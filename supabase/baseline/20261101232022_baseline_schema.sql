@@ -1,6 +1,6 @@
 -- =============================================================================
--- Baseline do schema de produção (doufsxqlfjyuvxuezpln) — versão 20261015140000
--- Gerado em 2026-10-15T15:48:25.900Z por scripts/export-schema-snapshot.mjs (supabase db dump --linked).
+-- Baseline do schema de produção (doufsxqlfjyuvxuezpln) — versão 20261101232022
+-- Gerado em 2026-11-07T00:48:04.745Z por scripts/export-schema-snapshot.mjs (supabase db dump --linked).
 -- Uso exclusivo: ponto de partida do replay do db-schema-drift-check.
 -- NÃO é migration: não aplicar em produção, não copiar para supabase/migrations/.
 -- Não contém: dados, jobs do pg_cron, storage, vault, schema auth, publications,
@@ -1002,6 +1002,126 @@ $$;
 ALTER FUNCTION "public"."acquire_ai_quota"("_user_id" "uuid", "_function_name" "text", "_model" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."admin_active_sessions"() RETURNS TABLE("user_id" "uuid", "email" "text", "session_id" "uuid", "session_created_at" timestamp with time zone, "session_updated_at" timestamp with time zone, "refreshed_at" timestamp with time zone, "not_after" timestamp with time zone, "ip" "text", "user_agent" "text", "live_refresh_token" boolean)
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'pg_catalog'
+    AS $$
+BEGIN
+  IF NOT public.has_role(auth.uid(), 'dev'::public.app_role) THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer role dev'
+      USING ERRCODE = '42501';
+  END IF;
+
+  -- Espelha mfaAal2 da rota: claim aal do JWT já verificado pelo PostgREST.
+  IF coalesce(auth.jwt() ->> 'aal', '') <> 'aal2' THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer sessão AAL2'
+      USING ERRCODE = '42501';
+  END IF;
+
+  RETURN QUERY
+  SELECT
+    u.id,
+    u.email::text,
+    s.id,
+    s.created_at,
+    s.updated_at,
+    s.refreshed_at::timestamptz,
+    s.not_after,
+    s.ip::text,
+    s.user_agent,
+    (
+      EXISTS (
+        SELECT 1
+        FROM auth.refresh_tokens rt
+        WHERE rt.session_id = s.id
+          AND rt.revoked IS NOT TRUE
+      )
+      -- Refresh tokens v2 vivem na própria sessão (hmac_key + counter),
+      -- sem linha em auth.refresh_tokens.
+      OR s.refresh_token_hmac_key IS NOT NULL
+    ) AS live_refresh_token
+  FROM auth.users u
+  JOIN auth.sessions s ON s.user_id = u.id
+  WHERE s.not_after IS NULL OR s.not_after > now()
+  ORDER BY s.updated_at DESC NULLS LAST;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."admin_active_sessions"() OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."admin_active_sessions"() IS 'Lista sessões ativas de auth.users (dev + aal2). Painel: /admin/sessoes.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'pg_catalog'
+    AS $_$
+BEGIN
+  IF NOT public.has_role(auth.uid(), 'dev'::public.app_role) THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer role dev'
+      USING ERRCODE = '42501';
+  END IF;
+  IF coalesce(auth.jwt() ->> 'aal', '') <> 'aal2' THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer sessão AAL2'
+      USING ERRCODE = '42501';
+  END IF;
+
+  -- Paridade com o 400 da edge manage-users (revoke_sessions): a RPC
+  -- revoga TODAS as sessões do alvo, incluindo a do próprio chamador —
+  -- quem quer derrubar só as outras sessões deve usar o logout normal.
+  IF _user_id = auth.uid() THEN
+    RAISE EXCEPTION 'self_revocation_denied: use o logout em outros dispositivos'
+      USING ERRCODE = '42501';
+  END IF;
+
+  UPDATE auth.refresh_tokens rt
+     SET revoked = true
+    FROM auth.sessions s
+   WHERE rt.session_id = s.id
+     AND s.user_id = _user_id;
+
+  UPDATE auth.sessions
+     SET refresh_token_hmac_key = NULL
+   WHERE user_id = _user_id;
+
+  PERFORM public.revoke_all_user_tokens(_user_id);
+
+  -- Trilha no DB: a edge audita a camada de aplicação (source distinto),
+  -- aqui fica a evidência da revogação efetiva, cobrindo também chamada
+  -- direta via PostgREST. Falha não aborta a revogação.
+  BEGIN
+    INSERT INTO public.admin_audit_log
+      (user_id, action, resource_type, resource_id, status, source,
+       details, ip_address)
+    VALUES (
+      auth.uid(),
+      'session.revoke_all',
+      'auth',
+      _user_id::text,
+      'success',
+      'db:admin_revoke_user_sessions',
+      jsonb_build_object('target_user_id', _user_id, 'scope', 'global'),
+      btrim(substring(
+        NULLIF(current_setting('request.headers', true), '')::jsonb
+          ->> 'x-forwarded-for'
+        from '([^,]+)$')));
+  EXCEPTION WHEN OTHERS THEN
+    RAISE WARNING 'admin_revoke_user_sessions: audit insert failed: %', SQLERRM;
+  END;
+END;
+$_$;
+
+
+ALTER FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") IS 'Revoga refresh tokens + marca revogação (dev + aal2, sem self, com auditoria no DB). Painel: /admin/sessoes.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."apply_transform"("p_value" "text", "p_transform_type" character varying, "p_transform_config" "jsonb" DEFAULT NULL::"jsonb") RETURNS "text"
     LANGUAGE "plpgsql" IMMUTABLE
     SET "search_path" TO 'public'
@@ -1579,10 +1699,13 @@ CREATE OR REPLACE FUNCTION "public"."audit_security_definer_acl"() RETURNS TABLE
   acl_expanded AS (
     SELECT d.oid, d.proname, d.args, d.is_trigger,
            d.public_intent, d.anon_pipeline, d.anon_edge, d.anon_mcp, d.catalog_intent,
-           a.grantee::regrole::text AS grantee
+           CASE WHEN a.grantee = 0 THEN '-'
+                ELSE pg_get_userbyid(a.grantee)
+           END AS grantee
     FROM defs d
     LEFT JOIN LATERAL (SELECT (aclexplode(d.proacl)).grantee) a ON true
     WHERE a.grantee IS NOT NULL
+      AND (a.grantee = 0 OR EXISTS (SELECT 1 FROM pg_catalog.pg_roles r WHERE r.oid = a.grantee))
   )
   SELECT proname, args, 'PUBLIC has EXECUTE'::text, 'PUBLIC'::text
   FROM acl_expanded
@@ -1604,7 +1727,7 @@ $$;
 ALTER FUNCTION "public"."audit_security_definer_acl"() OWNER TO "postgres";
 
 
-COMMENT ON FUNCTION "public"."audit_security_definer_acl"() IS 'Read-only SECURITY DEFINER ACL audit; exact-signature public endpoint allowlist aligned 2026-09-09.';
+COMMENT ON FUNCTION "public"."audit_security_definer_acl"() IS 'Retorna funções SECURITY DEFINER em public acessíveis por roles indevidos. Cast seguro via pg_get_userbyid() — tolera roles removidas sem lançar exceção.';
 
 
 
@@ -2368,7 +2491,7 @@ ALTER FUNCTION "public"."check_auth_throttling"("_email" "text", "_ip" "text") O
 
 CREATE OR REPLACE FUNCTION "public"."check_edge_rate_limit"("p_key" "text", "p_window_ms" integer, "p_max_requests" integer) RETURNS TABLE("allowed" boolean, "remaining" integer, "reset_at" timestamp with time zone)
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
     v_now TIMESTAMP WITH TIME ZONE := now();
@@ -2539,7 +2662,7 @@ ALTER FUNCTION "public"."check_ip_access"("_ip" "text") OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."check_login_rate_limit"("_email" "text", "_ip" "text" DEFAULT NULL::"text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   _max_failures int := 5;
@@ -7606,6 +7729,19 @@ $$;
 ALTER FUNCTION "public"."cleanup_discount_test_data"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."cleanup_expired_auth_sessions"() RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+BEGIN
+  DELETE FROM auth.sessions WHERE created_at < NOW() - INTERVAL '30 days';
+END;
+$$;
+
+
+ALTER FUNCTION "public"."cleanup_expired_auth_sessions"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."cleanup_expired_collection_trash"() RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
@@ -7619,7 +7755,7 @@ ALTER FUNCTION "public"."cleanup_expired_collection_trash"() OWNER TO "postgres"
 
 CREATE OR REPLACE FUNCTION "public"."cleanup_expired_edge_rate_limits"() RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 BEGIN
     DELETE FROM public.edge_rate_limits WHERE reset_at < now();
@@ -11981,7 +12117,7 @@ ALTER FUNCTION "public"."fn_anon_catalog_grant_audit_run"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."fn_anon_insert_rate_guard"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_role  text;
@@ -14646,7 +14782,7 @@ COMMENT ON FUNCTION "public"."fn_assert_public_contract"() IS 'Guarda do contrat
 
 CREATE OR REPLACE FUNCTION "public"."fn_audit_and_fix_grants"("p_source" "text" DEFAULT 'cron'::"text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE r record; v_fixed int := 0;
 BEGIN
@@ -20927,7 +21063,7 @@ ALTER FUNCTION "public"."fn_cron_guard"("p_key" bigint, "p_sql" "text") OWNER TO
 
 CREATE OR REPLACE FUNCTION "public"."fn_cron_safe_run"("p_key" bigint, "p_sql" "text", "p_timeout_ms" integer DEFAULT 45000, "p_job_label" "text" DEFAULT 'cron'::"text") RETURNS "text"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public'
+    SET "search_path" TO 'pg_catalog', 'public'
     AS $$
 DECLARE v_start timestamptz := clock_timestamp(); v_duration_ms int;
 BEGIN
@@ -20940,9 +21076,12 @@ BEGIN
   RETURN format('[%s] OK: %sms', p_job_label, v_duration_ms);
 EXCEPTION
   WHEN query_canceled THEN
+    RAISE WARNING 'fn_cron_safe_run [%] TIMEOUT após %ms (limite=%ms)', p_job_label,
+      EXTRACT(EPOCH FROM (clock_timestamp() - v_start))::int * 1000, p_timeout_ms;
     RETURN format('[%s] TIMEOUT após %sms (limite=%sms)', p_job_label,
       EXTRACT(EPOCH FROM (clock_timestamp() - v_start))::int * 1000, p_timeout_ms);
   WHEN OTHERS THEN
+    RAISE WARNING 'fn_cron_safe_run [%] ERRO: %', p_job_label, SQLERRM;
     RETURN format('[%s] ERRO: %s', p_job_label, SQLERRM);
 END; $$;
 
@@ -37048,7 +37187,7 @@ ALTER FUNCTION "public"."fn_purge_old_stock_snapshots"("p_retention_days" intege
 
 CREATE OR REPLACE FUNCTION "public"."fn_purge_spr_history"("p_keep_days" integer DEFAULT 90) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_cutoff   timestamptz := now() - make_interval(days => GREATEST(p_keep_days, 30));
@@ -58064,7 +58203,7 @@ ALTER FUNCTION "public"."get_edge_anon_key"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."get_edge_function_secret"("_name" "text") RETURNS "text"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'vault', 'public', 'pg_temp'
+    SET "search_path" TO 'vault', 'public'
     AS $$
 DECLARE
   _secret text;
@@ -58108,7 +58247,7 @@ COMMENT ON FUNCTION "public"."get_edge_function_secret"("_name" "text") IS 'Whit
 
 CREATE OR REPLACE FUNCTION "public"."get_edge_functions_base_url"() RETURNS "text"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'vault', 'pg_temp'
+    SET "search_path" TO 'public', 'vault'
     AS $_$
 DECLARE
   _cfg text;
@@ -59656,7 +59795,7 @@ ALTER FUNCTION "public"."get_sale_price_for_quantity"("p_variant_id" "uuid", "p_
 
 CREATE OR REPLACE FUNCTION "public"."get_sitemap_public"("p_limit" integer DEFAULT 1000, "p_offset" integer DEFAULT 0) RETURNS TABLE("url_type" "text", "url_path" "text", "identifier" "text", "title" "text", "lastmod" timestamp with time zone, "priority" numeric, "changefreq" "text", "image_url" "text")
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 BEGIN
   IF p_limit IS NULL OR p_limit NOT BETWEEN 1 AND 1000 THEN
@@ -60399,6 +60538,16 @@ $$;
 
 
 ALTER FUNCTION "public"."handle_new_user"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."handle_updated_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+BEGIN NEW.updated_at = now(); RETURN NEW; END;
+$$;
+
+
+ALTER FUNCTION "public"."handle_updated_at"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."has_active_step_up_challenge"("_action" "public"."step_up_action" DEFAULT NULL::"public"."step_up_action") RETURNS boolean
@@ -61756,7 +61905,7 @@ ALTER FUNCTION "public"."m_to_cm"("p_m" numeric) OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."magazine_add_items_atomic"("p_magazine_id" "uuid", "p_expected_updated_at" timestamp with time zone, "p_items" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -61857,7 +62006,7 @@ ALTER FUNCTION "public"."magazine_add_items_atomic"("p_magazine_id" "uuid", "p_e
 
 CREATE OR REPLACE FUNCTION "public"."magazine_add_items_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_items" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $_$
 DECLARE v_mag public.magazines%ROWTYPE; v_inserted INT; v_current INT; v_new INT; v_result public.magazines%ROWTYPE;
 BEGIN
@@ -61882,7 +62031,7 @@ ALTER FUNCTION "public"."magazine_add_items_v2"("p_magazine_id" "uuid", "p_expec
 
 CREATE OR REPLACE FUNCTION "public"."magazine_archive_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$ DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE; BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,FALSE); IF v_mag.status='archived' THEN RETURN jsonb_build_object('archived_at',v_mag.archived_at,'edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; IF v_mag.status NOT IN ('draft','published') THEN RAISE EXCEPTION 'magazine_not_archivable' USING ERRCODE='55000'; END IF; UPDATE public.magazines SET status='archived',edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('archived_at',v_result.archived_at,'edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $$;
 
 
@@ -61891,7 +62040,7 @@ ALTER FUNCTION "public"."magazine_archive_v2"("p_magazine_id" "uuid", "p_expecte
 
 CREATE OR REPLACE FUNCTION "public"."magazine_auto_archive_stale_drafts"("_ttl_days" integer DEFAULT 365) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   archived_count INTEGER;
@@ -61912,7 +62061,7 @@ ALTER FUNCTION "public"."magazine_auto_archive_stale_drafts"("_ttl_days" integer
 
 CREATE OR REPLACE FUNCTION "public"."magazine_cleanup_all"() RETURNS TABLE("step" "text", "affected_rows" integer)
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 BEGIN
   RETURN QUERY SELECT 'orphan_reader_state'::TEXT, public.magazine_cleanup_orphan_state(180);
@@ -61928,7 +62077,7 @@ ALTER FUNCTION "public"."magazine_cleanup_all"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."magazine_cleanup_orphan_state"("_ttl_days" integer DEFAULT 180) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   deleted_count INTEGER;
@@ -61946,7 +62095,7 @@ ALTER FUNCTION "public"."magazine_cleanup_orphan_state"("_ttl_days" integer) OWN
 
 CREATE OR REPLACE FUNCTION "public"."magazine_cleanup_view_events"("_ttl_days" integer DEFAULT 180) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   deleted_count integer := 0;
@@ -61969,7 +62118,7 @@ COMMENT ON FUNCTION "public"."magazine_cleanup_view_events"("_ttl_days" integer)
 
 CREATE OR REPLACE FUNCTION "public"."magazine_create_v2"("p_organization_id" "uuid", "p_title" "text", "p_template_id" "text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62015,7 +62164,7 @@ ALTER FUNCTION "public"."magazine_create_v2"("p_organization_id" "uuid", "p_titl
 
 CREATE OR REPLACE FUNCTION "public"."magazine_duplicate_atomic"("p_source_magazine_id" "uuid", "p_title" "text" DEFAULT NULL::"text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62112,7 +62261,7 @@ ALTER FUNCTION "public"."magazine_duplicate_atomic"("p_source_magazine_id" "uuid
 
 CREATE OR REPLACE FUNCTION "public"."magazine_duplicate_v2"("p_source_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_idempotency_key" "text", "p_title" "text" DEFAULT NULL::"text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE v_actor UUID:=auth.uid(); v_source public.magazines%ROWTYPE; v_existing public.magazine_duplicate_requests%ROWTYPE; v_item public.magazine_items%ROWTYPE; v_new_id UUID; v_new_item UUID; v_count INT:=0; v_map JSONB:='{}'; v_pages JSONB; v_order JSONB; v_request_title TEXT:=NULLIF(BTRIM(p_title),''); v_title TEXT;
 BEGIN
@@ -62136,7 +62285,7 @@ ALTER FUNCTION "public"."magazine_duplicate_v2"("p_source_magazine_id" "uuid", "
 
 CREATE OR REPLACE FUNCTION "public"."magazine_ensure_view_event_partitions"("_months_ahead" integer DEFAULT 3) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'public', 'extensions'
     AS $$
 DECLARE
   _created INTEGER := 0;
@@ -62194,7 +62343,7 @@ COMMENT ON FUNCTION "public"."magazine_ensure_view_event_partitions"("_months_ah
 
 CREATE OR REPLACE FUNCTION "public"."magazine_guard_and_version_v2"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'public', 'extensions'
     AS $$
 DECLARE
   v_changed BOOLEAN;
@@ -62332,7 +62481,7 @@ ALTER FUNCTION "public"."magazine_guard_and_version_v2"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."magazine_import_local_v2"("p_idempotency_key" "text", "p_payload" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'public', 'extensions'
     AS $_$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62589,7 +62738,7 @@ ALTER FUNCTION "public"."magazine_import_local_v2"("p_idempotency_key" "text", "
 
 CREATE OR REPLACE FUNCTION "public"."magazine_items_guard_v2"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_magazine_id UUID := CASE WHEN TG_OP = 'INSERT' THEN NEW.magazine_id ELSE OLD.magazine_id END;
@@ -62658,7 +62807,7 @@ ALTER TABLE "public"."magazines" OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."magazine_lock_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_allow_deleted" boolean DEFAULT false) RETURNS "public"."magazines"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62726,7 +62875,7 @@ ALTER FUNCTION "public"."magazine_page_order_remove_items_v2"("p_page_order" "js
 
 CREATE OR REPLACE FUNCTION "public"."magazine_publish_atomic"("p_magazine_id" "uuid") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62794,7 +62943,7 @@ ALTER FUNCTION "public"."magazine_publish_atomic"("p_magazine_id" "uuid") OWNER 
 
 CREATE OR REPLACE FUNCTION "public"."magazine_publish_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $_$
 DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE;
 BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,FALSE); IF v_mag.status='published' THEN IF v_mag.public_token IS NULL OR v_mag.public_token !~ '^[0-9a-f]{48}$' OR v_mag.published_at IS NULL THEN RAISE EXCEPTION 'magazine_publication_invariant_invalid' USING ERRCODE='55000'; END IF; RETURN jsonb_build_object('public_token',v_mag.public_token,'published_at',v_mag.published_at,'edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; IF v_mag.status<>'draft' THEN RAISE EXCEPTION 'magazine_not_publishable' USING ERRCODE='55000'; END IF; UPDATE public.magazines SET status='published',public_token=NULL,edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('public_token',v_result.public_token,'published_at',v_result.published_at,'edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $_$;
@@ -62805,7 +62954,7 @@ ALTER FUNCTION "public"."magazine_publish_v2"("p_magazine_id" "uuid", "p_expecte
 
 CREATE OR REPLACE FUNCTION "public"."magazine_reactivate_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$ DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE; BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,FALSE); IF v_mag.status='draft' THEN RETURN jsonb_build_object('edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; IF v_mag.status<>'archived' THEN RAISE EXCEPTION 'magazine_not_reactivatable' USING ERRCODE='55000'; END IF; UPDATE public.magazines SET status='draft',edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $$;
 
 
@@ -62814,7 +62963,7 @@ ALTER FUNCTION "public"."magazine_reactivate_v2"("p_magazine_id" "uuid", "p_expe
 
 CREATE OR REPLACE FUNCTION "public"."magazine_remove_items_atomic"("p_magazine_id" "uuid", "p_expected_updated_at" timestamp with time zone, "p_item_ids" "uuid"[]) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62862,7 +63011,7 @@ ALTER FUNCTION "public"."magazine_remove_items_atomic"("p_magazine_id" "uuid", "
 
 CREATE OR REPLACE FUNCTION "public"."magazine_remove_items_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_item_ids" "uuid"[]) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE v_mag public.magazines%ROWTYPE; v_removed INT; v_result public.magazines%ROWTYPE;
 BEGIN
@@ -62880,7 +63029,7 @@ ALTER FUNCTION "public"."magazine_remove_items_v2"("p_magazine_id" "uuid", "p_ex
 
 CREATE OR REPLACE FUNCTION "public"."magazine_reorder_items_atomic"("p_magazine_id" "uuid", "p_expected_updated_at" timestamp with time zone, "p_ordered_item_ids" "uuid"[]) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62942,7 +63091,7 @@ ALTER FUNCTION "public"."magazine_reorder_items_atomic"("p_magazine_id" "uuid", 
 
 CREATE OR REPLACE FUNCTION "public"."magazine_reorder_items_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_ordered_item_ids" "uuid"[]) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE v_mag public.magazines%ROWTYPE; v_total INT; v_current UUID[]; v_result public.magazines%ROWTYPE;
 BEGIN
@@ -62963,7 +63112,7 @@ ALTER FUNCTION "public"."magazine_reorder_items_v2"("p_magazine_id" "uuid", "p_e
 
 CREATE OR REPLACE FUNCTION "public"."magazine_restore_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$ DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE; BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,TRUE); IF v_mag.deleted_at IS NULL THEN RETURN jsonb_build_object('edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; UPDATE public.magazines SET deleted_at=NULL,status='draft',edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $$;
 
 
@@ -62972,7 +63121,7 @@ ALTER FUNCTION "public"."magazine_restore_v2"("p_magazine_id" "uuid", "p_expecte
 
 CREATE OR REPLACE FUNCTION "public"."magazine_rollup_view_counts"() RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   _from         timestamptz;
@@ -63029,7 +63178,7 @@ COMMENT ON FUNCTION "public"."magazine_rollup_view_counts"() IS 'Exactly-once. S
 
 CREATE OR REPLACE FUNCTION "public"."magazine_soft_delete_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$ DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE; BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,TRUE); IF v_mag.deleted_at IS NOT NULL THEN RETURN jsonb_build_object('deleted_at',v_mag.deleted_at,'edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; UPDATE public.magazines SET deleted_at=clock_timestamp(),status='archived',edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('deleted_at',v_result.deleted_at,'edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $$;
 
 
@@ -63038,7 +63187,7 @@ ALTER FUNCTION "public"."magazine_soft_delete_v2"("p_magazine_id" "uuid", "p_exp
 
 CREATE OR REPLACE FUNCTION "public"."magazine_unpublish_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$ DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE; BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,FALSE); IF v_mag.status='draft' THEN RETURN jsonb_build_object('edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; IF v_mag.status<>'published' THEN RAISE EXCEPTION 'magazine_not_unpublishable' USING ERRCODE='55000'; END IF; UPDATE public.magazines SET status='draft',edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $$;
 
 
@@ -63047,7 +63196,7 @@ ALTER FUNCTION "public"."magazine_unpublish_v2"("p_magazine_id" "uuid", "p_expec
 
 CREATE OR REPLACE FUNCTION "public"."magazine_update_item_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_item_id" "uuid", "p_patch" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE;
 BEGIN
@@ -63066,7 +63215,7 @@ ALTER FUNCTION "public"."magazine_update_item_v2"("p_magazine_id" "uuid", "p_exp
 
 CREATE OR REPLACE FUNCTION "public"."magazine_update_metadata_atomic"("p_magazine_id" "uuid", "p_expected_updated_at" timestamp with time zone, "p_patch" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -63200,7 +63349,7 @@ ALTER FUNCTION "public"."magazine_update_metadata_atomic"("p_magazine_id" "uuid"
 
 CREATE OR REPLACE FUNCTION "public"."magazine_update_metadata_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_patch" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE;
 BEGIN
@@ -63249,7 +63398,7 @@ ALTER FUNCTION "public"."magazine_update_metadata_v2"("p_magazine_id" "uuid", "p
 
 CREATE OR REPLACE FUNCTION "public"."magazine_validate_page_order_v2"("p_magazine_id" "uuid", "p_page_order" "jsonb") RETURNS boolean
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $_$
 DECLARE
   v_pages JSONB;
@@ -64571,6 +64720,33 @@ $$;
 ALTER FUNCTION "public"."parse_xbz_dimensions"("p_raw_data" "jsonb") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."perf002_drop_unused_snapshot_indexes"() RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+  idx text;
+  prefix text := 'DR' || 'OP INDEX IF EXISTS public.';
+  indexes text[] := ARRAY[
+    'idx_ss_supplier_id',
+    'idx_stock_snapshots_captured_at_br_date',
+    'idx_stock_snapshots_supplier_branch_id',
+    'idx_snapshots_vss_captured',
+    'idx_snapshots_product_captured',
+    'idx_snapshots_captured_at',
+    'idx_ss_variant_id'
+  ];
+BEGIN
+  FOREACH idx IN ARRAY indexes LOOP
+    EXECUTE prefix || quote_ident(idx);
+  END LOOP;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."perf002_drop_unused_snapshot_indexes"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."populate_import_staging"("p_filenames" "text"[], "p_source_zip" character varying DEFAULT 'products_print_area_allcolors_market1_150px.zip'::character varying, "p_batch_id" character varying DEFAULT NULL::character varying) RETURNS TABLE("total_processado" integer, "total_pending" integer, "total_already_exists" integer, "total_no_product" integer, "total_no_color" integer, "total_skipped" integer, "total_location" integer, "total_area" integer, "total_component" integer)
     LANGUAGE "plpgsql"
     SET "search_path" TO 'public'
@@ -65324,7 +65500,7 @@ ALTER FUNCTION "public"."purge_edge_invocations_old"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."purge_expired_security_data"() RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_purged_step_up integer;
@@ -69148,7 +69324,7 @@ ALTER FUNCTION "public"."tg_ip_access_control_set_updated_at"() OWNER TO "postgr
 
 CREATE OR REPLACE FUNCTION "public"."tg_magazines_on_publish"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'public', 'extensions'
     AS $$
 DECLARE
   candidate_token TEXT;
@@ -69185,7 +69361,7 @@ ALTER FUNCTION "public"."tg_magazines_on_publish"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."tg_reader_state_validate"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 BEGIN
   IF cardinality(NEW.bookmarks) > 500 THEN
@@ -73761,36 +73937,6 @@ COMMENT ON TABLE "public"."_archive_supplier_price_tiers_20260626" IS 'Archive d
 
 
 
-CREATE TABLE IF NOT EXISTS "public"."_backup_stock_daily_summary_20260618" (
-    "id" bigint NOT NULL,
-    "variant_supplier_source_id" "uuid",
-    "supplier_id" "uuid",
-    "supplier_branch_id" "uuid",
-    "variant_id" "uuid",
-    "product_id" "uuid",
-    "summary_date" "date",
-    "stock_open" integer,
-    "stock_close" integer,
-    "stock_min" integer,
-    "stock_max" integer,
-    "net_change" integer,
-    "units_depleted" integer,
-    "units_restocked" integer,
-    "restock_detected" boolean,
-    "restock_quantity" integer,
-    "restock_count" smallint,
-    "cost_price_open" numeric(12,4),
-    "cost_price_close" numeric(12,4),
-    "price_changed" boolean,
-    "sync_count" smallint,
-    "created_at" timestamp with time zone,
-    "restock_zero_to_positive" boolean
-);
-
-
-ALTER TABLE "public"."_backup_stock_daily_summary_20260618" OWNER TO "postgres";
-
-
 CREATE TABLE IF NOT EXISTS "public"."_bkp_kcvs_pre_normalize_20260624" (
     "id" "uuid" NOT NULL,
     "component_id" "uuid",
@@ -76606,6 +76752,8 @@ CREATE TABLE IF NOT EXISTS "public"."device_login_notifications" (
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
 );
 
+ALTER TABLE ONLY "public"."device_login_notifications" REPLICA IDENTITY FULL;
+
 
 ALTER TABLE "public"."device_login_notifications" OWNER TO "postgres";
 
@@ -77036,15 +77184,11 @@ CREATE TABLE IF NOT EXISTS "public"."frontend_telemetry" (
     "session_id" "text",
     "user_id" "uuid",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    CONSTRAINT "frontend_telemetry_size_caps_check" CHECK (((("length"(COALESCE("event_type", ''::"text")) >= 1) AND ("length"(COALESCE("event_type", ''::"text")) <= 64)) AND (("length"(COALESCE("name", ''::"text")) >= 1) AND ("length"(COALESCE("name", ''::"text")) <= 256)) AND ("length"(COALESCE("url", ''::"text")) <= 2048) AND ("length"(COALESCE("user_agent", ''::"text")) <= 1024) AND ("length"(COALESCE("session_id", ''::"text")) <= 128) AND ("length"(COALESCE(("metadata")::"text", ''::"text")) <= 8192)))
+    CONSTRAINT "frontend_telemetry_size_caps_check" CHECK ((("length"(COALESCE("event_type", ''::"text")) >= 1) AND ("length"(COALESCE("event_type", ''::"text")) <= 64) AND (("length"(COALESCE("name", ''::"text")) >= 1) AND ("length"(COALESCE("name", ''::"text")) <= 256)) AND ("length"(COALESCE("url", ''::"text")) <= 2048) AND ("length"(COALESCE("user_agent", ''::"text")) <= 1024) AND ("length"(COALESCE("session_id", ''::"text")) <= 128) AND ("length"(COALESCE(("metadata")::"text", ''::"text")) <= 8192)))
 );
 
 
 ALTER TABLE "public"."frontend_telemetry" OWNER TO "postgres";
-
-
-COMMENT ON CONSTRAINT "frontend_telemetry_size_caps_check" ON "public"."frontend_telemetry" IS 'SEC-002 defesa em profundidade — caps de tamanho não dependem da policy ativa.';
-
 
 
 CREATE TABLE IF NOT EXISTS "public"."generated_mockups" (
@@ -78198,6 +78342,8 @@ CREATE TABLE IF NOT EXISTS "public"."login_attempts" (
     "verified" boolean DEFAULT false NOT NULL
 );
 
+ALTER TABLE ONLY "public"."login_attempts" REPLICA IDENTITY FULL;
+
 
 ALTER TABLE "public"."login_attempts" OWNER TO "postgres";
 
@@ -78396,6 +78542,22 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2027_01" (
 
 
 ALTER TABLE "public"."magazine_public_view_events_2027_01" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2027_02" (
+    "id" bigint DEFAULT "nextval"('"public"."magazine_public_view_events_id_seq"'::"regclass") NOT NULL,
+    "magazine_id" "uuid" NOT NULL,
+    "token_hash" "text" NOT NULL,
+    "ip_hash" "text" NOT NULL,
+    "user_agent_hash" "text",
+    "referer_host" "text",
+    "page_index" integer,
+    "session_id" "text",
+    "viewed_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."magazine_public_view_events_2027_02" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_default" (
@@ -83711,6 +83873,22 @@ ALTER TABLE "public"."stock_daily_summary" ALTER COLUMN "id" ADD GENERATED ALWAY
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."stock_notes" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "variant_id" "uuid" NOT NULL,
+    "supplier_id" "uuid",
+    "created_by" "uuid" NOT NULL,
+    "note" "text" NOT NULL,
+    "is_pinned" boolean DEFAULT false NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "deleted_at" timestamp with time zone
+);
+
+
+ALTER TABLE "public"."stock_notes" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."stock_snapshots" (
     "id" bigint NOT NULL,
     "variant_supplier_source_id" "uuid" NOT NULL,
@@ -84111,20 +84289,6 @@ COMMENT ON TABLE "public"."supplier_products_raw_history" IS 'Versões anteriore
 
 
 
-CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_07" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "raw_id" "uuid",
-    "supplier_id" "uuid",
-    "supplier_reference" character varying,
-    "content_hash" "text",
-    "raw_data" "jsonb",
-    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
-);
-
-
-ALTER TABLE "public"."supplier_products_raw_history_p2026_07" OWNER TO "postgres";
-
-
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_08" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "raw_id" "uuid",
@@ -84207,6 +84371,20 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_01" (
 
 
 ALTER TABLE "public"."supplier_products_raw_history_p2027_01" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_02" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "raw_id" "uuid",
+    "supplier_id" "uuid",
+    "supplier_reference" character varying,
+    "content_hash" "text",
+    "raw_data" "jsonb",
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_02" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."supplier_property_mappings" (
@@ -88080,7 +88258,7 @@ COMMENT ON VIEW "public"."v_system_alerts" IS 'Alertas do sistema. Correções 2
 
 
 
-CREATE OR REPLACE VIEW "public"."v_system_health_dashboard" WITH ("security_invoker"='true') AS
+CREATE OR REPLACE VIEW "public"."v_system_health_dashboard" AS
  WITH "metrics" AS (
          SELECT 'database'::"text" AS "categoria",
             'total_tables_public'::"text" AS "metrica",
@@ -88090,226 +88268,226 @@ CREATE OR REPLACE VIEW "public"."v_system_health_dashboard" WITH ("security_invo
                   WHERE (("n"."nspname" = 'public'::"name") AND ("c"."relkind" = 'r'::"char"))))::"text" AS "valor",
             'count'::"text" AS "unit"
         UNION ALL
-         SELECT 'database'::"text",
-            'total_functions'::"text",
+         SELECT 'database'::"text" AS "text",
+            'total_functions'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM ("pg_proc" "p"
                      JOIN "pg_namespace" "n" ON (("n"."oid" = "p"."pronamespace")))
                   WHERE ("n"."nspname" = 'public'::"name")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'database'::"text",
-            'total_triggers'::"text",
+         SELECT 'database'::"text" AS "text",
+            'total_triggers'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM (("pg_trigger" "t"
                      JOIN "pg_class" "c" ON (("c"."oid" = "t"."tgrelid")))
                      JOIN "pg_namespace" "n" ON (("n"."oid" = "c"."relnamespace")))
                   WHERE (("n"."nspname" = 'public'::"name") AND (NOT "t"."tgisinternal"))))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'database'::"text",
-            'total_indexes'::"text",
+         SELECT 'database'::"text" AS "text",
+            'total_indexes'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "pg_indexes"
                   WHERE ("pg_indexes"."schemaname" = 'public'::"name")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'database'::"text",
-            'total_rls_policies'::"text",
+         SELECT 'database'::"text" AS "text",
+            'total_rls_policies'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "pg_policies"
                   WHERE ("pg_policies"."schemaname" = 'public'::"name")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'database'::"text",
-            'realtime_published_tables'::"text",
+         SELECT 'database'::"text" AS "text",
+            'realtime_published_tables'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "pg_publication_tables"
                   WHERE ("pg_publication_tables"."pubname" = 'supabase_realtime'::"name")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_products'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_products'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."products"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'active_products'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'active_products'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."products"
                   WHERE ("products"."is_active" = true)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'products_with_image'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'products_with_image'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."products"
                   WHERE ("products"."primary_image_url" IS NOT NULL)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'products_with_ncm'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'products_with_ncm'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."products"
                   WHERE ("products"."ncm_id" IS NOT NULL)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'products_with_ai_description'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'products_with_ai_description'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."products"
                   WHERE ("products"."ai_description" IS NOT NULL)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_variants'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_variants'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."product_variants"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'active_variants'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'active_variants'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."product_variants"
                   WHERE ("product_variants"."is_active" = true)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_images'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_images'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."product_images"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_videos'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_videos'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."product_videos"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_categories'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_categories'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."categories"
                   WHERE ("categories"."is_active" = true)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_stock_units'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_stock_units'::"text" AS "text",
             (COALESCE(( SELECT "sum"("variant_supplier_sources"."quantity") AS "sum"
                    FROM "public"."variant_supplier_sources"
                   WHERE ("variant_supplier_sources"."is_active" = true)), (0)::bigint))::"text" AS "coalesce",
-            'units'::"text"
+            'units'::"text" AS "text"
         UNION ALL
-         SELECT 'suppliers'::"text",
-            'total_suppliers'::"text",
+         SELECT 'suppliers'::"text" AS "text",
+            'total_suppliers'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."suppliers"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'suppliers'::"text",
-            'active_sync_suppliers'::"text",
+         SELECT 'suppliers'::"text" AS "text",
+            'active_sync_suppliers'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."suppliers"
                   WHERE ("suppliers"."sync_enabled" = true)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'suppliers'::"text",
-            'pending_import_batches'::"text",
+         SELECT 'suppliers'::"text" AS "text",
+            'pending_import_batches'::"text" AS "text",
             (( SELECT "count"(DISTINCT "supplier_products_raw"."import_batch_id") AS "count"
                    FROM "public"."supplier_products_raw"
                   WHERE ("supplier_products_raw"."status" <> 'processed'::"public"."supplier_raw_status")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'ai'::"text",
-            'ai_queue_pending'::"text",
+         SELECT 'ai'::"text" AS "text",
+            'ai_queue_pending'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."ai_enrichment_queue"
                   WHERE ("ai_enrichment_queue"."status" = 'pending'::"text")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'ai'::"text",
-            'ai_queue_completed'::"text",
+         SELECT 'ai'::"text" AS "text",
+            'ai_queue_completed'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."ai_enrichment_queue"
                   WHERE ("ai_enrichment_queue"."status" = 'done'::"text")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'ai'::"text",
-            'ai_queue_stuck'::"text",
+         SELECT 'ai'::"text" AS "text",
+            'ai_queue_stuck'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."ai_enrichment_queue"
                   WHERE (("ai_enrichment_queue"."status" = 'processing'::"text") AND ("ai_enrichment_queue"."locked_at" < ("now"() - '02:00:00'::interval)))))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'crm'::"text",
-            'total_quotes'::"text",
+         SELECT 'crm'::"text" AS "text",
+            'total_quotes'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."quotes"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'crm'::"text",
-            'total_orders'::"text",
+         SELECT 'crm'::"text" AS "text",
+            'total_orders'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."orders"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'auth'::"text",
-            'total_users'::"text",
+         SELECT 'auth'::"text" AS "text",
+            'total_users'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "auth"."users"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'auth'::"text",
-            'total_organizations'::"text",
+         SELECT 'auth'::"text" AS "text",
+            'total_organizations'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."organizations"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'cron'::"text",
-            'active_jobs'::"text",
+         SELECT 'cron'::"text" AS "text",
+            'active_jobs'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "cron"."job"
                   WHERE ("job"."active" = true)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'cron'::"text",
-            'failed_runs_24h'::"text",
+         SELECT 'cron'::"text" AS "text",
+            'failed_runs_24h'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "cron"."job_run_details"
                   WHERE (("job_run_details"."status" = 'failed'::"text") AND ("job_run_details"."start_time" > ("now"() - '24:00:00'::interval)))))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'cron'::"text",
-            'succeeded_runs_24h'::"text",
+         SELECT 'cron'::"text" AS "text",
+            'succeeded_runs_24h'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "cron"."job_run_details"
                   WHERE (("job_run_details"."status" = 'succeeded'::"text") AND ("job_run_details"."start_time" > ("now"() - '24:00:00'::interval)))))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'bi'::"text",
-            'stock_snapshots_count'::"text",
+         SELECT 'bi'::"text" AS "text",
+            'stock_snapshots_count'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."stock_snapshots"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'bi'::"text",
-            'stock_daily_summary_count'::"text",
+         SELECT 'bi'::"text" AS "text",
+            'stock_daily_summary_count'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."stock_daily_summary"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'storage'::"text",
-            'db_total_size'::"text",
+         SELECT 'storage'::"text" AS "text",
+            'db_total_size'::"text" AS "text",
             "pg_size_pretty"("pg_database_size"("current_database"())) AS "pg_size_pretty",
-            'size'::"text"
+            'size'::"text" AS "text"
         UNION ALL
-         SELECT 'storage'::"text",
-            'indexes_size_public'::"text",
+         SELECT 'storage'::"text" AS "text",
+            'indexes_size_public'::"text" AS "text",
             ( SELECT "pg_size_pretty"("sum"("pg_relation_size"(("pg_stat_user_indexes"."indexrelid")::"regclass"))) AS "pg_size_pretty"
                    FROM "pg_stat_user_indexes"
                   WHERE ("pg_stat_user_indexes"."schemaname" = 'public'::"name")) AS "pg_size_pretty",
-            'size'::"text"
+            'size'::"text" AS "text"
         )
  SELECT "categoria",
     "metrica",
@@ -92286,8 +92464,11 @@ CREATE TABLE IF NOT EXISTS "public"."workspace_notifications" (
     "action_url" "text",
     "metadata" "jsonb" DEFAULT '{}'::"jsonb",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "search_vector" "tsvector"
+    "search_vector" "tsvector",
+    "idempotency_key" "text"
 );
+
+ALTER TABLE ONLY "public"."workspace_notifications" REPLICA IDENTITY FULL;
 
 
 ALTER TABLE "public"."workspace_notifications" OWNER TO "postgres";
@@ -93132,11 +93313,11 @@ ALTER TABLE ONLY "public"."magazine_public_view_events" ATTACH PARTITION "public
 
 
 
+ALTER TABLE ONLY "public"."magazine_public_view_events" ATTACH PARTITION "public"."magazine_public_view_events_2027_02" FOR VALUES FROM ('2027-02-01 00:00:00+00') TO ('2027-03-01 00:00:00+00');
+
+
+
 ALTER TABLE ONLY "public"."magazine_public_view_events" ATTACH PARTITION "public"."magazine_public_view_events_default" DEFAULT;
-
-
-
-ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2026_07" FOR VALUES FROM ('2026-07-01 00:00:00+00') TO ('2026-08-01 00:00:00+00');
 
 
 
@@ -93161,6 +93342,10 @@ ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "publ
 
 
 ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_01" FOR VALUES FROM ('2027-01-01 00:00:00+00') TO ('2027-02-01 00:00:00+00');
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_02" FOR VALUES FROM ('2027-02-01 00:00:00+00') TO ('2027-03-01 00:00:00+00');
 
 
 
@@ -93595,11 +93780,6 @@ ALTER TABLE ONLY "public"."_bkp_kit_pkg_material_20260624"
 
 ALTER TABLE ONLY "public"."_bkp_orphan_active_variants_20260619"
     ADD CONSTRAINT "bkp_orphan_active_variants_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "public"."_backup_stock_daily_summary_20260618"
-    ADD CONSTRAINT "bkp_stock_daily_summary_pkey" PRIMARY KEY ("id");
 
 
 
@@ -94360,6 +94540,11 @@ ALTER TABLE ONLY "public"."magazine_public_view_events_2026_12"
 
 ALTER TABLE ONLY "public"."magazine_public_view_events_2027_01"
     ADD CONSTRAINT "magazine_public_view_events_2027_01_pkey" PRIMARY KEY ("id", "viewed_at");
+
+
+
+ALTER TABLE ONLY "public"."magazine_public_view_events_2027_02"
+    ADD CONSTRAINT "magazine_public_view_events_2027_02_pkey" PRIMARY KEY ("id", "viewed_at");
 
 
 
@@ -95593,6 +95778,11 @@ ALTER TABLE ONLY "public"."stock_daily_summary"
 
 
 
+ALTER TABLE ONLY "public"."stock_notes"
+    ADD CONSTRAINT "stock_notes_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."stock_snapshots"
     ADD CONSTRAINT "stock_snapshots_pkey" PRIMARY KEY ("id");
 
@@ -95708,11 +95898,6 @@ ALTER TABLE ONLY "public"."supplier_products_raw_history"
 
 
 
-ALTER TABLE ONLY "public"."supplier_products_raw_history_p2026_07"
-    ADD CONSTRAINT "supplier_products_raw_history_p2026_07_pkey" PRIMARY KEY ("id", "captured_at");
-
-
-
 ALTER TABLE ONLY "public"."supplier_products_raw_history_p2026_08"
     ADD CONSTRAINT "supplier_products_raw_history_p2026_08_pkey" PRIMARY KEY ("id", "captured_at");
 
@@ -95740,6 +95925,11 @@ ALTER TABLE ONLY "public"."supplier_products_raw_history_p2026_12"
 
 ALTER TABLE ONLY "public"."supplier_products_raw_history_p2027_01"
     ADD CONSTRAINT "supplier_products_raw_history_p2027_01_pkey" PRIMARY KEY ("id", "captured_at");
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history_p2027_02"
+    ADD CONSTRAINT "supplier_products_raw_history_p2027_02_pkey" PRIMARY KEY ("id", "captured_at");
 
 
 
@@ -97229,6 +97419,22 @@ CREATE INDEX "idx_kit_padronizacao_material_id" ON "public"."kit_component_padro
 
 
 
+CREATE INDEX "idx_kit_quote_requests_quote_id" ON "public"."kit_quote_requests" USING "btree" ("quote_id");
+
+
+
+CREATE INDEX "idx_kit_quote_requests_user_id" ON "public"."kit_quote_requests" USING "btree" ("user_id");
+
+
+
+CREATE INDEX "idx_kit_save_requests_kit_id" ON "public"."kit_save_requests" USING "btree" ("kit_id");
+
+
+
+CREATE INDEX "idx_kit_save_requests_user_id" ON "public"."kit_save_requests" USING "btree" ("user_id");
+
+
+
 CREATE INDEX "idx_kit_share_tokens_kit_id" ON "public"."kit_share_tokens" USING "btree" ("kit_id");
 
 
@@ -97246,6 +97452,10 @@ CREATE INDEX "idx_login_attempts_email_ip_created" ON "public"."login_attempts" 
 
 
 CREATE INDEX "idx_login_attempts_ip" ON "public"."login_attempts" USING "btree" ("ip_address", "created_at" DESC);
+
+
+
+CREATE INDEX "idx_login_attempts_lower_email_ip_created" ON "public"."login_attempts" USING "btree" ("lower"("email"), "ip_address", "created_at" DESC);
 
 
 
@@ -98390,15 +98600,7 @@ CREATE INDEX "idx_smoke_test_runs_ran_at" ON "public"."smoke_test_runs" USING "b
 
 
 
-CREATE INDEX "idx_snapshots_captured_at" ON "public"."stock_snapshots" USING "btree" ("captured_at" DESC);
-
-
-
-CREATE INDEX "idx_snapshots_product_captured" ON "public"."stock_snapshots" USING "btree" ("product_id", "captured_at" DESC);
-
-
-
-CREATE INDEX "idx_snapshots_vss_captured" ON "public"."stock_snapshots" USING "btree" ("variant_supplier_source_id", "captured_at" DESC);
+CREATE INDEX "idx_snapshots_captured_at" ON "public"."stock_snapshots" USING "btree" ("captured_at");
 
 
 
@@ -98410,11 +98612,35 @@ COMMENT ON INDEX "public"."idx_spr_images_pending" IS 'Fila do worker de imagens
 
 
 
+CREATE INDEX "idx_spr_images_status_pending" ON "public"."supplier_products_raw" USING "btree" ("id") WHERE ("images_status" = 'pending'::"public"."supplier_raw_status");
+
+
+
 CREATE INDEX "idx_spr_import_batch_id" ON "public"."supplier_products_raw" USING "btree" ("import_batch_id");
 
 
 
+CREATE INDEX "idx_spr_site_status_failed" ON "public"."supplier_products_raw" USING "btree" ("id") WHERE ("site_status" = 'failed'::"public"."supplier_raw_status");
+
+
+
+CREATE INDEX "idx_spr_site_status_pending" ON "public"."supplier_products_raw" USING "btree" ("id") WHERE ("site_status" = 'pending'::"public"."supplier_raw_status");
+
+
+
+CREATE INDEX "idx_spr_status_failed_quarantined" ON "public"."supplier_products_raw" USING "btree" ("supplier_id") WHERE ("status" = ANY (ARRAY['failed'::"public"."supplier_raw_status", 'quarantined'::"public"."supplier_raw_status"]));
+
+
+
+CREATE INDEX "idx_spr_status_pending" ON "public"."supplier_products_raw" USING "btree" ("supplier_id") WHERE ("status" = 'pending'::"public"."supplier_raw_status");
+
+
+
 CREATE INDEX "idx_spr_stock_pending" ON "public"."supplier_products_raw" USING "btree" ("supplier_id", "stock_synced_at") WHERE ("stock_status" <> 'processed'::"public"."supplier_raw_status");
+
+
+
+CREATE INDEX "idx_spr_stock_status_pending" ON "public"."supplier_products_raw" USING "btree" ("id") WHERE ("stock_status" = 'pending'::"public"."supplier_raw_status");
 
 
 
@@ -98466,14 +98692,6 @@ CREATE INDEX "idx_sre_variant_date" ON "public"."supplier_replenishment_events" 
 
 
 
-CREATE INDEX "idx_ss_supplier_id" ON "public"."stock_snapshots" USING "btree" ("supplier_id");
-
-
-
-CREATE INDEX "idx_ss_variant_id" ON "public"."stock_snapshots" USING "btree" ("variant_id");
-
-
-
 CREATE INDEX "idx_step_up_challenges_expires" ON "public"."step_up_challenges" USING "btree" ("expires_at") WHERE ("consumed" = false);
 
 
@@ -98483,14 +98701,6 @@ CREATE INDEX "idx_stock_daily_summary_supplier_branch_id" ON "public"."stock_dai
 
 
 CREATE INDEX "idx_stock_daily_summary_supplier_id" ON "public"."stock_daily_summary" USING "btree" ("supplier_id");
-
-
-
-CREATE INDEX "idx_stock_snapshots_captured_at_br_date" ON "public"."stock_snapshots" USING "btree" (((("captured_at" AT TIME ZONE 'America/Sao_Paulo'::"text"))::"date"), "variant_supplier_source_id") WHERE ("variant_supplier_source_id" IS NOT NULL);
-
-
-
-CREATE INDEX "idx_stock_snapshots_supplier_branch_id" ON "public"."stock_snapshots" USING "btree" ("supplier_branch_id");
 
 
 
@@ -98867,6 +99077,14 @@ CREATE INDEX "magazine_public_view_events_2027_01_token_hash_viewed_at_idx" ON "
 
 
 
+CREATE INDEX "magazine_public_view_events_2027_02_magazine_id_idx" ON "public"."magazine_public_view_events_2027_02" USING "btree" ("magazine_id");
+
+
+
+CREATE INDEX "magazine_public_view_events_2027_02_token_hash_viewed_at_idx" ON "public"."magazine_public_view_events_2027_02" USING "btree" ("token_hash", "viewed_at" DESC);
+
+
+
 CREATE INDEX "magazine_public_view_events_default_magazine_id_idx" ON "public"."magazine_public_view_events_default" USING "btree" ("magazine_id");
 
 
@@ -98920,6 +99138,14 @@ CREATE INDEX "products_main_category_id_idx" ON "public"."products" USING "btree
 
 
 CREATE INDEX "sm_category_pages_status_idx" ON "public"."sm_category_pages" USING "btree" ("status");
+
+
+
+CREATE INDEX "stock_notes_active_idx" ON "public"."stock_notes" USING "btree" ("variant_id") WHERE ("deleted_at" IS NULL);
+
+
+
+CREATE INDEX "stock_notes_variant_idx" ON "public"."stock_notes" USING "btree" ("variant_id");
 
 
 
@@ -99040,6 +99266,10 @@ COMMENT ON INDEX "public"."uq_spr_source_event" IS 'Idempotencia na origem: impe
 
 
 CREATE UNIQUE INDEX "uq_tecnicas_gravacao_id" ON "public"."tecnicas_gravacao" USING "btree" ("id");
+
+
+
+CREATE UNIQUE INDEX "uq_workspace_notifications_idempotency" ON "public"."workspace_notifications" USING "btree" ("idempotency_key");
 
 
 
@@ -99259,6 +99489,18 @@ ALTER INDEX "public"."idx_mag_view_events_token_hash" ATTACH PARTITION "public".
 
 
 
+ALTER INDEX "public"."idx_magazine_pub_view_events_magazine_id" ATTACH PARTITION "public"."magazine_public_view_events_2027_02_magazine_id_idx";
+
+
+
+ALTER INDEX "public"."magazine_public_view_events_pkey" ATTACH PARTITION "public"."magazine_public_view_events_2027_02_pkey";
+
+
+
+ALTER INDEX "public"."idx_mag_view_events_token_hash" ATTACH PARTITION "public"."magazine_public_view_events_2027_02_token_hash_viewed_at_idx";
+
+
+
 ALTER INDEX "public"."idx_magazine_pub_view_events_magazine_id" ATTACH PARTITION "public"."magazine_public_view_events_default_magazine_id_idx";
 
 
@@ -99268,10 +99510,6 @@ ALTER INDEX "public"."magazine_public_view_events_pkey" ATTACH PARTITION "public
 
 
 ALTER INDEX "public"."idx_mag_view_events_token_hash" ATTACH PARTITION "public"."magazine_public_view_events_default_token_hash_viewed_at_idx";
-
-
-
-ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2026_07_pkey";
 
 
 
@@ -99296,6 +99534,10 @@ ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "pub
 
 
 ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_01_pkey";
+
+
+
+ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_02_pkey";
 
 
 
@@ -99446,6 +99688,10 @@ CREATE OR REPLACE TRIGGER "set_magic_up_public_shares_updated_at" BEFORE UPDATE 
 
 
 CREATE OR REPLACE TRIGGER "set_quote_number" BEFORE INSERT ON "public"."quotes" FOR EACH ROW WHEN ((("new"."quote_number" IS NULL) OR ("new"."quote_number" = ''::"text"))) EXECUTE FUNCTION "public"."generate_quote_number"();
+
+
+
+CREATE OR REPLACE TRIGGER "set_stock_notes_updated_at" BEFORE UPDATE ON "public"."stock_notes" FOR EACH ROW EXECUTE FUNCTION "public"."handle_updated_at"();
 
 
 
@@ -99738,6 +99984,10 @@ CREATE OR REPLACE TRIGGER "trg_anon_rate_guard" BEFORE INSERT ON "public"."catal
 
 
 CREATE OR REPLACE TRIGGER "trg_anon_rate_guard" BEFORE INSERT ON "public"."frontend_telemetry" FOR EACH ROW EXECUTE FUNCTION "public"."fn_anon_insert_rate_guard"('300');
+
+
+
+CREATE OR REPLACE TRIGGER "trg_anon_rate_guard" BEFORE INSERT ON "public"."kill_switch_hits" FOR EACH ROW EXECUTE FUNCTION "public"."fn_anon_insert_rate_guard"('120');
 
 
 
@@ -102855,6 +103105,21 @@ ALTER TABLE ONLY "public"."stock_daily_summary"
 
 
 
+ALTER TABLE ONLY "public"."stock_notes"
+    ADD CONSTRAINT "stock_notes_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."stock_notes"
+    ADD CONSTRAINT "stock_notes_supplier_id_fkey" FOREIGN KEY ("supplier_id") REFERENCES "public"."suppliers"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."stock_notes"
+    ADD CONSTRAINT "stock_notes_variant_id_fkey" FOREIGN KEY ("variant_id") REFERENCES "public"."product_variants"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."stock_snapshots"
     ADD CONSTRAINT "stock_snapshots_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE;
 
@@ -103522,11 +103787,11 @@ CREATE POLICY "Authenticated view component locations" ON "public"."product_comp
 
 
 
-CREATE POLICY "Author can delete own comment" ON "public"."kit_comments" FOR DELETE USING ((("author_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))));
+CREATE POLICY "Author can delete own comment" ON "public"."kit_comments" FOR DELETE TO "authenticated" USING ((("author_id" = ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_admin"(( SELECT "auth"."uid"() AS "uid"))));
 
 
 
-CREATE POLICY "Author can edit own comment" ON "public"."kit_comments" FOR UPDATE USING ((("author_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")))) WITH CHECK ((("author_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))));
+CREATE POLICY "Author can edit own comment" ON "public"."kit_comments" FOR UPDATE TO "authenticated" USING ((("author_id" = ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_admin"(( SELECT "auth"."uid"() AS "uid")))) WITH CHECK ((("author_id" = ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_admin"(( SELECT "auth"."uid"() AS "uid"))));
 
 
 
@@ -103636,45 +103901,45 @@ CREATE POLICY "No direct update via JWT" ON "public"."mcp_api_keys" FOR UPDATE T
 
 
 
-CREATE POLICY "Owner can delete variants" ON "public"."kit_variants" FOR DELETE USING ((EXISTS ( SELECT 1
+CREATE POLICY "Owner can delete variants" ON "public"."kit_variants" FOR DELETE TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."custom_kits" "k"
-  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))));
+  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT "auth"."uid"() AS "uid"))))));
 
 
 
-CREATE POLICY "Owner can insert variants" ON "public"."kit_variants" FOR INSERT WITH CHECK ((EXISTS ( SELECT 1
+CREATE POLICY "Owner can insert variants" ON "public"."kit_variants" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."custom_kits" "k"
-  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))));
+  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT "auth"."uid"() AS "uid"))))));
 
 
 
-CREATE POLICY "Owner can invite collaborators" ON "public"."kit_collaborators" FOR INSERT WITH CHECK ("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "Owner can invite collaborators" ON "public"."kit_collaborators" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "Owner can remove collaborators" ON "public"."kit_collaborators" FOR DELETE USING ("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "Owner can remove collaborators" ON "public"."kit_collaborators" FOR DELETE TO "authenticated" USING ("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "Owner can update collaborators" ON "public"."kit_collaborators" FOR UPDATE USING ("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))) WITH CHECK ("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "Owner can update collaborators" ON "public"."kit_collaborators" FOR UPDATE TO "authenticated" USING ("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "Owner can update variants" ON "public"."kit_variants" FOR UPDATE USING ((EXISTS ( SELECT 1
+CREATE POLICY "Owner can update variants" ON "public"."kit_variants" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."custom_kits" "k"
-  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")))))) WITH CHECK ((EXISTS ( SELECT 1
+  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT "auth"."uid"() AS "uid")))))) WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."custom_kits" "k"
-  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))));
+  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT "auth"."uid"() AS "uid"))))));
 
 
 
-CREATE POLICY "Owner can view variants" ON "public"."kit_variants" FOR SELECT USING (((EXISTS ( SELECT 1
+CREATE POLICY "Owner can view variants" ON "public"."kit_variants" FOR SELECT TO "authenticated" USING (((EXISTS ( SELECT 1
    FROM "public"."custom_kits" "k"
-  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))));
+  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT "auth"."uid"() AS "uid"))))) OR "public"."is_admin"(( SELECT "auth"."uid"() AS "uid"))));
 
 
 
-CREATE POLICY "Owner or collab can comment" ON "public"."kit_comments" FOR INSERT WITH CHECK ((("author_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) AND ("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_kit_collaborator"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")))));
+CREATE POLICY "Owner or collab can comment" ON "public"."kit_comments" FOR INSERT TO "authenticated" WITH CHECK ((("author_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_kit_collaborator"("kit_id", ( SELECT "auth"."uid"() AS "uid")))));
 
 
 
@@ -103826,7 +104091,7 @@ CREATE POLICY "Users can delete their own cached insights" ON "public"."dashboar
 
 
 
-CREATE POLICY "Users can delete their own recently viewed products" ON "public"."recently_viewed_products" FOR DELETE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users can delete their own recently viewed products" ON "public"."recently_viewed_products" FOR DELETE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -103850,7 +104115,7 @@ CREATE POLICY "Users can insert their own cached insights" ON "public"."dashboar
 
 
 
-CREATE POLICY "Users can insert their own recently viewed products" ON "public"."recently_viewed_products" FOR INSERT WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users can insert their own recently viewed products" ON "public"."recently_viewed_products" FOR INSERT TO "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -103958,7 +104223,7 @@ CREATE POLICY "Users can update their own cached insights" ON "public"."dashboar
 
 
 
-CREATE POLICY "Users can update their own recently viewed products" ON "public"."recently_viewed_products" FOR UPDATE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")) WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users can update their own recently viewed products" ON "public"."recently_viewed_products" FOR UPDATE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -104026,7 +104291,7 @@ CREATE POLICY "Users can view their own cached insights" ON "public"."dashboard_
 
 
 
-CREATE POLICY "Users can view their own recently viewed products" ON "public"."recently_viewed_products" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users can view their own recently viewed products" ON "public"."recently_viewed_products" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -104034,7 +104299,7 @@ CREATE POLICY "Users can view their own usage events" ON "public"."ai_usage_even
 
 
 
-CREATE POLICY "Users delete own art files" ON "public"."art_file_attachments" FOR DELETE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users delete own art files" ON "public"."art_file_attachments" FOR DELETE TO "authenticated" USING (("user_id" = ( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -104042,7 +104307,7 @@ CREATE POLICY "Users delete own collection trash" ON "public"."collection_items_
 
 
 
-CREATE POLICY "Users insert own art files" ON "public"."art_file_attachments" FOR INSERT WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users insert own art files" ON "public"."art_file_attachments" FOR INSERT TO "authenticated" WITH CHECK (("user_id" = ( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -104073,7 +104338,7 @@ CREATE POLICY "Users read own roles" ON "public"."user_roles" FOR SELECT TO "aut
 
 
 
-CREATE POLICY "Users update own art files" ON "public"."art_file_attachments" FOR UPDATE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")) WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users update own art files" ON "public"."art_file_attachments" FOR UPDATE TO "authenticated" USING (("user_id" = ( SELECT "auth"."uid"() AS "uid"))) WITH CHECK (("user_id" = ( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -104081,7 +104346,7 @@ CREATE POLICY "Users update own preferences" ON "public"."user_preferences" FOR 
 
 
 
-CREATE POLICY "Users view own art files" ON "public"."art_file_attachments" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users view own art files" ON "public"."art_file_attachments" FOR SELECT TO "authenticated" USING (("user_id" = ( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -104101,11 +104366,11 @@ CREATE POLICY "Usuários podem ver seus próprios logs de conversa" ON "public".
 
 
 
-CREATE POLICY "View collaborators if owner or self" ON "public"."kit_collaborators" FOR SELECT USING (("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR ("user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))));
+CREATE POLICY "View collaborators if owner or self" ON "public"."kit_collaborators" FOR SELECT TO "authenticated" USING (("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")) OR ("user_id" = "auth"."uid"())));
 
 
 
-CREATE POLICY "View comments if owner/collab/admin" ON "public"."kit_comments" FOR SELECT USING (("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_kit_collaborator"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))));
+CREATE POLICY "View comments if owner/collab/admin" ON "public"."kit_comments" FOR SELECT TO "authenticated" USING (("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_kit_collaborator"("kit_id", ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_admin"(( SELECT "auth"."uid"() AS "uid"))));
 
 
 
@@ -104116,9 +104381,6 @@ ALTER TABLE "public"."_archive_product_seo_20260626" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."_archive_supplier_price_tiers_20260626" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "public"."_backup_stock_daily_summary_20260618" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."_bkp_kcvs_pre_normalize_20260624" ENABLE ROW LEVEL SECURITY;
@@ -104356,19 +104618,19 @@ CREATE POLICY "ai_usage_logs_user_own" ON "public"."ai_usage_logs" FOR SELECT US
 ALTER TABLE "public"."ai_usage_quotas" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "ai_usage_quotas_admin_delete" ON "public"."ai_usage_quotas" FOR DELETE USING (("public"."is_dev"() OR "public"."has_role"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"), 'admin'::"public"."app_role")));
+CREATE POLICY "ai_usage_quotas_admin_delete" ON "public"."ai_usage_quotas" FOR DELETE TO "authenticated" USING (("public"."is_dev"() OR "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role")));
 
 
 
-CREATE POLICY "ai_usage_quotas_admin_insert" ON "public"."ai_usage_quotas" FOR INSERT WITH CHECK (("public"."is_dev"() OR "public"."has_role"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"), 'admin'::"public"."app_role")));
+CREATE POLICY "ai_usage_quotas_admin_insert" ON "public"."ai_usage_quotas" FOR INSERT TO "authenticated" WITH CHECK (("public"."is_dev"() OR "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role")));
 
 
 
-CREATE POLICY "ai_usage_quotas_admin_update" ON "public"."ai_usage_quotas" FOR UPDATE USING (("public"."is_dev"() OR "public"."has_role"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"), 'admin'::"public"."app_role"))) WITH CHECK (("public"."is_dev"() OR "public"."has_role"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"), 'admin'::"public"."app_role")));
+CREATE POLICY "ai_usage_quotas_admin_update" ON "public"."ai_usage_quotas" FOR UPDATE TO "authenticated" USING (("public"."is_dev"() OR "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role"))) WITH CHECK (("public"."is_dev"() OR "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role")));
 
 
 
-CREATE POLICY "ai_usage_quotas_read_authenticated" ON "public"."ai_usage_quotas" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") IS NOT NULL));
+CREATE POLICY "ai_usage_quotas_read_authenticated" ON "public"."ai_usage_quotas" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") IS NOT NULL));
 
 
 
@@ -104734,19 +104996,19 @@ ALTER TABLE "public"."b2b_collection_products" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."b2b_collections" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "b2b_collections_delete" ON "public"."b2b_collections" FOR DELETE USING ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "b2b_collections_delete" ON "public"."b2b_collections" FOR DELETE TO "authenticated" USING ("public"."is_org_owner_or_admin"("organization_id"));
 
 
 
-CREATE POLICY "b2b_collections_insert" ON "public"."b2b_collections" FOR INSERT WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "b2b_collections_insert" ON "public"."b2b_collections" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
 
 
 
-CREATE POLICY "b2b_collections_select" ON "public"."b2b_collections" FOR SELECT USING ("public"."user_is_org_member"("organization_id"));
+CREATE POLICY "b2b_collections_select" ON "public"."b2b_collections" FOR SELECT TO "authenticated" USING ("public"."user_is_org_member"("organization_id"));
 
 
 
-CREATE POLICY "b2b_collections_update" ON "public"."b2b_collections" FOR UPDATE USING ("public"."is_org_owner_or_admin"("organization_id")) WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "b2b_collections_update" ON "public"."b2b_collections" FOR UPDATE TO "authenticated" USING ("public"."is_org_owner_or_admin"("organization_id")) WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
 
 
 
@@ -104755,10 +105017,6 @@ CREATE POLICY "backfill_queue_admin_all" ON "public"."image_backfill_queue" TO "
 
 
 ALTER TABLE "public"."backup_produto_ramo_atividade_20260625" ENABLE ROW LEVEL SECURITY;
-
-
-CREATE POLICY "backup_stock_service_only" ON "public"."_backup_stock_daily_summary_20260618" TO "service_role" USING (true) WITH CHECK (true);
-
 
 
 ALTER TABLE "public"."binding_colors" ENABLE ROW LEVEL SECURITY;
@@ -105074,7 +105332,7 @@ ALTER TABLE "public"."collection_items_trash" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."collection_products" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "collection_products_delete" ON "public"."b2b_collection_products" FOR DELETE USING ((EXISTS ( SELECT 1
+CREATE POLICY "collection_products_delete" ON "public"."b2b_collection_products" FOR DELETE TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."b2b_collections" "c"
   WHERE (("c"."id" = "b2b_collection_products"."b2b_collection_id") AND "public"."is_org_owner_or_admin"("c"."organization_id")))));
 
@@ -105086,7 +105344,7 @@ CREATE POLICY "collection_products_delete" ON "public"."collection_products" FOR
 
 
 
-CREATE POLICY "collection_products_insert" ON "public"."b2b_collection_products" FOR INSERT WITH CHECK ((EXISTS ( SELECT 1
+CREATE POLICY "collection_products_insert" ON "public"."b2b_collection_products" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."b2b_collections" "c"
   WHERE (("c"."id" = "b2b_collection_products"."b2b_collection_id") AND "public"."is_org_owner_or_admin"("c"."organization_id")))));
 
@@ -105098,7 +105356,7 @@ CREATE POLICY "collection_products_insert" ON "public"."collection_products" FOR
 
 
 
-CREATE POLICY "collection_products_select" ON "public"."b2b_collection_products" FOR SELECT USING ((EXISTS ( SELECT 1
+CREATE POLICY "collection_products_select" ON "public"."b2b_collection_products" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."b2b_collections" "c"
   WHERE (("c"."id" = "b2b_collection_products"."b2b_collection_id") AND "public"."user_is_org_member"("c"."organization_id")))));
 
@@ -105110,7 +105368,7 @@ CREATE POLICY "collection_products_select" ON "public"."collection_products" FOR
 
 
 
-CREATE POLICY "collection_products_update" ON "public"."b2b_collection_products" FOR UPDATE USING ((EXISTS ( SELECT 1
+CREATE POLICY "collection_products_update" ON "public"."b2b_collection_products" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."b2b_collections" "c"
   WHERE (("c"."id" = "b2b_collection_products"."b2b_collection_id") AND "public"."is_org_owner_or_admin"("c"."organization_id")))));
 
@@ -105597,10 +105855,6 @@ CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history" TO 
 
 
 
-CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2026_07" TO "service_role" USING (true) WITH CHECK (true);
-
-
-
 CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2026_08" TO "service_role" USING (true) WITH CHECK (true);
 
 
@@ -105625,11 +105879,11 @@ CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p202
 
 
 
+CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2027_02" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
 CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
-
-
-
-CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2026_07" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
 
 
 
@@ -105654,6 +105908,10 @@ CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p20
 
 
 CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2027_01" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2027_02" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -105694,19 +105952,19 @@ CREATE POLICY "ip_whitelist_admin_all" ON "public"."ip_whitelist" TO "authentica
 
 
 
-CREATE POLICY "kcer_admin_delete" ON "public"."kit_component_enrichment_raw" FOR DELETE USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcer_admin_delete" ON "public"."kit_component_enrichment_raw" FOR DELETE TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcer_admin_insert" ON "public"."kit_component_enrichment_raw" FOR INSERT WITH CHECK ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcer_admin_insert" ON "public"."kit_component_enrichment_raw" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcer_admin_update" ON "public"."kit_component_enrichment_raw" FOR UPDATE USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))) WITH CHECK ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcer_admin_update" ON "public"."kit_component_enrichment_raw" FOR UPDATE TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid"))) WITH CHECK ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcer_read_auth" ON "public"."kit_component_enrichment_raw" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") IS NOT NULL));
+CREATE POLICY "kcer_read_auth" ON "public"."kit_component_enrichment_raw" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") IS NOT NULL));
 
 
 
@@ -105722,19 +105980,19 @@ CREATE POLICY "kcpa_dev_delete" ON "public"."kit_component_print_areas" FOR DELE
 
 
 
-CREATE POLICY "kcpad_admin_delete" ON "public"."kit_component_padronizacao" FOR DELETE USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcpad_admin_delete" ON "public"."kit_component_padronizacao" FOR DELETE TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcpad_admin_insert" ON "public"."kit_component_padronizacao" FOR INSERT WITH CHECK ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcpad_admin_insert" ON "public"."kit_component_padronizacao" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcpad_admin_update" ON "public"."kit_component_padronizacao" FOR UPDATE USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))) WITH CHECK ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcpad_admin_update" ON "public"."kit_component_padronizacao" FOR UPDATE TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid"))) WITH CHECK ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcpad_read_auth" ON "public"."kit_component_padronizacao" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") IS NOT NULL));
+CREATE POLICY "kcpad_read_auth" ON "public"."kit_component_padronizacao" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") IS NOT NULL));
 
 
 
@@ -105779,14 +106037,6 @@ CREATE POLICY "kill_switches_delete_admin" ON "public"."system_kill_switches" FO
 
 
 CREATE POLICY "kill_switches_insert_admin" ON "public"."system_kill_switches" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
-
-
-
-CREATE POLICY "kill_switches_read_all" ON "public"."system_kill_switches" FOR SELECT TO "authenticated", "anon" USING (true);
-
-
-
-COMMENT ON POLICY "kill_switches_read_all" ON "public"."system_kill_switches" IS 'Read-only para feature flag checks. Restringido de PUBLIC para anon+authenticated em 2026-05-24 (P2-02) — reduz multiple_permissive_policies hits do advisor.';
 
 
 
@@ -105947,6 +106197,9 @@ ALTER TABLE "public"."magazine_public_view_events_2026_12" ENABLE ROW LEVEL SECU
 
 
 ALTER TABLE "public"."magazine_public_view_events_2027_01" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."magazine_public_view_events_2027_02" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."magazine_public_view_events_default" ENABLE ROW LEVEL SECURITY;
@@ -106284,19 +106537,19 @@ ALTER TABLE "public"."notebook_features" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."notification_preferences" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "notification_preferences_delete" ON "public"."notification_preferences" FOR DELETE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "notification_preferences_delete" ON "public"."notification_preferences" FOR DELETE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "notification_preferences_insert" ON "public"."notification_preferences" FOR INSERT WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "notification_preferences_insert" ON "public"."notification_preferences" FOR INSERT TO "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "notification_preferences_select" ON "public"."notification_preferences" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "notification_preferences_select" ON "public"."notification_preferences" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "notification_preferences_update" ON "public"."notification_preferences" FOR UPDATE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")) WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "notification_preferences_update" ON "public"."notification_preferences" FOR UPDATE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -106728,11 +106981,11 @@ CREATE POLICY "print_area_techniques_oa_upd" ON "public"."print_area_techniques"
 
 
 
-CREATE POLICY "product_ai_anon_select" ON "public"."product_ai_content" FOR SELECT TO "authenticated", "anon" USING (true);
-
-
-
 ALTER TABLE "public"."product_ai_content" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "product_ai_content_authenticated_select" ON "public"."product_ai_content" FOR SELECT TO "authenticated" USING (true);
+
 
 
 ALTER TABLE "public"."product_ai_history" ENABLE ROW LEVEL SECURITY;
@@ -106822,7 +107075,7 @@ CREATE POLICY "product_faqs_public_read" ON "public"."product_faqs" FOR SELECT U
 ALTER TABLE "public"."product_fiscal" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "product_fiscal_anon_select" ON "public"."product_fiscal" FOR SELECT TO "authenticated", "anon" USING (true);
+CREATE POLICY "product_fiscal_authenticated_select" ON "public"."product_fiscal" FOR SELECT TO "authenticated" USING (true);
 
 
 
@@ -107050,7 +107303,7 @@ ALTER TABLE "public"."product_search_logs" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."product_seo" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "product_seo_anon_select" ON "public"."product_seo" FOR SELECT TO "authenticated", "anon" USING (true);
+CREATE POLICY "product_seo_authenticated_select" ON "public"."product_seo" FOR SELECT TO "authenticated" USING (true);
 
 
 
@@ -107067,7 +107320,7 @@ ALTER TABLE "public"."product_similarity_groups" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."product_supply" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "product_supply_anon_select" ON "public"."product_supply" FOR SELECT TO "authenticated", "anon" USING (true);
+CREATE POLICY "product_supply_authenticated_select" ON "public"."product_supply" FOR SELECT TO "authenticated" USING (true);
 
 
 
@@ -107298,19 +107551,19 @@ ALTER TABLE "public"."public_token_failures" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."push_subscriptions" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "push_subscriptions_delete" ON "public"."push_subscriptions" FOR DELETE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "push_subscriptions_delete" ON "public"."push_subscriptions" FOR DELETE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "push_subscriptions_insert" ON "public"."push_subscriptions" FOR INSERT WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "push_subscriptions_insert" ON "public"."push_subscriptions" FOR INSERT TO "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "push_subscriptions_select" ON "public"."push_subscriptions" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "push_subscriptions_select" ON "public"."push_subscriptions" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "push_subscriptions_update" ON "public"."push_subscriptions" FOR UPDATE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")) WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "push_subscriptions_update" ON "public"."push_subscriptions" FOR UPDATE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -107637,6 +107890,46 @@ CREATE POLICY "rls_infra_deny_public" ON "public"."supplier_customization_option
 
 
 
+CREATE POLICY "rls_restrictive_ai_usage_quotas" ON "public"."ai_usage_quotas" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_kit_collaborators" ON "public"."kit_collaborators" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_notification_preferences" ON "public"."notification_preferences" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_product_ai_content" ON "public"."product_ai_content" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_product_fiscal" ON "public"."product_fiscal" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_product_seo" ON "public"."product_seo" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_product_supply" ON "public"."product_supply" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_push_subscriptions" ON "public"."push_subscriptions" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_recently_viewed_products" ON "public"."recently_viewed_products" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_system_kill_switches" ON "public"."system_kill_switches" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
 ALTER TABLE "public"."role_migration_batches" ENABLE ROW LEVEL SECURITY;
 
 
@@ -107932,6 +108225,25 @@ CREATE POLICY "step_up_tokens_update_own" ON "public"."step_up_tokens" FOR UPDAT
 ALTER TABLE "public"."stock_daily_summary" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."stock_notes" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "stock_notes_delete_own" ON "public"."stock_notes" FOR DELETE TO "authenticated" USING (("created_by" = "auth"."uid"()));
+
+
+
+CREATE POLICY "stock_notes_insert_own" ON "public"."stock_notes" FOR INSERT TO "authenticated" WITH CHECK (("created_by" = "auth"."uid"()));
+
+
+
+CREATE POLICY "stock_notes_select_authenticated" ON "public"."stock_notes" FOR SELECT TO "authenticated" USING (true);
+
+
+
+CREATE POLICY "stock_notes_update_own" ON "public"."stock_notes" FOR UPDATE TO "authenticated" USING (("created_by" = "auth"."uid"())) WITH CHECK (("created_by" = "auth"."uid"()));
+
+
+
 ALTER TABLE "public"."stock_snapshots" ENABLE ROW LEVEL SECURITY;
 
 
@@ -108041,9 +108353,6 @@ ALTER TABLE "public"."supplier_products_raw" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."supplier_products_raw_history" ENABLE ROW LEVEL SECURITY;
 
 
-ALTER TABLE "public"."supplier_products_raw_history_p2026_07" ENABLE ROW LEVEL SECURITY;
-
-
 ALTER TABLE "public"."supplier_products_raw_history_p2026_08" ENABLE ROW LEVEL SECURITY;
 
 
@@ -108060,6 +108369,9 @@ ALTER TABLE "public"."supplier_products_raw_history_p2026_12" ENABLE ROW LEVEL S
 
 
 ALTER TABLE "public"."supplier_products_raw_history_p2027_01" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_02" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."supplier_property_mappings" ENABLE ROW LEVEL SECURITY;
@@ -108124,6 +108436,10 @@ ALTER TABLE "public"."system_documentation" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."system_kill_switches" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "system_kill_switches_authenticated_select" ON "public"."system_kill_switches" FOR SELECT TO "authenticated" USING (true);
+
 
 
 ALTER TABLE "public"."system_settings" ENABLE ROW LEVEL SECURITY;
@@ -108623,6 +108939,12 @@ CREATE POLICY "view_events_read" ON "public"."magazine_public_view_events_2027_0
 
 
 
+CREATE POLICY "view_events_read" ON "public"."magazine_public_view_events_2027_02" FOR SELECT TO "authenticated" USING (("public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role") OR (EXISTS ( SELECT 1
+   FROM "public"."magazines" "m"
+  WHERE (("m"."id" = "magazine_public_view_events_2027_02"."magazine_id") AND ("m"."owner_id" = ( SELECT "auth"."uid"() AS "uid")))))));
+
+
+
 CREATE POLICY "view_events_read" ON "public"."magazine_public_view_events_default" FOR SELECT TO "authenticated" USING (("public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role") OR (EXISTS ( SELECT 1
    FROM "public"."magazines" "m"
   WHERE (("m"."id" = "magazine_public_view_events_default"."magazine_id") AND ("m"."owner_id" = ( SELECT "auth"."uid"() AS "uid")))))));
@@ -108658,6 +108980,10 @@ CREATE POLICY "view_events_service_all" ON "public"."magazine_public_view_events
 
 
 CREATE POLICY "view_events_service_all" ON "public"."magazine_public_view_events_2027_01" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "view_events_service_all" ON "public"."magazine_public_view_events_2027_02" TO "service_role" USING (true) WITH CHECK (true);
 
 
 
@@ -109367,6 +109693,18 @@ GRANT ALL ON FUNCTION "public"."acquire_ai_quota"("_user_id" "uuid", "_function_
 
 
 
+REVOKE ALL ON FUNCTION "public"."admin_active_sessions"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_active_sessions"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_active_sessions"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."apply_transform"("p_value" "text", "p_transform_type" character varying, "p_transform_config" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."apply_transform"("p_value" "text", "p_transform_type" character varying, "p_transform_config" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."apply_transform"("p_value" "text", "p_transform_type" character varying, "p_transform_config" "jsonb") TO "service_role";
@@ -109949,6 +110287,11 @@ GRANT ALL ON FUNCTION "public"."clean_old_rate_limits"() TO "service_role";
 
 REVOKE ALL ON FUNCTION "public"."cleanup_discount_test_data"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."cleanup_discount_test_data"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."cleanup_expired_auth_sessions"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."cleanup_expired_auth_sessions"() TO "service_role";
 
 
 
@@ -111204,8 +111547,7 @@ GRANT ALL ON FUNCTION "public"."fn_create_quote_v3"("p_quote_data" "jsonb", "p_i
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_cron_guard"("p_key" bigint, "p_sql" "text") TO "anon";
-GRANT ALL ON FUNCTION "public"."fn_cron_guard"("p_key" bigint, "p_sql" "text") TO "authenticated";
+REVOKE ALL ON FUNCTION "public"."fn_cron_guard"("p_key" bigint, "p_sql" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_cron_guard"("p_key" bigint, "p_sql" "text") TO "service_role";
 
 
@@ -115192,7 +115534,6 @@ GRANT ALL ON FUNCTION "public"."get_sale_price_for_quantity"("p_variant_id" "uui
 REVOKE ALL ON FUNCTION "public"."get_sitemap_public"("p_limit" integer, "p_offset" integer) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."get_sitemap_public"("p_limit" integer, "p_offset" integer) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."get_sitemap_public"("p_limit" integer, "p_offset" integer) TO "service_role";
-GRANT ALL ON FUNCTION "public"."get_sitemap_public"("p_limit" integer, "p_offset" integer) TO "anon";
 
 
 
@@ -115334,6 +115675,11 @@ GRANT ALL ON FUNCTION "public"."guard_mcp_api_keys_writes"() TO "service_role";
 
 REVOKE ALL ON FUNCTION "public"."handle_new_user"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."handle_updated_at"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."handle_updated_at"() TO "service_role";
 
 
 
@@ -115931,7 +116277,6 @@ GRANT ALL ON FUNCTION "public"."mcp_audit_violation"("_key_id" "uuid", "_reason"
 
 
 REVOKE ALL ON FUNCTION "public"."mcp_kv_get"("p_secret" "text", "p_key" "text") FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."mcp_kv_get"("p_secret" "text", "p_key" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."mcp_kv_get"("p_secret" "text", "p_key" "text") TO "service_role";
 
 
@@ -116060,6 +116405,12 @@ GRANT ALL ON FUNCTION "public"."parse_unit_from_string"("p_input" "text", OUT "v
 REVOKE ALL ON FUNCTION "public"."parse_xbz_dimensions"("p_raw_data" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."parse_xbz_dimensions"("p_raw_data" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."parse_xbz_dimensions"("p_raw_data" "jsonb") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."perf002_drop_unused_snapshot_indexes"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."perf002_drop_unused_snapshot_indexes"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."perf002_drop_unused_snapshot_indexes"() TO "service_role";
 
 
 
@@ -117363,11 +117714,6 @@ GRANT ALL ON TABLE "public"."_archive_supplier_price_tiers_20260626" TO "service
 
 
 
-GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."_backup_stock_daily_summary_20260618" TO "authenticated";
-GRANT ALL ON TABLE "public"."_backup_stock_daily_summary_20260618" TO "service_role";
-
-
-
 GRANT ALL ON TABLE "public"."_bkp_kcvs_pre_normalize_20260624" TO "service_role";
 
 
@@ -117976,7 +118322,7 @@ GRANT ALL ON TABLE "public"."expert_messages" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."external_connections" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."external_connections" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."external_connections" TO "authenticated";
 GRANT ALL ON TABLE "public"."external_connections" TO "service_role";
 
@@ -118332,6 +118678,10 @@ GRANT ALL ON TABLE "public"."magazine_public_view_events_2027_01" TO "service_ro
 
 
 
+GRANT ALL ON TABLE "public"."magazine_public_view_events_2027_02" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."magazine_public_view_events_default" TO "service_role";
 
 
@@ -118469,7 +118819,6 @@ GRANT ALL ON SEQUENCE "public"."medallion_coverage_snapshots_id_seq" TO "service
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."mockup_approval_links" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."mockup_approval_links" TO "authenticated";
 GRANT ALL ON TABLE "public"."mockup_approval_links" TO "service_role";
 
@@ -119369,6 +119718,12 @@ GRANT ALL ON SEQUENCE "public"."stock_daily_summary_id_seq" TO "service_role";
 
 
 
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."stock_notes" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."stock_notes" TO "authenticated";
+GRANT ALL ON TABLE "public"."stock_notes" TO "service_role";
+
+
+
 GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."stock_snapshots" TO "anon";
 GRANT SELECT,REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."stock_snapshots" TO "authenticated";
 GRANT ALL ON TABLE "public"."stock_snapshots" TO "service_role";
@@ -119456,12 +119811,6 @@ GRANT ALL ON TABLE "public"."supplier_products_raw_history" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_07" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_07" TO "authenticated";
-GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2026_07" TO "service_role";
-
-
-
 GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_08" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_08" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2026_08" TO "service_role";
@@ -119495,6 +119844,12 @@ GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2026_12" TO "service
 GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2027_01" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2027_01" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2027_01" TO "service_role";
+
+
+
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2027_02" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2027_02" TO "authenticated";
+GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2027_02" TO "service_role";
 
 
 
