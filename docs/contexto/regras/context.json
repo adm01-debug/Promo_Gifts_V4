@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "b5f7d2e29e0bcc5b46674db8a18a0a6f49717bcc",
+  "sha": "57ada8486af4977550fcb36034d69f1416885c88",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 14:21 UTC",
+  "generated_at": "2026-11-07 14:51 UTC",
   "files_total": 9097,
   "code_files": 7841,
   "code_lines": 1050758
@@ -482806,10 +482806,28 @@
   }
  },
  "git": {
-  "sha": "b5f7d2e29e0bcc5b46674db8a18a0a6f49717bcc",
+  "sha": "57ada8486af4977550fcb36034d69f1416885c88",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "57ada84",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "docs(pendencias): atualiza PENDENCIAS.md — itens #22/#23/#24 + re-falha #2 (#3155)",
+    "files": [
+     "PENDENCIAS.md"
+    ]
+   },
+   {
+    "sha": "f956f43",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "docs(ci): inventário HEAD b5f7d2e29e0b (2026-11-07) — §12 RELATORIO + baseline sessão (#3152)",
+    "files": [
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "b5f7d2e",
     "date": "2026-11-07",
@@ -483087,25 +483105,6 @@
     "files": [
      "PENDENCIAS.md"
     ]
-   },
-   {
-    "sha": "3654bd1",
-    "date": "2026-11-05",
-    "author": "adm01-debug",
-    "subject": "chore(docs): atualiza RELATORIO_CI e PENDENCIAS após PR #3078 mergeada (#3079)",
-    "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md"
-    ]
-   },
-   {
-    "sha": "7f254f7",
-    "date": "2026-11-05",
-    "author": "adm01-debug",
-    "subject": "fix(migrations-log): remove 8 entradas duplicadas no MIGRATIONS_SYNC_LOG.md (#3078)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
@@ -483122,11 +483121,11 @@
     3
    ],
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    3
+    ".github/workflows/e2e-swatch-quickview.yml",
+    2
    ],
    [
-    ".github/workflows/e2e-swatch-quickview.yml",
+    "supabase/MIGRATIONS_SYNC_LOG.md",
     2
    ],
    [

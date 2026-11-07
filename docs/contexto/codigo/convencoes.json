@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(pendencias): atualiza PENDENCIAS.md — itens #22/#23/#24 + re-falha #2 (#3155)",
+   "docs(ci): inventário HEAD b5f7d2e29e0b (2026-11-07) — §12 RELATORIO + baseline sessão (#3152)",
    "docs(ci): inventário HEAD 0549ea39629b (2026-11-07) — §11 RELATORIO + §21 PENDENCIAS (#3149)",
    "fix(catálogo): buscar cores ao trocar filtros ou página (#3140)",
-   "fix(ci): permitir leitura de PR no detector de reposição (#3139)",
-   "test(auth): estabilizar callback SSO na suíte completa (#3133)",
-   "fix(ci): evitar paridade de reposição em diffs unitários (#3135)"
+   "fix(ci): permitir leitura de PR no detector de reposição (#3139)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
