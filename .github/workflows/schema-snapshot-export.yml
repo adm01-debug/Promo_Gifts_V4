@@ -256,6 +256,7 @@ jobs:
     name: Commit snapshot to bot/schema-snapshot
     needs: export
     if: >-
+      !cancelled() &&
       (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') &&
       needs.export.result == 'success'
     runs-on: ubuntu-24.04
