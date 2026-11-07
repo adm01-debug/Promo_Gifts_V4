@@ -17437,7 +17437,7 @@
     "QuotesDashboardPage"
    ],
    "export_default": "QuotesDashboardPage",
-   "linhas": 412,
+   "linhas": 437,
    "dominio": "pages/quotes",
    "hooks_locais": [
     "useQuotesDashboard"

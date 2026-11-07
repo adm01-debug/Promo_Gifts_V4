@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3b2deef1d2` · branch `main` · 2026-11-07 16:13 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `787f8438dd` · branch `main` · 2026-11-07 17:43 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6131,7 +6131,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (18412 testes em 1880 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (18413 testes em 1880 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6844,4 +6844,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | // ⚠️ PERF-2026-08-19: Pré-filtra para apenas produtos VISÍVEIS (virtualizados) + | `src/components/products/VirtualizedProductGrid.tsx` |
 | ANTI N+1: prefetch batch de mv_stock_velocity apenas para produtos visíveis | `src/components/products/VirtualizedProductGrid.tsx` |
 | 2. scrollTo(0) → SOMENTE quando scrollResetKey muda (filter/sort/viewMode) | `src/components/products/VirtualizedProductGrid.tsx` |
-| … +1149 linhas — lista completa em `context.json` | |
+| … +1150 linhas — lista completa em `context.json` | |

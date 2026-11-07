@@ -949,7 +949,7 @@
   {
    "arquivo": "e2e/fixtures/auth.setup.ts",
    "tipo": "e2e",
-   "linhas": 94,
+   "linhas": 97,
    "testa": [],
    "casos": 0
   },
@@ -1766,9 +1766,9 @@
   {
    "arquivo": "e2e/flows/25-quote-full-flow.spec.ts",
    "tipo": "e2e",
-   "linhas": 70,
+   "linhas": 80,
    "testa": [],
-   "casos": 6
+   "casos": 7
   },
   {
    "arquivo": "e2e/flows/26-catalog-to-kit-flow.spec.ts",
@@ -2111,7 +2111,7 @@
   {
    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
    "tipo": "e2e",
-   "linhas": 233,
+   "linhas": 234,
    "testa": [],
    "casos": 2
   },
@@ -2356,7 +2356,7 @@
   {
    "arquivo": "e2e/helpers/auth.ts",
    "tipo": "e2e",
-   "linhas": 287,
+   "linhas": 292,
    "testa": [],
    "casos": 3
   },

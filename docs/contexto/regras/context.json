@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "3b2deef1d21e1d717c790d741423aa6ca94892b2",
+  "sha": "787f8438dd9217c02e829c7be1032c8c2a657361",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 16:13 UTC",
+  "generated_at": "2026-11-07 17:43 UTC",
   "files_total": 9098,
   "code_files": 7842,
-  "code_lines": 1051028
+  "code_lines": 1051072
  },
  "version": "1.3.2",
- "facts_hash": "6d8406bf98c76dd0",
+ "facts_hash": "fe2317999b0eb7b5",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -137881,7 +137881,7 @@
   {
    "module": "e2e",
    "files": 621,
-   "lines": 74791,
+   "lines": 74810,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -139184,7 +139184,7 @@
   {
    "module": "src/pages",
    "files": 345,
-   "lines": 81518,
+   "lines": 81543,
    "tables": [
     "ai_insights_cache",
     "ai_usage_events",
@@ -143967,6 +143967,12 @@
     "playwright.config.ts",
     "tests/config/playwright-config-smoke.test.ts"
    ],
+   "E2E_SELLER_EMAIL": [
+    "e2e/helpers/auth.ts"
+   ],
+   "E2E_SELLER_PASSWORD": [
+    "e2e/helpers/auth.ts"
+   ],
    "E2E_SERVER_MODE": [
     "playwright.config.ts",
     "tests/config/playwright-config-smoke.test.ts"
@@ -144112,6 +144118,8 @@
     "scripts/check-generated-files-protected.mjs"
    ],
    "GITHUB_EVENT_NAME": [
+    "e2e/fixtures/auth.setup.ts",
+    "e2e/helpers/auth.ts",
     "scripts/check-bundle-size.mjs"
    ],
    "GITHUB_HEAD_REF": [
@@ -159987,6 +159995,10 @@
    {
     "file": "src/pages/quotes/QuoteBuilderPage.tsx",
     "text": "Prazo | Pagamento */}"
+   },
+   {
+    "file": "src/pages/quotes/QuotesDashboardPage.tsx",
+    "text": "O título da página é estático e não deve depender do fetch de dados:"
    },
    {
     "file": "src/pages/quotes/QuotesListPage.tsx",
@@ -206477,6 +206489,10 @@
    {
     "file": "e2e/flows/25-quote-full-flow.spec.ts",
     "name": "kanban de orçamentos (/orcamentos/kanban) carrega"
+   },
+   {
+    "file": "e2e/flows/25-quote-full-flow.spec.ts",
+    "name": "formulário de novo orçamento exibe campo de data de validade"
    },
    {
     "file": "e2e/flows/26-catalog-to-kit-flow.spec.ts",
@@ -366746,12 +366762,13 @@
   },
   "e2e/fixtures/auth.setup.ts": {
    "path": "e2e/fixtures/auth.setup.ts",
-   "lines": 94,
+   "lines": 97,
    "env": [
     "CI",
     "E2E_MOCK_AUTH",
     "E2E_USER_EMAIL",
-    "E2E_USER_PASSWORD"
+    "E2E_USER_PASSWORD",
+    "GITHUB_EVENT_NAME"
    ],
    "errors": [
     "[auth.setup] E21 — login falhou em CI: ${reason}",
@@ -369491,12 +369508,13 @@
   },
   "e2e/flows/25-quote-full-flow.spec.ts": {
    "path": "e2e/flows/25-quote-full-flow.spec.ts",
-   "lines": 70,
+   "lines": 80,
    "is_test": true,
    "doc": "E2E — Fluxo completo de Orçamento: criação → personalização → aprovação Simula o caminho feliz de ponta a ponta: 1. Navega para /orcamentos/novo 2. Busca produto e adiciona ao orçamento 3. Configura personalização (logo + texto) 4. Salva rascunho e verifica autosave 5. Submete para aprovação 6. Veri …",
    "temporal": [
     "await expect(body).not.toContainText(\"404\", { timeout: 10_000 });",
     "await expect(clientField).toBeVisible({ timeout: 15_000 }).catch(() => {",
+    "await expect(expiryField).toBeVisible({ timeout: 15_000 }).catch(() => {",
     "await expect(page.locator(\"body\")).not.toContainText(\"500\", { timeout: 10_000 });",
     "await expect(searchInput).toBeVisible({ timeout: 15_000 }).catch(() => {",
     "await expect(title).toBeVisible({ timeout: 15_000 });"
@@ -369508,7 +369526,8 @@
     "formulário de orçamento tem campo de busca de produto",
     "campo de cliente está presente no formulário",
     "lista de orçamentos (/orcamentos) carrega sem erro",
-    "kanban de orçamentos (/orcamentos/kanban) carrega"
+    "kanban de orçamentos (/orcamentos/kanban) carrega",
+    "formulário de novo orçamento exibe campo de data de validade"
    ]
   },
   "e2e/flows/26-catalog-to-kit-flow.spec.ts": {
@@ -370406,7 +370425,7 @@
   },
   "e2e/flows/magazine-publish-smoke.spec.ts": {
    "path": "e2e/flows/magazine-publish-smoke.spec.ts",
-   "lines": 233,
+   "lines": 234,
    "is_test": true,
    "rule_comments": [
     "6. Concede permissão de clipboard APÓS navegação confirmada.",
@@ -370417,7 +370436,7 @@
     "await expect(page.getByText('Carregando revistas…')).toBeHidden({ timeout: 120_000 });",
     "await layoutStep.waitFor({ state: 'visible', timeout: 10_000 });",
     "await page.getByText('Produtos na revista').waitFor({ state: 'visible', timeout: 20_000 });",
-    "await page.waitForURL(/\\/magazine\\/[a-f0-9-]{6,}/i, { timeout: 60_000 });",
+    "await page.waitForURL(/\\/magazine\\/[a-f0-9-]{6,}/i, { timeout: 120_000 });",
     "await productSearch.waitFor({ state: 'visible', timeout: 15_000 });",
     "await productsStep.waitFor({ state: 'visible', timeout: 10_000 });",
     "await publishBtn.waitFor({ state: 'visible', timeout: 30_000 });",
@@ -371098,7 +371117,7 @@
   },
   "e2e/helpers/auth.ts": {
    "path": "e2e/helpers/auth.ts",
-   "lines": 287,
+   "lines": 292,
    "exports": [
     "interface LoginCreds",
     "type Role",
@@ -371118,8 +371137,11 @@
     "E2E_MANAGER_EMAIL",
     "E2E_MANAGER_PASSWORD",
     "E2E_MOCK_AUTH",
+    "E2E_SELLER_EMAIL",
+    "E2E_SELLER_PASSWORD",
     "E2E_USER_EMAIL",
-    "E2E_USER_PASSWORD"
+    "E2E_USER_PASSWORD",
+    "GITHUB_EVENT_NAME"
    ],
    "errors": [
     "[loginAs] E21 — modo estrito: E2E_${role.toUpperCase()}_EMAIL/PASSWORD ausentes em CI.",
@@ -371128,13 +371150,14 @@
    "enums": [
     {
      "name": "Role",
-     "values": "user | admin | dev | editor"
+     "values": "user | admin | dev | editor | seller"
     }
    ],
    "role_checks": [
     "admin",
     "dev",
-    "editor"
+    "editor",
+    "seller"
    ],
    "rule_comments": [
     "- **Todo login UI** deve passar por `loginViaUI` ou `loginAs` — nunca usar",
@@ -433136,7 +433159,7 @@
   },
   "src/pages/quotes/QuotesDashboardPage.tsx": {
    "path": "src/pages/quotes/QuotesDashboardPage.tsx",
-   "lines": 412,
+   "lines": 437,
    "exports": [
     "function QuotesDashboardPage"
    ],
@@ -433155,6 +433178,9 @@
      "value": "approved",
      "kind": "compara"
     }
+   ],
+   "rule_comments": [
+    "O título da página é estático e não deve depender do fetch de dados:"
    ]
   },
   "src/pages/quotes/QuotesKanbanPage.tsx": {
@@ -482870,10 +482896,31 @@
   }
  },
  "git": {
-  "sha": "3b2deef1d21e1d717c790d741423aa6ca94892b2",
+  "sha": "787f8438dd9217c02e829c7be1032c8c2a657361",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "787f843",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "Merge pull request #3154 from adm01-debug/claude/fix-dashboard-title-loading-261107-0100",
+    "files": []
+   },
+   {
+    "sha": "9739e65",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "fix(e2e): adiciona role seller ao helper de auth (#3145)",
+    "files": [
+     ".env.e2e.example",
+     "e2e/fixtures/auth.setup.ts",
+     "e2e/flows/20-all-features-smoke.spec.ts",
+     "e2e/flows/25-quote-full-flow.spec.ts",
+     "e2e/flows/magazine-publish-smoke.spec.ts",
+     "e2e/helpers/auth.ts"
+    ]
+   },
    {
     "sha": "3b2deef",
     "date": "2026-11-07",
@@ -482888,6 +482935,13 @@
      "tests/config/e2e-nav-helper-smoke.test.ts",
      "tests/config/playwright-config-smoke.test.ts"
     ]
+   },
+   {
+    "sha": "a0e18eb",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "Merge branch 'main' into claude/fix-dashboard-title-loading-261107-0100",
+    "files": []
    },
    {
     "sha": "3c2ff92",
@@ -482905,6 +482959,15 @@
     "subject": "docs(pendencias): atualiza PENDENCIAS.md — itens #22/#23/#24 + re-falha #2 (#3155)",
     "files": [
      "PENDENCIAS.md"
+    ]
+   },
+   {
+    "sha": "096eb03",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "fix: renderiza titulo do dashboard de orcamentos em loading e erro",
+    "files": [
+     "src/pages/quotes/QuotesDashboardPage.tsx"
     ]
    },
    {
@@ -483137,58 +483200,28 @@
      "PENDENCIAS.md",
      "RELATORIO_CI.md"
     ]
-   },
-   {
-    "sha": "8424587",
-    "date": "2026-11-05",
-    "author": "adm01-debug",
-    "subject": "docs: RELATORIO_CI.md — prova final #15-#18 e seção 2.9 diagnóstico E2E advisory",
-    "files": [
-     "RELATORIO_CI.md"
-    ]
-   },
-   {
-    "sha": "11b39ab",
-    "date": "2026-11-05",
-    "author": "adm01-debug",
-    "subject": "docs: registra workflows E2E advisory em PENDENCIAS.md (#15–#18) (#3085)",
-    "files": [
-     "PENDENCIAS.md"
-    ]
-   },
-   {
-    "sha": "4ebe5a8",
-    "date": "2026-11-05",
-    "author": "adm01-debug",
-    "subject": "chore(docs): RELATORIO_CI + PENDENCIAS item #14 RESOLVIDO — bc342a24 success",
-    "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md"
-    ]
-   },
-   {
-    "sha": "bc342a2",
-    "date": "2026-11-05",
-    "author": "adm01-debug",
-    "subject": "chore(docs): RELATORIO_CI + PENDENCIAS — SHA 2bc37120 + item #13 confirmed failure (#3083)",
-    "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    11
-   ],
-   [
-    "PENDENCIAS.md",
-    7
+    8
    ],
    [
     ".github/workflows/replenishment-quality.yml",
     4
+   ],
+   [
+    "PENDENCIAS.md",
+    4
+   ],
+   [
+    "e2e/fixtures/auth.setup.ts",
+    2
+   ],
+   [
+    "e2e/flows/magazine-publish-smoke.spec.ts",
+    2
    ],
    [
     ".github/workflows/e2e-swatch-quickview.yml",
@@ -483203,11 +483236,23 @@
     2
    ],
    [
-    "e2e/catalog/novidades-reposicao-card-parity.spec.ts",
+    ".env.e2e.example",
     1
    ],
    [
-    "e2e/flows/magazine-publish-smoke.spec.ts",
+    "e2e/flows/20-all-features-smoke.spec.ts",
+    1
+   ],
+   [
+    "e2e/flows/25-quote-full-flow.spec.ts",
+    1
+   ],
+   [
+    "e2e/helpers/auth.ts",
+    1
+   ],
+   [
+    "e2e/catalog/novidades-reposicao-card-parity.spec.ts",
     1
    ],
    [
@@ -483227,35 +483272,15 @@
     1
    ],
    [
+    "src/pages/quotes/QuotesDashboardPage.tsx",
+    1
+   ],
+   [
     "src/hooks/products/__tests__/useProductsColorsBatch.aggregation.test.tsx",
     1
    ],
    [
     "src/hooks/products/useProductsColorsBatch.ts",
-    1
-   ],
-   [
-    "src/pages/__tests__/SSOCallbackPage.race.test.tsx",
-    1
-   ],
-   [
-    "src/pages/__tests__/SSOCallbackPage.test.tsx",
-    1
-   ],
-   [
-    "supabase/functions/health-check/index.ts",
-    1
-   ],
-   [
-    ".github/scripts/e2e-relevance.mjs",
-    1
-   ],
-   [
-    ".github/workflows/_e2e-relevance.yml",
-    1
-   ],
-   [
-    ".github/workflows/delivery-quality.yml",
     1
    ]
   ]

@@ -5450,6 +5450,10 @@
     "ocorrencias": 10
    },
    {
+    "papel": "seller",
+    "ocorrencias": 9
+   },
+   {
     "papel": "tab",
     "ocorrencias": 9
    },
@@ -5467,10 +5471,6 @@
    },
    {
     "papel": "img",
-    "ocorrencias": 8
-   },
-   {
-    "papel": "seller",
     "ocorrencias": 8
    },
    {

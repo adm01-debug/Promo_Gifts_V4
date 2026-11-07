@@ -2,15 +2,30 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3b2deef1d21e1d717c790d741423aa6ca94892b2",
+  "commit": "787f8438dd9217c02e829c7be1032c8c2a657361",
   "branch": "main",
-  "data_commit": "2026-11-07T13:11:11-03:00",
+  "data_commit": "2026-11-07T14:03:05-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "787f843",
+    "data": "2026-11-07",
+    "assunto": "Merge pull request #3154 from adm01-debug/claude/fix-dashboard-title-loading-261107-0100"
+   },
+   {
+    "sha": "9739e65",
+    "data": "2026-11-07",
+    "assunto": "fix(e2e): adiciona role seller ao helper de auth (#3145)"
+   },
    {
     "sha": "3b2deef",
     "data": "2026-11-07",
     "assunto": "fix(ci): testar gates E2E no artefato de produção (#3142)"
+   },
+   {
+    "sha": "a0e18eb",
+    "data": "2026-11-07",
+    "assunto": "Merge branch 'main' into claude/fix-dashboard-title-loading-261107-0100"
    },
    {
     "sha": "3c2ff92",
@@ -21,6 +36,11 @@
     "sha": "57ada84",
     "data": "2026-11-07",
     "assunto": "docs(pendencias): atualiza PENDENCIAS.md — itens #22/#23/#24 + re-falha #2 (#3155)"
+   },
+   {
+    "sha": "096eb03",
+    "data": "2026-11-07",
+    "assunto": "fix: renderiza titulo do dashboard de orcamentos em loading e erro"
    },
    {
     "sha": "f956f43",
@@ -111,29 +131,9 @@
     "sha": "a064d6f",
     "data": "2026-11-05",
     "assunto": "docs: RELATORIO_CI.md — SHA 823822b0 + vitest PENDENCIAS #20 + run 42125946413"
-   },
-   {
-    "sha": "823822b",
-    "data": "2026-11-05",
-    "assunto": "docs: RELATORIO_CI.md — SHAs a792bade + 5e497761 + vitest #20 + prova final (#3091)"
-   },
-   {
-    "sha": "5e49776",
-    "data": "2026-11-05",
-    "assunto": "docs: PENDENCIAS.md — item #20 vitest date-utils falhas locais (pré-existente) (#3090)"
-   },
-   {
-    "sha": "a792bad",
-    "data": "2026-11-05",
-    "assunto": "docs: RELATORIO_CI.md — baseline e inventário SHA d49e289e (#3089)"
-   },
-   {
-    "sha": "d49e289",
-    "data": "2026-11-05",
-    "assunto": "docs: RELATORIO_CI.md prova final SHA 210ce9a9 + resolvidos #15/#16/#18/#19 (#3088)"
    }
   ],
-  "arquivos_mudados_7d": 404,
+  "arquivos_mudados_7d": 407,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 95
+    "mudancas": 96
    },
    {
     "pasta": "docs/arquivo/2026-09",
@@ -262,6 +262,10 @@
     "mudancas": 8
    },
    {
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "mudancas": 8
+   },
+   {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
     "mudancas": 7
    },
@@ -271,10 +275,6 @@
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 7
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 331
+    "commits": 337
    },
    {
     "autor": "Joaquim Ataides",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 9175,
   "arquivos_codigo": 4615,
-  "linhas_codigo": 883952,
+  "linhas_codigo": 883996,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -544,11 +544,11 @@
   },
   "e2e/fixtures": {
    "arquivos": 10,
-   "linhas": 1338
+   "linhas": 1341
   },
   "e2e/flows": {
    "arquivos": 183,
-   "linhas": 25189
+   "linhas": 25200
   },
   "e2e/future-stock.spec.ts": {
    "arquivos": 1,
@@ -564,7 +564,7 @@
   },
   "e2e/helpers": {
    "arquivos": 33,
-   "linhas": 4679
+   "linhas": 4684
   },
   "e2e/initial-load.spec.ts": {
    "arquivos": 1,
@@ -1884,7 +1884,7 @@
   },
   "src/pages": {
    "arquivos": 345,
-   "linhas": 81518
+   "linhas": 81543
   },
   "src/routes": {
    "arquivos": 14,

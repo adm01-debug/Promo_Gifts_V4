@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3b2deef1d21e1d717c790d741423aa6ca94892b2` (2026-11-07T13:11:11-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `787f8438dd9217c02e829c7be1032c8c2a657361` (2026-11-07T14:03:05-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 9175 |
 | arquivos_codigo | 4615 |
-| linhas_codigo | 883952 |
+| linhas_codigo | 883996 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -563,7 +563,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - env de integração (só nomes): CF_ORIGIN_SECRET, CONNECTIONS_AUTO_TEST_SECRET, CRM_CALLBACK_API_KEY, CSRF_SECRET, E2E_CLEANUP_TOKEN, LOVABLE_API_KEY, PRODUCT_WEBHOOK_ALLOWED_ORIGINS, PRODUCT_WEBHOOK_BATCH_SIZE, PROMO_CHAMPIONS_WEBHOOK_SECRET, TURNSTILE_SECRET_KEY, VITE_GRAVACAO_API_KEY, VITE_SENTRY_DSN, VITE_SENTRY_ENVIRONMENT, WEBHOOK_DISPATCHER_SECRET
 
 ## Permissões / papéis
-- papéis no código: status (75), alert (51), dev (40), button (37), user (32), group (31), admin (29), listitem (26), vendedor (23), supervisor (22), radio (21), dialog (19), radiogroup (18), list (17), system (17), tooltip (17), agente (15), combobox (13), option (12), authenticated (11), progressbar (10), region (10), tab (9), tablist (9), anon (8), assistant (8), img (8), seller (8), switch (8), checkbox (6), listbox (6), main (6), navigation (6), document (5), menu (5), public (5), slider (5), columnheader (4), manager (4), link (3), separator (3), toolbar (3), agent (2), alertdialog (2), cell (2), editor (2), grid (2), gridcell (2), log (2), menuitem (2), presentation (2), publico (2), table (2), OFFSET (1), Paperclip (1), Textos (1), banner (1), complementary (1), contentinfo (1), heading (1), none (1), note (1), searchbox (1), service_role (1), spinbutton (1), string (1), sup (1), superadmin_bypass (1)
+- papéis no código: status (75), alert (51), dev (40), button (37), user (32), group (31), admin (29), listitem (26), vendedor (23), supervisor (22), radio (21), dialog (19), radiogroup (18), list (17), system (17), tooltip (17), agente (15), combobox (13), option (12), authenticated (11), progressbar (10), region (10), seller (9), tab (9), tablist (9), anon (8), assistant (8), img (8), switch (8), checkbox (6), listbox (6), main (6), navigation (6), document (5), menu (5), public (5), slider (5), columnheader (4), manager (4), link (3), separator (3), toolbar (3), agent (2), alertdialog (2), cell (2), editor (2), grid (2), gridcell (2), log (2), menuitem (2), presentation (2), publico (2), table (2), OFFSET (1), Paperclip (1), Textos (1), banner (1), complementary (1), contentinfo (1), heading (1), none (1), note (1), searchbox (1), service_role (1), spinbutton (1), string (1), sup (1), superadmin_bypass (1)
 - enums de papel: app_role: admin|manager|vendedor|supervisor|dev|supervisor|dev|agente|coordenador; org_role: owner|admin|member; role_migration_status: pending|running|completed|failed|partial|dry_run; role_migration_item_status: pending|success|failed|skipped|dry_run
 - guards: src/components/admin/telemetry/RegressionGuardrailBanner.tsx, src/components/layout/ProtectedRoute.tsx, src/components/system/RootInteractivityGuard.tsx · rotas protegidas: 31 · públicas: /, /__test/alert-dialog, /__test/cnpj-form, /__test/color-swatches, /__test/confirm-dialog, /__test/dialog, /__test/magazine-ring, /__test/tab-skip, /__test/undo-toast, /__visual/calendar, /__visual/date-picker-field, /__visual/negotiation-markup-card, /__visual/preview-button, /__visual/quote-add-product-button, /__visual/quote-freight-block, /__visual/quote-item-editor-sheet, /__visual/quote-items-list-mobile, /__visual/quote-view-order, /*, /admin/aprovacoes-desconto/:id, /admin/audit-suite, /admin/badges-inteligencia, /admin/comissoes, /admin/ema-health, /admin/kit-templates/metricas, /admin/observabilidade, /admin/performance, /admin/performance-comercial, /admin/permissoes, /admin/qa, /admin/qa/sidebar, /admin/rate-limit, /admin/role-permissoes, /admin/roles, /admin/seguranca/exemplos-challenge, /admin/status, /admin/storage-test, /admin/validade-precos, /auth/callback, /busca-preco, /carrinhos, /carrinhos/:cartId, /clientes, /clientes/:id, /colecoes, /colecoes/:id, /comissoes, /comparar, /dashboard, /debug/images, /dropbox, /estoque, /external-db-test, /favoritos, /ferramentas/bi, /ferramentas/bi/comparar, /ferramentas/cobertura, /filtros, /forgot-password-confirmation, /inteligencia-comercial, /kit-builder, /magazine, /magazine/:id, /magazine/:id/print, /magazine/print, /magazine/templates, /magic-up, /match, /meus-kits, /mockup-generator, /mockups/historico, /montar-kit, /novidades, /orcamentos, /orcamentos/:id, /orcamentos/:id/editar, /orcamentos/dashboard, /orcamentos/kanban, /orcamentos/lista, /orcamentos/novo, /privacidade, /produto/:id, /produtos, /promoflix-playground, /raio-x, /reposicao, /reset-password, /revista-publica/:token, /simulacao, /simulador, /simulador-precos, /tendencias, /termos
 - feature flags: useEmaRupture, useColorSwatchesV2, ENABLE_NAV_METRICS, FEATURE_GROUPS, FEATURE_ITEMS, FEATURE_X, magic_up, nova-tela, novo-inbox, supplierReliability
@@ -586,7 +586,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38043 nós · 66406 arestas · 2125 comunidades · grafo do commit `3b2deef1`
+- 38043 nós · 66406 arestas · 2125 comunidades · grafo do commit `787f8438`
 - comunidades maiores: ref_components (688), ref_integrations (582), ref_lib (478), @testing-library/react (351), react-router-dom (345), ref_hooks (339), ref_types (332), test-base.ts (324), scripts (289), gotoAndSettle (280), react (277), ref_utils (245)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -1160,9 +1160,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.7.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.1...v1.7.0) (2026-11-02)
 
 ## Últimos commits
+- 2026-11-07 `787f843` Merge pull request #3154 from adm01-debug/claude/fix-dashboard-title-loading-261107-0100
+- 2026-11-07 `9739e65` fix(e2e): adiciona role seller ao helper de auth (#3145)
 - 2026-11-07 `3b2deef` fix(ci): testar gates E2E no artefato de produção (#3142)
+- 2026-11-07 `a0e18eb` Merge branch 'main' into claude/fix-dashboard-title-loading-261107-0100
 - 2026-11-07 `3c2ff92` docs(ci): §13 prova final Gate Final success SHA b5f7d2e29e0b (2026-11-07) (#3158)
 - 2026-11-07 `57ada84` docs(pendencias): atualiza PENDENCIAS.md — itens #22/#23/#24 + re-falha #2 (#3155)
+- 2026-11-07 `096eb03` fix: renderiza titulo do dashboard de orcamentos em loading e erro
 - 2026-11-07 `f956f43` docs(ci): inventário HEAD b5f7d2e29e0b (2026-11-07) — §12 RELATORIO + baseline sessão (#3152)
 - 2026-11-07 `b5f7d2e` docs(ci): inventário HEAD 0549ea39629b (2026-11-07) — §11 RELATORIO + §21 PENDENCIAS (#3149)
 - 2026-11-07 `0549ea3` fix(catálogo): buscar cores ao trocar filtros ou página (#3140)
@@ -1171,10 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-07 `a23cb8e` fix(ci): evitar paridade de reposição em diffs unitários (#3135)
 - 2026-11-07 `ed1c7cc` fix(health-check): tolera cold start do PostgREST (#3128)
 - 2026-11-07 `9429112` fix(ci): reduzir pressão dos E2E no Supabase (#3130)
-- 2026-11-07 `897cc4c` fix(ci/catalog): estabilizar auditorias E2E e restaurar cores na lista (#3120)
-- 2026-11-06 `5b0dab1` docs(db): registra aplicação da migration 20261101201000 (#3121)
-- 2026-11-06 `372dc82` fix(db): fixa search_path de handle_updated_at (#3111)
-- 2026-11-06 `e87f36b` test(date-utils): elimina dependência de timezone (#3116)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
