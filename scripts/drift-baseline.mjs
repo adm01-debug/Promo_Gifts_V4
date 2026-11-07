@@ -25,7 +25,7 @@
  *   prepare-workdir --ledger <json do migration list> --out <dir>
  *   filter-diff --diff <arquivo> --allowlist <arquivo> [--workdir <dir>]   (imprime o resíduo)
  */
-import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseSupabaseMigrationLedgerOutput } from './check-supabase-migration-ledger.mjs';
@@ -73,7 +73,8 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON FUNCTIONS FROM anon, aut
 `;
 
 // O baseline não carrega linhas do pg_cron (só schema), mas as migrations
-// 20261024180003 (job `auto-block-offenders`) e 20261024190001 (jobid 235) exigem jobs já existentes. Em produção
+// 20261024180003 (job `auto-block-offenders`), 20261024190001 (jobid 235) e
+// 20261027180000 (job `generate-blurhashes` inativo) exigem jobs já existentes. Em produção
 // ele vem de 20260623171736; no shadow, que parte do baseline, nunca existe e o
 // replay aborta com "job auto-block-offenders não encontrado". Esta semente é
 // gravada como migration B+1 na pasta temporária (jobs são dado, não schema:
@@ -103,6 +104,35 @@ BEGIN
     END LOOP;
     PERFORM cron.unschedule(v_id);
     PERFORM cron.schedule('image-dimensions-backfill', '0 * * * *', 'SELECT 1');
+  END IF;
+  -- O baseline guarda schema, não os dados de cron.job. Em produção o job foi
+  -- criado em junho e desativado antes do baseline; a migration 20261027180000
+  -- valida exatamente esse estado histórico antes de reativá-lo em */10.
+  IF to_regclass('cron.job') IS NOT NULL THEN
+    SELECT jobid INTO v_id FROM cron.job WHERE jobname = 'generate-blurhashes';
+    IF NOT FOUND THEN
+      v_id := cron.schedule(
+        'generate-blurhashes',
+        '1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59 * * * *',
+        'SELECT 1'
+      );
+    END IF;
+    PERFORM cron.alter_job(job_id := v_id, active := false);
+  END IF;
+  -- O dump do baseline não preserva a associação de tabelas de auth à
+  -- publication. Em produção, auth.users ainda pertencia à supabase_realtime
+  -- na versão do baseline; 20261101140001 remove essa exposição e exige a
+  -- associação como pré-condição.
+  IF to_regclass('auth.users') IS NOT NULL
+     AND EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime')
+     AND NOT EXISTS (
+       SELECT 1
+       FROM pg_publication_tables
+       WHERE pubname = 'supabase_realtime'
+         AND schemaname = 'auth'
+         AND tablename = 'users'
+     ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE auth.users;
   END IF;
 END
 $seed$;
@@ -261,6 +291,40 @@ export function replayFileName(baselineVersion, index, original) {
   return `${version}_${original}`;
 }
 
+// `supabase db diff` aplica o replay por pipeline transacional. PostgreSQL
+// proíbe CONCURRENTLY nesse modo, embora a palavra só altere a estratégia de
+// execução e não o schema final do índice. A migration original permanece
+// byte a byte intacta; apenas a cópia temporária do shadow é normalizada.
+export function sanitizeMigrationForReplay(sql) {
+  const state = { quote: false, ident: false, dollar: null };
+  let concurrentIndexes = 0;
+  let hardCodedCronAlterJobs = 0;
+  const lines = sql.split('\n').map((line) => {
+    const outsideLiteral = !state.quote && !state.ident && !state.dollar;
+    let normalized = outsideLiteral
+      ? line.replace(
+          /^(\s*(?:CREATE(?:\s+UNIQUE)?|DROP)\s+INDEX)\s+CONCURRENTLY\b/i,
+          (match, prefix) => {
+            concurrentIndexes += 1;
+            return prefix;
+          },
+        )
+      : line;
+    if (outsideLiteral) {
+      normalized = normalized.replace(
+        /^\s*SELECT\s+cron\.alter_job\(\s*(\d+)\s*,.*;\s*(?:--.*)?$/i,
+        (match, jobId) => {
+          hardCodedCronAlterJobs += 1;
+          return `-- drift-replay: cron.alter_job(${jobId}, ...) omitido; jobs não fazem parte do baseline`;
+        },
+      );
+    }
+    scanLine(normalized, state);
+    return normalized;
+  });
+  return { sql: lines.join('\n'), rewrites: { concurrentIndexes, hardCodedCronAlterJobs } };
+}
+
 export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef }) {
   // projectRef entra numa string TOML: aspas/quebra de linha reescreveriam o
   // config.toml (ex.: trocar major_version do shadow).
@@ -285,8 +349,16 @@ export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef })
   // Migration própria em B+1 (sessão nova, role padrão): no fim do baseline o
   // cron.job já está sem privilégio. As migrations replayadas começam em B+2.
   writeFileSync(join(outMigrations, replayFileName(baseline.version, 0, REPLAY_CRON_SEED_FILE)), REPLAY_CRON_SEED_SQL);
+  const migrationExecutionRewrites = [];
   replay.forEach((f, i) => {
-    copyFileSync(join(migrationsDir, f), join(outMigrations, replayFileName(baseline.version, i + 1, f)));
+    const normalized = sanitizeMigrationForReplay(readFileSync(join(migrationsDir, f), 'utf8'));
+    writeFileSync(
+      join(outMigrations, replayFileName(baseline.version, i + 1, f)),
+      normalized.sql,
+    );
+    if (Object.values(normalized.rewrites).some((count) => count > 0)) {
+      migrationExecutionRewrites.push({ file: f, ...normalized.rewrites });
+    }
   });
   return {
     baselineVersion: baseline.version,
@@ -294,6 +366,7 @@ export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef })
     workdir: outDir,
     removedStatements: sanitized.removed,
     rewrites: sanitized.rewrites,
+    migrationExecutionRewrites,
   };
 }
 

@@ -801,6 +801,9 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 | `20261027160000` | `c20b8190eee43e9a40fe8cc084040f25c94d1c1ef59335efda3da8d39ac6e8d6` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-28 10:13:23 UTC | job post-check da run 40670021078 confirmou a version no ledger | aplicada |
 | `20261027180000` | `1b47a1d2eadd49608f36331d6be6e93e7478022ed97cbbbae9617e455bcb38a4` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-01 14:24:36 UTC | job post-check da run 40670992687 confirmou a version no ledger | aplicada |
 | `20261101201000` | `c7c34b95fd0a194b315a90ddf95d1823dff3ad1918b4dad64bbe9f0fececbf17` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por ti@promobrindes.com.br) | E15 | 2026-11-07 01:45:37 UTC | job post-check da run 41841468881 confirmou a version no ledger | aplicada |
+| `20261106232045` | `16def918d5acb54217e6192b94093bf1872e5dbbcfc74377972951660940f54d` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-07 01:50:37 UTC | job post-check da run 42325571775 confirmou a version no ledger | aplicada |
+| `20261107143505` | `f123b38ca356e3503765e2b4a11fbd33b029b4fde2d97822c93c9c4654da07bb` | — | — (autorizada por @adm01-debug no chat em 2026-11-07; aguarda merge e `workflow_dispatch`) | E15 | — | pendente: endurece `public.fn_get_rupture_alerts` com `SECURITY DEFINER`, `search_path = pg_catalog, public, pg_temp`, ACL mínima e preservação do contrato funcional | **pendente — não aplicada** |
+| `20261107143509` | `0f40a2e2de180dee95722ce95bb8ac30e0c94c2b812db171c69e8769baad422b` | — | — (autorizada por @adm01-debug no chat em 2026-11-07; aguarda merge e `workflow_dispatch`) | E15 | — | pendente: limita `public.fn_global_search` a no máximo 100 resultados, preserva ACL existente e endurece o `search_path` | **pendente — não aplicada** |
 
 ### Evidências do recibo `20260922170000`
 
@@ -1714,10 +1717,21 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 
 | version | arquivo | status |
 |---|---|---|
-| `20261101201000` | fix_health_view_backup_check | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (regra 8: DDL em produção). Remove a tabela apagada `_backup_stock_daily_summary_20260618` da checagem `backup_tables_rls_locked`. |
+| `20261101201000` | fix_health_view_backup_check | aplicada — run `41841468881` em 2026-11-07; `backup_tables_rls_locked` confirmado como `✅ PASS`. |
 
 ## 2026-11-06 — Hardening de `public.handle_updated_at()`
 
 | version | arquivo | status |
 |---|---|---|
-| `20261106232045` | `fix_handle_updated_at_search_path` | pendente — fixa `search_path = public`; aplicar via `db-apply-migration.yml` após merge da PR |
+| `20261106232045` | `fix_handle_updated_at_search_path` | aplicada — run `42325571775` em 2026-11-07; ledger e advisor 0011 confirmados após a aplicação. |
+
+## 2026-11-07 — Migrations funcionais renomeadas antes da primeira aplicação
+
+As versões originais 20261101150000 e 20261101190101 nunca entraram no ledger
+canônico. Elas foram renomeadas, antes do primeiro apply, para incluir rollback e o
+`search_path` exigido pelo preflight E066 sem adulterar um recibo de aplicação.
+
+| version | sha256 | arquivo | status |
+|---|---|---|---|
+| `20261107143505` | `f123b38ca356e3503765e2b4a11fbd33b029b4fde2d97822c93c9c4654da07bb` | fix_sb0003_fn_get_rupture_alerts_hardened | pendente — substitui a versão nunca aplicada 20261101150000; aplicar via `db-apply-migration.yml` e substituir esta linha pelo recibo E15 |
+| `20261107143509` | `0f40a2e2de180dee95722ce95bb8ac30e0c94c2b812db171c69e8769baad422b` | fn_global_search_clamp_limit_hardened | pendente — substitui a versão nunca aplicada 20261101190101; aplicar via `db-apply-migration.yml` e substituir esta linha pelo recibo E15 |

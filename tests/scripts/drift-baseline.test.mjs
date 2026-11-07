@@ -21,6 +21,7 @@ import {
   maxNumericVersion,
   prepareWorkdir,
   sanitizeBaselineForReplay,
+  sanitizeMigrationForReplay,
   replayFileName,
   selectReplayMigrations,
 } from '../../scripts/drift-baseline.mjs';
@@ -71,6 +72,46 @@ describe('replayFileName', () => {
   it('renumera para depois do baseline mantendo o nome original', () => {
     expect(replayFileName('20261015140000', 0, '20260928212000_x.sql')).toBe('20261015140001_20260928212000_x.sql');
     expect(replayFileName('20261015140000', 1, '20261016090000_y.sql')).toBe('20261015140002_20261016090000_y.sql');
+  });
+});
+
+describe('sanitizeMigrationForReplay', () => {
+  it('remove apenas CONCURRENTLY de CREATE/DROP INDEX fora de literais', () => {
+    const sql = [
+      'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_a ON public.a(id);',
+      'CREATE UNIQUE INDEX CONCURRENTLY idx_b ON public.b(id);',
+      'DROP INDEX CONCURRENTLY IF EXISTS public.idx_c;',
+      '-- CREATE INDEX CONCURRENTLY idx_comment ON public.c(id);',
+      "SELECT 'CREATE INDEX CONCURRENTLY idx_string ON public.s(id)';",
+      'CREATE FUNCTION f() RETURNS void LANGUAGE plpgsql AS $fn$',
+      'BEGIN',
+      '  CREATE INDEX CONCURRENTLY idx_body ON public.body(id);',
+      'END;',
+      '$fn$;',
+    ].join('\n');
+    const out = sanitizeMigrationForReplay(sql);
+    expect(out.rewrites.concurrentIndexes).toBe(3);
+    expect(out.sql).toContain('CREATE INDEX IF NOT EXISTS idx_a');
+    expect(out.sql).toContain('CREATE UNIQUE INDEX idx_b');
+    expect(out.sql).toContain('DROP INDEX IF EXISTS public.idx_c');
+    expect(out.sql).toContain('-- CREATE INDEX CONCURRENTLY idx_comment');
+    expect(out.sql).toContain("'CREATE INDEX CONCURRENTLY idx_string");
+    expect(out.sql).toContain('CREATE INDEX CONCURRENTLY idx_body');
+  });
+
+  it('omite alter_job com ID de produção porque o baseline não contém dados do cron', () => {
+    const sql = [
+      "SELECT cron.alter_job(303, schedule := '3 */6 * * *'); -- operacional",
+      "SELECT cron.alter_job(job_id := v_id, schedule := '5 * * * *');",
+      "SELECT 'cron.alter_job(241, schedule := ''18 * * * *'')';",
+      "-- SELECT cron.alter_job(292, schedule := '1 */4 * * *');",
+    ].join('\n');
+    const out = sanitizeMigrationForReplay(sql);
+    expect(out.rewrites.hardCodedCronAlterJobs).toBe(1);
+    expect(out.sql).toContain('cron.alter_job(303, ...) omitido');
+    expect(out.sql).toContain('cron.alter_job(job_id := v_id');
+    expect(out.sql).toContain("SELECT 'cron.alter_job(241");
+    expect(out.sql).toContain('-- SELECT cron.alter_job(292');
   });
 });
 
@@ -239,6 +280,9 @@ describe('sanitizeBaselineForReplay', () => {
     const delivered = readFileSync(join(mig, '20261015140001_drift_replay_cron_seed.sql'), 'utf8');
     expect(delivered).toContain("cron.schedule('auto-block-offenders'");
     expect(delivered).toContain("cron.schedule('image-dimensions-backfill'");
+    expect(delivered).toContain("'generate-blurhashes'");
+    expect(delivered).toContain('cron.alter_job(job_id := v_id, active := false)');
+    expect(delivered).toContain('ALTER PUBLICATION supabase_realtime ADD TABLE auth.users');
     expect(delivered).toContain('cron.unschedule(v_id)');
     expect(delivered).not.toContain('UPDATE cron.job');
   });
