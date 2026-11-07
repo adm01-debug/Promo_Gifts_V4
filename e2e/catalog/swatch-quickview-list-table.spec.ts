@@ -23,6 +23,7 @@
  */
 import { test, expect, requireAuth } from '../fixtures/test-base';
 import { gotoAndSettle } from '../helpers/nav';
+import { installSwatchCatalogMocks } from '../helpers/swatch-catalog-mocks';
 import {
   DATA_TIMEOUT_MS,
   V1_SWATCH,
@@ -38,8 +39,9 @@ const ROUTE = '/produtos';
 const VIEWS: RowView[] = ['list', 'table'];
 
 test.describe('Swatch → QuickView (Lista e Tabela)', () => {
-  test.beforeEach(() => {
+  test.beforeEach(async ({ page }) => {
     requireAuth();
+    await installSwatchCatalogMocks(page);
     // Backend do CI chega a levar 15–60 s por request: folga sobre o timeout padrão (120 s).
     test.setTimeout(240_000);
   });
@@ -49,7 +51,7 @@ test.describe('Swatch → QuickView (Lista e Tabela)', () => {
       page,
     }) => {
       await presetSwatchesV2(page, false);
-      await page.setViewportSize({ width: 1366, height: 900 });
+      await page.setViewportSize({ width: 1920, height: 1080 });
       await gotoAndSettle(page, ROUTE);
       await switchCatalogView(page, mode);
 

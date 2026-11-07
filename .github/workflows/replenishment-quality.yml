@@ -73,7 +73,12 @@ jobs:
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-        run: npx playwright test e2e/replenishment-stress.spec.ts --project=chromium-authed
+          # O stress valida grid/virtualização/resiliência, não o login real.
+          # Mock auth elimina rate-limit/504 do Supabase no runner da CI.
+          E2E_MOCK_AUTH: '1'
+        # O spec compartilha a sessão autenticada e o mesmo servidor local.
+        # Serializar evita colisão no login/page.goto entre os cenários.
+        run: npx playwright test e2e/replenishment-stress.spec.ts --project=chromium-authed --workers=1
 
       - name: E2E — Paridade visual /novidades vs /reposicao
         if: env.E2E_USER_EMAIL != ''
@@ -81,7 +86,10 @@ jobs:
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-        run: npm run test:e2e:card-parity
+        # A suíte mede múltiplos viewports contra um único servidor local. Com
+        # fullyParallel + 2 workers, navegações concorrentes deixam a app em
+        # nprogress-busy e produzem falso timeout antes dos títulos das páginas.
+        run: npm run test:e2e:card-parity -- --workers=1
 
       - name: Upload Playwright artifacts (parity)
         if: always()
