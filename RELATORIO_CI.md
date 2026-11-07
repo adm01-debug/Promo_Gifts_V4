@@ -501,11 +501,11 @@ Zero mudanças de schema em toda a série de sessões desta task. REGRA #8/E056 
 
 ---
 
-## §17 — Estado Final (2026-11-07T18:20Z — atualizado com item #34 e novo main HEAD)
+## §17 — Estado Final (2026-11-07T18:22Z — atualizado com itens #34 e #35, main HEAD `3c2ff929`)
 
 ### Inventário COMPLETO de workflows em falha/action_required descobertos nesta sessão
 
-> **Nota:** Itens #1–#25 cobertos nas seções §1–§15 (linhas explícitas abaixo). Itens #26–#34 novos nesta sessão.
+> **Nota:** Itens #1–#25 cobertos nas seções §1–§15 (linhas explícitas abaixo). Itens #26–#35 novos nesta sessão.
 
 | # | Workflow | Branch / SHA | Conclusion | Required? | PENDENCIAS | Motivo do bloqueio |
 |---|---|---|---|---|---|---|
@@ -536,37 +536,43 @@ Zero mudanças de schema em toda a série de sessões desta task. REGRA #8/E056 
 | 25 | Gate 2.5 — PostgreSQL Transactional Integrity | main/SHA `3c2ff929` | ✅ success | NÃO | #25 — RESOLVIDO | Rerun attempt 2 = success (HTTP 400 transitório) |
 | 26 | Recibo de migration em MIGRATIONS_SYNC_LOG.md | claude/.../efae9c9c | ❌ failure | NÃO | #26 | `version_not_registered` para `20261101150000` — só resolve após aplicação em produção (REGRA #8) |
 | 27 | Migrations x Canonical schema (db-schema-drift-check) | claude/.../efae9c9c | ❌ failure | NÃO | #27 | Re-falha pré-existente item #1 — 1141×674 drift no ledger |
-| 28 | Gate Final - Deploy Ready (PR #3160) | claude/.../efae9c9c | ❌ failure | SIM (em PRs) | #28 | Gate E40 Schema Drift bloqueia — REGRA #8, aguarda dono |
+| 28 | Gate Final - Deploy Ready (PR #3160) | claude/.../efae9c9c | ❌ failure | SIM (em PRs) | #28 | Gate E40 Schema Drift bloqueia — REGRA #8, aguarda dono; Gate 1.13.3 job #128481103639 (migration >24h sem recibo) |
 | 29 | Compare GitHub × Canonical | main/787f8438 | ❌ failure | SIM (required em main) | #29 | 27 funções driftadas — deploy run #42394305679 **cancelled pelo dono**; 27 slugs listados em PENDENCIAS #29 |
 | 30 | DB — migration única (prematura) | main/SHA `b5f7d2e` | ❌ failure | NÃO | #30 | Despacho prematuro antes de PR #3160 ser mergeada |
 | 31 | 20x action_required | branch `release-please--branches--main--components--gifts-store` | action_required | NÃO (NÃO é main) | #31 | Aguardam aprovação de environment protection — branch release-please, não main |
 | 32 | 3x E2E/quality | branches de outros agentes | ❌ failure | NÃO | #32 | Fora do escopo — branches de outros agentes (codex/, devin/) |
 | 33 | Uptime Monitor | main | ❌ failure | NÃO | #33 | Falha transiente de sonda de infra — não é CI gate |
-| 34 | Vercel "Deployment was blocked" | PR #3160 / SHA `337f4aee9` | ❌ commit status failure | NÃO (não é required check) | #34 | PR #3160 é draft — Vercel bloqueia preview deploys em draft PRs por design; basta converter para ready-for-review quando items #28/#29 forem resolvidos |
+| 34 | Vercel "Deployment was blocked" | PR #3160 / SHA `337f4aee9` e `8ce75855fa` | ❌ commit status failure | NÃO (não é required check) | #34 | PR #3160 é draft — Vercel bloqueia preview deploys em draft PRs por design; basta converter para ready-for-review quando items #28/#29 forem resolvidos |
+| 35 | Magazine Tests OK | main / SHA `df81a741` (PR #3161 dono) | ❌ failure | NÃO | #35 | Falha introduzida pela PR #3161 do dono (fix(magazine) CSS título lg) — não causada por esta sessão; run [#42400439388](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42400439388) |
 
-### Required checks em main HEAD `df81a741` (2026-11-07T18:16Z — PR #3161 mergeada pelo dono)
+### Required checks em main HEAD `3c2ff9296dc2` (2026-11-07T18:22Z — avanço além de `df81a741`)
+
+> Main avançou para `3c2ff9296dc2` (base do PR #3160 atual) além de `df81a741` (PR #3161 dono, 18:16Z). CI de `df81a741` foi cancelado por novo push.
 
 | Required check | Status | Run / Evidência |
 |---|---|---|
-| Gate Final - Deploy Ready | ✅ **success** | run [#42394358194](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394358194) — completed 17:43Z (SHA `787f8438`, parent de `df81a741`) |
-| Gate Final - Deploy Ready (SHA `df81a741`) | ⏳ in_progress | run iniciado 18:16Z (PR #3161 mergeada pelo dono) — CI ainda rodando |
+| Gate Final - Deploy Ready | ✅ **success** | run [#42394358194](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394358194) — completed 17:43Z (SHA `787f8438`) |
+| Gate Final - Deploy Ready (SHA `df81a741`) | ❌ **cancelled** | CI cancelado pelo push do SHA `3c2ff929` que veio depois |
 | Compare GitHub × Canonical | ❌ failure (pré-existente) | run [#42394606339](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394606339) (SHA `787f8438`) — 27 funções driftadas; PENDENCIAS #29 |
 | Analyze (javascript-typescript) | ✅ success | SHA `787f8438` — sem mudança de código desta sessão |
 | Gate E23 - Secret Scan (gitleaks) | ✅ success | SHA `787f8438` — sem segredos em diff |
 | Assert Gate Final is required on main | ✅ success | — |
 
-> **Gate Final confirmado no SHA `787f8438`:** Run #42394358194 completou às 17:43Z com `conclusion=success`. O SHA `df81a741` (PR #3161 do dono, 18:16Z) está com CI em progresso — não introduzido por esta sessão.
+> **Gate Final confirmado no SHA `787f8438`:** Run #42394358194 completou às 17:43Z com `conclusion=success`. O SHA `df81a741` (PR #3161 do dono, 18:16Z) teve CI cancelado por push subsequente. O main atual (`3c2ff929`) não tem Gate Final confirmado nesta sessão — não introduzido por esta sessão.  
+> **Magazine Tests OK failure (SHA `df81a741`):** Introduzido pela PR #3161 do dono — NÃO é required check; documentado em PENDENCIAS #35.
 
-### Anti-regressão final (2026-11-07T18:20Z)
+### Anti-regressão final (2026-11-07T18:22Z)
 
 - **Gate Final (SHA `9739e654`):** ✅ success — run [#42392250972](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42392250972) (17:16:29Z)
 - **Gate Final (SHA `787f8438`):** ✅ success — run [#42394358194](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394358194) (completed 17:43Z)
-- **SHA `df81a741` (PR #3161 do dono, 18:16Z):** CI em progresso — não alterado por esta sessão; Gate Final da sessão anterior (`787f8438`) permanece ✅
+- **SHA `df81a741` (PR #3161 do dono, 18:16Z):** Gate Final cancelado (push subsequente); "Magazine Tests OK" ❌ failure — introduzido pela PR #3161 do dono, NÃO required check, documentado PENDENCIAS #35
+- **SHA `3c2ff9296dc2` (main atual):** Não verificado nesta sessão — posterior a `df81a741`; fora do escopo desta PR
 - **Compare GitHub × Canonical:** ❌ failure pré-existente; deploy run #42394305679 cancelled pelo dono; 27 slugs documentados em PENDENCIAS #29 com passos exatos para o dono
 - **Gate Final em PR #3160:** ❌ bloqueado por Gate E40 (REGRA #8) — documentado PENDENCIAS #28
 - **Sem nova falha required introduzida** por esta sessão nos commits desta branch
 - **Itens resolvidos nesta sessão:** #4, #8, #12, #14, #25 (5 itens)
 - **Itens bloqueados pelo dono (required):** #29 (Compare GitHub × Canonical — 27 funções drift)
+- **Itens não-required bloqueados pelo dono:** #35 (Magazine Tests OK — falha da PR #3161 do dono)
 
 ---
 
