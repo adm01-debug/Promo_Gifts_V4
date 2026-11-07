@@ -20,6 +20,15 @@ on:
       - '.github/workflows/delivery-quality.yml'
       - '.github/workflows/_e2e-relevance.yml'
       - '.github/scripts/e2e-relevance.mjs'
+      - '.github/workflows/_secrets-check.yml'
+      - '.github/actions/e2e-setup/**'
+      - '.github/actions/check-min-tests/**'
+      - '.github/actions/setup-node-ci/**'
+      - 'scripts/check-playwright-min-executed.mjs'
+      - 'scripts/run-smoke-filtered.mjs'
+      - 'scripts/check-smoke-tags.mjs'
+      - 'scripts/e2e-smoke-coverage-doc.mjs'
+      - 'scripts/e2e-mock-auth-setup.mjs'
   pull_request:
     branches: [ main ]
     paths:  # E14: evitar CI em PRs doc-only
@@ -40,6 +49,15 @@ on:
       - '.github/workflows/delivery-quality.yml'
       - '.github/workflows/_e2e-relevance.yml'
       - '.github/scripts/e2e-relevance.mjs'
+      - '.github/workflows/_secrets-check.yml'
+      - '.github/actions/e2e-setup/**'
+      - '.github/actions/check-min-tests/**'
+      - '.github/actions/setup-node-ci/**'
+      - 'scripts/check-playwright-min-executed.mjs'
+      - 'scripts/run-smoke-filtered.mjs'
+      - 'scripts/check-smoke-tags.mjs'
+      - 'scripts/e2e-smoke-coverage-doc.mjs'
+      - 'scripts/e2e-mock-auth-setup.mjs'
 
 permissions:
   contents: read
