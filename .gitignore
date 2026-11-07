@@ -79,11 +79,10 @@ reports/flakiness/
 .tmp/flakiness/
 reports/mutation/
 
-# Graphify: so o relatorio legivel e o manifest.
-# graph.json/graph.html sao regeneraveis: `graphify update .`
+# Graphify: so o relatorio legivel e versionado.
+# graph.json/graph.html/manifest.json sao regeneraveis: `graphify update .`
 graphify-out/*
 !graphify-out/GRAPH_REPORT.md
-!graphify-out/manifest.json
 bun.lock
 bun.lockb
 
