@@ -10,10 +10,15 @@ on:
       - 'src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx'
       - 'tests/**'
       - 'e2e/**'
+      - 'public/**'
+      - 'index.html'
+      - 'tailwind.config.*'
+      - 'postcss.config.*'
       - 'package*.json'
       - '.nvmrc'
       - 'vite.config.*'
       - '.github/workflows/delivery-quality.yml'
+      - '.github/workflows/_e2e-relevance.yml'
       - '.github/scripts/e2e-relevance.mjs'
   pull_request:
     branches: [ main ]
@@ -25,10 +30,15 @@ on:
       - 'src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx'
       - 'tests/**'
       - 'e2e/**'
+      - 'public/**'
+      - 'index.html'
+      - 'tailwind.config.*'
+      - 'postcss.config.*'
       - 'package*.json'
       - '.nvmrc'
       - 'vite.config.*'
       - '.github/workflows/delivery-quality.yml'
+      - '.github/workflows/_e2e-relevance.yml'
       - '.github/scripts/e2e-relevance.mjs'
 
 permissions:

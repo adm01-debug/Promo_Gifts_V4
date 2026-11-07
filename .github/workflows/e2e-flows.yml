@@ -14,11 +14,15 @@ on:
       - '!src/**/*.spec.*'
       - 'e2e/**'
       - 'public/**'
+      - 'index.html'
+      - 'tailwind.config.*'
+      - 'postcss.config.*'
       - 'package*.json'
       - '.nvmrc'
       - 'playwright.config.*'
       - 'vite.config.*'
       - '.github/workflows/e2e-flows.yml'
+      - '.github/workflows/_e2e-relevance.yml'
       - '.github/scripts/e2e-relevance.mjs'
   pull_request:
     branches: [main]
@@ -29,11 +33,15 @@ on:
       - '!src/**/*.spec.*'
       - 'e2e/**'
       - 'public/**'
+      - 'index.html'
+      - 'tailwind.config.*'
+      - 'postcss.config.*'
       - 'package*.json'
       - '.nvmrc'
       - 'playwright.config.*'
       - 'vite.config.*'
       - '.github/workflows/e2e-flows.yml'
+      - '.github/workflows/_e2e-relevance.yml'
       - '.github/scripts/e2e-relevance.mjs'
   workflow_dispatch:
 
@@ -210,6 +218,7 @@ jobs:
         uses: ./.github/actions/check-min-tests
         with:
           results-json: 'playwright-report/results-quote-flow.json'
+          min: '9'
 
       - name: Upload full flows report
         if: always()

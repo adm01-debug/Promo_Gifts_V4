@@ -17,7 +17,11 @@ on:
       - '!src/**/__tests__/**'
       - '!src/**/*.test.*'
       - '!src/**/*.spec.*'
+      - 'index.html'
+      - 'tailwind.config.*'
+      - 'postcss.config.*'
       - '.github/workflows/e2e-focused.yml'
+      - '.github/workflows/_e2e-relevance.yml'
       - '.github/scripts/e2e-relevance.mjs'
   schedule:
     # E89 — segunda-feira 02:00 UTC
