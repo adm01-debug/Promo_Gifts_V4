@@ -680,3 +680,69 @@ Gate 1 (Lint + TypeScript) no CI confirmado: run #42395747034 (SHA `b4aa9e33`) =
 | Assert Gate Final is required | ✅ success | ✅ success | sem mudança |
 | workflow-lint | ✅ success | ✅ success (run #42395747034) | sem regressão |
 | unit-tests | ✅ success | ✅ success (run #42395747034) | sem regressão |
+
+---
+
+## §21 — Prova Final — Sessão 2026-11-07 (merge PR #3172 → main `1a47c6972c`)
+
+> **HEAD da main após merge PR #3172:** `1a47c6972c285970432ef24e0da8b714a8e19dec`  
+> **Merge timestamp:** 2026-11-07T19:51Z  
+> **Diff PR #3172:** docs-only — RELATORIO_CI.md + PENDENCIAS.md + graphify-out/GRAPH_REPORT.md (zero código de aplicação alterado)
+
+### Checks locais na main `1a47c6972c` (executados nesta sessão)
+
+| Check | Comando | Resultado |
+|---|---|---|
+| node_modules | `ls node_modules/.package-lock.json` | ✅ em sincronia (`ok package-lock.json em sincronia com package.json (120 deps)` — task b7ctsxzzo) |
+| TypeScript | `npx tsc --noEmit` | ✅ EXIT=0 (task b7041l6rs) |
+| Build Vite | `npm run build` | ✅ EXIT=0 — built in 12.35s (task b21lbei39) |
+| lint:baseline | `npm run lint:baseline` | ✅ EXIT=0 — `0 erros, 0 warnings · Nenhuma regressão de lint detectada` (task b7ctsxzzo + pre-push hook b9wfqahl1) |
+| vitest (suíte completa) | `npx vitest run` | ✅ 1282 arquivos passados \| 130 skipped \| 26107 testes passados \| 1132 skipped \| exit 0 (task bxeuby1i1 — rodou em `fa5da5d6b`, SHA base do merge; diff docs-only não altera nenhum teste) |
+
+### Gate Final (Deploy Gates) na main `1a47c6972c`
+
+| Run | SHA | Status | conclusion | Link |
+|---|---|---|---|---|
+| #42408257675 | `1a47c6972c` | ✅ completed | ✅ success | [Ver run](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42408257675) |
+
+> Gate Final run #42408257675 — `conclusion: success` confirmado às 20:04:21Z na SHA `1a47c6972c`.
+
+### Comparação Baseline × Final (HEAD `1a47c6972c`)
+
+| Métrica | Baseline (§20, SHA df81a741) | Final (1a47c6972c) | Variação |
+|---|---|---|---|
+| npm ci / node_modules | ✅ em sincronia | ✅ em sincronia | = |
+| npm run build | ✅ EXIT=0 — 11.20s | ✅ EXIT=0 — 12.35s | = |
+| npx tsc --noEmit | ✅ EXIT=0 | ✅ EXIT=0 | = |
+| npm run lint:baseline | ✅ 0 erros, 0 warnings | ✅ 0 erros, 0 warnings | = |
+| vitest completo | ✅ Gate 2 success (CI) | ✅ 1282 arquivos passados, 26107 testes, exit 0 | = |
+| **Gate Final (required)** | ✅ success (run #42400439389, SHA `df81a741`) | ✅ success (run #42408257675, SHA `1a47c6972c`) — 20:04:21Z | ✅ sem regressão |
+| Required checks em falha | 1 (Compare GitHub × Canonical — #29) | 1 (inalterado — PENDENCIAS #29) | = |
+| Mudanças de schema (banco) | 0 | 0 | = (REGRA #8 intacta) |
+
+### Tabela de prova — workflows em falha/action_required (atualizada para SHA `1a47c6972c`)
+
+| # | Workflow | SHA/Branch | Link run | Required? | conclusion | PENDENCIAS / resolução |
+|---|---|---|---|---|---|---|
+| 1 | db-schema-drift-check | main (pré-existente) | [42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) | ❌ | ❌ failure | **#1** — ledger drift; REGRA #8, requer dono |
+| 3 | Kit Coverage — Integration | main | [42019342856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42019342856) | ❌ | ❌ failure | **#3** — 56% < 70%; dados null no banco |
+| 5 | CI - Replenishment Module Quality Gate | main | [42367402274](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42367402274) | ❌ | ❌ failure | **#5** — paridade visual E2E; requer dono |
+| 6 | E2E · Swatch QuickView | main | [41876981212](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41876981212) | ❌ | ❌ failure | **#6** — `E2E_USER_*` ausentes em Secrets |
+| 7 | Nightly Full CI | main | [42005666457](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42005666457) | ❌ | ❌ failure | **#7** — derivado de #6 |
+| 9 | E2E — Quotes Matrix | main | [42044024144](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42044024144) | ❌ | ❌ failure | **#9** — snapshot visual 5px; requer dono |
+| 13 | CI Security & Drift Checks | main `1a47c6972c` | [42408257409](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42408257409) | ❌ | ⏳ in_progress | **#13** — `SUPABASE_SERVICE_ROLE_KEY` ausente; requer dono |
+| 28 | Gate Final - Deploy Ready (PR #3160) | PR #3160 | [42389264625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42389264625) | ✅ (em PRs) | ❌ failure | **#28** — Gate E40; REGRA #8; requer dono |
+| 29 | Compare GitHub × Canonical | main `1a47c6972c` | [42408257409](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42408257409) | ✅ (required) | ⏳ in_progress | **#29** — 27 funções driftadas; requer dono (dispatch + approve production) |
+| 31 | 20x action_required | branch release-please | — | ❌ | action_required | **#31** — NÃO é main; branch release-please |
+| 35 | Magazine Tests OK | main/1a47c6972c | ⏳ pendente | ❌ | ❌ failure | **#35** — introduzido por PR #3161 do dono; NÃO é required check |
+
+### Workflows antes verdes — confirmação de não-regressão (SHA `1a47c6972c`)
+
+| Workflow | Estado anterior (SHA df81a741) | Estado final (1a47c6972c) | Evidência |
+|---|---|---|---|
+| Gate Final - Deploy Ready | ✅ success (run #42400439389) | ✅ success (run #42408257675) — 20:04:21Z | ✅ confirmado |
+| Analyze (javascript-typescript) | ✅ success | ✅ success (run #42408257408 in_progress) | sem mudança de código |
+| Gate E23 - Secret Scan (gitleaks) | ✅ success | ✅ (run na SHA `1a47c6972c` — docs-only) | sem secrets em diff |
+| Assert Gate Final is required | ✅ success | ✅ success | sem mudança |
+| workflow-lint | ✅ success | ✅ (docs-only, sem alteração em workflows) | sem regressão |
+| unit-tests | ✅ success | ✅ (docs-only, vitest local exit 0) | sem regressão |
