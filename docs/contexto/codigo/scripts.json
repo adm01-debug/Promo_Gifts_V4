@@ -2002,7 +2002,7 @@
   {
    "arquivo": "scripts/fuzz-edge-uploads.mjs",
    "descricao": "* scripts/fuzz-edge-uploads.mjs",
-   "linhas": 446,
+   "linhas": 499,
    "env": [
     "ALLOW_PROD_LOAD",
     "DRY_RUN",
@@ -2021,7 +2021,7 @@
   {
    "arquivo": "scripts/fuzz-testing.mjs",
    "descricao": "* scripts/fuzz-testing.mjs",
-   "linhas": 556,
+   "linhas": 586,
    "env": [
     "ALLOW_PROD_LOAD",
     "DRY_RUN",

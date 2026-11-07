@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1a47c6972c285970432ef24e0da8b714a8e19dec",
+  "commit": "3093c4a247c0ec39b16960f8d64691852f957574",
   "branch": "main",
-  "data_commit": "2026-11-07T16:51:52-03:00",
+  "data_commit": "2026-11-07T17:17:56-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3093c4a",
+    "data": "2026-11-07",
+    "assunto": "fix(test): validar de verdade o corpus dos fuzzers (#3173)"
+   },
+   {
+    "sha": "2eca6a4",
+    "data": "2026-11-07",
+    "assunto": "docs: RELATORIO_CI.md §21 — Gate Final ✅ success na main 1a47c6972c"
+   },
    {
     "sha": "1a47c69",
     "data": "2026-11-07",
@@ -121,19 +131,9 @@
     "sha": "cf98610",
     "data": "2026-11-06",
     "assunto": "fix(ci): publish recovery snapshot atomically (#3115)"
-   },
-   {
-    "sha": "6f94e35",
-    "data": "2026-11-06",
-    "assunto": "fix(ci): reconcile E40 ledger and forced rotation (#3113)"
-   },
-   {
-    "sha": "1c0eb37",
-    "data": "2026-11-06",
-    "assunto": "chore(security): sincroniza baseline de policies RLS (#3110)"
    }
   ],
-  "arquivos_mudados_7d": 398,
+  "arquivos_mudados_7d": 402,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -185,7 +185,7 @@
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 103
+    "mudancas": 102
    },
    {
     "pasta": "src/pages/quotes",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 70
+    "mudancas": 68
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 64
+    "mudancas": 62
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 335
+    "commits": 333
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9175,
-  "arquivos_codigo": 4615,
-  "linhas_codigo": 883984,
+  "arquivos_total": 9177,
+  "arquivos_codigo": 4617,
+  "linhas_codigo": 884238,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 544,
   "migrations": 3043,
   "cron_jobs": 120,
-  "testes": 2186,
+  "testes": 2188,
   "workflows": 94,
   "scripts": 255,
   "docs_md": 895
@@ -1524,11 +1524,11 @@
   },
   "scripts/fuzz-edge-uploads.mjs": {
    "arquivos": 1,
-   "linhas": 446
+   "linhas": 499
   },
   "scripts/fuzz-testing.mjs": {
    "arquivos": 1,
-   "linhas": 556
+   "linhas": 586
   },
   "scripts/gen-edge-live-tests.mjs": {
    "arquivos": 1,
@@ -2091,8 +2091,8 @@
    "linhas": 89
   },
   "tests/scripts": {
-   "arquivos": 50,
-   "linhas": 8372
+   "arquivos": 52,
+   "linhas": 8543
   },
   "tests/search": {
    "arquivos": 1,

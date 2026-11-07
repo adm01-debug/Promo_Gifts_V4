@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1a47c6972c` · branch `main` · 2026-11-07 19:56 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3093c4a247` · branch `main` · 2026-11-07 20:37 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -5828,7 +5828,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Schema ${schemaName} em formato não suportado em ${fileName}. | `scripts/extract-types-inventory.mjs` |
 | Tipo sem declaração em ${fileName}. | `scripts/extract-types-inventory.mjs` |
 | TypeScript inválido em ${fileName}: ${ts.flattenDiagnosticMessageText(sourceFile.parseDiagnostics[0].messageText,  | `scripts/extract-types-inventory.mjs` |
+| Corpus de fuzz inválido:\n- ${errors.join( | `scripts/fuzz-edge-uploads.mjs` |
 | Crash detectado: HTTP ${res.status} em  | `scripts/fuzz-edge-uploads.mjs` |
+| Resposta refletiu payload XSS sem escape em ${path} | `scripts/fuzz-edge-uploads.mjs` |
+| [fuzz-edge-uploads] BLOQUEADO: produção exige ALLOW_PROD_LOAD=1 em dispatch gated. | `scripts/fuzz-edge-uploads.mjs` |
+| [${spec.name}] payload ${index} inválido: ${error.message} | `scripts/fuzz-testing.mjs` |
+| [fuzz-testing] BLOQUEADO: produção exige ALLOW_PROD_LOAD=1 em dispatch gated. | `scripts/fuzz-testing.mjs` |
+| payload não serializável: ${typeof payload} | `scripts/fuzz-testing.mjs` |
+| rawBody deve ser string; recebido ${typeof rawBody} | `scripts/fuzz-testing.mjs` |
 | ${label} inválido: ${error.message} | `scripts/plan-status.mjs` |
 | Esperadas ${REQUIRED_STAGES} etapas únicas; encontradas ${stages.length} (${ids.size} IDs únicos). | `scripts/plan-status.mjs` |
 | Etapa(s) sem critério Pronto: ${missing.join( | `scripts/plan-status.mjs` |
@@ -6024,14 +6031,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Erro ao alterar material | `src/components/admin/products/ProductMaterialsSection.tsx` |
 | Erro ao atualizar | `src/components/admin/products/ProductMaterialsSection.tsx` |
 | Registro não encontrado | `src/components/admin/products/ProductMaterialsSection.tsx` |
-| Erro ao alterar segmento | `src/components/admin/products/ProductRamosSection.tsx` |
-| Erro ao alterar tag | `src/components/admin/products/ProductTagsSection.tsx` |
-| Registro não encontrado | `src/components/admin/products/ProductTagsSection.tsx` |
-| Erro ao reverter dados fiscais | `src/components/admin/products/SupplierFiscalInfo.tsx` |
-| Erro ao salvar dados fiscais | `src/components/admin/products/SupplierFiscalInfo.tsx` |
-| Erro ao salvar dados fiscais. Verifique se o produto possui variantes cadastradas. | `src/components/admin/products/SupplierFiscalInfo.tsx` |
-| Nome e SKU são obrigatórios | `src/components/admin/products/VariantForm.tsx` |
-| … +941 linhas — lista completa em `context.json` | |
+| … +948 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6131,7 +6131,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (18413 testes em 1880 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (18422 testes em 1882 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6435,7 +6435,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/scripts/check-anon-write-grants.test.mjs` | 17 | loadAllowlist · devolve grants=[] quando o arquivo não existe · lê grants de um arquivo válido · tolera arquivo sem campo grants (array vazio) … |
 | `tests/ssot/ssot-report-schema.test.ts` | 17 | ssot-report.json — schema · schema JSON é parseável e draft-07 · aceita relatório válido · rejeita canonical inesperado … |
 | `tests/utils/price-freshness-coverage.test.ts` | 17 | getPriceFreshness — bordas de threshold · dia exatamente no meio do threshold ainda é  · um dia após o meio do threshold vira  · dia exatamente no threshold já é  … |
-| … +1580 linhas — lista completa em `context.json` | | |
+| … +1582 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

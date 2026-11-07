@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2186,
+ "total": 2188,
  "por_tipo": {
   "contrato": 56,
   "e2e": 630,
   "pytest": 2,
   "qa": 17,
-  "unit": 1481
+  "unit": 1483
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 799
+   "arquivos": 801
   },
   {
    "padrao": "e2e/",
@@ -17449,6 +17449,24 @@
    "casos": 87
   },
   {
+   "arquivo": "tests/scripts/fuzz-edge-uploads.test.mjs",
+   "tipo": "unit",
+   "linhas": 112,
+   "testa": [
+    "scripts/fuzz-edge-uploads.mjs"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/scripts/fuzz-testing.test.mjs",
+   "tipo": "unit",
+   "linhas": 59,
+   "testa": [
+    "scripts/fuzz-testing.mjs"
+   ],
+   "casos": 3
+  },
+  {
    "arquivo": "tests/scripts/generate-quality-report.ts",
    "tipo": "unit",
    "linhas": 29,
@@ -18529,6 +18547,8 @@
   "scripts/check-workflow-contracts.mjs": 1,
   "scripts/drift-baseline.mjs": 2,
   "scripts/extract-types-inventory.mjs": 1,
+  "scripts/fuzz-edge-uploads.mjs": 1,
+  "scripts/fuzz-testing.mjs": 1,
   "scripts/graphify/enrich-typescript-references.mjs": 1,
   "scripts/graphify/graph-metrics.mjs": 1,
   "scripts/inventario/gerar-banco.mjs": 1,

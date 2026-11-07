@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "1a47c6972c285970432ef24e0da8b714a8e19dec",
+  "sha": "3093c4a247c0ec39b16960f8d64691852f957574",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 19:56 UTC",
-  "files_total": 9097,
-  "code_files": 7842,
-  "code_lines": 1051060
+  "generated_at": "2026-11-07 20:37 UTC",
+  "files_total": 9099,
+  "code_files": 7844,
+  "code_lines": 1051314
  },
  "version": "1.3.2",
- "facts_hash": "79151dbb25ca0db1",
+ "facts_hash": "0e0fa5cbeffda78d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1176,7 +1176,7 @@
    ".sql": 3228,
    ".ts": 2621,
    ".tsx": 1687,
-   ".mjs": 297,
+   ".mjs": 299,
    ".py": 9,
    ".js": 7
   },
@@ -138094,7 +138094,7 @@
   {
    "module": "scripts",
    "files": 269,
-   "lines": 52820,
+   "lines": 52903,
    "tables": [
     "a",
     "contacts",
@@ -138148,15 +138148,15 @@
     "drift-baseline.mjs: BASELINE_DIR, BASELINE_NAME_RE, SHADOW_MAJOR_VERSION, REPLAY_SEED_NAME, REPLAY_SEED_SQL, REPLAY_CRON_SEED_FILE",
     "extract-types-inventory.mjs: ROOT, DEFAULT_TYPES_PATH, CATEGORY_KEYS, extractTypesInventory, extractTypesContracts, countsOf",
     "fix_migrations_idempotent.py: should_process, extract_quoted_name, fix_simple_regex, fix_create_type_enum, fix_create_materialized_view, fix_create_trigger",
+    "fuzz-edge-uploads.mjs: HMAC_SIGNATURES_ADVERSARIAIS, validateFuzzCorpus",
+    "fuzz-testing.mjs: serializeFuzzPayload",
     "pgss-slo-check.mjs: SLO_TARGETS_MS, evaluateSloBreaches",
     "plan-status.mjs: ROOT, PLAN_PATH, RECEIPTS_PATH, parsePlan, validateReceipts, classifyStages",
     "preflight-migration-apply.mjs: detectCreateIndexWithoutConcurrently, parseOptOut, detectBlockingDdl, findMigrationFiles, findRollbackFile, hasRollbackHeader",
     "promote-draft-migration.mjs: parseHandleList, parsePositiveInt, GH_HANDLE_RE, validateHandles",
     "ssot-report.mjs: SCHEMA_VERSION",
     "supabase-read-only-query.mjs: querySupabaseReadOnly",
-    "test-critical-coverage.mjs: CRITICAL_TEST_FILES, CRITICAL_COVERAGE_INCLUDES, buildVitestArgs, runProducer",
-    "validate-migration-target.mjs: CANONICAL_PROJECT, validateMigrationTarget, validateLiveMigrationPooler",
-    "wraparound-monitor-check.mjs: THRESHOLDS, evaluateWraparoundAlerts"
+    "test-critical-coverage.mjs: CRITICAL_TEST_FILES, CRITICAL_COVERAGE_INCLUDES, buildVitestArgs, runProducer"
    ],
    "docs": [
     "append-edge-deploy-receipt.mjs: !/usr/bin/env node",
@@ -140362,8 +140362,8 @@
   },
   {
    "module": "tests",
-   "files": 813,
-   "lines": 124362,
+   "files": 815,
+   "lines": 124533,
    "tables": [
     "bot_detection_log",
     "companies",
@@ -150794,7 +150794,35 @@
    },
    {
     "file": "scripts/fuzz-edge-uploads.mjs",
+    "msg": "Corpus de fuzz inválido:\\n- ${errors.join("
+   },
+   {
+    "file": "scripts/fuzz-edge-uploads.mjs",
     "msg": "Crash detectado: HTTP ${res.status} em "
+   },
+   {
+    "file": "scripts/fuzz-edge-uploads.mjs",
+    "msg": "Resposta refletiu payload XSS sem escape em ${path}"
+   },
+   {
+    "file": "scripts/fuzz-edge-uploads.mjs",
+    "msg": "[fuzz-edge-uploads] BLOQUEADO: produção exige ALLOW_PROD_LOAD=1 em dispatch gated."
+   },
+   {
+    "file": "scripts/fuzz-testing.mjs",
+    "msg": "[${spec.name}] payload ${index} inválido: ${error.message}"
+   },
+   {
+    "file": "scripts/fuzz-testing.mjs",
+    "msg": "[fuzz-testing] BLOQUEADO: produção exige ALLOW_PROD_LOAD=1 em dispatch gated."
+   },
+   {
+    "file": "scripts/fuzz-testing.mjs",
+    "msg": "payload não serializável: ${typeof payload}"
+   },
+   {
+    "file": "scripts/fuzz-testing.mjs",
+    "msg": "rawBody deve ser string; recebido ${typeof rawBody}"
    },
    {
     "file": "scripts/plan-status.mjs",
@@ -267535,6 +267563,42 @@
     "name": "DROP FUNCTION sem lista de argumentos (IF EXISTS … CASCADE) invalida o nome e não puxa "
    },
    {
+    "file": "tests/scripts/fuzz-edge-uploads.test.mjs",
+    "name": "fuzz-edge-uploads"
+   },
+   {
+    "file": "tests/scripts/fuzz-edge-uploads.test.mjs",
+    "name": "mantém o corpus HMAC serializável e transmissível por HTTP"
+   },
+   {
+    "file": "tests/scripts/fuzz-edge-uploads.test.mjs",
+    "name": "executa todos os cenários em dry-run sem fazer HTTP"
+   },
+   {
+    "file": "tests/scripts/fuzz-edge-uploads.test.mjs",
+    "name": "transmite os 134 cenários contra um servidor HTTP local"
+   },
+   {
+    "file": "tests/scripts/fuzz-edge-uploads.test.mjs",
+    "name": "bloqueia carga contra produção sem autorização explícita"
+   },
+   {
+    "file": "tests/scripts/fuzz-testing.test.mjs",
+    "name": "fuzz-testing"
+   },
+   {
+    "file": "tests/scripts/fuzz-testing.test.mjs",
+    "name": "usa a mesma serialização no dry-run e nas requests reais"
+   },
+   {
+    "file": "tests/scripts/fuzz-testing.test.mjs",
+    "name": "serializa e valida os 920 payloads em dry-run"
+   },
+   {
+    "file": "tests/scripts/fuzz-testing.test.mjs",
+    "name": "bloqueia fuzz live em produção sem autorização explícita"
+   },
+   {
     "file": "tests/scripts/graphify-metrics.test.mjs",
     "name": "Graphify low-connectivity metric"
    },
@@ -319728,6 +319792,8 @@
    "tests/scripts/check-ledger-statements-gate.test.mjs",
    "tests/scripts/contexto-produtores.test.mjs",
    "tests/scripts/drift-baseline.test.mjs",
+   "tests/scripts/fuzz-edge-uploads.test.mjs",
+   "tests/scripts/fuzz-testing.test.mjs",
    "tests/security/edge-authz-bypass.test.ts",
    "tests/security/notification-rls.spec.ts",
    "tests/security/restore-seller-cart-rpc.test.ts",
@@ -377360,7 +377426,11 @@
   },
   "scripts/fuzz-edge-uploads.mjs": {
    "path": "scripts/fuzz-edge-uploads.mjs",
-   "lines": 446,
+   "lines": 499,
+   "exports": [
+    "const HMAC_SIGNATURES_ADVERSARIAIS",
+    "function validateFuzzCorpus"
+   ],
    "env": [
     "ALLOW_PROD_LOAD",
     "DRY_RUN",
@@ -377370,7 +377440,10 @@
     "VITE_SUPABASE_URL"
    ],
    "errors": [
-    "Crash detectado: HTTP ${res.status} em "
+    "Corpus de fuzz inválido:\\n- ${errors.join(",
+    "Crash detectado: HTTP ${res.status} em ",
+    "Resposta refletiu payload XSS sem escape em ${path}",
+    "[fuzz-edge-uploads] BLOQUEADO: produção exige ALLOW_PROD_LOAD=1 em dispatch gated."
    ],
    "params": [
     {
@@ -377386,11 +377459,26 @@
     "* Em modo dry-run (sem credenciais), apenas valida estrutura dos cenários."
    ],
    "doc": "!/usr/bin/env node",
+   "calc_fns": [
+    {
+     "name": "validateExecutionTarget",
+     "params": "",
+     "body": "if (!DRY_RUN && SUPABASE_URL.includes(CANONICAL_PROJECT) && process.env.ALLOW_PROD_LOAD !== '1') { throw new Error( '[fuzz-edge-uploads] BLOQUEADO: produção exige ALLOW_PROD_LOAD=1 em dispatch gated.', ); }"
+    },
+    {
+     "name": "validateFuzzCorpus",
+     "params": "",
+     "body": "const errors = []; const stringCollections = [ [\"HMAC_SIGNATURES_ADVERSARIAIS\", HMAC_SIGNATURES_ADVERSARIAIS], [\"CONTENT_TYPE_BYPASS\", CONTENT_TYPE_BYPASS], ]; for (const [name, values] of stringCollections) { values.forEach((value, index) => { if (typeof value !== \"string\") { errors.push(`${name}[${index}] deve ser string; recebido ${typeof value}`); return; } if (/[\\0\\r\\n]/u.test(value)) { errors.push(`${name}[${index}] contém controle proibido em header HTTP`); } }); } MIME_POLYGLOTAS.forEach …"
+    }
+   ],
    "uses_service_role": true
   },
   "scripts/fuzz-testing.mjs": {
    "path": "scripts/fuzz-testing.mjs",
-   "lines": 556,
+   "lines": 586,
+   "exports": [
+    "function serializeFuzzPayload"
+   ],
    "env": [
     "ALLOW_PROD_LOAD",
     "DRY_RUN",
@@ -377401,6 +377489,12 @@
     "SUPABASE_TEST_BYPASS_TOKEN",
     "SUPABASE_URL",
     "VITE_SUPABASE_URL"
+   ],
+   "errors": [
+    "[${spec.name}] payload ${index} inválido: ${error.message}",
+    "[fuzz-testing] BLOQUEADO: produção exige ALLOW_PROD_LOAD=1 em dispatch gated.",
+    "payload não serializável: ${typeof payload}",
+    "rawBody deve ser string; recebido ${typeof rawBody}"
    ],
    "params": [
     {
@@ -377417,6 +377511,11 @@
    ],
    "doc": "!/usr/bin/env node",
    "calc_fns": [
+    {
+     "name": "validateExecutionTarget",
+     "params": "",
+     "body": "if (!DRY_RUN && SUPABASE_URL.includes(CANONICAL_PROJECT) && process.env.ALLOW_PROD_LOAD !== '1') { throw new Error('[fuzz-testing] BLOQUEADO: produção exige ALLOW_PROD_LOAD=1 em dispatch gated.'); }"
+    },
     {
      "name": "generateCnpjLookupPayloads",
      "params": "",
@@ -377536,11 +377635,6 @@
      "name": "generateStepUpVerifyPayloads",
      "params": "",
      "body": "const valid = { [REDACTED], purpose: \"admin_action\" }; const p = [...missingFieldsMatrix(valid)]; for (const sql of SQL_INJECTIONS.slice(0, 4)) p.push({ ...valid, token: sql }); for (const xss of XSS_PAYLOADS.slice(0, 3)) p.push({ ...valid, purpose: xss }); for (const type of TYPE_CONFUSIONS) p.push({ ...valid, token: type }); p.push({}, valid); return p;"
-    },
-    {
-     "name": "generateVerify2faPayloads",
-     "params": "",
-     "body": "const valid = { user_id: \"550e8400-e29b-41d4-a716-446655440001\", code: \"123456\" }; const p = [...missingFieldsMatrix(valid)]; for (const uuid of UUID_CORPUS) p.push({ ...valid, user_id: uuid }); // Código inválido (< 6 dígitos, não numérico, muito longo, SQL) for (const code of [\"12345\", \"abc\", \"\", \"1234567\", \"' OR '1'='1\", null, 0]) { p.push({ ...valid, code }); } p.push({}, valid); return p;"
     }
    ],
    "uses_service_role": true
@@ -479728,6 +479822,37 @@
    ],
    "uses_service_role": true
   },
+  "tests/scripts/fuzz-edge-uploads.test.mjs": {
+   "path": "tests/scripts/fuzz-edge-uploads.test.mjs",
+   "lines": 112,
+   "is_test": true,
+   "temporal": [
+    "timeout: 30_000,"
+   ],
+   "tests": [
+    "fuzz-edge-uploads",
+    "mantém o corpus HMAC serializável e transmissível por HTTP",
+    "executa todos os cenários em dry-run sem fazer HTTP",
+    "transmite os 134 cenários contra um servidor HTTP local",
+    "bloqueia carga contra produção sem autorização explícita"
+   ],
+   "uses_service_role": true
+  },
+  "tests/scripts/fuzz-testing.test.mjs": {
+   "path": "tests/scripts/fuzz-testing.test.mjs",
+   "lines": 59,
+   "is_test": true,
+   "temporal": [
+    "timeout: 30_000,"
+   ],
+   "tests": [
+    "fuzz-testing",
+    "usa a mesma serialização no dry-run e nas requests reais",
+    "serializa e valida os 920 payloads em dry-run",
+    "bloqueia fuzz live em produção sem autorização explícita"
+   ],
+   "uses_service_role": true
+  },
   "tests/scripts/generate-quality-report.ts": {
    "path": "tests/scripts/generate-quality-report.ts",
    "lines": 29
@@ -482897,10 +483022,31 @@
   }
  },
  "git": {
-  "sha": "1a47c6972c285970432ef24e0da8b714a8e19dec",
+  "sha": "3093c4a247c0ec39b16960f8d64691852f957574",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "3093c4a",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "fix(test): validar de verdade o corpus dos fuzzers (#3173)",
+    "files": [
+     "scripts/fuzz-edge-uploads.mjs",
+     "scripts/fuzz-testing.mjs",
+     "tests/scripts/fuzz-edge-uploads.test.mjs",
+     "tests/scripts/fuzz-testing.test.mjs"
+    ]
+   },
+   {
+    "sha": "2eca6a4",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "docs: RELATORIO_CI.md §21 — Gate Final ✅ success na main 1a47c6972c",
+    "files": [
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "1a47c69",
     "date": "2026-11-07",
@@ -483188,24 +483334,6 @@
     "files": [
      "RELATORIO_CI.md"
     ]
-   },
-   {
-    "sha": "823822b",
-    "date": "2026-11-05",
-    "author": "adm01-debug",
-    "subject": "docs: RELATORIO_CI.md — SHAs a792bade + 5e497761 + vitest #20 + prova final (#3091)",
-    "files": [
-     "RELATORIO_CI.md"
-    ]
-   },
-   {
-    "sha": "5e49776",
-    "date": "2026-11-05",
-    "author": "adm01-debug",
-    "subject": "docs: PENDENCIAS.md — item #20 vitest date-utils falhas locais (pré-existente) (#3090)",
-    "files": [
-     "PENDENCIAS.md"
-    ]
    }
   ],
   "hot_files": [
@@ -483214,12 +483342,12 @@
     6
    ],
    [
-    "PENDENCIAS.md",
+    ".github/workflows/replenishment-quality.yml",
     4
    ],
    [
-    ".github/workflows/replenishment-quality.yml",
-    4
+    "PENDENCIAS.md",
+    3
    ],
    [
     "e2e/flows/magazine-publish-smoke.spec.ts",
@@ -483240,6 +483368,22 @@
    [
     ".github/workflows/schema-snapshot-export.yml",
     2
+   ],
+   [
+    "scripts/fuzz-edge-uploads.mjs",
+    1
+   ],
+   [
+    "scripts/fuzz-testing.mjs",
+    1
+   ],
+   [
+    "tests/scripts/fuzz-edge-uploads.test.mjs",
+    1
+   ],
+   [
+    "tests/scripts/fuzz-testing.test.mjs",
+    1
    ],
    [
     "graphify-out/GRAPH_REPORT.md",
@@ -483271,22 +483415,6 @@
    ],
    [
     "e2e/flows/20-all-features-smoke.spec.ts",
-    1
-   ],
-   [
-    "e2e/flows/25-quote-full-flow.spec.ts",
-    1
-   ],
-   [
-    "e2e/helpers/auth.ts",
-    1
-   ],
-   [
-    "e2e/catalog/novidades-reposicao-card-parity.spec.ts",
-    1
-   ],
-   [
-    "e2e/helpers/nav.ts",
     1
    ]
   ]

@@ -6,7 +6,7 @@
    "TypeScript (4307)",
    "SQL (3228)",
    "Markdown (895)",
-   "JavaScript (304)",
+   "JavaScript (306)",
    "YAML (107)",
    "JSON (91)",
    "Shell (18)",
@@ -3553,7 +3553,7 @@
   {
    "arquivo": "RELATORIO_CI.md",
    "titulo": "Relatório CI — Promo Gifts V4",
-   "linhas": 683
+   "linhas": 749
   },
   {
    "arquivo": "RELATORIO_CI_P34.md",
@@ -4707,7 +4707,7 @@
   "hosts_externos": [
    {
     "host": "doufsxqlfjyuvxuezpln.supabase.co",
-    "arquivos": 56
+    "arquivos": 58
    },
    {
     "host": "wa.me",
