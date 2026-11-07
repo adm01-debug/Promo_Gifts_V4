@@ -98,6 +98,21 @@ describe('sanitizeMigrationForReplay', () => {
     expect(out.sql).toContain("'CREATE INDEX CONCURRENTLY idx_string");
     expect(out.sql).toContain('CREATE INDEX CONCURRENTLY idx_body');
   });
+
+  it('omite alter_job com ID de produção porque o baseline não contém dados do cron', () => {
+    const sql = [
+      "SELECT cron.alter_job(303, schedule := '3 */6 * * *'); -- operacional",
+      "SELECT cron.alter_job(job_id := v_id, schedule := '5 * * * *');",
+      "SELECT 'cron.alter_job(241, schedule := ''18 * * * *'')';",
+      "-- SELECT cron.alter_job(292, schedule := '1 */4 * * *');",
+    ].join('\n');
+    const out = sanitizeMigrationForReplay(sql);
+    expect(out.rewrites.hardCodedCronAlterJobs).toBe(1);
+    expect(out.sql).toContain('cron.alter_job(303, ...) omitido');
+    expect(out.sql).toContain('cron.alter_job(job_id := v_id');
+    expect(out.sql).toContain("SELECT 'cron.alter_job(241");
+    expect(out.sql).toContain('-- SELECT cron.alter_job(292');
+  });
 });
 
 describe('prepareWorkdir', () => {

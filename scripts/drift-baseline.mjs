@@ -298,9 +298,10 @@ export function replayFileName(baselineVersion, index, original) {
 export function sanitizeMigrationForReplay(sql) {
   const state = { quote: false, ident: false, dollar: null };
   let concurrentIndexes = 0;
+  let hardCodedCronAlterJobs = 0;
   const lines = sql.split('\n').map((line) => {
     const outsideLiteral = !state.quote && !state.ident && !state.dollar;
-    const normalized = outsideLiteral
+    let normalized = outsideLiteral
       ? line.replace(
           /^(\s*(?:CREATE(?:\s+UNIQUE)?|DROP)\s+INDEX)\s+CONCURRENTLY\b/i,
           (match, prefix) => {
@@ -309,10 +310,19 @@ export function sanitizeMigrationForReplay(sql) {
           },
         )
       : line;
+    if (outsideLiteral) {
+      normalized = normalized.replace(
+        /^\s*SELECT\s+cron\.alter_job\(\s*(\d+)\s*,.*;\s*(?:--.*)?$/i,
+        (match, jobId) => {
+          hardCodedCronAlterJobs += 1;
+          return `-- drift-replay: cron.alter_job(${jobId}, ...) omitido; jobs não fazem parte do baseline`;
+        },
+      );
+    }
     scanLine(normalized, state);
     return normalized;
   });
-  return { sql: lines.join('\n'), rewrites: { concurrentIndexes } };
+  return { sql: lines.join('\n'), rewrites: { concurrentIndexes, hardCodedCronAlterJobs } };
 }
 
 export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef }) {
@@ -346,7 +356,7 @@ export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef })
       join(outMigrations, replayFileName(baseline.version, i + 1, f)),
       normalized.sql,
     );
-    if (normalized.rewrites.concurrentIndexes > 0) {
+    if (Object.values(normalized.rewrites).some((count) => count > 0)) {
       migrationExecutionRewrites.push({ file: f, ...normalized.rewrites });
     }
   });
