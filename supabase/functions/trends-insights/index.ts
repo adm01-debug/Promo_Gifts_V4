@@ -3,7 +3,7 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 // Agrega métricas de Tendências e gera narrativa via AI Router centralizado.
 // Refatorado em 2026-06-12: removido LOVABLE_API_KEY hardcoded.
 // Provider/model resolvido via ai_function_routing (DeepSeek primary, fallback automático).
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { parseContract } from "../_shared/contracts/index.ts";
 import {
   TrendsInsightsSchemas,

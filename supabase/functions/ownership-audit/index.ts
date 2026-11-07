@@ -8,7 +8,7 @@ import { authorizeCron } from "../_shared/dispatcher-auth.ts";
  * (`audit_ownership_orphans`) verifica permissão internamente quando
  * chamada por usuário autenticado.
  */
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { castRpcResult } from "../_shared/supabase-client-adapter.ts";
 import { parseContract } from "../_shared/contracts/index.ts";
 import {

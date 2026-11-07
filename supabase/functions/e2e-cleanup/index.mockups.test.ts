@@ -44,7 +44,7 @@ vi.mock('../_shared/credentials.ts', () => ({
 // O mesmo source Deno importa `@supabase/supabase-js` por URL esm.sh; aqui o
 // runner Node usa o pacote npm REAL (mesma API) para que o request shape
 // (PostgREST/Storage) seja o de producao.
-vi.mock('https://esm.sh/@supabase/supabase-js@2.49.4', async () => {
+vi.mock('npm:@supabase/supabase-js@2.49.4', async () => {
   const real = await import('@supabase/supabase-js');
   return { createClient: real.createClient };
 });
