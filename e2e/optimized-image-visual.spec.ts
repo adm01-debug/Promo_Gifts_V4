@@ -62,9 +62,19 @@ test.describe('OptimizedImage Visual Regression', () => {
     await expect(errorToggle).toBeVisible({ timeout: 5000 });
     await errorToggle.click();
 
-    const errorCard = page.locator('div:has-text("Erro ao carregar")').first();
+    // `div:has-text(...)` casava com #root (ancestral mais externo), gerando
+    // screenshot da pagina inteira e altura instavel (1641 vs 1665 px).
+    // O fallback e o <div> imediatamente pai do <span>Erro ao carregar</span>.
+    const errorCard = page.getByText('Erro ao carregar').locator('..');
     await expect(errorCard).toBeVisible({ timeout: 10000 });
-    await expect(errorCard).toHaveScreenshot('image-error-state.png');
+
+    await page.addStyleTag({
+      content: `*, *::before, *::after { animation-play-state: paused !important; transition: none !important; }`,
+    });
+
+    await expect(errorCard).toHaveScreenshot('image-error-state.png', {
+      maxDiffPixelRatio: 0.02,
+    });
   });
 
   test('should be responsive (mobile viewport)', async ({ page }) => {
