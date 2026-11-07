@@ -1,7 +1,54 @@
+import { pathToFileURL } from 'node:url';
+
 const deliveryUnit = 'src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx';
+
+const workflowInputs = new Set([
+  '.github/scripts/e2e-relevance.mjs',
+  '.github/workflows/_e2e-relevance.yml',
+  '.github/workflows/_secrets-check.yml',
+  '.github/workflows/delivery-quality.yml',
+  '.github/workflows/deploy-gates.yml',
+  '.github/workflows/e2e-flows.yml',
+  '.github/workflows/e2e-focused.yml',
+  '.github/workflows/e2e-personalization.yml',
+  '.github/workflows/e2e-swatch-quickview.yml',
+  '.github/workflows/e2e.yml',
+  '.github/workflows/replenishment-quality.yml',
+  '.github/workflows/visual-tests.yml',
+  'scripts/check-playwright-min-executed.mjs',
+  'scripts/run-smoke-filtered.mjs',
+  'scripts/check-smoke-tags.mjs',
+  'scripts/e2e-smoke-coverage-doc.mjs',
+  'scripts/e2e-mock-auth-setup.mjs',
+]);
+
+const sharedActionPrefixes = [
+  '.github/actions/e2e-setup/',
+  '.github/actions/check-min-tests/',
+  '.github/actions/setup-node-ci/',
+];
+
+const supabaseRuntimePrefixes = [
+  'supabase/functions/',
+  'supabase/migrations/',
+  'supabase/tests/',
+];
+
+const rootRuntimeInputs = new Set([
+  'package.json',
+  'package-lock.json',
+  '.nvmrc',
+  'index.html',
+  'vercel.json',
+  'supabase/config.toml',
+  'supabase/seed.sql',
+]);
 
 export function isE2ERuntimeFile(file) {
   if (file === deliveryUnit) return true;
+  if (workflowInputs.has(file)) return true;
+  if (sharedActionPrefixes.some((prefix) => file.startsWith(prefix))) return true;
+  if (supabaseRuntimePrefixes.some((prefix) => file.startsWith(prefix))) return true;
 
   const isSrcUnit =
     file.startsWith('src/') &&
@@ -13,9 +60,9 @@ export function isE2ERuntimeFile(file) {
     file.startsWith('e2e/') ||
     file.startsWith('tests/') ||
     file.startsWith('public/') ||
-    file.startsWith('.github/actions/e2e-setup/') ||
-    ['package.json', 'package-lock.json', '.nvmrc'].includes(file) ||
-    /^(?:playwright|vite)\.config\./.test(file)
+    rootRuntimeInputs.has(file) ||
+    /^tsconfig(?:\.[^/]+)?\.json$/.test(file) ||
+    /^(?:playwright|vite|tailwind|postcss)\.config\./.test(file)
   );
 }
 
@@ -23,5 +70,7 @@ export function hasE2ERuntimeChanges(files) {
   return files.some(isE2ERuntimeFile);
 }
 
-const files = JSON.parse(process.env.CHANGED_FILES || '[]');
-process.stdout.write(`relevant=${hasE2ERuntimeChanges(files)}\n`);
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const files = JSON.parse(process.env.CHANGED_FILES || '[]');
+  process.stdout.write(`relevant=${hasE2ERuntimeChanges(files)}\n`);
+}

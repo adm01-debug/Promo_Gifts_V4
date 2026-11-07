@@ -17,8 +17,21 @@ on:
       - '!src/**/__tests__/**'
       - '!src/**/*.test.*'
       - '!src/**/*.spec.*'
+      - 'index.html'
+      - 'tailwind.config.*'
+      - 'postcss.config.*'
       - '.github/workflows/e2e-focused.yml'
+      - '.github/workflows/_e2e-relevance.yml'
       - '.github/scripts/e2e-relevance.mjs'
+      - '.github/workflows/_secrets-check.yml'
+      - '.github/actions/e2e-setup/**'
+      - '.github/actions/check-min-tests/**'
+      - '.github/actions/setup-node-ci/**'
+      - 'scripts/check-playwright-min-executed.mjs'
+      - 'scripts/run-smoke-filtered.mjs'
+      - 'scripts/check-smoke-tags.mjs'
+      - 'scripts/e2e-smoke-coverage-doc.mjs'
+      - 'scripts/e2e-mock-auth-setup.mjs'
   schedule:
     # E89 — segunda-feira 02:00 UTC
     - cron: '0 2 * * 1'  # E89 — segunda 02:00 UTC
