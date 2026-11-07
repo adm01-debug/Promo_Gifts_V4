@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2a042dab281c2233d676b91b7ca02b04b27a6138",
+  "commit": "d2ce504aee3201f4a422ddeb914366675147b32c",
   "branch": "main",
-  "data_commit": "2026-11-07T19:25:28-03:00",
+  "data_commit": "2026-11-07T19:49:09-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "d2ce504",
+    "data": "2026-11-07",
+    "assunto": "docs(ci): RELATORIO §25 — Gate Final 2a042dab success + tabela completa (#3182)"
+   },
    {
     "sha": "2a042da",
     "data": "2026-11-07",
@@ -126,11 +131,6 @@
     "sha": "ed1c7cc",
     "data": "2026-11-07",
     "assunto": "fix(health-check): tolera cold start do PostgREST (#3128)"
-   },
-   {
-    "sha": "9429112",
-    "data": "2026-11-07",
-    "assunto": "fix(ci): reduzir pressão dos E2E no Supabase (#3130)"
    }
   ],
   "arquivos_mudados_7d": 403,
@@ -199,19 +199,19 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 70
+    "mudancas": 71
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 64
+    "mudancas": 63
    },
    {
     "arquivo": "package.json",
-    "mudancas": 28
+    "mudancas": 27
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 23
+    "mudancas": 22
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -317,7 +317,7 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 8
+    "commits": 7
    }
   ]
  },

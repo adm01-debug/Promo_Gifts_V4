@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "2a042dab281c2233d676b91b7ca02b04b27a6138",
+  "sha": "d2ce504aee3201f4a422ddeb914366675147b32c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 22:40 UTC",
+  "generated_at": "2026-11-07 22:55 UTC",
   "files_total": 9099,
   "code_files": 7844,
   "code_lines": 1051314
@@ -483022,10 +483022,19 @@
   }
  },
  "git": {
-  "sha": "2a042dab281c2233d676b91b7ca02b04b27a6138",
+  "sha": "d2ce504aee3201f4a422ddeb914366675147b32c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "d2ce504",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "docs(ci): RELATORIO §25 — Gate Final 2a042dab success + tabela completa (#3182)",
+    "files": [
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "2a042da",
     "date": "2026-11-07",
@@ -483325,21 +483334,12 @@
     "files": [
      "tests/unit/date-utils.test.ts"
     ]
-   },
-   {
-    "sha": "cf98610",
-    "date": "2026-11-06",
-    "author": "adm01-debug",
-    "subject": "fix(ci): publish recovery snapshot atomically (#3115)",
-    "files": [
-     ".github/workflows/schema-snapshot-export.yml"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    8
+    9
    ],
    [
     "PENDENCIAS.md",

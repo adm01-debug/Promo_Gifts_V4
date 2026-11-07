@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(ci): RELATORIO §25 — Gate Final 2a042dab success + tabela completa (#3182)",
    "docs(ci): verificar erros exatos #26 #30 #37 — sessão 2026-11-07T22h",
    "docs(ci): RELATORIO §24 — Gate Final be7688da success + PR #3179",
    "docs(ci): RELATORIO §23 — baseline bfb2926d + tabela de prova completa 36 workflows (#3178)",
-   "docs(ci): PENDENCIAS #36 + RELATORIO §22 — Gate Final a882bcc1 success (#3176)",
-   "docs(edge-deploy-log): recibo do deploy — run 42374498496 (#3163)"
+   "docs(ci): PENDENCIAS #36 + RELATORIO §22 — Gate Final a882bcc1 success (#3176)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
