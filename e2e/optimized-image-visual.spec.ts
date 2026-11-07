@@ -45,16 +45,14 @@ test.describe('OptimizedImage Visual Regression', () => {
   });
 
   test('should match error state', async ({ page }) => {
-    const errorToggle = page.getByLabel('Simular Erro');
-    if (await errorToggle.isVisible()) {
-      await errorToggle.check();
-      const errorCard = page.locator('div:has-text("Erro ao carregar")').first();
-      await expect(errorCard).toBeVisible({ timeout: 5000 });
-      await expect(errorCard).toHaveScreenshot('image-error-state.png');
-    } else {
-      // No toggle available and no spontaneous error — skip gracefully
-      expect(false, '[E108] Error state not reproducible without "Simular Erro" toggle').toBeTruthy();
-    }
+    // O demo expõe um Button (não um checkbox rotulado): OptimizedImageDemo.tsx:161-165
+    const errorToggle = page.getByRole('button', { name: 'Simular URL inválida' });
+    await expect(errorToggle).toBeVisible({ timeout: 5000 });
+    await errorToggle.click();
+
+    const errorCard = page.locator('div:has-text("Erro ao carregar")').first();
+    await expect(errorCard).toBeVisible({ timeout: 10000 });
+    await expect(errorCard).toHaveScreenshot('image-error-state.png');
   });
 
   test('should be responsive (mobile viewport)', async ({ page }) => {
