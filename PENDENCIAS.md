@@ -25,17 +25,28 @@ local_only=1141; remote_only=674
 
 ---
 
-## 2. edge-functions-drift-check — ✅ RESOLVIDO (PR #3078 mergeada — confirmar run na main)
+## 2. edge-functions-drift-check ❌ RE-FALHA (advisory — drift entre GitHub e canônico)
 
 **Workflow:** `edge-functions-drift-check.yml`  
-**Check required:** "Compare GitHub × Canonical" está em `.github/required-checks.json`  
-**Run verde (PR #3078 SHA f81798b):** [42084522842](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42084522842) — `conclusion: success`  
-**PR mergeada:** #3078 — squash `7f254f7` (2026-11-05 18:36 UTC)  
-**Estado:** PR #3078 mergeada. O `edge-functions-drift-check` rodará em push na main (SHA `7f254f7`). Se voltar vermelho, o dono precisa fazer deploy via workflow.  
-**O que o dono precisa fazer (se voltar vermelho após merge):**
-1. Acessar Actions → `deploy-edge-functions.yml` → "Run workflow" (workflow_dispatch)
-2. Pode usar `function_name` para deploy pontual ou deixar em branco para deploy de todas
-3. Após o deploy, re-executar `edge-functions-drift-check.yml` para confirmar verde
+**Run corrigida anteriormente:** [42084522842](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42084522842) — `conclusion: success` (PR #3078, SHA `7f254f7`, 2026-11-05)  
+**Run re-falha:** [42374370417](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42374370417) (2026-11-07T12:52Z, SHA `6065eb7adcef`) — `conclusion: failure`  
+**Erro exato:**
+```
+Drift detectado entre GitHub e canônico. Veja sumário do job e artefato drift-report.csv.
+Resoluções possíveis:
+  1. Drift de conteúdo: rodar 'supabase functions download <slug>' e commit no repo
+  2. Órfã no canônico: deletar via dashboard ou commit em supabase/functions/<slug>/
+  3. Sem deploy: aguardar workflow Deploy Edge Functions ou disparar manual
+```
+**Causa:** Nova divergência entre edge functions no repo e as deployadas em produção após o PR #3078. Provavelmente algum deploy direto via dashboard/MCP ou nova função sem deploy correspondente.  
+**Required check:** NÃO — advisory.  
+**Por que não corrijo:** Deploy de edge function só via `.github/workflows/deploy-edge-functions.yml` (REGRA #8 corolário). Preciso saber qual função diverge — requer artefato `drift-report.csv` do run.  
+**O que o dono precisa fazer:**
+1. Baixar artefato `drift-report.csv` do run [42374370417](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42374370417)
+2. Identificar qual(is) função(ões) diverge(m)
+3. Se conteúdo diferente: `supabase functions download <slug>` → commit no repo → PR
+4. Se órfã no canônico: deletar via dashboard ou commit vazio + deploy
+5. Se falta deploy: disparar `deploy-edge-functions.yml` via `workflow_dispatch`
 
 ---
 
@@ -61,16 +72,14 @@ local_only=1141; remote_only=674
 
 ---
 
-## 5. CI - Replenishment Module Quality Gate ❌ (a investigar)
+## 5. CI - Replenishment Module Quality Gate ❌ (a investigar — paridade visual E2E)
 
 **Workflow:** `replenishment-quality.yml`  
-**Run ID:** 41876981487 (2026-11-04)  
-**Erros:**
-- `cards tëm mesmas dimensões e imagem 1:1 nos dois módulos` (FAIL)
-- `rodapé (preço/estoque) está alinhado ao bottom em ambos os módulos` (FAIL)
-- 2 testes flaky adicionais
-
-**Causa:** E2E de paridade visual de cards em `novidades-reposicao-card-parity.spec.ts` — pode ser regressão de UI ou flakiness.  
+**Run ID mais recente:** [42367402274](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42367402274) (2026-11-07T11:15Z, SHA `ed1c7ccf`)  
+**Run ID anterior:** 41876981487 (2026-11-04)  
+**Job falhado:** `audit` — Step 8: "E2E — Paridade visual /novidades vs /reposicao"  
+**Causa:** E2E de paridade visual de cards em `novidades-reposicao-card-parity.spec.ts` — pode ser regressão de UI ou flakiness. Artefato `parity-report` disponível no run (414MB).  
+**Required check:** NÃO — advisory.  
 **Status:** Requer investigação aprofundada de E2E — não foi possível reproduzir sem ambiente completo com credenciais E2E.
 
 ---
@@ -209,8 +218,7 @@ Arquivo: e2e/flows/20-all-features-smoke.spec.ts:216
   [setup] e2e/fixtures/auth.setup.ts:18 — authenticate
 ```
 **Causa:** Flakiness de autenticação CI — `auth.setup.ts` marcado como `flaky`; os 3 testes falharam porque a sessão autenticada não estava pronta. Mesmo padrão dos itens #10, #11, #13. Este é o re-falha do item #11 (que passava em SHA `f240b5c`).  
-**Por que não corrijo:** Requer credenciais E2E (`chromium-authed`) para reproduzir. Sem acesso aos secrets `E2E_USER_EMAIL` / `E2E_USER_PASSWORD`.  
-**Próxima verificação:** Runs em SHA `4ebe5a83` (main pós-merge #3084, 2026-11-05 20:46Z) ainda `pending` — devem re-confirmar ou resolver a flakiness.
+**Por que não corrijo:** Requer credenciais E2E (`chromium-authed`) para reproduzir. Sem acesso aos secrets `E2E_USER_EMAIL` / `E2E_USER_PASSWORD`.
 
 ---
 
@@ -253,11 +261,7 @@ Arquivo: e2e/flows/20-all-features-smoke.spec.ts:216
 Erro: [waitForTestIdVisible] testid="app-header" não ficou visível em 30000ms
 ```
 **Causa:** `1 error was not a part of any test` = auth setup falhou antes dos testes; `app-header` não carregou porque a sessão autenticada não estava pronta (timeout 30s). O fail-fast do workflow bloqueou 168 testes que sequer iniciaram. Mesmo padrão de `waitForTestIdVisible` timeout dos itens #10, #11, #13, #14. Não é regressão de layout em `MainLayout.tsx` — é estado de autenticação intermediário.  
-**Por que não corrijo:** Requer credenciais E2E para reproduzir. O fail-fast amplificou o impacto, mas a causa raiz é auth flakiness.  
-**O que o dono precisa fazer:**
-1. Verificar se `e2e/flows/22-header-sticky.spec.ts` tem dependency em `auth.setup.ts` e adicionar retry
-2. Monitorar se próximas runs em `4ebe5a83` passam sem alteração de código
-3. Se falhar novamente: investigar `auth.setup.ts` — adicionar `waitForLoadState('networkidle')` antes das asserções
+**Por que não corrijo:** Requer credenciais E2E para reproduzir. O fail-fast amplificou o impacto, mas a causa raiz é auth flakiness.
 
 ---
 
@@ -274,9 +278,8 @@ Erro: [waitForTestIdVisible] testid="app-header" não ficou visível em 30000ms
   [chromium-authed] e2e/flows/91-personalization-variant-flow.spec.ts:10 — deve navegar de um produto diferente para o simulador com SKU correto
 Erro: locator(Sel.product.cardName).innerText() — timeout na seleção do card de produto
 ```
-**Causa:** Timeout ao tentar obter `innerText()` do `cardName` — estado de autenticação intermediário causou a página de produtos não carregar completamente. Mesmo padrão do item #10 (que passou em SHA `f240b5c` mas re-falhou em `2bc37120`). Flakiness de auth `chromium-authed` intermitente.  
-**Por que não corrijo:** Requer credenciais E2E (`E2E_USER_EMAIL`). Sem acesso aos secrets necessários.  
-**Próxima verificação:** Runs em SHA `4ebe5a83` (main pós-merge #3084) ainda `pending` — devem re-confirmar ou resolver a flakiness como ocorreu em `f240b5c`.
+**Causa:** Timeout ao tentar obter `innerText()` do `cardName` — estado de autenticação intermediário causou a página de produtos não carregar completamente. Mesmo padrão do item #10. Flakiness de auth `chromium-authed` intermitente.  
+**Por que não corrijo:** Requer credenciais E2E (`E2E_USER_EMAIL`). Sem acesso aos secrets necessários.
 
 ---
 
@@ -285,7 +288,7 @@ Erro: locator(Sel.product.cardName).innerText() — timeout na seleção do card
 **Workflow:** `branch-protection-sentinel.yml`  
 **Run ID:** [42110094646](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42110094646) (2026-11-05, SHA `84245872`) — `conclusion: failure`  
 **Required check:** NÃO — advisory.  
-**Causa:** Squash merge da PR #3086 via `github_merge_pull_request` MCP sem parâmetro `commit_title` explícito. O commit resultante — `docs: RELATORIO_CI.md — prova final #15-#18 e seção 2.9 diagnóstico E2E advisory` — não tinha o sufixo `(#3086)` aceito pelo sentinel.  
+**Causa:** Squash merge da PR #3086 via `github_merge_pull_request` MCP sem parâmetro `commit_title` explícito. O commit resultante não tinha o sufixo `(#3086)` aceito pelo sentinel.  
 **Fix definitivo:** Sempre passar `commit_title: "título da PR (#NNN)"` ao chamar `github_merge_pull_request`.  
 **O que o dono precisa fazer:** Nenhuma ação necessária — advisory, não bloqueia required checks.
 
@@ -310,3 +313,75 @@ Duration    915.17s · exit code 0
 - Corrigir mock de timezone no teste: `vi.useFakeTimers({ toFake: ['Date'], now: ... })` com offset explícito, ou
 - Rodar suíte completa localmente com `TZ=America/Sao_Paulo npx vitest run` para confirmar que passam
 - Ou adicionar `TZ=America/Sao_Paulo` ao script `test` em `package.json`
+
+---
+
+## 21. Uptime Monitor ❌ (2026-11-07T13:37Z — sonda de produção)
+
+**Workflow:** `uptime-monitor.yml`  
+**Run ID:** [42377833970](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42377833970) (2026-11-07, 13:37Z)  
+**Required check:** NÃO — advisory (sonda de health check a cada 30 min).  
+**Causa:** Sonda de produção falhou às 13:37Z. Mesmo padrão do item #12 (uptime monitor — falso-positivo de infra resolvido automaticamente). Deploy production via Vercel para HEAD `0549ea39629b` em andamento quando a sonda executou.  
+**Por que não corrijo:** Não é bug de código — é sonda de infra. O deploy automático do Vercel para o commit `0549ea39629b` (PR #3140) pode ter causado janela de indisponibilidade temporária. Próxima execução da sonda (a cada 30 min) deve confirmar se voltou ao normal.  
+**O que o dono precisa fazer:**
+- Aguardar a próxima execução automática do uptime-monitor (~30 min após a falha)
+- Se persistir: verificar o deploy no Vercel para SHA `0549ea39629b` — `vercel logs` ou dashboard Vercel
+- Se o deploy falhou: re-triggerar deploy via `.github/workflows/deploy-edge-functions.yml` ou verificar Vercel dashboard
+
+---
+
+## 22. DB — Aplicação controlada de migration única (E15) ❌ (preflight correto — rollback ausente + SECURITY DEFINER)
+
+**Workflow:** `db-apply-migration.yml` (workflow_dispatch manual)  
+**Run ID:** [42380876893](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380876893) (2026-11-07T14:17Z, SHA `b5f7d2e`)  
+**Job falhado:** `1. Preflight (read-only)` — Step 8: "Checa arquivo único, rollback documentado, ainda não no ledger"  
+**Erro exato:**
+```
+[preflight-migration-apply] result={"status":"failed","summary":"2 problema(s): arquivo de rollback 20261101150000_rollback.sql não encontrado. Para migrations novas, crie supabase/rollbacks/20261101150000_rollback.sql com os comandos de reversão (E058: rollbacks vivem em supabase/rollbacks/, não em supabase/migrations/). | SECURITY DEFINER sem \"pg_temp\" no SET search_path em função \"public.fn_get_rupture_alerts\": vulnerável a shadowing por objetos em pg_temp. Adicione SET search_path = pg_catalog, pg_temp (ou inclua pg_temp explicitamente).","version":"20261101150000",...}
+```
+**Causa:** Tentativa de aplicar migration `20261101150000_fix_sb0003_fn_get_rupture_alerts.sql` via `workflow_dispatch` manual. O preflight detectou 2 problemas corretamente (funciona como deveria):  
+1. Falta arquivo `supabase/rollbacks/20261101150000_rollback.sql` (exigido pelo E058)
+2. `fn_get_rupture_alerts` tem `SECURITY DEFINER` sem `pg_temp` no `SET search_path` — vulnerabilidade de shadowing
+
+**Required check:** NÃO — `workflow_dispatch` manual, não disparado automaticamente.  
+**Por que não corrijo via código:** A correção exige alterar a migration SQL (`fn_get_rupture_alerts`) + criar o arquivo de rollback. Mudança de função SQL em produção exige aprovação do dono (REGRA #8). Não é introduzida por esta sessão — foi disparado por outro agente/humano no SHA `b5f7d2e`.  
+**O que o dono precisa fazer:**
+1. Corrigir a migration `supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql` — adicionar `SET search_path = pg_catalog, pg_temp` na definição de `fn_get_rupture_alerts`
+2. Criar `supabase/rollbacks/20261101150000_rollback.sql` com os comandos de reversão
+3. Re-disparar o `db-apply-migration.yml` via `workflow_dispatch` com `version=20261101150000`
+
+---
+
+## 23. edge-functions-drift-check ❌ (2026-11-07T12:52Z — re-falha após resolução em #3078)
+
+> **Nota:** Este item documenta a re-falha do item #2. A resolução anterior (PR #3078) ficou válida por ~2 dias e agora há novo drift.
+
+**Workflow:** `edge-functions-drift-check.yml`  
+**Run ID:** [42374370417](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42374370417) (2026-11-07T12:52Z, SHA `6065eb7adcef`)  
+**Erro exato:** `Drift detectado entre GitHub e canônico` — job "Compare GitHub × Canonical" falhou no step 17.  
+**Causa:** Nova divergência entre as edge functions no repo e as deployadas em `doufsxqlfjyuvxuezpln`. Provável deploy direto via dashboard/MCP ou nova função sem PR correspondente.  
+**Required check:** NÃO — advisory.  
+**O que o dono precisa fazer:** Ver item #2 acima — baixar `drift-report.csv` e seguir o processo de reconciliação.
+
+---
+
+## 24. CI - Replenishment Module Quality Gate ❌ (2026-11-07T11:15Z — paridade visual persistente)
+
+> **Nota:** Este item registra a confirmação de que a falha do item #5 persiste no HEAD `ed1c7ccf` (2026-11-07).
+
+**Workflow:** `replenishment-quality.yml`  
+**Run ID:** [42367402274](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42367402274) (2026-11-07T11:15Z, SHA `ed1c7ccf`)  
+**Job falhado:** `audit` — Step 8: "E2E — Paridade visual /novidades vs /reposicao"  
+**Artefato:** `parity-report` (414MB) disponível no run para diagnóstico visual.  
+**Causa:** Mesma falha do item #5 — paridade visual de cards entre /novidades e /reposicao persiste. Não resolvida por nenhuma das PRs desta sessão (nenhuma tocou os componentes de card do módulo de reposição).  
+**Required check:** NÃO — advisory.  
+**O que o dono precisa fazer:** Ver item #5 — requer investigação de E2E visual com credenciais completas.
+
+---
+
+> **Atualização 2026-11-07T14:35Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
+> HEAD atual: `f956f4319a0490cc0e0d7343c7ea9dcdca8b575b` — `docs(ci): inventário HEAD b5f7d2e29e0b (2026-11-07) — §12 RELATORIO + baseline sessão (#3152)`  
+> Gate Final para f956f43: run [#42381522262](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42381522262) — ⏳ `queued` (aguarda run #42380435725 de `b5f7d2e` completar — concurrency `cancel-in-progress: false`).  
+> Run #42380435725 (`b5f7d2e`): `in_progress` — Gate 1 Lint+TS em andamento (step 23/43, 14:30Z).  
+> Banco de dados: **zero mudanças** — REGRA #8/E056 respeitada.  
+> **10 workflows em falha não-required** documentados nos itens #1, #2/#23, #3, #5/#24, #6, #7, #9, #13, #21, #22 — todos bloqueados por autorização do dono (credenciais E2E, migration repair, dados null, snapshot visual, rollback ausente).
