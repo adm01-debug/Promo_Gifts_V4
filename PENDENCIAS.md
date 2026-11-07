@@ -447,20 +447,31 @@ Process completed with exit code 2.
 
 ---
 
-## 28. Gate Final — Deploy Ready ❌ PR #3160 (Gate E40 Schema Drift bloqueia em PRs)
+## 28. Gate Final — Deploy Ready ❌ PR #3160 (Gate E40 + Gate 1.13.3 bloqueiam em PRs)
 
 **Workflow:** `deploy-gates.yml` (PR #3160)  
-**Run ID:** [42389264625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42389264625) (2026-11-07T16:02Z–16:18Z, SHA `efae9c9c4`)  
-**Job falhado:** `Gate Final - Deploy Ready` — R_SCHEMA_DRIFT=failure  
-**Erro exato (Gate E40 — job #128455407909):**
+**Run ID mais recente (SHA `5f5a4a7f5`, 2026-11-07T17:53Z):** [42398544261](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42398544261)  
+**Run anterior:** [42389264625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42389264625) (2026-11-07T16:02Z–16:18Z, SHA `efae9c9c4`)  
+
+**Dois gates falhando:**
+
+**Gate 1.13.3 — Recibo de migration em MIGRATIONS_SYNC_LOG.md** (job [#128481103639](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42398544261/job/128481103639)):
+```
+Migration 20261101150000 sem recibo em MIGRATIONS_SYNC_LOG.md há >24h
+```
+Causa: migration `20261101150000_fix_sb0003_fn_get_rupture_alerts.sql` foi adicionada nesta PR mas não foi aplicada em produção via `db-apply-migration.yml`. O recibo só existe após o workflow autorizado rodar.
+
+**Gate E40 — Migrations x Canonical schema** (job [#128481104083](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42398544246/job/128481104083)):
 ```
 Step 8 "Ledger parity (repo x canonical)": local_only=1141; remote_only=674
 ```
-**Causa:** `deploy-gates.yml` chama `db-schema-drift-check.yml` como referenced_workflow. Quando o drift check falha, o script Gate Final recebe `R_SCHEMA_DRIFT=failure` e encerra com exit code 1 — Gate Final = failure. Este é o mesmo drift pré-existente do item #1 (`local_only=1141; remote_only=674`). Nenhuma mudança desta PR afeta o ledger de migrations.  
+Causa: drift pré-existente do item #1 (`local_only=1141; remote_only=674`). Nenhuma mudança desta PR afeta o ledger.
+
 **Required check:** SIM — "Gate Final - Deploy Ready" é required check em `main`.  
-**Por que não corrijo:** Mesmas restrições do item #1 — REGRA #8 proíbe `migration repair` sem autorização do dono. O drift de 1141×674 só é resolvido com `supabase migration repair --status applied <versão>` explícita para cada migration real, autorizada pelo dono.  
-**Impacto:** PR #3160 não pode ser mergeada enquanto o Gate Final estiver em failure. As correções desta PR (fix SECURITY DEFINER + rollback) ficam pendentes de merge até que o drift de migrations seja resolvido pelo dono.  
-**O que o dono precisa fazer:** Resolver o item #1 (reconciliação de migrations) para que o Gate E40 passe, o que fará o Gate Final passar e desbloqueará o merge da PR #3160.
+**Por que não corrijo:** REGRA #8 proíbe migration/apply sem autorização do dono. O recibo só existe após `db-apply-migration.yml` rodar com `version=20261101150000` e aprovação do environment `production`.  
+**Impacto:** PR #3160 não pode ser mergeada. As correções (fix SECURITY DEFINER + rollback) ficam pendentes até que o dono:  
+1. Execute `db-apply-migration.yml` com `version=20261101150000` e aprove `production`  
+2. Merge da PR #3160 após Gate Final verde
 
 ---
 
