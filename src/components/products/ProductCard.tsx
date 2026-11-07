@@ -219,7 +219,12 @@ export const ProductCard = memo(
 
       // BUG-4 FIX: Sincronização de cor selecionada entre Grid e PDP via store
       const setSelectedColor = useProductSelectionStore((s) => s.setSelectedColor);
+      const setSelectedVariant = useProductSelectionStore((s) => s.setSelectedVariant);
+      const clearSelectedColor = useProductSelectionStore((s) => s.clearSelectedColor);
       const selectedColorFromStore = useProductSelectionStore((s) => s.selectedColors[product.id]);
+      const selectedVariantIdFromStore = useProductSelectionStore(
+        (s) => s.selectedVariantIds[product.id],
+      );
 
       // Carrega variantes (com estoque/foto por cor) assim que o usuário interage com o card
       // — hover OU clique de cor — para evitar latência percebida no clique da bolinha.
@@ -246,6 +251,8 @@ export const ProductCard = memo(
         stock_quantity: product.stock ?? 0,
         color_swatches: productSwatchesData,
         has_colors: !!productSwatchesData?.length,
+        selected_color_name: selectedColorFromStore ?? null,
+        selected_variant_id: selectedVariantIdFromStore ?? null,
       });
       const useSwatchesV2 = swatchesV2Enabled && (productSwatchesData?.length ?? 0) > 0;
 
@@ -807,7 +814,7 @@ export const ProductCard = memo(
                   swatchV2.selectVariant(variantId);
                   const sw = swatchV2.swatches.find((s) => s.variant_id === variantId);
                   if (sw?.color_name) {
-                    setSelectedColor(product.id, sw.color_name);
+                    setSelectedVariant(product.id, variantId, sw.color_name);
                     const currentUrl = new URL(window.location.href);
                     currentUrl.searchParams.set('cor', sw.color_name);
                     currentUrl.searchParams.set('pid', product.id);
@@ -820,11 +827,7 @@ export const ProductCard = memo(
                 onReset={() => {
                   feedback.light();
                   swatchV2.resetActive();
-                  useProductSelectionStore.setState((state) => {
-                    const next = { ...state.selectedColors };
-                    delete next[product.id];
-                    return { selectedColors: next };
-                  });
+                  clearSelectedColor(product.id);
                   setImageLoaded(false);
                   const currentUrl = new URL(window.location.href);
                   if (currentUrl.searchParams.get('pid') === product.id) {
@@ -866,11 +869,7 @@ export const ProductCard = memo(
                 onClear={() => {
                   feedback.light();
                   setActiveVariantIdx(0);
-                  useProductSelectionStore.setState((state) => {
-                    const next = { ...state.selectedColors };
-                    delete next[product.id];
-                    return { selectedColors: next };
-                  });
+                  clearSelectedColor(product.id);
                   setImageLoaded(false);
                   const currentUrl = new URL(window.location.href);
                   if (currentUrl.searchParams.get('pid') === product.id) {
