@@ -7810,11 +7810,11 @@
   {
    "arquivo": "src/hooks/products/__tests__/useProductsColorsBatch.aggregation.test.tsx",
    "tipo": "unit",
-   "linhas": 183,
+   "linhas": 220,
    "testa": [
     "src/hooks/products/useProductsColorsBatch.ts"
    ],
-   "casos": 9
+   "casos": 10
   },
   {
    "arquivo": "src/hooks/products/__tests__/useProductsLightweight.mapper.test.ts",

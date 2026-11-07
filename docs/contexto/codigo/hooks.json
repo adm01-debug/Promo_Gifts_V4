@@ -6807,7 +6807,7 @@
    "hooks_exportados": [
     "useProductsColorsBatch"
    ],
-   "linhas": 217,
+   "linhas": 220,
    "dominio": "hooks/products",
    "tabelas": [],
    "rpcs": [],

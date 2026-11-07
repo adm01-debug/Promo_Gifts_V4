@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "6065eb7adcef03f1c52f5b1738aef7dc8bd976e3",
+  "commit": "0549ea39629b9ad4ab1c0a04bc87d1d6bd0965c5",
   "branch": "main",
-  "data_commit": "2026-11-07T09:23:01-03:00",
+  "data_commit": "2026-11-07T10:21:03-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "0549ea3",
+    "data": "2026-11-07",
+    "assunto": "fix(catálogo): buscar cores ao trocar filtros ou página (#3140)"
+   },
    {
     "sha": "6065eb7",
     "data": "2026-11-07",
@@ -126,14 +131,9 @@
     "sha": "bc342a2",
     "data": "2026-11-05",
     "assunto": "chore(docs): RELATORIO_CI + PENDENCIAS — SHA 2bc37120 + item #13 confirmed failure (#3083)"
-   },
-   {
-    "sha": "2bc3712",
-    "data": "2026-11-05",
-    "assunto": "chore(docs): RELATORIO_CI final — inventário completo SHAs + prova final (#3082)"
    }
   ],
-  "arquivos_mudados_7d": 403,
+  "arquivos_mudados_7d": 404,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 212
+    "mudancas": 214
    },
    {
     "pasta": "src/pages/magazine",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 64
+    "mudancas": 63
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 337
+    "commits": 336
    },
    {
     "autor": "Joaquim Ataides",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 9174,
   "arquivos_codigo": 4614,
-  "linhas_codigo": 883642,
+  "linhas_codigo": 883682,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1864,7 +1864,7 @@
   },
   "src/hooks": {
    "arquivos": 447,
-   "linhas": 83732
+   "linhas": 83772
   },
   "src/integrations": {
    "arquivos": 11,
