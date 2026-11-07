@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "94291123bdcd2ea49c921602f4310dc6edc8e2a7",
+  "commit": "ed1c7ccf591aeb2e9a98f1db819b8417fb051f38",
   "branch": "main",
-  "data_commit": "2026-11-07T08:05:16-03:00",
+  "data_commit": "2026-11-07T08:15:20-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ed1c7cc",
+    "data": "2026-11-07",
+    "assunto": "fix(health-check): tolera cold start do PostgREST (#3128)"
+   },
    {
     "sha": "9429112",
     "data": "2026-11-07",
@@ -126,14 +131,9 @@
     "sha": "7f254f7",
     "data": "2026-11-05",
     "assunto": "fix(migrations-log): remove 8 entradas duplicadas no MIGRATIONS_SYNC_LOG.md (#3078)"
-   },
-   {
-    "sha": "f240b5c",
-    "data": "2026-11-05",
-    "assunto": "docs: atualiza PENDENCIAS.md e RELATORIO_CI.md pós-PR #3075 (#3077)"
    }
   ],
-  "arquivos_mudados_7d": 400,
+  "arquivos_mudados_7d": 401,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 314
+    "mudancas": 313
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 213
+    "mudancas": 212
    },
    {
     "pasta": "src/pages/magazine",
@@ -180,12 +180,12 @@
     "mudancas": 119
    },
    {
-    "pasta": "src/components/kit-builder",
+    "pasta": "src/pages/products",
     "mudancas": 110
    },
    {
-    "pasta": "src/pages/products",
-    "mudancas": 110
+    "pasta": "src/components/kit-builder",
+    "mudancas": 103
    },
    {
     "pasta": "src/pages/quotes",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 71
+    "mudancas": 69
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 67
+    "mudancas": 65
    },
    {
     "arquivo": "package.json",
@@ -274,14 +274,6 @@
     "mudancas": 7
    },
    {
-    "arquivo": "scripts/migration-ledger-remote-only-allowlist.json",
-    "mudancas": 7
-   },
-   {
-    "arquivo": ".github/workflows/ratchet-weekly.yml",
-    "mudancas": 6
-   },
-   {
     "arquivo": "analise-prs/baseline/lint.txt",
     "mudancas": 6
    },
@@ -296,12 +288,20 @@
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 6
+   },
+   {
+    "arquivo": "scripts/migration-ledger-remote-only-allowlist.json",
+    "mudancas": 6
+   },
+   {
+    "arquivo": ".github/workflows/ci-security-drift.yml",
+    "mudancas": 5
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 341
+    "commits": 340
    },
    {
     "autor": "Joaquim Ataides",
