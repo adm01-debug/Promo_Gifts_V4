@@ -73,6 +73,9 @@ jobs:
       - name: Type check
         run: node scripts/check-tsc-baseline.mjs
 
+      - name: Navigation helper contract
+        run: npx vitest run tests/config/e2e-nav-helper-smoke.test.ts
+
       - name: Run Module Tests (Unit & Integration)
         # E53: live Supabase integration only on push (not on PR to avoid prod reads)
         if: github.event_name == 'push'
