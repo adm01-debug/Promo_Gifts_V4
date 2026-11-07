@@ -222,6 +222,7 @@ export async function loginAs(page: Page, role: Role = "user"): Promise<void> {
       );
     }
     test.skip(true, `Credenciais E2E_${role.toUpperCase()}_EMAIL/PASSWORD ausentes`);
+    return;
   }
 
   // Se já estamos autenticados (storageState aplicado pelo project), uma
