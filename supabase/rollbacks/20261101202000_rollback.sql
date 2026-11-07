@@ -1,8 +1,11 @@
 -- Rollback da migration 20261101202000_drop_revoke_agent_created_functions.sql
--- Restaura GRANT EXECUTE em cleanup_expired_auth_sessions para PUBLIC, anon e authenticated.
--- Nota: perf002_drop_unused_snapshot_indexes() nao e recriada -- era funcao DDL de uso unico,
--- ja aplicada antes de ser dropada. Recriar seria noop e nao ha script original disponivel.
+-- Reversao deliberadamente fail-closed:
+-- 1) cleanup_expired_auth_sessions() ja estava revogada para PUBLIC/anon/authenticated
+--    pela migration 20261101202426 antes deste cleanup. Reabrir EXECUTE seria uma
+--    regressao de seguranca, nao a restauracao do estado anterior.
+-- 2) perf002_drop_unused_snapshot_indexes() nao e recriada: era uma funcao DDL de
+--    uso unico, ja executada, e sua definicao original nao esta versionada.
+--
+-- Mantem explicitamente o ACL seguro e pode ser executada repetidamente.
 
-GRANT EXECUTE ON FUNCTION public.cleanup_expired_auth_sessions() TO PUBLIC;
-GRANT EXECUTE ON FUNCTION public.cleanup_expired_auth_sessions() TO anon;
-GRANT EXECUTE ON FUNCTION public.cleanup_expired_auth_sessions() TO authenticated;
+REVOKE EXECUTE ON FUNCTION public.cleanup_expired_auth_sessions() FROM PUBLIC, anon, authenticated;
