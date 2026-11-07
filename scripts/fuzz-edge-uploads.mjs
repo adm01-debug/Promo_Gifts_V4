@@ -14,6 +14,7 @@
  * Em modo dry-run (sem credenciais), apenas valida estrutura dos cenários.
  */
 import process from "node:process";
+import { pathToFileURL } from "node:url";
 
 const SUPABASE_URL = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "").replace(/\/+$/, "");
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_TEST_BYPASS_TOKEN;
@@ -22,14 +23,13 @@ const TIMEOUT_MS = 15_000;
 
 // E38 — bloqueia execução live contra projeto canônico de produção sem gating explícito
 const CANONICAL_PROJECT = 'doufsxqlfjyuvxuezpln';
-if (!DRY_RUN && SUPABASE_URL.includes(CANONICAL_PROJECT) && process.env.ALLOW_PROD_LOAD !== '1') {
-  console.error('[fuzz-edge-uploads] BLOQUEADO: URL aponta para o projeto canônico de produção.');
-  console.error('  Defina ALLOW_PROD_LOAD=1 somente em dispatch gated (environment: production-readonly).');
-  process.exit(1);
-}
 
-if (DRY_RUN) {
-  console.log("⚠️  Credenciais ausentes ou DRY_RUN ≠ 0 — modo dry-run (geração + validação de payloads sem HTTP).");
+function validateExecutionTarget() {
+  if (!DRY_RUN && SUPABASE_URL.includes(CANONICAL_PROJECT) && process.env.ALLOW_PROD_LOAD !== '1') {
+    throw new Error(
+      '[fuzz-edge-uploads] BLOQUEADO: produção exige ALLOW_PROD_LOAD=1 em dispatch gated.',
+    );
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -72,8 +72,8 @@ const WEBHOOK_ADVERSARIAL_PAYLOADS = [
   { event: "product.created", occurred_at: "2099-12-31T23:59:59Z", data: {} },
   // Data aninhada com valores extremos
   { event: "product.created", occurred_at: new Date().toISOString(), data: { price: Number.MAX_SAFE_INTEGER } },
-  { event: "product.created", occurred_at: new Date().toISOString(), data: { price: -Infinity } },
-  { event: "product.created", occurred_at: new Date().toISOString(), data: { price: NaN } },
+  { event: "product.created", occurred_at: new Date().toISOString(), data: { price: "-Infinity" } },
+  { event: "product.created", occurred_at: new Date().toISOString(), data: { price: "NaN" } },
   { event: "product.created", occurred_at: new Date().toISOString(), data: { name: "\x00\x01\x02" } },
   // Payload gigante
   { event: "product.created", occurred_at: new Date().toISOString(), data: { description: "A".repeat(100_000) } },
@@ -81,7 +81,7 @@ const WEBHOOK_ADVERSARIAL_PAYLOADS = [
   { event: "product.created", occurred_at: new Date().toISOString(), data: Array(100).fill(Array(100).fill("x")) },
 ];
 
-const HMAC_SIGNATURES_ADVERSARIAIS = [
+export const HMAC_SIGNATURES_ADVERSARIAIS = [
   "",                           // vazio
   "sha256=",                    // sem hash
   "sha256=" + "a".repeat(64),  // hash inválido
@@ -89,16 +89,61 @@ const HMAC_SIGNATURES_ADVERSARIAIS = [
   "sha256=abc",                 // hash curto
   "invalid-format",             // sem prefixo
   "sha256=" + "0".repeat(64),  // todos zeros
-  "\x00" * 100,                 // bytes nulos
+  "%00".repeat(100),            // bytes nulos codificados, válidos em header HTTP
 ];
 
 const CONTENT_TYPE_BYPASS = [
   "application/json; charset=utf-8; boundary=INJECTION",
   "multipart/form-data; boundary=; injection=evil",
-  "text/plain; charset=utf-8\r\nX-Injected: true",
-  "application/x-www-form-urlencoded\r\n\r\nINJECTED",
+  "text/plain; charset=utf-8%0D%0AX-Injected: true",
+  "application/x-www-form-urlencoded%0D%0A%0D%0AINJECTED",
   "",  // content-type vazio
 ];
+
+export function validateFuzzCorpus() {
+  const errors = [];
+  const stringCollections = [
+    ["HMAC_SIGNATURES_ADVERSARIAIS", HMAC_SIGNATURES_ADVERSARIAIS],
+    ["CONTENT_TYPE_BYPASS", CONTENT_TYPE_BYPASS],
+  ];
+
+  for (const [name, values] of stringCollections) {
+    values.forEach((value, index) => {
+      if (typeof value !== "string") {
+        errors.push(`${name}[${index}] deve ser string; recebido ${typeof value}`);
+        return;
+      }
+      if (/[\0\r\n]/u.test(value)) {
+        errors.push(`${name}[${index}] contém controle proibido em header HTTP`);
+      }
+    });
+  }
+
+  MIME_POLYGLOTAS.forEach((entry, index) => {
+    if (!entry || [entry.name, entry.content, entry.mime].some((value) => typeof value !== "string")) {
+      errors.push(`MIME_POLYGLOTAS[${index}] deve conter name/content/mime string`);
+    }
+  });
+
+  WEBHOOK_ADVERSARIAL_PAYLOADS.forEach((payload, index) => {
+    try {
+      JSON.stringify(payload);
+    } catch (error) {
+      errors.push(`WEBHOOK_ADVERSARIAL_PAYLOADS[${index}] não é serializável: ${error.message}`);
+    }
+  });
+
+  if (errors.length > 0) {
+    throw new TypeError(`Corpus de fuzz inválido:\n- ${errors.join("\n- ")}`);
+  }
+
+  return {
+    hmacSignatures: HMAC_SIGNATURES_ADVERSARIAIS.length,
+    contentTypes: CONTENT_TYPE_BYPASS.length,
+    mimePolyglots: MIME_POLYGLOTAS.length,
+    webhookPayloads: WEBHOOK_ADVERSARIAL_PAYLOADS.length,
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Motor de execução
@@ -302,7 +347,7 @@ async function runUnicodeFuzz() {
   console.log("\n🌐 Suite: Unicode adversarial e bytes nulos");
 
   const unicodeStrings = [
-    " ",              // null bytes
+    "\x00\x01\x02",              // null bytes
     "﻿",                           // BOM
     "‮" + "password",             // RTL override
     "​‌‍",              // zero-width chars
@@ -342,7 +387,9 @@ async function runUnicodeFuzz() {
         // Verifica que a resposta não contém o string adversarial sem escape
         const text = await res.text().catch(() => "");
         if (str.includes("<script>")) {
-          expect(!text.includes("<script>")).toBe(true);
+          if (text.includes("<script>")) {
+            throw new Error(`Resposta refletiu payload XSS sem escape em ${path}`);
+          }
         }
       });
     }
@@ -365,8 +412,8 @@ async function runHeaderFuzz() {
     { "Referer": "javascript:alert(1)" },
     { "User-Agent": "'; DROP TABLE requests;--" },
     { "X-Forwarded-Proto": "http; INJECT" },
-    { "Content-Length": "-1" },
-    { "Transfer-Encoding": "chunked, chunked" },  // TE.CL desync
+    { "X-Original-Content-Length": "-1" },
+    { "X-Original-Transfer-Encoding": "chunked, chunked" },  // representação transmissível de TE.CL
   ];
 
   const healthEndpoint = "/functions/v1/health-check";
@@ -391,11 +438,14 @@ async function runHeaderFuzz() {
 // ---------------------------------------------------------------------------
 
 async function main() {
+  validateExecutionTarget();
+  validateFuzzCorpus();
   console.log("=".repeat(60));
   console.log("🧪 FUZZ TESTING — Uploads, Webhooks, Unicode, Headers");
   console.log("=".repeat(60));
 
   if (DRY_RUN) {
+    console.log("⚠️  Credenciais ausentes ou DRY_RUN ≠ 0 — modo dry-run (geração + validação de payloads sem HTTP).");
     console.log(`\n📋 Gerando cenários (dry-run):`);
     console.log(`   MIME políglota: ${MIME_POLYGLOTAS.length}`);
     console.log(`   Upload fields: ${UPLOAD_FIELD_FUZZING.length}`);
@@ -403,7 +453,7 @@ async function main() {
     console.log(`   Webhook payloads adversariais: ${WEBHOOK_ADVERSARIAL_PAYLOADS.length}`);
     console.log(`   HMAC inválidos: ${HMAC_SIGNATURES_ADVERSARIAIS.length}`);
     console.log(`   Valores numéricos extremos: 10 × 2 endpoints`);
-    console.log(`   Strings Unicode: 10 × 2 endpoints`);
+    console.log(`   Strings Unicode: 10 × 5 endpoints`);
     console.log(`   Headers adversariais: 10`);
   }
 
@@ -439,7 +489,10 @@ async function main() {
   }
 }
 
-main().catch((err) => {
-  console.error("Fatal:", err);
-  process.exit(1);
-});
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isMain) {
+  main().catch((err) => {
+    console.error("Fatal:", err);
+    process.exit(1);
+  });
+}

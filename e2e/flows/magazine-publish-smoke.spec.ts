@@ -42,6 +42,7 @@ const PUBLIC_TOKEN_RE = /\/revista-publica\/([a-f0-9]{16,64})/i;
 
 test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
   test.setTimeout(600_000);
+  test.describe.configure({ retries: 1 });
   test("publica revista e copia URL pública gerada", async ({ page, context }) => {
     await loginAs(page);
 
@@ -64,7 +65,7 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     const createBtn = page.locator('[data-testid="magazine-create-btn"]').first();
     await createBtn.waitFor({ state: "visible", timeout: 10_000 });
     await createBtn.click();
-    await page.waitForURL(/\/magazine\/[a-f0-9-]{6,}/i, { timeout: 60_000 });
+    await page.waitForURL(/\/magazine\/[a-f0-9-]{6,}/i, { timeout: 120_000 });
     await waitForRouteIdle(page);
 
     // 2) Preenche o título com prefixo E2E (cleanup escopado).

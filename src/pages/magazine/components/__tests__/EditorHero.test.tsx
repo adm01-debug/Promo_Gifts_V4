@@ -197,6 +197,10 @@ describe('EditorHero — sem mini preview', () => {
     expect(row.className).toMatch(/\bflex\b/);
     expect(row.className).toMatch(/flex-wrap/);
     expect(row.className).toMatch(/items-center/);
+    // Em lg (1024px), a coluna de ações compete por largura com o hero. Sem
+    // mínimo explícito o flex item do h1 pode colapsar para 0px e ficar
+    // semanticamente presente, porém visualmente oculto.
+    expect(title.className).toContain('min-w-[12rem]');
   });
 
   it('aria-expanded do botão "Trocar template" reflete o estado do popover', async () => {
