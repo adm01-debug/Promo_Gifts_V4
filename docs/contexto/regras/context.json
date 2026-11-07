@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "5b0dab1ae2bbae7596d5c65de954ea1cd6e8da16",
+  "sha": "897cc4c1026c483b5b23d7d6a80058d228c0a620",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 02:09 UTC",
-  "files_total": 9094,
-  "code_files": 7839,
-  "code_lines": 1050298
+  "generated_at": "2026-11-07 04:03 UTC",
+  "files_total": 9095,
+  "code_files": 7840,
+  "code_lines": 1050646
  },
  "version": "1.3.2",
- "facts_hash": "f620c1c0698eae7b",
+ "facts_hash": "1690a77209afc305",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1169,7 +1169,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3228,
-   ".ts": 2619,
+   ".ts": 2620,
    ".tsx": 1687,
    ".mjs": 296,
    ".py": 9,
@@ -137860,8 +137860,8 @@
   },
   {
    "module": "e2e",
-   "files": 620,
-   "lines": 74288,
+   "files": 621,
+   "lines": 74609,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -138314,7 +138314,7 @@
   {
    "module": "src/components",
    "files": 1332,
-   "lines": 268631,
+   "lines": 268658,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -143915,6 +143915,7 @@
    ],
    "E2E_MOCK_AUTH": [
     "e2e/auth/session-recovery.spec.ts",
+    "e2e/catalog/swatch-quickview-v2-list-table.spec.ts",
     "e2e/fixtures/auth.setup.ts",
     "e2e/fixtures/test-base.ts",
     "e2e/flows/23-rocket-animation-snapshot.spec.ts",
@@ -364465,7 +364466,7 @@
   },
   "e2e/replenishment-stress.spec.ts": {
    "path": "e2e/replenishment-stress.spec.ts",
-   "lines": 169,
+   "lines": 229,
    "is_test": true,
    "env": [
     "CI"
@@ -366481,7 +366482,7 @@
   },
   "e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts": {
    "path": "e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts",
-   "lines": 186,
+   "lines": 198,
    "is_test": true,
    "params": [
     {
@@ -366500,7 +366501,8 @@
    "temporal": [
     "await expect(dialog).toBeHidden({ timeout: 5_000 });",
     "await expect(dialog).toBeVisible({ timeout: 10_000 });",
-    "await page.waitForSelector('[data-state=\"loading\"]', { state: 'detached', timeout: 20000 }).catch(() => {});"
+    "await page.waitForSelector('[data-state=\"loading\"]', { state: 'detached', timeout: 20000 }).catch(() => {});",
+    "await target.click({ timeout: 15_000 });"
    ],
    "tests": [
     "V2 ColorSwatchPicker • ${route.slug}",
@@ -366530,7 +366532,7 @@
   },
   "e2e/catalog/swatch-quickview-list-table.spec.ts": {
    "path": "e2e/catalog/swatch-quickview-list-table.spec.ts",
-   "lines": 135,
+   "lines": 137,
    "is_test": true,
    "temporal": [
     "await expect(dialog).toBeHidden({ timeout: 5_000 });",
@@ -366543,8 +366545,11 @@
   },
   "e2e/catalog/swatch-quickview-v2-list-table.spec.ts": {
    "path": "e2e/catalog/swatch-quickview-v2-list-table.spec.ts",
-   "lines": 213,
+   "lines": 234,
    "is_test": true,
+   "env": [
+    "E2E_MOCK_AUTH"
+   ],
    "params": [
     {
      "name": "V2_RESET",
@@ -371618,6 +371623,16 @@
     "function setupDiscountAdmin"
    ],
    "doc": "setupDiscountAdmin — fixture compartilhada para os specs 04c5/04c6/04c7. Responsabilidades: 1. Login admin (loginAs) — pula com requireAdmin() se faltam credenciais. 2. Limpa storage antes do seed (isola execuções concorrentes do Playwright). 3. Seed idempotente com prefixo único por teste (testInfo …"
+  },
+  "e2e/helpers/swatch-catalog-mocks.ts": {
+   "path": "e2e/helpers/swatch-catalog-mocks.ts",
+   "lines": 226,
+   "exports": [
+    "function installSwatchCatalogMocks"
+   ],
+   "rule_comments": [
+    "modos de layout e interações continuam reais; apenas os dados são fixos."
+   ]
   },
   "e2e/helpers/tab-trail.ts": {
    "path": "e2e/helpers/tab-trail.ts",
@@ -397351,7 +397366,7 @@
   },
   "src/components/products/ProductList.tsx": {
    "path": "src/components/products/ProductList.tsx",
-   "lines": 305,
+   "lines": 332,
    "exports": [
     "interface ProductListProps",
     "const ProductList"
@@ -482752,10 +482767,27 @@
   }
  },
  "git": {
-  "sha": "5b0dab1ae2bbae7596d5c65de954ea1cd6e8da16",
+  "sha": "897cc4c1026c483b5b23d7d6a80058d228c0a620",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "897cc4c",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "fix(ci/catalog): estabilizar auditorias E2E e restaurar cores na lista (#3120)",
+    "files": [
+     ".github/workflows/e2e-swatch-quickview.yml",
+     ".github/workflows/replenishment-quality.yml",
+     "e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts",
+     "e2e/catalog/swatch-quickview-list-table.spec.ts",
+     "e2e/catalog/swatch-quickview-v2-list-table.spec.ts",
+     "e2e/helpers/swatch-catalog-mocks.ts",
+     "e2e/quotes/quote-view-no-presentation-mode.spec.ts-snapshots/quote-actions-menu-dark-mobile-chromium-public-linux.png",
+     "e2e/replenishment-stress.spec.ts",
+     "src/components/products/ProductList.tsx"
+    ]
+   },
    {
     "sha": "5b0dab1",
     "date": "2026-11-06",
@@ -483044,16 +483076,6 @@
      "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
      "e2e/flows/magazine-publish-smoke.spec.ts"
     ]
-   },
-   {
-    "sha": "07dc24e",
-    "date": "2026-11-04",
-    "author": "adm01-debug",
-    "subject": "fix(e2e): corrige 2 smoke tests de magazine pré-existentes (#3069)",
-    "files": [
-     "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-     "e2e/flows/magazine-publish-smoke.spec.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -483067,14 +483089,14 @@
    ],
    [
     "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    5
-   ],
-   [
-    "e2e/flows/magazine-publish-smoke.spec.ts",
     4
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
+    3
+   ],
+   [
+    "e2e/flows/magazine-publish-smoke.spec.ts",
     3
    ],
    [
@@ -483094,47 +483116,47 @@
     2
    ],
    [
+    ".github/workflows/e2e-swatch-quickview.yml",
+    1
+   ],
+   [
+    ".github/workflows/replenishment-quality.yml",
+    1
+   ],
+   [
+    "e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts",
+    1
+   ],
+   [
+    "e2e/catalog/swatch-quickview-list-table.spec.ts",
+    1
+   ],
+   [
+    "e2e/catalog/swatch-quickview-v2-list-table.spec.ts",
+    1
+   ],
+   [
+    "e2e/helpers/swatch-catalog-mocks.ts",
+    1
+   ],
+   [
+    "e2e/quotes/quote-view-no-presentation-mode.spec.ts-snapshots/quote-actions-menu-dark-mobile-chromium-public-linux.png",
+    1
+   ],
+   [
+    "e2e/replenishment-stress.spec.ts",
+    1
+   ],
+   [
+    "src/components/products/ProductList.tsx",
+    1
+   ],
+   [
     "supabase/migrations/20261106232045_fix_handle_updated_at_search_path.sql",
     1
    ],
    [
     "supabase/rollbacks/20261106232045_rollback.sql",
-    1
-   ],
-   [
-    "tests/unit/date-utils.test.ts",
-    1
-   ],
-   [
-    "scripts/migration-ledger-remote-only-allowlist.json",
-    1
-   ],
-   [
-    ".security/policies-baseline.json",
-    1
-   ],
-   [
-    "e2e/fixtures/auth.setup.ts",
-    1
-   ],
-   [
-    "docs/contexto/regras/manual/regras.md",
-    1
-   ],
-   [
-    "graphify-out/manifest.json",
-    1
-   ],
-   [
-    ".github/workflows/ci-security-drift.yml",
-    1
-   ],
-   [
-    "src/hooks/stock/__tests__/useRuptureAlerts.test.tsx",
-    1
-   ],
-   [
-    "tests/components/kit-builder/KitMakerLanding.test.tsx",
     1
    ]
   ]

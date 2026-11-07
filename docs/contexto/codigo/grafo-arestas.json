@@ -5956,6 +5956,7 @@
    "src/components/products/ProductListItem.tsx",
    "src/components/ui/button.tsx",
    "src/hooks/products/index.ts",
+   "src/hooks/products/useProductsColorsBatch.ts",
    "src/lib/utils.ts",
    "src/utils/color-image-resolver.ts"
   ],

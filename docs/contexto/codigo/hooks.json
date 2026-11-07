@@ -6817,11 +6817,12 @@
     "useQuery"
    ],
    "canais_realtime": [],
-   "usado_por": 8,
+   "usado_por": 9,
    "usado_por_arquivos": [
     "src/components/novelties/NoveltyProductGrid.tsx",
     "src/components/novelties/VirtualizedNoveltyGrid.tsx",
     "src/components/products/ProductGrid.tsx",
+    "src/components/products/ProductList.tsx",
     "src/components/products/ProductTableView.tsx",
     "src/components/products/VirtualizedProductGrid.tsx",
     "src/components/replenishments/ReplenishmentProductGrid.tsx",

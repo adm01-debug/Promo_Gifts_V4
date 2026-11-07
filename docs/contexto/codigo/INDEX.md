@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5b0dab1ae2bbae7596d5c65de954ea1cd6e8da16` (2026-11-06T22:59:03-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `897cc4c1026c483b5b23d7d6a80058d228c0a620` (2026-11-07T01:01:45-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4305), SQL (3228), Markdown (895), JavaScript (303), YAML (106), JSON (91), Shell (18), CSS (13)
+- linguagens: TypeScript (4306), SQL (3228), Markdown (895), JavaScript (303), YAML (106), JSON (91), Shell (18), CSS (13)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 9171 |
-| arquivos_codigo | 4612 |
-| linhas_codigo | 883222 |
+| arquivos_total | 9172 |
+| arquivos_codigo | 4613 |
+| linhas_codigo | 883570 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 544 |
 | migrations | 3043 |
 | cron_jobs | 120 |
-| testes | 2184 |
+| testes | 2185 |
 | workflows | 93 |
 | scripts | 254 |
 | docs_md | 895 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (931), src/pages (174), src/contexts (10)
 - hooks: src/hooks (287), src/components (75), src/pages (32)
 - servicos_logica: src/lib (224), src/utils (30), src/services (9)
-- testes: tests/ (798), e2e/ (619), co-localizado (__tests__) (605)
+- testes: tests/ (798), e2e/ (620), co-localizado (__tests__) (605)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/graphify (4), scripts/inventario (4), scripts/ai-context (2)
@@ -563,7 +563,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - env de integração (só nomes): CF_ORIGIN_SECRET, CONNECTIONS_AUTO_TEST_SECRET, CRM_CALLBACK_API_KEY, CSRF_SECRET, E2E_CLEANUP_TOKEN, LOVABLE_API_KEY, PRODUCT_WEBHOOK_ALLOWED_ORIGINS, PRODUCT_WEBHOOK_BATCH_SIZE, PROMO_CHAMPIONS_WEBHOOK_SECRET, TURNSTILE_SECRET_KEY, VITE_GRAVACAO_API_KEY, VITE_SENTRY_DSN, VITE_SENTRY_ENVIRONMENT, WEBHOOK_DISPATCHER_SECRET
 
 ## Permissões / papéis
-- papéis no código: status (75), alert (51), dev (40), button (37), user (32), group (31), admin (29), listitem (26), supervisor (22), radio (21), vendedor (21), dialog (19), radiogroup (18), list (17), system (17), tooltip (17), agente (15), combobox (13), option (12), authenticated (11), progressbar (10), region (10), tab (9), tablist (9), anon (8), assistant (8), img (8), seller (8), switch (8), checkbox (6), listbox (6), main (6), navigation (6), document (5), menu (5), public (5), slider (5), columnheader (4), manager (4), link (3), separator (3), toolbar (3), agent (2), alertdialog (2), cell (2), editor (2), grid (2), gridcell (2), log (2), menuitem (2), presentation (2), publico (2), table (2), OFFSET (1), Paperclip (1), Textos (1), banner (1), complementary (1), contentinfo (1), heading (1), none (1), note (1), searchbox (1), service_role (1), spinbutton (1), string (1), sup (1), superadmin_bypass (1)
+- papéis no código: status (75), alert (51), dev (40), button (37), user (32), group (31), admin (29), listitem (26), vendedor (23), supervisor (22), radio (21), dialog (19), radiogroup (18), list (17), system (17), tooltip (17), agente (15), combobox (13), option (12), authenticated (11), progressbar (10), region (10), tab (9), tablist (9), anon (8), assistant (8), img (8), seller (8), switch (8), checkbox (6), listbox (6), main (6), navigation (6), document (5), menu (5), public (5), slider (5), columnheader (4), manager (4), link (3), separator (3), toolbar (3), agent (2), alertdialog (2), cell (2), editor (2), grid (2), gridcell (2), log (2), menuitem (2), presentation (2), publico (2), table (2), OFFSET (1), Paperclip (1), Textos (1), banner (1), complementary (1), contentinfo (1), heading (1), none (1), note (1), searchbox (1), service_role (1), spinbutton (1), string (1), sup (1), superadmin_bypass (1)
 - enums de papel: app_role: admin|manager|vendedor|supervisor|dev|supervisor|dev|agente|coordenador; org_role: owner|admin|member; role_migration_status: pending|running|completed|failed|partial|dry_run; role_migration_item_status: pending|success|failed|skipped|dry_run
 - guards: src/components/admin/telemetry/RegressionGuardrailBanner.tsx, src/components/layout/ProtectedRoute.tsx, src/components/system/RootInteractivityGuard.tsx · rotas protegidas: 31 · públicas: /, /__test/alert-dialog, /__test/cnpj-form, /__test/color-swatches, /__test/confirm-dialog, /__test/dialog, /__test/magazine-ring, /__test/tab-skip, /__test/undo-toast, /__visual/calendar, /__visual/date-picker-field, /__visual/negotiation-markup-card, /__visual/preview-button, /__visual/quote-add-product-button, /__visual/quote-freight-block, /__visual/quote-item-editor-sheet, /__visual/quote-items-list-mobile, /__visual/quote-view-order, /*, /admin/aprovacoes-desconto/:id, /admin/audit-suite, /admin/badges-inteligencia, /admin/comissoes, /admin/ema-health, /admin/kit-templates/metricas, /admin/observabilidade, /admin/performance, /admin/performance-comercial, /admin/permissoes, /admin/qa, /admin/qa/sidebar, /admin/rate-limit, /admin/role-permissoes, /admin/roles, /admin/seguranca/exemplos-challenge, /admin/status, /admin/storage-test, /admin/validade-precos, /auth/callback, /busca-preco, /carrinhos, /carrinhos/:cartId, /clientes, /clientes/:id, /colecoes, /colecoes/:id, /comissoes, /comparar, /dashboard, /debug/images, /dropbox, /estoque, /external-db-test, /favoritos, /ferramentas/bi, /ferramentas/bi/comparar, /ferramentas/cobertura, /filtros, /forgot-password-confirmation, /inteligencia-comercial, /kit-builder, /magazine, /magazine/:id, /magazine/:id/print, /magazine/print, /magazine/templates, /magic-up, /match, /meus-kits, /mockup-generator, /mockups/historico, /montar-kit, /novidades, /orcamentos, /orcamentos/:id, /orcamentos/:id/editar, /orcamentos/dashboard, /orcamentos/kanban, /orcamentos/lista, /orcamentos/novo, /privacidade, /produto/:id, /produtos, /promoflix-playground, /raio-x, /reposicao, /reset-password, /revista-publica/:token, /simulacao, /simulador, /simulador-precos, /tendencias, /termos
 - feature flags: useEmaRupture, useColorSwatchesV2, ENABLE_NAV_METRICS, FEATURE_GROUPS, FEATURE_ITEMS, FEATURE_X, magic_up, nova-tela, novo-inbox, supplierReliability
@@ -586,8 +586,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38015 nós · 66355 arestas · 2109 comunidades · grafo do commit `5b0dab1a`
-- comunidades maiores: ref_lib (489), ref_integrations (424), ref_hooks (405), react-router-dom (326), test-base.ts (312), ref_node_fs (305), @testing-library/react (296), gotoAndSettle (294), scripts (289), ref_components (281), @tanstack/react-query (278), react (261)
+- 38035 nós · 66392 arestas · 2119 comunidades · grafo do commit `897cc4c1`
+- comunidades maiores: ref_components (472), ref_lib (434), ref_integrations (381), react-router-dom (351), ref_hooks (322), gotoAndSettle (289), scripts (289), @tanstack/react-query (287), ref_node_fs (280), react (279), concludeCheck (251), cors.ts (246)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -599,14 +599,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - supabase/MIGRATIONS_SYNC_LOG.md (22)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (15)
 - CHANGELOG.md (14)
-- analise-prs/RELATORIO_PRS.md (14)
+- analise-prs/RELATORIO_PRS.md (13)
 - docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (12)
 - .github/workflows/deploy-gates.yml (10)
 - analise-branches/RELATORIO_BRANCHES.md (10)
-- analise-prs/progresso.json (9)
-- analise-prs/prs.csv (9)
 - analise-prs/prs.json (9)
 - AGENTS.md (8)
+- CLAUDE.md (8)
+- analise-prs/progresso.json (8)
 
 ## Workflows
 - `_secrets-check.yml` — _secrets-check (reusable) (workflow_call)
@@ -1159,6 +1159,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.7.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.1...v1.7.0) (2026-11-02)
 
 ## Últimos commits
+- 2026-11-07 `897cc4c` fix(ci/catalog): estabilizar auditorias E2E e restaurar cores na lista (#3120)
 - 2026-11-06 `5b0dab1` docs(db): registra aplicação da migration 20261101201000 (#3121)
 - 2026-11-06 `372dc82` fix(db): fixa search_path de handle_updated_at (#3111)
 - 2026-11-06 `e87f36b` test(date-utils): elimina dependência de timezone (#3116)
@@ -1173,7 +1174,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-05 `a792bad` docs: RELATORIO_CI.md — baseline e inventário SHA d49e289e (#3089)
 - 2026-11-05 `d49e289` docs: RELATORIO_CI.md prova final SHA 210ce9a9 + resolvidos #15/#16/#18/#19 (#3088)
 - 2026-11-05 `210ce9a` docs: RELATORIO_CI.md HEAD 84245872 + PENDENCIAS.md item #19 sentinel advisory (#3087)
-- 2026-11-05 `8424587` docs: RELATORIO_CI.md — prova final #15-#18 e seção 2.9 diagnóstico E2E advisory
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

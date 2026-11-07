@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5b0dab1ae2bbae7596d5c65de954ea1cd6e8da16",
+  "commit": "897cc4c1026c483b5b23d7d6a80058d228c0a620",
   "branch": "main",
-  "data_commit": "2026-11-06T22:59:03-03:00",
+  "data_commit": "2026-11-07T01:01:45-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "897cc4c",
+    "data": "2026-11-07",
+    "assunto": "fix(ci/catalog): estabilizar auditorias E2E e restaurar cores na lista (#3120)"
+   },
    {
     "sha": "5b0dab1",
     "data": "2026-11-06",
@@ -126,14 +131,9 @@
     "sha": "3d514f5",
     "data": "2026-11-05",
     "assunto": "docs: RELATORIO_CI.md — PR #3075 mergeada, run 42073412218 success (#3076)"
-   },
-   {
-    "sha": "5e5e4a6",
-    "data": "2026-11-05",
-    "assunto": "fix: Gate 3 — reduz timeouts cold start magazine smoke (#3075)"
    }
   ],
-  "arquivos_mudados_7d": 386,
+  "arquivos_mudados_7d": 392,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 313
+    "mudancas": 314
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -227,7 +227,7 @@
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 14
+    "mudancas": 13
    },
    {
     "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
@@ -242,14 +242,6 @@
     "mudancas": 10
    },
    {
-    "arquivo": "analise-prs/progresso.json",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "analise-prs/prs.csv",
-    "mudancas": 9
-   },
-   {
     "arquivo": "analise-prs/prs.json",
     "mudancas": 9
    },
@@ -259,6 +251,14 @@
    },
    {
     "arquivo": "CLAUDE.md",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "analise-prs/progresso.json",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "analise-prs/prs.csv",
     "mudancas": 8
    },
    {
@@ -272,6 +272,10 @@
    {
     "arquivo": "scripts/migration-ledger-remote-only-allowlist.json",
     "mudancas": 7
+   },
+   {
+    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
+    "mudancas": 6
    },
    {
     "arquivo": ".github/workflows/ratchet-weekly.yml",
@@ -292,16 +296,12 @@
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 6
-   },
-   {
-    "arquivo": "tests/config/playwright-config-smoke.test.ts",
-    "mudancas": 6
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 343
+    "commits": 342
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9171,
-  "arquivos_codigo": 4612,
-  "linhas_codigo": 883222,
+  "arquivos_total": 9172,
+  "arquivos_codigo": 4613,
+  "linhas_codigo": 883570,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 544,
   "migrations": 3043,
   "cron_jobs": 120,
-  "testes": 2184,
+  "testes": 2185,
   "workflows": 93,
   "scripts": 254,
   "docs_md": 895
@@ -432,7 +432,7 @@
   },
   "e2e/catalog": {
    "arquivos": 32,
-   "linhas": 4139
+   "linhas": 4174
   },
   "e2e/catalog-exhaustive-validation.spec.ts": {
    "arquivos": 1,
@@ -559,8 +559,8 @@
    "linhas": 20
   },
   "e2e/helpers": {
-   "arquivos": 32,
-   "linhas": 4447
+   "arquivos": 33,
+   "linhas": 4673
   },
   "e2e/initial-load.spec.ts": {
    "arquivos": 1,
@@ -784,7 +784,7 @@
   },
   "e2e/replenishment-stress.spec.ts": {
    "arquivos": 1,
-   "linhas": 169
+   "linhas": 229
   },
   "e2e/replenishment-swatches.spec.ts": {
    "arquivos": 1,
@@ -1836,7 +1836,7 @@
   },
   "src/components": {
    "arquivos": 1332,
-   "linhas": 268632
+   "linhas": 268659
   },
   "src/config": {
    "arquivos": 1,

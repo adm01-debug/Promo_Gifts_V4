@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4305)",
+   "TypeScript (4306)",
    "SQL (3228)",
    "Markdown (895)",
    "JavaScript (303)",
@@ -5351,15 +5351,15 @@
     "ocorrencias": 26
    },
    {
+    "papel": "vendedor",
+    "ocorrencias": 23
+   },
+   {
     "papel": "supervisor",
     "ocorrencias": 22
    },
    {
     "papel": "radio",
-    "ocorrencias": 21
-   },
-   {
-    "papel": "vendedor",
     "ocorrencias": 21
    },
    {

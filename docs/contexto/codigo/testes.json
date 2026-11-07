@@ -5,10 +5,10 @@
   "vitest",
   "playwright"
  ],
- "total": 2184,
+ "total": 2185,
  "por_tipo": {
   "contrato": 56,
-  "e2e": 629,
+  "e2e": 630,
   "pytest": 2,
   "qa": 17,
   "unit": 1480
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "e2e/",
-   "arquivos": 619
+   "arquivos": 620
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -788,7 +788,7 @@
   {
    "arquivo": "e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts",
    "tipo": "e2e",
-   "linhas": 186,
+   "linhas": 198,
    "testa": [],
    "casos": 1
   },
@@ -802,14 +802,14 @@
   {
    "arquivo": "e2e/catalog/swatch-quickview-list-table.spec.ts",
    "tipo": "e2e",
-   "linhas": 135,
+   "linhas": 137,
    "testa": [],
    "casos": 1
   },
   {
    "arquivo": "e2e/catalog/swatch-quickview-v2-list-table.spec.ts",
    "tipo": "e2e",
-   "linhas": 213,
+   "linhas": 234,
    "testa": [],
    "casos": 4
   },
@@ -2545,6 +2545,13 @@
    "casos": 0
   },
   {
+   "arquivo": "e2e/helpers/swatch-catalog-mocks.ts",
+   "tipo": "e2e",
+   "linhas": 226,
+   "testa": [],
+   "casos": 0
+  },
+  {
    "arquivo": "e2e/helpers/tab-trail.ts",
    "tipo": "e2e",
    "linhas": 186,
@@ -3379,7 +3386,7 @@
   {
    "arquivo": "e2e/replenishment-stress.spec.ts",
    "tipo": "e2e",
-   "linhas": 169,
+   "linhas": 229,
    "testa": [],
    "casos": 2
   },
