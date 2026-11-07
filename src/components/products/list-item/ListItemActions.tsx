@@ -38,18 +38,24 @@ export function ListItemActions({
         'transition-opacity duration-200',
       )}
     >
-      {/* 1 - Carrinho (QuickAddToQuote já tem Tooltip + Popover próprios) */}
-      <QuickAddToQuote
-        productId={product.id}
-        productName={product.name}
-        productSku={product.sku}
-        productImageUrl={product.og_image_url || product.images[0]}
-        productPrice={product.price}
-        minQuantity={product.minQuantity || 1}
-        variant="icon"
-        className="h-8 w-8"
-      />
-
+      {/* 1 - Carrinho */}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div>
+            <QuickAddToQuote
+              productId={product.id}
+              productName={product.name}
+              productSku={product.sku}
+              productImageUrl={product.og_image_url || product.images[0]}
+              productPrice={product.price}
+              minQuantity={product.minQuantity || 1}
+              variant="icon"
+              className="h-8 w-8"
+            />
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">Adicionar ao Carrinho</TooltipContent>
+      </Tooltip>
 
       {/* 2 - Orçamento (desktop) */}
       <div className="hidden items-center gap-0.5 sm:flex">
@@ -92,7 +98,7 @@ export function ListItemActions({
             variant="ghost"
             size="icon"
             className={cn(
-              'h-8 w-8 rounded-full shrink-0',
+              'h-8 w-8 shrink-0 rounded-full',
               isFavorited
                 ? 'bg-destructive/10 text-destructive'
                 : 'text-muted-foreground hover:text-destructive',
@@ -117,7 +123,7 @@ export function ListItemActions({
             variant="ghost"
             size="icon"
             className={cn(
-              'h-8 w-8 rounded-full shrink-0',
+              'h-8 w-8 shrink-0 rounded-full',
               isInCompare
                 ? 'bg-primary/10 text-primary'
                 : 'text-muted-foreground hover:text-primary',

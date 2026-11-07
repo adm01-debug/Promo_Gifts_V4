@@ -115,9 +115,8 @@ const PROFILE_AND_ROLES = {
 };
 
 function json(route: Route, body: unknown, count?: number) {
-  const headers = count === undefined
-    ? {}
-    : { 'content-range': count === 0 ? '*/0' : `0-${count - 1}/${count}` };
+  const headers =
+    count === undefined ? {} : { 'content-range': count === 0 ? '*/0' : `0-${count - 1}/${count}` };
   return route.fulfill({
     status: 200,
     contentType: 'application/json',
@@ -137,8 +136,11 @@ function requestedOffset(route: Route): number {
  * Isola as suítes de swatch de Auth/PostgREST externos. Os componentes, rotas,
  * modos de layout e interações continuam reais; apenas os dados são fixos.
  */
-export async function installSwatchCatalogMocks(page: Page): Promise<void> {
-  if (!isMockAuthEnabled()) return;
+export async function installSwatchCatalogMocks(
+  page: Page,
+  options: { force?: boolean } = {},
+): Promise<void> {
+  if (!options.force && !isMockAuthEnabled()) return;
 
   await installMockAuth(page);
 
@@ -155,15 +157,21 @@ export async function installSwatchCatalogMocks(page: Page): Promise<void> {
     return json(route, firstPage ? VARIANTS : [], firstPage ? VARIANTS.length : 0);
   });
   await page.route(/\/rest\/v1\/product_images(?:\?|$)/, (route) =>
-    json(route, [{
-      id: '60000000-0000-4000-8000-000000000001',
-      product_id: PRODUCT_ID,
-      variant_id: SWATCHES[0].variant_id,
-      url: '/placeholder.svg',
-      image_url: '/placeholder.svg',
-      is_primary: true,
-      sort_order: 0,
-    }], 1),
+    json(
+      route,
+      [
+        {
+          id: '60000000-0000-4000-8000-000000000001',
+          product_id: PRODUCT_ID,
+          variant_id: SWATCHES[0].variant_id,
+          url: '/placeholder.svg',
+          image_url: '/placeholder.svg',
+          is_primary: true,
+          sort_order: 0,
+        },
+      ],
+      1,
+    ),
   );
   await page.route(/\/rest\/v1\/categories(?:\?|$)/, (route) =>
     json(route, [{ id: CATEGORY_ID, name: 'Categoria E2E', active: true }], 1),
@@ -173,15 +181,21 @@ export async function installSwatchCatalogMocks(page: Page): Promise<void> {
   );
   await page.route(/\/rest\/v1\/system_settings(?:\?|$)/, (route) => json(route, [], 0));
   await page.route(/\/rest\/v1\/user_onboarding(?:\?|$)/, (route) =>
-    json(route, [{
-      id: ONBOARDING_ID,
-      user_id: USER_ID,
-      has_completed_tour: true,
-      current_step: 12,
-      completed_at: '2026-01-01T00:00:00.000Z',
-      created_at: '2026-01-01T00:00:00.000Z',
-      updated_at: '2026-01-01T00:00:00.000Z',
-    }], 1),
+    json(
+      route,
+      [
+        {
+          id: ONBOARDING_ID,
+          user_id: USER_ID,
+          has_completed_tour: true,
+          current_step: 12,
+          completed_at: '2026-01-01T00:00:00.000Z',
+          created_at: '2026-01-01T00:00:00.000Z',
+          updated_at: '2026-01-01T00:00:00.000Z',
+        },
+      ],
+      1,
+    ),
   );
 
   await page.route(/\/rest\/v1\/rpc\/get_profile_and_roles(?:\?|$)/, (route) =>
@@ -191,29 +205,31 @@ export async function installSwatchCatalogMocks(page: Page): Promise<void> {
     json(route, [{ product_id: PRODUCT_ID, color_swatches: SWATCHES }]),
   );
   await page.route(/\/rest\/v1\/rpc\/fn_get_reposicao_listing(?:\?|$)/, (route) =>
-    json(route, [{
-      product_id: PRODUCT_ID,
-      name: PRODUCT.name,
-      slug: PRODUCT.slug,
-      sku: PRODUCT.sku,
-      sale_price: PRODUCT.sale_price,
-      is_stockout: false,
-      is_new: true,
-      total_stock: PRODUCT.total_stock,
-      primary_image_url: PRODUCT.primary_image_url,
-      primary_image_cdn: PRODUCT.primary_image_url,
-      supplier_id: SUPPLIER_ID,
-      supplier_name: PRODUCT.supplier_name,
-      supplier_code: PRODUCT.supplier_code,
-      ultimo_restock_date: '2026-11-01',
-      earliest_restock_date: null,
-      earliest_restock_qty: null,
-      has_upcoming_restock: false,
-      category_names: ['Categoria E2E'],
-      primary_category_id: CATEGORY_ID,
-      primary_category_name: 'Categoria E2E',
-      is_low_stock: false,
-    }]),
+    json(route, [
+      {
+        product_id: PRODUCT_ID,
+        name: PRODUCT.name,
+        slug: PRODUCT.slug,
+        sku: PRODUCT.sku,
+        sale_price: PRODUCT.sale_price,
+        is_stockout: false,
+        is_new: true,
+        total_stock: PRODUCT.total_stock,
+        primary_image_url: PRODUCT.primary_image_url,
+        primary_image_cdn: PRODUCT.primary_image_url,
+        supplier_id: SUPPLIER_ID,
+        supplier_name: PRODUCT.supplier_name,
+        supplier_code: PRODUCT.supplier_code,
+        ultimo_restock_date: '2026-11-01',
+        earliest_restock_date: null,
+        earliest_restock_qty: null,
+        has_upcoming_restock: false,
+        category_names: ['Categoria E2E'],
+        primary_category_id: CATEGORY_ID,
+        primary_category_name: 'Categoria E2E',
+        is_low_stock: false,
+      },
+    ]),
   );
 
   await page.route('**/functions/v1/get-visitor-info**', (route) =>
