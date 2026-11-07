@@ -703,9 +703,9 @@ Gate 1 (Lint + TypeScript) no CI confirmado: run #42395747034 (SHA `b4aa9e33`) =
 
 | Run | SHA | Status | conclusion | Link |
 |---|---|---|---|---|
-| #42408257675 | `1a47c6972c` | ⏳ in_progress | ⏳ NÃO VERIFICADO | [Ver run](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42408257675) |
+| #42408257675 | `1a47c6972c` | ✅ completed | ✅ success | [Ver run](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42408257675) |
 
-> Gate Final run #42408257675 em `in_progress` na SHA `1a47c6972c` (iniciado 19:51Z). Resultado será atualizado quando `conclusion` chegar.
+> Gate Final run #42408257675 — `conclusion: success` confirmado às 20:04:21Z na SHA `1a47c6972c`.
 
 ### Comparação Baseline × Final (HEAD `1a47c6972c`)
 
@@ -716,7 +716,7 @@ Gate 1 (Lint + TypeScript) no CI confirmado: run #42395747034 (SHA `b4aa9e33`) =
 | npx tsc --noEmit | ✅ EXIT=0 | ✅ EXIT=0 | = |
 | npm run lint:baseline | ✅ 0 erros, 0 warnings | ✅ 0 erros, 0 warnings | = |
 | vitest completo | ✅ Gate 2 success (CI) | ✅ 1282 arquivos passados, 26107 testes, exit 0 | = |
-| **Gate Final (required)** | ✅ success (run #42400439389, SHA `df81a741`) | ⏳ in_progress (run #42408257675, SHA `1a47c6972c`) — NÃO VERIFICADO | 🔄 aguardando |
+| **Gate Final (required)** | ✅ success (run #42400439389, SHA `df81a741`) | ✅ success (run #42408257675, SHA `1a47c6972c`) — 20:04:21Z | ✅ sem regressão |
 | Required checks em falha | 1 (Compare GitHub × Canonical — #29) | 1 (inalterado — PENDENCIAS #29) | = |
 | Mudanças de schema (banco) | 0 | 0 | = (REGRA #8 intacta) |
 
@@ -740,7 +740,7 @@ Gate 1 (Lint + TypeScript) no CI confirmado: run #42395747034 (SHA `b4aa9e33`) =
 
 | Workflow | Estado anterior (SHA df81a741) | Estado final (1a47c6972c) | Evidência |
 |---|---|---|---|
-| Gate Final - Deploy Ready | ✅ success (run #42400439389) | ⏳ in_progress (run #42408257675) — NÃO VERIFICADO | aguardando |
+| Gate Final - Deploy Ready | ✅ success (run #42400439389) | ✅ success (run #42408257675) — 20:04:21Z | ✅ confirmado |
 | Analyze (javascript-typescript) | ✅ success | ✅ success (run #42408257408 in_progress) | sem mudança de código |
 | Gate E23 - Secret Scan (gitleaks) | ✅ success | ✅ (run na SHA `1a47c6972c` — docs-only) | sem secrets em diff |
 | Assert Gate Final is required | ✅ success | ✅ success | sem mudança |
