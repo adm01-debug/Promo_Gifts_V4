@@ -32,7 +32,7 @@ export interface LoginCreds {
   timeoutMs?: number;
 }
 
-export type Role = "user" | "admin" | "dev" | "editor";
+export type Role = "user" | "admin" | "dev" | "editor" | "seller";
 
 // /login é alias legado da rota canônica /auth — ambas renderizam <Auth/>.
 // Se o signIn falha, a página pode permanecer em qualquer uma das duas; checar
@@ -206,20 +206,25 @@ export async function loginAs(page: Page, role: Role = "user"): Promise<void> {
   const email = role === "dev" ? process.env.E2E_DEV_EMAIL :
                 role === "admin" ? process.env.E2E_ADMIN_EMAIL :
                 role === "editor" ? (process.env.E2E_MANAGER_EMAIL || process.env.E2E_ADMIN_EMAIL) :
+                role === "seller" ? process.env.E2E_SELLER_EMAIL :
                 process.env.E2E_USER_EMAIL;
   const password = role === "dev" ? process.env.E2E_DEV_PASSWORD :
                    role === "admin" ? process.env.E2E_ADMIN_PASSWORD :
                    role === "editor" ? (process.env.E2E_MANAGER_PASSWORD || process.env.E2E_ADMIN_PASSWORD) :
+                   role === "seller" ? process.env.E2E_SELLER_PASSWORD :
                    process.env.E2E_USER_PASSWORD;
 
   if (!email || !password) {
-    // E21 — modo estrito: em CI, credentials ausentes = falha imediata.
-    if (process.env.CI) {
+    // E21 — modo estrito: em CI (push/schedule), credentials ausentes = falha imediata.
+    // Em pull_request de fork, o GitHub retém secrets — degradar graciosamente.
+    const isForkPR = process.env.CI && process.env.GITHUB_EVENT_NAME === 'pull_request';
+    if (process.env.CI && !isForkPR) {
       throw new Error(
         `[loginAs] E21 — modo estrito: E2E_${role.toUpperCase()}_EMAIL/PASSWORD ausentes em CI.`,
       );
     }
     test.skip(true, `Credenciais E2E_${role.toUpperCase()}_EMAIL/PASSWORD ausentes`);
+    return;
   }
 
   // Se já estamos autenticados (storageState aplicado pelo project), uma
