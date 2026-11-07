@@ -2,14 +2,30 @@ import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
 
 const externalBaseUrl = process.env.E2E_BASE_URL?.trim();
-const isLocalBaseUrl = !externalBaseUrl || /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::|\/|$)/i.test(externalBaseUrl);
+const isLocalBaseUrl =
+  !externalBaseUrl || /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::|\/|$)/i.test(externalBaseUrl);
 const forceStartServer = process.env.E2E_FORCE_START_SERVER === '1';
-const reuseExistingServer = !forceStartServer && (process.env.CI === 'true' || process.env.E2E_REUSE_EXISTING_SERVER === '1');
+const reuseExistingServer =
+  !forceStartServer && (process.env.CI === 'true' || process.env.E2E_REUSE_EXISTING_SERVER === '1');
 const localBaseUrl = externalBaseUrl || 'http://localhost:8080';
 const localServerPort = forceStartServer && isLocalBaseUrl ? new URL(localBaseUrl).port : '';
-const localServerCommand = forceStartServer && localServerPort
-  ? `npm run dev -- --port ${localServerPort} --strictPort`
-  : 'npm run dev';
+const localServerCommand =
+  forceStartServer && localServerPort
+    ? `npm run dev -- --port ${localServerPort} --strictPort`
+    : 'npm run dev';
+
+// Suítes funcionais de /estoque exigem sessão e já rodam no projeto autenticado
+// (além do workflow e2e-stock dedicado). Executá-las também nos projetos
+// públicos refaz login real por teste, duplica cobertura e esgota os shards.
+const authenticatedOnlySpecs = [
+  /[\\/]admin[\\/]stock-.*\.spec\.ts$/,
+  /[\\/]routes[\\/]app[\\/]stock-.*\.spec\.ts$/,
+  /[\\/]admin-conexoes-credentials-active-products\.spec\.ts$/,
+  /[\\/]admin-conexoes-zone-collapse\.spec\.ts$/,
+  /[\\/]agente-permissions\.spec\.ts$/,
+  /[\\/]business-flows\.spec\.ts$/,
+  /[\\/]carrinhos[\\/].*\.spec\.ts$/,
+];
 
 /**
  * Playwright Configuration
@@ -41,7 +57,12 @@ export default defineConfig({
   workers: process.env.CI ? 2 : undefined,
   // E43: no CI, never auto-create a missing baseline (prevents flaky green on first missing snapshot)
   updateSnapshots: process.env.CI ? 'none' : 'missing',
-  reporter: [['html', { open: 'never' }], ['list'], ['github'], ['json', { outputFile: 'playwright-report/results.json' }]],
+  reporter: [
+    ['html', { open: 'never' }],
+    ['list'],
+    ['github'],
+    ['json', { outputFile: 'playwright-report/results.json' }],
+  ],
   use: {
     baseURL: externalBaseUrl || 'http://localhost:8080',
     trace: 'retain-on-failure',
@@ -64,7 +85,7 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 720 },
       },
-      testIgnore: [/auth\.setup\.ts/],
+      testIgnore: [/auth\.setup\.ts/, ...authenticatedOnlySpecs],
     },
     {
       name: 'firefox-public',
@@ -72,7 +93,7 @@ export default defineConfig({
         ...devices['Desktop Firefox'],
         viewport: { width: 1280, height: 720 },
       },
-      testIgnore: [/auth\.setup\.ts/],
+      testIgnore: [/auth\.setup\.ts/, ...authenticatedOnlySpecs],
     },
     {
       name: 'webkit-public',
@@ -80,7 +101,7 @@ export default defineConfig({
         ...devices['Desktop Safari'],
         viewport: { width: 1280, height: 720 },
       },
-      testIgnore: [/auth\.setup\.ts/],
+      testIgnore: [/auth\.setup\.ts/, ...authenticatedOnlySpecs],
     },
 
     // 3. Projetos Autenticados (reaproveita login do setup)
@@ -152,7 +173,7 @@ export default defineConfig({
       testMatch: [/smoke\.spec\.ts/],
       grep: /@smoke/,
       retries: 0,
-      workers: 1,  // E21: smoke serializado — storageState compartilhado + fail-fast determinístico
+      workers: 1, // E21: smoke serializado — storageState compartilhado + fail-fast determinístico
     },
   ],
 
