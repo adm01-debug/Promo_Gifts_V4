@@ -2,14 +2,20 @@ import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
 
 const externalBaseUrl = process.env.E2E_BASE_URL?.trim();
-const isLocalBaseUrl = !externalBaseUrl || /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::|\/|$)/i.test(externalBaseUrl);
+const isLocalBaseUrl =
+  !externalBaseUrl || /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::|\/|$)/i.test(externalBaseUrl);
 const forceStartServer = process.env.E2E_FORCE_START_SERVER === '1';
-const reuseExistingServer = !forceStartServer && (process.env.CI === 'true' || process.env.E2E_REUSE_EXISTING_SERVER === '1');
+const useProductionPreview = process.env.E2E_SERVER_MODE === 'preview';
+const reuseExistingServer =
+  !forceStartServer && (process.env.CI === 'true' || process.env.E2E_REUSE_EXISTING_SERVER === '1');
 const localBaseUrl = externalBaseUrl || 'http://localhost:8080';
 const localServerPort = forceStartServer && isLocalBaseUrl ? new URL(localBaseUrl).port : '';
-const localServerCommand = forceStartServer && localServerPort
-  ? `npm run dev -- --port ${localServerPort} --strictPort`
-  : 'npm run dev';
+const localServerCommand =
+  forceStartServer && localServerPort
+    ? useProductionPreview
+      ? `npm run build && npm run preview -- --host 127.0.0.1 --port ${localServerPort} --strictPort`
+      : `npm run dev -- --port ${localServerPort} --strictPort`
+    : 'npm run dev';
 
 /**
  * Playwright Configuration
@@ -41,7 +47,12 @@ export default defineConfig({
   workers: process.env.CI ? 2 : undefined,
   // E43: no CI, never auto-create a missing baseline (prevents flaky green on first missing snapshot)
   updateSnapshots: process.env.CI ? 'none' : 'missing',
-  reporter: [['html', { open: 'never' }], ['list'], ['github'], ['json', { outputFile: 'playwright-report/results.json' }]],
+  reporter: [
+    ['html', { open: 'never' }],
+    ['list'],
+    ['github'],
+    ['json', { outputFile: 'playwright-report/results.json' }],
+  ],
   use: {
     baseURL: externalBaseUrl || 'http://localhost:8080',
     trace: 'retain-on-failure',
@@ -152,7 +163,7 @@ export default defineConfig({
       testMatch: [/smoke\.spec\.ts/],
       grep: /@smoke/,
       retries: 0,
-      workers: 1,  // E21: smoke serializado — storageState compartilhado + fail-fast determinístico
+      workers: 1, // E21: smoke serializado — storageState compartilhado + fail-fast determinístico
     },
   ],
 
@@ -165,7 +176,7 @@ export default defineConfig({
         command: localServerCommand,
         url: localBaseUrl,
         reuseExistingServer,
-        timeout: 120 * 1000,
+        timeout: useProductionPreview ? 240 * 1000 : 120 * 1000,
       }
     : undefined,
 });
