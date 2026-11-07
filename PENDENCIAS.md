@@ -423,7 +423,7 @@ Process completed with exit code 2.
 **Workflow:** `migrations-sync-log-gate` (workflow separado, NÃO está em `deploy-gates.yml`)  
 **Run ID:** [42389264565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42389264565) (2026-11-07T16:02Z, SHA `efae9c9c4`)  
 **Job falhado:** `Recibo de migration em MIGRATIONS_SYNC_LOG.md` — Step 4: "Gate — recibo de migration no log (bloqueante)"  
-**Erro exato:**
+**Erro exato (verificado nesta sessão em 2026-11-07T22:00Z via `github_get_run_failure_summary`):**
 ```
 [migrations-sync-log-gate] failed: 1/1 migration(ões) alterada(s) SEM recibo válido: 20261101150000_fix_sb0003_fn_get_rupture_alerts.sql(version_not_registered)
 ```
@@ -440,7 +440,10 @@ Process completed with exit code 2.
 
 **Workflow:** `db-schema-drift-check.yml` (mesma falha pré-existente do item #1)  
 **Run ID nesta PR:** check run na SHA `efae9c9c4` (2026-11-07T16:02Z)  
-**Erro exato:** `Migrations x Canonical schema` → `completed: failure` — mesmo drift `local_only/remote_only` do item #1.  
+**Erro exato (confirmado via item #1 — erro pré-existente, sem mudança nesta sessão):** `Migrations x Canonical schema` → `completed: failure` — mesmo drift `local_only/remote_only` do item #1.
+```
+local_only=1141; remote_only=674
+```
 **Causa:** Pré-existente — divergência massiva entre `supabase/migrations/` e banco de produção (`schema_migrations`). Nenhuma mudança nesta PR afeta o ledger de migrations (só o SQL foi corrigido, sem aplicação em produção). Esta falha está presente desde antes de qualquer PR desta sessão (ver item #1, run #42075701349).  
 **Required check:** NÃO — advisory. Gate Final passa mesmo com esta falha (confirmado: SHA `3c2ff9296dc2` teve Gate Final success com mesma falha ativa).  
 **Por que não corrijo:** Mesmas restrições do item #1 — REGRA #8 proíbe `migration repair` sem autorização do dono.
@@ -478,7 +481,7 @@ Causa: drift pré-existente do item #1 (`local_only=1141; remote_only=674`). Nen
 ## 29. Compare GitHub × Canonical ❌ (required check — drift de edge functions em main)
 
 **Workflow:** `edge-functions-drift-check.yml`  
-**Run ID mais recente:** [42394606339](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394606339) (2026-11-07T17:17Z, SHA `787f8438` = main atual)  
+**Run ID mais recente:** [42394606339](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394606339) (2026-11-07T17:17Z, SHA `787f8438` = main anterior)  
 **Run anterior confirmado (SHA `9739e654`):** [42393271130](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42393271130) (2026-11-07T16:58Z)  
 **Erro exato (artefato drift-report.csv, run 42394606339):**
 ```
@@ -545,7 +548,7 @@ Requer CLI com `SUPABASE_ACCESS_TOKEN` e `SUPABASE_DB_PASSWORD` configurados, ou
 **Workflow:** `db-apply-migration.yml` (workflow_dispatch)  
 **Run ID:** [42380876893](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380876893) (2026-11-07T14:20Z, SHA `b5f7d2e29e0b`)  
 **Job falhado:** `1. Preflight (read-only)` — Step: "Checa arquivo único, rollback documentado, ainda não no ledger"  
-**Erro exato:**
+**Erro exato (verificado em run #42380876893 nesta sessão — mesmo erro do item #22):**
 ```
 arquivo de rollback 20261101150000_rollback.sql não encontrado.
 SECURITY DEFINER sem "pg_temp" no SET search_path em função "public.fn_get_rupture_alerts"
@@ -638,3 +641,37 @@ SECURITY DEFINER sem "pg_temp" no SET search_path em função "public.fn_get_rup
 **Status attempt 2:** API do GitHub retornou estado stale (`in_progress` por 30+ min após timeout de 20 min); resultado final indeterminado por cache de API.  
 **Superado:** Commit seguinte (`a882bcc1`, docs-only) obteve Gate Final success via bypass E14 — Gate 3 bypassed por mudança exclusivamente docs. Required checks satisfeitos em main no SHA `a882bcc1`.  
 **O que o dono precisa fazer:** Adicionar `SUPABASE_SERVICE_ROLE_KEY` em Secrets (causa root confirmada nos itens #13 e correlatos) para evitar recorrência em runs não-docs.
+
+---
+
+## 37. Uptime Monitor ❌ (2026-11-07T21:33Z — `health-check` HTTP 503 persistente)
+
+**Workflow:** `uptime-monitor.yml`  
+**Run ID:** [42416388841](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42416388841) (2026-11-07T21:33Z, SHA `bfb2926d`)  
+**Required check:** NÃO — advisory (sonda de health check a cada 30 min).  
+**Erro exato (verificado nesta sessão em 2026-11-07T22:00Z via `github_get_run_failure_summary`):**
+```
+| Probe          | HTTP | curl exit |
+|---|---:|---:|
+| site           | 200  | 0         |
+| health-check   | 503  | 22        |
+| check-login    | 200  | 0         |
+| auth-health    | 200  | 0         |
+```
+Falha: `https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/health-check` → HTTP 503 (Service Unavailable). Issue #3174 ativa no repo (criada automaticamente pelo monitor).
+
+**Causa:** A edge function `health-check` retorna 503 de forma persistente em produção. Recorrência confirmada em múltiplos runs (SHAs `bfb2926d`, vários anteriores — ver itens #21, #33). O site (`promogifts.com.br`) e os outros endpoints (`check-login`, `auth-health`) respondem HTTP 200.  
+**Por que não corrijo:** Não é bug de código nos workflows de CI — é falha de runtime de edge function em produção. Requer: (1) diagnóstico dos logs de execução da função `health-check` no Supabase Dashboard (`doufsxqlfjyuvxuezpln`), (2) possível re-deploy da edge function `health-check` via `deploy-edge-functions.yml` com aprovação do dono (REGRA #8).  
+**O que o dono precisa fazer:**
+1. Acessar Supabase Dashboard → Functions → `health-check` → Logs para ver o erro de runtime
+2. Se a função existir mas estiver com erro: corrigir o código da função e re-deploy via `deploy-edge-functions.yml`
+3. Se a função não existir no canônico: fazer deploy via `deploy-edge-functions.yml` com `function_name=health-check`
+4. Issue #3174 será fechada automaticamente pelo próximo run do monitor após a correção
+
+---
+
+> **Atualização 2026-11-07T22:00Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
+> Erros dos itens #26, #30, #37 verificados nesta sessão via `github_get_run_failure_summary` com run IDs reais.  
+> HEAD atual (main): `be7688da2ab5508848747b10eaab99a31241467b` — Gate Final run [#42418015737](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42418015737) → `in_progress` (0 failed jobs em 2026-11-07T22:00Z).  
+> Workflows em falha NÃO required (todos com error exato registrado): itens #1, #2/#23, #3, #5/#24, #6, #7, #9, #13, #21/#33/#37 (uptime/health-check), #22/#30 (migration rollback), #26 (recibo migration), #27, #31, #32, #35.  
+> Required check failing: somente item #29 (Compare GitHub × Canonical — 27 EFs driftadas) — requer dono despachar `deploy-edge-functions.yml` e aprovar `production`.
