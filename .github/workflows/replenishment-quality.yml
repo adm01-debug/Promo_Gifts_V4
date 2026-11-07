@@ -74,7 +74,7 @@ jobs:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
           # O stress valida grid/virtualização/resiliência, não o login real.
-          # Mock auth elimina rate-limit/504 do Supabase no runner de PR.
+          # Mock auth elimina rate-limit/504 do Supabase no runner da CI.
           E2E_MOCK_AUTH: '1'
         # O spec compartilha a sessão autenticada e o mesmo servidor local.
         # Serializar evita colisão no login/page.goto entre os cenários.
