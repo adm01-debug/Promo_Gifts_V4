@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1c0eb375c2ed7f4c16d0c51ca6ac17776e9a555f",
+  "commit": "6f94e352017941362adc206d166d1dfaa8553a0b",
   "branch": "main",
-  "data_commit": "2026-11-06T20:19:38-03:00",
+  "data_commit": "2026-11-06T21:13:32-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "6f94e35",
+    "data": "2026-11-06",
+    "assunto": "fix(ci): reconcile E40 ledger and forced rotation (#3113)"
+   },
    {
     "sha": "1c0eb37",
     "data": "2026-11-06",
@@ -126,14 +131,9 @@
     "sha": "2c5dafc",
     "data": "2026-11-04",
     "assunto": "feat(e2e): corrige smoke tests de magazine para CI verde"
-   },
-   {
-    "sha": "07dc24e",
-    "data": "2026-11-04",
-    "assunto": "fix(e2e): corrige 2 smoke tests de magazine pré-existentes (#3069)"
    }
   ],
-  "arquivos_mudados_7d": 381,
+  "arquivos_mudados_7d": 383,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 178
+    "mudancas": 177
    },
    {
     "pasta": "src/components/inventory",
@@ -218,15 +218,15 @@
     "mudancas": 21
    },
    {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 15
-   },
-   {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
     "mudancas": 15
    },
    {
     "arquivo": "CHANGELOG.md",
+    "mudancas": 14
+   },
+   {
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
     "mudancas": 14
    },
    {
@@ -243,15 +243,15 @@
    },
    {
     "arquivo": "analise-prs/progresso.json",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "analise-prs/prs.csv",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "AGENTS.md",
@@ -270,7 +270,15 @@
     "mudancas": 7
    },
    {
+    "arquivo": "scripts/migration-ledger-remote-only-allowlist.json",
+    "mudancas": 7
+   },
+   {
     "arquivo": ".github/workflows/ratchet-weekly.yml",
+    "mudancas": 6
+   },
+   {
+    "arquivo": ".github/workflows/schema-snapshot-export.yml",
     "mudancas": 6
    },
    {
@@ -288,20 +296,12 @@
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 6
-   },
-   {
-    "arquivo": "scripts/migration-ledger-remote-only-allowlist.json",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "tests/config/playwright-config-smoke.test.ts",
-    "mudancas": 6
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 349
+    "commits": 348
    },
    {
     "autor": "Joaquim Ataides",

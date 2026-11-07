@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "1c0eb375c2ed7f4c16d0c51ca6ac17776e9a555f",
+  "sha": "6f94e352017941362adc206d166d1dfaa8553a0b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-06 23:26 UTC",
+  "generated_at": "2026-11-07 00:14 UTC",
   "files_total": 9092,
   "code_files": 7837,
   "code_lines": 1050284
@@ -482741,10 +482741,20 @@
   }
  },
  "git": {
-  "sha": "1c0eb375c2ed7f4c16d0c51ca6ac17776e9a555f",
+  "sha": "6f94e352017941362adc206d166d1dfaa8553a0b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "6f94e35",
+    "date": "2026-11-06",
+    "author": "adm01-debug",
+    "subject": "fix(ci): reconcile E40 ledger and forced rotation (#3113)",
+    "files": [
+     ".github/workflows/schema-snapshot-export.yml",
+     "scripts/migration-ledger-remote-only-allowlist.json"
+    ]
+   },
    {
     "sha": "1c0eb37",
     "date": "2026-11-06",
@@ -483033,16 +483043,6 @@
     "files": [
      "docs/PLANO_MELHORIAS_200_ETAPAS_261104.md"
     ]
-   },
-   {
-    "sha": "724592a",
-    "date": "2026-11-04",
-    "author": "adm01-debug",
-    "subject": "fix(docs): corrigir marcadores legado em planos — guard-canonical-project (#3062)",
-    "files": [
-     "docs/PLANO_MELHORIAS_200_ETAPAS.md",
-     "docs/PLANO_MELHORIAS_200_ETAPAS_261104.md"
-    ]
    }
   ],
   "hot_files": [
@@ -483075,8 +483075,12 @@
     2
    ],
    [
-    "docs/PLANO_MELHORIAS_200_ETAPAS_261104.md",
-    2
+    ".github/workflows/schema-snapshot-export.yml",
+    1
+   ],
+   [
+    "scripts/migration-ledger-remote-only-allowlist.json",
+    1
    ],
    [
     ".security/policies-baseline.json",
@@ -483120,10 +483124,6 @@
    ],
    [
     ".soft-delete-baseline.json",
-    1
-   ],
-   [
-    "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql",
     1
    ]
   ]
