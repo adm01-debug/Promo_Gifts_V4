@@ -13,6 +13,7 @@ const localServerCommand =
   forceStartServer && localServerPort
     ? `npm run dev -- --port ${localServerPort} --strictPort`
     : 'npm run dev';
+const isGeneralRegression = process.env.E2E_GENERAL_REGRESSION === '1';
 
 // Suítes funcionais de /estoque exigem sessão e já rodam no projeto autenticado
 // (além do workflow e2e-stock dedicado). Executá-las também nos projetos
@@ -25,7 +26,19 @@ const authenticatedOnlySpecs = [
   /[\\/]agente-permissions\.spec\.ts$/,
   /[\\/]business-flows\.spec\.ts$/,
   /[\\/]carrinhos[\\/].*\.spec\.ts$/,
+  /[\\/]catalog[\\/]catalog-search-audit\.spec\.ts$/,
+  /[\\/]auth-stability\.spec\.ts$/,
 ];
+
+// O workflow de estoque é o dono canônico destas suítes. Na regressão geral,
+// repeti-las consome logins reais e artefatos sem acrescentar cobertura; fora
+// dela (incluindo e2e-stock e visual-tests), continuam habilitadas normalmente.
+const generalRegressionDedicatedSpecs = isGeneralRegression
+  ? [/[\\/]admin[\\/]stock-.*\.spec\.ts$/, /[\\/]routes[\\/]app[\\/]stock-.*\.spec\.ts$/]
+  : [];
+
+// A suíte valida a tela pública de autenticação e não deve herdar storageState.
+const publicOnlySpecs = [/[\\/]auth-debug-removal\.spec\.ts$/];
 
 /**
  * Playwright Configuration
@@ -65,9 +78,11 @@ export default defineConfig({
   ],
   use: {
     baseURL: externalBaseUrl || 'http://localhost:8080',
-    trace: 'retain-on-failure',
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    // O gate geral já publica logs + blob report e pode gerar centenas de
+    // falhas correlatas. Evidências multimídia permanecem nos gates dedicados.
+    trace: isGeneralRegression ? 'off' : 'retain-on-failure',
+    screenshot: isGeneralRegression ? 'off' : 'only-on-failure',
+    video: isGeneralRegression ? 'off' : 'retain-on-failure',
     headless: true,
   },
 
@@ -113,7 +128,7 @@ export default defineConfig({
         storageState: path.resolve('e2e/.auth/storageState.json'),
       },
       dependencies: ['setup'],
-      testIgnore: [/auth\.setup\.ts/],
+      testIgnore: [/auth\.setup\.ts/, ...generalRegressionDedicatedSpecs, ...publicOnlySpecs],
     },
 
     {
