@@ -65,31 +65,107 @@ export default function QuotesDashboardPage() {
     [s.quotes],
   );
 
-  if (s.isLoading) {
-    return (
-      <div className="mx-auto w-full max-w-[1920px] animate-fade-in space-y-3 px-3 py-3 pb-24 sm:space-y-4 sm:px-4 sm:py-4 md:pb-6 lg:px-6 xl:px-8">
-        <Skeleton className="h-10 w-64" />
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {Array.from({ length: 4 }, (_, i) => (
-            <Skeleton key={i} className="h-32" />
-          ))}
-        </div>
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <Skeleton className="h-80" />
-          <Skeleton className="h-80" />
+  // O título da página é estático e não deve depender do fetch de dados:
+  // renderizá-lo em todos os estados evita que a rota fique sem conteúdo
+  // identificável enquanto a query de orçamentos está pendente ou falhou.
+  const pageHeader = (
+    <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+      <div className="flex items-center gap-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Voltar"
+          onClick={() => navigate('/orcamentos')}
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <div>
+          <h1
+            data-testid="page-title-orcamentos-dashboard"
+            className="font-display text-2xl font-bold text-foreground"
+          >
+            Dashboard de Orçamentos
+          </h1>
+          <p className="text-muted-foreground">Métricas e análises de performance</p>
         </div>
       </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <Select value={s.selectedClientId} onValueChange={s.setSelectedClientId}>
+          <SelectTrigger className="w-[200px]">
+            <Building2 className="mr-2 h-4 w-4 text-muted-foreground" />
+            <SelectValue placeholder="Todos os clientes" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos os clientes</SelectItem>
+            {(s.clients.length > 0 ? s.clients : s.quotesClients).map((c) => (
+              <SelectItem key={c.id} value={c.id}>
+                {c.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {(['month', 'quarter', 'year'] as const).map((p) => (
+          <Button
+            key={p}
+            variant={s.selectedPeriod === p ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => s.setSelectedPeriod(p)}
+          >
+            {p === 'month' ? 'Mês' : p === 'quarter' ? 'Trimestre' : 'Ano'}
+          </Button>
+        ))}
+        <Button variant="outline" size="sm" onClick={s.exportToPdf} className="gap-1.5">
+          <Download className="h-4 w-4" />
+          PDF
+        </Button>
+      </div>
+    </div>
+  );
+
+  if (s.isLoading) {
+    return (
+      <>
+        <PageSEO
+          title="Dashboard de Orçamentos"
+          description="Acompanhe métricas e indicadores dos seus orçamentos."
+          path="/orcamentos/dashboard"
+          noIndex
+        />
+        <div className="mx-auto w-full max-w-[1920px] animate-fade-in space-y-3 px-3 py-3 pb-24 sm:space-y-4 sm:px-4 sm:py-4 md:pb-6 lg:px-6 xl:px-8">
+          {pageHeader}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 4 }, (_, i) => (
+              <Skeleton key={i} className="h-32" />
+            ))}
+          </div>
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <Skeleton className="h-80" />
+            <Skeleton className="h-80" />
+          </div>
+        </div>
+      </>
     );
   }
 
   if (s.error) {
     return (
-      <div className="mx-auto w-full max-w-[1920px] px-3 py-12 text-center sm:px-4 lg:px-6">
-        <p className="text-sm text-destructive">{s.error}</p>
-        <Button variant="outline" className="mt-4" onClick={() => navigate('/orcamentos')}>
-          Voltar para orçamentos
-        </Button>
-      </div>
+      <>
+        <PageSEO
+          title="Dashboard de Orçamentos"
+          description="Acompanhe métricas e indicadores dos seus orçamentos."
+          path="/orcamentos/dashboard"
+          noIndex
+        />
+        <div className="mx-auto w-full max-w-[1920px] space-y-3 px-3 py-3 pb-24 sm:space-y-4 sm:px-4 sm:py-4 md:pb-6 lg:px-6 xl:px-8">
+          {pageHeader}
+          <div className="py-12 text-center">
+            <p className="text-sm text-destructive">{s.error}</p>
+            <Button variant="outline" className="mt-4" onClick={() => navigate('/orcamentos')}>
+              Voltar para orçamentos
+            </Button>
+          </div>
+        </div>
+      </>
     );
   }
 
@@ -102,58 +178,7 @@ export default function QuotesDashboardPage() {
         noIndex
       />
       <div className="mx-auto w-full max-w-[1920px] animate-fade-in space-y-3 px-3 py-3 pb-24 sm:space-y-4 sm:px-4 sm:py-4 md:pb-6 lg:px-6 xl:px-8">
-        {/* Header */}
-        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Voltar"
-              onClick={() => navigate('/orcamentos')}
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div>
-              <h1
-                data-testid="page-title-orcamentos-dashboard"
-                className="font-display text-2xl font-bold text-foreground"
-              >
-                Dashboard de Orçamentos
-              </h1>
-              <p className="text-muted-foreground">Métricas e análises de performance</p>
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <Select value={s.selectedClientId} onValueChange={s.setSelectedClientId}>
-              <SelectTrigger className="w-[200px]">
-                <Building2 className="mr-2 h-4 w-4 text-muted-foreground" />
-                <SelectValue placeholder="Todos os clientes" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os clientes</SelectItem>
-                {(s.clients.length > 0 ? s.clients : s.quotesClients).map((c) => (
-                  <SelectItem key={c.id} value={c.id}>
-                    {c.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {(['month', 'quarter', 'year'] as const).map((p) => (
-              <Button
-                key={p}
-                variant={s.selectedPeriod === p ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => s.setSelectedPeriod(p)}
-              >
-                {p === 'month' ? 'Mês' : p === 'quarter' ? 'Trimestre' : 'Ano'}
-              </Button>
-            ))}
-            <Button variant="outline" size="sm" onClick={s.exportToPdf} className="gap-1.5">
-              <Download className="h-4 w-4" />
-              PDF
-            </Button>
-          </div>
-        </div>
+        {pageHeader}
 
         {s.selectedClientName && (
           <div className="flex items-center gap-2">

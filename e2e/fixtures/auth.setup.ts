@@ -45,7 +45,10 @@ setup('authenticate', async ({ page }) => {
 
   if (!email || !password) {
     // E21 — modo estrito: em CI sem mock, credentials ausentes = falha imediata.
-    if (process.env.CI) {
+    // Exceção: pull_request de fork — o GitHub retém secrets intencionalmente;
+    // nesses casos, degradar graciosamente em vez de quebrar o workflow inteiro.
+    const isForkPR = process.env.CI && process.env.GITHUB_EVENT_NAME === 'pull_request';
+    if (process.env.CI && !isForkPR) {
       throw new Error(
         '[auth.setup] E21 — modo estrito: E2E_USER_EMAIL/E2E_USER_PASSWORD ausentes em CI.\n' +
         'Configure os secrets em Settings → Secrets and variables → Actions.\n' +

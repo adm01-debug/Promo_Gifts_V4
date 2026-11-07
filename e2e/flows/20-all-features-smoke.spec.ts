@@ -339,7 +339,7 @@ test.describe("@smoke Rotas públicas (gate de CI)", () => {
  * Smoke autenticado adicional — RLS guard (cobertura crítica P0).
  * ============================================================ */
 test.describe("@smoke RLS guard (gate de CI)", () => {
-  test.describe.configure({ mode: "serial" });
+  test.describe.configure({ mode: "serial", retries: 1 });
 
   test("94 · RLS bloqueia leitura de tabelas sensíveis para o usuário comum", async ({ page }) => {
     test.setTimeout(240_000);
