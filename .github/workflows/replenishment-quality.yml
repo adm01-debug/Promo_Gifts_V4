@@ -5,24 +5,28 @@ name: CI - Replenishment Module Quality Gate
 # 2026-10-01: E26 v2 — credencial-gate no step de stress test (evita falha sem E22)
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
       - 'src/**'
       - 'supabase/**'
       - 'tests/**'
       - 'e2e/**'
       - 'package.json'
+      - 'playwright.config.ts'
+      - 'vite.config.*'
       - '.tsc-baseline.json'
       - '.eslint-baseline.json'
       - '.github/workflows/replenishment-quality.yml'
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths:
       - 'src/**'
       - 'supabase/**'
       - 'tests/**'
       - 'e2e/**'
       - 'package.json'
+      - 'playwright.config.ts'
+      - 'vite.config.*'
       - '.tsc-baseline.json'
       - '.eslint-baseline.json'
       - '.github/workflows/replenishment-quality.yml'
@@ -34,7 +38,6 @@ concurrency:
 permissions:
   contents: read
   pull-requests: read
-
 
 defaults:
   run:
@@ -51,16 +54,16 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
-      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}  # E53: fallback
-      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}  # E53: fallback
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }} # E53: fallback
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }} # E53: fallback
       E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
       E2E_BASE_URL: http://127.0.0.1:8081
       E2E_FORCE_START_SERVER: '1'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      # E53: use setup-node (project standard) instead of setup-bun
+        # E53: use setup-node (project standard) instead of setup-bun
         with:
-          persist-credentials: false  # E32
+          persist-credentials: false # E32
       - name: Setup E2E
         uses: ./.github/actions/e2e-setup
 
@@ -69,6 +72,9 @@ jobs:
 
       - name: Type check
         run: node scripts/check-tsc-baseline.mjs
+
+      - name: Navigation helper contract
+        run: npx vitest run tests/config/e2e-nav-helper-smoke.test.ts
 
       - name: Run Module Tests (Unit & Integration)
         # E53: live Supabase integration only on push (not on PR to avoid prod reads)
@@ -93,6 +99,11 @@ jobs:
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          # A paridade valida layout do artefato que vai a produção. Usar o
+          # preview elimina a transformação lazy do Vite dev que, no runner
+          # frio, consumiu 120s em quatro tentativas antes de o mesmo grafo
+          # passar em 6–50s nos 13 cenários seguintes.
+          E2E_SERVER_MODE: preview
         # A suíte mede múltiplos viewports contra um único servidor local. Com
         # fullyParallel + 2 workers, navegações concorrentes deixam a app em
         # nprogress-busy e produzem falso timeout antes dos títulos das páginas.
@@ -103,5 +114,8 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: parity-report
-          path: playwright-report/
+          path: |
+            playwright-report/
+            !playwright-report/**/*.webm
+          if-no-files-found: error
           retention-days: 14
