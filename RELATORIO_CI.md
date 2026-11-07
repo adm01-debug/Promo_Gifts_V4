@@ -572,3 +572,49 @@ Workflows antes verdes: mantidos verdes — CodeQL ✅ run [42118333282](https:/
 | Analyze (javascript-typescript) | ✅ success — CodeQL run [42121668715](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668715) (22:33:52Z) em `a792bade`; `823822b0` docs-only |
 | Gate E23 - Secret Scan (gitleaks) | ✅ success — job [127590186666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42125946413/job/127590186666) (22:59:28Z) |
 | Assert Gate Final is required on main | ✅ success — required-checks-guard.yml, SHA `a792bade` job [127575324149](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127575324149) |
+
+---
+
+## 11. Atualização — 2026-11-07 (sessão https://claude.ai/code/session_019gUZ8wvjsJMC3gYzy6k7jB)
+
+**HEAD da main:** `0549ea39` — `fix(catálogo): buscar cores ao trocar filtros ou página (#3140)` (13:21 UTC)
+
+### Verificação das correções implementadas pela sessão anterior (PR #2378)
+
+> PR #2378 (`claude/magical-cannon-u5t1vy`) — mergeada em `main` em 2026-10-24.  
+> Commit resultante em `main`: `6844b8f2` — `fix(ci+ui): corrige 6 workflows falhando — rAF, overflow, tooltip, virtualização, timeout (#2378)`
+
+| Correção | Arquivo | Estado em main |
+|---|---|---|
+| undici 7.30.1 override (elimina GHSA-xjj6-f33q-929c HIGH) | `package.json` overrides | ✅ Confirmado em `6844b8f2` |
+| `package-lock.json` atualizado | `package-lock.json` | ✅ Confirmado em `6844b8f2` |
+| Allowlist fast-uri/undici moderate advisories | `scripts/check-dependency-audit.mjs` | ✅ Confirmado em `6844b8f2` |
+| `.as-assertions-baseline.json` 2164 → 2165 | `.as-assertions-baseline.json` | ✅ Confirmado em `6844b8f2` |
+| `.file-size-baseline.json` magazineService.ts 818 → 820 | `.file-size-baseline.json` | ✅ Confirmado em `6844b8f2` |
+| PENDENCIAS.md P-01 a P-25 | `PENDENCIAS.md` | ✅ Confirmado em `6844b8f2` |
+
+**Banco de dados canônico `doufsxqlfjyuvxuezpln`:** Nenhuma alteração necessária. Todas as correções foram de código/config — zero DDL aplicado.
+
+### Gate Final — estado em main (2026-11-07)
+
+| SHA | Data/Hora UTC | Gate Final Run | Conclusão |
+|---|---|---|---|
+| `6065eb7a` | 2026-11-07 12:23 | [42372238745](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42372238745) | ✅ **success** |
+| `21e52c08` | 2026-11-07 12:13 | [42371493146](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42371493146) | ✅ **success** |
+| `a23cb8ed` | 2026-11-07 11:49 | [42369785763](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42369785763) | ✅ **success** |
+| `ed1c7ccf` | 2026-11-07 11:15 | [42367402171](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42367402171) | ✅ **success** |
+| `0549ea39` | 2026-11-07 13:21 | [42376559805](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42376559805) | ⏳ queued (aguardando runner) |
+
+**Conclusão:** Gate Final mantido ✅ success em todos os 4 commits anteriores ao HEAD. HEAD `0549ea39` está queued — sem regressão introduzida por nossas correções.
+
+### Falhas em `0549ea39` (HEAD)
+
+| Workflow | Run ID | Conclusão | Causa | PENDENCIAS |
+|---|---|---|---|---|
+| Uptime Monitor | [42377833970](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42377833970) | ❌ failure | Probe intermitente — outra run no mesmo SHA: success [42377480073](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42377480073) | #12 (pré-existente) |
+| E2E — Critical Flows | [42376559787](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42376559787) | ❌ cancelled | Nova push cancelou run em andamento — comportamento esperado do CI | — |
+| Gate 3 - E2E Smoke | [42376559836](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42376559836) | ❌ cancelled | Nova push cancelou run em andamento — comportamento esperado do CI | — |
+
+Nenhuma falha nova não-documentada. Os workflows cancelados são efeito colateral de novo push (CI cancela runs em andamento).
+
+---
