@@ -12,7 +12,7 @@ CREATE OR REPLACE FUNCTION public.fn_global_search(p_term text, p_limit integer 
  RETURNS TABLE(result_id text, result_type text, result_title text, result_description text, result_url text, result_image_url text, result_metadata jsonb, result_relevance numeric)
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
- SET search_path TO 'public', 'extensions'
+ SET search_path TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
 AS $function$
 DECLARE
   v_term_norm text;
