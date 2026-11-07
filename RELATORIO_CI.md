@@ -696,7 +696,7 @@ Gate 1 (Lint + TypeScript) no CI confirmado: run #42395747034 (SHA `b4aa9e33`) =
 | node_modules | `ls node_modules/.package-lock.json` | ✅ em sincronia (`ok package-lock.json em sincronia com package.json (120 deps)` — task b7ctsxzzo) |
 | TypeScript | `npx tsc --noEmit` | ✅ EXIT=0 (task b7041l6rs) |
 | Build Vite | `npm run build` | ✅ EXIT=0 — built in 12.35s (task b21lbei39) |
-| lint:baseline | `npm run lint:baseline` | ⏳ em andamento (task b7ctsxzzo) — NÃO VERIFICADO até conclusão |
+| lint:baseline | `npm run lint:baseline` | ✅ EXIT=0 — `0 erros, 0 warnings · Nenhuma regressão de lint detectada` (task b7ctsxzzo + pre-push hook b9wfqahl1) |
 | vitest (suíte completa) | `npx vitest run` | ✅ 1282 arquivos passados \| 130 skipped \| 26107 testes passados \| 1132 skipped \| exit 0 (task bxeuby1i1 — rodou em `fa5da5d6b`, SHA base do merge; diff docs-only não altera nenhum teste) |
 
 ### Gate Final (Deploy Gates) na main `1a47c6972c`
