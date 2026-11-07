@@ -31,6 +31,7 @@ on:
 # R1 — permissões mínimas
 permissions:
   contents: read
+  pull-requests: read
 
 # R2 — PRs cancelam; schedule e dispatch não
 concurrency:
@@ -42,6 +43,9 @@ defaults:
     shell: bash
 
 jobs:
+  e2e-relevance:
+    uses: ./.github/workflows/_e2e-relevance.yml
+
   secrets_check:
     uses: ./.github/workflows/_secrets-check.yml
     secrets: inherit
@@ -50,7 +54,8 @@ jobs:
 
   e2e_focused:
     name: E2E Focused · ${{ matrix.suite }}
-    needs: [secrets_check]
+    needs: [e2e-relevance, secrets_check]
+    if: needs.e2e-relevance.outputs.relevant == 'true'
     runs-on: ubuntu-24.04
     # R3 — timeout por job
     timeout-minutes: 20
