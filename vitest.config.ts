@@ -18,10 +18,11 @@ const rewriteDenoUrlImports = (): Plugin => ({
   enforce: 'pre',
   transform(code, id) {
     if (!/\.(ts|tsx|mts|js|mjs)$/.test(id)) return null;
-    if (!code.includes('https://')) return null;
+    if (!code.includes('https://') && !code.includes('npm:zod')) return null;
     const next = code
       .replace(/(["'])https:\/\/esm\.sh\/zod@[^"']+\1/g, '"zod"')
-      .replace(/(["'])https:\/\/deno\.land\/x\/zod@[^"']+\/mod\.ts\1/g, '"zod"');
+      .replace(/(["'])https:\/\/deno\.land\/x\/zod@[^"']+\/mod\.ts\1/g, '"zod"')
+      .replace(/(["'])npm:zod@[^"']+\1/g, '"zod"');
     return next === code ? null : { code: next, map: null };
   },
 });
