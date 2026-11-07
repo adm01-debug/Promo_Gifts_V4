@@ -31,6 +31,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 concurrency:
   group: delivery-quality-${{ github.ref }}
@@ -42,7 +43,12 @@ defaults:
     shell: bash
 
 jobs:
+  e2e-relevance:
+    uses: ./.github/workflows/_e2e-relevance.yml
+
   quality-gate:
+    needs: [e2e-relevance]
+    if: needs.e2e-relevance.outputs.relevant == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 20  # E104: +5min para absorver --retries=2 no E2E (75s/tentativa × 2 retries)
     env:

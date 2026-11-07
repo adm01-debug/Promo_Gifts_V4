@@ -38,6 +38,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 concurrency:
   group: e2e-${{ github.ref }}
@@ -52,6 +53,9 @@ defaults:
 # E013: Determina quais projetos Playwright estão disponíveis com base nos secrets.
 # chromium-authed só entra na matrix quando has_e2e == 'true'.
 jobs:
+  e2e-relevance:
+    uses: ./.github/workflows/_e2e-relevance.yml
+
   secrets-check:
     uses: ./.github/workflows/_secrets-check.yml
     secrets: inherit
@@ -59,10 +63,11 @@ jobs:
 # ─── JOB 1: PRÉ-VÔOS (header-sticky + carrinhos URL-state) ──────────────────
 # Roda uma vez; se falhar, os shards não sobem (needs: e2e-gates).
   e2e-gates:
+    needs: [e2e-relevance]
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     # G-H3: fork guard
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    if: needs.e2e-relevance.outputs.relevant == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     env:
       CI: "true"
       FORCE_COLOR: "0"

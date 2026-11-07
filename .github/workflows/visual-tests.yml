@@ -29,6 +29,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 
 concurrency:
@@ -40,9 +41,13 @@ defaults:
     shell: bash
 
 jobs:
+  e2e-relevance:
+    uses: ./.github/workflows/_e2e-relevance.yml
+
   visual-baseline:
     # G-H3: fork guard — pull_request de forks não deve escrever no repo
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    needs: [e2e-relevance]
+    if: needs.e2e-relevance.outputs.relevant == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     permissions:
       contents: read  # E60: somente-leitura — baselines são atualizados via _update-snapshots.yml (E59)
     strategy:

@@ -1,0 +1,56 @@
+name: Reusable — E2E Runtime Relevance
+
+on:
+  workflow_call:
+    outputs:
+      relevant:
+        description: Se o diff exige executar testes E2E contra o backend
+        value: ${{ jobs.detect.outputs.relevant }}
+
+permissions:
+  contents: read
+  pull-requests: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  detect:
+    name: Detectar impacto de runtime/E2E
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    outputs:
+      relevant: ${{ steps.result.outputs.relevant }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        id: filter
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        with:
+          filters: |
+            runtime:
+              - 'src/**'
+              - '!src/**/__tests__/**'
+              - '!src/**/*.test.*'
+              - '!src/**/*.spec.*'
+              - 'src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx'
+              - 'e2e/**'
+              - 'tests/**'
+              - 'public/**'
+              - '.github/actions/e2e-setup/**'
+              - 'package.json'
+              - 'package-lock.json'
+              - 'playwright.config.*'
+              - 'vite.config.*'
+              - '.nvmrc'
+      - name: Publicar decisão
+        id: result
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" || "${{ github.event_name }}" == "push" ]]; then
+            echo "relevant=${{ steps.filter.outputs.runtime }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+          fi
