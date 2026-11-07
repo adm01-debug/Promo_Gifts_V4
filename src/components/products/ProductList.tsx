@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, memo } from 'react';
+import { useEffect, useState, useCallback, useMemo, memo } from 'react';
 import { ProductListItem } from './ProductListItem';
 import { BulkActionBar } from './BulkActionBar';
 import { AddToCollectionModal } from '@/components/collections/AddToCollectionModal';
@@ -10,6 +10,7 @@ import type { ActiveColorFilter } from '@/utils/color-image-resolver';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { ProductCardSkeleton } from '@/components/loading/ModernSkeletons';
+import { useProductsColorsBatch } from '@/hooks/products/useProductsColorsBatch';
 
 export interface ProductListProps {
   products: Product[];
@@ -117,6 +118,32 @@ export const ProductList = memo(
     const selectionMode = isExternallyControlled
       ? (externalSelectionMode ?? false)
       : internalSelectedIds.size > 0;
+
+    // O catálogo lightweight entrega `colors: []`. Hidrate a lista pelo mesmo
+    // SSOT usado no grid e na tabela para manter os swatches V1 disponíveis.
+    const idsNeedingColors = useMemo(
+      () => products.filter((p) => !p.colors || p.colors.length === 0).map((p) => p.id),
+      [products],
+    );
+    const { data: colorsByProduct } = useProductsColorsBatch(idsNeedingColors);
+    const hydratedProducts = useMemo(() => {
+      if (colorsByProduct.size === 0) return products;
+      return products.map((product) => {
+        if (product.colors && product.colors.length > 0) return product;
+        const batch = colorsByProduct.get(product.id);
+        if (!batch || batch.length === 0) return product;
+        return {
+          ...product,
+          colors: batch.map((color) => ({
+            name: color.name,
+            hex: color.hex || '',
+            group: '',
+            image: color.image || undefined,
+            stock: color.stockQty,
+          })),
+        };
+      });
+    }, [products, colorsByProduct]);
 
     // Clear internal selection when products change significantly
     useEffect(() => {
@@ -228,11 +255,11 @@ export const ProductList = memo(
             id: `skeleton-${i}`,
             isSkeleton: true as const,
           }))
-        : products;
+        : hydratedProducts;
 
     // Get first selected product for collection modal
     const firstSelectedId = selectedIds.size > 0 ? Array.from(selectedIds)[0] : '';
-    const firstSelectedProduct = products.find((p) => p.id === firstSelectedId);
+    const firstSelectedProduct = hydratedProducts.find((p) => p.id === firstSelectedId);
 
     return (
       <>
