@@ -521,7 +521,11 @@ supabase functions download <slug> --project-ref doufsxqlfjyuvxuezpln
 ```
 Requer CLI com `SUPABASE_ACCESS_TOKEN` e `SUPABASE_DB_PASSWORD` configurados, ou MCP com `get_edge_function` apontado para `doufsxqlfjyuvxuezpln` (MCP `GESTÃO DE PRODUTOS` tem apenas 3 tools — sem `get_edge_function`).
 
-**Bloqueio técnico desta sessão:** MCP `GESTÃO DE PRODUTOS` não tem `get_edge_function`; dispatch de deploy requer aprovação `production` pelo dono; tentativa anterior (run #42394305679) foi cancelada pelo dono.
+**Tentativas de deploy nesta sessão:**
+- Run [#42394305679](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394305679) (17:02Z) — **cancelado pelo dono**
+- Run [#42398685437](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42398685437) (17:55Z) — **queued por 5+ min sem runner assinalado (runner_id=0); cancelado por esta sessão às 18:00Z** para evitar run preso indefinidamente
+
+**Bloqueio técnico desta sessão:** MCP `GESTÃO DE PRODUTOS` não tem `get_edge_function`; dispatch de deploy requer aprovação `production` pelo dono; runs anteriores cancelados (pelo dono e por runner indisponível). **Para resolver: o dono deve despachar `deploy-edge-functions.yml` via** https://github.com/adm01-debug/Promo_Gifts_V4/actions/workflows/deploy-edge-functions.yml **e aprovar o environment `production` quando solicitado.**
 
 ---
 

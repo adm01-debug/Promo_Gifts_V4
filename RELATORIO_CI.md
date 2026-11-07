@@ -565,3 +565,34 @@ Zero mudanças de schema em toda a série de sessões desta task. REGRA #8/E056 
 - **Sem nova falha required introduzida** por esta sessão nos commits desta branch
 - **Itens resolvidos nesta sessão:** #4, #8, #12, #14, #25 (5 itens)
 - **Itens bloqueados pelo dono (required):** #29 (Compare GitHub × Canonical — 27 funções drift)
+
+---
+
+## §18 — Baseline Local — Sessão 2026-11-07T18:00Z (SHA `787f8438`, contexto reiniciado)
+
+> Executado nesta sessão, após compactação de contexto. Mesmo HEAD da sessão anterior.
+
+| Etapa | Resultado | Horário início | Horário fim | Detalhe |
+|---|---|---|---|---|
+| `npm ci` | ✅ exit 0 | 18:00:08Z | — | Dependências instaladas sem erro |
+| `npm run build` | ✅ exit 0 | 18:00:39Z | 18:00:53Z | `✓ built in 11.20s`; warnings de INEFFECTIVE_DYNAMIC_IMPORT (pré-existentes) |
+| `npx tsc --noEmit` | ✅ exit 0 | 18:00:56Z | 18:00:57Z | Sem erros de tipo |
+| `npm run test:ci-core` | ✅ 971/971 | 18:01:00Z | 18:01:35Z | 42 test files, 971 tests passados, 34.26s |
+| `npm run lint:baseline` | ⏳ OOM/timeout | 18:01:39Z | — | Invariante no container 2GB — ver §16; resultado anterior: 0 erros, 0 warnings, Δ=0 |
+
+**Conclusão:** Build, typecheck e testes passaram sem erro. Lint OOM é invariante do container (ver §16, commit `cab9e84d5` confirmou 0 regressões).
+
+---
+
+## §19 — Status deploy run #42398685437 (2026-11-07T18:00Z)
+
+| Campo | Valor |
+|---|---|
+| Run ID | [#42398685437](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42398685437) |
+| Dispatched | 17:55:30Z |
+| Status verificado | `queued` — sem runner assinalado (runner_id=0) por 5+ min |
+| Ação tomada | Cancelado nesta sessão (18:00Z) — run estava preso sem progredir |
+| Causa provável | Runner `ubuntu-24.04` indisponível no momento do dispatch |
+| Próximo passo | Dono faz novo dispatch de `deploy-edge-functions.yml` via Actions UI e aprova environment `production` quando solicitado |
+
+> **Compare GitHub × Canonical** permanece ❌ failure — bloqueio dependente do dono (aprovação de environment `production`). Registrado em PENDENCIAS #29.
