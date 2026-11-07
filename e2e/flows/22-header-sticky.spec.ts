@@ -25,18 +25,18 @@
  * ancestral do Header em `src/components/layout/MainLayout.tsx` transformava
  * o wrapper em scroll container, fazendo o header rolar junto com o conteúdo.
  */
-import { test, expect, requireAuth, requireAdmin } from '../fixtures/test-base';
-import { gotoAndSettle, waitForRouteIdle, expectOnRoute } from '../helpers/nav';
-import { waitForTestIdVisible } from '../helpers/waits';
-import { loginViaUI } from '../helpers/auth';
-import { Sel } from '../fixtures/selectors';
+import { test, expect, requireAuth, requireAdmin } from "../fixtures/test-base";
+import { gotoAndSettle, waitForRouteIdle, expectOnRoute } from "../helpers/nav";
+import { waitForTestIdVisible } from "../helpers/waits";
+import { loginViaUI } from "../helpers/auth";
+import { Sel } from "../fixtures/selectors";
 import {
   AUTHED_USER_ROUTES,
   ADMIN_ROUTES,
   SAMPLE_ID,
   SAMPLE_TOKEN,
   type RouteEntry,
-} from '../routes/_catalog';
+} from "../routes/_catalog";
 
 // Tolerância em px para acomodar a transição de altura do header
 // (h-14 → h-12 quando isScrolled ativa).
@@ -47,18 +47,20 @@ const Y_TOLERANCE_PX = 2;
 // o espaço com um spacer de `--header-h`. `sticky` também mantém o header no topo.
 // O que a regressão histórica quebrava (ancestral com overflow rolando junto) é
 // pego pelas asserções de y ≈ 0 após o scroll; aqui só se recusa `static`/`relative`/`absolute`.
-const PINNED_POSITIONS = ['sticky', 'fixed'];
+const PINNED_POSITIONS = ["sticky", "fixed"];
 
 /** Viewports cobertos pela matriz. Tamanhos compatíveis com `set_viewport_size`. */
 const VIEWPORTS = [
-  { name: 'mobile', width: 390, height: 844 },
-  { name: 'tablet', width: 820, height: 1180 },
-  { name: 'desktop', width: 1366, height: 768 },
+  { name: "mobile", width: 390, height: 844 },
+  { name: "tablet", width: 820, height: 1180 },
+  { name: "desktop", width: 1366, height: 768 },
 ] as const;
 
 /** Filtra rotas dinâmicas que dependem de IDs/tokens reais. */
 function staticRoutes(routes: readonly RouteEntry[]): RouteEntry[] {
-  return routes.filter((r) => !r.path.includes(SAMPLE_ID) && !r.path.includes(SAMPLE_TOKEN));
+  return routes.filter(
+    (r) => !r.path.includes(SAMPLE_ID) && !r.path.includes(SAMPLE_TOKEN),
+  );
 }
 
 /**
@@ -68,7 +70,9 @@ function staticRoutes(routes: readonly RouteEntry[]): RouteEntry[] {
  * anterior de `waitForFunction(fn, { timeout })` passava o objeto como argumento
  * de `fn` e deixava a espera consumir o timeout global do teste.
  */
-async function forceWindowScroll(page: import('@playwright/test').Page): Promise<void> {
+async function forceWindowScroll(
+  page: import("@playwright/test").Page,
+): Promise<void> {
   await page.evaluate(() => {
     const minHeight = `${window.innerHeight + 2400}px`;
     document.documentElement.style.minHeight = minHeight;
@@ -78,7 +82,7 @@ async function forceWindowScroll(page: import('@playwright/test').Page): Promise
 
   await expect
     .poll(() => page.evaluate(() => window.scrollY), {
-      message: 'a página deveria aceitar scroll sintético acima de 1000px',
+      message: "a página deveria aceitar scroll sintético acima de 1000px",
       timeout: 5_000,
     })
     .toBeGreaterThan(1000);
@@ -89,21 +93,21 @@ async function forceWindowScroll(page: import('@playwright/test').Page): Promise
  * Retorna `"ok"` se passou, `"redirected-to-login"` se a rota redirecionou.
  */
 async function assertHeaderSticky(
-  page: import('@playwright/test').Page,
+  page: import("@playwright/test").Page,
   routePath: string,
   viewportLabel: string,
-): Promise<'ok' | 'redirected-to-login' | 'page-closed'> {
+): Promise<"ok" | "redirected-to-login" | "page-closed"> {
   await gotoAndSettle(page, routePath);
 
   if (/\/login(\?|$)/.test(page.url())) {
-    return 'redirected-to-login';
+    return "redirected-to-login";
   }
 
   try {
-    await waitForTestIdVisible(page, 'app-header');
+    await waitForTestIdVisible(page, "app-header");
   } catch (err) {
-    if ((err as Error).message?.includes('has been closed')) {
-      return 'page-closed';
+    if ((err as Error).message?.includes("has been closed")) {
+      return "page-closed";
     }
     throw err;
   }
@@ -137,12 +141,12 @@ async function assertHeaderSticky(
     `Header em ${routePath} [${viewportLabel}] não está fixo no topo (position=${position})`,
   ).toContain(position);
 
-  return 'ok';
+  return "ok";
 }
 
 for (const vp of VIEWPORTS) {
   test.describe(`Header sticky — rotas autenticadas (app + quotes) [${vp.name} ${vp.width}×${vp.height}]`, () => {
-    test.describe.configure({ mode: 'parallel' });
+    test.describe.configure({ mode: "parallel" });
     test.use({ viewport: { width: vp.width, height: vp.height } });
     test.beforeEach(() => requireAuth());
 
@@ -150,11 +154,11 @@ for (const vp of VIEWPORTS) {
       test(`header permanece fixo ao rolar em ${route.path}`, async ({ page }) => {
         const result = await assertHeaderSticky(page, route.path, vp.name);
         test.skip(
-          result === 'redirected-to-login',
+          result === "redirected-to-login",
           `Rota ${route.path} redirecionou para /login (role insuficiente para o usuário E2E)`,
         );
         test.skip(
-          result === 'page-closed',
+          result === "page-closed",
           `Rota ${route.path} fechou o contexto em [${vp.name}] — possível OOM no CI runner`,
         );
       });
@@ -162,7 +166,7 @@ for (const vp of VIEWPORTS) {
   });
 
   test.describe(`Header sticky — rotas admin [${vp.name} ${vp.width}×${vp.height}]`, () => {
-    test.describe.configure({ mode: 'parallel' });
+    test.describe.configure({ mode: "parallel" });
     test.use({ viewport: { width: vp.width, height: vp.height } });
     test.beforeEach(() => requireAdmin());
 
@@ -170,11 +174,11 @@ for (const vp of VIEWPORTS) {
       test(`header permanece fixo ao rolar em ${route.path}`, async ({ page }) => {
         const result = await assertHeaderSticky(page, route.path, vp.name);
         test.skip(
-          result === 'redirected-to-login',
+          result === "redirected-to-login",
           `Rota ${route.path} redirecionou para /login (admin sem role dev?)`,
         );
         test.skip(
-          result === 'page-closed',
+          result === "page-closed",
           `Rota ${route.path} fechou o contexto em [${vp.name}] — possível OOM no CI runner`,
         );
       });
@@ -194,14 +198,14 @@ for (const vp of VIEWPORTS) {
  * orçamentos) para exercitar trocas de árvore de layout.
  */
 const PROTECTED_NAV_SEQUENCE = [
-  '/produtos',
-  '/orcamentos',
-  '/colecoes',
-  '/favoritos',
-  '/dashboard',
+  "/produtos",
+  "/orcamentos",
+  "/colecoes",
+  "/favoritos",
+  "/dashboard",
 ] as const;
 
-test.describe('Header sticky — pós-login e navegação entre módulos', () => {
+test.describe("Header sticky — pós-login e navegação entre módulos", () => {
   // Não reaproveita storageState: força login fresco via UI.
   test.use({ storageState: { cookies: [], origins: [] } });
 
@@ -209,28 +213,27 @@ test.describe('Header sticky — pós-login e navegação entre módulos', () =>
     requireAuth();
   });
 
-  test('header está sticky imediatamente após login via UI', async ({ page }) => {
+  test("header está sticky imediatamente após login via UI", async ({ page }) => {
     const email = process.env.E2E_USER_EMAIL!;
     const password = process.env.E2E_USER_PASSWORD!;
 
     const ok = await loginViaUI(page, { email, password });
-    expect(ok, 'login UI deveria autenticar com credenciais E2E').toBe(true);
+    expect(ok, "login UI deveria autenticar com credenciais E2E").toBe(true);
 
     // Após login, o usuário cai numa rota autenticada (geralmente "/").
     // Não assume rota específica — apenas garante que NÃO está em /login.
-    await expect(page, 'esperado fora de /login após autenticação').not.toHaveURL(/\/login(\?|$)/);
+    await expect(page, "esperado fora de /login após autenticação").not.toHaveURL(
+      /\/login(\?|$)/,
+    );
 
-    const result = await assertHeaderSticky(
-      page,
-      page.url().replace(/^https?:\/\/[^/]+/, ''),
-      'post-login',
-    );
-    expect(result, 'header deveria estar sticky na primeira rota autenticada após login').toBe(
-      'ok',
-    );
+    const result = await assertHeaderSticky(page, page.url().replace(/^https?:\/\/[^/]+/, ""), "post-login");
+    expect(
+      result,
+      "header deveria estar sticky na primeira rota autenticada após login",
+    ).toBe("ok");
   });
 
-  test('header permanece sticky ao navegar em sequência entre módulos protegidos', async ({
+  test("header permanece sticky ao navegar em sequência entre módulos protegidos", async ({
     page,
   }) => {
     const email = process.env.E2E_USER_EMAIL!;
@@ -252,7 +255,7 @@ test.describe('Header sticky — pós-login e navegação entre módulos', () =>
 
       await expectOnRoute(page, route);
       await waitForRouteIdle(page);
-      await waitForTestIdVisible(page, 'app-header');
+      await waitForTestIdVisible(page, "app-header");
 
       const header = page.locator(Sel.app.layout.header);
 
@@ -284,3 +287,4 @@ test.describe('Header sticky — pós-login e navegação entre módulos', () =>
     }
   });
 });
+
