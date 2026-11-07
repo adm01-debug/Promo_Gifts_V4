@@ -32,7 +32,7 @@ export interface LoginCreds {
   timeoutMs?: number;
 }
 
-export type Role = "user" | "admin" | "dev" | "editor";
+export type Role = "user" | "admin" | "dev" | "editor" | "seller";
 
 // /login é alias legado da rota canônica /auth — ambas renderizam <Auth/>.
 // Se o signIn falha, a página pode permanecer em qualquer uma das duas; checar
@@ -206,10 +206,12 @@ export async function loginAs(page: Page, role: Role = "user"): Promise<void> {
   const email = role === "dev" ? process.env.E2E_DEV_EMAIL :
                 role === "admin" ? process.env.E2E_ADMIN_EMAIL :
                 role === "editor" ? (process.env.E2E_MANAGER_EMAIL || process.env.E2E_ADMIN_EMAIL) :
+                role === "seller" ? process.env.E2E_SELLER_EMAIL :
                 process.env.E2E_USER_EMAIL;
   const password = role === "dev" ? process.env.E2E_DEV_PASSWORD :
                    role === "admin" ? process.env.E2E_ADMIN_PASSWORD :
                    role === "editor" ? (process.env.E2E_MANAGER_PASSWORD || process.env.E2E_ADMIN_PASSWORD) :
+                   role === "seller" ? process.env.E2E_SELLER_PASSWORD :
                    process.env.E2E_USER_PASSWORD;
 
   if (!email || !password) {
