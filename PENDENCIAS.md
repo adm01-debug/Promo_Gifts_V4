@@ -399,3 +399,19 @@ Duration    915.17s · exit code 0
 > Run #42380435725 (`b5f7d2e`): `in_progress` — Gate 1 Lint+TS em andamento (step 23/43, 14:30Z).  
 > Banco de dados: **zero mudanças** — REGRA #8/E056 respeitada.  
 > **10 workflows em falha não-required** documentados nos itens #1, #2/#23, #3, #5/#24, #6, #7, #9, #13, #21, #22 — todos bloqueados por autorização do dono (credenciais E2E, migration repair, dados null, snapshot visual, rollback ausente).
+
+---
+
+## 25. Gate 2.5 — PostgreSQL Transactional Integrity ❌ (HTTP 400 transiente — check:quote-rpc:canonical)
+
+**Workflow:** `deploy-gates.yml` (push: main)
+**Run ID:** [42385494290](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42385494290) (2026-11-07T15:15Z, SHA `3c2ff9296dc2`)
+**Job falhado:** `Gate 2.5 - PostgreSQL Transactional Integrity` — Step 5: "Block frontend promotion until canonical quote RPC contract is live"
+**Erro exato:**
+```
+[Quote RPC canonical readiness] status: "inconclusive", reason: "http-error", httpStatus: 400
+Process completed with exit code 2.
+```
+**Causa:** `scripts/check-quote-rpc-canonical-readiness.mjs --require-live` consulta `pg_catalog` via Management API do Supabase (`doufsxqlfjyuvxuezpln`) e recebeu HTTP 400. O run anterior no SHA `b5f7d2e29e0b` (run #42380435725 attempt 2) passou com success — as funções `create_quote_transactional`, `update_quote_transactional` e `increment_quote_version` existem no banco. HTTP 400 é uma falha transiente da API Supabase (provável flakiness de rede ou cache de schema). Rerun de failed jobs disparado em 2026-11-07T15:58Z.
+**Required check:** SIM (Gate 2.5 é bloqueante no Gate Final).
+**O que precisa acontecer:** O rerun (attempt 2) do run #42385494290 deve resolver. Se falhar novamente, investigar se as 3 funções ainda existem no banco e se o `SUPABASE_ACCESS_TOKEN` tem permissão de leitura via Management API.
