@@ -64,6 +64,10 @@ on:
       - 'supabase/config.toml'
       - 'supabase/baseline/**'
       - 'scripts/drift-baseline.mjs'
+      - 'scripts/check-supabase-migration-ledger.mjs'
+      - 'scripts/migration-ledger-remote-only-allowlist.json'
+      - 'scripts/supabase-read-only-query.mjs'
+      - 'tests/scripts/check-supabase-migration-ledger.test.mjs'
       - '.github/workflows/db-schema-drift-check.yml'
   workflow_dispatch:
   # Chamado por schema-snapshot-export.yml antes de girar o baseline: baseline
