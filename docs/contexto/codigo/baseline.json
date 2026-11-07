@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e87f36b910d322e58fd902e0231108a9d81359df",
+  "commit": "372dc82772b71a4f9a91b39496e39ff0ed6b36aa",
   "branch": "main",
-  "data_commit": "2026-11-06T21:54:01-03:00",
+  "data_commit": "2026-11-06T22:43:05-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "372dc82",
+    "data": "2026-11-06",
+    "assunto": "fix(db): fixa search_path de handle_updated_at (#3111)"
+   },
    {
     "sha": "e87f36b",
     "data": "2026-11-06",
@@ -126,14 +131,9 @@
     "sha": "2292176",
     "data": "2026-11-05",
     "assunto": "fix(e2e): corrige Gate 3 flakiness — Playwright cache + cold start skip + grep -F (#3074)"
-   },
-   {
-    "sha": "3383990",
-    "data": "2026-11-05",
-    "assunto": "fix(ci): ripgrep ausente + 2 mocks desatualizados"
    }
   ],
-  "arquivos_mudados_7d": 384,
+  "arquivos_mudados_7d": 386,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -173,7 +173,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 141
+    "mudancas": 140
    },
    {
     "pasta": "src/pages/admin",
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 346
+    "commits": 345
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9169,
+  "arquivos_total": 9171,
   "arquivos_codigo": 4612,
   "linhas_codigo": 883222,
   "rotas": 138,
@@ -334,7 +334,7 @@
   "hooks": 414,
   "edge_functions": 111,
   "tabelas": 544,
-  "migrations": 3042,
+  "migrations": 3043,
   "cron_jobs": 120,
   "testes": 2184,
   "workflows": 93,

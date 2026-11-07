@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "e87f36b910d322e58fd902e0231108a9d81359df",
+  "sha": "372dc82772b71a4f9a91b39496e39ff0ed6b36aa",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 00:55 UTC",
-  "files_total": 9092,
-  "code_files": 7837,
-  "code_lines": 1050287
+  "generated_at": "2026-11-07 01:45 UTC",
+  "files_total": 9094,
+  "code_files": 7839,
+  "code_lines": 1050298
  },
  "version": "1.3.2",
- "facts_hash": "87373dc630828fb6",
+ "facts_hash": "f620c1c0698eae7b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1168,7 +1168,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3226,
+   ".sql": 3228,
    ".ts": 2619,
    ".tsx": 1687,
    ".mjs": 296,
@@ -90913,6 +90913,7 @@
    "supabase/migrations/20261101210000_sb0007_drop_noop_restrictive_policies.sql",
    "supabase/migrations/20261101220000_cron001_stagger_schedules.sql",
    "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql",
+   "supabase/migrations/20261106232045_fix_handle_updated_at_search_path.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260916202000_rollback.sql",
@@ -90957,6 +90958,7 @@
    "supabase/rollbacks/20261101201000_rollback.sql",
    "supabase/rollbacks/20261101202000_rollback.sql",
    "supabase/rollbacks/20261104100000_rollback.sql",
+   "supabase/rollbacks/20261106232045_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -140101,8 +140103,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3041,
-   "lines": 219219,
+   "files": 3042,
+   "lines": 219225,
    "tables": [
     "...",
     "admin_audit_log",
@@ -140200,8 +140202,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 45,
-   "lines": 1330,
+   "files": 46,
+   "lines": 1335,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -140252,6 +140254,7 @@
     "supabase/rollbacks/20261101201000_rollback.sql",
     "supabase/rollbacks/20261101202000_rollback.sql",
     "supabase/rollbacks/20261104100000_rollback.sql",
+    "supabase/rollbacks/20261106232045_rollback.sql",
     "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql"
    ]
   },
@@ -463905,6 +463908,10 @@
    "path": "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql",
    "lines": 47
   },
+  "supabase/migrations/20261106232045_fix_handle_updated_at_search_path.sql": {
+   "path": "supabase/migrations/20261106232045_fix_handle_updated_at_search_path.sql",
+   "lines": 6
+  },
   "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql": {
    "path": "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "lines": 65,
@@ -464090,6 +464097,10 @@
   "supabase/rollbacks/20261104100000_rollback.sql": {
    "path": "supabase/rollbacks/20261104100000_rollback.sql",
    "lines": 15
+  },
+  "supabase/rollbacks/20261106232045_rollback.sql": {
+   "path": "supabase/rollbacks/20261106232045_rollback.sql",
+   "lines": 5
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -482741,10 +482752,21 @@
   }
  },
  "git": {
-  "sha": "e87f36b910d322e58fd902e0231108a9d81359df",
+  "sha": "372dc82772b71a4f9a91b39496e39ff0ed6b36aa",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "372dc82",
+    "date": "2026-11-06",
+    "author": "adm01-debug",
+    "subject": "fix(db): fixa search_path de handle_updated_at (#3111)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261106232045_fix_handle_updated_at_search_path.sql",
+     "supabase/rollbacks/20261106232045_rollback.sql"
+    ]
+   },
    {
     "sha": "e87f36b",
     "date": "2026-11-06",
@@ -483032,16 +483054,6 @@
     "files": [
      ".soft-delete-baseline.json"
     ]
-   },
-   {
-    "sha": "070e9d4",
-    "date": "2026-11-04",
-    "author": "adm01-debug",
-    "subject": "feat: cria partições p2027_03–p2027_12 de supplier_products_raw_history",
-    "files": [
-     "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql",
-     "supabase/rollbacks/20261104100000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -483062,6 +483074,10 @@
     4
    ],
    [
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    2
+   ],
+   [
     ".github/workflows/schema-snapshot-export.yml",
     2
    ],
@@ -483076,6 +483092,14 @@
    [
     "e2e/flows/20-all-features-smoke.spec.ts",
     2
+   ],
+   [
+    "supabase/migrations/20261106232045_fix_handle_updated_at_search_path.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261106232045_rollback.sql",
+    1
    ],
    [
     "tests/unit/date-utils.test.ts",
@@ -483098,10 +483122,6 @@
     1
    ],
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    1
-   ],
-   [
     "graphify-out/manifest.json",
     1
    ],
@@ -483115,14 +483135,6 @@
    ],
    [
     "tests/components/kit-builder/KitMakerLanding.test.tsx",
-    1
-   ],
-   [
-    "e2e/helpers/auth.ts",
-    1
-   ],
-   [
-    "e2e/smoke.spec.ts",
     1
    ]
   ]
