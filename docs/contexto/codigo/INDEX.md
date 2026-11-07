@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `fa5da5d6bda61a6914bdb09310bc38f07b45db8e` (2026-11-07T16:20:05-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1a47c6972c285970432ef24e0da8b714a8e19dec` (2026-11-07T16:51:52-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,14 +586,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38036 nós · 66398 arestas · 2159 comunidades · grafo do commit `fa5da5d6`
-- comunidades maiores: ref_integrations (596), ref_components (578), ref_lib (455), @testing-library/react (410), gotoAndSettle (343), ref_hooks (343), react-router-dom (333), scripts (289), @tanstack/react-query (280), @playwright/test (263), ref_types (259), ref_node_fs (249)
+- 38069 nós · 66432 arestas · 2067 comunidades · grafo do commit `1a47c697`
+- comunidades maiores: ref_lib (468), ref_integrations (375), @testing-library/react (360), ref_hooks (331), gotoAndSettle (320), test-base.ts (313), ref_node_fs (297), react-router-dom (297), scripts (289), @tanstack/react-query (270), cors.ts (257), ref_components (250)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (69)
-- PENDENCIAS.md (63)
+- RELATORIO_CI.md (70)
+- PENDENCIAS.md (64)
 - package.json (28)
 - package-lock.json (24)
 - supabase/MIGRATIONS_SYNC_LOG.md (22)
@@ -1004,10 +1004,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` — CLAUDE.md — Promo Gifts V4 (ficha técnica do repositório) (378 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
-- `PENDENCIAS.md` — PENDÊNCIAS — CI Promo Gifts V4 (388 linhas)
+- `PENDENCIAS.md` — PENDÊNCIAS — CI Promo Gifts V4 (621 linhas)
 - `PERFORMANCE-ANALYSIS.md` — 🔍 Relatório de Análise de Performance - MainLayout (195 linhas)
 - `README.md` — 🎁 Promo Brindes — Plataforma de Vendas de Brindes Promocionais (842 linhas)
-- `RELATORIO_CI.md` — Relatório CI — Promo Gifts V4 (395 linhas)
+- `RELATORIO_CI.md` — Relatório CI — Promo Gifts V4 (683 linhas)
 - `RELATORIO_CI_P34.md` — RELATORIO_CI_P34.md — Prova Final Sessão P34 (2026-10-30) (64 linhas)
 - `SECURITY.md` — Política de Segurança — Promo Gifts (89 linhas)
 - `STATUS.md` — 📡 Status do Projeto (19 linhas)
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.7.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.1...v1.7.0) (2026-11-02)
 
 ## Últimos commits
+- 2026-11-07 `1a47c69` docs: RELATORIO_CI.md e PENDENCIAS.md — status CI e workflows (#3172)
 - 2026-11-07 `fa5da5d` chore(docs): Gate 1.14 — adiciona SUPABASE_TEST_BYPASS_TOKEN ao SEGREDOS.md (#3164)
 - 2026-11-07 `df81a74` fix(magazine): impedir colapso do título em lg (#3161)
 - 2026-11-07 `787f843` Merge pull request #3154 from adm01-debug/claude/fix-dashboard-title-loading-261107-0100
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-07 `0549ea3` fix(catálogo): buscar cores ao trocar filtros ou página (#3140)
 - 2026-11-07 `6065eb7` fix(ci): permitir leitura de PR no detector de reposição (#3139)
 - 2026-11-07 `21e52c0` test(auth): estabilizar callback SSO na suíte completa (#3133)
-- 2026-11-07 `a23cb8e` fix(ci): evitar paridade de reposição em diffs unitários (#3135)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
