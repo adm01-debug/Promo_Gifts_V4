@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "21e52c08d6c8cc1c5f91e3033793fea094479f61",
+  "commit": "6065eb7adcef03f1c52f5b1738aef7dc8bd976e3",
   "branch": "main",
-  "data_commit": "2026-11-07T09:13:02-03:00",
+  "data_commit": "2026-11-07T09:23:01-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "6065eb7",
+    "data": "2026-11-07",
+    "assunto": "fix(ci): permitir leitura de PR no detector de reposição (#3139)"
+   },
    {
     "sha": "21e52c0",
     "data": "2026-11-07",
@@ -126,11 +131,6 @@
     "sha": "2bc3712",
     "data": "2026-11-05",
     "assunto": "chore(docs): RELATORIO_CI final — inventário completo SHAs + prova final (#3082)"
-   },
-   {
-    "sha": "7f5632b",
-    "data": "2026-11-05",
-    "assunto": "chore(docs): registra item #13 — CI Security & Drift step 28 E2E chromium-authed (#3080)"
    }
   ],
   "arquivos_mudados_7d": 403,
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 69
+    "mudancas": 68
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 65
+    "mudancas": 64
    },
    {
     "arquivo": "package.json",
@@ -270,6 +270,10 @@
     "mudancas": 7
    },
    {
+    "arquivo": ".github/workflows/replenishment-quality.yml",
+    "mudancas": 6
+   },
+   {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
     "mudancas": 6
    },
@@ -292,16 +296,12 @@
    {
     "arquivo": "scripts/migration-ledger-remote-only-allowlist.json",
     "mudancas": 6
-   },
-   {
-    "arquivo": ".github/workflows/ci-security-drift.yml",
-    "mudancas": 5
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 338
+    "commits": 337
    },
    {
     "autor": "Joaquim Ataides",

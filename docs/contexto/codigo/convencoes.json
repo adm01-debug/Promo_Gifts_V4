@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): permitir leitura de PR no detector de reposição (#3139)",
    "test(auth): estabilizar callback SSO na suíte completa (#3133)",
    "fix(ci): evitar paridade de reposição em diffs unitários (#3135)",
    "fix(health-check): tolera cold start do PostgREST (#3128)",
-   "fix(ci): reduzir pressão dos E2E no Supabase (#3130)",
-   "fix(ci/catalog): estabilizar auditorias E2E e restaurar cores na lista (#3120)"
+   "fix(ci): reduzir pressão dos E2E no Supabase (#3130)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

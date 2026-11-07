@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "21e52c08d6c8cc1c5f91e3033793fea094479f61",
+  "sha": "6065eb7adcef03f1c52f5b1738aef7dc8bd976e3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 12:15 UTC",
+  "generated_at": "2026-11-07 12:25 UTC",
   "files_total": 9097,
   "code_files": 7841,
   "code_lines": 1050718
@@ -482801,10 +482801,19 @@
   }
  },
  "git": {
-  "sha": "21e52c08d6c8cc1c5f91e3033793fea094479f61",
+  "sha": "6065eb7adcef03f1c52f5b1738aef7dc8bd976e3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "6065eb7",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "fix(ci): permitir leitura de PR no detector de reposição (#3139)",
+    "files": [
+     ".github/workflows/replenishment-quality.yml"
+    ]
+   },
    {
     "sha": "21e52c0",
     "date": "2026-11-07",
@@ -483091,38 +483100,24 @@
     "files": [
      "RELATORIO_CI.md"
     ]
-   },
-   {
-    "sha": "5e5e4a6",
-    "date": "2026-11-05",
-    "author": "adm01-debug",
-    "subject": "fix: Gate 3 — reduz timeouts cold start magazine smoke (#3075)",
-    "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md",
-     "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-     "e2e/flows/magazine-publish-smoke.spec.ts",
-     "e2e/flows/magazine-smoke.spec.ts",
-     "graphify-out/manifest.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    13
+    12
    ],
    [
     "PENDENCIAS.md",
-    9
+    8
+   ],
+   [
+    ".github/workflows/replenishment-quality.yml",
+    3
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     3
-   ],
-   [
-    ".github/workflows/replenishment-quality.yml",
-    2
    ],
    [
     ".github/workflows/e2e-swatch-quickview.yml",
