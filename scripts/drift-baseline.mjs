@@ -25,7 +25,7 @@
  *   prepare-workdir --ledger <json do migration list> --out <dir>
  *   filter-diff --diff <arquivo> --allowlist <arquivo> [--workdir <dir>]   (imprime o resíduo)
  */
-import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseSupabaseMigrationLedgerOutput } from './check-supabase-migration-ledger.mjs';
@@ -291,6 +291,30 @@ export function replayFileName(baselineVersion, index, original) {
   return `${version}_${original}`;
 }
 
+// `supabase db diff` aplica o replay por pipeline transacional. PostgreSQL
+// proíbe CONCURRENTLY nesse modo, embora a palavra só altere a estratégia de
+// execução e não o schema final do índice. A migration original permanece
+// byte a byte intacta; apenas a cópia temporária do shadow é normalizada.
+export function sanitizeMigrationForReplay(sql) {
+  const state = { quote: false, ident: false, dollar: null };
+  let concurrentIndexes = 0;
+  const lines = sql.split('\n').map((line) => {
+    const outsideLiteral = !state.quote && !state.ident && !state.dollar;
+    const normalized = outsideLiteral
+      ? line.replace(
+          /^(\s*(?:CREATE(?:\s+UNIQUE)?|DROP)\s+INDEX)\s+CONCURRENTLY\b/i,
+          (match, prefix) => {
+            concurrentIndexes += 1;
+            return prefix;
+          },
+        )
+      : line;
+    scanLine(normalized, state);
+    return normalized;
+  });
+  return { sql: lines.join('\n'), rewrites: { concurrentIndexes } };
+}
+
 export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef }) {
   // projectRef entra numa string TOML: aspas/quebra de linha reescreveriam o
   // config.toml (ex.: trocar major_version do shadow).
@@ -315,8 +339,16 @@ export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef })
   // Migration própria em B+1 (sessão nova, role padrão): no fim do baseline o
   // cron.job já está sem privilégio. As migrations replayadas começam em B+2.
   writeFileSync(join(outMigrations, replayFileName(baseline.version, 0, REPLAY_CRON_SEED_FILE)), REPLAY_CRON_SEED_SQL);
+  const migrationExecutionRewrites = [];
   replay.forEach((f, i) => {
-    copyFileSync(join(migrationsDir, f), join(outMigrations, replayFileName(baseline.version, i + 1, f)));
+    const normalized = sanitizeMigrationForReplay(readFileSync(join(migrationsDir, f), 'utf8'));
+    writeFileSync(
+      join(outMigrations, replayFileName(baseline.version, i + 1, f)),
+      normalized.sql,
+    );
+    if (normalized.rewrites.concurrentIndexes > 0) {
+      migrationExecutionRewrites.push({ file: f, ...normalized.rewrites });
+    }
   });
   return {
     baselineVersion: baseline.version,
@@ -324,6 +356,7 @@ export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef })
     workdir: outDir,
     removedStatements: sanitized.removed,
     rewrites: sanitized.rewrites,
+    migrationExecutionRewrites,
   };
 }
 

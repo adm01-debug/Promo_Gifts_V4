@@ -21,6 +21,7 @@ import {
   maxNumericVersion,
   prepareWorkdir,
   sanitizeBaselineForReplay,
+  sanitizeMigrationForReplay,
   replayFileName,
   selectReplayMigrations,
 } from '../../scripts/drift-baseline.mjs';
@@ -71,6 +72,31 @@ describe('replayFileName', () => {
   it('renumera para depois do baseline mantendo o nome original', () => {
     expect(replayFileName('20261015140000', 0, '20260928212000_x.sql')).toBe('20261015140001_20260928212000_x.sql');
     expect(replayFileName('20261015140000', 1, '20261016090000_y.sql')).toBe('20261015140002_20261016090000_y.sql');
+  });
+});
+
+describe('sanitizeMigrationForReplay', () => {
+  it('remove apenas CONCURRENTLY de CREATE/DROP INDEX fora de literais', () => {
+    const sql = [
+      'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_a ON public.a(id);',
+      'CREATE UNIQUE INDEX CONCURRENTLY idx_b ON public.b(id);',
+      'DROP INDEX CONCURRENTLY IF EXISTS public.idx_c;',
+      '-- CREATE INDEX CONCURRENTLY idx_comment ON public.c(id);',
+      "SELECT 'CREATE INDEX CONCURRENTLY idx_string ON public.s(id)';",
+      'CREATE FUNCTION f() RETURNS void LANGUAGE plpgsql AS $fn$',
+      'BEGIN',
+      '  CREATE INDEX CONCURRENTLY idx_body ON public.body(id);',
+      'END;',
+      '$fn$;',
+    ].join('\n');
+    const out = sanitizeMigrationForReplay(sql);
+    expect(out.rewrites.concurrentIndexes).toBe(3);
+    expect(out.sql).toContain('CREATE INDEX IF NOT EXISTS idx_a');
+    expect(out.sql).toContain('CREATE UNIQUE INDEX idx_b');
+    expect(out.sql).toContain('DROP INDEX IF EXISTS public.idx_c');
+    expect(out.sql).toContain('-- CREATE INDEX CONCURRENTLY idx_comment');
+    expect(out.sql).toContain("'CREATE INDEX CONCURRENTLY idx_string");
+    expect(out.sql).toContain('CREATE INDEX CONCURRENTLY idx_body');
   });
 });
 
