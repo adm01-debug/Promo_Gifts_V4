@@ -414,4 +414,33 @@ Process completed with exit code 2.
 ```
 **Causa:** `scripts/check-quote-rpc-canonical-readiness.mjs --require-live` consulta `pg_catalog` via Management API do Supabase (`doufsxqlfjyuvxuezpln`) e recebeu HTTP 400. O run anterior no SHA `b5f7d2e29e0b` (run #42380435725 attempt 2) passou com success — as funções `create_quote_transactional`, `update_quote_transactional` e `increment_quote_version` existem no banco. HTTP 400 é uma falha transiente da API Supabase (provável flakiness de rede ou cache de schema). Rerun de failed jobs disparado em 2026-11-07T15:58Z.
 **Required check:** SIM (Gate 2.5 é bloqueante no Gate Final).
-**O que precisa acontecer:** O rerun (attempt 2) do run #42385494290 deve resolver. Se falhar novamente, investigar se as 3 funções ainda existem no banco e se o `SUPABASE_ACCESS_TOKEN` tem permissão de leitura via Management API.
+**O que precisa acontecer:** ~~O rerun (attempt 2) do run #42385494290 deve resolver.~~ **RESOLVIDO:** rerun attempt 2 = `conclusion: success` (15:59:37Z). Gate 2.5 verde. Flakiness confirmada — sem ação pendente.
+
+---
+
+## 26. Recibo de migration em MIGRATIONS_SYNC_LOG.md ❌ (NÃO required — workflow separado)
+
+**Workflow:** `migrations-sync-log-gate` (workflow separado, NÃO está em `deploy-gates.yml`)  
+**Run ID:** [42389264565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42389264565) (2026-11-07T16:02Z, SHA `efae9c9c4`)  
+**Job falhado:** `Recibo de migration em MIGRATIONS_SYNC_LOG.md` — Step 4: "Gate — recibo de migration no log (bloqueante)"  
+**Erro exato:**
+```
+[migrations-sync-log-gate] failed: 1/1 migration(ões) alterada(s) SEM recibo válido: 20261101150000_fix_sb0003_fn_get_rupture_alerts.sql(version_not_registered)
+```
+**Causa:** A migration `20261101150000_fix_sb0003_fn_get_rupture_alerts.sql` foi alterada nesta PR (fix do `SET search_path`), mas não possui entrada em `supabase/MIGRATIONS_SYNC_LOG.md`. O recibo só existe depois de `db-apply-migration.yml` ser executado com sucesso em produção.  
+**Required check:** NÃO — `migrations-sync-log-gate` é workflow separado; NÃO está em `deploy-gates.yml` (confirmado por grep: ausente no arquivo). Não bloqueia merge.  
+**Por que não corrijo:** O recibo em `MIGRATIONS_SYNC_LOG.md` só pode ser criado APÓS a migration ser aplicada em produção via `db-apply-migration.yml` (REGRA #8). Migration ainda não foi aplicada (aprovação do dono pendente — REGRA #8).  
+**O que o dono precisa fazer:**
+1. Após merge desta PR: disparar `db-apply-migration.yml` via `workflow_dispatch(version=20261101150000)` com aprovação
+2. O recibo será criado automaticamente pelo workflow após aplicação com sucesso
+
+---
+
+## 27. Migrations x Canonical schema ❌ (re-falha pré-existente — NÃO required — ver item #1)
+
+**Workflow:** `db-schema-drift-check.yml` (mesma falha pré-existente do item #1)  
+**Run ID nesta PR:** check run na SHA `efae9c9c4` (2026-11-07T16:02Z)  
+**Erro exato:** `Migrations x Canonical schema` → `completed: failure` — mesmo drift `local_only/remote_only` do item #1.  
+**Causa:** Pré-existente — divergência massiva entre `supabase/migrations/` e banco de produção (`schema_migrations`). Nenhuma mudança nesta PR afeta o ledger de migrations (só o SQL foi corrigido, sem aplicação em produção). Esta falha está presente desde antes de qualquer PR desta sessão (ver item #1, run #42075701349).  
+**Required check:** NÃO — advisory. Gate Final passa mesmo com esta falha (confirmado: SHA `3c2ff9296dc2` teve Gate Final success com mesma falha ativa).  
+**Por que não corrijo:** Mesmas restrições do item #1 — REGRA #8 proíbe `migration repair` sem autorização do dono.

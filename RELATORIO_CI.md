@@ -363,3 +363,66 @@ Run de referência: Deploy Gates [42031544385](https://github.com/adm01-debug/Pr
 ### Banco de dados canônico (`doufsxqlfjyuvxuezpln`)
 
 **Zero mudanças de schema** em toda a série de sessões. REGRA #8/E056 intacta. A migration `20261101150000` **NÃO foi aplicada em produção** nesta sessão — só o código SQL foi corrigido; aplicação só via `db-apply-migration.yml` com aprovação do dono (REGRA #8).
+
+---
+
+## 15. Prova Final — Sessão 2026-11-07 continuada (PR #3160 — SHA `efae9c9c4`)
+
+> **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe  
+> **Branch:** `claude/fix-ci-workflows-261107-1540`  
+> **SHA da branch:** `efae9c9c4b1ba10095028ee5291f3af0db60e127`  
+> **SHA base (main):** `3c2ff9296dc226e3f0dee33bb60dcda3dbf5b298`
+
+### Correções desta PR
+
+| Fix | Arquivo(s) | Causa raiz |
+|---|---|---|
+| `SET search_path = pg_catalog, pg_temp, public` | `supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql` | SECURITY DEFINER sem `pg_temp` → vulnerabilidade de shadowing detectada pelo preflight (item #22) |
+| Arquivo de rollback criado | `supabase/rollbacks/20261101150000_rollback.sql` | Gate 1.3 (E058) — rollback ausente bloqueava preflight `db-apply-migration.yml` |
+| PENDENCIAS.md ##6 causa exata | `PENDENCIAS.md` | `E2E_USER_*` ausentes → `requireAuth()` skipa testes → guard min-executed falha |
+| PENDENCIAS.md ##13 run + causa | `PENDENCIAS.md` | Run #42380435647 — `wizard-step-box` disabled (172× retries) + `SUPABASE_SERVICE_ROLE_KEY` ausente |
+| PENDENCIAS.md ##21 run + causa | `PENDENCIAS.md` | HTTP 503 (curl exit 22) às 15:05Z — issue #3159 criada |
+| PENDENCIAS.md ##22 nota fix | `PENDENCIAS.md` | Fix preparado na PR para DB E15 |
+| PENDENCIAS.md ##25 RESOLVIDO | `PENDENCIAS.md` | Gate 2.5 rerun attempt 2 = `conclusion: success` (15:59:37Z) |
+| PENDENCIAS.md ##26 novo | `PENDENCIAS.md` | Recibo de migration (NÃO required) — `version_not_registered` para `20261101150000` |
+| PENDENCIAS.md ##27 novo | `PENDENCIAS.md` | `Migrations x Canonical schema` re-falha pré-existente (item #1, NÃO required) |
+
+### Inventário is:failure — Workflows com falha em SHA `efae9c9c4` (PR CI)
+
+| Workflow | Run ID | Required? | Conclusão | PENDENCIAS.md | Pode corrigir? |
+|---|---|---|---|---|---|
+| **Gate Final - Deploy Ready** | [42389264625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42389264625) | ✅ Sim | ⏳ pending (Smoke in_progress) | — | — |
+| Recibo de migration em MIGRATIONS_SYNC_LOG.md | [42389264565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42389264565) | ❌ Não (workflow separado) | ❌ failure | **#26** — `version_not_registered` para `20261101150000`; recibo só após aplicação em produção | ⛔ REGRA #8 |
+| Migrations x Canonical schema (db-schema-drift-check) | check run SHA efae9c9c4 | ❌ Não (advisory) | ❌ failure | **#1/#27** — pré-existente; Gate Final passa com esta falha ativa | ⛔ REGRA #8 |
+| db-schema-drift-check | [42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) | ❌ Não | ❌ failure | **#1** | ⛔ REGRA #8 |
+| Kit Coverage — Integration | [42019342856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42019342856) | ❌ Não | ❌ failure | **#3** | ⛔ dados null |
+| E2E · Swatch QuickView | [42326885938](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42326885938) | ❌ Não | ❌ failure | **#6** | ⛔ creds E2E ausentes |
+| Nightly Full CI | [42005666457](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42005666457) | ❌ Não | ❌ failure | **#7** | ⛔ derivado #6 |
+| E2E — Quotes Matrix | [42044024144](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42044024144) | ❌ Não | ❌ failure | **#9** | ⛔ snapshot visual 5px |
+| CI Security & Drift Checks | [42380435647](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435647) | ❌ Não | ❌ failure | **#13** | ⛔ SUPABASE_SERVICE_ROLE_KEY ausente |
+| Uptime Monitor | [42384641514](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42384641514) | ❌ Não | ❌ failure | **#21** | ⛔ sonda de infra |
+
+### Comparação Baseline × Final
+
+| Métrica | Baseline (§14) | Final (SHA `efae9c9c4`) | Variação |
+|---|---|---|---|
+| npm run build | ✅ EXIT=0 — 10.78s | ✅ EXIT=0 (CI verde) | = |
+| npx tsc --noEmit | ✅ EXIT=0 | ✅ EXIT=0 | = |
+| npm run test:ci-core | ✅ 957 testes | ✅ 957 testes | = |
+| **Gate Final (required)** | ✅ success (§14, attempt 2) | ⏳ pending (Smoke in_progress) | aguardando |
+| Workflows required em falha | 0 | 0 (pending, sem failure conhecido) | = |
+| Workflows não-required em falha | 7 (pré-existentes) | 9 (pré-existentes + #26 + #27 novos, todos NÃO required) | +2 novos registrados |
+| DB E15 preflight | ❌ failure (#22) | ✅ corrigido nesta PR | 🟢 RESOLVIDO |
+| Mudanças de schema (banco) | 0 | 0 | = |
+
+> **Nota:** Os 2 novos itens de failure (#26, #27) são NÃO required. Gate Final na main (SHA `3c2ff9296dc2`) passou com as mesmas falhas pré-existentes. Nenhum required check foi introduzido em falha por esta PR.
+
+### Estado dos required checks em `main` (base, SHA `3c2ff9296dc2`) — confirmado antes desta PR
+
+| Check | Estado |
+|---|---|
+| Gate Final - Deploy Ready | ✅ **success** — run [#42385494290](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42385494290) attempt 2 (15:59:37Z) |
+| Compare GitHub × Canonical | ✅ success (SHA efae9c9c4: run success) |
+| Analyze (javascript-typescript) | ✅ success |
+| Gate E23 - Secret Scan (gitleaks) | ✅ success |
+| Assert Gate Final is required on main | ✅ success |
