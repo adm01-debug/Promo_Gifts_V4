@@ -165,10 +165,11 @@ test.describe('@smoke Magazine — fluxo autenticado de publicação', () => {
         catalogError.waitFor({ state: 'visible', timeout: 60_000 }),
       ]);
     }
-    test.skip(
-      (await firstProductBtn.count()) === 0,
-      'catálogo de produtos indisponível ou vazio para o usuário de teste',
-    );
+    const selectableProductCount = await firstProductBtn.count();
+    expect(
+      selectableProductCount,
+      'catálogo de produtos indisponível ou vazio: o smoke de publicação não pode ser ignorado',
+    ).toBeGreaterThan(0);
     await firstProductBtn.click();
 
     const addBtn = page.locator('[data-testid="magazine-product-add-btn"]').first();
