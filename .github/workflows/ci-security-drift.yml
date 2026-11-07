@@ -170,7 +170,7 @@ jobs:
             import fs from "node:fs";
             const { stats } = JSON.parse(fs.readFileSync("playwright-report/results.json", "utf8"));
             if (stats.skipped > 0 || stats.unexpected > 0 || stats.expected < 5) {
-              console.error(`Auth smoke incompleto: ${JSON.stringify(stats)}`);
+              console.error("Auth smoke incompleto: " + JSON.stringify(stats));
               process.exit(1);
             }
           '
