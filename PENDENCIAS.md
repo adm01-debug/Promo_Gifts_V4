@@ -379,9 +379,34 @@ Duration    915.17s · exit code 0
 
 ---
 
-> **Atualização 2026-11-07T14:35Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
-> HEAD atual: `f956f4319a0490cc0e0d7343c7ea9dcdca8b575b` — `docs(ci): inventário HEAD b5f7d2e29e0b (2026-11-07) — §12 RELATORIO + baseline sessão (#3152)`  
-> Gate Final para f956f43: run [#42381522262](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42381522262) — ⏳ `queued` (aguarda run #42380435725 de `b5f7d2e` completar — concurrency `cancel-in-progress: false`).  
-> Run #42380435725 (`b5f7d2e`): `in_progress` — Gate 1 Lint+TS em andamento (step 23/43, 14:30Z).  
+## 25. Gate 6 — Build provenance (Sigstore/Rekor 500 transiente) ❌ (bloqueante — aguarda merge da PR de fix)
+
+**Workflow:** `deploy-gates.yml` (Gate 6 — Build, step "Attest build provenance (E99)")  
+**Run IDs afetados:**
+- Run [#42380435725](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435725) (SHA `b5f7d2e`, 2026-11-07T14:41Z) — `conclusion: failure`
+- Runs subsequentes (SHA `f956f43`, `57ada848`) — derivados, mesma causa
+
+**Erro exato:**
+```
+InternalError: error creating tlog entry - (500) unexpected result from transparency log
+```
+**Job:** `build` — Step 10: "Attest build provenance (E99)"  
+**Causa:** O serviço externo Sigstore/Rekor (transparency log) retornou HTTP 500 transiente durante a chamada de `actions/attest-build-provenance@v4`. Todos os outros steps do Gate 6 passaram: `npm run build` ✅, bundle size ✅, upload dist ✅, SBOM ✅. É infraestrutura de terceiro fora do controle do projeto.  
+**Impacto:** Gate 6 Build → `failure` → Gate Final - Deploy Ready → `failure`. Bloqueia merge e deploy enquanto Sigstore não se recuperar ou o step não for tolerante a falhas transitórias.  
+**Fix:** PR `claude/fix-attest-provenance-sigstore-261107-1500` — `continue-on-error: true` no step (não no job — R16 proíbe só a nível de job).  
+**Required check:** SIM — via Gate Final - Deploy Ready.  
+**Por que não mergei:** REGRA #8 (CLAUDE.md) — mudança em CI/workflow exige aprovação do dono.  
+**O que o dono precisa fazer:**
+1. Revisar e mergear a PR aberta para `claude/fix-attest-provenance-sigstore-261107-1500`
+2. Após merge: o próximo push em `main` vai reexecutar o Gate Final sem bloquear por Sigstore
+3. Se o Sigstore se recuperou e próximos runs passam sem o fix: o `continue-on-error` é igualmente correto (melhor resiliência)
+
+---
+
+> **Atualização 2026-11-07T15:00Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
+> HEAD atual da main: `57ada8486af4977550fcb36034d69f1416885c88`  
+> **Gate 6 Build BLOQUEADO** — Sigstore/Rekor retornou 500 em run #42380435725 (SHA `b5f7d2e`). Gate Final falha em todos os runs até que o fix seja mergeado.  
+> **Fix submetido:** PR `claude/fix-attest-provenance-sigstore-261107-1500` — `continue-on-error: true` no step "Attest build provenance (E99)" (step-level, não job-level — REGRA R16 respeitada).  
 > Banco de dados: **zero mudanças** — REGRA #8/E056 respeitada.  
-> **10 workflows em falha não-required** documentados nos itens #1, #2/#23, #3, #5/#24, #6, #7, #9, #13, #21, #22 — todos bloqueados por autorização do dono (credenciais E2E, migration repair, dados null, snapshot visual, rollback ausente).
+> **11 workflows em falha não-required** documentados nos itens #1, #2/#23, #3, #5/#24, #6, #7, #9, #13, #21, #22 — todos bloqueados por autorização do dono (credenciais E2E, migration repair, dados null, snapshot visual, rollback ausente).  
+> **1 required check bloqueado** — item #25 (Sigstore 500): aguarda merge da PR de fix pelo dono (REGRA #8).

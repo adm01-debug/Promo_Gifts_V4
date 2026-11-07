@@ -756,6 +756,7 @@ jobs:
           format: spdx-json
       - name: Attest build provenance (E99)
         if: needs.changes.outputs.docs_only != 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        continue-on-error: true  # Sigstore/Rekor 500 transiente — não deve bloquear gate (step-level — R16 proíbe só a nível de job)
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4
         with:
           subject-path: 'dist/**/*.js'
