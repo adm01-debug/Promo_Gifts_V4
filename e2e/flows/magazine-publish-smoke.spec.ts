@@ -45,17 +45,27 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
   test("publica revista e copia URL pública gerada", async ({ page, context }) => {
     await loginAs(page);
 
-    // 1) Vai para /magazine e cria uma revista nova.
-    // .catch() encadeado imediatamente para evitar rejeição não tratada caso
-    // o PostgREST demore mais que o timeout no cold start do CI.
+    // 1) Vai para /magazine e só inicia a mutação depois que a leitura real da
+    // lista terminou. O predicado anterior aceitava qualquer resposta contendo
+    // `/rest/v1/magazines` e engolia o timeout; com isso o teste clicava em
+    // "Nova revista" enquanto o PostgREST ainda estava em cold start e deixava
+    // leitura + escrita competirem pela mesma conexão.
     const waitMagazinesReady = page.waitForResponse(
-      (res) => res.url().includes("/rest/v1/magazines"),
-      { timeout: 60_000 },
-    ).catch(() => {});
+      (res) => {
+        const url = new URL(res.url());
+        return res.request().method() === "GET" && url.pathname === "/rest/v1/magazines";
+      },
+      { timeout: 120_000 },
+    );
     await gotoAndSettle(page, "/magazine");
     await expect(page).toHaveURL(/\/magazine(\/|$)/);
     await dismissOnboardingTour(page);
-    await waitMagazinesReady;
+    const magazinesResponse = await waitMagazinesReady;
+    expect(
+      magazinesResponse.ok(),
+      `listagem de revistas respondeu ${magazinesResponse.status()}`,
+    ).toBe(true);
+    await expect(page.getByText("Carregando revistas…")).toBeHidden({ timeout: 120_000 });
 
     await context.grantPermissions(["clipboard-read", "clipboard-write"], {
       origin: new URL(page.url()).origin,
@@ -63,7 +73,23 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
 
     const createBtn = page.locator('[data-testid="magazine-create-btn"]').first();
     await createBtn.waitFor({ state: "visible", timeout: 10_000 });
+    await expect(createBtn).toBeEnabled();
+    const waitCreateResponse = page.waitForResponse(
+      (res) => {
+        const url = new URL(res.url());
+        return (
+          res.request().method() === "POST" &&
+          url.pathname === "/rest/v1/rpc/magazine_create_v2"
+        );
+      },
+      { timeout: 120_000 },
+    );
     await createBtn.click();
+    const createResponse = await waitCreateResponse;
+    expect(
+      createResponse.ok(),
+      `magazine_create_v2 respondeu ${createResponse.status()}`,
+    ).toBe(true);
     await page.waitForURL(/\/magazine\/[a-f0-9-]{6,}/i, { timeout: 60_000 });
     await waitForRouteIdle(page);
 

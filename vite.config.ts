@@ -172,6 +172,19 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 8080,
       host: '::',
+      // O gate de paridade abre essas duas rotas em um servidor Vite recém-
+      // iniciado. Sem aquecimento, a primeira transformação do grafo de
+      // Novidades pode consumir todo o timeout do Playwright e deixar a rota
+      // presa no fallback de Suspense/NProgress; as execuções seguintes passam
+      // porque o mesmo grafo já está em cache. A API nativa do Vite aquece os
+      // módulos e suas dependências antes da primeira navegação sem alterar o
+      // bundle de produção.
+      warmup: {
+        clientFiles: [
+          './src/pages/products/NoveltiesPage.tsx',
+          './src/pages/products/ReplenishmentsPage.tsx',
+        ],
+      },
       // Evita CSS/JS cacheado no preview durante o dev: força revalidação a
       // cada request, garantindo que mudanças de width/min-width (e qualquer
       // outro estilo) sejam refletidas imediatamente após o save.
