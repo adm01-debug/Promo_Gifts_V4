@@ -20,24 +20,24 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 
 | tabela | linhas (~) | total | heap | índices | linhas mortas (~) | seq scans (~) | idx scans (~) | último autovacuum |
 |---|---|---|---|---|---|---|---|---|
-| public.stock_daily_summary | ~2.8M | 993.6 MB | 567.9 MB | 425.5 MB | 0 | ~20 | ~77.1k |  |
+| public.stock_daily_summary | ~2.8M | 993.6 MB | 567.9 MB | 425.5 MB | 0 | ~30 | ~77.4k |  |
 | public.stock_snapshots | ~151.8k | 777.7 MB | 657.4 MB | 120.1 MB | 0 | 0 | 0 |  |
 | public.supplier_products_raw_history_p2026_08 | ~531.3k | 753.5 MB | 723.1 MB | 27.1 MB | 0 | 0 | 0 |  |
 | public.supplier_products_raw_history_p2026_09 | ~495.5k | 704.6 MB | 676.1 MB | 25.4 MB | 0 | 0 | 0 |  |
 | public.supplier_products_raw_history_p2026_10 | ~348.1k | 501.6 MB | 480.3 MB | 18.0 MB | 0 | 0 | 0 |  |
 | public.supplier_products_raw | ~20.7k | 372.9 MB | 257.0 MB | 23.2 MB | 0 | 0 | ~38.8k |  |
-| public.products | ~8.3k | 178.5 MB | 43.8 MB | 42.5 MB | 0 | ~2.2k | ~9.2M |  |
+| public.products | ~8.3k | 178.5 MB | 43.8 MB | 42.5 MB | 0 | ~2.2k | ~9.4M |  |
 | public.supplier_customization_options_raw | ~46.4k | 152.3 MB | 142.2 MB | 9.9 MB | 0 | 0 | 0 |  |
-| public.product_images | ~72k | 141.4 MB | 81.9 MB | 59.4 MB | 0 | ~2.3k | ~103.3k |  |
-| public.bot_detection_log | ~84.1k | 90.2 MB | 82.4 MB | 7.8 MB | 0 | 0 | ~10 |  |
+| public.product_images | ~72k | 141.4 MB | 81.9 MB | 59.4 MB | 0 | ~2.4k | ~104.3k |  |
+| public.bot_detection_log | ~84.1k | 90.3 MB | 82.5 MB | 7.8 MB | 0 | 0 | ~10 |  |
 | public.image_backfill_queue | ~116.4k | 79.0 MB | 52.3 MB | 26.6 MB | 0 | 0 | ~20 |  |
 | public.product_relationships | ~154.8k | 73.7 MB | 28.3 MB | 45.3 MB | 0 | 0 | ~30 |  |
 | public.frontend_telemetry | ~99.5k | 73.2 MB | 66.8 MB | 4.9 MB | 0 | 0 | 0 |  |
 | public.variant_supplier_sources | ~20.7k | 69.3 MB | 56.1 MB | 13.1 MB | 0 | ~170 | ~369.1k | 2026-11-07 |
-| public.produtos_padronizacao_variantes | ~20.7k | 41.7 MB | 33.5 MB | 7.7 MB | 1 | 6 | ~6.2k |  |
+| public.produtos_padronizacao_variantes | ~20.7k | 41.7 MB | 33.5 MB | 7.7 MB | 0 | 7 | ~6.2k |  |
 | public.seo_audit_log | ~93.9k | 37.5 MB | 33.6 MB | 3.9 MB | 0 | 0 | 0 |  |
-| public.login_attempts | ~31.3k | 36.4 MB | 21.1 MB | 15.2 MB | 0 | 7 | ~490 |  |
-| public.product_variants | ~20.8k | 34.9 MB | 26.6 MB | 8.3 MB | ~280 | ~3.1k | ~237.1k |  |
+| public.login_attempts | ~31.3k | 36.4 MB | 21.1 MB | 15.2 MB | 0 | 7 | ~500 |  |
+| public.product_variants | ~20.8k | 34.9 MB | 26.6 MB | 8.3 MB | ~280 | ~3.2k | ~238.2k |  |
 | public.product_customization_prices | ~28.4k | 32.2 MB | 25.3 MB | 6.8 MB | 0 | 0 | 0 |  |
 | public.produtos_padronizacao | ~8.3k | 26.8 MB | 23.7 MB | 2.8 MB | 0 | 2 | ~10.7k |  |
 | public.product_seo | ~7.7k | 25.9 MB | 23.9 MB | 1.6 MB | 0 | 0 | 0 |  |
@@ -49,10 +49,10 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.xbz_upload_mapping | ~42k | 13.0 MB | 9.1 MB | 3.9 MB | 0 | 0 | 0 |  |
 | public.xbz_gallery_staging | ~18.6k | 11.6 MB | 7.7 MB | 3.9 MB | 0 | 0 | 0 |  |
 | prod_audit.product_features | ~6.1k | 11.4 MB | 4.5 MB | 6.9 MB | 0 | 0 | 0 |  |
-| public.product_tags | ~51k | 11.1 MB | 4.2 MB | 6.9 MB | 0 | 0 | ~1k |  |
+| public.product_tags | ~51k | 11.1 MB | 4.2 MB | 6.9 MB | 0 | 0 | ~1.1k |  |
 | public.product_ai_content | ~7.3k | 10.9 MB | 10.1 MB | 776.0 KB | 0 | 0 | 0 |  |
-| public.product_category_assignments | ~39.1k | 10.1 MB | 4.3 MB | 5.8 MB | 0 | 0 | ~66.9k |  |
-| public.print_area_techniques | ~24.4k | 10.0 MB | 5.2 MB | 4.8 MB | 0 | ~240 | ~281.1k |  |
+| public.product_category_assignments | ~39.1k | 10.1 MB | 4.3 MB | 5.8 MB | 0 | 0 | ~67.7k |  |
+| public.print_area_techniques | ~24.4k | 10.0 MB | 5.2 MB | 4.8 MB | 0 | ~240 | ~327.9k |  |
 | public.supplier_import_batches | ~830 | 9.7 MB | 7.4 MB | 2.3 MB | 0 | 0 | 0 |  |
 | public.supplier_replenishment_events | ~21.8k | 9.5 MB | 4.4 MB | 5.1 MB | 0 | 6 | 6 |  |
 | public.produtos_site_padronizacao | ~3.2k | 8.8 MB | 7.6 MB | 712.0 KB | 0 | 2 | ~2.6k |  |
@@ -63,31 +63,31 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.pipeline_run_log | ~3.8k | 6.5 MB | 5.8 MB | 608.0 KB | 1 | 2 | ~10 |  |
 | public.product_kit_components | ~3.6k | 5.8 MB | 3.4 MB | 2.4 MB | 0 | 2 | 3 |  |
 | cf_recon.cf_ghost_check_queue | ~17.8k | 5.7 MB | 4.1 MB | 1.6 MB | 0 | 0 | 0 |  |
-| public.product_novelties | ~2k | 5.5 MB | 3.3 MB | 2.1 MB | 0 | 4 | ~5k |  |
+| public.product_novelties | ~2k | 5.5 MB | 3.3 MB | 2.1 MB | 0 | 4 | ~5.1k |  |
 | public.admin_audit_log | ~6.6k | 5.1 MB | 4.4 MB | 760.0 KB | 0 | 0 | ~40 |  |
-| public.product_materials | ~13.5k | 4.8 MB | 2.0 MB | 2.8 MB | 0 | 2 | ~1.1k |  |
+| public.product_materials | ~13.5k | 4.8 MB | 2.0 MB | 2.8 MB | 0 | 2 | ~1.2k |  |
 | public._archive_product_seo_20260626 | ~6.6k | 4.8 MB | 4.5 MB | 224.0 KB | 0 | 0 | 0 |  |
 | public.product_packaging_compatibility | ~10.2k | 4.6 MB | 2.8 MB | 1.7 MB | 0 | 0 | 0 |  |
 | public.asia_upload_mapping | ~16.2k | 4.6 MB | 3.0 MB | 1.5 MB | 6 | 0 | ~90 |  |
-| public.kit_component_padronizacao | ~6.8k | 4.5 MB | 2.7 MB | 1.8 MB | 0 | 0 | 4 |  |
+| public.kit_component_padronizacao | ~6.8k | 4.5 MB | 2.7 MB | 1.8 MB | 0 | 0 | 5 |  |
 | public.supplier_customization_raw | ~330 | 4.3 MB | 4.1 MB | 136.0 KB | 0 | 0 | 0 |  |
 | public._archive_supplier_price_tiers_20260626 | ~31.2k | 4.1 MB | 3.1 MB | 976.0 KB | 0 | 0 | 0 |  |
-| public.request_rate_limits | ~18.5k | 4.0 MB | 2.0 MB | 1.9 MB | ~220 | 0 | ~1.9k |  |
+| public.request_rate_limits | ~18.5k | 4.0 MB | 2.0 MB | 1.9 MB | ~300 | 0 | ~2k |  |
 | public.ai_enrichment_queue | ~7.8k | 4.0 MB | 1.8 MB | 2.1 MB | 0 | 2 | 6 |  |
 | public.product_attributes | ~15.6k | 4.0 MB | 2.3 MB | 1.6 MB | 0 | 0 | 0 |  |
 | public.qa_image_coverage_log | ~2.7k | 3.3 MB | 3.2 MB | 96.0 KB | 0 | 0 | 0 |  |
 | public.b2b_collection_products | ~6.5k | 3.2 MB | 1.2 MB | 2.0 MB | 0 | 0 | 0 |  |
 | classification_audit.category_suggestions | ~6.7k | 3.0 MB | 1.4 MB | 1.5 MB | 0 | 0 | 0 |  |
 | public.schema_signature_baseline | ~7.2k | 2.9 MB | 1.9 MB | 992.0 KB | 0 | 2 | 3 |  |
-| public.tags | ~90 | 2.8 MB | 2.5 MB | 272.0 KB | 0 | ~2.2k | ~710 |  |
+| public.tags | ~90 | 2.8 MB | 2.5 MB | 272.0 KB | 0 | ~2.3k | ~720 |  |
 | public.audit_log_gravacao | ~1.1k | 2.6 MB | 1.1 MB | 80.0 KB | 0 | 0 | 0 |  |
 | public.schema_signature_drift_log | ~380 | 2.5 MB | 880.0 KB | 80.0 KB | 0 | 0 | 1 |  |
 | public.schema_drift_log | ~420 | 2.4 MB | 664.0 KB | 80.0 KB | 0 | 0 | 0 |  |
 | public.product_physical | ~8.2k | 2.4 MB | 1.6 MB | 760.0 KB | 0 | 0 | 0 |  |
-| public.categories | ~480 | 2.3 MB | 1.6 MB | 672.0 KB | 0 | ~8.7k | ~27.9k |  |
+| public.categories | ~480 | 2.3 MB | 1.6 MB | 672.0 KB | 0 | ~8.9k | ~28.2k |  |
 | public.kit_component_print_areas | ~6.1k | 2.2 MB | 920.0 KB | 1.3 MB | 0 | 0 | 0 |  |
 | public.product_similarity_group_members | ~7k | 2.2 MB | 936.0 KB | 1.3 MB | 0 | 0 | 0 |  |
-| public.workspace_notifications | ~2.4k | 2.2 MB | 1.6 MB | 512.0 KB | ~20 | ~1.5k | ~7.9k |  |
+| public.workspace_notifications | ~2.4k | 2.2 MB | 1.6 MB | 512.0 KB | ~20 | ~1.5k | ~8k |  |
 | public.product_fiscal | ~8.2k | 2.0 MB | 1.1 MB | 928.0 KB | 0 | 0 | 0 |  |
 | public.product_print_positions | ~3.8k | 2.0 MB | 1.5 MB | 512.0 KB | 0 | 0 | 0 |  |
 | public.product_supply | ~8k | 2.0 MB | 1.2 MB | 832.0 KB | 0 | 0 | 0 |  |
@@ -100,26 +100,26 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.asia_image_import_queue | ~60 | 1.5 MB | 24.0 KB | 1.4 MB | ~10 | 3 | ~30 |  |
 | public.included_packaging_print_areas | ~2.6k | 1.0 MB | 472.0 KB | 528.0 KB | 0 | 0 | 0 |  |
 | public.product_included_packagings | ~1.2k | 1008.0 KB | 680.0 KB | 288.0 KB | 0 | 0 | 0 |  |
-| public.product_views | ~2k | 992.0 KB | 456.0 KB | 504.0 KB | 0 | ~40 | ~140 |  |
+| public.product_views | ~2k | 992.0 KB | 456.0 KB | 504.0 KB | 0 | ~40 | ~150 |  |
 | public.product_qa_image_alerts | ~360 | 944.0 KB | 600.0 KB | 304.0 KB | 0 | 3 | ~420 |  |
 | public.included_packaging_techniques | ~2.8k | 928.0 KB | 448.0 KB | 440.0 KB | 0 | 0 | 0 |  |
 | public.video_validation_log | ~2.2k | 912.0 KB | 784.0 KB | 88.0 KB | 0 | 0 | 0 |  |
 | public._archive_product_ai_20260626 | ~6.6k | 904.0 KB | 640.0 KB | 224.0 KB | 0 | 0 | 1 |  |
 | public._bkp_kcvs_pre_normalize_20260624 | ~4.1k | 904.0 KB | 720.0 KB | 144.0 KB | 0 | 0 | 0 |  |
 | public.product_deactivation_requests | ~1.4k | 896.0 KB | 552.0 KB | 304.0 KB | 0 | 0 | 0 |  |
-| public.sm_site_url_map | ~1.4k | 840.0 KB | 440.0 KB | 360.0 KB | 0 | ~20 | 8 |  |
+| public.sm_site_url_map | ~1.4k | 840.0 KB | 440.0 KB | 360.0 KB | 0 | ~30 | 8 |  |
 | public.magic_up_generations | 0 | 816.0 KB | 8.0 KB | 32.0 KB | 0 | ~10 | 0 |  |
 | public.tabela_preco_gravacao_oficial_faixa | ~950 | 736.0 KB | 128.0 KB | 576.0 KB | 0 | 0 | 0 |  |
 | prod_audit.category_keywords | ~440 | 712.0 KB | 240.0 KB | 432.0 KB | 0 | 0 | 0 |  |
 | public.product_notebook_specs | ~780 | 584.0 KB | 256.0 KB | 288.0 KB | 0 | 0 | 0 |  |
 | public.product_packagings | ~1.4k | 560.0 KB | 224.0 KB | 296.0 KB | 0 | 0 | 0 |  |
 | public.product_notebook_features | ~1k | 544.0 KB | 200.0 KB | 304.0 KB | 0 | 0 | 0 |  |
-| public.magazines | ~480 | 520.0 KB | 296.0 KB | 184.0 KB | ~30 | 0 | ~7.7k |  |
-| public.magazine_items | ~10 | 480.0 KB | 392.0 KB | 48.0 KB | 0 | 0 | ~430 |  |
+| public.magazines | ~480 | 520.0 KB | 296.0 KB | 184.0 KB | ~30 | 0 | ~7.8k |  |
+| public.magazine_items | ~10 | 480.0 KB | 392.0 KB | 48.0 KB | 0 | 0 | ~440 |  |
 | public.seo_redirects | ~750 | 464.0 KB | 320.0 KB | 112.0 KB | 0 | 0 | 0 |  |
-| public.color_variations | ~90 | 448.0 KB | 32.0 KB | 376.0 KB | 0 | ~490 | ~970 |  |
+| public.color_variations | ~90 | 448.0 KB | 32.0 KB | 376.0 KB | 0 | ~500 | ~990 |  |
 | cf_recon.remediation | ~340 | 440.0 KB | 352.0 KB | 48.0 KB | 0 | 0 | 0 |  |
-| public.quotes | 4 | 432.0 KB | 16.0 KB | 376.0 KB | 0 | ~1k | ~2.7k |  |
+| public.quotes | 4 | 432.0 KB | 16.0 KB | 376.0 KB | 0 | ~1k | ~2.8k |  |
 | prod_audit.category_suggestions | ~450 | 408.0 KB | 200.0 KB | 176.0 KB | 0 | 0 | 0 |  |
 | public.supplier_colors | ~290 | 384.0 KB | 120.0 KB | 224.0 KB | 0 | 0 | 0 |  |
 | public.tabela_preco_gravacao_oficial | ~90 | 368.0 KB | 160.0 KB | 96.0 KB | 0 | ~260 | ~540 |  |
@@ -129,16 +129,16 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | cf_recon.action_log | ~480 | 296.0 KB | 232.0 KB | 32.0 KB | 0 | 0 | 0 |  |
 | public.collection_items | 0 | 296.0 KB | 8.0 KB | 264.0 KB | 0 | ~190 | 0 |  |
 | public.pipeline_health_log | ~40 | 296.0 KB | 240.0 KB | 16.0 KB | 1 | 1 | 0 |  |
-| public.search_analytics | ~350 | 288.0 KB | 48.0 KB | 200.0 KB | 0 | 0 | ~210 |  |
+| public.search_analytics | ~350 | 288.0 KB | 48.0 KB | 200.0 KB | 0 | 0 | ~230 |  |
 | prod_audit.test_results | ~920 | 264.0 KB | 160.0 KB | 72.0 KB | 0 | 0 | 0 |  |
-| public.favorite_items | 2 | 264.0 KB | 8.0 KB | 216.0 KB | 0 | ~480 | ~630 |  |
+| public.favorite_items | 2 | 264.0 KB | 8.0 KB | 216.0 KB | 0 | ~490 | ~640 |  |
 | public.kit_component_ficha_staging | ~430 | 264.0 KB | 152.0 KB | 72.0 KB | 0 | 0 | 6 |  |
-| public.quote_items | ~10 | 264.0 KB | 16.0 KB | 208.0 KB | 0 | ~930 | ~3.4k |  |
+| public.quote_items | ~10 | 264.0 KB | 16.0 KB | 208.0 KB | 0 | ~940 | ~3.5k |  |
 | public.medallion_coverage_snapshots | ~1.2k | 248.0 KB | 168.0 KB | 48.0 KB | 0 | 0 | 0 |  |
-| public.suppliers | 5 | 248.0 KB | 144.0 KB | 64.0 KB | 1 | ~2.5k | ~2.1M |  |
+| public.suppliers | 5 | 248.0 KB | 144.0 KB | 64.0 KB | 1 | ~2.6k | ~2.2M |  |
 | public.anon_catalog_grant_audit_log | ~310 | 240.0 KB | 176.0 KB | 32.0 KB | 0 | 0 | 0 |  |
 | public.supplier_categories | ~430 | 240.0 KB | 64.0 KB | 136.0 KB | 0 | 0 | 0 |  |
-| public.edge_rate_limits | 3 | 232.0 KB | 8.0 KB | 184.0 KB | ~10 | 2 | ~460 | 2026-11-07 |
+| public.edge_rate_limits | ~30 | 232.0 KB | 8.0 KB | 184.0 KB | ~40 | 2 | ~500 | 2026-11-07 |
 | public.category_ancestors | ~1k | 224.0 KB | 72.0 KB | 120.0 KB | 0 | 1 | 0 |  |
 | public.ncm_codes | ~260 | 216.0 KB | 96.0 KB | 80.0 KB | 0 | 0 | 0 |  |
 | public.seller_cart_items | ~40 | 216.0 KB | 16.0 KB | 160.0 KB | 0 | 0 | 6 |  |
@@ -148,7 +148,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.price_history | ~210 | 208.0 KB | 128.0 KB | 48.0 KB | 0 | 0 | 0 |  |
 | public.video_sim_results | ~1k | 208.0 KB | 104.0 KB | 72.0 KB | 0 | 0 | 0 |  |
 | public.product_deactivation_tokens | ~390 | 200.0 KB | 64.0 KB | 104.0 KB | 0 | 2 | 0 |  |
-| public.profiles | ~10 | 200.0 KB | 96.0 KB | 64.0 KB | 0 | 0 | ~4.2k |  |
+| public.profiles | ~10 | 200.0 KB | 96.0 KB | 64.0 KB | 0 | 0 | ~4.3k |  |
 | public.ai_usage_logs | ~60 | 192.0 KB | 56.0 KB | 96.0 KB | 0 | 0 | ~20 |  |
 | public._bkp_kit_dims_20260619 | ~960 | 184.0 KB | 128.0 KB | 48.0 KB | 0 | 0 | 0 |  |
 | public.ai_routing_decisions | ~20 | 184.0 KB | 88.0 KB | 64.0 KB | 0 | 0 | 0 |  |
@@ -158,13 +158,13 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.product_badge_definitions | ~30 | 168.0 KB | 32.0 KB | 96.0 KB | 0 | 0 | 0 |  |
 | public.quote_history | 3 | 168.0 KB | 16.0 KB | 112.0 KB | 0 | 0 | 0 |  |
 | public.supplier_property_mappings | ~280 | 160.0 KB | 40.0 KB | 88.0 KB | 0 | 0 | 0 |  |
-| public.anon_insert_rate | ~120 | 152.0 KB | 16.0 KB | 96.0 KB | ~60 | 6 | ~120 | 2026-11-07 |
+| public.anon_insert_rate | ~110 | 152.0 KB | 16.0 KB | 96.0 KB | 0 | 7 | ~120 | 2026-11-07 |
 | public.markup_configurations | 3 | 152.0 KB | 8.0 KB | 104.0 KB | 0 | ~3.5k | 0 |  |
 | public.product_similarity_groups | ~270 | 152.0 KB | 80.0 KB | 32.0 KB | 0 | 0 | 0 |  |
 | public.quote_item_personalizations | 0 | 152.0 KB | 8.0 KB | 104.0 KB | 0 | 0 | 0 |  |
 | public.magazine_public_view_events_2026_11 | 0 | 144.0 KB | 40.0 KB | 72.0 KB | 0 | 0 | 2 |  |
 | public.ops_grant_audit | ~600 | 144.0 KB | 80.0 KB | 32.0 KB | 0 | 0 | 0 |  |
-| public.ip_access_control | 1 | 136.0 KB | 40.0 KB | 64.0 KB | 3 | 0 | ~2.7k |  |
+| public.ip_access_control | 1 | 136.0 KB | 40.0 KB | 64.0 KB | 4 | 0 | ~2.9k |  |
 | public.kit_component_types | ~130 | 136.0 KB | 32.0 KB | 64.0 KB | 0 | 0 | 0 |  |
 | public.smoke_test_runs | ~310 | 136.0 KB | 48.0 KB | 56.0 KB | 0 | 0 | 0 |  |
 | public.supplier_field_mappings | ~190 | 136.0 KB | 48.0 KB | 56.0 KB | 0 | 0 | 0 |  |
@@ -174,29 +174,29 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.variation_values | ~170 | 128.0 KB | 24.0 KB | 64.0 KB | 0 | 0 | 0 |  |
 | public.crm_callback_events | ~110 | 120.0 KB | 16.0 KB | 64.0 KB | 0 | 0 | 0 |  |
 | public.kill_switch_hits | 0 | 120.0 KB | 8.0 KB | 88.0 KB | 0 | 0 | 0 |  |
-| public.user_roles | ~40 | 120.0 KB | 8.0 KB | 80.0 KB | 0 | ~421.8k | ~416k |  |
+| public.user_roles | ~40 | 120.0 KB | 8.0 KB | 80.0 KB | 0 | ~441.7k | ~435.7k |  |
 | public.ai_function_routing | ~20 | 112.0 KB | 16.0 KB | 64.0 KB | 0 | 0 | 0 |  |
-| public.color_groups | ~20 | 112.0 KB | 8.0 KB | 64.0 KB | 0 | ~4.9k | ~480 |  |
+| public.color_groups | ~20 | 112.0 KB | 8.0 KB | 64.0 KB | 0 | ~5k | ~480 |  |
 | public.favorite_lists | 4 | 112.0 KB | 8.0 KB | 64.0 KB | 0 | ~1.6k | ~880 |  |
 | public.integration_credentials | ~20 | 112.0 KB | 8.0 KB | 64.0 KB | 0 | ~1.7k | 0 |  |
-| public.material_types | ~90 | 112.0 KB | 24.0 KB | 48.0 KB | 0 | ~260 | ~750 |  |
-| public.orders | 5 | 112.0 KB | 8.0 KB | 96.0 KB | 0 | ~1000 | ~1.1k |  |
-| public.seller_carts | ~10 | 112.0 KB | 8.0 KB | 80.0 KB | 0 | ~2k | 0 |  |
+| public.material_types | ~90 | 112.0 KB | 24.0 KB | 48.0 KB | 0 | ~270 | ~760 |  |
+| public.orders | 5 | 112.0 KB | 8.0 KB | 96.0 KB | 0 | ~1k | ~1.1k |  |
+| public.seller_carts | ~10 | 112.0 KB | 8.0 KB | 80.0 KB | 0 | ~2.1k | 0 |  |
 | public._bkp_kit_color_from_name_20260624 | ~450 | 104.0 KB | 64.0 KB | 32.0 KB | 0 | 0 | 0 |  |
 | public.dashboard_insights_cache | 1 | 104.0 KB | 8.0 KB | 48.0 KB | 1 | ~20 | 1 |  |
 | public.magazine_reader_state | 0 | 104.0 KB | 8.0 KB | 72.0 KB | 0 | 0 | 0 |  |
 | public.navigation_analytics | ~70 | 104.0 KB | 16.0 KB | 32.0 KB | 0 | 0 | 0 |  |
 | public.supplier_subtype_category_map | ~100 | 104.0 KB | 24.0 KB | 48.0 KB | 0 | 0 | 0 |  |
-| public.admin_settings | 1 | 96.0 KB | 16.0 KB | 48.0 KB | 0 | ~11.2k | 0 |  |
+| public.admin_settings | 1 | 96.0 KB | 16.0 KB | 48.0 KB | 0 | ~11.3k | 0 |  |
 | public.attribute_definitions | ~50 | 96.0 KB | 8.0 KB | 48.0 KB | 0 | 0 | 0 |  |
 | public.color_synonym_map | ~10 | 96.0 KB | 16.0 KB | 48.0 KB | 0 | 0 | 0 |  |
 | public.enriched_contacts | ~50 | 96.0 KB | 24.0 KB | 32.0 KB | 0 | 0 | 0 |  |
 | public.import_pipeline_steps | ~50 | 96.0 KB | 24.0 KB | 32.0 KB | 0 | 0 | 0 |  |
-| public.material_groups | ~10 | 96.0 KB | 8.0 KB | 48.0 KB | 0 | ~860 | ~940 |  |
+| public.material_groups | ~10 | 96.0 KB | 8.0 KB | 48.0 KB | 0 | ~870 | ~960 |  |
 | public.material_variations | ~20 | 96.0 KB | 8.0 KB | 48.0 KB | 0 | 0 | 0 |  |
 | public.pipeline_known_issues | 8 | 96.0 KB | 16.0 KB | 48.0 KB | 0 | 0 | 0 |  |
-| public.ramo_atividade_filho | ~110 | 96.0 KB | 16.0 KB | 48.0 KB | 0 | ~850 | 0 |  |
-| public.role_permissions | ~120 | 96.0 KB | 16.0 KB | 48.0 KB | 0 | ~2k | 0 |  |
+| public.ramo_atividade_filho | ~110 | 96.0 KB | 16.0 KB | 48.0 KB | 0 | ~860 | 0 |  |
+| public.role_permissions | ~120 | 96.0 KB | 16.0 KB | 48.0 KB | 0 | ~2.1k | 0 |  |
 | public.supplier_attribute_definitions | ~10 | 96.0 KB | 8.0 KB | 48.0 KB | 0 | 0 | 0 |  |
 | public.supplier_branches | 7 | 96.0 KB | 8.0 KB | 48.0 KB | 0 | 0 | 0 |  |
 | public.category_attributes | ~100 | 88.0 KB | 24.0 KB | 32.0 KB | 0 | 0 | 0 |  |
@@ -236,16 +236,16 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.ai_models | ~20 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | 0 | 0 |  |
 | public.auto_tag_rules | ~80 | 64.0 KB | 16.0 KB | 16.0 KB | 0 | 0 | 0 |  |
 | public.collection_items_trash | 0 | 64.0 KB | 0 B | 40.0 KB | 0 | 0 | 0 |  |
-| public.commemorative_dates | ~40 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | ~270 | 0 |  |
+| public.commemorative_dates | ~40 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | ~280 | 0 |  |
 | public.edge_function_invocations | 0 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | 0 | 0 |  |
 | public.inbound_webhook_endpoints | 2 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | ~60 | 0 |  |
 | public.kit_typical_dims | ~90 | 64.0 KB | 16.0 KB | 16.0 KB | 0 | 0 | 0 |  |
 | public.magazine_public_view_events_2026_10 | 0 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | 0 | 0 |  |
-| public.order_items | 9 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | ~940 | ~10 |  |
+| public.order_items | 9 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | ~950 | ~10 |  |
 | public.packagings | ~10 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | 0 | 0 |  |
 | public.personalization_technique_mappings | ~10 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | 0 | 0 |  |
 | public.product_faqs | 6 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | 0 | 0 |  |
-| public.ramo_atividade | ~20 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | ~910 | 0 |  |
+| public.ramo_atividade | ~20 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | ~920 | 0 |  |
 | public.seller_discount_limits | ~10 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | 0 | ~110 |  |
 | public.supplier_field_priority | ~10 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | 0 | 0 |  |
 | public.system_changelog | ~30 | 64.0 KB | 16.0 KB | 16.0 KB | 0 | 0 | 0 |  |
@@ -284,15 +284,15 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.paper_colors | 4 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 0 | 0 |  |
 | public.paper_formats | 6 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 0 | 0 |  |
 | public.paper_rulings | 5 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 0 | 0 |  |
-| public.personalization_techniques | ~10 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | ~2.4k | 0 |  |
+| public.personalization_techniques | ~10 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | ~2.5k | 0 |  |
 | public.roles | 7 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 0 | 0 |  |
 | public.schema_signature_drift_allowlist | 1 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 3 | 0 |  |
 | public.supplier_sub_brands | 4 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 0 | 0 |  |
-| public.system_kill_switches | 7 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | ~240 | 0 |  |
-| public.user_2fa_settings | 0 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | ~20 | 0 |  |
+| public.system_kill_switches | 7 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | ~260 | 0 |  |
+| public.user_2fa_settings | 0 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | ~30 | 0 |  |
 | public.video_types | ~10 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 0 | 0 |  |
 | public.webhook_deliveries | 0 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 0 | 0 |  |
-| public.webhook_delivery_locks | 0 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 1 | 0 |  |
+| public.webhook_delivery_locks | 0 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 2 | 0 |  |
 | public.webhook_outbox | 0 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 0 | 0 |  |
 | supplier_stricker.customization_options | 0 | 48.0 KB | 0 B | 40.0 KB | 0 | 0 | 0 |  |
 | public._bkp_kit_packing_type_20260624 | ~150 | 40.0 KB | 16.0 KB | 16.0 KB | 0 | 0 | 0 |  |
@@ -359,7 +359,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.spot_typecode_map | ~30 | 32.0 KB | 8.0 KB | 16.0 KB | 0 | 0 | 0 |  |
 | public.step_up_audit_log | 0 | 32.0 KB | 8.0 KB | 16.0 KB | 0 | 0 | 0 |  |
 | public.stock_notes | 0 | 32.0 KB | 0 B | 24.0 KB | 0 | 0 | 0 |  |
-| public.system_settings | 2 | 32.0 KB | 8.0 KB | 16.0 KB | 0 | ~10.8k | 0 |  |
+| public.system_settings | 2 | 32.0 KB | 8.0 KB | 16.0 KB | 0 | ~11.1k | 0 |  |
 | public.user_allowed_ips | 0 | 32.0 KB | 0 B | 24.0 KB | 0 | 0 | 0 |  |
 | public.user_favorites | 0 | 32.0 KB | 0 B | 24.0 KB | 0 | 0 | 0 |  |
 | public.user_ip_allowlist | 0 | 32.0 KB | 0 B | 24.0 KB | 0 | 0 | 0 |  |
@@ -375,7 +375,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.connection_test_history | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 0 | 0 |  |
 | public.cron_watchdog_log | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 0 | 0 |  |
 | public.device_login_notifications | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 0 | 0 |  |
-| public.expert_conversations | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~1.9k | 0 |  |
+| public.expert_conversations | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~2k | 0 |  |
 | public.kit_collaborators | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 0 | 0 |  |
 | public.kit_variants | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 0 | 0 |  |
 | public.magic_up_campaigns | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~10 | 0 |  |
@@ -387,14 +387,14 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.product_group_locations | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 0 | 0 |  |
 | public.quote_templates | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 0 | 0 |  |
 | public.sales_goals | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 0 | 0 |  |
-| public.saved_trends_views | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~10 | 0 |  |
+| public.saved_trends_views | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~20 | 0 |  |
 | public.scheduled_reports | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~20 | 0 |  |
 | public.search_queries | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 0 | 0 |  |
 | public.step_up_challenges | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 7 | 0 |  |
 | public.user_known_devices | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 0 | 0 |  |
 | public.user_notification_preferences | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 0 | 0 |  |
 | public.user_search_history | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 0 | 0 |  |
-| public.user_token_revocations | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~290 | 0 |  |
+| public.user_token_revocations | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~330 | 0 |  |
 | public.visual_search_feedback | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 0 | 0 |  |
 | supplier_stricker.canceled_products | 0 | 24.0 KB | 0 B | 24.0 KB | 0 | 0 | 0 |  |
 | supplier_stricker.category_mappings | 0 | 24.0 KB | 0 B | 24.0 KB | 0 | 0 | 0 |  |
@@ -427,7 +427,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.product_groups | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | 0 | 0 |  |
 | public.product_search_logs | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | 0 | 0 |  |
 | public.product_sync_logs | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | 0 | 0 |  |
-| public.public_token_failures | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | 6 | 0 |  |
+| public.public_token_failures | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | 7 | 0 |  |
 | public.push_subscriptions | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | 0 | 0 |  |
 | public.quote_drafts | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | 0 | 0 |  |
 | public.recently_viewed_products | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | 0 | 0 |  |
@@ -436,7 +436,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.role_migration_items | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | 0 | 0 |  |
 | public.saved_filters | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | ~250 | 0 |  |
 | public.security_settings | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | 0 | 0 |  |
-| public.simulator_wizard_drafts | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | ~20 | 0 |  |
+| public.simulator_wizard_drafts | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | ~30 | 0 |  |
 | public.step_up_tokens | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | 7 | 0 |  |
 | public.supplier_products_raw_history_p2026_12 | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | 2 | 0 |  |
 | public.supplier_products_raw_history_p2027_01 | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | 2 | 0 |  |
@@ -621,35 +621,32 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 ## Consultas mais custosas (pg_stat_statements, desde o último reset)
 | role | chamadas (~) | total ms (~) | média ms | query |
 |---|---|---|---|---|
-| authenticated | ~6.8k | ~6.9M | 1014.87 | `WITH pgrst_source AS ( SELECT "public"."v_products_public"."id", "public"."v_products_public"."name", "public"."v_products_public"."sku", "public"."v_products_public"."supplier_reference", "public"."v_products_public"."s` |
-| authenticated | ~3.8k | ~4.8M | 1248.38 | `WITH pgrst_source AS ( SELECT "public"."v_products_public"."id", "public"."v_products_public"."name", "public"."v_products_public"."sku", "public"."v_products_public"."supplier_reference", "public"."v_products_public"."s` |
-| authenticated | ~2.2k | ~3.3M | 1485.63 | `WITH pgrst_source AS ( SELECT "public"."tags".* FROM "public"."tags" LIMIT $1 OFFSET $2 ) SELECT $3::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, coalesce(json_agg(_postgrest_t), $4) AS body,` |
-| authenticated | ~2.3k | ~2.1M | 932.59 | `WITH pgrst_source AS ( SELECT "public"."v_products_public"."id", "public"."v_products_public"."name", "public"."v_products_public"."sku", "public"."v_products_public"."supplier_reference", "public"."v_products_public"."s` |
-| postgres | ~160 | ~2M | 12323.22 | `SELECT public.fn_cron_safe_run($1::bigint, $2, $3, $4)` |
-| authenticated | ~2k | ~1M | 510.48 | `WITH pgrst_source AS (SELECT pgrst_call.pgrst_scalar FROM (SELECT "public"."fn_get_stock_notification_counts"() pgrst_scalar) pgrst_call) SELECT $3::bigint AS total_result_set, $4 AS page_total, coalesce(json_agg(_postgr` |
-| authenticated | ~240 | ~982.6k | 4163.36 | `WITH pgrst_source AS ( SELECT "public"."v_super_filtro_options"."slug_ou_codigo", "public"."v_super_filtro_options"."ordem" FROM "public"."v_super_filtro_options" WHERE "public"."v_super_filtro_options"."filtro_tipo" = $` |
-| authenticated | ~860 | ~767.6k | 894.63 | `WITH pgrst_source AS ( SELECT "public"."v_products_public"."id", "public"."v_products_public"."name", "public"."v_products_public"."sku", "public"."v_products_public"."supplier_reference", "public"."v_products_public"."s` |
-| authenticated | ~140 | ~660.1k | 4681.56 | `WITH pgrst_source AS ( SELECT "public"."product_images"."id", "public"."product_images"."product_id", "public"."product_images"."variant_id", "public"."product_images"."supplier_code", "public"."product_images"."url_cdn"` |
-| authenticated | ~2.2k | ~657.8k | 295.90 | `WITH pgrst_source AS ( SELECT "public"."categories".* FROM "public"."categories" WHERE "public"."categories"."is_active" = $1 LIMIT $2 OFFSET $3 ) SELECT $4::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS ` |
-| authenticated | ~160 | ~535k | 3385.97 | `WITH pgrst_source AS ( SELECT "public"."variant_supplier_sources"."id", "public"."variant_supplier_sources"."variant_id", "public"."variant_supplier_sources"."supplier_id", "public"."variant_supplier_sources"."supplier_s` |
-| postgres | 8 | ~495.5k | 61942.62 | `SELECT table_schema AS schema, table_name AS "table", column_name AS "column", grantee, string_agg(privilege_type, $1 ORDER BY privilege_type) AS privileges FROM information_schema.column_privileges cp WHERE grantee NOT ` |
-| authenticated | ~1.5k | ~476.6k | 313.98 | `WITH pgrst_source AS ( SELECT "public"."stock_daily_summary"."product_id", "public"."stock_daily_summary"."variant_id", "public"."stock_daily_summary"."summary_date", "public"."stock_daily_summary"."units_depleted", "pub` |
-| authenticated | ~2k | ~467.3k | 233.52 | `WITH pgrst_source AS (SELECT "pgrst_call".* FROM (SELECT $1 AS json_data) pgrst_payload, LATERAL (SELECT "p_limit" FROM json_to_record(pgrst_payload.json_data) AS _("p_limit" integer) LIMIT $4) pgrst_body , LATERAL "publ` |
-| authenticated | ~850 | ~410.1k | 483.65 | `WITH pgrst_source AS (SELECT "pgrst_call".* FROM "public"."fn_get_product_intelligence_all"() pgrst_call) SELECT $3::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, coalesce(json_agg(_postgrest_` |
+| authenticated | ~6.9k | ~7.1M | 1028.88 | `WITH pgrst_source AS ( SELECT "public"."v_products_public"."id", "public"."v_products_public"."name", "public"."v_products_public"."sku", "public"."v_products_public"."supplier_reference", "public"."v_products_public"."s` |
+| authenticated | ~3.9k | ~4.9M | 1272.33 | `WITH pgrst_source AS ( SELECT "public"."v_products_public"."id", "public"."v_products_public"."name", "public"."v_products_public"."sku", "public"."v_products_public"."supplier_reference", "public"."v_products_public"."s` |
+| authenticated | ~2.3k | ~3.3M | 1463.65 | `WITH pgrst_source AS ( SELECT "public"."tags".* FROM "public"."tags" LIMIT $1 OFFSET $2 ) SELECT $3::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, coalesce(json_agg(_postgrest_t), $4) AS body,` |
+| authenticated | ~2.3k | ~2.2M | 934.30 | `WITH pgrst_source AS ( SELECT "public"."v_products_public"."id", "public"."v_products_public"."name", "public"."v_products_public"."sku", "public"."v_products_public"."supplier_reference", "public"."v_products_public"."s` |
+| postgres | ~170 | ~2M | 11986.80 | `SELECT public.fn_cron_safe_run($1::bigint, $2, $3, $4)` |
+| authenticated | ~2k | ~1M | 506.17 | `WITH pgrst_source AS (SELECT pgrst_call.pgrst_scalar FROM (SELECT "public"."fn_get_stock_notification_counts"() pgrst_scalar) pgrst_call) SELECT $3::bigint AS total_result_set, $4 AS page_total, coalesce(json_agg(_postgr` |
+| authenticated | ~240 | ~1M | 4212.55 | `WITH pgrst_source AS ( SELECT "public"."v_super_filtro_options"."slug_ou_codigo", "public"."v_super_filtro_options"."ordem" FROM "public"."v_super_filtro_options" WHERE "public"."v_super_filtro_options"."filtro_tipo" = $` |
+| authenticated | ~870 | ~787.4k | 905.08 | `WITH pgrst_source AS ( SELECT "public"."v_products_public"."id", "public"."v_products_public"."name", "public"."v_products_public"."sku", "public"."v_products_public"."supplier_reference", "public"."v_products_public"."s` |
+| authenticated | ~2.3k | ~674.3k | 297.33 | `WITH pgrst_source AS ( SELECT "public"."categories".* FROM "public"."categories" WHERE "public"."categories"."is_active" = $1 LIMIT $2 OFFSET $3 ) SELECT $4::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS ` |
+| authenticated | ~140 | ~660.7k | 4620.13 | `WITH pgrst_source AS ( SELECT "public"."product_images"."id", "public"."product_images"."product_id", "public"."product_images"."variant_id", "public"."product_images"."supplier_code", "public"."product_images"."url_cdn"` |
+| postgres | 9 | ~540.8k | 60086.67 | `SELECT table_schema AS schema, table_name AS "table", column_name AS "column", grantee, string_agg(privilege_type, $1 ORDER BY privilege_type) AS privileges FROM information_schema.column_privileges cp WHERE grantee NOT ` |
+| authenticated | ~160 | ~536.7k | 3354.28 | `WITH pgrst_source AS ( SELECT "public"."variant_supplier_sources"."id", "public"."variant_supplier_sources"."variant_id", "public"."variant_supplier_sources"."supplier_id", "public"."variant_supplier_sources"."supplier_s` |
+| authenticated | ~1.5k | ~480k | 316.00 | `WITH pgrst_source AS ( SELECT "public"."stock_daily_summary"."product_id", "public"."stock_daily_summary"."variant_id", "public"."stock_daily_summary"."summary_date", "public"."stock_daily_summary"."units_depleted", "pub` |
+| authenticated | ~2k | ~478.1k | 233.89 | `WITH pgrst_source AS (SELECT "pgrst_call".* FROM (SELECT $1 AS json_data) pgrst_payload, LATERAL (SELECT "p_limit" FROM json_to_record(pgrst_payload.json_data) AS _("p_limit" integer) LIMIT $4) pgrst_body , LATERAL "publ` |
+| authenticated | ~860 | ~454.3k | 528.22 | `WITH pgrst_source AS (SELECT "pgrst_call".* FROM "public"."fn_get_product_intelligence_all"() pgrst_call) SELECT $3::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, coalesce(json_agg(_postgrest_` |
 
 
 ## Conexões
 | usuário | estado | n |
 |---|---|---|
-| authenticator | active | 2 |
-| authenticator | idle | 27 |
-| authenticator | idle in transaction | 2 |
+| authenticator | idle | 26 |
 | pgbouncer | idle | 2 |
 | postgres | active | 1 |
 | postgres |  | 1 |
 | supabase_admin | active | 1 |
 | supabase_admin | idle | 12 |
 | supabase_admin |  | 1 |
-| supabase_auth_admin | active | 1 |
 | supabase_auth_admin | idle | 2 |
 | supabase_storage_admin | idle | 1 |

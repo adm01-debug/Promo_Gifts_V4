@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "3093c4a247c0ec39b16960f8d64691852f957574",
+  "sha": "a882bcc1ad68ec8dafcca47e341194754ead752d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 20:37 UTC",
+  "generated_at": "2026-11-07 20:47 UTC",
   "files_total": 9099,
   "code_files": 7844,
   "code_lines": 1051314
@@ -483022,10 +483022,19 @@
   }
  },
  "git": {
-  "sha": "3093c4a247c0ec39b16960f8d64691852f957574",
+  "sha": "a882bcc1ad68ec8dafcca47e341194754ead752d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "a882bcc",
+    "date": "2026-11-07",
+    "author": "github-actions[bot]",
+    "subject": "docs(edge-deploy-log): recibo do deploy — run 42374498496 (#3163)",
+    "files": [
+     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
+    ]
+   },
    {
     "sha": "3093c4a",
     "date": "2026-11-07",
@@ -483325,21 +483334,12 @@
     "files": [
      "docs/contexto/regras/manual/regras.md"
     ]
-   },
-   {
-    "sha": "a064d6f",
-    "date": "2026-11-05",
-    "author": "adm01-debug",
-    "subject": "docs: RELATORIO_CI.md — SHA 823822b0 + vitest PENDENCIAS #20 + run 42125946413",
-    "files": [
-     "RELATORIO_CI.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    6
+    5
    ],
    [
     ".github/workflows/replenishment-quality.yml",
@@ -483368,6 +483368,10 @@
    [
     ".github/workflows/schema-snapshot-export.yml",
     2
+   ],
+   [
+    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    1
    ],
    [
     "scripts/fuzz-edge-uploads.mjs",
@@ -483411,10 +483415,6 @@
    ],
    [
     ".env.e2e.example",
-    1
-   ],
-   [
-    "e2e/flows/20-all-features-smoke.spec.ts",
     1
    ]
   ]

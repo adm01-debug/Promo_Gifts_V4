@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(edge-deploy-log): recibo do deploy — run 42374498496 (#3163)",
    "fix(test): validar de verdade o corpus dos fuzzers (#3173)",
    "docs: RELATORIO_CI.md §21 — Gate Final ✅ success na main 1a47c6972c",
    "docs: RELATORIO_CI.md e PENDENCIAS.md — status CI e workflows (#3172)",
-   "chore(docs): Gate 1.14 — adiciona SUPABASE_TEST_BYPASS_TOKEN ao SEGREDOS.md (#3164)",
-   "fix(magazine): impedir colapso do título em lg (#3161)"
+   "chore(docs): Gate 1.14 — adiciona SUPABASE_TEST_BYPASS_TOKEN ao SEGREDOS.md (#3164)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
