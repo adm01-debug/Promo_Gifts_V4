@@ -79,8 +79,11 @@ jobs:
           persist-credentials: false
       - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         id: filter
-        if: github.event_name == 'pull_request'
         with:
+          # Exige um include e respeita qualquer exclusão correspondente.
+          # Com o padrão `some`, `src/**` tornaria testes unitários relevantes
+          # para E2E mesmo quando os globs negados também casassem.
+          predicate-quantifier: some-with-excludes
           filters: |
             code:
               - 'src/**'
