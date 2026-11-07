@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "project_ref": "doufsxqlfjyuvxuezpln",
+  "baseline_version": "20261015140000",
+  "generated_at_utc": "2026-11-07T13:45:00Z",
+  "reason": "Entradas historicas remotas sem arquivo local que ja estao cobertas pelo baseline assinado ou por uma migration canonica. A remocao afeta somente supabase_migrations.schema_migrations; nenhum DDL e executado.",
+  "evidence_sha256": {
+    "supabase/baseline/20261015140000_baseline_schema.sql": "3ce43e34331f8b5b889b4343249e620729cee0db709f0f7d3cd5b82705f36f6d",
+    "supabase/migrations-snapshot/ALL_IN_ONE.sql": "ae6d437520f3862f4656788f343bb6d7b0758335f2e282c26dc9ba2c4318b007",
+    "supabase/migrations/20260623182623_fix_v_system_alerts_cron_threshold_bugalert1_20260623.sql": "ec4f1982e62c680ceaa583a049e4cbd0901057a9ede521298a4fc302f5551c6d",
+    "supabase/migrations/20260623201801_create_process_notifications_queue_rpcs_20260623.sql": "aef4c163590e55074b367c6989ad426cd470b20defe6c549b911e390cbbbe322",
+    "supabase/migrations/20260916181609_backfill_fix_google_provider_secret_name_20260623.sql": "3fd0648eaf7d7a2e16845190445098a8cf544b8ce0cdb5c7cf69c481d3d89e73",
+    "supabase/migrations/20261101202500_cron001_stagger_schedules_reduce_concurrent.sql": "34f19f30a1d9a168fbadcbc08dbeab01686ee800225fe55720226bf20fa96dd5",
+    "supabase/migrations/20261101220000_cron001_stagger_schedules.sql": "0e9b5f8059c765a55e8decef2f14f2c4fcd5e338a62240e7dd839c7a297a9e88",
+    "supabase/sql-legacy/001_notification_system.sql": "49684365c784dff4beeca84bf18fc471015d4963869b8589dd08a846f4c41bf2",
+    "supabase/sql-legacy/002_notification_preferences.sql": "32dad88a67fd9152e10d8426d5b26b2898064f054fefe7f30d027495851e97ae",
+    "supabase/sql-legacy/003_notification_templates.sql": "7b5a64b9ef6c78b6597e246b506585b1b10b818adc9dadb0a9c0ccf3f6a80cef",
+    "supabase/sql-legacy/004_notification_functions.sql": "f4c4a5f3d3a5f3aafb517b1cd17048a78151c4cdab48f95c9d5914f2bfe24e9f",
+    "supabase/sql-legacy/005_push_subscriptions.sql": "1b1cebbd88da03c08f7ec2691e53e874e9a84b8c4f6918ba2d9433817d1db64a",
+    "supabase/sql-legacy/2026062311292414001_add_full_path_readable_propagation_triggers.sql": "c03d47ba1092d52f69f53f24c0fd4a4bda564df820c78a5bf3d36c8f349cab1d",
+    "supabase/sql-legacy/20260712_fix_rls_policies_critical.sql": "fc521ebbe596cdd5512ac7b6d594a1f2811ce9aca577c628e32235bcd1704f06"
+  },
+  "entries": [
+    {
+      "version": "001",
+      "remote_name": null,
+      "covered_by": "baseline:20261015140000",
+      "evidence": [
+        "supabase/sql-legacy/001_notification_system.sql",
+        "supabase/baseline/20261015140000_baseline_schema.sql"
+      ]
+    },
+    {
+      "version": "002",
+      "remote_name": null,
+      "covered_by": "baseline:20261015140000",
+      "evidence": [
+        "supabase/sql-legacy/002_notification_preferences.sql",
+        "supabase/baseline/20261015140000_baseline_schema.sql"
+      ]
+    },
+    {
+      "version": "003",
+      "remote_name": null,
+      "covered_by": "baseline:20261015140000",
+      "evidence": [
+        "supabase/sql-legacy/003_notification_templates.sql",
+        "supabase/baseline/20261015140000_baseline_schema.sql"
+      ]
+    },
+    {
+      "version": "004",
+      "remote_name": null,
+      "covered_by": "baseline:20261015140000",
+      "evidence": [
+        "supabase/sql-legacy/004_notification_functions.sql",
+        "supabase/baseline/20261015140000_baseline_schema.sql"
+      ]
+    },
+    {
+      "version": "005",
+      "remote_name": null,
+      "covered_by": "baseline:20261015140000",
+      "evidence": [
+        "supabase/sql-legacy/005_push_subscriptions.sql",
+        "supabase/baseline/20261015140000_baseline_schema.sql"
+      ]
+    },
+    {
+      "version": "20260611014515",
+      "remote_name": "fn_dryrun_standardize_supplier_real_rollback",
+      "covered_by": "baseline:20261015140000",
+      "evidence": [
+        "supabase/migrations-snapshot/ALL_IN_ONE.sql",
+        "supabase/baseline/20261015140000_baseline_schema.sql"
+      ]
+    },
+    {
+      "version": "20260623_bugalert1",
+      "remote_name": "fix_v_system_alerts_cron_threshold_bugalert1",
+      "covered_by": "migration:20260623182623",
+      "evidence": [
+        "supabase/migrations/20260623182623_fix_v_system_alerts_cron_threshold_bugalert1_20260623.sql"
+      ]
+    },
+    {
+      "version": "20260623_create_process_notifications_queue_rpcs",
+      "remote_name": "create_process_notifications_queue_rpcs_20260623",
+      "covered_by": "migration:20260623201801",
+      "evidence": [
+        "supabase/migrations/20260623201801_create_process_notifications_queue_rpcs_20260623.sql"
+      ]
+    },
+    {
+      "version": "20260623_fix_google_provider_secret_name",
+      "remote_name": "fix: ai_providers.google GOOGLE_API_KEY→GEMINI_API_KEY name mismatch",
+      "covered_by": "migration:20260916181609",
+      "evidence": [
+        "supabase/migrations/20260916181609_backfill_fix_google_provider_secret_name_20260623.sql"
+      ]
+    },
+    {
+      "version": "2026062311292414001",
+      "remote_name": "add_full_path_readable_propagation_triggers",
+      "covered_by": "baseline:20261015140000",
+      "evidence": [
+        "supabase/sql-legacy/2026062311292414001_add_full_path_readable_propagation_triggers.sql",
+        "supabase/baseline/20261015140000_baseline_schema.sql"
+      ]
+    },
+    {
+      "version": "20260712",
+      "remote_name": "fix_rls_policies_critical",
+      "covered_by": "baseline:20261015140000",
+      "evidence": [
+        "supabase/sql-legacy/20260712_fix_rls_policies_critical.sql",
+        "supabase/baseline/20261015140000_baseline_schema.sql"
+      ]
+    },
+    {
+      "version": "20261101223908",
+      "remote_name": "20261101202500_cron001_stagger_schedules_reduce_concurrent",
+      "covered_by": "migration:20261101202500",
+      "evidence": [
+        "supabase/migrations/20261101202500_cron001_stagger_schedules_reduce_concurrent.sql"
+      ]
+    },
+    {
+      "version": "20261101232022",
+      "remote_name": "cron001_stagger_schedules",
+      "covered_by": "migration:20261101220000",
+      "evidence": ["supabase/migrations/20261101220000_cron001_stagger_schedules.sql"]
+    }
+  ]
+}
