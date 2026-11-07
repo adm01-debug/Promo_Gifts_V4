@@ -17,6 +17,13 @@ import type * as ReactRouterDom from 'react-router-dom';
 
 const navigateMock = vi.fn();
 const refreshSessionMock = vi.fn().mockResolvedValue(undefined);
+const signOutMock = vi.fn().mockResolvedValue(undefined);
+const validateIPForAuthenticatedUserMock = vi.fn().mockResolvedValue({
+  isAllowed: true,
+  hasRestrictions: false,
+  currentIP: '127.0.0.1',
+});
+const checkDeviceMock = vi.fn().mockResolvedValue(undefined);
 
 const exchangeCodeForSessionMock = vi.fn();
 const getSessionMock = vi.fn();
@@ -29,7 +36,19 @@ vi.mock('react-router-dom', async () => {
 });
 
 vi.mock('@/contexts/AuthContext', () => ({
-  useAuth: () => ({ refreshSession: refreshSessionMock }),
+  useAuth: () => ({ refreshSession: refreshSessionMock, signOut: signOutMock }),
+}));
+
+vi.mock('@/hooks/admin/useIPValidation', () => ({
+  useIPValidation: () => ({ validateIPForAuthenticatedUser: validateIPForAuthenticatedUserMock }),
+}));
+
+vi.mock('@/hooks/admin/useDeviceDetection', () => ({
+  useDeviceDetection: () => ({ checkDevice: checkDeviceMock }),
+}));
+
+vi.mock('@/lib/edge/safeInvokeCall', () => ({
+  invokeEdge: vi.fn().mockResolvedValue({ data: null, error: null }),
 }));
 
 vi.mock('@/integrations/supabase/client', () => ({
@@ -76,6 +95,9 @@ describe('SSOCallbackPage', () => {
   beforeEach(() => {
     navigateMock.mockClear();
     refreshSessionMock.mockClear();
+    signOutMock.mockClear();
+    validateIPForAuthenticatedUserMock.mockClear();
+    checkDeviceMock.mockClear();
     exchangeCodeForSessionMock.mockReset();
     getSessionMock.mockReset();
     onAuthStateChangeMock.mockReset().mockImplementation((_cb) => ({
