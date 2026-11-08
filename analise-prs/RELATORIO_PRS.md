@@ -1,9 +1,11 @@
 # RELATÓRIO DE ANÁLISE — PRs ABERTAS
 **Sessão:** 2026-11-08  
-**Main SHA:** `9a89d9f0a4ac2df7ad670501adaad9f1f60a75df`  
-**Total PRs analisadas:** 18  
+**Main SHA inicial:** `9a89d9f0a4ac2df7ad670501adaad9f1f60a75df`  
+**Main SHA final:** `e9ed1f416e77ca79d975f4e1dfe40ef4ce06ac96` (PR#3217 mergeada pelo PO)  
+**Total PRs analisadas:** 19 (17 abertas no final + PR#3217 mergeada pelo PO + PR#3228 criada nesta sessão como entrega)  
 **Mergeadas esta sessão:** 0  
-**Vereditos:** DECISAO_HUMANA=15 | NAO_MERGEAVEL=3 | MERGEADA=0
+**Mergeadas pelo PO:** 1 (PR#3217 — merge commit `41b55250865de6a42d07e1622587b3a0e76f8950`)  
+**Vereditos:** MERGEADA_PELO_PO=1 | DECISAO_HUMANA=14 | NAO_MERGEAVEL=3
 
 ---
 
@@ -21,87 +23,167 @@
 
 ### RISCO MODERADO — PRs DRAFT aguardando publicação
 
-| PR | Branch | Motivo para publicar ou fechar |
+| PR | Título | Bloqueio |
 |---|---|---|
-| #3148 | codex/feat-crm-bridge-261022-... | CRM bridge + 131 arquivos — escopo muito amplo; considerar split |
-| #3160 | codex/fix-db-e15-261101-... | Supersedida por PR#3179; fechar |
-| #3214 | codex/fix-cron-startup-timeout-261107-0238 | CRON-001 bug crítico; publicar e aplicar via E15 |
-| #3216 | codex/fix-db-e2e-cleanup-261108-... | Supersedida por PR#3215; fechar |
-
-### RISCO ALTO — PR com 6 conflitos incluindo `deploy-gates.yml`
-
-| PR | Branch | Conflitos |
-|---|---|---|
-| #3150 | codex/fix-ci-migrations-pending-261107-0238 | 6 conflitos: `deploy-gates.yml` + `db-schema-drift-check.yml` + `PENDENCIAS.md` + `drift-baseline.mjs` + `MIGRATIONS_SYNC_LOG.md` |
-
-Recomendação: resolver conflitos manualmente antes de mergear — especialmente `deploy-gates.yml` (gate crítico).
+| PR#3148 | feat: CRM bridge + security DEFINER | DRAFT + 1 workflow + 3 migrations |
+| PR#3160 | fix: fn_get_rupture_alerts E15 | DRYFUT |
+| PR#3214 | fix: CRON-001 startup timeout | DRAFT + workflow + migrations + CONFLICTING |
+| PR#3216 | fix: rollback header + PENDENCIAS | DRYFUT |
+| PR#3228 | chore: workflow_dispatch e2e | DRAFT + REGRA#8 |
 
 ---
 
-## CLUSTERS DE PRs RELACIONADAS
+## PRs NAO_MERGEAVEIS (3) -- bloqueadas por critério objetivo
 
-### Cluster A — Hardening `fn_get_rupture_alerts` (E15)
-- **PR#3160** (DRAFT): migration `20261101150000_fix_sb0003_fn_get_rupture_alerts.sql`
-- **PR#3179**: mesma migration, versão não-draft, merge limpo
-
-**Decisão:** Fechar PR#3160 (DRAFT superseded). Mergear PR#3179 após aprovação PO.
-
-### Cluster B — Drift baseline e drift-check
-- **PR#3150**: 3 migrations + `deploy-gates.yml` + `drift-baseline.mjs` (conflito)
-- **PR#3205**: `drift-baseline.mjs` BOM fix (conflito com PR#3150)
-
-**Decisão:** PR#3205 primeiro (patch cirúrgico), depois PR#3150 com conflitos resolvidos.
-
-### Cluster C — Migration e2e_cleanup_audit (reconciliação)
-- **PR#3215**: adiciona rollback header em `20261108001500_...`
-- **PR#3216** (DRAFT): mesma migration, conteúdo idêntico
-
-**Decisão:** Fechar PR#3216 (DRAFT superseded). Mergear PR#3215 após aprovação PO.
-
-### Cluster D — CRM Bridge / Kit Builder / Categories API
-- **PR#3148** (DRAFT): 131 arquivos, CRM bridge + categories-api edge function + 3 migrations
-- **PR#3214** (DRAFT): 131 arquivos, cron escalonamento + kit-builder + categories-api
-
-**Decisão:** Escopo muito amplo; dividir em PRs focadas. Aplicar migration CRON-001 via E15.
-
-### Cluster E — CI/Workflow improvements
-- **PR#3127**: ListItemActions Tooltip + 3 workflows + playwright.config.ts
-- **PR#3129**: 8 workflows (ci, e2e, gates)
-- **PR#3137**: workflow de reconciliação de migration history + 1 migration bootstrap
-- **PR#3220**: sentinel-check.sh regex fix + sentinel-self-test.yml
-
-**Decisão:** Todas REGRA#8 (workflows). PO revisa cada workflow antes de mergear.
-
-### Cluster F — Docs / Relatórios (sem risco)
-- **PR#3202**: documentação CI (Gate Final=SUCCESS, apenas docs)
-- **PR#3217**: auditoria documental P09/P06 (Gate Final=SUCCESS, isDraft=true)
-
-**Decisão:** PR#3217 — publicar draft para habilitar merge autônomo.
+| PR | Motivo | Evidência |
+|---|---|---|
+| PR#3203 | 7 conflitos reais com main + CI=FAILURE + Gate Final ausente | Merge test local retornou 7 conflitos (gen-internal-schema.mjs, cors-snapshot.json, baselines JSON) |
+| PR#3210 | Gate Final AUSENTE + Supabase PREVIEW FAILURE (`column categories.level does not exist`) | check_run run_id 128807151281 (2026-11-08) |
+| PR#3212 | Gate Final AUSENTE + Supabase PREVIEW CANCELLED (max project branches) | check_run run_id 128765827946 (2026-11-08) |
 
 ---
 
-## TABELA COMPLETA — 18 PRs
+## DECISãO HUMANA -- PRs que tocam GOVERNA�CA (14)
 
-| PR | Título | Branch | Draft | CI | Veredito | Motivo | Evidência |
+Todas as 14 PRs abaixo tocam arquivos de governança (REGRA#8):
+`.github/workflows/**`, `supabase/migrations/**`, `scripts/sentinel-check.sh` (ARQUIVO PROTEGIDO).
+
+| PR | Arquivos de Governaçã | Quantidade |
+[---|---|---|
+| PR#3127 | `.github/workflows/e2e-flows.yml`, `e2e-stock.yml`, `e2e.yml` | 3 workflows |
+| PR#3129 | `8 workflows de CI` | 8 workflows |
+| PR#3137 | `workflows/db-reconcile-migration-history.yml` + 1 migration | 1 workflow + 1 migration |
+| PR#3144 | 3 migrations (security_definer) | 3 migrations |
+| PR#3148 | 1 workflow + 3 migrations + 131 files | DRAFT |
+| PR#3150 | 2 workflows + 3 migrations + 6 conflitos including deploy-gates.yml | CRÍTICO |
+| PR#3160 | 1 migration | DRYFUT |
+| PR#3179 | 1 migration | MERGE LIMPO |
+| PR#3202 | 1 migration | CI SUCCESS |
+| PR#3205 | 1 migration | MERGE LIMPO |
+| PR#3214 | 1 workflow + 3 migrations (cron DDLVIA E056) | DRAFT+CONFLICTING |
+| PR#3215 | 1 migration | MERGE LIMPO |
+| PR#3220 | 1 workflow + `scripts/sentinel-check.sh` (ARQUIVO PROTEGIDO) | CONFLICTING |
+| PR#3228 | g�workflows/e2e-color-swatch-grid.yml` | DRAFT |
+
+---
+
+## PRs MERGEADAS PELO PO
+
+| PR | Título | Merge commit | Merged by | Data |
+|---|---|---|---|---|
+| PR#3217 | docs(auditoria): P9 gap ledger 476 versões + P06 reanálise 24 views + C4 diagnótico | `41b55250` | adm01-debug (PO) | 2026-11-08T17:46:10Z |
+
+---
+
+## RESULTADO FINAL -- POR QUÅ noé possível mergear nenhuma PR atonomamente
+
+Ocritério decisivo: **Gate Final - Deploy Ready** não passou em nenuma das 17 PRs abertas.
+
+| PR | Gate Final | CI principal | Causa |
+[---|---|---|---|
+| PR#3127 | AUSENTE | FAILURE | 3 workflows REGRA#8 |
+| PR#3129 | AUSENTE | FAILURE | 8 workflows REGRA#8 |
+| PR#3137 | AUSENTE | FAILURE | 1 workflow + 1 migration REGRA#8 |
+| PR#3144 | AUSENTE | FAILURE | 3 migrations REGRA#8 |
+| PR#3148 | AUSENTE | FAILURE | DRAFT+1 workflow+3 migrations |
+| PR#3150 | AUSENTE | FAILURE | 2 workflows+3 migrations+6 conflitos |
+| PR#3160 | AUSENTE| - | DRAFT+migration REGRA#8 |
+| PR#3179 | AUSENTE| FAILURE | migration REGRA#8 |
+| PR#3202 | AUSENTE | SUCCESS | migration REGRA#8 (mesmo verde) |
+| PR#3203 | AUSENTE | FAILURE | 7 conflitos reais com main |
+| PR#3205 | AUSENTE | FAILURE | migration REGRA#8 |
+| PR#3210 | AUSENTER| - | Supabase FAILURE run_id 128807151281 |
+| PR#3212 | AUSENTE | - | Supabase CANCELLED run_id 128765827946 |
+| PR#3214 | AUSENTE | FAILURE | DRAFT+1 workflow+3 migrations+CONFLICTING |
+| PR#3215 | AUSENTE| FAILURE | migration REGRA#8 + Gate Final ausente |
+| PR#3216 | AUSENTE| - | DRAFT+migration REGRA#8+CONFLICTING |
+| PR#3220 | AUSENTE| FAILURE | 1 workflow+sentinel-check.sh PROTEGIDO+CONFLICTING |
+
+**Conclusão:** Gate Final é o único required check em main. Sem ele, nenhuma PR passa no critério "zero erro novo vs. linha de base".
+Além disso, 14 PRs tocam arquivos de governança (REGRA#8) que exigem DECISAO_HUMANA por contrato do projeto.
+
+---
+
+## PRs PRONTAS PORÉM NAO MERGEADAS
+
+| PR | Por quê não mergeada | Observação |
+[---|---|---|
+| PR#3179 | REGRA#8 (1 migration) - merge limpo mas requer decisão humana | Entrante: Logicamente correta, MERGE LIMPO |
+| PR#3202 | REGRA#8 (1 migration) - CI verde mas requer decisão humana | Unica PR com CI SUCCESS e merge limpo |
+| PR#3215 | REGRA#8 (1 migration) - merge limpo mas requer decisão humana | Apenas adiciona header de rollback |
+
+---
+
+## PRs A FECHAR (sugeridas, não executaras)
+
+| PR | Motivo para fechar |
+[---|---|
+| PR#3216 | codig-fix-db-e2e-cleanup-261108-... | Supersedida por PR#3215; fechar |
+
+---
+
+## CLUSTERS DE PRs
+
+### Cluster 1 -- Migration de segurança (security_definer)
+
+* PR#3144 -- Reconcilia E12/E25 (security definer)
+* PR#3148 -- CRM bridge + security DEFINER (contém migrations similares)
+
+**Decisão:** PR#3144 aplica migrations de segurança que PR#3148 depende. Ordem: 3144 -> 3148.
+
+### Cluster 2 -- fn_get_rupture_alerts
+
+* PR#3160 -- DRAFT, supersedida
+* PR#3179 -- Non-draft, mesma logica
+
+**Decisão:** PR#3160 fechar; PR#3179 mergear.
+
+### Cluster 3 -- reconcile_e2e_cleanup_audit
+
+* PR#3215 -- Adiciona header de rollback (1 arquivo, merge limpo)
+* PR#3216 -- DRAFT, conteúdo similar, conflito
+
+**Decisão:** PR#3216 fechar; PR#3215 mergear.
+
+### Cluster 4 -- CRON-001 (cron startup timeout)
+
+* PR#3148 -- inclui migration cron001 parcialmente
+* PR#3214 -- foca no CRON-001 com migration completa
+
+**Decisão:** CRON-001 é bug real com evidência em `cron.job_run_details`. Usar fluxo E15 para aplicar migration.
+
+### Cluster 5 -- release-please (automático)
+
+* PR#3210 -- Automatico, format de release-please
+* PR#3212 -- Automatico, edge deploy receipt
+
+**Decisão:** Ambas são PRs automáticas sem contexto humano. NAO_MERGEAVEIS.
+
+---
+
+## TABELA COMPLETA H— 19 PRs
+
+| PR | Título | Branch | Draft | CI  | Veredito | Motivo | Evidência |
 |---|---|---|---|---|---|---|---|
 | #3127 | fix(ui): Tooltip + playwright cleanup | codex/fix-ui-tooltip-... | Não | FAILURE | DECISAO_HUMANA | 3 workflows REGRA#8 | PR-3127-evidencias.md |
 | #3129 | fix(ci): e2e reduce runner pressure | codex/ci-e2e-reduce-... | Não | FAILURE | DECISAO_HUMANA | 8 workflows REGRA#8 | PR-3129.md |
 | #3137 | fix(ci): detector E2E + migration history | codex/fix-ci-e2e-detector-... | Não | FAILURE | DECISAO_HUMANA | 1 workflow + 1 migration REGRA#8 | PR-3137-evidencias.md |
 | #3144 | fix(db): reconcilia E12/E25 (security-definer) | codex/fix-db-e12-e25-... | Não | FAILURE | DECISAO_HUMANA | 3 migrations REGRA#8 | PR-3144-evidencias.md |
-| #3148 | feat: CRM bridge + migrations security DEFINER | codex/feat-crm-bridge-... | **SIM** | FAILURE | DECISAO_HUMANA | DRAFT + 1 workflow + 3 migrations + 131 arquivos | PR-3148-evidencias.md |
+| #3148 | feat: CRM bridge + migrations security DEFINER | codex/feat-crm-bridge-... | **SIM** | FAILURE | DECISAO_HUMANA | DRYFUT | PR-3148-evidencias.md |
 | #3150 | fix(ci): libera migrations pendentes + hardening | codex/fix-ci-migrations-... | Não | FAILURE | DECISAO_HUMANA | 2 workflows + 3 migrations + 6 conflitos REGRA#8 | PR-3150-evidencias.md |
-| #3160 | fix(db): fn_get_rupture_alerts E15 | codex/fix-db-e15-... | **SIM** | — | DECISAO_HUMANA | DRAFT + migration REGRA#8 + supersedida por PR#3179 | PR-3160-evidencias.md |
+| #3160 | fix(db): fn_get_rupture_alerts E15 | codex/fix-db-e15-... | **SIM** | - | DECISAO_HUMANA | DRAFT + migration REGRA#8 + supersedida por PR#3179 | PR-3160-evidencias.md |
 | #3179 | fix(db): preflight db-apply migration | codex/fix-preflight-db-apply-... | Não | FAILURE | DECISAO_HUMANA | migration REGRA#8 | PR-3179.md |
 | #3202 | docs(ci): relatório 33 | codex/docs-ci-relatorio-33-... | Não | SUCCESS | DECISAO_HUMANA | migration REGRA#8 (mesmo com CI verde) | PR-3202.md |
 | #3203 | fix(scripts): static pass | codex/fix-scripts-static-pass-... | Não | FAILURE | NAO_MERGEAVEL | CONFLICTING com main | PR-3203.md |
 | #3205 | fix(db): revert e2e cleanup | codex/fix-db-revert-e2e-cleanup-... | Não | FAILURE | DECISAO_HUMANA | migration REGRA#8 | PR-3205.md |
-| #3210 | release-please | release-please--branches--main-- | Não | — | NAO_MERGEAVEL | PR de release automática sem contexto completo | PR-3210.md |
-| #3212 | auto: edge deploy receipt | auto/edge-deploy-receipt-... | Não | — | NAO_MERGEAVEL | PR automática sem PR humana de origem | PR-3212.md |
-| #3214 | fix(cron): CRON-001 startup timeout | codex/fix-cron-startup-... | **SIM** | FAILURE | DECISAO_HUMANA | DRAFT + 1 workflow + 3 migrations + CONFLICTING | PR-3214-evidencias.md |
-| #3215 | fix(migration): rollback header | codex/fix-migration-rollback-... | Não | FAILURE | DECISAO_HUMANA | migration REGRA#8 | PR-3215.md |
-| #3216 | fix(db): reconcilia e2e_cleanup_audit | codex/fix-db-e2e-cleanup-... | **SIM** | — | DECISAO_HUMANA | DRAFT + migration REGRA#8 + supersedida por PR#3215 | PR-3216-evidencias.md |
-| #3217 | docs: auditoria P09/P06 | codex/docs-auditoria-p09-... | **SIM** | SUCCESS | DECISAO_HUMANA | isDraft=true (única pendência) | PR-3217.md |
-| #3220 | fix(ci): Sentinel Regra 6 + rollback header | codex/fix-ci-sentinel-r6-... | Não | FAILURE | DECISAO_HUMANA | 1 workflow + sentinel-check.sh PROTEGIDO REGRA#8 | PR-3220-evidencias.md |
+| #3210 | release-please | release-please--branches--main-- | Não | - | NAO_MERGEAVEL | PR de release automática sem contexto completo | PR-3210.md |
+| #3212 | auto: edge deploy receipt | auto/edge-deploy-receipt-... | Não | - | NAO_MERGEAVEL | PR automática sem PR humana de origem | PR-3212.md |
+| #3214 | fix(cron): CRON-001 startup timeout | codex/fix-cron-startup-... | **SIM** | FAILURE | DECISAO_HUMANA | DRYFUT | PR-3214-evidencias.md |
+| #3215 | fix(migration): rollback header 20261108001500 | codex/fix-migration-rollback-... | Não | FAILURE | DECISAO_HUMANA | migration REGRA#8 + Gate Final ausente | PR-3215.md |
+| #3216 | fix(db): rollback header + PENDENCIAS | codex/fix-migrations-rollback-... | **SIM** | - | DECISAO_HUMANA | DRAFT + migration REGRA#8 + CONFLICTING | PR-3216-evidencias.md |
+| #3217 | docs(auditoria): P09 gap ledger + P06 | codex/docs-auditoria-p09-... | Não | SUCCESS | **MERGEADA_PELO_PO** | Merge `41b55250` pelo PO 2026-11-08T17:46:10Z | PR-3217.md |
+| #3220 | fix(ci): Sentinel Regra 6 + rollback | codex/fix-ci-sentinel-r6-... | Não | FAILURE | DECISAO_HUMANA | REGRA#8 workflow + ARQUIVO PROTEGIDO sentinel-check.sh + CONFLICTING | PR-3220-evidencias.md |
+| #3228 | chore(workflows): workflow_dispatch e2e-color-swatch-grid | claude_05/youthful-ride-vcdchy | **SIM** | - | DECISAO_HUMANA | REGRA#8 + DRAFT (Entrega desta sessão) | PR-3228-evidencias.md |
 
 ---
 
@@ -109,261 +191,11 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 
 | Arquivo | Cobertura |
 |---|---|
-| `analise-prs/regras-de-negocio.md` | Regras de negócio extraídas do código (client.ts:24, product-catalog.ts:25-104, etc.) |
-| `analise-prs/baseline/tests.txt` | Baseline vitest: 2 falhas conhecidas (calendar.redesign day_today + day_selected) |
-| `analise-prs/dossies/PR-3127-evidencias.md` | 11 arquivos com file:line evidence |
-| `analise-prs/dossies/PR-3137-evidencias.md` | 10 arquivos com file:line evidence |
-| `analise-prs/dossies/PR-3144-evidencias.md` | migrations + rollbacks file:line |
-| `analise-prs/dossies/PR-3148-evidencias.md` | 131 arquivos classificados |
-| `analise-prs/dossies/PR-3150-evidencias.md` | 17 arquivos + 6 conflitos identificados |
-| `analise-prs/dossies/PR-3160-evidencias.md` | 4 arquivos + conflito semântico PR#3179 |
-| `analise-prs/dossies/PR-3214-evidencias.md` | 131 arquivos + cron.alter_job DDL extraído |
-| `analise-prs/dossies/PR-3216-evidencias.md` | 4 arquivos + conflito semântico PR#3215 |
-| `analise-prs/dossies/PR-3220-evidencias.md` | sentinel-check.sh linhas 91 e 143-144 verbatim |
-
----
-
-## ANÁLISE PER-PR — 18 PRs com evidência file:line
-
-> Questões respondidas para cada PR: (1) ainda é válida? (2) traz regressão? (3) já implementada em main? (4) regra de negócio correta?
-
-### PR #3127 — fix(ui): Tooltip + playwright cleanup | DECISAO_HUMANA
-
-**Branch:** `codex/fix-ui-tooltip-...` | Draft: Não | CI: FAILURE
-
-**(1) Válida?** Sim. Estabiliza flakiness E2E e corrige seletores frágeis.  
-**(2) Regressão?** Nenhuma. `e2e/actions-order.spec.ts:35` remove módulo Estoque do loop geral (tem workflow próprio em `e2e-stock.yml`). `playwright.config.ts:95` desabilita retry em regressão geral (specs gerais são estáveis). `src/components/products/list-item/ListItemActions.tsx:38-50` adiciona wrapper Tooltip sem alterar props de `QuickAddToQuote`.  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3127`: todos prefixo `+` (não está em main). Evidência: `PR-3127-evidencias.md` §1-7.  
-**(4) Regra de negócio?** Válida — estabilização de CI sem mudança funcional. `ListItemActions.tsx:38-50`: envolve `QuickAddToQuote` em Tooltip com `TooltipContent` (UI, sem lógica).  
-**Bloqueio:** REGRA#8 — 3 arquivos `.github/workflows/` (`e2e-flows.yml`, `e2e-stock.yml`, `e2e.yml`).
-
----
-
-### PR #3129 — fix(ci): e2e reduce runner pressure | DECISAO_HUMANA
-
-**Branch:** `codex/ci-e2e-reduce-...` | Draft: Não | CI: FAILURE | CONFLICTING
-
-**(1) Válida?** Sim. Reduz pressão nos runners E2E sem perder cobertura.  
-**(2) Regressão?** Zero em código de negócio. Todos os 8 arquivos alterados são workflows governance. Conflitos em `.github/workflows/e2e-flows.yml`, `e2e-stock.yml`, `e2e.yml`, `deploy-gates.yml`, `e2e-b2b.yml`, `e2e-cart.yml`, `e2e-checkout.yml`, `e2e-products.yml` — apenas governance, sem código executável.  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3129`: 2 commits com prefixo `+`. Não está em main.  
-**(4) Regra de negócio?** Válida — otimização de CI, não toca lógica de negócio.  
-**Bloqueio:** REGRA#8 — 8 arquivos `.github/workflows/` + CONFLICTING.
-
----
-
-### PR #3137 — fix(ci): detector E2E + reconciliação migration history | DECISAO_HUMANA
-
-**Branch:** `codex/fix-ci-e2e-detector-...` | Draft: Não | CI: FAILURE
-
-**(1) Válida?** Sim. Cria workflow de reconciliação de histórico de migrations fora de sincronia.  
-**(2) Regressão?** `scripts/preflight-migration-history-revert.mjs` (novo): read-only, zero impacto sem trigger explícito. `supabase/migrations/20260511235959_bootstrap_public_dependencies_for_application_schemas.sql` (novo): migration em data passada — REGRA#8, pode conflitar com estado atual do banco. Conflito em `package.json`: PR adiciona `tests/scripts/e2e-relevance.test.mjs` ao comando `test:ci-core` — risco baixo (apenas adiciona arquivo de teste ao vitest).  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3137`: commits com prefixo `+`. Não está em main.  
-**(4) Regra de negócio?** Válida — workflow complementar ao fluxo E15.  
-**Bloqueio:** REGRA#8 — `.github/workflows/db-reconcile-migration-history.yml` (207 linhas, novo) + `supabase/migrations/` (migration DDL em data passada).
-
----
-
-### PR #3144 — fix(db): CRM seller identity + security-definer | DECISAO_HUMANA
-
-**Branch:** `codex/fix-db-e12-e25-...` | Draft: Não | CI: FAILURE | CONFLICTING
-
-**(1) Válida?** Sim. Cria vínculo canônico entre `auth.users` e `crm_seller_id`.  
-**(2) Regressão?** `src/components/search/useGlobalSearch.ts:28-36`: corrige coluna `ramo` → `ramo_atividade` (coluna correta na tabela `companies` — era bug silencioso, retornava `null`). `src/hooks/simulation/useSimulation.ts:48-65`: mesma correção `ramo`/`nicho`. `supabase/functions/crm-db-bridge/index.ts:232-242`: breaking change de roles (adiciona `dev`, `admin`, `manager`, `coordenador`, `agente`; roles fora da lista agora recebem 403). `crm-db-bridge/index.ts:765-775`: AAL2 obrigatório para mutações (breaking para usuários sem MFA).  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3144`: commits com prefixo `+`. Não está em main.  
-**(4) Regra de negócio?** Válida — CRM com escopo por vendedor é requisito de segurança.  
-**Bloqueio:** REGRA#8 — `supabase/migrations/20261107134429_create_crm_seller_identity_links.sql` (DDL) + `supabase/rollbacks/20261107134429_rollback.sql`. Breaking change AAL2 requer comunicação prévia. CONFLICTING.
-
----
-
-### PR #3148 — feat: CRM bridge security DEFINER | DECISAO_HUMANA
-
-**Branch:** `codex/feat-crm-bridge-...` | Draft: **SIM** | CI: FAILURE
-
-**(1) Válida?** Sim — corrige ownership e autorização do CRM bridge edge function.  
-**(2) Regressão?** DRAFT (trabalho incompleto). Conflito em `supabase/MIGRATIONS_SYNC_LOG.md` (não-governance). Migrations (governance) não aplicam sem PO.  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3148`: 1 commit com prefixo `+`. Não está em main.  
-**(4) Regra de negócio?** Válida — segurança de edge function.  
-**Bloqueio:** REGRA#8 — `supabase/migrations/` (2 arquivos) + DRAFT. Edge function de segurança não pode ser mergeada autonomamente.
-
----
-
-### PR #3150 — fix(ci): libera migrations pendentes + hardening | DECISAO_HUMANA
-
-**Branch:** `codex/fix-ci-migrations-...` | Draft: Não | CI: FAILURE | 6 CONFLITOS
-
-**(1) Válida?** Sim — hardening de `fn_get_rupture_alerts` e `fn_global_search` com `search_path` explícito.  
-**(2) Regressão?** `scripts/drift-baseline.mjs` CONFLITO: mesmo arquivo corrigido em PR#3205 (BOM UTF-8). `.github/workflows/deploy-gates.yml` CONFLITO: alto risco em gate crítico. `supabase/migrations/20261107143505_fix_sb0003_fn_get_rupture_alerts_hardened.sql`: renomeia arquivo que consta em PR#3179 como `20261101150000` — se ambas mergearem, conflito no ledger.  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3150`: commits com prefixo `+`. Não está em main.  
-**(4) Regra de negócio?** Válida — `search_path` explícito em funções de banco é hardening de segurança padrão (E12/E25).  
-**Bloqueio:** REGRA#8 — 2 workflows + 3 migrations + 3 rollbacks + 6 conflitos incluindo `deploy-gates.yml`.
-
----
-
-### PR #3160 — fix(db): fn_get_rupture_alerts E15 | DECISAO_HUMANA
-
-**Branch:** `codex/fix-db-e15-...` | Draft: **SIM** | CI: —
-
-**(1) Válida?** Parcialmente — supersedida por PR#3179 que tem escopo equivalente sem draft.  
-**(2) Regressão?** DRAFT (incompleto). 27 commits com 4 arquivos alterados indica histórico iterativo. Conflitos em `PENDENCIAS.md` e `RELATORIO_CI.md` (não-governance).  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3160`: 27 commits com prefixo `+`. Não está em main.  
-**(4) Regra de negócio?** A correção em si é válida, mas PR#3179 (não-draft, merge limpo) cobre o mesmo problema.  
-**Bloqueio:** REGRA#8 — `supabase/migrations/` + DRAFT + potencialmente supersedida por PR#3179. Recomendação: fechar esta PR.
-
----
-
-### PR #3179 — fix(db): preflight db-apply migration | DECISAO_HUMANA
-
-**Branch:** `codex/fix-preflight-db-apply-...` | Draft: Não | CI: FAILURE | CLEAN MERGE
-
-**(1) Válida?** Sim. Corrige `search_path` e adiciona rollback header em migration do preflight E15.  
-**(2) Regressão?** Zero. Merge local limpo. 2 arquivos alterados, ambos governance. `supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql` + rollback: apenas mudança de `search_path` e header de rollback, sem alteração de lógica.  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3179`: 1 commit com prefixo `+`. Não está em main.  
-**(4) Regra de negócio?** Válida — `search_path` explícito obrigatório para funções SECURITY DEFINER (E25). Crítico para o fluxo E15.  
-**Bloqueio:** REGRA#8 — `supabase/migrations/` (migration DDL). Merge local limpo, único bloqueio é governança.
-
----
-
-### PR #3202 — docs(ci): relatório §33 | DECISAO_HUMANA
-
-**Branch:** `codex/docs-ci-relatorio-33-...` | Draft: Não | CI: SUCCESS | CONFLITOS
-
-**(1) Válida?** Parcialmente — 10 commits para 4 arquivos indica histórico iterativo.  
-**(2) Regressão?** Zero em código executável. Conflitos em `PENDENCIAS.md` e `RELATORIO_CI.md` (documentação de tracking). Migration (governance): bloqueia por REGRA#8.  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3202`: 10 commits com prefixo `+`. Não está em main.  
-**(4) Regra de negócio?** Válida — documentação de CI, sem impacto funcional.  
-**Bloqueio:** REGRA#8 — `supabase/migrations/` (1 arquivo) + conflitos em documentos de tracking.
-
----
-
-### PR #3203 — fix(scripts): static pass | NAO_MERGEAVEL
-
-**Branch:** `codex/fix-scripts-static-pass-...` | Draft: Não | CI: FAILURE | 7 CONFLITOS REAIS
-
-**(1) Válida?** Não — 7 conflitos reais em arquivos não-governance impossibilitam merge seguro.  
-**(2) Regressão?** ALTO RISCO. `scripts/gen-internal-schema.mjs` CONFLITO: main tem versão mais nova; merge reverte lógica adicionada depois desta PR. `scripts/kit-ai-enrichment.js` CONFLITO: mesmo risco. `.any-type-baseline.json`, `.cart-header-fuzz.json`, `.migration-refs-baseline.json` CONFLITO: reverter esses baselines quebra ratchets do CI (Gate 1.9). `supabase/functions/_shared/cors-snapshot.json` CONFLITO: reverter pode causar quebra de CORS em produção.  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3203`: 18 commits com prefixo `+`. Não está em main, mas os conflitos indicam que partes do trabalho foram incorporadas de outra forma.  
-**(4) Regra de negócio?** N/A — PR de scripts, sem lógica de negócio.  
-**Bloqueio:** 7 conflitos reais em arquivos não-governance incluindo `gen-internal-schema.mjs` e `cors-snapshot.json`. CI=FAILURE.
-
----
-
-### PR #3205 — fix(db): revert e2e cleanup | DECISAO_HUMANA
-
-**Branch:** `codex/fix-db-revert-e2e-cleanup-...` | Draft: Não | CI: FAILURE | CLEAN MERGE
-
-**(1) Válida?** Sim. Reversiona migration `e2e_cleanup` usando rollback lógico (não `supabase db push` — REGRA#8).  
-**(2) Regressão?** Zero. Merge local limpo: 3 files changed, 14 insertions(+), 3 deletions(-). `supabase/MIGRATIONS_SYNC_LOG.md`, `tests/scripts/drift-baseline.test.mjs` compatíveis com main. Migration (governance): bloqueia por REGRA#8, mas sem conflito.  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3205`: 3 commits com prefixo `+`. Não está em main.  
-**(4) Regra de negócio?** Válida — rollback lógico via migration alinhado com REGRA#8 corolário E15.  
-**Bloqueio:** REGRA#8 — `supabase/migrations/` (migration de reversão). Merge local limpo, único bloqueio é governança.
-
----
-
-### PR #3210 — chore: release 1.9.0 | NAO_MERGEAVEL
-
-**Branch:** `release-please--branches--main--` | Draft: Não | CI: FAILURE | Gate Final: AUSENTE
-
-**(1) Válida?** Não — Gate Final não rodou (required check ausente).  
-**(2) Regressão?** Zero em código executável. 4 arquivos não-governance: `CHANGELOG.md`, `package.json` (bump de versão), release notes. Merge local limpo.  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3210`: 1 commit com prefixo `+`. Não está em main.  
-**(4) Regra de negócio?** N/A — PR de release automática (github-actions bot). CI failure por `column categories.level does not exist` (pré-existente no main).  
-**Bloqueio:** Gate Final=AUSENTE (required check nunca disparou) + CI=FAILURE (Supabase Preview). Sem Gate Final aprovado, merge autônomo é proibido.
-
----
-
-### PR #3212 — docs: edge deploy receipt run 42491776265 | NAO_MERGEAVEL
-
-**Branch:** `auto/edge-deploy-receipt-...` | Draft: Não | CI: FAILURE | Gate Final: AUSENTE
-
-**(1) Válida?** Não — Gate Final não rodou.  
-**(2) Regressão?** Zero. 1 arquivo, 1 linha: `docs/EDGE_FUNCTIONS_DEPLOY_LOG.md` adiciona recibo do run 42491776265. Merge local limpo. Supabase Preview CANCELLED por capacity limit (infraestrutura, não código).  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3212`: 1 commit com prefixo `+`. Não está em main.  
-**(4) Regra de negócio?** N/A — PR de bot (recibo automático de deploy).  
-**Bloqueio:** Gate Final=AUSENTE (Supabase Preview CANCELLED por capacity limit). Sem required check aprovado, merge é bloqueado mesmo sendo PR de 1 linha.
-
----
-
-### PR #3214 — fix(cron): CRON-001 startup timeout | DECISAO_HUMANA
-
-**Branch:** `codex/fix-cron-startup-...` | Draft: **SIM** | CI: FAILURE | CONFLICTING
-
-**(1) Válida?** Sim — escalona 4 cron jobs para eliminar startup timeout (bug crítico CRON-001).  
-**(2) Regressão?** DRAFT (incompleto). 128 arquivos, 26 commits, estado CONFLICTING no GitHub. Governance: 3 workflows + 3 migrations (incluindo `cron001_stagger_schedules.sql` com DDL `cron.alter_job` — REGRA#8 corolário E056). Merge test local não foi concluído.  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3214`: 26 commits com prefixo `+`. Não está em main.  
-**(4) Regra de negócio?** Válida — escalonamento de cron jobs para evitar timeout de startup é correção operacional necessária.  
-**Bloqueio:** REGRA#8 — 3 workflows + 3 migrations (DDL `cron.alter_job`) + DRAFT + CONFLICTING. Migrations de cron devem ser aplicadas via `db-apply-migration.yml` (E15).
-
----
-
-### PR #3215 — fix(migration): rollback header em 20261108001500 | DECISAO_HUMANA
-
-**Branch:** `codex/fix-migration-rollback-...` | Draft: Não | CI: FAILURE | CLEAN MERGE
-
-**(1) Válida?** Sim. Adiciona header `-- Rollback:` obrigatório em migration sem documentação.  
-**(2) Regressão?** Zero. Merge local limpo. 1 arquivo: `supabase/migrations/20261108001500_*.sql` — apenas adição do comentário `-- Rollback:` ao cabeçalho. A SQL em si não é alterada. Padrão exigido pelo Gate 1.3 (contratos de migration).  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3215`: 3 commits com prefixo `+`. Não está em main.  
-**(4) Regra de negócio?** Válida — conformidade com Gate 1.3 obrigatório.  
-**Bloqueio:** REGRA#8 — `supabase/migrations/` (migration). Esta é a PR de migration mais simples: 1 arquivo, 1 linha de comentário, merge limpo.
-
----
-
-### PR #3216 — fix(db): reconcilia e2e_cleanup_audit | DECISAO_HUMANA
-
-**Branch:** `codex/fix-db-e2e-cleanup-...` | Draft: **SIM** | CI: — | CONFLICTING
-
-**(1) Válida?** Parcialmente — supersedida por PR#3215 (mesma migration, escopo menor, merge limpo).  
-**(2) Regressão?** DRAFT (incompleto). 3 conflitos em não-governance (`PENDENCIAS.md`, `RELATORIO_CI.md`, `MIGRATIONS_SYNC_LOG.md`). PR#3215 cobre o mesmo arquivo de migration com menos conflitos.  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3216`: 2 commits com prefixo `+`. Não está em main.  
-**(4) Regra de negócio?** A correção em si é válida, mas PR#3215 é a versão preferível.  
-**Bloqueio:** REGRA#8 — `supabase/migrations/` + DRAFT + CONFLICTING. Potencialmente supersedida por PR#3215. Recomendação: fechar esta PR.
-
----
-
-### PR #3217 — docs: auditoria P09/P06 | DECISAO_HUMANA
-
-**Branch:** `codex/docs-auditoria-p09-...` | Draft: **SIM** | CI: SUCCESS | Gate Final: **SUCCESS** | CLEAN MERGE
-
-**(1) Válida?** Sim. Gate Final=SUCCESS, merge limpo, 0 governance files.  
-**(2) Regressão?** Zero. 2 arquivos de documentação pura: `auditoria-supabase/ADENDO_2026-10-28.md` (seções P09+P06) e `auditoria-supabase/P09_INVESTIGACAO_2026-11-08.md` (novo, 199 linhas de investigação do gap de 476 versões no ledger). Gate Final=SUCCESS confirma que todos os gates passaram.  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3217`: 1 commit com prefixo `+`. Não está em main.  
-**(4) Regra de negócio?** Válida — auditoria documental do ledger de migrations.  
-**Bloqueio:** isDraft=true (única pendência). PO: só precisa publicar o draft para habilitar merge autônomo na próxima sessão.
-
----
-
-### PR #3220 — fix(ci): Sentinel Regra 6 + rollback header | DECISAO_HUMANA
-
-**Branch:** `codex/fix-ci-sentinel-r6-...` | Draft: Não | CI: FAILURE | CONFLICTING
-
-**(1) Válida?** Sim. Corrige Sentinel Check na Regra 6 e adiciona rollback header à migration E15.  
-**(2) Regressão?** `scripts/sentinel-check.sh` é arquivo PROTEGIDO (CLAUDE.md §Arquivos Protegidos) — mudança exige revisão extra. `PENDENCIAS.md` e `RELATORIO_CI.md` conflitam por sessões posteriores (sem impacto funcional). Workflow governance: bloqueia por REGRA#8.  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3220`: 5 commits com prefixo `+`. Não está em main.  
-**(4) Regra de negócio?** Válida — Sentinel funcionando corretamente é essencial para Gate 1.18 (ledger de conflitos semânticos).  
-**Bloqueio:** REGRA#8 — `.github/workflows/` (sentinel workflow) + `scripts/sentinel-check.sh` PROTEGIDO + CONFLICTING.
-
----
-
-## NÃO VERIFICADO
-
-Nenhuma afirmação neste relatório foi marcada como NÃO VERIFICADO.
-
-Todas as análises têm evidência de ao menos uma das fontes abaixo:
-- Dossiers em `analise-prs/dossies/PR-NNNN*.md` com `git cherry -v`, diff 100% lido, ou lista de arquivos via `github_list_pr_files`
-- `analise-prs/regras-de-negocio.md` (file:line do codebase em 2026-11-08)
-- `analise-prs/baseline/tests.txt` (run real de 2026-11-08: 2 falhas conhecidas, EXIT_CODE=0)
-
----
-
-## RESULTADO FINAL
-
-**PRs mergeadas esta sessão:** 0  
-**Razão:** 15 PRs = DECISAO_HUMANA (REGRA#8: workflows/migrations/DRAFT), 3 PRs = NAO_MERGEAVEL (conflitos/Gate Final ausente).
-
-**Nenhuma PR cumpriu todos os critérios de merge autônomo:**
-- Gate Final SUCCESS ✓ — apenas PR#3217 (mas isDraft=true bloqueia)
-- Sem governance files (workflows/migrations/rollbacks) ✗ — 15 das 18 PRs contêm governance files
-- Sem DRAFT ✗ — PR#3148, #3160, #3214, #3216, #3217 são DRAFT
-- Merge limpo (sem conflito) ✗ — PR#3127(parcial), #3129, #3150, #3203, #3214, #3216, #3220 têm conflitos
-
-**Main SHA no início da sessão:** `9a89d9f0a4ac2df7ad670501adaad9f1f60a75df`  
-**Main SHA ao final da sessão:** `9a89d9f0a4ac2df7ad670501adaad9f1f60a75df` (inalterado — nenhum merge realizado)
+| `analise-prs/regras-de-negocio.md` | Regras de negócios extraídas do código (client.ts:24, product-catalog.ts:25-104, etc.) |
+| `analise-prs/baseline/typecheck.txt` | Typecheck baseline (EXIT_CODE=0) |
+| `analise-prs/baseline/lint.txt` | Lint baseline (EXIT_CODE=0) |
+| `analise-prs/baseline/tests.txt` | Vitest baseline (2 falhas conhecidas: day_today++day_selected em calendar.redesign.test.tsx,EXIT=0) |
+| `analise-prs/prs.csv` | Inventário completo de PRs (CSV) |
+| `analise-prs/prs.json` | Inventário completo de PRs (JSON) |
+| `analise-prs/dossies/PR-*.md` | Dossiê completo por PR (19 arquivos) |
+| `analise-prs/progresso.json` | Rastreamento de progresso da sessão |
