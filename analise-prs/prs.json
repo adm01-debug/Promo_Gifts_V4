@@ -2,13 +2,13 @@
   "meta": {
     "data_analise": "2026-11-08",
     "sessao": "claude_05/youthful-ride-vcdchy",
-    "total_abertos_analisados": 30,
-    "mergeadas_esta_sessao": 0,
-    "mergeadas_sessoes_anteriores": 4,
+    "total_abertos_analisados": 31,
+    "mergeadas_esta_sessao": 2,
+    "mergeadas_sessoes_anteriores": 1,
     "aguardando_humano": 29,
-    "pendente_ci": 1,
-    "pr_mais_recente_analisada": 3274,
-    "nota": "PR #3267 fechada/não-mergeada excluída da contagem. #3249 mergeada sessão anterior."
+    "pendente_ci": 0,
+    "pr_mais_recente_analisada": 3275,
+    "nota": "#3267 fechada/não-mergeada excluída. #3249 mergeada sessão anterior. #3245+#3254 mergeadas esta sessão."
   },
   "prs": [
     {
@@ -165,13 +165,13 @@
       "number": 3254,
       "title": "docs(analise-prs): corrige SHA errado de #3242 e causas falsas",
       "draft": false,
-      "mergeable_state": "unknown",
+      "mergeable_state": "clean",
       "head": "claude/docs-correcao-auditoria-261108-2230",
-      "veredito": "PENDENTE_CI",
-      "motivos": ["CI ainda em fila (queued) — Gate Final - Deploy Ready não completou ainda"],
-      "arquivos": ["analise-prs/dossies/PR-3179.md", "analise-prs/dossies/PR-3203.md", "analise-prs/progresso.json"],
-      "tipo": "docs-only-ish (analise-prs/ apenas, sem código)",
-      "sessao": "anterior"
+      "veredito": "MERGE_AUTONOMO",
+      "motivos": ["docs-only analise-prs (Gate E14/E197 bypass)", "mergeable: true, Gate Final não disparou"],
+      "merged": true,
+      "merge_sha": "ce5a9ab41ad51b6fb136d7cc446ccdf77d79ef51",
+      "sessao": "atual"
     },
     {
       "number": 3255,
@@ -312,6 +312,16 @@
       "veredito": "DECISAO_HUMANA",
       "motivos": ["Draft=true", "REGRA#8 Não tocar .github/workflows"],
       "sessao": "atual"
+    },
+    {
+      "number": 3275,
+      "title": "fix(ci): Gate 1.3 — congela ref PENDENCIAS.md → migration futura no baseline",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "head": "claude/fix-gate13-pendencias-ref-261108-2330",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true", "REGRA#8 Não tocar .github/workflows potencial"],
+      "sessao": "atual"
     }
   ],
   "mergeadas": [
@@ -321,15 +331,28 @@
       "squash_sha": "34ac6453d1f7a9ced950f2fb579db711219b4495",
       "tipo": "docs-only (Gate E14 bypass)",
       "sessao": "anterior"
+    },
+    {
+      "number": 3245,
+      "title": "fix(e2e): timeout color-swatch + data-skeleton VirtualizedProductGrid",
+      "squash_sha": "d56979f6f4c43c2d4159e42b3b6fc2cab95ed296",
+      "tipo": "e2e + front risco zero (timeouts + data-skeleton)",
+      "sessao": "atual"
+    },
+    {
+      "number": 3254,
+      "title": "docs(analise-prs): corrige SHA errado de #3242 e causas falsas de #3179/#3203",
+      "squash_sha": "ce5a9ab41ad51b6fb136d7cc446ccdf77d79ef51",
+      "tipo": "docs-only analise-prs (Gate E14/E197 bypass)",
+      "sessao": "atual"
     }
   ],
   "regras_bloqueio_summary": {
-    "Draft_18_prs": [3179, 3214, 3228, 3247, 3248, 3250, 3251, 3252, 3253, 3255, 3256, 3266, 3269, 3270, 3271, 3272, 3273, 3274],
+    "Draft_19_prs": [3179, 3214, 3228, 3247, 3248, 3250, 3251, 3252, 3253, 3255, 3256, 3266, 3269, 3270, 3271, 3272, 3273, 3274, 3275],
     "REGRA8_workflows_6_prs": [3127, 3129, 3137, 3228, 3247, 3274],
     "REGRA8_E15_DDL_migration_9_prs": [3179, 3243, 3250, 3255, 3256, 3257, 3264, 3265, 3273],
     "REGRA8_E056_cron_DDL_3_prs": [3251, 3261, 3263],
     "conflito_ou_dirty_1_pr": [3203],
-    "release_bot_1_pr": [3210],
-    "pendente_ci_1_pr": [3254]
+    "release_bot_1_pr": [3210]
   }
 }
