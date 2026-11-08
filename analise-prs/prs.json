@@ -8,7 +8,9 @@
     "aguardando_humano": 29,
     "pendente_ci": 0,
     "pr_mais_recente_analisada": 3275,
-    "nota": "#3267 fechada/não-mergeada excluída. #3249 mergeada sessão anterior. #3245+#3254 mergeadas esta sessão."
+    "nota": "#3267 fechada/não-mergeada excluída. #3249 mergeada sessão anterior. #3245+#3254 mergeadas esta sessão.",
+    "total_prs": 38,
+    "ultima_atualizacao": "2026-11-08T23:39:06Z"
   },
   "prs": [
     {
@@ -18,7 +20,9 @@
       "mergeable_state": "unknown",
       "head": "codex/fix-e2e-ci-pressure-261107-0238",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["REGRA#8 Não tocar .github/workflows (branch codex)"],
+      "motivos": [
+        "REGRA#8 Não tocar .github/workflows (branch codex)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -28,7 +32,9 @@
       "mergeable_state": "unknown",
       "head": "codex/infra-e2e-ci-pressure-261107-1040",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["REGRA#8 Não tocar .github/workflows (branch codex)"],
+      "motivos": [
+        "REGRA#8 Não tocar .github/workflows (branch codex)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -38,7 +44,9 @@
       "mergeable_state": "unknown",
       "head": "codex/fix-e2e-relevance-261107-1148",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["REGRA#8 Não tocar .github/workflows (branch codex)"],
+      "motivos": [
+        "REGRA#8 Não tocar .github/workflows (branch codex)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -48,7 +56,10 @@
       "mergeable_state": "unknown",
       "head": "claude/fix-ci-workflows-261107-2300",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true", "REGRA#8/E15 (toca supabase/migrations/ — DDL)"],
+      "motivos": [
+        "Draft=true",
+        "REGRA#8/E15 (toca supabase/migrations/ — DDL)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -58,7 +69,10 @@
       "mergeable_state": "unknown",
       "head": "claude/inspiring-knuth-swo71j",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["mergeable_state=dirty (conflito em artefatos gerados)", "PR Size Check FAILURE (132 arquivos > 50, falta label large-pr-approved)"],
+      "motivos": [
+        "mergeable_state=dirty (conflito em artefatos gerados)",
+        "PR Size Check FAILURE (132 arquivos > 50, falta label large-pr-approved)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -68,7 +82,10 @@
       "mergeable_state": "unknown",
       "head": "release-please--branches--main--components--gifts-store",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["PR de bot release-please — decisão de negócio do PO", "Gate Final ausente (outdated desde main)"],
+      "motivos": [
+        "PR de bot release-please — decisão de negócio do PO",
+        "Gate Final ausente (outdated desde main)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -78,7 +95,11 @@
       "mergeable_state": "unknown",
       "head": "claude_05/youthful-ride-vcdchy",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true", "REGRA#8/E056 (cron DDL ativo)", "REGRA#8 workflows"],
+      "motivos": [
+        "Draft=true",
+        "REGRA#8/E056 (cron DDL ativo)",
+        "REGRA#8 workflows"
+      ],
       "sessao": "anterior"
     },
     {
@@ -88,7 +109,10 @@
       "mergeable_state": "unknown",
       "head": "claude/chore-e2e-swatch-dispatch-261108-1800",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true", "REGRA#8 Não tocar .github/workflows"],
+      "motivos": [
+        "Draft=true",
+        "REGRA#8 Não tocar .github/workflows"
+      ],
       "sessao": "anterior"
     },
     {
@@ -98,7 +122,9 @@
       "mergeable_state": "unknown",
       "head": "claude/fix-categories-level-drift-261108-1952",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["REGRA#8/E15 (DDL via nova migration — ALTER TABLE categories ADD COLUMN level)"],
+      "motivos": [
+        "REGRA#8/E15 (DDL via nova migration — ALTER TABLE categories ADD COLUMN level)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -108,7 +134,10 @@
       "mergeable_state": "unknown",
       "head": "claude/chore-workflows-snapshot-261108-2230",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true", "REGRA#8 Não tocar .github/workflows (14 arquivos novos)"],
+      "motivos": [
+        "Draft=true",
+        "REGRA#8 Não tocar .github/workflows (14 arquivos novos)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -118,7 +147,9 @@
       "mergeable_state": "unknown",
       "head": "claude/feat-e2e-public-claude-config-261108-2230",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true"],
+      "motivos": [
+        "Draft=true"
+      ],
       "sessao": "anterior"
     },
     {
@@ -128,7 +159,10 @@
       "mergeable_state": "unknown",
       "head": "claude/fix-stock-daily-index-261108-2230",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true", "REGRA#8/E15 (CREATE INDEX CONCURRENTLY via nova migration)"],
+      "motivos": [
+        "Draft=true",
+        "REGRA#8/E15 (CREATE INDEX CONCURRENTLY via nova migration)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -138,7 +172,10 @@
       "mergeable_state": "unknown",
       "head": "claude/fix-remove-broken-cron-image-dimensions-backfill-20261108-2300",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true", "REGRA#8/E056 (cron DDL ativo: cron.unschedule)"],
+      "motivos": [
+        "Draft=true",
+        "REGRA#8/E056 (cron DDL ativo: cron.unschedule)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -148,7 +185,9 @@
       "mergeable_state": "unknown",
       "head": "claude/fix-logo-remove-areaid-261108-1200",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true"],
+      "motivos": [
+        "Draft=true"
+      ],
       "sessao": "anterior"
     },
     {
@@ -158,7 +197,9 @@
       "mergeable_state": "unknown",
       "head": "claude/fix-price-rounding-261108-1200",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true"],
+      "motivos": [
+        "Draft=true"
+      ],
       "sessao": "anterior"
     },
     {
@@ -168,7 +209,10 @@
       "mergeable_state": "clean",
       "head": "claude/docs-correcao-auditoria-261108-2230",
       "veredito": "MERGE_AUTONOMO",
-      "motivos": ["docs-only analise-prs (Gate E14/E197 bypass)", "mergeable: true, Gate Final não disparou"],
+      "motivos": [
+        "docs-only analise-prs (Gate E14/E197 bypass)",
+        "mergeable: true, Gate Final não disparou"
+      ],
       "merged": true,
       "merge_sha": "ce5a9ab41ad51b6fb136d7cc446ccdf77d79ef51",
       "sessao": "atual"
@@ -180,7 +224,10 @@
       "mergeable_state": "unknown",
       "head": "claude/fix-drop-perf002-incident-ddl-20261108-2231",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true", "REGRA#8/E15 (DDL destrutivo: DROP INDEX, via nova migration)"],
+      "motivos": [
+        "Draft=true",
+        "REGRA#8/E15 (DDL destrutivo: DROP INDEX, via nova migration)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -190,7 +237,10 @@
       "mergeable_state": "unknown",
       "head": "claude/fix-art-files-rls-quotes-only-2611082355",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true", "REGRA#8/E15 (DDL RLS via nova migration)"],
+      "motivos": [
+        "Draft=true",
+        "REGRA#8/E15 (DDL RLS via nova migration)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -200,7 +250,9 @@
       "mergeable_state": "unknown",
       "head": "claude/fix-idempotencia-migrations-pendentes-261108-2236",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["REGRA#8/E15 (modifica migrations existentes + DDL RLS)"],
+      "motivos": [
+        "REGRA#8/E15 (modifica migrations existentes + DDL RLS)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -210,7 +262,9 @@
       "mergeable_state": "unknown",
       "head": "claude/chore-reconciliacao-drift-cron001-261108-2238",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["REGRA#8/E056 (cron.alter_job DDL, mesmo sendo espelho retroativo)"],
+      "motivos": [
+        "REGRA#8/E056 (cron.alter_job DDL, mesmo sendo espelho retroativo)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -220,7 +274,10 @@
       "mergeable_state": "unknown",
       "head": "claude/feat-ft005-cron-scheduled-reports-20261108-2310",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["REGRA#8/E056 (cron DDL ativo: cron.unschedule + cron.schedule)", "REGRA#8/E15 (migration nova)"],
+      "motivos": [
+        "REGRA#8/E056 (cron DDL ativo: cron.unschedule + cron.schedule)",
+        "REGRA#8/E15 (migration nova)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -230,7 +287,9 @@
       "mergeable_state": "unknown",
       "head": "claude/feat-ft079-view-min-quantity-20261108-2310",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["REGRA#8/E15 (CREATE OR REPLACE VIEW via nova migration)"],
+      "motivos": [
+        "REGRA#8/E15 (CREATE OR REPLACE VIEW via nova migration)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -240,7 +299,9 @@
       "mergeable_state": "unknown",
       "head": "claude/feat-ft088-fn-check-item-fits-20261108-2310",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["REGRA#8/E15 (CREATE OR REPLACE FUNCTION via nova migration)"],
+      "motivos": [
+        "REGRA#8/E15 (CREATE OR REPLACE FUNCTION via nova migration)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -250,7 +311,10 @@
       "mergeable_state": "unknown",
       "head": "claude/fix-pr3203-scripts-static-pass-261108-2250",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true", "mergeable_state=blocked (CI falhando)"],
+      "motivos": [
+        "Draft=true",
+        "mergeable_state=blocked (CI falhando)"
+      ],
       "sessao": "anterior"
     },
     {
@@ -260,7 +324,9 @@
       "mergeable_state": "unknown",
       "head": "claude/feat-ft079-front-min-quantity-261108-2340",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true"],
+      "motivos": [
+        "Draft=true"
+      ],
       "sessao": "atual"
     },
     {
@@ -270,7 +336,9 @@
       "mergeable_state": "unknown",
       "head": "claude/feat-ft088-front-fits-261108-2300",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true"],
+      "motivos": [
+        "Draft=true"
+      ],
       "sessao": "atual"
     },
     {
@@ -280,7 +348,9 @@
       "mergeable_state": "unknown",
       "head": "claude/fix-price-rounding-mockup-261108-2305",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true"],
+      "motivos": [
+        "Draft=true"
+      ],
       "sessao": "atual"
     },
     {
@@ -290,7 +360,9 @@
       "mergeable_state": "unknown",
       "head": "claude/fix-ft118-ft119-integration-gaps-261108-2320",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true"],
+      "motivos": [
+        "Draft=true"
+      ],
       "sessao": "atual"
     },
     {
@@ -300,7 +372,10 @@
       "mergeable_state": "unknown",
       "head": "claude/chore-categories-indexes-espelho-261108-1200",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true", "REGRA#8/E15 (DDL: CREATE INDEX via migration espelho)"],
+      "motivos": [
+        "Draft=true",
+        "REGRA#8/E15 (DDL: CREATE INDEX via migration espelho)"
+      ],
       "sessao": "atual"
     },
     {
@@ -310,7 +385,10 @@
       "mergeable_state": "unknown",
       "head": "claude/fix-gate-e42-261108-2325",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true", "REGRA#8 Não tocar .github/workflows"],
+      "motivos": [
+        "Draft=true",
+        "REGRA#8 Não tocar .github/workflows"
+      ],
       "sessao": "atual"
     },
     {
@@ -320,8 +398,92 @@
       "mergeable_state": "unknown",
       "head": "claude/fix-gate13-pendencias-ref-261108-2330",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true", "REGRA#8 Não tocar .github/workflows potencial"],
+      "motivos": [
+        "Draft=true",
+        "REGRA#8 Não tocar .github/workflows potencial"
+      ],
       "sessao": "atual"
+    },
+    {
+      "number": 3276,
+      "title": "fix(kit-builder): confetti só na transição válido + botão Cancelar",
+      "draft": false,
+      "veredito": "PENDENTE_CI",
+      "motivo": "Não-draft. 2 arquivos frontend (KitAIPromptDialog.tsx, useKitBuilderPageState.ts). Sem workflows, sem DDL. CI queued às 2026-11-08T23:27:24Z. Gate Final ainda não apareceu. Base: d56979f6 (main pós #3245). Aguardando resultado do CI.",
+      "regras_bloqueio": [],
+      "head_sha": "ed10adc3fa1df879999ecbb8db3db5157a4b5c21",
+      "analisada_em": "2026-11-08T23:39:06Z"
+    },
+    {
+      "number": 3277,
+      "title": "fix(ux): UX batch6 — FT-174/040/083/093/134/136/139",
+      "draft": false,
+      "veredito": "PENDENTE_CI",
+      "motivo": "Não-draft. 7 arquivos frontend (src/). Sem workflows, sem DDL. CI queued às 2026-11-08T23:27:28Z. Gate Final ainda não apareceu. Base: d56979f6. RISCO SEMÂNTICO: toca useKitBuilderPageState.ts e KitAIPromptDialog.tsx — mesmos arquivos de #3276. Se #3276 mergear primeiro, useKitBuilderPageState.ts diverge e esta PR precisaria de rebase.",
+      "regras_bloqueio": [],
+      "head_sha": "87c7860069f1420501d89a735b16e0ef60dbf984",
+      "analisada_em": "2026-11-08T23:39:06Z"
+    },
+    {
+      "number": 3278,
+      "title": "chore(sentinel): grandfather SHA d50ae76c — squash sem (#NNN)",
+      "draft": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "Draft=true. Não mergeável pelo API (422).",
+      "regras_bloqueio": [
+        "DRAFT"
+      ],
+      "head_sha": "unknown",
+      "analisada_em": "2026-11-08T23:39:06Z"
+    },
+    {
+      "number": 3279,
+      "title": "fix(cron): CRON-002 — corrige colisões residuais de startup",
+      "draft": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "Draft=true. Não mergeável pelo API (422).",
+      "regras_bloqueio": [
+        "DRAFT"
+      ],
+      "head_sha": "unknown",
+      "analisada_em": "2026-11-08T23:39:06Z"
+    },
+    {
+      "number": 3280,
+      "title": "fix(backlog): FT-405 Comandos de voz — FEITA → PARCIAL com evidência",
+      "draft": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "Draft=true. Não mergeável pelo API (422).",
+      "regras_bloqueio": [
+        "DRAFT"
+      ],
+      "head_sha": "unknown",
+      "analisada_em": "2026-11-08T23:39:06Z"
+    },
+    {
+      "number": 3283,
+      "title": "feat(kit-builder): backup completo no beforeunload + restore",
+      "draft": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "Draft=true. Não mergeável pelo API (422).",
+      "regras_bloqueio": [
+        "DRAFT"
+      ],
+      "head_sha": "unknown",
+      "analisada_em": "2026-11-08T23:39:06Z"
+    },
+    {
+      "number": 3284,
+      "title": "chore(migrations): DRIFT mirror — arquivos espelho CRON-001",
+      "draft": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "Draft=true. Além disso: migrations DDL (REGRA#8/E15).",
+      "regras_bloqueio": [
+        "DRAFT",
+        "REGRA#8/E15"
+      ],
+      "head_sha": "unknown",
+      "analisada_em": "2026-11-08T23:39:06Z"
     }
   ],
   "mergeadas": [
@@ -348,11 +510,56 @@
     }
   ],
   "regras_bloqueio_summary": {
-    "Draft_19_prs": [3179, 3214, 3228, 3247, 3248, 3250, 3251, 3252, 3253, 3255, 3256, 3266, 3269, 3270, 3271, 3272, 3273, 3274, 3275],
-    "REGRA8_workflows_6_prs": [3127, 3129, 3137, 3228, 3247, 3274],
-    "REGRA8_E15_DDL_migration_9_prs": [3179, 3243, 3250, 3255, 3256, 3257, 3264, 3265, 3273],
-    "REGRA8_E056_cron_DDL_3_prs": [3251, 3261, 3263],
-    "conflito_ou_dirty_1_pr": [3203],
-    "release_bot_1_pr": [3210]
+    "Draft_19_prs": [
+      3179,
+      3214,
+      3228,
+      3247,
+      3248,
+      3250,
+      3251,
+      3252,
+      3253,
+      3255,
+      3256,
+      3266,
+      3269,
+      3270,
+      3271,
+      3272,
+      3273,
+      3274,
+      3275
+    ],
+    "REGRA8_workflows_6_prs": [
+      3127,
+      3129,
+      3137,
+      3228,
+      3247,
+      3274
+    ],
+    "REGRA8_E15_DDL_migration_9_prs": [
+      3179,
+      3243,
+      3250,
+      3255,
+      3256,
+      3257,
+      3264,
+      3265,
+      3273
+    ],
+    "REGRA8_E056_cron_DDL_3_prs": [
+      3251,
+      3261,
+      3263
+    ],
+    "conflito_ou_dirty_1_pr": [
+      3203
+    ],
+    "release_bot_1_pr": [
+      3210
+    ]
   }
 }
