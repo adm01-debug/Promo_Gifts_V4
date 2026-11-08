@@ -1,56 +1,57 @@
 number,title,draft,verdict
-2940,"feat(nav): adiciona entrada Audit Suite na sidebar admin",false,JA_EM_MAIN
-2941,"fix(security): atualiza allowlist lint-0029",false,DECISAO_HUMANA
-2944,"chore(main): release 1.6.1",false,JA_EM_MAIN
-2948,"chore(rollbacks): adiciona rollbacks para migrations e38/e47/e37",true,DECISAO_HUMANA
-2950,"fix(routes): remove rotas publicas mortas lista/colecao/comparacao",true,NAO_MERGEAVEL
-2951,"chore(rollbacks): adiciona rollback para migration 20261031000000",true,DECISAO_HUMANA
-2952,"fix(ci): Gate 1.13 — tolerancia automatica para policies de particoes mensais",false,JA_EM_MAIN
-2958,"fix(kit-builder): publicados = status shared (Decisao PO D7)",true,DECISAO_HUMANA
-2961,"fix(pptx): badge Dados simulados no PPTX gerado",true,DECISAO_HUMANA
-2965,"fix(ux): FT-040/FT-083/FT-093 — estados de carregamento e scroll",true,NAO_MERGEAVEL
-2966,"fix: adiciona 10 entradas de falsos-positivos ao allowlist do gitleaks",false,DECISAO_HUMANA
-2967,"fix: gate E42 nao executa check-min-tests quando auth-setup nao tem credenciais",false,DECISAO_HUMANA
-2969,"fix(security): REVOKE EXECUTE FROM PUBLIC em 106 funcoes trigger/internas (SEC-001)",false,DECISAO_HUMANA
-2970,"fix(ux): confetti reduced-motion guard + AlertDialog no Limpar mockup",true,NAO_MERGEAVEL
-2971,"fix(ux): FT-134/FT-136/FT-173 — confirmacao IA erros distintos maxColors",false,NAO_MERGEAVEL
-2973,"fix(ux): FT-167/306/309 — onLogoRemove senha min 8 CNPJ copy consistente",false,DECISAO_HUMANA
-2976,"fix(ux): FT-174/040/083/093/134/136/139 — UX batch6",false,DECISAO_HUMANA
-2978,"fix(kit-builder): guarda prefers-reduced-motion antes do confete (FT-139)",false,DECISAO_HUMANA
-2979,"fix(kit-builder): separa mensagem de erro 503/504 de 429/timeout (FT-136)",false,JA_EM_MAIN
-2980,"fix(mockup): onLogoRemove aceita areaId e limpa analise da area correta (FT-167)",true,DECISAO_HUMANA
-2981,"fix(ux): UX batch7 FT-172/107/108/220",false,JA_EM_MAIN
-2982,"fix(kit-builder): aviso previa indicativa no resultado (FT-174)",true,DECISAO_HUMANA
-2988,"fix(ts): TS2339 useRuptureAlerts — precedencia cast as/await",false,JA_EM_MAIN
-2990,"feat(catalog): FavoriteToggleButton nos cards da landing (FT-115)",false,JA_EM_MAIN
-2991,"fix(husky): aumenta heap do Node em pre-push de 2048 para 4096 MB",false,JA_EM_MAIN
-2992,"fix(kit-builder): detecta conflito 40001 no auto-save (FT-118)",false,JA_EM_MAIN
-2993,"fix(kit-builder): backup beforeunload localStorage (FT-119)",false,JA_EM_MAIN
-2996,"fix: correcao ja em main",false,JA_EM_MAIN
-2998,"fix (nao identificado)",true,DECISAO_HUMANA
-3001,"CI gate data file",false,DECISAO_HUMANA
-3003,"migrations SQL producao",false,DECISAO_HUMANA
-3004,"analise-prs rev88 (claude_04)",true,DECISAO_HUMANA
-3006,"docs(pendencias): P35 itens 9-16",true,DECISAO_HUMANA
-3012,"docs(ci): RELATORIO_CI.md",true,DECISAO_HUMANA
-3014,"docs(analise-prs): v5",true,DECISAO_HUMANA
-3015,"migrations + analise-branches",false,DECISAO_HUMANA
-3016,".github/workflows updates",false,DECISAO_HUMANA
-3017,"chore(security): atualiza timestamp baseline de politicas 2026-11-01",false,MERGEADA_AGENTE
-3018,"docs(analise-branches): rev88",false,MERGEADA_PO
-3020,"chore(main): release 1.7.0",false,MERGEADA_AGENTE
-3127,"fix(ci): estabiliza nucleo E2E",false,DECISAO_HUMANA
-3129,"ci(e2e): reduzir pressao dos runners",false,DECISAO_HUMANA
-3137,"fix(ci): impedir falso negativo no detector E2E",false,DECISAO_HUMANA
-3144,"fix(db): reconciliar ledger baseline e recibos",false,DECISAO_HUMANA
-3148,"fix(edge-fn): corrigir CRM bridge",true,DECISAO_HUMANA
-3150,"fix(db): liberar aplicacao de migrations",false,DECISAO_HUMANA
-3160,"fix: DB E15 (pg_temp + rollback)",true,DECISAO_HUMANA
-3179,"fix: corrige preflight db-apply-migration",true,DECISAO_HUMANA
-3201,"fix(scripts): corrige scripts edge functions e baselines",false,MERGEADA_AGENTE
-3202,"docs(ci): RELATORIO §33",true,DECISAO_HUMANA
-3203,"fix: scripts — static-pass exit codes e regressao TypeScript",false,DECISAO_HUMANA
-3205,"fix(db): reversionar migration e2e_cleanup",false,DECISAO_HUMANA
-3210,"chore(main): release 1.8.2",false,DECISAO_HUMANA
-3212,"docs: recibo de deploy de edge function(s)",false,DECISAO_HUMANA
-3214,"fix(cron): CRON-001 — escalonar 4 cron jobs",true,DECISAO_HUMANA
+2940,feat(nav): adiciona entrada Audit Suite na sidebar admin,False,JA_EM_MAIN
+2941,fix(security): atualiza allowlist lint-0029,False,DECISAO_HUMANA
+2944,chore(main): release 1.6.1,False,JA_EM_MAIN
+2948,chore(rollbacks): adiciona rollbacks para migrations e38/e47/e37,True,DECISAO_HUMANA
+2950,fix(routes): remove rotas publicas mortas lista/colecao/comparacao,True,NAO_MERGEAVEL
+2951,chore(rollbacks): adiciona rollback para migration 20261031000000,True,DECISAO_HUMANA
+2952,fix(ci): Gate 1.13 — tolerancia automatica para policies de particoes mensais,False,JA_EM_MAIN
+2958,fix(kit-builder): publicados = status shared (Decisao PO D7),True,DECISAO_HUMANA
+2961,fix(pptx): badge Dados simulados no PPTX gerado,True,DECISAO_HUMANA
+2965,fix(ux): FT-040/FT-083/FT-093 — estados de carregamento e scroll,True,NAO_MERGEAVEL
+2966,fix: adiciona 10 entradas de falsos-positivos ao allowlist do gitleaks,False,DECISAO_HUMANA
+2967,fix: gate E42 nao executa check-min-tests quando auth-setup nao tem credenciais,False,DECISAO_HUMANA
+2969,fix(security): REVOKE EXECUTE FROM PUBLIC em 106 funcoes trigger/internas (SEC-001),False,DECISAO_HUMANA
+2970,fix(ux): confetti reduced-motion guard + AlertDialog no Limpar mockup,True,NAO_MERGEAVEL
+2971,fix(ux): FT-134/FT-136/FT-173 — confirmacao IA erros distintos maxColors,False,NAO_MERGEAVEL
+2973,fix(ux): FT-167/306/309 — onLogoRemove senha min 8 CNPJ copy consistente,False,DECISAO_HUMANA
+2976,fix(ux): FT-174/040/083/093/134/136/139 — UX batch6,False,DECISAO_HUMANA
+2978,fix(kit-builder): guarda prefers-reduced-motion antes do confete (FT-139),False,DECISAO_HUMANA
+2979,fix(kit-builder): separa mensagem de erro 503/504 de 429/timeout (FT-136),False,JA_EM_MAIN
+2980,fix(mockup): onLogoRemove aceita areaId e limpa analise da area correta (FT-167),True,DECISAO_HUMANA
+2981,fix(ux): UX batch7 FT-172/107/108/220,False,JA_EM_MAIN
+2982,fix(kit-builder): aviso previa indicativa no resultado (FT-174),True,DECISAO_HUMANA
+2988,fix(ts): TS2339 useRuptureAlerts — precedencia cast as/await,False,JA_EM_MAIN
+2990,feat(catalog): FavoriteToggleButton nos cards da landing (FT-115),False,JA_EM_MAIN
+2991,fix(husky): aumenta heap do Node em pre-push de 2048 para 4096 MB,False,JA_EM_MAIN
+2992,fix(kit-builder): detecta conflito 40001 no auto-save (FT-118),False,JA_EM_MAIN
+2993,fix(kit-builder): backup beforeunload localStorage (FT-119),False,JA_EM_MAIN
+2996,fix: correcao ja em main,False,JA_EM_MAIN
+2998,fix (nao identificado),True,DECISAO_HUMANA
+3001,CI gate data file,False,DECISAO_HUMANA
+3003,migrations SQL producao,False,DECISAO_HUMANA
+3004,analise-prs rev88 (claude_04),True,DECISAO_HUMANA
+3006,docs(pendencias): P35 itens 9-16,True,DECISAO_HUMANA
+3012,docs(ci): RELATORIO_CI.md,True,DECISAO_HUMANA
+3014,docs(analise-prs): v5,True,DECISAO_HUMANA
+3015,migrations + analise-branches,False,DECISAO_HUMANA
+3016,.github/workflows updates,False,DECISAO_HUMANA
+3017,chore(security): atualiza timestamp baseline de politicas 2026-11-01,False,MERGEADA_AGENTE
+3018,docs(analise-branches): rev88,False,MERGEADA_PO
+3020,chore(main): release 1.7.0,False,MERGEADA_AGENTE
+3127,fix(ci): estabiliza nucleo E2E,False,DECISAO_HUMANA
+3129,ci(e2e): reduzir pressao dos runners,False,DECISAO_HUMANA
+3137,fix(ci): impedir falso negativo no detector E2E,False,DECISAO_HUMANA
+3144,fix(db): reconciliar ledger baseline e recibos,False,DECISAO_HUMANA
+3148,fix(edge-fn): corrigir CRM bridge,True,DECISAO_HUMANA
+3150,fix(db): liberar aplicacao de migrations,False,DECISAO_HUMANA
+3160,fix: DB E15 (pg_temp + rollback),True,DECISAO_HUMANA
+3179,fix: corrige preflight db-apply-migration,True,DECISAO_HUMANA
+3201,fix(scripts): corrige scripts edge functions e baselines,False,MERGEADA_AGENTE
+3202,docs(ci): RELATORIO §33,True,DECISAO_HUMANA
+3203,fix: scripts — static-pass exit codes e regressao TypeScript,False,DECISAO_HUMANA
+3205,fix(db): reversionar migration e2e_cleanup,False,DECISAO_HUMANA
+3210,chore(main): release 1.8.2,False,DECISAO_HUMANA
+3212,docs: recibo de deploy de edge function(s),False,DECISAO_HUMANA
+3214,fix(cron): CRON-001 — escalonar 4 cron jobs,True,DECISAO_HUMANA
+3215,fix(migration): adiciona -- Rollback: em 20261108001500_reconcile_e2e_cleanup_audit.sql,True,DECISAO_HUMANA

@@ -1,14 +1,14 @@
 # Relatório de Análise de PRs — Sessão Consolidada
-**Sessão:** `01Ss1tXZ4cAbxBvdmu95uNPz` (2 contextos)
+**Sessão:** `01Ss1tXZ4cAbxBvdmu95uNPz` (3 contextos)
 **main SHA inicial:** `a25070630788f77b297431665878319ad74bb587`
 **main SHA final:** `1d3dafae93722b7e19f426bcf63701a80ab4b148` (após merge PR #3201)
-**Total PRs analisadas:** 55 / 55 (100%)
+**Total PRs analisadas:** 56 / 56 (100%)
 
 ---
 
-## ⚠️ RISCOS E DECISÕES HUMANAS (leia primeiro)
+# ⚠️ RISCOS E DECISÕES HUMANAS (leia primeiro)
 
-### 🔴 Alto risco — revisão imediata necessária
+### 🚨 Alto risco — revisão imediata necessária
 
 **PR #2969 — 106 REVOKE EXECUTE em funções de produção (SEC-001)**
 - Migration com 106 `REVOKE EXECUTE ON FUNCTION ... FROM PUBLIC` em `doufsxqlfjyuvxuezpln`
@@ -25,7 +25,7 @@
 - 10 jobs falhando em produção; fix via `cron.alter_job` precisa aprovação PO
 - Aplicar via `db-apply-migration.yml` com version `20261101220000`
 
-### 🟡 Médio risco
+### ⚡ Médio risco
 
 **PR #2941** — dirty merge + supabase/rollbacks/
 **PR #2948, #2951** — rollbacks DDL em produção (cron.alter_job, DROP TABLE/TRIGGER)
@@ -34,21 +34,22 @@
 **PR #2967, #3016, #3127, #3129, #3137** — .github/workflows/ — REGRA#8
 **PR #3144, #3150, #3205** — migrations/ledger — REGRA#8/E056
 **PR #3203** — Gate Final FAILURE (CI vermelho)
+**PR #3215** — DRAFT + migration `20261108001500` (adiciona `-- Rollback:` ao preflight) — REGRA#8/E056
 
-### ⚪ DRAFTs pendentes
+### ⬛ DRAFTs pendentes
 
-#2948, #2950, #2951, #2958, #2961, #2965, #2970, #2976, #2978, #2980, #2982, #2998, #3004, #3006, #3012, #3014, #3148, #3160, #3179, #3202, #3214
+#2948, #2950, #2951, #2958, #2961, #2965, #2970, #2976, #2978, #2980, #2982, #2998, #3004, #3006, #3012, #3014, #3148, #3160, #3179, #3202, #3214, #3215
 
-### ⚪ PRs bloqueadas (conflito/CI falha)
+### ⬛ PRs bloqueadas (conflito/CI falha)
 
 #2950, #2965, #2970, #2971 — conflito confirmado no merge de teste  
 #3203 — Gate Final FAILURE
 
 ---
 
-## RESULTADO COMPLETO — 55 PRs
+## RESULTADO COMPLETO — 56 PRs
 
-| PR | Título (resumido) | Draft | Veredicto |
+| PR | Título (resumido) | Draft | Veredito |
 |---|---|---|---|
 | #2940 | feat(nav): Audit Suite na sidebar | não | **JA_EM_MAIN** |
 | #2941 | fix(security): allowlist lint-0029 | não | **DECISAO_HUMANA** |
@@ -62,10 +63,10 @@
 | #2965 | fix(ux): FT-040/083/093 | sim | **NAO_MERGEAVEL** |
 | #2966 | fix: gitleaks allowlist +10 | não | **DECISAO_HUMANA** |
 | #2967 | fix: gate E42 sem credenciais | não | **DECISAO_HUMANA** |
-| #2969 | fix(security): 106 REVOKE EXECUTE 🔴 | não | **DECISAO_HUMANA** |
+| #2969 | fix(security): 106 REVOKE EXECUTE 🚨 | não | **DECISAO_HUMANA** |
 | #2970 | fix(ux): confete + AlertDialog | sim | **NAO_MERGEAVEL** |
 | #2971 | fix(ux): FT-134/136/173 | não | **NAO_MERGEAVEL** |
-| #2973 | fix(ux): FT-167/306/309 🟡 | não | **DECISAO_HUMANA** |
+| #2973 | fix(ux): FT-167/306/309 ⚡ | não | **DECISAO_HUMANA** |
 | #2976 | fix(ux): UX batch6 | não | **DECISAO_HUMANA** |
 | #2978 | fix(kit-builder): FT-139 | não | **DECISAO_HUMANA** |
 | #2979 | fix(kit-builder): FT-136 | não | **JA_EM_MAIN** |
@@ -91,7 +92,7 @@
 | #3018 | docs(analise-branches): rev88 | não | **MERGEADA_PO** ✅ |
 | #3020 | chore(main): release 1.7.0 | não | **MERGEADA_AGENTE** ✅ |
 | #3127 | fix(ci): estabiliza núcleo E2E | não | **DECISAO_HUMANA** |
-| #3129 | ci(e2e): reduzir pressão dos runners | não | **DECISAO_HUMANA** |
+| #3129 | ci(e2e): reduzir pressão runners | não | **DECISAO_HUMANA** |
 | #3137 | fix(ci): falso negativo detector E2E | não | **DECISAO_HUMANA** |
 | #3144 | fix(db): reconciliar ledger | não | **DECISAO_HUMANA** |
 | #3148 | fix(edge-fn): CRM bridge | sim | **DECISAO_HUMANA** |
@@ -104,7 +105,8 @@
 | #3205 | fix(db): reversionar migration | não | **DECISAO_HUMANA** |
 | #3210 | chore(main): release 1.8.2 | não | **DECISAO_HUMANA** |
 | #3212 | docs: recibo deploy edge function | não | **DECISAO_HUMANA** |
-| #3214 | fix(cron): CRON-001 🔴 | sim | **DECISAO_HUMANA** |
+| #3214 | fix(cron): CRON-001 🚨 | sim | **DECISAO_HUMANA** |
+| #3215 | fix(migration): rollback header 20261108001500 | sim | **DECISAO_HUMANA** |
 
 ---
 
@@ -112,11 +114,11 @@
 
 | PR | Título | Merge SHA | Gate Final (pré-merge) |
 |---|---|---|---|
-| #3017 | chore(security): timestamp baseline | `5a35a743` | NÃO VERIFICADO (sessão 1) |
-| #3020 | chore(main): release 1.7.0 | `0a8a17f9` | NÃO VERIFICADO (sessão 1) |
-| #3201 | fix(scripts): scripts+edge+baselines | `1d3dafae` | ✅ SUCCESS run `42452557126` |
+| #3017 | chore(security): timestamp baseline | `5a35a743` | ⚠️ FAILURE pré-existente — Gate 1 Lint OOM (Δbaseline=0); job `125043861225`; diff tocou apenas `docs/security/*.json`, sem impacto em lint; falha idêntica existia antes do merge |
+| #3020 | chore(main): release 1.7.0 | `0a8a17f9` | ⚠️ Gate Final não disparado no SHA (release-please path bypass); Gate Final subsequente `1d3dafae` → ✅ SUCCESS job `128774330099` |
+| #3201 | fix(scripts): scripts+edge+baselines | `1d3dafae` | ✅ SUCCESS run `42494087701` job `128774330099` |
 
-**Gate Final pós-merge #3201 no main:** 54 check runs criados; Gate 3 E2E ainda `in_progress` no momento da compilação deste relatório.
+**Gate Final pós-merge #3201 no main:** ✅ SUCCESS (run `42494087701`, job `128774330099`, completed `2026-11-08T15:24:56Z`)
 
 ---
 
@@ -127,9 +129,9 @@
 | JA_EM_MAIN | 11 | 2940,2944,2952,2979,2981,2988,2990,2991,2992,2993,2996 |
 | MERGEADA_PO | 1 | 3018 |
 | MERGEADA_AGENTE | 3 | 3017,3020,3201 |
-| NAO_MERGEAVEL | 5 | 2950,2965,2970,2971,3203 |
-| DECISAO_HUMANA | 35 | 2941,2948,2951,2958,2961,2966,2967,2969,2973,2976,2978,2980,2982,2998,3001,3003,3004,3006,3012,3014,3015,3016,3127,3129,3137,3144,3148,3150,3160,3179,3202,3205,3210,3212,3214 |
-| **Total** | **55** | |
+| NAO_MERGEAVEL | 4 | 2950,2965,2970,2971 |
+| DECISAO_HUMANA | 37 | 2941,2948,2951,2958,2961,2966,2967,2969,2973,2976,2978,2980,2982,2998,3001,3003,3004,3006,3012,3014,3015,3016,3127,3129,3137,3144,3148,3150,3160,3179,3202,3203,3205,3210,3212,3214,3215 |
+| **Total** | **56** | |
 
 **main SHA final:** `1d3dafae93722b7e19f426bcf63701a80ab4b148`  
 **Outros writes no GitHub:** nenhum (sem comentários, labels, closes, edits, force-push)
@@ -138,10 +140,10 @@
 
 ## ARQUIVOS DE ENTREGA
 
-- `analise-prs/prs.json` — 55 entradas
-- `analise-prs/prs.csv` — 55 linhas
+- `analise-prs/prs.json` — 56 entradas
+- `analise-prs/prs.csv` — 56 linhas de dados (+ 1 header)
 - `analise-prs/progresso.json` — estado consolidado
 - `analise-prs/RELATORIO_PRS.md` — este arquivo
 - `analise-prs/baseline/BASELINE-session-01Ss1tXZ4cAbxBvdmu95uNPz.md`
 - `analise-prs/regras-de-negocio.md`
-- `analise-prs/dossies/PR-*.md` — 55 dossiês (40 sessão 1 + 15 sessão 2)
+- `analise-prs/dossies/PR-*.md` — 56 dossiês (40 sessão 1 + 15 sessão 2 + 1 sessão 3)

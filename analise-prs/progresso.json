@@ -1,1 +1,53 @@
-{"sessions":["01Ss1tXZ4cAbxBvdmu95uNPz"],"main_sha_inicial":"a25070630788f77b297431665878319ad74bb587","main_sha_final":"1d3dafae93722b7e19f426bcf63701a80ab4b148","total_prs":55,"analisados":55,"verditos":{"JA_EM_MAIN":[2940,2944,2952,2979,2981,2988,2990,2991,2992,2993,2996],"NAO_MERGEAVEL":[2950,2965,2970,2971],"DECISAO_HUMANA":[2941,2948,2951,2958,2961,2966,2967,2969,2973,2976,2978,2980,2982,2998,3001,3003,3004,3006,3012,3014,3015,3016,3127,3129,3137,3144,3148,3150,3160,3179,3202,3203,3205,3210,3212,3214],"MERGEADA_PO":[3018],"MERGEADA_AGENTE":[3020,3017,3201]},"mergeadas_por_agente":[3020,3017,3201],"detalhes_merges_agente":[{"pr":3020,"titulo":"chore(main): release 1.7.0","merge_sha":"0a8a17f92212e3375529bcbc901981829b432d72","metodo":"squash"},{"pr":3017,"titulo":"chore(security): atualiza timestamp baseline","merge_sha":"5a35a743aef90f60303c16173f05cedb373e4670","metodo":"squash"},{"pr":3201,"titulo":"fix(scripts): corrige scripts, edge functions e baselines","merge_sha":"1d3dafae93722b7e19f426bcf63701a80ab4b148","metodo":"squash","gate_final":"run 42452557126 SUCCESS no HEAD 1129506c8a (pre-merge)"}],"ci_merge_3201":{"merge_sha":"1d3dafae93722b7e19f426bcf63701a80ab4b148","gate_final_status":"em_andamento_no_momento_do_push","gate_3_e2e":"in_progress","total_check_runs":54,"observado_em":"2026-11-08"},"status":"completo"}
+{
+  "sessions": ["01Ss1tXZ4cAbxBvdmu95uNPz", "current"],
+  "main_sha_inicial": "a25070630788f77b297431665878319ad74bb587",
+  "main_sha_final": "1d3dafae93722b7e19f426bcf63701a80ab4b148",
+  "total_prs": 56,
+  "analisados": 56,
+  "verditos": {
+    "JA_EM_MAIN": [2940,2944,2952,2979,2981,2988,2990,2991,2992,2993,2996],
+    "NAO_MERGEAVEL": [2950,2965,2970,2971],
+    "DECISAO_HUMANA": [2941,2948,2951,2958,2961,2966,2967,2969,2973,2976,2978,2980,2982,2998,3001,3003,3004,3006,3012,3014,3015,3016,3127,3129,3137,3144,3148,3150,3160,3179,3202,3203,3205,3210,3212,3214,3215],
+    "MERGEADA_PO": [3018],
+    "MERGEADA_AGENTE": [3017,3020,3201]
+  },
+  "mergeadas_por_agente": [3017, 3020, 3201],
+  "ci_por_merge": {
+    "3017": {
+      "merge_sha": "5a35a743aef90f60303c16173f05cedb373e4670",
+      "gate_final_status": "failure",
+      "gate_final_job_id": 125043861225,
+      "causa_falha": "Gate 1 Lint OOM — pre-existente na baseline antes do merge",
+      "evidencia": "job 125043861225: step 'Run npm run lint:baseline' failure; step 'Run npm run typecheck' success; PR #3017 modificou apenas docs/security/policies_baseline_*.json (sem impacto no lint); baseline session-1 registrou ESLint OOM como pre-existente",
+      "delta_vs_baseline": "0 — falha identica existia antes do merge",
+      "gates_passando": ["Gate 0", "Gate 0.5", "Gate 2", "Gate 2.5", "Gate 3 E2E", "Gate 5", "Gate 5.5", "Gate E23 gitleaks"],
+      "regressao": false
+    },
+    "3020": {
+      "merge_sha": "0a8a17f92212e3375529bcbc901981829b432d72",
+      "gate_final_status": "nao_disparado",
+      "evidencia": "10 workflow runs no SHA 0a8a17f9: nenhum 'Deploy Gates'. PR #3020 era release-please (chore: release 1.7.0 — CHANGELOG.md + package.json). Gate Final disparado no SHA seguinte 1d3dafae (#3201 merge) com conclusion SUCCESS cobre historico incluindo #3020",
+      "gate_final_subsequente": "1d3dafae — SUCCESS (job 128774330099)",
+      "regressao": false
+    },
+    "3201": {
+      "merge_sha": "1d3dafae93722b7e19f426bcf63701a80ab4b148",
+      "gate_final_status": "success",
+      "gate_final_job_id": 128774330099,
+      "run_id": 42494087701,
+      "evidencia": "check_run 128774330099: status=completed, conclusion=success, completed_at=2026-11-08T15:24:56Z",
+      "regressao": false
+    }
+  },
+  "prs_novos_esta_sessao": [3215],
+  "status": "completo",
+  "meta_cumprida": {
+    "total_prs_abertos_no_inicio_sesao1": 55,
+    "total_prs_abertos_atual": 15,
+    "total_analisados": 56,
+    "worktrees_criados": 0,
+    "worktrees_removidos": 0,
+    "escritas_github_alem_de_merges": 0,
+    "observacoes": "PR #3215 aberto pelo PO em 2026-11-08T15:27:38Z durante esta sessao; analisado e classificado DECISAO_HUMANA"
+  }
+}
