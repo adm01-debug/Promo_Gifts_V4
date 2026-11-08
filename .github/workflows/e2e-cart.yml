@@ -114,11 +114,14 @@ jobs:
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
           E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+          PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results.json
         run: |
           npx playwright test ${{ matrix.spec }} \
             --project=${{ matrix.project }} \
-            --reporter=line,html
+            --reporter=line,json
 
+      # Só publica relatório JSON e screenshots de falha. O HTML e o diretório
+      # completo do Playwright podem anexar traces/vídeos com sessão autenticada.
       # R6 — retention-days: 14
       - name: Upload report on failure
         if: failure()
@@ -126,7 +129,7 @@ jobs:
         with:
           name: e2e-cart-${{ matrix.suite }}
           path: |
-            playwright-report
-            test-results
+            playwright-report/results.json
+            test-results/**/test-failed-1.png
           if-no-files-found: ignore
           retention-days: 14
