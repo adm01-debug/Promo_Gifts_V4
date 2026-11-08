@@ -802,3 +802,16 @@ POST auth/v1/token → 200 (success), GET rest/v1/v_products_public → PENDENTE
 > Item #43 adicionado: Branch Protection Sentinel failure em SHA `46212f02` causado por commit_title customizado sem sufixo `(#3191)`. Resolvido por PR §30 squash-mergeada sem commit_title customizado.  
 > HEAD atual (main após §29): `46212f026e8f9f8f827c907db630e45f250cf67e` — Gate Final [run #42437685662](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42437685662) → `conclusion: success`.  
 > Total de 43 itens. Item #43 RESOLVED. Itens #1, #29, #37, #42 requerem ação do dono.
+
+---
+
+> **Atualização 2026-11-08T02:50Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
+> HEAD atual (main após §30): `16408a6847b61fdd5fbba1e2a9385e311199edcc` — Gate Final [run #42439534734](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42439534734) → `conclusion: success`.  
+> **Item #42 (CI Security & Drift Checks):** run [#42439534623](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42439534623) em SHA `16408a68`, iniciada 02:40:30Z — `in_progress` às 02:50Z (job `quality-gate`, step 6/28 typecheck). Mesma causa raiz — `SUPABASE_SERVICE_ROLE_KEY` ausente — esperada para falhar nos steps 25-28 (Guard credenciais E2E + testes autenticados). Conclusão atualizada em §31 de RELATORIO_CI.md quando disponível.  
+> **Itens #29, #37:** ainda requerem ação do dono (edge-functions-drift e uptime monitor — sem run nova na SHA `16408a68`, scheduled workflows).  
+> §31 de RELATORIO_CI.md documenta o inventário completo de workflows em `16408a68`.
+
+> **Atualização 2026-11-08T03:10Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
+> Main avançou de `16408a68` para `9c33e63e` via PRs #3157 e #3141. Run anterior [#42439534623](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42439534623) em `16408a68` continua `in_progress` (step 22/28 — testes). Nova run [#42440258598](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42440258598) em `9c33e63e` — `status: pending` (na fila, criada 02:51:14Z). Causa e bloqueio inalterados: `SUPABASE_SERVICE_ROLE_KEY` ausente → requer dono.  
+> Gate Final em `9c33e63e`: [run #42440258617](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42440258617) → `conclusion: success`.  
+> Itens com ação do dono pendente: #1, #29, #37, #42.

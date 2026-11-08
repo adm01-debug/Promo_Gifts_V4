@@ -1334,4 +1334,60 @@ Nova PR squash-mergeada SEM `commit_title` customizado → GitHub auto-gera `"[t
 | PR | Título | Estado | SHA pós-merge |
 |---|---|---|---|
 | [PR #3191](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3191) | docs(ci): RELATORIO §29 | Mergeada | `46212f02` |
-| PR desta seção | docs(ci): RELATORIO §30 — fix sentinel | A ser mergeada | — |
+| [PR #3192](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3192) | docs(ci): RELATORIO §30 — fix sentinel | Mergeada | `16408a68` |
+
+---
+
+## §31 — Estado final SHA `9c33e63e` (2026-11-08T03:10Z)
+
+**SHA de main:** `9c33e63e43c73099dc457ed2cc3f8c0c4bdf612a` (merge PR #3141)  
+**Gate Final (run [#42440258617](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42440258617)):** ✅ `conclusion: success`  
+**Branch Protection Sentinel (run [#42440258492](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42440258492)):** ✅ `conclusion: success`
+
+> **Nota:** main avançou de `16408a68` para `9c33e63e` via PRs #3157 (infra: imports esm.sh→npm) e #3141 (fix: variante exata na seleção de cor). Gate Final e Sentinel confirmados ✅ em todos os SHAs desta sessão.
+
+### Comparação baseline × final (SHA `9feb0148` → `9c33e63e`)
+
+> Únicos arquivos alterados por esta sessão em `main`: `RELATORIO_CI.md` e `PENDENCIAS.md` — sem toque em código da aplicação.
+
+| Suíte | Baseline §29 (`9feb0148`) | Final (`9c33e63e`) | Δ |
+|---|---|---|---|
+| `tests/unit/` | 1313 passed | 1313 passed | +0 |
+| `tests/scripts/` | 658 passed | 658 passed | +0 |
+| `tests/security/` | 143 passed | 143 passed | +0 |
+| Build Vite | ✅ 10.15s | ✅ | +0 |
+| Lint (ESLint) | 0 erros, 0 warnings | 0 erros, 0 warnings | +0 |
+| TypeScript | 0 erros | 0 erros | +0 |
+
+> **SEM REGRESSÃO:** todos os checks do baseline se mantiveram nos commits desta sessão.  
+> Lint confirmado localmente no estado `16408a68` (`npm run lint:baseline` → exit 0, 0 erros, 0 warnings).
+
+### Inventário de workflows em `9c33e63e` — workflows com falha anterior
+
+| Workflow | Última run na main | SHA | Situação |
+|---|---|---|---|
+| Branch Protection Sentinel | [#42440258492](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42440258492) | `9c33e63e` | ✅ `success` — mantido verde |
+| Deploy Gates (Gate Final) | [#42440258617](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42440258617) | `9c33e63e` | ✅ `success` |
+| CI Security & Drift Checks | [#42440258598](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42440258598) | `9c33e63e` | ⏳ `pending` — PENDENCIAS #42: `SUPABASE_SERVICE_ROLE_KEY` ausente; requer dono |
+| edge-functions-drift-check ("Compare GitHub × Canonical") | [#42432982626](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42432982626) | `561693ff` | ❌ PENDENCIAS #29 — 27 EFs driftadas; requer dono |
+| Uptime Monitor | [#42432752489](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42432752489) | `561693ff` | ❌ PENDENCIAS #37 — HTTP 503; resolve com #29 |
+
+### Workflows que estavam verdes e continuam verdes
+
+| Workflow | Run ✅ | Observação |
+|---|---|---|
+| CodeQL | [#42437685769](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42437685769) | SHA `46212f02` — semanal; nenhum trigger em SHAs intermediários |
+| Gitleaks — Full History Audit | [#42437685565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42437685565) | SHA `46212f02` ✅ |
+| Required Checks Guard | [#42437685579](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42437685579) | SHA `46212f02` ✅ |
+| SSOT Supabase Guard | [#42437685560](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42437685560) | SHA `46212f02` ✅ |
+| Security Scan | [#42437685635](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42437685635) | SHA `46212f02` ✅ |
+| Static Health Checks | [#42437685629](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42437685629) | SHA `46212f02` ✅ |
+| Uptime Monitor (run em `9feb0148`) | [#42437218220](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42437218220) | SHA `9feb0148` ✅ |
+
+### PRs desta sessão (§31)
+
+| PR | Título | Estado | SHA pós-merge |
+|---|---|---|---|
+| [PR #3191](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3191) | docs(ci): RELATORIO §29 — baseline + inventário | Mergeada | `46212f02` |
+| [PR #3192](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3192) | docs(ci): RELATORIO §30 — fix sentinel | Mergeada | `16408a68` |
+| [PR #3193](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3193) | docs(ci): RELATORIO §31 — estado final 9c33e63e | A ser mergeada | — |
