@@ -16,6 +16,17 @@
     "lint_exit": 0,
     "vitest": "TIMEOUT — 2 falhas conhecidas: calendar.redesign day_selected + day_outside"
   },
+  "merge_tests": {
+    "metodo": "git fetch origin refs/pull/NNN/head + git merge --no-commit --no-ff vs main 9a89d9f0",
+    "clean": [3179, 3205, 3210, 3212, 3215, 3217],
+    "conflict": [3127, 3129, 3137, 3144, 3148, 3150, 3160, 3202, 3214, 3216, 3220],
+    "7_conflicts": [3203],
+    "nota_3214": "GitHub reporta CONFLICTING; merge test local não disponível (PR de 128 arquivos)"
+  },
+  "ja_implementada": {
+    "metodo": "git cherry -v 9a89d9f0 pr-tmp-NNN",
+    "resultado": "TODAS as 18 PRs têm commits com prefixo + (não estão em main)"
+  },
   "artefatos": {
     "baseline_typecheck": "analise-prs/baseline/typecheck.txt",
     "baseline_lint": "analise-prs/baseline/lint.txt",
@@ -24,6 +35,10 @@
     "prs_json": "analise-prs/prs.json",
     "relatorio": "analise-prs/RELATORIO_PRS.md",
     "dossies": "analise-prs/dossies/PR-*.md"
+  },
+  "correcoes_esta_sessao": {
+    "merge_local_corrigido_em": [3127, 3129, 3137, 3144, 3148, 3150, 3160, 3202, 3214, 3216, 3220],
+    "motivo": "Sessão anterior registrou 'clean' para PRs com conflitos reais. Merge tests re-executados vs main SHA 9a89d9f0 corrigiram os dados."
   },
   "historico_sessoes_anteriores": {
     "bed6ac4e": "8 PRs mergeadas — #2875,#2876,#2864,#2848,#2849,#2857,#2862,#2834",
