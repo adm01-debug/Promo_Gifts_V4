@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore: atualiza artefatos gerados, baselines visuais e inventário",
+   "fix: static-pass em 3 scripts + reverte tipo inert incorreto",
    "fix: static-pass em 5 shell scripts sem ambiente Docker/DB/CI",
    "chore: atualiza artefatos, baselines e snapshots gerados",
-   "fix: static-pass e exit codes corretos em 11 scripts",
-   "chore: atualiza artefatos, baselines e inventário",
-   "feat(tests): adiciona contrato decommissioned+cron e corrige 9 scripts"
+   "fix: static-pass e exit codes corretos em 11 scripts"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

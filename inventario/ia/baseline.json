@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7856bcba5af8968dd875c30ccd51772c8b93ea01",
+  "commit": "4c515bc0b5c171332ed6c36f82f2e4ebb8f89601",
   "branch": "claude/inspiring-knuth-swo71j",
-  "data_commit": "2026-11-08T04:12:09+00:00",
+  "data_commit": "2026-11-08T04:31:24+00:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "4c515bc",
+    "data": "2026-11-08",
+    "assunto": "chore: atualiza artefatos gerados, baselines visuais e inventário"
+   },
+   {
+    "sha": "88e6262",
+    "data": "2026-11-08",
+    "assunto": "fix: static-pass em 3 scripts + reverte tipo inert incorreto"
+   },
    {
     "sha": "7856bcb",
     "data": "2026-11-08",
@@ -121,16 +131,6 @@
     "sha": "3093c4a",
     "data": "2026-11-07",
     "assunto": "fix(test): validar de verdade o corpus dos fuzzers (#3173)"
-   },
-   {
-    "sha": "2eca6a4",
-    "data": "2026-11-07",
-    "assunto": "docs: RELATORIO_CI.md §21 — Gate Final ✅ success na main 1a47c6972c"
-   },
-   {
-    "sha": "1a47c69",
-    "data": "2026-11-07",
-    "assunto": "docs: RELATORIO_CI.md e PENDENCIAS.md — status CI e workflows (#3172)"
    }
   ],
   "arquivos_mudados_7d": 9291,
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 152
+    "mudancas": 153
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 75
+    "mudancas": 76
    },
    {
     "pasta": "src/components/ui",
@@ -207,38 +207,42 @@
    },
    {
     "arquivo": "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": "supabase/migrations-snapshot/SNAPSHOT_META.json",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": "audit-report.txt",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "docs/DB_FRONTEND_COVERAGE.md",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "qa/migrations-draft/DRAFTS_STATUS.md",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "qa/migrations-draft/README.md",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "supabase/functions/_shared/cors-snapshot.json",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "visual-diff-report/index.html",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "arquivo": "visual-diff-report/summary.json",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "qa/reports/daily-flows-simulation-2026-11-08.json",
     "mudancas": 6
    },
    {
@@ -246,7 +250,27 @@
     "mudancas": 5
    },
    {
-    "arquivo": "qa/reports/daily-flows-simulation-2026-11-08.json",
+    "arquivo": "inventario/estado/edges.json",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "inventario/estado/rotas.json",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "qa/exports/proposal-10015-26.pdf",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "qa/exports/proposal-complex-99999-26.pdf",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "qa/exports/proposal-minimal-00001-26.pdf",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "qa/reports/cart-header-fuzz-report.md",
     "mudancas": 5
    },
    {
@@ -254,27 +278,11 @@
     "mudancas": 4
    },
    {
-    "arquivo": "inventario/estado/edges.json",
+    "arquivo": "replenishment-performance-dashboard.json",
     "mudancas": 4
    },
    {
-    "arquivo": "inventario/estado/rotas.json",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "qa/exports/proposal-10015-26.pdf",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "qa/exports/proposal-complex-99999-26.pdf",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "qa/exports/proposal-minimal-00001-26.pdf",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "qa/reports/cart-header-fuzz-report.md",
+    "arquivo": "visual-diff-report/calibration.md",
     "mudancas": 4
    },
    {
@@ -288,14 +296,6 @@
    {
     "arquivo": "artifacts/route-test-matrix.json",
     "mudancas": 3
-   },
-   {
-    "arquivo": "e2e/fixtures/auth.setup.ts",
-    "mudancas": 3
-   },
-   {
-    "arquivo": "replenishment-performance-dashboard.json",
-    "mudancas": 3
    }
   ],
   "autores_30d": [
@@ -305,7 +305,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 10
+    "commits": 12
    },
    {
     "autor": "github-actions[bot]",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 9220,
   "arquivos_codigo": 4619,
-  "linhas_codigo": 884767,
+  "linhas_codigo": 884779,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1564,7 +1564,7 @@
   },
   "scripts/inventario": {
    "arquivos": 3,
-   "linhas": 604
+   "linhas": 610
   },
   "scripts/kit-ai-enrichment.js": {
    "arquivos": 1,
@@ -1712,7 +1712,7 @@
   },
   "scripts/ssot-report-markdown.mjs": {
    "arquivos": 1,
-   "linhas": 189
+   "linhas": 195
   },
   "scripts/ssot-report-summary.mjs": {
    "arquivos": 1,
@@ -2299,7 +2299,7 @@
  ],
  "qualidade": {
   "any": 568,
-  "console_log": 1269,
+  "console_log": 1272,
   "ts_ignore": 0,
   "eslint_disable": 6,
   "todos": 74,

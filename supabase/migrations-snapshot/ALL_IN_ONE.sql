@@ -1,6 +1,6 @@
 -- ==============================================================
 -- ALL_IN_ONE.sql — snapshot concatenado de supabase/migrations/
--- Gerado em: 2026-11-08T04:14:43.021Z
+-- Gerado em: 2026-11-08T04:54:10.339Z
 -- Total de arquivos: 3043
 -- Ordem: alfabética (mesmo critério do Supabase CLI)
 -- Uso: APENAS auditoria/leitura. NÃO aplicar direto no banco.

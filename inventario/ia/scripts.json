@@ -2186,7 +2186,7 @@
   {
    "arquivo": "scripts/inventario/gerar-banco.mjs",
    "descricao": "* Inventario do banco oficial -> inventario/estado/banco.json (fonte de consulta dos agentes).",
-   "linhas": 223,
+   "linhas": 229,
    "env": [
     "SUPABASE_ACCESS_TOKEN",
     "SUPABASE_PROJECT_REF"
@@ -2703,7 +2703,7 @@
   {
    "arquivo": "scripts/ssot-report-markdown.mjs",
    "descricao": "* ssot-report-markdown.mjs — Converte ssot-report.json em Markdown para revisão de PR.",
-   "linhas": 189,
+   "linhas": 195,
    "env": [],
    "npm_scripts": [
     "ssot:report:markdown"
