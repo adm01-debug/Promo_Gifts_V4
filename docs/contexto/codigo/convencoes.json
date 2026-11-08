@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(scripts): corrige scripts, edge functions e baselines (#3201)",
    "docs(auditoria): encerra P06 e P15 — migrations posteriores tornam proposta obsoleta",
    "fix(ci): reconhecer migration 20261107180000 reconciliada (#3211)",
    "docs(db): registrar recibo E15 da migration 20261107180000 (#3209)",
-   "fix(docs): restaurar contrato de recibos E15 (#3204)",
-   "chore(backlog): marca FT-175 como implementado (#3206)"
+   "fix(docs): restaurar contrato de recibos E15 (#3204)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

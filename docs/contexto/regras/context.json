@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "d03ee555dbd55c3dae9e85cfbb37f5f1ae4dd21b",
+  "sha": "1d3dafae93722b7e19f426bcf63701a80ab4b148",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 15:10 UTC",
-  "files_total": 9124,
+  "generated_at": "2026-11-08 15:20 UTC",
+  "files_total": 9125,
   "code_files": 7862,
-  "code_lines": 1054364
+  "code_lines": 1054635
  },
  "version": "1.3.2",
- "facts_hash": "32d3c1604b01d630",
+ "facts_hash": "1296a72e3f0bf77d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -138213,7 +138213,7 @@
   {
    "module": "scripts",
    "files": 270,
-   "lines": 53147,
+   "lines": 53274,
    "tables": [
     "a",
     "contacts",
@@ -138289,7 +138289,6 @@
     "#",
     "@anthropic-ai/sdk",
     "@babel/parser",
-    "@babel/traverse",
     "@lib/y",
     "@supabase/supabase-js",
     "@tanstack/react-query",
@@ -138310,7 +138309,8 @@
     "node:module",
     "node:net",
     "node:os",
-    "node:path"
+    "node:path",
+    "node:perf_hooks"
    ],
    "imports_modules": [
     "_shared",
@@ -140007,7 +140007,7 @@
   {
    "module": "supabase/functions",
    "files": 251,
-   "lines": 46481,
+   "lines": 46507,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -140489,7 +140489,7 @@
   {
    "module": "tests",
    "files": 821,
-   "lines": 125246,
+   "lines": 125364,
    "tables": [
     "bot_detection_log",
     "companies",
@@ -144579,7 +144579,6 @@
     "e2e/flows/04p-quotes-expiration-column.spec.ts",
     "e2e/helpers/discount-approval-seed-page.ts",
     "e2e/helpers/quotes-status-seed.ts",
-    "scripts/check-env.mjs",
     "scripts/check-restore-seller-cart-rpc.mjs",
     "scripts/check-security-definer-acl.mjs",
     "scripts/contract-testing.mjs",
@@ -144788,7 +144787,6 @@
     "docs/promo-champions/receive-quote-sync.ts",
     "e2e/helpers/cleanup-client.ts",
     "scripts/ai-context/cenarios.mjs",
-    "scripts/check-env.mjs",
     "scripts/check-restore-seller-cart-rpc.mjs",
     "scripts/check-rpc-get-profile-and-roles.mjs",
     "scripts/check-rpc-permissions.mjs",
@@ -248603,7 +248601,35 @@
    },
    {
     "file": "tests/components/pages/KitBuilderPage.test.tsx",
-    "name": "renderiza o fluxo base da página"
+    "name": "renderiza o passo box (padrão)"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "renderiza o passo items"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "renderiza o passo personalization"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "renderiza o passo summary com KitSummary"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "renderiza com isLoading ativo para boxes"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "renderiza com isLoading ativo para items"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "renderiza com kit salvo (currentKitId definido)"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "renderiza com isCreatingQuote ativo"
    },
    {
     "file": "tests/components/pages/MagicUp.test.tsx",
@@ -319649,6 +319675,7 @@
    "scripts/ai-context/gerar.unit.mjs",
    "scripts/audit-credentials.mjs",
    "scripts/check-edge-authorization.mjs",
+   "scripts/check-env.mjs",
    "scripts/check-lint-0011-drift.mjs",
    "scripts/check-lint-0029-drift.mjs",
    "scripts/check-no-bypass-literals.mjs",
@@ -376449,11 +376476,9 @@
   },
   "scripts/check-env.mjs": {
    "path": "scripts/check-env.mjs",
-   "lines": 3,
-   "env": [
-    "SUPABASE_ANON_KEY",
-    "SUPABASE_URL"
-   ]
+   "lines": 74,
+   "doc": "!/usr/bin/env node",
+   "uses_service_role": true
   },
   "scripts/check-eslint-baseline.mjs": {
    "path": "scripts/check-eslint-baseline.mjs",
@@ -376886,7 +376911,7 @@
   },
   "scripts/check-no-db-push.mjs": {
    "path": "scripts/check-no-db-push.mjs",
-   "lines": 188,
+   "lines": 199,
    "params": [
     {
      "name": "PATTERN",
@@ -377765,7 +377790,7 @@
   },
   "scripts/ci-metrics.mjs": {
    "path": "scripts/ci-metrics.mjs",
-   "lines": 270,
+   "lines": 275,
    "env": [
     "GH_TOKEN",
     "GITHUB_REPOSITORY",
@@ -378398,7 +378423,7 @@
   },
   "scripts/gen-internal-schema.mjs": {
    "path": "scripts/gen-internal-schema.mjs",
-   "lines": 78,
+   "lines": 84,
    "env": [
     "DATABASE_URL"
    ],
@@ -380336,18 +380361,11 @@
   },
   "scripts/qa/audit-freight-block.mjs": {
    "path": "scripts/qa/audit-freight-block.mjs",
-   "lines": 149,
+   "lines": 150,
    "rule_comments": [
     "(3) <Label> deve estar dentro de uma célula do grid."
    ],
-   "doc": "!/usr/bin/env node",
-   "calc_fns": [
-    {
-     "name": "ancestorIsGridCol",
-     "params": "path",
-     "body": "let p = path.parentPath; while (p) { if (p.isJSXElement()) { const tid = attrLiteral(jsxAttr(p.node, 'data-testid')); if (tid && gridColTestids.has(tid)) return true; } p = p.parentPath; } return false;"
-    }
-   ]
+   "doc": "!/usr/bin/env node"
   },
   "scripts/qa/calibrate-collapse-thresholds.mjs": {
    "path": "scripts/qa/calibrate-collapse-thresholds.mjs",
@@ -380395,7 +380413,7 @@
   },
   "scripts/qa/fuzz-calendar-proportional.mjs": {
    "path": "scripts/qa/fuzz-calendar-proportional.mjs",
-   "lines": 74,
+   "lines": 75,
    "params": [
     {
      "name": "ITER_PER_WIDTH",
@@ -380411,7 +380429,7 @@
   },
   "scripts/qa/fuzz-calendar-tokens.mjs": {
    "path": "scripts/qa/fuzz-calendar-tokens.mjs",
-   "lines": 106,
+   "lines": 107,
    "doc": "!/usr/bin/env node",
    "percents": [
     "// Invariantes do design iOS Calendar (revisado 2026-07-11, shrink -20% 2027):"
@@ -380502,7 +380520,7 @@
   },
   "scripts/qa/simulate-freight-label-alignment.mjs": {
    "path": "scripts/qa/simulate-freight-label-alignment.mjs",
-   "lines": 174,
+   "lines": 188,
    "params": [
     {
      "name": "ITER",
@@ -380536,9 +380554,9 @@
   },
   "scripts/qa/validate-quote-conditions-workflows.mjs": {
    "path": "scripts/qa/validate-quote-conditions-workflows.mjs",
-   "lines": 75,
+   "lines": 92,
    "rule_comments": [
-    "write/.test(pr), 'PR: SEM permissão contents:write');"
+    "write/.test(pr), 'PR: SEM permissao contents:write');"
    ],
    "doc": "!/usr/bin/env node"
   },
@@ -444919,7 +444937,7 @@
   },
   "supabase/functions/ema-pipeline-health/index.ts": {
    "path": "supabase/functions/ema-pipeline-health/index.ts",
-   "lines": 71,
+   "lines": 76,
    "rpc": [
     "fn_rupture_health_check",
     "fn_rupture_quick_stats"
@@ -447992,7 +448010,7 @@
   },
   "supabase/functions/mcp-query/index.ts": {
    "path": "supabase/functions/mcp-query/index.ts",
-   "lines": 16,
+   "lines": 22,
    "doc": "mcp-query — DESCOMISSIONADA em 2026-09-05 (audit r3) Razão: verify_jwt=false + SQL arbitrário via x-mcp-secret + CORS * = vetor de ataque em produção. 0 invocações em 24h antes da remoção. Esta versão retorna 410 Gone para todas as requisições. A função pode ser deletada pelo Supabase Dashboard."
   },
   "supabase/functions/mcp-server/index.ts": {
@@ -448208,7 +448226,7 @@
   },
   "supabase/functions/migrate-helper/index.ts": {
    "path": "supabase/functions/migrate-helper/index.ts",
-   "lines": 25,
+   "lines": 31,
    "rule_comments": [
     "migrate-helper foi um utilitário temporário e não deve executar migrações,"
    ],
@@ -448378,7 +448396,7 @@
   },
   "supabase/functions/product-visual-search/index.ts": {
    "path": "supabase/functions/product-visual-search/index.ts",
-   "lines": 553,
+   "lines": 556,
    "tables": [
     {
      "table": "product_images",
@@ -451511,7 +451529,7 @@
   },
   "supabase/functions/xbz-image-uploader/index.ts": {
    "path": "supabase/functions/xbz-image-uploader/index.ts",
-   "lines": 59,
+   "lines": 65,
    "tables": [
     {
      "table": "xbz_image_import_staging",
@@ -469950,11 +469968,18 @@
   },
   "tests/components/pages/KitBuilderPage.test.tsx": {
    "path": "tests/components/pages/KitBuilderPage.test.tsx",
-   "lines": 110,
+   "lines": 228,
    "is_test": true,
    "tests": [
     "KitBuilderPage",
-    "renderiza o fluxo base da página"
+    "renderiza o passo box (padrão)",
+    "renderiza o passo items",
+    "renderiza o passo personalization",
+    "renderiza o passo summary com KitSummary",
+    "renderiza com isLoading ativo para boxes",
+    "renderiza com isLoading ativo para items",
+    "renderiza com kit salvo (currentKitId definido)",
+    "renderiza com isCreatingQuote ativo"
    ]
   },
   "tests/components/pages/MagicUp.test.tsx": {
@@ -484026,10 +484051,44 @@
   }
  },
  "git": {
-  "sha": "d03ee555dbd55c3dae9e85cfbb37f5f1ae4dd21b",
+  "sha": "1d3dafae93722b7e19f426bcf63701a80ab4b148",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1d3dafa",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix(scripts): corrige scripts, edge functions e baselines (#3201)",
+    "files": [
+     ".any-type-baseline.json",
+     ".cart-header-fuzz.json",
+     ".migration-refs-baseline.json",
+     ".orphan-labels-baseline.json",
+     "docs/DB_FRONTEND_COVERAGE.md",
+     "docs/E2E_SMOKE_COVERAGE.md",
+     "scripts/check-env.mjs",
+     "scripts/check-no-db-push.mjs",
+     "scripts/check-quote-rpc-canonical-readiness.mjs",
+     "scripts/ci-metrics.mjs",
+     "scripts/gen-internal-schema.mjs",
+     "scripts/kit-ai-enrichment.js",
+     "scripts/observability-check.mjs",
+     "scripts/plan-status.mjs",
+     "scripts/qa/audit-freight-block.mjs",
+     "scripts/qa/fuzz-calendar-proportional.mjs",
+     "scripts/qa/fuzz-calendar-tokens.mjs",
+     "scripts/qa/simulate-freight-label-alignment.mjs",
+     "scripts/qa/validate-quote-conditions-workflows.mjs",
+     "supabase/functions/_shared/cors-snapshot.json",
+     "supabase/functions/ema-pipeline-health/index.ts",
+     "supabase/functions/mcp-query/index.ts",
+     "supabase/functions/migrate-helper/index.ts",
+     "supabase/functions/product-visual-search/index.ts",
+     "supabase/functions/xbz-image-uploader/index.ts",
+     "tests/components/pages/KitBuilderPage.test.tsx"
+    ]
+   },
    {
     "sha": "d03ee55",
     "date": "2026-11-08",
@@ -484502,26 +484561,16 @@
     "files": [
      "RELATORIO_CI.md"
     ]
-   },
-   {
-    "sha": "12e873a",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "docs(ci): RELATORIO §26 — baseline d2ce504a + PENDENCIAS #38 (#3183)",
-    "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    7
+    6
    ],
    [
     "PENDENCIAS.md",
-    5
+    4
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -484530,6 +484579,10 @@
    [
     "package.json",
     3
+   ],
+   [
+    "supabase/functions/product-visual-search/index.ts",
+    2
    ],
    [
     "scripts/migration-ledger-remote-only-allowlist.json",
@@ -484576,23 +484629,19 @@
     2
    ],
    [
-    "auditoria-supabase/ADENDO_2026-10-28.md",
+    ".any-type-baseline.json",
     1
    ],
    [
-    "auditoria-supabase/analise-impacto/APROVACAO_FASE_B_IMPACTO.md",
+    ".cart-header-fuzz.json",
     1
    ],
    [
-    "docs/estado/backlog/funcionalidades.md",
+    ".migration-refs-baseline.json",
     1
    ],
    [
-    "e2e/catalog.spec.ts",
-    1
-   ],
-   [
-    "e2e/kit-builder.spec.ts",
+    ".orphan-labels-baseline.json",
     1
    ]
   ]

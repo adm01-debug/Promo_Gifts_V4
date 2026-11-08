@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d03ee555dbd55c3dae9e85cfbb37f5f1ae4dd21b` (2026-11-08T12:05:11-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1d3dafae93722b7e19f426bcf63701a80ab4b148` (2026-11-08T12:17:53-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 9205 |
 | arquivos_codigo | 4631 |
-| linhas_codigo | 887042 |
+| linhas_codigo | 887313 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -586,18 +586,18 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38278 nós · 66800 arestas · 2187 comunidades · grafo do commit `d03ee555`
-- comunidades maiores: ref_components (650), ref_lib (471), ref_integrations (431), react (407), ref_hooks (329), ref_node_fs (308), @testing-library/react (290), scripts (289), react-router-dom (277), nav.ts (269), @tanstack/react-query (259), concludeCheck (257)
+- 38260 nós · 66763 arestas · 2127 comunidades · grafo do commit `1d3dafae`
+- comunidades maiores: ref_lib (740), ref_components (682), ref_integrations (375), react-router-dom (310), nav.ts (302), react (291), scripts (289), ref_node_fs (282), @tanstack/react-query (278), ref_hooks (273), cors.ts (251), ref_types (250)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - RELATORIO_CI.md (72)
 - PENDENCIAS.md (63)
-- package.json (27)
+- package.json (26)
 - supabase/MIGRATIONS_SYNC_LOG.md (23)
-- package-lock.json (20)
-- CHANGELOG.md (18)
+- package-lock.json (19)
+- CHANGELOG.md (17)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (16)
 - .github/workflows/deploy-gates.yml (14)
 - docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (14)
@@ -1051,7 +1051,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/DARK_MODE.md` — 🌙 Guia de Dark Mode - Gifts Store (80 linhas)
 - `docs/DATA_DICTIONARY.md` — Data Dictionary — Promo Gifts (Local Supabase) (101 linhas)
 - `docs/DB_CONNECTION_POOL.md` — DB Connection Pool — Promo Gifts (136 linhas)
-- `docs/DB_FRONTEND_COVERAGE.md` — DB ↔ Frontend Coverage Report (2708 linhas)
+- `docs/DB_FRONTEND_COVERAGE.md` — DB ↔ Frontend Coverage Report (363 linhas)
 - `docs/DECISION-LOG-2026-05-21-v2.md` — DECISION-LOG v2 — Onda "CI Green" (we-dream-big / PromoGifts) (109 linhas)
 - `docs/DEPLOYMENT.md` — Deployment Guide — Promo_Gifts (149 linhas)
 - `docs/DESIGN_TOKENS.md` — Design Tokens — Orange Premium SSOT (271 linhas)
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-08 `1d3dafa` fix(scripts): corrige scripts, edge functions e baselines (#3201)
 - 2026-11-08 `d03ee55` docs(auditoria): encerra P06 e P15 — migrations posteriores tornam proposta obsoleta
 - 2026-11-08 `46ec263` fix(ci): reconhecer migration 20261107180000 reconciliada (#3211)
 - 2026-11-08 `b45d233` docs(db): registrar recibo E15 da migration 20261107180000 (#3209)
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-08 `576a324` ci: amplia timeout do e2e-gates e corrige min-tests do full-flows
 - 2026-11-08 `74d9fda` fix(sentinel): audita intervalo first-parent do push (recupera parte faltante da #2839)
 - 2026-11-08 `f0f37db` fix(ci): corrige env Vite e endurece smoke autenticado
-- 2026-11-08 `f7f763e` fix: drift-check ignora *.test.ts e *_test.ts no REPO_ONLY
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

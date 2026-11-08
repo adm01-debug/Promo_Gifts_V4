@@ -4490,7 +4490,7 @@
   {
    "arquivo": "scripts/qa/audit-freight-block.mjs",
    "tipo": "qa",
-   "linhas": 149,
+   "linhas": 150,
    "testa": [],
    "casos": 2
   },
@@ -4532,7 +4532,7 @@
   {
    "arquivo": "scripts/qa/fuzz-calendar-proportional.mjs",
    "tipo": "qa",
-   "linhas": 74,
+   "linhas": 75,
    "testa": [],
    "casos": 2
   },
@@ -4546,7 +4546,7 @@
   {
    "arquivo": "scripts/qa/fuzz-calendar-tokens.mjs",
    "tipo": "qa",
-   "linhas": 106,
+   "linhas": 107,
    "testa": [],
    "casos": 2
   },
@@ -4588,7 +4588,7 @@
   {
    "arquivo": "scripts/qa/simulate-freight-label-alignment.mjs",
    "tipo": "qa",
-   "linhas": 174,
+   "linhas": 188,
    "testa": [],
    "casos": 8
   },
@@ -4604,9 +4604,9 @@
   {
    "arquivo": "scripts/qa/validate-quote-conditions-workflows.mjs",
    "tipo": "qa",
-   "linhas": 75,
+   "linhas": 92,
    "testa": [],
-   "casos": 25
+   "casos": 20
   },
   {
    "arquivo": "scripts/regras_negocio/test_generate.py",
@@ -12930,11 +12930,11 @@
   {
    "arquivo": "tests/components/pages/KitBuilderPage.test.tsx",
    "tipo": "unit",
-   "linhas": 110,
+   "linhas": 228,
    "testa": [
     "src/pages/kit-builder/KitBuilderPage.tsx"
    ],
-   "casos": 1
+   "casos": 8
   },
   {
    "arquivo": "tests/components/pages/MagicUp.test.tsx",

@@ -670,12 +670,9 @@
   },
   {
    "arquivo": "scripts/check-env.mjs",
-   "descricao": null,
-   "linhas": 3,
-   "env": [
-    "SUPABASE_ANON_KEY",
-    "SUPABASE_URL"
-   ],
+   "descricao": "* check-env.mjs",
+   "linhas": 74,
+   "env": [],
    "npm_scripts": [],
    "workflows": [],
    "orfao": false
@@ -990,7 +987,7 @@
   {
    "arquivo": "scripts/check-no-db-push.mjs",
    "descricao": "* Bloqueia commits que reintroduzem `supabase db push` como instrução operacional.",
-   "linhas": 188,
+   "linhas": 199,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -1698,7 +1695,7 @@
   {
    "arquivo": "scripts/ci-metrics.mjs",
    "descricao": "* E93 — Coleta métricas de CI da última semana via GitHub REST API",
-   "linhas": 270,
+   "linhas": 275,
    "env": [
     "GH_TOKEN",
     "GITHUB_REPOSITORY",
@@ -2055,7 +2052,7 @@
   {
    "arquivo": "scripts/gen-internal-schema.mjs",
    "descricao": "* gen-internal-schema.mjs",
-   "linhas": 78,
+   "linhas": 84,
    "env": [
     "DATABASE_URL"
    ],

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d03ee555dbd55c3dae9e85cfbb37f5f1ae4dd21b",
+  "commit": "1d3dafae93722b7e19f426bcf63701a80ab4b148",
   "branch": "main",
-  "data_commit": "2026-11-08T12:05:11-03:00",
+  "data_commit": "2026-11-08T12:17:53-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "1d3dafa",
+    "data": "2026-11-08",
+    "assunto": "fix(scripts): corrige scripts, edge functions e baselines (#3201)"
+   },
    {
     "sha": "d03ee55",
     "data": "2026-11-08",
@@ -126,14 +131,9 @@
     "sha": "217869d",
     "data": "2026-11-07",
     "assunto": "infra: migra imports esm.sh → npm: pinados nas edge functions (#3157)"
-   },
-   {
-    "sha": "16408a6",
-    "data": "2026-11-07",
-    "assunto": "docs(ci): RELATORIO §30 — fix Branch Protection Sentinel (#3192)"
    }
   ],
-  "arquivos_mudados_7d": 585,
+  "arquivos_mudados_7d": 607,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 229
+    "mudancas": 228
    },
    {
     "pasta": "src/pages/products",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 27
+    "mudancas": 26
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -215,11 +215,11 @@
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 20
+    "mudancas": 19
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 18
+    "mudancas": 17
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 324
+    "commits": 323
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 36
+    "commits": 34
    },
    {
     "autor": "github-actions[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 9205,
   "arquivos_codigo": 4631,
-  "linhas_codigo": 887042,
+  "linhas_codigo": 887313,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1112,7 +1112,7 @@
   },
   "scripts/check-env.mjs": {
    "arquivos": 1,
-   "linhas": 3
+   "linhas": 74
   },
   "scripts/check-eslint-baseline.mjs": {
    "arquivos": 1,
@@ -1220,7 +1220,7 @@
   },
   "scripts/check-no-db-push.mjs": {
    "arquivos": 1,
-   "linhas": 188
+   "linhas": 199
   },
   "scripts/check-no-followup-frontend.mjs": {
    "arquivos": 1,
@@ -1440,7 +1440,7 @@
   },
   "scripts/ci-metrics.mjs": {
    "arquivos": 1,
-   "linhas": 270
+   "linhas": 275
   },
   "scripts/ci-performance-gate.ts": {
    "arquivos": 1,
@@ -1536,7 +1536,7 @@
   },
   "scripts/gen-internal-schema.mjs": {
    "arquivos": 1,
-   "linhas": 78
+   "linhas": 84
   },
   "scripts/gen-migrations-readme.mjs": {
    "arquivos": 1,
@@ -1636,7 +1636,7 @@
   },
   "scripts/qa": {
    "arquivos": 17,
-   "linhas": 2025
+   "linhas": 2059
   },
   "scripts/qa-price-readonly-regression.mjs": {
    "arquivos": 1,
@@ -1912,7 +1912,7 @@
   },
   "supabase/functions": {
    "arquivos": 251,
-   "linhas": 46481
+   "linhas": 46507
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -1988,7 +1988,7 @@
   },
   "tests/components": {
    "arquivos": 145,
-   "linhas": 32335
+   "linhas": 32453
   },
   "tests/config": {
    "arquivos": 6,
@@ -2303,7 +2303,7 @@
  ],
  "qualidade": {
   "any": 568,
-  "console_log": 1222,
+  "console_log": 1233,
   "ts_ignore": 0,
   "eslint_disable": 6,
   "todos": 74,
@@ -2618,7 +2618,7 @@
   },
   {
    "arquivo": "supabase/functions/xbz-image-uploader/index.ts",
-   "linha": 50,
+   "linha": 56,
    "tipo": "TODO",
    "texto": "implementar upload para Cloudflare Images + chamada a complete_xbz_image_import"
   },
