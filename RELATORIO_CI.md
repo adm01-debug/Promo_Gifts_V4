@@ -1495,3 +1495,47 @@ Check IDs 128617661638 (SHA `4e638a69b`) e 128617563662 (SHA `576a3246e`) → `c
 | TypeScript | 0 erros | 0 erros | +0 |
 | `npm test` (total) | 2114 passed (suítes separadas) | 26241 passed, 1 failed, exit 0 | ⚠️ 1 falha preexistente (herdada de main; sessão só tocou .md) |
 
+
+---
+
+## §34 — Inventário final de falhas (2026-11-08T05:0xZ) + estado SHA `8c3abe3bcb`
+
+**SHA main atual:** `8c3abe3bcb08c7d5021fc619a3ebe92a938c0ad6` (merge PR #3206 — backlog FT-175; 04:57Z)
+
+### Inventário de workflows com falha no main (fonte: API branch=main, status=failure, per_page=100)
+
+| Workflow | Última run falha | SHA | Estado atual no main | Resolução |
+|---|---|---|---|---|
+| DB — Aplicação controlada de migration única (E15) | [#42447046724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42447046724) | `e09f4125` | Sem nova run (workflow_dispatch) | PENDENCIAS #46: fix em PR #3202; requer re-dispatch após merge |
+| CI Security & Drift Checks | [#42444594731](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42444594731) | `e09f4125` | Queued em `8c3abe3bcb` | Supersedido — última run não está em failure |
+| Kit Coverage — Integration | [#42443979822](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42443979822) | `5e28c6c85` | Queued em `8c3abe3bcb` | Supersedido |
+| E2E (Playwright) | [#42443580801](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42443580801) | `5e28c6c85` | Queued em `8c3abe3bcb` | Supersedido |
+| Branch Protection Sentinel | [#42443580756](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42443580756) | `5e28c6c85` | Queued em `8c3abe3bcb` | Supersedido |
+| Edge Integration Tests — All Functions | [#42441597056](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42441597056) | `c976bba17` | Queued em `8c3abe3bcb` | Supersedido |
+| E2E • ColorSwatch 2 linhas (Grid) | [#42440258426](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42440258426) | `9c33e63e4` | Queued em `8c3abe3bcb` | Supersedido |
+| Nightly Full CI | [#42439844067](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42439844067) | `16408a684` | Queued em `8c3abe3bcb` | Supersedido |
+| edge-functions-drift-check | [#42432982626](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42432982626) | `561693ff8` | Queued em `8c3abe3bcb` | Supersedido — PENDENCIAS #29 (27 edges drifted) |
+| Uptime Monitor | [#42432752489](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42432752489) | `561693ff8` | `cancelled` em `e09f4125` | Cancelado; não está em failure |
+
+> **Nota:** "Supersedido" = a última run do workflow no main NÃO está em `conclusion=failure` (está queued/running em `8c3abe3bcb` ou foi skipped). Apenas `db-apply-migration.yml` tem `conclusion=failure` como última run no main.
+
+### Gate Final (Deploy Gates) no main
+
+**Run atual:** [#42448861374](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861374) → `status: queued`, SHA `8c3abe3bcb` (criado 04:57Z)
+
+Ações tomadas para desbloquear:
+- Canceladas 9 runs antigas do Deploy Gates em main (SHAs obsoletos) às 05:0xZ
+- Apenas a run acima permanece na fila de concorrência
+
+> ⚠️ Aguardando `conclusion: success`. Após isso: merge PR #3202 (squash), re-dispatch `db-apply-migration.yml` com `MIGRATION_VERSION=20261108001500`.
+
+### Comparação baseline (§33) × final
+
+| Suíte | §33 (`e09f4125`) | §34 (`8c3abe3bcb`) | Δ |
+|---|---|---|---|
+| Build Vite | ✅ 15.50s | ✅ (sem mudança de código) | +0 |
+| Lint (ESLint) | 0 erros, 0 warnings | 0 erros, 0 warnings | +0 |
+| TypeScript | 0 erros | 0 erros | +0 |
+| `npm test` (27398 total) | 26241 passed, 1 failed preexistente | Sem mudança (sessão só tocou .md e comentário .sql) | +0 |
+| Falhas em main (`is:failure`) | Vários workflows | 1 (db-apply-migration.yml) | Melhoria: -9 falhas resolvidas por superseding |
+
