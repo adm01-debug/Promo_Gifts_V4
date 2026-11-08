@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(db): registrar recibo E15 da migration 20261107180000 (#3209)",
    "fix(docs): restaurar contrato de recibos E15 (#3204)",
    "chore(backlog): marca FT-175 como implementado (#3206)",
    "chore(main): release 1.8.1",
-   "fix(ci): aceitar skip estrutural do PDF no Chromium (#3199)",
-   "docs(ci): RELATORIO §32 + PENDENCIAS #44 (#3200)"
+   "fix(ci): aceitar skip estrutural do PDF no Chromium (#3199)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

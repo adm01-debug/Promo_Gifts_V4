@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "481e6142a737562c89b4c7de9444cc4afecbd19a",
+  "sha": "b45d233c655f1df7fd25979846478a58e9f0b45a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 13:08 UTC",
+  "generated_at": "2026-11-08 13:20 UTC",
   "files_total": 9124,
   "code_files": 7862,
   "code_lines": 1054364
@@ -484026,10 +484026,19 @@
   }
  },
  "git": {
-  "sha": "481e6142a737562c89b4c7de9444cc4afecbd19a",
+  "sha": "b45d233c655f1df7fd25979846478a58e9f0b45a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "b45d233",
+    "date": "2026-11-08",
+    "author": "github-actions[bot]",
+    "subject": "docs(db): registrar recibo E15 da migration 20261107180000 (#3209)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "481e614",
     "date": "2026-11-08",
@@ -484503,15 +484512,6 @@
     "files": [
      "RELATORIO_CI.md"
     ]
-   },
-   {
-    "sha": "2a042da",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "docs(ci): verificar erros exatos #26 #30 #37 — sessão 2026-11-07T22h",
-    "files": [
-     "PENDENCIAS.md"
-    ]
    }
   ],
   "hot_files": [
@@ -484521,15 +484521,15 @@
    ],
    [
     "PENDENCIAS.md",
-    6
+    5
+   ],
+   [
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    3
    ],
    [
     "package.json",
     3
-   ],
-   [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    2
    ],
    [
     ".release-please-manifest.json",

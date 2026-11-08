@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "481e6142a737562c89b4c7de9444cc4afecbd19a",
+  "commit": "b45d233c655f1df7fd25979846478a58e9f0b45a",
   "branch": "main",
-  "data_commit": "2026-11-08T10:07:52-03:00",
+  "data_commit": "2026-11-08T10:17:48-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "b45d233",
+    "data": "2026-11-08",
+    "assunto": "docs(db): registrar recibo E15 da migration 20261107180000 (#3209)"
+   },
    {
     "sha": "481e614",
     "data": "2026-11-08",
@@ -126,74 +131,69 @@
     "sha": "9feb014",
     "data": "2026-11-07",
     "assunto": "docs(ci): RELATORIO §28 + PENDENCIAS #39-42 — sessão 2026-11-08"
-   },
-   {
-    "sha": "0a80360",
-    "data": "2026-11-07",
-    "assunto": "docs(estado): atualiza PROGRESSO e PENDENCIAS — 2026-11-08 (#3189)"
    }
   ],
   "arquivos_mudados_7d": 584,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 609
+    "mudancas": 905
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 316
+    "mudancas": 466
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 233
+    "mudancas": 348
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 213
+    "mudancas": 317
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 188
+    "mudancas": 280
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 177
+    "mudancas": 259
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 160
+    "mudancas": 240
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 160
+    "mudancas": 229
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 151
+    "mudancas": 224
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 142
+    "mudancas": 187
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 118
+    "mudancas": 177
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 109
+    "mudancas": 159
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 103
+    "mudancas": 150
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 100
+    "mudancas": 147
    },
    {
     "pasta": "docs/arquivo/2026-09",
-    "mudancas": 86
+    "mudancas": 129
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -203,113 +203,113 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 62
+    "mudancas": 63
    },
    {
     "arquivo": "package.json",
-    "mudancas": 25
+    "mudancas": 26
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 20
+    "mudancas": 22
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 18
+    "mudancas": 19
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "CLAUDE.md",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "arquivo": "docs/estado/PENDENCIAS.md",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "arquivo": "docs/estado/backlog/funcionalidades.md",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "arquivo": ".github/workflows/ci-security-drift.yml",
-    "mudancas": 5
+    "mudancas": 6
    },
    {
     "arquivo": ".github/workflows/e2e-focused.yml",
-    "mudancas": 5
+    "mudancas": 6
    },
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 5
+    "mudancas": 6
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 325
+    "commits": 324
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 41
+    "commits": 40
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 23
+    "commits": 24
    },
    {
     "autor": "Claude",
