@@ -34,7 +34,7 @@ interface VirtualizedProductGridProps {
   viewMode?: 'grid' | 'list' | 'table';
   onViewModeChange?: (mode: 'grid' | 'list' | 'table') => void;
   showFilterBar?: boolean;
-  /** Filtros de cor ativos para mostrar imagem específica da cor no card */
+  /** Filtros de cor ativos para mostrar imagem especifica da cor no card */
   activeColorFilter?: ActiveColorFilter | null;
   /** Column selector React node to render in the filter bar */
   columnSelector?: React.ReactNode;
@@ -46,9 +46,9 @@ interface VirtualizedProductGridProps {
   onToggleSelect?: (id: string) => void;
   onStatusClick?: (type: string, value?: number | string) => void;
   /**
-   * BUG-SCROLL-01 FIX: Chave que muda SOMENTE em filter/sort — NUNCA em load-more.
-   * Quando muda, o grid rola ao topo. Quando `undefined` (padrão legado), o scroll
-   * reset ocorre em toda mudança de referência do array (FiltersPage: backward-compat).
+   * BUG-SCROLL-01 FIX: Chave que muda SOMENTE em filter/sort -- NUNCA em load-more.
+   * Quando muda, o grid rola ao topo. Quando `undefined` (padrao legado), o scroll
+   * reset ocorre em toda mudanca de referencia do array (FiltersPage: backward-compat).
    */
   scrollResetKey?: string;
 }
@@ -97,16 +97,16 @@ function VirtualizedProductGridInner({
   }, [effectiveColumns]);
   const rowGapPx = viewMode === 'list' ? 8 : 32;
 
-  // Hidrata cores nos cards cujo fetch principal (lightweight) não trouxe `colors`.
-  // Mesmo padrão usado no ProductGrid (Novidades/Reposição) — SSOT em useProductsColorsBatch.
+  // Hidrata cores nos cards cujo fetch principal (lightweight) nao trouxe `colors`.
+  // Mesmo padrao usado no ProductGrid (Novidades/Reposicao) -- SSOT em useProductsColorsBatch.
   //
-  // ⚠️ PERF-2026-08-19: Pré-filtra para apenas produtos VISÍVEIS (virtualizados) +
-  // overscan, evitando N+1 massivo (7.418 produtos → ~30 visíveis). Reduz queries
+  // PERF-2026-08-19: Pre-filtra para apenas produtos VISIVEIS (virtualizados) +
+  // overscan, evitando N+1 massivo (7.418 produtos -> ~30 visiveis). Reduz queries
   // ao banco em ~99% e melhora muito a fluidez do scroll.
   const estimatedRowHeight =
     viewMode === 'list'
       ? 88 // Altura fixa do ListItem (88px)
-      : 520; // Altura média do Grid Card (pode variar ligeiramente por zoom)
+      : 520; // Altura media do Grid Card (pode variar ligeiramente por zoom)
 
   const _rowCountForIds = Math.ceil(products.length / effectiveColumns);
   const virtualizer = useVirtualizer({
@@ -121,7 +121,7 @@ function VirtualizedProductGridInner({
   });
   const virtualItems = virtualizer.getVirtualItems();
 
-  // IDs visíveis (com overscan) — base para prefetch de cores e stock velocity
+  // IDs visiveis (com overscan) -- base para prefetch de cores e stock velocity
   const visibleProductIds = useMemo(() => {
     const ids: string[] = [];
     for (const item of virtualItems) {
@@ -143,8 +143,8 @@ function VirtualizedProductGridInner({
   }, [products, visibleProductIds]);
   const { data: colorsByProduct } = useProductsColorsBatch(idsNeedingColors);
 
-  // ANTI N+1: prefetch batch de mv_stock_velocity apenas para produtos visíveis
-  // (com overscan). Antes passava os 7.418 — agora ~30-50 por vez.
+  // ANTI N+1: prefetch batch de mv_stock_velocity apenas para produtos visiveis
+  // (com overscan). Antes passava os 7.418 -- agora ~30-50 por vez.
   useStockVelocityPrefetch(visibleProductIds);
   const hydratedProducts = useMemo(() => {
     if (colorsByProduct.size === 0) return products;
@@ -154,7 +154,7 @@ function VirtualizedProductGridInner({
       if (!batch || batch.length === 0) return p;
       return {
         ...p,
-        // FIX-COLOR-SEL-01 (2026-06-21): image/stock do batch eram descartados — clique na bolinha
+        // FIX-COLOR-SEL-01 (2026-06-21): image/stock do batch eram descartados -- clique na bolinha
         // nao trocava foto nem estoque. userSelectedColor?.image e resolveColorStock dependem desses campos.
         colors: batch.map((c) => ({
           name: c.name,
@@ -196,16 +196,16 @@ function VirtualizedProductGridInner({
 
   // BUG-SCROLL-01 FIX: dois efeitos com responsabilidades distintas.
   //
-  // PROBLEMA ANTERIOR: um único useEffect([products]) chamava scrollTo(0)
-  // toda vez que displayCount subia via loadMore() — products = nova slice
-  // = nova referência — causando snap-back inevitável com 7.143 produtos.
+  // PROBLEMA ANTERIOR: um unico useEffect([products]) chamava scrollTo(0)
+  // toda vez que displayCount subia via loadMore() -- products = nova slice
+  // = nova referencia -- causando snap-back inevitavel com 7.143 produtos.
   //
-  // SOLUÇÃO:
-  //   1. setLoadingMore(false) → em toda mudança de products (inclusive load-more)
-  //   2. scrollTo(0) → SOMENTE quando scrollResetKey muda (filter/sort/viewMode)
-  //      scrollResetKey não muda em load-more → scroll preservado ✓
+  // SOLUCAO:
+  //   1. setLoadingMore(false) -> em toda mudanca de products (inclusive load-more)
+  //   2. scrollTo(0) -> SOMENTE quando scrollResetKey muda (filter/sort/viewMode)
+  //      scrollResetKey nao muda em load-more -> scroll preservado
   //
-  // Modo legado (scrollResetKey=undefined): FiltersPage e similares que não passam
+  // Modo legado (scrollResetKey=undefined): FiltersPage e similares que nao passam
   // a prop continuam com o comportamento anterior (scroll reset no products change).
   useEffect(() => {
     setLoadingMore(false);
@@ -227,7 +227,7 @@ function VirtualizedProductGridInner({
 
   if (isLoading && products.length === 0) {
     return (
-      <div className="relative h-full">
+      <div className="relative h-full" data-skeleton="true">
         <div
           className="scrollbar-products h-full overflow-y-auto rounded-xl border border-border/40 bg-background shadow-sm"
           style={{ contain: 'strict' }}
@@ -403,7 +403,7 @@ function VirtualizedProductGridInner({
               >
                 {rowProducts.map((product) => {
                   // FAN-OUT: key composta productId|colorId garante unicidade quando o
-                  // mesmo produto vira múltiplos cards (1 por cor). Sem fan-out
+                  // mesmo produto vira multiplos cards (1 por cor). Sem fan-out
                   // (_cardColorId undefined) cai no product.id puro.
                   const cardKey = product._cardColorId
                     ? `${product.id}|${product._cardColorId}`
