@@ -1,5 +1,5 @@
 {
- "gerado_em": "2026-11-08T03:11:49.492Z",
+ "gerado_em": "2026-11-08T03:48:07.303Z",
  "total": 110,
  "sem_chamador": [
   "asia-ingestion",
@@ -670,7 +670,7 @@
    "sem_chamador": false
   },
   "ema-pipeline-health": {
-   "linhas": 71,
+   "linhas": 76,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -1346,7 +1346,7 @@
    "sem_chamador": false
   },
   "mcp-query": {
-   "linhas": 16,
+   "linhas": 22,
    "segredos_lidos": [],
    "chamada_em": {
     "src": 0,
@@ -1375,7 +1375,7 @@
    "sem_chamador": false
   },
   "migrate-helper": {
-   "linhas": 25,
+   "linhas": 31,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -1468,7 +1468,7 @@
    "sem_chamador": false
   },
   "product-visual-search": {
-   "linhas": 553,
+   "linhas": 556,
    "segredos_lidos": [
     "CSRF_SECRET",
     "LOG_CREDENTIAL_RESOLUTION",
@@ -2156,7 +2156,7 @@
    "sem_chamador": true
   },
   "xbz-image-uploader": {
-   "linhas": 59,
+   "linhas": 65,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
