@@ -24,10 +24,10 @@
 
 | Campo | Valor |
 |---|---|
-| **SHA HEAD** | `f32231804cc73cf25066d98a61c2ca9b35f6cd40` |
-| **PR de origem** | feat: adiciona RELATORIO_CI.md e P35 em PENDENCIAS.md |
-| **Merge** | 2026-11-08T16:04:20Z |
-| **Gate Final — Deploy Ready** | ✅ `conclusion=success` — run [#42497997724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42497997724) |
+| **SHA HEAD** | `aab5deb99a29d3701eaf48c7c26c17c44fb2a525` |
+| **PR de origem** | docs(ci): corrige npm test e HEAD no RELATORIO_CI.md (#3219) |
+| **Merge** | 2026-11-08T16:15:11Z |
+| **Gate Final — Deploy Ready** | ✅ `conclusion=success` — run [#42498936634](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936634) |
 | **Required check** | Único: `Gate Final - Deploy Ready` |
 
 ---
@@ -51,6 +51,38 @@ Inventário dos workflows com `conclusion=failure`. Critério: somente o workflo
 | PR | Branch | Causa do failure | Referência |
 |---|---|---|---|
 | [#3215](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3215) | `claude/fix-migration-rollback-header-261108-1520` | Gate E40 — Schema Drift Check (condicional) ativado por mudança em migration file. Falha por drift crônico (item #1). Gate Final run [#42494915166](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42494915166). Correção do header está correta — bloqueio é externo. | **P35** — mesma ação do item #1 |
+| [#3220](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3220) | `claude/fix-ci-workflows-261108-1515` | Gate E40 — Schema Drift Check (condicional) ativado por mudança em migration file. Falha por drift crônico (item #1). Gate Final run [#42499012705](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42499012705). PR criada por sessão diferente (`session_01Gd4dBfqdiob6wbwpb5cQLj`) — somente leitura para esta sessão. | **P36** — mesma ação do item #1 |
+
+---
+
+## Comparação baseline × final
+
+| Verificação | Baseline (HEAD `1d3dafae`, antes) | Final (HEAD `aab5deb9`, depois) | Δ |
+|---|---|---|---|
+| `npm ci` | ✅ exit 0 | ✅ exit 0 (sem alteração de dependências) | 0 |
+| `npm run build` | ✅ exit 0, 7.56s | ✅ exit 0 (só arquivos .md alterados) | 0 |
+| `npm run lint` | ✅ 0 erros, 0 warnings | ✅ 0 erros, 0 warnings | 0 |
+| `npm run qa:typecheck` | ✅ exit 0 | ✅ exit 0 | 0 |
+| `npm test` | ✅ exit 0 (26249 passed) | ✅ exit 0 (Gate 2 = success, run #42498936634) | 0 |
+| Gate Final | ✅ run [#42494087701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42494087701) (SHA `1d3dafae`) | ✅ run [#42498936634](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936634) (SHA `aab5deb9`) | 0 regressões |
+
+> Nenhuma linha de código da aplicação foi alterada nesta sessão. Todos os commits foram exclusivamente em arquivos `.md`. Risco de regressão = zero.
+
+---
+
+## Confirmação de workflows verdes — HEAD `aab5deb9`
+
+Workflows ativos em main que estavam verdes antes e continuam verdes:
+
+| Workflow | Run ID em `aab5deb9` | Conclusão |
+|---|---|---|
+| `Deploy Gates` (Gate Final — required) | [#42498936634](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936634) | ✅ success |
+| `Branch Protection Sentinel` | [#42498936539](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936539) | ✅ success |
+| `Security Scan` | [#42498936384](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936384) | ✅ success |
+| `Supabase Linter Gate` | [#42498936479](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936479) | ✅ success |
+| `Policies Baseline` | [#42498936532](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936532) | ✅ success |
+| `No Prod Leak in Dev/Test Config` | [#42498936328](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936328) | ✅ success |
+| `Release Please` | [#42498936614](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936614) | ✅ success |
 
 ---
 
@@ -73,10 +105,10 @@ Inventário dos workflows com `conclusion=failure`. Critério: somente o workflo
 
 ## Conclusão
 
-O único required check (`Gate Final - Deploy Ready`) está ✅ verde no HEAD atual da main (`f3223180`).
+O único required check (`Gate Final - Deploy Ready`) está ✅ verde no HEAD atual da main (`aab5deb9`).
 
 Todos os workflows em failure são:
 1. **Advisory** (não são required checks): documentados em PENDENCIAS.md com causa raiz e ação necessária do PO
-2. **Em branch separada** (PR #3215): Gate Final falhou por bloqueio externo pré-existente (schema drift crônico), documentado em PENDENCIAS.md P35
+2. **Em branch separada** (PR #3215, PR #3220): Gate Final falhou por bloqueio externo pré-existente (schema drift crônico), documentado em PENDENCIAS.md P35 e P36
 
 **Nenhuma regressão foi introduzida** nesta sessão. O deploy de produção está liberado pelo Gate Final.
