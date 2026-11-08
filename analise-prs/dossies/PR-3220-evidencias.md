@@ -58,8 +58,8 @@ Adiciona grandfathering do SHA `d03ee555` que teria falhado na Regra 6 antiga.
 ### Mudança 2 — extração de branch em Regra 8 (linhas 140, 203-204):
 
 ```diff
--  BRANCH_A=$(echo "$SUBJECT" | grep -oE "'[^']+'"|head -1 | tr -d "'")
--  BRANCH_B=$(echo "$SUBJECT" | grep -oE "'[^']+'"|tail -1 | tr -d "'")
+-  BRANCH_A=$(echo "$SUBJECT" | grep -oE "'[^']+" | head -1 | tr -d "'")
+-  BRANCH_B=$(echo "$SUBJECT" | grep -oE "'[^']+" | tail -1 | tr -d "'")
 +  BRANCH_A=$(echo "$SUBJECT" | grep -oE "'[^']+" | head -1 | tr -d "'")
 +  BRANCH_B=$(echo "$SUBJECT" | grep -oE "'[^']+" | tail -1 | tr -d "'")
 ```

@@ -7,7 +7,10 @@
 #   PR #2681 corrige (ainda aberta em sessão anterior — agora fechada)
 
 FALHAS_BASELINE_CONHECIDAS=2
-TESTE_1=src/components/ui/__tests__/calendar.redesign.test.tsx > day_selected
-TESTE_2=src/components/ui/__tests__/calendar.redesign.test.tsx > day_outside
-EXIT_CODE=TIMEOUT
+TESTE_1=src/components/ui/__tests__/calendar.redesign.test.tsx > Calendar iOS redesign > day_today destaca o dia atual em vermelho
+TESTE_2=src/components/ui/__tests__/calendar.redesign.test.tsx > Calendar iOS redesign > day_selected: bg-destructive + text-primary-foreground
+EXIT_CODE=0
+RESULTADO=Test Files 1 failed (1); Tests 2 failed | 7 passed (9); Duration 1.79s
+NOTA=Suite completa excede 240s (OOM); baseline gerado rodando só o arquivo com falhas conhecidas: npx vitest run src/components/ui/__tests__/calendar.redesign.test.tsx
+CORRECAO=Sessão anterior registrou 'day_outside' como falha e EXIT_CODE=TIMEOUT; run real de 2026-11-08 mostra 'day_today' como falha e exit 0
 NOTA=Regressão = falha NOVA além das 2 acima

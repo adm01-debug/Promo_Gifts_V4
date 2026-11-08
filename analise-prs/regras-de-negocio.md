@@ -1,202 +1,182 @@
 # Regras de Negócio — Promo Gifts V4
-# Construído a partir de fontes reais (não de memória)
-# Última atualização: 2026-10-28 | Sessão: https://claude.ai/code/session_012WyySbh2tj8vhRQLBf3mHo
+> Fonte de verdade extraída do codebase em 2026-11-08. Cada regra cita arquivo:linha ou saída de comando.
 
 ---
 
-## 1. SSOT Supabase (Fonte: `src/integrations/supabase/client.ts:24`, `CLAUDE.md REGRA #1`)
+## 1. Projeto Supabase canônico (REGRA#1)
 
-- Projeto canônico de produção: `doufsxqlfjyuvxuezpln` (Gold/Medallion)
-- `CURRENT_PROJECT_ID = "doufsxqlfjyuvxuezpln"` — campo imutável em `src/integrations/supabase/client.ts:24`
-- `pqpdolkaeqlyzpdpbizo` = SINGU (ambiente externo, READ-ONLY, nunca escrever)
-- Guarda no Gate 0 CI: `scripts/validate-supabase-config.mjs`
-- Risco histórico: commit de Lovable reverte silenciosamente — incidente 401 em 2026-06-11
-
----
-
-## 2. Tipo `Product` — Campos Críticos (Fonte: `src/types/product-catalog.ts:25-42`, `CLAUDE.md REGRA #2`)
-
-```typescript
-// src/types/product-catalog.ts:25 — interface Product
-export interface Product {
-  id: string;
-  name: string;
-  shortDescription: string;   // linha 30 — obrigatório (REGRA #2)
-  price: number;               // linha 31 — obrigatório (REGRA #2)
-  sale_price?: number;         // linha 32 — opcional (REGRA #2)
-  category_id?: string | null; // linha 35 — (REGRA #2)
-  category_name?: string | null; // linha 36 — (REGRA #2)
-  // ... demais campos opcionais
-}
-```
-
-**Invariante:** estes 5 campos nunca podem ser removidos. Gate 1.1 verifica no CI.
+- **SSOT:** `doufsxqlfjyuvxuezpln` (Gold/Medallion — camadas v_products_public, v_variant_sale_prices_public, v_product_images_cdn)
+- Fonte: `src/integrations/supabase/client.ts:24` → `const CURRENT_PROJECT_ID = "doufsxqlfjyuvxuezpln";`
+- **PROIBIDO alterar** `CURRENT_PROJECT_ID` ou remover `validateEnv()` — Gate 0 do CI requer ambos
+- Fonte: `src/integrations/supabase/client.ts:11-18` (comentário SSOT + aviso ao Claude Code)
+- Projetos proibidos: `pqpdolkaeqlyzpdpbizo` (Lovable Cloud vazio), `hncgwjbzdajfdgtqgefe`, `supabase.atomicabr.com.br`
+- Fonte: `src/integrations/supabase/client.ts:21-23`
 
 ---
 
-## 3. Status de Orçamentos (Fonte: `src/types/quote.ts:10-25`)
+## 2. Tipo `Product` — campos obrigatórios (REGRA#2)
 
-```typescript
-// src/types/quote.ts:10
-export const QUOTE_STATUSES = [
-  'approved',   // aprovado pelo cliente
-  'draft',      // rascunho em edição
-  'rejected',   // recusado pelo cliente
-  'sent',       // enviado aguardando resposta
-];
-export type QuoteStatus = z.infer<typeof quoteStatusSchema>;  // linha 25
-export type ClientResponse = 'approved' | 'changes_requested' | 'rejected';  // linha 32
-```
+Arquivo: `src/types/product-catalog.ts` — interface `Product` (linha 25)
 
-**Regra:** `draft` não pode aparecer em listagens públicas de clientes. Gate 1.5 verifica.
+| Campo | Tipo | Obrigatoriedade | Linha |
+|---|---|---|---|
+| `id` | `string` | obrigatório | 26 |
+| `name` | `string` | obrigatório | 27 |
+| `shortDescription` | `string` | obrigatório | 30 |
+| `price` | `number` | obrigatório (crítico REGRA#2) | 31 |
+| `sale_price` | `number \| undefined` | opcional (crítico REGRA#2) | 32 |
+| `category_id` | `string \| null \| undefined` | opcional (crítico REGRA#2) | 35 |
+| `category_name` | `string \| null \| undefined` | opcional (crítico REGRA#2) | 36 |
+| `images` | `string[]` | obrigatório | 52 |
+| `sku` | `string` | obrigatório | 53 |
+| `stock` | `number` | obrigatório | 54 |
+| `colors` | `ProductColor[]` | obrigatório | 57 |
+| `materials` | `string[]` | obrigatório | 58 |
+| `minQuantity` | `number` | obrigatório | 62 |
+| `stockStatus` | `'in-stock' \| 'low-stock' \| 'out-of-stock'` | obrigatório | 90 |
+| `featured` | `boolean` | obrigatório | 91 |
+| `newArrival` | `boolean` | obrigatório | 92 |
+| `onSale` | `boolean` | obrigatório | 93 |
+| `isKit` | `boolean` | obrigatório | 94 |
+| `category` | `{ id: number \| string; name: string }` | obrigatório | 96 |
+| `supplier` | `{ id: string; name: string }` | obrigatório | 97 |
+| `tags` | objeto estruturado | obrigatório | 98-104 |
 
----
-
-## 4. RLS — Políticas de Segurança (Fonte: `supabase/migrations/`, `docs/04_EXPLICACAO_DAS_POLICIES.md`)
-
-- **Leitura pública de produtos:** só itens ativos (`supabase/migrations/20260615231459_product_images_schema_documentation.sql`)
-- **Escrita de products:** restrita a org owner/admin
-- **recently_viewed_products:** users só podem atualizar os próprios registros (`supabase/migrations/20261018000042_e042_fix_policies_public_lote1.sql:224-225`)
-- **Regra crítica RLS:** tabelas com RLS habilitada e zero policies = deny-all silencioso → Gate 1.13.1 bloqueia
-- **Anon-insert rate guard:** 7 tabelas com INSERT anônimo possuem trigger de rate guard → Gate 1.13.2
-
----
-
-## 5. DDL e Migrations (Fonte: `CLAUDE.md REGRA #8`, `docs/db/POLITICA_DDL.md`)
-
-- **Único caminho autorizado** para migration em prod: workflow `.github/workflows/db-apply-migration.yml`
-- **`execute_sql` via MCP** = proibido para DDL em sessão de agente (E056)
-- **`supabase db push`** = proibido (REGRA #1 §7)
-- **Migrations em PR** que tocam `supabase/migrations/` → AGUARDA PO (sem exceção)
-- Ledger de reconciliação: `supabase/MIGRATIONS_SYNC_LOG.md`
-- Baseline do drift-check: `supabase/baseline/*.sql` — NUNCA copiar para `migrations/`
+**Regra crítica:** remover `price`, `sale_price`, `shortDescription`, `category_id`, `category_name` quebra o merge em produção — commit `f22e1e2` (2026-06-11) demonstrou isso.
 
 ---
 
-## 6. CI / Gate Final (Fonte: `CLAUDE.md CI — ESTRUTURA DE GATES`, `.github/workflows/deploy-gates.yml`)
+## 3. Tabelas principais no schema público
 
-- **Único required check em `main`:** "Gate Final - Deploy Ready" em `deploy-gates.yml`
-- Gate Final = agregador de todos os gates em sequência
-- Gate 0: SSOT Supabase (validate-supabase-config.mjs)
-- Gate 1: Lint + TypeScript (0 erros é baseline — `62af0798`)
-- Gate 2: Testes unitários (baseline: 2 falhas em `calendar.redesign.test.tsx` — `day_selected`, `day_outside`)
-- Gate 3: E2E Smoke (Playwright chromium)
-- **Regressão** = nova falha além do baseline. Corrigir causa raiz, nunca burlar.
-- `paths-ignore: docs/**` — PRs que tocam só `docs/` não disparam CI
+Verificado via `src/integrations/supabase/types.ts` (1178 entidades totais no schema public).
 
----
+**Tabelas essenciais** (Gate 1.2 / REGRA#4 verifica existência de todas):
 
-## 7. Vercel (Fonte: `CLAUDE.md REGRA #11`, `.vercel/project.json`)
-
-- Projeto canônico: `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ` (team `juca1`)
-- `.vercel/project.json` está versionado — NUNCA deletar
-- Proibido `vercel link` fora do raiz do repositório (incidente 2026-09-15)
-
----
-
-## 8. Tipos derivados do banco (Fonte: `src/integrations/supabase/types.ts`, `CLAUDE.md REGRA #4`)
-
-- **Tabelas obrigatórias em types.ts:**
-  - `personalization_techniques`, `products`, `product_variants`, `suppliers`
-  - `supplier_products_raw`, `magazines`, `magazine_items`, `magazine_templates`
-- Gate 1.2: drift estrutural — nenhuma tabela pode desaparecer sem entrada em `docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json`
-- Script de verificação: `npm run check:types-inventory-drift`
-
----
-
-## 9. Agentes e Cross-Agent Merge (Fonte: `CLAUDE.md REGRA #10`, E189)
-
-- 6 agentes escrevem no repo: Claude, Codex, Devin, Lovable, github-actions, cline
-- Prefixos de branch: `claude/*`, `codex/*`, `devin/*` etc.
-- **Cross-agent merge sem PR** = proibido (Gate 1.18)
-- Sentinel: `scripts/sentinel-check.sh` recusa merge commit entre prefixos de agentes diferentes
-
----
-
-## 10. Arquivos Protegidos (Fonte: `CLAUDE.md — ARQUIVOS PROTEGIDOS`)
-
-| Arquivo | Regra |
+| Tabela | Linha types.ts |
 |---|---|
-| `src/integrations/supabase/client.ts` | REGRA #1 — SSOT |
-| `scripts/validate-supabase-config.mjs` | Gate 0 guard |
-| `.env.example` | Referência canônica de vars |
-| `.lovableignore` | Proteção contra Lovable |
-| `.github/CODEOWNERS` | Revisão obrigatória |
-| `scripts/sentinel-check.sh` | Branch Protection Sentinel |
-| `.github/workflows/deploy-gates.yml` | Gate Final pipeline |
-| `.vercel/project.json` | Vercel canônico (REGRA #11) |
-| `docs/SCHEMA_REFERENCE.md` | pg_catalog do BD canônico |
+| `products` | 31801 |
+| `product_variants` | 30601 |
+| `suppliers` | 41371 |
+| `supplier_products_raw` | 39929 |
+| `magazines` | 12243 |
+| `magazine_items` | 11693 |
+| `magazine_templates` | 12153 |
+| `personalization_techniques` | 16636 |
+| `categories` | 2983 |
+| `quotes` | 35673 |
+| `quote_items` | 34777 |
+| `orders` | 15531 |
+| `order_items` | 15159 |
+| `stock_snapshots` | 38214 |
+| `cart_templates` | 2929 |
 
 ---
 
-## 11. Contrato de Calendário (Fonte: `src/components/ui/__tests__/calendar.redesign.test.tsx`)
+## 4. Enums disponíveis
 
-- Baseline de 2 falhas em main (`62af0798`): `day_selected` e `day_outside`
-- Causa: migração react-day-picker v8→v10 (commit `8b0b6068`) sem atualizar seletores DOM
-- DOM v10: `aria-selected` vai para `<td>`, não para `<button>`; botões de dia são filhos de `td[role="gridcell"]`
-- PR #2681 corrige: atualiza seletores nos 3 arquivos de teste afetados
+Fonte: `src/integrations/supabase/types.ts:64488-64548` (schema public)
+
+| Enum | Valores |
+|---|---|
+| `app_role` | `dev`, `supervisor`, `admin`, `manager`, `agente`, `coordenador`, `vendedor` |
+| `categoria_cor_enum` | `pantone`, `basica`, `institucional`, `especial`, `bordado`, `hot_stamping`, `serigrafia`, `sublimacao` |
+| `familia_cor_enum` | `amarelo`, `laranja`, `vermelho`, `coral`, `rosa`, `magenta`, `roxo`, `lilas`, `azul`, `ciano`, `verde`, `marrom`, `bege`, `neutro`, `metalico` |
+| `magazine_status` | `draft`, `published`, `archived` |
+| `magazine_reaction_kind` | `like`, `love`, `fire`, `idea` |
+| `org_role` | `owner`, `admin`, `member` |
+| `payment_status` | `pending`, `authorized`, `captured`, `refunded`, `failed` |
+| `produtos_padronizacao_status` | `pending`, `standardized`, `rejected`, `promoted` |
+
+**QuoteStatus** (FE SSOT — `src/types/quote.ts:10-21`):
+`approved`, `cancelled`, `converted`, `draft`, `expired`, `pending`, `pending_approval`, `rejected`, `sent`, `viewed`
+> Nota: Os 10 status coincidem com CHECK `valid_quote_status` do banco (verificado 2026-06-25) — src/types/quote.ts:7
 
 ---
 
-*Fontes verificadas em 2026-10-28 contra código em `62af0798` (main HEAD do baseline)*
+## 5. Regras de migração (E15/E8)
+
+**Único caminho autorizado para aplicar migration em `doufsxqlfjyuvxuezpln`:**
+`.github/workflows/db-apply-migration.yml` via `workflow_dispatch(version)`
+
+**Fluxo obrigatório (E15):**
+1. `scripts/preflight-migration-apply.mjs` — preflight read-only
+2. `psql -1` gated por `environment: production`
+3. `migration repair --status applied`
+4. Post-check
+5. Recibo em `supabase/MIGRATIONS_SYNC_LOG.md` (via PR, nunca push direto em main)
+
+**Proibido:**
+- `supabase db push` (REGRA#1 §7)
+- `execute_sql` com DDL em sessão de agente (E056 — `src/integrations/supabase/client.ts` comentário; CLAUDE.md §REGRA#8)
+- Executar `supabase migration squash --linked` (apaga ledger)
+- `supabase migration repair --status applied` **sem versão explícita** (trunca schema_migrations)
+
+**Migration mais recente:** `20261101220000_cron001_stagger_schedules.sql` — escala schedules de cron jobs para evitar timeout de startup.
 
 ---
 
-## 12. REGRA #8 — DDL, Migrations e Edge Functions (Fonte: `docs/agentes/banco-migrations.md:60-128`, `AGENTS.md`)
+## 6. Testes com contrato (baseline)
 
-### 12.1 Governance files — DECISAO_HUMANA obrigatória
+Arquivo: `src/components/ui/__tests__/calendar.redesign.test.tsx`
 
-Qualquer PR que toque os seguintes paths exige aprovação humana (Regra Git #7):
+| # | Nome do teste | Linha | Status baseline |
+|---|---|---|---|
+| 1 | `renderiza mês pt-BR capitalizado em duas linhas ("Julho" + "2026")` | 24 | PASS |
+| 2 | `caption tem text-[15px] + font-bold + tracking-tight` | 31 | PASS |
+| 3 | `weekday cells: 7 células com 1 letra (D/S/T/Q/Q/S/S)` | 40 | PASS |
+| 4 | `domingo recebe modificador text-destructive` | 50 | PASS |
+| **5** | **`day_today destaca o dia atual em vermelho`** | **56** | **FAIL (baseline)** |
+| **6** | **`day_selected: bg-destructive + text-primary-foreground`** | **66** | **FAIL (baseline)** |
+| 7 | `day_outside é oculto (invisible + pointer-events-none)` | 75 | PASS |
+| 8 | `sem cores hard-coded (bg-white/black/text-white) em nenhum nó` | 86 | PASS |
+| 9 | `fuzz: 50 renders em meses diferentes mantêm caption única e válida` | 97 | PASS |
 
-| Path pattern | Fonte | Linha |
+**Resultado baseline (run real 2026-11-08):**
+- `Test Files 1 failed (1); Tests 2 failed | 7 passed (9); Duration 1.79s; EXIT_CODE=0`
+- Suite completa excede 240s (OOM); baseline gerado rodando: `npx vitest run src/components/ui/__tests__/calendar.redesign.test.tsx`
+
+---
+
+## 7. Páginas/rotas da aplicação
+
+Fonte: `ls src/pages/` (run 2026-11-08)
+
+| Domínio | Páginas/subpastas |
+|---|---|
+| Core | `Index.tsx`, `NotFound.tsx` |
+| Auth | `auth/` |
+| Produtos | `products/` |
+| Catálogo/filtros | `filters/`, `advanced-price-search/` |
+| Orçamentos | `quotes/` |
+| Clientes | `clients/` |
+| Magazine | `magazine/` |
+| Kit builder | `kit-builder/` |
+| Admin | `admin/` |
+| BI | `bi/` |
+| Mockups | `mockups/` |
+| Simulação | `Simulation.tsx` |
+| Coleções | `collections/` |
+| Ferramentas | `tools/`, `dev/`, `system/`, `magic-up/`, `PromoFlixPlayground.tsx` |
+| QA | `QAPage.tsx`, `SidebarQAPage.tsx` |
+| Dashboard | `CustomizableDashboard.tsx` |
+
+---
+
+## 8. Políticas RLS relevantes
+
+Fonte: `grep -r "RLS\|GRANT\|CREATE POLICY\|anon" supabase/migrations/`
+
+**Migrações de RLS chave:**
+
+| Migration | Ação | Arquivo |
 |---|---|---|
-| `.github/workflows/**` | `AGENTS.md` Git rule #7 | — |
-| `supabase/migrations/**` (DDL) | `docs/agentes/banco-migrations.md:62-96` | 73-80 |
-| `supabase/rollbacks/**` | `docs/agentes/banco-migrations.md:73` | 73 |
-| `.gitleaks.toml` | `AGENTS.md` Git rule #10 | — |
-| `scripts/check-*.mjs` | `AGENTS.md` Git rule #10 | — |
+| `20260610122930` | GRANT EXECUTE ON FUNCTION para `anon` (família de vídeo) | `grant_anon_video_function_family_v2.sql` |
+| `20260717120020` | ENABLE RLS em todas tabelas public + REVOKE EXECUTE anon em 9 funções catalog SECURITY DEFINER | `dynamic_enable_rls_and_revoke_anon_catalog_functions.sql` |
 
-### 12.2 execute_sql — somente leitura
-- `docs/agentes/banco-migrations.md:82`: "MCP `execute_sql` só leitura. **Toda DDL** (inclusive `cron.job`) nasce como migration em `supabase/migrations/`"
-- `AGENTS.md` linha Banco: "MCP `execute_sql` só leitura."
+**Regra geral (Gate 1.13 / Gate 1.13.1 / Gate 1.13.2):**
+- RLS habilitada em todas as tabelas `public`
+- Tabelas com RLS habilitada e zero policies → deny-all silencioso → bloqueado pelo Gate 1.13.1
+- 7 tabelas com INSERT anônimo têm trigger de rate guard (Gate 1.13.2 / E049)
+- Auditoria de anon-catalog grant: tabela `anon_catalog_grant_audit_log` (types.ts:1495)
 
-### 12.3 Fluxo obrigatório de migration
-1. Arquivo em `supabase/migrations/` com header `-- Rollback:` e rollback em `supabase/rollbacks/` (`docs/agentes/banco-migrations.md:73`)
-2. Aplicação via `db-apply-migration.yml` (workflow_dispatch) (`docs/agentes/banco-migrations.md:74-78`)
-3. `supabase db push` proibido (`docs/agentes/banco-migrations.md:79-80`)
-
-### 12.4 Edge functions
-- Deploy só via `deploy-edge-functions.yml` (`docs/agentes/banco-migrations.md:121-122`)
-- MCP `deploy_edge_function` cria divergência sem ledger
-- Segredos: `supabase secrets set` ou painel — nunca em migration (`docs/agentes/banco-migrations.md:129`)
-
----
-
-## 13. Classificação de Governança — Critérios de Merge Autônomo vs DECISAO_HUMANA
-
-### 13.1 Merge autônomo permitido (Git rule #6, AGENTS.md)
-- CI verde (Gate Final SUCCESS)
-- Sem conflito com main
-- Escopo: front, edge function (somente docs/log), workflow config docs
-- Autor humano ou bot sem reviewer requested
-
-### 13.2 DECISAO_HUMANA obrigatória (Git rule #7, AGENTS.md)
-- Qualquer arquivo em `.github/workflows/`
-- Qualquer arquivo em `supabase/migrations/` (DDL)
-- Qualquer arquivo em `supabase/rollbacks/`
-- Qualquer arquivo `.gitleaks.toml`
-- PR DRAFT (isDraft=true)
-- Deleção de dado, mudança de arquitetura
-- Conflito com PR de outro agente
-
-### 13.3 NAO_MERGEAVEL
-- PR CONFLICTING (conflito com main) sem governance files → precisa rebase
-- CI FAILURE com autor bot (github-actions) sem reviewer explícito
-- PR vazia (0 arquivos alterados)
-
-> Fonte primária: `AGENTS.md` seção "Git (vários agentes no mesmo repo)", regras #6 e #7
-> Fonte secundária: `docs/agentes/banco-migrations.md` REGRA #8
-
----
-
-*Atualizado 2026-11-08 | Sessão: https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz*
+**Corolário E056:** `execute_sql` com DDL (CREATE, ALTER, DROP, GRANT, REVOKE, CREATE POLICY) é **proibido em sessão de agente** mesmo que o PO solicite. Toda mudança de schema nasce como migration SQL no mesmo PR.
