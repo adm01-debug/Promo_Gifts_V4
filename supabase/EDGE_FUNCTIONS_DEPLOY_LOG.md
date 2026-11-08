@@ -388,6 +388,7 @@ manualmente, no mesmo dia, com o método `emergência-MCP`.
 | 2026-10-28T19:38:31.236Z | `webhook-inbound` | 300 | `d784edb62a3dabc412aa3f0b39e9130f4b22103e` | 40750221254 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-10-28T19:38:31.261Z | `word-magic` | 124 | `d784edb62a3dabc412aa3f0b39e9130f4b22103e` | 40750221254 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-10-28T19:38:31.285Z | `xbz-image-uploader` | 1 | `d784edb62a3dabc412aa3f0b39e9130f4b22103e` | 40750221254 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-07T11:17:41.930Z | `health-check` | 276 | `ed1c7ccf591aeb2e9a98f1db819b8417fb051f38` | 42367422517 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-11-07T16:34:37.052Z | `ai-recommendations` | 297 | `6065eb7adcef03f1c52f5b1738aef7dc8bd976e3` | 42374498496 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-11-07T16:34:37.080Z | `analyze-logo-colors` | 260 | `6065eb7adcef03f1c52f5b1738aef7dc8bd976e3` | 42374498496 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-11-07T16:34:37.109Z | `anonymize-user` | 15 | `6065eb7adcef03f1c52f5b1738aef7dc8bd976e3` | 42374498496 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
