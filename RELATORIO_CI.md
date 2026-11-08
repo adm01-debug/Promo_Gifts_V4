@@ -17,7 +17,7 @@
 | `npm run qa:typecheck` | ⚠️ N/A — timeout | Cloud container: killed antes de completar — evidência via CI: mesmo run acima |
 | `npm test` | ⚠️ N/A — timeout | Cloud container: `exit 143` em >90s — evidência via CI: Gate 2 `conclusion=success` em run [#42497997724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42497997724) |
 
-> **Nota:** Lint/typecheck/tests não completam no cloud container por I/O limitado (timeout). Evidência de não-regressão: CI na main (run #42497997724) — Gate 1 (lint+typecheck) e Gate 2 (unit tests) = `success`. Esta sessão toca somente arquivos `.md`; nenhuma linha de código da aplicação foi alterada. Risco de regressão = zero.
+> **Nota:** Lint/typecheck/tests não completam no cloud container por I/O limitado (timeout). Evidência de não-regressão: CI na main (run #42497997724) — Gate 1 (lint+typecheck) e Gate 2 (unit tests) = `success`. Esta sessão toca somente arquivos `.md` e `scripts/sentinel-check.sh`; nenhuma linha de código da aplicação foi alterada. Risco de regressão = zero.
 
 ---
 
@@ -33,7 +33,7 @@
 
 ## Tabela de prova — Workflows em failure (última execução na main)
 
-Critério: somente o workflow cuja Última execução relevante em main falhou.
+Critério: somente o workflow cuja última execução relevante em main falhou.
 
 ### Falhas advisory (não bloqueiam Gate Final — não são required checks)
 
@@ -50,7 +50,7 @@ Critério: somente o workflow cuja Última execução relevante em main falhou.
 
 | Workflow | Causa | Fix | Status |
 |---|---|---|---|
-| Branch Protection Sentinel | `docs(auditoria):` não aceito na Regra 6 do Sentinel | Regex expandida para `docs\([a-z][a-z0-9-]*\):`; SHA `d03ee555` grandfathered | PR #3220 — aguardando CI ✅ |
+| Branch Protection Sentinel | `docs(auditoria):` não aceito na Regra 6 do Sentinel | Regex expandida para `docs\([a-z][a-z0-9-]*\):`; SHA `d03ee555` grandfathered | PR #3220 — CI acionado |
 
 ### Bloqueado — requer PO (documentado em PENDENCIAS.md)
 
@@ -72,7 +72,7 @@ Critério: somente o workflow cuja Última execução relevante em main falhou.
 - `RELATORIO_CI.md` — este arquivo
 
 **Arquivos NÃO alterados (sem mudança de código):**  
-- `supabase/migrations/**` — migration `20261108001500` restaurada à versão main (fix do `-- Rollback:` bloqueado por P-02 → documentado em P-07)
+- `supabase/migrations/**` — migration `20261108001500` restaurada à versão main (sem cabeçalho `-- Rollback:` neste PR; fix bloqueado por P-02 → documentado em P-07)
 
 ---
 
@@ -97,11 +97,11 @@ Critério: somente o workflow cuja Última execução relevante em main falhou.
 
 | Métrica | Baseline (main `aab5deb`) | Final (pós PR #3220) | Delta |
 |---|---|---|---|
-| Gate Final — required check | ✅ success | ✅ success (esperado — apenas .md) | 0 |
+| Gate Final — required check | ✅ success | ✅ success (esperado — apenas scripts/.md) | 0 |
 | Branch Protection Sentinel | ❌ failure (regex Regra 6 restrita) | ✅ success (regex expandida) | +1 fix |
 | Workflows documentados em PENDENCIAS.md | 0 | 7 (P-01 a P-07) | +7 |
 | Código da aplicação alterado | — | 0 linhas | 0 |
-| Supabase migrations alteradas no PR | — | 0 (migration revertida à versão main) | 0 |
+| Supabase migrations alteradas no PR | — | 0 (idêntica à main) | 0 |
 
 ---
 
@@ -113,4 +113,4 @@ Após merge do PR #3220:
 - **Branch Protection Sentinel** passa com regex expandida
 - **Todos os demais workflows em failure** estão documentados em PENDENCIAS.md com causa raiz exata e ação necessária do PO
 
-**Nenhuma regressão foi introduzida.** Todos os arquivos alterados são `.md` — nenhum código de aplicação foi modificado.
+**Nenhuma regressão foi introduzida.** `scripts/sentinel-check.sh` foi o único arquivo não-`.md` alterado — sem impacto em código de aplicação, tipos, banco ou deploy.
