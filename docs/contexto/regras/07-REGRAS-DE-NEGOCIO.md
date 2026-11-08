@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a2dda825f0` · branch `main` · 2026-11-08 17:45 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `da97d70dea` · branch `main` · 2026-11-08 17:55 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)

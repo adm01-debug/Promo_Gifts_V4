@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "a2dda825f052d07c632a3ffb0c8e049b31c339af",
+  "sha": "da97d70dea422dae19593ba463d8737e2e0e52b6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 17:45 UTC",
-  "files_total": 9125,
+  "generated_at": "2026-11-08 17:55 UTC",
+  "files_total": 9126,
   "code_files": 7862,
   "code_lines": 1054635
  },
@@ -484051,10 +484051,47 @@
   }
  },
  "git": {
-  "sha": "a2dda825f052d07c632a3ffb0c8e049b31c339af",
+  "sha": "da97d70dea422dae19593ba463d8737e2e0e52b6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "da97d70",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(auditoria): corrige status P06 — views já têm security_invoker=true",
+    "files": [
+     "auditoria-supabase/ADENDO_2026-10-28.md"
+    ]
+   },
+   {
+    "sha": "9656107",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(ci): atualiza RELATORIO_CI com Gate Final confirmado (a2dda825) (#3227)",
+    "files": [
+     "RELATORIO_CI.md"
+    ]
+   },
+   {
+    "sha": "e67c132",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(ci): atualiza RELATORIO_CI.md — HEAD a2dda825 + run #42502537624 (#3225)",
+    "files": [
+     "RELATORIO_CI.md"
+    ]
+   },
+   {
+    "sha": "41b5525",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(auditoria): P09 gap ledger 476 versões + P06 reanálise 24 views + C4 diagnóstico",
+    "files": [
+     "auditoria-supabase/ADENDO_2026-10-28.md",
+     "auditoria-supabase/P09_INVESTIGACAO_2026-11-08.md"
+    ]
+   },
    {
     "sha": "a2dda82",
     "date": "2026-11-08",
@@ -484426,67 +484463,20 @@
     "files": [
      "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
     ]
-   },
-   {
-    "sha": "a7c10dc",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(e2e): corrige seletores e mocks mortos do novelty-grid-visual (#3184)",
-    "files": [
-     "e2e/routes/app/novelty-grid-visual.spec.ts"
-    ]
-   },
-   {
-    "sha": "66f700b",
-    "date": "2026-11-08",
-    "author": "github-actions[bot]",
-    "subject": "docs: recibo de deploy de edge function(s) — run 42417851181 (E66) (#3185)",
-    "files": [
-     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
-    ]
-   },
-   {
-    "sha": "c976bba",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "chore: instruções de agentes consolidadas em AGENTS.md + docs/agentes/ (#3146)",
-    "files": [
-     ".agents/skills/promo-gifts-v4/SKILL.md",
-     ".claude/skills/promo-gifts-v4/SKILL.md",
-     "AGENTS.md",
-     "CLAUDE.md",
-     "docs/agentes/banco-migrations.md",
-     "docs/agentes/ci-gates.md",
-     "docs/agentes/lovable-conflitos-vercel.md",
-     "docs/agentes/regras-de-trabalho.md",
-     "scripts/check-gates-table.mjs"
-    ]
-   },
-   {
-    "sha": "9c33e63",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "fix(catalogo): preservar variante exata na seleção de cor (#3141)",
-    "files": [
-     "src/components/products/ProductCard.tsx",
-     "src/components/products/ProductListItem.tsx",
-     "src/components/products/ProductTableView.tsx",
-     "src/components/products/table-view/ProductTableRow.tsx",
-     "src/hooks/useProductColorSwatch.test.tsx",
-     "src/hooks/useProductColorSwatch.ts",
-     "src/stores/useProductSelectionStore.test.ts",
-     "src/stores/useProductSelectionStore.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    8
+    10
    ],
    [
     "PENDENCIAS.md",
     5
+   ],
+   [
+    "auditoria-supabase/ADENDO_2026-10-28.md",
+    3
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -484525,16 +484515,12 @@
     2
    ],
    [
-    "e2e/routes/app/novelty-grid-visual.spec.ts",
-    2
-   ],
-   [
     ".github/workflows/deploy-gates.yml",
     2
    ],
    [
-    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    2
+    "auditoria-supabase/P09_INVESTIGACAO_2026-11-08.md",
+    1
    ],
    [
     "scripts/sentinel-check.sh",
