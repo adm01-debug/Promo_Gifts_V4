@@ -79,11 +79,16 @@ jobs:
             project: chromium-public
             require_auth: 'false'
             min_tests: '32'
+            max_skipped_ratio: '0'
           - suite: pdf-print
             spec: 'e2e/flows/pdf-print-cross-browser.spec.ts'
             project: chromium-public
             require_auth: 'false'
-            min_tests: '3'
+            # O spec possui um cenário exclusivo de WebKit que deve ser
+            # ignorado no job Chromium. Os outros dois cenários continuam
+            # obrigatórios, sem tolerância a flake ou falha.
+            min_tests: '2'
+            max_skipped_ratio: '0.34'
           - suite: thumb-quickview
             spec: >-
               e2e/flows/03b-product-thumb-quickview.spec.ts
@@ -91,6 +96,7 @@ jobs:
             project: chromium-authed
             require_auth: 'true'
             min_tests: '26'
+            max_skipped_ratio: '0'
     # R5 — secrets via env:
     env:
       CI: 'true'
@@ -137,7 +143,7 @@ jobs:
         with:
           results-json: playwright-report/results-${{ matrix.suite }}.json
           min: ${{ matrix.min_tests }}
-          max-skipped-ratio: '0'
+          max-skipped-ratio: ${{ matrix.max_skipped_ratio }}
 
       # R6 — retention-days: 14
       - name: Upload report + artifacts
