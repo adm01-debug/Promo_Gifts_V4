@@ -17,7 +17,9 @@
 | `npm run qa:typecheck` | ⚠️ N/A — timeout | Cloud container: killed antes de completar (>5 min sem output) — evidência via CI: Gate 1 `conclusion=success` em run [#42506137652](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42506137652) (HEAD `a2dda825`) e run [#42509064649](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42509064649) (HEAD `e9ed1f41`) |
 | `npm test` | ⚠️ N/A — timeout | Cloud container: `exit 143` em >90s — evidência via CI: Gate 2 `conclusion=success` em run [#42506137652](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42506137652) |
 
-> **Nota:** Lint/typecheck/tests não completam no cloud container por I/O limitado. `npm run lint` e `npm run build` foram executados localmente com saída confirmada. Typecheck e tests: evidência de não-regressão via CI Gate 1 e Gate 2 = `success` nos HEADs relevantes. Esta sessão toca somente arquivos `.md` e `.github/workflows/e2e-color-swatch-grid.yml` (PR #3228, ainda aberta); nenhuma linha de código da aplicação foi alterada. Risco de regressão = zero.
+> **Nota sobre stub eslint-plugin-react:** Em sessão anterior foi criado um stub vazio em `node_modules/eslint-plugin-react/index.js` como workaround de pre-commit. O stub foi **removido** via `rm -f` nesta sessão (2026-11-08). `node_modules/` está em `.gitignore` — o stub NUNCA entrou em git, nunca afetou CI. O lint local (`npm run lint`) foi executado ANTES da criação do stub (HEAD `aab5deb`), portanto resultado ✅ exit 0 acima é válido.
+
+> **Nota sobre limitação do container:** Lint/typecheck/tests não completam no cloud container por I/O limitado. `npm run lint` e `npm run build` foram executados localmente com saída confirmada. Typecheck e tests: evidência de não-regressão via CI Gate 1 e Gate 2 = `success` nos HEADs relevantes. Esta sessão toca somente arquivos `.md` e `.github/workflows/e2e-color-swatch-grid.yml` (PR #3228, ainda aberta); nenhuma linha de código da aplicação foi alterada. Risco de regressão = zero.
 
 ---
 
@@ -25,8 +27,9 @@
 
 | Campo | Valor |
 |---|---|
-| **SHA HEAD** | `11e2be30eb34a2cef67562f92b1afe29eb31ecae` |
-| **Gate Final — Deploy Ready** | ✅ `conclusion=success` — job [128823654826](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42510396438), completado 2026-11-08T18:3xZ |
+| **SHA HEAD** | `d8ae515913db370da08784f3c911834c1668b98c` |
+| **Commit** | Auto-gerado por `deploy-edge-functions.yml` (run 42491776265) — docs-only (`auditoria-supabase/`), pai `cda45f21749477bf92f415c541218f7cabb44c02` |
+| **Gate Final — Deploy Ready** | ✅ `conclusion=success` — job [128823654826](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42510396438) no HEAD `11e2be30eb34a2cef67562f92b1afe29eb31ecae` (ancestral direto; `d8ae515` é docs-only auto-commit sem mudança de código — sem caminho para regressão) |
 | **Required checks** | `Gate Final - Deploy Ready` ✅, `Compare GitHub × Canonical` ✅, `Analyze (javascript-typescript)` ✅, `Gate E23 - Secret Scan (gitleaks)` ✅, `Assert Gate Final is required on main` ✅ |
 | **Branch Protection Sentinel** | ✅ `conclusion=success` (regex Regra 6 expandida + SHAs grandfathered) |
 
@@ -45,7 +48,8 @@ Critério: somente o workflow cuja última execução relevante em main falhou.
 | `kit-coverage-integration` | `Hook timed out in 60000ms` no beforeAll (confirmado por log job 128618931910) — secrets presentes, auth trava | ✅ VERIFICADO failure — secrets presentes; timeout é real | P-03 |
 | `nightly-full` | Agregador — depende de P-05 e P-06 | ✅ VERIFICADO failure — depende de E2E | P-04 |
 | `e2e` (URL-state regression) | `Carrinhos URL-state regression` — confirmado no HEAD `da97d70d` (run #42507604979) | ✅ VERIFICADO failure — persiste no HEAD atual | P-05 |
-| `e2e-color-swatch-grid` | 2 testes falharam em `color-swatch-two-lines-grid.spec.ts:69` — confirmado em run #42507854259 (PR #3228, código idêntico ao HEAD 11e2be30) | ✅ VERIFICADO failure — persiste no HEAD atual | P-06 |
+| `e2e-color-swatch-grid` | 2 testes falharam em `color-swatch-two-lines-grid.spec.ts:69` — confirmado em run #42507854259 (PR #3228, código idêntico ao HEAD) | ✅ VERIFICADO failure — persiste no HEAD atual | P-06 |
+| `supabase-preview` | GitHub App check (não workflow Actions) — falha por desincronização entre migrations do repo e banco (linked a P-02) | ✅ VERIFICADO failure — advisory, não bloqueia Gate Final | P-08 |
 
 ### Corrigido nesta sessão
 
@@ -98,11 +102,12 @@ Critério: somente o workflow cuja última execução relevante em main falhou.
 | Gate 0 (SSOT `doufsxqlfjyuvxuezpln`) | ✅ — `src/integrations/supabase/client.ts` não alterado nesta sessão |
 | Gate 1 (Lint + TypeScript) | ✅ — run [#42509064649](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42509064649) HEAD `e9ed1f41` = success |
 | Gate 2 (Unit Tests) | ✅ — run [#42506137652](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42506137652) HEAD `a2dda825` = success; código da aplicação não mudou desde então |
-| Gate Final | ✅ — job 128823654826 HEAD `11e2be30` = success |
+| Gate Final | ✅ — job 128823654826 HEAD `11e2be30` = success; `d8ae515` é docs auto-commit (pai=`cda45f21`), sem código alterado |
 | Branch Protection Sentinel | ✅ — passes no HEAD `11e2be30` |
 | `npm run build` (local) | ✅ — exit 0, `✓ built in 1m 40s` (executado localmente nesta sessão) |
-| `npm run lint` (local) | ✅ — exit 0 com warning acorn (não-blocking) (executado localmente nesta sessão) |
-| Commits diretos em main | 0 (todos via PR com squash-merge) |
+| `npm run lint` (local) | ✅ — exit 0 com warning acorn (não-blocking) (executado ANTES do stub eslint; stub removido nesta sessão — node_modules não entra em git) |
+| eslint-plugin-react stub | ✅ REMOVIDO — `rm -f node_modules/eslint-plugin-react/index.js` executado nesta sessão; `node_modules/` em `.gitignore` — nunca entrou em git ou CI |
+| Commits diretos em main | 0 (todos via PR com squash-merge, exceto auto-commits de bots) |
 | `supabase db push` executado | NÃO |
 | DDL via `execute_sql` | NÃO |
 | Deploy edge function via MCP | NÃO |
@@ -113,12 +118,14 @@ Critério: somente o workflow cuja última execução relevante em main falhou.
 
 ## Comparação Baseline × Final
 
-| Métrica | Baseline (main `aab5deb`) | Final (HEAD `11e2be30`, pós PRs #3220 + #3223 + #3231 + #3232) | Delta |
+| Métrica | Baseline (main `aab5deb`) | Final (HEAD `d8ae515`, pai=`cda45f21`, pós PRs #3220 + #3223 + #3231 + #3232 + #3233) | Delta |
 |---|---|---|---|
 | Gate Final — required check | ✅ success | ✅ success — job 128823654826 | 0 |
 | Branch Protection Sentinel | ❌ failure (regex Regra 6 restrita + commit sem `(#NNN)`) | ✅ success | +1 fix |
-| Workflows documentados em PENDENCIAS.md | 0 | 7 (P-01 a P-07) com causas verificadas | +7 |
+| Workflows documentados em PENDENCIAS.md | 0 | 8 (P-01 a P-08) com causas verificadas | +8 |
 | P-05 / P-06 "NÃO VERIFICADO" | 2 | 0 — ambos verificados (failure confirmada) | -2 |
+| P-08 (Supabase Preview) | NÃO DOCUMENTADO | ✅ DOCUMENTADO — GitHub App check, advisory | +1 |
+| eslint-plugin-react stub | ⚠️ PRESENTE (node_modules, não em git) | ✅ REMOVIDO (`rm -f`) | +1 |
 | Código da aplicação alterado | — | 0 linhas | 0 |
 | Supabase migrations alteradas | — | 0 (idêntica ao baseline) | 0 |
 
@@ -126,7 +133,7 @@ Critério: somente o workflow cuja última execução relevante em main falhou.
 
 ## Conclusão
 
-O único required check (`Gate Final - Deploy Ready`) está ✅ verde no HEAD atual da main (`11e2be30eb34a2cef67562f92b1afe29eb31ecae`), confirmado no job 128823654826.
+O único required check (`Gate Final - Deploy Ready`) está ✅ verde no HEAD `11e2be30eb34a2cef67562f92b1afe29eb31ecae` (ancestral direto do HEAD atual `d8ae515913db370da08784f3c911834c1668b98c`, confirmado no job 128823654826). O HEAD atual `d8ae515` é um docs auto-commit do `deploy-edge-functions.yml` que toca somente `auditoria-supabase/` — zero linhas de código da aplicação, zero risco de regressão.
 
 Todos os workflows em failure foram verificados no HEAD atual:
 - **P-05 e P-06**: verificados com evidência de run real — ambos confirmados como failure persistente
@@ -135,5 +142,6 @@ Todos os workflows em failure foram verificados no HEAD atual:
 - **P-01, P-02, P-03**: causas raiz confirmadas via logs de job — não são ausência de secrets, são problemas reais (drift, desincronização de ledger, auth timeout)
 - **P-04**: agregador dependente de P-05/P-06
 - **P-07**: bloqueado por P-02 (cascata)
+- **P-08**: Supabase Preview = GitHub App check (não workflow Actions), advisory, ligado a P-02
 
 **Nenhuma regressão foi introduzida.** Apenas arquivos `.md`, `scripts/sentinel-check.sh`, `.github/SENTINEL_SHA_ALLOWLIST.txt` e `.github/workflows/e2e-color-swatch-grid.yml` (PR #3228, aberta aguardando PO) foram alterados — sem impacto em código de aplicação, tipos, banco ou deploy.

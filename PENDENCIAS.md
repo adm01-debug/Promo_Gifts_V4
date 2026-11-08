@@ -2,7 +2,7 @@
 
 > Gerado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
 > Atualizado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT)
+> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08 e stub eslint)
 
 ---
 
@@ -88,9 +88,9 @@
 
 ### P-06 · E2E • ColorSwatch 2 linhas (Grid)
 - **Workflow:** `.github/workflows/e2e-color-swatch-grid.yml` (ID 303726213)
-- **Último run falhante no HEAD equivalente:** ID 42507854259, SHA `fd720765` (PR #3228 — único delta vs main = `workflow_dispatch` adicionado ao `.github/workflows/e2e-color-swatch-grid.yml`; código do componente e do spec idênticos ao HEAD da97d70d/11e2be30).
+- **Último run falhante no HEAD equivalente:** ID 42507854259, SHA `fd720765` (PR #3228 — único delta vs main = `workflow_dispatch` adicionado ao `.github/workflows/e2e-color-swatch-grid.yml`; código do componente e do spec idênticos ao HEAD da97d70d/d8ae515).
 - **Causa raiz:** 2 testes falharam em `e2e/catalog/color-swatch-two-lines-grid.spec.ts:69` — viewports desktop (1440px) e wide (1920px): "2 linhas + chip +N + sem clipping". Asserção de layout visual desatualizada após mudança no componente ColorSwatch.
-- **Status no HEAD atual:** ✅ VERIFICADO — **failure confirmada** em run [#42507854259](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42507854259) (PR #3228, `workflow_dispatch`, SHA `fd720765`, 2026-11-08T18:11:00Z). O código de `ColorSwatch.tsx` e do spec `color-swatch-two-lines-grid.spec.ts` é **idêntico** ao HEAD da main (`11e2be30`) — a falha **persiste** no HEAD atual.
+- **Status no HEAD atual:** ✅ VERIFICADO — **failure confirmada** em run [#42507854259](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42507854259) (PR #3228, `workflow_dispatch`, SHA `fd720765`, 2026-11-08T18:11:00Z). O código de `ColorSwatch.tsx` e do spec `color-swatch-two-lines-grid.spec.ts` é **idêntico** ao HEAD da main (`d8ae515`) — a falha **persiste** no HEAD atual.
 - **Bloqueio:** o spec testa layout visual em viewports 1440px/1920px. A asserção falha por divergência entre o esperado no test e o layout atual do componente `ColorSwatch`.
 - **Ação necessária (PO/Dev):**
   1. Revisar `e2e/catalog/color-swatch-two-lines-grid.spec.ts:69` — verificar qual asserção falha (provavelmente `expect(element).toHaveCSS` ou screenshot snapshot)
@@ -117,6 +117,16 @@
 
 ---
 
+### P-08 · Supabase Preview (GitHub App Check)
+- **Tipo:** GitHub App check (não workflow GitHub Actions) — aparece no painel de checks do GitHub como "Supabase Preview"
+- **Último status:** `failure` — verificado via `github_list_check_runs` no SHA `cda45f21749477bf92f415c541218f7cabb44c02`
+- **Causa raiz:** O check "Supabase Preview" é disparado pelo Supabase GitHub App ao detectar mudanças em `supabase/migrations/**`. Falha porque a migration `20261108001500_reconcile_e2e_cleanup_audit.sql` foi commitada no repo mas não foi aplicada no banco de produção via `db-apply-migration.yml` (P-07). O App detecta divergência entre o estado do banco e o estado do repo.
+- **Advisory:** Este check NÃO está em `.github/required-checks.json` e NÃO bloqueia o Gate Final. É informativo.
+- **Bloqueio:** Ligado a P-02 (ledger dessincronizado) e P-07 (migration sem `-- Rollback:`). Será resolvido automaticamente após P-02 + P-07.
+- **Ação necessária (PO):** Resolver P-02 e P-07 na ordem indicada; o Supabase Preview check passará automaticamente após a migration ser aplicada.
+
+---
+
 ## Resumo por categoria de bloqueio
 
 | Código | Descrição | Responsável |
@@ -127,6 +137,7 @@
 | E2E-FAILURE | E2E verificado no HEAD atual — falha confirmada | PO/Dev — investigar spec |
 | DEPENDS | Depende de outro item desta lista | Automático após resolução |
 | CASCATA | Bloqueado por outro item desta lista | Ver item referenciado |
+| APP-CHECK | GitHub App check advisory — não bloqueia Gate Final | Automático após P-02 + P-07 |
 
 | Item | Categoria | Urgência |
 |---|---|---|
@@ -137,3 +148,4 @@
 | P-05 (e2e playwright) | E2E-FAILURE — verificado | Baixa |
 | P-06 (e2e color-swatch) | E2E-FAILURE — verificado | Baixa |
 | P-07 (db-apply-migration E15) | CASCATA (P-02) | Baixa — bloqueado por P-02 |
+| P-08 (supabase-preview) | APP-CHECK — advisory | Baixa — automático após P-02 + P-07 |
