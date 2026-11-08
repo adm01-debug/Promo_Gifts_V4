@@ -155,13 +155,13 @@
       "motivos": ["docs-only (1 arquivo .md)", "E14 bypass aplicável", "sem conflito", "sem regressão"],
       "valida": true,
       "mergeada": true,
-      "merge_sha": "pendente"
+      "merge_sha": "34ac6453d1f7a9ced950f2fb579db711219b4495"
     }
   ],
   "mergeadas_historico": [
     {
       "numero": 3249,
-      "sha": "pendente",
+      "sha": "34ac6453d1f7a9ced950f2fb579db711219b4495",
       "tipo": "docs-only",
       "sessao": "esta_sessao"
     },

@@ -14,7 +14,7 @@
 | Worktrees removidos | 11 ✓ |
 | Veredito DECISAO_HUMANA | 11 |
 | Veredito MERGE_AUTONOMO | 1 (#3249 docs-only E14) |
-| Mergeadas esta sessão | 1 (#3249 sha pendente-CI) |
+| Mergeadas esta sessão | 1 (#3249 sha 34ac6453d1f7a9ced950f2fb579db711219b4495) |
 | Mergeadas sessão anterior | 2 (#3212 sha d8ae5159, #3241 sha 931b932a) |
 | CI main pós-merge #3212/#3241 | Verde (Gate Final green) ✓ |
 | Baseline gerado | typecheck ✓ · lint ✓ · tests ✓ · build ✓ |
@@ -233,4 +233,4 @@
 
 5. **PR #3243 — migration em branch PR** — Arquivo `20260511235950_add_categories_level_drift.sql` está no branch da PR, não em main. [Contradição anterior RESOLVIDA: "arquivo não encontrado no repo" referia-se a main; arquivo existe no branch.]
 
-6. **PR #3249 — MERGEADA esta sessão** — docs-only, E14 bypass, CI: SSOT Gates ✓ + Assert Gate Final ✓.
+6. **PR #3249 — MERGEADA esta sessão** — docs-only, E14 bypass, CI: SSOT Gates ✓ + Assert Gate Final ✓. SHA: `34ac6453d1f7a9ced950f2fb579db711219b4495`.
