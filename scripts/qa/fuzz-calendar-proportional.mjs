@@ -19,10 +19,11 @@ let fail = 0;
 const gaps = [];
 
 function check(width, seed) {
-  const cellMatch = CAL.match(/(?:^|\s)cell:\s*['"`]([^'"`]+)['"`]/);
-  const headCellMatch = CAL.match(/head_cell:\s*[\s\S]{0,200}?['"`]([^'"`]+)['"`]/);
-  const headRowMatch = CAL.match(/head_row:\s*['"`]([^'"`]+)['"`]/);
-  const rowMatch = CAL.match(/(?:^|\s)row:\s*['"`]([^'"`]+)['"`]/);
+  // DayPicker v10 API: day=célula, weekday=cabeçalho do dia, weekdays=linha de cabeçalhos, week=linha
+  const cellMatch = CAL.match(/(?:^|\s)day:\s*['"`]([^'"`]+)['"`]/);
+  const headCellMatch = CAL.match(/weekday:\s*[\s\S]{0,200}?['"`]([^'"`]+)['"`]/);
+  const headRowMatch = CAL.match(/weekdays:\s*['"`]([^'"`]+)['"`]/);
+  const rowMatch = CAL.match(/(?:^|\s)week:\s*['"`]([^'"`]+)['"`]/);
   const capMatch = CAL.match(/caption_label:\s*['"`]([^'"`]+)['"`]/);
 
   const cell = cellMatch?.[1] ?? '';
@@ -32,20 +33,20 @@ function check(width, seed) {
   const cap = capMatch?.[1] ?? '';
 
   if (!cell.includes('flex-1') || !cell.includes('aspect-square')) {
-    return `w=${width} seed=${seed}: cell sem flex-1/aspect-square (${cell})`;
+    return `w=${width} seed=${seed}: day sem flex-1/aspect-square (${cell})`;
   }
   if (/(?:^|\s)h-9(?:\s|$)/.test(cell)) {
-    return `w=${width} seed=${seed}: cell com altura fixa h-9 (${cell})`;
+    return `w=${width} seed=${seed}: day com altura fixa h-9 (${cell})`;
   }
 
   if (/(?:^|\s)h-\d+\s+w-\d+(?:\s|$)/.test(cell)) {
-    return `w=${width} seed=${seed}: cell com dimensão fixa (${cell})`;
+    return `w=${width} seed=${seed}: day com dimensão fixa (${cell})`;
   }
   if (!headCell.includes('flex-1')) {
-    return `w=${width} seed=${seed}: head_cell sem flex-1`;
+    return `w=${width} seed=${seed}: weekday sem flex-1`;
   }
   if (!headRow.includes('w-full')) {
-    return `w=${width} seed=${seed}: head_row sem w-full`;
+    return `w=${width} seed=${seed}: weekdays sem w-full`;
   }
   if (!cap.includes('leading-[1.1]') || !cap.includes('text-[11px]')) {
     return `w=${width} seed=${seed}: caption sem leading-[1.1]/text-[11px]`;
