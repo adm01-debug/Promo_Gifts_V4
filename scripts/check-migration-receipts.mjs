@@ -16,7 +16,7 @@
  */
 
 import { readFileSync, existsSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
 import {
   CHECK_RESULT_STATUS,
@@ -39,15 +39,14 @@ const fromFileArg = argv.find((a) => a.startsWith('--from-file='));
 // NOTA: supabase_migrations.schema_migrations NÃO tem coluna `inserted_at`.
 // Colunas reais: version, statements, name, created_by, idempotency_key, rollback.
 // O filtro de ">24h" é feito em JS parseando os 14 dígitos do version (YYYYMMDDHHMMSS).
-const SQL = `
+export const SQL = `
   SELECT version::text
   FROM supabase_migrations.schema_migrations
   ORDER BY version DESC
-  LIMIT 200;
 `.trim();
 
 /** Retorna true se version (formato YYYYMMDDHHMMSS, 14 dígitos) foi aplicada há >24h. */
-function isOlderThan24h(version) {
+export function isOlderThan24h(version) {
   if (typeof version !== 'string' || version.length < 14) return true;
   const y = version.slice(0, 4);
   const mo = version.slice(4, 6);
@@ -64,37 +63,141 @@ function loadSyncLog() {
   return readFileSync(SYNC_LOG_PATH, 'utf8');
 }
 
-function validateSyncLogIntegrity(content) {
+export function getReceiptLines(content) {
+  if (!content) return [];
+  const lines = content.split('\n');
+  const sectionStart = lines.findIndex((line) => /^## Recibos — aplicações confirmadas\b/.test(line));
+  if (sectionStart === -1) return [];
+  const sectionEnd = lines.findIndex((line, index) => index > sectionStart && /^## /.test(line));
+  return lines.slice(sectionStart + 1, sectionEnd === -1 ? undefined : sectionEnd).filter((line) => {
+    if (!line.trimStart().startsWith('|')) return false;
+    const firstCell = line.split('|')[1] ?? '';
+    // The canonical ledger uses 14 digits, but E09 documented one historical
+    // 19-digit version. Keep the receipt row visible rather than losing it.
+    return /^\s*`\d{8,19}`\s*$/.test(firstCell);
+  });
+}
+
+export function getReceiptCutoff(content) {
+  const section = content?.match(/^## Recibos — aplicações confirmadas[^\n]*$/m)?.[0];
+  return section?.match(/canônica\s*>\s*`(\d{14})`/)?.[1] ?? null;
+}
+
+export function validateSyncLogIntegrity(content) {
   if (!content || content.trim().length === 0) {
     return ['arquivo MIGRATIONS_SYNC_LOG.md está vazio'];
   }
   // Conta versões em linhas de tabela (1ª célula), não em cabeçalhos de seção.
   // Cabeçalhos como "## Recibos — ... (versão > `20260623111612`)" têm 14 dígitos
   // mas não são recibos individuais.
-  const receiptLines = content.split('\n').filter((l) => {
-    if (!l.trimStart().startsWith('|')) return false;
-    const firstCell = l.split('|')[1] ?? '';
-    return /`\d{14}/.test(firstCell);
-  });
-  if (receiptLines.length === 0) {
+  if (getReceiptLines(content).length === 0) {
     return ['MIGRATIONS_SYNC_LOG.md não contém nenhuma linha de recibo em tabela'];
+  }
+  if (!getReceiptCutoff(content)) {
+    return ['MIGRATIONS_SYNC_LOG.md não declara o cutoff da seção vigente de recibos'];
   }
   return [];
 }
 
-function hasReceiptForVersion(logContent, version) {
+export function hasReceiptForVersion(logContent, version) {
   // Usa word-boundary numérico para evitar falso positivo por substring.
   // Ex: versão "2026091615572" (13 dígitos) não faz match em "20260916155725".
   const re = new RegExp(`(?<!\\d)${version}(?!\\d)`);
   // Linha "pendente-only" (contém a versão mas apenas status pendente, sem "aplicada")
   // NÃO conta como recibo — a migration ainda não foi efetivada em produção.
-  const lines = logContent.split('\n').filter((l) => re.test(l));
+  // A mention in prose or in a non-version cell is not a receipt. Count only
+  // structured table rows whose first cell is the exact migration version.
+  const lines = getReceiptLines(logContent).filter((line) => re.test(line.split('|')[1] ?? ''));
   if (lines.length === 0) return false;
   return lines.some((l) => {
     if (!/pendente/i.test(l)) return true;
     // Tem "pendente" — só conta se também tem "aplicada" positivo (não "não aplicada")
     return /\baplicada\b/i.test(l) && !/não\s+aplicada/i.test(l);
   });
+}
+
+export function countReceiptLines(logContent) {
+  return getReceiptLines(logContent).length;
+}
+
+export function filterEligibleReceiptVersions(logContent, versions) {
+  const cutoff = getReceiptCutoff(logContent);
+  if (!cutoff) return [];
+
+  const explicitlyDocumentedNoncanonical = new Set(
+    getReceiptLines(logContent)
+      .map((line) => line.split('|')[1]?.trim().match(/^`([^`]+)`$/)?.[1])
+      .filter((version) => version && !/^\d{14}$/.test(version)),
+  );
+
+  return versions.map((item) => (typeof item === 'string' ? item : item.version)).filter((version) => {
+    if (typeof version !== 'string') return false;
+    if (/^\d{14}$/.test(version)) return version > cutoff;
+    // Noncanonical IDs are eligible only when they have an explicit, applied
+    // row in the current receipt table. Mentions in the legacy narrative and
+    // pending-only rows do not count.
+    return explicitlyDocumentedNoncanonical.has(version) && hasReceiptForVersion(logContent, version);
+  });
+}
+
+export function findMissingReceiptVersions(logContent, versions) {
+  return filterEligibleReceiptVersions(logContent, versions)
+    .filter((version) => !hasReceiptForVersion(logContent, version));
+}
+
+/** Converts a live query result into an explicit gate result. */
+export function evaluateLiveReceiptCoverage({ logContent, live, requireLive = false }) {
+  const receiptCount = countReceiptLines(logContent);
+
+  if (live.kind === 'missing-config') {
+    return {
+      check: 'migration-receipts',
+      status: requireLive ? CHECK_RESULT_STATUS.INCONCLUSIVE : CHECK_RESULT_STATUS.STATIC_PASS,
+      summary: requireLive
+        ? 'sem credenciais pg-meta; evidência live obrigatória não disponível'
+        : `MIGRATIONS_SYNC_LOG.md contém ${receiptCount} linha(s) tabular(es); sem credenciais para consulta live`,
+      details: { reason: live.kind, requireLive, receiptCount },
+    };
+  }
+
+  if (live.kind !== 'live') {
+    return {
+      check: 'migration-receipts',
+      status: CHECK_RESULT_STATUS.INCONCLUSIVE,
+      summary: `pg-meta indisponível para consulta live (${live.kind})`,
+      details: { reason: live.kind, maskedUrl: maskUrl(live.target), receiptCount },
+    };
+  }
+
+  const eligibleVersions = filterEligibleReceiptVersions(logContent, live.versions);
+  const missing = findMissingReceiptVersions(logContent, eligibleVersions);
+  if (missing.length > 0) {
+    return {
+      check: 'migration-receipts',
+      status: CHECK_RESULT_STATUS.FAILED,
+      summary: `${missing.length} versão(ões) aplicada(s) há >24h sem recibo em MIGRATIONS_SYNC_LOG.md`,
+      details: {
+        missing: missing.slice(0, 20),
+        additionalMissing: Math.max(0, missing.length - 20),
+        checked: eligibleVersions.length,
+        source: live.source,
+        maskedUrl: live.maskedUrl,
+        receiptCount,
+      },
+    };
+  }
+
+  return {
+    check: 'migration-receipts',
+    status: CHECK_RESULT_STATUS.PASSED,
+    summary: `${eligibleVersions.length} migration(s) elegíveis >24h verificadas; todas têm recibo tabular`,
+    details: {
+      checked: eligibleVersions.length,
+      source: live.source,
+      maskedUrl: live.maskedUrl,
+      receiptCount,
+    },
+  };
 }
 
 async function fetchLiveVersions() {
@@ -116,7 +219,7 @@ async function fetchLiveVersions() {
 async function main() {
   const logContent = loadSyncLog();
 
-  // ── Gate mode (sem live DB): valida só integridade estrutural do log ──────
+  // ── Gate mode: valida integridade e consulta o ledger quando há credenciais ─
   if (GATE_MODE && !fromFileArg) {
     if (!logContent) {
       process.stderr.write(
@@ -136,13 +239,25 @@ async function main() {
       process.exit(1);
     }
 
-    const receiptCount = logContent.split('\n').filter((l) => l.startsWith('## ') && /\d{14}/.test(l)).length;
-    return concludeCheck({
-      check: 'migration-receipts',
-      status: CHECK_RESULT_STATUS.STATIC_PASS,
-      summary: `MIGRATIONS_SYNC_LOG.md válido (${receiptCount} recibo(s)); sem live DB em --gate`,
-      details: { receiptCount },
+    const live = await fetchLiveVersions();
+    const evaluation = evaluateLiveReceiptCoverage({
+      logContent,
+      live,
+      requireLive: REQUIRE_LIVE,
     });
+    if (evaluation.status === CHECK_RESULT_STATUS.FAILED) {
+      const missing = evaluation.details.missing ?? [];
+      process.stderr.write(
+        `❌ migration-receipts: ${evaluation.summary}:\n` +
+          missing.map((v) => `   - ${v}`).join('\n') +
+          (evaluation.details.additionalMissing
+            ? `\n   ... e mais ${evaluation.details.additionalMissing}`
+            : '') +
+          '\n\nCorrija: registrar o recibo via scripts/append-migration-receipt.mjs ou pelo workflow db-apply-migration.yml\n',
+      );
+      process.exit(1);
+    }
+    return concludeCheck(evaluation);
   }
 
   // ── Live mode ─────────────────────────────────────────────────────────────
@@ -183,9 +298,7 @@ async function main() {
     versionsToCheck = live.versions;
   }
 
-  const missing = versionsToCheck
-    .map((v) => (typeof v === 'string' ? v : v.version))
-    .filter((version) => !hasReceiptForVersion(logContent, version));
+  const missing = findMissingReceiptVersions(logContent, versionsToCheck);
 
   if (missing.length > 0) {
     process.stderr.write(
@@ -204,7 +317,9 @@ async function main() {
   process.exit(0);
 }
 
-main().catch((err) => {
-  process.stderr.write(`[migration-receipts] erro inesperado: ${err.message}\n`);
-  process.exit(2);
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+  main().catch((err) => {
+    process.stderr.write(`[migration-receipts] erro inesperado: ${err.message}\n`);
+    process.exit(2);
+  });
+}
