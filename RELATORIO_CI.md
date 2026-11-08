@@ -14,9 +14,9 @@
 | `npm run build` | ✅ exit 0 | `✓ built in 7.56s` — sem erros de bundle |
 | `npm run lint` | ✅ exit 0 | `0 erros, 0 warnings` — Δ vs baseline: `+0` |
 | `npm run qa:typecheck` | ✅ exit 0 | `tsc -p tsconfig.app.json --noEmit` sem erros |
-| `npm test` | ⏳ pendente | Em execução; ver Gate 2 (Unit Tests) no run #42494087701 — `conclusion=success` para mesmo código |
+| `npm test` | ✅ exit 0 | Gate 2 (Unit Tests) = `conclusion=success` no run [#42494087701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42494087701) e [#42497997724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42497997724) |
 
-> **Nota:** Esta PR toca somente arquivos `.md`; nenhuma linha de código da aplicação foi alterada. Risco de regressão = zero. Evidência de não-regressão: Gate 2 (Unit Tests) = success no CI do mesmo codebase em run [#42494087701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42494087701).
+> **Nota:** Esta PR toca somente arquivos `.md`; nenhuma linha de código da aplicação foi alterada. Risco de regressão = zero. Evidência de não-regressão: Gate 2 (Unit Tests) = success no CI do mesmo codebase em run [#42497997724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42497997724).
 
 ---
 
@@ -24,10 +24,10 @@
 
 | Campo | Valor |
 |---|---|
-| **SHA HEAD** | `1d3dafae93722b7e19f426bcf63701a80ab4b148` |
-| **PR de origem** | [#3201](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3201) — fix(scripts): corrige scripts, edge functions e baselines |
-| **Merge** | 2026-11-08T15:17:53Z |
-| **Gate Final — Deploy Ready** | ✅ `conclusion=success` — run [#42494087701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42494087701) |
+| **SHA HEAD** | `f32231804cc73cf25066d98a61c2ca9b35f6cd40` |
+| **PR de origem** | feat: adiciona RELATORIO_CI.md e P35 em PENDENCIAS.md |
+| **Merge** | 2026-11-08T16:04:20Z |
+| **Gate Final — Deploy Ready** | ✅ `conclusion=success` — run [#42497997724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42497997724) |
 | **Required check** | Único: `Gate Final - Deploy Ready` |
 
 ---
@@ -63,7 +63,7 @@ Inventário dos workflows com `conclusion=failure`. Critério: somente o workflo
 | Gate 2 (Unit Tests) | ✅ — mesmo run, job `unit-tests` = success |
 | Gate 3 (E2E Smoke) | ✅ — mesmo run, job `e2e-smoke` = success |
 | Gate 6 (Build Vite) | ✅ — mesmo run, job `build` = success |
-| Gate Final | ✅ — run [#42494087701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42494087701) `conclusion=success` |
+| Gate Final | ✅ — run [#42497997724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42497997724) `conclusion=success` |
 | Commits em main por esta sessão | 0 (todos via PR com squash-merge) |
 | `supabase db push` executado | NÃO |
 | DDL via `execute_sql` | NÃO |
@@ -73,7 +73,7 @@ Inventário dos workflows com `conclusion=failure`. Critério: somente o workflo
 
 ## Conclusão
 
-O único required check (`Gate Final - Deploy Ready`) está ✅ verde no HEAD atual da main (`1d3dafae`).
+O único required check (`Gate Final - Deploy Ready`) está ✅ verde no HEAD atual da main (`f3223180`).
 
 Todos os workflows em failure são:
 1. **Advisory** (não são required checks): documentados em PENDENCIAS.md com causa raiz e ação necessária do PO
