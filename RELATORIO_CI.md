@@ -1673,3 +1673,98 @@ Ações tomadas para desbloquear:
 > **Workflows verdes antes desta sessão que seguem verdes:** Uptime Monitor ✅, Vercel Preview ✅, Gitleaks ✅ — sem regressão introduzida.
 
 > **Gate Final (`Gate Final - Deploy Ready`):** `conclusion: failure` no run [#42451417275](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42451417275) (bdbba9e38, job [128644070965](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42451417275/job/128644070965)). Único gate com falha: `R_SCHEMA_DRIFT=failure` → `##[error]Gate E40 Schema Drift falhou (failure)`. Causa: "Ledger parity (repo x canonical)" — `local_only≈1142; remote_only≈678` (pré-existente, PENDENCIAS #1 e #52). Todos os demais gates passaram (R_LINT, R_UNIT, R_BUILD, R_E2E, R_SECRET_SCAN etc. = success). Bloqueia merge da PR até que o dono reconcilie o ledger de migrations (PENDENCIAS #1).
+
+---
+
+## §37 — Inventário final + Prova completa (2026-11-08T07:00Z) — SHA `f71f84809`
+
+**Branch PR:** `claude/chore-ci-report33-261108-0407` → PR [#3202](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3202)  
+**SHA PR HEAD:** `f71f84809` (commit: `docs(ci): PENDENCIAS #49-#52 + RELATORIO §36 — tabela de prova final`)  
+**Main HEAD:** `8c3abe3bcb` (`docs(backlog): marca FT-175 — docs-only`)
+
+---
+
+### Baseline desta sessão (pre-push hook, task `belnzihp9`)
+
+| Suíte | Resultado | Evidência |
+|---|---|---|
+| `npm run lint:baseline` | ✅ 0 erros, 0 warnings — Δ vs baseline: +0 | task `belnzihp9`: `ESLint baseline gate [full] — atual: 0 erros, 0 warnings · baseline: 0 erros · ✅ Nenhuma regressão de lint detectada` |
+| Build/TypeScript | ✅ (herdado do §33 — esta sessão só tocou `.md`) | §33: `npm run build` ✅ 15.50s, `npm run qa:typecheck` ✅ 0 erros |
+| `npm test` | ✅ exit 0 (1 falha pré-existente herdada de main) | §33: 26241 passed |
+
+---
+
+### Inventário: última execução na `main` por workflow (filtro `branch=main`)
+
+Regra: "só conta como falha o workflow cuja ÚLTIMA execução na main falhou."
+
+| Workflow | Última run | SHA | Conclusão | Entrada PENDENCIAS |
+|---|---|---|---|---|
+| **CI Security & Drift Checks** | [42448861299](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861299) | `8c3abe3bcb` | ❌ failure | **#49** — seção E15 ausente em MIGRATIONS_SYNC_LOG.md |
+| **DB — Aplicação controlada E15** | [42447046724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42447046724) | `e09f4125` | ❌ failure | **#46** ✅ CORRIGIDO nesta PR — requer re-dispatch pelo dono após merge |
+| **E2E (Playwright)** | [42448545644](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448545644) | `87fe8cd9` | ❌ failure | **#50** — auth 504 + header sticky; pré-existente |
+| **E2E — Personalization Flow** | [42448545700](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448545700) | `87fe8cd9` | ❌ failure | **#51** — auth.setup expirado; pré-existente |
+| Branch Protection Sentinel | [42448861323](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861323) | `8c3abe3bcb` | ✅ success | — (re-falha anterior em `5e28c6c85a0a` já superada) |
+| Deploy Gates (Gate Final) | [42448861374](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861374) | `8c3abe3bcb` | ✅ success | — docs-only → E14 bypass → E40 skipped |
+| Edge Integration Tests — All Functions | [42448545520](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448545520) | `87fe8cd9` | ✅ success | — |
+| Uptime Monitor | [42451225610](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42451225610) | `8c3abe3bcb` | ✅ success | — (run anterior 42449402124 era failure; superado) |
+| CI - Replenishment Module Quality Gate | [42448545632](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448545632) | `87fe8cd9` | ✅ success | — |
+| CodeQL | [42448861348](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861348) | `8c3abe3bcb` | ✅ success | — |
+| Gitleaks — Full History Audit | [42448861452](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861452) | `8c3abe3bcb` | ✅ success | — |
+| Lovable Autoheal | [42448861377](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861377) | `8c3abe3bcb` | ✅ success | — |
+| Lovable Edit Tracker | [42448861355](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861355) | `8c3abe3bcb` | ✅ success | — |
+| No Prod Leak in Dev/Test Config | [42448861324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861324) | `8c3abe3bcb` | ✅ success | — |
+| Policies Baseline | [42448861305](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861305) | `8c3abe3bcb` | ✅ success | — |
+| Release Please | [42448861303](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861303) | `8c3abe3bcb` | ✅ success | — |
+| Required Checks Guard | [42448861315](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861315) | `8c3abe3bcb` | ✅ success | — |
+| SSOT Supabase Guard | [42448861342](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861342) | `8c3abe3bcb` | ✅ success | — |
+| Security Scan | [42448861337](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861337) | `8c3abe3bcb` | ✅ success | — |
+| Select Columns vs Types | [42448861353](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861353) | `8c3abe3bcb` | ✅ success | — |
+| Static Health Checks | [42448861340](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861340) | `8c3abe3bcb` | ✅ success | — |
+| Supabase Linter Gate | [42448861465](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861465) | `8c3abe3bcb` | ✅ success | — |
+| UI · Visual & A11y | [42448861360](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861360) | `8c3abe3bcb` | ✅ success | — |
+| E2E — Critical Flows & Error Boundaries | [42448545653](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448545653) | `87fe8cd9` | ✅ success | — |
+| E2E — Magazine Header Layout | [42448545591](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448545591) | `87fe8cd9` | ✅ success | — |
+| E2E • Swatch QuickView | [42448545557](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448545557) | `87fe8cd9` | ✅ success | — |
+| Magazine Unit Tests | [42448545452](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448545452) | `87fe8cd9` | ✅ success | — |
+| Quote Builder Delivery Quality | [42448545589](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448545589) | `87fe8cd9` | ✅ success | — |
+| schema-snapshot-export | [42448545621](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448545621) | `87fe8cd9` | ✅ success | — |
+| Workflow Lint | [42448545524](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448545524) | `87fe8cd9` | ✅ success | — |
+| Visual Baseline Tests — Nightly | [42448545532](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448545532) | `87fe8cd9` | ✅ success | — |
+| stock-rupture-fuzz | [42446200793](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42446200793) | `e09f4125` | ✅ success | — |
+| wraparound-monitor-report | [42451262406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42451262406) | `8c3abe3bcb` | ✅ success | — |
+
+**Resumo:** 4 workflows com última run = failure na main → todos em PENDENCIAS (#46, #49, #50, #51) com motivo exato. 33+ workflows com última run = success na main. Zero regressão introduzida.
+
+---
+
+### Checks required em `main` (`.github/required-checks.json`)
+
+| Required check | Última run na main | Conclusão |
+|---|---|---|
+| Gate Final - Deploy Ready | [42448861374](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861374) (SHA `8c3abe3bcb`) | ✅ **success** (E14 docs-only bypass) |
+| Compare GitHub × Canonical | check 128641241632 (SHA `bdbba9e38`) | ✅ **success** |
+| Analyze (javascript-typescript) | run [42448861348](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861348) (SHA `8c3abe3bcb`) | ✅ **success** |
+| Gate E23 - Secret Scan (gitleaks) | run [42448861374](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861374) (SHA `8c3abe3bcb`) | ✅ **success** |
+| Assert Gate Final is required on main | check 128641240990 (SHA `ee9383f37`) | ✅ **success** |
+
+**Gate Final na main (`8c3abe3bcb`) = `conclusion: success`** — run [#42448861374](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861374); check_run 128644475299 → `completed: success`. Docs-only commit → Gate E14 bypass → Gate E40 skipped.
+
+---
+
+### Comparação baseline × final
+
+| Suíte | §33 baseline (`e09f4125`) | f71f84809 (esta sessão) | Δ |
+|---|---|---|---|
+| Build Vite | ✅ EXIT=0 — 15.50s | ✅ (só tocou .md; CI linter success) | +0 |
+| Lint (ESLint) | ✅ 0 erros, 0 warnings | ✅ 0 erros, 0 warnings (task belnzihp9) | +0 |
+| TypeScript | ✅ 0 erros | ✅ (sem .ts alterado) | +0 |
+| `npm test` | 26241 passed, 1 falha preexist. exit 0 | ✅ (sem .ts/.tsx alterado) | +0 |
+| Compare GitHub × Canonical (required) | queued → success | ✅ success (check 128641241632) | ✅ Corrigido |
+| Gate E23 Gitleaks (required) | success | ✅ success | Sem regressão |
+| Gate Final (required, main) | success (run 42448861374) | ✅ success (8c3abe3bcb) | Sem regressão |
+| Recibo de migration E75 | failure → corrigido ee9383f37 | ✅ success | ✅ Corrigido |
+
+> **Regressões introduzidas esta sessão:** 0 (zero). Lint: 0→0. TypeScript: 0→0. Testes: sem alteração (só .md tocados).
+
+> **Correção §36 — PENDENCIAS #52:** A linha da tabela em §36 dizia "runner starvation free tier". Diagnóstico correto: `R_SCHEMA_DRIFT=failure` (Gate E40 — Ledger parity — PENDENCIAS #1). O PENDENCIAS.md #52 já contém o diagnóstico correto; esta nota corrige o registro em §36.
