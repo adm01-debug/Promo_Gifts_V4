@@ -136,7 +136,7 @@ test.describe('Novelty Grid Advanced Visual & A11y @mobile', () => {
     // O fetch de novidades vai direto ao Supabase (useNovelties.helpers.ts:387),
     // nao por /api/external-db — o mock HTTP antigo nunca era consumido.
     // Aqui atrasamos a resposta REST real para capturar o skeleton.
-    await page.route('**/rest/v1/products**', async route => {
+    await page.route('**/rest/v1/v_products_public**', async route => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       await route.continue();
     });
@@ -181,7 +181,7 @@ test.describe('Novelty Grid Advanced Visual & A11y @mobile', () => {
       { ...base, id: 'var-3', name: 'Consultation Price Item', sku: 'SKU-3', sale_price: 150 },
     ];
 
-    await page.route('**/rest/v1/products**', async route => {
+    await page.route('**/rest/v1/v_products_public**', async route => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
