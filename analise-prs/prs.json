@@ -2,15 +2,15 @@
   "meta": {
     "data_analise": "2026-11-08",
     "sessao": "claude_05/youthful-ride-vcdchy",
-    "total_abertos_analisados": 31,
-    "mergeadas_esta_sessao": 2,
+    "total_abertos_analisados": 37,
+    "mergeadas_esta_sessao": 3,
     "mergeadas_sessoes_anteriores": 1,
     "aguardando_humano": 29,
-    "pendente_ci": 0,
-    "pr_mais_recente_analisada": 3275,
-    "nota": "#3267 fechada/não-mergeada excluída. #3249 mergeada sessão anterior. #3245+#3254 mergeadas esta sessão.",
+    "pendente_ci": 2,
+    "pr_mais_recente_analisada": 3284,
+    "nota": "#3267 fechada/não-mergeada excluída. #3249 mergeada sessão anterior. #3245+#3254+#3280 mergeadas esta sessão. #3276+#3277 PENDENTE_CI (Gate Final queued).",
     "total_prs": 38,
-    "ultima_atualizacao": "2026-11-08T23:39:06Z"
+    "ultima_atualizacao": "2026-11-08T23:55:00Z"
   },
   "prs": [
     {
@@ -449,18 +449,6 @@
       "analisada_em": "2026-11-08T23:39:06Z"
     },
     {
-      "number": 3280,
-      "title": "fix(backlog): FT-405 Comandos de voz — FEITA → PARCIAL com evidência",
-      "draft": true,
-      "veredito": "DECISAO_HUMANA",
-      "motivo": "Draft=true. Não mergeável pelo API (422).",
-      "regras_bloqueio": [
-        "DRAFT"
-      ],
-      "head_sha": "unknown",
-      "analisada_em": "2026-11-08T23:39:06Z"
-    },
-    {
       "number": 3283,
       "title": "feat(kit-builder): backup completo no beforeunload + restore",
       "draft": true,
@@ -507,10 +495,17 @@
       "squash_sha": "ce5a9ab41ad51b6fb136d7cc446ccdf77d79ef51",
       "tipo": "docs-only analise-prs (Gate E14/E197 bypass)",
       "sessao": "atual"
+    },
+    {
+      "number": 3280,
+      "title": "fix(backlog): FT-405 Comandos de voz — FEITA → PARCIAL com evidência",
+      "squash_sha": "6b555f89a0605a60f1844aadefffc10c5d068da5",
+      "tipo": "docs-only backlog (Gate E14 bypass)",
+      "sessao": "atual"
     }
   ],
   "regras_bloqueio_summary": {
-    "Draft_19_prs": [
+    "Draft_23_prs": [
       3179,
       3214,
       3228,
@@ -529,7 +524,11 @@
       3272,
       3273,
       3274,
-      3275
+      3275,
+      3278,
+      3279,
+      3283,
+      3284
     ],
     "REGRA8_workflows_6_prs": [
       3127,
@@ -539,7 +538,7 @@
       3247,
       3274
     ],
-    "REGRA8_E15_DDL_migration_9_prs": [
+    "REGRA8_E15_DDL_migration_11_prs": [
       3179,
       3243,
       3250,
@@ -548,7 +547,9 @@
       3257,
       3264,
       3265,
-      3273
+      3273,
+      3279,
+      3284
     ],
     "REGRA8_E056_cron_DDL_3_prs": [
       3251,
