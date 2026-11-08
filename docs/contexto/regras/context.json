@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "12e873afb6703c4fc68c826aa57edb01257a8ed7",
+  "sha": "561693ff8b6e63b850f333a5812eb0c54fd1f3e5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 23:36 UTC",
+  "generated_at": "2026-11-08 00:52 UTC",
   "files_total": 9100,
   "code_files": 7845,
   "code_lines": 1051414
@@ -483049,10 +483049,19 @@
   }
  },
  "git": {
-  "sha": "12e873afb6703c4fc68c826aa57edb01257a8ed7",
+  "sha": "561693ff8b6e63b850f333a5812eb0c54fd1f3e5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "561693f",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "docs(ci): RELATORIO §27 — baseline 12e873af + inventário workflows (#3187)",
+    "files": [
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "12e873a",
     "date": "2026-11-07",
@@ -483352,21 +483361,12 @@
      "e2e/replenishment-stress.spec.ts",
      "src/components/products/ProductList.tsx"
     ]
-   },
-   {
-    "sha": "5b0dab1",
-    "date": "2026-11-06",
-    "author": "github-actions[bot]",
-    "subject": "docs(db): registra aplicação da migration 20261101201000 (#3121)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    10
+    11
    ],
    [
     "PENDENCIAS.md",
