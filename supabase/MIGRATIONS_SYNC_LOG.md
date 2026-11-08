@@ -394,7 +394,8 @@ no momento do registro.
   produziu os artefatos): os mesmos 483 batem exatamente com o número já
   citado no texto da E11 do plano (428 `NULL` + 55 `'{}'`). Distribuição
   temporal completa (todas as linhas com `version` canônico de 14 dígitos;
-  total/faltando por mês): 2024-12 (2/2), 2025-01 (24/23), 2025-12 (54/54),  2026-01 (15/15), 2026-02 (22/22), 2026-03 (165/65), 2026-04 (246/176),
+  total/faltando por mês): 2024-12 (2/2), 2025-01 (24/23), 2025-12 (54/54),
+  2026-01 (15/15), 2026-02 (22/22), 2026-03 (165/65), 2026-04 (246/176),
   2026-05 (368/94), 2026-06 (1.379/27), 2026-07 (156/0), 2026-08 (13/0),
   2026-09 (50/0) — soma 478 faltando nas linhas canônicas, + as 5 não-canônicas
   `00N` do achado abaixo = 483. (Nota de correção desta reconfirmação: a
@@ -793,6 +794,7 @@ recuperacao retroativa possivel).
   10; branch fn_clean_spot_name presente.
 
 ### Hardening abrangente pos-review (CodeRabbit/Codex/cubic) — aprovado pelo usuario
+
 A 2a/3a rodada de review (CodeRabbit 19+ comentarios, Codex, cubic) cobriu o
 conjunto reconciliado completo. Cada achado foi verificado contra o estado ATUAL
 de producao; muitos ja estavam superados pelo estado final (os revisores viam
