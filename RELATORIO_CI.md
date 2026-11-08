@@ -1162,3 +1162,59 @@ Baseline local não foi re-executado nesta sessão (sessão remota sem container
 | PR | Título | Estado | SHA pós-merge |
 |---|---|---|---|
 | [#3183](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3183) | docs(ci): RELATORIO §26 — baseline d2ce504a + PENDENCIAS #38 | Mergeada | `12e873af` |
+| [#3187](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3187) | docs(ci): RELATORIO §27 — baseline 12e873af + inventário workflows | Mergeada | `561693ff` |
+
+---
+
+## §28 — Baseline × Final sessão 2026-11-08T01:15Z (SHA `561693ff`)
+
+**Data:** 2026-11-08T01:15Z  
+**Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe  
+**SHA main:** `561693ff8b6e63b850f333a5812eb0c54fd1f3e5`  
+**Gate Final:** [run #42430908701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42430908701) → `conclusion: success` (00:47:46Z)
+
+### Verificação de gates verdes antes × depois desta sessão
+
+| Gate | Antes (`12e873af` §27) | Depois (`561693ff`) | Status |
+|---|---|---|---|
+| Gate Final - Deploy Ready | ✅ success (run #42425893853) | ✅ success (run #42430908701) | ✅ sem regressão |
+| Gate E23 - Secret Scan (gitleaks) | ✅ success | ✅ success | ✅ sem regressão |
+| Assert Gate Final is required on main | ✅ success | ✅ success | ✅ sem regressão |
+| Compare GitHub × Canonical | ❌ failure (#29) | ❌ failure (run #42432982626) | PENDENCIAS #29 — inalterado, requer dono |
+
+### Inventário dos workflows com falha em `main` nesta sessão — com causas corrigidas
+
+| # | Workflow | Última run | SHA | Conclusion | PENDENCIAS — causa exata |
+|---|---|---|---|---|---|
+| — | Deploy Gates | [#42430908701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42430908701) | `561693ff` | ✅ success | — |
+| — | Required Checks Guard | [#42430908720](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42430908720) | `561693ff` | ✅ success | — |
+| #29 | edge-functions-drift-check / Compare GitHub×Canonical | [#42432982626](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42432982626) | `561693ff` | ❌ failure | 27 EFs driftadas; requer `workflow_dispatch` pelo dono + approve `production` |
+| #37 | Uptime Monitor | [#42432752489](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42432752489) | `561693ff` | ❌ failure | `health-check` → HTTP 503 (edge function); não bloqueia CI |
+| #39 | E2E (Playwright) | [#42405699438](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42405699438) | `fa5da5d6` | ❌ failure | **Regressão URL-state** em `/carrinhos`/`/orcamentos` (13 testes) — NÃO missing secrets (E2E_USER_EMAIL presente); regressão frontend |
+| #40 | E2E — Magazine Header Layout | [#42390009053](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42390009053) | `3b2deef1` | ❌ failure | **Regressão visual** `magazine-header-align.spec.ts:87:5` — alinhamento breakpoint `lg` |
+| #41 | E2E — Personalization Flow | [#42405699423](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42405699423) | `fa5da5d6` | ❌ failure | **Timeout redirect pós-login** `92-personalization-auth-redirect.spec.ts:31:3` — POST auth→200, redirect não ocorre |
+| #42 | CI Security & Drift Checks | [#42430908783](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42430908783) | `561693ff` | ❌ failure | `SUPABASE_SERVICE_ROLE_KEY` ausente → `wizard-step-box` disabled (5 testes catalog/kit-builder) |
+
+> **⚠️ Correção de §27:** A tabela de §27 (linhas "E2E (Playwright)", "E2E — Personalization Flow", "E2E — Critical Flows") atribuía as falhas a "falta `E2E_USER_EMAIL`/`E2E_USER_PASSWORD`". Verificação das runs reais mostra que `E2E_USER_EMAIL` está presente (exibido como `***`). A causa real é regressão comportamental de frontend — corrigida acima em itens #39, #40, #41 de PENDENCIAS.md.
+
+### PENDENCIAS.md — itens adicionados nesta sessão
+
+| Item | Workflow | Erro exato registrado |
+|---|---|---|
+| #39 | E2E (Playwright) | 13 testes URL-state em carrinhos/orcamentos — regressão frontend, não missing secrets |
+| #40 | E2E — Magazine Header Layout | `magazine-header-align.spec.ts:87:5` — alinhamento lg — regressão visual |
+| #41 | E2E — Personalization Flow | `92-personalization-auth-redirect.spec.ts:31:3` — timeout redirect pós-login |
+| #42 | CI Security & Drift Checks | `wizard-step-box` disabled — `SUPABASE_SERVICE_ROLE_KEY` ausente — 5 testes catalog/kit-builder |
+
+### Ações pendentes do dono (REGRA #8 — não executáveis sem aprovação)
+
+1. Dispatch `deploy-edge-functions.yml` → approve environment `production` (fecha #29 — required check "Compare GitHub × Canonical")
+2. Adicionar `SUPABASE_SERVICE_ROLE_KEY` em GitHub Settings → Secrets → Actions (fecha #42 e #13)
+3. Adicionar `E2E_USER_EMAIL`, `E2E_USER_PASSWORD` para correr os testes E2E autenticados
+4. Dispatch `db-apply-migration.yml` com `version=20261101150000` após merge do PR #3179 (fecha #22/#26/#30)
+
+### PRs desta sessão
+
+| PR | Título | Estado | SHA pós-merge |
+|---|---|---|---|
+| [#3187](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3187) | docs(ci): RELATORIO §27 — baseline 12e873af + inventário workflows | Mergeada | `561693ff` |
