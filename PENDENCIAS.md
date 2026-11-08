@@ -2,7 +2,7 @@
 
 > Gerado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
 > Atualizado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08 e stub eslint)
+> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08, stub eslint e P-09)
 
 ---
 
@@ -11,6 +11,7 @@
 | Workflow | Causa | Fix |
 |---|---|---|
 | Branch Protection Sentinel | `docs(auditoria):` não aceito na allowlist | Expandido regex Regra 6 para `docs\([a-z][a-z0-9-]*\):`; SHA `d03ee555` grandfathered |
+| Branch Protection Sentinel (SHA `0409c07f`) | PR #3234 mergeado por agente externo com `commit_title` override — sem `(#NNN)` no subject | SHA `0409c07f` adicionado ao SENTINEL_SHA_ALLOWLIST.txt — PR [#3240](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3240) aberta aguardando CI |
 
 ---
 
@@ -119,6 +120,16 @@
 
 ---
 
+### P-09 · Branch Protection Sentinel — SHA `0409c07f` (agente externo)
+- **Workflow:** `.github/workflows/branch-protection-sentinel.yml`
+- **Run falhante:** ID 42514446349, SHA `0409c07f`, `conclusion=failure` (2026-11-08T19:19:24Z)
+- **Causa raiz:** PR #3234 (agente externo, sessão `01JPgV7FqkG4UuFBJWiJa9FB`) foi squash-mergeada com override de `commit_title`, produzindo subject `feat(migrations): P09 — reconcilia 432 versões históricas no ledger schema_migrations` — sem sufixo `(#NNN)`. Não passa nas Regras 1–8 do Sentinel.
+- **Fix:** SHA `0409c07f7cd3e3ed439e400caf4d3081c5c28ece` adicionado a `.github/SENTINEL_SHA_ALLOWLIST.txt` via PR [#3240](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3240) (branch `claude/fix-sentinel-p09-sha-261108-1930`, commit `44a2743c`).
+- **Status atual:** Sentinel = ✅ success no HEAD `17304c02232a8923791f15921d572b203b22c39d` — run [#42515555401](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42515555401). PR #3240 aguardando CI verde para merge.
+- **Advisory:** Sentinel não está em `.github/required-checks.json` — não bloqueia Gate Final. O HEAD atual já passa.
+
+---
+
 ## Resumo por categoria de bloqueio
 
 | Código | Descrição | Responsável |
@@ -130,6 +141,7 @@
 | DEPENDS | Depende de outro item | Automático após resolução |
 | CASCATA | Bloqueado por outro item | Ver item referenciado |
 | APP-CHECK | GitHub App check advisory | Automático após P-02 + P-07 |
+| SENTINEL-FIX | Sentinel SHA grandfathered — PR aberta | Merge PR #3240 após CI verde |
 
 | Item | Categoria | Urgência |
 |---|---|---|
@@ -141,3 +153,4 @@
 | P-06 (e2e color-swatch) | E2E-FAILURE — verificado | Baixa |
 | P-07 (db-apply-migration E15) | CASCATA (P-02) | Baixa |
 | P-08 (supabase-preview) | APP-CHECK — advisory | Baixa — automático após P-02 + P-07 |
+| P-09 (sentinel 0409c07f) | SENTINEL-FIX — PR #3240 aberta | Baixa — HEAD atual já passa |
