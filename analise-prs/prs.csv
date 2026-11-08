@@ -1,23 +1,26 @@
-number,title,draft,state,verdict,motivo
-,,False,,,REGRA#8 — .github/workflows/ (3 arquivos) + conflito em e2e/catalog/helpers/swatch-view.ts e playwright.config.ts
-,,False,,,REGRA#8 — .github/workflows/ (8 arquivos) — todos os conflitos são em governance files
-,,False,,,REGRA#8 — .github/workflows/ (8 arquivos) + conflito em package.json (não-governance)
-,,False,,,REGRA#8 — workflows + migrations + rollbacks + conflito em 2 arquivos não-governance
-,,True,,,REGRA#8 — migrations + DRAFT + conflito em supabase/MIGRATIONS_SYNC_LOG.md
-,,False,,,REGRA#8 — workflows + migrations (3) + rollbacks (3) + conflitos em 4 arquivos não-governance
-,,True,,,REGRA#8 — migrations + DRAFT + conflito em PENDENCIAS.md e RELATORIO_CI.md
-,,True,,,REGRA#8 — migrations + DRAFT
-,,True,,,REGRA#8 — migrations + DRAFT + conflito em PENDENCIAS.md e RELATORIO_CI.md
-,,False,,,7 conflitos reais no merge local + CI=FAILURE
-,,False,,,REGRA#8 — migrations
-,,False,,,Gate Final não rodou (required check ausente) + Supabase Preview FAILURE
-,,False,,,Gate Final não rodou (required check ausente)
-,,True,,,REGRA#8 — workflows + migrations (3) + DRAFT + CONFLICTING (GitHub)
-,,False,,,REGRA#8 — migrations
-,,True,,,REGRA#8 — migrations + DRAFT + CONFLICTING (GitHub) + conflito em 3 arquivos
-,,True,,,isDraft=true (única pendência; Gate Final=SUCCESS)
-,,False,,,REGRA#8 — .github/workflows/ + CONFLICTING (GitHub) + conflito em PENDENCIAS.md e RELATORIO_CI.md
-3239,chore(migrations): arquivo retroativo 20260611014515 — fn_dryrun_standardize_supplier,True,open,DECISAO_HUMANA,Draft + REGRA#8 — supabase/migrations/ retroativo
-3241,docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f,False,closed,MERGEADA_ESTA_SESSAO,E14_DOCS_ONLY; merge commit 931b932a; PO mergeou 2026-11-08T20:10:17Z
-3242,"docs(analise-prs): ciclos de correção — 2 mergeadas, 10 AGUARDANDO HUMANO",True,open,DECISAO_HUMANA,Draft + FLUXO GIT Regra 2 — branch claude_04 de outro agente
-3243,fix(migrations): adiciona migration de drift para categories.level (IF NOT EXISTS),True,open,DECISAO_HUMANA,Draft + REGRA#8 — supabase/migrations/ 20260511235950_add_categories_level_drift; behind main
+numero,titulo,draft,state,veredito,motivo
+3127,"fix(ci): estabiliza o núcleo E2E sem ocultar dívida de cobertura",False,open,DECISAO_HUMANA,"REGRA#8 — .github/workflows/ (3 arquivos) + conflito em e2e/catalog/helpers/swatch-view.ts e playwright.config.ts"
+3129,"ci(e2e): reduzir pressão dos runners sem perder cobertura",False,open,DECISAO_HUMANA,"REGRA#8 — .github/workflows/ (8 arquivos) — todos os conflitos são em governance files"
+3137,"fix(ci): impedir falso negativo no detector E2E compartilhado",False,open,DECISAO_HUMANA,"REGRA#8 — .github/workflows/ (8 arquivos) + conflito em package.json (não-governance)"
+3144,"fix(db): reconciliar ledger, baseline e recibos Supabase",False,closed,FECHADA_OU_MERGEADA_PO,"Fechada pelo PO antes desta sessão"
+3148,"fix(edge-fn): corrigir ownership e autorização do CRM bridge",True,closed,FECHADA_OU_MERGEADA_PO,"Fechada pelo PO antes desta sessão"
+3150,"fix(db): liberar aplicação íntegra de migrations pendentes",False,closed,FECHADA_OU_MERGEADA_PO,"Fechada pelo PO antes desta sessão"
+3160,"fix: DB E15 (pg_temp + rollback) e PENDENCIAS causas exatas",True,closed,FECHADA_OU_MERGEADA_PO,"Fechada pelo PO durante sessão — Draft supersedido por PR#3179"
+3179,"fix: corrige preflight db-apply-migration (search_path + rollback)",True,open,DECISAO_HUMANA,"Draft + REGRA#8 — supabase/migrations/ preflight corrections"
+3202,"docs(ci): RELATORIO §33 — baseline sessão + fix §32",True,closed,FECHADA_OU_MERGEADA_PO,"Fechada pelo PO antes desta sessão"
+3203,"fix: scripts — static-pass, exit codes e regressão TypeScript inert",False,open,DECISAO_HUMANA,"7 conflitos reais (scripts, baselines JSON, cors-snapshot) + CI=FAILURE"
+3205,"fix(db): reversionar migration e2e_cleanup com rollback lógico",False,closed,FECHADA_OU_MERGEADA_PO,"Fechada pelo PO antes desta sessão"
+3210,"chore(main): release 1.9.0",False,open,DECISAO_HUMANA,"Bot PR github-actions[bot] — Gate Final ausente (0 check runs no HEAD 05b38bc5)"
+3212,"docs: recibo de deploy de edge function(s) — run 42491776265 (E66)",False,closed,MERGEADA_ESTA_SESSAO,"Gate E14_DOCS_ONLY — merge commit d8ae5159"
+3214,"fix(cron): CRON-001 — escalonar 4 cron jobs para eliminar job startup timeout",True,open,DECISAO_HUMANA,"Draft + REGRA#8 — .github/workflows/ + supabase/migrations/ (cron DDL) + CONFLICTING"
+3215,"fix(migration): adiciona -- Rollback: em 20261108001500",False,closed,FECHADA_OU_MERGEADA_PO,"Fechada pelo PO sem merge em 2026-11-08T20:34:31Z — REGRA#8 migration (rollback header)"
+3216,"fix(migrations): rollback header em 20261108001500 + PENDENCIAS + RELATORIO_CI",True,closed,FECHADA_OU_MERGEADA_PO,"Fechada pelo PO durante sessão em 2026-11-08T18:34:14Z — supersedida por PR#3215"
+3217,"docs(auditoria): P09 gap ledger 476 versões + P06 reanálise 24 views + C4",True,closed,FECHADA_OU_MERGEADA_PO,"Mergeada pelo PO antes desta sessão"
+3220,"fix(ci): corrige Sentinel Regra 6 + cabeçalho rollback migration E15",False,closed,FECHADA_OU_MERGEADA_PO,"Fechada pelo PO antes desta sessão"
+3228,"chore(workflows): adiciona workflow_dispatch ao e2e-color-swatch",True,open,DECISAO_HUMANA,"Draft + REGRA#8 — .github/workflows/e2e-color-swatch.yml"
+3236,"fix(migrations): adiciona cabeçalho -- Rollback em reconcile_e2e_cleanup_audit",True,closed,FECHADA_OU_MERGEADA_PO,"Mergeada pelo PO após análise desta sessão — REGRA#8 migration (cabeçalho rollback)"
+3238,"docs(analise-prs): relatório merge-prs — 12 PRs analisadas",True,closed,FECHADA_OU_MERGEADA_PO,"Fechada pelo PO após análise desta sessão — delivery branch claude_05 artefatos"
+3239,"chore(migrations): arquivo retroativo 20260611014515 — fn_dryrun_standardize_supplier",True,open,DECISAO_HUMANA,"Draft + REGRA#8 — supabase/migrations/ retroativo fn_dryrun_standardize_supplier"
+3241,"docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f",False,closed,MERGEADA_ESTA_SESSAO,"Gate E14_DOCS_ONLY — merge commit 931b932a — merged by PO 2026-11-08T20:10:17Z"
+3242,"docs(analise-prs): ciclos de correção — 2 mergeadas, 10 AGUARDANDO HUMANO",True,closed,FECHADA_OU_MERGEADA_PO,"Mergeada pelo PO após sessão — merge commit 6e631dd1 (docs analise-prs claude_04)"
+3243,"fix(migrations): adiciona migration de drift para categories.level (IF NOT EXISTS)",True,open,DECISAO_HUMANA,"Draft + REGRA#8 — supabase/migrations/ categories.level drift + behind main"

@@ -1,11 +1,11 @@
 # RELATÓRIO DE ANÁLISE — PRs ABERTAS
 **Sessão:** 2026-11-08 (`49a643e1-3ba4-5a51-9048-a545eec48233`)
 **Main SHA (início):** `9a89d9f0a4ac2df7ad670501adaad9f1f60a75df`
-**Main SHA (atual):** `931b932aad60b9b3b5f4ec4d4505482fca136ac4` (após PR#3241)
-**Total PRs analisadas:** 24
+**Main SHA (atual):** `6e631dd1cab31832c09028c8e762fc19886a4b70` (após #3241 esta sessão + #3236/#3242 mergeadas pelo PO pós-sessão)
+**Total PRs analisadas:** 25
 **Mergeadas esta sessão:** 2 — PR#3212 → `d8ae515913` (E14) + PR#3241 → `931b932a` (E14, PO mergeou após branch update)
-**PRs abertas:** 13 — todas DECISAO_HUMANA
-**Vereditos:** MERGEADA=2 | DECISAO_HUMANA=14 | FECHADAS_PO=2 (esta sessão)
+**PRs abertas:** 11 — todas DECISAO_HUMANA
+**Vereditos:** MERGEADA=2 | DECISAO_HUMANA=10 | FECHADA_OU_MERGEADA_PO=13 (histórico + PO durante/após sessão)
 **Novas PRs analisadas:** #3239 (Draft+REGRA#8 migration), #3241 (MERGEADA), #3242 (Draft+outro agente), #3243 (Draft+REGRA#8 migration)
 
 ---
@@ -83,30 +83,34 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 
 ---
 
-## TABELA COMPLETA — 20 PRs
+## TABELA COMPLETA — 25 PRs
 
 | PR | Título | Branch | Draft | CI | Veredito | Motivo | Evidência |
 |---|---|---|---|---|---|---|---|
 | #3127 | fix(ui): Tooltip + playwright cleanup | codex/fix-ui-tooltip-... | Não | FAILURE | DECISAO_HUMANA | 3 workflows REGRA#8 | PR-3127-evidencias.md |
 | #3129 | fix(ci): e2e reduce runner pressure | codex/ci-e2e-reduce-... | Não | FAILURE | DECISAO_HUMANA | 8 workflows REGRA#8 | PR-3129.md |
 | #3137 | fix(ci): detector E2E + migration history | codex/fix-ci-e2e-detector-... | Não | FAILURE | DECISAO_HUMANA | 1 workflow + 1 migration REGRA#8 | PR-3137-evidencias.md |
-| #3144 | fix(db): reconcilia E12/E25 (security-definer) | codex/fix-db-e12-e25-... | Não | FAILURE | DECISAO_HUMANA | 3 migrations REGRA#8 | PR-3144-evidencias.md |
-| #3148 | feat: CRM bridge security DEFINER | codex/feat-crm-bridge-... | **SIM** | FAILURE | DECISAO_HUMANA | DRAFT + 1 workflow + 3 migrations + 131 arquivos | PR-3148-evidencias.md |
-| #3150 | fix(ci): libera migrations pendentes + hardening | codex/fix-ci-migrations-... | Não | FAILURE | DECISAO_HUMANA | 2 workflows + 3 migrations + 6 conflitos REGRA#8 | PR-3150-evidencias.md |
-| #3160 | fix(db): fn_get_rupture_alerts E15 | codex/fix-db-e15-... | **SIM** | — | DECISAO_HUMANA | DRAFT + migration REGRA#8 + supersedida por PR#3179 | PR-3160-evidencias.md |
-| #3179 | fix(db): preflight db-apply migration | codex/fix-preflight-db-apply-... | Não | FAILURE | DECISAO_HUMANA | migration REGRA#8 | PR-3179.md |
-| #3202 | docs(ci): relatório §33 | codex/docs-ci-relatorio-33-... | Não | SUCCESS | DECISAO_HUMANA | migration REGRA#8 (mesmo com CI verde) | PR-3202.md |
-| #3203 | fix(scripts): static pass | codex/fix-scripts-static-pass-... | Não | FAILURE | NAO_MERGEAVEL | CONFLICTING com main | PR-3203.md |
-| #3205 | fix(db): revert e2e cleanup | codex/fix-db-revert-e2e-cleanup-... | Não | FAILURE | DECISAO_HUMANA | migration REGRA#8 | PR-3205.md |
+| #3144 | fix(db): reconcilia E12/E25 (security-definer) | codex/fix-db-e12-e25-... | Não | FAILURE | FECHADA_PELO_PO | 3 migrations — PO fechou/mergeou | PR-3144-evidencias.md |
+| #3148 | feat: CRM bridge security DEFINER | codex/feat-crm-bridge-... | **SIM** | FAILURE | FECHADA_PELO_PO | DRAFT — PO fechou | PR-3148-evidencias.md |
+| #3150 | fix(ci): libera migrations pendentes + hardening | codex/fix-ci-migrations-... | Não | FAILURE | FECHADA_PELO_PO | 2 workflows + 3 migrations — PO fechou | PR-3150-evidencias.md |
+| #3160 | fix(db): fn_get_rupture_alerts E15 | codex/fix-db-e15-... | **SIM** | — | FECHADA_PELO_PO | DRAFT — PO fechou | PR-3160-evidencias.md |
+| #3179 | fix(db): preflight db-apply migration | codex/fix-preflight-db-apply-... | **SIM** | FAILURE | DECISAO_HUMANA | DRAFT + migration REGRA#8 | PR-3179.md |
+| #3202 | docs(ci): relatório §33 | codex/docs-ci-relatorio-33-... | Não | SUCCESS | FECHADA_PELO_PO | PO fechou | PR-3202.md |
+| #3203 | fix(scripts): static pass | codex/fix-scripts-static-pass-... | Não | FAILURE | DECISAO_HUMANA | Gate Final FAILURE + 7 conflitos vs main | PR-3203.md |
+| #3205 | fix(db): revert e2e cleanup | codex/fix-db-revert-e2e-cleanup-... | Não | FAILURE | FECHADA_PELO_PO | PO fechou | PR-3205.md |
 | #3210 | chore: release 1.9.0 | release-please--branches--main-- | Não | — | DECISAO_HUMANA | Bot PR — Gate Final status 0 check runs no HEAD | PR-3210.md |
 | #3212 | docs: edge deploy receipt run 42491776265 | auto/edge-deploy-receipt-... | Não | — | **MERGEADA** `d8ae515913` | docs-only E14 — Gate Final=success pós-merge | PR-3212.md |
-| #3214 | fix(cron): CRON-001 startup timeout | codex/fix-cron-startup-... | **SIM** | FAILURE | DECISAO_HUMANA | DRAFT + 1 workflow + 3 migrations + CONFLICTING | PR-3214-evidencias.md |
-| #3215 | fix(migration): rollback header | codex/fix-migration-rollback-... | Não | FAILURE | DECISAO_HUMANA | migration REGRA#8 | PR-3215.md |
-| #3216 | fix(db): reconcilia e2e_cleanup_audit | codex/fix-db-e2e-cleanup-... | **SIM** | — | DECISAO_HUMANA | DRAFT + migration REGRA#8 + supersedida por PR#3215 | PR-3216-evidencias.md |
-| #3217 | docs: auditoria P09/P06 | codex/docs-auditoria-p09-... | **SIM** | SUCCESS | DECISAO_HUMANA | isDraft=true (única pendência) | PR-3217.md |
-| #3220 | fix(ci): Sentinel Regra 6 + rollback header | codex/fix-ci-sentinel-r6-... | Não | FAILURE | DECISAO_HUMANA | 1 workflow + sentinel-check.sh PROTEGIDO REGRA#8 | PR-3220-evidencias.md |
-| #3236 | fix(migrations): cabeçalho -- Rollback | unknown | **SIM** | n/a | DECISAO_HUMANA | DRAFT + migration REGRA#8 | PR-3236.md |
-| #3238 | docs(analise-prs): relatório merge-prs | claude_05/youthful-ride-vcdchy | **SIM** | n/a | DECISAO_HUMANA | DRAFT — delivery branch desta sessão | PR-3238.md |
+| #3214 | fix(cron): CRON-001 startup timeout | codex/fix-cron-startup-... | **SIM** | FAILURE | DECISAO_HUMANA | DRAFT + 1 workflow + 3 migrations | PR-3214-evidencias.md |
+| #3215 | fix(migration): rollback header | codex/fix-migration-rollback-... | Não | FAILURE | FECHADA_PELO_PO | Fechada PO 2026-11-08T20:34Z | PR-3215.md |
+| #3216 | fix(db): reconcilia e2e_cleanup_audit | codex/fix-db-e2e-cleanup-... | **SIM** | — | FECHADA_PELO_PO | DRAFT — PO fechou | PR-3216-evidencias.md |
+| #3217 | docs: auditoria P09/P06 | codex/docs-auditoria-p09-... | **SIM** | SUCCESS | FECHADA_PELO_PO | DRAFT — PO fechou | PR-3217.md |
+| #3220 | fix(ci): Sentinel Regra 6 + rollback header | codex/fix-ci-sentinel-r6-... | Não | FAILURE | FECHADA_PELO_PO | PO fechou | PR-3220-evidencias.md |
+| #3228 | chore(workflows): workflow_dispatch e2e-color-swatch | unknown | **SIM** | n/a | DECISAO_HUMANA | DRAFT + REGRA#8 `.github/workflows/` | PR-3228.md |
+| #3236 | fix(migrations): cabeçalho -- Rollback | unknown | **SIM** | n/a | MERGEADA_PELO_PO `d50ae76c` | DRAFT+REGRA#8 — PO mergeou após sessão | PR-3236.md |
+| #3239 | chore(migrations): arquivo retroativo fn_dryrun | claude/fix-fn-dryrun-... | **SIM** | n/a | DECISAO_HUMANA | DRAFT + REGRA#8 migrations retroativas | PR-3239.md |
+| #3241 | docs(ci): RELATORIO_CI + PENDENCIAS P-09 | claude/fix-relatorio-ci-p09-... | Não | success | **MERGEADA** `931b932a` | docs-only E14 — PO mergeou após branch update | PR-3241.md |
+| #3242 | docs(analise-prs): ciclos claude_04 | claude_04/optimistic-lovelace-... | **SIM** | n/a | MERGEADA_PELO_PO `6e631dd1` | DRAFT+Regra2 — PO mergeou após sessão | PR-3242.md |
+| #3243 | fix(migrations): categories.level drift | claude/fix-categories-level-... | **SIM** | n/a | DECISAO_HUMANA | DRAFT + REGRA#8 migration (categories.level) | PR-3243.md |
 
 ---
 
@@ -302,7 +306,7 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 
 ---
 
-### PR #3215 — fix(migration): rollback header em 20261108001500 | DECISAO_HUMANA
+### PR #3215 — fix(migration): rollback header em 20261108001500 | FECHADA_OU_MERGEADA_PO
 
 **Branch:** `codex/fix-migration-rollback-...` | Draft: Não | CI: FAILURE | CLEAN MERGE
 
@@ -310,11 +314,11 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 **(2) Regressão?** Zero. Merge local limpo. 1 arquivo: `supabase/migrations/20261108001500_*.sql` — apenas adição do comentário `-- Rollback:` ao cabeçalho. A SQL em si não é alterada. Padrão exigido pelo Gate 1.3 (contratos de migration).  
 **(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3215`: 3 commits com prefixo `+`. Não está em main.  
 **(4) Regra de negócio?** Válida — conformidade com Gate 1.3 obrigatório.  
-**Bloqueio:** REGRA#8 — `supabase/migrations/` (migration). Esta é a PR de migration mais simples: 1 arquivo, 1 linha de comentário, merge limpo.
+**Veredito atualizado:** FECHADA_OU_MERGEADA_PO — Fechada pelo PO sem merge em 2026-11-08T20:34:31Z. CI falhou no Gate 1.3 ("Recibo de migration em MIGRATIONS_SYNC_LOG.md", check_run_id 128845031702, HEAD c0e8f0a2) antes do fechamento.
 
 ---
 
-### PR #3216 — fix(db): reconcilia e2e_cleanup_audit | DECISAO_HUMANA
+### PR #3216 — fix(db): reconcilia e2e_cleanup_audit | FECHADA_OU_MERGEADA_PO
 
 **Branch:** `codex/fix-db-e2e-cleanup-...` | Draft: **SIM** | CI: — | CONFLICTING
 
@@ -322,7 +326,7 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 **(2) Regressão?** DRAFT (incompleto). 3 conflitos em não-governance (`PENDENCIAS.md`, `RELATORIO_CI.md`, `MIGRATIONS_SYNC_LOG.md`). PR#3215 cobre o mesmo arquivo de migration com menos conflitos.  
 **(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3216`: 2 commits com prefixo `+`. Não está em main.  
 **(4) Regra de negócio?** A correção em si é válida, mas PR#3215 é a versão preferível.  
-**Bloqueio:** REGRA#8 — `supabase/migrations/` + DRAFT + CONFLICTING. Potencialmente supersedida por PR#3215. Recomendação: fechar esta PR.
+**Veredito:** FECHADA_OU_MERGEADA_PO — Fechada pelo PO durante sessão em 2026-11-08T18:34:14Z. Supersedida por PR#3215.
 
 ---
 
@@ -385,31 +389,87 @@ Todas as análises têm evidência de ao menos uma das fontes abaixo:
 
 ---
 
+### PR #3239 — chore(migrations): migration retroativa fn_dryrun_standardize_supplier | DECISAO_HUMANA
+
+**Branch:** `claude/fix-fn-dryrun-...` | Draft: **SIM** | CI: n/a | Merge test: NÃO EXECUTADO (Draft)
+
+**(1) Válida?** Sim — migration retroativa `20260511235950_add_fn_dryrun_standardize_supplier.sql` para reconciliar drift entre ledger e schema vivo (corolário E99). Registra função `fn_dryrun_standardize_supplier` aplicada fora do fluxo via MCP.  
+**(2) Regressão?** Baixo risco — migration `repair-only` (apenas registra no ledger, não reaaplica DDL). Idempotente por design.  
+**(3) Implementada em main?** Não — Draft aberta; conteúdo não está em main.  
+**(4) Regra de negócio?** Válida — conformidade com corolário E99 (reconciliação de drift). `IF NOT EXISTS` ou `CREATE OR REPLACE` garante idempotência.  
+**Bloqueio:** DRAFT + REGRA#8 — `supabase/migrations/` migration retroativa exige aprovação explícita do PO antes de aplicar via `db-apply-migration.yml`. Branch `behind main`. Dossier: `dossies/PR-3239.md`.
+
+---
+
+### PR #3241 — docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f | MERGEADA_ESTA_SESSAO
+
+**Branch:** `claude/fix-relatorio-ci-p09-261108-1950` | Draft: NÃO | CI: success (E14 docs-only) | Merge test: CLEAN
+
+**(1) Válida?** Sim — apenas arquivos `.md`: `RELATORIO_CI.md` + `PENDENCIAS.md` (P-09 adicionado).  
+**(2) Regressão?** Zero. Apenas documentação — sem código, migration, edge function ou workflow.  
+**(3) Implementada em main?** MERGEADA — commit `931b932aad60b9b3b5f4ec4d4505482fca136ac4`, merged by PO em 2026-11-08T20:10:17Z.  
+**(4) Regra de negócio?** Válida — rastreamento de incidente de CI (P-09 Sentinel). Docs corretos e necessários para manutenção.  
+**Gate:** E14_DOCS_ONLY — `Detectar mudanças (docs-only bypass E14)` = success. Branch atualizada via `update_pr_branch` antes do merge. Dossier: `dossies/PR-3241.md`.
+
+---
+
+### PR #3242 — docs(analise-prs): ciclos de correção claude_04 | MERGEADA_PELO_PO
+
+**Branch:** `claude_04/optimistic-lovelace-n960f7` | Draft: **SIM** | CI: n/a | Merge test: NÃO EXECUTADO (branch alheia)
+
+**(1) Válida?** Sim — artefatos de análise da sessão claude_04: `analise-prs/RELATORIO_PRS.md` + `analise-prs/progresso.json`. Zero risco funcional.  
+**(2) Regressão?** Zero — apenas arquivos de rastreamento em `analise-prs/`.  
+**(3) Implementada em main?** MERGEADA pelo PO após sessão — merge commit `6e631dd1cab31832c09028c8e762fc19886a4b70`.  
+**(4) Regra de negócio?** N/A — artefatos de análise interna de outro agente.  
+**Bloqueio original:** DRAFT + FLUXO GIT Regra 2 (branch de outro agente — somente leitura para esta sessão). PO decidiu mergear. Dossier: `dossies/PR-3242.md`.
+
+---
+
+### PR #3243 — fix(migrations): adiciona migration de drift para categories.level | DECISAO_HUMANA
+
+**Branch:** `claude/fix-categories-level-drift-261108-1952` | Draft: **SIM** | CI: n/a | Merge test: NÃO EXECUTADO (Draft; behind main)
+
+**(1) Válida?** Sim — `ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS "level" integer;` corrige drift entre shadow DB e schema vivo; resolve falha P-08 de Supabase Preview.  
+**(2) Regressão?** Baixo risco — `ADD COLUMN IF NOT EXISTS` é no-op em produção onde a coluna já existe. Idempotente.  
+**(3) Implementada em main?** Não — Draft aberta, branch `behind main`.  
+**(4) Regra de negócio?** Válida — conformidade com corolário E99 (migration espelho de drift). Timestamp `20260511235950` correto (precede bootstrap que referencia `categories.level`).  
+**Bloqueio:** DRAFT + REGRA#8 — `supabase/migrations/` DDL exige aprovação explícita do PO + dispatch via `db-apply-migration.yml`. Branch `behind main` — precisa de update antes do merge. Dossier: `dossies/PR-3243.md`.
+
+---
+
 ## RESULTADO FINAL
 
-**PRs mergeadas esta sessão:** 1 — PR#3212 → SHA `d8ae515913db370da08784f3c911834c1668b98c` (Gate E14 docs-only)  
-**CI após merge PR#3212 (evidência verificada):** `github_list_check_runs(ref=d8ae515913)` → 70 check-runs; Gate Final - Deploy Ready = **success** (completed); 8 success, 12 skipped, 0 failures — `doufsxqlfjyuvxuezpln` sem falha nova vs. baseline.  
-**Produção (PR#3212):** docs-only (1 arquivo `.md` — `EDGE_FUNCTIONS_DEPLOY_LOG.md`); sem migration, sem edge function; sem impacto em produção.
+**PRs mergeadas esta sessão:** 2  
+- PR#3212 → SHA `d8ae515913db370da08784f3c911834c1668b98c` (Gate E14 docs-only, auto-merged por esta sessão)  
+- PR#3241 → SHA `931b932aad60b9b3b5f4ec4d4505482fca136ac4` (Gate E14 docs-only; branch atualizada esta sessão, PO mergeou)
 
-**Baseline fresco desta sessão (2026-11-08, `session_01Ss1tXZ4cAbxBvdmu95uNPz`):**
-- typecheck: `npx tsc --noEmit` → EXIT_CODE=0 (confirmado nesta sessão)
-- lint: `npx eslint src --max-warnings=9999` → EXIT_CODE=0 (confirmado nesta sessão)
-- vitest: 2 falhas conhecidas pré-existentes — `day_today` (line 56) + `day_selected` (line 66) em `calendar.redesign.test.tsx` — EXIT_CODE=0 (do baseline da sessão em `analise-prs/baseline/tests.txt`)
+**CI após merges (evidência verificada):**  
+- PR#3212: `github_list_check_runs(ref=d8ae515913)` → Gate Final = **success** (8 success, 0 fail)  
+- PR#3241: `github_list_check_runs` confirmado na sessão; `Detectar mudanças (docs-only bypass E14)` = success; PO mergeou em 2026-11-08T20:10:17Z
 
-**Worktrees:** `git worktree list` retornou apenas `/home/user/Promo_Gifts_V4 fee9688f75 [claude_05/youthful-ride-vcdchy]` — 0 worktrees extra criados ou deixados.
+**PRs mergeadas pelo PO após sessão:**  
+- PR#3236 (fix(migrations): cabeçalho rollback) — PO mergeou após análise desta sessão  
+- PR#3242 (docs(analise-prs): claude_04) → main `6e631dd1cab31832c09028c8e762fc19886a4b70`
 
-**20 PRs analisadas no total (vereditos com evidência):**
-- 1 × MERGEADA: PR#3212 → `d8ae515913` — Gate Final=success (8 success, 0 fail), docs-only (E14), merge limpo, sem governance files, `analise-prs/dossies/PR-3212.md`
-- 12 × DECISAO_HUMANA: PRs #3127, #3129, #3137, #3160, #3179, #3203, #3210, #3214, #3215, #3228, #3236, #3238 — motivos em `analise-prs/progresso.json` campo `prs_abertas_decisao_humana`, dossies em `dossies/PR-NNNN.md`
-- 7 × FECHADA_OU_MERGEADA_PO: PRs #3144, #3148, #3150, #3202, #3205, #3217, #3220 — fechadas/mergeadas pelo PO durante ou antes desta sessão
+**Baseline desta sessão (2026-11-08, `session_01Ss1tXZ4cAbxBvdmu95uNPz`):**
+- typecheck: EXIT_CODE=0 (arquivo `analise-prs/baseline/typecheck.txt`, SHA `9a89d9f0`)
+- lint: EXIT_CODE=0 (arquivo `analise-prs/baseline/lint.txt`, SHA `9a89d9f0`)
+- vitest: 2 falhas conhecidas pré-existentes — `day_today` (line 56) + `day_selected` (line 66) em `calendar.redesign.test.tsx`; EXIT_CODE=0 (arquivo `analise-prs/baseline/tests.txt`)
+
+**Worktrees:** 0 extra criados nesta sessão — `git worktree list` retorna apenas `/home/user/Promo_Gifts_V4 [claude_05/youthful-ride-vcdchy]`
+
+**25 PRs analisadas no total (vereditos com evidência):**
+- 2 × MERGEADA_ESTA_SESSAO: PR#3212 → `d8ae5159`, PR#3241 → `931b932a`
+- 10 × DECISAO_HUMANA (abertas): #3127, #3129, #3137, #3179, #3203, #3210, #3214, #3228, #3239, #3243 — motivos em `analise-prs/progresso.json`, dossies em `dossies/PR-NNNN.md`
+- 13 × FECHADA_OU_MERGEADA_PO: #3144, #3148, #3150, #3160, #3202, #3205, #3215, #3216, #3217, #3220, #3236, #3238, #3242 (históricas + PO durante/após sessão)
 
 **Nenhuma outra PR cumpriu todos os critérios de merge autônomo:**
-- Gate Final SUCCESS: apenas PR#3217 (isDraft=true bloqueia)
-- Sem governance files: todas as 12 restantes contêm workflows ou migrations
-- Sem DRAFT: PR#3160, #3179, #3214, #3236, #3238 são DRAFT
-- Merge limpo: PR#3203 tem 7 conflitos (Gate Final=FAILURE)
+- Governance files: todas as 11 abertas contêm workflows ou migrations (REGRA#8)
+- DRAFT: #3179, #3214, #3228, #3239, #3243 são DRAFT
+- Conflitos: PR#3203 tem 7 conflitos vs main + Gate Final=FAILURE
+- Outro agente: PR#3242 era branch `claude_04/` (FLUXO GIT Regra 2) — PO decidiu
 
 **Main SHA início:** `9a89d9f0a4ac2df7ad670501adaad9f1f60a75df`  
-**Main SHA final:** `d8ae515913db370da08784f3c911834c1668b98c` (após PR#3212 mergeada)  
-**Worktrees criados/removidos:** 0 (nenhum criado nesta sessão — `git worktree list` verificado)  
-**Outras escritas no GitHub:** push de artefatos em `claude_05/youthful-ride-vcdchy` apenas
+**Main SHA final:** `6e631dd1cab31832c09028c8e762fc19886a4b70` (após #3241 esta sessão + #3236/#3242 pelo PO)  
+**Worktrees criados/removidos:** 0  
+**Outras escritas no GitHub:** push de artefatos em `claude_05/youthful-ride-vcdchy` via MCP `github_push_files`
