@@ -43,6 +43,7 @@ São usados em workflows de E2E/integração que **não fazem parte do Gate Fina
 | `E2E_USER_PASSWORD` | DevOps | Repo | Anual | Senha do usuário comprador padrão — 45 refs em workflows de E2E/integração |
 | `E2E_ADMIN_EMAIL` | DevOps | Repo | Anual | Usuário administrador de testes — deploy-gates.yml, e2e-cart-*.yml (13 refs) |
 | `E2E_ADMIN_PASSWORD` | DevOps | Repo | Anual | Senha do admin de testes — 13 refs |
+| `E2E_CLEANUP_TOKEN` | DevOps | Repo + Supabase Edge | Semestral | Token dedicado do cleanup escopado — `e2e-quotes.yml` e função `e2e-cleanup`; o valor do repo deve corresponder ao secret runtime da Edge |
 | `E2E_DEV_EMAIL` | DevOps | Repo | Anual | Usuário developer (edge-integration-all.yml) — 1 ref |
 | `E2E_DEV_PASSWORD` | DevOps | Repo | Anual | Senha do developer de testes — 1 ref |
 | `SUPABASE_TEST_BYPASS_TOKEN` | DevOps | Repo | Semestral | Token de bypass de segurança para testes de carga/stress — `ci-freight-quality.yml` (1 ref), `scripts/massive-load-test.mjs`, `scripts/fuzz-testing.mjs`, `scripts/stress-burst.mjs`, `scripts/freight-quest-load-test.mjs`. **Deve ser o segredo mais controlado do repo** — contorna regras RLS em ambiente de teste |
@@ -171,6 +172,8 @@ Configurados via `supabase secrets set`; obrigatórios para as funções listada
 | `CSRF_SECRET` | Chave CSRF | Semestral | `_shared/security.ts` |
 | `E2E_CLEANUP_RATE_LIMIT_MAX` | Config rate limit | — | `e2e-cleanup/index.ts` |
 | `E2E_CLEANUP_RATE_LIMIT_WINDOW_SECONDS` | Config rate limit | — | `e2e-cleanup/index.ts` |
+| `E2E_CLEANUP_TOKEN` | Token de automação | Semestral | `e2e-cleanup/index.ts`; deve corresponder ao GitHub Actions secret homônimo |
+| `E2E_CLEANUP_ALLOWED_EMAILS` | Allowlist CSV | Sob demanda | `e2e-cleanup/index.ts`; somente contas E2E autorizadas, nunca usuários humanos |
 | `ENVIRONMENT` | Flag de ambiente | — | `cnpj-lookup/index.ts` |
 | `EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY` | Supabase Key (ext) | Semestral | `_shared/ai-router/index.ts` |
 | `EXTERNAL_PROMOBRIND_URL` | URL Supabase (ext) | — | `_shared/ai-router/index.ts` |

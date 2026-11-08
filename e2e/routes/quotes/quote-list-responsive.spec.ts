@@ -10,38 +10,40 @@
  *
  * Política de seletores: somente Sel.* (TID).
  */
-import { test, expect, requireAuth } from "../../fixtures/test-base";
-import { gotoAndSettle } from "../../helpers/nav";
-import { Sel } from "../../fixtures/selectors";
+import { test, expect, requireLiveDatabaseAuth } from '../../fixtures/test-base';
+import { gotoAndSettle } from '../../helpers/nav';
+import { Sel } from '../../fixtures/selectors';
 import {
   QUOTES_ROW_H,
   QUOTES_MIN_VISIBLE_ROWS,
   chromeHeight,
   containerMaxHeight,
   assertMirrorInSyncWithSSOT,
-} from "../../helpers/quotes-layout";
+} from '../../helpers/quotes-layout';
 
-type Vp = { name: "mobile" | "tablet" | "desktop"; w: number; h: number };
+type Vp = { name: 'mobile' | 'tablet' | 'desktop'; w: number; h: number };
 const VIEWPORTS: Vp[] = [
-  { name: "mobile", w: 390, h: 844 },
-  { name: "tablet", w: 834, h: 1112 },
-  { name: "desktop", w: 1440, h: 900 },
+  { name: 'mobile', w: 390, h: 844 },
+  { name: 'tablet', w: 834, h: 1112 },
+  { name: 'desktop', w: 1440, h: 900 },
 ];
 const MAX_BOTTOM_GAP = 64; // px tolerados entre container e rodapé/viewport
-const SNAPSHOT_OPTS = { maxDiffPixelRatio: 0.02, animations: "disabled" as const };
+const SNAPSHOT_OPTS = { maxDiffPixelRatio: 0.02, animations: 'disabled' as const };
 
-test.describe("Lista de orçamentos — responsivo + regressão visual", () => {
-  test.beforeEach(() => requireAuth());
+test.describe('Lista de orçamentos — responsivo + regressão visual', () => {
+  test.beforeEach(() => requireLiveDatabaseAuth());
 
-  test("mirror E2E está em sync com o SSOT de layout", () => {
+  test('mirror E2E está em sync com o SSOT de layout', () => {
     expect(() => assertMirrorInSyncWithSSOT()).not.toThrow();
   });
 
   for (const vp of VIEWPORTS) {
-    test(`${vp.name} (${vp.w}x${vp.h}): container sem áreas vazias + snapshot`, async ({ page }) => {
+    test(`${vp.name} (${vp.w}x${vp.h}): container sem áreas vazias + snapshot`, async ({
+      page,
+    }) => {
       await page.setViewportSize({ width: vp.w, height: vp.h });
-      await gotoAndSettle(page, "/orcamentos");
-      await expect(page.locator(Sel.page.title("orcamentos")).first()).toBeVisible({
+      await gotoAndSettle(page, '/orcamentos');
+      await expect(page.locator(Sel.page.title('orcamentos')).first()).toBeVisible({
         timeout: 15_000,
       });
 
@@ -93,26 +95,20 @@ test.describe("Lista de orçamentos — responsivo + regressão visual", () => {
 
       // (5) SSOT --quotes-row-h disponível
       const rowVar = await container.evaluate((el) =>
-        getComputedStyle(el).getPropertyValue("--quotes-row-h").trim(),
+        getComputedStyle(el).getPropertyValue('--quotes-row-h').trim(),
       );
       expect(rowVar).toBe(`${QUOTES_ROW_H}px`);
 
       // (6) Snapshots visuais (baseline gerado no 1º run / `--update-snapshots`).
-      await expect(container).toHaveScreenshot(
-        `quotes-container-${vp.name}.png`,
-        SNAPSHOT_OPTS,
-      );
+      await expect(container).toHaveScreenshot(`quotes-container-${vp.name}.png`, SNAPSHOT_OPTS);
       if (footerBox) {
-        await expect(footer).toHaveScreenshot(
-          `quotes-footer-${vp.name}.png`,
-          SNAPSHOT_OPTS,
-        );
+        await expect(footer).toHaveScreenshot(`quotes-footer-${vp.name}.png`, SNAPSHOT_OPTS);
       }
     });
   }
 
-  test("desktop mostra mais linhas que mobile", async ({ page }) => {
-    await gotoAndSettle(page, "/orcamentos");
+  test('desktop mostra mais linhas que mobile', async ({ page }) => {
+    await gotoAndSettle(page, '/orcamentos');
     const container = page.locator(Sel.quotesList.scrollContainer);
     await expect(container).toBeVisible({ timeout: 15_000 });
 

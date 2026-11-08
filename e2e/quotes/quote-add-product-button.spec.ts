@@ -6,7 +6,7 @@
  * Usa o harness `/__visual/quote-add-product-button` que replica
  * exatamente o markup do botão real (mesmo data-testid + a11y).
  */
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 import { gotoAndSettle } from '../helpers/nav';
 
 const ROUTE = '/__visual/quote-add-product-button';
@@ -29,14 +29,8 @@ for (const vp of VIEWPORTS) {
       const btn = page.getByTestId('quote-add-product-button-summary');
       await expect(btn).toBeVisible();
       await expect(btn).toBeEnabled();
-      await expect(btn).toHaveAttribute(
-        'aria-label',
-        'Adicionar novo produto ao orçamento',
-      );
-      await expect(btn).toHaveAttribute(
-        'title',
-        'Adicionar novo produto ao orçamento',
-      );
+      await expect(btn).toHaveAttribute('aria-label', 'Adicionar novo produto ao orçamento');
+      await expect(btn).toHaveAttribute('title', 'Adicionar novo produto ao orçamento');
       const iconAriaHidden = await btn.locator('svg').first().getAttribute('aria-hidden');
       expect(iconAriaHidden).toBe('true');
     });
@@ -45,19 +39,13 @@ for (const vp of VIEWPORTS) {
       page,
     }) => {
       await gotoAndSettle(page, `${ROUTE}?longContent=1`);
-      await expect(page.getByTestId('product-search-open-state')).toHaveAttribute(
-        'data-open',
-        '0',
-      );
+      await expect(page.getByTestId('product-search-open-state')).toHaveAttribute('data-open', '0');
 
       await page.getByTestId('quote-add-product-button-summary').click();
 
       const dialog = page.getByRole('dialog');
       await expect(dialog).toBeVisible();
-      await expect(page.getByTestId('product-search-open-state')).toHaveAttribute(
-        'data-open',
-        '1',
-      );
+      await expect(page.getByTestId('product-search-open-state')).toHaveAttribute('data-open', '1');
 
       // Dialog cabe no viewport — sem overflow horizontal.
       const dlgBox = await dialog.boundingBox();
@@ -78,9 +66,7 @@ for (const vp of VIEWPORTS) {
       await expect(searchInput).toHaveValue('caneca');
     });
 
-    test('estado loading: botão fica disabled e anuncia via aria-disabled', async ({
-      page,
-    }) => {
+    test('estado loading: botão fica disabled e anuncia via aria-disabled', async ({ page }) => {
       await gotoAndSettle(page, `${ROUTE}?loading=1`);
       const btn = page.getByTestId('quote-add-product-button-summary');
       await expect(btn).toBeDisabled();
@@ -88,15 +74,10 @@ for (const vp of VIEWPORTS) {
 
       // Clique não abre o dialog.
       await btn.click({ force: true }).catch(() => {});
-      await expect(page.getByTestId('product-search-open-state')).toHaveAttribute(
-        'data-open',
-        '0',
-      );
+      await expect(page.getByTestId('product-search-open-state')).toHaveAttribute('data-open', '0');
     });
 
-    test('teclado: Enter e Espaço abrem o dialog e foco entra dentro dele', async ({
-      page,
-    }) => {
+    test('teclado: Enter e Espaço abrem o dialog e foco entra dentro dele', async ({ page }) => {
       await gotoAndSettle(page, `${ROUTE}?longContent=1`);
       const btn = page.getByTestId('quote-add-product-button-summary');
 
@@ -139,4 +120,3 @@ for (const vp of VIEWPORTS) {
     });
   });
 }
-
