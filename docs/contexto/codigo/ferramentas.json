@@ -44,7 +44,7 @@
  "workspaces": [],
  "package": {
   "nome": "@adm01-debug/gifts-store",
-  "versao": "1.8.0",
+  "versao": "1.8.1",
   "scripts": {
    "audit:credentials": "node scripts/audit-credentials.mjs --baseline .audit-credentials-baseline.json",
    "audit:credentials:all": "node scripts/audit-credentials.mjs",
@@ -3526,7 +3526,7 @@
   {
    "arquivo": "CHANGELOG.md",
    "titulo": "Changelog",
-   "linhas": 1522
+   "linhas": 1530
   },
   {
    "arquivo": "CI_PROVA_P33.md",
@@ -4486,7 +4486,7 @@
    "arquivos_md": 1
   }
  ],
- "changelog_topo": "[1.8.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.7.0...v1.8.0) (2026-11-08)",
+ "changelog_topo": "[1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)",
  "env": {
   "declaradas_no_env_example": [
    "CONNECTIONS_AUTO_TEST_SECRET",

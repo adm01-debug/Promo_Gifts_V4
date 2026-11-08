@@ -2585,3 +2585,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261101223908 | [20261101202500_cron001_stagger_schedules_reduce_concurrent](migrations/20261101223908_20261101202500_cron001_stagger_schedules_reduce_concurrent.sql) | 1 |
 | 20261101232022 | [cron001_stagger_schedules](migrations/20261101232022_cron001_stagger_schedules.sql) | 1 |
 | 20261106232045 | [fix_handle_updated_at_search_path](migrations/20261106232045_fix_handle_updated_at_search_path.sql) | 1 |
+| 20261107180000 | [security_fix_suppliers_authenticated_credential_leak_v2](migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql) | 4 |

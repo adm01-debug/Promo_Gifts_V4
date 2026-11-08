@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1036dc3de59dada19efc30c9e19907d0149bebe7` (2026-11-08T01:44:24-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `87fe8cd9b7244f8c31d6cfac9fb471d619d93159` (2026-11-08T01:52:35-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,27 +586,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38270 nós · 66791 arestas · 2118 comunidades · grafo do commit `1036dc3d`
-- comunidades maiores: ref_components (648), ref_integrations (557), ref_lib (499), nav.ts (387), @testing-library/react (357), react-router-dom (334), ref_hooks (327), ref_node_fs (303), scripts (289), ref_utils (261), concludeCheck (259), cors.ts (258)
+- 38272 nós · 66793 arestas · 2134 comunidades · grafo do commit `87fe8cd9`
+- comunidades maiores: react (641), ref_components (574), ref_lib (498), lucide-react (496), ref_integrations (429), nav.ts (354), ref_hooks (314), @tanstack/react-query (294), scripts (289), ref_node_fs (288), ref_types (258), concludeCheck (246)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - RELATORIO_CI.md (73)
 - PENDENCIAS.md (63)
-- package.json (23)
-- supabase/MIGRATIONS_SYNC_LOG.md (18)
-- package-lock.json (16)
-- CHANGELOG.md (14)
-- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (13)
-- .github/workflows/deploy-gates.yml (11)
-- docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (11)
-- analise-branches/RELATORIO_BRANCHES.md (9)
-- e2e/flows/magazine-publish-smoke.spec.ts (9)
-- AGENTS.md (8)
-- CLAUDE.md (8)
-- .github/workflows/replenishment-quality.yml (6)
-- e2e/flows/magazine-preview-sticky-smoke.spec.ts (6)
+- package.json (25)
+- supabase/MIGRATIONS_SYNC_LOG.md (19)
+- package-lock.json (18)
+- CHANGELOG.md (16)
+- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (14)
+- .github/workflows/deploy-gates.yml (12)
+- docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (12)
+- analise-branches/RELATORIO_BRANCHES.md (10)
+- e2e/flows/magazine-publish-smoke.spec.ts (10)
+- AGENTS.md (9)
+- CLAUDE.md (9)
+- .github/workflows/replenishment-quality.yml (7)
+- e2e/flows/magazine-preview-sticky-smoke.spec.ts (7)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1000,7 +1000,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/PULL_REQUEST_TEMPLATE.md` (112 linhas)
 - `.github/SENTINEL_CHANGELOG.md` — Sentinel Changelog (188 linhas)
 - `AGENTS.md` — AGENTS.md — Promo Gifts V4 (111 linhas)
-- `CHANGELOG.md` — Changelog (1522 linhas)
+- `CHANGELOG.md` — Changelog (1530 linhas)
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
@@ -1157,9 +1157,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/motor-v2-test-report.md` — 🧪 Relatório Exaustivo de Testes — Motor V2 (Bronze Layer) (401 linhas)
 - `docs/notifications-module-audit.md` — Auditoria — Módulo "Notificações de Estoque" (sino do header) (110 linhas)
 - subpastas de docs/: docs/arquivo (90), docs/redeploy (27), docs/estado (26), docs/plans (24), docs/db (14), docs/audits (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/ci (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/bugs (6), docs/security (5), docs/sessoes (5), docs/suppliers (5), docs/agentes (4), docs/arquitetura (4), docs/audit (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/design (3), docs/fabrica-vps (3), docs/observability (3), docs/qa (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/coordenacao (2), docs/edge-functions (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/operations (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
-- CHANGELOG topo: [1.8.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.7.0...v1.8.0) (2026-11-08)
+- CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-08 `87fe8cd` chore(main): release 1.8.1
 - 2026-11-08 `1036dc3` fix(ci): aceitar skip estrutural do PDF no Chromium (#3199)
 - 2026-11-08 `e09f412` docs(ci): RELATORIO §32 + PENDENCIAS #44 (#3200)
 - 2026-11-08 `5e28c6c` fix(e2e): desbloqueia grid de novidades, imagem e tour do kit builder
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-08 `59a9584` docs(ci): RELATORIO §31 — estado final SHA 16408a68
 - 2026-11-08 `fa9e722` docs: recibo deploy health-check run 42367422517 (E66) — substitui #3134
 - 2026-11-08 `a7c10dc` fix(e2e): corrige seletores e mocks mortos do novelty-grid-visual (#3184)
-- 2026-11-08 `66f700b` docs: recibo de deploy de edge function(s) — run 42417851181 (E66) (#3185)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

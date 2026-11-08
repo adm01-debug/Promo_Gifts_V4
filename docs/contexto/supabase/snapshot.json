@@ -2,9 +2,7 @@
   "api": {
     "enabled": false
   },
-  "carried": [
-    "grants"
-  ],
+  "carried": [],
   "db": {
     "columns": [
       {
@@ -190946,6 +190944,293 @@
           "privileges": "SELECT",
           "schema": "public",
           "table": "products"
+        },
+        {
+          "column": "active",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "address",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "api_base_url",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "api_rate_limit_per_hour",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "api_requests_current_hour",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "api_requests_reset_at",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "api_type",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "cnpj",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "code",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "contact_name",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "contact_person",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "created_at",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "default_markup_percent",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "delivery_time_days",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "email",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "id",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "inscricao_estadual",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "is_engraving_supplier",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "is_product_supplier",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "last_full_sync_at",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "last_sync_error",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "last_sync_status",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "logo_url",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "low_stock_threshold",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "min_order_value",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "minimum_order_value",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "name",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "notes",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "organization_id",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "payment_terms",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "phone",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "phone2",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "priority",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "shipping_terms",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "state_uf",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "sync_enabled",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "sync_interval_minutes",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "tax_regime",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "trading_name",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "updated_at",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "website",
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
         }
       ],
       "default_privileges": [
@@ -197437,7 +197722,7 @@
         },
         {
           "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
           "schema": "public",
           "table": "suppliers"
         },
@@ -233822,6 +234107,12 @@
         "statements": 1,
         "statements_sha": "40cc98aa4d7a16b8",
         "version": "20261106232045"
+      },
+      {
+        "name": "security_fix_suppliers_authenticated_credential_leak_v2",
+        "statements": 4,
+        "statements_sha": "6c4fab3b573a85fa",
+        "version": "20261107180000"
       }
     ],
     "policies": [
@@ -262234,7 +262525,7 @@
   "errors": [
     {
       "error": "canceling statement due to statement timeout",
-      "section": "grants"
+      "section": "cron_runs"
     }
   ],
   "format_version": 2

@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "1036dc3de59dada19efc30c9e19907d0149bebe7",
+  "sha": "87fe8cd9b7244f8c31d6cfac9fb471d619d93159",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 05:00 UTC",
+  "generated_at": "2026-11-08 05:17 UTC",
   "files_total": 9124,
   "code_files": 7862,
   "code_lines": 1054364
@@ -484026,10 +484026,22 @@
   }
  },
  "git": {
-  "sha": "1036dc3de59dada19efc30c9e19907d0149bebe7",
+  "sha": "87fe8cd9b7244f8c31d6cfac9fb471d619d93159",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "87fe8cd",
+    "date": "2026-11-08",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release 1.8.1",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "1036dc3",
     "date": "2026-11-08",
@@ -484500,26 +484512,32 @@
     "files": [
      "RELATORIO_CI.md"
     ]
-   },
-   {
-    "sha": "bfb2926",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "docs(ci): PENDENCIAS #36 + RELATORIO §22 — Gate Final a882bcc1 success (#3176)",
-    "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    11
+    10
    ],
    [
     "PENDENCIAS.md",
-    7
+    6
+   ],
+   [
+    "package.json",
+    3
+   ],
+   [
+    ".release-please-manifest.json",
+    2
+   ],
+   [
+    "CHANGELOG.md",
+    2
+   ],
+   [
+    "package-lock.json",
+    2
    ],
    [
     ".github/workflows/e2e-focused.yml",
@@ -484527,10 +484545,6 @@
    ],
    [
     "e2e/routes/app/novelty-grid-visual.spec.ts",
-    2
-   ],
-   [
-    "package.json",
     2
    ],
    [
@@ -484579,18 +484593,6 @@
    ],
    [
     "src/components/novelties/VirtualizedNoveltyGrid.tsx",
-    1
-   ],
-   [
-    "src/components/ui/OptimizedImage.tsx",
-    1
-   ],
-   [
-    "src/lib/external-db/kit-coverage.test.ts",
-    1
-   ],
-   [
-    "src/lib/external-db/kit-coverage.ts",
     1
    ]
   ]

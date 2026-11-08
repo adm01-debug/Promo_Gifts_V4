@@ -186,5 +186,52 @@
 
 | role | privilégios |
 |---|---|
-| authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| authenticated | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+
+
+Grants por coluna:
+
+| coluna | role | privilégios |
+|---|---|---|
+| active | authenticated | SELECT |
+| address | authenticated | SELECT |
+| api_base_url | authenticated | SELECT |
+| api_rate_limit_per_hour | authenticated | SELECT |
+| api_requests_current_hour | authenticated | SELECT |
+| api_requests_reset_at | authenticated | SELECT |
+| api_type | authenticated | SELECT |
+| cnpj | authenticated | SELECT |
+| code | authenticated | SELECT |
+| contact_name | authenticated | SELECT |
+| contact_person | authenticated | SELECT |
+| created_at | authenticated | SELECT |
+| default_markup_percent | authenticated | SELECT |
+| delivery_time_days | authenticated | SELECT |
+| email | authenticated | SELECT |
+| id | authenticated | SELECT |
+| inscricao_estadual | authenticated | SELECT |
+| is_engraving_supplier | authenticated | SELECT |
+| is_product_supplier | authenticated | SELECT |
+| last_full_sync_at | authenticated | SELECT |
+| last_sync_error | authenticated | SELECT |
+| last_sync_status | authenticated | SELECT |
+| logo_url | authenticated | SELECT |
+| low_stock_threshold | authenticated | SELECT |
+| min_order_value | authenticated | SELECT |
+| minimum_order_value | authenticated | SELECT |
+| name | authenticated | SELECT |
+| notes | authenticated | SELECT |
+| organization_id | authenticated | SELECT |
+| payment_terms | authenticated | SELECT |
+| phone | authenticated | SELECT |
+| phone2 | authenticated | SELECT |
+| priority | authenticated | SELECT |
+| shipping_terms | authenticated | SELECT |
+| state_uf | authenticated | SELECT |
+| sync_enabled | authenticated | SELECT |
+| sync_interval_minutes | authenticated | SELECT |
+| tax_regime | authenticated | SELECT |
+| trading_name | authenticated | SELECT |
+| updated_at | authenticated | SELECT |
+| website | authenticated | SELECT |

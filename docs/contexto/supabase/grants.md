@@ -1,7 +1,5 @@
 # Grants
 
-> ⚠️ Seção `grants` não pôde ser atualizada nesta coleta (ver errors.md); mostrando a versão anterior.
-
 
 Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypass RLS). Grants de sistema (postgres, supabase_*) omitidos.
 
@@ -965,7 +963,7 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.supplier_video_requirements | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.supplier_video_requirements | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_video_requirements | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.suppliers | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.suppliers | authenticated | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.suppliers | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.system_changelog | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.system_changelog | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
@@ -1410,6 +1408,47 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.products.id | anon | SELECT |
 | public.products.is_active | anon | SELECT |
 | public.products.is_deleted | anon | SELECT |
+| public.suppliers.active | authenticated | SELECT |
+| public.suppliers.address | authenticated | SELECT |
+| public.suppliers.api_base_url | authenticated | SELECT |
+| public.suppliers.api_rate_limit_per_hour | authenticated | SELECT |
+| public.suppliers.api_requests_current_hour | authenticated | SELECT |
+| public.suppliers.api_requests_reset_at | authenticated | SELECT |
+| public.suppliers.api_type | authenticated | SELECT |
+| public.suppliers.cnpj | authenticated | SELECT |
+| public.suppliers.code | authenticated | SELECT |
+| public.suppliers.contact_name | authenticated | SELECT |
+| public.suppliers.contact_person | authenticated | SELECT |
+| public.suppliers.created_at | authenticated | SELECT |
+| public.suppliers.default_markup_percent | authenticated | SELECT |
+| public.suppliers.delivery_time_days | authenticated | SELECT |
+| public.suppliers.email | authenticated | SELECT |
+| public.suppliers.id | authenticated | SELECT |
+| public.suppliers.inscricao_estadual | authenticated | SELECT |
+| public.suppliers.is_engraving_supplier | authenticated | SELECT |
+| public.suppliers.is_product_supplier | authenticated | SELECT |
+| public.suppliers.last_full_sync_at | authenticated | SELECT |
+| public.suppliers.last_sync_error | authenticated | SELECT |
+| public.suppliers.last_sync_status | authenticated | SELECT |
+| public.suppliers.logo_url | authenticated | SELECT |
+| public.suppliers.low_stock_threshold | authenticated | SELECT |
+| public.suppliers.min_order_value | authenticated | SELECT |
+| public.suppliers.minimum_order_value | authenticated | SELECT |
+| public.suppliers.name | authenticated | SELECT |
+| public.suppliers.notes | authenticated | SELECT |
+| public.suppliers.organization_id | authenticated | SELECT |
+| public.suppliers.payment_terms | authenticated | SELECT |
+| public.suppliers.phone | authenticated | SELECT |
+| public.suppliers.phone2 | authenticated | SELECT |
+| public.suppliers.priority | authenticated | SELECT |
+| public.suppliers.shipping_terms | authenticated | SELECT |
+| public.suppliers.state_uf | authenticated | SELECT |
+| public.suppliers.sync_enabled | authenticated | SELECT |
+| public.suppliers.sync_interval_minutes | authenticated | SELECT |
+| public.suppliers.tax_regime | authenticated | SELECT |
+| public.suppliers.trading_name | authenticated | SELECT |
+| public.suppliers.updated_at | authenticated | SELECT |
+| public.suppliers.website | authenticated | SELECT |
 
 
 ## Sequences (roles da API)

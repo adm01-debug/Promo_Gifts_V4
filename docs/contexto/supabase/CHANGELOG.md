@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-08 05:24 UTC
+
+- **grants** alterado (1): `public.suppliers:authenticated`
+- **migrations** adicionado (1): `20261107180000_security_fix_suppliers_authenticated_credential_leak_v2`
+
 ## 2026-11-08 04:17 UTC
 
 - **functions** alterado (1): `public.has_role(_user_id uuid, _role app_role)`

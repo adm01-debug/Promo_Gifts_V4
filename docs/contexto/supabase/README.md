@@ -30,7 +30,7 @@ Gerado automaticamente a cada 10 min pelo workflow `contexto.yml` (job `banco`) 
 | extensões | 18 |
 | cron jobs | 144 |
 | filas pgmq | 0 |
-| migrations | 2581 |
+| migrations | 2582 |
 | buckets | 11 |
 | edge functions | n/d |
 | webhooks | 0 |
@@ -91,8 +91,6 @@ Cada fonte é atualizada independentemente; referências anteriores não comprov
 
 ## ⚠️ Problemas na última coleta
 
-Seções reaproveitadas da coleta anterior: `grants`.
-
 | seção | erro |
 |---|---|
-| grants | canceling statement due to statement timeout |
+| cron_runs | canceling statement due to statement timeout |
