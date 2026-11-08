@@ -1241,9 +1241,10 @@ Baseline local não foi re-executado nesta sessão (sessão remota sem container
 | `npx vitest run tests/scripts/` | ✅ **51 passed, 658 tests, 0 failures** | Duration 34.42s |
 | `npx vitest run tests/security/` | ✅ **17 passed / 3 skipped, 143+67 tests, 0 failures** | Duration 9.53s |
 
-> Testes que requerem secrets (`SUPABASE_SERVICE_ROLE_KEY`, `E2E_*`) marcados como skipped — confirmando
-> que a falha em CI Security & Drift Checks (PENDENCIAS #42) e E2E (PENDENCIAS #39-#41) são causadas por
-> ausência de credentials no ambiente CI, não por bugs introduzidos nesta sessão.
+> Testes que requerem `SUPABASE_SERVICE_ROLE_KEY` marcados como skipped localmente — confirmando apenas
+> que PENDENCIAS #42 (Security & Drift Checks) é bloqueada por ausência dessa credencial no CI.
+> PENDENCIAS #39-#41 têm causas distintas documentadas no próprio relatório (URL-state, alinhamento
+> visual, redirect pós-login) e requerem correção de código, não secrets.
 
 ### Comparação baseline × final (checks required em main)
 
