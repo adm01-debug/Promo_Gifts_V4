@@ -402,7 +402,7 @@ function VirtualizedProductGridInner({
                 }}
               >
                 {rowProducts.map((product) => {
-                  // FAN-OUT: key composta productId|colorId garante unicidade quando o
+                  // FAN-OUT: key composta productId|colorId garante unici dade quando o
                   // mesmo produto vira múltiplos cards (1 por cor). Sem fan-out
                   // (_cardColorId undefined) cai no product.id puro.
                   const cardKey = product._cardColorId
@@ -488,7 +488,7 @@ function VirtualizedProductGridInner({
 
       {/* Scroll to top button - posicionado dentro do container */}
       <AnimatePresence>
-        {showScrollTop && (
+        {!showScrollTop && (
           <motion.button
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -499,7 +499,7 @@ function VirtualizedProductGridInner({
           >
             <ArrowUp className="h-5 w-5" />
           </motion.button>
-        )}
+          )}
       </AnimatePresence>
     </div>
   );
