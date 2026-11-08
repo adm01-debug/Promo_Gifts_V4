@@ -1,22 +1,23 @@
 {
   "sessao": "claude_04/optimistic-lovelace-n960f7",
-  "data": "2026-11-08T19:30:00Z",
+  "data": "2026-11-08T20:30:00Z",
+  "data_final": "2026-11-08T21:00:00Z",
   "main_sha_antes": "ba1c3fb13815467c33de069caee564f76ebfd9f5",
-  "main_sha_depois": "ba1c3fb13815467c33de069caee564f76ebfd9f5",
+  "main_sha_esta_sessao": "17304c02232a8923791f15921d572b203b22c39d",
+  "main_sha_final": "5aed391bf5777b04cb72c8d0138854422c279dd9",
   "total_prs_inicio": 12,
-  "mergeadas": 0,
-  "aguardando_humano": 12,
+  "mergeadas_esta_sessao": 1,
+  "mergeadas_outras_sessoes": 2,
+  "aguardando_humano": 11,
   "ja_implementada": 0,
   "duplicada": 0,
   "descartada": 0,
-  "prs_mergeadas": [],
-  "prs_aguardando_humano": [3127, 3129, 3137, 3160, 3179, 3203, 3210, 3214, 3215, 3228, 3234, 3236],
+  "prs_mergeadas_esta_sessao": [{"number": 3238, "titulo": "docs(analise-prs): relatório merge-prs", "squash_sha": "17304c02232a8923791f15921d572b203b22c39d", "tipo": "docs-only (E14 bypass)", "sessao": "esta sessão"}],
+  "prs_mergeadas_outras_sessoes": [{"number": 3234, "titulo": "feat(migrations): P09", "squash_sha": "0409c07", "sessao": "claude_05/ — antes desta sessão"}, {"number": 3240, "titulo": "fix(ci): grandfather SHA 0409c07f", "squash_sha": "5aed391bf5777b04cb72c8d0138854422c279dd9", "sessao": "outra sessão — durante esta sessão"}],
+  "prs_aguardando_humano": [3127, 3129, 3137, 3160, 3179, 3203, 3210, 3214, 3215, 3228, 3236],
+  "ci_verde_aguardando_humano": [3129, 3228],
+  "ci_irreparavel": [3160, 3179, 3215, 3236],
   "nada_afrouxado": true,
   "nenhuma_pr_alheia_alterada": true,
-  "observacoes": [
-    "Branch Protection Sentinel falhou em main (ba1c3fb) por commit sem padrão aceito — issue pré-existente, não bloqueante para merges (required check é Gate Final - Deploy Ready)",
-    "Gate 6 - Build estava in_progress no momento da análise para main",
-    "#3203: tentativa de fix branch abortada — rebase gerou 48+ conflitos add/add incluindo .github/workflows/",
-    "#3129 e #3137 (codex): arquivos não verificados, inferência de workflow a partir dos títulos ci(e2e)/fix(ci)"
-  ]
+  "dossiers_criados": true
 }

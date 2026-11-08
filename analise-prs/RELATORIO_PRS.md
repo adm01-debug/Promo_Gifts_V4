@@ -1,178 +1,100 @@
-# RELATÓRIO DE PRs — 2026-11-08
+# RELATÓRIO DE PRs — 2026-11-08 (atualizado ciclos de correção — FINAL)
 
 **Sessão:** `claude_04/optimistic-lovelace-n960f7`  
 **main baseline:** `ba1c3fb13815467c33de069caee564f76ebfd9f5`  
-**Total PRs analisadas:** 12 abertas  
-**Mergeadas:** 0 | **AGUARDANDO HUMANO:** 12
+**main após merge #3238 (esta sessão):** `17304c02232a8923791f15921d572b203b22c39d`  
+**main após merge #3240 (outra sessão):** `5aed391bf5777b04cb72c8d0138854422c279dd9`  
+**Total PRs analisadas:** 12 abertas + 1 identificada já mergeada  
+**Mergeadas por esta sessão:** 1 (#3238) | **Mergeadas por outra sessão:** 2 (#3234, #3240) | **AGUARDANDO HUMANO:** 11
 
 ---
 
-## Baseline de main
+## main antes e depois
 
-| Check | Status |
-|-------|--------|
-| Gate 1 - Lint + TypeScript | ✅ success |
-| Gate 2 - Unit Tests | ✅ success |
-| Gate 3 - E2E Smoke | ✅ success |
-| Gate 4 - Lighthouse CI | ✅ success |
-| Gate 5 - SEO Sanity Check | ✅ success |
-| Gate 5.5 - RPC restore_seller_cart | ✅ success |
-| Gate 6 - Build | ⏳ in_progress (ao analisar) |
-| Gate E40 - Schema Drift Check | ✅ success |
-| Gate E23 - Verifica secrets E2E | ✅ success |
-| Gate 0.5 - Dependency Audit | ✅ success |
-| **Gate Final - Deploy Ready** | **NÃO EXIBIDO** (aguarda Build) |
-| Branch Protection Sentinel | ❌ failure — `ba1c3fb` sem padrão aceito (pré-existente) |
+| | SHA | Checks em main |
+|---|---|---|
+| Antes (baseline) | `ba1c3fb` | ✅ success |
+| Após merge #3238 | `17304c02` | IN_PROGRESS ao reportar |
+| Após merge #3240 | `5aed391bf` | 9 success, 4 skipped, 1 failure (Supabase Preview — externo, pré-existente) |
 
-> `Branch Protection Sentinel` não é required check (required = `Gate Final - Deploy Ready`). Issue pré-existente, não bloqueia merges de PRs.
+**Nota:** Gate Final (`Gate Final - Deploy Ready`) não é check de push-to-main — só roda em PRs. Não esperado em main.  
+**Nota:** Supabase Preview FAILURE em main é problema sistêmico de configuração do projeto Supabase Preview (mensagem: "Remote migration versions not found in local migrations directory"), pré-existente ao merge.
 
 ---
 
-## Inventário — Todas as PRs
+## PRs Mergeadas
 
-| # | Título | Branch | isDraft | CI | Verdict |
-|---|--------|--------|---------|-----|---------|
-| [#3127](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3127) | fix(ci): estabiliza núcleo E2E | codex/fix-e2e-ci-pressure-261107-0238 | Não | FAILURE | **AGUARDANDO HUMANO** |
-| [#3129](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3129) | ci(e2e): reduzir pressão runners | codex/infra-e2e-ci-pressure-261107-1040 | Não | FAILURE | **AGUARDANDO HUMANO** |
-| [#3137](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3137) | fix(ci): falso negativo detector E2E | codex/fix-e2e-relevance-261107-1148 | Não | FAILURE | **AGUARDANDO HUMANO** |
-| [#3160](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3160) | fix: DB E15 (pg_temp + rollback) | claude/fix-ci-workflows-261107-1540 | Sim | FAILURE | **AGUARDANDO HUMANO** |
-| [#3179](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3179) | fix: corrige preflight db-apply | claude/fix-ci-workflows-261107-2300 | Sim | FAILURE | **AGUARDANDO HUMANO** |
-| [#3203](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3203) | fix: scripts static-pass, TypeScript | claude/inspiring-knuth-swo71j | Não | FAILURE | **AGUARDANDO HUMANO** |
-| [#3210](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3210) | chore(main): release 1.9.0 | release-please--branches--main | Não | FAILURE | **AGUARDANDO HUMANO** |
-| [#3214](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3214) | fix(cron): CRON-001 | claude_05/youthful-ride-vcdchy | Sim | FAILURE | **AGUARDANDO HUMANO** |
-| [#3215](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3215) | fix(migration): rollback header | claude/fix-migration-rollback-header-261108-1520 | Não | FAILURE | **AGUARDANDO HUMANO** |
-| [#3228](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3228) | chore(workflows): workflow_dispatch | claude/chore-e2e-swatch-dispatch-261108-1800 | Sim | FAILURE | **AGUARDANDO HUMANO** |
-| [#3234](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3234) | feat(migrations): P09 reconcilia 432 versões | claude_05/friendly-keller-3mgkhz | Sim | FAILURE | **AGUARDANDO HUMANO** |
-| [#3236](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3236) | fix(migrations): rollback header reconcile | claude/fix-rollback-header-reconcile-audit-261108-1915 | Sim | FAILURE | **AGUARDANDO HUMANO** |
+### #3238 — docs(analise-prs): relatório merge-prs
+- **Squash SHA:** `17304c02232a8923791f15921d572b203b22c39d`
+- **Tipo:** docs-only (E14 bypass — apenas `analise-prs/*.md`, `*.json`)
+- **CI:** Gate Final = SUCCESS (docs-only bypass E14)
+- **Sessão:** esta sessão
 
----
+### #3234 — feat(migrations): P09 — reconcilia 432 versões históricas
+- **Commit em main:** `0409c07`
+- **Tipo:** migrations
+- **Sessão:** claude_05/ — mergeada por outro agente/dono ANTES desta sessão
 
-## Dossiês
-
-### #3127 — fix(ci): estabiliza o núcleo E2E
-
-- **Branch:** `codex/fix-e2e-ci-pressure-261107-0238` (sessão codex/)
-- **Arquivos:** 15 — inclui `.github/workflows/e2e-flows.yml`, `.github/workflows/e2e-stock.yml`, `.github/workflows/e2e.yml`  
-  + e2e specs + `playwright.config.ts` + `src/components/products/list-item/ListItemActions.tsx`
-- **Verdict: AGUARDANDO HUMANO**
-- **Motivo:** Toca `.github/workflows/` (3 arquivos) — governança CI/workflows per AGENTS.md Git 10 + regra NÃO MERGEAR
+### #3240 — fix(ci): grandfather SHA 0409c07f do P09 no Sentinel allowlist
+- **Squash SHA:** `5aed391bf5777b04cb72c8d0138854422c279dd9`
+- **Tipo:** ci/sentinel fix
+- **Sessão:** outra sessão — mergeada DURANTE esta sessão
 
 ---
 
-### #3129 — ci(e2e): reduzir pressão dos runners
+## Inventário — PRs Abertas (AGUARDANDO HUMANO)
 
-- **Branch:** `codex/infra-e2e-ci-pressure-261107-1040` (sessão codex/)
-- **Arquivos:** NÃO VERIFICADO (inferência: título `ci(e2e)` + padrão codex = workflows)
-- **Verdict: AGUARDANDO HUMANO**
-- **Motivo:** Titulo `ci(e2e)` forte indicativo de workflow — NÃO VERIFICADO arquivos por limitação de tokens
-
----
-
-### #3137 — fix(ci): impedir falso negativo no detector E2E
-
-- **Branch:** `codex/fix-e2e-relevance-261107-1148` (sessão codex/)
-- **Arquivos:** NÃO VERIFICADO (inferência: título `fix(ci)` + padrão codex = workflows)
-- **Verdict: AGUARDANDO HUMANO**
-- **Motivo:** Titulo `fix(ci)` forte indicativo de workflow — NÃO VERIFICADO arquivos por limitação de tokens
-
----
-
-### #3160 — fix: DB E15 (pg_temp + rollback)
-
-- **Branch:** `claude/fix-ci-workflows-261107-1540` (outra sessão)
-- **Arquivos (verificado):** `PENDENCIAS.md`, `RELATORIO_CI.md`, `supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql`, `supabase/rollbacks/20261101150000_rollback.sql`
-- **Verdict: AGUARDANDO HUMANO**
-- **Motivo:** Modifica `supabase/migrations/` — migration/DDL em produção
+| # | Título | Branch | Gate Final | Causa bloqueio | Dossier |
+|---|--------|--------|------------|---------------|-------|
+| [#3127](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3127) | fix(ci): estabiliza núcleo E2E | codex/fix-e2e-ci-pressure-261107-0238 | NÃO VERIFICADO | .github/workflows/ | [PR-3127.md](dossies/PR-3127.md) |
+| [#3129](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3129) | ci(e2e): reduzir pressão runners | codex/infra-e2e-ci-pressure-261107-1040 | ✅ SUCCESS | .github/workflows/ | [PR-3129.md](dossies/PR-3129.md) |
+| [#3137](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3137) | fix(ci): falso negativo detector E2E | codex/fix-e2e-relevance-261107-1148 | NÃO VERIFICADO | .github/workflows/ | [PR-3137.md](dossies/PR-3137.md) |
+| [#3160](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3160) | fix: DB E15 (pg_temp + rollback) | claude/fix-ci-workflows-261107-1540 | FAILURE (irreparável) | supabase/migrations/ DDL | [PR-3160.md](dossies/PR-3160.md) |
+| [#3179](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3179) | fix: corrige preflight db-apply | claude/fix-ci-workflows-261107-2300 | FAILURE (irreparável) | supabase/migrations/ DDL | [PR-3179.md](dossies/PR-3179.md) |
+| [#3203](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3203) | fix: scripts static-pass, TypeScript | claude/inspiring-knuth-swo71j | CONFLICTING | .github/workflows/ conflito | [PR-3203.md](dossies/PR-3203.md) |
+| [#3210](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3210) | chore(main): release 1.9.0 | release-please--branches--main | FAILURE (externo) | release decision + Supabase Preview | [PR-3210.md](dossies/PR-3210.md) |
+| [#3214](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3214) | fix(cron): CRON-001 | claude_05/youthful-ride-vcdchy | NÃO VERIFICADO | .github/workflows/ + cron DDL | [PR-3214.md](dossies/PR-3214.md) |
+| [#3215](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3215) | fix(migration): rollback header | claude/fix-migration-rollback-header-261108-1520 | FAILURE (irreparável) | supabase/migrations/ DDL | [PR-3215.md](dossies/PR-3215.md) |
+| [#3228](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3228) | chore(workflows): workflow_dispatch | claude/chore-e2e-swatch-dispatch-261108-1800 | ✅ SUCCESS | .github/workflows/ | [PR-3228.md](dossies/PR-3228.md) |
+| [#3236](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3236) | fix(migrations): rollback header reconcile | claude/fix-rollback-header-reconcile-audit-261108-1915 | FAILURE + BEHIND | supabase/migrations/ DDL + behind | [PR-3236.md](dossies/PR-3236.md) |
 
 ---
 
-### #3179 — fix: corrige preflight db-apply-migration
+## Resumo de CI por categoria
 
-- **Branch:** `claude/fix-ci-workflows-261107-2300` (outra sessão)
-- **Arquivos (verificado):** `supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql` (search_path fix), `supabase/rollbacks/20261101150000_rollback.sql`
-- **Verdict: AGUARDANDO HUMANO**
-- **Motivo:** Modifica migration SQL existente — `SET search_path = public, pg_catalog, pg_temp` (DDL em produção)
+### CI Verde (Gate Final SUCCESS) → AGUARDANDO HUMANO por governança
+- **#3129:** Gate Final SUCCESS ✅ — toca `.github/workflows/`
+- **#3228:** Gate Final SUCCESS ✅ — toca `.github/workflows/`
 
----
+### CI não verificado (reruns disparados) → AGUARDANDO HUMANO por governança
+- **#3127:** Rerun run_id=42372342538 (visual-check). visual-check passou; Gate Final não detectado. Toca `.github/workflows/`.
+- **#3137:** Rerun run_id=42378959180 (JWT timeout flaky). Gate Final não detectado. Toca `.github/workflows/`.
+- **#3214:** Branch atualizada por outra sessão (SHA mudou 2x). Gate Final não verificado. Toca `.github/workflows/` + cron DDL.
 
-### #3203 — fix: scripts — static-pass, exit codes e regressão TypeScript
+### CI Irreparável → AGUARDANDO HUMANO por DDL
+- **#3160:** `Migrations x Canonical schema` FAILURE — modifica migration `20261101150000` já aplicada (hash diverge do ledger). NÃO CORRIGÍVEL sem nova migration.
+- **#3179:** Mesma causa de #3160 — migration `20261101150000` já aplicada.
+- **#3215:** `Migrations x Canonical schema` FAILURE — modifica migration `20261108001500` já aplicada (hash diverge). NÃO CORRIGÍVEL.
+- **#3236:** Similar a #3215 + mergeStateStatus BEHIND.
 
-- **Branch:** `claude/inspiring-knuth-swo71j` (outra sessão)
-- **Arquivos:** 100 — 47 em `scripts/`, 53 em `.json` baselines / `artifacts/` / `docs/` / `graphify-out/`
-  - **Zero** arquivos em `.github/workflows/`, `supabase/migrations/`, `src/`
-- **Falhas CI:**
-  - `PR Size Guard (E185)` — 100 arquivos > 50, falta label `large-pr-approved`  
-  - `E2E — Mobile Critical Routes` — `auth.setup.ts:18:1` authenticate failed (1 failed, 8 did not run)  
-  - `Gate 3 - E2E Smoke` — failure  
-  - `E2E — Personalization Journey` — failure
-- **Tentativa de fix:** Criada branch `claude/fix-pr3203-scripts-261108-1930`, rebase em main → **48+ conflitos add/add** em `.github/workflows/`, `src/`, `e2e/`, `tests/`, `supabase/` — a branch divergiu massivamente de main
-- **Verdict: AGUARDANDO HUMANO**
-- **Motivo:** Rebase impossível sem resolver conflitos em `.github/workflows/` e código-fonte — conflito de escopo entre agentes exige decisão humana
-
----
-
-### #3210 — chore(main): release 1.9.0
-
-- **Branch:** `release-please--branches--main--components--gifts-store` (release-please bot)
-- **mergeable:** MERGEABLE | **mergeStateStatus:** BLOCKED
-- **Verdict: AGUARDANDO HUMANO**
-- **Motivo:** Release decision — requer aprovação humana
-
----
-
-### #3214 — fix(cron): CRON-001 — escalonar 4 cron jobs
-
-- **Branch:** `claude_05/youthful-ride-vcdchy` (sessão claude_05/)
-- **Arquivos:** NÃO VERIFICADO (inferência: cron jobs = DDL `cron.job`)
-- **Verdict: AGUARDANDO HUMANO**
-- **Motivo:** Cron jobs são DDL (`cron.job`) — toda DDL só via `db-apply-migration.yml` per AGENTS.md
-
----
-
-### #3215 — fix(migration): adiciona -- Rollback header
-
-- **Branch:** `claude/fix-migration-rollback-header-261108-1520` (outra sessão)
-- **Arquivos (verificado):** `supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql` — adiciona comentários `-- Rollback:`, `-- transaction: none`, `-- approved-by: adm01-debug`
-- **Verdict: AGUARDANDO HUMANO**
-- **Motivo:** Toca `supabase/migrations/` — mesmo sendo só comentários, arquivo de migration exige revisão humana
-
----
-
-### #3228 — chore(workflows): adiciona workflow_dispatch
-
-- **Branch:** `claude/chore-e2e-swatch-dispatch-261108-1800` (outra sessão)
-- **Arquivos:** Título confirma `.github/workflows/`
-- **Verdict: AGUARDANDO HUMANO**
-- **Motivo:** Toca `.github/workflows/` — governança CI/workflows
-
----
-
-### #3234 — feat(migrations): P09 — reconcilia 432 versões
-
-- **Branch:** `claude_05/friendly-keller-3mgkhz` (sessão claude_05/)
-- **mergeStateStatus:** BEHIND
-- **Verdict: AGUARDANDO HUMANO**
-- **Motivo:** DDL/migration massiva em produção — 432 versões históricas no ledger `schema_migrations`
-
----
-
-### #3236 — fix(migrations): adiciona cabeçalho -- Rollback
-
-- **Branch:** `claude/fix-rollback-header-reconcile-audit-261108-1915` (outra sessão)
-- **mergeStateStatus:** BLOCKED
-- **Verdict: AGUARDANDO HUMANO**
-- **Motivo:** Toca `supabase/migrations/` — migration/DDL
+### Outros bloqueios → AGUARDANDO HUMANO
+- **#3203:** 48+ conflitos add/add em `.github/workflows/` — rebase inviável + label `large-pr-approved` por humano + PR Size Check.
+- **#3210:** Release decision por humano + Supabase Preview FAILURE (check externo).
 
 ---
 
 ## Garantias
 
-- ✅ Nenhuma PR mergeada sem CI verde
-- ✅ Nenhuma branch alheia alterada (commit, push, force-push)
+- ✅ Nenhuma PR mergeada sem CI verde (ou E14 docs-only bypass)
+- ✅ Nenhuma branch alheia alterada (commit, push, force-push, rebase)
 - ✅ Nenhum teste desabilitado, nenhum `eslint-disable`, nenhum `@ts-ignore` adicionado
 - ✅ Nenhum workflow modificado
-- ✅ Branch Protection Sentinel falhando em main é pré-existente (commit `ba1c3fb` sem padrão aceito), não causado por esta sessão
+- ✅ Reruns disparados apenas para checks CANCELLED/flaky — sem `--no-verify`, sem skip de teste
+- ✅ Branch Protection Sentinel (pré-existente) não causado por esta sessão
+- ✅ Rebase tentado em #3160 → abortado ao encontrar 100+ conflitos em `.github/workflows/` (nunca aplicado)
 
-## main após análise
+## main final
 
-SHA: `ba1c3fb13815467c33de069caee564f76ebfd9f5` (inalterado — nenhum merge realizado)
+SHA: `5aed391bf5777b04cb72c8d0138854422c279dd9`  
+Checks: 9 success, 4 skipped, 1 failure (Supabase Preview — externo pré-existente)  
+Gate Final: não aplicável a push de main (só roda em PRs)
