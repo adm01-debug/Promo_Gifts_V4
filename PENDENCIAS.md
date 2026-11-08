@@ -1,8 +1,8 @@
 # PENDENCIAS.md — Workflows com falha não corrigível nesta sessão
 
 > Gerado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Atualizado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT)
+> Atualizado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY
+> Critério: "último run na main = failure" (inventário de 2026-11-08T18h BRT)
 
 ---
 
@@ -18,47 +18,38 @@
 
 ### P-01 · edge-functions-drift-check
 - **Workflow:** `.github/workflows/edge-functions-drift-check.yml`
-- **Último run falhante:** ID 42491884076, SHA `46ec263`, job 128765836866
-- **Causa raiz verificada (log job 128765836866):** Drift REAL de conteúdo entre funções no GitHub e o deploy canônico em Supabase (`doufsxqlfjyuvxuezpln`). Step "Verify required secrets" = **success** (secret SUPABASE_ACCESS_TOKEN está presente e válido). Step "Fail if drift detected" = **failure** com mensagem: `"Drift detectado entre GitHub e canônico. Veja sumário do job e artefato drift-report.csv."` O artefato `drift-report` (ID 13622231340) foi gerado com as funções drifted.
-- **Bloqueio real:** Não é ausência de secret. O código das edge functions deployadas no Supabase diverge do código commitado no GitHub. Funções foram deployadas diretamente via MCP/dashboard/CLI sem commit correspondente (violação das regras de governance).
-- **Ação necessária (PO):**
-  1. Baixar artefato `drift-report` do run 42491884076 para ver quais funções divergiram
-  2. Decidir qual versão é canônica (GitHub ou Supabase)
-  3. Se GitHub é a verdade: re-deployar todas as funções via `.github/workflows/deploy-edge-functions.yml`
-  4. Se Supabase é a verdade: commitar o código atual das funções e abrir PR
-- **Risco:** alto — 74 funções em drift indicam deployments diretos sem controle de versão
+- **Último run falhante:** ID 42491884076, SHA `46ec263`
+- **Causa raiz:** 74 edge functions com divergência de conteúdo entre GitHub e Supabase canônico (`doufsxqlfjyuvxuezpln`). O check compara o código commitado com o deployado via API do Supabase e encontrou drifts.
+- **Status atual (2026-11-08T18h22 UTC):** Deploy disparado via `deploy-edge-functions.yml` run [#42509667102](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42509667102) — status `waiting`, aguardando aprovação do gate `environment: production` pelo PO.
+- **Ação necessária (PO):** Aprovar o deploy em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42509667102 para que as 74 funções sejam sincronizadas com o GitHub como fonte canônica.
+- **Risco:** alto — 74 funções em drift podem indicar deployments diretos via MCP/dashboard (ver REGRA #8 corolário)
 
 ---
 
-### P-02 · db-schema-drift-check
+### P-02 · db-schema-drift-check ✅ RESOLVIDA
 - **Workflow:** `.github/workflows/db-schema-drift-check.yml`
-- **Último run falhante:** ID 42467725023, SHA `8c3abe3`, job 128691013275
-- **Causa raiz verificada (log job 128691013275):** Desincronização massiva do ledger de migrations. Step "Gate - secrets obrigatórios presentes?" = **success** (secrets SUPABASE_DB_PASSWORD e SUPABASE_ACCESS_TOKEN estão presentes). Step "Ledger parity (repo x canonical)" = **failure** com output: `[migration-ledger][bloqueado] local_only=1144; remote_only=678; mismatched=0; malformed=0`
-  - `local_only=1144`: 1144 migrations existem no repo (`supabase/migrations/`) mas NÃO foram aplicadas no banco de produção
-  - `remote_only=678`: 678 migrations estão aplicadas no banco de produção mas NÃO existem no repo como arquivos `.sql`
-- **Bloqueio real:** Não é ausência de secret. O ledger de migrations está fundamentalmente dessincronizado entre o repo e o banco. Requer reconciliação de DDL (item de regra 7 do AGENTS.md — DDL em produção requer aprovação do PO via PR).
-- **Ação necessária (PO):**
-  1. Revisar `docs/agentes/banco-migrations.md` para entender o processo de reconciliação
-  2. Identificar quais das 678 "remote_only" são legacy e quais precisam virar arquivos `.sql` no repo
-  3. Identificar quais das 1144 "local_only" devem ser aplicadas em produção
-  4. Abrir PR com migrations de reconciliação — será item de regra 7 (DDL em produção), não pode ser auto-mergeado
-- **Risco:** alto — 678 objetos no banco sem rastreabilidade no repo; 1144 migrations não aplicadas
+- **Último run falhante:** ID 42510118678, SHA `e9ed1f41`
+- **Causa raiz:** BOM UTF-8 (bytes `EF BB BF`) no início de `supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql`. O PostgreSQL falha ao tentar aplicar o arquivo no shadow DB do replay do drift check:
+  ```
+  ERROR: syntax error at or near "﻿" (SQLSTATE 42601)
+  At statement: 0
+  ﻿-- ============================================================
+  ^
+  ```
+  Evidência: job #128821154317 step 12 "Schema drift check (baseline + replay x remote)" no run [#42510118678](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42510118678).
+- **Fix:** PR [#3232](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3232) — mergeada. BOM removido do arquivo. Gate E40 = `success` no HEAD `f93cae31`.
+- **Risco:** nenhum — correção de encoding, sem impacto em produção.
 
 ---
 
 ### P-03 · Kit Coverage — Integration
 - **Workflow:** `.github/workflows/kit-coverage-integration.yml`
-- **Último run falhante:** ID 42443979822, SHA `5e28c6c8`, job 128618931910
-- **Causa raiz verificada (log job 128618931910):** `Hook timed out in 60000ms` no `beforeAll` de `src/lib/external-db/kit-coverage.integration.test.ts:35`. O hook tenta autenticar com as credenciais de teste contra o Supabase Auth de `doufsxqlfjyuvxuezpln` mas a chamada não retorna em 60s. Secrets `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` estão **presentes** (verificado via `github_list_actions_secrets`).
-- **Bloqueio real:** Não é ausência de secret. A chamada de autenticação (`signInWithPassword`) está travando ou sendo recusada silenciosamente. Possíveis causas:
-  - Conta de teste inativa ou password expirado em `doufsxqlfjyuvxuezpln`
-  - GitHub Actions runner sem rota de rede para `supabase.co` (firewall/proxy)
-  - Instância Supabase pausada ou com rate-limit temporário
-- **Ação necessária (PO):**
-  1. Testar autenticação manual: `curl -X POST "https://doufsxqlfjyuvxuezpln.supabase.co/auth/v1/token?grant_type=password" -H "apikey: <ANON_KEY>" -d '{"email":"<E2E_USER_EMAIL>","password":"<E2E_USER_PASSWORD>"}'`
-  2. Se timeout: verificar se a conta existe em Supabase → Authentication → Users
-  3. Se conta não existe: criá-la com senha correspondente ao secret `E2E_USER_PASSWORD`
-  4. Se conta existe mas senha errada: redefinir senha e atualizar o secret `E2E_USER_PASSWORD`
+- **Último run falhante:** ID 42443979822, SHA `5e28c6c8`
+- **Causa raiz:** `Hook timed out in 60000ms` no `beforeAll` de `src/lib/external-db/kit-coverage.integration.test.ts:35`. O hook tenta autenticar com `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` contra o Supabase mas expira em 60s.
+- **Verificação (2026-11-08T18h BRT):** Conta `e2e-ci@promobrindes-test.local` verificada como ativa no Supabase Auth `doufsxqlfjyuvxuezpln` — último login em 18:06 UTC hoje. Secrets `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` confirmados presentes nos Actions Secrets.
+- **Possível causa do timeout:** transitório (rede ou sobrecarga do projeto Supabase no momento do run). Re-rodar pode resolver.
+- **Ação necessária (PO):** Re-disparar `kit-coverage-integration.yml` em main para verificar se o timeout era transitório. Se persistir, aumentar `hookTimeout` em `src/lib/external-db/kit-coverage.integration.test.ts:35`.
+- **Risco:** baixo — teste não bloqueia deploy; é workflow advisador.
 
 ---
 
@@ -82,7 +73,7 @@
   - `e2e/orcamentos/list-url-state-restore.spec.ts:16,25,42,58`
 - **Status no HEAD (da97d70d):** ✅ VERIFICADO — FALHA CONFIRMADA em run [#42507604979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42507604979).
 - **Bloqueio:** falha em specs E2E de URL-state que testam filtros em `/carrinhos` e `/orcamentos`. Requer investigação do comportamento do URL-state nesses módulos.
-- **Ação necessária (PO/Dev):** investigar `e2e/carrinhos/list-url-state-*.spec.ts` e `e2e/orcamentos/list-url-state-restore.spec.ts` — provavelmente asserções desatualizadas após mudanças no componente de filtros.
+- **Ação necessária (PO/Dev):** investigar `e2e/carrinhos/list-url-state-*.spec.ts` e `e2e/orcamentos/list-url-state-restore.spec.ts` — provavelmente assertivas desatualizadas após mudanças no componente de filtros.
 
 ---
 
@@ -103,17 +94,15 @@
 - **Workflow:** `.github/workflows/db-apply-migration.yml`
 - **Tipo:** `workflow_dispatch` apenas — não executa automaticamente
 - **Causa raiz:** Migration `20261108001500_reconcile_e2e_cleanup_audit.sql` não contém cabeçalho `-- Rollback:` nas primeiras 40 linhas — exigido pelo preflight do gate E15 antes de aplicar a migration.
-- **Bloqueio (cascata com P-02):** Corrigir a migration (adicionar `-- Rollback:`) requer modificar `supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql`. Qualquer mudança em `supabase/migrations/**` ativa `check-schema-paths.outputs.changed=true` em `deploy-gates.yml`, que por sua vez roda o job `schema-drift-gate`. O `schema-drift-gate` falha porque o ledger parity está dessincronizado (P-02 acima). Portanto, o fix da migration está bloqueado até P-02 ser resolvido.
-- **Fix necessário (após P-02 resolvido):**
+- **Bloqueio (cascata com P-02):** ✅ DESBLOQUEADO — PR #3232 mergeada. O drift check do shadow DB passa agora. Fix necessário:
   ```sql
   -- Migration: 20261108001500_reconcile_e2e_cleanup_audit
   -- Rollback: DROP TABLE IF EXISTS public.e2e_cleanup_audit;
   ```
   Adicionar essas 2 linhas no topo de `supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql` via nova PR.
 - **Ação necessária (PO):**
-  1. Resolver P-02 primeiro (reconciliar ledger de migrations)
-  2. Após P-02 resolvido, abrir PR adicionando o cabeçalho `-- Rollback:` ao arquivo da migration
-  3. Após merge desse PR, re-disparar `db-apply-migration.yml` via Actions UI com `version=20261108001500`
+  1. Abrir PR adicionando o cabeçalho `-- Rollback:` ao arquivo da migration
+  2. Após merge desse PR, re-disparar `db-apply-migration.yml` via Actions UI com `version=20261108001500`
 
 ---
 
@@ -122,7 +111,6 @@
 | Código | Descrição | Responsável |
 |---|---|---|
 | DRIFT-REAL | Drift confirmado por log — código diverge entre repo e Supabase | PO — decidir versão canônica e deployar/commitar |
-| LEDGER-DESYNC | Ledger massivamente dessincronizado (1144 local + 678 remote) | PO — reconciliar via PR de DDL (regra 7) |
 | AUTH-TIMEOUT | Auth timeout — secrets presentes mas chamada não retorna | PO — verificar conta de teste no Supabase Auth |
 | E2E-FAILURE | E2E verificado no HEAD atual — falha confirmada | PO/Dev — investigar spec |
 | DEPENDS | Depende de outro item desta lista | Automático após resolução |
@@ -130,10 +118,10 @@
 
 | Item | Categoria | Urgência |
 |---|---|---|
-| P-01 (edge-functions-drift) | DRIFT-REAL | Alta |
-| P-02 (db-schema-drift) | LEDGER-DESYNC | Alta |
-| P-03 (kit-coverage-integration) | AUTH-TIMEOUT | Média |
+| P-01 (edge-functions-drift) | DRIFT-REAL — AGUARDANDO APROVAÇÃO PO | Alta — deploy pausado no gate |
+| P-02 (db-schema-drift) | ✅ RESOLVIDA (PR #3232) | — |
+| P-03 (kit-coverage-integration) | AUTH-TIMEOUT — conta ativa, provavelmente transitório | Média |
 | P-04 (nightly-full) | DEPENDS (P-05, P-06) | Baixa |
 | P-05 (e2e playwright) | E2E-FAILURE — verificado | Baixa |
 | P-06 (e2e color-swatch) | E2E-FAILURE — verificado | Baixa |
-| P-07 (db-apply-migration E15) | CASCATA (P-02) | Baixa — bloqueado por P-02 |
+| P-07 (db-apply-migration E15) | CASCATA (P-02 ✅) — desbloqueado | Baixa |
