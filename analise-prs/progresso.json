@@ -1,14 +1,14 @@
 {
   "sessao": "2026-11-08",
   "session_id": "49a643e1-3ba4-5a51-9048-a545eec48233",
-  "main_sha": "931b932aad60b9b3b5f4ec4d4505482fca136ac4",
+  "main_sha": "6e631dd1cab31832c09028c8e762fc19886a4b70",
   "main_sha_antes_desta_sessao": "9a89d9f0a4ac2df7ad670501adaad9f1f60a75df",
-  "total_prs_abertas": 13,
+  "total_prs_abertas": 11,
   "total_analisadas": 24,
   "vereditos": {
     "MERGEADA_ESTA_SESSAO": 2,
-    "DECISAO_HUMANA": 14,
-    "FECHADA_OU_MERGEADA_PELO_PO": 7,
+    "DECISAO_HUMANA": 11,
+    "FECHADA_OU_MERGEADA_PELO_PO": 11,
     "MERGEADA_PELO_PO_APOS_UPDATE": 1
   },
   "prs_mergeadas_esta_sessao": [
@@ -31,22 +31,31 @@
     {"pr":3127,"motivo":"REGRA#8 — .github/workflows/ (e2e-flows.yml, e2e-stock.yml, e2e.yml)"},
     {"pr":3129,"motivo":"REGRA#8 — .github/workflows/ múltiplos CI/E2E"},
     {"pr":3137,"motivo":"REGRA#8 — .github/workflows/ + e2e-relevance.mjs"},
-    {"pr":3160,"motivo":"Draft — fix DB E15 pg_temp + rollback"},
     {"pr":3179,"motivo":"Draft — fix preflight db-apply-migration"},
-    {"pr":3203,"motivo":"Gate Final = failure (run 128654730896, SHA 1aad6831) + CONFLICTING vs main 931b932a (7 conflitos: .any-type-baseline.json, .cart-header-fuzz.json, .migration-refs-baseline.json, docs/DB_FRONTEND_COVERAGE.md, scripts/gen-internal-schema.mjs, scripts/kit-ai-enrichment.js, supabase/functions/_shared/cors-snapshot.json)"},
+    {"pr":3203,"motivo":"Gate Final = failure (run 128654730896, SHA 1aad6831) + CONFLICTING vs main 6e631dd1 (7 conflitos)"},
     {"pr":3210,"motivo":"Bot PR github-actions[bot] release 1.9.0 — Gate Final status 0 check runs no HEAD 05b38bc5"},
     {"pr":3214,"motivo":"Draft — fix cron CRON-001"},
     {"pr":3215,"motivo":"REGRA#8 — supabase/migrations/ DDL 20261108001500_reconcile; auto_merge squash ativo (PO autorizou)"},
     {"pr":3228,"motivo":"Draft + REGRA#8 — .github/workflows/ e2e-color-swatch"},
-    {"pr":3236,"motivo":"Draft + REGRA#8 — supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql (cabeçalho rollback) + MIGRATIONS_SYNC_LOG.md"},
-    {"pr":3238,"motivo":"Draft — delivery branch claude_05/youthful-ride-vcdchy (analise-prs/*.md + *.json)"},
     {"pr":3239,"motivo":"Draft + REGRA#8 — supabase/migrations/ retroativo 20260611014515 fn_dryrun_standardize_supplier"},
-    {"pr":3242,"motivo":"Draft + FLUXO GIT Regra 2 — branch claude_04/optimistic-lovelace-n960f7 de outro agente"},
     {"pr":3243,"motivo":"Draft + REGRA#8 — supabase/migrations/ 20260511235950_add_categories_level_drift (categories.level IF NOT EXISTS); behind main"}
   ],
-  "fechadas_pelo_po_esta_sessao": [
-    {"pr":3232,"motivo":"Fechada pelo PO/bot após análise anterior — REGRA#8 supabase/migrations/"},
-    {"pr":3234,"motivo":"Fechada pelo PO/bot após análise anterior — Draft feat migrations P09"}
+  "fechadas_ou_mergeadas_pelo_po": [
+    {"pr":3144,"motivo":"Fechada pelo PO antes desta sessão"},
+    {"pr":3148,"motivo":"Fechada pelo PO antes desta sessão"},
+    {"pr":3150,"motivo":"Fechada pelo PO antes desta sessão"},
+    {"pr":3160,"motivo":"Fechada pelo PO durante/após esta sessão — Draft supersedido por PR#3179"},
+    {"pr":3202,"motivo":"Fechada pelo PO antes desta sessão"},
+    {"pr":3205,"motivo":"Fechada pelo PO antes desta sessão"},
+    {"pr":3217,"motivo":"Mergeada pelo PO antes desta sessão"},
+    {"pr":3220,"motivo":"Fechada pelo PO antes desta sessão"},
+    {"pr":3236,"motivo":"Mergeada pelo PO após análise desta sessão — REGRA#8 migration (cabeçalho rollback)"},
+    {"pr":3238,"motivo":"Fechada pelo PO após análise desta sessão — delivery branch claude_05 artefatos"},
+    {"pr":3242,"motivo":"Mergeada pelo PO após sessão — merge commit 6e631dd1 (docs analise-prs claude_04)"}
+  ],
+  "fechadas_antes_desta_sessao_nao_analisadas": [
+    {"pr":3232,"motivo":"Fechada pelo PO/bot antes desta sessão — REGRA#8 supabase/migrations/"},
+    {"pr":3234,"motivo":"Fechada pelo PO/bot antes desta sessão — Draft feat migrations P09"}
   ],
   "baseline": {
     "typecheck_exit": 0,
