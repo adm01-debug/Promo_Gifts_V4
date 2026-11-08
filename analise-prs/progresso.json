@@ -4,20 +4,121 @@
   "data_final": "2026-11-08T21:00:00Z",
   "main_sha_antes": "ba1c3fb13815467c33de069caee564f76ebfd9f5",
   "main_sha_esta_sessao": "17304c02232a8923791f15921d572b203b22c39d",
-  "main_sha_final": "5aed391bf5777b04cb72c8d0138854422c279dd9",
+  "main_sha_final": "ed0733f",
+  "main_sha_antes_desta_pr_docs": "ed0733f",
   "total_prs_inicio": 12,
-  "mergeadas_esta_sessao": 1,
+  "mergeadas_esta_sessao": 2,
   "mergeadas_outras_sessoes": 2,
   "aguardando_humano": 11,
   "ja_implementada": 0,
   "duplicada": 0,
   "descartada": 0,
-  "prs_mergeadas_esta_sessao": [{"number": 3238, "titulo": "docs(analise-prs): relatório merge-prs", "squash_sha": "17304c02232a8923791f15921d572b203b22c39d", "tipo": "docs-only (E14 bypass)", "sessao": "esta sessão"}],
-  "prs_mergeadas_outras_sessoes": [{"number": 3234, "titulo": "feat(migrations): P09", "squash_sha": "0409c07", "sessao": "claude_05/ — antes desta sessão"}, {"number": 3240, "titulo": "fix(ci): grandfather SHA 0409c07f", "squash_sha": "5aed391bf5777b04cb72c8d0138854422c279dd9", "sessao": "outra sessão — durante esta sessão"}],
+  "prs_mergeadas_esta_sessao": [
+    {
+      "number": 3238,
+      "titulo": "docs(analise-prs): relatório merge-prs",
+      "squash_sha": "17304c02232a8923791f15921d572b203b22c39d",
+      "tipo": "docs-only (E14 bypass)",
+      "sessao": "esta sessão"
+    },
+    {
+      "number": 3242,
+      "titulo": "docs(analise-prs): dossiers por PR + ciclos de correção",
+      "squash_sha": "ed0733f",
+      "tipo": "docs-only (E14 bypass)",
+      "sessao": "esta sessão"
+    }
+  ],
+  "prs_mergeadas_outras_sessoes": [
+    {
+      "number": 3234,
+      "titulo": "feat(migrations): P09 — reconcilia 432 versões históricas no ledger schema_migrations",
+      "squash_sha": "0409c07",
+      "tipo": "migrations",
+      "sessao": "claude_05/ — antes desta sessão"
+    },
+    {
+      "number": 3240,
+      "titulo": "fix(ci): grandfather SHA 0409c07f do P09 no Sentinel allowlist",
+      "squash_sha": "5aed391bf5777b04cb72c8d0138854422c279dd9",
+      "tipo": "ci/sentinel fix",
+      "sessao": "outra sessão — durante esta sessão"
+    }
+  ],
   "prs_aguardando_humano": [3127, 3129, 3137, 3160, 3179, 3203, 3210, 3214, 3215, 3228, 3236],
-  "ci_verde_aguardando_humano": [3129, 3228],
+  "ci_verde_aguardando_humano": [3127, 3129, 3137, 3228],
   "ci_irreparavel": [3160, 3179, 3215, 3236],
   "nada_afrouxado": true,
   "nenhuma_pr_alheia_alterada": true,
-  "dossiers_criados": true
+  "dossiers_criados": true,
+  "ciclos_correcao": {
+    "3127": {
+      "ciclo_1": "rerun run_id=42372342538 (visual-check CANCELLED → rerun disparado). Gate Final = SUCCESS confirmado via check_runs SHA 6746bd9c.",
+      "bloqueio_merge": "toca .github/workflows/ — AGUARDANDO HUMANO",
+      "gate_final": "SUCCESS (verificado via check_runs SHA 6746bd9c)"
+    },
+    "3129": {
+      "ciclo_1": "rerun run_id=42365939519 (visual-baseline CANCELLED → rerun disparado)",
+      "bloqueio_merge": "toca .github/workflows/ — AGUARDANDO HUMANO",
+      "gate_final": "SUCCESS (run_id=42365939596)"
+    },
+    "3137": {
+      "ciclo_1": "rerun run_id=42378959180 (Edge Functions JWT timeout flaky → rerun disparado). Gate Final = SUCCESS confirmado via check_runs SHA e97fcf2e.",
+      "bloqueio_merge": "toca .github/workflows/ — AGUARDANDO HUMANO",
+      "gate_final": "SUCCESS (verificado via check_runs SHA e97fcf2e)"
+    },
+    "3160": {
+      "ciclo_1": "Migrations x Canonical schema FAILURE: branch modifica migration 20261101150000 já aplicada em produção — hash diverge. Rebase tentado → 100+ add/add conflicts em .github/workflows/ → abortado. Não corrigível.",
+      "bloqueio_merge": "supabase/migrations/ DDL — AGUARDANDO HUMANO",
+      "gate_final": "FAILURE (irreparável)"
+    },
+    "3179": {
+      "ciclo_1": "Mesma causa de #3160: migration 20261101150000 já aplicada (hash diverge). Não corrigível.",
+      "bloqueio_merge": "supabase/migrations/ DDL — AGUARDANDO HUMANO",
+      "gate_final": "FAILURE (irreparável)"
+    },
+    "3203": {
+      "ciclo_1": "mergeable=CONFLICTING. Rebase tentado → 48+ add/add conflicts em .github/workflows/ — PROIBIDO tocar. Não corrigível.",
+      "bloqueio_merge": "conflito + ci failure + label large-pr-approved — AGUARDANDO HUMANO",
+      "gate_final": "CONFLICTING"
+    },
+    "3210": {
+      "ciclo_1": "Supabase Preview FAILURE (check externo). Não é check do nosso CI — é serviço externo. Não corrigível. Release decision por humano.",
+      "bloqueio_merge": "release decision — AGUARDANDO HUMANO",
+      "gate_final": "FAILURE externo"
+    },
+    "3214": {
+      "ciclo_1": "Branch atualizada por outra sessão (SHA mudou de 5fdb82cd → 42c290c0 → 59bc8923). Toca .github/workflows/ + cron DDL — AGUARDANDO HUMANO.",
+      "bloqueio_merge": "supabase/migrations/ cron DDL + .github/workflows/ — AGUARDANDO HUMANO",
+      "gate_final": "NÃO VERIFICADO (SHA mudou)"
+    },
+    "3215": {
+      "ciclo_1": "Migrations x Canonical schema FAILURE + Recibo de migration FAILURE. Migration 20261108001500 — adicionar comentários em migration existente → hash diverge. Não corrigível.",
+      "bloqueio_merge": "supabase/migrations/ DDL — AGUARDANDO HUMANO",
+      "gate_final": "FAILURE (irreparável)"
+    },
+    "3228": {
+      "ciclo_1": "rerun run_id=42507854259 (ColorSwatch grid E2E FAILURE → rerun disparado). Gate Final = SUCCESS verificado.",
+      "bloqueio_merge": "toca .github/workflows/ — AGUARDANDO HUMANO",
+      "gate_final": "SUCCESS (job_id=128815663423)"
+    },
+    "3236": {
+      "ciclo_1": "Branch atualizada por outra sessão (SHA: 43a6b2a7 → 65190307). mergeable=BEHIND (estava CONFLICTING). Supabase Preview FAILURE (externo). Migration 20261108001500 — hash diverge. Não corrigível.",
+      "bloqueio_merge": "supabase/migrations/ DDL + behind — AGUARDANDO HUMANO",
+      "gate_final": "FAILURE (irreparável + externo)"
+    }
+  },
+  "observacoes": [
+    "#3240 mergeada por outra sessão durante esta sessão — main SHA avançou para 5aed391bf",
+    "#3234 já estava MERGEADA por outro agente/dono antes desta sessão (commit 0409c07 em main)",
+    "#3127, #3129, #3137: reruns disparados para checks CANCELLED/flaky",
+    "#3228: rerun disparado para ColorSwatch grid E2E — Gate Final = SUCCESS após rerun",
+    "#3129: Gate Final = SUCCESS (run original 42365939596)",
+    "#3160, #3179, #3215, #3236: Migrations x Canonical schema FAILURE — modifica migration já aplicada (hash diverge), não corrigível sem decisão humana",
+    "#3203: rebase bloqueado por 48+ conflitos add/add em .github/workflows/ (PROIBIDO)",
+    "#3210: Supabase Preview FAILURE é check externo, não é CI Actions — problema sistêmico (aparece até em main 5aed391bf)",
+    "#3214: toca .github/workflows/ + cron DDL — AGUARDANDO HUMANO (branch atualizada por outra sessão)",
+    "#3236: BEHIND + supabase/migrations/ DDL — AGUARDANDO HUMANO",
+    "Supabase Preview FAILURE em main 5aed391bf: pre-existing issue ('Remote migration versions not found in local migrations directory')"
+  ]
 }
