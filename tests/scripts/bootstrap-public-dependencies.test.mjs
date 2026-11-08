@@ -32,8 +32,18 @@ describe('bootstrap das dependências públicas do baseline', () => {
     expect(20260511235959n).toBeLessThan(20260512000000n);
   });
 
-  it('adiciona categories.level de forma idempotente', () => {
-    expect(sql).toMatch(/ALTER TABLE public\.categories\s+ADD COLUMN IF NOT EXISTS level/i);
+  it('reconcilia o contrato de categories de forma idempotente', () => {
+    expect(sql).toMatch(/ALTER TABLE public\.categories[\s\S]*?ADD COLUMN IF NOT EXISTS level\b/i);
+    for (const column of [
+      'display_order',
+      'is_active',
+      'full_path_readable',
+      'path',
+      'slug',
+      'products_count',
+    ]) {
+      expect(sql).toMatch(new RegExp(`ADD COLUMN IF NOT EXISTS ${column}\\b`, 'i'));
+    }
     expect(sql).toContain('categories_level_check');
   });
 

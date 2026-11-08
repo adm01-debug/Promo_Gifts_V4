@@ -7,7 +7,35 @@
 -- these are canonical application relations and must not be dropped).
 
 ALTER TABLE public.categories
-  ADD COLUMN IF NOT EXISTS level integer DEFAULT 1 NOT NULL;
+  ADD COLUMN IF NOT EXISTS slug text,
+  ADD COLUMN IF NOT EXISTS image_url text,
+  ADD COLUMN IF NOT EXISTS display_order integer DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS is_active boolean DEFAULT true NOT NULL,
+  ADD COLUMN IF NOT EXISTS updated_at timestamptz DEFAULT now(),
+  ADD COLUMN IF NOT EXISTS organization_id uuid
+    DEFAULT '5db5aee1-064b-4ef4-9193-345dcd8274ea'::uuid,
+  ADD COLUMN IF NOT EXISTS bitrix_id integer,
+  ADD COLUMN IF NOT EXISTS bitrix_modified_at timestamptz,
+  ADD COLUMN IF NOT EXISTS synced_at timestamptz,
+  ADD COLUMN IF NOT EXISTS sync_status text DEFAULT 'synced',
+  ADD COLUMN IF NOT EXISTS level integer DEFAULT 1 NOT NULL,
+  ADD COLUMN IF NOT EXISTS path text,
+  ADD COLUMN IF NOT EXISTS is_visible boolean DEFAULT true,
+  ADD COLUMN IF NOT EXISTS color_hex text,
+  ADD COLUMN IF NOT EXISTS meta_title text,
+  ADD COLUMN IF NOT EXISTS meta_description text,
+  ADD COLUMN IF NOT EXISTS meta_keywords text[],
+  ADD COLUMN IF NOT EXISTS products_count integer DEFAULT 0 NOT NULL,
+  ADD COLUMN IF NOT EXISTS children_count integer DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS descendants_count integer DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS created_by uuid,
+  ADD COLUMN IF NOT EXISTS updated_by uuid,
+  ADD COLUMN IF NOT EXISTS deleted_at timestamptz,
+  ADD COLUMN IF NOT EXISTS full_path_readable text,
+  ADD COLUMN IF NOT EXISTS ai_summary text,
+  ADD COLUMN IF NOT EXISTS schema_json jsonb,
+  ADD COLUMN IF NOT EXISTS seo_priority numeric(2,1) DEFAULT 0.7,
+  ADD COLUMN IF NOT EXISTS min_order_quantity integer DEFAULT 1;
 
 DO $bootstrap$
 BEGIN
