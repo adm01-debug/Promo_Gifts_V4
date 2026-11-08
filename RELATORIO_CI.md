@@ -1539,3 +1539,49 @@ Ações tomadas para desbloquear:
 | `npm test` (27398 total) | 26241 passed, 1 failed preexistente | Sem mudança (sessão só tocou .md e comentário .sql) | +0 |
 | Falhas em main (`is:failure`) | Vários workflows | 1 (db-apply-migration.yml) | Melhoria: -9 falhas resolvidas por superseding |
 
+
+---
+
+## §35 — Estado dos checks no SHA `ee9383f37` (2026-11-08T05:30Z) + correção "Recibo de migration"
+
+**SHA PR HEAD:** `ee9383f37652d93943beec9c8e16fd11a3cf30da`  
+**Branch:** `claude/chore-ci-report33-261108-0407` (PR [#3202](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3202))  
+**Deploy Gates run:** [#42450527972](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42450527972) → `status: pending` (runner congestion — free tier)
+
+### Checks concluídos no SHA `ee9383f37` (run #42450527972)
+
+| Check | Status | Conclusão | ID |
+|---|---|---|---|
+| Recibo de migration em MIGRATIONS_SYNC_LOG.md | `completed` | **success** ✅ | 128638555626 |
+| Gitleaks — Secret Scan | `completed` | **success** ✅ | 128638555078 |
+| linter | `completed` | **success** ✅ | 128638555083 |
+| SSOT Gates (validate + guard + hosts) | `completed` | **success** ✅ | 128638554999 |
+| CSP mirror | `completed` | **success** ✅ | 128638554910 |
+| Gate 5 — DB Security Audit | `completed` | **success** ✅ | 128638554861 |
+| Secrets Inventory Check (E40) | `completed` | **success** ✅ | 128638554694 |
+| PR Size Check | `completed` | **success** ✅ | 128638555037 |
+| Unit — Zod schemas | `completed` | **success** ✅ | 128638658926 |
+| Check no prod leak | `completed` | **success** ✅ | 128638554849 |
+| Vercel Preview Comments | `completed` | **success** ✅ | 128638551910 |
+| Vercel Agent Review | `completed` | neutral | 128638545633 |
+| Drift gate antes de girar o baseline | `completed` | skipped | 128638588576 |
+| alert | `completed` | skipped | 128638580709 |
+| Weekly live drift check | `completed` | skipped | 128638556782 |
+| Seed/regen do baseline + PR | `completed` | skipped | 128638556709 |
+| Supabase Preview | `completed` | skipped | 128638538169 |
+| Migrations x Canonical schema | `in_progress` | — | 128638555309 |
+| Compare GitHub × Canonical | `queued` | — | 128638555345 |
+| Export schema snapshot | `queued` | — | 128638555906 |
+| Drift de policies vs baseline assinado | `queued` | — | 128638555823 |
+| Ghost Check Guard | `queued` | — | 128638554872 |
+| Assert Gate Final is required on main | `queued` | — | 128638554860 |
+| relevance / Detectar impacto de runtime/E2E | `queued` | — | 128638555146 |
+| Smoke — HTTP against supabase functions serve | `queued` | — | 128639171258 |
+
+> **"Recibo de migration em MIGRATIONS_SYNC_LOG.md"**: `conclusion: success` ✅ — confirma que o fix do commit `ee9383f37` (mudança `pendente` → `aguardando_merge` + sha256 correto) resolveu o erro E75 `pendente_sem_adicao_no_pr`.
+
+> **Gate Final (Deploy Ready)**: aguardando conclusão da run `42450527972` — runner congestion no free tier do GitHub; run iniciada 05:22Z, sem runner atribuído.
+
+> **"Migrations x Canonical schema"**: pré-existente — drift `local_only≈1142; remote_only=678` (1 migration local adicionada nesta PR; PENDENCIAS #27). Não é required check.
+
+> **"Compare GitHub × Canonical"**: pré-existente — 27 edge functions com conteúdo divergente (PENDENCIAS #29). É required check; requer `deploy-edge-functions.yml` aprovado pelo dono.

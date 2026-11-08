@@ -879,3 +879,32 @@ versão: 20261108001500 | arquivo: 20261108001500_reconcile_e2e_cleanup_audit.sq
 > **Atualização 2026-11-08T04:52Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
 > Item #46 adicionado: `db-apply-migration.yml` falhou por falta de `-- Rollback:` em migration; corrigido nesta PR; requer re-dispatch pelo dono.  
 > Itens com ação do dono pendente: #1, #29, #37, #42, #44, #45 (read-only); #46 (re-dispatch após merge).
+
+---
+
+## 47. "Recibo de migration" ✅ CORRIGIDO nesta PR (SHA `ee9383f37`)
+
+**Check:** "Recibo de migration em MIGRATIONS_SYNC_LOG.md" (E75)  
+**Run falha (SHA `5ac95bfde`):** job [128634724091](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42449821847/job/128634724091) → `conclusion: failure`  
+**Erro exato:** `1/1 migration(ões) alterada(s) SEM recibo válido: 20261108001500_reconcile_e2e_cleanup_audit.sql(pendente_sem_adicao_no_pr)`  
+**Causa:** Status `pendente` em `MIGRATIONS_SYNC_LOG.md` para uma migration MODIFICADA (não adicionada) no PR → regra E75 `pendente_sem_adicao_no_pr`.  
+**Correção aplicada (commit `ee9383f37`):** Status mudado de `pendente` para `aguardando_merge` e sha256 atualizado para `d26ba93e5865229a46a907ae79a0039b2d333394e91f8d5bd982e8c7bd1ba066`.  
+**Confirmação:** check run 128638555626 no SHA `ee9383f37` → `completed: success` ✅ (verificado via API 05:30Z).
+
+---
+
+## 48. "Compare GitHub × Canonical" ❌ (required check — pré-existente — dono precisa agir)
+
+**Check:** "Compare GitHub × Canonical" (edge-functions-drift-check.yml)  
+**Status no SHA `ee9383f37`:** `queued` — esperado falhar por drift pré-existente (PENDENCIAS #29).  
+**Impacto:** Se falhar nesta PR, bloqueia merge (required check). Ver PENDENCIAS #29 para causa completa e ações do dono.  
+**Resumo do bloqueio:** 27 edge functions com conteúdo divergente entre GitHub e Supabase `doufsxqlfjyuvxuezpln`; requer `deploy-edge-functions.yml` com aprovação do ambiente `production` pelo dono. As duas tentativas anteriores foram canceladas.
+
+---
+
+> **Atualização 2026-11-08T05:30Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
+> Item #47: "Recibo de migration" confirmado `success` em SHA `ee9383f37` (check 128638555626).  
+> Item #48: "Compare GitHub × Canonical" queued em `ee9383f37` — esperado failure (pré-existente, required, PENDENCIAS #29).  
+> Deploy Gates run [#42450527972](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42450527972) no SHA `ee9383f37`: `pending` às 05:30Z (runner congestion).  
+> Gate Final em main (`8c3abe3bcb`): run [#42448861374](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861374) `queued` desde 04:57Z.  
+> Itens com ação do dono pendente: #1, #29, #37, #42, #44, #45, #48 (read-only); #46 (re-dispatch após merge).
