@@ -19,3 +19,11 @@ USING (
   bucket_id = 'art-files'
   AND name LIKE 'quotes/%'
 );
+
+-- Garante que usuários autenticados (vendedores, admins) mantêm acesso a todos
+-- os arquivos do bucket (mockups, logos, layouts). Sem esta policy eles perderiam
+-- SELECT após o DROP da policy anterior que era a única cobertura deles.
+CREATE POLICY "art_files_auth_read"
+ON storage.objects FOR SELECT
+TO authenticated
+USING (bucket_id = 'art-files');
