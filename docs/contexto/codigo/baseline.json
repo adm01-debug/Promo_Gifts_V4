@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ed0733f91c720e47f9f2a1dee2862683fe4841ab",
+  "commit": "9b2644b2c1a78f5809e829c6a916f23959e87f12",
   "branch": "main",
-  "data_commit": "2026-11-08T17:34:51-03:00",
+  "data_commit": "2026-11-08T18:01:51-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "9b2644b",
+    "data": "2026-11-08",
+    "assunto": "docs(analise-prs): corrige Gate Final verificado #3127/#3137, ciclo 2 #3203"
+   },
    {
     "sha": "ed0733f",
     "data": "2026-11-08",
@@ -126,14 +131,9 @@
     "sha": "1d3dafa",
     "data": "2026-11-08",
     "assunto": "fix(scripts): corrige scripts, edge functions e baselines (#3201)"
-   },
-   {
-    "sha": "d03ee55",
-    "data": "2026-11-08",
-    "assunto": "docs(auditoria): encerra P06 e P15 — migrations posteriores tornam proposta obsoleta"
    }
   ],
-  "arquivos_mudados_7d": 489,
+  "arquivos_mudados_7d": 462,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 70
+    "mudancas": 69
    },
    {
     "pasta": "src/pages/admin",
@@ -192,18 +192,18 @@
     "mudancas": 56
    },
    {
-    "pasta": "PENDENCIAS.md",
+    "pasta": "src/pages/quotes",
     "mudancas": 53
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 70
+    "mudancas": 69
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 53
+    "mudancas": 52
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -254,11 +254,15 @@
     "mudancas": 6
    },
    {
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "mudancas": 6
+   },
+   {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 6
    },
    {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "arquivo": "analise-prs/progresso.json",
     "mudancas": 5
    },
    {
@@ -291,10 +295,6 @@
    },
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
     "mudancas": 4
    }
   ],

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ed0733f91c720e47f9f2a1dee2862683fe4841ab` (2026-11-08T17:34:51-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `9b2644b2c1a78f5809e829c6a916f23959e87f12` (2026-11-08T18:01:51-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,14 +586,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38196 nós · 66694 arestas · 2110 comunidades · grafo do commit `ed0733f9`
+- 38196 nós · 66694 arestas · 2110 comunidades · grafo do commit `9b2644b2`
 - comunidades maiores: ref_components (701), ref_lib (525), lucide-react (495), ref_integrations (398), @tanstack/react-query (372), gotoAndSettle (335), ref_hooks (317), react (295), sonner (289), scripts (289), cors.ts (286), ref_node_fs (265)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (70)
-- PENDENCIAS.md (53)
+- RELATORIO_CI.md (69)
+- PENDENCIAS.md (52)
 - supabase/MIGRATIONS_SYNC_LOG.md (22)
 - package.json (21)
 - package-lock.json (15)
@@ -606,7 +606,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - AGENTS.md (7)
 - CLAUDE.md (7)
 - .github/workflows/replenishment-quality.yml (6)
-- e2e/flows/magazine-preview-sticky-smoke.spec.ts (6)
+- analise-prs/RELATORIO_PRS.md (6)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-08 `9b2644b` docs(analise-prs): corrige Gate Final verificado #3127/#3137, ciclo 2 #3203
 - 2026-11-08 `ed0733f` chore(migrations): arquivo retroativo 20260611014515 fn_dryrun_standardize_supplier (#3239)
 - 2026-11-08 `6e631dd` docs(analise-prs): ciclos de correção — 2 mergeadas, 11 AGUARDANDO HUMANO
 - 2026-11-08 `d50ae76` fix(migrations): adiciona header Rollback em 20261108001500_reconcile_e2e_cleanup_audit
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-08 `11e2be3` docs(ci): atualiza RELATORIO_CI e PENDENCIAS com verificação HEAD da97d70d (#3231)
 - 2026-11-08 `e9ed1f4` chore(pendencias): corrige causas raiz P-01, P-02, P-03 — secrets presentes, erros são reais
 - 2026-11-08 `da97d70` docs(auditoria): corrige status P06 — views já têm security_invoker=true
-- 2026-11-08 `9656107` docs(ci): atualiza RELATORIO_CI com Gate Final confirmado (a2dda825) (#3227)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

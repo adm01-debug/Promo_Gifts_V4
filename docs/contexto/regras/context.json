@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "ed0733f91c720e47f9f2a1dee2862683fe4841ab",
+  "sha": "9b2644b2c1a78f5809e829c6a916f23959e87f12",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 21:02 UTC",
+  "generated_at": "2026-11-08 22:22 UTC",
   "files_total": 9140,
   "code_files": 7865,
   "code_lines": 1055591
@@ -484067,10 +484067,22 @@
   }
  },
  "git": {
-  "sha": "ed0733f91c720e47f9f2a1dee2862683fe4841ab",
+  "sha": "9b2644b2c1a78f5809e829c6a916f23959e87f12",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "9b2644b",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(analise-prs): corrige Gate Final verificado #3127/#3137, ciclo 2 #3203",
+    "files": [
+     "analise-prs/RELATORIO_PRS.md",
+     "analise-prs/dossies/PR-3127.md",
+     "analise-prs/dossies/PR-3137.md",
+     "analise-prs/progresso.json"
+    ]
+   },
    {
     "sha": "ed0733f",
     "date": "2026-11-08",
@@ -484389,18 +484401,6 @@
     "files": [
      "docs/estado/backlog/funcionalidades.md"
     ]
-   },
-   {
-    "sha": "87fe8cd",
-    "date": "2026-11-08",
-    "author": "github-actions[bot]",
-    "subject": "chore(main): release 1.8.1",
-    "files": [
-     ".release-please-manifest.json",
-     "CHANGELOG.md",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
@@ -484417,6 +484417,14 @@
     5
    ],
    [
+    "analise-prs/RELATORIO_PRS.md",
+    3
+   ],
+   [
+    "analise-prs/progresso.json",
+    3
+   ],
+   [
     ".github/SENTINEL_SHA_ALLOWLIST.txt",
     3
    ],
@@ -484425,15 +484433,15 @@
     3
    ],
    [
+    "analise-prs/dossies/PR-3127.md",
+    2
+   ],
+   [
+    "analise-prs/dossies/PR-3137.md",
+    2
+   ],
+   [
     ".migration-refs-baseline.json",
-    2
-   ],
-   [
-    "analise-prs/RELATORIO_PRS.md",
-    2
-   ],
-   [
-    "analise-prs/progresso.json",
     2
    ],
    [
@@ -484441,15 +484449,7 @@
     1
    ],
    [
-    "analise-prs/dossies/PR-3127.md",
-    1
-   ],
-   [
     "analise-prs/dossies/PR-3129.md",
-    1
-   ],
-   [
-    "analise-prs/dossies/PR-3137.md",
     1
    ],
    [

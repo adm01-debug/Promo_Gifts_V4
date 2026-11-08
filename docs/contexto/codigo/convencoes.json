@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(analise-prs): corrige Gate Final verificado #3127/#3137, ciclo 2 #3203",
    "chore(migrations): arquivo retroativo 20260611014515 fn_dryrun_standardize_supplier (#3239)",
    "docs(analise-prs): ciclos de correção — 2 mergeadas, 11 AGUARDANDO HUMANO",
    "fix(migrations): adiciona header Rollback em 20261108001500_reconcile_e2e_cleanup_audit",
-   "docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f (#3241)",
-   "fix(ci): grandfather SHA 0409c07f do P09 no Sentinel allowlist (#3240)"
+   "docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f (#3241)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -1,7 +1,7 @@
 # Graph Report - Promo_Gifts_V4  (2026-11-08)
 
 ## Corpus Check
-- 5663 files · ~5,049,784 words
+- 5663 files · ~5,050,414 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 56 file(s) not represented in the graph (top: (none) 27, .css 10, .toml 6)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ed0733f9`
+- Built from commit: `9b2644b2`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -9046,7 +9046,7 @@ Nodes (4): Ciclos de correção, Dossiê PR #3236 — fix(migrations): adiciona 
 
 ### Community 1754 - "Resumo de CI por categoria"
 Cohesion: 0.40
-Nodes (5): CI Irreparável → AGUARDANDO HUMANO por DDL, CI não verificado (reruns disparados) → AGUARDANDO HUMANO por governança, CI Verde (Gate Final SUCCESS) → AGUARDANDO HUMANO por governança, Outros bloqueios → AGUARDANDO HUMANO, Resumo de CI por categoria
+Nodes (5): CI Irreparável → AGUARDANDO HUMANO por DDL, CI não verificado → AGUARDANDO HUMANO por governança, CI Verde (Gate Final SUCCESS) → AGUARDANDO HUMANO por governança, Outros bloqueios → AGUARDANDO HUMANO, Resumo de CI por categoria
 
 ### Community 1755 - "7. Custos"
 Cohesion: 0.40
