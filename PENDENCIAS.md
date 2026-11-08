@@ -837,3 +837,40 @@ Remote migration versions not found in local migrations directory.
 > Item #44 adicionado: Supabase Preview failure em SHAs `576a3246` e `4e638a69` — falha no App Supabase Branching (não é GitHub Actions, não é required check). Causa raiz: divergência ledger × banco (mesma do item #1).  
 > HEAD atual (main): `5e28c6c85a0a2b72ed7b3b0385c422b589554bd8` — Deploy Gates [run #42443580823](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42443580823) → `queued` (aguarda runner).  
 > Itens com ação do dono pendente: #1, #29, #37, #42, #44.
+
+---
+
+## P35 — PR #3215 bloqueada por Gate E40 (Schema Drift) — 2026-11-08
+
+**Branch:** `claude/fix-migration-rollback-header-261108-1520`  
+**PR:** [#3215](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3215)  
+**Gate Final run:** [#42494915166](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42494915166) — `conclusion: failure`  
+**Gate E40 job falho:** `128775200662` — step "Schema drift check (baseline + replay x remote)"
+
+### Descrição
+
+PR #3215 corrigiu o header `-- Rollback:` ausente na migration `20261108001500_reconcile_e2e_cleanup_audit.sql`. A correção em si é válida — Gate 1 (Lint + TypeScript), Gate 2 (Unit Tests) e Gate 3 (E2E Smoke) passaram com sucesso.
+
+**Problema:** A modificação de um arquivo em `supabase/migrations/` ativou o **Gate E40 condicional** (vide `deploy-gates.yml` — grep das paths de migration/baseline). Gate E40 falhou por divergência crônica massiva entre o schema ao vivo em `doufsxqlfjyuvxuezpln` e o baseline versionado — exatamente a mesma divergência documentada em **item #1** deste arquivo.
+
+**Verificado:** Gate E40 é condicional: só dispara quando arquivos de migration ou baseline mudam. Commits que não tocam esses arquivos têm Gate Final = ✅ success (confirmado: runs `42494087701`, `42492996567`, `42485383205` — todos success na main).
+
+### Por que não posso corrigir
+
+REGRA #8 (CLAUDE.md) proíbe `supabase migration repair`, `supabase db push` e DDL via `execute_sql` em sessão de agente. O drift crônico (item #1: `local_only=1141; remote_only=674`) só pode ser reconciliado pelo PO com credenciais de service role.
+
+### Impacto
+
+PR #3215 está aberta mas **não pode ser mergeada** enquanto o schema drift crônico (item #1) não for resolvido. A correção do header é válida e deve ser preservada quando o drift for resolvido.
+
+**Gate Final da main não é afetado** — commits recentes em main que não tocam migration files têm Gate Final ✅ success (run [#42494087701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42494087701) para SHA `1d3dafae`).
+
+### Ação necessária (PO)
+
+Mesma ação do item #1:
+1. Executar `supabase migration list --linked` para ver o ledger completo
+2. Rodar `supabase migration repair --status applied <versão>` para cada migration real, com versão explícita
+3. Disparar `schema-snapshot-export.yml` com `force_rotate: true` após reconciliação
+4. Após Gate E40 passar na PR #3215, o PR pode ser re-testado e mergeado
+
+**Referência:** Comentário no PR [#3215#issuecomment-6723473077](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3215#issuecomment-6723473077).
