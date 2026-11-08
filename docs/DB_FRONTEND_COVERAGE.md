@@ -1,6 +1,6 @@
 # DB ↔ Frontend Coverage Report
 
-_Gerado em 2026-11-08T03:14:18.213Z por `scripts/audit-db-frontend-coverage.mjs`._
+_Gerado em 2026-11-08T03:21:44.215Z por `scripts/audit-db-frontend-coverage.mjs`._
 
 > **Como ler:** para cada coluna, classificamos como `READ`, `WRITE`, `READ+WRITE`, `ORPHAN` ou `SYSTEM`. `ORPHAN` = não encontramos referência no código (`src/`, `supabase/functions/`, `api/`). Pode ser falso-positivo se for usada apenas por triggers/RPCs.
 
