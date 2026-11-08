@@ -28,6 +28,33 @@ type E2ERateLimitRow = {
   current_count?: number;
 };
 
+type CleanupAuditStatus =
+  | 'started'
+  | 'ok'
+  | 'error'
+  | 'rate_limited'
+  | 'unauthorized'
+  | 'forbidden'
+  | 'not_found'
+  | 'invalid';
+
+type CleanupAuditRow = {
+  email: string | null;
+  status: CleanupAuditStatus;
+  dry_run: boolean;
+  reason?: string | null;
+  ip?: string;
+  user_agent?: string | null;
+  user_id?: string;
+  seller_id?: string;
+  seller_scope?: string;
+  name_filter_prefix?: string | null;
+  total_deleted?: number;
+  deleted_by_table?: Record<string, number>;
+  errors?: Record<string, string>;
+  duration_ms: number;
+};
+
 let contractResponseHeaders: Record<string, string> = {};
 
 // E094: corsHeaders calculado por request — origem restrita; definido dentro do Deno.serve
@@ -80,6 +107,25 @@ function timingSafeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
+async function writeAudit(
+  supabase: ReturnType<typeof createClient>,
+  row: CleanupAuditRow,
+): Promise<boolean> {
+  const { error } = await supabase
+    .from('e2e_cleanup_audit')
+    .insert({
+      ...row,
+      totals: row.deleted_by_table ?? {},
+      total_ms: row.duration_ms,
+    })
+    .maybeSingle();
+  if (error) {
+    console.warn('[e2e-cleanup] audit write failed:', error.message);
+    return false;
+  }
+  return true;
+}
+
 Deno.serve(async (req: Request) => {
   // E094: origem restrita por request — não mais Access-Control-Allow-Origin: *
   _reqCorsHeaders = getCorsHeaders(req);
@@ -102,19 +148,19 @@ Deno.serve(async (req: Request) => {
   // 1. Auth
   const incomingToken = req.headers.get('x-e2e-cleanup-token') ?? '';
   if (!cleanupToken || !timingSafeEqual(incomingToken, cleanupToken)) {
-    await supabase
-      .from('e2e_cleanup_audit')
-      .insert({
-        ip: clientIp,
-        status: 'auth_failed',
-        reason: 'invalid_token',
-        dry_run: true,
-        total_ms: Date.now() - startMs,
-      })
-      .maybeSingle();
+    await writeAudit(supabase, {
+      email: null,
+      ip: clientIp,
+      user_agent: req.headers.get('user-agent'),
+      status: 'unauthorized',
+      reason: 'invalid_token',
+      dry_run: true,
+      duration_ms: Date.now() - startMs,
+    });
     return jsonResponse({ ok: false, error: 'Unauthorized' }, 401);
   }
 
+  let auditEmail = '';
   try {
     const contractResult = await parseContract(req, E2eCleanupSchemas, {
       corsHeaders: _reqCorsHeaders,
@@ -124,9 +170,20 @@ Deno.serve(async (req: Request) => {
     contractResponseHeaders = responseHeaders;
 
     const email = (body.email ?? '').toLowerCase();
+    auditEmail = email;
     const dryRun = body.dryRun !== false;
     const nameFilterPrefix = body.nameFilterPrefix?.trim() || null;
     if (nameFilterPrefix && !/^\[E2E\](?: [a-zA-Z0-9-]{1,80})?$/.test(nameFilterPrefix)) {
+      await writeAudit(supabase, {
+        email,
+        ip: clientIp,
+        user_agent: req.headers.get('user-agent'),
+        status: 'invalid',
+        reason: 'invalid_name_filter_prefix',
+        dry_run: dryRun,
+        name_filter_prefix: nameFilterPrefix,
+        duration_ms: Date.now() - startMs,
+      });
       return jsonResponse(
         { ok: false, error: 'nameFilterPrefix must be a canonical [E2E] prefix' },
         400,
@@ -143,19 +200,27 @@ Deno.serve(async (req: Request) => {
       }) as unknown as Promise<{ data: E2ERateLimitRow | null; error: unknown }>,
     );
     if (rlResult.error) {
+      await writeAudit(supabase, {
+        email,
+        ip: clientIp,
+        user_agent: req.headers.get('user-agent'),
+        status: 'error',
+        reason: 'rate_limit_unavailable',
+        dry_run: dryRun,
+        duration_ms: Date.now() - startMs,
+      });
       return jsonResponse({ ok: false, error: 'Rate limit unavailable' }, 503);
     }
     if (rlResult.data && !rlResult.data.allowed) {
-      await supabase
-        .from('e2e_cleanup_audit')
-        .insert({
-          ip: clientIp,
-          status: 'rate_limited',
-          reason: 'rate_limit_exceeded',
-          dry_run: dryRun,
-          total_ms: Date.now() - startMs,
-        })
-        .maybeSingle();
+      await writeAudit(supabase, {
+        email,
+        ip: clientIp,
+        user_agent: req.headers.get('user-agent'),
+        status: 'rate_limited',
+        reason: 'rate_limit_exceeded',
+        dry_run: dryRun,
+        duration_ms: Date.now() - startMs,
+      });
       return jsonResponse(
         {
           ok: false,
@@ -169,16 +234,15 @@ Deno.serve(async (req: Request) => {
     // 3. Email allowlist
     if (ALLOWED_EMAILS.size === 0 || !ALLOWED_EMAILS.has(email)) {
       // E019: fail-closed — empty allowlist = env var ausente = rejeita tudo
-      await supabase
-        .from('e2e_cleanup_audit')
-        .insert({
-          ip: clientIp,
-          status: 'forbidden',
-          reason: 'email_not_allowed',
-          dry_run: dryRun,
-          total_ms: Date.now() - startMs,
-        })
-        .maybeSingle();
+      await writeAudit(supabase, {
+        email,
+        ip: clientIp,
+        user_agent: req.headers.get('user-agent'),
+        status: 'forbidden',
+        reason: 'email_not_allowed',
+        dry_run: dryRun,
+        duration_ms: Date.now() - startMs,
+      });
       return jsonResponse({ ok: false, error: 'Email not in allowed list' }, 403);
     }
 
@@ -209,14 +273,57 @@ Deno.serve(async (req: Request) => {
       throw new Error(`User lookup exceeded the safe limit of ${maxUserPages} pages`);
     }
     if (!targetUser) {
+      await writeAudit(supabase, {
+        email,
+        ip: clientIp,
+        user_agent: req.headers.get('user-agent'),
+        status: 'not_found',
+        reason: 'user_not_found',
+        dry_run: dryRun,
+        duration_ms: Date.now() - startMs,
+      });
       return jsonResponse({ ok: false, error: 'User not found', email }, 404);
     }
     const userId = targetUser.id;
     if (body.sellerScope === 'explicit' && body.sellerId !== userId) {
+      await writeAudit(supabase, {
+        email,
+        ip: clientIp,
+        user_agent: req.headers.get('user-agent'),
+        status: 'forbidden',
+        reason: 'seller_id_mismatch',
+        dry_run: dryRun,
+        user_id: userId,
+        seller_id: body.sellerId,
+        seller_scope: 'explicit',
+        name_filter_prefix: nameFilterPrefix,
+        duration_ms: Date.now() - startMs,
+      });
       return jsonResponse(
         { ok: false, error: 'sellerId does not match the allowlisted email' },
         403,
       );
+    }
+
+    // Operações destrutivas sem trilha de auditoria são proibidas. Se o
+    // registro inicial não puder ser persistido, nenhum DELETE é executado.
+    if (!dryRun) {
+      const auditStarted = await writeAudit(supabase, {
+        email,
+        ip: clientIp,
+        user_agent: req.headers.get('user-agent'),
+        status: 'started',
+        reason: 'cleanup_started',
+        dry_run: false,
+        user_id: userId,
+        seller_id: userId,
+        seller_scope: nameFilterPrefix ? 'quotes-prefix' : 'full-user',
+        name_filter_prefix: nameFilterPrefix,
+        duration_ms: Date.now() - startMs,
+      });
+      if (!auditStarted) {
+        return jsonResponse({ ok: false, error: 'Audit trail unavailable' }, 503);
+      }
     }
 
     // 5. Cleanup (application data only)
@@ -389,18 +496,27 @@ Deno.serve(async (req: Request) => {
     }
 
     const totalMs = Date.now() - startMs;
-    const ok = Object.keys(errors).length === 0;
-    await supabase
-      .from('e2e_cleanup_audit')
-      .insert({
-        ip: clientIp,
-        status: ok ? 'success' : 'partial_error',
-        dry_run: dryRun,
-        user_id: userId,
-        totals: deleted,
-        total_ms: totalMs,
-      })
-      .maybeSingle();
+    const cleanupOk = Object.keys(errors).length === 0;
+    const auditCompleted = await writeAudit(supabase, {
+      email,
+      ip: clientIp,
+      user_agent: req.headers.get('user-agent'),
+      status: cleanupOk ? 'ok' : 'error',
+      reason: cleanupOk ? null : 'partial_cleanup_error',
+      dry_run: dryRun,
+      user_id: userId,
+      seller_id: userId,
+      seller_scope: nameFilterPrefix ? 'quotes-prefix' : 'full-user',
+      name_filter_prefix: nameFilterPrefix,
+      total_deleted: Object.values(deleted).reduce((total, count) => total + count, 0),
+      deleted_by_table: deleted,
+      errors,
+      duration_ms: totalMs,
+    });
+    if (!auditCompleted) {
+      errors.audit = 'final audit write failed';
+    }
+    const ok = cleanupOk && auditCompleted;
 
     return jsonResponse(
       {
@@ -420,16 +536,15 @@ Deno.serve(async (req: Request) => {
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'unknown';
     console.error('[e2e-cleanup] error:', msg);
-    await supabase
-      .from('e2e_cleanup_audit')
-      .insert({
-        ip: clientIp,
-        status: 'error',
-        reason: msg,
-        dry_run: true,
-        total_ms: Date.now() - startMs,
-      })
-      .maybeSingle();
+    await writeAudit(supabase, {
+      email: auditEmail,
+      ip: clientIp,
+      user_agent: req.headers.get('user-agent'),
+      status: 'error',
+      reason: msg,
+      dry_run: true,
+      duration_ms: Date.now() - startMs,
+    });
     return jsonResponse({ ok: false, error: 'Internal error' }, 500);
   }
 });

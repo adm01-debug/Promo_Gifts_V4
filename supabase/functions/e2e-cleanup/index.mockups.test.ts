@@ -104,6 +104,9 @@ let scopedQuoteDeleted = false;
 let scopedQuoteDeleteError: string | null = null;
 let userLookupPage = 1;
 let rateLimitError: string | null = null;
+let auditWriteError: string | null = null;
+let auditWriteFailsAt: number | null = null;
+let auditWriteCount = 0;
 
 async function contractFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
   const request = new Request(input, init);
@@ -130,6 +133,10 @@ async function contractFetch(input: RequestInfo | URL, init?: RequestInit): Prom
     return json({ allowed: true });
   }
   if (url.pathname === '/rest/v1/e2e_cleanup_audit') {
+    auditWriteCount += 1;
+    if (auditWriteError && (auditWriteFailsAt === null || auditWriteFailsAt === auditWriteCount)) {
+      return json({ message: auditWriteError }, 500);
+    }
     return json({ id: '00000000-0000-4000-8000-000000000045' }, 201);
   }
   if (url.pathname === `/storage/v1/object/list/${BUCKET}`) {
@@ -188,6 +195,9 @@ const restDeletes = () =>
   recorded.filter((r) => r.method === 'DELETE' && r.pathname.startsWith('/rest/v1/'));
 const storageDeletes = () =>
   recorded.filter((r) => r.method === 'DELETE' && r.pathname === `/storage/v1/object/${BUCKET}`);
+const auditInserts = () =>
+  recorded.filter((r) => r.method === 'POST' && r.pathname === '/rest/v1/e2e_cleanup_audit');
+const lastAudit = () => JSON.parse(auditInserts().at(-1)?.body ?? '{}') as Record<string, unknown>;
 
 type CleanupBody = {
   ok: boolean;
@@ -206,6 +216,9 @@ beforeEach(() => {
   scopedQuoteDeleteError = null;
   userLookupPage = 1;
   rateLimitError = null;
+  auditWriteError = null;
+  auditWriteFailsAt = null;
+  auditWriteCount = 0;
   recorded.length = 0;
   globalThis.fetch = contractFetch as typeof fetch;
 });
@@ -281,10 +294,56 @@ describe('e2e-cleanup — limpeza de mockups', () => {
     expect(storageDeletes()).toHaveLength(0);
     // O banco ainda foi limpo apesar da falha do storage.
     expect(restDeletes().some((r) => r.pathname === '/rest/v1/generated_mockups')).toBe(true);
+    expect(lastAudit()).toMatchObject({
+      email: TEST_USER.email,
+      status: 'error',
+      reason: 'partial_cleanup_error',
+      dry_run: false,
+      errors: {
+        [`storage:${BUCKET}/logos`]: 'storage offline',
+        [`storage:${BUCKET}/mockups`]: 'storage offline',
+      },
+    });
   });
 });
 
 describe('e2e-cleanup — escopo de quotes por prefixo', () => {
+  it('falha fechado antes de DELETE quando a trilha de auditoria está indisponível', async () => {
+    auditWriteError = 'audit unavailable';
+    const res = await handler!(
+      cleanupRequest({
+        email: TEST_USER.email,
+        dryRun: false,
+        nameFilterPrefix: SCOPED_PREFIX,
+      }),
+    );
+
+    expect(res.status).toBe(503);
+    await expect(res.json()).resolves.toMatchObject({
+      ok: false,
+      error: 'Audit trail unavailable',
+    });
+    expect(restDeletes()).toHaveLength(0);
+  });
+
+  it('não produz falso verde quando a auditoria final falha após o cleanup', async () => {
+    auditWriteError = 'audit unavailable';
+    auditWriteFailsAt = 2;
+    const res = await handler!(
+      cleanupRequest({
+        email: TEST_USER.email,
+        dryRun: false,
+        nameFilterPrefix: SCOPED_PREFIX,
+      }),
+    );
+    const body = (await res.json()) as CleanupBody;
+
+    expect(res.status).toBe(500);
+    expect(body.ok).toBe(false);
+    expect(body.errors).toMatchObject({ audit: 'final audit write failed' });
+    expect(restDeletes().map((call) => call.pathname)).toEqual(['/rest/v1/quotes']);
+  });
+
   it('falha fechado quando o rate limiter não responde', async () => {
     rateLimitError = 'rpc unavailable';
     const res = await handler!(
@@ -297,6 +356,12 @@ describe('e2e-cleanup — escopo de quotes por prefixo', () => {
 
     expect(res.status).toBe(503);
     expect(restDeletes()).toHaveLength(0);
+    expect(lastAudit()).toMatchObject({
+      email: TEST_USER.email,
+      status: 'error',
+      reason: 'rate_limit_unavailable',
+      dry_run: false,
+    });
   });
 
   it('encontra o email allowlisted depois da primeira página de usuários', async () => {
@@ -348,6 +413,24 @@ describe('e2e-cleanup — escopo de quotes por prefixo', () => {
     const deletes = restDeletes();
     expect(deletes.map((call) => call.pathname)).toEqual(['/rest/v1/quotes']);
     expect(new URLSearchParams(deletes[0].query).get('client_name')).toBe(`like.${SCOPED_PREFIX}%`);
+
+    const audit = lastAudit();
+    expect(audit).toMatchObject({
+      email: TEST_USER.email,
+      status: 'ok',
+      dry_run: false,
+      user_id: TEST_USER.id,
+      seller_id: TEST_USER.id,
+      seller_scope: 'quotes-prefix',
+      name_filter_prefix: SCOPED_PREFIX,
+      total_deleted: 3,
+      totals: { quotes: 1, quote_items: 2 },
+      total_ms: expect.any(Number),
+      deleted_by_table: { quotes: 1, quote_items: 2 },
+      errors: {},
+    });
+    expect(audit).toHaveProperty('duration_ms');
+    expect(audit.total_ms).toBe(audit.duration_ms);
   });
 
   it('rejeita prefixo não canônico antes de qualquer DELETE', async () => {
@@ -361,6 +444,12 @@ describe('e2e-cleanup — escopo de quotes por prefixo', () => {
 
     expect(res.status).toBe(400);
     expect(restDeletes()).toHaveLength(0);
+    expect(lastAudit()).toMatchObject({
+      email: TEST_USER.email,
+      status: 'invalid',
+      reason: 'invalid_name_filter_prefix',
+      name_filter_prefix: 'qualquer-coisa%',
+    });
   });
 
   it('propaga erro de DELETE e falha quando a verificação encontra resíduo', async () => {
@@ -395,5 +484,14 @@ describe('e2e-cleanup — escopo de quotes por prefixo', () => {
 
     expect(res.status).toBe(403);
     expect(restDeletes()).toHaveLength(0);
+    expect(lastAudit()).toMatchObject({
+      email: TEST_USER.email,
+      status: 'forbidden',
+      reason: 'seller_id_mismatch',
+      user_id: TEST_USER.id,
+      seller_id: OTHER_USER_ID,
+      seller_scope: 'explicit',
+      name_filter_prefix: SCOPED_PREFIX,
+    });
   });
 });
