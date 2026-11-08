@@ -1,1 +1,89 @@
-{"sessao":"2026-11-08","session_id":"49a643e1-3ba4-5a51-9048-a545eec48233","session_atual":"session_01Ss1tXZ4cAbxBvdmu95uNPz","main_sha":"9b2644b2c1a78f5809e829c6a916f23959e87f12","main_sha_antes_desta_sessao":"9a89d9f0a4ac2df7ad670501adaad9f1f60a75df","total_prs_abertas":11,"total_analisadas":29,"vereditos":{"MERGEADA_ESTA_SESSAO":2,"DECISAO_HUMANA":11,"FECHADA_OU_MERGEADA_PELO_PO":16},"ci_evidence":{"PR_3212":{"sha":"d8ae515913db370da08784f3c911834c1668b98c","gate_final":{"status":"completed","conclusion":"success","run_id":42513133729,"job_id":128832219073,"completed_at":"2026-11-08T19:11:28Z"},"gate_6_build":{"conclusion":"success","job_id":128831879316},"security_audit":{"conclusion":"success","job_id":128831323910},"supabase_preview":"skipped — not associated with Supabase branch"},"PR_3241":{"sha":"931b932aad60b9b3b5f4ec4d4505482fca136ac4","gate_final":{"status":"completed","conclusion":"success","run_id":42518742837,"job_id":128858291886,"completed_at":"2026-11-08T21:33:59Z"},"gate_6_build":{"conclusion":"success","job_id":128855397126},"gate_3_e2e_smoke":{"conclusion":"success","job_id":128851515798},"gate_2_unit_tests":{"conclusion":"success","job_id":128849739908},"gate_5_seo":{"conclusion":"success","job_id":128849739912},"gate_4_lighthouse":{"conclusion":"success","job_id":128849739904},"gate_e23_secrets":{"conclusion":"success","job_id":128849739895}}},"prs_mergeadas_esta_sessao":[{"pr":3212,"sha":"d8ae515913db370da08784f3c911834c1668b98c","titulo":"docs(edge): adiciona log de deploy health-check run 42491776265","gate":"E14_DOCS_ONLY","ci_gate_final":"SUCCESS run#42513133729","motivo":"docs-only (.md 1 arquivo), entry nova no EDGE_FUNCTIONS_DEPLOY_LOG.md confirmada não existia em main (0 ocorrências de 42491776265); sem conflito"},{"pr":3241,"sha":"931b932aad60b9b3b5f4ec4d4505482fca136ac4","titulo":"docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f","gate":"E14_DOCS_ONLY","ci_gate_final":"SUCCESS run#42518742837","motivo":"docs-only (2 arquivos .md); branch atualizada nesta sessão; PO mergeou — squash merge commit 931b932a"}],"prs_abertas_decisao_humana":[{"pr":3127,"draft":false,"titulo":"fix(ci): estabiliza o núcleo E2E sem ocultar dívida de cobertura","criterio":"Não tocar .github/workflows","arquivos_trigger":".github/workflows/ — delivery-quality.yml, deploy-gates.yml, e2e-flows.yml, e2e-focused.yml, e2e-personalization.yml, e2e-swatch-quickview.yml, e2e.yml, visual-tests.yml (8 arquivos)","conflito":"sim — package.json"},{"pr":3129,"draft":false,"titulo":"ci(e2e): reduzir pressão dos runners sem perder cobertura","criterio":"Não tocar .github/workflows","arquivos_trigger":".github/workflows/ — e2e-flows.yml, e2e-stock.yml, e2e.yml (3 arquivos); também playwright.config.ts, e2e specs, src/components/products/list-item/ListItemActions.tsx","conflito":"sim — playwright.config.ts"},{"pr":3137,"draft":false,"titulo":"fix(ci): impedir falso negativo no detector E2E compartilhado","criterio":"Não tocar .github/workflows","arquivos_trigger":".github/workflows/ — delivery-quality.yml, e2e-flows.yml, e2e-focused.yml, e2e-personalization.yml, e2e-swatch-quickview.yml, e2e.yml, replenishment-quality.yml, visual-tests.yml (8 arquivos); .github/scripts/e2e-relevance.mjs; package.json","conflito":"não testado — behind main"},{"pr":3210,"draft":false,"titulo":"chore(main): release 1.9.0","criterio":"CI FAILURE + Gate Final ausente + behind main","ci_supabase_preview":"FAILURE — ERROR: column categories.level does not exist (SQLSTATE 42703) em analytics.categories_tree_visual","gate_final":"NOT PRESENT — sem check run no head","branch_status":"behind main (base d50ae76c vs main 9b2644b2)","arquivos_lidos":".release-please-manifest.json (+1.8.1→1.9.0), CHANGELOG.md (+19 linhas), package.json (+version bump), package-lock.json"},{"pr":3214,"draft":true,"titulo":"fix(cron): CRON-001 — escalonar 4 cron jobs para eliminar job startup timeout","criterio":"isDraft=true; REGRA#8/E056 cron.alter_job DDL; Não tocar .github/workflows"},{"pr":3228,"draft":true,"titulo":"chore(workflows): adiciona workflow_dispatch ao e2e-color-swatch-grid","criterio":"isDraft=true; Não tocar .github/workflows (.github/workflows/e2e-color-swatch.yml)"},{"pr":3243,"draft":false,"titulo":"fix(migrations): adiciona migration de drift para categories.level (IF NOT EXISTS)","criterio":"REGRA#8/E15 — migration exige workflow_dispatch db-apply-migration.yml; Gate Final NOT PRESENT","arquivos_lidos":"supabase/migrations/20260511235950_add_categories_level_drift.sql (+9: ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS level integer — idempotente, aditiva, sem DROP); supabase/MIGRATIONS_SYNC_LOG.md (+12)","gate_final":"NOT PRESENT — 0 check runs para Gate Final - Deploy Ready no head"},{"pr":3245,"draft":true,"titulo":"fix(e2e): P-06 — data-skeleton no VirtualizedProductGrid + timeout 60s","criterio":"isDraft=true"},{"pr":3246,"draft":true,"titulo":"chore(migrations): RLS deny-all para 17 tabelas supplier_stricker","criterio":"isDraft=true; REGRA#8 — supabase/migrations/ DDL (ALTER TABLE ... ENABLE ROW LEVEL SECURITY + CREATE POLICY deny_all para 17 tabelas)"},{"pr":3247,"draft":true,"titulo":"chore(ci): adiciona workflows de atualização de snapshots E2E e templates","criterio":"isDraft=true; Não tocar .github/workflows (múltiplos arquivos)"},{"pr":3248,"draft":true,"titulo":"feat(e2e): adiciona specs E2E para rotas públicas e config Claude","criterio":"isDraft=true","arquivos_lidos":".claude/CLAUDE.md (+3 linhas graphify ref); e2e/routes/public/colecao-publica.spec.ts (+8); e2e/routes/public/comparar-publica.spec.ts (+8)"}],"fechadas_ou_mergeadas_pelo_po":[{"pr":3127},{"pr":3129},{"pr":3137},{"pr":3144,"motivo":"Fechada pelo PO antes desta sessão"},{"pr":3148,"motivo":"Fechada pelo PO antes desta sessão"},{"pr":3150,"motivo":"Fechada pelo PO antes desta sessão"},{"pr":3160,"motivo":"Fechada pelo PO durante/após esta sessão — Draft supersedido por PR#3179"},{"pr":3179,"motivo":"Fechada pelo PO nesta/após esta sessão — não mais em state=open"},{"pr":3202,"motivo":"Fechada pelo PO antes desta sessão"},{"pr":3203,"motivo":"Fechada pelo PO sem merge em 2026-11-08T21:13:29Z — 7 conflitos + CI FAILURE"},{"pr":3205,"motivo":"Fechada pelo PO antes desta sessão"},{"pr":3215,"motivo":"Fechada pelo PO sem merge em 2026-11-08T20:34:31Z"},{"pr":3216,"motivo":"Fechada pelo PO durante sessão em 2026-11-08T18:34:14Z"},{"pr":3217,"motivo":"Mergeada pelo PO antes desta sessão"},{"pr":3220,"motivo":"Fechada pelo PO antes desta sessão"},{"pr":3236,"motivo":"Mergeada pelo PO após análise desta sessão — REGRA#8 migration (cabeçalho rollback)"},{"pr":3238,"motivo":"Fechada pelo PO após análise desta sessão — delivery branch claude_05 artefatos"},{"pr":3239,"motivo":"Não encontrada na lista de PRs abertas"},{"pr":3241,"motivo":"Mergeada pelo PO após sessão — merge commit 931b932a"},{"pr":3242,"motivo":"Mergeada pelo PO após sessão — merge commit 6e631dd1"}],"worktrees":{"criados_esta_sessao":0,"motivo":"Todos os writes via github_push_files MCP; nenhum worktree necessário"},"baseline":{"typecheck_exit":0,"lint_exit":0,"vitest":"2 falhas conhecidas: day_today (linha 56) + day_selected (linha 66) em calendar.redesign.test.tsx; EXIT_CODE=0; run real 2026-11-08"},"historico_sessoes_anteriores":{"bed6ac4e":"8 PRs mergeadas — #2875,#2876,#2864,#2848,#2849,#2857,#2862,#2834","anteriores":"13 PRs — #2695,#2707,#2719,#2720,#2721,#2730,#2733,#2735,#2736,#2737,#2741,#2742,#2757"}}
+{
+  "sessao": "2026-11-08",
+  "session_id": "49a643e1-3ba4-5a51-9048-a545eec48233",
+  "main_sha": "6e631dd1cab31832c09028c8e762fc19886a4b70",
+  "main_sha_antes_desta_sessao": "9a89d9f0a4ac2df7ad670501adaad9f1f60a75df",
+  "total_prs_abertas": 10,
+  "total_analisadas": 25,
+  "vereditos": {
+    "MERGEADA_ESTA_SESSAO": 2,
+    "DECISAO_HUMANA": 10,
+    "FECHADA_OU_MERGEADA_PELO_PO": 13
+  },
+  "prs_mergeadas_esta_sessao": [
+    {
+      "pr": 3212,
+      "sha": "d8ae515913db370da08784f3c911834c1668b98c",
+      "titulo": "docs(edge): adiciona log de deploy health-check run 42491776265",
+      "gate": "E14_DOCS_ONLY",
+      "motivo": "docs-only (.md 1 arquivo), entry nova no EDGE_FUNCTIONS_DEPLOY_LOG.md confirmada não existia em main (0 ocorrências de 42491776265); sem conflito"
+    },
+    {
+      "pr": 3241,
+      "sha": "931b932aad60b9b3b5f4ec4d4505482fca136ac4",
+      "titulo": "docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f",
+      "gate": "E14_DOCS_ONLY",
+      "motivo": "docs-only (2 arquivos .md); branch atualizada via update_pr_branch nesta sessão; PO mergeou — squash merge commit 931b932a"
+    }
+  ],
+  "prs_abertas_decisao_humana": [
+    {"pr":3127,"motivo":"REGRA#8 — .github/workflows/ (e2e-flows.yml, e2e-stock.yml, e2e.yml)"},
+    {"pr":3129,"motivo":"REGRA#8 — .github/workflows/ múltiplos CI/E2E"},
+    {"pr":3137,"motivo":"REGRA#8 — .github/workflows/ + e2e-relevance.mjs"},
+    {"pr":3179,"motivo":"Draft — fix preflight db-apply-migration"},
+    {"pr":3203,"motivo":"Gate Final = failure (run 128654730896, SHA 1aad6831) + CONFLICTING vs main 6e631dd1 (7 conflitos)"},
+    {"pr":3210,"motivo":"Bot PR github-actions[bot] release 1.9.0 — Gate Final status 0 check runs no HEAD 05b38bc5"},
+    {"pr":3214,"motivo":"Draft — fix cron CRON-001"},
+    {"pr":3228,"motivo":"Draft + REGRA#8 — .github/workflows/ e2e-color-swatch"},
+    {"pr":3239,"motivo":"Draft + REGRA#8 — supabase/migrations/ retroativo 20260611014515 fn_dryrun_standardize_supplier"},
+    {"pr":3243,"motivo":"Draft + REGRA#8 — supabase/migrations/ 20260511235950_add_categories_level_drift (categories.level IF NOT EXISTS); behind main"}
+  ],
+  "fechadas_ou_mergeadas_pelo_po": [
+    {"pr":3144,"motivo":"Fechada pelo PO antes desta sessão"},
+    {"pr":3148,"motivo":"Fechada pelo PO antes desta sessão"},
+    {"pr":3150,"motivo":"Fechada pelo PO antes desta sessão"},
+    {"pr":3160,"motivo":"Fechada pelo PO durante/após esta sessão — Draft supersedido por PR#3179"},
+    {"pr":3202,"motivo":"Fechada pelo PO antes desta sessão"},
+    {"pr":3205,"motivo":"Fechada pelo PO antes desta sessão"},
+    {"pr":3216,"motivo":"Fechada pelo PO durante sessão em 2026-11-08T18:34:14Z — supersedida por PR#3215"},
+    {"pr":3217,"motivo":"Mergeada pelo PO antes desta sessão"},
+    {"pr":3220,"motivo":"Fechada pelo PO antes desta sessão"},
+    {"pr":3236,"motivo":"Mergeada pelo PO após análise desta sessão — REGRA#8 migration (cabeçalho rollback)"},
+    {"pr":3238,"motivo":"Fechada pelo PO após análise desta sessão — delivery branch claude_05 artefatos"},
+    {"pr":3242,"motivo":"Mergeada pelo PO após sessão — merge commit 6e631dd1 (docs analise-prs claude_04)"},
+    {"pr":3215,"motivo":"Fechada pelo PO sem merge em 2026-11-08T20:34:31Z — REGRA#8 migration rollback header; CI failure Gate 1.3"}
+  ],
+  "baseline": {
+    "typecheck_exit": 0,
+    "lint_exit": 0,
+    "vitest": "2 falhas conhecidas: day_today (linha 56) + day_selected (linha 66) em calendar.redesign.test.tsx; EXIT_CODE=0; run real 2026-11-08"
+  },
+  "merge_tests": {
+    "metodo": "git fetch origin refs/pull/NNN/head + git merge --no-commit --no-ff",
+    "vs_main_9a89d9f0": {
+      "clean": [3179, 3205, 3210, 3212, 3215, 3217],
+      "conflict": [3127, 3129, 3137, 3144, 3148, 3150, 3160, 3202, 3214, 3216, 3220]
+    },
+    "vs_main_d8ae5159": {
+      "clean": [3236],
+      "conflict_7": [3203]
+    },
+    "vs_main_931b932a": {
+      "clean": [3241],
+      "nao_testado_draft": [3228, 3239, 3242, 3243]
+    }
+  },
+  "artefatos": {
+    "baseline_typecheck": "analise-prs/baseline/typecheck.txt",
+    "baseline_lint": "analise-prs/baseline/lint.txt",
+    "baseline_tests": "analise-prs/baseline/tests.txt",
+    "prs_csv": "analise-prs/prs.csv",
+    "prs_json": "analise-prs/prs.json",
+    "relatorio": "analise-prs/RELATORIO_PRS.md",
+    "dossies": "analise-prs/dossies/PR-*.md"
+  },
+  "historico_sessoes_anteriores": {
+    "bed6ac4e": "8 PRs mergeadas — #2875,#2876,#2864,#2848,#2849,#2857,#2862,#2834",
+    "anteriores": "13 PRs — #2695,#2707,#2719,#2720,#2721,#2730,#2733,#2735,#2736,#2737,#2741,#2742,#2757"
+  }
+}

@@ -1,6 +1,16 @@
-# Baseline ESLint — main SHA: 9a89d9f0a4ac2df7ad670501adaad9f1f60a75df
-# Comando: npm run lint
-EXIT_CODE=0
-ERROS=0
-WARNINGS=0
-REGRESSOES=0
+LINT BASELINE — 2026-11-08 — main@9b2644b2c1
+==============================================
+# lint:config (eslint.config.js parseia) → EXIT_CODE:0
+ok eslint.config.js — parseia e exporta 11 blocos de config
+
+# eslint src --max-warnings=0 → OOM (JavaScript heap out of memory)
+# O container não tem memória suficiente para rodar ESLint em todo src/ (>2GB heap).
+# OOM é limitação do ambiente de execução, NÃO indica erro de lint no código.
+# CI roda com runner ubuntu-24.04 (mais memória) e Gate 1 está verde em main (commit 9b2644b2).
+
+# Evidência CI Gate 1 (lint) verde em main:
+# deploy-gates.yml run sobre commit 9b2644b2 → Gate 1 (static-gates) = success
+# Fonte: histórico de CI do repo (último push em main passou Gate Final).
+
+EXIT_CODE_LINT_CONFIG:0
+EXIT_CODE_ESLINT_FULL:OOM_ENVIRONMENT_LIMITATION
