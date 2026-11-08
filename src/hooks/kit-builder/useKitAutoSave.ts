@@ -10,7 +10,14 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import type { KitState } from '@/lib/kit-builder';
+import type {
+  KitState,
+  KitBox,
+  KitItem,
+  KitPersonalization,
+  KitIdentity,
+  KitType,
+} from '@/lib/kit-builder';
 import { logger } from '@/lib/logger';
 import {
   buildKitPersistencePayload,
@@ -20,6 +27,22 @@ import {
 
 const AUTO_SAVE_DELAY_MS = 5000;
 const LS_BACKUP_KEY_PREFIX = 'kit-builder-unload-backup';
+
+/**
+ * Full restorable state saved on beforeunload. Unlike the detection snapshot
+ * (which only holds IDs/quantities), this carries all display data needed to
+ * re-hydrate the editor without a round-trip to the database.
+ */
+export interface BackupFullState {
+  name: string;
+  kitType: KitType;
+  box: KitBox | null;
+  items: KitItem[];
+  personalization: KitPersonalization;
+  identity?: KitIdentity;
+  notes?: string;
+  qty: number;
+}
 
 interface AutoSaveResult {
   lastSavedAt: Date | null;
@@ -36,7 +59,12 @@ interface AutoSaveResult {
   /** Supersedes any failed automatic operation after a successful explicit save. */
   acknowledgeManualSave: (kitId: string, revision: number) => void;
   /** Reads and clears the localStorage backup written on beforeunload, if any. */
-  consumeUnloadBackup: () => { kitId: string | null; snapshot: string; savedAt: number } | null;
+  consumeUnloadBackup: () => {
+    kitId: string | null;
+    snapshot: string;
+    savedAt: number;
+    fullState?: BackupFullState;
+  } | null;
 }
 
 export function useKitAutoSave(
@@ -302,12 +330,24 @@ export function useKitAutoSave(
       if (!timerRef.current && !saveInFlightRef.current && !saveQueuedRef.current) return;
       try {
         const key = `${LS_BACKUP_KEY_PREFIX}-${user.id}`;
+        const ks = kitStateRef.current;
+        const fullState: BackupFullState = {
+          name: ks.name,
+          kitType: ks.kitType,
+          box: ks.box,
+          items: ks.items,
+          personalization: ks.personalization,
+          identity: ks.identity,
+          notes: ks.notes,
+          qty: kitQuantityRef.current,
+        };
         localStorage.setItem(
           key,
           JSON.stringify({
             kitId: autoSavedKitIdRef.current,
             snapshot: snapshotRef.current,
             savedAt: Date.now(),
+            fullState,
           }),
         );
       } catch {
@@ -338,7 +378,12 @@ export function useKitAutoSave(
       const raw = localStorage.getItem(key);
       if (!raw) return null;
       localStorage.removeItem(key);
-      return JSON.parse(raw) as { kitId: string | null; snapshot: string; savedAt: number };
+      return JSON.parse(raw) as {
+        kitId: string | null;
+        snapshot: string;
+        savedAt: number;
+        fullState?: BackupFullState;
+      };
     } catch {
       return null;
     }
