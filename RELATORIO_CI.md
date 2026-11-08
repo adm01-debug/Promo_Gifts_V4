@@ -1478,7 +1478,7 @@ Check IDs 128617661638 (SHA `4e638a69b`) e 128617563662 (SHA `576a3246e`) → `c
 | Build Vite | ✅ 15.50s, 0 erros | `npm run build` → "✓ built in 15.50s" |
 | Lint (ESLint) | ✅ 0 erros, 0 warnings | `npm run lint` → "Nenhuma regressão de lint detectada" |
 | TypeScript | ✅ 0 erros | `npm run qa:typecheck` → exit 0 |
-| `npm test` (2114 testes) | ⏳ em andamento | task bgsssh54l — aguarda conclusão |
+| `npm test` (27398 testes) | ⚠️ 26241 passed, 1 failed, exit 0 | task bgsssh54l — 1056s; 1 falha preexistente (sessão só tocou .md) |
 
 ### Gate Final em `e09f4125`
 
@@ -1493,7 +1493,5 @@ Check IDs 128617661638 (SHA `4e638a69b`) e 128617563662 (SHA `576a3246e`) → `c
 | Build Vite | ✅ | ✅ | +0 |
 | Lint (ESLint) | 0 erros, 0 warnings | 0 erros, 0 warnings | +0 |
 | TypeScript | 0 erros | 0 erros | +0 |
-| `tests/unit/` | 1313 passed | ⏳ | — |
-| `tests/scripts/` | 658 passed | ⏳ | — |
-| `tests/security/` | 143 passed | ⏳ | — |
+| `npm test` (total) | 2114 passed (suítes separadas) | 26241 passed, 1 failed, exit 0 | ⚠️ 1 falha preexistente (herdada de main; sessão só tocou .md) |
 
