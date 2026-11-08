@@ -51,15 +51,15 @@ Adiciona grandfathering do SHA `d03ee555` que teria falhado na Regra 6 antiga.
 ```
 
 **Antes:** Apenas `docs(redeploy):` era aceito como padrão docs-scopado.  
-**Depois:** Qualquer `docs(<scope>):` onde `<scope>` começa com letra minúscula e contém só `[a-z0-9-]` é aceito. Ex.: `docs(auditoria):`, `docs(api):`, `docs(crm):`, `docs(ci):`.
+**Depois:** Qualquer `docs(<scope>):` onde `<scope>` começa com letra minúscula e contém só `[a-z0-9-]` é aceito. Ex.: `docs(auditoria):`, `docs(api):`, `docs(crm):`, `docs(ci):`.  
 
 **Risco:** BAIXO — a regex é mais permissiva mas estruturalmente controlada (lowercase, alfanumérico+hífen). Não abre porta para padrões não-docs.
 
 ### Mudança 2 — extração de branch em Regra 8 (linhas 140, 203-204):
 
 ```diff
--  BRANCH_A=$(echo "$SUBJECT" | grep -oE "'[^']+" | head -1 | tr -d "'")
--  BRANCH_B=$(echo "$SUBJECT" | grep -oE "'[^']+" | tail -1 | tr -d "'")
+-  BRANCH_A=$(echo "$SUBJECT" | grep -oE "'[^']+'"| head -1 | tr -d "'")
+-  BRANCH_B=$(echo "$SUBJECT" | grep -oE "'[^']+'"| tail -1 | tr -d "'")
 +  BRANCH_A=$(echo "$SUBJECT" | grep -oE "'[^']+" | head -1 | tr -d "'")
 +  BRANCH_B=$(echo "$SUBJECT" | grep -oE "'[^']+" | tail -1 | tr -d "'")
 ```
