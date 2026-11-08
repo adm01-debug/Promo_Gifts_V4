@@ -76,6 +76,13 @@ describe('replayFileName', () => {
 });
 
 describe('sanitizeReplayMigration', () => {
+  it('remove somente o BOM inicial da cópia de replay e preserva U+FEFF interno', () => {
+    const sql = '\uFEFFSELECT \'\uFEFF\';';
+    expect(sanitizeReplayMigration('20261107180000_security_fix.sql', sql)).toBe(
+      'SELECT \'\uFEFF\';',
+    );
+  });
+
   it('remove CONCURRENTLY só de CREATE INDEX executável no shadow', () => {
     const fileName = '20261101140003_sb0006_index_kit_fk_user_id.sql';
     const sql = [

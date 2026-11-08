@@ -352,11 +352,15 @@ const REPLAY_PIPELINE_REWRITES = new Map([
 ]);
 
 export function sanitizeReplayMigration(fileName, sql) {
+  // Alguns editores gravam um BOM UTF-8. O PostgreSQL/libpq interpreta U+FEFF
+  // como token inválido quando ele abre a migration. Normalize somente a cópia
+  // temporária do replay; o arquivo histórico e qualquer U+FEFF interno ficam intactos.
+  const normalizedSql = sql.startsWith('\uFEFF') ? sql.slice(1) : sql;
   const expected = REPLAY_PIPELINE_REWRITES.get(fileName)?.concurrentlyIndexes;
-  if (expected === undefined) return sql;
+  if (expected === undefined) return normalizedSql;
 
   let rewritten = 0;
-  const output = sql.replace(
+  const output = normalizedSql.replace(
     /^(\s*CREATE\s+(?:UNIQUE\s+)?INDEX)\s+CONCURRENTLY\b/gim,
     (statement) => {
       rewritten += 1;
