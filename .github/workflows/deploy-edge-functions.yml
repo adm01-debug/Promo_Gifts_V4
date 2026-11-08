@@ -51,7 +51,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: deploy-edge-functions-${{ github.ref }}
+  group: deploy-edge-functions-v2-${{ github.ref }}
   cancel-in-progress: false  # R2/E19: deploy em push/main nunca deve ser cancelado
 
 
@@ -123,7 +123,7 @@ jobs:
             # não para a raiz. Bug real: quebrou o 1º push pós-merge deste
             # workflow em main (run 36065556329, "cd: supabase/functions:
             # No such file or directory" na 2ª cd abaixo).
-            cd ../..
+            cd ../.. 
             BEFORE="$GIT_BEFORE"
             AFTER="$GIT_AFTER"
             if [[ -z "$BEFORE" || "$BEFORE" =~ ^0+$ ]]; then

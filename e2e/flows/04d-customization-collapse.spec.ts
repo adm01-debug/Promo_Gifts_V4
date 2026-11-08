@@ -10,11 +10,11 @@
  *    `createClientLogger` escreve um JSON estruturado em `console.info` no
  *    bundle de dev, então capturamos `page.on('console')` para asserts.
  *
- * O painel só aparece após escolher cliente/produto com personalização —
- * em ambientes sem seed o spec é encerrado com `test.skip()`.
+ * Um fixture E2E intercepta catálogo e RPC para preparar o produto sem depender
+ * de seed comercial ou gravar dados operacionais no banco.
  */
 import { test, expect, requireAuth } from "../fixtures/test-base";
-import { gotoAndSettle } from "../helpers/nav";
+import { openQuoteWithPersonalizableProduct } from "../helpers/location-panel-quote";
 import { TID } from "../fixtures/selectors";
 
 const TOGGLE = TID("customization-collapse-toggle");
@@ -30,28 +30,22 @@ test.describe("ConfigurationPanelV6 — colapso", () => {
 
   test("colapsa, persiste, navega por teclado e emite analytics", async ({ page }) => {
     const events: AnalyticsEvent[] = [];
-    page.on("console", (msg) => {
-      const text = msg.text();
-      if (!text.includes("customization.collapsePrefs")) return;
-      // O logger pode emitir 1) pretty (dev): "[scope:event] { ... }"
-      // ou 2) JSON puro. Tentamos ambos.
-      const jsonStart = text.indexOf("{");
-      if (jsonStart === -1) return;
-      try {
-        const parsed = JSON.parse(text.slice(jsonStart).replace(/'/g, '"')) as AnalyticsEvent;
-        events.push(parsed);
-      } catch {
-        /* ignore malformed */
-      }
+    page.on("console", async (msg) => {
+      if (!msg.text().includes("customization.collapsePrefs")) return;
+      // Em DEV o logger chama console.info(tag, payload): o payload chega como
+      // argumento estruturado separado, não necessariamente dentro de text().
+      const args = await Promise.all(msg.args().map((arg) => arg.jsonValue().catch(() => null)));
+      const payload = args.find(
+        (value): value is AnalyticsEvent =>
+          !!value && typeof value === "object" && "event" in value && "technique_id" in value,
+      );
+      if (payload) events.push(payload);
     });
 
-    await gotoAndSettle(page, "/orcamentos/novo");
+    await openQuoteWithPersonalizableProduct(page);
 
     const toggle = page.locator(TOGGLE).first();
-    if (!(await toggle.isVisible({ timeout: 5_000 }).catch(() => false))) {
-      expect(false, "[E108] Painel de personalização indisponível neste ambiente.").toBeTruthy();
-      return;
-    }
+    await expect(toggle).toBeVisible();
 
     const controlsId = await toggle.getAttribute("aria-controls");
     expect(controlsId).toBeTruthy();
@@ -68,6 +62,9 @@ test.describe("ConfigurationPanelV6 — colapso", () => {
 
     // 2) Reload preserva o estado.
     await page.reload({ waitUntil: "domcontentloaded" });
+    // O rascunho não restaura produtos em memória; recria a mesma combinação
+    // deterministicamente e valida a preferência de colapso persistida.
+    await openQuoteWithPersonalizableProduct(page);
     const toggleAfter = page.locator(TOGGLE).first();
     await expect(toggleAfter).toBeVisible({ timeout: 10_000 });
     await expect(toggleAfter).toHaveAttribute("aria-expanded", "false");

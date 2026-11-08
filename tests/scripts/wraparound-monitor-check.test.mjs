@@ -101,10 +101,11 @@ describe('evaluateWraparoundAlerts', () => {
   });
 
   it('avalia várias métricas/objetos da mesma captura independentemente', () => {
+    const capturedAt = new Date(Date.now() - 3_600_000).toISOString();
     const rows = [
-      row('xid_age', 'postgres', { valueNumeric: 100 }),
-      row('sequence_pct_used', 'seq_a', { valuePct: 90 }),
-      row('sequence_pct_used', 'seq_b', { valuePct: 1 }),
+      { ...row('xid_age', 'postgres', { valueNumeric: 100 }), captured_at: capturedAt },
+      { ...row('sequence_pct_used', 'seq_a', { valuePct: 90 }), captured_at: capturedAt },
+      { ...row('sequence_pct_used', 'seq_b', { valuePct: 1 }), captured_at: capturedAt },
     ];
     const result = evaluateWraparoundAlerts({ rows });
     expect(result.evaluated.length).toBe(3);

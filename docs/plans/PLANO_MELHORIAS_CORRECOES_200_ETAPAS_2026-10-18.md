@@ -529,7 +529,7 @@ O ledger (`supabase_migrations.schema_migrations`) e o schema real divergem em v
 **Pronto:** o gate reprova com uma versão em `schema_migrations` sem linha correspondente no `MIGRATIONS_SYNC_LOG.md` há >24h
 **Origem:** A5-44, A2-21
 
-#### P200-E056 · [A] · P1 · Bloquear DDL por `execute_sql` em sessão de agente
+#### P200-E056 · [A] · P1 · Bloquear DDL por `execute_sql` em sessão de agente ✅
 **Arquivo:** `CLAUDE.md` (corolário da REGRA #8), `supabase/migrations/20261015120000_reconcilia_oob_incidente_2026_10_13.sql:22-60`
 **Fazer:** a policy `variant_stocks_select_org` e 7 `cron.alter_job` foram aplicados por `execute_sql` fora de migration e fora do ledger em 2026-10-13, só virando migration espelho 2 dias depois. Escrever no `CLAUDE.md` que `execute_sql` com DDL é proibido em sessão de agente, e que toda mudança de `cron.job` nasce como migration no mesmo PR.
 **Pronto:** `grep -c "execute_sql" CLAUDE.md` inclui a proibição explícita de DDL
@@ -1047,7 +1047,7 @@ Os 5 ratchets de dívida técnica estão todos exatamente no baseline: 889 index
 
 ### ONDA 13 — REACT: VAZAMENTOS, RE-RENDER E ACESSIBILIDADE (E131–E140)
 
-#### P200-E131 · [D] · P0 · Eliminar o hook condicional em `CloudStatusContext`
+#### P200-E131 · [D] · P0 · Eliminar o hook condicional em `CloudStatusContext` ✅
 **Arquivo:** `src/contexts/CloudStatusContext.tsx:47-53`
 **Fazer:** `useCloudStatus()` é chamado **condicionalmente**, depois de `if (ctx) return ctx`, com `eslint-disable react-hooks/rules-of-hooks` por cima. A contagem de hooks muda se o provider montar ou desmontar → React #310, exatamente a classe de regressão que o `CLAUDE.md` REGRA #7 cita em `MagazineEditorPage` (2026-07-16). Dar default ao `createContext` ou expor `useCloudStatusStandalone` separado.
 **Pronto:** `grep -c "rules-of-hooks" src/contexts/CloudStatusContext.tsx` → `0`; montar/desmontar o provider não lança React #310
