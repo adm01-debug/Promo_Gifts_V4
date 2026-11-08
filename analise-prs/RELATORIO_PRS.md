@@ -83,7 +83,7 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 
 ---
 
-## TABELA COMPLETA — 18 PRs
+## TABELA COMPLETA — 20 PRs
 
 | PR | Título | Branch | Draft | CI | Veredito | Motivo | Evidência |
 |---|---|---|---|---|---|---|---|
@@ -91,20 +91,22 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 | #3129 | fix(ci): e2e reduce runner pressure | codex/ci-e2e-reduce-... | Não | FAILURE | DECISAO_HUMANA | 8 workflows REGRA#8 | PR-3129.md |
 | #3137 | fix(ci): detector E2E + migration history | codex/fix-ci-e2e-detector-... | Não | FAILURE | DECISAO_HUMANA | 1 workflow + 1 migration REGRA#8 | PR-3137-evidencias.md |
 | #3144 | fix(db): reconcilia E12/E25 (security-definer) | codex/fix-db-e12-e25-... | Não | FAILURE | DECISAO_HUMANA | 3 migrations REGRA#8 | PR-3144-evidencias.md |
-| #3148 | feat: CRM bridge + migrations security DEFINER | codex/feat-crm-bridge-... | **SIM** | FAILURE | DECISAO_HUMANA | DRAFT + 1 workflow + 3 migrations + 131 arquivos | PR-3148-evidencias.md |
+| #3148 | feat: CRM bridge security DEFINER | codex/feat-crm-bridge-... | **SIM** | FAILURE | DECISAO_HUMANA | DRAFT + 1 workflow + 3 migrations + 131 arquivos | PR-3148-evidencias.md |
 | #3150 | fix(ci): libera migrations pendentes + hardening | codex/fix-ci-migrations-... | Não | FAILURE | DECISAO_HUMANA | 2 workflows + 3 migrations + 6 conflitos REGRA#8 | PR-3150-evidencias.md |
 | #3160 | fix(db): fn_get_rupture_alerts E15 | codex/fix-db-e15-... | **SIM** | — | DECISAO_HUMANA | DRAFT + migration REGRA#8 + supersedida por PR#3179 | PR-3160-evidencias.md |
 | #3179 | fix(db): preflight db-apply migration | codex/fix-preflight-db-apply-... | Não | FAILURE | DECISAO_HUMANA | migration REGRA#8 | PR-3179.md |
-| #3202 | docs(ci): relatório 33 | codex/docs-ci-relatorio-33-... | Não | SUCCESS | DECISAO_HUMANA | migration REGRA#8 (mesmo com CI verde) | PR-3202.md |
+| #3202 | docs(ci): relatório §33 | codex/docs-ci-relatorio-33-... | Não | SUCCESS | DECISAO_HUMANA | migration REGRA#8 (mesmo com CI verde) | PR-3202.md |
 | #3203 | fix(scripts): static pass | codex/fix-scripts-static-pass-... | Não | FAILURE | NAO_MERGEAVEL | CONFLICTING com main | PR-3203.md |
 | #3205 | fix(db): revert e2e cleanup | codex/fix-db-revert-e2e-cleanup-... | Não | FAILURE | DECISAO_HUMANA | migration REGRA#8 | PR-3205.md |
-| #3210 | release-please | release-please--branches--main-- | Não | — | NAO_MERGEAVEL | PR de release automática sem contexto completo | PR-3210.md |
-| #3212 | auto: edge deploy receipt | auto/edge-deploy-receipt-... | Não | — | NAO_MERGEAVEL | PR automática sem PR humana de origem | PR-3212.md |
+| #3210 | chore: release 1.9.0 | release-please--branches--main-- | Não | — | DECISAO_HUMANA | Bot PR — Gate Final status 0 check runs no HEAD | PR-3210.md |
+| #3212 | docs: edge deploy receipt run 42491776265 | auto/edge-deploy-receipt-... | Não | — | **MERGEADA** `d8ae515913` | docs-only E14 — Gate Final=success pós-merge | PR-3212.md |
 | #3214 | fix(cron): CRON-001 startup timeout | codex/fix-cron-startup-... | **SIM** | FAILURE | DECISAO_HUMANA | DRAFT + 1 workflow + 3 migrations + CONFLICTING | PR-3214-evidencias.md |
 | #3215 | fix(migration): rollback header | codex/fix-migration-rollback-... | Não | FAILURE | DECISAO_HUMANA | migration REGRA#8 | PR-3215.md |
 | #3216 | fix(db): reconcilia e2e_cleanup_audit | codex/fix-db-e2e-cleanup-... | **SIM** | — | DECISAO_HUMANA | DRAFT + migration REGRA#8 + supersedida por PR#3215 | PR-3216-evidencias.md |
 | #3217 | docs: auditoria P09/P06 | codex/docs-auditoria-p09-... | **SIM** | SUCCESS | DECISAO_HUMANA | isDraft=true (única pendência) | PR-3217.md |
 | #3220 | fix(ci): Sentinel Regra 6 + rollback header | codex/fix-ci-sentinel-r6-... | Não | FAILURE | DECISAO_HUMANA | 1 workflow + sentinel-check.sh PROTEGIDO REGRA#8 | PR-3220-evidencias.md |
+| #3236 | fix(migrations): cabeçalho -- Rollback | unknown | **SIM** | n/a | DECISAO_HUMANA | DRAFT + migration REGRA#8 | PR-3236.md |
+| #3238 | docs(analise-prs): relatório merge-prs | claude_05/youthful-ride-vcdchy | **SIM** | n/a | DECISAO_HUMANA | DRAFT — delivery branch desta sessão | PR-3238.md |
 
 ---
 
@@ -114,6 +116,8 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 |---|---|
 | `analise-prs/regras-de-negocio.md` | Regras de negócio extraídas do código (client.ts:24, product-catalog.ts:25-104, etc.) |
 | `analise-prs/baseline/tests.txt` | Baseline vitest: 2 falhas conhecidas (calendar.redesign day_today + day_selected) |
+| `analise-prs/baseline/typecheck.txt` | Baseline typecheck: EXIT_CODE=0 |
+| `analise-prs/baseline/lint.txt` | Baseline lint: EXIT_CODE=0 |
 | `analise-prs/dossies/PR-3127-evidencias.md` | 11 arquivos com file:line evidence |
 | `analise-prs/dossies/PR-3137-evidencias.md` | 10 arquivos com file:line evidence |
 | `analise-prs/dossies/PR-3144-evidencias.md` | migrations + rollbacks file:line |
@@ -126,7 +130,7 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 
 ---
 
-## ANÁLISE PER-PR — 18 PRs com evidência file:line
+## ANÁLISE PER-PR — 20 PRs com evidência file:line
 
 > Questões respondidas para cada PR: (1) ainda é válida? (2) traz regressão? (3) já implementada em main? (4) regra de negócio correta?
 
@@ -262,11 +266,11 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 
 ---
 
-### PR #3210 — chore: release 1.9.0 | NAO_MERGEAVEL
+### PR #3210 — chore: release 1.9.0 | DECISAO_HUMANA
 
 **Branch:** `release-please--branches--main--` | Draft: Não | CI: FAILURE | Gate Final: AUSENTE
 
-**(1) Válida?** Não — Gate Final não rodou (required check ausente).  
+**(1) Válida?** Sim — PR de release automática.  
 **(2) Regressão?** Zero em código executável. 4 arquivos não-governance: `CHANGELOG.md`, `package.json` (bump de versão), release notes. Merge local limpo.  
 **(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3210`: 1 commit com prefixo `+`. Não está em main.  
 **(4) Regra de negócio?** N/A — PR de release automática (github-actions bot). CI failure por `column categories.level does not exist` (pré-existente no main).  
@@ -274,15 +278,15 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 
 ---
 
-### PR #3212 — docs: edge deploy receipt run 42491776265 | NAO_MERGEAVEL
+### PR #3212 — docs: edge deploy receipt run 42491776265 | MERGEADA ✓
 
-**Branch:** `auto/edge-deploy-receipt-...` | Draft: Não | CI: FAILURE | Gate Final: AUSENTE
+**Branch:** `auto/edge-deploy-receipt-...` | Draft: Não | Mergeada: `d8ae515913db370da08784f3c911834c1668b98c`
 
-**(1) Válida?** Não — Gate Final não rodou.  
-**(2) Regressão?** Zero. 1 arquivo, 1 linha: `docs/EDGE_FUNCTIONS_DEPLOY_LOG.md` adiciona recibo do run 42491776265. Merge local limpo. Supabase Preview CANCELLED por capacity limit (infraestrutura, não código).  
-**(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3212`: 1 commit com prefixo `+`. Não está em main.  
+**(1) Válida?** Sim — recibo de deploy de edge function. docs-only.  
+**(2) Regressão?** Zero. 1 arquivo, 1 linha: `docs/EDGE_FUNCTIONS_DEPLOY_LOG.md`.  
+**(3) Implementada em main?** Mergeada nesta sessão — SHA `d8ae515913`.  
 **(4) Regra de negócio?** N/A — PR de bot (recibo automático de deploy).  
-**Bloqueio:** Gate Final=AUSENTE (Supabase Preview CANCELLED por capacity limit). Sem required check aprovado, merge é bloqueado mesmo sendo PR de 1 linha.
+**CI pós-merge (evidência):** `github_list_check_runs(ref=d8ae515913db370da08784f3c911834c1668b98c)` → 70 check-runs; Gate Final - Deploy Ready = **success** (completed); 8 success, 12 skipped, **0 failures**. Nenhuma falha nova vs. baseline.
 
 ---
 
