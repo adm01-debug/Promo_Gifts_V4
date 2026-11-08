@@ -1,14 +1,15 @@
 {
   "sessao": "2026-11-08",
   "session_id": "49a643e1-3ba4-5a51-9048-a545eec48233",
-  "main_sha": "d8ae515913db370da08784f3c911834c1668b98c",
+  "main_sha": "931b932aad60b9b3b5f4ec4d4505482fca136ac4",
   "main_sha_antes_desta_sessao": "9a89d9f0a4ac2df7ad670501adaad9f1f60a75df",
-  "total_prs_abertas": 12,
-  "total_analisadas": 20,
+  "total_prs_abertas": 13,
+  "total_analisadas": 24,
   "vereditos": {
-    "MERGEADA_ESTA_SESSAO": 1,
-    "DECISAO_HUMANA": 12,
-    "FECHADA_OU_MERGEADA_PELO_PO": 7
+    "MERGEADA_ESTA_SESSAO": 2,
+    "DECISAO_HUMANA": 14,
+    "FECHADA_OU_MERGEADA_PELO_PO": 7,
+    "MERGEADA_PELO_PO_APOS_UPDATE": 1
   },
   "prs_mergeadas_esta_sessao": [
     {
@@ -17,6 +18,13 @@
       "titulo": "docs(edge): adiciona log de deploy health-check run 42491776265",
       "gate": "E14_DOCS_ONLY",
       "motivo": "docs-only (.md 1 arquivo), entry nova no EDGE_FUNCTIONS_DEPLOY_LOG.md confirmada não existia em main (0 ocorrências de 42491776265); sem conflito"
+    },
+    {
+      "pr": 3241,
+      "sha": "931b932aad60b9b3b5f4ec4d4505482fca136ac4",
+      "titulo": "docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f",
+      "gate": "E14_DOCS_ONLY",
+      "motivo": "docs-only (2 arquivos .md); branch atualizada via update_pr_branch nesta sessão; PO mergeou — squash merge commit 931b932a"
     }
   ],
   "prs_abertas_decisao_humana": [
@@ -25,13 +33,16 @@
     {"pr":3137,"motivo":"REGRA#8 — .github/workflows/ + e2e-relevance.mjs"},
     {"pr":3160,"motivo":"Draft — fix DB E15 pg_temp + rollback"},
     {"pr":3179,"motivo":"Draft — fix preflight db-apply-migration"},
-    {"pr":3203,"motivo":"Gate Final = failure (run 128654730896, SHA 1aad6831) + CONFLICTING vs main d8ae5159 (7 conflitos: .any-type-baseline.json, .cart-header-fuzz.json, .migration-refs-baseline.json, docs/DB_FRONTEND_COVERAGE.md, scripts/gen-internal-schema.mjs, scripts/kit-ai-enrichment.js, supabase/functions/_shared/cors-snapshot.json)"},
+    {"pr":3203,"motivo":"Gate Final = failure (run 128654730896, SHA 1aad6831) + CONFLICTING vs main 931b932a (7 conflitos: .any-type-baseline.json, .cart-header-fuzz.json, .migration-refs-baseline.json, docs/DB_FRONTEND_COVERAGE.md, scripts/gen-internal-schema.mjs, scripts/kit-ai-enrichment.js, supabase/functions/_shared/cors-snapshot.json)"},
     {"pr":3210,"motivo":"Bot PR github-actions[bot] release 1.9.0 — Gate Final status 0 check runs no HEAD 05b38bc5"},
     {"pr":3214,"motivo":"Draft — fix cron CRON-001"},
-    {"pr":3215,"motivo":"REGRA#8 — supabase/migrations/ DDL 20261108001500_reconcile"},
+    {"pr":3215,"motivo":"REGRA#8 — supabase/migrations/ DDL 20261108001500_reconcile; auto_merge squash ativo (PO autorizou)"},
     {"pr":3228,"motivo":"Draft + REGRA#8 — .github/workflows/ e2e-color-swatch"},
     {"pr":3236,"motivo":"Draft + REGRA#8 — supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql (cabeçalho rollback) + MIGRATIONS_SYNC_LOG.md"},
-    {"pr":3238,"motivo":"Draft — delivery branch claude_05/youthful-ride-vcdchy (analise-prs/*.md + *.json)"}
+    {"pr":3238,"motivo":"Draft — delivery branch claude_05/youthful-ride-vcdchy (analise-prs/*.md + *.json)"},
+    {"pr":3239,"motivo":"Draft + REGRA#8 — supabase/migrations/ retroativo 20260611014515 fn_dryrun_standardize_supplier"},
+    {"pr":3242,"motivo":"Draft + FLUXO GIT Regra 2 — branch claude_04/optimistic-lovelace-n960f7 de outro agente"},
+    {"pr":3243,"motivo":"Draft + REGRA#8 — supabase/migrations/ 20260511235950_add_categories_level_drift (categories.level IF NOT EXISTS); behind main"}
   ],
   "fechadas_pelo_po_esta_sessao": [
     {"pr":3232,"motivo":"Fechada pelo PO/bot após análise anterior — REGRA#8 supabase/migrations/"},
@@ -49,8 +60,12 @@
       "conflict": [3127, 3129, 3137, 3144, 3148, 3150, 3160, 3202, 3214, 3216, 3220]
     },
     "vs_main_d8ae5159": {
-      "clean": [],
+      "clean": [3236],
       "conflict_7": [3203]
+    },
+    "vs_main_931b932a": {
+      "clean": [3241],
+      "nao_testado_draft": [3228, 3239, 3242, 3243]
     }
   },
   "artefatos": {

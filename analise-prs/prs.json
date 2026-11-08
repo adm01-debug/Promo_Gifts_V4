@@ -6,13 +6,19 @@
     "draft": false,
     "mergeable_github": "CONFLICTING",
     "merge_local": "conflict",
-    "conflitos": [".github/workflows/e2e-flows.yml", "e2e/catalog/helpers/swatch-view.ts", "playwright.config.ts"],
+    "conflitos": [
+      ".github/workflows/e2e-flows.yml",
+      "e2e/catalog/helpers/swatch-view.ts",
+      "playwright.config.ts"
+    ],
     "ci_state": "FAILURE",
     "gate_final_rodou": false,
     "commits_novos": 16,
     "arquivos": 15,
     "governance_count": 3,
-    "governance_files": [".github/workflows/"],
+    "governance_files": [
+      ".github/workflows/"
+    ],
     "ja_implementada": false,
     "cherry_summary": "16 commits, todos + (não estão em main)",
     "veredito": "DECISAO_HUMANA",
@@ -25,13 +31,24 @@
     "draft": false,
     "mergeable_github": "CONFLICTING",
     "merge_local": "conflict",
-    "conflitos": [".github/workflows/e2e-flows.yml", ".github/workflows/e2e-stock.yml", ".github/workflows/e2e.yml", ".github/workflows/deploy-gates.yml", ".github/workflows/e2e-b2b.yml", ".github/workflows/e2e-cart.yml", ".github/workflows/e2e-checkout.yml", ".github/workflows/e2e-products.yml"],
+    "conflitos": [
+      ".github/workflows/e2e-flows.yml",
+      ".github/workflows/e2e-stock.yml",
+      ".github/workflows/e2e.yml",
+      ".github/workflows/deploy-gates.yml",
+      ".github/workflows/e2e-b2b.yml",
+      ".github/workflows/e2e-cart.yml",
+      ".github/workflows/e2e-checkout.yml",
+      ".github/workflows/e2e-products.yml"
+    ],
     "ci_state": "FAILURE",
     "gate_final_rodou": false,
     "commits_novos": 2,
     "arquivos": 8,
     "governance_count": 8,
-    "governance_files": [".github/workflows/"],
+    "governance_files": [
+      ".github/workflows/"
+    ],
     "ja_implementada": false,
     "cherry_summary": "2 commits, todos + (não estão em main)",
     "veredito": "DECISAO_HUMANA",
@@ -44,13 +61,18 @@
     "draft": false,
     "mergeable_github": "CONFLICTING",
     "merge_local": "conflict",
-    "conflitos": [".github/workflows/e2e-flows.yml", "package.json"],
+    "conflitos": [
+      ".github/workflows/e2e-flows.yml",
+      "package.json"
+    ],
     "ci_state": "FAILURE",
     "gate_final_rodou": false,
     "commits_novos": 3,
     "arquivos": 11,
     "governance_count": 8,
-    "governance_files": [".github/workflows/"],
+    "governance_files": [
+      ".github/workflows/"
+    ],
     "ja_implementada": false,
     "cherry_summary": "3 commits, todos + (não estão em main)",
     "veredito": "DECISAO_HUMANA",
@@ -63,13 +85,20 @@
     "draft": false,
     "mergeable_github": "UNKNOWN",
     "merge_local": "conflict",
-    "conflitos": ["scripts/migration-ledger-remote-only-allowlist.json", "supabase/MIGRATIONS_SYNC_LOG.md"],
+    "conflitos": [
+      "scripts/migration-ledger-remote-only-allowlist.json",
+      "supabase/MIGRATIONS_SYNC_LOG.md"
+    ],
     "ci_state": "FAILURE",
     "gate_final_rodou": false,
     "commits_novos": 5,
     "arquivos": 10,
     "governance_count": 3,
-    "governance_files": [".github/workflows/", "supabase/migrations/", "supabase/rollbacks/"],
+    "governance_files": [
+      ".github/workflows/",
+      "supabase/migrations/",
+      "supabase/rollbacks/"
+    ],
     "ja_implementada": false,
     "cherry_summary": "5 commits, todos + (não estão em main)",
     "veredito": "DECISAO_HUMANA",
@@ -82,13 +111,17 @@
     "draft": true,
     "mergeable_github": "UNKNOWN",
     "merge_local": "conflict",
-    "conflitos": ["supabase/MIGRATIONS_SYNC_LOG.md"],
+    "conflitos": [
+      "supabase/MIGRATIONS_SYNC_LOG.md"
+    ],
     "ci_state": "FAILURE",
     "gate_final_rodou": false,
     "commits_novos": 1,
     "arquivos": 11,
     "governance_count": 2,
-    "governance_files": ["supabase/migrations/"],
+    "governance_files": [
+      "supabase/migrations/"
+    ],
     "ja_implementada": false,
     "cherry_summary": "1 commit, todos + (não está em main)",
     "veredito": "DECISAO_HUMANA",
@@ -101,13 +134,24 @@
     "draft": false,
     "mergeable_github": "UNKNOWN",
     "merge_local": "conflict",
-    "conflitos": [".github/workflows/db-apply-migration.yml", ".github/workflows/schema-snapshot-export.yml", "scripts/drift-baseline.mjs", "scripts/migration-ledger-remote-only-allowlist.json", "supabase/MIGRATIONS_SYNC_LOG.md", "tests/scripts/drift-baseline.test.mjs"],
+    "conflitos": [
+      ".github/workflows/db-apply-migration.yml",
+      ".github/workflows/schema-snapshot-export.yml",
+      "scripts/drift-baseline.mjs",
+      "scripts/migration-ledger-remote-only-allowlist.json",
+      "supabase/MIGRATIONS_SYNC_LOG.md",
+      "tests/scripts/drift-baseline.test.mjs"
+    ],
     "ci_state": "FAILURE",
     "gate_final_rodou": false,
     "commits_novos": 13,
     "arquivos": 17,
     "governance_count": 8,
-    "governance_files": [".github/workflows/", "supabase/migrations/", "supabase/rollbacks/"],
+    "governance_files": [
+      ".github/workflows/",
+      "supabase/migrations/",
+      "supabase/rollbacks/"
+    ],
     "ja_implementada": false,
     "cherry_summary": "13 commits, todos + (não estão em main)",
     "veredito": "DECISAO_HUMANA",
@@ -120,13 +164,18 @@
     "draft": true,
     "mergeable_github": "UNKNOWN",
     "merge_local": "conflict",
-    "conflitos": ["PENDENCIAS.md", "RELATORIO_CI.md"],
+    "conflitos": [
+      "PENDENCIAS.md",
+      "RELATORIO_CI.md"
+    ],
     "ci_state": "FAILURE",
     "gate_final_rodou": false,
     "commits_novos": 27,
     "arquivos": 4,
     "governance_count": 2,
-    "governance_files": ["supabase/migrations/"],
+    "governance_files": [
+      "supabase/migrations/"
+    ],
     "ja_implementada": false,
     "cherry_summary": "27 commits, todos + (não estão em main)",
     "veredito": "DECISAO_HUMANA",
@@ -144,7 +193,9 @@
     "commits_novos": 1,
     "arquivos": 2,
     "governance_count": 2,
-    "governance_files": ["supabase/migrations/"],
+    "governance_files": [
+      "supabase/migrations/"
+    ],
     "ja_implementada": false,
     "cherry_summary": "1 commit, todos + (não está em main)",
     "veredito": "DECISAO_HUMANA",
@@ -157,13 +208,18 @@
     "draft": true,
     "mergeable_github": "UNKNOWN",
     "merge_local": "conflict",
-    "conflitos": ["PENDENCIAS.md", "RELATORIO_CI.md"],
+    "conflitos": [
+      "PENDENCIAS.md",
+      "RELATORIO_CI.md"
+    ],
     "ci_state": "FAILURE",
     "gate_final_rodou": false,
     "commits_novos": 10,
     "arquivos": 4,
     "governance_count": 1,
-    "governance_files": ["supabase/migrations/"],
+    "governance_files": [
+      "supabase/migrations/"
+    ],
     "ja_implementada": false,
     "cherry_summary": "10 commits, todos + (não estão em main)",
     "veredito": "DECISAO_HUMANA",
@@ -208,7 +264,9 @@
     "commits_novos": 3,
     "arquivos": 4,
     "governance_count": 1,
-    "governance_files": ["supabase/migrations/"],
+    "governance_files": [
+      "supabase/migrations/"
+    ],
     "ja_implementada": false,
     "cherry_summary": "3 commits, todos + (não estão em main)",
     "veredito": "DECISAO_HUMANA",
@@ -265,13 +323,18 @@
     "draft": true,
     "mergeable_github": "CONFLICTING",
     "merge_local": "conflict",
-    "conflitos": ["(GitHub reporta CONFLICTING — PR tem 128 arquivos, merge local não disponível nesta sessão)"],
+    "conflitos": [
+      "(GitHub reporta CONFLICTING — PR tem 128 arquivos, merge local não disponível nesta sessão)"
+    ],
     "ci_state": "FAILURE",
     "gate_final_rodou": false,
     "commits_novos": 26,
     "arquivos": 128,
     "governance_count": 6,
-    "governance_files": [".github/workflows/", "supabase/migrations/"],
+    "governance_files": [
+      ".github/workflows/",
+      "supabase/migrations/"
+    ],
     "ja_implementada": false,
     "cherry_summary": "26 commits, todos + (não estão em main)",
     "veredito": "DECISAO_HUMANA",
@@ -289,7 +352,9 @@
     "commits_novos": 3,
     "arquivos": 1,
     "governance_count": 1,
-    "governance_files": ["supabase/migrations/"],
+    "governance_files": [
+      "supabase/migrations/"
+    ],
     "ja_implementada": false,
     "cherry_summary": "3 commits, todos + (não estão em main)",
     "veredito": "DECISAO_HUMANA",
@@ -302,13 +367,19 @@
     "draft": true,
     "mergeable_github": "CONFLICTING",
     "merge_local": "conflict",
-    "conflitos": ["PENDENCIAS.md", "RELATORIO_CI.md", "supabase/MIGRATIONS_SYNC_LOG.md"],
+    "conflitos": [
+      "PENDENCIAS.md",
+      "RELATORIO_CI.md",
+      "supabase/MIGRATIONS_SYNC_LOG.md"
+    ],
     "ci_state": "FAILURE",
     "gate_final_rodou": false,
     "commits_novos": 2,
     "arquivos": 4,
     "governance_count": 1,
-    "governance_files": ["supabase/migrations/"],
+    "governance_files": [
+      "supabase/migrations/"
+    ],
     "ja_implementada": false,
     "cherry_summary": "2 commits, todos + (não estão em main)",
     "veredito": "DECISAO_HUMANA",
@@ -345,16 +416,53 @@
     "draft": false,
     "mergeable_github": "CONFLICTING",
     "merge_local": "conflict",
-    "conflitos": ["PENDENCIAS.md", "RELATORIO_CI.md"],
+    "conflitos": [
+      "PENDENCIAS.md",
+      "RELATORIO_CI.md"
+    ],
     "ci_state": "FAILURE",
     "gate_final_rodou": false,
     "commits_novos": 5,
     "arquivos": 6,
     "governance_count": 1,
-    "governance_files": [".github/workflows/"],
+    "governance_files": [
+      ".github/workflows/"
+    ],
     "ja_implementada": false,
     "cherry_summary": "5 commits, todos + (não estão em main)",
     "veredito": "DECISAO_HUMANA",
     "motivo": "REGRA#8 — .github/workflows/ + CONFLICTING (GitHub) + conflito em PENDENCIAS.md e RELATORIO_CI.md"
+  },
+  {
+    "number": 3239,
+    "title": "chore(migrations): arquivo retroativo 20260611014515 — fn_dryrun_standardize_supplier",
+    "draft": true,
+    "state": "open",
+    "verdict": "DECISAO_HUMANA",
+    "motivo": "Draft + REGRA#8 — supabase/migrations/ retroativo"
+  },
+  {
+    "number": 3241,
+    "title": "docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f",
+    "draft": false,
+    "state": "closed",
+    "verdict": "MERGEADA_ESTA_SESSAO",
+    "motivo": "E14_DOCS_ONLY; merge commit 931b932a; PO mergeou 2026-11-08T20:10:17Z"
+  },
+  {
+    "number": 3242,
+    "title": "docs(analise-prs): ciclos de correção — 2 mergeadas, 10 AGUARDANDO HUMANO",
+    "draft": true,
+    "state": "open",
+    "verdict": "DECISAO_HUMANA",
+    "motivo": "Draft + FLUXO GIT Regra 2 — branch claude_04 de outro agente"
+  },
+  {
+    "number": 3243,
+    "title": "fix(migrations): adiciona migration de drift para categories.level (IF NOT EXISTS)",
+    "draft": true,
+    "state": "open",
+    "verdict": "DECISAO_HUMANA",
+    "motivo": "Draft + REGRA#8 — supabase/migrations/ 20260511235950_add_categories_level_drift; behind main"
   }
 ]

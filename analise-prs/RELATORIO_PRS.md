@@ -1,12 +1,12 @@
 # RELATÓRIO DE ANÁLISE — PRs ABERTAS
-**Sessão:** 2026-11-08 (`session_01Ss1tXZ4cAbxBvdmu95uNPz`)
+**Sessão:** 2026-11-08 (`49a643e1-3ba4-5a51-9048-a545eec48233`)
 **Main SHA (início):** `9a89d9f0a4ac2df7ad670501adaad9f1f60a75df`
-**Main SHA (atual):** `d8ae515913db370da08784f3c911834c1668b98c` (após PR#3212)
-**Total PRs analisadas:** 20
-**Mergeadas esta sessão:** 1 — PR#3212 → `d8ae515913` (docs-only E14)
-**PRs abertas restantes:** 12 — todas DECISAO_HUMANA
-**Vereditos:** MERGEADA=1 | DECISAO_HUMANA=12 | FECHADAS_PO=7
-**Atualização final:** PR#3232 e PR#3234 fechadas pelo PO; PR#3236 e PR#3238 abertas e analisadas
+**Main SHA (atual):** `931b932aad60b9b3b5f4ec4d4505482fca136ac4` (após PR#3241)
+**Total PRs analisadas:** 24
+**Mergeadas esta sessão:** 2 — PR#3212 → `d8ae515913` (E14) + PR#3241 → `931b932a` (E14, PO mergeou após branch update)
+**PRs abertas:** 13 — todas DECISAO_HUMANA
+**Vereditos:** MERGEADA=2 | DECISAO_HUMANA=14 | FECHADAS_PO=2 (esta sessão)
+**Novas PRs analisadas:** #3239 (Draft+REGRA#8 migration), #3241 (MERGEADA), #3242 (Draft+outro agente), #3243 (Draft+REGRA#8 migration)
 
 ---
 
