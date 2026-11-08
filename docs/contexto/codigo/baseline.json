@@ -2,11 +2,31 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5aed391bf5777b04cb72c8d0138854422c279dd9",
+  "commit": "ed0733f91c720e47f9f2a1dee2862683fe4841ab",
   "branch": "main",
-  "data_commit": "2026-11-08T16:59:00-03:00",
+  "data_commit": "2026-11-08T17:34:51-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ed0733f",
+    "data": "2026-11-08",
+    "assunto": "chore(migrations): arquivo retroativo 20260611014515 fn_dryrun_standardize_supplier (#3239)"
+   },
+   {
+    "sha": "6e631dd",
+    "data": "2026-11-08",
+    "assunto": "docs(analise-prs): ciclos de correção — 2 mergeadas, 11 AGUARDANDO HUMANO"
+   },
+   {
+    "sha": "d50ae76",
+    "data": "2026-11-08",
+    "assunto": "fix(migrations): adiciona header Rollback em 20261108001500_reconcile_e2e_cleanup_audit"
+   },
+   {
+    "sha": "931b932",
+    "data": "2026-11-08",
+    "assunto": "docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f (#3241)"
+   },
    {
     "sha": "5aed391",
     "data": "2026-11-08",
@@ -111,29 +131,9 @@
     "sha": "d03ee55",
     "data": "2026-11-08",
     "assunto": "docs(auditoria): encerra P06 e P15 — migrations posteriores tornam proposta obsoleta"
-   },
-   {
-    "sha": "46ec263",
-    "data": "2026-11-08",
-    "assunto": "fix(ci): reconhecer migration 20261107180000 reconciliada (#3211)"
-   },
-   {
-    "sha": "b45d233",
-    "data": "2026-11-08",
-    "assunto": "docs(db): registrar recibo E15 da migration 20261107180000 (#3209)"
-   },
-   {
-    "sha": "481e614",
-    "data": "2026-11-08",
-    "assunto": "fix(docs): restaurar contrato de recibos E15 (#3204)"
-   },
-   {
-    "sha": "8c3abe3",
-    "data": "2026-11-08",
-    "assunto": "chore(backlog): marca FT-175 como implementado (#3206)"
    }
   ],
-  "arquivos_mudados_7d": 571,
+  "arquivos_mudados_7d": 489,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -193,7 +193,7 @@
    },
    {
     "pasta": "PENDENCIAS.md",
-    "mudancas": 54
+    "mudancas": 53
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -203,15 +203,15 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 54
+    "mudancas": 53
+   },
+   {
+    "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "mudancas": 22
    },
    {
     "arquivo": "package.json",
     "mudancas": 21
-   },
-   {
-    "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 20
    },
    {
     "arquivo": "package-lock.json",
@@ -262,10 +262,6 @@
     "mudancas": 5
    },
    {
-    "arquivo": "analise-prs/prs.json",
-    "mudancas": 5
-   },
-   {
     "arquivo": "docs/ci/SEGREDOS.md",
     "mudancas": 5
    },
@@ -296,6 +292,10 @@
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
     "mudancas": 4
+   },
+   {
+    "arquivo": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
+    "mudancas": 4
    }
   ],
   "autores_30d": [
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9208,
+  "arquivos_total": 9220,
   "arquivos_codigo": 4631,
   "linhas_codigo": 887313,
   "rotas": 138,
@@ -330,12 +330,12 @@
   "hooks": 414,
   "edge_functions": 111,
   "tabelas": 544,
-  "migrations": 3046,
+  "migrations": 3047,
   "cron_jobs": 120,
   "testes": 2200,
   "workflows": 94,
   "scripts": 257,
-  "docs_md": 900
+  "docs_md": 911
  },
  "por_pasta": {
   ".github/scripts": {

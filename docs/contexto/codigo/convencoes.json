@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
-   "fix(ci): grandfather SHA 0409c07f do P09 no Sentinel allowlist (#3240)",
-   "docs(analise-prs): relatório merge-prs — 12 PRs analisadas, 12 AGUARDANDO HUMANO",
-   "feat(migrations): P09 — reconcilia 432 versões históricas no ledger schema_migrations",
-   "docs(ci): inventário final HEAD ba1c3fb — P-08, stub eslint, comparação baseline×final (#3237)",
-   "fix(migrations): remove BOM UTF-8 do security_fix_suppliers_v2 — corrige db-schema-drift-check"
+   "chore(migrations): arquivo retroativo 20260611014515 fn_dryrun_standardize_supplier (#3239)",
+   "docs(analise-prs): ciclos de correção — 2 mergeadas, 11 AGUARDANDO HUMANO",
+   "fix(migrations): adiciona header Rollback em 20261108001500_reconcile_e2e_cleanup_audit",
+   "docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f (#3241)",
+   "fix(ci): grandfather SHA 0409c07f do P09 no Sentinel allowlist (#3240)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

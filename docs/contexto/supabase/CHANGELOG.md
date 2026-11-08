@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-08 21:01 UTC
+
+- **functions** alterado (2): `public.fn_standardize_supplier(p_supplier_id uuid, p_limit integer)`, `public.is_admin_or_above(_user_id uuid)`
+
 ## 2026-11-08 05:24 UTC
 
 - **grants** alterado (1): `public.suppliers:authenticated`

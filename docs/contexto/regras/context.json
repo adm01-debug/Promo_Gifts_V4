@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "5aed391bf5777b04cb72c8d0138854422c279dd9",
+  "sha": "ed0733f91c720e47f9f2a1dee2862683fe4841ab",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 20:22 UTC",
-  "files_total": 9128,
-  "code_files": 7864,
-  "code_lines": 1055532
+  "generated_at": "2026-11-08 21:02 UTC",
+  "files_total": 9140,
+  "code_files": 7865,
+  "code_lines": 1055591
  },
  "version": "1.3.2",
- "facts_hash": "c6fe72a686b5c021",
+ "facts_hash": "d232f3bcbfbd8cd7",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1173,7 +1173,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3234,
+   ".sql": 3235,
    ".ts": 2627,
    ".tsx": 1691,
    ".mjs": 303,
@@ -89332,6 +89332,7 @@
    "supabase/migrations/20260611014138_m16b_fn_classify_residual_wave2_2026.sql",
    "supabase/migrations/20260611014254_m18_medallion_coverage_monitoring_2026.sql",
    "supabase/migrations/20260611014320_m18b_fix_view_gold_materials_col_2026.sql",
+   "supabase/migrations/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/migrations/20260611014803_lockdown_pipeline_function_acls.sql",
    "supabase/migrations/20260611110436_packaging_pipeline_bronze_silver_gold_v1.sql",
    "supabase/migrations/20260611115719_b01e905c-9c47-488d-a93b-1907890e4436.sql",
@@ -140249,8 +140250,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3045,
-   "lines": 219903,
+   "files": 3046,
+   "lines": 219962,
    "tables": [
     "...",
     "admin_audit_log",
@@ -457651,6 +457652,10 @@
     "DELETE FROM public.medallion_coverage_snapshots WHERE captured_at > now() - interval '1 hour';"
    ]
   },
+  "supabase/migrations/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql": {
+   "path": "supabase/migrations/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
+   "lines": 56
+  },
   "supabase/migrations/20260611014803_lockdown_pipeline_function_acls.sql": {
    "path": "supabase/migrations/20260611014803_lockdown_pipeline_function_acls.sql",
    "lines": 31,
@@ -465041,7 +465046,7 @@
   },
   "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql": {
    "path": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql",
-   "lines": 157,
+   "lines": 160,
    "uses_service_role": true
   },
   "supabase/migrations/20261108020000_p09_reconcile_ledger_schema_migrations.sql": {
@@ -484062,10 +484067,62 @@
   }
  },
  "git": {
-  "sha": "5aed391bf5777b04cb72c8d0138854422c279dd9",
+  "sha": "ed0733f91c720e47f9f2a1dee2862683fe4841ab",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "ed0733f",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "chore(migrations): arquivo retroativo 20260611014515 fn_dryrun_standardize_supplier (#3239)",
+    "files": [
+     ".migration-refs-baseline.json",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql"
+    ]
+   },
+   {
+    "sha": "6e631dd",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(analise-prs): ciclos de correção — 2 mergeadas, 11 AGUARDANDO HUMANO",
+    "files": [
+     "analise-prs/RELATORIO_PRS.md",
+     "analise-prs/dossies/PR-3127.md",
+     "analise-prs/dossies/PR-3129.md",
+     "analise-prs/dossies/PR-3137.md",
+     "analise-prs/dossies/PR-3160.md",
+     "analise-prs/dossies/PR-3179.md",
+     "analise-prs/dossies/PR-3203.md",
+     "analise-prs/dossies/PR-3210.md",
+     "analise-prs/dossies/PR-3214.md",
+     "analise-prs/dossies/PR-3215.md",
+     "analise-prs/dossies/PR-3228.md",
+     "analise-prs/dossies/PR-3236.md",
+     "analise-prs/progresso.json"
+    ]
+   },
+   {
+    "sha": "d50ae76",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix(migrations): adiciona header Rollback em 20261108001500_reconcile_e2e_cleanup_audit",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
+    ]
+   },
+   {
+    "sha": "931b932",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f (#3241)",
+    "files": [
+     "PENDENCIAS.md",
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "5aed391",
     "date": "2026-11-08",
@@ -484344,56 +484401,6 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "1036dc3",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(ci): aceitar skip estrutural do PDF no Chromium (#3199)",
-    "files": [
-     ".github/workflows/e2e-focused.yml"
-    ]
-   },
-   {
-    "sha": "e09f412",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs(ci): RELATORIO §32 + PENDENCIAS #44 (#3200)",
-    "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md"
-    ]
-   },
-   {
-    "sha": "5e28c6c",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(e2e): desbloqueia grid de novidades, imagem e tour do kit builder",
-    "files": [
-     "e2e/catalog.spec.ts",
-     "e2e/kit-builder.spec.ts",
-     "e2e/optimized-image-visual.spec.ts",
-     "e2e/optimized-image-visual.spec.ts-snapshots/image-error-state-chromium-public-linux.png",
-     "e2e/optimized-image-visual.spec.ts-snapshots/image-loading-blur-chromium-public-linux.png",
-     "e2e/routes/app/novelty-grid-visual.spec.ts",
-     "src/components/kit-builder/KitOnboardingTour.tsx",
-     "src/components/novelties/VirtualizedNoveltyGrid.tsx",
-     "src/components/ui/OptimizedImage.tsx",
-     "src/lib/external-db/kit-coverage.test.ts",
-     "src/lib/external-db/kit-coverage.ts"
-    ]
-   },
-   {
-    "sha": "1e63b10",
-    "date": "2026-11-08",
-    "author": "github-actions[bot]",
-    "subject": "chore(main): release 1.8.0",
-    "files": [
-     ".release-please-manifest.json",
-     "CHANGELOG.md",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
@@ -484406,11 +484413,11 @@
     9
    ],
    [
-    ".github/SENTINEL_SHA_ALLOWLIST.txt",
-    3
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    5
    ],
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
+    ".github/SENTINEL_SHA_ALLOWLIST.txt",
     3
    ],
    [
@@ -484418,63 +484425,63 @@
     3
    ],
    [
-    ".release-please-manifest.json",
-    2
-   ],
-   [
-    "CHANGELOG.md",
-    2
-   ],
-   [
-    "package-lock.json",
-    2
-   ],
-   [
-    "package.json",
+    ".migration-refs-baseline.json",
     2
    ],
    [
     "analise-prs/RELATORIO_PRS.md",
-    1
+    2
    ],
    [
     "analise-prs/progresso.json",
+    2
+   ],
+   [
+    "supabase/migrations/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
     1
    ],
    [
-    "analise-prs/prs.json",
+    "analise-prs/dossies/PR-3127.md",
     1
    ],
    [
-    "supabase/migrations/20261108020000_p09_reconcile_ledger_schema_migrations.sql",
+    "analise-prs/dossies/PR-3129.md",
     1
    ],
    [
-    "supabase/rollbacks/20261108020000_rollback.sql",
+    "analise-prs/dossies/PR-3137.md",
     1
    ],
    [
-    "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql",
+    "analise-prs/dossies/PR-3160.md",
     1
    ],
    [
-    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "analise-prs/dossies/PR-3179.md",
     1
    ],
    [
-    "auditoria-supabase/P09_INVESTIGACAO_2026-11-08.md",
+    "analise-prs/dossies/PR-3203.md",
     1
    ],
    [
-    ".github/workflows/sentinel-self-test.yml",
+    "analise-prs/dossies/PR-3210.md",
     1
    ],
    [
-    "scripts/sentinel-check.sh",
+    "analise-prs/dossies/PR-3214.md",
     1
    ],
    [
-    ".any-type-baseline.json",
+    "analise-prs/dossies/PR-3215.md",
+    1
+   ],
+   [
+    "analise-prs/dossies/PR-3228.md",
+    1
+   ],
+   [
+    "analise-prs/dossies/PR-3236.md",
     1
    ]
   ]
