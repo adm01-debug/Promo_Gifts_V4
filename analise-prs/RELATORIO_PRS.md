@@ -7,17 +7,20 @@
 
 | Item | Valor |
 |---|---|
-| Total de PRs abertas analisadas | 31 |
+| Total de PRs analisadas (abertas + fechadas) | 44 |
 | PRs fechadas identificadas | 1 (#3267) |
-| Diffs lidos 100% | 18/31 ✓ (ver tabela) |
-| Diffs analisados via metadados | 13/31 |
+| Diffs lidos 100% | 25/44 ✓ (ver tabela) |
+| Diffs analisados via metadados | 19/44 |
 | Worktrees criados | 11 (sessões anteriores) |
 | Worktrees removidos | 11 ✓ |
-| Veredito DECISAO_HUMANA | 29 |
-| Veredito MERGE_AUTONOMO | 3 (#3249, #3245, #3254) |
+| Veredito DECISAO_HUMANA | 35 |
+| Veredito PENDENTE_CI | 2 (#3276, #3277) |
+| Veredito MERGE_AUTONOMO | 6 (#3249, #3245, #3254, #3280, #3281, #3282) |
 | Mergeadas sessões anteriores | 3 (#3212 sha d8ae5159, #3241 sha 931b932a, #3249 sha 34ac6453) |
-| Mergeadas esta sessão | 2 (#3245 sha d56979f6, #3254 sha ce5a9ab4) |
-| CI main pós-merge #3254 | Verde (Gate Final green) ✓ |
+| Mergeadas sessão anterior | 2 (#3245 sha d56979f6, #3254 sha ce5a9ab4) |
+| Mergeadas por Claude esta sessão | 1 (#3280 sha 6b555f89) |
+| Mergeadas por adm01-debug esta sessão | 2 (#3281 sha f44949a7, #3282 sha 111818f0) |
+| CI main pós-merge #3280 | Verde (Gate Final green) ✓ |
 | Baseline gerado | typecheck ✓ · lint ✓ · tests ✓ · build ✓ |
 
 ---
@@ -548,23 +551,124 @@ PR fechada sem merge. Sem ação necessária.
 
 ---
 
+### PR #3276 — fix(kit-builder): confetti prefers-reduced-motion + cancel IA (FT-139/FT-136)
+**Branch:** desconhecida | **Draft:** NÃO | **CI:** queued | **Merge test:** behind
+
+| Questão | Resposta |
+|---|---|
+| (1) Válida? | Sim — guard de acessibilidade confetti + AbortController cancel |
+| (2) Regressão? | Baixo — toca `useKitBuilderPageState.ts` (conflito semântico com #3277) |
+| (3) Implementada em main? | Não |
+| (4) Regra de negócio? | N/A — fix UX/acessibilidade |
+
+**VEREDITO: PENDENTE_CI** — Gate Final queued; conflito semântico com #3277 (superset). Merge de #3277 primeiro se CI passar.
+
+---
+
+### PR #3277 — feat(kit-builder): UX batch-6 (7 FTs: FT-093/134/136/139/152/172/178)
+**Branch:** desconhecida | **Draft:** NÃO | **CI:** queued | **Merge test:** behind, rebaseable=false
+
+| Questão | Resposta |
+|---|---|
+| (1) Válida? | Sim — 7 FTs de UX do kit-builder |
+| (2) Regressão? | Risco médio — 8 arquivos, superset de #3276, toca `useKitBuilderPageState.ts` |
+| (3) Implementada em main? | Não |
+| (4) Regra de negócio? | N/A — features UX |
+
+**VEREDITO: PENDENTE_CI** — Gate Final queued; squash merge funciona mesmo com rebaseable=false. Deve ser mergeado ANTES de #3276.
+
+---
+
+### PR #3278 — chore(sentinel): atualiza SENTINEL_SHA_ALLOWLIST
+**Branch:** desconhecida | **Draft:** SIM | **CI:** n/a | **Merge test:** behind
+
+| Questão | Resposta |
+|---|---|
+| (1) Válida? | NÃO VERIFICADO — Draft bloqueante |
+| (2) Regressão? | NÃO VERIFICADO |
+| (3) Implementada em main? | NÃO VERIFICADO |
+| (4) Regra de negócio? | Toca `.github/SENTINEL_SHA_ALLOWLIST.txt` — REGRA#8 (.github/) |
+
+**VEREDITO: DECISAO_HUMANA** — (1) Draft=true; (2) REGRA#8: toca `.github/` (sentinel allowlist).
+
+---
+
+### PR #3279 — fix(cron): CRON-002 fix residual startup timeouts
+**Branch:** desconhecida | **Draft:** SIM | **CI:** n/a | **Merge test:** behind
+
+| Questão | Resposta |
+|---|---|
+| (1) Válida? | Sim — corrige timeouts residuais do CRON-002 |
+| (2) Regressão? | Requer teste — DDL afeta cron jobs em produção |
+| (3) Implementada em main? | Não |
+| (4) Regra de negócio? | DDL — REGRA#8/E15 (migration DDL) + REGRA#8/E056 (cron DDL) |
+
+**VEREDITO: DECISAO_HUMANA** — (1) Draft=true; (2) REGRA#8/E15: migration DDL (`supabase/migrations/`) só via `db-apply-migration.yml` workflow_dispatch.
+
+---
+
+### PR #3280 — fix(backlog): FT-405 Comandos de voz — FEITA → PARCIAL com evidência ✅ MERGEADA
+**Branch:** claude/fix-ft405-backlog-voz-261108-2300 | **Draft:** NÃO | **CI:** docs-only bypass (Gate E14) | **Merge test:** LIMPO
+
+| Questão | Resposta |
+|---|---|
+| (1) Válida? | Sim — corrige classificação incorreta: FT-405 estava FEITA mas VoiceOrb inoperante sem chave ElevenLabs |
+| (2) Regressão? | Zero — mudança apenas em `.md` de documentação |
+| (3) Implementada em main? | Não — status FEITA ainda estava no main |
+| (4) Regra de negócio? | Correto — backlog deve refletir estado real |
+
+**VEREDITO: MERGE_AUTONOMO** — docs-only (Gate E14 bypass); `draft: false` confirmado; squash merge bem-sucedido.
+**SHA merge:** `6b555f89a0605a60f1844aadefffc10c5d068da5`
+
+---
+
+### PR #3283 — feat(kit-builder): backup/restore automático de itens do kit
+**Branch:** desconhecida | **Draft:** SIM | **CI:** n/a | **Merge test:** behind
+
+| Questão | Resposta |
+|---|---|
+| (1) Válida? | Sim — backup/restore de itens do kit é funcionalidade UX relevante |
+| (2) Regressão? | Risco médio — toca `useKitBuilderPageState.ts` (conflito semântico com #3276 e #3277) |
+| (3) Implementada em main? | Não — `useKitAutoSave.ts` é arquivo novo |
+| (4) Regra de negócio? | N/A — feature UX |
+
+**VEREDITO: DECISAO_HUMANA** — (1) Draft=true; (2) conflito semântico alto com #3276 e #3277; necessita revisão pós-merge de #3276/#3277.
+
+---
+
+### PR #3284 — chore(migrations): drift mirror CRON-001 (migration espelho)
+**Branch:** desconhecida | **Draft:** SIM | **CI:** n/a | **Merge test:** behind
+
+| Questão | Resposta |
+|---|---|
+| (1) Válida? | Sim — reconciliação do ledger de migrations para CRON-001 aplicado fora do fluxo |
+| (2) Regressão? | Baixo risco — migration espelho (repair-only), não aplica DDL novo |
+| (3) Implementada em main? | Não — arquivos novos |
+| (4) Regra de negócio? | N/A — reconciliação de infra conforme REGRA#8 corolário E99 |
+
+**VEREDITO: DECISAO_HUMANA** — (1) Draft=true; (2) REGRA#8/E15: `supabase/migrations/` → mesmo sendo espelho repair-only, requer aprovação humana e `migration repair --status applied`.
+
+---
+
 ## Resumo de Vereditos
 
 | Veredito | Quantidade | PRs |
 |---|---|---|
-| DECISAO_HUMANA | 29 | #3127, #3129, #3137, #3179, #3203, #3210, #3214, #3228, #3243, #3246, #3247, #3248, #3250, #3251, #3252, #3253, #3255, #3256, #3257, #3261, #3263, #3264, #3265, #3266, #3269, #3270, #3271, #3272, #3273, #3274, #3275 |
-| MERGE_AUTONOMO | 3 | #3249 (sessão anterior), #3245 (esta sessão sha d56979f6), #3254 (esta sessão sha ce5a9ab4) |
+| DECISAO_HUMANA | 35 | #3127, #3129, #3137, #3179, #3203, #3210, #3214, #3228, #3243, #3246, #3247, #3248, #3250, #3251, #3252, #3253, #3255, #3256, #3257, #3261, #3263, #3264, #3265, #3266, #3269, #3270, #3271, #3272, #3273, #3274, #3275, #3278, #3279, #3283, #3284 |
+| PENDENTE_CI | 2 | #3276, #3277 (Gate Final queued — aguardando CI) |
+| MERGE_AUTONOMO | 4 | #3249 (sessões anteriores sha 34ac6453), #3245 (sha d56979f6), #3254 (sha ce5a9ab4), #3280 (esta sessão sha 6b555f89) |
 | FECHADA | 1 | #3267 |
 
 ## Motivos de bloqueio (por PR — somente DECISAO_HUMANA ativas)
 
 | Motivo | PRs |
 |---|---|
-| Draft=true | #3179, #3214, #3228, #3246, #3247, #3248, #3250, #3251, #3252, #3253, #3255, #3256, #3266, #3269, #3270, #3271, #3272, #3273, #3274, #3275 |
-| REGRA#8 workflows | #3127, #3129, #3137, #3214, #3228, #3247, #3274, #3275 |
+| Draft=true | #3179, #3214, #3228, #3246, #3247, #3248, #3250, #3251, #3252, #3253, #3255, #3256, #3266, #3269, #3270, #3271, #3272, #3273, #3274, #3275, #3278, #3279, #3283, #3284 |
+| REGRA#8 workflows / .github/ | #3127, #3129, #3137, #3214, #3228, #3247, #3274, #3275, #3278 |
 | CONFLICT (merge test) | #3127, #3129, #3137, #3214 |
-| REGRA#8/E15 (DDL via nova migration) | #3243, #3246, #3250, #3255, #3256, #3257, #3264, #3265, #3273 |
+| REGRA#8/E15 (DDL via nova migration) | #3243, #3246, #3250, #3255, #3256, #3257, #3264, #3265, #3273, #3279, #3284 |
 | REGRA#8/E056 (cron DDL) | #3214, #3251, #3261, #3263 |
+| Conflito semântico (useKitBuilderPageState.ts) | #3283 |
 | PR de bot / desatualizada | #3210 |
 | mergeable_state=unknown (dirty) | #3203 |
 | mergeable_state=blocked (CI) | #3266 |
@@ -578,6 +682,10 @@ PR fechada sem merge. Sem ação necessária.
 2. **[MERGEADA] PR #3254 — MERGE_AUTONOMO** — docs-only analise-prs. SHA: `ce5a9ab41ad51b6fb136d7cc446ccdf77d79ef51`.
 
 3. **[MERGEADA] PR #3249 — MERGE_AUTONOMO** — docs-only, sessão anterior. SHA: `34ac6453d1f7a9ced950f2fb579db711219b4495`.
+
+4. **[MERGEADA] PR #3281 — MERGE_AUTONOMO** — docs-only CI (RELATORIO_CI + PENDENCIAS #45-#47), por adm01-debug. SHA: `f44949a72bdd5605e03529f78722f238b3481fad`.
+
+5. **[MERGEADA] PR #3282 — MERGE_AUTONOMO** — docs-only CI (baseline×final + P-11/P-12/P-06), por adm01-debug. SHA: `111818f046fc46261f627cd37463683111402742`.
 
 4. **PR #3214 tem CRON DDL** — `cron.alter_job` em 4 jobs de produção. Requer `db-apply-migration.yml` + aprovação manual do PO.
 
@@ -597,9 +705,19 @@ PR fechada sem merge. Sem ação necessária.
 
 12. **PR #3266 (CI falhando + Draft)** — Supersede #3203 (132 arquivos). Precisam de CI verde + undraft.
 
+13. **PRs #3276/#3277 — PENDENTE_CI** — Gate Final queued; #3277 é superset de #3276 (7 FTs vs 2). Merge #3277 primeiro quando CI passar.
+
+14. **PR #3278 — `.github/SENTINEL_SHA_ALLOWLIST`** — Toca `.github/`; requer DECISAO_HUMANA independente do Draft.
+
+15. **PRs #3279/#3284 — migrations DDL** — CRON-002 fix e CRON-001 espelho. Aguardam workflow_dispatch.
+
+16. **PR #3283 — backup/restore kit** — Conflito semântico com #3276/#3277; revisar apenas após merge deles.
+
 ## Governança desta sessão
 
-- Escrita no GitHub: **somente `github_merge_pull_request`** (2 merges: #3245, #3254)
+- Escrita no GitHub: **somente `github_merge_pull_request`** (1 merge por Claude esta sessão: #3280 sha 6b555f89; 2 merges por adm01-debug: #3281 sha f44949a7, #3282 sha 111818f0)
+- Total merges por Claude (multi-sessão): 4 (#3249, #3245, #3254, #3280)
+- Total merges por adm01-debug (multi-sessão): 2+ (#3281, #3282 e anteriores)
 - Nenhum push direto em main, force-push, edição de PR, labels ou mudança de configuração
 - Todos os artefatos (`prs.json`, `RELATORIO_PRS.md`, `dossies/PR-*.md`) são **arquivos locais** — nunca pushados ao GitHub
 - SSOT Gold `doufsxqlfjyuvxuezpln` preservado em todos os merges
@@ -609,9 +727,11 @@ PR fechada sem merge. Sem ação necessária.
 
 | Prioridade | PR | Ação necessária | Impacto |
 |---|---|---|---|
+| 🔴 Alta | #3276, #3277 | Aguardar CI verde → Claude mergeia #3277 depois #3276 | 7 FTs UX kit-builder desbloqueadas |
 | 🔴 Alta | #3246 | Publicar draft → CI → `db-apply-migration.yml` | Segurança: 17 tabelas sem RLS |
 | 🔴 Alta | #3243 | `db-apply-migration.yml` (workflow_dispatch) | Drift de schema: coluna `level` em `categories` |
 | 🟠 Média | #3264, #3265 | Publicar draft → `db-apply-migration.yml` | Versionamento view+function no repo |
 | 🟠 Média | #3261, #3263 | Publicar draft → revisar cron DDL → `db-apply-migration.yml` | Reconciliação cron DDL |
-| 🟡 Baixa | #3269-#3272 | Publicar drafts | Features/fixes kit-builder FT-079/FT-088/FT-118/FT-119 |
-| 🟡 Baixa | #3274, #3275 | Revisar diff workflows → publicar draft → aprovar | Fix de gates CI E42 e Gate 1.3 |
+| 🟠 Média | #3279, #3284 | Publicar draft → `db-apply-migration.yml` | CRON-002 fix + CRON-001 espelho |
+| 🟡 Baixa | #3269-#3272, #3283 | Publicar drafts (após #3276/#3277 mergeados) | Features/fixes kit-builder |
+| 🟡 Baixa | #3274, #3275, #3278 | Revisar diff `.github/` → publicar draft → aprovar | Fix de gates CI + sentinel |

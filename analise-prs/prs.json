@@ -3,14 +3,14 @@
     "data_analise": "2026-11-08",
     "sessao": "claude_05/youthful-ride-vcdchy",
     "total_abertos_analisados": 37,
-    "mergeadas_esta_sessao": 3,
+    "mergeadas_esta_sessao": 5,
     "mergeadas_sessoes_anteriores": 1,
     "aguardando_humano": 29,
     "pendente_ci": 2,
     "pr_mais_recente_analisada": 3284,
-    "nota": "#3267 fechada/não-mergeada excluída. #3249 mergeada sessão anterior. #3245+#3254+#3280 mergeadas esta sessão. #3276+#3277 PENDENTE_CI (Gate Final queued).",
-    "total_prs": 38,
-    "ultima_atualizacao": "2026-11-08T23:55:00Z"
+    "nota": "#3267 fechada/não-mergeada excluída. #3249 mergeada sessão anterior. #3245+#3254+#3280 mergeadas por Claude esta sessão. #3281+#3282 mergeadas por adm01-debug esta sessão. #3276+#3277 PENDENTE_CI (Gate Final queued).",
+    "total_prs": 40,
+    "ultima_atualizacao": "2026-11-09T00:00:00Z"
   },
   "prs": [
     {
@@ -502,6 +502,22 @@
       "squash_sha": "6b555f89a0605a60f1844aadefffc10c5d068da5",
       "tipo": "docs-only backlog (Gate E14 bypass)",
       "sessao": "atual"
+    },
+    {
+      "number": 3281,
+      "title": "docs: RELATORIO_CI.md + PENDENCIAS itens #45-#47",
+      "squash_sha": "f44949a72bdd5605e03529f78722f238b3481fad",
+      "tipo": "docs-only CI (Gate E14/E197 bypass)",
+      "sessao": "atual",
+      "merge_por": "adm01-debug (humano)"
+    },
+    {
+      "number": 3282,
+      "title": "docs(ci): RELATORIO_CI.md baseline×final + PENDENCIAS.md P-11/P-12 + P-06 corrigido",
+      "squash_sha": "111818f046fc46261f627cd37463683111402742",
+      "tipo": "docs-only CI (Gate E14/E197 bypass)",
+      "sessao": "atual",
+      "merge_por": "adm01-debug (humano)"
     }
   ],
   "regras_bloqueio_summary": {

@@ -39,5 +39,7 @@ numero,titulo,draft,conflito,toca_workflows,toca_migrations,regressao,veredito,m
 3278,"chore(sentinel): grandfather SHA d50ae76c",true,false,false,false,false,DECISAO_HUMANA,"Draft=true + arquivo .github/ (REGRA#8)"
 3279,"fix(cron): CRON-002 — corrige colisões residuais de startup",true,false,false,true,false,DECISAO_HUMANA,"Draft=true + REGRA#8/E15 DDL migration"
 3280,"fix(backlog): FT-405 Comandos de voz — FEITA → PARCIAL",false,false,false,false,false,MERGE_AUTONOMO,"MERGEADA SHA 6b555f89a0605a60f1844aadefffc10c5d068da5 (docs-only E14 bypass)"
+3281,"docs: RELATORIO_CI.md + PENDENCIAS itens #45-#47",false,false,false,false,false,MERGE_AUTONOMO,"MERGEADA SHA f44949a72bdd5605e03529f78722f238b3481fad (docs-only E14 bypass) por adm01-debug"
+3282,"docs(ci): RELATORIO_CI.md baseline×final + PENDENCIAS.md P-11/P-12 + P-06 corrigido",false,false,false,false,false,MERGE_AUTONOMO,"MERGEADA SHA 111818f046fc46261f627cd37463683111402742 (docs-only E14 bypass) por adm01-debug"
 3283,"feat(kit-builder): backup completo no beforeunload + restore",true,true,false,false,false,DECISAO_HUMANA,"Draft=true + conflito semântico com #3276/#3277"
 3284,"chore(migrations): DRIFT mirror — arquivos espelho CRON-001",true,false,false,true,false,DECISAO_HUMANA,"Draft=true + REGRA#8/E15 DDL migration espelho"
