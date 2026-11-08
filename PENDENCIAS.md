@@ -904,7 +904,91 @@ versão: 20261108001500 | arquivo: 20261108001500_reconcile_e2e_cleanup_audit.sq
 
 > **Atualização 2026-11-08T05:30Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
 > Item #47: "Recibo de migration" confirmado `success` em SHA `ee9383f37` (check 128638555626).  
-> Item #48: "Compare GitHub × Canonical" queued em `ee9383f37` — esperado failure (pré-existente, required, PENDENCIAS #29).  
-> Deploy Gates run [#42450527972](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42450527972) no SHA `ee9383f37`: `pending` às 05:30Z (runner congestion).  
-> Gate Final em main (`8c3abe3bcb`): run [#42448861374](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861374) `queued` desde 04:57Z.  
-> Itens com ação do dono pendente: #1, #29, #37, #42, #44, #45, #48 (read-only); #46 (re-dispatch após merge).
+> Item #48: "Compare GitHub × Canonical" queued em `ee9383f37`; em `bdbba9e38` → `completed: success` (check 128641241632) ✅ — required check desbloqueado.  
+> Deploy Gates run [#42451417275](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42451417275) em `bdbba9e38`: em progresso (runners alocados ~05:42Z; vários gates success).  
+> Gate Final em main (`8c3abe3bcb`): run [#42448861374](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861374) `queued` desde 04:57Z — runner starvation (ver #52).  
+> Itens com ação do dono pendente: #1, #29, #37, #42, #44, #45, #49, #50, #51, #52 (read-only); #46 (re-dispatch após merge).
+
+---
+
+## 49. CI Security & Drift Checks ❌ (pré-existente — seção E15 ausente em MIGRATIONS_SYNC_LOG.md)
+
+**Workflow:** `ci-security-drift-checks.yml`  
+**Run ID:** [42448861299](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861299) (2026-11-08T05:00Z, SHA `8c3abe3bcb`)  
+**Conclusão:** `failure`  
+**Erro exato (vitest):**
+```
+seção "## Recibos — E15 (workflow de aplicação controlada)" não encontrada em MIGRATIONS_SYNC_LOG.md
+tests/scripts/append-migration-receipt.test.mjs > appendReceiptRow
+```
+**Causa:** `supabase/MIGRATIONS_SYNC_LOG.md` não possui a seção `## Recibos — E15 (workflow de aplicação controlada)`. O teste `append-migration-receipt.test.mjs` busca esse cabeçalho para inserir o recibo e falha na ausência.  
+**Pré-existente:** Confirmado via `git show 51519ef5a:supabase/MIGRATIONS_SYNC_LOG.md | grep "Recibos — E15"` — seção nunca existiu antes desta sessão. Esta sessão só alterou 1 linha no arquivo (sha256 + status de `20261108001500`).  
+**Required check em main:** NÃO — não está em `.github/required-checks.json`.  
+**Por que não corrijo:** Adicionar a seção exige entender o schema esperado e validar que o `appendReceiptRow` vai aceitar a estrutura — requer que o dono aprove a adição.  
+**O que o dono precisa fazer:**  
+1. Adicionar em `supabase/MIGRATIONS_SYNC_LOG.md` a seção `## Recibos — E15 (workflow de aplicação controlada)` com o schema correto (inspecionar `scripts/append-migration-receipt.mjs` para o formato esperado)
+2. Verificar se a seção precisa de cabeçalho de coluna (ex.: `| versão | sha256 | status | aplicado_em |`)
+3. Re-executar CI para confirmar que o teste passa
+
+---
+
+## 50. E2E (Playwright) ❌ (pré-existente — auth timeout 504 + header sticky)
+
+**Workflow:** `e2e-playwright.yml`  
+**Run ID:** [42448545644](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448545644) (SHA `87fe8cd9`)  
+**Conclusão:** `failure`  
+**Erros exatos:**
+```
+[loginViaUI] Timeout aguardando redirect pós-login
+auth/v1/token -> 504 (48327ms)
+```
+```
+O Header global deixou de ser sticky em alguma rota/viewport
+Test: 22-header-sticky.spec.ts
+```
+**Causa:** Dois problemas independentes:  
+1. `auth/v1/token` retornando 504 (Gateway Timeout) — Supabase Auth lento/indisponível no momento do CI  
+2. Regressão no sticky do header global em alguma viewport (`22-header-sticky.spec.ts`)  
+**SHA de origem:** `87fe8cd9` — commit de outro agente/sessão, anterior a esta sessão.  
+**Required check em main:** NÃO — E2E não está em `.github/required-checks.json`.  
+**Por que não corrijo:** Regressão introduzida em SHA de outra sessão; o timeout 504 pode ser flake de infraestrutura; não é escopo desta sessão (que toca apenas `.md` e `.sql`).  
+**O que o dono precisa fazer:**  
+1. Identificar quem introduziu a regressão do header sticky em `87fe8cd9` e abrir issue/PR de correção  
+2. Verificar disponibilidade do Supabase Auth no CI (pode ser flake — re-executar o run para confirmar)
+
+---
+
+## 51. E2E — Personalization Flow ❌ (pré-existente — auth.setup expirado)
+
+**Workflow:** `e2e-personalization-flow.yml` (ou similar)  
+**Run ID:** [42448545700](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448545700) (SHA `87fe8cd9`)  
+**Conclusão:** `failure`  
+**Erro exato:**
+```
+sessão canônica ausente, inválida ou expirada após auth.setup em CI
+flows/90-92 (personalization auth redirect) — 4 testes falhando
+```
+**Causa:** O `auth.setup.ts` que cria a sessão canônica do Playwright retornou sessão inválida/expirada, bloqueando todos os testes de personalization que dependem de autenticação prévia.  
+**SHA de origem:** `87fe8cd9` — commit de outro agente/sessão, anterior a esta sessão.  
+**Required check em main:** NÃO — não está em `.github/required-checks.json`.  
+**Por que não corrijo:** Mesma causa raiz do item #50 (auth timeout no CI); SHA de outra sessão; fora do escopo.  
+**O que o dono precisa fazer:**  
+1. Verificar se o auth timeout de #50 é a causa raiz do `auth.setup` falhar em #51  
+2. Se confirmado flake: re-executar o run  
+3. Se regressão real: identificar o commit em `87fe8cd9` que quebrou o flow e corrigir
+
+---
+
+## 52. Deploy Gates — Gate Final ❌ (main) / em progresso (PR) — runner starvation free tier
+
+**Workflow:** `deploy-gates.yml` → job `Gate Final - Deploy Ready`  
+**Run ID (main `8c3abe3bcb`):** [42448861374](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861374) → `status: queued` desde 04:57Z (06:00Z+ sem runner atribuído)  
+**Run ID (PR branch `bdbba9e38`):** [42451417275](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42451417275) → runners alocados ~05:42Z; vários gates `completed: success` (ver §36)  
+**Causa:** GitHub Actions free tier tem limite de concorrência de runners. Com múltiplos workflows enfileirados, o run da branch main ficou bloqueado por runner starvation — bloqueio externo, não corrigível por código.  
+**Required check em main:** SIM — "Gate Final - Deploy Ready" está em `.github/required-checks.json`.  
+**Por que não corrijo:** Bloqueio externo (infraestrutura GitHub); já foi mitigado ao cancelar runs antigas em 05:0xZ (§34). O run na PR está progredindo.  
+**O que o dono precisa fazer:**  
+1. Aguardar o run [#42451417275](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42451417275) concluir na PR  
+2. Se "Gate Final - Deploy Ready" = success na PR: fazer merge (squash) da PR #3202  
+3. Após merge, o Gate Final no main será re-executado automaticamente; aguardar success  
+4. Depois: re-disparar `db-apply-migration.yml` com `MIGRATION_VERSION=20261108001500` (ver #46)

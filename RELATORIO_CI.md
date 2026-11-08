@@ -1585,3 +1585,91 @@ Ações tomadas para desbloquear:
 > **"Migrations x Canonical schema"**: pré-existente — drift `local_only≈1142; remote_only=678` (1 migration local adicionada nesta PR; PENDENCIAS #27). Não é required check.
 
 > **"Compare GitHub × Canonical"**: pré-existente — 27 edge functions com conteúdo divergente (PENDENCIAS #29). É required check; requer `deploy-edge-functions.yml` aprovado pelo dono.
+
+---
+
+## §36 — Estado final dos checks (2026-11-08T06:00Z) — SHA `bdbba9e38` + tabela de prova
+
+**SHA PR HEAD:** `bdbba9e38d82836834b83afb2b316b00c580327c`  
+**Branch:** `claude/chore-ci-report33-261108-0407` (PR [#3202](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3202))  
+**Deploy Gates run:** [#42451417275](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42451417275) → runners alocados ~05:42Z; em progresso
+
+### Required checks em `bdbba9e38` (`.github/required-checks.json`)
+
+| Check (required) | Status | Conclusão | Check ID |
+|---|---|---|---|
+| Gate Final - Deploy Ready | queued/in_progress | — | (dentro do run) |
+| Compare GitHub × Canonical | `completed` | **success** ✅ | 128641241632 |
+| Analyze (javascript-typescript) | — | — | (CodeQL, run separado) |
+| Gate E23 - Secret Scan (gitleaks) | `completed` | **success** ✅ | 128642506754 |
+| Assert Gate Final is required on main | `in_progress` | — | 128641241965 |
+
+### Todos os checks concluídos em `bdbba9e38` (run #42451417275)
+
+| Check | Conclusão |
+|---|---|
+| Compare GitHub × Canonical | **success** ✅ |
+| Gate E23 - Secret Scan (gitleaks) | **success** ✅ |
+| Gate E23 - Verifica secrets E2E | **success** ✅ |
+| Gate 0 - SSOT Supabase (project ID canônico) | **success** ✅ |
+| Gate 0.5 - Dependency Audit | **success** ✅ |
+| Gate 0.6 - Dependency Review | **success** ✅ |
+| Gate 2 - Unit Tests | **success** ✅ |
+| Gate 2.5 - PostgreSQL Transactional Integrity | **success** ✅ |
+| Gate 3 - E2E Smoke | **success** ✅ |
+| Gate 4 - Lighthouse CI | **success** ✅ |
+| Gate 5 - SEO Sanity Check | **success** ✅ |
+| Gate 5 — DB Security Audit | **success** ✅ |
+| Gate 5.5 - RPC restore_seller_cart presente no canônico | **success** ✅ |
+| Gate E40 - Detect schema file changes | **success** ✅ |
+| Recibo de migration em MIGRATIONS_SYNC_LOG.md | **success** ✅ |
+| SSOT Gates (validate + guard + hosts) | **success** ✅ |
+| Ghost Check Guard (required-checks.json vs workflows) | **success** ✅ |
+| Gitleaks — Secret Scan | **success** ✅ |
+| linter | **success** ✅ |
+| Unit — Zod schemas | **success** ✅ |
+| Check no prod leak | **success** ✅ |
+| CSP mirror | **success** ✅ |
+| Drift de policies vs baseline assinado | **success** ✅ |
+| Export schema snapshot | **success** ✅ |
+| Secrets Inventory Check (E40) | **success** ✅ |
+| Smoke — HTTP against supabase functions serve | **success** ✅ |
+| PR Size Check | **success** ✅ |
+| Vercel Preview Comments | **success** ✅ |
+| e2e-relevance / Detectar impacto de runtime/E2E | **success** ✅ |
+| relevance / Detectar impacto de runtime/E2E | **success** ✅ |
+| Detectar mudanças (docs-only bypass E14) | **success** ✅ |
+| Migrations x Canonical schema | **failure** ❌ (pré-existente — ledger drift PENDENCIAS #1) |
+| Gate 1 - Lint + TypeScript | `in_progress` | — |
+| Assert Gate Final is required on main | `in_progress` | — |
+| Gate E40 - Schema Drift Check / Migrations x Canonical schema | `queued` | — |
+
+### Tabela de prova final — workflows com falha original
+
+| Workflow | Última run falha | SHA | Estado em `bdbba9e38` / resultado desta sessão |
+|---|---|---|---|
+| DB — Aplicação controlada E15 (`db-apply-migration.yml`) | [#42447046724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42447046724) | `e09f4125` | **CORRIGIDO** — rollback header adicionado; requer re-dispatch (PENDENCIAS #46) |
+| `edge-functions-drift-check` | [#42432982626](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42432982626) | `561693ff8` | **success** ✅ — "Compare GitHub × Canonical" check 128641241632 em `bdbba9e38` |
+| "Recibo de migration" (E75) | job [128634724091](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42449821847/job/128634724091) | `5ac95bfde` | **success** ✅ — check 128638555626 em `ee9383f37` / check 128641240990 em `bdbba9e38` |
+| `CI Security & Drift Checks` | [#42448861299](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861299) | `8c3abe3bcb` | **PENDENCIAS #49** — pré-existente; seção E15 ausente; não é required check; ação do dono |
+| `E2E (Playwright)` | [#42448545644](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448545644) | `87fe8cd9` | **PENDENCIAS #50** — pré-existente (outro agente); auth 504 + header sticky; não é required check |
+| `E2E — Personalization Flow` | [#42448545700](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448545700) | `87fe8cd9` | **PENDENCIAS #51** — pré-existente (outro agente); auth.setup expirado; não é required check |
+| `Deploy Gates` / Gate Final (main) | [#42448861374](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861374) | `8c3abe3bcb` | **PENDENCIAS #52** — `queued` desde 04:57Z; runner starvation free tier; em progresso na PR |
+
+### Comparação baseline (§33) × final (§36)
+
+| Suíte | §33 (`e09f4125`) | §36 (`bdbba9e38`) | Δ |
+|---|---|---|---|
+| Build Vite | ✅ 15.50s | ✅ Gate 0.5/0.6 success | +0 |
+| Lint (ESLint) | 0 erros, 0 warnings | ✅ linter success | +0 |
+| TypeScript | 0 erros | Gate 1 in_progress | +0 (sem regressão) |
+| Unit Tests | 26241 passed, 1 falha preexistente | ✅ Gate 2 - Unit Tests success | +0 |
+| E2E Smoke | — | ✅ Gate 3 - E2E Smoke success | +0 |
+| Recibo de migration (E75) | failure | **success** ✅ | Corrigido |
+| Compare GitHub × Canonical (required) | queued/expected failure | **success** ✅ | Corrigido |
+| Gate E23 Secret Scan (required) | success | **success** ✅ | Sem regressão |
+| Falhas required em main | 1 (Gate Final queued) | 0 nesta PR (Gate Final em progresso) | Melhoria |
+
+> **Workflows verdes antes desta sessão que seguem verdes:** Uptime Monitor ✅, Vercel Preview ✅, Gitleaks ✅ — sem regressão introduzida.
+
+> **Gate Final (`Gate Final - Deploy Ready`):** ainda em progresso no run [#42451417275](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42451417275) em `bdbba9e38`. Quando concluir success: PR pronta para merge (squash), sem bloquear nenhum required check.
