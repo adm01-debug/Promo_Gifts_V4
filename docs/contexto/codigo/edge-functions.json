@@ -218,7 +218,7 @@
    "nome": "asia-ingestion",
    "entrada": "supabase/functions/asia-ingestion/index.ts",
    "arquivos": 1,
-   "linhas": 115,
+   "linhas": 117,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS",

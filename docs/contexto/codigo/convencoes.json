@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "infra: migra imports esm.sh → npm: pinados nas edge functions (#3157)",
    "docs(ci): RELATORIO §30 — fix Branch Protection Sentinel (#3192)",
    "docs(ci): RELATORIO §29 — baseline local 9feb0148 + inventário fix/ci-workflows",
    "docs(ci): RELATORIO §28 + PENDENCIAS #39-42 — sessão 2026-11-08",
-   "docs(estado): atualiza PROGRESSO e PENDENCIAS — 2026-11-08 (#3189)",
-   "docs(ci): RELATORIO §27 — baseline 12e873af + inventário workflows (#3187)"
+   "docs(estado): atualiza PROGRESSO e PENDENCIAS — 2026-11-08 (#3189)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "16408a6847b61fdd5fbba1e2a9385e311199edcc",
+  "sha": "217869d1f7fb52bef586a63e30fd37bb1dffa290",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 02:46 UTC",
+  "generated_at": "2026-11-08 02:51 UTC",
   "files_total": 9100,
   "code_files": 7845,
-  "code_lines": 1051414
+  "code_lines": 1051417
  },
  "version": "1.3.2",
- "facts_hash": "5c5edbdd21ae48c4",
+ "facts_hash": "f281de1c1ab6ff88",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -137714,7 +137714,7 @@
   {
    "module": "(raiz)",
    "files": 9,
-   "lines": 3393,
+   "lines": 3394,
    "tables": [],
    "exports": [
     "playwright.config.ts: defineConfig",
@@ -139887,7 +139887,7 @@
   {
    "module": "supabase/functions",
    "files": 251,
-   "lines": 45902,
+   "lines": 45904,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -140032,6 +140032,10 @@
     "node:fs",
     "node:path",
     "npm:@supabase",
+    "npm:blurhash@2.0.5",
+    "npm:fast-png@6.0.0",
+    "npm:jpeg-js@0.4.4",
+    "npm:otpauth@9.3.5",
     "npm:zod@3.23.8",
     "vitest"
    ],
@@ -362429,7 +362433,7 @@
   },
   "vitest.config.ts": {
    "path": "vitest.config.ts",
-   "lines": 164,
+   "lines": 165,
    "exports": [
     "default defineConfig"
    ],
@@ -442101,7 +442105,7 @@
   },
   "supabase/functions/asia-ingestion/index.ts": {
    "path": "supabase/functions/asia-ingestion/index.ts",
-   "lines": 115,
+   "lines": 117,
    "tables": [
     {
      "table": "supplier_products_raw",
@@ -483049,10 +483053,107 @@
   }
  },
  "git": {
-  "sha": "16408a6847b61fdd5fbba1e2a9385e311199edcc",
+  "sha": "217869d1f7fb52bef586a63e30fd37bb1dffa290",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "217869d",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "infra: migra imports esm.sh → npm: pinados nas edge functions (#3157)",
+    "files": [
+     "supabase/functions/_shared/contracts/_zod.ts",
+     "supabase/functions/_shared/contracts/errors.ts",
+     "supabase/functions/_shared/contracts/index.ts",
+     "supabase/functions/_shared/contracts/parse.ts",
+     "supabase/functions/_shared/contracts/schemas/bi-copilot.ts",
+     "supabase/functions/_shared/contracts/schemas/block-ip-temporarily.ts",
+     "supabase/functions/_shared/contracts/schemas/e2e-cleanup.ts",
+     "supabase/functions/_shared/contracts/schemas/force-global-logout.ts",
+     "supabase/functions/_shared/contracts/schemas/kit-ai-builder.ts",
+     "supabase/functions/_shared/contracts/schemas/market-intelligence-insights.ts",
+     "supabase/functions/_shared/contracts/schemas/ownership-audit.ts",
+     "supabase/functions/_shared/contracts/schemas/ownership-repair.ts",
+     "supabase/functions/_shared/contracts/schemas/product-webhook.ts",
+     "supabase/functions/_shared/contracts/schemas/send-transactional-email.ts",
+     "supabase/functions/_shared/contracts/schemas/simulation-orchestrator.ts",
+     "supabase/functions/_shared/contracts/schemas/step-up-verify.ts",
+     "supabase/functions/_shared/contracts/schemas/sync-external-db.ts",
+     "supabase/functions/_shared/contracts/schemas/trends-insights.ts",
+     "supabase/functions/_shared/contracts/schemas/webhook-dispatcher.ts",
+     "supabase/functions/_shared/contracts/schemas/webhook-inbound.ts",
+     "supabase/functions/asia-ingestion/index.ts",
+     "supabase/functions/audit-suite/index.ts",
+     "supabase/functions/bitrix-sync/index.ts",
+     "supabase/functions/block-ip-temporarily/index.ts",
+     "supabase/functions/categories-api/index.ts",
+     "supabase/functions/check-login/index.ts",
+     "supabase/functions/cleanup-notifications/index.ts",
+     "supabase/functions/cleanup-novelties/index.ts",
+     "supabase/functions/collections-watcher/index.ts",
+     "supabase/functions/commemorative-dates/index.ts",
+     "supabase/functions/comparison-price-watcher/index.ts",
+     "supabase/functions/connection-tester/index.ts",
+     "supabase/functions/connections-auto-test/index.ts",
+     "supabase/functions/connections-auto-test/processBatch.generic.test.ts",
+     "supabase/functions/connections-health-check/index.ts",
+     "supabase/functions/connections-hub-audit/index.ts",
+     "supabase/functions/detect-new-device/index.ts",
+     "supabase/functions/e2e-cleanup/index.mockups.test.ts",
+     "supabase/functions/e2e-cleanup/index.ts",
+     "supabase/functions/expert-chat/index.ts",
+     "supabase/functions/external-db-inspect/index.ts",
+     "supabase/functions/favorites-watcher/index.ts",
+     "supabase/functions/force-global-logout/index.ts",
+     "supabase/functions/full-op-diagnostics/index.ts",
+     "supabase/functions/generate-blurhashes/index.ts",
+     "supabase/functions/github-credentials-test/index.ts",
+     "supabase/functions/health-check/index.ts",
+     "supabase/functions/intelligence-substitute-applied/index.ts",
+     "supabase/functions/load-test/index.ts",
+     "supabase/functions/log-login-attempt/index.ts",
+     "supabase/functions/manage-users/index.ts",
+     "supabase/functions/market-intelligence-insights/index.ts",
+     "supabase/functions/materials-api/index.ts",
+     "supabase/functions/mcp-keys-issue/index.ts",
+     "supabase/functions/mcp-keys-issue/rls-isolation.test.ts",
+     "supabase/functions/mcp-keys-revoke/index.ts",
+     "supabase/functions/mcp-keys-rotate/index.ts",
+     "supabase/functions/mcp-keys-update/index.ts",
+     "supabase/functions/ownership-audit/index.ts",
+     "supabase/functions/ownership-repair/index.ts",
+     "supabase/functions/process-queue/index.ts",
+     "supabase/functions/process-scheduled-reports/index.ts",
+     "supabase/functions/product-visual-search/index.ts",
+     "supabase/functions/product-webhook/idempotency_test.ts",
+     "supabase/functions/product-webhook/index.ts",
+     "supabase/functions/quote-sync/index.ts",
+     "supabase/functions/rls-integration-tests/index.ts",
+     "supabase/functions/rls-matrix-export/index.ts",
+     "supabase/functions/secrets-manager/index.ts",
+     "supabase/functions/semantic-search/index.ts",
+     "supabase/functions/send-scheduled-reports/index.ts",
+     "supabase/functions/step-up-verify/index.ts",
+     "supabase/functions/sync-external-db/index.ts",
+     "supabase/functions/test-contract-orchestrator/index.ts",
+     "supabase/functions/test-inventory-orchestrator/index.ts",
+     "supabase/functions/tests/external_db_test.ts",
+     "supabase/functions/tests/load-test.ts",
+     "supabase/functions/tests/seller-carts-rls_test.ts",
+     "supabase/functions/tests/shockwave-load-test.ts",
+     "supabase/functions/trends-insights/index.ts",
+     "supabase/functions/validate-access/index.ts",
+     "supabase/functions/verify-2fa-token/index.ts",
+     "supabase/functions/verify-email/index.ts",
+     "supabase/functions/visual-search/index.ts",
+     "supabase/functions/visual-search/integration_test.ts",
+     "supabase/functions/webhook-inbound/integration_test.ts",
+     "supabase/functions/word-magic/index.limits.test.ts",
+     "supabase/functions/word-magic/index.ts",
+     "vitest.config.ts"
+    ]
+   },
    {
     "sha": "16408a6",
     "date": "2026-11-07",
@@ -483337,16 +483438,6 @@
     "files": [
      ".github/workflows/replenishment-quality.yml"
     ]
-   },
-   {
-    "sha": "21e52c0",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "test(auth): estabilizar callback SSO na suíte completa (#3133)",
-    "files": [
-     "src/pages/__tests__/SSOCallbackPage.race.test.tsx",
-     "src/pages/__tests__/SSOCallbackPage.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -483367,67 +483458,67 @@
     2
    ],
    [
-    "docs/estado/PENDENCIAS.md",
+    "supabase/functions/_shared/contracts/_zod.ts",
     1
    ],
    [
-    "docs/estado/PROGRESSO.md",
+    "supabase/functions/_shared/contracts/errors.ts",
     1
    ],
    [
-    "scripts/check-min-tests-executed.mjs",
+    "supabase/functions/_shared/contracts/index.ts",
     1
    ],
    [
-    "tests/scripts/check-min-tests-executed.test.mjs",
+    "supabase/functions/_shared/contracts/parse.ts",
     1
    ],
    [
-    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "supabase/functions/_shared/contracts/schemas/bi-copilot.ts",
     1
    ],
    [
-    "scripts/fuzz-edge-uploads.mjs",
+    "supabase/functions/_shared/contracts/schemas/block-ip-temporarily.ts",
     1
    ],
    [
-    "scripts/fuzz-testing.mjs",
+    "supabase/functions/_shared/contracts/schemas/e2e-cleanup.ts",
     1
    ],
    [
-    "tests/scripts/fuzz-edge-uploads.test.mjs",
+    "supabase/functions/_shared/contracts/schemas/force-global-logout.ts",
     1
    ],
    [
-    "tests/scripts/fuzz-testing.test.mjs",
+    "supabase/functions/_shared/contracts/schemas/kit-ai-builder.ts",
     1
    ],
    [
-    "graphify-out/GRAPH_REPORT.md",
+    "supabase/functions/_shared/contracts/schemas/market-intelligence-insights.ts",
     1
    ],
    [
-    ".gitignore",
+    "supabase/functions/_shared/contracts/schemas/ownership-audit.ts",
     1
    ],
    [
-    "docs/ci/SEGREDOS.md",
+    "supabase/functions/_shared/contracts/schemas/ownership-repair.ts",
     1
    ],
    [
-    "graphify-out/manifest.json",
+    "supabase/functions/_shared/contracts/schemas/product-webhook.ts",
     1
    ],
    [
-    "src/pages/magazine/components/EditorHero.tsx",
+    "supabase/functions/_shared/contracts/schemas/send-transactional-email.ts",
     1
    ],
    [
-    "src/pages/magazine/components/__tests__/EditorHero.test.tsx",
+    "supabase/functions/_shared/contracts/schemas/simulation-orchestrator.ts",
     1
    ],
    [
-    ".env.e2e.example",
+    "supabase/functions/_shared/contracts/schemas/step-up-verify.ts",
     1
    ]
   ]
