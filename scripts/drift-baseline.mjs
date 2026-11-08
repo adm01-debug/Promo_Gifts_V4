@@ -25,7 +25,7 @@
  *   prepare-workdir --ledger <json do migration list> --out <dir>
  *   filter-diff --diff <arquivo> --allowlist <arquivo> [--workdir <dir>]   (imprime o resíduo)
  */
-import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseSupabaseMigrationLedgerOutput } from './check-supabase-migration-ledger.mjs';
@@ -293,6 +293,35 @@ export function replayFileName(baselineVersion, index, original) {
   return `${version}_${original}`;
 }
 
+// O Supabase CLI aplica migrations de replay via pipeline do libpq. PostgreSQL
+// recusa CREATE INDEX CONCURRENTLY nesse modo, embora a mesma migration seja
+// válida no workflow oficial (sessão standalone). No shadow descartável não há
+// tráfego concorrente; remover apenas CONCURRENTLY preserva o índice resultante
+// sem alterar o arquivo histórico nem esconder outros erros SQL.
+const REPLAY_PIPELINE_REWRITES = new Map([
+  ['20261101140003_sb0006_index_kit_fk_user_id.sql', { concurrentlyIndexes: 2 }],
+]);
+
+export function sanitizeReplayMigration(fileName, sql) {
+  const expected = REPLAY_PIPELINE_REWRITES.get(fileName)?.concurrentlyIndexes;
+  if (expected === undefined) return sql;
+
+  let rewritten = 0;
+  const output = sql.replace(
+    /^(\s*CREATE\s+(?:UNIQUE\s+)?INDEX)\s+CONCURRENTLY\b/gim,
+    (statement) => {
+      rewritten += 1;
+      return statement.replace(/\s+CONCURRENTLY$/i, '');
+    },
+  );
+  if (rewritten !== expected) {
+    throw new Error(
+      `${fileName}: esperado(s) ${expected} CREATE INDEX CONCURRENTLY no replay; encontrado(s) ${rewritten}`,
+    );
+  }
+  return output;
+}
+
 export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef }) {
   // projectRef entra numa string TOML: aspas/quebra de linha reescreveriam o
   // config.toml (ex.: trocar major_version do shadow).
@@ -318,7 +347,8 @@ export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef })
   // cron.job já está sem privilégio. As migrations replayadas começam em B+2.
   writeFileSync(join(outMigrations, replayFileName(baseline.version, 0, REPLAY_CRON_SEED_FILE)), REPLAY_CRON_SEED_SQL);
   replay.forEach((f, i) => {
-    copyFileSync(join(migrationsDir, f), join(outMigrations, replayFileName(baseline.version, i + 1, f)));
+    const replaySql = sanitizeReplayMigration(f, readFileSync(join(migrationsDir, f), 'utf8'));
+    writeFileSync(join(outMigrations, replayFileName(baseline.version, i + 1, f)), replaySql);
   });
   return {
     baselineVersion: baseline.version,
