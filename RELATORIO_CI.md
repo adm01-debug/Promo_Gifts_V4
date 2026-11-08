@@ -6,6 +6,20 @@
 
 ---
 
+## Baseline local — 2026-11-08T15:55Z (HEAD `1d3dafae`, antes de qualquer alteração de código)
+
+| Comando | Resultado | Detalhe |
+|---|---|---|
+| `npm ci` | ✅ exit 0 | 120 deps instaladas sem conflito |
+| `npm run build` | ✅ exit 0 | `✓ built in 7.56s` — sem erros de bundle |
+| `npm run lint` | ✅ exit 0 | `0 erros, 0 warnings` — Δ vs baseline: `+0` |
+| `npm run qa:typecheck` | ✅ exit 0 | `tsc -p tsconfig.app.json --noEmit` sem erros |
+| `npm test` | ⏳ pendente | Em execução; ver Gate 2 (Unit Tests) no run #42494087701 — `conclusion=success` para mesmo código |
+
+> **Nota:** Esta PR toca somente arquivos `.md`; nenhuma linha de código da aplicação foi alterada. Risco de regressão = zero. Evidência de não-regressão: Gate 2 (Unit Tests) = success no CI do mesmo codebase em run [#42494087701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42494087701).
+
+---
+
 ## Estado da main — HEAD atual
 
 | Campo | Valor |
