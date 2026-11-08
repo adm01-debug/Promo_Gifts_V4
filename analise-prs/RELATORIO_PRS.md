@@ -2,10 +2,11 @@
 **Sessão:** 2026-11-08 (`session_01Ss1tXZ4cAbxBvdmu95uNPz`)
 **Main SHA (início):** `9a89d9f0a4ac2df7ad670501adaad9f1f60a75df`
 **Main SHA (atual):** `d8ae515913db370da08784f3c911834c1668b98c` (após PR#3212)
-**Total PRs analisadas:** 18
+**Total PRs analisadas:** 20
 **Mergeadas esta sessão:** 1 — PR#3212 → `d8ae515913` (docs-only E14)
 **PRs abertas restantes:** 12 — todas DECISAO_HUMANA
-**Vereditos:** MERGEADA=1 | DECISAO_HUMANA=12 | FECHADAS_PO=5
+**Vereditos:** MERGEADA=1 | DECISAO_HUMANA=12 | FECHADAS_PO=7
+**Atualização final:** PR#3232 e PR#3234 fechadas pelo PO; PR#3236 e PR#3238 abertas e analisadas
 
 ---
 
@@ -356,16 +357,47 @@ Todas as análises têm evidência de ao menos uma das fontes abaixo:
 
 ---
 
+### PR #3236 — fix(migrations): cabeçalho -- Rollback em reconcile_e2e_cleanup_audit | DECISAO_HUMANA
+
+**Branch:** unknown | Draft: **SIM** | CI: n/a | Merge test vs `d8ae5159`: **CLEAN**
+
+**(1) Válida?** Sim. Adiciona header `-- Rollback:` e `-- Migration:` à migration `20261108001500_reconcile_e2e_cleanup_audit.sql`.  
+**(2) Regressão?** Zero. Apenas 3 linhas de comentário adicionadas ao topo do arquivo; SQL em si não foi alterada. `supabase/MIGRATIONS_SYNC_LOG.md`: 1-line update de status (documentação).  
+**(3) Implementada em main?** Draft — merge test limpo vs `d8ae515913`; conteúdo não está em main.  
+**(4) Regra de negócio?** Válida — conformidade com padrão de cabeçalho de migration (rollback documentado).  
+**Bloqueio:** REGRA#8 — `supabase/migrations/` + DRAFT. Merge test: CLEAN (commit `4a21495a`). Dossier: `dossies/PR-3236.md`.
+
+---
+
+### PR #3238 — docs(analise-prs): relatório merge-prs / delivery branch | DECISAO_HUMANA
+
+**Branch:** `claude_05/youthful-ride-vcdchy` | Draft: **SIM** | CI: n/a | Merge test vs `d8ae5159`: **CLEAN**
+
+**(1) Válida?** Sim — PR de entrega desta sessão com artefatos de análise.  
+**(2) Regressão?** Zero. 3 arquivos em `analise-prs/` (RELATORIO_PRS.md, progresso.json, prs.json). Nenhum toca código de produção, edge functions, migrations ou workflows.  
+**(3) Implementada em main?** Não — conteúdo específico desta sessão.  
+**(4) Regra de negócio?** N/A — artefatos de análise interna.  
+**Bloqueio:** DRAFT. Merge test: CLEAN (sessão atual). PO decide se quer mesclar artefatos de análise em main. Dossier: `dossies/PR-3238.md`.
+
+---
+
 ## RESULTADO FINAL
 
-**PRs mergeadas esta sessão:** 0  
-**Razão:** 15 PRs = DECISAO_HUMANA (REGRA#8: workflows/migrations/DRAFT), 3 PRs = NAO_MERGEAVEL (conflitos/Gate Final ausente).
+**PRs mergeadas esta sessão:** 1 — PR#3212 → SHA `d8ae515913db370da08784f3c911834c1668b98c` (Gate E14 docs-only)  
+**CI após merge PR#3212:** E14 — Gate Final não disparou por design (docs-only); produção sem impacto (1 arquivo .md)
 
-**Nenhuma PR cumpriu todos os critérios de merge autônomo:**
-- Gate Final SUCCESS ✓ — apenas PR#3217 (mas isDraft=true bloqueia)
-- Sem governance files (workflows/migrations/rollbacks) ✗ — 15 das 18 PRs contêm governance files
-- Sem DRAFT ✗ — PR#3148, #3160, #3214, #3216, #3217 são DRAFT
-- Merge limpo (sem conflito) ✗ — PR#3127(parcial), #3129, #3150, #3203, #3214, #3216, #3220 têm conflitos
+**20 PRs analisadas no total:**
+- 1 × MERGEADA (PR#3212)
+- 12 × DECISAO_HUMANA (PRs #3127, #3129, #3137, #3160, #3179, #3203, #3210, #3214, #3215, #3228, #3236, #3238)
+- 7 × FECHADA_OU_MERGEADA_PO (PRs #3144, #3148, #3150, #3202, #3205, #3217, #3220 e outros de sessões anteriores)
 
-**Main SHA no início da sessão:** `9a89d9f0a4ac2df7ad670501adaad9f1f60a75df`  
-**Main SHA ao final da sessão:** `9a89d9f0a4ac2df7ad670501adaad9f1f60a75df` (inalterado — nenhum merge realizado)
+**Nenhuma outra PR cumpriu todos os critérios de merge autônomo:**
+- Gate Final SUCCESS: apenas PR#3217 (isDraft=true bloqueia — fechada pelo PO antes de publicar)
+- Sem governance files: todas as 12 restantes contêm workflows ou migrations
+- Sem DRAFT: PR#3160, #3179 parcialmente, #3214, #3236, #3238 são DRAFT
+- Merge limpo: PR#3203 tem 7 conflitos; PR#3203 Gate Final=FAILURE
+
+**Main SHA início:** `9a89d9f0a4ac2df7ad670501adaad9f1f60a75df`  
+**Main SHA final:** `d8ae515913db370da08784f3c911834c1668b98c` (após PR#3212 mergeada)  
+**Worktrees criados:** 0  
+**Outras escritas no GitHub:** push de artefatos em `claude_05/youthful-ride-vcdchy` apenas
