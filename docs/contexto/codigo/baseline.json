@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1d3dafae93722b7e19f426bcf63701a80ab4b148",
+  "commit": "f32231804cc73cf25066d98a61c2ca9b35f6cd40",
   "branch": "main",
-  "data_commit": "2026-11-08T12:17:53-03:00",
+  "data_commit": "2026-11-08T13:04:20-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "f322318",
+    "data": "2026-11-08",
+    "assunto": "feat: adiciona RELATORIO_CI.md e P35 em PENDENCIAS.md"
+   },
    {
     "sha": "1d3dafa",
     "data": "2026-11-08",
@@ -126,14 +131,9 @@
     "sha": "9c33e63",
     "data": "2026-11-07",
     "assunto": "fix(catalogo): preservar variante exata na seleção de cor (#3141)"
-   },
-   {
-    "sha": "217869d",
-    "data": "2026-11-07",
-    "assunto": "infra: migra imports esm.sh → npm: pinados nas edge functions (#3157)"
    }
   ],
-  "arquivos_mudados_7d": 607,
+  "arquivos_mudados_7d": 597,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 228
+    "mudancas": 227
    },
    {
     "pasta": "src/pages/products",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 72
+    "mudancas": 73
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 63
+    "mudancas": 64
    },
    {
     "arquivo": "package.json",
@@ -305,11 +305,11 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 34
+    "commits": 32
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 24
+    "commits": 23
    },
    {
     "autor": "Claude",

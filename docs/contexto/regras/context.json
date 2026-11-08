@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "1d3dafae93722b7e19f426bcf63701a80ab4b148",
+  "sha": "f32231804cc73cf25066d98a61c2ca9b35f6cd40",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 15:20 UTC",
+  "generated_at": "2026-11-08 16:11 UTC",
   "files_total": 9125,
   "code_files": 7862,
   "code_lines": 1054635
@@ -484051,10 +484051,20 @@
   }
  },
  "git": {
-  "sha": "1d3dafae93722b7e19f426bcf63701a80ab4b148",
+  "sha": "f32231804cc73cf25066d98a61c2ca9b35f6cd40",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "f322318",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "feat: adiciona RELATORIO_CI.md e P35 em PENDENCIAS.md",
+    "files": [
+     "PENDENCIAS.md",
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "1d3dafa",
     "date": "2026-11-08",
@@ -484552,15 +484562,6 @@
      "docs/estado/PENDENCIAS.md",
      "docs/estado/PROGRESSO.md"
     ]
-   },
-   {
-    "sha": "561693f",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "docs(ci): RELATORIO §27 — baseline 12e873af + inventário workflows (#3187)",
-    "files": [
-     "RELATORIO_CI.md"
-    ]
    }
   ],
   "hot_files": [
@@ -484570,7 +484571,7 @@
    ],
    [
     "PENDENCIAS.md",
-    4
+    5
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
