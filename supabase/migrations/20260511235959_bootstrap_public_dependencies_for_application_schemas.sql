@@ -152,6 +152,35 @@ CREATE TABLE IF NOT EXISTS public.product_images (
   cf_last_checked_at timestamptz
 );
 
+CREATE TABLE IF NOT EXISTS public.supplier_branches (
+  id uuid DEFAULT gen_random_uuid() CONSTRAINT supplier_branches_pkey PRIMARY KEY,
+  supplier_id uuid NOT NULL REFERENCES public.suppliers(id) ON DELETE CASCADE,
+  branch_name varchar(100) NOT NULL,
+  branch_code varchar(20),
+  cnpj varchar(18),
+  inscricao_estadual varchar(20),
+  state_uf varchar(2) NOT NULL,
+  city varchar(100),
+  address text,
+  tax_regime varchar(30) DEFAULT 'lucro_presumido',
+  icms_internal_rate numeric(5,2),
+  icms_interstate_rate numeric(5,2),
+  default_cfop_internal varchar(4),
+  default_cfop_interstate varchar(4),
+  is_default boolean DEFAULT false,
+  is_active boolean DEFAULT true,
+  notes text,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now(),
+  default_cst varchar(3),
+  default_pis_rate numeric(5,4),
+  default_cofins_rate numeric(5,4),
+  default_csosn varchar(4),
+  default_cest varchar(7),
+  default_operation_nature varchar(100),
+  CONSTRAINT supplier_branches_supplier_id_branch_code_key UNIQUE (supplier_id, branch_code)
+);
+
 CREATE TABLE IF NOT EXISTS public.variant_supplier_sources (
   id uuid DEFAULT gen_random_uuid() CONSTRAINT variant_stocks_pkey PRIMARY KEY,
   organization_id uuid NOT NULL,
@@ -258,5 +287,6 @@ ALTER TABLE public.product_images ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.product_materials ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.material_groups ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.material_types ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.supplier_branches ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.variant_supplier_sources ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.stock_daily_summary ENABLE ROW LEVEL SECURITY;

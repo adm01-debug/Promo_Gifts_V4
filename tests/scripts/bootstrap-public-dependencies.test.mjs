@@ -37,6 +37,15 @@ describe('bootstrap das dependências públicas do baseline', () => {
     expect(sql).toContain('categories_level_check');
   });
 
+  it('cria supplier_branches antes das FKs de estoque', () => {
+    const supplierBranches = sql.search(/CREATE TABLE IF NOT EXISTS public\.supplier_branches\b/i);
+    const variantSources = sql.search(
+      /CREATE TABLE IF NOT EXISTS public\.variant_supplier_sources\b/i,
+    );
+    expect(supplierBranches).toBeGreaterThan(-1);
+    expect(supplierBranches).toBeLessThan(variantSources);
+  });
+
   it('preserva as chaves usadas pelos drops e joins posteriores', () => {
     expect(sql).toContain('product_materials_organization_id_product_id_material_id_pa_key');
     expect(sql).toContain('variant_stocks_organization_id_variant_id_supplier_id_key');
