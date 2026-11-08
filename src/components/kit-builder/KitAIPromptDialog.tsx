@@ -6,6 +6,16 @@
 import { useMemo, useRef, useState, type ReactNode } from 'react';
 import { z } from 'zod';
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -66,6 +76,8 @@ const suggestionSchema = z
 interface KitAIPromptDialogProps {
   catalogItems?: KitItem[];
   catalogBoxes?: KitBox[];
+  /** True when the kit already has a box or items — triggers a replace-confirmation dialog. */
+  hasKitContent?: boolean;
   onApply: (
     suggestion: Suggestion,
     composition: KitAIComposition,
@@ -154,9 +166,16 @@ function buildStructuredPrompt({
 export function KitAIPromptDialog({
   catalogItems = [],
   catalogBoxes = [],
+  hasKitContent = false,
   onApply,
 }: KitAIPromptDialogProps) {
   const [open, setOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const pendingApplyRef = useRef<{
+    suggestion: Suggestion;
+    composition: KitAIComposition;
+    requestedQuantity?: number;
+  } | null>(null);
   const [prompt, setPrompt] = useState('');
   const [audience, setAudience] = useState('');
   const [budget, setBudget] = useState('');
@@ -249,19 +268,32 @@ export function KitAIPromptDialog({
     }
   };
 
-  const handleApply = () => {
-    if (!suggestion || !activeAlternative) return;
-    const requestedQuantity = Number.parseInt(quantity, 10);
-    onApply(
-      suggestion,
-      activeAlternative,
-      Number.isSafeInteger(requestedQuantity) && requestedQuantity > 0
-        ? requestedQuantity
-        : undefined,
-    );
+  const commitApply = (
+    s: Suggestion,
+    composition: KitAIComposition,
+    requestedQuantity?: number,
+  ) => {
+    onApply(s, composition, requestedQuantity);
     setOpen(false);
     clearForm();
     toast.success('Composição aplicada — revise variantes, estoque e valores antes de continuar.');
+  };
+
+  const handleApply = () => {
+    if (!suggestion || !activeAlternative) return;
+    const requestedQuantity = Number.parseInt(quantity, 10);
+    const qty =
+      Number.isSafeInteger(requestedQuantity) && requestedQuantity > 0
+        ? requestedQuantity
+        : undefined;
+
+    if (hasKitContent) {
+      pendingApplyRef.current = { suggestion, composition: activeAlternative, requestedQuantity: qty };
+      setConfirmOpen(true);
+      return;
+    }
+
+    commitApply(suggestion, activeAlternative, qty);
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -279,6 +311,7 @@ export function KitAIPromptDialog({
   };
 
   return (
+    <>
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-1.5">
@@ -534,6 +567,33 @@ export function KitAIPromptDialog({
         </div>
       </DialogContent>
     </Dialog>
+
+    <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Substituir o kit atual?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Aplicar esta composição vai substituir a caixa e os itens já escolhidos. Esta ação não
+            pode ser desfeita automaticamente.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={() => { pendingApplyRef.current = null; }}>
+            Cancelar
+          </AlertDialogCancel>
+          <AlertDialogAction
+            onClick={() => {
+              const p = pendingApplyRef.current;
+              if (p) commitApply(p.suggestion, p.composition, p.requestedQuantity);
+              pendingApplyRef.current = null;
+            }}
+          >
+            Substituir
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }
 
