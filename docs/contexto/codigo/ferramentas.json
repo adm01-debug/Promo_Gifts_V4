@@ -4,7 +4,7 @@
  "stack": {
   "linguagens": [
    "TypeScript (4317)",
-   "SQL (3232)",
+   "SQL (3234)",
    "Markdown (900)",
    "JavaScript (310)",
    "YAML (107)",
@@ -3546,7 +3546,7 @@
   {
    "arquivo": "PENDENCIAS.md",
    "titulo": "PENDENCIAS.md — Workflows com falha não corrigível nesta sessão",
-   "linhas": 128
+   "linhas": 144
   },
   {
    "arquivo": "PERFORMANCE-ANALYSIS.md",
@@ -3561,7 +3561,7 @@
   {
    "arquivo": "RELATORIO_CI.md",
    "titulo": "RELATÓRIO CI — Prova de Conclusão do Stop Hook",
-   "linhas": 140
+   "linhas": 148
   },
   {
    "arquivo": "RELATORIO_CI_P34.md",

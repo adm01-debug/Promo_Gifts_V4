@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ba1c3fb13815467c33de069caee564f76ebfd9f5",
+  "commit": "0409c07f7cd3e3ed439e400caf4d3081c5c28ece",
   "branch": "main",
-  "data_commit": "2026-11-08T16:12:22-03:00",
+  "data_commit": "2026-11-08T16:19:20-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "0409c07",
+    "data": "2026-11-08",
+    "assunto": "feat(migrations): P09 — reconcilia 432 versões históricas no ledger schema_migrations"
+   },
+   {
+    "sha": "9e4dfbb",
+    "data": "2026-11-08",
+    "assunto": "docs(ci): inventário final HEAD ba1c3fb — P-08, stub eslint, comparação baseline×final (#3237)"
+   },
    {
     "sha": "ba1c3fb",
     "data": "2026-11-08",
@@ -121,19 +131,9 @@
     "sha": "1036dc3",
     "data": "2026-11-08",
     "assunto": "fix(ci): aceitar skip estrutural do PDF no Chromium (#3199)"
-   },
-   {
-    "sha": "e09f412",
-    "data": "2026-11-08",
-    "assunto": "docs(ci): RELATORIO §32 + PENDENCIAS #44 (#3200)"
-   },
-   {
-    "sha": "5e28c6c",
-    "data": "2026-11-08",
-    "assunto": "fix(e2e): desbloqueia grid de novidades, imagem e tour do kit builder"
    }
   ],
-  "arquivos_mudados_7d": 585,
+  "arquivos_mudados_7d": 587,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 70
+    "mudancas": 71
    },
    {
     "pasta": "src/pages/admin",
@@ -193,33 +193,33 @@
    },
    {
     "pasta": "PENDENCIAS.md",
-    "mudancas": 54
+    "mudancas": 55
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 70
+    "mudancas": 71
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 54
+    "mudancas": 55
    },
    {
     "arquivo": "package.json",
-    "mudancas": 22
+    "mudancas": 21
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 19
+    "mudancas": 20
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 16
+    "mudancas": 15
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 14
+    "mudancas": 13
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 314
+    "commits": 315
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 22
+    "commits": 21
    },
    {
     "autor": "Joaquim Ataides",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9206,
+  "arquivos_total": 9208,
   "arquivos_codigo": 4631,
   "linhas_codigo": 887313,
   "rotas": 138,
@@ -330,7 +330,7 @@
   "hooks": 414,
   "edge_functions": 111,
   "tabelas": 544,
-  "migrations": 3045,
+  "migrations": 3046,
   "cron_jobs": 120,
   "testes": 2200,
   "workflows": 94,

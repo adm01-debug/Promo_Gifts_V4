@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "ba1c3fb13815467c33de069caee564f76ebfd9f5",
+  "sha": "0409c07f7cd3e3ed439e400caf4d3081c5c28ece",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 19:13 UTC",
-  "files_total": 9126,
-  "code_files": 7862,
-  "code_lines": 1054636
+  "generated_at": "2026-11-08 19:20 UTC",
+  "files_total": 9128,
+  "code_files": 7864,
+  "code_lines": 1055532
  },
  "version": "1.3.2",
- "facts_hash": "98edd370b05fea05",
+ "facts_hash": "c6fe72a686b5c021",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1173,7 +1173,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3232,
+   ".sql": 3234,
    ".ts": 2627,
    ".tsx": 1691,
    ".mjs": 303,
@@ -90973,6 +90973,7 @@
    "supabase/migrations/20261106232045_fix_handle_updated_at_search_path.sql",
    "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql",
    "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql",
+   "supabase/migrations/20261108020000_p09_reconcile_ledger_schema_migrations.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260916202000_rollback.sql",
@@ -91020,6 +91021,7 @@
    "supabase/rollbacks/20261106232045_rollback.sql",
    "supabase/rollbacks/20261107180000_rollback.sql",
    "supabase/rollbacks/20261108001500_rollback.sql",
+   "supabase/rollbacks/20261108020000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -140247,8 +140249,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3044,
-   "lines": 219448,
+   "files": 3045,
+   "lines": 219903,
    "tables": [
     "...",
     "admin_audit_log",
@@ -140346,8 +140348,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 48,
-   "lines": 1359,
+   "files": 49,
+   "lines": 1800,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -140401,6 +140403,7 @@
     "supabase/rollbacks/20261106232045_rollback.sql",
     "supabase/rollbacks/20261107180000_rollback.sql",
     "supabase/rollbacks/20261108001500_rollback.sql",
+    "supabase/rollbacks/20261108020000_rollback.sql",
     "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql"
    ]
   },
@@ -465041,6 +465044,10 @@
    "lines": 157,
    "uses_service_role": true
   },
+  "supabase/migrations/20261108020000_p09_reconcile_ledger_schema_migrations.sql": {
+   "path": "supabase/migrations/20261108020000_p09_reconcile_ledger_schema_migrations.sql",
+   "lines": 455
+  },
   "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql": {
    "path": "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "lines": 65,
@@ -465238,6 +465245,10 @@
   "supabase/rollbacks/20261108001500_rollback.sql": {
    "path": "supabase/rollbacks/20261108001500_rollback.sql",
    "lines": 20
+  },
+  "supabase/rollbacks/20261108020000_rollback.sql": {
+   "path": "supabase/rollbacks/20261108020000_rollback.sql",
+   "lines": 441
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -484051,10 +484062,31 @@
   }
  },
  "git": {
-  "sha": "ba1c3fb13815467c33de069caee564f76ebfd9f5",
+  "sha": "0409c07f7cd3e3ed439e400caf4d3081c5c28ece",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "0409c07",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "feat(migrations): P09 — reconcilia 432 versões históricas no ledger schema_migrations",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261108020000_p09_reconcile_ledger_schema_migrations.sql",
+     "supabase/rollbacks/20261108020000_rollback.sql"
+    ]
+   },
+   {
+    "sha": "9e4dfbb",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(ci): inventário final HEAD ba1c3fb — P-08, stub eslint, comparação baseline×final (#3237)",
+    "files": [
+     "PENDENCIAS.md",
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "ba1c3fb",
     "date": "2026-11-08",
@@ -484363,38 +484395,20 @@
      ".github/workflows/e2e-flows.yml",
      ".github/workflows/e2e.yml"
     ]
-   },
-   {
-    "sha": "74d9fda",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(sentinel): audita intervalo first-parent do push (recupera parte faltante da #2839)",
-    "files": [
-     ".github/SENTINEL_CHANGELOG.md",
-     ".github/workflows/branch-protection-sentinel.yml",
-     ".github/workflows/sentinel-self-test.yml",
-     "scripts/sentinel-push-range.sh",
-     "tests/scripts/sentinel-push-range.test.mjs"
-    ]
-   },
-   {
-    "sha": "f0f37db",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(ci): corrige env Vite e endurece smoke autenticado",
-    "files": [
-     ".github/workflows/ci-security-drift.yml"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    11
+    12
    ],
    [
     "PENDENCIAS.md",
-    8
+    9
+   ],
+   [
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    3
    ],
    [
     "auditoria-supabase/ADENDO_2026-10-28.md",
@@ -484406,14 +484420,6 @@
    ],
    [
     ".github/SENTINEL_SHA_ALLOWLIST.txt",
-    2
-   ],
-   [
-    ".github/workflows/sentinel-self-test.yml",
-    2
-   ],
-   [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
     2
    ],
    [
@@ -484433,11 +484439,23 @@
     2
    ],
    [
+    "supabase/migrations/20261108020000_p09_reconcile_ledger_schema_migrations.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261108020000_rollback.sql",
+    1
+   ],
+   [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     1
    ],
    [
     "auditoria-supabase/P09_INVESTIGACAO_2026-11-08.md",
+    1
+   ],
+   [
+    ".github/workflows/sentinel-self-test.yml",
     1
    ],
    [
@@ -484458,14 +484476,6 @@
    ],
    [
     ".orphan-labels-baseline.json",
-    1
-   ],
-   [
-    "docs/DB_FRONTEND_COVERAGE.md",
-    1
-   ],
-   [
-    "docs/E2E_SMOKE_COVERAGE.md",
     1
    ]
   ]
