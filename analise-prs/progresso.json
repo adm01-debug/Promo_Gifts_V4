@@ -26,10 +26,45 @@
   "vereditos": {
     "MERGEADA_PELO_PO": 1,
     "MERGEADA_ESTA_SESSAO": 0,
-    "DECISAO_HUMANA": 17,
-    "NAO_MERGEAVEL": 0
+    "DECISAO_HUMANA": 14,
+    "NAO_MERGEAVEL": 3
   },
   "prs_mergeadas_esta_sessao": [],
+  "nao_mergeaveis_evidencia": {
+    "3203": {
+      "motivo": "7 conflitos reais (gen-internal-schema.mjs, cors-snapshot.json, baselines JSON) + CI=FAILURE + Gate Final ausente",
+      "evidencia": "analise-prs/dossies/PR-3203.md — merge local vs 9a89d9f0 retornou 7 conflitos"
+    },
+    "3210": {
+      "motivo": "Gate Final nao rodou + Supabase Preview FAILURE (column categories.level does not exist — pre-existente)",
+      "ci_checks_verificados": "2026-11-08 — total_count:4, Gate Final AUSENTE, Supabase=failure, Vercel=success, alert=skipped",
+      "head_sha": "05b38bc5e1d20b555824e37f9ef901822ab9dc82",
+      "evidencia": "mcp__GITHUB_-_MCP_-_FOREVER__github_list_check_runs run id 128807151281"
+    },
+    "3212": {
+      "motivo": "Gate Final nao rodou + Supabase Preview CANCELLED (maximum concurrent branches reached — infra)",
+      "ci_checks_verificados": "2026-11-08 — total_count:4, Gate Final AUSENTE, Supabase=cancelled, Vercel=success, alert=skipped",
+      "head_sha": "c7844753716a7a11cb0d3ca196e1f283a98bd423",
+      "evidencia": "mcp__GITHUB_-_MCP_-_FOREVER__github_list_check_runs run id 128765827946"
+    }
+  },
+  "decisao_humana_evidencia": {
+    "3127": "REGRA#8: .github/workflows/e2e-flows.yml, e2e-stock.yml, e2e.yml — github_list_pr_files confirmado esta sessao",
+    "3129": "REGRA#8: .github/workflows/delivery-quality.yml, deploy-gates.yml, e2e-flows.yml, e2e-focused.yml, e2e-personalization.yml, e2e-swatch-quickview.yml, e2e.yml, visual-tests.yml",
+    "3137": "REGRA#8: .github/workflows/db-reconcile-migration-history.yml + supabase/migrations/20260511235959_* + rollback",
+    "3144": "REGRA#8: supabase/migrations/20261107134429_create_crm_seller_identity_links.sql + rollback",
+    "3148": "REGRA#8: .github/workflows/db-schema-drift-check.yml + deploy-gates.yml + 3 migrations + DRAFT",
+    "3150": "REGRA#8: supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql + rollback",
+    "3160": "REGRA#8: supabase/migrations/* + rollback + DRAFT + conflito semantico com 3179 — dossie PR-3160-evidencias.md",
+    "3179": "REGRA#8: supabase/migrations/* + rollback + DRAFT — dossie PR-3179.md",
+    "3202": "REGRA#8: supabase/migrations/20261108001500_* + DRAFT + CI Gate Final FAILURE — dossie PR-3202.md",
+    "3205": "REGRA#8: supabase/migrations/20261108132000_* + tests/scripts/drift-baseline.test.mjs — dossie PR-3205.md",
+    "3214": "REGRA#8: .github/workflows/contract-tests.yml + 3 migrations (cron.alter_job) + DRAFT + CONFLICTING — dossie PR-3214-evidencias.md",
+    "3215": "REGRA#8: supabase/migrations/20261108001500_* — dossie PR-3215.md",
+    "3216": "REGRA#8: supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql — overflow 1794162582123.txt + dossie PR-3216.md",
+    "3220": "REGRA#8: .github/workflows/sentinel-self-test.yml + ARQUIVO PROTEGIDO scripts/sentinel-check.sh + conflitos PENDENCIAS.md/RELATORIO_CI.md — dossie PR-3220-evidencias.md",
+    "3228": "REGRA#8: .github/workflows/e2e-color-swatch-grid.yml + DRAFT — dossie PR-3228-evidencias.md"
+  },
   "prs_analisadas": [3127,3129,3137,3144,3148,3150,3160,3179,3202,3203,3205,3210,3212,3214,3215,3216,3217,3220,3228],
   "baseline": {
     "typecheck_exit": 0,
