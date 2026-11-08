@@ -4,13 +4,14 @@
  * tocar o bridge / edge function / rede.
  */
 
+// FIX 2026-11-07: component_description, primary_image_url, images e
+// supplier_component_code NAO existem em v_kit_component_complete (ver
+// src/integrations/supabase/types.ts). Auditá-los zerava 4/15 campos e tornava
+// o threshold de 70% aritmeticamente inatingível (máx 66,7%).
 export const KIT_AUDITED_FIELDS = [
   'component_name',
-  'component_description',
   'material',
   'color',
-  'primary_image_url',
-  'images',
   'height_mm',
   'width_mm',
   'length_mm',
@@ -19,7 +20,6 @@ export const KIT_AUDITED_FIELDS = [
   'weight_g',
   // 'capacity_ml',  // FIX 2026-06-27: coluna não existe em product_kit_components (PostgREST 400/42703)
   'component_type_code',
-  'supplier_component_code',
   'personalization_notes',
 ] as const;
 

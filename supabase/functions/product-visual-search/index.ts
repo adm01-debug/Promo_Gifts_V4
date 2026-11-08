@@ -10,7 +10,7 @@
 //      similar characteristics via pg_trgm
 //   4. Return ranked results with confidence scores
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4';
+import { createClient } from 'npm:@supabase/supabase-js@2.49.4';
 import { getCorsHeaders } from '../_shared/cors.ts';
 import { authenticateRequest } from '../_shared/auth.ts';
 import { runBotProtection } from '../_shared/bot-protection.ts';

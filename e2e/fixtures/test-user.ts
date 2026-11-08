@@ -21,15 +21,15 @@
  * user_id pelo email — esses helpers garantem que client e server estão
  * falando do MESMO usuário e que recursos criados sejam reconhecíveis.
  */
-import type { Page } from "@playwright/test";
+import type { Page } from '@playwright/test';
 
-const DEFAULT_PREFIX = "[E2E]";
+const DEFAULT_PREFIX = '[E2E]';
 
 export function getTestUserEmail(): string {
   const email = process.env.E2E_USER_EMAIL;
   if (!email) {
     throw new Error(
-      "E2E_USER_EMAIL não definido — defina nas envs antes de rodar specs autenticados.",
+      'E2E_USER_EMAIL não definido — defina nas envs antes de rodar specs autenticados.',
     );
   }
   return email.trim().toLowerCase();
@@ -38,7 +38,7 @@ export function getTestUserEmail(): string {
 export function getTestUserPassword(): string {
   const pw = process.env.E2E_USER_PASSWORD;
   if (!pw) {
-    throw new Error("E2E_USER_PASSWORD não definido.");
+    throw new Error('E2E_USER_PASSWORD não definido.');
   }
   return pw;
 }
@@ -54,21 +54,31 @@ export function getTestPrefix(): string {
 /**
  * Deriva um sub-prefixo determinístico a partir de um slug de spec
  * (ex.: "quote-create"). Garante isolamento por spec/feature: cleanup
- * pós-falha pode filtrar por `[E2E:quote-create]` sem tocar em recursos
- * vivos de specs paralelos `[E2E:kit-builder]`.
+ * pós-falha pode filtrar por `[E2E] quote-create` sem tocar em recursos
+ * vivos de specs paralelos. Em CI, o namespace da rodada também é preservado
+ * (ex.: `[E2E] quotes-123-1-quote-create`).
  *
  * O slug é normalizado: apenas [a-zA-Z0-9-], truncado a 32 chars.
  */
 export function e2eScope(specSlug: string): string {
-  const safe = specSlug.replace(/[^a-zA-Z0-9-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 32) || "spec";
-  return `[E2E:${safe}]`;
+  const safe =
+    specSlug
+      .replace(/[^a-zA-Z0-9-]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 32) || 'spec';
+  const root = getTestPrefix();
+  const scoped = root === DEFAULT_PREFIX ? `${root} ${safe}` : `${root}-${safe}`;
+  if (!/^\[E2E\] [a-zA-Z0-9-]{1,80}$/.test(scoped)) {
+    throw new Error(`E2E_TEST_PREFIX não permite escopo canônico: ${JSON.stringify(scoped)}`);
+  }
+  return scoped;
 }
 
 /**
  * Gera um nome único e reconhecível para um recurso criado pelo E2E.
  *
  *   e2eName("orcamento")                        -> "[E2E] orcamento 1730000000000-a1b2"
- *   e2eName("orcamento", { prefix: "[E2E:qc]" }) -> "[E2E:qc] orcamento 1730000000000-a1b2"
+ *   e2eName("orcamento", { prefix: "[E2E] qc" }) -> "[E2E] qc orcamento 1730000000000-a1b2"
  *
  * O `prefix` opcional permite escopar por spec via `e2eScope(slug)` —
  * usado pela fixture `e2eResources` em `test-base.ts`.
@@ -82,12 +92,12 @@ export function e2eName(label: string, opts: { prefix?: string } = {}): string {
 
 /**
  * Verifica se um nome arbitrário foi gerado pelo E2E (heurística pelo prefixo).
- * Aceita o prefixo global E2E_TEST_PREFIX OU qualquer sub-prefixo `[E2E:*]`.
+ * Aceita o prefixo global E2E_TEST_PREFIX e seus sub-prefixos canônicos.
  */
 export function isE2eName(name: string | null | undefined): boolean {
   if (!name) return false;
   if (name.startsWith(getTestPrefix())) return true;
-  return /^\[E2E:[a-zA-Z0-9-]{1,32}\]/.test(name);
+  return /^\[E2E\] [a-zA-Z0-9-]{1,80}/.test(name);
 }
 
 const userIdCache = new WeakMap<Page, string>();
@@ -107,19 +117,19 @@ export async function getTestUserId(page: Page): Promise<string> {
 
   // Precisa estar na origin para localStorage estar acessível.
   if (!/^https?:/.test(page.url())) {
-    await page.goto("/produtos", { waitUntil: "domcontentloaded" }).catch(() => {});
+    await page.goto('/produtos', { waitUntil: 'domcontentloaded' }).catch(() => {});
   }
 
   const userId = await page.evaluate(() => {
     try {
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (!key || !key.startsWith("sb-") || !key.endsWith("-auth-token")) continue;
+        if (!key || !key.startsWith('sb-') || !key.endsWith('-auth-token')) continue;
         const raw = localStorage.getItem(key);
         if (!raw) continue;
         const parsed = JSON.parse(raw);
         const id = parsed?.user?.id ?? parsed?.currentSession?.user?.id;
-        if (typeof id === "string" && id.length > 0) return id;
+        if (typeof id === 'string' && id.length > 0) return id;
       }
     } catch {
       /* noop */
@@ -129,7 +139,7 @@ export async function getTestUserId(page: Page): Promise<string> {
 
   if (!userId) {
     throw new Error(
-      "Não foi possível resolver o user_id do usuário de teste — confirme que o storageState autenticado foi carregado e que a página está na origin do app.",
+      'Não foi possível resolver o user_id do usuário de teste — confirme que o storageState autenticado foi carregado e que a página está na origin do app.',
     );
   }
   userIdCache.set(page, userId);

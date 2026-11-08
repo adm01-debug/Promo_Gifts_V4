@@ -781,3 +781,59 @@ POST auth/v1/token → 200 (success), GET rest/v1/v_products_public → PENDENTE
 > **Correção de §27 (RELATORIO_CI.md):** E2E failures nas runs #42405699438, #42405699423 e #42390009053 foram incorretamente atribuídas a "falta de secrets" em §27. A causa real é regressão comportamental de frontend (URL-state, layout Magazine, redirect pós-login). Corrigido nos itens #39, #40, #41 acima e §28 de RELATORIO_CI.md.  
 > HEAD atual (main): `561693ff8b6e63b850f333a5812eb0c54fd1f3e5` — Gate Final [run #42430908701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42430908701) → `conclusion: success` (00:47:46Z).  
 > Todos os 42 itens têm motivo exato registrado. Nenhum requer ação de código.
+
+---
+
+## 43. Branch Protection Sentinel ❌→✅ RESOLVED
+
+**Workflow:** `branch-protection-sentinel.yml`  
+**Run ID:** [42437685616](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42437685616) (SHA `46212f02`, push do merge de PR #3191)  
+**Erro exato:**
+```
+1 commit(s) em push para main sem padrão aceito: 46212f0
+```
+**Causa:** PR #3191 squash-mergeada com `commit_title` customizado (`docs(ci): RELATORIO §29 — baseline local 9feb0148 + inventário fix/ci-workflows`) sem o sufixo `(#3191)` exigido pela Regra 1 do Sentinel.  
+**Resolução:** PR nova squash-mergeada SEM `commit_title` customizado → GitHub auto-gera `"[titulo] (#NNNN)"` → Sentinel Regra 1 satisfeita.  
+**Status:** RESOLVED — ver §30 de RELATORIO_CI.md.
+
+---
+
+> **Atualização 2026-11-08T02:33Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
+> Item #43 adicionado: Branch Protection Sentinel failure em SHA `46212f02` causado por commit_title customizado sem sufixo `(#3191)`. Resolvido por PR §30 squash-mergeada sem commit_title customizado.  
+> HEAD atual (main após §29): `46212f026e8f9f8f827c907db630e45f250cf67e` — Gate Final [run #42437685662](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42437685662) → `conclusion: success`.  
+> Total de 43 itens. Item #43 RESOLVED. Itens #1, #29, #37, #42 requerem ação do dono.
+
+---
+
+> **Atualização 2026-11-08T02:50Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
+> HEAD atual (main após §30): `16408a6847b61fdd5fbba1e2a9385e311199edcc` — Gate Final [run #42439534734](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42439534734) → `conclusion: success`.  
+> **Item #42 (CI Security & Drift Checks):** run [#42439534623](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42439534623) em SHA `16408a68`, iniciada 02:40:30Z — `in_progress` às 02:50Z (job `quality-gate`, step 6/28 typecheck). Mesma causa raiz — `SUPABASE_SERVICE_ROLE_KEY` ausente — esperada para falhar nos steps 25-28 (Guard credenciais E2E + testes autenticados). Conclusão atualizada em §31 de RELATORIO_CI.md quando disponível.  
+> **Itens #29, #37:** ainda requerem ação do dono (edge-functions-drift e uptime monitor — sem run nova na SHA `16408a68`, scheduled workflows).  
+> §31 de RELATORIO_CI.md documenta o inventário completo de workflows em `16408a68`.
+
+> **Atualização 2026-11-08T03:10Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
+> Main avançou de `16408a68` para `9c33e63e` via PRs #3157 e #3141. Run anterior [#42439534623](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42439534623) em `16408a68` continua `in_progress` (step 22/28 — testes). Nova run [#42440258598](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42440258598) em `9c33e63e` — `status: pending` (na fila, criada 02:51:14Z). Causa e bloqueio inalterados: `SUPABASE_SERVICE_ROLE_KEY` ausente → requer dono.  
+> Gate Final em `9c33e63e`: [run #42440258617](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42440258617) → `conclusion: success`.  
+> Itens com ação do dono pendente: #1, #29, #37, #42.
+
+---
+
+## 44. Supabase Preview ❌ (required: NÃO — check externo Supabase App)
+
+**App:** Supabase Branching (ID 330661, não é GitHub Actions)  
+**Check IDs:** [128617661638](https://github.com/adm01-debug/Promo_Gifts_V4/runs/128617661638) (SHA `4e638a69`), [128617563662](https://github.com/adm01-debug/Promo_Gifts_V4/runs/128617563662) (SHA `576a3246`)  
+**Erro exato:**
+```
+Remote migration versions not found in local migrations directory.
+```
+**Causa:** Commits nos SHAs `576a3246` e `4e638a69` em 2026-11-08 causaram divergência entre o ledger do repo (`supabase/migrations/`) e o banco de produção (`schema_migrations`), detectada pelo App Supabase Branching ao tentar criar preview branch.  
+**Required check:** NÃO — `Supabase Preview` não está em `.github/required-checks.json`; não bloqueia Gate Final nem deploy.  
+**Por que não corrijo:** REGRA #8 — DDL/migration só via `db-apply-migration.yml`. Mesma causa raiz do item #1 (divergência massiva entre ledger local e banco de produção).  
+**O que o dono precisa fazer:** Reconciliar o ledger de migrations seguindo o processo em `docs/db/POLITICA_DDL.md` (mesmo procedimento do item #1).
+
+---
+
+> **Atualização 2026-11-08T03:48Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
+> Item #44 adicionado: Supabase Preview failure em SHAs `576a3246` e `4e638a69` — falha no App Supabase Branching (não é GitHub Actions, não é required check). Causa raiz: divergência ledger × banco (mesma do item #1).  
+> HEAD atual (main): `5e28c6c85a0a2b72ed7b3b0385c422b589554bd8` — Deploy Gates [run #42443580823](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42443580823) → `queued` (aguarda runner).  
+> Itens com ação do dono pendente: #1, #29, #37, #42, #44.

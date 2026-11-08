@@ -10,7 +10,8 @@
  *  - interação Recolher/Expandir × Agrupar não altera contagem nem
  *    interatividade dos botões de ação.
  */
-import { test, expect, type Page, type Locator } from '@playwright/test';
+import type { Page, Locator } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 import { loginAs } from '../helpers/auth';
 import { gotoAndSettle } from '../helpers/nav';
 
@@ -32,7 +33,10 @@ async function setup(page: Page, width: number, height: number) {
 async function skipIfEmpty(page: Page) {
   const firstCard = page.getByTestId('quote-summary-item-0');
   if ((await firstCard.count()) === 0) {
-    expect(false, '[E108] Resumo vazio — adicionar produto está fora do escopo desta spec.').toBeTruthy();
+    expect(
+      false,
+      '[E108] Resumo vazio — adicionar produto está fora do escopo desta spec.',
+    ).toBeTruthy();
   }
   await expect(firstCard).toBeVisible({ timeout: 10_000 });
 }
@@ -209,4 +213,3 @@ test.describe('QuoteBuilderSummaryColumn — botões Criar / Rascunho lado a lad
       .toBe(true);
   });
 });
-

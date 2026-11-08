@@ -2,9 +2,9 @@
 import { pathToFileURL } from 'node:url';
 
 export const CANONICAL_PROJECT = 'doufsxqlfjyuvxuezpln';
-export function validateMigrationTarget(env, { versionOnly = false } = {}) {
+export function validateMigrationTarget(env, { versionOnly = false, targetOnly = false } = {}) {
   const problems = [];
-  if (!/^\d{6,19}(?:_[A-Za-z0-9]+)*$/.test(env.MIGRATION_VERSION || '')) {
+  if (!targetOnly && !/^\d{6,19}(?:_[A-Za-z0-9]+)*$/.test(env.MIGRATION_VERSION || '')) {
     problems.push('MIGRATION_VERSION inválida');
   }
   if (env.SUPABASE_PROJECT_REF !== CANONICAL_PROJECT) problems.push('Project ref não canônico');
@@ -25,8 +25,12 @@ export function validateMigrationTarget(env, { versionOnly = false } = {}) {
 }
 
 /** Read-only discovery: a valid pooler hostname may belong to another cluster. */
-export async function validateLiveMigrationPooler(env, fetchImpl = fetch) {
-  const problems = validateMigrationTarget(env);
+export async function validateLiveMigrationPooler(
+  env,
+  fetchImpl = fetch,
+  { targetOnly = false } = {},
+) {
+  const problems = validateMigrationTarget(env, { targetOnly });
   if (problems.length) return problems;
   if (env.PGHOST === `db.${CANONICAL_PROJECT}.supabase.co`) {
     return (env.PGPORT || '5432') === '5432' ? [] : ['Conexão direta exige porta 5432'];
@@ -68,10 +72,12 @@ export async function validateLiveMigrationPooler(env, fetchImpl = fetch) {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const targetOnly = process.argv.includes('--target-only');
   const problems = process.argv.includes('--require-live-pooler')
-    ? await validateLiveMigrationPooler(process.env)
+    ? await validateLiveMigrationPooler(process.env, fetch, { targetOnly })
     : validateMigrationTarget(process.env, {
         versionOnly: process.argv.includes('--version-only'),
+        targetOnly,
       });
   if (problems.length) {
     const missingCreds = ['PGHOST ausente', 'PGUSER ausente', 'PGPASSWORD ausente', 'PGDATABASE ausente'];

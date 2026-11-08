@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 
 // This test requires a running Supabase instance or a mock
 // Since we want to test the 'webhook_request_nonces' logic, we'll focus on the logic description

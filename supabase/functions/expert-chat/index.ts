@@ -3,7 +3,7 @@ import {
   getCorsHeaders,
   handleCorsPreflightIfNeeded,
 } from '../_shared/cors.ts';
-// BUG-011 FIX: Changed from 'https://esm.sh/@supabase/supabase-js@2.49.4' to npm: direct —
+// BUG-011 FIX: Changed from 'npm:@supabase/supabase-js@2.49.4' to npm: direct —
 // removes import_map dependency for deployment. Same pattern used by all other edge functions.
 import { createClient } from 'npm:@supabase/supabase-js@2.49.4';
 import { authenticateRequest, authErrorResponse } from '../_shared/auth.ts';
