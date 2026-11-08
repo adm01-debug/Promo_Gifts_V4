@@ -1136,3 +1136,26 @@ Function v300.
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261108001500` | `reconcile_e2e_cleanup_audit` | `e08b629995808c5f82e4e6285c02a9b1db50e6d13723ec89647cc8d92bc3e0f7` | aguardando aplicação via `db-apply-migration.yml` após merge; rollback: `DROP TABLE IF EXISTS public.e2e_cleanup_audit;` |
+
+## 2026-11-08 — P09: Reconciliação do ledger `schema_migrations` (432 versões)
+
+Registra no ledger as versões do repo que nunca foram inseridas em
+`supabase_migrations.schema_migrations`:
+- **427 versões Category C** (pré-Gate-1.13.3, antes de 2026-09-16): migrações
+  históricas aplicadas antes que o contrato MIGRATIONS_SYNC_LOG.md existisse.
+- **5 versões Category B confirmadas** (pós-gate, aplicadas sem workflow):
+  `20261022100020`, `20261022100021`, `20261022100022`, `20261101210000`,
+  `20261101220000` — objetos verificados em produção via `pg_catalog`.
+
+**NÃO registradas (pendentes ou não verificadas):**
+- 6 versions Category A (genuinamente pendentes — objetos ausentes em produção):
+  `20261013180500`, `20260916193000`, `20260916201000`, `20261027195959`,
+  `20261104100000`, `20261108001500`
+- 33 versions post-gate sem verificação suficiente (risco de registrar como
+  aplicadas se ainda pendentes)
+
+Referência: `auditoria-supabase/P09_INVESTIGACAO_2026-11-08.md`
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261108020000` | `p09_reconcile_ledger_schema_migrations` | `ce2dfa278f39643d261cc5c238a6eb0d2c4827a52327826e7a30b5c554a84686` | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (REGRA #8: DDL em produção) |
