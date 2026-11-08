@@ -1,179 +1,335 @@
 {
-  "gerado_em": "2026-11-08",
-  "main_sha": "9b2644b2c1a78f5809e829c6a916f23959e87f12",
-  "total_abertos_analisados": 12,
-  "mergeadas_esta_sessao": 1,
-  "mergeadas_sessao_anterior": 2,
+  "meta": {
+    "data_analise": "2026-11-08",
+    "sessao": "claude_05/youthful-ride-vcdchy",
+    "total_abertos_analisados": 30,
+    "mergeadas_esta_sessao": 0,
+    "mergeadas_sessoes_anteriores": 4,
+    "aguardando_humano": 29,
+    "pendente_ci": 1,
+    "pr_mais_recente_analisada": 3274,
+    "nota": "PR #3267 fechada/não-mergeada excluída da contagem. #3249 mergeada sessão anterior."
+  },
   "prs": [
     {
-      "numero": 3127,
-      "titulo": "fix(e2e): tooltip ListItemActions + melhorias CI e2e-flows",
+      "number": 3127,
+      "title": "fix(ci): estabiliza núcleo E2E sem ocultar dívida de cobertura",
       "draft": false,
-      "conflito": true,
-      "conflito_em": ["e2e-flows.yml"],
-      "toca_workflows": true,
+      "mergeable_state": "unknown",
+      "head": "codex/fix-e2e-ci-pressure-261107-0238",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["REGRA#8 workflows", "CONFLICT em e2e-flows.yml"],
-      "regressao": false,
-      "valida": true
+      "motivos": ["REGRA#8 Não tocar .github/workflows (branch codex)"],
+      "sessao": "anterior"
     },
     {
-      "numero": 3129,
-      "titulo": "fix(ci): melhorias delivery-quality + deploy-gates",
+      "number": 3129,
+      "title": "ci(e2e): reduzir pressão dos runners sem perder cobertura",
       "draft": false,
-      "conflito": true,
-      "conflito_em": ["delivery-quality.yml", "deploy-gates.yml"],
-      "toca_workflows": true,
+      "mergeable_state": "unknown",
+      "head": "codex/infra-e2e-ci-pressure-261107-1040",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["REGRA#8 workflows", "CONFLICT em deploy-gates.yml (required check)"],
-      "regressao": false,
-      "valida": true
+      "motivos": ["REGRA#8 Não tocar .github/workflows (branch codex)"],
+      "sessao": "anterior"
     },
     {
-      "numero": 3137,
-      "titulo": "fix(e2e): e2e-relevance.mjs + melhorias CI",
+      "number": 3137,
+      "title": "fix(ci): impedir falso negativo no detector E2E compartilhado",
       "draft": false,
-      "conflito": true,
-      "conflito_em": ["e2e-flows.yml", "package.json"],
-      "toca_workflows": true,
+      "mergeable_state": "unknown",
+      "head": "codex/fix-e2e-relevance-261107-1148",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["REGRA#8 workflows", "CONFLICT em e2e-flows.yml + package.json"],
-      "regressao": false,
-      "valida": true
+      "motivos": ["REGRA#8 Não tocar .github/workflows (branch codex)"],
+      "sessao": "anterior"
     },
     {
-      "numero": 3210,
-      "titulo": "chore(release): v0.x.x (bot release-please)",
+      "number": 3179,
+      "title": "fix: corrige preflight db-apply-migration (search_path + rollback)",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "head": "claude/fix-ci-workflows-261107-2300",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true", "REGRA#8/E15 (toca supabase/migrations/ — DDL)"],
+      "sessao": "anterior"
+    },
+    {
+      "number": 3203,
+      "title": "fix: scripts — static-pass, exit codes e regressão TypeScript",
       "draft": false,
-      "conflito": false,
-      "toca_workflows": false,
+      "mergeable_state": "unknown",
+      "head": "claude/inspiring-knuth-swo71j",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["PR de bot (github-actions[bot])", "Gate Final ausente no HEAD", "Desatualizada em relação ao main"],
-      "regressao": false,
-      "valida": false
+      "motivos": ["mergeable_state=dirty (conflito em artefatos gerados)", "PR Size Check FAILURE (132 arquivos > 50, falta label large-pr-approved)"],
+      "sessao": "anterior"
     },
     {
-      "numero": 3214,
-      "titulo": "feat(cron): CRON-001 escalonamento de 4 cron jobs",
-      "draft": true,
-      "conflito": true,
-      "conflito_em": [".as-assertions-baseline.json"],
-      "toca_workflows": true,
-      "toca_migrations": true,
-      "migration": "20261101220000_cron001_stagger_schedules.sql",
-      "migration_tipo": "cron.alter_job (DDL)",
-      "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft", "REGRA#8/E056 cron DDL", "REGRA#8 workflow (contract-tests.yml)", "CONFLICT em .as-assertions-baseline.json"],
-      "regressao": false,
-      "valida": true
-    },
-    {
-      "numero": 3228,
-      "titulo": "fix(ci): adiciona workflow_dispatch ao e2e-color-swatch-grid",
-      "draft": true,
-      "conflito": false,
-      "toca_workflows": true,
-      "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft", "REGRA#8 workflows"],
-      "regressao": false,
-      "valida": true
-    },
-    {
-      "numero": 3243,
-      "titulo": "fix(db): adiciona coluna level em categories (drift)",
+      "number": 3210,
+      "title": "chore(main): release 1.9.0",
       "draft": false,
-      "conflito": false,
-      "toca_workflows": false,
-      "toca_migrations": true,
-      "migration": "20260511235950_add_categories_level_drift.sql",
-      "migration_tipo": "ALTER TABLE ADD COLUMN IF NOT EXISTS (aditivo, idempotente)",
+      "mergeable_state": "unknown",
+      "head": "release-please--branches--main--components--gifts-store",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["REGRA#8/E15: DDL só via db-apply-migration.yml workflow_dispatch", "MIGRATIONS_SYNC_LOG.md com 1174 deleções (histórico apagado)"],
-      "regressao": false,
-      "valida": true
+      "motivos": ["PR de bot release-please — decisão de negócio do PO", "Gate Final ausente (outdated desde main)"],
+      "sessao": "anterior"
     },
     {
-      "numero": 3245,
-      "titulo": "fix(e2e): aumenta timeout e2e color-swatch + data-skeleton VirtualizedProductGrid",
+      "number": 3214,
+      "title": "fix(cron): CRON-001 — escalonar 4 cron jobs",
       "draft": true,
-      "conflito": false,
-      "toca_workflows": false,
-      "regressao": true,
-      "regressao_detalhe": "VirtualizedProductGrid.tsx linha 488: {!showScrollTop && (} — lógica invertida; botão scroll-to-top desaparece quando visível e aparece quando oculto. Main tem {showScrollTop && (} (correto); PR introduz regressão.",
+      "mergeable_state": "unknown",
+      "head": "claude_05/youthful-ride-vcdchy",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft", "REGRESSAO real em showScrollTop (lógica invertida introduzida pelo PR)"],
-      "valida": false
+      "motivos": ["Draft=true", "REGRA#8/E056 (cron DDL ativo)", "REGRA#8 workflows"],
+      "sessao": "anterior"
     },
     {
-      "numero": 3246,
-      "titulo": "fix(rls): habilita RLS deny-all nas 17 tabelas supplier_stricker",
+      "number": 3228,
+      "title": "chore(workflows): adiciona workflow_dispatch ao e2e-color-swatch-grid",
       "draft": true,
-      "conflito": false,
-      "toca_workflows": false,
-      "toca_migrations": true,
-      "migration": "20261027195959_supplier_stricker_rls_deny_all.sql",
-      "migration_tipo": "ENABLE ROW LEVEL SECURITY + CREATE POLICY (17 tabelas)",
-      "nota_timestamp": "PR body menciona 20261027200000 mas arquivo real é 20261027195959 (1 minuto de diferença — sem impacto funcional)",
+      "mergeable_state": "unknown",
+      "head": "claude/chore-e2e-swatch-dispatch-261108-1800",
       "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft", "REGRA#8/E15: DDL só via db-apply-migration.yml workflow_dispatch"],
-      "regressao": false,
-      "valida": true
+      "motivos": ["Draft=true", "REGRA#8 Não tocar .github/workflows"],
+      "sessao": "anterior"
     },
     {
-      "numero": 3247,
-      "titulo": "fix(ci): melhorias de workflows CI/E2E (14 novos workflows)",
-      "draft": true,
-      "conflito": false,
-      "toca_workflows": true,
-      "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft", "REGRA#8 workflows (14 arquivos novos em .github/workflows/)"],
-      "regressao": false,
-      "valida": true
-    },
-    {
-      "numero": 3248,
-      "titulo": "fix(e2e): adiciona testes públicos coleção e comparar + graphify update",
-      "draft": true,
-      "conflito": false,
-      "toca_workflows": false,
-      "veredito": "DECISAO_HUMANA",
-      "motivos": ["Draft=true (único bloqueio)"],
-      "regressao": false,
-      "valida": true
-    },
-    {
-      "numero": 3249,
-      "titulo": "docs(ci): atualiza RELATORIO_CI com baseline desta sessão e P-06 em correção",
+      "number": 3243,
+      "title": "fix(migrations): adiciona migrations de drift para categories",
       "draft": false,
-      "conflito": false,
-      "toca_workflows": false,
-      "toca_migrations": false,
-      "regressao": false,
-      "docs_only": true,
-      "e14_bypass": true,
-      "veredito": "MERGE_AUTONOMO",
-      "motivos": ["docs-only (1 arquivo .md)", "E14 bypass aplicável", "sem conflito", "sem regressão"],
-      "valida": true,
-      "mergeada": true,
-      "merge_sha": "34ac6453d1f7a9ced950f2fb579db711219b4495"
+      "mergeable_state": "unknown",
+      "head": "claude/fix-categories-level-drift-261108-1952",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["REGRA#8/E15 (DDL via nova migration — ALTER TABLE categories ADD COLUMN level)"],
+      "sessao": "anterior"
+    },
+    {
+      "number": 3247,
+      "title": "chore(ci): adiciona workflows de atualização de snapshots E2E",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "head": "claude/chore-workflows-snapshot-261108-2230",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true", "REGRA#8 Não tocar .github/workflows (14 arquivos novos)"],
+      "sessao": "anterior"
+    },
+    {
+      "number": 3248,
+      "title": "feat(e2e): adiciona specs E2E para rotas públicas e config Claude",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "head": "claude/feat-e2e-public-claude-config-261108-2230",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true"],
+      "sessao": "anterior"
+    },
+    {
+      "number": 3250,
+      "title": "fix: índice summary_date em stock_daily_summary",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "head": "claude/fix-stock-daily-index-261108-2230",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true", "REGRA#8/E15 (CREATE INDEX CONCURRENTLY via nova migration)"],
+      "sessao": "anterior"
+    },
+    {
+      "number": 3251,
+      "title": "fix: remove cron inativa image-dimensions-backfill",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "head": "claude/fix-remove-broken-cron-image-dimensions-backfill-20261108-2300",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true", "REGRA#8/E056 (cron DDL ativo: cron.unschedule)"],
+      "sessao": "anterior"
+    },
+    {
+      "number": 3252,
+      "title": "fix: onLogoRemove usa areaId correto no MockupGenerator",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "head": "claude/fix-logo-remove-areaid-261108-1200",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true"],
+      "sessao": "anterior"
+    },
+    {
+      "number": 3253,
+      "title": "fix: arredondamento de ponto flutuante em calculateTotalKitPrice",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "head": "claude/fix-price-rounding-261108-1200",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true"],
+      "sessao": "anterior"
+    },
+    {
+      "number": 3254,
+      "title": "docs(analise-prs): corrige SHA errado de #3242 e causas falsas",
+      "draft": false,
+      "mergeable_state": "unknown",
+      "head": "claude/docs-correcao-auditoria-261108-2230",
+      "veredito": "PENDENTE_CI",
+      "motivos": ["CI ainda em fila (queued) — Gate Final - Deploy Ready não completou ainda"],
+      "arquivos": ["analise-prs/dossies/PR-3179.md", "analise-prs/dossies/PR-3203.md", "analise-prs/progresso.json"],
+      "tipo": "docs-only-ish (analise-prs/ apenas, sem código)",
+      "sessao": "anterior"
+    },
+    {
+      "number": 3255,
+      "title": "fix: drop perf002_drop_unused_snapshot_indexes (survivor incident DDL)",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "head": "claude/fix-drop-perf002-incident-ddl-20261108-2231",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true", "REGRA#8/E15 (DDL destrutivo: DROP INDEX, via nova migration)"],
+      "sessao": "anterior"
+    },
+    {
+      "number": 3256,
+      "title": "fix: restringe RLS pública de art-files ao path quotes/",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "head": "claude/fix-art-files-rls-quotes-only-2611082355",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true", "REGRA#8/E15 (DDL RLS via nova migration)"],
+      "sessao": "anterior"
+    },
+    {
+      "number": 3257,
+      "title": "fix(migrations): idempotência em RLS deny-all e partições",
+      "draft": false,
+      "mergeable_state": "unknown",
+      "head": "claude/fix-idempotencia-migrations-pendentes-261108-2236",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["REGRA#8/E15 (modifica migrations existentes + DDL RLS)"],
+      "sessao": "anterior"
+    },
+    {
+      "number": 3261,
+      "title": "chore(migrations): arquivos espelho DRIFT CRON-001 — reconciliação",
+      "draft": false,
+      "mergeable_state": "unknown",
+      "head": "claude/chore-reconciliacao-drift-cron001-261108-2238",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["REGRA#8/E056 (cron.alter_job DDL, mesmo sendo espelho retroativo)"],
+      "sessao": "anterior"
+    },
+    {
+      "number": 3263,
+      "title": "feat: versionar cron jobs process/send-scheduled-reports (FT-005)",
+      "draft": false,
+      "mergeable_state": "unknown",
+      "head": "claude/feat-ft005-cron-scheduled-reports-20261108-2310",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["REGRA#8/E056 (cron DDL ativo: cron.unschedule + cron.schedule)", "REGRA#8/E15 (migration nova)"],
+      "sessao": "anterior"
+    },
+    {
+      "number": 3264,
+      "title": "feat: versionar view vw_products_min_quantity (FT-079)",
+      "draft": false,
+      "mergeable_state": "unknown",
+      "head": "claude/feat-ft079-view-min-quantity-20261108-2310",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["REGRA#8/E15 (CREATE OR REPLACE VIEW via nova migration)"],
+      "sessao": "anterior"
+    },
+    {
+      "number": 3265,
+      "title": "feat: versionar function fn_check_item_fits (FT-088)",
+      "draft": false,
+      "mergeable_state": "unknown",
+      "head": "claude/feat-ft088-fn-check-item-fits-20261108-2310",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["REGRA#8/E15 (CREATE OR REPLACE FUNCTION via nova migration)"],
+      "sessao": "anterior"
+    },
+    {
+      "number": 3266,
+      "title": "fix: scripts static-pass, exit codes e endurecimento (supersede #3203)",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "head": "claude/fix-pr3203-scripts-static-pass-261108-2250",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true", "mergeable_state=blocked (CI falhando)"],
+      "sessao": "anterior"
+    },
+    {
+      "number": 3269,
+      "title": "feat(kit-builder): FT-079 validação de quantidade mínima antes do add",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "head": "claude/feat-ft079-front-min-quantity-261108-2340",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true"],
+      "sessao": "atual"
+    },
+    {
+      "number": 3270,
+      "title": "feat(kit-builder): FT-088 validação fn_check_item_fits antes do add",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "head": "claude/feat-ft088-front-fits-261108-2300",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true"],
+      "sessao": "atual"
+    },
+    {
+      "number": 3271,
+      "title": "fix(kit-builder): arredondamento de preço e assinatura onLogoRemove",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "head": "claude/fix-price-rounding-mockup-261108-2305",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true"],
+      "sessao": "atual"
+    },
+    {
+      "number": 3272,
+      "title": "fix(kit-builder): conecta isConflictError e consumeUnloadBacklog",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "head": "claude/fix-ft118-ft119-integration-gaps-261108-2320",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true"],
+      "sessao": "atual"
+    },
+    {
+      "number": 3273,
+      "title": "chore(migrations): espelho P-10 — 3 índices out-of-band de partições",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "head": "claude/chore-categories-indexes-espelho-261108-1200",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true", "REGRA#8/E15 (DDL: CREATE INDEX via migration espelho)"],
+      "sessao": "atual"
+    },
+    {
+      "number": 3274,
+      "title": "fix(ci): gate E42 não executa check-min-tests sem credenciais",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "head": "claude/fix-gate-e42-261108-2325",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true", "REGRA#8 Não tocar .github/workflows"],
+      "sessao": "atual"
     }
   ],
-  "mergeadas_historico": [
+  "mergeadas": [
     {
-      "numero": 3249,
-      "sha": "34ac6453d1f7a9ced950f2fb579db711219b4495",
-      "tipo": "docs-only",
-      "sessao": "esta_sessao"
-    },
-    {
-      "numero": 3212,
-      "sha": "d8ae515913db370da08784f3c911834c1668b98c",
-      "tipo": "docs-only"
-    },
-    {
-      "numero": 3241,
-      "sha": "931b932aad60b9b3b5f4ec4d4505482fca136ac4",
-      "tipo": "docs-only"
+      "number": 3249,
+      "title": "docs(ci): atualiza RELATORIO_CI com baseline desta sessão e P-06 em correção",
+      "squash_sha": "34ac6453d1f7a9ced950f2fb579db711219b4495",
+      "tipo": "docs-only (Gate E14 bypass)",
+      "sessao": "anterior"
     }
-  ]
+  ],
+  "regras_bloqueio_summary": {
+    "Draft_18_prs": [3179, 3214, 3228, 3247, 3248, 3250, 3251, 3252, 3253, 3255, 3256, 3266, 3269, 3270, 3271, 3272, 3273, 3274],
+    "REGRA8_workflows_6_prs": [3127, 3129, 3137, 3228, 3247, 3274],
+    "REGRA8_E15_DDL_migration_9_prs": [3179, 3243, 3250, 3255, 3256, 3257, 3264, 3265, 3273],
+    "REGRA8_E056_cron_DDL_3_prs": [3251, 3261, 3263],
+    "conflito_ou_dirty_1_pr": [3203],
+    "release_bot_1_pr": [3210],
+    "pendente_ci_1_pr": [3254]
+  }
 }

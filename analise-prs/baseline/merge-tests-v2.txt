@@ -1,0 +1,20 @@
+# Merge-tests locais — main@271b3cf232171341d09a2a092ecd03c5d3e0b8be
+# Gerado: 2026-11-08
+
+PR 3203: CONFLICT
+  - .any-type-baseline.json (content)
+  - .cart-header-fuzz.json (add/add)
+  - docs/DB_FRONTEND_COVERAGE.md (content)
+  - scripts/gen-internal-schema.mjs (content)
+  - scripts/kit-ai-enrichment.js (content)
+
+PR 3243: CLEAN (sem conflito)
+PR 3245: CLEAN (sem conflito)
+PR 3254: CLEAN (sem conflito)
+PR 3257: CLEAN (sem conflito)
+PR 3261: CLEAN (sem conflito)
+PR 3263: CLEAN (sem conflito)
+PR 3264: CLEAN (sem conflito)
+PR 3265: CLEAN (sem conflito)
+
+Worktrees criados e removidos: 9/9 ✓
