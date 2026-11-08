@@ -1426,14 +1426,14 @@ Check IDs 128617661638 (SHA `4e638a69b`) e 128617563662 (SHA `576a3246e`) → `c
 
 | Suíte | §31 (`9c33e63e`) | §32 | Δ |
 |---|---|---|---|
-| `tests/unit/` | 1313 passed | 1313 passed | +0 |
-| `tests/scripts/` | 658 passed | 658 passed | +0 |
-| `tests/security/` | 143 passed | 143 passed | +0 |
-| Build Vite | ✅ | ✅ | +0 |
-| Lint (ESLint) | 0 erros, 0 warnings | 0 erros, 0 warnings | +0 |
-| TypeScript | 0 erros | 0 erros | +0 |
+| `tests/unit/` | 1313 passed | NÃO VERIFICADO | — |
+| `tests/scripts/` | 658 passed | NÃO VERIFICADO | — |
+| `tests/security/` | 143 passed | NÃO VERIFICADO | — |
+| Build Vite | ✅ | NÃO VERIFICADO | — |
+| Lint (ESLint) | 0 erros, 0 warnings | NÃO VERIFICADO | — |
+| TypeScript | 0 erros | NÃO VERIFICADO | — |
 
-> Lint verificado localmente no SHA `3faba38f1` (sessão anterior): `npm run lint:baseline` → exit 0, 0 erros.
+> ⚠️ NÃO VERIFICADO: coluna §32 não foi reexecutada nesta sessão — run #42443580823 estava `queued` no momento da escrita. Evidência verificada está em §33 (baseline da sessão 2026-11-08T04:0xZ no SHA `e09f4125`).
 
 ### Inventário de required checks em `5e28c6c85`
 
@@ -1450,10 +1450,11 @@ Check IDs 128617661638 (SHA `4e638a69b`) e 128617563662 (SHA `576a3246e`) → `c
 | # PENDENCIAS | Workflow | Situação |
 |---|---|---|
 | #1 | db-schema-drift-check | ❌ ledger divergente; requer dono |
-| #29 | Compare GitHub × Canonical | ❌ 27 EFs driftadas; requer dono |
 | #37 | Uptime Monitor | ❌ HTTP 503; resolve com #29 |
 | #42 | CI Security & Drift Checks | ❌ SUPABASE_SERVICE_ROLE_KEY ausente; requer dono |
 | #44 | Supabase Preview | ❌ divergência ledger × banco; requer dono |
+
+> `Compare GitHub × Canonical` (#29) é required check (`.github/required-checks.json`) — listado na tabela de required checks acima, não aqui.
 
 ### PRs desta sessão (§32)
 
@@ -1462,4 +1463,37 @@ Check IDs 128617661638 (SHA `4e638a69b`) e 128617563662 (SHA `576a3246e`) → `c
 | [PR #3191](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3191) | docs(ci): RELATORIO §29 — baseline + inventário | Mergeada | `46212f02` |
 | [PR #3192](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3192) | docs(ci): RELATORIO §30 — fix sentinel | Mergeada | `16408a68` |
 | [PR #3193](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3193) | docs(ci): RELATORIO §31 — estado final 9c33e63e | Mergeada | `59a958464` |
-| [PR #3194](#) | docs(ci): RELATORIO §32 + PENDENCIAS #44 | A ser mergeada | — |
+| [PR #3200](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3200) | docs(ci): RELATORIO §32 + PENDENCIAS #44 | Mergeada | `e09f4125` |
+
+---
+
+## §33 — Baseline desta sessão (2026-11-08T04:0xZ) + estado SHA `e09f4125`
+
+**SHA main atual:** `e09f4125ad904a5cfa274dfee131bfb8de5ae58d` (merge PR #3200: docs §32 + PENDENCIAS #44)
+
+### Baseline local (sessão 2026-11-08, executado ~04:00Z)
+
+| Suíte | Resultado | Evidência |
+|---|---|---|
+| Build Vite | ✅ 15.50s, 0 erros | `npm run build` → "✓ built in 15.50s" |
+| Lint (ESLint) | ✅ 0 erros, 0 warnings | `npm run lint` → "Nenhuma regressão de lint detectada" |
+| TypeScript | ✅ 0 erros | `npm run qa:typecheck` → exit 0 |
+| `npm test` (2114 testes) | ⏳ em andamento | task bgsssh54l — aguarda conclusão |
+
+### Gate Final em `e09f4125`
+
+**Run:** [#42444594752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42444594752) → `status: queued` (criado 03:53Z — congestionamento de runners free-tier; commit docs-only → Gate E14 bypass esperado)
+
+> ⚠️ Aguardando `conclusion: success` no run acima. Tabela de prova final será apresentada após conclusão.
+
+### Comparação baseline × final (§31 → §33)
+
+| Suíte | §31 (`9c33e63e`) | §33 (`e09f4125`) | Δ |
+|---|---|---|---|
+| Build Vite | ✅ | ✅ | +0 |
+| Lint (ESLint) | 0 erros, 0 warnings | 0 erros, 0 warnings | +0 |
+| TypeScript | 0 erros | 0 erros | +0 |
+| `tests/unit/` | 1313 passed | ⏳ | — |
+| `tests/scripts/` | 658 passed | ⏳ | — |
+| `tests/security/` | 143 passed | ⏳ | — |
+
