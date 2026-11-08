@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "8c3abe3bcb08c7d5021fc619a3ebe92a938c0ad6",
+  "sha": "481e6142a737562c89b4c7de9444cc4afecbd19a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 05:39 UTC",
+  "generated_at": "2026-11-08 13:08 UTC",
   "files_total": 9124,
   "code_files": 7862,
   "code_lines": 1054364
@@ -484026,10 +484026,19 @@
   }
  },
  "git": {
-  "sha": "8c3abe3bcb08c7d5021fc619a3ebe92a938c0ad6",
+  "sha": "481e6142a737562c89b4c7de9444cc4afecbd19a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "481e614",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix(docs): restaurar contrato de recibos E15 (#3204)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "8c3abe3",
     "date": "2026-11-08",
@@ -484503,21 +484512,12 @@
     "files": [
      "PENDENCIAS.md"
     ]
-   },
-   {
-    "sha": "6522f77",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "docs(ci): RELATORIO §24 — Gate Final be7688da success + PR #3179",
-    "files": [
-     "RELATORIO_CI.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    9
+    8
    ],
    [
     "PENDENCIAS.md",
@@ -484526,6 +484526,10 @@
    [
     "package.json",
     3
+   ],
+   [
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    2
    ],
    [
     ".release-please-manifest.json",
@@ -484589,10 +484593,6 @@
    ],
    [
     "e2e/optimized-image-visual.spec.ts-snapshots/image-loading-blur-chromium-public-linux.png",
-    1
-   ],
-   [
-    "src/components/kit-builder/KitOnboardingTour.tsx",
     1
    ]
   ]

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8c3abe3bcb08c7d5021fc619a3ebe92a938c0ad6` (2026-11-08T01:57:41-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `481e6142a737562c89b4c7de9444cc4afecbd19a` (2026-11-08T10:07:52-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,8 +586,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38272 nós · 66794 arestas · 2128 comunidades · grafo do commit `8c3abe3b`
-- comunidades maiores: ref_lib (560), ref_integrations (522), ref_components (505), lucide-react (404), ref_hooks (342), react (322), scripts (289), ref_node_fs (288), gotoAndSettle (280), react-router-dom (274), sonner (247), D.1 — Núcleo (adoção alta, é o que sustenta o padrão) (242)
+- 38273 nós · 66795 arestas · 2162 comunidades · grafo do commit `481e6142`
+- comunidades maiores: ref_integrations (534), react (518), ref_lib (502), lucide-react (443), ref_hooks (356), react-router-dom (291), scripts (289), nav.ts (271), cors.ts (267), ref_components (266), ref_utils (262), @playwright/test (252)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -595,7 +595,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - RELATORIO_CI.md (72)
 - PENDENCIAS.md (62)
 - package.json (25)
-- supabase/MIGRATIONS_SYNC_LOG.md (19)
+- supabase/MIGRATIONS_SYNC_LOG.md (20)
 - package-lock.json (18)
 - CHANGELOG.md (16)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (14)
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-08 `481e614` fix(docs): restaurar contrato de recibos E15 (#3204)
 - 2026-11-08 `8c3abe3` chore(backlog): marca FT-175 como implementado (#3206)
 - 2026-11-08 `87fe8cd` chore(main): release 1.8.1
 - 2026-11-08 `1036dc3` fix(ci): aceitar skip estrutural do PDF no Chromium (#3199)
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-08 `51519ef` test(e2e): endurecer publicação, orçamentos e limpeza canônica
 - 2026-11-08 `ed85d00` fix(e2e): preservar smoke diante de lockout compartilhado do CI
 - 2026-11-08 `59a9584` docs(ci): RELATORIO §31 — estado final SHA 16408a68
-- 2026-11-08 `fa9e722` docs: recibo deploy health-check run 42367422517 (E66) — substitui #3134
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

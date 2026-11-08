@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8c3abe3bcb08c7d5021fc619a3ebe92a938c0ad6",
+  "commit": "481e6142a737562c89b4c7de9444cc4afecbd19a",
   "branch": "main",
-  "data_commit": "2026-11-08T01:57:41-03:00",
+  "data_commit": "2026-11-08T10:07:52-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "481e614",
+    "data": "2026-11-08",
+    "assunto": "fix(docs): restaurar contrato de recibos E15 (#3204)"
+   },
    {
     "sha": "8c3abe3",
     "data": "2026-11-08",
@@ -126,11 +131,6 @@
     "sha": "0a80360",
     "data": "2026-11-07",
     "assunto": "docs(estado): atualiza PROGRESSO e PENDENCIAS — 2026-11-08 (#3189)"
-   },
-   {
-    "sha": "561693f",
-    "data": "2026-11-07",
-    "assunto": "docs(ci): RELATORIO §27 — baseline 12e873af + inventário workflows (#3187)"
    }
   ],
   "arquivos_mudados_7d": 584,
@@ -173,7 +173,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 143
+    "mudancas": 142
    },
    {
     "pasta": "src/pages/admin",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 19
+    "mudancas": 20
    },
    {
     "arquivo": "package-lock.json",
@@ -305,7 +305,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 42
+    "commits": 41
    },
    {
     "autor": "github-actions[bot]",
