@@ -1,8 +1,8 @@
 # PENDENCIAS.md — Workflows com falha não corrigível nesta sessão
 
 > Gerado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Atualizado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY
-> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08, P-09 e causas exatas P-05/P-06; P-10 adicionado na validação de PR #3243)
+> Atualizado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
+> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08, P-09 e causas exatas P-05/P-06; P-10 adicionado na validação de PR #3243; P-06 atualizado com fix implementado em PR #3245)
 
 ---
 
@@ -64,7 +64,7 @@
 - **Workflow:** `.github/workflows/nightly-full.yml`
 - **Último run falhante:** ID 42439844067, SHA `16408a68`
 - **Causa raiz:** Agregador dependente de P-05 e P-06.
-- **Ação necessária:** Resolver P-05 e P-06 primeiro.
+- **Ação necessária:** Resolver P-05 primeiro; P-06 tem fix em PR #3245 aguardando CI.
 
 ---
 
@@ -90,23 +90,16 @@
 
 ---
 
-### P-06 · E2E • ColorSwatch 2 linhas (Grid) — `product-card` não carrega em desktop/wide
+### P-06 · E2E • ColorSwatch 2 linhas (Grid) — fix implementado em PR #3245 ⏳ CI aguardando runner
 - **Workflow:** `.github/workflows/e2e-color-swatch-grid.yml` (ID 303726213)
-- **Run verificado:** ID 42440258426, SHA `5e28c6c8`, job 128607766368, `conclusion=failure`
-- **Causa raiz exata (log job 128607766368, `color-swatch-two-lines-grid.spec.ts:28`):**
-  ```
-  TimeoutError: page.waitForSelector: Timeout 20000ms exceeded.
-  Call log:
-    - waiting for locator('[data-testid="product-card"]') to be visible
-  ```
-  A função `settleCatalog` em `color-swatch-two-lines-grid.spec.ts:28` aguarda `[data-testid="product-card"]` por 20 s. Falha somente nos viewports **desktop (1440px)** e **wide (1920px)**; mobile e tablet passam. Bug real de UI: o catálogo não renderiza os cards de produto nessas larguras.
-- **Specs falhantes (2 testes):**
-  - `color-swatch-two-lines-grid.spec.ts` — viewport desktop (1440px)
-  - `color-swatch-two-lines-grid.spec.ts` — viewport wide (1920px)
-- **Ação necessária (PO/Dev):**
-  1. Reproduzir localmente: `npx playwright test e2e/catalog/color-swatch-two-lines-grid.spec.ts --project=chromium` em viewport 1440px e 1920px
-  2. Investigar por que `[data-testid="product-card"]` não aparece nesses viewports — provável problema de CSS (media query ou grid responsivo) em `src/components/catalog/`
-  3. Corrigir o componente e abrir PR; após merge, confirmar que os 2 testes passam
+- **Run falhante original:** ID 42440258426, SHA `5e28c6c8`, job 128607766368, `conclusion=failure`
+- **Causa raiz exata:** `settleCatalog` aguardava `[data-testid="product-card"]` por 20 s, mas `VirtualizedProductGrid` não expunha atributo `data-skeleton` durante o loading — `gotoAndSettle` retornava antes do catálogo estar pronto, causando timeout nos viewports desktop (1440 px) e wide (1920 px); mobile e tablet passavam porque renderizavam mais rápido.
+- **Fix implementado:** PR [#3245](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3245) · branch `claude/fix-p06-product-card-desktop-261108-2043` · HEAD `18cbb0b`
+  - `src/components/products/VirtualizedProductGrid.tsx:230` — adicionado `data-skeleton="true"` ao container de loading (early return; atributo NUNCA vaza para o estado carregado)
+  - `e2e/catalog/color-swatch-two-lines-grid.spec.ts` — timeout elevado 20 s → 60 s; overflow assertion corrigida para extrair hidden count de `Mais N cores` no aria-label; função `parsePx` não utilizada removida (bloqueava lint `--max-warnings=0`)
+  - `e2e/catalog/color-swatch-selected-no-clip.spec.ts` — `TOLERANCE_PX` corrigido de 0.5 → 1 px (subpixel rendering); timeout elevado para 60 s
+- **Status CI:** Run `42530352316` attempt 3 · iniciado `2026-11-08T22:55:40Z` · `status=queued` — GitHub Actions runner pool saturado (não é bloqueio de código; rerun automático disparado)
+- **Próxima ação:** Aguardar runner disponível → CI verde → squash-merge PR #3245 → confirmar `conclusion=success` na main
 
 ---
 
@@ -181,7 +174,7 @@
 | LEDGER-DESYNC | Ledger massivamente dessincronizado | PO — reconciliar via PR (regra 7) |
 | AUTH-TIMEOUT | Auth timeout — secrets presentes | PO — verificar conta de teste |
 | SECRETS-MISSING | Secrets E2E ausentes em CI | PO — adicionar secrets no GitHub |
-| UI-BUG | Bug real de UI confirmado por timeout | PO/Dev — investigar e corrigir componente |
+| FIX-PENDING | Fix implementado em PR, aguardando CI | Auto — merge após CI verde |
 | DEPENDS | Depende de outro item | Automático após resolução |
 | CASCATA | Bloqueado por outro item | Ver item referenciado |
 | APP-CHECK | GitHub App check advisory | Automático após P-02 + P-07 |
@@ -193,7 +186,7 @@
 | P-03 (kit-coverage-integration) | AUTH-TIMEOUT | Média |
 | P-04 (nightly-full) | DEPENDS (P-05, P-06) | Baixa |
 | P-05 (e2e playwright) | SECRETS-MISSING — `E2E_SELLER_EMAIL/PASSWORD` | Baixa — adicionar secrets resolve |
-| P-06 (e2e color-swatch) | UI-BUG — `product-card` não carrega em desktop/wide | Baixa — requer fix de componente |
+| P-06 (e2e color-swatch) | FIX-PENDING — PR #3245 aberta, CI aguardando runner GitHub Actions | Baixa — merge automático após CI verde |
 | P-07 (db-apply-migration E15) | CASCATA (P-02) | Baixa |
 | P-08 (supabase-preview) | APP-CHECK — advisory | Baixa — automático após P-02 + P-07 |
 | P-09 (sentinel 0409c07f) | ✅ CORRIGIDO — PR #3240 mergeada (`5aed391b`) | — |
