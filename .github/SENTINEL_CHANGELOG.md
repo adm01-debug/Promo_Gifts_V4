@@ -1,5 +1,20 @@
 # Sentinel Changelog
 
+## v2.1.2 — 2026-10-31 — Reconciliação pontual do squash merge do PR #2867
+
+**Contexto:** o merge do PR #2867 (`fix(ci): remove workflow vazio que quebra actionlint`)
+gerou o commit `d4e19a64990e2d232f42c7b856462271538a8f7a` sem o sufixo `(#2867)`.
+O Branch Protection Sentinel [run 41203248360](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41203248360)
+rejeitou corretamente o SHA por não corresponder ao formato de squash aprovado.
+
+**Reconciliação:** registrar somente esse SHA imutável na allowlist 7.5, com a
+justificativa e a evidência acima. A regex geral permanece estrita; novos merges
+via API devem usar o título `... (#NNN)` ou deixar o GitHub acrescentar o sufixo.
+Esta exceção reconhece o commit já publicado e não altera o histórico da `main`.
+
+**Aprovação:** autorizado no escopo da solicitação do PO para executar as correções
+do projeto; a revisão deste PR continua necessária antes de incorporar a exceção.
+
 ## v2.1.1 — 2026-10-29 — Regra 7.5: SHA allowlist histórica (P-CI-H)
 
 **Contexto:** Push direto em main entre `14b6d5fc` e `c3b41286` (por TIPROMO)

@@ -16,3 +16,4 @@
 e2518bbd23ecd5b7e9960dfaec2f24837ee44d91  # docs(auditoria): registra lacuna do rate guard E049  [2026-10-29]
 c55c6781311b428cdbb52e4ff8f753c59222c470  # docs(audit): registra bloqueios de sincronização e CI  [2026-10-29]
 9d9dd2a7b502ab7e5ff42691d40b95a822c21d6b  # fix(ci): protege contrato de repair-only em E15  [2026-10-29]
+d4e19a64990e2d232f42c7b856462271538a8f7a  # fix(ci): remove workflow vazio que quebra actionlint — merge PR #2867 sem sufixo aceito; reconciliação pontual  [2026-10-31] [PO]
