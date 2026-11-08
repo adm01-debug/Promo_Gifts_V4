@@ -72,12 +72,13 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON SEQUENCES FROM anon, aut
 ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON FUNCTIONS FROM anon, authenticated, service_role;
 `;
 
-// O baseline não carrega linhas do pg_cron (só schema), mas as migrations
-// 20261024180003 (job `auto-block-offenders`) e 20261024190001 (jobid 235) exigem jobs já existentes. Em produção
-// ele vem de 20260623171736; no shadow, que parte do baseline, nunca existe e o
-// replay aborta com "job auto-block-offenders não encontrado". Esta semente é
-// gravada como migration B+1 na pasta temporária (jobs são dado, não schema:
-// não alteram o diff). Idempotente e tolerante a shadow sem pg_cron.
+// O baseline não carrega linhas do pg_cron (só schema), mas migrations de
+// replay exigem jobs já existentes: 20261024180003 (`auto-block-offenders`),
+// 20261024190001 (jobid 235) e 20261027180000 (`generate-blurhashes` inativo).
+// Em produção eles vieram de migrations anteriores ao baseline; no shadow, que
+// parte do dump sem dados, nunca existem. Esta semente é gravada como migration
+// B+1 na pasta temporária (jobs são dados, não schema: não alteram o diff).
+// Idempotente e tolerante a shadow sem pg_cron.
 export const REPLAY_CRON_SEED_FILE = 'drift_replay_cron_seed.sql';
 export const REPLAY_CRON_SEED_SQL = `
 -- Semente de jobs do pg_cron para o replay (scripts/drift-baseline.mjs).
@@ -103,6 +104,19 @@ BEGIN
     END LOOP;
     PERFORM cron.unschedule(v_id);
     PERFORM cron.schedule('image-dimensions-backfill', '0 * * * *', 'SELECT 1');
+  END IF;
+  -- 20261027180000 exige o job legado presente e inativo antes de reativá-lo
+  -- com */10. O dump de schema não preserva linhas de cron.job, então criamos
+  -- somente o estado mínimo da pré-condição; a migration real continua sendo
+  -- responsável por alterar schedule/active e validar a pós-condição.
+  IF to_regclass('cron.job') IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'generate-blurhashes') THEN
+    v_id := cron.schedule(
+      'generate-blurhashes',
+      '1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59 * * * *',
+      'SELECT 1'
+    );
+    PERFORM cron.alter_job(job_id := v_id, active := false);
   END IF;
 END
 $seed$;

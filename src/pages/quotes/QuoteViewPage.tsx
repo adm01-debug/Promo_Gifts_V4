@@ -88,6 +88,8 @@ export default function QuoteViewPage() {
     quote,
     setQuote,
     isLoadingQuote,
+    quoteLoadError,
+    loadQuote,
     clientCnpj,
     isGeneratingPDF,
     isSyncing,
@@ -135,17 +137,28 @@ export default function QuoteViewPage() {
       <div className="mx-auto w-full max-w-[1920px] animate-fade-in space-y-3 px-3 py-3 pb-24 sm:space-y-4 sm:px-4 sm:py-4 md:pb-6 lg:px-6 xl:px-8">
         <div className="py-12 text-center">
           <FileText className="mx-auto mb-4 h-16 w-16 text-muted-foreground" />
-          <h2 className="font-display text-xl font-semibold">Orçamento não encontrado</h2>
+          <h2 className="font-display text-xl font-semibold">
+            {quoteLoadError ? 'Não foi possível carregar o orçamento' : 'Orçamento não encontrado'}
+          </h2>
           <p className="mt-2 text-muted-foreground">
-            O orçamento solicitado não existe ou foi removido.
+            {quoteLoadError
+              ? quoteLoadError
+              : 'O orçamento solicitado não existe ou foi removido.'}
           </p>
-          <Button
-            variant="outline"
-            className="mt-4 rounded-full border-primary/40 hover:border-primary hover:bg-primary/10"
-            onClick={() => navigate('/orcamentos')}
-          >
-            <ArrowLeft className="mr-2 h-4 w-4 text-primary" /> Voltar para Orçamentos
-          </Button>
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            {quoteLoadError && (
+              <Button onClick={() => loadQuote().catch(() => undefined)}>
+                <RefreshCw className="mr-2 h-4 w-4" /> Tentar novamente
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              className="rounded-full border-primary/40 hover:border-primary hover:bg-primary/10"
+              onClick={() => navigate('/orcamentos')}
+            >
+              <ArrowLeft className="mr-2 h-4 w-4 text-primary" /> Voltar para Orçamentos
+            </Button>
+          </div>
         </div>
       </div>
     );

@@ -239,6 +239,8 @@ describe('sanitizeBaselineForReplay', () => {
     const delivered = readFileSync(join(mig, '20261015140001_drift_replay_cron_seed.sql'), 'utf8');
     expect(delivered).toContain("cron.schedule('auto-block-offenders'");
     expect(delivered).toContain("cron.schedule('image-dimensions-backfill'");
+    expect(delivered).toContain("'generate-blurhashes'");
+    expect(delivered).toContain('cron.alter_job(job_id := v_id, active := false)');
     expect(delivered).toContain('cron.unschedule(v_id)');
     expect(delivered).not.toContain('UPDATE cron.job');
   });

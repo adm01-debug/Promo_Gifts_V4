@@ -25,11 +25,11 @@ async function waitForNetworkIdle(page: Page) {
 async function fillQuoteStep1(page: Page) {
   const searchInput = page.getByPlaceholder(/buscar empresa/i);
   if (await searchInput.isVisible({ timeout: 5_000 }).catch(() => false)) {
-    await searchInput.fill("Promo");
-    const firstOption = page.locator('[data-testid^="company-option-"], button:has-text("Promo")').first();
-    if (await firstOption.isVisible({ timeout: 3_000 }).catch(() => false)) {
-      await firstOption.click();
-    }
+    await searchInput.click();
+    const noCompanyOption = page.getByTestId("no-company-option");
+    await expect(noCompanyOption).toBeVisible({ timeout: 5_000 });
+    await noCompanyOption.click();
+    await expect(noCompanyOption).toBeHidden({ timeout: 5_000 });
   }
 }
 
@@ -337,8 +337,11 @@ test.describe("Orçamento — acessibilidade básica @freight @a11y", () => {
     await page.goto("/orcamentos/novo");
     await waitForNetworkIdle(page);
 
-    const h1Elements = await page.getByRole("heading", { level: 1 }).count();
-    expect(h1Elements).toBeGreaterThanOrEqual(0);
+    const title = page.getByRole("heading", {
+      level: 1,
+      name: /^(novo orçamento|editar orçamento|editar rascunho|editar proposta(?:\s*·.*)?)$/i,
+    });
+    await expect(title).toHaveCount(1, { timeout: 10_000 });
   });
 
   test("campos de frete têm labels acessíveis", async ({ page }) => {
@@ -397,12 +400,10 @@ test.describe("Orçamento — mobile (viewport 375px) @freight @mobile", () => {
     await page.goto("/orcamentos/novo");
     await waitForNetworkIdle(page);
 
-    const summary = page
-      .getByTestId("summary-total-value")
-      .or(page.getByTestId("quote-totals"))
-      .or(page.locator(".quote-summary, [data-testid*='total']").first());
-
-    const isVisible = await summary.isVisible({ timeout: 8_000 }).catch(() => false);
-    expect(isVisible || true).toBe(true);
+    const summary = page.getByTestId("summary-total-value");
+    await expect(summary).toBeVisible({ timeout: 8_000 });
+    await expect(summary).toHaveText(/\d/);
+    await summary.scrollIntoViewIfNeeded();
+    await expect(summary).toBeInViewport();
   });
 });

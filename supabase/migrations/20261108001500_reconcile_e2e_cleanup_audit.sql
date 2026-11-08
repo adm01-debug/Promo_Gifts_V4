@@ -10,7 +10,7 @@ DO $migration$
 BEGIN
   IF to_regclass('public.e2e_cleanup_audit') IS NULL THEN
     EXECUTE $ddl$
-      CREATE TABLE public.e2e_cleanup_audit (
+      CREATE TABLE public.e2e_cleanup_audit ( -- soft-delete-exempt: auditoria append-only de limpeza E2E
         id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
         email text,
         user_id uuid,
