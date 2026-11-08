@@ -4,11 +4,11 @@
   "main_sha": "d8ae515913db370da08784f3c911834c1668b98c",
   "main_sha_antes_desta_sessao": "9a89d9f0a4ac2df7ad670501adaad9f1f60a75df",
   "total_prs_abertas": 12,
-  "total_analisadas": 18,
+  "total_analisadas": 20,
   "vereditos": {
     "MERGEADA_ESTA_SESSAO": 1,
     "DECISAO_HUMANA": 12,
-    "FECHADA_OU_MERGEADA_PELO_PO": 5
+    "FECHADA_OU_MERGEADA_PELO_PO": 7
   },
   "prs_mergeadas_esta_sessao": [
     {
@@ -30,8 +30,12 @@
     {"pr":3214,"motivo":"Draft — fix cron CRON-001"},
     {"pr":3215,"motivo":"REGRA#8 — supabase/migrations/ DDL 20261108001500_reconcile"},
     {"pr":3228,"motivo":"Draft + REGRA#8 — .github/workflows/ e2e-color-swatch"},
-    {"pr":3232,"motivo":"REGRA#8 — supabase/migrations/ DDL security_fix_suppliers BOM fix"},
-    {"pr":3234,"motivo":"Draft — feat migrations P09 reconcilia 432 versões históricas"}
+    {"pr":3236,"motivo":"Draft + REGRA#8 — supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql (cabeçalho rollback) + MIGRATIONS_SYNC_LOG.md"},
+    {"pr":3238,"motivo":"Draft — delivery branch claude_05/youthful-ride-vcdchy (analise-prs/*.md + *.json)"}
+  ],
+  "fechadas_pelo_po_esta_sessao": [
+    {"pr":3232,"motivo":"Fechada pelo PO/bot após análise anterior — REGRA#8 supabase/migrations/"},
+    {"pr":3234,"motivo":"Fechada pelo PO/bot após análise anterior — Draft feat migrations P09"}
   ],
   "baseline": {
     "typecheck_exit": 0,
