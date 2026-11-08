@@ -4,11 +4,11 @@
   "main_sha": "d8ae515913db370da08784f3c911834c1668b98c",
   "main_sha_antes_desta_sessao": "9a89d9f0a4ac2df7ad670501adaad9f1f60a75df",
   "total_prs_abertas": 12,
-  "total_analisadas": 18,
+  "total_analisadas": 20,
   "vereditos": {
     "MERGEADA_ESTA_SESSAO": 1,
     "DECISAO_HUMANA": 12,
-    "FECHADA_OU_MERGEADA_PELO_PO": 5
+    "FECHADA_OU_MERGEADA_PELO_PO": 7
   },
   "prs_mergeadas_esta_sessao": [
     {
@@ -16,22 +16,26 @@
       "sha": "d8ae515913db370da08784f3c911834c1668b98c",
       "titulo": "docs(edge): adiciona log de deploy health-check run 42491776265",
       "gate": "E14_DOCS_ONLY",
-      "motivo": "docs-only (.md 1 arquivo), entry nova no EDGE_FUNCTIONS_DEPLOY_LOG.md confirmada nao existia em main (0 ocorrencias de 42491776265); sem conflito"
+      "motivo": "docs-only (.md 1 arquivo), entry nova no EDGE_FUNCTIONS_DEPLOY_LOG.md confirmada não existia em main (0 ocorrências de 42491776265); sem conflito"
     }
   ],
   "prs_abertas_decisao_humana": [
     {"pr":3127,"motivo":"REGRA#8 — .github/workflows/ (e2e-flows.yml, e2e-stock.yml, e2e.yml)"},
-    {"pr":3129,"motivo":"REGRA#8 — .github/workflows/ multiplos CI/E2E"},
+    {"pr":3129,"motivo":"REGRA#8 — .github/workflows/ múltiplos CI/E2E"},
     {"pr":3137,"motivo":"REGRA#8 — .github/workflows/ + e2e-relevance.mjs"},
     {"pr":3160,"motivo":"Draft — fix DB E15 pg_temp + rollback"},
     {"pr":3179,"motivo":"Draft — fix preflight db-apply-migration"},
-    {"pr":3203,"motivo":"Gate Final = failure (run 128654730896, SHA 1aad6831) + CONFLICTING vs main d8ae5159 (7 conflitos)"},
+    {"pr":3203,"motivo":"Gate Final = failure (run 128654730896, SHA 1aad6831) + CONFLICTING vs main d8ae5159 (7 conflitos: .any-type-baseline.json, .cart-header-fuzz.json, .migration-refs-baseline.json, docs/DB_FRONTEND_COVERAGE.md, scripts/gen-internal-schema.mjs, scripts/kit-ai-enrichment.js, supabase/functions/_shared/cors-snapshot.json)"},
     {"pr":3210,"motivo":"Bot PR github-actions[bot] release 1.9.0 — Gate Final status 0 check runs no HEAD 05b38bc5"},
     {"pr":3214,"motivo":"Draft — fix cron CRON-001"},
     {"pr":3215,"motivo":"REGRA#8 — supabase/migrations/ DDL 20261108001500_reconcile"},
     {"pr":3228,"motivo":"Draft + REGRA#8 — .github/workflows/ e2e-color-swatch"},
-    {"pr":3232,"motivo":"REGRA#8 — supabase/migrations/ DDL security_fix_suppliers BOM fix"},
-    {"pr":3234,"motivo":"Draft — feat migrations P09 reconcilia 432 versoes historicas"}
+    {"pr":3236,"motivo":"Draft + REGRA#8 — supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql (cabeçalho rollback) + MIGRATIONS_SYNC_LOG.md"},
+    {"pr":3238,"motivo":"Draft — delivery branch claude_05/youthful-ride-vcdchy (analise-prs/*.md + *.json)"}
+  ],
+  "fechadas_pelo_po_esta_sessao": [
+    {"pr":3232,"motivo":"Fechada pelo PO/bot após análise anterior — REGRA#8 supabase/migrations/"},
+    {"pr":3234,"motivo":"Fechada pelo PO/bot após análise anterior — Draft feat migrations P09"}
   ],
   "baseline": {
     "typecheck_exit": 0,
