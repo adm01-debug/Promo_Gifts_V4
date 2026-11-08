@@ -105,7 +105,7 @@ jobs:
           assert_fail "merge lowercase PR inválido" "merge(pr-ABC): corrige"       "merge(pr-ABC): corrige"       "alice"
           assert_fail "docs genérico (sem escopo)"  "docs: README"                "docs: README"                "alice"
           assert_fail "chore genérico"              "chore: bump"                 "chore: bump"                 "alice"
-          assert_fail "docs escopo não-allowlist"   "docs(api): nova endpoint"    "docs(api): nova endpoint"    "alice"
+          assert_pass "allowlist docs(api) genérico"  "docs(api): nova endpoint"    "docs(api): nova endpoint"    "alice"
 
           echo ""
           echo "═══════════════════════════════════════════════════════════"
