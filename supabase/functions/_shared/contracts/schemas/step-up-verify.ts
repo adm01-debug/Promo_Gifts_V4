@@ -5,7 +5,7 @@
  *     Sunset 2026-10-31.
  * v2: discriminated union por step — auth sensível.
  */
-import { z } from "https://esm.sh/zod@3.23.8";
+import { z } from "npm:zod@3.23.8";
 
 const ActionEnum = z.enum([
   "promote_dev",

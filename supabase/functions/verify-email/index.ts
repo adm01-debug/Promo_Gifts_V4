@@ -2,7 +2,7 @@
 // BUG-EF-001 FIXED: Substituído getUserById(token) por verifyOtp — API correta.
 // BUG-EF-011 FIXED: Import Zod padronizado para npm:zod@3.23.8.
 import { getCorsHeaders, handleCorsPreflightIfNeeded } from '../_shared/cors.ts';
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { z } from "npm:zod@3.23.8";
 
 const BodySchema = z.object({

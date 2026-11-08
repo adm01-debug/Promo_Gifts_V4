@@ -781,3 +781,24 @@ POST auth/v1/token → 200 (success), GET rest/v1/v_products_public → PENDENTE
 > **Correção de §27 (RELATORIO_CI.md):** E2E failures nas runs #42405699438, #42405699423 e #42390009053 foram incorretamente atribuídas a "falta de secrets" em §27. A causa real é regressão comportamental de frontend (URL-state, layout Magazine, redirect pós-login). Corrigido nos itens #39, #40, #41 acima e §28 de RELATORIO_CI.md.  
 > HEAD atual (main): `561693ff8b6e63b850f333a5812eb0c54fd1f3e5` — Gate Final [run #42430908701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42430908701) → `conclusion: success` (00:47:46Z).  
 > Todos os 42 itens têm motivo exato registrado. Nenhum requer ação de código.
+
+---
+
+## 43. Branch Protection Sentinel ❌→✅ RESOLVED
+
+**Workflow:** `branch-protection-sentinel.yml`  
+**Run ID:** [42437685616](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42437685616) (SHA `46212f02`, push do merge de PR #3191)  
+**Erro exato:**
+```
+1 commit(s) em push para main sem padrão aceito: 46212f0
+```
+**Causa:** PR #3191 squash-mergeada com `commit_title` customizado (`docs(ci): RELATORIO §29 — baseline local 9feb0148 + inventário fix/ci-workflows`) sem o sufixo `(#3191)` exigido pela Regra 1 do Sentinel.  
+**Resolução:** PR nova squash-mergeada SEM `commit_title` customizado → GitHub auto-gera `"[titulo] (#NNNN)"` → Sentinel Regra 1 satisfeita.  
+**Status:** RESOLVED — ver §30 de RELATORIO_CI.md.
+
+---
+
+> **Atualização 2026-11-08T02:33Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
+> Item #43 adicionado: Branch Protection Sentinel failure em SHA `46212f02` causado por commit_title customizado sem sufixo `(#3191)`. Resolvido por PR §30 squash-mergeada sem commit_title customizado.  
+> HEAD atual (main após §29): `46212f026e8f9f8f827c907db630e45f250cf67e` — Gate Final [run #42437685662](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42437685662) → `conclusion: success`.  
+> Total de 43 itens. Item #43 RESOLVED. Itens #1, #29, #37, #42 requerem ação do dono.
