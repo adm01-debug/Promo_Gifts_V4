@@ -7,7 +7,7 @@
  *
  * Cobre:
  *  1) Altura ≤ 2 linhas em qualquer card visível (todos os breakpoints).
- *  2) Cards com overflow → chip "+N" aparece e visíveis+ocultas = total.
+ *  2) Cards com overflow → chip "+N" aparece, hidden > 0 e pelo menos 1 visível.
  *  3) Estados sem clipping: idle, hover do card, focus do swatch, selected.
  *  4) Screenshot do container por breakpoint (artefato de revisão).
  */
@@ -108,18 +108,18 @@ test.describe('ProductCard — swatches travados em 2 linhas no grid', () => {
           firstGroupShot = true;
         }
 
-        // (2) overflow: chip "+N" presente e visíveis + hidden = total
+        // (2) overflow: chip presente → há bolinhas ocultas e ao menos 1 visível
         const chip = card.locator('[data-testid="color-swatches-overflow"]').first();
         if (await chip.isVisible().catch(() => false)) {
           const ariaLabel = (await chip.getAttribute('aria-label')) ?? '';
-          const declaredTotal = Number(ariaLabel.match(/(\d+)\s+cores?/i)?.[1] ?? '0');
-          const hidden = Number(ariaLabel.match(/\+?(\d+)/)?.[1] ?? '0');
+          // aria-label = "Mais N cores" — fornece somente o count oculto, não o total
+          const hidden = Number(ariaLabel.match(/Mais\s+(\d+)/i)?.[1] ?? '0');
           const visible = await group.locator('[role="radio"]').count();
-          if (declaredTotal > 0) {
+          if (hidden > 0) {
             expect(
-              visible + hidden,
-              `card ${i}: visíveis(${visible}) + ocultas(${hidden}) ≠ total(${declaredTotal})`,
-            ).toBe(declaredTotal);
+              visible,
+              `card ${i}: chip mostra ${hidden} ocultas mas nenhuma bolinha visível`,
+            ).toBeGreaterThan(0);
             overflowAsserted++;
           }
         }
