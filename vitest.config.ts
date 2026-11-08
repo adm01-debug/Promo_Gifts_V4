@@ -18,12 +18,11 @@ const rewriteDenoUrlImports = (): Plugin => ({
   enforce: 'pre',
   transform(code, id) {
     if (!/\.(ts|tsx|mts|js|mjs)$/.test(id)) return null;
-    if (!code.includes('https://') && !code.includes('npm:')) return null;
+    if (!code.includes('https://') && !code.includes('npm:zod')) return null;
     const next = code
       .replace(/(["'])https:\/\/esm\.sh\/zod@[^"']+\1/g, '"zod"')
       .replace(/(["'])https:\/\/deno\.land\/x\/zod@[^"']+\/mod\.ts\1/g, '"zod"')
-      .replace(/(["'])npm:zod@[^"']+\1/g, '"zod"')
-      .replace(/(["'])npm:@supabase\/supabase-js@[^"']+\1/g, '"@supabase/supabase-js"');
+      .replace(/(["'])npm:zod@[^"']+\1/g, '"zod"');
     return next === code ? null : { code: next, map: null };
   },
 });
@@ -65,7 +64,6 @@ export default defineConfig({
       'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       'src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       'e2e/scripts/__tests__/*.test.ts',
-      'supabase/functions/e2e-cleanup/index.mockups.test.ts',
       // T-FIX-5: descobre a suite vitest do script anti-órfão.
       // Ver docs/redeploy/T-FIX-5-CHECKLIST.md (Passo 3).
       'scripts/__tests__/**/*.{test,spec}.{ts,mts,cts}',
@@ -145,6 +143,7 @@ export default defineConfig({
         statements: 60,
       },
     },
+
   },
   resolve: {
     alias: [
