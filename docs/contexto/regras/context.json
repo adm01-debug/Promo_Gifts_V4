@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "17304c02232a8923791f15921d572b203b22c39d",
+  "sha": "5aed391bf5777b04cb72c8d0138854422c279dd9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 19:46 UTC",
+  "generated_at": "2026-11-08 20:22 UTC",
   "files_total": 9128,
   "code_files": 7864,
   "code_lines": 1055532
@@ -484062,10 +484062,19 @@
   }
  },
  "git": {
-  "sha": "17304c02232a8923791f15921d572b203b22c39d",
+  "sha": "5aed391bf5777b04cb72c8d0138854422c279dd9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "5aed391",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix(ci): grandfather SHA 0409c07f do P09 no Sentinel allowlist (#3240)",
+    "files": [
+     ".github/SENTINEL_SHA_ALLOWLIST.txt"
+    ]
+   },
    {
     "sha": "17304c0",
     "date": "2026-11-08",
@@ -484385,16 +484394,6 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "4e638a6",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(db): fecha vazamento de api_credentials em suppliers para authenticated",
-    "files": [
-     "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql",
-     "supabase/rollbacks/20261107180000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -484407,20 +484406,16 @@
     9
    ],
    [
+    ".github/SENTINEL_SHA_ALLOWLIST.txt",
+    3
+   ],
+   [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     3
    ],
    [
     "auditoria-supabase/ADENDO_2026-10-28.md",
     3
-   ],
-   [
-    "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql",
-    2
-   ],
-   [
-    ".github/SENTINEL_SHA_ALLOWLIST.txt",
-    2
    ],
    [
     ".release-please-manifest.json",
@@ -484456,6 +484451,10 @@
    ],
    [
     "supabase/rollbacks/20261108020000_rollback.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql",
     1
    ],
    [

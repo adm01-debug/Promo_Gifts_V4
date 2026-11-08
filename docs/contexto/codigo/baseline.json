@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "17304c02232a8923791f15921d572b203b22c39d",
+  "commit": "5aed391bf5777b04cb72c8d0138854422c279dd9",
   "branch": "main",
-  "data_commit": "2026-11-08T16:32:25-03:00",
+  "data_commit": "2026-11-08T16:59:00-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "5aed391",
+    "data": "2026-11-08",
+    "assunto": "fix(ci): grandfather SHA 0409c07f do P09 no Sentinel allowlist (#3240)"
+   },
    {
     "sha": "17304c0",
     "data": "2026-11-08",
@@ -126,14 +131,9 @@
     "sha": "8c3abe3",
     "data": "2026-11-08",
     "assunto": "chore(backlog): marca FT-175 como implementado (#3206)"
-   },
-   {
-    "sha": "87fe8cd",
-    "data": "2026-11-08",
-    "assunto": "chore(main): release 1.8.1"
    }
   ],
-  "arquivos_mudados_7d": 590,
+  "arquivos_mudados_7d": 571,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -282,6 +282,10 @@
     "mudancas": 5
    },
    {
+    "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
+    "mudancas": 4
+   },
+   {
     "arquivo": ".github/workflows/ci-security-drift.yml",
     "mudancas": 4
    },
@@ -291,10 +295,6 @@
    },
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
     "mudancas": 4
    }
   ],

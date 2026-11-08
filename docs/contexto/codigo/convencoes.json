@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): grandfather SHA 0409c07f do P09 no Sentinel allowlist (#3240)",
    "docs(analise-prs): relatório merge-prs — 12 PRs analisadas, 12 AGUARDANDO HUMANO",
    "feat(migrations): P09 — reconcilia 432 versões históricas no ledger schema_migrations",
    "docs(ci): inventário final HEAD ba1c3fb — P-08, stub eslint, comparação baseline×final (#3237)",
-   "fix(migrations): remove BOM UTF-8 do security_fix_suppliers_v2 — corrige db-schema-drift-check",
-   "docs(edge): registra deploy health-check run 42491776265"
+   "fix(migrations): remove BOM UTF-8 do security_fix_suppliers_v2 — corrige db-schema-drift-check"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
