@@ -1172,3 +1172,21 @@ Este PR cria o arquivo retroativo para fechar o gap documental.
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20260611014515` | `fn_dryrun_standardize_supplier_real_rollback` | `49c18b67748c6cb7fc39d3b80b1f3eb58fff39fc2f21a20ee7cac92f69e08a3d` | arquivo retroativo — função `fn_dryrun_standardize_supplier` confirmada em produção via `pg_get_functiondef`; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
+
+## 2026-11-08 — Reconciliação de drift CRON-001 (`20261101223908`/`20261101232022`)
+
+Duas versões estavam no ledger (`supabase_migrations.schema_migrations`), aplicadas em
+produção em 2026-11-01 via `db-apply-migration.yml`, mas sem arquivo correspondente em
+`supabase/migrations/` no main — gap "ledger-sem-arquivo" detectado por `analise-branches`
+e documentado em PR #3015 (fechada sem merge em 2026-11-07, por trazer também mudanças
+não relacionadas em `analise-branches/RELATORIO_BRANCHES.md`; comentário do dono na PR
+confirmou o efeito de produção como correto e pediu uma PR nova só com os arquivos
+espelho — esta PR cumpre essa pendência). Conteúdo confirmado via
+`SELECT statements FROM supabase_migrations.schema_migrations WHERE version IN (...)`
+contra o projeto canônico `doufsxqlfjyuvxuezpln`: ambos só `cron.alter_job` (idempotente,
+sem DDL de schema, sem risco de dado). **Nenhuma DDL nova é executada por esta PR.**
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261101223908` | `cron001_stagger_additional_jobs` | `819350cc0006cbc218b74bd2cd6dee7049586ed6479109b7dcd828f3807ee811` | arquivo retroativo — `cron.alter_job` jobs 292/303/241 confirmado em produção via ledger; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
+| `20261101232022` | `cron001_stagger_schedules_reapply` | `8fe64496a5dba8e27be274a41522bf9a1988be3f5e912b712c1ce1ddd2d93dad` | arquivo retroativo — `cron.alter_job` jobs 276/224/114/243 (idêntico a `20261101220000`) confirmado em produção via ledger; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
