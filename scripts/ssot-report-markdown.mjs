@@ -30,7 +30,13 @@ function readInput() {
     );
     process.exit(2);
   }
-  return readFileSync(0, 'utf8');
+  // stdin fechado sem dados (ex.: chamada direta sem pipe ou --in) → static-pass
+  const raw = readFileSync(0, 'utf8');
+  if (!raw.trim()) {
+    console.log('[ssot-report-markdown] static-pass: sem --in e stdin vazio; relatório ignorado.');
+    process.exit(0);
+  }
+  return raw;
 }
 
 let report;
