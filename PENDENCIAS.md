@@ -1,8 +1,8 @@
 # PENDENCIAS.md — Workflows com falha não corrigível nesta sessão
 
 > Gerado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Atualizado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08, P-09 e causas exatas P-05/P-06)
+> Atualizado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY
+> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08, P-09 e causas exatas P-05/P-06; P-10 adicionado na validação de PR #3243)
 
 ---
 
@@ -146,11 +146,38 @@
 
 ---
 
+### P-10 · Índices out-of-band em `public.categories` (sem migration)
+- **Descoberto em:** Sessão https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY · 2026-11-08 · validação de PR #3243
+- **Causa raiz:** Três índices criados diretamente em produção (out-of-band) sem migration registrada. O replay de migrations no shadow DB da Supabase Preview não os cria, causando degradação de performance em queries do Preview.
+- **DDL exato em produção** (verificado via `pg_indexes` em `doufsxqlfjyuvxuezpln`):
+  ```sql
+  CREATE INDEX idx_categories_level
+      ON public.categories USING btree (level);
+
+  CREATE INDEX idx_categories_level_display_order
+      ON public.categories USING btree (level, display_order)
+      WHERE ((is_active = true) AND (deleted_at IS NULL));
+
+  CREATE INDEX idx_cat_parent_nav
+      ON public.categories USING btree (parent_id, display_order)
+      INCLUDE (id, name, slug, level, is_active, is_visible, icon, children_count)
+      WHERE (is_active = true);
+  ```
+- **Impacto:** Shadow DB fica sem índices → queries mais lentas em Preview; sem erro funcional; produção não afetada.
+- **Ação necessária (PO/Dev):**
+  1. Criar migration `supabase/migrations/20260511235970_add_categories_indexes_drift.sql` com `CREATE INDEX IF NOT EXISTS` para cada um (idempotente — no-op em produção onde já existem)
+  2. Abrir PR e aguardar CI verde
+  3. Disparar `db-apply-migration.yml` com `version=20260511235970` (DDL em produção — REGRA #8)
+- **Risco:** Baixo — apenas performance de queries no Preview; produção inalterada
+
+---
+
 ## Resumo por categoria de bloqueio
 
 | Código | Descrição | Responsável |
 |---|---|---|
 | DRIFT-REAL | Drift confirmado por log | PO — decidir versão canônica |
+| DRIFT-INDEX | Índices out-of-band sem migration | PO/Dev — criar migration com `IF NOT EXISTS` |
 | LEDGER-DESYNC | Ledger massivamente dessincronizado | PO — reconciliar via PR (regra 7) |
 | AUTH-TIMEOUT | Auth timeout — secrets presentes | PO — verificar conta de teste |
 | SECRETS-MISSING | Secrets E2E ausentes em CI | PO — adicionar secrets no GitHub |
@@ -170,3 +197,4 @@
 | P-07 (db-apply-migration E15) | CASCATA (P-02) | Baixa |
 | P-08 (supabase-preview) | APP-CHECK — advisory | Baixa — automático após P-02 + P-07 |
 | P-09 (sentinel 0409c07f) | ✅ CORRIGIDO — PR #3240 mergeada (`5aed391b`) | — |
+| P-10 (categories indexes out-of-band) | DRIFT-INDEX — 3 índices `categories` sem migration | Baixa |
