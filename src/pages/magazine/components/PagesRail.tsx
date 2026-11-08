@@ -64,7 +64,7 @@ export function PagesRail({
               onClick={() => onSelect(idx)}
               className={cn(
                 'group flex w-full items-center gap-3 rounded-md border bg-card-elevated p-2 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                isActive && 'border-primary/50 bg-primary/10 ring-2 ring-primary',
+                isActive && 'border-primary/50 bg-primary/10 ring-2 ring-amber-500',
                 !isActive && isHighlighted && 'ring-2 ring-amber-500',
                 !isActive && !isHighlighted && 'border-border hover:border-border-strong',
               )}

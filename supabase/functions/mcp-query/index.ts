@@ -7,9 +7,15 @@
  * Esta versão retorna 410 Gone para todas as requisições.
  * A função pode ser deletada pelo Supabase Dashboard.
  */
-Deno.serve(() =>
-  new Response(
+import { createStructuredLogger } from '../_shared/structured-logger.ts';
+import { getOrCreateRequestId } from '../_shared/request-id.ts';
+
+Deno.serve((req) => {
+  const requestId = getOrCreateRequestId(req);
+  const log = createStructuredLogger({ fn: 'mcp-query', requestId, req });
+  log.warn('decommissioned_access');
+  return log.respond(new Response(
     JSON.stringify({ error: 'decommissioned', message: 'Esta função foi descomissionada em 2026-09-05. Use os MCPs da VPS para acesso ao banco.' }),
     { status: 410, headers: { 'Content-Type': 'application/json' } },
-  )
-);
+  ));
+});

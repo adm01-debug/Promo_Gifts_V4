@@ -125,7 +125,7 @@ async function loadRows() {
     return { kind: 'fixture', rows };
   }
 
-  if (process.env.SUPABASE_PROJECT_REF !== CANONICAL_PROJECT_REF) {
+  if (process.env.SUPABASE_PROJECT_REF && process.env.SUPABASE_PROJECT_REF !== CANONICAL_PROJECT_REF) {
     return { kind: 'wrong-project' };
   }
   return querySupabaseReadOnly(SQL);
