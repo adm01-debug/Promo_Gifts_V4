@@ -1218,3 +1218,76 @@ Baseline local não foi re-executado nesta sessão (sessão remota sem container
 | PR | Título | Estado | SHA pós-merge |
 |---|---|---|---|
 | [#3187](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3187) | docs(ci): RELATORIO §27 — baseline 12e873af + inventário workflows | Mergeada | `561693ff` |
+| [#3190](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3190) | docs(ci): RELATORIO §28 + PENDENCIAS #39-42 — sessão 2026-11-08 | Mergeada | `9feb0148` |
+
+---
+
+## §29 — Baseline local SHA `9feb0148` + branch `fix/ci-workflows` (2026-11-08T02:00Z)
+
+**HEAD local:** `9feb0148afabc3433713d6dcb9271bed8fd9f436`
+**Data:** 2026-11-08T02:00:53Z
+**Branch:** `fix/ci-workflows-2611081-baseline`
+**Node:** v22.22.0 | npm 10.9.4
+
+### Baseline local — ANTES de qualquer alteração
+
+| Etapa | Resultado | Detalhes |
+|---|---|---|
+| `npm ci` | ✅ success | Instalação completa sem erros |
+| `npm run build` | ✅ success | `built in 10.15s`; chunk-cycles OK; production-harnesses OK |
+| `npm run lint` (lint:baseline) | ✅ success | 0 erros, 0 warnings; regressões +0 |
+| `npm run typecheck:full` | ✅ success | `tsc -p tsconfig.app.json --noEmit` — sem erros |
+| `npx vitest run tests/unit/` | ✅ **31 passed, 1313 tests, 0 failures** | Duration 14.89s |
+| `npx vitest run tests/scripts/` | ✅ **51 passed, 658 tests, 0 failures** | Duration 34.42s |
+| `npx vitest run tests/security/` | ✅ **17 passed / 3 skipped, 143+67 tests, 0 failures** | Duration 9.53s |
+
+> Testes que requerem `SUPABASE_SERVICE_ROLE_KEY` marcados como skipped localmente — confirmando apenas
+> que PENDENCIAS #42 (Security & Drift Checks) é bloqueada por ausência dessa credencial no CI.
+> PENDENCIAS #39-#41 têm causas distintas documentadas no próprio relatório (URL-state, alinhamento
+> visual, redirect pós-login) e requerem correção de código, não secrets.
+
+### Comparação baseline × final (checks required em main)
+
+| Check required | SHA baseline (`12e873af`) | SHA final (`9feb0148`) | Δ |
+|---|---|---|---|
+| Gate Final - Deploy Ready | ✅ | ✅ run [#42435385305](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42435385305) | = |
+| Gate E23 - Secret Scan (gitleaks) | ✅ | ✅ | = |
+| Assert Gate Final is required on main | ✅ | ✅ | = |
+| Compare GitHub × Canonical | ❌ | ❌ PENDENCIAS #29 | = (bloqueio requer dono) |
+| Analyze (javascript-typescript) | ✅ | ✅ | = |
+
+**Nenhuma regressão introduzida.** Os 4 checks required que estavam ✅ permanecem ✅. O único ❌
+(`Compare GitHub × Canonical`) requer ação do dono (PENDENCIAS #29): não alterável via PR de código.
+
+### Testes locais: comparação antes × depois
+
+| Suite | Antes | Depois | Δ |
+|---|---|---|---|
+| `tests/unit/` | 1313 passed | 1313 passed | +0 |
+| `tests/scripts/` | 658 passed | 658 passed | +0 |
+| `tests/security/` | 143 passed / 67 skipped | 143 passed / 67 skipped | +0 |
+| Build | ✅ | ✅ | +0 |
+| Lint | 0 erros | 0 erros | +0 |
+| TypeScript | 0 erros | 0 erros | +0 |
+
+### Inventário final de falhas (last run na main `9feb0148`)
+
+| # PENDENCIAS | Workflow | Última run | Situação |
+|---|---|---|---|
+| — | Deploy Gates (Gate Final) | [#42435385305](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42435385305) SHA `9feb0148` | ✅ `conclusion: success` |
+| #29 | Compare GitHub × Canonical | [#42432982626](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42432982626) | ❌ 27 EFs driftadas; **requer dono**: dispatch `deploy-edge-functions.yml` + aprovar `production` |
+| #37 | Uptime Monitor | [#42432752489](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42432752489) | ❌ HTTP 503 edge function; não bloqueia CI principal |
+| #39 | E2E Playwright (carrinhos/orcamentos) | [#42405699438](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42405699438) | ❌ 13 testes URL-state; regressão comportamental frontend |
+| #40 | E2E Magazine Header Layout | [#42390009053](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42390009053) | ❌ `magazine-header-align.spec.ts:87:5`; alinhamento `lg` |
+| #41 | E2E Personalization Flow | [#42405699423](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42405699423) | ❌ `92-personalization-auth-redirect.spec.ts:31:3`; redirect pós-login |
+| #42 | CI Security & Drift Checks | [#42430908783](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42430908783) | ❌ `SUPABASE_SERVICE_ROLE_KEY` ausente; **requer dono**: adicionar secret |
+
+> **SEM REGRESSÃO:** todos os workflows que estavam ✅ permanecem ✅. As falhas listadas (#29, #37, #39-#42)
+> existiam antes desta sessão e estão registradas em PENDENCIAS.md com causa raiz e bloqueio exato.
+> Nenhuma alteração de código de aplicação foi feita — só documentação (RELATORIO_CI.md, PENDENCIAS.md).
+
+### PRs desta sessão (§29)
+
+| PR | Título | Estado | SHA pós-merge |
+|---|---|---|---|
+| fix/ci-workflows-2611081-baseline | docs(ci): RELATORIO §29 — baseline local SHA 9feb0148 (a ser mergeada) | Em aberto | — |
