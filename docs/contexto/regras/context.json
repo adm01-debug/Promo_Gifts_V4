@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "46212f026e8f9f8f827c907db630e45f250cf67e",
+  "sha": "16408a6847b61fdd5fbba1e2a9385e311199edcc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 02:17 UTC",
+  "generated_at": "2026-11-08 02:46 UTC",
   "files_total": 9100,
   "code_files": 7845,
   "code_lines": 1051414
@@ -483049,10 +483049,20 @@
   }
  },
  "git": {
-  "sha": "46212f026e8f9f8f827c907db630e45f250cf67e",
+  "sha": "16408a6847b61fdd5fbba1e2a9385e311199edcc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "16408a6",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "docs(ci): RELATORIO §30 — fix Branch Protection Sentinel (#3192)",
+    "files": [
+     "PENDENCIAS.md",
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "46212f0",
     "date": "2026-11-07",
@@ -483337,25 +483347,16 @@
      "src/pages/__tests__/SSOCallbackPage.race.test.tsx",
      "src/pages/__tests__/SSOCallbackPage.test.tsx"
     ]
-   },
-   {
-    "sha": "a23cb8e",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "fix(ci): evitar paridade de reposição em diffs unitários (#3135)",
-    "files": [
-     ".github/workflows/replenishment-quality.yml"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    13
+    14
    ],
    [
     "PENDENCIAS.md",
-    7
+    8
    ],
    [
     "e2e/flows/magazine-publish-smoke.spec.ts",
@@ -483363,7 +483364,7 @@
    ],
    [
     ".github/workflows/replenishment-quality.yml",
-    3
+    2
    ],
    [
     "docs/estado/PENDENCIAS.md",

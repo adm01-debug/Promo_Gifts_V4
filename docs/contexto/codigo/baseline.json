@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "46212f026e8f9f8f827c907db630e45f250cf67e",
+  "commit": "16408a6847b61fdd5fbba1e2a9385e311199edcc",
   "branch": "main",
-  "data_commit": "2026-11-07T23:14:31-03:00",
+  "data_commit": "2026-11-07T23:40:27-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "16408a6",
+    "data": "2026-11-07",
+    "assunto": "docs(ci): RELATORIO §30 — fix Branch Protection Sentinel (#3192)"
+   },
    {
     "sha": "46212f0",
     "data": "2026-11-07",
@@ -126,11 +131,6 @@
     "sha": "096eb03",
     "data": "2026-11-07",
     "assunto": "fix: renderiza titulo do dashboard de orcamentos em loading e erro"
-   },
-   {
-    "sha": "f956f43",
-    "data": "2026-11-07",
-    "assunto": "docs(ci): inventário HEAD b5f7d2e29e0b (2026-11-07) — §12 RELATORIO + baseline sessão (#3152)"
    }
   ],
   "arquivos_mudados_7d": 405,
@@ -145,7 +145,7 @@
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 234
+    "mudancas": 233
    },
    {
     "pasta": "src/hooks/products",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 75
+    "mudancas": 76
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 65
+    "mudancas": 66
    },
    {
     "arquivo": "package.json",
@@ -262,16 +262,16 @@
     "mudancas": 7
    },
    {
-    "arquivo": "analise-prs/progresso.json",
-    "mudancas": 7
-   },
-   {
     "arquivo": "analise-prs/prs.csv",
     "mudancas": 7
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 7
+   },
+   {
+    "arquivo": "analise-prs/progresso.json",
+    "mudancas": 6
    },
    {
     "arquivo": "docs/estado/PENDENCIAS.md",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 4
+    "commits": 3
    },
    {
     "autor": "dependabot[bot]",
