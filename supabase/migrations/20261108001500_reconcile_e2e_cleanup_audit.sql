@@ -1,3 +1,7 @@
+-- Rollback: DROP TABLE IF EXISTS public.e2e_cleanup_audit CASCADE;
+-- (destrutivo — remove todos os dados de auditoria E2E se a tabela for nova;
+--  se a tabela preexistia, as colunas adicionadas são removidas junto com a tabela)
+--
 -- Reconcilia o drift em que o ledger registra as migrations históricas do
 -- e2e_cleanup_audit, mas a tabela não existe no projeto canônico.
 --
@@ -129,6 +133,8 @@ SET total_ms = duration_ms
 WHERE total_ms = 0
   AND duration_ms <> 0;
 
+-- transaction: none
+-- approved-by: adm01-debug
 CREATE INDEX IF NOT EXISTS idx_e2e_cleanup_audit_created_at
   ON public.e2e_cleanup_audit (created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_e2e_cleanup_audit_email
