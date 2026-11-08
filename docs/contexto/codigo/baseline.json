@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0409c07f7cd3e3ed439e400caf4d3081c5c28ece",
+  "commit": "17304c02232a8923791f15921d572b203b22c39d",
   "branch": "main",
-  "data_commit": "2026-11-08T16:19:20-03:00",
+  "data_commit": "2026-11-08T16:32:25-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "17304c0",
+    "data": "2026-11-08",
+    "assunto": "docs(analise-prs): relatório merge-prs — 12 PRs analisadas, 12 AGUARDANDO HUMANO"
+   },
    {
     "sha": "0409c07",
     "data": "2026-11-08",
@@ -126,14 +131,9 @@
     "sha": "87fe8cd",
     "data": "2026-11-08",
     "assunto": "chore(main): release 1.8.1"
-   },
-   {
-    "sha": "1036dc3",
-    "data": "2026-11-08",
-    "assunto": "fix(ci): aceitar skip estrutural do PDF no Chromium (#3199)"
    }
   ],
-  "arquivos_mudados_7d": 587,
+  "arquivos_mudados_7d": 590,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 71
+    "mudancas": 70
    },
    {
     "pasta": "src/pages/admin",
@@ -193,17 +193,17 @@
    },
    {
     "pasta": "PENDENCIAS.md",
-    "mudancas": 55
+    "mudancas": 54
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 71
+    "mudancas": 70
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 55
+    "mudancas": 54
    },
    {
     "arquivo": "package.json",
@@ -258,6 +258,14 @@
     "mudancas": 6
    },
    {
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "analise-prs/prs.json",
+    "mudancas": 5
+   },
+   {
     "arquivo": "docs/ci/SEGREDOS.md",
     "mudancas": 5
    },
@@ -287,14 +295,6 @@
    },
    {
     "arquivo": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "analise-branches/dossies/fix-contract-mag-reader-261019-2110.md",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "analise-branches/progresso.json",
     "mudancas": 4
    }
   ],

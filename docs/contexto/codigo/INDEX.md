@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0409c07f7cd3e3ed439e400caf4d3081c5c28ece` (2026-11-08T16:19:20-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `17304c02232a8923791f15921d572b203b22c39d` (2026-11-08T16:32:25-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,14 +586,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38130 nós · 66628 arestas · 2156 comunidades · grafo do commit `0409c07f`
-- comunidades maiores: ref_components (621), ref_integrations (546), ref_lib (474), @testing-library/react (361), test-base.ts (346), react-router-dom (340), gotoAndSettle (322), ref_hooks (318), cors.ts (295), scripts (289), ref_node_fs (280), @playwright/test (252)
+- 38142 nós · 66640 arestas · 2105 comunidades · grafo do commit `17304c02`
+- comunidades maiores: ref_lib (438), ref_hooks (390), ref_integrations (372), @testing-library/react (309), ref_components (295), scripts (289), ref_utils (282), gotoAndSettle (280), react-router-dom (271), react (265), @tanstack/react-query (262), @playwright/test (251)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (71)
-- PENDENCIAS.md (55)
+- RELATORIO_CI.md (70)
+- PENDENCIAS.md (54)
 - package.json (21)
 - supabase/MIGRATIONS_SYNC_LOG.md (20)
 - package-lock.json (15)
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-08 `17304c0` docs(analise-prs): relatório merge-prs — 12 PRs analisadas, 12 AGUARDANDO HUMANO
 - 2026-11-08 `0409c07` feat(migrations): P09 — reconcilia 432 versões históricas no ledger schema_migrations
 - 2026-11-08 `9e4dfbb` docs(ci): inventário final HEAD ba1c3fb — P-08, stub eslint, comparação baseline×final (#3237)
 - 2026-11-08 `ba1c3fb` fix(migrations): remove BOM UTF-8 do security_fix_suppliers_v2 — corrige db-schema-drift-check
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-08 `a2dda82` docs(ci): grandfathers squash commit 252cc01d + atualiza RELATORIO_CI (#3223)
 - 2026-11-08 `252cc01` fix(sentinel): expande Regra 6 e documenta pendências P-01 a P-07
 - 2026-11-08 `93ae29d` docs(ci): atualiza RELATORIO_CI.md para HEAD 9a89d9f0 e Gate Final #42501464198
-- 2026-11-08 `9a89d9f` docs(ci): completa RELATORIO_CI.md e PENDENCIAS.md com prova de conclusão do stop hook (#3221)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "0409c07f7cd3e3ed439e400caf4d3081c5c28ece",
+  "sha": "17304c02232a8923791f15921d572b203b22c39d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 19:20 UTC",
+  "generated_at": "2026-11-08 19:46 UTC",
   "files_total": 9128,
   "code_files": 7864,
   "code_lines": 1055532
@@ -484062,10 +484062,21 @@
   }
  },
  "git": {
-  "sha": "0409c07f7cd3e3ed439e400caf4d3081c5c28ece",
+  "sha": "17304c02232a8923791f15921d572b203b22c39d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "17304c0",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(analise-prs): relatório merge-prs — 12 PRs analisadas, 12 AGUARDANDO HUMANO",
+    "files": [
+     "analise-prs/RELATORIO_PRS.md",
+     "analise-prs/progresso.json",
+     "analise-prs/prs.json"
+    ]
+   },
    {
     "sha": "0409c07",
     "date": "2026-11-08",
@@ -484384,17 +484395,6 @@
      "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql",
      "supabase/rollbacks/20261107180000_rollback.sql"
     ]
-   },
-   {
-    "sha": "576a324",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "ci: amplia timeout do e2e-gates e corrige min-tests do full-flows",
-    "files": [
-     ".github/workflows/deploy-gates.yml",
-     ".github/workflows/e2e-flows.yml",
-     ".github/workflows/e2e.yml"
-    ]
    }
   ],
   "hot_files": [
@@ -484439,6 +484439,18 @@
     2
    ],
    [
+    "analise-prs/RELATORIO_PRS.md",
+    1
+   ],
+   [
+    "analise-prs/progresso.json",
+    1
+   ],
+   [
+    "analise-prs/prs.json",
+    1
+   ],
+   [
     "supabase/migrations/20261108020000_p09_reconcile_ledger_schema_migrations.sql",
     1
    ],
@@ -484464,18 +484476,6 @@
    ],
    [
     ".any-type-baseline.json",
-    1
-   ],
-   [
-    ".cart-header-fuzz.json",
-    1
-   ],
-   [
-    ".migration-refs-baseline.json",
-    1
-   ],
-   [
-    ".orphan-labels-baseline.json",
     1
    ]
   ]

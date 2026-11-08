@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(analise-prs): relatório merge-prs — 12 PRs analisadas, 12 AGUARDANDO HUMANO",
    "feat(migrations): P09 — reconcilia 432 versões históricas no ledger schema_migrations",
    "docs(ci): inventário final HEAD ba1c3fb — P-08, stub eslint, comparação baseline×final (#3237)",
    "fix(migrations): remove BOM UTF-8 do security_fix_suppliers_v2 — corrige db-schema-drift-check",
-   "docs(edge): registra deploy health-check run 42491776265",
-   "docs(ci): P-06 verificado (failure confirmada run #42507854259) + HEAD 11e2be30 (#3233)"
+   "docs(edge): registra deploy health-check run 42491776265"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
