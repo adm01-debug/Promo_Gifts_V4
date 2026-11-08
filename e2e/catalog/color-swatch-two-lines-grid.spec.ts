@@ -32,11 +32,6 @@ async function settleCatalog(page: Page) {
   });
 }
 
-function parsePx(v: string): number {
-  const n = parseFloat(v);
-  return Number.isFinite(n) ? n : 0;
-}
-
 async function measureGroup(group: Locator) {
   return group.evaluate((el) => {
     const cs = getComputedStyle(el);
