@@ -2,7 +2,7 @@
 
 > Gerado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
 > Atualizado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08, stub eslint e P-09)
+> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08, P-09 e causas exatas P-05/P-06)
 
 ---
 
@@ -11,7 +11,7 @@
 | Workflow | Causa | Fix |
 |---|---|---|
 | Branch Protection Sentinel | `docs(auditoria):` não aceito na allowlist | Expandido regex Regra 6 para `docs\([a-z][a-z0-9-]*\):`; SHA `d03ee555` grandfathered |
-| Branch Protection Sentinel (SHA `0409c07f`) | PR #3234 mergeado por agente externo com `commit_title` override — sem `(#NNN)` no subject | SHA `0409c07f` adicionado ao SENTINEL_SHA_ALLOWLIST.txt — PR [#3240](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3240) aberta aguardando CI |
+| Branch Protection Sentinel (SHA `0409c07f`) | PR #3234 mergeado por agente externo com `commit_title` override — sem `(#NNN)` no subject | SHA `0409c07f` adicionado ao SENTINEL_SHA_ALLOWLIST.txt — PR [#3240](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3240) ✅ MERGEADA (squash `5aed391b`) |
 
 ---
 
@@ -68,28 +68,45 @@
 
 ---
 
-### P-05 · E2E (Playwright) — URL-state regression (carrinhos/orcamentos)
+### P-05 · E2E (Playwright) — Secrets `E2E_SELLER_EMAIL/PASSWORD` ausentes em CI
 - **Workflow:** `.github/workflows/e2e.yml` (ID 278436800)
-- **Run verificado no HEAD:** ID 42507604979, SHA `da97d70d`, `conclusion=failure` (2026-11-08T18:08:03Z)
-- **Causa original (22-header-sticky):** ✅ CORRIGIDA
-- **Causa atual verificada:** `Carrinhos URL-state regression`. Specs falhantes:
+- **Run verificado no HEAD:** ID 42507604979, SHA `da97d70d`, job 128813567692, `conclusion=failure` (2026-11-08T18:08:03Z)
+- **Causa raiz exata (log job 128813567692, linha ~65):**
+  ```
+  Error: [loginAs] E21 — modo estrito: E2E_SELLER_EMAIL/PASSWORD ausentes em CI.
+      at helpers/auth.ts:243
+  ```
+  Todos os 13 testes falhantes usam o browser project `chromium-authed` → `loginAs('seller')` → `e2e/helpers/auth.ts:243` lança erro quando `process.env.CI=true` e `E2E_SELLER_EMAIL` ou `E2E_SELLER_PASSWORD` estão ausentes. O CI tem `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` mas **não** tem as credenciais do seller.
+- **Specs falhantes (13 testes):**
   - `e2e/carrinhos/list-url-state-overdue-chip.spec.ts:45`
   - `e2e/carrinhos/list-url-state-restore.spec.ts:16,38,60`
   - `e2e/carrinhos/list-url-state-search-debounce.spec.ts:17,31,50`
   - `e2e/orcamentos/list-url-state-restore.spec.ts:16,25,42,58`
-- **Ação necessária (PO/Dev):** Investigar `e2e/carrinhos/list-url-state-*.spec.ts` e `e2e/orcamentos/list-url-state-restore.spec.ts`.
+- **Ação necessária (PO):**
+  1. Adicionar secrets no GitHub: repo Settings → Secrets and variables → Actions → New repository secret
+  2. `E2E_SELLER_EMAIL` = e-mail do usuário vendedor de teste
+  3. `E2E_SELLER_PASSWORD` = senha correspondente
+  4. O usuário deve existir no Supabase Auth do projeto `doufsxqlfjyuvxuezpln` com role de seller
 
 ---
 
-### P-06 · E2E • ColorSwatch 2 linhas (Grid)
+### P-06 · E2E • ColorSwatch 2 linhas (Grid) — `product-card` não carrega em desktop/wide
 - **Workflow:** `.github/workflows/e2e-color-swatch-grid.yml` (ID 303726213)
-- **Último run falhante no HEAD equivalente:** ID 42507854259, SHA `fd720765` (PR #3228 — código idêntico ao HEAD `ba1c3fb`).
-- **Causa raiz:** 2 testes falharam em `e2e/catalog/color-swatch-two-lines-grid.spec.ts:69` — viewports 1440px e 1920px.
-- **Status:** ✅ VERIFICADO — failure confirmada em run [#42507854259](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42507854259).
+- **Run verificado:** ID 42440258426, SHA `5e28c6c8`, job 128607766368, `conclusion=failure`
+- **Causa raiz exata (log job 128607766368, `color-swatch-two-lines-grid.spec.ts:28`):**
+  ```
+  TimeoutError: page.waitForSelector: Timeout 20000ms exceeded.
+  Call log:
+    - waiting for locator('[data-testid="product-card"]') to be visible
+  ```
+  A função `settleCatalog` em `color-swatch-two-lines-grid.spec.ts:28` aguarda `[data-testid="product-card"]` por 20 s. Falha somente nos viewports **desktop (1440px)** e **wide (1920px)**; mobile e tablet passam. Bug real de UI: o catálogo não renderiza os cards de produto nessas larguras.
+- **Specs falhantes (2 testes):**
+  - `color-swatch-two-lines-grid.spec.ts` — viewport desktop (1440px)
+  - `color-swatch-two-lines-grid.spec.ts` — viewport wide (1920px)
 - **Ação necessária (PO/Dev):**
-  1. Revisar `e2e/catalog/color-swatch-two-lines-grid.spec.ts:69`
-  2. Se layout OK: `npx playwright test --update-snapshots`
-  3. Se regressão: investigar `src/components/shared/ColorSwatch.tsx`
+  1. Reproduzir localmente: `npx playwright test e2e/catalog/color-swatch-two-lines-grid.spec.ts --project=chromium` em viewport 1440px e 1920px
+  2. Investigar por que `[data-testid="product-card"]` não aparece nesses viewports — provável problema de CSS (media query ou grid responsivo) em `src/components/catalog/`
+  3. Corrigir o componente e abrir PR; após merge, confirmar que os 2 testes passam
 
 ---
 
@@ -120,13 +137,12 @@
 
 ---
 
-### P-09 · Branch Protection Sentinel — SHA `0409c07f` (agente externo)
+### P-09 · Branch Protection Sentinel — SHA `0409c07f` (agente externo) ✅ CORRIGIDO
 - **Workflow:** `.github/workflows/branch-protection-sentinel.yml`
 - **Run falhante:** ID 42514446349, SHA `0409c07f`, `conclusion=failure` (2026-11-08T19:19:24Z)
 - **Causa raiz:** PR #3234 (agente externo, sessão `01JPgV7FqkG4UuFBJWiJa9FB`) foi squash-mergeada com override de `commit_title`, produzindo subject `feat(migrations): P09 — reconcilia 432 versões históricas no ledger schema_migrations` — sem sufixo `(#NNN)`. Não passa nas Regras 1–8 do Sentinel.
-- **Fix:** SHA `0409c07f7cd3e3ed439e400caf4d3081c5c28ece` adicionado a `.github/SENTINEL_SHA_ALLOWLIST.txt` via PR [#3240](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3240) (branch `claude/fix-sentinel-p09-sha-261108-1930`, commit `44a2743c`).
-- **Status atual:** Sentinel = ✅ success no HEAD `17304c02232a8923791f15921d572b203b22c39d` — run [#42515555401](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42515555401). PR #3240 aguardando CI verde para merge.
-- **Advisory:** Sentinel não está em `.github/required-checks.json` — não bloqueia Gate Final. O HEAD atual já passa.
+- **Fix:** SHA `0409c07f7cd3e3ed439e400caf4d3081c5c28ece` adicionado a `.github/SENTINEL_SHA_ALLOWLIST.txt` via PR [#3240](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3240).
+- **Status:** ✅ PR #3240 MERGEADA (squash `5aed391bf5777b04cb72c8d0138854422c279dd9`, 2026-11-08T19:59:00Z). Sentinel = success no HEAD atual `5aed391b`.
 
 ---
 
@@ -137,11 +153,11 @@
 | DRIFT-REAL | Drift confirmado por log | PO — decidir versão canônica |
 | LEDGER-DESYNC | Ledger massivamente dessincronizado | PO — reconciliar via PR (regra 7) |
 | AUTH-TIMEOUT | Auth timeout — secrets presentes | PO — verificar conta de teste |
-| E2E-FAILURE | E2E verificado — falha confirmada | PO/Dev — investigar spec |
+| SECRETS-MISSING | Secrets E2E ausentes em CI | PO — adicionar secrets no GitHub |
+| UI-BUG | Bug real de UI confirmado por timeout | PO/Dev — investigar e corrigir componente |
 | DEPENDS | Depende de outro item | Automático após resolução |
 | CASCATA | Bloqueado por outro item | Ver item referenciado |
 | APP-CHECK | GitHub App check advisory | Automático após P-02 + P-07 |
-| SENTINEL-FIX | Sentinel SHA grandfathered — PR aberta | Merge PR #3240 após CI verde |
 
 | Item | Categoria | Urgência |
 |---|---|---|
@@ -149,8 +165,8 @@
 | P-02 (db-schema-drift) | LEDGER-DESYNC | Alta |
 | P-03 (kit-coverage-integration) | AUTH-TIMEOUT | Média |
 | P-04 (nightly-full) | DEPENDS (P-05, P-06) | Baixa |
-| P-05 (e2e playwright) | E2E-FAILURE — verificado | Baixa |
-| P-06 (e2e color-swatch) | E2E-FAILURE — verificado | Baixa |
+| P-05 (e2e playwright) | SECRETS-MISSING — `E2E_SELLER_EMAIL/PASSWORD` | Baixa — adicionar secrets resolve |
+| P-06 (e2e color-swatch) | UI-BUG — `product-card` não carrega em desktop/wide | Baixa — requer fix de componente |
 | P-07 (db-apply-migration E15) | CASCATA (P-02) | Baixa |
 | P-08 (supabase-preview) | APP-CHECK — advisory | Baixa — automático após P-02 + P-07 |
-| P-09 (sentinel 0409c07f) | SENTINEL-FIX — PR #3240 aberta | Baixa — HEAD atual já passa |
+| P-09 (sentinel 0409c07f) | ✅ CORRIGIDO — PR #3240 mergeada (`5aed391b`) | — |
