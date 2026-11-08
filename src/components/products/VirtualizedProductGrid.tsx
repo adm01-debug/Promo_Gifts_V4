@@ -200,7 +200,7 @@ function VirtualizedProductGridInner({
   // toda vez que displayCount subia via loadMore() — products = nova slice
   // = nova referência — causando snap-back inevitável com 7.143 produtos.
   //
-  // SOLUÇÃO:
+  // SOLW�ÃO:
   //   1. setLoadingMore(false) → em toda mudança de products (inclusive load-more)
   //   2. scrollTo(0) → SOMENTE quando scrollResetKey muda (filter/sort/viewMode)
   //      scrollResetKey não muda em load-more → scroll preservado ✓
@@ -227,7 +227,7 @@ function VirtualizedProductGridInner({
 
   if (isLoading && products.length === 0) {
     return (
-      <div className="relative h-full">
+      <div className="relative h-full" data-skeleton="true">
         <div
           className="scrollbar-products h-full overflow-y-auto rounded-xl border border-border/40 bg-background shadow-sm"
           style={{ contain: 'strict' }}

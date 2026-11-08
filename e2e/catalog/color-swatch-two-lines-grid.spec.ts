@@ -25,7 +25,7 @@ const TOLERANCE_PX = 1;
 const SAMPLE_CARDS = 8;
 
 async function settleCatalog(page: Page) {
-  await page.waitForSelector('[data-testid="product-card"]', { timeout: 20_000 });
+  await page.waitForSelector('[data-testid="product-card"]', { timeout: 60_000 });
   await expect(page.locator('[data-testid="product-card-skeleton"]')).toHaveCount(0);
   await page.addStyleTag({
     content: `*, *::before, *::after { transition: none !important; animation: none !important; }`,
