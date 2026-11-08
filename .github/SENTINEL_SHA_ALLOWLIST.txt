@@ -15,4 +15,6 @@
 4e83d972c3446c042e7003f7f51dbdc4ec22649d  # docs(ci): registra deploy Vercel sem diagnóstico no PR 2730  [2026-10-29]
 e2518bbd23ecd5b7e9960dfaec2f24837ee44d91  # docs(auditoria): registra lacuna do rate guard E049  [2026-10-29]
 c55c6781311b428cdbb52e4ff8f753c59222c470  # docs(audit): registra bloqueios de sincronização e CI  [2026-10-29]
-9d9dd2a7b502ab7e5ff42691d40b95a822c21d6b  # fix(ci): protege contrato de repair-only em E15  [2026-10-29]
+9d9dd2a7b502ab7e5ff42461d40b95a822c21d6b  # fix(ci): protege contrato de repair-only em E15  [2026-10-29]
+d03ee555dbd55c3dae9e85cfbb37f5f1ae4dd21b  # docs(auditoria): encerra P06 e P15 — migrations obsoletas  [2026-11-08]
+252cc01d07e6e625c956a37916aa868844cfe305  # fix(sentinel): expande Regra 6 e documenta pendências P-01 a P-07 — squash sem (#NNN) por override de commit_title  [2026-11-08]
