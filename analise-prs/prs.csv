@@ -49,9 +49,10 @@ number,title,draft,verdict
 3179,fix: corrige preflight db-apply-migration,True,DECISAO_HUMANA
 3201,fix(scripts): corrige scripts edge functions e baselines,False,MERGEADA_AGENTE
 3202,docs(ci): RELATORIO §33,True,DECISAO_HUMANA
-3203,fix: scripts — static-pass exit codes e regressao TypeScript,False,DECISAO_HUMANA
+3203,fix: scripts — static-pass exit codes e regressao TypeScript,False,NAO_MERGEAVEL
 3205,fix(db): reversionar migration e2e_cleanup,False,DECISAO_HUMANA
 3210,chore(main): release 1.8.2,False,DECISAO_HUMANA
 3212,docs: recibo de deploy de edge function(s),False,DECISAO_HUMANA
 3214,fix(cron): CRON-001 — escalonar 4 cron jobs,True,DECISAO_HUMANA
-3215,fix(migration): adiciona -- Rollback: em 20261108001500_reconcile_e2e_cleanup_audit.sql,True,DECISAO_HUMANA
+3215,fix(migration): adiciona -- Rollback: em 20261108001500,True,DECISAO_HUMANA
+3216,docs(analise): PRs + migrations pendentes nov-2026,True,DECISAO_HUMANA

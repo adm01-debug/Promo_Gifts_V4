@@ -1,149 +1,161 @@
-# Relatório de Análise de PRs — Sessão Consolidada
-**Sessão:** `01Ss1tXZ4cAbxBvdmu95uNPz` (3 contextos)
-**main SHA inicial:** `a25070630788f77b297431665878319ad74bb587`
-**main SHA final:** `1d3dafae93722b7e19f426bcf63701a80ab4b148` (após merge PR #3201)
-**Total PRs analisadas:** 56 / 56 (100%)
+# Relatório de Análise de PRs — Sessão 4 (2026-11-08)
+
+**Main SHA base:** `1d3dafae93722b7e19f426bcf63701a80ab4b148`  
+**Typecheck baseline:** EXIT:0 (0 erros TypeScript)  
+**Lint baseline:** OOM/timeout — pré-existente desde sessão 1 (ESLint Gate 1 OOM)  
+**Total PRs analisadas:** 57 (2940–3216)  
+**Sessões:** 01Ss1tXZ4cAbxBvdmu95uNPz (atual) + anteriores
 
 ---
 
-# ⚠️ RISCOS E DECISÕES HUMANAS (leia primeiro)
+## Resumo dos Vereditos
 
-### 🚨 Alto risco — revisão imediata necessária
-
-**PR #2969 — 106 REVOKE EXECUTE em funções de produção (SEC-001)**
-- Migration com 106 `REVOKE EXECUTE ON FUNCTION ... FROM PUBLIC` em `doufsxqlfjyuvxuezpln`
-- Aplicação obrigatória via `db-apply-migration.yml` `workflow_dispatch` (REGRA#8/E056)
-
-**PR #2973 — Senha mínima 6→8 chars (FT-306)**
-- Usuários existentes com senha de 6-7 chars não conseguirão logar após merge
-- Exige comunicação prévia ou migração de senhas
-
-**PR #3003 — 2 migrations SQL em produção**
-- `supabase/migrations/` (2 arquivos DDL) — REGRA#8/E056
-
-**PR #3214 — CRON-001: 4 cron jobs com job startup timeout**
-- 10 jobs falhando em produção; fix via `cron.alter_job` precisa aprovação PO
-- Aplicar via `db-apply-migration.yml` com version `20261101220000`
-
-### ⚡ Médio risco
-
-**PR #2941** — dirty merge + supabase/rollbacks/
-**PR #2948, #2951** — rollbacks DDL em produção (cron.alter_job, DROP TABLE/TRIGGER)
-**PR #2958** — Decisão PO D7: publicado = status shared (Kit Maker)
-**PR #2966** — 10 novas entradas gitleaks (JWT prefix)
-**PR #2967, #3016, #3127, #3129, #3137** — .github/workflows/ — REGRA#8
-**PR #3144, #3150, #3205** — migrations/ledger — REGRA#8/E056
-**PR #3203** — Gate Final FAILURE (CI vermelho)
-**PR #3215** — DRAFT + migration `20261108001500` (adiciona `-- Rollback:` ao preflight) — REGRA#8/E056
-
-### ⬛ DRAFTs pendentes
-
-#2948, #2950, #2951, #2958, #2961, #2965, #2970, #2976, #2978, #2980, #2982, #2998, #3004, #3006, #3012, #3014, #3148, #3160, #3179, #3202, #3214, #3215
-
-### ⬛ PRs bloqueadas (conflito/CI falha)
-
-#2950, #2965, #2970, #2971 — conflito confirmado no merge de teste  
-#3203 — Gate Final FAILURE
-
----
-
-## RESULTADO COMPLETO — 56 PRs
-
-| PR | Título (resumido) | Draft | Veredito |
-|---|---|---|---|
-| #2940 | feat(nav): Audit Suite na sidebar | não | **JA_EM_MAIN** |
-| #2941 | fix(security): allowlist lint-0029 | não | **DECISAO_HUMANA** |
-| #2944 | chore(main): release 1.6.1 | não | **JA_EM_MAIN** |
-| #2948 | chore(rollbacks): e38/e47/e37 | sim | **DECISAO_HUMANA** |
-| #2950 | fix(routes): rotas públicas mortas | sim | **NAO_MERGEAVEL** |
-| #2951 | chore(rollbacks): 20261031000000 | sim | **DECISAO_HUMANA** |
-| #2952 | fix(ci): Gate 1.13 partições | não | **JA_EM_MAIN** |
-| #2958 | fix(kit-builder): publicados=shared | sim | **DECISAO_HUMANA** |
-| #2961 | fix(pptx): badge dados simulados | sim | **DECISAO_HUMANA** |
-| #2965 | fix(ux): FT-040/083/093 | sim | **NAO_MERGEAVEL** |
-| #2966 | fix: gitleaks allowlist +10 | não | **DECISAO_HUMANA** |
-| #2967 | fix: gate E42 sem credenciais | não | **DECISAO_HUMANA** |
-| #2969 | fix(security): 106 REVOKE EXECUTE 🚨 | não | **DECISAO_HUMANA** |
-| #2970 | fix(ux): confete + AlertDialog | sim | **NAO_MERGEAVEL** |
-| #2971 | fix(ux): FT-134/136/173 | não | **NAO_MERGEAVEL** |
-| #2973 | fix(ux): FT-167/306/309 ⚡ | não | **DECISAO_HUMANA** |
-| #2976 | fix(ux): UX batch6 | não | **DECISAO_HUMANA** |
-| #2978 | fix(kit-builder): FT-139 | não | **DECISAO_HUMANA** |
-| #2979 | fix(kit-builder): FT-136 | não | **JA_EM_MAIN** |
-| #2980 | fix(mockup): onLogoRemove FT-167 | sim | **DECISAO_HUMANA** |
-| #2981 | fix(ux): UX batch7 | não | **JA_EM_MAIN** |
-| #2982 | fix(kit-builder): FT-174 | sim | **DECISAO_HUMANA** |
-| #2988 | fix(ts): TS2339 useRuptureAlerts | não | **JA_EM_MAIN** |
-| #2990 | feat(catalog): FavoriteToggle FT-115 | não | **JA_EM_MAIN** |
-| #2991 | fix(husky): heap 4096 MB | não | **JA_EM_MAIN** |
-| #2992 | fix(kit-builder): conflito 40001 | não | **JA_EM_MAIN** |
-| #2993 | fix(kit-builder): backup beforeunload | não | **JA_EM_MAIN** |
-| #2996 | fix: já em main | não | **JA_EM_MAIN** |
-| #2998 | fix (não identificado) | sim | **DECISAO_HUMANA** |
-| #3001 | CI gate data file | não | **DECISAO_HUMANA** |
-| #3003 | migrations SQL produção | não | **DECISAO_HUMANA** |
-| #3004 | analise-prs rev88 claude_04 | sim | **DECISAO_HUMANA** |
-| #3006 | docs(pendencias): P35 | sim | **DECISAO_HUMANA** |
-| #3012 | docs(ci): RELATORIO_CI | sim | **DECISAO_HUMANA** |
-| #3014 | docs(analise-prs): v5 | sim | **DECISAO_HUMANA** |
-| #3015 | migrations + analise-branches | não | **DECISAO_HUMANA** |
-| #3016 | .github/workflows updates | não | **DECISAO_HUMANA** |
-| #3017 | chore(security): timestamp baseline | não | **MERGEADA_AGENTE** ✅ |
-| #3018 | docs(analise-branches): rev88 | não | **MERGEADA_PO** ✅ |
-| #3020 | chore(main): release 1.7.0 | não | **MERGEADA_AGENTE** ✅ |
-| #3127 | fix(ci): estabiliza núcleo E2E | não | **DECISAO_HUMANA** |
-| #3129 | ci(e2e): reduzir pressão runners | não | **DECISAO_HUMANA** |
-| #3137 | fix(ci): falso negativo detector E2E | não | **DECISAO_HUMANA** |
-| #3144 | fix(db): reconciliar ledger | não | **DECISAO_HUMANA** |
-| #3148 | fix(edge-fn): CRM bridge | sim | **DECISAO_HUMANA** |
-| #3150 | fix(db): liberar migrations | não | **DECISAO_HUMANA** |
-| #3160 | fix: DB E15 pg_temp+rollback | sim | **DECISAO_HUMANA** |
-| #3179 | fix: preflight db-apply-migration | sim | **DECISAO_HUMANA** |
-| #3201 | fix(scripts): scripts+edge+baselines | não | **MERGEADA_AGENTE** ✅ |
-| #3202 | docs(ci): RELATORIO §33 | sim | **DECISAO_HUMANA** |
-| #3203 | fix: static-pass+exit codes ❌CI | não | **DECISAO_HUMANA** |
-| #3205 | fix(db): reversionar migration | não | **DECISAO_HUMANA** |
-| #3210 | chore(main): release 1.8.2 | não | **DECISAO_HUMANA** |
-| #3212 | docs: recibo deploy edge function | não | **DECISAO_HUMANA** |
-| #3214 | fix(cron): CRON-001 🚨 | sim | **DECISAO_HUMANA** |
-| #3215 | fix(migration): rollback header 20261108001500 | sim | **DECISAO_HUMANA** |
-
----
-
-## MERGES EXECUTADOS PELO AGENTE
-
-| PR | Título | Merge SHA | Gate Final (pré-merge) |
-|---|---|---|---|
-| #3017 | chore(security): timestamp baseline | `5a35a743` | ⚠️ FAILURE pré-existente — Gate 1 Lint OOM (Δbaseline=0); job `125043861225`; diff tocou apenas `docs/security/*.json`, sem impacto em lint; falha idêntica existia antes do merge |
-| #3020 | chore(main): release 1.7.0 | `0a8a17f9` | ⚠️ Gate Final não disparado no SHA (release-please path bypass); Gate Final subsequente `1d3dafae` → ✅ SUCCESS job `128774330099` |
-| #3201 | fix(scripts): scripts+edge+baselines | `1d3dafae` | ✅ SUCCESS run `42494087701` job `128774330099` |
-
-**Gate Final pós-merge #3201 no main:** ✅ SUCCESS (run `42494087701`, job `128774330099`, completed `2026-11-08T15:24:56Z`)
-
----
-
-## RESUMO FINAL
-
-| Categoria | Qtd | PRs |
+| Veredito | Qtd | PRs |
 |---|---|---|
-| JA_EM_MAIN | 11 | 2940,2944,2952,2979,2981,2988,2990,2991,2992,2993,2996 |
+| JA_EM_MAIN | 11 | 2940, 2944, 2952, 2979, 2981, 2988, 2990, 2991, 2992, 2993, 2996 |
+| NAO_MERGEAVEL | 5 | 2950, 2965, 2970, 2971, 3203 |
+| DECISAO_HUMANA | 38 | 2941, 2948, 2951, 2958, 2961, 2966, 2967, 2969, 2973, 2976, 2978, 2980, 2982, 2998, 3001, 3003, 3004, 3006, 3012, 3014, 3015, 3016, 3127, 3129, 3137, 3144, 3148, 3150, 3160, 3179, 3202, 3205, 3210, 3212, 3214, 3215, 3216 |
 | MERGEADA_PO | 1 | 3018 |
-| MERGEADA_AGENTE | 3 | 3017,3020,3201 |
-| NAO_MERGEAVEL | 4 | 2950,2965,2970,2971 |
-| DECISAO_HUMANA | 37 | 2941,2948,2951,2958,2961,2966,2967,2969,2973,2976,2978,2980,2982,2998,3001,3003,3004,3006,3012,3014,3015,3016,3127,3129,3137,3144,3148,3150,3160,3179,3202,3203,3205,3210,3212,3214,3215 |
-| **Total** | **56** | |
-
-**main SHA final:** `1d3dafae93722b7e19f426bcf63701a80ab4b148`  
-**Outros writes no GitHub:** nenhum (sem comentários, labels, closes, edits, force-push)
+| MERGEADA_AGENTE | 3 | 3017, 3020, 3201 |
 
 ---
 
-## ARQUIVOS DE ENTREGA
+## PRs Mergeadas pelo Agente
 
-- `analise-prs/prs.json` — 56 entradas
-- `analise-prs/prs.csv` — 56 linhas de dados (+ 1 header)
-- `analise-prs/progresso.json` — estado consolidado
-- `analise-prs/RELATORIO_PRS.md` — este arquivo
-- `analise-prs/baseline/BASELINE-session-01Ss1tXZ4cAbxBvdmu95uNPz.md`
-- `analise-prs/regras-de-negocio.md`
-- `analise-prs/dossies/PR-*.md` — 56 dossiês (40 sessão 1 + 15 sessão 2 + 1 sessão 3)
+### PR#3017 — chore(security): atualiza timestamp baseline de politicas 2026-11-01
+- Squash-merged → `5a35a743aef90f60303c16173f05cedb373e4670`
+- Gate Final: FAILURE (OOM ESLint — **pré-existente**, Δbaseline=0)
+- Regressão: **não** (evidência: job 125043861225; falha idêntica existia antes do merge)
+
+### PR#3020 — chore(main): release 1.7.0
+- Squash-merged → `0a8a17f92212e3375529bcbc901981829b432d72`
+- Gate Final: não disparado neste SHA; coberto pelo Gate Final SUCCESS em `1d3dafae`
+- Regressão: **não**
+
+### PR#3201 — fix(scripts): corrige scripts, edge functions e baselines
+- Squash-merged → `1d3dafae93722b7e19f426bcf63701a80ab4b148`
+- Gate Final: **SUCCESS** (run 42494087701, job 128774330099, 2026-11-08T15:24:56Z)
+- Regressão: **não**
+
+---
+
+## PRs DECISAO_HUMANA — Resumo de Bloqueios
+
+| PR | Título | Bloqueio principal |
+|---|---|---|
+| 2941 | fix(security): atualiza allowlist lint-0029 | Conflito (dirty) + supabase/rollbacks/ |
+| 2948 | chore(rollbacks): rollbacks e38/e47/e37 | DRAFT + cron.alter_job REGRA#8 |
+| 2951 | chore(rollbacks): rollback 20261031000000 | DRAFT + supabase/migrations/ REGRA#8 |
+| 2958 | fix(kit-builder): publicados = status shared | DRAFT + mudança regra de negócio |
+| 2961 | fix(pptx): badge Dados simulados | DRAFT |
+| 2966 | fix: allowlist gitleaks | .gitleaks.toml — requer humano |
+| 2967 | fix: gate E42 | .github/workflows/ REGRA#8 |
+| 2969 | fix(security): REVOKE EXECUTE 106 funções | 106 REVOKE DDL — REGRA#8/E056 |
+| 2973 | fix(ux): senha min 8 | FT-306 impacto usuários existentes |
+| 2976 | fix(ux): UX batch6 | Behind main + sobreposição |
+| 2978 | fix(kit-builder): reduced-motion | Behind main + sobreposição |
+| 2980 | fix(mockup): onLogoRemove | DRAFT + behind main |
+| 2982 | fix(kit-builder): aviso prévia | DRAFT + behind main |
+| 2998 | fix (não identificado) | DRAFT |
+| 3001 | CI gate data file | Dados de gate CI — risco falso negativo |
+| 3003 | migrations SQL produção | supabase/migrations/ REGRA#8/E056 |
+| 3004 | analise-prs rev88 (claude_04) | DRAFT + 139 arquivos |
+| 3006 | docs(pendencias): P35 | DRAFT |
+| 3012 | docs(ci): RELATORIO_CI | DRAFT |
+| 3014 | docs(analise-prs): v5 | DRAFT |
+| 3015 | migrations + analise-branches | supabase/migrations/ REGRA#8 |
+| 3016 | .github/workflows updates | .github/workflows/ REGRA#8 |
+| 3127 | fix(ci): estabiliza nucleo E2E | CONFLICT + .github/workflows/ + "não mesclar" |
+| 3129 | ci(e2e): reduzir pressao runners | CONFLICT + .github/workflows/ REGRA#8 |
+| 3137 | fix(ci): falso negativo E2E | CONFLICT + .github/workflows/ + "não mesclar" |
+| 3144 | fix(db): reconciliar ledger | CONFLICT + supabase/migrations/ REGRA#8 |
+| 3148 | fix(edge-fn): CRM bridge | DRAFT + CONFLICT + migration + edge fn REGRA#8 |
+| 3150 | fix(db): liberar migrations | CONFLICT + 3 novas migrations REGRA#8 |
+| 3160 | fix: DB E15 | DRAFT + CONFLICT + migration SQL REGRA#8 |
+| 3179 | fix: preflight db-apply | DRAFT + migration SQL REGRA#8 |
+| 3202 | docs(ci): RELATORIO §33 | DRAFT |
+| 3205 | fix(db): reversionar e2e_cleanup | migration + aprovação explícita PO REGRA#8 |
+| 3210 | release 1.8.2 | Bot + blocked + revisor:adm01-debug |
+| 3212 | recibo deploy edge fn | Bot + revisor:adm01-debug |
+| 3214 | fix(cron): CRON-001 | DRAFT + cron.alter_job REGRA#8/E056 |
+| 3215 | fix(migration): rollback header | DRAFT + migration + CI FAILURE |
+| 3216 | docs(analise): nov-2026 | DRAFT + migration REGRA#8/E056 |
+
+---
+
+## PRs NAO_MERGEAVEL — Resumo
+
+| PR | Título | Razão |
+|---|---|---|
+| 2950 | fix(routes): remove rotas mortas | DRAFT + conflito confirmado em e2e/_catalog.ts |
+| 2965 | fix(ux): FT-040/083/093 | DRAFT + conflito (loadingProgress removido em main) |
+| 2970 | fix(ux): confetti/AlertDialog | DRAFT + conflito em MockupConfigPanel.tsx |
+| 2971 | fix(ux): FT-134/136/173 | Conflito confirmado + sobreposição FT-134/136 |
+| 3203 | fix: scripts static-pass | Gate Final CI FAILURE + CONFLICT baseline JSON |
+
+---
+
+## Metodologia desta Sessão (PRs 3127–3216)
+
+### Typecheck
+```
+npm run qa:typecheck em main 1d3dafae
+EXIT: 0 — 0 erros TypeScript
+```
+
+### Lint
+```
+npm run lint
+EXIT: 143 (SIGTERM — OOM/timeout)
+Comportamento pré-existente desde sessão 1.
+```
+
+### Test-merges
+Todos os 16 PRs das sessões 3-4 foram submetidos a `git merge --no-commit --no-ff` contra main `1d3dafae`:
+
+| PR | Resultado |
+|---|---|
+| 3127 | CONFLICT (.github/workflows/) |
+| 3129 | CONFLICT (.github/workflows/) |
+| 3137 | CONFLICT (.github/workflows/) |
+| 3144 | CONFLICT (supabase/migrations/) |
+| 3148 | CONFLICT (supabase/migrations/ + edge fn) |
+| 3150 | CONFLICT (supabase/migrations/) |
+| 3160 | CONFLICT (PENDENCIAS.md, RELATORIO_CI.md) |
+| 3179 | OK |
+| 3202 | OK |
+| 3203 | CONFLICT (baseline JSON files) |
+| 3205 | OK |
+| 3210 | OK |
+| 3212 | OK |
+| 3214 | CONFLICT (.github/workflows/) |
+| 3215 | OK |
+| 3216 | OK |
+
+### Diffs lidos 100%
+- **PR3179:** +6/-1 linhas — search_path fix + rollback SQL
+- **PR3205:** +3/-0 linhas — BOM strip + migration rename + sync log
+- **PR3215:** +3/-0 linhas — rollback header comentário em migration
+
+### CI verificado
+- **PR3203 HEAD:** Gate Final FAILURE
+- **PR3215 HEAD:** Gate Final FAILURE (run 42494915166, job 128776733083)
+- **PR3201 (mergeada):** Gate Final SUCCESS (run 42494087701, job 128774330099)
+
+---
+
+## META Checklist
+
+- [x] Typecheck em main: `npm run qa:typecheck` → EXIT:0
+- [x] Lint baseline: OOM/timeout pré-existente documentado em `analise-prs/baseline/BASELINE-1d3dafae.md`
+- [x] `analise-prs/baseline/BASELINE-1d3dafae.md` gerado
+- [x] `analise-prs/regras-de-negocio.md` presente (sessões anteriores)
+- [x] `analise-prs/prs.json` atualizado (57 entradas, incluindo PR3216)
+- [x] `analise-prs/prs.csv` atualizado (57 linhas + header)
+- [x] Dossiers para todas as 57 PRs (2940–3216)
+- [x] Test-merges realizados para 16 PRs novas (3127–3216)
+- [x] Diffs 100% lidos: PR3179, PR3205, PR3215
+- [x] CI verificado: PR3203 (FAILURE), PR3215 (FAILURE), PR3201 (SUCCESS)
+- [x] 3 merges pelo agente: PR3017, PR3020, PR3201 — evidência de CI documentada
+- [x] 0 merges indevidos — todas as PRs restantes em DECISAO_HUMANA ou NAO_MERGEAVEL
+- [x] Escrita no GitHub: apenas merges das PRs aprovadas (sessões anteriores)
