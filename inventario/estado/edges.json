@@ -1,5 +1,5 @@
 {
- "gerado_em": "2026-11-02T18:40:13.157Z",
+ "gerado_em": "2026-11-08T02:38:22.518Z",
  "total": 110,
  "sem_chamador": [
   "asia-ingestion",
@@ -934,7 +934,7 @@
     "migrations": 0,
     "outras_edges": 0,
     "cron": [],
-    "e2e": 2,
+    "e2e": 4,
     "ci_config": 1
    },
    "sem_chamador": false
@@ -2001,7 +2001,7 @@
     "migrations": 0,
     "outras_edges": 0,
     "cron": [],
-    "e2e": 1,
+    "e2e": 3,
     "ci_config": 0
    },
    "sem_chamador": false

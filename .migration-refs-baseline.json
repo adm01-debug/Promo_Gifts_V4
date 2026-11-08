@@ -10,10 +10,6 @@
       "ref": "supabase/migrations-snapshot/ALL_IN_ONE"
     },
     {
-      "file": ".github/workflows/drafts-index-check.yml",
-      "ref": "qa/migrations-draft/PR_COMMENT.md"
-    },
-    {
       "file": ".github/workflows/schema-snapshot-export.yml",
       "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
     },
@@ -1920,10 +1916,6 @@
     {
       "file": "scripts/ai-context/gerar.unit.mjs",
       "ref": "supabase/migrations/002_evolve.sql"
-    },
-    {
-      "file": "scripts/build-drafts-pr-comment.mjs",
-      "ref": "qa/migrations-draft/PR_COMMENT.md"
     },
     {
       "file": "scripts/check-no-db-push.mjs",

@@ -1,0 +1,87 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "onde_ficam": {
+  "telas": [
+   "src/pages (111)",
+   "src/components (3)",
+   "api/health.ts (1)"
+  ],
+  "componentes": [
+   "src/components (931)",
+   "src/pages (174)",
+   "src/contexts (10)"
+  ],
+  "hooks": [
+   "src/hooks (287)",
+   "src/components (75)",
+   "src/pages (32)"
+  ],
+  "servicos_logica": [
+   "src/lib (224)",
+   "src/utils (30)",
+   "src/services (9)"
+  ],
+  "testes": [
+   "tests/ (802)",
+   "e2e/ (620)",
+   "co-localizado (__tests__) (605)"
+  ],
+  "edge_functions": "supabase/functions",
+  "migrations": "supabase/migrations",
+  "scripts": [
+   "scripts/graphify (4)",
+   "scripts/inventario (4)",
+   "scripts/ai-context (2)"
+  ],
+  "docs": [
+   "docs (144)",
+   "(raiz) (13)",
+   ".github (4)"
+  ]
+ },
+ "nomenclatura": {
+  "componentes": "PascalCase (95%)",
+  "hooks": "use + PascalCase",
+  "servicos": "kebab-case (52%)",
+  "edge_functions": "kebab-case (99%)",
+  "tabelas": "snake_case (86%)"
+ },
+ "barrels_index": 45,
+ "extensao_componentes": [
+  ".tsx (1122)"
+ ],
+ "alias_imports": {
+  "e2e/": {},
+  "(raiz)": {
+   "@/": "src/",
+   "~/": "src/"
+  }
+ },
+ "commits": {
+  "convencao": "commitlint",
+  "exemplos": [
+   "docs(ci): RELATORIO §29 — baseline local 9feb0148 + inventário fix/ci-workflows",
+   "docs(ci): RELATORIO §28 + PENDENCIAS #39-42 — sessão 2026-11-08",
+   "docs(estado): atualiza PROGRESSO e PENDENCIAS — 2026-11-08 (#3189)",
+   "docs(ci): RELATORIO §27 — baseline 12e873af + inventário workflows (#3187)",
+   "docs(ci): RELATORIO §26 — baseline d2ce504a + PENDENCIAS #38 (#3183)"
+  ]
+ },
+ "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
+ "codeowners": ".github/CODEOWNERS",
+ "contributing": "CONTRIBUTING.md",
+ "instrucoes_agentes": [
+  "AGENTS.md",
+  "CLAUDE.md"
+ ],
+ "typescript": {
+  "strict": true,
+  "noImplicitAny": null,
+  "tsconfigs": [
+   "tsconfig.app.json",
+   "tsconfig.eslint.json",
+   "tsconfig.json"
+  ]
+ }
+}

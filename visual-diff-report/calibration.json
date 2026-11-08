@@ -1,0 +1,281 @@
+{
+  "diffs": 0,
+  "combos": [
+    {
+      "threshold": 0.1,
+      "ratio": 0.005,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.2,
+      "ratio": 0.005,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.25,
+      "ratio": 0.005,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.3,
+      "ratio": 0.005,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.4,
+      "ratio": 0.005,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.1,
+      "ratio": 0.01,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.2,
+      "ratio": 0.01,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.25,
+      "ratio": 0.01,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.3,
+      "ratio": 0.01,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.4,
+      "ratio": 0.01,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.1,
+      "ratio": 0.015,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.2,
+      "ratio": 0.015,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.25,
+      "ratio": 0.015,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.3,
+      "ratio": 0.015,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.4,
+      "ratio": 0.015,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.1,
+      "ratio": 0.02,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.2,
+      "ratio": 0.02,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.25,
+      "ratio": 0.02,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.3,
+      "ratio": 0.02,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.4,
+      "ratio": 0.02,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.1,
+      "ratio": 0.03,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.2,
+      "ratio": 0.03,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.25,
+      "ratio": 0.03,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.3,
+      "ratio": 0.03,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "threshold": 0.4,
+      "ratio": 0.03,
+      "total": 0,
+      "perViewport": {
+        "mobile": 0,
+        "tablet": 0,
+        "desktop": 0,
+        "unknown": 0
+      }
+    }
+  ],
+  "dryRun": false
+}
