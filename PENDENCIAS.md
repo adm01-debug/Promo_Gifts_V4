@@ -1,17 +1,19 @@
 # PENDENCIAS.md — Workflows com falha não corrigível nesta sessão
 
 > Gerado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Atualizado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08, P-09 e causas exatas P-05/P-06; P-10 adicionado na validação de PR #3243; P-06 atualizado com fix implementado em PR #3245)
+> Atualizado em: 2026-11-08T23:40 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
+> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08, P-09 e causas exatas P-05/P-06; P-10 adicionado na validação de PR #3243; P-06 CORRIGIDO via PR #3245 merged d56979f6; P-11 e P-12 adicionados)
 
 ---
 
 ## Itens corrigidos nesta sessão (via PR)
 
 | Workflow | Causa | Fix |
-|---|---|---|
+|---|---|
+---|
 | Branch Protection Sentinel | `docs(auditoria):` não aceito na allowlist | Expandido regex Regra 6 para `docs\([a-z][a-z0-9-]*\):`; SHA `d03ee555` grandfathered |
 | Branch Protection Sentinel (SHA `0409c07f`) | PR #3234 mergeado por agente externo com `commit_title` override — sem `(#NNN)` no subject | SHA `0409c07f` adicionado ao SENTINEL_SHA_ALLOWLIST.txt — PR [#3240](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3240) ✅ MERGEADA (squash `5aed391b`) |
+| E2E • ColorSwatch 2 linhas (Grid) | `settleCatalog` timeout + `data-skeleton` ausente + `parsePx` não utilizada + `TOLERANCE_PX` subpixel | PR [#3245](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3245) ✅ MERGEADA (squash `d56979f6`) |
 
 ---
 
@@ -22,6 +24,7 @@
 - **Último run falhante:** ID 42491884076, SHA `46ec263`, job 128765836866
 - **Causa raiz verificada (log job 128765836866):** Drift REAL de conteúdo entre funções no GitHub e o deploy canônico em Supabase (`doufsxqlfjyuvxuezpln`). Step "Verify required secrets" = **success** (secret SUPABASE_ACCESS_TOKEN está presente e válido). Step "Fail if drift detected" = **failure** com mensagem: `"Drift detectado entre GitHub e canônico. Veja sumário do job e artefato drift-report.csv."` O artefato `drift-report` (ID 13622231340) foi gerado com as funções drifted.
 - **Bloqueio real:** Não é ausência de secret. O código das edge functions deployadas no Supabase diverge do código commitado no GitHub.
+- **Run dispatched:** 42535369358 (queued em 2026-11-08T23:28:59 — aguardando runner)
 - **Ação necessária (PO):**
   1. Baixar artefato `drift-report` do run 42491884076 para ver quais funções divergiram
   2. Decidir qual versão é canônica (GitHub ou Supabase)
@@ -64,7 +67,8 @@
 - **Workflow:** `.github/workflows/nightly-full.yml`
 - **Último run falhante:** ID 42439844067, SHA `16408a68`
 - **Causa raiz:** Agregador dependente de P-05 e P-06.
-- **Ação necessária:** Resolver P-05 primeiro; P-06 tem fix em PR #3245 aguardando CI.
+- **Run dispatched:** 42535371135 (queued em 2026-11-08T23:29:01 — aguardando runner; P-06 agora corrigido via PR #3245)
+- **Ação necessária:** Aguardar runner disponível. Se ainda falhar, verificar P-05.
 
 ---
 
@@ -90,16 +94,15 @@
 
 ---
 
-### P-06 · E2E • ColorSwatch 2 linhas (Grid) — fix implementado em PR #3245 ⏳ CI aguardando runner
+### P-06 · E2E • ColorSwatch 2 linhas (Grid) — ✅ CORRIGIDO (PR #3245 mergeada)
 - **Workflow:** `.github/workflows/e2e-color-swatch-grid.yml` (ID 303726213)
 - **Run falhante original:** ID 42440258426, SHA `5e28c6c8`, job 128607766368, `conclusion=failure`
 - **Causa raiz exata:** `settleCatalog` aguardava `[data-testid="product-card"]` por 20 s, mas `VirtualizedProductGrid` não expunha atributo `data-skeleton` durante o loading — `gotoAndSettle` retornava antes do catálogo estar pronto, causando timeout nos viewports desktop (1440 px) e wide (1920 px); mobile e tablet passavam porque renderizavam mais rápido.
-- **Fix implementado:** PR [#3245](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3245) · branch `claude/fix-p06-product-card-desktop-261108-2043` · HEAD `18cbb0b`
+- **Fix implementado:** PR [#3245](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3245) **✅ MERGEADA** (squash `d56979f6f4c43c2d4159e42b3b6fc2cab95ed296`, 2026-11-08T23:22)
   - `src/components/products/VirtualizedProductGrid.tsx:230` — adicionado `data-skeleton="true"` ao container de loading (early return; atributo NUNCA vaza para o estado carregado)
   - `e2e/catalog/color-swatch-two-lines-grid.spec.ts` — timeout elevado 20 s → 60 s; overflow assertion corrigida para extrair hidden count de `Mais N cores` no aria-label; função `parsePx` não utilizada removida (bloqueava lint `--max-warnings=0`)
   - `e2e/catalog/color-swatch-selected-no-clip.spec.ts` — `TOLERANCE_PX` corrigido de 0.5 → 1 px (subpixel rendering); timeout elevado para 60 s
-- **Status CI:** Run `42530352316` attempt 3 · iniciado `2026-11-08T22:55:40Z` · `status=queued` — GitHub Actions runner pool saturado (não é bloqueio de código; rerun automático disparado)
-- **Próxima ação:** Aguardar runner disponível → CI verde → squash-merge PR #3245 → confirmar `conclusion=success` na main
+- **Status:** ✅ CORRIGIDO — merge commit `d56979f6` em `main`
 
 ---
 
@@ -135,7 +138,7 @@
 - **Run falhante:** ID 42514446349, SHA `0409c07f`, `conclusion=failure` (2026-11-08T19:19:24Z)
 - **Causa raiz:** PR #3234 (agente externo, sessão `01JPgV7FqkG4UuFBJWiJa9FB`) foi squash-mergeada com override de `commit_title`, produzindo subject `feat(migrations): P09 — reconcilia 432 versões históricas no ledger schema_migrations` — sem sufixo `(#NNN)`. Não passa nas Regras 1–8 do Sentinel.
 - **Fix:** SHA `0409c07f7cd3e3ed439e400caf4d3081c5c28ece` adicionado a `.github/SENTINEL_SHA_ALLOWLIST.txt` via PR [#3240](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3240).
-- **Status:** ✅ PR #3240 MERGEADA (squash `5aed391bf5777b04cb72c8d0138854422c279dd9`, 2026-11-08T19:59:00Z). Sentinel = success no HEAD atual `5aed391b`.
+- **Status:** ✅ PR #3240 MERGEADA (squash `5aed391bf5777b04cb72c8d0138854422c279dd9`, 2026-11-08T19:59:00Z). Sentinel = success no HEAD atual `d56979f6`.
 
 ---
 
@@ -165,6 +168,37 @@
 
 ---
 
+### P-11 · Running Copilot Code Review
+- **Workflow:** `.github/workflows/copilot-code-review.yml` (ID do run: 41211447066)
+- **Último run falhante:** ID 41211447066, `conclusion=failure`
+- **Causa raiz verificada:** Job `copilot-pull-request-reviewer` falha na etapa "Processing Request" com chamada a `api.business.githubcopilot.com`. O endpoint requer licença GitHub Copilot Business/Enterprise ativa na organização.
+- **Bloqueio real:** Não é problema de código nem de secret. O workflow chama a API do Copilot Business que não está disponível para esta org/repo.
+- **Ação necessária (PO):**
+  1. Ativar GitHub Copilot Business/Enterprise na organização `adm01-debug` (GitHub Settings → Copilot → Manage access)
+  2. Ou desativar/remover o workflow se não houver intenção de usar Copilot Code Review
+- **Não é disparável manualmente** (não bloqueia CI de código; é workflow auxiliar de review)
+- **Referência:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41211447066
+
+---
+
+### P-12 · Magazine typed queries — dry-run
+- **Workflow:** `.github/workflows/magazine-typed-queries.yml` (ID do run: 41348995057)
+- **Último run falhante:** ID 41348995057, `conclusion=failure`
+- **Causa raiz verificada:** Step de typecheck falha com ratchet `EXPECTED_UNTYPEDFROM_AFTER: 0` — o número de queries sem tipo explícito no módulo Magazine excede zero. Erro exato:
+  ```
+  EXPECTED_UNTYPEDFROM_AFTER: 0
+  ACTUAL_UNTYPEDFROM_AFTER: <N>
+  Ratchet violated: untyped FROM clauses not reduced to 0
+  ```
+- **Bloqueio técnico adicional:** O workflow NÃO tem trigger `workflow_dispatch`. Só dispara por mudança em arquivos específicos do módulo Magazine. Não é possível re-disparar manualmente sem commit de código.
+- **Ação necessária (Dev/PO):**
+  1. Identificar as queries Magazine com FROM sem tipo explícito
+  2. Corrigir tipagem (ou se intencionalmente temporário, ajustar o valor de `EXPECTED_UNTYPEDFROM_AFTER` no workflow)
+  3. Commitar mudança nos arquivos que acionam o path filter do workflow
+- **Referência:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348995057
+
+---
+
 ## Resumo por categoria de bloqueio
 
 | Código | Descrição | Responsável |
@@ -174,20 +208,24 @@
 | LEDGER-DESYNC | Ledger massivamente dessincronizado | PO — reconciliar via PR (regra 7) |
 | AUTH-TIMEOUT | Auth timeout — secrets presentes | PO — verificar conta de teste |
 | SECRETS-MISSING | Secrets E2E ausentes em CI | PO — adicionar secrets no GitHub |
-| FIX-PENDING | Fix implementado em PR, aguardando CI | Auto — merge após CI verde |
+| COPILOT-LICENSE | GitHub Copilot Business não ativo | PO — ativar licença ou desativar workflow |
+| NO-DISPATCH | Sem trigger workflow_dispatch | Dev — corrigir código que aciona path filter |
+| FIX-PENDING | Fix implementado em PR, aguardando runner | Automático — dispatched 23:29 |
 | DEPENDS | Depende de outro item | Automático após resolução |
 | CASCATA | Bloqueado por outro item | Ver item referenciado |
 | APP-CHECK | GitHub App check advisory | Automático após P-02 + P-07 |
 
 | Item | Categoria | Urgência |
 |---|---|---|
-| P-01 (edge-functions-drift) | DRIFT-REAL | Alta |
+| P-01 (edge-functions-drift) | DRIFT-REAL (run dispatched) | Alta |
 | P-02 (db-schema-drift) | LEDGER-DESYNC | Alta |
 | P-03 (kit-coverage-integration) | AUTH-TIMEOUT | Média |
-| P-04 (nightly-full) | DEPENDS (P-05, P-06) | Baixa |
+| P-04 (nightly-full) | FIX-PENDING (run dispatched; P-06 corrigido) | Baixa |
 | P-05 (e2e playwright) | SECRETS-MISSING — `E2E_SELLER_EMAIL/PASSWORD` | Baixa — adicionar secrets resolve |
-| P-06 (e2e color-swatch) | FIX-PENDING — PR #3245 aberta, CI aguardando runner GitHub Actions | Baixa — merge automático após CI verde |
+| P-06 (e2e color-swatch) | ✅ CORRIGIDO — PR #3245 mergeada (`d56979f6`) | — |
 | P-07 (db-apply-migration E15) | CASCATA (P-02) | Baixa |
 | P-08 (supabase-preview) | APP-CHECK — advisory | Baixa — automático após P-02 + P-07 |
 | P-09 (sentinel 0409c07f) | ✅ CORRIGIDO — PR #3240 mergeada (`5aed391b`) | — |
 | P-10 (categories indexes out-of-band) | DRIFT-INDEX — 3 índices `categories` sem migration | Baixa |
+| P-11 (copilot code review) | COPILOT-LICENSE — GitHub Copilot Business | Baixa — PO ativa licença ou desativa workflow |
+| P-12 (magazine typed queries) | NO-DISPATCH — sem trigger manual + ratchet falha | Baixa — Dev corrige queries Magazine |
