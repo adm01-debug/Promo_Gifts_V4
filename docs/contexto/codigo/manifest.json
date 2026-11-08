@@ -1,33 +1,33 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "gerado_em": "2026-11-08T02:59:15.857Z",
- "commit": "9c33e63e43c73099dc457ed2cc3f8c0c4bdf612a",
+ "gerado_em": "2026-11-08T03:27:48.996Z",
+ "commit": "a7c10dc21c7a85278063d37dd57aa7416ea2d61f",
  "branch": "main",
  "gerador": "scripts/ai-context/gerar.mjs",
  "node": "v22.22.1",
  "arquivos": {
-  "INDEX.md": "6f2467b6f318aac3",
+  "INDEX.md": "fa59176d93f2718e",
   "banco.json": "e51674db0eb50479",
-  "baseline.json": "bc2f6d745b457a11",
+  "baseline.json": "46fd2b183baeb211",
   "componentes.json": "af46557af828587d",
-  "convencoes.json": "82e420a365646c1d",
+  "convencoes.json": "25f3fce6e0002e5b",
   "edge-functions.json": "b5f725a83cf55baf",
-  "ferramentas.json": "47afa3c1c1f4083e",
+  "ferramentas.json": "27ea4577b129d048",
   "grafo-arestas.json": "78421bd382e07c43",
-  "grafo-graphify.json": "75632ef02a39caed",
+  "grafo-graphify.json": "237f40d73d7ee072",
   "grafo.json": "847821154575acdc",
   "hooks.json": "def12851d097ba43",
   "logica.json": "3557014d5f9f2e90",
   "modulos.json": "f4b05ea5630476ea",
   "rotas.json": "cec881a1e7a2f1dd",
-  "scripts.json": "218a5729a39bb899",
-  "testes.json": "067a14ddb02b758c"
+  "scripts.json": "5849793ffedbd1c9",
+  "testes.json": "a8165721ccf0e7f5"
  },
  "contagens": {
-  "arquivos_total": 9180,
+  "arquivos_total": 9184,
   "arquivos_codigo": 4620,
-  "linhas_codigo": 884609,
+  "linhas_codigo": 884564,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -42,7 +42,7 @@
   "testes": 2191,
   "workflows": 94,
   "scripts": 255,
-  "docs_md": 895
+  "docs_md": 899
  },
  "erros": []
 }

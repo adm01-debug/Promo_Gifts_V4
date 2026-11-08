@@ -5,7 +5,7 @@
   "linguagens": [
    "TypeScript (4309)",
    "SQL (3228)",
-   "Markdown (895)",
+   "Markdown (899)",
    "JavaScript (307)",
    "YAML (107)",
    "JSON (91)",
@@ -3513,7 +3513,7 @@
   {
    "arquivo": "AGENTS.md",
    "titulo": "AGENTS.md — Promo Gifts V4",
-   "linhas": 210
+   "linhas": 111
   },
   {
    "arquivo": "CHANGELOG.md",
@@ -3527,8 +3527,8 @@
   },
   {
    "arquivo": "CLAUDE.md",
-   "titulo": "CLAUDE.md — Promo Gifts V4 (ficha técnica do repositório)",
-   "linhas": 378
+   "titulo": null,
+   "linhas": 2
   },
   {
    "arquivo": "CONTRIBUTING.md",
@@ -4366,6 +4366,10 @@
    "arquivos_md": 5
   },
   {
+   "pasta": "docs/agentes",
+   "arquivos_md": 4
+  },
+  {
    "pasta": "docs/arquitetura",
    "arquivos_md": 4
   },
@@ -4814,6 +4818,10 @@
     "arquivos": 3
    },
    {
+    "host": "placehold.co",
+    "arquivos": 3
+   },
+   {
     "host": "promogifts.com.br",
     "arquivos": 3
    },
@@ -4879,10 +4887,6 @@
    },
    {
     "host": "n8n.suaempresa.com",
-    "arquivos": 2
-   },
-   {
-    "host": "placehold.co",
     "arquivos": 2
    },
    {

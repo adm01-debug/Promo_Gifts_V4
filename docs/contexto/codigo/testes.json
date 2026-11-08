@@ -3722,9 +3722,9 @@
   {
    "arquivo": "e2e/routes/app/novelty-grid-visual.spec.ts",
    "tipo": "e2e",
-   "linhas": 249,
+   "linhas": 203,
    "testa": [],
-   "casos": 9
+   "casos": 8
   },
   {
    "arquivo": "e2e/routes/app/novidades.spec.ts",

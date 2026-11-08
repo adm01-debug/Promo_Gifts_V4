@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `9c33e63e43` · branch `main` · 2026-11-08 02:57 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a7c10dc21c` · branch `main` · 2026-11-08 03:34 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6131,7 +6131,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (18437 testes em 1885 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (18436 testes em 1885 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|

@@ -776,8 +776,8 @@
   },
   {
    "arquivo": "scripts/check-gates-table.mjs",
-   "descricao": "E191: valida que todo step \"Gate X.Y\" em deploy-gates.yml está documentado em CLAUDE.md. Uso: node scripts/check-gates-table.mjs [--gate]",
-   "linhas": 49,
+   "descricao": "E191: valida que todo step \"Gate X.Y\" em deploy-gates.yml está documentado em docs/agentes/ci-gates.md (tabela que vivia em CLAUDE.md até 2026-11-07; CLAUDE.md agora só importa AGENTS.md).",
+   "linhas": 50,
    "env": [],
    "npm_scripts": [],
    "workflows": [],

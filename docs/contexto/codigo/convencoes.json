@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(e2e): corrige seletores e mocks mortos do novelty-grid-visual (#3184)",
+   "docs: recibo de deploy de edge function(s) — run 42417851181 (E66) (#3185)",
+   "chore: instruções de agentes consolidadas em AGENTS.md + docs/agentes/ (#3146)",
    "fix(catalogo): preservar variante exata na seleção de cor (#3141)",
-   "infra: migra imports esm.sh → npm: pinados nas edge functions (#3157)",
-   "docs(ci): RELATORIO §30 — fix Branch Protection Sentinel (#3192)",
-   "docs(ci): RELATORIO §29 — baseline local 9feb0148 + inventário fix/ci-workflows",
-   "docs(ci): RELATORIO §28 + PENDENCIAS #39-42 — sessão 2026-11-08"
+   "infra: migra imports esm.sh → npm: pinados nas edge functions (#3157)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
