@@ -3,7 +3,7 @@
 // BUG-EF-005 FIXED: Auth ausente em endpoint destrutivo -- adicionado authorizeCron
 // BUG-EF-012 FIXED: console.log vaza nome de tabela -- substituido por log estruturado
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { parseContract } from "../_shared/contracts/index.ts";
 import { SyncExternalDbSchemas } from "../_shared/contracts/schemas/sync-external-db.ts";
 import { buildPublicCorsHeaders } from "../_shared/cors.ts";
