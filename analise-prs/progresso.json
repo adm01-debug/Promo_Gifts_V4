@@ -1,31 +1,48 @@
 {
   "sessao": "2026-11-08",
   "session_id": "49a643e1-3ba4-5a51-9048-a545eec48233",
-  "main_sha": "9a89d9f0a4ac2df7ad670501adaad9f1f60a75df",
-  "total_prs_abertas": 18,
-  "total_analisadas": 18,
+  "main_sha_analise_inicial": "9a89d9f0a4ac2df7ad670501adaad9f1f60a75df",
+  "main_sha_atual": "e9ed1f416e77ca79d975f4e1dfe40ef4ce06ac96",
+  "total_prs_abertas_inicial": 18,
+  "total_prs_abertas_atual": 17,
+  "total_analisadas": 19,
+  "pr_3217_mergeada_externamente": {
+    "numero": 3217,
+    "merge_commit": "41b55250865de6a42d07e1622587b3a0e76f8950",
+    "merged_by": "adm01-debug (PO)",
+    "merged_at": "2026-11-08T17:46:10Z",
+    "titulo": "docs(auditoria): P09 gap ledger 476 versões + P06 reanálise 24 views + C4 diagnóstico",
+    "arquivos": ["auditoria-supabase/ADENDO_2026-10-28.md", "auditoria-supabase/P09_INVESTIGACAO_2026-11-08.md"],
+    "nota": "Docs-only. Mergeada pelo PO, não por esta sessão."
+  },
+  "pr_3228_nova": {
+    "numero": 3228,
+    "titulo": "chore(workflows): adiciona workflow_dispatch ao e2e-color-swatch-grid",
+    "draft": true,
+    "arquivos": [".github/workflows/e2e-color-swatch-grid.yml"],
+    "veredito": "DECISAO_HUMANA",
+    "motivo": "REGRA#8 (workflow) + isDraft"
+  },
   "vereditos": {
-    "MERGEADA": 0,
-    "DECISAO_HUMANA": 15,
-    "NAO_MERGEAVEL": 3
+    "MERGEADA_PELO_PO": 1,
+    "MERGEADA_ESTA_SESSAO": 0,
+    "DECISAO_HUMANA": 17,
+    "NAO_MERGEAVEL": 0
   },
   "prs_mergeadas_esta_sessao": [],
-  "prs_analisadas": [3127,3129,3137,3144,3148,3150,3160,3179,3202,3203,3205,3210,3212,3214,3215,3216,3217,3220],
+  "prs_analisadas": [3127,3129,3137,3144,3148,3150,3160,3179,3202,3203,3205,3210,3212,3214,3215,3216,3217,3220,3228],
   "baseline": {
     "typecheck_exit": 0,
     "lint_exit": 0,
     "vitest": "2 falhas conhecidas: day_today (linha 56) + day_selected (linha 66) em calendar.redesign.test.tsx; EXIT_CODE=0; run real 2026-11-08"
   },
   "merge_tests": {
-    "metodo": "git fetch origin refs/pull/NNN/head + git merge --no-commit --no-ff vs main 9a89d9f0",
-    "clean": [3179, 3205, 3210, 3212, 3215, 3217],
-    "conflict": [3127, 3129, 3137, 3144, 3148, 3150, 3160, 3202, 3214, 3216, 3220],
+    "metodo": "git fetch origin refs/pull/NNN/head + merge test vs main",
+    "clean_vs_9a89d9f0": [3179, 3205, 3210, 3212, 3215, 3217],
+    "conflict_vs_9a89d9f0": [3127, 3129, 3137, 3144, 3148, 3150, 3160, 3202, 3214, 3216, 3220],
     "7_conflicts": [3203],
-    "nota_3214": "GitHub reporta CONFLICTING; merge test local não disponível (PR de 128 arquivos)"
-  },
-  "ja_implementada": {
-    "metodo": "git cherry -v 9a89d9f0 pr-tmp-NNN",
-    "resultado": "TODAS as 18 PRs têm commits com prefixo + (não estão em main)"
+    "pr_3228": "1 linha adicionada, merge limpo esperado vs e9ed1f416e",
+    "nota": "Main avançou de 9a89d9f0 para e9ed1f416e. Merge tests originais vs SHA anterior."
   },
   "artefatos": {
     "baseline_typecheck": "analise-prs/baseline/typecheck.txt",
@@ -36,12 +53,6 @@
     "relatorio": "analise-prs/RELATORIO_PRS.md",
     "dossies": "analise-prs/dossies/PR-*.md"
   },
-  "correcoes_esta_sessao": {
-    "merge_local_corrigido_em": [3127, 3129, 3137, 3144, 3148, 3150, 3160, 3202, 3214, 3216, 3220],
-    "motivo": "Sessão anterior registrou 'clean' para PRs com conflitos reais. Merge tests re-executados vs main SHA 9a89d9f0 corrigiram os dados."
-  },
-  "historico_sessoes_anteriores": {
-    "bed6ac4e": "8 PRs mergeadas — #2875,#2876,#2864,#2848,#2849,#2857,#2862,#2834",
-    "anteriores": "13 PRs — #2695,#2707,#2719,#2720,#2721,#2730,#2733,#2735,#2736,#2737,#2741,#2742,#2757"
-  }
+  "worktrees_criados": [],
+  "outras_escritas_github": "nenhuma além do push de artefatos no branch claude_05/youthful-ride-vcdchy"
 }
