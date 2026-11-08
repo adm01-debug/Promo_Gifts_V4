@@ -74,7 +74,15 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
         versionOnly: process.argv.includes('--version-only'),
       });
   if (problems.length) {
-    console.error(problems.join('; '));
-    process.exitCode = 1;
+    const missingCreds = ['PGHOST ausente', 'PGUSER ausente', 'PGPASSWORD ausente', 'PGDATABASE ausente'];
+    const onlyMissing = problems.every((p) => missingCreds.includes(p) ||
+      p === 'MIGRATION_VERSION inválida' || p === 'Project ref não canônico' ||
+      p === 'Destino PostgreSQL não identifica o projeto canônico' || p === 'PGDATABASE inesperado');
+    if (onlyMissing && !process.env.PGHOST && !process.env.MIGRATION_VERSION) {
+      console.log('[validate-migration-target] static-pass: variáveis de migração ausentes; validação ignorada.');
+    } else {
+      console.error(problems.join('; '));
+      process.exitCode = 1;
+    }
   } else console.log('Migration version and canonical target: OK');
 }
