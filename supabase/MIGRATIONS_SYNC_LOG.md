@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 69442)
-Total output lines: 1735
-
 # Migration Sync Log
 
 > **Etapa E48** (`docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md`,
@@ -397,8 +394,7 @@ no momento do registro.
   produziu os artefatos): os mesmos 483 batem exatamente com o número já
   citado no texto da E11 do plano (428 `NULL` + 55 `'{}'`). Distribuição
   temporal completa (todas as linhas com `version` canônico de 14 dígitos;
-  total/faltando por mês): 2024-12 (2/2), 2025-01 (24/23), 2025-12 (54/54),
-  2026-01 (15/15), 2026-02 (22/22), 2026-03 (165/65), 2026-04 (246/176),
+  total/faltando por mês): 2024-12 (2/2), 2025-01 (24/23), 2025-12 (54/54),  2026-01 (15/15), 2026-02 (22/22), 2026-03 (165/65), 2026-04 (246/176),
   2026-05 (368/94), 2026-06 (1.379/27), 2026-07 (156/0), 2026-08 (13/0),
   2026-09 (50/0) — soma 478 faltando nas linhas canônicas, + as 5 não-canônicas
   `00N` do achado abaixo = 483. (Nota de correção desta reconfirmação: a
@@ -797,7 +793,6 @@ recuperacao retroativa possivel).
   10; branch fn_clean_spot_name presente.
 
 ### Hardening abrangente pos-review (CodeRabbit/Codex/cubic) — aprovado pelo usuario
-
 A 2a/3a rodada de review (CodeRabbit 19+ comentarios, Codex, cubic) cobriu o
 conjunto reconciliado completo. Cada achado foi verificado contra o estado ATUAL
 de producao; muitos ja estavam superados pelo estado final (os revisores viam
@@ -1121,6 +1116,11 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | version | arquivo | status |
 |---|---|---|
 | `20261106232045` | `fix_handle_updated_at_search_path` | aplicada — ledger e `pg_proc.proconfig = {search_path=public}` confirmados no canônico em 2026-11-08 |
+
+## Recibos — E15 (workflow de aplicação controlada)
+
+| versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check | status |
+|---|---|---|---|---|---|---|---|
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
