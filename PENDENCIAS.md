@@ -856,3 +856,26 @@ Remote migration versions not found in local migrations directory.
 > **Atualização 2026-11-08T04:30Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
 > Item #45 adicionado: 1 falha preexistente na suíte vitest em SHA `e09f4125` (herdada de main; sessão só tocou .md; exit 0; não é required check).  
 > Itens com ação do dono pendente: #1, #29, #37, #42, #44, #45.
+
+---
+
+## 46. db-apply-migration.yml ❌ → ✅ CORRIGIDO (migration faltava `-- Rollback:`)
+
+**Workflow:** `db-apply-migration.yml` (DB — Aplicação controlada de migration única E15)  
+**Run ID:** [42447046724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42447046724) (2026-11-08T04:29Z, SHA `e09f4125`, workflow_dispatch por `adm01-debug`)  
+**Conclusão:** `failure`  
+**Erro exato (preflight step 8):**
+```
+[preflight-migration-apply] failed: 1 problema(s): arquivo não tem cabeçalho de rollback lógico ("-- Rollback:" nas primeiras 40 linhas).
+versão: 20261108001500 | arquivo: 20261108001500_reconcile_e2e_cleanup_audit.sql
+```
+**Causa:** `supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql` não tinha a linha `-- Rollback:` nas primeiras 40 linhas, exigida pelo preflight `preflight-migration-apply.mjs`.  
+**Required check em main:** NÃO — workflow_dispatch, não required check.  
+**Correção aplicada:** `-- Rollback: DROP TABLE IF EXISTS public.e2e_cleanup_audit;` adicionada como linha 8 do arquivo de migration nesta PR (sessão `01RfQzo7S3K6o49UBUDoCtUe`).  
+**O que o dono precisa fazer:** Após merge desta PR, re-disparar `db-apply-migration.yml` via workflow_dispatch com `MIGRATION_VERSION=20261108001500` para aplicar a migration em produção.
+
+---
+
+> **Atualização 2026-11-08T04:52Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
+> Item #46 adicionado: `db-apply-migration.yml` falhou por falta de `-- Rollback:` em migration; corrigido nesta PR; requer re-dispatch pelo dono.  
+> Itens com ação do dono pendente: #1, #29, #37, #42, #44, #45 (read-only); #46 (re-dispatch após merge).

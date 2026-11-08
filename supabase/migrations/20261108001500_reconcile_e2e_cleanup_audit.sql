@@ -5,6 +5,7 @@
 -- disponíveis para zero downtime com a Edge Function v300. A versão nova
 -- dual-write esses pares enquanto consumidores operacionais migram para os
 -- nomes canônicos deleted_by_table/duration_ms.
+-- Rollback: DROP TABLE IF EXISTS public.e2e_cleanup_audit;
 
 DO $migration$
 BEGIN
