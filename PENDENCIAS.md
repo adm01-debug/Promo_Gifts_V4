@@ -2,6 +2,7 @@
 
 > Gerado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
 > Atualizado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY
+> Atualizado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
 > Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT)
 
 ---
@@ -75,9 +76,12 @@
 - **Workflow:** `.github/workflows/e2e.yml` (ID 278436800)
 - **Último run falhante:** ID 42448545644, SHA `87fe8cd`
 - **Causa raiz:** `[loginViaUI] Timeout aguardando redirect pós-login` em `e2e/flows/22-header-sticky.spec.ts:238`. URL fica presa em `http://localhost:8080/login` após tentativa de login.
-- **Status no HEAD atual:** NÃO VERIFICADO — o último run registrado é de SHA `87fe8cd`, anterior ao HEAD atual. Pode ter sido corrigido por commits posteriores.
-- **Bloqueio:** requer investigação manual do fluxo de login em `e2e/flows/22-header-sticky.spec.ts`. Possíveis causas: seletor de input desatualizado após mudança de UI, credencial de teste inválida, ou race condition no redirect pós-autenticação.
-- **Ação necessária (PO/Dev):** verificar se o último run do workflow `e2e.yml` no HEAD atual passou; se não, investigar o spec.
+- **Status no HEAD atual:** ✅ VERIFICADO — **failure confirmada** em run [#42507604979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42507604979) (`workflow_dispatch`, SHA `da97d70d`, 2026-11-08T17:58:32Z–18:08:03Z). O timeout de login **persiste** no HEAD atual — não foi corrigido por commits posteriores.
+- **Bloqueio:** requer investigação manual do fluxo de login em `e2e/flows/22-header-sticky.spec.ts:238`. Causas prováveis: seletor de input desatualizado após mudança de UI, credencial de teste inválida, ou race condition no redirect pós-autenticação.
+- **Ação necessária (PO/Dev):**
+  1. Verificar as credenciais `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` contra a conta real em Supabase Auth de `doufsxqlfjyuvxuezpln`
+  2. Inspecionar `e2e/flows/22-header-sticky.spec.ts:238` — verificar se o seletor do input de login ainda corresponde ao HTML atual
+  3. Se credencial OK e seletor OK: pode ser race condition — adicionar `await page.waitForURL('**/dashboard')` com timeout maior
 
 ---
 
@@ -85,9 +89,12 @@
 - **Workflow:** `.github/workflows/e2e-color-swatch-grid.yml` (ID 303726213)
 - **Último run falhante:** ID 42440258426, SHA `9c33e63`
 - **Causa raiz:** 2 testes falharam em `e2e/catalog/color-swatch-two-lines-grid.spec.ts:69` — viewports desktop (1440px) e wide (1920px): "2 linhas + chip +N + sem clipping". Provavelmente asserção de layout visual desatualizada após mudança no componente ColorSwatch.
-- **Status no HEAD atual:** NÃO VERIFICADO — último run é de SHA `9c33e63`, anterior ao HEAD.
-- **Bloqueio:** requer re-run no HEAD atual para confirmar se a falha persiste. Se persistir, o componente ColorSwatch ou os snapshots precisam ser atualizados.
-- **Ação necessária (PO/Dev):** disparar manualmente o workflow `e2e-color-swatch-grid.yml` no HEAD atual para confirmar status.
+- **Status no HEAD atual:** ✅ VERIFICADO — **failure confirmada** em run [#42507854259](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42507854259) no HEAD equivalente ao main atual (PR #3228, SHA `fd720765`, único delta = `workflow_dispatch` adicionado ao `.github/workflows/e2e-color-swatch-grid.yml`; código do componente e do spec idênticos). A falha em `color-swatch-two-lines-grid.spec.ts:69` **persiste** no HEAD atual.
+- **Bloqueio:** o spec testa layout visual em viewports 1440px/1920px. A asserção falha por divergência entre o esperado no test e o layout atual do componente `ColorSwatch`.
+- **Ação necessária (PO/Dev):**
+  1. Revisar `e2e/catalog/color-swatch-two-lines-grid.spec.ts:69` — verificar qual asserção falha (provavelmente `expect(element).toHaveCSS` ou screenshot snapshot)
+  2. Se o layout atual está correto (mudança intencional): atualizar os snapshots via `npx playwright test --update-snapshots`
+  3. Se o layout está errado (regressão): investigar últimas mudanças em `src/components/shared/ColorSwatch.tsx`
 
 ---
 
@@ -116,7 +123,7 @@
 | DRIFT-REAL | Drift confirmado por log — código diverge entre repo e Supabase | PO — decidir versão canônica e deployar/commitar |
 | LEDGER-DESYNC | Ledger massivamente dessincronizado (1144 local + 678 remote) | PO — reconciliar via PR de DDL (regra 7) |
 | AUTH-TIMEOUT | Auth timeout — secrets presentes mas chamada não retorna | PO — verificar conta de teste no Supabase Auth |
-| E2E-VERIFY | E2E em SHA antigo — pode já ter passado | PO/Dev — re-rodar no HEAD |
+| E2E-FAILURE | E2E verificado no HEAD atual — falha confirmada | PO/Dev — investigar spec |
 | DEPENDS | Depende de outro item desta lista | Automático após resolução |
 | CASCATA | Bloqueado por outro item desta lista | Ver item referenciado |
 
@@ -126,6 +133,6 @@
 | P-02 (db-schema-drift) | LEDGER-DESYNC | Alta |
 | P-03 (kit-coverage-integration) | AUTH-TIMEOUT | Média |
 | P-04 (nightly-full) | DEPENDS (P-05, P-06) | Baixa |
-| P-05 (e2e playwright) | E2E-VERIFY | Baixa |
-| P-06 (e2e color-swatch) | E2E-VERIFY | Baixa |
+| P-05 (e2e playwright) | E2E-FAILURE — verificado | Baixa |
+| P-06 (e2e color-swatch) | E2E-FAILURE — verificado | Baixa |
 | P-07 (db-apply-migration E15) | CASCATA (P-02) | Baixa — bloqueado por P-02 |
