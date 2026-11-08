@@ -10,13 +10,6 @@
 | Workflow | Causa | Fix |
 |---|---|---|
 | Branch Protection Sentinel | `docs(auditoria):` não aceito na allowlist | Expandido regex Regra 6 para `docs\([a-z][a-z0-9-]*\):`; SHA `d03ee555` grandfathered |
-| DB — Aplicação E15 | Migration `20261108001500` sem `-- Rollback:` nas primeiras 40 linhas | Adicionado cabeçalho `-- Rollback:` |
-
-> **Nota DB — Aplicação E15:** o fix acima corrige o arquivo de migration para que futuros
-> `workflow_dispatch` passem no preflight. O workflow em si é `workflow_dispatch` apenas —
-> não reexecuta automaticamente. **Ação do PO necessária:** re-disparar
-> `.github/workflows/db-apply-migration.yml` via Actions UI com `version=20261108001500`
-> para registrar a migration no ledger de produção.
 
 ---
 
@@ -75,7 +68,7 @@
 - **Workflow:** `.github/workflows/e2e.yml` (ID 278436800)
 - **Último run falhante:** ID 42448545644, SHA `87fe8cd`
 - **Causa raiz:** `[loginViaUI] Timeout aguardando redirect pós-login` em `e2e/flows/22-header-sticky.spec.ts:238`. URL fica presa em `http://localhost:8080/login` após tentativa de login.
-- **Status no HEAD (d03ee555):** NÃO VERIFICADO — o último run registrado é de SHA `87fe8cd`, anterior ao HEAD atual. Pode ter sido corrigido por commits posteriores.
+- **Status no HEAD (aab5deb):** NÃO VERIFICADO — o último run registrado é de SHA `87fe8cd`, anterior ao HEAD atual. Pode ter sido corrigido por commits posteriores.
 - **Bloqueio:** requer investigação manual do fluxo de login em `e2e/flows/22-header-sticky.spec.ts`. Possíveis causas: seletor de input desatualizado após mudança de UI, credencial de teste inválida, ou race condition no redirect pós-autenticação.
 - **Ação necessária (PO/Dev):** verificar se o último run do workflow `e2e.yml` no HEAD atual passou; se não, investigar o spec.
 
@@ -85,9 +78,27 @@
 - **Workflow:** `.github/workflows/e2e-color-swatch-grid.yml` (ID 303726213)
 - **Último run falhante:** ID 42440258426, SHA `9c33e63`
 - **Causa raiz:** 2 testes falharam em `e2e/catalog/color-swatch-two-lines-grid.spec.ts:69` — viewports desktop (1440px) e wide (1920px): "2 linhas + chip +N + sem clipping". Provavelmente asserção de layout visual desatualizada após mudança no componente ColorSwatch.
-- **Status no HEAD (d03ee555):** NÃO VERIFICADO — último run é de SHA `9c33e63`, anterior ao HEAD.
+- **Status no HEAD (aab5deb):** NÃO VERIFICADO — último run é de SHA `9c33e63`, anterior ao HEAD.
 - **Bloqueio:** requer re-run no HEAD atual para confirmar se a falha persiste. Se persistir, o componente ColorSwatch ou os snapshots precisam ser atualizados.
 - **Ação necessária (PO/Dev):** disparar manualmente o workflow `e2e-color-swatch-grid.yml` no HEAD atual para confirmar status.
+
+---
+
+### P-07 · DB — Aplicação E15
+- **Workflow:** `.github/workflows/db-apply-migration.yml`
+- **Tipo:** `workflow_dispatch` apenas — não executa automaticamente
+- **Causa raiz:** Migration `20261108001500_reconcile_e2e_cleanup_audit.sql` não contém cabeçalho `-- Rollback:` nas primeiras 40 linhas — exigido pelo preflight do gate E15 antes de aplicar a migration.
+- **Bloqueio (cascata com P-02):** Corrigir a migration (adicionar `-- Rollback:`) requer modificar `supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql`. Qualquer mudança em `supabase/migrations/**` ativa `check-schema-paths.outputs.changed=true` em `deploy-gates.yml`, que por sua vez roda o job `schema-drift-gate`. O `schema-drift-gate` falha porque `SUPABASE_DB_PASSWORD` e `SUPABASE_ACCESS_TOKEN` estão ausentes (P-02). Portanto, o fix da migration está bloqueado até P-02 ser resolvido.
+- **Fix necessário (após P-02 resolvido):**
+  ```sql
+  -- Migration: 20261108001500_reconcile_e2e_cleanup_audit
+  -- Rollback: DROP TABLE IF EXISTS public.e2e_cleanup_audit;
+  ```
+  Adicionar essas 2 linhas no topo de `supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql` via nova PR.
+- **Ação necessária (PO):**
+  1. Resolver P-02 primeiro (configurar `SUPABASE_DB_PASSWORD` e `SUPABASE_ACCESS_TOKEN` como Actions Secrets)
+  2. Após P-02 resolvido, abrir PR adicionando o cabeçalho `-- Rollback:` ao arquivo da migration
+  3. Após merge desse PR, re-disparar `db-apply-migration.yml` via Actions UI com `version=20261108001500`
 
 ---
 
@@ -99,6 +110,7 @@
 | ACESSO-BD | Acesso ao banco de produção necessário | PO — verificar credenciais |
 | E2E-VERIFY | E2E em SHA antigo — pode já ter passado | PO/Dev — re-rodar no HEAD |
 | DEPENDS | Depende de outro item desta lista | Automático após resolução |
+| CASCATA | Bloqueado por outro item desta lista | Ver item referenciado |
 
 | Item | Categoria | Urgência |
 |---|---|---|
@@ -108,3 +120,4 @@
 | P-04 (nightly-full) | DEPENDS (P-05, P-06) | Baixa |
 | P-05 (e2e playwright) | E2E-VERIFY | Baixa |
 | P-06 (e2e color-swatch) | E2E-VERIFY | Baixa |
+| P-07 (db-apply-migration E15) | CASCATA (P-02) | Baixa — bloqueado por P-02 |
