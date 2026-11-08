@@ -325,7 +325,7 @@ Novidade desde 11/10: `supabase/baseline/20261015140000_baseline_schema.sql` (62
 | FT-172 | MK-021 | "Limpar" com confirmação | PARCIAL | atalhos removidos (`KeyboardShortcuts.tsx:14,27` só Ctrl+Enter); sem `AlertDialog/confirm` em `MockupConfigPanel.tsx`/`MockupResultCard.tsx` | F | P2 | P | — |
 | FT-173 | MK-027 | Confirmação limite de cores | PARCIAL | aviso em `LogoColorAnalyzer.tsx`; sem confirmação | F | P2 | P | — |
 | FT-174 | MK-029 | Aviso "prévia indicativa" | AUSENTE | rg `prévia indicativa` em `components/mockup` vazio | F | P2 | P | — |
-| FT-175 | MK-030 | Entradas `productId`/state | AUSENTE | `useMockupGenerator.ts:294` lê só `product_id` | F | P2 | P | — |
+| FT-175 | MK-030 | Entradas `productId`/state | IMPLEMENTADO | `useMockupEntryParams` lê `product_id`, `productId`, `technique` e `location.state.preSelectedProduct` | F | P2 | P | — |
 | FT-176 | MK-070/071 | Snapshot sempre / 3 estados de conclusão | AUSENTE | depende de MK-069 (Outro dono) | F | P2 | G | MK-069 |
 | FT-177 | MK-078 | Acessibilidade geral | AUSENTE | sem auditoria WCAG no módulo | F | P2 | G | — |
 | FT-178 | MK-093 | Redesign onda 3 (stepper 4 etapas) | AUSENTE | `MockupWizard.tsx:85` "Crie o mockup com IA", stepper de 6 | F | P2 | G | MK-099 |
