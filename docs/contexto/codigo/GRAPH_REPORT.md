@@ -1,7 +1,7 @@
 # Graph Report - Promo_Gifts_V4  (2026-11-08)
 
 ## Corpus Check
-- 5651 files · ~5,054,058 words
+- 5651 files · ~5,054,084 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 56 file(s) not represented in the graph (top: (none) 27, .css 10, .toml 6)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9a89d9f0`
+- Built from commit: `93ae29d9`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -6530,7 +6530,7 @@ Nodes (5): react-dom, Props, Step, STEPS, PROPOSAL_FIXTURES
 
 ### Community 1114 - "RELATÓRIO CI — Prova de Conclusão do Stop Hook"
 Cohesion: 0.20
-Nodes (10): Baseline local — 2026-11-08T15:55Z (HEAD `1d3dafae`, antes de qualquer alteração de código), Comparação baseline × final, Conclusão, Confirmação de workflows verdes — HEAD `aab5deb9`, Estado da main — HEAD atual, Falhas advisory (não bloqueiam Gate Final — não são required checks), Prova de não-regressão, PRs com Gate Final em failure (branch separada — não afeta main) (+2 more)
+Nodes (10): Baseline local — 2026-11-08T15:55Z (HEAD `1d3dafae`, antes de qualquer alteração de código), Comparação baseline × final, Conclusão, Confirmação de workflows verdes — HEAD `9a89d9f0`, Estado da main — HEAD atual, Falhas advisory (não bloqueiam Gate Final — não são required checks), Prova de não-regressão, PRs com Gate Final em failure (branch separada — não afeta main) (+2 more)
 
 ### Community 1115 - "bundle-size-report.mjs"
 Cohesion: 0.31

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `9a89d9f0a4ac2df7ad670501adaad9f1f60a75df` (2026-11-08T13:44:58-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `93ae29d9fa382610ea74363d680660054ebb3f02` (2026-11-08T13:57:57-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,27 +586,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38149 nós · 66652 arestas · 2087 comunidades · grafo do commit `9a89d9f0`
+- 38149 nós · 66652 arestas · 2087 comunidades · grafo do commit `93ae29d9`
 - comunidades maiores: vitest (677), lucide-react (471), ref_integrations (407), ref_hooks (402), ref_lib (384), gotoAndSettle (354), react-router-dom (295), @tanstack/react-query (290), scripts (289), react (276), ref_node_fs (265), cors.ts (245)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (75)
-- PENDENCIAS.md (65)
-- package.json (27)
-- supabase/MIGRATIONS_SYNC_LOG.md (24)
-- package-lock.json (20)
-- CHANGELOG.md (18)
-- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (17)
-- .github/workflows/deploy-gates.yml (15)
-- docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (14)
-- analise-branches/RELATORIO_BRANCHES.md (13)
-- e2e/flows/magazine-publish-smoke.spec.ts (13)
-- AGENTS.md (12)
-- CLAUDE.md (12)
-- .github/workflows/replenishment-quality.yml (10)
-- e2e/flows/magazine-preview-sticky-smoke.spec.ts (10)
+- RELATORIO_CI.md (77)
+- PENDENCIAS.md (64)
+- package.json (29)
+- supabase/MIGRATIONS_SYNC_LOG.md (26)
+- package-lock.json (22)
+- CHANGELOG.md (20)
+- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (19)
+- .github/workflows/deploy-gates.yml (17)
+- analise-branches/RELATORIO_BRANCHES.md (15)
+- docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (15)
+- e2e/flows/magazine-publish-smoke.spec.ts (15)
+- AGENTS.md (13)
+- CLAUDE.md (13)
+- .github/workflows/replenishment-quality.yml (12)
+- e2e/flows/magazine-preview-sticky-smoke.spec.ts (12)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-08 `93ae29d` docs(ci): atualiza RELATORIO_CI.md para HEAD 9a89d9f0 e Gate Final #42501464198
 - 2026-11-08 `9a89d9f` docs(ci): completa RELATORIO_CI.md e PENDENCIAS.md com prova de conclusão do stop hook (#3221)
 - 2026-11-08 `aab5deb` docs(ci): corrige npm test e HEAD no RELATORIO_CI.md (#3219)
 - 2026-11-08 `f322318` feat: adiciona RELATORIO_CI.md e P35 em PENDENCIAS.md
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-08 `e09f412` docs(ci): RELATORIO §32 + PENDENCIAS #44 (#3200)
 - 2026-11-08 `5e28c6c` fix(e2e): desbloqueia grid de novidades, imagem e tour do kit builder
 - 2026-11-08 `1e63b10` chore(main): release 1.8.0
-- 2026-11-08 `4e638a6` fix(db): fecha vazamento de api_credentials em suppliers para authenticated
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

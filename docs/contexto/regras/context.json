@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "9a89d9f0a4ac2df7ad670501adaad9f1f60a75df",
+  "sha": "93ae29d9fa382610ea74363d680660054ebb3f02",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 16:55 UTC",
+  "generated_at": "2026-11-08 17:10 UTC",
   "files_total": 9125,
   "code_files": 7862,
   "code_lines": 1054635
@@ -484051,10 +484051,19 @@
   }
  },
  "git": {
-  "sha": "9a89d9f0a4ac2df7ad670501adaad9f1f60a75df",
+  "sha": "93ae29d9fa382610ea74363d680660054ebb3f02",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "93ae29d",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(ci): atualiza RELATORIO_CI.md para HEAD 9a89d9f0 e Gate Final #42501464198",
+    "files": [
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "9a89d9f",
     "date": "2026-11-08",
@@ -484550,15 +484559,6 @@
     "subject": "docs(ci): RELATORIO §30 — fix Branch Protection Sentinel (#3192)",
     "files": [
      "PENDENCIAS.md",
-     "RELATORIO_CI.md"
-    ]
-   },
-   {
-    "sha": "46212f0",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "docs(ci): RELATORIO §29 — baseline local 9feb0148 + inventário fix/ci-workflows",
-    "files": [
      "RELATORIO_CI.md"
     ]
    }
