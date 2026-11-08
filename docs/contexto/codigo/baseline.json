@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "87fe8cd9b7244f8c31d6cfac9fb471d619d93159",
+  "commit": "8c3abe3bcb08c7d5021fc619a3ebe92a938c0ad6",
   "branch": "main",
-  "data_commit": "2026-11-08T01:52:35-03:00",
+  "data_commit": "2026-11-08T01:57:41-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "8c3abe3",
+    "data": "2026-11-08",
+    "assunto": "chore(backlog): marca FT-175 como implementado (#3206)"
+   },
    {
     "sha": "87fe8cd",
     "data": "2026-11-08",
@@ -126,14 +131,9 @@
     "sha": "561693f",
     "data": "2026-11-07",
     "assunto": "docs(ci): RELATORIO §27 — baseline 12e873af + inventário workflows (#3187)"
-   },
-   {
-    "sha": "12e873a",
-    "data": "2026-11-07",
-    "assunto": "docs(ci): RELATORIO §26 — baseline d2ce504a + PENDENCIAS #38 (#3183)"
    }
   ],
-  "arquivos_mudados_7d": 583,
+  "arquivos_mudados_7d": 584,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -173,7 +173,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 144
+    "mudancas": 143
    },
    {
     "pasta": "src/pages/admin",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 73
+    "mudancas": 72
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 63
+    "mudancas": 62
    },
    {
     "arquivo": "package.json",
@@ -278,6 +278,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "docs/estado/backlog/funcionalidades.md",
+    "mudancas": 6
+   },
+   {
     "arquivo": "e2e/helpers/auth.ts",
     "mudancas": 6
    },
@@ -292,10 +296,6 @@
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
     "mudancas": 5
-   },
-   {
-    "arquivo": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
-    "mudancas": 5
    }
   ],
   "autores_30d": [
@@ -305,7 +305,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 43
+    "commits": 42
    },
    {
     "autor": "github-actions[bot]",

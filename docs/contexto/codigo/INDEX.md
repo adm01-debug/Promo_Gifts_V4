@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `87fe8cd9b7244f8c31d6cfac9fb471d619d93159` (2026-11-08T01:52:35-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8c3abe3bcb08c7d5021fc619a3ebe92a938c0ad6` (2026-11-08T01:57:41-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,14 +586,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38272 nós · 66793 arestas · 2134 comunidades · grafo do commit `87fe8cd9`
-- comunidades maiores: react (641), ref_components (574), ref_lib (498), lucide-react (496), ref_integrations (429), nav.ts (354), ref_hooks (314), @tanstack/react-query (294), scripts (289), ref_node_fs (288), ref_types (258), concludeCheck (246)
+- 38272 nós · 66794 arestas · 2128 comunidades · grafo do commit `8c3abe3b`
+- comunidades maiores: ref_lib (560), ref_integrations (522), ref_components (505), lucide-react (404), ref_hooks (342), react (322), scripts (289), ref_node_fs (288), gotoAndSettle (280), react-router-dom (274), sonner (247), D.1 — Núcleo (adoção alta, é o que sustenta o padrão) (242)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (73)
-- PENDENCIAS.md (63)
+- RELATORIO_CI.md (72)
+- PENDENCIAS.md (62)
 - package.json (25)
 - supabase/MIGRATIONS_SYNC_LOG.md (19)
 - package-lock.json (18)
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-08 `8c3abe3` chore(backlog): marca FT-175 como implementado (#3206)
 - 2026-11-08 `87fe8cd` chore(main): release 1.8.1
 - 2026-11-08 `1036dc3` fix(ci): aceitar skip estrutural do PDF no Chromium (#3199)
 - 2026-11-08 `e09f412` docs(ci): RELATORIO §32 + PENDENCIAS #44 (#3200)
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-08 `ed85d00` fix(e2e): preservar smoke diante de lockout compartilhado do CI
 - 2026-11-08 `59a9584` docs(ci): RELATORIO §31 — estado final SHA 16408a68
 - 2026-11-08 `fa9e722` docs: recibo deploy health-check run 42367422517 (E66) — substitui #3134
-- 2026-11-08 `a7c10dc` fix(e2e): corrige seletores e mocks mortos do novelty-grid-visual (#3184)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "87fe8cd9b7244f8c31d6cfac9fb471d619d93159",
+  "sha": "8c3abe3bcb08c7d5021fc619a3ebe92a938c0ad6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 05:17 UTC",
+  "generated_at": "2026-11-08 05:39 UTC",
   "files_total": 9124,
   "code_files": 7862,
   "code_lines": 1054364
@@ -484026,10 +484026,19 @@
   }
  },
  "git": {
-  "sha": "87fe8cd9b7244f8c31d6cfac9fb471d619d93159",
+  "sha": "8c3abe3bcb08c7d5021fc619a3ebe92a938c0ad6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "8c3abe3",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "chore(backlog): marca FT-175 como implementado (#3206)",
+    "files": [
+     "docs/estado/backlog/funcionalidades.md"
+    ]
+   },
    {
     "sha": "87fe8cd",
     "date": "2026-11-08",
@@ -484503,21 +484512,12 @@
     "files": [
      "RELATORIO_CI.md"
     ]
-   },
-   {
-    "sha": "be7688d",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "docs(ci): RELATORIO §23 — baseline bfb2926d + tabela de prova completa 36 workflows (#3178)",
-    "files": [
-     "RELATORIO_CI.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    10
+    9
    ],
    [
     "PENDENCIAS.md",
@@ -484568,6 +484568,10 @@
     2
    ],
    [
+    "docs/estado/backlog/funcionalidades.md",
+    1
+   ],
+   [
     "e2e/catalog.spec.ts",
     1
    ],
@@ -484589,10 +484593,6 @@
    ],
    [
     "src/components/kit-builder/KitOnboardingTour.tsx",
-    1
-   ],
-   [
-    "src/components/novelties/VirtualizedNoveltyGrid.tsx",
     1
    ]
   ]
