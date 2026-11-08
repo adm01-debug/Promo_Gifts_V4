@@ -979,16 +979,27 @@ flows/90-92 (personalization auth redirect) — 4 testes falhando
 
 ---
 
-## 52. Deploy Gates — Gate Final ❌ (main) / em progresso (PR) — runner starvation free tier
+## 52. Deploy Gates — Gate Final ❌ — R_SCHEMA_DRIFT=failure (Gate E40 — Ledger parity pré-existente)
 
 **Workflow:** `deploy-gates.yml` → job `Gate Final - Deploy Ready`  
-**Run ID (main `8c3abe3bcb`):** [42448861374](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861374) → `status: queued` desde 04:57Z (06:00Z+ sem runner atribuído)  
-**Run ID (PR branch `bdbba9e38`):** [42451417275](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42451417275) → runners alocados ~05:42Z; vários gates `completed: success` (ver §36)  
-**Causa:** GitHub Actions free tier tem limite de concorrência de runners. Com múltiplos workflows enfileirados, o run da branch main ficou bloqueado por runner starvation — bloqueio externo, não corrigível por código.  
-**Required check em main:** SIM — "Gate Final - Deploy Ready" está em `.github/required-checks.json`.  
-**Por que não corrijo:** Bloqueio externo (infraestrutura GitHub); já foi mitigado ao cancelar runs antigas em 05:0xZ (§34). O run na PR está progredindo.  
+**Run ID (PR branch `bdbba9e38`):** [42451417275](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42451417275) → `conclusion: failure` (05:51Z)  
+**Run ID (main `8c3abe3bcb`):** [42448861374](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42448861374) → `queued` → mesmo erro esperado quando rodar  
+**Erro exato (Gate Final — job 128644070965):**
+```
+R_SCHEMA_DRIFT: failure
+##[error]Gate E40 Schema Drift falhou (failure)
+```
+**Causa do Gate E40 (job 128642836745 — step 9):**
+```
+Ledger parity (repo x canonical) → failure
+```
+O check `ledger_parity` detecta que há `local_only≈1142; remote_only≈678` migrations divergentes entre o repo e o banco de produção `doufsxqlfjyuvxuezpln`. Idêntico ao PENDENCIAS #1 (sessão anterior).  
+**Todos os outros gates passaram:** `R_SSOT=success`, `R_LINT=success`, `R_UNIT=success`, `R_BUILD=success`, `R_SECRET_SCAN=success`, `R_E2E=success`, `R_DB_INT=success`, etc.  
+**Pré-existente:** Esta divergência existia antes desta sessão (PENDENCIAS #1 de 2026-11-05). Esta sessão adicionou 1 migration local (`20261108001500`), mas o ledger já estava divergente com ~1141 arquivos.  
+**Required check em main:** SIM — "Gate Final - Deploy Ready" está em `.github/required-checks.json`. **Bloqueia o merge da PR #3202.**  
+**Por que não corrijo:** PENDENCIAS #1 proíbe `migration repair` em lote sem autorização do dono (REGRA #8). Requer reconciliação do ledger entre repo e banco de produção.  
 **O que o dono precisa fazer:**  
-1. Aguardar o run [#42451417275](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42451417275) concluir na PR  
-2. Se "Gate Final - Deploy Ready" = success na PR: fazer merge (squash) da PR #3202  
-3. Após merge, o Gate Final no main será re-executado automaticamente; aguardar success  
-4. Depois: re-disparar `db-apply-migration.yml` com `MIGRATION_VERSION=20261108001500` (ver #46)
+1. Resolver PENDENCIAS #1: executar `supabase migration list --linked` para ver divergências e `supabase migration repair --status applied <versão>` para cada migration real  
+2. Após reconciliar o ledger: re-executar o Deploy Gates na PR #3202 — Gate E40 passará  
+3. Gate Final passará → PR pronta para merge (squash)  
+4. Após merge: re-disparar `db-apply-migration.yml` com `MIGRATION_VERSION=20261108001500` (ver #46)

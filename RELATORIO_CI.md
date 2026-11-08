@@ -1672,4 +1672,4 @@ Ações tomadas para desbloquear:
 
 > **Workflows verdes antes desta sessão que seguem verdes:** Uptime Monitor ✅, Vercel Preview ✅, Gitleaks ✅ — sem regressão introduzida.
 
-> **Gate Final (`Gate Final - Deploy Ready`):** ainda em progresso no run [#42451417275](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42451417275) em `bdbba9e38`. Quando concluir success: PR pronta para merge (squash), sem bloquear nenhum required check.
+> **Gate Final (`Gate Final - Deploy Ready`):** `conclusion: failure` no run [#42451417275](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42451417275) (bdbba9e38, job [128644070965](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42451417275/job/128644070965)). Único gate com falha: `R_SCHEMA_DRIFT=failure` → `##[error]Gate E40 Schema Drift falhou (failure)`. Causa: "Ledger parity (repo x canonical)" — `local_only≈1142; remote_only≈678` (pré-existente, PENDENCIAS #1 e #52). Todos os demais gates passaram (R_LINT, R_UNIT, R_BUILD, R_E2E, R_SECRET_SCAN etc. = success). Bloqueia merge da PR até que o dono reconcilie o ledger de migrations (PENDENCIAS #1).
