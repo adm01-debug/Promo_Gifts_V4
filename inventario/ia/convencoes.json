@@ -23,7 +23,7 @@
    "src/services (9)"
   ],
   "testes": [
-   "tests/ (802)",
+   "tests/ (803)",
    "e2e/ (620)",
    "co-localizado (__tests__) (605)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
-   "chore: atualiza artefatos, baselines e inventário ia",
-   "fix(scripts): corrige 9 scripts com falhas de runtime",
-   "docs(ci): RELATORIO §29 — baseline local 9feb0148 + inventário fix/ci-workflows",
-   "docs(ci): RELATORIO §28 + PENDENCIAS #39-42 — sessão 2026-11-08",
-   "docs(estado): atualiza PROGRESSO e PENDENCIAS — 2026-11-08 (#3189)"
+   "fix: static-pass em 5 shell scripts sem ambiente Docker/DB/CI",
+   "chore: atualiza artefatos, baselines e snapshots gerados",
+   "fix: static-pass e exit codes corretos em 11 scripts",
+   "chore: atualiza artefatos, baselines e inventário",
+   "feat(tests): adiciona contrato decommissioned+cron e corrige 9 scripts"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

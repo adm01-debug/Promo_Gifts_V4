@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2cc7de7141370d4dd408747a2025488a469066f8` (2026-11-08T03:03:07+00:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7856bcba5af8968dd875c30ccd51772c8b93ea01` (2026-11-08T04:12:09+00:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4307), SQL (3228), Markdown (897), JavaScript (307), YAML (107), JSON (96), Shell (19), CSS (13)
+- linguagens: TypeScript (4308), SQL (3228), Markdown (899), JavaScript (307), YAML (107), JSON (99), Shell (19), CSS (13)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 9214 |
-| arquivos_codigo | 4618 |
-| linhas_codigo | 884460 |
+| arquivos_total | 9220 |
+| arquivos_codigo | 4619 |
+| linhas_codigo | 884767 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -48,17 +48,17 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 544 |
 | migrations | 3043 |
 | cron_jobs | 120 |
-| testes | 2189 |
+| testes | 2190 |
 | workflows | 94 |
 | scripts | 255 |
-| docs_md | 897 |
+| docs_md | 899 |
 
 ## Onde ficam as coisas
 - telas: src/pages (111), src/components (3), api/health.ts (1)
 - componentes: src/components (931), src/pages (174), src/contexts (10)
 - hooks: src/hooks (287), src/components (75), src/pages (32)
 - servicos_logica: src/lib (224), src/utils (30), src/services (9)
-- testes: tests/ (802), e2e/ (620), co-localizado (__tests__) (605)
+- testes: tests/ (803), e2e/ (620), co-localizado (__tests__) (605)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/graphify (4), scripts/inventario (4), scripts/ai-context (2)
@@ -586,27 +586,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38196 nós · 67848 arestas · 2092 comunidades · grafo do commit `da32eaed` (DESATUALIZADO em relação ao HEAD)
-- comunidades maiores: ref_lib (556), vitest (346), nav.ts (326), @testing-library/react (316), react (307), scripts (289), ref_hooks (281), ref_node_fs (263), ProductCard.tsx (260), @playwright/test (249), lucide-react (240), ref_types (235)
+- 38205 nós · 67878 arestas · 2095 comunidades · grafo do commit `27f24575` (DESATUALIZADO em relação ao HEAD)
+- comunidades maiores: ref_lib (736), ref_components (492), ref_integrations (492), ProductCard.tsx (349), scripts (289), gotoAndSettle (278), ref_hooks (262), @tanstack/react-query (255), ref_node_fs (251), @playwright/test (248), nav.ts (241), ref_types (240)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - RELATORIO_CI.md (24)
 - PENDENCIAS.md (15)
+- supabase/migrations-snapshot/ALL_IN_ONE.sql (8)
+- supabase/migrations-snapshot/SNAPSHOT_META.json (8)
+- audit-report.txt (7)
+- docs/DB_FRONTEND_COVERAGE.md (7)
+- qa/migrations-draft/DRAFTS_STATUS.md (7)
+- qa/migrations-draft/README.md (7)
+- supabase/functions/_shared/cors-snapshot.json (7)
+- visual-diff-report/index.html (6)
+- visual-diff-report/summary.json (6)
 - .github/workflows/replenishment-quality.yml (5)
+- qa/reports/daily-flows-simulation-2026-11-08.json (5)
 - e2e/flows/magazine-publish-smoke.spec.ts (4)
-- .github/workflows/e2e-swatch-quickview.yml (3)
-- .github/workflows/schema-snapshot-export.yml (3)
-- e2e/fixtures/auth.setup.ts (3)
-- supabase/MIGRATIONS_SYNC_LOG.md (3)
-- .github/workflows/delivery-quality.yml (2)
-- .github/workflows/deploy-gates.yml (2)
-- .github/workflows/e2e-flows.yml (2)
-- .github/workflows/e2e-focused.yml (2)
-- .github/workflows/e2e-personalization.yml (2)
-- .github/workflows/e2e.yml (2)
-- .github/workflows/visual-tests.yml (2)
+- inventario/estado/edges.json (4)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1160,6 +1160,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.7.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.1...v1.7.0) (2026-11-02)
 
 ## Últimos commits
+- 2026-11-08 `7856bcb` fix: static-pass em 5 shell scripts sem ambiente Docker/DB/CI
+- 2026-11-08 `8badacd` chore: atualiza artefatos, baselines e snapshots gerados
+- 2026-11-08 `0b4cb8f` fix: static-pass e exit codes corretos em 11 scripts
+- 2026-11-08 `27f2457` chore: atualiza artefatos, baselines e inventário
+- 2026-11-08 `e139d8a` feat(tests): adiciona contrato decommissioned+cron e corrige 9 scripts
+- 2026-11-08 `c742e0f` fix: static-pass e exit codes corretos em 16 scripts
+- 2026-11-08 `3557175` fix: adiciona structured logger em 5 edge functions e expande testes KitBuilderPage
+- 2026-11-08 `0a36a12` fix: corrige allowlist check-no-db-push e tipo inert no ConfigurationPanelV6
 - 2026-11-08 `2cc7de7` chore: atualiza artefatos, baselines e inventário ia
 - 2026-11-08 `da32eae` fix(scripts): corrige 9 scripts com falhas de runtime
 - 2026-11-07 `46212f0` docs(ci): RELATORIO §29 — baseline local 9feb0148 + inventário fix/ci-workflows
@@ -1167,14 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-07 `0a80360` docs(estado): atualiza PROGRESSO e PENDENCIAS — 2026-11-08 (#3189)
 - 2026-11-07 `561693f` docs(ci): RELATORIO §27 — baseline 12e873af + inventário workflows (#3187)
 - 2026-11-07 `12e873a` docs(ci): RELATORIO §26 — baseline d2ce504a + PENDENCIAS #38 (#3183)
-- 2026-11-07 `bd6773e` fix(ci): impedir falso verde com mínimo de testes inválido (#3168)
-- 2026-11-07 `d2ce504` docs(ci): RELATORIO §25 — Gate Final 2a042dab success + tabela completa (#3182)
-- 2026-11-07 `2a042da` docs(ci): verificar erros exatos #26 #30 #37 — sessão 2026-11-07T22h
-- 2026-11-07 `6522f77` docs(ci): RELATORIO §24 — Gate Final be7688da success + PR #3179
-- 2026-11-07 `be7688d` docs(ci): RELATORIO §23 — baseline bfb2926d + tabela de prova completa 36 workflows (#3178)
-- 2026-11-07 `bfb2926` docs(ci): PENDENCIAS #36 + RELATORIO §22 — Gate Final a882bcc1 success (#3176)
-- 2026-11-07 `a882bcc` docs(edge-deploy-log): recibo do deploy — run 42374498496 (#3163)
-- 2026-11-07 `3093c4a` fix(test): validar de verdade o corpus dos fuzzers (#3173)
 
 ## Arquivos deste diretório
 - `inventario/ia/rotas.json`

@@ -12974,6 +12974,8 @@
   "supabase/functions/ema-pipeline-health/index.ts": [
    "supabase/functions/_shared/authorize.ts",
    "supabase/functions/_shared/cors.ts",
+   "supabase/functions/_shared/request-id.ts",
+   "supabase/functions/_shared/structured-logger.ts",
    "supabase/functions/ema-pipeline-health/handler.ts"
   ],
   "supabase/functions/expert-chat/index.ts": [
@@ -13208,6 +13210,10 @@
    "supabase/functions/_shared/request-id.ts",
    "supabase/functions/_shared/supabase-client-adapter.ts"
   ],
+  "supabase/functions/mcp-query/index.ts": [
+   "supabase/functions/_shared/request-id.ts",
+   "supabase/functions/_shared/structured-logger.ts"
+  ],
   "supabase/functions/mcp-server/index.ts": [
    "supabase/functions/_shared/audit-log.ts",
    "supabase/functions/_shared/cors.ts",
@@ -13217,7 +13223,9 @@
   ],
   "supabase/functions/migrate-helper/index.ts": [
    "supabase/functions/_shared/authorize.ts",
-   "supabase/functions/_shared/cors.ts"
+   "supabase/functions/_shared/cors.ts",
+   "supabase/functions/_shared/request-id.ts",
+   "supabase/functions/_shared/structured-logger.ts"
   ],
   "supabase/functions/ownership-audit/index.ts": [
    "supabase/functions/_shared/contracts/index.ts",
@@ -13249,6 +13257,7 @@
    "supabase/functions/_shared/cors.ts",
    "supabase/functions/_shared/credentials.ts",
    "supabase/functions/_shared/request-id.ts",
+   "supabase/functions/_shared/structured-logger.ts",
    "supabase/functions/_shared/zod-validate.ts"
   ],
   "supabase/functions/product-webhook/contract_test.ts": [
@@ -13487,7 +13496,9 @@
    "supabase/functions/_shared/zod-validate.ts"
   ],
   "supabase/functions/xbz-image-uploader/index.ts": [
-   "supabase/functions/_shared/dispatcher-auth.ts"
+   "supabase/functions/_shared/dispatcher-auth.ts",
+   "supabase/functions/_shared/request-id.ts",
+   "supabase/functions/_shared/structured-logger.ts"
   ]
  }
 }

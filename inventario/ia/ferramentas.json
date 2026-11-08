@@ -3,12 +3,12 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4307)",
+   "TypeScript (4308)",
    "SQL (3228)",
-   "Markdown (897)",
+   "Markdown (899)",
    "JavaScript (307)",
    "YAML (107)",
-   "JSON (96)",
+   "JSON (99)",
    "Shell (19)",
    "CSS (13)"
   ],
@@ -4707,7 +4707,7 @@
   "hosts_externos": [
    {
     "host": "doufsxqlfjyuvxuezpln.supabase.co",
-    "arquivos": 58
+    "arquivos": 59
    },
    {
     "host": "wa.me",

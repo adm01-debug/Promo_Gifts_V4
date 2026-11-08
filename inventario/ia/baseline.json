@@ -2,11 +2,51 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2cc7de7141370d4dd408747a2025488a469066f8",
+  "commit": "7856bcba5af8968dd875c30ccd51772c8b93ea01",
   "branch": "claude/inspiring-knuth-swo71j",
-  "data_commit": "2026-11-08T03:03:07+00:00",
+  "data_commit": "2026-11-08T04:12:09+00:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "7856bcb",
+    "data": "2026-11-08",
+    "assunto": "fix: static-pass em 5 shell scripts sem ambiente Docker/DB/CI"
+   },
+   {
+    "sha": "8badacd",
+    "data": "2026-11-08",
+    "assunto": "chore: atualiza artefatos, baselines e snapshots gerados"
+   },
+   {
+    "sha": "0b4cb8f",
+    "data": "2026-11-08",
+    "assunto": "fix: static-pass e exit codes corretos em 11 scripts"
+   },
+   {
+    "sha": "27f2457",
+    "data": "2026-11-08",
+    "assunto": "chore: atualiza artefatos, baselines e inventário"
+   },
+   {
+    "sha": "e139d8a",
+    "data": "2026-11-08",
+    "assunto": "feat(tests): adiciona contrato decommissioned+cron e corrige 9 scripts"
+   },
+   {
+    "sha": "c742e0f",
+    "data": "2026-11-08",
+    "assunto": "fix: static-pass e exit codes corretos em 16 scripts"
+   },
+   {
+    "sha": "3557175",
+    "data": "2026-11-08",
+    "assunto": "fix: adiciona structured logger em 5 edge functions e expande testes KitBuilderPage"
+   },
+   {
+    "sha": "0a36a12",
+    "data": "2026-11-08",
+    "assunto": "fix: corrige allowlist check-no-db-push e tipo inert no ConfigurationPanelV6"
+   },
    {
     "sha": "2cc7de7",
     "data": "2026-11-08",
@@ -91,49 +131,9 @@
     "sha": "1a47c69",
     "data": "2026-11-07",
     "assunto": "docs: RELATORIO_CI.md e PENDENCIAS.md — status CI e workflows (#3172)"
-   },
-   {
-    "sha": "fa5da5d",
-    "data": "2026-11-07",
-    "assunto": "chore(docs): Gate 1.14 — adiciona SUPABASE_TEST_BYPASS_TOKEN ao SEGREDOS.md (#3164)"
-   },
-   {
-    "sha": "df81a74",
-    "data": "2026-11-07",
-    "assunto": "fix(magazine): impedir colapso do título em lg (#3161)"
-   },
-   {
-    "sha": "787f843",
-    "data": "2026-11-07",
-    "assunto": "Merge pull request #3154 from adm01-debug/claude/fix-dashboard-title-loading-261107-0100"
-   },
-   {
-    "sha": "9739e65",
-    "data": "2026-11-07",
-    "assunto": "fix(e2e): adiciona role seller ao helper de auth (#3145)"
-   },
-   {
-    "sha": "3b2deef",
-    "data": "2026-11-07",
-    "assunto": "fix(ci): testar gates E2E no artefato de produção (#3142)"
-   },
-   {
-    "sha": "a0e18eb",
-    "data": "2026-11-07",
-    "assunto": "Merge branch 'main' into claude/fix-dashboard-title-loading-261107-0100"
-   },
-   {
-    "sha": "3c2ff92",
-    "data": "2026-11-07",
-    "assunto": "docs(ci): §13 prova final Gate Final success SHA b5f7d2e29e0b (2026-11-07) (#3158)"
-   },
-   {
-    "sha": "57ada84",
-    "data": "2026-11-07",
-    "assunto": "docs(pendencias): atualiza PENDENCIAS.md — itens #22/#23/#24 + re-falha #2 (#3155)"
    }
   ],
-  "arquivos_mudados_7d": 9278,
+  "arquivos_mudados_7d": 9291,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 151
+    "mudancas": 152
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -153,23 +153,23 @@
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 94
+    "mudancas": 96
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 87
+    "mudancas": 88
    },
    {
     "pasta": "src/components/inventory",
     "mudancas": 80
    },
    {
-    "pasta": "src/components/ui",
-    "mudancas": 73
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 75
    },
    {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 70
+    "pasta": "src/components/ui",
+    "mudancas": 73
    },
    {
     "pasta": "src/components/mockup",
@@ -206,11 +206,75 @@
     "mudancas": 15
    },
    {
+    "arquivo": "supabase/migrations-snapshot/ALL_IN_ONE.sql",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "supabase/migrations-snapshot/SNAPSHOT_META.json",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "audit-report.txt",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "docs/DB_FRONTEND_COVERAGE.md",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "qa/migrations-draft/DRAFTS_STATUS.md",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "qa/migrations-draft/README.md",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "supabase/functions/_shared/cors-snapshot.json",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "visual-diff-report/index.html",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "visual-diff-report/summary.json",
+    "mudancas": 6
+   },
+   {
     "arquivo": ".github/workflows/replenishment-quality.yml",
     "mudancas": 5
    },
    {
+    "arquivo": "qa/reports/daily-flows-simulation-2026-11-08.json",
+    "mudancas": 5
+   },
+   {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "inventario/estado/edges.json",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "inventario/estado/rotas.json",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "qa/exports/proposal-10015-26.pdf",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "qa/exports/proposal-complex-99999-26.pdf",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "qa/exports/proposal-minimal-00001-26.pdf",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "qa/reports/cart-header-fuzz-report.md",
     "mudancas": 4
    },
    {
@@ -222,80 +286,16 @@
     "mudancas": 3
    },
    {
+    "arquivo": "artifacts/route-test-matrix.json",
+    "mudancas": 3
+   },
+   {
     "arquivo": "e2e/fixtures/auth.setup.ts",
     "mudancas": 3
    },
    {
-    "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "arquivo": "replenishment-performance-dashboard.json",
     "mudancas": 3
-   },
-   {
-    "arquivo": ".github/workflows/delivery-quality.yml",
-    "mudancas": 2
-   },
-   {
-    "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 2
-   },
-   {
-    "arquivo": ".github/workflows/e2e-flows.yml",
-    "mudancas": 2
-   },
-   {
-    "arquivo": ".github/workflows/e2e-focused.yml",
-    "mudancas": 2
-   },
-   {
-    "arquivo": ".github/workflows/e2e-personalization.yml",
-    "mudancas": 2
-   },
-   {
-    "arquivo": ".github/workflows/e2e.yml",
-    "mudancas": 2
-   },
-   {
-    "arquivo": ".github/workflows/visual-tests.yml",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "artifacts/route-test-matrix.json",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "artifacts/route-test-matrix.md",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "audit-report.txt",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "docs/DB_FRONTEND_COVERAGE.md",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "docs/E2E_SMOKE_COVERAGE.md",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "docs/contexto/regras/manual/regras.md",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "docs/estado/PENDENCIAS.md",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "docs/estado/PROGRESSO.md",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "e2e/catalog/novidades-reposicao-card-parity.spec.ts",
-    "mudancas": 2
    }
   ],
   "autores_30d": [
@@ -305,7 +305,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 2
+    "commits": 10
    },
    {
     "autor": "github-actions[bot]",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9214,
-  "arquivos_codigo": 4618,
-  "linhas_codigo": 884460,
+  "arquivos_total": 9220,
+  "arquivos_codigo": 4619,
+  "linhas_codigo": 884767,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -328,10 +328,10 @@
   "tabelas": 544,
   "migrations": 3043,
   "cron_jobs": 120,
-  "testes": 2189,
+  "testes": 2190,
   "workflows": 94,
   "scripts": 255,
-  "docs_md": 897
+  "docs_md": 899
  },
  "por_pasta": {
   ".github/scripts": {
@@ -924,7 +924,7 @@
   },
   "scripts/audit-debug.ts": {
    "arquivos": 1,
-   "linhas": 72
+   "linhas": 86
   },
   "scripts/build-cors-snapshot.mjs": {
    "arquivos": 1,
@@ -1016,7 +1016,7 @@
   },
   "scripts/check-cloud-status-coverage.mjs": {
    "arquivos": 1,
-   "linhas": 102
+   "linhas": 100
   },
   "scripts/check-cnpj-render.mjs": {
    "arquivos": 1,
@@ -1048,7 +1048,7 @@
   },
   "scripts/check-critical-path-coverage.mjs": {
    "arquivos": 1,
-   "linhas": 100
+   "linhas": 99
   },
   "scripts/check-cron-drift.mjs": {
    "arquivos": 1,
@@ -1204,7 +1204,7 @@
   },
   "scripts/check-min-tests-executed.mjs": {
    "arquivos": 1,
-   "linhas": 56
+   "linhas": 55
   },
   "scripts/check-mojibake.mjs": {
    "arquivos": 1,
@@ -1272,7 +1272,7 @@
   },
   "scripts/check-price-freshness-coverage.mjs": {
    "arquivos": 1,
-   "linhas": 136
+   "linhas": 134
   },
   "scripts/check-product-type-duplicates.mjs": {
    "arquivos": 1,
@@ -1436,7 +1436,7 @@
   },
   "scripts/ci-metrics.mjs": {
    "arquivos": 1,
-   "linhas": 270
+   "linhas": 275
   },
   "scripts/ci-performance-gate.ts": {
    "arquivos": 1,
@@ -1472,7 +1472,7 @@
   },
   "scripts/e2e-feature-summary.mjs": {
    "arquivos": 1,
-   "linhas": 374
+   "linhas": 371
   },
   "scripts/e2e-mock-auth-setup.mjs": {
    "arquivos": 1,
@@ -1484,7 +1484,7 @@
   },
   "scripts/e2e-smoke-summary.mjs": {
    "arquivos": 1,
-   "linhas": 404
+   "linhas": 401
   },
   "scripts/eslint-baseline-generate.mjs": {
    "arquivos": 1,
@@ -1568,7 +1568,7 @@
   },
   "scripts/kit-ai-enrichment.js": {
    "arquivos": 1,
-   "linhas": 40
+   "linhas": 60
   },
   "scripts/kit-enrichment": {
    "arquivos": 2,
@@ -1664,7 +1664,7 @@
   },
   "scripts/run-smoke-filtered.mjs": {
    "arquivos": 1,
-   "linhas": 60
+   "linhas": 70
   },
   "scripts/seo-sanity-check.mjs": {
    "arquivos": 1,
@@ -1692,11 +1692,11 @@
   },
   "scripts/simulate-quote-rpc-proposals.mjs": {
    "arquivos": 1,
-   "linhas": 582
+   "linhas": 589
   },
   "scripts/simulate-signup-migration.mjs": {
    "arquivos": 1,
-   "linhas": 245
+   "linhas": 251
   },
   "scripts/smoke-tests.mjs": {
    "arquivos": 1,
@@ -1760,7 +1760,7 @@
   },
   "scripts/typecheck-edge-functions.mjs": {
    "arquivos": 1,
-   "linhas": 137
+   "linhas": 135
   },
   "scripts/update-any-type-baseline.mjs": {
    "arquivos": 1,
@@ -1780,11 +1780,11 @@
   },
   "scripts/validate-lovable-sync-target.mjs": {
    "arquivos": 1,
-   "linhas": 161
+   "linhas": 159
   },
   "scripts/validate-migration-target.mjs": {
    "arquivos": 1,
-   "linhas": 81
+   "linhas": 89
   },
   "scripts/validate-quote-summary-undo.mjs": {
    "arquivos": 1,
@@ -1796,7 +1796,7 @@
   },
   "scripts/validate-ssot-report.mjs": {
    "arquivos": 1,
-   "linhas": 284
+   "linhas": 287
   },
   "scripts/validate-supabase-config.mjs": {
    "arquivos": 1,
@@ -1812,11 +1812,11 @@
   },
   "scripts/verify-quote-number-hardening.mjs": {
    "arquivos": 1,
-   "linhas": 240
+   "linhas": 245
   },
   "scripts/verify-roboflow-setup.js": {
    "arquivos": 1,
-   "linhas": 253
+   "linhas": 251
   },
   "scripts/wraparound-monitor-check.mjs": {
    "arquivos": 1,
@@ -1832,7 +1832,7 @@
   },
   "src/components": {
    "arquivos": 1332,
-   "linhas": 268659
+   "linhas": 268660
   },
   "src/config": {
    "arquivos": 1,
@@ -1908,7 +1908,7 @@
   },
   "supabase/functions": {
    "arquivos": 251,
-   "linhas": 45902
+   "linhas": 45928
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -1984,7 +1984,7 @@
   },
   "tests/components": {
    "arquivos": 145,
-   "linhas": 32335
+   "linhas": 32453
   },
   "tests/config": {
    "arquivos": 5,
@@ -2007,8 +2007,8 @@
    "linhas": 165
   },
   "tests/edge-functions": {
-   "arquivos": 167,
-   "linhas": 12487
+   "arquivos": 168,
+   "linhas": 12589
   },
   "tests/fixtures": {
    "arquivos": 3,
@@ -2299,7 +2299,7 @@
  ],
  "qualidade": {
   "any": 568,
-  "console_log": 1235,
+  "console_log": 1269,
   "ts_ignore": 0,
   "eslint_disable": 6,
   "todos": 74,
@@ -2614,7 +2614,7 @@
   },
   {
    "arquivo": "supabase/functions/xbz-image-uploader/index.ts",
-   "linha": 50,
+   "linha": 56,
    "tipo": "TODO",
    "texto": "implementar upload para Cloudflare Images + chamada a complete_xbz_image_import"
   },

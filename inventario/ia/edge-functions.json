@@ -1208,7 +1208,7 @@
    "nome": "ema-pipeline-health",
    "entrada": "supabase/functions/ema-pipeline-health/index.ts",
    "arquivos": 2,
-   "linhas": 189,
+   "linhas": 194,
    "verify_jwt": true,
    "metodos": [
     "GET",
@@ -1225,7 +1225,9 @@
    "hosts_externos": [],
    "usa_shared": [
     "authorize.ts",
-    "cors.ts"
+    "cors.ts",
+    "request-id.ts",
+    "structured-logger.ts"
    ],
    "chamada_pelo_front": [],
    "chamada_por_edges": [],
@@ -2396,7 +2398,7 @@
    "nome": "mcp-query",
    "entrada": "supabase/functions/mcp-query/index.ts",
    "arquivos": 1,
-   "linhas": 16,
+   "linhas": 22,
    "verify_jwt": true,
    "metodos": [],
    "tabelas": [],
@@ -2405,7 +2407,10 @@
    "buckets": [],
    "chama_edges": [],
    "hosts_externos": [],
-   "usa_shared": [],
+   "usa_shared": [
+    "request-id.ts",
+    "structured-logger.ts"
+   ],
    "chamada_pelo_front": [],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
@@ -2453,7 +2458,7 @@
    "nome": "migrate-helper",
    "entrada": "supabase/functions/migrate-helper/index.ts",
    "arquivos": 2,
-   "linhas": 39,
+   "linhas": 45,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -2466,7 +2471,9 @@
    "hosts_externos": [],
    "usa_shared": [
     "authorize.ts",
-    "cors.ts"
+    "cors.ts",
+    "request-id.ts",
+    "structured-logger.ts"
    ],
    "chamada_pelo_front": [],
    "chamada_por_edges": [],
@@ -2615,7 +2622,7 @@
    "nome": "product-visual-search",
    "entrada": "supabase/functions/product-visual-search/index.ts",
    "arquivos": 1,
-   "linhas": 553,
+   "linhas": 556,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -2642,6 +2649,7 @@
     "cors.ts",
     "credentials.ts",
     "request-id.ts",
+    "structured-logger.ts",
     "zod-validate.ts"
    ],
    "chamada_pelo_front": [],
@@ -3844,7 +3852,7 @@
    "nome": "xbz-image-uploader",
    "entrada": "supabase/functions/xbz-image-uploader/index.ts",
    "arquivos": 1,
-   "linhas": 59,
+   "linhas": 65,
    "verify_jwt": true,
    "metodos": [
     "POST"
@@ -3861,7 +3869,9 @@
    "chama_edges": [],
    "hosts_externos": [],
    "usa_shared": [
-    "dispatcher-auth.ts"
+    "dispatcher-auth.ts",
+    "request-id.ts",
+    "structured-logger.ts"
    ],
    "chamada_pelo_front": [],
    "chamada_por_edges": [],
