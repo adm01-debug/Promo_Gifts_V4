@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0a80360f114cceba6676a412cfab3ae9917785dd",
+  "commit": "9feb0148afabc3433713d6dcb9271bed8fd9f436",
   "branch": "main",
-  "data_commit": "2026-11-07T22:11:51-03:00",
+  "data_commit": "2026-11-07T22:42:04-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "9feb014",
+    "data": "2026-11-07",
+    "assunto": "docs(ci): RELATORIO §28 + PENDENCIAS #39-42 — sessão 2026-11-08"
+   },
    {
     "sha": "0a80360",
     "data": "2026-11-07",
@@ -126,74 +131,69 @@
     "sha": "b5f7d2e",
     "data": "2026-11-07",
     "assunto": "docs(ci): inventário HEAD 0549ea39629b (2026-11-07) — §11 RELATORIO + §21 PENDENCIAS (#3149)"
-   },
-   {
-    "sha": "0549ea3",
-    "data": "2026-11-07",
-    "assunto": "fix(catálogo): buscar cores ao trocar filtros ou página (#3140)"
    }
   ],
   "arquivos_mudados_7d": 405,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 906
+    "mudancas": 610
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 460
+    "mudancas": 311
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 348
+    "mudancas": 234
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 318
+    "mudancas": 214
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 278
+    "mudancas": 186
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 259
+    "mudancas": 177
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 240
+    "mudancas": 160
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 227
-   },
-   {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 209
+    "mudancas": 154
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 191
+    "mudancas": 145
+   },
+   {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 140
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 178
+    "mudancas": 119
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 159
+    "mudancas": 109
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 149
+    "mudancas": 102
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 143
+    "mudancas": 96
    },
    {
     "pasta": "docs/arquivo/2026-09",
-    "mudancas": 129
+    "mudancas": 86
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -207,95 +207,95 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 24
+    "mudancas": 23
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 19
+    "mudancas": 18
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 16
-   },
-   {
-    "arquivo": "CHANGELOG.md",
     "mudancas": 15
    },
    {
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 14
+   },
+   {
     "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 12
-   },
-   {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 12
-   },
-   {
-    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
     "mudancas": 11
    },
    {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
     "mudancas": 10
    },
    {
-    "arquivo": "AGENTS.md",
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "mudancas": 10
+   },
+   {
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 9
+   },
+   {
+    "arquivo": "AGENTS.md",
+    "mudancas": 8
    },
    {
     "arquivo": "CLAUDE.md",
-    "mudancas": 9
+    "mudancas": 8
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 9
+    "mudancas": 8
    },
    {
     "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "analise-prs/progresso.json",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "analise-prs/prs.csv",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "docs/estado/PENDENCIAS.md",
     "mudancas": 7
    },
    {
-    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
+    "arquivo": "analise-prs/progresso.json",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "analise-prs/prs.csv",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "docs/estado/PENDENCIAS.md",
     "mudancas": 6
+   },
+   {
+    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
+    "mudancas": 5
    },
    {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 6
+    "mudancas": 5
    },
    {
     "arquivo": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
-    "mudancas": 6
+    "mudancas": 5
    },
    {
     "arquivo": "analise-branches/dossies/fix-contract-mag-reader-261019-2110.md",
-    "mudancas": 6
+    "mudancas": 5
    },
    {
     "arquivo": "analise-branches/progresso.json",
-    "mudancas": 6
+    "mudancas": 5
    }
   ],
   "autores_30d": [
@@ -313,11 +313,11 @@
    },
    {
     "autor": "Claude",
-    "commits": 6
+    "commits": 5
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 3
+    "commits": 2
    }
   ]
  },

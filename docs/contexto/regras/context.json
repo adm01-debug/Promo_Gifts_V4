@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "0a80360f114cceba6676a412cfab3ae9917785dd",
+  "sha": "9feb0148afabc3433713d6dcb9271bed8fd9f436",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 01:19 UTC",
+  "generated_at": "2026-11-08 01:46 UTC",
   "files_total": 9100,
   "code_files": 7845,
   "code_lines": 1051414
@@ -483049,10 +483049,20 @@
   }
  },
  "git": {
-  "sha": "0a80360f114cceba6676a412cfab3ae9917785dd",
+  "sha": "9feb0148afabc3433713d6dcb9271bed8fd9f436",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "9feb014",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "docs(ci): RELATORIO §28 + PENDENCIAS #39-42 — sessão 2026-11-08",
+    "files": [
+     "PENDENCIAS.md",
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "0a80360",
     "date": "2026-11-07",
@@ -483336,34 +483346,16 @@
     "files": [
      "supabase/functions/health-check/index.ts"
     ]
-   },
-   {
-    "sha": "9429112",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "fix(ci): reduzir pressão dos E2E no Supabase (#3130)",
-    "files": [
-     ".github/scripts/e2e-relevance.mjs",
-     ".github/workflows/_e2e-relevance.yml",
-     ".github/workflows/delivery-quality.yml",
-     ".github/workflows/deploy-gates.yml",
-     ".github/workflows/e2e-flows.yml",
-     ".github/workflows/e2e-focused.yml",
-     ".github/workflows/e2e-personalization.yml",
-     ".github/workflows/e2e-swatch-quickview.yml",
-     ".github/workflows/e2e.yml",
-     ".github/workflows/visual-tests.yml"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    11
+    12
    ],
    [
     "PENDENCIAS.md",
-    6
+    7
    ],
    [
     "e2e/flows/magazine-publish-smoke.spec.ts",
