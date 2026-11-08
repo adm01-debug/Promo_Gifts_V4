@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "cda45f21749477bf92f415c541218f7cabb44c02",
+  "sha": "d8ae515913db370da08784f3c911834c1668b98c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 18:45 UTC",
+  "generated_at": "2026-11-08 19:05 UTC",
   "files_total": 9126,
   "code_files": 7862,
   "code_lines": 1054635
@@ -484051,10 +484051,19 @@
   }
  },
  "git": {
-  "sha": "cda45f21749477bf92f415c541218f7cabb44c02",
+  "sha": "d8ae515913db370da08784f3c911834c1668b98c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "d8ae515",
+    "date": "2026-11-08",
+    "author": "github-actions[bot]",
+    "subject": "docs(edge): registra deploy health-check run 42491776265",
+    "files": [
+     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
+    ]
+   },
    {
     "sha": "cda45f2",
     "date": "2026-11-08",
@@ -484375,93 +484384,6 @@
     "files": [
      ".github/workflows/edge-functions-drift-check.yml"
     ]
-   },
-   {
-    "sha": "51519ef",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "test(e2e): endurecer publicação, orçamentos e limpeza canônica",
-    "files": [
-     ".github/workflows/db-schema-drift-check.yml",
-     ".github/workflows/deploy-gates.yml",
-     ".github/workflows/e2e-focused.yml",
-     ".github/workflows/e2e-quotes.yml",
-     ".github/workflows/visual-tests.yml",
-     "docs/ci/SEGREDOS.md",
-     "e2e/catalog/helpers/swatch-view.ts",
-     "e2e/fixtures/auth.setup.ts",
-     "e2e/fixtures/quickview-dataset.ts",
-     "e2e/fixtures/test-base.ts",
-     "e2e/fixtures/test-user.ts",
-     "e2e/flows/03b-product-thumb-quickview.spec.ts",
-     "e2e/flows/04m-quotes-awaiting-tooltip-viewports.spec.ts",
-     "e2e/flows/04m-quotes-status-tooltips-a11y.spec.ts",
-     "e2e/flows/04m-quotes-status-tooltips.spec.ts",
-     "e2e/flows/04o-quotes-columns-always-visible.spec.ts",
-     "e2e/flows/04o-quotes-single-delete-undo.spec.ts",
-     "e2e/flows/04p-quotes-bulk-delete-undo.spec.ts",
-     "e2e/flows/04p-quotes-expiration-column.spec.ts",
-     "e2e/flows/04q-quotes-single-delete-undo-edge-cases.spec.ts",
-     "e2e/flows/04s-quotes-duplicate-undo-a11y-rapid.spec.ts",
-     "e2e/flows/22-header-sticky.spec.ts",
-     "e2e/flows/freight-quest-complete-flow.spec.ts",
-     "e2e/flows/magazine-publish-smoke.spec.ts",
-     "e2e/helpers/cleanup-client.ts",
-     "e2e/helpers/e2e-resources.ts",
-     "e2e/helpers/http-status.ts",
-     "e2e/helpers/quotes-status-seed.ts",
-     "e2e/quotes/quote-add-product-button.spec.ts",
-     "e2e/quotes/quote-item-editor-sheet-header.spec.ts",
-     "e2e/quotes/quote-items-inner-scroll.spec.ts",
-     "e2e/quotes/quote-items-table-header-radius.spec.ts",
-     "e2e/quotes/quote-row-menu-width-zoom.spec.ts",
-     "e2e/quotes/quote-row-menu-width.spec.ts",
-     "e2e/quotes/quote-summary-action-buttons-states.spec.ts",
-     "e2e/quotes/quote-summary-action-buttons.spec.ts",
-     "e2e/quotes/quote-summary-collapse-all.spec.ts",
-     "e2e/quotes/quote-summary-sticky-header-visual.spec.ts",
-     "e2e/quotes/quote-summary-sticky-header.spec.ts",
-     "e2e/quotes/quote-view-mainlayout-overflow.spec.ts",
-     "e2e/quotes/quote-view-no-presentation-mode.spec.ts",
-     "e2e/quotes/quote-view-overflow-regression.spec.ts",
-     "e2e/quotes/quote-view-sticky-sidebar.spec.ts",
-     "e2e/quotes/quote-view-sticky-visual.spec.ts",
-     "e2e/quotes/quote-view-sticky-visual.spec.ts-snapshots/sidebar-after-scroll-chromium-public-linux.png",
-     "e2e/quotes/quote-view-sticky-visual.spec.ts-snapshots/sidebar-before-scroll-chromium-public-linux.png",
-     "e2e/routes/quotes/quote-list-responsive.spec.ts",
-     "e2e/visual/quote-freight-block.spec.ts",
-     "package.json",
-     "scripts/check-cron-drift.mjs",
-     "scripts/check-event-triggers-drift.mjs",
-     "scripts/check-visual-tests-specs.mjs",
-     "scripts/drift-baseline.mjs",
-     "scripts/lib/canonical-pg-connection.mjs",
-     "scripts/migration-ledger-remote-only-allowlist.json",
-     "scripts/validate-migration-target.mjs",
-     "src/components/ui/ConfirmDialog.tsx",
-     "src/components/ui/__tests__/ConfirmDialog.keyboard.test.tsx",
-     "src/pages/__visual/QuoteViewOrderHarness.tsx",
-     "src/pages/magazine/MagazineEditorPage.tsx",
-     "src/pages/magazine/__tests__/MagazineEditorPage.hooksOrder.test.tsx",
-     "src/pages/quotes/QuoteViewPage.tsx",
-     "src/pages/quotes/quote-view/QuoteUnavailableState.test.tsx",
-     "src/pages/quotes/quote-view/QuoteUnavailableState.tsx",
-     "src/pages/quotes/quote-view/useQuoteViewData.test.tsx",
-     "src/pages/quotes/quote-view/useQuoteViewData.ts",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/baseline/20261108000000_cron_jobs.json",
-     "supabase/baseline/20261108000000_event_triggers.json",
-     "supabase/functions/e2e-cleanup/index.mockups.test.ts",
-     "supabase/functions/e2e-cleanup/index.ts",
-     "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql",
-     "supabase/rollbacks/20261108001500_rollback.sql",
-     "tests/config/e2e-http-status.test.ts",
-     "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
-     "tests/scripts/drift-baseline.test.mjs",
-     "tests/scripts/validate-migration-target.test.mjs",
-     "tests/unit/test-user-prefix.test.ts",
-     "vitest.config.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -484478,14 +484400,6 @@
     3
    ],
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    3
-   ],
-   [
-    "package.json",
-    3
-   ],
-   [
     ".github/SENTINEL_SHA_ALLOWLIST.txt",
     2
    ],
@@ -484494,7 +484408,7 @@
     2
    ],
    [
-    "scripts/migration-ledger-remote-only-allowlist.json",
+    "supabase/MIGRATIONS_SYNC_LOG.md",
     2
    ],
    [
@@ -484510,12 +484424,12 @@
     2
    ],
    [
-    ".github/workflows/e2e-focused.yml",
+    "package.json",
     2
    ],
    [
-    ".github/workflows/deploy-gates.yml",
-    2
+    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    1
    ],
    [
     "auditoria-supabase/P09_INVESTIGACAO_2026-11-08.md",
@@ -484543,6 +484457,14 @@
    ],
    [
     "docs/DB_FRONTEND_COVERAGE.md",
+    1
+   ],
+   [
+    "docs/E2E_SMOKE_COVERAGE.md",
+    1
+   ],
+   [
+    "scripts/check-env.mjs",
     1
    ]
   ]

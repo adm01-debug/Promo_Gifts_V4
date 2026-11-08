@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "cda45f21749477bf92f415c541218f7cabb44c02",
+  "commit": "d8ae515913db370da08784f3c911834c1668b98c",
   "branch": "main",
-  "data_commit": "2026-11-08T15:42:41-03:00",
+  "data_commit": "2026-11-08T16:04:08-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "d8ae515",
+    "data": "2026-11-08",
+    "assunto": "docs(edge): registra deploy health-check run 42491776265"
+   },
    {
     "sha": "cda45f2",
     "data": "2026-11-08",
@@ -126,11 +131,6 @@
     "sha": "1e63b10",
     "data": "2026-11-08",
     "assunto": "chore(main): release 1.8.0"
-   },
-   {
-    "sha": "4e638a6",
-    "data": "2026-11-08",
-    "assunto": "fix(db): fecha vazamento de api_credentials em suppliers para authenticated"
    }
   ],
   "arquivos_mudados_7d": 585,
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 71
+    "mudancas": 70
    },
    {
     "pasta": "src/pages/admin",
@@ -193,17 +193,17 @@
    },
    {
     "pasta": "PENDENCIAS.md",
-    "mudancas": 54
+    "mudancas": 53
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 71
+    "mudancas": 70
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 54
+    "mudancas": 53
    },
    {
     "arquivo": "package.json",
@@ -270,6 +270,10 @@
     "mudancas": 5
    },
    {
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "mudancas": 5
+   },
+   {
     "arquivo": ".github/workflows/ci-security-drift.yml",
     "mudancas": 4
    },
@@ -292,20 +296,16 @@
    {
     "arquivo": "analise-branches/progresso.json",
     "mudancas": 4
-   },
-   {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 4
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 315
+    "commits": 314
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 21
+    "commits": 22
    },
    {
     "autor": "Joaquim Ataides",
