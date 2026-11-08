@@ -1183,3 +1183,4 @@ Esta migration (timestamp antes do bootstrap) adiciona a coluna com `IF NOT EXIS
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20260511235950` | `add_categories_level_drift` | `93610ba1fa022c3050b352f45da4754101f6e7aee6b627a5105e1a0a3e1403aa` | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (REGRA #8: DDL em produção) |
+
