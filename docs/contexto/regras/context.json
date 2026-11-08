@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "e9ed1f416e77ca79d975f4e1dfe40ef4ce06ac96",
+  "sha": "11e2be30eb34a2cef67562f92b1afe29eb31ecae",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 18:20 UTC",
+  "generated_at": "2026-11-08 18:41 UTC",
   "files_total": 9126,
   "code_files": 7862,
   "code_lines": 1054635
@@ -484051,10 +484051,20 @@
   }
  },
  "git": {
-  "sha": "e9ed1f416e77ca79d975f4e1dfe40ef4ce06ac96",
+  "sha": "11e2be30eb34a2cef67562f92b1afe29eb31ecae",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "11e2be3",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(ci): atualiza RELATORIO_CI e PENDENCIAS com verificação HEAD da97d70d (#3231)",
+    "files": [
+     "PENDENCIAS.md",
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "e9ed1f4",
     "date": "2026-11-08",
@@ -484452,16 +484462,6 @@
      "e2e/helpers/auth.ts",
      "e2e/helpers/ci-auth-lockout.ts",
      "tests/unit/ci-auth-lockout.test.ts"
-    ]
-   },
-   {
-    "sha": "59a9584",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs(ci): RELATORIO §31 — estado final SHA 16408a68",
-    "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md"
     ]
    }
   ],

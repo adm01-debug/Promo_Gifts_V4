@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e9ed1f416e77ca79d975f4e1dfe40ef4ce06ac96",
+  "commit": "11e2be30eb34a2cef67562f92b1afe29eb31ecae",
   "branch": "main",
-  "data_commit": "2026-11-08T15:15:17-03:00",
+  "data_commit": "2026-11-08T15:31:02-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "11e2be3",
+    "data": "2026-11-08",
+    "assunto": "docs(ci): atualiza RELATORIO_CI e PENDENCIAS com verificação HEAD da97d70d (#3231)"
+   },
    {
     "sha": "e9ed1f4",
     "data": "2026-11-08",
@@ -126,14 +131,9 @@
     "sha": "576a324",
     "data": "2026-11-08",
     "assunto": "ci: amplia timeout do e2e-gates e corrige min-tests do full-flows"
-   },
-   {
-    "sha": "74d9fda",
-    "data": "2026-11-08",
-    "assunto": "fix(sentinel): audita intervalo first-parent do push (recupera parte faltante da #2839)"
    }
   ],
-  "arquivos_mudados_7d": 587,
+  "arquivos_mudados_7d": 585,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 70
+    "mudancas": 71
    },
    {
     "pasta": "src/pages/admin",
@@ -193,17 +193,17 @@
    },
    {
     "pasta": "PENDENCIAS.md",
-    "mudancas": 53
+    "mudancas": 54
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 70
+    "mudancas": 71
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 53
+    "mudancas": 54
    },
    {
     "arquivo": "package.json",
@@ -258,14 +258,6 @@
     "mudancas": 6
    },
    {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "analise-prs/prs.json",
-    "mudancas": 5
-   },
-   {
     "arquivo": "docs/ci/SEGREDOS.md",
     "mudancas": 5
    },
@@ -295,6 +287,14 @@
    },
    {
     "arquivo": "analise-branches/dossies/fix-contract-mag-reader-261019-2110.md",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "analise-branches/progresso.json",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
     "mudancas": 4
    }
   ],
