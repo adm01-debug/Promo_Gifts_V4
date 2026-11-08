@@ -5,6 +5,15 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.8.2](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.1...v1.8.2) (2026-11-08)
+
+
+### Bug Fixes
+
+* **ci:** reconhecer migration 20261107180000 reconciliada ([#3211](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3211)) ([46ec263](https://github.com/adm01-debug/Promo_Gifts_V4/commit/46ec263fe1b0a72a62154a6dc25eda90fe07767b))
+* **docs:** restaurar contrato de recibos E15 ([#3204](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3204)) ([481e614](https://github.com/adm01-debug/Promo_Gifts_V4/commit/481e6142a737562c89b4c7de9444cc4afecbd19a))
+* **scripts:** corrige scripts, edge functions e baselines ([#3201](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3201)) ([1d3dafa](https://github.com/adm01-debug/Promo_Gifts_V4/commit/1d3dafae93722b7e19f426bcf63701a80ab4b148))
+
 ## [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 
