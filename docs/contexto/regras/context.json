@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "da97d70dea422dae19593ba463d8737e2e0e52b6",
+  "sha": "e9ed1f416e77ca79d975f4e1dfe40ef4ce06ac96",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 17:55 UTC",
+  "generated_at": "2026-11-08 18:20 UTC",
   "files_total": 9126,
   "code_files": 7862,
   "code_lines": 1054635
@@ -484051,10 +484051,19 @@
   }
  },
  "git": {
-  "sha": "da97d70dea422dae19593ba463d8737e2e0e52b6",
+  "sha": "e9ed1f416e77ca79d975f4e1dfe40ef4ce06ac96",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e9ed1f4",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "chore(pendencias): corrige causas raiz P-01, P-02, P-03 — secrets presentes, erros são reais",
+    "files": [
+     "PENDENCIAS.md"
+    ]
+   },
    {
     "sha": "da97d70",
     "date": "2026-11-08",
@@ -484454,15 +484463,6 @@
      "PENDENCIAS.md",
      "RELATORIO_CI.md"
     ]
-   },
-   {
-    "sha": "fa9e722",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs: recibo deploy health-check run 42367422517 (E66) — substitui #3134",
-    "files": [
-     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
-    ]
    }
   ],
   "hot_files": [
@@ -484472,7 +484472,7 @@
    ],
    [
     "PENDENCIAS.md",
-    5
+    6
    ],
    [
     "auditoria-supabase/ADENDO_2026-10-28.md",

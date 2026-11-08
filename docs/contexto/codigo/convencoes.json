@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(pendencias): corrige causas raiz P-01, P-02, P-03 — secrets presentes, erros são reais",
    "docs(auditoria): corrige status P06 — views já têm security_invoker=true",
    "docs(ci): atualiza RELATORIO_CI com Gate Final confirmado (a2dda825) (#3227)",
    "docs(ci): atualiza RELATORIO_CI.md — HEAD a2dda825 + run #42502537624 (#3225)",
-   "docs(auditoria): P09 gap ledger 476 versões + P06 reanálise 24 views + C4 diagnóstico",
-   "docs(ci): grandfathers squash commit 252cc01d + atualiza RELATORIO_CI (#3223)"
+   "docs(auditoria): P09 gap ledger 476 versões + P06 reanálise 24 views + C4 diagnóstico"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

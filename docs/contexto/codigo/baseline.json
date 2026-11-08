@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "da97d70dea422dae19593ba463d8737e2e0e52b6",
+  "commit": "e9ed1f416e77ca79d975f4e1dfe40ef4ce06ac96",
   "branch": "main",
-  "data_commit": "2026-11-08T14:49:51-03:00",
+  "data_commit": "2026-11-08T15:15:17-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e9ed1f4",
+    "data": "2026-11-08",
+    "assunto": "chore(pendencias): corrige causas raiz P-01, P-02, P-03 — secrets presentes, erros são reais"
+   },
    {
     "sha": "da97d70",
     "data": "2026-11-08",
@@ -126,80 +131,75 @@
     "sha": "74d9fda",
     "data": "2026-11-08",
     "assunto": "fix(sentinel): audita intervalo first-parent do push (recupera parte faltante da #2839)"
-   },
-   {
-    "sha": "f0f37db",
-    "data": "2026-11-08",
-    "assunto": "fix(ci): corrige env Vite e endurece smoke autenticado"
    }
   ],
-  "arquivos_mudados_7d": 594,
+  "arquivos_mudados_7d": 587,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 609
+    "mudancas": 313
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 314
+    "mudancas": 164
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 232
+    "mudancas": 117
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 213
-   },
-   {
-    "pasta": "src/pages/magazine",
-    "mudancas": 188
-   },
-   {
-    "pasta": "src/components/quotes",
-    "mudancas": 176
-   },
-   {
-    "pasta": "src/components/inventory",
-    "mudancas": 160
-   },
-   {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 159
-   },
-   {
-    "pasta": "src/components/ui",
-    "mudancas": 149
-   },
-   {
-    "pasta": "src/components/mockup",
-    "mudancas": 120
-   },
-   {
-    "pasta": "src/pages/admin",
-    "mudancas": 118
-   },
-   {
-    "pasta": "src/pages/products",
     "mudancas": 109
    },
    {
+    "pasta": "src/pages/magazine",
+    "mudancas": 96
+   },
+   {
+    "pasta": "src/components/quotes",
+    "mudancas": 94
+   },
+   {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 90
+   },
+   {
+    "pasta": "src/components/inventory",
+    "mudancas": 80
+   },
+   {
+    "pasta": "src/components/ui",
+    "mudancas": 76
+   },
+   {
+    "pasta": "src/components/mockup",
+    "mudancas": 74
+   },
+   {
+    "pasta": "RELATORIO_CI.md",
+    "mudancas": 70
+   },
+   {
+    "pasta": "src/pages/admin",
+    "mudancas": 59
+   },
+   {
+    "pasta": "src/pages/products",
+    "mudancas": 59
+   },
+   {
     "pasta": "src/components/kit-builder",
-    "mudancas": 103
+    "mudancas": 56
    },
    {
-    "pasta": "src/pages/quotes",
-    "mudancas": 100
-   },
-   {
-    "pasta": "docs/arquivo/2026-09",
-    "mudancas": 86
+    "pasta": "PENDENCIAS.md",
+    "mudancas": 53
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 71
+    "mudancas": 70
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -207,95 +207,95 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 23
+    "mudancas": 22
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 20
+    "mudancas": 19
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 17
+    "mudancas": 16
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 15
-   },
-   {
-    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
     "mudancas": 14
    },
    {
+    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
+    "mudancas": 13
+   },
+   {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 10
-   },
-   {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 10
-   },
-   {
-    "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
     "mudancas": 9
    },
    {
-    "arquivo": "AGENTS.md",
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
     "mudancas": 8
+   },
+   {
+    "arquivo": "AGENTS.md",
+    "mudancas": 7
    },
    {
     "arquivo": "CLAUDE.md",
-    "mudancas": 8
+    "mudancas": 7
    },
    {
     "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 7
+    "mudancas": 6
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 7
+    "mudancas": 6
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 6
+    "mudancas": 5
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 6
+    "mudancas": 5
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 6
+    "mudancas": 5
    },
    {
     "arquivo": "docs/estado/backlog/funcionalidades.md",
-    "mudancas": 6
+    "mudancas": 5
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 6
+    "mudancas": 5
    },
    {
     "arquivo": ".github/workflows/ci-security-drift.yml",
-    "mudancas": 5
+    "mudancas": 4
    },
    {
     "arquivo": ".github/workflows/e2e-focused.yml",
-    "mudancas": 5
+    "mudancas": 4
    },
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 5
+    "mudancas": 4
    },
    {
     "arquivo": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
-    "mudancas": 5
+    "mudancas": 4
    },
    {
     "arquivo": "analise-branches/dossies/fix-contract-mag-reader-261019-2110.md",
-    "mudancas": 5
+    "mudancas": 4
    }
   ],
   "autores_30d": [
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 4
+    "commits": 3
    },
    {
     "autor": "Claude",

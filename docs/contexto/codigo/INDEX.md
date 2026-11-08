@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `da97d70dea422dae19593ba463d8737e2e0e52b6` (2026-11-08T14:49:51-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e9ed1f416e77ca79d975f4e1dfe40ef4ce06ac96` (2026-11-08T15:15:17-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,27 +586,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38127 nós · 66625 arestas · 2125 comunidades · grafo do commit `da97d70d`
+- 38127 nós · 66625 arestas · 2125 comunidades · grafo do commit `e9ed1f41`
 - comunidades maiores: ref_components (665), ref_integrations (566), ref_lib (453), ref_hooks (385), @testing-library/react (354), gotoAndSettle (345), react-router-dom (310), concludeCheck (290), scripts (289), ref_node_fs (279), cors.ts (264), ref_types (263)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (71)
+- RELATORIO_CI.md (70)
 - PENDENCIAS.md (53)
-- package.json (23)
-- supabase/MIGRATIONS_SYNC_LOG.md (20)
-- package-lock.json (17)
-- CHANGELOG.md (15)
-- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (14)
-- .github/workflows/deploy-gates.yml (12)
-- analise-branches/RELATORIO_BRANCHES.md (10)
-- e2e/flows/magazine-publish-smoke.spec.ts (10)
-- docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (9)
-- AGENTS.md (8)
-- CLAUDE.md (8)
-- .github/workflows/replenishment-quality.yml (7)
-- e2e/flows/magazine-preview-sticky-smoke.spec.ts (7)
+- package.json (22)
+- supabase/MIGRATIONS_SYNC_LOG.md (19)
+- package-lock.json (16)
+- CHANGELOG.md (14)
+- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (13)
+- .github/workflows/deploy-gates.yml (11)
+- analise-branches/RELATORIO_BRANCHES.md (9)
+- e2e/flows/magazine-publish-smoke.spec.ts (9)
+- docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (8)
+- AGENTS.md (7)
+- CLAUDE.md (7)
+- .github/workflows/replenishment-quality.yml (6)
+- e2e/flows/magazine-preview-sticky-smoke.spec.ts (6)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1004,7 +1004,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
-- `PENDENCIAS.md` — PENDENCIAS.md — Workflows com falha não corrigível nesta sessão (124 linhas)
+- `PENDENCIAS.md` — PENDENCIAS.md — Workflows com falha não corrigível nesta sessão (132 linhas)
 - `PERFORMANCE-ANALYSIS.md` — 🔍 Relatório de Análise de Performance - MainLayout (195 linhas)
 - `README.md` — 🎁 Promo Brindes — Plataforma de Vendas de Brindes Promocionais (842 linhas)
 - `RELATORIO_CI.md` — RELATÓRIO CI — Prova de Conclusão do Stop Hook (131 linhas)
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-08 `e9ed1f4` chore(pendencias): corrige causas raiz P-01, P-02, P-03 — secrets presentes, erros são reais
 - 2026-11-08 `da97d70` docs(auditoria): corrige status P06 — views já têm security_invoker=true
 - 2026-11-08 `9656107` docs(ci): atualiza RELATORIO_CI com Gate Final confirmado (a2dda825) (#3227)
 - 2026-11-08 `e67c132` docs(ci): atualiza RELATORIO_CI.md — HEAD a2dda825 + run #42502537624 (#3225)
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-08 `d03ee55` docs(auditoria): encerra P06 e P15 — migrations posteriores tornam proposta obsoleta
 - 2026-11-08 `46ec263` fix(ci): reconhecer migration 20261107180000 reconciliada (#3211)
 - 2026-11-08 `b45d233` docs(db): registrar recibo E15 da migration 20261107180000 (#3209)
-- 2026-11-08 `481e614` fix(docs): restaurar contrato de recibos E15 (#3204)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
