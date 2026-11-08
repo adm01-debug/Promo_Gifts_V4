@@ -175,6 +175,56 @@ jobs:
           # Senha via SUPABASE_DB_PASSWORD (env do job), nunca como argumento (R5).
           supabase link --project-ref "$SUPABASE_PROJECT_REF"
 
+      - name: Detector E12 — índices out-of-band (pg_indexes)
+        id: e12
+        if: steps.guard.outputs.enabled == 'true'
+        run: |
+          set -euo pipefail
+          # Extrai nomes de índices referenciados em supabase/migrations/
+          grep -rh -i 'CREATE INDEX' supabase/migrations/ \
+            | grep -oP '(?i)CREATE\s+INDEX\s+(?:IF\s+NOT\s+EXISTS\s+)?\K\w+' \
+            | tr '[:upper:]' '[:lower:]' \
+            | sort -u > /tmp/migration_indexes.txt || true
+
+          # Consulta pg_indexes: índices explícitos (exclui _pkey/_key de constraints)
+          psql -t -A -c "
+            SELECT lower(indexname)
+            FROM pg_indexes
+            WHERE schemaname = 'public'
+              AND indexdef LIKE 'CREATE INDEX %'
+              AND indexname NOT LIKE '%_pkey'
+              AND indexname NOT LIKE '%_key'
+            ORDER BY 1
+          " 2>/dev/null > /tmp/pg_indexes.txt || {
+            echo "::warning::E12 — falha ao consultar pg_indexes via pooler; step ignorado"
+            exit 0
+          }
+
+          # Índices em produção sem referência em nenhum arquivo de migration
+          comm -23 /tmp/pg_indexes.txt /tmp/migration_indexes.txt \
+            > /tmp/e12_drift.txt || true
+
+          DRIFT_COUNT=$(wc -l < /tmp/e12_drift.txt | tr -d ' ')
+          echo "e12_drift_count=${DRIFT_COUNT}" >> "$GITHUB_OUTPUT"
+
+          if [ "${DRIFT_COUNT}" -gt 0 ]; then
+            {
+              echo "## E12 — ${DRIFT_COUNT} índice(s) out-of-band em \`public\`"
+              echo
+              echo "Criados diretamente em produção sem migration correspondente."
+              echo "Crie migrations espelho com \`CREATE INDEX IF NOT EXISTS\` (ver P-11 no PENDENCIAS.md)."
+              echo
+              echo '```'
+              head -60 /tmp/e12_drift.txt
+              [ "$(wc -l < /tmp/e12_drift.txt)" -gt 60 ] && echo "... (truncado)"
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning::E12 — ${DRIFT_COUNT} índices out-of-band em public sem migration. Ver job summary."
+          else
+            echo "## E12 — Sem índices out-of-band" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+
       - name: Ledger parity (repo x canonical)
         if: steps.guard.outputs.enabled == 'true'
         run: |
