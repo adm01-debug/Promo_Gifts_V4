@@ -815,3 +815,25 @@ POST auth/v1/token → 200 (success), GET rest/v1/v_products_public → PENDENTE
 > Main avançou de `16408a68` para `9c33e63e` via PRs #3157 e #3141. Run anterior [#42439534623](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42439534623) em `16408a68` continua `in_progress` (step 22/28 — testes). Nova run [#42440258598](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42440258598) em `9c33e63e` — `status: pending` (na fila, criada 02:51:14Z). Causa e bloqueio inalterados: `SUPABASE_SERVICE_ROLE_KEY` ausente → requer dono.  
 > Gate Final em `9c33e63e`: [run #42440258617](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42440258617) → `conclusion: success`.  
 > Itens com ação do dono pendente: #1, #29, #37, #42.
+
+---
+
+## 44. Supabase Preview ❌ (required: NÃO — check externo Supabase App)
+
+**App:** Supabase Branching (ID 330661, não é GitHub Actions)  
+**Check IDs:** [128617661638](https://github.com/adm01-debug/Promo_Gifts_V4/runs/128617661638) (SHA `4e638a69`), [128617563662](https://github.com/adm01-debug/Promo_Gifts_V4/runs/128617563662) (SHA `576a3246`)  
+**Erro exato:**
+```
+Remote migration versions not found in local migrations directory.
+```
+**Causa:** Commits nos SHAs `576a3246` e `4e638a69` em 2026-11-08 causaram divergência entre o ledger do repo (`supabase/migrations/`) e o banco de produção (`schema_migrations`), detectada pelo App Supabase Branching ao tentar criar preview branch.  
+**Required check:** NÃO — `Supabase Preview` não está em `.github/required-checks.json`; não bloqueia Gate Final nem deploy.  
+**Por que não corrijo:** REGRA #8 — DDL/migration só via `db-apply-migration.yml`. Mesma causa raiz do item #1 (divergência massiva entre ledger local e banco de produção).  
+**O que o dono precisa fazer:** Reconciliar o ledger de migrations seguindo o processo em `docs/db/POLITICA_DDL.md` (mesmo procedimento do item #1).
+
+---
+
+> **Atualização 2026-11-08T03:48Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
+> Item #44 adicionado: Supabase Preview failure em SHAs `576a3246` e `4e638a69` — falha no App Supabase Branching (não é GitHub Actions, não é required check). Causa raiz: divergência ledger × banco (mesma do item #1).  
+> HEAD atual (main): `5e28c6c85a0a2b72ed7b3b0385c422b589554bd8` — Deploy Gates [run #42443580823](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42443580823) → `queued` (aguarda runner).  
+> Itens com ação do dono pendente: #1, #29, #37, #42, #44.
