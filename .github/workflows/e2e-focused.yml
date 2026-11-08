@@ -78,16 +78,19 @@ jobs:
             spec: 'e2e/ui/cnpj-*.spec.ts'
             project: chromium-public
             require_auth: 'false'
+            min_tests: '32'
           - suite: pdf-print
             spec: 'e2e/flows/pdf-print-cross-browser.spec.ts'
             project: chromium-public
             require_auth: 'false'
+            min_tests: '3'
           - suite: thumb-quickview
             spec: >-
               e2e/flows/03b-product-thumb-quickview.spec.ts
               e2e/flows/03b-thumb-quickview.smoke.spec.ts
             project: chromium-authed
             require_auth: 'true'
+            min_tests: '26'
     # R5 — secrets via env:
     env:
       CI: 'true'
@@ -116,14 +119,25 @@ jobs:
           exit 0
 
       - name: Run E2E Focused · ${{ matrix.suite }}
+        if: github.event.inputs.suite == '' || github.event.inputs.suite == matrix.suite
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-${{ matrix.suite }}.json
         run: |
           npx playwright test ${{ matrix.spec }} \
             --project=${{ matrix.project }} \
             --no-deps \
-            --reporter=line,html
+            --fail-on-flaky-tests \
+            --reporter=line,html,json
+
+      - name: Rejeitar suite vazia, parcial ou ignorada
+        if: always() && (github.event.inputs.suite == '' || github.event.inputs.suite == matrix.suite)
+        uses: ./.github/actions/check-min-tests
+        with:
+          results-json: playwright-report/results-${{ matrix.suite }}.json
+          min: ${{ matrix.min_tests }}
+          max-skipped-ratio: '0'
 
       # R6 — retention-days: 14
       - name: Upload report + artifacts
@@ -134,6 +148,7 @@ jobs:
           path: |
             playwright-report
             test-results
+            !test-results/**/trace.zip
           if-no-files-found: ignore
           retention-days: 14
 

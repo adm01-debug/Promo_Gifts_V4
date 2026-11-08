@@ -15,12 +15,12 @@
  *     (`logos/` e `mockups/`). Nenhum outro prefixo e tocado.
  */
 // @ts-ignore - Deno runtime
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4';
-import { castRpcResult } from '../_shared/supabase-client-adapter.ts';
-import { getCorsHeaders } from '../_shared/cors.ts';
-import { parseContract } from '../_shared/contracts/index.ts';
-import { E2eCleanupSchemas } from '../_shared/contracts/schemas/e2e-cleanup.ts';
-import { resolveCredential } from '../_shared/credentials.ts';
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
+import { castRpcResult } from "../_shared/supabase-client-adapter.ts";
+import { getCorsHeaders } from "../_shared/cors.ts";
+import { parseContract } from "../_shared/contracts/index.ts";
+import { E2eCleanupSchemas } from "../_shared/contracts/schemas/e2e-cleanup.ts";
+import { resolveCredential } from "../_shared/credentials.ts";
 
 type E2ERateLimitRow = {
   allowed: boolean;
