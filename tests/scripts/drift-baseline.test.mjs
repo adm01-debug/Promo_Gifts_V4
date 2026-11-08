@@ -316,6 +316,11 @@ describe('sanitizeBaselineForReplay', () => {
     expect(delivered).toContain("cron.schedule('image-dimensions-backfill'");
     expect(delivered).toContain("'generate-blurhashes'");
     expect(delivered).toContain('cron.alter_job(job_id := v_id, active := false)');
+    for (const fixedId of [114, 224, 235, 241, 243, 276, 292, 303]) {
+      expect(delivered).toMatch(new RegExp(`\\b${fixedId}\\b`));
+    }
+    expect(delivered).toContain('v_id <> 235');
+    expect(delivered).toContain('conjunto de jobids fixos incompleto');
     expect(delivered).toContain('pg_publication_tables');
     expect(delivered).toContain('ALTER PUBLICATION supabase_realtime ADD TABLE auth.users');
     expect(delivered).toContain('cron.unschedule(v_id)');

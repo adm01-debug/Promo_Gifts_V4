@@ -9,7 +9,6 @@ import {
   CreditCard,
   Edit2,
   Eye,
-  FileText,
   History,
   Loader2,
   MoreHorizontal,
@@ -63,6 +62,7 @@ import { SectionEyebrow } from '@/components/quotes/SectionEyebrow';
 import { PdfGenerationDialog } from '@/components/quotes/PdfGenerationDialog';
 import { QUOTE_STATUS_CONFIG } from '@/lib/quote-status-config';
 import { useQuoteViewData } from '@/pages/quotes/quote-view/useQuoteViewData';
+import { QuoteUnavailableState } from '@/pages/quotes/quote-view/QuoteUnavailableState';
 
 import { applyNegotiationMarkup } from '@/hooks/quotes/quoteMarkup';
 
@@ -134,33 +134,13 @@ export default function QuoteViewPage() {
 
   if (!quote) {
     return (
-      <div className="mx-auto w-full max-w-[1920px] animate-fade-in space-y-3 px-3 py-3 pb-24 sm:space-y-4 sm:px-4 sm:py-4 md:pb-6 lg:px-6 xl:px-8">
-        <div className="py-12 text-center">
-          <FileText className="mx-auto mb-4 h-16 w-16 text-muted-foreground" />
-          <h2 className="font-display text-xl font-semibold">
-            {quoteLoadError ? 'Não foi possível carregar o orçamento' : 'Orçamento não encontrado'}
-          </h2>
-          <p className="mt-2 text-muted-foreground">
-            {quoteLoadError
-              ? quoteLoadError
-              : 'O orçamento solicitado não existe ou foi removido.'}
-          </p>
-          <div className="mt-4 flex flex-wrap justify-center gap-2">
-            {quoteLoadError && (
-              <Button onClick={() => loadQuote().catch(() => undefined)}>
-                <RefreshCw className="mr-2 h-4 w-4" /> Tentar novamente
-              </Button>
-            )}
-            <Button
-              variant="outline"
-              className="rounded-full border-primary/40 hover:border-primary hover:bg-primary/10"
-              onClick={() => navigate('/orcamentos')}
-            >
-              <ArrowLeft className="mr-2 h-4 w-4 text-primary" /> Voltar para Orçamentos
-            </Button>
-          </div>
-        </div>
-      </div>
+      <QuoteUnavailableState
+        error={quoteLoadError}
+        onBack={() => navigate('/orcamentos')}
+        onRetry={() => {
+          loadQuote().catch(() => undefined);
+        }}
+      />
     );
   }
 

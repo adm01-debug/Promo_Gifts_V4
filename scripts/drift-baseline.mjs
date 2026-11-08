@@ -85,24 +85,40 @@ DO $seed$
 DECLARE
   v_id bigint;
   v_n int := 0;
+  v_fixed_ids bigint[] := ARRAY[114, 224, 235, 241, 243, 276, 292, 303]::bigint[];
+  v_late_ids bigint[] := ARRAY[241, 243, 276, 292, 303]::bigint[];
 BEGIN
   IF to_regclass('cron.job') IS NOT NULL
      AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'auto-block-offenders') THEN
     PERFORM cron.schedule('auto-block-offenders', '1,6,11,16,21,26,31,36,41,46,51,56 * * * *', 'SELECT 1');
   END IF;
-  -- 20261024190001 e 20261025002500 exigem este job com jobid=235. O role do
-  -- replay não tem UPDATE em cron.job: avança a sequence agendando/removendo
-  -- jobs temporários até o próximo jobid ser 235.
+  -- 20261024190001 exige este job com jobid=235. Migrations
+  -- posteriores alteram jobs pelos IDs fixos 114/224/241/243/276/292/303.
+  -- O role do replay não tem UPDATE em cron.job: avança a sequence por meio da
+  -- API pública, preservando somente os IDs que o histórico exige.
   IF to_regclass('cron.job') IS NOT NULL
      AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'image-dimensions-backfill') THEN
     LOOP
-      v_id := cron.schedule('drift-seed-tmp-' || v_n, '0 * * * *', 'SELECT 1');
+      v_id := cron.schedule('drift-seed-tmp-' || v_n, '0 0 1 1 *', 'SELECT 1');
       v_n := v_n + 1;
-      EXIT WHEN v_id >= 234 OR v_n > 1000;
-      PERFORM cron.unschedule(v_id);
+      IF NOT (v_id = ANY(ARRAY[114, 224]::bigint[])) THEN
+        PERFORM cron.unschedule(v_id);
+      END IF;
+      EXIT WHEN v_id >= 234;
+      IF v_n > 1000 THEN
+        RAISE EXCEPTION 'drift replay: não foi possível alcançar o jobid 234';
+      END IF;
     END LOOP;
-    PERFORM cron.unschedule(v_id);
-    PERFORM cron.schedule('image-dimensions-backfill', '0 * * * *', 'SELECT 1');
+    v_id := cron.schedule('image-dimensions-backfill', '0 * * * *', 'SELECT 1');
+    IF v_id <> 235 THEN
+      RAISE EXCEPTION 'drift replay: image-dimensions-backfill recebeu jobid %, esperado 235', v_id;
+    END IF;
+  END IF;
+  IF to_regclass('cron.job') IS NOT NULL
+     AND NOT EXISTS (
+       SELECT 1 FROM cron.job WHERE jobid = 235 AND jobname = 'image-dimensions-backfill'
+     ) THEN
+    RAISE EXCEPTION 'drift replay: jobid 235 não pertence a image-dimensions-backfill';
   END IF;
   -- 20261027180000 exige o job legado presente e inativo antes de reativá-lo
   -- com */10. O dump de schema não preserva linhas de cron.job, então criamos
@@ -116,6 +132,39 @@ BEGIN
       'SELECT 1'
     );
     PERFORM cron.alter_job(job_id := v_id, active := false);
+  END IF;
+  -- Avança até o maior ID fixo restante. Jobs intermediários são removidos;
+  -- placeholders nos IDs históricos ficam com comando inofensivo SELECT 1 e
+  -- terão apenas o schedule alterado pelas migrations reais.
+  IF to_regclass('cron.job') IS NOT NULL
+     AND EXISTS (
+       SELECT 1
+       FROM unnest(v_late_ids) AS required(jobid)
+       WHERE NOT EXISTS (SELECT 1 FROM cron.job AS job WHERE job.jobid = required.jobid)
+     ) THEN
+    LOOP
+      v_id := cron.schedule('drift-seed-tmp-' || v_n, '0 0 1 1 *', 'SELECT 1');
+      v_n := v_n + 1;
+      IF NOT (v_id = ANY(v_late_ids)) THEN
+        PERFORM cron.unschedule(v_id);
+      END IF;
+      EXIT WHEN NOT EXISTS (
+        SELECT 1
+        FROM unnest(v_late_ids) AS required(jobid)
+        WHERE NOT EXISTS (SELECT 1 FROM cron.job AS job WHERE job.jobid = required.jobid)
+      );
+      IF v_id >= 303 OR v_n > 1000 THEN
+        RAISE EXCEPTION 'drift replay: não foi possível materializar os jobids fixos até 303 (último=%)', v_id;
+      END IF;
+    END LOOP;
+  END IF;
+  IF to_regclass('cron.job') IS NOT NULL
+     AND EXISTS (
+       SELECT 1
+       FROM unnest(v_fixed_ids) AS required(jobid)
+       WHERE NOT EXISTS (SELECT 1 FROM cron.job AS job WHERE job.jobid = required.jobid)
+     ) THEN
+    RAISE EXCEPTION 'drift replay: conjunto de jobids fixos incompleto';
   END IF;
 END
 $seed$;
