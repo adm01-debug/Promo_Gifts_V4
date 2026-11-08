@@ -44,9 +44,19 @@ const SCHEMAS_TXT = path.join(ROOT, 'supabase/baseline/schemas.txt');
 const argv = process.argv.slice(2);
 const fromFileArg = argv.find((a) => a.startsWith('--from-file='));
 const UPDATE = argv.includes('--update-allowlist');
-const REQUIRE_LIVE = shouldRequireLive(argv);
-// --gate: valida integridade da allowlist (sem live DB)
+const EXPLICIT_REQUIRE_LIVE = shouldRequireLive(argv);
+// --gate: exige consulta live quando alguma credencial está presente; sem
+// credenciais continua validando a allowlist para suportar forks sem secrets.
 const GATE_MODE = argv.includes('--gate');
+// Em CI --gate deve fazer a consulta live quando credenciais foram injetadas,
+// mas continua permitindo a validação estática em forks sem secrets.
+const HAS_ANY_LIVE_CREDENTIAL = Boolean(
+  process.env.SUPABASE_ACCESS_TOKEN ||
+    process.env.SUPABASE_PROJECT_REF ||
+    process.env.VITE_SUPABASE_URL ||
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+);
+const REQUIRE_LIVE = EXPLICIT_REQUIRE_LIVE || GATE_MODE;
 
 // E045: lê schemas de aplicação do SSOT (schemas.txt — mesmo do check-policies-baseline)
 function loadAppSchemas() {
@@ -130,8 +140,8 @@ function validateAllowlistIntegrity(doc) {
 async function main() {
   const { doc, set: allowed } = loadAllowlist();
 
-  // ── Gate mode (sem live DB): valida só a integridade da allowlist ──────────
-  if (GATE_MODE && !fromFileArg) {
+  // ── Gate sem credenciais: valida a allowlist, mas não simula estado live ───
+  if (GATE_MODE && !fromFileArg && !HAS_ANY_LIVE_CREDENTIAL && !EXPLICIT_REQUIRE_LIVE) {
     const integrityProblems = validateAllowlistIntegrity(doc);
     if (integrityProblems.length) {
       process.stderr.write(
