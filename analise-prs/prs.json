@@ -1,530 +1,179 @@
-[
-  {
-    "numero": 3127,
-    "titulo": "fix(ci): estabiliza o núcleo E2E sem ocultar dívida de cobertura",
-    "autor": "adm01-debug",
-    "draft": false,
-    "mergeable_github": "CONFLICTING",
-    "merge_local": "conflict",
-    "conflitos": [
-      ".github/workflows/e2e-flows.yml",
-      "e2e/catalog/helpers/swatch-view.ts",
-      "playwright.config.ts"
-    ],
-    "ci_state": "FAILURE",
-    "gate_final_rodou": false,
-    "commits_novos": 16,
-    "arquivos": 15,
-    "governance_count": 3,
-    "governance_files": [
-      ".github/workflows/"
-    ],
-    "ja_implementada": false,
-    "cherry_summary": "16 commits, todos + (não estão em main)",
-    "veredito": "DECISAO_HUMANA",
-    "motivo": "REGRA#8 — .github/workflows/ (3 arquivos) + conflito em e2e/catalog/helpers/swatch-view.ts e playwright.config.ts"
-  },
-  {
-    "numero": 3129,
-    "titulo": "ci(e2e): reduzir pressão dos runners sem perder cobertura",
-    "autor": "adm01-debug",
-    "draft": false,
-    "mergeable_github": "CONFLICTING",
-    "merge_local": "conflict",
-    "conflitos": [
-      ".github/workflows/e2e-flows.yml",
-      ".github/workflows/e2e-stock.yml",
-      ".github/workflows/e2e.yml",
-      ".github/workflows/deploy-gates.yml",
-      ".github/workflows/e2e-b2b.yml",
-      ".github/workflows/e2e-cart.yml",
-      ".github/workflows/e2e-checkout.yml",
-      ".github/workflows/e2e-products.yml"
-    ],
-    "ci_state": "FAILURE",
-    "gate_final_rodou": false,
-    "commits_novos": 2,
-    "arquivos": 8,
-    "governance_count": 8,
-    "governance_files": [
-      ".github/workflows/"
-    ],
-    "ja_implementada": false,
-    "cherry_summary": "2 commits, todos + (não estão em main)",
-    "veredito": "DECISAO_HUMANA",
-    "motivo": "REGRA#8 — .github/workflows/ (8 arquivos) — todos os conflitos são em governance files"
-  },
-  {
-    "numero": 3137,
-    "titulo": "fix(ci): impedir falso negativo no detector E2E compartilhado",
-    "autor": "adm01-debug",
-    "draft": false,
-    "mergeable_github": "CONFLICTING",
-    "merge_local": "conflict",
-    "conflitos": [
-      ".github/workflows/e2e-flows.yml",
-      "package.json"
-    ],
-    "ci_state": "FAILURE",
-    "gate_final_rodou": false,
-    "commits_novos": 3,
-    "arquivos": 11,
-    "governance_count": 8,
-    "governance_files": [
-      ".github/workflows/"
-    ],
-    "ja_implementada": false,
-    "cherry_summary": "3 commits, todos + (não estão em main)",
-    "veredito": "DECISAO_HUMANA",
-    "motivo": "REGRA#8 — .github/workflows/ (8 arquivos) + conflito em package.json (não-governance)"
-  },
-  {
-    "numero": 3144,
-    "titulo": "fix(db): reconciliar ledger, baseline e recibos Supabase",
-    "autor": "adm01-debug",
-    "draft": false,
-    "mergeable_github": "UNKNOWN",
-    "merge_local": "conflict",
-    "conflitos": [
-      "scripts/migration-ledger-remote-only-allowlist.json",
-      "supabase/MIGRATIONS_SYNC_LOG.md"
-    ],
-    "ci_state": "FAILURE",
-    "gate_final_rodou": false,
-    "commits_novos": 5,
-    "arquivos": 10,
-    "governance_count": 3,
-    "governance_files": [
-      ".github/workflows/",
-      "supabase/migrations/",
-      "supabase/rollbacks/"
-    ],
-    "ja_implementada": false,
-    "cherry_summary": "5 commits, todos + (não estão em main)",
-    "veredito": "FECHADA_OU_MERGEADA_PO",
-    "motivo": "Fechada pelo PO antes desta sessão"
-  },
-  {
-    "numero": 3148,
-    "titulo": "fix(edge-fn): corrigir ownership e autorização do CRM bridge",
-    "autor": "adm01-debug",
-    "draft": true,
-    "mergeable_github": "UNKNOWN",
-    "merge_local": "conflict",
-    "conflitos": [
-      "supabase/MIGRATIONS_SYNC_LOG.md"
-    ],
-    "ci_state": "FAILURE",
-    "gate_final_rodou": false,
-    "commits_novos": 1,
-    "arquivos": 11,
-    "governance_count": 2,
-    "governance_files": [
-      "supabase/migrations/"
-    ],
-    "ja_implementada": false,
-    "cherry_summary": "1 commit, todos + (não está em main)",
-    "veredito": "FECHADA_OU_MERGEADA_PO",
-    "motivo": "Fechada pelo PO antes desta sessão"
-  },
-  {
-    "numero": 3150,
-    "titulo": "fix(db): liberar aplicação íntegra de migrations pendentes",
-    "autor": "adm01-debug",
-    "draft": false,
-    "mergeable_github": "UNKNOWN",
-    "merge_local": "conflict",
-    "conflitos": [
-      ".github/workflows/db-apply-migration.yml",
-      ".github/workflows/schema-snapshot-export.yml",
-      "scripts/drift-baseline.mjs",
-      "scripts/migration-ledger-remote-only-allowlist.json",
-      "supabase/MIGRATIONS_SYNC_LOG.md",
-      "tests/scripts/drift-baseline.test.mjs"
-    ],
-    "ci_state": "FAILURE",
-    "gate_final_rodou": false,
-    "commits_novos": 13,
-    "arquivos": 17,
-    "governance_count": 8,
-    "governance_files": [
-      ".github/workflows/",
-      "supabase/migrations/",
-      "supabase/rollbacks/"
-    ],
-    "ja_implementada": false,
-    "cherry_summary": "13 commits, todos + (não estão em main)",
-    "veredito": "FECHADA_OU_MERGEADA_PO",
-    "motivo": "Fechada pelo PO antes desta sessão"
-  },
-  {
-    "numero": 3160,
-    "titulo": "fix: DB E15 (pg_temp + rollback) e PENDENCIAS causas exatas",
-    "autor": "adm01-debug",
-    "draft": true,
-    "mergeable_github": "UNKNOWN",
-    "merge_local": "conflict",
-    "conflitos": [
-      "PENDENCIAS.md",
-      "RELATORIO_CI.md"
-    ],
-    "ci_state": "FAILURE",
-    "gate_final_rodou": false,
-    "commits_novos": 27,
-    "arquivos": 4,
-    "governance_count": 2,
-    "governance_files": [
-      "supabase/migrations/"
-    ],
-    "ja_implementada": false,
-    "cherry_summary": "27 commits, todos + (não estão em main)",
-    "veredito": "FECHADA_OU_MERGEADA_PO",
-    "motivo": "Fechada pelo PO durante sessão — Draft supersedido por PR#3179"
-  },
-  {
-    "numero": 3179,
-    "titulo": "fix: corrige preflight db-apply-migration (search_path + rollback)",
-    "autor": "adm01-debug",
-    "draft": true,
-    "mergeable_github": "UNKNOWN",
-    "merge_local": "clean",
-    "ci_state": "FAILURE",
-    "gate_final_rodou": false,
-    "commits_novos": 1,
-    "arquivos": 2,
-    "governance_count": 2,
-    "governance_files": [
-      "supabase/migrations/"
-    ],
-    "ja_implementada": false,
-    "cherry_summary": "1 commit, todos + (não está em main)",
-    "veredito": "DECISAO_HUMANA",
-    "motivo": "Draft + REGRA#8 — supabase/migrations/ preflight corrections"
-  },
-  {
-    "numero": 3202,
-    "titulo": "docs(ci): RELATORIO §33 — baseline sessão + fix §32",
-    "autor": "adm01-debug",
-    "draft": true,
-    "mergeable_github": "UNKNOWN",
-    "merge_local": "conflict",
-    "conflitos": [
-      "PENDENCIAS.md",
-      "RELATORIO_CI.md"
-    ],
-    "ci_state": "FAILURE",
-    "gate_final_rodou": false,
-    "commits_novos": 10,
-    "arquivos": 4,
-    "governance_count": 1,
-    "governance_files": [
-      "supabase/migrations/"
-    ],
-    "ja_implementada": false,
-    "cherry_summary": "10 commits, todos + (não estão em main)",
-    "veredito": "FECHADA_OU_MERGEADA_PO",
-    "motivo": "Fechada pelo PO antes desta sessão"
-  },
-  {
-    "numero": 3203,
-    "titulo": "fix: scripts — static-pass, exit codes e regressão TypeScript inert",
-    "autor": "adm01-debug",
-    "draft": false,
-    "mergeable_github": "UNKNOWN",
-    "merge_local": "7_conflicts",
-    "conflitos": [
-      ".any-type-baseline.json",
-      ".cart-header-fuzz.json",
-      ".migration-refs-baseline.json",
-      "docs/DB_FRONTEND_COVERAGE.md",
-      "scripts/gen-internal-schema.mjs",
-      "scripts/kit-ai-enrichment.js",
-      "supabase/functions/_shared/cors-snapshot.json"
-    ],
-    "ci_state": "FAILURE",
-    "gate_final_rodou": false,
-    "commits_novos": 18,
-    "arquivos": 132,
-    "governance_count": 0,
-    "governance_files": [],
-    "ja_implementada": false,
-    "cherry_summary": "18 commits, todos + (não estão em main)",
-    "veredito": "DECISAO_HUMANA",
-    "motivo": "7 conflitos reais (scripts, baselines JSON, cors-snapshot) + CI=FAILURE — sem resolução dos conflitos não é possível mergear"
-  },
-  {
-    "numero": 3205,
-    "titulo": "fix(db): reversionar migration e2e_cleanup com rollback lógico",
-    "autor": "adm01-debug",
-    "draft": false,
-    "mergeable_github": "UNKNOWN",
-    "merge_local": "clean",
-    "ci_state": "FAILURE",
-    "gate_final_rodou": false,
-    "commits_novos": 3,
-    "arquivos": 4,
-    "governance_count": 1,
-    "governance_files": [
-      "supabase/migrations/"
-    ],
-    "ja_implementada": false,
-    "cherry_summary": "3 commits, todos + (não estão em main)",
-    "veredito": "FECHADA_OU_MERGEADA_PO",
-    "motivo": "Fechada pelo PO antes desta sessão"
-  },
-  {
-    "numero": 3210,
-    "titulo": "chore(main): release 1.9.0",
-    "autor": "github-actions",
-    "draft": false,
-    "mergeable_github": "UNKNOWN",
-    "merge_local": "clean",
-    "ci_state": "FAILURE",
-    "gate_final_rodou": false,
-    "commits_novos": 1,
-    "arquivos": 4,
-    "governance_count": 0,
-    "governance_files": [],
-    "ja_implementada": false,
-    "cherry_summary": "1 commit, todos + (não está em main)",
-    "check_runs": {
-      "gate_final": "AUSENTE",
-      "supabase_preview": "FAILURE — column categories.level does not exist (pre-existente)"
+{
+  "gerado_em": "2026-11-08",
+  "main_sha": "9b2644b2c1a78f5809e829c6a916f23959e87f12",
+  "total_abertos_analisados": 12,
+  "mergeadas_esta_sessao": 1,
+  "mergeadas_sessao_anterior": 2,
+  "prs": [
+    {
+      "numero": 3127,
+      "titulo": "fix(e2e): tooltip ListItemActions + melhorias CI e2e-flows",
+      "draft": false,
+      "conflito": true,
+      "conflito_em": ["e2e-flows.yml"],
+      "toca_workflows": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["REGRA#8 workflows", "CONFLICT em e2e-flows.yml"],
+      "regressao": false,
+      "valida": true
     },
-    "veredito": "DECISAO_HUMANA",
-    "motivo": "Bot PR github-actions[bot] — Gate Final ausente (0 check runs no HEAD 05b38bc5)"
-  },
-  {
-    "numero": 3212,
-    "titulo": "docs: recibo de deploy de edge function(s) — run 42491776265 (E66)",
-    "autor": "github-actions",
-    "draft": false,
-    "mergeable_github": "UNKNOWN",
-    "merge_local": "clean",
-    "ci_state": "FAILURE",
-    "gate_final_rodou": false,
-    "commits_novos": 1,
-    "arquivos": 1,
-    "governance_count": 0,
-    "governance_files": [],
-    "ja_implementada": false,
-    "cherry_summary": "1 commit, todos + (não está em main)",
-    "check_runs": {
-      "gate_final": "AUSENTE",
-      "supabase_preview": "CANCELLED — infrastructure capacity limit"
+    {
+      "numero": 3129,
+      "titulo": "fix(ci): melhorias delivery-quality + deploy-gates",
+      "draft": false,
+      "conflito": true,
+      "conflito_em": ["delivery-quality.yml", "deploy-gates.yml"],
+      "toca_workflows": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["REGRA#8 workflows", "CONFLICT em deploy-gates.yml (required check)"],
+      "regressao": false,
+      "valida": true
     },
-    "veredito": "MERGEADA_ESTA_SESSAO",
-    "motivo": "Gate E14_DOCS_ONLY — merge commit d8ae5159"
-  },
-  {
-    "numero": 3214,
-    "titulo": "fix(cron): CRON-001 — escalonar 4 cron jobs para eliminar job startup timeout",
-    "autor": "adm01-debug",
-    "draft": true,
-    "mergeable_github": "CONFLICTING",
-    "merge_local": "conflict",
-    "conflitos": [
-      "(GitHub reporta CONFLICTING — PR tem 128 arquivos, merge local não disponível nesta sessão)"
-    ],
-    "ci_state": "FAILURE",
-    "gate_final_rodou": false,
-    "commits_novos": 26,
-    "arquivos": 128,
-    "governance_count": 6,
-    "governance_files": [
-      ".github/workflows/",
-      "supabase/migrations/"
-    ],
-    "ja_implementada": false,
-    "cherry_summary": "26 commits, todos + (não estão em main)",
-    "veredito": "DECISAO_HUMANA",
-    "motivo": "Draft + REGRA#8 — .github/workflows/ + supabase/migrations/ (cron DDL) + CONFLICTING"
-  },
-  {
-    "numero": 3215,
-    "titulo": "fix(migration): adiciona -- Rollback: em 20261108001500",
-    "autor": "adm01-debug",
-    "draft": false,
-    "mergeable_github": "UNKNOWN",
-    "merge_local": "clean",
-    "ci_state": "FAILURE",
-    "gate_final_rodou": false,
-    "commits_novos": 3,
-    "arquivos": 1,
-    "governance_count": 1,
-    "governance_files": [
-      "supabase/migrations/"
-    ],
-    "ja_implementada": false,
-    "cherry_summary": "3 commits, todos + (não estão em main)",
-    "veredito": "FECHADA_OU_MERGEADA_PO",
-    "motivo": "Fechada pelo PO sem merge em 2026-11-08T20:34:31Z — REGRA#8 migration (rollback header); CI failure Gate 1.3 no HEAD c0e8f0a2"
-  },
-  {
-    "numero": 3216,
-    "titulo": "fix(migrations): rollback header em 20261108001500 + PENDENCIAS + RELATORIO_CI",
-    "autor": "adm01-debug",
-    "draft": true,
-    "mergeable_github": "CONFLICTING",
-    "merge_local": "conflict",
-    "conflitos": [
-      "PENDENCIAS.md",
-      "RELATORIO_CI.md",
-      "supabase/MIGRATIONS_SYNC_LOG.md"
-    ],
-    "ci_state": "FAILURE",
-    "gate_final_rodou": false,
-    "commits_novos": 2,
-    "arquivos": 4,
-    "governance_count": 1,
-    "governance_files": [
-      "supabase/migrations/"
-    ],
-    "ja_implementada": false,
-    "cherry_summary": "2 commits, todos + (não estão em main)",
-    "veredito": "FECHADA_OU_MERGEADA_PO",
-    "motivo": "Fechada pelo PO durante sessão em 2026-11-08T18:34:14Z — supersedida por PR#3215"
-  },
-  {
-    "numero": 3217,
-    "titulo": "docs(auditoria): P09 gap ledger 476 versões + P06 reanálise 24 views + C4",
-    "autor": "adm01-debug",
-    "draft": true,
-    "mergeable_github": "UNKNOWN",
-    "merge_local": "clean",
-    "ci_state": "SUCCESS",
-    "gate_final_rodou": true,
-    "commits_novos": 1,
-    "arquivos": 2,
-    "governance_count": 0,
-    "governance_files": [],
-    "ja_implementada": false,
-    "cherry_summary": "1 commit, todos + (não está em main)",
-    "diff_lido_100pct": true,
-    "diff_descricao": "Adiciona P09 e P06 a auditoria-supabase/ADENDO_2026-10-28.md; cria auditoria-supabase/P09_INVESTIGACAO_2026-11-08.md",
-    "check_runs": {
-      "gate_final": "SUCCESS",
-      "supabase_preview": "NAO_VERIFICADO"
+    {
+      "numero": 3137,
+      "titulo": "fix(e2e): e2e-relevance.mjs + melhorias CI",
+      "draft": false,
+      "conflito": true,
+      "conflito_em": ["e2e-flows.yml", "package.json"],
+      "toca_workflows": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["REGRA#8 workflows", "CONFLICT em e2e-flows.yml + package.json"],
+      "regressao": false,
+      "valida": true
     },
-    "veredito": "FECHADA_OU_MERGEADA_PO",
-    "motivo": "Mergeada pelo PO antes desta sessão"
-  },
-  {
-    "numero": 3220,
-    "titulo": "fix(ci): corrige Sentinel Regra 6 + cabeçalho rollback migration E15",
-    "autor": "adm01-debug",
-    "draft": false,
-    "mergeable_github": "CONFLICTING",
-    "merge_local": "conflict",
-    "conflitos": [
-      "PENDENCIAS.md",
-      "RELATORIO_CI.md"
-    ],
-    "ci_state": "FAILURE",
-    "gate_final_rodou": false,
-    "commits_novos": 5,
-    "arquivos": 6,
-    "governance_count": 1,
-    "governance_files": [
-      ".github/workflows/"
-    ],
-    "ja_implementada": false,
-    "cherry_summary": "5 commits, todos + (não estão em main)",
-    "veredito": "FECHADA_OU_MERGEADA_PO",
-    "motivo": "Fechada pelo PO antes desta sessão"
-  },
-  {
-    "numero": 3228,
-    "titulo": "chore(workflows): adiciona workflow_dispatch ao e2e-color-swatch",
-    "autor": "adm01-debug",
-    "draft": true,
-    "mergeable_github": "N/A (Draft)",
-    "merge_local": "nao_executado",
-    "conflitos": [],
-    "ci_state": "n/a",
-    "gate_final_rodou": false,
-    "commits_novos": null,
-    "arquivos": 1,
-    "governance_count": 1,
-    "governance_files": [
-      ".github/workflows/e2e-color-swatch.yml"
-    ],
-    "ja_implementada": false,
-    "cherry_summary": "nao verificado (Draft)",
-    "veredito": "DECISAO_HUMANA",
-    "motivo": "Draft + REGRA#8 — .github/workflows/e2e-color-swatch.yml"
-  },
-  {
-    "numero": 3236,
-    "titulo": "fix(migrations): adiciona cabeçalho -- Rollback em reconcile_e2e_cleanup_audit",
-    "autor": "adm01-debug",
-    "draft": true,
-    "mergeable_github": "N/A (Draft)",
-    "merge_local": "clean",
-    "conflitos": [],
-    "ci_state": "n/a",
-    "gate_final_rodou": false,
-    "commits_novos": null,
-    "arquivos": 2,
-    "governance_count": 2,
-    "governance_files": [
-      "supabase/migrations/",
-      "supabase/MIGRATIONS_SYNC_LOG.md"
-    ],
-    "ja_implementada": false,
-    "cherry_summary": "merge clean vs d8ae515913",
-    "veredito": "FECHADA_OU_MERGEADA_PO",
-    "motivo": "Mergeada pelo PO após análise desta sessão — REGRA#8 migration (cabeçalho rollback); merge commit gerado após update_pr_branch"
-  },
-  {
-    "numero": 3238,
-    "titulo": "docs(analise-prs): relatório merge-prs — 12 PRs analisadas",
-    "autor": "adm01-debug",
-    "draft": true,
-    "mergeable_github": "N/A (Draft)",
-    "merge_local": "clean",
-    "conflitos": [],
-    "ci_state": "n/a",
-    "gate_final_rodou": false,
-    "commits_novos": null,
-    "arquivos": 3,
-    "governance_count": 0,
-    "governance_files": [],
-    "ja_implementada": false,
-    "cherry_summary": "merge clean vs d8ae515913",
-    "veredito": "FECHADA_OU_MERGEADA_PO",
-    "motivo": "Fechada pelo PO após análise desta sessão — delivery branch claude_05 artefatos"
-  },
-  {
-    "draft": true,
-    "state": "open",
-    "motivo": "Draft + REGRA#8 — supabase/migrations/ retroativo fn_dryrun_standardize_supplier",
-    "numero": 3239,
-    "titulo": "chore(migrations): arquivo retroativo 20260611014515 — fn_dryrun_standardize_supplier",
-    "veredito": "DECISAO_HUMANA"
-  },
-  {
-    "draft": false,
-    "state": "closed",
-    "motivo": "Gate E14_DOCS_ONLY — merge commit 931b932a — merged by PO 2026-11-08T20:10:17Z",
-    "numero": 3241,
-    "titulo": "docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f",
-    "veredito": "MERGEADA_ESTA_SESSAO"
-  },
-  {
-    "draft": true,
-    "state": "open",
-    "motivo": "Mergeada pelo PO após sessão — merge commit 6e631dd1 (docs analise-prs claude_04)",
-    "numero": 3242,
-    "titulo": "docs(analise-prs): ciclos de correção — 2 mergeadas, 10 AGUARDANDO HUMANO",
-    "veredito": "FECHADA_OU_MERGEADA_PO"
-  },
-  {
-    "draft": true,
-    "state": "open",
-    "motivo": "Draft + REGRA#8 — supabase/migrations/ categories.level drift + behind main",
-    "numero": 3243,
-    "titulo": "fix(migrations): adiciona migration de drift para categories.level (IF NOT EXISTS)",
-    "veredito": "DECISAO_HUMANA"
-  }
-]
+    {
+      "numero": 3210,
+      "titulo": "chore(release): v0.x.x (bot release-please)",
+      "draft": false,
+      "conflito": false,
+      "toca_workflows": false,
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["PR de bot (github-actions[bot])", "Gate Final ausente no HEAD", "Desatualizada em relação ao main"],
+      "regressao": false,
+      "valida": false
+    },
+    {
+      "numero": 3214,
+      "titulo": "feat(cron): CRON-001 escalonamento de 4 cron jobs",
+      "draft": true,
+      "conflito": true,
+      "conflito_em": [".as-assertions-baseline.json"],
+      "toca_workflows": true,
+      "toca_migrations": true,
+      "migration": "20261101220000_cron001_stagger_schedules.sql",
+      "migration_tipo": "cron.alter_job (DDL)",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft", "REGRA#8/E056 cron DDL", "REGRA#8 workflow (contract-tests.yml)", "CONFLICT em .as-assertions-baseline.json"],
+      "regressao": false,
+      "valida": true
+    },
+    {
+      "numero": 3228,
+      "titulo": "fix(ci): adiciona workflow_dispatch ao e2e-color-swatch-grid",
+      "draft": true,
+      "conflito": false,
+      "toca_workflows": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft", "REGRA#8 workflows"],
+      "regressao": false,
+      "valida": true
+    },
+    {
+      "numero": 3243,
+      "titulo": "fix(db): adiciona coluna level em categories (drift)",
+      "draft": false,
+      "conflito": false,
+      "toca_workflows": false,
+      "toca_migrations": true,
+      "migration": "20260511235950_add_categories_level_drift.sql",
+      "migration_tipo": "ALTER TABLE ADD COLUMN IF NOT EXISTS (aditivo, idempotente)",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["REGRA#8/E15: DDL só via db-apply-migration.yml workflow_dispatch", "MIGRATIONS_SYNC_LOG.md com 1174 deleções (histórico apagado)"],
+      "regressao": false,
+      "valida": true
+    },
+    {
+      "numero": 3245,
+      "titulo": "fix(e2e): aumenta timeout e2e color-swatch + data-skeleton VirtualizedProductGrid",
+      "draft": true,
+      "conflito": false,
+      "toca_workflows": false,
+      "regressao": true,
+      "regressao_detalhe": "VirtualizedProductGrid.tsx linha 488: {!showScrollTop && (} — lógica invertida; botão scroll-to-top desaparece quando visível e aparece quando oculto. Main tem {showScrollTop && (} (correto); PR introduz regressão.",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft", "REGRESSAO real em showScrollTop (lógica invertida introduzida pelo PR)"],
+      "valida": false
+    },
+    {
+      "numero": 3246,
+      "titulo": "fix(rls): habilita RLS deny-all nas 17 tabelas supplier_stricker",
+      "draft": true,
+      "conflito": false,
+      "toca_workflows": false,
+      "toca_migrations": true,
+      "migration": "20261027195959_supplier_stricker_rls_deny_all.sql",
+      "migration_tipo": "ENABLE ROW LEVEL SECURITY + CREATE POLICY (17 tabelas)",
+      "nota_timestamp": "PR body menciona 20261027200000 mas arquivo real é 20261027195959 (1 minuto de diferença — sem impacto funcional)",
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft", "REGRA#8/E15: DDL só via db-apply-migration.yml workflow_dispatch"],
+      "regressao": false,
+      "valida": true
+    },
+    {
+      "numero": 3247,
+      "titulo": "fix(ci): melhorias de workflows CI/E2E (14 novos workflows)",
+      "draft": true,
+      "conflito": false,
+      "toca_workflows": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft", "REGRA#8 workflows (14 arquivos novos em .github/workflows/)"],
+      "regressao": false,
+      "valida": true
+    },
+    {
+      "numero": 3248,
+      "titulo": "fix(e2e): adiciona testes públicos coleção e comparar + graphify update",
+      "draft": true,
+      "conflito": false,
+      "toca_workflows": false,
+      "veredito": "DECISAO_HUMANA",
+      "motivos": ["Draft=true (único bloqueio)"],
+      "regressao": false,
+      "valida": true
+    },
+    {
+      "numero": 3249,
+      "titulo": "docs(ci): atualiza RELATORIO_CI com baseline desta sessão e P-06 em correção",
+      "draft": false,
+      "conflito": false,
+      "toca_workflows": false,
+      "toca_migrations": false,
+      "regressao": false,
+      "docs_only": true,
+      "e14_bypass": true,
+      "veredito": "MERGE_AUTONOMO",
+      "motivos": ["docs-only (1 arquivo .md)", "E14 bypass aplicável", "sem conflito", "sem regressão"],
+      "valida": true,
+      "mergeada": true,
+      "merge_sha": "pendente"
+    }
+  ],
+  "mergeadas_historico": [
+    {
+      "numero": 3249,
+      "sha": "pendente",
+      "tipo": "docs-only",
+      "sessao": "esta_sessao"
+    },
+    {
+      "numero": 3212,
+      "sha": "d8ae515913db370da08784f3c911834c1668b98c",
+      "tipo": "docs-only"
+    },
+    {
+      "numero": 3241,
+      "sha": "931b932aad60b9b3b5f4ec4d4505482fca136ac4",
+      "tipo": "docs-only"
+    }
+  ]
+}

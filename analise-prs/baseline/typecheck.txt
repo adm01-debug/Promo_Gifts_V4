@@ -1,5 +1,1 @@
-# Baseline TypeScript — main SHA: 9a89d9f0a4ac2df7ad670501adaad9f1f60a75df
-# Sessão: 2026-11-08 (session_01Ss1tXZ4cAbxBvdmu95uNPz)
-# Comando: npm run qa:typecheck (tsc -p tsconfig.app.json --noEmit)
-EXIT_CODE=0
-ERROS=0
+EXIT_CODE:0

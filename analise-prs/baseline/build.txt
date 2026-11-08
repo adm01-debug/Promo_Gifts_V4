@@ -1,11 +1,20 @@
-Build check — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
-Data: 2026-10-25
+## Baseline — npm run build
+## main@9b2644b2c1a78f5809e829c6a916f23959e87f12
+## Executado em: 2026-11-08
 
-NÃO EXECUTADO LOCALMENTE
-Motivo: npm install falha com 403 (registry europe-west1-npm.pkg.dev sem credenciais)
+RESULTADO: ✓ built in 14.70s
+EXIT_CODE:0
 
-Referência CI (Gate 6 — Build Vite):
-- Run #40214531246 (SHA 4cb4feb4): conclusion=success → Build OK
-- Gate Final completo: success ✅
+WARNINGS (não bloqueantes):
+- [INEFFECTIVE_DYNAMIC_IMPORT] src/lib/external-db/index.ts (import dinâmico e estático simultâneos — aviso Rollup, não erro)
+- [INEFFECTIVE_DYNAMIC_IMPORT] src/lib/crm-db.ts (mesmo caso)
+- [INEFFECTIVE_DYNAMIC_IMPORT] src/components/cart/CartCompanyPickerDialog.tsx
+- [INEFFECTIVE_DYNAMIC_IMPORT] src/components/cart/CartSelectorDialog.tsx
+- [INEFFECTIVE_DYNAMIC_IMPORT] src/components/collections/AddToCollectionModal.tsx
+- [INEFFECTIVE_DYNAMIC_IMPORT] src/components/products/ProductQuickView.tsx
+- [INEFFECTIVE_DYNAMIC_IMPORT] src/components/products/VariantPickerDialog.tsx
+- [INEFFECTIVE_DYNAMIC_IMPORT] src/components/products/share/SharePreviewDialog.tsx
 
-Evidência: Gate Final run #40214531246 job "build" conclusion=success
+GUARDAS OK:
+- [chunk-cycles] OK: no static import cycles between production chunks.
+- [production-harnesses] OK: no /__test routes or harness chunks in dist/.
