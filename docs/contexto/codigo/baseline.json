@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "93ae29d9fa382610ea74363d680660054ebb3f02",
+  "commit": "252cc01d07e6e625c956a37916aa868844cfe305",
   "branch": "main",
-  "data_commit": "2026-11-08T13:57:57-03:00",
+  "data_commit": "2026-11-08T14:31:50-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "252cc01",
+    "data": "2026-11-08",
+    "assunto": "fix(sentinel): expande Regra 6 e documenta pendências P-01 a P-07"
+   },
    {
     "sha": "93ae29d",
     "data": "2026-11-08",
@@ -126,14 +131,9 @@
     "sha": "fa9e722",
     "data": "2026-11-08",
     "assunto": "docs: recibo deploy health-check run 42367422517 (E66) — substitui #3134"
-   },
-   {
-    "sha": "a7c10dc",
-    "data": "2026-11-08",
-    "assunto": "fix(e2e): corrige seletores e mocks mortos do novelty-grid-visual (#3184)"
    }
   ],
-  "arquivos_mudados_7d": 592,
+  "arquivos_mudados_7d": 594,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 515
+    "mudancas": 514
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -176,12 +176,12 @@
     "mudancas": 413
    },
    {
-    "pasta": "src/components/mockup",
-    "mudancas": 361
-   },
-   {
     "pasta": "src/pages/products",
     "mudancas": 359
+   },
+   {
+    "pasta": "src/components/mockup",
+    "mudancas": 358
    },
    {
     "pasta": "src/components/kit-builder",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 77
+    "mudancas": 76
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 64
+    "mudancas": 62
    },
    {
     "arquivo": "package.json",
@@ -278,10 +278,6 @@
     "mudancas": 11
    },
    {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 11
-   },
-   {
     "arquivo": ".github/workflows/ci-security-drift.yml",
     "mudancas": 10
    },
@@ -296,20 +292,24 @@
    {
     "arquivo": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
     "mudancas": 10
+   },
+   {
+    "arquivo": "analise-branches/dossies/fix-contract-mag-reader-261019-2110.md",
+    "mudancas": 10
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 321
-   },
-   {
-    "autor": "Joaquim Ataides",
-    "commits": 24
+    "commits": 320
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 23
+    "commits": 22
+   },
+   {
+    "autor": "Joaquim Ataides",
+    "commits": 20
    },
    {
     "autor": "Claude",

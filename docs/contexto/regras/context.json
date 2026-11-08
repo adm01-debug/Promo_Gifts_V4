@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "93ae29d9fa382610ea74363d680660054ebb3f02",
+  "sha": "252cc01d07e6e625c956a37916aa868844cfe305",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 17:10 UTC",
+  "generated_at": "2026-11-08 17:33 UTC",
   "files_total": 9125,
   "code_files": 7862,
   "code_lines": 1054635
@@ -484051,10 +484051,23 @@
   }
  },
  "git": {
-  "sha": "93ae29d9fa382610ea74363d680660054ebb3f02",
+  "sha": "252cc01d07e6e625c956a37916aa868844cfe305",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "252cc01",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix(sentinel): expande Regra 6 e documenta pendências P-01 a P-07",
+    "files": [
+     ".github/SENTINEL_SHA_ALLOWLIST.txt",
+     ".github/workflows/sentinel-self-test.yml",
+     "PENDENCIAS.md",
+     "RELATORIO_CI.md",
+     "scripts/sentinel-check.sh"
+    ]
+   },
    {
     "sha": "93ae29d",
     "date": "2026-11-08",
@@ -484551,16 +484564,6 @@
      "supabase/functions/word-magic/index.ts",
      "vitest.config.ts"
     ]
-   },
-   {
-    "sha": "16408a6",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "docs(ci): RELATORIO §30 — fix Branch Protection Sentinel (#3192)",
-    "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md"
-    ]
    }
   ],
   "hot_files": [
@@ -484579,6 +484582,10 @@
    [
     "package.json",
     3
+   ],
+   [
+    ".github/workflows/sentinel-self-test.yml",
+    2
    ],
    [
     "supabase/functions/product-visual-search/index.ts",
@@ -484629,19 +484636,15 @@
     2
    ],
    [
+    ".github/SENTINEL_SHA_ALLOWLIST.txt",
+    1
+   ],
+   [
+    "scripts/sentinel-check.sh",
+    1
+   ],
+   [
     ".any-type-baseline.json",
-    1
-   ],
-   [
-    ".cart-header-fuzz.json",
-    1
-   ],
-   [
-    ".migration-refs-baseline.json",
-    1
-   ],
-   [
-    ".orphan-labels-baseline.json",
     1
    ]
   ]

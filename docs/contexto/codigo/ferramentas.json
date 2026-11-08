@@ -3545,8 +3545,8 @@
   },
   {
    "arquivo": "PENDENCIAS.md",
-   "titulo": "PENDÊNCIAS — CI Promo Gifts V4",
-   "linhas": 896
+   "titulo": "PENDENCIAS.md — Workflows com falha não corrigível nesta sessão",
+   "linhas": 124
   },
   {
    "arquivo": "PERFORMANCE-ANALYSIS.md",
@@ -3561,7 +3561,7 @@
   {
    "arquivo": "RELATORIO_CI.md",
    "titulo": "RELATÓRIO CI — Prova de Conclusão do Stop Hook",
-   "linhas": 115
+   "linhas": 117
   },
   {
    "arquivo": "RELATORIO_CI_P34.md",
