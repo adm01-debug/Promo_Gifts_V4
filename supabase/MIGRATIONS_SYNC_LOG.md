@@ -1172,3 +1172,14 @@ Este PR cria o arquivo retroativo para fechar o gap documental.
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20260611014515` | `fn_dryrun_standardize_supplier_real_rollback` | `49c18b67748c6cb7fc39d3b80b1f3eb58fff39fc2f21a20ee7cac92f69e08a3d` | arquivo retroativo — função `fn_dryrun_standardize_supplier` confirmada em produção via `pg_get_functiondef`; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
+
+## 2026-11-08 — Correção de drift: `categories.level`
+
+Coluna `public.categories.level` existia em produção sem migration registrada.
+Migration `20260512000000_bootstrap_missing_application_schemas` cria views que referenciam
+`categories.level`, causando `SQLSTATE 42703` no shadow DB da Supabase Preview.
+Esta migration (timestamp antes do bootstrap) adiciona a coluna com `IF NOT EXISTS` — no-op em produção.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20260511235950` | `add_categories_level_drift` | `93610ba1fa022c3050b352f45da4754101f6e7aee6b627a5105e1a0a3e1403aa` | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (REGRA #8: DDL em produção) |
