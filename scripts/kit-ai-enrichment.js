@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Kit AI Enrichment Pipeline
 // SUPABASE_URL=... SUPABASE_SERVICE_KEY=... BATCH_SIZE=50 DRY_RUN=true node kit-ai-enrichment.js
-const { createClient } = require('@supabase/supabase-js');
-const Anthropic = require('@anthropic-ai/sdk');
+import { createClient } from '@supabase/supabase-js';
+import Anthropic from '@anthropic-ai/sdk';
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 const claude = new Anthropic();
 const DRY_RUN = process.env.DRY_RUN === 'true';

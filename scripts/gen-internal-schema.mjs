@@ -34,7 +34,13 @@
 import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import pg from 'pg';
+let pg;
+try {
+  pg = (await import('pg')).default;
+} catch {
+  console.error('ERRO: pacote `pg` não encontrado. Instale com: npm i -D pg');
+  process.exit(1);
+}
 
 const DATABASE_URL = process.env.DATABASE_URL;
 if (!DATABASE_URL) {

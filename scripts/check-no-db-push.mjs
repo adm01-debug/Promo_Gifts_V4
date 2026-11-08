@@ -82,9 +82,6 @@ const ALLOWLIST = [
   'qa/migrations-draft/2026-07-06_crm_callback_events.sql',
   'qa/migrations-draft/README.md',
 
-  // ─── Grafos gerados automaticamente (auto-generated, não executável) ──
-  'graphify-out/GRAPH_REPORT.md',
-
   // ─── Docs de auditoria (2026-08-26 — citam o comando como anti-padrão) ──
   'docs/AUDITORIA_EXAUSTIVA_E_PLANO_100_ETAPAS_2026-08-26.md',
   'docs/motor-v2-test-report.md',
@@ -125,6 +122,15 @@ const ALLOWLIST = [
   // Migrations adicionais com referência histórica ao comando proibido:
   'supabase/migrations/20260511235900_mirror_categories_bitrix_id_out_of_band.sql',
   'supabase/migrations/20260623120001_harden_get_favorite_list_counts_revoke_anon.sql',
+  // Migration 2026-07-06: cita o comando como NOTA de anti-padrão (linha 9, comentário SQL)
+  'supabase/migrations/20260706181356_crm_callback_events.sql',
+
+  // ─── Docs de auditoria Supabase (citam como anti-padrão em tabelas/listas) ──
+  'auditoria-supabase/secao12_lacunas.md',
+
+  // ─── Relatórios de CI e análise (citam como item de verificação, não como instrução) ──
+  'RELATORIO_CI.md',
+  'analise-prs/regras-de-negocio.md',
 ];
 
 function isAllowed(path) {
@@ -142,7 +148,8 @@ const PATTERN = 'supabase[[:space:]]+db[[:space:]]+push';
 const EXCLUDE_DIRS = [
   'node_modules', '.git', 'dist', 'build', 'coverage',
   'playwright-report', 'e2e-artifacts', '.next', '.cache',
-  '.claude',  // agent worktrees e configs — docs temporários, não código executável
+  '.claude',       // agent worktrees e configs — docs temporários, não código executável
+  'graphify-out',  // todo o diretório é gerado automaticamente (AST cache, graph.json, wiki)
 ];
 
 let raw = '';
