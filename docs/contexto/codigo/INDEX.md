@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `561693ff8b6e63b850f333a5812eb0c54fd1f3e5` (2026-11-07T21:41:32-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0a80360f114cceba6676a412cfab3ae9917785dd` (2026-11-07T22:11:51-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,17 +586,17 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38128 nós · 66512 arestas · 2139 comunidades · grafo do commit `561693ff`
-- comunidades maiores: ref_integrations (556), ref_lib (446), ref_hooks (339), gotoAndSettle (333), @testing-library/react (311), react-router-dom (299), scripts (289), @playwright/test (251), ref_node_fs (249), cors.ts (245), react (237), ref_utils (235)
+- 38129 nós · 66513 arestas · 2154 comunidades · grafo do commit `0a80360f`
+- comunidades maiores: ref_lib (513), lucide-react (506), ref_components (450), ref_integrations (350), ref_hooks (344), nav.ts (306), scripts (289), @tanstack/react-query (274), ref_node_fs (264), ref_utils (264), react-router-dom (259), react (254)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - RELATORIO_CI.md (74)
 - PENDENCIAS.md (65)
-- package.json (25)
-- supabase/MIGRATIONS_SYNC_LOG.md (22)
-- package-lock.json (20)
+- package.json (24)
+- supabase/MIGRATIONS_SYNC_LOG.md (21)
+- package-lock.json (19)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (16)
 - CHANGELOG.md (15)
 - docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (13)
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.7.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.1...v1.7.0) (2026-11-02)
 
 ## Últimos commits
+- 2026-11-07 `0a80360` docs(estado): atualiza PROGRESSO e PENDENCIAS — 2026-11-08 (#3189)
 - 2026-11-07 `561693f` docs(ci): RELATORIO §27 — baseline 12e873af + inventário workflows (#3187)
 - 2026-11-07 `12e873a` docs(ci): RELATORIO §26 — baseline d2ce504a + PENDENCIAS #38 (#3183)
 - 2026-11-07 `bd6773e` fix(ci): impedir falso verde com mínimo de testes inválido (#3168)
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-07 `1a47c69` docs: RELATORIO_CI.md e PENDENCIAS.md — status CI e workflows (#3172)
 - 2026-11-07 `fa5da5d` chore(docs): Gate 1.14 — adiciona SUPABASE_TEST_BYPASS_TOKEN ao SEGREDOS.md (#3164)
 - 2026-11-07 `df81a74` fix(magazine): impedir colapso do título em lg (#3161)
-- 2026-11-07 `787f843` Merge pull request #3154 from adm01-debug/claude/fix-dashboard-title-loading-261107-0100
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

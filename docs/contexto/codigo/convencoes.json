@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(estado): atualiza PROGRESSO e PENDENCIAS — 2026-11-08 (#3189)",
    "docs(ci): RELATORIO §27 — baseline 12e873af + inventário workflows (#3187)",
    "docs(ci): RELATORIO §26 — baseline d2ce504a + PENDENCIAS #38 (#3183)",
    "fix(ci): impedir falso verde com mínimo de testes inválido (#3168)",
-   "docs(ci): RELATORIO §25 — Gate Final 2a042dab success + tabela completa (#3182)",
-   "docs(ci): verificar erros exatos #26 #30 #37 — sessão 2026-11-07T22h"
+   "docs(ci): RELATORIO §25 — Gate Final 2a042dab success + tabela completa (#3182)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "561693ff8b6e63b850f333a5812eb0c54fd1f3e5",
+  "sha": "0a80360f114cceba6676a412cfab3ae9917785dd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 00:52 UTC",
+  "generated_at": "2026-11-08 01:19 UTC",
   "files_total": 9100,
   "code_files": 7845,
   "code_lines": 1051414
@@ -483049,10 +483049,20 @@
   }
  },
  "git": {
-  "sha": "561693ff8b6e63b850f333a5812eb0c54fd1f3e5",
+  "sha": "0a80360f114cceba6676a412cfab3ae9917785dd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "0a80360",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "docs(estado): atualiza PROGRESSO e PENDENCIAS — 2026-11-08 (#3189)",
+    "files": [
+     "docs/estado/PENDENCIAS.md",
+     "docs/estado/PROGRESSO.md"
+    ]
+   },
    {
     "sha": "561693f",
     "date": "2026-11-07",
@@ -483344,23 +483354,6 @@
      ".github/workflows/e2e.yml",
      ".github/workflows/visual-tests.yml"
     ]
-   },
-   {
-    "sha": "897cc4c",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "fix(ci/catalog): estabilizar auditorias E2E e restaurar cores na lista (#3120)",
-    "files": [
-     ".github/workflows/e2e-swatch-quickview.yml",
-     ".github/workflows/replenishment-quality.yml",
-     "e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts",
-     "e2e/catalog/swatch-quickview-list-table.spec.ts",
-     "e2e/catalog/swatch-quickview-v2-list-table.spec.ts",
-     "e2e/helpers/swatch-catalog-mocks.ts",
-     "e2e/quotes/quote-view-no-presentation-mode.spec.ts-snapshots/quote-actions-menu-dark-mobile-chromium-public-linux.png",
-     "e2e/replenishment-stress.spec.ts",
-     "src/components/products/ProductList.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -483373,16 +483366,20 @@
     6
    ],
    [
-    ".github/workflows/replenishment-quality.yml",
-    4
-   ],
-   [
     "e2e/flows/magazine-publish-smoke.spec.ts",
     3
    ],
    [
-    ".github/workflows/e2e-swatch-quickview.yml",
-    2
+    ".github/workflows/replenishment-quality.yml",
+    3
+   ],
+   [
+    "docs/estado/PENDENCIAS.md",
+    1
+   ],
+   [
+    "docs/estado/PROGRESSO.md",
+    1
    ],
    [
     "scripts/check-min-tests-executed.mjs",
@@ -483438,10 +483435,6 @@
    ],
    [
     ".env.e2e.example",
-    1
-   ],
-   [
-    "e2e/fixtures/auth.setup.ts",
     1
    ]
   ]

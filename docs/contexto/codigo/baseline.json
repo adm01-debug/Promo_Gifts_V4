@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "561693ff8b6e63b850f333a5812eb0c54fd1f3e5",
+  "commit": "0a80360f114cceba6676a412cfab3ae9917785dd",
   "branch": "main",
-  "data_commit": "2026-11-07T21:41:32-03:00",
+  "data_commit": "2026-11-07T22:11:51-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "0a80360",
+    "data": "2026-11-07",
+    "assunto": "docs(estado): atualiza PROGRESSO e PENDENCIAS — 2026-11-08 (#3189)"
+   },
    {
     "sha": "561693f",
     "data": "2026-11-07",
@@ -126,11 +131,6 @@
     "sha": "0549ea3",
     "data": "2026-11-07",
     "assunto": "fix(catálogo): buscar cores ao trocar filtros ou página (#3140)"
-   },
-   {
-    "sha": "6065eb7",
-    "data": "2026-11-07",
-    "assunto": "fix(ci): permitir leitura de PR no detector de reposição (#3139)"
    }
   ],
   "arquivos_mudados_7d": 405,
@@ -207,15 +207,15 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 25
+    "mudancas": 24
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 22
+    "mudancas": 21
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 20
+    "mudancas": 19
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
@@ -274,7 +274,7 @@
     "mudancas": 8
    },
    {
-    "arquivo": "analise-prs/baseline/lint.txt",
+    "arquivo": "docs/estado/PENDENCIAS.md",
     "mudancas": 7
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 330
+    "commits": 329
    },
    {
     "autor": "Joaquim Ataides",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 7
+    "commits": 6
    },
    {
     "autor": "dependabot[bot]",
