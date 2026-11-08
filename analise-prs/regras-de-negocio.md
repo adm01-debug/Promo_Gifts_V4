@@ -1,54 +1,202 @@
 # Regras de Negócio — Promo Gifts V4
-**Sessão:** session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
-**Data:** 2026-10-25
-**main HEAD:** `c113300c034fb39126274fba9aa10ef05762ab13` (PR #2540 mergeada pelo PO — docs RELATORIO_CI)
+# Construído a partir de fontes reais (não de memória)
+# Última atualização: 2026-10-28 | Sessão: https://claude.ai/code/session_012WyySbh2tj8vhRQLBf3mHo
 
-## 1. SSOT do Supabase (REGRA #1)
-- Projeto canônico: `doufsxqlfjyuvxuezpln` (Gold/Medallion)
-- `CURRENT_PROJECT_ID` em `src/integrations/supabase/client.ts` NUNCA muda
-- Projeto proibido: `pqpdolkaeqlyzpdpbizo` (SINGU — READ-ONLY)
-- Qualquer PR que escreva em SINGU → não mergeada
+---
 
-## 2. Campos críticos do tipo Product (REGRA #2)
-Tipo `Product` DEVE conter: `price`, `sale_price?`, `shortDescription`, `category_id?`, `category_name?`
+## 1. SSOT Supabase (Fonte: `src/integrations/supabase/client.ts:24`, `CLAUDE.md REGRA #1`)
 
-## 3. Critérios de merge autônomo (8 critérios)
-PR passa todos os 8 critérios para merge autônomo:
-1. **Válida** — branch com ancestral comum em main, não órfã
-2. **Não implementada** — conteúdo não já em main (git cherry > 0 unique commits)
-3. **Sem conflito** — git merge-tree CLEAN (sem "changed in both")
-4. **Zero erro novo** — Gate Final CI success no HEAD da PR
-5. **Zero código revertido** — não desfaz melhorias já em main
-6. **Regra de negócio válida** — não viola REGRA #1/#2/#3/#4/#5/#7/#8/#9/#10
-7. **Completa** — funcionalidade integrada de ponta a ponta
-8. **Confiança alta** — sem ambiguidade, sem risco de regressão
+- Projeto canônico de produção: `doufsxqlfjyuvxuezpln` (Gold/Medallion)
+- `CURRENT_PROJECT_ID = "doufsxqlfjyuvxuezpln"` — campo imutável em `src/integrations/supabase/client.ts:24`
+- `pqpdolkaeqlyzpdpbizo` = SINGU (ambiente externo, READ-ONLY, nunca escrever)
+- Guarda no Gate 0 CI: `scripts/validate-supabase-config.mjs`
+- Risco histórico: commit de Lovable reverte silenciosamente — incidente 401 em 2026-06-11
 
-## 4. Bloqueios automáticos (REGRA #8 — DECISAO_HUMANA)
-PRs tocando estes arquivos exigem aprovação explícita do PO:
-- `.github/workflows/` — qualquer arquivo de workflow CI/CD
-- `supabase/migrations/` — migrações de schema
-- `.gitleaks.toml` — política de secrets
+---
 
-## 5. Bloqueio cross-agente (REGRA #10 — DECISAO_HUMANA)
-- Branch criada em sessão diferente → não mergeada autonomamente
-- Prefixos de agente: `claude/*`, `claude_05/*`, `codex/*`, `devin/*`, `cline/*`
-- Merge entre branches de agentes diferentes exige PR
+## 2. Tipo `Product` — Campos Críticos (Fonte: `src/types/product-catalog.ts:25-42`, `CLAUDE.md REGRA #2`)
 
-## 6. Branches órfãs (FECHAR)
-- NO_MERGE_BASE → `git merge-base HEAD refs/remotes/pr/$N` retorna vazio
-- Impossível mergear sem rebase completo
-- PRs afetadas: #2417, #2418, #2419, #2420, #2422
+```typescript
+// src/types/product-catalog.ts:25 — interface Product
+export interface Product {
+  id: string;
+  name: string;
+  shortDescription: string;   // linha 30 — obrigatório (REGRA #2)
+  price: number;               // linha 31 — obrigatório (REGRA #2)
+  sale_price?: number;         // linha 32 — opcional (REGRA #2)
+  category_id?: string | null; // linha 35 — (REGRA #2)
+  category_name?: string | null; // linha 36 — (REGRA #2)
+  // ... demais campos opcionais
+}
+```
 
-## 7. Deploy contínuo
-- merge em main = deploy em produção (Vercel automático)
-- Somente Gate Final CI success permite merge
-- `supabase db push` proibido — caminho único: `db-apply-migration.yml`
+**Invariante:** estes 5 campos nunca podem ser removidos. Gate 1.1 verifica no CI.
 
-## 8. Migrations (REGRA #8 corolário E056)
-- DDL via `execute_sql` MCP proibido em sessão de agente
-- Migration espelho + `migration repair` para DDL out-of-band
-- Caminho único: `.github/workflows/db-apply-migration.yml`
+---
 
-## 9. Edge Functions (REGRA #8 corolário)
-- Deploy via `deploy_edge_function` MCP proibido como caminho padrão
-- Caminho único: `.github/workflows/deploy-edge-functions.yml`
+## 3. Status de Orçamentos (Fonte: `src/types/quote.ts:10-25`)
+
+```typescript
+// src/types/quote.ts:10
+export const QUOTE_STATUSES = [
+  'approved',   // aprovado pelo cliente
+  'draft',      // rascunho em edição
+  'rejected',   // recusado pelo cliente
+  'sent',       // enviado aguardando resposta
+];
+export type QuoteStatus = z.infer<typeof quoteStatusSchema>;  // linha 25
+export type ClientResponse = 'approved' | 'changes_requested' | 'rejected';  // linha 32
+```
+
+**Regra:** `draft` não pode aparecer em listagens públicas de clientes. Gate 1.5 verifica.
+
+---
+
+## 4. RLS — Políticas de Segurança (Fonte: `supabase/migrations/`, `docs/04_EXPLICACAO_DAS_POLICIES.md`)
+
+- **Leitura pública de produtos:** só itens ativos (`supabase/migrations/20260615231459_product_images_schema_documentation.sql`)
+- **Escrita de products:** restrita a org owner/admin
+- **recently_viewed_products:** users só podem atualizar os próprios registros (`supabase/migrations/20261018000042_e042_fix_policies_public_lote1.sql:224-225`)
+- **Regra crítica RLS:** tabelas com RLS habilitada e zero policies = deny-all silencioso → Gate 1.13.1 bloqueia
+- **Anon-insert rate guard:** 7 tabelas com INSERT anônimo possuem trigger de rate guard → Gate 1.13.2
+
+---
+
+## 5. DDL e Migrations (Fonte: `CLAUDE.md REGRA #8`, `docs/db/POLITICA_DDL.md`)
+
+- **Único caminho autorizado** para migration em prod: workflow `.github/workflows/db-apply-migration.yml`
+- **`execute_sql` via MCP** = proibido para DDL em sessão de agente (E056)
+- **`supabase db push`** = proibido (REGRA #1 §7)
+- **Migrations em PR** que tocam `supabase/migrations/` → AGUARDA PO (sem exceção)
+- Ledger de reconciliação: `supabase/MIGRATIONS_SYNC_LOG.md`
+- Baseline do drift-check: `supabase/baseline/*.sql` — NUNCA copiar para `migrations/`
+
+---
+
+## 6. CI / Gate Final (Fonte: `CLAUDE.md CI — ESTRUTURA DE GATES`, `.github/workflows/deploy-gates.yml`)
+
+- **Único required check em `main`:** "Gate Final - Deploy Ready" em `deploy-gates.yml`
+- Gate Final = agregador de todos os gates em sequência
+- Gate 0: SSOT Supabase (validate-supabase-config.mjs)
+- Gate 1: Lint + TypeScript (0 erros é baseline — `62af0798`)
+- Gate 2: Testes unitários (baseline: 2 falhas em `calendar.redesign.test.tsx` — `day_selected`, `day_outside`)
+- Gate 3: E2E Smoke (Playwright chromium)
+- **Regressão** = nova falha além do baseline. Corrigir causa raiz, nunca burlar.
+- `paths-ignore: docs/**` — PRs que tocam só `docs/` não disparam CI
+
+---
+
+## 7. Vercel (Fonte: `CLAUDE.md REGRA #11`, `.vercel/project.json`)
+
+- Projeto canônico: `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ` (team `juca1`)
+- `.vercel/project.json` está versionado — NUNCA deletar
+- Proibido `vercel link` fora do raiz do repositório (incidente 2026-09-15)
+
+---
+
+## 8. Tipos derivados do banco (Fonte: `src/integrations/supabase/types.ts`, `CLAUDE.md REGRA #4`)
+
+- **Tabelas obrigatórias em types.ts:**
+  - `personalization_techniques`, `products`, `product_variants`, `suppliers`
+  - `supplier_products_raw`, `magazines`, `magazine_items`, `magazine_templates`
+- Gate 1.2: drift estrutural — nenhuma tabela pode desaparecer sem entrada em `docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json`
+- Script de verificação: `npm run check:types-inventory-drift`
+
+---
+
+## 9. Agentes e Cross-Agent Merge (Fonte: `CLAUDE.md REGRA #10`, E189)
+
+- 6 agentes escrevem no repo: Claude, Codex, Devin, Lovable, github-actions, cline
+- Prefixos de branch: `claude/*`, `codex/*`, `devin/*` etc.
+- **Cross-agent merge sem PR** = proibido (Gate 1.18)
+- Sentinel: `scripts/sentinel-check.sh` recusa merge commit entre prefixos de agentes diferentes
+
+---
+
+## 10. Arquivos Protegidos (Fonte: `CLAUDE.md — ARQUIVOS PROTEGIDOS`)
+
+| Arquivo | Regra |
+|---|---|
+| `src/integrations/supabase/client.ts` | REGRA #1 — SSOT |
+| `scripts/validate-supabase-config.mjs` | Gate 0 guard |
+| `.env.example` | Referência canônica de vars |
+| `.lovableignore` | Proteção contra Lovable |
+| `.github/CODEOWNERS` | Revisão obrigatória |
+| `scripts/sentinel-check.sh` | Branch Protection Sentinel |
+| `.github/workflows/deploy-gates.yml` | Gate Final pipeline |
+| `.vercel/project.json` | Vercel canônico (REGRA #11) |
+| `docs/SCHEMA_REFERENCE.md` | pg_catalog do BD canônico |
+
+---
+
+## 11. Contrato de Calendário (Fonte: `src/components/ui/__tests__/calendar.redesign.test.tsx`)
+
+- Baseline de 2 falhas em main (`62af0798`): `day_selected` e `day_outside`
+- Causa: migração react-day-picker v8→v10 (commit `8b0b6068`) sem atualizar seletores DOM
+- DOM v10: `aria-selected` vai para `<td>`, não para `<button>`; botões de dia são filhos de `td[role="gridcell"]`
+- PR #2681 corrige: atualiza seletores nos 3 arquivos de teste afetados
+
+---
+
+*Fontes verificadas em 2026-10-28 contra código em `62af0798` (main HEAD do baseline)*
+
+---
+
+## 12. REGRA #8 — DDL, Migrations e Edge Functions (Fonte: `docs/agentes/banco-migrations.md:60-128`, `AGENTS.md`)
+
+### 12.1 Governance files — DECISAO_HUMANA obrigatória
+
+Qualquer PR que toque os seguintes paths exige aprovação humana (Regra Git #7):
+
+| Path pattern | Fonte | Linha |
+|---|---|---|
+| `.github/workflows/**` | `AGENTS.md` Git rule #7 | — |
+| `supabase/migrations/**` (DDL) | `docs/agentes/banco-migrations.md:62-96` | 73-80 |
+| `supabase/rollbacks/**` | `docs/agentes/banco-migrations.md:73` | 73 |
+| `.gitleaks.toml` | `AGENTS.md` Git rule #10 | — |
+| `scripts/check-*.mjs` | `AGENTS.md` Git rule #10 | — |
+
+### 12.2 execute_sql — somente leitura
+- `docs/agentes/banco-migrations.md:82`: "MCP `execute_sql` só leitura. **Toda DDL** (inclusive `cron.job`) nasce como migration em `supabase/migrations/`"
+- `AGENTS.md` linha Banco: "MCP `execute_sql` só leitura."
+
+### 12.3 Fluxo obrigatório de migration
+1. Arquivo em `supabase/migrations/` com header `-- Rollback:` e rollback em `supabase/rollbacks/` (`docs/agentes/banco-migrations.md:73`)
+2. Aplicação via `db-apply-migration.yml` (workflow_dispatch) (`docs/agentes/banco-migrations.md:74-78`)
+3. `supabase db push` proibido (`docs/agentes/banco-migrations.md:79-80`)
+
+### 12.4 Edge functions
+- Deploy só via `deploy-edge-functions.yml` (`docs/agentes/banco-migrations.md:121-122`)
+- MCP `deploy_edge_function` cria divergência sem ledger
+- Segredos: `supabase secrets set` ou painel — nunca em migration (`docs/agentes/banco-migrations.md:129`)
+
+---
+
+## 13. Classificação de Governança — Critérios de Merge Autônomo vs DECISAO_HUMANA
+
+### 13.1 Merge autônomo permitido (Git rule #6, AGENTS.md)
+- CI verde (Gate Final SUCCESS)
+- Sem conflito com main
+- Escopo: front, edge function (somente docs/log), workflow config docs
+- Autor humano ou bot sem reviewer requested
+
+### 13.2 DECISAO_HUMANA obrigatória (Git rule #7, AGENTS.md)
+- Qualquer arquivo em `.github/workflows/`
+- Qualquer arquivo em `supabase/migrations/` (DDL)
+- Qualquer arquivo em `supabase/rollbacks/`
+- Qualquer arquivo `.gitleaks.toml`
+- PR DRAFT (isDraft=true)
+- Deleção de dado, mudança de arquitetura
+- Conflito com PR de outro agente
+
+### 13.3 NAO_MERGEAVEL
+- PR CONFLICTING (conflito com main) sem governance files → precisa rebase
+- CI FAILURE com autor bot (github-actions) sem reviewer explícito
+- PR vazia (0 arquivos alterados)
+
+> Fonte primária: `AGENTS.md` seção "Git (vários agentes no mesmo repo)", regras #6 e #7
+> Fonte secundária: `docs/agentes/banco-migrations.md` REGRA #8
+
+---
+
+*Atualizado 2026-11-08 | Sessão: https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz*
