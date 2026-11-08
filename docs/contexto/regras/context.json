@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "9feb0148afabc3433713d6dcb9271bed8fd9f436",
+  "sha": "46212f026e8f9f8f827c907db630e45f250cf67e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 01:46 UTC",
+  "generated_at": "2026-11-08 02:17 UTC",
   "files_total": 9100,
   "code_files": 7845,
   "code_lines": 1051414
@@ -483049,10 +483049,19 @@
   }
  },
  "git": {
-  "sha": "9feb0148afabc3433713d6dcb9271bed8fd9f436",
+  "sha": "46212f026e8f9f8f827c907db630e45f250cf67e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "46212f0",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "docs(ci): RELATORIO §29 — baseline local 9feb0148 + inventário fix/ci-workflows",
+    "files": [
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "9feb014",
     "date": "2026-11-07",
@@ -483337,21 +483346,12 @@
     "files": [
      ".github/workflows/replenishment-quality.yml"
     ]
-   },
-   {
-    "sha": "ed1c7cc",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "fix(health-check): tolera cold start do PostgREST (#3128)",
-    "files": [
-     "supabase/functions/health-check/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    12
+    13
    ],
    [
     "PENDENCIAS.md",

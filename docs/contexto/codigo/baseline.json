@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "9feb0148afabc3433713d6dcb9271bed8fd9f436",
+  "commit": "46212f026e8f9f8f827c907db630e45f250cf67e",
   "branch": "main",
-  "data_commit": "2026-11-07T22:42:04-03:00",
+  "data_commit": "2026-11-07T23:14:31-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "46212f0",
+    "data": "2026-11-07",
+    "assunto": "docs(ci): RELATORIO §29 — baseline local 9feb0148 + inventário fix/ci-workflows"
+   },
    {
     "sha": "9feb014",
     "data": "2026-11-07",
@@ -126,11 +131,6 @@
     "sha": "f956f43",
     "data": "2026-11-07",
     "assunto": "docs(ci): inventário HEAD b5f7d2e29e0b (2026-11-07) — §12 RELATORIO + baseline sessão (#3152)"
-   },
-   {
-    "sha": "b5f7d2e",
-    "data": "2026-11-07",
-    "assunto": "docs(ci): inventário HEAD 0549ea39629b (2026-11-07) — §11 RELATORIO + §21 PENDENCIAS (#3149)"
    }
   ],
   "arquivos_mudados_7d": 405,
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 74
+    "mudancas": 75
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -239,7 +239,7 @@
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 5
+    "commits": 4
    },
    {
     "autor": "dependabot[bot]",
