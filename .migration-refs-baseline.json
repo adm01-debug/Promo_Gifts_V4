@@ -1956,6 +1956,14 @@
     {
       "file": "tests/security/restore-seller-cart-rpc.test.ts",
       "ref": "supabase/migrations/20260713101342_...sql"
+    },
+    {
+      "file": ".github/workflows/drafts-index-check.yml",
+      "ref": "qa/migrations-draft/PR_COMMENT.md"
+    },
+    {
+      "file": "scripts/build-drafts-pr-comment.mjs",
+      "ref": "qa/migrations-draft/PR_COMMENT.md"
     }
   ]
 }
