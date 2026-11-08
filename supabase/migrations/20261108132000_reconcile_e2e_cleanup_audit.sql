@@ -34,7 +34,7 @@ BEGIN
       )
     $ddl$;
     COMMENT ON TABLE public.e2e_cleanup_audit IS
-      'created_by=20261108001500_reconcile_e2e_cleanup_audit; append-only Edge cleanup audit';
+      'created_by=20261108132000_reconcile_e2e_cleanup_audit; append-only Edge cleanup audit';
   END IF;
 END
 $migration$;
