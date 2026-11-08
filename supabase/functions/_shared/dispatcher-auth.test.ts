@@ -50,7 +50,7 @@ function makeRequest(headers: Record<string, string> = {}): Request {
   return new Request("https://example.com/", { method: "POST", headers });
 }
 
-Deno.test("authorizeCron: env nao setada => fail-closed 503 (SEC-003)", async () => {
+Deno.test("authorizeCron: env nao setada => fail-closed 401 (SEC-003)", async () => {
   Deno.env.delete("TEST_CRON_SECRET_1");
   const req = makeRequest({});
   const result = await authorizeCron(req, {
@@ -60,7 +60,7 @@ Deno.test("authorizeCron: env nao setada => fail-closed 503 (SEC-003)", async ()
   });
   assertEquals(result.ok, false);
   if (!result.ok) {
-    assertEquals(result.response.status, 503);
+    assertEquals(result.response.status, 401);
     const body = await result.response.json();
     assertEquals(body.error, "service_misconfigured");
   }

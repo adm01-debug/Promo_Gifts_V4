@@ -133,7 +133,7 @@ export const EDGE_AUTHZ_MANIFEST: Record<string, AuthzEntry> = {
   "connection-tester": { category: "dev", rationale: "is_dev() inline check", enforcedBy: "custom" },
   "github-credentials-test": { category: "dev", rationale: "is_dev() inline check", enforcedBy: "custom" },
   "external-db-inspect": { category: "dev", rationale: "is_dev() inline check", enforcedBy: "custom" },
-  "rls-audit": { category: "dev", rationale: "Auditoria via service-role + has_role inline", enforcedBy: "custom" },
+  "rls-audit": { category: "dev", rationale: "Auditoria de RLS cria/apaga dados com service_role; authorize(dev) + validação server-side" },
   "rls-integration-tests": { category: "dev", rationale: "Testes RLS — dev/cron only", enforcedBy: "custom" },
   "rls-matrix-export": { category: "dev", rationale: "Export matriz — has_role inline", enforcedBy: "custom" },
   "tests": { category: "dev", rationale: "Pasta de Deno tests, não é edge deployada", enforcedBy: "custom", skipAnonBypassTest: true, skipAuthBypassTest: true },

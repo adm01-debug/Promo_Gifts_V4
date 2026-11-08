@@ -9,16 +9,21 @@
  * O relatório em markdown é gerado sempre — mesmo em execução bem-sucedida —
  * para servir como auditoria histórica e facilitar a inspeção manual.
  */
-import { describe, it, expect } from 'vitest';
-import { mkdirSync, writeFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { afterAll, describe, it, expect } from 'vitest';
+import { mkdtempSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { GREEN, PDF_TOKENS } from '../../ProposalStyles';
 
-// E106: escreve em tmpdir para não sujar a árvore versionada
-const REPORT_PATH = join(tmpdir(), 'pdf-contrast-report.md');
+// E106: diretório exclusivo e privado, removido após o teste.
+const REPORT_DIR = mkdtempSync(join(tmpdir(), 'pdf-contrast-report-'));
+const REPORT_PATH = join(REPORT_DIR, 'pdf-contrast-report.md');
 const WCAG_AA_TEXT = 4.5;
 const WCAG_AA_UI = 3.0;
+
+afterAll(() => {
+  rmSync(REPORT_DIR, { recursive: true, force: true });
+});
 
 function hexToRgb(hex: string): [number, number, number] {
   const h = hex.replace('#', '');
@@ -154,8 +159,9 @@ describe('PDF contraste WCAG — relatório', () => {
       '',
     ].join('\n');
 
-    mkdirSync(dirname(REPORT_PATH), { recursive: true });
-    writeFileSync(REPORT_PATH, md, 'utf8');
+    writeFileSync(REPORT_PATH, md, { encoding: 'utf8', mode: 0o600, flag: 'wx' });
+    expect(statSync(REPORT_DIR).mode & 0o077).toBe(0);
+    expect(statSync(REPORT_PATH).mode & 0o077).toBe(0);
 
     expect(
       failed,
