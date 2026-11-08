@@ -5,7 +5,7 @@
 **Total PRs analisadas:** 25
 **Mergeadas esta sessão:** 2 — PR#3212 → `d8ae515913` (E14) + PR#3241 → `931b932a` (E14, PO mergeou após branch update)
 **PRs abertas:** 11 — todas DECISAO_HUMANA
-**Vereditos:** MERGEADA=2 | DECISAO_HUMANA=11 | FECHADA_OU_MERGEADA_PO=12 (histórico + PO após sessão)
+**Vereditos:** MERGEADA=2 | DECISAO_HUMANA=10 | FECHADA_OU_MERGEADA_PO=13 (histórico + PO durante/após sessão)
 **Novas PRs analisadas:** #3239 (Draft+REGRA#8 migration), #3241 (MERGEADA), #3242 (Draft+outro agente), #3243 (Draft+REGRA#8 migration)
 
 ---
@@ -101,7 +101,7 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 | #3210 | chore: release 1.9.0 | release-please--branches--main-- | Não | — | DECISAO_HUMANA | Bot PR — Gate Final status 0 check runs no HEAD | PR-3210.md |
 | #3212 | docs: edge deploy receipt run 42491776265 | auto/edge-deploy-receipt-... | Não | — | **MERGEADA** `d8ae515913` | docs-only E14 — Gate Final=success pós-merge | PR-3212.md |
 | #3214 | fix(cron): CRON-001 startup timeout | codex/fix-cron-startup-... | **SIM** | FAILURE | DECISAO_HUMANA | DRAFT + 1 workflow + 3 migrations | PR-3214-evidencias.md |
-| #3215 | fix(migration): rollback header | codex/fix-migration-rollback-... | Não | FAILURE | DECISAO_HUMANA | migration REGRA#8 | PR-3215.md |
+| #3215 | fix(migration): rollback header | codex/fix-migration-rollback-... | Não | FAILURE | FECHADA_PELO_PO | Fechada PO 2026-11-08T20:34Z | PR-3215.md |
 | #3216 | fix(db): reconcilia e2e_cleanup_audit | codex/fix-db-e2e-cleanup-... | **SIM** | — | FECHADA_PELO_PO | DRAFT — PO fechou | PR-3216-evidencias.md |
 | #3217 | docs: auditoria P09/P06 | codex/docs-auditoria-p09-... | **SIM** | SUCCESS | FECHADA_PELO_PO | DRAFT — PO fechou | PR-3217.md |
 | #3220 | fix(ci): Sentinel Regra 6 + rollback header | codex/fix-ci-sentinel-r6-... | Não | FAILURE | FECHADA_PELO_PO | PO fechou | PR-3220-evidencias.md |
@@ -306,7 +306,7 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 
 ---
 
-### PR #3215 — fix(migration): rollback header em 20261108001500 | DECISAO_HUMANA
+### PR #3215 — fix(migration): rollback header em 20261108001500 | FECHADA_OU_MERGEADA_PO
 
 **Branch:** `codex/fix-migration-rollback-...` | Draft: Não | CI: FAILURE | CLEAN MERGE
 
@@ -314,7 +314,7 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 **(2) Regressão?** Zero. Merge local limpo. 1 arquivo: `supabase/migrations/20261108001500_*.sql` — apenas adição do comentário `-- Rollback:` ao cabeçalho. A SQL em si não é alterada. Padrão exigido pelo Gate 1.3 (contratos de migration).  
 **(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3215`: 3 commits com prefixo `+`. Não está em main.  
 **(4) Regra de negócio?** Válida — conformidade com Gate 1.3 obrigatório.  
-**Bloqueio:** REGRA#8 — `supabase/migrations/` (migration). Esta é a PR de migration mais simples: 1 arquivo, 1 linha de comentário, merge limpo.
+**Veredito atualizado:** FECHADA_OU_MERGEADA_PO — Fechada pelo PO sem merge em 2026-11-08T20:34:31Z. CI falhou no Gate 1.3 ("Recibo de migration em MIGRATIONS_SYNC_LOG.md", check_run_id 128845031702, HEAD c0e8f0a2) antes do fechamento.
 
 ---
 
@@ -460,8 +460,8 @@ Todas as análises têm evidência de ao menos uma das fontes abaixo:
 
 **25 PRs analisadas no total (vereditos com evidência):**
 - 2 × MERGEADA_ESTA_SESSAO: PR#3212 → `d8ae5159`, PR#3241 → `931b932a`
-- 11 × DECISAO_HUMANA (abertas): #3127, #3129, #3137, #3179, #3203, #3210, #3214, #3215, #3228, #3239, #3243 — motivos em `analise-prs/progresso.json`, dossies em `dossies/PR-NNNN.md`
-- 12 × FECHADA_OU_MERGEADA_PO: #3144, #3148, #3150, #3160, #3202, #3205, #3216, #3217, #3220, #3236, #3238, #3242 (históricas + PO durante/após sessão)
+- 10 × DECISAO_HUMANA (abertas): #3127, #3129, #3137, #3179, #3203, #3210, #3214, #3228, #3239, #3243 — motivos em `analise-prs/progresso.json`, dossies em `dossies/PR-NNNN.md`
+- 13 × FECHADA_OU_MERGEADA_PO: #3144, #3148, #3150, #3160, #3202, #3205, #3215, #3216, #3217, #3220, #3236, #3238, #3242 (históricas + PO durante/após sessão)
 
 **Nenhuma outra PR cumpriu todos os critérios de merge autônomo:**
 - Governance files: todas as 11 abertas contêm workflows ou migrations (REGRA#8)
