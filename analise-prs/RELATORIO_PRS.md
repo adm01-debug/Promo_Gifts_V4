@@ -45,10 +45,10 @@
 ## Inventário — PRs Abertas (AGUARDANDO HUMANO)
 
 | # | Título | Branch | Gate Final | Causa bloqueio | Dossier |
-|---|--------|--------|------------|---------------|-------|
-| [#3127](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3127) | fix(ci): estabiliza núcleo E2E | codex/fix-e2e-ci-pressure-261107-0238 | NÃO VERIFICADO | .github/workflows/ | [PR-3127.md](dossies/PR-3127.md) |
+|---|--------|--------|------------|---------------|---------|
+| [#3127](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3127) | fix(ci): estabiliza núcleo E2E | codex/fix-e2e-ci-pressure-261107-0238 | ✅ SUCCESS | .github/workflows/ | [PR-3127.md](dossies/PR-3127.md) |
 | [#3129](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3129) | ci(e2e): reduzir pressão runners | codex/infra-e2e-ci-pressure-261107-1040 | ✅ SUCCESS | .github/workflows/ | [PR-3129.md](dossies/PR-3129.md) |
-| [#3137](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3137) | fix(ci): falso negativo detector E2E | codex/fix-e2e-relevance-261107-1148 | NÃO VERIFICADO | .github/workflows/ | [PR-3137.md](dossies/PR-3137.md) |
+| [#3137](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3137) | fix(ci): falso negativo detector E2E | codex/fix-e2e-relevance-261107-1148 | ✅ SUCCESS | .github/workflows/ | [PR-3137.md](dossies/PR-3137.md) |
 | [#3160](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3160) | fix: DB E15 (pg_temp + rollback) | claude/fix-ci-workflows-261107-1540 | FAILURE (irreparável) | supabase/migrations/ DDL | [PR-3160.md](dossies/PR-3160.md) |
 | [#3179](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3179) | fix: corrige preflight db-apply | claude/fix-ci-workflows-261107-2300 | FAILURE (irreparável) | supabase/migrations/ DDL | [PR-3179.md](dossies/PR-3179.md) |
 | [#3203](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3203) | fix: scripts static-pass, TypeScript | claude/inspiring-knuth-swo71j | CONFLICTING | .github/workflows/ conflito | [PR-3203.md](dossies/PR-3203.md) |
@@ -63,12 +63,12 @@
 ## Resumo de CI por categoria
 
 ### CI Verde (Gate Final SUCCESS) → AGUARDANDO HUMANO por governança
+- **#3127:** Gate Final SUCCESS ✅ — toca `.github/workflows/e2e*.yml` (branch alheia codex/)
 - **#3129:** Gate Final SUCCESS ✅ — toca `.github/workflows/`
+- **#3137:** Gate Final SUCCESS ✅ — toca `.github/scripts/` + `.github/workflows/` (branch alheia codex/)
 - **#3228:** Gate Final SUCCESS ✅ — toca `.github/workflows/`
 
-### CI não verificado (reruns disparados) → AGUARDANDO HUMANO por governança
-- **#3127:** Rerun run_id=42372342538 (visual-check). visual-check passou; Gate Final não detectado. Toca `.github/workflows/`.
-- **#3137:** Rerun run_id=42378959180 (JWT timeout flaky). Gate Final não detectado. Toca `.github/workflows/`.
+### CI não verificado → AGUARDANDO HUMANO por governança
 - **#3214:** Branch atualizada por outra sessão (SHA mudou 2x). Gate Final não verificado. Toca `.github/workflows/` + cron DDL.
 
 ### CI Irreparável → AGUARDANDO HUMANO por DDL
