@@ -8068,7 +8068,7 @@
     "useProductSelectionStore"
    ],
    "export_default": null,
-   "linhas": 47,
+   "linhas": 84,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -8083,7 +8083,7 @@
    "usado_por_modulos": [
     "components/products"
    ],
-   "coberto_por_testes": 0,
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {

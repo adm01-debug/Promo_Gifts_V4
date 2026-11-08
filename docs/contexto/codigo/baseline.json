@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "217869d1f7fb52bef586a63e30fd37bb1dffa290",
+  "commit": "9c33e63e43c73099dc457ed2cc3f8c0c4bdf612a",
   "branch": "main",
-  "data_commit": "2026-11-07T23:49:15-03:00",
+  "data_commit": "2026-11-07T23:51:11-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "9c33e63",
+    "data": "2026-11-07",
+    "assunto": "fix(catalogo): preservar variante exata na seleção de cor (#3141)"
+   },
    {
     "sha": "217869d",
     "data": "2026-11-07",
@@ -126,14 +131,9 @@
     "sha": "3c2ff92",
     "data": "2026-11-07",
     "assunto": "docs(ci): §13 prova final Gate Final success SHA b5f7d2e29e0b (2026-11-07) (#3158)"
-   },
-   {
-    "sha": "57ada84",
-    "data": "2026-11-07",
-    "assunto": "docs(pendencias): atualiza PENDENCIAS.md — itens #22/#23/#24 + re-falha #2 (#3155)"
    }
   ],
-  "arquivos_mudados_7d": 489,
+  "arquivos_mudados_7d": 496,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 311
+    "mudancas": 315
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -312,19 +312,19 @@
     "commits": 22
    },
    {
-    "autor": "Claude",
+    "autor": "dependabot[bot]",
     "commits": 2
    },
    {
-    "autor": "dependabot[bot]",
-    "commits": 2
+    "autor": "Claude",
+    "commits": 1
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 9178,
-  "arquivos_codigo": 4618,
-  "linhas_codigo": 884341,
+  "arquivos_total": 9180,
+  "arquivos_codigo": 4620,
+  "linhas_codigo": 884609,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 544,
   "migrations": 3043,
   "cron_jobs": 120,
-  "testes": 2189,
+  "testes": 2191,
   "workflows": 94,
   "scripts": 255,
   "docs_md": 895
@@ -1840,7 +1840,7 @@
   },
   "src/components": {
    "arquivos": 1332,
-   "linhas": 268659
+   "linhas": 268660
   },
   "src/config": {
    "arquivos": 1,
@@ -1863,8 +1863,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 447,
-   "linhas": 83772
+   "arquivos": 448,
+   "linhas": 83968
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1895,8 +1895,8 @@
    "linhas": 5351
   },
   "src/stores": {
-   "arquivos": 10,
-   "linhas": 1056
+   "arquivos": 11,
+   "linhas": 1127
   },
   "src/test": {
    "arquivos": 3,
@@ -2246,7 +2246,7 @@
   },
   {
    "arquivo": "src/components/products/ProductCard.tsx",
-   "linhas": 1129
+   "linhas": 1128
   },
   {
    "arquivo": "src/lib/theme-presets.ts",
@@ -2274,7 +2274,7 @@
   },
   {
    "arquivo": "src/components/products/ProductListItem.tsx",
-   "linhas": 939
+   "linhas": 938
   },
   {
    "arquivo": "src/pages/filters/useFiltersPageState.ts",

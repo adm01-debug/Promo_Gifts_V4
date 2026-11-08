@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2189,
+ "total": 2191,
  "por_tipo": {
   "contrato": 56,
   "e2e": 630,
   "pytest": 2,
   "qa": 17,
-  "unit": 1484
+  "unit": 1486
  },
  "onde_ficam": [
   {
@@ -28,7 +28,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 119
+   "arquivos": 121
   },
   {
    "padrao": "outro",
@@ -8237,6 +8237,15 @@
    "casos": 3
   },
   {
+   "arquivo": "src/hooks/useProductColorSwatch.test.tsx",
+   "tipo": "unit",
+   "linhas": 162,
+   "testa": [
+    "src/hooks/useProductColorSwatch.ts"
+   ],
+   "casos": 6
+  },
+  {
    "arquivo": "src/hooks/voice/__tests__/processTranscript.aiNotConfigured.test.ts",
    "tipo": "unit",
    "linhas": 51,
@@ -10493,6 +10502,15 @@
     "src/stores/useComparisonStore.ts"
    ],
    "casos": 15
+  },
+  {
+   "arquivo": "src/stores/useProductSelectionStore.test.ts",
+   "tipo": "unit",
+   "linhas": 34,
+   "testa": [
+    "src/stores/useProductSelectionStore.ts"
+   ],
+   "casos": 3
   },
   {
    "arquivo": "src/test/detect-flaky-vitest.mjs",
@@ -18983,7 +19001,7 @@
   "src/hooks/ui/useScrollLockFix.ts": 1,
   "src/hooks/ui/useWorkspaceNotifications.tsx": 9,
   "src/hooks/useFutureStockPreference.ts": 2,
-  "src/hooks/useProductColorSwatch.ts": 1,
+  "src/hooks/useProductColorSwatch.ts": 2,
   "src/hooks/voice/processTranscript.ts": 2,
   "src/hooks/voice/retry.ts": 2,
   "src/hooks/voice/types.ts": 1,
@@ -19232,6 +19250,7 @@
   "src/stores/useBadgeVisibilityStore.ts": 3,
   "src/stores/useComparisonStore.ts": 5,
   "src/stores/useFavoritesStore.ts": 5,
+  "src/stores/useProductSelectionStore.ts": 1,
   "src/types/advancedFilters.ts": 1,
   "src/types/customization.ts": 6,
   "src/types/domain/simulator-wizard.ts": 2,
@@ -19648,7 +19667,6 @@
    "src/pages/quotes/quote-view/useQuoteViewData.ts",
    "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
    "src/stores/oracleVoiceBridge.ts",
-   "src/stores/useProductSelectionStore.ts",
    "src/stores/useRecentlyViewedStore.ts",
    "src/stores/useSearchStore.ts",
    "src/stores/useWordMagicStore.ts"

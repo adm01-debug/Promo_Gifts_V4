@@ -10840,7 +10840,7 @@
     "ProductCardProps"
    ],
    "export_default": null,
-   "linhas": 1129,
+   "linhas": 1128,
    "dominio": "components/products",
    "hooks_locais": [
     "useComparisonStore",
@@ -11086,7 +11086,7 @@
     "ProductListItem"
    ],
    "export_default": null,
-   "linhas": 939,
+   "linhas": 938,
    "dominio": "components/products",
    "hooks_locais": [
     "useComparisonStore",
@@ -11261,7 +11261,7 @@
     "ProductTableView"
    ],
    "export_default": null,
-   "linhas": 625,
+   "linhas": 624,
    "dominio": "components/products",
    "hooks_locais": [
     "useComparisonStore",
@@ -11644,7 +11644,7 @@
     "ProductTableRowProps"
    ],
    "export_default": null,
-   "linhas": 379,
+   "linhas": 383,
    "dominio": "components/products",
    "hooks_locais": [
     "useExternalVariantStock",

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `217869d1f7fb52bef586a63e30fd37bb1dffa290` (2026-11-07T23:49:15-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `9c33e63e43c73099dc457ed2cc3f8c0c4bdf612a` (2026-11-07T23:51:11-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4307), SQL (3228), Markdown (895), JavaScript (307), YAML (107), JSON (91), Shell (18), CSS (13)
+- linguagens: TypeScript (4309), SQL (3228), Markdown (895), JavaScript (307), YAML (107), JSON (91), Shell (18), CSS (13)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 9178 |
-| arquivos_codigo | 4618 |
-| linhas_codigo | 884341 |
+| arquivos_total | 9180 |
+| arquivos_codigo | 4620 |
+| linhas_codigo | 884609 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 544 |
 | migrations | 3043 |
 | cron_jobs | 120 |
-| testes | 2189 |
+| testes | 2191 |
 | workflows | 94 |
 | scripts | 255 |
 | docs_md | 895 |
@@ -586,8 +586,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38155 nós · 66556 arestas · 2159 comunidades · grafo do commit `217869d1`
-- comunidades maiores: ref_components (688), ref_integrations (564), ref_lib (537), gotoAndSettle (355), @testing-library/react (341), react-router-dom (323), ref_hooks (314), ref_node_fs (303), scripts (289), @playwright/test (281), react (272), cors.ts (251)
+- 38160 nós · 66569 arestas · 2163 comunidades · grafo do commit `9c33e63e`
+- comunidades maiores: ref_components (591), ref_integrations (557), ref_lib (470), @testing-library/react (400), gotoAndSettle (357), react-router-dom (325), ref_hooks (320), ref_node_fs (297), cors.ts (289), scripts (289), @playwright/test (267), concludeCheck (265)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.7.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.1...v1.7.0) (2026-11-02)
 
 ## Últimos commits
+- 2026-11-07 `9c33e63` fix(catalogo): preservar variante exata na seleção de cor (#3141)
 - 2026-11-07 `217869d` infra: migra imports esm.sh → npm: pinados nas edge functions (#3157)
 - 2026-11-07 `16408a6` docs(ci): RELATORIO §30 — fix Branch Protection Sentinel (#3192)
 - 2026-11-07 `46212f0` docs(ci): RELATORIO §29 — baseline local 9feb0148 + inventário fix/ci-workflows
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-07 `be7688d` docs(ci): RELATORIO §23 — baseline bfb2926d + tabela de prova completa 36 workflows (#3178)
 - 2026-11-07 `bfb2926` docs(ci): PENDENCIAS #36 + RELATORIO §22 — Gate Final a882bcc1 success (#3176)
 - 2026-11-07 `a882bcc` docs(edge-deploy-log): recibo do deploy — run 42374498496 (#3163)
-- 2026-11-07 `3093c4a` fix(test): validar de verdade o corpus dos fuzzers (#3173)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

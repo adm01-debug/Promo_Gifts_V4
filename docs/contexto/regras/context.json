@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "217869d1f7fb52bef586a63e30fd37bb1dffa290",
+  "sha": "9c33e63e43c73099dc457ed2cc3f8c0c4bdf612a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 02:51 UTC",
-  "files_total": 9100,
-  "code_files": 7845,
-  "code_lines": 1051417
+  "generated_at": "2026-11-08 02:57 UTC",
+  "files_total": 9102,
+  "code_files": 7847,
+  "code_lines": 1051685
  },
  "version": "1.3.2",
- "facts_hash": "f281de1c1ab6ff88",
+ "facts_hash": "b8a25a19cc9d7ead",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1174,8 +1174,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3228,
-   ".ts": 2621,
-   ".tsx": 1687,
+   ".ts": 2622,
+   ".tsx": 1688,
    ".mjs": 300,
    ".py": 9,
    ".js": 7
@@ -138334,7 +138334,7 @@
   {
    "module": "src/components",
    "files": 1332,
-   "lines": 268658,
+   "lines": 268659,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -138690,8 +138690,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 447,
-   "lines": 83772,
+   "files": 448,
+   "lines": 83968,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -138850,6 +138850,7 @@
     "src/hooks/useFutureStockPreference.ts",
     "src/hooks/useHorizontalScroll.ts",
     "src/hooks/useNavigationAnalytics.ts",
+    "src/hooks/useProductColorSwatch.test.tsx",
     "src/hooks/useProductColorSwatch.ts",
     "src/hooks/__tests__/anti-flash-ref.unit.test.tsx",
     "src/hooks/__tests__/bug-g7-regression.unit.test.ts",
@@ -138924,8 +138925,7 @@
     "src/hooks/collections/index.ts",
     "src/hooks/collections/useCollections.ts",
     "src/hooks/collections/useExternalCollections.ts",
-    "src/hooks/common/index.ts",
-    "src/hooks/common/useAppBootstrap.ts"
+    "src/hooks/common/index.ts"
    ]
   },
   {
@@ -139519,8 +139519,8 @@
   },
   {
    "module": "src/stores",
-   "files": 10,
-   "lines": 1056,
+   "files": 11,
+   "lines": 1127,
    "tables": [
     "profiles"
    ],
@@ -139551,6 +139551,7 @@
     "src/stores/useBadgeVisibilityStore.ts",
     "src/stores/useComparisonStore.ts",
     "src/stores/useFavoritesStore.ts",
+    "src/stores/useProductSelectionStore.test.ts",
     "src/stores/useProductSelectionStore.ts",
     "src/stores/useRecentlyViewedStore.ts",
     "src/stores/useSearchStore.ts",
@@ -160151,6 +160152,10 @@
    {
     "file": "src/stores/useFavoritesStore.ts",
     "text": "Filter out corrupted entries missing the required productId field"
+   },
+   {
+    "file": "src/stores/useProductSelectionStore.ts",
+    "text": "com o estado persistido legado, que armazena apenas o nome da cor."
    },
    {
     "file": "src/stores/useProductSelectionStore.ts",
@@ -220699,6 +220704,34 @@
     "name": "useSellerCartContextSafe() retorna null fora do provider"
    },
    {
+    "file": "src/hooks/useProductColorSwatch.test.tsx",
+    "name": "useProductColorSwatch"
+   },
+   {
+    "file": "src/hooks/useProductColorSwatch.test.tsx",
+    "name": "seleciona e reseta uma variante em modo não controlado"
+   },
+   {
+    "file": "src/hooks/useProductColorSwatch.test.tsx",
+    "name": "prioriza variant_id e não troca variantes com nomes de cor duplicados"
+   },
+   {
+    "file": "src/hooks/useProductColorSwatch.test.tsx",
+    "name": "mantém compatibilidade com persistência legada baseada no nome da cor"
+   },
+   {
+    "file": "src/hooks/useProductColorSwatch.test.tsx",
+    "name": "não troca silenciosamente para outra variante quando o variant_id persistido é inválido"
+   },
+   {
+    "file": "src/hooks/useProductColorSwatch.test.tsx",
+    "name": "aplica reset controlado imediatamente, sem ressuscitar estado local antigo"
+   },
+   {
+    "file": "src/hooks/useProductColorSwatch.test.tsx",
+    "name": "isola respostas lazy concorrentes por produto"
+   },
+   {
     "file": "src/hooks/__tests__/anti-flash-ref.unit.test.tsx",
     "name": "GAP-2 anti-flash useRef — runtime React real (renderHook)"
    },
@@ -236677,6 +236710,22 @@
    {
     "file": "src/services/__tests__/quoteStatusTransitionTelemetry.test.ts",
     "name": "NÃO emite telemetria quando a transição é válida e o banco aceita"
+   },
+   {
+    "file": "src/stores/useProductSelectionStore.test.ts",
+    "name": "useProductSelectionStore"
+   },
+   {
+    "file": "src/stores/useProductSelectionStore.test.ts",
+    "name": "persiste nome e identidade exata da variante atomicamente"
+   },
+   {
+    "file": "src/stores/useProductSelectionStore.test.ts",
+    "name": "remove variant_id obsoleto ao gravar uma seleção legada"
+   },
+   {
+    "file": "src/stores/useProductSelectionStore.test.ts",
+    "name": "limpa nome e variant_id juntos"
    },
    {
     "file": "src/stores/__tests__/useBadgeVisibilityStore.test.ts",
@@ -397334,7 +397383,7 @@
   },
   "src/components/products/ProductCard.tsx": {
    "path": "src/components/products/ProductCard.tsx",
-   "lines": 1129,
+   "lines": 1128,
    "exports": [
     "interface ProductCardProps",
     "const ProductCard"
@@ -397585,7 +397634,7 @@
   },
   "src/components/products/ProductListItem.tsx": {
    "path": "src/components/products/ProductListItem.tsx",
-   "lines": 939,
+   "lines": 938,
    "exports": [
     "const ProductListItem"
    ],
@@ -397922,7 +397971,7 @@
   },
   "src/components/products/ProductTableView.tsx": {
    "path": "src/components/products/ProductTableView.tsx",
-   "lines": 625,
+   "lines": 624,
    "exports": [
     "const ProductTableView"
    ],
@@ -399375,7 +399424,7 @@
   },
   "src/components/products/table-view/ProductTableRow.tsx": {
    "path": "src/components/products/table-view/ProductTableRow.tsx",
-   "lines": 379,
+   "lines": 383,
    "exports": [
     "interface ProductTableRowProps",
     "const ProductTableRow"
@@ -404868,9 +404917,23 @@
     "useNavigationAnalytics"
    ]
   },
+  "src/hooks/useProductColorSwatch.test.tsx": {
+   "path": "src/hooks/useProductColorSwatch.test.tsx",
+   "lines": 162,
+   "is_test": true,
+   "tests": [
+    "useProductColorSwatch",
+    "seleciona e reseta uma variante em modo não controlado",
+    "prioriza variant_id e não troca variantes com nomes de cor duplicados",
+    "mantém compatibilidade com persistência legada baseada no nome da cor",
+    "não troca silenciosamente para outra variante quando o variant_id persistido é inválido",
+    "aplica reset controlado imediatamente, sem ressuscitar estado local antigo",
+    "isola respostas lazy concorrentes por produto"
+   ]
+  },
   "src/hooks/useProductColorSwatch.ts": {
    "path": "src/hooks/useProductColorSwatch.ts",
-   "lines": 91,
+   "lines": 125,
    "exports": [
     "interface ColorSwatch",
     "interface ProductWithSwatches",
@@ -436546,13 +436609,25 @@
     "useFavoritesStore"
    ]
   },
+  "src/stores/useProductSelectionStore.test.ts": {
+   "path": "src/stores/useProductSelectionStore.test.ts",
+   "lines": 34,
+   "is_test": true,
+   "tests": [
+    "useProductSelectionStore",
+    "persiste nome e identidade exata da variante atomicamente",
+    "remove variant_id obsoleto ao gravar uma seleção legada",
+    "limpa nome e variant_id juntos"
+   ]
+  },
   "src/stores/useProductSelectionStore.ts": {
    "path": "src/stores/useProductSelectionStore.ts",
-   "lines": 47,
+   "lines": 84,
    "exports": [
     "const useProductSelectionStore"
    ],
    "rule_comments": [
+    "com o estado persistido legado, que armazena apenas o nome da cor.",
     "Remove as entradas mais antigas (primeiras inseridas) quando o limite é atingido."
    ],
    "hooks": [
@@ -483053,10 +483128,26 @@
   }
  },
  "git": {
-  "sha": "217869d1f7fb52bef586a63e30fd37bb1dffa290",
+  "sha": "9c33e63e43c73099dc457ed2cc3f8c0c4bdf612a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "9c33e63",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "fix(catalogo): preservar variante exata na seleção de cor (#3141)",
+    "files": [
+     "src/components/products/ProductCard.tsx",
+     "src/components/products/ProductListItem.tsx",
+     "src/components/products/ProductTableView.tsx",
+     "src/components/products/table-view/ProductTableRow.tsx",
+     "src/hooks/useProductColorSwatch.test.tsx",
+     "src/hooks/useProductColorSwatch.ts",
+     "src/stores/useProductSelectionStore.test.ts",
+     "src/stores/useProductSelectionStore.ts"
+    ]
+   },
    {
     "sha": "217869d",
     "date": "2026-11-07",
@@ -483429,15 +483520,6 @@
      "src/hooks/products/__tests__/useProductsColorsBatch.aggregation.test.tsx",
      "src/hooks/products/useProductsColorsBatch.ts"
     ]
-   },
-   {
-    "sha": "6065eb7",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "fix(ci): permitir leitura de PR no detector de reposição (#3139)",
-    "files": [
-     ".github/workflows/replenishment-quality.yml"
-    ]
    }
   ],
   "hot_files": [
@@ -483454,8 +483536,36 @@
     3
    ],
    [
-    ".github/workflows/replenishment-quality.yml",
-    2
+    "src/components/products/ProductCard.tsx",
+    1
+   ],
+   [
+    "src/components/products/ProductListItem.tsx",
+    1
+   ],
+   [
+    "src/components/products/ProductTableView.tsx",
+    1
+   ],
+   [
+    "src/components/products/table-view/ProductTableRow.tsx",
+    1
+   ],
+   [
+    "src/hooks/useProductColorSwatch.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/useProductColorSwatch.ts",
+    1
+   ],
+   [
+    "src/stores/useProductSelectionStore.test.ts",
+    1
+   ],
+   [
+    "src/stores/useProductSelectionStore.ts",
+    1
    ],
    [
     "supabase/functions/_shared/contracts/_zod.ts",
@@ -483491,34 +483601,6 @@
    ],
    [
     "supabase/functions/_shared/contracts/schemas/kit-ai-builder.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/contracts/schemas/market-intelligence-insights.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/contracts/schemas/ownership-audit.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/contracts/schemas/ownership-repair.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/contracts/schemas/product-webhook.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/contracts/schemas/send-transactional-email.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/contracts/schemas/simulation-orchestrator.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/contracts/schemas/step-up-verify.ts",
     1
    ]
   ]

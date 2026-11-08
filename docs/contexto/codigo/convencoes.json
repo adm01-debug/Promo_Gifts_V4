@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(catalogo): preservar variante exata na seleção de cor (#3141)",
    "infra: migra imports esm.sh → npm: pinados nas edge functions (#3157)",
    "docs(ci): RELATORIO §30 — fix Branch Protection Sentinel (#3192)",
    "docs(ci): RELATORIO §29 — baseline local 9feb0148 + inventário fix/ci-workflows",
-   "docs(ci): RELATORIO §28 + PENDENCIAS #39-42 — sessão 2026-11-08",
-   "docs(estado): atualiza PROGRESSO e PENDENCIAS — 2026-11-08 (#3189)"
+   "docs(ci): RELATORIO §28 + PENDENCIAS #39-42 — sessão 2026-11-08"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

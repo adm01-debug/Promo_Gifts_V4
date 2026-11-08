@@ -9071,7 +9071,7 @@
    "hooks_exportados": [
     "useProductColorSwatch"
    ],
-   "linhas": 91,
+   "linhas": 125,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [
@@ -9080,8 +9080,7 @@
    "edges": [],
    "hooks_internos": [
     "useCallback",
-    "useMemo",
-    "useState"
+    "useMemo"
    ],
    "canais_realtime": [],
    "usado_por": 4,
@@ -9091,7 +9090,7 @@
     "src/components/products/table-view/ProductTableRow.tsx",
     "src/components/ui/ColorSwatchPicker.tsx"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/voice/useVoiceHistory.ts",
@@ -10064,7 +10063,7 @@
    "hooks_exportados": [
     "useProductSelectionStore"
    ],
-   "linhas": 47,
+   "linhas": 84,
    "dominio": "stores",
    "tabelas": [],
    "rpcs": [],
@@ -10078,7 +10077,7 @@
     "src/components/products/ProductTableView.tsx",
     "src/components/products/table-view/ProductTableRow.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/stores/useRecentlyViewedStore.ts",
