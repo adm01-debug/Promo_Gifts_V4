@@ -4,12 +4,11 @@
   "main_sha": "6e631dd1cab31832c09028c8e762fc19886a4b70",
   "main_sha_antes_desta_sessao": "9a89d9f0a4ac2df7ad670501adaad9f1f60a75df",
   "total_prs_abertas": 11,
-  "total_analisadas": 24,
+  "total_analisadas": 25,
   "vereditos": {
     "MERGEADA_ESTA_SESSAO": 2,
     "DECISAO_HUMANA": 11,
-    "FECHADA_OU_MERGEADA_PELO_PO": 11,
-    "MERGEADA_PELO_PO_APOS_UPDATE": 1
+    "FECHADA_OU_MERGEADA_PELO_PO": 12
   },
   "prs_mergeadas_esta_sessao": [
     {
@@ -47,15 +46,12 @@
     {"pr":3160,"motivo":"Fechada pelo PO durante/após esta sessão — Draft supersedido por PR#3179"},
     {"pr":3202,"motivo":"Fechada pelo PO antes desta sessão"},
     {"pr":3205,"motivo":"Fechada pelo PO antes desta sessão"},
+    {"pr":3216,"motivo":"Fechada pelo PO durante sessão em 2026-11-08T18:34:14Z — supersedida por PR#3215"},
     {"pr":3217,"motivo":"Mergeada pelo PO antes desta sessão"},
     {"pr":3220,"motivo":"Fechada pelo PO antes desta sessão"},
     {"pr":3236,"motivo":"Mergeada pelo PO após análise desta sessão — REGRA#8 migration (cabeçalho rollback)"},
     {"pr":3238,"motivo":"Fechada pelo PO após análise desta sessão — delivery branch claude_05 artefatos"},
     {"pr":3242,"motivo":"Mergeada pelo PO após sessão — merge commit 6e631dd1 (docs analise-prs claude_04)"}
-  ],
-  "fechadas_antes_desta_sessao_nao_analisadas": [
-    {"pr":3232,"motivo":"Fechada pelo PO/bot antes desta sessão — REGRA#8 supabase/migrations/"},
-    {"pr":3234,"motivo":"Fechada pelo PO/bot antes desta sessão — Draft feat migrations P09"}
   ],
   "baseline": {
     "typecheck_exit": 0,

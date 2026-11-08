@@ -2,10 +2,10 @@
 **Sessão:** 2026-11-08 (`49a643e1-3ba4-5a51-9048-a545eec48233`)
 **Main SHA (início):** `9a89d9f0a4ac2df7ad670501adaad9f1f60a75df`
 **Main SHA (atual):** `6e631dd1cab31832c09028c8e762fc19886a4b70` (após #3241 esta sessão + #3236/#3242 mergeadas pelo PO pós-sessão)
-**Total PRs analisadas:** 24
+**Total PRs analisadas:** 25
 **Mergeadas esta sessão:** 2 — PR#3212 → `d8ae515913` (E14) + PR#3241 → `931b932a` (E14, PO mergeou após branch update)
 **PRs abertas:** 11 — todas DECISAO_HUMANA
-**Vereditos:** MERGEADA=2 | DECISAO_HUMANA=11 | FECHADA_OU_MERGEADA_PO=11 (histórico + PO após sessão)
+**Vereditos:** MERGEADA=2 | DECISAO_HUMANA=11 | FECHADA_OU_MERGEADA_PO=12 (histórico + PO após sessão)
 **Novas PRs analisadas:** #3239 (Draft+REGRA#8 migration), #3241 (MERGEADA), #3242 (Draft+outro agente), #3243 (Draft+REGRA#8 migration)
 
 ---
@@ -83,7 +83,7 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 
 ---
 
-## TABELA COMPLETA — 24 PRs
+## TABELA COMPLETA — 25 PRs
 
 | PR | Título | Branch | Draft | CI | Veredito | Motivo | Evidência |
 |---|---|---|---|---|---|---|---|
@@ -318,7 +318,7 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 
 ---
 
-### PR #3216 — fix(db): reconcilia e2e_cleanup_audit | DECISAO_HUMANA
+### PR #3216 — fix(db): reconcilia e2e_cleanup_audit | FECHADA_OU_MERGEADA_PO
 
 **Branch:** `codex/fix-db-e2e-cleanup-...` | Draft: **SIM** | CI: — | CONFLICTING
 
@@ -326,7 +326,7 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 **(2) Regressão?** DRAFT (incompleto). 3 conflitos em não-governance (`PENDENCIAS.md`, `RELATORIO_CI.md`, `MIGRATIONS_SYNC_LOG.md`). PR#3215 cobre o mesmo arquivo de migration com menos conflitos.  
 **(3) Implementada em main?** `git cherry -v 9a89d9f0 pr-tmp-3216`: 2 commits com prefixo `+`. Não está em main.  
 **(4) Regra de negócio?** A correção em si é válida, mas PR#3215 é a versão preferível.  
-**Bloqueio:** REGRA#8 — `supabase/migrations/` + DRAFT + CONFLICTING. Potencialmente supersedida por PR#3215. Recomendação: fechar esta PR.
+**Veredito:** FECHADA_OU_MERGEADA_PO — Fechada pelo PO durante sessão em 2026-11-08T18:34:14Z. Supersedida por PR#3215.
 
 ---
 
@@ -458,10 +458,10 @@ Todas as análises têm evidência de ao menos uma das fontes abaixo:
 
 **Worktrees:** 0 extra criados nesta sessão — `git worktree list` retorna apenas `/home/user/Promo_Gifts_V4 [claude_05/youthful-ride-vcdchy]`
 
-**24 PRs analisadas no total (vereditos com evidência):**
+**25 PRs analisadas no total (vereditos com evidência):**
 - 2 × MERGEADA_ESTA_SESSAO: PR#3212 → `d8ae5159`, PR#3241 → `931b932a`
 - 11 × DECISAO_HUMANA (abertas): #3127, #3129, #3137, #3179, #3203, #3210, #3214, #3215, #3228, #3239, #3243 — motivos em `analise-prs/progresso.json`, dossies em `dossies/PR-NNNN.md`
-- 11 × FECHADA_OU_MERGEADA_PO: #3144, #3148, #3150, #3160, #3202, #3205, #3217, #3220, #3236, #3238, #3242 (históricas + PO pós-sessão; #3232/#3234 fechadas antes desta sessão, não contam nas 24)
+- 12 × FECHADA_OU_MERGEADA_PO: #3144, #3148, #3150, #3160, #3202, #3205, #3216, #3217, #3220, #3236, #3238, #3242 (históricas + PO durante/após sessão)
 
 **Nenhuma outra PR cumpriu todos os critérios de merge autônomo:**
 - Governance files: todas as 11 abertas contêm workflows ou migrations (REGRA#8)
