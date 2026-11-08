@@ -1,7 +1,7 @@
 import { getCorsHeaders } from '../_shared/cors.ts';
 import { safeErrorResponse } from '../_shared/error-response.ts';
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
-import { z } from "https://esm.sh/zod@3.23.8";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
+import { z } from "npm:zod@3.23.8";
 import { parseBodyWithSchema } from "../_shared/zod-validate.ts";
 // BUG-012 FIX: import resolveCredential for SSOT credential resolution (DB-first -> env fallback).
 // Previously used Deno.env.get('EXTERNAL_SUPABASE_URL') and Deno.env.get('EXTERNAL_SUPABASE_SERVICE_KEY')

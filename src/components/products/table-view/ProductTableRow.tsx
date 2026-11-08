@@ -75,7 +75,7 @@ export interface ProductTableRowProps {
   activeColorFilter: ActiveColorFilter | null;
   onProductClick?: (id: string) => void;
   onToggleSelect?: (id: string) => void;
-  selectColorWithUrl: (id: string, name: string) => void;
+  selectColorWithUrl: (id: string, name: string, variantId?: string) => void;
   clearSelectedColor: (id: string) => void;
   canAddToCompare: boolean;
   isFavorite?: (id: string) => boolean;
@@ -125,6 +125,8 @@ export const ProductTableRow = memo(
     // Cor selecionada manualmente nesta linha — lida do store global (SSOT)
     const userSelectedColorName =
       useProductSelectionStore((s) => s.selectedColors[product.id]) ?? null;
+    const userSelectedVariantId =
+      useProductSelectionStore((s) => s.selectedVariantIds[product.id]) ?? null;
 
     // FIX-COLOR-SEL-03: busca dados reais da variante ao selecionar cor.
     // Dispara SOMENTE quando o usuário clicou numa bolinha — zero overhead no mount.
@@ -148,6 +150,8 @@ export const ProductTableRow = memo(
       stock_quantity: product.stock ?? 0,
       color_swatches: productSwatchesData ?? undefined,
       has_colors: !!productSwatchesData?.length,
+      selected_color_name: userSelectedColorName,
+      selected_variant_id: userSelectedVariantId,
     });
     const useSwatchesV2 = swatchesV2Enabled && (productSwatchesData?.length ?? 0) > 0;
 
@@ -298,7 +302,7 @@ export const ProductTableRow = memo(
               onSelect={(variantId) => {
                 const sw = swatchV2.swatches.find((s) => s.variant_id === variantId);
                 swatchV2.selectVariant(variantId);
-                if (sw) selectColorWithUrl(product.id, sw.color_name);
+                if (sw) selectColorWithUrl(product.id, sw.color_name, variantId);
                 // FIX-SWATCH-INLINE-V2: seleção de cor inline na tabela — sem abrir QuickView.
               }}
               onReset={() => {

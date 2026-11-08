@@ -4,7 +4,7 @@
  * v1: table obrigatório. Sunset 2026-11-30.
  * v2: strict + since como ISO 8601 + idempotency_key.
  */
-import { z } from "https://esm.sh/zod@3.23.8";
+import { z } from "npm:zod@3.23.8";
 
 const DirectionEnum = z.enum(["to-external", "from-external"]);
 

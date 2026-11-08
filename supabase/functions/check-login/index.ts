@@ -15,7 +15,7 @@
  *
  * Implantada em 2026-06-15 como Peça 4 do enforcement de segurança.
  */
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4';
+import { createClient } from 'npm:@supabase/supabase-js@2.49.4';
 import { buildPublicCorsHeaders, handleCorsPreflight } from '../_shared/cors.ts';
 import { createStructuredLogger } from '../_shared/structured-logger.ts';
 import { getOrCreateRequestId } from '../_shared/request-id.ts';
