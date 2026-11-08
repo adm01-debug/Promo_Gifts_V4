@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "aab5deb99a29d3701eaf48c7c26c17c44fb2a525",
+  "sha": "9a89d9f0a4ac2df7ad670501adaad9f1f60a75df",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 16:17 UTC",
+  "generated_at": "2026-11-08 16:55 UTC",
   "files_total": 9125,
   "code_files": 7862,
   "code_lines": 1054635
@@ -484051,10 +484051,20 @@
   }
  },
  "git": {
-  "sha": "aab5deb99a29d3701eaf48c7c26c17c44fb2a525",
+  "sha": "9a89d9f0a4ac2df7ad670501adaad9f1f60a75df",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "9a89d9f",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(ci): completa RELATORIO_CI.md e PENDENCIAS.md com prova de conclusão do stop hook (#3221)",
+    "files": [
+     "PENDENCIAS.md",
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "aab5deb",
     "date": "2026-11-08",
@@ -484549,16 +484559,6 @@
     "author": "adm01-debug",
     "subject": "docs(ci): RELATORIO §29 — baseline local 9feb0148 + inventário fix/ci-workflows",
     "files": [
-     "RELATORIO_CI.md"
-    ]
-   },
-   {
-    "sha": "9feb014",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "docs(ci): RELATORIO §28 + PENDENCIAS #39-42 — sessão 2026-11-08",
-    "files": [
-     "PENDENCIAS.md",
      "RELATORIO_CI.md"
     ]
    }

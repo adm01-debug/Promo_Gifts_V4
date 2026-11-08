@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(ci): completa RELATORIO_CI.md e PENDENCIAS.md com prova de conclusão do stop hook (#3221)",
    "docs(ci): corrige npm test e HEAD no RELATORIO_CI.md (#3219)",
    "feat: adiciona RELATORIO_CI.md e P35 em PENDENCIAS.md",
    "fix(scripts): corrige scripts, edge functions e baselines (#3201)",
-   "docs(auditoria): encerra P06 e P15 — migrations posteriores tornam proposta obsoleta",
-   "fix(ci): reconhecer migration 20261107180000 reconciliada (#3211)"
+   "docs(auditoria): encerra P06 e P15 — migrations posteriores tornam proposta obsoleta"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

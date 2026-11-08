@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "aab5deb99a29d3701eaf48c7c26c17c44fb2a525",
+  "commit": "9a89d9f0a4ac2df7ad670501adaad9f1f60a75df",
   "branch": "main",
-  "data_commit": "2026-11-08T13:15:11-03:00",
+  "data_commit": "2026-11-08T13:44:58-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "9a89d9f",
+    "data": "2026-11-08",
+    "assunto": "docs(ci): completa RELATORIO_CI.md e PENDENCIAS.md com prova de conclusão do stop hook (#3221)"
+   },
    {
     "sha": "aab5deb",
     "data": "2026-11-08",
@@ -126,108 +131,103 @@
     "sha": "66f700b",
     "data": "2026-11-08",
     "assunto": "docs: recibo de deploy de edge function(s) — run 42417851181 (E66) (#3185)"
-   },
-   {
-    "sha": "c976bba",
-    "data": "2026-11-08",
-    "assunto": "chore: instruções de agentes consolidadas em AGENTS.md + docs/agentes/ (#3146)"
    }
   ],
-  "arquivos_mudados_7d": 597,
+  "arquivos_mudados_7d": 592,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 1201
+    "mudancas": 1497
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 615
+    "mudancas": 764
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 463
+    "mudancas": 578
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 421
+    "mudancas": 525
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 372
+    "mudancas": 464
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 340
+    "mudancas": 422
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 320
-   },
-   {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 298
+    "mudancas": 400
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 296
+    "mudancas": 369
+   },
+   {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 366
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 236
+    "mudancas": 295
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 226
+    "mudancas": 271
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 209
+    "mudancas": 259
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 197
+    "mudancas": 244
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 194
+    "mudancas": 241
    },
    {
     "pasta": "docs/arquivo/2026-09",
-    "mudancas": 172
+    "mudancas": 215
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 73
+    "mudancas": 75
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 63
+    "mudancas": 65
    },
    {
     "arquivo": "package.json",
-    "mudancas": 26
+    "mudancas": 27
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 23
+    "mudancas": 24
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 19
+    "mudancas": 20
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 17
+    "mudancas": 18
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
@@ -235,77 +235,77 @@
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "CLAUDE.md",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": "docs/estado/backlog/funcionalidades.md",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": ".github/workflows/ci-security-drift.yml",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": ".github/workflows/e2e-focused.yml",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
-    "mudancas": 7
+    "mudancas": 8
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 322
+    "commits": 321
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 30
+    "commits": 28
    },
    {
     "autor": "github-actions[bot]",
