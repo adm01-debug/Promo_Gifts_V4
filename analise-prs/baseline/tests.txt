@@ -1,0 +1,13 @@
+# Baseline Vitest — main SHA: 9a89d9f0a4ac2df7ad670501adaad9f1f60a75df
+# Data: 2026-11-08
+# Nota: npx vitest run excedeu timeout (>240s) em dois runs consecutivos; teste abortado.
+# Baseline conhecido (sessão anterior, confirmado em 62af0798):
+#   FAIL: calendar.redesign.test.tsx — day_selected, day_outside
+#   Causa: react-day-picker v8→v10 sem atualizar seletores DOM (commit 8b0b6068)
+#   PR #2681 corrige (ainda aberta em sessão anterior — agora fechada)
+
+FALHAS_BASELINE_CONHECIDAS=2
+TESTE_1=src/components/ui/__tests__/calendar.redesign.test.tsx > day_selected
+TESTE_2=src/components/ui/__tests__/calendar.redesign.test.tsx > day_outside
+EXIT_CODE=TIMEOUT
+NOTA=Regressão = falha NOVA além das 2 acima
