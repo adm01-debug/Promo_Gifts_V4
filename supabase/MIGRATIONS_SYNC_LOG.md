@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 69442)
-Total output lines: 1735
-
 # Migration Sync Log
 
 > **Etapa E48** (`docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md`,
@@ -1121,6 +1118,11 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | version | arquivo | status |
 |---|---|---|
 | `20261106232045` | `fix_handle_updated_at_search_path` | aplicada — ledger e `pg_proc.proconfig = {search_path=public}` confirmados no canônico em 2026-11-08 |
+
+## Recibos — E15 (workflow de aplicação controlada)
+
+| versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check | status |
+|---|---|---|---|---|---|---|---|
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
