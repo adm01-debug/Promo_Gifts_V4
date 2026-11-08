@@ -454,7 +454,7 @@ local_only=1141; remote_only=674
 
 **Workflow:** `deploy-gates.yml` (PR #3160)  
 **Run ID mais recente (SHA `5f5a4a7f5`, 2026-11-07T17:53Z):** [42398544261](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42398544261)  
-**Run anterior:** [42389264625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42389264625) (2026-11-07T16:02Z–16:18Z, SHA `efae9c9c4`)  
+**Run anterior:** [42389264625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42389264625) (2026-11-07T16:02Z–16:18Z, SHA `efae9c9c4`)
 
 **Dois gates falhando:**
 
@@ -874,3 +874,22 @@ Mesma ação do item #1:
 4. Após Gate E40 passar na PR #3215, o PR pode ser re-testado e mergeado
 
 **Referência:** Comentário no PR [#3215#issuecomment-6723473077](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3215#issuecomment-6723473077).
+
+---
+
+## P36 — PR #3220 bloqueada por Gate E40 (Schema Drift) — 2026-11-08
+
+**Branch:** `claude/fix-ci-workflows-261108-1515`  
+**PR:** [#3220](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3220)  
+**Sessão de origem:** `session_01Gd4dBfqdiob6wbwpb5cQLj` (sessão diferente — somente leitura para a sessão atual)  
+**Gate Final run:** [#42499012705](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42499012705) — `conclusion: failure`
+
+### Descrição
+
+PR #3220 foi criada por uma sessão diferente e tocou arquivos em `supabase/migrations/`, ativando o **Gate E40 condicional** (mesmo mecanismo de P35). Gate E40 falhou pela mesma divergência crônica massiva documentada em **item #1** deste arquivo (`local_only=1141; remote_only=674`).
+
+**Por que não posso corrigir:** REGRA #1 (AGENTS.md) — só escrevo em branch que criei nesta sessão; branch alheia é somente leitura. REGRA #8 — schema drift só pode ser reconciliado pelo PO.
+
+### Ação necessária (PO)
+
+Mesma ação do item #1 (reconciliação de schema drift). Após resolução do item #1, o Gate E40 passará em ambas as PRs (#3215 e #3220).
