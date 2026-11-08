@@ -802,6 +802,7 @@
         "tests/edge-functions/integration/connections.test.ts",
         "tests/edge-functions/integration/crm-callback-reprocess-and-alerts.test.ts",
         "tests/edge-functions/integration/data-ops.test.ts",
+        "tests/edge-functions/integration/decommissioned-and-cron.test.ts",
         "tests/edge-functions/integration/edge-function-harness.test.ts",
         "tests/edge-functions/integration/ema-pipeline-health.test.ts",
         "tests/edge-functions/integration/freight-quest-webhook-simulation.test.ts",

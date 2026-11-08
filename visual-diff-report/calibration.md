@@ -1,6 +1,6 @@
 # Calibragem do diff visual — Colapso do LocationPanel
 
-Gerado em 2026-11-08T03:11:58.242Z
+Gerado em 2026-11-08T03:47:47.527Z
 Diffs processados: **0**
 
 ## Combinações (menos falhas primeiro)
