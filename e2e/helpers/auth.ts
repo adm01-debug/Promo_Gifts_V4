@@ -20,6 +20,7 @@ import { expect, type Page, type Request } from "@playwright/test";
 
 import { Sel } from "../fixtures/selectors";
 import { test } from "../fixtures/test-base";
+import { rewriteCiSharedIpLockout } from "./ci-auth-lockout";
 import { gotoAndSettle, waitForRouteIdle } from "./nav";
 import { clickTestId } from "./waits";
 
@@ -73,6 +74,21 @@ export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean
         contentType: 'application/json',
         body: JSON.stringify({ allowed: true }),
       });
+    });
+
+    // O runner do GitHub compartilha IP entre jobs. Falhas de outras execuções
+    // podem acionar o lockout da aplicação mesmo após credenciais, perfil e
+    // roles válidos. Consulta a edge real e neutraliza somente esse motivo;
+    // whitelist, cidade, autenticação e erros HTTP permanecem inalterados.
+    await page.route('**/functions/v1/validate-access**', async (route) => {
+      try {
+        const response = await route.fetch();
+        const payload = await response.json().catch(() => null);
+        const rewritten = rewriteCiSharedIpLockout(true, response.status(), payload);
+        await route.fulfill(rewritten ? { response, json: rewritten } : { response });
+      } catch {
+        await route.continue();
+      }
     });
   }
 
@@ -132,7 +148,12 @@ export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean
         `  Causa original: ${String(err)}`,
     );
   } finally {
-    if (process.env.CI) await page.unroute('**/functions/v1/check-login**').catch(() => undefined);
+    if (process.env.CI) {
+      await Promise.all([
+        page.unroute('**/functions/v1/check-login**').catch(() => undefined),
+        page.unroute('**/functions/v1/validate-access**').catch(() => undefined),
+      ]);
+    }
     netLog.stop();
   }
   await waitForRouteIdle(page);
