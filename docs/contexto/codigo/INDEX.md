@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `11e2be30eb34a2cef67562f92b1afe29eb31ecae` (2026-11-08T15:31:02-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cda45f21749477bf92f415c541218f7cabb44c02` (2026-11-08T15:42:41-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,8 +586,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38126 nós · 66625 arestas · 2157 comunidades · grafo do commit `11e2be30`
-- comunidades maiores: ref_components (517), ref_integrations (459), ref_hooks (442), gotoAndSettle (329), vitest (318), react-router-dom (295), ref_node_fs (291), scripts (289), react (275), ref_lib (272), @playwright/test (264), ref_types (246)
+- 38128 nós · 66626 arestas · 2181 comunidades · grafo do commit `cda45f21`
+- comunidades maiores: ref_components (679), ref_integrations (581), ref_lib (509), @testing-library/react (363), ref_hooks (331), react-router-dom (327), scripts (289), gotoAndSettle (265), test-base.ts (260), react (252), resolveCredential (248), ref_node_fs (245)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -1004,10 +1004,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
-- `PENDENCIAS.md` — PENDENCIAS.md — Workflows com falha não corrigível nesta sessão (129 linhas)
+- `PENDENCIAS.md` — PENDENCIAS.md — Workflows com falha não corrigível nesta sessão (140 linhas)
 - `PERFORMANCE-ANALYSIS.md` — 🔍 Relatório de Análise de Performance - MainLayout (195 linhas)
 - `README.md` — 🎁 Promo Brindes — Plataforma de Vendas de Brindes Promocionais (842 linhas)
-- `RELATORIO_CI.md` — RELATÓRIO CI — Prova de Conclusão do Stop Hook (121 linhas)
+- `RELATORIO_CI.md` — RELATÓRIO CI — Prova de Conclusão do Stop Hook (140 linhas)
 - `RELATORIO_CI_P34.md` — RELATORIO_CI_P34.md — Prova Final Sessão P34 (2026-10-30) (64 linhas)
 - `SECURITY.md` — Política de Segurança — Promo Gifts (89 linhas)
 - `STATUS.md` — 📡 Status do Projeto (19 linhas)
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-08 `cda45f2` docs(ci): P-06 verificado (failure confirmada run #42507854259) + HEAD 11e2be30 (#3233)
 - 2026-11-08 `11e2be3` docs(ci): atualiza RELATORIO_CI e PENDENCIAS com verificação HEAD da97d70d (#3231)
 - 2026-11-08 `e9ed1f4` chore(pendencias): corrige causas raiz P-01, P-02, P-03 — secrets presentes, erros são reais
 - 2026-11-08 `da97d70` docs(auditoria): corrige status P06 — views já têm security_invoker=true
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-08 `f322318` feat: adiciona RELATORIO_CI.md e P35 em PENDENCIAS.md
 - 2026-11-08 `1d3dafa` fix(scripts): corrige scripts, edge functions e baselines (#3201)
 - 2026-11-08 `d03ee55` docs(auditoria): encerra P06 e P15 — migrations posteriores tornam proposta obsoleta
-- 2026-11-08 `46ec263` fix(ci): reconhecer migration 20261107180000 reconciliada (#3211)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

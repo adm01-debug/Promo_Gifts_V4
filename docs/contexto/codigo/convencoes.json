@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(ci): P-06 verificado (failure confirmada run #42507854259) + HEAD 11e2be30 (#3233)",
    "docs(ci): atualiza RELATORIO_CI e PENDENCIAS com verificação HEAD da97d70d (#3231)",
    "chore(pendencias): corrige causas raiz P-01, P-02, P-03 — secrets presentes, erros são reais",
    "docs(auditoria): corrige status P06 — views já têm security_invoker=true",
-   "docs(ci): atualiza RELATORIO_CI com Gate Final confirmado (a2dda825) (#3227)",
-   "docs(ci): atualiza RELATORIO_CI.md — HEAD a2dda825 + run #42502537624 (#3225)"
+   "docs(ci): atualiza RELATORIO_CI com Gate Final confirmado (a2dda825) (#3227)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

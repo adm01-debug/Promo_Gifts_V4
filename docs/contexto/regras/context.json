@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "11e2be30eb34a2cef67562f92b1afe29eb31ecae",
+  "sha": "cda45f21749477bf92f415c541218f7cabb44c02",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 18:41 UTC",
+  "generated_at": "2026-11-08 18:45 UTC",
   "files_total": 9126,
   "code_files": 7862,
   "code_lines": 1054635
@@ -484051,10 +484051,20 @@
   }
  },
  "git": {
-  "sha": "11e2be30eb34a2cef67562f92b1afe29eb31ecae",
+  "sha": "cda45f21749477bf92f415c541218f7cabb44c02",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "cda45f2",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(ci): P-06 verificado (failure confirmada run #42507854259) + HEAD 11e2be30 (#3233)",
+    "files": [
+     "PENDENCIAS.md",
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "11e2be3",
     "date": "2026-11-08",
@@ -484452,27 +484462,16 @@
      "tests/unit/test-user-prefix.test.ts",
      "vitest.config.ts"
     ]
-   },
-   {
-    "sha": "ed85d00",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(e2e): preservar smoke diante de lockout compartilhado do CI",
-    "files": [
-     "e2e/helpers/auth.ts",
-     "e2e/helpers/ci-auth-lockout.ts",
-     "tests/unit/ci-auth-lockout.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    10
+    11
    ],
    [
     "PENDENCIAS.md",
-    6
+    7
    ],
    [
     "auditoria-supabase/ADENDO_2026-10-28.md",

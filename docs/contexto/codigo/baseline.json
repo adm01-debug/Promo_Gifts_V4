@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "11e2be30eb34a2cef67562f92b1afe29eb31ecae",
+  "commit": "cda45f21749477bf92f415c541218f7cabb44c02",
   "branch": "main",
-  "data_commit": "2026-11-08T15:31:02-03:00",
+  "data_commit": "2026-11-08T15:42:41-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "cda45f2",
+    "data": "2026-11-08",
+    "assunto": "docs(ci): P-06 verificado (failure confirmada run #42507854259) + HEAD 11e2be30 (#3233)"
+   },
    {
     "sha": "11e2be3",
     "data": "2026-11-08",
@@ -126,11 +131,6 @@
     "sha": "4e638a6",
     "data": "2026-11-08",
     "assunto": "fix(db): fecha vazamento de api_credentials em suppliers para authenticated"
-   },
-   {
-    "sha": "576a324",
-    "data": "2026-11-08",
-    "assunto": "ci: amplia timeout do e2e-gates e corrige min-tests do full-flows"
    }
   ],
   "arquivos_mudados_7d": 585,

@@ -20,7 +20,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 
 | tabela | linhas (~) | total | heap | índices | linhas mortas (~) | seq scans (~) | idx scans (~) | último autovacuum |
 |---|---|---|---|---|---|---|---|---|
-| public.stock_daily_summary | ~2.8M | 1001.8 MB | 574.1 MB | 427.5 MB | ~12.8k | ~190 | ~348.8k |  |
+| public.stock_daily_summary | ~2.8M | 1001.8 MB | 574.1 MB | 427.5 MB | ~12.8k | ~190 | ~348.9k |  |
 | public.stock_snapshots | ~156.1k | 777.7 MB | 657.4 MB | 120.1 MB | ~10 | 4 | ~20 | 2026-11-08 |
 | public.supplier_products_raw_history_p2026_08 | ~531.3k | 753.5 MB | 723.1 MB | 27.1 MB | 0 | 0 | 0 |  |
 | public.supplier_products_raw_history_p2026_09 | ~495.5k | 704.6 MB | 676.1 MB | 25.4 MB | 0 | 0 | 0 |  |
@@ -28,18 +28,18 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.supplier_products_raw | ~20.8k | 372.9 MB | 257.0 MB | 23.2 MB | 0 | 0 | ~527.3k | 2026-11-08 |
 | public.products | ~8.3k | 178.5 MB | 43.8 MB | 42.5 MB | 3 | ~6.9k | ~30.9M | 2026-11-08 |
 | public.supplier_customization_options_raw | ~46.4k | 152.3 MB | 142.2 MB | 9.9 MB | 0 | 0 | 0 |  |
-| public.product_images | ~72k | 141.4 MB | 81.9 MB | 59.4 MB | 0 | ~7.3k | ~824.1k |  |
+| public.product_images | ~72k | 141.4 MB | 81.9 MB | 59.4 MB | 0 | ~7.3k | ~839.9k |  |
 | public.bot_detection_log | ~84.1k | 94.5 MB | 86.3 MB | 8.1 MB | 0 | 0 | ~140 |  |
 | public.image_backfill_queue | ~116.4k | 79.0 MB | 52.3 MB | 26.6 MB | 0 | 0 | ~220 |  |
 | public.frontend_telemetry | ~99.5k | 74.4 MB | 67.9 MB | 5.0 MB | 0 | 0 | 0 |  |
 | public.product_relationships | ~154.8k | 73.7 MB | 28.3 MB | 45.3 MB | 0 | 0 | ~90 |  |
-| public.variant_supplier_sources | ~20.7k | 69.3 MB | 56.1 MB | 13.1 MB | 0 | ~540 | ~3.5M | 2026-11-08 |
-| public.produtos_padronizacao_variantes | ~20.7k | 41.7 MB | 33.5 MB | 7.7 MB | ~210 | ~70 | ~56k |  |
+| public.variant_supplier_sources | ~20.7k | 69.3 MB | 56.1 MB | 13.1 MB | 0 | ~540 | ~3.6M | 2026-11-08 |
+| public.produtos_padronizacao_variantes | ~20.7k | 41.7 MB | 33.5 MB | 7.7 MB | ~210 | ~70 | ~56.2k |  |
 | public.login_attempts | ~31.3k | 37.6 MB | 21.7 MB | 15.9 MB | 0 | ~30 | ~1.5k |  |
 | public.seo_audit_log | ~93.9k | 37.5 MB | 33.6 MB | 3.9 MB | 0 | 0 | 0 |  |
 | public.product_variants | ~20.8k | 34.9 MB | 26.6 MB | 8.3 MB | ~260 | ~9.9k | ~1.4M | 2026-11-08 |
 | public.product_customization_prices | ~28.4k | 32.2 MB | 25.3 MB | 6.8 MB | 0 | 0 | 4 |  |
-| public.produtos_padronizacao | ~8.3k | 26.8 MB | 23.7 MB | 2.8 MB | ~330 | ~20 | ~109.1k |  |
+| public.produtos_padronizacao | ~8.3k | 26.8 MB | 23.7 MB | 2.8 MB | ~330 | ~20 | ~109.2k |  |
 | public.product_seo | ~7.7k | 25.9 MB | 23.9 MB | 1.6 MB | 0 | 0 | 0 |  |
 | public.produto_ramo_atividade | ~54.4k | 25.5 MB | 9.4 MB | 16.1 MB | 0 | 0 | 0 |  |
 | cf_recon.cf_image | ~65.5k | 22.2 MB | 14.2 MB | 7.9 MB | 0 | 0 | ~20 |  |
@@ -52,7 +52,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.product_tags | ~51k | 11.1 MB | 4.2 MB | 6.9 MB | 0 | 0 | ~3.3k |  |
 | public.product_ai_content | ~7.3k | 10.9 MB | 10.1 MB | 776.0 KB | 0 | 0 | 0 |  |
 | public.product_category_assignments | ~39.1k | 10.1 MB | 4.3 MB | 5.8 MB | 0 | 1 | ~369.4k |  |
-| public.print_area_techniques | ~24.4k | 10.0 MB | 5.2 MB | 4.8 MB | 0 | ~740 | ~3.1M |  |
+| public.print_area_techniques | ~24.4k | 10.0 MB | 5.2 MB | 4.8 MB | 0 | ~740 | ~3.2M |  |
 | public.supplier_import_batches | ~830 | 9.7 MB | 7.4 MB | 2.3 MB | 3 | 0 | ~20 |  |
 | public.supplier_replenishment_events | ~21.8k | 9.5 MB | 4.4 MB | 5.1 MB | 0 | ~70 | ~110 |  |
 | public.produtos_site_padronizacao | ~3.2k | 8.8 MB | 7.6 MB | 712.0 KB | 0 | ~70 | ~82k |  |
@@ -72,7 +72,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.kit_component_padronizacao | ~6.8k | 4.5 MB | 2.7 MB | 1.8 MB | 0 | 0 | ~60 |  |
 | public.supplier_customization_raw | ~330 | 4.3 MB | 4.1 MB | 136.0 KB | 0 | 0 | 0 |  |
 | public._archive_supplier_price_tiers_20260626 | ~31.2k | 4.1 MB | 3.1 MB | 976.0 KB | 0 | 0 | 0 |  |
-| public.request_rate_limits | ~18.5k | 4.0 MB | 2.0 MB | 1.9 MB | ~300 | 0 | ~4.4k |  |
+| public.request_rate_limits | ~18.5k | 4.0 MB | 2.0 MB | 1.9 MB | ~310 | 0 | ~4.4k |  |
 | public.ai_enrichment_queue | ~7.9k | 4.0 MB | 1.8 MB | 2.1 MB | 0 | ~20 | ~820 | 2026-11-08 |
 | public.product_attributes | ~15.6k | 4.0 MB | 2.3 MB | 1.6 MB | 0 | 0 | 0 |  |
 | public.qa_image_coverage_log | ~2.7k | 3.3 MB | 3.2 MB | 96.0 KB | 0 | 0 | 0 |  |
@@ -84,7 +84,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.schema_signature_drift_log | ~380 | 2.5 MB | 888.0 KB | 80.0 KB | 0 | 0 | 3 |  |
 | public.schema_drift_log | ~420 | 2.4 MB | 672.0 KB | 80.0 KB | 0 | 0 | 0 |  |
 | public.product_physical | ~8.2k | 2.4 MB | 1.6 MB | 760.0 KB | ~20 | 1 | ~16.5k |  |
-| public.workspace_notifications | ~2.4k | 2.3 MB | 1.7 MB | 536.0 KB | ~80 | ~5.6k | ~27.3k |  |
+| public.workspace_notifications | ~2.4k | 2.3 MB | 1.7 MB | 536.0 KB | ~80 | ~5.6k | ~27.4k |  |
 | public.categories | ~480 | 2.3 MB | 1.6 MB | 672.0 KB | ~130 | ~33.5k | ~149.4k | 2026-11-08 |
 | public.kit_component_print_areas | ~6.1k | 2.2 MB | 920.0 KB | 1.3 MB | 0 | 2 | 8 |  |
 | public.product_similarity_group_members | ~7k | 2.2 MB | 936.0 KB | 1.3 MB | 0 | 0 | 8 |  |
@@ -117,7 +117,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.magazines | ~580 | 552.0 KB | 320.0 KB | 192.0 KB | ~100 | 0 | ~31.8k |  |
 | public.product_notebook_features | ~1k | 544.0 KB | 200.0 KB | 304.0 KB | 0 | 0 | 9 |  |
 | public.seo_redirects | ~750 | 464.0 KB | 320.0 KB | 112.0 KB | 0 | 0 | 0 |  |
-| public.color_variations | ~90 | 448.0 KB | 32.0 KB | 376.0 KB | 0 | ~11.3k | ~3.3k |  |
+| public.color_variations | ~90 | 448.0 KB | 32.0 KB | 376.0 KB | 0 | ~11.4k | ~3.3k |  |
 | cf_recon.remediation | ~340 | 440.0 KB | 352.0 KB | 48.0 KB | 0 | 0 | 0 |  |
 | public.quotes | 4 | 432.0 KB | 16.0 KB | 376.0 KB | 0 | ~3.1k | ~9.6k |  |
 | prod_audit.category_suggestions | ~450 | 408.0 KB | 200.0 KB | 176.0 KB | 0 | 0 | 0 |  |
@@ -236,7 +236,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.ai_models | ~20 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | 0 | 0 |  |
 | public.auto_tag_rules | ~80 | 64.0 KB | 16.0 KB | 16.0 KB | 0 | 0 | 0 |  |
 | public.collection_items_trash | 0 | 64.0 KB | 0 B | 40.0 KB | 0 | 0 | 0 |  |
-| public.commemorative_dates | ~40 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | ~920 | 0 |  |
+| public.commemorative_dates | ~40 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | ~930 | 0 |  |
 | public.edge_function_invocations | 0 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | 0 | 0 |  |
 | public.inbound_webhook_endpoints | 2 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | ~240 | 0 |  |
 | public.kit_typical_dims | ~90 | 64.0 KB | 16.0 KB | 16.0 KB | 0 | 0 | 8 |  |
@@ -274,7 +274,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.cover_materials | ~20 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 2 | 0 |  |
 | public.cover_types | 3 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 0 | 0 |  |
 | public.favorite_items_trash | 0 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | ~80 | 0 |  |
-| public.image_types | ~20 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 1 | ~30 |  |
+| public.image_types | ~20 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 2 | ~30 |  |
 | public.ip_whitelist | 0 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 0 | 0 |  |
 | public.kit_quote_requests | 0 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 1 | 0 |  |
 | public.notebook_features | ~20 | 48.0 KB | 8.0 KB | 32.0 KB | 0 | 0 | 4 |  |
@@ -367,7 +367,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | supplier_stricker.stg_product_types | 0 | 32.0 KB | 0 B | 24.0 KB | 0 | 0 | 0 |  |
 | supplier_stricker.stg_products | 0 | 32.0 KB | 0 B | 24.0 KB | 0 | 0 | 0 |  |
 | supplier_stricker.stocks | 0 | 32.0 KB | 0 B | 32.0 KB | 0 | 0 | 0 |  |
-| public.access_security_settings | 1 | 24.0 KB | 8.0 KB | 16.0 KB | 0 | ~680 | 0 |  |
+| public.access_security_settings | 1 | 24.0 KB | 8.0 KB | 16.0 KB | 0 | ~690 | 0 |  |
 | public.cart_templates | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 0 | 0 |  |
 | public.collection_item_reactions | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 0 | 0 |  |
 | public.company_email_patterns | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 0 | 0 |  |
@@ -594,27 +594,27 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 ## Consultas mais custosas (pg_stat_statements, desde o último reset)
 | role | chamadas (~) | total ms (~) | média ms | query |
 |---|---|---|---|---|
-| authenticated | ~22.1k | ~22.6M | 1023.61 | `WITH pgrst_source AS ( SELECT "public"."v_products_public"."id", "public"."v_products_public"."name", "public"."v_products_public"."sku", "public"."v_products_public"."supplier_reference", "public"."v_products_public"."s` |
-| authenticated | ~10.6k | ~13.9M | 1314.01 | `WITH pgrst_source AS ( SELECT "public"."v_products_public"."id", "public"."v_products_public"."name", "public"."v_products_public"."sku", "public"."v_products_public"."supplier_reference", "public"."v_products_public"."s` |
-| postgres | ~1.7k | ~8.9M | 5245.70 | `SELECT public.fn_cron_safe_run($1::bigint, $2, $3, $4)` |
-| authenticated | ~7.3k | ~8.7M | 1187.64 | `WITH pgrst_source AS ( SELECT "public"."tags".* FROM "public"."tags" LIMIT $1 OFFSET $2 ) SELECT $3::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, coalesce(json_agg(_postgrest_t), $4) AS body,` |
-| authenticated | ~7.4k | ~6.6M | 898.72 | `WITH pgrst_source AS ( SELECT "public"."v_products_public"."id", "public"."v_products_public"."name", "public"."v_products_public"."sku", "public"."v_products_public"."supplier_reference", "public"."v_products_public"."s` |
-| postgres | ~90 | ~3.8M | 44547.22 | `SELECT table_schema AS schema, table_name AS "table", column_name AS "column", grantee, string_agg(privilege_type, $1 ORDER BY privilege_type) AS privileges FROM information_schema.column_privileges cp WHERE grantee NOT ` |
-| authenticated | ~6.7k | ~3.4M | 505.77 | `WITH pgrst_source AS (SELECT pgrst_call.pgrst_scalar FROM (SELECT "public"."fn_get_stock_notification_counts"() pgrst_scalar) pgrst_call) SELECT $3::bigint AS total_result_set, $4 AS page_total, coalesce(json_agg(_postgr` |
-| authenticated | ~720 | ~3.3M | 4614.29 | `WITH pgrst_source AS ( SELECT "public"."v_super_filtro_options"."slug_ou_codigo", "public"."v_super_filtro_options"."ordem" FROM "public"."v_super_filtro_options" WHERE "public"."v_super_filtro_options"."filtro_tipo" = $` |
-| authenticated | ~7.4k | ~3M | 402.02 | `WITH pgrst_source AS ( SELECT "public"."categories".* FROM "public"."categories" WHERE "public"."categories"."is_active" = $1 LIMIT $2 OFFSET $3 ) SELECT $4::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS ` |
-| authenticated | ~2.5k | ~2.4M | 959.60 | `WITH pgrst_source AS ( SELECT "public"."v_products_public"."id", "public"."v_products_public"."name", "public"."v_products_public"."sku", "public"."v_products_public"."supplier_reference", "public"."v_products_public"."s` |
+| authenticated | ~22.1k | ~22.7M | 1023.23 | `WITH pgrst_source AS ( SELECT "public"."v_products_public"."id", "public"."v_products_public"."name", "public"."v_products_public"."sku", "public"."v_products_public"."supplier_reference", "public"."v_products_public"."s` |
+| authenticated | ~10.6k | ~13.9M | 1313.19 | `WITH pgrst_source AS ( SELECT "public"."v_products_public"."id", "public"."v_products_public"."name", "public"."v_products_public"."sku", "public"."v_products_public"."supplier_reference", "public"."v_products_public"."s` |
+| postgres | ~1.7k | ~9M | 5275.19 | `SELECT public.fn_cron_safe_run($1::bigint, $2, $3, $4)` |
+| authenticated | ~7.4k | ~8.7M | 1187.14 | `WITH pgrst_source AS ( SELECT "public"."tags".* FROM "public"."tags" LIMIT $1 OFFSET $2 ) SELECT $3::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, coalesce(json_agg(_postgrest_t), $4) AS body,` |
+| authenticated | ~7.4k | ~6.6M | 898.36 | `WITH pgrst_source AS ( SELECT "public"."v_products_public"."id", "public"."v_products_public"."name", "public"."v_products_public"."sku", "public"."v_products_public"."supplier_reference", "public"."v_products_public"."s` |
+| postgres | ~90 | ~3.9M | 44511.11 | `SELECT table_schema AS schema, table_name AS "table", column_name AS "column", grantee, string_agg(privilege_type, $1 ORDER BY privilege_type) AS privileges FROM information_schema.column_privileges cp WHERE grantee NOT ` |
+| authenticated | ~6.7k | ~3.4M | 505.65 | `WITH pgrst_source AS (SELECT pgrst_call.pgrst_scalar FROM (SELECT "public"."fn_get_stock_notification_counts"() pgrst_scalar) pgrst_call) SELECT $3::bigint AS total_result_set, $4 AS page_total, coalesce(json_agg(_postgr` |
+| authenticated | ~720 | ~3.3M | 4608.87 | `WITH pgrst_source AS ( SELECT "public"."v_super_filtro_options"."slug_ou_codigo", "public"."v_super_filtro_options"."ordem" FROM "public"."v_super_filtro_options" WHERE "public"."v_super_filtro_options"."filtro_tipo" = $` |
+| authenticated | ~7.4k | ~3M | 401.79 | `WITH pgrst_source AS ( SELECT "public"."categories".* FROM "public"."categories" WHERE "public"."categories"."is_active" = $1 LIMIT $2 OFFSET $3 ) SELECT $4::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS ` |
+| authenticated | ~2.5k | ~2.4M | 958.73 | `WITH pgrst_source AS ( SELECT "public"."v_products_public"."id", "public"."v_products_public"."name", "public"."v_products_public"."sku", "public"."v_products_public"."supplier_reference", "public"."v_products_public"."s` |
 | service_role | ~1.3k | ~2.1M | 1564.76 | `WITH pgrst_source AS (INSERT INTO "public"."supplier_products_raw"("raw_data", "source_channel", "source_endpoint", "status", "supplier_id", "supplier_reference", "supplier_sku") SELECT "pgrst_body"."raw_data", "pgrst_bo` |
-| authenticated | ~6.7k | ~1.5M | 227.06 | `WITH pgrst_source AS (SELECT "pgrst_call".* FROM (SELECT $1 AS json_data) pgrst_payload, LATERAL (SELECT "p_limit" FROM json_to_record(pgrst_payload.json_data) AS _("p_limit" integer) LIMIT $4) pgrst_body , LATERAL "publ` |
+| authenticated | ~6.7k | ~1.5M | 227.15 | `WITH pgrst_source AS (SELECT "pgrst_call".* FROM (SELECT $1 AS json_data) pgrst_payload, LATERAL (SELECT "p_limit" FROM json_to_record(pgrst_payload.json_data) AS _("p_limit" integer) LIMIT $4) pgrst_body , LATERAL "publ` |
 | authenticated | ~440 | ~1.5M | 3449.25 | `WITH pgrst_source AS ( SELECT "public"."variant_supplier_sources"."id", "public"."variant_supplier_sources"."variant_id", "public"."variant_supplier_sources"."supplier_id", "public"."variant_supplier_sources"."supplier_s` |
-| authenticated | ~2.4k | ~1.4M | 598.79 | `WITH pgrst_source AS (SELECT "pgrst_call".* FROM "public"."fn_get_product_intelligence_all"() pgrst_call) SELECT $3::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, coalesce(json_agg(_postgrest_` |
+| authenticated | ~2.4k | ~1.4M | 598.25 | `WITH pgrst_source AS (SELECT "pgrst_call".* FROM "public"."fn_get_product_intelligence_all"() pgrst_call) SELECT $3::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, coalesce(json_agg(_postgrest_` |
 | authenticated | ~390 | ~1.3M | 3415.70 | `WITH pgrst_source AS ( SELECT "public"."product_images"."id", "public"."product_images"."product_id", "public"."product_images"."variant_id", "public"."product_images"."supplier_code", "public"."product_images"."url_cdn"` |
 
 
 ## Conexões
 | usuário | estado | n |
 |---|---|---|
-| authenticator | idle | 6 |
+| authenticator | idle | 23 |
 | pgbouncer | idle | 2 |
 | postgres | active | 1 |
 | postgres | idle | 1 |
@@ -622,4 +622,5 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | supabase_admin | active | 1 |
 | supabase_admin | idle | 12 |
 | supabase_admin |  | 1 |
+| supabase_auth_admin | idle | 1 |
 | supabase_storage_admin | idle | 1 |
