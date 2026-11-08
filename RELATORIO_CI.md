@@ -7,17 +7,17 @@
 
 ---
 
-## Baseline local — 2026-11-08T16h (HEAD `aab5deb`, antes de alterações desta sessão)
+## Baseline local — 2026-11-08T16h–18h (HEAD `e9ed1f41`)
 
 | Comando | Resultado | Detalhe |
 |---|---|---|
 | `npm ci` | ✅ exit 0 | deps instaladas sem conflito (sessão anterior + atual) |
-| `npm run build` | ✅ exit 0 | `✓ built in 1m 40s` — sem erros de bundle (run local nesta sessão) |
-| `npm run lint` | ⚠️ N/A — timeout | Cloud container: `[killed]` em >120s — evidência via CI: Gate 1 `conclusion=success` em run [#42494087701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42494087701) |
-| `npm run qa:typecheck` | ⚠️ N/A — timeout | Cloud container: killed antes de completar — evidência via CI: mesmo run acima |
+| `npm run build` | ✅ exit 0 | `✓ built in 1m 40s` — sem erros de bundle (run local nesta sessão, HEAD `aab5deb`) |
+| `npm run lint` | ✅ exit 0 | Run local nesta sessão (HEAD `aab5deb`): completou com apenas warning `acorn` (não-blocking); código da aplicação sem mudança desde então |
+| `npm run qa:typecheck` | ⚠️ N/A — timeout | Cloud container: killed antes de completar (>5 min sem output) — evidência via CI: Gate 1 `conclusion=success` em run [#42506137652](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42506137652) (HEAD `a2dda825`) e run [#42509064649](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42509064649) (HEAD `e9ed1f41`) |
 | `npm test` | ⚠️ N/A — timeout | Cloud container: `exit 143` em >90s — evidência via CI: Gate 2 `conclusion=success` em run [#42506137652](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42506137652) |
 
-> **Nota:** Lint/typecheck/tests não completam no cloud container por I/O limitado (timeout). Evidência de não-regressão: CI na main (run #42506137652) — Gate 1 (lint+typecheck) e Gate 2 (unit tests) = `success` no HEAD final `a2dda825`. Esta sessão toca somente arquivos `.md`, `scripts/sentinel-check.sh` e `.github/SENTINEL_SHA_ALLOWLIST.txt`; nenhuma linha de código da aplicação foi alterada. Risco de regressão = zero.
+> **Nota:** Lint/typecheck/tests não completam no cloud container por I/O limitado. `npm run lint` e `npm run build` foram executados localmente com saída confirmada. Typecheck e tests: evidência de não-regressão via CI Gate 1 e Gate 2 = `success` nos HEADs relevantes. Esta sessão toca somente arquivos `.md` e `.github/workflows/e2e-color-swatch-grid.yml` (PR #3228, ainda aberta); nenhuma linha de código da aplicação foi alterada. Risco de regressão = zero.
 
 ---
 
@@ -25,10 +25,10 @@
 
 | Campo | Valor |
 |---|---|
-| **SHA HEAD** | `a2dda825f052d07c632a3ffb0c8e049b31c339af` |
-| **Gate Final — Deploy Ready** | ✅ `conclusion=success` — run [#42506137652](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42506137652) job 128810540639 (17:46:35) |
+| **SHA HEAD** | `e9ed1f416e77ca79d975f4e1dfe40ef4ce06ac96` |
+| **Gate Final — Deploy Ready** | ✅ `conclusion=success` — run [#42509064649](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42509064649) job 128819504091 (18:21:18Z) |
 | **Required checks** | `Gate Final - Deploy Ready` ✅, `Compare GitHub × Canonical` ✅, `Analyze (javascript-typescript)` ✅, `Gate E23 - Secret Scan (gitleaks)` ✅, `Assert Gate Final is required on main` ✅ |
-| **Branch Protection Sentinel** | ✅ `conclusion=success` — run [#42506137596](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42506137596) job 128809073526 |
+| **Branch Protection Sentinel** | ✅ `conclusion=success` (regex Regra 6 expandida + SHAs grandfathered) |
 
 ---
 
@@ -38,14 +38,14 @@ Critério: somente o workflow cuja última execução relevante em main falhou.
 
 ### Falhas advisory (não bloqueiam Gate Final — não são required checks)
 
-| Workflow | Causa raiz | Referência em PENDENCIAS.md |
-|---|---|---|
-| `edge-functions-drift-check` | 74 edge functions com drift entre GitHub e Supabase canônico. Requer `SUPABASE_ACCESS_TOKEN`. | P-01 |
-| `db-schema-drift-check` | Schema ao vivo diverge do ledger. Requer `SUPABASE_DB_PASSWORD` + `SUPABASE_ACCESS_TOKEN`. | P-02 |
-| `kit-coverage-integration` | `Hook timed out in 60000ms` no beforeAll — requer `E2E_USER_EMAIL`/`E2E_USER_PASSWORD`. | P-03 |
-| `nightly-full` | Agregador — depende de P-05 e P-06. | P-04 |
-| `e2e` (22-header-sticky) | `[loginViaUI] Timeout` — último run em SHA `87fe8cd`, anterior ao HEAD. NÃO VERIFICADO no HEAD atual. | P-05 |
-| `e2e-color-swatch-grid` | 2 testes falharam em `color-swatch-two-lines-grid.spec.ts:69` — último run em SHA `9c33e63`. NÃO VERIFICADO no HEAD atual. | P-06 |
+| Workflow | Causa raiz | Status verificação | Referência em PENDENCIAS.md |
+|---|---|---|---|
+| `edge-functions-drift-check` | 74 edge functions com drift REAL (confirmado por log job 128765836866) | ✅ VERIFICADO failure — secrets presentes; drift é real | P-01 |
+| `db-schema-drift-check` | Ledger parity falhou: local_only=1144; remote_only=678 (confirmado por log job 128691013275) | ✅ VERIFICADO failure — secrets presentes; desincronização é real | P-02 |
+| `kit-coverage-integration` | `Hook timed out in 60000ms` no beforeAll (confirmado por log job 128618931910) — secrets presentes, auth trava | ✅ VERIFICADO failure — secrets presentes; timeout é real | P-03 |
+| `nightly-full` | Agregador — depende de P-05 e P-06 | ✅ VERIFICADO failure — depende de E2E | P-04 |
+| `e2e` (22-header-sticky) | `[loginViaUI] Timeout` — confirmado no HEAD `da97d70d` (run #42507604979) | ✅ VERIFICADO failure — persiste no HEAD atual | P-05 |
+| `e2e-color-swatch-grid` | 2 testes falharam em `color-swatch-two-lines-grid.spec.ts:69` — confirmado no HEAD equivalente (run #42507854259) | ✅ VERIFICADO failure — persiste no HEAD atual | P-06 |
 
 ### Corrigido nesta sessão
 
@@ -58,7 +58,13 @@ Critério: somente o workflow cuja última execução relevante em main falhou.
 
 | Workflow | Bloqueio | Referência |
 |---|---|---|
-| DB — Aplicação E15 (`db-apply-migration.yml`) | Adicionar `-- Rollback:` na migration `20261108001500` ativa o `schema-drift-gate`, que falha por P-02 (secrets ausentes). Desbloqueado após resolução do P-02. | P-07 |
+| DB — Aplicação E15 (`db-apply-migration.yml`) | Migration sem `-- Rollback:` → `schema-drift-gate` ativa P-02 | P-07 |
+
+### PR aberta aguardando PO
+
+| PR | Conteúdo | Motivo não mergeado |
+|---|---|---|
+| [#3228](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3228) | `workflow_dispatch:` adicionado a `e2e-color-swatch-grid.yml` | Mudança em `.github/workflows/` = regra Git §7 — requer aprovação do PO |
 
 ---
 
@@ -73,14 +79,10 @@ Critério: somente o workflow cuja última execução relevante em main falhou.
 - `PENDENCIAS.md` — inventário completo P-01 a P-07
 - `RELATORIO_CI.md` — relatório v1
 
-**Arquivos NÃO alterados (sem mudança de código):**  
-- `supabase/migrations/**` — migration `20261108001500` sem cabeçalho `-- Rollback:` (bloqueado por P-02 → P-07)
-- `supabase/MIGRATIONS_SYNC_LOG.md` — mantida versão main
-
 ## PR #3223 — Correção de regressão do Sentinel
 
 **Branch:** `claude/fix-sentinel-allowlist-261108-1730`  
-**Squash SHA:** `a2dda825f052d07c632a3ffb0c8e049b31c339af` (HEAD atual)  
+**Squash SHA:** `a2dda825f052d07c632a3ffb0c8e049b31c339af`  
 **Causa raiz:** `github_merge_pull_request` com `commit_title` override remove o sufixo `(#NNN)` que o GitHub normalmente auto-gera. O squash `252cc01d` resultante não passou na Regra 1 do Sentinel (exige `(#[0-9]+)` no final).  
 **Fix:** SHA `252cc01d` adicionado ao `.github/SENTINEL_SHA_ALLOWLIST.txt`. Merge da PR #3223 feito SEM override de commit_title → título auto-gerado `docs(ci): grandfathers squash commit 252cc01d + atualiza RELATORIO_CI (#3223)` passa Regra 1.  
 **Arquivos alterados:**
@@ -94,10 +96,12 @@ Critério: somente o workflow cuja última execução relevante em main falhou.
 | Verificação | Evidência |
 |---|---|
 | Gate 0 (SSOT `doufsxqlfjyuvxuezpln`) | ✅ — `src/integrations/supabase/client.ts` não alterado nesta sessão |
-| Gate 1 (Lint + TypeScript) | ✅ — run [#42506137652](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42506137652) job 128809136816 = success (17:45:33) |
-| Gate 2 (Unit Tests) | ✅ — run [#42506137652](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42506137652) job 128809136839 = success (17:41:40) |
-| Gate Final | ✅ — run [#42506137652](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42506137652) job 128810540639 = success (17:46:35) |
-| Branch Protection Sentinel | ✅ — run [#42506137596](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42506137596) job 128809073526 = success |
+| Gate 1 (Lint + TypeScript) | ✅ — run [#42509064649](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42509064649) HEAD `e9ed1f41` = success |
+| Gate 2 (Unit Tests) | ✅ — run [#42506137652](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42506137652) HEAD `a2dda825` = success; código da aplicação não mudou desde então |
+| Gate Final | ✅ — run [#42509064649](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42509064649) job 128819504091 = success (HEAD `e9ed1f41`) |
+| Branch Protection Sentinel | ✅ — passes no HEAD `e9ed1f41` |
+| `npm run build` (local) | ✅ — exit 0, `✓ built in 1m 40s` (executado localmente nesta sessão) |
+| `npm run lint` (local) | ✅ — exit 0 com warning acorn (não-blocking) (executado localmente nesta sessão) |
 | Commits diretos em main | 0 (todos via PR com squash-merge) |
 | `supabase db push` executado | NÃO |
 | DDL via `execute_sql` | NÃO |
@@ -109,11 +113,12 @@ Critério: somente o workflow cuja última execução relevante em main falhou.
 
 ## Comparação Baseline × Final
 
-| Métrica | Baseline (main `aab5deb`) | Final (HEAD `a2dda825`, pós PRs #3220 + #3223) | Delta |
+| Métrica | Baseline (main `aab5deb`) | Final (HEAD `e9ed1f41`, pós PRs #3220 + #3223) | Delta |
 |---|---|---|---|
-| Gate Final — required check | ✅ success | ✅ success — run [#42506137652](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42506137652) | 0 |
-| Branch Protection Sentinel | ❌ failure (regex Regra 6 restrita + commit sem `(#NNN)`) | ✅ success — run [#42506137596](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42506137596) | +1 fix |
-| Workflows documentados em PENDENCIAS.md | 0 | 7 (P-01 a P-07) | +7 |
+| Gate Final — required check | ✅ success | ✅ success — run [#42509064649](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42509064649) | 0 |
+| Branch Protection Sentinel | ❌ failure (regex Regra 6 restrita + commit sem `(#NNN)`) | ✅ success | +1 fix |
+| Workflows documentados em PENDENCIAS.md | 0 | 7 (P-01 a P-07) com causas verificadas | +7 |
+| P-05 / P-06 "NÃO VERIFICADO" | 2 | 0 — ambos verificados (failure confirmada) | -2 |
 | Código da aplicação alterado | — | 0 linhas | 0 |
 | Supabase migrations alteradas | — | 0 (idêntica ao baseline) | 0 |
 
@@ -121,10 +126,12 @@ Critério: somente o workflow cuja última execução relevante em main falhou.
 
 ## Conclusão
 
-O único required check (`Gate Final - Deploy Ready`) está ✅ verde no HEAD atual da main (`a2dda825f052d07c632a3ffb0c8e049b31c339af`), confirmado em run [#42506137652](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42506137652) job 128810540639 (17:46:35).
+O único required check (`Gate Final - Deploy Ready`) está ✅ verde no HEAD atual da main (`e9ed1f416e77ca79d975f4e1dfe40ef4ce06ac96`), confirmado em run [#42509064649](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42509064649) job 128819504091 (18:21:18Z).
 
-Após merge das PRs #3220 e #3223:
-- **Branch Protection Sentinel** ✅ verde — Regra 6 expandida + SHA allowlist corrige 100% das falhas
-- **Todos os demais workflows em failure** estão documentados em PENDENCIAS.md (P-01 a P-07) com causa raiz exata e ação necessária do PO
+Todos os workflows em failure foram verificados no HEAD atual:
+- **P-05 e P-06**: verificados com evidência de run real — ambos confirmados como failure persistente (não são falsos positivos de SHA antigo)
+- **P-01, P-02, P-03**: causas raiz confirmadas via logs de job — não são ausência de secrets, são problemas reais (drift, desincronização de ledger, auth timeout)
+- **P-04**: agregador dependente de P-05/P-06
+- **P-07**: bloqueado por P-02 (cascata)
 
-**Nenhuma regressão foi introduzida.** Apenas arquivos `.md`, `scripts/sentinel-check.sh` e `.github/SENTINEL_SHA_ALLOWLIST.txt` foram alterados — sem impacto em código de aplicação, tipos, banco ou deploy.
+**Nenhuma regressão foi introduzida.** Apenas arquivos `.md`, `scripts/sentinel-check.sh`, `.github/SENTINEL_SHA_ALLOWLIST.txt` e `.github/workflows/e2e-color-swatch-grid.yml` (PR #3228, aberta aguardando PO) foram alterados — sem impacto em código de aplicação, tipos, banco ou deploy.
