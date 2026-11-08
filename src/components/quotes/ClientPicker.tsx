@@ -47,8 +47,14 @@ export function ClientPicker({ value, onChange }: ClientPickerProps) {
             selectedClientName={value.client_company}
             onSelect={(client) => {
               if (!client) {
-                // FT-083: clear auto-filled company when CRM client is removed
-                onChange({ ...value, client_id: undefined, client_company: undefined });
+                // FT-083: clear auto-filled company + name when CRM client is removed
+                const wasAutoFilled = autoFilledClientNameRef.current !== null;
+                onChange({
+                  ...value,
+                  client_id: undefined,
+                  client_company: undefined,
+                  ...(wasAutoFilled && { client_name: undefined }),
+                });
                 autoFilledClientNameRef.current = null;
                 return;
               }
