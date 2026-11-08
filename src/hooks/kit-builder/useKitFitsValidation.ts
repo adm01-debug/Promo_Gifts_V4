@@ -16,9 +16,9 @@ export type KitFitsValidationResult =
   | { status: 'skipped' };
 
 type FitRow = {
-  fits: boolean;
+  fits: boolean | null;
   packaging_volume: number;
-  product_volume: number;
+  product_volume: number | null;
   used_volume: number;
   available_volume: number;
   percentage_used: number;
@@ -48,17 +48,18 @@ export async function validateKitFitsForQuote(
       });
       if (error || !data || (data as FitRow[]).length === 0) continue;
       const row = (data as FitRow[])[0];
-      if (!row.fits) {
+      // fits=null means no dimension data — fail-open: skip, do not violate
+      if (row.fits === false) {
         violations.push({
           itemId: item.id,
           itemName: item.name,
           sku: item.sku,
-          productVolume: row.product_volume,
+          productVolume: row.product_volume ?? 0,
           availableVolume: row.available_volume,
           percentageUsed: row.percentage_used,
         });
       }
-      usedLiters += row.product_volume;
+      usedLiters += row.product_volume ?? 0;
     } catch {
       continue;
     }
