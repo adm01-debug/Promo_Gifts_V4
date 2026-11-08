@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5e28c6c85a0a2b72ed7b3b0385c422b589554bd8` (2026-11-08T00:38:37-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1036dc3de59dada19efc30c9e19907d0149bebe7` (2026-11-08T01:44:24-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,8 +586,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38262 nós · 66783 arestas · 2118 comunidades · grafo do commit `5e28c6c8`
-- comunidades maiores: vitest (633), nav.ts (418), ref_integrations (414), ref_lib (373), ref_hooks (357), lucide-react (355), scripts (289), react-router-dom (283), react (262), ref_utils (255), ref_node_fs (254), cors.ts (250)
+- 38270 nós · 66791 arestas · 2118 comunidades · grafo do commit `1036dc3d`
+- comunidades maiores: ref_components (648), ref_integrations (557), ref_lib (499), nav.ts (387), @testing-library/react (357), react-router-dom (334), ref_hooks (327), ref_node_fs (303), scripts (289), ref_utils (261), concludeCheck (259), cors.ts (258)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -1004,10 +1004,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
-- `PENDENCIAS.md` — PENDÊNCIAS — CI Promo Gifts V4 (818 linhas)
+- `PENDENCIAS.md` — PENDÊNCIAS — CI Promo Gifts V4 (840 linhas)
 - `PERFORMANCE-ANALYSIS.md` — 🔍 Relatório de Análise de Performance - MainLayout (195 linhas)
 - `README.md` — 🎁 Promo Brindes — Plataforma de Vendas de Brindes Promocionais (842 linhas)
-- `RELATORIO_CI.md` — Relatório CI — Promo Gifts V4 (1394 linhas)
+- `RELATORIO_CI.md` — Relatório CI — Promo Gifts V4 (1466 linhas)
 - `RELATORIO_CI_P34.md` — RELATORIO_CI_P34.md — Prova Final Sessão P34 (2026-10-30) (64 linhas)
 - `SECURITY.md` — Política de Segurança — Promo Gifts (89 linhas)
 - `STATUS.md` — 📡 Status do Projeto (19 linhas)
@@ -1160,6 +1160,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.7.0...v1.8.0) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-08 `1036dc3` fix(ci): aceitar skip estrutural do PDF no Chromium (#3199)
+- 2026-11-08 `e09f412` docs(ci): RELATORIO §32 + PENDENCIAS #44 (#3200)
 - 2026-11-08 `5e28c6c` fix(e2e): desbloqueia grid de novidades, imagem e tour do kit builder
 - 2026-11-08 `1e63b10` chore(main): release 1.8.0
 - 2026-11-08 `4e638a6` fix(db): fecha vazamento de api_credentials em suppliers para authenticated
@@ -1173,8 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-08 `fa9e722` docs: recibo deploy health-check run 42367422517 (E66) — substitui #3134
 - 2026-11-08 `a7c10dc` fix(e2e): corrige seletores e mocks mortos do novelty-grid-visual (#3184)
 - 2026-11-08 `66f700b` docs: recibo de deploy de edge function(s) — run 42417851181 (E66) (#3185)
-- 2026-11-08 `c976bba` chore: instruções de agentes consolidadas em AGENTS.md + docs/agentes/ (#3146)
-- 2026-11-07 `9c33e63` fix(catalogo): preservar variante exata na seleção de cor (#3141)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

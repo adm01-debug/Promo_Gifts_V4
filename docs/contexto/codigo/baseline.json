@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5e28c6c85a0a2b72ed7b3b0385c422b589554bd8",
+  "commit": "1036dc3de59dada19efc30c9e19907d0149bebe7",
   "branch": "main",
-  "data_commit": "2026-11-08T00:38:37-03:00",
+  "data_commit": "2026-11-08T01:44:24-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "1036dc3",
+    "data": "2026-11-08",
+    "assunto": "fix(ci): aceitar skip estrutural do PDF no Chromium (#3199)"
+   },
+   {
+    "sha": "e09f412",
+    "data": "2026-11-08",
+    "assunto": "docs(ci): RELATORIO §32 + PENDENCIAS #44 (#3200)"
+   },
    {
     "sha": "5e28c6c",
     "data": "2026-11-08",
@@ -121,19 +131,9 @@
     "sha": "bd6773e",
     "data": "2026-11-07",
     "assunto": "fix(ci): impedir falso verde com mínimo de testes inválido (#3168)"
-   },
-   {
-    "sha": "d2ce504",
-    "data": "2026-11-07",
-    "assunto": "docs(ci): RELATORIO §25 — Gate Final 2a042dab success + tabela completa (#3182)"
-   },
-   {
-    "sha": "2a042da",
-    "data": "2026-11-07",
-    "assunto": "docs(ci): verificar erros exatos #26 #30 #37 — sessão 2026-11-07T22h"
    }
   ],
-  "arquivos_mudados_7d": 586,
+  "arquivos_mudados_7d": 583,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -286,15 +286,15 @@
     "mudancas": 4
    },
    {
+    "arquivo": ".github/workflows/e2e-focused.yml",
+    "mudancas": 4
+   },
+   {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
     "mudancas": 4
    },
    {
     "arquivo": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "analise-branches/dossies/fix-contract-mag-reader-261019-2110.md",
     "mudancas": 4
    }
   ],

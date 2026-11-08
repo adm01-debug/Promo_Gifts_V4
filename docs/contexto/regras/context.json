@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "5e28c6c85a0a2b72ed7b3b0385c422b589554bd8",
+  "sha": "1036dc3de59dada19efc30c9e19907d0149bebe7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 04:13 UTC",
+  "generated_at": "2026-11-08 05:00 UTC",
   "files_total": 9124,
   "code_files": 7862,
   "code_lines": 1054364
@@ -484026,10 +484026,29 @@
   }
  },
  "git": {
-  "sha": "5e28c6c85a0a2b72ed7b3b0385c422b589554bd8",
+  "sha": "1036dc3de59dada19efc30c9e19907d0149bebe7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1036dc3",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix(ci): aceitar skip estrutural do PDF no Chromium (#3199)",
+    "files": [
+     ".github/workflows/e2e-focused.yml"
+    ]
+   },
+   {
+    "sha": "e09f412",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(ci): RELATORIO §32 + PENDENCIAS #44 (#3200)",
+    "files": [
+     "PENDENCIAS.md",
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "5e28c6c",
     "date": "2026-11-08",
@@ -484491,41 +484510,20 @@
      "PENDENCIAS.md",
      "RELATORIO_CI.md"
     ]
-   },
-   {
-    "sha": "a882bcc",
-    "date": "2026-11-07",
-    "author": "github-actions[bot]",
-    "subject": "docs(edge-deploy-log): recibo do deploy — run 42374498496 (#3163)",
-    "files": [
-     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
-    ]
-   },
-   {
-    "sha": "3093c4a",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "fix(test): validar de verdade o corpus dos fuzzers (#3173)",
-    "files": [
-     "scripts/fuzz-edge-uploads.mjs",
-     "scripts/fuzz-testing.mjs",
-     "tests/scripts/fuzz-edge-uploads.test.mjs",
-     "tests/scripts/fuzz-testing.test.mjs"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    10
+    11
    ],
    [
     "PENDENCIAS.md",
-    6
+    7
    ],
    [
-    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    3
+    ".github/workflows/e2e-focused.yml",
+    2
    ],
    [
     "e2e/routes/app/novelty-grid-visual.spec.ts",
@@ -484549,6 +484547,10 @@
    ],
    [
     "vitest.config.ts",
+    2
+   ],
+   [
+    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     2
    ],
    [
@@ -484589,10 +484591,6 @@
    ],
    [
     "src/lib/external-db/kit-coverage.ts",
-    1
-   ],
-   [
-    ".release-please-manifest.json",
     1
    ]
   ]

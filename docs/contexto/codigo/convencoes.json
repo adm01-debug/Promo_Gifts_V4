@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): aceitar skip estrutural do PDF no Chromium (#3199)",
+   "docs(ci): RELATORIO §32 + PENDENCIAS #44 (#3200)",
    "fix(e2e): desbloqueia grid de novidades, imagem e tour do kit builder",
    "chore(main): release 1.8.0",
-   "fix(db): fecha vazamento de api_credentials em suppliers para authenticated",
-   "ci: amplia timeout do e2e-gates e corrige min-tests do full-flows",
-   "fix(sentinel): audita intervalo first-parent do push (recupera parte faltante da #2839)"
+   "fix(db): fecha vazamento de api_credentials em suppliers para authenticated"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
