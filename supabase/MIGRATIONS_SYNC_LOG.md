@@ -1135,4 +1135,4 @@ Function v300.
 
 | version | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261108001500` | `reconcile_e2e_cleanup_audit` | `e08b629995808c5f82e4e6285c02a9b1db50e6d13723ec89647cc8d92bc3e0f7` | pendente — aplicar via `db-apply-migration.yml` após merge e antes do deploy de `e2e-cleanup` |
+| `20261108001500` | `reconcile_e2e_cleanup_audit` | `e08b629995808c5f82e4e6285c02a9b1db50e6d13723ec89647cc8d92bc3e0f7` | aguardando aplicação via `db-apply-migration.yml` após merge; rollback: `DROP TABLE IF EXISTS public.e2e_cleanup_audit;` |
