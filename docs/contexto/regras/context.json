@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "b45d233c655f1df7fd25979846478a58e9f0b45a",
+  "sha": "46ec263fe1b0a72a62154a6dc25eda90fe07767b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 13:20 UTC",
+  "generated_at": "2026-11-08 13:36 UTC",
   "files_total": 9124,
   "code_files": 7862,
   "code_lines": 1054364
@@ -484026,10 +484026,19 @@
   }
  },
  "git": {
-  "sha": "b45d233c655f1df7fd25979846478a58e9f0b45a",
+  "sha": "46ec263fe1b0a72a62154a6dc25eda90fe07767b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "46ec263",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix(ci): reconhecer migration 20261107180000 reconciliada (#3211)",
+    "files": [
+     "scripts/migration-ledger-remote-only-allowlist.json"
+    ]
+   },
    {
     "sha": "b45d233",
     "date": "2026-11-08",
@@ -484503,21 +484512,12 @@
      "scripts/check-min-tests-executed.mjs",
      "tests/scripts/check-min-tests-executed.test.mjs"
     ]
-   },
-   {
-    "sha": "d2ce504",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "docs(ci): RELATORIO §25 — Gate Final 2a042dab success + tabela completa (#3182)",
-    "files": [
-     "RELATORIO_CI.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    8
+    7
    ],
    [
     "PENDENCIAS.md",
@@ -484530,6 +484530,10 @@
    [
     "package.json",
     3
+   ],
+   [
+    "scripts/migration-ledger-remote-only-allowlist.json",
+    2
    ],
    [
     ".release-please-manifest.json",
@@ -484589,10 +484593,6 @@
    ],
    [
     "e2e/optimized-image-visual.spec.ts-snapshots/image-error-state-chromium-public-linux.png",
-    1
-   ],
-   [
-    "e2e/optimized-image-visual.spec.ts-snapshots/image-loading-blur-chromium-public-linux.png",
     1
    ]
   ]
