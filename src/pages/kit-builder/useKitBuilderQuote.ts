@@ -19,6 +19,7 @@ import type { Json } from '@/integrations/supabase/types';
 import { newRequestId } from '@/lib/telemetry/requestId';
 import { validateKitStockForQuote } from '@/hooks/kit-builder/useKitStockValidation';
 import { validateKitPricesForQuote } from '@/hooks/kit-builder/useKitPriceValidation';
+import { validateKitFitsForQuote } from '@/hooks/kit-builder/useKitFitsValidation';
 
 export interface KitQuoteClient {
   client_cnpj?: string;
@@ -384,6 +385,14 @@ export function useKitBuilderQuote() {
         if (liveStock.status === 'unavailable') {
           throw new KitQuoteValidationError(
             `Estoque insuficiente em ${liveStock.alerts.length} item(ns). Revise o kit antes de continuar.`,
+          );
+        }
+
+        const liveFits = await validateKitFitsForQuote(kitState.box, kitState.items);
+        if (liveFits.status === 'violations') {
+          const names = liveFits.violations.map((v) => v.itemName).join(', ');
+          throw new KitQuoteValidationError(
+            `${liveFits.violations.length} item(ns) não cabem na embalagem selecionada: ${names}. Revise o kit antes de continuar.`,
           );
         }
       }
