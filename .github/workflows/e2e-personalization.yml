@@ -74,15 +74,12 @@ jobs:
 
       - name: Setup auth state
         id: auth-setup
-        run: |
-          if [ -n "$E2E_USER_EMAIL" ] && [ -n "$E2E_USER_PASSWORD" ]; then
-            npx playwright test --project=setup
-          fi
+        if: env.E2E_USER_EMAIL != '' && env.E2E_USER_PASSWORD != ''
+        run: npx playwright test --project=setup
         env:
           E2E_BASE_URL: http://localhost:8080
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-        continue-on-error: true
 
       - name: Run Personalization E2E Tests
         run: |
