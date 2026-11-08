@@ -1159,3 +1159,16 @@ Referência: `auditoria-supabase/P09_INVESTIGACAO_2026-11-08.md`
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261108020000` | `p09_reconcile_ledger_schema_migrations` | `ce2dfa278f39643d261cc5c238a6eb0d2c4827a52327826e7a30b5c554a84686` | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (REGRA #8: DDL em produção) |
+
+## 2026-11-08 — Arquivo retroativo `20260611014515` (ledger-sem-arquivo)
+
+Versão presente no ledger (`supabase_migrations.schema_migrations`) e na
+produção (`fn_dryrun_standardize_supplier` confirmada via `pg_get_functiondef`)
+mas sem arquivo local correspondente no repo — gap do tipo "ledger-sem-arquivo".
+Este PR cria o arquivo retroativo para fechar o gap documental.
+**Nenhuma DDL nova é executada**: a função já existe em produção desde
+2026-06-11. Versão anterior ao cutoff E48 (`20260623111612`).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20260611014515` | `fn_dryrun_standardize_supplier_real_rollback` | `49c18b67748c6cb7fc39d3b80b1f3eb58fff39fc2f21a20ee7cac92f69e08a3d` | arquivo retroativo — função `fn_dryrun_standardize_supplier` confirmada em produção via `pg_get_functiondef`; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
