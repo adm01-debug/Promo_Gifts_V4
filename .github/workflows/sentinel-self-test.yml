@@ -7,6 +7,7 @@ on:
   pull_request:
     paths:
       - 'scripts/sentinel-check.sh'
+      - '.github/SENTINEL_SHA_ALLOWLIST.txt'
       - '.github/workflows/branch-protection-sentinel.yml'
       - '.github/workflows/sentinel-self-test.yml'
   workflow_dispatch:
@@ -171,3 +172,25 @@ jobs:
             exit 1
           fi
           echo "✅ lista vazia → NONE correto"
+
+      - name: Validate SHA allowlist is exact
+        run: |
+          set -euo pipefail
+
+          SCRIPT="scripts/sentinel-check.sh"
+          APPROVED_SHA="d4e19a64990e2d232f42c7b856462271538a8f7a"
+          UNKNOWN_SHA="0000000000000000000000000000000000000000"
+          SUBJECT="fix(ci): remove workflow vazio que quebra actionlint"
+
+          RESULT=$(bash "$SCRIPT" "$SUBJECT" "$SUBJECT" "adm01-debug" "$APPROVED_SHA")
+          if [[ "$RESULT" != "sha-allowlist: d4e19a6" ]]; then
+            echo "::error::SHA aprovado deveria retornar sha-allowlist, retornou: $RESULT"
+            exit 1
+          fi
+
+          if RESULT=$(bash "$SCRIPT" "$SUBJECT" "$SUBJECT" "adm01-debug" "$UNKNOWN_SHA" 2>&1); then
+            echo "::error::SHA desconhecido foi aceito pela allowlist: $RESULT"
+            exit 1
+          fi
+
+          echo "SHA aprovado passa por correspondência exata; SHA desconhecido continua rejeitado."
