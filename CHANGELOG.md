@@ -5,6 +5,13 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
+
+
+### Bug Fixes
+
+* **e2e:** desbloqueia grid de novidades, imagem e tour do kit builder ([5e28c6c](https://github.com/adm01-debug/Promo_Gifts_V4/commit/5e28c6c85a0a2b72ed7b3b0385c422b589554bd8))
+
 ## [1.8.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.7.0...v1.8.0) (2026-11-08)
 
 
