@@ -1,5 +1,7 @@
 -- Reconcilia o drift em que o ledger registra as migrations históricas do
 -- e2e_cleanup_audit, mas a tabela não existe no projeto canônico.
+-- Rollback: DROP TABLE IF EXISTS public.e2e_cleanup_audit CASCADE
+--           (somente se criada exclusivamente por esta migration e sem dependências externas).
 --
 -- As colunas totals/total_ms e os status legados ficam temporariamente
 -- disponíveis para zero downtime com a Edge Function v300. A versão nova
