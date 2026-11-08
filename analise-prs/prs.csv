@@ -13,7 +13,7 @@ numero,titulo,draft,state,veredito,motivo
 3210,"chore(main): release 1.9.0",False,open,DECISAO_HUMANA,"Bot PR github-actions[bot] — Gate Final ausente (0 check runs no HEAD 05b38bc5)"
 3212,"docs: recibo de deploy de edge function(s) — run 42491776265 (E66)",False,closed,MERGEADA_ESTA_SESSAO,"Gate E14_DOCS_ONLY — merge commit d8ae5159"
 3214,"fix(cron): CRON-001 — escalonar 4 cron jobs para eliminar job startup timeout",True,open,DECISAO_HUMANA,"Draft + REGRA#8 — .github/workflows/ + supabase/migrations/ (cron DDL) + CONFLICTING"
-3215,"fix(migration): adiciona -- Rollback: em 20261108001500",False,open,DECISAO_HUMANA,"REGRA#8 — supabase/migrations/ (rollback header) — merge limpo mas exige aprovação PO"
+3215,"fix(migration): adiciona -- Rollback: em 20261108001500",False,closed,FECHADA_OU_MERGEADA_PO,"Fechada pelo PO sem merge em 2026-11-08T20:34:31Z — REGRA#8 migration (rollback header)"
 3216,"fix(migrations): rollback header em 20261108001500 + PENDENCIAS + RELATORIO_CI",True,closed,FECHADA_OU_MERGEADA_PO,"Fechada pelo PO durante sessão em 2026-11-08T18:34:14Z — supersedida por PR#3215"
 3217,"docs(auditoria): P09 gap ledger 476 versões + P06 reanálise 24 views + C4",True,closed,FECHADA_OU_MERGEADA_PO,"Mergeada pelo PO antes desta sessão"
 3220,"fix(ci): corrige Sentinel Regra 6 + cabeçalho rollback migration E15",False,closed,FECHADA_OU_MERGEADA_PO,"Fechada pelo PO antes desta sessão"

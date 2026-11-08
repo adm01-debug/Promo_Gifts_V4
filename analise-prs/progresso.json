@@ -3,12 +3,12 @@
   "session_id": "49a643e1-3ba4-5a51-9048-a545eec48233",
   "main_sha": "6e631dd1cab31832c09028c8e762fc19886a4b70",
   "main_sha_antes_desta_sessao": "9a89d9f0a4ac2df7ad670501adaad9f1f60a75df",
-  "total_prs_abertas": 11,
+  "total_prs_abertas": 10,
   "total_analisadas": 25,
   "vereditos": {
     "MERGEADA_ESTA_SESSAO": 2,
-    "DECISAO_HUMANA": 11,
-    "FECHADA_OU_MERGEADA_PELO_PO": 12
+    "DECISAO_HUMANA": 10,
+    "FECHADA_OU_MERGEADA_PELO_PO": 13
   },
   "prs_mergeadas_esta_sessao": [
     {
@@ -34,7 +34,6 @@
     {"pr":3203,"motivo":"Gate Final = failure (run 128654730896, SHA 1aad6831) + CONFLICTING vs main 6e631dd1 (7 conflitos)"},
     {"pr":3210,"motivo":"Bot PR github-actions[bot] release 1.9.0 — Gate Final status 0 check runs no HEAD 05b38bc5"},
     {"pr":3214,"motivo":"Draft — fix cron CRON-001"},
-    {"pr":3215,"motivo":"REGRA#8 — supabase/migrations/ DDL 20261108001500_reconcile; auto_merge squash ativo (PO autorizou)"},
     {"pr":3228,"motivo":"Draft + REGRA#8 — .github/workflows/ e2e-color-swatch"},
     {"pr":3239,"motivo":"Draft + REGRA#8 — supabase/migrations/ retroativo 20260611014515 fn_dryrun_standardize_supplier"},
     {"pr":3243,"motivo":"Draft + REGRA#8 — supabase/migrations/ 20260511235950_add_categories_level_drift (categories.level IF NOT EXISTS); behind main"}
@@ -51,7 +50,8 @@
     {"pr":3220,"motivo":"Fechada pelo PO antes desta sessão"},
     {"pr":3236,"motivo":"Mergeada pelo PO após análise desta sessão — REGRA#8 migration (cabeçalho rollback)"},
     {"pr":3238,"motivo":"Fechada pelo PO após análise desta sessão — delivery branch claude_05 artefatos"},
-    {"pr":3242,"motivo":"Mergeada pelo PO após sessão — merge commit 6e631dd1 (docs analise-prs claude_04)"}
+    {"pr":3242,"motivo":"Mergeada pelo PO após sessão — merge commit 6e631dd1 (docs analise-prs claude_04)"},
+    {"pr":3215,"motivo":"Fechada pelo PO sem merge em 2026-11-08T20:34:31Z — REGRA#8 migration rollback header; CI failure Gate 1.3"}
   ],
   "baseline": {
     "typecheck_exit": 0,
