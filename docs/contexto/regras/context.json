@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "46ec263fe1b0a72a62154a6dc25eda90fe07767b",
+  "sha": "d03ee555dbd55c3dae9e85cfbb37f5f1ae4dd21b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 13:36 UTC",
+  "generated_at": "2026-11-08 15:10 UTC",
   "files_total": 9124,
   "code_files": 7862,
   "code_lines": 1054364
@@ -484026,10 +484026,20 @@
   }
  },
  "git": {
-  "sha": "46ec263fe1b0a72a62154a6dc25eda90fe07767b",
+  "sha": "d03ee555dbd55c3dae9e85cfbb37f5f1ae4dd21b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "d03ee55",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(auditoria): encerra P06 e P15 — migrations posteriores tornam proposta obsoleta",
+    "files": [
+     "auditoria-supabase/ADENDO_2026-10-28.md",
+     "auditoria-supabase/analise-impacto/APROVACAO_FASE_B_IMPACTO.md"
+    ]
+   },
    {
     "sha": "46ec263",
     "date": "2026-11-08",
@@ -484502,16 +484512,6 @@
      "PENDENCIAS.md",
      "RELATORIO_CI.md"
     ]
-   },
-   {
-    "sha": "bd6773e",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "fix(ci): impedir falso verde com mínimo de testes inválido (#3168)",
-    "files": [
-     "scripts/check-min-tests-executed.mjs",
-     "tests/scripts/check-min-tests-executed.test.mjs"
-    ]
    }
   ],
   "hot_files": [
@@ -484576,6 +484576,14 @@
     2
    ],
    [
+    "auditoria-supabase/ADENDO_2026-10-28.md",
+    1
+   ],
+   [
+    "auditoria-supabase/analise-impacto/APROVACAO_FASE_B_IMPACTO.md",
+    1
+   ],
+   [
     "docs/estado/backlog/funcionalidades.md",
     1
    ],
@@ -484585,14 +484593,6 @@
    ],
    [
     "e2e/kit-builder.spec.ts",
-    1
-   ],
-   [
-    "e2e/optimized-image-visual.spec.ts",
-    1
-   ],
-   [
-    "e2e/optimized-image-visual.spec.ts-snapshots/image-error-state-chromium-public-linux.png",
     1
    ]
   ]
