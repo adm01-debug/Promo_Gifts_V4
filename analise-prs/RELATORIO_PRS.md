@@ -120,3 +120,34 @@ Recomendação: resolver conflitos manualmente antes de mergear — especialment
 | `analise-prs/dossies/PR-3214-evidencias.md` | 131 arquivos + cron.alter_job DDL extraído |
 | `analise-prs/dossies/PR-3216-evidencias.md` | 4 arquivos + conflito semântico PR#3215 |
 | `analise-prs/dossies/PR-3220-evidencias.md` | sentinel-check.sh linhas 91 e 143-144 verbatim |
+
+---
+
+## META CUMPRIDA
+
+**MERGEADAS esta sessão:** 0
+
+### Por que nenhuma PR foi mergeada:
+
+Todas as 18 PRs analisadas têm pelo menos uma das seguintes condições bloqueantes:
+
+| Condição bloqueante | PRs afetadas |
+|---|---|
+| **REGRA#8 — workflows** (`.github/workflows/`) | 3127, 3129, 3137, 3148, 3150, 3214, 3220 |
+| **REGRA#8 — migrations** (`supabase/migrations/`) | 3137, 3144, 3148, 3150, 3160, 3179, 3202, 3205, 3214, 3215, 3216 |
+| **isDraft=true** (não mergeável autonomamente) | 3148, 3160, 3214, 3216, 3217 |
+| **CONFLITING com main** (merge impossível) | 3127, 3129, 3137, 3144, 3148, 3150, 3160, 3202, 3214, 3216, 3220 |
+| **NAO_MERGEAVEL** (conflito severo ou PR automática) | 3203, 3210, 3212 |
+
+### Critérios de merge autônomo verificados para cada PR:
+
+1. **Válida?** — Sim para todas as 15 DECISAO_HUMANA (mudanças legítimas). Não para 3203 (conflito), 3210 (release automática), 3212 (PR automática sem contexto).
+2. **Traz regressão?** — Nenhuma regressão identificada nas partes não-governance. As mudanças de workflows/migrations são as que requerem decisão humana.
+3. **Já implementada no main?** — Verificado via `git cherry -v` (all 18 PRs têm commits com prefixo `+`, confirmando que NÃO estão em main SHA `9a89d9f0`).
+4. **Regra de negócio correta?** — Sim para todas as 15 DECISAO_HUMANA (mudanças alinhadas com as regras documentadas em `regras-de-negocio.md`).
+
+### Bloqueio residual: REGRA#8
+
+O bloqueio não é de qualidade ou validade das PRs — é procedimental. Nenhuma PR passou pelo critério "sem workflows, sem migrations" que permitiria merge autônomo. A PR mais próxima de ser mergeável seria PR#3217 (docs puras, CI verde), mas está em **isDraft=true**.
+
+**Ação recomendada para o PO:** Ver seção "RISCOS E DECISÕES PENDENTES" acima.

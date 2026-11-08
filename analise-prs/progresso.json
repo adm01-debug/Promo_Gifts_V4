@@ -14,7 +14,7 @@
   "baseline": {
     "typecheck_exit": 0,
     "lint_exit": 0,
-    "vitest": "TIMEOUT — 2 falhas conhecidas: calendar.redesign day_selected + day_outside"
+    "vitest": "2 falhas conhecidas: calendar.redesign day_today (linha 56) + day_selected (linha 66); EXIT_CODE=0; Duration 1.79s"
   },
   "merge_tests": {
     "metodo": "git fetch origin refs/pull/NNN/head + git merge --no-commit --no-ff vs main 9a89d9f0",
@@ -38,7 +38,8 @@
   },
   "correcoes_esta_sessao": {
     "merge_local_corrigido_em": [3127, 3129, 3137, 3144, 3148, 3150, 3160, 3202, 3214, 3216, 3220],
-    "motivo": "Sessão anterior registrou 'clean' para PRs com conflitos reais. Merge tests re-executados vs main SHA 9a89d9f0 corrigiram os dados."
+    "motivo": "Sessão anterior registrou 'clean' para PRs com conflitos reais. Merge tests re-executados vs main SHA 9a89d9f0 corrigiram os dados.",
+    "baseline_tests_corrigido": "Sessão anterior: day_outside + EXIT_CODE=TIMEOUT. Run real 2026-11-08: day_today (linha 56) + day_selected (linha 66) + EXIT_CODE=0"
   },
   "historico_sessoes_anteriores": {
     "bed6ac4e": "8 PRs mergeadas — #2875,#2876,#2864,#2848,#2849,#2857,#2862,#2834",
