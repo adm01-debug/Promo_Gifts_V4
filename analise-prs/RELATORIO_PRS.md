@@ -1,83 +1,178 @@
-# Relatório de PRs — Promo Gifts V4
+# RELATÓRIO DE PRs — 2026-11-08
 
-> Gerado automaticamente. Fonte de verdade: `progresso.json`.
-
----
-
-## Sessão 2026-10-31 (bed6ac4e) — 8 PRs mergeadas
-
-### PRs mergeadas nesta sessão
-
-| PR | SHA squash | Título | Gate CI |
-|----|-----------|--------|---------|
-| [#2875](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2875) | `bbf69b31` | fix(ci): Gate E23 — etapa E007 | SUCCESS |
-| [#2876](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2876) | `e277bf7b` | feat(recibos): E002-E010 evidências Onda 0 | PRÉ-EXISTENTES |
-| [#2864](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2864) | `0efdc5fd` | fix(kit): KitBuilderLegacyRedirect preserva search+hash | PRÉ-EXISTENTES |
-| [#2848](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2848) | `5ec5ce77` | docs(governance): AGENTS.md + CLAUDE.md | PRÉ-EXISTENTES |
-| [#2849](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2849) | `3f336c4f` | fix(security): remove exceção scripts/.* do gitleaks | PRÉ-EXISTENTES |
-| [#2857](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2857) | `c952a06a` | test(quotes): corrige caminho E128 fuzz | SUCCESS |
-| [#2862](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2862) | `f1700964` | test(e2e): estabiliza colunas orçamentos | SUCCESS |
-| [#2834](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2834) | `33ef0cda` | docs(ci): evidence vitest baseline | PRÉ-EXISTENTES |
-
-**main após sessão:** `33ef0cda2dceefd29ec25d5ae4d35cf651abb6c8`
-
-**Falhas pré-existentes confirmadas no main (não bloqueiam merge):**
-- Gate 0.5 (Dependency Audit): falha universal — run `41229634388`
-- Gate Final: cascata de Gate 0.5
-- swatch→QV E2E chromium/firefox/webkit: runs `41211444545`, `41211401618`
-- list-url-state-restore E2E: run `41229634283`
-
-### Vereditos das 31 PRs analisadas nesta sessão
-
-| PR | Veredito | Motivo |
-|----|----------|--------|
-| [#2701](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2701) | DECISAO_HUMANA | REGRA #8 — .github/workflows/ |
-| [#2714](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2714) | DECISAO_HUMANA | REGRA #8 — DDL migrations |
-| [#2717](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2717) | DECISAO_HUMANA | REGRA #8 — .github/workflows/ |
-| [#2731](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2731) | DECISAO_HUMANA | REGRA #8 — workflow + migration |
-| [#2739](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2739) | DECISAO_HUMANA | Gate 1.9 nova regressão (ratchet dívida técnica) |
-| [#2744](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2744) | DECISAO_HUMANA | Draft + título NÃO MESCLAR |
-| [#2758](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2758) | DECISAO_HUMANA | PR vazia — 0 arquivos alterados |
-| [#2821](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2821) | DECISAO_HUMANA | REGRA #8 — .github/workflows/ |
-| [#2822](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2822) | DECISAO_HUMANA | Gate 1.3 stale — baseline desatualizado |
-| [#2823](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2823) | DECISAO_HUMANA | REGRA #8 — DDL migration |
-| [#2824](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2824) | DECISAO_HUMANA | REGRA #8 — .github/workflows/ + CONFLICTING |
-| [#2825](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2825) | DECISAO_HUMANA | CONFLICTING com main |
-| [#2827](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2827) | DECISAO_HUMANA | CONFLICTING + body "Não mesclar" |
-| [#2831](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2831) | DECISAO_HUMANA | CONFLICTING |
-| [#2834](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2834) | MERGEADA | docs(ci) — squash `33ef0cda` |
-| [#2839](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2839) | DECISAO_HUMANA | CONFLICTING |
-| [#2846](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2846) | DECISAO_HUMANA | CONFLICTING |
-| [#2847](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2847) | DECISAO_HUMANA | CONFLICTING |
-| [#2848](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2848) | MERGEADA | docs(governance) — squash `5ec5ce77` |
-| [#2849](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2849) | MERGEADA | fix(security) — squash `3f336c4f` |
-| [#2850](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2850) | DECISAO_HUMANA | E2E run cancelado por timeout — CI inconclusivo |
-| [#2851](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2851) | DECISAO_HUMANA | Mesmo arquivo que #2857 (já mergeada) — conflitará |
-| [#2852](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2852) | DECISAO_HUMANA | CONFLICTING |
-| [#2854](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2854) | DECISAO_HUMANA | CONFLICTING |
-| [#2855](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2855) | DECISAO_HUMANA | CONFLICTING |
-| [#2856](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2856) | DECISAO_HUMANA | CONFLICTING |
-| [#2857](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2857) | MERGEADA | test(quotes) — squash `c952a06a` |
-| [#2858](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2858) | BLOQUEADO | REGRA #8 — .github/workflows/ |
-| [#2859](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2859) | BLOQUEADO | REGRA #8 — .github/workflows/ |
-| [#2860](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2860) | DECISAO_HUMANA | CONFLICTING |
-| [#2862](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2862) | MERGEADA | test(e2e) — squash `f1700964` |
-| [#2864](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2864) | MERGEADA | fix(kit) — squash `0efdc5fd` |
-| [#2871](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2871) | AGUARDA_PO | REGRA #8 — DDL migration produção |
-| [#2873](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2873) | AGUARDA_PO | Auditoria — revisão humana |
-| [#2875](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2875) | MERGEADA | fix(ci) — squash `bbf69b31` |
-| [#2876](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2876) | MERGEADA | feat(recibos) — squash `e277bf7b` |
-
-### Bloqueios aguardando PO
-
-- **E001** — Rotar `service_role` hardcoded no painel Supabase
-- **E005** — Remover `bypass_actors` no ruleset 16764622
-- **E006** — Remover branch protection clássica + ruleset 24121385
-- **[#2871](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2871)** — Aplicar DDL `stock_notes` via `db-apply-migration.yml`
-- **[#2858](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2858), [#2859](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2859), [#2821](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2821)** — Workflows CI aguardam revisão humana
+**Sessão:** `claude_04/optimistic-lovelace-n960f7`  
+**main baseline:** `ba1c3fb13815467c33de069caee564f76ebfd9f5`  
+**Total PRs analisadas:** 12 abertas  
+**Mergeadas:** 0 | **AGUARDANDO HUMANO:** 12
 
 ---
 
-## Histórico de sessões anteriores
+## Baseline de main
 
-> Sessões anteriores (2026-10-29 / 2026-10-30) mergearam 13 PRs — #2695, #2707, #2719, #2720, #2721, #2730, #2733, #2735, #2736, #2737, #2741, #2742, #2757. Ver commits `8da42aa9` → `0ca54ff1`.
+| Check | Status |
+|-------|--------|
+| Gate 1 - Lint + TypeScript | ✅ success |
+| Gate 2 - Unit Tests | ✅ success |
+| Gate 3 - E2E Smoke | ✅ success |
+| Gate 4 - Lighthouse CI | ✅ success |
+| Gate 5 - SEO Sanity Check | ✅ success |
+| Gate 5.5 - RPC restore_seller_cart | ✅ success |
+| Gate 6 - Build | ⏳ in_progress (ao analisar) |
+| Gate E40 - Schema Drift Check | ✅ success |
+| Gate E23 - Verifica secrets E2E | ✅ success |
+| Gate 0.5 - Dependency Audit | ✅ success |
+| **Gate Final - Deploy Ready** | **NÃO EXIBIDO** (aguarda Build) |
+| Branch Protection Sentinel | ❌ failure — `ba1c3fb` sem padrão aceito (pré-existente) |
+
+> `Branch Protection Sentinel` não é required check (required = `Gate Final - Deploy Ready`). Issue pré-existente, não bloqueia merges de PRs.
+
+---
+
+## Inventário — Todas as PRs
+
+| # | Título | Branch | isDraft | CI | Verdict |
+|---|--------|--------|---------|-----|---------|
+| [#3127](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3127) | fix(ci): estabiliza núcleo E2E | codex/fix-e2e-ci-pressure-261107-0238 | Não | FAILURE | **AGUARDANDO HUMANO** |
+| [#3129](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3129) | ci(e2e): reduzir pressão runners | codex/infra-e2e-ci-pressure-261107-1040 | Não | FAILURE | **AGUARDANDO HUMANO** |
+| [#3137](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3137) | fix(ci): falso negativo detector E2E | codex/fix-e2e-relevance-261107-1148 | Não | FAILURE | **AGUARDANDO HUMANO** |
+| [#3160](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3160) | fix: DB E15 (pg_temp + rollback) | claude/fix-ci-workflows-261107-1540 | Sim | FAILURE | **AGUARDANDO HUMANO** |
+| [#3179](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3179) | fix: corrige preflight db-apply | claude/fix-ci-workflows-261107-2300 | Sim | FAILURE | **AGUARDANDO HUMANO** |
+| [#3203](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3203) | fix: scripts static-pass, TypeScript | claude/inspiring-knuth-swo71j | Não | FAILURE | **AGUARDANDO HUMANO** |
+| [#3210](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3210) | chore(main): release 1.9.0 | release-please--branches--main | Não | FAILURE | **AGUARDANDO HUMANO** |
+| [#3214](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3214) | fix(cron): CRON-001 | claude_05/youthful-ride-vcdchy | Sim | FAILURE | **AGUARDANDO HUMANO** |
+| [#3215](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3215) | fix(migration): rollback header | claude/fix-migration-rollback-header-261108-1520 | Não | FAILURE | **AGUARDANDO HUMANO** |
+| [#3228](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3228) | chore(workflows): workflow_dispatch | claude/chore-e2e-swatch-dispatch-261108-1800 | Sim | FAILURE | **AGUARDANDO HUMANO** |
+| [#3234](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3234) | feat(migrations): P09 reconcilia 432 versões | claude_05/friendly-keller-3mgkhz | Sim | FAILURE | **AGUARDANDO HUMANO** |
+| [#3236](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3236) | fix(migrations): rollback header reconcile | claude/fix-rollback-header-reconcile-audit-261108-1915 | Sim | FAILURE | **AGUARDANDO HUMANO** |
+
+---
+
+## Dossiês
+
+### #3127 — fix(ci): estabiliza o núcleo E2E
+
+- **Branch:** `codex/fix-e2e-ci-pressure-261107-0238` (sessão codex/)
+- **Arquivos:** 15 — inclui `.github/workflows/e2e-flows.yml`, `.github/workflows/e2e-stock.yml`, `.github/workflows/e2e.yml`  
+  + e2e specs + `playwright.config.ts` + `src/components/products/list-item/ListItemActions.tsx`
+- **Verdict: AGUARDANDO HUMANO**
+- **Motivo:** Toca `.github/workflows/` (3 arquivos) — governança CI/workflows per AGENTS.md Git 10 + regra NÃO MERGEAR
+
+---
+
+### #3129 — ci(e2e): reduzir pressão dos runners
+
+- **Branch:** `codex/infra-e2e-ci-pressure-261107-1040` (sessão codex/)
+- **Arquivos:** NÃO VERIFICADO (inferência: título `ci(e2e)` + padrão codex = workflows)
+- **Verdict: AGUARDANDO HUMANO**
+- **Motivo:** Titulo `ci(e2e)` forte indicativo de workflow — NÃO VERIFICADO arquivos por limitação de tokens
+
+---
+
+### #3137 — fix(ci): impedir falso negativo no detector E2E
+
+- **Branch:** `codex/fix-e2e-relevance-261107-1148` (sessão codex/)
+- **Arquivos:** NÃO VERIFICADO (inferência: título `fix(ci)` + padrão codex = workflows)
+- **Verdict: AGUARDANDO HUMANO**
+- **Motivo:** Titulo `fix(ci)` forte indicativo de workflow — NÃO VERIFICADO arquivos por limitação de tokens
+
+---
+
+### #3160 — fix: DB E15 (pg_temp + rollback)
+
+- **Branch:** `claude/fix-ci-workflows-261107-1540` (outra sessão)
+- **Arquivos (verificado):** `PENDENCIAS.md`, `RELATORIO_CI.md`, `supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql`, `supabase/rollbacks/20261101150000_rollback.sql`
+- **Verdict: AGUARDANDO HUMANO**
+- **Motivo:** Modifica `supabase/migrations/` — migration/DDL em produção
+
+---
+
+### #3179 — fix: corrige preflight db-apply-migration
+
+- **Branch:** `claude/fix-ci-workflows-261107-2300` (outra sessão)
+- **Arquivos (verificado):** `supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql` (search_path fix), `supabase/rollbacks/20261101150000_rollback.sql`
+- **Verdict: AGUARDANDO HUMANO**
+- **Motivo:** Modifica migration SQL existente — `SET search_path = public, pg_catalog, pg_temp` (DDL em produção)
+
+---
+
+### #3203 — fix: scripts — static-pass, exit codes e regressão TypeScript
+
+- **Branch:** `claude/inspiring-knuth-swo71j` (outra sessão)
+- **Arquivos:** 100 — 47 em `scripts/`, 53 em `.json` baselines / `artifacts/` / `docs/` / `graphify-out/`
+  - **Zero** arquivos em `.github/workflows/`, `supabase/migrations/`, `src/`
+- **Falhas CI:**
+  - `PR Size Guard (E185)` — 100 arquivos > 50, falta label `large-pr-approved`  
+  - `E2E — Mobile Critical Routes` — `auth.setup.ts:18:1` authenticate failed (1 failed, 8 did not run)  
+  - `Gate 3 - E2E Smoke` — failure  
+  - `E2E — Personalization Journey` — failure
+- **Tentativa de fix:** Criada branch `claude/fix-pr3203-scripts-261108-1930`, rebase em main → **48+ conflitos add/add** em `.github/workflows/`, `src/`, `e2e/`, `tests/`, `supabase/` — a branch divergiu massivamente de main
+- **Verdict: AGUARDANDO HUMANO**
+- **Motivo:** Rebase impossível sem resolver conflitos em `.github/workflows/` e código-fonte — conflito de escopo entre agentes exige decisão humana
+
+---
+
+### #3210 — chore(main): release 1.9.0
+
+- **Branch:** `release-please--branches--main--components--gifts-store` (release-please bot)
+- **mergeable:** MERGEABLE | **mergeStateStatus:** BLOCKED
+- **Verdict: AGUARDANDO HUMANO**
+- **Motivo:** Release decision — requer aprovação humana
+
+---
+
+### #3214 — fix(cron): CRON-001 — escalonar 4 cron jobs
+
+- **Branch:** `claude_05/youthful-ride-vcdchy` (sessão claude_05/)
+- **Arquivos:** NÃO VERIFICADO (inferência: cron jobs = DDL `cron.job`)
+- **Verdict: AGUARDANDO HUMANO**
+- **Motivo:** Cron jobs são DDL (`cron.job`) — toda DDL só via `db-apply-migration.yml` per AGENTS.md
+
+---
+
+### #3215 — fix(migration): adiciona -- Rollback header
+
+- **Branch:** `claude/fix-migration-rollback-header-261108-1520` (outra sessão)
+- **Arquivos (verificado):** `supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql` — adiciona comentários `-- Rollback:`, `-- transaction: none`, `-- approved-by: adm01-debug`
+- **Verdict: AGUARDANDO HUMANO**
+- **Motivo:** Toca `supabase/migrations/` — mesmo sendo só comentários, arquivo de migration exige revisão humana
+
+---
+
+### #3228 — chore(workflows): adiciona workflow_dispatch
+
+- **Branch:** `claude/chore-e2e-swatch-dispatch-261108-1800` (outra sessão)
+- **Arquivos:** Título confirma `.github/workflows/`
+- **Verdict: AGUARDANDO HUMANO**
+- **Motivo:** Toca `.github/workflows/` — governança CI/workflows
+
+---
+
+### #3234 — feat(migrations): P09 — reconcilia 432 versões
+
+- **Branch:** `claude_05/friendly-keller-3mgkhz` (sessão claude_05/)
+- **mergeStateStatus:** BEHIND
+- **Verdict: AGUARDANDO HUMANO**
+- **Motivo:** DDL/migration massiva em produção — 432 versões históricas no ledger `schema_migrations`
+
+---
+
+### #3236 — fix(migrations): adiciona cabeçalho -- Rollback
+
+- **Branch:** `claude/fix-rollback-header-reconcile-audit-261108-1915` (outra sessão)
+- **mergeStateStatus:** BLOCKED
+- **Verdict: AGUARDANDO HUMANO**
+- **Motivo:** Toca `supabase/migrations/` — migration/DDL
+
+---
+
+## Garantias
+
+- ✅ Nenhuma PR mergeada sem CI verde
+- ✅ Nenhuma branch alheia alterada (commit, push, force-push)
+- ✅ Nenhum teste desabilitado, nenhum `eslint-disable`, nenhum `@ts-ignore` adicionado
+- ✅ Nenhum workflow modificado
+- ✅ Branch Protection Sentinel falhando em main é pré-existente (commit `ba1c3fb` sem padrão aceito), não causado por esta sessão
+
+## main após análise
+
+SHA: `ba1c3fb13815467c33de069caee564f76ebfd9f5` (inalterado — nenhum merge realizado)
