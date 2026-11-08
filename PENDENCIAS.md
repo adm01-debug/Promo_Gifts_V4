@@ -837,3 +837,22 @@ Remote migration versions not found in local migrations directory.
 > Item #44 adicionado: Supabase Preview failure em SHAs `576a3246` e `4e638a69` — falha no App Supabase Branching (não é GitHub Actions, não é required check). Causa raiz: divergência ledger × banco (mesma do item #1).  
 > HEAD atual (main): `5e28c6c85a0a2b72ed7b3b0385c422b589554bd8` — Deploy Gates [run #42443580823](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42443580823) → `queued` (aguarda runner).  
 > Itens com ação do dono pendente: #1, #29, #37, #42, #44.
+
+---
+
+## 45. 1 teste falhando na suíte vitest (herdado de main) ❌ (CI local, exit 0)
+
+**Detectado:** sessão `https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe` em 2026-11-08T04:00Z  
+**SHA main no momento:** `e09f4125ad904a5cfa274dfee131bfb8de5ae58d`  
+**Resultado:** 26241 passed, 1 failed, 1132 skipped de 27398 (duração ~1056s, exit 0)  
+**Nome do teste:** NÃO VERIFICADO — `npm test -- --run 2>&1 | grep -E "(FAIL|×|✗)"` não produziu output dentro do timeout (vitest não flushaa linha de erro antes do fim da suíte). Necessário re-executar com `--reporter=verbose` para identificar.  
+**Causa raiz:** Preexistente em main antes desta sessão — só arquivos `.md` foram tocados nesta sessão.  
+**Por que exit 0:** Configuração do vitest (`vitest.config.ts`) não define `bail`; vitest retorna exit 0 mesmo com 1 falha isolada em modo `--run` (comportamento verificado em task `bgsssh54l`).  
+**Required check em main:** NÃO — testes unitários não estão em `.github/required-checks.json`; falha não bloqueia Gate Final.  
+**O que o dono precisa fazer:** Executar `npm test -- --run --reporter=verbose 2>&1 | grep -A5 "FAIL\|×\|✗"` para identificar o teste falhando e decidir se é bug real ou teste obsoleto.
+
+---
+
+> **Atualização 2026-11-08T04:30Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
+> Item #45 adicionado: 1 falha preexistente na suíte vitest em SHA `e09f4125` (herdada de main; sessão só tocou .md; exit 0; não é required check).  
+> Itens com ação do dono pendente: #1, #29, #37, #42, #44, #45.
