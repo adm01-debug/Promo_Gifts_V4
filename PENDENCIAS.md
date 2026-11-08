@@ -1,7 +1,7 @@
 # PENDENCIAS.md — Workflows com falha não corrigível nesta sessão
 
-> Gerado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT)
+> Gerado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY
+> Critério: "último run na main = failure" (inventário de 2026-11-08T18h BRT)
 
 ---
 
@@ -19,26 +19,26 @@
 - **Workflow:** `.github/workflows/edge-functions-drift-check.yml`
 - **Último run falhante:** ID 42491884076, SHA `46ec263`
 - **Causa raiz:** 74 edge functions com divergência de conteúdo entre GitHub e Supabase canônico (`doufsxqlfjyuvxuezpln`). O check compara o código commitado com o deployado via API do Supabase e encontrou drifts.
-- **Bloqueio:** requer `SUPABASE_ACCESS_TOKEN` válido com permissão de leitura nas edge functions do projeto `doufsxqlfjyuvxuezpln`. Sem esse secret, o check não consegue autenticar na API do Supabase Management para comparar.
-- **Ação necessária (PO):**
-  1. Verificar se `SUPABASE_ACCESS_TOKEN` está configurado como Actions Secret no repositório
-  2. Se sim, confirmar se o token expirou ou foi revogado (tokens de acesso pessoal do Supabase têm validade)
-  3. Re-rodar o workflow após confirmar o secret. Se as funções realmente divergirem, fazer deploy via `.github/workflows/deploy-edge-functions.yml`
+- **Status atual (2026-11-08T18h22 UTC):** Deploy disparado via `deploy-edge-functions.yml` run [#42509667102](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42509667102) — status `waiting`, aguardando aprovação do gate `environment: production` pelo PO.
+- **Ação necessária (PO):** Aprovar o deploy em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42509667102 para que as 74 funções sejam sincronizadas com o GitHub como fonte canônica.
 - **Risco:** alto — 74 funções em drift podem indicar deployments diretos via MCP/dashboard (ver REGRA #8 corolário)
 
 ---
 
 ### P-02 · db-schema-drift-check
 - **Workflow:** `.github/workflows/db-schema-drift-check.yml`
-- **Último run falhante:** ID 42467725023, SHA `8c3abe3`
-- **Causa raiz:** "Ledger parity falhou" — schema ao vivo em `doufsxqlfjyuvxuezpln` diverge do ledger `supabase_migrations.schema_migrations`. Objetos aplicados via MCP ou dashboard sem migration correspondente.
-- **Bloqueio:** requer conexão ao banco de produção (`DATABASE_URL` ou `SUPABASE_DB_PASSWORD`) e `SUPABASE_ACCESS_TOKEN`. Sem acesso ao banco, não é possível verificar o schema real.
-- **Ação necessária (PO):**
-  1. Verificar secrets `SUPABASE_DB_PASSWORD` e `SUPABASE_ACCESS_TOKEN` no repositório
-  2. Identificar quais objetos estão no banco mas sem migration (via query em `pg_catalog` — ver `docs/SCHEMA_REFERENCE.md` §8)
-  3. Criar migrations espelho para cada objeto fora do ledger (ver REGRA #8 corolário E99)
-  4. Re-rodar o drift-check após reconciliação
-- **Risco:** alto — indica DDL fora do fluxo controlado (REGRA #8/E056 violado)
+- **Último run falhante:** ID 42510118678, SHA `e9ed1f41`
+- **Causa raiz:** BOM UTF-8 (bytes `EF BB BF`) no início de `supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql`. O PostgreSQL falha ao tentar aplicar o arquivo no shadow DB do replay do drift check:
+  ```
+  ERROR: syntax error at or near "﻿e" (SQLSTATE 42601)
+  At statement: 0
+  ﻿e-- ============================================================
+  ^
+  ```
+  Evidência: job #128821154317 step 12 "Schema drift check (baseline + replay x remote)" no run [#42510118678](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42510118678).
+- **Fix em andamento:** PR [#3232](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3232) — remove BOM do arquivo. A migration já está aplicada em produção; a correção afeta apenas o replay local do shadow DB, sem DDL novo.
+- **Ação necessária (PO):** Revisar e mergear PR #3232.
+- **Risco:** baixo — correção de encoding, sem impacto em produção.
 
 ---
 
@@ -46,12 +46,10 @@
 - **Workflow:** `.github/workflows/kit-coverage-integration.yml`
 - **Último run falhante:** ID 42443979822, SHA `5e28c6c8`
 - **Causa raiz:** `Hook timed out in 60000ms` no `beforeAll` de `src/lib/external-db/kit-coverage.integration.test.ts:35`. O hook tenta autenticar com `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` contra o Supabase mas expira em 60s.
-- **Bloqueio:** requer credenciais `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` configuradas como Actions Secrets, e conectividade de rede do runner para `doufsxqlfjyuvxuezpln`. O timeout pode ser por credencial inválida, conta desativada ou bloqueio de rede.
-- **Ação necessária (PO):**
-  1. Verificar se `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` estão configurados e válidos
-  2. Confirmar que a conta de testes existe em `doufsxqlfjyuvxuezpln` (Supabase Auth)
-  3. Testar autenticação manual: `curl -X POST "$SUPABASE_URL/auth/v1/token?grant_type=password" -d '{"email":"...","password":"..."}'`
-  4. Se credencial OK, aumentar o timeout do hook ou adicionar retry
+- **Verificação (2026-11-08T18h BRT):** Conta `e2e-ci@promobrindes-test.local` verificada como ativa no Supabase Auth `doufsxqlfjyuvxuezpln` — último login em 18:06 UTC hoje. Secrets `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` confirmados presentes nos Actions Secrets.
+- **Possível causa do timeout:** transitório (rede ou sobrecarga do projeto Supabase no momento do run). Re-rodar pode resolver.
+- **Ação necessária (PO):** Re-disparar `kit-coverage-integration.yml` em main para verificar se o timeout era transitório. Se persistir, aumentar `hookTimeout` em `src/lib/external-db/kit-coverage.integration.test.ts:35`.
+- **Risco:** baixo — teste não bloqueia deploy; é workflow advisador.
 
 ---
 
@@ -75,16 +73,16 @@
   - `e2e/orcamentos/list-url-state-restore.spec.ts:16,25,42,58`
 - **Status no HEAD (da97d70d):** VERIFICADO — FALHA CONFIRMADA em run [#42507604979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42507604979).
 - **Bloqueio:** falha em specs E2E de URL-state que testam filtros em `/carrinhos` e `/orcamentos`. Requer investigação do comportamento do URL-state nesses módulos.
-- **Ação necessária (PO/Dev):** investigar `e2e/carrinhos/list-url-state-*.spec.ts` e `e2e/orcamentos/list-url-state-restore.spec.ts` — provavelmente asserções desatualizadas após mudanças no componente de filtros.
+- **Ação necessária (PO/Dev):** investigar `e2e/carrinhos/list-url-state-*.spec.ts` e `e2e/orcamentos/list-url-state-restore.spec.ts` — provavelmente assertivas desatualizadas após mudanças no componente de filtros.
 
 ---
 
 ### P-06 · E2E • ColorSwatch 2 linhas (Grid)
 - **Workflow:** `.github/workflows/e2e-color-swatch-grid.yml` (ID 303726213)
 - **Último run falhante:** ID 42440258426, SHA `1440ebaf` (2026-11-01T20:48:15Z), `conclusion=failure`
-- **Causa raiz:** 2 testes falharam em `e2e/catalog/color-swatch-two-lines-grid.spec.ts:69` — viewports desktop (1440px) e wide (1920px): "2 linhas + chip +N + sem clipping". Provavelmente asserção de layout visual desatualizada após mudança no componente ColorSwatch.
+- **Causa raiz:** 2 testes falharam em `e2e/catalog/color-swatch-two-lines-grid.spec.ts:69` — viewports desktop (1440px) e wide (1920px): "2 linhas + chip +N + sem clipping". Provavelmente assertação de layout visual desatualizada após mudança no componente ColorSwatch.
 - **Status no HEAD (da97d70d):** NÃO VERIFICADO — impossibilidade técnica confirmada: (1) workflow NÃO tem trigger `workflow_dispatch` — só dispara em `push`/`pull_request` nos paths específicos; (2) HEAD `da97d70d` alterou apenas `auditoria-supabase/ADENDO_2026-10-28.md`, fora dos paths que acionam o workflow (`src/components/products/ProductCard.tsx`, `ProductColorSwatches.tsx`, `ColorSwatch.tsx`, `src/index.css`, specs). Portanto, nenhum run foi gerado no HEAD e não há como disparar manualmente.
-- **Bloqueio:** workflow sem `workflow_dispatch` + HEAD não altera arquivos-alvo. Falha presumidamente persiste pois os arquivos de componente não foram tocados desde o último run falhante.
+- **Bloqueio:** workflow sem `workflow_dispatch` + HEAD não altera arquivos-alvo. Falha presumivelmente persiste pois os arquivos de componente não foram tocados desde o último run falhante.
 - **Ação necessária (PO/Dev):** alterar qualquer arquivo-alvo (mesmo cosmético) para acionar o workflow no HEAD atual, ou adicionar `workflow_dispatch` ao `.github/workflows/e2e-color-swatch-grid.yml` via PR.
 
 ---
@@ -93,16 +91,16 @@
 - **Workflow:** `.github/workflows/db-apply-migration.yml`
 - **Tipo:** `workflow_dispatch` apenas — não executa automaticamente
 - **Causa raiz:** Migration `20261108001500_reconcile_e2e_cleanup_audit.sql` não contém cabeçalho `-- Rollback:` nas primeiras 40 linhas — exigido pelo preflight do gate E15 antes de aplicar a migration.
-- **Bloqueio (cascata com P-02):** Corrigir a migration (adicionar `-- Rollback:`) requer modificar `supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql`. Qualquer mudança em `supabase/migrations/**` ativa `check-schema-paths.outputs.changed=true` em `deploy-gates.yml`, que por sua vez roda o job `schema-drift-gate`. O `schema-drift-gate` falha porque `SUPABASE_DB_PASSWORD` e `SUPABASE_ACCESS_TOKEN` estão ausentes (P-02). Portanto, o fix da migration está bloqueado até P-02 ser resolvido.
-- **Fix necessário (após P-02 resolvido):**
+- **Bloqueio (cascata com P-02):** Corrigir a migration (adicionar `-- Rollback:`) requer modificar `supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql`. Qualquer mudança em `supabase/migrations/**` ativa `check-schema-paths.outputs.changed=true` em `deploy-gates.yml`, que por sua vez roda o job `schema-drift-gate`. O `schema-drift-gate` falha porque o replay do shadow DB falha (P-02 — BOM UTF-8). Portanto, o fix da migration está bloqueado até PR #3232 ser mergeado.
+- **Fix necessário (após PR #3232 mergeado):**
   ```sql
   -- Migration: 20261108001500_reconcile_e2e_cleanup_audit
   -- Rollback: DROP TABLE IF EXISTS public.e2e_cleanup_audit;
   ```
   Adicionar essas 2 linhas no topo de `supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql` via nova PR.
 - **Ação necessária (PO):**
-  1. Resolver P-02 primeiro (configurar `SUPABASE_DB_PASSWORD` e `SUPABASE_ACCESS_TOKEN` como Actions Secrets)
-  2. Após P-02 resolvido, abrir PR adicionando o cabeçalho `-- Rollback:` ao arquivo da migration
+  1. Mergear PR #3232 (correção do BOM)
+  2. Abrir PR adicionando o cabeçalho `-- Rollback:` ao arquivo da migration
   3. Após merge desse PR, re-disparar `db-apply-migration.yml` via Actions UI com `version=20261108001500`
 
 ---
@@ -119,10 +117,10 @@
 
 | Item | Categoria | Urgência |
 |---|---|---|
-| P-01 (edge-functions-drift) | SECRET + possivelmente deploy real | Alta |
-| P-02 (db-schema-drift) | ACESSO-BD + SECRET | Alta |
-| P-03 (kit-coverage-integration) | SECRET | Média |
+| P-01 (edge-functions-drift) | AGUARDANDO APROVAÇÃO PO | Alta — deploy pausado no gate |
+| P-02 (db-schema-drift) | PR #3232 aberta — BOM UTF-8 | Alta |
+| P-03 (kit-coverage-integration) | Conta ativa — provavelmente transitório | Média |
 | P-04 (nightly-full) | DEPENDS (P-05, P-06) | Baixa |
 | P-05 (e2e playwright) | E2E-VERIFY | Baixa |
 | P-06 (e2e color-swatch) | E2E-VERIFY | Baixa |
-| P-07 (db-apply-migration E15) | CASCATA (P-02) | Baixa — bloqueado por P-02 |
+| P-07 (db-apply-migration E15) | CASCATA (P-02 — aguarda PR #3232) | Baixa |
