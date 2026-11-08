@@ -313,15 +313,11 @@ test.describe("Orçamento — estados de erro e validação @freight @regression
     await page.goto("/orcamentos/00000000-0000-0000-0000-000000000000");
     await waitForNetworkIdle(page);
 
-    const errorEl = page
-      .getByText(/não encontrado|not found|404|erro/i, { exact: false })
-      .or(page.getByRole("heading", { name: /erro/i }))
-      .or(page.locator("[data-testid='error-boundary']"));
-
-    const isErrorVisible = await errorEl.isVisible({ timeout: 10_000 }).catch(() => false);
-    const isRedirected = !page.url().includes("00000000-0000-0000-0000-000000000000");
-
-    expect(isErrorVisible || isRedirected).toBe(true);
+    const errorHeading = page.getByRole("heading", {
+      level: 2,
+      name: /orçamento não encontrado|não foi possível carregar o orçamento/i,
+    });
+    await expect(errorHeading).toBeVisible({ timeout: 12_000 });
   });
 });
 

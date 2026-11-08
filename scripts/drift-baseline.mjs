@@ -72,13 +72,12 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON SEQUENCES FROM anon, aut
 ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON FUNCTIONS FROM anon, authenticated, service_role;
 `;
 
-// O baseline não carrega linhas do pg_cron (só schema), mas migrations de
-// replay exigem jobs já existentes: 20261024180003 (`auto-block-offenders`),
-// 20261024190001 (jobid 235) e 20261027180000 (`generate-blurhashes` inativo).
-// Em produção eles vieram de migrations anteriores ao baseline; no shadow, que
-// parte do dump sem dados, nunca existem. Esta semente é gravada como migration
-// B+1 na pasta temporária (jobs são dados, não schema: não alteram o diff).
-// Idempotente e tolerante a shadow sem pg_cron.
+// O baseline não carrega certos dados de infraestrutura, mas migrations de
+// replay dependem deles: linhas do pg_cron usadas por 20261024180003,
+// 20261024190001 e 20261027180000, além da associação auth.users →
+// supabase_realtime removida por 20261101140001. Em produção esses estados
+// vieram antes do baseline; no shadow, que parte do dump sem dados, não existem.
+// Esta semente B+1 recria apenas as pré-condições históricas e é idempotente.
 export const REPLAY_CRON_SEED_FILE = 'drift_replay_cron_seed.sql';
 export const REPLAY_CRON_SEED_SQL = `
 -- Semente de jobs do pg_cron para o replay (scripts/drift-baseline.mjs).
@@ -117,6 +116,25 @@ BEGIN
       'SELECT 1'
     );
     PERFORM cron.alter_job(job_id := v_id, active := false);
+  END IF;
+END
+$seed$;
+
+-- 20261101140001 prova a remoção de auth.users da publication. O dump de
+-- schema preserva a publication, mas não sua lista de tabelas; restaure somente
+-- a associação que a migration histórica precisa remover.
+DO $seed$
+BEGIN
+  IF to_regclass('auth.users') IS NOT NULL
+     AND EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime')
+     AND NOT EXISTS (
+       SELECT 1
+       FROM pg_publication_tables
+       WHERE pubname = 'supabase_realtime'
+         AND schemaname = 'auth'
+         AND tablename = 'users'
+     ) THEN
+    EXECUTE 'ALTER PUBLICATION supabase_realtime ADD TABLE auth.users';
   END IF;
 END
 $seed$;
