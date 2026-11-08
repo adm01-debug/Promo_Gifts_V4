@@ -1,7 +1,7 @@
 # Graph Report - Promo_Gifts_V4  (2026-11-08)
 
 ## Corpus Check
-- 5652 files · ~5,049,059 words
+- 5652 files · ~5,048,773 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 56 file(s) not represented in the graph (top: (none) 27, .css 10, .toml 6)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d8ae5159`
+- Built from commit: `ba1c3fb1`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -3088,7 +3088,7 @@ Nodes (30): 1.1 — Sistema restrito a colaboradores, 1.2 — Reset de senha com
 
 ### Community 225 - "RELATÓRIO CI — Prova de Conclusão do Stop Hook"
 Cohesion: 0.06
-Nodes (28): Arquivos testados, Baseline Vitest Sample — 2026-10-30T17:43Z, Contexto, Referências, Itens corrigidos nesta sessão (via PR), P-01 · edge-functions-drift-check, P-02 · db-schema-drift-check, P-03 · Kit Coverage — Integration (+20 more)
+Nodes (28): Arquivos testados, Baseline Vitest Sample — 2026-10-30T17:43Z, Contexto, Referências, Itens corrigidos nesta sessão (via PR), P-01 · edge-functions-drift-check, P-02 · db-schema-drift-check ✅ RESOLVIDA, P-03 · Kit Coverage — Integration (+20 more)
 
 ### Community 226 - "PROMO_GIFTS_V4_BLUE_PREMIUM_DESIGN_SYSTEM.md"
 Cohesion: 0.06

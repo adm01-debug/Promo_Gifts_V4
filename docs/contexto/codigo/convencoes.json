@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(migrations): remove BOM UTF-8 do security_fix_suppliers_v2 — corrige db-schema-drift-check",
    "docs(edge): registra deploy health-check run 42491776265",
    "docs(ci): P-06 verificado (failure confirmada run #42507854259) + HEAD 11e2be30 (#3233)",
    "docs(ci): atualiza RELATORIO_CI e PENDENCIAS com verificação HEAD da97d70d (#3231)",
-   "chore(pendencias): corrige causas raiz P-01, P-02, P-03 — secrets presentes, erros são reais",
-   "docs(auditoria): corrige status P06 — views já têm security_invoker=true"
+   "chore(pendencias): corrige causas raiz P-01, P-02, P-03 — secrets presentes, erros são reais"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

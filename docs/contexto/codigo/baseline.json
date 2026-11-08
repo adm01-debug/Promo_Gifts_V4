@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d8ae515913db370da08784f3c911834c1668b98c",
+  "commit": "ba1c3fb13815467c33de069caee564f76ebfd9f5",
   "branch": "main",
-  "data_commit": "2026-11-08T16:04:08-03:00",
+  "data_commit": "2026-11-08T16:12:22-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ba1c3fb",
+    "data": "2026-11-08",
+    "assunto": "fix(migrations): remove BOM UTF-8 do security_fix_suppliers_v2 — corrige db-schema-drift-check"
+   },
    {
     "sha": "d8ae515",
     "data": "2026-11-08",
@@ -126,11 +131,6 @@
     "sha": "5e28c6c",
     "data": "2026-11-08",
     "assunto": "fix(e2e): desbloqueia grid de novidades, imagem e tour do kit builder"
-   },
-   {
-    "sha": "1e63b10",
-    "data": "2026-11-08",
-    "assunto": "chore(main): release 1.8.0"
    }
   ],
   "arquivos_mudados_7d": 585,
@@ -193,7 +193,7 @@
    },
    {
     "pasta": "PENDENCIAS.md",
-    "mudancas": 53
+    "mudancas": 54
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 53
+    "mudancas": 54
    },
    {
     "arquivo": "package.json",
