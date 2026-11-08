@@ -237,6 +237,7 @@ function QuoteItemRow({
                 <span
                   data-testid="quote-item-price-display"
                   aria-label={`Valor unitário (somente leitura, não editável): ${formatCurrency(item.unit_price)}`}
+                  aria-readonly="true"
                   title="Preço definido pelo catálogo — somente leitura, não editável aqui"
                   className="cursor-not-allowed select-none whitespace-nowrap font-display text-xs font-medium tabular-nums text-muted-foreground min-[360px]:text-sm"
                 >

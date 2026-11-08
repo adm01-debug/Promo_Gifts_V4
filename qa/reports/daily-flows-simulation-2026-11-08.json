@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-11-08T03:18:01.104Z",
+  "startedAt": "2026-11-08T03:28:57.247Z",
   "scale": 1,
   "flows": {
     "quote-calc": {
@@ -34,7 +34,7 @@
     }
   },
   "gaps": [],
-  "finishedAt": "2026-11-08T03:18:01.109Z",
+  "finishedAt": "2026-11-08T03:28:57.252Z",
   "totalScenarios": 1520,
   "totalFailed": 0
 }
