@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a7c10dc21c7a85278063d37dd57aa7416ea2d61f` (2026-11-08T00:12:00-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5e28c6c85a0a2b72ed7b3b0385c422b589554bd8` (2026-11-08T00:38:37-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4309), SQL (3228), Markdown (899), JavaScript (307), YAML (107), JSON (91), Shell (18), CSS (13)
+- linguagens: TypeScript (4317), SQL (3232), Markdown (899), JavaScript (310), YAML (107), JSON (93), Shell (19), CSS (13)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,31 +34,31 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 9184 |
-| arquivos_codigo | 4620 |
-| linhas_codigo | 884564 |
+| arquivos_total | 9205 |
+| arquivos_codigo | 4631 |
+| linhas_codigo | 887042 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
 | itens_menu | 69 |
 | modulos | 158 |
-| componentes | 1122 |
+| componentes | 1123 |
 | hooks | 414 |
 | edge_functions | 111 |
 | tabelas | 544 |
-| migrations | 3043 |
+| migrations | 3045 |
 | cron_jobs | 120 |
-| testes | 2191 |
+| testes | 2200 |
 | workflows | 94 |
-| scripts | 255 |
+| scripts | 257 |
 | docs_md | 899 |
 
 ## Onde ficam as coisas
 - telas: src/pages (111), src/components (3), api/health.ts (1)
-- componentes: src/components (931), src/pages (174), src/contexts (10)
+- componentes: src/components (931), src/pages (175), src/contexts (10)
 - hooks: src/hooks (287), src/components (75), src/pages (32)
 - servicos_logica: src/lib (224), src/utils (30), src/services (9)
-- testes: tests/ (802), e2e/ (620), co-localizado (__tests__) (605)
+- testes: tests/ (807), e2e/ (622), co-localizado (__tests__) (605)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/graphify (4), scripts/inventario (4), scripts/ai-context (2)
@@ -150,7 +150,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/magazine | 1 | 6 | 64 | 82 | 2 | 10 |
 | pages/mockups | 3 | 2 | 6 | 272 | 5 | 41 |
 | pages/products | 9 | 10 | 24 | 331 | 5 | 56 |
-| pages/quotes | 3 | 7 | 12 | 295 | 4 | 50 |
+| pages/quotes | 3 | 7 | 13 | 295 | 4 | 50 |
 | pages/system | 1 | 3 | 3 | 287 | 4 | 44 |
 | pages/tools | 6 | 8 | 9 | 291 | 5 | 50 |
 | routes | 0 | 0 | 9 | 502 | 16 | 111 |
@@ -351,7 +351,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `crm-db-bridge` (verify_jwt=false) — tabelas: companies, quotes, user_roles; chamada por 2 arquivo(s) do front
 - `detect-new-device` — tabelas: device_login_notifications, user_known_devices, workspace_notifications; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `dropbox-list` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `e2e-cleanup` (verify_jwt=false) — tabelas: e2e_cleanup_audit; chamada por 0 arquivo(s) do front
+- `e2e-cleanup` (verify_jwt=false) — tabelas: e2e_cleanup_audit, quote_items, quotes; chamada por 0 arquivo(s) do front
 - `elevenlabs-scribe-token` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `elevenlabs-tts` — tabelas: -; chamada por 1 arquivo(s) do front
 - `ema-pipeline-health` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
@@ -563,7 +563,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - env de integração (só nomes): CF_ORIGIN_SECRET, CONNECTIONS_AUTO_TEST_SECRET, CRM_CALLBACK_API_KEY, CSRF_SECRET, E2E_CLEANUP_TOKEN, LOVABLE_API_KEY, PRODUCT_WEBHOOK_ALLOWED_ORIGINS, PRODUCT_WEBHOOK_BATCH_SIZE, PROMO_CHAMPIONS_WEBHOOK_SECRET, TURNSTILE_SECRET_KEY, VITE_GRAVACAO_API_KEY, VITE_SENTRY_DSN, VITE_SENTRY_ENVIRONMENT, WEBHOOK_DISPATCHER_SECRET
 
 ## Permissões / papéis
-- papéis no código: status (75), alert (51), dev (40), button (37), user (32), group (31), admin (29), listitem (26), vendedor (23), supervisor (22), radio (21), dialog (19), radiogroup (18), list (17), system (17), tooltip (17), agente (15), combobox (13), option (12), authenticated (11), progressbar (10), region (10), seller (9), tab (9), tablist (9), anon (8), assistant (8), img (8), switch (8), checkbox (6), listbox (6), main (6), navigation (6), document (5), menu (5), public (5), slider (5), columnheader (4), manager (4), link (3), separator (3), toolbar (3), agent (2), alertdialog (2), cell (2), editor (2), grid (2), gridcell (2), log (2), menuitem (2), presentation (2), publico (2), table (2), OFFSET (1), Paperclip (1), Textos (1), banner (1), complementary (1), contentinfo (1), heading (1), none (1), note (1), searchbox (1), service_role (1), spinbutton (1), string (1), sup (1), superadmin_bypass (1)
+- papéis no código: status (75), alert (51), dev (40), button (37), user (32), group (31), admin (29), listitem (26), vendedor (23), supervisor (22), radio (21), dialog (20), radiogroup (18), list (17), system (17), tooltip (17), agente (15), combobox (13), option (12), authenticated (11), progressbar (10), region (10), anon (9), seller (9), tab (9), tablist (9), assistant (8), img (8), switch (8), checkbox (6), listbox (6), main (6), navigation (6), document (5), menu (5), public (5), slider (5), columnheader (4), manager (4), link (3), separator (3), toolbar (3), agent (2), alertdialog (2), cell (2), editor (2), grid (2), gridcell (2), log (2), menuitem (2), presentation (2), publico (2), table (2), OFFSET (1), Paperclip (1), Textos (1), banner (1), complementary (1), contentinfo (1), heading (1), none (1), note (1), searchbox (1), service_role (1), spinbutton (1), string (1), sup (1), superadmin_bypass (1)
 - enums de papel: app_role: admin|manager|vendedor|supervisor|dev|supervisor|dev|agente|coordenador; org_role: owner|admin|member; role_migration_status: pending|running|completed|failed|partial|dry_run; role_migration_item_status: pending|success|failed|skipped|dry_run
 - guards: src/components/admin/telemetry/RegressionGuardrailBanner.tsx, src/components/layout/ProtectedRoute.tsx, src/components/system/RootInteractivityGuard.tsx · rotas protegidas: 31 · públicas: /, /__test/alert-dialog, /__test/cnpj-form, /__test/color-swatches, /__test/confirm-dialog, /__test/dialog, /__test/magazine-ring, /__test/tab-skip, /__test/undo-toast, /__visual/calendar, /__visual/date-picker-field, /__visual/negotiation-markup-card, /__visual/preview-button, /__visual/quote-add-product-button, /__visual/quote-freight-block, /__visual/quote-item-editor-sheet, /__visual/quote-items-list-mobile, /__visual/quote-view-order, /*, /admin/aprovacoes-desconto/:id, /admin/audit-suite, /admin/badges-inteligencia, /admin/comissoes, /admin/ema-health, /admin/kit-templates/metricas, /admin/observabilidade, /admin/performance, /admin/performance-comercial, /admin/permissoes, /admin/qa, /admin/qa/sidebar, /admin/rate-limit, /admin/role-permissoes, /admin/roles, /admin/seguranca/exemplos-challenge, /admin/status, /admin/storage-test, /admin/validade-precos, /auth/callback, /busca-preco, /carrinhos, /carrinhos/:cartId, /clientes, /clientes/:id, /colecoes, /colecoes/:id, /comissoes, /comparar, /dashboard, /debug/images, /dropbox, /estoque, /external-db-test, /favoritos, /ferramentas/bi, /ferramentas/bi/comparar, /ferramentas/cobertura, /filtros, /forgot-password-confirmation, /inteligencia-comercial, /kit-builder, /magazine, /magazine/:id, /magazine/:id/print, /magazine/print, /magazine/templates, /magic-up, /match, /meus-kits, /mockup-generator, /mockups/historico, /montar-kit, /novidades, /orcamentos, /orcamentos/:id, /orcamentos/:id/editar, /orcamentos/dashboard, /orcamentos/kanban, /orcamentos/lista, /orcamentos/novo, /privacidade, /produto/:id, /produtos, /promoflix-playground, /raio-x, /reposicao, /reset-password, /revista-publica/:token, /simulacao, /simulador, /simulador-precos, /tendencias, /termos
 - feature flags: useEmaRupture, useColorSwatchesV2, ENABLE_NAV_METRICS, FEATURE_GROUPS, FEATURE_ITEMS, FEATURE_X, magic_up, nova-tela, novo-inbox, supplierReliability
@@ -586,27 +586,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38186 nós · 66592 arestas · 2081 comunidades · grafo do commit `a7c10dc2`
-- comunidades maiores: ref_lib (506), ref_integrations (427), gotoAndSettle (409), @testing-library/react (381), ref_hooks (339), ref_node_fs (304), react-router-dom (302), scripts (289), react (276), nav.ts (248), concludeCheck (245), ref_utils (239)
+- 38262 nós · 66783 arestas · 2118 comunidades · grafo do commit `5e28c6c8`
+- comunidades maiores: vitest (633), nav.ts (418), ref_integrations (414), ref_lib (373), ref_hooks (357), lucide-react (355), scripts (289), react-router-dom (283), react (262), ref_utils (255), ref_node_fs (254), cors.ts (250)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (76)
-- PENDENCIAS.md (66)
-- package.json (22)
-- supabase/MIGRATIONS_SYNC_LOG.md (20)
-- package-lock.json (17)
+- RELATORIO_CI.md (73)
+- PENDENCIAS.md (63)
+- package.json (23)
+- supabase/MIGRATIONS_SYNC_LOG.md (18)
+- package-lock.json (16)
 - CHANGELOG.md (14)
-- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (14)
-- docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (12)
+- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (13)
 - .github/workflows/deploy-gates.yml (11)
-- analise-branches/RELATORIO_BRANCHES.md (10)
-- AGENTS.md (9)
-- CLAUDE.md (9)
+- docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (11)
+- analise-branches/RELATORIO_BRANCHES.md (9)
 - e2e/flows/magazine-publish-smoke.spec.ts (9)
-- .github/workflows/replenishment-quality.yml (7)
-- analise-prs/RELATORIO_PRS.md (7)
+- AGENTS.md (8)
+- CLAUDE.md (8)
+- .github/workflows/replenishment-quality.yml (6)
+- e2e/flows/magazine-preview-sticky-smoke.spec.ts (6)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -792,7 +792,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `test:quote-rpc:postgres`: `node scripts/simulate-quote-rpc-proposals.mjs`
 - `check:quote-rpc:canonical`: `node scripts/check-quote-rpc-canonical-readiness.mjs`
 - `test:quality`: `TZ=America/Sao_Paulo vitest run --exclude 'tests/hooks/**'`
-- `test:ci-core`: `TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts`
+- `test:ci-core`: `TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts`
 - `test:ci-core:coverage`: `TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --coverage --coverage.include=src/lib/theme-presets.ts --coverage.include=src/components/products/ProductSparkline.tsx --coverage.reporter=text --coverage.reporter=json --coverage.reporter=json-summary --coverage.thresholds.lines=50 --coverage.thresholds.functions=50 --coverage.thresholds.branches=30 --coverage.thresholds.statements=50`
 - `test:deploy-gate`: `TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --reporter=dot`
 - `test:watch`: `TZ=America/Sao_Paulo vitest`
@@ -998,16 +998,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/BRANCH_PROTECTION_QUOTE_SUMMARY.md` — Branch Protection — Quote Summary (sticky header + action buttons) (49 linhas)
 - `.github/BRANCH_PROTECTION_SETUP.md` — Como ligar Branch Protection em `main` (5 minutos) (138 linhas)
 - `.github/PULL_REQUEST_TEMPLATE.md` (112 linhas)
-- `.github/SENTINEL_CHANGELOG.md` — Sentinel Changelog (160 linhas)
+- `.github/SENTINEL_CHANGELOG.md` — Sentinel Changelog (188 linhas)
 - `AGENTS.md` — AGENTS.md — Promo Gifts V4 (111 linhas)
-- `CHANGELOG.md` — Changelog (1473 linhas)
+- `CHANGELOG.md` — Changelog (1522 linhas)
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
-- `PENDENCIAS.md` — PENDÊNCIAS — CI Promo Gifts V4 (805 linhas)
+- `PENDENCIAS.md` — PENDÊNCIAS — CI Promo Gifts V4 (818 linhas)
 - `PERFORMANCE-ANALYSIS.md` — 🔍 Relatório de Análise de Performance - MainLayout (195 linhas)
 - `README.md` — 🎁 Promo Brindes — Plataforma de Vendas de Brindes Promocionais (842 linhas)
-- `RELATORIO_CI.md` — Relatório CI — Promo Gifts V4 (1338 linhas)
+- `RELATORIO_CI.md` — Relatório CI — Promo Gifts V4 (1394 linhas)
 - `RELATORIO_CI_P34.md` — RELATORIO_CI_P34.md — Prova Final Sessão P34 (2026-10-30) (64 linhas)
 - `SECURITY.md` — Política de Segurança — Promo Gifts (89 linhas)
 - `STATUS.md` — 📡 Status do Projeto (19 linhas)
@@ -1157,24 +1157,24 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/motor-v2-test-report.md` — 🧪 Relatório Exaustivo de Testes — Motor V2 (Bronze Layer) (401 linhas)
 - `docs/notifications-module-audit.md` — Auditoria — Módulo "Notificações de Estoque" (sino do header) (110 linhas)
 - subpastas de docs/: docs/arquivo (90), docs/redeploy (27), docs/estado (26), docs/plans (24), docs/db (14), docs/audits (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/ci (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/bugs (6), docs/security (5), docs/sessoes (5), docs/suppliers (5), docs/agentes (4), docs/arquitetura (4), docs/audit (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/design (3), docs/fabrica-vps (3), docs/observability (3), docs/qa (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/coordenacao (2), docs/edge-functions (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/operations (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
-- CHANGELOG topo: [1.7.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.1...v1.7.0) (2026-11-02)
+- CHANGELOG topo: [1.8.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.7.0...v1.8.0) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-08 `5e28c6c` fix(e2e): desbloqueia grid de novidades, imagem e tour do kit builder
+- 2026-11-08 `1e63b10` chore(main): release 1.8.0
+- 2026-11-08 `4e638a6` fix(db): fecha vazamento de api_credentials em suppliers para authenticated
+- 2026-11-08 `576a324` ci: amplia timeout do e2e-gates e corrige min-tests do full-flows
+- 2026-11-08 `74d9fda` fix(sentinel): audita intervalo first-parent do push (recupera parte faltante da #2839)
+- 2026-11-08 `f0f37db` fix(ci): corrige env Vite e endurece smoke autenticado
+- 2026-11-08 `f7f763e` fix: drift-check ignora *.test.ts e *_test.ts no REPO_ONLY
+- 2026-11-08 `51519ef` test(e2e): endurecer publicação, orçamentos e limpeza canônica
+- 2026-11-08 `ed85d00` fix(e2e): preservar smoke diante de lockout compartilhado do CI
+- 2026-11-08 `59a9584` docs(ci): RELATORIO §31 — estado final SHA 16408a68
+- 2026-11-08 `fa9e722` docs: recibo deploy health-check run 42367422517 (E66) — substitui #3134
 - 2026-11-08 `a7c10dc` fix(e2e): corrige seletores e mocks mortos do novelty-grid-visual (#3184)
 - 2026-11-08 `66f700b` docs: recibo de deploy de edge function(s) — run 42417851181 (E66) (#3185)
 - 2026-11-08 `c976bba` chore: instruções de agentes consolidadas em AGENTS.md + docs/agentes/ (#3146)
 - 2026-11-07 `9c33e63` fix(catalogo): preservar variante exata na seleção de cor (#3141)
-- 2026-11-07 `217869d` infra: migra imports esm.sh → npm: pinados nas edge functions (#3157)
-- 2026-11-07 `16408a6` docs(ci): RELATORIO §30 — fix Branch Protection Sentinel (#3192)
-- 2026-11-07 `46212f0` docs(ci): RELATORIO §29 — baseline local 9feb0148 + inventário fix/ci-workflows
-- 2026-11-07 `9feb014` docs(ci): RELATORIO §28 + PENDENCIAS #39-42 — sessão 2026-11-08
-- 2026-11-07 `0a80360` docs(estado): atualiza PROGRESSO e PENDENCIAS — 2026-11-08 (#3189)
-- 2026-11-07 `561693f` docs(ci): RELATORIO §27 — baseline 12e873af + inventário workflows (#3187)
-- 2026-11-07 `12e873a` docs(ci): RELATORIO §26 — baseline d2ce504a + PENDENCIAS #38 (#3183)
-- 2026-11-07 `bd6773e` fix(ci): impedir falso verde com mínimo de testes inválido (#3168)
-- 2026-11-07 `d2ce504` docs(ci): RELATORIO §25 — Gate Final 2a042dab success + tabela completa (#3182)
-- 2026-11-07 `2a042da` docs(ci): verificar erros exatos #26 #30 #37 — sessão 2026-11-07T22h
-- 2026-11-07 `6522f77` docs(ci): RELATORIO §24 — Gate Final be7688da success + PR #3179
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

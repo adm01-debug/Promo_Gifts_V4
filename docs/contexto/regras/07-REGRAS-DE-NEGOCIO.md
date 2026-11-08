@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a7c10dc21c` · branch `main` · 2026-11-08 03:34 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5e28c6c85a` · branch `main` · 2026-11-08 04:13 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -503,7 +503,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `product_group_location_techniques` | pgloctech_select_authenticated | SELECT | authenticated | permissive | `true` |  |
 | `product_component_location_techniques` | pcloctech_select_authenticated | SELECT | authenticated | permissive | `true` |  |
 | `smoke_tests_runs` | smoke_tests_runs_read_admin | SELECT | authenticated | permissive | `is_admin_or_above((SELECT auth.uid()))` |  |
-| … +335 linhas — lista completa em `context.json` | | | | | | |
+| … +336 linhas — lista completa em `context.json` | | | | | | |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 
@@ -1512,7 +1512,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `bitrix_sync_logs` | `status` | **livre (sem enum/CHECK)** | `pending` |
 | `company_addresses` | `estado` | **livre (sem enum/CHECK)** |  |
 | `future_stock_entries` | `status` | `cancelled`, `completed`, `confirmed`, `in_transit`, `partial`, `pending` | `pending` |
-| `e2e_cleanup_audit` | `status` | `error`, `forbidden`, `invalid`, `not_found`, `ok`, `rate_limited`, `unauthorized` |  |
+| `e2e_cleanup_audit` | `status` | `auth_failed`, `error`, `forbidden`, `invalid`, `not_found`, `ok`, `partial_error`, `rate_limited`, `started`, `success`, `unauthorized` |  |
 | `cotacoes` | `status` | `aguardando_coleta`, `atrasado`, `cancelado`, `contratado`, `cotado`, `em_risco`, `em_transito`, `entregue` | `cotado` |
 | `simulation_runs` | `status` | **livre (sem enum/CHECK)** | `running` |
 | `quote_approval_tokens` | `status` | **livre (sem enum/CHECK)** | `active` |
@@ -1743,7 +1743,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `already_applied` | escreve | `supabase/functions/crm-callback-reprocess/index.ts` |
 | `status` | `approved` | compara, escreve | `src/components/admin/DiscountManagementPanel.tsx`<br>`src/components/admin/PasswordResetApproval.tsx`<br>`src/components/dashboard/MyDiscountRequestsWidget.tsx`<br>`src/components/dashboard/QuickActionsPanel.tsx`<br>`src/components/quotes/QuoteStatusTimeline.tsx`<br>… +17 |
 | `status` | `archived` | compara, escreve | `src/lib/kit-builder/persistence.ts`<br>`src/pages/kit-builder/KitLibraryPage.tsx`<br>`src/pages/magazine/MagazineEditorPage.tsx`<br>`src/pages/magazine/pg.ts`<br>`src/types/magazine.ts`<br>… +1 |
-| `status` | `auth_failed` | escreve | `supabase/functions/e2e-cleanup/handler_characterization_test.ts`<br>`supabase/functions/e2e-cleanup/index.ts` |
+| `status` | `auth_failed` | escreve | `supabase/functions/e2e-cleanup/handler_characterization_test.ts` |
 | `status` | `available` | compara | `src/components/kit-builder/KitSummary.tsx` |
 | `status` | `blocked` | compara, escreve | `src/pages/Simulation.tsx`<br>`src/pages/admin/telemetry/useOptimizationQueue.ts`<br>`supabase/functions/simulation-orchestrator/index.ts` |
 | `status` | `cancelled` | compara, escreve | `src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>`src/components/admin/security/keys/UpdateMcpKeyDialog.tsx`<br>`src/components/common/StatusTimeline.tsx`<br>`src/components/quotes/QuoteStatusTimeline.tsx`<br>… +7 |
@@ -1783,11 +1783,13 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `incompatible` | compara, escreve | `src/components/kit-builder/BoxComparisonDialog.tsx`<br>`src/components/kit-builder/BoxSelector.tsx`<br>`src/lib/kit-builder/ai-composition.ts`<br>`src/lib/kit-builder/box-recommendations.ts` |
 | `status` | `inconclusive` | compara, escreve | `src/components/kit-builder/BoxComparisonDialog.tsx`<br>`src/components/kit-builder/BoxSelector.tsx`<br>`src/lib/kit-builder/box-recommendations.ts` |
 | `status` | `insufficient_data` | escreve | `src/pages/admin/telemetry/useRegressionGuardrail.ts` |
+| `status` | `invalid` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `loading` | compara, escreve | `src/components/ui/StatusBadge.tsx`<br>`src/pages/system/SystemStatusPage.tsx` |
 | `status` | `low-stock` | compara | `src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/inventory/StockBadge.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductQuickView.tsx`<br>… +3 |
 | `status` | `low_stock` | compara | `src/components/inventory/StockDashboard.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>`src/lib/inventory/stock-filter.ts`<br>… +1 |
 | `status` | `missing` | compara, escreve | `src/components/admin/connections/MaskedSuffixBadge.tsx`<br>`src/lib/masked-suffix.ts` |
 | `status` | `none` | compara | `src/lib/carts/shipping-deadline.ts`<br>`src/pages/products/seller-carts/useSellerCartsPage.ts` |
+| `status` | `not_found` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `not_ready` | escreve | `api/ready.ts` |
 | `status` | `number` | compara | `src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`src/contexts/SellerCartContext.tsx`<br>`src/lib/crm-db.ts`<br>`src/lib/db-retry.ts`<br>… +6 |
 | `status` | `offline` | compara | `src/components/quotes/QuoteAutoSave.tsx` |
@@ -1823,10 +1825,12 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `slow` | compara | `src/pages/auth/SSOCallbackPage.tsx` |
 | `status` | `soon` | compara | `src/lib/carts/shipping-deadline.ts`<br>`src/pages/products/CartsListPage.tsx` |
 | `status` | `stale` | compara | `src/components/products/PriceFreshnessBadge.tsx`<br>`src/utils/price-freshness.ts` |
+| `status` | `started` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `step_up_error` | compara, escreve | `src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>`src/components/admin/security/keys/UpdateMcpKeyDialog.tsx`<br>`src/lib/auth/invoke-full-scope.ts`<br>`src/pages/admin/DevChallengeExamplesPage.tsx` |
 | `status` | `string` | compara | `src/lib/products/stock-status.ts` |
-| `status` | `success` | compara, escreve | `src/components/admin/connections/FailedDeliveriesPanel.tsx`<br>`src/components/admin/security/keys/audit/McpAuditRow.tsx`<br>`src/components/kit-builder/VolumeIndicator.tsx`<br>`src/hooks/intelligence/useAiUsage.ts`<br>`src/pages/admin/AdminClientPerformancePage.tsx`<br>… +17 |
+| `status` | `success` | compara, escreve | `src/components/admin/connections/FailedDeliveriesPanel.tsx`<br>`src/components/admin/security/keys/audit/McpAuditRow.tsx`<br>`src/components/kit-builder/VolumeIndicator.tsx`<br>`src/hooks/intelligence/useAiUsage.ts`<br>`src/pages/admin/AdminClientPerformancePage.tsx`<br>… +16 |
 | `status` | `super` | compara | `src/components/bi/ClientCategoryRadar.tsx` |
+| `status` | `unauthorized` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `unavailable` | compara, escreve | `src/components/kit-builder/KitSummary.tsx`<br>`src/hooks/kit-builder/useKitPriceValidation.ts`<br>`src/pages/kit-builder/useKitBuilderQuote.ts` |
 | `status` | `unchanged` | escreve | `src/hooks/kit-builder/useKitPriceValidation.ts` |
 | `status` | `unconfigured` | compara | `src/components/admin/connections/DataSourceDebugTab.tsx` |
@@ -1850,11 +1854,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `step` | `intro` | compara | `src/components/security/MfaEnrollmentDialog.tsx` |
 | `step` | `items` | compara | `src/hooks/quotes/useQuoteBuilderState.helpers.ts` |
 | `step` | `layout` | compara | `src/pages/magazine/MagazineEditorPage.tsx`<br>`src/pages/magazine/utils/stepValidation.ts` |
-| `step` | `loading` | compara, escreve | `src/components/auth/StepUpAuthDialog.tsx` |
-| `step` | `location` | compara, escreve | `src/types/domain/simulator-wizard.ts` |
-| `step` | `mapping` | compara | `src/components/admin/products/BulkImportDialog.tsx` |
-| `step` | `otp` | compara | `src/components/auth/StepUpAuthDialog.tsx` |
-| … +88 linhas — lista completa em `context.json` | | | |
+| … +92 linhas — lista completa em `context.json` | | | |
 
 ### E.4 Enums e listas de valores
 
@@ -2020,7 +2020,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ImportMode | insert \| upsert | `src/lib/external-db/batch-import.ts` |
 | BridgeStatusType | degraded \| recovered \| unavailable | `src/lib/external-db/bridge-status-events.ts` |
 | Operation | batch_insert \| delete \| insert \| select \| update \| upsert | `src/lib/external-db/bridge.ts` |
-| KIT_AUDITED_FIELDS | 'component_name', 'component_description', 'material', 'color', 'primary_image_url', 'images', 'height_mm', 'width_mm', 'length_mm', 'diameter_mm', 'circumference_mm', 'weight_g', // 'capacity_ml', // FIX 2026-06-27: coluna não existe em product_kit_components (PostgREST 400/42703) 'component_type_c … | `src/lib/external-db/kit-coverage.ts` |
+| KIT_AUDITED_FIELDS | 'component_name', 'material', 'color', 'height_mm', 'width_mm', 'length_mm', 'diameter_mm', 'circumference_mm', 'weight_g', // 'capacity_ml', // FIX 2026-06-27: coluna não existe em product_kit_components (PostgREST 400/42703) 'component_type_code', 'personalization_notes', | `src/lib/external-db/kit-coverage.ts` |
 | BRIDGE_ALIASES | 'tecnica_gravacao', // → tabela_preco_gravacao_oficial 'personalization_techniques', // real table (uuid PK, EN cols) — NOT aliased; see rest-native.ts "BUG A" 'customization_price_tables', // → tabela_preco_fornecedores_gravacao (via bridge alias) 'customization_price_tiers', // → tabela_preco_grav … | `src/lib/external-db/tables.ts` |
 | COMPANY_TABLES | 'client_contacts', 'organizations', 'companies' | `src/lib/external-db/tables.ts` |
 | DegradationReason | missing_relation \| permission_denied \| quota_exceeded \| schema_mismatch | `src/lib/intelligence/degradation.ts` |
@@ -5273,7 +5273,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `E2E_BUFFER_LIMIT` | `200` | `src/lib/analytics/mfaNavigationAnalytics.ts` |
 | `E2E_BUFFER_LIMIT` | `200` | `src/lib/analytics/zeroResultAnalytics.ts` |
 | `MAX_AUTO_RETRIES` | `1` | `src/lib/auth/invoke-full-scope.ts` |
-| … +277 linhas — lista completa em `context.json` | | |
+| … +279 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -5706,6 +5706,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | 1 | `supabase/functions/connections-hub-audit/index.ts` |
 | 1 | `supabase/functions/crm-db-bridge/index.ts` |
 | 50 | `supabase/functions/crm-db-bridge/index.ts` |
+| 1000 | `supabase/functions/e2e-cleanup/index.ts` |
 | 10 | `supabase/functions/expert-chat/index.ts` |
 | 1000 | `supabase/functions/expert-chat/index.ts` |
 | 120 | `supabase/functions/expert-chat/index.ts` |
@@ -5738,6 +5739,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Test failed due to console errors:\n${allErrors.join( | `e2e/fixtures/test-base.ts` |
 | Test failed due to critical console warnings:\n${criticalWarnings.join( | `e2e/fixtures/test-base.ts` |
 | [requireAuth] E21 — modo estrito: ${reason} em CI. | `e2e/fixtures/test-base.ts` |
+| [requireAuth] sessão canônica ausente, inválida ou expirada após auth.setup em CI. | `e2e/fixtures/test-base.ts` |
+| [requireLiveDatabaseAuth] ${reason}:  | `e2e/fixtures/test-base.ts` |
+| E2E_TEST_PREFIX não permite escopo canônico: ${JSON.stringify(scoped)} | `e2e/fixtures/test-user.ts` |
 | E2E_USER_EMAIL não definido — defina nas envs antes de rodar specs autenticados. | `e2e/fixtures/test-user.ts` |
 | E2E_USER_PASSWORD não definido. | `e2e/fixtures/test-user.ts` |
 | Não foi possível resolver o user_id do usuário de teste — confirme que o storageState autenticado foi carregado e que a página está na origin do app. | `e2e/fixtures/test-user.ts` |
@@ -5749,6 +5753,25 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Nenhum dos seletores visível: ${selectors.join( | `e2e/helpers/forms.ts` |
 | Console errors detected:\n${errors.map((e) => e.text).join( | `e2e/helpers/nav.ts` |
 | [quotes-layout mirror] divergente do SSOT em  | `e2e/helpers/quotes-layout.ts` |
+| JWT expirado | `e2e/helpers/quotes-status-seed.ts` |
+| JWT issuer inválido: esperado ${expectedIssuer} | `e2e/helpers/quotes-status-seed.ts` |
+| JWT malformado | `e2e/helpers/quotes-status-seed.ts` |
+| JWT sem audience authenticated | `e2e/helpers/quotes-status-seed.ts` |
+| JWT sem issuer | `e2e/helpers/quotes-status-seed.ts` |
+| JWT sub diverge do usuário da sessão | `e2e/helpers/quotes-status-seed.ts` |
+| formato desconhecido | `e2e/helpers/quotes-status-seed.ts` |
+| role=${payload.role ??  | `e2e/helpers/quotes-status-seed.ts` |
+| seed auth falhou: ${detail} | `e2e/helpers/quotes-status-seed.ts` |
+| seed auth falhou: anon key ausente | `e2e/helpers/quotes-status-seed.ts` |
+| seed auth falhou: organização do usuário não encontrada | `e2e/helpers/quotes-status-seed.ts` |
+| seed auth falhou: publishable/anon key inválida (${detail}) | `e2e/helpers/quotes-status-seed.ts` |
+| seed auth falhou: sb_secret não pode ser usada no browser | `e2e/helpers/quotes-status-seed.ts` |
+| seed auth falhou: sessão canônica ausente em ${storageKey} | `e2e/helpers/quotes-status-seed.ts` |
+| seed insert em lote falhou (${insertResp.status}): ${errBody.slice(0, 160)} | `e2e/helpers/quotes-status-seed.ts` |
+| seed lookup atingiu o limite de ${maxRows} quotes E2E; execute o cleanup antes de continuar | `e2e/helpers/quotes-status-seed.ts` |
+| seed lookup falhou (${response.status}): ${detail.slice(0, 160)} | `e2e/helpers/quotes-status-seed.ts` |
+| seed recusou E2E_TEST_PREFIX inseguro: ${JSON.stringify(testPrefix)} | `e2e/helpers/quotes-status-seed.ts` |
+| sessão mock não pode acessar o PostgREST real | `e2e/helpers/quotes-status-seed.ts` |
 | [e2e] ${envVar} não definida. Este spec fala direto com o banco e NUNCA deve  | `e2e/helpers/require-env-base-url.ts` |
 | [e2e] VITE_SUPABASE_PUBLISHABLE_KEY / VITE_SUPABASE_ANON_KEY não definida.  | `e2e/helpers/require-env-base-url.ts` |
 | [gotoWithRetry] falhou ao navegar para  | `e2e/helpers/waits.ts` |
@@ -5807,6 +5830,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Entrada #${index} da allowlist tem category  | `scripts/check-types-inventory-drift.mjs` |
 | Entrada #${index}: member deve ser um array de nomes de propriedades. | `scripts/check-types-inventory-drift.mjs` |
 | GET ${url} → ${r.status} ${r.statusText} | `scripts/ci-metrics.mjs` |
+| ${fileName}: esperado(s) ${expected} CREATE INDEX CONCURRENTLY no replay; encontrado(s) ${rewritten} | `scripts/drift-baseline.mjs` |
 | ${label} ilegível: ${error.message} | `scripts/drift-baseline.mjs` |
 | ${label} não é um objeto JSON | `scripts/drift-baseline.mjs` |
 | ${label}:  | `scripts/drift-baseline.mjs` |
@@ -6008,30 +6032,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Erro ao adicionar localização | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
 | Erro ao associar técnica | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
 | Erro ao atualizar componente | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
-| Erro ao atualizar localização | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
-| Erro ao atualizar modo | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
-| Erro ao atualizar técnica | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
-| Erro ao copiar regras do grupo | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
-| Erro ao remover componente | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
-| Erro ao remover localização | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
-| Erro ao remover técnica | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
-| Erro ao reordenar componentes | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
-| Grupo não possui componentes configurados | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
-| Erro ao adicionar produto | `src/components/admin/product-groups/useProductGroups.ts` |
-| Erro ao atualizar grupo | `src/components/admin/product-groups/useProductGroups.ts` |
-| Erro ao criar grupo | `src/components/admin/product-groups/useProductGroups.ts` |
-| Erro ao remover grupo | `src/components/admin/product-groups/useProductGroups.ts` |
-| Erro ao remover produto | `src/components/admin/product-groups/useProductGroups.ts` |
-| ${result.failed} produto(s) falharam | `src/components/admin/products/BulkImportDialog.tsx` |
-| Nenhuma linha para importar | `src/components/admin/products/BulkImportDialog.tsx` |
-| Não foi possível verificar SKUs existentes | `src/components/admin/products/BulkImportDialog.tsx` |
-| Erro ao criar categoria | `src/components/admin/products/NewCategoryDialog.tsx` |
-| Erro ao limpar | `src/components/admin/products/ProductMarketingSection.tsx` |
-| Erro ao salvar | `src/components/admin/products/ProductMarketingSection.tsx` |
-| Erro ao alterar material | `src/components/admin/products/ProductMaterialsSection.tsx` |
-| Erro ao atualizar | `src/components/admin/products/ProductMaterialsSection.tsx` |
-| Registro não encontrado | `src/components/admin/products/ProductMaterialsSection.tsx` |
-| … +948 linhas — lista completa em `context.json` | |
+| … +973 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6131,7 +6132,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (18436 testes em 1885 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (18488 testes em 1892 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6435,7 +6436,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/scripts/check-anon-write-grants.test.mjs` | 17 | loadAllowlist · devolve grants=[] quando o arquivo não existe · lê grants de um arquivo válido · tolera arquivo sem campo grants (array vazio) … |
 | `tests/ssot/ssot-report-schema.test.ts` | 17 | ssot-report.json — schema · schema JSON é parseável e draft-07 · aceita relatório válido · rejeita canonical inesperado … |
 | `tests/utils/price-freshness-coverage.test.ts` | 17 | getPriceFreshness — bordas de threshold · dia exatamente no meio do threshold ainda é  · um dia após o meio do threshold vira  · dia exatamente no threshold já é  … |
-| … +1585 linhas — lista completa em `context.json` | | |
+| … +1592 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -6844,4 +6845,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | // ⚠️ PERF-2026-08-19: Pré-filtra para apenas produtos VISÍVEIS (virtualizados) + | `src/components/products/VirtualizedProductGrid.tsx` |
 | ANTI N+1: prefetch batch de mv_stock_velocity apenas para produtos visíveis | `src/components/products/VirtualizedProductGrid.tsx` |
 | 2. scrollTo(0) → SOMENTE quando scrollResetKey muda (filter/sort/viewMode) | `src/components/products/VirtualizedProductGrid.tsx` |
-| … +1151 linhas — lista completa em `context.json` | |
+| … +1154 linhas — lista completa em `context.json` | |

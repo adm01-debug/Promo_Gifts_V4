@@ -9,7 +9,7 @@
   ],
   "componentes": [
    "src/components (931)",
-   "src/pages (174)",
+   "src/pages (175)",
    "src/contexts (10)"
   ],
   "hooks": [
@@ -23,8 +23,8 @@
    "src/services (9)"
   ],
   "testes": [
-   "tests/ (802)",
-   "e2e/ (620)",
+   "tests/ (807)",
+   "e2e/ (622)",
    "co-localizado (__tests__) (605)"
   ],
   "edge_functions": "supabase/functions",
@@ -49,7 +49,7 @@
  },
  "barrels_index": 45,
  "extensao_componentes": [
-  ".tsx (1122)"
+  ".tsx (1123)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
-   "fix(e2e): corrige seletores e mocks mortos do novelty-grid-visual (#3184)",
-   "docs: recibo de deploy de edge function(s) — run 42417851181 (E66) (#3185)",
-   "chore: instruções de agentes consolidadas em AGENTS.md + docs/agentes/ (#3146)",
-   "fix(catalogo): preservar variante exata na seleção de cor (#3141)",
-   "infra: migra imports esm.sh → npm: pinados nas edge functions (#3157)"
+   "fix(e2e): desbloqueia grid de novidades, imagem e tour do kit builder",
+   "chore(main): release 1.8.0",
+   "fix(db): fecha vazamento de api_credentials em suppliers para authenticated",
+   "ci: amplia timeout do e2e-gates e corrige min-tests do full-flows",
+   "fix(sentinel): audita intervalo first-parent do push (recupera parte faltante da #2839)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

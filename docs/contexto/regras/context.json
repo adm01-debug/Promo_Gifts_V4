@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "a7c10dc21c7a85278063d37dd57aa7416ea2d61f",
+  "sha": "5e28c6c85a0a2b72ed7b3b0385c422b589554bd8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 03:34 UTC",
-  "files_total": 9106,
-  "code_files": 7847,
-  "code_lines": 1051640
+  "generated_at": "2026-11-08 04:13 UTC",
+  "files_total": 9124,
+  "code_files": 7862,
+  "code_lines": 1054364
  },
  "version": "1.3.2",
- "facts_hash": "55411229d1ba5f1b",
+ "facts_hash": "32d3c1604b01d630",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -185,7 +185,7 @@
    "test:quote-rpc:postgres": "node scripts/simulate-quote-rpc-proposals.mjs",
    "check:quote-rpc:canonical": "node scripts/check-quote-rpc-canonical-readiness.mjs",
    "test:quality": "TZ=America/Sao_Paulo vitest run --exclude 'tests/hooks/**'",
-   "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts",
+   "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts",
    "test:ci-core:coverage": "TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --coverage --coverage.include=src/lib/theme-presets.ts --coverage.include=src/components/products/ProductSparkline.tsx --coverage.reporter=text --coverage.reporter=json --coverage.reporter=json-summary --coverage.thresholds.lines=50 --coverage.thresholds.functions=50 --coverage.thresholds.branches=30 --coverage.thresholds.statements=50",
    "test:deploy-gate": "TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --reporter=dot",
    "test:watch": "TZ=America/Sao_Paulo vitest",
@@ -1173,10 +1173,10 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3228,
-   ".ts": 2622,
-   ".tsx": 1688,
-   ".mjs": 300,
+   ".sql": 3232,
+   ".ts": 2627,
+   ".tsx": 1691,
+   ".mjs": 303,
    ".py": 9,
    ".js": 7
   },
@@ -38668,7 +38668,7 @@
      },
      {
       "name": "email",
-      "type": "TEXT NOT NULL",
+      "type": "TEXT",
       "fk": "",
       "generated": "",
       "src": "supabase/migrations/20260426200011_1f6f92f7-035d-49de-a218-78241e85c1ba.sql"
@@ -38765,9 +38765,11 @@
       "src": "supabase/migrations/20260426224900_289fce13-9cac-4d27-ac2b-3cb8c4aa7224.sql"
      }
     ],
-    "constraints": [],
+    "constraints": [
+     "constraint e2e_cleanup_audit_status_check CHECK (status IN ( 'started', 'success', 'partial_error', 'auth_failed', 'ok', 'error', 'rate_limited', 'unauthorized', 'forbidden', 'not_found', 'invalid' ))"
+    ],
     "src": "supabase/migrations/20260426200011_1f6f92f7-035d-49de-a218-78241e85c1ba.sql",
-    "comment": "",
+    "comment": "created_by=20261108001500_reconcile_e2e_cleanup_audit; append-only Edge cleanup audit",
     "origin": "migration"
    },
    "audit_logs": {
@@ -47481,6 +47483,16 @@
     "using": "bucket_id = 'recibos-entrega'",
     "check": "bucket_id = 'recibos-entrega'",
     "src": "supabase/migrations/20261101150003_st002_st003_avatars_recibos_policies.sql"
+   },
+   {
+    "name": "admins_select_e2e_cleanup_audit",
+    "table": "e2e_cleanup_audit",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role((SELECT auth.uid()), 'admin')",
+    "check": "",
+    "src": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
    },
    {
     "name": "product_ai_anon_select",
@@ -85430,6 +85442,46 @@
     "src": "supabase/migrations/20261101202432_fix_perf002_recreate_captured_at_index.sql"
    },
    {
+    "name": "idx_e2e_cleanup_audit_created_at",
+    "table": "e2e_cleanup_audit",
+    "columns": "created_at DESC",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
+   },
+   {
+    "name": "idx_e2e_cleanup_audit_email",
+    "table": "e2e_cleanup_audit",
+    "columns": "email, created_at DESC",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
+   },
+   {
+    "name": "idx_e2e_cleanup_audit_status",
+    "table": "e2e_cleanup_audit",
+    "columns": "status, created_at DESC",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
+   },
+   {
+    "name": "idx_e2e_cleanup_audit_user_id",
+    "table": "e2e_cleanup_audit",
+    "columns": "user_id, created_at DESC",
+    "unique": false,
+    "where": "WHERE user_id IS NOT NULL",
+    "src": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
+   },
+   {
+    "name": "idx_e2e_cleanup_audit_seller_id",
+    "table": "e2e_cleanup_audit",
+    "columns": "seller_id, created_at DESC",
+    "unique": false,
+    "where": "WHERE seller_id IS NOT NULL",
+    "src": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
+   },
+   {
     "name": "idx_user_organizations_user",
     "table": "user_organizations",
     "columns": "user_id",
@@ -90919,6 +90971,8 @@
    "supabase/migrations/20261101220000_cron001_stagger_schedules.sql",
    "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql",
    "supabase/migrations/20261106232045_fix_handle_updated_at_search_path.sql",
+   "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql",
+   "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260916202000_rollback.sql",
@@ -90964,6 +91018,8 @@
    "supabase/rollbacks/20261101202000_rollback.sql",
    "supabase/rollbacks/20261104100000_rollback.sql",
    "supabase/rollbacks/20261106232045_rollback.sql",
+   "supabase/rollbacks/20261107180000_rollback.sql",
+   "supabase/rollbacks/20261108001500_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -126110,6 +126166,46 @@
    },
    {
     "kind": "revoke",
+    "privs": "select",
+    "object": "suppliers",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "suppliers",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "e2e_cleanup_audit",
+    "objkind": "table",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "e2e_cleanup_audit",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert, update",
+    "object": "e2e_cleanup_audit",
+    "objkind": "table",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
@@ -126363,6 +126459,14 @@
     "objkind": "function",
     "roles": "authenticated",
     "src": "supabase/rollbacks/20261101202000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "suppliers",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261107180000_rollback.sql"
    },
    {
     "kind": "grant",
@@ -129967,6 +130071,7 @@
    "table:ops.pgss_history": "PLANO_DBA E40 — snapshot semanal de extensions.pg_stat_statements (filtrado a ",
    "table:ops.wraparound_monitor_log": "PLANO_DBA E33 — snapshot diário de risco de wraparound de XID/multixact, ",
    "function:fn_backfill_queue_reap_stuck": "Rede de segurança de idempotência: reclama linhas de image_backfill_queue travadas em processing, incrementa attempts e desiste (failed) após N tentativas em vez de tentar para sempre. Agendada via pg_cron (incidente 2026-10-13).",
+   "table:e2e_cleanup_audit": "created_by=20261108001500_reconcile_e2e_cleanup_audit; append-only Edge cleanup audit",
    "table:frontend_telemetry": "ATENCAO: Auditoria 20260602 - user_id = NULL em 100% dos registros. Bug de instrumentacao no frontend."
   },
   "types_file": ""
@@ -131357,7 +131462,9 @@
     "auth": "PÚBLICA (verify_jwt=false em config.toml)",
     "tables": [
      "e2e_cleanup_audit",
-     "integration_credentials"
+     "integration_credentials",
+     "quote_items",
+     "quotes"
     ],
     "env": [
      "E2E_CLEANUP_RATE_LIMIT_MAX",
@@ -131368,7 +131475,9 @@
     "external": [],
     "invokes": [],
     "doc": "supabase/functions/e2e-cleanup/index.ts BUG-EF-006 FIXED: supabase-js@2.45.0 -> @2.49.4",
-    "errors": [],
+    "errors": [
+     "User lookup exceeded the safe limit of ${maxUserPages} pages"
+    ],
     "side_effects": [],
     "webhook_events": [],
     "idempotency": false
@@ -135127,8 +135236,18 @@
    },
    {
     "kind": "cron (código)",
+    "detail": "generate-blurhashes 1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59 * * * *",
+    "file": "scripts/drift-baseline.mjs"
+   },
+   {
+    "kind": "cron (código)",
     "detail": "daily_orders 0 0 * * *",
     "file": "scripts/regras_negocio/test_generate.py"
+   },
+   {
+    "kind": "cron (código)",
+    "detail": "7 * * * *",
+    "file": "tests/scripts/check-infrastructure-drift-snapshots.test.mjs"
    },
    {
     "kind": "GitHub Actions cron",
@@ -137714,7 +137833,7 @@
   {
    "module": "(raiz)",
    "files": 9,
-   "lines": 3394,
+   "lines": 3395,
    "tables": [],
    "exports": [
     "playwright.config.ts: defineConfig",
@@ -137880,8 +137999,8 @@
   },
   {
    "module": "e2e",
-   "files": 621,
-   "lines": 74748,
+   "files": 623,
+   "lines": 75549,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -137895,10 +138014,10 @@
     "color-swatch-selectors.ts: ATTR, TID, SEL",
     "extended-test.ts: test",
     "permissions-matrix.ts: Role, PermissionRoute, resolvePaths, PERMISSION_MATRIX",
-    "quickview-dataset.ts: FIXTURE_PRODUCT, installQuickViewDataset, teardownQuickViewDataset",
+    "quickview-dataset.ts: FIXTURE_PRODUCT, PRODUCT_DETAIL_ROUTE, PRODUCT_IMAGES_ROUTE, PRODUCT_VARIANTS_ROUTE, PRODUCT_VIDEOS_ROUTE, installQuickViewDataset",
     "selectors.ts: TID, TID_PREFIX, PageSlug, Sel",
     "stock-rupture-fixture.ts: FX_PRODUCTS, FX_VARIANTS, FX_SUPPLIER_SOURCES, installRuptureFixture",
-    "test-base.ts: skipIfQuarantined, E2eResources, test, requireAuth, requireAdmin",
+    "test-base.ts: skipIfQuarantined, E2eResources, test, requireAuth, requireLiveDatabaseAuth, requireAdmin",
     "test-user.ts: getTestUserEmail, getTestUserPassword, getTestPrefix, e2eScope, e2eName, isE2eName",
     "_mocks.ts: mockEdgeFunctionFailure, mockExternalDbOffline, mockCrmBridgeOffline, mockBitrixWebhookFail, mockAllEdgeFunctions5xx, mockSessionExpired",
     "analytics.ts: AnalyticsEvent, readAnalyticsEvents, readAnalyticsEventNames, resetAnalyticsBuffer, assertEventOrder, WaitForEventSequenceOptions",
@@ -137911,6 +138030,7 @@
     "cart-mock.ts: MockCartItem, MockCart, makeMockItem, makeMockCart, mockSellerCartsAPI, seedAndMock",
     "cart-setup.ts: SetupAuthedWithCartsOptions, SetupAuthedWithCartsResult, setupAuthedWithCarts",
     "cart-toast-assertions.ts: assertCartAddErrorToast",
+    "ci-auth-lockout.ts: AccessGatePayload, rewriteCiSharedIpLockout",
     "cleanup-client.ts: CleanupResponse, CleanupConfig, loadCleanupConfig, RetryPolicy, loadRetryPolicy, PurgeOpts",
     "consistency.ts: ensureNoDuplicateRequests, cleanupCreatedData",
     "diagnostics.ts: DiagnosticsRecorder, attachDiagnosticsRecorder, dumpDiagnosticsIfFailed",
@@ -137923,10 +138043,9 @@
     "evidence.ts: EvidenceCollector, attachConsoleCapture",
     "favorites.ts: FavoriteItem, readFavoritesStorage, writeFavoritesStorage, installFavoritesCleanup, reloadAndAwaitFavoritesPage",
     "forms.ts: fillIfPresent, clickByText, expectVisibleAny, safeClick",
+    "http-status.ts: isRetryableBackendStatus, shouldRetryBackendStatus, isRetryableBrowserError, shouldRetryBrowserError, retryAfterDelayMs",
     "location-panel-quote.ts: openQuoteWithPersonalizableProduct",
-    "mock-auth.ts: isMockAuthEnabled, installMockAuth",
-    "nav.ts: waitForRouteIdle, expectOnRoute, gotoAndSettle, settleAfterAction, waitForVisible, waitForCount",
-    "pagination-asserts.ts: PageRow, assertMonotonicOrder, assertNoDuplicatesBetween, assertStableCursor, assertCursorPagination"
+    "mock-auth.ts: isMockAuthEnabled, installMockAuth"
    ],
    "docs": [
     "agente-permissions.spec.ts: E2E: Agente (Vendedor) Permissions & Navigation Valida o fluxo de acesso e bloqueio específico para o perfil de Agente. Garante que a comunicação de erro (403) seja contextual ao papel de vendedor.",
@@ -138093,8 +138212,8 @@
   },
   {
    "module": "scripts",
-   "files": 269,
-   "lines": 52914,
+   "files": 270,
+   "lines": 53147,
    "tables": [
     "a",
     "contacts",
@@ -138334,7 +138453,7 @@
   {
    "module": "src/components",
    "files": 1332,
-   "lines": 268659,
+   "lines": 268687,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -139183,8 +139302,8 @@
   },
   {
    "module": "src/pages",
-   "files": 345,
-   "lines": 81547,
+   "files": 348,
+   "lines": 81762,
    "tables": [
     "ai_insights_cache",
     "ai_usage_events",
@@ -139888,7 +140007,7 @@
   {
    "module": "supabase/functions",
    "files": 251,
-   "lines": 45904,
+   "lines": 46481,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -140128,8 +140247,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3042,
-   "lines": 219225,
+   "files": 3044,
+   "lines": 219447,
    "tables": [
     "...",
     "admin_audit_log",
@@ -140227,8 +140346,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 46,
-   "lines": 1335,
+   "files": 48,
+   "lines": 1359,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -140280,6 +140399,8 @@
     "supabase/rollbacks/20261101202000_rollback.sql",
     "supabase/rollbacks/20261104100000_rollback.sql",
     "supabase/rollbacks/20261106232045_rollback.sql",
+    "supabase/rollbacks/20261107180000_rollback.sql",
+    "supabase/rollbacks/20261108001500_rollback.sql",
     "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql"
    ]
   },
@@ -140367,8 +140488,8 @@
   },
   {
    "module": "tests",
-   "files": 816,
-   "lines": 124623,
+   "files": 821,
+   "lines": 125246,
    "tables": [
     "bot_detection_log",
     "companies",
@@ -141916,6 +142037,7 @@
      "src/hooks/quotes/useQuoteVersions.ts",
      "src/services/quoteItemsReorder.ts",
      "src/services/quoteService.ts",
+     "supabase/functions/e2e-cleanup/index.ts",
      "supabase/functions/quote-sync/index.ts"
     ],
     "update": [
@@ -141973,6 +142095,7 @@
      "src/services/quoteService.ts",
      "supabase/functions/crm-callback-reprocess/index.ts",
      "supabase/functions/crm-db-bridge/index.ts",
+     "supabase/functions/e2e-cleanup/index.ts",
      "supabase/functions/expert-chat/index.ts",
      "supabase/functions/market-intelligence-insights/index.ts",
      "supabase/functions/mcp-server/index.ts",
@@ -142005,6 +142128,7 @@
     ],
     "delete": [
      "src/services/quoteService.ts",
+     "supabase/functions/e2e-cleanup/index.ts",
      "supabase/functions/rls-audit/index.ts"
     ]
    },
@@ -142257,7 +142381,8 @@
      "supabase/functions/expert-chat/index.ts"
     ],
     "ref": [
-     "supabase/migrations/20260611001048_security_fix_suppliers_authenticated_credential_leak.sql"
+     "supabase/migrations/20260611001048_security_fix_suppliers_authenticated_credential_leak.sql",
+     "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql"
     ]
    },
    "sync_logs": {
@@ -143715,6 +143840,9 @@
    "CANONICAL_SUPABASE_URL": [
     "scripts/check-restore-seller-cart-rpc.mjs"
    ],
+   "CAPTURE_PATH": [
+    "tests/scripts/check-infrastructure-drift-snapshots.test.mjs"
+   ],
    "CF_ORIGIN_SECRET": [
     "supabase/functions/check-login/index.ts"
    ],
@@ -143730,6 +143858,7 @@
     "e2e/flows/20-all-features-smoke.spec.ts",
     "e2e/helpers/auth.ts",
     "e2e/helpers/cleanup-client.ts",
+    "e2e/helpers/quotes-status-seed.ts",
     "e2e/helpers/waits.ts",
     "e2e/quotes/quote-view-sticky-multi-viewport.spec.ts",
     "e2e/replenishment-stress.spec.ts",
@@ -143822,8 +143951,6 @@
     "supabase/functions/_shared/security.ts"
    ],
    "DATABASE_URL": [
-    "scripts/check-cron-drift.mjs",
-    "scripts/check-event-triggers-drift.mjs",
     "scripts/check-types-inventory-drift.mjs",
     "scripts/gen-internal-schema.mjs"
    ],
@@ -143952,6 +144079,7 @@
     "e2e/flows/27-logout-flow.spec.ts",
     "e2e/helpers/auth.ts",
     "e2e/helpers/mock-auth.ts",
+    "e2e/helpers/quotes-status-seed.ts",
     "e2e/product-card-click.spec.ts",
     "e2e/quotes/quote-view-mainlayout-overflow.spec.ts",
     "e2e/quotes/quote-view-overflow-regression.spec.ts",
@@ -143996,7 +144124,8 @@
    ],
    "E2E_TEST_PREFIX": [
     "e2e/fixtures/test-user.ts",
-    "e2e/helpers/cleanup-client.ts"
+    "e2e/helpers/cleanup-client.ts",
+    "tests/unit/test-user-prefix.test.ts"
    ],
    "E2E_USER": [
     "scripts/run-e2e-quotes-undo.mjs"
@@ -144083,6 +144212,9 @@
     "scripts/verify-external.ts",
     "supabase/functions/_shared/ai-router/index.ts",
     "supabase/functions/commemorative-dates/index.ts"
+   ],
+   "FAKE_KIND": [
+    "tests/scripts/check-infrastructure-drift-snapshots.test.mjs"
    ],
    "FUTURE_STOCK_FUZZ_RUNS": [
     "src/hooks/__tests__/useFutureStockPreference.fuzz.test.ts"
@@ -144246,6 +144378,7 @@
    ],
    "PATH": [
     "scripts/export-schema-snapshot.mjs",
+    "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
     "tests/scripts/check-quote-rpc-canonical-readiness.test.mjs",
     "tests/scripts/rpc-live-evidence-contract.test.mjs",
     "tests/scripts/uptime-probe.test.ts",
@@ -144257,6 +144390,12 @@
    "PDF_VISUAL_THRESHOLD_PCT": [
     "scripts/qa/diff-proposal-pdfs.mjs"
    ],
+   "PGCONNECT_TIMEOUT": [
+    "tests/scripts/check-infrastructure-drift-snapshots.test.mjs"
+   ],
+   "PGDATABASE": [
+    "tests/scripts/check-infrastructure-drift-snapshots.test.mjs"
+   ],
    "PGDUMP": [
     "scripts/supabase_snapshot/snapshot.py"
    ],
@@ -144266,7 +144405,20 @@
    "PGHOST": [
     "scripts/check-draft-canonical-target.mjs",
     "scripts/dry-run-migration-draft.mjs",
-    "scripts/map-drafts-to-migrations.mjs"
+    "scripts/map-drafts-to-migrations.mjs",
+    "tests/scripts/check-infrastructure-drift-snapshots.test.mjs"
+   ],
+   "PGPASSWORD": [
+    "tests/scripts/check-infrastructure-drift-snapshots.test.mjs"
+   ],
+   "PGPORT": [
+    "tests/scripts/check-infrastructure-drift-snapshots.test.mjs"
+   ],
+   "PGSSLMODE": [
+    "tests/scripts/check-infrastructure-drift-snapshots.test.mjs"
+   ],
+   "PGUSER": [
+    "tests/scripts/check-infrastructure-drift-snapshots.test.mjs"
    ],
    "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH": [
     "scripts/qa/generate-proposal-pdf.mjs"
@@ -144473,8 +144625,6 @@
     "tests/security/security-definer-acl.test.ts"
    ],
    "SUPABASE_DB_PASSWORD": [
-    "scripts/check-cron-drift.mjs",
-    "scripts/check-event-triggers-drift.mjs",
     "scripts/export-schema-snapshot.mjs"
    ],
    "SUPABASE_DB_URL": [
@@ -144484,10 +144634,8 @@
     "supabase/functions/tests/rls-policies_test.ts"
    ],
    "SUPABASE_PROJECT_REF": [
-    "scripts/check-cron-drift.mjs",
     "scripts/check-ddl-out-of-band.mjs",
     "scripts/check-edge-verify-jwt-allowlist.mjs",
-    "scripts/check-event-triggers-drift.mjs",
     "scripts/check-policies-baseline.mjs",
     "scripts/check-quote-rpc-canonical-readiness.mjs",
     "scripts/check-supabase-linter.mjs",
@@ -149905,7 +150053,7 @@
    {
     "file": "src/lib/external-db/kit-coverage.ts",
     "name": "KIT_AUDITED_FIELDS",
-    "values": "'component_name', 'component_description', 'material', 'color', 'primary_image_url', 'images', 'height_mm', 'width_mm', 'length_mm', 'diameter_mm', 'circumference_mm', 'weight_g', // 'capacity_ml', // FIX 2026-06-27: coluna não existe em product_kit_components (PostgREST 400/42703) 'component_type_c …"
+    "values": "'component_name', 'material', 'color', 'height_mm', 'width_mm', 'length_mm', 'diameter_mm', 'circumference_mm', 'weight_g', // 'capacity_ml', // FIX 2026-06-27: coluna não existe em product_kit_components (PostgREST 400/42703) 'component_type_code', 'personalization_notes',"
    },
    {
     "file": "src/lib/external-db/tables.ts",
@@ -150438,6 +150586,18 @@
     "msg": "[requireAuth] E21 — modo estrito: ${reason} em CI."
    },
    {
+    "file": "e2e/fixtures/test-base.ts",
+    "msg": "[requireAuth] sessão canônica ausente, inválida ou expirada após auth.setup em CI."
+   },
+   {
+    "file": "e2e/fixtures/test-base.ts",
+    "msg": "[requireLiveDatabaseAuth] ${reason}: "
+   },
+   {
+    "file": "e2e/fixtures/test-user.ts",
+    "msg": "E2E_TEST_PREFIX não permite escopo canônico: ${JSON.stringify(scoped)}"
+   },
+   {
     "file": "e2e/fixtures/test-user.ts",
     "msg": "E2E_USER_EMAIL não definido — defina nas envs antes de rodar specs autenticados."
    },
@@ -150480,6 +150640,82 @@
    {
     "file": "e2e/helpers/quotes-layout.ts",
     "msg": "[quotes-layout mirror] divergente do SSOT em "
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "JWT expirado"
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "JWT issuer inválido: esperado ${expectedIssuer}"
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "JWT malformado"
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "JWT sem audience authenticated"
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "JWT sem issuer"
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "JWT sub diverge do usuário da sessão"
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "formato desconhecido"
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "role=${payload.role ?? "
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "seed auth falhou: ${detail}"
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "seed auth falhou: anon key ausente"
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "seed auth falhou: organização do usuário não encontrada"
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "seed auth falhou: publishable/anon key inválida (${detail})"
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "seed auth falhou: sb_secret não pode ser usada no browser"
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "seed auth falhou: sessão canônica ausente em ${storageKey}"
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "seed insert em lote falhou (${insertResp.status}): ${errBody.slice(0, 160)}"
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "seed lookup atingiu o limite de ${maxRows} quotes E2E; execute o cleanup antes de continuar"
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "seed lookup falhou (${response.status}): ${detail.slice(0, 160)}"
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "seed recusou E2E_TEST_PREFIX inseguro: ${JSON.stringify(testPrefix)}"
+   },
+   {
+    "file": "e2e/helpers/quotes-status-seed.ts",
+    "msg": "sessão mock não pode acessar o PostgREST real"
    },
    {
     "file": "e2e/helpers/require-env-base-url.ts",
@@ -150712,6 +150948,10 @@
    {
     "file": "scripts/ci-metrics.mjs",
     "msg": "GET ${url} → ${r.status} ${r.statusText}"
+   },
+   {
+    "file": "scripts/drift-baseline.mjs",
+    "msg": "${fileName}: esperado(s) ${expected} CREATE INDEX CONCURRENTLY no replay; encontrado(s) ${rewritten}"
    },
    {
     "file": "scripts/drift-baseline.mjs",
@@ -154731,6 +154971,10 @@
    },
    {
     "file": "src/pages/quotes/quote-view/useQuoteViewData.ts",
+    "msg": "Não foi possível carregar o orçamento"
+   },
+   {
+    "file": "src/pages/quotes/quote-view/useQuoteViewData.ts",
     "msg": "Não foi possível copiar o link"
    },
    {
@@ -155028,6 +155272,10 @@
    {
     "file": "supabase/functions/crm-callback-alerts/index.ts",
     "msg": "invalid_sentry_dsn"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.ts",
+    "msg": "User lookup exceeded the safe limit of ${maxUserPages} pages"
    },
    {
     "file": "supabase/functions/elevenlabs-scribe-token/index.ts",
@@ -160776,6 +161024,18 @@
    {
     "file": "supabase/functions/e2e-cleanup/index.ts",
     "text": "2. Rate limit"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.ts",
+    "text": "A API admin pagina usuários. Procurar apenas a primeira página fazia o"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.ts",
+    "text": "O limite explícito também evita uma busca ilimitada caso o email"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.ts",
+    "text": "Compatibilidade do cleanup completo do usuário E2E. Somente requests"
    },
    {
     "file": "supabase/functions/elevenlabs-tts/index.ts",
@@ -180370,11 +180630,6 @@
    },
    {
     "table": "e2e_cleanup_audit",
-    "column": "email",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "e2e_cleanup_audit",
     "column": "dry_run",
     "rule": "default true"
    },
@@ -180407,6 +180662,11 @@
     "table": "e2e_cleanup_audit",
     "column": "created_at",
     "rule": "default now()"
+   },
+   {
+    "table": "e2e_cleanup_audit",
+    "column": "(tabela)",
+    "rule": "constraint e2e_cleanup_audit_status_check CHECK (status IN ( 'started', 'success', 'partial_error', 'auth_failed', 'ok', 'error', 'rate_limited', 'unauthorized', 'forbidden', 'not_found', 'invalid' ))"
    },
    {
     "table": "audit_logs",
@@ -183921,6 +184181,11 @@
     "value": "60"
    },
    {
+    "file": "src/pages/quotes/quote-view/useQuoteViewData.ts",
+    "name": "QUOTE_VIEW_LOAD_TIMEOUT_MS",
+    "value": "8"
+   },
+   {
     "file": "src/pages/tools/OptimizedImageDemo.tsx",
     "name": "SAMPLE_IMAGE",
     "value": "'https://picsum.photos/seed/picsum/800/1000'"
@@ -184223,7 +184488,12 @@
    {
     "file": "supabase/functions/e2e-cleanup/index.ts",
     "name": "MOCKUP_BUCKET",
-    "value": "\"mockup-assets\""
+    "value": "'mockup-assets'"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.ts",
+    "name": "CLEANUP_PROTOCOL",
+    "value": "'quotes-prefix-v2'"
    },
    {
     "file": "supabase/functions/favorites-watcher/index.ts",
@@ -193486,7 +193756,19 @@
    {
     "file": "supabase/functions/e2e-cleanup/index.ts",
     "field": "status",
-    "value": "auth_failed",
+    "value": "unauthorized",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.ts",
+    "field": "status",
+    "value": "invalid",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.ts",
+    "field": "status",
+    "value": "error",
     "kind": "escreve"
    },
    {
@@ -193504,7 +193786,19 @@
    {
     "file": "supabase/functions/e2e-cleanup/index.ts",
     "field": "status",
-    "value": "success",
+    "value": "not_found",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.ts",
+    "field": "status",
+    "value": "forbidden",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.ts",
+    "field": "status",
+    "value": "started",
     "kind": "escreve"
    },
    {
@@ -208973,6 +209267,10 @@
    },
    {
     "file": "e2e/routes/app/novelty-grid-visual.spec.ts",
+    "name": "Pagination & Alignment Check"
+   },
+   {
+    "file": "e2e/routes/app/novelty-grid-visual.spec.ts",
     "name": "Card Variations: Long Title & Consultation Price"
    },
    {
@@ -219922,6 +220220,10 @@
    {
     "file": "src/components/ui/__tests__/ConfirmDialog.keyboard.test.tsx",
     "name": "ConfirmDialog — navegação por teclado + leitor de tela (todas variantes)"
+   },
+   {
+    "file": "src/components/ui/__tests__/ConfirmDialog.keyboard.test.tsx",
+    "name": "durante loading, Escape não fecha o diálogo"
    },
    {
     "file": "src/components/ui/__tests__/ConfirmDialog.keyboard.test.tsx",
@@ -232533,6 +232835,10 @@
    },
    {
     "file": "src/pages/magazine/__tests__/MagazineEditorPage.hooksOrder.test.tsx",
+    "name": "mantém o cluster de ações em uma única linha a partir de lg"
+   },
+   {
+    "file": "src/pages/magazine/__tests__/MagazineEditorPage.hooksOrder.test.tsx",
     "name": "sobrevive a items vazio"
    },
    {
@@ -236178,6 +236484,30 @@
    {
     "file": "src/pages/quotes/components/__tests__/DeliveryModeToggle.test.tsx",
     "name": "permanece alinhado (inline-flex) em diferentes larguras de container"
+   },
+   {
+    "file": "src/pages/quotes/quote-view/QuoteUnavailableState.test.tsx",
+    "name": "QuoteUnavailableState"
+   },
+   {
+    "file": "src/pages/quotes/quote-view/QuoteUnavailableState.test.tsx",
+    "name": "distingue orçamento inexistente de falha transitória"
+   },
+   {
+    "file": "src/pages/quotes/quote-view/QuoteUnavailableState.test.tsx",
+    "name": "expõe retry e retorno sem engolir os callbacks"
+   },
+   {
+    "file": "src/pages/quotes/quote-view/useQuoteViewData.test.tsx",
+    "name": "useQuoteViewData"
+   },
+   {
+    "file": "src/pages/quotes/quote-view/useQuoteViewData.test.tsx",
+    "name": "encerra o loading e oferece erro recuperável quando a leitura trava"
+   },
+   {
+    "file": "src/pages/quotes/quote-view/useQuoteViewData.test.tsx",
+    "name": "não deixa a tela carregando quando a rota não tem id"
    },
    {
     "file": "src/pages/quotes/quote-view/__tests__/QuoteActionHandlers.fuzz.test.ts",
@@ -240038,6 +240368,42 @@
    {
     "file": "supabase/functions/e2e-cleanup/index.mockups.test.ts",
     "name": "erro de listagem do storage vira "
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.mockups.test.ts",
+    "name": "e2e-cleanup — escopo de quotes por prefixo"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.mockups.test.ts",
+    "name": "falha fechado antes de DELETE quando a trilha de auditoria está indisponível"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.mockups.test.ts",
+    "name": "não produz falso verde quando a auditoria final falha após o cleanup"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.mockups.test.ts",
+    "name": "falha fechado quando o rate limiter não responde"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.mockups.test.ts",
+    "name": "encontra o email allowlisted depois da primeira página de usuários"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.mockups.test.ts",
+    "name": "apaga somente quotes/items do prefixo e confirma zero remanescentes"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.mockups.test.ts",
+    "name": "rejeita prefixo não canônico antes de qualquer DELETE"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.mockups.test.ts",
+    "name": "propaga erro de DELETE e falha quando a verificação encontra resíduo"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/index.mockups.test.ts",
+    "name": "rejeita sellerId explícito divergente do email allowlisted"
    },
    {
     "file": "supabase/functions/ema-pipeline-health/handler.test.ts",
@@ -249370,6 +249736,38 @@
    {
     "file": "tests/components/ui/Tooltip.test.tsx",
     "name": "renders tooltip component"
+   },
+   {
+    "file": "tests/config/e2e-http-status.test.ts",
+    "name": "classificação de status transitório no E2E"
+   },
+   {
+    "file": "tests/config/e2e-http-status.test.ts",
+    "name": "permite retentativa limitada para %i"
+   },
+   {
+    "file": "tests/config/e2e-http-status.test.ts",
+    "name": "não mascara erro determinístico %i"
+   },
+   {
+    "file": "tests/config/e2e-http-status.test.ts",
+    "name": "limita a indisponibilidade transitória ao número máximo de tentativas"
+   },
+   {
+    "file": "tests/config/e2e-http-status.test.ts",
+    "name": "não repete falha determinística mesmo antes do limite"
+   },
+   {
+    "file": "tests/config/e2e-http-status.test.ts",
+    "name": "limita o retry de timeout ao número máximo de tentativas"
+   },
+   {
+    "file": "tests/config/e2e-http-status.test.ts",
+    "name": "respeita Retry-After em segundos com teto de cinco segundos"
+   },
+   {
+    "file": "tests/config/e2e-http-status.test.ts",
+    "name": "respeita Retry-After em data HTTP e aplica fallback seguro"
    },
    {
     "file": "tests/config/e2e-nav-helper-smoke.test.ts",
@@ -266116,6 +266514,46 @@
     "name": "arquivo na baseline que encolheu → exit 0 (drift positivo, não regressão)"
    },
    {
+    "file": "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
+    "name": "snapshots de infraestrutura live"
+   },
+   {
+    "file": "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
+    "name": "versiona metadados completos de event triggers sem duplicidade"
+   },
+   {
+    "file": "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
+    "name": "versiona apenas schedule/active dos crons, sem command nem IDs instáveis"
+   },
+   {
+    "file": "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
+    "name": "falha fechado quando o snapshot de %s está ausente"
+   },
+   {
+    "file": "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
+    "name": "não consulta command de cron e compara alterações de configuração"
+   },
+   {
+    "file": "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
+    "name": "passa senha com metacaracteres fora do shell/argv (%s)"
+   },
+   {
+    "file": "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
+    "name": "invoca psql sem shell nos dois gates"
+   },
+   {
+    "file": "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
+    "name": "separa a concorrência standalone/E40 e ativa ambos quando os gates mudam"
+   },
+   {
+    "file": "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
+    "name": "recusa PG* parcial, porta transaction e alvos não canônicos"
+   },
+   {
+    "file": "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
+    "name": "valida DATABASE_URL canônica, decodifica a senha e rejeita banco arbitrário"
+   },
+   {
     "file": "tests/scripts/check-ledger-manifest-drift.test.mjs",
     "name": "declaredVersionOf"
    },
@@ -267325,7 +267763,27 @@
    },
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "sanitizeReplayMigration"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "remove CONCURRENTLY só de CREATE INDEX executável no shadow"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "falha fechado se a migration histórica mudar e não tiver exatamente dois índices"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "não reescreve migrations fora do allowlist de compatibilidade do pipeline"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
     "name": "prepareWorkdir"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "reescreve CONCURRENTLY somente na cópia temporária do replay"
    },
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
@@ -267606,26 +268064,6 @@
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
     "name": "aspas redundantes e caixa de palavra-chave seguem equivalentes"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "literal do SET no cabeçalho com caixa diferente fica no resíduo"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "dropDumpLossyFunctions — mudanças posteriores ao CREATE não são escondidas (revisão adversarial)"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "controle: CREATE idêntico é removido do resíduo; OWNER TO é inócuo"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "ALTER FUNCTION (SECURITY DEFINER / SET) e DROP FUNCTION posteriores mantêm a função no resíduo"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "DROP FUNCTION sem lista de argumentos (IF EXISTS … CASCADE) invalida o nome e não puxa "
    },
    {
     "file": "tests/scripts/fuzz-edge-uploads.test.mjs",
@@ -268240,6 +268678,38 @@
     "name": "não aceita audit inacessível como smoke aprovado"
    },
    {
+    "file": "tests/scripts/sentinel-push-range.test.mjs",
+    "name": "sentinel-push-range"
+   },
+   {
+    "file": "tests/scripts/sentinel-push-range.test.mjs",
+    "name": "não deixa um commit sem PR escapar quando o push termina em squash"
+   },
+   {
+    "file": "tests/scripts/sentinel-push-range.test.mjs",
+    "name": "seleciona o squash quando ele é o único commit do push"
+   },
+   {
+    "file": "tests/scripts/sentinel-push-range.test.mjs",
+    "name": "inclui todas as integrações first-parent no mesmo push"
+   },
+   {
+    "file": "tests/scripts/sentinel-push-range.test.mjs",
+    "name": "preserva o first-parent e exclui commits laterais de merge de PR"
+   },
+   {
+    "file": "tests/scripts/sentinel-push-range.test.mjs",
+    "name": "retorna erro se before não for ancestral first-parent de after"
+   },
+   {
+    "file": "tests/scripts/sentinel-push-range.test.mjs",
+    "name": "rejeita before alcançável apenas pelo segundo pai de um merge"
+   },
+   {
+    "file": "tests/scripts/sentinel-push-range.test.mjs",
+    "name": "falha fechado para intervalo vazio, SHA malformado e SHA inexistente"
+   },
+   {
     "file": "tests/scripts/strict-test-side-effects-contract.test.mjs",
     "name": "strict test side-effects contract"
    },
@@ -268274,6 +268744,10 @@
    {
     "file": "tests/scripts/validate-migration-target.test.mjs",
     "name": "preflight needs only version and canonical project, not database credentials"
+   },
+   {
+    "file": "tests/scripts/validate-migration-target.test.mjs",
+    "name": "target-only validates the canonical connection without inventing a migration version"
    },
    {
     "file": "tests/scripts/validate-migration-target.test.mjs",
@@ -269734,6 +270208,18 @@
    {
     "file": "tests/unit/catalog-stock-status.test.ts",
     "name": "falls back to in-stock color for unknown status"
+   },
+   {
+    "file": "tests/unit/ci-auth-lockout.test.ts",
+    "name": "rewriteCiSharedIpLockout"
+   },
+   {
+    "file": "tests/unit/ci-auth-lockout.test.ts",
+    "name": "seleciona apenas o lockout exato em uma matriz de 180 cenários"
+   },
+   {
+    "file": "tests/unit/ci-auth-lockout.test.ts",
+    "name": "preserva os detalhes de auditoria sem alterar o payload original"
    },
    {
     "file": "tests/unit/connection-error-copy.test.ts",
@@ -271998,6 +272484,22 @@
    {
     "file": "tests/unit/syntax-integrity.test.tsx",
     "name": "SidebarReorganized deve renderizar sem erros de sintaxe ou JSX"
+   },
+   {
+    "file": "tests/unit/test-user-prefix.test.ts",
+    "name": "namespace E2E canônico"
+   },
+   {
+    "file": "tests/unit/test-user-prefix.test.ts",
+    "name": "deriva um prefixo por spec compatível com o cleanup padrão"
+   },
+   {
+    "file": "tests/unit/test-user-prefix.test.ts",
+    "name": "mantém o namespace único da rodada no prefixo do spec"
+   },
+   {
+    "file": "tests/unit/test-user-prefix.test.ts",
+    "name": "rejeita namespace que não pode ser filtrado com segurança pela Edge"
    },
    {
     "file": "tests/unit/text-utils.test.ts",
@@ -280444,6 +280946,16 @@
     "using": "bucket_id = 'recibos-entrega'",
     "check": "bucket_id = 'recibos-entrega'",
     "src": "supabase/migrations/20261101150003_st002_st003_avatars_recibos_policies.sql"
+   },
+   {
+    "name": "admins_select_e2e_cleanup_audit",
+    "table": "e2e_cleanup_audit",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role((SELECT auth.uid()), 'admin')",
+    "check": "",
+    "src": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
    },
    {
     "name": "product_ai_anon_select",
@@ -310521,6 +311033,10 @@
     "limit": "50"
    },
    {
+    "file": "supabase/functions/e2e-cleanup/index.ts",
+    "limit": "1000"
+   },
+   {
     "file": "supabase/functions/expert-chat/index.ts",
     "limit": "10"
    },
@@ -311443,12 +311959,16 @@
      "column": "status",
      "enum": "",
      "allowed": [
+      "auth_failed",
       "error",
       "forbidden",
       "invalid",
       "not_found",
       "ok",
+      "partial_error",
       "rate_limited",
+      "started",
+      "success",
       "unauthorized"
      ],
      "default": "",
@@ -312575,7 +313095,6 @@
       "escreve:supabase/functions/_shared/ai-router/index.ts",
       "escreve:supabase/functions/_shared/ai-usage.ts",
       "escreve:supabase/functions/_shared/audit-log.ts",
-      "escreve:supabase/functions/e2e-cleanup/index.ts",
       "escreve:supabase/functions/kit-ai-builder/index.ts",
       "escreve:supabase/functions/manage-users/index.ts",
       "escreve:supabase/functions/mcp-keys-issue/index.ts",
@@ -313046,14 +313565,25 @@
       "escreve:supabase/functions/crm-callback-reprocess/index.ts"
      ],
      "auth_failed": [
-      "escreve:supabase/functions/e2e-cleanup/handler_characterization_test.ts",
-      "escreve:supabase/functions/e2e-cleanup/index.ts"
+      "escreve:supabase/functions/e2e-cleanup/handler_characterization_test.ts"
      ],
      "forbidden": [
       "escreve:supabase/functions/e2e-cleanup/handler_characterization_test.ts",
       "escreve:supabase/functions/e2e-cleanup/index.ts"
      ],
+     "unauthorized": [
+      "escreve:supabase/functions/e2e-cleanup/index.ts"
+     ],
+     "invalid": [
+      "escreve:supabase/functions/e2e-cleanup/index.ts"
+     ],
      "rate_limited": [
+      "escreve:supabase/functions/e2e-cleanup/index.ts"
+     ],
+     "not_found": [
+      "escreve:supabase/functions/e2e-cleanup/index.ts"
+     ],
+     "started": [
       "escreve:supabase/functions/e2e-cleanup/index.ts"
      ],
      "pass": [
@@ -314845,7 +315375,9 @@
    },
    "e2e_cleanup_audit": {
     "rls": "enabled",
-    "SELECT": [],
+    "SELECT": [
+     "authenticated: public.has_role((SELECT auth.uid()), 'admin')"
+    ],
     "INSERT": [],
     "UPDATE": [],
     "DELETE": []
@@ -318685,11 +319217,6 @@
     ]
    },
    {
-    "table": "e2e_cleanup_audit",
-    "issue": "RLS ligado sem nenhuma política → só service_role acessa",
-    "files": []
-   },
-   {
     "table": "e2e_cleanup_rate_limit",
     "issue": "RLS ligado sem nenhuma política → só service_role acessa",
     "files": []
@@ -319819,6 +320346,7 @@
    "supabase/migrations/20261101150001_sec004b_revoke_fn_cron_guard_authenticated.sql",
    "supabase/migrations/20261101150003_st002_st003_avatars_recibos_policies.sql",
    "supabase/migrations/20261101202000_drop_revoke_agent_created_functions.sql",
+   "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20261022000000_rollback.sql",
@@ -355188,6 +355716,46 @@
    },
    {
     "kind": "revoke",
+    "privs": "select",
+    "object": "suppliers",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "suppliers",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "e2e_cleanup_audit",
+    "objkind": "table",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "e2e_cleanup_audit",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert, update",
+    "object": "e2e_cleanup_audit",
+    "objkind": "table",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
@@ -355441,6 +356009,14 @@
     "objkind": "function",
     "roles": "authenticated",
     "src": "supabase/rollbacks/20261101202000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "suppliers",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261107180000_rollback.sql"
    },
    {
     "kind": "grant",
@@ -358901,14 +359477,6 @@
    },
    {
     "kind": "status",
-    "msg": "valor `auth_failed` para `status` usado no código não existe em nenhum enum do banco/TS",
-    "where": [
-     "escreve:supabase/functions/e2e-cleanup/handler_characterization_test.ts",
-     "escreve:supabase/functions/e2e-cleanup/index.ts"
-    ]
-   },
-   {
-    "kind": "status",
     "msg": "valor `pass` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:supabase/functions/full-op-diagnostics/index.ts",
@@ -360170,11 +360738,6 @@
      "src/hooks/kit-builder/useCustomKitPersistence.ts",
      "src/pages/kit-builder/KitLibraryPage.tsx"
     ]
-   },
-   {
-    "kind": "rls",
-    "msg": "`e2e_cleanup_audit`: RLS ligado sem nenhuma política → só service_role acessa",
-    "where": []
    },
    {
     "kind": "rls",
@@ -362263,7 +362826,7 @@
    "`quote_approval_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
    "`kit_share_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
    "`_deprecated_silver_images_queue_20260606.img_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
-   "259/484 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `suppliers`, `classification_audit.category_suggestions` …",
+   "258/484 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `suppliers`, `classification_audit.category_suggestions` …",
    "Há tabelas usadas no código sem migration no repo — o schema real pode ter sido alterado pelo painel."
   ]
  },
@@ -362478,7 +363041,7 @@
   },
   "vitest.config.ts": {
    "path": "vitest.config.ts",
-   "lines": 165,
+   "lines": 166,
    "exports": [
     "default defineConfig"
    ],
@@ -363249,10 +363812,11 @@
   },
   "e2e/catalog.spec.ts": {
    "path": "e2e/catalog.spec.ts",
-   "lines": 150,
+   "lines": 151,
    "is_test": true,
    "rule_comments": [
-    "Open categories section (click only if not already expanded)"
+    "Open categories section (click only if not already expanded)",
+    "O input de mínimo não tem placeholder (só o de máximo tem \"Sem limite\")."
    ],
    "doc": "E2E: Catalog & Filters - All critical routes",
    "temporal": [
@@ -363729,14 +364293,15 @@
   },
   "e2e/kit-builder.spec.ts": {
    "path": "e2e/kit-builder.spec.ts",
-   "lines": 103,
+   "lines": 105,
    "is_test": true,
    "doc": "E2E: Kit Builder - Flows and states",
    "temporal": [
     "await expect(firstBox).toBeVisible({ timeout: 10000 });",
     "await expect(firstItem).toBeVisible({ timeout: 10000 });",
     "await expect(nameInput).toBeVisible({ timeout: 5000 });",
-    "await expect(startBtn).toBeVisible({ timeout: 10000 });"
+    "await expect(startBtn).toBeVisible({ timeout: 10000 });",
+    "if (await skipTour.isVisible({ timeout: 3000 }).catch(() => false)) await skipTour.click();"
    ],
    "tests": [
     "Kit Builder",
@@ -363953,11 +364518,14 @@
   },
   "e2e/optimized-image-visual.spec.ts": {
    "path": "e2e/optimized-image-visual.spec.ts",
-   "lines": 67,
+   "lines": 102,
    "is_test": true,
    "temporal": [
     ".waitFor({ state: 'visible', timeout: 5000 })",
-    "await expect(errorCard).toBeVisible({ timeout: 5000 });"
+    "await expect(errorCard).toBeVisible({ timeout: 10000 });",
+    "await expect(errorToggle).toBeVisible({ timeout: 5000 });",
+    "await expect(imageContainer.locator('svg.lucide-loader-2')).toBeVisible({ timeout: 10_000 });",
+    "await expect(loadingImage.locator('svg.lucide-loader-2')).toBeVisible({ timeout: 10_000 });"
    ],
    "tests": [
     "OptimizedImage Visual Regression",
@@ -366795,7 +367363,7 @@
   },
   "e2e/catalog/helpers/swatch-view.ts": {
    "path": "e2e/catalog/helpers/swatch-view.ts",
-   "lines": 117,
+   "lines": 125,
    "exports": [
     "type CatalogView",
     "type RowView",
@@ -366893,7 +367461,7 @@
   },
   "e2e/fixtures/auth.setup.ts": {
    "path": "e2e/fixtures/auth.setup.ts",
-   "lines": 97,
+   "lines": 90,
    "env": [
     "CI",
     "E2E_MOCK_AUTH",
@@ -366906,8 +367474,7 @@
     "[auth.setup] E21 — modo estrito: E2E_USER_EMAIL/E2E_USER_PASSWORD ausentes em CI.\\n"
    ],
    "rule_comments": [
-    "Mock mode must be self-contained. Previously the setup project always",
-    "Timeout de rede (auth/v1/token pendurado — rate-limit do Supabase em IPs"
+    "Mock mode must be self-contained. Previously the setup project always"
    ],
    "doc": "Auth setup — roda UMA vez antes dos projects autenticados. Usa o helper SSOT `loginViaUI` (e2e/helpers/auth.ts) — sem seletores duplicados."
   },
@@ -366964,13 +367531,21 @@
   },
   "e2e/fixtures/quickview-dataset.ts": {
    "path": "e2e/fixtures/quickview-dataset.ts",
-   "lines": 53,
+   "lines": 96,
    "exports": [
     "const FIXTURE_PRODUCT",
+    "const PRODUCT_DETAIL_ROUTE",
+    "const PRODUCT_IMAGES_ROUTE",
+    "const PRODUCT_VARIANTS_ROUTE",
+    "const PRODUCT_VIDEOS_ROUTE",
     "function installQuickViewDataset",
     "function teardownQuickViewDataset"
    ],
-   "doc": "Fixture de dataset determinístico para a suíte 03b (QuickView). Estratégia: mocka o `external-db-bridge` ANTES do login + navegação, garantindo que todo teste rode contra o MESMO produto sintético. Isso elimina flakes por mudança de dados em produção/staging. Use em `test.beforeEach` quando o spec p …"
+   "rule_comments": [
+    "* Estratégia: intercepta somente o detalhe REST-native de `products` e as",
+    "Listagens continuam reais; apenas `fetchProductById` é estabilizado."
+   ],
+   "doc": "Fixture de dataset determinístico para a suíte 03b (QuickView). Estratégia: intercepta somente o detalhe REST-native de `products` e as imagens relacionadas, mantendo as listagens reais dos módulos. Assim a suíte ainda prova que cada módulo expõe um QuickViewThumb, mas o conteúdo do modal não depend …"
   },
   "e2e/fixtures/selectors.ts": {
    "path": "e2e/fixtures/selectors.ts",
@@ -367015,12 +367590,13 @@
   },
   "e2e/fixtures/test-base.ts": {
    "path": "e2e/fixtures/test-base.ts",
-   "lines": 251,
+   "lines": 411,
    "exports": [
     "function skipIfQuarantined",
     "interface E2eResources",
     "const test",
     "function requireAuth",
+    "function requireLiveDatabaseAuth",
     "function requireAdmin"
    ],
    "env": [
@@ -367036,12 +367612,20 @@
    "errors": [
     "Test failed due to console errors:\\n${allErrors.join(",
     "Test failed due to critical console warnings:\\n${criticalWarnings.join(",
-    "[requireAuth] E21 — modo estrito: ${reason} em CI."
+    "[requireAuth] E21 — modo estrito: ${reason} em CI.",
+    "[requireAuth] sessão canônica ausente, inválida ou expirada após auth.setup em CI.",
+    "[requireLiveDatabaseAuth] ${reason}: "
+   ],
+   "rule_comments": [
+    "precedência; o restante recebe apenas respostas locais seguras.",
+    "a rede, portanto um JWT sintético não pode tocar o banco canônico.",
+    "coerentes. Em mock aceitamos somente a sentinela gerada pelo script oficial.",
+    "* Em PR com E2E_MOCK_AUTH o skip é intencional: o JWT sintético nunca deve"
    ]
   },
   "e2e/fixtures/test-user.ts": {
    "path": "e2e/fixtures/test-user.ts",
-   "lines": 156,
+   "lines": 166,
    "exports": [
     "function getTestUserEmail",
     "function getTestUserPassword",
@@ -367059,6 +367643,7 @@
     "E2E_USER_PASSWORD"
    ],
    "errors": [
+    "E2E_TEST_PREFIX não permite escopo canônico: ${JSON.stringify(scoped)}",
     "E2E_USER_EMAIL não definido — defina nas envs antes de rodar specs autenticados.",
     "E2E_USER_PASSWORD não definido.",
     "Não foi possível resolver o user_id do usuário de teste — confirme que o storageState autenticado foi carregado e que a página está na origin do app."
@@ -367128,7 +367713,7 @@
   },
   "e2e/flows/03b-product-thumb-quickview.spec.ts": {
    "path": "e2e/flows/03b-product-thumb-quickview.spec.ts",
-   "lines": 426,
+   "lines": 434,
    "is_test": true,
    "params": [
     {
@@ -367140,6 +367725,7 @@
     "* Tempo máximo para os dados do módulo chegarem. Sob carga o backend do CI leva",
     "* Estados de borda no módulo /estoque — QuickViewThumb não deve quebrar a",
     "interna cai no fallback (sem src). O clique deve abrir o QuickView.",
+    "Após o settle inicial, forçamos 500 somente no detalhe REST-native.",
     "O QuickView NÃO deve abrir (produto nunca resolveu).",
     "para o PDP — `e.stopPropagation()` do QuickViewThumb não pode \"vazar\" e",
     "Tabula várias vezes — o foco JAMAIS deve sair do dialog.",
@@ -367855,7 +368441,7 @@
   },
   "e2e/flows/04m-quotes-awaiting-tooltip-viewports.spec.ts": {
    "path": "e2e/flows/04m-quotes-awaiting-tooltip-viewports.spec.ts",
-   "lines": 59,
+   "lines": 67,
    "is_test": true,
    "doc": "Verifica o texto canônico do tooltip do chip/badge \"awaiting\" (Pendente Aprovação) em mobile, tablet e desktop. A copy vem do SSOT `QUOTE_ROW_BADGE_STYLES.awaiting.description`.",
    "temporal": [
@@ -367924,7 +368510,7 @@
   },
   "e2e/flows/04m-quotes-status-tooltips-a11y.spec.ts": {
    "path": "e2e/flows/04m-quotes-status-tooltips-a11y.spec.ts",
-   "lines": 92,
+   "lines": 94,
    "is_test": true,
    "temporal": [
     "await expect(tip).toBeVisible({ timeout: 2_000 });",
@@ -367938,7 +368524,7 @@
   },
   "e2e/flows/04m-quotes-status-tooltips.spec.ts": {
    "path": "e2e/flows/04m-quotes-status-tooltips.spec.ts",
-   "lines": 91,
+   "lines": 94,
    "is_test": true,
    "errors": [
     "nenhum badge de status conhecido foi encontrado na lista"
@@ -367946,7 +368532,7 @@
    "params": [
     {
      "name": "ALL_COPY",
-     "value": "\"Mostra todos os seus orçamentos, em qualquer fase.\""
+     "value": "'Mostra todos os seus orçamentos, em qualquer fase.'"
     }
    ],
    "doc": "Fluxo: tooltips Radix (didáticos para vendedor) em /orcamentos. Verifica que ao passar o mouse OU focar (teclado) em cada chip de status, o `TooltipContent` aparece com o texto canônico de `QUOTE_ROW_BADGE_STYLES`. Também verifica o tooltip do badge de status dentro da linha da tabela.",
@@ -367984,7 +368570,7 @@
   },
   "e2e/flows/04o-quotes-columns-always-visible.spec.ts": {
    "path": "e2e/flows/04o-quotes-columns-always-visible.spec.ts",
-   "lines": 78,
+   "lines": 84,
    "is_test": true,
    "doc": "Valida que TODAS as colunas da lista de orçamentos sempre aparecem e que NÃO existe mais nenhum seletor de visibilidade de colunas (popover \"Colunas\").",
    "temporal": [
@@ -367997,7 +368583,7 @@
   },
   "e2e/flows/04o-quotes-single-delete-undo.spec.ts": {
    "path": "e2e/flows/04o-quotes-single-delete-undo.spec.ts",
-   "lines": 356,
+   "lines": 348,
    "is_test": true,
    "params": [
     {
@@ -368016,15 +368602,16 @@
     "`items` DEVE estar presente e todos os demais campos devem"
    ],
    "temporal": [
-    ".poll(() => deleteCalls, { timeout: 10_000 })",
-    ".poll(() => deleteCalls, { timeout: 15_000 })",
-    ".poll(() => postCalls, { timeout: 10_000 })",
     "await expect(confirm).toBeDisabled({ timeout: 3_000 });",
     "await expect(dialog).toBeHidden({ timeout: 10_000 });",
     "await expect(dialog).toBeVisible({ timeout: 5_000 });",
     "await expect(firstRow).toBeVisible({ timeout: 10_000 });",
     "await expect(page.locator(UNDO_TOAST)).toBeVisible({ timeout: 10_000 });",
     "await expect(toast).toBeVisible({ timeout: 10_000 });",
+    "await expect.poll(() => deleteCalls, { timeout: 10_000 }).toBe(1);",
+    "await expect.poll(() => deleteCalls, { timeout: 15_000 }).toBeGreaterThanOrEqual(1);",
+    "await expect.poll(() => postCalls, { timeout: 10_000 }).toBe(1);",
+    "await expect.poll(() => postCalls, { timeout: 10_000 }).toBeGreaterThanOrEqual(1);",
     "await new Promise((r) => setTimeout(r, 1500));",
     "timeout: 10_000,"
    ],
@@ -368037,7 +368624,7 @@
   },
   "e2e/flows/04p-quotes-bulk-delete-undo.spec.ts": {
    "path": "e2e/flows/04p-quotes-bulk-delete-undo.spec.ts",
-   "lines": 308,
+   "lines": 296,
    "is_test": true,
    "params": [
     {
@@ -368055,10 +368642,10 @@
    ],
    "doc": "E2E — Exclusão em LOTE com Desfazer (restore + falha do restore). Complementa `04n-quotes-bulk-delete.spec.ts` (que já cobre seleção, cancelar, sucesso emitindo toast, e falha do DELETE preservando seleção). Cobre: 1. Sucesso: DELETE 204 em N linhas → toast \"Desfazer\" → clicar Desfazer dispara N POS …",
    "temporal": [
-    ".poll(() => deleteCalls, { timeout: 20_000 })",
-    ".poll(() => postCalls, { timeout: 15_000 })",
     "await expect(page.locator(UNDO_TOAST)).toBeVisible({ timeout: 10_000 });",
     "await expect(toast).toBeVisible({ timeout: 10_000 });",
+    "await expect.poll(() => deleteCalls, { timeout: 20_000 }).toBeGreaterThanOrEqual(2);",
+    "await expect.poll(() => postCalls, { timeout: 15_000 }).toBeGreaterThanOrEqual(2);",
     "timeout: 10_000,"
    ],
    "tests": [
@@ -368069,22 +368656,36 @@
   },
   "e2e/flows/04p-quotes-expiration-column.spec.ts": {
    "path": "e2e/flows/04p-quotes-expiration-column.spec.ts",
-   "lines": 347,
+   "lines": 441,
    "is_test": true,
    "env": [
     "SUPABASE_ANON_KEY",
     "VITE_SUPABASE_ANON_KEY",
     "VITE_SUPABASE_PUBLISHABLE_KEY"
    ],
+   "errors": [
+    "seed expiração: JWT expirado",
+    "seed expiração: JWT malformado",
+    "seed expiração: JWT sub diverge da sessão",
+    "seed expiração: anon key ausente",
+    "seed expiração: audience inválida",
+    "seed expiração: insert falhou (${response.status}): ${detail.slice(0, 160)}",
+    "seed expiração: issuer inválido; esperado ${expectedIssuer}",
+    "seed expiração: organização falhou (${organizationResponse.status})",
+    "seed expiração: sessão ausente em ${storageKey}",
+    "seed expiração: sessão mock recusada",
+    "seed expiração: usuário sem organização RLS"
+   ],
    "rule_comments": [
     "em -1d / hoje / +1d / +7d e validação do texto, da classe de cor e do",
     "Tooltip DEVE ser exatamente \"Válido até dd/MM/yyyy\" — não pode variar por locale do navegador."
    ],
    "temporal": [
-    "await expect(page.getByTestId(\"quotes-col-header-expiration\")).toBeVisible({ timeout: 10_000 });",
-    "await expect(page.getByTestId(\"quotes-col-header-status\")).toBeVisible({ timeout: 10_000 });",
+    "await expect(page.getByTestId('quotes-col-header-expiration')).toBeVisible({ timeout: 10_000 });",
+    "await expect(page.getByTestId('quotes-col-header-status')).toBeVisible({ timeout: 10_000 });",
     "await expect(tip, `tooltip exato @${tz}`).toBeVisible({ timeout: 3_000 });",
-    "expires_in: 3600,"
+    "expires_in: 3600,",
+    "timeout: 10_000,"
    ],
    "tests": [
     "Cotações · coluna Expiração [tz=${tz}]",
@@ -368095,7 +368696,7 @@
   },
   "e2e/flows/04q-quotes-single-delete-undo-edge-cases.spec.ts": {
    "path": "e2e/flows/04q-quotes-single-delete-undo-edge-cases.spec.ts",
-   "lines": 627,
+   "lines": 617,
    "is_test": true,
    "params": [
     {
@@ -368139,19 +368740,19 @@
    "doc": "E2E — Cenários de borda da exclusão INDIVIDUAL com \"Desfazer\". Cobre: 1. Contador expira → toast desaparece → cliques posteriores no botão \"Desfazer\" não disparam POST de restore (o botão sai do DOM). 2. `deleteQuote` falha (DELETE 500) → toast \"Desfazer\" NÃO aparece → linha do orçamento continua na …",
    "temporal": [
     ".click({ force: true, timeout: 1_500 })",
-    ".poll(() => postCalls, { timeout: 2_000, intervals: [200, 400] })",
-    ".poll(() => postCalls, { timeout: 2_000, intervals: [200, 500] })",
-    ".poll(() => rpcCreateCalls, { timeout: 2_000, intervals: [200, 500] })",
     "await expect(firstRow).toBeVisible({ timeout: 10_000 });",
     "await expect(page.locator(UNDO_TOAST)).toHaveCount(0, { timeout: 5_000 });",
     "await expect(toast).toBeVisible({ timeout: 10_000 });",
     "await expect.poll(() => deleteCalls, { timeout: 15_000 }).toBe(1);",
     "await expect.poll(() => deleteCalls, { timeout: 15_000 }).toBeGreaterThanOrEqual(1);",
+    "await expect.poll(() => postCalls, { timeout: 2_000, intervals: [200, 400] }).toBe(0);",
+    "await expect.poll(() => postCalls, { timeout: 2_000, intervals: [200, 500] }).toBe(0);",
     "await expect.poll(() => rpcCreateCalls, { timeout: 10_000 }).toBe(1);",
+    "await expect.poll(() => rpcCreateCalls, { timeout: 2_000, intervals: [200, 500] }).toBe(1);",
     "timeout: 10_000,",
     "timeout: 2_000,",
+    "timeout: 3_000,",
     "{ timeout: 20_000, intervals: [200, 500, 1000] },",
-    "{ timeout: 3_000, intervals: [200, 500, 1000] },",
     "{ timeout: 5_000, intervals: [100, 250, 500] },"
    ],
    "tests": [
@@ -368206,7 +368807,7 @@
   },
   "e2e/flows/04s-quotes-duplicate-undo-a11y-rapid.spec.ts": {
    "path": "e2e/flows/04s-quotes-duplicate-undo-a11y-rapid.spec.ts",
-   "lines": 163,
+   "lines": 157,
    "is_test": true,
    "params": [
     {
@@ -369492,7 +370093,7 @@
   },
   "e2e/flows/22-header-sticky.spec.ts": {
    "path": "e2e/flows/22-header-sticky.spec.ts",
-   "lines": 285,
+   "lines": 287,
    "is_test": true,
    "env": [
     "E2E_USER_EMAIL",
@@ -369508,7 +370109,7 @@
     "Não assume rota específica — apenas garante que NÃO está em /login."
    ],
    "temporal": [
-    "await page.waitForFunction(() => window.scrollY > 1000, { timeout: 3000 });"
+    "timeout: 5_000,"
    ],
    "tests": [
     "Header sticky — rotas autenticadas (app + quotes) [${vp.name} ${vp.width}×${vp.height}]",
@@ -370376,7 +370977,7 @@
   },
   "e2e/flows/freight-quest-complete-flow.spec.ts": {
    "path": "e2e/flows/freight-quest-complete-flow.spec.ts",
-   "lines": 409,
+   "lines": 406,
    "is_test": true,
    "env": [
     "CI_SKIP_FREIGHT_E2E",
@@ -370390,26 +370991,26 @@
    ],
    "doc": "freight-quest: Fluxo E2E completo com Playwright Simula o fluxo real do usuário: 1. Login → navegação ao catálogo 2. Seleção de produto → Kit Builder 3. FreightEstimator: seleção de método e validação de cálculo 4. Criação de orçamento com frete (CIF, FOB, FOB_PRE) 5. Validação do total no sumário 6 …",
    "temporal": [
+    "await expect(errorHeading).toBeVisible({ timeout: 12_000 });",
     "await expect(freightCard).toBeVisible({ timeout: 10_000 });",
+    "await expect(noCompanyOption).toBeHidden({ timeout: 5_000 });",
+    "await expect(noCompanyOption).toBeVisible({ timeout: 5_000 });",
     "await expect(shippingCostInput).not.toBeVisible({ timeout: 2_000 });",
+    "await expect(summary).toBeVisible({ timeout: 8_000 });",
     "await expect(title).toBeVisible({ timeout: 12_000 });",
+    "await expect(title).toHaveCount(1, { timeout: 10_000 });",
     "await page.getByTestId(\"kit-builder-container\").isVisible({ timeout: 3_000 }).catch(() => false);",
     "await page.getByText(/kit builder/i, { exact: false }).isVisible({ timeout: 8_000 }).catch(() => false) ||",
     "const hasLabel = await label.isVisible({ timeout: 3_000 }).catch(() => false);",
     "const isBlocked = await errorMsg.isVisible({ timeout: 2_000 }).catch(() => false);",
-    "const isErrorVisible = await errorEl.isVisible({ timeout: 10_000 }).catch(() => false);",
-    "const isVisible = await summary.isVisible({ timeout: 8_000 }).catch(() => false);",
     "if (!(await fobPreOption.isVisible({ timeout: 2_000 }).catch(() => false))) {",
     "if (!(await freightSelect.isVisible({ timeout: 5_000 }).catch(() => false))) {",
     "if (!(await shippingSelect.isVisible({ timeout: 8_000 }).catch(() => false))) {",
     "if (await cifOption.isVisible({ timeout: 3_000 }).catch(() => false)) {",
     "if (await costInput.isVisible({ timeout: 3_000 }).catch(() => false)) {",
-    "if (await firstOption.isVisible({ timeout: 3_000 }).catch(() => false)) {",
     "if (await fobPreOption.isVisible({ timeout: 2_000 }).catch(() => false)) {",
     "if (await fobPreOption.isVisible({ timeout: 3_000 }).catch(() => false)) {",
-    "if (await nextBtn.isVisible({ timeout: 5_000 }).catch(() => false)) {",
-    "if (await nextBtn2.isVisible({ timeout: 3_000 }).catch(() => false)) {",
-    "if (await searchInput.isVisible({ timeout: 5_000 }).catch(() => false)) {"
+    "if (await nextBtn.isVisible({ timeout: 5_000 }).catch(() => false)) {"
    ],
    "tests": [
     "FreightEstimator — Kit Builder @freight",
@@ -370556,28 +371157,40 @@
   },
   "e2e/flows/magazine-publish-smoke.spec.ts": {
    "path": "e2e/flows/magazine-publish-smoke.spec.ts",
-   "lines": 218,
+   "lines": 288,
    "is_test": true,
+   "errors": [
+    "listagem de revistas falhou após ${attempt} tentativa(s); trace: ${trace.join("
+   ],
+   "params": [
+    {
+     "name": "MAGAZINE_LIST_ATTEMPTS",
+     "value": "3"
+    }
+   ],
    "rule_comments": [
     "6. Concede permissão de clipboard APÓS navegação confirmada.",
     "O ProductsStep exibe role=\"status\">Produtos na revista apenas quando"
    ],
    "temporal": [
-    ").toBeVisible({ timeout: 15_000 });",
-    "await createBtn.waitFor({ state: \"visible\", timeout: 10_000 });",
-    "await layoutStep.waitFor({ state: \"visible\", timeout: 10_000 });",
-    "await page.getByText(\"Produtos na revista\").waitFor({ state: \"visible\", timeout: 20_000 });",
+    ").toBeVisible({ timeout: 60_000 });",
+    "await createBtn.waitFor({ state: 'visible', timeout: 10_000 });",
+    "await expect(page.getByText('Carregando revistas…')).toBeHidden({ timeout: 120_000 });",
+    "await layoutStep.waitFor({ state: 'visible', timeout: 10_000 });",
     "await page.waitForURL(/\\/magazine\\/[a-f0-9-]{6,}/i, { timeout: 120_000 });",
-    "await productSearch.waitFor({ state: \"visible\", timeout: 15_000 });",
-    "await productsStep.waitFor({ state: \"visible\", timeout: 10_000 });",
-    "await publishBtn.waitFor({ state: \"visible\", timeout: 30_000 });",
-    "await titleInput.waitFor({ state: \"visible\", timeout: 20_000 });",
-    "catalogEmpty.waitFor({ state: \"visible\", timeout: 60_000 }),",
-    "catalogError.waitFor({ state: \"visible\", timeout: 60_000 }),",
-    "firstProductBtn.waitFor({ state: \"visible\", timeout: 60_000 }),",
+    "await productSearch.waitFor({ state: 'visible', timeout: 15_000 });",
+    "await productsStep.waitFor({ state: 'visible', timeout: 10_000 });",
+    "await publishBtn.waitFor({ state: 'visible', timeout: 30_000 });",
+    "await titleInput.waitFor({ state: 'visible', timeout: 20_000 });",
+    "catalogEmpty.waitFor({ state: 'visible', timeout: 60_000 }),",
+    "catalogError.waitFor({ state: 'visible', timeout: 60_000 }),",
+    "firstProductBtn.waitFor({ state: 'visible', timeout: 60_000 }),",
     "timeout: 10_000,",
+    "timeout: 120_000,",
+    "timeout: 15_000,",
     "timeout: 5_000,",
-    "{ timeout: 60_000 },"
+    "timeout: 60_000,",
+    "{ timeout: 120_000 },"
    ],
    "tests": [
     "@smoke Magazine — fluxo autenticado de publicação",
@@ -371246,7 +371859,7 @@
   },
   "e2e/helpers/auth.ts": {
    "path": "e2e/helpers/auth.ts",
-   "lines": 292,
+   "lines": 313,
    "exports": [
     "interface LoginCreds",
     "type Role",
@@ -371292,6 +371905,7 @@
     "- **Todo login UI** deve passar por `loginViaUI` ou `loginAs` — nunca usar",
     "apenas refazendo UI se a sessão não estiver presente.",
     "* Quando true, espera permanecer em /login (validação/erro). */",
+    "roles válidos. Consulta a edge real e neutraliza somente esse motivo;",
     "visita rápida à home não deve cair em tela de auth nem exibir o form."
    ],
    "temporal": [
@@ -371398,9 +372012,20 @@
     "const { expectAutoDismiss = true, timeout = 6_000 } = opts;"
    ]
   },
+  "e2e/helpers/ci-auth-lockout.ts": {
+   "path": "e2e/helpers/ci-auth-lockout.ts",
+   "lines": 30,
+   "exports": [
+    "type AccessGatePayload",
+    "function rewriteCiSharedIpLockout"
+   ],
+   "rule_comments": [
+    "* Libera somente o lockout compartilhado do runner de CI. Demais decisões da"
+   ]
+  },
   "e2e/helpers/cleanup-client.ts": {
    "path": "e2e/helpers/cleanup-client.ts",
-   "lines": 340,
+   "lines": 331,
    "exports": [
     "type CleanupResponse",
     "interface CleanupConfig",
@@ -371428,23 +372053,23 @@
    "params": [
     {
      "name": "YELLOW",
-     "value": "\"\\x1b[33m\""
+     "value": "'\\x1b[33m'"
     },
     {
      "name": "GREEN",
-     "value": "\"\\x1b[32m\""
+     "value": "'\\x1b[32m'"
     },
     {
      "name": "RED",
-     "value": "\"\\x1b[31m\""
+     "value": "'\\x1b[31m'"
     },
     {
      "name": "DIM",
-     "value": "\"\\x1b[2m\""
+     "value": "'\\x1b[2m'"
     },
     {
      "name": "RESET",
-     "value": "\"\\x1b[0m\""
+     "value": "'\\x1b[0m'"
     }
    ],
    "rule_comments": [
@@ -371629,7 +372254,7 @@
   },
   "e2e/helpers/e2e-resources.ts": {
    "path": "e2e/helpers/e2e-resources.ts",
-   "lines": 214,
+   "lines": 205,
    "exports": [
     "function assertE2eName",
     "function fillResourceNameField",
@@ -371653,8 +372278,8 @@
    ],
    "temporal": [
     ").toBeVisible({ timeout: 10_000 });",
-    "await field.waitFor({ state: \"visible\", timeout: 8_000 });",
-    "await submit.waitFor({ state: \"visible\", timeout: 8_000 });"
+    "await field.waitFor({ state: 'visible', timeout: 8_000 });",
+    "await submit.waitFor({ state: 'visible', timeout: 8_000 });"
    ]
   },
   "e2e/helpers/evidence.ts": {
@@ -371696,6 +372321,33 @@
     "Nenhum dos seletores visível: ${selectors.join("
    ],
    "doc": "Helpers de formulários — preenchimento robusto + validações."
+  },
+  "e2e/helpers/http-status.ts": {
+   "path": "e2e/helpers/http-status.ts",
+   "lines": 52,
+   "exports": [
+    "function isRetryableBackendStatus",
+    "function shouldRetryBackendStatus",
+    "function isRetryableBrowserError",
+    "function shouldRetryBrowserError",
+    "function retryAfterDelayMs"
+   ],
+   "rule_comments": [
+    "determinísticas. A retentativa do chamador também deve permanecer limitada."
+   ],
+   "doc": "Status que podem representar indisponibilidade curta de proxy/backend. O conjunto é deliberadamente estreito: erros de contrato (4xx, exceto 429) e falhas 500 não são repetidos para que o E2E continue detectando regressões determinísticas. A retentativa do chamador também deve permanecer limitada.",
+   "calc_fns": [
+    {
+     "name": "shouldRetryBackendStatus",
+     "params": "status: number, attempt: number, maxAttempts: number,",
+     "body": "return attempt < maxAttempts && isRetryableBackendStatus(status);"
+    },
+    {
+     "name": "shouldRetryBrowserError",
+     "params": "error: unknown, attempt: number, maxAttempts: number,",
+     "body": "return attempt < maxAttempts && isRetryableBrowserError(error);"
+    }
+   ]
   },
   "e2e/helpers/location-panel-quote.ts": {
    "path": "e2e/helpers/location-panel-quote.ts",
@@ -371801,28 +372453,55 @@
   },
   "e2e/helpers/quotes-status-seed.ts": {
    "path": "e2e/helpers/quotes-status-seed.ts",
-   "lines": 264,
+   "lines": 479,
    "exports": [
     "const ALL_BADGE_KEYS",
     "type BadgeKey",
     "interface QuotesStatusSeedTargetResult",
     "interface QuotesStatusSeedResult",
+    "function assertPublicSupabaseKey",
     "function seedQuotesForStatusChips"
    ],
    "env": [
+    "CI",
+    "E2E_MOCK_AUTH",
     "SUPABASE_ANON_KEY",
     "VITE_SUPABASE_ANON_KEY",
     "VITE_SUPABASE_PUBLISHABLE_KEY"
    ],
+   "errors": [
+    "JWT expirado",
+    "JWT issuer inválido: esperado ${expectedIssuer}",
+    "JWT malformado",
+    "JWT sem audience authenticated",
+    "JWT sem issuer",
+    "JWT sub diverge do usuário da sessão",
+    "formato desconhecido",
+    "role=${payload.role ?? ",
+    "seed auth falhou: ${detail}",
+    "seed auth falhou: anon key ausente",
+    "seed auth falhou: organização do usuário não encontrada",
+    "seed auth falhou: publishable/anon key inválida (${detail})",
+    "seed auth falhou: sb_secret não pode ser usada no browser",
+    "seed auth falhou: sessão canônica ausente em ${storageKey}",
+    "seed insert em lote falhou (${insertResp.status}): ${errBody.slice(0, 160)}",
+    "seed lookup atingiu o limite de ${maxRows} quotes E2E; execute o cleanup antes de continuar",
+    "seed lookup falhou (${response.status}): ${detail.slice(0, 160)}",
+    "seed recusou E2E_TEST_PREFIX inseguro: ${JSON.stringify(testPrefix)}",
+    "sessão mock não pode acessar o PostgREST real"
+   ],
    "enums": [
     {
      "name": "ALL_BADGE_KEYS",
-     "values": "\"draft\", \"unsynced\", \"synced\", \"awaiting\", \"approved\", \"rejected\", \"expired\", \"expired_discount\", \"sent\", \"viewed\", \"quote_approved\", \"converted\", \"cancelled\", \"quote_rejected\","
+     "values": "'draft', 'unsynced', 'synced', 'awaiting', 'approved', 'rejected', 'expired', 'expired_discount', 'sent', 'viewed', 'quote_approved', 'converted', 'cancelled', 'quote_rejected',"
     }
+   ],
+   "role_checks": [
+    "anon"
    ],
    "rule_comments": [
     "`e2e-cleanup` apagar apenas estes registros.",
-    "Precisão de idempotência: alvos com DAR nulo precisam casar APENAS"
+    "assinado. Ele serve apenas para exercitar UI com rotas mockadas e jamais"
    ]
   },
   "e2e/helpers/require-env-base-url.ts": {
@@ -372231,7 +372910,7 @@
   },
   "e2e/quotes/quote-add-product-button.spec.ts": {
    "path": "e2e/quotes/quote-add-product-button.spec.ts",
-   "lines": 143,
+   "lines": 123,
    "is_test": true,
    "doc": "QuoteBuilder \"+ Produto\" (botão do Resumo) — a11y, abertura do QuoteBuilderProductSearch, estado disabled/loading e interatividade com conteúdo longo nos viewports 320/375/768/1024/1440. Usa o harness `/__visual/quote-add-product-button` que replica exatamente o markup do botão real (mesmo data-test …",
    "tests": [
@@ -372351,7 +373030,7 @@
   },
   "e2e/quotes/quote-item-editor-sheet-header.spec.ts": {
    "path": "e2e/quotes/quote-item-editor-sheet-header.spec.ts",
-   "lines": 413,
+   "lines": 404,
    "is_test": true,
    "rule_comments": [
     "\"+ Produto\" deve ficar na metade esquerda do dialog.",
@@ -372498,7 +373177,7 @@
   },
   "e2e/quotes/quote-items-inner-scroll.spec.ts": {
    "path": "e2e/quotes/quote-items-inner-scroll.spec.ts",
-   "lines": 81,
+   "lines": 82,
    "is_test": true,
    "doc": "QuoteItemsTable · scroll interno (>5 itens) e scroll de página. Valida sobre `/__visual/quote-view-order`: - Fixture `quote-items-table-fixture` (3 itens): scroll interno DESLIGADO. - Fixture `quote-items-table-fixture-many` (8 itens): scroll interno LIGADO, `tabIndex=0`, `role=region`, `aria-label` …",
    "tests": [
@@ -372538,7 +373217,7 @@
   },
   "e2e/quotes/quote-items-table-header-radius.spec.ts": {
    "path": "e2e/quotes/quote-items-table-header-radius.spec.ts",
-   "lines": 224,
+   "lines": 239,
    "is_test": true,
    "params": [
     {
@@ -372740,7 +373419,7 @@
   },
   "e2e/quotes/quote-row-menu-width-zoom.spec.ts": {
    "path": "e2e/quotes/quote-row-menu-width-zoom.spec.ts",
-   "lines": 144,
+   "lines": 149,
    "is_test": true,
    "params": [
     {
@@ -372808,7 +373487,7 @@
   },
   "e2e/quotes/quote-summary-action-buttons-states.spec.ts": {
    "path": "e2e/quotes/quote-summary-action-buttons-states.spec.ts",
-   "lines": 142,
+   "lines": 143,
    "is_test": true,
    "rule_comments": [
     "NÃO pode quebrar o flex row do rodapé.",
@@ -372827,7 +373506,7 @@
   },
   "e2e/quotes/quote-summary-action-buttons.spec.ts": {
    "path": "e2e/quotes/quote-summary-action-buttons.spec.ts",
-   "lines": 213,
+   "lines": 216,
    "is_test": true,
    "rule_comments": [
     "\"Criar\" pode virar \"Solicitar Aprovação\" quando desconto excede alçada;",
@@ -372899,7 +373578,7 @@
   },
   "e2e/quotes/quote-summary-collapse-all.spec.ts": {
    "path": "e2e/quotes/quote-summary-collapse-all.spec.ts",
-   "lines": 125,
+   "lines": 128,
    "is_test": true,
    "rule_comments": [
     "Estado inicial: pelo menos 1 aberto → label deve dizer \"Recolher\".",
@@ -372941,12 +373620,12 @@
   },
   "e2e/quotes/quote-summary-sticky-header-visual.spec.ts": {
    "path": "e2e/quotes/quote-summary-sticky-header-visual.spec.ts",
-   "lines": 148,
+   "lines": 151,
    "is_test": true,
    "doc": "Visual regression: header sticky do Resumo. Garante que bordas, backdrop-blur e sombra do header NÃO regridam: - estado inicial (sem scroll) - estado sticky (após rolar a lista de produtos) - mobile (375) e tablet (768) Baselines são geradas no primeiro run com `--update-snapshots`. Tolerância: 0.2% …",
    "temporal": [
     "await expect(firstCard).toBeVisible({ timeout: 10_000 });",
-    "}, null, { timeout: 5000 });"
+    "{ timeout: 5000 },"
    ],
    "tests": [
     "Visual regression · Resumo sticky header · ${vp.name}",
@@ -372957,7 +373636,7 @@
   },
   "e2e/quotes/quote-summary-sticky-header.spec.ts": {
    "path": "e2e/quotes/quote-summary-sticky-header.spec.ts",
-   "lines": 220,
+   "lines": 226,
    "is_test": true,
    "rule_comments": [
     "header não pode estourar a largura da viewport"
@@ -372965,7 +373644,7 @@
    "doc": "E2E: header sticky do Resumo no Quote Builder. Cobre: - header (`Resumo` + `Recolher/Expandir` + `Agrupar`) permanece visível ao rolar a lista de produtos do Resumo; - botões continuam clicáveis no estado sticky (não cobertos por overlay); - interação Recolher/Expandir × Agrupar mantém contagem e la …",
    "temporal": [
     "await expect(firstCard).toBeVisible({ timeout: 10_000 });",
-    "}, null, { timeout: 5000 });"
+    "{ timeout: 5000 },"
    ],
    "tests": [
     "Quote Builder · Resumo sticky header — desktop",
@@ -372990,7 +373669,7 @@
   },
   "e2e/quotes/quote-view-mainlayout-overflow.spec.ts": {
    "path": "e2e/quotes/quote-view-mainlayout-overflow.spec.ts",
-   "lines": 65,
+   "lines": 69,
    "is_test": true,
    "env": [
     "E2E_MOCK_AUTH"
@@ -373022,7 +373701,7 @@
   },
   "e2e/quotes/quote-view-no-presentation-mode.spec.ts": {
    "path": "e2e/quotes/quote-view-no-presentation-mode.spec.ts",
-   "lines": 436,
+   "lines": 453,
    "is_test": true,
    "errors": [
     "TECH_BOOM: connection refused at 10.0.0.1:5432"
@@ -373031,7 +373710,8 @@
     "Escape NÃO deve fechar prematuramente (Radix bloqueia quando o focus está",
     "Durante o loading: ainda apenas 1 registro e botão disabled.",
     "Aguarda conclusão e valida idempotência total: 1 chamada apenas.",
-    "Foca o trigger e abre o menu apenas com teclado."
+    "Foca o trigger e abre o menu apenas com teclado.",
+    "Chromium atual variou somente a rasterização dos glifos/ícones"
    ],
    "temporal": [
     "() => new Promise((resolve) => setTimeout(resolve, 1500));",
@@ -373053,7 +373733,7 @@
   },
   "e2e/quotes/quote-view-overflow-regression.spec.ts": {
    "path": "e2e/quotes/quote-view-overflow-regression.spec.ts",
-   "lines": 220,
+   "lines": 225,
    "is_test": true,
    "env": [
     "E2E_MOCK_AUTH"
@@ -373092,7 +373772,7 @@
   },
   "e2e/quotes/quote-view-sticky-sidebar.spec.ts": {
    "path": "e2e/quotes/quote-view-sticky-sidebar.spec.ts",
-   "lines": 65,
+   "lines": 66,
    "is_test": true,
    "doc": "Sidebar sticky + scroll de página + scroll interno do QuoteItemsTable. Sobre `/__visual/quote-view-order` (1280×900): - `aside` tem `position: sticky` computado com `top ≈ 0`. - Brand header permanece grudado no topo do viewport após scrollar a página até o final (Y do brand antes/depois ≤ 2px de di …",
    "temporal": [
@@ -373123,7 +373803,7 @@
   },
   "e2e/quotes/quote-view-sticky-visual.spec.ts": {
    "path": "e2e/quotes/quote-view-sticky-visual.spec.ts",
-   "lines": 63,
+   "lines": 67,
    "is_test": true,
    "tests": [
     "@visual sidebar sticky",
@@ -373584,18 +374264,14 @@
   },
   "e2e/routes/app/novelty-grid-visual.spec.ts": {
    "path": "e2e/routes/app/novelty-grid-visual.spec.ts",
-   "lines": 203,
+   "lines": 258,
    "is_test": true,
    "env": [
     "E2E_USER_EMAIL",
     "E2E_USER_PASSWORD"
    ],
    "temporal": [
-    "await expect(cards).toHaveCount(3, { timeout: 20_000 });",
-    "await expect(skeleton).toBeVisible({ timeout: 20_000 });",
-    "await grid.waitFor({ state: 'visible', timeout: 20_000 });",
-    "await new Promise(resolve => setTimeout(resolve, 2000));",
-    "await page.waitForSelector('div[role=\"list\"]', { timeout: 30_000 });"
+    "await new Promise(resolve => setTimeout(resolve, 2000));"
    ],
    "tests": [
     "Novelty Grid Advanced Visual & A11y @mobile",
@@ -373606,6 +374282,7 @@
     "Browser Preferences - Accessibility Consistency",
     "Keyboard Navigation",
     "Skeleton State & Layout Stability",
+    "Pagination & Alignment Check",
     "Card Variations: Long Title & Consultation Price"
    ]
   },
@@ -374139,7 +374816,7 @@
   },
   "e2e/routes/quotes/quote-list-responsive.spec.ts": {
    "path": "e2e/routes/quotes/quote-list-responsive.spec.ts",
-   "lines": 131,
+   "lines": 127,
    "is_test": true,
    "params": [
     {
@@ -374844,9 +375521,10 @@
   },
   "e2e/visual/quote-freight-block.spec.ts": {
    "path": "e2e/visual/quote-freight-block.spec.ts",
-   "lines": 100,
+   "lines": 105,
    "is_test": true,
    "rule_comments": [
+    "permanecem no limite estrito original.",
     "Geometria: apenas col-1 presente; ausência de col-2."
    ],
    "temporal": [
@@ -375509,12 +376187,7 @@
   },
   "scripts/check-cron-drift.mjs": {
    "path": "scripts/check-cron-drift.mjs",
-   "lines": 93,
-   "env": [
-    "DATABASE_URL",
-    "SUPABASE_DB_PASSWORD",
-    "SUPABASE_PROJECT_REF"
-   ],
+   "lines": 114,
    "params": [
     {
      "name": "BASELINE_DIR",
@@ -375845,12 +376518,7 @@
   },
   "scripts/check-event-triggers-drift.mjs": {
    "path": "scripts/check-event-triggers-drift.mjs",
-   "lines": 93,
-   "env": [
-    "DATABASE_URL",
-    "SUPABASE_DB_PASSWORD",
-    "SUPABASE_PROJECT_REF"
-   ],
+   "lines": 111,
    "params": [
     {
      "name": "BASELINE_DIR",
@@ -377011,7 +377679,7 @@
   },
   "scripts/check-visual-tests-specs.mjs": {
    "path": "scripts/check-visual-tests-specs.mjs",
-   "lines": 41,
+   "lines": 57,
    "params": [
     {
      "name": "WORKFLOW",
@@ -377159,7 +377827,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "path": "scripts/drift-baseline.mjs",
-   "lines": 1138,
+   "lines": 1249,
    "exports": [
     "const BASELINE_DIR",
     "const BASELINE_NAME_RE",
@@ -377179,6 +377847,7 @@
     "function findBaseline",
     "function selectReplayMigrations",
     "function replayFileName",
+    "function sanitizeReplayMigration",
     "function prepareWorkdir",
     "function sanitizeBaselineForReplay",
     "function loadAllowlist",
@@ -377194,6 +377863,7 @@
     "SUPABASE_PROJECT_REF"
    ],
    "errors": [
+    "${fileName}: esperado(s) ${expected} CREATE INDEX CONCURRENTLY no replay; encontrado(s) ${rewritten}",
     "${label} ilegível: ${error.message}",
     "${label} não é um objeto JSON",
     "${label}: ",
@@ -377227,6 +377897,8 @@
    "rule_comments": [
     "(dropDumpLossyFunctions). Nenhuma regra esconde mudança de comportamento.",
     "Mesma regra do CLI (`^([0-9]+)_(.*)\\.sql$`): a versão é o prefixo numérico, de",
+    "Esta semente B+1 recria apenas as pré-condições históricas e é idempotente.",
+    "tráfego concorrente; remover apenas CONCURRENTLY preserva o índice resultante",
     "duplas não pode virar início de string/comentário.",
     "argumentos) não pode puxar o `(` de um comando posterior. O `;` e os nomes são",
     "scenarios — not schema objects, strip before allowlist validation."
@@ -377234,7 +377906,8 @@
    "doc": "!/usr/bin/env node",
    "cron": [
     "auto-block-offenders 1,6,11,16,21,26,31,36,41,46,51,56 * * * *",
-    "image-dimensions-backfill 0 * * * *"
+    "image-dimensions-backfill 0 * * * *",
+    "generate-blurhashes 1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59 * * * *"
    ],
    "calc_fns": [
     {
@@ -378669,7 +379342,7 @@
   },
   "scripts/validate-migration-target.mjs": {
    "path": "scripts/validate-migration-target.mjs",
-   "lines": 81,
+   "lines": 87,
    "exports": [
     "const CANONICAL_PROJECT",
     "function validateMigrationTarget",
@@ -378688,13 +379361,13 @@
    "calc_fns": [
     {
      "name": "validateMigrationTarget",
-     "params": "env, { versionOnly = false } = {}",
-     "body": "const problems = []; if (!/^\\d{6,19}(?:_[A-Za-z0-9]+)*$/.test(env.MIGRATION_VERSION || '')) { problems.push('MIGRATION_VERSION inválida'); } if (env.SUPABASE_PROJECT_REF !== CANONICAL_PROJECT) problems.push('Project ref não canônico'); if (versionOnly) return problems; for (const key of ['PGHOST', 'PGUSER', 'PGPASSWORD', 'PGDATABASE']) { if (!env[key]) problems.push(`${key} ausente`); } // Shared pooler hosts do not identify a project; the user suffix must do so. const direct = env.PGHOST === `d …"
+     "params": "env, { versionOnly = false, targetOnly = false } = {}",
+     "body": "const problems = []; if (!targetOnly && !/^\\d{6,19}(?:_[A-Za-z0-9]+)*$/.test(env.MIGRATION_VERSION || '')) { problems.push('MIGRATION_VERSION inválida'); } if (env.SUPABASE_PROJECT_REF !== CANONICAL_PROJECT) problems.push('Project ref não canônico'); if (versionOnly) return problems; for (const key of ['PGHOST', 'PGUSER', 'PGPASSWORD', 'PGDATABASE']) { if (!env[key]) problems.push(`${key} ausente`); } // Shared pooler hosts do not identify a project; the user suffix must do so. const direct = en …"
     },
     {
      "name": "validateLiveMigrationPooler",
-     "params": "env, fetchImpl = fetch",
-     "body": "const problems = validateMigrationTarget(env); if (problems.length) return problems; if (env.PGHOST === `db.${CANONICAL_PROJECT}.supabase.co`) { return (env.PGPORT || '5432') === '5432' ? [] : ['Conexão direta exige porta 5432']; } if (!env.SUPABASE_ACCESS_TOKEN) return ['SUPABASE_ACCESS_TOKEN ausente para conferir pooler']; try { const response = await fetchImpl( `https://api.supabase.com/v1/projects/${CANONICAL_PROJECT}/config/database/pooler`, { method: 'GET', redirect: 'error', headers: { Au …"
+     "params": "env, fetchImpl = fetch, { targetOnly = false } = {},",
+     "body": "const problems = validateMigrationTarget(env, { targetOnly }); if (problems.length) return problems; if (env.PGHOST === `db.${CANONICAL_PROJECT}.supabase.co`) { return (env.PGPORT || '5432') === '5432' ? [] : ['Conexão direta exige porta 5432']; } if (!env.SUPABASE_ACCESS_TOKEN) return ['SUPABASE_ACCESS_TOKEN ausente para conferir pooler']; try { const response = await fetchImpl( `https://api.supabase.com/v1/projects/${CANONICAL_PROJECT}/config/database/pooler`, { method: 'GET', redirect: 'error …"
     }
    ]
   },
@@ -379646,6 +380319,20 @@
     "também conta — um `// TODO:` novo não pode ser de graça."
    ],
    "doc": "!/usr/bin/env node"
+  },
+  "scripts/lib/canonical-pg-connection.mjs": {
+   "path": "scripts/lib/canonical-pg-connection.mjs",
+   "lines": 61,
+   "exports": [
+    "function canonicalPgConnection"
+   ],
+   "calc_fns": [
+    {
+     "name": "validatedEnv",
+     "params": "env",
+     "body": "const candidate = { ...env, SUPABASE_PROJECT_REF: env.SUPABASE_PROJECT_REF || CANONICAL_PROJECT, PGSSLMODE: env.PGSSLMODE || 'require', PGCONNECT_TIMEOUT: env.PGCONNECT_TIMEOUT || '15', }; if (candidate.PGPORT !== '5432') return null; return validateMigrationTarget(candidate, { targetOnly: true }).length ? null : candidate;"
+    }
+   ]
   },
   "scripts/qa/audit-freight-block.mjs": {
    "path": "scripts/qa/audit-freight-block.mjs",
@@ -393088,7 +393775,7 @@
   },
   "src/components/kit-builder/KitOnboardingTour.tsx": {
    "path": "src/components/kit-builder/KitOnboardingTour.tsx",
-   "lines": 121,
+   "lines": 127,
    "exports": [
     "function KitOnboardingTour"
    ],
@@ -395777,7 +396464,7 @@
   },
   "src/components/novelties/VirtualizedNoveltyGrid.tsx": {
    "path": "src/components/novelties/VirtualizedNoveltyGrid.tsx",
-   "lines": 178,
+   "lines": 179,
    "exports": [
     "function VirtualizedNoveltyGrid"
    ],
@@ -403560,7 +404247,7 @@
   },
   "src/components/ui/ConfirmDialog.tsx": {
    "path": "src/components/ui/ConfirmDialog.tsx",
-   "lines": 338,
+   "lines": 343,
    "exports": [
     "function ConfirmDialog",
     "function DeleteConfirmDialog",
@@ -403648,7 +404335,7 @@
   },
   "src/components/ui/OptimizedImage.tsx": {
    "path": "src/components/ui/OptimizedImage.tsx",
-   "lines": 261,
+   "lines": 264,
    "exports": [
     "function OptimizedImage"
    ],
@@ -404068,11 +404755,12 @@
   },
   "src/components/ui/__tests__/ConfirmDialog.keyboard.test.tsx": {
    "path": "src/components/ui/__tests__/ConfirmDialog.keyboard.test.tsx",
-   "lines": 101,
+   "lines": 114,
    "is_test": true,
    "doc": "Testes de navegação por teclado + semântica screen-reader do ConfirmDialog em TODAS as variantes (default | destructive | warning | info). Cobre: - foco inicial fica dentro do diálogo (focus trap Radix) - Tab e Shift+Tab mantêm o foco preso ao diálogo - Enter no botão de confirmação dispara onConfir …",
    "tests": [
     "ConfirmDialog — navegação por teclado + leitor de tela (todas variantes)",
+    "durante loading, Escape não fecha o diálogo",
     "variante %s",
     "foco inicial cai dentro do diálogo",
     "accessible name e description refletem o texto exibido",
@@ -422055,7 +422743,7 @@
    "enums": [
     {
      "name": "KIT_AUDITED_FIELDS",
-     "values": "'component_name', 'component_description', 'material', 'color', 'primary_image_url', 'images', 'height_mm', 'width_mm', 'length_mm', 'diameter_mm', 'circumference_mm', 'weight_g', // 'capacity_ml', // FIX 2026-06-27: coluna não existe em product_kit_components (PostgREST 400/42703) 'component_type_c …"
+     "values": "'component_name', 'material', 'color', 'height_mm', 'width_mm', 'length_mm', 'diameter_mm', 'circumference_mm', 'weight_g', // 'capacity_ml', // FIX 2026-06-27: coluna não existe em product_kit_components (PostgREST 400/42703) 'component_type_code', 'personalization_notes',"
     }
    ],
    "rule_comments": [
@@ -427049,7 +427737,7 @@
   },
   "src/pages/__visual/QuoteViewOrderHarness.tsx": {
    "path": "src/pages/__visual/QuoteViewOrderHarness.tsx",
-   "lines": 364,
+   "lines": 370,
    "exports": [
     "function QuoteViewOrderHarness"
    ],
@@ -430248,7 +430936,7 @@
   },
   "src/pages/magazine/__tests__/MagazineEditorPage.hooksOrder.test.tsx": {
    "path": "src/pages/magazine/__tests__/MagazineEditorPage.hooksOrder.test.tsx",
-   "lines": 205,
+   "lines": 214,
    "is_test": true,
    "rule_comments": [
     "`MagazineEditorPage` tinha dois `useMemo` (paginacao e validacao do passo) DEPOIS dos"
@@ -430256,6 +430944,7 @@
    "tests": [
     "MagazineEditorPage — ordem de hooks (React #310)",
     "atravessa loading -> loaded sem mudar a contagem de hooks",
+    "mantém o cluster de ações em uma única linha a partir de lg",
     "sobrevive a items vazio",
     "sobrevive a items null (linha legada)",
     "sobrevive a title null",
@@ -433260,7 +433949,7 @@
   },
   "src/pages/quotes/QuoteViewPage.tsx": {
    "path": "src/pages/quotes/QuoteViewPage.tsx",
-   "lines": 598,
+   "lines": 591,
    "exports": [
     "function QuoteViewPage"
    ],
@@ -434148,10 +434837,38 @@
    ],
    "doc": "Promo Champions sync — dispara evento `quote.sent` via webhook-dispatcher. Reaproveita a infra do outbound_webhooks (registro em /admin/conexoes). Idempotência é garantida pelo próprio dispatcher via correlation key do payload."
   },
+  "src/pages/quotes/quote-view/QuoteUnavailableState.test.tsx": {
+   "path": "src/pages/quotes/quote-view/QuoteUnavailableState.test.tsx",
+   "lines": 33,
+   "is_test": true,
+   "tests": [
+    "QuoteUnavailableState",
+    "distingue orçamento inexistente de falha transitória",
+    "expõe retry e retorno sem engolir os callbacks"
+   ]
+  },
+  "src/pages/quotes/quote-view/QuoteUnavailableState.tsx": {
+   "path": "src/pages/quotes/quote-view/QuoteUnavailableState.tsx",
+   "lines": 39,
+   "exports": [
+    "function QuoteUnavailableState"
+   ]
+  },
+  "src/pages/quotes/quote-view/useQuoteViewData.test.tsx": {
+   "path": "src/pages/quotes/quote-view/useQuoteViewData.test.tsx",
+   "lines": 78,
+   "is_test": true,
+   "tests": [
+    "useQuoteViewData",
+    "encerra o loading e oferece erro recuperável quando a leitura trava",
+    "não deixa a tela carregando quando a rota não tem id"
+   ]
+  },
   "src/pages/quotes/quote-view/useQuoteViewData.ts": {
    "path": "src/pages/quotes/quote-view/useQuoteViewData.ts",
-   "lines": 332,
+   "lines": 389,
    "exports": [
+    "const QUOTE_VIEW_LOAD_TIMEOUT_MS",
     "function useQuoteViewData"
    ],
    "errors": [
@@ -434159,8 +434876,15 @@
     "Erro ao sincronizar com Bitrix24",
     "Erro ao sincronizar com Promo Champions",
     "Falha ao sincronizar em ambos os destinos",
+    "Não foi possível carregar o orçamento",
     "Não foi possível copiar o link",
     "Sincronização parcial"
+   ],
+   "params": [
+    {
+     "name": "QUOTE_VIEW_LOAD_TIMEOUT_MS",
+     "value": "8"
+    }
    ],
    "status_values": [
     {
@@ -443974,7 +444698,7 @@
   },
   "supabase/functions/e2e-cleanup/index.mockups.test.ts": {
    "path": "supabase/functions/e2e-cleanup/index.mockups.test.ts",
-   "lines": 241,
+   "lines": 498,
    "is_test": true,
    "exports": [
     "const mockupSuiteHandlerLoaded"
@@ -443993,35 +444717,67 @@
     "e2e-cleanup — limpeza de mockups",
     "apaga generated_mockups e os objetos do prefixo do usuario de teste, e nada alem disso",
     "dryRun conta os mockups do usuario sem apagar linhas nem objetos",
-    "erro de listagem do storage vira "
+    "erro de listagem do storage vira ",
+    "e2e-cleanup — escopo de quotes por prefixo",
+    "falha fechado antes de DELETE quando a trilha de auditoria está indisponível",
+    "não produz falso verde quando a auditoria final falha após o cleanup",
+    "falha fechado quando o rate limiter não responde",
+    "encontra o email allowlisted depois da primeira página de usuários",
+    "apaga somente quotes/items do prefixo e confirma zero remanescentes",
+    "rejeita prefixo não canônico antes de qualquer DELETE",
+    "propaga erro de DELETE e falha quando a verificação encontra resíduo",
+    "rejeita sellerId explícito divergente do email allowlisted"
    ],
    "uses_service_role": true
   },
   "supabase/functions/e2e-cleanup/index.ts": {
    "path": "supabase/functions/e2e-cleanup/index.ts",
-   "lines": 231,
+   "lines": 551,
    "tables": [
     {
      "table": "e2e_cleanup_audit",
      "op": "insert"
     },
     {
-     "table": "e2e_cleanup_audit",
-     "op": "insert"
+     "table": "quotes",
+     "op": "select"
     },
     {
-     "table": "e2e_cleanup_audit",
-     "op": "insert"
+     "table": "quote_items",
+     "op": "select"
     },
     {
-     "table": "e2e_cleanup_audit",
-     "op": "insert"
+     "table": "quotes",
+     "op": "delete"
     },
     {
-     "table": "e2e_cleanup_audit",
-     "op": "insert"
+     "table": "quotes",
+     "op": "select"
+    },
+    {
+     "table": "quotes",
+     "op": "select"
+    },
+    {
+     "table": "quote_items",
+     "op": "select"
+    },
+    {
+     "table": "quotes",
+     "op": "delete"
     }
    ],
+   "table_cols": {
+    "quotes": [
+     "client_name",
+     "id",
+     "seller_id"
+    ],
+    "quote_items": [
+     "id",
+     "quote_id"
+    ]
+   },
    "dyn_from": 3,
    "rpc": [
     "e2e_cleanup_check_rate_limit"
@@ -444032,16 +444788,33 @@
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
    ],
+   "errors": [
+    "User lookup exceeded the safe limit of ${maxUserPages} pages"
+   ],
    "params": [
     {
      "name": "MOCKUP_BUCKET",
-     "value": "\"mockup-assets\""
+     "value": "'mockup-assets'"
+    },
+    {
+     "name": "CLEANUP_PROTOCOL",
+     "value": "'quotes-prefix-v2'"
     }
    ],
    "status_values": [
     {
      "field": "status",
-     "value": "auth_failed",
+     "value": "unauthorized",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "invalid",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
      "kind": "escreve"
     },
     {
@@ -444056,7 +444829,17 @@
     },
     {
      "field": "status",
-     "value": "success",
+     "value": "not_found",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "forbidden",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "started",
      "kind": "escreve"
     },
     {
@@ -444068,9 +444851,15 @@
    "rule_comments": [
     "2. Rate limit por IP via RPC e2e_cleanup_check_rate_limit.",
     "6. Apaga apenas dados de aplicacao. NUNCA apaga auth.users.",
-    "2. Rate limit"
+    "2. Rate limit",
+    "A API admin pagina usuários. Procurar apenas a primeira página fazia o",
+    "O limite explícito também evita uma busca ilimitada caso o email",
+    "Compatibilidade do cleanup completo do usuário E2E. Somente requests"
    ],
    "doc": "supabase/functions/e2e-cleanup/index.ts BUG-EF-006 FIXED: supabase-js@2.45.0 -> @2.49.4",
+   "pagination": [
+    "1000"
+   ],
    "uses_service_role": true
   },
   "supabase/functions/elevenlabs-scribe-token/index.ts": {
@@ -464219,6 +465008,21 @@
    "path": "supabase/migrations/20261106232045_fix_handle_updated_at_search_path.sql",
    "lines": 6
   },
+  "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql": {
+   "path": "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql",
+   "lines": 65,
+   "tables": [
+    {
+     "table": "suppliers",
+     "op": "ref"
+    }
+   ]
+  },
+  "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql": {
+   "path": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql",
+   "lines": 157,
+   "uses_service_role": true
+  },
   "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql": {
    "path": "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "lines": 65,
@@ -464408,6 +465212,14 @@
   "supabase/rollbacks/20261106232045_rollback.sql": {
    "path": "supabase/rollbacks/20261106232045_rollback.sql",
    "lines": 5
+  },
+  "supabase/rollbacks/20261107180000_rollback.sql": {
+   "path": "supabase/rollbacks/20261107180000_rollback.sql",
+   "lines": 4
+  },
+  "supabase/rollbacks/20261108001500_rollback.sql": {
+   "path": "supabase/rollbacks/20261108001500_rollback.sql",
+   "lines": 20
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -469659,6 +470471,21 @@
    "tests": [
     "Tooltip",
     "renders tooltip component"
+   ]
+  },
+  "tests/config/e2e-http-status.test.ts": {
+   "path": "tests/config/e2e-http-status.test.ts",
+   "lines": 69,
+   "is_test": true,
+   "tests": [
+    "classificação de status transitório no E2E",
+    "permite retentativa limitada para %i",
+    "não mascara erro determinístico %i",
+    "limita a indisponibilidade transitória ao número máximo de tentativas",
+    "não repete falha determinística mesmo antes do limite",
+    "limita o retry de timeout ao número máximo de tentativas",
+    "respeita Retry-After em segundos com teto de cinco segundos",
+    "respeita Retry-After em data HTTP e aplica fallback seguro"
    ]
   },
   "tests/config/e2e-nav-helper-smoke.test.ts": {
@@ -479280,6 +480107,38 @@
     "arquivo na baseline que encolheu → exit 0 (drift positivo, não regressão)"
    ]
   },
+  "tests/scripts/check-infrastructure-drift-snapshots.test.mjs": {
+   "path": "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
+   "lines": 229,
+   "is_test": true,
+   "env": [
+    "CAPTURE_PATH",
+    "FAKE_KIND",
+    "PATH",
+    "PGCONNECT_TIMEOUT",
+    "PGDATABASE",
+    "PGHOST",
+    "PGPASSWORD",
+    "PGPORT",
+    "PGSSLMODE",
+    "PGUSER"
+   ],
+   "cron": [
+    "7 * * * *"
+   ],
+   "tests": [
+    "snapshots de infraestrutura live",
+    "versiona metadados completos de event triggers sem duplicidade",
+    "versiona apenas schedule/active dos crons, sem command nem IDs instáveis",
+    "falha fechado quando o snapshot de %s está ausente",
+    "não consulta command de cron e compara alterações de configuração",
+    "passa senha com metacaracteres fora do shell/argv (%s)",
+    "invoca psql sem shell nos dois gates",
+    "separa a concorrência standalone/E40 e ativa ambos quando os gates mudam",
+    "recusa PG* parcial, porta transaction e alvos não canônicos",
+    "valida DATABASE_URL canônica, decodifica a senha e rejeita banco arbitrário"
+   ]
+  },
   "tests/scripts/check-ledger-manifest-drift.test.mjs": {
    "path": "tests/scripts/check-ledger-manifest-drift.test.mjs",
    "lines": 209,
@@ -479840,7 +480699,7 @@
   },
   "tests/scripts/drift-baseline.test.mjs": {
    "path": "tests/scripts/drift-baseline.test.mjs",
-   "lines": 962,
+   "lines": 1046,
    "is_test": true,
    "doc": "Testa scripts/drift-baseline.mjs: montagem da pasta de replay do db-schema-drift-check (baseline + migrations aplicadas depois do dump), filtro de ruído do diff e varredura de segredos do dump.",
    "tests": [
@@ -479848,7 +480707,12 @@
     "replaya só o que foi aplicado depois do dump, inclusive versão menor que B",
     "replayFileName",
     "renumera para depois do baseline mantendo o nome original",
+    "sanitizeReplayMigration",
+    "remove CONCURRENTLY só de CREATE INDEX executável no shadow",
+    "falha fechado se a migration histórica mudar e não tiver exatamente dois índices",
+    "não reescreve migrations fora do allowlist de compatibilidade do pipeline",
     "prepareWorkdir",
+    "reescreve CONCURRENTLY somente na cópia temporária do replay",
     "monta config.toml com PG 17, o baseline e o replay renumerado em ordem",
     "falha sem baseline e com baseline sem a lista de versões do ledger",
     "falha com mais de um baseline",
@@ -479918,12 +480782,7 @@
     "dropDumpLossyFunctions — cabeçalho preserva literais e identificadores (Codex P1)",
     "DEFAULT com caixa diferente é diferença real e fica no resíduo",
     "identificador entre aspas com maiúscula não equivale ao minúsculo",
-    "aspas redundantes e caixa de palavra-chave seguem equivalentes",
-    "literal do SET no cabeçalho com caixa diferente fica no resíduo",
-    "dropDumpLossyFunctions — mudanças posteriores ao CREATE não são escondidas (revisão adversarial)",
-    "controle: CREATE idêntico é removido do resíduo; OWNER TO é inócuo",
-    "ALTER FUNCTION (SECURITY DEFINER / SET) e DROP FUNCTION posteriores mantêm a função no resíduo",
-    "DROP FUNCTION sem lista de argumentos (IF EXISTS … CASCADE) invalida o nome e não puxa "
+    "aspas redundantes e caixa de palavra-chave seguem equivalentes"
    ],
    "uses_service_role": true
   },
@@ -480319,6 +481178,21 @@
     "não aceita audit inacessível como smoke aprovado"
    ]
   },
+  "tests/scripts/sentinel-push-range.test.mjs": {
+   "path": "tests/scripts/sentinel-push-range.test.mjs",
+   "lines": 140,
+   "is_test": true,
+   "tests": [
+    "sentinel-push-range",
+    "não deixa um commit sem PR escapar quando o push termina em squash",
+    "seleciona o squash quando ele é o único commit do push",
+    "inclui todas as integrações first-parent no mesmo push",
+    "preserva o first-parent e exclui commits laterais de merge de PR",
+    "retorna erro se before não for ancestral first-parent de after",
+    "rejeita before alcançável apenas pelo segundo pai de um merge",
+    "falha fechado para intervalo vazio, SHA malformado e SHA inexistente"
+   ]
+  },
   "tests/scripts/strict-test-side-effects-contract.test.mjs": {
    "path": "tests/scripts/strict-test-side-effects-contract.test.mjs",
    "lines": 35,
@@ -480346,7 +481220,7 @@
   },
   "tests/scripts/validate-migration-target.test.mjs": {
    "path": "tests/scripts/validate-migration-target.test.mjs",
-   "lines": 231,
+   "lines": 243,
    "is_test": true,
    "errors": [
     "should not fetch",
@@ -480357,6 +481231,7 @@
     "accepts canonical direct and shared pooler targets",
     "rejects invalid or incomplete target %j",
     "preflight needs only version and canonical project, not database credentials",
+    "target-only validates the canonical connection without inventing a migration version",
     "workflow routes user input through env and validates PG target before DDL",
     "live canonical pooler validation",
     "validates session endpoint against live PRIMARY pooler, with bounded read-only discovery",
@@ -481357,6 +482232,16 @@
     "falls back to in-stock color for unknown status"
    ]
   },
+  "tests/unit/ci-auth-lockout.test.ts": {
+   "path": "tests/unit/ci-auth-lockout.test.ts",
+   "lines": 51,
+   "is_test": true,
+   "tests": [
+    "rewriteCiSharedIpLockout",
+    "seleciona apenas o lockout exato em uma matriz de 180 cenários",
+    "preserva os detalhes de auditoria sem alterar o payload original"
+   ]
+  },
   "tests/unit/connection-error-copy.test.ts": {
    "path": "tests/unit/connection-error-copy.test.ts",
    "lines": 161,
@@ -482166,6 +483051,20 @@
     "Integridade de Sintaxe e Renderização Básica",
     "Header deve renderizar sem erros de sintaxe ou JSX",
     "SidebarReorganized deve renderizar sem erros de sintaxe ou JSX"
+   ]
+  },
+  "tests/unit/test-user-prefix.test.ts": {
+   "path": "tests/unit/test-user-prefix.test.ts",
+   "lines": 38,
+   "is_test": true,
+   "env": [
+    "E2E_TEST_PREFIX"
+   ],
+   "tests": [
+    "namespace E2E canônico",
+    "deriva um prefixo por spec compatível com o cleanup padrão",
+    "mantém o namespace único da rodada no prefixo do spec",
+    "rejeita namespace que não pode ser filtrado com segurança pela Edge"
    ]
   },
   "tests/unit/text-utils.test.ts": {
@@ -483127,10 +484026,210 @@
   }
  },
  "git": {
-  "sha": "a7c10dc21c7a85278063d37dd57aa7416ea2d61f",
+  "sha": "5e28c6c85a0a2b72ed7b3b0385c422b589554bd8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "5e28c6c",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix(e2e): desbloqueia grid de novidades, imagem e tour do kit builder",
+    "files": [
+     "e2e/catalog.spec.ts",
+     "e2e/kit-builder.spec.ts",
+     "e2e/optimized-image-visual.spec.ts",
+     "e2e/optimized-image-visual.spec.ts-snapshots/image-error-state-chromium-public-linux.png",
+     "e2e/optimized-image-visual.spec.ts-snapshots/image-loading-blur-chromium-public-linux.png",
+     "e2e/routes/app/novelty-grid-visual.spec.ts",
+     "src/components/kit-builder/KitOnboardingTour.tsx",
+     "src/components/novelties/VirtualizedNoveltyGrid.tsx",
+     "src/components/ui/OptimizedImage.tsx",
+     "src/lib/external-db/kit-coverage.test.ts",
+     "src/lib/external-db/kit-coverage.ts"
+    ]
+   },
+   {
+    "sha": "1e63b10",
+    "date": "2026-11-08",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release 1.8.0",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "4e638a6",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix(db): fecha vazamento de api_credentials em suppliers para authenticated",
+    "files": [
+     "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql",
+     "supabase/rollbacks/20261107180000_rollback.sql"
+    ]
+   },
+   {
+    "sha": "576a324",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "ci: amplia timeout do e2e-gates e corrige min-tests do full-flows",
+    "files": [
+     ".github/workflows/deploy-gates.yml",
+     ".github/workflows/e2e-flows.yml",
+     ".github/workflows/e2e.yml"
+    ]
+   },
+   {
+    "sha": "74d9fda",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix(sentinel): audita intervalo first-parent do push (recupera parte faltante da #2839)",
+    "files": [
+     ".github/SENTINEL_CHANGELOG.md",
+     ".github/workflows/branch-protection-sentinel.yml",
+     ".github/workflows/sentinel-self-test.yml",
+     "scripts/sentinel-push-range.sh",
+     "tests/scripts/sentinel-push-range.test.mjs"
+    ]
+   },
+   {
+    "sha": "f0f37db",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix(ci): corrige env Vite e endurece smoke autenticado",
+    "files": [
+     ".github/workflows/ci-security-drift.yml"
+    ]
+   },
+   {
+    "sha": "f7f763e",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix: drift-check ignora *.test.ts e *_test.ts no REPO_ONLY",
+    "files": [
+     ".github/workflows/edge-functions-drift-check.yml"
+    ]
+   },
+   {
+    "sha": "51519ef",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "test(e2e): endurecer publicação, orçamentos e limpeza canônica",
+    "files": [
+     ".github/workflows/db-schema-drift-check.yml",
+     ".github/workflows/deploy-gates.yml",
+     ".github/workflows/e2e-focused.yml",
+     ".github/workflows/e2e-quotes.yml",
+     ".github/workflows/visual-tests.yml",
+     "docs/ci/SEGREDOS.md",
+     "e2e/catalog/helpers/swatch-view.ts",
+     "e2e/fixtures/auth.setup.ts",
+     "e2e/fixtures/quickview-dataset.ts",
+     "e2e/fixtures/test-base.ts",
+     "e2e/fixtures/test-user.ts",
+     "e2e/flows/03b-product-thumb-quickview.spec.ts",
+     "e2e/flows/04m-quotes-awaiting-tooltip-viewports.spec.ts",
+     "e2e/flows/04m-quotes-status-tooltips-a11y.spec.ts",
+     "e2e/flows/04m-quotes-status-tooltips.spec.ts",
+     "e2e/flows/04o-quotes-columns-always-visible.spec.ts",
+     "e2e/flows/04o-quotes-single-delete-undo.spec.ts",
+     "e2e/flows/04p-quotes-bulk-delete-undo.spec.ts",
+     "e2e/flows/04p-quotes-expiration-column.spec.ts",
+     "e2e/flows/04q-quotes-single-delete-undo-edge-cases.spec.ts",
+     "e2e/flows/04s-quotes-duplicate-undo-a11y-rapid.spec.ts",
+     "e2e/flows/22-header-sticky.spec.ts",
+     "e2e/flows/freight-quest-complete-flow.spec.ts",
+     "e2e/flows/magazine-publish-smoke.spec.ts",
+     "e2e/helpers/cleanup-client.ts",
+     "e2e/helpers/e2e-resources.ts",
+     "e2e/helpers/http-status.ts",
+     "e2e/helpers/quotes-status-seed.ts",
+     "e2e/quotes/quote-add-product-button.spec.ts",
+     "e2e/quotes/quote-item-editor-sheet-header.spec.ts",
+     "e2e/quotes/quote-items-inner-scroll.spec.ts",
+     "e2e/quotes/quote-items-table-header-radius.spec.ts",
+     "e2e/quotes/quote-row-menu-width-zoom.spec.ts",
+     "e2e/quotes/quote-row-menu-width.spec.ts",
+     "e2e/quotes/quote-summary-action-buttons-states.spec.ts",
+     "e2e/quotes/quote-summary-action-buttons.spec.ts",
+     "e2e/quotes/quote-summary-collapse-all.spec.ts",
+     "e2e/quotes/quote-summary-sticky-header-visual.spec.ts",
+     "e2e/quotes/quote-summary-sticky-header.spec.ts",
+     "e2e/quotes/quote-view-mainlayout-overflow.spec.ts",
+     "e2e/quotes/quote-view-no-presentation-mode.spec.ts",
+     "e2e/quotes/quote-view-overflow-regression.spec.ts",
+     "e2e/quotes/quote-view-sticky-sidebar.spec.ts",
+     "e2e/quotes/quote-view-sticky-visual.spec.ts",
+     "e2e/quotes/quote-view-sticky-visual.spec.ts-snapshots/sidebar-after-scroll-chromium-public-linux.png",
+     "e2e/quotes/quote-view-sticky-visual.spec.ts-snapshots/sidebar-before-scroll-chromium-public-linux.png",
+     "e2e/routes/quotes/quote-list-responsive.spec.ts",
+     "e2e/visual/quote-freight-block.spec.ts",
+     "package.json",
+     "scripts/check-cron-drift.mjs",
+     "scripts/check-event-triggers-drift.mjs",
+     "scripts/check-visual-tests-specs.mjs",
+     "scripts/drift-baseline.mjs",
+     "scripts/lib/canonical-pg-connection.mjs",
+     "scripts/migration-ledger-remote-only-allowlist.json",
+     "scripts/validate-migration-target.mjs",
+     "src/components/ui/ConfirmDialog.tsx",
+     "src/components/ui/__tests__/ConfirmDialog.keyboard.test.tsx",
+     "src/pages/__visual/QuoteViewOrderHarness.tsx",
+     "src/pages/magazine/MagazineEditorPage.tsx",
+     "src/pages/magazine/__tests__/MagazineEditorPage.hooksOrder.test.tsx",
+     "src/pages/quotes/QuoteViewPage.tsx",
+     "src/pages/quotes/quote-view/QuoteUnavailableState.test.tsx",
+     "src/pages/quotes/quote-view/QuoteUnavailableState.tsx",
+     "src/pages/quotes/quote-view/useQuoteViewData.test.tsx",
+     "src/pages/quotes/quote-view/useQuoteViewData.ts",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/baseline/20261108000000_cron_jobs.json",
+     "supabase/baseline/20261108000000_event_triggers.json",
+     "supabase/functions/e2e-cleanup/index.mockups.test.ts",
+     "supabase/functions/e2e-cleanup/index.ts",
+     "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql",
+     "supabase/rollbacks/20261108001500_rollback.sql",
+     "tests/config/e2e-http-status.test.ts",
+     "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
+     "tests/scripts/drift-baseline.test.mjs",
+     "tests/scripts/validate-migration-target.test.mjs",
+     "tests/unit/test-user-prefix.test.ts",
+     "vitest.config.ts"
+    ]
+   },
+   {
+    "sha": "ed85d00",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix(e2e): preservar smoke diante de lockout compartilhado do CI",
+    "files": [
+     "e2e/helpers/auth.ts",
+     "e2e/helpers/ci-auth-lockout.ts",
+     "tests/unit/ci-auth-lockout.test.ts"
+    ]
+   },
+   {
+    "sha": "59a9584",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(ci): RELATORIO §31 — estado final SHA 16408a68",
+    "files": [
+     "PENDENCIAS.md",
+     "RELATORIO_CI.md"
+    ]
+   },
+   {
+    "sha": "fa9e722",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs: recibo deploy health-check run 42367422517 (E66) — substitui #3134",
+    "files": [
+     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
+    ]
+   },
    {
     "sha": "a7c10dc",
     "date": "2026-11-08",
@@ -483413,199 +484512,87 @@
      "tests/scripts/fuzz-edge-uploads.test.mjs",
      "tests/scripts/fuzz-testing.test.mjs"
     ]
-   },
-   {
-    "sha": "2eca6a4",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "docs: RELATORIO_CI.md §21 — Gate Final ✅ success na main 1a47c6972c",
-    "files": [
-     "RELATORIO_CI.md"
-    ]
-   },
-   {
-    "sha": "1a47c69",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "docs: RELATORIO_CI.md e PENDENCIAS.md — status CI e workflows (#3172)",
-    "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md",
-     "graphify-out/GRAPH_REPORT.md"
-    ]
-   },
-   {
-    "sha": "fa5da5d",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "chore(docs): Gate 1.14 — adiciona SUPABASE_TEST_BYPASS_TOKEN ao SEGREDOS.md (#3164)",
-    "files": [
-     ".gitignore",
-     "docs/ci/SEGREDOS.md",
-     "e2e/flows/magazine-publish-smoke.spec.ts",
-     "graphify-out/manifest.json"
-    ]
-   },
-   {
-    "sha": "df81a74",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "fix(magazine): impedir colapso do título em lg (#3161)",
-    "files": [
-     "src/pages/magazine/components/EditorHero.tsx",
-     "src/pages/magazine/components/__tests__/EditorHero.test.tsx"
-    ]
-   },
-   {
-    "sha": "787f843",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "Merge pull request #3154 from adm01-debug/claude/fix-dashboard-title-loading-261107-0100",
-    "files": []
-   },
-   {
-    "sha": "9739e65",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "fix(e2e): adiciona role seller ao helper de auth (#3145)",
-    "files": [
-     ".env.e2e.example",
-     "e2e/fixtures/auth.setup.ts",
-     "e2e/flows/20-all-features-smoke.spec.ts",
-     "e2e/flows/25-quote-full-flow.spec.ts",
-     "e2e/flows/magazine-publish-smoke.spec.ts",
-     "e2e/helpers/auth.ts"
-    ]
-   },
-   {
-    "sha": "3b2deef",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "fix(ci): testar gates E2E no artefato de produção (#3142)",
-    "files": [
-     ".github/workflows/replenishment-quality.yml",
-     "e2e/catalog/novidades-reposicao-card-parity.spec.ts",
-     "e2e/flows/magazine-publish-smoke.spec.ts",
-     "e2e/helpers/nav.ts",
-     "playwright.config.ts",
-     "tests/config/e2e-nav-helper-smoke.test.ts",
-     "tests/config/playwright-config-smoke.test.ts"
-    ]
-   },
-   {
-    "sha": "a0e18eb",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "Merge branch 'main' into claude/fix-dashboard-title-loading-261107-0100",
-    "files": []
-   },
-   {
-    "sha": "3c2ff92",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "docs(ci): §13 prova final Gate Final success SHA b5f7d2e29e0b (2026-11-07) (#3158)",
-    "files": [
-     "RELATORIO_CI.md"
-    ]
-   },
-   {
-    "sha": "57ada84",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "docs(pendencias): atualiza PENDENCIAS.md — itens #22/#23/#24 + re-falha #2 (#3155)",
-    "files": [
-     "PENDENCIAS.md"
-    ]
-   },
-   {
-    "sha": "096eb03",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "fix: renderiza titulo do dashboard de orcamentos em loading e erro",
-    "files": [
-     "src/pages/quotes/QuotesDashboardPage.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    12
+    10
    ],
    [
     "PENDENCIAS.md",
-    7
-   ],
-   [
-    "e2e/flows/magazine-publish-smoke.spec.ts",
-    3
+    6
    ],
    [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    2
+    3
    ],
    [
     "e2e/routes/app/novelty-grid-visual.spec.ts",
+    2
+   ],
+   [
+    "package.json",
+    2
+   ],
+   [
+    ".github/workflows/deploy-gates.yml",
+    2
+   ],
+   [
+    "supabase/functions/e2e-cleanup/index.mockups.test.ts",
+    2
+   ],
+   [
+    "supabase/functions/e2e-cleanup/index.ts",
+    2
+   ],
+   [
+    "vitest.config.ts",
+    2
+   ],
+   [
+    "e2e/catalog.spec.ts",
     1
    ],
    [
-    ".agents/skills/promo-gifts-v4/SKILL.md",
+    "e2e/kit-builder.spec.ts",
     1
    ],
    [
-    ".claude/skills/promo-gifts-v4/SKILL.md",
+    "e2e/optimized-image-visual.spec.ts",
     1
    ],
    [
-    "AGENTS.md",
+    "e2e/optimized-image-visual.spec.ts-snapshots/image-error-state-chromium-public-linux.png",
     1
    ],
    [
-    "CLAUDE.md",
+    "e2e/optimized-image-visual.spec.ts-snapshots/image-loading-blur-chromium-public-linux.png",
     1
    ],
    [
-    "docs/agentes/banco-migrations.md",
+    "src/components/kit-builder/KitOnboardingTour.tsx",
     1
    ],
    [
-    "docs/agentes/ci-gates.md",
+    "src/components/novelties/VirtualizedNoveltyGrid.tsx",
     1
    ],
    [
-    "docs/agentes/lovable-conflitos-vercel.md",
+    "src/components/ui/OptimizedImage.tsx",
     1
    ],
    [
-    "docs/agentes/regras-de-trabalho.md",
+    "src/lib/external-db/kit-coverage.test.ts",
     1
    ],
    [
-    "scripts/check-gates-table.mjs",
+    "src/lib/external-db/kit-coverage.ts",
     1
    ],
    [
-    "src/components/products/ProductCard.tsx",
-    1
-   ],
-   [
-    "src/components/products/ProductListItem.tsx",
-    1
-   ],
-   [
-    "src/components/products/ProductTableView.tsx",
-    1
-   ],
-   [
-    "src/components/products/table-view/ProductTableRow.tsx",
-    1
-   ],
-   [
-    "src/hooks/useProductColorSwatch.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useProductColorSwatch.ts",
+    ".release-please-manifest.json",
     1
    ]
   ]

@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1122,
+ "total": 1123,
  "orfaos": 80,
  "nomes_duplicados": {
   "BreadcrumbItem": [
@@ -8181,7 +8181,7 @@
     "KitOnboardingTour"
    ],
    "export_default": null,
-   "linhas": 121,
+   "linhas": 127,
    "dominio": "components/kit-builder",
    "hooks_locais": [],
    "tabelas": [],
@@ -9867,7 +9867,7 @@
     "VirtualizedNoveltyGrid"
    ],
    "export_default": null,
-   "linhas": 178,
+   "linhas": 179,
    "dominio": "components/novelties",
    "hooks_locais": [
     "useProductsColorsBatch",
@@ -13807,7 +13807,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 547,
+   "usado_por": 548,
    "orfao": false
   },
   {
@@ -13954,7 +13954,7 @@
     "UnsavedChangesDialog"
    ],
    "export_default": null,
-   "linhas": 338,
+   "linhas": 343,
    "dominio": "components/ui",
    "hooks_locais": [],
    "tabelas": [],
@@ -14277,7 +14277,7 @@
     "OptimizedImage"
    ],
    "export_default": null,
-   "linhas": 261,
+   "linhas": 264,
    "dominio": "components/ui",
    "hooks_locais": [],
    "tabelas": [],
@@ -15099,7 +15099,7 @@
     "QuoteViewOrderHarness"
    ],
    "export_default": "QuoteViewOrderHarness",
-   "linhas": 364,
+   "linhas": 370,
    "dominio": "pages/__visual",
    "hooks_locais": [],
    "tabelas": [],
@@ -17414,6 +17414,20 @@
    "orfao": false
   },
   {
+   "arquivo": "src/pages/quotes/quote-view/QuoteUnavailableState.tsx",
+   "exports": [
+    "QuoteUnavailableState"
+   ],
+   "export_default": null,
+   "linhas": 39,
+   "dominio": "pages/quotes",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
    "exports": [
     "QuoteBuilderPage"
@@ -17485,7 +17499,7 @@
     "QuoteViewPage"
    ],
    "export_default": "QuoteViewPage",
-   "linhas": 598,
+   "linhas": 591,
    "dominio": "pages/quotes",
    "hooks_locais": [
     "useDiscountApproval",

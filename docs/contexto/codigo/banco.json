@@ -8,10 +8,10 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3043,
+ "migrations": 3045,
  "seeds": [],
  "avisos": [
-  "315 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
+  "317 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
  ],
  "extensoes": [
   "http",
@@ -15759,7 +15759,7 @@
      "ref": null
     },
     "duration_ms": {
-     "tipo": "int",
+     "tipo": "integer",
      "nn": true,
      "pk": false,
      "default": "0",
@@ -15767,7 +15767,7 @@
     },
     "email": {
      "tipo": "text",
-     "nn": true,
+     "nn": false,
      "pk": false,
      "default": null,
      "ref": null
@@ -15829,10 +15829,24 @@
      "ref": null
     },
     "total_deleted": {
-     "tipo": "int",
+     "tipo": "integer",
      "nn": true,
      "pk": false,
      "default": "0",
+     "ref": null
+    },
+    "total_ms": {
+     "tipo": "integer",
+     "nn": true,
+     "pk": false,
+     "default": "0",
+     "ref": null
+    },
+    "totals": {
+     "tipo": "jsonb",
+     "nn": true,
+     "pk": false,
+     "default": "'{}'::jsonb",
      "ref": null
     },
     "user_agent": {
@@ -15878,6 +15892,11 @@
     {
      "nome": "idx_e2e_cleanup_audit_status",
      "colunas": "status, created_at DESC",
+     "unico": false
+    },
+    {
+     "nome": "idx_e2e_cleanup_audit_user_id",
+     "colunas": "user_id, created_at DESC",
      "unico": false
     }
    ],
@@ -38073,6 +38092,7 @@
    "criada_em": "20250103080000_complete_schema.sql",
    "usada_no_front": 10,
    "usada_em_edges": [
+    "e2e-cleanup",
     "quote-sync"
    ],
    "triggers": [
@@ -39165,6 +39185,7 @@
    "usada_em_edges": [
     "crm-callback-reprocess",
     "crm-db-bridge",
+    "e2e-cleanup",
     "expert-chat",
     "market-intelligence-insights",
     "mcp-server",

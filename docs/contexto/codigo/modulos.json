@@ -8187,7 +8187,7 @@
    "modulo": "components/kit-builder",
    "arquivos": 47,
    "testes": 0,
-   "linhas": 10588,
+   "linhas": 10594,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -11315,7 +11315,7 @@
    "modulo": "components/novelties",
    "arquivos": 7,
    "testes": 9,
-   "linhas": 2443,
+   "linhas": 2444,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -15869,7 +15869,7 @@
    "modulo": "components/ui",
    "arquivos": 61,
    "testes": 12,
-   "linhas": 7664,
+   "linhas": 7672,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -26047,7 +26047,7 @@
    "modulo": "pages/__visual",
    "arquivos": 9,
    "testes": 0,
-   "linhas": 986,
+   "linhas": 992,
    "itens_menu": [],
    "telas": [
     "/__visual/calendar",
@@ -31821,9 +31821,9 @@
   },
   {
    "modulo": "pages/quotes",
-   "arquivos": 12,
-   "testes": 35,
-   "linhas": 4172,
+   "arquivos": 13,
+   "testes": 37,
+   "linhas": 4261,
    "itens_menu": [
     "Gestão de Orçamentos",
     "Novo Orçamento",
@@ -31839,7 +31839,7 @@
     "/orcamentos/novo"
    ],
    "rotas_http": [],
-   "componentes": 6,
+   "componentes": 7,
    "hooks_locais": [
     "useA11y",
     "useAIRecommendations",

@@ -3,13 +3,13 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4309)",
-   "SQL (3228)",
+   "TypeScript (4317)",
+   "SQL (3232)",
    "Markdown (899)",
-   "JavaScript (307)",
+   "JavaScript (310)",
    "YAML (107)",
-   "JSON (91)",
-   "Shell (18)",
+   "JSON (93)",
+   "Shell (19)",
    "CSS (13)"
   ],
   "linguagem_principal": "TypeScript",
@@ -44,7 +44,7 @@
  "workspaces": [],
  "package": {
   "nome": "@adm01-debug/gifts-store",
-  "versao": "1.7.0",
+  "versao": "1.8.0",
   "scripts": {
    "audit:credentials": "node scripts/audit-credentials.mjs --baseline .audit-credentials-baseline.json",
    "audit:credentials:all": "node scripts/audit-credentials.mjs",
@@ -245,7 +245,7 @@
    "test:auth:stability": "npx playwright test e2e/auth-stability.spec.ts",
    "test:cart-header": "TZ=America/Sao_Paulo vitest run src/pages/products/__tests__/CartShippingDeadlineLayout.test.ts src/pages/products/__tests__/CartHeaderExhaustiveFuzz.test.ts src/pages/products/__tests__/CartHeaderEdgeCases.test.ts",
    "test:cart-header:report": "node scripts/qa/cart-header-fuzz-report.mjs",
-   "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts",
+   "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts",
    "test:ci-core:coverage": "TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --coverage --coverage.include=src/lib/theme-presets.ts --coverage.include=src/components/products/ProductSparkline.tsx --coverage.reporter=text --coverage.reporter=json --coverage.reporter=json-summary --coverage.thresholds.lines=50 --coverage.thresholds.functions=50 --coverage.thresholds.branches=30 --coverage.thresholds.statements=50",
    "test:cloud-status": "TZ=America/Sao_Paulo vitest run tests/components/CloudStatusBanner.test.tsx tests/hooks/useDevGate.test.ts",
    "test:cloud-status-coverage": "TZ=America/Sao_Paulo vitest run tests/components/CloudStatusBanner.test.tsx tests/hooks/useDevGate.test.ts --coverage --coverage.reporter=text --coverage.reporter=json-summary --coverage.include=src/components/system/CloudStatusBanner.tsx --coverage.include=src/hooks/admin/useDevGate.ts && node scripts/check-cloud-status-coverage.mjs",
@@ -487,7 +487,8 @@
     "contents: read"
    ],
    "scripts_usados": [
-    "scripts/sentinel-check.sh"
+    "scripts/sentinel-check.sh",
+    "scripts/sentinel-push-range.sh"
    ],
    "npm_scripts": [],
    "secrets": [
@@ -722,6 +723,7 @@
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "actions": [
@@ -955,11 +957,16 @@
     "scripts/check-cron-drift.mjs",
     "scripts/check-event-triggers-drift.mjs",
     "scripts/check-supabase-migration-ledger.mjs",
-    "scripts/drift-baseline.mjs"
+    "scripts/drift-baseline.mjs",
+    "scripts/validate-migration-target.mjs"
    ],
    "npm_scripts": [],
    "secrets": [
     "GITHUB_TOKEN",
+    "PGDATABASE",
+    "PGHOST",
+    "PGPASSWORD",
+    "PGUSER",
     "SUPABASE_ACCESS_TOKEN",
     "SUPABASE_DB_PASSWORD"
    ],
@@ -1778,7 +1785,11 @@
    ],
    "jobs": [
     "secrets_check",
-    "e2e_matrix"
+    "matrix_plan",
+    "cleanup_before",
+    "e2e_matrix",
+    "cleanup_after",
+    "live_receipt"
    ],
    "permissoes": [
     "contents: read"
@@ -1786,6 +1797,7 @@
    "scripts_usados": [],
    "npm_scripts": [],
    "secrets": [
+    "E2E_CLEANUP_TOKEN",
     "E2E_USER_EMAIL",
     "E2E_USER_PASSWORD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
@@ -3026,7 +3038,8 @@
    "branches": [],
    "jobs": [
     "fixtures",
-    "test-protection-config"
+    "test-protection-config",
+    "test-push-range-selection"
    ],
    "permissoes": [
     "contents: read"
@@ -3393,12 +3406,7 @@
     "scripts/check-visual-tests-specs.mjs"
    ],
    "npm_scripts": [],
-   "secrets": [
-    "E2E_USER_EMAIL",
-    "E2E_USER_PASSWORD",
-    "VITE_SUPABASE_PUBLISHABLE_KEY",
-    "VITE_SUPABASE_URL"
-   ],
+   "secrets": [],
    "actions": [
     "actions/checkout",
     "actions/setup-node",
@@ -3508,7 +3516,7 @@
   {
    "arquivo": ".github/SENTINEL_CHANGELOG.md",
    "titulo": "Sentinel Changelog",
-   "linhas": 160
+   "linhas": 188
   },
   {
    "arquivo": "AGENTS.md",
@@ -3518,7 +3526,7 @@
   {
    "arquivo": "CHANGELOG.md",
    "titulo": "Changelog",
-   "linhas": 1473
+   "linhas": 1522
   },
   {
    "arquivo": "CI_PROVA_P33.md",
@@ -3538,7 +3546,7 @@
   {
    "arquivo": "PENDENCIAS.md",
    "titulo": "PENDÊNCIAS — CI Promo Gifts V4",
-   "linhas": 805
+   "linhas": 818
   },
   {
    "arquivo": "PERFORMANCE-ANALYSIS.md",
@@ -3553,7 +3561,7 @@
   {
    "arquivo": "RELATORIO_CI.md",
    "titulo": "Relatório CI — Promo Gifts V4",
-   "linhas": 1338
+   "linhas": 1394
   },
   {
    "arquivo": "RELATORIO_CI_P34.md",
@@ -4478,7 +4486,7 @@
    "arquivos_md": 1
   }
  ],
- "changelog_topo": "[1.7.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.1...v1.7.0) (2026-11-02)",
+ "changelog_topo": "[1.8.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.7.0...v1.8.0) (2026-11-08)",
  "env": {
   "declaradas_no_env_example": [
    "CONNECTIONS_AUTO_TEST_SECRET",
@@ -4634,6 +4642,7 @@
    "CRM_CALLBACK_API_KEY",
    "E2E_ADMIN_EMAIL",
    "E2E_ADMIN_PASSWORD",
+   "E2E_CLEANUP_TOKEN",
    "E2E_DEV_EMAIL",
    "E2E_DEV_PASSWORD",
    "E2E_USER_EMAIL",
@@ -4711,7 +4720,7 @@
   "hosts_externos": [
    {
     "host": "doufsxqlfjyuvxuezpln.supabase.co",
-    "arquivos": 58
+    "arquivos": 59
    },
    {
     "host": "wa.me",
@@ -4815,10 +4824,6 @@
    },
    {
     "host": "fonts.gstatic.com",
-    "arquivos": 3
-   },
-   {
-    "host": "placehold.co",
     "arquivos": 3
    },
    {
@@ -5166,6 +5171,10 @@
     "arquivos": 1
    },
    {
+    "host": "placehold.co",
+    "arquivos": 1
+   },
+   {
     "host": "player.vimeo.com",
     "arquivos": 1
    },
@@ -5411,7 +5420,7 @@
    },
    {
     "papel": "dialog",
-    "ocorrencias": 19
+    "ocorrencias": 20
    },
    {
     "papel": "radiogroup",
@@ -5454,6 +5463,10 @@
     "ocorrencias": 10
    },
    {
+    "papel": "anon",
+    "ocorrencias": 9
+   },
+   {
     "papel": "seller",
     "ocorrencias": 9
    },
@@ -5464,10 +5477,6 @@
    {
     "papel": "tablist",
     "ocorrencias": 9
-   },
-   {
-    "papel": "anon",
-    "ocorrencias": 8
    },
    {
     "papel": "assistant",

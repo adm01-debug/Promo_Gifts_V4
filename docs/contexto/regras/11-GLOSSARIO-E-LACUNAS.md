@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a7c10dc21c` · branch `main` · 2026-11-08 03:34 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5e28c6c85a` · branch `main` · 2026-11-08 04:13 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -119,7 +119,7 @@
 | `device_login_notifications` | Notificações de login em novo dispositivo/IP. Escrita: edge detect-new-device (service_role). Leitura: dono via RLS. Consumida em realtime por usePushNotifications. | 8 colunas | migration |
 | `discount_approval_audit` | Trilha de auditoria de aprovações de desconto. Reconciliada em 2026-06-25  | 13 colunas | migration |
 | `discount_approval_requests` | Workflow de aprovação de desconto acima do limite. Vendedor solicita, supervisor+ aprova/rejeita. Schema oficial extraído de useDiscountApproval.ts. | 6 colunas | migration |
-| `e2e_cleanup_audit` | _(sem COMMENT ON TABLE — significado não documentado)_ | 15 colunas | migration |
+| `e2e_cleanup_audit` | created_by=20261108001500_reconcile_e2e_cleanup_audit; append-only Edge cleanup audit | 15 colunas | migration |
 | `e2e_cleanup_rate_limit` | Rate limit interno do edge e2e-cleanup. Acesso exclusivo via service_role / RPC SECURITY DEFINER. Policies explícitas negam anon/authenticated por defesa em profundidade. | 4 colunas | migration |
 | `eco_material_config` | Lista de materiais considerados ecológicos para auto-link com categoria Ecologia e Dia do Meio Ambiente | 5 colunas | migration |
 | `edge_function_invocations` | Logs de invocações de edge functions. Edges escrevem via service_role. NÃO inserir secrets/auth headers em request_metadata. Cleanup periódico via purge_edge_invocations_old() ou cron job. | 11 colunas | migration |
@@ -375,7 +375,6 @@
 | status | valor `already_applied` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/crm-callback-reprocess/index.ts` |
 | status | valor `quote_not_found` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/crm-callback-reprocess/index.ts` |
 | status | valor `reprocessed` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/crm-callback-reprocess/index.ts` |
-| status | valor `auth_failed` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/e2e-cleanup/handler_characterization_test.ts`<br>`escreve:supabase/functions/e2e-cleanup/index.ts` |
 | status | valor `pass` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/full-op-diagnostics/index.ts`<br>`escreve:supabase/functions/full-op-diagnostics/index.ts` |
 | status | valor `unhealthy` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/health-check/index.ts`<br>`escreve:supabase/functions/health-check/index.ts` |
 | status | valor `duplicate_ignored` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/receive-crm-callback/index.ts` |
@@ -591,7 +590,6 @@
 | rls | `custom_kits`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/components/dashboard/RecentKitsWidget.tsx`<br>`src/components/kit-builder/KitHealthCard.tsx`<br>`src/components/kit-builder/KitSmartSuggestions.tsx`<br>`src/components/search/useGlobalSearch.ts` |
 | rls | `custom_kits`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/hooks/kit-builder/useCustomKitPersistence.ts`<br>`src/pages/kit-builder/KitLibraryPage.tsx` |
 | rls | `custom_kits`: front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `src/hooks/kit-builder/useCustomKitPersistence.ts`<br>`src/pages/kit-builder/KitLibraryPage.tsx` |
-| rls | `e2e_cleanup_audit`: RLS ligado sem nenhuma política → só service_role acessa |  |
 | rls | `e2e_cleanup_rate_limit`: RLS ligado sem nenhuma política → só service_role acessa |  |
 | rls | `edge_function_invocations`: RLS ligado sem nenhuma política → só service_role acessa |  |
 | rls | `expert_conversations`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/intelligence/useExpertConversations.tsx` |
@@ -646,7 +644,9 @@
 | rls | `video_variant_links`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/components/admin/products/video-gallery/useProductVideoGallery.ts`<br>`src/hooks/products/useVideoVariantLinks.ts` |
 | rls | `voice_command_logs`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/voice/logVoiceCommand.ts` |
 | dinheiro | `ops.pgss_history.total_exec_time` guarda dinheiro em `double precision NOT NULL` (ponto flutuante) — arredondamento imprevisível; padrão é numeric |  |
-| … +232 linhas — lista completa em `context.json` | | |
+| edge | edge function `a` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
+| edge | edge function `b` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
+| … +230 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 
@@ -707,7 +707,7 @@
 - `quote_approval_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `kit_share_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `_deprecated_silver_images_queue_20260606.img_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- 259/484 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `suppliers`, `classification_audit.category_suggestions` …
+- 258/484 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `suppliers`, `classification_audit.category_suggestions` …
 - Há tabelas usadas no código sem migration no repo — o schema real pode ter sido alterado pelo painel.
 
 ## Regras manuais presentes

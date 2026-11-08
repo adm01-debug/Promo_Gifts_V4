@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a7c10dc21c` · branch `main` · 2026-11-08 03:34 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5e28c6c85a` · branch `main` · 2026-11-08 04:13 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -135,7 +135,7 @@
 | `device_login_notifications` | enabled | authenticated: user_id = (SELECT auth.uid()) | — | — | — |
 | `discount_approval_audit` | enabled | authenticated: can_view_all_sales() OR has_role((SELECT auth.uid()), 'supervisor'::app_role) OR (EXISTS ( SELECT 1 FROM discount_approval_re | authenticated: false | authenticated: false | authenticated: false |
 | `discount_approval_requests` | enabled | authenticated: requesting_user_id = auth.uid() | authenticated: requesting_user_id = auth.uid() | authenticated: requesting_user_id = auth.uid() | — |
-| `e2e_cleanup_audit` | enabled | — | — | — | — |
+| `e2e_cleanup_audit` | enabled | authenticated: public.has_role((SELECT auth.uid()), 'admin') | — | — | — |
 | `e2e_cleanup_rate_limit` | enabled | — | — | — | — |
 | `eco_material_config` | enabled | — | — | — | — |
 | `edge_function_invocations` | enabled | — | — | — | — |
@@ -327,7 +327,7 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
-## Onde o RLS é IGNORADO (service_role) — 774 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 775 arquivo(s)
 
 - `auditoria-supabase/propostas/P01_rls_restrictive_correcao.sql`
 - `auditoria-supabase/propostas/P10_func_new_001_fn_cron_guard_revoke.sql`
@@ -479,7 +479,7 @@
 - `supabase/functions/product-visual-search/index.ts`
 - `supabase/functions/product-webhook/idempotency_test.ts`
 - `supabase/functions/product-webhook/index.ts`
-- … +624 (lista completa em `context.json`)
+- … +625 (lista completa em `context.json`)
 
 ## Funções SQL `SECURITY DEFINER` (rodam com privilégio do dono, ignoram RLS)
 
@@ -1234,7 +1234,7 @@ Middleware matcher (Next.js): nenhum
 | grant | authenticated | execute | `seed_discount_test_users`, `cleanup_discount_test_data`, `get_bundle_suggestions`, `get_client_top_products`, `get_industry_top_products`, `get_industry_benchmark_stats`, `get_web_vitals_summary`, `check_hardening_status`, `get_top_favorited_products`, `get_favorites_weekly_count`, `set_connections_auto_test_interval`, `get_connections_auto_test_interval`, `set_connection_failure_window_minutes`, `get_connection_failure_window_minutes`, `get_auto_test_job_status` … +123 |
 | grant | authenticated | insert | `kill_switch_hits`, `system_error_logs`, `navigation_analytics`, `navigation_analytics`, `navigation_analytics`, `frontend_telemetry` |
 | grant | authenticated | insert, update, delete | `collection_products` |
-| grant | authenticated | select | `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `crm_callback_events`, `user_token_revocations`, `collection_products`, `system_kill_switches`, `v_kill_switch_hits_summary`, `v_kill_switch_hits_summary`, `smoke_tests_runs`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `system_error_logs` … +59 |
+| grant | authenticated | select | `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `crm_callback_events`, `user_token_revocations`, `collection_products`, `system_kill_switches`, `v_kill_switch_hits_summary`, `v_kill_switch_hits_summary`, `smoke_tests_runs`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `system_error_logs` … +61 |
 | grant | authenticated | select, delete | `kill_switch_hits` |
 | grant | authenticated | select, insert | `access_blocked_log`, `smoke_test_runs`, `admin_audit_log`, `admin_audit_log`, `catalog_analytics`, `audit_log`, `kit_quote_requests` |
 | grant | authenticated | select, insert, update | `visual_search_feedback` |
@@ -1259,7 +1259,7 @@ Middleware matcher (Next.js): nenhum
 | grant | service_role | execute | `increment_webhook_dedupe_hit`, `claim_webhook_delivery`, `release_webhook_delivery_lock`, `cleanup_stale_webhook_locks`, `get_edge_invoke_summary`, `record_public_token_failure`, `public`, `get_edge_function_secret`, `get_edge_function_secret`, `check_edge_rate_limit`, `cleanup_expired_edge_rate_limits`, `record_schema_drift_result`, `fn_trigger_schema_drift_fetch`, `fn_compute_and_record_drift`, `fn_run_schema_drift_check` … +175 |
 | grant | service_role | select | `slow_queries_view`, `v_ai_function_routing_effective`, `v_ai_function_routing_effective`, `archive`, `v_product_images_quality_gap`, `v_product_images_quality_gap`, `mv_product_images_audit`, `v_product_images_quality_gap`, `vw_image_type_dropblockers`, `mv_product_images_audit`, `v_cf_drift_dashboard`, `v_cf_drift_dashboard`, `v_cf_drift_dashboard`, `v_ai_function_routing_effective`, `mv_stock_rupture_alert` |
 | grant | service_role | select, insert, delete | `webhook_request_nonces` |
-| grant | service_role | select, insert, update | `image_backfill_queue` |
+| grant | service_role | select, insert, update | `image_backfill_queue`, `e2e_cleanup_audit` |
 | grant | service_role | select, insert, update, delete | `product_novelties`, `_cf_images_audit`, `_img_divergence_audit`, `cf_recon.cf_image`, `cf_recon.cf_ghost_check_queue`, `cf_recon.action_log`, `cf_recon.crawl_run`, `cf_recon.metric_snapshot`, `cf_recon.remediation`, `ai_insights_cache`, `ai_usage_logs`, `products`, `product_sync_logs` |
 | grant | service_role | select, insert, update, delete, references, trigger, truncate | `v_products_public` |
 | grant | service_role, authenticated | execute | `record_mcp_access_violation`, `fn_sm_pipeline_health`, `fn_expire_novelties`, `fn_check_schema_signature_drift` |
@@ -1270,7 +1270,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | PUBLIC | select | `vw_product_availability`, `extensions.pg_stat_statements`, `extensions.pg_stat_statements_info` |
 | revoke | PUBLIC, anon | all | `fn_get_reposicao_variants_summary`, `check_hardening_status`, `record_mcp_access_violation`, `fn_reconcile_stock_gold`, `fn_pipeline_health`, `fn_generate_market_insights_cache`, `request_discount_approval_transactional`, `respond_discount_approval_transactional`, `request_discount_approval_transactional`, `request_discount_approval_transactional`, `create_quote_with_discount_approval_transactional`, `update_quote_with_discount_approval_transactional`, `request_discount_approval_transactional`, `request_discount_approval_transactional`, `magazine_add_items_atomic` … +15 |
 | revoke | PUBLIC, anon | execute | `cleanup_rate_limits`, `acquire_ai_quota`, `complete_optimization`, `reset_optimization_queue`, `is_org_member`, `start_step_up_challenge`, `verify_step_up_password`, `fn_handle_canonical_root_soft_delete`, `fn_reset_is_shared_on_canonical_null`, `fn_auto_revoke_secdef_public_execute`, `fn_revoke_view_write_grants_on_create`, `get_supplier_reliability_history`, `get_supplier_reliability_history`, `fn_run_smoke_tests`, `fn_run_smoke_tests` … +8 |
-| revoke | PUBLIC, anon, authenticated | all | `increment_webhook_dedupe_hit`, `cleanup_security_logs`, `check_mcp_abuse_threshold`, `vault.decrypted_secrets`, `vault.secrets`, `increment_webhook_stats`, `fn_spot_direct_stock_gold`, `fn_spot_direct_prices_gold`, `fn_ingest_asia_api_batch`, `fn_ingest_asia_hg_batch`, `fn_sync_asia_colors`, `fn_parity_standardize_variant`, `fn_purge_spr_history`, `fn_expire_novelties`, `fn_sync_product_novelties` … +31 |
+| revoke | PUBLIC, anon, authenticated | all | `increment_webhook_dedupe_hit`, `cleanup_security_logs`, `check_mcp_abuse_threshold`, `vault.decrypted_secrets`, `vault.secrets`, `increment_webhook_stats`, `fn_spot_direct_stock_gold`, `fn_spot_direct_prices_gold`, `fn_ingest_asia_api_batch`, `fn_ingest_asia_hg_batch`, `fn_sync_asia_colors`, `fn_parity_standardize_variant`, `fn_purge_spr_history`, `fn_expire_novelties`, `fn_sync_product_novelties` … +32 |
 | revoke | PUBLIC, anon, authenticated | execute | `check_seller_cart_limit`, `handle_password_reset_request`, `check_auth_config_status`, `refresh_product_popularity`, `audit_rls_coverage`, `audit_security_definer_acl`, `fn_pipeline_health`, `fn_product_images_health_check`, `fn_run_schema_drift_check`, `fn_trigger_schema_drift_fetch`, `fn_compute_and_record_drift`, `fn_snapshot_medallion_coverage`, `fn_deploy_readiness_check`, `fn_check_coverage_regression`, `refresh_product_popularity` … +186 |
 | revoke | PUBLIC, anon, authenticated, service_role | all | `magazine_add_items_atomic`, `magazine_remove_items_atomic`, `magazine_reorder_items_atomic`, `magazine_duplicate_atomic`, `magazine_update_metadata_atomic`, `magazine_publish_atomic`, `magazine_validate_page_order_v2`, `magazine_page_order_remove_items_v2`, `magazine_guard_and_version_v2`, `magazine_items_guard_v2`, `magazine_lock_v2` |
 | revoke | PUBLIC,anon | all | `magazine_create_v2`, `magazine_update_metadata_v2`, `magazine_add_items_v2`, `magazine_remove_items_v2`, `magazine_reorder_items_v2`, `magazine_update_item_v2`, `magazine_publish_v2`, `magazine_unpublish_v2`, `magazine_archive_v2`, `magazine_reactivate_v2`, `magazine_soft_delete_v2`, `magazine_restore_v2`, `magazine_duplicate_v2`, `magazine_import_local_v2` |
@@ -1286,7 +1286,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | anon | insert, update, delete, truncate, references, trigger | `system_kill_switches` |
 | revoke | anon | insert, update, delete, truncate, trigger, references, select | `suppliers` |
 | revoke | anon | insert, update, references | `supplier_products_raw`, `supplier_products_raw`, `import_staging_images`, `color_analysis_staging`, `xbz_gallery_staging`, `scraper_images_staging`, `sm_images_staging`, `_asia_api_staging` |
-| revoke | anon | select | `v_kill_switch_hits_summary`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `products`, `products`, `products`, `products`, `_asia_api_staging`, `_backup_produtos_padronizacao_20260604`, `ai_function_routing`, `ai_provider_quotas`, `ai_providers`, `ai_routing_decisions` … +70 |
+| revoke | anon | select | `v_kill_switch_hits_summary`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `products`, `products`, `products`, `products`, `_asia_api_staging`, `_backup_produtos_padronizacao_20260604`, `ai_function_routing`, `ai_provider_quotas`, `ai_providers`, `ai_routing_decisions` … +71 |
 | revoke | anon, PUBLIC | execute | `fn_rupture_quick_stats`, `fn_ema_kpi_by_level`, `fn_rupture_anomalia_report`, `fn_rupture_by_level`, `fn_rupture_health_check` |
 | revoke | anon, authenticated | all | `slow_queries_view`, `get_edge_function_secret`, `webhook_request_nonces`, `get_edge_functions_base_url`, `mcp_sessions`, `supplier_customization_raw`, `fn_resync_product_media`, `fn_resync_product_media`, `fn_resync_product_media`, `fn_resync_product_media`, `mv_product_images_audit`, `v_product_images_quality_gap`, `vw_image_type_dropblockers`, `mv_product_images_audit`, `mcp_kv` … +28 |
 | revoke | anon, authenticated | all privileges | `_cf_images_audit`, `_img_divergence_audit`, `cf_recon.cf_image`, `cf_recon.cf_ghost_check_queue`, `cf_recon.action_log`, `cf_recon.crawl_run`, `cf_recon.metric_snapshot`, `cf_recon.remediation`, `archive`, `archive`, `archive`, `backup`, `backup`, `archive`, `backup` … +2 |
@@ -1311,7 +1311,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | authenticated | insert, update, references | `supplier_products_raw`, `supplier_products_raw` |
 | revoke | authenticated | references | `frontend_telemetry` |
 | revoke | authenticated | references, trigger | `seller_discount_limits`, `quotes`, `quote_approval_tokens`, `quote_items`, `quote_versions`, `quote_drafts`, `quote_item_personalizations`, `quote_comments`, `quote_templates`, `discount_approval_requests`, `product_variants` |
-| revoke | authenticated | select | `suppliers`, `image_backfill_queue`, `v_cf_drift_dashboard` |
+| revoke | authenticated | select | `suppliers`, `image_backfill_queue`, `v_cf_drift_dashboard`, `suppliers` |
 | revoke | authenticated | trigger | `frontend_telemetry` |
 | revoke | authenticated | update | `frontend_telemetry` |
 | revoke | authenticated | update, delete, references, trigger | `quote_history` |
@@ -1346,7 +1346,6 @@ Middleware matcher (Next.js): nenhum
 | `custom_kits` | front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/components/dashboard/RecentKitsWidget.tsx`<br>`src/components/kit-builder/KitHealthCard.tsx`<br>`src/components/kit-builder/KitSmartSuggestions.tsx`<br>`src/components/search/useGlobalSearch.ts`<br>… +4 |
 | `custom_kits` | front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/hooks/kit-builder/useCustomKitPersistence.ts`<br>`src/pages/kit-builder/KitLibraryPage.tsx` |
 | `custom_kits` | front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `src/hooks/kit-builder/useCustomKitPersistence.ts`<br>`src/pages/kit-builder/KitLibraryPage.tsx` |
-| `e2e_cleanup_audit` | RLS ligado sem nenhuma política → só service_role acessa |  |
 | `e2e_cleanup_rate_limit` | RLS ligado sem nenhuma política → só service_role acessa |  |
 | `edge_function_invocations` | RLS ligado sem nenhuma política → só service_role acessa |  |
 | `expert_conversations` | RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/intelligence/useExpertConversations.tsx` |

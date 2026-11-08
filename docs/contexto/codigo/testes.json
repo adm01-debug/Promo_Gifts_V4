@@ -5,22 +5,22 @@
   "vitest",
   "playwright"
  ],
- "total": 2191,
+ "total": 2200,
  "por_tipo": {
   "contrato": 56,
-  "e2e": 630,
+  "e2e": 632,
   "pytest": 2,
   "qa": 17,
-  "unit": 1486
+  "unit": 1493
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 802
+   "arquivos": 807
   },
   {
    "padrao": "e2e/",
-   "arquivos": 620
+   "arquivos": 622
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -28,7 +28,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 121
+   "arquivos": 123
   },
   {
    "padrao": "outro",
@@ -585,7 +585,7 @@
   {
    "arquivo": "e2e/catalog.spec.ts",
    "tipo": "e2e",
-   "linhas": 150,
+   "linhas": 151,
    "testa": [],
    "casos": 7
   },
@@ -655,7 +655,7 @@
   {
    "arquivo": "e2e/catalog/helpers/swatch-view.ts",
    "tipo": "e2e",
-   "linhas": 117,
+   "linhas": 125,
    "testa": [],
    "casos": 0
   },
@@ -949,7 +949,7 @@
   {
    "arquivo": "e2e/fixtures/auth.setup.ts",
    "tipo": "e2e",
-   "linhas": 97,
+   "linhas": 90,
    "testa": [],
    "casos": 0
   },
@@ -984,7 +984,7 @@
   {
    "arquivo": "e2e/fixtures/quickview-dataset.ts",
    "tipo": "e2e",
-   "linhas": 53,
+   "linhas": 96,
    "testa": [],
    "casos": 0
   },
@@ -1005,16 +1005,16 @@
   {
    "arquivo": "e2e/fixtures/test-base.ts",
    "tipo": "e2e",
-   "linhas": 251,
+   "linhas": 411,
    "testa": [],
-   "casos": 5
+   "casos": 6
   },
   {
    "arquivo": "e2e/fixtures/test-user.ts",
    "tipo": "e2e",
-   "linhas": 156,
+   "linhas": 166,
    "testa": [],
-   "casos": 2
+   "casos": 3
   },
   {
    "arquivo": "e2e/flows/01-auth.spec.ts",
@@ -1040,7 +1040,7 @@
   {
    "arquivo": "e2e/flows/03b-product-thumb-quickview.spec.ts",
    "tipo": "e2e",
-   "linhas": 426,
+   "linhas": 434,
    "testa": [],
    "casos": 12
   },
@@ -1264,7 +1264,7 @@
   {
    "arquivo": "e2e/flows/04m-quotes-awaiting-tooltip-viewports.spec.ts",
    "tipo": "e2e",
-   "linhas": 59,
+   "linhas": 67,
    "testa": [
     "src/components/quotes/QuotesStatusChips.tsx"
    ],
@@ -1296,7 +1296,7 @@
   {
    "arquivo": "e2e/flows/04m-quotes-status-tooltips-a11y.spec.ts",
    "tipo": "e2e",
-   "linhas": 92,
+   "linhas": 94,
    "testa": [
     "src/components/quotes/QuotesStatusChips.tsx"
    ],
@@ -1305,7 +1305,7 @@
   {
    "arquivo": "e2e/flows/04m-quotes-status-tooltips.spec.ts",
    "tipo": "e2e",
-   "linhas": 91,
+   "linhas": 94,
    "testa": [
     "src/components/quotes/QuotesStatusChips.tsx"
    ],
@@ -1321,35 +1321,35 @@
   {
    "arquivo": "e2e/flows/04o-quotes-columns-always-visible.spec.ts",
    "tipo": "e2e",
-   "linhas": 78,
+   "linhas": 84,
    "testa": [],
    "casos": 2
   },
   {
    "arquivo": "e2e/flows/04o-quotes-single-delete-undo.spec.ts",
    "tipo": "e2e",
-   "linhas": 356,
+   "linhas": 348,
    "testa": [],
    "casos": 6
   },
   {
    "arquivo": "e2e/flows/04p-quotes-bulk-delete-undo.spec.ts",
    "tipo": "e2e",
-   "linhas": 308,
+   "linhas": 296,
    "testa": [],
    "casos": 3
   },
   {
    "arquivo": "e2e/flows/04p-quotes-expiration-column.spec.ts",
    "tipo": "e2e",
-   "linhas": 347,
+   "linhas": 441,
    "testa": [],
-   "casos": 4
+   "casos": 2
   },
   {
    "arquivo": "e2e/flows/04q-quotes-single-delete-undo-edge-cases.spec.ts",
    "tipo": "e2e",
-   "linhas": 627,
+   "linhas": 617,
    "testa": [],
    "casos": 8
   },
@@ -1363,7 +1363,7 @@
   {
    "arquivo": "e2e/flows/04s-quotes-duplicate-undo-a11y-rapid.spec.ts",
    "tipo": "e2e",
-   "linhas": 163,
+   "linhas": 157,
    "testa": [],
    "casos": 3
   },
@@ -1717,7 +1717,7 @@
   {
    "arquivo": "e2e/flows/22-header-sticky.spec.ts",
    "tipo": "e2e",
-   "linhas": 285,
+   "linhas": 287,
    "testa": [],
    "casos": 10
   },
@@ -2053,7 +2053,7 @@
   {
    "arquivo": "e2e/flows/freight-quest-complete-flow.spec.ts",
    "tipo": "e2e",
-   "linhas": 409,
+   "linhas": 406,
    "testa": [],
    "casos": 29
   },
@@ -2111,9 +2111,9 @@
   {
    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
    "tipo": "e2e",
-   "linhas": 218,
+   "linhas": 288,
    "testa": [],
-   "casos": 2
+   "casos": 1
   },
   {
    "arquivo": "e2e/flows/magazine-smoke.spec.ts",
@@ -2356,7 +2356,7 @@
   {
    "arquivo": "e2e/helpers/auth.ts",
    "tipo": "e2e",
-   "linhas": 292,
+   "linhas": 313,
    "testa": [],
    "casos": 3
   },
@@ -2405,9 +2405,16 @@
    "casos": 0
   },
   {
+   "arquivo": "e2e/helpers/ci-auth-lockout.ts",
+   "tipo": "e2e",
+   "linhas": 30,
+   "testa": [],
+   "casos": 0
+  },
+  {
    "arquivo": "e2e/helpers/cleanup-client.ts",
    "tipo": "e2e",
-   "linhas": 340,
+   "linhas": 331,
    "testa": [],
    "casos": 0
   },
@@ -2463,7 +2470,7 @@
   {
    "arquivo": "e2e/helpers/e2e-resources.ts",
    "tipo": "e2e",
-   "linhas": 214,
+   "linhas": 205,
    "testa": [],
    "casos": 0
   },
@@ -2487,6 +2494,13 @@
    "linhas": 38,
    "testa": [],
    "casos": 0
+  },
+  {
+   "arquivo": "e2e/helpers/http-status.ts",
+   "tipo": "e2e",
+   "linhas": 52,
+   "testa": [],
+   "casos": 2
   },
   {
    "arquivo": "e2e/helpers/location-panel-quote.ts",
@@ -2526,9 +2540,9 @@
   {
    "arquivo": "e2e/helpers/quotes-status-seed.ts",
    "tipo": "e2e",
-   "linhas": 264,
+   "linhas": 479,
    "testa": [],
-   "casos": 0
+   "casos": 1
   },
   {
    "arquivo": "e2e/helpers/require-env-base-url.ts",
@@ -2575,7 +2589,7 @@
   {
    "arquivo": "e2e/kit-builder.spec.ts",
    "tipo": "e2e",
-   "linhas": 103,
+   "linhas": 105,
    "testa": [],
    "casos": 4
   },
@@ -2694,9 +2708,9 @@
   {
    "arquivo": "e2e/optimized-image-visual.spec.ts",
    "tipo": "e2e",
-   "linhas": 67,
+   "linhas": 102,
    "testa": [],
-   "casos": 6
+   "casos": 2
   },
   {
    "arquivo": "e2e/orcamentos/list-url-state-restore.spec.ts",
@@ -3013,7 +3027,7 @@
   {
    "arquivo": "e2e/quotes/quote-add-product-button.spec.ts",
    "tipo": "e2e",
-   "linhas": 143,
+   "linhas": 123,
    "testa": [],
    "casos": 4
   },
@@ -3055,7 +3069,7 @@
   {
    "arquivo": "e2e/quotes/quote-item-editor-sheet-header.spec.ts",
    "tipo": "e2e",
-   "linhas": 413,
+   "linhas": 404,
    "testa": [],
    "casos": 15
   },
@@ -3099,7 +3113,7 @@
   {
    "arquivo": "e2e/quotes/quote-items-inner-scroll.spec.ts",
    "tipo": "e2e",
-   "linhas": 81,
+   "linhas": 82,
    "testa": [],
    "casos": 3
   },
@@ -3120,7 +3134,7 @@
   {
    "arquivo": "e2e/quotes/quote-items-table-header-radius.spec.ts",
    "tipo": "e2e",
-   "linhas": 224,
+   "linhas": 239,
    "testa": [],
    "casos": 2
   },
@@ -3190,7 +3204,7 @@
   {
    "arquivo": "e2e/quotes/quote-row-menu-width-zoom.spec.ts",
    "tipo": "e2e",
-   "linhas": 144,
+   "linhas": 149,
    "testa": [],
    "casos": 2
   },
@@ -3218,14 +3232,14 @@
   {
    "arquivo": "e2e/quotes/quote-summary-action-buttons-states.spec.ts",
    "tipo": "e2e",
-   "linhas": 142,
+   "linhas": 143,
    "testa": [],
    "casos": 5
   },
   {
    "arquivo": "e2e/quotes/quote-summary-action-buttons.spec.ts",
    "tipo": "e2e",
-   "linhas": 213,
+   "linhas": 216,
    "testa": [],
    "casos": 5
   },
@@ -3253,7 +3267,7 @@
   {
    "arquivo": "e2e/quotes/quote-summary-collapse-all.spec.ts",
    "tipo": "e2e",
-   "linhas": 125,
+   "linhas": 128,
    "testa": [],
    "casos": 2
   },
@@ -3267,14 +3281,14 @@
   {
    "arquivo": "e2e/quotes/quote-summary-sticky-header-visual.spec.ts",
    "tipo": "e2e",
-   "linhas": 148,
+   "linhas": 151,
    "testa": [],
    "casos": 6
   },
   {
    "arquivo": "e2e/quotes/quote-summary-sticky-header.spec.ts",
    "tipo": "e2e",
-   "linhas": 220,
+   "linhas": 226,
    "testa": [],
    "casos": 6
   },
@@ -3288,7 +3302,7 @@
   {
    "arquivo": "e2e/quotes/quote-view-mainlayout-overflow.spec.ts",
    "tipo": "e2e",
-   "linhas": 65,
+   "linhas": 69,
    "testa": [],
    "casos": 4
   },
@@ -3302,14 +3316,14 @@
   {
    "arquivo": "e2e/quotes/quote-view-no-presentation-mode.spec.ts",
    "tipo": "e2e",
-   "linhas": 436,
+   "linhas": 453,
    "testa": [],
    "casos": 12
   },
   {
    "arquivo": "e2e/quotes/quote-view-overflow-regression.spec.ts",
    "tipo": "e2e",
-   "linhas": 220,
+   "linhas": 225,
    "testa": [],
    "casos": 11
   },
@@ -3323,7 +3337,7 @@
   {
    "arquivo": "e2e/quotes/quote-view-sticky-sidebar.spec.ts",
    "tipo": "e2e",
-   "linhas": 65,
+   "linhas": 66,
    "testa": [],
    "casos": 2
   },
@@ -3337,7 +3351,7 @@
   {
    "arquivo": "e2e/quotes/quote-view-sticky-visual.spec.ts",
    "tipo": "e2e",
-   "linhas": 63,
+   "linhas": 67,
    "testa": [],
    "casos": 2
   },
@@ -3722,9 +3736,9 @@
   {
    "arquivo": "e2e/routes/app/novelty-grid-visual.spec.ts",
    "tipo": "e2e",
-   "linhas": 203,
+   "linhas": 258,
    "testa": [],
-   "casos": 8
+   "casos": 12
   },
   {
    "arquivo": "e2e/routes/app/novidades.spec.ts",
@@ -4016,7 +4030,7 @@
   {
    "arquivo": "e2e/routes/quotes/quote-list-responsive.spec.ts",
    "tipo": "e2e",
-   "linhas": 131,
+   "linhas": 127,
    "testa": [],
    "casos": 3
   },
@@ -4396,7 +4410,7 @@
   {
    "arquivo": "e2e/visual/quote-freight-block.spec.ts",
    "tipo": "e2e",
-   "linhas": 100,
+   "linhas": 105,
    "testa": [],
    "casos": 2
   },
@@ -7025,11 +7039,11 @@
   {
    "arquivo": "src/components/ui/__tests__/ConfirmDialog.keyboard.test.tsx",
    "tipo": "unit",
-   "linhas": 101,
+   "linhas": 114,
    "testa": [
     "src/components/ui/ConfirmDialog.tsx"
    ],
-   "casos": 7
+   "casos": 8
   },
   {
    "arquivo": "src/components/ui/__tests__/ConfirmDialog.responsive.test.tsx",
@@ -9478,12 +9492,12 @@
   {
    "arquivo": "src/pages/magazine/__tests__/MagazineEditorPage.hooksOrder.test.tsx",
    "tipo": "unit",
-   "linhas": 205,
+   "linhas": 214,
    "testa": [
     "src/pages/magazine/MagazineEditorPage.tsx",
     "src/types/magazine.ts"
    ],
-   "casos": 9
+   "casos": 10
   },
   {
    "arquivo": "src/pages/magazine/__tests__/pagination.property.test.ts",
@@ -10276,6 +10290,24 @@
     "src/utils/proposalPdfReactGenerator.ts"
    ],
    "casos": 8
+  },
+  {
+   "arquivo": "src/pages/quotes/quote-view/QuoteUnavailableState.test.tsx",
+   "tipo": "unit",
+   "linhas": 33,
+   "testa": [
+    "src/pages/quotes/quote-view/QuoteUnavailableState.tsx"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "src/pages/quotes/quote-view/useQuoteViewData.test.tsx",
+   "tipo": "unit",
+   "linhas": 78,
+   "testa": [
+    "src/pages/quotes/quote-view/useQuoteViewData.ts"
+   ],
+   "casos": 2
   },
   {
    "arquivo": "src/pages/quotes/QuoteBuilder.e2e.test.tsx",
@@ -11286,11 +11318,11 @@
   {
    "arquivo": "supabase/functions/e2e-cleanup/index.mockups.test.ts",
    "tipo": "unit",
-   "linhas": 241,
+   "linhas": 498,
    "testa": [
     "supabase/functions/e2e-cleanup/index.ts"
    ],
-   "casos": 3
+   "casos": 11
   },
   {
    "arquivo": "supabase/functions/ema-pipeline-health/handler.test.ts",
@@ -13385,6 +13417,13 @@
     "src/components/ui/tooltip.tsx"
    ],
    "casos": 1
+  },
+  {
+   "arquivo": "tests/config/e2e-http-status.test.ts",
+   "tipo": "unit",
+   "linhas": 69,
+   "testa": [],
+   "casos": 9
   },
   {
    "arquivo": "tests/config/e2e-nav-helper-smoke.test.ts",
@@ -17272,6 +17311,16 @@
    "casos": 3
   },
   {
+   "arquivo": "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
+   "tipo": "unit",
+   "linhas": 229,
+   "testa": [
+    "scripts/lib/canonical-pg-connection.mjs",
+    "scripts/validate-migration-target.mjs"
+   ],
+   "casos": 9
+  },
+  {
    "arquivo": "tests/scripts/check-ledger-manifest-drift.test.mjs",
    "tipo": "unit",
    "linhas": 209,
@@ -17467,11 +17516,11 @@
   {
    "arquivo": "tests/scripts/drift-baseline.test.mjs",
    "tipo": "unit",
-   "linhas": 962,
+   "linhas": 1046,
    "testa": [
     "scripts/drift-baseline.mjs"
    ],
-   "casos": 87
+   "casos": 91
   },
   {
    "arquivo": "tests/scripts/fuzz-edge-uploads.test.mjs",
@@ -17581,6 +17630,13 @@
    "casos": 8
   },
   {
+   "arquivo": "tests/scripts/sentinel-push-range.test.mjs",
+   "tipo": "unit",
+   "linhas": 140,
+   "testa": [],
+   "casos": 7
+  },
+  {
    "arquivo": "tests/scripts/strict-test-side-effects-contract.test.mjs",
    "tipo": "contrato",
    "linhas": 35,
@@ -17597,11 +17653,11 @@
   {
    "arquivo": "tests/scripts/validate-migration-target.test.mjs",
    "tipo": "unit",
-   "linhas": 231,
+   "linhas": 243,
    "testa": [
     "scripts/validate-migration-target.mjs"
    ],
-   "casos": 14
+   "casos": 15
   },
   {
    "arquivo": "tests/scripts/wraparound-monitor-check.test.mjs",
@@ -18077,6 +18133,13 @@
    "casos": 19
   },
   {
+   "arquivo": "tests/unit/ci-auth-lockout.test.ts",
+   "tipo": "unit",
+   "linhas": 51,
+   "testa": [],
+   "casos": 2
+  },
+  {
    "arquivo": "tests/unit/connection-error-copy.test.ts",
    "tipo": "unit",
    "linhas": 161,
@@ -18298,6 +18361,13 @@
     "src/contexts/ThemeContext.tsx"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "tests/unit/test-user-prefix.test.ts",
+   "tipo": "unit",
+   "linhas": 38,
+   "testa": [],
+   "casos": 3
   },
   {
    "arquivo": "tests/unit/text-utils.test.ts",
@@ -18577,12 +18647,13 @@
   "scripts/graphify/enrich-typescript-references.mjs": 1,
   "scripts/graphify/graph-metrics.mjs": 1,
   "scripts/inventario/gerar-banco.mjs": 1,
+  "scripts/lib/canonical-pg-connection.mjs": 1,
   "scripts/pgss-slo-check.mjs": 1,
   "scripts/plan-status.mjs": 1,
   "scripts/preflight-migration-apply.mjs": 1,
   "scripts/promote-draft-migration.mjs": 1,
   "scripts/supabase-read-only-query.mjs": 1,
-  "scripts/validate-migration-target.mjs": 1,
+  "scripts/validate-migration-target.mjs": 2,
   "scripts/wraparound-monitor-check.mjs": 1,
   "src/App.tsx": 2,
   "src/components/LoadingScreen.tsx": 1,
@@ -19233,6 +19304,8 @@
   "src/pages/quotes/QuotesListPage.tsx": 5,
   "src/pages/quotes/components/DeliveryModeToggle.tsx": 2,
   "src/pages/quotes/quote-view/QuoteActionHandlers.ts": 2,
+  "src/pages/quotes/quote-view/QuoteUnavailableState.tsx": 1,
+  "src/pages/quotes/quote-view/useQuoteViewData.ts": 1,
   "src/pages/quotes/useQuotesListPage.ts": 12,
   "src/pages/tools/AdvancedPriceSearchPage.tsx": 1,
   "src/pages/tools/MagicUp.tsx": 1,
@@ -19664,7 +19737,6 @@
    "src/pages/magazine/hooks/usePageZoom.ts",
    "src/pages/magazine/hooks/usePresentationMode.ts",
    "src/pages/products/seller-carts/useSellerCartsPage.ts",
-   "src/pages/quotes/quote-view/useQuoteViewData.ts",
    "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
    "src/stores/oracleVoiceBridge.ts",
    "src/stores/useRecentlyViewedStore.ts",

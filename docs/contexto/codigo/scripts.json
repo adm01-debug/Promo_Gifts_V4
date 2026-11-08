@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 255,
+ "total": 257,
  "scripts": [
   {
    "arquivo": ".github/scripts/e2e-relevance.mjs",
@@ -500,12 +500,8 @@
   {
    "arquivo": "scripts/check-cron-drift.mjs",
    "descricao": "* check-cron-drift — E037",
-   "linhas": 93,
-   "env": [
-    "DATABASE_URL",
-    "SUPABASE_DB_PASSWORD",
-    "SUPABASE_PROJECT_REF"
-   ],
+   "linhas": 114,
+   "env": [],
    "npm_scripts": [],
    "workflows": [
     "db-schema-drift-check.yml"
@@ -737,12 +733,8 @@
   {
    "arquivo": "scripts/check-event-triggers-drift.mjs",
    "descricao": "* check-event-triggers-drift — E036",
-   "linhas": 93,
-   "env": [
-    "DATABASE_URL",
-    "SUPABASE_DB_PASSWORD",
-    "SUPABASE_PROJECT_REF"
-   ],
+   "linhas": 111,
+   "env": [],
    "npm_scripts": [],
    "workflows": [
     "db-schema-drift-check.yml"
@@ -1673,7 +1665,7 @@
   {
    "arquivo": "scripts/check-visual-tests-specs.mjs",
    "descricao": "* Gate de pré-execução do workflow `visual-tests.yml`.",
-   "linhas": 41,
+   "linhas": 57,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -1786,7 +1778,7 @@
   {
    "arquivo": "scripts/drift-baseline.mjs",
    "descricao": "* drift-baseline.mjs — baseline do schema de produção para o drift-check.",
-   "linhas": 1138,
+   "linhas": 1249,
    "env": [
     "SUPABASE_PROJECT_REF"
    ],
@@ -2260,6 +2252,15 @@
    "orfao": false
   },
   {
+   "arquivo": "scripts/lib/canonical-pg-connection.mjs",
+   "descricao": null,
+   "linhas": 61,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
    "arquivo": "scripts/lint-untyped-from.sh",
    "descricao": "Lint: cruza nomes de tabela chamados via untypedFrom(\"...\") contra o schema gerado em src/integrations/supabase/types.ts. Falha se houver",
    "linhas": 129,
@@ -2563,6 +2564,17 @@
    "arquivo": "scripts/sentinel-check.sh",
    "descricao": "============================================================================ sentinel-check.sh — Coração do Branch Protection Sentinel",
    "linhas": 182,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "branch-protection-sentinel.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/sentinel-push-range.sh",
+   "descricao": "Print the commits that the Branch Protection Sentinel must audit for a push. First-parent traversal preserves every commit added to the target branch while",
+   "linhas": 39,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -2983,11 +2995,12 @@
   {
    "arquivo": "scripts/validate-migration-target.mjs",
    "descricao": "Shared pooler hosts do not identify a project; the user suffix must do so.",
-   "linhas": 81,
+   "linhas": 87,
    "env": [],
    "npm_scripts": [],
    "workflows": [
-    "db-apply-migration.yml"
+    "db-apply-migration.yml",
+    "db-schema-drift-check.yml"
    ],
    "orfao": false
   },

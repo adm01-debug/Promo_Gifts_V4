@@ -2,11 +2,66 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a7c10dc21c7a85278063d37dd57aa7416ea2d61f",
+  "commit": "5e28c6c85a0a2b72ed7b3b0385c422b589554bd8",
   "branch": "main",
-  "data_commit": "2026-11-08T00:12:00-03:00",
+  "data_commit": "2026-11-08T00:38:37-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "5e28c6c",
+    "data": "2026-11-08",
+    "assunto": "fix(e2e): desbloqueia grid de novidades, imagem e tour do kit builder"
+   },
+   {
+    "sha": "1e63b10",
+    "data": "2026-11-08",
+    "assunto": "chore(main): release 1.8.0"
+   },
+   {
+    "sha": "4e638a6",
+    "data": "2026-11-08",
+    "assunto": "fix(db): fecha vazamento de api_credentials em suppliers para authenticated"
+   },
+   {
+    "sha": "576a324",
+    "data": "2026-11-08",
+    "assunto": "ci: amplia timeout do e2e-gates e corrige min-tests do full-flows"
+   },
+   {
+    "sha": "74d9fda",
+    "data": "2026-11-08",
+    "assunto": "fix(sentinel): audita intervalo first-parent do push (recupera parte faltante da #2839)"
+   },
+   {
+    "sha": "f0f37db",
+    "data": "2026-11-08",
+    "assunto": "fix(ci): corrige env Vite e endurece smoke autenticado"
+   },
+   {
+    "sha": "f7f763e",
+    "data": "2026-11-08",
+    "assunto": "fix: drift-check ignora *.test.ts e *_test.ts no REPO_ONLY"
+   },
+   {
+    "sha": "51519ef",
+    "data": "2026-11-08",
+    "assunto": "test(e2e): endurecer publicação, orçamentos e limpeza canônica"
+   },
+   {
+    "sha": "ed85d00",
+    "data": "2026-11-08",
+    "assunto": "fix(e2e): preservar smoke diante de lockout compartilhado do CI"
+   },
+   {
+    "sha": "59a9584",
+    "data": "2026-11-08",
+    "assunto": "docs(ci): RELATORIO §31 — estado final SHA 16408a68"
+   },
+   {
+    "sha": "fa9e722",
+    "data": "2026-11-08",
+    "assunto": "docs: recibo deploy health-check run 42367422517 (E66) — substitui #3134"
+   },
    {
     "sha": "a7c10dc",
     "data": "2026-11-08",
@@ -76,146 +131,91 @@
     "sha": "2a042da",
     "data": "2026-11-07",
     "assunto": "docs(ci): verificar erros exatos #26 #30 #37 — sessão 2026-11-07T22h"
-   },
-   {
-    "sha": "6522f77",
-    "data": "2026-11-07",
-    "assunto": "docs(ci): RELATORIO §24 — Gate Final be7688da success + PR #3179"
-   },
-   {
-    "sha": "be7688d",
-    "data": "2026-11-07",
-    "assunto": "docs(ci): RELATORIO §23 — baseline bfb2926d + tabela de prova completa 36 workflows (#3178)"
-   },
-   {
-    "sha": "bfb2926",
-    "data": "2026-11-07",
-    "assunto": "docs(ci): PENDENCIAS #36 + RELATORIO §22 — Gate Final a882bcc1 success (#3176)"
-   },
-   {
-    "sha": "a882bcc",
-    "data": "2026-11-07",
-    "assunto": "docs(edge-deploy-log): recibo do deploy — run 42374498496 (#3163)"
-   },
-   {
-    "sha": "3093c4a",
-    "data": "2026-11-07",
-    "assunto": "fix(test): validar de verdade o corpus dos fuzzers (#3173)"
-   },
-   {
-    "sha": "2eca6a4",
-    "data": "2026-11-07",
-    "assunto": "docs: RELATORIO_CI.md §21 — Gate Final ✅ success na main 1a47c6972c"
-   },
-   {
-    "sha": "1a47c69",
-    "data": "2026-11-07",
-    "assunto": "docs: RELATORIO_CI.md e PENDENCIAS.md — status CI e workflows (#3172)"
-   },
-   {
-    "sha": "fa5da5d",
-    "data": "2026-11-07",
-    "assunto": "chore(docs): Gate 1.14 — adiciona SUPABASE_TEST_BYPASS_TOKEN ao SEGREDOS.md (#3164)"
-   },
-   {
-    "sha": "df81a74",
-    "data": "2026-11-07",
-    "assunto": "fix(magazine): impedir colapso do título em lg (#3161)"
-   },
-   {
-    "sha": "787f843",
-    "data": "2026-11-07",
-    "assunto": "Merge pull request #3154 from adm01-debug/claude/fix-dashboard-title-loading-261107-0100"
-   },
-   {
-    "sha": "9739e65",
-    "data": "2026-11-07",
-    "assunto": "fix(e2e): adiciona role seller ao helper de auth (#3145)"
    }
   ],
-  "arquivos_mudados_7d": 504,
+  "arquivos_mudados_7d": 586,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 610
+    "mudancas": 313
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 315
+    "mudancas": 166
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 233
+    "mudancas": 118
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 213
-   },
-   {
-    "pasta": "src/pages/magazine",
-    "mudancas": 186
-   },
-   {
-    "pasta": "src/components/quotes",
-    "mudancas": 177
-   },
-   {
-    "pasta": "src/components/inventory",
-    "mudancas": 160
-   },
-   {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 160
-   },
-   {
-    "pasta": "src/components/ui",
-    "mudancas": 154
-   },
-   {
-    "pasta": "src/components/mockup",
-    "mudancas": 145
-   },
-   {
-    "pasta": "src/pages/admin",
-    "mudancas": 119
-   },
-   {
-    "pasta": "src/pages/products",
     "mudancas": 109
    },
    {
-    "pasta": "src/components/kit-builder",
-    "mudancas": 102
+    "pasta": "src/components/mockup",
+    "mudancas": 99
    },
    {
-    "pasta": "src/pages/quotes",
+    "pasta": "src/pages/magazine",
     "mudancas": 96
    },
    {
-    "pasta": "docs/arquivo/2026-09",
-    "mudancas": 86
+    "pasta": "src/components/quotes",
+    "mudancas": 95
+   },
+   {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 91
+   },
+   {
+    "pasta": "src/components/inventory",
+    "mudancas": 80
+   },
+   {
+    "pasta": "src/components/ui",
+    "mudancas": 78
+   },
+   {
+    "pasta": "RELATORIO_CI.md",
+    "mudancas": 73
+   },
+   {
+    "pasta": "PENDENCIAS.md",
+    "mudancas": 63
+   },
+   {
+    "pasta": "src/pages/admin",
+    "mudancas": 59
+   },
+   {
+    "pasta": "src/pages/products",
+    "mudancas": 59
+   },
+   {
+    "pasta": "src/components/kit-builder",
+    "mudancas": 56
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 76
+    "mudancas": 73
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 66
+    "mudancas": 63
    },
    {
     "arquivo": "package.json",
-    "mudancas": 22
+    "mudancas": 23
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 20
+    "mudancas": 18
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 17
+    "mudancas": 16
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -223,26 +223,18 @@
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 14
-   },
-   {
-    "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
     "mudancas": 11
    },
    {
+    "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
+    "mudancas": 11
+   },
+   {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 10
-   },
-   {
-    "arquivo": "AGENTS.md",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "CLAUDE.md",
     "mudancas": 9
    },
    {
@@ -250,31 +242,19 @@
     "mudancas": 9
    },
    {
+    "arquivo": "AGENTS.md",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "CLAUDE.md",
+    "mudancas": 8
+   },
+   {
     "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "analise-prs/prs.json",
-    "mudancas": 7
+    "mudancas": 6
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "analise-prs/progresso.json",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "analise-prs/prs.csv",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "docs/estado/PENDENCIAS.md",
     "mudancas": 6
    },
    {
@@ -282,26 +262,46 @@
     "mudancas": 6
    },
    {
-    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
     "mudancas": 5
    },
    {
-    "arquivo": ".github/workflows/schema-snapshot-export.yml",
+    "arquivo": "analise-prs/prs.json",
     "mudancas": 5
+   },
+   {
+    "arquivo": "docs/ci/SEGREDOS.md",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "docs/estado/PENDENCIAS.md",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "e2e/helpers/auth.ts",
+    "mudancas": 5
+   },
+   {
+    "arquivo": ".github/workflows/ci-security-drift.yml",
+    "mudancas": 4
+   },
+   {
+    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
+    "mudancas": 4
    },
    {
     "arquivo": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
-    "mudancas": 5
+    "mudancas": 4
    },
    {
     "arquivo": "analise-branches/dossies/fix-contract-mag-reader-261019-2110.md",
-    "mudancas": 5
+    "mudancas": 4
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 325
+    "commits": 326
    },
    {
     "autor": "Joaquim Ataides",
@@ -309,11 +309,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 23
-   },
-   {
-    "autor": "dependabot[bot]",
-    "commits": 2
+    "commits": 22
    },
    {
     "autor": "Claude",
@@ -322,23 +318,23 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9184,
-  "arquivos_codigo": 4620,
-  "linhas_codigo": 884564,
+  "arquivos_total": 9205,
+  "arquivos_codigo": 4631,
+  "linhas_codigo": 887042,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
   "modulos": 158,
-  "componentes": 1122,
+  "componentes": 1123,
   "hooks": 414,
   "edge_functions": 111,
   "tabelas": 544,
-  "migrations": 3043,
+  "migrations": 3045,
   "cron_jobs": 120,
-  "testes": 2191,
+  "testes": 2200,
   "workflows": 94,
-  "scripts": 255,
+  "scripts": 257,
   "docs_md": 899
  },
  "por_pasta": {
@@ -436,7 +432,7 @@
   },
   "e2e/catalog": {
    "arquivos": 32,
-   "linhas": 4334
+   "linhas": 4342
   },
   "e2e/catalog-exhaustive-validation.spec.ts": {
    "arquivos": 1,
@@ -468,7 +464,7 @@
   },
   "e2e/catalog.spec.ts": {
    "arquivos": 1,
-   "linhas": 150
+   "linhas": 151
   },
   "e2e/chaos-validation.spec.ts": {
    "arquivos": 1,
@@ -544,11 +540,11 @@
   },
   "e2e/fixtures": {
    "arquivos": 10,
-   "linhas": 1341
+   "linhas": 1547
   },
   "e2e/flows": {
    "arquivos": 183,
-   "linhas": 25184
+   "linhas": 25338
   },
   "e2e/future-stock.spec.ts": {
    "arquivos": 1,
@@ -563,8 +559,8 @@
    "linhas": 20
   },
   "e2e/helpers": {
-   "arquivos": 33,
-   "linhas": 4684
+   "arquivos": 35,
+   "linhas": 4984
   },
   "e2e/initial-load.spec.ts": {
    "arquivos": 1,
@@ -572,7 +568,7 @@
   },
   "e2e/kit-builder.spec.ts": {
    "arquivos": 1,
-   "linhas": 103
+   "linhas": 105
   },
   "e2e/login.spec.ts": {
    "arquivos": 1,
@@ -628,7 +624,7 @@
   },
   "e2e/optimized-image-visual.spec.ts": {
    "arquivos": 1,
-   "linhas": 67
+   "linhas": 102
   },
   "e2e/orcamentos": {
    "arquivos": 1,
@@ -760,7 +756,7 @@
   },
   "e2e/quotes": {
    "arquivos": 60,
-   "linhas": 6898
+   "linhas": 6937
   },
   "e2e/raio-x.spec.ts": {
    "arquivos": 1,
@@ -804,7 +800,7 @@
   },
   "e2e/routes": {
    "arquivos": 89,
-   "linhas": 4704
+   "linhas": 4755
   },
   "e2e/scripts": {
    "arquivos": 3,
@@ -880,7 +876,7 @@
   },
   "e2e/visual": {
    "arquivos": 5,
-   "linhas": 541
+   "linhas": 546
   },
   "e2e/visual-regression.spec.ts": {
    "arquivos": 1,
@@ -1060,7 +1056,7 @@
   },
   "scripts/check-cron-drift.mjs": {
    "arquivos": 1,
-   "linhas": 93
+   "linhas": 114
   },
   "scripts/check-ddl-out-of-band.mjs": {
    "arquivos": 1,
@@ -1136,7 +1132,7 @@
   },
   "scripts/check-event-triggers-drift.mjs": {
    "arquivos": 1,
-   "linhas": 93
+   "linhas": 111
   },
   "scripts/check-fab-accessibility.mjs": {
    "arquivos": 1,
@@ -1432,7 +1428,7 @@
   },
   "scripts/check-visual-tests-specs.mjs": {
    "arquivos": 1,
-   "linhas": 41
+   "linhas": 57
   },
   "scripts/check-workflow-contracts.mjs": {
    "arquivos": 1,
@@ -1468,7 +1464,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 1138
+   "linhas": 1249
   },
   "scripts/dry-run-migration-draft.mjs": {
    "arquivos": 1,
@@ -1583,8 +1579,8 @@
    "linhas": 381
   },
   "scripts/lib": {
-   "arquivos": 1,
-   "linhas": 146
+   "arquivos": 2,
+   "linhas": 207
   },
   "scripts/list-migration-drafts.mjs": {
    "arquivos": 1,
@@ -1792,7 +1788,7 @@
   },
   "scripts/validate-migration-target.mjs": {
    "arquivos": 1,
-   "linhas": 81
+   "linhas": 87
   },
   "scripts/validate-quote-summary-undo.mjs": {
    "arquivos": 1,
@@ -1840,7 +1836,7 @@
   },
   "src/components": {
    "arquivos": 1332,
-   "linhas": 268660
+   "linhas": 268688
   },
   "src/config": {
    "arquivos": 1,
@@ -1883,8 +1879,8 @@
    "linhas": 63
   },
   "src/pages": {
-   "arquivos": 345,
-   "linhas": 81547
+   "arquivos": 348,
+   "linhas": 81762
   },
   "src/routes": {
    "arquivos": 14,
@@ -1916,7 +1912,7 @@
   },
   "supabase/functions": {
    "arquivos": 251,
-   "linhas": 45904
+   "linhas": 46481
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -1995,8 +1991,8 @@
    "linhas": 32335
   },
   "tests/config": {
-   "arquivos": 5,
-   "linhas": 322
+   "arquivos": 6,
+   "linhas": 391
   },
   "tests/contexts": {
    "arquivos": 2,
@@ -2091,8 +2087,8 @@
    "linhas": 89
   },
   "tests/scripts": {
-   "arquivos": 53,
-   "linhas": 8633
+   "arquivos": 55,
+   "linhas": 9098
   },
   "tests/search": {
    "arquivos": 1,
@@ -2179,8 +2175,8 @@
    "linhas": 160
   },
   "tests/unit": {
-   "arquivos": 31,
-   "linhas": 5485
+   "arquivos": 33,
+   "linhas": 5574
   },
   "tests/utils": {
    "arquivos": 21,
@@ -2200,7 +2196,7 @@
   },
   "vitest.config.ts": {
    "arquivos": 1,
-   "linhas": 165
+   "linhas": 166
   }
  },
  "maiores_arquivos": [
@@ -2237,12 +2233,12 @@
    "linhas": 1273
   },
   {
-   "arquivo": "src/pages/products/SellerCartsPage.tsx",
-   "linhas": 1196
+   "arquivo": "scripts/drift-baseline.mjs",
+   "linhas": 1249
   },
   {
-   "arquivo": "scripts/drift-baseline.mjs",
-   "linhas": 1138
+   "arquivo": "src/pages/products/SellerCartsPage.tsx",
+   "linhas": 1196
   },
   {
    "arquivo": "src/components/products/ProductCard.tsx",
@@ -2307,11 +2303,11 @@
  ],
  "qualidade": {
   "any": 568,
-  "console_log": 1224,
+  "console_log": 1222,
   "ts_ignore": 0,
   "eslint_disable": 6,
   "todos": 74,
-  "arquivos_acima_500_linhas": 164
+  "arquivos_acima_500_linhas": 165
  },
  "todos": [
   {
@@ -2508,7 +2504,7 @@
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",
-   "linha": 488,
+   "linha": 599,
    "tipo": "TODO",
    "texto": "objeto (ex.: `.*`, `^create table`, `public`)."
   },

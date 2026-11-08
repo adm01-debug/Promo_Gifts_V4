@@ -1103,7 +1103,7 @@
    "nome": "e2e-cleanup",
    "entrada": "supabase/functions/e2e-cleanup/index.ts",
    "arquivos": 2,
-   "linhas": 511,
+   "linhas": 831,
    "verify_jwt": false,
    "metodos": [
     "GET",
@@ -1112,7 +1112,9 @@
     "POST"
    ],
    "tabelas": [
-    "e2e_cleanup_audit"
+    "e2e_cleanup_audit",
+    "quote_items",
+    "quotes"
    ],
    "rpcs": [
     "e2e_cleanup_check_rate_limit"
