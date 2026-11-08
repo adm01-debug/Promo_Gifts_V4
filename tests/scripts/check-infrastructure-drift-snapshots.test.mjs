@@ -3,6 +3,8 @@ import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
+import { canonicalPgConnection } from '../../scripts/lib/canonical-pg-connection.mjs';
+import { CANONICAL_PROJECT } from '../../scripts/validate-migration-target.mjs';
 
 const ROOT = process.cwd();
 const EVENT_SCRIPT = join(ROOT, 'scripts/check-event-triggers-drift.mjs');
@@ -60,6 +62,8 @@ writeFileSync(process.env.CAPTURE_PATH, JSON.stringify({
   database: process.env.PGDATABASE,
   user: process.env.PGUSER,
   password: process.env.PGPASSWORD,
+  sslmode: process.env.PGSSLMODE,
+  connectTimeout: process.env.PGCONNECT_TIMEOUT,
 }));
 process.stdout.write(process.env.FAKE_KIND === 'event'
   ? 'evt_test|ddl_command_end|O|public.fn_test\\n'
@@ -76,8 +80,13 @@ process.stdout.write(process.env.FAKE_KIND === 'event'
       ...process.env,
       PATH: `${binDir}:${process.env.PATH}`,
       DATABASE_URL: '',
-      SUPABASE_PROJECT_REF: 'projeto-canônico-teste',
-      SUPABASE_DB_PASSWORD: password,
+      SUPABASE_PROJECT_REF: CANONICAL_PROJECT,
+      SUPABASE_DB_PASSWORD: 'senha-direta-não-deve-ser-usada',
+      PGHOST: 'aws-1-sa-east-1.pooler.supabase.com',
+      PGPORT: '5432',
+      PGDATABASE: 'postgres',
+      PGUSER: `postgres.${CANONICAL_PROJECT}`,
+      PGPASSWORD: password,
       CAPTURE_PATH: capturePath,
       FAKE_KIND: kind,
     },
@@ -146,11 +155,13 @@ describe('snapshots de infraestrutura live', () => {
     expect(capture.argv.join(' ')).not.toContain(password);
     expect(capture.argv).not.toContain('--dbname');
     expect(capture).toMatchObject({
-      host: 'db.projeto-canônico-teste.supabase.co',
+      host: 'aws-1-sa-east-1.pooler.supabase.com',
       port: '5432',
       database: 'postgres',
-      user: 'postgres',
+      user: `postgres.${CANONICAL_PROJECT}`,
       password,
+      sslmode: 'require',
+      connectTimeout: '15',
     });
   });
 
@@ -171,5 +182,47 @@ describe('snapshots de infraestrutura live', () => {
       expect(drift).toContain(`scripts/${script}.mjs`);
       expect(deploy).toContain(script);
     }
+    for (const secret of ['PGHOST', 'PGDATABASE', 'PGUSER', 'PGPASSWORD']) {
+      expect(drift).toContain(`${secret}: \${{ secrets.${secret} }}`);
+    }
+    expect(drift).toContain("PGPORT: '5432'");
+    expect(drift).toContain('PGSSLMODE: require');
+    expect(drift).toContain('PGCONNECT_TIMEOUT:');
+    expect(drift).toContain('--require-live-pooler --target-only');
+  });
+
+  it('recusa PG* parcial, porta transaction e alvos não canônicos', () => {
+    const valid = {
+      SUPABASE_PROJECT_REF: CANONICAL_PROJECT,
+      PGHOST: 'aws-1-sa-east-1.pooler.supabase.com',
+      PGPORT: '5432',
+      PGDATABASE: 'postgres',
+      PGUSER: `postgres.${CANONICAL_PROJECT}`,
+      PGPASSWORD: 'fixture-only',
+    };
+
+    expect(canonicalPgConnection(valid)?.env.PGHOST).toBe(valid.PGHOST);
+    expect(canonicalPgConnection({ ...valid, PGPASSWORD: '' })).toBeNull();
+    expect(canonicalPgConnection({ ...valid, PGPORT: '6543' })).toBeNull();
+    expect(canonicalPgConnection({ ...valid, PGHOST: 'pooler.attacker.invalid' })).toBeNull();
+    expect(canonicalPgConnection({ ...valid, PGUSER: 'postgres.other-project' })).toBeNull();
+  });
+
+  it('valida DATABASE_URL canônica, decodifica a senha e rejeita banco arbitrário', () => {
+    const password = '@:/#$()" senha';
+    const canonical = canonicalPgConnection({
+      DATABASE_URL:
+        `postgresql://postgres.${CANONICAL_PROJECT}:${encodeURIComponent(password)}` +
+        '@aws-1-sa-east-1.pooler.supabase.com:5432/postgres?sslmode=require',
+    });
+
+    expect(canonical?.args).toEqual([]);
+    expect(canonical?.env.PGPASSWORD).toBe(password);
+    expect(canonical?.env.PGSSLMODE).toBe('require');
+    expect(
+      canonicalPgConnection({
+        DATABASE_URL: 'postgresql://postgres:password@db.attacker.invalid:5432/postgres',
+      }),
+    ).toBeNull();
   });
 });

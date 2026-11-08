@@ -16,6 +16,7 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { canonicalPgConnection } from './lib/canonical-pg-connection.mjs';
 
 const BASELINE_DIR = 'supabase/baseline';
 
@@ -28,25 +29,7 @@ function findLatestEventTriggerSnapshot() {
 }
 
 function getDbConnection() {
-  if (process.env.DATABASE_URL) {
-    return { args: ['--dbname', process.env.DATABASE_URL], env: process.env };
-  }
-  const ref = process.env.SUPABASE_PROJECT_REF;
-  const pw = process.env.SUPABASE_DB_PASSWORD;
-  if (ref && pw) {
-    return {
-      args: [],
-      env: {
-        ...process.env,
-        PGHOST: `db.${ref}.supabase.co`,
-        PGPORT: '5432',
-        PGDATABASE: 'postgres',
-        PGUSER: 'postgres',
-        PGPASSWORD: pw,
-      },
-    };
-  }
-  return null;
+  return canonicalPgConnection(process.env);
 }
 
 function queryLiveEventTriggers(connection) {
