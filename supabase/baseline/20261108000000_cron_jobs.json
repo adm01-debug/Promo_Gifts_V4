@@ -1,0 +1,722 @@
+[
+  {
+    "jobname": "ai-enqueue-daily",
+    "schedule": "17 4 * * *",
+    "active": true
+  },
+  {
+    "jobname": "ai-queue-stuck-cleanup",
+    "schedule": "34 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "alert-products-without-images",
+    "schedule": "0 8 * * *",
+    "active": true
+  },
+  {
+    "jobname": "alert-supplier-settings-incomplete",
+    "schedule": "0 9 * * *",
+    "active": true
+  },
+  {
+    "jobname": "analyze-dictionaries-daily",
+    "schedule": "0 2 * * *",
+    "active": true
+  },
+  {
+    "jobname": "analyze-weekly-supplement",
+    "schedule": "0 3 * * 6",
+    "active": true
+  },
+  {
+    "jobname": "anon-catalog-grant-audit-6h",
+    "schedule": "3 */6 * * *",
+    "active": true
+  },
+  {
+    "jobname": "anon-insert-rate-purge",
+    "schedule": "1,16,31,46 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "asia-enqueue-new-products",
+    "schedule": "21,51 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "asia-image-uploader",
+    "schedule": "9 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "asia-stock-sync",
+    "schedule": "7,22,37,52 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "auto-block-offenders",
+    "schedule": "1,16,31,46 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "backfill-image-dimensions",
+    "schedule": "7,22,37,52 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "backfill-queue-reap-stuck",
+    "schedule": "2,17,32,47 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "category-resync-weekly",
+    "schedule": "0 2 * * 0",
+    "active": true
+  },
+  {
+    "jobname": "cleanup-edge-rate-limits",
+    "schedule": "37 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "cleanup-expired-auth-sessions",
+    "schedule": "0 4 * * *",
+    "active": true
+  },
+  {
+    "jobname": "cleanup-expired-favorites-trash",
+    "schedule": "15 2 * * *",
+    "active": true
+  },
+  {
+    "jobname": "cleanup-expired-token-revocations",
+    "schedule": "43 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "cleanup-log-tables-weekly",
+    "schedule": "7 3 * * 0",
+    "active": true
+  },
+  {
+    "jobname": "cleanup-notifications",
+    "schedule": "10 3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "cleanup-novelties",
+    "schedule": "5 4 * * *",
+    "active": true
+  },
+  {
+    "jobname": "cleanup-product-webhook-nonces-hourly",
+    "schedule": "17 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "cleanup-security-logs",
+    "schedule": "30 3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "cleanup-skipped-backfill-items",
+    "schedule": "0 2 * * 0",
+    "active": true
+  },
+  {
+    "jobname": "cleanup-stale-ai-pending-logs",
+    "schedule": "3,18,33,48 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "cleanup-webhook-delivery-locks-hourly",
+    "schedule": "47 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "collections-watcher",
+    "schedule": "23 6 * * *",
+    "active": true
+  },
+  {
+    "jobname": "color-health-daily",
+    "schedule": "19 6 * * *",
+    "active": true
+  },
+  {
+    "jobname": "comparison-price-watcher",
+    "schedule": "40 6 * * *",
+    "active": true
+  },
+  {
+    "jobname": "connections-auto-test",
+    "schedule": "9,24,39,54 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "connections-health-check",
+    "schedule": "4,19,34,49 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "cron_job_run_details_purge_weekly",
+    "schedule": "0 4 * * 0",
+    "active": true
+  },
+  {
+    "jobname": "daily-expire-quotes",
+    "schedule": "30 3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "dashboard-insights-cache-cleanup",
+    "schedule": "48 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "dispatcher-failure-alert",
+    "schedule": "5,20,35,50 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "dispatcher-log-cleanup",
+    "schedule": "0 3 * * 0",
+    "active": true
+  },
+  {
+    "jobname": "dispatcher-log-sync",
+    "schedule": "*/2 * * * *",
+    "active": false
+  },
+  {
+    "jobname": "expire-product-novelties",
+    "schedule": "7 3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "expire-stale-password-reset-requests",
+    "schedule": "7 6 * * *",
+    "active": true
+  },
+  {
+    "jobname": "expire-supplier-promises",
+    "schedule": "11 4 * * *",
+    "active": true
+  },
+  {
+    "jobname": "fantasmas-deactivate-guard",
+    "schedule": "4,34 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "favorites-watcher",
+    "schedule": "20 6 * * *",
+    "active": true
+  },
+  {
+    "jobname": "fix_price_verified_drift_daily",
+    "schedule": "15 3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "generate-blurhashes",
+    "schedule": "*/10 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "hash-product-images",
+    "schedule": "11,26,41,56 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "image-dimensions-backfill",
+    "schedule": "31 */3 * * *",
+    "active": false
+  },
+  {
+    "jobname": "kill_switch_hits_purge_weekly",
+    "schedule": "0 4 * * 0",
+    "active": true
+  },
+  {
+    "jobname": "kit-component-auto-approve",
+    "schedule": "26,56 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "kit-component-auto-promote",
+    "schedule": "46 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "kit-component-variant-skus-refresh",
+    "schedule": "20 */6 * * *",
+    "active": true
+  },
+  {
+    "jobname": "kit-enrich-daily",
+    "schedule": "45 3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "kit-ficha-fetch",
+    "schedule": "12 */3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "kit-ficha-parse-site",
+    "schedule": "33 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "kit-ficha-promote",
+    "schedule": "38 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "kit-material-propagate",
+    "schedule": "10 */6 * * *",
+    "active": true
+  },
+  {
+    "jobname": "kit-sync-personalization-notes",
+    "schedule": "31 6,18 * * *",
+    "active": true
+  },
+  {
+    "jobname": "magazine-cleanup-nightly",
+    "schedule": "15 3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "magazine-partition-maintenance",
+    "schedule": "0 4 * * *",
+    "active": true
+  },
+  {
+    "jobname": "magazine-view-rollup-hourly",
+    "schedule": "5 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "medallion-coverage-daily",
+    "schedule": "37 3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "medallion-promote-tick",
+    "schedule": "6,36 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "monitor-connections",
+    "schedule": "* * * * *",
+    "active": false
+  },
+  {
+    "jobname": "notebook-specs-daily",
+    "schedule": "7 5 * * *",
+    "active": true
+  },
+  {
+    "jobname": "novelties-safeguard-hourly",
+    "schedule": "5 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "novelties-sync-bihourly",
+    "schedule": "20 */2 * * *",
+    "active": true
+  },
+  {
+    "jobname": "ops-grants-self-heal",
+    "schedule": "0 6 * * 1",
+    "active": true
+  },
+  {
+    "jobname": "pgrst-schema-reload",
+    "schedule": "7 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "pipeline-classify-categories",
+    "schedule": "2,12,22,32,42,52 * * * *",
+    "active": false
+  },
+  {
+    "jobname": "pipeline-health-check-4h",
+    "schedule": "1 */4 * * *",
+    "active": true
+  },
+  {
+    "jobname": "pipeline-health-hourly",
+    "schedule": "15 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "pipeline-print-profiles",
+    "schedule": "14,29,44,59 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "pipeline-run-log-purge-weekly",
+    "schedule": "0 4 * * 0",
+    "active": true
+  },
+  {
+    "jobname": "populate-novelties-from-supplier",
+    "schedule": "5 3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "pre-generate-market-insights",
+    "schedule": "44 1,7,13,19 * * *",
+    "active": true
+  },
+  {
+    "jobname": "process-pending-products",
+    "schedule": "2,17,32,47 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "process-queue",
+    "schedule": "4,14,24,34,44,54 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "process-scheduled-reports",
+    "schedule": "5 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "process-webhook-outbox",
+    "schedule": "* * * * *",
+    "active": false
+  },
+  {
+    "jobname": "purge-expired-restock-dates",
+    "schedule": "13 6 * * *",
+    "active": true
+  },
+  {
+    "jobname": "purge-expired-security",
+    "schedule": "6,21,36,51 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "purge-kit-quote-requests",
+    "schedule": "23 3 * * 0",
+    "active": true
+  },
+  {
+    "jobname": "purge-kit-save-requests",
+    "schedule": "17 3 * * 0",
+    "active": true
+  },
+  {
+    "jobname": "purge-magazine-duplicate-requests",
+    "schedule": "31 3 * * 0",
+    "active": true
+  },
+  {
+    "jobname": "purge-spr-history-daily",
+    "schedule": "30 3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "purge_crm_callback_events_daily",
+    "schedule": "17 3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "qa-image-coverage-hourly",
+    "schedule": "51 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "qa-imageless-products",
+    "schedule": "29,59 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "quote-followup-reminders",
+    "schedule": "17 9 * * *",
+    "active": true
+  },
+  {
+    "jobname": "reconcile-category-products-count",
+    "schedule": "5,20,35,50 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "reconcile-stock-gold-daily",
+    "schedule": "10 5 * * *",
+    "active": true
+  },
+  {
+    "jobname": "refresh-all-materialized-views",
+    "schedule": "38 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "refresh-analytics-mv-product-intelligence",
+    "schedule": "30 */6 * * *",
+    "active": false
+  },
+  {
+    "jobname": "refresh-analytics-mv-stock-velocity",
+    "schedule": "13 */8 * * *",
+    "active": false
+  },
+  {
+    "jobname": "refresh-backfill-queue-expiry",
+    "schedule": "33 */4 * * *",
+    "active": true
+  },
+  {
+    "jobname": "refresh-category-ancestors",
+    "schedule": "7 1 * * *",
+    "active": true
+  },
+  {
+    "jobname": "refresh-mv-ema-kpi-by-level",
+    "schedule": "16 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "refresh-mv-product-images-audit",
+    "schedule": "42 */6 * * *",
+    "active": true
+  },
+  {
+    "jobname": "refresh-mv-product-leaf-category",
+    "schedule": "37 */4 * * *",
+    "active": true
+  },
+  {
+    "jobname": "refresh-mv-stock-rupture-alert",
+    "schedule": "18 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "refresh-mv-supplier-reliability",
+    "schedule": "8,23,38,53 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "reposicao-backfill-hourly",
+    "schedule": "42 */4 * * *",
+    "active": true
+  },
+  {
+    "jobname": "resync-product-physical-weekly",
+    "schedule": "0 3 * * 0",
+    "active": true
+  },
+  {
+    "jobname": "revoke-truncate-daily",
+    "schedule": "5 0 * * *",
+    "active": true
+  },
+  {
+    "jobname": "schema-drift-check",
+    "schedule": "11 2,8,14,20 * * *",
+    "active": true
+  },
+  {
+    "jobname": "send-digest",
+    "schedule": "0 8 * * 1",
+    "active": true
+  },
+  {
+    "jobname": "send-scheduled-reports",
+    "schedule": "10 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "seo-populate-new-products",
+    "schedule": "13 5 * * *",
+    "active": true
+  },
+  {
+    "jobname": "seo-recalculate-stale-scores",
+    "schedule": "30 5 * * *",
+    "active": true
+  },
+  {
+    "jobname": "sm-category-collect",
+    "schedule": "12,27,42,57 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "sm-category-enqueue",
+    "schedule": "11,26,41,56 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "sm-session-check",
+    "schedule": "7 8 * * *",
+    "active": true
+  },
+  {
+    "jobname": "sm-site-scrape",
+    "schedule": "16,46 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "sm-site-scrape-auth",
+    "schedule": "19,39,59 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "sm-stock-guard",
+    "schedule": "6,21,36,51 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "sm-url-discover-collect",
+    "schedule": "8,18,28,38,48,58 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "sm-url-discover-search",
+    "schedule": "5,15,25,35,45,55 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "sm-url-map-rebuild",
+    "schedule": "30 3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "sm-variant-coherence-guard",
+    "schedule": "12,27,42,57 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "smoke_tests_monthly",
+    "schedule": "0 3 1 * *",
+    "active": true
+  },
+  {
+    "jobname": "spot-health-check-daily",
+    "schedule": "11 9 * * *",
+    "active": true
+  },
+  {
+    "jobname": "spot-relink-family-images",
+    "schedule": "22,52 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "spot-stock-fast-sync",
+    "schedule": "10,40 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "spr-requeue-failed-hourly",
+    "schedule": "25 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "stock-daily-backfill-today",
+    "schedule": "15 3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "stock_daily_aggregation",
+    "schedule": "30 22 * * *",
+    "active": true
+  },
+  {
+    "jobname": "stock_snapshots_weekly_purge",
+    "schedule": "11 3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "sync-derived-product-flags",
+    "schedule": "23 2 * * *",
+    "active": true
+  },
+  {
+    "jobname": "sync-dynamic-collections",
+    "schedule": "10 3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "sync-is-new-expires-at",
+    "schedule": "10 3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "sync-is-stockout-universal",
+    "schedule": "0,15,30,45 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "sync-supplier-timestamps-hourly",
+    "schedule": "57 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "vacuum-analyze-weekly",
+    "schedule": "0 2 * * 6",
+    "active": true
+  },
+  {
+    "jobname": "vacuum-high-dead-tuples",
+    "schedule": "30 4 * * 0",
+    "active": true
+  },
+  {
+    "jobname": "vacuum-product-variants-weekly",
+    "schedule": "8 3 * * 0",
+    "active": true
+  },
+  {
+    "jobname": "vacuum-products-weekly",
+    "schedule": "3 3 * * 0",
+    "active": true
+  },
+  {
+    "jobname": "vacuum-request-rate-limits",
+    "schedule": "30 3 * * *",
+    "active": true
+  },
+  {
+    "jobname": "vacuum-stock-snapshots",
+    "schedule": "0 3 * * 0",
+    "active": true
+  },
+  {
+    "jobname": "video-botcheck-heal",
+    "schedule": "30 1 * * *",
+    "active": true
+  },
+  {
+    "jobname": "video-recover-stuck",
+    "schedule": "13,28,43,58 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "xbz-enrich-gold-extractors",
+    "schedule": "26,56 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "xbz-image-uploader",
+    "schedule": "3,13,23,33,43,53 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "xbz-site-scrape",
+    "schedule": "1,31 * * * *",
+    "active": true
+  },
+  {
+    "jobname": "xbz-stock-sync",
+    "schedule": "23,53 * * * *",
+    "active": true
+  }
+]

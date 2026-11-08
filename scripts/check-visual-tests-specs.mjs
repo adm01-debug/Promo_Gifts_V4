@@ -10,7 +10,7 @@
  * Uso: `node scripts/check-visual-tests-specs.mjs`
  * Exit 0 = todos os specs existem. Exit 1 = lista os ausentes.
  */
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const WORKFLOW = '.github/workflows/visual-tests.yml';
@@ -31,10 +31,26 @@ if (unique.length === 0) {
 const missing = unique.filter((p) => !existsSync(resolve(ROOT, p)));
 
 if (missing.length > 0) {
-  console.error(`❌ ${missing.length} spec(s) referenciado(s) em ${WORKFLOW} não existem no disco:`);
+  console.error(
+    `❌ ${missing.length} spec(s) referenciado(s) em ${WORKFLOW} não existem no disco:`,
+  );
   for (const p of missing) console.error(`   • ${p}`);
   console.error('\nCorrija o YAML ou recrie os arquivos antes de executar o workflow.');
   process.exit(1);
 }
 
-console.log(`✅ ${unique.length} specs referenciados em ${WORKFLOW} existem no disco.`);
+const missingBaselines = unique.filter((p) => {
+  const source = readFileSync(resolve(ROOT, p), 'utf8');
+  if (!/toHaveScreenshot|toMatchSnapshot/.test(source)) return false;
+  const dir = resolve(ROOT, `${p}-snapshots`);
+  return !existsSync(dir) || readdirSync(dir).filter((name) => !name.startsWith('.')).length === 0;
+});
+
+if (missingBaselines.length > 0) {
+  console.error(`❌ ${missingBaselines.length} spec(s) visual(is) sem baseline versionado:`);
+  for (const p of missingBaselines) console.error(`   • ${p}-snapshots/`);
+  console.error('\nGere, revise e versione os snapshots antes de incluir o spec no workflow.');
+  process.exit(1);
+}
+
+console.log(`✅ ${unique.length} specs e seus diretórios de baseline estão versionados.`);

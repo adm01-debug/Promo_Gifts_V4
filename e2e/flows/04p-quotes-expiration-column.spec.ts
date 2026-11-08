@@ -13,24 +13,26 @@
  *     teste de "persistência após reload" reduz-se a recarregar a página
  *     e conferir que a coluna continua presente.
  */
-import { test, expect, requireAuth } from "../fixtures/test-base";
-import { gotoAndSettle } from "../helpers/nav";
-import { e2eName } from "../helpers/e2e-resources";
-import { requireE2EBaseUrl } from "../helpers/require-env-base-url";
-import type { Page } from "@playwright/test";
+import { test, expect, requireAuth, requireLiveDatabaseAuth } from '../fixtures/test-base';
+import { gotoAndSettle } from '../helpers/nav';
+import { e2eName } from '../helpers/e2e-resources';
+import { requireE2EBaseUrl } from '../helpers/require-env-base-url';
+import { assertPublicSupabaseKey } from '../helpers/quotes-status-seed';
+import type { Page } from '@playwright/test';
 
 // Matriz de fusos: a contagem regressiva usa `new Date(y,m,d)` local, então
 // validamos em 3 fusos distintos para garantir que 0/1/7/-1 dia continuam
 // determinísticos e que o dd/MM/yyyy do tooltip não muda com o fuso.
-const TIMEZONES = ["America/Sao_Paulo", "UTC", "Europe/Lisbon"] as const;
+const TIMEZONES = ['America/Sao_Paulo', 'UTC', 'Europe/Lisbon'] as const;
 
-const SUPABASE_URL =
-  requireE2EBaseUrl();
+const SUPABASE_URL = requireE2EBaseUrl();
 const SUPABASE_ANON_KEY =
   process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
   process.env.VITE_SUPABASE_ANON_KEY ||
   process.env.SUPABASE_ANON_KEY ||
-  "";
+  '';
+const SUPABASE_PROJECT_REF = new URL(SUPABASE_URL).hostname.split('.')[0];
+const SUPABASE_STORAGE_KEY = `sb-${SUPABASE_PROJECT_REF}-auth-token`;
 
 interface ExpirationSeed {
   name: string;
@@ -52,16 +54,40 @@ function buildTargets(): ExpirationSeed[] {
     return `${x.getFullYear()}-${pad(x.getMonth() + 1)}-${pad(x.getDate())}`;
   };
   return [
-    { name: e2eName("exp-minus1"), daysFromToday: -1, expectedText: /^Expirado há 1d$/, expectedToneClass: /text-destructive/, iso: atOffset(-1) },
-    { name: e2eName("exp-today"),  daysFromToday:  0, expectedText: /^Expira hoje$/,    expectedToneClass: /text-destructive/, iso: atOffset(0)  },
-    { name: e2eName("exp-plus1"),  daysFromToday:  1, expectedText: /^1 dia$/,           expectedToneClass: /text-amber-500/,   iso: atOffset(1)  },
-    { name: e2eName("exp-plus7"),  daysFromToday:  7, expectedText: /^7 dias$/,          expectedToneClass: /text-amber-400/,   iso: atOffset(7)  },
+    {
+      name: e2eName('exp-minus1'),
+      daysFromToday: -1,
+      expectedText: /^Expirado há 1d$/,
+      expectedToneClass: /text-destructive/,
+      iso: atOffset(-1),
+    },
+    {
+      name: e2eName('exp-today'),
+      daysFromToday: 0,
+      expectedText: /^Expira hoje$/,
+      expectedToneClass: /text-destructive/,
+      iso: atOffset(0),
+    },
+    {
+      name: e2eName('exp-plus1'),
+      daysFromToday: 1,
+      expectedText: /^1 dia$/,
+      expectedToneClass: /text-amber-500/,
+      iso: atOffset(1),
+    },
+    {
+      name: e2eName('exp-plus7'),
+      daysFromToday: 7,
+      expectedText: /^7 dias$/,
+      expectedToneClass: /text-amber-400/,
+      iso: atOffset(7),
+    },
   ];
 }
 
 function formatLocal(iso: string): string {
-  const [y, m, d] = iso.split("-").map(Number);
-  return `${String(d).padStart(2, "0")}/${String(m).padStart(2, "0")}/${y}`;
+  const [y, m, d] = iso.split('-').map(Number);
+  return `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`;
 }
 
 /**
@@ -75,139 +101,147 @@ async function installLayoutSupabaseMock(page: Page) {
   const intercepted: string[] = [];
   const unexpected: string[] = [];
   const websocketOrigins: string[] = [];
-  const userId = "00000000-0000-0000-0000-e2e0e2e0e2e0";
+  const userId = '00000000-0000-0000-0000-e2e0e2e0e2e0';
   const user = {
     id: userId,
-    aud: "authenticated",
-    role: "authenticated",
-    email: "e2e-mock@promogifts.local",
-    email_confirmed_at: "2026-01-01T00:00:00.000Z",
-    created_at: "2026-01-01T00:00:00.000Z",
-    updated_at: "2026-01-01T00:00:00.000Z",
-    app_metadata: { provider: "email", providers: ["email"] },
+    aud: 'authenticated',
+    role: 'authenticated',
+    email: 'e2e-mock@promogifts.local',
+    email_confirmed_at: '2026-01-01T00:00:00.000Z',
+    created_at: '2026-01-01T00:00:00.000Z',
+    updated_at: '2026-01-01T00:00:00.000Z',
+    app_metadata: { provider: 'email', providers: ['email'] },
     user_metadata: { e2e_mock: true },
     identities: [],
   };
   const quote = {
-    id: "11111111-1111-4111-8111-111111111111",
-    quote_number: "E2E-LAYOUT-01",
-    client_name: "Cliente sintético",
-    client_company: "Cliente sintético",
+    id: '11111111-1111-4111-8111-111111111111',
+    quote_number: 'E2E-LAYOUT-01',
+    client_name: 'Cliente sintético',
+    client_company: 'Cliente sintético',
     seller_id: userId,
-    status: "draft",
+    status: 'draft',
     subtotal: 100,
     discount_percent: 0,
     discount_amount: 0,
     total: 100,
-    created_at: "2026-10-31T12:00:00.000Z",
-    updated_at: "2026-10-31T12:00:00.000Z",
-    valid_until: "2026-11-30",
+    created_at: '2026-10-31T12:00:00.000Z',
+    updated_at: '2026-10-31T12:00:00.000Z',
+    valid_until: '2026-11-30',
   };
   const corsHeaders = {
-    "access-control-allow-origin": "*",
-    "access-control-allow-methods": "GET, POST, OPTIONS",
-    "access-control-allow-headers": "apikey, authorization, content-type, prefer, x-client-info",
-    "access-control-expose-headers": "content-range, x-total-count",
+    'access-control-allow-origin': '*',
+    'access-control-allow-methods': 'GET, POST, OPTIONS',
+    'access-control-allow-headers': 'apikey, authorization, content-type, prefer, x-client-info',
+    'access-control-expose-headers': 'content-range, x-total-count',
   };
 
-  await page.route((url) => url.origin === origin, async (route, request) => {
-    const url = new URL(request.url());
-    const method = request.method();
-    intercepted.push(`${method} ${url.pathname}`);
+  await page.route(
+    (url) => url.origin === origin,
+    async (route, request) => {
+      const url = new URL(request.url());
+      const method = request.method();
+      intercepted.push(`${method} ${url.pathname}`);
 
-    if (method === "OPTIONS") {
-      await route.fulfill({ status: 204, headers: corsHeaders, body: "" });
-      return;
-    }
+      if (method === 'OPTIONS') {
+        await route.fulfill({ status: 204, headers: corsHeaders, body: '' });
+        return;
+      }
 
-    if (url.pathname === "/auth/v1/user" && method === "GET") {
-      await route.fulfill({ status: 200, headers: corsHeaders, json: user });
-      return;
-    }
-    if (url.pathname === "/auth/v1/token" && method === "POST") {
-      const now = Math.floor(Date.now() / 1000);
-      await route.fulfill({
-        status: 200,
-        headers: corsHeaders,
-        json: {
-          access_token: "e2e-layout-mock-token",
-          refresh_token: "e2e-layout-mock-refresh",
-          token_type: "bearer",
-          expires_in: 3600,
-          expires_at: now + 3600,
-          user,
-        },
-      });
-      return;
-    }
-    if (url.pathname.startsWith("/auth/v1/") && method === "POST") {
-      await route.fulfill({ status: 204, headers: corsHeaders, body: "" });
-      return;
-    }
+      if (url.pathname === '/auth/v1/user' && method === 'GET') {
+        await route.fulfill({ status: 200, headers: corsHeaders, json: user });
+        return;
+      }
+      if (url.pathname === '/auth/v1/token' && method === 'POST') {
+        const now = Math.floor(Date.now() / 1000);
+        await route.fulfill({
+          status: 200,
+          headers: corsHeaders,
+          json: {
+            access_token: 'e2e-layout-mock-token',
+            refresh_token: 'e2e-layout-mock-refresh',
+            token_type: 'bearer',
+            expires_in: 3600,
+            expires_at: now + 3600,
+            user,
+          },
+        });
+        return;
+      }
+      if (url.pathname.startsWith('/auth/v1/') && method === 'POST') {
+        await route.fulfill({ status: 204, headers: corsHeaders, body: '' });
+        return;
+      }
 
-    if (url.pathname === "/functions/v1/get-visitor-info" && method === "POST") {
-      await route.fulfill({ status: 200, headers: corsHeaders, json: { ip: "127.0.0.1" } });
-      return;
-    }
+      if (url.pathname === '/functions/v1/get-visitor-info' && method === 'POST') {
+        await route.fulfill({ status: 200, headers: corsHeaders, json: { ip: '127.0.0.1' } });
+        return;
+      }
 
-    if (method === "POST" && url.pathname.startsWith("/rest/v1/rpc/")) {
-      // RPCs invoked during app bootstrap are read-only; empty results are
-      // sufficient for this layout-only test and remain fully local.
+      if (method === 'POST' && url.pathname.startsWith('/rest/v1/rpc/')) {
+        // RPCs invoked during app bootstrap are read-only; empty results are
+        // sufficient for this layout-only test and remain fully local.
+        await route.fulfill({ status: 200, headers: corsHeaders, json: [] });
+        return;
+      }
+      if (
+        method === 'POST' &&
+        (url.pathname === '/rest/v1/user_onboarding' ||
+          url.pathname === '/rest/v1/frontend_telemetry')
+      ) {
+        // App-shell side effects are acknowledged only inside the browser mock;
+        // they never reach a Supabase project.
+        await route.fulfill({ status: 204, headers: corsHeaders, body: '' });
+        return;
+      }
+
+      if (method !== 'GET') {
+        unexpected.push(`${method} ${url.pathname}`);
+        await route.fulfill({
+          status: 405,
+          headers: corsHeaders,
+          json: { error: 'Somente leitura no mock E2E' },
+        });
+        return;
+      }
+
+      if (url.pathname === '/rest/v1/quotes') {
+        await route.fulfill({
+          status: 200,
+          headers: { ...corsHeaders, 'content-range': '0-0/1' },
+          json: [quote],
+        });
+        return;
+      }
+      if (
+        url.pathname === '/rest/v1/quote_items' ||
+        url.pathname === '/rest/v1/personalization_techniques' ||
+        url.pathname === '/rest/v1/system_settings'
+      ) {
+        await route.fulfill({ status: 200, headers: corsHeaders, json: [] });
+        return;
+      }
+
+      // App shell/bootstrap pode consultar outras tabelas de leitura. Mantemos
+      // resposta vazia para elas, preservando o isolamento sem acoplar o teste a
+      // detalhes de módulos alheios à ordem das colunas.
       await route.fulfill({ status: 200, headers: corsHeaders, json: [] });
-      return;
-    }
-    if (
-      method === "POST" &&
-      (url.pathname === "/rest/v1/user_onboarding" || url.pathname === "/rest/v1/frontend_telemetry")
-    ) {
-      // App-shell side effects are acknowledged only inside the browser mock;
-      // they never reach a Supabase project.
-      await route.fulfill({ status: 204, headers: corsHeaders, body: "" });
-      return;
-    }
-
-    if (method !== "GET") {
-      unexpected.push(`${method} ${url.pathname}`);
-      await route.fulfill({ status: 405, headers: corsHeaders, json: { error: "Somente leitura no mock E2E" } });
-      return;
-    }
-
-    if (url.pathname === "/rest/v1/quotes") {
-      await route.fulfill({
-        status: 200,
-        headers: { ...corsHeaders, "content-range": "0-0/1" },
-        json: [quote],
-      });
-      return;
-    }
-    if (
-      url.pathname === "/rest/v1/quote_items" ||
-      url.pathname === "/rest/v1/personalization_techniques" ||
-      url.pathname === "/rest/v1/system_settings"
-    ) {
-      await route.fulfill({ status: 200, headers: corsHeaders, json: [] });
-      return;
-    }
-
-    // App shell/bootstrap pode consultar outras tabelas de leitura. Mantemos
-    // resposta vazia para elas, preservando o isolamento sem acoplar o teste a
-    // detalhes de módulos alheios à ordem das colunas.
-    await route.fulfill({ status: 200, headers: corsHeaders, json: [] });
-  });
+    },
+  );
 
   // Intercepta também referências Supabase inesperadas (incluindo um fallback
   // acidental ao projeto canônico) e mantém a conexão Realtime dentro do mock.
   await page.route(
-    (url) => url.hostname.endsWith(".supabase.co") && url.origin !== origin,
+    (url) => url.hostname.endsWith('.supabase.co') && url.origin !== origin,
     async (route, request) => {
       unexpected.push(`${request.method()} ${new URL(request.url()).origin}`);
-      await route.fulfill({ status: 599, body: "Host Supabase fora do mock E2E" });
+      await route.fulfill({ status: 599, body: 'Host Supabase fora do mock E2E' });
     },
   );
   await page.routeWebSocket(
     (url) =>
-      (url.hostname === supabaseHost || url.hostname.endsWith(".supabase.co")) &&
-      url.pathname.startsWith("/realtime/v1/"),
+      (url.hostname === supabaseHost || url.hostname.endsWith('.supabase.co')) &&
+      url.pathname.startsWith('/realtime/v1/'),
     (socket) => {
       // Não encaminha para a rede: o socket termina no mock do Playwright.
       const socketUrl = new URL(socket.url());
@@ -221,70 +255,127 @@ async function installLayoutSupabaseMock(page: Page) {
 
   return {
     assertIsolated: () => {
-      expect(intercepted.some((call) => call.endsWith("/rest/v1/quotes"))).toBe(true);
+      expect(intercepted.some((call) => call.endsWith('/rest/v1/quotes'))).toBe(true);
       expect(websocketOrigins.every((value) => value === supabaseHost)).toBe(true);
-      expect(unexpected, `requisições fora do mock isolado: ${unexpected.join(", ")}`).toEqual([]);
+      expect(unexpected, `requisições fora do mock isolado: ${unexpected.join(', ')}`).toEqual([]);
     },
   };
 }
 
 for (const tz of TIMEZONES) {
   test.describe(`Cotações · coluna Expiração [tz=${tz}]`, () => {
-    test.use({ timezoneId: tz, locale: "pt-BR" });
-    test.beforeEach(() => requireAuth());
+    test.use({ timezoneId: tz, locale: 'pt-BR' });
+    test.beforeEach(() => requireLiveDatabaseAuth());
 
     test(`renderiza dias restantes, tom e tooltip por caso-limite [${tz}]`, async ({ page }) => {
+      assertPublicSupabaseKey(SUPABASE_ANON_KEY);
       const targets = buildTargets();
-      await gotoAndSettle(page, "/orcamentos");
+      await gotoAndSettle(page, '/orcamentos');
 
       const seed = await page.evaluate(
-        async ({ url, anonKey, targets }) => {
-          let jwt = "";
-          let sellerId = "";
-          for (let i = 0; i < localStorage.length; i++) {
-            const k = localStorage.key(i)!;
-            if (!k.startsWith("sb-") || !k.endsWith("-auth-token")) continue;
-            const raw = localStorage.getItem(k);
-            if (!raw) continue;
-            const parsed = JSON.parse(raw);
-            jwt = parsed?.access_token ?? "";
-            sellerId = parsed?.user?.id ?? "";
-            if (jwt) break;
+        async ({ url, anonKey, storageKey, targets }) => {
+          if (!anonKey) throw new Error('seed expiração: anon key ausente');
+          const raw = localStorage.getItem(storageKey);
+          if (!raw) throw new Error(`seed expiração: sessão ausente em ${storageKey}`);
+          const parsed = JSON.parse(raw);
+          const jwt = parsed?.access_token ?? '';
+          const sellerId = parsed?.user?.id ?? '';
+          const parts = jwt.split('.');
+          if (
+            parsed?.user?.user_metadata?.e2e_mock === true ||
+            sellerId === '00000000-0000-0000-0000-e2e0e2e0e2e0' ||
+            parts[2] === 'mock-signature-not-verified'
+          ) {
+            throw new Error('seed expiração: sessão mock recusada');
           }
-          if (!jwt || !sellerId) return { skipped: "no-jwt" as const, created: 0 };
+          if (parts.length !== 3) throw new Error('seed expiração: JWT malformado');
+          const encoded = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+          const padded = encoded.padEnd(Math.ceil(encoded.length / 4) * 4, '=');
+          const payload = JSON.parse(atob(padded)) as {
+            aud?: string | string[];
+            exp?: number;
+            iss?: string;
+            sub?: string;
+          };
+          if (!payload.exp || payload.exp <= Math.floor(Date.now() / 1000)) {
+            throw new Error('seed expiração: JWT expirado');
+          }
+          if (!payload.sub || payload.sub !== sellerId) {
+            throw new Error('seed expiração: JWT sub diverge da sessão');
+          }
+          const audiences = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
+          if (!audiences.includes('authenticated')) {
+            throw new Error('seed expiração: audience inválida');
+          }
+          const expectedIssuer = `${url.replace(/\/$/, '')}/auth/v1`;
+          if (payload.iss !== expectedIssuer) {
+            throw new Error(`seed expiração: issuer inválido; esperado ${expectedIssuer}`);
+          }
           const headers = {
             apikey: anonKey,
             Authorization: `Bearer ${jwt}`,
-            "Content-Type": "application/json",
-            Prefer: "return=representation",
+            'Content-Type': 'application/json',
+            Prefer: 'return=representation',
           };
-          let created = 0;
-          for (const t of targets) {
-            const r = await fetch(`${url}/rest/v1/quotes`, {
-              method: "POST",
-              headers,
-              body: JSON.stringify({
-                seller_id: sellerId,
-                client_name: t.name,
-                status: "draft",
-                total: 100,
-                valid_until: t.iso,
-                notes: "e2e-seed-expiration",
-              }),
-            });
-            if (r.ok) created += 1;
+
+          const organizationResponse = await fetch(
+            `${url}/rest/v1/user_organizations?user_id=eq.${sellerId}&select=organization_id&limit=1`,
+            { headers },
+          );
+          if (!organizationResponse.ok) {
+            throw new Error(`seed expiração: organização falhou (${organizationResponse.status})`);
           }
-          return { skipped: null as null, created };
+          const organizationRows = (await organizationResponse.json()) as Array<{
+            organization_id: string;
+          }>;
+          const organizationId = organizationRows[0]?.organization_id;
+          if (!organizationId) {
+            throw new Error('seed expiração: usuário sem organização RLS');
+          }
+
+          const response = await fetch(`${url}/rest/v1/quotes`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(
+              targets.map((target) => ({
+                organization_id: organizationId,
+                seller_id: sellerId,
+                client_name: target.name,
+                status: 'draft',
+                total: 100,
+                valid_until: target.iso,
+                notes: 'e2e-seed-expiration',
+              })),
+            ),
+          });
+          if (!response.ok) {
+            const detail = await response.text().catch(() => '');
+            throw new Error(
+              `seed expiração: insert falhou (${response.status}): ${detail.slice(0, 160)}`,
+            );
+          }
+          const createdRows = (await response.json()) as unknown[];
+          if (createdRows.length !== targets.length) {
+            throw new Error(
+              `seed expiração: esperado ${targets.length} inserts, recebido ${createdRows.length}`,
+            );
+          }
+          return { created: createdRows.length };
         },
-        { url: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, targets },
+        {
+          url: SUPABASE_URL,
+          anonKey: SUPABASE_ANON_KEY,
+          storageKey: SUPABASE_STORAGE_KEY,
+          targets,
+        },
       );
 
-      test.skip(seed.skipped === "no-jwt", "Sem JWT no localStorage para seed.");
-      if (seed.created === 0) { test.skip(true, "Nenhuma quote criada — sem acesso ao banco (no-org)."); }
-      expect(seed.created).toBeGreaterThan(0);
+      expect(seed.created).toBe(targets.length);
 
-      await gotoAndSettle(page, "/orcamentos");
-      await expect(page.getByTestId("quotes-col-header-expiration")).toBeVisible({ timeout: 10_000 });
+      await gotoAndSettle(page, '/orcamentos');
+      await expect(page.getByTestId('quotes-col-header-expiration')).toBeVisible({
+        timeout: 10_000,
+      });
 
       for (const t of targets) {
         const row = page.locator('[data-testid^="quote-row-"]').filter({ hasText: t.name }).first();
@@ -294,12 +385,14 @@ for (const tz of TIMEZONES) {
 
         const expectedDate = formatLocal(t.iso);
         // Tooltip DEVE ser exatamente "Válido até dd/MM/yyyy" — não pode variar por locale do navegador.
-        await expect(cell).toHaveAttribute("aria-label", new RegExp(`Válido até ${expectedDate}$`));
+        await expect(cell).toHaveAttribute('aria-label', new RegExp(`Válido até ${expectedDate}$`));
 
         await cell.focus();
-        const tip = page.getByRole("tooltip", { name: new RegExp(`^Válido até ${expectedDate}$`) }).first();
+        const tip = page
+          .getByRole('tooltip', { name: new RegExp(`^Válido até ${expectedDate}$`) })
+          .first();
         await expect(tip, `tooltip exato @${tz}`).toBeVisible({ timeout: 3_000 });
-        await page.keyboard.press("Escape");
+        await page.keyboard.press('Escape');
       }
     });
   });
@@ -307,40 +400,41 @@ for (const tz of TIMEZONES) {
 
 // Regressão de layout: coluna continua no lugar correto após reload e
 // navegação fora→volta. Posição é validada via ordem dos headers.
-test.describe("Cotações · coluna Expiração — regressão de layout", () => {
-  test.use({ timezoneId: "America/Sao_Paulo", locale: "pt-BR" });
+test.describe('Cotações · coluna Expiração — regressão de layout', () => {
+  test.use({ timezoneId: 'America/Sao_Paulo', locale: 'pt-BR' });
   test.beforeEach(() => requireAuth());
 
-  test("ordem Status → Expiração → Nº Orçamento sobrevive a reload e navegação", async ({ page }) => {
+  test('ordem Status → Expiração → Nº Orçamento sobrevive a reload e navegação', async ({
+    page,
+  }) => {
     const supabaseMock = await installLayoutSupabaseMock(page);
-    await gotoAndSettle(page, "/orcamentos");
+    await gotoAndSettle(page, '/orcamentos');
 
     const expectOrder = async (label: string) => {
       const ids = await page
         .locator('[data-testid^="quotes-col-header-"]')
         .evaluateAll((els) =>
-          els.map((el) => el.getAttribute("data-testid")?.replace("quotes-col-header-", "") ?? ""),
+          els.map((el) => el.getAttribute('data-testid')?.replace('quotes-col-header-', '') ?? ''),
         );
-      const iStatus = ids.indexOf("status");
-      const iExp = ids.indexOf("expiration");
-      const iNum = ids.indexOf("quote_number");
+      const iStatus = ids.indexOf('status');
+      const iExp = ids.indexOf('expiration');
+      const iNum = ids.indexOf('quote_number');
       expect(iStatus, `status presente em ${label}`).toBeGreaterThanOrEqual(0);
       expect(iExp, `expiration presente em ${label}`).toBeGreaterThan(iStatus);
       expect(iNum, `quote_number presente em ${label}`).toBeGreaterThan(iExp);
     };
 
-    await expect(page.getByTestId("quotes-col-header-status")).toBeVisible({ timeout: 10_000 });
-    await expectOrder("primeiro acesso");
+    await expect(page.getByTestId('quotes-col-header-status')).toBeVisible({ timeout: 10_000 });
+    await expectOrder('primeiro acesso');
 
     await page.reload();
-    await expect(page.getByTestId("quotes-col-header-expiration")).toBeVisible({ timeout: 10_000 });
-    await expectOrder("após reload");
+    await expect(page.getByTestId('quotes-col-header-expiration')).toBeVisible({ timeout: 10_000 });
+    await expectOrder('após reload');
 
-    await gotoAndSettle(page, "/");
-    await gotoAndSettle(page, "/orcamentos");
-    await expect(page.getByTestId("quotes-col-header-expiration")).toBeVisible({ timeout: 10_000 });
-    await expectOrder("após navegação fora→volta");
+    await gotoAndSettle(page, '/');
+    await gotoAndSettle(page, '/orcamentos');
+    await expect(page.getByTestId('quotes-col-header-expiration')).toBeVisible({ timeout: 10_000 });
+    await expectOrder('após navegação fora→volta');
     supabaseMock.assertIsolated();
   });
 });
-

@@ -21,7 +21,7 @@ on:
       - '.github/scripts/e2e-relevance.mjs'
   schedule:
     # E89 — segunda-feira 02:00 UTC
-    - cron: '0 2 * * 1'  # E89 — segunda 02:00 UTC
+    - cron: '0 2 * * 1' # E89 — segunda 02:00 UTC
   workflow_dispatch:
     inputs:
       suite:
@@ -77,14 +77,20 @@ jobs:
           - suite: cnpj
             spec: 'e2e/ui/cnpj-*.spec.ts'
             project: chromium-public
+            require_auth: 'false'
+            min_tests: '32'
           - suite: pdf-print
             spec: 'e2e/flows/pdf-print-cross-browser.spec.ts'
             project: chromium-public
+            require_auth: 'false'
+            min_tests: '3'
           - suite: thumb-quickview
             spec: >-
               e2e/flows/03b-product-thumb-quickview.spec.ts
               e2e/flows/03b-thumb-quickview.smoke.spec.ts
-            project: chromium-public
+            project: chromium-authed
+            require_auth: 'true'
+            min_tests: '26'
     # R5 — secrets via env:
     env:
       CI: 'true'
@@ -94,10 +100,15 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false  # E32
+          persist-credentials: false # E32
 
       - name: Setup E2E
         uses: ./.github/actions/e2e-setup
+        with:
+          require-auth: ${{ matrix.require_auth }}
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
       - name: Filtrar suite
         if: github.event.inputs.suite != '' && github.event.inputs.suite != matrix.suite
@@ -108,13 +119,25 @@ jobs:
           exit 0
 
       - name: Run E2E Focused · ${{ matrix.suite }}
+        if: github.event.inputs.suite == '' || github.event.inputs.suite == matrix.suite
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-${{ matrix.suite }}.json
         run: |
           npx playwright test ${{ matrix.spec }} \
             --project=${{ matrix.project }} \
-            --reporter=line,html
+            --no-deps \
+            --fail-on-flaky-tests \
+            --reporter=line,html,json
+
+      - name: Rejeitar suite vazia, parcial ou ignorada
+        if: always() && (github.event.inputs.suite == '' || github.event.inputs.suite == matrix.suite)
+        uses: ./.github/actions/check-min-tests
+        with:
+          results-json: playwright-report/results-${{ matrix.suite }}.json
+          min: ${{ matrix.min_tests }}
+          max-skipped-ratio: '0'
 
       # R6 — retention-days: 14
       - name: Upload report + artifacts
@@ -125,6 +148,7 @@ jobs:
           path: |
             playwright-report
             test-results
+            !test-results/**/trace.zip
           if-no-files-found: ignore
           retention-days: 14
 
@@ -142,7 +166,7 @@ jobs:
       - name: Checkout (sparse — ci-issue action)
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false  # E32
+          persist-credentials: false # E32
           sparse-checkout: .github/actions/ci-issue
 
       - name: Compute issue body (e2e-focused cron falha)
@@ -189,7 +213,7 @@ jobs:
       - name: Checkout (sparse — ci-issue action)
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false  # E32
+          persist-credentials: false # E32
           sparse-checkout: .github/actions/ci-issue
 
       - name: Fechar issue — E2E Focused recuperado
