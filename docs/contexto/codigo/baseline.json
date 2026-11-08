@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "252cc01d07e6e625c956a37916aa868844cfe305",
+  "commit": "a2dda825f052d07c632a3ffb0c8e049b31c339af",
   "branch": "main",
-  "data_commit": "2026-11-08T14:31:50-03:00",
+  "data_commit": "2026-11-08T14:40:31-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "a2dda82",
+    "data": "2026-11-08",
+    "assunto": "docs(ci): grandfathers squash commit 252cc01d + atualiza RELATORIO_CI (#3223)"
+   },
    {
     "sha": "252cc01",
     "data": "2026-11-08",
@@ -126,11 +131,6 @@
     "sha": "59a9584",
     "data": "2026-11-08",
     "assunto": "docs(ci): RELATORIO §31 — estado final SHA 16408a68"
-   },
-   {
-    "sha": "fa9e722",
-    "data": "2026-11-08",
-    "assunto": "docs: recibo deploy health-check run 42367422517 (E66) — substitui #3134"
    }
   ],
   "arquivos_mudados_7d": 594,
@@ -145,7 +145,7 @@
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 808
+    "mudancas": 807
    },
    {
     "pasta": "src/hooks/products",
@@ -181,7 +181,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 358
+    "mudancas": 357
    },
    {
     "pasta": "src/components/kit-builder",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 62
+    "mudancas": 60
    },
    {
     "arquivo": "package.json",
@@ -234,12 +234,12 @@
     "mudancas": 15
    },
    {
-    "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 15
    },
    {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 15
+    "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
+    "mudancas": 14
    },
    {
     "arquivo": "AGENTS.md",
@@ -301,15 +301,15 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 320
+    "commits": 319
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 22
+    "commits": 21
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 20
+    "commits": 16
    },
    {
     "autor": "Claude",

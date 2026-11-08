@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `252cc01d07e6e625c956a37916aa868844cfe305` (2026-11-08T14:31:50-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a2dda825f052d07c632a3ffb0c8e049b31c339af` (2026-11-08T14:40:31-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,14 +586,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38108 nós · 66607 arestas · 2072 comunidades · grafo do commit `252cc01d`
+- 38108 nós · 66607 arestas · 2072 comunidades · grafo do commit `a2dda825`
 - comunidades maiores: ref_integrations (493), ref_components (376), gotoAndSettle (345), vitest (344), ref_hooks (315), @testing-library/react (311), lucide-react (293), scripts (289), @playwright/test (263), ref_node_fs (247), getCorsHeaders (237), cors.ts (230)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - RELATORIO_CI.md (76)
-- PENDENCIAS.md (62)
+- PENDENCIAS.md (60)
 - package.json (29)
 - supabase/MIGRATIONS_SYNC_LOG.md (26)
 - package-lock.json (22)
@@ -601,8 +601,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (19)
 - .github/workflows/deploy-gates.yml (17)
 - analise-branches/RELATORIO_BRANCHES.md (15)
-- docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (15)
 - e2e/flows/magazine-publish-smoke.spec.ts (15)
+- docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (14)
 - AGENTS.md (13)
 - CLAUDE.md (13)
 - .github/workflows/replenishment-quality.yml (12)
@@ -1007,7 +1007,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `PENDENCIAS.md` — PENDENCIAS.md — Workflows com falha não corrigível nesta sessão (124 linhas)
 - `PERFORMANCE-ANALYSIS.md` — 🔍 Relatório de Análise de Performance - MainLayout (195 linhas)
 - `README.md` — 🎁 Promo Brindes — Plataforma de Vendas de Brindes Promocionais (842 linhas)
-- `RELATORIO_CI.md` — RELATÓRIO CI — Prova de Conclusão do Stop Hook (117 linhas)
+- `RELATORIO_CI.md` — RELATÓRIO CI — Prova de Conclusão do Stop Hook (111 linhas)
 - `RELATORIO_CI_P34.md` — RELATORIO_CI_P34.md — Prova Final Sessão P34 (2026-10-30) (64 linhas)
 - `SECURITY.md` — Política de Segurança — Promo Gifts (89 linhas)
 - `STATUS.md` — 📡 Status do Projeto (19 linhas)
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-08 `a2dda82` docs(ci): grandfathers squash commit 252cc01d + atualiza RELATORIO_CI (#3223)
 - 2026-11-08 `252cc01` fix(sentinel): expande Regra 6 e documenta pendências P-01 a P-07
 - 2026-11-08 `93ae29d` docs(ci): atualiza RELATORIO_CI.md para HEAD 9a89d9f0 e Gate Final #42501464198
 - 2026-11-08 `9a89d9f` docs(ci): completa RELATORIO_CI.md e PENDENCIAS.md com prova de conclusão do stop hook (#3221)
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-08 `87fe8cd` chore(main): release 1.8.1
 - 2026-11-08 `1036dc3` fix(ci): aceitar skip estrutural do PDF no Chromium (#3199)
 - 2026-11-08 `e09f412` docs(ci): RELATORIO §32 + PENDENCIAS #44 (#3200)
-- 2026-11-08 `5e28c6c` fix(e2e): desbloqueia grid de novidades, imagem e tour do kit builder
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

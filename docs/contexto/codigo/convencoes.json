@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(ci): grandfathers squash commit 252cc01d + atualiza RELATORIO_CI (#3223)",
    "fix(sentinel): expande Regra 6 e documenta pendências P-01 a P-07",
    "docs(ci): atualiza RELATORIO_CI.md para HEAD 9a89d9f0 e Gate Final #42501464198",
    "docs(ci): completa RELATORIO_CI.md e PENDENCIAS.md com prova de conclusão do stop hook (#3221)",
-   "docs(ci): corrige npm test e HEAD no RELATORIO_CI.md (#3219)",
-   "feat: adiciona RELATORIO_CI.md e P35 em PENDENCIAS.md"
+   "docs(ci): corrige npm test e HEAD no RELATORIO_CI.md (#3219)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
