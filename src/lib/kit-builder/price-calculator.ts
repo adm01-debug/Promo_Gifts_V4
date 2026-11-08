@@ -92,9 +92,9 @@ export function calculateTotalKitPrice(
   const itemsPrice = itemsPricePerKit * kitQuantity;
   const personalizationPrice = calculatePersonalizationPrice(personalization, items, kitQuantity);
 
-  const subtotal = boxPrice + itemsPrice;
-  const total = subtotal + personalizationPrice;
-  const unitPrice = kitQuantity > 0 ? total / kitQuantity : 0;
+  const subtotal = Math.round((boxPrice + itemsPrice) * 100) / 100;
+  const total = Math.round((subtotal + personalizationPrice) * 100) / 100;
+  const unitPrice = kitQuantity > 0 ? Math.round((total / kitQuantity) * 100) / 100 : 0;
 
   return {
     boxPrice,
