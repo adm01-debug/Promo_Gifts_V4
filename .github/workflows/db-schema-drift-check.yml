@@ -64,6 +64,8 @@ on:
       - 'supabase/config.toml'
       - 'supabase/baseline/**'
       - 'scripts/drift-baseline.mjs'
+      - 'scripts/check-event-triggers-drift.mjs'
+      - 'scripts/check-cron-drift.mjs'
       - '.github/workflows/db-schema-drift-check.yml'
   workflow_dispatch:
   # Chamado por schema-snapshot-export.yml antes de girar o baseline: baseline
@@ -83,7 +85,9 @@ permissions:
   # pull-requests: write — removido E92 (não usado neste workflow)
 
 concurrency:
-  group: db-schema-drift-${{ github.ref }}
+  # `github.workflow` é o caller quando reutilizado: separa o standalone do E40
+  # de Deploy Gates e impede que um cancele a evidência do outro no mesmo PR.
+  group: db-schema-drift-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 

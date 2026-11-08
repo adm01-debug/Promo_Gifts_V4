@@ -786,7 +786,7 @@ jobs:
             BASE="HEAD~1"
           fi
           changed=$(git diff --name-only "${BASE}...${HEAD_SHA}" 2>/dev/null | \
-            grep -cE '^supabase/(migrations/|baseline/|config\.toml)|^scripts/drift-baseline\.mjs|\.github/workflows/db-schema-drift-check\.yml' \
+            grep -cE '^supabase/(migrations/|baseline/|config\.toml)|^scripts/(drift-baseline|check-event-triggers-drift|check-cron-drift)\.mjs|\.github/workflows/db-schema-drift-check\.yml' \
             || echo 0)
           if [ "$changed" -gt 0 ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"

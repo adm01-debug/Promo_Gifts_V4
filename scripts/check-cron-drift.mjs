@@ -13,7 +13,7 @@
  *   DATABASE_URL  — string de conexão Postgres (requerida para consulta live)
  *   SUPABASE_PROJECT_REF, SUPABASE_DB_PASSWORD — alternativa ao DATABASE_URL
  */
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -27,20 +27,41 @@ function findLatestCronSnapshot() {
   return join(BASELINE_DIR, files[files.length - 1]);
 }
 
-function getDbUrl() {
-  if (process.env.DATABASE_URL) return process.env.DATABASE_URL;
+function getDbConnection() {
+  if (process.env.DATABASE_URL) {
+    return { args: ['--dbname', process.env.DATABASE_URL], env: process.env };
+  }
   const ref = process.env.SUPABASE_PROJECT_REF;
   const pw = process.env.SUPABASE_DB_PASSWORD;
-  if (ref && pw) return `postgresql://postgres:${pw}@db.${ref}.supabase.co:5432/postgres`;
+  if (ref && pw) {
+    return {
+      args: [],
+      env: {
+        ...process.env,
+        PGHOST: `db.${ref}.supabase.co`,
+        PGPORT: '5432',
+        PGDATABASE: 'postgres',
+        PGUSER: 'postgres',
+        PGPASSWORD: pw,
+      },
+    };
+  }
   return null;
 }
 
-function queryLiveCronJobs(dbUrl) {
+function queryLiveCronJobs(connection) {
   let out;
   try {
-    out = execSync(
-      `psql "${dbUrl}" -t -A -c "SELECT COALESCE(json_agg(t ORDER BY t.jobname),'[]'::json) FROM (SELECT jobname,schedule,active FROM cron.job) t;"`,
-      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] },
+    out = execFileSync(
+      'psql',
+      [
+        ...connection.args,
+        '-t',
+        '-A',
+        '-c',
+        "SELECT COALESCE(json_agg(t ORDER BY t.jobname),'[]'::json) FROM (SELECT jobname,schedule,active FROM cron.job) t;",
+      ],
+      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], env: connection.env },
     );
   } catch (e) {
     // cron schema ausente — extensão pg_cron não instalada; retorna vazio
@@ -59,9 +80,9 @@ if (!snapshotPath) {
 }
 
 const snapshot = JSON.parse(readFileSync(snapshotPath, 'utf8'));
-const dbUrl = getDbUrl();
+const connection = getDbConnection();
 
-if (!dbUrl) {
+if (!connection) {
   console.error(
     'DATABASE_URL ou SUPABASE_PROJECT_REF+SUPABASE_DB_PASSWORD ausentes — não é permitido pular validação live.',
   );
@@ -70,7 +91,7 @@ if (!dbUrl) {
 
 let live;
 try {
-  live = queryLiveCronJobs(dbUrl);
+  live = queryLiveCronJobs(connection);
 } catch (e) {
   console.error(`Falha ao consultar cron.job: ${e.message}`);
   process.exit(1);
