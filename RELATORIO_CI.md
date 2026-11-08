@@ -24,10 +24,10 @@
 
 | Campo | Valor |
 |---|---|
-| **SHA HEAD** | `aab5deb99a29d3701eaf48c7c26c17c44fb2a525` |
-| **PR de origem** | docs(ci): corrige npm test e HEAD no RELATORIO_CI.md (#3219) |
-| **Merge** | 2026-11-08T16:15:11Z |
-| **Gate Final — Deploy Ready** | ✅ `conclusion=success` — run [#42498936634](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936634) |
+| **SHA HEAD** | `9a89d9f0a4ac2df7ad670501adaad9f1f60a75df` |
+| **PR de origem** | docs(ci): completa RELATORIO_CI.md e PENDENCIAS.md com prova de conclusão do stop hook (#3221) |
+| **Merge** | 2026-11-08T16:44:58Z |
+| **Gate Final — Deploy Ready** | ✅ `conclusion=success` — run [#42501464198](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42501464198) |
 | **Required check** | Único: `Gate Final - Deploy Ready` |
 
 ---
@@ -57,32 +57,32 @@ Inventário dos workflows com `conclusion=failure`. Critério: somente o workflo
 
 ## Comparação baseline × final
 
-| Verificação | Baseline (HEAD `1d3dafae`, antes) | Final (HEAD `aab5deb9`, depois) | Δ |
+| Verificação | Baseline (HEAD `1d3dafae`, antes) | Final (HEAD `9a89d9f0`, depois) | Δ |
 |---|---|---|---|
 | `npm ci` | ✅ exit 0 | ✅ exit 0 (sem alteração de dependências) | 0 |
 | `npm run build` | ✅ exit 0, 7.56s | ✅ exit 0 (só arquivos .md alterados) | 0 |
 | `npm run lint` | ✅ 0 erros, 0 warnings | ✅ 0 erros, 0 warnings | 0 |
 | `npm run qa:typecheck` | ✅ exit 0 | ✅ exit 0 | 0 |
-| `npm test` | ✅ exit 0 (26249 passed) | ✅ exit 0 (Gate 2 = success, run #42498936634) | 0 |
-| Gate Final | ✅ run [#42494087701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42494087701) (SHA `1d3dafae`) | ✅ run [#42498936634](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936634) (SHA `aab5deb9`) | 0 regressões |
+| `npm test` | ✅ exit 0 (26249 passed) | ✅ exit 0 (Gate 2 = success, run [#42501464198](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42501464198)) | 0 |
+| Gate Final | ✅ run [#42494087701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42494087701) (SHA `1d3dafae`) | ✅ run [#42501464198](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42501464198) (SHA `9a89d9f0`) | 0 regressões |
 
 > Nenhuma linha de código da aplicação foi alterada nesta sessão. Todos os commits foram exclusivamente em arquivos `.md`. Risco de regressão = zero.
 
 ---
 
-## Confirmação de workflows verdes — HEAD `aab5deb9`
+## Confirmação de workflows verdes — HEAD `9a89d9f0`
 
 Workflows ativos em main que estavam verdes antes e continuam verdes:
 
-| Workflow | Run ID em `aab5deb9` | Conclusão |
+| Workflow | Run ID | Conclusão |
 |---|---|---|
-| `Deploy Gates` (Gate Final — required) | [#42498936634](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936634) | ✅ success |
-| `Branch Protection Sentinel` | [#42498936539](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936539) | ✅ success |
-| `Security Scan` | [#42498936384](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936384) | ✅ success |
-| `Supabase Linter Gate` | [#42498936479](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936479) | ✅ success |
-| `Policies Baseline` | [#42498936532](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936532) | ✅ success |
-| `No Prod Leak in Dev/Test Config` | [#42498936328](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936328) | ✅ success |
-| `Release Please` | [#42498936614](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936614) | ✅ success |
+| `Deploy Gates` (Gate Final — required) | [#42501464198](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42501464198) | ✅ success |
+| `Branch Protection Sentinel` | [#42498936539](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936539) | ✅ success (HEAD `aab5deb9`, imediatamente anterior) |
+| `Security Scan` | [#42498936384](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936384) | ✅ success (HEAD `aab5deb9`, imediatamente anterior) |
+| `Supabase Linter Gate` | [#42498936479](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936479) | ✅ success (HEAD `aab5deb9`, imediatamente anterior) |
+| `Policies Baseline` | [#42498936532](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936532) | ✅ success (HEAD `aab5deb9`, imediatamente anterior) |
+| `No Prod Leak in Dev/Test Config` | [#42498936328](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936328) | ✅ success (HEAD `aab5deb9`, imediatamente anterior) |
+| `Release Please` | [#42498936614](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42498936614) | ✅ success (HEAD `aab5deb9`, imediatamente anterior) |
 
 ---
 
@@ -91,11 +91,11 @@ Workflows ativos em main que estavam verdes antes e continuam verdes:
 | Verificação | Evidência |
 |---|---|
 | Gate 0 (SSOT `doufsxqlfjyuvxuezpln`) | ✅ — `src/integrations/supabase/client.ts` não alterado nesta sessão |
-| Gate 1 (Lint + TypeScript) | ✅ — run [#42494087701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42494087701) job `static-gates` = success |
+| Gate 1 (Lint + TypeScript) | ✅ — run [#42501464198](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42501464198) job `static-gates` = success |
 | Gate 2 (Unit Tests) | ✅ — mesmo run, job `unit-tests` = success |
 | Gate 3 (E2E Smoke) | ✅ — mesmo run, job `e2e-smoke` = success |
 | Gate 6 (Build Vite) | ✅ — mesmo run, job `build` = success |
-| Gate Final | ✅ — run [#42497997724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42497997724) `conclusion=success` |
+| Gate Final | ✅ — run [#42501464198](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42501464198) `conclusion=success` |
 | Commits em main por esta sessão | 0 (todos via PR com squash-merge) |
 | `supabase db push` executado | NÃO |
 | DDL via `execute_sql` | NÃO |
@@ -105,7 +105,7 @@ Workflows ativos em main que estavam verdes antes e continuam verdes:
 
 ## Conclusão
 
-O único required check (`Gate Final - Deploy Ready`) está ✅ verde no HEAD atual da main (`aab5deb9`).
+O único required check (`Gate Final - Deploy Ready`) está ✅ verde no HEAD atual da main (`9a89d9f0`).
 
 Todos os workflows em failure são:
 1. **Advisory** (não são required checks): documentados em PENDENCIAS.md com causa raiz e ação necessária do PO
