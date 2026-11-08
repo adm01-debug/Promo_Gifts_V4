@@ -1110,3 +1110,55 @@ Baseline local não foi re-executado nesta sessão (sessão remota sem container
 | [#3179](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3179) | PENDENCIAS migration `20261101150000` | Aberta — aguarda dono (REGRA #8) | — |
 | [#3180](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3180) | docs: verificar erros exatos #26 #30 #37 | Mergeada | `2a042dab` |
 | [#3182](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3182) | docs: RELATORIO §25 Gate Final 2a042dab | Mergeada | `d2ce504a` |
+
+---
+
+## §27 — Baseline local sessão 2026-11-08T00:30Z (SHA `12e873af`)
+
+**Data:** 2026-11-08T00:30Z  
+**Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe  
+**SHA main:** `12e873afb6703c4fc68c826aa57edb01257a8ed7`  
+**Gate Final:** [run #42425893853/job/128565554197](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42425893853/job/128565554197) → `conclusion: success` (23:42:02Z)
+
+### Baseline local completo executado nesta sessão
+
+| Passo | Resultado | Detalhe |
+|---|---|---|
+| `npm ci` | ✅ exit 0 | 1149 packages instalados em ~20s, sem erro |
+| `npm run build` (Vite) | ✅ | 9.33s, sem erros; "✓ built in 9.33s" |
+| `npm run lint:baseline` | ✅ | 0 erros, 0 warnings — "Nenhuma regressão de lint detectada" |
+| `npx tsc --noEmit` | ✅ | 0 erros (exit 0) |
+| `npx vitest run` (completo) | ⚠️ TIMEOUT | Suite ~896 arquivos; timeout no container local após múltiplas tentativas (60s, 180s, 600s, todas terminadas com SIGTERM 143). Causa: CI usa timeout-minutes:45 para esta suite (CLAUDE.md REGRA #5); container de cloud não tem capacidade equivalente. Gate 2 CI = success no run #42425893853 sha=12e873af (evidência: `conclusion:success` verificado via MCP `github_list_check_runs`) |
+
+### Verificação de gates verdes antes × depois desta sessão
+
+| Gate | Antes (`d2ce504a` §26) | Depois (`12e873af`) | Status |
+|---|---|---|---|
+| Gate Final - Deploy Ready | ✅ success (run #42422381875) | ✅ success (run #42425893853) | ✅ sem regressão |
+| Gate E23 - Secret Scan (gitleaks) | ✅ success | ✅ success (id 128564046742) | ✅ sem regressão |
+| Assert Gate Final is required on main | ✅ success | ✅ success (id 128563967341) | ✅ sem regressão |
+| Compare GitHub × Canonical | ❌ failure (PENDENCIAS #29) | ❌ failure (id 128570474928) | PENDENCIAS #29 — inalterado, requer dono |
+
+### Inventário dos workflows com falha em `main` nesta sessão
+
+| Workflow | Última run | SHA | Conclusion | PENDENCIAS |
+|---|---|---|---|---|
+| Deploy Gates | [#42425893853](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42425893853) | `12e873af` | ✅ success | — |
+| Required Checks Guard | [#42425893693](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42425893693) | `12e873af` | ✅ success | — |
+| edge-functions-drift-check | [#42428037382](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42428037382) | `12e873af` | ❌ failure | #29 — 27 edge functions driftadas; requer `workflow_dispatch` pelo dono |
+| Uptime Monitor | [#42425746202](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42425746202) | `bd6773e9` | ✅ success | — |
+| E2E (Playwright) | [#42405699438](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42405699438) | `fa5da5d6` | ❌ failure | PENDENCIAS — falta `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` |
+| E2E — Personalization Flow | [#42405699423](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42405699423) | `fa5da5d6` | ❌ failure | PENDENCIAS — falta `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` |
+| E2E — Critical Flows | [#42390009076](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42390009076) | `3b2deef1` | ❌ failure | PENDENCIAS — falta `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` |
+
+### Ações pendentes do dono (REGRA #8 — não executáveis sem aprovação)
+
+1. Adicionar `E2E_USER_EMAIL`, `E2E_USER_PASSWORD`, `SUPABASE_SERVICE_ROLE_KEY` em Secrets (fecha E2E failures e #13)
+2. Dispatch `deploy-edge-functions.yml` → approve environment `production` (fecha #29 — required check)
+3. Dispatch `db-apply-migration.yml` com `version=20261101150000` após merge do PR #3179 (fecha #22/#26/#30)
+
+### PRs desta sessão
+
+| PR | Título | Estado | SHA pós-merge |
+|---|---|---|---|
+| [#3183](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3183) | docs(ci): RELATORIO §26 — baseline d2ce504a + PENDENCIAS #38 | Mergeada | `12e873af` |
