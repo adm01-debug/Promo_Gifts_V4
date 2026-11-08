@@ -5,6 +5,25 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.9.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.1...v1.9.0) (2026-11-08)
+
+
+### Features
+
+* adiciona RELATORIO_CI.md e P35 em PENDENCIAS.md ([f322318](https://github.com/adm01-debug/Promo_Gifts_V4/commit/f32231804cc73cf25066d98a61c2ca9b35f6cd40))
+* **migrations:** P09 — reconcilia 432 versões históricas no ledger schema_migrations ([0409c07](https://github.com/adm01-debug/Promo_Gifts_V4/commit/0409c07f7cd3e3ed439e400caf4d3081c5c28ece))
+
+
+### Bug Fixes
+
+* **ci:** grandfather SHA 0409c07f do P09 no Sentinel allowlist ([#3240](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3240)) ([5aed391](https://github.com/adm01-debug/Promo_Gifts_V4/commit/5aed391bf5777b04cb72c8d0138854422c279dd9))
+* **ci:** reconhecer migration 20261107180000 reconciliada ([#3211](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3211)) ([46ec263](https://github.com/adm01-debug/Promo_Gifts_V4/commit/46ec263fe1b0a72a62154a6dc25eda90fe07767b))
+* **docs:** restaurar contrato de recibos E15 ([#3204](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3204)) ([481e614](https://github.com/adm01-debug/Promo_Gifts_V4/commit/481e6142a737562c89b4c7de9444cc4afecbd19a))
+* **migrations:** adiciona header Rollback em 20261108001500_reconcile_e2e_cleanup_audit ([d50ae76](https://github.com/adm01-debug/Promo_Gifts_V4/commit/d50ae76c4b2465d347b196cff4e974db02fbdeaa))
+* **migrations:** remove BOM UTF-8 do security_fix_suppliers_v2 — corrige db-schema-drift-check ([ba1c3fb](https://github.com/adm01-debug/Promo_Gifts_V4/commit/ba1c3fb13815467c33de069caee564f76ebfd9f5))
+* **scripts:** corrige scripts, edge functions e baselines ([#3201](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3201)) ([1d3dafa](https://github.com/adm01-debug/Promo_Gifts_V4/commit/1d3dafae93722b7e19f426bcf63701a80ab4b148))
+* **sentinel:** expande Regra 6 e documenta pendências P-01 a P-07 ([252cc01](https://github.com/adm01-debug/Promo_Gifts_V4/commit/252cc01d07e6e625c956a37916aa868844cfe305))
+
 ## [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 
