@@ -16,3 +16,4 @@
 e2518bbd23ecd5b7e9960dfaec2f24837ee44d91  # docs(auditoria): registra lacuna do rate guard E049  [2026-10-29]
 c55c6781311b428cdbb52e4ff8f753c59222c470  # docs(audit): registra bloqueios de sincronização e CI  [2026-10-29]
 9d9dd2a7b502ab7e5ff42691d40b95a822c21d6b  # fix(ci): protege contrato de repair-only em E15  [2026-10-29]
+d03ee555dbd55c3dae9e85cfbb37f5f1ae4dd21b  # docs(auditoria): encerra P06 e P15 — migrations obsoletas  [2026-11-08]
