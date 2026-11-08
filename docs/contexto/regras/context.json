@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "f32231804cc73cf25066d98a61c2ca9b35f6cd40",
+  "sha": "aab5deb99a29d3701eaf48c7c26c17c44fb2a525",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 16:11 UTC",
+  "generated_at": "2026-11-08 16:17 UTC",
   "files_total": 9125,
   "code_files": 7862,
   "code_lines": 1054635
@@ -484051,10 +484051,19 @@
   }
  },
  "git": {
-  "sha": "f32231804cc73cf25066d98a61c2ca9b35f6cd40",
+  "sha": "aab5deb99a29d3701eaf48c7c26c17c44fb2a525",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "aab5deb",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(ci): corrige npm test e HEAD no RELATORIO_CI.md (#3219)",
+    "files": [
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "f322318",
     "date": "2026-11-08",
@@ -484552,22 +484561,12 @@
      "PENDENCIAS.md",
      "RELATORIO_CI.md"
     ]
-   },
-   {
-    "sha": "0a80360",
-    "date": "2026-11-07",
-    "author": "adm01-debug",
-    "subject": "docs(estado): atualiza PROGRESSO e PENDENCIAS — 2026-11-08 (#3189)",
-    "files": [
-     "docs/estado/PENDENCIAS.md",
-     "docs/estado/PROGRESSO.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    6
+    7
    ],
    [
     "PENDENCIAS.md",

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f32231804cc73cf25066d98a61c2ca9b35f6cd40",
+  "commit": "aab5deb99a29d3701eaf48c7c26c17c44fb2a525",
   "branch": "main",
-  "data_commit": "2026-11-08T13:04:20-03:00",
+  "data_commit": "2026-11-08T13:15:11-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "aab5deb",
+    "data": "2026-11-08",
+    "assunto": "docs(ci): corrige npm test e HEAD no RELATORIO_CI.md (#3219)"
+   },
    {
     "sha": "f322318",
     "data": "2026-11-08",
@@ -126,11 +131,6 @@
     "sha": "c976bba",
     "data": "2026-11-08",
     "assunto": "chore: instruções de agentes consolidadas em AGENTS.md + docs/agentes/ (#3146)"
-   },
-   {
-    "sha": "9c33e63",
-    "data": "2026-11-07",
-    "assunto": "fix(catalogo): preservar variante exata na seleção de cor (#3141)"
    }
   ],
   "arquivos_mudados_7d": 597,
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 227
+    "mudancas": 226
    },
    {
     "pasta": "src/pages/products",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 64
+    "mudancas": 63
    },
    {
     "arquivo": "package.json",
@@ -274,10 +274,6 @@
     "mudancas": 8
    },
    {
-    "arquivo": "docs/estado/PENDENCIAS.md",
-    "mudancas": 8
-   },
-   {
     "arquivo": "docs/estado/backlog/funcionalidades.md",
     "mudancas": 8
    },
@@ -296,16 +292,20 @@
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
     "mudancas": 7
+   },
+   {
+    "arquivo": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
+    "mudancas": 7
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 323
+    "commits": 322
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 32
+    "commits": 30
    },
    {
     "autor": "github-actions[bot]",
