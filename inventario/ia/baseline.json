@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "46212f026e8f9f8f827c907db630e45f250cf67e",
+  "commit": "2cc7de7141370d4dd408747a2025488a469066f8",
   "branch": "claude/inspiring-knuth-swo71j",
-  "data_commit": "2026-11-07T23:14:31-03:00",
+  "data_commit": "2026-11-08T03:03:07+00:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "2cc7de7",
+    "data": "2026-11-08",
+    "assunto": "chore: atualiza artefatos, baselines e inventário ia"
+   },
+   {
+    "sha": "da32eae",
+    "data": "2026-11-08",
+    "assunto": "fix(scripts): corrige 9 scripts com falhas de runtime"
+   },
    {
     "sha": "46212f0",
     "data": "2026-11-07",
@@ -121,19 +131,9 @@
     "sha": "57ada84",
     "data": "2026-11-07",
     "assunto": "docs(pendencias): atualiza PENDENCIAS.md — itens #22/#23/#24 + re-falha #2 (#3155)"
-   },
-   {
-    "sha": "096eb03",
-    "data": "2026-11-07",
-    "assunto": "fix: renderiza titulo do dashboard de orcamentos em loading e erro"
-   },
-   {
-    "sha": "f956f43",
-    "data": "2026-11-07",
-    "assunto": "docs(ci): inventário HEAD b5f7d2e29e0b (2026-11-07) — §12 RELATORIO + baseline sessão (#3152)"
    }
   ],
-  "arquivos_mudados_7d": 9254,
+  "arquivos_mudados_7d": 9278,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -169,7 +169,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 69
+    "mudancas": 70
    },
    {
     "pasta": "src/components/mockup",
@@ -258,6 +258,26 @@
     "mudancas": 2
    },
    {
+    "arquivo": "artifacts/route-test-matrix.json",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "artifacts/route-test-matrix.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "audit-report.txt",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "docs/DB_FRONTEND_COVERAGE.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "docs/E2E_SMOKE_COVERAGE.md",
+    "mudancas": 2
+   },
+   {
     "arquivo": "docs/ci/SEGREDOS.md",
     "mudancas": 2
    },
@@ -276,26 +296,6 @@
    {
     "arquivo": "e2e/catalog/novidades-reposicao-card-parity.spec.ts",
     "mudancas": 2
-   },
-   {
-    "arquivo": "e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "e2e/catalog/swatch-quickview-list-table.spec.ts",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "e2e/catalog/swatch-quickview-v2-list-table.spec.ts",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "e2e/flows/20-all-features-smoke.spec.ts",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "e2e/flows/25-quote-full-flow.spec.ts",
-    "mudancas": 2
    }
   ],
   "autores_30d": [
@@ -304,15 +304,19 @@
     "commits": 53
    },
    {
+    "autor": "Claude",
+    "commits": 2
+   },
+   {
     "autor": "github-actions[bot]",
     "commits": 2
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 9212,
+  "arquivos_total": 9214,
   "arquivos_codigo": 4618,
-  "linhas_codigo": 884416,
+  "linhas_codigo": 884460,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1212,7 +1216,7 @@
   },
   "scripts/check-no-db-push.mjs": {
    "arquivos": 1,
-   "linhas": 195
+   "linhas": 199
   },
   "scripts/check-no-followup-frontend.mjs": {
    "arquivos": 1,
@@ -1528,7 +1532,7 @@
   },
   "scripts/gen-internal-schema.mjs": {
    "arquivos": 1,
-   "linhas": 78
+   "linhas": 84
   },
   "scripts/gen-migrations-readme.mjs": {
    "arquivos": 1,
@@ -1628,7 +1632,7 @@
   },
   "scripts/qa": {
    "arquivos": 17,
-   "linhas": 2025
+   "linhas": 2059
   },
   "scripts/qa-price-readonly-regression.mjs": {
    "arquivos": 1,
@@ -2295,7 +2299,7 @@
  ],
  "qualidade": {
   "any": 568,
-  "console_log": 1231,
+  "console_log": 1235,
   "ts_ignore": 0,
   "eslint_disable": 6,
   "todos": 74,

@@ -131,6 +131,10 @@ const ALLOWLIST = [
   // ─── Relatórios de CI e análise (citam como item de verificação, não como instrução) ──
   'RELATORIO_CI.md',
   'analise-prs/regras-de-negocio.md',
+
+  // ─── Inventário gerado automaticamente (descreve scripts, cita o comando como anti-padrão) ──
+  'inventario/ia/scripts.json',  // inventário de scripts — cita `supabase db push` como proibido em descrição
+  'inventario/ia/',              // qualquer outro artefato de inventário gerado
 ];
 
 function isAllowed(path) {

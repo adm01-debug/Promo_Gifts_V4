@@ -49,7 +49,7 @@ interface ConfigurationPanelV6Props {
 }
 
 type CollapsedInteractionProps = {
-  inert?: boolean;
+  inert?: '';
 };
 
 export function ConfigurationPanelV6({
@@ -115,7 +115,7 @@ export function ConfigurationPanelV6({
 
   const contentId = useId();
   const isLocked = isConfirmed && !editing;
-  const collapsedInteractionProps: CollapsedInteractionProps = collapsed ? { inert: true } : {};
+  const collapsedInteractionProps: CollapsedInteractionProps = collapsed ? { inert: '' } : {};
 
   const larguraNum = parseFloat(largura) || 0;
   const alturaNum = parseFloat(altura) || 0;

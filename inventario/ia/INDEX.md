@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `46212f026e8f9f8f827c907db630e45f250cf67e` (2026-11-07T23:14:31-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2cc7de7141370d4dd408747a2025488a469066f8` (2026-11-08T03:03:07+00:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4307), SQL (3228), Markdown (897), JavaScript (307), YAML (107), JSON (94), Shell (19), CSS (13)
+- linguagens: TypeScript (4307), SQL (3228), Markdown (897), JavaScript (307), YAML (107), JSON (96), Shell (19), CSS (13)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 9212 |
+| arquivos_total | 9214 |
 | arquivos_codigo | 4618 |
-| linhas_codigo | 884416 |
+| linhas_codigo | 884460 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -586,8 +586,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38156 nós · 68282 arestas · 2078 comunidades · grafo do commit `46212f02`
-- comunidades maiores: ref_components (587), ref_lib (467), ref_integrations (346), nav.ts (316), @testing-library/react (315), ref_hooks (314), ref_node_fs (303), scripts (289), ref_types (284), concludeCheck (270), cors.ts (265), @tanstack/react-query (241)
+- 38196 nós · 67848 arestas · 2092 comunidades · grafo do commit `da32eaed` (DESATUALIZADO em relação ao HEAD)
+- comunidades maiores: ref_lib (556), vitest (346), nav.ts (326), @testing-library/react (316), react (307), scripts (289), ref_hooks (281), ref_node_fs (263), ProductCard.tsx (260), @playwright/test (249), lucide-react (240), ref_types (235)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -1160,6 +1160,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.7.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.1...v1.7.0) (2026-11-02)
 
 ## Últimos commits
+- 2026-11-08 `2cc7de7` chore: atualiza artefatos, baselines e inventário ia
+- 2026-11-08 `da32eae` fix(scripts): corrige 9 scripts com falhas de runtime
 - 2026-11-07 `46212f0` docs(ci): RELATORIO §29 — baseline local 9feb0148 + inventário fix/ci-workflows
 - 2026-11-07 `9feb014` docs(ci): RELATORIO §28 + PENDENCIAS #39-42 — sessão 2026-11-08
 - 2026-11-07 `0a80360` docs(estado): atualiza PROGRESSO e PENDENCIAS — 2026-11-08 (#3189)
@@ -1173,8 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-07 `bfb2926` docs(ci): PENDENCIAS #36 + RELATORIO §22 — Gate Final a882bcc1 success (#3176)
 - 2026-11-07 `a882bcc` docs(edge-deploy-log): recibo do deploy — run 42374498496 (#3163)
 - 2026-11-07 `3093c4a` fix(test): validar de verdade o corpus dos fuzzers (#3173)
-- 2026-11-07 `2eca6a4` docs: RELATORIO_CI.md §21 — Gate Final ✅ success na main 1a47c6972c
-- 2026-11-07 `1a47c69` docs: RELATORIO_CI.md e PENDENCIAS.md — status CI e workflows (#3172)
 
 ## Arquivos deste diretório
 - `inventario/ia/rotas.json`

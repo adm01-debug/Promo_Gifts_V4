@@ -1,5 +1,5 @@
 === Relatório Final de Auditoria de Segurança e Qualidade ===
-Data: 08/11/2026, 02:36:17
+Data: 08/11/2026, 03:16:20
 
 1. Verificação de Qualidade (Lint & Typecheck)
    - Typecheck (tsc): Passou (Zero erros)
@@ -15,7 +15,10 @@ Data: 08/11/2026, 02:36:17
    - CI Workflow: Configurado e testado via .github/workflows/full-ci.yml
 
 4. Cobertura de Testes (Coverage)
-   - Relatório de coverage não encontrado.
+   - Statements: 75.98%
+   - Branches: 72.86%
+   - Functions: 75.96%
+   - Lines: 76.68%
 
 5. Resumo das Correções Aplicadas
    - Correção de erro de build em PromptBank.tsx (Unused variable)

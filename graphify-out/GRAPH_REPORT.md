@@ -6,8 +6,8 @@
 - Unclassified: 56 file(s) not represented in the graph (top: (none) 27, .css 10, .toml 6)
 
 ## Summary
-- 38070 nodes · 67735 edges · 2069 communities (1915 shown, 154 thin omitted)
-- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 3616 edges (avg confidence: 0.94)
+- 38196 nodes · 67848 edges · 2092 communities (1915 shown, 154 thin omitted)
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 3582 edges (avg confidence: 0.94)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
@@ -9740,9 +9740,9 @@ Cohesion: 0.67
 Nodes (3): 2.1 Stack Completa, 2.2 Bundle JavaScript (v49.10.7), 2. Infraestrutura e Stack Técnica
 
 ## Knowledge Gaps
-- **65 isolated node(s):** `PATH`, `../tsconfig.app.json`, `@fontsource/archivo-black`, `@fontsource/dm-serif-display`, `@fontsource/great-vibes` (+60 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 21250 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **154 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **15299 nós de baixa conectividade (grau ≤ 1):** `ApiRequest` (api/health.ts), `requestIdFrom()` (api/health.ts), `ApiRequest` (api/ready.ts), `probe()` (api/ready.ts), `ProbeResult` (api/ready.ts) (+15294 mais)
+  Métrica calculada sobre 18880 nós de código elegíveis, usando as relações do grafo principal para medir o grau; dependências, saídas geradas, arquivos de configuração e conteúdo não relacionado a código foram excluídos da população e das relações medidas.
+- **154 comunidades pequenas (<3 nós) omitidas do relatório** — use `graphify query` para explorar nós de baixa conectividade.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
