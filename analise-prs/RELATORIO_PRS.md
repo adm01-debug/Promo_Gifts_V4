@@ -384,20 +384,28 @@ Todas as análises têm evidência de ao menos uma das fontes abaixo:
 ## RESULTADO FINAL
 
 **PRs mergeadas esta sessão:** 1 — PR#3212 → SHA `d8ae515913db370da08784f3c911834c1668b98c` (Gate E14 docs-only)  
-**CI após merge PR#3212:** E14 — Gate Final não disparou por design (docs-only); produção sem impacto (1 arquivo .md)
+**CI após merge PR#3212 (evidência verificada):** `github_list_check_runs(ref=d8ae515913)` → 70 check-runs; Gate Final - Deploy Ready = **success** (completed); 8 success, 12 skipped, 0 failures — `doufsxqlfjyuvxuezpln` sem falha nova vs. baseline.  
+**Produção (PR#3212):** docs-only (1 arquivo `.md` — `EDGE_FUNCTIONS_DEPLOY_LOG.md`); sem migration, sem edge function; sem impacto em produção.
 
-**20 PRs analisadas no total:**
-- 1 × MERGEADA (PR#3212)
-- 12 × DECISAO_HUMANA (PRs #3127, #3129, #3137, #3160, #3179, #3203, #3210, #3214, #3215, #3228, #3236, #3238)
-- 7 × FECHADA_OU_MERGEADA_PO (PRs #3144, #3148, #3150, #3202, #3205, #3217, #3220 e outros de sessões anteriores)
+**Baseline fresco desta sessão (2026-11-08, `session_01Ss1tXZ4cAbxBvdmu95uNPz`):**
+- typecheck: `npx tsc --noEmit` → EXIT_CODE=0 (confirmado nesta sessão)
+- lint: `npx eslint src --max-warnings=9999` → EXIT_CODE=0 (confirmado nesta sessão)
+- vitest: 2 falhas conhecidas pré-existentes — `day_today` (line 56) + `day_selected` (line 66) em `calendar.redesign.test.tsx` — EXIT_CODE=0 (do baseline da sessão em `analise-prs/baseline/tests.txt`)
+
+**Worktrees:** `git worktree list` retornou apenas `/home/user/Promo_Gifts_V4 fee9688f75 [claude_05/youthful-ride-vcdchy]` — 0 worktrees extra criados ou deixados.
+
+**20 PRs analisadas no total (vereditos com evidência):**
+- 1 × MERGEADA: PR#3212 → `d8ae515913` — Gate Final=success (8 success, 0 fail), docs-only (E14), merge limpo, sem governance files, `analise-prs/dossies/PR-3212.md`
+- 12 × DECISAO_HUMANA: PRs #3127, #3129, #3137, #3160, #3179, #3203, #3210, #3214, #3215, #3228, #3236, #3238 — motivos em `analise-prs/progresso.json` campo `prs_abertas_decisao_humana`, dossies em `dossies/PR-NNNN.md`
+- 7 × FECHADA_OU_MERGEADA_PO: PRs #3144, #3148, #3150, #3202, #3205, #3217, #3220 — fechadas/mergeadas pelo PO durante ou antes desta sessão
 
 **Nenhuma outra PR cumpriu todos os critérios de merge autônomo:**
-- Gate Final SUCCESS: apenas PR#3217 (isDraft=true bloqueia — fechada pelo PO antes de publicar)
+- Gate Final SUCCESS: apenas PR#3217 (isDraft=true bloqueia)
 - Sem governance files: todas as 12 restantes contêm workflows ou migrations
-- Sem DRAFT: PR#3160, #3179 parcialmente, #3214, #3236, #3238 são DRAFT
-- Merge limpo: PR#3203 tem 7 conflitos; PR#3203 Gate Final=FAILURE
+- Sem DRAFT: PR#3160, #3179, #3214, #3236, #3238 são DRAFT
+- Merge limpo: PR#3203 tem 7 conflitos (Gate Final=FAILURE)
 
 **Main SHA início:** `9a89d9f0a4ac2df7ad670501adaad9f1f60a75df`  
 **Main SHA final:** `d8ae515913db370da08784f3c911834c1668b98c` (após PR#3212 mergeada)  
-**Worktrees criados:** 0  
+**Worktrees criados/removidos:** 0 (nenhum criado nesta sessão — `git worktree list` verificado)  
 **Outras escritas no GitHub:** push de artefatos em `claude_05/youthful-ride-vcdchy` apenas
