@@ -1,22 +1,88 @@
 {
   "sessao": "claude_04/optimistic-lovelace-n960f7",
-  "data": "2026-11-08T19:30:00Z",
+  "data": "2026-11-08T20:30:00Z",
   "main_sha_antes": "ba1c3fb13815467c33de069caee564f76ebfd9f5",
-  "main_sha_depois": "ba1c3fb13815467c33de069caee564f76ebfd9f5",
+  "main_sha_depois": "17304c02232a8923791f15921d572b203b22c39d",
   "total_prs_inicio": 12,
-  "mergeadas": 0,
-  "aguardando_humano": 12,
+  "mergeadas": 2,
+  "aguardando_humano": 10,
   "ja_implementada": 0,
   "duplicada": 0,
   "descartada": 0,
-  "prs_mergeadas": [],
-  "prs_aguardando_humano": [3127, 3129, 3137, 3160, 3179, 3203, 3210, 3214, 3215, 3228, 3234, 3236],
+  "prs_mergeadas": [
+    {
+      "number": 3238,
+      "titulo": "docs(analise-prs): relatório merge-prs",
+      "squash_sha": "17304c02232a8923791f15921d572b203b22c39d",
+      "tipo": "docs-only (E14 bypass)",
+      "sessao": "esta sessão"
+    },
+    {
+      "number": 3234,
+      "titulo": "feat(migrations): P09 — reconcilia 432 versões históricas no ledger schema_migrations",
+      "squash_sha": "0409c07",
+      "tipo": "migrations (mergeada por outro agente/dono antes desta sessão)",
+      "sessao": "claude_05/"
+    }
+  ],
+  "prs_aguardando_humano": [3127, 3129, 3137, 3160, 3179, 3203, 3210, 3214, 3215, 3228, 3236],
   "nada_afrouxado": true,
   "nenhuma_pr_alheia_alterada": true,
+  "ciclos_correcao": {
+    "3127": {
+      "ciclo_1": "rerun run_id=42372342538 (visual-check CANCELLED → rerun disparado)",
+      "bloqueio_merge": "toca .github/workflows/ — AGUARDANDO HUMANO"
+    },
+    "3129": {
+      "ciclo_1": "rerun run_id=42365939519 (visual-baseline CANCELLED → rerun disparado)",
+      "bloqueio_merge": "toca .github/workflows/ — AGUARDANDO HUMANO"
+    },
+    "3137": {
+      "ciclo_1": "rerun run_id=42378959180 (Edge Functions JWT timeout flaky → rerun disparado)",
+      "bloqueio_merge": "toca .github/workflows/ — AGUARDANDO HUMANO"
+    },
+    "3160": {
+      "ciclo_1": "Migrations x Canonical schema FAILURE: branch modifica migration 20261101150000 já aplicada em produção — hash diverge. Não corrigível sem nova migration (DDL — só via db-apply-migration.yml, decisão humana)",
+      "bloqueio_merge": "supabase/migrations/ DDL — AGUARDANDO HUMANO"
+    },
+    "3179": {
+      "ciclo_1": "Mesma causa de #3160: Migrations x Canonical schema FAILURE (hash ledger diverge). Recibo de migration também ausente. Não corrigível.",
+      "bloqueio_merge": "supabase/migrations/ DDL — AGUARDANDO HUMANO"
+    },
+    "3203": {
+      "ciclo_1": "mergeable=CONFLICTING (branch divergiu de main). Rebase tentado na sessão anterior: 48+ add/add conflicts em .github/workflows/ — PROIBIDO tocar. Não corrigível nesta sessão.",
+      "bloqueio_merge": "conflito + ci failure — AGUARDANDO HUMANO"
+    },
+    "3210": {
+      "ciclo_1": "Supabase Preview FAILURE (check externo, sem workflowRun). Não é check do nosso CI — é serviço externo. Não corrigível.",
+      "bloqueio_merge": "release decision — AGUARDANDO HUMANO"
+    },
+    "3214": {
+      "ciclo_1": "headRefOid atualizado para 5fdb82cd. Checks visíveis: Supabase Preview SKIPPED, Vercel NEUTRAL — sem failures de CI Actions. Toca .github/workflows/ — AGUARDANDO HUMANO.",
+      "bloqueio_merge": "supabase/migrations/ cron DDL + .github/workflows/ — AGUARDANDO HUMANO"
+    },
+    "3215": {
+      "ciclo_1": "Migrations x Canonical schema FAILURE + Recibo de migration FAILURE. Mesma causa estrutural: migration 20261108001500 — adiciona comentários em migration existente → hash diverge. Não corrigível.",
+      "bloqueio_merge": "supabase/migrations/ DDL — AGUARDANDO HUMANO"
+    },
+    "3228": {
+      "ciclo_1": "rerun run_id=42507854259 (ColorSwatch grid E2E FAILURE → rerun disparado)",
+      "bloqueio_merge": "toca .github/workflows/ — AGUARDANDO HUMANO"
+    },
+    "3236": {
+      "ciclo_1": "headRefOid atualizado para 43a6b2a7. mergeable=CONFLICTING (branch divergiu). Supabase Preview FAILURE (externo). Conflito + check externo — não corrigível nesta sessão.",
+      "bloqueio_merge": "supabase/migrations/ DDL + conflito — AGUARDANDO HUMANO"
+    }
+  },
   "observacoes": [
-    "Branch Protection Sentinel falhou em main (ba1c3fb) por commit sem padrão aceito — issue pré-existente, não bloqueante para merges (required check é Gate Final - Deploy Ready)",
-    "Gate 6 - Build estava in_progress no momento da análise para main",
-    "#3203: tentativa de fix branch abortada — rebase gerou 48+ conflitos add/add incluindo .github/workflows/",
-    "#3129 e #3137 (codex): arquivos não verificados, inferência de workflow a partir dos títulos ci(e2e)/fix(ci)"
+    "#3234 já estava MERGEADA por outro agente/dono antes desta sessão (commit 0409c07 em main)",
+    "#3127, #3129, #3137: reruns disparados para checks CANCELLED/flaky — aguardando resultado",
+    "#3228: rerun disparado para ColorSwatch grid E2E — aguardando resultado",
+    "#3160, #3179, #3215: Migrations x Canonical schema FAILURE — modifica migration já aplicada (hash diverge), não corrigível sem decisão humana",
+    "#3203: rebase bloqueado por 48+ conflitos add/add em .github/workflows/ (PROIBIDO)",
+    "#3210: Supabase Preview FAILURE é check externo, não é CI Actions",
+    "#3214: toca .github/workflows/ + cron DDL — AGUARDANDO HUMANO",
+    "#3236: CONFLICTING + Supabase Preview externo — AGUARDANDO HUMANO",
+    "Gate Final em main 17304c02: CI IN_PROGRESS ao reportar (Analyze typescript rodando)"
   ]
 }
