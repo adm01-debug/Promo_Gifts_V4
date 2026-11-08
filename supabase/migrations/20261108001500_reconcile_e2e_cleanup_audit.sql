@@ -1,3 +1,6 @@
+-- Migration: 20261108001500_reconcile_e2e_cleanup_audit
+-- Rollback: DROP TABLE IF EXISTS public.e2e_cleanup_audit;
+
 -- Reconcilia o drift em que o ledger registra as migrations históricas do
 -- e2e_cleanup_audit, mas a tabela não existe no projeto canônico.
 --
