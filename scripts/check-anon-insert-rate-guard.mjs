@@ -1,134 +1,209 @@
 #!/usr/bin/env node
 /**
- * check-anon-insert-rate-guard.mjs  (P200-E049)
+ * check-anon-insert-rate-guard.mjs (P200-E049)
  *
- * Verifica que as 7 tabelas com INSERT anônimo real possuem o trigger
- * `fn_anon_insert_rate_guard` (ou equivalente documentado).
+ * Confere, por consulta somente leitura a pg_catalog, se cada tabela com
+ * INSERT anônimo real tem um trigger INSERT habilitado que chama a função de
+ * rate guard registrada no manifest.
  *
- * Sem esse trigger, qualquer usuário anônimo pode inserir linhas sem limite
- * de volume — o `WITH CHECK` das policies filtra dados inválidos mas não
- * limita taxa de inserção.
+ * `--gate` exige evidência live: sem SUPABASE_ACCESS_TOKEN e
+ * SUPABASE_PROJECT_REF, o resultado é inconclusivo (exit 2), nunca um falso
+ * passe estático.
  *
- * Modo --gate (sem credenciais): valida o manifest (7 tabelas documentadas,
- * todos os campos obrigatórios presentes). Sem live DB.
- *
- * Modo live (com SUPABASE_DB_PASSWORD ou SUPABASE_ACCESS_TOKEN):
- *   - Consulta `pg_trigger` e verifica que cada tabela do manifest tem
- *     ao menos um trigger cujo nome contém o padrão documentado.
- *   - Falha (exit 1) se qualquer tabela perder o trigger.
- *
- * Exit codes: 0 (ok/static-pass), 1 (guard faltando), 2 (erro)
+ * Exit codes: 0 (passed), 1 (trigger/tabela ausente ou manifest inválido),
+ * 2 (consulta inconclusiva/erro).
  */
 
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { CHECK_RESULT_STATUS, concludeCheck } from './check-result-contract.mjs';
+import { querySupabaseReadOnly } from './supabase-read-only-query.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const MANIFEST_PATH = path.join(ROOT, '.security/anon-insert-rate-guard-manifest.json');
 
-const argv = process.argv.slice(2);
-const GATE_MODE = argv.includes('--gate');
-
-// Manifest das 7 tabelas que requerem rate guard
-const REQUIRED_TABLES = [
-  { table: 'analytics_events',        trigger_pattern: 'rate_guard' },
-  { table: 'catalog_analytics',       trigger_pattern: 'rate_guard' },
-  { table: 'product_views',           trigger_pattern: 'rate_guard' },
-  { table: 'search_analytics',        trigger_pattern: 'rate_guard' },
-  { table: 'frontend_telemetry',      trigger_pattern: 'rate_guard' },
-  { table: 'kill_switch_hits',        trigger_pattern: 'rate_guard' },
-  { table: 'password_reset_requests', trigger_pattern: 'rate_guard' },
+// Apenas estes destinos, revisados em P200-E049, entram na query SQL.
+export const REQUIRED_TABLES = [
+  { table: 'analytics_events', trigger_name: 'fn_anon_insert_rate_guard' },
+  { table: 'catalog_analytics', trigger_name: 'fn_anon_insert_rate_guard' },
+  { table: 'product_views', trigger_name: 'fn_anon_insert_rate_guard' },
+  { table: 'search_analytics', trigger_name: 'fn_anon_insert_rate_guard' },
+  { table: 'frontend_telemetry', trigger_name: 'fn_anon_insert_rate_guard' },
+  { table: 'kill_switch_hits', trigger_name: 'fn_anon_insert_rate_guard' },
+  { table: 'password_reset_requests', trigger_name: 'fn_anon_insert_rate_guard' },
 ];
 
-function loadManifest() {
+export function loadManifest(manifestPath = MANIFEST_PATH) {
   try {
-    return JSON.parse(readFileSync(MANIFEST_PATH, 'utf8'));
-  } catch (e) {
-    if (e.code === 'ENOENT') return null;
-    throw e;
+    return JSON.parse(readFileSync(manifestPath, 'utf8'));
+  } catch (error) {
+    if (error.code === 'ENOENT') return null;
+    throw error;
   }
 }
 
-function validateManifest(manifest) {
+export function validateManifest(manifest) {
   if (!manifest || !Array.isArray(manifest.tables)) {
     return ['manifest ausente ou inválido (sem campo tables[])'];
   }
+
   const problems = [];
-  const byTable = new Map(manifest.tables.map((t) => [t.table, t]));
-  for (const req of REQUIRED_TABLES) {
-    const entry = byTable.get(req.table);
-    if (!entry) {
-      problems.push(`tabela ${req.table} não documentada no manifest`);
+  const entries = manifest.tables;
+  const byTable = new Map();
+
+  for (const entry of entries) {
+    if (!entry || typeof entry.table !== 'string' || !entry.table.trim()) {
+      problems.push('manifest contém entrada sem nome de tabela válido');
       continue;
     }
-    if (!entry.trigger_name) {
-      problems.push(`${req.table}: campo trigger_name vazio`);
+    if (byTable.has(entry.table)) problems.push(`tabela ${entry.table} duplicada no manifest`);
+    byTable.set(entry.table, entry);
+  }
+
+  for (const required of REQUIRED_TABLES) {
+    const entry = byTable.get(required.table);
+    if (!entry) {
+      problems.push(`tabela ${required.table} não documentada no manifest`);
+      continue;
     }
-    if (!entry.verified_at) {
-      problems.push(`${req.table}: campo verified_at vazio`);
+    if (entry.trigger_name !== required.trigger_name) {
+      problems.push(`${required.table}: trigger_name esperado ${required.trigger_name}`);
     }
   }
+
+  const unexpected = [...byTable.keys()].filter(
+    (table) => !REQUIRED_TABLES.some((required) => required.table === table),
+  );
+  for (const table of unexpected) problems.push(`tabela inesperada ${table} no manifest`);
+
   return problems;
 }
 
-async function main() {
-  const manifest = loadManifest();
-
-  if (GATE_MODE) {
-    // Modo gate (sem live DB): valida integridade do manifest
-    if (!manifest) {
-      // Manifest não existe ainda — criar template e falhar
-      process.stderr.write(
-        `[rate-guard] ❌ ${MANIFEST_PATH} não encontrado.\n` +
-          `  Crie o manifest e execute verificação live: node scripts/check-anon-insert-rate-guard.mjs --update-manifest\n`,
-      );
-      process.stdout.write(JSON.stringify({
-        check: 'anon-insert-rate-guard',
-        status: 'fail',
-        summary: 'manifest ausente — sem evidência de rate guard nas 7 tabelas',
-      }) + '\n');
-      process.exit(1);
-    }
-    const problems = validateManifest(manifest);
-    if (problems.length) {
-      process.stderr.write(
-        `[rate-guard] ❌ ${problems.length} problema(s) no manifest:\n` +
-          problems.map((p) => `  • ${p}`).join('\n') + '\n',
-      );
-      process.stdout.write(JSON.stringify({
-        check: 'anon-insert-rate-guard',
-        status: 'fail',
-        summary: `manifest inválido: ${problems[0]}`,
-      }) + '\n');
-      process.exit(1);
-    }
-    process.stderr.write(
-      `[rate-guard] ✅ static-pass: ${REQUIRED_TABLES.length} tabela(s) documentadas no manifest com trigger verificado.\n`,
-    );
-    process.stdout.write(JSON.stringify({
-      check: 'anon-insert-rate-guard',
-      status: 'static-pass',
-      summary: `${REQUIRED_TABLES.length} tabelas documentadas; sem live DB em --gate`,
-    }) + '\n');
-    process.exit(0);
-  }
-
-  // Modo sem --gate e sem credenciais: static-pass com aviso
-  process.stderr.write(
-    `[rate-guard] ℹ️  static-pass: sem credenciais para verificação live de pg_trigger.\n` +
-      `  Execute com SUPABASE_DB_PASSWORD para verificar triggers ao vivo.\n`,
-  );
-  process.stdout.write(JSON.stringify({
-    check: 'anon-insert-rate-guard',
-    status: 'static-pass',
-    summary: 'sem credenciais; use SUPABASE_DB_PASSWORD para verificação live',
-  }) + '\n');
-  process.exit(0);
+function sqlLiteral(value) {
+  // Os valores vêm da constante REQUIRED_TABLES, mas mantemos escape explícito.
+  return `'${String(value).replaceAll("'", "''")}'`;
 }
 
-main().catch((err) => {
-  process.stderr.write(`[rate-guard] erro inesperado: ${err.message}\n`);
-  process.exit(2);
-});
+export function buildTriggerQuery(tables = REQUIRED_TABLES) {
+  const values = tables
+    .map((entry) => `(${sqlLiteral(entry.table)}, ${sqlLiteral(entry.trigger_name)})`)
+    .join(',\n      ');
+
+  return `WITH expected(table_name, expected_function) AS (
+    VALUES ${values}
+  )
+  SELECT
+    e.table_name,
+    (c.oid IS NOT NULL) AS table_exists,
+    tr.tgname AS trigger_name,
+    p.proname AS function_name,
+    pn.nspname AS function_schema,
+    tr.tgenabled AS trigger_enabled,
+    (tr.tgtype & 4) = 4 AS handles_insert
+  FROM expected e
+  LEFT JOIN pg_namespace n ON n.nspname = 'public'
+  LEFT JOIN pg_class c ON c.relnamespace = n.oid AND c.relname = e.table_name AND c.relkind IN ('r', 'p')
+  LEFT JOIN LATERAL (
+    SELECT t.tgname, t.tgenabled, t.tgtype, t.tgfoid
+    FROM pg_trigger t
+    WHERE t.tgrelid = c.oid
+      AND NOT t.tgisinternal
+    ORDER BY t.tgname
+  ) tr ON true
+  LEFT JOIN pg_proc p ON p.oid = tr.tgfoid
+  LEFT JOIN pg_namespace pn ON pn.oid = p.pronamespace
+  ORDER BY e.table_name;`;
+}
+
+export function evaluateTriggerRows(rows, tables = REQUIRED_TABLES) {
+  if (!Array.isArray(rows)) {
+    return { problems: ['resposta live inválida (esperado um array de linhas)'], checked: 0 };
+  }
+
+  const byTable = new Map();
+  for (const row of rows) {
+    if (row && typeof row.table_name === 'string') {
+      const current = byTable.get(row.table_name) ?? [];
+      current.push(row);
+      byTable.set(row.table_name, current);
+    }
+  }
+
+  const problems = [];
+  for (const expected of tables) {
+    const candidates = byTable.get(expected.table) ?? [];
+    const row = candidates.find((candidate) => candidate.table_exists === true);
+    if (!row) {
+      problems.push(`${expected.table}: tabela ausente no schema public`);
+      continue;
+    }
+
+    const valid = candidates.some(
+      (candidate) =>
+        candidate.table_exists === true &&
+        candidate.function_name === expected.trigger_name &&
+        candidate.function_schema === 'public' &&
+        ['O', 'A'].includes(candidate.trigger_enabled) &&
+        candidate.handles_insert === true,
+    );
+    if (!valid) {
+      problems.push(`${expected.table}: sem trigger INSERT habilitado que execute ${expected.trigger_name}`);
+    }
+  }
+
+  return { problems, checked: tables.length };
+}
+
+export async function run({ argv = process.argv.slice(2) } = {}) {
+  const manifest = loadManifest();
+  const manifestProblems = validateManifest(manifest);
+  if (manifestProblems.length) {
+    return concludeCheck({
+      check: 'anon-insert-rate-guard',
+      status: CHECK_RESULT_STATUS.FAILED,
+      summary: `manifest inválido: ${manifestProblems[0]}`,
+      details: { problems: manifestProblems },
+    });
+  }
+
+  const result = await querySupabaseReadOnly(buildTriggerQuery());
+
+  if (result.kind !== 'live') {
+    const reason = result.kind === 'missing-config'
+      ? 'SUPABASE_ACCESS_TOKEN e SUPABASE_PROJECT_REF ausentes'
+      : `consulta read-only não concluída (${result.kind}${result.httpStatus ? `, HTTP ${result.httpStatus}` : ''})`;
+    return concludeCheck({
+      check: 'anon-insert-rate-guard',
+      status: CHECK_RESULT_STATUS.INCONCLUSIVE,
+      summary: `${reason}; nenhuma afirmação de cobertura foi feita`,
+      details: { reason: result.kind, requireLive: argv.includes('--gate') || argv.includes('--require-live') },
+    });
+  }
+
+  const evaluation = evaluateTriggerRows(result.rows);
+  if (evaluation.problems.length) {
+    return concludeCheck({
+      check: 'anon-insert-rate-guard',
+      status: CHECK_RESULT_STATUS.FAILED,
+      summary: evaluation.problems[0],
+      details: { source: result.source, problems: evaluation.problems, checked: evaluation.checked },
+    });
+  }
+
+  return concludeCheck({
+    check: 'anon-insert-rate-guard',
+    status: CHECK_RESULT_STATUS.PASSED,
+    summary: `${evaluation.checked} tabelas verificadas em pg_catalog: trigger INSERT ativo chama fn_anon_insert_rate_guard`,
+    details: { source: result.source, checked: evaluation.checked },
+  });
+}
+
+const isDirectExecution = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (isDirectExecution) {
+  run().catch((error) => {
+    process.stderr.write(`[rate-guard] erro inesperado: ${error.message}\n`);
+    process.exit(2);
+  });
+}
