@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: corrige typecheck e permissão de script pré-existentes em main (#3320)",
    "docs(analise-prs): relatórios definitivos — ciclo merge-prs claude_04 (#3318)",
    "docs: progresso v6 + prs.json — balanço correto 29 abertas",
    "docs(analise-prs): progresso.json v5 — balanço 32 correto + SHA final 16995de3 (#3315)",
-   "docs(analise-prs): RELATORIO_PRS.md — dossiê completo 32 PRs + META CUMPRIDA (#3314)",
-   "docs(analise-prs): progresso.json v4 — estado real corrigido (13 mergeadas, 32 abertas, zombie bloqueando CI)"
+   "docs(analise-prs): RELATORIO_PRS.md — dossiê completo 32 PRs + META CUMPRIDA (#3314)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

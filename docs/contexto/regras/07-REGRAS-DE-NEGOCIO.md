@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `ae1782f755` · branch `main` · 2026-11-09 05:48 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `193a750676` · branch `main` · 2026-11-09 06:52 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3716,7 +3716,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **validateKitMinQuantityForQuote(items: KitItem[], kitQuantity: number,)** — `src/hooks/kit-builder/useKitMinQuantityValidation.ts`
   ```
-  if (items.length === 0) return { status: 'ok' }; const productIds = [...new Set(items.map((item) => item.id))]; let rows: Array<{ id: string; effective_min_quantity: number | null }>; try { const { data, error } = await supabase .from('vw_products_min_quantity') .select('id, effective_min_quantity') .in('id', productIds); if (error || !data) return { status: 'unavailable' }; rows = data; } catch { return { status: 'unavailable' }; } const minByProduct = new Map(rows.map((row) => [row.id, row.eff …
+  if (items.length === 0) return { status: 'ok' }; const productIds = [...new Set(items.map((item) => item.id))]; let rows: Array<{ id: string; effective_min_quantity: number | null }>; try { const { data, error } = await supabase .from('vw_products_min_quantity') .select('id, effective_min_quantity') .in('id', productIds); if (error || !data) return { status: 'unavailable' }; rows = data.filter((r): r is { id: string; effective_min_quantity: number | null } => r.id !== null); } catch { return { s …
   ```
 - **priceInCents(value: number)** — `src/hooks/kit-builder/useKitPriceValidation.ts`
   ```
