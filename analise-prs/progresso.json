@@ -33,8 +33,10 @@
   "gate_final_main_atual": {
     "sha": "6b859b0fbfa95e34493900cf0137402e95e46823",
     "run_id": 42648049808,
-    "status": "in_progress",
-    "gate_final_pr_head": {"check_run_id": 128955748854, "conclusao": "success"}
+    "check_run_id": 129269658289,
+    "status": "completed",
+    "conclusion": "success",
+    "completed_at": "2026-11-09T15:51:59Z"
   },
   "contagem_por_veredito": {
     "MERGEADA_AGENTE": 4,
@@ -58,7 +60,7 @@
   "prs_aguarda_po": {
     "count": 27,
     "categorias": {
-      "workflows_github": [3127, 3129, 3137, 3179, 3228, 3247, 3274, 3290, 3327, 3328],
+      "ci_workflows": [3129, 3137, 3210, 3228, 3247, 3274, 3290, 3327, 3328],
       "ddl_migration": [3214, 3243, 3250, 3251, 3255, 3256, 3261, 3263, 3264, 3265, 3273, 3279, 3284],
       "major_version_bumps": [3331, 3333, 3334]
     }
