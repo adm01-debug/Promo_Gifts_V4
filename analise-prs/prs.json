@@ -1,32 +1,67 @@
-[
-  {
-    "number": 3127,
-    "title": "feat(catalog): filter-bridge v2 — ProductCatalogFilters talks to CatalogState via useFiltersPageState",
-    "draft": false,
-    "author": "adm01-debug",
-    "created_at": "2026-09-30T00:00:00Z",
-    "updated_at": "2026-09-30T00:00:00Z",
-    "labels": "",
-    "url": "https://github.com/adm01-debug/Promo_Gifts_V4/pull/3127"
+{
+  "meta": {
+    "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
+    "main_sha": "78729fc11038f7d0b2bb73ff0c1330f92547658b",
+    "analisado_em": "2026-11-09",
+    "total_open": 38,
+    "total_analisadas": 43,
+    "nota": "43 = 38 abertas + 5 mergeadas nesta sessão"
   },
-  {
-    "number": 3129,
-    "title": "feat(catalog): filter-bridge v3 — debounce + sync fix",
-    "draft": false,
-    "author": "adm01-debug",
-    "created_at": "2026-09-30T00:00:00Z",
-    "updated_at": "2026-09-30T00:00:00Z",
-    "labels": "",
-    "url": "https://github.com/adm01-debug/Promo_Gifts_V4/pull/3129"
-  },
-  {
-    "number": 3137,
-    "title": "feat(catalog): search + filter integration v1",
-    "draft": false,
-    "author": "adm01-debug",
-    "created_at": "2026-10-01T00:00:00Z",
-    "updated_at": "2026-10-01T00:00:00Z",
-    "labels": "",
-    "url": "https://github.com/adm01-debug/Promo_Gifts_V4/pull/3137"
+  "mergeadas_por_agente": [
+    {"number": 3337, "sha_main_apos": "6933eb6122d2ccf333d533d4441891b8d918479b", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
+    {"number": 3340, "sha_main_apos": "16f4af23...", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
+    {"number": 3343, "sha_main_apos": "78729fc11038f7d0b2bb73ff0c1330f92547658b", "tipo": "chore/ci", "gate_final": "SUCCESS"}
+  ],
+  "mergeadas_externas": [
+    {"number": 3341, "merged_by": "adm01-debug"},
+    {"number": 3342, "merged_by": "adm01-debug"}
+  ],
+  "open_prs": [
+    {"number": 3346, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_CI", "motivo": "DRAFT + CI queued (runner saturation)", "titulo": "fix(tests): corrige regressões vitest onLogoRemove/consumeUnloadBackup/goToStep"},
+    {"number": 3345, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_CI", "motivo": "DRAFT + CI queued (runner saturation)", "titulo": "fix(e2e): smoke tests 03b e magazine-preview sticky"},
+    {"number": 3344, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_CI", "motivo": "DRAFT + precisa rebase após #3343 (conflito .file-size-baseline.json)", "titulo": "fix(tests): corrige TypeError consumeUnloadBackup e atualiza baseline"},
+    {"number": 3339, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_CI", "motivo": "CI queued (runner saturation)", "titulo": "test: alinhar regressões da suíte ao Kit Builder"},
+    {"number": 3334, "draft": false, "user": "dependabot[bot]", "veredito": "AGUARDA_PO", "motivo": "Major version bump Sentry 8→11 (breaking changes)", "titulo": "chore(deps): bump @sentry/react from 8.55.2 to 11.11.0"},
+    {"number": 3333, "draft": false, "user": "dependabot[bot]", "veredito": "AGUARDA_PO", "motivo": "Major version bump framer-motion 11→14 (breaking changes)", "titulo": "chore(deps): bump framer-motion from 11.18.2 to 14.10.x"},
+    {"number": 3332, "draft": false, "user": "dependabot[bot]", "veredito": "AGUARDA_CI", "motivo": "CI queued (runner saturation) — dev group patch/minor bump", "titulo": "chore(deps-dev): bump the development-all group across 1 directory"},
+    {"number": 3331, "draft": false, "user": "dependabot[bot]", "veredito": "AGUARDA_PO", "motivo": "Major version bump date-fns 3→4 (breaking API changes)", "titulo": "chore(deps): bump date-fns from 3.6.0 to 4.4.0"},
+    {"number": 3330, "draft": false, "user": "dependabot[bot]", "veredito": "AGUARDA_PO", "motivo": ".github/workflows/ — REGRA proíbe toque em CI sem PO", "titulo": "chore(ci): bump github/codeql-action/init from 4.39.1"},
+    {"number": 3329, "draft": false, "user": "dependabot[bot]", "veredito": "AGUARDA_PO", "motivo": ".github/workflows/ — REGRA proíbe toque em CI sem PO", "titulo": "chore(ci): bump supabase/setup-cli from 3.0.1 to 3.2.0"},
+    {"number": 3328, "draft": false, "user": "dependabot[bot]", "veredito": "AGUARDA_PO", "motivo": ".github/workflows/ — REGRA proíbe toque em CI sem PO", "titulo": "chore(ci): bump github/codeql-action/analyze from 4.39.x"},
+    {"number": 3327, "draft": false, "user": "dependabot[bot]", "veredito": "AGUARDA_PO", "motivo": ".github/workflows/ — REGRA proíbe toque em CI sem PO", "titulo": "chore(ci): bump github/codeql-action/upload-sarif from 4.39.x"},
+    {"number": 3290, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + toca .github/workflows/ (detector E12)", "titulo": "fix(ci): detector E12 — índices out-of-band via pg_indexes"},
+    {"number": 3284, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + supabase/migrations/ — DDL exige aprovação PO", "titulo": "chore(migrations): DRIFT mirror — arquivos espelho CRON-001"},
+    {"number": 3279, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + cron DDL — exige aprovação PO", "titulo": "fix(cron): CRON-002 — corrige colisões residuais de startup"},
+    {"number": 3278, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_CI", "motivo": "DRAFT + CI queued — chore sentinel grandfather SHA", "titulo": "chore(sentinel): grandfather SHA d50ae76c"},
+    {"number": 3277, "draft": false, "user": "adm01-debug", "veredito": "NAO_MERGEAR", "motivo": "Gate Final=FAILURE, merge-reports=failure, base desatualizada d56979f6 → rebase necessário", "titulo": "fix(ux): UX batch6 — FT-174/040/083/093/134/136/139"},
+    {"number": 3274, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + toca .github/workflows/ (gate E42)", "titulo": "fix(ci): gate E42 — if a nível de step"},
+    {"number": 3273, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "supabase/migrations/ — DDL exige aprovação PO", "titulo": "chore(migrations): espelho P-10 — 3 índices out-of-band"},
+    {"number": 3265, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "supabase/migrations/ — DDL exige aprovação PO (fn_check_item_fits)", "titulo": "feat: versionar function fn_check_item_fits (FT-088)"},
+    {"number": 3264, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "supabase/migrations/ — DDL exige aprovação PO (view vw_products_min_quantity)", "titulo": "feat: versionar view vw_products_min_quantity (FT-079)"},
+    {"number": 3263, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "supabase/migrations/ + cron DDL — exige aprovação PO", "titulo": "feat: versionar cron jobs process/send-scheduled-reports (FT-005)"},
+    {"number": 3261, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "supabase/migrations/ — DDL exige aprovação PO (CRON-001 drift)", "titulo": "chore(migrations): arquivos espelho DRIFT CRON-001"},
+    {"number": 3257, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "supabase/migrations/ RLS — exige teste em Postgres temporário + aprovação PO", "titulo": "fix(migrations): idempotência em RLS deny-all e partições 2026"},
+    {"number": 3256, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + RLS fix — exige teste Postgres temporário + aprovação PO", "titulo": "fix: restringe RLS pública de art-files ao path quotes/"},
+    {"number": 3255, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + DROP INDEX — DDL destrutivo (remove perf002)", "titulo": "fix: drop perf002_drop_unused_snapshot_indexes"},
+    {"number": 3251, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + remove cron DDL — exige aprovação PO", "titulo": "fix: remove cron inativa image-dimensions-backfill"},
+    {"number": 3250, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + CREATE INDEX DDL — exige aprovação PO", "titulo": "fix: índice summary_date em stock_daily_summary"},
+    {"number": 3247, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + toca .github/workflows/ (snapshots E2E)", "titulo": "chore(ci): adiciona workflows de atualização de snapshots E2E"},
+    {"number": 3243, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "supabase/migrations/ — DDL exige aprovação PO (categories level)", "titulo": "fix(migrations): adiciona migrations de drift para categories_level"},
+    {"number": 3228, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + toca .github/workflows/ (e2e-color-swatch dispatch)", "titulo": "chore(workflows): adiciona workflow_dispatch ao e2e-color-swatch"},
+    {"number": 3214, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + cron DDL — CRON-001 escalonamento", "titulo": "fix(cron): CRON-001 — escalonar 4 cron jobs"},
+    {"number": 3210, "draft": false, "user": "github-actions[bot]", "veredito": "AGUARDA_CI", "motivo": "action_required (pending deployment approval) + migration suspeita (categories.level)", "titulo": "chore(main): release 1.9.0"},
+    {"number": 3203, "draft": false, "user": "adm01-debug", "veredito": "NAO_MERGEAR", "motivo": "Gate Final=FAILURE (merge-reports=failure, E2E cancelled), base desatualizada 9b2644b2", "titulo": "fix: scripts — static-pass, exit codes e regressão TypeScript"},
+    {"number": 3179, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + toca .github/workflows/ (preflight db-apply-migration)", "titulo": "fix: corrige preflight db-apply-migration"},
+    {"number": 3137, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_CI", "motivo": "CI queued (runner saturation) — fix(ci) false negative E2E", "titulo": "fix(ci): impedir falso negativo no detector E2E compartilhado"},
+    {"number": 3129, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "Altera .github/workflows/ (8 workflows para reduzir pressão runners)", "titulo": "ci(e2e): reduzir pressão dos runners sem perder cobertura"},
+    {"number": 3127, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_CI", "motivo": "CI queued (runner saturation) — fix(ci) core E2E", "titulo": "fix(ci): estabiliza o núcleo E2E sem ocultar dívida de cobertura"}
+  ],
+  "contagem": {
+    "MERGEADA_AGENTE": 3,
+    "MERGEADA_EXTERNA": 2,
+    "NAO_MERGEAR": 2,
+    "AGUARDA_PO": 22,
+    "AGUARDA_CI": 11,
+    "TOTAL_OPEN": 38
   }
-]
+}

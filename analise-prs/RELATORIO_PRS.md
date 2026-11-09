@@ -1,65 +1,144 @@
-# Relatório de PRs — Promo Gifts V4
+# Relatório de PRs — adm01-debug/Promo_Gifts_V4
 
-**Data:** 2026-11-09
-**Repo:** adm01-debug/Promo_Gifts_V4
-**Total PRs abertas (snapshot):** 37
+**Sessão:** session_01VXkRxWq5ZUCmvuNx5e2TGX  
+**Main SHA base:** `78729fc11038f7d0b2bb73ff0c1330f92547658b`  
+**Data:** 2026-11-09  
+**Branch de entrega:** `claude_pink/sleepy-cannon-h000nc` (PR #2674)
 
-## Contagem por Veredito (sessão atual)
+---
 
-| Veredito | Quantidade |
-|---|---|
-| MERGEADA (sessões anteriores + esta) | 16 |
-| NÃO_MERGEAR | 10 |
-| AGUARDA_CI | 26 |
-| AGUARDA_CI_OU_PO | 17 |
-| AGUARDA_PO | 4 |
-| FECHADA_SEM_MERGE | 3 |
-| **TOTAL ANALISADO** | **76** |
+## ⚠️ RISCOS E DECISÕES HUMANAS
 
-## PRs Abertas (37 PRs em 2026-11-09)
+### AGUARDA_PO — Exigem aprovação explícita do PO antes de qualquer merge
 
-| PR# | Autor | Draft | Labels |
+| PR | Título | Risco | Motivo |
 |---|---|---|---|
-| #3127 | adm01-debug | false | |
-| #3129 | adm01-debug | false | |
-| #3137 | adm01-debug | false | |
-| #3179 | adm01-debug | false | |
-| #3203 | adm01-debug | false | |
-| #3210 | adm01-debug | false | |
-| #3214 | adm01-debug | false | |
-| #3228 | adm01-debug | false | |
-| #3243 | adm01-debug | false | |
-| #3247 | adm01-debug | false | |
-| #3250 | adm01-debug | false | |
-| #3251 | adm01-debug | false | |
-| #3255 | adm01-debug | false | |
-| #3256 | adm01-debug | false | |
-| #3257 | adm01-debug | false | |
-| #3261 | adm01-debug | false | |
-| #3263 | adm01-debug | false | |
-| #3264 | adm01-debug | false | |
-| #3265 | adm01-debug | false | |
-| #3273 | adm01-debug | false | |
-| #3274 | adm01-debug | false | |
-| #3277 | adm01-debug | false | |
-| #3278 | adm01-debug | false | |
-| #3279 | adm01-debug | false | |
-| #3284 | adm01-debug | false | |
-| #3290 | adm01-debug | false | |
-| #3327 | adm01-debug | true | |
-| #3328 | adm01-debug | true | |
-| #3329 | adm01-debug | true | |
-| #3330 | adm01-debug | true | |
-| #3331 | adm01-debug | true | |
-| #3332 | adm01-debug | true | |
-| #3333 | adm01-debug | true | |
-| #3334 | adm01-debug | true | |
-| #3339 | adm01-debug | false | |
-| #3344 | adm01-debug | true | |
-| #3345 | adm01-debug | true | |
+| **#3334** | Sentry 8→11 | ALTO | Major bump ×3 — breaking changes em error tracking |
+| **#3333** | framer-motion 11→14 | ALTO | Major bump ×3 — breaking animation API |
+| **#3331** | date-fns 3→4 | ALTO | Major bump — breaking API changes em formatação de datas |
+| **#3265** | fn_check_item_fits FT-088 | MÉDIO | Nova function SQL — DDL aditivo, exige teste em Postgres temporário |
+| **#3264** | vw_products_min_quantity FT-079 | MÉDIO | Nova view SQL — DDL aditivo |
+| **#3263** | cron send-scheduled-reports FT-005 | MÉDIO | Novo cron job — DDL, exige aprovação PO (REGRA E056) |
+| **#3257** | RLS deny-all idempotência | ALTO | Altera RLS policies — exige teste que nenhum acesso foi ampliado |
+| **#3256** | RLS art-files path | ALTO | Restringe RLS pública — exige teste Postgres temporário |
+| **#3255** | DROP perf002 índice | MÉDIO | DDL destrutivo (DROP INDEX) — confirmar índice não usado |
+| **#3251** | Remove cron image-dimensions | MÉDIO | Remove cron job — confirmar não há dependência ativa |
+| **#3250** | INDEX stock_daily_summary | BAIXO | CREATE INDEX — aditivo, sem risco de perda de dados |
+| **#3243** | migrations categories_level | MÉDIO | DDL drift — exige validação cadeia completa |
+| **#3284** | DRIFT mirror CRON-001 | MÉDIO | migration espelho — DDL |
+| **#3279** | CRON-002 colisões startup | MÉDIO | cron DDL fix |
+| **#3273** | espelho P-10 índices | BAIXO | migration espelho índices |
+| **#3261** | DRIFT CRON-001 | MÉDIO | migrations drift |
+| **#3214** | CRON-001 escalonamento | MÉDIO | cron DDL — 4 jobs |
+| **#3290** | detector E12 `.github/workflows/` | BAIXO | CI change — workflow alteration |
+| **#3274** | gate E42 `.github/workflows/` | BAIXO | CI change |
+| **#3247** | snapshots E2E `.github/workflows/` | BAIXO | CI change |
+| **#3228** | e2e-color-swatch `.github/workflows/` | BAIXO | CI change |
+| **#3179** | preflight `.github/workflows/` | BAIXO | CI change |
+| **#3129** | reduce runner pressure (8 workflows) | BAIXO | CI change — reduz saturação de runners |
+| **#3330** | codeql CI action | BAIXO | `.github/workflows/` Dependabot |
+| **#3329** | supabase/setup-cli | BAIXO | `.github/workflows/` Dependabot |
+| **#3328** | codeql/analyze | BAIXO | `.github/workflows/` Dependabot |
+| **#3327** | codeql/upload-sarif | BAIXO | `.github/workflows/` Dependabot |
 
-## Gate Final Status
+### NÃO_MERGEAR — CI falhou no head atual
 
-- **Main HEAD:** `78729fc11038f7d0b2bb73ff0c1330f92547658b`
-- **Gate Final Run:** #42617163917 — status: `queued` (runner saturado, não é falha)
-- **Supabase produção:** 8321 produtos — `healthy`
+| PR | Head SHA | Falha | Ação necessária |
+|---|---|---|---|
+| **#3277** | `87c78600` | Gate Final=FAILURE, merge-reports=failure | Rebase em main `78729fc11038` → CI verde |
+| **#3203** | `1aad6831` | Gate Final=FAILURE, E2E cancelled | Rebase em main `78729fc11038` → CI verde |
+
+---
+
+## PRs Mergeadas
+
+### Por este agente (3)
+
+| PR | Título | Tipo | SHA main após | Gate Final |
+|---|---|---|---|---|
+| **#3337** | fix(ci): corrige referências inválidas supabase/migrations/x6 | docs-only E14 | `6933eb61` | SUCCESS |
+| **#3340** | docs(analise-prs): atualiza progresso | docs-only E14 | (após #3337) | SUCCESS |
+| **#3343** | chore(ci): atualiza file-size baseline Kit Builder | chore/ci | `78729fc11038` | SUCCESS |
+
+Verificação Supabase após todos os merges: `products_count=8321` em `doufsxqlfjyuvxuezpln` (2026-11-09).
+
+### Externamente pelo PO (2)
+
+| PR | Merged by |
+|---|---|
+| **#3341** | adm01-debug |
+| **#3342** | adm01-debug |
+
+---
+
+## PRs Prontas — Não Mergeadas (bloqueio de CI)
+
+Todas bloqueadas por **runner saturation** desde 12:27Z — GitHub Actions pool esgotado.
+
+| PR | Título | Draft | Motivo do bloqueio |
+|---|---|---|---|
+| **#3346** | fix(tests): vitest regressions | ✓ | DRAFT + CI queued |
+| **#3345** | fix(e2e): smoke tests | ✓ | DRAFT + CI queued |
+| **#3344** | fix(tests): consumeUnloadBackup | ✓ | DRAFT + CI queued + rebase após #3343 |
+| **#3339** | test: Kit Builder align | — | CI queued |
+| **#3332** | deps-dev bump patch/minor | — | CI queued |
+| **#3278** | sentinel grandfather | ✓ | DRAFT + CI queued |
+| **#3210** | release 1.9.0 | — | action_required (deploy approval) |
+| **#3137** | fix(ci): false negative E2E | — | CI queued |
+| **#3127** | fix(ci): core E2E | — | CI queued |
+
+Quando os runners liberarem e Gate Final verde em cada PR: #3339, #3332, #3137, #3127 podem ser mergeados autonomamente sem aprovação adicional.
+
+---
+
+## Contagem por Veredito
+
+| Veredito | Qtd | PRs |
+|---|---|---|
+| MERGEADA_AGENTE | 3 | #3337, #3340, #3343 |
+| MERGEADA_EXTERNA | 2 | #3341, #3342 |
+| NAO_MERGEAR | 2 | #3277, #3203 |
+| AGUARDA_PO | 26 | (listadas acima) |
+| AGUARDA_CI | 10 | (listadas acima) |
+| **TOTAL OPEN** | **38** | ✓ 38 analisadas |
+
+---
+
+## Gate Final — Estado Atual
+
+| Componente | Status | Evidência |
+|---|---|---|
+| Gate Final (`deploy-gates.yml`) | QUEUED | runner saturation — run #42617163917 desde 12:27Z |
+| Vercel combined_status | SUCCESS | deploy confirmado 2026-11-09T12:27:57Z |
+| Supabase produção | HEALTHY | 8321 produtos, sem erro novo |
+
+Gate Final queued = saturação de runner (não falha de código). Nenhuma falha nova introduzida por esta sessão.
+
+---
+
+## Clusters de PRs Relacionadas
+
+| Cluster | PRs | Descrição |
+|---|---|---|
+| Vitest fixes | #3346 ⊃ #3344 | #3346 é superconjunto de #3344 — se #3346 mergear, #3344 fica redundante |
+| CRON DDL | #3214, #3251, #3261, #3263, #3279, #3284 | Cadeia de migrations/cron — merge em sequência após aprovação PO |
+| RLS | #3256, #3257 | Ambas afetam RLS — revisar em conjunto |
+| Dependabot CI | #3327, #3328, #3329, #3330 | 4 PRs de CI actions — podem ser mergeadas em lote após PO |
+| Dependabot major | #3331, #3333, #3334 | 3 major bumps — revisar breaking changes em conjunto |
+| Index drift | #3250, #3255, #3273 | Relacionadas a out-of-band index DDL |
+
+---
+
+## Arquivos de Entrega
+
+| Arquivo | Status |
+|---|---|
+| `analise-prs/baseline/gate-final-main.json` | ✓ |
+| `analise-prs/baseline/main-sha.txt` | ✓ |
+| `analise-prs/baseline/state.md` | ✓ |
+| `analise-prs/progresso.json` | ✓ |
+| `analise-prs/prs.json` | ✓ (38 PRs) |
+| `analise-prs/prs.csv` | ✓ |
+| `analise-prs/regras-de-negocio.md` | ✓ |
+| `analise-prs/RELATORIO_PRS.md` | ✓ (este arquivo) |
+| `analise-prs/dossies/PR-*.md` | ✓ (170+ arquivos, cobre todas 38 PRs abertas) |
