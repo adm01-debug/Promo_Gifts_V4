@@ -3546,7 +3546,7 @@
   {
    "arquivo": "PENDENCIAS.md",
    "titulo": "PENDENCIAS.md — Workflows com falha não corrigível nesta sessão",
-   "linhas": 173
+   "linhas": 201
   },
   {
    "arquivo": "PERFORMANCE-ANALYSIS.md",
@@ -3560,8 +3560,8 @@
   },
   {
    "arquivo": "RELATORIO_CI.md",
-   "titulo": "RELATÓRIO CI — Prova de Conclusão do Stop Hook",
-   "linhas": 157
+   "titulo": "RELATORIO CI - Prova de Conclusao do Stop Hook",
+   "linhas": 151
   },
   {
    "arquivo": "RELATORIO_CI_P34.md",

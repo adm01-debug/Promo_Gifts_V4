@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "9b2644b2c1a78f5809e829c6a916f23959e87f12",
+  "sha": "898f05c26e7b779ddaa0526b0ee5b533fcd824c5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-08 22:22 UTC",
+  "generated_at": "2026-11-09 02:34 UTC",
   "files_total": 9140,
   "code_files": 7865,
   "code_lines": 1055591
@@ -484067,10 +484067,28 @@
   }
  },
  "git": {
-  "sha": "9b2644b2c1a78f5809e829c6a916f23959e87f12",
+  "sha": "898f05c26e7b779ddaa0526b0ee5b533fcd824c5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "898f05c",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "chore(docs): registra P-10 — 3 índices out-of-band em categories sem migration (#3262)",
+    "files": [
+     "PENDENCIAS.md"
+    ]
+   },
+   {
+    "sha": "34ac645",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(ci): atualiza RELATORIO_CI com baseline desta sessão e P-06 em correção (#3249)",
+    "files": [
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "9b2644b",
     "date": "2026-11-08",
@@ -484383,38 +484401,20 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "481e614",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(docs): restaurar contrato de recibos E15 (#3204)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "8c3abe3",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "chore(backlog): marca FT-175 como implementado (#3206)",
-    "files": [
-     "docs/estado/backlog/funcionalidades.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    12
+    13
    ],
    [
     "PENDENCIAS.md",
-    9
+    10
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    5
+    4
    ],
    [
     "analise-prs/RELATORIO_PRS.md",

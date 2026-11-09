@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "9b2644b2c1a78f5809e829c6a916f23959e87f12",
+  "commit": "898f05c26e7b779ddaa0526b0ee5b533fcd824c5",
   "branch": "main",
-  "data_commit": "2026-11-08T18:01:51-03:00",
+  "data_commit": "2026-11-08T19:41:56-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "898f05c",
+    "data": "2026-11-08",
+    "assunto": "chore(docs): registra P-10 — 3 índices out-of-band em categories sem migration (#3262)"
+   },
+   {
+    "sha": "34ac645",
+    "data": "2026-11-08",
+    "assunto": "docs(ci): atualiza RELATORIO_CI com baseline desta sessão e P-06 em correção (#3249)"
+   },
    {
     "sha": "9b2644b",
     "data": "2026-11-08",
@@ -121,19 +131,9 @@
     "sha": "aab5deb",
     "data": "2026-11-08",
     "assunto": "docs(ci): corrige npm test e HEAD no RELATORIO_CI.md (#3219)"
-   },
-   {
-    "sha": "f322318",
-    "data": "2026-11-08",
-    "assunto": "feat: adiciona RELATORIO_CI.md e P35 em PENDENCIAS.md"
-   },
-   {
-    "sha": "1d3dafa",
-    "data": "2026-11-08",
-    "assunto": "fix(scripts): corrige scripts, edge functions e baselines (#3201)"
    }
   ],
-  "arquivos_mudados_7d": 462,
+  "arquivos_mudados_7d": 390,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",

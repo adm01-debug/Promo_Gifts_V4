@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(docs): registra P-10 — 3 índices out-of-band em categories sem migration (#3262)",
+   "docs(ci): atualiza RELATORIO_CI com baseline desta sessão e P-06 em correção (#3249)",
    "docs(analise-prs): corrige Gate Final verificado #3127/#3137, ciclo 2 #3203",
    "chore(migrations): arquivo retroativo 20260611014515 fn_dryrun_standardize_supplier (#3239)",
-   "docs(analise-prs): ciclos de correção — 2 mergeadas, 11 AGUARDANDO HUMANO",
-   "fix(migrations): adiciona header Rollback em 20261108001500_reconcile_e2e_cleanup_audit",
-   "docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f (#3241)"
+   "docs(analise-prs): ciclos de correção — 2 mergeadas, 11 AGUARDANDO HUMANO"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
