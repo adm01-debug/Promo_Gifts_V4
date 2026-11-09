@@ -2,8 +2,8 @@
   "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 2674,
-  "atualizado_em": "2026-11-09T18:30:00Z",
-  "main_sha_final": "6b859b0fbfa95e34493900cf0137402e95e46823",
+  "atualizado_em": "2026-11-09T18:00:00Z",
+  "main_sha_final": "c1d47d13bee8089eb62e3c47db1b7b500dcf1042",
   "mergeadas_por_agente_esta_sessao": [
     {"number": 3337, "sha_main_apos": "6933eb61", "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
     {"number": 3340, "titulo": "docs(analise-prs): atualiza progresso", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
@@ -21,12 +21,14 @@
   ],
   "fechadas_externas_esta_sessao": [
     {"number": 3277, "motivo": "Gate Final=FAILURE fechada sem merge"},
-    {"number": 3347, "motivo": "CI incompleto fechada sem merge"},
-    {"number": 3129, "motivo": "Fechada externamente"},
-    {"number": 3137, "motivo": "Fechada externamente"},
-    {"number": 3274, "motivo": "Fechada externamente"},
-    {"number": 3290, "motivo": "Fechada externamente"},
-    {"number": 3350, "motivo": "Gate 1 Lint+TypeScript=FAILURE"}
+    {"number": 3347, "motivo": "CI incompleto fechada sem merge"}
+  ],
+  "processadas_externas": [
+    {"number": 3129, "categoria": "ci_workflows"},
+    {"number": 3137, "categoria": "ci_workflows"},
+    {"number": 3274, "categoria": "ci_workflows"},
+    {"number": 3290, "categoria": "ci_workflows"},
+    {"number": 3350, "motivo": "Gate 1 Lint+TypeScript=FAILURE run_id=129233697044"}
   ],
   "supabase_producao": {
     "project_id": "doufsxqlfjyuvxuezpln",
@@ -36,48 +38,49 @@
     "verificado_via": "mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__execute_sql (SELECT COUNT(*) FROM products WHERE deleted_at IS NULL)"
   },
   "gate_final_main_atual": {
+    "sha": "c1d47d13bee8089eb62e3c47db1b7b500dcf1042",
+    "run_id": 42652746997,
+    "check_run_id": 129290526546,
+    "status": "completed",
+    "conclusion": "success",
+    "nota": "SHA atualizado apos merges externos pos-sessao"
+  },
+  "gate_final_main_baseline_sessao": {
     "sha": "6b859b0fbfa95e34493900cf0137402e95e46823",
     "run_id": 42648049808,
     "check_run_id": 129269658289,
-    "status": "completed",
     "conclusion": "success",
     "completed_at": "2026-11-09T15:51:59Z"
   },
   "contagem_por_veredito": {
     "MERGEADA_AGENTE": 4,
     "MERGEADA_EXTERNA": 7,
-    "FECHADA_EXTERNA": 7,
-    "NAO_MERGEAR": 5,
-    "BRANCH_ENTREGA": 1,
-    "AGUARDA_PO": 25,
+    "FECHADA_EXTERNA": 2,
+    "PROCESSADA_EXTERNA": 5,
+    "NAO_MERGEAR": 8,
+    "AGUARDA_PO": 21,
     "TOTAL_OPEN_RESTANTE": 29,
-    "TOTAL_ANALISADAS": 49,
+    "TOTAL_ANALISADAS": 47,
     "VERIFICADO_EXAUSTIVO": true,
-    "dossiers_criados": 29
+    "DOSSIERS_CRIADOS": 29,
+    "nota_reclassificacoes": "#3329/#3330 eram NAO_MERGEAR agora AGUARDA_PO(ddl); #3331 era AGUARDA_PO(major) agora NAO_MERGEAR(DIRTY+workflows); #3333/#3334 eram major_version_bumps agora ddl_migration; #3265/#3273 adicionados como NAO_MERGEAR"
   },
   "prs_nao_mergear": [
-    {"number": 3203, "motivo": "CONFLICTING merge conflict ativo"},
-    {"number": 3329, "motivo": "Gate 1+5=FAILURE + 9 workflows"},
-    {"number": 3330, "motivo": "CodeQL+Gate 1+Gate E23=FAILURE + codeql.yml"},
-    {"number": 3332, "motivo": "npm ci ERESOLVE eslint@10 + major version bumps breaking"},
-    {"number": 3339, "motivo": "Gate 1=FAILURE file-size regression"},
-    {"number": 3355, "motivo": "BRANCH_ENTREGA NUNCA MERGEAR"}
+    {"number": 3203, "motivo": "CONFLICTING/DIRTY — duplicata de #3273 (mesmo head SHA 1aad6831)"},
+    {"number": 3265, "motivo": "test: regressoes Kit Builder — CONFLICTING/DIRTY (6f8930b4)"},
+    {"number": 3273, "motivo": "CONFLICTING/DIRTY — duplicata de #3203 (mesmo head SHA 1aad6831)"},
+    {"number": 3279, "motivo": "PR entrega sessao anterior — CONFLICTING/DIRTY (ca9dae70)"},
+    {"number": 3331, "motivo": "fix(cron) CRON-001 — toca .github/workflows E CONFLICTING/DIRTY (7d6a177a)"},
+    {"number": 3332, "motivo": "npm ci ERESOLVE eslint@10 + SSOT=FAILURE + E2E=FAILURE [dados sessao anterior]"},
+    {"number": 3339, "motivo": "Gate 1=FAILURE file-size regression REGRA #10 [dados sessao anterior]"},
+    {"number": 3355, "motivo": "PR de entrega DESTA sessao — NUNCA MERGEAR", "head_sha": "ca9dae70", "pr_entrega": true, "branch": "claude_pink/sleepy-cannon-h000nc"}
   ],
   "prs_aguarda_po": {
-    "count": 25,
+    "count": 21,
     "categorias": {
-      "ci_workflows": [3210, 3228, 3247, 3327, 3328, 3357],
-      "ddl_migration": [3179, 3214, 3243, 3250, 3251, 3255, 3256, 3261, 3263, 3264, 3265, 3273, 3279, 3284],
-      "major_version_bumps": [3331, 3333, 3334]
+      "ci_workflows": [3210, 3327, 3328, 3357],
+      "ddl_migration": [3179, 3214, 3243, 3250, 3251, 3255, 3256, 3261, 3263, 3284, 3329, 3330, 3333, 3334],
+      "major_version_bumps": [3228, 3247, 3264]
     }
-  },
-  "deliverables_entregues": {
-    "dossiers": 29,
-    "prs_json": true,
-    "prs_csv": true,
-    "regras_de_negocio": true,
-    "relatorio": true,
-    "meta_condicao_satisfeita": true,
-    "commit_entrega": "pendente"
   }
 }

@@ -1,48 +1,48 @@
-number,titulo,veredito,categoria,motivo
-3337,"fix(ci): corrige referencias invalidas supabase/migrations/x6",MERGEADA_AGENTE,,
-3340,"docs(analise-prs): atualiza progresso",MERGEADA_AGENTE,,
-3343,"chore(ci): atualiza file-size baseline Kit Builder",MERGEADA_AGENTE,,
-3257,"fix(migrations): idempotencia em RLS deny-all e particoes 2027",MERGEADA_AGENTE,,
-3341,"docs: recibo deploy edge function",MERGEADA_EXTERNA,,
-3342,"fix(ci): as-assertions-baseline",MERGEADA_EXTERNA,,
-3344,"fix(tests): consumeUnloadBackup",MERGEADA_EXTERNA,,
-3346,"fix(tests): corrige regressoes vitest",MERGEADA_EXTERNA,,
-3348,"fix(tests): corrige 5 falhas preexistentes em useKitBuilderQuote",MERGEADA_EXTERNA,,
-3349,"fix(update-snapshots): atualizar snapshots PriceFreshnessBadge",MERGEADA_EXTERNA,,
-3278,"fix: corrige referencia de SHA de sentinela em check-sentinel-sha",MERGEADA_EXTERNA,,
-3277,"(desconhecido)",FECHADA_EXTERNA,,Gate Final=FAILURE
-3347,"replace corrupt PNG snapshot",FECHADA_EXTERNA,,CI incompleto
-3129,"(desconhecido)",FECHADA_EXTERNA,,Fechada externamente
-3137,"(desconhecido)",FECHADA_EXTERNA,,Fechada externamente
-3274,"ci: corrige Gate E42 e2e-personalization",FECHADA_EXTERNA,,Fechada externamente
-3290,"ci: adiciona detector E12 pg_indexes out-of-band",FECHADA_EXTERNA,,Fechada externamente
-3350,"kit-builder: remove bloco FT-119 incompleto",FECHADA_EXTERNA,,Gate 1 FAILURE
-3203,"fix: scripts static-pass exit codes e regressao TypeScript inert",NAO_MERGEAR,merge_conflict,CONFLICTING
-3329,"chore(ci)(deps): bump supabase/setup-cli 3.0.1 to 3.2.0",NAO_MERGEAR,ci_failure_workflow,CI FAILURE + 9 workflows
-3330,"chore(ci)(deps): bump github/codeql-action/init 4.39.1 to 4.39.3",NAO_MERGEAR,ci_failure_workflow,CI FAILURE + codeql.yml
-3332,"chore(deps-dev): bump 18 dev deps (eslint9->10 tailwind3->4)",NAO_MERGEAR,ci_failure_major,CI FAILURE + major bumps breaking
-3339,"test: alinhar regressoes da suite ao Kit Builder",NAO_MERGEAR,ci_failure,Gate 1 FAILURE file-size
-3355,"chore(analise-prs): auditoria completa 47 PRs",NAO_MERGEAR,branch_entrega,BRANCH_ENTREGA NUNCA MERGEAR
-3210,"chore(main): release 1.9.0",AGUARDA_PO,release_decision,Release Please — decisao PO
-3228,"chore(workflows): workflow_dispatch ao e2e-color-swatch-grid",AGUARDA_PO,ci_workflows,toca .github/workflows (RB-01)
-3247,"chore(ci): 10+ workflows de update-snapshots",AGUARDA_PO,ci_workflows,10+ workflows novos (RB-01)
-3327,"chore(deps): bump codeql-action/upload-sarif",AGUARDA_PO,ci_workflows,toca gitleaks-history-audit.yml (RB-01)
-3328,"chore(deps): bump codeql-action/analyze",AGUARDA_PO,ci_workflows,toca codeql.yml (RB-01)
-3357,"chore(e2e): @smoke no job e2e-gates",AGUARDA_PO,ci_workflows,toca .github/workflows/e2e.yml (RB-01)
-3179,"fix: corrige preflight db-apply-migration",AGUARDA_PO,ddl_migration,DDL supabase/migrations (RB-02)
-3214,"fix(cron): CRON-001 escalonar 4 cron jobs",AGUARDA_PO,ddl_migration,cron.alter_job (RB-02+RB-10)
-3243,"fix(migrations): categories.level e full_path_readable",AGUARDA_PO,ddl_migration,DDL drift reconciliation (RB-02)
-3250,"fix: indice summary_date em stock_daily_summary",AGUARDA_PO,ddl_migration,CREATE INDEX CONCURRENTLY (RB-02)
-3251,"fix: remove cron inativa image-dimensions-backfill",AGUARDA_PO,ddl_migration,cron.unschedule (RB-02+RB-10)
-3255,"fix: drop perf002 (security)",AGUARDA_PO,ddl_migration,DROP FUNCTION security (RB-02)
-3256,"fix: RLS art-files path quotes/",AGUARDA_PO,ddl_migration,DDL RLS policy (RB-02)
-3261,"chore: espelho DRIFT CRON-001",AGUARDA_PO,ddl_migration,DDL mirror (RB-02) — ver #3284
-3263,"feat: versionar cron send-scheduled-reports (FT-005)",AGUARDA_PO,ddl_migration,cron.schedule (RB-02+RB-10)
-3264,"feat: versionar view vw_products_min_quantity (FT-079)",AGUARDA_PO,ddl_migration,CREATE OR REPLACE VIEW (RB-02)
-3265,"feat: versionar fn_check_item_fits (FT-088)",AGUARDA_PO,ddl_migration,CREATE OR REPLACE FUNCTION (RB-02)
-3273,"chore: espelho P-10 3 indices categories",AGUARDA_PO,ddl_migration,CREATE INDEX IF NOT EXISTS x3 (RB-02)
-3279,"fix(cron): CRON-002 colisoes residuais",AGUARDA_PO,ddl_migration,cron.alter_job x4 (RB-02+RB-10)
-3284,"chore: DRIFT mirror CRON-001 (ver #3261)",AGUARDA_PO,ddl_migration,DDL mirror (RB-02)
-3331,"chore(deps): bump date-fns 3.6.0 to 4.4.0",AGUARDA_PO,major_version_bump,major 3->4 (RB-03)
-3333,"chore(deps): bump framer-motion 11.18.2 to 14.10.0",AGUARDA_PO,major_version_bump,major 11->14 (RB-03)
-3334,"chore(deps): bump @sentry/react 8.55.2 to 11.11.0",AGUARDA_PO,major_version_bump,major 8->11 (RB-03)
+number,titulo,autor,veredito,categoria,head_sha,merge_state,nota
+3257,"fix(migrations): idempotencia em RLS deny-all e particoes 2027",adm01-debug,MERGEADA_AGENTE,,,6b859b0f,
+3337,"fix(ci): corrige referencias invalidas supabase/migrations/x6",adm01-debug,MERGEADA_AGENTE,,,6933eb61,
+3340,"docs(analise-prs): atualiza progresso",adm01-debug,MERGEADA_AGENTE,,,,
+3343,"chore(ci): atualiza file-size baseline Kit Builder",adm01-debug,MERGEADA_AGENTE,,,78729fc1,
+3278,"fix: corrige referencia de SHA de sentinela",adm01-debug,MERGEADA_EXTERNA,,,0818809d,
+3341,"docs: recibo deploy edge function",adm01-debug,MERGEADA_EXTERNA,,,,
+3342,"fix(ci): as-assertions-baseline",adm01-debug,MERGEADA_EXTERNA,,,,
+3344,"fix(tests): consumeUnloadBackup",adm01-debug,MERGEADA_EXTERNA,,,,
+3346,"fix(tests): corrige regressoes vitest",adm01-debug,MERGEADA_EXTERNA,,,1696c5a5,
+3348,"fix(tests): corrige 5 falhas preexistentes em useKitBuilderQuote",external,MERGEADA_EXTERNA,,,b4c1167c,
+3349,"fix(update-snapshots): atualizar snapshots PriceFreshnessBadge",adm01-debug,MERGEADA_EXTERNA,,,fb4b8c2d,
+3277,"[fechada]",adm01-debug,FECHADA_EXTERNA,,,,Gate Final=FAILURE
+3347,"[fechada]",adm01-debug,FECHADA_EXTERNA,,,,CI incompleto
+3129,"[ci_workflows]",dependabot,PROCESSADA_EXTERNA,ci_workflows,,,
+3137,"[ci_workflows]",dependabot,PROCESSADA_EXTERNA,ci_workflows,,,
+3274,"[ci_workflows]",dependabot,PROCESSADA_EXTERNA,ci_workflows,,,
+3290,"[ci_workflows]",dependabot,PROCESSADA_EXTERNA,ci_workflows,,,
+3350,"[ci_failure]",adm01-debug,PROCESSADA_EXTERNA,,,,Gate 1 FAILURE
+3203,"fix: scripts - static-pass",adm01-debug,NAO_MERGEAR,,1aad6831,DIRTY,Duplicata de #3273
+3265,"test: alinhar regressoes Kit Builder",adm01-debug,NAO_MERGEAR,,6f8930b4,DIRTY,
+3273,"fix: scripts - static-pass",adm01-debug,NAO_MERGEAR,,1aad6831,DIRTY,Duplicata de #3203
+3279,"chore(analise-prs): auditoria completa 47 PRs",adm01-debug,NAO_MERGEAR,,ca9dae70,DIRTY,PR entrega sessao anterior
+3331,"fix(cron): CRON-001 - escalonar 4 cron jobs",adm01-debug,NAO_MERGEAR,,7d6a177a,DIRTY,Toca workflows + conflito
+3332,"[npm ci ERESOLVE eslint@10]",adm01-debug,NAO_MERGEAR,,,,SSOT+E2E FAILURE
+3339,"[file-size regression]",adm01-debug,NAO_MERGEAR,,,,Gate 1 FAILURE
+3355,"chore(analise-prs): auditoria completa 47 PRs",adm01-debug,NAO_MERGEAR,,ca9dae70,DIRTY,PR entrega desta sessao - NUNCA MERGEAR
+3210,"[supabase/setup-cli em 9 workflows]",dependabot,AGUARDA_PO,ci_workflows,,,
+3327,"[codeql-action/init bump]",dependabot,AGUARDA_PO,ci_workflows,,,
+3328,"[@sentry/react 8->11]",dependabot,AGUARDA_PO,ci_workflows,,,
+3357,"[e2e.yml draft]",adm01-debug,AGUARDA_PO,ci_workflows,,,isDraft=true
+3228,"[date-fns 3.6->4.4]",dependabot,AGUARDA_PO,major_version_bumps,,,
+3247,"[framer-motion 11->14]",dependabot,AGUARDA_PO,major_version_bumps,,,
+3264,"chore(deps-dev): bump 18 dev deps",dependabot,AGUARDA_PO,major_version_bumps,915e83a9,BEHIND,
+3179,"[ddl_migration draft]",adm01-debug,AGUARDA_PO,ddl_migration,,,isDraft=true
+3214,"fix: restringe RLS publica de art-files",adm01-debug,AGUARDA_PO,ddl_migration,748b9d3f,BEHIND,
+3243,"chore(migrations): espelho DRIFT CRON-001",adm01-debug,AGUARDA_PO,ddl_migration,f5b6c194,BEHIND,Possivel duplicata de #3263
+3250,"feat: versionar cron jobs FT-005",adm01-debug,AGUARDA_PO,ddl_migration,d3c13756,BEHIND,
+3251,"feat: versionar view FT-079",adm01-debug,AGUARDA_PO,ddl_migration,17c21509,BEHIND,
+3255,"feat: versionar function FT-088",adm01-debug,AGUARDA_PO,ddl_migration,e00a33b4,BEHIND,
+3256,"chore(migrations): espelho P-10 categories",adm01-debug,AGUARDA_PO,ddl_migration,551ca9d6,BEHIND,
+3261,"fix(cron): CRON-002",adm01-debug,AGUARDA_PO,ddl_migration,bb59d431,BEHIND,
+3263,"chore(migrations): DRIFT mirror CRON-001",adm01-debug,AGUARDA_PO,ddl_migration,8cbd22b3,BEHIND,Possivel duplicata de #3243
+3284,"[ddl_migration]",adm01-debug,AGUARDA_PO,ddl_migration,,,
+3329,"fix: remove cron inativa image-dimensions-backfill",adm01-debug,AGUARDA_PO,ddl_migration,d9d091d5,BEHIND,Reclassificado de NAO_MERGEAR
+3330,"fix: drop perf002_drop_unused_snapshot_indexes",adm01-debug,AGUARDA_PO,ddl_migration,4af27e85,BEHIND,Reclassificado de NAO_MERGEAR
+3333,"fix(migrations): adiciona migrations de drift",adm01-debug,AGUARDA_PO,ddl_migration,06f31e44,BEHIND,Reclassificado de major_version_bumps
+3334,"fix: indice summary_date em stock_daily_summary",adm01-debug,AGUARDA_PO,ddl_migration,4d94363c,BEHIND,Reclassificado de major_version_bumps
