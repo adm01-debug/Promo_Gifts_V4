@@ -62,7 +62,7 @@ jobs:
     uses: ./.github/workflows/_secrets-check.yml
     secrets: inherit
 
-# ─── JOB 1: PRÉ-VÔOS (header-sticky + carrinhos URL-state) ──────────────────
+# ─── JOB 1: PRÉ-VÔOS (header-sticky + carrinhos URL-state + smoke specs) ─────
 # Roda uma vez; se falhar, os shards não sobem (needs: e2e-gates).
   e2e-gates:
     needs: [e2e-relevance]
@@ -143,6 +143,51 @@ jobs:
         if: steps.e2e_carrinhos_urlstate.outcome == 'failure'
         run: |
           echo "::error title=Carrinhos URL-state regression::Specs de URL-state em /carrinhos ou /orcamentos falharam."
+          exit 1
+
+      # ─── SMOKE @smoke (excluídos dos shards via --grep-invert) ───────────────
+      - name: 💨 Smoke 03b — pré-checagem de ambiente
+        id: e2e_smoke_03b
+        if: (steps.e2e_carrinhos_urlstate.outcome == 'success' || steps.e2e_carrinhos_urlstate.outcome == 'skipped') && env.E2E_USER_EMAIL != ''
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_BASE_URL: http://localhost:8080
+        run: |
+          npx playwright test \
+            e2e/flows/03b-thumb-quickview.smoke.spec.ts \
+            --project=chromium-authed \
+            --no-deps \
+            --max-failures=1 \
+            --reporter=github,list
+        continue-on-error: true
+
+      - name: 🛑 Fail se smoke 03b falhou
+        if: steps.e2e_smoke_03b.outcome == 'failure'
+        run: |
+          echo "::error title=Smoke 03b regression::Pré-checagem de ambiente (03b) falhou. Spec: e2e/flows/03b-thumb-quickview.smoke.spec.ts."
+          exit 1
+
+      - name: 📰 Smoke Magazine — preview sticky/aligned (xl+)
+        id: e2e_smoke_magazine_preview
+        if: (steps.e2e_smoke_03b.outcome == 'success' || steps.e2e_smoke_03b.outcome == 'skipped') && env.E2E_USER_EMAIL != ''
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_BASE_URL: http://localhost:8080
+        run: |
+          npx playwright test \
+            e2e/flows/magazine-preview-sticky-smoke.spec.ts \
+            --project=chromium-authed \
+            --no-deps \
+            --max-failures=1 \
+            --reporter=github,list
+        continue-on-error: true
+
+      - name: 🛑 Fail se magazine preview sticky falhou
+        if: steps.e2e_smoke_magazine_preview.outcome == 'failure'
+        run: |
+          echo "::error title=Magazine preview sticky regression::Smoke do preview da capa da revista falhou. Spec: e2e/flows/magazine-preview-sticky-smoke.spec.ts."
           exit 1
 
 # ─── JOB 2: SHARDS DE REGRESSÃO ──────────────────────────────────────────────
