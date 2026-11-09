@@ -6,16 +6,6 @@
 import { useMemo, useRef, useState, type ReactNode } from 'react';
 import { z } from 'zod';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -76,8 +66,8 @@ const suggestionSchema = z
 interface KitAIPromptDialogProps {
   catalogItems?: KitItem[];
   catalogBoxes?: KitBox[];
-  /** True when the kit already has a box or items — triggers a replace-confirmation dialog. */
-  hasKitContent?: boolean;
+  /** FT-134: true when the kit already has items — triggers replace warning */
+  hasExistingItems?: boolean;
   onApply: (
     suggestion: Suggestion,
     composition: KitAIComposition,
@@ -166,16 +156,10 @@ function buildStructuredPrompt({
 export function KitAIPromptDialog({
   catalogItems = [],
   catalogBoxes = [],
-  hasKitContent = false,
+  hasExistingItems = false,
   onApply,
 }: KitAIPromptDialogProps) {
   const [open, setOpen] = useState(false);
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const pendingApplyRef = useRef<{
-    suggestion: Suggestion;
-    composition: KitAIComposition;
-    requestedQuantity?: number;
-  } | null>(null);
   const [prompt, setPrompt] = useState('');
   const [audience, setAudience] = useState('');
   const [budget, setBudget] = useState('');
@@ -186,7 +170,6 @@ export function KitAIPromptDialog({
   const [alternativeIndex, setAlternativeIndex] = useState(0);
   const generationInFlightRef = useRef(false);
   const latestGenerationRef = useRef(0);
-  const abortControllerRef = useRef<AbortController | null>(null);
   const alternatives = useMemo(
     () => (suggestion ? resolveKitAICompositions(suggestion, catalogItems, catalogBoxes) : []),
     [catalogBoxes, catalogItems, suggestion],
@@ -212,8 +195,6 @@ export function KitAIPromptDialog({
     generationInFlightRef.current = true;
     const generation = latestGenerationRef.current + 1;
     latestGenerationRef.current = generation;
-    const ac = new AbortController();
-    abortControllerRef.current = ac;
     setLoading(true);
     setSuggestion(null);
     try {
@@ -223,7 +204,6 @@ export function KitAIPromptDialog({
           body: {
             prompt: buildStructuredPrompt({ prompt, audience, budget, style, quantity }),
           },
-          signal: ac.signal,
           // Sem isto, o corpo de um erro não-2xx some — e é ele que distingue
           // "sem chave" de "circuit breaker aberto" (ambos HTTP 503).
           preserveErrorData: true,
@@ -272,39 +252,19 @@ export function KitAIPromptDialog({
     }
   };
 
-  const handleCancel = () => {
-    abortControllerRef.current?.abort();
-    abortControllerRef.current = null;
-    generationInFlightRef.current = false;
-    setLoading(false);
-  };
-
-  const commitApply = (
-    s: Suggestion,
-    composition: KitAIComposition,
-    requestedQuantity?: number,
-  ) => {
-    onApply(s, composition, requestedQuantity);
-    setOpen(false);
-    clearForm();
-    toast.success('Composição aplicada — revise variantes, estoque e valores antes de continuar.');
-  };
-
   const handleApply = () => {
     if (!suggestion || !activeAlternative) return;
     const requestedQuantity = Number.parseInt(quantity, 10);
-    const qty =
+    onApply(
+      suggestion,
+      activeAlternative,
       Number.isSafeInteger(requestedQuantity) && requestedQuantity > 0
         ? requestedQuantity
-        : undefined;
-
-    if (hasKitContent) {
-      pendingApplyRef.current = { suggestion, composition: activeAlternative, requestedQuantity: qty };
-      setConfirmOpen(true);
-      return;
-    }
-
-    commitApply(suggestion, activeAlternative, qty);
+        : undefined,
+    );
+    setOpen(false);
+    clearForm();
+    toast.success('Composição aplicada — revise variantes, estoque e valores antes de continuar.');
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -322,7 +282,6 @@ export function KitAIPromptDialog({
   };
 
   return (
-    <>
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-1.5">
@@ -409,16 +368,6 @@ export function KitAIPromptDialog({
               >
                 <RotateCcw className="h-4 w-4" /> Limpar campos
               </Button>
-              {loading && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleCancel}
-                  className="gap-2"
-                >
-                  Cancelar
-                </Button>
-              )}
               <Button
                 onClick={handleGenerate}
                 disabled={loading || prompt.trim().length < 6}
@@ -562,8 +511,13 @@ export function KitAIPromptDialog({
                       <p className="mb-3 text-xs text-muted-foreground">
                         Estoque e preço comercial serão novamente validados antes do orçamento.
                       </p>
+                      {hasExistingItems && (
+                        <p className="mb-2 text-xs font-medium text-warning">
+                          ⚠ Isso substituirá a composição atual do kit.
+                        </p>
+                      )}
                       <Button onClick={handleApply} className="w-full">
-                        Usar esta composição
+                        {hasExistingItems ? 'Substituir e usar esta composição' : 'Usar esta composição'}
                       </Button>
                     </div>
                   </>
@@ -588,33 +542,6 @@ export function KitAIPromptDialog({
         </div>
       </DialogContent>
     </Dialog>
-
-    <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Substituir o kit atual?</AlertDialogTitle>
-          <AlertDialogDescription>
-            Aplicar esta composição vai substituir a caixa e os itens já escolhidos. Esta ação não
-            pode ser desfeita automaticamente.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => { pendingApplyRef.current = null; }}>
-            Cancelar
-          </AlertDialogCancel>
-          <AlertDialogAction
-            onClick={() => {
-              const p = pendingApplyRef.current;
-              if (p) commitApply(p.suggestion, p.composition, p.requestedQuantity);
-              pendingApplyRef.current = null;
-            }}
-          >
-            Substituir
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-    </>
   );
 }
 
