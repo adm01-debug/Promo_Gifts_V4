@@ -170,7 +170,7 @@ describe('CLI', () => {
     expect(result.stderr).toContain('não encontrada');
   });
 
-  it('sai com erro (exit 1) se --slug faltar', () => {
+  it('sai com erro de uso (exit 2) se --slug faltar', () => {
     const dir = tempDir('append-edge-receipt-cli-missing-slug-');
     const logPath = join(dir, 'log.md');
     writeFileSync(logPath, SAMPLE_LOG);
@@ -180,7 +180,7 @@ describe('CLI', () => {
       encoding: 'utf8',
     });
 
-    expect(result.status).toBe(1);
+    expect(result.status).toBe(2);
     expect(result.stderr).toContain('--slug');
   });
 });
