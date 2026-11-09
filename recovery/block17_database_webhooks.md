@@ -107,7 +107,7 @@ Características importantes:
   assinando o evento, **nem** chama `http_post`.
 - **Status only on diff:** UPDATEs só disparam quando
   `OLD.status IS DISTINCT FROM NEW.status`.
-- **Endpoint fixo:** `https://nmojwpihnslkssljowjh.supabase.co/functions/v1/webhook-dispatcher`
+- **Endpoint fixo:** `https://nmojwpihnslkssljowjh.supabase.co/functions/v1/webhook-dispatcher` [LEGACY_INFORMATIVO]
   (a edge function lê o evento e fan-out p/ cada subscriber em `outbound_webhooks`
   com HMAC-SHA256 do secret).
 
@@ -194,7 +194,7 @@ Funções com net.http_* .............. 1 (retry_failed_webhook_deliveries)
 
 ---
 
-## Apêndice — Comandos de auditoria reusáveis
+## Apêndice — Comandos de auditoria reutilizáveis
 
 ```sql
 -- Listar TODOS os triggers que fazem chamadas HTTP (nativo + custom)

@@ -7,7 +7,7 @@
 > Este arquivo é validado pelo script `scripts/check-secrets-inventory.mjs` (E40).
 > Rodar: `node scripts/check-secrets-inventory.mjs --gate` para verificar completude.
 
-Última atualização: 2026-11-07 (Gate 1.14 — SUPABASE_TEST_BYPASS_TOKEN adicionado; ci-freight-quality.yml)
+Última atualização: 2026-11-09 (Gate 1.14 — SMOKE_HEALTH_FN_URL, TEST_ADMIN_PASSWORD, TEST_SELLER_PASSWORD, vars.SMOKE_BASE_URL adicionados; ci.yml)
 
 ---
 
@@ -47,6 +47,9 @@ São usados em workflows de E2E/integração que **não fazem parte do Gate Fina
 | `E2E_DEV_EMAIL` | DevOps | Repo | Anual | Usuário developer (edge-integration-all.yml) — 1 ref |
 | `E2E_DEV_PASSWORD` | DevOps | Repo | Anual | Senha do developer de testes — 1 ref |
 | `SUPABASE_TEST_BYPASS_TOKEN` | DevOps | Repo | Semestral | Token de bypass de segurança para testes de carga/stress — `ci-freight-quality.yml` (1 ref), `scripts/massive-load-test.mjs`, `scripts/fuzz-testing.mjs`, `scripts/stress-burst.mjs`, `scripts/freight-quest-load-test.mjs`. **Deve ser o segredo mais controlado do repo** — contorna regras RLS em ambiente de teste |
+| `TEST_ADMIN_PASSWORD` | DevOps | Repo | Anual | Senha do usuário admin para testes de integração — `ci.yml` (1 ref); opcional, job pulado se não configurado |
+| `TEST_SELLER_PASSWORD` | DevOps | Repo | Anual | Senha do usuário vendedor para testes de integração — `ci.yml` (1 ref); opcional, job pulado se não configurado |
+| `SMOKE_HEALTH_FN_URL` | DevOps | Repo | Sob demanda | URL da edge function de health check para smoke tests — `ci.yml` (1 ref) |
 
 ---
 
@@ -117,6 +120,7 @@ Gerado automaticamente em cada run — não armazenado como secret no repositór
 | `vars.CART_TOTAL_SHARDS` | DevOps | Repo | Número de shards em `cart-invariants-smoke.yml` — default 4 |
 | `vars.E2E_BASE_URL` | DevOps | Repo | URL base para E2E em `ci-freight-quality.yml` |
 | `vars.CI_SKIP_FREIGHT_E2E` | DevOps | Repo | Flag para pular E2E de frete em `freight-quality-gates.yml` |
+| `vars.SMOKE_BASE_URL` | DevOps | Repo | URL base para smoke tests de rota/health — `ci.yml` (2 refs) |
 | `vars.KIT_FIXTURE_ID` | DevOps | Repo | UUID do fixture de kit (alternativa ao secret) — `kit-coverage-integration.yml` |
 
 ---
