@@ -1,5 +1,5 @@
 # Relatório de Análise de PRs — Promo_Gifts_V4
-## Gerado em: 2026-11-08 | main@5aaebc67dcc55a3b14a684b2e3419f89fc8cf1a6 (atualizado 2026-11-09)
+## Atualizado: 2026-11-09 | main@c2bbc6be51e461ac401726b0c50aa816ff4ae40b
 
 ---
 
@@ -7,21 +7,28 @@
 
 | Item | Valor |
 |---|---|
-| Total de PRs analisadas (abertas + fechadas) | 51 |
-| PRs fechadas identificadas | 3 (#3267, #3246, #3271) |
-| Diffs lidos 100% | 33/51 ✓ (ver tabela — +#3252, #3253, #3272, #3291 esta sessão) |
-| Diffs analisados via metadados | 18/51 |
-| Worktrees criados | 0 (nenhum nesta sessão) |
-| Worktrees removidos | N/A (nenhum criado) |
-| Veredito DECISAO_HUMANA | 34 |
-| Veredito PENDENTE_CI | 6 (#3276, #3277, #3252, #3253, #3272, #3291) |
+| Total de PRs analisadas (abertas + fechadas) | 50 |
+| PRs fechadas identificadas | 3 (#3267, #3246, #3271 state=closed) |
+| PRs abertas (atual) | 39 |
+| Diffs lidos 100% | 35/50 ✓ (+#3269, #3270 esta sessão) |
+| Diffs analisados via metadados | 15/50 |
+| Worktrees criados | 0 |
+| Worktrees removidos | N/A |
+| Veredito DECISAO_HUMANA | 32 |
+| Veredito PENDENTE_CI | 8 (#3252, #3253, #3269, #3270, #3272, #3276, #3277, #3291) |
 | Veredito MERGE_AUTONOMO | 7 (#3249, #3245, #3254, #3280, #3281, #3282, #3285) |
-| Mergeadas sessões anteriores | 3 (#3212 sha d8ae5159, #3241 sha 931b932a, #3249 sha 34ac6453) |
-| Mergeadas sessão anterior | 2 (#3245 sha d56979f6, #3254 sha ce5a9ab4) |
-| Mergeadas por Claude esta sessão | 2 (#3280 sha 6b555f89, #3285 sha 5aaebc67) |
-| Mergeadas por adm01-debug esta sessão | 2 (#3281 sha f44949a7, #3282 sha 111818f0) |
-| CI main pós-merge #3280 | Verde (Gate Final green) ✓ |
-| Baseline gerado | typecheck ✓ · lint ✓ · tests ✓ · build ✓ |
+| Veredito FECHADA | 3 (#3246, #3267, #3271) |
+| Mergeadas total acumulado | 7 |
+| Mergeadas por Claude | 5 (#3245, #3249, #3254, #3280, #3285) |
+| Mergeadas por adm01-debug | 2 (#3281, #3282) |
+| PR mergeada em main pós-sessão | #3293 (docs-only) → main=c2bbc6be |
+| CI main | Verde — Gate Final success (c2bbc6be herda de 5aaebc67, docs-only) |
+| Baseline typecheck | EXIT_CODE:0 (confirmado local nesta sessão em c2bbc6be) |
+| Baseline vitest webhook | 95/95 PASS (confirmado local 2026-11-09T00:44:29Z) |
+| Baseline vitest total | 429/429 PASS (CI run #40218104943 + webhook confirmado) |
+| Baseline lint/build | CI-confirmed (npm ci inacessível localmente — registry 403) |
+| regras-de-negocio.md | CRIADO analise-prs/regras-de-negocio.md |
+| #3269 e #3270 | Reclassificados DECISAO_HUMANA → PENDENTE_CI (draft=false) |
 
 ---
 

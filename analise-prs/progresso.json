@@ -1,20 +1,20 @@
 {
   "sessao": "2026-11-09",
   "session_id": "49a643e1-3ba4-5a51-9048-a545eec48233",
-  "main_sha": "5aaebc67dcc55a3b14a684b2e3419f89fc8cf1a6",
+  "main_sha": "c2bbc6be51e461ac401726b0c50aa816ff4ae40b",
   "total_prs_no_inventario": 50,
   "total_analisadas": 50,
   "vereditos": {
     "MERGE_AUTONOMO": 7,
-    "PENDENTE_CI": 6,
-    "DECISAO_HUMANA": 34,
+    "PENDENTE_CI": 8,
+    "DECISAO_HUMANA": 32,
     "FECHADA": 3
   },
   "ci_status": {
     "runners": "SATURADO desde 2026-11-08T23:27 UTC",
     "gate_final_queued": true,
-    "prs_aguardando_ci": [3252, 3253, 3272, 3276, 3277, 3291],
-    "nota": "Gate Final nunca executou para nenhuma das 6 PRs PENDENTE_CI. Merge autônomo pendente quando CI liberar."
+    "prs_aguardando_ci": [3252, 3253, 3269, 3270, 3272, 3276, 3277, 3291],
+    "nota": "Gate Final nunca executou para nenhuma das 8 PRs PENDENTE_CI. #3269 e #3270 promovidos de DECISAO_HUMANA (draft=true) para PENDENTE_CI (draft=false 2026-11-09T00:19Z). Merge autônomo pendente quando CI liberar."
   },
   "worktrees": "NENHUM — confirmado nesta sessão. Único diretório: /home/user/Promo_Gifts_V4",
   "prs_mergeadas_esta_sessao": [
@@ -68,6 +68,20 @@
     {"pr": 3267, "motivo": "state=closed — PR de bot graphify"},
     {"pr": 3271, "motivo": "state=closed 2026-11-09T00:14:43Z — supersedida por #3252+#3253"}
   ],
+  "pr_mergeada_em_main_apos_sessao": {
+    "pr": 3293,
+    "titulo": "docs: P-14 E2E Magazine Header + teste e2e + snapshot",
+    "novo_main_sha": "c2bbc6be51e461ac401726b0c50aa816ff4ae40b",
+    "tipo": "docs-only bypass E14/E197"
+  },
+  "baseline": {
+    "typecheck": "EXIT_CODE:0 (confirmado em c2bbc6be, sessão atual 2026-11-09)",
+    "vitest_webhook": "95/95 PASS (confirmado local 2026-11-09T00:44:29Z, SHA c2bbc6be)",
+    "vitest_deploy_gate": "334/334 PASS (CI run #40218104943, SHA c113300c — inalterado por merges docs-only)",
+    "vitest_total": "429/429 PASS",
+    "lint": "npm ci inacessível localmente (registry 403) — baseline autoritativa: CI Gate Final success em c113300c",
+    "build": "npm ci inacessível localmente (registry 403) — baseline autoritativa: CI Gate Final success em c113300c"
+  },
   "artefatos": {
     "baseline_typecheck": "analise-prs/baseline/typecheck.txt",
     "baseline_vitest": "analise-prs/baseline/vitest-per-test-name.txt",

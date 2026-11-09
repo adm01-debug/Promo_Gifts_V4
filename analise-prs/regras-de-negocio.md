@@ -1,133 +1,126 @@
-# Regras de Negócio — Promo_Gifts_V4
-## Gerado em: 2026-11-08 — main@9b2644b2c1
+# Regras de Negócio — Promo Brindes V4
 
-Fontes lidas: `src/integrations/supabase/client.ts`, `src/types/product.ts`, `supabase/migrations/` (3047 migrations), `e2e/routes/`, `.github/workflows/deploy-gates.yml`, `CLAUDE.md`.
-
----
-
-## 1. SSOT do Supabase (REGRA #1 — IMUTÁVEL)
-
-**Projeto canônico Gold:** `doufsxqlfjyuvxuezpln`
-**Projeto proibido:** `pqpdolkaeqlyzpdpbizo` (NUNCA referenciar em código executável)
-
-Fonte: `src/integrations/supabase/client.ts` — `CURRENT_PROJECT_ID = 'doufsxqlfjyuvxuezpln'`
-
-Consequência de qualquer PR: se um PR alterar `CURRENT_PROJECT_ID` ou remover `validateEnv()`, **BLOQUEADO** (Gate 0).
+Documento gerado a partir de código, diffs, schema e testes observados na sessão de análise de PRs.
+Data: 2026-11-09 | Sessão: `claude_05/youthful-ride-vcdchy` | Main SHA: `c2bbc6be51e461ac401726b0c50aa816ff4ae40b`
 
 ---
 
-## 2. Tipo `Product` — Campos Críticos (REGRA #2)
+## 1. Isolamento de Tenant (org_id / supplier_id)
 
-Obrigatório em `src/types/product.ts` (ou equivalente):
+**Fonte:** RLS policies em produção (`doufsxqlfjyuvxuezpln`), PRs #3257, #3261, #3273.
+
+- Toda tabela multi-tenant possui `org_id` (ou `supplier_id` no contexto de supply).
+- RLS habilitado em todas as tabelas expostas via PostgREST; `anon` nunca enxerga dados de outro tenant.
+- Gate 1.13 (CI) valida que nenhuma tabela com RLS tem zero policies (deny-all silencioso).
+- Gate 1.13.2 valida que 7 tabelas com INSERT anônimo têm trigger de rate guard.
+- PR #3257: migrations de idempotência em RLS deny-all e partições — reforço de que RLS é gate de segurança, não conveniência.
+- PR #3261: arquivos espelho DRIFT CRON-001 — cron jobs também seguem o fluxo de migration.
+
+## 2. Precificação de Produto
+
+**Fonte:** `src/types/product-catalog.ts` (REGRA #2 CLAUDE.md), histórico de incidentes.
+
 ```typescript
-price: number           // preço original
-sale_price?: number     // preço de venda
-shortDescription: string
-category_id?: string
-category_name?: string
+price: number       // preço original — obrigatório
+sale_price?: number // preço de venda — opcional
 ```
 
-Verificado em main@9b2644b2: `shortDescription`, `price`, `sale_price` presentes ✓
+- Ambos os campos DEVEM existir no tipo `Product`. Remover `price` ou `sale_price` é proibido (REGRA #2).
+- `price` é o preço base; `sale_price` é o preço promocional. A UI exibe `sale_price` se presente.
+- Incidente 2026-06-11: commit `f22e1e2` removeu esses campos durante merge — levou 3 commits para restaurar.
+- Validação automática: Gate 1.1 (CI) verifica presença dos campos críticos do tipo `Product`.
 
----
+## 3. Kit Builder — Fluxo de Validação Pré-Orçamento
 
-## 3. Schema de Banco — Tabelas Críticas
+**Fonte:** `src/pages/kit-builder/useKitBuilderQuote.ts`, PRs #3269, #3270, #3272, #3252, #3253, #3276, #3277.
 
-Via `supabase/migrations/` (3047 arquivos) + Gate 1.2 (types-inventory-drift):
-- `products`, `product_variants`, `suppliers`, `supplier_products_raw`
-- `personalization_techniques`
-- `magazines`, `magazine_items`, `magazine_templates`
-- `categories` (com coluna `level` — drift detectado em PR#3243)
-- `supplier_stricker.*` (17 tabelas — sem RLS, pendência PR#3246)
+Ordem de validações antes de criar o orçamento (dentro do bloco `!serverConfirmedCommit`):
 
----
+1. **Preços** (`validateKitPricesForQuote` — `useKitPriceValidation.ts`)
+   - Verifica se todos os itens têm preço válido no momento da criação
+   
+2. **Quantidade mínima** (`validateKitMinQuantityForQuote` — `useKitMinQuantityValidation.ts`) — FT-079
+   - Consulta `vw_products_min_quantity` para cada produto do kit
+   - Regra: `item.quantity × kitQuantity >= effective_min_quantity`
+   - Fail-closed em erro de DB (bloqueia com mensagem clara)
+   - Fail-open quando `effectiveMin <= 1` (produto sem mínimo não bloqueia)
+   - Fonte: PR #3269 (`claude/feat-ft079-front-min-quantity-261108-2340`)
 
-## 4. DDL em Produção (REGRA #8/E15)
+3. **Estoque** (`validateKitStockForQuote` — `useKitStockValidation.ts`)
+   - Verifica estoque disponível para cada item do kit
 
-**Único caminho autorizado:** `.github/workflows/db-apply-migration.yml` (workflow_dispatch)
+4. **Volume/encaixe** (`validateKitFitsForQuote` — `useKitFitsValidation.ts`) — FT-088
+   - Chama `fn_check_item_fits(p_packaging_id, p_product_id, p_current_used_liters)` sequencialmente
+   - Bloqueia apenas quando `fits === false` (explícito)
+   - Fail-open em erro de RPC (erros individuais → `continue`)
+   - Retorna `'skipped'` quando não há caixa selecionada
+   - Fonte: PR #3270 (`claude/feat-ft088-front-fits-261108-2300`)
 
-Tipos de DDL que BLOQUEIAM merge autônomo:
-- `ALTER TABLE` (incluindo `ADD COLUMN`, `ENABLE ROW LEVEL SECURITY`)
-- `CREATE POLICY`
-- `cron.alter_job`, `cron.schedule`, `cron.unschedule`
-- `DROP *`, `RENAME *`, `ALTER TYPE *`
-- `CREATE TABLE`, `CREATE INDEX` não-idempotente
+**Invariante:** O bloco de validação só executa quando `!serverConfirmedCommit` — não re-valida retry de orçamento já confirmado (idempotência).
 
----
+## 4. Kit Builder — Navegação por Etapas
 
-## 5. Deploy de Edge Functions (REGRA #8 corolário)
+**Fonte:** PRs #3272, #3276, #3277, #3292.
 
-**Único caminho autorizado:** `.github/workflows/deploy-edge-functions.yml` (workflow_dispatch)
+- Fluxo de etapas: Produtos → Embalagem → Personalização → Resumo → Orçamento
+- **FT-122** (PR #3292): guard em `goToStep` — impede navegar para etapa não completada (draft).
+- **PR #3276**: confetti só na transição válido; botão "Cancelar Substituição" corrigido.
+- **PR #3272**: conecta `isConflictError` e `consumeUnloadBackup` — tratamento de conflito de estado.
+- `useKitBuilderPageState.ts` é god-node do estado de navegação — #3276 e #3277 tocam esse arquivo.
 
-Edge functions em produção (Supabase `doufsxqlfjyuvxuezpln`):
-- `collections-public-react` (referenciada em PR#3248)
-- `comparisons-public-react` (referenciada em PR#3248)
-- `categories-api` (modificada em PR#3214)
-- 40+ outras edge functions
+## 5. SSOT Supabase (Projeto Gold)
 
----
+**Fonte:** REGRA #1 CLAUDE.md, `src/integrations/supabase/client.ts`.
 
-## 6. CI/CD — Gate Final (único required check)
+```
+CURRENT_PROJECT_ID = 'doufsxqlfjyuvxuezpln'  // IMUTÁVEL
+```
 
-**Único check required:** "Gate Final - Deploy Ready" (`.github/workflows/deploy-gates.yml`)
+- O projeto `pqpdolkaeqlyzpdpbizo` é proibido em qualquer código executável.
+- Gate 0 (CI): `validate-supabase-config.mjs` falha se o ID canônico não estiver presente.
+- O Lovable reverte este arquivo silenciosamente — Gate 0 detecta isso.
 
-Gates bloqueantes relevantes para PRs analisadas:
-- Gate 0: SSOT `doufsxqlfjyuvxuezpln`
-- Gate 1: Lint (ESLint) + TypeScript
-- Gate 1.3: Contratos de migration (preflight E15)
-- Gate 2: Vitest unit tests
-- Gate 3: E2E Smoke (Playwright)
+## 6. Migrations — Fluxo Único Autorizado
 
----
+**Fonte:** REGRA #8/E15 CLAUDE.md, PRs #3257, #3261, #3264, #3265, #3273.
 
-## 7. Regra de Workflows CI (REGRA #8 "Não tocar .github/workflows")
+- Migrations em produção **só** via `workflow_dispatch` em `.github/workflows/db-apply-migration.yml`.
+- `execute_sql` com DDL é **proibido** em sessões de agente (E056).
+- Migrations devem ser: aditivas, idempotentes, sem DROP/RENAME/ALTER TYPE/DELETE em massa.
+- PRs com `CREATE INDEX CONCURRENTLY` via migration espelho: REGRA#8 → DECISAO_HUMANA (aprovação PO).
+- Arquivos espelho DRIFT: reconciliam DDL aplicada fora do fluxo — precisam de PR (não push direto).
 
-Nenhum merge autônomo por agente em PR que toque `.github/workflows/**` ou `.github/scripts/**`.
+## 7. CI/Workflows — Regras de Escrita
 
-PRs bloqueadas por esta regra: #3127, #3129, #3137, #3214 (contract-tests.yml), #3228, #3247.
+**Fonte:** REGRA CI CLAUDE.md, PRs #3129, #3137, #3127, #3274, #3275.
 
----
+- **Proibido** tocar `.github/workflows/` sem aprovação explícita do PO.
+- Gate Final (`deploy-gates.yml`) é o único check required em `main`.
+- PRs que tocam `.github/workflows/` → veredito **DECISAO_HUMANA** automaticamente.
+- Exceção: PRs docs-only sob `docs/**` têm bypass E14/E197 (Gate Final não dispara).
+- Arquivos na raiz (ex.: `PENDENCIAS.md`, `CHANGELOG.md`) **não** recebem bypass — disparam CI normalmente.
 
-## 8. Regras de Draft
+## 8. Arquitetura Bronze → Silver → Gold
 
-PRs com `isDraft=true` **não são mergeadas** — aguardam publicação pelo PO.
+**Fonte:** CLAUDE.md, PRs de migration, cron jobs.
 
-PRs em draft desta sessão: #3214, #3228, #3245, #3246, #3247, #3248.
+- **Bronze:** ingestão bruta (webhooks, imports externos) → `*_raw` tables.
+- **Silver:** limpeza e enriquecimento → views materializadas, `*_clean` tables.
+- **Gold:** `doufsxqlfjyuvxuezpln` — produto final, queries de front, orçamentos.
+- Cron jobs (`process_scheduled_reports`, `send_scheduled_reports`) gerenciam o pipeline periódico.
+- PR #3263: versiona migrations de cron jobs `process/send-scheduled-reports` (FT-074).
 
----
+## 9. Orçamentos e Carrinhos
 
-## 9. Rota Pública — Fábricas E2E
+**Fonte:** PRs #3253, #3272, Gate 5.5.
 
-`buildPublicTokenSuite` em `e2e/routes/_factories.ts`:
-- Suíte parametrizada para rotas públicas com token (coleção, comparar, dossier, kit)
-- Espera edge function no Supabase e rota no frontend
+- Gate 5.5: RPC `restore_seller_cart` deve existir no projeto canônico.
+- PR #3253: corrige arredondamento de ponto flutuante em `calculateTotalKitPrice` — preço total do kit deve ser valor monetário preciso (não float IEEE 754).
+- `consumeUnloadBackup` (PR #3272): backup do estado do kit no `beforeunload` deve ser consumido corretamente ao retornar à página.
 
-Rotas públicas confirmadas em main: `/dossie`, `/kit-publico`, `/approve`
-Rotas propostas por PR#3248: `/colecao-publica`, `/comparar-publica`
+## 10. SINGU — Fora do Escopo
 
----
+**Fonte:** Regras da sessão de análise.
 
-## 10. VirtualizedProductGrid — Componente Crítico
-
-`src/components/products/VirtualizedProductGrid.tsx`:
-- Grid virtualizado com 7.143+ produtos
-- `showScrollTop` controla visibilidade do botão scroll-to-top
-- PR#3245 inverte esta condição (`!showScrollTop`) — regressão real detectada
-
----
-
-## 11. Cron Jobs em Produção
-
-Schema `cron` (pg_cron):
-- 10+ jobs em produção com problemas de "job startup timeout"
-- CRON-001 (PR#3214): propõe escalonamento de 4 jobs (IDs 114, 224, 243, 276)
-- Qualquer alteração via `cron.alter_job` requer migration via `db-apply-migration.yml`
-
----
-
-## 12. Schema `supplier_stricker` — Segurança
-
-17 tabelas sem RLS habilitado:
-- Schema não exposto via API (sem GRANT USAGE para `authenticated`)
-- Risco: qualquer GRANT futuro expõe todas as tabelas irrestritamente
-- Mitigation: PR#3246 — `ENABLE ROW LEVEL SECURITY` + `CREATE POLICY deny_all USING (false)`
+- Sistema SINGU (externo) é READ-ONLY nesta análise.
+- PRs que escrevem no SINGU não são mergeadas autonomamente.

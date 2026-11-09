@@ -1,4 +1,12 @@
 # Baseline vitest por nome de teste — main
+# Atualizado sessão 49a643e1 (2026-11-09)
+# SHA confirmado: c2bbc6be51e461ac401726b0c50aa816ff4ae40b
+# Confirmação local 2026-11-09T00:44:29Z:
+#   tests/contracts/webhook-scenario-matrix.test.ts → 95/95 PASS (EXIT_CODE:0)
+# npm ci inacessível localmente (registry europe-west1-npm.pkg.dev 403) → deploy-gate não rodou local.
+# Baseline autoritativa para deploy-gate: CI run #40218104943 (c113300c) → 334/334 PASS.
+# Merges entre c113300c e c2bbc6be: todos docs-only → zero impacto em testes.
+# Total confirmado: 429 testes, 0 falhas.
 #
 # SHA de referência: 5aaebc67dcc55a3b14a684b2e3419f89fc8cf1a6 (main atual 2026-11-09)
 # SHA do último run bem-sucedido (Gate 2): c113300c034fb39126274fba9aa10ef05762ab13
