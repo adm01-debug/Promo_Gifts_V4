@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-11-09T16:30:00Z",
+  "main_head_sha": "78729fc11038f7d0b2bb73ff0c1330f92547658b",
+  "gate_final_run_id": 42617163917,
+  "gate_final_status": "queued",
+  "gate_final_conclusion": null,
+  "note": "Runner saturated — 3 runs queued. Not a failure.",
+  "supabase_production": {
+    "project_id": "doufsxqlfjyuvxuezpln",
+    "products_count": 8321,
+    "verified_at": "2026-11-09T16:30:00Z",
+    "status": "healthy"
+  }
+}

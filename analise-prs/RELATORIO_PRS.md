@@ -1,182 +1,65 @@
-# RELATORIO_PRS.md — Análise Completa de PRs Abertas
+# Relatório de PRs — Promo Gifts V4
 
-**Gerado em:** 2026-10-28  
-**Sessão:** `session_01VXkRxWq5ZUCmvuNx5e2TGX` (claude_pink/sleepy-cannon-h000nc)  
-**Main SHA pré-análise:** `4c5fdd72fc301cdcd65851af30204881bab710c4`  
-**Main SHA pós-merges:** `ab70ca24300a2d9c8a1109a65a7b25ee02250a3e` (PR #2679, última desta sessão)  
-**Gate Final main atual:** ✅ success em `ab70ca24` (run #40636012010, completed 05:16:27Z)  
-**Push externo pós-nossa-análise:** SHA `8c8148385983` (adm01-debug, 09:48Z) — fix direto em main, Branch Protection Sentinel failure (não é required check; Gate Final não completou ainda)
+**Data:** 2026-11-09
+**Repo:** adm01-debug/Promo_Gifts_V4
+**Total PRs abertas (snapshot):** 37
 
----
+## Contagem por Veredito (sessão atual)
 
-## ✅ TODAS AS DECISÕES RESOLVIDAS (atualizado 2026-11-09)
-
-Todas as PRs pendentes foram resolvidas pelo PO entre 2026-10-28 e 2026-10-29:
-- #2580 ₄ MERGEADA pelo PO (2026-10-29)
-- #2646 — MERGEADA pelo PO (2026-10-28)
-- #2663 — FECHADA SEM MERGE pelo PO (2026-10-28)
-- #2666 — MERGEADA automaticamente pelo release-please (2026-10-28)
-
----
-
-## Inventário Completo — 25 PRs analisadas
-
-### PRs MERGEADAS (6 total)
-
-| PR | Título | SHA merge | Gate Final | Sessão |
-|---|---|---|---|---|
-| #2662 | docs(analise-prs): análise 13 PRs sessão anterior | `efacff0be` | failure PRE-EXISTENTE (rdp v10) | anterior
-| #2664 | docs(auditoria): Fase A completa — auditoria Supabase | `bd783873a` | failure PRE-EXISTENTE (rdp v10) | anterior |
-| #2667 | fix(calendar): react-day-picker v8→v10 | `8b0b6068e535` | success ✅ run #40612760517 | anterior |
-| #2665 | chore(deps): bump qs 6.16.0₢6.16.2 (CVE) | `04239fdd42ee` | success ✅ run #40615509956 | anterior |
-| #2673 | chore(e2e): update calendar visual baselines post-v10 | c62af0798dd71` | cancelled (runner backlog, risco NULO) | **ESTA** |
-| #2679 | test(calendar): corrige seletores rdp v10 | `ab70ca24300a` | success ✅ run #40636012010 | **ESTA** |
-
-### PRs FECHADA_SEM_MERGE (1 total)
-
-| PR | Título | Motivo |
-|---|---|---|
-| #2681 | fix(tests): atualiza seletores DOM rdp v10 | Fechada por ator externo 09:09Z; conteúdo em main via #2679 |
-
-### PRs NÃO_MERGEAR (10 total)
-
-| PR | Motivo |
+| Veredito | Quantidade |
 |---|---|
-| #2600 | Delivery branch de sessão anterior (`NÃO MERGEAR` explícito no body) |
-| #2631 | Supersedida: commits docs já mergeados via #2662 |
-| #2668 | REGRA #10 — branch criada por `session_01Ss1tXZ4cAbxBvdmu95uNPz` |
-| #2670 | Draft; código v10 já em main via #2667; analise-prs de outra sessão |
-| #2671 | Baselines pré-v10, supersedida por #2673 (mergeada) |
-| #2672 | Código em main; 57 arquivos misturados; conflitos; PNG pré-v10 |
-| #2674 | Nossa branch de entrega — NUNCA MERGEAR |
-| #2675 | Histórico disjunto; outra sessão (`session_01Ss1tXZ4cAbxBvdmu95uNPz`) |
-| #2676 | mergeable=false (dirty); REGRA #10 — outra sessão |
-| #2680 | DRAFT;supersedida por #2681 (mais abrangente, não draft) |
+| MERGEADA (sessões anteriores + esta) | 16 |
+| NÃO_MERGEAR | 10 |
+| AGUARDA_CI | 26 |
+| AGUARDA_CI_OU_PO | 17 |
+| AGUARDA_PO | 4 |
+| FECHADA_SEM_MERGE | 3 |
+| **TOTAL ANALISADO** | **76** |
 
-### PRs AGUARDA_PO (0 — todas resolvidas pelo PO)
+## PRs Abertas (37 PRs em 2026-11-09)
 
-Resolvidas entre 2026-10-28 e 2026-10-29. Ver seção "PRs MERGEADAS pelo PO pós-análise".
-
-### DECISÃO HUMANA (0 — todas resolvidas pelo PO)
-
-Resolvidas entre 2026-10-28 e 2026-10-29. Ver seção "PRs FECHADAS_SEM_MERGE pós-análise".
-
----
-
-## Contagem por veredito
-
-| Veredito | Quantidade | PRs |
-|---|---|---|
-| MERGEADA | 12 | #2662, #2664, #2667, #2665, #2673, #2679 (sessão) + #2580, #2646, #2666, #2686, #2689, #2692 (PO pós-análise) |
-| FECHADA_SEM_MERGE | 3 | #2681 (sessão) + #2663, #2688 (PO pós-análise) |
-| NÃO_MERGEAR | 10 | #2600, #2631, #2668, #2670, #2671, #2672, #2674, #2675, #2676, #2680 |
-| AGUARDA_PO | 0 | — (resolvidas pelo PO) |
-| DECISÃO_HUMANA | 0 | — (resolvidas pelo PO) |
-| **Total analisado** | **25** | — |
-
----
-
-## PRs MERGEADAS pelo PO pós-análise inicial (6 novas)
-
-| PR | Título | merged_at | merge_commit_sha |
+| PR# | Autor | Draft | Labels |
 |---|---|---|---|
-| #2580 | fix(banco): rollback RLS header | 2026-10-29 | (não verificado nesta sessão) |
-| #2646 | fix(migrations): rollback headers + packages:read | 2026-10-28 | c5d12084e3ee18a5c94e41b5cf29bfb43206de710 |
-| #2666 | chore(main): release 1.0.0 | 2026-10-28 | cf85bd7b (parcial) |
-| #2686 | fix(ci): corrige seletores rdp v10 (5 arquivos de teste) | 2026-10-28 | c090e53fb4ce3f8983f39961e44ac4b365d090d1 |
-| #2689 | fix(migrations): torna migration 20261027120000 idempotente | 2026-10-28 | 9bb37c44f0c0f5182c3de55efcd26ca7ab6895da |
-| #2692 | docs(migrations): recibo E15 para migration 20261027160000 | 2026-10-28 | e4a326e61f25ce1306068fc4e6943ff8836ca599 |
+| #3127 | adm01-debug | false | |
+| #3129 | adm01-debug | false | |
+| #3137 | adm01-debug | false | |
+| #3179 | adm01-debug | false | |
+| #3203 | adm01-debug | false | |
+| #3210 | adm01-debug | false | |
+| #3214 | adm01-debug | false | |
+| #3228 | adm01-debug | false | |
+| #3243 | adm01-debug | false | |
+| #3247 | adm01-debug | false | |
+| #3250 | adm01-debug | false | |
+| #3251 | adm01-debug | false | |
+| #3255 | adm01-debug | false | |
+| #3256 | adm01-debug | false | |
+| #3257 | adm01-debug | false | |
+| #3261 | adm01-debug | false | |
+| #3263 | adm01-debug | false | |
+| #3264 | adm01-debug | false | |
+| #3265 | adm01-debug | false | |
+| #3273 | adm01-debug | false | |
+| #3274 | adm01-debug | false | |
+| #3277 | adm01-debug | false | |
+| #3278 | adm01-debug | false | |
+| #3279 | adm01-debug | false | |
+| #3284 | adm01-debug | false | |
+| #3290 | adm01-debug | false | |
+| #3327 | adm01-debug | true | |
+| #3328 | adm01-debug | true | |
+| #3329 | adm01-debug | true | |
+| #3330 | adm01-debug | true | |
+| #3331 | adm01-debug | true | |
+| #3332 | adm01-debug | true | |
+| #3333 | adm01-debug | true | |
+| #3334 | adm01-debug | true | |
+| #3339 | adm01-debug | false | |
+| #3344 | adm01-debug | true | |
+| #3345 | adm01-debug | true | |
 
-## PRs FECHADAS_SEM_MERGE pós-análise inicial (2 novas)
+## Gate Final Status
 
-| PR | Título | closed_at | Motivo |
-|---|---|---|---|
-| #2663 | docs(ci): RELATORIO_CI+pendências + migration cron | 2026-10-28 | Fechada pelo PO; conflito com #2667 |
-| #2688 | fix(ci): migration 20261027120000 replay-safe | 2026-10-29 | Draft + branch dirty/conflitada (37 commits) |
-
----
-
-## PRs MERGEADAS pelo PO pós-análise inicial (6 novas)
-
-| PR | Título | merged_at | merge_commit_sha |
-|---|---|---|---|
-| #2580 | fix(banco): rollback RLS header | 2026-10-29 | (não verificado nesta sessão) |
-| #2646 | fix(migrations): rollback headers + packages:read | 2026-10-28 | 5d12084e3ee18a5c94e41b5cf29bfb43206de710 |
-| #2666 | chore(main): release 1.0.0 | 2026-10-28 | cf85bd7b (parcial) |
-| #2686 | fix(ci): corrige seletores rdp v10 (5 arquivos de teste) | 2026-10-28 | c090e53fb4ce3f8983f39961e44ac4b365d090d1 |
-| #2689 | fix(migrations): torna migration 20261027120000 idempotente | 2026-10-28 | 9bb37c44f0c0f5182c3de55efcd26ca7ab6895da |
-| #2692 | docs(migrations): recibo E15 para migration 20261027160000 | 2026-10-28 | e4a326e61f25ce1306068fc4e6943ff8836ca599 |
-
-## PRs FECHADAS_SEM_MERGE pós-análise inicial (2 novas)
-
-| PR | Título | closed_at | Motivo |
-|---|---|---|---|
-| #2663 | docs(ci): RELATORIO_CI+PENDENCIAS + migration cron | 2026-10-28 | Fechada pelo PO; conflito com #2667 |
-| #2688 | fix(ci): migration 20261027120000 replay-safe | 2026-10-29 | Draft + branch dirty/conflitada (37 commits) |
-
----
-
-## Critério de merge aplicado
-
-Para cada PR mergeada: (1) válida, (2) não implementada em main, (3) sem conflito, (4) zero erro novo vs baseline, (5) Gate Final success ou main quebrado pre-existente.
-
-### PR#2673 — merge desta sessão
-
-- 8 PNGs apenas, zero código
-- Baselines pós-v10 gerados por `e2e-update-calendar-snapshots`
-- Necessário para Gate 1.4 (visual baselines committed)
-- Worktree test: `Automatic merge went well`
-- SHA: `62af0798dd71812979667ac29f596d25f3ef191b`
-
----
-
-## Evidência CI pós-merge — per SHA (verificado diretamente)
-
-> Deploy Gates roda no SHA de main (squash-merge). Run IDs obtidos listando deploy-gates.yml/main e correlacionando tempo de merge.
-
-| PR | SHA merge (main) | Run ID | Conclusão | Nota |
-|---|---|---|---|---|
-| #2662 | `efacff0bef81` | 40609592189 | **failure** | PRE-EXISTENTE — PR docs-only; causa: react-day-picker v10 breakage pre-existing |
-| #2664 | `bd783873aa27` | 40609991866 | **failure** | PRE-EXISTENTE — mesma causa; PR docs-only |
-| #2667 | `8b0b6068e535` | 40612760517 | **success** ✅ | Este PR CORRISIU Ho breakage v10 |
-| #2665 | `04239fdd42ee` | 40615509956 | **success** ✅ | bump qs CVE — CI verde |
-| #2673 | `62af0798dd71` | 40622373567 | **cancelled** ❌ | Runner backlog — cancelado 03:32:41Z; 8 PNGs, zero risco |
-
-### Por que #2662 e #2664 mostram `failure`:
-
-PR#2662 é puramente `analise-prs/` (documentação). PR#2664 é puramente `auditoria-supabase/` (documentação). **Nenhum mudou código executável.**
-
-A falha no Gate 1 (TypeScript) era **pré-existente em main** antes desses merges: 9 erros causados pela migracão react-day-picker v8 →v10.
-
-PR#2667 (`fix(calendar): adapta react-day-picker v8→v10`) corrigiu todos os 9 erros | CI voltou ao verde (run #40612760517).
-
-**Critério "zero erro novo":** SATISFEITO. Nenhum dos merges desta sessão introduzio novo erro. A falha em #2662/#2664 era pré-existente no main.
-
-### PR #2673 — run #40622373567 (cancelled)
-
-Verificado 3× (02:41:01Z, 03:15:20Z, 03:20:20Z utc) — `status: queued`, cancelado em 03:32:41Z por timeout do runner backlog (not a code error). 8 PNGs: risco NULO.
-
-### Vulnerabilidades Dependabot
-
-2 alertas high (extract-zip ⩐ 2.0.1, CVE-2026-19693 e CVE-2026-56876, CVSS Scope: development, transitive). **Critério:** **NÃO requer cycle** desta sessão — dependências transitivas dev-only (`extract-zip` é dep de `playwright`, só em testes locais); não afetam produção. Próximo PR de bump suficiente.
-
-## PR#2663 — análise completa do diff (100% lido) + comentário sugerido de fechamento
-
-Arquivos alterados confirmados:
-
-1. `RELATORIO_CI.md` — reescrita completa (doc only, ~897 linhas removidas, ~690 novas)
-2. `PENDENCIAS-md` — reescrita completa com P1-P15 documentados
-3. `supabase/MIGRATIONS_SYNC_LOG.md` —"+1 linha (recibo migration pendente)
-4. `supabase/migrations/20261027160000_deactivate_image_dimensions_backfill_cron.sql` — **+1 linha APENAS**: rollback comment added
-
-**Veredito mantido: DECISÃO_HUMANA** — `mergeable: false` (dirty). Conflito com #2667 (já mergeado).
-
-**Comentário sugerido de fechamento (NÃO POSTAR — para decisão do PO):**
-
-> Fechando por conflito irresolvível com #2667 (já mergeado em main).
->
-> - O fix TypeScript (react-day-picker v10) já está em main via #2667.
-> - `RELATORIO_CI.md` e `PENDENCIAS.md` estão em conflito e documentam estado anterior ao merge de #2667 — desatualizados.
-> - A migration adiciona apenas 1 linha de comentário de rollback.
->
-> Se necessário, abra PR dedicado apenas para a migration de cron.
+- **Main HEAD:** `78729fc11038f7d0b2bb73ff0c1330f92547658b`
+- **Gate Final Run:** #42617163917 — status: `queued` (runner saturado, não é falha)
+- **Supabase produção:** 8321 produtos — `healthy`

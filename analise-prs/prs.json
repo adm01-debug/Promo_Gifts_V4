@@ -1,196 +1,32 @@
 [
   {
-    "number": 2580,
-    "title": "fix(banco): rollback RLS header",
-    "author": "adm01-debug",
+    "number": 3127,
+    "title": "feat(catalog): filter-bridge v2 — ProductCatalogFilters talks to CatalogState via useFiltersPageState",
     "draft": false,
-    "base": "main",
-    "veredito": "AGUARDA_PO",
-    "razao": "Migration RLS comentada — requer aprovação humana (governança)"
-  },
-  {
-    "number": 2600,
-    "title": "docs(analise-prs): rev46 — delivery branch sessão anterior",
     "author": "adm01-debug",
-    "draft": false,
-    "base": "main",
-    "veredito": "NÃO_MERGEAR",
-    "razao": "Delivery branch de sessão anterior. Body: NÃO MERGEAR ESTA PR."
+    "created_at": "2026-09-30T00:00:00Z",
+    "updated_at": "2026-09-30T00:00:00Z",
+    "labels": "",
+    "url": "https://github.com/adm01-debug/Promo_Gifts_V4/pull/3127"
   },
   {
-    "number": 2631,
-    "title": "chore: atualiza PENDENCIAS §4 e RELATORIO_CI — bloqueio deploy confirmado",
+    "number": 3129,
+    "title": "feat(catalog): filter-bridge v3 — debounce + sync fix",
+    "draft": false,
     "author": "adm01-debug",
-    "draft": false,
-    "base": "main",
-    "veredito": "NÃO_MERGEAR",
-    "razao": "Supersedida — commits docs já mergeados via #2662"
+    "created_at": "2026-09-30T00:00:00Z",
+    "updated_at": "2026-09-30T00:00:00Z",
+    "labels": "",
+    "url": "https://github.com/adm01-debug/Promo_Gifts_V4/pull/3129"
   },
   {
-    "number": 2646,
-    "title": "fix(migrations): rollback headers + packages:read",
+    "number": 3137,
+    "title": "feat(catalog): search + filter integration v1",
+    "draft": false,
     "author": "adm01-debug",
-    "draft": false,
-    "base": "main",
-    "veredito": "AGUARDA_PO",
-    "razao": ".github/workflows/ x3 + migrations x3 — requer revisão humana (REGRA CI)"
-  },
-  {
-    "number": 2662,
-    "title": "docs(analise-prs): análise 13 PRs sessão anterior",
-    "author": "adm01-debug",
-    "draft": false,
-    "base": "main",
-    "veredito": "MERGEADA",
-    "merge_sha": "efacff0be",
-    "sessao": "anterior"
-  },
-  {
-    "number": 2663,
-    "title": "docs(ci): RELATORIO_CI+PENDENCIAS + migration cron",
-    "author": "adm01-debug",
-    "draft": false,
-    "base": "main",
-    "veredito": "DECISÃO_HUMANA",
-    "razao": "Migration cron + conflito com #2667 — PO decide: fechar ou aprovar migration separada"
-  },
-  {
-    "number": 2664,
-    "title": "docs(auditoria): Fase A completa — auditoria Supabase doufsxqlfjyuvxuezpln",
-    "author": "adm01-debug",
-    "draft": false,
-    "base": "main",
-    "veredito": "MERGEADA",
-    "merge_sha": "bd783873a",
-    "sessao": "anterior"
-  },
-  {
-    "number": 2665,
-    "title": "chore(deps): bump qs 6.16.0→6.16.2 (CVE fix)",
-    "author": "dependabot[bot]",
-    "draft": false,
-    "base": "main",
-    "veredito": "MERGEADA",
-    "merge_sha": "04239fdd42eef05589fb41b3f0e58a664621fbf7",
-    "sessao": "anterior"
-  },
-  {
-    "number": 2666,
-    "title": "chore(main): release 1.0.0",
-    "author": "github-actions[bot]",
-    "draft": false,
-    "base": "main",
-    "veredito": "AGUARDA_PO",
-    "razao": "Downgrade semver 1.2.1→1.0.0 — requer confirmação do PO"
-  },
-  {
-    "number": 2667,
-    "title": "fix(calendar): adapta react-day-picker v8→v10 (classNames + components + autoFocus)",
-    "author": "adm01-debug",
-    "draft": false,
-    "base": "main",
-    "veredito": "MERGEADA",
-    "merge_sha": "8b0b6068e53592509cfac7225935340b6f3409df",
-    "sessao": "anterior"
-  },
-  {
-    "number": 2668,
-    "title": "analise-prs inventário (draft, outra sessão)",
-    "author": "adm01-debug",
-    "draft": true,
-    "base": "old",
-    "veredito": "NÃO_MERGEAR",
-    "razao": "REGRA #10 — branch criada por session_01Ss1tXZ4cAbxBvdmu95uNPz"
-  },
-  {
-    "number": 2670,
-    "title": "fix react-day-picker v10 (draft, outra sessão)",
-    "author": "adm01-debug",
-    "draft": true,
-    "base": "old",
-    "veredito": "NÃO_MERGEAR",
-    "razao": "Draft; código v10 já em main via #2667; analise-prs de outra sessão sobrescreveria deliverables"
-  },
-  {
-    "number": 2671,
-    "title": "chore(e2e): update calendar visual baselines (pré-v10)",
-    "author": "github-actions[bot]",
-    "draft": false,
-    "base": "old",
-    "veredito": "NÃO_MERGEAR",
-    "razao": "Baselines pré-v10, supersedida por #2673 (mergeada com SHA 62af0798dd)"
-  },
-  {
-    "number": 2672,
-    "title": "chore(e2e): update calendar visual baselines (force, 57 files)",
-    "author": "adm01-debug",
-    "draft": false,
-    "base": "other",
-    "veredito": "NÃO_MERGEAR",
-    "razao": "Código em main + analise-prs de outra sessão + conflitos + PNG calendar-mobile pré-v10"
-  },
-  {
-    "number": 2673,
-    "title": "chore(e2e): update calendar visual baselines post-v10",
-    "author": "github-actions[bot]",
-    "draft": false,
-    "base": "main",
-    "veredito": "MERGEADA",
-    "merge_sha": "62af0798dd71812979667ac29f596d25f3ef191b",
-    "sessao": "ESTA — session_01VXkRxWq5ZUCmvuNx5e2TGX"
-  },
-  {
-    "number": 2674,
-    "title": "analise-prs: entrega desta sessão (claude_pink/sleepy-cannon-h000nc)",
-    "author": "adm01-debug",
-    "draft": true,
-    "base": "main",
-    "veredito": "NÃO_MERGEAR",
-    "razao": "Nossa branch de entrega — NUNCA MERGEAR"
-  },
-  {
-    "number": 2675,
-    "title": "branch de outra sessão — histórico disjunto",
-    "author": "adm01-debug",
-    "draft": false,
-    "base": "disjoint",
-    "veredito": "NÃO_MERGEAR",
-    "razao": "Histórico disjunto; session_01Ss1tXZ4cAbxBvdmu95uNPz; REGRA #10"
-  },
-  {
-    "number": 2676,
-    "title": "fix(tests): corrige seletores rdp v10 + entrega analise-prs (outra sessão)",
-    "author": "adm01-debug",
-    "draft": false,
-    "base": "main",
-    "veredito": "NÃO_MERGEAR",
-    "razao": "mergeable=false (dirty); REGRA #10 — branch criada por outra sessão"
-  },
-  {
-    "number": 2679,
-    "title": "test(calendar): corrige seletores de teste para react-day-picker v10",
-    "author": "adm01-debug",
-    "draft": false,
-    "base": "main",
-    "veredito": "AGUARDA_CI",
-    "razao": "mergeable=true mas blocked; Gate Final cancelled por runner starvation (run #40630295218); outra sessão (claude_pink/awesome-ride-d25ur3); supersedida por #2681 em escopo"
-  },
-  {
-    "number": 2680,
-    "title": "fix(tests): corrige seletores para react-day-picker v10 (draft)",
-    "author": "adm01-debug",
-    "draft": true,
-    "base": "main",
-    "veredito": "NÃO_MERGEAR",
-    "razao": "DRAFT; escopo menor (3 arquivos vs 5 de #2681); supersedida por #2681"
-  },
-  {
-    "number": 2681,
-    "title": "fix(tests): atualiza seletores DOM para react-day-picker v10",
-    "author": "adm01-debug",
-    "draft": false,
-    "base": "main",
-    "veredito": "AGUARDA_CI",
-    "razao": "mergeable=true mas blocked; Gate Final queued (run #40630803838, 04:10:18Z); melhor candidato — 5 arquivos, não draft; runner starvation bloqueando CI"
+    "created_at": "2026-10-01T00:00:00Z",
+    "updated_at": "2026-10-01T00:00:00Z",
+    "labels": "",
+    "url": "https://github.com/adm01-debug/Promo_Gifts_V4/pull/3137"
   }
 ]

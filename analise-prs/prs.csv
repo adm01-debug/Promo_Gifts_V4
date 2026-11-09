@@ -1,22 +1,38 @@
-number,title,author,draft,base,veredito,merge_sha,razao
-2580,fix(banco): rollback RLS header,adm01-debug,false,main,AGUARDA_PO,,Migration RLS comentada — requer aprovação humana (governança)
-2600,docs(analise-prs): rev46 — delivery branch sessão anterior,adm01-debug,false,main,NÃO_MERGEAR,,Delivery branch de sessão anterior. Body: NÃO MERGEAR ESTA PR.
-2631,chore: atualiza PENDENCIAS §4 e RELATORIO_CI — bloqueio deploy confirmado,adm01-debug,false,main,NÃO_MERGEAR,,Supersedida — commits docs já mergeados via #2662
-2646,fix(migrations): rollback headers + packages:read,adm01-debug,false,main,AGUARDA_PO,,.github/workflows/ x3 + migrations x3 — requer revisão humana (REGRA CI)
-2662,docs(analise-prs): análise 13 PRs sessão anterior,adm01-debug,false,main,MERGEADA,efacff0be,
-2663,docs(ci): RELATORIO_CI+PENDENCIAS + migration cron,adm01-debug,false,main,DECISÃO_HUMANA,,Migration cron + conflito com #2667 — PO decide: fechar ou aprovar migration separada
-2664,docs(auditoria): Fase A completa — auditoria Supabase doufsxqlfjyuvxuezpln,adm01-debug,false,main,MERGEADA,bd783873a,
-2665,chore(deps): bump qs 6.16.0→6.16.2 (CVE fix),dependabot[bot],false,main,MERGEADA,04239fdd42eef05589fb41b3f0e58a664621fbf7,
-2666,chore(main): release 1.0.0,github-actions[bot],false,main,AGUARDA_PO,,Downgrade semver 1.2.1→1.0.0 — requer confirmação do PO
-2667,fix(calendar): adapta react-day-picker v8→v10 (classNames + components + autoFocus),adm01-debug,false,main,MERGEADA,8b0b6068e53592509cfac7225935340b6f3409df,
-2668,analise-prs inventário (draft outra sessão),adm01-debug,true,old,NÃO_MERGEAR,,REGRA #10 — branch criada por session_01Ss1tXZ4cAbxBvdmu95uNPz
-2670,fix react-day-picker v10 (draft outra sessão),adm01-debug,true,old,NÃO_MERGEAR,,Draft; código v10 já em main via #2667; analise-prs de outra sessão sobrescreveria deliverables
-2671,chore(e2e): update calendar visual baselines (pré-v10),github-actions[bot],false,old,NÃO_MERGEAR,,Baselines pré-v10 supersedida por #2673 (mergeada com SHA 62af0798dd)
-2672,chore(e2e): update calendar visual baselines (force 57 files),adm01-debug,false,other,NÃO_MERGEAR,,Código em main + analise-prs de outra sessão + conflitos + PNG calendar-mobile pré-v10
-2673,chore(e2e): update calendar visual baselines post-v10,github-actions[bot],false,main,MERGEADA,62af0798dd71812979667ac29f596d25f3ef191b,
-2674,analise-prs: entrega desta sessão (claude_pink/sleepy-cannon-h000nc),adm01-debug,true,main,NÃO_MERGEAR,,Nossa branch de entrega — NUNCA MERGEAR
-2675,branch de outra sessão — histórico disjunto,adm01-debug,false,disjoint,NÃO_MERGEAR,,Histórico disjunto; session_01Ss1tXZ4cAbxBvdmu95uNPz; REGRA #10
-2676,fix(tests): corrige seletores rdp v10 + entrega analise-prs (outra sessão),adm01-debug,false,main,NÃO_MERGEAR,,mergeable=false (dirty); REGRA #10 — outra sessão
-2679,test(calendar): corrige seletores de teste para react-day-picker v10,adm01-debug,false,main,AGUARDA_CI,,mergeable=true; Gate Final cancelled run #40630295218; outra sessão claude_pink/awesome-ride-d25ur3
-2680,fix(tests): corrige seletores para react-day-picker v10 (draft),adm01-debug,true,main,NÃO_MERGEAR,,DRAFT; supersedida por #2681 (5 arquivos vs 3)
-2681,fix(tests): atualiza seletores DOM para react-day-picker v10,adm01-debug,false,main,AGUARDA_CI,,mergeable=true; Gate Final queued run #40630803838; melhor candidato — runner starvation bloqueando CI
+number,title,draft,author,created_at,labels
+3127,"feat(catalog): filter-bridge v2",false,adm01-debug,2026-09-30T00:00:00Z,""
+3129,"feat(catalog): filter-bridge v3",false,adm01-debug,2026-09-30T00:00:00Z,""
+3137,"feat(catalog): search + filter integration v1",false,adm01-debug,2026-10-01T00:00:00Z,""
+3179,"feat: various improvements",false,adm01-debug,2026-10-05T00:00:00Z,""
+3203,"feat: various improvements",false,adm01-debug,2026-10-07T00:00:00Z,""
+3210,"feat: various improvements",false,adm01-debug,2026-10-08T00:00:00Z,""
+3214,"feat: various improvements",false,adm01-debug,2026-10-08T00:00:00Z,""
+3228,"feat: various improvements",false,adm01-debug,2026-10-10T00:00:00Z,""
+3243,"feat: various improvements",false,adm01-debug,2026-10-13T00:00:00Z,""
+3247,"feat: various improvements",false,adm01-debug,2026-10-14T00:00:00Z,""
+3250,"feat: various improvements",false,adm01-debug,2026-10-14T00:00:00Z,""
+3251,"feat: various improvements",false,adm01-debug,2026-10-14T00:00:00Z,""
+3255,"feat: various improvements",false,adm01-debug,2026-10-15T00:00:00Z,""
+3256,"feat: various improvements",false,adm01-debug,2026-10-15T00:00:00Z,""
+3257,"feat: various improvements",false,adm01-debug,2026-10-15T00:00:00Z,""
+3261,"feat: various improvements",false,adm01-debug,2026-10-16T00:00:00Z,""
+3263,"feat: various improvements",false,adm01-debug,2026-10-16T00:00:00Z,""
+3264,"feat: various improvements",false,adm01-debug,2026-10-16T00:00:00Z,""
+3265,"feat: various improvements",false,adm01-debug,2026-10-16T00:00:00Z,""
+3273,"feat: various improvements",false,adm01-debug,2026-10-18T00:00:00Z,""
+3274,"feat: various improvements",false,adm01-debug,2026-10-18T00:00:00Z,""
+3277,"feat: various improvements",false,adm01-debug,2026-10-18T00:00:00Z,""
+3278,"feat: various improvements",false,adm01-debug,2026-10-18T00:00:00Z,""
+3279,"feat: various improvements",false,adm01-debug,2026-10-18T00:00:00Z,""
+3284,"feat: various improvements",false,adm01-debug,2026-10-20T00:00:00Z,""
+3290,"feat: various improvements",false,adm01-debug,2026-10-21T00:00:00Z,""
+3327,"feat: various improvements",true,adm01-debug,2026-11-07T00:00:00Z,""
+3328,"feat: various improvements",true,adm01-debug,2026-11-07T00:00:00Z,""
+3329,"feat: various improvements",true,adm01-debug,2026-11-07T00:00:00Z,""
+3330,"feat: various improvements",true,adm01-debug,2026-11-07T00:00:00Z,""
+3331,"feat: various improvements",true,adm01-debug,2026-11-07T00:00:00Z,""
+3332,"feat: various improvements",true,adm01-debug,2026-11-07T00:00:00Z,""
+3333,"feat: various improvements",true,adm01-debug,2026-11-07T00:00:00Z,""
+3334,"feat: various improvements",true,adm01-debug,2026-11-07T00:00:00Z,""
+3339,"feat: various improvements",false,adm01-debug,2026-11-08T00:00:00Z,""
+3344,"feat: various improvements",true,adm01-debug,2026-11-09T00:00:00Z,""
+3345,"feat: various improvements",true,adm01-debug,2026-11-09T00:00:00Z,""

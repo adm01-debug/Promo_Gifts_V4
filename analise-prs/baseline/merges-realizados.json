@@ -1,0 +1,11 @@
+{
+  "checked_at": "2026-11-09T16:30:00Z",
+  "merges_esta_sessao": [
+    {"number": 3337, "sha": "6933eb6122d2ccf333d533d4441891b8d918479b", "title": "fix(ci): corrige referências inválidas supabase/migrations/x6 em analise-prs", "gate_final": "SUCCESS", "merged_at": "2026-11-09T12:00:00Z"},
+    {"number": 3340, "sha": "5a3f679e", "title": "docs(analise-prs): atualiza progresso — merges sessão anterior", "gate_final": "SUCCESS", "merged_at": "2026-11-09T12:30:00Z"},
+    {"number": 3343, "sha": "78729fc11038f7d0b2bb73ff0c1330f92547658b", "title": "chore(ci): atualiza file-size baseline — Kit Builder +21/+13/+10 linhas", "gate_final": "SUCCESS_BEFORE_MERGE", "merged_at": "2026-11-09T16:00:00Z"}
+  ],
+  "merges_externas": [
+    {"number": 3341, "title": "docs: recibo de deploy de edge function(s) — run 42609591614 (E66)", "merged_by": "adm01-debug", "merged_at": "2026-11-09T13:00:00Z"}
+  ]
+}
