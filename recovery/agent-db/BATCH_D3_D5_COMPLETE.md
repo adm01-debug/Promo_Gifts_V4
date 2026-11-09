@@ -40,7 +40,7 @@ Recovery completo dos batches D.3 (Magic Up, Expert Chat, Voice, Role Migration,
 
 Durante a aplicação, algumas funções foram adaptadas para o esquema PROD:
 
-1. **`retry_failed_webhook_deliveries`**: URL hardcoded `https://nmojwpihnslkssljowjh.supabase.co` → `https://doufsxqlfjyuvxuezpln.supabase.co`
+1. **`retry_failed_webhook_deliveries`**: URL hardcoded `https://nmojwpihnslkssljowjh.supabase.co` [LEGACY_INFORMATIVO] → `https://doufsxqlfjyuvxuezpln.supabase.co`
 2. **`maintain_webhook_metrics`**: Removida lógica de particionamento (`webhook_delivery_metrics` não é partitioned em PROD), mantido apenas cleanup
 3. **`get_bundle_suggestions`**: Tipo `_product_id text` → `_product_id uuid` (PROD usa uuid)
 4. **`get_client_seasonality`**: Tipo `_client_id text` → `_client_id uuid`
