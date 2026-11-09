@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c1d47d13bee8089eb62e3c47db1b7b500dcf1042",
+  "commit": "9346b048e8fff01c3be31c7095d8b8ebdd4ebdcc",
   "branch": "main",
-  "data_commit": "2026-11-09T13:14:30-03:00",
+  "data_commit": "2026-11-09T14:57:47-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "9346b04",
+    "data": "2026-11-09",
+    "assunto": "chore(migrations): adiciona arquivos espelho CRON-001 (20261101223908, 20261101232022)"
+   },
    {
     "sha": "c1d47d1",
     "data": "2026-11-09",
@@ -126,14 +131,9 @@
     "sha": "6933eb6",
     "data": "2026-11-09",
     "assunto": "fix(ci): corrige referências inválidas supabase/migrations/x6 em analise-prs (#3337)"
-   },
-   {
-    "sha": "93d3cf0",
-    "data": "2026-11-09",
-    "assunto": "fix(gate13): remove referência falsa supabase/migrations/x6 nos JSONs de analise-prs"
    }
   ],
-  "arquivos_mudados_7d": 500,
+  "arquivos_mudados_7d": 502,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 160
+    "mudancas": 158
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 109
+    "mudancas": 107
    },
    {
     "pasta": "src/pages/magazine",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 22
+    "mudancas": 23
    },
    {
     "arquivo": "analise-prs/progresso.json",
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9262,
+  "arquivos_total": 9264,
   "arquivos_codigo": 4635,
   "linhas_codigo": 887574,
   "rotas": 138,
@@ -326,7 +326,7 @@
   "hooks": 416,
   "edge_functions": 111,
   "tabelas": 545,
-  "migrations": 3047,
+  "migrations": 3049,
   "cron_jobs": 120,
   "testes": 2202,
   "workflows": 94,

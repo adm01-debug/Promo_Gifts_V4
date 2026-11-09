@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "c1d47d13bee8089eb62e3c47db1b7b500dcf1042",
+  "sha": "9346b048e8fff01c3be31c7095d8b8ebdd4ebdcc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 16:27 UTC",
-  "files_total": 9182,
-  "code_files": 7869,
-  "code_lines": 1055862
+  "generated_at": "2026-11-09 17:59 UTC",
+  "files_total": 9184,
+  "code_files": 7871,
+  "code_lines": 1055886
  },
  "version": "1.3.2",
- "facts_hash": "e279bc48f6737c6e",
+ "facts_hash": "6cea089e6c774729",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1173,7 +1173,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3235,
+   ".sql": 3237,
    ".ts": 2631,
    ".tsx": 1691,
    ".mjs": 303,
@@ -90970,6 +90970,8 @@
    "supabase/migrations/20261101205400_perf005_drop_unused_indexes.sql",
    "supabase/migrations/20261101210000_sb0007_drop_noop_restrictive_policies.sql",
    "supabase/migrations/20261101220000_cron001_stagger_schedules.sql",
+   "supabase/migrations/20261101223908_cron001_stagger_additional_jobs.sql",
+   "supabase/migrations/20261101232022_cron001_stagger_schedules_reapply.sql",
    "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql",
    "supabase/migrations/20261106232045_fix_handle_updated_at_search_path.sql",
    "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql",
@@ -140250,8 +140252,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3046,
-   "lines": 219972,
+   "files": 3048,
+   "lines": 219996,
    "tables": [
     "...",
     "admin_audit_log",
@@ -465342,6 +465344,14 @@
    "path": "supabase/migrations/20261101220000_cron001_stagger_schedules.sql",
    "lines": 32
   },
+  "supabase/migrations/20261101223908_cron001_stagger_additional_jobs.sql": {
+   "path": "supabase/migrations/20261101223908_cron001_stagger_additional_jobs.sql",
+   "lines": 9
+  },
+  "supabase/migrations/20261101232022_cron001_stagger_schedules_reapply.sql": {
+   "path": "supabase/migrations/20261101232022_cron001_stagger_schedules_reapply.sql",
+   "lines": 15
+  },
   "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql": {
    "path": "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql",
    "lines": 53
@@ -484383,10 +484393,21 @@
   }
  },
  "git": {
-  "sha": "c1d47d13bee8089eb62e3c47db1b7b500dcf1042",
+  "sha": "9346b048e8fff01c3be31c7095d8b8ebdd4ebdcc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "9346b04",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "chore(migrations): adiciona arquivos espelho CRON-001 (20261101223908, 20261101232022)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261101223908_cron001_stagger_additional_jobs.sql",
+     "supabase/migrations/20261101232022_cron001_stagger_schedules_reapply.sql"
+    ]
+   },
    {
     "sha": "c1d47d1",
     "date": "2026-11-09",
@@ -484675,21 +484696,12 @@
      "analise-prs/progresso.json",
      "analise-prs/prs.json"
     ]
-   },
-   {
-    "sha": "56cfd7f",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "docs(analise-prs): progresso.json v5 — balanço 32 correto + SHA final 16995de3 (#3315)",
-    "files": [
-     "analise-prs/progresso.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "analise-prs/progresso.json",
-    5
+    4
    ],
    [
     "analise-prs/prs.json",
@@ -484728,6 +484740,18 @@
     2
    ],
    [
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    1
+   ],
+   [
+    "supabase/migrations/20261101223908_cron001_stagger_additional_jobs.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261101232022_cron001_stagger_schedules_reapply.sql",
+    1
+   ],
+   [
     "supabase/migrations/20261027195959_supplier_stricker_rls_deny_all.sql",
     1
    ],
@@ -484753,18 +484777,6 @@
    ],
    [
     "src/components/replenishments/ReplenishmentProductGrid.tsx",
-    1
-   ],
-   [
-    "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    1
-   ],
-   [
-    "src/pages/kit-builder/KitBuilderPage.tsx",
-    1
-   ],
-   [
-    ".github/workflows/db-schema-drift-check.yml",
     1
    ]
   ]
