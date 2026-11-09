@@ -1,1 +1,66 @@
-{"session": "session_01VXkRxWq5ZUCmvuNx5e2TGX", "branch": "claude_pink/sleepy-cannon-h000nc", "pr_entrega": 2674, "atualizado_em": "2026-11-09T23:30:00Z", "main_sha_final": "0818809dae41c295b046dc52f85078e4f06b3df4", "mergeadas_por_agente_esta_sessao": [{"number": 3337, "sha_main_apos": "6933eb61", "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6", "tipo": "docs-only E14", "gate_final": "SUCCESS"}, {"number": 3340, "titulo": "docs(analise-prs): atualiza progresso", "tipo": "docs-only E14", "gate_final": "SUCCESS"}, {"number": 3343, "sha_main_apos": "78729fc11038", "titulo": "chore(ci): atualiza file-size baseline Kit Builder", "tipo": "chore/ci", "gate_final": "SUCCESS"}], "mergeadas_externas_esta_sessao": [{"number": 3341, "titulo": "docs: recibo deploy edge function", "merged_by": "adm01-debug"}, {"number": 3342, "titulo": "fix(ci): as-assertions-baseline", "merged_by": "adm01-debug"}, {"number": 3344, "titulo": "fix(tests): consumeUnloadBackup", "merged_by": "adm01-debug (commit direto 00c8fa295dbc)"}, {"number": 3346, "titulo": "fix(tests): corrige regressoes vitest", "merged_by": "adm01-debug", "sha_main_apos": "1696c5a5"}, {"number": 3348, "titulo": "fix(tests): corrige 5 falhas preexistentes em useKitBuilderQuote", "merged_by": "external", "sha_main_apos": "b4c1167c"}, {"number": 3349, "titulo": "fix(update-snapshots): atualizar snapshots PriceFreshnessBadge", "merged_by": "adm01-debug", "sha_main_apos": "fb4b8c2d"}, {"number": 3278, "titulo": "fix: corrige referencia de SHA de sentinela em check-sentinel-sha", "merged_by": "adm01-debug", "sha_main_apos": "0818809d"}], "fechadas_externas_esta_sessao": [{"number": 3277, "motivo": "Gate Final=FAILURE — fechada sem merge"}, {"number": 3347, "motivo": "CI incompleto — fechada sem merge"}], "supabase_producao": {"project_id": "doufsxqlfjyuvxuezpln", "products_count": 8321, "verificado_em": "2026-11-09T23:30:00Z", "status": "healthy", "logs_postgres_erros_24h": 0, "verificado_via": "mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__execute_sql (SELECT COUNT(*) FROM products WHERE deleted_at IS NULL)"}, "gate2_unit_tests_main": {"sha": "0818809d", "check_run_id": 129233697044, "conclusao": "success", "annotations_count": 0, "descricao": "TODOS OS TESTES PASSAM — zero falhas por nome"}, "merge_tests_realizados": [{"pr": 3243, "branch": "claude/fix-categories-level-drift-261108-1952", "resultado": "merge automatico sem conflito", "arquivos_alterados": ["supabase/MIGRATIONS_SYNC_LOG.md", "supabase/migrations/20260511235950_add_categories_level_drift.sql", "supabase/migrations/20260511235960_add_categories_full_path_readable_drift.sql"], "bloqueio": "REGRA E056 — DDL via agent session proibido", "veredito_final": "AGUARDA_PO"}], "worktrees": {"orfao_removido": "/tmp/baseline-main (78729fc11)", "merge_test_criado_removido": "/tmp/merge-test-3243", "estado_final": "nenhum worktree orfao"}, "contagem_por_veredito": {"MERGEADA_AGENTE": 3, "MERGEADA_EXTERNA": 7, "FECHADA_EXTERNA": 2, "NAO_MERGEAR": 6, "AGUARDA_CI": 1, "AGUARDA_PO": 27, "TOTAL_OPEN_RESTANTE": 34, "TOTAL_ANALISADAS": 46, "VERIFICADO_EXAUSTIVO": true}, "prs_nao_mergear": [{"number": 3203, "head_sha": "1aad6831", "motivo": "MERGE_CONFLICT — HTTP 405 merge API; Gate Final=SUCCESS check_run_id=128857128545; zero DDL em migrations/"}, {"number": 3329, "head_sha": "65966984", "motivo": "Gate 1+5=FAILURE + Migrations x Canonical=FAILURE + workflows prohibited"}, {"number": 3330, "head_sha": "519c1089", "motivo": "CodeQL+Gate 1+Gate E23=FAILURE + workflows prohibited"}, {"number": 3332, "head_sha": "915e83a9", "motivo": "npm ci ERESOLVE eslint@10 + SSOT=FAILURE + E2E massivo=FAILURE"}, {"number": 3339, "head_sha": "6f8930b4", "motivo": "Gate 1=FAILURE file-size regression — REGRA #10 proibe push (codex branch)"}, {"number": 3350, "head_sha": "62761213", "motivo": "Gate 1 Lint+TypeScript=FAILURE — 1 commit unico novo; draft=false confirmado"}], "prs_aguarda_ci": [{"number": 3210, "motivo": "action_required (pending deployment approval Supabase Preview)"}], "prs_aguarda_po": {"count": 27, "categorias": {"workflows_github": [3127, 3129, 3137, 3179, 3228, 3247, 3274, 3290, 3327, 3328], "ddl_migration": [3214, 3243, 3250, 3251, 3255, 3256, 3257, 3261, 3263, 3264, 3265, 3273, 3279, 3284], "major_version_bumps": [3331, 3333, 3334]}}}
+{
+  "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
+  "branch": "claude_pink/sleepy-cannon-h000nc",
+  "pr_entrega": 2674,
+  "atualizado_em": "2026-11-09T16:00:00Z",
+  "main_sha_final": "6b859b0fbfa95e34493900cf0137402e95e46823",
+  "mergeadas_por_agente_esta_sessao": [
+    {"number": 3337, "sha_main_apos": "6933eb61", "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
+    {"number": 3340, "titulo": "docs(analise-prs): atualiza progresso", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
+    {"number": 3343, "sha_main_apos": "78729fc11038", "titulo": "chore(ci): atualiza file-size baseline Kit Builder", "tipo": "chore/ci", "gate_final": "SUCCESS"},
+    {"number": 3257, "sha_main_apos": "6b859b0fbfa95e34493900cf0137402e95e46823", "titulo": "fix(migrations): idempotencia em RLS deny-all e particoes 2027", "tipo": "fix/migrations-idempotencia", "gate_final": "SUCCESS", "gate_final_check_run_id": 128955748854, "diff_lido_100pct": true, "merged_at": "2026-11-09T15:46:32Z"}
+  ],
+  "mergeadas_externas_esta_sessao": [
+    {"number": 3341, "titulo": "docs: recibo deploy edge function", "merged_by": "adm01-debug"},
+    {"number": 3342, "titulo": "fix(ci): as-assertions-baseline", "merged_by": "adm01-debug"},
+    {"number": 3344, "titulo": "fix(tests): consumeUnloadBackup", "merged_by": "adm01-debug"},
+    {"number": 3346, "titulo": "fix(tests): corrige regressoes vitest", "merged_by": "adm01-debug", "sha_main_apos": "1696c5a5"},
+    {"number": 3348, "titulo": "fix(tests): corrige 5 falhas preexistentes em useKitBuilderQuote", "merged_by": "external", "sha_main_apos": "b4c1167c"},
+    {"number": 3349, "titulo": "fix(update-snapshots): atualizar snapshots PriceFreshnessBadge", "merged_by": "adm01-debug", "sha_main_apos": "fb4b8c2d"},
+    {"number": 3278, "titulo": "fix: corrige referencia de SHA de sentinela em check-sentinel-sha", "merged_by": "adm01-debug", "sha_main_apos": "0818809d"}
+  ],
+  "fechadas_externas_esta_sessao": [
+    {"number": 3277, "motivo": "Gate Final=FAILURE fechada sem merge"},
+    {"number": 3347, "motivo": "CI incompleto fechada sem merge"}
+  ],
+  "supabase_producao": {
+    "project_id": "doufsxqlfjyuvxuezpln",
+    "products_count": 8321,
+    "verificado_em": "2026-11-09T15:50:00Z",
+    "status": "healthy",
+    "verificado_via": "mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__execute_sql (SELECT COUNT(*) FROM products WHERE deleted_at IS NULL)"
+  },
+  "gate_final_main_atual": {
+    "sha": "6b859b0fbfa95e34493900cf0137402e95e46823",
+    "run_id": 42648049808,
+    "status": "in_progress",
+    "gate_final_pr_head": {"check_run_id": 128955748854, "conclusao": "success"}
+  },
+  "contagem_por_veredito": {
+    "MERGEADA_AGENTE": 4,
+    "MERGEADA_EXTERNA": 7,
+    "FECHADA_EXTERNA": 2,
+    "NAO_MERGEAR": 6,
+    "AGUARDA_CI": 1,
+    "AGUARDA_PO": 27,
+    "TOTAL_OPEN_RESTANTE": 33,
+    "TOTAL_ANALISADAS": 47,
+    "VERIFICADO_EXAUSTIVO": true
+  },
+  "prs_nao_mergear": [
+    {"number": 3203, "motivo": "MERGE_CONFLICT HTTP 405; Gate Final=SUCCESS check_run_id=128857128545"},
+    {"number": 3329, "motivo": "Gate 1+5=FAILURE + Migrations x Canonical=FAILURE"},
+    {"number": 3330, "motivo": "CodeQL+Gate 1+Gate E23=FAILURE"},
+    {"number": 3332, "motivo": "npm ci ERESOLVE eslint@10 + SSOT=FAILURE + E2E=FAILURE"},
+    {"number": 3339, "motivo": "Gate 1=FAILURE file-size regression REGRA #10"},
+    {"number": 3350, "motivo": "Gate 1 Lint+TypeScript=FAILURE run_id=129233697044"}
+  ],
+  "prs_aguarda_po": {
+    "count": 27,
+    "categorias": {
+      "workflows_github": [3127, 3129, 3137, 3179, 3228, 3247, 3274, 3290, 3327, 3328],
+      "ddl_migration": [3214, 3243, 3250, 3251, 3255, 3256, 3261, 3263, 3264, 3265, 3273, 3279, 3284],
+      "major_version_bumps": [3331, 3333, 3334]
+    }
+  }
+}
