@@ -14,6 +14,7 @@ import {
   useTemplateSnapshot,
 } from '@/hooks/kit-builder';
 import { useKitBuilderQuote, type KitQuoteClient } from '@/pages/kit-builder/useKitBuilderQuote';
+import type { BackupFullState } from '@/hooks/kit-builder/useKitAutoSave';
 import {
   calculateTotalKitPrice,
   type ExternalProductForKit,
@@ -221,6 +222,7 @@ export function useKitBuilderPageState() {
     retryLastSave,
     cancelPendingSave,
     acknowledgeManualSave,
+    consumeUnloadBackup,
   } = useKitAutoSave(
     kitState,
     kitQuantity,
@@ -460,6 +462,22 @@ export function useKitBuilderPageState() {
     setOccasion(null);
   }, [resetKit]);
 
+  const restoreFromBackup = useCallback(
+    (fullState: BackupFullState) => {
+      loadKit({
+        name: fullState.name,
+        kitType: fullState.kitType,
+        box: fullState.box,
+        items: fullState.items,
+        personalization: fullState.personalization,
+        kitQuantity: fullState.qty,
+        identity: fullState.identity,
+        notes: fullState.notes,
+      });
+    },
+    [loadKit],
+  );
+
   return {
     state: {
       kitState,
@@ -519,6 +537,8 @@ export function useKitBuilderPageState() {
       applyAISuggestion,
       startFlow,
       setKitOrigin,
+      consumeUnloadBackup,
+      restoreFromBackup,
     },
     meta: {
       isSaving,
