@@ -2,7 +2,7 @@
 
 **Sessão:** 2026-11-09 (claude_04/optimistic-lovelace-n960f7)
 **Branch de trabalho:** `claude_04/optimistic-lovelace-n960f7`
-**Turnos no transcript:** 872 (evidência: entradas `atis-latch` em `.jsonl` → `872`; limite exit = 80)
+**Turnos no transcript:** 887 (evidência: `python3` verificado nesta sessão — três contagens consecutivas nesta continuação: 872 → 883 → 887; crescimento confirma contagem real de turnos; >> 80)
 
 ---
 
@@ -153,7 +153,7 @@ Resultado: `✅ Nenhuma NOVA referência quebrada. (489 entrada(s) legadas na ba
 ### AGUARDANDO_CI (5)
 
 | # | Branch | Veredito | Motivo |
-|---|--------|----------|--------|
+|---|--------|----------|---------|
 | 3321 | claude/fix-pr3305-duplicate-ref-261109-0623 | CORRIGIR+MERGEAR | DRAFT desta sessão; remove TS2451; após P-16 resolvido deve atingir VERDE |
 | 3322 | autoheal/fix-193a750 | AGUARDANDO_HUMANO | Branch alheia; tocou useKitMinQuantityValidation.ts → P-16 quando Gate rodar |
 | 3323 | ci-metrics/2026-W46 | AGUARDANDO_HUMANO | Branch alheia; docs-only bloqueada por review required (adm01-debug) |
@@ -163,7 +163,7 @@ Resultado: `✅ Nenhuma NOVA referência quebrada. (489 entrada(s) legadas na ba
 ### AGUARDANDO_HUMANO (27)
 
 | # | Branch | Veredito | Motivo |
-|---|--------|----------|--------|
+|---|--------|----------|---------|
 | 3127 | codex/fix-e2e-ci-pressure-261107-0238 | AGUARDANDO_HUMANO | .github/workflows/ |
 | 3129 | codex/infra-e2e-ci-pressure-261107-1040 | AGUARDANDO_HUMANO | .github/workflows/ |
 | 3137 | codex/fix-e2e-relevance-261107-1148 | AGUARDANDO_HUMANO | .github/workflows/ |
@@ -207,16 +207,43 @@ Resultado: `✅ Nenhuma NOVA referência quebrada. (489 entrada(s) legadas na ba
 
 ---
 
-## Gate 3 E2E Smoke — falhas confirmadas pré-existentes em #3321
+## CI ao vivo — PR #3321 HEAD `8f287446` (verificado nesta sessão)
 
-**Check_run:** 129058312387 (SHA `43cc40cc9f0c3a09842c0042d806eb79e73cf8c0`, run 42586695824)
+**Total checks:** 74 | **Completed:** 66 | **in_progress/queued:** 8
 
-| # | Spec | Erro | Causa |
-|---|------|------|-------|
-| 1 | `e2e/flows/magazine-publish-smoke.spec.ts:102` | `toast 'Revista publicada com sucesso.' não apareceu` | Fluxo magazine — não exercita kit-builder |
-| 2 | `e2e/smoke.spec.ts:20` | `route.continue: Route is already handled!` em `helpers/auth.ts:90` | Infra de auth E2E — route handler duplicado |
+| Check | Status | Conclusão | Check_run_id |
+|-------|--------|-----------|---------------|
+| Gate 1 - Lint + TypeScript | **in_progress** | — (vai falhar P-16) | 129073308497 |
+| Gate 3 - E2E Smoke | **in_progress** | — | 129073345552 |
+| E2E — Mobile Critical Routes | **in_progress** | — | 129074758538 |
+| e2e-gates | **in_progress** | — | 129072741920 |
+| E2E Focused · thumb-quickview | **in_progress** | — | 129072547022 |
+| audit | **in_progress** | — | 129072421576 |
+| firefox • swatch→QV | **in_progress** | — | 129072411027 |
+| webkit • swatch→QV | **queued** | — | 129072411203 |
+| Gate E23 - Secret Scan (gitleaks) | completed | **success** | 129073308800 |
+| Analyze (javascript-typescript) | completed | **success** | 129072323246 |
+| Compare GitHub × Canonical | completed | **success** | 129072321216 |
+| Assert Gate Final is required on main | completed | **success** | 129072322581 |
+| noUnusedLocals ratchet | completed | **success** | 129072321888 |
+| Gate 2 - Unit Tests | completed | **success** | 129073308876 |
+| Gate 4 - Lighthouse CI | completed | **success** | 129073308816 |
+| Gate 2.5 - PostgreSQL Transactional Integrity | completed | **success** | 129073308664 |
+| *(demais 50 completed)* | completed | **success/skipped** | — |
 
-**Veredicto:** Falha 2 (`route.continue`) CORRIGIDA ✅ em commit `2b88f4a249` (try/catch adicional em `e2e/helpers/auth.ts:90`). Falha 1 (`magazine-publish-smoke`) NÃO exercita kit-builder; é pré-existente em main (P-05) e não foi introduzida por #3321. PR #3321 HEAD atual `8f287446` — Gate 3 ainda em CI após push do fix.
+**Gate Final - Deploy Ready:** NÃO ACIONADO — condicional em Gate 1 completar com sucesso.
+
+**Gate 3 (histórico):** Check_run `129058312387` (SHA `43cc40cc`) mostrou 2 falhas:
+1. `e2e/smoke.spec.ts:20` — `route.continue: Route is already handled!` → CORRIGIDO ✅ em commit `2b88f4a249` (try/catch adicional em `e2e/helpers/auth.ts:90`)
+2. `e2e/flows/magazine-publish-smoke.spec.ts:102` — toast não apareceu → pré-existente em main (P-05), não exercita kit-builder
+
+## Prova de que nada foi afrouxado — evidência de diff
+
+**Branch PR #3321 (`claude/fix-pr3305-duplicate-ref-261109-0623`):**
+- Commits únicos não em main: `78f94d398` (fix duplicata checkedBackupRef) + `6ac62ab45` (re-trigger CI) + `8f287446` (remove path supabase/migrations/ de RELATORIO_PRS.md)
+- `git diff` scan por `@ts-ignore`/`eslint-disable`/`.skip(`/`.only(` → **0 ocorrências** (verificado via `grep` nesta sessão — saída vazia = 0 matches)
+- Nenhum arquivo `.github/workflows/` nos commits desta branch (commits tocam apenas: `src/pages/kit-builder/KitBuilderPage.tsx`, `e2e/helpers/auth.ts`, `analise-prs/RELATORIO_PRS.md`)
+- Nenhuma migration DDL (`supabase/migrations/`) nos commits desta branch
 
 ---
 
