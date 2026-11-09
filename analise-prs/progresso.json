@@ -2,7 +2,7 @@
   "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 2674,
-  "atualizado_em": "2026-11-09T16:00:00Z",
+  "atualizado_em": "2026-11-09T16:30:00Z",
   "main_sha_final": "0818809dae41c295b046dc52f85078e4f06b3df4",
   "gate_final_main_push": {
     "status": "FAILURE",
@@ -21,13 +21,13 @@
     {"number": 3343, "sha_main_apos": "78729fc11038", "titulo": "chore(ci): atualiza file-size baseline Kit Builder", "tipo": "chore/ci", "gate_final_pr_head": "VERIFICAR run no PR HEAD"}
   ],
   "mergeadas_externas_esta_sessao": [
-    {"number": 3341, "titulo": "docs: recibo deploy edge function", "merged_by": "adm01-debug"},
-    {"number": 3342, "titulo": "fix(ci): as-assertions-baseline", "merged_by": "adm01-debug"},
-    {"number": 3344, "titulo": "fix(tests): consumeUnloadBackup", "merged_by": "adm01-debug (commit direto 00c8fa295dbc)"},
-    {"number": 3346, "titulo": "fix(tests): corrige regressoes vitest", "merged_by": "adm01-debug", "sha_main_apos": "1696c5a5"},
-    {"number": 3348, "titulo": "fix(tests): corrige 5 falhas preexistentes em useKitBuilderQuote", "merged_by": "external", "sha_main_apos": "b4c1167c"},
-    {"number": 3349, "titulo": "fix(update-snapshots): atualizar snapshots PriceFreshnessBadge", "merged_by": "adm01-debug", "sha_main_apos": "fb4b8c2d"},
-    {"number": 3278, "titulo": "fix: corrige referencia de SHA de sentinela em check-sentinel-sha", "merged_by": "adm01-debug", "sha_main_apos": "0818809d"}
+    {"number": 3341, "merged_by": "adm01-debug"},
+    {"number": 3342, "merged_by": "adm01-debug"},
+    {"number": 3344, "merged_by": "adm01-debug"},
+    {"number": 3346, "merged_by": "adm01-debug", "sha_main_apos": "1696c5a5"},
+    {"number": 3348, "merged_by": "external", "sha_main_apos": "b4c1167c"},
+    {"number": 3349, "merged_by": "adm01-debug", "sha_main_apos": "fb4b8c2d"},
+    {"number": 3278, "merged_by": "adm01-debug", "sha_main_apos": "0818809d"}
   ],
   "fechadas_externas_esta_sessao": [
     {"number": 3277, "motivo": "Gate Final=FAILURE — fechada sem merge"},
@@ -37,24 +37,42 @@
     "project_id": "doufsxqlfjyuvxuezpln",
     "products_count": 8321,
     "verificado_via": "execute_sql READ: SELECT COUNT(*) FROM products",
-    "verificado_em": "2026-11-09T23:00:00Z",
-    "status": "healthy",
-    "migrations_verificadas": "pendente list_migrations"
+    "migrations_count": 2582,
+    "migrations_ultima": "20261107180000_security_fix_suppliers_authenticated_credential_leak_v2",
+    "verificado_via_migrations": "list_migrations (SUPABASE_-_GEST_O_DE_PRODUTOS)",
+    "verificado_em": "2026-11-09T16:30:00Z",
+    "status": "healthy"
   },
   "contagem_por_veredito": {
     "MERGEADA_AGENTE": 3,
     "MERGEADA_EXTERNA": 7,
     "FECHADA_EXTERNA": 2,
-    "NAO_MERGEAR": 5,
-    "AGUARDA_CI": 2,
+    "NAO_MERGEAR": 6,
+    "AGUARDA_CI": 1,
     "AGUARDA_PO": 28,
     "TOTAL_OPEN_RESTANTE": 35,
     "TOTAL_ANALISADAS": 47,
     "VERIFICADO_EXAUSTIVO": true
   },
-  "prs_aguarda_ci": [
-    {"number": 3210, "motivo": "action_required (pending deployment approval Supabase Preview)"},
-    {"number": 3350, "motivo": "Non-draft feat UX batch6, Gate Final nao rodou no head SHA 627612137535", "head_sha": "627612137535b7590226e057a1abc17da1ff5ce1", "nota": "Corrige PENDENCIAS.md Gate 1. Se Gate Final=SUCCESS, avaliar merge."}
+  "prs_nao_mergear": [
+    {"number": 3203, "head_sha": "1aad6831", "motivo": "Gate Final=FAILURE — merge-reports + E2E cancelled"},
+    {"number": 3329, "head_sha": "65966984", "motivo": "Gate 1+5=FAILURE + Migrations x Canonical=FAILURE + workflows prohibited"},
+    {"number": 3330, "head_sha": "519c1089", "motivo": "CodeQL+Gate 1+Gate E23=FAILURE + workflows prohibited"},
+    {"number": 3332, "head_sha": "915e83a9", "motivo": "npm ci ERESOLVE eslint@10 + SSOT=FAILURE + E2E massivo=FAILURE"},
+    {"number": 3339, "head_sha": "6f8930b4", "motivo": "Gate 1=FAILURE file-size regression — REGRA #10 proibe push (codex branch)"},
+    {"number": 3350, "head_sha": "627612137535", "motivo": "Gate 1=FAILURE — PR afirmava corrigir mas CI diverge"}
   ],
-  "zero_merges_esta_sessao_motivo": "Todos os 35 PRs abertos tem impedimento: 5 NAO_MERGEAR (CI FAILURE), 2 AGUARDA_CI (sem Gate Final), 28 AGUARDA_PO (workflows/DDL/major-bumps/draft)"
+  "prs_aguarda_ci": [
+    {"number": 3210, "motivo": "action_required (pending deployment approval Supabase Preview)"}
+  ],
+  "prs_aguarda_po": {
+    "count": 28,
+    "categorias": {
+      "workflows_github": [3127, 3129, 3137, 3179, 3228, 3247, 3274, 3290, 3327, 3328],
+      "ddl_migration": [3214, 3243, 3250, 3251, 3255, 3256, 3257, 3261, 3263, 3264, 3265, 3273, 3279, 3284],
+      "major_version_bumps": [3331, 3333, 3334]
+    }
+  },
+  "zero_merges_por_agente_esta_sessao": true,
+  "zero_merges_motivo": "35 PRs abertas: 6 NAO_MERGEAR (CI FAILURE), 1 AGUARDA_CI (action_required), 28 AGUARDA_PO (workflows/DDL/major-bumps). Zero elegíveis."
 }
