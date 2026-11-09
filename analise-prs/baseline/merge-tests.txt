@@ -1,0 +1,49 @@
+## Merge Tests Locais — session_01VXkRxWq5ZUCmvuNx5e2TGX — 2026-11-09
+
+### PR #3243 — fix(migrations): categories level drift
+Branch: claude/fix-categories-level-drift-261108-1952
+Head SHA: 06f31e44
+Base: 0818809d
+
+Comando:
+  git worktree add /tmp/merge-test-3243 0818809dae41c295b046dc52f85078e4f06b3df4
+  git merge --no-commit --no-ff origin/claude/fix-categories-level-drift-261108-1952
+
+Resultado: Automatic merge went well; stopped before committing as requested
+Arquivos que seriam alterados:
+  supabase/MIGRATIONS_SYNC_LOG.md
+  supabase/migrations/20260511235950_add_categories_level_drift.sql
+  supabase/migrations/20260511235960_add_categories_full_path_readable_drift.sql
+
+Commits unicos (git log origin/main..origin/branch):
+  06f31e44e Merge branch main (merge commit)
+  c3af288d2 Merge branch main (merge commit)
+  1efc65891 Merge branch main (merge commit)
+  6da971cad fix(migrations): alinha 20260511235950 com producao
+  3a422123e fix(migrations): restaura MIGRATIONS_SYNC_LOG
+  ed4db3b8c chore(migrations): registra 20260511235960
+  b36b3f6e0 fix(migrations): categories.full_path_readable (IF NOT EXISTS)
+  f4ba0d9c9 chore(ci): retrigger CI
+  6f43a8d92 fix(migrations): categories.level (IF NOT EXISTS)
+
+VEREDITO: Merge tecnicamente possivel (sem conflitos), BLOQUEADO por REGRA E056:
+  - Contem DDL (ALTER TABLE via migrations SQL)
+  - Caminho autorizado: workflow_dispatch db-apply-migration.yml
+  - Requer aprovacao explicita do PO
+  - Classificacao: AGUARDA_PO
+
+### PR #3350 — feat(kit-builder): FT-083/093/134/139/174 UX batch6
+Branch: claude/fix-ft-ux-batch6-rebuild-261109-1500
+Head SHA: 62761213
+
+Cherry check (git log origin/main..origin/branch):
+  62761213 feat(kit-builder): FT-083/093/134/139/174 UX batch6 (UNICO commit novo)
+  0818809da fix: sentinela (JA EM MAIN)
+  fb4b8c2d8 fix: snapshots PriceFreshnessBadge (JA EM MAIN via #3349)
+  8b29818  fix: PNG snapshot (JA EM MAIN via #3347)
+
+draft=False confirmado via GitHub API
+Gate 1 Lint+TypeScript: FAILURE (confirmado via 76 check runs)
+VEREDITO: NAO_MERGEAR — Gate 1=FAILURE
+
+Verificado em 2026-11-09 nesta sessao.
