@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4cf30818dd24fa6abb1bbe91052befdb5d7d318a",
+  "commit": "93d3cf02acb654db0df4463e5a3345644b677205",
   "branch": "main",
-  "data_commit": "2026-11-09T10:05:43Z",
+  "data_commit": "2026-11-09T07:55:09-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "93d3cf0",
+    "data": "2026-11-09",
+    "assunto": "fix(gate13): remove referência falsa supabase/migrations/x6 nos JSONs de analise-prs"
+   },
    {
     "sha": "4cf3081",
     "data": "2026-11-09",
@@ -126,193 +131,188 @@
     "sha": "08e10b7",
     "data": "2026-11-08",
     "assunto": "fix(kit-builder): arredondamento de preços a 2 casas decimais (#3253)"
-   },
-   {
-    "sha": "4d9fe52",
-    "data": "2026-11-08",
-    "assunto": "fix(mockup-generator): corrige onLogoRemove para usar areaId passado (#3252)"
    }
   ],
   "arquivos_mudados_7d": 489,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 1493
+    "mudancas": 897
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 761
+    "mudancas": 461
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 577
+    "mudancas": 347
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 525
+    "mudancas": 317
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 464
+    "mudancas": 280
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 429
+    "mudancas": 260
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 400
-   },
-   {
-    "pasta": "src/components/ui",
-    "mudancas": 368
+    "mudancas": 240
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 366
+    "mudancas": 228
+   },
+   {
+    "pasta": "src/components/ui",
+    "mudancas": 222
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 310
+    "mudancas": 192
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 295
+    "mudancas": 177
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 259
+    "mudancas": 159
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 245
+    "mudancas": 151
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 241
+    "mudancas": 147
    },
    {
     "pasta": "docs/arquivo/2026-09",
-    "mudancas": 215
+    "mudancas": 129
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 57
+    "mudancas": 55
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 48
+    "mudancas": 46
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 26
+    "mudancas": 24
    },
    {
     "arquivo": "package.json",
-    "mudancas": 19
-   },
-   {
-    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
     "mudancas": 17
    },
    {
     "arquivo": "analise-prs/progresso.json",
-    "mudancas": 16
-   },
-   {
-    "arquivo": "package-lock.json",
     "mudancas": 15
    },
    {
+    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
+    "mudancas": 15
+   },
+   {
+    "arquivo": "package-lock.json",
+    "mudancas": 13
+   },
+   {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 14
-   },
-   {
-    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 14
-   },
-   {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 13
-   },
-   {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 13
-   },
-   {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
     "mudancas": 12
    },
    {
-    "arquivo": "AGENTS.md",
+    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
+    "mudancas": 12
+   },
+   {
+    "arquivo": "CHANGELOG.md",
     "mudancas": 11
+   },
+   {
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "mudancas": 11
+   },
+   {
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "mudancas": 10
+   },
+   {
+    "arquivo": "AGENTS.md",
+    "mudancas": 9
    },
    {
     "arquivo": "CLAUDE.md",
-    "mudancas": 11
+    "mudancas": 9
    },
    {
     "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 10
+    "mudancas": 8
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 10
+    "mudancas": 8
+   },
+   {
+    "arquivo": "analise-prs/prs.json",
+    "mudancas": 7
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 9
+    "mudancas": 7
    },
    {
     "arquivo": "docs/estado/PENDENCIAS.md",
-    "mudancas": 9
+    "mudancas": 7
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 9
+    "mudancas": 7
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 9
+    "mudancas": 7
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 9
+    "mudancas": 7
    },
    {
     "arquivo": ".github/workflows/ci-security-drift.yml",
-    "mudancas": 8
+    "mudancas": 6
    },
    {
     "arquivo": ".github/workflows/e2e-focused.yml",
-    "mudancas": 8
+    "mudancas": 6
    },
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
-    "mudancas": 8
+    "mudancas": 6
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 292
+    "commits": 290
    },
    {
     "autor": "github-actions[bot]",
     "commits": 16
    },
    {
-    "autor": "Joaquim Ataides",
-    "commits": 3
+    "autor": "Claude",
+    "commits": 1
    },
    {
-    "autor": "Claude",
+    "autor": "Joaquim Ataides",
     "commits": 1
    }
   ]

@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(gate13): remove referência falsa supabase/migrations/x6 nos JSONs de analise-prs",
    "fix(ci): congela ref PENDENCIAS.md → migration futura no Gate 1.3 baseline (#3275)",
    "fix: corrige typecheck e permissão de script pré-existentes em main (#3320)",
    "docs(analise-prs): relatórios definitivos — ciclo merge-prs claude_04 (#3318)",
-   "docs: progresso v6 + prs.json — balanço correto 29 abertas",
-   "docs(analise-prs): progresso.json v5 — balanço 32 correto + SHA final 16995de3 (#3315)"
+   "docs: progresso v6 + prs.json — balanço correto 29 abertas"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

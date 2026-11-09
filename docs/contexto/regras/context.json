@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "4cf30818dd24fa6abb1bbe91052befdb5d7d318a",
+  "sha": "93d3cf02acb654db0df4463e5a3345644b677205",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 10:16 UTC",
+  "generated_at": "2026-11-09 11:17 UTC",
   "files_total": 9182,
   "code_files": 7869,
   "code_lines": 1055933
@@ -484404,10 +484404,20 @@
   }
  },
  "git": {
-  "sha": "4cf30818dd24fa6abb1bbe91052befdb5d7d318a",
+  "sha": "93d3cf02acb654db0df4463e5a3345644b677205",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "93d3cf0",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "fix(gate13): remove referência falsa supabase/migrations/x6 nos JSONs de analise-prs",
+    "files": [
+     "analise-prs/progresso.json",
+     "analise-prs/prs.json"
+    ]
+   },
    {
     "sha": "4cf3081",
     "date": "2026-11-09",
@@ -484764,21 +484774,16 @@
      "analise-prs/inventario_prs.json",
      "analise-prs/progresso.json"
     ]
-   },
-   {
-    "sha": "9ba190f",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs(pendencias): registrar P-15 a P-18 — classificação completa de 30 runs is:failure (#3295)",
-    "files": [
-     "PENDENCIAS.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "analise-prs/progresso.json",
-    6
+    7
+   ],
+   [
+    "analise-prs/prs.json",
+    3
    ],
    [
     "scripts/test-approved-plan-database.sh",
@@ -484801,10 +484806,6 @@
     2
    ],
    [
-    "analise-prs/prs.json",
-    2
-   ],
-   [
     "analise-prs/RELATORIO_PRS.md",
     2
    ],
@@ -484818,10 +484819,6 @@
    ],
    [
     "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    2
-   ],
-   [
-    "PENDENCIAS.md",
     2
    ],
    [
@@ -484854,6 +484851,10 @@
    ],
    [
     "scripts/check-cloud-status-coverage.mjs",
+    1
+   ],
+   [
+    "scripts/check-critical-path-coverage.mjs",
     1
    ]
   ]
