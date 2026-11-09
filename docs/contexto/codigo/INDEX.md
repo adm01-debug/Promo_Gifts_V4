@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `00c8fa295dbc60bd9dc3f7117f2ebf80350bd110` (2026-11-09T10:04:20-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1696c5a5dc0aa73007785a8c2a26820d99d3f163` (2026-11-09T10:50:25-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 9262 |
 | arquivos_codigo | 4635 |
-| linhas_codigo | 887715 |
+| linhas_codigo | 887734 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -586,8 +586,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38552 nós · 67007 arestas · 2187 comunidades · grafo do commit `00c8fa29`
-- comunidades maiores: ref_lib (779), ref_components (637), ref_integrations (395), nav.ts (364), react-router-dom (361), @tanstack/react-query (346), ref_hooks (321), ref_node_fs (293), scripts (289), ref_utils (286), cors.ts (254), sonner (254)
+- 38553 nós · 67008 arestas · 2161 comunidades · grafo do commit `1696c5a5`
+- comunidades maiores: ref_lib (745), ref_components (613), ref_integrations (536), ref_hooks (329), gotoAndSettle (321), react-router-dom (309), ref_node_fs (299), scripts (289), ref_types (277), @playwright/test (264), getCorsHeaders (254), ProductCard.tsx (248)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-09 `1696c5a` fix(tests): corrige regressões vitest — onLogoRemove, consumeUnloadBackup, goToStep, exit codes, mock transactional (#33
 - 2026-11-09 `00c8fa2` fix(tests): corrige TypeError consumeUnloadBackup e atualiza baseline de tamanho
 - 2026-11-09 `78729fc` chore(ci): atualiza file-size baseline — Kit Builder +21/+13/+10 linhas
 - 2026-11-09 `29838f1` feat(kit-builder): confirmar substituição ao aplicar composição da IA (FT-134)
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-09 `93d3cf0` fix(gate13): remove referência falsa supabase/migrations/x6 nos JSONs de analise-prs
 - 2026-11-09 `4cf3081` fix(ci): congela ref PENDENCIAS.md → migration futura no Gate 1.3 baseline (#3275)
 - 2026-11-09 `193a750` fix: corrige typecheck e permissão de script pré-existentes em main (#3320)
-- 2026-11-09 `ae1782f` docs(analise-prs): relatórios definitivos — ciclo merge-prs claude_04 (#3318)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

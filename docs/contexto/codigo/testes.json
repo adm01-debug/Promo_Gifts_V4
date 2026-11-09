@@ -10756,7 +10756,7 @@
   {
    "arquivo": "src/tests/MockupDeletion.test.tsx",
    "tipo": "unit",
-   "linhas": 848,
+   "linhas": 850,
    "testa": [
     "src/components/a11y/AriaLive.tsx",
     "src/components/ui/tooltip.tsx",
@@ -12944,7 +12944,7 @@
   {
    "arquivo": "tests/components/pages/KitBuilderPage.test.tsx",
    "tipo": "unit",
-   "linhas": 229,
+   "linhas": 230,
    "testa": [
     "src/pages/kit-builder/KitBuilderPage.tsx"
    ],
@@ -15471,7 +15471,7 @@
   {
    "arquivo": "tests/hooks/useKitBuilder-flow.test.tsx",
    "tipo": "unit",
-   "linhas": 233,
+   "linhas": 236,
    "testa": [
     "src/hooks/kit-builder/useKitBuilder.ts",
     "src/lib/kit-builder/index.ts"
@@ -17060,7 +17060,7 @@
   {
    "arquivo": "tests/pages/kit-builder/useKitBuilderQuote.test.ts",
    "tipo": "unit",
-   "linhas": 556,
+   "linhas": 569,
    "testa": [
     "src/lib/db/postgrest.ts",
     "src/pages/kit-builder/useKitBuilderQuote.ts"

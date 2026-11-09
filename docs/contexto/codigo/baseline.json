@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "00c8fa295dbc60bd9dc3f7117f2ebf80350bd110",
+  "commit": "1696c5a5dc0aa73007785a8c2a26820d99d3f163",
   "branch": "main",
-  "data_commit": "2026-11-09T10:04:20-03:00",
+  "data_commit": "2026-11-09T10:50:25-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "1696c5a",
+    "data": "2026-11-09",
+    "assunto": "fix(tests): corrige regressões vitest — onLogoRemove, consumeUnloadBackup, goToStep, exit codes, mock transactional (#33"
+   },
    {
     "sha": "00c8fa2",
     "data": "2026-11-09",
@@ -126,14 +131,9 @@
     "sha": "0aab655",
     "data": "2026-11-09",
     "assunto": "feat(e2e): specs E2E rotas públicas — PR #3248 (#3248)"
-   },
-   {
-    "sha": "d017980",
-    "data": "2026-11-09",
-    "assunto": "docs(analise-prs): RELATORIO_DOSSIES — dossiê CI por PR com evidências (#3311)"
    }
   ],
-  "arquivos_mudados_7d": 491,
+  "arquivos_mudados_7d": 496,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 9262,
   "arquivos_codigo": 4635,
-  "linhas_codigo": 887715,
+  "linhas_codigo": 887734,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1896,7 +1896,7 @@
   },
   "src/tests": {
    "arquivos": 33,
-   "linhas": 5019
+   "linhas": 5021
   },
   "src/types": {
    "arquivos": 26,
@@ -1984,7 +1984,7 @@
   },
   "tests/components": {
    "arquivos": 145,
-   "linhas": 32454
+   "linhas": 32455
   },
   "tests/config": {
    "arquivos": 6,
@@ -2028,7 +2028,7 @@
   },
   "tests/hooks": {
    "arquivos": 123,
-   "linhas": 16747
+   "linhas": 16750
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2060,7 +2060,7 @@
   },
   "tests/pages": {
    "arquivos": 13,
-   "linhas": 2541
+   "linhas": 2554
   },
   "tests/product-form-improvements.test.ts": {
    "arquivos": 1,

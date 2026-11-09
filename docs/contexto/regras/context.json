@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "00c8fa295dbc60bd9dc3f7117f2ebf80350bd110",
+  "sha": "1696c5a5dc0aa73007785a8c2a26820d99d3f163",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 13:28 UTC",
+  "generated_at": "2026-11-09 13:56 UTC",
   "files_total": 9182,
   "code_files": 7869,
-  "code_lines": 1055993
+  "code_lines": 1056012
  },
  "version": "1.3.2",
- "facts_hash": "6cf84896c9b323f5",
+ "facts_hash": "f72fea91c04136f3",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -139712,7 +139712,7 @@
   {
    "module": "src/tests",
    "files": 33,
-   "lines": 5019,
+   "lines": 5021,
    "tables": [
     "products",
     "v_products_public",
@@ -140493,7 +140493,7 @@
   {
    "module": "tests",
    "files": 821,
-   "lines": 125365,
+   "lines": 125382,
    "tables": [
     "bot_detection_log",
     "companies",
@@ -266267,7 +266267,7 @@
    },
    {
     "file": "tests/scripts/append-edge-deploy-receipt.test.mjs",
-    "name": "sai com erro (exit 1) se --slug faltar"
+    "name": "sai com erro de uso (exit 2) se --slug faltar"
    },
    {
     "file": "tests/scripts/append-migration-receipt.test.mjs",
@@ -438143,7 +438143,7 @@
   },
   "src/tests/MockupDeletion.test.tsx": {
    "path": "src/tests/MockupDeletion.test.tsx",
-   "lines": 848,
+   "lines": 850,
    "is_test": true,
    "temporal": [
     "const deleteButton = await screen.findByTestId('delete-mockup-button', {}, { timeout: 8000 });"
@@ -470334,7 +470334,7 @@
   },
   "tests/components/pages/KitBuilderPage.test.tsx": {
    "path": "tests/components/pages/KitBuilderPage.test.tsx",
-   "lines": 229,
+   "lines": 230,
    "is_test": true,
    "tests": [
     "KitBuilderPage",
@@ -475543,7 +475543,7 @@
   },
   "tests/hooks/useKitBuilder-flow.test.tsx": {
    "path": "tests/hooks/useKitBuilder-flow.test.tsx",
-   "lines": 233,
+   "lines": 236,
    "is_test": true,
    "tests": [
     "useKitBuilder — fluxos de montagem",
@@ -479743,7 +479743,7 @@
   },
   "tests/pages/kit-builder/useKitBuilderQuote.test.ts": {
    "path": "tests/pages/kit-builder/useKitBuilderQuote.test.ts",
-   "lines": 556,
+   "lines": 569,
    "is_test": true,
    "rule_comments": [
     "A RPC injeta quote_id dentro da transação; o cliente não pode criar"
@@ -480272,7 +480272,7 @@
     "CLI",
     "escreve o recibo no arquivo apontado por --log-path",
     "sai com erro (exit 1) se a seção de Recibos não existir no log alvo",
-    "sai com erro (exit 1) se --slug faltar"
+    "sai com erro de uso (exit 2) se --slug faltar"
    ]
   },
   "tests/scripts/append-migration-receipt.test.mjs": {
@@ -484417,10 +484417,24 @@
   }
  },
  "git": {
-  "sha": "00c8fa295dbc60bd9dc3f7117f2ebf80350bd110",
+  "sha": "1696c5a5dc0aa73007785a8c2a26820d99d3f163",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1696c5a",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "fix(tests): corrige regressões vitest — onLogoRemove, consumeUnloadBackup, goToStep, exit codes, mock transactional (#3346)",
+    "files": [
+     "src/tests/MockupDeletion.test.tsx",
+     "tests/components/pages/KitBuilderPage.test.tsx",
+     "tests/hooks/useKitBuilder-flow.test.tsx",
+     "tests/pages/kit-builder/useKitBuilderQuote.test.ts",
+     "tests/scripts/append-edge-deploy-receipt.test.mjs",
+     "tests/ssot/ssot-report-bump.test.ts"
+    ]
+   },
    {
     "sha": "00c8fa2",
     "date": "2026-11-09",
@@ -484744,15 +484758,6 @@
     "files": [
      "analise-prs/prs.json"
     ]
-   },
-   {
-    "sha": "7851536",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs(analise-prs): RELATORIO_META_CUMPRIDA — versão final com evidências por PR",
-    "files": [
-     "analise-prs/RELATORIO_META_CUMPRIDA.md"
-    ]
    }
   ],
   "hot_files": [
@@ -484763,6 +484768,10 @@
    [
     "analise-prs/prs.json",
     4
+   ],
+   [
+    "tests/components/pages/KitBuilderPage.test.tsx",
+    2
    ],
    [
     ".file-size-baseline.json",
@@ -484793,7 +484802,23 @@
     2
    ],
    [
-    "tests/components/pages/KitBuilderPage.test.tsx",
+    "src/tests/MockupDeletion.test.tsx",
+    1
+   ],
+   [
+    "tests/hooks/useKitBuilder-flow.test.tsx",
+    1
+   ],
+   [
+    "tests/pages/kit-builder/useKitBuilderQuote.test.ts",
+    1
+   ],
+   [
+    "tests/scripts/append-edge-deploy-receipt.test.mjs",
+    1
+   ],
+   [
+    "tests/ssot/ssot-report-bump.test.ts",
     1
    ],
    [
@@ -484814,26 +484839,6 @@
    ],
    [
     "bundle-size-baseline.json",
-    1
-   ],
-   [
-    "docs/ci/METRICAS_SEMANAIS.md",
-    1
-   ],
-   [
-    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    1
-   ],
-   [
-    ".as-assertions-baseline.json",
-    1
-   ],
-   [
-    "audit/supabase-reference-catalog.temporary.json",
-    1
-   ],
-   [
-    ".migration-refs-baseline.json",
     1
    ]
   ]
