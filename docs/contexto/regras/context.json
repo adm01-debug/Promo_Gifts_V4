@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "167f5f8de8c8a5063a17774a90373f9bc2caaff1",
+  "sha": "e70479bfc8235c716cb9c09f7ff38a27588b7c23",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 19:03 UTC",
+  "generated_at": "2026-11-09 20:05 UTC",
   "files_total": 9794,
   "code_files": 8357,
   "code_lines": 1174878
@@ -517173,10 +517173,19 @@
   }
  },
  "git": {
-  "sha": "167f5f8de8c8a5063a17774a90373f9bc2caaff1",
+  "sha": "e70479bfc8235c716cb9c09f7ff38a27588b7c23",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e70479b",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "chore(e2e): registrar specs @smoke no job e2e-gates",
+    "files": [
+     ".github/workflows/e2e.yml"
+    ]
+   },
    {
     "sha": "167f5f8",
     "date": "2026-11-09",
@@ -518072,16 +518081,6 @@
     "files": [
      "audit/supabase-reference-catalog.temporary.json"
     ]
-   },
-   {
-    "sha": "6933eb6",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "fix(ci): corrige referências inválidas supabase/migrations/x6 em analise-prs (#3337)",
-    "files": [
-     "analise-prs/progresso.json",
-     "analise-prs/prs.json"
-    ]
    }
   ],
   "hot_files": [
@@ -518092,14 +518091,6 @@
    [
     ".file-size-baseline.json",
     3
-   ],
-   [
-    "analise-prs/progresso.json",
-    2
-   ],
-   [
-    "analise-prs/prs.json",
-    2
    ],
    [
     "src/components/kit-builder/KitAIPromptDialog.tsx",
@@ -518124,6 +518115,10 @@
    [
     "tests/components/pages/KitBuilderPage.test.tsx",
     2
+   ],
+   [
+    ".github/workflows/e2e.yml",
+    1
    ],
    [
     ".github/workflows/ci.yml",
@@ -518163,6 +518158,10 @@
    ],
    [
     ".lovable/memory/integrations/connections-hub.md",
+    1
+   ],
+   [
+    ".lovable/memory/security/production-hardening-baseline.md",
     1
    ]
   ]

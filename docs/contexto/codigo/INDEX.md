@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `167f5f8de8c8a5063a17774a90373f9bc2caaff1` (2026-11-09T16:01:12-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e70479bfc8235c716cb9c09f7ff38a27588b7c23` (2026-11-09T17:03:21-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -588,7 +588,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 41522 nós · 71279 arestas · 2377 comunidades · grafo do commit `167f5f8d`
+- 41522 nós · 71279 arestas · 2377 comunidades · grafo do commit `e70479bf`
 - comunidades maiores: ref_integrations (592), lucide-react (566), ref_lib (564), ref_components (515), react-router-dom (376), ref_hooks (355), @tanstack/react-query (345), gotoAndSettle (337), ref_types (317), sonner (304), react (302), scripts (289)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), useExternalDatabase() (src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -1164,6 +1164,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-09 `e70479b` chore(e2e): registrar specs @smoke no job e2e-gates
 - 2026-11-09 `167f5f8` chore: registra 611 arquivos não rastreados de sessões anteriores (#3361)
 - 2026-11-09 `1368a91` feat(edge-deploy-log): recibo run 42665634216 — edge functions deploy
 - 2026-11-09 `9a9c363` feat(edge-deploy-log): recibo run 42660725884 — edge functions deploy
@@ -1178,7 +1179,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-09 `defe294` fix(ci): corrige Gate E42 e2e-personalization com auth-setup step condicional (#3274)
 - 2026-11-09 `973864d` fix(ci): atualiza baseline Gate 1.3 — remove referência já resolvida de 20260511235970 (#3352)
 - 2026-11-09 `586f454` chore(sentinel): grandfather SHA fb4b8c2d87 do PR #3349 (#3351)
-- 2026-11-09 `0818809` fix: corrige referência de SHA de sentinela em check-sentinel-sha (#3278)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
