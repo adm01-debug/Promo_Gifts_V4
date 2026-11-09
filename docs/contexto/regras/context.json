@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "9a9c363e419e5a54c34f6cb387bc12f96649884d",
+  "sha": "1368a9180ff2eb6283c23e4b4e197ca8e5024893",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 18:45 UTC",
+  "generated_at": "2026-11-09 18:51 UTC",
   "files_total": 9186,
   "code_files": 7873,
   "code_lines": 1055915
@@ -484404,10 +484404,19 @@
   }
  },
  "git": {
-  "sha": "9a9c363e419e5a54c34f6cb387bc12f96649884d",
+  "sha": "1368a9180ff2eb6283c23e4b4e197ca8e5024893",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1368a91",
+    "date": "2026-11-09",
+    "author": "github-actions[bot]",
+    "subject": "feat(edge-deploy-log): recibo run 42665634216 — edge functions deploy",
+    "files": [
+     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
+    ]
+   },
    {
     "sha": "9a9c363",
     "date": "2026-11-09",
@@ -484695,21 +484704,12 @@
      "analise-prs/progresso.json",
      "analise-prs/prs.json"
     ]
-   },
-   {
-    "sha": "4cf3081",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "fix(ci): congela ref PENDENCIAS.md → migration futura no Gate 1.3 baseline (#3275)",
-    "files": [
-     ".migration-refs-baseline.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    3
+    4
    ],
    [
     "analise-prs/progresso.json",
@@ -484724,15 +484724,15 @@
     3
    ],
    [
-    ".migration-refs-baseline.json",
-    3
-   ],
-   [
     "src/components/kit-builder/KitAIPromptDialog.tsx",
     2
    ],
    [
     "src/components/kit-builder/KitBuilderHeader.tsx",
+    2
+   ],
+   [
+    ".migration-refs-baseline.json",
     2
    ],
    [

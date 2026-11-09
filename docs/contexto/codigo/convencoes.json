@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(edge-deploy-log): recibo run 42665634216 — edge functions deploy",
    "feat(edge-deploy-log): recibo run 42660725884 — edge functions deploy",
    "feat: versionar view vw_products_min_quantity (FT-079) (#3264)",
    "docs: recibo de deploy de edge function(s) — run 42649363787 (E66)",
-   "chore(migrations): adiciona arquivos espelho CRON-001 (20261101223908, 20261101232022)",
-   "chore(tracking): progresso.json v7 — #3257 e #3275 MERGED, #3338 fechada (#3356)"
+   "chore(migrations): adiciona arquivos espelho CRON-001 (20261101223908, 20261101232022)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
