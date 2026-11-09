@@ -3,11 +3,11 @@
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 2674,
   "iniciado_em": "2026-10-28T00:00:00Z",
-  "atualizado_em": "2026-11-09T16:30:00Z",
+  "atualizado_em": "2026-11-09T12:30:00Z",
   "contagem_por_veredito": {
-    "MERGEADA": 14,
+    "MERGEADA": 16,
     "NÃO_MERGEAR": 10,
-    "AGUARDA_CI": 28,
+    "AGUARDA_CI": 26,
     "AGUARDA_CI_OU_PO": 17,
     "AGUARDA_PO": 4,
     "FECHADA_SEM_MERGE": 3,
@@ -33,6 +33,28 @@
       "gate_final_ref": "5a3f679e",
       "supabase_impacto": "ZERO — docs only",
       "merged_at": "2026-11-09T12:30:00Z"
+    },
+    {
+      "number": 3343,
+      "sha": "78729fc11038f7d0b2bb73ff0c1330f92547658b",
+      "titulo": "chore(ci): atualiza file-size baseline — Kit Builder +21/+13/+10 linhas",
+      "tipo": "chore/ci — baseline ratchet",
+      "gate_final": "QUEUED",
+      "gate_final_ref": "78729fc11038f7d0b2bb73ff0c1330f92547658b",
+      "supabase_impacto": "ZERO — só .file-size-baseline.json",
+      "merged_at": "2026-11-09T12:28:00Z",
+      "nota": "Corrige Gate 1.9 falha em main desde SHA 16f4af23"
+    }
+  ],
+  "mergeadas_externas_esta_sessao": [
+    {
+      "number": 3341,
+      "sha": "d82bd6a835ff0448bccfdd0d5a9e0474bb7b5ab6",
+      "titulo": "docs: recibo de deploy de edge function(s) — run 42609591614 (E66)",
+      "tipo": "docs-only E14",
+      "merged_by": "adm01-debug",
+      "merged_at": "2026-11-09T12:23:48Z",
+      "supabase_impacto": "ZERO — docs only"
     }
   ],
   "mergeadas_sessoes_anteriores": {
@@ -45,21 +67,16 @@
     "motivos": "NÃO_MERGEAR: CI failure, conflito, já implementado em main ou supersedida"
   },
   "aguardando": {
-    "AGUARDA_CI": "28 PRs — inclui #3343 (fix gate 1.9) e #3341 (edge deploy receipt E14)",
+    "AGUARDA_CI": "26 PRs — esperando Gate Final verde em main (SHA 78729fc1)",
     "AGUARDA_CI_OU_PO": "17 PRs que requerem CI verde + decisão do PO",
     "AGUARDA_PO": "4 PRs: migrations DDL, .github/workflows, segurança — requerem aprovação humana"
   },
   "gate_final_main_atual": {
-    "sha": "16f4af23df235c2f68b534692d8287ee20eb83c1",
-    "status": "FAILURE",
-    "causa": "Gate 1.9 file-size — 3 Kit Builder files acima do baseline (.file-size-baseline.json)",
-    "fix_em_andamento": "PR #3343 (commit 45a2912a) — CI queued"
+    "sha": "78729fc11038f7d0b2bb73ff0c1330f92547658b",
+    "status": "QUEUED",
+    "causa": "CI ainda rodando após merge PR #3343 (fix gate 1.9)",
+    "supabase_preview": "FAILURE (pré-existente — 'Remote migration versions not found in local migrations directory' — não é gate required)",
+    "proximo_passo": "Aguardar quality-gate completar → se SUCCESS, desbloqueia merges dos 26 AGUARDA_CI"
   },
-  "bloqueio_geral": "Gate Final FAILURE em main (SHA 16f4af23) por Gate 1.9 file-size. Fix: PR #3343 aguardando CI.",
-  "pr_3343_fix": {
-    "branch": "claude/fix-filesize-baseline-261109-1600",
-    "commit": "45a2912a1d920bde82c7b9a13bb22ae7a720635e",
-    "ci_status": "queued (16 checks, apenas Vercel Preview = success)",
-    "acao_quando_verde": "merge imediato (squash) — sem risco de regressão"
-  }
+  "bloqueio_geral": "Gate Final QUEUED em main (SHA 78729fc1) — aguardando CI completar"
 }
