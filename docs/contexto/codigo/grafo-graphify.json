@@ -4,10 +4,10 @@
  "presente": true,
  "como_gerar": "uvx --from \"graphifyy[sql]\" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente",
  "relatorio": null,
- "commit_do_grafo": "defe2940731929fd9cc50425a8d8b15fafc79863",
+ "commit_do_grafo": "944ff2dd03ecd26ac0925dd8e8de80d92591b4ad",
  "grafo_atual": true,
  "nos": 38553,
- "arestas": 67009,
+ "arestas": 67008,
  "comunidades_total": 2172,
  "relacoes": {
   "calls": 6169,
@@ -18,7 +18,7 @@
   "extends": 2,
   "implements": 7,
   "imports": 6879,
-  "imports_from": 16478,
+  "imports_from": 16477,
   "indirect_call": 435,
   "inherits": 43,
   "method": 357,
@@ -27,7 +27,7 @@
   "references": 3557
  },
  "origem": {
-  "EXTRACTED": 63424,
+  "EXTRACTED": 63423,
   "INFERRED": 3585
  },
  "comunidades": [
@@ -1469,7 +1469,7 @@
    "id": "ref_sonner",
    "rotulo": "sonner",
    "arquivo": "package.json",
-   "grau": 317,
+   "grau": 316,
    "comunidade": "ref_integrations"
   },
   {

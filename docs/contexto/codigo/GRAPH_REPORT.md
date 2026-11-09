@@ -1,17 +1,17 @@
 # Graph Report - Promo_Gifts_V4  (2026-11-09)
 
 ## Corpus Check
-- 5705 files · ~5,069,149 words
+- 5705 files · ~5,068,791 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 56 file(s) not represented in the graph (top: (none) 27, .css 10, .toml 6)
 
 ## Summary
-- 38553 nodes · 67009 edges · 2172 communities (2019 shown, 153 thin omitted)
+- 38553 nodes · 67008 edges · 2172 communities (2019 shown, 153 thin omitted)
 - Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 3585 edges (avg confidence: 0.94)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `defe2940`
+- Built from commit: `944ff2dd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -2153,7 +2153,7 @@
 6. `test` - 354 edges
 7. `@tanstack/react-query` - 333 edges
 8. `react-router-dom` - 326 edges
-9. `sonner` - 317 edges
+9. `sonner` - 316 edges
 10. `@playwright/test` - 293 edges
 
 ## Surprising Connections (you probably didn't know these)

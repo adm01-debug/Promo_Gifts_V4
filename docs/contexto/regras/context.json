@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "defe2940731929fd9cc50425a8d8b15fafc79863",
+  "sha": "944ff2dd03ecd26ac0925dd8e8de80d92591b4ad",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 15:26 UTC",
+  "generated_at": "2026-11-09 15:35 UTC",
   "files_total": 9182,
   "code_files": 7869,
-  "code_lines": 1055970
+  "code_lines": 1055852
  },
  "version": "1.3.2",
- "facts_hash": "143eafdc0975fabd",
+ "facts_hash": "3cc8a65e40f0296f",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -138455,7 +138455,7 @@
   {
    "module": "src/components",
    "files": 1332,
-   "lines": 268774,
+   "lines": 268712,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -138812,7 +138812,7 @@
   {
    "module": "src/hooks",
    "files": 450,
-   "lines": 84118,
+   "lines": 84088,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -139306,7 +139306,7 @@
   {
    "module": "src/pages",
    "files": 348,
-   "lines": 81822,
+   "lines": 81796,
    "tables": [
     "ai_insights_cache",
     "ai_usage_events",
@@ -154608,10 +154608,6 @@
     "msg": "Erro ao aplicar filtro de tamanhos"
    },
    {
-    "file": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "msg": "Alterações não salvas detectadas"
-   },
-   {
     "file": "src/pages/kit-builder/KitLibraryPage.tsx",
     "msg": " className="
    },
@@ -157998,14 +157994,6 @@
    {
     "file": "src/hooks/kit-builder/useKitBuilder.ts",
     "text": "Selecting a variant already present in this kit must combine the"
-   },
-   {
-    "file": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "text": "must land in the items-first journey instead of showing an empty box step."
-   },
-   {
-    "file": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "text": "A saved snapshot must be restored before autosave is allowed to run. This"
    },
    {
     "file": "src/hooks/kit-builder/useKitBuilderQueries.ts",
@@ -196296,12 +196284,6 @@
     "name": "fmtScore",
     "params": "v: number | null",
     "body": "return v === null ? '—' : `${v}/100`;"
-   },
-   {
-    "file": "src/components/kit-builder/KitAIPromptDialog.tsx",
-    "name": "commitApply",
-    "params": "s: Suggestion, composition: KitAIComposition, requestedQuantity?: number,",
-    "body": "onApply(s, composition, requestedQuantity); setOpen(false); clearForm(); toast.success('Composição aplicada — revise variantes, estoque e valores antes de continuar.');"
    },
    {
     "file": "src/components/kit-builder/KitSummary.tsx",
@@ -393791,7 +393773,7 @@
   },
   "src/components/kit-builder/KitAIPromptDialog.tsx": {
    "path": "src/components/kit-builder/KitAIPromptDialog.tsx",
-   "lines": 658,
+   "lines": 585,
    "exports": [
     "function buildAlternativeTitle",
     "function mapKitAiErrorMessage",
@@ -393815,18 +393797,11 @@
     "* Etapa 18: 3 erros de negócio distintos em vez do genérico \"Erro ao gerar",
     "O servidor já devolve mensagens de negócio (sem chave/quota/timeout);"
    ],
-   "doc": "KitAIPromptDialog — briefing estruturado para a edge function kit-ai-builder. A IA devolve intenção semântica; itens, caixas, preços e compatibilidade são resolvidos pelo catálogo carregado e aplicados só após confirmação humana.",
-   "calc_fns": [
-    {
-     "name": "commitApply",
-     "params": "s: Suggestion, composition: KitAIComposition, requestedQuantity?: number,",
-     "body": "onApply(s, composition, requestedQuantity); setOpen(false); clearForm(); toast.success('Composição aplicada — revise variantes, estoque e valores antes de continuar.');"
-    }
-   ]
+   "doc": "KitAIPromptDialog — briefing estruturado para a edge function kit-ai-builder. A IA devolve intenção semântica; itens, caixas, preços e compatibilidade são resolvidos pelo catálogo carregado e aplicados só após confirmação humana."
   },
   "src/components/kit-builder/KitBuilderHeader.tsx": {
    "path": "src/components/kit-builder/KitBuilderHeader.tsx",
-   "lines": 416,
+   "lines": 412,
    "exports": [
     "function KitBuilderHeader"
    ],
@@ -393940,7 +393915,7 @@
   },
   "src/components/kit-builder/KitMakerLanding.tsx": {
    "path": "src/components/kit-builder/KitMakerLanding.tsx",
-   "lines": 565,
+   "lines": 564,
    "exports": [
     "function KitMakerLanding"
    ],
@@ -395551,7 +395526,7 @@
   },
   "src/components/mockup/MockupResultCard.tsx": {
    "path": "src/components/mockup/MockupResultCard.tsx",
-   "lines": 443,
+   "lines": 448,
    "exports": [
     "function getConfettiTokenColors",
     "const MockupResultCard"
@@ -396602,7 +396577,7 @@
   },
   "src/components/novelties/NoveltyProductGrid.tsx": {
    "path": "src/components/novelties/NoveltyProductGrid.tsx",
-   "lines": 863,
+   "lines": 865,
    "exports": [
     "function NoveltyProductGrid"
    ],
@@ -400450,7 +400425,7 @@
   },
   "src/components/quotes/ClientPicker.tsx": {
    "path": "src/components/quotes/ClientPicker.tsx",
-   "lines": 124,
+   "lines": 132,
    "exports": [
     "interface ClientData",
     "function ClientPicker"
@@ -402280,7 +402255,7 @@
   },
   "src/components/replenishments/ReplenishmentProductGrid.tsx": {
    "path": "src/components/replenishments/ReplenishmentProductGrid.tsx",
-   "lines": 435,
+   "lines": 436,
    "exports": [
     "function ReplenishmentProductGrid"
    ],
@@ -411006,7 +410981,7 @@
   },
   "src/hooks/kit-builder/useKitBuilderPageState.ts": {
    "path": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-   "lines": 563,
+   "lines": 533,
    "exports": [
     "function isKitMakerLandingRoute",
     "function useKitBuilderPageState"
@@ -411015,10 +410990,6 @@
     "Adicione uma caixa ou item antes de salvar o kit.",
     "Este produto não possui preço comercial disponível para o kit.",
     "O rascunho do kit está em um formato inválido."
-   ],
-   "rule_comments": [
-    "must land in the items-first journey instead of showing an empty box step.",
-    "A saved snapshot must be restored before autosave is allowed to run. This"
    ],
    "hooks": [
     "useKitBuilderPageState"
@@ -430671,12 +430642,9 @@
   },
   "src/pages/kit-builder/KitBuilderPage.tsx": {
    "path": "src/pages/kit-builder/KitBuilderPage.tsx",
-   "lines": 342,
+   "lines": 316,
    "exports": [
     "function KitBuilderPage"
-   ],
-   "errors": [
-    "Alterações não salvas detectadas"
    ],
    "percents": [
     "radial-gradient(ellipse 60% 40% at 100% 100%, hsl(var(--primary) / 0.04), transparent),",
@@ -484415,10 +484383,36 @@
   }
  },
  "git": {
-  "sha": "defe2940731929fd9cc50425a8d8b15fafc79863",
+  "sha": "944ff2dd03ecd26ac0925dd8e8de80d92591b4ad",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "944ff2d",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "fix(kit-builder): remove bloco FT-119 incompleto e corrige type imports (#3350)",
+    "files": [
+     "src/components/kit-builder/KitAIPromptDialog.tsx",
+     "src/components/kit-builder/KitBuilderHeader.tsx",
+     "src/components/kit-builder/KitMakerLanding.tsx",
+     "src/components/mockup/MockupResultCard.tsx",
+     "src/components/novelties/NoveltyProductGrid.tsx",
+     "src/components/quotes/ClientPicker.tsx",
+     "src/components/replenishments/ReplenishmentProductGrid.tsx",
+     "src/hooks/kit-builder/useKitBuilderPageState.ts",
+     "src/pages/kit-builder/KitBuilderPage.tsx"
+    ]
+   },
+   {
+    "sha": "6ba67b4",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "fix(ci): adiciona detector E12 pg_indexes out-of-band no Gate 2 (#3290)",
+    "files": [
+     ".github/workflows/db-schema-drift-check.yml"
+    ]
+   },
    {
     "sha": "defe294",
     "date": "2026-11-09",
@@ -484688,24 +484682,6 @@
     "files": [
      "analise-prs/RELATORIO_DEFINITIVO.md"
     ]
-   },
-   {
-    "sha": "9895738",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "fix(dropbox): exibir título no estado desconectado (#3303)",
-    "files": [
-     "src/pages/tools/DropboxBrowserPage.tsx"
-    ]
-   },
-   {
-    "sha": "ee6f6c8",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "feat(kit-builder): guard goToStep etapas não completadas FT-122 (#3292)",
-    "files": [
-     "src/hooks/kit-builder/useKitBuilder.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -484720,6 +484696,14 @@
    [
     "analise-prs/prs.json",
     3
+   ],
+   [
+    "src/components/kit-builder/KitAIPromptDialog.tsx",
+    2
+   ],
+   [
+    "src/components/kit-builder/KitBuilderHeader.tsx",
+    2
    ],
    [
     ".github/SENTINEL_SHA_ALLOWLIST.txt",
@@ -484746,47 +484730,39 @@
     2
    ],
    [
+    "src/components/kit-builder/KitMakerLanding.tsx",
+    1
+   ],
+   [
+    "src/components/mockup/MockupResultCard.tsx",
+    1
+   ],
+   [
+    "src/components/novelties/NoveltyProductGrid.tsx",
+    1
+   ],
+   [
+    "src/components/quotes/ClientPicker.tsx",
+    1
+   ],
+   [
+    "src/components/replenishments/ReplenishmentProductGrid.tsx",
+    1
+   ],
+   [
+    "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    1
+   ],
+   [
+    "src/pages/kit-builder/KitBuilderPage.tsx",
+    1
+   ],
+   [
+    ".github/workflows/db-schema-drift-check.yml",
+    1
+   ],
+   [
     ".github/workflows/e2e-personalization.yml",
-    1
-   ],
-   [
-    "PENDENCIAS.md",
-    1
-   ],
-   [
-    "src/components/products/__snapshots__/PriceFreshnessBadge.snapshots.test.tsx.snap",
-    1
-   ],
-   [
-    "e2e/flows/03b-thumb-quickview.smoke.spec.ts",
-    1
-   ],
-   [
-    "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    1
-   ],
-   [
-    "e2e/quotes/quote-view-no-presentation-mode.spec.ts-snapshots/quote-actions-menu-dark-mobile-chromium-public-linux.png",
-    1
-   ],
-   [
-    "src/tests/MockupDeletion.test.tsx",
-    1
-   ],
-   [
-    "tests/hooks/useKitBuilder-flow.test.tsx",
-    1
-   ],
-   [
-    "tests/scripts/append-edge-deploy-receipt.test.mjs",
-    1
-   ],
-   [
-    "tests/ssot/ssot-report-bump.test.ts",
-    1
-   ],
-   [
-    "src/components/kit-builder/KitAIPromptDialog.tsx",
     1
    ]
   ]

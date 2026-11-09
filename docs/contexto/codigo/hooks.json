@@ -5336,7 +5336,7 @@
    "hooks_exportados": [
     "useKitBuilderPageState"
    ],
-   "linhas": 563,
+   "linhas": 533,
    "dominio": "hooks/kit-builder",
    "tabelas": [],
    "rpcs": [],
@@ -5351,7 +5351,6 @@
     "useKitBuilder",
     "useKitBuilderQuote",
     "useKitUndoRedo",
-    "useRef",
     "useSearchParams",
     "useState",
     "useTemplateSnapshot"

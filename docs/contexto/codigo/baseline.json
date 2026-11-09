@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "defe2940731929fd9cc50425a8d8b15fafc79863",
+  "commit": "944ff2dd03ecd26ac0925dd8e8de80d92591b4ad",
   "branch": "main",
-  "data_commit": "2026-11-09T12:25:03-03:00",
+  "data_commit": "2026-11-09T12:26:29-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "944ff2d",
+    "data": "2026-11-09",
+    "assunto": "fix(kit-builder): remove bloco FT-119 incompleto e corrige type imports (#3350)"
+   },
+   {
+    "sha": "6ba67b4",
+    "data": "2026-11-09",
+    "assunto": "fix(ci): adiciona detector E12 pg_indexes out-of-band no Gate 2 (#3290)"
+   },
    {
     "sha": "defe294",
     "data": "2026-11-09",
@@ -121,19 +131,9 @@
     "sha": "ae1782f",
     "data": "2026-11-09",
     "assunto": "docs(analise-prs): relatórios definitivos — ciclo merge-prs claude_04 (#3318)"
-   },
-   {
-    "sha": "b5f3706",
-    "data": "2026-11-09",
-    "assunto": "docs: progresso v6 + prs.json — balanço correto 29 abertas"
-   },
-   {
-    "sha": "56cfd7f",
-    "data": "2026-11-09",
-    "assunto": "docs(analise-prs): progresso.json v5 — balanço 32 correto + SHA final 16995de3 (#3315)"
    }
   ],
-  "arquivos_mudados_7d": 498,
+  "arquivos_mudados_7d": 502,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 90
+    "mudancas": 91
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -173,18 +173,14 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 74
+    "mudancas": 75
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 59
+    "mudancas": 62
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 59
-   },
-   {
-    "pasta": "src/pages/products",
     "mudancas": 59
    },
    {
@@ -194,6 +190,10 @@
    {
     "pasta": "src/pages/quotes",
     "mudancas": 53
+   },
+   {
+    "pasta": "src/pages/products",
+    "mudancas": 52
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -270,6 +270,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "mudancas": 6
+   },
+   {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 6
    },
@@ -282,20 +286,16 @@
     "mudancas": 5
    },
    {
-    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "arquivo": "src/components/kit-builder/KitAIPromptDialog.tsx",
     "mudancas": 5
    },
    {
-    "arquivo": ".github/workflows/ci-security-drift.yml",
-    "mudancas": 4
+    "arquivo": "src/components/kit-builder/KitBuilderHeader.tsx",
+    "mudancas": 5
    },
    {
-    "arquivo": ".github/workflows/e2e-focused.yml",
-    "mudancas": 4
-   },
-   {
-    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 4
+    "arquivo": "src/components/kit-builder/KitMakerLanding.tsx",
+    "mudancas": 5
    }
   ],
   "autores_30d": [
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 9262,
   "arquivos_codigo": 4635,
-  "linhas_codigo": 887692,
+  "linhas_codigo": 887574,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1832,7 +1832,7 @@
   },
   "src/components": {
    "arquivos": 1332,
-   "linhas": 268775
+   "linhas": 268713
   },
   "src/config": {
    "arquivos": 1,
@@ -1856,7 +1856,7 @@
   },
   "src/hooks": {
    "arquivos": 450,
-   "linhas": 84118
+   "linhas": 84088
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1876,7 +1876,7 @@
   },
   "src/pages": {
    "arquivos": 348,
-   "linhas": 81822
+   "linhas": 81796
   },
   "src/routes": {
    "arquivos": 14,

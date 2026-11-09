@@ -7957,7 +7957,7 @@
     "KitAIPromptDialog"
    ],
    "export_default": null,
-   "linhas": 658,
+   "linhas": 585,
    "dominio": "components/kit-builder",
    "hooks_locais": [],
    "tabelas": [],
@@ -7971,7 +7971,7 @@
     "KitBuilderHeader"
    ],
    "export_default": null,
-   "linhas": 416,
+   "linhas": 412,
    "dominio": "components/kit-builder",
    "hooks_locais": [
     "useRBAC",
@@ -8120,7 +8120,7 @@
     "KitMakerLanding"
    ],
    "export_default": null,
-   "linhas": 565,
+   "linhas": 564,
    "dominio": "components/kit-builder",
    "hooks_locais": [
     "useKitTemplates"
@@ -9533,7 +9533,7 @@
     "MockupResultCard"
    ],
    "export_default": null,
-   "linhas": 443,
+   "linhas": 448,
    "dominio": "components/mockup",
    "hooks_locais": [
     "useReducedMotion"
@@ -9829,7 +9829,7 @@
     "NoveltyProductGrid"
    ],
    "export_default": null,
-   "linhas": 863,
+   "linhas": 865,
    "dominio": "components/novelties",
    "hooks_locais": [
     "useAuth",
@@ -11831,7 +11831,7 @@
     "ClientPicker"
    ],
    "export_default": null,
-   "linhas": 124,
+   "linhas": 132,
    "dominio": "components/quotes",
    "hooks_locais": [],
    "tabelas": [],
@@ -12620,7 +12620,7 @@
     "ReplenishmentProductGrid"
    ],
    "export_default": null,
-   "linhas": 435,
+   "linhas": 436,
    "dominio": "components/replenishments",
    "hooks_locais": [
     "useComparisonStore",
@@ -13725,7 +13725,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 26,
+   "usado_por": 25,
    "orfao": false
   },
   {
@@ -16318,7 +16318,7 @@
     "KitBuilderPage"
    ],
    "export_default": "KitBuilderPage",
-   "linhas": 342,
+   "linhas": 316,
    "dominio": "pages/kit-builder",
    "hooks_locais": [
     "useKitBuilderPageState",

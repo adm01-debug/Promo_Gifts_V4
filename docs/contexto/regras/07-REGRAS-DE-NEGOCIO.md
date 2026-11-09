@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `defe294073` · branch `main` · 2026-11-09 15:26 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `944ff2dd03` · branch `main` · 2026-11-09 15:35 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3482,10 +3482,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   return v === null ? '—' : `${v}/100`;
   ```
-- **commitApply(s: Suggestion, composition: KitAIComposition, requestedQuantity?: number,)** — `src/components/kit-builder/KitAIPromptDialog.tsx`
-  ```
-  onApply(s, composition, requestedQuantity); setOpen(false); clearForm(); toast.success('Composição aplicada — revise variantes, estoque e valores antes de continuar.');
-  ```
 - **shouldRenderKitStockForecast(status: KitStockStatus)** — `src/components/kit-builder/KitSummary.tsx`
   ```
   return status === 'available' || status === 'unavailable';
@@ -6044,7 +6040,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Erro ao adicionar localização | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
 | Erro ao associar técnica | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
 | Erro ao atualizar componente | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
-| … +976 linhas — lista completa em `context.json` | |
+| … +975 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6857,4 +6853,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | // PERF-2026-08-19: Pre-filtra para apenas produtos VISIVEIS (virtualizados) + | `src/components/products/VirtualizedProductGrid.tsx` |
 | ANTI N+1: prefetch batch de mv_stock_velocity apenas para produtos visiveis | `src/components/products/VirtualizedProductGrid.tsx` |
 | 2. scrollTo(0) -> SOMENTE quando scrollResetKey muda (filter/sort/viewMode) | `src/components/products/VirtualizedProductGrid.tsx` |
-| … +1154 linhas — lista completa em `context.json` | |
+| … +1152 linhas — lista completa em `context.json` | |
