@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "3b03ad11884cb1d416d273ca8a0c8a7b2dd72406",
+  "sha": "908f30abba7b3fa1b46583ceae3cd0eaee872500",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 18:04 UTC",
-  "files_total": 9184,
-  "code_files": 7871,
-  "code_lines": 1055886
+  "generated_at": "2026-11-09 18:28 UTC",
+  "files_total": 9186,
+  "code_files": 7873,
+  "code_lines": 1055915
  },
  "version": "1.3.2",
- "facts_hash": "6cea089e6c774729",
+ "facts_hash": "ac35354854613386",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1173,7 +1173,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3237,
+   ".sql": 3239,
    ".ts": 2631,
    ".tsx": 1691,
    ".mjs": 303,
@@ -87640,8 +87640,8 @@
     "src": "supabase/migrations-snapshot/SCHEMA_LIVE.sql"
    },
    "vw_products_min_quantity": {
-    "body": "SELECT \"p\".\"id\", \"p\".\"sku\", \"p\".\"name\", \"p\".\"category_id\", \"c\".\"name\" AS \"category_name\", \"c\".\"min_order_quantity\" AS \"category_min\", \"p\".\"min_order_quantity\" AS \"product_override\", COALESCE(\"p\".\"min_order_quantity\", \"c\".\"min_order_quantity\", 1) AS \"effective_min_quantity\", CASE WHEN (\"p\".\"min_order_quantity\" IS NOT NULL) THEN 'product_override'::\"text\" WHEN (\"c\".\"min_order_quantity\" IS NOT NULL) THEN 'category_default'::\"text\" ELSE 'system_default'::\"text\" END AS \"min_quantity_source\", \"p\".\"sale_price\", \"p\".\"is_active\" FROM (\"public\".\"products\" \"p\" LEFT JOIN \"public\".\"categories\" \"c\" ON ((\"p\" …",
-    "src": "supabase/migrations-snapshot/SCHEMA_LIVE.sql"
+    "body": "SELECT p.id, p.sku, p.name, p.category_id, c.name AS category_name, c.min_order_quantity AS category_min, p.min_order_quantity AS product_override, COALESCE(p.min_order_quantity, c.min_order_quantity, 1) AS effective_min_quantity, CASE WHEN p.min_order_quantity IS NOT NULL THEN 'product_override'::text WHEN c.min_order_quantity IS NOT NULL THEN 'category_default'::text ELSE 'system_default'::text END AS min_quantity_source, p.sale_price, p.is_active FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.is_active = true",
+    "src": "supabase/migrations/20261108030100_ft079_view_products_min_quantity.sql"
    },
    "vw_products_packaging_info": {
     "body": "SELECT p.id, p.sku, p.supplier_reference, p.name, p.product_type, p.shape_type, p.height_cm, p.width_cm, p.length_cm, p.diameter_cm, p.weight_g, CASE p.shape_type WHEN 'cylindrical'::text THEN ((('ø'::text || COALESCE(p.diameter_cm::text, '?'::text)) || 'x'::text) || COALESCE(p.height_cm::text, '?'::text)) || 'cm'::text ELSE ((((COALESCE(p.width_cm::text, '?'::text) || 'x'::text) || COALESCE(p.height_cm::text, '?'::text)) || 'x'::text) || COALESCE(p.length_cm::text, '?'::text)) || 'cm'::text END AS dimensoes, (EXISTS ( SELECT 1 FROM product_included_packagings pip WHERE pip.product_id = p.id A …",
@@ -90977,6 +90977,7 @@
    "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql",
    "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql",
    "supabase/migrations/20261108020000_p09_reconcile_ledger_schema_migrations.sql",
+   "supabase/migrations/20261108030100_ft079_view_products_min_quantity.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260916202000_rollback.sql",
@@ -91025,6 +91026,7 @@
    "supabase/rollbacks/20261107180000_rollback.sql",
    "supabase/rollbacks/20261108001500_rollback.sql",
    "supabase/rollbacks/20261108020000_rollback.sql",
+   "supabase/rollbacks/20261108030100_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -140252,8 +140254,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3048,
-   "lines": 219996,
+   "files": 3049,
+   "lines": 220022,
    "tables": [
     "...",
     "admin_audit_log",
@@ -140351,8 +140353,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 49,
-   "lines": 1800,
+   "files": 50,
+   "lines": 1803,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -140407,6 +140409,7 @@
     "supabase/rollbacks/20261107180000_rollback.sql",
     "supabase/rollbacks/20261108001500_rollback.sql",
     "supabase/rollbacks/20261108020000_rollback.sql",
+    "supabase/rollbacks/20261108030100_rollback.sql",
     "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql"
    ]
   },
@@ -310455,8 +310458,8 @@
     "src": "supabase/migrations-snapshot/SCHEMA_LIVE.sql"
    },
    "vw_products_min_quantity": {
-    "body": "SELECT \"p\".\"id\", \"p\".\"sku\", \"p\".\"name\", \"p\".\"category_id\", \"c\".\"name\" AS \"category_name\", \"c\".\"min_order_quantity\" AS \"category_min\", \"p\".\"min_order_quantity\" AS \"product_override\", COALESCE(\"p\".\"min_order_quantity\", \"c\".\"min_order_quantity\", 1) AS \"effective_min_quantity\", CASE WHEN (\"p\".\"min_order_quantity\" IS NOT NULL) THEN 'product_override'::\"text\" WHEN (\"c\".\"min_order_quantity\" IS NOT NULL) THEN 'category_default'::\"text\" ELSE 'system_default'::\"text\" END AS \"min_quantity_source\", \"p\".\"sale_price\", \"p\".\"is_active\" FROM (\"public\".\"products\" \"p\" LEFT JOIN \"public\".\"categories\" \"c\" ON ((\"p\" …",
-    "src": "supabase/migrations-snapshot/SCHEMA_LIVE.sql"
+    "body": "SELECT p.id, p.sku, p.name, p.category_id, c.name AS category_name, c.min_order_quantity AS category_min, p.min_order_quantity AS product_override, COALESCE(p.min_order_quantity, c.min_order_quantity, 1) AS effective_min_quantity, CASE WHEN p.min_order_quantity IS NOT NULL THEN 'product_override'::text WHEN c.min_order_quantity IS NOT NULL THEN 'category_default'::text ELSE 'system_default'::text END AS min_quantity_source, p.sale_price, p.is_active FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.is_active = true",
+    "src": "supabase/migrations/20261108030100_ft079_view_products_min_quantity.sql"
    },
    "vw_products_packaging_info": {
     "body": "SELECT p.id, p.sku, p.supplier_reference, p.name, p.product_type, p.shape_type, p.height_cm, p.width_cm, p.length_cm, p.diameter_cm, p.weight_g, CASE p.shape_type WHEN 'cylindrical'::text THEN ((('ø'::text || COALESCE(p.diameter_cm::text, '?'::text)) || 'x'::text) || COALESCE(p.height_cm::text, '?'::text)) || 'cm'::text ELSE ((((COALESCE(p.width_cm::text, '?'::text) || 'x'::text) || COALESCE(p.height_cm::text, '?'::text)) || 'x'::text) || COALESCE(p.length_cm::text, '?'::text)) || 'cm'::text END AS dimensoes, (EXISTS ( SELECT 1 FROM product_included_packagings pip WHERE pip.product_id = p.id A …",
@@ -465379,6 +465382,10 @@
    "path": "supabase/migrations/20261108020000_p09_reconcile_ledger_schema_migrations.sql",
    "lines": 455
   },
+  "supabase/migrations/20261108030100_ft079_view_products_min_quantity.sql": {
+   "path": "supabase/migrations/20261108030100_ft079_view_products_min_quantity.sql",
+   "lines": 26
+  },
   "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql": {
    "path": "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "lines": 65,
@@ -465580,6 +465587,10 @@
   "supabase/rollbacks/20261108020000_rollback.sql": {
    "path": "supabase/rollbacks/20261108020000_rollback.sql",
    "lines": 441
+  },
+  "supabase/rollbacks/20261108030100_rollback.sql": {
+   "path": "supabase/rollbacks/20261108030100_rollback.sql",
+   "lines": 3
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -484393,10 +484404,20 @@
   }
  },
  "git": {
-  "sha": "3b03ad11884cb1d416d273ca8a0c8a7b2dd72406",
+  "sha": "908f30abba7b3fa1b46583ceae3cd0eaee872500",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "908f30a",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "feat: versionar view vw_products_min_quantity (FT-079) (#3264)",
+    "files": [
+     "supabase/migrations/20261108030100_ft079_view_products_min_quantity.sql",
+     "supabase/rollbacks/20261108030100_rollback.sql"
+    ]
+   },
    {
     "sha": "3b03ad1",
     "date": "2026-11-09",
@@ -484684,17 +484705,6 @@
      "scripts/test-approved-plan-database.sh",
      "src/hooks/kit-builder/useKitMinQuantityValidation.ts"
     ]
-   },
-   {
-    "sha": "ae1782f",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "docs(analise-prs): relatórios definitivos — ciclo merge-prs claude_04 (#3318)",
-    "files": [
-     "analise-prs/RELATORIO_DEFINITIVO.md",
-     "analise-prs/RELATORIO_DOSSIES.md",
-     "analise-prs/RELATORIO_META_CUMPRIDA_v2.md"
-    ]
    }
   ],
   "hot_files": [
@@ -484743,6 +484753,14 @@
     2
    ],
    [
+    "supabase/migrations/20261108030100_ft079_view_products_min_quantity.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261108030100_rollback.sql",
+    1
+   ],
+   [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     1
    ],
@@ -484768,14 +484786,6 @@
    ],
    [
     "src/components/mockup/MockupResultCard.tsx",
-    1
-   ],
-   [
-    "src/components/novelties/NoveltyProductGrid.tsx",
-    1
-   ],
-   [
-    "src/components/quotes/ClientPicker.tsx",
     1
    ]
   ]

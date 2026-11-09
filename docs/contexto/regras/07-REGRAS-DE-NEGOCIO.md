@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3b03ad1188` · branch `main` · 2026-11-09 18:04 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `908f30abba` · branch `main` · 2026-11-09 18:28 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3245,7 +3245,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `vw_products_by_date` | `SELECT "cd"."id" AS "date_id", "cd"."name" AS "date_name", "cd"."date_day", "cd"."date_month", "cd"."target_audience", "cd"."campaign_start_days", "cd"."campaign_end_days", "p"."id" AS "product_id", "p"."name" AS "product_name", "p"."sku", "c"."name" AS "category_name", "pcd"."is_featured", "pcd"."r …` |
 | `vw_products_by_property_category` | `SELECT "pd"."category", "count"(DISTINCT "pp"."product_id") AS "product_count", "count"("pp"."id") AS "property_count", "array_agg"(DISTINCT "pd"."name_pt" ORDER BY "pd"."name_pt") AS "properties_in_category" FROM ("public"."property_definitions" "pd" JOIN "public"."product_properties" "pp" ON (("pd …` |
 | `vw_products_commercial_packing` | `SELECT "p"."id", "p"."sku", "p"."name", "p"."slug", "p"."packing_type", "p"."packing_classification", "p"."has_gift_box", "p"."sale_price", "p"."cost_price", "p"."category_id", "c"."name" AS "category_name", "c"."slug" AS "category_slug", "p"."supplier_id", "s"."name" AS "supplier_name", "p"."primar …` |
-| `vw_products_min_quantity` | `SELECT "p"."id", "p"."sku", "p"."name", "p"."category_id", "c"."name" AS "category_name", "c"."min_order_quantity" AS "category_min", "p"."min_order_quantity" AS "product_override", COALESCE("p"."min_order_quantity", "c"."min_order_quantity", 1) AS "effective_min_quantity", CASE WHEN ("p"."min_order …` |
+| `vw_products_min_quantity` | `SELECT p.id, p.sku, p.name, p.category_id, c.name AS category_name, c.min_order_quantity AS category_min, p.min_order_quantity AS product_override, COALESCE(p.min_order_quantity, c.min_order_quantity, 1) AS effective_min_quantity, CASE WHEN p.min_order_quantity IS NOT NULL THEN 'product_override'::t …` |
 | `vw_products_packaging_info` | `SELECT p.id, p.sku, p.supplier_reference, p.name, p.product_type, p.shape_type, p.height_cm, p.width_cm, p.length_cm, p.diameter_cm, p.weight_g, CASE p.shape_type WHEN 'cylindrical'::text THEN ((('ø'::text \|\| COALESCE(p.diameter_cm::text, '?'::text)) \|\| 'x'::text) \|\| COALESCE(p.height_cm::text, '?': …` |
 | `vw_products_pending_variants` | `SELECT "s"."name" AS "fornecedor", "s"."code" AS "supplier_code", "p"."id" AS "product_id", "p"."supplier_reference", "p"."name" AS "product_name", "p"."is_active", ("p"."created_at")::"date" AS "criado_em", ("p"."updated_at")::"date" AS "atualizado_em", ( SELECT "spr"."status" FROM "public"."suppli …` |
 | `vw_products_seo_status` | `SELECT p.id, p.name, p.sku, p.supplier_reference, p.slug, s.name AS supplier_name, CASE WHEN p.slug IS NOT NULL AND LENGTH(TRIM(p.slug)) > 0 THEN '✅' ELSE '❌' END AS has_slug, CASE WHEN p.meta_title IS NOT NULL AND LENGTH(TRIM(p.meta_title)) > 0 THEN '✅' ELSE '❌' END AS has_meta_title, CASE WHEN p.m …` |

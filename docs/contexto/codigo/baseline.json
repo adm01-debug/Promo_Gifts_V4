@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3b03ad11884cb1d416d273ca8a0c8a7b2dd72406",
+  "commit": "908f30abba7b3fa1b46583ceae3cd0eaee872500",
   "branch": "main",
-  "data_commit": "2026-11-09T15:03:59-03:00",
+  "data_commit": "2026-11-09T15:14:04-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "908f30a",
+    "data": "2026-11-09",
+    "assunto": "feat: versionar view vw_products_min_quantity (FT-079) (#3264)"
+   },
    {
     "sha": "3b03ad1",
     "data": "2026-11-09",
@@ -126,14 +131,9 @@
     "sha": "16f4af2",
     "data": "2026-11-09",
     "assunto": "fix(baseline): atualizar .as-assertions-baseline.json para arquivos kit-builder (#3342)"
-   },
-   {
-    "sha": "5a3f679",
-    "data": "2026-11-09",
-    "assunto": "fix(audit): registrar fn_check_item_fits e vw_products_min_quantity no catálogo Supabase (#3340)"
    }
   ],
-  "arquivos_mudados_7d": 502,
+  "arquivos_mudados_7d": 504,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9264,
+  "arquivos_total": 9266,
   "arquivos_codigo": 4635,
   "linhas_codigo": 887574,
   "rotas": 138,
@@ -326,7 +326,7 @@
   "hooks": 416,
   "edge_functions": 111,
   "tabelas": 545,
-  "migrations": 3049,
+  "migrations": 3050,
   "cron_jobs": 120,
   "testes": 2202,
   "workflows": 94,
@@ -2891,7 +2891,6 @@
    "mv_material_group_stats",
    "sync_logs",
    "v_commemorative_dates_with_colors",
-   "vw_products_min_quantity",
    "xbz_image_import_staging"
   ],
   "tabelas_com_drift_migration_vs_types": [],
