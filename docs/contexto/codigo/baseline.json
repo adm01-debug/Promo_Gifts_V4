@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "908f30abba7b3fa1b46583ceae3cd0eaee872500",
+  "commit": "9a9c363e419e5a54c34f6cb387bc12f96649884d",
   "branch": "main",
-  "data_commit": "2026-11-09T15:14:04-03:00",
+  "data_commit": "2026-11-09T15:42:55-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "9a9c363",
+    "data": "2026-11-09",
+    "assunto": "feat(edge-deploy-log): recibo run 42660725884 — edge functions deploy"
+   },
    {
     "sha": "908f30a",
     "data": "2026-11-09",
@@ -126,11 +131,6 @@
     "sha": "d82bd6a",
     "data": "2026-11-09",
     "assunto": "docs: recibo deploy edge functions run 42609591614 (E66)"
-   },
-   {
-    "sha": "16f4af2",
-    "data": "2026-11-09",
-    "assunto": "fix(baseline): atualizar .as-assertions-baseline.json para arquivos kit-builder (#3342)"
    }
   ],
   "arquivos_mudados_7d": 504,
@@ -238,6 +238,10 @@
     "mudancas": 9
    },
    {
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "mudancas": 8
+   },
+   {
     "arquivo": "CHANGELOG.md",
     "mudancas": 7
    },
@@ -251,10 +255,6 @@
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 7
    },
    {
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 285
+    "commits": 284
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 19
+    "commits": 20
    },
    {
     "autor": "dependabot[bot]",

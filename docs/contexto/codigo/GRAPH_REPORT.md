@@ -1,7 +1,7 @@
 # Graph Report - Promo_Gifts_V4  (2026-11-09)
 
 ## Corpus Check
-- 5705 files · ~5,070,917 words
+- 5705 files · ~5,073,007 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 56 file(s) not represented in the graph (top: (none) 27, .css 10, .toml 6)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `908f30ab`
+- Built from commit: `9a9c363e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
