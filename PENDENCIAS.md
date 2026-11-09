@@ -1,8 +1,8 @@
 # PENDENCIAS.md — Workflows com falha não corrigível nesta sessão
 
 > Gerado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Atualizado em: 2026-11-09T00:45 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08, P-09 e causas exatas P-05/P-06; P-10 adicionado na validação de PR #3243; P-06 CORRIGIDO via PR #3245 merged d56979f6; P-11 e P-12 adicionados; P-13 adicionado — run pós-merge cancelado por runner saturation; P-14 adicionado — run Magazine Header stuck queued; P-15–P-18 adicionados — sessão claude_05, classificação completa de 30 runs is:failure)
+> Atualizado em: 2026-11-09T01:30 · Sessão: https://claude.ai/code/session_01SpCUng4CM8x7uJmxVjTD8k
+> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08, P-09 e causas exatas P-05/P-06; P-10 adicionado na validação de PR #3243; P-06 CORRIGIDO via PR #3245 merged d56979f6; P-11 e P-12 adicionados; P-13 adicionado — run pós-merge cancelado por runner saturation; P-14 adicionado — run Magazine Header stuck queued; P-15–P-18 adicionados — sessão claude_05, classificação completa de 30 runs is:failure; P-19 adicionado — drift sistêmico 220 índices out-of-band)
 
 ---
 
@@ -314,6 +314,25 @@
 
 ---
 
+### P-19 · Drift sistêmico de índices out-of-band (220 índices sem migration)
+- **Descoberto em:** Sessão https://claude.ai/code/session_01SpCUng4CM8x7uJmxVjTD8k · 2026-11-09T00:36Z
+- **Banco:** `doufsxqlfjyuvxuezpln` (397 tabelas, `quotes` = 7 linhas)
+- **Causa raiz sistêmica:** Detector E12 (`db-schema-drift-check.yml` step "Ledger parity") compara versões do ledger de migrations, **não** DDL reais (`pg_indexes`). Resultado: 220 índices criados out-of-band em produção nunca são detectados porque o step falha por `local_only=1144` (P-02) antes de chegar ao diff de DDL.
+- **Evidência (pg_indexes em `doufsxqlfjyuvxuezpln`):**
+  - Total `public.*`: 1.199 índices
+  - 449 implícitos (PK + UNIQUE constraints)
+  - 530 com referência a migration rastreável
+  - 220 out-of-band: criados diretamente em produção sem migration
+- **Triagem completa:** `/mnt/project-files/p11-indice-triage.md`
+- **Impacto:** Shadow DB (Supabase Preview) fica sem os 220 índices → queries lentas em preview; produção não afetada.
+- **Ações necessárias (regra #8 — aguarda Juca05):**
+  1. Fix detector E12: PR #3290 em draft (adiciona step `pg_indexes` que roda antes do "Ledger parity")
+  2. Migrations espelho em lote: `CREATE INDEX IF NOT EXISTS` para os 220 índices
+  3. Dispatch `db-apply-migration.yml` (DDL em produção — REGRA #8)
+- **Risco:** Baixo em produção; médio em qualidade de CI (shadow DB degradado).
+
+---
+
 ## Resumo por categoria de bloqueio
 
 | Código | Descrição | Responsável |
@@ -333,7 +352,7 @@
 | CANCEL-STUCK | Cancel solicitado mas nao processado pelo GitHub; risco de failure se runner disponivel | PO — adicionar secrets ou monitorar run |
 | LABEL-MISSING | PR > 50 arquivos sem label `large-pr-approved` | PO — adicionar label ou dividir PR |
 | RATCHET-FAIL | Ratchet de qualidade aumentado por novo código | Agente/Dev — corrigir unused local na branch |
-| STALE-BRANCH | Falhas em commits intermediários de branch squash-mergeada | Nenhuma — histórico imutável; fix em main |
+| STALE-BRANCH | Falhas em commits intermediários de branch squash-mergeada | Nenhuma — histórico imutável |
 
 | Item | Categoria | Urgência |
 |---|---|---|
@@ -355,3 +374,4 @@
 | P-16 (ts-unused-ratchet branch fix-price-rounding) | RATCHET-FAIL — 1 unused local | Baixa — agente da sessão `01N1ArYR3CFaoFfXHZNhsqHq` corrige |
 | P-17 (stale branch intermediary failures) | STALE-BRANCH — histórico imutável de branch morta | Nenhuma — código correto em main |
 | P-18 (required-checks + deploy-gates cascata P-12) | CASCATA (P-12) | Média — automatico após P-12 resolvido |
+| P-19 (drift sistêmico de índices out-of-band) | DRIFT-INDEX — 220 índices sem migration; detector E12 silencioso | Média — PR #3290 (draft, regra #8) + migrations espelho em lote |
