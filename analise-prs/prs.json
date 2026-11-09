@@ -20,10 +20,10 @@
     {"number": 3346, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_CI", "motivo": "DRAFT + CI queued (runner saturation)", "titulo": "fix(tests): corrige regressões vitest onLogoRemove/consumeUnloadBackup/goToStep"},
     {"number": 3345, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_CI", "motivo": "DRAFT + CI queued (runner saturation)", "titulo": "fix(e2e): smoke tests 03b e magazine-preview sticky"},
     {"number": 3344, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_CI", "motivo": "DRAFT + precisa rebase após #3343 (conflito .file-size-baseline.json)", "titulo": "fix(tests): corrige TypeError consumeUnloadBackup e atualiza baseline"},
-    {"number": 3339, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_CI", "motivo": "CI queued (runner saturation)", "titulo": "test: alinhar regressões da suíte ao Kit Builder"},
+    {"number": 3339, "draft": false, "user": "adm01-debug", "veredito": "NAO_MERGEAR", "motivo": "Gate Final=FAILURE — Gate 1.9 file-size regression (598/774/563 vs baseline 577/761/553 no SHA base 16f4af23, antes do merge #3343). codex branch — REGRA #10 proíbe push.", "titulo": "test: alinhar regressões da suíte ao Kit Builder"},
     {"number": 3334, "draft": false, "user": "dependabot[bot]", "veredito": "AGUARDA_PO", "motivo": "Major version bump Sentry 8→11 (breaking changes)", "titulo": "chore(deps): bump @sentry/react from 8.55.2 to 11.11.0"},
     {"number": 3333, "draft": false, "user": "dependabot[bot]", "veredito": "AGUARDA_PO", "motivo": "Major version bump framer-motion 11→14 (breaking changes)", "titulo": "chore(deps): bump framer-motion from 11.18.2 to 14.10.x"},
-    {"number": 3332, "draft": false, "user": "dependabot[bot]", "veredito": "AGUARDA_CI", "motivo": "CI queued (runner saturation) — dev group patch/minor bump", "titulo": "chore(deps-dev): bump the development-all group across 1 directory"},
+    {"number": 3332, "draft": false, "user": "dependabot[bot]", "veredito": "NAO_MERGEAR", "motivo": "Gate Final=FAILURE — npm ci ERESOLVE: eslint@10.14.0 incompatível com eslint-plugin-jsx-a11y@6.10.2 (suporta apenas eslint ≤9). Gates 0.5/1/2 falham. Dependabot branch — REGRA #10 proíbe push.", "titulo": "chore(deps-dev): bump the development-all group across 1 directory"},
     {"number": 3331, "draft": false, "user": "dependabot[bot]", "veredito": "AGUARDA_PO", "motivo": "Major version bump date-fns 3→4 (breaking API changes)", "titulo": "chore(deps): bump date-fns from 3.6.0 to 4.4.0"},
     {"number": 3330, "draft": false, "user": "dependabot[bot]", "veredito": "AGUARDA_PO", "motivo": ".github/workflows/ — REGRA proíbe toque em CI sem PO", "titulo": "chore(ci): bump github/codeql-action/init from 4.39.1"},
     {"number": 3329, "draft": false, "user": "dependabot[bot]", "veredito": "AGUARDA_PO", "motivo": ".github/workflows/ — REGRA proíbe toque em CI sem PO", "titulo": "chore(ci): bump supabase/setup-cli from 3.0.1 to 3.2.0"},
@@ -52,16 +52,16 @@
     {"number": 3210, "draft": false, "user": "github-actions[bot]", "veredito": "AGUARDA_CI", "motivo": "action_required (pending deployment approval) + migration suspeita", "titulo": "chore(main): release 1.9.0"},
     {"number": 3203, "draft": false, "user": "adm01-debug", "veredito": "NAO_MERGEAR", "motivo": "Gate Final=FAILURE (merge-reports, E2E cancelled), base desatualizada 9b2644b2", "titulo": "fix: scripts — static-pass, exit codes e regressão TypeScript"},
     {"number": 3179, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + toca .github/workflows/ (preflight db-apply-migration)", "titulo": "fix: corrige preflight db-apply-migration"},
-    {"number": 3137, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_CI", "motivo": "CI queued (runner saturation) — fix(ci) false negative E2E", "titulo": "fix(ci): impedir falso negativo no detector E2E compartilhado"},
+    {"number": 3137, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "Altera 8 .github/workflows/ — REGRA proíbe merge de CI sem aprovação PO. Evidência: git diff --name-only confirmado nesta sessão.", "titulo": "fix(ci): impedir falso negativo no detector E2E compartilhado"},
     {"number": 3129, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "Altera .github/workflows/ (8 workflows para reduzir pressão runners)", "titulo": "ci(e2e): reduzir pressão dos runners sem perder cobertura"},
-    {"number": 3127, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_CI", "motivo": "CI queued (runner saturation) — fix(ci) core E2E", "titulo": "fix(ci): estabiliza o núcleo E2E sem ocultar dívida de cobertura"}
+    {"number": 3127, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "Altera 3 .github/workflows/ + playwright.config.ts + src — REGRA proíbe merge de CI sem aprovação PO. Evidência: git diff --name-only confirmado nesta sessão.", "titulo": "fix(ci): estabiliza o núcleo E2E sem ocultar dívida de cobertura"}
   ],
   "contagem": {
     "MERGEADA_AGENTE": 3,
     "MERGEADA_EXTERNA": 2,
-    "NAO_MERGEAR": 2,
-    "AGUARDA_PO": 22,
-    "AGUARDA_CI": 11,
+    "NAO_MERGEAR": 4,
+    "AGUARDA_PO": 26,
+    "AGUARDA_CI": 5,
     "TOTAL_OPEN": 38
   }
 }

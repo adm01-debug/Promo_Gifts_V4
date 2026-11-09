@@ -36,6 +36,8 @@
 | **#3228** | e2e-color-swatch `.github/workflows/` | BAIXO | CI change |
 | **#3179** | preflight `.github/workflows/` | BAIXO | CI change |
 | **#3129** | reduce runner pressure (8 workflows) | BAIXO | CI change — reduz saturação de runners |
+| **#3137** | fix(ci): false negative E2E detector | BAIXO | Altera 8 `.github/workflows/` — confirmado nesta sessão |
+| **#3127** | fix(ci): core E2E stabilization | BAIXO | Altera 3 `.github/workflows/` + playwright.config.ts — confirmado nesta sessão |
 | **#3330** | codeql CI action | BAIXO | `.github/workflows/` Dependabot |
 | **#3329** | supabase/setup-cli | BAIXO | `.github/workflows/` Dependabot |
 | **#3328** | codeql/analyze | BAIXO | `.github/workflows/` Dependabot |
@@ -47,6 +49,8 @@
 |---|---|---|---|
 | **#3277** | `87c78600` | Gate Final=FAILURE, merge-reports=failure | Rebase em main `78729fc11038` → CI verde |
 | **#3203** | `1aad6831` | Gate Final=FAILURE, E2E cancelled | Rebase em main `78729fc11038` → CI verde |
+| **#3339** | `6f8930b4` | Gate Final=FAILURE, Gate 1.9 file-size (598/774/563 vs baseline 577/761/553) | Branch codex — REGRA #10 proíbe push. Autor precisa rebasar em main `78729fc11038`. |
+| **#3332** | `915e83a9` | Gate Final=FAILURE, npm ci ERESOLVE: eslint@10 incompatível com eslint-plugin-jsx-a11y@6.10.2 | Branch Dependabot — REGRA #10 proíbe push. Dependabot precisa abrir novo PR compatível. |
 
 ---
 
@@ -80,14 +84,11 @@ Todas bloqueadas por **runner saturation** desde 12:27Z — GitHub Actions pool 
 | **#3346** | fix(tests): vitest regressions | ✓ | DRAFT + CI queued |
 | **#3345** | fix(e2e): smoke tests | ✓ | DRAFT + CI queued |
 | **#3344** | fix(tests): consumeUnloadBackup | ✓ | DRAFT + CI queued + rebase após #3343 |
-| **#3339** | test: Kit Builder align | — | CI queued |
-| **#3332** | deps-dev bump patch/minor | — | CI queued |
 | **#3278** | sentinel grandfather | ✓ | DRAFT + CI queued |
 | **#3210** | release 1.9.0 | — | action_required (deploy approval) |
-| **#3137** | fix(ci): false negative E2E | — | CI queued |
-| **#3127** | fix(ci): core E2E | — | CI queued |
 
-Quando os runners liberarem e Gate Final verde em cada PR: #3339, #3332, #3137, #3127 podem ser mergeados autonomamente sem aprovação adicional.
+**#3339 e #3332** → reclassificados NAO_MERGEAR (Gate Final=FAILURE com falhas reais — ver tabela acima).  
+**#3137 e #3127** → reclassificados AGUARDA_PO (tocam `.github/workflows/` — confirmado por `git diff --name-only` nesta sessão).
 
 ---
 
@@ -97,9 +98,9 @@ Quando os runners liberarem e Gate Final verde em cada PR: #3339, #3332, #3137, 
 |---|---|---|
 | MERGEADA_AGENTE | 3 | #3337, #3340, #3343 |
 | MERGEADA_EXTERNA | 2 | #3341, #3342 |
-| NAO_MERGEAR | 2 | #3277, #3203 |
-| AGUARDA_PO | 26 | (listadas acima) |
-| AGUARDA_CI | 10 | (listadas acima) |
+| NAO_MERGEAR | 4 | #3277, #3203, #3339, #3332 |
+| AGUARDA_PO | 26 | (listadas acima, inclui #3137 e #3127) |
+| AGUARDA_CI | 5 | #3346, #3345, #3344, #3278, #3210 |
 | **TOTAL OPEN** | **38** | ✓ 38 analisadas |
 
 ---
