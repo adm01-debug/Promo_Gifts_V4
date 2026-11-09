@@ -1,5 +1,12 @@
 {
-  "generatedAt": "2026-09-03T17:47:02.094Z",
-  "totalErrors": 0,
-  "counts": {}
+  "generatedAt": "2026-11-09T01:35:14.876Z",
+  "totalErrors": 1,
+  "counts": {
+    "src/hooks/kit-builder/useKitMinQuantityValidation.ts": {
+      "@typescript-eslint/sort-type-constituents": 1
+    },
+    "src/pages/kit-builder/KitBuilderPage.tsx": {
+      "react-hooks/exhaustive-deps": 1
+    }
+  }
 }

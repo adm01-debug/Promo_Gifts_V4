@@ -20,6 +20,7 @@ import { newRequestId } from '@/lib/telemetry/requestId';
 import { validateKitStockForQuote } from '@/hooks/kit-builder/useKitStockValidation';
 import { validateKitPricesForQuote } from '@/hooks/kit-builder/useKitPriceValidation';
 import { validateKitMinQuantityForQuote } from '@/hooks/kit-builder/useKitMinQuantityValidation';
+import { validateKitFitsForQuote } from '@/hooks/kit-builder/useKitFitsValidation';
 
 export interface KitQuoteClient {
   client_cnpj?: string;
@@ -70,7 +71,12 @@ function readRetryReceipt(fingerprint: string): RetryableQuoteOperation | null {
       typeof value.kitGroupId === 'string' &&
       (value.sourceKitId === null || typeof value.sourceKitId === 'string')
     ) {
-      return { id: value.id, fingerprint, kitGroupId: value.kitGroupId, sourceKitId: value.sourceKitId };
+      return {
+        id: value.id,
+        fingerprint,
+        kitGroupId: value.kitGroupId,
+        sourceKitId: value.sourceKitId,
+      };
     }
   } catch {
     // Storage can be disabled by the browser. In-memory retry remains safe.
@@ -80,10 +86,7 @@ function readRetryReceipt(fingerprint: string): RetryableQuoteOperation | null {
 
 function writeRetryReceipt(operation: RetryableQuoteOperation): void {
   try {
-    globalThis.sessionStorage?.setItem(
-      operation.fingerprint,
-      JSON.stringify(operation),
-    );
+    globalThis.sessionStorage?.setItem(operation.fingerprint, JSON.stringify(operation));
   } catch {
     // An unavailable storage must not prevent a commercially valid submission.
   }
@@ -334,8 +337,8 @@ export function useKitBuilderQuote() {
         retryableRequestRef.current?.fingerprint === fingerprint ||
         (sourceKitId && retryableRequestRef.current?.fingerprint === unsavedFingerprint)
           ? retryableRequestRef.current
-          : readRetryReceipt(fingerprint) ??
-            (sourceKitId ? readRetryReceipt(unsavedFingerprint) : null);
+          : (readRetryReceipt(fingerprint) ??
+            (sourceKitId ? readRetryReceipt(unsavedFingerprint) : null));
       // A real source-kit change is a new operation. Only an initially absent
       // id may later become populated by autosave without changing identity.
       const recoverableOperation =
@@ -400,6 +403,14 @@ export function useKitBuilderQuote() {
         if (liveStock.status === 'unavailable') {
           throw new KitQuoteValidationError(
             `Estoque insuficiente em ${liveStock.alerts.length} item(ns). Revise o kit antes de continuar.`,
+          );
+        }
+
+        const liveFits = await validateKitFitsForQuote(kitState.box, kitState.items);
+        if (liveFits.status === 'violations') {
+          const names = liveFits.violations.map((v) => v.itemName).join(', ');
+          throw new KitQuoteValidationError(
+            `${liveFits.violations.length} item(ns) não cabem na embalagem selecionada: ${names}. Revise o kit antes de continuar.`,
           );
         }
       }
