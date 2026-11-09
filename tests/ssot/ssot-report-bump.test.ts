@@ -21,7 +21,10 @@ function makeSandbox(currentVersion = '2.0.0') {
     properties: { schemaVersion: { type: 'string', const: currentVersion } },
     required: ['schemaVersion'],
   };
-  writeFileSync(join(dir, 'schemas/ssot-report.schema.json'), JSON.stringify(schema, null, 2) + '\n');
+  writeFileSync(
+    join(dir, 'schemas/ssot-report.schema.json'),
+    JSON.stringify(schema, null, 2) + '\n',
+  );
 
   const emitter = `export const SCHEMA_VERSION = '${currentVersion}';\n`;
   writeFileSync(join(dir, 'scripts/ssot-report.mjs'), emitter);
@@ -48,24 +51,28 @@ describe('ssot-report-bump — CLI', () => {
 
   it('exige --kind válido', () => {
     const r = runBump(sandbox, ['--reason=motivo suficiente']);
-    expect(r.status).toBe(1);
+    expect(r.status).toBe(2);
     expect(r.stderr).toMatch(/--kind/);
   });
 
   it('exige --reason com pelo menos 8 caracteres', () => {
     const r = runBump(sandbox, ['--kind=patch', '--reason=curta']);
-    expect(r.status).toBe(1);
+    expect(r.status).toBe(2);
     expect(r.stderr).toMatch(/--reason/);
   });
 
   it('rejeita --kind fora de major|minor|patch', () => {
     const r = runBump(sandbox, ['--kind=hotfix', '--reason=motivo suficiente aqui']);
-    expect(r.status).toBe(1);
+    expect(r.status).toBe(2);
   });
 
   it('--dry retorna plano sem mutar arquivos', () => {
     const s0 = readFileSync(join(sandbox, 'schemas/ssot-report.schema.json'), 'utf8');
-    const r = runBump(sandbox, ['--kind=minor', '--reason=adicionando gate opcional novo', '--dry']);
+    const r = runBump(sandbox, [
+      '--kind=minor',
+      '--reason=adicionando gate opcional novo',
+      '--dry',
+    ]);
     expect(r.status).toBe(0);
     const plan = JSON.parse(r.stdout);
     expect(plan).toMatchObject({ dryRun: true, from: '2.0.0', to: '2.1.0', kind: 'minor' });

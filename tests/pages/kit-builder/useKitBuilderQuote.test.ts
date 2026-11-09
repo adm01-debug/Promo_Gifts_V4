@@ -112,6 +112,25 @@ describe('useKitBuilderQuote — payloads', () => {
     return mod.useKitBuilderQuote;
   }
 
+  function mockTransactionalQuoteResponses(...responses: Array<{ data: unknown; error: unknown }>) {
+    const rpc = vi.mocked(mock.client.rpc);
+    let transactionalCall = 0;
+    rpc.mockImplementation(async (fn, args) => {
+      mock.calls.rpc.push({ fn, args });
+      if (fn === 'create_kit_quote_transactional') {
+        return (
+          responses[transactionalCall++] ?? {
+            data: { id: 'mock-create_kit_quote_transactional-id' },
+            error: null,
+          }
+        );
+      }
+      if (fn === 'fn_check_item_fits') return { data: [], error: null };
+      return { data: { id: `mock-${fn}-id` }, error: null };
+    });
+    return rpc;
+  }
+
   it('inclui seller_id e chave de idempotência na RPC transacional', async () => {
     const useHook = await loadHook({ user: { id: USER_ID } });
     const { result } = renderHook(() => useHook());
@@ -199,7 +218,9 @@ describe('useKitBuilderQuote — payloads', () => {
       await result.current.handleAddToQuote(KIT_STATE, 3);
     });
 
-    expect(mock.calls.rpc.filter((call) => call.fn === 'create_kit_quote_transactional')).toHaveLength(0);
+    expect(
+      mock.calls.rpc.filter((call) => call.fn === 'create_kit_quote_transactional'),
+    ).toHaveLength(0);
     expect(validateKitStockForQuote).not.toHaveBeenCalled();
   });
 
@@ -212,7 +233,9 @@ describe('useKitBuilderQuote — payloads', () => {
       await result.current.handleAddToQuote(KIT_STATE, 3);
     });
 
-    expect(mock.calls.rpc.filter((call) => call.fn === 'create_kit_quote_transactional')).toHaveLength(0);
+    expect(
+      mock.calls.rpc.filter((call) => call.fn === 'create_kit_quote_transactional'),
+    ).toHaveLength(0);
     expect(validateKitStockForQuote).not.toHaveBeenCalled();
   });
 
@@ -389,13 +412,13 @@ describe('useKitBuilderQuote — payloads', () => {
 
   it('reutiliza a mesma operação, mas revalida estoque sem confirmação do ledger', async () => {
     const useHook = await loadHook({ user: { id: USER_ID } });
-    const rpc = vi.mocked(mock.client.rpc);
-    rpc
-      .mockResolvedValueOnce({ data: null, error: { message: 'Resposta perdida após commit' } })
-      .mockResolvedValueOnce({
+    const rpc = mockTransactionalQuoteResponses(
+      { data: null, error: { message: 'Resposta perdida após commit' } },
+      {
         data: { id: 'quote-retomado', quote_number: 'ORC-002' },
         error: null,
-      });
+      },
+    );
 
     const { result } = renderHook(() => useHook());
     await act(async () => {
@@ -420,10 +443,10 @@ describe('useKitBuilderQuote — payloads', () => {
       user: { id: USER_ID },
       selects: { kit_quote_requests: { quote_id: 'quote-confirmado' } },
     });
-    const rpc = vi.mocked(mock.client.rpc);
-    rpc
-      .mockResolvedValueOnce({ data: null, error: { message: 'Resposta perdida após commit' } })
-      .mockResolvedValueOnce({ data: { id: 'quote-confirmado' }, error: null });
+    const rpc = mockTransactionalQuoteResponses(
+      { data: null, error: { message: 'Resposta perdida após commit' } },
+      { data: { id: 'quote-confirmado' }, error: null },
+    );
 
     const { result } = renderHook(() => useHook());
     await act(async () => {
@@ -435,15 +458,17 @@ describe('useKitBuilderQuote — payloads', () => {
 
     expect(dbInvoke).toHaveBeenCalledTimes(1);
     expect(validateKitStockForQuote).toHaveBeenCalledTimes(1);
-    expect(rpc.mock.calls.filter(([fn]) => fn === 'create_kit_quote_transactional')).toHaveLength(2);
+    expect(rpc.mock.calls.filter(([fn]) => fn === 'create_kit_quote_transactional')).toHaveLength(
+      2,
+    );
   });
 
   it('não duplica a operação quando o autosave cria o kit entre timeout e retry', async () => {
     const useHook = await loadHook({ user: { id: USER_ID } });
-    const rpc = vi.mocked(mock.client.rpc);
-    rpc
-      .mockResolvedValueOnce({ data: null, error: { message: 'Resposta perdida após commit' } })
-      .mockResolvedValueOnce({ data: { id: 'quote-retomado' }, error: null });
+    const rpc = mockTransactionalQuoteResponses(
+      { data: null, error: { message: 'Resposta perdida após commit' } },
+      { data: { id: 'quote-retomado' }, error: null },
+    );
     const { result } = renderHook(() => useHook());
 
     await act(async () => {
@@ -462,7 +487,7 @@ describe('useKitBuilderQuote — payloads', () => {
 
   it('não grava nome, e-mail ou payload do orçamento no recibo de retry', async () => {
     const useHook = await loadHook({ user: { id: USER_ID } });
-    vi.mocked(mock.client.rpc).mockResolvedValueOnce({
+    mockTransactionalQuoteResponses({
       data: null,
       error: { message: 'Resposta perdida após commit' },
     });
@@ -487,10 +512,10 @@ describe('useKitBuilderQuote — payloads', () => {
 
   it('não reutiliza a operação de outro kit salvo com composição igual', async () => {
     const useHook = await loadHook({ user: { id: USER_ID } });
-    const rpc = vi.mocked(mock.client.rpc);
-    rpc
-      .mockResolvedValueOnce({ data: null, error: { message: 'Timeout' } })
-      .mockResolvedValueOnce({ data: { id: 'quote-B' }, error: null });
+    const rpc = mockTransactionalQuoteResponses(
+      { data: null, error: { message: 'Timeout' } },
+      { data: { id: 'quote-B' }, error: null },
+    );
     const { result } = renderHook(() => useHook());
     await act(async () => {
       await result.current.handleAddToQuote(KIT_STATE, 2, {}, 'kit-A');
@@ -500,8 +525,9 @@ describe('useKitBuilderQuote — payloads', () => {
     });
     const calls = rpc.mock.calls.filter(([fn]) => fn === 'create_kit_quote_transactional');
     expect(calls[1][1]?._request_id).not.toBe(calls[0][1]?._request_id);
-    expect((calls[1][1]?._quote as { tags: { source_custom_kit_id: string } }).tags.source_custom_kit_id)
-      .toBe('kit-B');
+    expect(
+      (calls[1][1]?._quote as { tags: { source_custom_kit_id: string } }).tags.source_custom_kit_id,
+    ).toBe('kit-B');
   });
 
   it('pula a revalidação apenas quando o ledger confirma o commit perdido', async () => {
@@ -509,13 +535,13 @@ describe('useKitBuilderQuote — payloads', () => {
       user: { id: USER_ID },
       selects: { kit_quote_requests: { quote_id: 'quote-retomado' } },
     });
-    const rpc = vi.mocked(mock.client.rpc);
-    rpc
-      .mockResolvedValueOnce({ data: null, error: { message: 'Resposta perdida após commit' } })
-      .mockResolvedValueOnce({
+    const rpc = mockTransactionalQuoteResponses(
+      { data: null, error: { message: 'Resposta perdida após commit' } },
+      {
         data: { id: 'quote-retomado', quote_number: 'ORC-002' },
         error: null,
-      });
+      },
+    );
 
     const { result } = renderHook(() => useHook());
     await act(async () => {
@@ -526,7 +552,9 @@ describe('useKitBuilderQuote — payloads', () => {
     });
 
     expect(validateKitStockForQuote).toHaveBeenCalledTimes(1);
-    expect(rpc.mock.calls.filter(([fn]) => fn === 'create_kit_quote_transactional')).toHaveLength(2);
+    expect(rpc.mock.calls.filter(([fn]) => fn === 'create_kit_quote_transactional')).toHaveLength(
+      2,
+    );
   });
 
   it('preserva tamanho e identidade de variante no payload de linha', async () => {
