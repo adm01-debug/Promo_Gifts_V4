@@ -175,8 +175,8 @@
       WHERE (is_active = true);
   ```
 - **Impacto:** Shadow DB fica sem índices → queries mais lentas em Preview; sem erro funcional; produção não afetada.
-- **Acao necessaria (PO/Dev):**
-  1. Criar migration `supabase/migrations/20260511235970_add_categories_indexes_drift.sql` com `CREATE INDEX IF NOT EXISTS` para cada um (idempotente — no-op em produção onde já existem)
+- **Ação necessária (PO/Dev):**
+  1. Criar migration com nome `20260511235970_add_categories_indexes_drift.sql` (pasta `supabase/migrations/`) com `CREATE INDEX IF NOT EXISTS` para cada um (idempotente — no-op em produção onde já existem)
   2. Abrir PR e aguardar CI verde
   3. Disparar `db-apply-migration.yml` com `version=20260511235970` (DDL em produção — REGRA #8)
 - **Risco:** Baixo — apenas performance de queries no Preview; produção inalterada
