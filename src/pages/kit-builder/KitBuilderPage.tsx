@@ -42,15 +42,9 @@ export default function KitBuilderPage() {
     state.wizardState.currentStep,
   );
   const handleExportPDF = () => {
-    // Printing is the browser-supported PDF path. It is intentionally explicit
-    // rather than a no-op "Exportar PDF" action while a server renderer is not
-    // part of this module's contract.
     window.print();
   };
 
-  // Restore unsaved edits from beforeunload backup once hydration finishes.
-  // Runs at most once per mount; avoids running during the hydration pass so
-  // loadKit doesn't race with the kit loader's own setState calls.
   const checkedBackupRef = useRef(false);
   useEffect(() => {
     if (state.isHydrating) return;
@@ -61,11 +55,9 @@ export default function KitBuilderPage() {
     if (!backup) return;
 
     const ageMs = Date.now() - backup.savedAt;
-    // Ignore backups older than 5 minutes — session likely ended intentionally.
     if (ageMs > 300_000) return;
 
     if (backup.fullState) {
-      // Case 1: same kit (or brand-new unsaved kit) — auto-restore silently.
       const sameKit =
         (!backup.kitId && !state.currentKitId) ||
         backup.kitId === state.currentKitId ||
@@ -73,18 +65,17 @@ export default function KitBuilderPage() {
 
       if (sameKit) {
         actions.restoreFromBackup(backup.fullState);
-        toast.info('Alterações restauradas', {
-          description: 'Suas edições não salvas foram recuperadas automaticamente.',
+        toast.info('Alteracoes restauradas', {
+          description: 'Suas edicoes nao salvas foram recuperadas automaticamente.',
           duration: 5_000,
         });
         return;
       }
 
-      // Case 2: different kit loaded — offer to switch and restore.
-      toast.warning('Edições não salvas de outro kit', {
-        description: 'Você fechou o Kit Maker com edições pendentes em outro kit.',
+      toast.warning('Edicoes nao salvas de outro kit', {
+        description: 'Voce fechou o Kit Maker com edicoes pendentes em outro kit.',
         action: {
-          label: 'Restaurar edições',
+          label: 'Restaurar edicoes',
           onClick: () => {
             actions.restoreFromBackup(backup.fullState!);
             toast.dismiss();
@@ -95,10 +86,9 @@ export default function KitBuilderPage() {
       return;
     }
 
-    // Legacy backup without fullState — navigate to DB version if available.
     if (!backup.kitId) return;
-    toast.warning('Alterações não salvas detectadas', {
-      description: 'Vocà fechou o Kit Maker com edições pendentes.',
+    toast.warning('Alteracoes nao salvas detectadas', {
+      description: 'Voce fechou o Kit Maker com edicoes pendentes.',
       action: {
         label: 'Reabrir kit',
         onClick: () => {
@@ -128,8 +118,6 @@ export default function KitBuilderPage() {
       const target = event.target as HTMLElement | null;
       const isTextEntry =
         target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.isContentEditable;
-      // Preserve native undo/redo while a user is editing text. Ctrl/Cmd+S
-      // remains available because it is an explicit save operation.
       if (isTextEntry && key !== 's') return;
       if (key === 's') {
         event.preventDefault();
@@ -372,7 +360,7 @@ export default function KitBuilderPage() {
               hasContent={!!state.kitState.box || state.kitState.items.length > 0}
             />
             <Button className="w-full" onClick={() => actions.goToStep('summary')}>
-              Abrir revisão do kit
+              Abrir revisao do kit
             </Button>
           </KitMobileSummaryBar>
         </>
