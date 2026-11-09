@@ -13,8 +13,8 @@ import {
   useKitUndoRedo,
   useTemplateSnapshot,
 } from '@/hooks/kit-builder';
-import type { BackupFullState } from '@/hooks/kit-builder/useKitAutoSave';
 import { useKitBuilderQuote, type KitQuoteClient } from '@/pages/kit-builder/useKitBuilderQuote';
+import type { BackupFullState } from '@/hooks/kit-builder/useKitAutoSave';
 import {
   calculateTotalKitPrice,
   type ExternalProductForKit,

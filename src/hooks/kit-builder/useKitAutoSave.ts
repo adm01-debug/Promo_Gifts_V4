@@ -28,11 +28,6 @@ import {
 const AUTO_SAVE_DELAY_MS = 5000;
 const LS_BACKUP_KEY_PREFIX = 'kit-builder-unload-backup';
 
-/**
- * Full restorable state saved on beforeunload. Unlike the detection snapshot
- * (which only holds IDs/quantities), this carries all display data needed to
- * re-hydrate the editor without a round-trip to the database.
- */
 export interface BackupFullState {
   name: string;
   kitType: KitType;
