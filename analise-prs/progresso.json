@@ -1,9 +1,10 @@
 {
   "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
   "branch": "claude_pink/sleepy-cannon-h000nc",
-  "pr_entrega": 2674,
-  "atualizado_em": "2026-11-09T16:30:00Z",
-  "main_sha_final": "6b859b0fbfa95e34493900cf0137402e95e46823",
+  "pr_entrega": [2674, 3355],
+  "atualizado_em": "2026-11-09T16:40:00Z",
+  "main_sha_final": "c1d47d13bee8089eb62e3c47db1b7b500dcf1042",
+  "main_sha_anterior": "6b859b0fbfa95e34493900cf0137402e95e46823",
   "mergeadas_por_agente_esta_sessao": [
     {"number": 3337, "sha_main_apos": "6933eb61", "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
     {"number": 3340, "titulo": "docs(analise-prs): atualiza progresso", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
@@ -23,6 +24,13 @@
     {"number": 3277, "motivo": "Gate Final=FAILURE fechada sem merge"},
     {"number": 3347, "motivo": "CI incompleto fechada sem merge"}
   ],
+  "fechadas_externas_pos_analise": [
+    {"number": 3129, "motivo": "nao aparece mais na lista de PRs abertas — fechada/mergeada externamente", "era": "AGUARDA_PO ci_workflows"},
+    {"number": 3137, "motivo": "nao aparece mais na lista de PRs abertas — fechada/mergeada externamente", "era": "AGUARDA_PO ci_workflows"},
+    {"number": 3274, "motivo": "nao aparece mais na lista de PRs abertas — fechada/mergeada externamente", "era": "AGUARDA_PO ci_workflows"},
+    {"number": 3290, "motivo": "nao aparece mais na lista de PRs abertas — fechada/mergeada externamente", "era": "AGUARDA_PO ci_workflows"},
+    {"number": 3350, "motivo": "nao aparece mais na lista de PRs abertas — fechada externamente", "era": "NAO_MERGEAR Gate 1=FAILURE"}
+  ],
   "supabase_producao": {
     "project_id": "doufsxqlfjyuvxuezpln",
     "products_count": 8321,
@@ -31,6 +39,15 @@
     "verificado_via": "mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__execute_sql (SELECT COUNT(*) FROM products WHERE deleted_at IS NULL)"
   },
   "gate_final_main_atual": {
+    "sha": "c1d47d13bee8089eb62e3c47db1b7b500dcf1042",
+    "run_id": 42652746997,
+    "check_run_id": 129290526546,
+    "status": "completed",
+    "conclusion": "success",
+    "started_at": "2026-11-09T16:27:03Z",
+    "completed_at": "2026-11-09T16:27:07Z"
+  },
+  "gate_final_main_anterior": {
     "sha": "6b859b0fbfa95e34493900cf0137402e95e46823",
     "run_id": 42648049808,
     "check_run_id": 129269658289,
@@ -42,27 +59,30 @@
     "MERGEADA_AGENTE": 4,
     "MERGEADA_EXTERNA": 7,
     "FECHADA_EXTERNA": 2,
+    "FECHADA_EXTERNA_POS_ANALISE": 5,
     "NAO_MERGEAR": 6,
-    "AGUARDA_CI": 1,
-    "AGUARDA_PO": 27,
+    "AGUARDA_PO": 23,
     "TOTAL_OPEN_RESTANTE": 29,
-    "TOTAL_ANALISADAS": 47,
-    "VERIFICADO_EXAUSTIVO": true
+    "TOTAL_ANALISADAS": 49,
+    "VERIFICADO_EXAUSTIVO": true,
+    "OPEN_PR_LIST_VERIFICADO_EM": "2026-11-09T16:40:00Z"
   },
   "prs_nao_mergear": [
-    {"number": 3203, "motivo": "MERGE_CONFLICT HTTP 405; Gate Final=SUCCESS check_run_id=128857128545"},
+    {"number": 3203, "motivo": "MERGE_CONFLICT (mergeable=CONFLICTING, mergeStateStatus=DIRTY)"},
     {"number": 3329, "motivo": "Gate 1+5=FAILURE + Migrations x Canonical=FAILURE"},
     {"number": 3330, "motivo": "CodeQL+Gate 1+Gate E23=FAILURE"},
     {"number": 3332, "motivo": "npm ci ERESOLVE eslint@10 + SSOT=FAILURE + E2E=FAILURE"},
     {"number": 3339, "motivo": "Gate 1=FAILURE file-size regression REGRA #10"},
-    {"number": 3350, "motivo": "Gate 1 Lint+TypeScript=FAILURE run_id=129233697044"}
+    {"number": 3355, "motivo": "PR de entrega desta sessao — NUNCA MERGEAR (REGRA delivery branch)"}
   ],
   "prs_aguarda_po": {
-    "count": 27,
+    "count": 23,
     "categorias": {
-      "ci_workflows": [3129, 3137, 3210, 3228, 3247, 3274, 3290, 3327, 3328],
-      "ddl_migration": [3214, 3243, 3250, 3251, 3255, 3256, 3261, 3263, 3264, 3265, 3273, 3279, 3284],
+      "ci_workflows": [3210, 3228, 3247, 3327, 3328, 3357],
+      "ddl_migration": [3179, 3214, 3243, 3250, 3251, 3255, 3256, 3261, 3263, 3264, 3265, 3273, 3279, 3284],
       "major_version_bumps": [3331, 3333, 3334]
-    }
+    },
+    "nota_ci_workflows": "3210 release-please BEHIND (precisa rebase + reviewer humano); 3357 draft UNSTABLE; 3228/3247/3327/3328 aguardam PO",
+    "nota_ddl_migration": "3179 draft sem Gate Final; demais aguardam workflow_dispatch por PO (REGRA #8)"
   }
 }

@@ -1,22 +1,28 @@
-## Baseline main SHA — 2026-11-09
+## Main SHA baseline — 2026-11-09
 
-SHA atual: 6b859b0fbfa95e34493900cf0137402e95e46823
-Commit: fix(migrations): idempotencia em RLS deny-all e particoes 2027 (PR #3257, merged by agente)
-Data: 2026-11-09
+SHA atual: c1d47d13bee8089eb62e3c47db1b7b500dcf1042
+SHA anterior (sessao anterior): 6b859b0fbfa95e34493900cf0137402e95e46823
 
-Gate Final check_run_id: 129269658289
-Gate Final conclusao: success
-Gate Final run_id: 42648049808
+Main avancou externamente: commits adicionados apos merge #3257 (sha_main_apos 6b859b0f).
+Novo SHA confirmado como base de PR #3357 (criada por adm01-debug em 2026-11-09).
 
-Gates confirmados neste SHA:
-- Gate 0 SSOT: id=129266551386, conclusion=success
-- Gate 1 Lint+TS: id=129266757585, conclusion=success
-- Gate 2 Unit Tests: id=129266757427, conclusion=success
-- Gate 2.5 PG Integrity: id=129266757467, conclusion=success
-- Gate 3 E2E Smoke: id=129266808851, conclusion=success
-- Gate 5 SEO: id=129266757809, conclusion=success
-- Gate 5.5 RPC: id=129266757602, conclusion=success
-- Gate 6 Build: id=129269100596, conclusion=success
-- Gate Final: id=129269658289, conclusion=success
+## Gate Final — c1d47d13
 
-Verificado em sessao: session_01VXkRxWq5ZUCmvuNx5e2TGX
+check_run_id: 129290526546
+run_id: 42652746997
+conclusion: success
+status: completed
+started_at: 2026-11-09T16:27:03Z
+completed_at: 2026-11-09T16:27:07Z
+annotations_count: 0
+
+## Gate Final — 6b859b0f (SHA anterior — referencia)
+
+check_run_id: 129269658289
+run_id: 42648049808
+conclusion: success
+status: completed
+completed_at: 2026-11-09T15:51:59Z
+
+Verificado via github_list_check_runs (check_name="Gate Final - Deploy Ready")  
+em 2026-11-09 nesta sessao (session_01VXkRxWq5ZUCmvuNx5e2TGX)

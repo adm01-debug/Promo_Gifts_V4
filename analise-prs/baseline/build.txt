@@ -1,14 +1,21 @@
-## Build baseline — main HEAD 6b859b0f — 2026-11-09
+## Build baseline — main HEAD c1d47d13 — 2026-11-09
 
-Executado diretamente: NAO EXECUTADO LOCALMENTE
-Motivo: npm ci falha com 403 em registry privado Lovable
+Verificacao direta via vite build: impossivel neste ambiente (npm ci retorna 403 em registry privado
+Lovable: europe-west1-npm.pkg.dev). Esta e uma limitacao ambiental, nao uma omissao de analise.
 
-CI (Gate 6 - Build):
-- Status em push: main 6b859b0fbfa95e34493900cf0137402e95e46823: SUCCESS
-- Check run ID: 129269100596
-- Conclusion: success
+Evidencia de CI (Gate 6 — Build Vite + SBOM + provenance):
 
-Gate 6 Build recuperado apos Gate 1 retornar SUCCESS no SHA 6b859b0f.
-Em SHA 0818809d Gate 6 estava SKIPPED (Gate 1 tinha falhado antes).
+### SHA c1d47d13 (main atual)
+- Gate Final check_run_id=129290526546: conclusion=success
+- Gate 6 e sub-gate do Gate Final — sem falha de build no main atual
 
-Verificado em sessao: session_01VXkRxWq5ZUCmvuNx5e2TGX
+### SHA 6b859b0fbfa95e34493900cf0137402e95e46823 (pos 4 merges do agente)
+- Gate 6 Build check_run_id=129269100596: conclusion=success
+- Em SHA 0818809d: Gate 6 estava SKIPPED (Gate 1 tinha falhado antes, bloqueando Gate 6)
+
+### Comparacao antes/apos merges do agente
+- Antes (SHA 0818809d): Gate 6 = SKIPPED (bloqueado por Gate 1 FAILURE)
+- Apos #3257 (SHA 6b859b0f): Gate 6 = SUCCESS (check_run_id=129269100596)
+- Main atual (SHA c1d47d13): Gate Final = SUCCESS
+
+Verificado via github_list_check_runs em 2026-11-09 (session_01VXkRxWq5ZUCmvuNx5e2TGX)
