@@ -99,6 +99,8 @@ interface KitBuilderHeaderProps {
   isAutoSaving: boolean;
   lastSavedAt: Date | null;
   autoSaveError?: string | null;
+  /** True when the last auto-save failed due to a PostgreSQL 40001 serialization conflict. */
+  isConflictError?: boolean;
   onRetryAutoSave?: () => void;
   hasContent: boolean;
   isExistingKit: boolean;
@@ -134,6 +136,7 @@ export function KitBuilderHeader({
   isAutoSaving,
   lastSavedAt,
   autoSaveError,
+  isConflictError,
   onRetryAutoSave,
   hasContent,
   isExistingKit,
@@ -258,11 +261,12 @@ export function KitBuilderHeader({
                   type="button"
                   variant="outline"
                   size="sm"
-                  className="h-5 gap-1 border-warning/40 px-1.5 text-[10px] text-warning hover:text-warning"
-                  onClick={onRetryAutoSave}
+                  className="h-5 gap-1 border-destructive/40 px-1.5 text-[10px] text-destructive hover:text-destructive"
+                  onClick={isConflictError ? () => window.location.reload() : onRetryAutoSave}
                   title={autoSaveError}
                 >
-                  <AlertTriangle className="h-2.5 w-2.5" /> Rascunho não salvo — tentar novamente
+                  <AlertTriangle className="h-2.5 w-2.5" />
+                  {isConflictError ? 'Conflito — recarregar página' : 'Rascunho não salvo — tentar novamente'}
                 </Button>
               )}
               {isValid && hasContent && !isAutoSaving && (

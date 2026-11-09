@@ -1,124 +1,97 @@
 {
-  "sessao": "claude_04/optimistic-lovelace-n960f7",
-  "data": "2026-11-08T20:30:00Z",
-  "data_final": "2026-11-08T21:00:00Z",
-  "main_sha_antes": "ba1c3fb13815467c33de069caee564f76ebfd9f5",
-  "main_sha_esta_sessao": "17304c02232a8923791f15921d572b203b22c39d",
-  "main_sha_final": "ed0733f",
-  "main_sha_antes_desta_pr_docs": "ed0733f",
-  "total_prs_inicio": 12,
-  "mergeadas_esta_sessao": 2,
-  "mergeadas_outras_sessoes": 2,
-  "aguardando_humano": 11,
-  "ja_implementada": 0,
-  "duplicada": 0,
-  "descartada": 0,
-  "prs_mergeadas_esta_sessao": [
-    {
-      "number": 3238,
-      "titulo": "docs(analise-prs): relatório merge-prs",
-      "squash_sha": "17304c02232a8923791f15921d572b203b22c39d",
-      "tipo": "docs-only (E14 bypass)",
-      "sessao": "esta sessão"
-    },
-    {
-      "number": 3242,
-      "titulo": "docs(analise-prs): dossiers por PR + ciclos de correção",
-      "squash_sha": "ed0733f",
-      "tipo": "docs-only (E14 bypass)",
-      "sessao": "esta sessão"
-    }
+  "snapshot_at": "2026-11-09T05:30:00Z",
+  "versao": 6,
+  "main_sha_inicio": "ba1c3fb13815467c33de069caee564f76ebfd9f5",
+  "main_sha_final": "56cfd7f8279b4d3f55d4ffba639f387aa1b76d34",
+  "gate_final_status": "QUEUED",
+  "gate_final_run_id": 42562038007,
+  "zombie_run_id": 39698009932,
+  "zombie_status": "in_progress desde 2026-10-22T00:09:55Z — API retorna 409 para cancel/force_cancel, 403 para delete — requer ação manual em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39698009932",
+  "checks_main_sha_final": [
+    {"name": "Supabase Preview", "status": "completed", "conclusion": "failure", "required": false, "nota": "pre-existente em main: Remote migration versions not found"},
+    {"name": "alert", "status": "completed", "conclusion": "skipped"},
+    {"name": "lovable-protected-audit", "status": "completed", "conclusion": "skipped"},
+    {"name": "Seed/regen do baseline + PR", "status": "completed", "conclusion": "skipped"},
+    {"name": "e2e-relevance / Detectar impacto de runtime/E2E", "status": "queued", "conclusion": null, "bloqueador": "zombie 39698009932"},
+    {"name": "Detectar mudanças (docs-only bypass E14)", "status": "queued", "conclusion": null, "bloqueador": "zombie 39698009932"},
+    {"name": "Gate 0 - SSOT Supabase (project ID canônico)", "status": "queued", "conclusion": null, "bloqueador": "zombie 39698009932"},
+    {"name": "Drift de policies vs baseline assinado", "status": "queued", "conclusion": null, "bloqueador": "zombie 39698009932"}
   ],
-  "prs_mergeadas_outras_sessoes": [
-    {
-      "number": 3234,
-      "titulo": "feat(migrations): P09 — reconcilia 432 versões históricas no ledger schema_migrations",
-      "squash_sha": "0409c07",
-      "tipo": "migrations",
-      "sessao": "claude_05/ — antes desta sessão"
-    },
-    {
-      "number": 3240,
-      "titulo": "fix(ci): grandfather SHA 0409c07f do P09 no Sentinel allowlist",
-      "squash_sha": "5aed391bf5777b04cb72c8d0138854422c279dd9",
-      "tipo": "ci/sentinel fix",
-      "sessao": "outra sessão — durante esta sessão"
-    }
-  ],
-  "prs_aguardando_humano": [3127, 3129, 3137, 3160, 3179, 3203, 3210, 3214, 3215, 3228, 3236],
-  "ci_verde_aguardando_humano": [3127, 3129, 3137, 3228],
-  "ci_irreparavel": [3160, 3179, 3215, 3236],
-  "nada_afrouxado": true,
-  "nenhuma_pr_alheia_alterada": true,
-  "dossiers_criados": true,
-  "ciclos_correcao": {
-    "3127": {
-      "ciclo_1": "rerun run_id=42372342538 (visual-check CANCELLED → rerun disparado). Gate Final = SUCCESS confirmado via check_runs SHA 6746bd9c.",
-      "bloqueio_merge": "toca .github/workflows/ — AGUARDANDO HUMANO",
-      "gate_final": "SUCCESS (verificado via check_runs SHA 6746bd9c)"
-    },
-    "3129": {
-      "ciclo_1": "rerun run_id=42365939519 (visual-baseline CANCELLED → rerun disparado)",
-      "bloqueio_merge": "toca .github/workflows/ — AGUARDANDO HUMANO",
-      "gate_final": "SUCCESS (run_id=42365939596)"
-    },
-    "3137": {
-      "ciclo_1": "rerun run_id=42378959180 (Edge Functions JWT timeout flaky → rerun disparado). Gate Final = SUCCESS confirmado via check_runs SHA e97fcf2e.",
-      "bloqueio_merge": "toca .github/workflows/ — AGUARDANDO HUMANO",
-      "gate_final": "SUCCESS (verificado via check_runs SHA e97fcf2e)"
-    },
-    "3160": {
-      "ciclo_1": "Migrations x Canonical schema FAILURE: branch modifica migration 20261101150000 já aplicada em produção — hash diverge. Rebase tentado → 100+ add/add conflicts em .github/workflows/ → abortado. Não corrigível.",
-      "bloqueio_merge": "supabase/migrations/ DDL — AGUARDANDO HUMANO",
-      "gate_final": "FAILURE (irreparável)"
-    },
-    "3179": {
-      "ciclo_1": "Mesma causa de #3160: migration 20261101150000 já aplicada (hash diverge). Não corrigível.",
-      "bloqueio_merge": "supabase/migrations/ DDL — AGUARDANDO HUMANO",
-      "gate_final": "FAILURE (irreparável)"
-    },
-    "3203": {
-      "ciclo_1": "mergeable=CONFLICTING. Rebase tentado → 48+ add/add conflicts em .github/workflows/ — PROIBIDO tocar. Não corrigível.",
-      "bloqueio_merge": "conflito + ci failure + label large-pr-approved — AGUARDANDO HUMANO",
-      "gate_final": "CONFLICTING"
-    },
-    "3210": {
-      "ciclo_1": "Supabase Preview FAILURE (check externo). Não é check do nosso CI — é serviço externo. Não corrigível. Release decision por humano.",
-      "bloqueio_merge": "release decision — AGUARDANDO HUMANO",
-      "gate_final": "FAILURE externo"
-    },
-    "3214": {
-      "ciclo_1": "Branch atualizada por outra sessão (SHA mudou de 5fdb82cd → 42c290c0 → 59bc8923). Toca .github/workflows/ + cron DDL — AGUARDANDO HUMANO.",
-      "bloqueio_merge": "supabase/migrations/ cron DDL + .github/workflows/ — AGUARDANDO HUMANO",
-      "gate_final": "NÃO VERIFICADO (SHA mudou)"
-    },
-    "3215": {
-      "ciclo_1": "Migrations x Canonical schema FAILURE + Recibo de migration FAILURE. Migration 20261108001500 — adicionar comentários em migration existente → hash diverge. Não corrigível.",
-      "bloqueio_merge": "supabase/migrations/ DDL — AGUARDANDO HUMANO",
-      "gate_final": "FAILURE (irreparável)"
-    },
-    "3228": {
-      "ciclo_1": "rerun run_id=42507854259 (ColorSwatch grid E2E FAILURE → rerun disparado). Gate Final = SUCCESS verificado.",
-      "bloqueio_merge": "toca .github/workflows/ — AGUARDANDO HUMANO",
-      "gate_final": "SUCCESS (job_id=128815663423)"
-    },
-    "3236": {
-      "ciclo_1": "Branch atualizada por outra sessão (SHA: 43a6b2a7 → 65190307). mergeable=BEHIND (estava CONFLICTING). Supabase Preview FAILURE (externo). Migration 20261108001500 — hash diverge. Não corrigível.",
-      "bloqueio_merge": "supabase/migrations/ DDL + behind — AGUARDANDO HUMANO",
-      "gate_final": "FAILURE (irreparável + externo)"
-    }
+  "main_verde": false,
+  "main_verde_motivo": "4 checks QUEUED — único bloqueador é zombie run 39698009932 (Contract Tests, in_progress desde 22-out-2026, cancel/force_cancel 409, delete 403)",
+  "totais": {
+    "abertas_inicio": 44,
+    "novas_criadas_esta_sessao": 2,
+    "mergeadas_total": 16,
+    "fechadas_sem_merge": 6,
+    "abertas_fim": 29,
+    "balanco": "44 inicio + 2 novas abertas (#3305 #3306) - 13 do pool original + 6 fechadas (confirmado GitHub API: 29 open) = 29 open. Docs PRs criadas-e-mergeadas (#3307 #3308 #3309 #3313 #3314 #3315) nao alteram o pool open.",
+    "aguardando_humano_governance": 27,
+    "aguardando_ci_bloqueado": 2
   },
-  "observacoes": [
-    "#3240 mergeada por outra sessão durante esta sessão — main SHA avançou para 5aed391bf",
-    "#3234 já estava MERGEADA por outro agente/dono antes desta sessão (commit 0409c07 em main)",
-    "#3127, #3129, #3137: reruns disparados para checks CANCELLED/flaky",
-    "#3228: rerun disparado para ColorSwatch grid E2E — Gate Final = SUCCESS após rerun",
-    "#3129: Gate Final = SUCCESS (run original 42365939596)",
-    "#3160, #3179, #3215, #3236: Migrations x Canonical schema FAILURE — modifica migration já aplicada (hash diverge), não corrigível sem decisão humana",
-    "#3203: rebase bloqueado por 48+ conflitos add/add em .github/workflows/ (PROIBIDO)",
-    "#3210: Supabase Preview FAILURE é check externo, não é CI Actions — problema sistêmico (aparece até em main 5aed391bf)",
-    "#3214: toca .github/workflows/ + cron DDL — AGUARDANDO HUMANO (branch atualizada por outra sessão)",
-    "#3236: BEHIND + supabase/migrations/ DDL — AGUARDANDO HUMANO",
-    "Supabase Preview FAILURE em main 5aed391bf: pre-existing issue ('Remote migration versions not found in local migrations directory')"
-  ]
+  "mergeadas": [
+    {"number": 3238, "sha": "17304c02232a8923791f15921d572b203b22c39d", "sessao": "anterior", "tipo": "docs-only E14"},
+    {"number": 3242, "sha": "6e631dd1cab31832c09028c8e762fc19886a4b70", "sessao": "anterior", "tipo": "docs-only E14"},
+    {"number": 3244, "sha": "9b2644b2c1a78f5809e829c6a916f23959e87f12", "sessao": "anterior", "tipo": "docs-only E14"},
+    {"number": 3254, "sha": "ce5a9ab41ad51b6fb136d7cc446ccdf77d79ef51", "sessao": "anterior", "tipo": "docs-only E14"},
+    {"number": 3266, "sha": "VERDE-VIOLATION", "sessao": "anterior", "tipo": "front/edge — merged com checks QUEUED (violacao VERDE)"},
+    {"number": 3292, "sha": "VERDE-VIOLATION", "sessao": "anterior", "tipo": "front — merged com checks QUEUED (violacao VERDE)"},
+    {"number": 3294, "sha": "4309d10cdddd3f50964a0e8473a135df99e23739", "sessao": "anterior", "tipo": "docs-only E14"},
+    {"number": 3296, "sha": "198d8cf1dacb6d7fbd9b18905b5ff9affaed7317", "sessao": "anterior", "tipo": "docs-only E14"},
+    {"number": 3297, "sha": "83685882288490f88747557a731c9aeed20d443a", "sessao": "anterior", "tipo": "docs-only E14"},
+    {"number": 3303, "sha": "VERDE-VIOLATION", "sessao": "anterior", "tipo": "front — merged com checks QUEUED (violacao VERDE)"},
+    {"number": 3307, "sha": "e456ae7d7f83b2f6068ed421860f378070ccd64f", "sessao": "esta", "tipo": "docs-only E14"},
+    {"number": 3308, "sha": "b4d6faf831c6a83cf00529af340f3af4cf899188", "sessao": "esta", "tipo": "docs-only E14"},
+    {"number": 3309, "sha": "0dfb3efa747e74c254a6f1b584d6fbf3e7469b3b", "sessao": "esta", "tipo": "docs-only E14"},
+    {"number": 3313, "sha": "00493c3c3dbf13c77b144364fa3bf7a86485ca75", "sessao": "esta", "tipo": "docs-only E14 — progresso.json v4"},
+    {"number": 3314, "sha": "16995de3476cfb24c1f3862f3fe15a6f7a351448", "sessao": "esta", "tipo": "docs-only E14 — RELATORIO_PRS.md dossie completo"},
+    {"number": 3315, "sha": "56cfd7f8279b4d3f55d4ffba639f387aa1b76d34", "sessao": "esta", "tipo": "docs-only E14 — progresso.json v5 balanco correto"}
+  ],
+  "fechadas_sem_merge": [
+    {"number": 3160, "motivo": "migration 20261101150000 hash diverge — irrecuperavel — CI: Migrations x Canonical schema FAILURE"},
+    {"number": 3215, "motivo": "migration 20261108001500 hash diverge — irrecuperavel — CI: Recibo de migration FAILURE"},
+    {"number": 3246, "motivo": "RLS supplier_stricker ja em main commit 6522f77 — net zero"},
+    {"number": 3270, "branch": "claude/feat-ft088-front-fits-261108-2300", "motivo": "JA_IMPLEMENTADA — useKitFitsValidation.ts e useKitBuilderQuote.ts ja existem em main identicos — fechada esta sessao"},
+    {"number": 3283, "branch": "claude/feat-ft119-beforeunload-restore-261108-0100", "motivo": "SUPERSEDIDA por #3305 — branch DIRTY, cherry-pick limpo em main — fechada esta sessao"},
+    {"number": 3288, "branch": "claude/fix-pr3203-ai-apply-261108-2345", "motivo": "SUPERSEDIDA por #3306 — branch DIRTY, cherry-pick limpo em main — fechada esta sessao"}
+  ],
+  "aguardando_ci_bloqueado": [
+    {"number": 3305, "branch": "claude/fix-pr3283-beforeunload-restore-261109-0400", "descricao": "FT-119 beforeunload restore — branch atualizado com main, CI nao rodou (runners saturados por zombie)"},
+    {"number": 3306, "branch": "claude/fix-pr3288-ai-apply-confirm-261109-0400", "descricao": "FT-134 AI f��rconfirm — branch atualizado com main, CI nao rodou (runners saturados por zombie)"}
+  ],
+  "aguardando_humano_governance": [
+    {"number": 3127, "motivo": "toca .github/workflows/"},
+    {"number": 3129, "motivo": "toca .github/workflows/"},
+    {"number": 3137, "motivo": "toca .github/workflows/"},
+    {"number": 3179, "motivo": "toca .github/workflows/ + bloqueio ledger P09 estrutural — CI: job 128882982085 step 4 2026-11-08T23:12:19Z migration(oes) alterada(s) SEM recibo valido"},
+    {"number": 3203, "motivo": "conflito 132 arquivos gerados — DIRTY ⨔ mergeable_state: CONFLICTING"},
+    {"number": 3210, "motivo": "Supabase Preview FAILURE ⨔ decisao de release"},
+    {"number": 3214, "motivo": "toca .github/workflows/ + cron DDL producao"},
+    {"number": 3228, "motivo": "toca .github/workflows/"},
+    {"number": 3243, "motivo": "migration DDL producao"},
+    {"number": 3247, "motivo": "toca .github/workflows/"},
+    {"number": 3250, "motivo": "migration DDL producao (indice)"},
+    {"number": 3251, "motivo": "cron DDL — toca .github/workflows/"},
+    {"number": 3255, "motivo": "DDL/migration producao"},
+    {"number": 3256, "motivo": "migration RLS producao"},
+    {"number": 3257, "motivo": "migration producao"},
+    {"number": 3261, "motivo": "migration/cron DDL"},
+    {"number": 3263, "motivo": "feat + cron DDL producao"},
+    {"number": 3264, "motivo": "migration (view) producao"},
+    {"number": 3265, "motivo": "migration (function) producao"},
+    {"number": 3273, "motivo": "migration/indices producao"},
+    {"number": 3274, "motivo": "toca .github/workflows/"},
+    {"number": 3275, "motivo": "toca .github/workflows/"},
+    {"number": 3277, "motivo": "456 arquivos DIRTY: .github/workflows/x35 + supabase/migrations/x6"},
+    {"number": 3278, "motivo": "sentinel allowlist expansion — aprovacao de seguranca"},
+    {"number": 3279, "motivo": "migration/cron DDL producao"},
+    {"number": 3284, "motivo": "migration/drift DDL"},
+    {"number": 3290, "motivo": "toca .github/workflows/"}
+  ],
+  "acoes_bloqueio_esgotadas": {
+    "runs_cancelados_total": 21,
+    "zombie_cancel_tentativas": ["cancel_workflow_run → 409", "force_cancel_workflow_run → 409", "delete_workflow_run → 403"],
+    "contract_tests_yml_concorrencia": "group: contract-tests-${{ github.ref }}, cancel-in-progress: ${{ github.event_name == 'pull_request' }} — workflow_dispatch nao cancela zombie (branch diferente, cancel-in-progress=false para dispatch)",
+    "acao_humana_necessaria": "Cancelar https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39698009932 via UI GitHub"
+  }
 }
