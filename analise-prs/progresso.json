@@ -3,15 +3,15 @@
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 2674,
   "iniciado_em": "2026-10-28T00:00:00Z",
-  "atualizado_em": "2026-11-09T12:00:00Z",
+  "atualizado_em": "2026-11-09T12:30:00Z",
   "contagem_por_veredito": {
-    "MERGEADA": 13,
+    "MERGEADA": 15,
     "NÃO_MERGEAR": 10,
     "AGUARDA_CI": 26,
     "AGUARDA_CI_OU_PO": 17,
     "AGUARDA_PO": 4,
     "FECHADA_SEM_MERGE": 3,
-    "TOTAL_ANALISADO": 72
+    "TOTAL_ANALISADO": 74
   },
   "mergeadas_por_agente_esta_sessao": [
     {
@@ -23,11 +23,21 @@
       "gate_final_ref": "5a9579c7e4f6d386f6118a40dada051c7c266a74",
       "supabase_impacto": "ZERO — zero DDL, zero edge function",
       "merged_at": "2026-11-09T12:00:00Z"
+    },
+    {
+      "number": 3340,
+      "sha": "5a3f679e7b32c652696d955a7c90f867db79abe7",
+      "titulo": "fix(audit): registrar fn_check_item_fits e vw_products_min_quantity no catálogo Supabase",
+      "tipo": "docs-only E14",
+      "gate_final": "SUCCESS",
+      "gate_final_ref": "confirmado pre-merge via check-runs da PR",
+      "supabase_impacto": "ZERO — zero DDL, zero edge function; fn_check_item_fits e vw_products_min_quantity confirmados em produção doufsxqlfjyuvxuezpln",
+      "merged_at": "2026-11-09T11:30:12Z"
     }
   ],
   "mergeadas_sessoes_anteriores": {
-    "total": 12,
-    "range": "#2580-#2692",
+    "total": 13,
+    "range": "#2580-#3340",
     "detalhes": "Ver RELATORIO_PRS.md sessoes anteriores"
   },
   "nao_mergeadas": {
@@ -40,8 +50,15 @@
     "AGUARDA_PO": "4 PRs: migrations DDL, .github/workflows, segurança — requerem aprovação humana"
   },
   "gate_final_main_atual": {
-    "verificado": false,
-    "nota": "Após merge #3337 (SHA 6933eb6), Gate 1.3 do analise-prs foi corrigido. NÃO VERIFICADO."
+    "verificado": true,
+    "sha": "5a3f679e7b32c652696d955a7c90f867db79abe7",
+    "run_id": 42609551247,
+    "conclusion": "failure",
+    "job_falhando": "Gate 1 - Lint + TypeScript (job #129134477785)",
+    "step_falhando": "Gate 1.9 — Dívida técnica (ratchets TODO/as/file-size/eslint-disable) [step 14]",
+    "causa": "PRE-EXISTENTE — ratchets de dívida técnica excedidos no código-fonte. Não causado pelos merges #3337/#3340 (ambos docs-only). Bloqueio estrutural em main desde antes desta sessão.",
+    "impacto_merges_docs": "ZERO — merges docs-only com bypass E14 continuam seguros (Gate 1 skipped para docs-only)",
+    "verificado_em": "2026-11-09T12:30:00Z"
   },
-  "bloqueio_geral": "Maioria dos PRs com código têm Gate Final FAILURE por falhas em Gate 1 (Lint+TS) não relacionadas ao diff da PR — problema estrutural em main"
+  "bloqueio_geral": "Gate 1.9 (Dívida técnica — ratchets TODO/as/file-size/eslint-disable) falha em main desde antes desta sessão — problema estrutural no código-fonte. PRs de código bloqueadas. PRs docs-only com bypass E14 continuam mergeáveis."
 }
