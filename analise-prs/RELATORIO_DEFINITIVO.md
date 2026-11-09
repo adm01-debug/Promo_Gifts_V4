@@ -136,15 +136,15 @@ Governança: `.github/workflows/`
 
 **#3179** — `claude/fix-ci-workflows-261107-2300`  
 SHA: `105a0b31`  
-Checks (86 total, run `42530357017`/`42418413977`):  
+Checks (86 total, run `42530357017`/`42418413977`):
 - Gate Final: QUEUED (latest) + FAILURE (run `42418413977`, job `128543502660`, step 2)  
   Log linha: `2026-11-07T22:07:40.5482135Z ##[error]Gate E40 Schema Drift falhou (failure)`  
   Env: `R_SCHEMA_DRIFT: failure` às `2026-11-07T22:07:40.5310741Z`  
-  Exit code 1 às `2026-11-07T22:07:40.5502815Z`  
+  Exit code 1 às `2026-11-07T22:07:40.5502815Z`
 - Recibo de migration: FAILURE (run `42530357017`, job `128882982085`, step 4)  
   Log linha: `2026-11-08T23:12:19.5032599Z [migrations-sync-log-gate] failed: 1/1 migration(ões) alterada(s) SEM recibo válido: 20261101150000_fix_sb0003_fn_get_rupture_alerts.sql(version_not_registered)`  
-  Exit code 1 às `2026-11-08T23:12:19.5072134Z`  
-- Gate E40 Schema Drift: FAILURE (run `42530357088`) — mesmo arquivo de migration  
+  Exit code 1 às `2026-11-08T23:12:19.5072134Z`
+- Gate E40 Schema Drift: FAILURE (run `42530357088`) — mesmo arquivo de migration
 Governança: toca `.github/workflows/` + falha de schema drift (migration não registrada em MIGRATIONS_SYNC_LOG.md)
 
 **#3214** — `claude_05/youthful-ride-vcdchy`  
@@ -240,11 +240,11 @@ Governança: migration/drift DDL
 
 **#3203** — `claude/inspiring-knuth-swo71j`  
 SHA: `1aad6831`, mergeable=CONFLICTING/DIRTY  
-Checks (97 total, run parcial via check runs):  
-- Gate Final: SUCCESS (run anterior) — porém PR está DIRTY (conflito em 132 arquivos gerados: ALL_IN_ONE.sql, baselines)  
-- merge-reports: FAILURE  
-- Diff visual dos PDFs de proposta: FAILURE  
-- PR Size Check: FAILURE (não-required)  
+Checks (97 total, run parcial via check runs):
+- Gate Final: SUCCESS (run anterior) — porém PR está DIRTY (conflito em 132 arquivos gerados: ALL_IN_ONE.sql, baselines)
+- merge-reports: FAILURE
+- Diff visual dos PDFs de proposta: FAILURE
+- PR Size Check: FAILURE (não-required)
 Governança: conflito em 132 arquivos gerados — DIRTY; decisão de negócio sobre merge vs rebase
 
 **#3210** — `release-please--branches--main--components--gifts-store`  
