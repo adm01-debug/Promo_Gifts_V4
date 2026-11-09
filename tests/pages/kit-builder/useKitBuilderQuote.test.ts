@@ -11,11 +11,13 @@ import { createSupabaseMock } from '../../helpers/supabase-mock';
 import type { KitState } from '@/hooks/useKitBuilder';
 import { dbInvoke } from '@/lib/db/postgrest';
 
-const { validateKitStockForQuote } = vi.hoisted(() => ({
+const { validateKitStockForQuote, validateKitFitsForQuote } = vi.hoisted(() => ({
   validateKitStockForQuote: vi.fn().mockResolvedValue({ status: 'available', alerts: [] }),
+  validateKitFitsForQuote: vi.fn().mockResolvedValue({ status: 'ok' }),
 }));
 
 vi.mock('@/hooks/kit-builder/useKitStockValidation', () => ({ validateKitStockForQuote }));
+vi.mock('@/hooks/kit-builder/useKitFitsValidation', () => ({ validateKitFitsForQuote }));
 vi.mock('@/lib/db/postgrest', () => ({ dbInvoke: vi.fn() }));
 
 vi.mock('@/lib/logger', () => ({ logger: { error: vi.fn(), warn: vi.fn(), info: vi.fn() } }));
@@ -74,6 +76,8 @@ describe('useKitBuilderQuote — payloads', () => {
     vi.resetModules();
     validateKitStockForQuote.mockReset();
     validateKitStockForQuote.mockResolvedValue({ status: 'available', alerts: [] });
+    validateKitFitsForQuote.mockReset();
+    validateKitFitsForQuote.mockResolvedValue({ status: 'ok' });
     vi.mocked(dbInvoke).mockReset();
     vi.mocked(dbInvoke).mockResolvedValue({
       records: [
