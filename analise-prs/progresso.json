@@ -1,7 +1,7 @@
 {
   "sessao": "2026-11-09",
   "session_id": "49a643e1-3ba4-5a51-9048-a545eec48233",
-  "main_sha": "c2bbc6be51e461ac401726b0c50aa816ff4ae40b",
+  "main_sha": "198d8cf1dacb6d7fbd9b18905b5ff9affaed7317",
   "total_prs_no_inventario": 50,
   "total_analisadas": 50,
   "vereditos": {
@@ -11,10 +11,10 @@
     "FECHADA": 3
   },
   "ci_status": {
-    "runners": "SATURADO desde 2026-11-08T23:27 UTC",
+    "runners": "SATURADO desde 2026-11-08T23:27 UTC — confirmado novamente 2026-11-09 (segunda verificação; total_count:0 para todas as 8 PRs)",
     "gate_final_queued": true,
     "prs_aguardando_ci": [3252, 3253, 3269, 3270, 3272, 3276, 3277, 3291],
-    "nota": "Gate Final nunca executou para nenhuma das 8 PRs PENDENTE_CI. #3269 e #3270 promovidos de DECISAO_HUMANA (draft=true) para PENDENTE_CI (draft=false 2026-11-09T00:19Z). Merge autônomo pendente quando CI liberar."
+    "nota": "Gate Final nunca executou para nenhuma das 8 PRs PENDENTE_CI. #3269 e #3270 promovidos de DECISAO_HUMANA (draft=true) para PENDENTE_CI (draft=false 2026-11-09T00:19Z). #3291 confirmado sem bypass E14 (toca PENDENCIAS.md na raiz). Merge autônomo pendente quando CI liberar. main_sha avançou para 198d8cf1 (docs-only commit pelo PO) — sem impacto em vereditos."
   },
   "worktrees": "NENHUM — confirmado nesta sessão. Único diretório: /home/user/Promo_Gifts_V4",
   "prs_mergeadas_esta_sessao": [
