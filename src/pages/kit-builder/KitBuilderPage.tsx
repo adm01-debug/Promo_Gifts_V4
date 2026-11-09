@@ -98,10 +98,12 @@ export default function KitBuilderPage() {
               actions.persistUnloadBackup(backup);
               window.location.href = `/montar-kit?kit=${backup.kitId}`;
             } else {
-              // Unsaved new kit: start a fresh flow so auto-save creates a new
-              // record instead of overwriting the currently loaded kit.
-              actions.startFlow('items-first', 'manual');
-              actions.restoreFromBackup(backup.fullState!);
+              // Unsaved new kit backed up without a kit ID: re-persist and
+              // navigate to a clean URL so the new mount restores via Case 1.
+              // This avoids auto-save mistakenly targeting the currently-loaded
+              // kit's ID (startFlow doesn't clear currentKitId/autoSavedKitId).
+              actions.persistUnloadBackup(backup);
+              window.location.href = '/montar-kit';
             }
             toast.dismiss();
           },
