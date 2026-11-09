@@ -9,7 +9,6 @@ import { type SellerCart } from '@/hooks/useSellerCarts';
 import { useCartTemplates, type CartTemplateItem } from '@/hooks/useCartTemplates';
 import { ProductsContext } from '@/contexts/ProductsContext';
 import {
-  recordAction,
   exportCartToCSV,
   exportCartToPDF,
   shareCartLink,
@@ -67,7 +66,7 @@ export function useSellerCartsPage() {
 
   const [cartNotesOpen, setCartNotesOpen] = useState(false);
   const [localCartNotes, setLocalCartNotes] = useState('');
-  const debounceNotesRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceNotesRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const stockMap = useMemo(() => {
     const map = new Map<string, number>();
@@ -150,7 +149,6 @@ export function useSellerCartsPage() {
       const item = activeCart?.items.find((i) => i.id === itemId);
       removeItem(itemId);
       if (item && activeCart) {
-        recordAction(activeCart.id, { type: 'remove', itemName, time: new Date() });
         showUndoToast({
           title: `${itemName} removido`,
           description: activeCart.company_name,
@@ -176,14 +174,6 @@ export function useSellerCartsPage() {
     (itemId: string, qty: number) => {
       updateItemQuantity(itemId, qty);
       const item = activeCart?.items.find((i) => i.id === itemId);
-      if (item && activeCart) {
-        recordAction(activeCart.id, {
-          type: 'qty',
-          itemName: item.product_name,
-          detail: `${qty}`,
-          time: new Date(),
-        });
-      }
     },
     [updateItemQuantity, activeCart],
   );
@@ -193,14 +183,6 @@ export function useSellerCartsPage() {
       const item = activeCart?.items.find((i) => i.id === itemId);
       const targetCart = carts.find((c) => c.id === targetCartId);
       moveItemToCart(itemId, targetCartId);
-      if (item && activeCart) {
-        recordAction(activeCart.id, {
-          type: 'move',
-          itemName: item.product_name,
-          detail: targetCart?.company_name,
-          time: new Date(),
-        });
-      }
     },
     [moveItemToCart, activeCart, carts],
   );
@@ -210,14 +192,6 @@ export function useSellerCartsPage() {
       const item = activeCart?.items.find((i) => i.id === itemId);
       const targetCart = carts.find((c) => c.id === targetCartId);
       duplicateItemToCart(itemId, targetCartId);
-      if (item && activeCart) {
-        recordAction(activeCart.id, {
-          type: 'duplicate',
-          itemName: item.product_name,
-          detail: targetCart?.company_name,
-          time: new Date(),
-        });
-      }
     },
     [duplicateItemToCart, activeCart, carts],
   );
@@ -226,7 +200,6 @@ export function useSellerCartsPage() {
     if (!activeCart) return;
     const itemsToRestore = [...activeCart.items];
     clearCart(activeCart.id);
-    recordAction(activeCart.id, { type: 'clear', itemName: 'todos os itens', time: new Date() });
 
     showUndoToast({
       title: `Carrinho limpo`,

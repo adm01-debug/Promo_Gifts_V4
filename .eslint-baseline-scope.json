@@ -1,6 +1,6 @@
 {
   "$schema": "./docs/schemas/eslint-baseline-scope.schema.json",
-  "mode": "full",
+  "mode": "incremental",
   "include": [],
   "exclude": [],
   "notes": [
