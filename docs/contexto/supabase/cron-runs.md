@@ -52,18 +52,18 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:05:01 | succeeded | 6.97 | 1 row |
 | 2026-11-09 08:05:00 | succeeded | 0.04 | 1 row |
 | 2026-11-09 06:05:00 | failed | 12.10 | job startup timeout |
-| 2026-11-09 05:05:01 | succeeded | 0.21 | 1 row |
 
 
 ## 16 · send-scheduled-reports
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:10:00 | succeeded | 0.03 | 1 row |
 | 2026-11-09 08:10:00 | succeeded | 0.02 | 1 row |
 | 2026-11-09 07:10:00 | succeeded | 0.06 | 1 row |
-| 2026-11-09 06:10:00 | failed | 10.64 | job startup timeout |
 
 
 ## 17 · send-digest
@@ -86,9 +86,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:17:00 | succeeded | 0.04 | 1 row |
 | 2026-11-09 08:17:00 | succeeded | 0.01 | 1 row |
 | 2026-11-09 07:17:00 | succeeded | 0.03 | 1 row |
-| 2026-11-09 06:17:06 | succeeded | 0.14 | 1 row |
 
 
 ## 27 · cron_job_run_details_purge_weekly
@@ -130,18 +130,18 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:07:00 | succeeded | 0.32 | 1 row |
-| 2026-11-09 07:52:00 | succeeded | 0.34 | 1 row |
-| 2026-11-09 07:37:00 | succeeded | 0.18 | 1 row |
+| 2026-11-09 09:07:00 | succeeded | 0.33 | 1 row |
+| 2026-11-09 08:52:00 | succeeded | 0.17 | 1 row |
+| 2026-11-09 08:37:00 | succeeded | 0.15 | 1 row |
 
 
 ## 60 · pipeline-health-hourly
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:15:01 | succeeded | 54.14 | INSERT 0 1 |
 | 2026-11-09 08:15:00 | succeeded | 8.96 | INSERT 0 1 |
 | 2026-11-09 07:15:00 | succeeded | 2.66 | INSERT 0 1 |
-| 2026-11-09 06:15:00 | failed | 10.55 | job startup timeout |
 
 
 ## 61 · pipeline-run-log-purge-weekly
@@ -173,9 +173,9 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:25:01 | succeeded | 0.74 | 1 row |
 | 2026-11-09 07:25:00 | succeeded | 0.03 | 1 row |
 | 2026-11-09 06:25:03 | succeeded | 0.13 | 1 row |
-| 2026-11-09 05:25:00 | succeeded | 0.53 | 1 row |
 
 
 ## 85 · reconcile-stock-gold-daily
@@ -200,9 +200,9 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:20:00 | succeeded | 4.60 | 1 row |
 | 2026-11-09 06:20:02 | succeeded | 26.96 | 1 row |
 | 2026-11-09 04:20:00 | succeeded | 4.47 | 1 row |
-| 2026-11-09 02:20:00 | succeeded | 2.69 | 1 row |
 
 
 ## 95 · seo-recalculate-stale-scores
@@ -236,9 +236,9 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:05:01 | succeeded | 15.57 | 1 row |
 | 2026-11-09 08:05:00 | succeeded | 0.78 | 1 row |
 | 2026-11-09 06:05:00 | failed | 10.51 | job startup timeout |
-| 2026-11-09 05:05:01 | succeeded | 6.42 | 1 row |
 
 
 ## 104 · kit-enrich-daily
@@ -288,9 +288,9 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:57:00 | succeeded | 0.22 | 1 row |
 | 2026-11-09 07:57:00 | succeeded | 0.49 | 1 row |
 | 2026-11-09 05:57:05 | succeeded | 13.74 | 1 row |
-| 2026-11-09 04:57:00 | succeeded | 7.12 | 1 row |
 
 
 ## 116 · stock-daily-backfill-today
@@ -306,9 +306,9 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:42:01 | failed | 120.04 | ERROR:  canceling statement due to statement timeout CONTEXT:  SQL statement "WITH missing AS (     SELECT vss.id, vss.supplier_id, vss.supplier_branch_id, vss.variant_id,            pv.product_id, vss.quantity AS cur_stock, vss.cost_price     FROM variant_supplier_sources vss     JOIN product_varia |
 | 2026-11-09 04:42:03 | failed | 124.27 | ERROR:  canceling statement due to statement timeout CONTEXT:  SQL statement "DELETE FROM stock_daily_summary WHERE summary_date > v_today" PL/pgSQL function fn_aggregate_stock_daily(date) line 15 at SQL statement SQL statement "SELECT public.fn_aggregate_stock_daily(v_today)" PL/pgSQL function fn_r |
 | 2026-11-09 00:42:00 | succeeded | 19.68 | 1 row |
-| 2026-11-08 20:42:00 | succeeded | 32.52 | 1 row |
 
 
 ## 141 · cleanup-skipped-backfill-items
@@ -364,252 +364,252 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:15:00 | succeeded | 0.22 | 1 row |
-| 2026-11-09 08:00:01 | succeeded | 0.54 | 1 row |
-| 2026-11-09 07:45:00 | succeeded | 0.20 | 1 row |
+| 2026-11-09 09:15:01 | succeeded | 0.20 | 1 row |
+| 2026-11-09 09:00:00 | succeeded | 0.14 | 1 row |
+| 2026-11-09 08:45:00 | succeeded | 0.07 | 1 row |
 
 
 ## 205 · auto-block-offenders
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:16:00 | succeeded | 0.72 | 1 row |
-| 2026-11-09 08:01:01 | succeeded | 3.34 | 1 row |
-| 2026-11-09 07:46:00 | succeeded | 0.39 | 1 row |
+| 2026-11-09 09:16:00 | succeeded | 4.27 | 1 row |
+| 2026-11-09 09:01:00 | succeeded | 0.42 | 1 row |
+| 2026-11-09 08:46:00 | succeeded | 0.51 | 1 row |
 
 
 ## 206 · sm-variant-coherence-guard
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:12:00 | succeeded | 0.35 | 1 row |
-| 2026-11-09 07:57:00 | succeeded | 0.56 | 1 row |
-| 2026-11-09 07:42:02 | succeeded | 6.75 | 1 row |
+| 2026-11-09 09:12:00 | succeeded | 1.01 | 1 row |
+| 2026-11-09 08:57:00 | succeeded | 0.61 | 1 row |
+| 2026-11-09 08:42:01 | succeeded | 4.75 | 1 row |
 
 
 ## 207 · sm-stock-guard
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:06:00 | succeeded | 1.99 | 1 row |
-| 2026-11-09 07:51:00 | succeeded | 6.47 | 1 row |
-| 2026-11-09 07:36:00 | succeeded | 0.50 | 1 row |
+| 2026-11-09 09:06:00 | succeeded | 8.25 | 1 row |
+| 2026-11-09 08:51:00 | succeeded | 1.08 | 1 row |
+| 2026-11-09 08:36:00 | succeeded | 12.52 | 1 row |
 
 
 ## 208 · fantasmas-deactivate-guard
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:04:01 | succeeded | 40.83 | 1 row |
+| 2026-11-09 08:34:00 | succeeded | 1.27 | 1 row |
 | 2026-11-09 08:04:02 | succeeded | 17.00 | 1 row |
-| 2026-11-09 07:34:00 | succeeded | 0.66 | 1 row |
-| 2026-11-09 06:34:00 | failed | 10.54 | job startup timeout |
 
 
 ## 209 · connections-health-check
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:04:02 | succeeded | 0.20 | 1 row |
-| 2026-11-09 07:49:00 | succeeded | 0.09 | 1 row |
-| 2026-11-09 07:34:00 | succeeded | 0.02 | 1 row |
+| 2026-11-09 09:04:01 | succeeded | 0.24 | 1 row |
+| 2026-11-09 08:49:00 | succeeded | 0.05 | 1 row |
+| 2026-11-09 08:34:00 | succeeded | 0.10 | 1 row |
 
 
 ## 210 · purge-expired-security
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:06:00 | succeeded | 0.39 | 1 row |
-| 2026-11-09 07:51:00 | succeeded | 0.57 | 1 row |
-| 2026-11-09 07:36:00 | succeeded | 0.08 | 1 row |
+| 2026-11-09 09:06:00 | succeeded | 2.05 | 1 row |
+| 2026-11-09 08:51:00 | succeeded | 0.11 | 1 row |
+| 2026-11-09 08:36:00 | succeeded | 0.69 | 1 row |
 
 
 ## 211 · connections-auto-test
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:09:00 | succeeded | 0.05 | 1 row |
-| 2026-11-09 07:54:00 | succeeded | 0.08 | 1 row |
-| 2026-11-09 07:39:00 | succeeded | 0.04 | 1 row |
+| 2026-11-09 09:09:00 | succeeded | 0.11 | 1 row |
+| 2026-11-09 08:54:00 | succeeded | 0.05 | 1 row |
+| 2026-11-09 08:39:02 | succeeded | 0.38 | 1 row |
 
 
 ## 212 · refresh-mv-supplier-reliability
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:08:00 | succeeded | 0.26 | 1 row |
-| 2026-11-09 07:53:00 | succeeded | 0.94 | 1 row |
-| 2026-11-09 07:38:00 | succeeded | 0.51 | 1 row |
+| 2026-11-09 09:08:00 | succeeded | 0.64 | 1 row |
+| 2026-11-09 08:53:00 | succeeded | 0.86 | 1 row |
+| 2026-11-09 08:38:00 | succeeded | 0.98 | 1 row |
 
 
 ## 213 · sm-category-enqueue
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:11:00 | succeeded | 0.17 | 1 row |
-| 2026-11-09 07:56:00 | succeeded | 0.24 | 1 row |
-| 2026-11-09 07:41:00 | succeeded | 0.21 | 1 row |
+| 2026-11-09 09:11:00 | succeeded | 0.05 | 1 row |
+| 2026-11-09 08:56:00 | succeeded | 0.04 | 1 row |
+| 2026-11-09 08:41:05 | succeeded | 0.46 | 1 row |
 
 
 ## 214 · sm-category-collect
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:12:00 | succeeded | 0.02 | 1 row |
-| 2026-11-09 07:57:00 | succeeded | 0.03 | 1 row |
-| 2026-11-09 07:42:02 | succeeded | 0.34 | 1 row |
+| 2026-11-09 09:12:00 | succeeded | 0.05 | 1 row |
+| 2026-11-09 08:57:00 | succeeded | 0.07 | 1 row |
+| 2026-11-09 08:42:01 | succeeded | 0.62 | 1 row |
 
 
 ## 215 · video-recover-stuck
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:13:00 | succeeded | 0.09 | 1 row |
-| 2026-11-09 07:58:00 | succeeded | 0.17 | 1 row |
-| 2026-11-09 07:43:06 | succeeded | 1.14 | 1 row |
+| 2026-11-09 09:13:01 | succeeded | 4.59 | 1 row |
+| 2026-11-09 08:58:00 | succeeded | 0.13 | 1 row |
+| 2026-11-09 08:43:00 | failed | 10.99 | job startup timeout |
 
 
 ## 216 · pipeline-print-profiles
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:14:00 | succeeded | 0.89 | 1 row |
-| 2026-11-09 07:59:00 | succeeded | 0.86 | 1 row |
-| 2026-11-09 07:44:00 | succeeded | 2.39 | 1 row |
+| 2026-11-09 09:14:00 | succeeded | 0.42 | 1 row |
+| 2026-11-09 08:59:00 | succeeded | 0.49 | 1 row |
+| 2026-11-09 08:44:00 | succeeded | 0.81 | 1 row |
 
 
 ## 217 · process-queue
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:14:00 | succeeded | 0.03 | 1 row |
-| 2026-11-09 08:04:02 | succeeded | 0.29 | 1 row |
-| 2026-11-09 07:54:00 | succeeded | 0.08 | 1 row |
+| 2026-11-09 09:14:00 | succeeded | 0.06 | 1 row |
+| 2026-11-09 09:04:01 | succeeded | 0.25 | 1 row |
+| 2026-11-09 08:54:00 | succeeded | 0.07 | 1 row |
 
 
 ## 219 · sm-url-discover-search
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:15:00 | succeeded | 0.30 | 1 row |
-| 2026-11-09 08:05:00 | succeeded | 0.17 | 1 row |
-| 2026-11-09 07:55:03 | succeeded | 2.02 | 1 row |
+| 2026-11-09 09:15:01 | succeeded | 4.03 | 1 row |
+| 2026-11-09 09:05:01 | succeeded | 8.76 | 1 row |
+| 2026-11-09 08:55:00 | succeeded | 0.18 | 1 row |
 
 
 ## 221 · cleanup-stale-ai-pending-logs
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:18:00 | succeeded | 0.02 | 1 row |
-| 2026-11-09 08:03:00 | succeeded | 0.05 | 1 row |
-| 2026-11-09 07:48:00 | succeeded | 0.01 | 1 row |
+| 2026-11-09 09:18:00 | succeeded | 0.02 | 1 row |
+| 2026-11-09 09:03:00 | succeeded | 0.17 | 1 row |
+| 2026-11-09 08:48:00 | succeeded | 0.02 | 1 row |
 
 
 ## 222 · backfill-image-dimensions
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:07:00 | succeeded | 0.17 | 1 row |
-| 2026-11-09 07:52:00 | succeeded | 0.14 | 1 row |
-| 2026-11-09 07:37:00 | succeeded | 0.06 | 1 row |
+| 2026-11-09 09:07:00 | succeeded | 0.16 | 1 row |
+| 2026-11-09 08:52:00 | succeeded | 0.04 | 1 row |
+| 2026-11-09 08:37:00 | succeeded | 0.07 | 1 row |
 
 
 ## 224 · asia-enqueue-new-products
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:51:00 | succeeded | 0.13 | 1 row |
+| 2026-11-09 08:21:00 | succeeded | 0.16 | 1 row |
 | 2026-11-09 07:51:00 | succeeded | 0.27 | 1 row |
-| 2026-11-09 07:21:00 | succeeded | 0.05 | 1 row |
-| 2026-11-09 06:51:09 | succeeded | 6.21 | 1 row |
 
 
 ## 225 · spot-relink-family-images
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:52:00 | succeeded | 0.07 | 1 row |
+| 2026-11-09 08:22:00 | succeeded | 0.34 | 1 row |
 | 2026-11-09 07:52:00 | succeeded | 0.20 | 1 row |
-| 2026-11-09 07:22:00 | succeeded | 0.22 | 1 row |
-| 2026-11-09 06:52:00 | failed | 10.83 | job startup timeout |
 
 
 ## 226 · kit-component-auto-approve
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:56:00 | succeeded | 0.04 | 1 row |
+| 2026-11-09 08:26:02 | succeeded | 0.22 | 1 row |
 | 2026-11-09 07:56:00 | succeeded | 0.45 | 1 row |
-| 2026-11-09 07:26:00 | succeeded | 0.05 | 1 row |
-| 2026-11-09 06:26:07 | succeeded | 0.31 | 1 row |
 
 
 ## 227 · qa-imageless-products
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:59:00 | succeeded | 0.60 | 1 row |
+| 2026-11-09 08:29:00 | succeeded | 2.16 | 1 row |
 | 2026-11-09 07:59:00 | succeeded | 0.84 | 1 row |
-| 2026-11-09 07:29:00 | succeeded | 0.32 | 1 row |
-| 2026-11-09 06:29:05 | succeeded | 4.35 | 1 row |
 
 
 ## 228 · cleanup-edge-rate-limits
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:37:00 | succeeded | 0.04 | 1 row |
 | 2026-11-09 07:37:00 | succeeded | 0.04 | 1 row |
 | 2026-11-09 06:37:06 | succeeded | 0.34 | 1 row |
-| 2026-11-09 05:37:01 | succeeded | 0.10 | 1 row |
 
 
 ## 229 · cleanup-expired-token-revocations
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:43:00 | failed | 11.88 | job startup timeout |
 | 2026-11-09 07:43:07 | succeeded | 0.02 | 1 row |
 | 2026-11-09 06:43:00 | failed | 23.62 | job startup timeout |
-| 2026-11-09 05:43:09 | succeeded | 0.27 | 1 row |
 
 
 ## 230 · kit-component-auto-promote
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:46:00 | succeeded | 0.07 | 1 row |
 | 2026-11-09 07:46:00 | succeeded | 0.07 | 1 row |
 | 2026-11-09 06:46:00 | failed | 12.13 | job startup timeout |
-| 2026-11-09 05:46:00 | succeeded | 0.08 | 1 row |
 
 
 ## 231 · dashboard-insights-cache-cleanup
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:48:00 | succeeded | 0.03 | 1 row |
 | 2026-11-09 07:48:00 | succeeded | 0.01 | 1 row |
 | 2026-11-09 06:48:06 | succeeded | 0.87 | 1 row |
-| 2026-11-09 05:48:07 | succeeded | 0.31 | 1 row |
 
 
 ## 232 · qa-image-coverage-hourly
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:51:00 | succeeded | 0.64 | 1 row |
 | 2026-11-09 07:51:00 | succeeded | 0.68 | 1 row |
 | 2026-11-09 06:51:09 | succeeded | 32.22 | 1 row |
-| 2026-11-09 05:51:04 | succeeded | 5.31 | 1 row |
 
 
 ## 233 · ai-queue-stuck-cleanup
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:34:00 | succeeded | 0.28 | 1 row |
 | 2026-11-09 07:34:00 | succeeded | 0.14 | 1 row |
 | 2026-11-09 06:34:00 | failed | 10.98 | job startup timeout |
-| 2026-11-09 05:34:03 | succeeded | 3.90 | 1 row |
 
 
 ## 234 · refresh-all-materialized-views
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:38:00 | succeeded | 124.76 | 1 row |
 | 2026-11-09 07:38:00 | succeeded | 120.79 | 1 row |
 | 2026-11-09 06:38:02 | succeeded | 122.60 | 1 row |
-| 2026-11-09 05:38:00 | failed | 16.93 | job startup timeout |
 
 
 ## 235 · image-dimensions-backfill
@@ -621,9 +621,9 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:33:00 | succeeded | 0.07 | 1 row |
 | 2026-11-09 04:33:00 | succeeded | 0.06 | 1 row |
 | 2026-11-09 00:33:00 | succeeded | 0.03 | 1 row |
-| 2026-11-08 20:33:00 | succeeded | 0.03 | 1 row |
 
 
 ## 238 · refresh-mv-product-images-audit
@@ -648,36 +648,36 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:16:00 | succeeded | 10.83 | 1 row |
 | 2026-11-09 08:16:00 | succeeded | 0.93 | 1 row |
 | 2026-11-09 07:16:00 | succeeded | 0.43 | 1 row |
-| 2026-11-09 06:16:00 | failed | 15.75 | job startup timeout |
 
 
 ## 241 · refresh-mv-stock-rupture-alert
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:18:00 | succeeded | 7.60 | 1 row |
 | 2026-11-09 08:18:00 | succeeded | 2.42 | 1 row |
 | 2026-11-09 07:18:00 | succeeded | 1.21 | 1 row |
-| 2026-11-09 06:18:02 | succeeded | 43.13 | 1 row |
 
 
 ## 242 · generate-blurhashes
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:10:00 | succeeded | 0.03 | 1 row |
-| 2026-11-09 08:00:01 | succeeded | 0.08 | 1 row |
-| 2026-11-09 07:50:00 | succeeded | 0.09 | 1 row |
+| 2026-11-09 09:10:00 | succeeded | 0.04 | 1 row |
+| 2026-11-09 09:00:00 | succeeded | 0.02 | 1 row |
+| 2026-11-09 08:50:00 | succeeded | 0.05 | 1 row |
 
 
 ## 243 · hash-product-images
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:11:00 | succeeded | 0.11 | 1 row |
-| 2026-11-09 07:56:00 | succeeded | 0.10 | 1 row |
-| 2026-11-09 07:41:00 | succeeded | 0.13 | 1 row |
+| 2026-11-09 09:11:00 | succeeded | 0.04 | 1 row |
+| 2026-11-09 08:56:00 | succeeded | 0.03 | 1 row |
+| 2026-11-09 08:41:05 | succeeded | 0.51 | 1 row |
 
 
 ## 244 · refresh-category-ancestors
@@ -792,18 +792,18 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:11:00 | succeeded | 0.54 | 1 row |
 | 2026-11-08 09:11:00 | succeeded | 2.86 | 1 row |
 | 2026-11-07 09:11:00 | succeeded | 7.44 | 1 row |
-| 2026-11-06 09:11:00 | succeeded | 2.86 | 1 row |
 
 
 ## 258 · quote-followup-reminders
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:17:00 | succeeded | 0.13 | 1 row |
 | 2026-11-08 09:17:00 | succeeded | 0.02 | 1 row |
 | 2026-11-07 09:17:00 | succeeded | 0.04 | 1 row |
-| 2026-11-06 09:17:00 | succeeded | 0.03 | 1 row |
 
 
 ## 259 · refresh-analytics-mv-stock-velocity
@@ -838,63 +838,63 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:18:00 | succeeded | 0.05 | 1 row |
-| 2026-11-09 08:08:00 | succeeded | 0.03 | 1 row |
-| 2026-11-09 07:58:00 | succeeded | 0.14 | 1 row |
+| 2026-11-09 09:18:00 | succeeded | 0.18 | 1 row |
+| 2026-11-09 09:08:00 | succeeded | 0.10 | 1 row |
+| 2026-11-09 08:58:00 | succeeded | 0.09 | 1 row |
 
 
 ## 264 · sm-site-scrape-auth
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 07:59:00 | succeeded | 1.42 | 1 row |
-| 2026-11-09 07:39:00 | succeeded | 0.36 | 1 row |
-| 2026-11-09 07:19:00 | succeeded | 0.07 | 1 row |
+| 2026-11-09 08:59:00 | succeeded | 0.42 | 1 row |
+| 2026-11-09 08:39:02 | succeeded | 3.29 | 1 row |
+| 2026-11-09 08:19:00 | succeeded | 0.80 | 1 row |
 
 
 ## 265 · spot-stock-fast-sync
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:10:00 | succeeded | 9.43 | 1 row |
+| 2026-11-09 08:40:03 | succeeded | 92.55 | 1 row |
 | 2026-11-09 08:10:00 | succeeded | 1.79 | 1 row |
-| 2026-11-09 07:40:00 | succeeded | 16.50 | 1 row |
-| 2026-11-09 07:10:00 | succeeded | 2.31 | 1 row |
 
 
 ## 266 · xbz-enrich-gold-extractors
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:56:00 | succeeded | 1.30 | 1 row |
+| 2026-11-09 08:26:02 | succeeded | 3.24 | 1 row |
 | 2026-11-09 07:56:00 | succeeded | 4.02 | 1 row |
-| 2026-11-09 07:26:00 | succeeded | 0.96 | 1 row |
-| 2026-11-09 06:26:07 | succeeded | 16.72 | 1 row |
 
 
 ## 267 · reconcile-category-products-count
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:05:00 | succeeded | 0.31 | 1 row |
-| 2026-11-09 07:50:00 | succeeded | 0.74 | 1 row |
-| 2026-11-09 07:35:00 | succeeded | 0.11 | 1 row |
+| 2026-11-09 09:05:01 | succeeded | 10.75 | 1 row |
+| 2026-11-09 08:50:00 | succeeded | 0.37 | 1 row |
+| 2026-11-09 08:35:00 | succeeded | 0.24 | 1 row |
 
 
 ## 268 · xbz-image-uploader
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:13:00 | succeeded | 0.01 | 1 row |
-| 2026-11-09 08:03:00 | succeeded | 0.06 | 1 row |
-| 2026-11-09 07:53:00 | succeeded | 0.02 | 1 row |
+| 2026-11-09 09:13:01 | succeeded | 1.62 | 1 row |
+| 2026-11-09 09:03:00 | succeeded | 0.07 | 1 row |
+| 2026-11-09 08:53:00 | succeeded | 0.04 | 1 row |
 
 
 ## 269 · xbz-site-scrape
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:01:00 | succeeded | 11.57 | 1 row |
+| 2026-11-09 08:31:00 | succeeded | 11.50 | 1 row |
 | 2026-11-09 08:01:01 | succeeded | 24.61 | 1 row |
-| 2026-11-09 07:31:00 | succeeded | 0.78 | 1 row |
-| 2026-11-09 06:31:00 | succeeded | 87.76 | 1 row |
 
 
 ## 271 · cleanup-log-tables-weekly
@@ -917,9 +917,9 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:17:00 | succeeded | 2.77 | 1 row |
-| 2026-11-09 08:02:05 | succeeded | 9.38 | 1 row |
-| 2026-11-09 07:47:00 | succeeded | 3.91 | 1 row |
+| 2026-11-09 09:17:00 | succeeded | 4.57 | 1 row |
+| 2026-11-09 09:02:00 | succeeded | 42.62 | 1 row |
+| 2026-11-09 08:47:00 | succeeded | 3.90 | 1 row |
 
 
 ## 274 · pipeline-classify-categories
@@ -931,36 +931,36 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:06:00 | succeeded | 10.44 | 1 row |
+| 2026-11-09 08:36:00 | succeeded | 15.93 | 1 row |
 | 2026-11-09 08:06:00 | succeeded | 13.24 | 1 row |
-| 2026-11-09 07:36:00 | succeeded | 0.36 | 1 row |
-| 2026-11-09 07:06:05 | succeeded | 12.77 | 1 row |
 
 
 ## 276 · sm-site-scrape
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:16:00 | succeeded | 12.42 | 1 row |
+| 2026-11-09 08:46:00 | succeeded | 0.72 | 1 row |
 | 2026-11-09 08:16:00 | succeeded | 1.11 | 1 row |
-| 2026-11-09 07:46:00 | succeeded | 1.07 | 1 row |
-| 2026-11-09 07:16:00 | succeeded | 0.78 | 1 row |
 
 
 ## 277 · xbz-stock-sync
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:53:00 | succeeded | 6.58 | 1 row |
+| 2026-11-09 08:23:00 | succeeded | 103.54 | 1 row |
 | 2026-11-09 07:53:00 | succeeded | 26.95 | 1 row |
-| 2026-11-09 07:23:00 | succeeded | 2.90 | 1 row |
-| 2026-11-09 06:53:00 | failed | 10.63 | job startup timeout |
 
 
 ## 278 · asia-image-uploader
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:09:00 | succeeded | 60.64 | 1 row |
 | 2026-11-09 08:09:00 | succeeded | 60.17 | 1 row |
 | 2026-11-09 07:09:00 | succeeded | 60.10 | 1 row |
-| 2026-11-09 06:09:00 | failed | 11.13 | job startup timeout |
 
 
 ## 279 · vacuum-products-weekly
@@ -981,9 +981,9 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:07:00 | succeeded | 0.01 | 1 row |
 | 2026-11-09 08:07:00 | succeeded | 0.02 | 1 row |
 | 2026-11-09 07:07:00 | succeeded | 0.01 | 1 row |
-| 2026-11-09 06:07:00 | failed | 13.05 | job startup timeout |
 
 
 ## 282 · kit-component-variant-skus-refresh
@@ -999,27 +999,27 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:38:00 | succeeded | 0.05 | 1 row |
 | 2026-11-09 07:38:00 | succeeded | 0.09 | 1 row |
 | 2026-11-09 06:38:02 | succeeded | 0.47 | 1 row |
-| 2026-11-09 05:38:00 | failed | 16.11 | job startup timeout |
 
 
 ## 284 · kit-ficha-parse-site
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:33:00 | succeeded | 3.38 | 1 row |
 | 2026-11-09 07:33:00 | succeeded | 1.76 | 1 row |
 | 2026-11-09 06:33:04 | succeeded | 46.47 | 1 row |
-| 2026-11-09 05:33:01 | succeeded | 99.50 | 1 row |
 
 
 ## 285 · kit-ficha-fetch
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:12:00 | succeeded | 13.37 | 0 rows |
 | 2026-11-09 06:12:00 | failed | 13.82 | job startup timeout |
 | 2026-11-09 03:12:00 | succeeded | 7.83 | 0 rows |
-| 2026-11-09 00:12:00 | succeeded | 3.01 | 0 rows |
 
 
 ## 286 · analyze-dictionaries-daily
@@ -1067,9 +1067,9 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:47:00 | succeeded | 0.03 | 1 row |
 | 2026-11-09 07:47:00 | succeeded | 0.02 | 1 row |
 | 2026-11-09 06:47:00 | failed | 23.81 | job startup timeout |
-| 2026-11-09 05:47:04 | succeeded | 0.20 | 1 row |
 
 
 ## 292 · pipeline-health-check-4h
@@ -1106,9 +1106,9 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:05:00 | succeeded | 0.08 | 1 row |
-| 2026-11-09 07:50:00 | succeeded | 0.11 | 1 row |
-| 2026-11-09 07:35:00 | succeeded | 0.02 | 1 row |
+| 2026-11-09 09:05:01 | succeeded | 5.97 | 1 row |
+| 2026-11-09 08:50:00 | succeeded | 0.10 | 1 row |
+| 2026-11-09 08:35:00 | succeeded | 0.09 | 1 row |
 
 
 ## 297 · vacuum-high-dead-tuples
@@ -1122,9 +1122,9 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:00:00 | succeeded | 0.06 | 1 row |
 | 2026-11-08 09:00:00 | succeeded | 0.10 | 1 row |
 | 2026-11-07 09:00:00 | succeeded | 0.04 | 1 row |
-| 2026-11-06 09:00:00 | succeeded | 0.02 | 1 row |
 
 
 ## 299 · magazine-cleanup-nightly
@@ -1140,9 +1140,9 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 09:05:01 | succeeded | 8.37 | 1 row |
 | 2026-11-09 08:05:00 | succeeded | 0.08 | 1 row |
 | 2026-11-09 06:05:00 | failed | 14.00 | job startup timeout |
-| 2026-11-09 05:05:01 | succeeded | 0.64 | 1 row |
 
 
 ## 301 · magazine-partition-maintenance
@@ -1167,27 +1167,27 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-09 08:37:00 | succeeded | 1.55 | 1 row |
 | 2026-11-09 04:37:00 | succeeded | 1.55 | 1 row |
 | 2026-11-09 00:37:00 | succeeded | 0.59 | 1 row |
-| 2026-11-08 20:37:00 | succeeded | 0.51 | 1 row |
 
 
 ## 306 · anon-insert-rate-purge
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:16:00 | succeeded | 0.04 | DELETE 5 |
-| 2026-11-09 08:01:01 | succeeded | 0.17 | DELETE 18 |
-| 2026-11-09 07:46:00 | succeeded | 0.02 | DELETE 4 |
+| 2026-11-09 09:16:00 | succeeded | 0.03 | DELETE 0 |
+| 2026-11-09 09:01:00 | succeeded | 0.02 | DELETE 0 |
+| 2026-11-09 08:46:00 | succeeded | 0.02 | DELETE 0 |
 
 
 ## 307 · backfill-queue-reap-stuck
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-09 08:17:00 | succeeded | 0.45 | 1 row |
-| 2026-11-09 08:02:05 | succeeded | 3.24 | 1 row |
-| 2026-11-09 07:47:00 | succeeded | 0.66 | 1 row |
+| 2026-11-09 09:17:00 | succeeded | 1.05 | 1 row |
+| 2026-11-09 09:02:00 | succeeded | 1.06 | 1 row |
+| 2026-11-09 08:47:00 | succeeded | 0.44 | 1 row |
 
 
 ## 308 · purge-kit-save-requests
