@@ -9,7 +9,8 @@
  *  - thead (fora do scroller, em `quote-items-table-header-wrap`) permanece
  *    fixo e visível enquanto o body rola internamente.
  */
-import { test, expect, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 import { gotoAndSettle } from '../helpers/nav';
 
 const ROUTE = '/__visual/quote-view-order';

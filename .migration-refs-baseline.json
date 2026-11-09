@@ -1075,10 +1075,6 @@
     },
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
-      "ref": "supabase/migrations/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
       "ref": "supabase/migrations/20260611120000_fix_standardize_variant_fcode_fhex_swallowed_by_comment.sql"
     },
     {
@@ -1372,10 +1368,6 @@
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
       "ref": "supabase/migrations/20260610120000_silver_depara_01_apply_transform_color_resolver.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
-      "ref": "supabase/migrations/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql"
     },
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
@@ -1884,6 +1876,10 @@
     {
       "file": "inventario/branches.json",
       "ref": "supabase/migrations/20261015150000"
+    },
+    {
+      "file": "PENDENCIAS.md",
+      "ref": "supabase/migrations/20260511235970_add_categories_indexes_drift.sql"
     },
     {
       "file": "qa/reports/magazine-exhaustive-validation-2026-07-15.md",

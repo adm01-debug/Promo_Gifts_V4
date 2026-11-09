@@ -167,6 +167,7 @@ export function KitAIPromptDialog({
   const [alternativeIndex, setAlternativeIndex] = useState(0);
   const generationInFlightRef = useRef(false);
   const latestGenerationRef = useRef(0);
+  const abortControllerRef = useRef<AbortController | null>(null);
   const alternatives = useMemo(
     () => (suggestion ? resolveKitAICompositions(suggestion, catalogItems, catalogBoxes) : []),
     [catalogBoxes, catalogItems, suggestion],
@@ -192,6 +193,8 @@ export function KitAIPromptDialog({
     generationInFlightRef.current = true;
     const generation = latestGenerationRef.current + 1;
     latestGenerationRef.current = generation;
+    const ac = new AbortController();
+    abortControllerRef.current = ac;
     setLoading(true);
     setSuggestion(null);
     try {
@@ -201,6 +204,7 @@ export function KitAIPromptDialog({
           body: {
             prompt: buildStructuredPrompt({ prompt, audience, budget, style, quantity }),
           },
+          signal: ac.signal,
           // Sem isto, o corpo de um erro não-2xx some — e é ele que distingue
           // "sem chave" de "circuit breaker aberto" (ambos HTTP 503).
           preserveErrorData: true,
@@ -247,6 +251,13 @@ export function KitAIPromptDialog({
       generationInFlightRef.current = false;
       if (latestGenerationRef.current === generation) setLoading(false);
     }
+  };
+
+  const handleCancel = () => {
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = null;
+    generationInFlightRef.current = false;
+    setLoading(false);
   };
 
   const handleApply = () => {
@@ -365,6 +376,16 @@ export function KitAIPromptDialog({
               >
                 <RotateCcw className="h-4 w-4" /> Limpar campos
               </Button>
+              {loading && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleCancel}
+                  className="gap-2"
+                >
+                  Cancelar
+                </Button>
+              )}
               <Button
                 onClick={handleGenerate}
                 disabled={loading || prompt.trim().length < 6}

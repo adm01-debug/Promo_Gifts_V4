@@ -5,35 +5,37 @@
  *
  * Também verifica o tooltip do badge de status dentro da linha da tabela.
  */
-import { test, expect, requireAuth } from "../fixtures/test-base";
-import { gotoAndSettle } from "../helpers/nav";
-import { Sel } from "../fixtures/selectors";
-import { seedQuotesForStatusChips } from "../helpers/quotes-status-seed";
-import { QUOTE_ROW_BADGE_STYLES } from "../../src/components/quotes/QuotesStatusChips";
+import { test, expect, requireLiveDatabaseAuth } from '../fixtures/test-base';
+import { gotoAndSettle } from '../helpers/nav';
+import { Sel } from '../fixtures/selectors';
+import { seedQuotesForStatusChips } from '../helpers/quotes-status-seed';
+import { QUOTE_ROW_BADGE_STYLES } from '../../src/components/quotes/QuotesStatusChips';
 
 // Mapa: chave do chip → chave de QUOTE_ROW_BADGE_STYLES (espelha CHIP_TOOLTIPS).
-const CHIP_TO_BADGE: Record<string, keyof typeof QUOTE_ROW_BADGE_STYLES | "all"> = {
-  all: "all",
-  draft: "draft",
-  unsynced: "unsynced",
-  created_synced: "synced",
-  pending_approval: "awaiting",
-  expired: "expired",
+const CHIP_TO_BADGE: Record<string, keyof typeof QUOTE_ROW_BADGE_STYLES | 'all'> = {
+  all: 'all',
+  draft: 'draft',
+  unsynced: 'unsynced',
+  created_synced: 'synced',
+  pending_approval: 'awaiting',
+  expired: 'expired',
 };
 
-const ALL_COPY = "Mostra todos os seus orçamentos, em qualquer fase.";
+const ALL_COPY = 'Mostra todos os seus orçamentos, em qualquer fase.';
 
-test.describe("Fluxo: tooltips didáticos de status de orçamentos", () => {
-  test.beforeEach(() => requireAuth());
+test.describe('Fluxo: tooltips didáticos de status de orçamentos', () => {
+  test.beforeEach(() => requireLiveDatabaseAuth());
 
-  test("hover e focus em cada chip exibem o tooltip Radix com o texto canônico", async ({
+  test('hover e focus em cada chip exibem o tooltip Radix com o texto canônico', async ({
     page,
   }) => {
-    await gotoAndSettle(page, "/orcamentos");
+    await gotoAndSettle(page, '/orcamentos');
     const seed = await seedQuotesForStatusChips(page);
-    if (seed.skipped != null) { test.skip(true, `seed falhou: ${seed.skipped}`); }
-    await gotoAndSettle(page, "/orcamentos");
-    await expect(page.locator(Sel.page.title("orcamentos")).first()).toBeVisible({
+    if (seed.skipped != null) {
+      test.skip(true, `seed falhou: ${seed.skipped}`);
+    }
+    await gotoAndSettle(page, '/orcamentos');
+    await expect(page.locator(Sel.page.title('orcamentos')).first()).toBeVisible({
       timeout: 10_000,
     });
 
@@ -41,8 +43,7 @@ test.describe("Fluxo: tooltips didáticos de status de orçamentos", () => {
       const chip = page.locator(Sel.quotesList.chip(chipKey));
       if ((await chip.count()) === 0) continue; // chip oculto quando count=0
 
-      const expected =
-        badgeKey === "all" ? ALL_COPY : QUOTE_ROW_BADGE_STYLES[badgeKey].description;
+      const expected = badgeKey === 'all' ? ALL_COPY : QUOTE_ROW_BADGE_STYLES[badgeKey].description;
 
       // Hover dispara o tooltip Radix.
       await chip.hover();
@@ -57,23 +58,25 @@ test.describe("Fluxo: tooltips didáticos de status de orçamentos", () => {
       // Foco por teclado também precisa abrir o tooltip (a11y).
       await chip.focus();
       await expect(tooltip).toBeVisible({ timeout: 2_000 });
-      await page.keyboard.press("Escape");
+      await page.keyboard.press('Escape');
     }
   });
 
-  test("badge de status dentro da linha exibe tooltip ao hover", async ({ page }) => {
-    await gotoAndSettle(page, "/orcamentos");
+  test('badge de status dentro da linha exibe tooltip ao hover', async ({ page }) => {
+    await gotoAndSettle(page, '/orcamentos');
     const seed = await seedQuotesForStatusChips(page);
-    if (seed.skipped != null) { test.skip(true, `seed falhou: ${seed.skipped}`); }
-    await gotoAndSettle(page, "/orcamentos");
+    if (seed.skipped != null) {
+      test.skip(true, `seed falhou: ${seed.skipped}`);
+    }
+    await gotoAndSettle(page, '/orcamentos');
 
     // Pega o primeiro badge visível de qualquer status conhecido.
     const knownKeys: Array<keyof typeof QUOTE_ROW_BADGE_STYLES> = [
-      "draft",
-      "unsynced",
-      "synced",
-      "awaiting",
-      "expired",
+      'draft',
+      'unsynced',
+      'synced',
+      'awaiting',
+      'expired',
     ];
     for (const key of knownKeys) {
       const badge = page.locator(Sel.quotesList.statusBadge(key)).first();
@@ -85,6 +88,6 @@ test.describe("Fluxo: tooltips didáticos de status de orçamentos", () => {
       await expect(tip).toHaveText(QUOTE_ROW_BADGE_STYLES[key].description);
       return;
     }
-    throw new Error("nenhum badge de status conhecido foi encontrado na lista");
+    throw new Error('nenhum badge de status conhecido foi encontrado na lista');
   });
 });

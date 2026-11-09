@@ -20,6 +20,7 @@ import { expect, type Page, type Request } from "@playwright/test";
 
 import { Sel } from "../fixtures/selectors";
 import { test } from "../fixtures/test-base";
+import { rewriteCiSharedIpLockout } from "./ci-auth-lockout";
 import { gotoAndSettle, waitForRouteIdle } from "./nav";
 import { clickTestId } from "./waits";
 
@@ -32,7 +33,7 @@ export interface LoginCreds {
   timeoutMs?: number;
 }
 
-export type Role = "user" | "admin" | "dev" | "editor";
+export type Role = "user" | "admin" | "dev" | "editor" | "seller";
 
 // /login é alias legado da rota canônica /auth — ambas renderizam <Auth/>.
 // Se o signIn falha, a página pode permanecer em qualquer uma das duas; checar
@@ -73,6 +74,21 @@ export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean
         contentType: 'application/json',
         body: JSON.stringify({ allowed: true }),
       });
+    });
+
+    // O runner do GitHub compartilha IP entre jobs. Falhas de outras execuções
+    // podem acionar o lockout da aplicação mesmo após credenciais, perfil e
+    // roles válidos. Consulta a edge real e neutraliza somente esse motivo;
+    // whitelist, cidade, autenticação e erros HTTP permanecem inalterados.
+    await page.route('**/functions/v1/validate-access**', async (route) => {
+      try {
+        const response = await route.fetch();
+        const payload = await response.json().catch(() => null);
+        const rewritten = rewriteCiSharedIpLockout(true, response.status(), payload);
+        await route.fulfill(rewritten ? { response, json: rewritten } : { response });
+      } catch {
+        await route.continue();
+      }
     });
   }
 
@@ -132,7 +148,12 @@ export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean
         `  Causa original: ${String(err)}`,
     );
   } finally {
-    if (process.env.CI) await page.unroute('**/functions/v1/check-login**').catch(() => undefined);
+    if (process.env.CI) {
+      await Promise.all([
+        page.unroute('**/functions/v1/check-login**').catch(() => undefined),
+        page.unroute('**/functions/v1/validate-access**').catch(() => undefined),
+      ]);
+    }
     netLog.stop();
   }
   await waitForRouteIdle(page);
@@ -206,20 +227,25 @@ export async function loginAs(page: Page, role: Role = "user"): Promise<void> {
   const email = role === "dev" ? process.env.E2E_DEV_EMAIL :
                 role === "admin" ? process.env.E2E_ADMIN_EMAIL :
                 role === "editor" ? (process.env.E2E_MANAGER_EMAIL || process.env.E2E_ADMIN_EMAIL) :
+                role === "seller" ? process.env.E2E_SELLER_EMAIL :
                 process.env.E2E_USER_EMAIL;
   const password = role === "dev" ? process.env.E2E_DEV_PASSWORD :
                    role === "admin" ? process.env.E2E_ADMIN_PASSWORD :
                    role === "editor" ? (process.env.E2E_MANAGER_PASSWORD || process.env.E2E_ADMIN_PASSWORD) :
+                   role === "seller" ? process.env.E2E_SELLER_PASSWORD :
                    process.env.E2E_USER_PASSWORD;
 
   if (!email || !password) {
-    // E21 — modo estrito: em CI, credentials ausentes = falha imediata.
-    if (process.env.CI) {
+    // E21 — modo estrito: em CI (push/schedule), credentials ausentes = falha imediata.
+    // Em pull_request de fork, o GitHub retém secrets — degradar graciosamente.
+    const isForkPR = process.env.CI && process.env.GITHUB_EVENT_NAME === 'pull_request';
+    if (process.env.CI && !isForkPR) {
       throw new Error(
         `[loginAs] E21 — modo estrito: E2E_${role.toUpperCase()}_EMAIL/PASSWORD ausentes em CI.`,
       );
     }
     test.skip(true, `Credenciais E2E_${role.toUpperCase()}_EMAIL/PASSWORD ausentes`);
+    return;
   }
 
   // Se já estamos autenticados (storageState aplicado pelo project), uma

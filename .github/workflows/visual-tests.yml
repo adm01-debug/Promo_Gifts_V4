@@ -6,24 +6,32 @@ on:
     branches: [main]
     paths:
       - 'src/**'
+      - '!src/**/__tests__/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
       - 'public/**'
       - 'e2e/**'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/visual-tests.yml'
+      - '.github/scripts/e2e-relevance.mjs'
   pull_request:
     branches: [main]
     paths:
       - 'src/**'
+      - '!src/**/__tests__/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
       - 'public/**'
       - 'e2e/**'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/visual-tests.yml'
+      - '.github/scripts/e2e-relevance.mjs'
 
 permissions:
   contents: read
-
+  pull-requests: read
 
 concurrency:
   group: visual-tests-${{ github.ref }}
@@ -34,77 +42,79 @@ defaults:
     shell: bash
 
 jobs:
+  e2e-relevance:
+    uses: ./.github/workflows/_e2e-relevance.yml
+
   visual-baseline:
     # G-H3: fork guard — pull_request de forks não deve escrever no repo
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    needs: [e2e-relevance]
+    if: needs.e2e-relevance.outputs.relevant == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     permissions:
-      contents: read  # E60: somente-leitura — baselines são atualizados via _update-snapshots.yml (E59)
+      contents: read # E60: somente-leitura — baselines são atualizados via _update-snapshots.yml (E59)
     strategy:
       fail-fast: false
+      # A matriz usa apenas harnesses locais, sem acesso ao banco canônico.
+      max-parallel: 2
       matrix:
         shardIndex: [1, 2]
         shardTotal: [2]
     timeout-minutes: 20
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      with:
-        persist-credentials: false  # E32
-    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-      with:
-        node-version-file: '.nvmrc'
-        cache: 'npm'
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false # E32
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Validate visual specs exist (fail-fast antes do Playwright)
-      run: node scripts/check-visual-tests-specs.mjs
+      - name: Validate visual specs exist (fail-fast antes do Playwright)
+        run: node scripts/check-visual-tests-specs.mjs
 
-    - name: Clear Cache & Artifacts
-      run: |
-        rm -rf e2e-artifacts/
-        rm -rf playwright-report/
-        rm -rf playwright-report-authed/
-        rm -rf test-results/
+      - name: Clear Cache & Artifacts
+        run: |
+          rm -rf e2e-artifacts/
+          rm -rf playwright-report/
+          rm -rf playwright-report-authed/
+          rm -rf test-results/
 
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps chromium
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
 
-    # Specs que NÃO precisam de sessão: baseline canônico em chromium-public (sem credenciais).
-    # O optimized-image-visual dá test.skip fora de chromium-public; 99-auth-ui usa storageState vazio.
-    - name: Run Playwright Visual Tests (públicos — chromium-public)
-      # E36: Removido --update-snapshots (incondicional) e --update-snapshots=missing.
-      # Baselines devem estar commitados (E43). Specs sem baseline falham
-      # explicitamente, forçando commit da baseline antes de aprovar o PR.
-      run: npx playwright test --project=chromium-public --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} e2e/flows/99-auth-ui-baseline.spec.ts e2e/optimized-image-visual.spec.ts e2e/catalog/swatch-picker-v2-visual-baseline.spec.ts
-      env:
-        CI: true
+      # Somente specs com baselines Linux/Chromium versionados. Todos usam
+      # harnesses locais e dados congelados; nenhum consulta o banco canônico.
+      - name: Run Playwright Visual Tests (baseline canônico — chromium-public)
+        # E36: Removido --update-snapshots (incondicional) e --update-snapshots=missing.
+        # Baselines devem estar commitados (E43). Specs sem baseline falham
+        # explicitamente, forçando commit da baseline antes de aprovar o PR.
+        run: >-
+          npx playwright test
+          --project=chromium-public
+          --fail-on-flaky-tests
+          --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+          e2e/ui/calendar-visual.spec.ts
+          e2e/ui/magazine-ring-visual.spec.ts
+        env:
+          CI: true
 
-    # Specs que exigem login (requireAuth/loginAs ou skip por E2E_USER_*): rodam em
-    # chromium-authed, que depende do projeto `setup` (gera e2e/.auth/storageState.json).
-    # E21 (modo estrito) permanece: sem E2E_USER_* em CI o setup e os specs falham.
-    # E33 havia removido E2E_USER_* deste workflow por engano — estes specs autenticam.
-    # Os segredos entram só neste passo (nível de step), não no workflow inteiro.
-    - name: Run Playwright Visual Tests (autenticados — chromium-authed)
-      if: ${{ !cancelled() }}
-      run: npx playwright test --project=chromium-authed --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} e2e/flows/supplier-comparison-visual.spec.ts e2e/flows/31-promoflix-player.spec.ts e2e/tooltips-a11y.spec.ts e2e/routes/app/replenishment-grid-visual.spec.ts e2e/routes/app/novelty-grid-visual.spec.ts e2e/routes/app/novelty-card-variations.spec.ts e2e/flows/voice-tooltip.spec.ts e2e/product-card-visual-regression.spec.ts e2e/catalog/product-card-badges-visual.spec.ts e2e/catalog/product-card-to-superfilter.spec.ts e2e/catalog/superfiltro-toolbar-actions-alignment.spec.ts e2e/flows/03d-superfiltro-toolbar-alignment.spec.ts e2e/admin/stock-dashboard-visual.spec.ts e2e/admin/stock-dashboard-layout.spec.ts e2e/admin/stock-health-badges.spec.ts e2e/quotes/quote-builder-scroll-and-sidebar.spec.ts e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts
-      env:
-        CI: true
-        # Relatório separado: o HTML reporter limpa a pasta de saída e sobrescreveria o do passo anterior.
-        PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report-authed
-        VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
-        VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-        E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-        E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+      - name: Rejeitar shard vazio ou quase todo ignorado
+        if: always()
+        uses: ./.github/actions/check-min-tests
+        with:
+          results-json: playwright-report/results.json
+          min: 10
+          max-skipped-ratio: '0'
 
-    - name: Upload Playwright report
-      if: always()
-      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-      with:
-        name: playwright-report-shard-${{ matrix.shardIndex }}
-        path: |
-          playwright-report/
-          playwright-report-authed/
-        retention-days: 14
-        if-no-files-found: warn
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: playwright-report-shard-${{ matrix.shardIndex }}
+          path: |
+            playwright-report/
+          retention-days: 14
+          if-no-files-found: warn

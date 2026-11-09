@@ -11,7 +11,7 @@
  *     `sync` foi removido: era ambíguo e nunca foi usado em produção.
  */
 
-import { z } from "https://esm.sh/zod@3.23.8";
+import { z } from "npm:zod@3.23.8";
 
 const JsonPrimitive = z.union([z.string(), z.number(), z.boolean(), z.null()]);
 type JsonValue = z.infer<typeof JsonPrimitive> | { [key: string]: JsonValue } | JsonValue[];

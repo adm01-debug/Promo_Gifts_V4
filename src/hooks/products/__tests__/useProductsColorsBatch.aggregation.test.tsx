@@ -94,6 +94,43 @@ beforeEach(() => {
 });
 
 describe('useProductsColorsBatch — agregação (SSOT de cor/estoque)', () => {
+  it('busca cores ao trocar para um conjunto de produtos ainda não cacheado', async () => {
+    const firstId = uuid();
+    const secondId = uuid();
+    __rows = [
+      {
+        product_id: firstId,
+        color_name: 'Azul',
+        color_hex: '#00f',
+        selected_thumbnail: null,
+        images: null,
+        stock_quantity: 1,
+      },
+    ];
+
+    const { result, rerender } = renderHook(
+      ({ ids }: { ids: string[] }) => useProductsColorsBatch(ids),
+      { wrapper, initialProps: { ids: [firstId] } },
+    );
+    await waitFor(() => expect(result.current.data.get(firstId)?.[0]?.name).toBe('Azul'));
+
+    __rows = [
+      {
+        product_id: secondId,
+        color_name: 'Verde',
+        color_hex: '#0f0',
+        selected_thumbnail: null,
+        images: null,
+        stock_quantity: 2,
+      },
+    ];
+    __rangeCalls = 0;
+    rerender({ ids: [secondId] });
+
+    await waitFor(() => expect(result.current.data.get(secondId)?.[0]?.name).toBe('Verde'));
+    expect(result.current.data.has(firstId)).toBe(false);
+  });
+
   it('SOMA stockQty por (nome|hex)', async () => {
     const colors = await runFor([
       { color_name: 'Azul', color_hex: '#00f', selected_thumbnail: 'a.png', stock_quantity: 5 },

@@ -1,4 +1,4 @@
-import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2.49.4";
 import { getCorsHeaders, handleCorsPreflight } from "../_shared/cors.ts";
 import { authorize } from "../_shared/authorize.ts";
 import { createStructuredLogger } from '../_shared/structured-logger.ts';

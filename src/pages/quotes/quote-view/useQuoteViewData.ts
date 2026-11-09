@@ -1,7 +1,7 @@
 /**
  * Hook to manage QuoteViewPage state and data fetching.
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useQuotes, type Quote } from '@/hooks/quotes';
@@ -23,22 +23,74 @@ type QuoteClientCompany = {
   bitrix_id?: number | string | null;
 };
 
+export const QUOTE_VIEW_LOAD_TIMEOUT_MS = 8_000;
+
+class QuoteViewLoadTimeoutError extends Error {
+  constructor() {
+    super('A consulta excedeu o tempo máximo de 8 segundos.');
+    this.name = 'QuoteViewLoadTimeoutError';
+  }
+}
+
+async function withQuoteLoadTimeout<T>(promise: Promise<T>): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(() => reject(new QuoteViewLoadTimeoutError()), QUOTE_VIEW_LOAD_TIMEOUT_MS);
+      }),
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
 export function useQuoteViewData(id: string | undefined) {
   const { fetchQuote, logQuoteHistory, duplicateQuote, deleteQuote } = useQuotes();
   const { user, profile } = useAuth();
 
   const [quote, setQuote] = useState<Quote | null>(null);
   const [isLoadingQuote, setIsLoadingQuote] = useState(true);
+  const [quoteLoadError, setQuoteLoadError] = useState<string | null>(null);
   const [clientCnpj, setClientCnpj] = useState<string | undefined>(undefined);
   const [bitrixCompanyId, setBitrixCompanyId] = useState<string | null>(null);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [syncingTarget, setSyncingTarget] = useState<'all' | 'bitrix' | 'pc' | null>(null);
   const isSyncing = syncingTarget !== null;
+  const loadRequestRef = useRef(0);
 
   const loadQuote = useCallback(async () => {
-    if (!id) return;
+    const requestId = ++loadRequestRef.current;
+    if (!id) {
+      setQuote(null);
+      setQuoteLoadError(null);
+      setIsLoadingQuote(false);
+      return;
+    }
+
     setIsLoadingQuote(true);
-    const data = await fetchQuote(id);
+    setQuoteLoadError(null);
+    setClientCnpj(undefined);
+    setBitrixCompanyId(null);
+
+    let data: Quote | null;
+    try {
+      data = await withQuoteLoadTimeout(fetchQuote(id));
+    } catch (error) {
+      if (requestId !== loadRequestRef.current) return;
+      const message =
+        error instanceof QuoteViewLoadTimeoutError
+          ? 'A consulta demorou mais de 8 segundos. Verifique a conexão e tente novamente.'
+          : 'Ocorreu um erro inesperado. Tente novamente.';
+      setQuote(null);
+      setQuoteLoadError(message);
+      toast.error('Não foi possível carregar o orçamento', { description: message });
+      setIsLoadingQuote(false);
+      return;
+    }
+
+    if (requestId !== loadRequestRef.current) return;
     setQuote(data);
     setIsLoadingQuote(false);
     // Prefer CNPJ stored on the quote (snapshot at creation) over live company data.
@@ -50,7 +102,7 @@ export function useQuoteViewData(id: string | undefined) {
         // source of truth and may have been intentionally cleared (clearable-CNPJ migrations
         // 20260620120000/160000). Re-filling it here would resurrect a CNPJ the user removed.
         const bId = company?.bitrix_company_id ?? company?.bitrix_id;
-        if (bId) setBitrixCompanyId(String(bId));
+        if (bId && requestId === loadRequestRef.current) setBitrixCompanyId(String(bId));
       } catch {
         // Company not found
       }
@@ -58,8 +110,11 @@ export function useQuoteViewData(id: string | undefined) {
   }, [fetchQuote, id]);
 
   useEffect(() => {
-    if (id) void loadQuote();
-  }, [id, loadQuote]);
+    void loadQuote();
+    return () => {
+      loadRequestRef.current += 1;
+    };
+  }, [loadQuote]);
 
   const proposalData: ProposalTemplateData | null = useMemo(() => {
     if (!quote) return null;
@@ -307,6 +362,8 @@ export function useQuoteViewData(id: string | undefined) {
     quote,
     setQuote,
     isLoadingQuote,
+    quoteLoadError,
+    loadQuote,
     clientCnpj,
     bitrixCompanyId,
     isGeneratingPDF,

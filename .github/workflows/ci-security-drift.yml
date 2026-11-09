@@ -150,14 +150,35 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          # O app Vite lê apenas VITE_SUPABASE_*; manter os aliases legados
+          # acima para helpers Node que ainda consomem SUPABASE_*.
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || secrets.SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || secrets.SUPABASE_ANON_KEY }}
 
       # R5 — credenciais E2E escopadas apenas ao step que as usa.
-      - name: Run E2E Critical Tests — specs autenticados
+      # O gate usa rotas críticas tolerantes ao tempo de hidratação do backend,
+      # sem transformar falha real de autenticação em skip ou retry silencioso.
+      - name: Auth Security Smoke — sessão, catálogo e kit
         if: ${{ env.E2E_HAS_CREDS == 'true' }}
-        run: npx playwright test --project=chromium-authed e2e/catalog.spec.ts e2e/kit-builder.spec.ts
+        run: |
+          npx playwright test --project=chromium-smoke \
+            e2e/smoke.spec.ts \
+            e2e/flows/20-all-features-smoke.spec.ts \
+            --grep 'deve realizar login com sucesso|00 · Sessão autenticada carregada|03 ·|20 ·'
+
+          node --input-type=module -e '
+            import fs from "node:fs";
+            const { stats } = JSON.parse(fs.readFileSync("playwright-report/results.json", "utf8"));
+            if (stats.skipped > 0 || stats.unexpected > 0 || stats.expected < 5) {
+              console.error("Auth smoke incompleto: " + JSON.stringify(stats));
+              process.exit(1);
+            }
+          '
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || secrets.SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || secrets.SUPABASE_ANON_KEY }}
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 

@@ -13,7 +13,7 @@
  *     --project=chromium-public --update-snapshots
  *   (repetir para firefox-public e webkit-public)
  */
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 import { gotoAndSettle } from '../helpers/nav';
 
 const ROUTE = '/__visual/quote-view-order';
@@ -36,7 +36,11 @@ test.describe('@visual sidebar sticky', () => {
     await gotoAndSettle(page, ROUTE);
     await expect(page.getByTestId('quote-view-order-harness')).toBeVisible();
     // Garante que fontes/imagens da sidebar estabilizaram antes do snapshot.
-    await page.evaluate(() => document.fonts && (document as unknown as { fonts: { ready: Promise<unknown> } }).fonts.ready);
+    await page.evaluate(
+      () =>
+        document.fonts &&
+        (document as unknown as { fonts: { ready: Promise<unknown> } }).fonts.ready,
+    );
   });
 
   test('sidebar antes do scroll', async ({ page }) => {

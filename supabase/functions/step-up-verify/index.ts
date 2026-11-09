@@ -3,7 +3,7 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 // Audit log: registra TODAS as transições do fluxo (requested, password_verified,
 // password_failed, otp_failed, issued, cancelled, unauthorized) com action,
 // target_ref e action_label para rastreabilidade humana.
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { castRpcResult } from "../_shared/supabase-client-adapter.ts";
 import { parseContract } from "../_shared/contracts/index.ts";
 import {

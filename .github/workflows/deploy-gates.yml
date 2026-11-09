@@ -55,6 +55,7 @@ concurrency:
 
 permissions:
   contents: read
+  pull-requests: read
 
 
 defaults:
@@ -78,7 +79,7 @@ jobs:
           persist-credentials: false
       - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         id: filter
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
         with:
           filters: |
             code:
@@ -107,6 +108,9 @@ jobs:
           else
             echo "docs_only=false" >> "$GITHUB_OUTPUT"
           fi
+
+  e2e-relevance:
+    uses: ./.github/workflows/_e2e-relevance.yml
 
   # ============================================================
   # GATE 0: SSOT Supabase — DEVE PASSAR antes de todos os outros
@@ -530,8 +534,8 @@ jobs:
   e2e-smoke:
     name: Gate 3 - E2E Smoke
     runs-on: ubuntu-24.04
-    timeout-minutes: 20  # E24: E2E shard ≤ 20 min (aumentado de 15 — smoke levava ~14.5 min na prática)
-    needs: [ssot-gate, secrets-check, changes]
+    timeout-minutes: 30  # E24: E2E shard ≤ 30 min (aumentado de 20 — smoke estourou 20 min em 22:39Z por saturação Auth transitória)
+    needs: [ssot-gate, secrets-check, changes, e2e-relevance]
     if: always() && needs.ssot-gate.result == 'success' && needs.secrets-check.result == 'success' && (needs.changes.result == 'skipped' || needs.changes.outputs.docs_only != 'true')
     # E015+E14: sem guard de auth — Gate 3 executa quando há código; docs-only faz skip gracioso
     env:
@@ -542,22 +546,30 @@ jobs:
         with:
           persist-credentials: false  # E32
       - name: Setup Node CI
+        if: needs.e2e-relevance.outputs.relevant != 'false'
         uses: ./.github/actions/setup-node-ci
       - name: Cache Playwright browsers
+        if: needs.e2e-relevance.outputs.relevant != 'false'
         id: cache-playwright
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
       - name: Install Playwright browsers
-        if: steps.cache-playwright.outputs.cache-hit != 'true'
+        if: needs.e2e-relevance.outputs.relevant != 'false' && steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
       # E16: checks de smoke migrados de e2e.yml (único dono de chromium-smoke).
       - name: Validar doc de auditoria do smoke (drift check)
+        if: needs.e2e-relevance.outputs.relevant != 'false'
         run: node scripts/e2e-smoke-coverage-doc.mjs --check
       - name: Validar tags @smoke no spec do gate
+        if: needs.e2e-relevance.outputs.relevant != 'false'
         run: node scripts/check-smoke-tags.mjs
+      - name: Bypass E2E para mudança exclusivamente unitária
+        if: needs.e2e-relevance.outputs.relevant == 'false'
+        run: echo "::notice::Mudança sem impacto de runtime/E2E; Gate 3 aprovado sem acessar o Supabase de produção."
       - name: Run Playwright smoke tests
+        if: needs.e2e-relevance.outputs.relevant != 'false'
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
@@ -774,7 +786,7 @@ jobs:
             BASE="HEAD~1"
           fi
           changed=$(git diff --name-only "${BASE}...${HEAD_SHA}" 2>/dev/null | \
-            grep -cE '^supabase/(migrations/|baseline/|config\.toml)|^scripts/drift-baseline\.mjs|\.github/workflows/db-schema-drift-check\.yml' \
+            grep -cE '^supabase/(migrations/|baseline/|config\.toml)|^scripts/(drift-baseline|check-event-triggers-drift|check-cron-drift)\.mjs|\.github/workflows/db-schema-drift-check\.yml' \
             || echo 0)
           if [ "$changed" -gt 0 ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"

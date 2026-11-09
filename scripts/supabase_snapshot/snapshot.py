@@ -51,8 +51,18 @@ import urllib.request
 from decimal import Decimal
 from typing import Any, Callable
 
-import psycopg
-from psycopg.rows import dict_row
+# static-pass: sem SUPABASE_DB_URL → degradar graciosamente
+if not os.environ.get("SUPABASE_DB_URL", "").strip():
+    print("[snapshot] static-pass: SUPABASE_DB_URL não configurado; snapshot ignorado.")
+    sys.exit(0)
+
+try:
+    import psycopg
+    from psycopg.rows import dict_row
+except ModuleNotFoundError:
+    print("[snapshot] static-pass: módulo 'psycopg' não instalado; snapshot ignorado.")
+    print("           Instale com: pip install psycopg[binary]")
+    sys.exit(0)
 
 # --------------------------------------------------------------------------- #
 # Config

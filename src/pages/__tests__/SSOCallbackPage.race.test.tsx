@@ -18,6 +18,13 @@ const navigateMock = vi.fn();
 let refreshSessionImpl: () => Promise<void>;
 const refreshSessionMockA = vi.fn();
 const refreshSessionMockB = vi.fn();
+const signOutMock = vi.fn().mockResolvedValue(undefined);
+const validateIPForAuthenticatedUserMock = vi.fn().mockResolvedValue({
+  isAllowed: true,
+  hasRestrictions: false,
+  currentIP: '127.0.0.1',
+});
+const checkDeviceMock = vi.fn().mockResolvedValue(undefined);
 
 const exchangeCodeForSessionMock = vi.fn();
 const getSessionMock = vi.fn();
@@ -32,7 +39,19 @@ vi.mock('react-router-dom', async () => {
 // A cada render, useAuth devolve a identidade ATUAL de refreshSession —
 // simula o useCallback([user,...]) do AuthContext mudando quando o user chega.
 vi.mock('@/contexts/AuthContext', () => ({
-  useAuth: () => ({ refreshSession: refreshSessionImpl }),
+  useAuth: () => ({ refreshSession: refreshSessionImpl, signOut: signOutMock }),
+}));
+
+vi.mock('@/hooks/admin/useIPValidation', () => ({
+  useIPValidation: () => ({ validateIPForAuthenticatedUser: validateIPForAuthenticatedUserMock }),
+}));
+
+vi.mock('@/hooks/admin/useDeviceDetection', () => ({
+  useDeviceDetection: () => ({ checkDevice: checkDeviceMock }),
+}));
+
+vi.mock('@/lib/edge/safeInvokeCall', () => ({
+  invokeEdge: vi.fn().mockResolvedValue({ data: null, error: null }),
 }));
 
 vi.mock('@/integrations/supabase/client', () => ({
@@ -63,6 +82,9 @@ describe('SSOCallbackPage — race de identidade de deps', () => {
     navigateMock.mockClear();
     refreshSessionMockA.mockReset().mockResolvedValue(undefined);
     refreshSessionMockB.mockReset().mockResolvedValue(undefined);
+    signOutMock.mockClear();
+    validateIPForAuthenticatedUserMock.mockClear();
+    checkDeviceMock.mockClear();
     refreshSessionImpl = refreshSessionMockA;
     exchangeCodeForSessionMock.mockReset();
     getSessionMock.mockReset();
