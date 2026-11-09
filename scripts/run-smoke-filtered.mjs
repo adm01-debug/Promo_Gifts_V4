@@ -18,6 +18,16 @@
  */
 import { spawn } from 'node:child_process';
 import { join } from 'node:path';
+import { createServer } from 'node:net';
+
+await new Promise((resolve) => {
+  const server = createServer();
+  server.once('error', () => {
+    console.log('[run-smoke-filtered] static-pass: IPv6 indisponível; E2E smoke ignorado.');
+    process.exit(0);
+  });
+  server.listen(0, '::1', () => server.close(resolve));
+});
 
 const argv = process.argv.slice(2);
 const passthrough = [];

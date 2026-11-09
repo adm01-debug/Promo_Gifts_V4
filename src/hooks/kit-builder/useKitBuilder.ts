@@ -200,18 +200,27 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       isValid: validationErrors.length === 0,
       validationErrors,
     };
-  }, [kitName, kitType, kitOrigin, selectedBox, selectedItems, personalization, kitQuantity, identity, notes]);
+  }, [
+    kitName,
+    kitType,
+    kitOrigin,
+    selectedBox,
+    selectedItems,
+    personalization,
+    kitQuantity,
+    identity,
+    notes,
+  ]);
+
+  const completedSteps = useMemo((): KitBuilderStep[] => {
+    const steps: KitBuilderStep[] = [];
+    if (selectedBox) steps.push('box');
+    if (selectedItems.length > 0) steps.push('items');
+    if (personalizationReviewed) steps.push('personalization');
+    return steps;
+  }, [selectedBox, selectedItems.length, personalizationReviewed]);
 
   const wizardState = useMemo((): KitBuilderWizardState => {
-    const completedSteps: KitBuilderStep[] = [];
-
-    if (selectedBox) completedSteps.push('box');
-    if (selectedItems.length > 0) completedSteps.push('items');
-
-    if (personalizationReviewed) {
-      completedSteps.push('personalization');
-    }
-
     let canProceed = false;
     switch (currentStep) {
       case 'box':
@@ -238,7 +247,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       canProceed,
       flow,
     };
-  }, [currentStep, selectedBox, selectedItems, personalizationReviewed, kitState, flow]);
+  }, [currentStep, completedSteps, selectedBox, selectedItems, kitState, flow]);
 
   // ============================================
   // AÇÕES
@@ -481,9 +490,13 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     }));
   }, []);
 
-  const goToStep = useCallback((step: KitBuilderStep) => {
-    setCurrentStep(step);
-  }, []);
+  const goToStep = useCallback(
+    (step: KitBuilderStep) => {
+      if (step !== currentStep && !completedSteps.includes(step)) return;
+      setCurrentStep(step);
+    },
+    [completedSteps, currentStep],
+  );
 
   const nextStep = useCallback(() => {
     const steps: KitBuilderStep[] =

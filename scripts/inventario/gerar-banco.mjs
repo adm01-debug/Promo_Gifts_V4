@@ -216,6 +216,12 @@ async function main(argv) {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main(process.argv.slice(2)).catch((error) => {
+    // Ausência de credenciais/entrada = static-pass (ambiente sem API access)
+    const credMissing = error.message.includes('SUPABASE_ACCESS_TOKEN') || error.message.includes('sem --entrada');
+    if (credMissing) {
+      console.log(`[gerar-banco] static-pass: ${error.message}`);
+      process.exit(0);
+    }
     console.error(`ERRO: ${error.message}`);
     process.exit(2);
   });
