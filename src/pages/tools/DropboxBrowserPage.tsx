@@ -46,6 +46,13 @@ export default function DropboxBrowserPage() {
           path="/dropbox"
           noIndex
         />
+        <h1
+          data-testid="page-title-dropbox"
+          className="flex items-center gap-2 font-display text-2xl font-bold text-foreground"
+        >
+          <Cloud className="h-6 w-6" />
+          Dropbox
+        </h1>
         <EdgeFallback
           variant="disconnected"
           title="Dropbox não conectado"
