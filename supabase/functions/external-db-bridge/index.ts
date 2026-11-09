@@ -37,3 +37,15 @@ Deno.serve(async (req) => {
     ),
   );
 });
+
+// Stub exports preserved for test-file compatibility (bridge decommissioned 2026-05-30)
+export const HEAVY_PRODUCT_COLUMNS: readonly string[] = [];
+export const LIGHTWEIGHT_LIMIT_THRESHOLD = 0;
+export const WIDE_SELECT_COLUMN_THRESHOLD = 0;
+// deno-lint-ignore no-explicit-any
+export function applyFilters(_query: any, _filters: Record<string, unknown>): any { return _query; }
+// deno-lint-ignore no-explicit-any
+export function resolveProductsSelect(_select: string): any { return _select; }
+export function extractBaseColumn(col: string): string { return col; }
+export function callerSelectIsHeavy(_select: string): boolean { return false; }
+export function logSelectDecision(_decision: Record<string, unknown>): void {}

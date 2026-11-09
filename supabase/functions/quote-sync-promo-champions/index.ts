@@ -10,7 +10,7 @@ import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { resolveCredential } from "../_shared/credentials.ts";
 
 const cors = buildPublicCorsHeaders({ allowMethods: "POST, OPTIONS" });
-const baseLog = createStructuredLogger("quote-sync-promo-champions");
+const baseLog = createStructuredLogger({ fn: "quote-sync-promo-champions" });
 
 const CHAMPIONS_URL =
   "https://rapjswienfhkobhlamxb.supabase.co/functions/v1/receive-quote-sync";
@@ -100,7 +100,7 @@ export async function handler(req: Request): Promise<Response> {
     return json({ error: "forbidden", hint: "Este orçamento não pertence a você" }, 403);
   }
 
-  // ─── Rate limiting: 10 syncs/h por (seller × quote) ─────────────────────
+  // ─── Rate limiting: 10 syncs/h por (seller × quote) ────────────────────────
   const rlIdentifier = `${sellerId}:${q.quote_id}`;
   const rlEndpoint = "quote-sync-promo-champions";
   const rlWindowMs = 60 * 60 * 1000;
@@ -156,7 +156,7 @@ export async function handler(req: Request): Promise<Response> {
       }, 429);
     }
   }
-  // ─────────────────────────────────────────────────────────────────────────
+  // ────────────────────────────────────────────────────────────────────────────
 
 
 
@@ -304,7 +304,7 @@ export async function handler(req: Request): Promise<Response> {
  * Usado na `correlation_key` para garantir que a MESMA quote/updated_at gere
  * SEMPRE a mesma chave, independentemente de como o Postgres/driver formatar.
  *
- * Fallback: se `ts` for null/undefined → null; se for inparseável → devolve
+ * Fallback: se `ts` for null/undefined → null; se for inparsável → devolve
  * a string original (não bloqueia o fluxo; apenas perde o efeito de dedup).
  */
 function normalizeTs(ts: string | null | undefined): string | null {
