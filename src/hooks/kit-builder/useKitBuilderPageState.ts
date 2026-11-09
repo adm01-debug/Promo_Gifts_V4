@@ -13,6 +13,7 @@ import {
   useKitUndoRedo,
   useTemplateSnapshot,
 } from '@/hooks/kit-builder';
+import type { BackupFullState } from '@/hooks/kit-builder/useKitAutoSave';
 import { useKitBuilderQuote, type KitQuoteClient } from '@/pages/kit-builder/useKitBuilderQuote';
 import {
   calculateTotalKitPrice,
@@ -317,246 +318,4 @@ export function useKitBuilderPageState() {
     const row = savedKits.find((kit) => kit.id === kitIdParam);
     hydratedKitIdRef.current = kitIdParam;
     if (!row) {
-      logger.warn('[kit-builder] Saved kit was not found or is no longer accessible:', kitIdParam);
-      toast.error('NÃ£o foi possÃ­vel abrir este kit salvo.');
-      setIsHydrating(false);
-      return;
-    }
-
-    const snapshot = toSavedKitSnapshot(row);
-    if (!snapshot) {
-      logger.warn('[kit-builder] Invalid saved kit snapshot:', kitIdParam);
-      toast.error('O rascunho do kit estÃ¡ em um formato invÃ¡lido.');
-      setIsHydrating(false);
-      return;
-    }
-
-    loadKit(snapshot);
-    setQuoteClient(snapshot.quoteClient);
-    setAIBriefing(snapshot.aiBriefing);
-    setCurrentKitId(row.id);
-    setCurrentRevision(row.revision);
-    if (originParam === 'manual' || originParam === 'template' || originParam === 'ai') {
-      setKitOrigin(originParam);
-    }
-    setIsHydrating(false);
-  }, [isLoadingKits, kitIdParam, loadKit, originParam, savedKits, setKitOrigin]);
-
-  // Load Logic (Simplified for the pattern example)
-  useEffect(() => {
-    if (productIdParam && !kitIdParam) {
-      (async () => {
-        try {
-          const result = await dbInvoke<ExternalProductForKit>({
-            table: 'products',
-            operation: 'select',
-            filters: { id: productIdParam },
-            limit: 1,
-          });
-          if (result.records?.length > 0) {
-            const kitItem = transformToKitItem(result.records[0]);
-            if (!kitItem) {
-              toast.error('Este produto nÃ£o possui preÃ§o comercial disponÃ­vel para o kit.');
-              return;
-            }
-            addItem(kitItem);
-            setKitName(result.records[0].name || '');
-          }
-        } catch (err) {
-          logger.warn('[kit-builder] Failed to load product:', err);
-        }
-      })();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productIdParam, kitIdParam]);
-
-  // Effects (Confetti, Title, etc.)
-  const prevIsValidRef = useRef(false);
-  useEffect(() => {
-    const wasValid = prevIsValidRef.current;
-    prevIsValidRef.current = kitState.isValid;
-    // Only fire when transitioning invalidâ†’valid, and respect prefers-reduced-motion
-    if (!wasValid && kitState.isValid && kitState.items.length > 0) {
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        confetti({
-          particleCount: 60,
-          spread: 70,
-          origin: { y: 0.85, x: 0.5 },
-          colors: [kitState.identity?.color || '#3B82F6'],
-        });
-      }
-    }
-  }, [kitState.identity?.color, kitState.isValid, kitState.items.length]);
-
-  const pricing = calculateTotalKitPrice(
-    kitState.box,
-    kitState.items,
-    kitState.personalization,
-    kitQuantity,
-  );
-
-  const handleSaveKit = useCallback(async () => {
-    if (!kitState.box && kitState.items.length === 0) {
-      toast.error('Adicione uma caixa ou item antes de salvar o kit.');
-      return;
-    }
-    if (isAutoSaving) {
-      toast.info(
-        'O salvamento automÃ¡tico estÃ¡ em andamento. Aguarde a confirmaÃ§Ã£o antes de salvar novamente.',
-      );
-      return;
-    }
-    // Prevent the debounce timer from racing the explicit save and submitting
-    // a stale revision immediately after the manual operation.
-    cancelPendingSave();
-    try {
-      const kitId = currentKitId || autoSavedKitId || undefined;
-      const saved = await saveKit(kitState, kitQuantity, kitId, kitId ? currentRevision : null, {
-        quoteClient,
-        flow: wizardState.flow,
-        aiBriefing,
-      });
-      acknowledgeManualSave(saved.id, saved.revision);
-      setCurrentKitId(saved.id);
-      setCurrentRevision(saved.revision);
-    } catch (error) {
-      // useCustomKitPersistence already displays a sanitized message. Keep the
-      // error observable without producing a second, potentially unsafe toast.
-      logger.warn('[kit-builder] Manual save failed:', error);
-    }
-  }, [
-    autoSavedKitId,
-    acknowledgeManualSave,
-    cancelPendingSave,
-    currentKitId,
-    currentRevision,
-    isAutoSaving,
-    kitQuantity,
-    kitState,
-    quoteClient,
-    wizardState.flow,
-    aiBriefing,
-    saveKit,
-  ]);
-
-  const applyAISuggestion = useCallback(
-    (
-      suggestion: KitAISuggestionBrief,
-      composition: KitAIComposition,
-      requestedQuantity?: number,
-    ) => {
-      applyAIComposition(composition, requestedQuantity);
-      setAIBriefing(suggestion);
-      toast.success('ComposiÃ§Ã£o da IA aplicada', {
-        description: 'Confira variantes, estoque, personalizaÃ§Ã£o e valores antes de continuar.',
-      });
-    },
-    [applyAIComposition],
-  );
-
-  const startFlow = useCallback(
-    (flow: 'box-first' | 'items-first', origin?: KitOrigin) => {
-      startNewFlow(flow, origin);
-      setQuoteClient({});
-      setAIBriefing(undefined);
-      setIsLanding(false);
-    },
-    [startNewFlow],
-  );
-
-  // An occasion is intentionally advisory: it narrows the catalog and selects
-  // a kit type, but it never inserts products or boxes without confirmation.
-  const selectOccasion = useCallback(
-    (nextOccasion: Occasion | null) => {
-      setOccasion(nextOccasion);
-      if (!nextOccasion) return;
-
-      const metadata = OCCASIONS.find((item) => item.id === nextOccasion);
-      if (!metadata) return;
-
-      setKitType(metadata.suggestedKitType);
-      setItemFilters({ ...itemFilters, search: metadata.itemKeywords[0] });
-      setBoxFilters({ ...boxFilters, search: metadata.boxKeywords[0] });
-    },
-    [boxFilters, itemFilters, setBoxFilters, setItemFilters, setKitType],
-  );
-
-  const resetKitAndQuoteClient = useCallback(() => {
-    resetKit();
-    setQuoteClient({});
-    setAIBriefing(undefined);
-    setOccasion(null);
-  }, [resetKit]);
-
-  return {
-    state: {
-      kitState,
-      wizardState,
-      kitQuantity,
-      currentKitId,
-      autoSavedKitId,
-      availableBoxes,
-      allAvailableBoxes,
-      availableItems,
-      allAvailableItems,
-      isLoadingBoxes,
-      isLoadingItems,
-      boxError,
-      itemError,
-      refetchBoxes,
-      refetchItems,
-      isHydrating,
-      isLanding,
-      boxFilters,
-      itemFilters,
-      setBoxFilters,
-      setItemFilters,
-      occasion,
-      setOccasion,
-      quoteClient,
-      setQuoteClient,
-      aiBriefing,
-    },
-    actions: {
-      setKitName,
-      selectBox,
-      clearBox,
-      addItem,
-      removeItem,
-      clearItems,
-      updateItemQuantity,
-      updateItemVariant,
-      reorderItems,
-      setItemPersonalization,
-      setBoxPersonalization,
-      setKitQuantity,
-      setIdentity,
-      setNotes,
-      goToStep,
-      nextStep,
-      prevStep,
-      resetKit: resetKitAndQuoteClient,
-      selectOccasion,
-      undo,
-      redo,
-      canUndo,
-      canRedo,
-      handleSaveKit,
-      retryAutoSave: retryLastSave,
-      handleAddToQuote,
-      applyAISuggestion,
-      startFlow,
-      setKitOrigin,
-      consumeUnloadBackup,
-    },
-    meta: {
-      isSaving,
-      isAutoSaving,
-      isCreatingQuote,
-      lastSavedAt,
-      autoSaveError,
-      isConflictError,
-      pricing,
-    },
-  };
-}
+      logger.warn('[kjÍtµ‰Õ¥±‘•ÉtM…Ù•­¥Ğİ…Ì¹½Ğ™½Õ¹½È¥Ì¹¼±½¹•È…•ÍÍ¥‰±”èœ°­¥Ñ%‘A…É…´¤ì(€€€€€Ñ½…ÍĞ¹•ÉÉ½È ;¼™½¤Á½ÍÏµÙ•°…‰É¥È•ÍÑ”­¥ĞÍ…±Ù¼¸œ¤ì(€€€€€Í•Ñ%Í!å‘É…Ñ¥¹œ¡™…±Í”¤ì(€€€€€É•ÑÕÉ¸ì(€€€ô((€€€½¹ÍĞÍ¹…ÁÍ¡½Ğ€ôÑ½M…Ù•‘-¥ÑM¹…ÁÍ¡½Ğ¡É½Ü¤ì(€€€¥˜€ …Í¹…ÁÍ¡½Ğ¤ì(€€€€€±½•È¹İ…É¸ m­¥Ğµ‰Õ¥±‘•Ét%¹Ù…±¥Í…Ù•­¥ĞÍ¹…ÁÍ¡½Ğèœ°­¥Ñ%‘A…É…´¤ì(€€€€€Ñ½…ÍĞ¹•ÉÉ½È <É…ÍÕ¹¡¼‘¼­¥Ğ•ÍÓ„•´Õ´™½Éµ…Ñ¼¥¹Û…±¥‘¼¸œ¤ì(€€€€€Í•Ñ%Í!å‘É…Ñ¥¹œ¡™…±Í”¤ì(€€€€€É•ÑÕÉ¸ì(€€€ô((€€€±½…‘-¥Ğ¡Í¹…ÁÍ¡½Ğ¤ì(€€€Í•ÑEÕ½Ñ•±¥•¹Ğ¡Í¹…ÁÍ¡½Ğ¹ÅÕ½Ñ•±¥•¹Ğ¤ì(€€€Í•Ñ%	É¥•™¥¹œ¡Í¹…ÁÍ¡½Ğ¹…¥	É¥•™¥¹œ¤ì(€€€Í•ÑÕÉÉ•¹Ñ-¥Ñ%¡É½Ü¹¥¤ì(€€€Í•ÑÕÉÉ•¹ÑI•Ù¥Í¥½¸¡É½Ü¹É•Ù¥Í¥½¸¤ì(€€€¥˜€¡½É¥¥¹A…É…´€ôôô€µ…¹Õ…°œñğ½É¥¥¹A…É…´€ôôô€Ñ•µÁ±…Ñ”œñğ½É¥¥¹A…É…´€ôôô€…¤œ¤ì(€€€€€Í•Ñ-¥Ñ=É¥¥¸¡½É¥¥¹A…É…´¤ì(€€€ô(€€€Í•Ñ%Í!å‘É…Ñ¥¹œ¡™…±Í”¤ì(€ô°m¥Í1½…‘¥¹-¥ÑÌ°­¥Ñ%‘A…É…´°±½…‘-¥Ğ°½É¥¥¹A…É…´°Í…Ù•‘-¥ÑÌ°Í•Ñ-¥Ñ=É¥¥¹t¤ì((€€¼¼1½…1½¥Œ€¡M¥µÁ±¥™¥•™½ÈÑ¡”Á…ÑÑ•É¸•á…µÁ±”¤(€ÕÍ•™™•Ğ  ¤€ôøì(€€€¥˜€¡ÁÉ½‘ÕÑ%‘A…É…´€˜˜€…­¥Ñ%‘A…É…´¤ì(€€€€€€¡…Íå¹Œ€ ¤€ôøì(€€€€€€€ÑÉäì(€€€€€€€€€½¹ÍĞÉ•ÍÕ±Ğ€ô…İ…¥Ğ‘‰%¹Ù½­”ñáÑ•É¹…±AÉ½‘ÕÑ½É-¥Ğø¡ì(€€€€€€€€€€€Ñ…‰±”è€ÁÉ½‘ÕÑÌœ°(€€€€€€€€€€€½Á•É…Ñ¥½¸è€Í•±•Ğœ°(€€€€€€€€€€€™¥±Ñ•ÉÌèì¥èÁÉ½‘ÕÑ%‘A…É…´ô°(€€€€€€€€€€€±¥µ¥Ğè€Ä°(€€€€€€€€€ô¤ì(€€€€€€€€€¥˜€¡É•ÍÕ±Ğ¹É•½É‘Ìü¹±•¹Ñ €ø€À¤ì(€€€€€€€€€€€½¹ÍĞ­¥Ñ%Ñ•´€ôÑÉ…¹Í™½ÉµQ½-¥Ñ%Ñ•´¡É•ÍÕ±Ğ¹É•½É‘ÍlÁt¤ì(€€€€€€€€€€€¥˜€ …­¥Ñ%Ñ•´¤ì(€€€€€€€€€€€€€Ñ½…ÍĞ¹•ÉÉ½È ÍÑ”ÁÉ½‘ÕÑ¼»¼Á½ÍÍÕ¤ÁÉ—¼½µ•É¥…°‘¥ÍÁ½»µÙ•°Á…É„¼­¥Ğ¸œ¤ì(€€€€€€€€€€€€€É•ÑÕÉ¸ì(€€€€€€€€€€€ô(€€€€€€€€€€€…‘‘%Ñ•´¡­¥Ñ%Ñ•´¤ì(€€€€€€€€€€€Í•Ñ-¥Ñ9…µ”¡É•ÍÕ±Ğ¹É•½É‘ÍlÁt¹¹…µ”ñğ€œœ¤ì(€€€€€€€€€ô(€€€€€€€ô…Ñ €¡•ÉÈ¤ì(€€€€€€€€€±½•È¹İ…É¸ m­¥Ğµ‰Õ¥±‘•Ét…¥±•Ñ¼±½…ÁÉ½‘ÕĞèœ°•ÉÈ¤ì(€€€€€€€ô(€€€€€ô¤ ¤ì(€€€ô(€€€€¼¼•Í±¥¹Ğµ‘¥Í…‰±”µ¹•áĞµ±¥¹”É•…Ğµ¡½½­Ì½•á¡…ÕÍÑ¥Ù”µ‘•ÁÌ(€ô°mÁÉ½‘ÕÑ%‘A…É…´°­¥Ñ%‘A…É…µt¤ì((€€¼¼™™•ÑÌ€¡½¹™•ÑÑ¤°Q¥Ñ±”°•ÑŒ¸¤(€½¹ÍĞÁÉ•Ù%ÍY…±¥‘I•˜€ôÕÍ•I•˜¡™…±Í”¤ì(€ÕÍ•™™•Ğ  ¤€ôøì(€€€½¹ÍĞİ…ÍY…±¥€ôÁÉ•Ù%ÍY…±¥‘I•˜¹ÕÉÉ•¹Ğì(€€€ÁÉ•Ù%ÍY…±¥‘I•˜¹ÕÉÉ•¹Ğ€ô­¥ÑMÑ…Ñ”¹¥ÍY…±¥ì(€€€€¼¼=¹±ä™¥É”İ¡•¸ÑÉ…¹Í¥Ñ¥½¹¥¹œ¥¹Ù…±¥“ŠIÙ…±¥°…¹É•ÍÁ•ĞÁÉ•™•ÉÌµÉ•‘Õ•µµ½Ñ¥½¸(€€€¥˜€ …İ…ÍY…±¥€˜˜­¥ÑMÑ…Ñ”¹¥ÍY…±¥€˜˜­¥ÑMÑ…Ñ”¹¥Ñ•µÌ¹±•¹Ñ €ø€À¤ì(€€€€€¥˜€ …İ¥¹‘½Ü¹µ…Ñ¡5•‘¥„ œ¡ÁÉ•™•ÉÌµÉ•‘Õ•µµ½Ñ¥½¸èÉ•‘Õ”¤œ¤¹µ…Ñ¡•Ì¤ì(€€€€€€€½¹™•ÑÑ¤¡ì(€€€€€€€€€Á…ÉÑ¥±•½Õ¹Ğè€ØÀ°(€€€€€€€€€ÍÁÉ•…è€ÜÀ°(€€€€€€€€€½É¥¥¸èìäè€À¸àÔ°àè€À¸Ôô°(€€€€€€€€€½±½ÉÌèm­¥ÑMÑ…Ñ”¹¥‘•¹Ñ¥Ñäü¹½±½Èñğ€œŒÍàÉØt°(€€€€€€€ô¤ì(€€€€€ô(€€€ô(€ô°m­¥ÑMÑ…Ñ”¹¥‘•¹Ñ¥Ñäü¹½±½È°­¥ÑMÑ…Ñ”¹¥ÍY…±¥°­¥ÑMÑ…Ñ”¹¥Ñ•µÌ¹±•¹Ñ¡t¤ì((€½¹ÍĞÁÉ¥¥¹œ€ô…±Õ±…Ñ•Q½Ñ…±-¥ÑAÉ¥” (€€€­¥ÑMÑ…Ñ”¹‰½à°(€€€­¥ÑMÑ…Ñ”¹¥Ñ•µÌ°(€€€­¥ÑMÑ…Ñ”¹Á•ÉÍ½¹…±¥é…Ñ¥½¸°(€€€­¥ÑEÕ…¹Ñ¥Ñä°(€€¤ì((€½¹ÍĞ¡…¹‘±•M…Ù•-¥Ğ€ôÕÍ•…±±‰…¬¡…Íå¹Œ€ ¤€ôøì(€€€¥˜€ …­¥ÑMÑ…Ñ”¹‰½à€˜˜­¥ÑMÑ…Ñ”¹¥Ñ•µÌ¹±•¹Ñ €ôôô€À¤ì(€€€€€Ñ½…ÍĞ¹•ÉÉ½È ‘¥¥½¹”Õµ„…¥á„½Ô¥Ñ•´…¹Ñ•Ì‘”Í…±Ù…È¼­¥Ğ¸œ¤ì(€€€€€É•ÑÕÉ¸ì(€€€ô(€€€¥˜€¡¥ÍÕÑ½M…Ù¥¹œ¤ì(€€€€€Ñ½…ÍĞ¹¥¹™¼ (€€€€€€€€<Í…±Ù…µ•¹Ñ¼…ÕÑ½·…Ñ¥¼•ÍÓ„•´…¹‘…µ•¹Ñ¼¸Õ…É‘”„½¹™¥Éµ‡Ÿ¼…¹Ñ•Ì‘”Í…±Ù…È¹½Ù…µ•¹Ñ”¸œ°(€€€€€€¤ì(€€€€€É•ÑÕÉ¸ì(€€€ô(€€€€¼¼AÉ•Ù•¹ĞÑ¡”‘•‰½Õ¹”Ñ¥µ•È™É½´É…¥¹œÑ¡”•áÁ±¥¥ĞÍ…Ù”…¹ÍÕ‰µ¥ÑÑ¥¹œ(€€€€¼¼„ÍÑ…±”É•Ù¥Í¥½¸¥µµ•‘¥…Ñ•±ä…™Ñ•ÈÑ¡”µ…¹Õ…°½Á•É…Ñ¥½¸¸(€€€…¹•±A•¹‘¥¹M…Ù” ¤ì(€€€ÑÉäì(€€€€€½¹ÍĞ­¥Ñ%€ôÕÉÉ•¹Ñ-¥Ñ%ñğ…ÕÑ½M…Ù•‘-¥Ñ%ñğÕ¹‘•™¥¹•ì(€€€€€½¹ÍĞÍ…Ù•€ô…İ…¥ĞÍ…Ù•-¥Ğ¡­¥ÑMÑ…Ñ”°­¥ÑEÕ…¹Ñ¥Ñä°­¥Ñ%°­¥Ñ%€üÕÉÉ•¹ÑI•Ù¥Í¥½¸€è¹Õ±°°ì(€€€€€€€ÅÕ½Ñ•±¥•¹Ğ°(€€€€€€€™±½Üèİ¥é…É‘MÑ…Ñ”¹™±½Ü°(€€€€€€€…¥	É¥•™¥¹œ°(€€€€€ô¤ì(€€€€€…­¹½İ±•‘•5…¹Õ…±M…Ù”¡Í…Ù•¹¥°Í…Ù•¹É•Ù¥Í¥½¸¤ì(€€€€€Í•ÑÕÉÉ•¹Ñ-¥Ñ%¡Í…Ù•¹¥¤ì(€€€€€Í•ÑÕÉÉ•¹ÑI•Ù¥Í¥½¸¡Í…Ù•¹É•Ù¥Í¥½¸¤ì(€€€ô…Ñ €¡•ÉÉ½È¤ì(€€€€€€¼¼ÕÍ•ÕÍÑ½µ-¥ÑA•ÉÍ¥ÍÑ•¹”…±É•…‘ä‘¥ÍÁ±…åÌ„Í…¹¥Ñ¥é•µ•ÍÍ…”¸-••ÀÑ¡”(€€€€€€¼¼•ÉÉ½È½‰Í•ÉÙ…‰±”İ¥Ñ¡½ÕĞÁÉ½‘Õ¥¹œ„Í•½¹°Á½Ñ•¹Ñ¥…±±äÕ¹Í…™”Ñ½…ÍĞ¸(€€€€€±½•È¹İ…É¸ m­¥Ğµ‰Õ¥±‘•Ét5…¹Õ…°Í…Ù”™…¥±•èœ°•ÉÉ½È¤ì(€€€ô(€ô°l(€€€…ÕÑ½M…Ù•‘-¥Ñ%°(€€€…­¹½İ±•‘•5…¹Õ…±M…Ù”°(€€€…¹•±A•¹‘¥¹M…Ù”°(€€€ÕÉÉ•¹Ñ-¥Ñ%°(€€€ÕÉÉ•¹ÑI•Ù¥Í¥½¸°(€€€¥ÍÕÑ½M…Ù¥¹œ°(€€€­¥ÑEÕ…¹Ñ¥Ñä°(€€€­¥ÑMÑ…Ñ”°(€€€ÅÕ½Ñ•±¥•¹Ğ°(€€€İ¥é…É‘MÑ…Ñ”¹™±½Ü°(€€€…¥	É¥•™¥¹œ°(€€€Í…Ù•-¥Ğ°(€t¤ì((€½¹ÍĞ…ÁÁ±å%MÕ•ÍÑ¥½¸€ôÕÍ•…±±‰…¬ (€€€€ (€€€€€ÍÕ•ÍÑ¥½¸è-¥Ñ%MÕ•ÍÑ¥½¹	É¥•˜°(€€€€€½µÁ½Í¥Ñ¥½¸è-¥Ñ%½µÁ½Í¥Ñ¥½¸°(€€€€€É•ÅÕ•ÍÑ•‘EÕ…¹Ñ¥Ñäüè¹Õµ‰•È°(€€€€¤€ôøì(€€€€€…ÁÁ±å%½µÁ½Í¥Ñ¥½¸¡½µÁ½Í¥Ñ¥½¸°É•ÅÕ•ÍÑ•‘EÕ…¹Ñ¥Ñä¤ì(€€€€€Í•Ñ%	É¥•™¥¹œ¡ÍÕ•ÍÑ¥½¸¤ì(€€€€€Ñ½…ÍĞ¹ÍÕ•ÍÌ ½µÁ½Í§Ÿ¼‘„%…Á±¥…‘„œ°ì(€€€€€€€‘•ÍÉ¥ÁÑ¥½¸è€½¹™¥É„Ù…É¥…¹Ñ•Ì°•ÍÑ½ÅÕ”°Á•ÉÍ½¹…±¥é‡Ÿ¼”Ù…±½É•Ì…¹Ñ•Ì‘”½¹Ñ¥¹Õ…È¸œ°(€€€€€ô¤ì(€€€ô°(€€€m…ÁÁ±å%½µÁ½Í¥Ñ¥½¹t°(€€¤ì((€½¹ÍĞÍÑ…ÉÑ±½Ü€ôÕÍ•…±±‰…¬ (€€€€¡™±½Üè€‰½àµ™¥ÉÍĞœğ€¥Ñ•µÌµ™¥ÉÍĞœ°½É¥¥¸üè-¥Ñ=É¥¥¸¤€ôøì(€€€€€ÍÑ…ÉÑ9•İ±½Ü¡™±½Ü°½É¥¥¸¤ì(€€€€€Í•ÑEÕ½Ñ•±¥•¹Ğ¡íô¤ì(€€€€€Í•Ñ%	É¥•™¥¹œ¡Õ¹‘•™¥¹•¤ì(€€€€€Í•Ñ%Í1…¹‘¥¹œ¡™…±Í”¤ì(€€€ô°(€€€mÍÑ…ÉÑ9•İ±½İt°(€€¤ì((€€¼¼¸½…Í¥½¸¥Ì¥¹Ñ•¹Ñ¥½¹…±±ä…‘Ù¥Í½Éäè¥Ğ¹…ÉÉ½İÌÑ¡”…Ñ…±½œ…¹Í•±•ÑÌ(€€¼¼„­¥ĞÑåÁ”°‰ÕĞ¥Ğ¹•Ù•È¥¹Í•ÉÑÌÁÉ½‘ÕÑÌ½È‰½á•Ìİ¥Ñ¡½ÕĞ½¹™¥Éµ…Ñ¥½¸¸(€½¹ÍĞÍ•±•Ñ=…Í¥½¸€ôÕÍ•…±±‰…¬ (€€€€¡¹•áÑ=…Í¥½¸è=…Í¥½¸ğ¹Õ±°¤€ôøì(€€€€€Í•Ñ=…Í¥½¸¡¹•áÑ=…Í¥½¸¤ì(€€€€€¥˜€ …¹•áÑ=…Í¥½¸¤É•ÑÕÉ¸ì((€€€€€½¹ÍĞµ•Ñ…‘…Ñ„€ô=M%=9L¹™¥¹ ¡¥Ñ•´¤€ôø¥Ñ•´¹¥€ôôô¹•áÑ=…Í¥½¸¤ì(€€€€€¥˜€ …µ•Ñ…‘…Ñ„¤É•ÑÕÉ¸ì((€€€€€Í•Ñ-¥ÑQåÁ”¡µ•Ñ…‘…Ñ„¹ÍÕ•ÍÑ•‘-¥ÑQåÁ”¤ì(€€€€€Í•Ñ%Ñ•µ¥±Ñ•ÉÌ¡ì€¸¸¹¥Ñ•µ¥±Ñ•ÉÌ°Í•…É èµ•Ñ…‘…Ñ„¹¥Ñ•µ-•åİ½É‘ÍlÁtô¤ì(€€€€€Í•Ñ	½á¥±Ñ•ÉÌ¡ì€¸¸¹‰½á¥±Ñ•ÉÌ°Í•…É èµ•Ñ…‘…Ñ„¹‰½á-•åİ½É‘ÍlÁtô¤ì(€€€ô°(€€€m‰½á¥±Ñ•ÉÌ°¥Ñ•µ¥±Ñ•ÉÌ°Í•Ñ	½á¥±Ñ•ÉÌ°Í•Ñ%Ñ•µ¥±Ñ•ÉÌ°Í•Ñ-¥ÑQåÁ•t°(€€¤ì((€½¹ÍĞÉ•Í•Ñ-¥Ñ¹‘EÕ½Ñ•±¥•¹Ğ€ôÕÍ•…±±‰…¬  ¤€ôøì(€€€É•Í•Ñ-¥Ğ ¤ì(€€€Í•ÑEÕ½Ñ•±¥•¹Ğ¡íô¤ì(€€€Í•Ñ%	É¥•™¥¹œ¡Õ¹‘•™¥¹•¤ì(€€€Í•Ñ=…Í¥½¸¡¹Õ±°¤ì(€ô°mÉ•Í•Ñ-¥Ñt¤ì((€½¹ÍĞÉ•ÍÑ½É•É½µ	…­ÕÀ€ôÕÍ•…±±‰…¬ (€€€€¡™Õ±±MÑ…Ñ”è	…­ÕÁÕ±±MÑ…Ñ”¤€ôøì(€€€€€±½…‘-¥Ğ¡ì(€€€€€€€¹…µ”è™Õ±±MÑ…Ñ”¹¹…µ”°(€€€€€€€­¥ÑQåÁ”è™Õ±±MÑ…Ñ”¹­¥ÑQåÁ”°(€€€€€€€‰½àè™Õ±±MÑ…Ñ”¹‰½à°(€€€€€€€¥Ñ•µÌè™Õ±±MÑ…Ñ”¹¥Ñ•µÌ°(€€€€€€€Á•ÉÍ½¹…±¥é…Ñ¥½¸è™Õ±±MÑ…Ñ”¹Á•ÉÍ½¹…±¥é…Ñ¥½¸°(€€€€€€€­¥ÑEÕ…¹Ñ¥Ñäè™Õ±±MÑ…Ñ”¹ÅÑä°(€€€€€€€¥‘•¹Ñ¥Ñäè™Õ±±MÑ…Ñ”¹¥‘•¹Ñ¥Ñä°(€€€€€€€¹½Ñ•Ìè™Õ±±MÑ…Ñ”¹¹½Ñ•Ì°(€€€€€ô¤ì(€€€ô°(€€€m±½…‘-¥Ñt°(€€¤ì((€É•ÑÕÉ¸ì(€€€ÍÑ…Ñ”èì(€€€€€­¥ÑMÑ…Ñ”°(€€€€€İ¥é…É‘MÑ…Ñ”°(€€€€€­¥ÑEÕ…¹Ñ¥Ñä°(€€€€€ÕÉÉ•¹Ñ-¥Ñ%°(€€€€€…ÕÑ½M…Ù•‘-¥Ñ%°(€€€€€…Ù…¥±…‰±•	½á•Ì°(€€€€€…±±Ù…¥±…‰±•	½á•Ì°(€€€€€…Ù…¥±…‰±•%Ñ•µÌ°(€€€€€…±±Ù…¥±…‰±•%Ñ•µÌ°(€€€€€¥Í1½…‘¥¹	½á•Ì°(€€€€€¥Í1½…‘¥¹%Ñ•µÌ°(€€€€€‰½áÉÉ½È°(€€€€€¥Ñ•µÉÉ½È°(€€€€€É•™•Ñ¡	½á•Ì°(€€€€€É•™•Ñ¡%Ñ•µÌ°(€€€€€¥Í!å‘É…Ñ¥¹œ°(€€€€€¥Í1…¹‘¥¹œ°(€€€€€‰½á¥±Ñ•ÉÌ°(€€€€€¥Ñ•µ¥±Ñ•ÉÌ°(€€€€€Í•Ñ	½á¥±Ñ•ÉÌ°(€€€€€Í•Ñ%Ñ•µ¥±Ñ•ÉÌ°(€€€€€½…Í¥½¸°(€€€€€Í•Ñ=…Í¥½¸°(€€€€€ÅÕ½Ñ•±¥•¹Ğ°(€€€€€Í•ÑEÕ½Ñ•±¥•¹Ğ°(€€€€€…¥	É¥•™¥¹œ°(€€€ô°(€€€…Ñ¥½¹Ìèì(€€€€€Í•Ñ-¥Ñ9…µ”°(€€€€€Í•±•Ñ	½à°(€€€€€±•…É	½à°(€€€€€…‘‘%Ñ•´°(€€€€€É•µ½Ù•%Ñ•´°(€€€€€±•…É%Ñ•µÌ°(€€€€€ÕÁ‘…Ñ•%Ñ•µEÕ…¹Ñ¥Ñä°(€€€€€ÕÁ‘…Ñ•%Ñ•µY…É¥…¹Ğ°(€€€€€É•½É‘•É%Ñ•µÌ°(€€€€€Í•Ñ%Ñ•µA•ÉÍ½¹…±¥é…Ñ¥½¸°(€€€€€Í•Ñ	½áA•ÉÍ½¹…±¥é…Ñ¥½¸°(€€€€€Í•Ñ-¥ÑEÕ…¹Ñ¥Ñä°(€€€€€Í•Ñ%‘•¹Ñ¥Ñä°(€€€€€Í•Ñ9½Ñ•Ì°(€€€€€½Q½MÑ•À°(€€€€€¹•áÑMÑ•À°(€€€€€ÁÉ•ÙMÑ•À°(€€€€€É•Í•Ñ-¥ĞèÉ•Í•Ñ-¥Ñ¹‘EÕ½Ñ•±¥•¹Ğ°(€€€€€Í•±•Ñ=…Í¥½¸°(€€€€€Õ¹‘¼°(€€€€€É•‘¼°(€€€€€…¹U¹‘¼°(€€€€€…¹I•‘¼°(€€€€€¡…¹‘±•M…Ù•-¥Ğ°(€€€€€É•ÑÉåÕÑ½M…Ù”èÉ•ÑÉå1…ÍÑM…Ù”°(€€€€€¡…¹‘±•‘‘Q½EÕ½Ñ”°(€€€€€…ÁÁ±å%MÕ•ÍÑ¥½¸°(€€€€€ÍÑ…ÉÑ±½Ü°(€€€€€Í•Ñ-¥Ñ=É¥¥¸°(€€€€€½¹ÍÕµ•U¹±½…‘	…­ÕÀ°(€€€€€É•ÍÑ½É•É½µ	…­ÕÀ°(€€€ô°(€€€µ•Ñ„èì(€€€€€¥ÍM…Ù¥¹œ°(€€€€€¥ÍÕÑ½M…Ù¥¹œ°(€€€€€¥ÍÉ•…Ñ¥¹EÕ½Ñ”°(€€€€€±…ÍÑM…Ù•‘Ğ°(€€€€€…ÕÑ½M…Ù•ÉÉ½È°(€€€€€¥Í½¹™±¥ÑÉÉ½È°(€€€€€ÁÉ¥¥¹œ°(€€€ô°(€ôì)ô(
