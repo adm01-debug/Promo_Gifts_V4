@@ -1,14 +1,15 @@
-## Lint baseline — main HEAD 0818809d — 2026-11-09
+## Lint baseline — main HEAD 6b859b0f — 2026-11-09
 
 Executado diretamente: NAO EXECUTADO LOCALMENTE
 Motivo: npm ci falha com 403 em registry privado Lovable
 
 CI (Gate 1 = Lint + TypeScript, job static-gates):
-- Status em push: main 0818809d: FAILURE
-- Check run ID: 129236175091
-- Annotation: 'Gate 1 Lint+TypeScript falhou (failure)'
+- Status em push: main 6b859b0fbfa95e34493900cf0137402e95e46823: SUCCESS
+- Check run ID: 129266757585
+- Annotation: nenhuma (SUCCESS)
 
-Baseline anterior (SHA 4c5fdd72, session anterior): NAO DISPONIVEL (OOM durante execucao)
-Falha pre-existente no main desde pelo menos 2026-11-09T11:33 (SHA 6933eb61).
+Gate 1 retornou SUCCESS apos merges desta sessao (#3337, #3340, #3343, #3257).
+Falha pre-existente em SHA 0818809d era pre-existente, nao causada por merges desta sessao.
+Recuperada pelo merge #3257 (fix idempotencia migrations).
 
 Verificado em sessao: session_01VXkRxWq5ZUCmvuNx5e2TGX

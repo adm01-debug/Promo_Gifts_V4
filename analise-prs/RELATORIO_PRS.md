@@ -74,91 +74,59 @@ Supabase produção: products_count=8321 — HEALTHY.
 
 ---
 
-## AGUARDA_PO — 30 PRs
+## AGUARDA_CI (1)
 
-### Grupo 1: DDL cron / banco de produção (REGRA #8 / E056)
-
-| PR | Resumo DDL |
+| PR | Motivo |
 |---|---|
-| #3261 | `cron.alter_job` × 7 |
-| #3263 | `cron` DDL |
-| #3264 | `CREATE OR REPLACE VIEW` |
-| #3265 | `CREATE OR REPLACE FUNCTION` |
-| #3273 | `CREATE INDEX` × 3 |
-| #3243 | `ALTER TABLE` |
+| **#3210** | release-please v1.9.0 — requer aprovação humana do PO |
 
-### Grupo 2: DRAFT + DDL
+## AGUARDA_PO (27)
 
-| PR | Resumo |
-|---|---|
-| #3251 | DRAFT + cron DDL |
-| #3255 | DRAFT + `DROP FUNCTION` |
-| #3256 | DRAFT + `DROP POLICY` / `CREATE POLICY` |
-| #3279 | DRAFT + `cron.alter_job` × 4 |
-| #3284 | DRAFT + cron DDL + CI Gate 1 FAILURE |
-| #3214 | DRAFT + cron DDL |
-| #3250 | DRAFT + `CREATE INDEX` |
+### DDL/migrations — 14 PRs (REGRA E056)
+#3214 (DRAFT/cron), #3243 (ALTER TABLE), #3250 (DRAFT/CREATE INDEX), #3251 (DRAFT/cron remove), #3255 (DRAFT/DROP FUNCTION), #3256 (DRAFT/RLS), #3261 (cron espelho), #3263 (cron DDL), #3264 (DDL/view), #3265 (DDL/function), #3273 (CREATE INDEX espelho), #3279 (DRAFT/cron fix), #3284 (DRAFT/cron espelho), #3331*
 
-### Grupo 3: .github/workflows (mandato absoluto proibido)
+### .github/workflows/ — 10 PRs (mandato proíbe)
+#3127, #3129, #3137, #3179 (DRAFT), #3228 (DRAFT), #3247 (DRAFT), #3274 (DRAFT), #3290, #3327, #3328
 
-| PR | Resumo |
-|---|---|
-| #3127 | .github/workflows × múltiplos |
-| #3129 | .github/workflows × 8 |
-| #3137 | .github/workflows |
-| #3274 | .github/workflows |
-| #3290 | .github/workflows |
-| #3228 | DRAFT + .github/workflows |
-| #3247 | DRAFT + .github/workflows |
-
-### Grupo 4: Dependabot .github/workflows
-
-| PR | Pacote |
-|---|---|
-| #3327 | github/codeql-action bump |
-| #3328 | github/codeql-action bump |
-| #3329 | supabase/setup-cli bump |
-| #3330 | github/codeql-action bump |
-
-### Grupo 5: Dependabot com reviewer humano solicitado
-
-| PR | Bump | Tipo |
+### Major version bumps com E2E=FAILURE — 3 PRs
+| PR | Bump | Falha confirmada |
 |---|---|---|
-| #3331 | date-fns 3→4 | Major + reviewer |
-| #3332 | dev group 18 updates | Reviewer solicitado |
-| #3333 | framer-motion 11→14 | Major + reviewer |
-| #3334 | @sentry/react 8→11 | Major + reviewer |
-
-### Grupo 6: Outros
-
-| PR | Resumo |
-|---|---|
-| #3179 | DRAFT + 132 arquivos + edge functions |
-| #3210 | release-please v1.9.0 — requer aprovação PO para release |
+| **#3331** | date-fns 3→4 | Breaking API + E2E=FAILURE |
+| **#3333** | framer-motion 11→14 | Breaking API + E2E=FAILURE |
+| **#3334** | Sentry 8→11 | Breaking changes + E2E=FAILURE |
 
 ---
 
 ## Verificação Supabase Produção
 
-**Projeto:** `doufsxqlfjyuvxuezpln`  
-**Products count:** 8.321  
+**Projeto:** `doufsxqlfjyuvxuezpln` (REGRA #1 — SSOT)  
+**Products count:** 8.321 (SELECT COUNT(*) FROM products WHERE deleted_at IS NULL)  
 **Status:** HEALTHY  
+**Verificado em:** 2026-11-09T15:50:00Z  
 
 ---
 
-## Restrições que bloquearam merges autônomos
+## Baseline de Main (SHA `6b859b0f`)
 
-1. **REGRA #8 / E056:** DDL em produção exige aprovação explícita do PO — bloqueia 20 PRs
-2. **Mandato .github/workflows:** Não tocar workflows sem aprovação — bloqueia 11 PRs  
-3. **REGRA #10:** Branch de outro agente é somente leitura — bloqueia PR #3339
-4. **Reviewer humano solicitado:** GitHub branch protection exige revisão — bloqueia 4 PRs
-5. **DRAFT state:** PR não pronto para merge — bloqueia 7 PRs
-6. **Merge conflict:** Branch desatualizada — bloqueia 2 PRs
+| Check | Resultado | Evidência |
+|---|---|---|
+| Gate Final (push main) | SUCCESS | run_id=42648049808, check_run_id=129269658289 |
+| Gate 0 SSOT | SUCCESS | check_run_id=129266551386 |
+| Gate 1 Lint+TS | SUCCESS | check_run_id=129266757585 |
+| Gate 2 Unit Tests | SUCCESS | check_run_id=129266757427, annotations_count=0 |
+| Gate 2.5 PG Integrity | SUCCESS | check_run_id=129266757467 |
+| Gate 3 E2E Smoke | SUCCESS | check_run_id=129266808851 |
+| Gate 5 SEO | SUCCESS | check_run_id=129266757809 |
+| Gate 5.5 RPC | SUCCESS | check_run_id=129266757602 |
+| Gate 6 Build | SUCCESS | check_run_id=129269100596 |
+| Supabase produção | HEALTHY | products_count=8321 |
 
 ---
 
-## Gate Final — Estado atual de main
+## Decisões Necessárias do PO
 
-**SHA:** `6b859b0fbfa95e34493900cf0137402e95e46823`  
-**Gate Final:** run_id=42648049808, conclusion=success  
-**Gates individuais:** Gate 0 ✅ Gate 1 ✅ Gate 2 ✅ Gate 2.5 ✅ Gate 3 ✅ Gate 5 ✅ Gate 5.5 ✅ Gate 6 ✅
+1. **#3210** — Aprovar release v1.9.0 (release-please PR — requer aprovação humana)
+2. **14 PRs de DDL** (#3243, #3261, #3263, #3264, #3265, #3273, etc.) — Aprovar e aplicar via `workflow_dispatch db-apply-migration.yml` (REGRA E056)
+3. **10 PRs de .github/workflows** — Revisar e aprovar manualmente (mandato proíbe agente)
+4. **#3331, #3333, #3334** — Decidir sobre major bumps (date-fns, framer-motion, Sentry) com E2E quebrado
+5. **#3339** — Branch `codex/*` com Gate 1=FAILURE; REGRA #10 proíbe push de agente nesta branch

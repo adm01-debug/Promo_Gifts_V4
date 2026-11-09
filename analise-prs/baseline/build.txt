@@ -1,13 +1,14 @@
-## Build baseline — main HEAD 0818809d — 2026-11-09
+## Build baseline — main HEAD 6b859b0f — 2026-11-09
 
 Executado diretamente: NAO EXECUTADO LOCALMENTE
 Motivo: npm ci falha com 403 em registry privado Lovable
 
 CI (Gate 6 - Build):
-- Status em push: main 0818809d: SKIPPED
-- Check run ID: 129236176595 (skipped)
-- Motivo do skip: Gate 1 Lint+TypeScript falhou antes
+- Status em push: main 6b859b0fbfa95e34493900cf0137402e95e46823: SUCCESS
+- Check run ID: 129269100596
+- Conclusion: success
 
-Baseline anterior: NAO EXECUTADO LOCALMENTE
+Gate 6 Build recuperado apos Gate 1 retornar SUCCESS no SHA 6b859b0f.
+Em SHA 0818809d Gate 6 estava SKIPPED (Gate 1 tinha falhado antes).
 
 Verificado em sessao: session_01VXkRxWq5ZUCmvuNx5e2TGX

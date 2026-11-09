@@ -1,15 +1,15 @@
-## Gate 2 - Unit Tests — main SHA 0818809d
+## Gate 2 - Unit Tests — main SHA 6b859b0f
 
-check_run_id: 129233697044
+check_run_id: 129266757427
 conclusao: success
 annotations_count: 0
-iniciado_em: 2026-11-09T14:51:29Z
-concluido_em: 2026-11-09T14:52:36Z
-duracao: 67s
-run_id: 42638435584
+run_id: 42648049808
+SHA: 6b859b0fbfa95e34493900cf0137402e95e46823
 
-Resultado: TODOS OS TESTES PASSAM em main 0818809d
+Resultado: TODOS OS TESTES PASSAM em main 6b859b0f
 Falhas por nome: NENHUMA — annotations_count=0
+
+Comparacao com SHA anterior (0818809d, check_run_id=129233697044): ambos success, sem regressao.
 
 Verificado via github_list_check_runs (check_name="Gate 2 - Unit Tests")
 em 2026-11-09 nesta sessao (session_01VXkRxWq5ZUCmvuNx5e2TGX)
