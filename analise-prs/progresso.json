@@ -2,81 +2,55 @@
   "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 2674,
-  "atualizado_em": "2026-11-09T20:30:00Z",
+  "atualizado_em": "2026-11-09T22:00:00Z",
   "main_sha_final": "b4c1167c7ce91e664d23fddc43570d0a61efd048",
   "mergeadas_por_agente_esta_sessao": [
-    {"number": 3337, "sha_main_apos": "6933eb6122d2ccf333d533d4441891b8d918479b", "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
+    {"number": 3337, "sha_main_apos": "6933eb61", "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
     {"number": 3340, "titulo": "docs(analise-prs): atualiza progresso", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
-    {"number": 3343, "sha_main_apos": "78729fc11038f7d0b2bb73ff0c1330f92547658b", "titulo": "chore(ci): atualiza file-size baseline Kit Builder", "tipo": "chore/ci", "gate_final": "SUCCESS"}
+    {"number": 3343, "sha_main_apos": "78729fc11038", "titulo": "chore(ci): atualiza file-size baseline Kit Builder", "tipo": "chore/ci", "gate_final": "SUCCESS"}
   ],
   "mergeadas_externas_esta_sessao": [
     {"number": 3341, "titulo": "docs: recibo deploy edge function", "merged_by": "adm01-debug"},
     {"number": 3342, "titulo": "fix(ci): as-assertions-baseline", "merged_by": "adm01-debug"},
-    {"number": 3344, "titulo": "fix(tests): consumeUnloadBackup", "merged_by": "adm01-debug", "nota": "cherry_plus=0 no momento da analise - absorvida como commit direto 00c8fa295dbc"},
-    {"number": 3346, "titulo": "fix(tests): corrige regressoes vitest", "merged_by": "adm01-debug", "sha_main_apos": "1696c5a5dc0aa73007785a8c2a26820d99d3f163", "merged_at": "2026-11-09T13:50:25Z"},
-    {"number": 3348, "titulo": "fix(tests): corrige 5 falhas preexistentes em useKitBuilderQuote", "merged_by": "external", "sha_main_apos": "b4c1167c7ce91e664d23fddc43570d0a61efd048", "merged_at": "2026-11-09T20:00:00Z", "gate_final_verificado": "SUCCESS (Gate E23=success, Gate 3 E2E in_progress; state=MERGED na graphql)"}
+    {"number": 3344, "titulo": "fix(tests): consumeUnloadBackup", "merged_by": "adm01-debug (commit direto 00c8fa295dbc)"},
+    {"number": 3346, "titulo": "fix(tests): corrige regressoes vitest", "merged_by": "adm01-debug", "sha_main_apos": "1696c5a5"},
+    {"number": 3348, "titulo": "fix(tests): corrige 5 falhas preexistentes em useKitBuilderQuote", "merged_by": "external", "sha_main_apos": "b4c1167c"}
   ],
-  "gate_final_main_atual": {
-    "sha": "b4c1167c7ce91e664d23fddc43570d0a61efd048",
-    "verificado_em": "2026-11-09T20:30:00Z",
-    "nota": "Gate Final so dispara em pull_request, nao em push para main. Vercel combined_status confirmado OK apos merges. Supabase saudavel."
-  },
   "supabase_producao": {
     "project_id": "doufsxqlfjyuvxuezpln",
     "products_count": 8321,
     "verificado_em": "2026-11-09T16:30:00Z",
     "status": "healthy"
   },
-  "prs_nao_mergear": [
-    {"number": 3277, "head_sha": "87c78600", "motivo": "Gate Final=FAILURE run 128980382539"},
-    {"number": 3203, "head_sha": "1aad6831", "motivo": "Gate Final=FAILURE - merge-reports + e2e cancelled"},
-    {"number": 3339, "head_sha": "6f8930b4", "motivo": "Gate Final=FAILURE - Gate 1.9 file-size + codex branch REGRA #10"},
-    {"number": 3332, "head_sha": "915e83a9", "motivo": "Gate Final=FAILURE - npm ci ERESOLVE eslint@10 + Dependabot REGRA #10"},
-    {"number": 3347, "head_sha": "e4e866073348cb56049b6551984495136cfb0ac4", "motivo": "E2E failure: view-no-presentation-mode mock = failure. Rebase em 1696c5a5 + re-captura snapshot necessarios."}
-  ],
-  "prs_aguarda_ci": [
-    {"number": 3345, "draft": true, "motivo": "DRAFT"},
-    {"number": 3278, "draft": true, "motivo": "DRAFT - sentinel grandfather"},
-    {"number": 3210, "motivo": "action_required (pending deployment approval)"}
-  ],
-  "prs_aguarda_po": {
-    "count": 26,
-    "categorias": {
-      "workflows_github": [3127, 3129, 3137, 3179, 3228, 3247, 3274, 3290, 3327, 3328, 3329, 3330],
-      "ddl_migration": [3214, 3243, 3250, 3251, 3255, 3256, 3257, 3261, 3263, 3264, 3265, 3273, 3279, 3284],
-      "major_version_bumps": [3331, 3333, 3334]
-    }
-  },
-  "gate_final_ddl_prs": {
-    "#3257": "SUCCESS (conclusion=success, status=completed) - ede7e6664. DDL/RLS - AGUARDA_PO",
-    "#3261": "SUCCESS (conclusion=success, status=completed) - f5b6c1949. DDL/cron - AGUARDA_PO",
-    "#3243": "NAO verificado (Vercel=failure 'Deployment has failed') - DDL - AGUARDA_PO",
-    "#3263": "NAO verificado (Vercel=failure 'Deployment was blocked') - DDL/cron - AGUARDA_PO",
-    "#3264": "NAO verificado (Vercel=failure 'Deployment was blocked') - DDL/view - AGUARDA_PO",
-    "#3265": "NAO verificado (Vercel=failure 'Deployment was blocked') - DDL/function - AGUARDA_PO",
-    "#3273": "NAO verificado (Vercel=failure 'Deployment has failed') - DDL/index - AGUARDA_PO"
-  },
   "contagem_por_veredito": {
     "MERGEADA_AGENTE": 3,
     "MERGEADA_EXTERNA": 5,
-    "NAO_MERGEAR": 5,
+    "NAO_MERGEAR": 6,
     "AGUARDA_CI": 3,
-    "AGUARDA_PO": 26,
-    "TOTAL_OPEN_RESTANTE": 34,
-    "VERIFICADO_EXAUSTIVO": true,
-    "NOTA": "#3348 mergeada externamente em 2026-11-09T20:00Z. Main SHA final: b4c1167c7. 34 PRs abertas restantes: 5 NAO_MERGEAR, 3 AGUARDA_CI, 26 AGUARDA_PO."
+    "AGUARDA_PO": 27,
+    "TOTAL_OPEN_RESTANTE": 36,
+    "TOTAL_ANALISADAS": 44,
+    "VERIFICADO_EXAUSTIVO": true
   },
-  "worktrees_criados_esta_sessao": [],
-  "arquivos_entrega": [
-    "analise-prs/progresso.json",
-    "analise-prs/RELATORIO_PRS.md",
-    "analise-prs/regras-de-negocio.md",
-    "analise-prs/baseline/typecheck.txt",
-    "analise-prs/baseline/unit-tests-78729fc1-session4.txt",
-    "analise-prs/baseline/main-sha.txt",
-    "analise-prs/baseline/state.md",
-    "analise-prs/prs.json",
-    "analise-prs/prs.csv",
-    "analise-prs/dossies/PR-*.md (170+ arquivos)"
-  ]
+  "prs_nao_mergear": [
+    {"number": 3203, "head_sha": "1aad6831", "motivo": "Gate Final=FAILURE — merge-reports + E2E cancelled"},
+    {"number": 3277, "head_sha": "87c78600", "motivo": "Gate Final=FAILURE run 128980382539"},
+    {"number": 3329, "head_sha": "65966984", "motivo": "Gate 1+5=FAILURE + Migrations x Canonical=FAILURE + workflows prohibited"},
+    {"number": 3330, "head_sha": "519c1089", "motivo": "CodeQL+Gate 1+Gate E23=FAILURE + workflows prohibited"},
+    {"number": 3332, "head_sha": "915e83a9", "motivo": "npm ci ERESOLVE eslint@10 + SSOT=FAILURE + E2E massivo=FAILURE"},
+    {"number": 3339, "head_sha": "6f8930b4", "motivo": "Gate 1=FAILURE file-size regression"}
+  ],
+  "prs_aguarda_ci": [
+    {"number": 3210, "motivo": "action_required (pending deployment approval)"},
+    {"number": 3278, "draft": true, "motivo": "DRAFT — Gate Final=SUCCESS"},
+    {"number": 3347, "motivo": "CI incompleto cross-reference QUEUED"}
+  ],
+  "prs_aguarda_po": {
+    "count": 27,
+    "categorias": {
+      "workflows_github": [3127, 3129, 3137, 3179, 3228, 3247, 3274, 3290, 3327, 3328],
+      "ddl_migration": [3214, 3243, 3250, 3251, 3255, 3256, 3257, 3261, 3263, 3264, 3265, 3273, 3279, 3284],
+      "major_version_bumps": [3331, 3333, 3334]
+    }
+  }
 }
