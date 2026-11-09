@@ -2,67 +2,27 @@
   "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 2674,
-  "iniciado_em": "2026-10-28T00:00:00Z",
-  "atualizado_em": "2026-11-09T16:45:00Z",
-  "contagem_por_veredito": {
-    "MERGEADA": 17,
-    "NAO_MERGEAR": 10,
-    "AGUARDA_CI": 35,
-    "AGUARDA_CI_OU_PO": 0,
-    "AGUARDA_PO": 2,
-    "FECHADA_SEM_MERGE": 3,
-    "TOTAL_ANALISADO": 74,
-    "OPEN_PRs_ATUAL": 37
-  },
+  "atualizado_em": "2026-11-09T17:00:00Z",
   "mergeadas_por_agente_esta_sessao": [
-    {
-      "number": 3337,
-      "sha": "6933eb6122d2ccf333d533d4441891b8d918479b",
-      "titulo": "fix(ci): corrige referências inválidas supabase/migrations/x6 em analise-prs",
-      "tipo": "docs-only E14",
-      "gate_final": "SUCCESS",
-      "merged_at": "2026-11-09T12:00:00Z"
-    },
-    {
-      "number": 3340,
-      "sha": "5a3f679e",
-      "titulo": "docs(analise-prs): atualiza progresso — merges sessão anterior",
-      "tipo": "docs-only E14",
-      "gate_final": "SUCCESS",
-      "merged_at": "2026-11-09T12:30:00Z"
-    },
-    {
-      "number": 3343,
-      "sha": "78729fc11038f7d0b2bb73ff0c1330f92547658b",
-      "titulo": "chore(ci): atualiza file-size baseline — Kit Builder +21/+13/+10 linhas",
-      "tipo": "chore/ci — ratchet fix",
-      "gate_final": "SUCCESS_BEFORE_MERGE",
-      "supabase_impacto": "ZERO — apenas .file-size-baseline.json",
-      "merged_at": "2026-11-09T16:00:00Z"
-    }
+    {"number": 3337, "sha": "6933eb6122d2ccf333d533d4441891b8d918479b", "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
+    {"number": 3340, "titulo": "docs(analise-prs): atualiza progresso", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
+    {"number": 3343, "sha": "78729fc11038f7d0b2bb73ff0c1330f92547658b", "titulo": "chore(ci): atualiza file-size baseline Kit Builder", "tipo": "chore/ci", "gate_final": "SUCCESS"}
   ],
-  "mergeadas_externas": [
-    {
-      "number": 3341,
-      "titulo": "docs: recibo de deploy de edge function(s) — run 42609591614 (E66)",
-      "merged_by": "adm01-debug",
-      "merged_at": "2026-11-09T13:00:00Z"
-    }
+  "mergeadas_externas_esta_sessao": [
+    {"number": 3341, "titulo": "docs: recibo deploy edge function", "merged_by": "adm01-debug"},
+    {"number": 3342, "titulo": "fix(ci): as-assertions-baseline", "merged_by": "adm01-debug"}
   ],
   "gate_final_main_atual": {
     "sha": "78729fc11038f7d0b2bb73ff0c1330f92547658b",
-    "run_id": 42617163917,
     "status": "queued",
-    "conclusao": null,
-    "causa": "Runner saturado — 3 runs na fila desde 12:27 UTC. Nao é falha.",
-    "verificado_em": "2026-11-09T16:45:00Z"
+    "causa": "Runner saturation - 44 checks queued desde 12:30Z (5+ horas)"
   },
   "supabase_producao": {
-    "projeto": "doufsxqlfjyuvxuezpln",
-    "total_products": 8321,
+    "project_id": "doufsxqlfjyuvxuezpln",
+    "products_count": 8321,
     "verificado_em": "2026-11-09T16:30:00Z",
     "status": "healthy"
   },
-  "prs_abertas_atuais": [3127, 3129, 3137, 3179, 3203, 3210, 3214, 3228, 3243, 3247, 3250, 3251, 3255, 3256, 3257, 3261, 3263, 3264, 3265, 3273, 3274, 3277, 3278, 3279, 3284, 3290, 3327, 3328, 3329, 3330, 3331, 3332, 3333, 3334, 3339, 3344, 3345],
-  "bloqueio_atual": "Gate Final queued em main SHA 78729fc11038 desde 12:27 UTC. PRs de código aguardam CI verde. Agente fork analisando CI por PR."
+  "prs_aguarda_ci_runner": "35 PRs com gates queued por runner saturation - inclui #3344, #3345 (draft) e os 33 PRs analisados pelo fork agent",
+  "bloqueio_geral": "Runner saturation GitHub Actions impede CI em todos os PRs abertos"
 }
