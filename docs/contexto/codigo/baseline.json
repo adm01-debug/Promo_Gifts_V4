@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "fb4b8c2d87b1ab06ace206e837083b7bd78ad124",
+  "commit": "0818809dae41c295b046dc52f85078e4f06b3df4",
   "branch": "main",
-  "data_commit": "2026-11-09T11:47:01-03:00",
+  "data_commit": "2026-11-09T11:49:19-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "0818809",
+    "data": "2026-11-09",
+    "assunto": "fix: corrige referência de SHA de sentinela em check-sentinel-sha (#3278)"
+   },
    {
     "sha": "fb4b8c2",
     "data": "2026-11-09",
@@ -126,11 +131,6 @@
     "sha": "0dfb3ef",
     "data": "2026-11-09",
     "assunto": "docs(analise-prs): RELATORIO_DEFINITIVO — dossiê completo com evidências de CI"
-   },
-   {
-    "sha": "9895738",
-    "data": "2026-11-09",
-    "assunto": "fix(dropbox): exibir título no estado desconectado (#3303)"
    }
   ],
   "arquivos_mudados_7d": 498,
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 91
+    "mudancas": 90
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 43
+    "mudancas": 44
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -270,6 +270,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
+    "mudancas": 5
+   },
+   {
     "arquivo": "docs/ci/SEGREDOS.md",
     "mudancas": 5
    },
@@ -280,10 +284,6 @@
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
     "mudancas": 5
-   },
-   {
-    "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
-    "mudancas": 4
    },
    {
     "arquivo": ".github/workflows/ci-security-drift.yml",

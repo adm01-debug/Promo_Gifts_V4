@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "fb4b8c2d87b1ab06ace206e837083b7bd78ad124",
+  "sha": "0818809dae41c295b046dc52f85078e4f06b3df4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 14:50 UTC",
+  "generated_at": "2026-11-09 14:56 UTC",
   "files_total": 9182,
   "code_files": 7869,
   "code_lines": 1055970
@@ -484415,10 +484415,20 @@
   }
  },
  "git": {
-  "sha": "fb4b8c2d87b1ab06ace206e837083b7bd78ad124",
+  "sha": "0818809dae41c295b046dc52f85078e4f06b3df4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "0818809",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "fix: corrige referência de SHA de sentinela em check-sentinel-sha (#3278)",
+    "files": [
+     ".github/SENTINEL_SHA_ALLOWLIST.txt",
+     "PENDENCIAS.md"
+    ]
+   },
    {
     "sha": "fb4b8c2",
     "date": "2026-11-09",
@@ -484748,22 +484758,12 @@
     "files": [
      "analise-prs/RELATORIO_DOSSIES.md"
     ]
-   },
-   {
-    "sha": "f68850a",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "docs(analise-prs): RELATORIO_PRS.md + progresso.json — inventário completo 36 PRs abertas",
-    "files": [
-     "analise-prs/RELATORIO_PRS.md",
-     "analise-prs/progresso.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "analise-prs/progresso.json",
-    6
+    5
    ],
    [
     "analise-prs/prs.json",
@@ -484798,8 +484798,12 @@
     2
    ],
    [
-    "analise-prs/RELATORIO_PRS.md",
-    2
+    ".github/SENTINEL_SHA_ALLOWLIST.txt",
+    1
+   ],
+   [
+    "PENDENCIAS.md",
+    1
    ],
    [
     "src/components/products/__snapshots__/PriceFreshnessBadge.snapshots.test.tsx.snap",
@@ -484835,10 +484839,6 @@
    ],
    [
     "src/components/kit-builder/KitAIPromptDialog.tsx",
-    1
-   ],
-   [
-    "src/components/kit-builder/KitBuilderHeader.tsx",
     1
    ]
   ]

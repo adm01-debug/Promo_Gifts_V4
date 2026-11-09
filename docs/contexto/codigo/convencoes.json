@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: corrige referência de SHA de sentinela em check-sentinel-sha (#3278)",
    "fix(update-snapshots): atualizar snapshots PriceFreshnessBadge para novo class Lucide AlertTriangle",
    "fix: replace corrupt PNG snapshot and add smoke test timeouts (#3347)",
    "fix(tests): corrige 5 falhas preexistentes em useKitBuilderQuote (#3348)",
-   "fix(tests): corrige regressões vitest — onLogoRemove, consumeUnloadBackup, goToStep, exit codes, mock transactional (#3346)",
-   "fix(tests): corrige TypeError consumeUnloadBackup e atualiza baseline de tamanho"
+   "fix(tests): corrige regressões vitest — onLogoRemove, consumeUnloadBackup, goToStep, exit codes, mock transactional (#3346)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
