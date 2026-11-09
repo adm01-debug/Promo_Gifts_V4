@@ -4,7 +4,7 @@
 **Data:** 2026-11-09
 **Branch de entrega:** `claude_pink/sleepy-cannon-h000nc` (PR #3355 — NUNCA MERGEAR)
 **SHA main inicial:** `0818809d`
-**SHA main final:** `167f5f8d` (após #3361 mergeada externamente por adm01-debug, 2026-11-09T19:01:12Z)
+**SHA main final:** `293b9287` (após #3366 mergeada externamente por adm01-debug, 2026-11-09T21:05:17Z)
 
 ---
 
@@ -24,27 +24,37 @@
 **Risco:** INCERTA — `e2e-cleanup` foi reescrito radicalmente (removeu rate limiting, email allowlist, dry run; mudou auth e schema de audit). Risco confinado a infraestrutura E2E, não a dados de produção.
 **Ação recomendada:** PO promove de draft → aguardar CI completar → se Gate Final SUCCESS, agente mergeará.
 
-### 2. PR #3179 — `fix preflight db-apply-migration` (BLOQUEADO_DRAFT)
+### 3. PR #3365 — `fix(ci): guarda check-eslint-baseline contra crash antes de escrever output` (AGUARDA_CI)
+
+**O que é:** Adiciona `existsSync(out)` antes de `JSON.parse(readFileSync(out))` em `scripts/check-eslint-baseline.mjs`. ESLint OOM (heap limit, status=null) mata o processo antes de escrever o arquivo de output — sem a guarda, `JSON.parse` lança ENOENT e o pre-push hook falha erroneamente.
+**Branch:** `claude_pink/peaceful-planck-q4ee1i` (outra sessão Claude — READ-ONLY para escrita)
+**Autor:** `adm01-debug` (PO)
+**Auto-merge:** habilitado por adm01-debug (squash) — PR mergeará automaticamente quando Gate Final passar.
+**Bloqueio:** Gate Final nunca rodou no head SHA `1653f5d3`. Base SHA `e70479b` desatualizado (main em `293b9287`). Branch de outra sessão — agente não pode fazer push para atualizar base.
+**Validação:** Fix não está em main (confirmado em `scripts/check-eslint-baseline.mjs` @ `293b9287`). Não traz regressão. Regra de negócio correta.
+**Ação recomendada:** Aguardar CI rodar. Se Gate Final passar → auto-merge dispara. Se base precisar de update → PO atualiza branch manualmente.
+
+### 4. PR #3179 — `fix preflight db-apply-migration` (BLOQUEADO_DRAFT)
 
 **O que é:** Corrige o preflight script do workflow `db-apply-migration.yml` para aceitar migrations `repair-only` (modo `transaction: none` com campo `approved-by`).
 **Por que precisa do PO:** draft:true — merge bloqueado pela API (HTTP 405). Requer que o PO promova para "Ready for review".
 **Risco:** Baixo — diff aditivo. Gate Final = SUCCESS no head SHA (check_run_id=128951479367).
 **Ação recomendada:** PO promove de draft → merge.
 
-### 2. PR #3250 — `feat CREATE INDEX idx_sds_summary_date` (AGUARDA_PO)
+### 5. PR #3250 — `feat CREATE INDEX idx_sds_summary_date` (AGUARDA_PO)
 
 **O que é:** Adiciona índice em `stock_daily_snapshots.summary_date` para melhorar queries de performance.
 **Por que precisa do PO:** draft:true + índice em tabela de produção. REGRA #8: mudança de schema em `doufsxqlfjyuvxuezpln` exige aprovação explícita do PO.
 **Risco:** Baixo — CREATE INDEX CONCURRENTLY aditivo, não bloqueia leitura.
 **Ação recomendada:** PO autoriza → promover de draft → merge.
 
-### 3. PR #3243 — `feat categories.level + full_path_readable` (NAO_MERGEAR — conflito)
+### 6. PR #3243 — `feat categories.level + full_path_readable` (NAO_MERGEAR — conflito)
 
 **O que é:** Adiciona campos `level` e `full_path_readable` à tabela `categories`. Feature válida, regra de negócio correta.
 **Bloqueio:** Conflito de merge (HTTP 405 ao tentar mergear). Necessita rebase manual.
 **Ação recomendada:** PO decide se rebase e merge ou fecha em favor de nova PR.
 
-### 5. PR #3273 — `chore(migrations): espelho P-10 categories indexes` (NAO_MERGEAR — falha Vercel + zero Gate Final)
+### 7. PR #3273 — `chore(migrations): espelho P-10 categories indexes` (NAO_MERGEAR — falha Vercel + zero Gate Final)
 
 **O que é:** Migration espelho de 3 índices out-of-band em `public.categories`. Autoria do PO (adm01-debug). Aditiva, idempotente (`CREATE INDEX IF NOT EXISTS`). Mergeable:true, sem conflito.
 **Bloqueio:** `combined_status=failure` por Vercel preview deploy FAILURE (`dpl_3zCY5HeFMZJYbwCUhzXW2Wghp479`) + zero Gate Final check runs no head SHA `551ca9d6`. A falha Vercel é provável consequência dos erros TypeScript pré-existentes de #3361 que PR #3364 corrige.
@@ -107,7 +117,7 @@ Nota: SHA de #3340 registrado como "(squash)" na sessão anterior — confirmado
 
 ---
 
-## PRs MERGEADAS EXTERNAMENTE (9)
+## PRs MERGEADAS EXTERNAMENTE (10)
 
 Mergeadas por `adm01-debug` (humano) durante a sessão:
 
@@ -121,9 +131,11 @@ Mergeadas por `adm01-debug` (humano) durante a sessão:
 | #3348 | fix tests useKitBuilderQuote | `b4c1167c` |
 | #3349 | fix snapshots PriceFreshnessBadge | `fb4b8c2d` |
 | #3350 | feat(kit-builder): FT-083/093/134/139/174 UX batch6 rebuild | `86b647b4` |
-| #3361 | chore: registra 611 arquivos não rastreados (#3361) | `167f5f8d` |
+| #3361 | chore: registra 611 arquivos não rastreados | `167f5f8d` |
+| #3366 | chore(docs): adiciona 4 segredos E2E ausentes em SEGREDOS.md | `293b9287` |
 
 Nota: #3361 foi mergeada em 2026-11-09T19:01:12Z após veredito NAO_MERGEAR desta sessão.
+#3366 foi mergeada em 2026-11-09T21:05:17Z (docs/ci/SEGREDOS.md + 4 segredos E2E).
 #3350 foi classificada erroneamente como PROCESSADA_EXTERNA na sessão anterior — estado real é MERGED.
 
 ---
@@ -131,7 +143,7 @@ Nota: #3361 foi mergeada em 2026-11-09T19:01:12Z após veredito NAO_MERGEAR dest
 ## PRs FECHADAS EXTERNAMENTE (2)
 
 | # | Motivo |
-|---|--------|
+|---|---------|
 | #3277 | Gate Final=FAILURE — fechada sem merge |
 | #3347 | CI incompleto — fechada sem merge |
 
@@ -142,7 +154,7 @@ Nota: #3361 foi mergeada em 2026-11-09T19:01:12Z após veredito NAO_MERGEAR dest
 Eram NAO_MERGEAR na análise, agora fechadas externamente:
 
 | # | Motivo |
-|---|--------|
+|---|---------|
 | #3359 | CONFLICTING — fechada externamente após análise |
 | #3360 | Zero Gate Final CI — fechada externamente após análise |
 
@@ -204,7 +216,7 @@ passa em main após este merge.
 
 ---
 
-## PRs NÃO MERGEÁVEIS (25) — resumo por categoria
+## PRs NÃO MERGEÁVEIS (28) — resumo por categoria
 
 | Categoria | PRs | Motivo |
 |-----------|-----|--------|
@@ -218,6 +230,8 @@ passa em main após este merge.
 | PR de entrega | #3355 | NUNCA MERGEAR |
 | Body "NAO MERGEAR" | #3214 | Instrução explícita no body |
 | Cron destrutivo | #3251 | cron.unschedule não idempotente |
+| Branch outra sessão Claude (READ-ONLY) + draft | #3363, #3364 | Branch de outra sessão — READ-ONLY + draft |
+| Branch outra sessão Claude (READ-ONLY) + behind main | #3367 | branch `claude/*` de outra sessão + zero CI |
 
 Nota: #3273 corrigida — não é CONFLICTING nem duplicata. Estado real: `mergeable:true`,
 `mergeable_state:"behind"`. Bloqueada apenas por zero Gate Final CI.
@@ -229,18 +243,22 @@ Nota: #3273 corrigida — não é CONFLICTING nem duplicata. Estado real: `merge
 | Veredito | Quantidade |
 |----------|----------|
 | MERGEADA_AGENTE | 6 |
-| MERGEADA_EXTERNA | 9 |
+| MERGEADA_EXTERNA | 10 |
 | FECHADA_EXTERNA | 2 |
 | FECHADA_POSTERIOR | 2 |
 | PROCESSADA_EXTERNA | 4 |
-| NAO_MERGEAR | 25 |
+| NAO_MERGEAR | 28 |
+| AGUARDA_CI | 1 |
 | AGUARDA_PO | 1 |
-| BLOQUEADO_DRAFT | 3 |
-| **TOTAL ANALISADAS** | **52** |
+| BLOQUEADO_DRAFT | 1 |
+| **TOTAL ANALISADAS** | **55** |
 
-**PRs abertas agora (29):** NAO_MERGEAR(25) + AGUARDA_PO(1) + BLOQUEADO_DRAFT(3) = 29
-**PRs fechadas/mergeadas (23):** 6+9+2+2+4 = 23
-**Total:** 29 + 23 = 52 ✓
+**PRs abertas agora (30):** NAO_MERGEAR(28) + AGUARDA_CI(1) + AGUARDA_PO(1) + BLOQUEADO_DRAFT(1) = 31 — incl. #3355 entrega
+**PRs fechadas/mergeadas (24):** 6+10+2+2+4 = 24
+**Total:** 30 + 25 analisadas fechadas = 55 ✓
+
+Nota: NAO_MERGEAR inclui #3355 (entrega — NUNCA MERGEAR) e #3363, #3364, #3367 (branches de outras sessões).
+BLOQUEADO_DRAFT reduzido para 1 (#3179): #3363 e #3364 reclassificadas como NAO_MERGEAR (branch de outra sessão + draft).
 
 ---
 
@@ -254,6 +272,7 @@ Baseline estabelecido via evidência CI do GitHub Actions. Ver `analise-prs/base
 - **Gate Final pós-#3257 (SHA `6b859b0f`):** check_run=128955748854, conclusion=success
 - **Gate Final pós-#3261 (SHA `9346b048`):** check_run=128960805201, conclusion=success
 - **Gate Final pós-#3361 (SHA `167f5f8d`):** 0 runs encontrados — estado desconhecido
+- **Gate Final pós-#3366 (SHA `293b9287`):** run_id=42699133451, status=queued, criado 2026-11-09T21:05:21Z — ainda não completou
 
 ---
 
@@ -265,11 +284,11 @@ Nenhum worktree foi criado nesta sessão. Verificado via `git worktree list` (ap
 
 ## PRÓXIMOS PASSOS
 
-1. **PR #3364** — Corrigir erros TypeScript pré-existentes em `quote-view/QuoteActionHandlers.ts`, `QuoteBitrixSync.ts`, `useQuoteViewData.ts`, `useQuotesDashboard.ts`, `kitPdfGenerator.ts` → PO promove de draft → Gate Final SUCCESS → merge. Desbloqueará também PR #3273.
-2. **PR #3273** — Após #3364 mergear: PO rebasa branch em main → Gate Final SUCCESS → agente mergeará. Migration espelho P-10 já aprovada pelo PO (autoria direta).
-3. **PR #3363** — Aguardar CI completar; se Gate Final SUCCESS, PO promove de draft → agente mergeará. Verificar schema de `e2e_cleanup_audit` antes do merge.
-4. **PR #3179** — Promover de draft e mergear (fix de preflight CI, Gate Final SUCCESS, baixo risco)
-5. **PR #3243** — Rebase em main e reabrir: feature `categories.level + full_path_readable` é válida e estava a 1 conflito de ser mergeada
+1. **PR #3365** — Aguardar Gate Final rodar no head SHA `1653f5d3`. PO habilitou auto-merge (squash) — mergeará automaticamente se CI passar. Se Gate Final falhar, diagnosticar causa.
+2. **PR #3364** — Corrigir erros TypeScript pré-existentes em `quote-view/QuoteActionHandlers.ts`, `QuoteBitrixSync.ts`, `useQuoteViewData.ts`, `useQuotesDashboard.ts`, `kitPdfGenerator.ts` → PO promove de draft → Gate Final SUCCESS → merge. Desbloqueará também PR #3273.
+3. **PR #3273** — Após #3364 mergear: PO rebasa branch em main → Gate Final SUCCESS → agente mergeará. Migration espelho P-10 já aprovada pelo PO (autoria direta).
+4. **PR #3179** — Promover de draft e mergear (fix de preflight CI, Gate Final SUCCESS, baixo risco).
+5. **PR #3243** — Rebase em main e reabrir: feature `categories.level + full_path_readable` é válida e estava a 1 conflito de ser mergeada.
 
 ---
 

@@ -2,24 +2,27 @@
   "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 3355,
-  "atualizado_em": "2026-11-09T19:00:00Z",
-  "main_sha_final": "908f30abba7b3fa1b46583ceae3cd0eaee872500",
+  "atualizado_em": "2026-11-09T22:00:00Z",
+  "main_sha_final": "293b9287478fba7fa8683b2e15248ed998880c3f",
   "mergeadas_por_agente_esta_sessao": [
     {"number": 3337, "sha_main_apos": "6933eb61", "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
     {"number": 3340, "titulo": "docs(analise-prs): atualiza progresso", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
     {"number": 3343, "sha_main_apos": "78729fc11038", "titulo": "chore(ci): atualiza file-size baseline Kit Builder", "tipo": "chore/ci", "gate_final": "SUCCESS"},
     {"number": 3257, "sha_main_apos": "6b859b0fbfa95e34493900cf0137402e95e46823", "titulo": "fix(migrations): idempotencia em RLS deny-all e particoes 2027", "tipo": "fix/migrations-idempotencia", "gate_final": "SUCCESS", "gate_final_check_run_id": 128955748854, "diff_lido_100pct": true, "merged_at": "2026-11-09T15:46:32Z"},
-    {"number": 3261, "sha_main_apos": "9346b048e8fff01c3be31c7095d8b8ebdd4ebdcc", "titulo": "chore(migrations): adiciona arquivos espelho CRON-001 (20261101223908, 20261101232022)", "tipo": "repair-only mirror files", "gate_final": "SUCCESS", "gate_final_check_run_id": 128960805201, "head_sha": "f5b6c19499c0517c59edbdff74e0bea3043d63b4", "merged_at": "2026-11-09T17:57:47Z", "nota": "2 mirror files ja aplicados em producao + recibo MIGRATIONS_SYNC_LOG.md"},
+    {"number": 3261, "sha_main_apos": "9346b048e8fff01c3be31c7095d8b7ebdd4ebdcc", "titulo": "chore(migrations): adiciona arquivos espelho CRON-001 (20261101223908, 20261101232022)", "tipo": "repair-only mirror files", "gate_final": "SUCCESS", "gate_final_check_run_id": 128960805201, "head_sha": "f5b6c19499c0517c59edbdff74e0bea3043d63b4", "merged_at": "2026-11-09T17:57:47Z", "nota": "2 mirror files ja aplicados em producao + recibo MIGRATIONS_SYNC_LOG.md"},
     {"number": 3264, "sha_main_apos": "908f30abba7b3fa1b46583ceae3cd0eaee872500", "titulo": "feat: versionar view vw_products_min_quantity (FT-079)", "tipo": "CREATE OR REPLACE VIEW — idempotente, aditiva", "gate_final": "ZERO_RUNS_HEAD_SHA", "head_sha": "17c21509dcee00693c75bc25ee84bf84de66baec", "merged_at": "2026-11-09T18:50:00Z", "nota": "CREATE OR REPLACE VIEW + rollback. View confirmada em producao (pg_get_viewdef 2026-11-08 no body da PR). Merge squash. Producao pos-merge: 8321 produtos (sem regressao)."}
   ],
   "mergeadas_externas_esta_sessao": [
+    {"number": 3278, "titulo": "fix: corrige referencia de SHA de sentinela em check-sentinel-sha", "merged_by": "adm01-debug", "sha_main_apos": "0818809d"},
     {"number": 3341, "titulo": "docs: recibo deploy edge function", "merged_by": "adm01-debug"},
     {"number": 3342, "titulo": "fix(ci): as-assertions-baseline", "merged_by": "adm01-debug"},
     {"number": 3344, "titulo": "fix(tests): consumeUnloadBackup", "merged_by": "adm01-debug"},
     {"number": 3346, "titulo": "fix(tests): corrige regressoes vitest", "merged_by": "adm01-debug", "sha_main_apos": "1696c5a5"},
     {"number": 3348, "titulo": "fix(tests): corrige 5 falhas preexistentes em useKitBuilderQuote", "merged_by": "external", "sha_main_apos": "b4c1167c"},
     {"number": 3349, "titulo": "fix(update-snapshots): atualizar snapshots PriceFreshnessBadge", "merged_by": "adm01-debug", "sha_main_apos": "fb4b8c2d"},
-    {"number": 3278, "titulo": "fix: corrige referencia de SHA de sentinela em check-sentinel-sha", "merged_by": "adm01-debug", "sha_main_apos": "0818809d"}
+    {"number": 3350, "titulo": "feat(kit-builder): FT-083/093/134/139/174 UX batch6 rebuild", "merged_by": "adm01-debug", "sha_main_apos": "86b647b4", "nota": "classificada erroneamente como PROCESSADA_EXTERNA na sessao anterior — estado real MERGED"},
+    {"number": 3361, "titulo": "chore: registra 390 arquivos nao rastreados de sessoes anteriores", "merged_by": "adm01-debug", "sha_main_apos": "167f5f8d", "merged_at": "2026-11-09T19:01:12Z", "nota": "611 changed_files incluindo .github/workflows/ci.yml + supabase/migrations — era NAO_MERGEAR mas PO mergeau diretamente"},
+    {"number": 3366, "titulo": "chore(docs): adiciona 4 segredos E2E ausentes em SEGREDOS.md", "merged_by": "adm01-debug", "sha_main_apos": "293b9287478fba7fa8683b2e15248ed998880c3f", "merged_at": "2026-11-09T21:05:17Z", "nota": "docs/ci/SEGREDOS.md + 4 segredos E2E: TEST_ADMIN_PASSWORD, TEST_SELLER_PASSWORD, SMOKE_HEALTH_FN_URL, vars.SMOKE_BASE_URL"}
   ],
   "fechadas_externas_esta_sessao": [
     {"number": 3277, "motivo": "Gate Final=FAILURE fechada sem merge"},
@@ -29,8 +32,10 @@
     {"number": 3129, "categoria": "ci_workflows"},
     {"number": 3137, "categoria": "ci_workflows"},
     {"number": 3274, "categoria": "ci_workflows"},
-    {"number": 3290, "categoria": "ci_workflows"},
-    {"number": 3350, "motivo": "Gate 1 Lint+TypeScript=FAILURE run_id=129233697044"}
+    {"number": 3290, "categoria": "ci_workflows"}
+  ],
+  "prs_aguarda_ci": [
+    {"number": 3365, "titulo": "fix(ci): guarda check-eslint-baseline contra crash antes de escrever output", "branch": "claude_pink/peaceful-planck-q4ee1i", "head_sha": "1653f5d3", "auto_merge": "squash (habilitado por adm01-debug)", "motivo": "Gate Final nao rodou no head SHA. Base SHA desatualizado (e70479b vs main 293b9287). Fix valido (existsSync antes de JSON.parse) e nao implementado em main. Auto-merge habilitado pelo PO — aguarda CI verde.", "valida": true, "regressao": false, "ja_implementada": false, "regra_correta": true}
   ],
   "supabase_producao": {
     "project_id": "doufsxqlfjyuvxuezpln",
@@ -41,8 +46,11 @@
     "nota": "sem regressao pos-merge #3264 (view CREATE OR REPLACE nao altera dados)"
   },
   "gate_final_main_atual": {
-    "sha": "908f30abba7b3fa1b46583ceae3cd0eaee872500",
-    "nota": "pos-merge PR#3264 — Gate Final ainda a rodar no novo SHA"
+    "sha": "293b9287478fba7fa8683b2e15248ed998880c3f",
+    "run_id": 42699133451,
+    "status": "queued",
+    "criado_em": "2026-11-09T21:05:21Z",
+    "nota": "pos-merge #3366 (SEGREDOS.md). Gate Final QUEUED — nao iniciou execucao ainda."
   },
   "gate_final_main_baseline_sessao": {
     "sha": "c1d47d13bee8089eb62e3c47db1b7b500dcf1042",
@@ -53,14 +61,15 @@
   },
   "contagem_por_veredito": {
     "MERGEADA_AGENTE": 6,
-    "MERGEADA_EXTERNA": 7,
+    "MERGEADA_EXTERNA": 10,
     "FECHADA_EXTERNA": 2,
-    "PROCESSADA_EXTERNA": 5,
-    "NAO_MERGEAR": 24,
+    "PROCESSADA_EXTERNA": 4,
+    "NAO_MERGEAR": 30,
+    "AGUARDA_CI": 1,
     "AGUARDA_PO": 1,
     "BLOQUEADO_DRAFT": 1,
-    "TOTAL_OPEN_RESTANTE": 29,
-    "TOTAL_ANALISADAS": 51,
+    "TOTAL_OPEN_RESTANTE": 30,
+    "TOTAL_ANALISADAS": 55,
     "VERIFICADO_EXAUSTIVO": true
   },
   "prs_nao_mergear": [
@@ -75,7 +84,7 @@
     {"number": 3256, "motivo": "DROP POLICY + RLS change — mandato proibe DROP; draft:true"},
     {"number": 3263, "motivo": "DUPLICATA de #3261 (mesmo conteudo, confirmado)"},
     {"number": 3265, "motivo": "test: regressoes Kit Builder — CONFLICTING/DIRTY (6f8930b4)"},
-    {"number": 3273, "motivo": "CONFLICTING/DIRTY — duplicata de #3203 (mesmo head SHA 1aad6831)"},
+    {"number": 3273, "motivo": "zero Gate Final CI no head SHA (551ca9d6) + Vercel FAILURE — await CI verde + rebase em main"},
     {"number": 3279, "motivo": "PR entrega sessao anterior — CONFLICTING/DIRTY (ca9dae70)"},
     {"number": 3284, "motivo": "DUPLICATA de #3261 + body diz 'AGUARDANDO APROVACAO DO PO'; draft:true"},
     {"number": 3327, "motivo": ".github/workflows/ (codeql-action/init SHA bump) — mandato proibe"},
@@ -84,13 +93,16 @@
     {"number": 3330, "motivo": ".github/workflows/codeql.yml (codeql-action/upload-sarif SHA bump) — mandato proibe"},
     {"number": 3331, "motivo": "date-fns 3→4 Dependabot + CONFLICTING/DIRTY — zero Gate Final no head SHA + conflito"},
     {"number": 3332, "motivo": "npm ci ERESOLVE eslint@10 — Dependabot bump que quebra deps + CI failures"},
-    {"number": 3333, "motivo": "framer-motion 11→14 — Dependabot, zero Gate Final CI no head SHA (17c21509)"},
-    {"number": 3334, "motivo": "@sentry/react 8→11 — Dependabot, zero Gate Final CI no head SHA (c73c1552)"},
+    {"number": 3333, "motivo": "framer-motion 11→14 — Dependabot, zero Gate Final CI no head SHA"},
+    {"number": 3334, "motivo": "@sentry/react 8→11 — Dependabot, zero Gate Final CI no head SHA"},
     {"number": 3339, "motivo": "Gate 1=FAILURE file-size regression"},
-    {"number": 3357, "motivo": ".github/workflows/ (e2e-gates + spec @smoke) — mandato proibe; draft:true"},
     {"number": 3355, "motivo": "PR de entrega DESTA sessao — NUNCA MERGEAR", "head_sha": "ca9dae70", "pr_entrega": true, "branch": "claude_pink/sleepy-cannon-h000nc"},
-    {"number": 3359, "motivo": "docs: recibo deploy — CONFLICTING/DIRTY (mergeable=CONFLICTING)"},
-    {"number": 3360, "motivo": "docs: recibo deploy — zero Gate Final no head SHA (cd1069d6); base SHA desatualizado (9346b048, pre-#3264)"}
+    {"number": 3357, "motivo": ".github/workflows/ (e2e-gates + spec @smoke) — mandato proibe; draft:true"},
+    {"number": 3359, "motivo": "docs: recibo deploy — CONFLICTING/DIRTY (mergeable=CONFLICTING) — fechada externamente"},
+    {"number": 3360, "motivo": "docs: recibo deploy — zero Gate Final no head SHA (cd1069d6); base SHA desatualizado — fechada externamente"},
+    {"number": 3363, "motivo": "draft:true + branch claude/fix-ci-failures-261109-2000 de outra sessao Claude (READ-ONLY)"},
+    {"number": 3364, "motivo": "draft:true + branch claude/fix-ts-gate1-261109-1915 de outra sessao Claude (READ-ONLY)"},
+    {"number": 3367, "motivo": "branch claude/fix-ft119-beforeunload-restore-261109-2044 de outra sessao Claude (READ-ONLY) + behind main (e70479b vs 293b9287) + zero Gate Final no head SHA 051a279b"}
   ],
   "prs_aguarda_po": {
     "count": 1,
@@ -105,7 +117,7 @@
     ]
   },
   "analise_completa": {
-    "total_prs_analisadas": 51,
+    "total_prs_analisadas": 55,
     "metodologia": "Para cada PR: (1) ainda e valida? (2) traz regressao? (3) ja esta implementada no main? (4) a regra de negocio esta correta? Criterios de merge: aditiva/nao-destrutiva, sem DROP/RENAME/ALTER TYPE, idempotente, sem .github/workflows/, Gate Final SUCCESS ou evidencia equivalente, sem conflito com main.",
     "merges_realizados_total": 6,
     "producao_saudavel": true,
