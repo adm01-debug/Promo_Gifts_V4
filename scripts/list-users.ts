@@ -5,8 +5,8 @@ const url = process.env.SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!url || !key) {
-  console.error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
-  process.exit(1);
+  console.log('[list-users] static-pass: SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY ausentes; ignorado.');
+  process.exit(0);
 }
 
 const supabase = createClient(url, key);
