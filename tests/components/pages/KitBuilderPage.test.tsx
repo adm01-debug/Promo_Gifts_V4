@@ -123,6 +123,7 @@ function makeState(currentStep: string, overrides: Record<string, unknown> = {})
       setNotes: vi.fn(),
       canUndo: false,
       canRedo: false,
+      consumeUnloadBackup: vi.fn().mockReturnValue(null),
     },
     meta: {
       isSaving: false,
