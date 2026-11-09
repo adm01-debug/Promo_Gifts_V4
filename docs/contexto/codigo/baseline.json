@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "9346b048e8fff01c3be31c7095d8b8ebdd4ebdcc",
+  "commit": "3b03ad11884cb1d416d273ca8a0c8a7b2dd72406",
   "branch": "main",
-  "data_commit": "2026-11-09T14:57:47-03:00",
+  "data_commit": "2026-11-09T15:03:59-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3b03ad1",
+    "data": "2026-11-09",
+    "assunto": "docs: recibo de deploy de edge function(s) — run 42649363787 (E66)"
+   },
    {
     "sha": "9346b04",
     "data": "2026-11-09",
@@ -126,11 +131,6 @@
     "sha": "5a3f679",
     "data": "2026-11-09",
     "assunto": "fix(audit): registrar fn_check_item_fits e vw_products_min_quantity no catálogo Supabase (#3340)"
-   },
-   {
-    "sha": "6933eb6",
-    "data": "2026-11-09",
-    "assunto": "fix(ci): corrige referências inválidas supabase/migrations/x6 em analise-prs (#3337)"
    }
   ],
   "arquivos_mudados_7d": 502,
@@ -254,6 +254,10 @@
     "mudancas": 7
    },
    {
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "mudancas": 7
+   },
+   {
     "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
     "mudancas": 6
    },
@@ -271,10 +275,6 @@
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 6
    },
    {
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 286
+    "commits": 285
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 18
+    "commits": 19
    },
    {
     "autor": "dependabot[bot]",

@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "9346b048e8fff01c3be31c7095d8b8ebdd4ebdcc",
+  "sha": "3b03ad11884cb1d416d273ca8a0c8a7b2dd72406",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 17:59 UTC",
+  "generated_at": "2026-11-09 18:04 UTC",
   "files_total": 9184,
   "code_files": 7871,
   "code_lines": 1055886
@@ -484393,10 +484393,19 @@
   }
  },
  "git": {
-  "sha": "9346b048e8fff01c3be31c7095d8b8ebdd4ebdcc",
+  "sha": "3b03ad11884cb1d416d273ca8a0c8a7b2dd72406",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "3b03ad1",
+    "date": "2026-11-09",
+    "author": "github-actions[bot]",
+    "subject": "docs: recibo de deploy de edge function(s) — run 42649363787 (E66)",
+    "files": [
+     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
+    ]
+   },
    {
     "sha": "9346b04",
     "date": "2026-11-09",
@@ -484686,26 +484695,16 @@
      "analise-prs/RELATORIO_DOSSIES.md",
      "analise-prs/RELATORIO_META_CUMPRIDA_v2.md"
     ]
-   },
-   {
-    "sha": "b5f3706",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "docs: progresso v6 + prs.json — balanço correto 29 abertas",
-    "files": [
-     "analise-prs/progresso.json",
-     "analise-prs/prs.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "analise-prs/progresso.json",
-    4
+    3
    ],
    [
     "analise-prs/prs.json",
-    4
+    3
    ],
    [
     ".file-size-baseline.json",
@@ -484714,6 +484713,10 @@
    [
     ".migration-refs-baseline.json",
     3
+   ],
+   [
+    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    2
    ],
    [
     "src/components/kit-builder/KitAIPromptDialog.tsx",
@@ -484773,10 +484776,6 @@
    ],
    [
     "src/components/quotes/ClientPicker.tsx",
-    1
-   ],
-   [
-    "src/components/replenishments/ReplenishmentProductGrid.tsx",
     1
    ]
   ]
