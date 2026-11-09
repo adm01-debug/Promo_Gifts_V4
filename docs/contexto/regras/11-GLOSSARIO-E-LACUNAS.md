@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1368a9180f` · branch `main` · 2026-11-09 18:51 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `167f5f8de8` · branch `main` · 2026-11-09 19:03 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -18,6 +18,13 @@
 | `access_security_settings` | Singleton de configuracao de seguranca do sistema (sempre 1 linha). Criada em 2026-05-24, provavelmente pelo Lovable ao montar o painel admin de seguranca.  PROPOSITO: armazenar os parametros globais que controlam:   • bloqueio por IP (ip_whitelist_enabled + tabela ip_whitelist)   • bloqueio por cidade (city_whitelist_enabled + tabela city_whitelist)   • bloqueio de localizacoes desconhecidas (block_unknown_locations)   • lockout por tentativas falhas (max_failed_attempts + lockout_duration_minutes)   • modo strict (strict_access_mode)  ESTADO ATUAL (2026-06-15): FEATURE INCOMPLETA   • Frontend consegue ler e gravar esta tabela via RLS (admin/dev).   • NENHUMA funcao Postgres le esses flags e age sobre eles.   • Ou seja: mesmo que ip_whitelist_enabled = true, NADA e bloqueado.   • A tabela e um cockpit sem motor.  ECOSSISTEMA RELACIONADO (tabelas irmas):   • ip_whitelist             (0 linhas) — lista de IPs permitidos   • city_whitelist           (0 linhas) — lista de cidades permitidas   • access_blocked_log       (0 linhas) — log de acessos bloqueados   • login_attempts           (1.240 linhas) — UNICA tabela ativa do ecosistema   • auth_login_attempts      (0 linhas) — duplicata inativa de login_attempts   • ip_access_control        (1 linha)  — controle adicional de IP   • device_login_notifications (0 linhas)   • security_settings        (0 linhas) — alternativa key-value, vazia   • mcp_access_violations    (0 linhas)  PROXIMO PASSO: implementar fn_enforce_security_settings() e fn_check_login_allowed(p_ip, p_user_id, p_city) que leiam esta tabela e apliquem os bloqueios. Ver comentario de roadmap nas colunas abaixo.  NAO ARQUIVAR / NAO DROPAR — tabela de feature incompleta, nao abandonada. | 9 colunas | migration |
 | `achievements` | _(sem COMMENT ON TABLE — significado não documentado)_ | 12 colunas | migration |
 | `admin_audit_log` | LIVRO DE OCORRÊNCIAS ADMINISTRATIVAS — trilha imutável de ações de alto risco executadas por admins.  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ O QUE É ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Equivalente ao livro de ocorrências de segurança de um datacenter. Registra SOMENTE eventos administrativos de alto risco: logouts forçados, cutover de banco, hardening de segurança, bloqueio de rotas, revogação de chaves MCP. NÃO é lugar para erros de frontend — esses vão para frontend_telemetry.  Estado atual (2026-06-15): ~40 linhas. Normal. Saudável. Tamanho: 88 KB (limite operacional esperado: < 5 MB).  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ QUEM ESCREVE AQUI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Funções de backend autorizadas (todas SECURITY DEFINER):   • log_audit(action, resource_type, resource_id, details)  → chamada genérica   • log_user_logout(user_id)                               → logout forçado   • log_access_denied(...)                                 → rota bloqueada   • log_mcp_key_changes / audit_mcp_key_insert / _revoke   → ciclo de vida de chaves MCP   • audit_mcp_api_keys_changes                             → trigger em mcp_sessions   • audit_user_role_changes                                → trigger em user_roles   • auto_block_extreme_offenders                           → bloqueio automático de IPs   • force_user_logout                                      → admin expulsa sessão   • record_dev_route_telemetry                             → acesso a rotas de dev   • execute_role_migration_batch                           → migração de papéis em lote  NUNCA escrever diretamente via supabase.from('admin_audit_log').insert() no frontend — RLS bloqueará se o usuário não for is_admin_or_above().  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ RLS (ROW LEVEL SECURITY) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ INSERT → authenticated + is_admin_or_above(uid) + user_id = auth.uid() SELECT → authenticated + can_view_audit_logs(uid) UPDATE → BLOQUEADO (não existe policy) DELETE → BLOQUEADO (não existe policy) anon   → ZERO acesso  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ VALORES ESPERADOS EM `action` ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━   user.logout         → admin ou sistema expirou uma sessão   user.login          → login administrativo registrado   cutover             → troca de ambiente / migração crítica   hardening           → operação de segurança aplicada   route.access_denied → tentativa de acesso a rota restrita   route.ux_event      → evento de UX em rota administrativa   mcp_key_insert      → nova chave MCP criada   mcp_key_revoke      → chave MCP revogada   role_change         → papel de usuário alterado   force_logout        → sessão encerrada à força por admin   access_denied       → acesso negado (genérico)  SE APARECER `client_error` → BUG NO FRONTEND. Ver seção HISTÓRICO abaixo.  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COM QUEM CONVIVE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━   frontend_telemetry  → AQUI vão os erros de frontend (React/JS).                         Tem RLS para anon + authenticated.                         Retenção: 30 dias via fn_cleanup_log_tables.    mcp_sessions        → trigger audit_mcp_api_keys_changes escreve aqui                         quando uma sessão MCP é criada/revogada.    user_roles          → trigger audit_user_role_changes escreve aqui                         quando um papel é alterado.    login_attempts      → tabela irmã para tentativas de login (não aqui).    bot_detection_log   → tabela irmã para detecção de bots (não aqui).  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ RETENÇÃO E CLEANUP ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Gerenciada por DUAS funções (redundância intencional):    fn_cleanup_log_tables()      → roda TODO DOMINGO 03:00 (cron job 50)     • action != 'client_error' → deleta rows com created_at > 90 dias     • action = 'client_error'  → deleta rows com created_at > 7 dias    cleanup_security_logs()      → roda TODO DIA 03:30 (cron job 21)     • Mesma lógica 90d / 7d (belt + suspenders)    clean_old_audit_logs(days)   → função manual para admins (parâmetro livre)  Esperado: < 500 rows em produção normal. Se > 5.000 rows → investigar se o frontend está escrevendo client_error nesta tabela por engano.  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMO RECUPERAR QUANDO TRAVA ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SINTOMA 1 — Tabela com > 10.000 rows de 'client_error':   O frontend voltou a escrever aqui por engano (regressão em error-reporter.ts).   SOLUÇÃO:     DELETE FROM admin_audit_log WHERE action = 'client_error';     VACUUM FULL admin_audit_log;   E corrigir src/lib/error-reporter.ts → .from('frontend_telemetry')  SINTOMA 2 — INSERT falhando com "new row violates row-level security":   O código chamante não é admin ou está passando user_id errado.   SOLUÇÃO: chamar via SECURITY DEFINER function (log_audit), nunca direto.  SINTOMA 3 — Tabela ocupando > 500 MB:   Cleanup não está rodando. Verificar:     SELECT * FROM cron.job WHERE jobname IN ('cleanup-security-logs','cleanup-log-tables-weekly');   Se inactive → SELECT cron.alter_job(job_id, active := true);  SINTOMA 4 — VACUUM FULL necessário (bloat > 20%):   VACUUM FULL public.admin_audit_log;  -- requer lock breve (~40 rows = < 1s)  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ HISTÓRICO DE CORREÇÕES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2026-06-15 — CORREÇÃO CRÍTICA (PR #774, commit b75607d):   PROBLEMA: src/lib/error-reporter.ts enviava TODOS os erros React/JS para   esta tabela com action='client_error'. Resultado: 42.946 linhas de ruído   de desenvolvimento acumuladas (60 MB em uma tabela de auditoria).   CAUSA RAIZ: erro de design — a tabela de audit foi usada como sink de   telemetria de frontend porque era a mais acessível para usuários autenticados.   SOLUÇÃO:     1. DELETE 42.946 rows (action='client_error')     2. VACUUM FULL → 60 MB → 88 KB     3. error-reporter.ts redirecionado para frontend_telemetry     4. Belt+suspenders: cleanup automático de client_error com 7 dias     5. Retention de audit real harmonizada para 90 dias em ambas as funções        (era 365 dias em cleanup_security_logs — conflito com fn_cleanup_log_tables) | 10 colunas | migration |
+| `admin_audit_log_y2025m12` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
+| `admin_audit_log_y2026m01` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
+| `admin_audit_log_y2026m02` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
+| `admin_audit_log_y2026m03` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
+| `admin_audit_log_y2026m04` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
+| `admin_audit_log_y2026m05` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
+| `admin_audit_log_y2026m06` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
 | `admin_settings` | Key-value store de configurações globais do painel admin. Padrão: 1 linha por configuração, chave única, valor em JSONB livre. Criada em 20260514 (migration t39_create_missing_tables_part3).  PROPÓSITO:   Persistir preferências e parâmetros configuráveis pelo admin   que precisam ser compartilhados entre máquinas sem necessidade   de deploy. Todos os admins leem/escrevem o mesmo valor.  CONSUMIDORES (frontend — src/hooks/admin/):   useRetestCooldownSetting.ts     chave: retest_cooldown \| valor: { ms: number }     uso  : cooldown em ms do botão Testar novamente nos cards de            conexão de fornecedores. Default: 3000. Presets: [3000,10000,30000,60000].    useIntelligenceBadgeSettings.ts     chave: intelligence_badges     valor: { hotItem:{enabled:bool}, bestSeller:{enabled:bool, minAvgDailyDepletion7d:number} }     uso  : liga/desliga badges Hot Item e Best-seller no ProductCard.            Default: hotItem enabled=true, bestSeller enabled=true threshold=15.  PADRÃO DE ACESSO (ambos os hooks):   Leitura : supabase.from(admin_settings).select(value).eq(key,KEY).maybeSingle()   Gravação: supabase.from(admin_settings).upsert({key,value},{onConflict:key})   Cache module-level + broadcast pattern — fetch único por sessão por chave.  RLS:   SELECT/INSERT/UPDATE → authenticated com has_role(uid, admin)   DELETE               → sem policy (bloqueado implicitamente pelo RLS)   anon                 → sem GRANT  INFRAESTRUTURA:   Trigger: update_admin_settings_updated_at → BEFORE UPDATE → update_updated_at_column()   FK em updated_by: pendente (melhoria #3)   Nenhuma função Postgres acessa esta tabela — só frontend.   Nenhuma view depende desta tabela.  ESTADO: 0 linhas (2026-06-15) — admins usando defaults do frontend. NÃO ARQUIVAR / NÃO DROPAR — tabela ativa com consumidores no frontend. | 6 colunas | migration |
 | `ai_enrichment_queue` | Fila de enriquecimento AI (DeepSeek). Registros pendentes são consumidos pelo n8n e resultados salvos via fn_save_ai_enrichment_results. | 15 colunas | migration |
 | `ai_function_routing` | Function → model routing. The primary is tried first, then fallbacks in order. required_capabilities filters out invalid fallbacks at runtime. | 11 colunas | migration |
@@ -30,6 +37,7 @@
 | `analytics_events` | [Etapa 7] RLS corrigido: SELECT escopado a self+supervisor (era USING true vazando). INSERT permite anon (tracking público) sem atribuir a user. DELETE só dev. | 3 colunas | migration |
 | `anon_catalog_grant_audit_log` | RLS deny-all intencional (E19, 2026-09-16): RLS ligada, zero policies — só  | 3 colunas | migration |
 | `anon_insert_rate` | Contadores (tabela\|ip\|minuto) do guard fn_anon_insert_rate_guard. Só o trigger (SECURITY DEFINER) escreve; purga via cron anon-insert-rate-purge. | 3 colunas | migration |
+| `app_vitals` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
 | `archive._cleanup_manifest` | Audit log of the database faxina (cleanup). One row per object moved public->archive, with evidence, enabling precise one-command rollback. | 10 colunas | migration |
 | `art_file_attachments` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
 | `asia_image_import_queue` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
@@ -43,6 +51,7 @@
 | `audit_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
 | `audit_trail` | _(sem COMMENT ON TABLE — significado não documentado)_ | 3 colunas | migration |
 | `auth.users` | Auth: Stores user login data within a secure schema. | 3 colunas | migration |
+| `auth_login_attempts` | Versao mais recente de login_attempts (com metadata). Atualmente vazia. login_attempts e a tabela populada (203 registros). Consolidacao pendente. | 7 colunas | migration |
 | `auto_tag_rules` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
 | `b2b_collection_products` | _(sem COMMENT ON TABLE — significado não documentado)_ | 5 colunas | migration |
 | `b2b_collections` | _(sem COMMENT ON TABLE — significado não documentado)_ | 12 colunas | migration |
@@ -298,16 +307,7 @@
 | `product_print_positions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 18 colunas | migration |
 | `product_properties` | Relacionamento entre produtos e suas propriedades | 9 colunas | migration |
 | `product_qa_image_alerts` | Tabela de qualidade: rastreia produtos ativos que foram ativados ou encontrados sem imagem. Regra de negócio violada: "nenhum produto ativo pode existir sem ao menos uma imagem".  ━━━ CICLO DE VIDA DE UM ALERTA ━━━ ABERTO    → is_resolved=false, resolved_at=NULL RESOLVIDO → is_resolved=true,  resolved_at=timestamp, resolution_notes=motivo  ━━━ FONTES DE CRIAÇÃO (2 caminhos) ━━━ 1. Trigger em tempo real  — products: BEFORE UPDATE    Função: fn_qa_alert_on_activate_without_image()    Gatilho: qualquer UPDATE que mude is_active de false/NULL → true    Efeito: além do alerta, seta products.sync_status = 'activated_no_image' (18 chars, MAX varchar(20))     2. Varredura periódica — pg_cron 'qa-imageless-products' (a cada 30 minutos)    Função: fn_qa_scan_imageless_products()    Detecta produtos que escaparam do trigger (ex.: criados diretamente em pipeline mode)    Também auto-resolve alertas de produtos que já sanaram a situação  ━━━ AUTO-RESOLUÇÃO (fn_qa_scan_imageless_products) ━━━ Um alerta aberto é marcado is_resolved=true automaticamente quando:   • O produto recebeu uma imagem  (row ativa em product_images, primary_image_url, ou images JSONB)   • O produto foi desativado      (is_active=false)   • O produto foi deletado        (is_deleted=true) Para forçar uma varredura manual: SELECT * FROM fn_qa_scan_imageless_products();  ━━━ RELACIONAMENTOS ━━━ • products (FK product_id, ON DELETE CASCADE) — produto monitorado • supplier_id, sku_promo, product_name        — denormalizados no momento do alerta   (para leitura rápida sem JOIN, mesmo se o produto for deletado depois)  ━━━ QUEM ALIMENTA / CONSOME ━━━ Escreve:  trigger fn_qa_alert_on_activate_without_image() \| fn_qa_scan_imageless_products() Lê:       dashboards de qualidade \| rotinas de re-ativação pós-imagem \| n8n workflows de alerta NÃO deve ser editado manualmente — gerenciado exclusivamente pelas funções acima.  ━━━ ÍNDICES ━━━ • idx_pqia_product_id   — busca por produto • idx_pqia_is_resolved  — WHERE is_resolved=false (alertas abertos) • idx_pqia_detected_at  — ordenação por data de detecção  | 11 colunas | migration |
-| `product_relationships` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
-| `product_reviews` | _(sem COMMENT ON TABLE — significado não documentado)_ | 12 colunas | migration |
-| `product_search_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
-| `product_seo` | [fix_version:satellite_seo_20260627] Satélite 1:1 SEO/OG de products.  Extrai meta_title, meta_description, meta_keywords, canonical_url, robots_meta,  og_*, schema_json, seo_score, seo_issues. Sincronizado por trg_sync_product_seo.  Colunas fonte em products mantidas até refactor do código frontend (DROP = sprint futuro). | 16 colunas | migration |
-| `product_similarity_group_members` | Membros dos grupos de similaridade. Derivam pares em product_relationships automaticamente. | 9 colunas | migration |
-| `product_similarity_groups` | Grupos de produtos semelhantes cross-supplier. Cada grupo agrupa produtos de diferentes fornecedores com mesma família de material e faixa de capacidade. | 13 colunas | migration |
-| `product_specifications` | Especificações técnicas estruturadas por produto — alimenta Schema.org e SEO técnico | 11 colunas | migration |
-| `product_supply` | [fix_version:satellite_supply_20260627] Satélite 1:1 de dados de fornecimento/sincronização.  Colunas: supply_mode, lead_time_days, is_imported, origin_country,  last_sync_at, sync_status, supplier_updated_at.  Sincronizado por trg_sync_product_supply. | 11 colunas | migration |
-| `product_sync_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 17 colunas | migration |
-| … +445 linhas — lista completa em `context.json` | | | |
+| … +485 linhas — lista completa em `context.json` | | | |
 
 ## Dados de referência (seed — planos, categorias, perfis fixos)
 
@@ -350,7 +350,7 @@
 | status | valor `ready` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/kit-builder/persistence.ts`<br>`escreve:api/ready.ts` |
 | status | valor `fulfilled` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/admin/connections/CredentialsChangedBanner.tsx`<br>`compara:src/components/admin/connections/GlobalRefreshFromDbButton.tsx`<br>`compara:src/hooks/mockup/mockupGenerationService.ts`<br>`compara:src/hooks/mockup/mockupGeneratorModel.ts` |
 | status | valor `step_up_error` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`compara:src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>`compara:src/components/admin/security/keys/UpdateMcpKeyDialog.tsx`<br>`compara:src/pages/admin/DevChallengeExamplesPage.tsx` |
-| status | valor `number` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`compara:src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`compara:src/contexts/SellerCartContext.tsx`<br>`compara:src/lib/crm-db.ts` |
+| status | valor `number` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`compara:src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`compara:src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`compara:src/contexts/SellerCartContext.tsx` |
 | status | valor `Status` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/components/audit/AuditHistory.tsx` |
 | status | valor `PASSED` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/audit/AuditReport.tsx` |
 | status | valor `aligned` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/components/bi/ClientCategoryRadar.tsx` |
@@ -386,10 +386,10 @@
 | status | valor `intro` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/security/MfaEnrollmentDialog.tsx` |
 | status | valor `qr` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/security/MfaEnrollmentDialog.tsx` |
 | status | valor `verify` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/security/MfaEnrollmentDialog.tsx` |
-| status | valor `request` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/step-up-verify/index.ts`<br>`escreve:src/hooks/auth/useStepUpAuth.ts`<br>`escreve:supabase/functions/step-up-verify/index.ts` |
-| status | valor `verify_password` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/step-up-verify/index.ts`<br>`escreve:src/hooks/auth/useStepUpAuth.ts`<br>`escreve:supabase/functions/step-up-verify/index.ts` |
-| status | valor `verify_otp` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/step-up-verify/index.ts`<br>`escreve:src/hooks/auth/useStepUpAuth.ts`<br>`escreve:supabase/functions/step-up-verify/index.ts` |
-| status | valor `cancel` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/step-up-verify/index.ts`<br>`escreve:src/hooks/auth/useStepUpAuth.ts` |
+| status | valor `request` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/step-up-verify/index.ts`<br>`escreve:src/hooks/auth/useStepUpAuth.ts`<br>`escreve:src/hooks/useStepUpAuth.ts`<br>`escreve:supabase/functions/step-up-verify/index.ts` |
+| status | valor `verify_password` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/step-up-verify/index.ts`<br>`escreve:src/hooks/auth/useStepUpAuth.ts`<br>`escreve:src/hooks/useStepUpAuth.ts`<br>`escreve:supabase/functions/step-up-verify/index.ts` |
+| status | valor `verify_otp` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/step-up-verify/index.ts`<br>`escreve:src/hooks/auth/useStepUpAuth.ts`<br>`escreve:src/hooks/useStepUpAuth.ts`<br>`escreve:supabase/functions/step-up-verify/index.ts` |
+| status | valor `cancel` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/step-up-verify/index.ts`<br>`escreve:src/hooks/auth/useStepUpAuth.ts`<br>`escreve:src/hooks/useStepUpAuth.ts` |
 | status | valor `specs` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:src/types/domain/simulator-wizard.ts`<br>`escreve:src/types/domain/simulator-wizard.ts` |
 | status | valor `mixed` para `state` usado no código não existe em nenhum enum do banco/TS | `escreve:src/components/admin/connections/ConnectionRowSourceBadge.tsx` |
 | status | valor `CLOSED` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/admin/telemetry/BreakerStatusCard.tsx` |
@@ -405,10 +405,10 @@
 | status | valor `syncing` para `cf_sync_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/AdminCloudflareImagesPage.tsx` |
 | status | valor `generating` para `stage` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/quotes/PdfGenerationDialog.tsx` |
 | status | valor `ready` para `stage` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/quotes/PdfGenerationDialog.tsx` |
-| status | valor `Criados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
-| status | valor `Enviados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
-| status | valor `Respondidos` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
-| status | valor `Aprovados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
+| status | valor `Criados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
+| status | valor `Enviados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
+| status | valor `Respondidos` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
+| status | valor `Aprovados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
 | status | valor `ready` para `cloudflare_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/external-db/products-detail.ts` |
 | status | valor `synced` para `sync_status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/product-webhook/index.ts` |
 | coluna | coluna `admin_notes` usada no código não existe no schema de `discount_approval_requests` |  |
@@ -427,6 +427,7 @@
 | coluna | coluna `selected_packaging_name` usada no código não existe no schema de `quote_items` |  |
 | coluna | coluna `selected_packaging_unit_cost` usada no código não existe no schema de `quote_items` |  |
 | coluna | coluna `updated_at` usada no código não existe no schema de `quote_items` |  |
+| coluna | coluna `avatar_url` usada no código não existe no schema de `profiles` |  |
 | coluna | coluna `bitrix_id` usada no código não existe no schema de `profiles` |  |
 | coluna | coluna `count` usada no código não existe no schema de `profiles` |  |
 | coluna | coluna `component_name` usada no código não existe no schema de `product_kit_components` |  |
@@ -478,9 +479,13 @@
 | coluna | coluna `source` usada no código não existe no schema de `admin_audit_log` |  |
 | coluna | coluna `started_at` usada no código não existe no schema de `admin_audit_log` |  |
 | coluna | coluna `status` usada no código não existe no schema de `admin_audit_log` |  |
+| coluna | coluna `is_public` usada no código não existe no schema de `collections` |  |
+| coluna | coluna `share_expires_at` usada no código não existe no schema de `collections` |  |
+| coluna | coluna `share_token` usada no código não existe no schema de `collections` |  |
 | coluna | coluna `changed_at` usada no código não existe no schema de `price_history` |  |
 | coluna | coluna `new_values` usada no código não existe no schema de `price_history` |  |
 | coluna | coluna `total` usada no código não existe no schema de `orders` |  |
+| coluna | coluna `is_pinned` usada no código não existe no schema de `custom_kits` |  |
 | coluna | coluna `category` usada no código não existe no schema de `saved_filters` |  |
 | coluna | coluna `user_id` usada no código não existe no schema de `generated_mockups` |  |
 | coluna | coluna `aspect_ratio` usada no código não existe no schema de `magic_up_generations` |  |
@@ -490,13 +495,7 @@
 | coluna | coluna `quality_score` usada no código não existe no schema de `magic_up_generations` |  |
 | coluna | coluna `status` usada no código não existe no schema de `magic_up_generations` |  |
 | coluna | coluna `device_fingerprint` usada no código não existe no schema de `user_known_devices` |  |
-| coluna | coluna `received_at` usada no código não existe no schema de `crm_callback_events` |  |
 | coluna | coluna `filter_states` usada no código não existe no schema de `user_preferences` |  |
-| coluna | coluna `color_code` usada no código não existe no schema de `product_variants` |  |
-| coluna | coluna `color_hex` usada no código não existe no schema de `product_variants` |  |
-| coluna | coluna `color_name` usada no código não existe no schema de `product_variants` |  |
-| coluna | coluna `selected_thumbnail` usada no código não existe no schema de `product_variants` |  |
-| coluna | coluna `size_code` usada no código não existe no schema de `product_variants` |  |
 | coluna | coluna `ai_description` usada no código não existe no schema de `products` |  |
 | coluna | coluna `ai_generated_at` usada no código não existe no schema de `products` |  |
 | coluna | coluna `ai_summary` usada no código não existe no schema de `products` |  |
@@ -514,6 +513,15 @@
 | coluna | coluna `stock_quantity` usada no código não existe no schema de `products` |  |
 | coluna | coluna `tags` usada no código não existe no schema de `products` |  |
 | coluna | coluna `view_count` usada no código não existe no schema de `products` |  |
+| coluna | coluna `created_at` usada no código não existe no schema de `quote_item_personalizations` |  |
+| coluna | coluna `updated_at` usada no código não existe no schema de `quote_item_personalizations` |  |
+| coluna | coluna `permission_id` usada no código não existe no schema de `role_permissions` |  |
+| coluna | coluna `received_at` usada no código não existe no schema de `crm_callback_events` |  |
+| coluna | coluna `color_code` usada no código não existe no schema de `product_variants` |  |
+| coluna | coluna `color_hex` usada no código não existe no schema de `product_variants` |  |
+| coluna | coluna `color_name` usada no código não existe no schema de `product_variants` |  |
+| coluna | coluna `selected_thumbnail` usada no código não existe no schema de `product_variants` |  |
+| coluna | coluna `size_code` usada no código não existe no schema de `product_variants` |  |
 | coluna | coluna `area_maxima_texto` usada no código não existe no schema de `tabela_preco_gravacao_oficial` |  |
 | coluna | coluna `ativo` usada no código não existe no schema de `tabela_preco_gravacao_oficial` |  |
 | coluna | coluna `cobra_por_cor` usada no código não existe no schema de `tabela_preco_gravacao_oficial` |  |
@@ -534,8 +542,6 @@
 | coluna | coluna `website` usada no código não existe no schema de `companies` |  |
 | coluna | coluna `is_active` usada no código não existe no schema de `integration_credentials` |  |
 | coluna | coluna `cache_hit` usada no código não existe no schema de `query_telemetry` |  |
-| coluna | coluna `created_at` usada no código não existe no schema de `quote_item_personalizations` |  |
-| coluna | coluna `updated_at` usada no código não existe no schema de `quote_item_personalizations` |  |
 | coluna | coluna `deleted_at` usada no código não existe no schema de `product_images` |  |
 | coluna | coluna `format` usada no código não existe no schema de `product_images` |  |
 | coluna | coluna `id` usada no código não existe no schema de `product_images` |  |
@@ -558,9 +564,11 @@
 | tabela | tabela `foreign_quotes` usada no código não existe nas migrations/types do repo | `tests/scripts/check-supabase-reference-catalog.test.mjs` |
 | tabela | tabela `ghost_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `literal` usada no código não existe nas migrations/types do repo | `scripts/check-select-columns.mjs` |
+| tabela | tabela `messages` usada no código não existe nas migrations/types do repo | `recovery/RealtimeMessagesExample.tsx` |
 | tabela | tabela `payments` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `pg_class` usada no código não existe nas migrations/types do repo | `tests/security/rls-validation.test.ts` |
 | tabela | tabela `produtos` usada no código não existe nas migrations/types do repo | `tests/scripts/inventario-banco.test.mjs` |
+| tabela | tabela `quote_comments` usada no código não existe nas migrations/types do repo | `src/hooks/useQuoteComments.ts` |
 | tabela | tabela `runtime_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `so_teste` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
 | tabela | tabela `some_table` usada no código não existe nas migrations/types do repo | `src/lib/intelligence/degradation.ts` |
@@ -574,79 +582,71 @@
 | tabela | tabela `tx` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
 | tabela | tabela `x` usada no código não existe nas migrations/types do repo | `scripts/inventario/gerar-banco.mjs`<br>`supabase/migrations/20260627130450_reconcile_unarchive_7_live_tables_faxina20260620.sql` |
 | tabela | tabela `xbz_image_import_staging` usada no código não existe nas migrations/types do repo | `supabase/functions/xbz-image-uploader/index.ts` |
-| rls | `access_security_settings`: RLS ligado sem nenhuma política → só service_role acessa |  |
+| rls | `audit_log`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/hooks/useAuditLog.ts` |
 | rls | `bitrix_deals`: RLS ligado sem nenhuma política → só service_role acessa |  |
-| rls | `bot_detection_log`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/components/admin/security/AnomalyCards.tsx`<br>`src/components/admin/security/TopOffenderIpsCard.tsx`<br>`src/pages/admin/AdminSegurancaAcessoPage.tsx` |
-| rls | `cart_templates`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/search/useGlobalSearch.ts`<br>`src/hooks/products/useCartTemplates.ts` |
-| rls | `category_icons`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/hooks/products/useCategoriesTree.ts`<br>`src/hooks/products/useCategoryIcons.ts` |
-| rls | `collection_items`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts` |
-| rls | `collection_items`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts` |
-| rls | `collection_items`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts` |
-| rls | `collection_items`: front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts` |
-| rls | `collections`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts` |
-| rls | `collections`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts` |
-| rls | `collections`: front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts` |
-| rls | `component_media`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/components/search/useGlobalSearch.ts` |
-| rls | `connection_test_history`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/components/admin/connections/ConnectionErrorDetailsDialog.tsx`<br>`src/components/admin/connections/ConnectionTimelineDrawer.tsx`<br>`src/components/admin/connections/IntegrationsHealthCard.tsx`<br>`src/components/admin/connections/useIncidentDetails.ts` |
-| rls | `custom_kits`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/components/dashboard/RecentKitsWidget.tsx`<br>`src/components/kit-builder/KitHealthCard.tsx`<br>`src/components/kit-builder/KitSmartSuggestions.tsx`<br>`src/components/search/useGlobalSearch.ts` |
-| rls | `custom_kits`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/hooks/kit-builder/useCustomKitPersistence.ts`<br>`src/pages/kit-builder/KitLibraryPage.tsx` |
-| rls | `custom_kits`: front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `src/hooks/kit-builder/useCustomKitPersistence.ts`<br>`src/pages/kit-builder/KitLibraryPage.tsx` |
+| rls | `collection_items`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
+| rls | `collection_items`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
+| rls | `collection_items`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
+| rls | `collection_items`: front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
+| rls | `collections`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
+| rls | `collections`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/components/collections/ShareCollectionDialog.tsx`<br>`src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
+| rls | `collections`: front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
 | rls | `e2e_cleanup_rate_limit`: RLS ligado sem nenhuma política → só service_role acessa |  |
 | rls | `edge_function_invocations`: RLS ligado sem nenhuma política → só service_role acessa |  |
-| rls | `expert_conversations`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/intelligence/useExpertConversations.tsx` |
-| rls | `expert_messages`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/intelligence/useExpertConversations.tsx` |
-| rls | `external_connections`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/connections/ConnectionErrorDetailsDialog.tsx`<br>`src/components/admin/connections/ConnectionTimelineDrawer.tsx`<br>`src/components/admin/connections/ConnectionsOverviewTable.tsx`<br>`src/components/admin/connections/IntegrationsHealthCard.tsx` |
+| rls | `expert_conversations`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/intelligence/useExpertConversations.tsx`<br>`src/hooks/useExpertConversations.tsx` |
+| rls | `expert_messages`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/intelligence/useExpertConversations.tsx`<br>`src/hooks/useExpertConversations.tsx` |
 | rls | `external_connections_sync_log`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/connections/ExternalConnectionsSyncLogPanel.tsx`<br>`src/components/admin/connections/LastSyncRunPanel.tsx` |
-| rls | `favorite_items`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/favorites/useFavoriteLists.ts`<br>`src/hooks/favorites/useFavoriteQuickAdd.ts` |
-| rls | `favorite_items_trash`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/favorites/useFavoriteLists.ts` |
-| rls | `favorite_lists`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/favorites/useFavoriteLists.ts` |
 | rls | `file_scan_logs`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/security/SecureUploadManager.tsx` |
-| rls | `follow_up_reminders`: RLS ligado sem nenhuma política → só service_role acessa |  |
-| rls | `generated_mockups`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/search/useGlobalSearch.ts`<br>`src/hooks/mockup/mockupGenerationService.ts`<br>`src/pages/mockups/MockupHistoryPage.tsx` |
-| rls | `hardening_health_snapshots`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/security/HardeningTrendChart.tsx` |
-| rls | `inbound_webhook_endpoints`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/connections/InboundEventsPanel.tsx`<br>`src/components/admin/connections/WebhooksTab.tsx` |
-| rls | `inbound_webhook_events`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/connections/InboundEventsPanel.tsx` |
+| rls | `geo_allowed_countries`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/useGeoBlocking.ts` |
+| rls | `geo_allowed_countries`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/hooks/useGeoBlocking.ts` |
+| rls | `geo_allowed_countries`: front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `src/hooks/useGeoBlocking.ts` |
 | rls | `integration_credentials`: RLS ligado sem nenhuma política → só service_role acessa |  |
-| rls | `ip_access_control`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/security/ActiveIpsList.tsx`<br>`src/pages/admin/AdminSegurancaAcessoPage.tsx` |
-| rls | `kit_templates`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/admin/useAdminKitTemplates.ts`<br>`src/hooks/kit-builder/useKitTemplates.ts`<br>`src/hooks/kit-builder/useSimilarKits.ts`<br>`src/hooks/kit-builder/useTemplateSnapshot.ts` |
-| rls | `login_attempts`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/components/admin/security/AnomalyCards.tsx`<br>`src/components/admin/security/TopOffenderIpsCard.tsx`<br>`src/components/security/useSecurityData.ts`<br>`src/hooks/auth/useLoginAttempts.ts` |
-| rls | `magic_up_brand_kits`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/intelligence/useMagicUpState.helpers.ts`<br>`src/hooks/intelligence/useMagicUpState.ts` |
-| rls | `magic_up_campaigns`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/intelligence/useMagicUpState.helpers.ts` |
-| rls | `magic_up_generations`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/search/useGlobalSearch.ts`<br>`src/hooks/intelligence/useMagicUpGeneration.ts`<br>`src/hooks/intelligence/useMagicUpState.helpers.ts` |
-| rls | `mcp_api_keys`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/connections/IntegrationsHealthCard.tsx`<br>`src/components/admin/connections/McpTab.tsx`<br>`src/components/admin/security/keys/audit/useStepUpAttempts.ts`<br>`src/components/admin/security/keys/useMcpKeys.ts` |
-| rls | `mockup_drafts`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/mockup/useMockupDraft.ts` |
-| rls | `ownership_repair_logs`: RLS ligado sem nenhuma política → só service_role acessa |  |
-| rls | `permissions`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/pages/admin/PermissionsPage.tsx`<br>`src/pages/admin/RolePermissionsPage.tsx` |
-| rls | `product_component_locations`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/hooks/quotes/useProdutoPersonalizacao.ts` |
-| rls | `product_components`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/components/admin/personalization-manager/usePersonalizationManager.ts`<br>`src/components/admin/personalization/GroupInheritance.tsx`<br>`src/components/admin/personalization/usePersonalizationData.ts`<br>`src/components/products/ProductPersonalizationRules.tsx` |
+| rls | `magic_up_generations`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/search/useGlobalSearch.ts`<br>`src/hooks/intelligence/useMagicUpGeneration.ts`<br>`src/hooks/intelligence/useMagicUpState.helpers.ts`<br>`src/hooks/useMagicUpGeneration.ts` |
+| rls | `mockup_drafts`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/mockup/useMockupDraft.ts`<br>`src/hooks/useMockupDraft.ts` |
 | rls | `product_materials`: RLS ligado sem nenhuma política → só service_role acessa |  |
-| rls | `product_price_freshness_overrides`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/hooks/products/useProductFreshnessOverride.ts` |
-| rls | `public_token_failures`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/components/admin/security/AnomalyCards.tsx`<br>`src/components/admin/security/TopOffenderIpsCard.tsx` |
-| rls | `query_telemetry`: RLS ligado sem nenhuma política → só service_role acessa | `src/pages/admin/telemetry/useErrorCounters.ts`<br>`src/pages/admin/telemetry/useHighLimitTelemetry.ts`<br>`src/pages/admin/telemetry/useOptimizationMetrics.ts`<br>`src/pages/admin/telemetry/useProductsListingLatencyAlert.ts` |
-| rls | `quote_item_personalizations`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/services/quoteService.ts` |
-| rls | `quote_templates`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/quotes/useQuoteTemplates.ts` |
-| rls | `quotes`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/components/expert/chat/useExpertChat.ts` |
-| rls | `quotes`: front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `src/services/quoteService.ts` |
-| rls | `request_rate_limits`: RLS ligado sem nenhuma política → só service_role acessa | `src/pages/admin/AdminSegurancaAcessoPage.tsx` |
-| rls | `rls_denial_log`: RLS ligado sem nenhuma política → só service_role acessa | `src/pages/admin/RlsDenialsAdminPage.tsx` |
-| rls | `role_migration_batches`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/admin/useRoleMigration.ts` |
-| rls | `role_migration_items`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/admin/useRoleMigration.ts` |
-| rls | `role_permissions`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/auth/useRBAC.tsx`<br>`src/pages/admin/RolePermissionsPage.tsx` |
-| rls | `scheduled_reports`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/intelligence/useScheduledReports.ts` |
-| rls | `search_analytics`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/components/intelligence/ConversionFunnel.tsx`<br>`src/components/intelligence/HotSearchesCard.tsx`<br>`src/components/intelligence/TrendsHeatmap.tsx`<br>`src/components/intelligence/UnmetDemandCard.tsx` |
-| rls | `seller_cart_items`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
-| rls | `seller_carts`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
-| rls | `seller_discount_limits`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/SellerDiscountLimitsPanel.tsx`<br>`src/hooks/quotes/useSellerDiscountLimits.ts`<br>`src/pages/admin/SellerDiscountLimitsAdminPage.tsx` |
-| rls | `simulator_wizard_drafts`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/simulator/useWizardDrafts.ts` |
+| rls | `product_price_freshness_overrides`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/hooks/products/useProductFreshnessOverride.ts`<br>`src/hooks/useProductFreshnessOverride.ts` |
+| rls | `role_migration_batches`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/admin/useRoleMigration.ts`<br>`src/hooks/useRoleMigration.ts` |
+| rls | `role_migration_items`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/admin/useRoleMigration.ts`<br>`src/hooks/useRoleMigration.ts` |
+| rls | `security_settings`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/useGeoBlocking.ts` |
+| rls | `seller_cart_items`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts`<br>`src/hooks/useSellerCarts.ts` |
+| rls | `seller_carts`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts`<br>`src/hooks/useSellerCarts.ts` |
 | rls | `supplier_products_raw`: RLS ligado sem nenhuma política → só service_role acessa |  |
 | rls | `tabela_preco_gravacao_oficial`: RLS ligado sem nenhuma política → só service_role acessa | `src/lib/external-db/rpc-native.ts` |
-| rls | `user_comparisons`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/comparison/useComparisonSync.ts` |
-| rls | `user_onboarding`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/ui/useOnboarding.ts` |
-| rls | `video_variant_links`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/components/admin/products/video-gallery/useProductVideoGallery.ts`<br>`src/hooks/products/useVideoVariantLinks.ts` |
-| rls | `voice_command_logs`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/voice/logVoiceCommand.ts` |
+| rls | `user_comparisons`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/compare/ShareComparisonDialog.tsx`<br>`src/hooks/comparison/useComparisonSync.ts`<br>`src/hooks/useComparisonSync.ts` |
+| rls | `user_onboarding`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/hooks/ui/useOnboarding.ts`<br>`src/hooks/useOnboarding.ts` |
+| rls | `user_onboarding`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/ui/useOnboarding.ts`<br>`src/hooks/useOnboarding.ts` |
+| rls | `user_onboarding`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/hooks/ui/useOnboarding.ts`<br>`src/hooks/useOnboarding.ts` |
 | dinheiro | `ops.pgss_history.total_exec_time` guarda dinheiro em `double precision NOT NULL` (ponto flutuante) — arredondamento imprevisível; padrão é numeric |  |
 | edge | edge function `a` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
-| … +231 linhas — lista completa em `context.json` | | |
+| edge | edge function `b` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
+| edge | edge function `chamada-literal` invocada mas não existe em supabase/functions/ | `tests/scripts/inventario-repo.test.mjs` |
+| edge | edge function `chamada-ok` invocada mas não existe em supabase/functions/ | `tests/scripts/inventario-repo.test.mjs` |
+| edge | edge function `chamada-por-outra-edge` invocada mas não existe em supabase/functions/ | `tests/scripts/inventario-repo.test.mjs` |
+| edge | edge function `dashboard-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
+| edge | edge function `e` invocada mas não existe em supabase/functions/ | `src/integrations/supabase/__tests__/edge-request-id.test.ts` |
+| edge | edge function `e1` invocada mas não existe em supabase/functions/ | `src/integrations/supabase/__tests__/edge-request-id.test.ts` |
+| edge | edge function `e2` invocada mas não existe em supabase/functions/ | `src/integrations/supabase/__tests__/edge-request-id.test.ts` |
+| edge | edge function `fixture-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
+| edge | edge function `ghost-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
+| edge | edge function `inexistente` invocada mas não existe em supabase/functions/ | `scripts/ai-context/cenarios.mjs` |
+| edge | edge function `no` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
+| edge | edge function `nome` invocada mas não existe em supabase/functions/ | `scripts/gen-edges-readme.mjs` |
+| edge | edge function `orphan-fn` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
+| edge | edge function `other` invocada mas não existe em supabase/functions/ | `scripts/ai-context/cenarios.mjs` |
+| edge | edge function `qualquer-edge` invocada mas não existe em supabase/functions/ | `src/integrations/supabase/__tests__/edge-request-id.test.ts` |
+| edge | edge function `runtime-fn` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
+| edge | edge function `runtime-missing` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
+| edge | edge function `send-email` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs`<br>`tests/scripts/inventario-rotas.test.mjs` |
+| edge | edge function `so-chamada-em-teste` invocada mas não existe em supabase/functions/ | `tests/scripts/inventario-repo.test.mjs` |
+| edge | edge function `ssot-ignored` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
+| edge | edge function `t` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
+| edge | edge function `tem-chamador` invocada mas não existe em supabase/functions/ | `tests/scripts/inventario-repo.test.mjs` |
+| edge | edge function `tools-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
+| rpc | RPC `admin_active_sessions` chamada mas não definida nas migrations/types | `src/hooks/admin/useAdminSessions.ts` |
+| rpc | RPC `calculate_quote_totals` chamada mas não definida nas migrations/types | `tests/integration/freight-quest/quote-freight-integration.test.ts` |
+| rpc | RPC `check_rls_enabled` chamada mas não definida nas migrations/types | `tests/security/rls-validation.test.ts` |
+| rpc | RPC `dashboard_rpc` chamada mas não definida nas migrations/types | `scripts/ai-context/gerar.unit.mjs` |
+| … +204 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 
@@ -657,35 +657,46 @@
 - `custom_kits.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `quotes_inbound.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `webhook_inbound_log.http_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `admin_audit_log_y2025m12.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `admin_audit_log_y2026m01.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `admin_audit_log_y2026m02.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `admin_audit_log_y2026m03.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `admin_audit_log_y2026m04.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `admin_audit_log_y2026m05.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `admin_audit_log_y2026m06.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `ai_usage_logs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `conversation_audit_logs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `conversation_delivery_status.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `external_connections_sync_log.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `magic_up_campaigns.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `magic_up_public_shares.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `optimization_queue_runs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `optimization_queue_runs.guardrail_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `orders.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `orders.fulfillment_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `product_sync_logs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `simulator_wizard_drafts.wizard_step` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `user_onboarding.current_step` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `webhook_delivery_metrics.http_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `webhook_delivery_metrics_y2026m05.http_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `webhook_delivery_metrics_y2026m06.http_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `variant_supplier_sources.sync_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `variant_supplier_sources.supplier_availability_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `cf_recon.action_log.old_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `cf_recon.action_log.new_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `access_blocked_log.state` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `ai_enrichment_queue.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `ai_usage_logs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `asia_upload_mapping.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `city_whitelist.state` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `conversation_audit_logs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `conversation_delivery_status.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `external_connections_sync_log.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `import_pipeline_steps.fase` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `import_pipeline_steps.etapa` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `import_pipeline_steps.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `magic_up_campaigns.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `magic_up_public_shares.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `mockup_generation_jobs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `notifications.delivery_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `optimization_queue_runs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `optimization_queue_runs.guardrail_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `orders.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `orders.fulfillment_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `pipeline_run_log.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `product_fiscal.tax_reference_state` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `product_supply.sync_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `product_sync_logs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `product_videos.cloudflare_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `simulator_wizard_drafts.wizard_step` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `sm_site_url_map.search_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `sm_worker_partitions.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `video_validation_log.validation_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
@@ -693,11 +704,9 @@
 - `webhook_dispatcher_log.http_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `video_import_queue.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `video_sim_results.queue_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `webhook_delivery_metrics.http_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `xbz_upload_mapping.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `supplier_stricker.sync_log.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `product_images.cf_sync_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `user_onboarding.current_step` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `reward_redemptions.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `sync_jobs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `bitrix_deals.stage` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
@@ -707,7 +716,7 @@
 - `quote_approval_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `kit_share_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `_deprecated_silver_images_queue_20260606.img_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- 258/484 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `suppliers`, `classification_audit.category_suggestions` …
+- 268/495 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01` …
 - Há tabelas usadas no código sem migration no repo — o schema real pode ter sido alterado pelo painel.
 
 ## Regras manuais presentes

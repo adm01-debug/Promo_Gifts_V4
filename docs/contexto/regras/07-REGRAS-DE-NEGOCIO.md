@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1368a9180f` · branch `main` · 2026-11-09 18:51 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `167f5f8de8` · branch `main` · 2026-11-09 19:03 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -215,6 +215,166 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `magazine_items` | magazine_items_via_magazine | ALL | authenticated | permissive | `EXISTS ( SELECT 1 FROM public.magazines m WHERE m.id = magazine_items.magazine_id AND ( m.owner_id = auth.uid() OR ( m.organization_id IS NOT NULL AND EXISTS ( SELECT 1 FROM public.organization_members om WHERE om.organization_id = m.organization_id AND om.user_id = auth.uid() ) ) ) )` | `EXISTS ( SELECT 1 FROM public.magazines m WHERE m.id = magazine_items.magazine_id AND m.owner_id = auth.uid() )` |
 | `magazine_templates` | magazine_templates_owner_all | ALL | authenticated | permissive | `owner_id = auth.uid()` | `owner_id = auth.uid()` |
 | `magazine_templates` | magazine_templates_org_read | SELECT | authenticated | permissive | `shared_in_org = true AND organization_id IS NOT NULL AND EXISTS ( SELECT 1 FROM public.organization_members om WHERE om.organization_id = public.magazine_templates.organization_id AND om.user_id = auth.uid() )` |  |
+| `rls_denial_log` | Admins can delete old logs | DELETE | authenticated | permissive | `public.is_admin_strict(auth.uid())` |  |
+| `kit_templates` | Admins can delete templates | DELETE | authenticated | permissive | `public.is_admin(auth.uid())` |  |
+| `kit_templates` | Admins can insert templates | INSERT | authenticated | permissive |  | `public.is_admin(auth.uid())` |
+| `permissions` | Admins can manage permissions | ALL | authenticated | permissive | `public.is_admin(auth.uid())` | `public.is_admin(auth.uid())` |
+| `ai_usage_quotas` | Admins can manage quotas | ALL | authenticated | permissive | `public.is_admin(auth.uid())` | `public.is_admin(auth.uid())` |
+| `role_permissions` | Admins can manage role_permissions | ALL | authenticated | permissive | `public.is_admin(auth.uid())` | `public.is_admin(auth.uid())` |
+| `video_variant_links` | Admins can manage video variant links | ALL | authenticated | permissive | `public.is_admin(auth.uid())` | `public.is_admin(auth.uid())` |
+| `custom_kits` | Admins can read all kits | SELECT | authenticated | permissive | `public.is_admin(auth.uid())` |  |
+| `login_attempts` | Admins can read all login attempts | SELECT | authenticated | permissive | `public.is_admin(auth.uid())` |  |
+| `kit_templates` | Admins can update templates | UPDATE | authenticated | permissive | `public.is_admin(auth.uid())` | `public.is_admin(auth.uid())` |
+| `ai_usage_logs` | Admins can view all AI usage logs | SELECT | authenticated | permissive | `public.is_admin(auth.uid())` |  |
+| `voice_command_logs` | Admins can view all voice logs | SELECT | authenticated | permissive | `public.is_manager_or_admin()` |  |
+| `inbound_webhook_events` | Admins delete inbound_webhook_events | DELETE | public | permissive | `public.is_admin(auth.uid())` |  |
+| `access_security_settings` | Admins e Devs podem atualizar configurações de segurança | UPDATE | authenticated | permissive | `(public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'dev'::public.app_role))` | `(public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'dev'::public.app_role))` |
+| `access_security_settings` | Admins e Devs podem visualizar configurações de segurança | SELECT | authenticated | permissive | `(public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'dev'::public.app_role))` |  |
+| `audit_logs` | Admins e Devs podem visualizar logs de auditoria | SELECT | authenticated | permissive | `(public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'dev'::public.app_role))` |  |
+| `conversation_audit_logs` | Admins e Managers podem ver todos os logs de conversa | SELECT | authenticated | permissive | `(public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'manager'::public.app_role))` |  |
+| `secret_rotation_log` | Admins insert secret_rotation_log | INSERT | public | permissive |  | `(public.is_admin(auth.uid()) AND (rotated_by = auth.uid()))` |
+| `inbound_webhook_endpoints` | Admins manage inbound_webhook_endpoints | ALL | public | permissive | `public.is_admin(auth.uid())` | `public.is_admin(auth.uid())` |
+| `favorite_items` | Admins read all favorite items | SELECT | authenticated | permissive | `public.is_admin(auth.uid())` |  |
+| `favorite_lists` | Admins read all favorite lists | SELECT | authenticated | permissive | `public.is_admin(auth.uid())` |  |
+| `inbound_webhook_events` | Admins read inbound_webhook_events | SELECT | public | permissive | `public.is_admin(auth.uid())` |  |
+| `rls_denial_log` | Admins read rls denials | SELECT | authenticated | permissive | `public.is_supervisor_or_above(auth.uid())` |  |
+| `public_token_failures` | Admins read token failures | SELECT | authenticated | permissive | `public.is_admin(auth.uid())` |  |
+| `ownership_repair_logs` | Admins/devs read repair logs | SELECT | authenticated | permissive | `(public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'dev'::public.app_role))` |  |
+| `category_icons` | Anyone can read category icons | SELECT | public | permissive | `true` |  |
+| `query_telemetry` | Authenticated users can insert own telemetry | INSERT | authenticated | permissive |  | `(user_id = auth.uid())` |
+| `search_analytics` | Authenticated users can log searches | INSERT | authenticated | permissive |  | `(auth.uid() IS NOT NULL)` |
+| `component_media` | Authenticated users can read component media | SELECT | authenticated | permissive | `true` |  |
+| `product_components` | Authenticated users can read components | SELECT | authenticated | permissive | `true` |  |
+| `product_groups` | Authenticated users can read groups | SELECT | authenticated | permissive | `true` |  |
+| `product_group_members` | Authenticated users can read members | SELECT | authenticated | permissive | `true` |  |
+| `permissions` | Authenticated users can read permissions | SELECT | authenticated | permissive | `true` |  |
+| `ai_usage_quotas` | Authenticated users can read quotas | SELECT | authenticated | permissive | `true` |  |
+| `role_permissions` | Authenticated users can read role_permissions | SELECT | authenticated | permissive | `true` |  |
+| `video_variant_links` | Authenticated users can read video variant links | SELECT | authenticated | permissive | `true` |  |
+| `kit_templates` | Authenticated users can view active templates | SELECT | authenticated | permissive | `((is_active = true) OR public.is_admin(auth.uid()))` |  |
+| `product_component_locations` | Authenticated view component locations | SELECT | authenticated | permissive | `true` |  |
+| `rls_denial_log` | Block direct insert | INSERT | authenticated | permissive |  | `false` |
+| `rls_denial_log` | Block direct update | UPDATE | authenticated | permissive | `false` |  |
+| `query_telemetry` | Devs can delete telemetry | DELETE | authenticated | permissive | `public.is_dev(auth.uid())` |  |
+| `ip_access_control` | Devs can manage ip_access_control | ALL | authenticated | permissive | `public.is_dev(auth.uid())` | `public.is_dev(auth.uid())` |
+| `admin_audit_log_old` | Devs can read audit logs | SELECT | authenticated | permissive | `public.is_dev(auth.uid())` |  |
+| `bot_detection_log` | Devs can read bot log | SELECT | authenticated | permissive | `public.is_dev(auth.uid())` |  |
+| `request_rate_limits` | Devs can read rate limits | SELECT | authenticated | permissive | `public.is_dev(auth.uid())` |  |
+| `query_telemetry` | Devs can read telemetry | SELECT | authenticated | permissive | `public.is_dev(auth.uid())` |  |
+| `step_up_audit_log` | Devs can view all audit logs | SELECT | public | permissive | `public.is_dev(auth.uid())` |  |
+| `connection_test_history` | Devs delete connection_test_history | DELETE | authenticated | permissive | `public.is_dev(auth.uid())` |  |
+| `external_connections` | Devs manage external_connections | ALL | authenticated | permissive | `public.is_dev(auth.uid())` | `public.is_dev(auth.uid())` |
+| `optimization_queue` | Devs manage optimization queue | ALL | authenticated | permissive | `public.is_dev(auth.uid())` | `public.is_dev(auth.uid())` |
+| `connection_test_history` | Devs read connection_test_history | SELECT | authenticated | permissive | `public.is_dev(auth.uid())` |  |
+| `hardening_health_snapshots` | Devs read hardening snapshots | SELECT | authenticated | permissive | `public.is_dev(auth.uid())` |  |
+| `mcp_api_keys` | Devs read mcp_api_keys | SELECT | authenticated | permissive | `public.is_dev(auth.uid())` |  |
+| `mcp_full_grantors` | Devs read mcp_full_grantors | SELECT | authenticated | permissive | `public.is_dev(auth.uid())` |  |
+| `secret_rotation_log` | Devs read secret_rotation_log | SELECT | authenticated | permissive | `public.is_dev(auth.uid())` |  |
+| `conversation_event_history` | Inserção de eventos permitida para o dono da conversa | INSERT | authenticated | permissive |  | `(EXISTS ( SELECT 1 FROM public.conversation_audit_logs WHERE ((conversation_audit_logs.id = conversation_event_history.conversation_id) AND (conversation_audit_logs.user_id = auth.uid()))))` |
+| `search_analytics` | Managers and admins can read search analytics | SELECT | authenticated | permissive | `public.is_manager_or_admin()` |  |
+| `quote_comments` | Managers can read all comments | SELECT | authenticated | permissive | `public.is_manager_or_admin()` |  |
+| `organization_members` | Members can view org members | SELECT | authenticated | permissive | `(organization_id IN ( SELECT public.get_user_org_ids(auth.uid()) AS get_user_org_ids))` |  |
+| `mcp_api_keys` | No direct delete via JWT | DELETE | authenticated | permissive | `false` |  |
+| `mcp_api_keys` | No direct insert via JWT | INSERT | authenticated | permissive |  | `false` |
+| `mcp_api_keys` | No direct update via JWT | UPDATE | authenticated | permissive | `false` | `false` |
+| `organization_members` | Org owners can delete members | DELETE | authenticated | permissive | `(public.has_org_role(auth.uid(), organization_id, 'owner'::public.org_role) OR (user_id = auth.uid()))` |  |
+| `organization_members` | Org owners can insert members any role | INSERT | authenticated | permissive |  | `public.has_org_role(auth.uid(), organization_id, 'owner'::public.org_role)` |
+| `organization_members` | Org owners can update members | UPDATE | authenticated | permissive | `public.has_org_role(auth.uid(), organization_id, 'owner'::public.org_role)` | `public.has_org_role(auth.uid(), organization_id, 'owner'::public.org_role)` |
+| `organizations` | Owners can update their organization | UPDATE | authenticated | permissive | `public.has_org_role(auth.uid(), id, 'owner'::public.org_role)` | `public.has_org_role(auth.uid(), id, 'owner'::public.org_role)` |
+| `favorite_items` | Public can read items of shared lists | SELECT | authenticated, anon | permissive | `(EXISTS ( SELECT 1 FROM public.favorite_lists l WHERE ((l.id = favorite_items.list_id) AND (l.shared_token IS NOT NULL) AND ((l.shared_expires_at IS NULL) OR (l.shared_expires_at > now())))))` |  |
+| `favorite_lists` | Public can read shared lists by token | SELECT | authenticated, anon | permissive | `((shared_token IS NOT NULL) AND ((shared_expires_at IS NULL) OR (shared_expires_at > now())))` |  |
+| `collection_items` | Public can view items of public collections | SELECT | public | permissive | `(EXISTS ( SELECT 1 FROM public.collections c WHERE ((c.id = collection_items.collection_id) AND (c.is_public = true) AND (c.share_token IS NOT NULL) AND ((c.share_expires_at IS NULL) OR (c.share_expires_at > now())))))` |  |
+| `kit_share_tokens` | Sellers can manage own kit share tokens | ALL | authenticated | permissive | `(seller_id = auth.uid())` | `(seller_id = auth.uid())` |
+| `quote_comments` | Sellers can read comments on own quotes | SELECT | authenticated | permissive | `(EXISTS ( SELECT 1 FROM public.quotes q WHERE (((q.id)::text = quote_comments.quote_id) AND (q.seller_id = auth.uid()))))` |  |
+| `seller_discount_limits` | Sellers can read own discount limit | SELECT | authenticated | permissive | `(user_id = auth.uid())` |  |
+| `request_rate_limits` | Service role can manage rate limits | ALL | service_role | permissive | `true` | `true` |
+| `ai_usage_logs` | Service role can update AI usage logs | UPDATE | service_role | permissive | `true` | `true` |
+| `ip_access_control` | Service role full access ip_access_control | ALL | service_role | permissive | `true` | `true` |
+| `admin_audit_log_old` | Supervisors can insert audit entries | INSERT | authenticated | permissive |  | `public.is_supervisor_or_above(auth.uid())` |
+| `seller_discount_limits` | Supervisors can manage all discount limits | ALL | authenticated | permissive | `public.can_approve_discount(auth.uid())` | `public.can_approve_discount(auth.uid())` |
+| `user_token_revocations` | Supervisors can manage revocations | ALL | authenticated | permissive | `public.is_supervisor_or_above(auth.uid())` |  |
+| `magic_up_comments` | Users can create comments on own Magic Up generations | INSERT | authenticated | permissive |  | `((auth.uid() = user_id) AND (EXISTS ( SELECT 1 FROM public.magic_up_generations g WHERE ((g.id = magic_up_comments.generation_id) AND (g.user_id = auth.uid())))))` |
+| `magic_up_brand_kits` | Users can create own Magic Up brand kits | INSERT | authenticated | permissive |  | `(auth.uid() = user_id)` |
+| `magic_up_campaigns` | Users can create own Magic Up campaigns | INSERT | authenticated | permissive |  | `(auth.uid() = user_id)` |
+| `magic_up_public_shares` | Users can create own Magic Up public shares | INSERT | authenticated | permissive |  | `(auth.uid() = user_id)` |
+| `scheduled_reports` | Users can create own scheduled reports | INSERT | authenticated | permissive |  | `(auth.uid() = user_id)` |
+| `magic_up_reactions` | Users can create reactions on own Magic Up generations | INSERT | authenticated | permissive |  | `((auth.uid() = user_id) AND (EXISTS ( SELECT 1 FROM public.magic_up_generations g WHERE ((g.id = magic_up_reactions.generation_id) AND (g.user_id = auth.uid())))))` |
+| `magic_up_comments` | Users can delete comments on own Magic Up generations | DELETE | authenticated | permissive | `(auth.uid() = user_id)` |  |
+| `magic_up_brand_kits` | Users can delete own Magic Up brand kits | DELETE | authenticated | permissive | `(auth.uid() = user_id)` |  |
+| `magic_up_campaigns` | Users can delete own Magic Up campaigns | DELETE | authenticated | permissive | `(auth.uid() = user_id)` |  |
+| `magic_up_public_shares` | Users can delete own Magic Up public shares | DELETE | authenticated | permissive | `(auth.uid() = user_id)` |  |
+| `simulator_wizard_drafts` | Users can delete own drafts | DELETE | authenticated | permissive | `(user_id = auth.uid())` |  |
+| `saved_filters` | Users can delete own filters | DELETE | authenticated | permissive | `(user_id = auth.uid())` |  |
+| `user_onboarding` | Users can delete own onboarding | DELETE | authenticated | permissive | `(user_id = auth.uid())` |  |
+| `scheduled_reports` | Users can delete own scheduled reports | DELETE | authenticated | permissive | `(auth.uid() = user_id)` |  |
+| `magic_up_reactions` | Users can delete reactions on own Magic Up generations | DELETE | authenticated | permissive | `(auth.uid() = user_id)` |  |
+| `simulator_wizard_drafts` | Users can insert own drafts | INSERT | authenticated | permissive |  | `(user_id = auth.uid())` |
+| `saved_filters` | Users can insert own filters | INSERT | authenticated | permissive |  | `(user_id = auth.uid())` |
+| `profiles` | Users can insert own profile | INSERT | authenticated | permissive |  | `(user_id = auth.uid())` |
+| `voice_command_logs` | Users can insert own voice logs | INSERT | authenticated | permissive |  | `(auth.uid() = user_id)` |
+| `custom_kits` | Users can manage own kits | ALL | authenticated | permissive | `((user_id = auth.uid()) OR public.is_admin(auth.uid()))` | `((user_id = auth.uid()) OR public.is_admin(auth.uid()))` |
+| `generated_mockups` | Users can manage own mockups | ALL | authenticated | permissive | `(seller_id = auth.uid())` | `(seller_id = auth.uid())` |
+| `follow_up_reminders` | Users can manage own reminders | ALL | authenticated | permissive | `(seller_id = auth.uid())` | `(seller_id = auth.uid())` |
+| `cart_templates` | Users can manage own templates | ALL | authenticated | permissive | `(user_id = auth.uid())` | `(user_id = auth.uid())` |
+| `favorites` | Users can manage their own favorites | ALL | public | permissive | `(auth.uid() = user_id)` | `(auth.uid() = user_id)` |
+| `magic_up_comments` | Users can update comments on own Magic Up generations | UPDATE | authenticated | permissive | `(auth.uid() = user_id)` | `(auth.uid() = user_id)` |
+| `magic_up_brand_kits` | Users can update own Magic Up brand kits | UPDATE | authenticated | permissive | `(auth.uid() = user_id)` | `(auth.uid() = user_id)` |
+| `magic_up_campaigns` | Users can update own Magic Up campaigns | UPDATE | authenticated | permissive | `(auth.uid() = user_id)` | `(auth.uid() = user_id)` |
+| `magic_up_public_shares` | Users can update own Magic Up public shares | UPDATE | authenticated | permissive | `(auth.uid() = user_id)` | `(auth.uid() = user_id)` |
+| `quote_comments` | Users can update own comments | UPDATE | authenticated | permissive | `(user_id = auth.uid())` | `(user_id = auth.uid())` |
+| `simulator_wizard_drafts` | Users can update own drafts | UPDATE | authenticated | permissive | `(user_id = auth.uid())` | `(user_id = auth.uid())` |
+| `saved_filters` | Users can update own filters | UPDATE | authenticated | permissive | `(user_id = auth.uid())` | `(user_id = auth.uid())` |
+| `scheduled_reports` | Users can update own scheduled reports | UPDATE | authenticated | permissive | `(auth.uid() = user_id)` |  |
+| `magic_up_reactions` | Users can update reactions on own Magic Up generations | UPDATE | authenticated | permissive | `(auth.uid() = user_id)` | `(auth.uid() = user_id)` |
+| `magic_up_comments` | Users can view comments on own Magic Up generations | SELECT | authenticated | permissive | `(auth.uid() = user_id)` |  |
+| `ai_usage_logs` | Users can view own AI usage logs | SELECT | authenticated | permissive | `(user_id = auth.uid())` |  |
+| `magic_up_brand_kits` | Users can view own Magic Up brand kits | SELECT | authenticated | permissive | `(auth.uid() = user_id)` |  |
+| `magic_up_campaigns` | Users can view own Magic Up campaigns | SELECT | authenticated | permissive | `(auth.uid() = user_id)` |  |
+| `magic_up_public_shares` | Users can view own Magic Up public shares | SELECT | authenticated | permissive | `(auth.uid() = user_id)` |  |
+| `simulator_wizard_drafts` | Users can view own drafts | SELECT | authenticated | permissive | `(user_id = auth.uid())` |  |
+| `saved_filters` | Users can view own filters | SELECT | authenticated | permissive | `(user_id = auth.uid())` |  |
+| `user_token_revocations` | Users can view own revocation | SELECT | authenticated | permissive | `(auth.uid() = user_id)` |  |
+| `scheduled_reports` | Users can view own scheduled reports | SELECT | authenticated | permissive | `(auth.uid() = user_id)` |  |
+| `voice_command_logs` | Users can view own voice logs | SELECT | authenticated | permissive | `(auth.uid() = user_id)` |  |
+| `magic_up_reactions` | Users can view reactions on own Magic Up generations | SELECT | authenticated | permissive | `(auth.uid() = user_id)` |  |
+| `mockup_templates` | Users delete own mockup templates | DELETE | public | permissive | `(auth.uid() = user_id)` |  |
+| `mockup_templates` | Users insert own mockup templates | INSERT | public | permissive |  | `(auth.uid() = user_id)` |
+| `favorite_items` | Users manage own favorite items | ALL | authenticated | permissive | `(user_id = auth.uid())` | `(user_id = auth.uid())` |
+| `favorite_lists` | Users manage own favorite lists | ALL | authenticated | permissive | `(user_id = auth.uid())` | `(user_id = auth.uid())` |
+| `favorite_items_trash` | Users manage own trash | ALL | authenticated | permissive | `(user_id = auth.uid())` | `(user_id = auth.uid())` |
+| `mockup_templates` | Users update own mockup templates | UPDATE | public | permissive | `(auth.uid() = user_id)` |  |
+| `mockup_templates` | Users view own mockup templates | SELECT | public | permissive | `(auth.uid() = user_id)` |  |
+| `conversation_audit_logs` | Usuários podem criar seus próprios logs de conversa | INSERT | authenticated | permissive |  | `(auth.uid() = user_id)` |
+| `conversation_audit_logs` | Usuários podem ver seus próprios logs de conversa | SELECT | authenticated | permissive | `(auth.uid() = user_id)` |  |
+| `admin_audit_log_old` | admin_audit_log_select_policy | SELECT | authenticated | permissive | `public.is_supervisor_or_above(auth.uid())` |  |
+| `discount_approval_requests` | dar_delete_scope | DELETE | authenticated | permissive | `public.can_view_all_sales()` |  |
+| `discount_approval_requests` | dar_insert_scope | INSERT | authenticated | permissive |  | `((seller_id = auth.uid()) OR public.can_view_all_sales())` |
+| `discount_approval_requests` | dar_select_scope | SELECT | authenticated | permissive | `(public.can_view_all_sales() OR public.has_role(auth.uid(), 'supervisor'::public.app_role) OR (seller_id = auth.uid()))` |  |
+| `discount_approval_requests` | dar_update_scope | UPDATE | authenticated | permissive | `(public.can_view_all_sales() OR public.has_role(auth.uid(), 'supervisor'::public.app_role))` | `(public.can_view_all_sales() OR public.has_role(auth.uid(), 'supervisor'::public.app_role))` |
+| `orders` | orders_delete_scope | DELETE | authenticated | permissive | `(public.can_view_all_sales() OR (seller_id = auth.uid()))` |  |
+| `orders` | orders_insert_scope | INSERT | authenticated | permissive |  | `(public.can_view_all_sales() OR (seller_id = auth.uid()))` |
+| `orders` | orders_manage_v10 | ALL | authenticated | permissive | `(seller_id = auth.uid())` | `(seller_id = auth.uid())` |
+| `orders` | orders_select_scope | SELECT | authenticated | permissive | `(public.can_view_all_sales() OR (public.has_role(auth.uid(), 'supervisor'::public.app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT public.get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))` |  |
+| `orders` | orders_update_scope | UPDATE | authenticated | permissive | `(public.can_view_all_sales() OR (public.has_role(auth.uid(), 'supervisor'::public.app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT public.get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))` | `(public.can_view_all_sales() OR (public.has_role(auth.uid(), 'supervisor'::public.app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT public.get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))` |
+| `quote_approval_tokens` | qatokens_delete_scope | DELETE | authenticated | permissive | `(public.can_view_all_sales() OR (seller_id = auth.uid()))` |  |
+| `quote_approval_tokens` | qatokens_insert_scope | INSERT | authenticated | permissive |  | `(public.can_view_all_sales() OR (seller_id = auth.uid()))` |
+| `quote_approval_tokens` | qatokens_select_scope | SELECT | authenticated | permissive | `(public.can_view_all_sales() OR (seller_id = auth.uid()))` |  |
+| `quote_approval_tokens` | qatokens_update_scope | UPDATE | authenticated | permissive | `(public.can_view_all_sales() OR (seller_id = auth.uid()))` | `(public.can_view_all_sales() OR (seller_id = auth.uid()))` |
+| `quote_comments` | qcomments_insert_scope | INSERT | authenticated | permissive |  | `((user_id = auth.uid()) AND (public.can_view_all_sales() OR (EXISTS ( SELECT 1 FROM public.quotes q WHERE (((q.id)::text = quote_comments.quote_id) AND ((q.seller_id = auth.uid()) OR (public.has_role(auth.uid(), 'supervisor'::public.app_role) AND ((q.organization_id IS NULL) OR (q.organization_id IN …` |
+| `quote_templates` | qtemplates_delete_scope | DELETE | authenticated | permissive | `(public.can_view_all_sales() OR (seller_id = auth.uid()))` |  |
+| `quote_templates` | qtemplates_insert_scope | INSERT | authenticated | permissive |  | `(public.can_view_all_sales() OR (seller_id = auth.uid()))` |
+| `quote_templates` | qtemplates_select_scope | SELECT | authenticated | permissive | `(public.can_view_all_sales() OR (seller_id = auth.uid()))` |  |
+| `quote_templates` | qtemplates_update_scope | UPDATE | authenticated | permissive | `(public.can_view_all_sales() OR (seller_id = auth.uid()))` | `(public.can_view_all_sales() OR (seller_id = auth.uid()))` |
+| `quote_item_personalizations` | quote_item_personalizations_delete_scope | DELETE | public | permissive | `(public.can_view_all_sales() OR (EXISTS ( SELECT 1 FROM (public.quote_items qi JOIN public.quotes q ON ((q.id = qi.quote_id))) WHERE ((qi.id = quote_item_personalizations.quote_item_id) AND (q.seller_id = auth.uid())))))` |  |
+| `quote_item_personalizations` | quote_item_personalizations_insert_scope | INSERT | public | permissive |  | `(public.can_view_all_sales() OR (EXISTS ( SELECT 1 FROM (public.quote_items qi JOIN public.quotes q ON ((q.id = qi.quote_id))) WHERE ((qi.id = quote_item_personalizations.quote_item_id) AND (q.seller_id = auth.uid())))))` |
+| `quote_item_personalizations` | quote_item_personalizations_select_scope | SELECT | public | permissive | `(public.can_view_all_sales() OR (EXISTS ( SELECT 1 FROM (public.quote_items qi JOIN public.quotes q ON ((q.id = qi.quote_id))) WHERE ((qi.id = quote_item_personalizations.quote_item_id) AND ((q.seller_id = auth.uid()) OR (public.has_role(auth.uid(), 'supervisor'::public.app_role) AND ((q.organizatio …` |  |
+| `quote_item_personalizations` | quote_item_personalizations_update_scope | UPDATE | public | permissive | `(public.can_view_all_sales() OR (EXISTS ( SELECT 1 FROM (public.quote_items qi JOIN public.quotes q ON ((q.id = qi.quote_id))) WHERE ((qi.id = quote_item_personalizations.quote_item_id) AND ((q.seller_id = auth.uid()) OR (public.has_role(auth.uid(), 'supervisor'::public.app_role) AND ((q.organizatio …` | `(public.can_view_all_sales() OR (EXISTS ( SELECT 1 FROM (public.quote_items qi JOIN public.quotes q ON ((q.id = qi.quote_id))) WHERE ((qi.id = quote_item_personalizations.quote_item_id) AND ((q.seller_id = auth.uid()) OR (public.has_role(auth.uid(), 'supervisor'::public.app_role) AND ((q.organizatio …` |
+| `quote_items` | quote_items_delete_scope | DELETE | public | permissive | `(public.can_view_all_sales() OR (EXISTS ( SELECT 1 FROM public.quotes q WHERE ((q.id = quote_items.quote_id) AND (q.seller_id = auth.uid())))))` |  |
+| `quote_items` | quote_items_insert_scope | INSERT | public | permissive |  | `(public.can_view_all_sales() OR (EXISTS ( SELECT 1 FROM public.quotes q WHERE ((q.id = quote_items.quote_id) AND (q.seller_id = auth.uid())))))` |
+| `quote_items` | quote_items_select_scope | SELECT | public | permissive | `(public.can_view_all_sales() OR (EXISTS ( SELECT 1 FROM public.quotes q WHERE ((q.id = quote_items.quote_id) AND ((q.seller_id = auth.uid()) OR (public.has_role(auth.uid(), 'supervisor'::public.app_role) AND ((q.organization_id IS NULL) OR (q.organization_id IN ( SELECT public.get_user_org_ids(auth. …` |  |
+| `quote_items` | quote_items_update_scope | UPDATE | public | permissive | `(public.can_view_all_sales() OR (EXISTS ( SELECT 1 FROM public.quotes q WHERE ((q.id = quote_items.quote_id) AND ((q.seller_id = auth.uid()) OR (public.has_role(auth.uid(), 'supervisor'::public.app_role) AND ((q.organization_id IS NULL) OR (q.organization_id IN ( SELECT public.get_user_org_ids(auth. …` | `(public.can_view_all_sales() OR (EXISTS ( SELECT 1 FROM public.quotes q WHERE ((q.id = quote_items.quote_id) AND ((q.seller_id = auth.uid()) OR (public.has_role(auth.uid(), 'supervisor'::public.app_role) AND ((q.organization_id IS NULL) OR (q.organization_id IN ( SELECT public.get_user_org_ids(auth. …` |
+| `quotes` | quotes_delete_scope | DELETE | authenticated | permissive | `(public.can_view_all_sales() OR (seller_id = auth.uid()))` |  |
+| `quotes` | quotes_insert_scope | INSERT | authenticated | permissive |  | `(public.can_view_all_sales() OR (seller_id = auth.uid()))` |
 | `webhook_deliveries` | Admins delete webhook_deliveries | DELETE | public | permissive | `"public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |  |
 | `mockup_prompt_history` | Admins insert prompt history | INSERT | public | permissive |  | `"public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |
 | `outbound_webhooks` | Admins manage outbound_webhooks | ALL | public | permissive | `"public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` | `"public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |
@@ -343,167 +503,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `paper_rulings` | ref_select_public | SELECT | public | permissive | `true` |  |
 | `paper_weights` | ref_select_public | SELECT | public | permissive | `true` |  |
 | `product_notebook_features` | ref_select_public | SELECT | public | permissive | `true` |  |
-| `product_notebook_specs` | ref_select_public | SELECT | public | permissive | `true` |  |
-| `user_token_revocations` | revocations_supervisor_delete | DELETE | public | permissive | `"public"."is_supervisor_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |  |
-| `user_token_revocations` | revocations_supervisor_insert | INSERT | public | permissive |  | `"public"."is_supervisor_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |
-| `saved_filters` | saved_filters_delete | DELETE | public | permissive | `(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")` |  |
-| `saved_filters` | saved_filters_insert | INSERT | public | permissive |  | `(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")` |
-| `saved_filters` | saved_filters_select | SELECT | public | permissive | `(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")` |  |
-| `saved_filters` | saved_filters_update | UPDATE | public | permissive | `(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")` | `(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")` |
-| `secret_rotation_log` | secret_rotation_log_dev_select | SELECT | public | permissive | `"public"."is_dev"()` |  |
-| `secret_rotation_log` | secret_rotation_log_service_insert | INSERT | public | permissive |  | `false` |
-| `supplier_materials` | sm_delete | DELETE | public | permissive | `("supplier_id" IN ( SELECT "suppliers"."id" FROM "public"."suppliers" WHERE ("suppliers"."organization_id" IN ( SELECT "suppliers"."organization_id" FROM "public"."profiles" WHERE ("profiles"."id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))))` |  |
-| `supplier_materials` | sm_insert | INSERT | public | permissive |  | `("supplier_id" IN ( SELECT "suppliers"."id" FROM "public"."suppliers" WHERE ("suppliers"."organization_id" IN ( SELECT "suppliers"."organization_id" FROM "public"."profiles" WHERE ("profiles"."id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))))` |
-| `supplier_materials` | sm_select | SELECT | public | permissive | `("supplier_id" IN ( SELECT "suppliers"."id" FROM "public"."suppliers" WHERE ("suppliers"."organization_id" IN ( SELECT "suppliers"."organization_id" FROM "public"."profiles" WHERE ("profiles"."id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))))` |  |
-| `supplier_materials` | sm_update | UPDATE | public | permissive | `("supplier_id" IN ( SELECT "suppliers"."id" FROM "public"."suppliers" WHERE ("suppliers"."organization_id" IN ( SELECT "suppliers"."organization_id" FROM "public"."profiles" WHERE ("profiles"."id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))))` |  |
-| `supplier_attribute_definitions` | supplier_attribute_definitions_delete_policy | DELETE | public | permissive | `("organization_id" IN ( SELECT "supplier_attribute_definitions"."organization_id" FROM "public"."profiles" WHERE ("profiles"."id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))` |  |
-| `supplier_attribute_definitions` | supplier_attribute_definitions_insert_policy | INSERT | public | permissive |  | `("organization_id" IN ( SELECT "supplier_attribute_definitions"."organization_id" FROM "public"."profiles" WHERE ("profiles"."id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))` |
-| `supplier_attribute_definitions` | supplier_attribute_definitions_select_policy | SELECT | public | permissive | `("organization_id" IN ( SELECT "supplier_attribute_definitions"."organization_id" FROM "public"."profiles" WHERE ("profiles"."id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))` |  |
-| `supplier_attribute_definitions` | supplier_attribute_definitions_update_policy | UPDATE | public | permissive | `("organization_id" IN ( SELECT "supplier_attribute_definitions"."organization_id" FROM "public"."profiles" WHERE ("profiles"."id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))` |  |
-| `suppliers` | suppliers_delete | DELETE | public | permissive | `"public"."is_org_owner_or_admin"("organization_id")` |  |
-| `suppliers` | suppliers_insert | INSERT | public | permissive |  | `"public"."is_org_owner_or_admin"("organization_id")` |
-| `suppliers` | suppliers_update | UPDATE | public | permissive | `"public"."is_org_owner_or_admin"("organization_id")` | `"public"."is_org_owner_or_admin"("organization_id")` |
-| `user_organizations` | uo_delete_admins | DELETE | public | permissive | `("public"."is_org_owner_or_admin"("organization_id") AND CASE WHEN ("role" = ANY (ARRAY['admin'::"public"."org_role", 'owner'::"public"."org_role"])) THEN (EXISTS ( SELECT 1 FROM "public"."user_organizations" "me" WHERE (("me"."organization_id" = "user_organizations"."organization_id") AND ("me"."us …` |  |
-| `user_organizations` | uo_insert_admins | INSERT | public | permissive |  | `("public"."is_org_owner_or_admin"("organization_id") AND CASE WHEN ("role" = ANY (ARRAY['admin'::"public"."org_role", 'owner'::"public"."org_role"])) THEN (EXISTS ( SELECT 1 FROM "public"."user_organizations" "me" WHERE (("me"."organization_id" = "user_organizations"."organization_id") AND ("me"."us …` |
-| `user_organizations` | uo_update_admins | UPDATE | public | permissive | `"public"."is_org_owner_or_admin"("organization_id")` | `("public"."is_org_owner_or_admin"("organization_id") AND CASE WHEN ("role" = ANY (ARRAY['admin'::"public"."org_role", 'owner'::"public"."org_role"])) THEN (EXISTS ( SELECT 1 FROM "public"."user_organizations" "me" WHERE (("me"."organization_id" = "user_organizations"."organization_id") AND ("me"."us …` |
-| `user_filter_presets` | user_filter_presets_delete | DELETE | public | permissive | `(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")` |  |
-| `user_filter_presets` | user_filter_presets_insert | INSERT | public | permissive |  | `(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")` |
-| `user_filter_presets` | user_filter_presets_select | SELECT | public | permissive | `(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")` |  |
-| `user_filter_presets` | user_filter_presets_update | UPDATE | public | permissive | `(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")` | `(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")` |
-| `user_favorites` | users_delete_own_favorites | DELETE | public | permissive | `("user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |  |
-| `notifications` | users_update_own_notifications | UPDATE | public | permissive | `("user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` | `("user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |
-| `user_favorites` | users_view_own_favorites | SELECT | public | permissive | `("user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |  |
-| `notifications` | users_view_own_notifications | SELECT | public | permissive | `("user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |  |
-| `variant_supplier_sources` | variant_stocks_select_org | SELECT | public | permissive | `("organization_id" IN ( SELECT "uo"."organization_id" FROM "public"."user_organizations" "uo" WHERE ("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid"))))` |  |
-| `variation_types` | variation_types_select_org | SELECT | public | permissive | `"public"."user_belongs_to_org"("organization_id")` |  |
-| `variation_values` | variation_values_select_org | SELECT | public | permissive | `"public"."user_belongs_to_org"("organization_id")` |  |
-| `variant_commemorative_dates` | vcd_admin_delete | DELETE | public | permissive | `"public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |  |
-| `variant_commemorative_dates` | vcd_admin_insert | INSERT | public | permissive |  | `"public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |
-| `variant_commemorative_dates` | vcd_admin_update | UPDATE | public | permissive | `"public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` | `"public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |
-| `video_variant_links` | vvl_admin_delete | DELETE | public | permissive | `"public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |  |
-| `video_variant_links` | vvl_admin_insert | INSERT | public | permissive |  | `"public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |
-| `video_variant_links` | vvl_admin_update | UPDATE | public | permissive | `"public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` | `"public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |
-| `product_groups` | Authenticated users can view groups | SELECT | public | permissive | `true` |  |
-| `product_group_members` | Authenticated users can view group members | SELECT | public | permissive | `true` |  |
-| `product_group_members` | Admins can manage group members | ALL | public | permissive | `has_role(auth.uid(), 'admin'::app_role)` | `has_role(auth.uid(), 'admin'::app_role)` |
-| `product_group_components` | Authenticated users can view group components | SELECT | public | permissive | `true` |  |
-| `product_group_components` | Admins can manage group components | ALL | public | permissive | `has_role(auth.uid(), 'admin'::app_role)` | `has_role(auth.uid(), 'admin'::app_role)` |
-| `product_group_locations` | Authenticated users can view group locations | SELECT | public | permissive | `true` |  |
-| `product_group_locations` | Admins can manage group locations | ALL | public | permissive | `has_role(auth.uid(), 'admin'::app_role)` | `has_role(auth.uid(), 'admin'::app_role)` |
-| `product_group_location_techniques` | Authenticated users can view group location techniques | SELECT | public | permissive | `true` |  |
-| `product_group_location_techniques` | Admins can manage group location techniques | ALL | public | permissive | `has_role(auth.uid(), 'admin'::app_role)` | `has_role(auth.uid(), 'admin'::app_role)` |
-| `storage.objects` | Anyone can view personalization images | SELECT | public | permissive | `bucket_id = 'personalization-images'` |  |
-| `storage.objects` | Admins can upload personalization images | INSERT | public | permissive |  | `bucket_id = 'personalization-images' AND has_role(auth.uid(), 'admin'::app_role)` |
-| `storage.objects` | Admins can update personalization images | UPDATE | public | permissive | `bucket_id = 'personalization-images' AND has_role(auth.uid(), 'admin'::app_role)` |  |
-| `storage.objects` | Admins can delete personalization images | DELETE | public | permissive | `bucket_id = 'personalization-images' AND has_role(auth.uid(), 'admin'::app_role)` |  |
-| `quote_comments` | Users can view comments on accessible quotes | SELECT | public | permissive | `EXISTS ( SELECT 1 FROM quotes WHERE quotes.id = quote_comments.quote_id AND (quotes.seller_id = auth.uid() OR quotes.created_by = auth.uid()) )` |  |
-| `quote_comments` | Users can create comments | INSERT | public | permissive |  | `auth.uid() = user_id` |
-| `sync_jobs` | Users can view own jobs | SELECT | public | permissive | `auth.uid() = created_by` |  |
-| `user_filter_presets` | Users manage own filters | ALL | public | permissive | `auth.uid() = user_id` |  |
-| `analytics_events` | Users can view analytics_events | SELECT | public | permissive | `true` |  |
-| `audit_trail` | Users can view audit_trail | SELECT | public | permissive | `true` |  |
-| `cache_entries` | Users can view cache_entries | SELECT | public | permissive | `true` |  |
-| `feature_flags` | Users can view feature_flags | SELECT | public | permissive | `true` |  |
-| `optimization_logs` | Users can view optimization_logs | SELECT | public | permissive | `true` |  |
-| `rate_limits` | Users can view rate_limits | SELECT | public | permissive | `true` |  |
-| `redis_config` | Users can view redis_config | SELECT | public | permissive | `true` |  |
-| `template_versions` | Users can view template_versions | SELECT | public | permissive | `true` |  |
-| `two_factor_secrets` | Users can view two_factor_secrets | SELECT | public | permissive | `true` |  |
-| `websocket_sessions` | Users can view websocket_sessions | SELECT | public | permissive | `true` |  |
-| `color_groups` | Anyone can view color groups | SELECT | public | permissive | `true` |  |
-| `color_variations` | Anyone can view color variations | SELECT | public | permissive | `true` |  |
-| `color_nuances` | Anyone can view color nuances | SELECT | public | permissive | `true` |  |
-| `color_groups` | Admins can manage color groups | ALL | public | permissive | `has_role(auth.uid(), 'admin'::app_role)` | `has_role(auth.uid(), 'admin'::app_role)` |
-| `color_variations` | Admins can manage color variations | ALL | public | permissive | `has_role(auth.uid(), 'admin'::app_role)` | `has_role(auth.uid(), 'admin'::app_role)` |
-| `color_nuances` | Admins can manage color nuances | ALL | public | permissive | `has_role(auth.uid(), 'admin'::app_role)` | `has_role(auth.uid(), 'admin'::app_role)` |
-| `product_novelties` | Anyone can view novelties | SELECT | public | permissive | `true` |  |
-| `product_novelties` | Admins can manage novelties | ALL | public | permissive | `has_role(auth.uid(), 'admin')` | `has_role(auth.uid(), 'admin')` |
-| `product_novelties` | Service can manage novelties | ALL | public | permissive | `true` | `true` |
-| `cotacoes` | cotacoes_select_authenticated | SELECT | authenticated | permissive | `true` |  |
-| `cotacoes` | cotacoes_insert_self | INSERT | authenticated | permissive |  | `user_id = auth.uid()` |
-| `cotacoes` | cotacoes_update_owner_or_admin | UPDATE | authenticated | permissive | `user_id = auth.uid() or public.current_user_role() = 'admin'` | `user_id = auth.uid() or public.current_user_role() = 'admin'` |
-| `notification_templates` | notification_templates_select | SELECT | authenticated | permissive | `is_supervisor_or_above((SELECT auth.uid()))` |  |
-| `quote_items` | quote_items_select | SELECT | public | permissive | `public.can_access_quote(quote_id)` |  |
-| `quote_items` | quote_items_insert | INSERT | public | permissive |  | `public.can_access_quote(quote_id)` |
-| `quote_items` | quote_items_update | UPDATE | public | permissive | `public.can_access_quote(quote_id)` |  |
-| `quote_comments` | quote_comments_select | SELECT | public | permissive | `public.can_access_quote(quote_id)` |  |
-| `quote_comments` | quote_comments_insert | INSERT | public | permissive |  | `public.can_access_quote(quote_id)` |
-| `quote_comments` | quote_comments_update | UPDATE | public | permissive | `public.can_access_quote(quote_id)` |  |
-| `quote_versions` | quote_versions_select_scope | SELECT | public | permissive | `public.can_access_quote(quote_id)` |  |
-| `password_reset_requests` | Admins can view password reset requests | SELECT | public | permissive | `EXISTS ( SELECT 1 FROM public.user_roles WHERE user_roles.user_id = auth.uid() AND user_roles.role IN ('dev', 'supervisor', 'admin') )` |  |
-| `password_reset_requests` | Admins can update password reset requests | UPDATE | public | permissive | `EXISTS ( SELECT 1 FROM public.user_roles WHERE user_roles.user_id = auth.uid() AND user_roles.role IN ('dev', 'supervisor', 'admin') )` |  |
-| `products` | Products are viewable by all authenticated users | SELECT | public | permissive | `auth.uid() IS NOT NULL` |  |
-| `edge_rate_limits` | Service role can do everything on edge_rate_limits | ALL | public | permissive | `auth.role() = 'service_role'` | `auth.role() = 'service_role'` |
-| `simulation_runs` | Admins can view simulation runs | SELECT | authenticated | permissive | `EXISTS ( SELECT 1 FROM public.profiles WHERE profiles.id = auth.uid() AND profiles.role = 'admin' )` |  |
-| `simulation_logs` | Admins can view simulation logs | SELECT | authenticated | permissive | `EXISTS ( SELECT 1 FROM public.profiles WHERE profiles.id = auth.uid() AND profiles.role = 'admin' )` |  |
-| `frontend_telemetry` | Admins can view telemetry | SELECT | public | permissive | `EXISTS ( SELECT 1 FROM public.profiles WHERE profiles.id = auth.uid() AND profiles.role IN ('admin', 'supervisor') )` |  |
-| `frontend_telemetry` | Admins can cleanup telemetry | DELETE | public | permissive | `EXISTS ( SELECT 1 FROM public.profiles WHERE profiles.id = auth.uid() AND profiles.role IN ('admin', 'supervisor') )` |  |
-| `frontend_telemetry` | frontend_telemetry_insert_anon | INSERT | anon | permissive |  | `user_id IS NULL AND length(coalesce(event_type,'')) BETWEEN 1 AND 64 AND length(coalesce(name,'')) BETWEEN 1 AND 256 AND length(coalesce(url,'')) <= 2048 AND length(coalesce(user_agent,'')) <= 1024 AND length(coalesce(session_id,'')) <= 128 AND length(coalesce(metadata::text,'')) <= 8192` |
-| `frontend_telemetry` | frontend_telemetry_insert_authenticated | INSERT | authenticated | permissive |  | `(user_id IS NULL OR user_id = (select auth.uid())) AND length(coalesce(event_type,'')) BETWEEN 1 AND 64 AND length(coalesce(name,'')) BETWEEN 1 AND 256 AND length(coalesce(url,'')) <= 2048 AND length(coalesce(user_agent,'')) <= 1024 AND length(coalesce(session_id,'')) <= 128 AND length(coalesce(meta …` |
-| `category_icons` | Admins can delete category icons | DELETE | authenticated | permissive | `has_role((SELECT auth.uid()), 'admin'::app_role)` |  |
-| `category_icons` | Admins can insert category icons | INSERT | authenticated | permissive |  | `has_role((SELECT auth.uid()), 'admin'::app_role)` |
-| `category_icons` | Admins can update category icons | UPDATE | authenticated | permissive | `has_role((SELECT auth.uid()), 'admin'::app_role)` | `has_role((SELECT auth.uid()), 'admin'::app_role)` |
-| `product_price_freshness_overrides` | Admins can delete freshness overrides | DELETE | authenticated | permissive | `has_role((SELECT auth.uid()), 'admin'::app_role)` |  |
-| `product_price_freshness_overrides` | Admins can insert freshness overrides | INSERT | authenticated | permissive |  | `has_role((SELECT auth.uid()), 'admin'::app_role)` |
-| `product_price_freshness_overrides` | Admins can update freshness overrides | UPDATE | authenticated | permissive | `has_role((SELECT auth.uid()), 'admin'::app_role)` | `has_role((SELECT auth.uid()), 'admin'::app_role)` |
-| `product_sync_logs` | Admins insert product sync logs | INSERT | authenticated | permissive |  | `has_role((SELECT auth.uid()), 'admin'::app_role)` |
-| `product_sync_logs` | Admins view product sync logs | SELECT | authenticated | permissive | `has_role((SELECT auth.uid()), 'admin'::app_role)` |  |
-| `admin_settings` | Admins can insert admin_settings | INSERT | authenticated | permissive |  | `has_role((SELECT auth.uid()), 'admin'::app_role)` |
-| `admin_settings` | Admins can update admin_settings | UPDATE | authenticated | permissive | `has_role((SELECT auth.uid()), 'admin'::app_role)` | `has_role((SELECT auth.uid()), 'admin'::app_role)` |
-| `admin_settings` | Admins can view admin_settings | SELECT | authenticated | permissive | `has_role((SELECT auth.uid()), 'admin'::app_role)` |  |
-| `dashboard_insights_cache` | Users can delete their own cached insights | DELETE | authenticated | permissive | `((SELECT auth.uid()) = user_id) OR has_role((SELECT auth.uid()), 'admin'::app_role)` |  |
-| `dashboard_insights_cache` | Users can insert their own cached insights | INSERT | authenticated | permissive |  | `(SELECT auth.uid()) = user_id` |
-| `dashboard_insights_cache` | Users can update their own cached insights | UPDATE | authenticated | permissive | `(SELECT auth.uid()) = user_id` | `(SELECT auth.uid()) = user_id` |
-| `ai_usage_events` | Users can insert their own usage events | INSERT | authenticated | permissive |  | `(SELECT auth.uid()) = user_id` |
-| `ai_usage_events` | Users can view their own usage events | SELECT | authenticated | permissive | `((SELECT auth.uid()) = user_id) OR has_role((SELECT auth.uid()), 'admin'::app_role)` |  |
-| `collection_products` | collection_products_delete | DELETE | authenticated | permissive | `EXISTS (SELECT 1 FROM collections c WHERE c.id = collection_products.collection_id AND c.user_id = (SELECT auth.uid())) OR is_supervisor_or_above((SELECT auth.uid()))` |  |
-| `collection_products` | collection_products_insert | INSERT | authenticated | permissive |  | `EXISTS (SELECT 1 FROM collections c WHERE c.id = collection_products.collection_id AND c.user_id = (SELECT auth.uid())) OR is_supervisor_or_above((SELECT auth.uid()))` |
-| `collection_products` | collection_products_select | SELECT | authenticated | permissive | `EXISTS (SELECT 1 FROM collections c WHERE c.id = collection_products.collection_id AND (c.user_id = (SELECT auth.uid()) OR c.is_public = true OR c.share_token IS NOT NULL)) OR is_supervisor_or_above((SELECT auth.uid()))` |  |
-| `collection_products` | collection_products_update | UPDATE | authenticated | permissive | `EXISTS (SELECT 1 FROM collections c WHERE c.id = collection_products.collection_id AND c.user_id = (SELECT auth.uid())) OR is_supervisor_or_above((SELECT auth.uid()))` |  |
-| `quotes` | quotes_select_scope | SELECT | public | permissive | `user_is_org_member(organization_id) AND (is_coord_or_above((SELECT auth.uid())) OR seller_id = (SELECT auth.uid()) OR created_by = (SELECT auth.uid()) OR assigned_to = (SELECT auth.uid()))` |  |
-| `quotes` | quotes_update_scope | UPDATE | public | permissive | `user_is_org_member(organization_id) AND (is_coord_or_above((SELECT auth.uid())) OR seller_id = (SELECT auth.uid()) OR created_by = (SELECT auth.uid()) OR assigned_to = (SELECT auth.uid()))` |  |
-| `favorite_item_reactions` | Public can insert reactions on shared lists | INSERT | anon, authenticated | permissive |  | `EXISTS (SELECT 1 FROM public.favorite_lists l WHERE l.id=favorite_item_reactions.list_id AND l.shared_token IS NOT NULL AND (l.shared_expires_at IS NULL OR l.shared_expires_at > now()))` |
-| `favorite_item_reactions` | Owners delete own list reactions | DELETE | authenticated | permissive | `EXISTS (SELECT 1 FROM public.favorite_lists l WHERE l.id=favorite_item_reactions.list_id AND l.user_id=auth.uid())` |  |
-| `custom_kits` | ck_insert_self | INSERT | authenticated | permissive |  | `user_id = (SELECT auth.uid())` |
-| `schema_drift_log` | Admins read schema_drift_log | SELECT | authenticated | permissive | `is_admin(auth.uid())` |  |
-| `schema_drift_allowlist` | Admins manage drift allowlist | ALL | authenticated | permissive | `EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role = 'admin')` | `EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role = 'admin')` |
-| `component_media` | Admins insert component media | INSERT | authenticated | permissive |  | `has_role((select auth.uid()), 'admin'::app_role)` |
-| `component_media` | Admins update component media | UPDATE | authenticated | permissive | `has_role((select auth.uid()), 'admin'::app_role)` | `has_role((select auth.uid()), 'admin'::app_role)` |
-| `component_media` | Admins delete component media | DELETE | authenticated | permissive | `has_role((select auth.uid()), 'admin'::app_role)` |  |
-| `product_component_locations` | Admins insert component locations | INSERT | authenticated | permissive |  | `has_role((select auth.uid()), 'admin'::app_role)` |
-| `product_component_locations` | Admins update component locations | UPDATE | authenticated | permissive | `has_role((select auth.uid()), 'admin'::app_role)` | `has_role((select auth.uid()), 'admin'::app_role)` |
-| `product_component_locations` | Admins delete component locations | DELETE | authenticated | permissive | `has_role((select auth.uid()), 'admin'::app_role)` |  |
-| `product_components` | Admins insert components | INSERT | authenticated | permissive |  | `has_role((select auth.uid()), 'admin'::app_role)` |
-| `product_components` | Admins update components | UPDATE | authenticated | permissive | `has_role((select auth.uid()), 'admin'::app_role)` | `has_role((select auth.uid()), 'admin'::app_role)` |
-| `product_components` | Admins delete components | DELETE | authenticated | permissive | `has_role((select auth.uid()), 'admin'::app_role)` |  |
-| `product_group_members` | Admins insert group members | INSERT | authenticated | permissive |  | `has_role((select auth.uid()), 'admin'::app_role)` |
-| `product_group_members` | Admins update group members | UPDATE | authenticated | permissive | `has_role((select auth.uid()), 'admin'::app_role)` | `has_role((select auth.uid()), 'admin'::app_role)` |
-| `product_group_members` | Admins delete group members | DELETE | authenticated | permissive | `has_role((select auth.uid()), 'admin'::app_role)` |  |
-| `product_groups` | Admins insert groups | INSERT | authenticated | permissive |  | `has_role((select auth.uid()), 'admin'::app_role)` |
-| `product_groups` | Admins update groups | UPDATE | authenticated | permissive | `has_role((select auth.uid()), 'admin'::app_role)` | `has_role((select auth.uid()), 'admin'::app_role)` |
-| `product_groups` | Admins delete groups | DELETE | authenticated | permissive | `has_role((select auth.uid()), 'admin'::app_role)` |  |
-| `favorite_item_reactions` | Read reactions: admin, owner or shared list | SELECT | anon, authenticated | permissive | `is_admin((select auth.uid())) OR EXISTS ( SELECT 1 FROM favorite_lists l WHERE ((l.id = favorite_item_reactions.list_id) AND (l.user_id = (select auth.uid())))) OR EXISTS ( SELECT 1 FROM favorite_lists l WHERE ((l.id = favorite_item_reactions.list_id) AND (l.shared_token IS NOT NULL) AND ((l.shared_ …` |  |
-| `organization_members` | Insert org members: org admin/owner, bootstrap or sys admin | INSERT | public | permissive |  | `has_org_role((select auth.uid()), organization_id, 'owner'::org_role) OR has_org_role((select auth.uid()), organization_id, 'admin'::org_role) OR ((NOT org_has_any_members(organization_id)) AND (user_id = (select auth.uid())) AND (role = 'owner'::org_role)) OR is_admin((select auth.uid()))` |
-| `user_organizations` | uo_select_members | SELECT | public | permissive | `public.user_is_org_member(organization_id)` |  |
-| `webhook_request_nonces` | service_role_manage_webhook_request_nonces | ALL | service_role | permissive | `true` | `true` |
-| `password_reset_requests` | Anyone can request a password reset (validated) | INSERT | anon, authenticated | permissive |  | `email ~* '^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$' AND length(email) BETWEEN 5 AND 254 AND status = 'pending' AND reviewed_at IS NULL AND reviewed_by IS NULL AND reviewer_notes IS NULL AND user_id IS NULL` |
-| `system_kill_switches` | kill_switches_insert_admin | INSERT | authenticated | permissive |  | `public.is_admin_or_above((SELECT auth.uid()))` |
-| `system_kill_switches` | kill_switches_update_admin | UPDATE | authenticated | permissive | `public.is_admin_or_above((SELECT auth.uid()))` | `public.is_admin_or_above((SELECT auth.uid()))` |
-| `system_kill_switches` | kill_switches_delete_admin | DELETE | authenticated | permissive | `public.is_admin_or_above((SELECT auth.uid()))` |  |
-| `kill_switch_hits` | kill_switch_hits_read_admin | SELECT | authenticated | permissive | `is_admin_or_above((SELECT auth.uid()))` |  |
-| `kill_switch_hits` | kill_switch_hits_delete_admin | DELETE | authenticated | permissive | `is_admin_or_above((SELECT auth.uid()))` |  |
-| `kill_switch_hits` | kill_switch_hits_insert_validated | INSERT | anon, authenticated, service_role | permissive |  | `switch_name IS NOT NULL AND length(switch_name) BETWEEN 3 AND 100 AND source IS NOT NULL AND occurred_at <= now() + interval '5 minutes' AND occurred_at >= now() - interval '1 hour' AND (origin IS NULL OR length(origin) <= 500) AND (operation IS NULL OR length(operation) <= 200) AND (target IS NULL …` |
-| `bitrix_clients` | bitrix_clients_select_authenticated | SELECT | authenticated | permissive | `true` |  |
-| `companies` | companies_select_authenticated | SELECT | authenticated | permissive | `true` |  |
-| `storage.objects` | avatars_public_read | SELECT | public | permissive | `bucket_id = 'avatars'` |  |
-| `storage.objects` | avatars_auth_insert | INSERT | authenticated | permissive |  | `bucket_id = 'avatars'` |
-| `storage.objects` | art_files_public_read | SELECT | public | permissive | `bucket_id = 'art-files'` |  |
-| `product_group_components` | pgcomp_select_authenticated | SELECT | authenticated | permissive | `true` |  |
-| `product_group_locations` | pgloc_select_authenticated | SELECT | authenticated | permissive | `true` |  |
-| `product_group_location_techniques` | pgloctech_select_authenticated | SELECT | authenticated | permissive | `true` |  |
-| `product_component_location_techniques` | pcloctech_select_authenticated | SELECT | authenticated | permissive | `true` |  |
-| `smoke_tests_runs` | smoke_tests_runs_read_admin | SELECT | authenticated | permissive | `is_admin_or_above((SELECT auth.uid()))` |  |
-| … +336 linhas — lista completa em `context.json` | | | | | | |
+| … +496 linhas — lista completa em `context.json` | | | | | | |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 
@@ -712,104 +712,104 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `magazine_templates` | `(tabela)` | constraint magazine_templates_organization_id_fkey FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE SET NULL |
 | `magazine_templates` | `(tabela)` | constraint magazine_templates_owner_id_fkey FOREIGN KEY ("owner_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE |
 | `magazine_templates` | `(tabela)` | constraint magazine_templates_template_id_fkey FOREIGN KEY ("template_id") REFERENCES "public"."magazine_templates_catalog"("template_id") |
-| `suppliers` | `id` | PK; default gen_random_uuid() |
-| `suppliers` | `name` | obrigatório |
-| `suppliers` | `code` | obrigatório; único |
-| `suppliers` | `is_active` | default true |
-| `suppliers` | `created_at` | default NOW() |
-| `suppliers` | `updated_at` | default NOW() |
-| `suppliers` | `deleted_at` | default NULL |
-| `suppliers` | `low_stock_threshold` | default 10; CHECK low_stock_threshold > 0 |
-| `suppliers` | `(tabela)` | constraint suppliers_cnpj_length_chk CHECK (cnpj IS NULL OR length(cnpj) = 14) |
-| `suppliers` | `(tabela)` | constraint suppliers_cnpj_digits_only_chk CHECK (cnpj IS NULL OR cnpj ~ '^[0-9]+$') |
-| `product_variants` | `id` | PK; default gen_random_uuid() |
-| `product_variants` | `product_id` | obrigatório; FK → products.id ON DELETE CASCADE |
-| `product_variants` | `sku` | obrigatório; único |
-| `product_variants` | `name` | obrigatório |
-| `product_variants` | `attributes` | obrigatório |
-| `product_variants` | `price_adjustment` | default 0 |
-| `product_variants` | `stock_quantity` | default 0 |
-| `product_variants` | `images` | default '[]' |
-| `product_variants` | `is_active` | default true |
-| `product_variants` | `created_at` | default NOW() |
-| `product_variants` | `updated_at` | default NOW() |
-| `product_variants` | `(tabela)` | constraint chk_pv_stock_quantity_nonneg CHECK (stock_quantity >= 0), ADD CONSTRAINT chk_pv_next_quantities_nonneg CHECK ( next_quantity_1 >= 0 AND next_quantity_2 >= 0 AND next_quantity_3 >= 0 AND next_quantity_4 >= 0 AND next_quantity_5 >= 0 AND next_quantity_6 >= 0) |
-| `product_variants` | `(tabela)` | constraint chk_pv_capacity_ml_positive CHECK (capacity_ml > 0) |
-| `stock_daily_summary` | `id` | obrigatório |
-| `stock_daily_summary` | `variant_supplier_source_id` | obrigatório; FK → variant_supplier_sources.id ON DELETE CASCADE |
-| `stock_daily_summary` | `supplier_id` | obrigatório; FK → suppliers.id |
-| `stock_daily_summary` | `supplier_branch_id` | FK → supplier_branches.id |
-| `stock_daily_summary` | `variant_id` | obrigatório; FK → product_variants.id ON DELETE CASCADE |
-| `stock_daily_summary` | `product_id` | obrigatório; FK → products.id ON DELETE CASCADE |
-| `stock_daily_summary` | `summary_date` | obrigatório |
-| `stock_daily_summary` | `units_depleted` | default 0 |
-| `stock_daily_summary` | `units_restocked` | default 0 |
-| `stock_daily_summary` | `restock_detected` | default false |
-| `stock_daily_summary` | `restock_quantity` | default 0 |
-| `stock_daily_summary` | `restock_count` | default 0 |
-| `stock_daily_summary` | `price_changed` | default false |
-| `stock_daily_summary` | `sync_count` | default 0 |
-| `stock_daily_summary` | `created_at` | default "now"() |
-| `stock_daily_summary` | `restock_zero_to_positive` | default false |
-| `stock_daily_summary` | `(tabela)` | constraint stock_daily_summary_pkey PRIMARY KEY ("id") |
-| `stock_daily_summary` | `(tabela)` | constraint uq_stock_daily_vss_date UNIQUE ("variant_supplier_source_id", "summary_date") |
-| `stock_daily_summary` | `(tabela)` | constraint stock_daily_summary_product_id_fkey FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE |
-| `stock_daily_summary` | `(tabela)` | constraint stock_daily_summary_supplier_branch_id_fkey FOREIGN KEY ("supplier_branch_id") REFERENCES "public"."supplier_branches"("id") |
-| `stock_daily_summary` | `(tabela)` | constraint stock_daily_summary_supplier_id_fkey FOREIGN KEY ("supplier_id") REFERENCES "public"."suppliers"("id") |
-| `stock_daily_summary` | `(tabela)` | constraint stock_daily_summary_variant_id_fkey FOREIGN KEY ("variant_id") REFERENCES "public"."product_variants"("id") ON DELETE CASCADE |
-| `stock_daily_summary` | `(tabela)` | constraint stock_daily_summary_variant_supplier_source_id_fkey FOREIGN KEY ("variant_supplier_source_id") REFERENCES "public"."variant_supplier_sources"("id") ON DELETE CASCADE |
-| `variant_supplier_sources` | `id` | default "gen_random_uuid"() |
-| `variant_supplier_sources` | `organization_id` | obrigatório |
-| `variant_supplier_sources` | `variant_id` | obrigatório; FK → product_variants.id ON DELETE CASCADE |
-| `variant_supplier_sources` | `supplier_id` | obrigatório; FK → suppliers.id ON DELETE CASCADE |
-| `variant_supplier_sources` | `quantity` | default 0 |
-| `variant_supplier_sources` | `source` | default 'manual'::character |
-| `variant_supplier_sources` | `sync_status` | default 'synced'::character |
-| `variant_supplier_sources` | `updated_at` | default "now"() |
-| `variant_supplier_sources` | `min_order_qty` | default 1 |
-| `variant_supplier_sources` | `pack_quantity` | default 1 |
-| `variant_supplier_sources` | `sale_multiplier` | default 1 |
-| `variant_supplier_sources` | `is_preferred` | default false |
-| `variant_supplier_sources` | `priority` | default 99 |
-| `variant_supplier_sources` | `is_active` | default true |
-| `variant_supplier_sources` | `supplier_images` | default '[]'::"jsonb" |
-| `variant_supplier_sources` | `supplier_videos` | default '[]'::"jsonb" |
-| `variant_supplier_sources` | `removed_from_api` | default false |
-| `variant_supplier_sources` | `stock_main_warehouse` | default 0 |
-| `variant_supplier_sources` | `stock_other_warehouses` | default 0 |
-| `variant_supplier_sources` | `supplier_branch_id` | FK → supplier_branches.id |
-| `variant_supplier_sources` | `(tabela)` | CONSTRAINT "chk_vss_cost_price_not_zero" CHECK ((("cost_price" IS NULL) OR ("cost_price" > (0)::numeric))) |
-| `variant_supplier_sources` | `(tabela)` | CONSTRAINT "chk_vss_priority_positive" CHECK ((("priority" IS NULL) OR ("priority" > 0))) |
-| `variant_supplier_sources` | `(tabela)` | CONSTRAINT "chk_vss_quantity_positive" CHECK ((("quantity" IS NULL) OR ("quantity" >= 0))) |
-| `variant_supplier_sources` | `(tabela)` | CONSTRAINT "variant_stocks_quantity_check" CHECK (("quantity" >= 0)) |
-| `variant_supplier_sources` | `(tabela)` | constraint variant_stocks_organization_id_variant_id_supplier_id_key UNIQUE ("organization_id", "variant_id", "supplier_id") |
-| `variant_supplier_sources` | `(tabela)` | constraint variant_stocks_pkey PRIMARY KEY ("id") |
-| `variant_supplier_sources` | `(tabela)` | constraint variant_stocks_supplier_id_fkey FOREIGN KEY ("supplier_id") REFERENCES "public"."suppliers"("id") ON DELETE CASCADE |
-| `variant_supplier_sources` | `(tabela)` | constraint variant_stocks_variant_id_fkey FOREIGN KEY ("variant_id") REFERENCES "public"."product_variants"("id") ON DELETE CASCADE |
-| `variant_supplier_sources` | `(tabela)` | constraint variant_supplier_sources_supplier_branch_id_fkey FOREIGN KEY ("supplier_branch_id") REFERENCES "public"."supplier_branches"("id") |
-| `variant_supplier_sources` | `(tabela)` | constraint chk_vss_cost_price_not_zero CHECK (cost_price IS NULL OR cost_price > 0) |
-| `cf_recon.action_log` | `id` | PK |
-| `cf_recon.action_log` | `acted_at` | default now() |
-| `cf_recon.action_log` | `actor` | default 'claude' |
-| `cf_recon.action_log` | `action` | obrigatório |
-| `cf_recon.action_log` | `reversible` | default true |
-| `cf_recon.cf_ghost_check_queue` | `image_id` | PK |
-| `cf_recon.cf_ghost_check_queue` | `status` | default 'pending'; CHECK status IN ('pending','checked_alive','checked_dead','error') |
-| `cf_recon.cf_ghost_check_queue` | `attempts` | default 0 |
-| `cf_recon.cf_ghost_check_queue` | `enqueued_at` | default now() |
-| `cf_recon.cf_ghost_check_queue` | `(tabela)` | checked_at timestamptz |
-| `cf_recon.cf_ghost_check_queue` | `(tabela)` | constraint cf_ghost_check_queue_status_check CHECK (status = ANY (ARRAY[ 'pending'::text, 'checked_alive'::text, 'checked_dead'::text, 'error'::text, 'false_positive'::text ])) |
-| `cf_recon.cf_image` | `image_id` | PK |
-| `cf_recon.cf_image` | `first_seen_at` | default now() |
-| `cf_recon.cf_image` | `last_seen_at` | default now() |
-| `cf_recon.crawl_run` | `id` | PK; default gen_random_uuid() |
-| `cf_recon.crawl_run` | `started_at` | default now() |
-| `cf_recon.crawl_run` | `pages_scanned` | default 0 |
-| `cf_recon.crawl_run` | `images_seen` | default 0 |
-| `cf_recon.crawl_run` | `status` | default 'running'; CHECK status in ('running','completed','failed','partial') |
-| `cf_recon.metric_snapshot` | `id` | PK |
-| `cf_recon.metric_snapshot` | `taken_at` | default now() |
-| … +3721 linhas — lista completa em `context.json` | | |
+| `access_security_settings` | `id` | PK; default gen_random_uuid() |
+| `access_security_settings` | `ip_whitelist_enabled` | default false |
+| `access_security_settings` | `city_whitelist_enabled` | default false |
+| `access_security_settings` | `block_unknown_locations` | default false |
+| `access_security_settings` | `max_failed_attempts` | default 5 |
+| `access_security_settings` | `lockout_duration_minutes` | default 15 |
+| `access_security_settings` | `updated_by` | FK → users.id |
+| `access_security_settings` | `updated_at` | default now() |
+| `access_security_settings` | `strict_access_mode` | default false |
+| `admin_audit_log` | `id` | PK; default gen_random_uuid() |
+| `admin_audit_log` | `action` | obrigatório |
+| `admin_audit_log` | `resource_type` | obrigatório |
+| `admin_audit_log` | `details` | default '{}'::jsonb |
+| `admin_audit_log` | `created_at` | default now() |
+| `admin_audit_log_y2025m12` | `id` | default gen_random_uuid() |
+| `admin_audit_log_y2025m12` | `user_id` | obrigatório |
+| `admin_audit_log_y2025m12` | `action` | obrigatório |
+| `admin_audit_log_y2025m12` | `resource_type` | obrigatório |
+| `admin_audit_log_y2025m12` | `created_at` | default now() |
+| `admin_audit_log_y2025m12` | `(tabela)` | constraint admin_audit_log_y2025m12_pkey PRIMARY KEY (id, created_at) |
+| `admin_audit_log_y2026m01` | `id` | default gen_random_uuid() |
+| `admin_audit_log_y2026m01` | `user_id` | obrigatório |
+| `admin_audit_log_y2026m01` | `action` | obrigatório |
+| `admin_audit_log_y2026m01` | `resource_type` | obrigatório |
+| `admin_audit_log_y2026m01` | `created_at` | default now() |
+| `admin_audit_log_y2026m01` | `(tabela)` | constraint admin_audit_log_y2026m01_pkey PRIMARY KEY (id, created_at) |
+| `admin_audit_log_y2026m02` | `id` | default gen_random_uuid() |
+| `admin_audit_log_y2026m02` | `user_id` | obrigatório |
+| `admin_audit_log_y2026m02` | `action` | obrigatório |
+| `admin_audit_log_y2026m02` | `resource_type` | obrigatório |
+| `admin_audit_log_y2026m02` | `created_at` | default now() |
+| `admin_audit_log_y2026m02` | `(tabela)` | constraint admin_audit_log_y2026m02_pkey PRIMARY KEY (id, created_at) |
+| `admin_audit_log_y2026m03` | `id` | default gen_random_uuid() |
+| `admin_audit_log_y2026m03` | `user_id` | obrigatório |
+| `admin_audit_log_y2026m03` | `action` | obrigatório |
+| `admin_audit_log_y2026m03` | `resource_type` | obrigatório |
+| `admin_audit_log_y2026m03` | `created_at` | default now() |
+| `admin_audit_log_y2026m03` | `(tabela)` | constraint admin_audit_log_y2026m03_pkey PRIMARY KEY (id, created_at) |
+| `admin_audit_log_y2026m04` | `id` | default gen_random_uuid() |
+| `admin_audit_log_y2026m04` | `user_id` | obrigatório |
+| `admin_audit_log_y2026m04` | `action` | obrigatório |
+| `admin_audit_log_y2026m04` | `resource_type` | obrigatório |
+| `admin_audit_log_y2026m04` | `created_at` | default now() |
+| `admin_audit_log_y2026m04` | `(tabela)` | constraint admin_audit_log_y2026m04_pkey PRIMARY KEY (id, created_at) |
+| `admin_audit_log_y2026m05` | `id` | default gen_random_uuid() |
+| `admin_audit_log_y2026m05` | `user_id` | obrigatório |
+| `admin_audit_log_y2026m05` | `action` | obrigatório |
+| `admin_audit_log_y2026m05` | `resource_type` | obrigatório |
+| `admin_audit_log_y2026m05` | `created_at` | default now() |
+| `admin_audit_log_y2026m05` | `(tabela)` | constraint admin_audit_log_y2026m05_pkey PRIMARY KEY (id, created_at) |
+| `admin_audit_log_y2026m06` | `id` | default gen_random_uuid() |
+| `admin_audit_log_y2026m06` | `user_id` | obrigatório |
+| `admin_audit_log_y2026m06` | `action` | obrigatório |
+| `admin_audit_log_y2026m06` | `resource_type` | obrigatório |
+| `admin_audit_log_y2026m06` | `created_at` | default now() |
+| `admin_audit_log_y2026m06` | `(tabela)` | constraint admin_audit_log_y2026m06_pkey PRIMARY KEY (id, created_at) |
+| `admin_settings` | `id` | PK; default gen_random_uuid() |
+| `admin_settings` | `key` | obrigatório; único |
+| `admin_settings` | `value` | default '{}'::jsonb |
+| `admin_settings` | `updated_by` | FK → users.id ON DELETE SET NULL |
+| `admin_settings` | `created_at` | default now() |
+| `admin_settings` | `updated_at` | default now() |
+| `admin_settings` | `(tabela)` | constraint fk_admin_settings_updated_by FOREIGN KEY (updated_by) REFERENCES auth.users(id) ON DELETE SET NULL |
+| `admin_settings` | `(tabela)` | constraint chk_admin_settings_key_not_empty CHECK (trim(key) <> '') |
+| `admin_settings` | `(tabela)` | constraint fk_admin_settings_updated_by FOREIGN KEY (updated_by) REFERENCES auth.users(id) ON DELETE SET NULL |
+| `admin_settings` | `(tabela)` | constraint chk_admin_settings_key_not_empty CHECK (trim(key) <> '') |
+| `ai_usage_events` | `id` | PK; default gen_random_uuid() |
+| `ai_usage_events` | `user_id` | obrigatório |
+| `ai_usage_events` | `function_name` | obrigatório |
+| `ai_usage_events` | `event_type` | obrigatório |
+| `ai_usage_events` | `created_at` | default now() |
+| `ai_usage_logs` | `id` | PK; default gen_random_uuid() |
+| `ai_usage_logs` | `user_id` | obrigatório |
+| `ai_usage_logs` | `function_name` | obrigatório |
+| `ai_usage_logs` | `input_tokens` | default 0 |
+| `ai_usage_logs` | `output_tokens` | default 0 |
+| `ai_usage_logs` | `estimated_cost_usd` | default 0 |
+| `ai_usage_logs` | `status` | default 'success' |
+| `ai_usage_logs` | `metadata` | default '{}'::jsonb |
+| `ai_usage_logs` | `created_at` | default now() |
+| `ai_usage_logs` | `updated_at` | default now() |
+| `ai_usage_quotas` | `id` | PK; default gen_random_uuid() |
+| `ai_usage_quotas` | `role` | obrigatório; único |
+| `ai_usage_quotas` | `monthly_limit` | default 100 |
+| `ai_usage_quotas` | `is_unlimited` | default false |
+| `ai_usage_quotas` | `created_at` | default now() |
+| `ai_usage_quotas` | `updated_at` | default now() |
+| `app_vitals` | `id` | default gen_random_uuid() |
+| `app_vitals` | `metric_name` | obrigatório |
+| `app_vitals` | `metric_value` | obrigatório |
+| `app_vitals` | `created_at` | default now() |
+| `app_vitals` | `(tabela)` | constraint app_vitals_pkey PRIMARY KEY (id) |
+| `art_file_attachments` | `id` | PK; default gen_random_uuid() |
+| `art_file_attachments` | `user_id` | obrigatório |
+| `art_file_attachments` | `file_url` | obrigatório |
+| `art_file_attachments` | `file_path` | obrigatório |
+| `art_file_attachments` | `original_name` | obrigatório |
+| … +3797 linhas — lista completa em `context.json` | | |
 
 ## D. Automações no banco (triggers e funções — regras que rodam sozinhas)
 
@@ -818,6 +818,34 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | quotes_inbound_updated_at | BEFORE UPDATE | `quotes_inbound` | `set_updated_at` |  |
 | magazine_reader_state_touch | BEFORE UPDATE | `magazine_reader_state` | `tg_magazine_reader_state_touch` |  |
 | trg_magazine_public_token | BEFORE INSERT OR UPDATE OF STATUS | `magazines` | `fn_magazine_public_token` |  |
+| collections_updated_at | BEFORE UPDATE | `collections` | `set_updated_at` |  |
+| favorites_updated_at | BEFORE UPDATE | `favorites` | `set_updated_at` |  |
+| tr_generate_order_number | BEFORE INSERT | `orders` | `generate_order_number_v5` |  |
+| trg_owner__ai_insights_cache__user_id | BEFORE INSERT | `ai_insights_cache` | `enforce_user_id_owner` |  |
+| trg_owner__art_file_attachments__user_id | BEFORE INSERT | `art_file_attachments` | `enforce_user_id_owner` |  |
+| trg_owner__collections__user_id | BEFORE INSERT | `collections` | `enforce_user_id_owner` |  |
+| trg_owner__custom_kits__user_id | BEFORE INSERT | `custom_kits` | `enforce_user_id_owner` |  |
+| trg_owner__discount_approval_requests__seller_id | BEFORE INSERT | `discount_approval_requests` | `enforce_seller_id_owner` |  |
+| trg_owner__external_connections__created_by | BEFORE INSERT | `external_connections` | `enforce_created_by_owner` |  |
+| trg_owner__favorite_items__user_id | BEFORE INSERT | `favorite_items` | `enforce_user_id_owner` |  |
+| trg_owner__favorite_lists__user_id | BEFORE INSERT | `favorite_lists` | `enforce_user_id_owner` |  |
+| trg_owner__generated_mockups__seller_id | BEFORE INSERT | `generated_mockups` | `enforce_seller_id_owner` |  |
+| trg_owner__inbound_webhook_endpoints__created_by | BEFORE INSERT | `inbound_webhook_endpoints` | `enforce_created_by_owner` |  |
+| trg_owner__magic_up_brand_kits__user_id | BEFORE INSERT | `magic_up_brand_kits` | `enforce_user_id_owner` |  |
+| trg_owner__magic_up_campaigns__user_id | BEFORE INSERT | `magic_up_campaigns` | `enforce_user_id_owner` |  |
+| trg_owner__magic_up_comments__user_id | BEFORE INSERT | `magic_up_comments` | `enforce_user_id_owner` |  |
+| trg_owner__magic_up_generations__user_id | BEFORE INSERT | `magic_up_generations` | `enforce_user_id_owner` |  |
+| trg_owner__magic_up_public_shares__user_id | BEFORE INSERT | `magic_up_public_shares` | `enforce_user_id_owner` |  |
+| trg_owner__magic_up_reactions__user_id | BEFORE INSERT | `magic_up_reactions` | `enforce_user_id_owner` |  |
+| trg_owner__mcp_api_keys__created_by | BEFORE INSERT | `mcp_api_keys` | `enforce_created_by_owner` |  |
+| trg_owner__mockup_templates__user_id | BEFORE INSERT | `mockup_templates` | `enforce_user_id_owner` |  |
+| trg_owner__orders__seller_id | BEFORE INSERT | `orders` | `enforce_seller_id_owner` |  |
+| trg_owner__outbound_webhooks__created_by | BEFORE INSERT | `outbound_webhooks` | `enforce_created_by_owner` |  |
+| trg_owner__quote_comments__user_id | BEFORE INSERT | `quote_comments` | `enforce_user_id_owner` |  |
+| trg_owner__quote_templates__seller_id | BEFORE INSERT | `quote_templates` | `enforce_seller_id_owner` |  |
+| trg_owner__quotes__seller_id | BEFORE INSERT | `quotes` | `enforce_seller_id_owner` |  |
+| trg_owner__saved_filters__user_id | BEFORE INSERT | `saved_filters` | `enforce_user_id_owner` |  |
+| trigger_limit_recently_viewed_products | AFTER INSERT | `recently_viewed_products` | `limit_recently_viewed_products` |  |
 | ai_function_routing_updated_at | BEFORE UPDATE | `ai_function_routing` | `tg_ai_providers_set_updated_at` |  |
 | ai_models_updated_at | BEFORE UPDATE | `ai_models` | `tg_ai_providers_set_updated_at` |  |
 | ai_providers_updated_at | BEFORE UPDATE | `ai_providers` | `tg_ai_providers_set_updated_at` |  |
@@ -1087,35 +1115,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | trg_validate_commission_status | BEFORE INSERT OR UPDATE | `commission_entries` | `validate_commission_status` |  |
 | update_commission_rules_updated_at | BEFORE UPDATE | `commission_rules` | `update_updated_at_column` |  |
 | update_commission_entries_updated_at | BEFORE UPDATE | `commission_entries` | `update_updated_at_column` |  |
-| trg_validate_ip_access_control | BEFORE INSERT OR UPDATE | `ip_access_control` | `validate_ip_access_control` |  |
-| trg_ip_access_control_updated_at | BEFORE UPDATE | `ip_access_control` | `update_updated_at_column` |  |
-| update_mockup_templates_updated_at | BEFORE UPDATE | `mockup_templates` | `update_updated_at_column` |  |
-| update_art_files_updated_at | BEFORE UPDATE | `art_file_attachments` | `update_updated_at_column` |  |
-| update_mockup_prompt_configs_updated_at | BEFORE UPDATE | `mockup_prompt_configs` | `update_updated_at_column` |  |
-| trg_log_mockup_prompt_change | BEFORE UPDATE | `mockup_prompt_configs` | `log_mockup_prompt_change` |  |
-| update_product_comp_loc_updated_at | BEFORE UPDATE | `product_component_locations` | `update_updated_at_column` |  |
-| update_saved_trends_views_updated_at | BEFORE UPDATE | `saved_trends_views` | `update_updated_at_column` |  |
-| trg_orders_increment_version | BEFORE UPDATE | `orders` | `increment_row_version` |  |
-| trg_quotes_increment_version | BEFORE UPDATE | `quotes` | `increment_row_version` |  |
-| update_kit_variants_updated_at | BEFORE UPDATE | `kit_variants` | `update_updated_at_column` |  |
-| update_kit_collab_updated_at | BEFORE UPDATE | `kit_collaborators` | `update_updated_at_column` |  |
-| update_kit_comments_updated_at | BEFORE UPDATE | `kit_comments` | `update_updated_at_column` |  |
-| trg_kit_templates_updated_at | BEFORE UPDATE | `kit_templates` | `update_updated_at_column` |  |
-| trg_external_connections_updated_at | BEFORE UPDATE | `external_connections` | `update_updated_at_column` |  |
-| trg_outbound_webhooks_updated_at | BEFORE UPDATE | `outbound_webhooks` | `update_updated_at_column` |  |
-| trg_inbound_endpoints_updated_at | BEFORE UPDATE | `inbound_webhook_endpoints` | `update_updated_at_column` |  |
-| trg_mcp_api_keys_updated_at | BEFORE UPDATE | `mcp_api_keys` | `update_updated_at_column` |  |
-| trg_dispatch_webhook_quotes | AFTER INSERT OR UPDATE | `quotes` | `dispatch_quote_webhook_event` |  |
-| trg_dispatch_webhook_orders | AFTER INSERT | `orders` | `dispatch_quote_webhook_event` |  |
-| trg_dispatch_webhook_discount | AFTER INSERT OR UPDATE | `discount_approval_requests` | `dispatch_quote_webhook_event` |  |
-| trg_dispatch_webhook_kit_share | AFTER INSERT | `kit_share_tokens` | `dispatch_quote_webhook_event` |  |
-| trg_trim_connection_test_history | AFTER INSERT | `connection_test_history` | `trim_connection_test_history` |  |
-| set_favorite_lists_updated_at | BEFORE UPDATE | `favorite_lists` | `update_updated_at_column` |  |
-| set_favorite_items_updated_at | BEFORE UPDATE | `favorite_items` | `update_updated_at_column` |  |
-| trg_favorite_items_to_trash | BEFORE DELETE | `favorite_items` | `move_favorite_to_trash` |  |
-| trg_move_collection_item_to_trash | BEFORE DELETE | `collection_items` | `move_collection_item_to_trash` |  |
-| trg_user_comparisons_updated_at | BEFORE UPDATE | `user_comparisons` | `update_updated_at_column` |  |
-| … +151 linhas — lista completa em `context.json` | | | | |
+| … +179 linhas — lista completa em `context.json` | | | | |
 
 Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banco):
 
@@ -1437,6 +1437,34 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `custom_kits` | `status` | **livre (sem enum/CHECK)** | `draft` |
 | `quotes_inbound` | `status` | **livre (sem enum/CHECK)** |  |
 | `webhook_inbound_log` | `http_status` | **livre (sem enum/CHECK)** |  |
+| `admin_audit_log_y2025m12` | `status` | **livre (sem enum/CHECK)** |  |
+| `admin_audit_log_y2026m01` | `status` | **livre (sem enum/CHECK)** |  |
+| `admin_audit_log_y2026m02` | `status` | **livre (sem enum/CHECK)** |  |
+| `admin_audit_log_y2026m03` | `status` | **livre (sem enum/CHECK)** |  |
+| `admin_audit_log_y2026m04` | `status` | **livre (sem enum/CHECK)** |  |
+| `admin_audit_log_y2026m05` | `status` | **livre (sem enum/CHECK)** |  |
+| `admin_audit_log_y2026m06` | `status` | **livre (sem enum/CHECK)** |  |
+| `ai_usage_logs` | `status` | **livre (sem enum/CHECK)** | `success` |
+| `conversation_audit_logs` | `status` | **livre (sem enum/CHECK)** | `active` |
+| `conversation_delivery_status` | `status` | **livre (sem enum/CHECK)** | `sent` |
+| `e2e_cleanup_audit` | `status` | `auth_failed`, `error`, `forbidden`, `invalid`, `not_found`, `ok`, `partial_error`, `rate_limited`, `started`, `success`, `unauthorized` |  |
+| `external_connections` | `status` | `active`, `degraded`, `disabled`, `error`, `unconfigured` | `unconfigured` |
+| `external_connections_sync_log` | `status` | **livre (sem enum/CHECK)** | `ok` |
+| `magic_up_campaigns` | `status` | **livre (sem enum/CHECK)** | `draft` |
+| `magic_up_public_shares` | `status` | **livre (sem enum/CHECK)** | `active` |
+| `optimization_queue_runs` | `status` | **livre (sem enum/CHECK)** |  |
+| `optimization_queue_runs` | `guardrail_status` | **livre (sem enum/CHECK)** |  |
+| `orders` | `status` | **livre (sem enum/CHECK)** | `pending` |
+| `orders` | `fulfillment_status` | **livre (sem enum/CHECK)** | `unfulfilled` |
+| `product_sync_logs` | `status` | **livre (sem enum/CHECK)** | `pending` |
+| `role_migration_batches` | `status` | `pending`, `running`, `completed`, `failed`, `cancelled` | `pending` |
+| `role_migration_items` | `status` | `pending`, `success`, `failed`, `skipped` | `pending` |
+| `seller_carts` | `status` | `em_separacao`, `pronto_orcamento` | `em_separacao` |
+| `simulator_wizard_drafts` | `wizard_step` | **livre (sem enum/CHECK)** | `product` |
+| `user_onboarding` | `current_step` | **livre (sem enum/CHECK)** | `0` |
+| `webhook_delivery_metrics` | `http_status` | **livre (sem enum/CHECK)** |  |
+| `webhook_delivery_metrics_y2026m05` | `http_status` | **livre (sem enum/CHECK)** |  |
+| `webhook_delivery_metrics_y2026m06` | `http_status` | **livre (sem enum/CHECK)** |  |
 | `variant_supplier_sources` | `sync_status` | **livre (sem enum/CHECK)** | `synced` |
 | `variant_supplier_sources` | `supplier_availability_status` | **livre (sem enum/CHECK)** |  |
 | `cf_recon.action_log` | `old_status` | **livre (sem enum/CHECK)** |  |
@@ -1446,16 +1474,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `cf_recon.remediation` | `status` | `done`, `in_progress`, `open`, `wontfix` | `open` |
 | `access_blocked_log` | `state` | **livre (sem enum/CHECK)** |  |
 | `ai_enrichment_queue` | `status` | **livre (sem enum/CHECK)** | `pending` |
-| `ai_usage_logs` | `status` | **livre (sem enum/CHECK)** | `success` |
 | `asia_image_import_queue` | `status` | `done`, `error`, `pending`, `skipped`, `uploading` | `pending` |
 | `asia_upload_mapping` | `status` | **livre (sem enum/CHECK)** | `pending` |
 | `city_whitelist` | `state` | **livre (sem enum/CHECK)** |  |
 | `content_articles` | `status` | `archived`, `draft`, `published` | `draft` |
-| `conversation_audit_logs` | `status` | **livre (sem enum/CHECK)** | `active` |
-| `conversation_delivery_status` | `status` | **livre (sem enum/CHECK)** | `sent` |
 | `enriched_contacts` | `enrichment_status` | `complete`, `enriching`, `failed`, `partial`, `pending` | `pending` |
-| `external_connections` | `status` | `active`, `degraded`, `disabled`, `error`, `unconfigured` | `unconfigured` |
-| `external_connections_sync_log` | `status` | **livre (sem enum/CHECK)** | `ok` |
 | `image_backfill_queue` | `status` | `done`, `failed`, `pending`, `processing`, `skipped` | `pending` |
 | `import_pipeline_steps` | `fase` | **livre (sem enum/CHECK)** |  |
 | `import_pipeline_steps` | `etapa` | **livre (sem enum/CHECK)** |  |
@@ -1463,29 +1486,18 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `ingestion_run_log` | `status` | `aborted_rate_limit`, `failed`, `ok`, `ok_com_erros`, `running` | `running` |
 | `kit_component_ficha_staging` | `match_status` | `ambiguous`, `no_component`, `pending`, `promoted`, `skipped` | `pending` |
 | `kit_component_padronizacao` | `padronizacao_status` | `approved`, `pending`, `promoted`, `rejected` | `pending` |
-| `magic_up_campaigns` | `status` | **livre (sem enum/CHECK)** | `draft` |
-| `magic_up_public_shares` | `status` | **livre (sem enum/CHECK)** | `active` |
 | `mockup_generation_jobs` | `status` | **livre (sem enum/CHECK)** | `pending` |
 | `notifications` | `delivery_status` | **livre (sem enum/CHECK)** |  |
-| `optimization_queue_runs` | `status` | **livre (sem enum/CHECK)** |  |
-| `optimization_queue_runs` | `guardrail_status` | **livre (sem enum/CHECK)** |  |
-| `orders` | `status` | **livre (sem enum/CHECK)** | `pending` |
-| `orders` | `fulfillment_status` | **livre (sem enum/CHECK)** | `unfulfilled` |
 | `password_reset_requests` | `status` | `approved`, `pending`, `rejected` | `pending` |
 | `pipeline_known_issues` | `status` | `fixed`, `in_progress`, `open`, `wont_fix` | `open` |
 | `pipeline_run_log` | `status` | **livre (sem enum/CHECK)** | `running` |
 | `product_deactivation_requests` | `status` | `approved`, `cancelled`, `executed`, `pending`, `rejected` | `pending` |
 | `product_fiscal` | `tax_reference_state` | **livre (sem enum/CHECK)** |  |
 | `product_supply` | `sync_status` | **livre (sem enum/CHECK)** |  |
-| `product_sync_logs` | `status` | **livre (sem enum/CHECK)** | `pending` |
 | `product_videos` | `cloudflare_status` | **livre (sem enum/CHECK)** | `pending` |
 | `produtos_padronizacao` | `status` | `pending`, `standardized`, `rejected`, `promoted` | `pending` |
 | `produtos_padronizacao_variantes` | `status` | `pending`, `standardized`, `rejected`, `promoted` | `pending` |
 | `produtos_site_padronizacao` | `status` | `pending`, `standardized`, `rejected`, `promoted` | `pending` |
-| `role_migration_batches` | `status` | `pending`, `running`, `completed`, `failed`, `cancelled` | `pending` |
-| `role_migration_items` | `status` | `pending`, `success`, `failed`, `skipped` | `pending` |
-| `seller_carts` | `status` | `em_separacao`, `pronto_orcamento` | `em_separacao` |
-| `simulator_wizard_drafts` | `wizard_step` | **livre (sem enum/CHECK)** | `product` |
 | `sm_category_pages` | `status` | `done`, `failed`, `partial`, `pending`, `processing` | `pending` |
 | `sm_site_url_map` | `search_status` | **livre (sem enum/CHECK)** |  |
 | `sm_worker_partitions` | `status` | **livre (sem enum/CHECK)** | `pending` |
@@ -1499,20 +1511,17 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `webhook_dispatcher_log` | `delivery_status` | `delivered`, `failed`, `pending`, `timeout` | `pending` |
 | `video_import_queue` | `status` | **livre (sem enum/CHECK)** | `pending` |
 | `video_sim_results` | `queue_status` | **livre (sem enum/CHECK)** |  |
-| `webhook_delivery_metrics` | `http_status` | **livre (sem enum/CHECK)** |  |
 | `webhook_outbox` | `status` | `dead_letter`, `failed`, `pending`, `processing`, `sent` | `pending` |
 | `xbz_upload_mapping` | `status` | **livre (sem enum/CHECK)** | `pending` |
 | `supplier_stricker.sync_log` | `status` | **livre (sem enum/CHECK)** | `running` |
 | `product_images` | `cf_sync_status` | **livre (sem enum/CHECK)** | `pending` |
 | `supplier_customization_raw` | `status` | `pending`, `processing`, `processed`, `failed`, `skipped`, `quarantined` | `pending` |
-| `user_onboarding` | `current_step` | **livre (sem enum/CHECK)** | `0` |
 | `reward_redemptions` | `status` | **livre (sem enum/CHECK)** | `pending` |
 | `sync_jobs` | `status` | **livre (sem enum/CHECK)** | `pending` |
 | `bitrix_deals` | `stage` | **livre (sem enum/CHECK)** |  |
 | `bitrix_sync_logs` | `status` | **livre (sem enum/CHECK)** | `pending` |
 | `company_addresses` | `estado` | **livre (sem enum/CHECK)** |  |
 | `future_stock_entries` | `status` | `cancelled`, `completed`, `confirmed`, `in_transit`, `partial`, `pending` | `pending` |
-| `e2e_cleanup_audit` | `status` | `auth_failed`, `error`, `forbidden`, `invalid`, `not_found`, `ok`, `partial_error`, `rate_limited`, `started`, `success`, `unauthorized` |  |
 | `cotacoes` | `status` | `aguardando_coleta`, `atrasado`, `cancelado`, `contratado`, `cotado`, `em_risco`, `em_transito`, `entregue` | `cotado` |
 | `simulation_runs` | `status` | **livre (sem enum/CHECK)** | `running` |
 | `quote_approval_tokens` | `status` | **livre (sem enum/CHECK)** | `active` |
@@ -1555,8 +1564,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Campo | Valor | Uso | Onde |
 |---|---|---|---|
 | `type` | `ADD_PERSONALIZATION` | compara, escreve | `src/hooks/simulator/useWizardPricing.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
+| `type` | `ADD_TOAST` | compara, escreve | `src/hooks/use-toast.ts` |
 | `type` | `CANCEL_PERSONALIZATION` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
 | `type` | `CLEAR` | compara, escreve | `src/hooks/simulation/usePositionHistory.ts` |
+| `type` | `DISMISS_TOAST` | compara, escreve | `src/hooks/use-toast.ts` |
 | `type` | `DUPLICATE_PERSONALIZATION` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
 | `type` | `EDIT_PERSONALIZATION` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
 | `type` | `LOAD_DRAFT` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
@@ -1565,6 +1576,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `REDO` | compara, escreve | `src/hooks/simulation/usePositionHistory.ts` |
 | `type` | `REMOVE_ALL_PERSONALIZATIONS` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
 | `type` | `REMOVE_PERSONALIZATION` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
+| `type` | `REMOVE_TOAST` | compara, escreve | `src/hooks/use-toast.ts` |
 | `type` | `RESET_WIZARD` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
 | `type` | `SELECT_COMPARISON` | compara, escreve | `src/hooks/simulator/useWizardPricing.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
 | `type` | `SELECT_LOCATION` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
@@ -1580,9 +1592,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `UNDO` | compara, escreve | `src/hooks/simulation/usePositionHistory.ts` |
 | `type` | `UPDATE_PERSONALIZATION` | compara, escreve | `src/hooks/simulator/useWizardPricing.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
 | `type` | `UPDATE_SPECS` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
+| `type` | `UPDATE_TOAST` | compara, escreve | `src/hooks/use-toast.ts` |
 | `type` | `__REDO__` | compara, escreve | `src/hooks/simulator/useUndoRedo.ts` |
 | `type` | `__UNDO__` | compara, escreve | `src/hooks/simulator/useUndoRedo.ts` |
-| `type` | `action` | compara, escreve | `src/components/search/GlobalSearchIdleState.tsx`<br>`src/hooks/intelligence/useContextualSuggestions.ts` |
+| `type` | `action` | compara, escreve | `src/components/search/GlobalSearchIdleState.tsx`<br>`src/hooks/intelligence/useContextualSuggestions.ts`<br>`src/hooks/useContextualSuggestions.ts` |
 | `type` | `addProduct` | compara, escreve | `test-hooks-safety.mjs` |
 | `type` | `add_position` | escreve | `src/components/pricing/simulator/upsell/upsell-engine.ts` |
 | `type` | `added` | compara | `src/lib/query-config.ts` |
@@ -1594,59 +1607,61 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `bag` | escreve | `supabase/functions/generate-ad-image/index.ts` |
 | `type` | `base64` | escreve | `supabase/functions/_shared/ai-router/anthropic-native.ts` |
 | `type` | `basic` | compara | `public/sw.js` |
-| `type` | `best-seller` | compara, escreve | `src/components/products/ProductCard.tsx`<br>`src/hooks/products/useProductIntelligenceBadges.ts`<br>`src/pages/products/product-detail/ProductDetailHero.tsx` |
+| `type` | `best-seller` | compara, escreve | `src/components/products/ProductCard.tsx`<br>`src/hooks/products/useProductIntelligenceBadges.ts`<br>`src/hooks/useProductIntelligenceBadges.ts`<br>`src/pages/products/product-detail/ProductDetailHero.tsx` |
 | `type` | `bitmap` | escreve | `src/types/canvas-confetti.d.ts` |
 | `type` | `bitrix24` | compara, escreve | `src/components/admin/connections/SecretField.utils.ts`<br>`supabase/functions/_shared/connection-test-runner.ts` |
 | `type` | `boolean` | compara, escreve | `src/lib/telemetry/bridgeCallMetrics.ts`<br>`supabase/functions/voice-agent/systemPrompt.ts` |
 | `type` | `bottle` | escreve | `supabase/functions/generate-ad-image/index.ts` |
 | `type` | `bulk` | compara, escreve | `src/components/admin/products/image-gallery/ProductImageGallery.tsx`<br>`src/components/admin/products/image-gallery/useProductImageGallery.ts` |
 | `type` | `cart_template` | escreve | `src/components/search/useGlobalSearch.ts` |
-| `type` | `category` | compara, escreve | `src/components/search/AdvancedSearch.tsx`<br>`src/components/search/SearchResultGroups.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/components/search/useGlobalSearch.ts`<br>`src/hooks/common/useSearch.ts`<br>… +2 |
+| `type` | `category` | compara, escreve | `src/components/search/AdvancedSearch.tsx`<br>`src/components/search/SearchResultGroups.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/components/search/useGlobalSearch.ts`<br>`src/hooks/common/useSearch.ts`<br>… +3 |
 | `type` | `change` | compara, escreve | `src/pages/products/seller-carts/cartViewModePrefs.ts`<br>`src/pages/products/seller-carts/cartViewModeTelemetry.ts` |
 | `type` | `childList` | compara | `src/hooks/ui/useScrollLockFix.ts` |
 | `type` | `cif` | compara | `src/components/pdf/ProposalHtmlTemplate.tsx` |
 | `type` | `class-a` | escreve | `src/hooks/products/useProductIntelligenceBadges.ts` |
-| `type` | `clear` | escreve | `src/hooks/intelligence/useVoiceCommandHistory.ts` |
+| `type` | `clear` | escreve | `src/hooks/intelligence/useVoiceCommandHistory.ts`<br>`src/pages/seller-carts/useSellerCartsPage.ts` |
 | `type` | `client` | compara, escreve | `src/components/search/useGlobalSearch.ts` |
 | `type` | `collection` | compara, escreve | `src/components/search/useGlobalSearch.ts` |
 | `type` | `command` | compara, escreve | `src/components/search/GlobalSearchPalette.tsx`<br>`src/components/search/useGlobalSearch.ts` |
-| `type` | `company` | escreve | `src/components/bi/ClientSelector.tsx`<br>`src/components/cart/CartCompanyPicker.tsx`<br>`src/components/quotes/company-contact/CompanySearchDropdown.tsx`<br>`src/pages/clients/ClientsPage.tsx` |
+| `type` | `company` | escreve | `src/components/bi/ClientSelector.tsx`<br>`src/components/cart/CartCompanyPicker.tsx`<br>`src/components/quotes/company-contact/CompanySearchDropdown.tsx`<br>`src/pages/ClientsPage.tsx`<br>`src/pages/clients/ClientsPage.tsx` |
 | `type` | `complementary` | escreve | `src/components/pricing/simulator/upsell/upsell-engine.ts` |
 | `type` | `component` | escreve | `src/components/search/useGlobalSearch.ts` |
 | `type` | `conversation` | compara, escreve | `src/components/search/useGlobalSearch.ts` |
-| `type` | `critical` | compara, escreve | `src/components/inventory/StockAlertDialogs.tsx`<br>`src/hooks/stock/stockAlerts.ts`<br>`src/hooks/ui/usePushNotifications.tsx` |
+| `type` | `critical` | compara, escreve | `src/components/inventory/StockAlertDialogs.tsx`<br>`src/hooks/stock/stockAlerts.ts`<br>`src/hooks/ui/usePushNotifications.tsx`<br>`src/hooks/usePushNotifications.tsx` |
 | `type` | `daily_reset` | escreve | `src/pages/products/seller-carts/cartViewModePrefs.ts` |
 | `type` | `declining` | escreve | `src/hooks/products/useProductIntelligenceBadges.ts` |
-| `type` | `degraded` | escreve | `src/lib/external-db/bridge-status-events.ts`<br>`src/lib/external-db/invoke.ts` |
+| `type` | `degraded` | compara, escreve | `src/hooks/useBridgeStatusBanner.ts`<br>`src/lib/external-db/bridge-status-events.ts`<br>`src/lib/external-db/cold-start-recorder.ts`<br>`src/lib/external-db/invoke.ts` |
 | `type` | `dragenter` | compara | `src/components/search/VisualSearchButton.tsx` |
 | `type` | `dragleave` | compara | `src/components/search/VisualSearchButton.tsx` |
 | `type` | `dragover` | compara | `src/components/search/VisualSearchButton.tsx` |
 | `type` | `drinkware` | escreve | `supabase/functions/generate-ad-image/index.ts` |
+| `type` | `duplicate` | escreve | `src/pages/seller-carts/useSellerCartsPage.ts` |
 | `type` | `email` | escreve | `src/services/authService.ts` |
+| `type` | `emergente` | escreve | `src/hooks/useProductIntelligenceBadges.ts` |
 | `type` | `emerging` | escreve | `src/hooks/products/useProductIntelligenceBadges.ts` |
 | `type` | `ending-soon` | compara | `src/components/products/ProductStatusBadge.tsx` |
 | `type` | `error` | compara, escreve | `src/components/a11y/AriaLive.tsx`<br>`src/components/admin/connections/useIncidentTimeline72h.ts`<br>`src/components/admin/connections/useRecentIncidents.ts`<br>`src/hooks/ui/useWorkspaceNotifications.tsx`<br>`supabase/functions/connections-health-check/index.ts` |
 | `type` | `event` | escreve | `src/lib/telemetry/navigationMetrics.ts`<br>`src/utils/performance-budget.ts`<br>`supabase/functions/crm-callback-alerts/index.ts` |
-| `type` | `featured` | compara, escreve | `src/components/novelties/NoveltyCards.tsx`<br>`src/components/novelties/NoveltyProductGrid.tsx`<br>`src/components/products/ProductCard.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductStatusBadge.tsx`<br>… +1 |
-| `type` | `filter` | compara, escreve | `src/components/search/GlobalSearchIdleState.tsx`<br>`src/hooks/intelligence/useContextualSuggestions.ts` |
+| `type` | `featured` | compara, escreve | `src/components/novelties/NoveltyCards.tsx`<br>`src/components/novelties/NoveltyProductGrid.tsx`<br>`src/components/products/ProductCard.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductStatusBadge.tsx`<br>… +2 |
+| `type` | `filter` | compara, escreve | `src/components/search/GlobalSearchIdleState.tsx`<br>`src/hooks/intelligence/useContextualSuggestions.ts`<br>`src/hooks/useContextualSuggestions.ts`<br>`src/hooks/useVoiceCommandHistory.ts` |
 | `type` | `fob` | compara | `src/components/pdf/ProposalHtmlTemplate.tsx` |
 | `type` | `fob_pre` | compara | `src/components/pdf/ProposalHtmlTemplate.tsx` |
 | `type` | `frequent-restock` | escreve | `src/hooks/products/useProductIntelligenceBadges.ts` |
 | `type` | `function` | escreve | `supabase/functions/_shared/ai-router/openai-bridge.ts`<br>`supabase/functions/comparison-ai-advisor/index.ts`<br>`supabase/functions/generate-product-seo/index.ts`<br>`supabase/functions/kit-ai-builder/index.ts`<br>`supabase/functions/kit-identity-suggest/index.ts`<br>… +4 |
-| `type` | `general` | compara, escreve | `src/components/intelligence/RankingFilterToolbar.tsx`<br>`src/components/search/EmptySearchState.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/components/search/useGlobalSearch.ts`<br>`src/hooks/common/useSearch.ts` |
+| `type` | `general` | compara, escreve | `src/components/intelligence/RankingFilterToolbar.tsx`<br>`src/components/search/EmptySearchState.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/components/search/useGlobalSearch.ts`<br>`src/hooks/common/useSearch.ts`<br>… +1 |
 | `type` | `headwear` | escreve | `supabase/functions/generate-ad-image/index.ts` |
-| `type` | `history` | compara, escreve | `src/components/catalog/CatalogHeader.tsx`<br>`src/components/search/AdvancedSearch.tsx`<br>`src/components/search/SearchResultGroups.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/hooks/common/useSearch.ts` |
+| `type` | `history` | compara, escreve | `src/components/catalog/CatalogHeader.tsx`<br>`src/components/search/AdvancedSearch.tsx`<br>`src/components/search/SearchResultGroups.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/hooks/common/useSearch.ts`<br>… +1 |
 | `type` | `hot-item` | compara, escreve | `src/components/products/ProductCard.tsx`<br>`src/hooks/products/useProductIntelligenceBadges.ts`<br>`src/pages/products/product-detail/ProductDetailHero.tsx` |
 | `type` | `image` | escreve | `supabase/functions/_shared/ai-router/anthropic-native.ts` |
 | `type` | `image_url` | compara, escreve | `supabase/functions/_shared/ai-router/anthropic-native.ts`<br>`supabase/functions/_shared/ai-router/google-genai.ts`<br>`supabase/functions/analyze-logo-colors/index.ts`<br>`supabase/functions/generate-ad-image/index.ts`<br>`supabase/functions/magic-up-score/index.ts`<br>… +1 |
 | `type` | `in_app_enabled` | escreve | `src/components/notifications/NotificationPreferences.tsx` |
-| `type` | `info` | compara, escreve | `src/hooks/bi/useSeasonalPeakNotifications.ts`<br>`src/hooks/ui/usePushNotifications.tsx`<br>`src/lib/access/request-dev-access.ts`<br>`supabase/functions/send-transactional-email/index.ts` |
+| `type` | `info` | compara, escreve | `src/hooks/bi/useSeasonalPeakNotifications.ts`<br>`src/hooks/ui/usePushNotifications.tsx`<br>`src/hooks/usePushNotifications.tsx`<br>`src/hooks/useWorkspaceNotifications.tsx`<br>`src/lib/access/request-dev-access.ts`<br>… +1 |
 | `type` | `json` | escreve | `supabase/functions/cors-audit/index.ts` |
 | `type` | `json_object` | escreve | `supabase/functions/word-magic/index.ts` |
 | `type` | `json_schema` | compara, escreve | `supabase/functions/_shared/ai-router/openai-bridge.ts`<br>`supabase/functions/_shared/ai-router/openai-compatible.ts` |
 | `type` | `kit` | compara, escreve | `src/components/novelties/NoveltyProductGrid.tsx`<br>`src/components/products/ProductCard.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductStatusBadge.tsx`<br>`src/components/search/useGlobalSearch.ts`<br>… +1 |
 | `type` | `largest-contentful-paint` | escreve | `src/lib/telemetry/navigationMetrics.ts`<br>`src/utils/performance-budget.ts` |
-| `type` | `last-units` | escreve | `src/hooks/products/useProductIntelligenceBadges.ts` |
+| `type` | `last-units` | escreve | `src/hooks/products/useProductIntelligenceBadges.ts`<br>`src/hooks/useProductIntelligenceBadges.ts` |
 | `type` | `layout-shift` | escreve | `src/lib/telemetry/navigationMetrics.ts`<br>`src/utils/performance-budget.ts` |
 | `type` | `limited-stock` | compara | `src/components/products/ProductStatusBadge.tsx` |
 | `type` | `longtask` | escreve | `src/lib/telemetry/navigationMetrics.ts` |
@@ -1658,14 +1673,17 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `media` | escreve | `src/components/search/useGlobalSearch.ts` |
 | `type` | `mixed` | compara, escreve | `src/components/search/GlobalSearchPalette.tsx`<br>`src/components/search/useGlobalSearch.ts`<br>`supabase/functions/semantic-search/index.ts` |
 | `type` | `mockup` | escreve | `src/components/search/useGlobalSearch.ts` |
-| `type` | `monthly` | compara, escreve | `src/hooks/intelligence/useSalesGoals.ts` |
+| `type` | `monthly` | compara, escreve | `src/hooks/intelligence/useSalesGoals.ts`<br>`src/hooks/useSalesGoals.ts` |
+| `type` | `move` | escreve | `src/pages/seller-carts/useSellerCartsPage.ts` |
 | `type` | `n8n` | compara, escreve | `src/components/admin/connections/SecretField.utils.ts`<br>`supabase/functions/_shared/connection-test-runner.ts` |
-| `type` | `navigation` | compara | `src/components/search/GlobalSearchIdleState.tsx` |
-| `type` | `new-arrival` | escreve | `src/hooks/products/useProductIntelligenceBadges.ts` |
+| `type` | `navigation` | compara, escreve | `src/components/search/GlobalSearchIdleState.tsx`<br>`src/hooks/useContextualSuggestions.ts` |
+| `type` | `new-arrival` | escreve | `src/hooks/products/useProductIntelligenceBadges.ts`<br>`src/hooks/useProductIntelligenceBadges.ts` |
+| `type` | `normal` | escreve | `src/hooks/useProductIntelligenceBadges.ts` |
 | `type` | `notebook` | escreve | `supabase/functions/generate-ad-image/index.ts` |
 | `type` | `novelty` | compara | `src/components/novelties/NoveltyProductGrid.tsx`<br>`src/components/products/ProductCard.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductStatusBadge.tsx` |
 | `type` | `number` | compara, escreve | `src/components/admin/products/ProductFormFullscreen.tsx`<br>`src/components/admin/products/SupplierFiscalInfo.tsx`<br>`src/lib/telemetry/bridgeCallMetrics.ts`<br>`supabase/functions/kit-ai-builder/index.ts`<br>`supabase/functions/mcp-server/index.ts`<br>… +1 |
 | `type` | `object` | compara, escreve | `src/lib/telemetry/bridgeCallMetrics.ts`<br>`supabase/functions/comparison-ai-advisor/index.ts`<br>`supabase/functions/generate-product-seo/index.ts`<br>`supabase/functions/kit-ai-builder/index.ts`<br>`supabase/functions/kit-identity-suggest/index.ts`<br>… +5 |
+| `type` | `on-sale` | escreve | `src/hooks/useProductIntelligenceBadges.ts` |
 | `type` | `openWindow` | escreve | `tests/sw/sw-harness.ts` |
 | `type` | `order` | escreve | `src/hooks/products/useProductInsights.ts` |
 | `type` | `out-of-stock` | compara | `src/components/products/ProductStatusBadge.tsx` |
@@ -1673,32 +1691,39 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `packaging` | compara | `src/components/products/ProductCard.tsx`<br>`src/components/products/ProductStatusBadge.tsx` |
 | `type` | `path` | escreve | `src/types/canvas-confetti.d.ts` |
 | `type` | `pen` | escreve | `supabase/functions/generate-ad-image/index.ts` |
+| `type` | `popular` | escreve | `src/hooks/useProductIntelligenceBadges.ts` |
 | `type` | `price_drop` | escreve, filtra | `supabase/functions/comparison-price-watcher/index.ts` |
-| `type` | `product` | compara, escreve | `src/components/search/AdvancedSearch.tsx`<br>`src/components/search/SearchResultGroups.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/components/search/useGlobalSearch.ts`<br>`src/hooks/common/useSearch.ts`<br>… +2 |
-| `type` | `promotion` | compara | `src/components/novelties/NoveltyProductGrid.tsx`<br>`src/components/products/ProductCard.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductStatusBadge.tsx` |
+| `type` | `product` | compara, escreve | `src/components/command/commandActions.tsx`<br>`src/components/search/AdvancedSearch.tsx`<br>`src/components/search/SearchResultGroups.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/components/search/useGlobalSearch.ts`<br>… +5 |
+| `type` | `promotion` | compara, escreve | `src/components/novelties/NoveltyProductGrid.tsx`<br>`src/components/products/ProductCard.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductStatusBadge.tsx`<br>`src/components/search/SmartSuggestions.tsx` |
 | `type` | `publish` | compara, escreve | `test-hooks-safety.mjs` |
+| `type` | `qty` | escreve | `src/pages/seller-carts/useSellerCartsPage.ts` |
 | `type` | `quantity_tier` | escreve | `src/components/pricing/simulator/upsell/upsell-engine.ts` |
-| `type` | `quarterly` | compara | `src/hooks/intelligence/useSalesGoals.ts` |
-| `type` | `quote` | compara, escreve | `src/components/search/useGlobalSearch.ts`<br>`src/hooks/products/useProductInsights.ts` |
+| `type` | `quarterly` | compara | `src/hooks/intelligence/useSalesGoals.ts`<br>`src/hooks/useSalesGoals.ts` |
+| `type` | `quote` | compara, escreve | `src/components/search/useGlobalSearch.ts`<br>`src/hooks/products/useProductInsights.ts`<br>`src/hooks/useProductInsights.ts` |
+| `type` | `quote_comment` | escreve | `src/hooks/useQuoteComments.ts` |
 | `type` | `react_error_boundary` | escreve | `src/components/errors/EnhancedErrorBoundary.tsx` |
-| `type` | `recovered` | escreve | `src/lib/external-db/bridge-status-events.ts`<br>`src/lib/external-db/invoke.ts` |
-| `type` | `recovery` | compara | `src/pages/auth/ResetPassword.tsx` |
+| `type` | `recent` | escreve | `src/components/search/SmartSuggestions.tsx` |
+| `type` | `recommended` | escreve | `src/components/search/SmartSuggestions.tsx` |
+| `type` | `recovered` | compara, escreve | `src/hooks/useBridgeStatusBanner.ts`<br>`src/lib/external-db/bridge-status-events.ts`<br>`src/lib/external-db/bridge-telemetry-client.ts`<br>`src/lib/external-db/cold-start-recorder.ts`<br>`src/lib/external-db/invoke.ts` |
+| `type` | `recovery` | compara | `src/pages/ResetPassword.tsx`<br>`src/pages/auth/ResetPassword.tsx` |
+| `type` | `related` | escreve | `src/components/search/SmartSuggestions.tsx` |
+| `type` | `remove` | escreve | `src/pages/seller-carts/useSellerCartsPage.ts` |
 | `type` | `removeItem` | compara, escreve | `test-hooks-safety.mjs` |
 | `type` | `rotate` | compara, escreve | `src/components/admin/connections/RotationHistoryDialog.tsx` |
-| `type` | `search` | compara | `src/components/search/GlobalSearchIdleState.tsx` |
-| `type` | `security` | compara, escreve, filtra | `src/components/security/useSecurityData.ts`<br>`src/hooks/ui/usePushNotifications.tsx`<br>`supabase/functions/detect-new-device/index.ts` |
+| `type` | `search` | compara, escreve | `src/components/search/GlobalSearchIdleState.tsx`<br>`src/hooks/useContextualSuggestions.ts` |
+| `type` | `security` | compara, escreve, filtra | `src/components/security/useSecurityData.ts`<br>`src/hooks/ui/usePushNotifications.tsx`<br>`src/hooks/usePushNotifications.tsx`<br>`supabase/functions/detect-new-device/index.ts` |
 | `type` | `setBranding` | compara, escreve | `test-hooks-safety.mjs` |
 | `type` | `setTitle` | compara, escreve | `test-hooks-safety.mjs` |
 | `type` | `simulator_error_boundary` | escreve | `src/components/simulator/wizard/SimulatorErrorBoundary.tsx` |
 | `type` | `single` | compara, escreve | `src/components/admin/products/image-gallery/ProductImageGallery.tsx` |
 | `type` | `solid` | escreve | `src/lib/bi/pptxGenerator.ts` |
-| `type` | `spring` | escreve | `src/components/admin/connections/RotateSecretConfirmDialog.tsx`<br>`src/components/admin/connections/SaveSecretConfirmDialog.tsx`<br>`src/components/catalog/CatalogToolbar.tsx`<br>`src/components/collections/AddToCollectionModal.tsx`<br>`src/components/collections/CollectionDetailHeader.tsx`<br>… +21 |
+| `type` | `spring` | escreve | `src/components/admin/connections/RotateSecretConfirmDialog.tsx`<br>`src/components/admin/connections/SaveSecretConfirmDialog.tsx`<br>`src/components/catalog/CatalogToolbar.tsx`<br>`src/components/collections/AddToCollectionModal.tsx`<br>`src/components/collections/CollectionDetailHeader.tsx`<br>… +24 |
 | `type` | `stockout_predicted` | escreve | `src/hooks/stock/stockAlerts.ts` |
 | `type` | `string` | compara, escreve | `src/lib/error-reporter.ts`<br>`src/lib/telemetry/bridgeCallMetrics.ts`<br>`supabase/functions/comparison-ai-advisor/index.ts`<br>`supabase/functions/generate-product-seo/index.ts`<br>`supabase/functions/kit-ai-builder/index.ts`<br>… +6 |
 | `type` | `success` | escreve | `supabase/functions/collections-watcher/index.ts`<br>`supabase/functions/favorites-watcher/index.ts` |
 | `type` | `suggestion` | escreve | `eslint.config.js` |
-| `type` | `supabase` | compara, escreve | `src/components/admin/connections/SecretField.utils.ts`<br>`src/hooks/common/useConsecutiveFailures.ts`<br>`src/pages/admin/AdminConexoesStatusPage.tsx`<br>`supabase/functions/_shared/connection-test-runner.ts` |
-| `type` | `supplier` | compara, escreve | `src/components/search/AdvancedSearch.tsx`<br>`src/components/search/SearchResultGroups.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/hooks/common/useSearch.ts`<br>`src/pages/Index.tsx`<br>… +1 |
+| `type` | `supabase` | compara, escreve | `src/components/admin/connections/SecretField.utils.ts`<br>`src/hooks/common/useConsecutiveFailures.ts`<br>`src/hooks/useConnectionsOverview.ts`<br>`src/hooks/useConsecutiveFailures.ts`<br>`src/pages/admin/AdminConexoesStatusPage.tsx`<br>… +1 |
+| `type` | `supplier` | compara, escreve | `src/components/search/AdvancedSearch.tsx`<br>`src/components/search/SearchResultGroups.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/hooks/common/useSearch.ts`<br>`src/hooks/useSearch.ts`<br>… +2 |
 | `type` | `tag` | escreve | `tests/a11y/axe-helper.ts` |
 | `type` | `tech` | escreve | `supabase/functions/generate-ad-image/index.ts` |
 | `type` | `technique_upgrade` | escreve | `src/components/pricing/simulator/upsell/upsell-engine.ts` |
@@ -1708,9 +1733,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `tool` | compara | `src/components/workflows/WorkflowCanvas.tsx` |
 | `type` | `tool_use` | compara | `supabase/functions/_shared/ai-router/anthropic-native.ts` |
 | `type` | `transient_edge_runtime` | escreve | `src/lib/error-reporter.ts` |
-| `type` | `trending` | compara | `src/components/products/ProductStatusBadge.tsx` |
+| `type` | `trending` | compara, escreve | `src/components/products/ProductStatusBadge.tsx`<br>`src/components/search/SmartSuggestions.tsx` |
 | `type` | `umbrella` | escreve | `supabase/functions/generate-ad-image/index.ts` |
-| `type` | `unavailable` | escreve | `src/lib/external-db/bridge-status-events.ts`<br>`src/lib/external-db/invoke.ts` |
+| `type` | `unavailable` | compara, escreve | `src/hooks/useBridgeStatusBanner.ts`<br>`src/lib/external-db/bridge-status-events.ts`<br>`src/lib/external-db/bridge-telemetry-client.ts`<br>`src/lib/external-db/cold-start-recorder.ts`<br>`src/lib/external-db/invoke.ts` |
 | `type` | `unhandled_error` | escreve | `src/lib/error-reporter.ts` |
 | `type` | `unhandled_promise_rejection` | escreve | `src/lib/error-reporter.ts` |
 | `type` | `update_stock` | compara, escreve | `src/components/admin/products/useProductVariants.ts`<br>`src/components/products/VariantGridMatrix.tsx` |
@@ -1718,11 +1743,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `urgency` | compara | `src/components/products/ProductStatusBadge.tsx` |
 | `type` | `urgent` | compara | `supabase/functions/send-notification/index.ts` |
 | `type` | `url` | escreve | `supabase/functions/_shared/ai-router/anthropic-native.ts` |
-| `type` | `view` | escreve | `src/hooks/products/useProductInsights.ts` |
-| `type` | `warning` | compara, escreve | `src/components/admin/connections/useIncidentTimeline72h.ts`<br>`src/components/admin/connections/useRecentIncidents.ts`<br>`src/lib/access/log-access-denied.ts`<br>`supabase/functions/connections-health-check/index.ts` |
+| `type` | `view` | escreve | `src/hooks/products/useProductInsights.ts`<br>`src/hooks/useProductInsights.ts` |
+| `type` | `warning` | compara, escreve | `src/components/admin/connections/useIncidentTimeline72h.ts`<br>`src/components/admin/connections/useRecentIncidents.ts`<br>`src/hooks/useDiscountApproval.ts`<br>`src/lib/access/log-access-denied.ts`<br>`supabase/functions/connections-health-check/index.ts` |
 | `type` | `webhook_outbound` | compara | `supabase/functions/_shared/connection-test-runner.ts` |
 | `type` | `websearch` | escreve | `src/lib/db/postgrest.ts` |
-| `type` | `weekly` | compara | `src/hooks/intelligence/useSalesGoals.ts` |
+| `type` | `weekly` | compara | `src/hooks/intelligence/useSalesGoals.ts`<br>`src/hooks/useSalesGoals.ts` |
 | `type` | `window` | escreve | `public/sw.js` |
 | `status` | `APPLIED` | escreve | `src/lib/theme-presets-css-vars-patch.ts` |
 | `status` | `CHANNEL_ERROR` | compara | `src/components/dashboard/MyDiscountRequestsWidget.tsx`<br>`src/hooks/kit-builder/useCustomKitsRealtime.ts`<br>`src/hooks/kit-builder/useKitCollaboration.ts`<br>`src/hooks/quotes/useQuotes.ts`<br>`src/hooks/ui/usePushNotifications.tsx`<br>… +1 |
@@ -1736,12 +1761,12 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `TIMED_OUT` | compara | `src/components/dashboard/MyDiscountRequestsWidget.tsx`<br>`src/hooks/kit-builder/useCustomKitsRealtime.ts`<br>`src/hooks/kit-builder/useKitCollaboration.ts`<br>`src/hooks/quotes/useQuotes.ts`<br>`src/hooks/ui/usePushNotifications.tsx`<br>… +1 |
 | `status` | `UNKNOWN` | compara | `src/hooks/stock/useEmaRiskSummary.ts` |
 | `status` | `WARN` | compara | `src/components/inventory/StockHeroRiskBanner.tsx` |
-| `status` | `active` | compara, escreve, filtra | `src/components/admin/connections/Bitrix24Tab.tsx`<br>`src/components/admin/connections/ConnectionStatusBadge.tsx`<br>`src/components/admin/connections/DataSourceDebugTab.tsx`<br>`src/components/admin/connections/N8nTab.tsx`<br>`src/components/admin/security/keys/McpKeyDetailsDrawer.tsx`<br>… +8 |
+| `status` | `active` | compara, escreve, filtra | `src/components/admin/connections/Bitrix24Tab.tsx`<br>`src/components/admin/connections/ConnectionStatusBadge.tsx`<br>`src/components/admin/connections/DataSourceDebugTab.tsx`<br>`src/components/admin/connections/N8nTab.tsx`<br>`src/components/admin/security/keys/McpKeyDetailsDrawer.tsx`<br>… +9 |
 | `status` | `aging` | compara | `src/components/products/PriceFreshnessBadge.tsx`<br>`src/utils/price-freshness.ts` |
 | `status` | `aligned` | escreve | `src/components/bi/ClientCategoryRadar.tsx` |
-| `status` | `all` | compara, escreve | `src/components/admin/DiscountApprovalFilterBar.tsx`<br>`src/components/admin/connections/ConnectionsOverviewFilters.tsx`<br>`src/components/admin/security/keys/useMcpKeys.ts`<br>`src/components/dashboard/MyDiscountRequestsWidget.tsx`<br>`src/components/dashboard/MyRecentQuotesWidget.tsx`<br>… +10 |
+| `status` | `all` | compara, escreve | `src/components/admin/DiscountApprovalFilterBar.tsx`<br>`src/components/admin/connections/ConnectionsOverviewFilters.tsx`<br>`src/components/admin/security/keys/useMcpKeys.ts`<br>`src/components/dashboard/MyDiscountRequestsWidget.tsx`<br>`src/components/dashboard/MyRecentQuotesWidget.tsx`<br>… +12 |
 | `status` | `already_applied` | escreve | `supabase/functions/crm-callback-reprocess/index.ts` |
-| `status` | `approved` | compara, escreve | `src/components/admin/DiscountManagementPanel.tsx`<br>`src/components/admin/PasswordResetApproval.tsx`<br>`src/components/dashboard/MyDiscountRequestsWidget.tsx`<br>`src/components/dashboard/QuickActionsPanel.tsx`<br>`src/components/quotes/QuoteStatusTimeline.tsx`<br>… +17 |
+| `status` | `approved` | compara, escreve | `recovery/block04_functions.sql`<br>`recovery/full-public-schema.sql`<br>`recovery/patches/D4.2_quote_advanced/functions.sql`<br>`src/components/admin/DiscountManagementPanel.tsx`<br>`src/components/admin/PasswordResetApproval.tsx`<br>… +26 |
 | `status` | `archived` | compara, escreve | `src/lib/kit-builder/persistence.ts`<br>`src/pages/kit-builder/KitLibraryPage.tsx`<br>`src/pages/magazine/MagazineEditorPage.tsx`<br>`src/pages/magazine/pg.ts`<br>`src/types/magazine.ts`<br>… +1 |
 | `status` | `auth_failed` | escreve | `supabase/functions/e2e-cleanup/handler_characterization_test.ts` |
 | `status` | `available` | compara | `src/components/kit-builder/KitSummary.tsx` |
@@ -1753,108 +1778,92 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `completed` | compara | `src/lib/inventory/future-stock-stats.ts` |
 | `status` | `confirmed` | compara, escreve | `src/hooks/stock/stockFetcher.ts`<br>`src/lib/inventory/future-stock-stats.ts`<br>`src/pages/auth/SSOCallbackPage.tsx` |
 | `status` | `confirming` | compara | `src/pages/auth/SSOCallbackPage.tsx` |
-| `status` | `converted` | compara, filtra | `src/components/quotes/MarginInsightBadge.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/hooks/quotes/useQuoteFunnel.ts`<br>`supabase/functions/expert-chat/index.ts` |
-| `status` | `critical` | compara | `src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>`src/lib/inventory/stock-filter.ts`<br>`src/types/stock.ts` |
+| `status` | `converted` | compara, filtra | `src/components/quotes/MarginInsightBadge.tsx`<br>`src/components/quotes/QuoteRowQuickActions.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/hooks/quotes/useQuoteFunnel.ts`<br>`src/hooks/useQuoteFunnel.ts`<br>… +1 |
+| `status` | `crit` | compara | `src/components/admin/telemetry/PlatformFailureCards.tsx` |
+| `status` | `critical` | compara | `src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>`src/hooks/useVariantStock.ts`<br>`src/lib/inventory/stock-filter.ts`<br>… +1 |
 | `status` | `degraded` | compara, escreve | `api/ready.ts`<br>`src/components/system/CloudStatusBanner.tsx`<br>`src/lib/external-db/invoke.ts` |
 | `status` | `delivered` | compara, escreve | `src/components/common/StatusTimeline.tsx`<br>`supabase/functions/semantic-search/index.ts` |
 | `status` | `denied` | compara, escreve, filtra | `src/components/admin/security/keys/audit/McpAuditRow.tsx`<br>`src/components/admin/security/keys/audit/useStepUpAttempts.ts`<br>`supabase/functions/connections-hub-audit/index.ts`<br>`supabase/functions/mcp-keys-issue/index.ts`<br>`supabase/functions/mcp-keys-revoke/index.ts`<br>… +4 |
 | `status` | `destructive` | compara | `src/components/kit-builder/VolumeIndicator.tsx`<br>`src/pages/admin/AdminClientPerformancePage.tsx` |
 | `status` | `done` | compara | `src/pages/admin/telemetry/useOptimizationQueue.ts` |
-| `status` | `down` | compara | `src/components/system/CloudStatusBanner.tsx`<br>`src/hooks/ui/useCloudStatus.ts`<br>`src/lib/external-db/invoke.ts` |
-| `status` | `draft` | compara, escreve, filtra | `src/components/dashboard/MyRecentQuotesWidget.tsx`<br>`src/components/dashboard/RecentKitsWidget.tsx`<br>`src/components/expert/chat/useExpertChat.ts`<br>`src/components/magic-up/MagicUpCampaignPanel.tsx`<br>`src/components/quotes/QuoteBuilderSummaryColumn.tsx`<br>… +28 |
+| `status` | `down` | compara | `src/components/system/CloudStatusBanner.tsx`<br>`src/hooks/ui/useCloudStatus.ts`<br>`src/hooks/useCloudStatus.ts`<br>`src/lib/external-db/invoke.ts` |
+| `status` | `draft` | compara, escreve, filtra | `src/components/dashboard/MyRecentQuotesWidget.tsx`<br>`src/components/dashboard/RecentKitsWidget.tsx`<br>`src/components/expert/chat/useExpertChat.ts`<br>`src/components/magic-up/MagicUpCampaignPanel.tsx`<br>`src/components/quotes/QuoteBuilderSummaryColumn.tsx`<br>… +40 |
 | `status` | `duplicate_ignored` | escreve | `supabase/functions/receive-crm-callback/index.ts` |
 | `status` | `em_separacao` | escreve | `src/hooks/products/useSellerCarts.ts` |
 | `status` | `empty` | escreve | `src/components/admin/connections/KeysValidationTab.tsx` |
-| `status` | `error` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>`src/components/admin/security/keys/UpdateMcpKeyDialog.tsx`<br>… +20 |
+| `status` | `error` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>`src/components/admin/security/keys/UpdateMcpKeyDialog.tsx`<br>… +22 |
 | `status` | `expired` | compara | `src/components/admin/security/keys/McpKeyDetailsDrawer.tsx`<br>`src/components/admin/security/keys/McpKeyRow.tsx`<br>`src/components/admin/security/keys/useMcpKeys.ts`<br>`src/components/quotes/QuoteStatusTimeline.tsx`<br>`src/components/quotes/QuoteValidityBanner.tsx`<br>… +4 |
 | `status` | `expiring_soon` | compara | `src/components/novelties/NoveltyCards.tsx` |
-| `status` | `fail` | compara, escreve | `src/components/admin/connections/ConnectionTestHistoryPanel.tsx`<br>`src/hooks/intelligence/useConnectionsOverviewFilters.ts`<br>`supabase/functions/full-op-diagnostics/index.ts` |
-| `status` | `failed` | compara, escreve | `src/components/admin/connections/SmokeTestChecklist.tsx`<br>`src/pages/admin/telemetry/useOptimizationQueue.ts`<br>`src/pages/auth/SSOCallbackPage.tsx`<br>`supabase/functions/crm-callback-reprocess/index.ts`<br>`supabase/functions/webhook-dispatcher/index.ts` |
+| `status` | `fail` | compara, escreve | `src/components/admin/connections/ConnectionTestHistoryPanel.tsx`<br>`src/hooks/intelligence/useConnectionsOverviewFilters.ts`<br>`src/hooks/useConnectionsOverviewFilters.ts`<br>`supabase/functions/full-op-diagnostics/index.ts` |
+| `status` | `failed` | compara, escreve | `src/components/admin/CatalogQualityDashboard.tsx`<br>`src/components/admin/connections/SmokeTestChecklist.tsx`<br>`src/pages/admin/telemetry/useOptimizationQueue.ts`<br>`src/pages/auth/SSOCallbackPage.tsx`<br>`supabase/functions/crm-callback-reprocess/index.ts`<br>… +1 |
 | `status` | `forbidden` | escreve | `supabase/functions/e2e-cleanup/handler_characterization_test.ts`<br>`supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `fresh` | compara | `src/components/products/PriceFreshnessBadge.tsx` |
 | `status` | `fulfilled` | compara, escreve | `src/components/admin/connections/CredentialsChangedBanner.tsx`<br>`src/components/admin/connections/GlobalRefreshFromDbButton.tsx`<br>`src/hooks/mockup/mockupGenerationService.ts`<br>`src/hooks/mockup/mockupGeneratorModel.ts`<br>`src/hooks/quotes/useQuoteBuilderState.helpers.ts`<br>… +7 |
 | `status` | `gap` | compara, escreve | `src/components/bi/ClientCategoryRadar.tsx` |
-| `status` | `healthy` | compara, escreve | `src/components/system/CloudStatusBanner.tsx`<br>`src/components/system/CloudStatusDot.tsx`<br>`src/contexts/CloudStatusContext.tsx`<br>`src/hooks/ui/useCloudStatus.ts`<br>`supabase/functions/health-check/index.ts` |
+| `status` | `healthy` | compara, escreve | `src/components/system/CloudStatusBanner.tsx`<br>`src/components/system/CloudStatusDot.tsx`<br>`src/contexts/CloudStatusContext.tsx`<br>`src/hooks/ui/useCloudStatus.ts`<br>`src/hooks/useCloudStatus.ts`<br>… +1 |
 | `status` | `idle` | compara, escreve | `src/components/admin/connections/SmokeTestChecklist.tsx`<br>`src/components/quotes/QuoteAutoSave.tsx`<br>`src/hooks/kit-builder/useKitStockValidation.ts`<br>`src/pages/auth/postLoginGuards.ts` |
-| `status` | `in-stock` | compara | `src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductQuickView.tsx`<br>`src/components/products/table-view/ProductTableRow.tsx`<br>`src/lib/comparison-utils.ts`<br>… +1 |
-| `status` | `in_stock` | compara, escreve | `src/components/inventory/StockDashboard.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/types/stock.ts` |
+| `status` | `in-stock` | compara | `src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductQuickView.tsx`<br>`src/components/products/table-view/ProductTableRow.tsx`<br>`src/lib/comparison-utils.ts`<br>… +3 |
+| `status` | `in_stock` | compara, escreve | `src/components/inventory/StockDashboard.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/useVariantStock.ts`<br>`src/types/stock.ts` |
 | `status` | `in_transit` | compara | `src/lib/inventory/future-stock-stats.ts` |
-| `status` | `incoming` | compara | `src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/lib/inventory/stock-filter.ts`<br>`src/types/stock.ts` |
+| `status` | `incoming` | compara | `src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/useVariantStock.ts`<br>`src/lib/inventory/stock-filter.ts`<br>`src/types/stock.ts` |
 | `status` | `incompatible` | compara, escreve | `src/components/kit-builder/BoxComparisonDialog.tsx`<br>`src/components/kit-builder/BoxSelector.tsx`<br>`src/lib/kit-builder/ai-composition.ts`<br>`src/lib/kit-builder/box-recommendations.ts` |
 | `status` | `inconclusive` | compara, escreve | `src/components/kit-builder/BoxComparisonDialog.tsx`<br>`src/components/kit-builder/BoxSelector.tsx`<br>`src/lib/kit-builder/box-recommendations.ts` |
 | `status` | `insufficient_data` | escreve | `src/pages/admin/telemetry/useRegressionGuardrail.ts` |
 | `status` | `invalid` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
-| `status` | `loading` | compara, escreve | `src/components/ui/StatusBadge.tsx`<br>`src/pages/system/SystemStatusPage.tsx` |
-| `status` | `low-stock` | compara | `src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/inventory/StockBadge.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductQuickView.tsx`<br>… +3 |
-| `status` | `low_stock` | compara | `src/components/inventory/StockDashboard.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>`src/lib/inventory/stock-filter.ts`<br>… +1 |
+| `status` | `loading` | compara, escreve | `src/components/ui/StatusBadge.tsx`<br>`src/pages/SystemStatusPage.tsx`<br>`src/pages/system/SystemStatusPage.tsx` |
+| `status` | `low-stock` | compara | `src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/inventory/StockBadge.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductQuickView.tsx`<br>… +5 |
+| `status` | `low_stock` | compara | `src/components/inventory/StockDashboard.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>`src/hooks/useVariantStock.ts`<br>… +2 |
 | `status` | `missing` | compara, escreve | `src/components/admin/connections/MaskedSuffixBadge.tsx`<br>`src/lib/masked-suffix.ts` |
 | `status` | `none` | compara | `src/lib/carts/shipping-deadline.ts`<br>`src/pages/products/seller-carts/useSellerCartsPage.ts` |
 | `status` | `not_found` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `not_ready` | escreve | `api/ready.ts` |
-| `status` | `number` | compara | `src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`src/contexts/SellerCartContext.tsx`<br>`src/lib/crm-db.ts`<br>`src/lib/db-retry.ts`<br>… +6 |
+| `status` | `novo` | escreve | `src/hooks/useSellerCarts.ts` |
+| `status` | `number` | compara | `src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`src/contexts/SellerCartContext.tsx`<br>`src/lib/crm-db.ts`<br>… +7 |
 | `status` | `offline` | compara | `src/components/quotes/QuoteAutoSave.tsx` |
-| `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`src/components/admin/connections/ConnectionsOverviewFilters.tsx`<br>`src/components/admin/connections/ExternalConnectionsSyncLogPanel.tsx`<br>`src/components/admin/connections/KeysValidationTab.tsx`<br>… +10 |
+| `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`src/components/admin/connections/ConnectionsOverviewFilters.tsx`<br>`src/components/admin/connections/ExternalConnectionsSyncLogPanel.tsx`<br>`src/components/admin/connections/KeysValidationTab.tsx`<br>… +14 |
 | `status` | `order` | compara | `src/components/dashboard/MyClientsWidget.tsx` |
-| `status` | `out-of-stock` | compara, escreve | `src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductQuickView.tsx`<br>`src/lib/comparison-utils.ts`<br>… +2 |
-| `status` | `out_of_stock` | compara | `src/components/inventory/StockDashboard.tsx`<br>`src/components/inventory/VariantStockTable.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>… +1 |
+| `status` | `out-of-stock` | compara, escreve | `src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductQuickView.tsx`<br>`src/lib/comparison-utils.ts`<br>… +4 |
+| `status` | `out_of_stock` | compara | `src/components/inventory/StockDashboard.tsx`<br>`src/components/inventory/VariantStockTable.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>… +2 |
 | `status` | `overdue` | compara | `src/lib/carts/shipping-deadline.ts`<br>`src/pages/products/CartsListPage.tsx` |
 | `status` | `overstocked` | compara | `src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/types/stock.ts` |
 | `status` | `partial` | compara, escreve | `src/lib/inventory/future-stock-stats.ts`<br>`supabase/functions/anonymize-user/index.ts` |
 | `status` | `pass` | compara, escreve | `supabase/functions/full-op-diagnostics/index.ts` |
 | `status` | `passed` | compara, escreve | `src/components/admin/connections/SmokeTestChecklist.tsx` |
-| `status` | `pending` | compara, escreve, filtra | `src/components/admin/DiscountApprovalFilterBar.tsx`<br>`src/components/admin/DiscountApprovalHeaderBadge.tsx`<br>`src/components/admin/DiscountApprovalQueue.tsx`<br>`src/components/admin/DiscountManagementPanel.tsx`<br>`src/components/admin/PasswordResetApproval.tsx`<br>… +19 |
-| `status` | `pending_approval` | compara, escreve | `src/components/quotes/QuoteKanbanBoard.tsx`<br>`src/components/quotes/QuoteStatusTimeline.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/hooks/quotes/useDiscountApproval.ts`<br>`src/hooks/quotes/useQuoteBuilderState.ts`<br>… +2 |
+| `status` | `pending` | compara, escreve, filtra | `src/components/admin/DiscountApprovalFilterBar.tsx`<br>`src/components/admin/DiscountApprovalHeaderBadge.tsx`<br>`src/components/admin/DiscountApprovalQueue.tsx`<br>`src/components/admin/DiscountManagementPanel.tsx`<br>`src/components/admin/PasswordResetApproval.tsx`<br>… +22 |
+| `status` | `pending_approval` | compara, escreve | `src/components/quotes/QuoteKanbanBoard.tsx`<br>`src/components/quotes/QuoteStatusTimeline.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/hooks/quotes/useDiscountApproval.ts`<br>`src/hooks/quotes/useQuoteBuilderState.ts`<br>… +5 |
 | `status` | `processing` | compara, escreve | `src/components/ui/StatusBadge.tsx`<br>`supabase/functions/product-webhook/index.ts`<br>`supabase/functions/word-magic/index.ts`<br>`supabase/migrations/20250103090000_mockup_ai_complete.sql` |
+| `status` | `pronto_orcamento` | compara | `src/components/cart/CartHealthChecklist.tsx` |
 | `status` | `published` | compara, escreve, filtra | `src/lib/security/magazine-guard.ts`<br>`src/pages/magazine/MagazineEditorPage.tsx`<br>`src/pages/magazine/MagazineListPage.tsx`<br>`src/pages/magazine/PublicMagazineView.tsx`<br>`src/pages/magazine/hooks/useMagazineGoldImport.ts`<br>… +8 |
 | `status` | `quote` | compara | `src/components/dashboard/MyClientsWidget.tsx` |
 | `status` | `quote_not_found` | escreve | `supabase/functions/crm-callback-reprocess/index.ts` |
 | `status` | `rate_limited` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `ready` | compara, escreve | `api/ready.ts`<br>`src/lib/kit-builder/persistence.ts` |
 | `status` | `regression` | compara | `src/components/admin/telemetry/RegressionGuardrailBanner.tsx` |
-| `status` | `rejected` | compara, escreve | `src/components/admin/DiscountManagementPanel.tsx`<br>`src/components/admin/PasswordResetApproval.tsx`<br>`src/components/admin/products/useProductsManager.ts`<br>`src/components/dashboard/MyDiscountRequestsWidget.tsx`<br>`src/components/dashboard/QuickActionsPanel.tsx`<br>… +10 |
+| `status` | `rejected` | compara, escreve | `src/components/admin/DiscountManagementPanel.tsx`<br>`src/components/admin/PasswordResetApproval.tsx`<br>`src/components/admin/products/useProductsManager.ts`<br>`src/components/dashboard/MyDiscountRequestsWidget.tsx`<br>`src/components/dashboard/QuickActionsPanel.tsx`<br>… +13 |
 | `status` | `reprocessed` | escreve | `supabase/functions/crm-callback-reprocess/index.ts` |
 | `status` | `revoked` | compara | `src/components/admin/security/keys/McpKeyRow.tsx`<br>`src/components/admin/security/keys/useMcpKeys.ts` |
 | `status` | `running` | compara, escreve | `src/components/admin/connections/SmokeTestChecklist.tsx`<br>`src/components/admin/telemetry/OptimizationQueuePanel.tsx`<br>`tests/p0/_mocks.ts` |
 | `status` | `saved` | compara | `src/components/quotes/QuoteAutoSave.tsx` |
 | `status` | `saving` | compara | `src/components/quotes/QuoteAutoSave.tsx` |
-| `status` | `sent` | compara, escreve, filtra | `src/components/dashboard/QuickActionsPanel.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/pages/quotes/QuoteViewPage.tsx`<br>`src/pages/quotes/quote-view/QuoteActionHandlers.ts`<br>`src/pages/quotes/quote-view/QuoteBitrixSync.ts`<br>… +6 |
+| `status` | `sent` | compara, escreve, filtra | `src/components/dashboard/QuickActionsPanel.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/hooks/useSalesHistory.ts`<br>`src/hooks/useSalesHistoryMacro.ts`<br>`src/pages/QuoteViewPage.tsx`<br>… +11 |
 | `status` | `short` | compara, escreve | `src/components/admin/connections/MaskedSuffixBadge.tsx`<br>`src/lib/masked-suffix.ts` |
 | `status` | `skipped` | compara, escreve | `src/components/admin/connections/SmokeTestChecklist.tsx`<br>`src/hooks/kit-builder/useKitFitsValidation.ts`<br>`src/pages/admin/telemetry/useOptimizationQueue.ts`<br>`supabase/functions/_shared/ai-router/index.ts`<br>`supabase/functions/full-op-diagnostics/index.ts`<br>… +1 |
 | `status` | `skipped_claim_error` | escreve | `supabase/functions/webhook-dispatcher/index.ts` |
 | `status` | `skipped_duplicate` | escreve | `supabase/functions/webhook-dispatcher/index.ts` |
-| `status` | `slow` | compara | `src/pages/auth/SSOCallbackPage.tsx` |
+| `status` | `slow` | compara | `src/pages/auth/SSOCallbackPage.tsx`<br>`supabase/functions/_shared/external-db-telemetry.ts` |
 | `status` | `soon` | compara | `src/lib/carts/shipping-deadline.ts`<br>`src/pages/products/CartsListPage.tsx` |
 | `status` | `stale` | compara | `src/components/products/PriceFreshnessBadge.tsx`<br>`src/utils/price-freshness.ts` |
 | `status` | `started` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `step_up_error` | compara, escreve | `src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>`src/components/admin/security/keys/UpdateMcpKeyDialog.tsx`<br>`src/lib/auth/invoke-full-scope.ts`<br>`src/pages/admin/DevChallengeExamplesPage.tsx` |
 | `status` | `string` | compara | `src/lib/products/stock-status.ts` |
-| `status` | `success` | compara, escreve | `src/components/admin/connections/FailedDeliveriesPanel.tsx`<br>`src/components/admin/security/keys/audit/McpAuditRow.tsx`<br>`src/components/kit-builder/VolumeIndicator.tsx`<br>`src/hooks/intelligence/useAiUsage.ts`<br>`src/pages/admin/AdminClientPerformancePage.tsx`<br>… +16 |
+| `status` | `success` | compara, escreve | `src/components/admin/connections/FailedDeliveriesPanel.tsx`<br>`src/components/admin/security/keys/audit/McpAuditRow.tsx`<br>`src/components/kit-builder/VolumeIndicator.tsx`<br>`src/hooks/intelligence/useAiUsage.ts`<br>`src/hooks/useAiUsage.ts`<br>… +17 |
 | `status` | `super` | compara | `src/components/bi/ClientCategoryRadar.tsx` |
 | `status` | `unauthorized` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `unavailable` | compara, escreve | `src/components/kit-builder/KitSummary.tsx`<br>`src/hooks/kit-builder/useKitMinQuantityValidation.ts`<br>`src/hooks/kit-builder/useKitPriceValidation.ts`<br>`src/pages/kit-builder/useKitBuilderQuote.ts` |
 | `status` | `unchanged` | escreve | `src/hooks/kit-builder/useKitPriceValidation.ts` |
 | `status` | `unconfigured` | compara | `src/components/admin/connections/DataSourceDebugTab.tsx` |
 | `status` | `underindex` | compara | `src/components/bi/ClientCategoryRadar.tsx` |
-| `status` | `unhealthy` | compara, escreve | `supabase/functions/health-check/index.ts` |
-| `status` | `unknown` | compara, escreve | `src/components/products/PriceFreshnessBadge.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/components/system/CloudStatusDot.tsx`<br>`src/pages/kit-builder/useKitBuilderQuote.ts`<br>`src/utils/price-freshness.ts` |
-| `status` | `valid` | compara, escreve | `src/components/admin/connections/MaskedSuffixBadge.tsx`<br>`src/lib/masked-suffix.ts` |
-| `status` | `verified` | compara, escreve | `src/components/security/MfaChallengeDialog.tsx`<br>`src/components/security/MfaEnrollmentDialog.tsx`<br>`src/services/authService.ts` |
-| `status` | `viewed` | compara | `src/components/quotes/QuotesStatusChips.tsx`<br>`supabase/functions/quote-followup-reminders/index.ts` |
-| `status` | `violations` | compara, escreve | `src/hooks/kit-builder/useKitFitsValidation.ts`<br>`src/hooks/kit-builder/useKitMinQuantityValidation.ts`<br>`src/pages/kit-builder/useKitBuilderQuote.ts` |
-| `status` | `warming` | compara | `src/components/system/CloudStatusBanner.tsx` |
-| `status` | `warning` | compara | `src/pages/admin/AdminClientPerformancePage.tsx`<br>`src/pages/system/SystemStatusPage.tsx` |
-| `step` | `cancel` | compara, escreve | `src/hooks/auth/useStepUpAuth.ts`<br>`supabase/functions/step-up-verify/index.ts` |
-| `step` | `client` | compara | `src/hooks/quotes/useQuoteBuilderState.helpers.ts` |
-| `step` | `comparison` | compara, escreve | `src/types/domain/simulator-wizard.ts` |
-| `step` | `complete` | compara | `src/components/admin/products/BulkImportDialog.tsx` |
-| `step` | `conditions` | compara | `src/hooks/quotes/useQuoteBuilderState.helpers.ts` |
-| `step` | `content` | compara | `src/pages/magazine/MagazineEditorPage.tsx` |
-| `step` | `design` | compara | `src/pages/magazine/MagazineEditorPage.tsx`<br>`src/pages/magazine/utils/stepValidation.ts` |
-| `step` | `identity` | compara | `src/pages/magazine/MagazineEditorPage.tsx`<br>`src/pages/magazine/utils/stepValidation.ts` |
-| `step` | `importing` | compara | `src/components/admin/products/BulkImportDialog.tsx` |
-| `step` | `intro` | compara | `src/components/security/MfaEnrollmentDialog.tsx` |
-| `step` | `items` | compara | `src/hooks/quotes/useQuoteBuilderState.helpers.ts` |
-| … +93 linhas — lista completa em `context.json` | | | |
+| … +114 linhas — lista completa em `context.json` | | | |
 
 ### E.4 Enums e listas de valores
 
@@ -1946,7 +1955,31 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | DatePickerFieldVariant | compact \| input | `src/components/ui/date-picker-field.tsx` |
 | StatVariant | danger \| default \| info \| orange \| success \| warning | `src/components/ui/stat-card.tsx` |
 | AppRole | admin \| agente \| coordenador \| dev \| manager \| supervisor \| vendedor | `src/contexts/AuthContext.tsx` |
+| AiApiFormat | openai_compatible \| anthropic_native \| google_native \| custom | `src/hooks/useAiRouter.ts` |
+| AuditAction | INSERT \| UPDATE \| DELETE | `src/hooks/useAuditLog.ts` |
+| AuditEntityType | products \| product_variants \| product_images \| product_videos \| quotes \| quote_items \| orders \| order_items \| suppliers \| categories \| material_types \| color_variations \| companies \| company_contacts | `src/hooks/useAuditLog.ts` |
+| ViewMode | grid \| list \| table | `src/hooks/useCatalogState.ts` |
+| SortOption | relevance \| name \| price-asc \| price-desc \| stock \| newest \| color-match \| best-seller-supplier \| best-seller-promo | `src/hooks/useCatalogState.ts` |
+| ConnectionType | supabase \| bitrix24 \| n8n \| mcp \| webhook_outbound | `src/hooks/useConnectionTester.ts` |
+| ErrorKind | timeout \| network \| dns \| http \| auth \| config \| unknown | `src/hooks/useConnectionTester.ts` |
+| OverviewStatusFilter | all \| ok \| fail | `src/hooks/useConnectionsOverviewFilters.ts` |
+| OverviewWindowFilter | any \| 5m \| 1h \| 24h \| 7d \| never | `src/hooks/useConnectionsOverviewFilters.ts` |
+| DEV_EXPECTED_TABLES | "admin_audit_log", "ai_usage_logs", "ai_usage_quotas", "bot_detection_log", "external_connections_sync_log", "integration_credentials", "inbound_webhook_endpoints", "inbound_webhook_events", "ip_access_control", | `src/hooks/useDevAccessAudit.ts` |
+| EXTERNAL_CATEGORIES_QUERY_KEY | 'external-categories' | `src/hooks/useExternalCategoriesQuery.ts` |
 | FUTURE_STOCK_WINDOWS | 7, 15, 30 | `src/hooks/useFutureStockPreference.ts` |
+| ALLOWED_FRESHNESS_THRESHOLDS | 30, 60, 90 | `src/hooks/useProductFreshnessOverride.ts` |
+| RoleName | dev \| supervisor \| agente | `src/hooks/useRBAC.tsx` |
+| ReplenishmentStatus | active \| expiring_soon \| expired | `src/hooks/useReplenishments.ts` |
+| StockStatus | in-stock \| low-stock \| out-of-stock | `src/hooks/useReplenishments.ts` |
+| RETEST_COOLDOWN_PRESETS_MS | 3000, 10_000, 30_000, 60_000 | `src/hooks/useRetestCooldownSetting.ts` |
+| ReportFrequency | daily \| weekly \| monthly | `src/hooks/useScheduledReports.ts` |
+| ReportType | sales \| quotes \| clients \| products \| orders | `src/hooks/useScheduledReports.ts` |
+| HistoryType | product \| company \| general | `src/hooks/useSearchHistory.ts` |
+| CartStatus | novo \| em_negociacao \| pronto_orcamento | `src/hooks/useSellerCarts.ts` |
+| StepUpAction | promote_dev \| demote_dev \| mcp_full_issue \| mcp_full_escalate \| mcp_key_revoke \| mcp_key_rotate \| secret_rotation \| secret_revoke | `src/hooks/useStepUpAuth.ts` |
+| IntelligenceFlag | hot-product \| stockout-risk \| stagnant \| negotiation-opportunity \| frequent-restock \| class-a | `src/hooks/useStockHistory.ts` |
+| SortOption | recommended \| price_asc \| price_desc \| time_asc \| time_desc \| popularity | `src/hooks/useTechniqueRecommendations.ts` |
+| EmailEventType | quote_sent \| quote_approved \| quote_rejected \| order_created | `src/hooks/useTransactionalEmail.ts` |
 | AuditAction | DELETE \| INSERT \| UPDATE | `src/hooks/admin/useAuditLog.ts` |
 | AuditEntityType | categories \| color_variations \| companies \| company_contacts \| material_types \| order_items \| orders \| product_images \| product_variants \| product_videos \| products \| quote_items \| quotes \| suppliers | `src/hooks/admin/useAuditLog.ts` |
 | DEV_EXPECTED_TABLES | 'admin_audit_log', 'ai_usage_logs', 'ai_usage_quotas', 'bot_detection_log', 'external_connections_sync_log', 'integration_credentials', 'inbound_webhook_endpoints', 'inbound_webhook_events', 'ip_access_control', | `src/hooks/admin/useDevAccessAudit.ts` |
@@ -2109,6 +2142,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | DispatcherAuthMode | secret \| user_jwt | `supabase/functions/_shared/dispatcher-auth.ts` |
 | CronAuthMode | secret \| secret_vault | `supabase/functions/_shared/dispatcher-auth.ts` |
 | AuthzCategory | public \| authenticated \| supervisor \| dev \| service \| scoped | `supabase/functions/_shared/edge-authz-manifest.ts` |
+| ResourceGroup | products \| companies \| views | `supabase/functions/_shared/external-db-config.ts` |
+| Operation | select \| insert \| update \| delete \| rpc \| upsert \| batch_insert | `supabase/functions/_shared/external-db-config.ts` |
+| ALLOWED_RPCS | 'fn_get_product_print_areas', 'fn_get_product_print_areas_v2', 'fn_get_product_customization_options', 'fn_link_product_print_areas', 'fn_backfill_product_print_areas', 'fn_get_customization_price', 'fn_get_customization_price_v2', 'fn_find_fornecedor_price_table', 'get_category_descendants', | `supabase/functions/_shared/external-db-config.ts` |
+| COMPANY_TABLES | 'bitrix_clients', 'client_contacts', 'client_notes', 'organizations', 'user_organizations', 'business_sectors', | `supabase/functions/_shared/external-db-config.ts` |
+| ErrorKind | timeout \| postgrest_error \| validation \| network \| rate_limit \| auth \| unknown | `supabase/functions/_shared/external-db-telemetry.ts` |
 | KNOWN_SCOPES | "quotes:read", "orders:read", "crm:read", "products:read", "code:read", "code:write", "*", | `supabase/functions/_shared/mcp-scopes.ts` |
 | McpViolationReason | missing_jwt \| invalid_jwt \| not_admin \| stepup_missing \| stepup_invalid \| stepup_consume_failed \| rate_limited \| validation_failed \| unauthorized_direct_write \| other | `supabase/functions/_shared/mcp-violations.ts` |
 | LogLevel | debug \| info \| warn \| error | `supabase/functions/_shared/structured-logger.ts` |
@@ -3036,6 +3074,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `forgot-email` | type=email | `src/components/auth/ForgotPasswordForm.tsx` |
 | `su-pwd` | type=password | `src/components/auth/StepUpAuthDialog.tsx` |
 | `su-otp` | pattern=[0-9]{6, max | `src/components/auth/StepUpAuthDialog.tsx` |
+| `days` | type=number, min=1, max=365 | `src/components/favorites/ShareListDialog.tsx` |
 | `po-qty` | type=number, min=1 | `src/components/inventory/PurchaseOrderModal.tsx` |
 | `markup` | type=number, min=0, max=500, step=5 | `src/components/kit-builder/KitMarginSimulator.tsx` |
 | `kit-qty` | type=number, min=1 | `src/components/kit-builder/kit-summary/KitIdentificationCard.tsx` |
@@ -3043,11 +3082,15 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `custom-qty` | type=number, min=minQuantity | `src/components/products/inline-price/QuantityCalculator.tsx` |
 | `custom-qty-col` | type=number, min=minQuantity | `src/components/products/inline-price/QuantityCalculator.tsx` |
 | `quote-client-email` | type=email | `src/components/quotes/ClientPicker.tsx` |
+| `validity` | type=number, min=1, max=365 | `src/components/quotes/QuoteTemplateForm.tsx` |
+| `discount_percent` | type=number, min=0, max=100, step=0.1 | `src/components/quotes/QuoteTemplateForm.tsx` |
+| `discount_amount` | type=number, min=0, step=0.01 | `src/components/quotes/QuoteTemplateForm.tsx` |
 | `visual-search-input` | accept=image/*, disabled=isLoading | `src/components/search/VisualSearchButton.tsx` |
 | `fieldId` | required=required | `src/components/ui/LabeledField.tsx` |
 | `fieldId` | required=required | `src/components/ui/LabeledField.tsx` |
 | `resolvedId` | disabled, disabled | `src/components/ui/input.tsx` |
 | `resolvedId` | min, disabled, disabled | `src/components/ui/textarea.tsx` |
+| `login-email` | type=email | `src/pages/Auth.tsx` |
 | `exp` | type=datetime-local | `src/pages/admin/AdminSegurancaAcessoPage.tsx` |
 | `best-seller-threshold` | type=number, min=1, step=1, disabled=!draft.bestSeller.enabled, min | `src/pages/admin/IntelligenceBadgeSettingsPage.tsx` |
 | `tpl-price` | type=number, step=0.01 | `src/pages/admin/KitTemplatesAdminPage.tsx` |
@@ -3065,12 +3108,12 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Tabela | Coluna | Expressão |
 |---|---|---|
 | `categories` | `active` | `is_active` |
+| `webhook_deliveries` | `idempotency_key` | `webhook_id::text \|\| ':' \|\| payload_hash` |
 | `markup_configurations` | `priority` | `CASE WHEN ("variant_id" IS NOT NULL) THEN 1 WHEN ("product_id" IS NOT NULL) THEN 2 WHEN ("category_id" IS NOT NULL) THEN 3 WHEN ("supplier_id" IS NOT NULL) THEN 4 WHEN ("organization_id" IS NOT NULL) THEN 5 ELSE 6 END` |
 | `supplier_replenishment_events` | `delay_days` | `CASE WHEN actual_date IS NULL THEN NULL ELSE actual_date - promised_date END` |
 | `supplier_replenishment_events` | `fulfillment_ratio` | `CASE WHEN actual_quantity IS NULL OR promised_quantity = 0 THEN NULL ELSE LEAST(1.0, actual_quantity::numeric / promised_quantity::numeric) END` |
 | `sm_category_pages` | `site_url` | `CASE WHEN category_id IS NOT NULL THEN 'https://www.somarcas.com.br/' \|\| category_id::text \|\| '/categorias/' \|\| slug ELSE NULL END` |
 | `supplier_products_raw` | `images_processed` | `images_status = 'processed'::supplier_raw_status` |
-| `webhook_deliveries` | `idempotency_key` | `webhook_id::text \|\| ':' \|\| payload_hash` |
 | `tabela_preco_gravacao_oficial` | `codigo` | `codigo_tabela` |
 | `tabela_preco_gravacao_oficial` | `nome_grupo` | `grupo_tecnica` |
 
@@ -3082,6 +3125,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `v_products_public` | `SELECT p.id, p.name, p.description, p.sku, p.category_id, p.supplier_id, NULL::numeric AS cost_price, p.sale_price, p.stock_quantity, p.is_active AS active, p.created_at, p.updated_at, NULL::numeric AS suggested_price, CASE WHEN p.length_cm IS NOT NULL OR p.width_cm IS NOT NULL OR p.height_cm IS NOT …` |
 | `analytics.categories_tree_visual` | `WITH RECURSIVE "tree" AS ( SELECT "categories"."id", "categories"."bitrix_id", "categories"."name", "categories"."level", "categories"."parent_id", "categories"."name" AS "tree_structure", ARRAY[COALESCE("categories"."display_order", 0)] AS "sort_path" FROM "public"."categories" WHERE ("categories". …` |
 | `analytics.mv_material_group_stats` | `SELECT "mg"."id" AS "group_id", "mg"."organization_id", "mg"."name" AS "group_name", "mg"."slug" AS "group_slug", "count"(DISTINCT "mt"."id") AS "total_materials", "count"(DISTINCT CASE WHEN "mt"."is_active" THEN "mt"."id" ELSE NULL::"uuid" END) AS "active_materials", "count"(DISTINCT "pm"."product_ …` |
+| `v_full_scope_grants` | `SELECT sual.id AS audit_id, sual.created_at AS granted_at, sual.user_id AS granted_to_user_id, p.full_name AS granted_to_name, u.email AS granted_to_email, sual.action AS step_up_action, (sual.metadata->>'operation') AS operation, (sual.metadata->>'key_id')::uuid AS key_id, (sual.metadata->>'key_pre …` |
 | `analytics.mv_media_health` | `SELECT "s"."code" AS "source_supplier", "count"(DISTINCT "p"."id") AS "total_produtos", "count"(DISTINCT CASE WHEN ("pi_main"."id" IS NOT NULL) THEN "p"."id" ELSE NULL::"uuid" END) AS "com_img_principal", "count"(DISTINCT CASE WHEN ("pi_any"."id" IS NOT NULL) THEN "p"."id" ELSE NULL::"uuid" END) AS …` |
 | `analytics.mv_product_cards` | `SELECT "p"."id", "p"."name", "p"."slug", "p"."sku", "p"."short_description", "p"."sale_price", "p"."is_active", "p"."is_new", "p"."is_featured", "p"."is_stockout", "p"."category_id", "p"."main_category_id", "p"."colors", "p"."product_type", "p"."supplier_id", "p"."primary_image_url", "pi"."url_cdn" …` |
 | `analytics.mv_product_compositions` | `SELECT "p"."id" AS "product_id", "p"."organization_id", "p"."name" AS "product_name", "count"(DISTINCT "pm"."material_id") AS "total_materials", "sum"("pm"."percentage") AS "total_percentage", "array_agg"("json_build_object"('material_id', "mt"."id", 'material_name', "mt"."name", 'group_name', "mg". …` |
@@ -3293,7 +3337,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `supplier_stricker.v_stock_by_product` | `SELECT "p"."prod_reference", "p"."name", "count"(DISTINCT "o"."sku") AS "total_skus", "sum"("s"."stock_quantity") AS "total_stock", "min"("s"."stock_quantity") AS "min_stock_sku", "max"("s"."stock_quantity") AS "max_stock_sku", "bool_or"(("s"."stock_quantity" > 0)) AS "has_stock", "min"("s"."next_da …` |
 | `v_color_hierarchy` | `SELECT cg.id AS group_id, cg.name AS group_name, cg.slug AS group_slug, cg.hex_code AS group_hex, cg.sort_order AS group_sort, cv.id AS variation_id, cv.name AS variation_name, cv.slug AS variation_slug, cv.hex_code AS variation_hex, cv.sort_order AS variation_sort FROM color_groups cg LEFT JOIN col …` |
 | `v_product_novelties` | `SELECT n.id AS novelty_id, n.product_id, p.name AS product_name, p.sku AS product_sku, p.description AS product_description, p.price AS base_price, p.images[1] AS product_image, n.supplier_id, n.supplier_code, n.supplier_product_code, p.supplier_name, p.category_id, p.category_name, n.detected_at, n …` |
-| `v_full_scope_grants` | `SELECT sual.id AS audit_id, sual.created_at AS granted_at, sual.user_id AS granted_to_user_id, p.full_name AS granted_to_name, u.email AS granted_to_email, sual.action AS step_up_action, (sual.metadata->>'operation') AS operation, (sual.metadata->>'key_id')::uuid AS key_id, (sual.metadata->>'key_pre …` |
 | `slow_queries_view` | `SELECT pg_stat_statements.userid::regrole::text AS "user", pg_stat_statements.dbid, pg_stat_statements.queryid, left(pg_stat_statements.query, 200) AS query_snippet, pg_stat_statements.calls, round((pg_stat_statements.total_exec_time / pg_stat_statements.calls)::numeric, 2) AS avg_ms, round(pg_stat_ …` |
 | `somarcas_catalogo_publico` | `SELECT id, raw_data ->> 'codigo' AS codigo, raw_data ->> 'titulo' AS titulo, raw_data ->> 'descricao' AS descricao, raw_data ->> 'url_foto' AS url_foto, raw_data -> 'matriz_de_fotos_adicionais' AS fotos_adicionais, raw_data -> 'matriz_de_categorias' AS categorias, raw_data -> 'produtos_similares' AS …` |
 | `v_products_min_price` | `SELECT vp.product_id, p.name, p.sku, min(vp.sale_price_1) AS min_price, max(vp.sale_price_1) AS max_price, count(DISTINCT vp.variant_id) AS variants_count FROM public.v_variant_sale_prices_public vp JOIN public.v_products_public p ON p.id = vp.product_id GROUP BY vp.product_id, p.name, p.sku` |
@@ -3390,9 +3433,17 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   return ( <div className={cn('flex flex-col space-y-0.5', className)}> <span className={cn( 'font-medium tracking-tight text-muted-foreground opacity-70 transition-opacity group-hover:opacity-100', className?.includes('flex-row') ? 'text-[8px]' : 'text-[10px]', )} > {label} </span> <span data-testid={testId} className={cn( 'font-bold tabular-nums', className?.includes('flex-row') ? 'text-[11px]' : 'text-sm', isPrimary ? 'text-primary' : 'text-foreground', )} > {formatCurrency(value)} </span> </di …
   ```
+- **generateToken()** — `src/components/collections/ShareCollectionDialog.tsx`
+  ```
+  setBusy(true); try { const expires = new Date(); expires.setDate(expires.getDate() + 30); const { data, error } = await supabase .from("collections") .update({ share_token: crypto.randomUUID(), share_expires_at: expires.toISOString(), is_public: true, }) .eq("id", collectionId) .select("share_token, share_expires_at, is_public") .single(); if (error) throw error; updateCollection(collectionId, { shareToken: data.share_token, shareExpiresAt: data.share_expires_at, isPublic: true, }); const url = …
+  ```
 - **PriceSparkline({ productId, className }: Props)** — `src/components/compare/PriceSparkline.tsx`
   ```
   const [data, setData] = useState<PricePoint[]>([]); const [loading, setLoading] = useState(true); useEffect(() => { let cancelled = false; (async () => { try { const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(); const { data: rows } = await supabase .from('price_history') .select('changed_at,new_values') .eq('variant_id', productId) .gte('changed_at', since) .order('changed_at', { ascending: true }) .limit(60); if (cancelled) return; const points = (rows ?? []).map((r) = …
+  ```
+- **generateLink()** — `src/components/compare/ShareComparisonDialog.tsx`
+  ```
+  setGenerating(true); try { const { data: userData } = await supabase.auth.getUser(); if (!userData.user) { toast.error("Faça login para compartilhar"); return; } const days = parseInt(expiresIn, 10); const expiresAt = new Date(Date.now() + days * 86400000).toISOString(); const { data, error } = await supabase .from("user_comparisons") .insert({ user_id: userData.user.id, client_id: clientId ?? null, client_name: clientName ?? null, items: JSON.parse(JSON.stringify(compareItems)), is_public: true …
   ```
 - **formatCurrency(value: number)** — `src/components/compare/SupplierComparisonModal.tsx`
   ```
@@ -3514,6 +3565,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   if (!file.name.toLowerCase().endsWith('.pdf')) return true; try { const head = new Uint8Array(await file.slice(0, 4).arrayBuffer()); return String.fromCharCode(...head) === '%PDF'; } catch { return true; }
   ```
+- **GenerateButton({ onClick, isGenerating, disabled = false, hasAllRequirements = true, label = "Gerar Mockup com IA", className, }: Gener)** — `src/components/mockup/GenerateButton.tsx`
+  ```
+  const isReady = hasAllRequirements && !disabled && !isGenerating; return ( <motion.div whileHover={isReady ? { scale: 1.02 } : undefined} whileTap={isReady ? { scale: 0.98 } : undefined} className={cn("relative", className)} > {isReady && ( <motion.span aria-hidden className="absolute inset-0 rounded-md bg-primary/40 blur-md" animate={{ opacity: [0.3, 0.7, 0.3] }} transition={{ duration: 2, repeat: Infinity }} /> )} <Button type="button" size="lg" onClick={onClick} disabled={disabled || isGenera …
+  ```
 - **formatCurrency(value: number)** — `src/components/mockup/MockupProductSelector.tsx`
   ```
   
@@ -3562,6 +3617,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   if (engravings.length === 0) { setCalculations([]); return; } setIsCalculating(true); const results = await Promise.all( engravings.map(async (engraving) => { try { // Usar ID da área da técnica selecionada // Assumindo que technique.id é o ID da área de impressão const areaId = engraving.technique.id; const priceData = await calculatePrice(areaId, quantity, engraving.colors || 1); return { engraving, priceData, loading: false, error: priceData?.success === false ? 'Erro no cálculo' : null, }; } …
   ```
+- **PriceResultV51({ productName, productPrice, quantity, priceData, showDetails = true, }: PriceResultV51Props)** — `src/components/pricing/simulator/PriceResultV51.tsx`
+  ```
+  const [copied, setCopied] = useState(false); // Cálculos derivados const productTotal = productPrice * quantity; const grandTotal = productTotal + priceData.total_price; const unitTotal = grandTotal / quantity; const handleCopyCode = () => { navigator.clipboard.writeText(priceData.codigo_orcamento); setCopied(true); toast.success('Código copiado!'); setTimeout(() => setCopied(false), 2000); }; return ( <Card className="border-primary/30 bg-primary/5"> <CardHeader className="pb-3"> <div className …
+  ```
+- **calculate()** — `src/components/pricing/simulator/QuantityAndResult.tsx`
+  ```
+  setIsCalculating(true); setError(null); try { // Usar o ID da técnica como ID da área const result = await calculatePrice(technique.id, quantity, colors); if (result?.success) { setPriceData(result); } else { setError('Erro ao calcular preço'); setPriceData(null); } } catch (err) { setError(err instanceof Error ? err.message : 'Erro desconhecido'); setPriceData(null); } finally { setIsCalculating(false); }
+  ```
 - **formatCurrency(value: number)** — `src/components/pricing/simulator/utils.ts`
   ```
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);
@@ -3573,6 +3636,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **formatPrice(price: number)** — `src/components/products/BaseProductGridCard.tsx`
   ```
   return baseCardPriceFormatter.format(price);
+  ```
+- **formatPrice(price: number)** — `src/components/products/EnhancedProductCard.tsx`
+  ```
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", }).format(price);
   ```
 - **extractPriceTiersFromSource(source: SupplierSourcePricing, basePrice: number,)** — `src/components/products/InlinePriceCalculator.tsx`
   ```
@@ -3630,6 +3697,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   return `📦 *ITEM DO KIT* 📦 *${item.productName}* Parte do Kit: ${product.name} ${item.description || ''} ${item.material ? `🧵 Material: ${item.material}` : ''} ${item.weightG ? `⚖️ Peso: ${item.weightG}g` : ''} 💰 Kit completo a partir de ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price)}/un 📦 Qtd mínima: ${product.minQuantity} kits Promo Brindes - Brindes com Excelência!`;
   ```
+- **formatCurrency(value: number)** — `src/components/quotes/AdminTemplatesManager.tsx`
+  ```
+  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
+  ```
+- **calculateTotal(template: QuoteTemplate)** — `src/components/quotes/AdminTemplatesManager.tsx`
+  ```
+  const itemsTotal = template.items_data.reduce((sum, item) => { const personalizationCost = item.personalizations?.reduce((pSum, p) => pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0), 0) || 0; return sum + item.quantity * item.unitPrice + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;
+  ```
 - **round2(n: number)** — `src/components/quotes/QuoteItemsTable.tsx`
   ```
   Math.round((n + Number.EPSILON) * 100) / 100;
@@ -3637,6 +3712,22 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **formatCurrency(value: number)** — `src/components/quotes/QuoteListCellRenderer.tsx`
   ```
   
+  ```
+- **formatCurrency(value: number)** — `src/components/quotes/QuoteTemplateForm.tsx`
+  ```
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", }).format(value);
+  ```
+- **calculateTotal()** — `src/components/quotes/QuoteTemplateForm.tsx`
+  ```
+  const itemsTotal = (formData.items_data || []).reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = formData.discount_percent && formData.discount_percent > 0 ? itemsTotal * (formData.discount_percent / 100) : formData.discount_amount || 0; return ite …
+  ```
+- **formatCurrency(value: number)** — `src/components/quotes/QuoteTemplatesList.tsx`
+  ```
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", }).format(value);
+  ```
+- **calculateTemplateTotal(template: QuoteTemplate)** — `src/components/quotes/QuoteTemplatesList.tsx`
+  ```
+  const itemsTotal = template.items_data.reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;
   ```
 - **hasDiscountWorkflow(q: Quote)** — `src/components/quotes/QuotesStatusChips.tsx`
   ```
@@ -3657,6 +3748,66 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **validateRange(n: number)** — `src/components/ui/currency-input.tsx`
   ```
   if (!allowNegative && n < 0) return 'Valores negativos não são permitidos.'; if (n < min) return `Valor mínimo é ${formatBR(min)}.`; if (typeof max === 'number' && n > max) return `Valor máximo é ${formatBR(max)}.`; return null;
+  ```
+- **generateDeviceFingerprint()** — `src/hooks/useDeviceDetection.ts`
+  ```
+  const components = [ navigator.userAgent, navigator.language, navigator.platform, screen.width, screen.height, screen.colorDepth, new Date().getTimezoneOffset(), navigator.hardwareConcurrency || 'unknown', (navigator as Navigator & { deviceMemory?: number }).deviceMemory || 'unknown', ]; const fingerprint = components.join('|'); // Simple hash function let hash = 0; for (let i = 0; i < fingerprint.length; i++) { const char = fingerprint.charCodeAt(i); hash = ((hash << 5) - hash) + char; hash = h …
+  ```
+- **mapPriceResponseToFlat(resp: Record<string, unknown>)** — `src/hooks/useGravacaoPriceV2.ts`
+  ```
+  return adaptPriceResponse(resp);
+  ```
+- **calculateCustomizationPrice(params: CalculatePriceParams)** — `src/hooks/useGravacaoPriceV2.ts`
+  ```
+  const result = await invokeExternalRpc<CustomizationPriceResponse>( 'fn_get_customization_price', { p_area_id: params.areaId, p_quantidade: params.quantidade, p_num_cores: params.numCores ?? 1, p_largura_cm: params.larguraCm ?? null, p_altura_cm: params.alturaCm ?? null, } ); return adaptPriceResponse(result);
+  ```
+- **generateMockup()** — `src/hooks/useMockupGenerator.ts`
+  ```
+  const areasWithLogos = personalizationAreas.filter((a) => a.logoPreview); if (!selectedClient || !productSelection || !selectedTechnique || areasWithLogos.length === 0) { toast.error('Selecione empresa, produto, técnica e faça upload de pelo menos um logo'); return; } const productImage = getProductImage(); if (!productImage) { toast.error('O produto selecionado não possui imagem'); return; } setIsLoading(true); setGeneratedMockup(null); setGeneratedBatchMockups([]); setGenerationError(null); se …
+  ```
+- **calcDaysRemaining(createdAt: string)** — `src/hooks/useNovelties.ts`
+  ```
+  const created = new Date(createdAt).getTime(); const now = Date.now(); const elapsed = Math.floor((now - created) / (1000 * 60 * 60 * 24)); return Math.max(0, NOVELTY_WINDOW_DAYS - elapsed);
+  ```
+- **calculateMatchScore(source: Product, candidate: Product)** — `src/hooks/useProductMatch.ts`
+  ```
+  score: number; reasons: string[]
+  ```
+- **calcDaysSinceReplenishment(updatedAt: string)** — `src/hooks/useReplenishments.ts`
+  ```
+  const updated = new Date(updatedAt).getTime(); if (Number.isNaN(updated)) return REPLENISHMENT_WINDOW_DAYS; return Math.max(0, Math.floor((Date.now() - updated) / (1000 * 60 * 60 * 24)));
+  ```
+- **calcDaysRemaining(updatedAt: string)** — `src/hooks/useReplenishments.ts`
+  ```
+  const elapsed = calcDaysSinceReplenishment(updatedAt); return Math.max(0, REPLENISHMENT_WINDOW_DAYS - elapsed);
+  ```
+- **calculateNextRun(frequency: ReportFrequency)** — `src/hooks/useScheduledReports.ts`
+  ```
+  const now = new Date(); switch (frequency) { case 'daily': return new Date(now.getTime() + 24 * 60 * 60 * 1000); case 'weekly': return new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); case 'monthly': { const next = new Date(now); next.setMonth(next.getMonth() + 1); return next; } }
+  ```
+- **calculateNameSimilarity(name1: string, name2: string)** — `src/hooks/useSupplierComparison.ts`
+  ```
+  if (!name1?.trim() || !name2?.trim()) return 0; const words1 = name1.toLowerCase().split(/\s+/).filter(w => w.length >= 3 && !STOP_WORDS.has(w)); const words2 = name2.toLowerCase().split(/\s+/).filter(w => w.length >= 3 && !STOP_WORDS.has(w)); if (words1.length === 0 || words2.length === 0) return 0; const commonWords = words1.filter((word) => words2.some((w) => w.includes(word) || word.includes(w)) ); return commonWords.length / Math.max(words1.length, words2.length);
+  ```
+- **fetchPriceOptions()** — `src/hooks/useTechniquePricing.ts`
+  ```
+  setIsLoading(true); setError(null); try { // Buscar todas as tabelas que contêm o código da técnica const { data, error: invokeError } = await supabase.functions.invoke('external-db-bridge', { body: { table: 'customization_price_tables', operation: 'select', select: 'id,table_code,table_code_option,table_fullcode,customization_type_name,max_colors,max_area_width_cm,max_area_height_cm,price_by_color,price_by_area,setup_price,handling_price', filters: { is_active: true }, limit: 100, }, }); if (in …
+  ```
+- **calculateRecommendationScore(technique: Technique, keywords: string[],)** — `src/hooks/useTechniqueRecommendations.ts`
+  ```
+  score: number; matchedKeywords: string[]; reason: string
+  ```
+- **extractPriceTiers(table: CustomizationPriceTable)** — `src/hooks/useTecnicasUnificadas.ts`
+  ```
+  const tiers: PriceTier[] = []; for (let i = 1; i <= 15; i++) { const minQty = table[`min_qty_${i}`] as number | undefined; const price = table[`price_${i}`] as number | undefined; const sla = table[`sla_${i}`] as number | undefined; if (minQty !== undefined && minQty !== null && price !== undefined && price !== null) { const nextMinQty = table[`min_qty_${i + 1}`] as number | undefined; const maxQty = nextMinQty ? nextMinQty - 1 : null; tiers.push({ tierIndex: i, minQuantity: minQty, maxQuantity: …
+  ```
+- **calculatePriceForQuantityLegacy(table: CustomizationPriceTable, quantity: number,)** — `src/hooks/useTecnicasUnificadas.ts`
+  ```
+  const tiers = extractPriceTiers(table); if (tiers.length === 0) return null; let selectedTier = tiers[0]; for (const tier of tiers) { if (quantity >= tier.minQuantity) { selectedTier = tier; } } const unitPrice = selectedTier.unitPrice; const totalPrice = unitPrice * quantity; const setupPrice = table.setup_price || 0; const handlingPrice = table.handling_price || 0; const grandTotal = totalPrice + setupPrice + handlingPrice; const minTierPrice = tiers[0].unitPrice; const savingsPerUnit = minTie …
+  ```
+- **calculateColorSummary(variants: VariantWithStock[], stockEntries: StockEntry[])** — `src/hooks/useVariantSupplierSources.ts`
+  ```
+  const colorMap = new Map<string, ColorSummary>(); // Agregar estoque atual por cor for (const v of variants) { const name = v.color_name || 'Sem cor'; const existing = colorMap.get(name); if (existing) { existing.currentStock += v.stock_quantity || 0; } else { colorMap.set(name, { name, hex: v.color_hex, thumbnail: v.selected_thumbnail, currentStock: v.stock_quantity || 0, incomingTotal: 0, incomingCount: 0, }); } } // Agregar previsões de reposição por cor for (const entry of stockEntries) { co …
   ```
 - **generateDeviceFingerprint()** — `src/hooks/admin/useDeviceDetection.ts`
   ```
@@ -3701,6 +3852,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **calculateCustomizationTotal(quantidade: number, numCores: number, tabela: TabelaPrecoOficial, faixas: FaixaPrecoOficial[], markupPercent = 115,)** — `src/hooks/gravacao/gravacao-constants.ts`
   ```
   const faixa = findPriceTier(quantidade, faixas); const markupMultiplier = 1 + markupPercent / 100; if (!faixa) { return { faixa: null, custoUnitarioBase: 0, custoUnitarioTotal: 0, custoSetup: 0, custoManuseio: 0, custoTotalPecas: 0, precoUnitario: 0, precoMinimoUnitario: 0, subtotalPecas: 0, faturamentoMinimoGravacao: tabela.faturamento_minimo || 0, minimumApplied: false, total: 0, margemPercent: 0, prazoDias: null as number | null, }; } const custoUnitarioBase = faixa.preco_unitario; const cust …
+  ```
+- **generateSlug(nome: string)** — `src/hooks/gravacao/useVariantesGravacao.ts`
+  ```
+  return nome .toLowerCase() .normalize('NFD') .replace(/[\u0300-\u036f]/g, '') .replace(/[^a-z0-9]+/g, '-') .replace(/(^-|-$)/g, '');
   ```
 - **calculateNextRun(frequency: ReportFrequency)** — `src/hooks/intelligence/useScheduledReports.ts`
   ```
@@ -3917,6 +4072,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **convertToPng(file: File)** — `src/lib/image-converter.ts`
   ```
   return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); // Use a reasonable max size to avoid memory issues const maxDim = 2048; let width = img.naturalWidth || img.width; let height = img.naturalHeight || img.height; // For SVGs with no intrinsic size, default to 512 if (width === 0 || height === 0) { width = 512; height = 512; } // Scale down if too large if …
+  ```
+- **generateKitOgImage(input: KitOgInput)** — `src/lib/kit-og-image.ts`
+  ```
+  if (typeof document === "undefined") return null; try { const canvas = document.createElement("canvas"); canvas.width = 1200; canvas.height = 630; const ctx = canvas.getContext("2d"); if (!ctx) return null; const color = input.color && /^#[0-9a-f]{6}$/i.test(input.color) ? input.color : "#3B82F6"; // Background gradient diagonal const grad = ctx.createLinearGradient(0, 0, 1200, 630); grad.addColorStop(0, color); grad.addColorStop(1, shade(color, -30)); ctx.fillStyle = grad; ctx.fillRect(0, 0, 12 …
   ```
 - **countTotalAreas(groups: GroupedPrintArea[])** — `src/lib/print-area-grouping.ts`
   ```
@@ -4366,6 +4525,22 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   if (realSubtotal <= 0) return 0; const finalBeforeShipping = Math.max(0, presentedSubtotal - discountAmount); // SSOT: Arredondamento para 2 casas decimais no percentual; Math.max(0,...) evita negativo quando markup > desconto return round2(Math.max(0, ((realSubtotal - finalBeforeShipping) / realSubtotal) * 100));
   ```
+- **validateAndRedirect(userId: string, email: string)** — `src/pages/Auth.tsx`
+  ```
+  try { const ipValidation = await validateIPForAuthenticatedUser(userId); if (!ipValidation.isAllowed && ipValidation.hasRestrictions) { await signOut(); const reason = ipValidation.reason || 'access_blocked'; await logLoginAttempt(email, userId, false, `${reason}: ${ipValidation.error}`); setIpBlocked(true); setBlockedIP(ipValidation.currentIP); toast({ variant: 'destructive', title: 'Acesso Bloqueado', description: ipValidation.error || `Seu IP (${ipValidation.currentIP}) não está autorizado.`, …
+  ```
+- **formatCurrency(value: number)** — `src/pages/ComparePage.tsx`
+  ```
+  
+  ```
+- **PriceSimulatorPage()** — `src/pages/PriceSimulatorPage.tsx`
+  ```
+  return ( <MainLayout> <PageSEO title="Simulador de Preços" description="Simule preços de brindes com personalização, quantidades e custos." path="/simulador-precos" /> <div className="mx-auto w-full max-w-[1920px] animate-fade-in space-y-3 px-3 py-3 pb-24 sm:space-y-4 sm:px-4 sm:py-4 md:pb-6 lg:px-6 xl:px-8"> {/* Hero Header — #1 */} <div className="flex flex-col gap-1"> <h1 data-testid="page-title-simulador-precos" className="font-display text-2xl font-bold tracking-tight text-foreground sm:tex …
+  ```
+- **formatCurrency(value: number)** — `src/pages/QuotesListPage.tsx`
+  ```
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);
+  ```
 - **formatCurrency(val: number)** — `src/pages/admin/AdminAiUsagePage.tsx`
   ```
   `$${val.toFixed(4)}`;
@@ -4454,6 +4629,18 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   return ( <div className="space-y-2"> {/* Toggle Modo Rápido (Nano Banana / Gemini 2.5 Flash Image) Desativado: usa Gemini 3 Pro (qualidade máxima, mais lento e caro). Ativado: usa Gemini 2.5 Flash Image ("nano-banana"), ideal para iterações e refinamentos baratos antes de gerar a versão final. */} <label className={cn( 'flex cursor-pointer items-center justify-between gap-3 rounded-lg border px-3 py-2 transition-colors', m.fastMode ? 'border-warning/60 bg-warning/10' : 'border-border bg-muted/30 …
   ```
+- **formatPrice(price: number)** — `src/pages/product-detail/ProductDetailHero.tsx`
+  ```
+  
+  ```
+- **formatPrice(value: number)** — `src/pages/product-match/MatchCards.tsx`
+  ```
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+  ```
+- **formatPrice(value: number)** — `src/pages/product-match/ProductSearchPanel.tsx`
+  ```
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+  ```
 - **ShippingDeadlinePicker({ id = 'cart-shipping-deadline', 'data-testid': dataTestId = 'cart-shipping-deadline-input', 'aria-invalid': ariaInvalid)** — `src/pages/products/SellerCartsPage.tsx`
   ```
   const today = React.useMemo(() => startOfDay(new Date()), []); return ( <DatePickerField id={id} data-testid={dataTestId} variant="compact" className={className} aria-label="Prazo para envio" aria-invalid={ariaInvalidProp ?? (hasError || undefined)} aria-describedby={ ariaDescribedbyProp ?? (hasError ? 'cart-shipping-deadline-error' : undefined) } value={value ?? ''} onChange={(next) => onChange(next === '' ? null : next)} minDate={today} placeholder="dd/mm/aaaa" /> );
@@ -4470,6 +4657,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
   ```
+- **formatCurrency(value: number)** — `src/pages/quote-view/QuoteActionHandlers.ts`
+  ```
+  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  ```
+- **calcPersTotal(totalCost: number, qty: number)** — `src/pages/quote-view/QuoteActionHandlers.ts`
+  ```
+  if (qty <= 0) return totalCost; const roundedUnit = Math.round((totalCost / qty) * 100) / 100; return Math.round(roundedUnit * qty * 100) / 100;
+  ```
 - **formatCurrency(value: number)** — `src/pages/quotes/quote-view/QuoteActionHandlers.ts`
   ```
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -4479,6 +4674,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   return totalCost;
   ```
 - **formatCurrency(value: number)** — `src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts`
+  ```
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+  ```
+- **formatCurrency(value: number)** — `src/pages/quotes-dashboard/useQuotesDashboard.ts`
   ```
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
   ```
@@ -4525,6 +4724,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **canNavigateToStep(targetStep: WizardStep, state: SimulatorWizardState)** — `src/types/domain/simulator-wizard.ts`
   ```
   const targetIndex = getStepIndex(targetStep); const currentIndex = getStepIndex(state.currentStep); // Sempre pode voltar if (targetIndex <= currentIndex) return true; // Se já tem personalizações, pode ir direto ao comparativo (resumo) if (targetStep === 'comparison' && state.personalizations.length > 0) return true; for (let i = 0; i < targetIndex; i++) { if (!isStepComplete(WIZARD_STEPS[i], state)) { return false; } } return true;
+  ```
+- **drawPriceBreakdown(doc: jsPDF, kitState: KitState, kitQuantity: number, y: number,)** — `src/utils/kitPdfGenerator.ts`
+  ```
+  const { box, items, personalization } = kitState; const breakdown = generatePriceBreakdown(box, items, personalization, kitQuantity); const pricing = calculateTotalKitPrice(box, items, personalization, kitQuantity); y = drawSectionTitle(doc, 'Detalhamento de Preços', y); const rows = breakdown.map((item) => [ item.isPersonalization ? ` ↳ ${item.label}` : item.label, item.quantity ? String(item.quantity) : '-', formatCurrency(item.unitPrice), formatCurrency(item.totalPrice), ]); autoTable(doc, { …
+  ```
+- **generateKitPDF(options: KitPdfOptions)** — `src/utils/kitPdfGenerator.ts`
+  ```
+  const { kitState, kitQuantity, kitName } = options; const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' }); let y = drawHeader(doc, kitName, 0, options.orgName, options.orgLogoUrl, kitState.identity); // KPI cards y = drawKpiCards(doc, kitState, kitQuantity, y); // Composition section y = drawSectionTitle(doc, 'Composição do Kit', y); y = drawCompositionTable(doc, kitState, y); // Box info line if (kitState.box) { doc.setFontSize(7); doc.setFont('helvetica', 'normal'); doc. …
   ```
 - **validateCnpj(value: string)** — `src/utils/masks.ts`
   ```
@@ -4582,6 +4789,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const [jsPDF, html2canvas] = await Promise.all([getJsPDF(), getHtml2Canvas()]); const container = document.createElement('div'); container.style.position = 'fixed'; container.style.top = '-10000px'; container.style.left = '-10000px'; container.style.zIndex = '-9999'; container.style.pointerEvents = 'none'; document.body.appendChild(container); // FIX #1: declarar root fora do try para garantir unmount no finally externo let root: ReturnType<typeof ReactDOM.createRoot> | null = null; try { root = …
   ```
+- **validateImportedTemplates(data: unknown)** — `src/utils/templateExport.ts`
+  ```
+  if (!data || typeof data !== 'object') return null; const obj = data as Record<string, unknown>; if (!obj.version || !obj.templates || !Array.isArray(obj.templates)) { return null; } // Validate each template has required fields for (const template of obj.templates) { if (typeof template !== 'object' || !template) return null; const t = template as Record<string, unknown>; if (!t.name || typeof t.name !== 'string') return null; } return data as ExportedTemplate;
+  ```
 - **rankOf(r: AppRole | string | null,)** — `supabase/functions/_shared/authorize.ts`
   ```
   (r != null && r in ROLE_RANK ? ROLE_RANK[r as AppRole] : 0);
@@ -4598,6 +4809,22 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   if (name) { CACHE.delete(name); METRICS.invalidations_single += 1; for (const [canonical] of Object.entries(ALIASES)) { if (canonical === name) CACHE.delete(canonical); } } else { CACHE.clear(); METRICS.invalidations_full += 1; }
   ```
+- **isCustomizationPriceTablesAlias(table: string)** — `supabase/functions/_shared/external-db-aliases.ts`
+  ```
+  return table === 'customization_price_tables' || table === 'customization_price_tiers';
+  ```
+- **mapPriceTableFiltersToExternal(filters: Record<string, unknown> | undefined)** — `supabase/functions/_shared/external-db-aliases.ts`
+  ```
+  if (!filters) return undefined; const out: Record<string, unknown> = { ...filters }; if ('table_code' in out) { out.tecnica_codigo = out.table_code; delete out.table_code; } if ('table_code_option' in out) { out.table_code = out.table_code_option; delete out.table_code_option; } if ('table_fullcode' in out) { out.table_code = out.table_fullcode; delete out.table_fullcode; } if ('technique_id' in out) { delete out.technique_id; } if ('customization_type_name' in out) { out.tecnica_codigo = out.cu …
+  ```
+- **mapPriceTableOrderByToExternal(orderBy: { column: string; ascending?: boolean } | undefined)** — `supabase/functions/_shared/external-db-aliases.ts`
+  ```
+  if (!orderBy) return { column: 'table_code', ascending: true }; const columnMap: Record<string, string> = { 'table_code': 'table_code', 'table_code_option': 'table_code', 'customization_type_name': 'tecnica_codigo', 'max_colors': 'max_colors', 'display_order': 'table_code', 'is_active': 'is_active', }; return { column: columnMap[orderBy.column] || 'table_code', ascending: orderBy.ascending ?? true };
+  ```
+- **mapPriceTableRowToLegacyShape(row: Record<string, unknown>)** — `supabase/functions/_shared/external-db-aliases.ts`
+  ```
+  return { ...row, id: row.id, table_code: row.table_code, table_code_option: row.table_code, table_fullcode: row.table_code, customization_type_name: row.tecnica_codigo, tecnica_codigo: row.tecnica_codigo, max_colors: row.max_colors, max_area_width_cm: row.max_area_width_cm, max_area_height_cm: row.max_area_height_cm, price_by_color: row.price_by_color ?? false, price_by_area: row.price_by_area ?? false, setup_price: row.setup_price ?? 0, handling_price: 0, is_active: row.is_active ?? true, min_q …
+  ```
 - **applyRateLimit(req: Request, limiter: RateLimiter, getIdentifier: (req: Request)** — `supabase/functions/_shared/rate-limiter.ts`
   ```
   string = (r) => r.headers.get('x-forwarded-for') || 'anonymous'
@@ -4613,6 +4840,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **validateExternalUrl(rawUrl: string)** — `supabase/functions/_shared/url-allowlist.ts`
   ```
   if (!rawUrl || typeof rawUrl !== 'string') { return { ok: false, reason: 'URL vazia ou inválida' }; } let parsed: URL; try { parsed = new URL(rawUrl); } catch { return { ok: false, reason: 'URL malformada' }; } // Protocolo: apenas https e http if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') { return { ok: false, reason: `Protocolo não permitido: ${parsed.protocol}` }; } const host = parsed.hostname.toLowerCase(); // Bloqueio defensivo: IPs privados/loopback if (isPrivateOrReser …
+  ```
+- **validateRequired(body: Record<string, unknown> | null, fields: string[])** — `supabase/functions/_shared/validate.ts`
+  ```
+  if (!body) return 'Request body is required'; const missing = fields.filter(f => { const val = body[f]; return val === undefined || val === null || val === ''; }); if (missing.length > 0) { return `Missing required fields: ${missing.join(', ')}`; } return null;
+  ```
+- **validationError(message: string, headers: Record<string, string> = {})** — `supabase/functions/_shared/validate.ts`
+  ```
+  return new Response( JSON.stringify({ error: message }), { status: 400, headers: { 'Content-Type': 'application/json', ...headers }, } );
   ```
 - **buildValidationErrorBody(code: ErrorCode, message: string, fields: ValidationFieldError[] = [])** — `supabase/functions/_shared/zod-validate.ts`
   ```
@@ -4748,11 +4983,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `* ou sucesso 24h entre 70% e 95%,` | `src/components/admin/connections/usePulseBarStatus.ts` |
 | `A chave será exibida apenas uma vez. Geração 100% server-side com validação de` | `src/components/admin/security/keys/McpKeysList.tsx` |
 | `return values[Math.floor(values.length * 0.5)] ?? null;` | `src/components/admin/telemetry/EdgeInvokeLivePanel.tsx` |
+| `* - Amarelo (warning): falhas dentro do esperado (<2% taxa).` | `src/components/admin/telemetry/PlatformFailureCards.tsx` |
+| `* - Vermelho (destructive): pico de falhas (>2% taxa) ou delta crescente.` | `src/components/admin/telemetry/PlatformFailureCards.tsx` |
 | `transition={{ delay: idx * 0.05 }}` | `src/components/ai/AIMockupAssistant.tsx` |
 | `mas representa &lt;5% das compras do cliente — oportunidade clara.` | `src/components/bi/ClientCategoryRadar.tsx` |
 | `priceFrom: Math.round(t.avgPrice * 0.9),` | `src/components/bi/ClientHealthHero.tsx` |
 | `* Heurística: empresas do mesmo ramo + (LTV agregado de quotes ±30% do cliente atual)` | `src/components/bi/ClientLookalikes.tsx` |
 | `// Heurística: cliente / (cliente + 1.5 × média setor) — capped 5..95%` | `src/components/bi/ClientVsIndustryComparison.tsx` |
+| `transition={{ delay: idx * 0.05 }}` | `src/components/cart/CartHealthChecklist.tsx` |
 | `* Evita a imagem gigante quando a coluna ocupa 100% da largura da página.` | `src/components/cart/SortableCartItem.tsx` |
 | `transition={{ delay: index * 0.03 }}` | `src/components/cart/SortableCartItem.tsx` |
 | `delay: idx * 0.03,` | `src/components/collections/AddToCollectionModal.tsx` |
@@ -4774,6 +5012,12 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `delay: 0.5 + i * 0.05,` | `src/components/effects/SuccessCelebration.tsx` |
 | `delay: i * 0.3,` | `src/components/effects/SuccessCelebration.tsx` |
 | `delay: i * 0.2,` | `src/components/expert/chat/ChatMessageList.tsx` |
+| `const imgH = cellH * 0.55;` | `src/components/favorites/ExportFavoritesButton.tsx` |
+| `doc.text(formatCurrency(p.price ?? 0), x + 4, y + cellH * 0.6 + 22);` | `src/components/favorites/ExportFavoritesButton.tsx` |
+| `doc.text(name, x + 4, y + cellH * 0.6 + 4);` | `src/components/favorites/ExportFavoritesButton.tsx` |
+| `doc.text(noteLines, x + 4, y + cellH * 0.6 + 33);` | `src/components/favorites/ExportFavoritesButton.tsx` |
+| `doc.text(p.sku ?? "—", x + 4, y + cellH * 0.6 + 14);` | `src/components/favorites/ExportFavoritesButton.tsx` |
+| `if (variant) doc.text(`Cor: ${variant}`, x + 4, y + cellH * 0.6 + 28);` | `src/components/favorites/ExportFavoritesButton.tsx` |
 | `const getBarOpacity = (i: number) => Math.max(1 - i * 0.06, 0.35);` | `src/components/intelligence/CategoryRanking.tsx` |
 | `const getOpacity = (i: number) => Math.max(1 - i * 0.08, 0.4);` | `src/components/intelligence/SegmentAnalysis.tsx` |
 | `const getBarOpacity = (i: number) => Math.max(1 - i * 0.07, 0.4);` | `src/components/intelligence/SupplierSales.tsx` |
@@ -4787,6 +5031,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `// A divisória fica entre 2% e 98% para o puxador não sair do quadro.` | `src/components/mockup/MockupBeforeAfter.tsx` |
 | `* caber, sem nunca ampliar acima de 100%.` | `src/components/mockup/approval/MockupApprovalPreview.tsx` |
 | `Resetar 100%` | `src/components/mockup/logo-editor/LogoSizeControls.tsx` |
+| `transition={{ delay: index * 0.05 }}` | `src/components/navigation/DynamicBreadcrumbs.tsx` |
 | `* visual entre as duas variações. Valor atual reflete redução de 20%` | `src/components/pdf/ProposalStyles.ts` |
 | `if (colors > 1 && matchingTable.price_by_color) modifiedUnitPrice *= 1 + (colors - 1) * 0.1;` | `src/components/pricing/calculator/QuantityComparisonTable.tsx` |
 | `/** Limiar alto: se faltar ≤15%, prioridade alta */` | `src/components/pricing/simulator/upsell/upsell-engine.ts` |
@@ -4814,6 +5059,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `— ex.: 5 = 5%.` | `src/components/quotes/QuoteBuilderSummaryPricing.tsx` |
 | `transition={{ duration: 0.15, delay: 0.2 + i * 0.04 }}` | `src/components/search/GlobalSearchIdleState.tsx` |
 | `transition={{ duration: 0.15, delay: 0.28 + i * 0.03 }}` | `src/components/search/GlobalSearchIdleState.tsx` |
+| `transition={{ delay: index * 0.05 }}` | `src/components/search/SmartSuggestions.tsx` |
 | `const lineAlpha = (1 - dist / CONNECTION_DIST) * Math.min(alphas[i], alphas[j]) * 0.6;` | `src/components/search/voice/FloatingParticles.tsx` |
 | `const speed = (Math.random() * 0.5 + 0.5) * cfg.speed;` | `src/components/search/voice/FloatingParticles.tsx` |
 | `ctx.arc(p.x, p.y, p.size * 0.6, 0, Math.PI * 2);` | `src/components/search/voice/FloatingParticles.tsx` |
@@ -4837,6 +5083,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `const COVERAGE = 0.9; // element must span >=90% of the viewport in both axes` | `src/components/system/RootInteractivityGuard.tsx` |
 | `* A match por identidade de objeto (match === t) é O(1) e 100% confiável —` | `src/components/ui/alert-dialog.tsx` |
 | `// (match por identidade de objeto, 100% robusto, independe de displayName).` | `src/components/ui/alert-dialog.tsx` |
+| `* useNoveltiesSelectionMode and useReplenishmentsSelectionMode were 95%` | `src/hooks/useEntitySelectionMode.ts` |
+| `/** Margem de negociação interna 0–50%. Default 0 (desligado). */` | `src/hooks/useQuoteBuilderState.ts` |
+| `score += popularityScore * 0.3; // 30% do peso para popularidade` | `src/hooks/useTechniqueRecommendations.ts` |
+| `const aScore = a.count * 0.7 + aRecency * 10 * 0.3;` | `src/hooks/useVoiceCommandHistory.ts` |
+| `const bScore = b.count * 0.7 + bRecency * 10 * 0.3;` | `src/hooks/useVoiceCommandHistory.ts` |
 | `const p95Index = Math.max(0, Math.ceil(sorted.length * 0.95) - 1);` | `src/hooks/auth/useAuthHydrationMetrics.ts` |
 | `priceFrom: Math.round(Number(p.avg_unit_price) * 0.85) \|\| 0,` | `src/hooks/bi/useClientAffinity.ts` |
 | `avgTicket: MOCK_CLIENT_STATS.avgTicket * 0.92,` | `src/hooks/bi/useClientBI.ts` |
@@ -4903,6 +5154,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `cost *= 1 + (positions - 1) * 0.25; // +25% por posição adicional` | `src/lib/personalization/validators.ts` |
 | `realDiscountPercent > maxDiscountPercent * 0.7 &&` | `src/lib/quotes/discount-validation-messages.ts` |
 | `* Sample rate: 10% (configurável via VITE_NAV_METRICS_SAMPLE_RATE).` | `src/lib/telemetry/navigationMetrics.ts` |
+| `transition={{ delay: idx * 0.08, type: "spring", stiffness: 400, damping: 25 }}` | `src/pages/CollectionsPage.tsx` |
+| `radial-gradient(ellipse 60% 40% at 100% 100%, hsl(var(--primary) / 0.04), transparent),` | `src/pages/KitBuilderPage.tsx` |
+| `radial-gradient(ellipse 80% 50% at 50% -20%, hsl(var(--primary) / 0.08), transparent),` | `src/pages/KitBuilderPage.tsx` |
+| `<SelectItem value="50_50">50% entrada / 50% após entrega</SelectItem>` | `src/pages/QuoteBuilderPage.tsx` |
 | `Item <strong>hover</strong>: fundo accent ~70% + texto mais forte (sem brilho).` | `src/pages/SidebarQAPage.tsx` |
 | `// Evita PGRST204/23502/23514 que tornavam o formulário 100% inoperante.` | `src/pages/admin/AdminProductFormPage.tsx` |
 | `custom={2.5 + i * 0.05}` | `src/pages/admin/AdminTemasPage.tsx` |
@@ -5005,6 +5260,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `ALL_CREATORS` | `'__all__'` | `src/components/admin/security/keys/McpKeysFilters.tsx` |
 | `PAGE_SIZE` | `50` | `src/components/admin/security/keys/audit/useMcpAuditFeed.ts` |
 | `POLL_MS` | `15` | `src/components/admin/telemetry/BreakerStatusCard.tsx` |
+| `RECENT_LIMIT` | `20` | `src/components/admin/telemetry/BridgesLiveCard.tsx` |
 | `POLL_MS` | `30` | `src/components/admin/telemetry/ColdVsWarmCrmCard.tsx` |
 | `SLOW_REDIRECT_MS` | `6000` | `src/components/auth/SocialLoginButtons.tsx` |
 | `REDIRECT_TIMEOUT_MS` | `15000` | `src/components/auth/SocialLoginButtons.tsx` |
@@ -5111,7 +5367,49 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `SIDEBAR_COOKIE_MAX_AGE` | `60` | `src/components/ui/sidebar.tsx` |
 | `SIDEBAR_WIDTH` | `'16rem'` | `src/components/ui/sidebar.tsx` |
 | `SIDEBAR_WIDTH_MOBILE` | `'18rem'` | `src/components/ui/sidebar.tsx` |
+| `MOBILE_BREAKPOINT` | `768` | `src/hooks/use-mobile.tsx` |
+| `TOAST_LIMIT` | `1` | `src/hooks/use-toast.ts` |
+| `TOAST_REMOVE_DELAY` | `1000000` | `src/hooks/use-toast.ts` |
+| `MAX_RETRIES` | `2` | `src/hooks/useAIRecommendations.ts` |
+| `INITIAL_BACKOFF_MS` | `500` | `src/hooks/useAIRecommendations.ts` |
+| `AUTOSAVE_SCHEMA_VERSION` | `2` | `src/hooks/useAutoSaveQuote.ts` |
+| `TOAST_ID_DEGRADED` | `'bridge-degraded'` | `src/hooks/useBridgeStatusBanner.ts` |
+| `TOAST_ID_UNAVAILABLE` | `'bridge-unavailable'` | `src/hooks/useBridgeStatusBanner.ts` |
+| `ITEMS_PER_PAGE` | `36` | `src/hooks/useCatalogState.ts` |
+| `HEALTHY_INTERVAL` | `60` | `src/hooks/useCloudStatus.ts` |
+| `DOWN_AUTO_STOP_MS` | `30` | `src/hooks/useCloudStatus.ts` |
+| `CHUNK` | `80` | `src/hooks/useColorEnrichment.ts` |
+| `MAX_COMPARE_ITEMS` | `4` | `src/hooks/useComparison.ts` |
 | `LINE_HEIGHT` | `16` | `src/hooks/useHorizontalScroll.ts` |
+| `AUTO_SAVE_DELAY_MS` | `5000` | `src/hooks/useKitAutoSave.ts` |
+| `BUFFER_DAYS` | `3` | `src/hooks/useKitStockForecast.ts` |
+| `MAX_HISTORY` | `30` | `src/hooks/useKitUndoRedo.ts` |
+| `MAX_ATTEMPTS` | `5` | `src/hooks/useLoginRateLimit.ts` |
+| `LOCKOUT_MS` | `5` | `src/hooks/useLoginRateLimit.ts` |
+| `MAX_SIZE` | `200` | `src/hooks/useLogoColorAnalysis.ts` |
+| `AUTO_SAVE_DELAY` | `2000` | `src/hooks/useMockupDraft.ts` |
+| `NOVELTY_WINDOW_DAYS` | `30` | `src/hooks/useNovelties.ts` |
+| `BRIDGE_TABLE` | `'variant_supplier_sources'` | `src/hooks/useProductSupplierSources.ts` |
+| `CHUNK` | `50` | `src/hooks/useProductsByColor.ts` |
+| `CATALOG_PAGE_SIZE` | `500` | `src/hooks/useProductsLightweight.ts` |
+| `CATALOG_BATCH_PAGES` | `4` | `src/hooks/useProductsLightweight.ts` |
+| `MAX_RECENT_PRODUCTS` | `5` | `src/hooks/useRecentProducts.ts` |
+| `MAX_ITEMS` | `10` | `src/hooks/useRecentlyViewed.ts` |
+| `REPLENISHMENT_WINDOW_DAYS` | `30` | `src/hooks/useReplenishments.ts` |
+| `MIN_REPLENISHMENT_DELTA_MS` | `86` | `src/hooks/useReplenishments.ts` |
+| `DEFAULT_MS` | `3000` | `src/hooks/useRetestCooldownSetting.ts` |
+| `MAX_HISTORY` | `10` | `src/hooks/useSearchHistory.ts` |
+| `BATCH_SIZE` | `50` | `src/hooks/useSparklineSales.tsx` |
+| `MAX_STACK` | `10` | `src/hooks/useUndoStack.ts` |
+| `TTL_MS` | `30` | `src/hooks/useUndoStack.ts` |
+| `ERROR_RESET_DELAY_MS` | `5000` | `src/hooks/useVoiceAgent.ts` |
+| `PROCESSING_ERROR_RESET_DELAY_MS` | `3000` | `src/hooks/useVoiceAgent.ts` |
+| `SESSION_START_TIMEOUT_MS` | `4000` | `src/hooks/useVoiceAgent.ts` |
+| `MAX_HISTORY` | `100` | `src/hooks/useVoiceCommandHistory.ts` |
+| `RECENT_LIMIT` | `5` | `src/hooks/useVoiceCommandHistory.ts` |
+| `FREQUENT_LIMIT` | `6` | `src/hooks/useVoiceCommandHistory.ts` |
+| `CACHE_TTL_MS` | `60` | `src/hooks/useWorkspaceNotifications.tsx` |
+| `PREFETCH_MIN_INTERVAL_MS` | `5` | `src/hooks/useWorkspaceNotifications.tsx` |
 | `REFRESH_INTERVAL_MS` | `30` | `src/hooks/admin/useKillSwitchObservability.ts` |
 | `DEFAULT_MS` | `3000` | `src/hooks/admin/useRetestCooldownSetting.ts` |
 | `DEFAULT_LIMIT` | `1000` | `src/hooks/admin/useV4Callbacks.ts` |
@@ -5238,50 +5536,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `SHARED_RELOAD_WINDOW_MS` | `20` | `src/lib/chunk-recovery.ts` |
 | `CACHE_MS` | `15` | `src/lib/cloud-status.ts` |
 | `PROBE_TIMEOUT_MS` | `5000` | `src/lib/cloud-status.ts` |
-| `MAX_HISTORY_AGE_MS` | `24` | `src/lib/cloud-status.ts` |
-| `FAILURE_THRESHOLD` | `2` | `src/lib/cloud-status.ts` |
-| `CONSECUTIVE_FAILURE_THRESHOLD` | `3` | `src/lib/connections-config.ts` |
-| `RATE_LIMIT_COOLDOWN_BASE_MS` | `60` | `src/lib/crm-db.ts` |
-| `RATE_LIMIT_COOLDOWN_MAX_MS` | `300` | `src/lib/crm-db.ts` |
-| `MAX_CONCURRENT_REQUESTS` | `3` | `src/lib/crm-db.ts` |
-| `MAX_RETRIES` | `2` | `src/lib/crm-db.ts` |
-| `INITIAL_BACKOFF_MS` | `600` | `src/lib/crm-db.ts` |
-| `DEFAULT_MAX_ATTEMPTS` | `3` | `src/lib/db-retry.ts` |
-| `FLUSH_INTERVAL` | `5000` | `src/lib/error-reporter.ts` |
-| `MAX_QUEUE` | `20` | `src/lib/error-reporter.ts` |
-| `PREWARM_COOLDOWN_MS` | `5` | `src/lib/external-db-prewarm.ts` |
-| `MAX_RETRIES` | `3` | `src/lib/external-rpc.ts` |
-| `INITIAL_BACKOFF_MS` | `800` | `src/lib/external-rpc.ts` |
-| `TOTAL_TIMEOUT_MS` | `30` | `src/lib/external-rpc.ts` |
-| `MIN_LOGO_PX` | `40` | `src/lib/mockup-geometry.ts` |
-| `TRIGGER_TO_FETCH_HISTORY` | `20` | `src/lib/notifications-metrics.ts` |
-| `TRIGGER_TO_FETCH_TTL_MS` | `5000` | `src/lib/notifications-metrics.ts` |
-| `BADGE_RENDER_HISTORY` | `20` | `src/lib/notifications-metrics.ts` |
-| `BADGE_RENDER_BUDGET_MS` | `16` | `src/lib/notifications-metrics.ts` |
-| `AUTO_RESET_INTERVAL_MS` | `15` | `src/lib/notifications-metrics.ts` |
-| `DEBUG_LOG_THROTTLE_MS` | `1000` | `src/lib/notifications-metrics.ts` |
-| `MAX_CONCURRENT_DETECTIONS` | `6` | `src/lib/product-bounds-detector.ts` |
-| `BULLET` | `'\u2022'` | `src/lib/sensitive-masking.ts` |
-| `BUFFER_MAX` | `50` | `src/lib/sentry.ts` |
-| `RELOAD_DELAY_MS` | `300` | `src/lib/sw-register.ts` |
-| `PRIDE_RED` | `'0 85% 55%'` | `src/lib/theme-presets.ts` |
-| `PRIDE_ORANGE` | `'30 90% 55%'` | `src/lib/theme-presets.ts` |
-| `PRIDE_YELLOW` | `'55 90% 50%'` | `src/lib/theme-presets.ts` |
-| `PRIDE_GREEN` | `'130 70% 45%'` | `src/lib/theme-presets.ts` |
-| `PRIDE_BLUE` | `'210 80% 55%'` | `src/lib/theme-presets.ts` |
-| `PRIDE_PURPLE` | `'280 80% 58%'` | `src/lib/theme-presets.ts` |
-| `PRIDE_PINK` | `'330 85% 52%'` | `src/lib/theme-presets.ts` |
-| `COALESCE_MS` | `2` | `src/lib/access/dev-route-telemetry.ts` |
-| `THROTTLE_MS` | `30` | `src/lib/access/log-access-denied.ts` |
-| `THROTTLE_MS` | `5` | `src/lib/access/request-dev-access.ts` |
-| `E2E_BUFFER_LIMIT` | `200` | `src/lib/analytics/cartAnalytics.ts` |
-| `MIRROR_FN` | `'intelligence-substitute-applied'` | `src/lib/analytics/intelligenceAnalytics.ts` |
-| `E2E_BUFFER_LIMIT` | `200` | `src/lib/analytics/intelligenceAnalytics.ts` |
-| `FAILURE_BUFFER_LIMIT` | `100` | `src/lib/analytics/intelligenceAnalytics.ts` |
-| `E2E_BUFFER_LIMIT` | `200` | `src/lib/analytics/mfaNavigationAnalytics.ts` |
-| `E2E_BUFFER_LIMIT` | `200` | `src/lib/analytics/zeroResultAnalytics.ts` |
-| `MAX_AUTO_RETRIES` | `1` | `src/lib/auth/invoke-full-scope.ts` |
-| … +279 linhas — lista completa em `context.json` | | |
+| … +326 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -5293,6 +5548,73 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `WHERE created > now() - interval '7 days'` | `auditoria-supabase/propostas/P16_net001_pg_net_failure_monitoring.sql` |
 | `await new Promise((r) => setTimeout(r, 1000));` | `public/sw.js` |
 | `const IMAGE_CACHE_TTL = 90 * 24 * 60 * 60 * 1000;` | `public/sw.js` |
+| `AND created_at > now() - interval '1 hour'` | `recovery/block04_functions.sql` |
+| `AND created_at > now() - interval '1 hour';` | `recovery/block04_functions.sql` |
+| `AND created_at > now() - interval '1 minute';` | `recovery/block04_functions.sql` |
+| `AND created_at > now() - interval '20 hours'` | `recovery/block04_functions.sql` |
+| `AND cth.tested_at > now() - interval '7 days'` | `recovery/block04_functions.sql` |
+| `DELETE FROM public.step_up_challenges WHERE expires_at < (now() - interval '1 day');` | `recovery/block04_functions.sql` |
+| `DELETE FROM public.step_up_tokens WHERE expires_at < (now() - interval '1 day');` | `recovery/block04_functions.sql` |
+| `WHERE blocked = true AND created_at > now() - interval '1 hour' AND ip_address IS NOT NULL` | `recovery/block04_functions.sql` |
+| `WHERE created_at > now() - interval '1 hour' AND ip_address IS NOT NULL` | `recovery/block04_functions.sql` |
+| `WHERE d.delivered_at > now() - interval '1 hour'` | `recovery/block04_functions.sql` |
+| `WHERE delivered_at < now() - interval '90 days'` | `recovery/block04_functions.sql` |
+| `WHERE occurred_at < now() - interval '90 days'` | `recovery/block04_functions.sql` |
+| `WHERE received_at < now() - interval '90 days'` | `recovery/block04_functions.sql` |
+| `WHERE success = false AND created_at > now() - interval '1 hour' AND ip_address IS NOT NULL AND ip_address <> 'unknown'` | `recovery/block04_functions.sql` |
+| `WHERE updated_at > now() - interval '30 days'` | `recovery/block04_functions.sql` |
+| `WHERE user_id = _uid AND created_at > (now() - interval '1 hour');` | `recovery/block04_functions.sql` |
+| `_exp := now() + interval '5 minutes';` | `recovery/block04_functions.sql` |
+| `_expires timestamptz := now() + interval '6 hours';` | `recovery/block04_functions.sql` |
+| `baseline_window_end timestamptz := now() - interval '24 hours';` | `recovery/block04_functions.sql` |
+| `baseline_window_start timestamptz := now() - interval '26 hours';` | `recovery/block04_functions.sql` |
+| `AND d.start_time > now() - interval '24 hours'` | `recovery/block11_cron_status_report.sql` |
+| `AND created_at > now() - interval '1 hour'` | `recovery/full-public-schema.sql` |
+| `AND created_at > now() - interval '1 hour';` | `recovery/full-public-schema.sql` |
+| `AND created_at > now() - interval '1 minute';` | `recovery/full-public-schema.sql` |
+| `AND created_at > now() - interval '20 hours'` | `recovery/full-public-schema.sql` |
+| `AND cth.tested_at > now() - interval '7 days'` | `recovery/full-public-schema.sql` |
+| `DELETE FROM public.step_up_challenges WHERE expires_at < (now() - interval '1 day');` | `recovery/full-public-schema.sql` |
+| `DELETE FROM public.step_up_tokens WHERE expires_at < (now() - interval '1 day');` | `recovery/full-public-schema.sql` |
+| `SET idle_in_transaction_session_timeout = 0;` | `recovery/full-public-schema.sql` |
+| `SET lock_timeout = 0;` | `recovery/full-public-schema.sql` |
+| `SET statement_timeout = 0;` | `recovery/full-public-schema.sql` |
+| `SET transaction_timeout = 0;` | `recovery/full-public-schema.sql` |
+| `WHERE blocked = true AND created_at > now() - interval '1 hour' AND ip_address IS NOT NULL` | `recovery/full-public-schema.sql` |
+| `WHERE created_at > now() - interval '1 hour' AND ip_address IS NOT NULL` | `recovery/full-public-schema.sql` |
+| `WHERE d.delivered_at > now() - interval '1 hour'` | `recovery/full-public-schema.sql` |
+| `WHERE delivered_at < now() - interval '90 days'` | `recovery/full-public-schema.sql` |
+| `WHERE occurred_at < now() - interval '90 days'` | `recovery/full-public-schema.sql` |
+| `WHERE received_at < now() - interval '90 days'` | `recovery/full-public-schema.sql` |
+| `WHERE success = false AND created_at > now() - interval '1 hour' AND ip_address IS NOT NULL AND ip_address <> 'unknown'` | `recovery/full-public-schema.sql` |
+| `WHERE updated_at > now() - interval '30 days'` | `recovery/full-public-schema.sql` |
+| `WHERE user_id = _uid AND created_at > (now() - interval '1 hour');` | `recovery/full-public-schema.sql` |
+| `AND cth.tested_at > now() - interval '7 days'` | `recovery/patches/D1.2_optimization_queue/patch.sql` |
+| `WHERE updated_at > now() - interval '30 days'` | `recovery/patches/D1.5_dashboard_widgets/patch.sql` |
+| `WHERE d.delivered_at > now() - interval '1 hour'` | `recovery/patches/D2.2_webhooks_extra/functions.sql` |
+| `WHERE delivered_at < now() - interval '90 days'` | `recovery/patches/D2.2_webhooks_extra/functions.sql` |
+| `WHERE occurred_at < now() - interval '90 days'` | `recovery/patches/D2.2_webhooks_extra/functions.sql` |
+| `WHERE received_at < now() - interval '90 days'` | `recovery/patches/D2.2_webhooks_extra/functions.sql` |
+| `next_month DATE := date_trunc('month', now() + interval '1 month');` | `recovery/patches/D2.2_webhooks_extra/functions.sql` |
+| `next_month_end DATE := date_trunc('month', now() + interval '2 month');` | `recovery/patches/D2.2_webhooks_extra/functions.sql` |
+| `AND created_at > now() - interval '1 minute';` | `recovery/patches/D2.5_telemetry/patch.sql` |
+| `baseline_window_end timestamptz := now() - interval '24 hours';` | `recovery/patches/D2.5_telemetry/patch.sql` |
+| `baseline_window_start timestamptz := now() - interval '26 hours';` | `recovery/patches/D2.5_telemetry/patch.sql` |
+| `current_window_start timestamptz := now() - interval '2 hours';` | `recovery/patches/D2.5_telemetry/patch.sql` |
+| `AND created_at > now() - interval '1 hour';` | `recovery/patches/D4.1_step_up_mfa/functions.sql` |
+| `DELETE FROM public.step_up_challenges WHERE expires_at < (now() - interval '1 day');` | `recovery/patches/D4.1_step_up_mfa/functions.sql` |
+| `DELETE FROM public.step_up_tokens WHERE expires_at < (now() - interval '1 day');` | `recovery/patches/D4.1_step_up_mfa/functions.sql` |
+| `WHERE user_id = _uid AND created_at > (now() - interval '1 hour');` | `recovery/patches/D4.1_step_up_mfa/functions.sql` |
+| `_exp := now() + interval '5 minutes';` | `recovery/patches/D4.1_step_up_mfa/functions.sql` |
+| `AND created_at > now() - interval '1 hour'` | `recovery/patches/D4.6_security_auth/functions.sql` |
+| `AND created_at > now() - interval '20 hours'` | `recovery/patches/D4.6_security_auth/functions.sql` |
+| `WHERE blocked = true AND created_at > now() - interval '1 hour' AND ip_address IS NOT NULL` | `recovery/patches/D4.6_security_auth/functions.sql` |
+| `WHERE created_at > now() - interval '1 hour' AND ip_address IS NOT NULL` | `recovery/patches/D4.6_security_auth/functions.sql` |
+| `WHERE success = false AND created_at > now() - interval '1 hour' AND ip_address IS NOT NULL AND ip_address <> 'unknown'` | `recovery/patches/D4.6_security_auth/functions.sql` |
+| `_expires timestamptz := now() + interval '6 hours';` | `recovery/patches/D4.6_security_auth/functions.sql` |
+| `WHERE delivered_at < now() - interval '90 days'` | `recovery/patches/D6_advisor_fixes/patch.sql` |
+| `WHERE occurred_at < now() - interval '90 days'` | `recovery/patches/D6_advisor_fixes/patch.sql` |
+| `WHERE received_at < now() - interval '90 days'` | `recovery/patches/D6_advisor_fixes/patch.sql` |
 | `const timer = setTimeout(() => setAnnouncement(null), 1000);` | `src/components/a11y/AccessibilityProvider.tsx` |
 | `const timer = setTimeout(() => setAssertiveMessage(''), 1000);` | `src/components/a11y/AriaLive.tsx` |
 | `const timer = setTimeout(() => setPoliteMessage(''), 1000);` | `src/components/a11y/AriaLive.tsx` |
@@ -5345,6 +5667,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();` | `src/components/admin/security/TopOffenderIpsCard.tsx` |
 | `const days = Math.floor(ms / (24 * 60 * 60 * 1000));` | `src/components/admin/security/keys/McpKeyRow.tsx` |
 | `const maxMs = FULL_SCOPE_MAX_TTL_DAYS * 24 * 60 * 60 * 1000;` | `src/components/admin/security/keys/UpdateMcpKeyDialog.tsx` |
+| `setTimeout(() => setCopied(null), 1500);` | `src/components/admin/telemetry/BridgeCallDetailDrawer.tsx` |
 | `c1h: countInWindow(rows, source, 60 * 60 * 1000),` | `src/components/admin/telemetry/QuoteBuilderHandoffCard.tsx` |
 | `c24h: countInWindow(rows, source, 24 * 60 * 60 * 1000),` | `src/components/admin/telemetry/QuoteBuilderHandoffCard.tsx` |
 | `c7d: countInWindow(rows, source, 7 * 24 * 60 * 60 * 1000),` | `src/components/admin/telemetry/QuoteBuilderHandoffCard.tsx` |
@@ -5362,12 +5685,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/components/collections/CollectionsHeatmap.tsx` |
 | `const CACHE_TTL_MS = 30 * 60 * 1000;` | `src/components/compare/AIComparisonAdvisor.tsx` |
 | `const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();` | `src/components/compare/PriceSparkline.tsx` |
+| `setTimeout(() => setCopied(false), 2500);` | `src/components/compare/ShareComparisonDialog.tsx` |
 | `staleTime: 10 * 60 * 1000,` | `src/components/compare/SimilarProductsRail.tsx` |
 | `this.copyTimer = setTimeout(() => { this.copyTimer = null; this.setState({ copied: false }); }, 2000);` | `src/components/errors/EnhancedErrorBoundary.tsx` |
 | `setTimeout(() => setCopiedId(null), 2000);` | `src/components/expert/chat/useExpertChat.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/components/favorites/FavoritesClientPicker.tsx` |
 | `staleTime: 30 * 60 * 1000,` | `src/components/favorites/FavoritesEmptyStateSmart.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/components/favorites/FavoritesHeatmap.tsx` |
+| `setTimeout(() => setCopied(false), 2000);` | `src/components/favorites/ShareListDialog.tsx` |
 | `const WINDOW_MS = 5 * 60 * 1000;` | `src/components/intelligence/RealtimeBadge.tsx` |
 | `const diffDays = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));` | `src/components/inventory/FutureStockDialog.tsx` |
 | `return Math.ceil(diff / (1000 * 60 * 60 * 24));` | `src/components/inventory/FutureStockDialog.tsx` |
@@ -5387,6 +5712,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `cursorTimer.current = setTimeout(() => setCursorHidden(true), 3000);` | `src/components/presentation/PresentationMode.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/components/pricing/ProductPriceSimulator.tsx` |
 | `setTimeout(() => setCopied(null), 2000);` | `src/components/pricing/simulator/MultiEngravingResult.tsx` |
+| `setTimeout(() => setCopied(false), 2000);` | `src/components/pricing/simulator/PriceResultV51.tsx` |
+| `setTimeout(() => setCopied(false), 2000);` | `src/components/pricing/simulator/QuantityAndResult.tsx` |
 | `(1000 * 60 * 60 * 24),` | `src/components/products/FutureStockModal.tsx` |
 | `return !isBefore(entryDate, todayStart) && isBefore(entryDate, addDays(todayStart, 31));` | `src/components/products/FutureStockModal.tsx` |
 | `return !isBefore(entryDate, todayStart) && isBefore(entryDate, addDays(todayStart, 8));` | `src/components/products/FutureStockModal.tsx` |
@@ -5407,6 +5734,95 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `setTimeout(() => setCopied(false), 2000);` | `src/components/security/TwoFactorSetup.tsx` |
 | `const buffer = 5 * 60 * 1000;` | `src/contexts/AuthContext.tsx` |
 | `const warningTime = timeToExpiry - 2 * 60 * 1000;` | `src/contexts/AuthContext.tsx` |
+| `staleTime: 30 * 60 * 1000, // Matching useProductsCatalog staleTime` | `src/hooks/useCatalogPrefetch.ts` |
+| `gcTime: 60 * 60 * 1000,` | `src/hooks/useCatalogRealStats.ts` |
+| `staleTime: 30 * 60 * 1000,` | `src/hooks/useCatalogRealStats.ts` |
+| `setTimeout(() => fetchNextPage(), 1000);` | `src/hooks/useCatalogState.ts` |
+| `staleTime: 30 * 60 * 1000, // 30 min (dados estáveis)` | `src/hooks/useCategories.ts` |
+| `staleTime: 30 * 60 * 1000, // 30 min (dados estáveis)` | `src/hooks/useCategoryIcons.ts` |
+| `staleTime: 10 * 60 * 1000,` | `src/hooks/useClientTopProducts.ts` |
+| `gcTime: 10 * 60 * 1000,` | `src/hooks/useColorEnrichment.ts` |
+| `gcTime: 24 * 60 * 60 * 1000, // 24 horas` | `src/hooks/useColorSystem.ts` |
+| `staleTime: 60 * 60 * 1000, // 1 hora` | `src/hooks/useColorSystem.ts` |
+| `gcTime: 1000 * 60 * 60, // 1 hora` | `src/hooks/useCommemorativeDates.ts` |
+| `"24h": 24 * 60 * 60_000,` | `src/hooks/useConnectionsOverviewFilters.ts` |
+| `"7d": 7 * 24 * 60 * 60_000,` | `src/hooks/useConnectionsOverviewFilters.ts` |
+| `staleTime: 10 * 60 * 1000,` | `src/hooks/useCrmCompanies.ts` |
+| `staleTime: 15 * 60 * 1000,` | `src/hooks/useCrmCompanies.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useCrmCompanies.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useExternalCollections.ts` |
+| `staleTime: 5 * 60 * 1000, // 5 minutos` | `src/hooks/useExternalCollections.ts` |
+| `gcTime: 60 * 60 * 1000,` | `src/hooks/useExternalVariantStock.ts` |
+| `staleTime: 15 * 60 * 1000,` | `src/hooks/useExternalVariantStock.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useGravacaoPriceV2.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useGravacaoV2.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useKitBuilderQueries.ts` |
+| `staleTime: 2 * 60 * 1000,` | `src/hooks/useKitStockForecast.ts` |
+| `const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();` | `src/hooks/useLoginAttempts.ts` |
+| `const last7d = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();` | `src/hooks/useLoginAttempts.ts` |
+| `const LOCKOUT_MS = 5 * 60 * 1000; // 5 minutes` | `src/hooks/useLoginRateLimit.ts` |
+| `staleTime: 10 * 60 * 1000,` | `src/hooks/useMarketIntelligenceMacro.ts` |
+| `gcTime: 30 * 60 * 1000, // 30 minutos` | `src/hooks/useMaterialGroups.ts` |
+| `staleTime: 5 * 60 * 1000, // 5 minutos` | `src/hooks/useMaterialGroups.ts` |
+| `gcTime: 30 * 60 * 1000,` | `src/hooks/useMaterialTypes.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useMaterialTypes.ts` |
+| `setTimeout(() => setShowDraftRestoredNotice(false), 5000);` | `src/hooks/useMockupGenerator.ts` |
+| `staleTime: 10 * 60 * 1000,` | `src/hooks/useMockupTechniques.ts` |
+| `const elapsed = Math.floor((now - created) / (1000 * 60 * 60 * 24));` | `src/hooks/useNovelties.ts` |
+| `staleTime: 2 * 60 * 1000,` | `src/hooks/useNovelties.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useNovelties.ts` |
+| `staleTime: 10 * 60 * 1000,` | `src/hooks/usePrintAreas.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/usePrintAreas.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useProductCustomizationOptions.ts` |
+| `staleTime: 15 * 60 * 1000,` | `src/hooks/useProductImages.ts` |
+| `staleTime: 15 * 60 * 1000, // Aumentado para 15 min (dados estáveis)` | `src/hooks/useProductImages.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useProductInsights.ts` |
+| `staleTime: 10 * 60 * 1000,` | `src/hooks/useProductRecommendations.ts` |
+| `staleTime: 15 * 60 * 1000,` | `src/hooks/useProductRecommendations.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useProductRecommendations.ts` |
+| `gcTime: 30 * 60 * 1000,` | `src/hooks/useProducts.ts` |
+| `gcTime: 60 * 60 * 1000,` | `src/hooks/useProducts.ts` |
+| `staleTime: 10 * 60 * 1000,` | `src/hooks/useProducts.ts` |
+| `staleTime: 15 * 60 * 1000,` | `src/hooks/useProducts.ts` |
+| `gcTime: 10 * 60 * 1000, // 10 minutos` | `src/hooks/useProductsByMaterial.ts` |
+| `staleTime: 2 * 60 * 1000, // 2 minutos` | `src/hooks/useProductsByMaterial.ts` |
+| `gcTime: 120 * 60 * 1000,` | `src/hooks/useProductsLightweight.ts` |
+| `staleTime: 30 * 60 * 1000,` | `src/hooks/useProductsLightweight.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useProdutoRamoAtividade.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/usePromoSalesRanking.ts` |
+| `const [validUntil, setValidUntil] = useState(format(addDays(new Date(), 7), 'yyyy-MM-dd'));` | `src/hooks/useQuoteBuilderState.ts` |
+| `setValidUntil(quote.valid_until \|\| format(addDays(new Date(), 30), 'yyyy-MM-dd'));` | `src/hooks/useQuoteBuilderState.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useQuoteBuilderState.ts` |
+| `return sum + (end - start) / (1000 * 60 * 60 * 24);` | `src/hooks/useQuoteFunnel.ts` |
+| `gcTime: 10 * 60 * 1000,` | `src/hooks/useRBAC.tsx` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useRBAC.tsx` |
+| `setTimeout(() => { if (lastAddedRef.current === productId) { lastAddedRef.current = null; } }, 1000);` | `src/hooks/useRecentlyViewed.ts` |
+| `return Math.max(0, Math.floor((Date.now() - updated) / (1000 * 60 * 60 * 24)));` | `src/hooks/useReplenishments.ts` |
+| `staleTime: 2 * 60 * 1000,` | `src/hooks/useReplenishments.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useReplenishments.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useSalesHistory.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useSalesHistoryMacro.ts` |
+| `return new Date(now.getTime() + 24 * 60 * 60 * 1000);` | `src/hooks/useScheduledReports.ts` |
+| `return new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);` | `src/hooks/useScheduledReports.ts` |
+| `gcTime: 30 * 60 * 1000,` | `src/hooks/useSimilarProducts.ts` |
+| `staleTime: 10 * 60 * 1000,` | `src/hooks/useSimilarProducts.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useSimulation.ts` |
+| `setTimeout(() => { saveToCloudMutation.mutate(updated); }, 2000);` | `src/hooks/useSimulatorPreferences.ts` |
+| `staleTime: 5 * 60 * 1000, // 5 minutes` | `src/hooks/useSimulatorPreferences.ts` |
+| `gcTime: 120 * 60 * 1000,` | `src/hooks/useSparklineSales.tsx` |
+| `staleTime: 60 * 60 * 1000,` | `src/hooks/useSparklineSales.tsx` |
+| `staleTime: 10 * 60 * 1000,` | `src/hooks/useStockHistory.ts` |
+| `staleTime: 30 * 60 * 1000,` | `src/hooks/useStockHistory.ts` |
+| `{ enabled: !!product && !!categoryName, staleTime: 10 * 60 * 1000 }` | `src/hooks/useSupplierComparison.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useSupplierFiscalData.ts` |
+| `staleTime: 60 * 60 * 1000, // 1h cache — supplier names rarely change` | `src/hooks/useSupplierNames.ts` |
+| `staleTime: 10 * 60 * 1000, // 10 min cache` | `src/hooks/useSupplierSalesRanking.ts` |
+| `staleTime: 10 * 60 * 1000, // 10 min cache` | `src/hooks/useSupplierTrust.ts` |
+| `gcTime: 30 * 60 * 1000,` | `src/hooks/useVariantStock.ts` |
+| `staleTime: 10 * 60 * 1000,` | `src/hooks/useVariantStock.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/useVariantSupplierSources.ts` |
+| `const aRecency = 1 / (1 + (now - a.lastUsed.getTime()) / (1000 * 60 * 60 * 24));` | `src/hooks/useVoiceCommandHistory.ts` |
+| `const bRecency = 1 / (1 + (now - b.lastUsed.getTime()) / (1000 * 60 * 60 * 24));` | `src/hooks/useVoiceCommandHistory.ts` |
 | `const ipTimeout = setTimeout(() => ipCtrl.abort(), 5000);` | `src/hooks/admin/useIPValidation.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/admin/useSystemSettings.ts` |
 | `const bucketMs = granularity === 'hour' ? 60 * 60 * 1000 : 24 * 60 * 60 * 1000;` | `src/hooks/admin/useV4Callbacks.ts` |
@@ -5426,173 +5842,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 10 * 60 * 1000,` | `src/hooks/bi/useIndustryTrends.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/collections/useExternalCollections.ts` |
 | `staleTime: 5 * 60 * 1000, // 5 minutos` | `src/hooks/collections/useExternalCollections.ts` |
-| `{ timeout = 3000, delay = 0 }: IdleOptions = {},` | `src/hooks/common/useIdleEffect.ts` |
-| `gcTime: 60 * 60 * 1000,` | `src/hooks/common/useSearch.ts` |
-| `staleTime: 30 * 60 * 1000,` | `src/hooks/common/useSearch.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/crm/useClientTopProducts.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/crm/useCrmCompanies.ts` |
-| `staleTime: 15 * 60 * 1000,` | `src/hooks/crm/useCrmCompanies.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/crm/useCrmCompanies.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/crm/useProdutoRamoAtividade.ts` |
-| `staleTime: 30 * 60 * 1000,` | `src/hooks/crm/useRamoAtividade.ts` |
-| `staleTime: 60 * 60 * 1000,` | `src/hooks/crm/useRamoAtividade.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/gravacao/useTecnicasGravacao.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/intelligence/useAiRouter.ts` |
-| `gcTime: 1000 * 60 * 60, // 1 hora` | `src/hooks/intelligence/useCommemorativeDates.ts` |
-| `'24h': 24 * 60 * 60_000,` | `src/hooks/intelligence/useConnectionsOverviewFilters.ts` |
-| `'7d': 7 * 24 * 60 * 60_000,` | `src/hooks/intelligence/useConnectionsOverviewFilters.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/intelligence/useMarketIntelligenceMacro.ts` |
-| `gcTime: 15 * 60 * 1000,` | `src/hooks/intelligence/usePromoSales90dByProduct.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/intelligence/usePromoSales90dByProduct.ts` |
-| `gcTime: 15 * 60 * 1000,` | `src/hooks/intelligence/usePromoSalesRanking.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/intelligence/usePromoSalesRanking.ts` |
-| `staleTime: 2 * 60 * 1000,` | `src/hooks/intelligence/useSalesGoals.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/intelligence/useSalesHistory.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/intelligence/useSalesHistoryMacro.ts` |
-| `return new Date(now.getTime() + 24 * 60 * 60 * 1000);` | `src/hooks/intelligence/useScheduledReports.ts` |
-| `return new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);` | `src/hooks/intelligence/useScheduledReports.ts` |
-| `const t = setTimeout(() => setDeferred(true), 1500);` | `src/hooks/intelligence/useSparklineSales.tsx` |
-| `gcTime: 120 * 60 * 1000,` | `src/hooks/intelligence/useSparklineSales.tsx` |
-| `staleTime: 60 * 60 * 1000,` | `src/hooks/intelligence/useSparklineSales.tsx` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/intelligence/useStockHistory.ts` |
-| `staleTime: 30 * 60 * 1000,` | `src/hooks/intelligence/useStockHistory.ts` |
-| `staleTime: 30 * 60 * 1000,` | `src/hooks/intelligence/useStockVelocityPrefetch.ts` |
-| `const aRecency = 1 / (1 + (now - a.lastUsed.getTime()) / (1000 * 60 * 60 * 24));` | `src/hooks/intelligence/useVoiceCommandHistory.ts` |
-| `const bRecency = 1 / (1 + (now - b.lastUsed.getTime()) / (1000 * 60 * 60 * 24));` | `src/hooks/intelligence/useVoiceCommandHistory.ts` |
-| `gcTime: 30 * 60 * 1000,` | `src/hooks/inventory/useSupplierReliability.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/inventory/useSupplierReliability.ts` |
-| `gcTime: 10 * 60 * 1000,` | `src/hooks/inventory/useSupplierReliabilityServer.ts` |
-| `gcTime: 30 * 60 * 1000,` | `src/hooks/inventory/useSupplierReliabilityServer.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/inventory/useSupplierReliabilityServer.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/kit-builder/useKitBuilderQueries.ts` |
-| `staleTime: 2 * 60 * 1000,` | `src/hooks/kit-builder/useKitStockForecast.ts` |
-| `draftNoticeTimeoutRef.current = setTimeout(() => setShowDraftRestoredNotice(false), 5000);` | `src/hooks/mockup/useMockupGenerator.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/mockup/useMockupTechniques.ts` |
-| `export const MS_PER_DAY = 1000 * 60 * 60 * 24;` | `src/hooks/products/novelty-core.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/products/useCatalogPreferences.ts` |
-| `staleTime: 30 * 60 * 1000,` | `src/hooks/products/useCatalogPrefetch.ts` |
-| `gcTime: 60 * 60 * 1000,` | `src/hooks/products/useCatalogRealStats.ts` |
-| `staleTime: 30 * 60 * 1000,` | `src/hooks/products/useCatalogRealStats.ts` |
-| `const prefetchTimer = setTimeout(() => { fetchNextPage().finally(() => { prefetchScheduledRef.current = false; }); }, 1000);` | `src/hooks/products/useCatalogState.ts` |
-| `staleTime: 30 * 60 * 1000, // 30 min (dados estáveis)` | `src/hooks/products/useCategories.ts` |
-| `staleTime: 30 * 60 * 1000,` | `src/hooks/products/useCategoryIcons.ts` |
-| `gcTime: 10 * 60 * 1000,` | `src/hooks/products/useColorEnrichment.ts` |
-| `gcTime: 10 * 60 * 1000,` | `src/hooks/products/useColorFanout.ts` |
-| `gcTime: 24 * 60 * 60 * 1000,` | `src/hooks/products/useColorSystem.ts` |
-| `staleTime: 60 * 60 * 1000,` | `src/hooks/products/useColorSystem.ts` |
-| `gcTime: 60 * 60 * 1000,` | `src/hooks/products/useExternalVariantStock.ts` |
-| `staleTime: 15 * 60 * 1000,` | `src/hooks/products/useExternalVariantStock.ts` |
-| `gcTime: 30 * 60 * 1000, // 30 minutos` | `src/hooks/products/useMaterialGroups.ts` |
-| `staleTime: 5 * 60 * 1000, // 5 minutos` | `src/hooks/products/useMaterialGroups.ts` |
-| `gcTime: 30 * 60 * 1000,` | `src/hooks/products/useMaterialTypes.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/products/useMaterialTypes.ts` |
-| `const MS_PER_DAY = 1000 * 60 * 60 * 24;` | `src/hooks/products/useNovelties.helpers.ts` |
-| `const daysLeft = (expTime - Date.now()) / (1000 * 60 * 60 * 24);` | `src/hooks/products/useNovelties.helpers.ts` |
-| `staleTime: 2 * 60 * 1000,` | `src/hooks/products/useNovelties.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/products/useNovelties.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/products/usePrefetchProduct.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/products/useProductEngravingOptions.ts` |
-| `staleTime: 15 * 60 * 1000,` | `src/hooks/products/useProductImages.ts` |
-| `staleTime: 15 * 60 * 1000, // Aumentado para 15 min (dados estáveis)` | `src/hooks/products/useProductImages.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/products/useProductInsights.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/products/useProductRecommendations.ts` |
-| `staleTime: 15 * 60 * 1000,` | `src/hooks/products/useProductRecommendations.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/products/useProductRecommendations.ts` |
-| `gcTime: 24 * 60 * 60 * 1000,` | `src/hooks/products/useProducts.ts` |
-| `gcTime: 30 * 60 * 1000,` | `src/hooks/products/useProducts.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/products/useProducts.ts` |
-| `staleTime: 30 * 60 * 1000,` | `src/hooks/products/useProducts.ts` |
-| `gcTime: 10 * 60 * 1000, // 10 minutos` | `src/hooks/products/useProductsByMaterial.ts` |
-| `staleTime: 2 * 60 * 1000, // 2 minutos` | `src/hooks/products/useProductsByMaterial.ts` |
-| `gcTime: 15 * 60 * 1000,` | `src/hooks/products/useProductsBySize.ts` |
-| `gcTime: 60 * 60 * 1000,` | `src/hooks/products/useProductsBySize.ts` |
-| `staleTime: 30 * 60 * 1000,` | `src/hooks/products/useProductsBySize.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/products/useProductsBySize.ts` |
-| `gcTime: 30 * 60 * 1000,` | `src/hooks/products/useProductsColorsBatch.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/products/useProductsColorsBatch.ts` |
-| `gcTime: 120 * 60 * 1000,` | `src/hooks/products/useProductsLightweight.ts` |
-| `staleTime: 30 * 60 * 1000,` | `src/hooks/products/useProductsLightweight.ts` |
-| `dedupeTimerRef.current = setTimeout(() => { dedupeTimerRef.current = undefined; if (lastAddedRef.current === productId) { lastAddedRef.current = null; } }, 1000 …` | `src/hooks/products/useRecentlyViewed.ts` |
-| `staleTime: 2 * 60 * 1000,` | `src/hooks/products/useReplenishments.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/products/useReplenishments.ts` |
-| `gcTime: 30 * 60 * 1000,` | `src/hooks/products/useSimilarProducts.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/products/useSimilarProducts.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/products/useStockAlerts.ts` |
-| `const STALE = 2 * 60 * 1000;` | `src/hooks/products/useStockNotifications.ts` |
-| `{ enabled: !!product && (!!categoryId \|\| !!categoryName), staleTime: 10 * 60 * 1000 },` | `src/hooks/products/useSupplierComparison.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/products/useSupplierFiscalData.ts` |
-| `staleTime: 60 * 60 * 1000,` | `src/hooks/products/useSupplierNames.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/products/useSupplierSalesRanking.ts` |
-| `staleTime: 10 * 60 * 1000, // 10 min cache` | `src/hooks/products/useSupplierTrust.ts` |
-| `gcTime: 30 * 60 * 1000,` | `src/hooks/products/useVariantStock.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/products/useVariantStock.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/products/useVariantSupplierSources.ts` |
-| `? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()` | `src/hooks/quotes/discountApprovalResponder.ts` |
-| `(new Date(dateStr).getTime() - startOfDay(new Date()).getTime()) / (1000 * 60 * 60 * 24),` | `src/hooks/quotes/useQuoteBuilderState.helpers.ts` |
-| `s.setValidUntil(quote.valid_until \|\| format(addDays(new Date(), 30), 'yyyy-MM-dd'));` | `src/hooks/quotes/useQuoteBuilderState.helpers.ts` |
-| `const [validUntil, setValidUntil] = useState(format(addDays(new Date(), 7), 'yyyy-MM-dd'));` | `src/hooks/quotes/useQuoteBuilderState.ts` |
-| `setValidUntil(format(addDays(new Date(), 7), 'yyyy-MM-dd'));` | `src/hooks/quotes/useQuoteBuilderState.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/quotes/useQuoteBuilderState.ts` |
-| `gcTime: 10 * 60 * 1000,` | `src/hooks/quotes/useQuoteClientLogos.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/quotes/useQuoteClientLogos.ts` |
-| `return sum + (end - start) / (1000 * 60 * 60 * 24);` | `src/hooks/quotes/useQuoteFunnel.ts` |
-| `gcTime: 5 * 60 * 1000,` | `src/hooks/quotes/useQuoteItemCounts.ts` |
-| `staleTime: 60 * 60 * 1000,` | `src/hooks/quotes/useQuotes.ts` |
-| `setTimeout(() => setCopiedId(null), 2000);` | `src/hooks/simulation/simulationClipboard.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/simulation/useGravacaoPriceV2.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/simulation/useGravacaoV2.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/simulation/usePrintAreas.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/simulation/useSimulation.ts` |
-| `setTimeout(() => { saveToCloudMutation.mutate(updated); }, 2000);` | `src/hooks/simulation/useSimulatorPreferences.ts` |
-| `staleTime: 5 * 60 * 1000, // 5 minutes` | `src/hooks/simulation/useSimulatorPreferences.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/simulator/useSimulatorWizard.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/simulator/useWizardDrafts.ts` |
-| `const SESSION_TTL = 2 * 60 * 60 * 1000; // 2 hours` | `src/hooks/simulator/useWizardPersistence.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/tecnicas/useTabelasPreco.ts` |
-| `const timeout = setTimeout(() => controller.abort(), 60000);` | `src/hooks/voice/playTtsAudio.ts` |
-| `const timeout = setTimeout(() => controller.abort(), 15000);` | `src/hooks/voice/processTranscript.ts` |
-| `const CACHE_TTL_MS = 12 * 60 * 1000; // 12 minutes` | `src/hooks/voice/scribeTokenCache.ts` |
-| `const MAX_HISTORY_AGE_MS = 24 * 60 * 60 * 1000; // 24h` | `src/lib/cloud-status.ts` |
-| `const PREWARM_COOLDOWN_MS = 5 * 60 * 1000;` | `src/lib/external-db-prewarm.ts` |
-| `setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);` | `src/lib/mockup-storage.ts` |
-| `export const AUTO_RESET_INTERVAL_MS = 15 * 60 * 1000;` | `src/lib/notifications-metrics.ts` |
-| `DEFAULT: 15 * 60 * 1000,` | `src/lib/query-config.ts` |
-| `DYNAMIC: 5 * 60 * 1000,` | `src/lib/query-config.ts` |
-| `LONG: 60 * 60 * 1000,` | `src/lib/query-config.ts` |
-| `PRODUTOS: 10 * 60 * 1000,` | `src/lib/query-config.ts` |
-| `STABLE: 60 * 60 * 1000,` | `src/lib/query-config.ts` |
-| `TABELAS_PRECO: 15 * 60 * 1000,` | `src/lib/query-config.ts` |
-| `TECNICAS: 30 * 60 * 1000,` | `src/lib/query-config.ts` |
-| `VERY_STABLE: 24 * 60 * 60 * 1000,` | `src/lib/query-config.ts` |
-| `).requestIdleCallback(trigger, { timeout: 3000 });` | `src/lib/sentry.ts` |
-| `setTimeout(trigger, 3000);` | `src/lib/sentry.ts` |
-| `const LOCKOUT_MS = 5 * 60 * 1000; // 5 minutes` | `src/lib/auth/rate-limit.ts` |
-| `const RECOVERY_RESET_MS = 60 * 60 * 1000; // 1h — reset circuit breaker` | `src/lib/auth/session-recovery.ts` |
-| `const MS_PER_DAY = 24 * 60 * 60 * 1000;` | `src/lib/carts/shipping-deadline.ts` |
-| `setTimeout(() => URL.revokeObjectURL(url), 1000);` | `src/lib/edge/invokeExport.ts` |
-| `const TTL_MS = 5 * 60 * 1000; // 5 minutes — refs change rarely` | `src/lib/external-db/immutableCache.ts` |
-| `setTimeout(r, 1000 * (attempt + 1));` | `src/lib/external-db/products-detail.ts` |
-| `staleTime: 2 * 60 * 1000,` | `src/pages/admin/AdminCloudflareImagesPage.tsx` |
-| `window.setTimeout(() => setHighlightZone((cur) => (cur === anchorId ? null : cur)), 1800);` | `src/pages/admin/AdminConexoesPage.tsx` |
-| `const in30Days = (): string => new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();` | `src/pages/admin/AdminProductFormPage.tsx` |
-| `since: new Date(Date.now() - windowHours * 60 * 60 * 1000).toISOString(),` | `src/pages/admin/AdminV4CallbacksPage.tsx` |
-| `window.setTimeout(() => setCopied(false), 1800);` | `src/pages/admin/DevChallengeExamplesPage.tsx` |
-| `staleTime: 5 * 60 * 1000,` | `src/pages/admin/KitTemplatesMetricsPage.tsx` |
-| `const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();` | `src/pages/admin/ai-usage/MarketIntelInsightsUsagePanel.tsx` |
-| `const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();` | `src/pages/admin/telemetry/useOptimizationMetrics.ts` |
-| `setTimeout(r, 1500);` | `src/pages/admin/telemetry/useOptimizationQueue.ts` |
-| `redirectTimerRef.current = setTimeout(() => { navigate('/'); }, 3000);` | `src/pages/auth/ResetPassword.tsx` |
-| `const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1_000;` | `src/pages/magazine/editorRecovery.ts` |
-| `staleTime: 15 * 60 * 1000,` | `src/pages/magazine/components/MagazineClientPicker.tsx` |
-| `staleTime: 5 * 60 * 1000,` | `src/pages/products/ProductDetail.tsx` |
-| `{ enabled: !!selectedProduct?.category_id, staleTime: 10 * 60 * 1000 },` | `src/pages/products/ProductMatchPage.tsx` |
-| `setTimeout(() => { s.handleUpdateQuantity(itemId, 999999);` | `src/pages/products/SellerCartsPage.tsx` |
-| … +210 linhas — lista completa em `context.json` | |
+| … +379 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
 | Limite | Arquivo |
 |---|---|
+| 50 | `recovery/RealtimeMessagesExample.tsx` |
+| 50 | `src/components/admin/CatalogQualityDashboard.tsx` |
 | 1 | `src/components/admin/DiscountApprovalHeaderBadge.tsx` |
 | 100 | `src/components/admin/DiscountNotificationFilterPanel.tsx` |
 | 100 | `src/components/admin/MockupPromptManager.tsx` |
@@ -5635,6 +5892,30 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | 5 | `src/components/search/useGlobalSearch.ts` |
 | 10 | `src/components/security/useSecurityData.ts` |
 | 20 | `src/components/security/useSecurityData.ts` |
+| 1 | `src/hooks/useAccessSecurity.ts` |
+| 50 | `src/hooks/useAccessSecurity.ts` |
+| 1 | `src/hooks/useCollections.ts` |
+| 1 | `src/hooks/useComparisonSync.ts` |
+| 1 | `src/hooks/useDevAccessAudit.ts` |
+| 1 | `src/hooks/useDiscountApproval.ts` |
+| 50 | `src/hooks/useDuplicateKitDetector.ts` |
+| 1 | `src/hooks/useFavoriteLists.ts` |
+| 30 | `src/hooks/useMagicUpState.ts` |
+| 50 | `src/hooks/useMagicUpState.ts` |
+| 3 | `src/hooks/useProductInsights.ts` |
+| 20 | `src/hooks/useProductRecommendations.ts` |
+| 200 | `src/hooks/useQuoteHistory.ts` |
+| 200 | `src/hooks/useQuoteTemplates.ts` |
+| 500 | `src/hooks/useQuoteTemplates.ts` |
+| 1 | `src/hooks/useQuoteVersions.ts` |
+| 500 | `src/hooks/useQuotes.ts` |
+| 50 | `src/hooks/useRoleMigration.ts` |
+| 5000 | `src/hooks/useSalesHistory.ts` |
+| 2000 | `src/hooks/useSalesHistoryMacro.ts` |
+| 5000 | `src/hooks/useSalesHistoryMacro.ts` |
+| 50 | `src/hooks/useSimilarKits.ts` |
+| 50 | `src/hooks/useSimulation.ts` |
+| 50 | `src/hooks/useWorkspaceNotifications.tsx` |
 | 1 | `src/hooks/admin/useDevAccessAudit.ts` |
 | 200 | `src/hooks/admin/useDeviceDetection.ts` |
 | 100 | `src/hooks/admin/useKillSwitchObservability.ts` |
@@ -5685,6 +5966,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | 1 | `src/lib/external-db/rpc-native.ts` |
 | 0 | `src/lib/supabase/rls-validator.ts` |
 | 1 | `src/lib/supabase/rls-validator.ts` |
+| 100 | `src/pages/RateLimitDashboardPage.tsx` |
+| 1 | `src/pages/SystemStatusPage.tsx` |
 | 2000 | `src/pages/admin/AdminCloudflareImagesPage.tsx` |
 | 100 | `src/pages/admin/AdminSegurancaAcessoPage.tsx` |
 | 200 | `src/pages/admin/AdminSegurancaAcessoPage.tsx` |
@@ -5927,6 +6210,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | view removida depois da consulta ao catálogo | `scripts/supabase_snapshot/test_snapshot.py` |
 | view sem permissão na fixture | `scripts/supabase_snapshot/test_snapshot.py` |
 | Elemento root nao encontrado no DOM | `src/main.tsx` |
+|        aria-live= | `src/components/BridgeStatusBanner.tsx` |
 |  aria-live= | `src/components/a11y/AccessibilityProvider.tsx` |
 | useA11y must be used within an AccessibilityProvider | `src/components/a11y/AccessibilityProvider.tsx` |
 |  aria-live= | `src/components/a11y/AriaLive.tsx` |
@@ -6039,13 +6323,24 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Erro ao adicionar componente | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
 | Erro ao adicionar localização | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
 | Erro ao associar técnica | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
-| Erro ao atualizar componente | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
-| … +975 linhas — lista completa em `context.json` | |
+| … +1165 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
 | Valor comparado | Arquivo |
 |---|---|
+| `admin` | `recovery/block04_functions.sql` |
+| `dev` | `recovery/block04_functions.sql` |
+| `manager` | `recovery/block04_functions.sql` |
+| `vendedor` | `recovery/block04_functions.sql` |
+| `admin` | `recovery/block16_auth_hooks_validation.sql` |
+| `admin` | `recovery/full-public-schema.sql` |
+| `dev` | `recovery/full-public-schema.sql` |
+| `manager` | `recovery/full-public-schema.sql` |
+| `vendedor` | `recovery/full-public-schema.sql` |
+| `admin` | `recovery/patches/D4.3_ownership_audit/functions.sql` |
+| `dev` | `recovery/patches/D4.3_ownership_audit/functions.sql` |
+| `vendedor` | `recovery/patches/D5_misc_cross_cutting/functions.sql` |
 | `agent` | `src/components/access/DevAccessDeniedPage.tsx` |
 | `agente` | `src/components/access/DevAccessDeniedPage.tsx` |
 | `string` | `src/components/access/DevAccessDeniedPage.tsx` |
@@ -6062,6 +6357,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `assistant` | `src/components/expert/chat/useExpertChat.ts` |
 | `user` | `src/components/expert/chat/useExpertChat.ts` |
 | `denied` | `src/components/security/PushNotificationSettings.tsx` |
+| `granted` | `src/hooks/usePushNotifications.tsx` |
+| `dev` | `src/hooks/useRBAC.tsx` |
+| `roleName` | `src/hooks/useRBAC.tsx` |
+| `supervisor` | `src/hooks/useRBAC.tsx` |
 | `dev` | `src/hooks/auth/useRBAC.tsx` |
 | `roleName` | `src/hooks/auth/useRBAC.tsx` |
 | `supervisor` | `src/hooks/auth/useRBAC.tsx` |
@@ -6073,6 +6372,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `supervisor` | `src/lib/auth/visibility-scope.ts` |
 | `admin` | `src/lib/rbac/route-matrix.ts` |
 | `dev` | `src/lib/rbac/route-matrix.ts` |
+| `perm` | `src/pages/RolePermissionsPage.tsx` |
+| `permissionId` | `src/pages/RolePermissionsPage.tsx` |
+| `role` | `src/pages/RolePermissionsPage.tsx` |
 | `vendedor` | `src/pages/admin/AdminPromoverUsuarioPage.tsx` |
 | `dev` | `src/pages/admin/AdminRbacRoutesPage.tsx` |
 | `public` | `src/pages/admin/AdminRbacRoutesPage.tsx` |
@@ -6140,7 +6442,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (18495 testes em 1892 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (19663 testes em 1964 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6159,6 +6461,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/components/intelligence/commercial-intelligence.test.ts` | 80 | getSinceDate logic · should return ISO string for 30 days ago · should handle 0 days (today) · should handle 360 days (1 year) … |
 | `tests/components/products/StatsPopover.test.tsx` | 80 | statBadges — Basic scenarios · returns correct structure with 5 stat items · returns all zeros for empty product list · counts a single product correctly … |
 | `tests/contracts/migrated-endpoints.contract.test.ts` | 80 | contract: kit-ai-builder · v1 aceita prompt 6-2000 chars · v1 rejeita prompt < 6 → 422 · v2 exige idempotency_key … |
+| `tests/lib/external-db-bridge-telemetry.test.ts` | 80 | external-db-bridge — getResourceGroup · classifies product tables correctly · classifies views correctly · classifies company tables correctly … |
 | `tests/lib/telemetry-logic.test.ts` | 80 | formatDuration · formats 0ms · formats 1ms · formats 999ms … |
 | `tests/lib/theme-presets.test.ts` | 80 | §1 Catálogo THEME_PRESETS · expõe exatamente 19 skins (10 clássicas + 9 GX) · IDs são únicos · todos os presets têm name, description, emoji, swatches[4], light, dark … |
 | `tests/scripts/drift-baseline.test.mjs` | 80 | selectReplayMigrations · replaya só o que foi aplicado depois do dump, inclusive versão menor que B · replayFileName · renumera para depois do baseline mantendo o nome original … |
@@ -6173,8 +6476,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/hooks/quotes/quoteHelpers.freight.test.ts` | 66 | round2 — arredondamento monetário · 1.005 → 1.01 (half-up) · 1.004 → 1.00 (trunca) · 0 → 0 … |
 | `tests/hooks/useProductMatch.test.ts` | 65 | normalizeText · lowercases text · removes accents · handles empty string … |
 | `src/contexts/__tests__/SellerCartContext.restoreTelemetry.test.tsx` | 62 | SellerCartContext — telemetria do restoreCart (Undo) · restore_ok — desfechos success \| partial \| deduped · classifica  · classifica  … |
+| `tests/e2e/quotes-flow.test.ts` | 60 | E2E Quotes — Status Machine · has 6 statuses · draft → sent is valid · draft → pending is valid … |
 | `tests/unit/print-area-grouping.test.ts` | 58 | groupPrintAreasByComponent · returns empty array for empty input · groups area without component_name under  · uses location_name when provided … |
+| `tests/e2e/products-catalog.test.ts` | 56 | E2E Catalog — Product Filtering · active only by default · includes inactive when specified · search by name … |
 | `tests/pages/AdminTelemetriaPage.test.tsx` | 56 | AdminTelemetriaPage - Rendering · renders page title and description · renders the page shell · renders all 4 stat cards … |
+| `tests/e2e/cross-cutting-regression.test.ts` | 55 | Cross-Cutting — Currency Formatting · formats BRL correctly · formats zero · formats large number … |
 | `tests/utils/product-sorting.test.ts` | 54 | sortProducts · name sort · sorts alphabetically A-Z · handles accented characters correctly … |
 | `src/components/inventory/__tests__/stock-pure-components.test.tsx` | 53 | StockBadge · renders %s status label · shows formatted quantity when showQuantity=true · formats large quantity with k suffix … |
 | `tests/edge-functions/integration/receive-crm-callback.fuzz.test.ts` | 53 | SOURCE PARITY — código de produção contém as funções esperadas · timingSafeEqual continua constant-time (XOR loop, sem early-return) · verify_jwt=false via config.toml (auth é 100% inline) · usa service_role — nunca ANON — para writes … |
@@ -6182,12 +6488,15 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/rls/critical-tables-rls.test.ts` | 53 | RLS: quotes · has RLS enabled (policies exist) · only allows authenticated users · sellers can only manage their own quotes … |
 | `src/hooks/mockup/__tests__/mockupGenerationService.test.ts` | 52 | getTechniquePrompt · maps known technique codes to their prompts · maps the remaining known codes (uv, sublimacao) · falls back to default for unknown techniques … |
 | `tests/components/search/VoiceSearchOverlay.test.tsx` | 52 | VoiceSearchOverlay · Rendering · renders when open · does not render when closed … |
+| `tests/e2e/tools-simulator.test.ts` | 51 | E2E Tools — Simulator Wizard · has 4 steps · starts at product · ends at summary … |
+| `tests/e2e/kit-builder-flow.test.ts` | 50 | Kit Builder E2E Flow - Box Selection · validates box selection is required before adding items · allows item addition after box selection · prevents proceeding to items step without box … |
 | `tests/scripts/preflight-migration-apply.test.mjs` | 50 | findMigrationFiles · devolve [] quando nenhum arquivo bate com o prefixo · encontra exatamente um arquivo quando o prefixo é único · encontra múltiplos arquivos em colisão de prefixo (caso E10) … |
 | `tests/components/TelemetryCharts.test.tsx` | 46 | TelemetryCharts - Rendering · returns null when no rows · renders chart titles when rows exist · renders bar chart for table distribution … |
 | `tests/unit/stock-chart-utils.test.ts` | 46 | seededRandom · returns a value in [0, 1) · is deterministic: same seed produces same result · different seeds produce different results (most of the time) … |
 | `tests/edge-functions/integration/freight-quest-webhook-simulation.test.ts` | 45 | webhook-inbound — happy path (v2 envelope) · aceita evento  · webhook-inbound — múltiplas fontes · aceita source= … |
 | `e2e/products-module.spec.ts` | 44 | Products Module - Public Access (No Auth) · should redirect to auth when accessing ${route.path} unauthenticated · should display auth page for all product routes · should not expose product catalog data to unauthenticated users … |
 | `src/hooks/stock/__tests__/stockFetcher.test.ts` | 44 | toNumber · returns numbers as-is · coerces numeric strings · returns the fallback for non-finite / non-numeric values … |
+| `tests/e2e/admin-module.test.ts` | 44 | E2E Admin — User Management · lists all users · filters active users · filters inactive users … |
 | `tests/scripts/check-ledger-statements-gate.test.mjs` | 44 | isCanonicalVersion · aceita exatamente 14 dígitos · rejeita versões não-canônicas (curtas, com sufixo, ou não numéricas) · asStatementsArray … |
 | `tests/sw/sw.test.ts` | 44 | sw.js — install/activate · precacheia os critical assets e ativa skipWaiting sem lançar mesmo se um optional falhar · activate remove caches de versões antigas e preserva os atuais · sw.js — predicados de roteamento (extensão base64url, BUG-SW-9) … |
 | `tests/utils/color-variant-carousel.test.ts` | 44 | resolveAllMatchingColors — cenários sem match · retorna [] quando activeColorFilter é null · retorna [] quando activeColorFilter é undefined · retorna [] quando groups e variations estão vazios … |
@@ -6198,18 +6507,25 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/cart/__tests__/PopoverQtyInput.test.tsx` | 40 | normalizeQty (regra pura) · aceita inteiros dentro do intervalo · faz clamp acima do máximo · rejeita valores abaixo do mínimo … |
 | `src/lib/carts/__tests__/shipping-deadline.test.ts` | 39 | shipping-deadline · daysUntilDeadline · retorna 0 para hoje · retorna 3 para +3 dias … |
 | `src/pages/magazine/__tests__/pagination.test.ts` | 39 | paginateMagazine — null/undefined safety · handles null magazine → returns [cover, back-cover] · handles undefined magazine → returns [cover, back-cover] · handles magazine.content = undefined → no crash, no grouping … |
+| `tests/e2e/auth-flow.test.tsx` | 39 | E2E Auth — Login Validation · rejects empty email · rejects invalid email format · rejects email without domain … |
+| `tests/e2e/phase3-detail-experience.test.ts` | 39 | Phase 3.1 — ProductSizeSelector · builds size options from variations · aggregates stock across same size_code · excludes null/undefined size_codes … |
 | `tests/unit/freight-quest/freight-calculations.test.ts` | 39 | FreightEstimator — SEDEX · 0g → R$ 22,50 (faixa ≤ 1kg) · 500g, 1 kit → R$ 22,50 (≤ 1kg) · 1000g, 1 kit → R$ 22,50 (exatamente 1kg, faixa ≤ 1kg) … |
 | `e2e/tools-module.spec.ts` | 38 | Tools Module - Public Access (No Auth) · should redirect to auth when accessing ${route.path} unauthenticated · should display auth page for all tool routes · should not expose tool data to unauthenticated users … |
 | `src/pages/products/__tests__/applyVoiceFilters.test.ts` | 38 | applyVoiceFilters — mapeamento de filtros de voz · payload vazio não altera o estado · color acumula sem duplicar · category acumula sem duplicar … |
+| `tests/e2e/phase2-filters-catalog.test.ts` | 38 | Phase 2.1 — Gender Filter Integration · no filter returns all products · filter masculino · filter feminino … |
 | `tests/edge-functions/integration/auth-security.test.ts` | 38 | validate-access · usuário com permissão → 200 + allowed=true · usuário sem permissão → 200 + allowed=false · sem Authorization → 401 … |
 | `src/pages/products/seller-carts/__tests__/CartHeader.invariants.fuzz.test.ts` | 37 | Header meta — pluralização e formatação (100+ cenários) · carrinho vazio → 0 SKUs · 0 unidades (sem moeda) · 1 SKU · 1 unidade → singular em ambos · 1 SKU · N>1 unidades → SKU singular, unidades plural … |
 | `src/utils/__tests__/br-schemas.test.ts` | 37 | validateCpf (masks) · aceita CPF válido %s · rejeita CPF inválido %s · rejeita todos os dígitos repetidos … |
 | `tests/contracts/webhook-scenario-matrix.test.ts` | 37 | WebhookInbound — v1 passthrough · aceita ${label} · body vazio → 400 missing_body · JSON inválido → 400 invalid_json … |
+| `tests/e2e/navigation-layout.test.tsx` | 37 | E2E Navigation — Route Registry · has public routes · has protected routes · has admin routes … |
+| `tests/e2e/phase1-foundation-types.test.ts` | 37 | Phase 1.1 — ProductColor Type Contract · accepts valid color with all fields · accepts color without optional fields · handles zero stock … |
 | `tests/hooks/super-filtro-bugfix-15-22.test.ts` | 37 | BUG-15a — filtro featured · deve incluir apenas produtos com featured=true quando filtro ativo · não deve filtrar quando featured=false no filtro · BUG-15b — filtro isNew via newArrival … |
 | `tests/unit/masked-suffix.test.ts` | 37 | normalizeMaskedSuffix · returns ???? for null · returns ???? for undefined · returns ???? for empty string … |
 | `src/hooks/__tests__/hooks-audit-regression.unit.test.ts` | 36 | STOCK-01 — toNumber utility (base para buildFutureEntries) · converte number para number sem alteracao · converte string numerica corretamente · retorna fallback para NaN e valores invalidos … |
+| `tests/e2e/phase4-admin-grid.test.ts` | 36 | Phase 4.1 — Variation Axes Config · detects color-only axes · detects color + size axes · detects all three axes … |
 | `tests/lib/kit-builder-volume.test.ts` | 36 | kit-builder volume-calculator · calculateVolume · returns w*h*d · calculateUsableVolume … |
 | `tests/security/security-headers.test.ts` | 36 | Security Headers: HSTS · Strict-Transport-Security is configured · HSTS max-age is at least 1 year (31536000) · HSTS includes includeSubDomains … |
+| `tests/e2e/phase5-propagation.test.ts` | 35 | Phase 5.1 — Quote Items with size_code · quote item with color and size · quote item without size (non-apparel) · quote item subtotal calculation … |
 | `tests/lib/date-utils.test.ts` | 35 | date-utils · formatDate · formats ISO string with default pattern · formats Date object … |
 | `tests/scripts/check-types-inventory-drift.test.mjs` | 35 | extractTypesInventory (TypeScript Compiler API) · rejeita entrada vazia, truncada ou desconhecida: %s · extrai Tables/Views/Functions/Enums por schema e ignora __InternalSupabase · countsOf reduz o inventário a contagens por schema/categoria … |
 | `e2e/admin-conexoes-module.spec.ts` | 34 | Admin / Conexões Module - Public Access (No Auth) · should redirect to auth when accessing ${route.path} unauthenticated · should display auth page for all admin routes · should not expose admin/conexoes data to unauthenticated users … |
@@ -6224,6 +6540,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/integration/freight-quest/webhook-matrix-1000.test.ts` | 32 | matriz 1: todos eventos × todas fontes (v2 envelope) · event=$event source=$source → 200 · matriz 2: todos eventos com envelope v1 · evento  … |
 | `tests/unit/freight-quest/quote-shipping-validation.test.ts` | 32 | quoteFormSchema — valid cases · CIF com shippingCost=0 → válido · FOB com shippingCost=0 → válido · FOB_PRE com shippingCost=50 → válido … |
 | `tests/ai-usage.test.ts` | 31 | AI Usage - Cost Estimation · calculates Gemini 2.5 Flash cost correctly · calculates Gemini 3 Flash Preview cost correctly · calculates GPT-5 cost correctly … |
+| `tests/e2e/performance.test.ts` | 31 | E2E Performance — Lazy Loading · MainLayout lazy loads 12+ components · E2E Performance — Query Limits · app page size < supabase limit … |
 | `tests/edge-functions/integration/ai-features.test.ts` | 31 | ai-recommendations · product_id válido → 200 + recomendações · contexto de orçamento → 200 + recomendações contextuais · produto inexistente → 404 … |
 | `tests/edge-functions/integration/notifications.test.ts` | 31 | send-notification · notificação válida → 200 + notification_id · notificação broadcast para múltiplos usuários → 200 + count · user_id inexistente → 404 … |
 | `tests/lib/date-utils-extended.test.ts` | 31 | formatDate — extended · formats Date object dd/MM/yyyy · formats ISO string · formats timestamp … |
@@ -6238,6 +6555,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/catalog/catalog-search-audit.spec.ts` | 29 | Catálogo · Busca · termos comuns (grade não-vazia + relevância) · busca comum retorna resultados relevantes:  · Catálogo · Busca · SKU exato (bug #1) · busca por SKU encontra o produto:  … |
 | `src/components/inventory/__tests__/ri[REDACTED].test.tsx` | 29 | RiskKpi · renders label, value and sub · renders with alert style when alert=true · renders with warning style when warning=true … |
 | `src/components/products/__tests__/ColorSwatchTwoLineOverflow.test.tsx` | 29 | V1 ProductColorSwatches (wrap, max=14) · 7 cores → exibe TODAS, sem chip  · 14 cores → exibe TODAS, sem chip  · 20 cores → 13 bolinhas + chip  … |
+| `tests/e2e/analytics-bi.test.ts` | 29 | E2E Analytics — BI Metrics · total = approved + rejected + pending · conversion rate is correct · avg ticket = revenue / approved … |
 | `tests/lib/kit-builder-price.test.ts` | 29 | kit-builder price-calculator · calculateBoxPrice · returns 0 for null box · multiplies box price by quantity … |
 | `tests/lib/masked-suffix.test.ts` | 29 | normalizeMaskedSuffix — paridade de comprimento · 0 chars (null) →  · 1 char  · 2 chars  … |
 | `tests/pages/ProductDetail.test.ts` | 29 | mapPromobrindToProduct — full integration · maps basic fields correctly · maps colors with hex, code, images · maps materials from comma-separated string … |
@@ -6261,6 +6579,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/quotes/__tests__/personalizationSummary.test.ts` | 27 | normalizeColorsCount · normaliza %p → %p · formatColors · singular vs plural … |
 | `src/pages/magazine/__tests__/useMagazineEditor.staleRef.test.ts` | 27 | useMagazineEditor — stale ref race condition · restaura rascunho local quando a versão-base ainda coincide · permite reaplicar conscientemente recovery conflitante sobre a versão atual · não restaura sobre versão remota mais nova e permite descartar … |
 | `tests/stock-types.test.ts` | 27 | calculateStockStatus · returns out_of_stock when current is 0 · returns incoming when current is 0 but in transit > 0 · does NOT derive critical from min (deprecated) … |
+| `tests/e2e/catalog-price-freshness-badge.test.tsx` | 27 | E2E Catálogo — visibilidade do PriceFreshnessBadge por host · Produto FRESH (5d, threshold 60d) — preço dentro do prazo · Card (icon-only) NÃO renderiza badge · EnhancedCard (icon-only) NÃO renderiza badge … |
 | `tests/edge-functions/integration/quote-flow.test.ts` | 27 | quote-sync · payload válido · recalculate → 200 + synced=true · action=recalculate com itens → 200 + totals calculados … |
 | `tests/unit/trending-score.test.ts` | 27 | calculateTrendingScore · classification boundaries · returns  · returns  … |
 | `tests/unit/variant-matching.test.ts` | 27 | normalizeColorName · returns empty string for null · returns empty string for undefined · returns empty string for empty string … |
@@ -6270,6 +6589,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/pages/products/__tests__/CartHeaderEdgeCases.test.ts` | 26 | shippingDeadlineSchema — inputs extremos · aceita null (limpar prazo) · trata string vazia como null · rejeita formato inválido (dd/mm/aaaa) … |
 | `src/pages/products/seller-carts/__tests__/undoCopy.test.ts` | 26 | undoCopy — SSOT: duração + singular/plural · duração de 8 segundos · UNDO_DURATION_MS é 8000ms (contrato do fluxo Desfazer) · UNDO_DURATION_LABEL é  … |
 | `src/utils/__tests__/image-utils.fuzz.test.ts` | 26 | getCdnUrl — fuzz (variantes × formas de URL) · aplica a variante pedida a qualquer URL CDN, com ou sem sufixo prévio (168 casos) · é idempotente: reaplicar variantes nunca acumula sufixos (144 combinações) · não altera URLs fora do CDN (30 casos) … |
+| `tests/e2e/profile-user.test.ts` | 26 | E2E Profile — Form Validation · accepts valid profile · rejects empty name · rejects short name … |
 | `tests/hooks/useReplenishments.test.ts` | 26 | Replenishment utility functions · isReplenishment · returns true when updated_at is 1+ day after created_at · returns false when updated_at equals created_at (new product) … |
 | `tests/lib/external-db-invoke.test.ts` | 26 | extractFunctionErrorMessage · returns message from Error instance · returns generic message for non-Error · aceita envelope compatível de invokeEdge sem exigir instanceof Error … |
 | `tests/unit/connection-error-copy.test.ts` | 26 | getErrorCopy · returns timeout copy for kind= · includes timeoutMs in hint when provided · returns network copy for kind= … |
@@ -6292,6 +6612,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/inventory/__tests__/rupture-risk.test.ts` | 23 | rupture-risk constants · exposes the canonical horizon options · defaults the horizon to 3 days · computeRuptureRisk — precondition guards on current … |
 | `src/lib/navigation/__tests__/active-match.test.ts` | 23 | isNavItemActive · highlights on the exact /carrinhos route · highlights on child routes /carrinhos/:id · highlights on deep child routes /carrinhos/:id/editar … |
 | `src/lib/security/__tests__/lastInternalRoute.deeplink.test.ts` | 23 | isSafeReturnPath · rejeita rota gated/auth: %s · aceita rota interna segura: %s · rejeita valores não-path (absoluto externo, vazio, null) … |
+| `supabase/functions/external-db-bridge/callerSelectIsHeavy.test.ts` | 23 | extractBaseColumn: nome simples · extractBaseColumn: alias PostgREST  · extractBaseColumn: operadores JSON  · extractBaseColumn: alias + JSON op combinados … |
 | `tests/components/PriceFreshnessBadge.catalog-visibility.test.tsx` | 23 | PriceFreshnessBadge — visibilidade nos componentes do catálogo · ProductCard / EnhancedProductCard / ProductTableView (variant= · NÃO renderiza quando fresh (preço atualizado dentro de 50% do threshold) · NÃO renderiza quando o status é unknown (data ausente) … |
 | `tests/edge-functions/integration/generate-mockup.test.ts` | 23 | generate-mockup · happy path · returns 200 with mockupUrl/mockup_url and a mockup_id · mockupUrl points to a safe https CDN (no javascript:/data:) … |
 | `tests/edge-functions/integration/manage-users.test.ts` | 23 | manage-users · listar usuários (GET) · admin recebe 200 com array de usuários · lista não expõe password_hash ou tokens … |
@@ -6309,6 +6630,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/components/PriceFreshnessBadge.copyAssertions.test.tsx` | 22 | PriceFreshnessBadge — cópia pt-BR exata por variant · variant=inline (PDP / Quick View) · fresh:  · aging:  … |
 | `tests/components/kit-builder/KitBuilderComponents.test.tsx` | 22 | KitVisualPreview · renders null when no box · renders box preview with items · shows correct fill color for normal usage … |
 | `tests/contracts/product-webhook.contract.test.ts` | 22 | contract: product-webhook v1 (compat com produção) · aceita payload válido (upsert, default v1) · aceita produto com campos opcionais ricos · payload sem body → 400 missing_body … |
+| `tests/e2e/favorites-module.test.ts` | 22 | E2E Favoritos — Gestão de Listas · identifica a lista padrão corretamente · valida token de compartilhamento ativo · calcula total de itens entre todas as listas … |
+| `tests/e2e/ui-components.test.tsx` | 22 | E2E UI — Button Variants · renders  · default variant renders · E2E UI — Button Sizes … |
 | `tests/edge-functions/integration/ai-content-materials-ops.test.ts` | 22 | analyze-logo-colors · returns 200 with a colors array on success · rejects SVG logos with 400 · returns 401 without a token … |
 | `tests/edge-functions/integration/ai-recommendations.test.ts` | 22 | ai-recommendations · happy path · retorna 200 com array de recomendações · cada recomendação tem product_id e score numérico … |
 | `tests/edge-functions/integration/image-proxy.test.ts` | 22 | image-proxy · proxy de imagem válida · retorna 200 com Content-Type image/* para URL válida · inclui Cache-Control com max-age para imagens … |
@@ -6357,7 +6680,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/pages/quotes/__tests__/useQuotesListPage.expiring.test.ts` | 20 | useQuotesListPage — filtro  · I1: exclui quotes com status=expired mesmo com valid_until futuro · I2: exclui valid_until no passado (mesmo status=pending) · I3: exclui quotes sem valid_until … |
 | `src/pages/quotes/__tests__/useQuotesListPage.test.ts` | 20 | useQuotesListPage — onlyPendingStatuses · false quando lista está vazia · true quando todos os quotes são pending · false quando há mix de status … |
 | `src/tests/ProductSortingRelevance.test.ts` | 20 | SORT_OPTIONS — contrato do seletor · expõe exatamente as 7 opções esperadas, na ordem da UI · todas as opções têm label não vazia · sortProducts — Nome (A-Z) … |
+| `src/utils/price-freshness.test.ts` | 20 | Price Freshness Utility · formatPriceDateShort · formats date in pt-BR short format · formatPriceDateLong … |
 | `src/utils/__tests__/quote-number.exhaustive.test.ts` | 20 | quote-number · normalização e validação exaustivas · idempotência · normalizar(%s) é idempotente · saneamento de espaços … |
+| `supabase/functions/external-db-bridge/applyFiltersAndSwap.integration.test.ts` | 20 | applyFilters: nunca chama .select() (filtro vazio) · applyFilters: nunca chama .select() (filtros simples eq) · applyFilters: nunca chama .select() (operadores PostgREST string) · applyFilters: nunca chama .select() (sufixos _gte/_lte/_isnull/_notnull) … |
 | `tests/edge-functions/integration/cnpj-lookup.test.ts` | 20 | cnpj-lookup · happy path · retorna 200 com dados da empresa para CNPJ válido formatado · aceita CNPJ sem formatação (somente dígitos) … |
 | `tests/edge-functions/integration/step-up-verify.test.ts` | 20 | step-up-verify · verificação bem-sucedida · retorna 200 com step_up_token quando OTP correto · step_up_token expira em tempo razoável (15min) … |
 | `tests/integration/freight-quest/quote-freight-integration.test.ts` | 20 | quote-sync — integração com frete · sync_quote com shipping_type=fob_pre → total inclui frete · sync_quote com shipping_type=cif → total NÃO inclui frete · quoteId inválido (não-UUID) → 400 validation error … |
@@ -6421,30 +6746,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/novelties/NoveltyCards.stockBadge.test.tsx` | 17 | NoveltyCards › StockBadge (fallback de stock_quantity) · getStockStatus com threshold=10 · retorna  · retorna  … |
 | `src/components/ui/__tests__/OptimizedImage.test.tsx` | 17 | OptimizedImage · renders a shimmer or placeholder when loading · applies fade-in, removes blur and resets zoom after onLoad · handles custom configuration correctly … |
 | `src/hooks/common/__tests__/useListUrlState.test.tsx` | 17 | useListUrlState — contrato de /carrinhos (deadline/sort/q) · clearAll remove deadline, sort e q da URL · após clearAll, remontar (simula reload) mantém URL limpa · remove defaults explícitos ao hidratar e preserva filtros ativos e params externos … |
-| `src/hooks/products/__tests__/useProductsByCategory.test.ts` | 17 | hasFilter · false quando categoryIds vazio · true quando categoryIds tem itens · sem invoke quando sem filtro ou disabled … |
-| `src/pages/mockups/mockup-generator/__tests__/MockupTechniqueHandlers.test.tsx` | 17 | useTechniqueHandlers — escolher técnica · aplica a técnica na hora, limpa o mockup gerado e carrega a área da técnica · técnica que exige configuração de cores (laser) abre o diálogo e não grava config direto · serigrafia também exige configuração de cores … |
-| `src/pages/products/seller-carts/__tests__/CartSidebar.render.test.tsx` | 17 | CartSidebar — render smoke pós-repaginação · monta card hero com data-loaded=true quando há peso/volume (CTA vive no CartActionsMenu) · NÃO renderiza mais Subtotal/SKUs/Qtd. total (vivem no header agora) · NÃO renderiza painéis legados … |
-| `src/utils/__tests__/undoToast.stress.test.tsx` | 17 | UndoToast — testids granulares · expõe title, description e countdown com testids estáveis · omite testid de description quando prop ausente · data-remaining-ms decrementa conforme o tempo avança … |
-| `tests/supplierReliability.extract.test.ts` | 17 | extractPromisesFromSource · retorna [] quando todos os slots vazios · extrai promessas válidas de múltiplos slots e ignora inválidas · descarta source sem variant_id ou supplier_id … |
-| `tests/supplierReliability.matching.test.ts` | 17 | matchReplenishments — pareamento básico · pareia chegada com promessa exata no mesmo dia · respeita janela de 15d (chegada 16d atrasada vira orphan + expired) · pareia adiantamento (delay negativo) … |
-| `tests/admin/skeleton-fallbacks-ref-warning.test.tsx` | 17 | SkeletonLoaders — nenhum ref warning · render direto: %s · como fallback de <Suspense>: %s · getFallback( … |
-| `tests/components/PriceFreshnessBadge.invalid-dates.test.tsx` | 17 | PriceFreshnessBadge — datas ausentes/inválidas · variant inline (PDP, sempre renderiza) · mostra  · mostra  … |
-| `tests/components/pages/PageUtilities.test.ts` | 17 | Page Utilities - SellerCartsPage · calculates cart total correctly · handles empty cart · returns correct color for  … |
-| `tests/components/quotes/AIRecommendationsPanel.test.tsx` | 17 | AIRecommendationsPanel · renders client form fields in default state · shows product count in the action area · shows singular  … |
-| `tests/e2e-customization/mask-config.test.ts` | 17 | mask-config — getMaskSelectors · retorna baseline quando sem env · aceita EXTRA único, múltiplo e com espaços em branco · DISABLE remove selector do baseline … |
-| `tests/edge-functions/integration/crm-callback-reprocess-and-alerts.test.ts` | 17 | crm-callback-reprocess — source invariants · auth: exige Bearer token + role admin/dev · aceita modo single (event_id) e batch · mapeia os 5 event_types canônicos … |
-| `tests/edge-functions/integration/get-visitor-info.test.ts` | 17 | get-visitor-info · visitante anônimo (sem JWT) · retorna 200 sem Authorization header (verify_jwt=false) · não exige Authorization header — acessível anonimamente … |
-| `tests/hooks/useConnectionTester.test.tsx` | 17 | webhook_outbound · useConnectionTester · HTTP 4xx e 5xx: exibe hints corretos para rejeição e indisponibilidade parcial · Timeout: preserva error_kind, timeout_ms, latency e dispara toast  … |
-| `tests/hooks/useKitBuilder-extended.test.ts` | 17 | useKitUndoRedo · initializes with empty history · pushes snapshot and enables undo only after a 2nd distinct state · dedups identical consecutive snapshots … |
-| `tests/hooks/voice-modules.test.ts` | 17 | withRetry · returns result on first success · retries on retryable error and succeeds · does not retry non-retryable errors … |
-| `tests/lib/external-db-immutable-cache.test.ts` | 17 | immutableCache.getCachedByIds — básico · cache miss puro: 1 chamada bridge com filtro id=in.(...) · cache hit puro: 0 chamadas bridge · hit parcial: bridge é chamada só com os ids faltantes … |
-| `tests/lib/filter-dev-only-items.test.ts` | 17 | filterDevOnlyItems — visibilidade por papel · vendedor (não-dev, não-admin) NÃO vê nenhum item devOnly · admin (não-dev) NÃO vê itens devOnly, mas vê adminOnly · dev vê TODOS os itens, inclusive devOnly … |
-| `tests/lib/rupture-risk.simulation.test.ts` | 17 | Simulações exaustivas — 500 cenários determinísticos · I1 — determinismo: mesma entrada produz mesma saída · I2 — projectedStock sempre em [0, current] · I3 — monotonia decrescente em horizonDays … |
-| `tests/magazine/regression-2026-07-15.test.tsx` | 17 | V-BUG · MagazineMiniMap: sem comentários  · não contém  · T-I1 · Templates corporate: alt do logo usa clientName · CorporateExecutiveTemplate — alt inclui clientName … |
-| `tests/scripts/check-anon-write-grants.test.mjs` | 17 | loadAllowlist · devolve grants=[] quando o arquivo não existe · lê grants de um arquivo válido · tolera arquivo sem campo grants (array vazio) … |
-| `tests/ssot/ssot-report-schema.test.ts` | 17 | ssot-report.json — schema · schema JSON é parseável e draft-07 · aceita relatório válido · rejeita canonical inesperado … |
-| `tests/utils/price-freshness-coverage.test.ts` | 17 | getPriceFreshness — bordas de threshold · dia exatamente no meio do threshold ainda é  · um dia após o meio do threshold vira  · dia exatamente no threshold já é  … |
-| … +1592 linhas — lista completa em `context.json` | | |
+| … +1664 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -6452,6 +6754,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 |---|---|
 | `added` | `src/lib/query-config.ts` |
 | `updated` | `src/lib/query-config.ts` |
+| `recovered` | `src/lib/external-db/bridge-telemetry-client.ts` |
+| `unavailable` | `src/lib/external-db/bridge-telemetry-client.ts` |
 | `change` | `src/pages/products/seller-carts/cartViewModeTelemetry.ts` |
 | `create` | `supabase/functions/manage-users/index.ts` |
 | `delete` | `supabase/functions/manage-users/index.ts` |
@@ -6465,6 +6769,28 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 
 | Chamada | Arquivo |
 |---|---|
+| `notify_discount_approval_request` | `recovery/block04_functions.sql` |
+| `notify_hardening_regression` | `recovery/block04_functions.sql` |
+| `notify_new_order` | `recovery/block04_functions.sql` |
+| `notify_quote_client_response` | `recovery/block04_functions.sql` |
+| `notify_quote_status_change` | `recovery/block04_functions.sql` |
+| `notify_discount_approval_request` | `recovery/block05_triggers.sql` |
+| `notify_discount_approval_trigger` | `recovery/block05_triggers.sql` |
+| `notify_new_order` | `recovery/block05_triggers.sql` |
+| `notify_quote_client_response` | `recovery/block05_triggers.sql` |
+| `notify_quote_status_change` | `recovery/block05_triggers.sql` |
+| `notify_discount_approval_request` | `recovery/full-public-schema.sql` |
+| `notify_discount_approval_trigger` | `recovery/full-public-schema.sql` |
+| `notify_hardening_regression` | `recovery/full-public-schema.sql` |
+| `notify_new_order` | `recovery/full-public-schema.sql` |
+| `notify_quote_client_response` | `recovery/full-public-schema.sql` |
+| `notify_quote_status_change` | `recovery/full-public-schema.sql` |
+| `notify_discount_approval_request` | `recovery/patches/D4.2_quote_advanced/functions.sql` |
+| `notify_quote_client_response` | `recovery/patches/D4.2_quote_advanced/functions.sql` |
+| `notify_quote_status_change` | `recovery/patches/D4.2_quote_advanced/functions.sql` |
+| `notify_hardening_regression` | `recovery/patches/D4.6_security_auth/functions.sql` |
+| `notify_new_order` | `recovery/patches/D5_misc_cross_cutting/functions.sql` |
+| `notify_quote_client_response` | `recovery/sql/01_missing_functions.sql` |
 | `.add('high-contrast'` | `src/components/a11y/AccessibilityProvider.tsx` |
 | `.add('keyboard-mode'` | `src/components/a11y/AccessibilityProvider.tsx` |
 | `invoke(` | `src/components/admin/OwnershipRepairDialog.tsx` |
@@ -6478,6 +6804,34 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `notify` | `src/components/quotes/QuoteProductColorSelector.tsx` |
 | `invoke(` | `src/contexts/DevChallengeContext.tsx` |
 | `.add('dark'` | `src/contexts/ThemeContext.tsx` |
+| `invoke(` | `src/hooks/useCategoriesTree.ts` |
+| `invoke(` | `src/hooks/useColorSystem.ts` |
+| `invoke(` | `src/hooks/useCommemorativeDates.ts` |
+| `invoke(` | `src/hooks/useConnectionTestDetails.ts` |
+| `invoke(` | `src/hooks/useConnectionTestHistory.ts` |
+| `invoke(` | `src/hooks/useConnectionTester.ts` |
+| `invoke(` | `src/hooks/useConsecutiveFailures.ts` |
+| `invoke(` | `src/hooks/useDeviceDetection.ts` |
+| `invoke(` | `src/hooks/useDropboxFiles.ts` |
+| `invoke(` | `src/hooks/useExternalCategoriesQuery.ts` |
+| `invoke(` | `src/hooks/useExternalDatabase.ts` |
+| `invoke(` | `src/hooks/useExternalDbInspect.ts` |
+| `invoke(` | `src/hooks/useExternalSimulator.ts` |
+| `invoke(` | `src/hooks/useIPValidation.ts` |
+| `invoke(` | `src/hooks/useKitIdentitySuggestion.ts` |
+| `invoke(` | `src/hooks/useLogoColorAnalysis.ts` |
+| `invoke(` | `src/hooks/useMagicUpGeneration.ts` |
+| `invoke(` | `src/hooks/usePrintAreas.ts` |
+| `invoke(` | `src/hooks/useProductSeoAI.ts` |
+| `invoke(` | `src/hooks/useProductSupplierSources.ts` |
+| `invoke(` | `src/hooks/useProductsByCategory.ts` |
+| `invoke(` | `src/hooks/useProdutoRamoAtividade.ts` |
+| `invoke(` | `src/hooks/useQuotes.ts` |
+| `invoke(` | `src/hooks/useSecretsManager.ts` |
+| `invoke(` | `src/hooks/useStepUpAuth.ts` |
+| `invoke(` | `src/hooks/useTechniquePricing.ts` |
+| `invoke(` | `src/hooks/useTechniquePricingOptions.ts` |
+| `invoke(` | `src/hooks/useTransactionalEmail.ts` |
 | `invoke(` | `src/hooks/admin/useV4Callbacks.ts` |
 | `invoke(` | `src/hooks/intelligence/useExternalDatabase.ts` |
 | `invoke(` | `src/hooks/products/useCategoriesTree.ts` |
@@ -6490,10 +6844,13 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `.add('theme-transitioning'` | `src/lib/theme-presets.ts` |
 | `notify` | `src/lib/access/log-access-denied.ts` |
 | `notify` | `src/lib/edge/invokeTelemetrySink.ts` |
+| `notify` | `src/lib/external-db/cold-start-recorder.ts` |
 | `invoke(` | `src/lib/security/sanitize-error.ts` |
 | `notify` | `src/lib/telemetry/instrumentationControl.ts` |
 | `notifyRouteChange` | `src/lib/telemetry/navigationMetrics.ts` |
 | `invoke(` | `src/lib/telemetry/requestId.ts` |
+| `invoke(` | `src/pages/Auth.tsx` |
+| `.add('ring-2'` | `src/pages/MockupGenerator.tsx` |
 | `.add('dark'` | `src/pages/__visual/CalendarHarness.tsx` |
 | `.add('dark'` | `src/pages/__visual/DatePickerFieldHarness.tsx` |
 | `.add("dark"` | `src/pages/__visual/PreviewButtonHarness.tsx` |
@@ -6505,6 +6862,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `publish(` | `src/pages/magazine/useMagazinePublish.ts` |
 | `notifyRemoteDisabled` | `src/pages/magazine/hooks/useMagazineReaderState.ts` |
 | `.add('ring-2'` | `src/pages/mockups/MockupGenerator.tsx` |
+| `invoke(` | `src/pages/quote-view/QuoteActionHandlers.ts` |
+| `invoke(` | `src/pages/quote-view/QuoteBitrixSync.ts` |
 | `publish(` | `src/services/magazineService.ts` |
 | `invoke(` | `supabase/functions/bitrix-sync/handler_characterization_test.ts` |
 | `notifyAdmins` | `supabase/functions/connections-health-check/index.ts` |
@@ -6596,6 +6955,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Apenas tipos que o browser carrega como módulo/stylesheet — usados na | `public/sw.js` |
 | * Retorna true se o pathname é uma rota SPA que deve ser servida | `public/sw.js` |
 | (prefetch, manifest/PWA shortcuts validation) retornam 404 do Vercel | `public/sw.js` |
+| FROM public.quote_approval_tokens WHERE token = _token LIMIT 1; | `recovery/block04_functions.sql` |
+| FROM cron.job_run_details ORDER BY start_time DESC LIMIT 50; | `recovery/block11_cron_jobs.sql` |
+| FROM public.quote_approval_tokens WHERE token = _token LIMIT 1; | `recovery/full-public-schema.sql` |
+| FROM public.quote_approval_tokens WHERE token = _token LIMIT 1; | `recovery/patches/D4.2_quote_advanced/functions.sql` |
 | * Mostra apenas o ícone (modo compacto, ex.: sidebar colapsada). */ | `src/components/RoleBadge.tsx` |
 | * Caminho bloqueado (apenas pathname, ex: "/admin/telemetria"). */ | `src/components/access/DevAccessDeniedPage.tsx` |
 | Se não houver, preservamos o próprio /unauthorized apenas como referência — | `src/components/access/UnauthorizedPage.tsx` |
@@ -6662,7 +7025,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | - Somente FULL (chaves com escopo *) | `src/components/admin/security/keys/McpKeysFilters.tsx` |
 | gateamos por `useUserRole` para evitar mostrar a UI a quem não pode usar. | `src/components/admin/security/role-migration/RoleMigrationPanel.tsx` |
 | apenas colunas reais e não os retorna. | `src/components/admin/suppliers-manager/types.ts` |
+| * Sem persistência (memória apenas). Atualiza em tempo real via subscribe. | `src/components/admin/telemetry/BridgesLiveCard.tsx` |
 | * Não depende da RPC `get_edge_invoke_summary` (draft, REGRA #1). Assim | `src/components/admin/telemetry/EdgeInvokeLivePanel.tsx` |
+| ultrapassa o limite configurado, mostra um alerta destacado com | `src/components/admin/telemetry/PlatformFailureAlertBanner.tsx` |
 | - obriga justificativa (mínimo 10 caracteres) | `src/components/admin/users/PromotionDialog.tsx` |
 | R4: exibida apenas quando o usuário digita texto livre (não é uma ação rápida conhecida) | `src/components/ai/AIMockupAssistant.tsx` |
 | que o pai deve automaticamente focar o formulário de e-mail (sem exigir clique). | `src/components/auth/SocialLoginButtons.tsx` |
@@ -6673,6 +7038,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | INSERTs e cria dois carrinhos, queimando o limite de 3. | `src/components/cart/CartCompanyPicker.tsx` |
 | Roda ANTES do guard de limite: abrir o existente deve funcionar mesmo com 3. | `src/components/cart/CartCompanyPicker.tsx` |
 | de limite: abrir o existente deve funcionar mesmo no limite máximo de carrinhos. | `src/components/cart/CartCompanyPickerDialog.tsx` |
+| Improved variant detection: if SKU is composite (contains '-'), it MUST have color_name or notes | `src/components/cart/CartHealthChecklist.tsx` |
 | usuário possa apenas apertar Enter para tentar de novo (a11y). | `src/components/cart/CartItemErrorAlert.tsx` |
 | - Sanitiza a entrada: aceita apenas dígitos (vírgula, ponto, espaço, letras | `src/components/cart/PopoverQtyInput.tsx` |
 | - Valores vazios / inválidos / abaixo do mínimo revertem ao valor externo | `src/components/cart/PopoverQtyInput.tsx` |
@@ -6684,6 +7050,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Indicador de expansão integrado (seta) - apenas para itens com filhos */} | `src/components/categories/CategorySidebarPanel.tsx` |
 | Emoji da categoria (apenas para raiz com emoji) */} | `src/components/categories/CategorySidebarPanel.tsx` |
 | Auto-expandir apenas os PAIS (não o nó selecionado) | `src/components/categories/CategorySidebarPanel.tsx` |
+| usado em contextos onde o componente atua como navegador de seleção (não apenas exibição). | `src/components/categories/CategoryTreeNavigator.tsx` |
+| Recents — também filtrados por permissão (recente pode ter sido | `src/components/command/GlobalCommandBar.tsx` |
 | * DEPRECATED — mantido apenas para retrocompatibilidade da API antiga | `src/components/common/ConfirmDialog.tsx` |
 | permissão. Ações puramente locais (toggle de tema, abrir help) podem | `src/components/common/spotlight/SpotlightItems.ts` |
 | Admin (visível apenas a admin/dev — filtrado em runtime) | `src/components/common/spotlight/SpotlightItems.ts` |
@@ -6808,6 +7176,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Prazo máximo | `src/components/pricing/simulator/MultiEngravingResult.tsx` |
 | Verificar se algum aplicou faturamento mínimo | `src/components/pricing/simulator/MultiEngravingResult.tsx` |
 | Info sobre faturamento mínimo */} | `src/components/pricing/simulator/MultiEngravingResult.tsx` |
+| - Setup = PISO MÍNIMO (não é somado!) | `src/components/pricing/simulator/PriceResultV51.tsx` |
+| Faturamento mínimo (se aplicado) */} | `src/components/pricing/simulator/PriceResultV51.tsx` |
+| Markup info (apenas em modo detalhes) */} | `src/components/pricing/simulator/PriceResultV51.tsx` |
+| - Faturamento mínimo (setup como piso, não soma!) | `src/components/pricing/simulator/QuantityAndResult.tsx` |
+| Faturamento mínimo aplicado */} | `src/components/pricing/simulator/QuantityAndResult.tsx` |
 | * Máximo de sugestões exibidas (padrão: 3) */ | `src/components/pricing/simulator/upsell/UpsellPlusPlus.tsx` |
 | * Faixas de quantidade com desconto progressivo */ | `src/components/pricing/simulator/upsell/upsell-engine.ts` |
 | min-h apenas: o virtualizer precisa medir a altura real do card. | `src/components/products/BaseProductGridCard.tsx` |
@@ -6839,18 +7212,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Regra de exclusividade: se o produto possuir uma opção "CIRCULAR/360°" | `src/components/products/ProductCustomizationOptions.tsx` |
 | Deduplica por location_code: a RPC calcula as options apenas por código, | `src/components/products/ProductEngravingSection.tsx` |
 | Dispara SOMENTE quando o usuário clicou numa bolinha (userSelectedColorName != null). | `src/components/products/ProductListItem.tsx` |
-| primary_image_url (is_primary=true) é a imagem capa canônica — deve ser a primeira exibida | `src/components/products/ProductListItem.tsx` |
-| Hook chamado ANTES do early-return "if(!product) return null" — regra dos hooks do React | `src/components/products/ProductQuickView.tsx` |
-| A imagem type='main' (is_primary=true) é a imagem principal do produto e deve | `src/components/products/ProductQuickView.tsx` |
-| * Quando informado, exibe vendas APENAS dessa variante (cor/SKU). */ | `src/components/products/ProductSales90dButton.tsx` |
-| Usuário pode optar por ver apenas a variante via toggle dentro do popover. | `src/components/products/ProductSales90dButton.tsx` |
-| (apenas type-imports em runtime → sem ciclo). Evita localeCompare sem locale e null-throw. | `src/components/products/ProductTableView.tsx` |
-| o scrollTop ao topo SOMENTE quando scrollResetKey muda — nunca durante a carga | `src/components/products/ProductTableView.tsx` |
-| apenas registramos telemetria — sem toast duplicado. | `src/components/products/QuickAddToQuote.tsx` |
-| - Lazy: busca o Product completo via useProduct apenas quando o usuário abre | `src/components/products/QuickViewThumb.tsx` |
-| - Limite configurável (`maxResults`) | `src/components/products/SmartRecommendations.tsx` |
-| * BUG-SCROLL-01 FIX: Chave que muda SOMENTE em filter/sort -- NUNCA em load-more. | `src/components/products/VirtualizedProductGrid.tsx` |
-| // PERF-2026-08-19: Pre-filtra para apenas produtos VISIVEIS (virtualizados) + | `src/components/products/VirtualizedProductGrid.tsx` |
-| ANTI N+1: prefetch batch de mv_stock_velocity apenas para produtos visiveis | `src/components/products/VirtualizedProductGrid.tsx` |
-| 2. scrollTo(0) -> SOMENTE quando scrollResetKey muda (filter/sort/viewMode) | `src/components/products/VirtualizedProductGrid.tsx` |
-| … +1152 linhas — lista completa em `context.json` | |
+| … +1242 linhas — lista completa em `context.json` | |

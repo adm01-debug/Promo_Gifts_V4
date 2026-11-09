@@ -8,10 +8,10 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3050,
+ "migrations": 3057,
  "seeds": [],
  "avisos": [
-  "317 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
+  "318 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
  ],
  "extensoes": [
   "http",
@@ -414,6 +414,7 @@
   "consume_step_up_token",
   "convert_quote_to_order",
   "convert_string_to_unit",
+  "create_default_notification_preferences",
   "create_default_print_areas_for_product",
   "create_kit_quote_transactional",
   "create_material_with_equivalence",
@@ -1432,6 +1433,7 @@
   "update_mockup_job_progress",
   "update_mockup_updated_at",
   "update_notebook_tables_timestamp",
+  "update_notification_updated_at",
   "update_parent_children_count",
   "update_preferred_suppliers",
   "update_print_area_images_updated_at",
@@ -1527,6 +1529,13 @@
    "evento": "insert",
    "tabela": "auth.users",
    "funcao": "handle_new_user"
+  },
+  {
+   "nome": "on_user_created_preferences",
+   "quando": "after",
+   "evento": "insert",
+   "tabela": "auth.users",
+   "funcao": "create_default_notification_preferences"
   },
   {
    "nome": "trigger_create_credit_account",
@@ -2157,6 +2166,13 @@
    "evento": "update",
    "tabela": "mockup_templates",
    "funcao": "update_updated_at_column"
+  },
+  {
+   "nome": "trigger_update_notification_updated_at",
+   "quando": "before",
+   "evento": "update",
+   "tabela": "notifications",
+   "funcao": "update_notification_updated_at"
   },
   {
    "nome": "trg_optimization_queue_updated_at",
@@ -3899,7 +3915,7 @@
   {
    "nome": "art-files",
    "criado_em_sql": true,
-   "usado_em": 2
+   "usado_em": 4
   },
   {
    "nome": "avatars",
@@ -5538,7 +5554,7 @@
     "user_id->auth"
    ],
    "criada_em": "20260220001443_54c4d527-34ff-47cb-b192-8821dee4b9ae.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [
     "validate-access"
    ],
@@ -5626,7 +5642,7 @@
     "updated_by->auth"
    ],
    "criada_em": "20260220001443_54c4d527-34ff-47cb-b192-8821dee4b9ae.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [
     "validate-access"
    ],
@@ -5966,7 +5982,7 @@
    ],
    "fks": [],
    "criada_em": "20260326191912_07b386c9-cb61-45d6-aa44-bf2452d07c0e.sql",
-   "usada_no_front": 7,
+   "usada_no_front": 8,
    "usada_em_edges": [
     "_shared",
     "block-ip-temporarily",
@@ -6078,7 +6094,7 @@
     "updated_by->auth"
    ],
    "criada_em": "20260423193705_0c82aded-4fab-436d-a56f-4b96ecdb4a6f.sql",
-   "usada_no_front": 2,
+   "usada_no_front": 3,
    "usada_em_edges": [],
    "triggers": [
     "trg_admin_settings_set_updated_at"
@@ -6302,7 +6318,7 @@
    ],
    "fks": [],
    "criada_em": null,
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
@@ -6348,7 +6364,7 @@
    ],
    "fks": [],
    "criada_em": null,
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [
     "ai-router"
    ],
@@ -6620,7 +6636,7 @@
    ],
    "fks": [],
    "criada_em": "20260406202212_20735579-941a-46d2-b872-abe769fe774a.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [
     "_shared"
    ],
@@ -6717,7 +6733,7 @@
    "indices": [],
    "fks": [],
    "criada_em": "20260406202212_20735579-941a-46d2-b872-abe769fe774a.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
@@ -8431,11 +8447,11 @@
     "user_id->profiles"
    ],
    "criada_em": "20250103080000_complete_schema.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "audit_log_gravacao": {
    "colunas": {},
@@ -9152,7 +9168,7 @@
     "organization_id->organizations"
    ],
    "criada_em": "20250103080000_complete_schema.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 2,
    "usada_em_edges": [
     "bitrix-sync"
    ],
@@ -9610,7 +9626,7 @@
     "user_id->auth"
    ],
    "criada_em": "20260226200633_e02b5e2d-c127-43a6-9ea8-07da1bc67d13.sql",
-   "usada_no_front": 2,
+   "usada_no_front": 3,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
@@ -10125,7 +10141,7 @@
     "category_id->categories"
    ],
    "criada_em": "20260108173818_1d94da3e-0e58-473c-a297-989205f387a8.sql",
-   "usada_no_front": 2,
+   "usada_no_front": 4,
    "usada_em_edges": [],
    "triggers": [
     "update_category_icons_updated_at"
@@ -10719,7 +10735,7 @@
     "created_by->auth"
    ],
    "criada_em": "20260220001443_54c4d527-34ff-47cb-b192-8821dee4b9ae.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [
     "validate-access"
    ],
@@ -11285,7 +11301,7 @@
     "collection_id->collections"
    ],
    "criada_em": "20260412182408_a60c0965-6c47-4779-82e3-a2bbc011e204.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [
     "collections-watcher"
    ],
@@ -11419,7 +11435,7 @@
    ],
    "fks": [],
    "criada_em": "20260420142509_3657c725-d2da-43e4-9c02-36993a7e02f4.sql",
-   "usada_no_front": 2,
+   "usada_no_front": 3,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
@@ -11760,7 +11776,7 @@
     "organization_id->organizations"
    ],
    "criada_em": "20250103080000_complete_schema.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 3,
    "usada_em_edges": [
     "collections-watcher"
    ],
@@ -12037,11 +12053,11 @@
    ],
    "fks": [],
    "criada_em": "20260109125132_c8eb2ca4-378d-455c-b380-0f1b3b55efd6.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "color_synonym_map": {
    "colunas": {},
@@ -15052,7 +15068,7 @@
    ],
    "fks": [],
    "criada_em": "20260322133758_7dc8f3c8-e0a0-4b62-b9e6-75995b2199c5.sql",
-   "usada_no_front": 9,
+   "usada_no_front": 14,
    "usada_em_edges": [],
    "triggers": [
     "trg_validate_kit_status"
@@ -15714,7 +15730,7 @@
     "seller_id->profiles"
    ],
    "criada_em": "20260414193435_871210cd-f0d8-40ee-ae9f-401b4887727f.sql",
-   "usada_no_front": 9,
+   "usada_no_front": 10,
    "usada_em_edges": [
     "rls-audit"
    ],
@@ -16275,7 +16291,7 @@
     "seller_id->auth"
    ],
    "criada_em": "20251215002227_ba71d2dc-e527-4f63-8c01-ca9b43f83daf.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [
     "update_expert_conversations_updated_at"
@@ -16352,7 +16368,7 @@
     "conversation_id->expert_conversations"
    ],
    "criada_em": "20251215002227_ba71d2dc-e527-4f63-8c01-ca9b43f83daf.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
@@ -16494,7 +16510,7 @@
    ],
    "fks": [],
    "criada_em": "20260419130037_5f01e5dd-e3d5-4d26-8a08-328d432a05aa.sql",
-   "usada_no_front": 9,
+   "usada_no_front": 10,
    "usada_em_edges": [
     "_shared",
     "connection-tester",
@@ -16875,7 +16891,7 @@
     "list_id->favorite_lists"
    ],
    "criada_em": "20260420123931_cfdf94d4-a89e-4f3a-bd30-2a7f43cc62df.sql",
-   "usada_no_front": 2,
+   "usada_no_front": 4,
    "usada_em_edges": [
     "favorites-watcher"
    ],
@@ -17001,7 +17017,7 @@
    ],
    "fks": [],
    "criada_em": "20260420123931_cfdf94d4-a89e-4f3a-bd30-2a7f43cc62df.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
@@ -17150,7 +17166,7 @@
    ],
    "fks": [],
    "criada_em": "20260420123931_cfdf94d4-a89e-4f3a-bd30-2a7f43cc62df.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [
     "set_favorite_lists_updated_at",
@@ -18292,7 +18308,7 @@
     "user_id->auth"
    ],
    "criada_em": "20250103080000_complete_schema.sql",
-   "usada_no_front": 3,
+   "usada_no_front": 4,
    "usada_em_edges": [],
    "triggers": [
     "trigger_update_job_progress",
@@ -18372,11 +18388,11 @@
     "created_by->auth"
    ],
    "criada_em": "20251231130817_8aeff4f3-66df-41e0-a380-c7ffe3c03f96.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "hardening_health_snapshots": {
    "colunas": {
@@ -19401,7 +19417,7 @@
     "created_by->auth"
    ],
    "criada_em": "20260220001443_54c4d527-34ff-47cb-b192-8821dee4b9ae.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [
     "validate-access"
    ],
@@ -19616,7 +19632,7 @@
     "kit_id->custom_kits"
    ],
    "criada_em": "20260418175315_6317f072-62ee-49c8-af36-6c992764a582.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [
     "update_kit_collab_updated_at"
@@ -19744,7 +19760,7 @@
     "parent_id->kit_comments"
    ],
    "criada_em": "20260418175315_6317f072-62ee-49c8-af36-6c992764a582.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [
     "update_kit_comments_updated_at"
@@ -20767,7 +20783,7 @@
    ],
    "fks": [],
    "criada_em": "20260418183756_107f80f6-c724-4ce3-a61f-d3b256419118.sql",
-   "usada_no_front": 5,
+   "usada_no_front": 9,
    "usada_em_edges": [],
    "triggers": [
     "trg_kit_templates_updated_at"
@@ -20898,7 +20914,7 @@
     "kit_master_id->custom_kits"
    ],
    "criada_em": "20260418175315_6317f072-62ee-49c8-af36-6c992764a582.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [
     "update_kit_variants_updated_at"
@@ -21018,7 +21034,7 @@
    ],
    "fks": [],
    "criada_em": "20251231024837_c924e1c3-b77f-4076-9cdc-195effdf6ea2.sql",
-   "usada_no_front": 6,
+   "usada_no_front": 8,
    "usada_em_edges": [
     "anonymize-user",
     "log-login-attempt",
@@ -21575,7 +21591,7 @@
    ],
    "fks": [],
    "criada_em": "20260420185009_19ba5060-cb2d-4030-82d6-dc64b8365cee.sql",
-   "usada_no_front": 2,
+   "usada_no_front": 3,
    "usada_em_edges": [],
    "triggers": [
     "set_magic_up_brand_kits_updated_at"
@@ -21721,7 +21737,7 @@
    ],
    "fks": [],
    "criada_em": "20260420185009_19ba5060-cb2d-4030-82d6-dc64b8365cee.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [
     "set_magic_up_campaigns_updated_at"
@@ -22103,7 +22119,7 @@
     "user_id->auth"
    ],
    "criada_em": "20260216110718_f0a3e9e7-0ae7-4a15-9fea-5e5f50d0940d.sql",
-   "usada_no_front": 3,
+   "usada_no_front": 5,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
@@ -23794,7 +23810,7 @@
     "user_id->auth"
    ],
    "criada_em": "20260107013155_66a04f90-a966-424c-a356-15f40b5f08b7.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [
     "update_mockup_drafts_updated_at"
@@ -24958,11 +24974,88 @@
      "default": "NOW()",
      "ref": null
     },
+    "digest_days": {
+     "tipo": "int[]",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "digest_enabled": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": false,
+     "default": "false",
+     "ref": null
+    },
+    "digest_frequency": {
+     "tipo": "text",
+     "nn": false,
+     "pk": false,
+     "default": "'daily'",
+     "ref": null
+    },
+    "digest_time": {
+     "tipo": "time",
+     "nn": false,
+     "pk": false,
+     "default": "'09:00:00'",
+     "ref": null
+    },
+    "dnd_days": {
+     "tipo": "int[]",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "dnd_enabled": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": false,
+     "default": "false",
+     "ref": null
+    },
+    "dnd_end_time": {
+     "tipo": "time",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "dnd_start_time": {
+     "tipo": "time",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "email_enabled": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": false,
+     "default": "true",
+     "ref": null
+    },
     "email_notifications": {
      "tipo": "boolean",
      "nn": false,
      "pk": false,
      "default": "true",
+     "ref": null
+    },
+    "grouping_enabled": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": false,
+     "default": "true",
+     "ref": null
+    },
+    "grouping_window_minutes": {
+     "tipo": "int",
+     "nn": false,
+     "pk": false,
+     "default": "5",
      "ref": null
     },
     "id": {
@@ -24986,6 +25079,27 @@
      "default": "true",
      "ref": null
     },
+    "phone_number": {
+     "tipo": "text",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "preferences": {
+     "tipo": "jsonb",
+     "nn": false,
+     "pk": false,
+     "default": "'{ \"approval\": {\"channels\": [\"in_app\"",
+     "ref": null
+    },
+    "push_enabled": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": false,
+     "default": "true",
+     "ref": null
+    },
     "push_notifications": {
      "tipo": "boolean",
      "nn": false,
@@ -24998,6 +25112,13 @@
      "nn": false,
      "pk": false,
      "default": "true",
+     "ref": null
+    },
+    "sms_enabled": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": false,
+     "default": "false",
      "ref": null
     },
     "system_announcements": {
@@ -25017,6 +25138,20 @@
     "user_id": {
      "tipo": "uuid",
      "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "whatsapp_enabled": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": false,
+     "default": "false",
+     "ref": null
+    },
+    "whatsapp_number": {
+     "tipo": "text",
+     "nn": false,
      "pk": false,
      "default": null,
      "ref": null
@@ -25049,6 +25184,12 @@
      "tipo": "permissive"
     },
     {
+     "nome": "Users can manage own preferences",
+     "comando": "all",
+     "para": "public",
+     "tipo": "permissive"
+    },
+    {
      "nome": "users_manage_own_notification_prefs",
      "comando": "all",
      "para": "authenticated",
@@ -25062,8 +25203,10 @@
     }
    ],
    "indices": [],
-   "fks": [],
-   "criada_em": "20250103080000_complete_schema.sql",
+   "fks": [
+    "user_id->auth"
+   ],
+   "criada_em": "002_notification_preferences.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
@@ -25073,6 +25216,13 @@
   "notification_templates": {
    "colunas": {
     "body_template": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "channel": {
      "tipo": "text",
      "nn": true,
      "pk": false,
@@ -25093,6 +25243,20 @@
      "default": "NOW()",
      "ref": null
     },
+    "default_priority": {
+     "tipo": "int",
+     "nn": false,
+     "pk": false,
+     "default": "1",
+     "ref": null
+    },
+    "event_type": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "id": {
      "tipo": "uuid",
      "nn": false,
@@ -25107,6 +25271,13 @@
      "default": "true",
      "ref": null
     },
+    "message_template": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "name": {
      "tipo": "text",
      "nn": true,
@@ -25117,6 +25288,20 @@
     "subject": {
      "tipo": "text",
      "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "system": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "title_template": {
+     "tipo": "text",
+     "nn": true,
      "pk": false,
      "default": null,
      "ref": null
@@ -25165,7 +25350,7 @@
    ],
    "indices": [],
    "fks": [],
-   "criada_em": "20250103030000_seed_final.sql",
+   "criada_em": "003_notification_templates.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
@@ -25174,11 +25359,39 @@
   },
   "notifications": {
    "colunas": {
+    "action_data": {
+     "tipo": "jsonb",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "action_label": {
+     "tipo": "text",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "action_url": {
      "tipo": "text",
      "nn": false,
      "pk": false,
      "default": null,
+     "ref": null
+    },
+    "category": {
+     "tipo": "text",
+     "nn": false,
+     "pk": false,
+     "default": "'system'",
+     "ref": null
+    },
+    "channels": {
+     "tipo": "text[]",
+     "nn": false,
+     "pk": false,
+     "default": "ARRAY['in_app']",
      "ref": null
     },
     "created_at": {
@@ -25195,11 +25408,53 @@
      "default": "'{}'",
      "ref": null
     },
+    "delivered_at": {
+     "tipo": "timestamptz",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "delivery_status": {
+     "tipo": "jsonb",
+     "nn": false,
+     "pk": false,
+     "default": "'{}'::jsonb",
+     "ref": null
+    },
+    "expires_at": {
+     "tipo": "timestamptz",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "group_count": {
+     "tipo": "int",
+     "nn": false,
+     "pk": false,
+     "default": "1",
+     "ref": null
+    },
+    "group_key": {
+     "tipo": "text",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "id": {
      "tipo": "uuid",
      "nn": true,
      "pk": true,
      "default": "gen_random_uuid()",
+     "ref": null
+    },
+    "is_grouped": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": false,
+     "default": "false",
      "ref": null
     },
     "is_read": {
@@ -25237,6 +25492,34 @@
      "default": null,
      "ref": null
     },
+    "scheduled_for": {
+     "tipo": "timestamptz",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "source_entity_id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "source_entity_type": {
+     "tipo": "text",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "source_system": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "title": {
      "tipo": "text",
      "nn": true,
@@ -25251,6 +25534,13 @@
      "default": null,
      "ref": null
     },
+    "updated_at": {
+     "tipo": "timestamptz",
+     "nn": false,
+     "pk": false,
+     "default": "NOW()",
+     "ref": null
+    },
     "user_id": {
      "tipo": "uuid",
      "nn": true,
@@ -25261,6 +25551,18 @@
    },
    "rls": true,
    "policies": [
+    {
+     "nome": "Systems can create notifications",
+     "comando": "insert",
+     "para": "public",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "Users can delete own notifications",
+     "comando": "delete",
+     "para": "public",
+     "tipo": "permissive"
+    },
     {
      "nome": "Users can delete their own notifications",
      "comando": "delete",
@@ -25316,6 +25618,11 @@
      "unico": false
     },
     {
+     "nome": "idx_notifications_group",
+     "colunas": "group_key",
+     "unico": false
+    },
+    {
      "nome": "idx_notifications_is_read",
      "colunas": "user_id, is_read",
      "unico": false
@@ -25323,6 +25630,21 @@
     {
      "nome": "idx_notifications_read",
      "colunas": "is_read",
+     "unico": false
+    },
+    {
+     "nome": "idx_notifications_scheduled",
+     "colunas": "scheduled_for",
+     "unico": false
+    },
+    {
+     "nome": "idx_notifications_source",
+     "colunas": "source_system, source_entity_type, source_entity_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_notifications_unread",
+     "colunas": "user_id, is_read",
      "unico": false
     },
     {
@@ -25336,11 +25658,15 @@
      "unico": false
     }
    ],
-   "fks": [],
-   "criada_em": "20250103080000_complete_schema.sql",
+   "fks": [
+    "user_id->auth"
+   ],
+   "criada_em": "001_notification_system.sql",
    "usada_no_front": 1,
    "usada_em_edges": [],
-   "triggers": [],
+   "triggers": [
+    "trigger_update_notification_updated_at"
+   ],
    "sem_rls": false,
    "nao_usada": false
   },
@@ -26226,7 +26552,7 @@
     "quote_item_id->quote_items"
    ],
    "criada_em": "20250103080000_complete_schema.sql",
-   "usada_no_front": 6,
+   "usada_no_front": 12,
    "usada_em_edges": [
     "market-intelligence-insights"
    ],
@@ -26702,7 +27028,7 @@
     "quote_id->quotes"
    ],
    "criada_em": "20250103080000_complete_schema.sql",
-   "usada_no_front": 9,
+   "usada_no_front": 14,
    "usada_em_edges": [
     "expert-chat",
     "market-intelligence-insights",
@@ -27790,7 +28116,7 @@
     "user_id->auth"
    ],
    "criada_em": "20251231024259_526ec13a-dacb-4a65-a724-61688978e5fb.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [
     "tr_handle_password_reset_request",
@@ -27914,7 +28240,7 @@
    "indices": [],
    "fks": [],
    "criada_em": "20260323145546_052422d8-a771-4b36-a442-b706fbac18e7.sql",
-   "usada_no_front": 2,
+   "usada_no_front": 4,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
@@ -28162,13 +28488,13 @@
     "seller_id->auth"
    ],
    "criada_em": "20251214212212_f25bfdd3-ddc8-4a06-896a-0be8733968ee.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [
     "update_personalization_simulations_updated_at"
    ],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "personalization_sizes": {
    "colunas": {
@@ -28521,7 +28847,7 @@
    "indices": [],
    "fks": [],
    "criada_em": "20250103080000_complete_schema.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [
     "trigger_update_techniques_timestamp",
@@ -30154,7 +30480,7 @@
     "component_id->product_components"
    ],
    "criada_em": "20251214202150_2537b013-3d76-49df-b2a9-1b345cc14878.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [
     "update_product_comp_loc_updated_at"
@@ -30273,7 +30599,7 @@
     "product_id->products"
    ],
    "criada_em": "20251214202150_2537b013-3d76-49df-b2a9-1b345cc14878.sql",
-   "usada_no_front": 7,
+   "usada_no_front": 8,
    "usada_em_edges": [],
    "triggers": [
     "update_product_components_updated_at"
@@ -32729,7 +33055,7 @@
     "updated_by->auth"
    ],
    "criada_em": "20260424110636_f5d85f4b-a5ae-46a4-932a-409dff195653.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [
     "trg_pfo_set_updated_at"
@@ -33802,7 +34128,7 @@
    "indices": [],
    "fks": [],
    "criada_em": "20251214200524_1f519508-285c-4649-ba22-b40d67618e67.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [
     "product-webhook"
    ],
@@ -34354,7 +34680,7 @@
     "seller_id->auth"
    ],
    "criada_em": "20250103080000_complete_schema.sql",
-   "usada_no_front": 5,
+   "usada_no_front": 8,
    "usada_em_edges": [
     "trends-insights"
    ],
@@ -35367,7 +35693,7 @@
     "supplier_id->suppliers"
    ],
    "criada_em": "20250102000000_gifts_production.sql",
-   "usada_no_front": 4,
+   "usada_no_front": 5,
    "usada_em_edges": [
     "categories-api",
     "cleanup-novelties",
@@ -36637,7 +36963,7 @@
     "user_id->auth"
    ],
    "criada_em": "20250103080000_complete_schema.sql",
-   "usada_no_front": 24,
+   "usada_no_front": 32,
    "usada_em_edges": [
     "anonymize-user",
     "expert-chat",
@@ -36779,6 +37105,13 @@
      "default": "NOW()",
      "ref": null
     },
+    "device_type": {
+     "tipo": "text",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "endpoint": {
      "tipo": "text",
      "nn": true,
@@ -36903,7 +37236,7 @@
    "fks": [
     "user_id->auth"
    ],
-   "criada_em": "20250103080000_complete_schema.sql",
+   "criada_em": "005_push_subscriptions.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
@@ -37128,7 +37461,9 @@
    "fks": [],
    "criada_em": "20260314133410_b4a5983b-76fc-4419-b422-a590dc0fa2ed.sql",
    "usada_no_front": 6,
-   "usada_em_edges": [],
+   "usada_em_edges": [
+    "_shared"
+   ],
    "triggers": [],
    "sem_rls": false,
    "nao_usada": false
@@ -37489,7 +37824,7 @@
     "user_id->auth"
    ],
    "criada_em": "20251220131225_6ad66331-ea04-4f49-89fe-80b0531fef66.sql",
-   "usada_no_front": 4,
+   "usada_no_front": 7,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
@@ -37702,7 +38037,7 @@
     "technique_id->personalization_techniques"
    ],
    "criada_em": "20251214194907_a5a0f44d-0504-411d-842a-cb07597b6ed5.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
@@ -38091,7 +38426,7 @@
     "selected_packaging_id->products"
    ],
    "criada_em": "20250103080000_complete_schema.sql",
-   "usada_no_front": 10,
+   "usada_no_front": 18,
    "usada_em_edges": [
     "e2e-cleanup",
     "quote-sync"
@@ -38386,7 +38721,7 @@
     "created_by->auth"
    ],
    "criada_em": "20250103080000_complete_schema.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 3,
    "usada_em_edges": [],
    "triggers": [
     "trg_set_seller_id_default_qtemplates",
@@ -39182,7 +39517,7 @@
     "seller_id->profiles"
    ],
    "criada_em": "20250102000000_gifts_production.sql",
-   "usada_no_front": 23,
+   "usada_no_front": 32,
    "usada_em_edges": [
     "crm-callback-reprocess",
     "crm-db-bridge",
@@ -39991,7 +40326,7 @@
    ],
    "fks": [],
    "criada_em": "20260426124745_a1de9fd9-f880-4613-8aa4-9a0684805b7b.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
@@ -40132,7 +40467,7 @@
     "batch_id->role_migration_batches"
    ],
    "criada_em": "20260426124745_a1de9fd9-f880-4613-8aa4-9a0684805b7b.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
@@ -40211,7 +40546,7 @@
    ],
    "fks": [],
    "criada_em": "20260323162846_a9ad25c6-da2e-4be9-89f4-08fd3af447ed.sql",
-   "usada_no_front": 2,
+   "usada_no_front": 4,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
@@ -40272,7 +40607,7 @@
    "indices": [],
    "fks": [],
    "criada_em": "20251231023800_2b909a8a-cd0f-484e-8abf-bc0656fe3b54.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
@@ -40842,7 +41177,7 @@
     "user_id->auth"
    ],
    "criada_em": "20251228000008_scheduled_reports.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [
     "process-scheduled-reports",
     "send-scheduled-reports"
@@ -41660,11 +41995,11 @@
     "updated_by->auth"
    ],
    "criada_em": "20251231130817_8aeff4f3-66df-41e0-a380-c7ffe3c03f96.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "seller_achievements": {
    "colunas": {
@@ -41861,7 +42196,7 @@
     "cart_id->seller_carts"
    ],
    "criada_em": "20260214152115_900b7a1c-3aa4-48e7-afc1-5e44ea411a12.sql",
-   "usada_no_front": 2,
+   "usada_no_front": 3,
    "usada_em_edges": [
     "audit-suite",
     "test-cart-concurrency"
@@ -41992,7 +42327,7 @@
     "seller_id->auth"
    ],
    "criada_em": "20260214152115_900b7a1c-3aa4-48e7-afc1-5e44ea411a12.sql",
-   "usada_no_front": 2,
+   "usada_no_front": 3,
    "usada_em_edges": [
     "audit-suite",
     "test-cart-concurrency",
@@ -42092,7 +42427,7 @@
     "user_id->profiles"
    ],
    "criada_em": "20260414193435_871210cd-f0d8-40ee-ae9f-401b4887727f.sql",
-   "usada_no_front": 3,
+   "usada_no_front": 4,
    "usada_em_edges": [],
    "triggers": [
     "update_seller_discount_limits_updated_at"
@@ -48810,7 +49145,7 @@
     "user_id->auth"
    ],
    "criada_em": "20251231024837_c924e1c3-b77f-4076-9cdc-195effdf6ea2.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [
     "verify-2fa-token"
    ],
@@ -48985,11 +49320,11 @@
     "user_id->auth"
    ],
    "criada_em": "20251231024837_c924e1c3-b77f-4076-9cdc-195effdf6ea2.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "user_comparisons": {
    "colunas": {
@@ -49124,7 +49459,7 @@
    ],
    "fks": [],
    "criada_em": "20260420164558_8d6e1541-e786-4b7a-9f6c-2f5ec1d3c7df.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 3,
    "usada_em_edges": [
     "comparison-price-watcher"
    ],
@@ -49601,7 +49936,7 @@
     "user_id->auth"
    ],
    "criada_em": "20251231121324_9bfed8fc-56ff-45e4-8175-e1bd0bb0f72f.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [
     "detect-new-device"
    ],
@@ -49824,7 +50159,7 @@
     "user_id->auth"
    ],
    "criada_em": "20251227175512_1e710604-28f2-4cc0-8b47-3c59cda3580e.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [
     "update_user_onboarding_updated_at"
@@ -50056,7 +50391,7 @@
    "indices": [],
    "fks": [],
    "criada_em": "20260420172157_b0ec64e0-2e7d-496d-82c4-8dbdea3fe417.sql",
-   "usada_no_front": 2,
+   "usada_no_front": 3,
    "usada_em_edges": [],
    "triggers": [
     "update_user_preferences_updated_at"
@@ -50263,7 +50598,7 @@
     "user_id->profiles"
    ],
    "criada_em": "20251214183243_14916945-c09e-42a0-bdf1-8972c41f9210.sql",
-   "usada_no_front": 4,
+   "usada_no_front": 5,
    "usada_em_edges": [
     "_shared",
     "audit-suite",
@@ -50818,7 +51153,7 @@
    "indices": [],
    "fks": [],
    "criada_em": "20260314175106_78748479-ede7-49b7-a0b8-ec8a30da9de8.sql",
-   "usada_no_front": 2,
+   "usada_no_front": 3,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
@@ -51040,12 +51375,113 @@
    "nao_usada": false
   },
   "webhook_configs": {
-   "colunas": {},
+   "colunas": {
+    "created_at": {
+     "tipo": "timestamptz",
+     "nn": false,
+     "pk": false,
+     "default": "NOW()",
+     "ref": null
+    },
+    "events": {
+     "tipo": "text[]",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "failed_calls": {
+     "tipo": "int",
+     "nn": false,
+     "pk": false,
+     "default": "0",
+     "ref": null
+    },
+    "id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": true,
+     "default": "gen_random_uuid()",
+     "ref": null
+    },
+    "is_active": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": false,
+     "default": "true",
+     "ref": null
+    },
+    "last_triggered_at": {
+     "tipo": "timestamptz",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "max_retries": {
+     "tipo": "int",
+     "nn": false,
+     "pk": false,
+     "default": "3",
+     "ref": null
+    },
+    "name": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "retry_delay_seconds": {
+     "tipo": "int",
+     "nn": false,
+     "pk": false,
+     "default": "60",
+     "ref": null
+    },
+    "secret": {
+     "tipo": "text",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "system": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "total_calls": {
+     "tipo": "int",
+     "nn": false,
+     "pk": false,
+     "default": "0",
+     "ref": null
+    },
+    "url": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "user_id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": "auth"
+    }
+   },
    "rls": true,
    "policies": [],
    "indices": [],
-   "fks": [],
-   "criada_em": null,
+   "fks": [
+    "user_id->auth"
+   ],
+   "criada_em": "003_notification_templates.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
@@ -51468,12 +51904,84 @@
    "nao_usada": true
   },
   "webhook_logs": {
-   "colunas": {},
+   "colunas": {
+    "attempt_number": {
+     "tipo": "int",
+     "nn": false,
+     "pk": false,
+     "default": "1",
+     "ref": null
+    },
+    "created_at": {
+     "tipo": "timestamptz",
+     "nn": false,
+     "pk": false,
+     "default": "NOW()",
+     "ref": null
+    },
+    "event_type": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": true,
+     "default": "gen_random_uuid()",
+     "ref": null
+    },
+    "payload": {
+     "tipo": "jsonb",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "response_body": {
+     "tipo": "text",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "status_code": {
+     "tipo": "int",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "success": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "webhook_id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": "webhook_configs"
+    }
+   },
    "rls": true,
    "policies": [],
-   "indices": [],
-   "fks": [],
-   "criada_em": null,
+   "indices": [
+    {
+     "nome": "idx_webhook_logs_webhook",
+     "colunas": "webhook_id, created_at DESC",
+     "unico": false
+    }
+   ],
+   "fks": [
+    "webhook_id->webhook_configs"
+   ],
+   "criada_em": "003_notification_templates.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
@@ -51870,7 +52378,7 @@
    ],
    "fks": [],
    "criada_em": "20260330104621_b1c5cde5-1d76-43c7-b27d-7ce25242435c.sql",
-   "usada_no_front": 7,
+   "usada_no_front": 10,
    "usada_em_edges": [
     "collections-watcher",
     "comparison-price-watcher",
@@ -52046,7 +52554,9 @@
   "categories_tree_visual",
   "contacts",
   "customers",
+  "messages",
   "mv_material_group_stats",
+  "quote_comments",
   "sync_logs",
   "v_commemorative_dates_with_colors",
   "xbz_image_import_staging"
@@ -52085,7 +52595,7 @@
   {
    "nome": "check_ai_quota",
    "definida": true,
-   "usada_em": 3
+   "usada_em": 4
   },
   {
    "nome": "check_edge_rate_limit",
@@ -52165,12 +52675,12 @@
   {
    "nome": "ensure_default_favorite_list",
    "definida": true,
-   "usada_em": 1
+   "usada_em": 2
   },
   {
    "nome": "execute_role_migration_batch",
    "definida": true,
-   "usada_em": 1
+   "usada_em": 2
   },
   {
    "nome": "fn_admin_sync_external_connections",
@@ -52425,7 +52935,7 @@
   {
    "nome": "increment_kit_template_usage",
    "definida": true,
-   "usada_em": 1
+   "usada_em": 2
   },
   {
    "nome": "increment_webhook_stats",
@@ -52559,6 +53069,11 @@
   },
   {
    "nome": "record_mcp_access_violation",
+   "definida": true,
+   "usada_em": 1
+  },
+  {
+   "nome": "record_platform_failure",
    "definida": true,
    "usada_em": 1
   },

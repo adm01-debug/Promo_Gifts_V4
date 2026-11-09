@@ -2,6 +2,9 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "arestas": {
+  "recovery/RealtimeMessagesExample.tsx": [
+   "src/integrations/supabase/client.ts"
+  ],
   "scripts/ai-context/cenarios.mjs": [
    "src/components/ui/index.ts",
    "src/types/index.ts"
@@ -178,6 +181,11 @@
    "src/routes/AppRoutes.tsx",
    "src/routes/RoutePrefetcher.tsx"
   ],
+  "src/components/BridgeStatusBanner.tsx": [
+   "src/components/ui/button.tsx",
+   "src/hooks/useBridgeStatusBanner.ts",
+   "src/hooks/useDevGate.ts"
+  ],
   "src/components/RoleBadge.tsx": [
    "src/components/ui/badge.tsx",
    "src/lib/roles.ts",
@@ -212,6 +220,12 @@
    "src/components/ui/badge.tsx",
    "src/components/ui/tabs.tsx",
    "src/hooks/auth/index.ts"
+  ],
+  "src/components/admin/CatalogQualityDashboard.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/integrations/supabase/client.ts"
   ],
   "src/components/admin/DevAccessAuditAlert.tsx": [
    "src/components/ui/alert.tsx",
@@ -2307,6 +2321,38 @@
    "src/lib/to-error-message.ts",
    "src/lib/utils.ts"
   ],
+  "src/components/admin/telemetry/BridgeAlertsCard.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/components/ui/switch.tsx",
+   "src/lib/telemetry/bridgeAlertThresholds.ts",
+   "src/lib/telemetry/bridgeCallMetrics.ts"
+  ],
+  "src/components/admin/telemetry/BridgeCallDetailDrawer.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/sheet.tsx",
+   "src/lib/telemetry/bridgeCallMetrics.ts"
+  ],
+  "src/components/admin/telemetry/BridgesLiveCard.tsx": [
+   "src/components/admin/telemetry/BridgeCallDetailDrawer.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/lib/telemetry/bridgeCallMetrics.ts",
+   "src/lib/telemetry/requestId.ts"
+  ],
+  "src/components/admin/telemetry/ColdStartRetriesPanel.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/collapsible.tsx",
+   "src/lib/external-db/cold-start-recorder.ts",
+   "src/lib/utils.ts"
+  ],
   "src/components/admin/telemetry/ColdVsWarmCrmCard.tsx": [
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
@@ -2321,6 +2367,20 @@
    "src/components/ui/card.tsx",
    "src/lib/intelligence/degradation.ts",
    "src/lib/intelligence/degradationRegistry.ts"
+  ],
+  "src/components/admin/telemetry/EdgeFunctionLogsPanel.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/scroll-area.tsx",
+   "src/components/ui/select.tsx",
+   "src/components/ui/table.tsx",
+   "src/components/ui/tooltip.tsx",
+   "src/lib/telemetry/bridgeCallMetrics.ts",
+   "src/lib/telemetry/requestId.ts",
+   "src/lib/telemetry/secretsManagerCallMetrics.ts",
+   "src/lib/utils.ts"
   ],
   "src/components/admin/telemetry/EdgeInvokeLivePanel.tsx": [
    "src/components/ui/badge.tsx",
@@ -2359,6 +2419,22 @@
    "src/components/ui/textarea.tsx",
    "src/lib/utils.ts",
    "src/pages/admin/telemetry/useOptimizationQueue.ts"
+  ],
+  "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx": [
+   "src/components/ui/alert.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/components/ui/popover.tsx",
+   "src/components/ui/switch.tsx",
+   "src/lib/utils.ts",
+   "src/pages/admin/telemetry/usePlatformFailureAlert.ts"
+  ],
+  "src/components/admin/telemetry/PlatformFailureCards.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/card.tsx",
+   "src/pages/admin/telemetry/usePlatformFailureMetrics.ts"
   ],
   "src/components/admin/telemetry/ProductsListingLatencyAlert.tsx": [
    "src/components/ui/badge.tsx",
@@ -2767,6 +2843,10 @@
    "src/integrations/supabase/types.ts",
    "src/lib/logger.ts"
   ],
+  "src/components/cart/CartActionsMenu.tsx": [
+   "src/components/ui/button.tsx",
+   "src/components/ui/dropdown-menu.tsx"
+  ],
   "src/components/cart/CartCompanyPicker.tsx": [
    "src/components/ui/button.tsx",
    "src/components/ui/input.tsx",
@@ -2818,6 +2898,11 @@
    "src/lib/utils.ts",
    "src/pages/products/seller-carts/undoCopy.ts",
    "src/utils/undoToast.tsx"
+  ],
+  "src/components/cart/CartHealthChecklist.tsx": [
+   "src/components/ui/card.tsx",
+   "src/hooks/useSellerCarts.ts",
+   "src/lib/utils.ts"
   ],
   "src/components/cart/CartItemSkeleton.tsx": [
    "src/components/ui/card.tsx",
@@ -2991,6 +3076,9 @@
    "src/hooks/products/index.ts",
    "src/lib/utils.ts"
   ],
+  "src/components/categories/CategoryTreeNavigator.tsx": [
+   "src/components/categories/CategoryTreeNavigation.tsx"
+  ],
   "src/components/categories/index.ts": [
    "src/components/categories/CategorySidebarPanel.tsx",
    "src/components/categories/CategoryTreeNavigation.tsx"
@@ -3110,12 +3198,32 @@
    "src/hooks/collections/index.ts",
    "src/lib/utils.ts"
   ],
+  "src/components/collections/ShareCollectionDialog.tsx": [
+   "src/components/ui/button.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/components/ui/input.tsx",
+   "src/contexts/CollectionsContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
   "src/components/collections/SortableProductItem.tsx": [
    "src/components/common/SelectionCheckbox.tsx",
    "src/components/favorites/PriceDropBadge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/input.tsx",
    "src/lib/utils.ts"
+  ],
+  "src/components/command/CommandActionGroup.tsx": [
+   "src/components/command/commandActions.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/command.tsx"
+  ],
+  "src/components/command/GlobalCommandBar.tsx": [
+   "src/components/command/CommandActionGroup.tsx",
+   "src/components/command/commandActions.tsx",
+   "src/components/ui/command.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/contexts/ThemeContext.tsx",
+   "src/lib/navigation/filter-restricted-items.ts"
   ],
   "src/components/common/BackButton.tsx": [
    "src/components/ui/button.tsx",
@@ -3130,6 +3238,9 @@
   ],
   "src/components/common/ConfirmDialog.tsx": [
    "src/components/ui/ConfirmDialog.tsx"
+  ],
+  "src/components/common/ContextualSkeleton.tsx": [
+   "src/lib/utils.ts"
   ],
   "src/components/common/EmptyState.tsx": [
    "src/lib/utils.ts"
@@ -3282,6 +3393,13 @@
    "src/components/ui/button.tsx",
    "src/components/ui/dialog.tsx"
   ],
+  "src/components/compare/ComparisonWeightsPopover.tsx": [
+   "src/components/ui/button.tsx",
+   "src/components/ui/label.tsx",
+   "src/components/ui/popover.tsx",
+   "src/components/ui/slider.tsx",
+   "src/hooks/useComparisonWeights.ts"
+  ],
   "src/components/compare/ExportComparisonButton.tsx": [
    "src/components/ui/button.tsx",
    "src/components/ui/dropdown-menu.tsx",
@@ -3322,6 +3440,15 @@
   "src/components/compare/RecentComparisonsSidebar.tsx": [
    "src/components/ui/button.tsx",
    "src/components/ui/sheet.tsx",
+   "src/integrations/supabase/client.ts",
+   "src/stores/useComparisonStore.ts"
+  ],
+  "src/components/compare/ShareComparisonDialog.tsx": [
+   "src/components/ui/button.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/components/ui/select.tsx",
    "src/integrations/supabase/client.ts",
    "src/stores/useComparisonStore.ts"
   ],
@@ -3449,6 +3576,10 @@
   ],
   "src/components/dev/DiagnosticProfiler.tsx": [
    "src/lib/logger.ts"
+  ],
+  "src/components/dev/metrics/BridgeCallItem.tsx": [
+   "src/components/dev/metrics/MetricUtils.ts",
+   "src/lib/telemetry/bridgeCallMetrics.ts"
   ],
   "src/components/dev/metrics/BridgeMetricsSummary.tsx": [
    "src/components/dev/metrics/MetricUtils.ts",
@@ -3590,6 +3721,13 @@
    "src/hooks/favorites/index.ts",
    "src/lib/utils.ts"
   ],
+  "src/components/favorites/ExportFavoritesButton.tsx": [
+   "src/components/ui/button.tsx",
+   "src/components/ui/dropdown-menu.tsx",
+   "src/hooks/useFavoriteLists.ts",
+   "src/lib/format.ts",
+   "src/types/product.ts"
+  ],
   "src/components/favorites/FavoriteListsSidebar.tsx": [
    "src/components/favorites/CreateListDialog.tsx",
    "src/components/ui/ConfirmDialog.tsx",
@@ -3598,6 +3736,10 @@
    "src/components/ui/dropdown-menu.tsx",
    "src/hooks/favorites/index.ts",
    "src/lib/utils.ts"
+  ],
+  "src/components/favorites/FavoritePresentationLauncher.tsx": [
+   "src/components/presentation/PresentationMode.tsx",
+   "src/types/product.ts"
   ],
   "src/components/favorites/FavoritesClientPicker.tsx": [
    "src/components/ui/button.tsx",
@@ -3657,6 +3799,13 @@
    "src/components/ui/scroll-area.tsx",
    "src/hooks/favorites/index.ts",
    "src/lib/utils.ts"
+  ],
+  "src/components/favorites/ShareListDialog.tsx": [
+   "src/components/ui/button.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/hooks/useFavoriteLists.ts"
   ],
   "src/components/filters/ColorGroupFilter.tsx": [
    "src/components/ui/badge.tsx",
@@ -4910,6 +5059,9 @@
    "src/lib/logger.ts",
    "src/lib/utils.ts"
   ],
+  "src/components/loading/SkeletonShimmer.tsx": [
+   "src/lib/utils.ts"
+  ],
   "src/components/loading/index.ts": [
    "src/components/loading/LoadingOverlay.tsx",
    "src/components/loading/ModernSkeletons.tsx"
@@ -5071,6 +5223,10 @@
    "src/lib/logger.ts",
    "src/lib/utils.ts"
   ],
+  "src/components/mockup/GenerateButton.tsx": [
+   "src/components/ui/button.tsx",
+   "src/lib/utils.ts"
+  ],
   "src/components/mockup/GeneratingOverlay.tsx": [
    "src/lib/utils.ts"
   ],
@@ -5201,6 +5357,10 @@
    "src/hooks/ui/useReducedMotion.ts",
    "src/lib/utils.ts"
   ],
+  "src/components/mockup/MockupSkeleton.tsx": [
+   "src/components/ui/card.tsx",
+   "src/lib/utils.ts"
+  ],
   "src/components/mockup/MockupSuccessToast.tsx": [
    "src/components/ui/button.tsx",
    "src/hooks/ui/useReducedMotion.ts",
@@ -5224,6 +5384,12 @@
    "src/components/ui/command.tsx",
    "src/components/ui/popover.tsx",
    "src/lib/utils.ts"
+  ],
+  "src/components/mockup/SaveTemplateDialog.tsx": [
+   "src/components/mockup/MultiAreaManager.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/components/ui/input.tsx"
   ],
   "src/components/mockup/ShareMenu.tsx": [
    "src/components/ui/button.tsx",
@@ -5249,6 +5415,13 @@
   "src/components/mockup/TemplatePreview.tsx": [
    "src/components/ui/tooltip.tsx",
    "src/lib/utils.ts"
+  ],
+  "src/components/mockup/TemplateSelector.tsx": [
+   "src/components/mockup/TemplatePreview.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/dropdown-menu.tsx",
+   "src/components/ui/hover-card.tsx"
   ],
   "src/components/mockup/approval/MockupApprovalPreview.tsx": [
    "src/components/mockup/approval/MockupApprovalTemplate.tsx",
@@ -5308,6 +5481,12 @@
    "src/utils/image-utils.ts"
   ],
   "src/components/navigation/Breadcrumbs.tsx": [
+   "src/components/ui/breadcrumb.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/lib/navigation/restricted-routes.ts",
+   "src/lib/utils.ts"
+  ],
+  "src/components/navigation/DynamicBreadcrumbs.tsx": [
    "src/components/ui/breadcrumb.tsx",
    "src/contexts/AuthContext.tsx",
    "src/lib/navigation/restricted-routes.ts",
@@ -5633,6 +5812,16 @@
    "src/hooks/simulation/index.ts",
    "src/lib/utils.ts"
   ],
+  "src/components/pricing/simulator/PriceResultV51.tsx": [
+   "src/components/pricing/simulator/utils.ts",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/separator.tsx",
+   "src/components/ui/tooltip.tsx",
+   "src/hooks/useGravacaoV2.ts",
+   "src/lib/utils.ts"
+  ],
   "src/components/pricing/simulator/ProductSearch.tsx": [
    "src/components/pricing/simulator/types.ts",
    "src/components/pricing/simulator/utils.ts",
@@ -5645,6 +5834,18 @@
   ],
   "src/components/pricing/simulator/ProductVariantSelector.tsx": [
    "src/components/ui/badge.tsx",
+   "src/lib/utils.ts"
+  ],
+  "src/components/pricing/simulator/QuantityAndResult.tsx": [
+   "src/components/pricing/simulator/types.ts",
+   "src/components/pricing/simulator/utils.ts",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/slider.tsx",
+   "src/components/ui/tooltip.tsx",
+   "src/hooks/useGravacaoV2.ts",
    "src/lib/utils.ts"
   ],
   "src/components/pricing/simulator/StepIndicator.tsx": [
@@ -5720,6 +5921,14 @@
   ],
   "src/components/products/ColumnSelector.tsx": [
    "src/components/ui/tooltip.tsx",
+   "src/lib/utils.ts"
+  ],
+  "src/components/products/EnhancedProductCard.tsx": [
+   "src/components/products/PriceFreshnessBadge.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/tooltip.tsx",
+   "src/hooks/useProducts.ts",
    "src/lib/utils.ts"
   ],
   "src/components/products/FutureStockModal.tsx": [
@@ -5875,6 +6084,12 @@
    "src/utils/image-utils.ts",
    "src/utils/imageProxy.ts"
   ],
+  "src/components/products/ProductCardSkeleton.tsx": [
+   "src/components/products/ColumnSelector.tsx",
+   "src/components/replenishments/VirtualizedReplenishmentGrid.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/lib/utils.ts"
+  ],
   "src/components/products/ProductCategoryBadges.tsx": [
    "src/components/ui/CategoryIcon.tsx",
    "src/components/ui/badge.tsx",
@@ -5902,6 +6117,9 @@
    "src/hooks/products/useProductCustomizationOptions.ts",
    "src/lib/utils.ts",
    "src/types/customization.ts"
+  ],
+  "src/components/products/ProductDetailSkeleton.tsx": [
+   "src/components/ui/skeleton.tsx"
   ],
   "src/components/products/ProductEngravingSection.tsx": [
    "src/components/ui/button.tsx",
@@ -6008,6 +6226,9 @@
    "src/utils/image-utils.ts",
    "src/utils/imageProxy.ts",
    "src/utils/undoToast.tsx"
+  ],
+  "src/components/products/ProductListItemSkeleton.tsx": [
+   "src/components/ui/skeleton.tsx"
   ],
   "src/components/products/ProductPersonalizationRules.tsx": [
    "src/components/ui/accordion.tsx",
@@ -6577,6 +6798,26 @@
    "src/contexts/OrganizationContext.tsx",
    "src/contexts/ProductsContext.tsx"
   ],
+  "src/components/quotes/AdminTemplateDialogs.tsx": [
+   "src/components/ui/alert-dialog.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/components/ui/select.tsx"
+  ],
+  "src/components/quotes/AdminTemplatesManager.tsx": [
+   "src/components/quotes/AdminTemplateDialogs.tsx",
+   "src/components/quotes/admin-templates/TemplateGridView.tsx",
+   "src/components/quotes/admin-templates/TemplateTableView.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/select.tsx",
+   "src/components/ui/separator.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/hooks/useQuoteTemplates.ts",
+   "src/utils/templateExport.ts"
+  ],
   "src/components/quotes/ClientPicker.tsx": [
    "src/components/favorites/FavoritesClientPicker.tsx",
    "src/components/ui/card.tsx",
@@ -6591,6 +6832,14 @@
    "src/lib/crm-db.ts",
    "src/lib/utils.ts",
    "src/types/crm.ts"
+  ],
+  "src/components/quotes/DraggableQuoteItems.tsx": [
+   "src/components/products/PriceFreshnessBadge.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/lib/utils.ts"
   ],
   "src/components/quotes/EngravingBadge.tsx": [
    "src/lib/utils.ts"
@@ -6732,6 +6981,17 @@
    "src/components/quotes/SectionEyebrow.tsx",
    "src/components/quotes/quote-view-typography.ts"
   ],
+  "src/components/quotes/QuoteCommentsSection.tsx": [
+   "src/components/ui/avatar.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/separator.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/components/ui/textarea.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/useQuoteComments.ts"
+  ],
   "src/components/quotes/QuoteConcurrencyAlert.tsx": [
    "src/components/ui/alert.tsx",
    "src/components/ui/button.tsx",
@@ -6829,6 +7089,11 @@
    "src/hooks/quotes/index.ts",
    "src/types/customization.ts"
   ],
+  "src/components/quotes/QuoteRowQuickActions.tsx": [
+   "src/components/ui/button.tsx",
+   "src/components/ui/tooltip.tsx",
+   "src/hooks/useQuotes.ts"
+  ],
   "src/components/quotes/QuoteSignaturePad.tsx": [
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
@@ -6837,6 +7102,40 @@
   ],
   "src/components/quotes/QuoteStatusTimeline.tsx": [
    "src/lib/utils.ts"
+  ],
+  "src/components/quotes/QuoteTemplateForm.tsx": [
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/components/ui/separator.tsx",
+   "src/components/ui/switch.tsx",
+   "src/components/ui/textarea.tsx",
+   "src/hooks/useQuoteTemplates.ts"
+  ],
+  "src/components/quotes/QuoteTemplatePicker.tsx": [
+   "src/components/ui/label.tsx",
+   "src/components/ui/select.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/components/quotes/QuoteTemplateSelector.tsx": [
+   "src/components/quotes/QuoteTemplatesList.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/hooks/useQuoteTemplates.ts"
+  ],
+  "src/components/quotes/QuoteTemplatesList.tsx": [
+   "src/components/ui/alert-dialog.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/components/ui/dropdown-menu.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/select.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/hooks/useQuoteTemplates.ts",
+   "src/utils/templateExport.ts"
   ],
   "src/components/quotes/QuoteTotalsSummary.tsx": [
    "src/components/quotes/QuoteItemsTable.tsx",
@@ -6882,6 +7181,11 @@
    "src/pages/quotes/QuoteBuilderPage.tsx",
    "src/pages/quotes/QuoteViewPage.tsx"
   ],
+  "src/components/quotes/QuotesFunnelChart.tsx": [
+   "src/components/ui/card.tsx",
+   "src/components/ui/tooltip.tsx",
+   "src/hooks/useQuoteFunnel.ts"
+  ],
   "src/components/quotes/QuotesStatusChips.tsx": [
    "src/components/ui/tooltip.tsx",
    "src/hooks/quotes/quoteTypes.ts",
@@ -6889,9 +7193,33 @@
    "src/lib/telemetry/structuredLogger.ts",
    "src/lib/utils.ts"
   ],
+  "src/components/quotes/SaveAsTemplateButton.tsx": [
+   "src/components/quotes/QuoteTemplateForm.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/hooks/useQuoteTemplates.ts"
+  ],
   "src/components/quotes/SectionEyebrow.tsx": [
    "src/components/quotes/quote-view-typography.ts",
    "src/lib/utils.ts"
+  ],
+  "src/components/quotes/admin-templates/TemplateGridView.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/dropdown-menu.tsx",
+   "src/hooks/useQuoteTemplates.ts",
+   "src/utils/templateExport.ts"
+  ],
+  "src/components/quotes/admin-templates/TemplateTableView.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/dropdown-menu.tsx",
+   "src/components/ui/scroll-area.tsx",
+   "src/components/ui/table.tsx",
+   "src/hooks/useQuoteTemplates.ts",
+   "src/utils/templateExport.ts"
   ],
   "src/components/quotes/company-contact/CompanySearchDropdown.tsx": [
    "src/components/quotes/company-contact/shared-types.tsx",
@@ -7106,6 +7434,10 @@
    "src/hooks/common/index.ts",
    "src/hooks/intelligence/index.ts",
    "src/hooks/products/index.ts",
+   "src/lib/utils.ts"
+  ],
+  "src/components/search/SmartSuggestions.tsx": [
+   "src/components/ui/badge.tsx",
    "src/lib/utils.ts"
   ],
   "src/components/search/VisualSearchButton.tsx": [
@@ -7739,6 +8071,13 @@
   "src/components/ui/timeline.tsx": [
    "src/lib/utils.ts"
   ],
+  "src/components/ui/toast.tsx": [
+   "src/lib/utils.ts"
+  ],
+  "src/components/ui/toaster.tsx": [
+   "src/components/ui/toast.tsx",
+   "src/hooks/use-toast.ts"
+  ],
   "src/components/ui/toggle-group.tsx": [
    "src/components/ui/toggle.tsx",
    "src/lib/utils.ts"
@@ -8293,10 +8632,18 @@
   "src/hooks/gravacao/index.ts": [
    "src/hooks/gravacao/useTecnicasGravacao.ts"
   ],
+  "src/hooks/gravacao/useFornecedoresGravacao.ts": [
+   "src/lib/external-db/index.ts",
+   "src/types/gravacao-database.ts"
+  ],
   "src/hooks/gravacao/useTecnicasGravacao.ts": [
    "src/lib/external-db/silent-empty-report.ts",
    "src/lib/security/sanitize-error.ts",
    "src/lib/supabase-untyped.ts",
+   "src/types/gravacao-database.ts"
+  ],
+  "src/hooks/gravacao/useVariantesGravacao.ts": [
+   "src/lib/external-db/index.ts",
    "src/types/gravacao-database.ts"
   ],
   "src/hooks/intelligence/index.ts": [
@@ -9571,13 +9918,812 @@
   "src/hooks/use-overlay-interactivity.ts": [
    "src/lib/dom/scroll-lock.ts"
   ],
+  "src/hooks/use-toast.ts": [
+   "src/components/ui/toast.tsx"
+  ],
+  "src/hooks/use2FA.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useAIRecommendations.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useAccessSecurity.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useAdminKitTemplates.ts": [
+   "src/hooks/useKitTemplates.ts",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useAdvancedFilters.ts": [
+   "src/constants/filters.ts",
+   "src/hooks/useExternalDatabase.ts",
+   "src/types/advancedFilters.ts"
+  ],
+  "src/hooks/useAiRouter.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useAiUsage.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useAllowedIPs.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useAppBootstrap.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/contexts/ThemeContext.tsx",
+   "src/hooks/useCatalogPrefetch.ts",
+   "src/hooks/useErrorHandler.ts",
+   "src/lib/chunk-recovery.ts",
+   "src/lib/external-db/bridge-telemetry-client.ts",
+   "src/lib/external-db/cold-start-recorder.ts",
+   "src/lib/theme-presets.ts"
+  ],
+  "src/hooks/useAuditLog.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useAutoSaveQuote.ts": [
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useBridgeStatusBanner.ts": [
+   "src/lib/external-db/bridge-status-events.ts"
+  ],
+  "src/hooks/useCartTemplates.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useCatalogFiltering.ts": [
+   "src/components/filters/FilterPanel.tsx",
+   "src/hooks/useCatalogState.ts",
+   "src/hooks/useProducts.ts",
+   "src/utils/product-sorting.ts"
+  ],
+  "src/hooks/useCatalogPrefetch.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/useProductsLightweight.ts",
+   "src/lib/external-db/index.ts"
+  ],
+  "src/hooks/useCatalogRealStats.ts": [
+   "src/lib/external-db/bridge.ts"
+  ],
+  "src/hooks/useCatalogState.ts": [
+   "src/components/filters/FilterPanel.tsx",
+   "src/components/products/ColumnSelector.tsx",
+   "src/contexts/ProductsContext.tsx",
+   "src/hooks/use-toast.ts",
+   "src/hooks/useCatalogFiltering.ts",
+   "src/hooks/useCatalogRealStats.ts",
+   "src/hooks/useColorEnrichment.ts",
+   "src/hooks/useDebounce.ts",
+   "src/hooks/useExternalCategoriesQuery.ts",
+   "src/hooks/useFavoriteQuickAdd.ts",
+   "src/hooks/useProductFuzzySearch.ts",
+   "src/hooks/useProducts.ts",
+   "src/hooks/useProductsByCategory.ts",
+   "src/hooks/useProductsByMaterial.ts",
+   "src/hooks/useProductsLightweight.ts",
+   "src/hooks/usePromoSalesRanking.ts",
+   "src/hooks/useSearch.ts",
+   "src/hooks/useSupplierSalesRanking.ts",
+   "src/stores/useComparisonStore.ts",
+   "src/stores/useFavoritesStore.ts"
+  ],
+  "src/hooks/useCategories.ts": [
+   "src/lib/external-db/index.ts"
+  ],
+  "src/hooks/useCategoriesTree.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/textUtils.ts"
+  ],
+  "src/hooks/useCategoryIcons.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useClientTopProducts.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useCloudStatus.ts": [
+   "src/lib/cloud-status.ts"
+  ],
+  "src/hooks/useCollections.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/useProducts.ts",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useColorEnrichment.ts": [
+   "src/lib/external-db/index.ts",
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useColorSystem.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useColors.ts": [
+   "src/hooks/useColorSystem.ts"
+  ],
+  "src/hooks/useCommemorativeDates.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useCommercialIntelligence.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/intelligence/intelligenceHelpers.ts",
+   "src/hooks/useCurrentOrgId.ts",
+   "src/integrations/supabase/client.ts",
+   "src/lib/auth/apply-seller-scope.ts",
+   "src/lib/auth/visibility-scope.ts",
+   "src/lib/external-db/index.ts",
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useComparison.ts": [
+   "src/hooks/useProductAnalytics.ts",
+   "src/hooks/useProducts.ts"
+  ],
+  "src/hooks/useComparisonShortcuts.ts": [
+   "src/stores/useComparisonStore.ts"
+  ],
+  "src/hooks/useComparisonSync.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/stores/useComparisonStore.ts"
+  ],
+  "src/hooks/useComparisonWeights.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useConnectionTestDetails.ts": [
+   "src/hooks/useConnectionTester.ts",
+   "src/integrations/supabase/client.ts",
+   "src/lib/error-kind-inference.ts"
+  ],
+  "src/hooks/useConnectionTestHistory.ts": [
+   "src/hooks/useConnectionTester.ts",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useConnectionTester.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/connection-error-copy.ts",
+   "src/lib/telemetry/structuredLogger.ts"
+  ],
+  "src/hooks/useConnectionsOverview.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useConnectionsOverviewFilters.ts": [
+   "src/hooks/useConnectionsOverview.ts",
+   "src/hooks/useConsecutiveFailures.ts",
+   "src/lib/connections-config.ts"
+  ],
+  "src/hooks/useConsecutiveFailures.ts": [
+   "src/hooks/useConnectionsOverview.ts",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useCrmCompanies.ts": [
+   "src/lib/bi/demoClient.ts",
+   "src/lib/crm-db.ts",
+   "src/lib/logger.ts",
+   "src/types/crm.ts"
+  ],
+  "src/hooks/useCurrentOrgId.ts": [
+   "src/contexts/OrganizationContext.tsx"
+  ],
+  "src/hooks/useCustomKitPersistence.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts",
+   "src/lib/kit-builder/index.ts"
+  ],
+  "src/hooks/useCustomKitsRealtime.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useCustomizationPrice.ts": [
+   "src/lib/external-rpc.ts",
+   "src/lib/personalization/rpc-contracts.ts",
+   "src/lib/personalization/rpc-validator.ts",
+   "src/types/customization.ts"
+  ],
+  "src/hooks/useDevAccessAudit.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useDevGate.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/lib/system/dev-gate/DevInfraGate.ts"
+  ],
+  "src/hooks/useDeviceDetection.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useDiscountApproval.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts",
+   "src/lib/security/rls-denial-logger.ts"
+  ],
+  "src/hooks/useDropboxFiles.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useDuplicateKitDetector.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useEnrichedFavoriteItems.ts": [
+   "src/contexts/ProductsContext.tsx",
+   "src/hooks/useFavoriteLists.ts",
+   "src/types/product.ts"
+  ],
+  "src/hooks/useEntitySelectionMode.ts": [
+   "src/components/catalog/BulkVariantWizard.tsx",
+   "src/hooks/useProducts.ts",
+   "src/stores/useComparisonStore.ts",
+   "src/stores/useFavoritesStore.ts"
+  ],
+  "src/hooks/useErrorHandler.ts": [
+   "src/lib/telemetry/structuredLogger.ts"
+  ],
+  "src/hooks/useExpertConversations.tsx": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useExternalCategoriesQuery.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/query-config.ts"
+  ],
+  "src/hooks/useExternalCollections.ts": [
+   "src/lib/external-db/index.ts"
+  ],
+  "src/hooks/useExternalDatabase.ts": [
+   "src/lib/external-db/invoke.ts",
+   "src/lib/external-db/tables.ts",
+   "src/lib/external-db/types.ts",
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useExternalDbInspect.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useExternalSimulator.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/fetch-print-areas.ts",
+   "src/lib/logger.ts",
+   "src/utils/product-search.ts"
+  ],
+  "src/hooks/useExternalVariantStock.ts": [
+   "src/lib/external-db/index.ts"
+  ],
+  "src/hooks/useFavoriteLists.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useFavoriteQuickAdd.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/useFavoriteLists.ts",
+   "src/integrations/supabase/client.ts",
+   "src/stores/useFavoritesStore.ts",
+   "src/types/product.ts"
+  ],
+  "src/hooks/useFavorites.ts": [
+   "src/hooks/useProductAnalytics.ts",
+   "src/hooks/useProducts.ts"
+  ],
+  "src/hooks/useFavoritesPageState.ts": [
+   "src/components/catalog/useCatalogSelection.ts",
+   "src/components/favorites/FavoritesSortBar.tsx",
+   "src/components/products/ColumnSelector.tsx",
+   "src/contexts/ProductsContext.tsx",
+   "src/hooks/useEnrichedFavoriteItems.ts",
+   "src/hooks/useFavoriteLists.ts",
+   "src/hooks/useFavoritesGlobalShortcuts.ts",
+   "src/hooks/useUndoStack.ts",
+   "src/stores/useFavoritesStore.ts"
+  ],
+  "src/hooks/useGeoBlocking.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useGlobalShortcuts.ts": [
+   "src/stores/oracleVoiceBridge.ts"
+  ],
+  "src/hooks/useGravacaoPriceV2.ts": [
+   "src/lib/external-db/index.ts",
+   "src/lib/external-rpc.ts",
+   "src/lib/fetch-print-areas.ts",
+   "src/lib/personalization/adapters/index.ts"
+  ],
+  "src/hooks/useGravacaoV2.ts": [
+   "src/hooks/gravacao/gravacao-constants.ts",
+   "src/hooks/gravacao/gravacao-types.ts",
+   "src/lib/external-db/index.ts",
+   "src/lib/external-rpc.ts",
+   "src/lib/fetch-print-areas.ts"
+  ],
+  "src/hooks/useIPValidation.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useKitAutoSave.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts",
+   "src/lib/kit-builder/index.ts",
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useKitBuilder.ts": [
+   "src/hooks/useKitBuilderQueries.ts",
+   "src/lib/kit-builder/index.ts"
+  ],
+  "src/hooks/useKitBuilderPageState.ts": [
+   "src/hooks/useCustomKitPersistence.ts",
+   "src/hooks/useDuplicateKitDetector.ts",
+   "src/hooks/useKitAutoSave.ts",
+   "src/hooks/useKitBuilder.ts",
+   "src/hooks/useKitBuilderTransformers.ts",
+   "src/hooks/useKitUndoRedo.ts",
+   "src/hooks/useTemplateSnapshot.ts",
+   "src/lib/external-db/index.ts",
+   "src/lib/kit-builder/index.ts",
+   "src/lib/logger.ts",
+   "src/pages/kit-builder/useKitBuilderQuote.ts"
+  ],
+  "src/hooks/useKitBuilderQueries.ts": [
+   "src/hooks/useKitBuilderTransformers.ts",
+   "src/lib/external-db/index.ts",
+   "src/lib/kit-builder/index.ts",
+   "src/lib/kit-builder/mock-data.ts",
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useKitBuilderTransformers.ts": [
+   "src/lib/external-db/index.ts",
+   "src/lib/kit-builder/index.ts"
+  ],
+  "src/hooks/useKitCollaboration.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useKitIdentitySuggestion.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useKitStockForecast.ts": [
+   "src/lib/external-db/index.ts",
+   "src/lib/kit-builder/index.ts"
+  ],
+  "src/hooks/useKitStockValidation.ts": [
+   "src/lib/external-db/bridge.ts",
+   "src/lib/kit-builder/types.ts"
+  ],
+  "src/hooks/useKitTemplates.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useKitVariants.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/kit-builder/index.ts"
+  ],
+  "src/hooks/useKitWizardShortcuts.ts": [
+   "src/lib/kit-builder/index.ts"
+  ],
+  "src/hooks/useLoginAttempts.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useLogoColorAnalysis.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/utils/color-matching.ts"
+  ],
+  "src/hooks/useMagicUpGeneration.ts": [
+   "src/components/magic-up/AdImageResult.tsx",
+   "src/components/magic-up/PromptBank.tsx",
+   "src/hooks/useMagicUpState.ts",
+   "src/integrations/supabase/client.ts",
+   "src/integrations/supabase/types.ts",
+   "src/lib/telemetry/structuredLogger.ts",
+   "src/pages/magic-up/magicUpStrategy.ts"
+  ],
+  "src/hooks/useMagicUpState.ts": [
+   "src/components/a11y/index.ts",
+   "src/components/magic-up/AdImageResult.tsx",
+   "src/components/magic-up/PromptBank.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/useMagicUpGeneration.ts",
+   "src/hooks/useMockupTechniques.ts",
+   "src/integrations/supabase/client.ts",
+   "src/integrations/supabase/types.ts",
+   "src/lib/crm-db.ts",
+   "src/lib/external-db/index.ts",
+   "src/pages/magic-up/magicUpStrategy.ts",
+   "src/types/crm.ts",
+   "src/types/gravacao.ts"
+  ],
+  "src/hooks/useMarketIntelligenceMacro.ts": [
+   "src/hooks/useStockHistory.ts",
+   "src/lib/external-db/index.ts"
+  ],
+  "src/hooks/useMaterialFilter.ts": [
+   "src/hooks/useMaterialGroups.ts",
+   "src/hooks/useMaterialTypes.ts",
+   "src/services/materialService.ts"
+  ],
+  "src/hooks/useMaterialGroups.ts": [
+   "src/services/materialService.ts"
+  ],
+  "src/hooks/useMaterialTypes.ts": [
+   "src/services/materialService.ts"
+  ],
+  "src/hooks/useMockupDraft.ts": [
+   "src/components/mockup/MultiAreaManager.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useMockupGenerator.ts": [
+   "src/components/mockup/MockupConfigPanel.tsx",
+   "src/components/mockup/MockupProductSelector.tsx",
+   "src/components/mockup/MockupSuccessToast.tsx",
+   "src/components/mockup/MultiAreaManager.tsx",
+   "src/components/mockup/mockupWizardStep.ts",
+   "src/components/mockup/techniqueColorUtils.ts",
+   "src/contexts/AuthContext.tsx",
+   "src/contexts/ProductsContext.tsx",
+   "src/hooks/mockup/mockupGenerationService.ts",
+   "src/hooks/useLogoColorAnalysis.ts",
+   "src/hooks/useMockupDraft.ts",
+   "src/hooks/useMockupTechniques.ts",
+   "src/hooks/usePositionHistory.ts",
+   "src/lib/external-db/invoke.ts",
+   "src/lib/image-converter.ts",
+   "src/lib/personalization/adapters/index.ts"
+  ],
+  "src/hooks/useMockupTechniques.ts": [
+   "src/lib/external-db/index.ts",
+   "src/lib/external-rpc.ts",
+   "src/lib/personalization/adapters/index.ts"
+  ],
   "src/hooks/useNavigationAnalytics.ts": [
    "src/contexts/AuthContext.tsx",
    "src/lib/logger.ts",
    "src/lib/supabase-untyped.ts"
   ],
+  "src/hooks/useNotifications.ts": [
+   "src/hooks/usePushNotifications.tsx",
+   "src/hooks/useWorkspaceNotifications.tsx"
+  ],
+  "src/hooks/useNovelties.ts": [
+   "src/lib/external-db/bridge.ts"
+  ],
+  "src/hooks/useNoveltiesSelectionMode.ts": [
+   "src/hooks/useEntitySelectionMode.ts",
+   "src/hooks/useNovelties.ts",
+   "src/hooks/useProducts.ts"
+  ],
+  "src/hooks/useOnboarding.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/usePasswordResetRequests.ts": [
+   "src/hooks/use-toast.ts",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/usePrintAreas.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/logger.ts",
+   "src/lib/personalization/adapters/index.ts",
+   "src/types/gravacao.ts"
+  ],
+  "src/hooks/useProductAnalytics.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/lib/supabase-untyped.ts"
+  ],
+  "src/hooks/useProductBounds.ts": [
+   "src/lib/product-bounds-detector.ts"
+  ],
   "src/hooks/useProductColorSwatch.ts": [
    "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useProductCustomizationOptions.ts": [
+   "src/lib/external-rpc.ts",
+   "src/lib/personalization/adapters/index.ts",
+   "src/types/customization.ts"
+  ],
+  "src/hooks/useProductFreshnessOverride.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useProductFuzzySearch.ts": [
+   "src/hooks/useProducts.ts",
+   "src/utils/product-search.ts"
+  ],
+  "src/hooks/useProductImages.ts": [
+   "src/lib/external-db/index.ts",
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useProductInsights.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/crm-db.ts"
+  ],
+  "src/hooks/useProductIntelligenceBadges.ts": [
+   "src/hooks/useStockHistory.ts",
+   "src/lib/stock-chart-utils.ts"
+  ],
+  "src/hooks/useProductMatch.ts": [
+   "src/types/product-catalog.ts"
+  ],
+  "src/hooks/useProductRecommendations.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/useClientTopProducts.ts",
+   "src/hooks/useProductInsights.ts",
+   "src/integrations/supabase/client.ts",
+   "src/lib/external-db/index.ts"
+  ],
+  "src/hooks/useProductSeoAI.ts": [
+   "src/components/admin/products/ProductFormSchema.ts",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useProductSupplierSources.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useProducts.ts": [
+   "src/lib/external-db/index.ts",
+   "src/types/product-catalog.ts",
+   "src/utils/product-colors.ts",
+   "src/utils/product-mapper.ts"
+  ],
+  "src/hooks/useProductsByCategory.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useProductsByColor.ts": [
+   "src/lib/external-db/index.ts",
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useProductsByMaterial.ts": [
+   "src/services/materialService.ts"
+  ],
+  "src/hooks/useProductsLightweight.ts": [
+   "src/lib/external-db/index.ts",
+   "src/types/product-catalog.ts"
+  ],
+  "src/hooks/useProdutoPersonalizacao.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useProdutoRamoAtividade.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/usePromoSalesRanking.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/usePushNotifications.tsx": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts",
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useQuoteBuilderState.ts": [
+   "src/components/quotes/CompanyContactSelector.tsx",
+   "src/components/quotes/QuoteBuilderStepper.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/useAutoSaveQuote.ts",
+   "src/hooks/useDebounce.ts",
+   "src/hooks/useDiscountApproval.ts",
+   "src/hooks/useExternalVariantStock.ts",
+   "src/hooks/useProducts.ts",
+   "src/hooks/useQuoteItems.ts",
+   "src/hooks/useQuoteTemplates.ts",
+   "src/hooks/useQuotes.ts",
+   "src/hooks/useSellerDiscountLimits.ts",
+   "src/lib/external-db/index.ts",
+   "src/lib/validations/index.ts",
+   "src/logic/quotes/calculations.ts",
+   "src/utils/price-freshness.ts",
+   "src/utils/product-search.ts"
+  ],
+  "src/hooks/useQuoteComments.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useQuoteFunnel.ts": [
+   "src/hooks/useQuotes.ts"
+  ],
+  "src/hooks/useQuoteHistory.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useQuoteItems.ts": [
+   "src/hooks/useExternalVariantStock.ts",
+   "src/hooks/useQuotes.ts"
+  ],
+  "src/hooks/useQuoteTemplates.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/use-toast.ts",
+   "src/integrations/supabase/client.ts",
+   "src/integrations/supabase/types.ts"
+  ],
+  "src/hooks/useQuoteVersions.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/useQuotes.ts",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useQuotes.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/contexts/OrganizationContext.tsx",
+   "src/hooks/quotes/quoteHelpers.ts",
+   "src/hooks/quotes/quoteTypes.ts",
+   "src/integrations/supabase/client.ts",
+   "src/lib/auth/apply-seller-scope.ts",
+   "src/lib/auth/visibility-scope.ts",
+   "src/lib/external-db/index.ts",
+   "src/lib/telemetry/structuredLogger.ts"
+  ],
+  "src/hooks/useRBAC.tsx": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts",
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useRamoAtividade.ts": [
+   "src/services/ramoAtividadeService.ts",
+   "src/types/ramo-atividade.ts"
+  ],
+  "src/hooks/useRamoAtividadeFilho.ts": [
+   "src/services/ramoAtividadeService.ts",
+   "src/types/ramo-atividade.ts"
+  ],
+  "src/hooks/useRamoAtividadeFilter.ts": [
+   "src/hooks/useRamoAtividade.ts",
+   "src/hooks/useRamoAtividadeFilho.ts",
+   "src/types/ramo-atividade.ts"
+  ],
+  "src/hooks/useRecentProducts.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useRecentlyViewed.ts": [
+   "src/hooks/useProducts.ts"
+  ],
+  "src/hooks/useReplenishments.ts": [
+   "src/lib/external-db/bridge.ts"
+  ],
+  "src/hooks/useReplenishmentsSelectionMode.ts": [
+   "src/hooks/useEntitySelectionMode.ts",
+   "src/hooks/useProducts.ts",
+   "src/hooks/useReplenishments.ts"
+  ],
+  "src/hooks/useRetestCooldownSetting.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useRoleMigration.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/integrations/supabase/types.ts"
+  ],
+  "src/hooks/useSalesGoals.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/lib/supabase-untyped.ts"
+  ],
+  "src/hooks/useSalesHistory.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useSalesHistoryMacro.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/useSalesHistory.ts",
+   "src/integrations/supabase/client.ts",
+   "src/lib/auth/visibility-scope.ts"
+  ],
+  "src/hooks/useScheduledReports.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useSearch.ts": [
+   "src/contexts/ProductsContext.tsx",
+   "src/data/mockData.ts",
+   "src/hooks/useProducts.ts",
+   "src/hooks/useSearchHistory.ts",
+   "src/utils/product-search.ts"
+  ],
+  "src/hooks/useSecretsManager.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/telemetry/requestId.ts",
+   "src/lib/telemetry/secretsManagerCallMetrics.ts"
+  ],
+  "src/hooks/useSellerCarts.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useSellerDiscountLimits.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useSimilarKits.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useSimilarProducts.ts": [
+   "src/lib/external-db/index.ts",
+   "src/lib/logger.ts",
+   "src/types/product-catalog.ts"
+  ],
+  "src/hooks/useSimulation.ts": [
+   "src/components/simulator/ScenarioComparison.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/simulation/simulationClipboard.ts",
+   "src/hooks/simulation/simulationPriceFetcher.ts",
+   "src/hooks/useSimulatorPreferences.ts",
+   "src/hooks/useTechniquePricingOptions.ts",
+   "src/integrations/supabase/client.ts",
+   "src/lib/crm-db.ts",
+   "src/lib/external-db/index.ts",
+   "src/lib/logger.ts",
+   "src/types/external-db.ts",
+   "src/types/simulation.ts"
+  ],
+  "src/hooks/useSimulatorPreferences.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts",
+   "src/types/simulation.ts"
+  ],
+  "src/hooks/useSparklineSales.tsx": [
+   "src/lib/external-db/index.ts",
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useStepUpAuth.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/security/sanitize-error.ts"
+  ],
+  "src/hooks/useStockHistory.ts": [
+   "src/lib/external-db/index.ts",
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useSupplierComparison.ts": [
+   "src/hooks/useProducts.ts"
+  ],
+  "src/hooks/useSupplierFiscalData.ts": [
+   "src/lib/external-db/index.ts",
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useSupplierNames.ts": [
+   "src/lib/external-db/index.ts"
+  ],
+  "src/hooks/useSupplierSalesRanking.ts": [
+   "src/lib/external-db/index.ts",
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useSupplierTrust.ts": [
+   "src/components/common/SocialProof.tsx",
+   "src/lib/external-db/bridge.ts",
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useSuppliers.ts": [
+   "src/hooks/useExternalDatabase.ts"
+  ],
+  "src/hooks/useTechniquePricing.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useTechniquePricingOptions.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useTechniqueRecommendations.ts": [
+   "src/types/simulation.ts"
+  ],
+  "src/hooks/useTecnicasUnificadas.ts": [
+   "src/hooks/tecnicas/index.ts",
+   "src/types/tecnica-unificada.ts"
+  ],
+  "src/hooks/useTemplateSnapshot.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/kit-builder/index.ts"
+  ],
+  "src/hooks/useTransactionalEmail.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useVariantStock.ts": [
+   "src/hooks/stock/stockFetcher.ts",
+   "src/types/stock.ts"
+  ],
+  "src/hooks/useVariantSupplierSources.ts": [
+   "src/lib/external-db/index.ts"
+  ],
+  "src/hooks/useVideoVariantLinks.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/useVoiceAgent.ts": [
+   "src/hooks/voice/logVoiceCommand.ts",
+   "src/hooks/voice/playTtsAudio.ts",
+   "src/hooks/voice/processTranscript.ts",
+   "src/hooks/voice/retry.ts",
+   "src/hooks/voice/scribeTokenCache.ts",
+   "src/hooks/voice/types.ts",
+   "src/hooks/voice/webSpeechFallback.ts",
+   "src/lib/logger.ts"
+  ],
+  "src/hooks/useWorkspaceNotifications.tsx": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts",
+   "src/lib/notifications-metrics.ts"
   ],
   "src/hooks/voice/index.ts": [
    "src/hooks/voice/useVoiceHistory.ts"
@@ -9785,6 +10931,11 @@
    "src/lib/db/postgrest.ts",
    "src/lib/logger.ts"
   ],
+  "src/lib/external-db/bridge-telemetry-client.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/external-db/bridge-status-events.ts",
+   "src/lib/logger.ts"
+  ],
   "src/lib/external-db/bridge.ts": [
    "src/lib/external-db/kill-switch-client.ts",
    "src/lib/external-db/kill-switch-telemetry.ts",
@@ -9794,6 +10945,9 @@
    "src/lib/telemetry/bridgeCallMetrics.ts",
    "src/lib/telemetry/requestId.ts",
    "src/lib/to-error-message.ts"
+  ],
+  "src/lib/external-db/cold-start-recorder.ts": [
+   "src/lib/external-db/bridge-status-events.ts"
   ],
   "src/lib/external-db/immutableCache.ts": [
    "src/lib/external-db/bridge.ts",
@@ -10239,6 +11393,187 @@
    "src/styles/missing-root-tokens.css",
    "src/utils/performance-budget.ts"
   ],
+  "src/pages/AdvancedPriceSearchPage.tsx": [
+   "src/components/layout/MainLayout.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/components/ui/scroll-area.tsx",
+   "src/components/ui/select.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/components/ui/slider.tsx",
+   "src/components/ui/switch.tsx",
+   "src/lib/utils.ts",
+   "src/pages/advanced-price-search/ResultViews.tsx",
+   "src/pages/advanced-price-search/types.ts",
+   "src/pages/advanced-price-search/useAdvancedPriceSearch.ts"
+  ],
+  "src/pages/Auth.tsx": [
+   "src/components/auth/ForgotPasswordForm.tsx",
+   "src/components/auth/SocialLoginButtons.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/use-toast.ts",
+   "src/hooks/useIPValidation.ts",
+   "src/integrations/supabase/client.ts",
+   "src/lib/validations/index.ts",
+   "src/pages/auth/AuthBranding.tsx"
+  ],
+  "src/pages/BusinessIntelligencePage.tsx": [
+   "src/components/bi/BIAiCopilot.tsx",
+   "src/components/bi/BIBriefingMode.tsx",
+   "src/components/bi/BITourGuide.tsx",
+   "src/components/bi/BundleSuggestions.tsx",
+   "src/components/bi/ChurnRiskBanner.tsx",
+   "src/components/bi/ClientAffinityProducts.tsx",
+   "src/components/bi/ClientCategoryRadar.tsx",
+   "src/components/bi/ClientHealthHero.tsx",
+   "src/components/bi/ClientLookalikes.tsx",
+   "src/components/bi/ClientOverview360.tsx",
+   "src/components/bi/ClientSeasonalityHeatmap.tsx",
+   "src/components/bi/ClientSelector.tsx",
+   "src/components/bi/ClientVsIndustryComparison.tsx",
+   "src/components/bi/EmpiricalRecommendations.tsx",
+   "src/components/bi/EnrichedOrdersTimeline.tsx",
+   "src/components/bi/ExecutiveSummaryButton.tsx",
+   "src/components/bi/IndustryTrendingProducts.tsx",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/contexts/BICategoryFocusContext.tsx",
+   "src/hooks/bi/useClientSeasonality.ts",
+   "src/hooks/bi/useSeasonalPeakNotifications.ts",
+   "src/hooks/useCrmCompanies.ts",
+   "src/lib/bi/demoClient.ts",
+   "src/types/crm.ts"
+  ],
+  "src/pages/ClientComparatorPage.tsx": [
+   "src/components/bi/ClientComparator.tsx",
+   "src/components/bi/ClientSelector.tsx",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx"
+  ],
+  "src/pages/ClientDetailPage.tsx": [
+   "src/components/clients/ClientDetailHeader.tsx",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/hooks/useClientTopProducts.ts",
+   "src/hooks/useCrmCompanies.ts",
+   "src/types/crm.ts"
+  ],
+  "src/pages/ClientsPage.tsx": [
+   "src/components/clients/ClientCard.tsx",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/popover.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/hooks/useCrmCompanies.ts",
+   "src/hooks/useSearchHistory.ts",
+   "src/types/crm.ts"
+  ],
+  "src/pages/CollectionDetailPage.tsx": [
+   "src/components/collections/CollectionDetailHeader.tsx",
+   "src/components/collections/CollectionPresentationLauncher.tsx",
+   "src/components/collections/CollectionsTrashView.tsx",
+   "src/components/collections/ShareCollectionDialog.tsx",
+   "src/components/collections/SortableProductItem.tsx",
+   "src/components/common/BulkSelectionBar.tsx",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/products/ColumnSelector.tsx",
+   "src/components/products/LayoutPopover.tsx",
+   "src/components/products/ProductGrid.tsx",
+   "src/components/products/ProductListItem.tsx",
+   "src/components/products/ProductTableView.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/dropdown-menu.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/components/ui/tabs.tsx",
+   "src/contexts/CollectionsContext.tsx",
+   "src/contexts/ProductsContext.tsx",
+   "src/hooks/useExternalCollections.ts",
+   "src/stores/useComparisonStore.ts",
+   "src/stores/useFavoritesStore.ts"
+  ],
+  "src/pages/CollectionsPage.tsx": [
+   "src/components/collections/CollectionFormDialog.tsx",
+   "src/components/collections/CollectionGridCard.tsx",
+   "src/components/collections/CollectionListItem.tsx",
+   "src/components/collections/CollectionTableView.tsx",
+   "src/components/collections/CollectionsEmptyStateSmart.tsx",
+   "src/components/collections/CollectionsHeatmap.tsx",
+   "src/components/collections/ExternalCollectionCard.tsx",
+   "src/components/collections/ExternalCollectionTableView.tsx",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/products/LayoutPopover.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/alert-dialog.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/hooks/useCollectionsGlobalShortcuts.ts",
+   "src/lib/utils.ts",
+   "src/pages/collections/useCollectionsPageState.ts"
+  ],
+  "src/pages/CommercialIntelligencePage.tsx": [
+   "src/components/intelligence/CategoryRanking.tsx",
+   "src/components/intelligence/IntelligenceFilterBar.tsx",
+   "src/components/intelligence/IntelligenceKPICards.tsx",
+   "src/components/intelligence/MarketIntelligenceChart.tsx",
+   "src/components/intelligence/MarketIntelligenceInsightsCard.tsx",
+   "src/components/intelligence/ProductRankingSearch.tsx",
+   "src/components/intelligence/SalesOverviewChart.tsx",
+   "src/components/intelligence/SupplierSales.tsx",
+   "src/components/intelligence/TrendingProducts.tsx",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/hooks/useDebouncedFilters.ts"
+  ],
+  "src/pages/ComparePage.tsx": [
+   "src/components/compare/AIComparisonAdvisor.tsx",
+   "src/components/compare/CompareEmptyStateSmart.tsx",
+   "src/components/compare/CompareTableView.tsx",
+   "src/components/compare/ComparisonDuelView.tsx",
+   "src/components/compare/ComparisonMobileView.tsx",
+   "src/components/compare/ComparisonPresentationLauncher.tsx",
+   "src/components/compare/ComparisonRadarChart.tsx",
+   "src/components/compare/ComparisonScoreCard.tsx",
+   "src/components/compare/ExportComparisonButton.tsx",
+   "src/components/compare/RecentComparisonsSidebar.tsx",
+   "src/components/compare/ShareComparisonDialog.tsx",
+   "src/components/compare/SimilarProductsRail.tsx",
+   "src/components/compare/SyncedZoomGallery.tsx",
+   "src/components/favorites/FavoritesClientPicker.tsx",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/popover.tsx",
+   "src/components/ui/tabs.tsx",
+   "src/contexts/ProductsContext.tsx",
+   "src/hooks/useComparisonShortcuts.ts",
+   "src/hooks/useComparisonSync.ts",
+   "src/lib/utils.ts",
+   "src/stores/useComparisonStore.ts",
+   "src/types/product.ts"
+  ],
   "src/pages/CustomizableDashboard.tsx": [
    "src/components/common/ScopeBadge.tsx",
    "src/components/dashboard/MyClientsWidget.tsx",
@@ -10258,6 +11593,100 @@
    "src/lib/auth/visibility-scope.ts",
    "src/lib/utils.ts"
   ],
+  "src/pages/DropboxBrowserPage.tsx": [
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/hooks/useDropboxFiles.ts"
+  ],
+  "src/pages/EngravingRegistrationPage.tsx": [
+   "src/components/admin/GroupPersonalizationManager.tsx",
+   "src/components/admin/ProductGroupsManager.tsx",
+   "src/components/admin/TechniquesManager.tsx",
+   "src/components/admin/personalization-manager/index.ts",
+   "src/components/engraving/PricingPanel.tsx",
+   "src/components/engraving/TechniquesPanel.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/tabs.tsx"
+  ],
+  "src/pages/ExternalDatabaseTest.tsx": [
+   "src/components/layout/MainLayout.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/scroll-area.tsx",
+   "src/components/ui/tabs.tsx",
+   "src/hooks/useExternalDatabase.ts"
+  ],
+  "src/pages/FavoritesPage.tsx": [
+   "src/components/catalog/CatalogBulkModals.tsx",
+   "src/components/catalog/useCatalogSelection.ts",
+   "src/components/favorites/FavoriteListsSidebar.tsx",
+   "src/components/favorites/FavoritePresentationLauncher.tsx",
+   "src/components/favorites/FavoritesEmptyStateSmart.tsx",
+   "src/components/favorites/FavoritesSortBar.tsx",
+   "src/components/favorites/FavoritesTrashView.tsx",
+   "src/components/favorites/FavoritesViewHeader.tsx",
+   "src/components/favorites/ItemNoteEditor.tsx",
+   "src/components/favorites/PriceDropBadge.tsx",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/products/ColumnSelector.tsx",
+   "src/components/products/LayoutPopover.tsx",
+   "src/components/products/ProductCard.tsx",
+   "src/components/products/ProductListItem.tsx",
+   "src/components/products/ProductTableView.tsx",
+   "src/components/replenishments/VirtualizedReplenishmentGrid.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/ConfirmDialog.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/sheet.tsx",
+   "src/contexts/ProductsContext.tsx",
+   "src/hooks/useEnrichedFavoriteItems.ts",
+   "src/hooks/useFavoriteLists.ts",
+   "src/hooks/useFavoritesGlobalShortcuts.ts",
+   "src/hooks/useUndoStack.ts",
+   "src/lib/utils.ts",
+   "src/stores/useFavoritesStore.ts"
+  ],
+  "src/pages/FiltersPage.tsx": [
+   "src/components/catalog/BulkAddToCartModal.tsx",
+   "src/components/catalog/BulkVariantWizard.tsx",
+   "src/components/collections/AddToCollectionModal.tsx",
+   "src/components/filters/FilterPanel.tsx",
+   "src/components/filters/PresetsBar.tsx",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/products/BulkActionBar.tsx",
+   "src/components/products/ColumnSelector.tsx",
+   "src/components/products/LayoutPopover.tsx",
+   "src/components/products/ProductList.tsx",
+   "src/components/products/ProductTableView.tsx",
+   "src/components/products/VariantPickerDialog.tsx",
+   "src/components/products/VirtualizedProductGrid.tsx",
+   "src/components/products/share/SharePreviewDialog.tsx",
+   "src/components/search/VoiceSearchOverlayConnected.tsx",
+   "src/components/search/index.ts",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/select.tsx",
+   "src/components/ui/sheet.tsx",
+   "src/components/ui/tooltip.tsx",
+   "src/constants/filters.ts",
+   "src/hooks/useExternalVariantStock.ts",
+   "src/hooks/useProducts.ts",
+   "src/hooks/voice/types.ts",
+   "src/lib/utils.ts",
+   "src/pages/filters/useFiltersPageState.ts",
+   "src/pages/filters/useFiltersSelectionMode.ts",
+   "src/stores/oracleVoiceBridge.ts",
+   "src/stores/useComparisonStore.ts",
+   "src/stores/useFavoritesStore.ts"
+  ],
   "src/pages/Index.tsx": [
    "src/components/catalog/CatalogActiveFilters.tsx",
    "src/components/catalog/CatalogContent.tsx",
@@ -10271,10 +11700,166 @@
    "src/hooks/products/useCatalogState.ts",
    "src/hooks/products/useExternalVariantStock.ts"
   ],
+  "src/pages/KitBuilderPage.tsx": [
+   "src/components/kit-builder/KitBuilderHeader.tsx",
+   "src/components/kit-builder/KitHeroPricingCard.tsx",
+   "src/components/kit-builder/KitIsometricPreview.tsx",
+   "src/components/kit-builder/index.ts",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/card.tsx",
+   "src/hooks/useKitBuilderPageState.ts"
+  ],
+  "src/pages/KitLibraryPage.tsx": [
+   "src/components/kit-library/KitCard.tsx",
+   "src/components/kit-library/KitCardSkeleton.tsx",
+   "src/components/kit-library/KitCategoryChips.tsx",
+   "src/components/kit-library/KitLibraryFilters.tsx",
+   "src/components/kit-library/KitTemplatePreviewDialog.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/alert-dialog.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/tabs.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/useCustomKitPersistence.ts",
+   "src/hooks/useKitTemplates.ts",
+   "src/integrations/supabase/client.ts",
+   "src/lib/kit-library/buildCustomKitInsert.ts"
+  ],
+  "src/pages/MagicUp.tsx": [
+   "src/components/layout/MainLayout.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/hooks/useMagicUpState.ts",
+   "src/lib/utils.ts",
+   "src/pages/magic-up/MagicUpConfigPanel.tsx",
+   "src/pages/magic-up/MagicUpResultPanel.tsx"
+  ],
+  "src/pages/MockupGenerator.tsx": [
+   "src/components/ai/index.ts",
+   "src/components/dev/DiagnosticProfiler.tsx",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/mockup/GeneratingOverlay.tsx",
+   "src/components/mockup/KeyboardShortcuts.tsx",
+   "src/components/mockup/LogoPositionEditor.tsx",
+   "src/components/mockup/MockupConfigPanel.tsx",
+   "src/components/mockup/MockupHistoryPanel.tsx",
+   "src/components/mockup/MockupResultCard.tsx",
+   "src/components/mockup/MockupWizard.tsx",
+   "src/components/mockup/TechniqueColorConfigDialog.tsx",
+   "src/components/mockup/approval/MockupLayoutButtons.tsx",
+   "src/components/mockup/approval/OffscreenLayoutCapture.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/alert.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/tabs.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/contexts/ProductsContext.tsx",
+   "src/hooks/mockup/mockupGenerationService.ts",
+   "src/hooks/useMockupGenerator.ts",
+   "src/lib/lazyWithRetry.ts",
+   "src/pages/mockup-generator/MockupDialogs.tsx",
+   "src/pages/mockup-generator/MockupEmptyState.tsx",
+   "src/pages/mockup-generator/MockupTechniqueHandlers.tsx",
+   "src/pages/mockup-generator/MockupToolbar.tsx",
+   "src/types/external-db.ts",
+   "src/types/mockup-approval.ts"
+  ],
+  "src/pages/MockupHistoryPage.tsx": [
+   "src/components/dev/DiagnosticProfiler.tsx",
+   "src/components/mockup/MockupSkeleton.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/table.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/useDebounce.ts",
+   "src/integrations/supabase/client.ts"
+  ],
   "src/pages/NotFound.tsx": [
    "src/components/seo/PageSEO.tsx",
    "src/components/ui/button.tsx",
    "src/lib/logger.ts"
+  ],
+  "src/pages/NoveltiesPage.tsx": [
+   "src/components/layout/MainLayout.tsx",
+   "src/components/novelties/ExpiringNoveltiesWidget.tsx",
+   "src/components/novelties/NoveltyProductGrid.tsx",
+   "src/components/novelties/NoveltyStatsCards.tsx",
+   "src/components/seo/PageSEO.tsx"
+  ],
+  "src/pages/PermissionsPage.tsx": [
+   "src/components/common/BackButton.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/components/ui/select.tsx",
+   "src/components/ui/sidebar.tsx",
+   "src/components/ui/table.tsx",
+   "src/components/ui/textarea.tsx",
+   "src/hooks/use-toast.ts",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/pages/PriceSimulatorPage.tsx": [
+   "src/components/layout/MainLayout.tsx",
+   "src/components/pricing/ProductPriceSimulator.tsx",
+   "src/components/pricing/QuantityPriceCalculator.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/tabs.tsx"
+  ],
+  "src/pages/ProductDetail.tsx": [
+   "src/components/common/EmptyState.tsx",
+   "src/components/common/IntelligenceBadges.tsx",
+   "src/components/compare/FloatingCompareBar.tsx",
+   "src/components/compare/SupplierComparisonModal.tsx",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/mobile/MobileProductActions.tsx",
+   "src/components/products/FutureStockModal.tsx",
+   "src/components/products/PackagingModal.tsx",
+   "src/components/products/ProductDetailSkeleton.tsx",
+   "src/components/products/ProductStickyHeader.tsx",
+   "src/components/products/SalesHistoryChart.tsx",
+   "src/components/products/SimilarProducts.tsx",
+   "src/components/products/SmartRecommendations.tsx",
+   "src/components/products/StockHistoryChart.tsx",
+   "src/components/products/VariantPickerDialog.tsx",
+   "src/hooks/use-toast.ts",
+   "src/hooks/useAIRecommendations.ts",
+   "src/hooks/useExternalVariantStock.ts",
+   "src/hooks/useProductAnalytics.ts",
+   "src/hooks/useProductIntelligenceBadges.ts",
+   "src/hooks/useProducts.ts",
+   "src/hooks/useSimilarProducts.ts",
+   "src/hooks/useSupplierTrust.ts",
+   "src/integrations/supabase/client.ts",
+   "src/pages/product-detail/ProductDetailHero.tsx",
+   "src/stores/useFavoritesStore.ts",
+   "src/stores/useRecentlyViewedStore.ts",
+   "src/types/product-catalog.ts",
+   "src/utils/image-utils.ts"
+  ],
+  "src/pages/ProductMatchPage.tsx": [
+   "src/components/layout/MainLayout.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/scroll-area.tsx",
+   "src/data/mock-match-products.ts",
+   "src/hooks/useProductMatch.ts",
+   "src/hooks/useProducts.ts",
+   "src/lib/utils.ts",
+   "src/pages/product-match/MatchCards.tsx",
+   "src/pages/product-match/MatchFiltersPanel.tsx",
+   "src/pages/product-match/ProductSearchPanel.tsx"
   ],
   "src/pages/PromoFlixPlayground.tsx": [
    "src/components/products/gallery/PromoFlixPlayer.tsx",
@@ -10292,9 +11877,212 @@
    "src/hooks/admin/index.ts",
    "src/lib/system/dev-gate/DevInfraGate.ts"
   ],
+  "src/pages/QuoteBuilderPage.tsx": [
+   "src/components/common/UnsavedChangesDialog.tsx",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/quotes/CompanyContactSelector.tsx",
+   "src/components/quotes/DraggableQuoteItems.tsx",
+   "src/components/quotes/QuoteAutoSave.tsx",
+   "src/components/quotes/QuoteBuilderProductSearch.tsx",
+   "src/components/quotes/QuoteBuilderStepper.tsx",
+   "src/components/quotes/QuoteBuilderSummaryColumn.tsx",
+   "src/components/quotes/QuoteProductCustomization.tsx",
+   "src/components/quotes/QuoteTemplateSelector.tsx",
+   "src/components/quotes/SaveAsTemplateButton.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/calendar.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/components/ui/popover.tsx",
+   "src/components/ui/select.tsx",
+   "src/hooks/useQuoteBuilderState.ts",
+   "src/hooks/useUnsavedChangesGuard.ts",
+   "src/lib/utils.ts"
+  ],
+  "src/pages/QuoteTemplatesPage.tsx": [
+   "src/components/layout/MainLayout.tsx",
+   "src/components/quotes/AdminTemplatesManager.tsx",
+   "src/components/quotes/QuoteTemplateForm.tsx",
+   "src/components/quotes/QuoteTemplatesList.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/tabs.tsx",
+   "src/hooks/useQuoteTemplates.ts"
+  ],
+  "src/pages/QuoteViewPage.tsx": [
+   "src/components/layout/MainLayout.tsx",
+   "src/components/pdf/ProposalHtmlTemplate.tsx",
+   "src/components/presentation/PresentationMode.tsx",
+   "src/components/quotes/PdfGenerationDialog.tsx",
+   "src/components/quotes/QuoteClientInfo.tsx",
+   "src/components/quotes/QuoteCommentsSection.tsx",
+   "src/components/quotes/QuoteHistoryPanel.tsx",
+   "src/components/quotes/QuoteItemsTable.tsx",
+   "src/components/quotes/QuoteMobileActionBar.tsx",
+   "src/components/quotes/QuoteStatusTimeline.tsx",
+   "src/components/quotes/QuoteTotalsSummary.tsx",
+   "src/components/quotes/QuoteValidityBanner.tsx",
+   "src/components/quotes/QuoteVersionHistory.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/dropdown-menu.tsx",
+   "src/components/ui/separator.tsx",
+   "src/components/ui/sheet.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/hooks/useDiscountApproval.ts",
+   "src/integrations/supabase/client.ts",
+   "src/lib/quote-status-config.ts",
+   "src/pages/quote-view/useQuoteViewData.ts"
+  ],
+  "src/pages/QuotesDashboardPage.tsx": [
+   "src/components/layout/MainLayout.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/chart.tsx",
+   "src/components/ui/select.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/components/ui/stat-card.tsx",
+   "src/pages/quotes-dashboard/useQuotesDashboard.ts"
+  ],
+  "src/pages/QuotesKanbanPage.tsx": [
+   "src/components/layout/MainLayout.tsx",
+   "src/components/quotes/QuoteKanbanBoard.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/select.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/hooks/useQuotes.ts",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/pages/QuotesListPage.tsx": [
+   "src/components/common/ContextualSkeleton.tsx",
+   "src/components/common/EmptyState.tsx",
+   "src/components/common/MicroInteractions.tsx",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/quotes/QuotesConfigurableList.tsx",
+   "src/components/quotes/QuotesFunnelChart.tsx",
+   "src/components/quotes/QuotesStatusChips.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/alert-dialog.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/scroll-area.tsx",
+   "src/components/ui/select.tsx",
+   "src/components/ui/tooltip.tsx",
+   "src/hooks/useQuoteFunnel.ts",
+   "src/hooks/useQuotes.ts",
+   "src/utils/excelExport.ts"
+  ],
+  "src/pages/RateLimitDashboardPage.tsx": [
+   "src/components/layout/MainLayout.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/table.tsx",
+   "src/hooks/use-toast.ts",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/pages/ReplenishmentsPage.tsx": [
+   "src/components/layout/MainLayout.tsx",
+   "src/components/replenishments/RecentReplenishmentsWidget.tsx",
+   "src/components/replenishments/ReplenishmentProductGrid.tsx",
+   "src/components/replenishments/ReplenishmentStatsCards.tsx",
+   "src/components/seo/PageSEO.tsx"
+  ],
+  "src/pages/ResetPassword.tsx": [
+   "src/components/auth/PasswordStrengthIndicator.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/hooks/use-toast.ts",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/pages/RolePermissionsPage.tsx": [
+   "src/components/common/BackButton.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/checkbox.tsx",
+   "src/components/ui/scroll-area.tsx",
+   "src/components/ui/sidebar.tsx",
+   "src/components/ui/tabs.tsx",
+   "src/hooks/use-toast.ts",
+   "src/integrations/supabase/client.ts",
+   "src/integrations/supabase/types.ts"
+  ],
+  "src/pages/RolesPage.tsx": [
+   "src/components/common/BackButton.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/components/ui/sidebar.tsx",
+   "src/components/ui/table.tsx",
+   "src/components/ui/textarea.tsx",
+   "src/hooks/use-toast.ts",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/pages/SSOCallbackPage.tsx": [
+   "src/components/seo/PageSEO.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts",
+   "src/lib/auth/auth-debug.ts",
+   "src/lib/logger.ts"
+  ],
+  "src/pages/SellerCartsPage.tsx": [
+   "src/components/cart/CartCompanyPickerDialog.tsx",
+   "src/components/cart/CartEmptyStateSmart.tsx",
+   "src/components/cart/CartTabsRich.tsx",
+   "src/components/cart/CartUtilComponents.tsx",
+   "src/components/cart/SortableCartItem.tsx",
+   "src/components/common/EmptyState.tsx",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/ConfirmDialog.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/select.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/components/ui/textarea.tsx",
+   "src/hooks/useCartTemplates.ts",
+   "src/hooks/useSellerCarts.ts",
+   "src/lib/utils.ts",
+   "src/pages/seller-carts/CartSidebar.tsx",
+   "src/pages/seller-carts/useSellerCartsPage.ts"
+  ],
   "src/pages/SidebarQAPage.tsx": [
    "src/components/seo/PageSEO.tsx",
    "src/lib/utils.ts"
+  ],
+  "src/pages/SimuladorWizard.tsx": [
+   "src/components/layout/MainLayout.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/simulator/wizard/MobilePersonalizationSummary.tsx",
+   "src/components/simulator/wizard/index.ts",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/components/ui/dropdown-menu.tsx",
+   "src/components/ui/input.tsx",
+   "src/hooks/simulator/useSimulatorWizard.ts",
+   "src/hooks/simulator/useWizardDrafts.ts",
+   "src/types/domain/simulator-wizard.ts"
   ],
   "src/pages/Simulation.tsx": [
    "src/components/ui/badge.tsx",
@@ -10306,6 +12094,46 @@
    "src/lib/edge/safeInvokeCall.ts",
    "src/lib/latency-percentiles.ts",
    "src/lib/logger.ts"
+  ],
+  "src/pages/StockDashboardPage.tsx": [
+   "src/components/inventory/StockDashboard.tsx",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/seo/PageSEO.tsx"
+  ],
+  "src/pages/SystemStatusPage.tsx": [
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/integrations/supabase/client.ts",
+   "src/lib/crm-db.ts"
+  ],
+  "src/pages/TrendsPage.tsx": [
+   "src/components/intelligence/ConversionFunnel.tsx",
+   "src/components/intelligence/HotSearchesCard.tsx",
+   "src/components/intelligence/RealtimeBadge.tsx",
+   "src/components/intelligence/SavedViewsManager.tsx",
+   "src/components/intelligence/TopCategoriesCard.tsx",
+   "src/components/intelligence/TrendsForecastChart.tsx",
+   "src/components/intelligence/TrendsHeatmap.tsx",
+   "src/components/intelligence/TrendsInsightsCard.tsx",
+   "src/components/intelligence/TrendsTour.tsx",
+   "src/components/intelligence/UnmetDemandCard.tsx",
+   "src/components/layout/MainLayout.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/select.tsx",
+   "src/components/ui/tabs.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/use-toast.ts",
+   "src/hooks/useUrlState.ts",
+   "src/lib/supabase-untyped.ts",
+   "src/lib/trending-score.ts",
+   "src/lib/trends-export.ts",
+   "src/pages/trends/TrendsCharts.tsx",
+   "src/pages/trends/TrendsKpiCards.tsx",
+   "src/pages/trends/trends-mock.ts"
   ],
   "src/pages/__visual/CalendarHarness.tsx": [
    "src/components/ui/calendar.tsx"
@@ -11726,6 +13554,22 @@
    "src/components/ui/button.tsx",
    "src/hooks/intelligence/index.ts"
   ],
+  "src/pages/mockup-generator/MockupDialogs.tsx": [
+   "src/components/ui/alert-dialog.tsx"
+  ],
+  "src/pages/mockup-generator/MockupEmptyState.tsx": [
+   "src/components/ui/card.tsx",
+   "src/lib/utils.ts"
+  ],
+  "src/pages/mockup-generator/MockupTechniqueHandlers.tsx": [
+   "src/components/mockup/techniqueColorUtils.ts",
+   "src/types/external-db.ts"
+  ],
+  "src/pages/mockup-generator/MockupToolbar.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/tooltip.tsx"
+  ],
   "src/pages/mockups/MockupGenerator.tsx": [
    "src/components/ai/index.ts",
    "src/components/dev/DiagnosticProfiler.tsx",
@@ -11784,6 +13628,54 @@
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/tooltip.tsx"
+  ],
+  "src/pages/product-detail/ProductDetailHero.tsx": [
+   "src/components/catalog/BulkVariantWizard.tsx",
+   "src/components/common/SocialProof.tsx",
+   "src/components/products/GenderBadge.tsx",
+   "src/components/products/KitComposition.tsx",
+   "src/components/products/PackagingBadge.tsx",
+   "src/components/products/PriceFreshnessBadge.tsx",
+   "src/components/products/PriceFreshnessThresholdEditor.tsx",
+   "src/components/products/ProductCategoryBadges.tsx",
+   "src/components/products/ProductDimensions.tsx",
+   "src/components/products/ProductGallery.tsx",
+   "src/components/products/ProductInfoBar.tsx",
+   "src/components/products/ProductQuickActions.tsx",
+   "src/components/products/QuickAddToQuote.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/hooks/useProductFreshnessOverride.ts",
+   "src/hooks/useProducts.ts",
+   "src/lib/utils.ts",
+   "src/types/product-catalog.ts",
+   "src/utils/colorSorting.ts",
+   "src/utils/price-freshness.ts"
+  ],
+  "src/pages/product-match/MatchCards.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/hooks/useProductMatch.ts",
+   "src/hooks/useProducts.ts",
+   "src/lib/utils.ts",
+   "src/utils/image-utils.ts"
+  ],
+  "src/pages/product-match/MatchFiltersPanel.tsx": [
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/select.tsx",
+   "src/components/ui/switch.tsx",
+   "src/hooks/useProductMatch.ts"
+  ],
+  "src/pages/product-match/ProductSearchPanel.tsx": [
+   "src/components/ui/input.tsx",
+   "src/components/ui/scroll-area.tsx",
+   "src/hooks/useDebounce.ts",
+   "src/hooks/useProducts.ts",
+   "src/lib/utils.ts",
+   "src/utils/image-utils.ts",
+   "src/utils/product-search.ts"
   ],
   "src/pages/products/CartsListPage.tsx": [
    "src/components/cart/CartCompanyPickerDialog.tsx",
@@ -12080,6 +13972,35 @@
    "src/pages/products/seller-carts/undoCopy.ts",
    "src/utils/undoToast.tsx"
   ],
+  "src/pages/quote-view/QuoteActionHandlers.ts": [
+   "src/components/pdf/ProposalHtmlTemplate.tsx",
+   "src/hooks/useQuotes.ts",
+   "src/integrations/supabase/client.ts",
+   "src/lib/logger.ts",
+   "src/utils/proposalPdfReactGenerator.ts"
+  ],
+  "src/pages/quote-view/QuoteBitrixSync.ts": [
+   "src/components/pdf/ProposalHtmlTemplate.tsx",
+   "src/hooks/useQuotes.ts",
+   "src/integrations/supabase/client.ts",
+   "src/lib/crm-db.ts",
+   "src/lib/logger.ts",
+   "src/utils/proposalPdfReactGenerator.ts"
+  ],
+  "src/pages/quote-view/useQuoteViewData.ts": [
+   "src/components/pdf/ProposalHtmlTemplate.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/useQuotes.ts",
+   "src/lib/crm-db.ts",
+   "src/pages/quote-view/QuoteActionHandlers.ts",
+   "src/pages/quote-view/QuoteBitrixSync.ts",
+   "src/utils/proposalPdfReactGenerator.ts"
+  ],
+  "src/pages/quotes-dashboard/useQuotesDashboard.ts": [
+   "src/hooks/useQuotes.ts",
+   "src/lib/crm-db.ts",
+   "src/lib/quote-status-config.ts"
+  ],
   "src/pages/quotes/QuoteBuilderPage.tsx": [
    "src/components/common/ConfirmDialog.tsx",
    "src/components/common/UnsavedChangesDialog.tsx",
@@ -12230,6 +14151,29 @@
    "src/components/quotes/QuotesStatusChips.tsx",
    "src/hooks/common/useListUrlState.ts",
    "src/hooks/quotes/index.ts",
+   "src/utils/undoToast.tsx"
+  ],
+  "src/pages/seller-carts/CartSidebar.tsx": [
+   "src/components/cart/CartActionsMenu.tsx",
+   "src/components/cart/CartHealthChecklist.tsx",
+   "src/components/cart/CartUtilComponents.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/scroll-area.tsx",
+   "src/components/ui/textarea.tsx",
+   "src/hooks/useCartTemplates.ts",
+   "src/hooks/useSellerCarts.ts",
+   "src/lib/utils.ts"
+  ],
+  "src/pages/seller-carts/useSellerCartsPage.ts": [
+   "src/components/cart/CartUtilComponents.tsx",
+   "src/contexts/ProductsContext.tsx",
+   "src/contexts/SellerCartContext.tsx",
+   "src/hooks/useCartTemplates.ts",
+   "src/hooks/useSellerCarts.ts",
    "src/utils/undoToast.tsx"
   ],
   "src/pages/system/ExternalDatabaseTest.tsx": [
@@ -12666,6 +14610,9 @@
   "src/utils/excelExport.ts": [
    "src/lib/date-utils.ts"
   ],
+  "src/utils/kitPdfGenerator.ts": [
+   "src/lib/kit-builder/index.ts"
+  ],
   "src/utils/performance.ts": [
    "src/lib/logger.ts",
    "src/services/telemetryService.ts"
@@ -12692,6 +14639,9 @@
   "src/utils/security-audit.ts": [
    "src/integrations/supabase/client.ts",
    "src/lib/logger.ts"
+  ],
+  "src/utils/templateExport.ts": [
+   "src/hooks/useQuoteTemplates.ts"
   ],
   "src/utils/undoToast.tsx": [
    "src/lib/utils.ts"

@@ -8,24 +8,24 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (931)",
-   "src/pages (175)",
+   "src/components (981)",
+   "src/pages (225)",
    "src/contexts (10)"
   ],
   "hooks": [
-   "src/hooks (289)",
-   "src/components (75)",
-   "src/pages (32)"
+   "src/hooks (483)",
+   "src/components (76)",
+   "src/pages (36)"
   ],
   "servicos_logica": [
-   "src/lib (224)",
-   "src/utils (30)",
+   "src/lib (227)",
+   "src/utils (32)",
    "src/services (9)"
   ],
   "testes": [
-   "tests/ (807)",
-   "e2e/ (624)",
-   "co-localizado (__tests__) (605)"
+   "tests/ (862)",
+   "e2e/ (625)",
+   "co-localizado (__tests__) (606)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -36,7 +36,7 @@
   ],
   "docs": [
    "docs (144)",
-   "(raiz) (13)",
+   "(raiz) (14)",
    ".github (4)"
   ]
  },
@@ -49,7 +49,7 @@
  },
  "barrels_index": 45,
  "extensao_componentes": [
-  ".tsx (1123)"
+  ".tsx (1225)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore: registra 611 arquivos não rastreados de sessões anteriores (#3361)",
    "feat(edge-deploy-log): recibo run 42665634216 — edge functions deploy",
    "feat(edge-deploy-log): recibo run 42660725884 — edge functions deploy",
    "feat: versionar view vw_products_min_quantity (FT-079) (#3264)",
-   "docs: recibo de deploy de edge function(s) — run 42649363787 (E66)",
-   "chore(migrations): adiciona arquivos espelho CRON-001 (20261101223908, 20261101232022)"
+   "docs: recibo de deploy de edge function(s) — run 42649363787 (E66)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

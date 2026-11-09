@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 257,
+ "total": 258,
  "scripts": [
   {
    "arquivo": ".github/scripts/e2e-relevance.mjs",
@@ -127,7 +127,9 @@
    "npm_scripts": [
     "build:cors-snapshot"
    ],
-   "workflows": [],
+   "workflows": [
+    "ci.yml"
+   ],
    "orfao": false
   },
   {
@@ -288,6 +290,7 @@
     "check:aschild-nesting"
    ],
    "workflows": [
+    "ci.yml",
     "deploy-gates.yml"
    ],
    "orfao": false
@@ -581,6 +584,7 @@
    ],
    "npm_scripts": [],
    "workflows": [
+    "ci.yml",
     "deploy-gates.yml"
    ],
    "orfao": false
@@ -594,6 +598,7 @@
     "check:edge-cors"
    ],
    "workflows": [
+    "ci.yml",
     "magazine-unit-tests.yml"
    ],
    "orfao": false
@@ -628,7 +633,9 @@
     "LIST_ONLY"
    ],
    "npm_scripts": [],
-   "workflows": [],
+   "workflows": [
+    "ci.yml"
+   ],
    "orfao": false
   },
   {
@@ -637,7 +644,9 @@
    "linhas": 133,
    "env": [],
    "npm_scripts": [],
-   "workflows": [],
+   "workflows": [
+    "ci.yml"
+   ],
    "orfao": false
   },
   {
@@ -686,7 +695,9 @@
     "lint:baseline",
     "lint:baseline:incremental"
    ],
-   "workflows": [],
+   "workflows": [
+    "ci.yml"
+   ],
    "orfao": false
   },
   {
@@ -990,7 +1001,9 @@
    "linhas": 199,
    "env": [],
    "npm_scripts": [],
-   "workflows": [],
+   "workflows": [
+    "ci.yml"
+   ],
    "orfao": false
   },
   {
@@ -1013,6 +1026,7 @@
     "check:no-inline-cors"
    ],
    "workflows": [
+    "ci.yml",
     "deploy-gates.yml"
    ],
    "orfao": false
@@ -1162,7 +1176,9 @@
    "npm_scripts": [
     "test:price-freshness"
    ],
-   "workflows": [],
+   "workflows": [
+    "ci.yml"
+   ],
    "orfao": false
   },
   {
@@ -1306,6 +1322,7 @@
     "check:route-error-element"
    ],
    "workflows": [
+    "ci.yml",
     "deploy-gates.yml"
    ],
    "orfao": false
@@ -1321,6 +1338,7 @@
     "check:route-ref-usage"
    ],
    "workflows": [
+    "ci.yml",
     "deploy-gates.yml"
    ],
    "orfao": false
@@ -1421,6 +1439,7 @@
     "check:security-definer-acl"
    ],
    "workflows": [
+    "ci.yml",
     "magazine-unit-tests.yml",
     "migration-dry-run.yml"
    ],
@@ -1445,7 +1464,9 @@
     "GITHUB_BASE_REF"
    ],
    "npm_scripts": [],
-   "workflows": [],
+   "workflows": [
+    "ci.yml"
+   ],
    "orfao": false
   },
   {
@@ -1470,6 +1491,7 @@
     "check:seller-scope"
    ],
    "workflows": [
+    "ci.yml",
     "deploy-gates.yml"
    ],
    "orfao": false
@@ -2106,6 +2128,15 @@
    "orfao": false
   },
   {
+   "arquivo": "scripts/generate-theme-report.ts",
+   "descricao": null,
+   "linhas": 82,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
    "arquivo": "scripts/graphify/build-sql-graph.py",
    "descricao": "Build a Graphify map from repository SQL files in an isolated output directory.\"\"\"",
    "linhas": 102,
@@ -2689,7 +2720,9 @@
    "npm_scripts": [
     "smoke"
    ],
-   "workflows": [],
+   "workflows": [
+    "ci.yml"
+   ],
    "orfao": false
   },
   {
@@ -2917,7 +2950,9 @@
    "linhas": 135,
    "env": [],
    "npm_scripts": [],
-   "workflows": [],
+   "workflows": [
+    "ci.yml"
+   ],
    "orfao": false
   },
   {

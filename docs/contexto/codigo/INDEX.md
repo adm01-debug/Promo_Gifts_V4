@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1368a9180ff2eb6283c23e4b4e197ca8e5024893` (2026-11-09T15:48:17-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `167f5f8de8c8a5063a17774a90373f9bc2caaff1` (2026-11-09T16:01:12-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4321), SQL (3239), Markdown (948), JavaScript (310), YAML (107), JSON (94), Shell (19), CSS (13)
+- linguagens: TypeScript (4709), SQL (3335), Markdown (1009), JavaScript (310), JSON (118), YAML (108), Shell (25), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,35 +34,35 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 9266 |
-| arquivos_codigo | 4635 |
-| linhas_codigo | 887574 |
+| arquivos_total | 9864 |
+| arquivos_codigo | 5023 |
+| linhas_codigo | 958781 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
-| itens_menu | 69 |
-| modulos | 158 |
-| componentes | 1123 |
-| hooks | 416 |
+| itens_menu | 70 |
+| modulos | 165 |
+| componentes | 1225 |
+| hooks | 615 |
 | edge_functions | 111 |
 | tabelas | 545 |
-| migrations | 3050 |
+| migrations | 3057 |
 | cron_jobs | 120 |
-| testes | 2202 |
-| workflows | 94 |
-| scripts | 257 |
-| docs_md | 948 |
+| testes | 2276 |
+| workflows | 95 |
+| scripts | 258 |
+| docs_md | 1009 |
 
 ## Onde ficam as coisas
 - telas: src/pages (111), src/components (3), api/health.ts (1)
-- componentes: src/components (931), src/pages (175), src/contexts (10)
-- hooks: src/hooks (289), src/components (75), src/pages (32)
-- servicos_logica: src/lib (224), src/utils (30), src/services (9)
-- testes: tests/ (807), e2e/ (624), co-localizado (__tests__) (605)
+- componentes: src/components (981), src/pages (225), src/contexts (10)
+- hooks: src/hooks (483), src/components (76), src/pages (36)
+- servicos_logica: src/lib (227), src/utils (32), src/services (9)
+- testes: tests/ (862), e2e/ (625), co-localizado (__tests__) (606)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/graphify (4), scripts/inventario (4), scripts/ai-context (2)
-- docs: docs (144), (raiz) (13), .github (4)
+- docs: docs (144), (raiz) (14), .github (4)
 - nomenclatura: {"componentes":"PascalCase (95%)","hooks":"use + PascalCase","servicos":"kebab-case (52%)","edge_functions":"kebab-case (99%)","tabelas":"snake_case (86%)"}
 - instruções para agentes no repo: .claude/CLAUDE.md, AGENTS.md, CLAUDE.md
 
@@ -71,42 +71,43 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|---|---|---|---|---|
 | api | 0 | 3 | 3 | 0 | 0 | 0 |
 | components/access | 0 | 1 | 2 | 0 | 0 | 1 |
-| components/admin | 0 | 0 | 292 | 361 | 10 | 81 |
+| components/admin | 0 | 0 | 300 | 363 | 10 | 82 |
 | components/audit | 1 | 1 | 3 | 19 | 0 | 7 |
 | components/auth | 0 | 0 | 8 | 16 | 0 | 5 |
 | components/bi | 0 | 0 | 22 | 281 | 4 | 41 |
-| components/cart | 0 | 0 | 16 | 272 | 4 | 41 |
+| components/cart | 0 | 0 | 18 | 272 | 4 | 41 |
 | components/catalog | 0 | 0 | 8 | 309 | 5 | 50 |
-| components/collections | 0 | 0 | 14 | 274 | 5 | 44 |
-| components/common | 0 | 0 | 27 | 288 | 4 | 43 |
-| components/compare | 0 | 0 | 23 | 276 | 5 | 44 |
+| components/collections | 0 | 0 | 15 | 274 | 5 | 44 |
+| components/common | 0 | 0 | 28 | 288 | 4 | 43 |
+| components/compare | 0 | 0 | 25 | 276 | 5 | 44 |
 | components/dashboard | 0 | 0 | 10 | 281 | 4 | 51 |
-| components/dev | 0 | 0 | 6 | 20 | 0 | 7 |
+| components/dev | 0 | 0 | 7 | 20 | 0 | 7 |
 | components/effects | 0 | 0 | 5 | 27 | 0 | 7 |
 | components/expert | 0 | 0 | 14 | 271 | 5 | 41 |
-| components/favorites | 0 | 0 | 11 | 268 | 4 | 41 |
+| components/favorites | 0 | 0 | 14 | 268 | 4 | 41 |
 | components/filters | 0 | 0 | 23 | 269 | 4 | 42 |
 | components/intelligence | 0 | 0 | 27 | 289 | 4 | 44 |
 | components/inventory | 0 | 0 | 40 | 318 | 5 | 47 |
 | components/kit-builder | 0 | 0 | 47 | 294 | 4 | 52 |
 | components/kit-library | 0 | 0 | 7 | 26 | 0 | 9 |
 | components/layout | 0 | 4 | 18 | 437 | 8 | 83 |
+| components/loading | 0 | 0 | 5 | 8 | 0 | 2 |
 | components/magic-up | 0 | 0 | 18 | 268 | 4 | 41 |
-| components/mockup | 0 | 0 | 39 | 271 | 4 | 41 |
+| components/mockup | 0 | 0 | 43 | 271 | 4 | 41 |
 | components/notifications | 0 | 0 | 7 | 31 | 0 | 8 |
 | components/novelties | 0 | 0 | 7 | 300 | 5 | 46 |
 | components/pdf | 0 | 0 | 13 | 0 | 0 | 0 |
-| components/pricing | 0 | 0 | 20 | 268 | 4 | 41 |
-| components/products | 0 | 0 | 103 | 310 | 5 | 49 |
-| components/quotes | 0 | 0 | 50 | 295 | 5 | 50 |
+| components/pricing | 0 | 0 | 22 | 268 | 4 | 41 |
+| components/products | 0 | 0 | 107 | 311 | 5 | 49 |
+| components/quotes | 0 | 0 | 63 | 297 | 6 | 53 |
 | components/replenishments | 0 | 0 | 9 | 301 | 5 | 46 |
-| components/search | 0 | 0 | 25 | 294 | 5 | 47 |
+| components/search | 0 | 0 | 26 | 294 | 5 | 47 |
 | components/security | 0 | 0 | 10 | 51 | 0 | 17 |
 | components/shared | 0 | 0 | 5 | 19 | 0 | 7 |
 | components/simulator | 0 | 0 | 24 | 54 | 0 | 7 |
-| components/ui | 0 | 0 | 61 | 33 | 1 | 7 |
+| components/ui | 0 | 0 | 63 | 33 | 1 | 7 |
 | contexts | 0 | 0 | 10 | 304 | 4 | 49 |
-| hooks | 0 | 0 | 5 | 10 | 0 | 2 |
+| hooks | 0 | 0 | 198 | 357 | 22 | 84 |
 | hooks/admin | 0 | 0 | 19 | 29 | 1 | 9 |
 | hooks/auth | 0 | 0 | 11 | 13 | 0 | 5 |
 | hooks/bi | 0 | 0 | 14 | 41 | 0 | 6 |
@@ -114,6 +115,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks/comparison | 0 | 0 | 6 | 273 | 4 | 43 |
 | hooks/crm | 0 | 0 | 7 | 24 | 0 | 3 |
 | hooks/favorites | 0 | 0 | 8 | 268 | 4 | 41 |
+| hooks/gravacao | 0 | 0 | 6 | 49 | 0 | 5 |
 | hooks/intelligence | 0 | 0 | 39 | 271 | 4 | 41 |
 | hooks/kit-builder | 0 | 0 | 22 | 24 | 0 | 9 |
 | hooks/mockup | 0 | 0 | 9 | 268 | 4 | 41 |
@@ -126,11 +128,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks/ui | 0 | 0 | 18 | 31 | 0 | 8 |
 | hooks/voice | 0 | 0 | 10 | 1 | 2 | 1 |
 | integrations/supabase | 0 | 0 | 7 | 3 | 0 | 2 |
-| lib | 0 | 0 | 57 | 426 | 8 | 82 |
+| lib | 0 | 0 | 58 | 426 | 8 | 82 |
 | lib/access | 0 | 0 | 6 | 3 | 0 | 3 |
 | lib/auth | 0 | 0 | 19 | 12 | 0 | 5 |
 | lib/bi | 0 | 0 | 7 | 9 | 0 | 2 |
-| lib/external-db | 0 | 0 | 21 | 45 | 0 | 6 |
+| lib/external-db | 0 | 0 | 23 | 45 | 0 | 6 |
 | lib/inventory | 0 | 0 | 10 | 0 | 0 | 0 |
 | lib/kit-builder | 0 | 0 | 11 | 0 | 0 | 0 |
 | lib/personalization | 0 | 0 | 20 | 45 | 0 | 5 |
@@ -138,7 +140,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | lib/security | 0 | 0 | 10 | 3 | 0 | 2 |
 | lib/telemetry | 0 | 0 | 14 | 0 | 0 | 1 |
 | lib/validations | 0 | 0 | 5 | 0 | 0 | 0 |
-| pages | 3 | 7 | 7 | 336 | 5 | 61 |
+| pages | 3 | 7 | 49 | 466 | 16 | 89 |
 | pages/__visual | 0 | 9 | 9 | 282 | 4 | 50 |
 | pages/admin | 17 | 40 | 59 | 413 | 13 | 101 |
 | pages/auth | 0 | 7 | 11 | 12 | 0 | 3 |
@@ -157,7 +159,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | services | 0 | 0 | 9 | 45 | 2 | 15 |
 | stores | 0 | 0 | 8 | 0 | 0 | 1 |
 | types | 0 | 0 | 19 | 0 | 0 | 1 |
-| utils | 0 | 0 | 31 | 268 | 5 | 41 |
+| utils | 0 | 0 | 33 | 269 | 5 | 42 |
 
 ## Rotas (url → arquivo)
 - `/` [tela] → src/pages/Index.tsx
@@ -322,8 +324,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - (nenhum)
 
 ## Edge functions
-- `ai-recommendations` (verify_jwt=false) — tabelas: -; chamada por 1 arquivo(s) do front
-- `analyze-logo-colors` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `ai-recommendations` (verify_jwt=false) — tabelas: -; chamada por 2 arquivo(s) do front
+- `analyze-logo-colors` — tabelas: -; chamada por 1 arquivo(s) do front
 - `anonymize-user` — tabelas: login_attempts, profiles; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `asia-ingestion` (verify_jwt=false) — tabelas: supplier_products_raw; chamada por 0 arquivo(s) do front
 - `audit-suite` — tabelas: seller_cart_items, seller_carts, user_roles; chamada por 0 arquivo(s) do front — **ÓRFÃ**
@@ -332,16 +334,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `bitrix-sync` — tabelas: bitrix_clients, bitrix_deals, sync_logs; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `block-ip-temporarily` — tabelas: admin_audit_log, ip_access_control, user_roles; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `bulk-random-passwords` — tabelas: admin_audit_log; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `categories-api` — tabelas: categories, categories_tree_visual, product_category_assignments, products; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `categories-api` — tabelas: categories, categories_tree_visual, product_category_assignments, products; chamada por 1 arquivo(s) do front
 - `check-login` (verify_jwt=false) — tabelas: -; chamada por 0 arquivo(s) do front, por SQL/cron
 - `cleanup-notifications` (verify_jwt=false) — tabelas: -; chamada por 0 arquivo(s) do front
 - `cleanup-novelties` (verify_jwt=false) — tabelas: product_novelties, products; chamada por 0 arquivo(s) do front
 - `cnpj-lookup` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `collections-watcher` (verify_jwt=false) — tabelas: collection_items, collections, products, workspace_notifications; chamada por 0 arquivo(s) do front, por SQL/cron
-- `commemorative-dates` — tabelas: v_commemorative_dates_with_colors; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `commemorative-dates` — tabelas: v_commemorative_dates_with_colors; chamada por 1 arquivo(s) do front
 - `comparison-ai-advisor` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `comparison-price-watcher` (verify_jwt=false) — tabelas: price_history, product_variants, user_comparisons, workspace_notifications; chamada por 0 arquivo(s) do front
-- `connection-tester` — tabelas: connection_test_history, external_connections, user_roles; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `connection-tester` — tabelas: connection_test_history, external_connections, user_roles; chamada por 4 arquivo(s) do front
 - `connections-auto-test` (verify_jwt=false) — tabelas: external_connections; chamada por 0 arquivo(s) do front, por SQL/cron
 - `connections-health-check` (verify_jwt=false) — tabelas: connection_test_history, external_connections, outbound_webhooks, secret_rotation_log, user_roles, workspace_notifications; chamada por 0 arquivo(s) do front, por SQL/cron
 - `connections-hub-audit` — tabelas: webhook_deliveries; chamada por 0 arquivo(s) do front — **ÓRFÃ**
@@ -349,33 +351,33 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `crm-callback-alerts` (verify_jwt=false) — tabelas: crm_callback_events, system_settings; chamada por 0 arquivo(s) do front
 - `crm-callback-reprocess` (verify_jwt=false) — tabelas: crm_callback_events, quotes, user_roles; chamada por 1 arquivo(s) do front
 - `crm-db-bridge` (verify_jwt=false) — tabelas: companies, quotes, user_roles; chamada por 2 arquivo(s) do front
-- `detect-new-device` — tabelas: device_login_notifications, user_known_devices, workspace_notifications; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `dropbox-list` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `detect-new-device` — tabelas: device_login_notifications, user_known_devices, workspace_notifications; chamada por 1 arquivo(s) do front
+- `dropbox-list` — tabelas: -; chamada por 1 arquivo(s) do front
 - `e2e-cleanup` (verify_jwt=false) — tabelas: e2e_cleanup_audit, quote_items, quotes; chamada por 0 arquivo(s) do front
 - `elevenlabs-scribe-token` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `elevenlabs-tts` — tabelas: -; chamada por 1 arquivo(s) do front
 - `ema-pipeline-health` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `expert-chat` — tabelas: categories, companies, contacts, customers, orders, product_category_assignments, products, profiles, quotes, suppliers; chamada por 2 arquivo(s) do front
-- `external-db-bridge` — tabelas: -; chamada por 0 arquivo(s) do front, por SQL/cron
-- `external-db-inspect` (verify_jwt=false) — tabelas: user_roles; chamada por 0 arquivo(s) do front
+- `external-db-bridge` — tabelas: -; chamada por 9 arquivo(s) do front, por SQL/cron
+- `external-db-inspect` (verify_jwt=false) — tabelas: user_roles; chamada por 1 arquivo(s) do front
 - `favorites-watcher` (verify_jwt=false) — tabelas: favorite_items, products, workspace_notifications; chamada por 0 arquivo(s) do front
 - `force-global-logout` — tabelas: admin_audit_log, user_roles; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `full-op-diagnostics` — tabelas: step_up_tokens; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `generate-ad-image` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `generate-ad-image` — tabelas: -; chamada por 1 arquivo(s) do front
 - `generate-ad-prompt` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `generate-blurhashes` — tabelas: product_images; chamada por 0 arquivo(s) do front, por SQL/cron
 - `generate-mockup` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `generate-product-seo` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `get-visitor-info` (verify_jwt=false) — tabelas: -; chamada por 0 arquivo(s) do front
+- `generate-product-seo` — tabelas: -; chamada por 1 arquivo(s) do front
+- `get-visitor-info` (verify_jwt=false) — tabelas: -; chamada por 2 arquivo(s) do front
 - `github-credentials-test` — tabelas: admin_audit_log, integration_credentials, user_roles; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `hash-product-images` — tabelas: product_images; chamada por 0 arquivo(s) do front, por SQL/cron
 - `health-check` — tabelas: products, profiles; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `image-proxy` (verify_jwt=false) — tabelas: -; chamada por 1 arquivo(s) do front
 - `intelligence-substitute-applied` — tabelas: ai_usage_events; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `kit-ai-builder` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `kit-identity-suggest` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `kit-identity-suggest` — tabelas: -; chamada por 1 arquivo(s) do front
 - `load-test` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `log-login-attempt` (verify_jwt=false) — tabelas: login_attempts; chamada por 0 arquivo(s) do front
+- `log-login-attempt` (verify_jwt=false) — tabelas: login_attempts; chamada por 1 arquivo(s) do front
 - `magazine-import-local` (verify_jwt=false) — tabelas: -; chamada por 1 arquivo(s) do front
 - `magazine-public-react` (verify_jwt=false) — tabelas: magazine_public_reactions, magazines; chamada por 0 arquivo(s) do front
 - `magazine-public-view` (verify_jwt=false) — tabelas: magazine_public_view_events, magazines; chamada por 1 arquivo(s) do front
@@ -399,24 +401,24 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `product-visual-search` — tabelas: categories, product_images, products; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `product-webhook` — tabelas: product_sync_logs, products, webhook_request_nonces; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `quote-followup-reminders` (verify_jwt=false) — tabelas: follow_up_reminders, quotes; chamada por 0 arquivo(s) do front, por SQL/cron
-- `quote-sync` — tabelas: profiles, quote_items, quotes; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `quote-sync` — tabelas: profiles, quote_items, quotes; chamada por 1 arquivo(s) do front
 - `quote-sync-promo-champions` — tabelas: quotes, request_rate_limits; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `rate-limit-check` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `receive-crm-callback` (verify_jwt=false) — tabelas: crm_callback_events; chamada por 0 arquivo(s) do front
 - `rls-audit` — tabelas: discount_approval_requests, orders, quotes; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `rls-integration-tests` — tabelas: user_roles; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `rls-matrix-export` — tabelas: -; chamada por 1 arquivo(s) do front
-- `secrets-manager` — tabelas: admin_audit_log, integration_credentials, secret_rotation_log, user_roles; chamada por 1 arquivo(s) do front
+- `secrets-manager` — tabelas: admin_audit_log, integration_credentials, secret_rotation_log, user_roles; chamada por 2 arquivo(s) do front
 - `secure-upload` — tabelas: file_scan_logs; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `semantic-search` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `send-digest` (verify_jwt=false) — tabelas: workspace_notifications; chamada por 0 arquivo(s) do front
 - `send-notification` (verify_jwt=false) — tabelas: workspace_notifications; chamada por 0 arquivo(s) do front
 - `send-scheduled-reports` (verify_jwt=false) — tabelas: orders, quotes, scheduled_reports; chamada por 0 arquivo(s) do front
-- `send-transactional-email` — tabelas: workspace_notifications; chamada por 0 arquivo(s) do front
+- `send-transactional-email` — tabelas: workspace_notifications; chamada por 1 arquivo(s) do front
 - `simulation-orchestrator` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `step-up-verify` — tabelas: step_up_audit_log; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `step-up-verify` — tabelas: step_up_audit_log; chamada por 1 arquivo(s) do front
 - `sync-external-db` (verify_jwt=false) — tabelas: -; chamada por 0 arquivo(s) do front
-- `sync-quote-bitrix` — tabelas: profiles; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `sync-quote-bitrix` — tabelas: profiles; chamada por 2 arquivo(s) do front
 - `test-cart-concurrency` — tabelas: seller_cart_items, seller_carts; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `test-cart-limit` — tabelas: seller_carts; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `test-cart-rls` — tabelas: seller_carts; chamada por 0 arquivo(s) do front — **ÓRFÃ**
@@ -424,7 +426,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `test-inventory-orchestrator` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `tests` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `trends-insights` — tabelas: product_views, search_analytics; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `validate-access` — tabelas: access_blocked_log, access_security_settings, city_whitelist, ip_whitelist, login_attempts; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `validate-access` — tabelas: access_blocked_log, access_security_settings, city_whitelist, ip_whitelist, login_attempts; chamada por 1 arquivo(s) do front
 - `verify-2fa-token` — tabelas: admin_audit_log, user_2fa_settings, user_roles; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `verify-email` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `visual-search` — tabelas: categories, edge_function_invocations, products; chamada por 0 arquivo(s) do front — **ÓRFÃ**
@@ -558,12 +560,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Integrações externas
 - SDKs: ElevenLabs, Sentry, Supabase, react-query, zod
-- hosts mais citados: doufsxqlfjyuvxuezpln.supabase.co, wa.me, www.promogifts.com.br, fixture.invalid, api.supabase.com, imagedelivery.net, test.supabase.co, ai.gateway.lovable.dev, cdn.test, edge-contract.invalid, fonts.googleapis.com, images.unsplash.com, www.spotgifts.com.br, api.resend.com, example.supabase.co
+- hosts mais citados: doufsxqlfjyuvxuezpln.supabase.co, wa.me, www.promogifts.com.br, fixture.invalid, api.supabase.com, imagedelivery.net, test.supabase.co, ai.gateway.lovable.dev, api.ipify.org, cdn.test, edge-contract.invalid, fonts.googleapis.com, images.unsplash.com, www.spotgifts.com.br, api.resend.com
 - webhooks recebidos: ai-recommendations, asia-ingestion, backfill-image-dimensions, check-login, cleanup-notifications, cleanup-novelties, collections-watcher, comparison-price-watcher, connections-auto-test, connections-health-check, crm-callback-alerts, crm-callback-reprocess, crm-db-bridge, e2e-cleanup, external-db-inspect, favorites-watcher, get-visitor-info, image-proxy, log-login-attempt, magazine-import-local, magazine-public-react, magazine-public-view, magazine-reader-state-read, magazine-reader-state-write, mcp-server, ownership-audit, process-queue, process-scheduled-reports, quote-followup-reminders, receive-crm-callback, send-digest, send-notification, send-scheduled-reports, sync-external-db, webhook-dispatcher, webhook-inbound
 - env de integração (só nomes): CF_ORIGIN_SECRET, CONNECTIONS_AUTO_TEST_SECRET, CRM_CALLBACK_API_KEY, CSRF_SECRET, E2E_CLEANUP_TOKEN, LOVABLE_API_KEY, PRODUCT_WEBHOOK_ALLOWED_ORIGINS, PRODUCT_WEBHOOK_BATCH_SIZE, PROMO_CHAMPIONS_WEBHOOK_SECRET, TURNSTILE_SECRET_KEY, VITE_GRAVACAO_API_KEY, VITE_SENTRY_DSN, VITE_SENTRY_ENVIRONMENT, WEBHOOK_DISPATCHER_SECRET
 
 ## Permissões / papéis
-- papéis no código: status (75), alert (51), dev (40), button (37), user (32), group (31), admin (29), listitem (26), vendedor (23), supervisor (22), radio (21), dialog (20), radiogroup (18), list (17), system (17), tooltip (17), agente (15), combobox (13), option (12), authenticated (11), progressbar (10), region (10), anon (9), seller (9), tab (9), tablist (9), assistant (8), img (8), switch (8), checkbox (6), listbox (6), main (6), navigation (6), document (5), menu (5), public (5), slider (5), columnheader (4), manager (4), link (3), separator (3), toolbar (3), agent (2), alertdialog (2), cell (2), editor (2), grid (2), gridcell (2), log (2), menuitem (2), presentation (2), publico (2), table (2), OFFSET (1), Paperclip (1), Textos (1), banner (1), complementary (1), contentinfo (1), heading (1), none (1), note (1), searchbox (1), service_role (1), spinbutton (1), string (1), sup (1), superadmin_bypass (1)
+- papéis no código: status (78), alert (53), dev (41), button (39), user (33), admin (31), group (31), listitem (26), agente (25), vendedor (25), supervisor (23), dialog (22), radio (21), radiogroup (18), list (17), system (17), tooltip (17), combobox (13), option (12), authenticated (11), progressbar (10), region (10), anon (9), seller (9), tab (9), tablist (9), assistant (8), img (8), switch (8), main (7), checkbox (6), listbox (6), manager (6), menu (6), navigation (6), document (5), public (5), slider (5), columnheader (4), alertdialog (3), link (3), presentation (3), separator (3), toolbar (3), OFFSET (2), agent (2), cell (2), editor (2), grid (2), gridcell (2), log (2), menuitem (2), publico (2), table (2), Paperclip (1), Textos (1), banner (1), complementary (1), contentinfo (1), heading (1), none (1), note (1), searchbox (1), service_role (1), spinbutton (1), string (1), sup (1), superadmin_bypass (1)
 - enums de papel: app_role: admin|manager|vendedor|supervisor|dev|supervisor|dev|agente|coordenador; org_role: owner|admin|member; role_migration_status: pending|running|completed|failed|partial|dry_run; role_migration_item_status: pending|success|failed|skipped|dry_run
 - guards: src/components/admin/telemetry/RegressionGuardrailBanner.tsx, src/components/layout/ProtectedRoute.tsx, src/components/system/RootInteractivityGuard.tsx · rotas protegidas: 31 · públicas: /, /__test/alert-dialog, /__test/cnpj-form, /__test/color-swatches, /__test/confirm-dialog, /__test/dialog, /__test/magazine-ring, /__test/tab-skip, /__test/undo-toast, /__visual/calendar, /__visual/date-picker-field, /__visual/negotiation-markup-card, /__visual/preview-button, /__visual/quote-add-product-button, /__visual/quote-freight-block, /__visual/quote-item-editor-sheet, /__visual/quote-items-list-mobile, /__visual/quote-view-order, /*, /admin/aprovacoes-desconto/:id, /admin/audit-suite, /admin/badges-inteligencia, /admin/comissoes, /admin/ema-health, /admin/kit-templates/metricas, /admin/observabilidade, /admin/performance, /admin/performance-comercial, /admin/permissoes, /admin/qa, /admin/qa/sidebar, /admin/rate-limit, /admin/role-permissoes, /admin/roles, /admin/seguranca/exemplos-challenge, /admin/status, /admin/storage-test, /admin/validade-precos, /auth/callback, /busca-preco, /carrinhos, /carrinhos/:cartId, /clientes, /clientes/:id, /colecoes, /colecoes/:id, /comissoes, /comparar, /dashboard, /debug/images, /dropbox, /estoque, /external-db-test, /favoritos, /ferramentas/bi, /ferramentas/bi/comparar, /ferramentas/cobertura, /filtros, /forgot-password-confirmation, /inteligencia-comercial, /kit-builder, /magazine, /magazine/:id, /magazine/:id/print, /magazine/print, /magazine/templates, /magic-up, /match, /meus-kits, /mockup-generator, /mockups/historico, /montar-kit, /novidades, /orcamentos, /orcamentos/:id, /orcamentos/:id/editar, /orcamentos/dashboard, /orcamentos/kanban, /orcamentos/lista, /orcamentos/novo, /privacidade, /produto/:id, /produtos, /promoflix-playground, /raio-x, /reposicao, /reset-password, /revista-publica/:token, /simulacao, /simulador, /simulador-precos, /tendencias, /termos
 - feature flags: useEmaRupture, useColorSwatchesV2, ENABLE_NAV_METRICS, FEATURE_GROUPS, FEATURE_ITEMS, FEATURE_X, magic_up, nova-tela, novo-inbox, supplierReliability
@@ -571,24 +573,24 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Alertas (baseline.json → alertas)
 - rotas_sem_arquivo: 2 — ex.: /kit-builder, /montar-kit
 - componentes_ambiguos: 0
-- menu_sem_destino: 18 — ex.: Ação -> #fab, AI Router -> ai-router, Bem-vindo ao Promo Brindes! -> welcome
-- edges_orfas: 62 — ex.: analyze-logo-colors, anonymize-user, audit-suite
+- menu_sem_destino: 19 — ex.: Ação -> #fab, AI Router -> ai-router, Bem-vindo ao Promo Brindes! -> welcome
+- edges_orfas: 49 — ex.: anonymize-user, audit-suite, bi-copilot
 - edges_chamadas_sem_pasta: 1 — ex.: receive-quote-sync
 - tabelas_sem_rls: 36 — ex.: _backup_quotes_orgid_null_20260614, _bkp_asia_raw_pre_fix_referencia, binding_colors
-- tabelas_usadas_sem_definicao: 9 — ex.: ai_models, avatars, categories_tree_visual
+- tabelas_usadas_sem_definicao: 11 — ex.: ai_models, avatars, categories_tree_visual
 - tabelas_com_drift_migration_vs_types: 0
 - rpcs_sem_definicao: 5 — ex.: fn_get_color_swatches_batch, fn_get_reposicao_variants_summary, fn_rupture_health_check
-- componentes_orfaos: 80 — ex.: src/components/admin/connections/ConnectionErrorDetailsDialog.tsx, src/components/admin/connections/ErrorDetailsDialog.tsx, src/components/admin/DiscountApprovalQueue.tsx
-- componentes_com_nome_duplicado: 30 — ex.: BreadcrumbItem, BulkAction, CartItemSkeleton
-- scripts_orfaos: 2 — ex.: scripts/test-magazine-sql-contracts.sh, scripts/test-wave1-forward-only-migrations.sh
+- componentes_orfaos: 104 — ex.: recovery/RealtimeMessagesExample.tsx, src/components/admin/CatalogQualityDashboard.tsx, src/components/admin/connections/ConnectionErrorDetailsDialog.tsx
+- componentes_com_nome_duplicado: 105 — ex.: AdvancedPriceSearchPage, Auth, BreadcrumbItem
+- scripts_orfaos: 3 — ex.: scripts/generate-theme-report.ts, scripts/test-magazine-sql-contracts.sh, scripts/test-wave1-forward-only-migrations.sh
 - env_usadas_nao_declaradas: 24 — ex.: CI, DEV, E2E_USER_EMAIL
-- ciclos_de_import: 18
+- ciclos_de_import: 20
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38554 nós · 67009 arestas · 2167 comunidades · grafo do commit `1368a918`
-- comunidades maiores: ref_integrations (530), ref_components (477), ref_lib (475), lucide-react (391), ref_hooks (350), react-router-dom (325), gotoAndSettle (311), ref_node_fs (290), scripts (289), ref_types (275), cors.ts (263), react (252)
-- símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
+- 41522 nós · 71279 arestas · 2377 comunidades · grafo do commit `167f5f8d`
+- comunidades maiores: ref_integrations (592), lucide-react (566), ref_lib (564), ref_components (515), react-router-dom (376), ref_hooks (355), @tanstack/react-query (345), gotoAndSettle (337), ref_types (317), sonner (304), react (302), scripts (289)
+- símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), useExternalDatabase() (src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
@@ -620,6 +622,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `check-select-columns.yml` — Select Columns vs Types (pull_request, push)
 - `ci-metrics-weekly.yml` — CI Metrics Weekly (E66/E87) (schedule, workflow_dispatch; cron 15 7 * * 1)
 - `ci-security-drift.yml` — CI Security & Drift Checks (push, schedule, workflow_dispatch; cron 55 5 * * 1)
+- `ci.yml` — CI (pull_request, push, workflow_dispatch)
 - `codeql.yml` — CodeQL (pull_request, push, schedule; cron 33 9 * * 1)
 - `contexto.yml` — Contexto para agentes de IA (10 min) (push, schedule, workflow_dispatch; cron 3,13,23,33,43,53 * * * *)
 - `contract-tests.yml` — Contract Tests (pull_request, workflow_dispatch)
@@ -1007,6 +1010,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `PENDENCIAS.md` — PENDENCIAS.md — Workflows com falha não corrigível nesta sessão (378 linhas)
 - `PERFORMANCE-ANALYSIS.md` — 🔍 Relatório de Análise de Performance - MainLayout (195 linhas)
 - `README.md` — 🎁 Promo Brindes — Plataforma de Vendas de Brindes Promocionais (842 linhas)
+- `RECOVERY_PLAN.md` — 🛠️ RECOVERY PLAN — Restauração de 65 tabelas faltantes (235 linhas)
 - `RELATORIO_CI.md` — RELATORIO_CI.md — Baseline × Final CI (96 linhas)
 - `RELATORIO_CI_P34.md` — RELATORIO_CI_P34.md — Prova Final Sessão P34 (2026-10-30) (64 linhas)
 - `SECURITY.md` — Política de Segurança — Promo Gifts (89 linhas)
@@ -1160,6 +1164,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-09 `167f5f8` chore: registra 611 arquivos não rastreados de sessões anteriores (#3361)
 - 2026-11-09 `1368a91` feat(edge-deploy-log): recibo run 42665634216 — edge functions deploy
 - 2026-11-09 `9a9c363` feat(edge-deploy-log): recibo run 42660725884 — edge functions deploy
 - 2026-11-09 `908f30a` feat: versionar view vw_products_min_quantity (FT-079) (#3264)
@@ -1174,7 +1179,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-09 `973864d` fix(ci): atualiza baseline Gate 1.3 — remove referência já resolvida de 20260511235970 (#3352)
 - 2026-11-09 `586f454` chore(sentinel): grandfather SHA fb4b8c2d87 do PR #3349 (#3351)
 - 2026-11-09 `0818809` fix: corrige referência de SHA de sentinela em check-sentinel-sha (#3278)
-- 2026-11-09 `fb4b8c2` fix(update-snapshots): atualizar snapshots PriceFreshnessBadge para novo class Lucide AlertTriangle
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

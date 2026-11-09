@@ -91,6 +91,11 @@
   "supabase/functions/_shared/dispatcher-auth.ts",
   "supabase/functions/_shared/edge-authz-manifest.ts",
   "supabase/functions/_shared/error-response.ts",
+  "supabase/functions/_shared/external-db-aliases.ts",
+  "supabase/functions/_shared/external-db-cache.ts",
+  "supabase/functions/_shared/external-db-config.ts",
+  "supabase/functions/_shared/external-db-telemetry.test.ts",
+  "supabase/functions/_shared/external-db-telemetry.ts",
   "supabase/functions/_shared/external-fetch.ts",
   "supabase/functions/_shared/json-parser.ts",
   "supabase/functions/_shared/kill_switch.test.ts",
@@ -110,6 +115,7 @@
   "supabase/functions/_shared/token-revocation.ts",
   "supabase/functions/_shared/url-allowlist.test.ts",
   "supabase/functions/_shared/url-allowlist.ts",
+  "supabase/functions/_shared/validate.ts",
   "supabase/functions/_shared/zod-validate.ts"
  ],
  "edges": [
@@ -143,7 +149,8 @@
     "rate-limiter.ts"
    ],
    "chamada_pelo_front": [
-    "src/hooks/intelligence/useAIRecommendations.ts"
+    "src/hooks/intelligence/useAIRecommendations.ts",
+    "src/hooks/useAIRecommendations.ts"
    ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
@@ -174,10 +181,12 @@
     "log-safety.ts",
     "zod-validate.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useLogoColorAnalysis.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 1
   },
   {
@@ -483,10 +492,12 @@
     "log-safety.ts",
     "zod-validate.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useProductsByCategory.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 2
   },
   {
@@ -691,10 +702,12 @@
     "error-response.ts",
     "zod-validate.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useCommemorativeDates.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 1
   },
   {
@@ -788,10 +801,15 @@
     "cors.ts",
     "error-response.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useConnectionTestDetails.ts",
+    "src/hooks/useConnectionTestHistory.ts",
+    "src/hooks/useConnectionTester.ts",
+    "src/hooks/useConsecutiveFailures.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 1
   },
   {
@@ -1063,10 +1081,12 @@
    "usa_shared": [
     "cors.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useDeviceDetection.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 1
   },
   {
@@ -1093,10 +1113,12 @@
     "external-fetch.ts",
     "zod-validate.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useDropboxFiles.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 1
   },
   {
@@ -1305,13 +1327,23 @@
     "request-id.ts",
     "structured-logger.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useCategoriesTree.ts",
+    "src/hooks/useColorSystem.ts",
+    "src/hooks/useExternalCategoriesQuery.ts",
+    "src/hooks/useExternalSimulator.ts",
+    "src/hooks/usePrintAreas.ts",
+    "src/hooks/useProductSupplierSources.ts",
+    "src/hooks/useProdutoRamoAtividade.ts",
+    "src/hooks/useTechniquePricing.ts",
+    "src/hooks/useTechniquePricingOptions.ts"
+   ],
    "chamada_por_edges": [
     "test-contract-orchestrator"
    ],
    "chamada_por_sql_ou_cron": true,
    "orfa": false,
-   "testes": 3
+   "testes": 10
   },
   {
    "nome": "external-db-inspect",
@@ -1338,7 +1370,9 @@
     "cors.ts",
     "credentials.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useExternalDbInspect.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": false,
@@ -1467,10 +1501,12 @@
     "cors.ts",
     "zod-validate.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useMagicUpGeneration.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 5
   },
   {
@@ -1590,10 +1626,12 @@
     "log-safety.ts",
     "zod-validate.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useProductSeoAI.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 1
   },
   {
@@ -1618,7 +1656,10 @@
     "cors.ts",
     "external-fetch.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useIPValidation.ts",
+    "src/pages/Auth.tsx"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": false,
@@ -1839,10 +1880,12 @@
     "external-fetch.ts",
     "zod-validate.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useKitIdentitySuggestion.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 1
   },
   {
@@ -1903,7 +1946,9 @@
     "request-id.ts",
     "structured-logger.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useIPValidation.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": false,
@@ -2758,10 +2803,12 @@
     "external-fetch.ts",
     "zod-validate.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useQuotes.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 2
   },
   {
@@ -2985,7 +3032,8 @@
     "request-id.ts"
    ],
    "chamada_pelo_front": [
-    "src/components/admin/connections/DataSourceDebugTab.tsx"
+    "src/components/admin/connections/DataSourceDebugTab.tsx",
+    "src/hooks/useSecretsManager.ts"
    ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
@@ -3194,7 +3242,9 @@
     "index.ts",
     "send-transactional-email.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useTransactionalEmail.ts"
+   ],
    "chamada_por_edges": [
     "step-up-verify"
    ],
@@ -3268,10 +3318,12 @@
     "step-up-verify.ts",
     "supabase-client-adapter.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useStepUpAuth.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 2
   },
   {
@@ -3334,10 +3386,13 @@
     "external-fetch.ts",
     "zod-validate.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/pages/quote-view/QuoteActionHandlers.ts",
+    "src/pages/quote-view/QuoteBitrixSync.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 2
   },
   {
@@ -3513,7 +3568,7 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": true,
-   "testes": 56
+   "testes": 57
   },
   {
    "nome": "trends-insights",
@@ -3579,10 +3634,12 @@
     "cors.ts",
     "errors.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useIPValidation.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 3
   },
   {

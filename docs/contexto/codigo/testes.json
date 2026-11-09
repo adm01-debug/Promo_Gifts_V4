@@ -5,34 +5,34 @@
   "vitest",
   "playwright"
  ],
- "total": 2202,
+ "total": 2276,
  "por_tipo": {
   "contrato": 56,
-  "e2e": 634,
+  "e2e": 676,
   "pytest": 2,
   "qa": 17,
-  "unit": 1493
+  "unit": 1525
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 807
+   "arquivos": 862
   },
   {
    "padrao": "e2e/",
-   "arquivos": 624
+   "arquivos": 625
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 605
+   "arquivos": 606
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 123
+   "arquivos": 139
   },
   {
    "padrao": "outro",
-   "arquivos": 43
+   "arquivos": 44
   }
  ],
  "arquivos": [
@@ -4054,6 +4054,13 @@
    "linhas": 63,
    "testa": [],
    "casos": 2
+  },
+  {
+   "arquivo": "e2e/routes/quotes/templates.spec.ts",
+   "tipo": "e2e",
+   "linhas": 3,
+   "testa": [],
+   "casos": 0
   },
   {
    "arquivo": "e2e/routes/quotes/view-no-comments-network.spec.ts",
@@ -8265,6 +8272,45 @@
    "casos": 3
   },
   {
+   "arquivo": "src/hooks/useAdvancedFilters.unit.test.tsx",
+   "tipo": "unit",
+   "linhas": 158,
+   "testa": [
+    "src/constants/filters.ts",
+    "src/hooks/useAdvancedFilters.ts",
+    "src/hooks/useExternalDatabase.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/hooks/useGenericFuzzySearch.unit.test.tsx",
+   "tipo": "unit",
+   "linhas": 71,
+   "testa": [
+    "src/hooks/useGenericFuzzySearch.ts"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "src/hooks/useIPValidation.test.ts",
+   "tipo": "unit",
+   "linhas": 277,
+   "testa": [
+    "src/hooks/useIPValidation.ts",
+    "src/integrations/supabase/client.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "src/hooks/useLoginAttempts.unit.test.tsx",
+   "tipo": "unit",
+   "linhas": 49,
+   "testa": [
+    "src/hooks/useLoginAttempts.ts"
+   ],
+   "casos": 1
+  },
+  {
    "arquivo": "src/hooks/useProductColorSwatch.test.tsx",
    "tipo": "unit",
    "linhas": 162,
@@ -9351,6 +9397,16 @@
     "src/pages/auth/SSOCallbackPage.tsx"
    ],
    "casos": 7
+  },
+  {
+   "arquivo": "src/pages/Auth.test.tsx",
+   "tipo": "unit",
+   "linhas": 80,
+   "testa": [
+    "src/components/ui/toaster.tsx",
+    "src/pages/Auth.tsx"
+   ],
+   "casos": 3
   },
   {
    "arquivo": "src/pages/auth/__tests__/auth-copy.smoke.test.ts",
@@ -10582,6 +10638,13 @@
    "casos": 0
   },
   {
+   "arquivo": "src/test/setup.ts",
+   "tipo": "unit",
+   "linhas": 16,
+   "testa": [],
+   "casos": 0
+  },
+  {
    "arquivo": "src/tests/AdminLayout.test.tsx",
    "tipo": "unit",
    "linhas": 143,
@@ -10908,6 +10971,17 @@
    "casos": 2
   },
   {
+   "arquivo": "src/tests/ThemeInitializer.test.tsx",
+   "tipo": "unit",
+   "linhas": 84,
+   "testa": [
+    "src/components/ThemeInitializer.tsx",
+    "src/contexts/ThemeContext.tsx",
+    "src/lib/theme-presets.ts"
+   ],
+   "casos": 3
+  },
+  {
    "arquivo": "src/tests/ThemeRuntime.test.tsx",
    "tipo": "unit",
    "linhas": 49,
@@ -11023,6 +11097,15 @@
     "src/utils/undoToast.tsx"
    ],
    "casos": 18
+  },
+  {
+   "arquivo": "src/utils/__tests__/color-matching.test.ts",
+   "tipo": "unit",
+   "linhas": 73,
+   "testa": [
+    "src/utils/color-matching.ts"
+   ],
+   "casos": 9
   },
   {
    "arquivo": "src/utils/__tests__/image-utils.blurhash.test.ts",
@@ -11161,6 +11244,24 @@
    "casos": 24
   },
   {
+   "arquivo": "src/utils/masks.unit.test.tsx",
+   "tipo": "unit",
+   "linhas": 45,
+   "testa": [
+    "src/utils/masks.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/utils/price-freshness.test.ts",
+   "tipo": "unit",
+   "linhas": 137,
+   "testa": [
+    "src/utils/price-freshness.ts"
+   ],
+   "casos": 15
+  },
+  {
    "arquivo": "supabase/functions/_shared/connection-test-runner.test.ts",
    "tipo": "unit",
    "linhas": 147,
@@ -11214,6 +11315,15 @@
     "supabase/functions/_shared/dispatcher-auth.ts"
    ],
    "casos": 13
+  },
+  {
+   "arquivo": "supabase/functions/_shared/external-db-telemetry.test.ts",
+   "tipo": "unit",
+   "linhas": 55,
+   "testa": [
+    "supabase/functions/_shared/external-db-telemetry.ts"
+   ],
+   "casos": 9
   },
   {
    "arquivo": "supabase/functions/_shared/kill_switch.test.ts",
@@ -11346,6 +11456,63 @@
     "supabase/functions/ema-pipeline-health/handler.ts"
    ],
    "casos": 3
+  },
+  {
+   "arquivo": "supabase/functions/external-db-bridge/applyFiltersAndSwap.integration.test.ts",
+   "tipo": "unit",
+   "linhas": 274,
+   "testa": [
+    "supabase/functions/external-db-bridge/index.ts"
+   ],
+   "casos": 20
+  },
+  {
+   "arquivo": "supabase/functions/external-db-bridge/callerSelectIsHeavy.test.ts",
+   "tipo": "unit",
+   "linhas": 172,
+   "testa": [
+    "supabase/functions/external-db-bridge/index.ts"
+   ],
+   "casos": 23
+  },
+  {
+   "arquivo": "supabase/functions/external-db-bridge/lightweightSelect.e2e.test.ts",
+   "tipo": "e2e",
+   "linhas": 155,
+   "testa": [],
+   "casos": 7
+  },
+  {
+   "arquivo": "supabase/functions/external-db-bridge/performance.test.ts",
+   "tipo": "unit",
+   "linhas": 131,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "supabase/functions/external-db-bridge/resolveProductsSelect.test.ts",
+   "tipo": "unit",
+   "linhas": 80,
+   "testa": [
+    "supabase/functions/external-db-bridge/index.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "supabase/functions/external-db-bridge/singleton.test.ts",
+   "tipo": "unit",
+   "linhas": 43,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "supabase/functions/external-db-bridge/wideSelectThreshold.test.ts",
+   "tipo": "unit",
+   "linhas": 93,
+   "testa": [
+    "supabase/functions/external-db-bridge/index.ts"
+   ],
+   "casos": 5
   },
   {
    "arquivo": "supabase/functions/generate-ad-image/index.imports.test.ts",
@@ -11672,6 +11839,7 @@
    "tipo": "unit",
    "linhas": 79,
    "testa": [
+    "src/components/BridgeStatusBanner.tsx",
     "src/hooks/admin/useDevGate.ts"
    ],
    "casos": 3
@@ -12106,6 +12274,26 @@
    "casos": 7
   },
   {
+   "arquivo": "tests/components/BridgeMetricsOverlay-ProdGate.test.tsx",
+   "tipo": "unit",
+   "linhas": 52,
+   "testa": [
+    "src/components/dev/BridgeMetricsOverlay.tsx",
+    "src/hooks/useDevGate.ts"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/components/BridgeStatusBanner.test.tsx",
+   "tipo": "unit",
+   "linhas": 137,
+   "testa": [
+    "src/components/BridgeStatusBanner.tsx",
+    "src/lib/external-db/bridge-status-events.ts"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "tests/components/BulkSelectionBar.test.tsx",
    "tipo": "unit",
    "linhas": 112,
@@ -12133,6 +12321,15 @@
     "src/lib/cloud-status.ts"
    ],
    "casos": 12
+  },
+  {
+   "arquivo": "tests/components/command/GlobalCommandBar.test.tsx",
+   "tipo": "unit",
+   "linhas": 32,
+   "testa": [
+    "src/components/command/GlobalCommandBar.tsx"
+   ],
+   "casos": 2
   },
   {
    "arquivo": "tests/components/dependency-compatibility-react19.test.tsx",
@@ -12194,6 +12391,16 @@
     "src/hooks/admin/useDevGate.ts"
    ],
    "casos": 1
+  },
+  {
+   "arquivo": "tests/components/DevOnlyBridgeOverlay.test.tsx",
+   "tipo": "unit",
+   "linhas": 56,
+   "testa": [
+    "src/components/dev/DevOnlyBridgeOverlay.tsx",
+    "src/hooks/useDevGate.ts"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "tests/components/DevRoute.test.tsx",
@@ -13666,6 +13873,34 @@
    "casos": 13
   },
   {
+   "arquivo": "tests/e2e/admin-module.test.ts",
+   "tipo": "e2e",
+   "linhas": 155,
+   "testa": [],
+   "casos": 39
+  },
+  {
+   "arquivo": "tests/e2e/analytics-bi.test.ts",
+   "tipo": "e2e",
+   "linhas": 122,
+   "testa": [],
+   "casos": 24
+  },
+  {
+   "arquivo": "tests/e2e/auth-flow.test.tsx",
+   "tipo": "e2e",
+   "linhas": 158,
+   "testa": [],
+   "casos": 34
+  },
+  {
+   "arquivo": "tests/e2e/carts-excellence.spec.ts",
+   "tipo": "e2e",
+   "linhas": 68,
+   "testa": [],
+   "casos": 3
+  },
+  {
    "arquivo": "tests/e2e/catalog-flow.spec.ts",
    "tipo": "e2e",
    "linhas": 68,
@@ -13680,11 +13915,267 @@
    "casos": 3
   },
   {
+   "arquivo": "tests/e2e/catalog-price-freshness-badge.test.tsx",
+   "tipo": "e2e",
+   "linhas": 299,
+   "testa": [
+    "src/components/products/PriceFreshnessBadge.tsx"
+   ],
+   "casos": 21
+  },
+  {
+   "arquivo": "tests/e2e/compare-exhaustive.test.ts",
+   "tipo": "e2e",
+   "linhas": 127,
+   "testa": [],
+   "casos": 6
+  },
+  {
+   "arquivo": "tests/e2e/compare-exhaustive.test.tsx",
+   "tipo": "e2e",
+   "linhas": 143,
+   "testa": [
+    "src/components/ui/tooltip.tsx",
+    "src/pages/ComparePage.tsx",
+    "src/stores/useComparisonStore.ts"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/e2e/compare-module.test.ts",
+   "tipo": "e2e",
+   "linhas": 117,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/e2e/compare-module.test.tsx",
+   "tipo": "e2e",
+   "linhas": 330,
+   "testa": [
+    "src/components/ui/tooltip.tsx",
+    "src/pages/ComparePage.tsx",
+    "src/stores/useComparisonStore.ts"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "tests/e2e/compare-ultra.test.ts",
+   "tipo": "e2e",
+   "linhas": 121,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests/e2e/compare-ultra.test.tsx",
+   "tipo": "e2e",
+   "linhas": 130,
+   "testa": [
+    "src/components/ui/tooltip.tsx",
+    "src/pages/ComparePage.tsx",
+    "src/stores/useComparisonStore.ts"
+   ],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests/e2e/compare-viewer-a11y.test.tsx",
+   "tipo": "e2e",
+   "linhas": 122,
+   "testa": [
+    "src/components/ui/tooltip.tsx",
+    "src/pages/ComparePage.tsx",
+    "src/stores/useComparisonStore.ts"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/e2e/compare-visual.test.ts",
+   "tipo": "e2e",
+   "linhas": 92,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests/e2e/compare-visual.test.tsx",
+   "tipo": "e2e",
+   "linhas": 134,
+   "testa": [
+    "src/components/ui/tooltip.tsx",
+    "src/pages/ComparePage.tsx",
+    "src/stores/useComparisonStore.ts"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/e2e/cross-cutting-regression.test.ts",
+   "tipo": "e2e",
+   "linhas": 325,
+   "testa": [],
+   "casos": 48
+  },
+  {
+   "arquivo": "tests/e2e/favorites-module.test.ts",
+   "tipo": "e2e",
+   "linhas": 180,
+   "testa": [],
+   "casos": 16
+  },
+  {
+   "arquivo": "tests/e2e/favorites-ui.test.tsx",
+   "tipo": "e2e",
+   "linhas": 185,
+   "testa": [
+    "src/components/a11y/AriaLive.tsx",
+    "src/components/ui/tooltip.tsx",
+    "src/contexts/AuthContext.tsx",
+    "src/contexts/ProductsContext.tsx",
+    "src/integrations/supabase/client.ts",
+    "src/pages/FavoritesPage.tsx",
+    "src/stores/useFavoritesStore.ts"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/e2e/infra-banners-prod.test.tsx",
+   "tipo": "e2e",
+   "linhas": 143,
+   "testa": [
+    "src/components/BridgeStatusBanner.tsx",
+    "src/components/system/CloudStatusBanner.tsx",
+    "src/lib/external-db/bridge-status-events.ts"
+   ],
+   "casos": 6
+  },
+  {
+   "arquivo": "tests/e2e/kit-builder-flow.test.ts",
+   "tipo": "e2e",
+   "linhas": 375,
+   "testa": [],
+   "casos": 38
+  },
+  {
+   "arquivo": "tests/e2e/mockup-regressions.spec.ts",
+   "tipo": "e2e",
+   "linhas": 31,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests/e2e/navigation-layout.test.tsx",
+   "tipo": "e2e",
+   "linhas": 166,
+   "testa": [
+    "src/pages/NotFound.tsx"
+   ],
+   "casos": 30
+  },
+  {
+   "arquivo": "tests/e2e/new-quote-advanced.test.tsx",
+   "tipo": "e2e",
+   "linhas": 117,
+   "testa": [
+    "src/components/ui/tooltip.tsx",
+    "src/pages/QuoteBuilderPage.tsx",
+    "src/stores/useComparisonStore.ts"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/e2e/new-quote-cycle.test.tsx",
+   "tipo": "e2e",
+   "linhas": 104,
+   "testa": [
+    "src/components/ui/tooltip.tsx",
+    "src/pages/QuoteBuilderPage.tsx",
+    "src/stores/useComparisonStore.ts"
+   ],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests/e2e/new-quote-exhaustive.test.ts",
+   "tipo": "e2e",
+   "linhas": 132,
+   "testa": [],
+   "casos": 6
+  },
+  {
+   "arquivo": "tests/e2e/new-quote-exhaustive.test.tsx",
+   "tipo": "e2e",
+   "linhas": 162,
+   "testa": [
+    "src/components/ui/tooltip.tsx",
+    "src/pages/QuoteBuilderPage.tsx"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/e2e/new-quote-full-audit.test.tsx",
+   "tipo": "e2e",
+   "linhas": 113,
+   "testa": [
+    "src/components/ui/tooltip.tsx",
+    "src/pages/QuoteBuilderPage.tsx"
+   ],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests/e2e/new-quote-resilience.test.tsx",
+   "tipo": "e2e",
+   "linhas": 120,
+   "testa": [
+    "src/components/ui/tooltip.tsx",
+    "src/pages/QuoteBuilderPage.tsx"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "tests/e2e/optimized-image.spec.ts",
    "tipo": "e2e",
    "linhas": 47,
    "testa": [],
    "casos": 2
+  },
+  {
+   "arquivo": "tests/e2e/performance.test.ts",
+   "tipo": "e2e",
+   "linhas": 99,
+   "testa": [],
+   "casos": 25
+  },
+  {
+   "arquivo": "tests/e2e/phase1-foundation-types.test.ts",
+   "tipo": "e2e",
+   "linhas": 285,
+   "testa": [],
+   "casos": 30
+  },
+  {
+   "arquivo": "tests/e2e/phase2-filters-catalog.test.ts",
+   "tipo": "e2e",
+   "linhas": 288,
+   "testa": [],
+   "casos": 35
+  },
+  {
+   "arquivo": "tests/e2e/phase3-detail-experience.test.ts",
+   "tipo": "e2e",
+   "linhas": 410,
+   "testa": [],
+   "casos": 35
+  },
+  {
+   "arquivo": "tests/e2e/phase4-admin-grid.test.ts",
+   "tipo": "e2e",
+   "linhas": 294,
+   "testa": [],
+   "casos": 33
+  },
+  {
+   "arquivo": "tests/e2e/phase5-propagation.test.ts",
+   "tipo": "e2e",
+   "linhas": 410,
+   "testa": [],
+   "casos": 31
   },
   {
    "arquivo": "tests/e2e/product-gallery-tooltip.spec.ts",
@@ -13701,6 +14192,34 @@
    "casos": 2
   },
   {
+   "arquivo": "tests/e2e/products-catalog.test.ts",
+   "tipo": "e2e",
+   "linhas": 201,
+   "testa": [],
+   "casos": 50
+  },
+  {
+   "arquivo": "tests/e2e/profile-user.test.ts",
+   "tipo": "e2e",
+   "linhas": 102,
+   "testa": [],
+   "casos": 22
+  },
+  {
+   "arquivo": "tests/e2e/quote-resilience.test.ts",
+   "tipo": "e2e",
+   "linhas": 72,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/e2e/quotes-flow.test.ts",
+   "tipo": "e2e",
+   "linhas": 243,
+   "testa": [],
+   "casos": 53
+  },
+  {
    "arquivo": "tests/e2e/replenishment-flows.spec.ts",
    "tipo": "e2e",
    "linhas": 67,
@@ -13715,11 +14234,34 @@
    "casos": 2
   },
   {
+   "arquivo": "tests/e2e/seller-carts.test.ts",
+   "tipo": "e2e",
+   "linhas": 215,
+   "testa": [],
+   "casos": 11
+  },
+  {
    "arquivo": "tests/e2e/stock-regression.spec.ts",
    "tipo": "e2e",
    "linhas": 56,
    "testa": [],
    "casos": 1
+  },
+  {
+   "arquivo": "tests/e2e/tools-simulator.test.ts",
+   "tipo": "e2e",
+   "linhas": 205,
+   "testa": [],
+   "casos": 43
+  },
+  {
+   "arquivo": "tests/e2e/ui-components.test.tsx",
+   "tipo": "e2e",
+   "linhas": 133,
+   "testa": [
+    "src/components/ui/button.tsx"
+   ],
+   "casos": 17
   },
   {
    "arquivo": "tests/edge-functions/catalog-integration.test.ts",
@@ -15200,6 +15742,38 @@
    "casos": 8
   },
   {
+   "arquivo": "tests/hooks/useBridgeMetricsCleanup.test.ts",
+   "tipo": "unit",
+   "linhas": 56,
+   "testa": [
+    "src/hooks/dev/useBridgeMetrics.ts",
+    "src/lib/telemetry/bridgeCallMetrics.ts",
+    "src/lib/telemetry/longTaskWatchdog.ts"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/hooks/useBridgeMetricsPerformance.test.ts",
+   "tipo": "unit",
+   "linhas": 65,
+   "testa": [
+    "src/hooks/dev/useBridgeMetrics.ts",
+    "src/lib/telemetry/bridgeCallMetrics.ts",
+    "src/lib/telemetry/longTaskWatchdog.ts"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/hooks/useBridgeStatusBanner.test.ts",
+   "tipo": "unit",
+   "linhas": 116,
+   "testa": [
+    "src/hooks/useBridgeStatusBanner.ts",
+    "src/lib/external-db/bridge-status-events.ts"
+   ],
+   "casos": 5
+  },
+  {
    "arquivo": "tests/hooks/useBulkSelection-extended.test.ts",
    "tipo": "unit",
    "linhas": 75,
@@ -15753,6 +16327,16 @@
    "casos": 13
   },
   {
+   "arquivo": "tests/hooks/useQuoteTemplates.test.tsx",
+   "tipo": "unit",
+   "linhas": 34,
+   "testa": [
+    "src/contexts/AuthContext.tsx",
+    "src/hooks/useQuoteTemplates.ts"
+   ],
+   "casos": 1
+  },
+  {
    "arquivo": "tests/hooks/useRBAC.test.tsx",
    "tipo": "unit",
    "linhas": 122,
@@ -15774,7 +16358,8 @@
    "tipo": "unit",
    "linhas": 121,
    "testa": [
-    "src/hooks/products/useReplenishmentsSelectionMode.ts"
+    "src/hooks/products/useReplenishmentsSelectionMode.ts",
+    "src/hooks/useReplenishments.ts"
    ],
    "casos": 7
   },
@@ -15938,7 +16523,9 @@
    "arquivo": "tests/hooks/useTechniquePricing.test.ts",
    "tipo": "unit",
    "linhas": 218,
-   "testa": [],
+   "testa": [
+    "src/hooks/useTechniquePricing.ts"
+   ],
    "casos": 16
   },
   {
@@ -16234,6 +16821,16 @@
    "casos": 8
   },
   {
+   "arquivo": "tests/lib/bridge.test.ts",
+   "tipo": "unit",
+   "linhas": 239,
+   "testa": [
+    "src/integrations/supabase/client.ts",
+    "src/lib/external-db/bridge.ts"
+   ],
+   "casos": 11
+  },
+  {
    "arquivo": "tests/lib/buildCustomKitInsert.test.ts",
    "tipo": "unit",
    "linhas": 51,
@@ -16341,6 +16938,13 @@
     "src/lib/error-reporter.ts"
    ],
    "casos": 3
+  },
+  {
+   "arquivo": "tests/lib/external-db-bridge-telemetry.test.ts",
+   "tipo": "unit",
+   "linhas": 740,
+   "testa": [],
+   "casos": 67
   },
   {
    "arquivo": "tests/lib/external-db-immutable-cache.test.ts",
@@ -16964,6 +17568,16 @@
    "casos": 1
   },
   {
+   "arquivo": "tests/observability/structured-logger.test.ts",
+   "tipo": "unit",
+   "linhas": 65,
+   "testa": [
+    "src/lib/sentry.ts",
+    "src/lib/telemetry/structuredLogger.ts"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "tests/p0/_mocks.ts",
    "tipo": "unit",
    "linhas": 156,
@@ -17062,6 +17676,7 @@
    "tipo": "unit",
    "linhas": 573,
    "testa": [
+    "src/hooks/useKitBuilder.ts",
     "src/lib/db/postgrest.ts",
     "src/pages/kit-builder/useKitBuilderQuote.ts"
    ],
@@ -18377,6 +18992,49 @@
    "casos": 2
   },
   {
+   "arquivo": "tests/unit/system/BridgeMetricsOverlay.test.tsx",
+   "tipo": "unit",
+   "linhas": 140,
+   "testa": [
+    "src/components/dev/BridgeMetricsOverlay.tsx",
+    "src/hooks/dev/useBridgeMetrics.ts",
+    "src/hooks/useDevGate.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "tests/unit/system/BridgeMetricsPerformance.test.tsx",
+   "tipo": "unit",
+   "linhas": 91,
+   "testa": [
+    "src/components/dev/BridgeMetricsOverlay.tsx",
+    "src/hooks/dev/useBridgeMetrics.ts",
+    "src/hooks/useDevGate.ts"
+   ],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/unit/system/BridgeStatusBanner.test.tsx",
+   "tipo": "unit",
+   "linhas": 73,
+   "testa": [
+    "src/components/BridgeStatusBanner.tsx",
+    "src/hooks/useBridgeStatusBanner.ts",
+    "src/hooks/useDevGate.ts"
+   ],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests/unit/system/useBridgeMetrics.test.ts",
+   "tipo": "unit",
+   "linhas": 36,
+   "testa": [
+    "src/hooks/dev/useBridgeMetrics.ts",
+    "src/lib/telemetry/bridgeCallMetrics.ts"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "tests/unit/test-user-prefix.test.ts",
    "tipo": "unit",
    "linhas": 38,
@@ -18670,10 +19328,11 @@
   "scripts/validate-migration-target.mjs": 2,
   "scripts/wraparound-monitor-check.mjs": 1,
   "src/App.tsx": 2,
+  "src/components/BridgeStatusBanner.tsx": 4,
   "src/components/LoadingScreen.tsx": 1,
   "src/components/RoleBadge.tsx": 1,
-  "src/components/ThemeInitializer.tsx": 2,
-  "src/components/a11y/AriaLive.tsx": 5,
+  "src/components/ThemeInitializer.tsx": 3,
+  "src/components/a11y/AriaLive.tsx": 6,
   "src/components/a11y/index.ts": 2,
   "src/components/admin/DiscountApprovalHeaderBadge.tsx": 1,
   "src/components/admin/OwnershipRepairDialog.tsx": 1,
@@ -18709,14 +19368,15 @@
   "src/components/cart/cartCompanyCnpj.ts": 2,
   "src/components/catalog/BulkVariantWizard.tsx": 1,
   "src/components/catalog/CatalogToolbar.tsx": 4,
+  "src/components/command/GlobalCommandBar.tsx": 1,
   "src/components/common/BulkSelectionBar.tsx": 1,
   "src/components/common/IntelligenceBadges.tsx": 1,
   "src/components/common/PersistentBreadcrumbs.tsx": 2,
   "src/components/compare/CompareTableView.tsx": 1,
   "src/components/dashboard/RecentKitsWidget.tsx": 1,
-  "src/components/dev/BridgeMetricsOverlay.tsx": 4,
+  "src/components/dev/BridgeMetricsOverlay.tsx": 7,
   "src/components/dev/DevOnly.tsx": 1,
-  "src/components/dev/DevOnlyBridgeOverlay.tsx": 7,
+  "src/components/dev/DevOnlyBridgeOverlay.tsx": 8,
   "src/components/effects/PageTransition.tsx": 1,
   "src/components/errors/EnhancedErrorBoundary.tsx": 3,
   "src/components/errors/SafeMessage.tsx": 1,
@@ -18852,7 +19512,7 @@
   "src/components/products/FutureStockModal.tsx": 1,
   "src/components/products/KitComposition.tsx": 1,
   "src/components/products/LayoutPopover.tsx": 1,
-  "src/components/products/PriceFreshnessBadge.tsx": 17,
+  "src/components/products/PriceFreshnessBadge.tsx": 18,
   "src/components/products/ProductCard.tsx": 2,
   "src/components/products/ProductCardImage.tsx": 1,
   "src/components/products/ProductCategoryBadges.tsx": 1,
@@ -18908,14 +19568,14 @@
   "src/components/shared/EdgeFallback.tsx": 1,
   "src/components/simulator/SimulationPriceSourceBadge.tsx": 1,
   "src/components/simulator/TechniqueCard.tsx": 1,
-  "src/components/system/CloudStatusBanner.tsx": 1,
+  "src/components/system/CloudStatusBanner.tsx": 2,
   "src/components/system/RootInteractivityGuard.tsx": 2,
   "src/components/ui/ColorSwatchPicker.tsx": 1,
   "src/components/ui/ConfirmDialog.tsx": 3,
   "src/components/ui/OptimizedImage.tsx": 2,
   "src/components/ui/alert-dialog.tsx": 1,
   "src/components/ui/avatar.tsx": 1,
-  "src/components/ui/button.tsx": 4,
+  "src/components/ui/button.tsx": 5,
   "src/components/ui/calendar.tsx": 3,
   "src/components/ui/command.tsx": 1,
   "src/components/ui/currency-input.tsx": 4,
@@ -18927,17 +19587,18 @@
   "src/components/ui/label.tsx": 3,
   "src/components/ui/popover.tsx": 2,
   "src/components/ui/select.tsx": 6,
-  "src/components/ui/tooltip.tsx": 98,
+  "src/components/ui/toaster.tsx": 1,
+  "src/components/ui/tooltip.tsx": 109,
   "src/components/ui/truncated-tooltip.tsx": 1,
   "src/components/workflows/WorkflowEditDialog.tsx": 1,
-  "src/constants/filters.ts": 6,
-  "src/contexts/AuthContext.tsx": 34,
+  "src/constants/filters.ts": 7,
+  "src/contexts/AuthContext.tsx": 36,
   "src/contexts/CloudStatusContext.tsx": 1,
   "src/contexts/OnboardingContext.tsx": 1,
   "src/contexts/OrganizationContext.tsx": 2,
-  "src/contexts/ProductsContext.tsx": 2,
+  "src/contexts/ProductsContext.tsx": 3,
   "src/contexts/SellerCartContext.tsx": 9,
-  "src/contexts/ThemeContext.tsx": 16,
+  "src/contexts/ThemeContext.tsx": 17,
   "src/hooks/admin/index.ts": 5,
   "src/hooks/admin/useAllowedIPs.ts": 2,
   "src/hooks/admin/useDevGate.ts": 13,
@@ -18973,7 +19634,7 @@
   "src/hooks/comparison/useComparisonSync.ts": 1,
   "src/hooks/comparison/useComparisonWeights.ts": 1,
   "src/hooks/customization/useCustomizationCollapsePrefs.ts": 1,
-  "src/hooks/dev/useBridgeMetrics.ts": 6,
+  "src/hooks/dev/useBridgeMetrics.ts": 11,
   "src/hooks/favorites/useFavoriteLists.ts": 1,
   "src/hooks/favorites/useFavorites.ts": 1,
   "src/hooks/intelligence/index.ts": 8,
@@ -19085,12 +19746,23 @@
   "src/hooks/ui/useScroll.ts": 1,
   "src/hooks/ui/useScrollLockFix.ts": 1,
   "src/hooks/ui/useWorkspaceNotifications.tsx": 9,
+  "src/hooks/useAdvancedFilters.ts": 1,
+  "src/hooks/useBridgeStatusBanner.ts": 2,
+  "src/hooks/useDevGate.ts": 5,
+  "src/hooks/useExternalDatabase.ts": 1,
   "src/hooks/useFutureStockPreference.ts": 2,
+  "src/hooks/useGenericFuzzySearch.ts": 1,
+  "src/hooks/useIPValidation.ts": 1,
+  "src/hooks/useKitBuilder.ts": 1,
+  "src/hooks/useLoginAttempts.ts": 1,
   "src/hooks/useProductColorSwatch.ts": 2,
+  "src/hooks/useQuoteTemplates.ts": 1,
+  "src/hooks/useReplenishments.ts": 1,
+  "src/hooks/useTechniquePricing.ts": 1,
   "src/hooks/voice/processTranscript.ts": 2,
   "src/hooks/voice/retry.ts": 2,
   "src/hooks/voice/types.ts": 1,
-  "src/integrations/supabase/client.ts": 44,
+  "src/integrations/supabase/client.ts": 47,
   "src/integrations/supabase/gold-relations.ts": 1,
   "src/integrations/supabase/types.ts": 3,
   "src/lib/access/access-policy.ts": 1,
@@ -19133,8 +19805,8 @@
   "src/lib/error-reporter.ts": 1,
   "src/lib/external-db-prewarm.ts": 1,
   "src/lib/external-db/batch-import.ts": 1,
-  "src/lib/external-db/bridge-status-events.ts": 1,
-  "src/lib/external-db/bridge.ts": 4,
+  "src/lib/external-db/bridge-status-events.ts": 4,
+  "src/lib/external-db/bridge.ts": 5,
   "src/lib/external-db/immutableCache.ts": 1,
   "src/lib/external-db/index.ts": 3,
   "src/lib/external-db/invoke.ts": 1,
@@ -19211,7 +19883,7 @@
   "src/lib/security/sanitize-message.ts": 1,
   "src/lib/security/validation.ts": 3,
   "src/lib/sensitive-masking.ts": 1,
-  "src/lib/sentry.ts": 2,
+  "src/lib/sentry.ts": 3,
   "src/lib/stock-chart-utils.ts": 1,
   "src/lib/supabase-direct.ts": 2,
   "src/lib/supabase-untyped.ts": 1,
@@ -19220,18 +19892,18 @@
   "src/lib/system/dev-gate/DevInfraGate.ts": 4,
   "src/lib/system/dev-gate/providers.ts": 1,
   "src/lib/system/dev-gate/types.ts": 2,
-  "src/lib/telemetry/bridgeCallMetrics.ts": 3,
+  "src/lib/telemetry/bridgeCallMetrics.ts": 6,
   "src/lib/telemetry/correlationId.ts": 3,
   "src/lib/telemetry/instrumentationControl.ts": 1,
-  "src/lib/telemetry/longTaskWatchdog.ts": 2,
+  "src/lib/telemetry/longTaskWatchdog.ts": 4,
   "src/lib/telemetry/navigationMetrics.ts": 1,
   "src/lib/telemetry/requestId.ts": 2,
   "src/lib/telemetry/restoreEventSchema.ts": 3,
   "src/lib/telemetry/restoreLogger.ts": 1,
   "src/lib/telemetry/secretsManagerCallMetrics.ts": 1,
-  "src/lib/telemetry/structuredLogger.ts": 2,
+  "src/lib/telemetry/structuredLogger.ts": 3,
   "src/lib/textUtils.ts": 3,
-  "src/lib/theme-presets.ts": 5,
+  "src/lib/theme-presets.ts": 6,
   "src/lib/to-error-message.ts": 1,
   "src/lib/trending-score.ts": 1,
   "src/lib/utils.ts": 6,
@@ -19240,8 +19912,12 @@
   "src/lib/validations/quoteSchema.ts": 2,
   "src/lib/variant-matching.ts": 1,
   "src/logic/quotes/calculations.ts": 4,
+  "src/pages/Auth.tsx": 1,
+  "src/pages/ComparePage.tsx": 5,
+  "src/pages/FavoritesPage.tsx": 1,
   "src/pages/Index.tsx": 2,
-  "src/pages/NotFound.tsx": 1,
+  "src/pages/NotFound.tsx": 2,
+  "src/pages/QuoteBuilderPage.tsx": 5,
   "src/pages/Simulation.tsx": 1,
   "src/pages/admin/AdminConexoesPage.tsx": 2,
   "src/pages/admin/AdminConexoesStatusPage.tsx": 1,
@@ -19335,8 +20011,8 @@
   "src/services/quoteItemsReorder.ts": 2,
   "src/services/quoteService.ts": 5,
   "src/stores/useBadgeVisibilityStore.ts": 3,
-  "src/stores/useComparisonStore.ts": 5,
-  "src/stores/useFavoritesStore.ts": 5,
+  "src/stores/useComparisonStore.ts": 12,
+  "src/stores/useFavoritesStore.ts": 6,
   "src/stores/useProductSelectionStore.ts": 1,
   "src/types/advancedFilters.ts": 1,
   "src/types/customization.ts": 6,
@@ -19354,14 +20030,15 @@
   "src/utils/cnpj-schema.ts": 4,
   "src/utils/color-group-hex.ts": 1,
   "src/utils/color-image-resolver.ts": 2,
+  "src/utils/color-matching.ts": 1,
   "src/utils/color-variant-carousel.ts": 1,
   "src/utils/colorSorting.ts": 3,
   "src/utils/currency.ts": 1,
   "src/utils/image-utils.ts": 4,
   "src/utils/imageProxy.ts": 1,
   "src/utils/laser-logo-processor.ts": 1,
-  "src/utils/masks.ts": 9,
-  "src/utils/price-freshness.ts": 7,
+  "src/utils/masks.ts": 10,
+  "src/utils/price-freshness.ts": 8,
   "src/utils/product-colors.ts": 1,
   "src/utils/product-mapper.ts": 3,
   "src/utils/product-sorting.ts": 4,
@@ -19396,6 +20073,7 @@
   "supabase/functions/_shared/credentials.ts": 2,
   "supabase/functions/_shared/dispatcher-auth.ts": 1,
   "supabase/functions/_shared/edge-authz-manifest.ts": 3,
+  "supabase/functions/_shared/external-db-telemetry.ts": 1,
   "supabase/functions/_shared/kill_switch.ts": 1,
   "supabase/functions/_shared/rate-limiter.ts": 1,
   "supabase/functions/_shared/retry-backoff.ts": 1,
@@ -19405,6 +20083,7 @@
   "supabase/functions/crm-db-bridge/index.ts": 3,
   "supabase/functions/e2e-cleanup/index.ts": 1,
   "supabase/functions/ema-pipeline-health/handler.ts": 1,
+  "supabase/functions/external-db-bridge/index.ts": 4,
   "supabase/functions/generate-ad-image/index.ts": 1,
   "supabase/functions/generate-ad-image/sanitize.ts": 1,
   "supabase/functions/generate-ad-prompt/timeout.ts": 1,
@@ -19622,7 +20301,9 @@
    "src/hooks/favorites/useFavoriteQuickAdd.ts",
    "src/hooks/favorites/useFavoritesGlobalShortcuts.ts",
    "src/hooks/favorites/useFavoritesPageState.ts",
+   "src/hooks/gravacao/useFornecedoresGravacao.ts",
    "src/hooks/gravacao/useTecnicasGravacao.ts",
+   "src/hooks/gravacao/useVariantesGravacao.ts",
    "src/hooks/intelligence/useAiRouter.ts",
    "src/hooks/intelligence/useAiUsage.ts",
    "src/hooks/intelligence/useCommemorativeDates.ts",
@@ -19728,9 +20409,190 @@
    "src/hooks/ui/usePushNotifications.tsx",
    "src/hooks/ui/useReducedMotion.ts",
    "src/hooks/ui/useSlashCommands.ts",
+   "src/hooks/use-mobile.tsx",
    "src/hooks/use-overlay-interactivity.ts",
+   "src/hooks/use-toast.ts",
+   "src/hooks/useAccessSecurity.ts",
+   "src/hooks/useAdminKitTemplates.ts",
+   "src/hooks/useAIRecommendations.ts",
+   "src/hooks/useAiRouter.ts",
+   "src/hooks/useAiUsage.ts",
+   "src/hooks/useAllowedIPs.ts",
+   "src/hooks/useAppBootstrap.ts",
+   "src/hooks/useAuditLog.ts",
+   "src/hooks/useAutoSaveQuote.ts",
+   "src/hooks/useBulkSelection.ts",
+   "src/hooks/useCartTemplates.ts",
+   "src/hooks/useCatalogFiltering.ts",
+   "src/hooks/useCatalogPrefetch.ts",
+   "src/hooks/useCatalogRealStats.ts",
+   "src/hooks/useCatalogState.ts",
+   "src/hooks/useCategories.ts",
+   "src/hooks/useCategoriesTree.ts",
+   "src/hooks/useCategoryIcons.ts",
+   "src/hooks/useClientTopProducts.ts",
+   "src/hooks/useCloudStatus.ts",
+   "src/hooks/useCollections.ts",
+   "src/hooks/useCollectionsGlobalShortcuts.ts",
+   "src/hooks/useColorEnrichment.ts",
+   "src/hooks/useColors.ts",
+   "src/hooks/useColorSystem.ts",
+   "src/hooks/useCommemorativeDates.ts",
+   "src/hooks/useCommercialIntelligence.ts",
+   "src/hooks/useComparison.ts",
+   "src/hooks/useComparisonScore.ts",
+   "src/hooks/useComparisonShortcuts.ts",
+   "src/hooks/useComparisonSync.ts",
+   "src/hooks/useComparisonWeights.ts",
+   "src/hooks/useConnectionsOverview.ts",
+   "src/hooks/useConnectionsOverviewFilters.ts",
+   "src/hooks/useConnectionTestDetails.ts",
+   "src/hooks/useConnectionTester.ts",
+   "src/hooks/useConnectionTestHistory.ts",
+   "src/hooks/useConsecutiveFailures.ts",
+   "src/hooks/useContextualSuggestions.ts",
+   "src/hooks/useCrmCompanies.ts",
+   "src/hooks/useCurrentOrgId.ts",
+   "src/hooks/useCurrentSection.ts",
+   "src/hooks/useCustomizationPrice.ts",
+   "src/hooks/useCustomKitPersistence.ts",
+   "src/hooks/useCustomKitsRealtime.ts",
+   "src/hooks/useDebounce.ts",
+   "src/hooks/useDebouncedFilters.ts",
+   "src/hooks/useDevAccessAudit.ts",
+   "src/hooks/useDeviceDetection.ts",
+   "src/hooks/useDiscountApproval.ts",
+   "src/hooks/useDropboxFiles.ts",
+   "src/hooks/useDuplicateKitDetector.ts",
+   "src/hooks/useEnrichedFavoriteItems.ts",
+   "src/hooks/useEntitySelectionMode.ts",
+   "src/hooks/useErrorHandler.ts",
+   "src/hooks/useExpertConversations.tsx",
+   "src/hooks/useExternalCategoriesQuery.ts",
+   "src/hooks/useExternalCollections.ts",
+   "src/hooks/useExternalDbInspect.ts",
+   "src/hooks/useExternalSimulator.ts",
+   "src/hooks/useExternalVariantStock.ts",
+   "src/hooks/useFavoriteLists.ts",
+   "src/hooks/useFavoriteQuickAdd.ts",
+   "src/hooks/useFavorites.ts",
+   "src/hooks/useFavoritesGlobalShortcuts.ts",
+   "src/hooks/useFavoritesPageState.ts",
+   "src/hooks/useGeoBlocking.ts",
+   "src/hooks/useGlobalShortcuts.ts",
+   "src/hooks/useGravacaoPriceV2.ts",
+   "src/hooks/useGravacaoV2.ts",
    "src/hooks/useHorizontalScroll.ts",
+   "src/hooks/useInfiniteScroll.ts",
+   "src/hooks/useKitAutoSave.ts",
+   "src/hooks/useKitBuilderPageState.ts",
+   "src/hooks/useKitBuilderQueries.ts",
+   "src/hooks/useKitBuilderTransformers.ts",
+   "src/hooks/useKitCollaboration.ts",
+   "src/hooks/useKitIdentitySuggestion.ts",
+   "src/hooks/useKitStockForecast.ts",
+   "src/hooks/useKitStockValidation.ts",
+   "src/hooks/useKitTemplates.ts",
+   "src/hooks/useKitUndoRedo.ts",
+   "src/hooks/useKitVariants.ts",
+   "src/hooks/useKitWizardShortcuts.ts",
+   "src/hooks/useLoginRateLimit.ts",
+   "src/hooks/useLogoColorAnalysis.ts",
+   "src/hooks/useMagicUpGeneration.ts",
+   "src/hooks/useMagicUpState.ts",
+   "src/hooks/useMarketIntelligenceMacro.ts",
+   "src/hooks/useMaterialFilter.ts",
+   "src/hooks/useMaterialGroups.ts",
+   "src/hooks/useMaterialTypes.ts",
+   "src/hooks/useMockupDraft.ts",
+   "src/hooks/useMockupGenerator.ts",
+   "src/hooks/useMockupTechniques.ts",
    "src/hooks/useNavigationAnalytics.ts",
+   "src/hooks/useNotifications.ts",
+   "src/hooks/useNovelties.ts",
+   "src/hooks/useNoveltiesSelectionMode.ts",
+   "src/hooks/useOnboarding.ts",
+   "src/hooks/usePasswordBreachCheck.tsx",
+   "src/hooks/usePasswordResetRequests.ts",
+   "src/hooks/usePositionHistory.ts",
+   "src/hooks/usePrintAreas.ts",
+   "src/hooks/useProductAnalytics.ts",
+   "src/hooks/useProductBounds.ts",
+   "src/hooks/useProductCustomizationOptions.ts",
+   "src/hooks/useProductFreshnessOverride.ts",
+   "src/hooks/useProductFuzzySearch.ts",
+   "src/hooks/useProductImages.ts",
+   "src/hooks/useProductInsights.ts",
+   "src/hooks/useProductIntelligenceBadges.ts",
+   "src/hooks/useProductMatch.ts",
+   "src/hooks/useProductRecommendations.ts",
+   "src/hooks/useProducts.ts",
+   "src/hooks/useProductsByCategory.ts",
+   "src/hooks/useProductsByColor.ts",
+   "src/hooks/useProductsByMaterial.ts",
+   "src/hooks/useProductSeoAI.ts",
+   "src/hooks/useProductsLightweight.ts",
+   "src/hooks/useProductSupplierSources.ts",
+   "src/hooks/useProdutoPersonalizacao.ts",
+   "src/hooks/useProdutoRamoAtividade.ts",
+   "src/hooks/usePromoSalesRanking.ts",
+   "src/hooks/usePushNotifications.tsx",
+   "src/hooks/useQuoteBuilderState.ts",
+   "src/hooks/useQuoteComments.ts",
+   "src/hooks/useQuoteFunnel.ts",
+   "src/hooks/useQuoteHistory.ts",
+   "src/hooks/useQuoteItems.ts",
+   "src/hooks/useQuotes.ts",
+   "src/hooks/useQuoteVersions.ts",
+   "src/hooks/useRamoAtividade.ts",
+   "src/hooks/useRamoAtividadeFilho.ts",
+   "src/hooks/useRamoAtividadeFilter.ts",
+   "src/hooks/useRBAC.tsx",
+   "src/hooks/useRecentlyViewed.ts",
+   "src/hooks/useRecentProducts.ts",
+   "src/hooks/useReducedMotion.ts",
+   "src/hooks/useReplenishmentsSelectionMode.ts",
+   "src/hooks/useRetestCooldownSetting.ts",
+   "src/hooks/useRoleMigration.ts",
+   "src/hooks/useSalesGoals.ts",
+   "src/hooks/useSalesHistory.ts",
+   "src/hooks/useSalesHistoryMacro.ts",
+   "src/hooks/useScheduledReports.ts",
+   "src/hooks/useScroll.ts",
+   "src/hooks/useScrollLockFix.ts",
+   "src/hooks/useSearch.ts",
+   "src/hooks/useSearchHistory.ts",
+   "src/hooks/useSecretsManager.ts",
+   "src/hooks/useSellerCarts.ts",
+   "src/hooks/useSellerDiscountLimits.ts",
+   "src/hooks/useSimilarKits.ts",
+   "src/hooks/useSimilarProducts.ts",
+   "src/hooks/useSimulation.ts",
+   "src/hooks/useSimulatorPreferences.ts",
+   "src/hooks/useSparklineSales.tsx",
+   "src/hooks/useSpeechRecognition.ts",
+   "src/hooks/useStepUpAuth.ts",
+   "src/hooks/useStockHistory.ts",
+   "src/hooks/useSupplierComparison.ts",
+   "src/hooks/useSupplierFiscalData.ts",
+   "src/hooks/useSupplierNames.ts",
+   "src/hooks/useSuppliers.ts",
+   "src/hooks/useSupplierSalesRanking.ts",
+   "src/hooks/useSupplierTrust.ts",
+   "src/hooks/useTechniquePricingOptions.ts",
+   "src/hooks/useTechniqueRecommendations.ts",
+   "src/hooks/useTecnicasUnificadas.ts",
+   "src/hooks/useTemplateSnapshot.ts",
+   "src/hooks/useTransactionalEmail.ts",
+   "src/hooks/useUndoStack.ts",
+   "src/hooks/useUnsavedChangesGuard.ts",
+   "src/hooks/useUrlState.ts",
+   "src/hooks/useVariantStock.ts",
+   "src/hooks/useVariantSupplierSources.ts",
+   "src/hooks/useVideoVariantLinks.ts",
+   "src/hooks/useVoiceAgent.ts",
+   "src/hooks/useVoiceCommandHistory.ts",
+   "src/hooks/useWorkspaceNotifications.tsx",
    "src/hooks/voice/useVoiceHistory.ts",
    "src/hooks/word-magic/useWordMagic.ts",
    "src/lib/auth/visibility-scope.ts",
@@ -19752,8 +20614,12 @@
    "src/pages/magazine/hooks/useMagazineBookmarks.ts",
    "src/pages/magazine/hooks/usePageZoom.ts",
    "src/pages/magazine/hooks/usePresentationMode.ts",
+   "src/pages/mockup-generator/MockupTechniqueHandlers.tsx",
    "src/pages/products/seller-carts/useSellerCartsPage.ts",
+   "src/pages/quote-view/useQuoteViewData.ts",
+   "src/pages/quotes-dashboard/useQuotesDashboard.ts",
    "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
+   "src/pages/seller-carts/useSellerCartsPage.ts",
    "src/stores/oracleVoiceBridge.ts",
    "src/stores/useRecentlyViewedStore.ts",
    "src/stores/useSearchStore.ts",

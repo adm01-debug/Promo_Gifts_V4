@@ -1,88 +1,88 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2433,
- "arestas": 9703,
+ "nos": 2747,
+ "arestas": 11089,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
-   "importado_por": 627
+   "importado_por": 657
   },
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 552
+   "importado_por": 618
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
-   "importado_por": 433
+   "importado_por": 479
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 340
+   "importado_por": 449
   },
   {
    "arquivo": "src/components/ui/card.tsx",
-   "importado_por": 301
+   "importado_por": 346
   },
   {
    "arquivo": "src/lib/logger.ts",
-   "importado_por": 284
+   "importado_por": 312
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
-   "importado_por": 266
+   "importado_por": 286
   },
   {
    "arquivo": "src/components/ui/input.tsx",
-   "importado_por": 228
+   "importado_por": 256
   },
   {
    "arquivo": "src/contexts/AuthContext.tsx",
-   "importado_por": 178
+   "importado_por": 236
   },
   {
    "arquivo": "src/components/ui/skeleton.tsx",
-   "importado_por": 163
+   "importado_por": 180
+  },
+  {
+   "arquivo": "src/components/ui/select.tsx",
+   "importado_por": 146
+  },
+  {
+   "arquivo": "src/components/ui/label.tsx",
+   "importado_por": 143
+  },
+  {
+   "arquivo": "src/components/ui/dialog.tsx",
+   "importado_por": 136
   },
   {
    "arquivo": "src/hooks/products/index.ts",
    "importado_por": 136
   },
   {
-   "arquivo": "src/components/ui/label.tsx",
-   "importado_por": 130
-  },
-  {
-   "arquivo": "src/components/ui/select.tsx",
-   "importado_por": 130
-  },
-  {
-   "arquivo": "src/components/ui/dialog.tsx",
-   "importado_por": 124
+   "arquivo": "src/components/seo/PageSEO.tsx",
+   "importado_por": 132
   },
   {
    "arquivo": "supabase/functions/_shared/cors.ts",
    "importado_por": 108
   },
   {
-   "arquivo": "src/components/seo/PageSEO.tsx",
-   "importado_por": 91
+   "arquivo": "src/lib/kit-builder/index.ts",
+   "importado_por": 95
+  },
+  {
+   "arquivo": "src/components/ui/scroll-area.tsx",
+   "importado_por": 93
   },
   {
    "arquivo": "src/lib/db/postgrest.ts",
    "importado_por": 91
   },
   {
-   "arquivo": "src/components/ui/scroll-area.tsx",
-   "importado_por": 84
-  },
-  {
-   "arquivo": "src/lib/kit-builder/index.ts",
-   "importado_por": 84
-  },
-  {
    "arquivo": "src/types/product-catalog.ts",
-   "importado_por": 80
+   "importado_por": 86
   },
   {
    "arquivo": "src/hooks/intelligence/index.ts",
@@ -93,48 +93,56 @@
    "importado_por": 70
   },
   {
+   "arquivo": "src/types/stock.ts",
+   "importado_por": 62
+  },
+  {
+   "arquivo": "src/components/ui/textarea.tsx",
+   "importado_por": 61
+  },
+  {
    "arquivo": "src/types/magazine.ts",
    "importado_por": 61
   },
   {
-   "arquivo": "src/types/stock.ts",
-   "importado_por": 61
+   "arquivo": "src/components/ui/switch.tsx",
+   "importado_por": 60
   },
   {
-   "arquivo": "src/components/ui/switch.tsx",
+   "arquivo": "src/lib/external-db/index.ts",
    "importado_por": 55
   },
   {
-   "arquivo": "src/components/ui/textarea.tsx",
+   "arquivo": "src/utils/image-utils.ts",
    "importado_por": 55
   },
   {
    "arquivo": "src/lib/security/sanitize-error.ts",
+   "importado_por": 54
+  },
+  {
+   "arquivo": "src/components/ui/table.tsx",
    "importado_por": 53
   },
   {
-   "arquivo": "src/utils/image-utils.ts",
-   "importado_por": 52
+   "arquivo": "src/integrations/supabase/types.ts",
+   "importado_por": 53
   },
   {
    "arquivo": "src/lib/supabase-untyped.ts",
-   "importado_por": 50
+   "importado_por": 53
+  },
+  {
+   "arquivo": "src/components/ui/popover.tsx",
+   "importado_por": 52
+  },
+  {
+   "arquivo": "src/components/ui/tabs.tsx",
+   "importado_por": 52
   },
   {
    "arquivo": "src/hooks/admin/index.ts",
    "importado_por": 48
-  },
-  {
-   "arquivo": "src/integrations/supabase/types.ts",
-   "importado_por": 48
-  },
-  {
-   "arquivo": "src/components/ui/popover.tsx",
-   "importado_por": 47
-  },
-  {
-   "arquivo": "src/components/ui/table.tsx",
-   "importado_por": 47
   },
   {
    "arquivo": "supabase/functions/_shared/request-id.ts",
@@ -145,28 +153,20 @@
    "importado_por": 45
   },
   {
-   "arquivo": "src/components/ui/tabs.tsx",
-   "importado_por": 42
+   "arquivo": "src/stores/useComparisonStore.ts",
+   "importado_por": 44
   },
   {
    "arquivo": "src/lib/format.ts",
-   "importado_por": 42
-  },
-  {
-   "arquivo": "supabase/functions/_shared/credentials.ts",
-   "importado_por": 42
+   "importado_por": 43
   },
   {
    "arquivo": "src/components/ui/ConfirmDialog.tsx",
-   "importado_por": 40
-  },
-  {
-   "arquivo": "src/hooks/ui/index.ts",
-   "importado_por": 39
+   "importado_por": 42
   }
  ],
  "ciclos": {
-  "total": 18,
+  "total": 20,
   "maiores": [
    {
     "tamanho": 54,
@@ -322,7 +322,10 @@
   "cloudflare-workers/og-meta-bot.js",
   "docs/promo-champions/receive-quote-sync.ts",
   "public/sw.js",
+  "recovery/RealtimeMessagesExample.tsx",
+  "src/components/BridgeStatusBanner.tsx",
   "src/components/LoadingScreen.tsx",
+  "src/components/admin/CatalogQualityDashboard.tsx",
   "src/components/admin/DiscountApprovalQueue.tsx",
   "src/components/admin/ProductPersonalizationManager.tsx",
   "src/components/admin/SellerDiscountLimitsPanel.tsx",
@@ -330,12 +333,19 @@
   "src/components/admin/connections/ErrorDetailsDialog.tsx",
   "src/components/admin/products/CategorySelect.tsx",
   "src/components/admin/products/kit-components/index.ts",
+  "src/components/admin/telemetry/BridgeAlertsCard.tsx",
+  "src/components/admin/telemetry/BridgesLiveCard.tsx",
+  "src/components/admin/telemetry/ColdStartRetriesPanel.tsx",
+  "src/components/admin/telemetry/EdgeFunctionLogsPanel.tsx",
+  "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
+  "src/components/admin/telemetry/PlatformFailureCards.tsx",
   "src/components/audit/index.ts",
   "src/components/auth/SupabaseConnectionDebug.tsx",
   "src/components/bi/ExportDossierButton.tsx",
   "src/components/cart/BundleSuggestionCard.tsx",
-  "src/components/cart/CartTabsRich.tsx",
+  "src/components/categories/CategoryTreeNavigator.tsx",
   "src/components/categories/index.ts",
+  "src/components/command/GlobalCommandBar.tsx",
   "src/components/common/BulkActionsBar.tsx",
   "src/components/common/GlassElements.tsx",
   "src/components/common/ImageWithFallback.tsx",
@@ -343,15 +353,19 @@
   "src/components/common/StatusTimeline.tsx",
   "src/components/common/UrgencyBadge.tsx",
   "src/components/compare/ComparisonShortcutsCheatsheet.tsx",
+  "src/components/compare/ComparisonWeightsPopover.tsx",
   "src/components/compare/FocusModeToggle.tsx",
   "src/components/compare/HistoricalPriceOverlay.tsx",
   "src/components/compare/ImageZoomCell.tsx",
   "src/components/compare/SortableColumnWrapper.tsx",
   "src/components/dashboard/index.ts",
   "src/components/dev/DevOnlyBridgeOverlay.tsx",
+  "src/components/dev/metrics/BridgeCallItem.tsx",
   "src/components/effects/index.ts",
   "src/components/expert/ExpertChatButton.tsx",
+  "src/components/favorites/ExportFavoritesButton.tsx",
   "src/components/favorites/QuickListPicker.tsx",
+  "src/components/favorites/ShareListDialog.tsx",
   "src/components/filters/FilterSection.tsx",
   "src/components/filters/index.ts",
   "src/components/goals/SalesGoalsCard.tsx",
@@ -372,19 +386,27 @@
   "src/components/kit-builder/SimilarKitsWidget.tsx",
   "src/components/layout/PageHeader.tsx",
   "src/components/layout/index.ts",
+  "src/components/loading/SkeletonShimmer.tsx",
   "src/components/loading/index.ts",
   "src/components/mobile/index.ts",
-  "src/components/mockup/TemplatePreview.tsx",
+  "src/components/mockup/GenerateButton.tsx",
+  "src/components/mockup/SaveTemplateDialog.tsx",
+  "src/components/mockup/TemplateSelector.tsx",
+  "src/components/navigation/DynamicBreadcrumbs.tsx",
   "src/components/novelties/NoveltiesSection.tsx",
   "src/components/onboarding/index.ts",
   "src/components/personalization/ThemeCustomization.tsx",
   "src/components/personalization/index.ts",
   "src/components/pricing/index.ts",
+  "src/components/pricing/simulator/PriceResultV51.tsx",
+  "src/components/pricing/simulator/QuantityAndResult.tsx",
+  "src/components/products/EnhancedProductCard.tsx",
   "src/components/products/KitVisualComposition.tsx",
-  "src/components/products/PriceFreshnessThresholdEditor.tsx",
   "src/components/products/PriceHistoryChart.tsx",
+  "src/components/products/ProductCardSkeleton.tsx",
   "src/components/products/ProductHoverPreview.tsx",
   "src/components/products/ProductIntelligence.tsx",
+  "src/components/products/ProductListItemSkeleton.tsx",
   "src/components/products/ProductSectionNav.tsx",
   "src/components/products/ProductVariations.tsx",
   "src/components/products/RecentlyViewedBar.tsx",
@@ -398,10 +420,12 @@
   "src/components/quotes/QuoteBuilderNavigation.tsx",
   "src/components/quotes/QuoteCard.tsx",
   "src/components/quotes/QuoteFilters.tsx",
+  "src/components/quotes/QuoteRowQuickActions.tsx",
   "src/components/quotes/QuoteSignaturePad.tsx",
-  "src/components/quotes/QuoteValidityBanner.tsx",
+  "src/components/quotes/QuoteTemplatePicker.tsx",
   "src/components/ramo-atividade/index.ts",
   "src/components/search/GlobalSearch.tsx",
+  "src/components/search/SmartSuggestions.tsx",
   "src/components/search/voice/VoiceOverlaySections.tsx",
   "src/components/security/SecuritySettings.tsx",
   "src/components/simulator/MockupPreview.tsx",
@@ -416,7 +440,7 @@
   "src/components/ui/StatusBadge.tsx",
   "src/components/ui/carousel.tsx",
   "src/components/ui/form.tsx",
-  "src/components/ui/sidebar.tsx",
+  "src/components/ui/toaster.tsx",
   "src/deploy-version.ts",
   "src/hooks/auth/useAuthHydrationMetrics.ts",
   "src/hooks/bi/index.ts",
@@ -424,19 +448,120 @@
   "src/hooks/common/useIntersectionObserver.ts",
   "src/hooks/dev/index.ts",
   "src/hooks/gravacao/index.ts",
+  "src/hooks/gravacao/useFornecedoresGravacao.ts",
+  "src/hooks/gravacao/useVariantesGravacao.ts",
   "src/hooks/products/novelty-core.ts",
   "src/hooks/quotes/useQuoteTemplates.ts",
   "src/hooks/simulator/index.ts",
   "src/hooks/stock/useSavedStockViews.ts",
   "src/hooks/stock/useStockNotes.ts",
+  "src/hooks/use-mobile.tsx",
+  "src/hooks/use2FA.ts",
+  "src/hooks/useAccessSecurity.ts",
+  "src/hooks/useAdminKitTemplates.ts",
+  "src/hooks/useAdvancedFilters.ts",
+  "src/hooks/useAiRouter.ts",
+  "src/hooks/useAiUsage.ts",
+  "src/hooks/useAllowedIPs.ts",
+  "src/hooks/useAppBootstrap.ts",
+  "src/hooks/useAuditLog.ts",
+  "src/hooks/useBulkSelection.ts",
+  "src/hooks/useCategories.ts",
+  "src/hooks/useCategoriesTree.ts",
+  "src/hooks/useCategoryIcons.ts",
+  "src/hooks/useCloudStatus.ts",
+  "src/hooks/useCollections.ts",
+  "src/hooks/useColors.ts",
+  "src/hooks/useCommemorativeDates.ts",
+  "src/hooks/useCommercialIntelligence.ts",
+  "src/hooks/useComparison.ts",
+  "src/hooks/useComparisonScore.ts",
+  "src/hooks/useConnectionTestDetails.ts",
+  "src/hooks/useConnectionTestHistory.ts",
+  "src/hooks/useConnectionsOverviewFilters.ts",
+  "src/hooks/useContextualSuggestions.ts",
+  "src/hooks/useCurrentSection.ts",
+  "src/hooks/useCustomKitsRealtime.ts",
+  "src/hooks/useCustomizationPrice.ts",
+  "src/hooks/useDevAccessAudit.ts",
+  "src/hooks/useDeviceDetection.ts",
+  "src/hooks/useExpertConversations.tsx",
+  "src/hooks/useExternalDbInspect.ts",
+  "src/hooks/useExternalSimulator.ts",
+  "src/hooks/useFavorites.ts",
+  "src/hooks/useFavoritesPageState.ts",
+  "src/hooks/useGenericFuzzySearch.ts",
+  "src/hooks/useGeoBlocking.ts",
+  "src/hooks/useGlobalShortcuts.ts",
+  "src/hooks/useGravacaoPriceV2.ts",
+  "src/hooks/useInfiniteScroll.ts",
+  "src/hooks/useKitCollaboration.ts",
+  "src/hooks/useKitIdentitySuggestion.ts",
+  "src/hooks/useKitStockForecast.ts",
+  "src/hooks/useKitStockValidation.ts",
+  "src/hooks/useKitVariants.ts",
+  "src/hooks/useKitWizardShortcuts.ts",
+  "src/hooks/useLoginAttempts.ts",
+  "src/hooks/useLoginRateLimit.ts",
+  "src/hooks/useMarketIntelligenceMacro.ts",
+  "src/hooks/useMaterialFilter.ts",
+  "src/hooks/useNotifications.ts",
+  "src/hooks/useNoveltiesSelectionMode.ts",
+  "src/hooks/useOnboarding.ts",
+  "src/hooks/usePasswordBreachCheck.tsx",
+  "src/hooks/usePasswordResetRequests.ts",
+  "src/hooks/usePrintAreas.ts",
+  "src/hooks/useProductBounds.ts",
+  "src/hooks/useProductCustomizationOptions.ts",
+  "src/hooks/useProductImages.ts",
+  "src/hooks/useProductRecommendations.ts",
+  "src/hooks/useProductSeoAI.ts",
+  "src/hooks/useProductSupplierSources.ts",
+  "src/hooks/useProductsByColor.ts",
+  "src/hooks/useProdutoPersonalizacao.ts",
+  "src/hooks/useProdutoRamoAtividade.ts",
+  "src/hooks/useQuoteHistory.ts",
+  "src/hooks/useQuoteVersions.ts",
+  "src/hooks/useRBAC.tsx",
+  "src/hooks/useRamoAtividadeFilter.ts",
+  "src/hooks/useRecentProducts.ts",
+  "src/hooks/useRecentlyViewed.ts",
+  "src/hooks/useReducedMotion.ts",
+  "src/hooks/useReplenishmentsSelectionMode.ts",
+  "src/hooks/useRetestCooldownSetting.ts",
+  "src/hooks/useRoleMigration.ts",
+  "src/hooks/useSalesGoals.ts",
+  "src/hooks/useSalesHistoryMacro.ts",
+  "src/hooks/useScheduledReports.ts",
+  "src/hooks/useScroll.ts",
+  "src/hooks/useScrollLockFix.ts",
+  "src/hooks/useSecretsManager.ts",
+  "src/hooks/useSimilarKits.ts",
+  "src/hooks/useSimulation.ts",
+  "src/hooks/useSparklineSales.tsx",
+  "src/hooks/useSpeechRecognition.ts",
+  "src/hooks/useStepUpAuth.ts",
+  "src/hooks/useSupplierComparison.ts",
+  "src/hooks/useSupplierFiscalData.ts",
+  "src/hooks/useSupplierNames.ts",
+  "src/hooks/useSuppliers.ts",
+  "src/hooks/useTechniquePricing.ts",
+  "src/hooks/useTechniqueRecommendations.ts",
+  "src/hooks/useTecnicasUnificadas.ts",
+  "src/hooks/useTransactionalEmail.ts",
+  "src/hooks/useVariantStock.ts",
+  "src/hooks/useVariantSupplierSources.ts",
+  "src/hooks/useVideoVariantLinks.ts",
+  "src/hooks/useVoiceAgent.ts",
+  "src/hooks/useVoiceCommandHistory.ts",
   "src/hooks/voice/index.ts",
   "src/integrations/lovable/index.ts",
   "src/integrations/supabase/rpc-overrides.ts",
-  "src/lib/auth/apply-seller-scope.ts",
   "src/lib/auth/safeMfaCall.ts",
   "src/lib/auth/token-audit.ts",
   "src/lib/design-policy.ts",
   "src/lib/external-db/rpc-native.ts",
+  "src/lib/kit-og-image.ts",
   "src/lib/navigation/filter-dev-only-items.ts",
   "src/lib/payments/order-payment-simulator.ts",
   "src/lib/pdf/whitelabel-comparison.ts",
@@ -444,10 +569,10 @@
   "src/lib/supabase/rest-client.ts",
   "src/lib/supabase/rls-validator.ts",
   "src/lib/system/dev-infra-messages.ts",
-  "src/lib/telemetry/bridgeAlertThresholds.ts",
   "src/lib/telemetry/longTaskWatchdog.ts",
   "src/lib/theme-presets-css-vars-patch.ts",
   "src/services/quoteItemsReorder.ts",
+  "src/utils/kitPdfGenerator.ts",
   "src/utils/security-audit.ts",
   "supabase/functions/ai-recommendations/kill_switch_contract_test.ts",
   "supabase/functions/bitrix-sync/handler_characterization_test.ts",
@@ -473,22 +598,27 @@
   {
    "modulo": "lib",
    "depende_de": 20,
-   "importado_por": 103
-  },
-  {
-   "modulo": "contexts",
-   "depende_de": 17,
-   "importado_por": 58
+   "importado_por": 109
   },
   {
    "modulo": "components/ui",
    "depende_de": 7,
-   "importado_por": 67
+   "importado_por": 73
+  },
+  {
+   "modulo": "contexts",
+   "depende_de": 17,
+   "importado_por": 61
   },
   {
    "modulo": "integrations/supabase",
    "depende_de": 3,
-   "importado_por": 69
+   "importado_por": 70
+  },
+  {
+   "modulo": "pages",
+   "depende_de": 69,
+   "importado_por": 2
   },
   {
    "modulo": "hooks/products",
@@ -496,24 +626,29 @@
    "importado_por": 37
   },
   {
-   "modulo": "types",
-   "depende_de": 4,
-   "importado_por": 50
-  },
-  {
-   "modulo": "components/products",
-   "depende_de": 31,
+   "modulo": "hooks",
+   "depende_de": 42,
    "importado_por": 17
   },
   {
+   "modulo": "types",
+   "depende_de": 4,
+   "importado_por": 54
+  },
+  {
    "modulo": "utils",
-   "depende_de": 10,
-   "importado_por": 37
+   "depende_de": 12,
+   "importado_por": 43
+  },
+  {
+   "modulo": "components/products",
+   "depende_de": 32,
+   "importado_por": 19
   },
   {
    "modulo": "hooks/intelligence",
    "depende_de": 19,
-   "importado_por": 25
+   "importado_por": 26
   },
   {
    "modulo": "pages/products",
@@ -521,13 +656,13 @@
    "importado_por": 5
   },
   {
-   "modulo": "components/layout",
-   "depende_de": 33,
-   "importado_por": 6
-  },
-  {
    "modulo": "components/admin",
    "depende_de": 31,
+   "importado_por": 9
+  },
+  {
+   "modulo": "components/layout",
+   "depende_de": 33,
    "importado_por": 7
   },
   {
@@ -541,6 +676,11 @@
    "importado_por": 26
   },
   {
+   "modulo": "lib/security",
+   "depende_de": 5,
+   "importado_por": 29
+  },
+  {
    "modulo": "pages/admin",
    "depende_de": 31,
    "importado_por": 3
@@ -551,24 +691,9 @@
    "importado_por": 30
   },
   {
-   "modulo": "lib/security",
-   "depende_de": 5,
-   "importado_por": 28
-  },
-  {
    "modulo": "components/common",
    "depende_de": 12,
-   "importado_por": 17
-  },
-  {
-   "modulo": "lib/telemetry",
-   "depende_de": 2,
-   "importado_por": 27
-  },
-  {
-   "modulo": "components/quotes",
-   "depende_de": 22,
-   "importado_por": 5
+   "importado_por": 19
   }
  ],
  "arestas_em": "docs/contexto/codigo/grafo-arestas.json"

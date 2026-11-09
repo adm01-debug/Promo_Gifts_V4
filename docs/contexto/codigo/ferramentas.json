@@ -3,14 +3,14 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4321)",
-   "SQL (3239)",
-   "Markdown (948)",
+   "TypeScript (4709)",
+   "SQL (3335)",
+   "Markdown (1009)",
    "JavaScript (310)",
-   "YAML (107)",
-   "JSON (94)",
-   "Shell (19)",
-   "CSS (13)"
+   "JSON (118)",
+   "YAML (108)",
+   "Shell (25)",
+   "HTML (20)"
   ],
   "linguagem_principal": "TypeScript",
   "framework": "React",
@@ -728,6 +728,76 @@
    ],
    "actions": [
     "actions/checkout"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/ci.yml",
+   "nome": "CI",
+   "gatilhos": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "smoke",
+    "quality",
+    "coverage",
+    "integration-tests",
+    "critical-e2e",
+    "ref-warning-suite",
+    "hooks-tests",
+    "price-freshness-tests",
+    "cloud-status-tests",
+    "edge-functions-typecheck",
+    "theme-validation"
+   ],
+   "permissoes": [],
+   "scripts_usados": [
+    "scripts/build-cors-snapshot.mjs",
+    "scripts/check-aschild-nesting.mjs",
+    "scripts/check-edge-authorization.mjs",
+    "scripts/check-edge-cors-headers.mjs",
+    "scripts/check-edge-request-id-propagation.mjs",
+    "scripts/check-edge-structured-logging.mjs",
+    "scripts/check-eslint-baseline.mjs",
+    "scripts/check-no-db-push.mjs",
+    "scripts/check-no-inline-cors.mjs",
+    "scripts/check-price-freshness-coverage.mjs",
+    "scripts/check-route-error-element.mjs",
+    "scripts/check-route-ref-usage.mjs",
+    "scripts/check-security-definer-acl.mjs",
+    "scripts/check-security-definer-hardening.mjs",
+    "scripts/check-seller-scope.mjs",
+    "scripts/smoke-tests.mjs",
+    "scripts/typecheck-edge-functions.mjs"
+   ],
+   "npm_scripts": [
+    "check:critical-coverage",
+    "test:cloud-status-coverage",
+    "test:e2e:critical",
+    "test:edge:integration",
+    "test:fuzz",
+    "test:quality",
+    "test:theme-validation",
+    "typecheck"
+   ],
+   "secrets": [
+    "SMOKE_HEALTH_FN_URL",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "TEST_ADMIN_PASSWORD",
+    "TEST_SELLER_PASSWORD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node",
+    "actions/upload-artifact",
+    "denoland/setup-deno"
    ]
   },
   {
@@ -3559,6 +3629,11 @@
    "linhas": 842
   },
   {
+   "arquivo": "RECOVERY_PLAN.md",
+   "titulo": "🛠️ RECOVERY PLAN — Restauração de 65 tabelas faltantes",
+   "linhas": 235
+  },
+  {
    "arquivo": "RELATORIO_CI.md",
    "titulo": "RELATORIO_CI.md — Baseline × Final CI",
    "linhas": 96
@@ -4658,11 +4733,14 @@
    "PGUSER",
    "RELEASE_PLEASE_TOKEN",
    "SENTINEL_SLACK_WEBHOOK",
+   "SMOKE_HEALTH_FN_URL",
    "SUPABASE_ACCESS_TOKEN",
    "SUPABASE_ANON_KEY",
    "SUPABASE_DB_PASSWORD",
    "SUPABASE_SERVICE_ROLE_KEY",
    "SUPABASE_URL",
+   "TEST_ADMIN_PASSWORD",
+   "TEST_SELLER_PASSWORD",
    "V4_CALLBACK_URL",
    "VERCEL_ORG_ID",
    "VERCEL_PROJECT_ID",
@@ -4724,7 +4802,7 @@
    },
    {
     "host": "wa.me",
-    "arquivos": 16
+    "arquivos": 21
    },
    {
     "host": "www.promogifts.com.br",
@@ -4751,6 +4829,10 @@
     "arquivos": 8
    },
    {
+    "host": "api.ipify.org",
+    "arquivos": 6
+   },
+   {
     "host": "cdn.test",
     "arquivos": 6
    },
@@ -4775,6 +4857,10 @@
     "arquivos": 4
    },
    {
+    "host": "criar-together-now.lovable.app",
+    "arquivos": 4
+   },
+   {
     "host": "example.supabase.co",
     "arquivos": 4
    },
@@ -4792,10 +4878,6 @@
    },
    {
     "host": "abc.supabase.co",
-    "arquivos": 3
-   },
-   {
-    "host": "api.ipify.org",
     "arquivos": 3
    },
    {
@@ -4847,6 +4929,10 @@
     "arquivos": 2
    },
    {
+    "host": "api.pwnedpasswords.com",
+    "arquivos": 2
+   },
+   {
     "host": "app.lovable.app",
     "arquivos": 2
    },
@@ -4860,10 +4946,6 @@
    },
    {
     "host": "challenges.cloudflare.com",
-    "arquivos": 2
-   },
-   {
-    "host": "criar-together-now.lovable.app",
     "arquivos": 2
    },
    {
@@ -4888,6 +4970,10 @@
    },
    {
     "host": "ip-api.com",
+    "arquivos": 2
+   },
+   {
+    "host": "ipapi.co",
     "arquivos": 2
    },
    {
@@ -4960,10 +5046,6 @@
    },
    {
     "host": "api.promobrindes.com.br",
-    "arquivos": 1
-   },
-   {
-    "host": "api.pwnedpasswords.com",
     "arquivos": 1
    },
    {
@@ -5104,10 +5186,6 @@
    },
    {
     "host": "invalid-url.com",
-    "arquivos": 1
-   },
-   {
-    "host": "ipapi.co",
     "arquivos": 1
    },
    {
@@ -5364,9 +5442,13 @@
   "realtime": [
    "admin-conexoes-credentials-changes:${crypto.randomUUID()}",
    "dar-seller-${userId}",
+   "kit-comments-${kitId}",
    "kit-comments-${kitId}-${crypto.randomUUID()}",
+   "public:messages",
+   "security-notifications",
    "security-notifications:${crypto.randomUUID()}",
    "trends-realtime:${crypto.randomUUID()}",
+   "user:${user.id}:custom-kits",
    "user:${user.id}:custom-kits:${crypto.randomUUID()}",
    "user_notification_preferences_realtime:${crypto.randomUUID()}",
    "workspace_notifications_realtime:${crypto.randomUUID()}"
@@ -5376,51 +5458,55 @@
   "papeis_no_codigo": [
    {
     "papel": "status",
-    "ocorrencias": 75
+    "ocorrencias": 78
    },
    {
     "papel": "alert",
-    "ocorrencias": 51
+    "ocorrencias": 53
    },
    {
     "papel": "dev",
-    "ocorrencias": 40
+    "ocorrencias": 41
    },
    {
     "papel": "button",
-    "ocorrencias": 37
+    "ocorrencias": 39
    },
    {
     "papel": "user",
-    "ocorrencias": 32
+    "ocorrencias": 33
+   },
+   {
+    "papel": "admin",
+    "ocorrencias": 31
    },
    {
     "papel": "group",
     "ocorrencias": 31
    },
    {
-    "papel": "admin",
-    "ocorrencias": 29
-   },
-   {
     "papel": "listitem",
     "ocorrencias": 26
    },
    {
+    "papel": "agente",
+    "ocorrencias": 25
+   },
+   {
     "papel": "vendedor",
-    "ocorrencias": 23
+    "ocorrencias": 25
    },
    {
     "papel": "supervisor",
+    "ocorrencias": 23
+   },
+   {
+    "papel": "dialog",
     "ocorrencias": 22
    },
    {
     "papel": "radio",
     "ocorrencias": 21
-   },
-   {
-    "papel": "dialog",
-    "ocorrencias": 20
    },
    {
     "papel": "radiogroup",
@@ -5437,10 +5523,6 @@
    {
     "papel": "tooltip",
     "ocorrencias": 17
-   },
-   {
-    "papel": "agente",
-    "ocorrencias": 15
    },
    {
     "papel": "combobox",
@@ -5491,6 +5573,10 @@
     "ocorrencias": 8
    },
    {
+    "papel": "main",
+    "ocorrencias": 7
+   },
+   {
     "papel": "checkbox",
     "ocorrencias": 6
    },
@@ -5499,7 +5585,11 @@
     "ocorrencias": 6
    },
    {
-    "papel": "main",
+    "papel": "manager",
+    "ocorrencias": 6
+   },
+   {
+    "papel": "menu",
     "ocorrencias": 6
    },
    {
@@ -5508,10 +5598,6 @@
    },
    {
     "papel": "document",
-    "ocorrencias": 5
-   },
-   {
-    "papel": "menu",
     "ocorrencias": 5
    },
    {
@@ -5527,11 +5613,15 @@
     "ocorrencias": 4
    },
    {
-    "papel": "manager",
-    "ocorrencias": 4
+    "papel": "alertdialog",
+    "ocorrencias": 3
    },
    {
     "papel": "link",
+    "ocorrencias": 3
+   },
+   {
+    "papel": "presentation",
     "ocorrencias": 3
    },
    {
@@ -5543,11 +5633,11 @@
     "ocorrencias": 3
    },
    {
-    "papel": "agent",
+    "papel": "OFFSET",
     "ocorrencias": 2
    },
    {
-    "papel": "alertdialog",
+    "papel": "agent",
     "ocorrencias": 2
    },
    {
@@ -5575,20 +5665,12 @@
     "ocorrencias": 2
    },
    {
-    "papel": "presentation",
-    "ocorrencias": 2
-   },
-   {
     "papel": "publico",
     "ocorrencias": 2
    },
    {
     "papel": "table",
     "ocorrencias": 2
-   },
-   {
-    "papel": "OFFSET",
-    "ocorrencias": 1
    },
    {
     "papel": "Paperclip",
