@@ -45484,6 +45484,19 @@
    "sem_rls": false,
    "nao_usada": true
   },
+  "supplier_stricker": {
+   "colunas": {},
+   "rls": false,
+   "policies": [],
+   "indices": [],
+   "fks": [],
+   "criada_em": null,
+   "usada_no_front": 0,
+   "usada_em_edges": [],
+   "triggers": [],
+   "sem_rls": false,
+   "nao_usada": true
+  },
   "supplier_stricker.canceled_products": {
    "colunas": {
     "created_at": {

@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(migrations): idempotência em RLS deny-all e partições 2027 (#3257)",
    "fix(ci): atualiza baseline file-size NoveltyProductGrid 863→865 (#3354)",
    "fix(kit-builder): remove bloco FT-119 incompleto e corrige type imports (#3350)",
    "fix(ci): adiciona detector E12 pg_indexes out-of-band no Gate 2 (#3290)",
-   "fix(ci): corrige Gate E42 e2e-personalization com auth-setup step condicional (#3274)",
-   "fix(ci): atualiza baseline Gate 1.3 — remove referência já resolvida de 20260511235970 (#3352)"
+   "fix(ci): corrige Gate E42 e2e-personalization com auth-setup step condicional (#3274)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `634b93ef05b9f94addc775060c66393e979bc174` (2026-11-09T12:42:27-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6b859b0fbfa95e34493900cf0137402e95e46823` (2026-11-09T12:46:32-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -45,7 +45,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | componentes | 1123 |
 | hooks | 416 |
 | edge_functions | 111 |
-| tabelas | 544 |
+| tabelas | 545 |
 | migrations | 3047 |
 | cron_jobs | 120 |
 | testes | 2202 |
@@ -586,7 +586,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38553 nós · 67008 arestas · 2172 comunidades · grafo do commit `634b93ef`
+- 38553 nós · 67008 arestas · 2172 comunidades · grafo do commit `6b859b0f`
 - comunidades maiores: ref_lib (745), ref_components (613), ref_integrations (536), ref_hooks (329), gotoAndSettle (321), react-router-dom (309), ref_node_fs (299), scripts (289), ref_types (277), @playwright/test (264), getCorsHeaders (254), ProductCard.tsx (248)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-09 `6b859b0` fix(migrations): idempotência em RLS deny-all e partições 2027 (#3257)
 - 2026-11-09 `634b93e` fix(ci): atualiza baseline file-size NoveltyProductGrid 863→865 (#3354)
 - 2026-11-09 `944ff2d` fix(kit-builder): remove bloco FT-119 incompleto e corrige type imports (#3350)
 - 2026-11-09 `6ba67b4` fix(ci): adiciona detector E12 pg_indexes out-of-band no Gate 2 (#3290)
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-09 `00c8fa2` fix(tests): corrige TypeError consumeUnloadBackup e atualiza baseline de tamanho
 - 2026-11-09 `78729fc` chore(ci): atualiza file-size baseline — Kit Builder +21/+13/+10 linhas
 - 2026-11-09 `29838f1` feat(kit-builder): confirmar substituição ao aplicar composição da IA (FT-134)
-- 2026-11-09 `0387ecb` chore(deps): bump production-minor-patch group com 12 updates
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
