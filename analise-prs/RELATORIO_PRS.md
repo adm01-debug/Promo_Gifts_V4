@@ -1,9 +1,19 @@
-# RELATORIO_PRS.md — META CUMPRIDA
+# RELATORIO_PRS.md — META CUMPRIDA (EXIT 80 TURNOS)
 
 **Sessão:** 2026-11-09 (claude_04/optimistic-lovelace-n960f7)
 **Branch de trabalho:** `claude_04/optimistic-lovelace-n960f7`
-**Main SHA início:** `56cfd7f8279b4d3f55d4ffba639f387aa1b76d34`
-**Main SHA fim:** `193a750676b00a8b7d94a73d74012ef076897872`
+**Turnos no transcript:** 2047 (evidência: `grep -c '"role":"user"' .jsonl` → `2047`; limite exit = 80)
+
+---
+
+## Baseline de main — início / fim
+
+| | SHA | Gate Final | Gate 1 | Gate 3 |
+|---|-----|-----------|--------|--------|
+| **Início sessão** | `56cfd7f8279b4d3f55d4ffba639f387aa1b76d34` | ❌ failure (check_run 129002395110) | ❌ failure (P-16) | ❌ failure |
+| **Fim sessão** | `193a750676b00a8b7d94a73d74012ef076897872` | ❌ failure (check_run 129023475996) | ❌ failure (check_run 129021346363, P-16) | ❌ failure (check_run 129021381329) |
+
+**Main estava vermelho antes desta sessão (P-16) e permanece vermelho.** Esta sessão não commitou em main e não agravou o estado.
 
 ---
 
@@ -35,6 +45,42 @@
 **Main está vermelho pré-existente** — falha em Gate Final e Gate 1 desde antes desta sessão por P-16. Esta sessão não introduziu nenhum commit em main e não agravou o estado.
 
 Causa (P-16): `check-supabase-reference-catalog.mjs` falha porque dois hooks em main (`useKitFitsValidation.ts:42` → RPC `fn_check_item_fits`; `useKitMinQuantityValidation.ts:31` → relation `vw_products_min_quantity`) referenciam objetos de banco ainda não criados. Fix requer human merge das PRs #3265 + #3264 (DDL produção).
+
+---
+
+## Lista única AGUARDANDO HUMANO (27 PRs)
+
+| # | Branch | Motivo bloqueio |
+|---|--------|-----------------|
+| 3127 | codex/fix-e2e-ci-pressure-261107-0238 | toca `.github/workflows/` |
+| 3129 | codex/infra-e2e-ci-pressure-261107-1040 | toca `.github/workflows/` |
+| 3137 | codex/fix-e2e-relevance-261107-1148 | toca `.github/workflows/` |
+| 3179 | claude/fix-ci-workflows-261107-2300 | toca `.github/workflows/` + P09 estrutural |
+| 3203 | claude/inspiring-knuth-swo71j | 132 arquivos gerados, CONFLICTING |
+| 3210 | release-please--branches--main--components--gifts-store | decisão de release |
+| 3214 | claude_05/youthful-ride-vcdchy | toca `.github/workflows/` + cron DDL |
+| 3228 | claude/chore-e2e-swatch-dispatch-261108-1800 | toca `.github/workflows/` |
+| 3243 | claude/fix-categories-level-drift-261108-1952 | migration DDL produção |
+| 3247 | claude/chore-workflows-snapshot-261108-2230 | toca `.github/workflows/` |
+| 3250 | claude/fix-stock-daily-index-261108-2230 | migration DDL produção (índice) |
+| 3251 | claude/fix-remove-broken-cron-image-dimensions-backfill-20261108-2300 | cron DDL + `.github/workflows/` |
+| 3255 | claude/fix-drop-perf002-incident-ddl-20261108-2231 | DDL/migration produção |
+| 3256 | claude/fix-art-files-rls-quotes-only-2611082355 | migration RLS produção |
+| 3257 | claude/fix-idempotencia-migrations-pendentes-261108-2236 | migration produção |
+| 3261 | claude/chore-reconciliacao-drift-cron001-261108-2238 | migration/cron DDL |
+| 3263 | claude/feat-ft005-cron-scheduled-reports-20261108-2310 | feat + cron DDL produção |
+| **3264** | claude/feat-ft079-view-min-quantity-20261108-2310 | **migration (view) DDL produção — DESBLOQUEIA P-16** |
+| **3265** | claude/feat-ft088-fn-check-item-fits-20261108-2310 | **migration (function) DDL produção — DESBLOQUEIA P-16** |
+| 3273 | claude/chore-categories-indexes-espelho-261108-1200 | migration/índices produção |
+| 3274 | claude/fix-gate-e42-261108-2325 | toca `.github/workflows/` |
+| 3275 | claude/fix-gate13-migration-refs-261108-1200 | toca `.github/workflows/` |
+| 3277 | claude/fix-ft-ux-batch6-261101-2230 | 456 arquivos DIRTY: `.github/workflows/` (35) + `supabase/migrations/` (6) |
+| 3278 | claude/fix-sentinel-sha-d50ae76-261108-2330 | sentinel allowlist — aprovação de segurança |
+| 3279 | claude/fix-cron002-collision-stagger-261108-2300 | migration/cron DDL produção |
+| 3284 | claude/chore-drift-mirror-cron001-reopen-261108-2340 | migration/drift DDL |
+| 3290 | claude/fix-e12-pg-indexes-check-261108-2352 | toca `.github/workflows/` |
+
+**Regra governance aplicada a todas:** `.github/workflows/` e DDL/migration em produção são AGUARDANDO_HUMANO por AGENTS.md § Git item 7.
 
 ---
 
@@ -96,6 +142,9 @@ Resultado: `✅ Nenhuma NOVA referência quebrada. (489 entrada(s) legadas na ba
 ### 3. Fix de bugs adicionais
 - `useKitAutoSave.ts`: en dashes em JSDoc causavam TS1010 — trocados por hífens ASCII
 - `KitBuilderPage.tsx` (PR #3321): bloco `checkedBackupRef` duplicado (TS2451 introduzido por #3305) — removido
+
+### 4. Fix Gate 3 — auth.ts route handler (PR #3321, commit 2b88f4a249)
+`e2e/helpers/auth.ts:90`: `route.continue()` lançava `"Route is already handled!"` quando outro listener já tratava a rota antes do catch. Envolvido em try/catch adicional. Causa da falha lida do log do job 129058312387 linha: `Error: route.continue: Route is already handled! at helpers/auth.ts:90`.
 
 ---
 
