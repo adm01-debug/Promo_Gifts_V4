@@ -10,9 +10,7 @@ export interface MinQuantityViolation {
 }
 
 export type KitMinQuantityValidationResult =
-  | { status: 'ok' }
-  | { status: 'violations'; violations: MinQuantityViolation[] }
-  | { status: 'unavailable' };
+  { status: 'ok' } | { status: 'unavailable' } | { status: 'violations'; violations: MinQuantityViolation[] };
 
 /**
  * Checks every kit item against vw_products_min_quantity.
