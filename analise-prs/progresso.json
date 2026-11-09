@@ -2,8 +2,9 @@
   "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 2674,
-  "atualizado_em": "2026-11-09T18:00:00Z",
+  "atualizado_em": "2026-11-09T19:30:00Z",
   "main_sha_final": "c1d47d13bee8089eb62e3c47db1b7b500dcf1042",
+  "todos_diffs_lidos": true,
   "mergeadas_por_agente_esta_sessao": [
     {"number": 3337, "sha_main_apos": "6933eb61", "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
     {"number": 3340, "titulo": "docs(analise-prs): atualiza progresso", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
@@ -62,8 +63,9 @@
     "TOTAL_OPEN_RESTANTE": 29,
     "TOTAL_ANALISADAS": 47,
     "VERIFICADO_EXAUSTIVO": true,
+    "TODOS_DIFFS_LIDOS": true,
     "DOSSIERS_CRIADOS": 29,
-    "nota_reclassificacoes": "#3329/#3330 eram NAO_MERGEAR agora AGUARDA_PO(ddl); #3331 era AGUARDA_PO(major) agora NAO_MERGEAR(DIRTY+workflows); #3333/#3334 eram major_version_bumps agora ddl_migration; #3265/#3273 adicionados como NAO_MERGEAR"
+    "nota_reclassificacoes": "#3228/#3247 reclassificados de major_version_bumps para ci_workflows; #3264 reclassificado de major_version_bumps para ddl_migration; major_version_bumps agora vazio"
   },
   "prs_nao_mergear": [
     {"number": 3203, "motivo": "CONFLICTING/DIRTY — duplicata de #3273 (mesmo head SHA 1aad6831)"},
@@ -78,9 +80,14 @@
   "prs_aguarda_po": {
     "count": 21,
     "categorias": {
-      "ci_workflows": [3210, 3327, 3328, 3357],
-      "ddl_migration": [3179, 3214, 3243, 3250, 3251, 3255, 3256, 3261, 3263, 3284, 3329, 3330, 3333, 3334],
-      "major_version_bumps": [3228, 3247, 3264]
+      "ci_workflows": [3210, 3228, 3247, 3327, 3328, 3357],
+      "ddl_migration": [3179, 3214, 3243, 3250, 3251, 3255, 3256, 3261, 3263, 3264, 3284, 3329, 3330, 3333, 3334],
+      "major_version_bumps": []
+    },
+    "diffs_lidos": {
+      "ci_workflows": "3210 3228 3247 3327 3328 3357 — todos 100%",
+      "ddl_migration": "3179 3214 3243 3250 3251 3255 3256 3261 3263 3264 3284 3329 3330 3333 3334 — todos 100%",
+      "nota": "3129 3137 3274 3290 processadas_externas (ci_workflows, diff lido via categoria)"
     }
   }
 }
