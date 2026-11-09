@@ -1,8 +1,8 @@
 # PENDENCIAS.md — Workflows com falha não corrigível nesta sessão
 
 > Gerado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Atualizado em: 2026-11-09T00:00 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08, P-09 e causas exatas P-05/P-06; P-10 adicionado na validação de PR #3243; P-06 CORRIGIDO via PR #3245 merged d56979f6; P-11 e P-12 adicionados; P-13 adicionado — run pós-merge cancelado por runner saturation)
+> Atualizado em: 2026-11-09T00:30 · Sessão: https://claude.ai/code/session_01SpCUng4CM8x7uJmxVjTD8k
+> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08–P-13; P-06 CORRIGIDO via PR #3245 merged d56979f6; P-14 adicionado — 220 índices out-of-band + fix E12 em PR #3290)
 
 ---
 
@@ -227,6 +227,31 @@
 
 ---
 
+### P-14 · Drift sistêmico de índices out-of-band (220 índices explícitos sem migration)
+- **Descoberto em:** Sessão https://claude.ai/code/session_01SpCUng4CM8x7uJmxVjTD8k · 2026-11-08T23:36Z · contagem via `pg_indexes` no conector "SUPABASE - GESTÃO DE PRODUTOS" (banco `doufsxqlfjyuvxuezpln`, **397 tabelas em `public`**, confirmado por `select count(*) from quotes` = 7 linhas)
+- **Causa raiz sistêmica:** O detector E12 (`.github/workflows/db-schema-drift-check.yml`) compara o ledger de versões de migration, não os objetos DDL reais — índices criados sem migration não aparecem no ledger e nunca dispararam alerta. Resultado: 220 índices explícitos acumulados em produção sem migration correspondente ao longo de meses.
+- **Números (banco correto — 397 tabelas):**
+  - Total de índices em `public`: **1.199**
+  - Implícitos de PK/UNIQUE (`_pkey`/`_key`) auto-criados por constraint: **449**
+  - Com referência em algum arquivo de migration: **530**
+  - **Out-of-band explícitos (drift real): 220** — esses precisam de migration espelho
+- **Exemplos de índices out-of-band (primeiros 15):**
+  `idx_ai_queue_locked_at`, `idx_ai_models_provider`, `idx_ai_usage_logs_status_errors`,
+  `idx_aiq_variant_id`, `idx_asia_img_queue_product`, `idx_asia_img_queue_status`,
+  `idx_asia_upload_mapping_request_id`, `idx_asia_upload_mapping_status`,
+  `idx_audit_log_ts`, `idx_bot_detection_log_created_at`,
+  `categories_org_slug_unique`, `idx_cat_parent_nav`,
+  `idx_categories_level`, `idx_categories_level_display_order`, `idx_categories_org_id`
+- **Triagem completa:** `/mnt/project-files/p11-indice-triage.md` — 557 índices explícitos classificados em A (urgente), B (normal), C (só ledger)
+- **Impacto:** shadow DB do Supabase Preview fica sem esses índices → queries mais lentas em Preview; qualquer restore a partir de migrations perde os 220 índices de performance; produção não afetada funcionalmente.
+- **Ação necessária:**
+  1. (Dev/Auto) Corrigir detector E12 — PR [#3290](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3290) aberta (draft, **regra #8**, aguarda Juca05)
+  2. (Dev/Auto) Gerar migrations espelho para os 220 índices explícitos em lote (`CREATE INDEX IF NOT EXISTS`) — uma PR por grupo de tabelas, usando triagem em `p11-indice-triage.md`
+  3. (PO) Dispatchar `db-apply-migration.yml` para cada migration espelho após merge — **REGRA #8**
+- **Risco:** Médio — sem migrations espelho, qualquer restore a partir de migrations perde os 220 índices de performance
+
+---
+
 ## Resumo por categoria de bloqueio
 
 | Código | Descrição | Responsável |
@@ -259,3 +284,4 @@
 | P-11 (copilot code review) | COPILOT-LICENSE — GitHub Copilot Business | Baixa — PO ativa licença ou desativa workflow |
 | P-12 (magazine typed queries) | NO-DISPATCH — sem trigger manual + ratchet falha | Baixa — Dev corrige queries Magazine |
 | P-13 (e2e colorswatch run pos-merge) | RUNNER-SAT — run cancelado; fix em main (`d56979f6`) | Baixa — re-disparar quando runners disponíveis |
+| P-14 (drift sistêmico out-of-band) | DRIFT-INDEX — 220 índices explícitos sem migration; E12 silencioso é causa raiz; PR #3290 fix do detector (aguarda PO) | Média |
