@@ -2,14 +2,14 @@
   "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 3355,
-  "atualizado_em": "2026-11-09T22:00:00Z",
+  "atualizado_em": "2026-11-09T22:30:00Z",
   "main_sha_final": "293b9287478fba7fa8683b2e15248ed998880c3f",
   "mergeadas_por_agente_esta_sessao": [
     {"number": 3337, "sha_main_apos": "6933eb61", "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
     {"number": 3340, "titulo": "docs(analise-prs): atualiza progresso", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
     {"number": 3343, "sha_main_apos": "78729fc11038", "titulo": "chore(ci): atualiza file-size baseline Kit Builder", "tipo": "chore/ci", "gate_final": "SUCCESS"},
     {"number": 3257, "sha_main_apos": "6b859b0fbfa95e34493900cf0137402e95e46823", "titulo": "fix(migrations): idempotencia em RLS deny-all e particoes 2027", "tipo": "fix/migrations-idempotencia", "gate_final": "SUCCESS", "gate_final_check_run_id": 128955748854, "diff_lido_100pct": true, "merged_at": "2026-11-09T15:46:32Z"},
-    {"number": 3261, "sha_main_apos": "9346b048e8fff01c3be31c7095d8b7ebdd4ebdcc", "titulo": "chore(migrations): adiciona arquivos espelho CRON-001 (20261101223908, 20261101232022)", "tipo": "repair-only mirror files", "gate_final": "SUCCESS", "gate_final_check_run_id": 128960805201, "head_sha": "f5b6c19499c0517c59edbdff74e0bea3043d63b4", "merged_at": "2026-11-09T17:57:47Z", "nota": "2 mirror files ja aplicados em producao + recibo MIGRATIONS_SYNC_LOG.md"},
+    {"number": 3261, "sha_main_apos": "9346b048e8fff01c3be31c7095d8b8ebdd4ebdcc", "titulo": "chore(migrations): adiciona arquivos espelho CRON-001 (20261101223908, 20261101232022)", "tipo": "repair-only mirror files", "gate_final": "SUCCESS", "gate_final_check_run_id": 128960805201, "head_sha": "f5b6c19499c0517c59edbdff74e0bea3043d63b4", "merged_at": "2026-11-09T17:57:47Z", "nota": "2 mirror files ja aplicados em producao + recibo MIGRATIONS_SYNC_LOG.md"},
     {"number": 3264, "sha_main_apos": "908f30abba7b3fa1b46583ceae3cd0eaee872500", "titulo": "feat: versionar view vw_products_min_quantity (FT-079)", "tipo": "CREATE OR REPLACE VIEW — idempotente, aditiva", "gate_final": "ZERO_RUNS_HEAD_SHA", "head_sha": "17c21509dcee00693c75bc25ee84bf84de66baec", "merged_at": "2026-11-09T18:50:00Z", "nota": "CREATE OR REPLACE VIEW + rollback. View confirmada em producao (pg_get_viewdef 2026-11-08 no body da PR). Merge squash. Producao pos-merge: 8321 produtos (sem regressao)."}
   ],
   "mergeadas_externas_esta_sessao": [
@@ -47,10 +47,15 @@
   },
   "gate_final_main_atual": {
     "sha": "293b9287478fba7fa8683b2e15248ed998880c3f",
-    "run_id": 42699133451,
-    "status": "queued",
-    "criado_em": "2026-11-09T21:05:21Z",
-    "nota": "pos-merge #3366 (SEGREDOS.md). Gate Final QUEUED — nao iniciou execucao ainda."
+    "run_id": null,
+    "status": "nao_disparado",
+    "nota": "merge #3366 tocou apenas docs/ci/SEGREDOS.md (paths-ignore: docs/**) — Gate Final nao e disparado para pushes docs-only. Ultimo Gate Final real: run_id=42677295865 no sha=1368a918, conclusion=success, 18:55 UTC.",
+    "ultimo_gate_final_real": {
+      "run_id": 42677295865,
+      "sha": "1368a9180ff2eb6283c23e4b4e197ca8e5024893",
+      "conclusion": "success",
+      "completed_at": "2026-11-09T18:55:00Z"
+    }
   },
   "gate_final_main_baseline_sessao": {
     "sha": "c1d47d13bee8089eb62e3c47db1b7b500dcf1042",
@@ -123,5 +128,15 @@
     "producao_saudavel": true,
     "products_count_final": 8321,
     "verificado_em": "2026-11-09T18:55:00Z"
+  },
+  "entregaveis_na_branch": {
+    "RELATORIO_PRS.md": "commit 3825314f",
+    "progresso.json": "commit 3825314f (atualizado)",
+    "baseline/main-293b9287.md": "commit 5718071",
+    "regras-de-negocio.md": "commit 5718071",
+    "prs.json": "commit 5718071",
+    "prs.csv": "commit 5718071",
+    "dossies/PR-*.md x55": "commits ca48271 + c64138a",
+    "total_dossiers": 55
   }
 }
