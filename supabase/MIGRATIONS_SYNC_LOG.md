@@ -1172,3 +1172,14 @@ Este PR cria o arquivo retroativo para fechar o gap documental.
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20260611014515` | `fn_dryrun_standardize_supplier_real_rollback` | `49c18b67748c6cb7fc39d3b80b1f3eb58fff39fc2f21a20ee7cac92f69e08a3d` | arquivo retroativo — função `fn_dryrun_standardize_supplier` confirmada em produção via `pg_get_functiondef`; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
+
+## 2026-11-09 — DROP `perf002_drop_unused_snapshot_indexes` (PEND-I01)
+
+Função `public.perf002_drop_unused_snapshot_indexes()` criada como SECURITY DEFINER
+com `authenticated:EXECUTE` via DDL direto (sessão PEND-I01, 2026-11-01). Executa
+DDL por concatenação de string — vetor de escalada de privilégio. Esta migration a
+dropa. Aguardando dispatch via `db-apply-migration.yml` após aprovação do PO (REGRA #8).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261108223100` | `drop_perf002_incident_ddl_survivor` | `a912697ce92a3b6da285fad499575dc89fb8c2138f1f3b573dbdc9206c717dfa` | pendente — aguardando merge PR #3255 + dispatch `db-apply-migration.yml` (REGRA #8: DDL em produção) |
