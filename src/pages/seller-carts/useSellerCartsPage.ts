@@ -66,7 +66,7 @@ export function useSellerCartsPage() {
 
   const [cartNotesOpen, setCartNotesOpen] = useState(false);
   const [localCartNotes, setLocalCartNotes] = useState('');
-  const debounceNotesRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceNotesRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const stockMap = useMemo(() => {
     const map = new Map<string, number>();
