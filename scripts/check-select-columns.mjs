@@ -27,6 +27,8 @@
  *     não-public, etc.) são puladas silenciosamente — fail-open, não
  *     fail-closed, para não travar o build em casos que o parser não
  *     entende.
+ *   - Quando outro .from() aparece entre o from atual e o select encontrado
+ *     dentro da janela, são chains distintas — a correspondência é descartada.
  *
  * Uso: node scripts/check-select-columns.mjs
  * Retorna: 0 = OK (ou nada para validar), 1 = coluna inexistente encontrada
@@ -110,8 +112,12 @@ function extractSelectCalls(content) {
     const table = match[1];
     const windowEnd = Math.min(content.length, match.index + 600);
     const window = content.slice(match.index, windowEnd);
-    const selectMatch = /\.select\(\s*['"]([^'"]*)['"]/s.exec(window);
+    const selectMatch = /\.select\(\s*['"]([^'"]*)['"]/.exec(window);
     if (!selectMatch) continue;
+    // Se outro .from() aparece entre este .from() e o .select() encontrado,
+    // pertencem a chains distintas — descartar para evitar falso positivo.
+    const between = window.slice(0, selectMatch.index);
+    if (/\.from\(\s*['"]/.test(between)) continue;
     const selectStr = selectMatch[1];
     const lineNo = content.slice(0, match.index + selectMatch.index).split('\n').length;
     calls.push({ table, selectStr, line: lineNo });
