@@ -94,7 +94,7 @@ function main() {
     console.error('[drafts] marcadores BEGIN/END não encontrados no README.');
     process.exit(1);
   }
-  const next = current.replace(re, block);
+  const next = current.replace(re, () => block) // função: `$&`/`$$` no texto de um draft não pode ser interpretado como padrão de replace;
 
   if (check) {
     // Compara ignorando a linha de timestamp `_Atualizado em ..._`, senão

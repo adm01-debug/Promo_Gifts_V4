@@ -7,9 +7,11 @@
 import { readdirSync, readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { edgesChamadasNoCodigo, segredosViaResolver, semComentarios } from './gerar-rotas.mjs';
 
-const RAIZ = new URL('../../', import.meta.url).pathname;
+// fileURLToPath: .pathname deixa %20/%C3%A7 escapados e quebra em caminho com espaço ou acento.
+const RAIZ = fileURLToPath(new URL('../../', import.meta.url));
 const FDIR = join(RAIZ, 'supabase/functions');
 const OUT = join(RAIZ, 'inventario/estado');
 mkdirSync(OUT, { recursive: true });
