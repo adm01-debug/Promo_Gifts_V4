@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `193a750676b00a8b7d94a73d74012ef076897872` (2026-11-09T03:30:53-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4cf30818dd24fa6abb1bbe91052befdb5d7d318a` (2026-11-09T10:05:43Z).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,7 +586,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38552 nós · 67007 arestas · 2187 comunidades · grafo do commit `193a7506`
+- 38552 nós · 67007 arestas · 2187 comunidades · grafo do commit `4cf30818`
 - comunidades maiores: ref_lib (779), ref_components (637), ref_integrations (395), nav.ts (364), react-router-dom (361), @tanstack/react-query (346), ref_hooks (321), ref_node_fs (293), scripts (289), ref_utils (286), cors.ts (254), sonner (254)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-09 `4cf3081` fix(ci): congela ref PENDENCIAS.md → migration futura no Gate 1.3 baseline (#3275)
 - 2026-11-09 `193a750` fix: corrige typecheck e permissão de script pré-existentes em main (#3320)
 - 2026-11-09 `ae1782f` docs(analise-prs): relatórios definitivos — ciclo merge-prs claude_04 (#3318)
 - 2026-11-09 `b5f3706` docs: progresso v6 + prs.json — balanço correto 29 abertas
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-09 `d017980` docs(analise-prs): RELATORIO_DOSSIES — dossiê CI por PR com evidências (#3311)
 - 2026-11-09 `f68850a` docs(analise-prs): RELATORIO_PRS.md + progresso.json — inventário completo 36 PRs abertas
 - 2026-11-09 `ffa5228` docs(analise-prs): RELATORIO_META_CUMPRIDA_v3 — 8 runs cancelados, bloqueio runner documentado
-- 2026-11-08 `b4d6faf` docs(analise-prs): RELATORIO_META_CUMPRIDA_v2 — bloqueio Gate Final documentado
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
