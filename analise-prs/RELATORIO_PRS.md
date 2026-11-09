@@ -10,7 +10,14 @@
 
 ## DECISÕES QUE EXIGEM O PO
 
-### 1. PR #3363 — `fix(ci): corrige falhas de hooks tests e deno typecheck` (BLOQUEADO_DRAFT — nova)
+### 1. PR #3364 — `fix(ci): baseline incremental mode + remove imports TS2305` (BLOQUEADO_DRAFT — nova)
+
+**O que é:** Corrige 2 problemas causados pelo merge de #3361 (611 arquivos): (a) ESLint baseline com `mode: "full"` flagrava os 611 arquivos novos como regressões — PR muda para `mode: "incremental"`; (b) 3 arquivos de `SellerCarts` importavam símbolos inexistentes de `CartUtilComponents` (TS2305) — removidos.
+**Por que precisa do PO:** draft:true — merge bloqueado pela API (HTTP 405). Além disso, Gate 1 FAILURE por TypeScript pré-existente em `quote-view/` e `kitPdfGenerator.ts` (não causado por esta PR, mas bloqueia `tsc --noEmit` que verifica o projeto inteiro).
+**Risco:** Baixo — workaround reversível; remove dead code (TS2305).
+**Ação recomendada:** Corrigir erros TypeScript pré-existentes em `quote-view/` e `kitPdfGenerator.ts` → PO promove de draft → Gate Final SUCCESS → merge.
+
+### 2. PR #3363 — `fix(ci): corrige falhas de hooks tests e deno typecheck` (BLOQUEADO_DRAFT — nova)
 
 **O que é:** Corrige 8 CI failures: 3 hook tests com API obsoleta (`useBridgeMetricsCleanup`, `useBridgeMetricsPerformance`, `useBridgeStatusBanner`), stub exports para `external-db-bridge` (descomissionado 2026-05-30), `deno.json` sem mapping `vitest`, e TS2345 em 3 edge functions.
 **Por que precisa do PO:** draft:true — merge bloqueado pela API (HTTP 405). Além disso, Gate Final `quality-gate` ainda pendente no momento da análise.
@@ -37,11 +44,11 @@
 **Bloqueio:** Conflito de merge (HTTP 405 ao tentar mergear). Necessita rebase manual.
 **Ação recomendada:** PO decide se rebase e merge ou fecha em favor de nova PR.
 
-### 4. PR #3273 — `chore(migrations): espelho P-10 categories indexes` (NAO_MERGEAR — zero Gate Final)
+### 5. PR #3273 — `chore(migrations): espelho P-10 categories indexes` (NAO_MERGEAR — falha Vercel + zero Gate Final)
 
 **O que é:** Migration espelho de 3 índices out-of-band em `public.categories`. Autoria do PO (adm01-debug). Aditiva, idempotente (`CREATE INDEX IF NOT EXISTS`). Mergeable:true, sem conflito.
-**Bloqueio:** Zero Gate Final CI runs no head SHA `551ca9d6`. Mandato exige Gate Final = SUCCESS.
-**Ação recomendada:** PO triggera CI (atualizar branch ou re-run) → Gate Final SUCCESS → agente pode mergear.
+**Bloqueio:** `combined_status=failure` por Vercel preview deploy FAILURE (`dpl_3zCY5HeFMZJYbwCUhzXW2Wghp479`) + zero Gate Final check runs no head SHA `551ca9d6`. A falha Vercel é provável consequência dos erros TypeScript pré-existentes de #3361 que PR #3364 corrige.
+**Ação recomendada:** Aguardar merge de #3364 → PO atualiza branch desta PR (rebase em main) → Gate Final SUCCESS → agente pode mergear.
 
 ---
 
@@ -176,7 +183,7 @@ passa em main após este merge.
 ### Dependabot — .github/workflows/ (4 PRs)
 
 | PR | Descrição |
-|----|-----------|
+|----|----------|
 | #3327 | codeql-action/init SHA bump |
 | #3328 | codeql-action/analyze SHA bump |
 | #3329 | 9 workflows SHAs Dependabot |
@@ -187,7 +194,7 @@ passa em main após este merge.
 ### Dependabot — deps com CI failure ou zero CI
 
 | PR | Descrição | Status CI |
-|----|-----------|-----------|
+|----|-----------|----------|
 | #3332 | eslint@10 | FAILURE — ERESOLVE incompatível |
 | #3331 | date-fns 3→4 | CONFLICTING — zero CI |
 | #3333 | framer-motion 11→14 | zero CI |
@@ -228,12 +235,12 @@ Nota: #3273 corrigida — não é CONFLICTING nem duplicata. Estado real: `merge
 | PROCESSADA_EXTERNA | 4 |
 | NAO_MERGEAR | 25 |
 | AGUARDA_PO | 1 |
-| BLOQUEADO_DRAFT | 2 |
-| **TOTAL ANALISADAS** | **51** |
+| BLOQUEADO_DRAFT | 3 |
+| **TOTAL ANALISADAS** | **52** |
 
-**PRs abertas agora (28):** NAO_MERGEAR(25) + AGUARDA_PO(1) + BLOQUEADO_DRAFT(2) = 28
+**PRs abertas agora (29):** NAO_MERGEAR(25) + AGUARDA_PO(1) + BLOQUEADO_DRAFT(3) = 29
 **PRs fechadas/mergeadas (23):** 6+9+2+2+4 = 23
-**Total:** 28 + 23 = 51 ✓
+**Total:** 29 + 23 = 52 ✓
 
 ---
 
@@ -258,10 +265,11 @@ Nenhum worktree foi criado nesta sessão. Verificado via `git worktree list` (ap
 
 ## PRÓXIMOS PASSOS
 
-1. **PR #3273** — PO triggera CI no head SHA `551ca9d6` (atualizar branch) → Gate Final SUCCESS → agente mergeará automaticamente. Migration espelho P-10 já aprovada pelo PO (autoria direta).
-2. **PR #3363** — Aguardar CI completar; se Gate Final SUCCESS, PO promove de draft → agente mergeará. Verificar schema de `e2e_cleanup_audit` antes do merge.
-3. **PR #3179** — Promover de draft e mergear (fix de preflight CI, Gate Final SUCCESS, baixo risco)
-4. **PR #3243** — Rebase em main e reabrir: feature `categories.level + full_path_readable` é válida e estava a 1 conflito de ser mergeada
+1. **PR #3364** — Corrigir erros TypeScript pré-existentes em `quote-view/QuoteActionHandlers.ts`, `QuoteBitrixSync.ts`, `useQuoteViewData.ts`, `useQuotesDashboard.ts`, `kitPdfGenerator.ts` → PO promove de draft → Gate Final SUCCESS → merge. Desbloqueará também PR #3273.
+2. **PR #3273** — Após #3364 mergear: PO rebasa branch em main → Gate Final SUCCESS → agente mergeará. Migration espelho P-10 já aprovada pelo PO (autoria direta).
+3. **PR #3363** — Aguardar CI completar; se Gate Final SUCCESS, PO promove de draft → agente mergeará. Verificar schema de `e2e_cleanup_audit` antes do merge.
+4. **PR #3179** — Promover de draft e mergear (fix de preflight CI, Gate Final SUCCESS, baixo risco)
+5. **PR #3243** — Rebase em main e reabrir: feature `categories.level + full_path_readable` é válida e estava a 1 conflito de ser mergeada
 
 ---
 
