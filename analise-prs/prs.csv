@@ -1,38 +1,48 @@
-pr_number,title,autor,estado,draft,veredito,motivo_bloqueio,analisado_em
-3127,fix(ci): E2E false negative detector (multiple workflows),adm01-debug,open,false,AGUARDA_PO,.github/workflows modificado,2026-11-09
-3129,ci: multiple workflow updates,adm01-debug,open,false,AGUARDA_PO,.github/workflows x8,2026-11-09
-3137,fix(ci): false negative E2E detector,adm01-debug,open,false,AGUARDA_PO,.github/workflows modificado,2026-11-09
-3179,feat: edge function updates + 132 files,adm01-debug,open,true,AGUARDA_PO,DRAFT + edge functions DDL,2026-11-09
-3203,feat: major feature branch,adm01-debug,open,false,NAO_MERGEAR,mergeable_state dirty (conflito com main),2026-11-09
-3210,chore(main): release 1.9.0,release-please[bot],open,false,AGUARDA_PO,release PR — aprovacao PO obrigatoria,2026-11-09
-3214,fix: cron jobs update,adm01-debug,open,true,AGUARDA_PO,DRAFT + cron DDL (E056),2026-11-09
-3228,ci: workflow improvements,adm01-debug,open,true,AGUARDA_PO,DRAFT + .github/workflows,2026-11-09
-3243,fix: ALTER TABLE schema changes,adm01-debug,open,false,AGUARDA_PO,DDL ALTER TABLE (REGRA #8),2026-11-09
-3247,ci: workflow enhancements,adm01-debug,open,true,AGUARDA_PO,DRAFT + .github/workflows,2026-11-09
-3250,fix: indice summary_date em stock_daily_summary,claude,open,true,AGUARDA_PO,DRAFT + CREATE INDEX DDL,2026-11-09
-3251,fix: cron jobs configuration,adm01-debug,open,true,AGUARDA_PO,DRAFT + cron DDL (E056),2026-11-09
-3255,fix: DROP FUNCTION cleanup,adm01-debug,open,true,AGUARDA_PO,DRAFT + DROP FUNCTION (DDL destrutivo),2026-11-09
-3256,fix: DROP POLICY + CREATE POLICY,adm01-debug,open,true,AGUARDA_PO,DRAFT + DDL policy,2026-11-09
-3257,chore: dependency updates,adm01-debug,merged,false,MERGED,Mergeado pelo agente em sessao anterior,2026-11-09
-3261,fix: cron.alter_job x7,adm01-debug,open,false,AGUARDA_PO,cron DDL x7 (REGRA #8/E056),2026-11-09
-3263,fix: cron schedule updates,adm01-debug,open,false,AGUARDA_PO,cron DDL (E056),2026-11-09
-3264,feat: CREATE OR REPLACE VIEW,adm01-debug,open,false,AGUARDA_PO,DDL VIEW (REGRA #8),2026-11-09
-3265,feat: CREATE OR REPLACE FUNCTION,adm01-debug,open,false,AGUARDA_PO,DDL FUNCTION (REGRA #8),2026-11-09
-3273,perf: CREATE INDEX x3,adm01-debug,open,false,AGUARDA_PO,DDL CREATE INDEX x3 (REGRA #8),2026-11-09
-3274,ci: workflow updates,adm01-debug,open,false,AGUARDA_PO,.github/workflows modificado,2026-11-09
-3279,fix: cron.alter_job x4,adm01-debug,open,true,AGUARDA_PO,DRAFT + cron DDL x4 (E056),2026-11-09
-3284,fix: cron jobs (CI failed),adm01-debug,open,true,AGUARDA_PO,DRAFT + cron DDL + CI falhou,2026-11-09
-3290,ci: workflow improvements,adm01-debug,open,false,AGUARDA_PO,.github/workflows modificado,2026-11-09
-3327,chore(deps): bump github/codeql-action,dependabot[bot],open,false,AGUARDA_PO,.github/workflows (dependabot),2026-11-09
-3328,chore(deps): bump github/codeql-action (2),dependabot[bot],open,false,AGUARDA_PO,.github/workflows (dependabot),2026-11-09
-3329,chore(deps): bump supabase/setup-cli,dependabot[bot],open,false,AGUARDA_PO,.github/workflows (dependabot),2026-11-09
-3330,chore(deps): bump github/codeql-action (3),dependabot[bot],open,false,AGUARDA_PO,.github/workflows (dependabot),2026-11-09
-3331,chore(deps): bump date-fns 3->4,dependabot[bot],open,false,AGUARDA_PO,major bump + reviewer solicitado,2026-11-09
-3332,chore(deps-dev): bump dev group 18 updates,dependabot[bot],open,false,AGUARDA_PO,reviewer humano solicitado,2026-11-09
-3333,chore(deps): bump framer-motion 11->14,dependabot[bot],open,false,AGUARDA_PO,major bump + reviewer solicitado,2026-11-09
-3334,chore(deps): bump @sentry/react 8->11,dependabot[bot],open,false,AGUARDA_PO,major bump + reviewer solicitado,2026-11-09
-3337,chore: minor dependency updates,adm01-debug,merged,false,MERGED,Mergeado pelo agente — Gate Final green,2026-11-09
-3339,fix: vitest regressions (codex),codex,open,false,NAO_MERGEAR,conflito + branch codex (REGRA #10) + depends on PRs,2026-11-09
-3340,fix: UI component fixes,adm01-debug,merged,false,MERGED,Mergeado pelo agente — Gate Final green,2026-11-09
-3343,chore: cleanup,adm01-debug,merged,false,MERGED,Mergeado pelo agente — Gate Final green,2026-11-09
-3350,fix: production fix,adm01-debug,merged,false,MERGED_EXTERNALLY,Mergeado pelo PO em 2026-11-09T15:26:30Z,2026-11-09
+number,titulo,veredito,categoria,motivo
+3337,"fix(ci): corrige referencias invalidas supabase/migrations/x6",MERGEADA_AGENTE,,
+3340,"docs(analise-prs): atualiza progresso",MERGEADA_AGENTE,,
+3343,"chore(ci): atualiza file-size baseline Kit Builder",MERGEADA_AGENTE,,
+3257,"fix(migrations): idempotencia em RLS deny-all e particoes 2027",MERGEADA_AGENTE,,
+3341,"docs: recibo deploy edge function",MERGEADA_EXTERNA,,
+3342,"fix(ci): as-assertions-baseline",MERGEADA_EXTERNA,,
+3344,"fix(tests): consumeUnloadBackup",MERGEADA_EXTERNA,,
+3346,"fix(tests): corrige regressoes vitest",MERGEADA_EXTERNA,,
+3348,"fix(tests): corrige 5 falhas preexistentes em useKitBuilderQuote",MERGEADA_EXTERNA,,
+3349,"fix(update-snapshots): atualizar snapshots PriceFreshnessBadge",MERGEADA_EXTERNA,,
+3278,"fix: corrige referencia de SHA de sentinela em check-sentinel-sha",MERGEADA_EXTERNA,,
+3277,"(desconhecido)",FECHADA_EXTERNA,,Gate Final=FAILURE
+3347,"replace corrupt PNG snapshot",FECHADA_EXTERNA,,CI incompleto
+3129,"(desconhecido)",FECHADA_EXTERNA,,Fechada externamente
+3137,"(desconhecido)",FECHADA_EXTERNA,,Fechada externamente
+3274,"ci: corrige Gate E42 e2e-personalization",FECHADA_EXTERNA,,Fechada externamente
+3290,"ci: adiciona detector E12 pg_indexes out-of-band",FECHADA_EXTERNA,,Fechada externamente
+3350,"kit-builder: remove bloco FT-119 incompleto",FECHADA_EXTERNA,,Gate 1 FAILURE
+3203,"fix: scripts static-pass exit codes e regressao TypeScript inert",NAO_MERGEAR,merge_conflict,CONFLICTING
+3329,"chore(ci)(deps): bump supabase/setup-cli 3.0.1 to 3.2.0",NAO_MERGEAR,ci_failure_workflow,CI FAILURE + 9 workflows
+3330,"chore(ci)(deps): bump github/codeql-action/init 4.39.1 to 4.39.3",NAO_MERGEAR,ci_failure_workflow,CI FAILURE + codeql.yml
+3332,"chore(deps-dev): bump 18 dev deps (eslint9->10 tailwind3->4)",NAO_MERGEAR,ci_failure_major,CI FAILURE + major bumps breaking
+3339,"test: alinhar regressoes da suite ao Kit Builder",NAO_MERGEAR,ci_failure,Gate 1 FAILURE file-size
+3355,"chore(analise-prs): auditoria completa 47 PRs",NAO_MERGEAR,branch_entrega,BRANCH_ENTREGA NUNCA MERGEAR
+3210,"chore(main): release 1.9.0",AGUARDA_PO,release_decision,Release Please — decisao PO
+3228,"chore(workflows): workflow_dispatch ao e2e-color-swatch-grid",AGUARDA_PO,ci_workflows,toca .github/workflows (RB-01)
+3247,"chore(ci): 10+ workflows de update-snapshots",AGUARDA_PO,ci_workflows,10+ workflows novos (RB-01)
+3327,"chore(deps): bump codeql-action/upload-sarif",AGUARDA_PO,ci_workflows,toca gitleaks-history-audit.yml (RB-01)
+3328,"chore(deps): bump codeql-action/analyze",AGUARDA_PO,ci_workflows,toca codeql.yml (RB-01)
+3357,"chore(e2e): @smoke no job e2e-gates",AGUARDA_PO,ci_workflows,toca .github/workflows/e2e.yml (RB-01)
+3179,"fix: corrige preflight db-apply-migration",AGUARDA_PO,ddl_migration,DDL supabase/migrations (RB-02)
+3214,"fix(cron): CRON-001 escalonar 4 cron jobs",AGUARDA_PO,ddl_migration,cron.alter_job (RB-02+RB-10)
+3243,"fix(migrations): categories.level e full_path_readable",AGUARDA_PO,ddl_migration,DDL drift reconciliation (RB-02)
+3250,"fix: indice summary_date em stock_daily_summary",AGUARDA_PO,ddl_migration,CREATE INDEX CONCURRENTLY (RB-02)
+3251,"fix: remove cron inativa image-dimensions-backfill",AGUARDA_PO,ddl_migration,cron.unschedule (RB-02+RB-10)
+3255,"fix: drop perf002 (security)",AGUARDA_PO,ddl_migration,DROP FUNCTION security (RB-02)
+3256,"fix: RLS art-files path quotes/",AGUARDA_PO,ddl_migration,DDL RLS policy (RB-02)
+3261,"chore: espelho DRIFT CRON-001",AGUARDA_PO,ddl_migration,DDL mirror (RB-02) — ver #3284
+3263,"feat: versionar cron send-scheduled-reports (FT-005)",AGUARDA_PO,ddl_migration,cron.schedule (RB-02+RB-10)
+3264,"feat: versionar view vw_products_min_quantity (FT-079)",AGUARDA_PO,ddl_migration,CREATE OR REPLACE VIEW (RB-02)
+3265,"feat: versionar fn_check_item_fits (FT-088)",AGUARDA_PO,ddl_migration,CREATE OR REPLACE FUNCTION (RB-02)
+3273,"chore: espelho P-10 3 indices categories",AGUARDA_PO,ddl_migration,CREATE INDEX IF NOT EXISTS x3 (RB-02)
+3279,"fix(cron): CRON-002 colisoes residuais",AGUARDA_PO,ddl_migration,cron.alter_job x4 (RB-02+RB-10)
+3284,"chore: DRIFT mirror CRON-001 (ver #3261)",AGUARDA_PO,ddl_migration,DDL mirror (RB-02)
+3331,"chore(deps): bump date-fns 3.6.0 to 4.4.0",AGUARDA_PO,major_version_bump,major 3->4 (RB-03)
+3333,"chore(deps): bump framer-motion 11.18.2 to 14.10.0",AGUARDA_PO,major_version_bump,major 11->14 (RB-03)
+3334,"chore(deps): bump @sentry/react 8.55.2 to 11.11.0",AGUARDA_PO,major_version_bump,major 8->11 (RB-03)

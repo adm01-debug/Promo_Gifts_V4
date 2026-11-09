@@ -1,93 +1,71 @@
-# Regras de Negócio — promo-gifts-v4
+# Regras de Negócio — Auditoria de PRs (2026-11-09)
 
-Analisado em: 2026-11-09  
-Fonte: código-fonte, migrations, testes, CLAUDE.md
-
----
-
-## RN-001 — SSOT Supabase canônico
-
-**Arquivo:** `src/integrations/supabase/client.ts:24`  
-**Regra:** `CURRENT_PROJECT_ID = "doufsxqlfjyuvxuezpln"` — imutável. Projeto `pqpdolkaeqlyzpdpbizo` é proibido em código executável.  
-**Gate:** Gate 0 (`validate-supabase-config.mjs`) bloqueia CI se violado.
+Derivadas do CLAUDE.md, histórico de PRs e análise do código.
+Sessão: session_01VXkRxWq5ZUCmvuNx5e2TGX
 
 ---
 
-## RN-002 — Campos obrigatórios do tipo `Product`
+## RB-01: Nunca Mergear Workflows
+PRs que tocam `.github/workflows/` NUNCA são mergeadas sem aprovação explícita do PO.
+Fundamento: CLAUDE.md mandato absoluto "Não tocar .github/workflows".
+Aplica-se a: #3228, #3247, #3327, #3328, #3329, #3330, #3357
 
-**Arquivo:** `src/types/product-catalog.ts:30-36`  
-```typescript
-shortDescription: string;   // linha 30
-price: number;              // linha 31
-sale_price?: number;        // linha 32
-category_id?: string | null; // linha 35
-category_name?: string | null; // linha 36
-```
-**Gate:** Gate 1.1 bloqueia CI se campos removidos.
+## RB-02: DDL Migrations Requerem PO
+Qualquer PR com arquivo em `supabase/migrations/` ou `supabase/rollbacks/` requer aprovação do PO antes do merge.
+O deploy ocorre via `.github/workflows/db-apply-migration.yml` (workflow_dispatch) — nunca via merge direto.
+Aplica-se a: #3179, #3214, #3243, #3250, #3251, #3255, #3256, #3261, #3263, #3264, #3265, #3273, #3279, #3284
 
----
+## RB-03: Major Version Bumps Requerem PO
+Bumps de dependência com salto de major version (N→N+1 ou maior) requerem análise de compatibilidade e aprovação do PO.
+Critério: `package.json` com semver MAJOR diferente (ex: 3.x.x → 4.x.x).
+Aplica-se a: #3331 (date-fns 3→4), #3333 (framer-motion 11→14), #3334 (sentry 8→11)
 
-## RN-003 — Status de orçamento (QUOTE_STATUSES)
+## RB-04: CI Verde É Pré-requisito de Merge
+PRs com Gate Final ou qualquer gate bloqueante em FAILURE não são mergeadas.
+Aplica-se a: #3329, #3330, #3332, #3339
 
-**Arquivo:** `src/types/quote.ts:10-22`  
-**Valores:** `approved`, `cancelled`, `converted`, `draft`, `expired`, `pending`, `pending_approval`, `rejected`, `sent`, `viewed`  
-**Gate:** `src/types/__tests__/quote-status-schema.test.ts` — testa invariantes do enum.
+## RB-05: SSOT Canônico Nunca Alterado
+O projeto Supabase `doufsxqlfjyuvxuezpln` é o único canônico.
+Fundamento: REGRA #1 do CLAUDE.md.
 
----
+## RB-06: Merge Conflict = Não Mergeável
+PRs com mergeStateStatus=CONFLICTING ou DIRTY não podem ser mergeadas pelo agente.
+Aplica-se a: #3203, #3355
 
-## RN-004 — Categorias de magazine (MAGAZINE_CATEGORIES)
+## RB-07: Branch de Entrega Nunca Mergeada
+A branch `claude_pink/sleepy-cannon-h000nc` (PR #3355) é a branch de rastreamento do agente.
+NUNCA deve ser mergeada em main.
 
-**Arquivo:** `src/types/magazine.ts:32-48`  
-**Valores:** `awards`, `bags`, `clocks`, `customized`, `drinkwares`, `general`, `giftsets`, `id`, `packaging`, `pins`, `signs`, `stationery`, `technology`, `wearables`
+## RB-08: Dependabot Workflows = AGUARDA_PO
+PRs do Dependabot que tocam `.github/workflows/` seguem RB-01.
+Aplica-se a: #3327, #3328.
 
----
+## RB-09: Dependabot Deps Sem Major Bump = Elegível
+PRs do Dependabot com bump de patch/minor que não tocam workflows podem ser mergeadas se CI verde.
+Exceção: RB-03 prevalece para major bumps.
 
-## RN-005 — Tabelas críticas do schema Gold
+## RB-10: Cron DDL Exige Workflow Dispatch
+Qualquer `cron.alter_job`, `cron.schedule`, `cron.unschedule` deve ser aplicado via db-apply-migration.yml.
+Fundamento: REGRA #8/E056 do CLAUDE.md.
+Aplica-se a: #3214, #3251, #3263, #3279
 
-**Fonte:** CLAUDE.md REGRA #4  
-Tabelas que NÃO podem ser removidas de `types.ts` sem entrada em allowlist:
-- `personalization_techniques`, `products`, `product_variants`
-- `suppliers`, `supplier_products_raw`
-- `magazines`, `magazine_items`, `magazine_templates`
+## RB-11: Release Please PR = Decisão do PO
+PRs geradas pelo `github-actions[bot]` via Release Please são decisões de release.
+O agente não mergeia releases automaticamente.
+Aplica-se a: #3210
 
-**Gate:** Gate 1.2 (`check:types-inventory-drift`) bloqueia CI se tabela sumir.
+## RB-12: Idempotência é Requisito para Merge de Migration
+Migrations de reconciliação devem usar IF NOT EXISTS, CREATE OR REPLACE, etc.
+Verificado em: #3243, #3250, #3255, #3261, #3264, #3265, #3273
 
----
+## RB-13: PR com Gate 1 Failure por Regressão = NAO_MERGEAR
+PRs que introduzem regressão em Gate 1 não são mergeadas.
+Aplica-se a: #3339
 
-## RN-006 — Arquitetura Medallion Bronze → Silver → Gold
+## RB-14: Verificação de Produção Antes de Merge de Migration
+Antes de classificar uma migration como AGUARDA_PO (aprovável), verificar via execute_sql (READ ONLY)
+que o estado em produção é o esperado.
 
-**Fonte:** CLAUDE.md CONTEXTO + `doufsxqlfjyuvxuezpln` = Gold  
-Dados fluem Bronze (raw) → Silver (cleaned) → Gold (final, `doufsxqlfjyuvxuezpln`). Nenhum código de produção acessa Bronze/Silver diretamente.
-
----
-
-## RN-007 — DDL em produção exige aprovação PO
-
-**Fonte:** CLAUDE.md REGRA #8 / E056  
-`execute_sql` com DDL (CREATE, ALTER, DROP, GRANT, REVOKE, CREATE POLICY, ALTER TABLE, CREATE INDEX, CREATE FUNCTION, `cron.alter_job`) é **proibido em sessão de agente Claude**. Único caminho autorizado: `.github/workflows/db-apply-migration.yml`.
-
----
-
-## RN-008 — Fluxo de sortimento: sort options
-
-**Arquivo:** `src/types/product-catalog.ts:264-265`  
-Sort options suportados: `price-asc`, `price-desc` (e outros não listados neste trecho).
-
----
-
-## RN-009 — Histórico de migrations
-
-**Contagem:** 3009 migrations em `supabase/migrations/`  
-**Última:** `20261027234500_reactivate_xbz_image_uploader_cron.sql`  
-Cada migration é aditiva e idempotente; migrations destrutivas exigem aprovação PO.
-
----
-
-## RN-010 — Merge = deploy em produção
-
-**Fonte:** CLAUDE.md CONTEXTO  
-Merge em `main` dispara deploy automático via Lovable/Vercel. Não existe staging intermediário para o fluxo principal.
-
----
-
-*Nota: build local impossível (npm registry `europe-west1-npm.pkg.dev` retorna 403 nesta sessão). Typecheck/lint/build: NAO EXECUTADO LOCALMENTE — validado apenas via Gate Final CI no GitHub Actions.*
+## RB-15: Escrita em GitHub Apenas via MCP FOREVER
+Toda operação de escrita no GitHub usa exclusivamente `mcp__GITHUB_-_MCP_-_FOREVER__*`.
+O MCP padrão do GitHub retorna 403 em writes.
