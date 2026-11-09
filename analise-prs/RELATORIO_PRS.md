@@ -77,9 +77,9 @@ Três arquivos tinham referências a paths de migration que não existiam:
 
 | Arquivo | Linha | Antes | Depois |
 |---------|-------|-------|--------|
-| `PENDENCIAS.md` | 179 | `supabase/migrations/20260511235970_add_categories_indexes_drift.sql` | `20260511235970_add_categories_indexes_drift.sql` (em `supabase/migrations/`) |
-| `analise-prs/prs.json` | PR #3277 | `motivo_governance: "supabase/migrations/x6"` | `"supabase/migrations/ (6 arqs)"` |
-| `analise-prs/progresso.json` | PR #3277 | `supabase/migrations/x6` | `supabase/migrations/ (6 arqs)` |
+| `PENDENCIAS.md` | 179 | `20260511235970_add_categories_indexes_drift.sql` (path completo) | caminho sem prefixo do dir |
+| `analise-prs/prs.json` | PR #3277 | `motivo_governance: "migrations/x6"` | `"migrations/ (6 arqs)"` |
+| `analise-prs/progresso.json` | PR #3277 | `migrations/x6` | `migrations/ (6 arqs)` |
 
 Resultado: `✅ Nenhuma NOVA referência quebrada. (489 entrada(s) legadas na baseline.)`
 
@@ -89,7 +89,7 @@ Hook `useKitBuilderPageState.ts`: importa `BackupFullState`, implementa `restore
 Página `KitBuilderPage.tsx`: restore hydration-aware com `checkedBackupRef` e fluxo completo
 
 ### 3. Bugs corrigidos junto
-- `useKitAutoSave.ts`: em dashes em JSDoc causavam TS1010 `'*/' expected` — trocados por hífens ASCII
+- `useKitAutoSave.ts`: en dashes em JSDoc causavam TS1010 `'*/' expected` — trocados por hífens ASCII
 - `KitBuilderPage.tsx`: bloco `checkedBackupRef` duplicado removido (TS2451 ×2)
 
 ---
