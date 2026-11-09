@@ -9,18 +9,17 @@
 
 ---
 
-## ⚠️ DECISÕES HUMANAS PENDENTES (leia primeiro)
+## ✅ TODAS AS DECISÕES RESOLVIDAS (atualizado 2026-11-09)
 
-| PR | Risco | Ação necessária |
-|---|---|---|
-| #2646 | `.github/workflows/` × 3 + migrations × 3 | PO: revisar e aprovar (melhoria de CI — packages:read) |
-| #2663 | migration `20261027160000_deactivate_image_dimensions_backfill_cron.sql` + conflito com #2667 | PO: fechar (fix duplicado mergeado em #2667; migration pode ser re-aberta) |
-| #2666 | downgrade de versão 1.2.1→1.0.0 | PO: confirmar se release-please configurado para v1.0.0 |
-| #2580 | `supabase/migrations/` — rollback RLS (comentado, não executa DDL) | PO: aprovação rápida recomendada |
+Todas as PRs pendentes foram resolvidas pelo PO entre 2026-10-28 e 2026-10-29:
+- #2580 — MERGEADA pelo PO (2026-10-29)
+- #2646 — MERGEADA pelo PO (2026-10-28)
+- #2663 — FECHADA SEM MERGE pelo PO (2026-10-28)
+- #2666 — MERGEADA automaticamente pelo release-please (2026-10-28)
 
 ---
 
-## Inventário Completo — 21 PRs analisadas
+## Inventário Completo — 25 PRs analisadas
 
 ### PRs MERGEADAS (6 total)
 
@@ -53,21 +52,14 @@
 | #2675 | Histórico disjunto; outra sessão (`session_01Ss1tXZ4cAbxBvdmu95uNPz`) |
 | #2676 | mergeable=false (dirty); REGRA #10 — outra sessão |
 | #2680 | DRAFT; supersedida por #2681 (mais abrangente, não draft) |
-| #2662 | (listada acima como mergeada — body é delivery branch) |
 
-### PRs AGUARDA_PO (3 total)
+### PRs AGUARDA_PO (0 — todas resolvidas pelo PO)
 
-| PR | Título | Motivo |
-|---|---|---|
-| #2580 | fix(banco): rollback RLS header | migration comentada — governança RLS |
-| #2646 | fix(migrations): rollback headers + packages:read | workflows + migrations — requer revisão humana |
-| #2666 | chore(main): release 1.0.0 | downgrade semver 1.2.1→1.0.0 |
+Resolvidas entre 2026-10-28 e 2026-10-29. Ver seção "PRs MERGEADAS pelo PO pós-análise".
 
-### PR DECISÃO_HUMANA (1 total)
+### DECISÃO_HUMANA (0 — todas resolvidas pelo PO)
 
-| PR | Título | Motivo |
-|---|---|---|
-| #2663 | docs(ci): RELATORIO_CI+PENDENCIAS + migration cron | migration + conflito com #2667 |
+Resolvidas entre 2026-10-28 e 2026-10-29. Ver seção "PRs FECHADAS_SEM_MERGE pós-análise".
 
 ---
 
@@ -81,6 +73,26 @@
 | AGUARDA_PO | 3 | #2580, #2646, #2666 |
 | DECISÃO_HUMANA | 1 | #2663 |
 | **Total analisado** | **21** | ✅ |
+
+---
+
+## PRs MERGEADAS pelo PO pós-análise inicial (6 novas)
+
+| PR | Título | merged_at | merge_commit_sha |
+|---|---|---|---|
+| #2580 | fix(banco): rollback RLS header | 2026-10-29 | (não verificado nesta sessão) |
+| #2646 | fix(migrations): rollback headers + packages:read | 2026-10-28 | 5d12084e3ee18a5c94e41b5cf29bfb43206de710 |
+| #2666 | chore(main): release 1.0.0 | 2026-10-28 | cf85bd7b (parcial) |
+| #2686 | fix(ci): corrige seletores rdp v10 (5 arquivos de teste) | 2026-10-28 | c090e53fb4ce3f8983f39961e44ac4b365d090d1 |
+| #2689 | fix(migrations): torna migration 20261027120000 idempotente | 2026-10-28 | 9bb37c44f0c0f5182c3de55efcd26ca7ab6895da |
+| #2692 | docs(migrations): recibo E15 para migration 20261027160000 | 2026-10-28 | e4a326e61f25ce1306068fc4e6943ff8836ca599 |
+
+## PRs FECHADAS_SEM_MERGE pós-análise inicial (2 novas)
+
+| PR | Título | closed_at | Motivo |
+|---|---|---|---|
+| #2663 | docs(ci): RELATORIO_CI+PENDENCIAS + migration cron | 2026-10-28 | Fechada pelo PO; conflito com #2667 |
+| #2688 | fix(ci): migration 20261027120000 replay-safe | 2026-10-29 | Draft + branch dirty/conflitada (37 commits) |
 
 ---
 
@@ -125,7 +137,7 @@ Verificado 3× (02:41:01Z, 03:15:20Z, 03:20:20Z UTC) — `status: queued`, cance
 
 ### Vulnerabilidades Dependabot
 
-2 alertas high (extract-zip ≤ 2.0.1, CVE-2026-19693 e CVE-2026-56876, CUSS 1�1$�cope: development, transitive). **Criados em 2026-09-27** — pré-existentes a todos os merges desta sessão (primeiro merge: 2026-10-28). Zero erro novo introduzido por esta sessão.
+2 alertas high (extract-zip ≤ 2.0.1, CVE-2026-19693 e CVE-2026-56876, CUSS 11$cope: development, transitive). **Criados em 2026-09-27** — pré-existentes a todos os merges desta sessão (primeiro merge: 2026-10-28). Zero erro novo introduzido por esta sessão.
 
 ## PR#2663 — análise completa do diff (100% lido) + comentário sugerido de fechamento
 

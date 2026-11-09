@@ -97,10 +97,30 @@
     }
   ],
   "merges_sessoes_anteriores": [
-    {"pr": 2662, "merge_sha": "efacff0be", "sessao": "anterior", "ci_evidencia": "Gate Final run #40572329584 em e0b569f18 downstream = SUCCESS"},
-    {"pr": 2664, "merge_sha": "bd783873a", "sessao": "anterior", "ci_evidencia": "Gate Final run #40572329584 em e0b569f18 downstream = SUCCESS"},
-    {"pr": 2665, "merge_sha": "04239fdd42eef05589fb41b3f0e58a664621fbf7", "sessao": "anterior", "ci_evidencia": "Gate Final run #40572329584 em e0b569f18 downstream = SUCCESS"},
-    {"pr": 2667, "merge_sha": "8b0b6068e53592509cfac7225935340b6f3409df", "sessao": "anterior", "ci_evidencia": "Gate Final run #40572329584 em e0b569f18 downstream = SUCCESS"}
+    {
+      "pr": 2662,
+      "merge_sha": "efacff0be",
+      "sessao": "anterior",
+      "ci_evidencia": "Gate Final run #40572329584 em e0b569f18 downstream = SUCCESS"
+    },
+    {
+      "pr": 2664,
+      "merge_sha": "bd783873a",
+      "sessao": "anterior",
+      "ci_evidencia": "Gate Final run #40572329584 em e0b569f18 downstream = SUCCESS"
+    },
+    {
+      "pr": 2665,
+      "merge_sha": "04239fdd42eef05589fb41b3f0e58a664621fbf7",
+      "sessao": "anterior",
+      "ci_evidencia": "Gate Final run #40572329584 em e0b569f18 downstream = SUCCESS"
+    },
+    {
+      "pr": 2667,
+      "merge_sha": "8b0b6068e53592509cfac7225935340b6f3409df",
+      "sessao": "anterior",
+      "ci_evidencia": "Gate Final run #40572329584 em e0b569f18 downstream = SUCCESS"
+    }
   ],
   "analise_completa": [
     {
@@ -294,11 +314,11 @@
     }
   ],
   "contagem_por_veredito": {
-    "MERGEADA": {"count": 6, "prs": [2662, 2664, 2665, 2667, 2673, 2679]},
-    "NÃO_MERGEAR": {"count": 10, "prs": [2600, 2631, 2668, 2670, 2671, 2672, 2674, 2675, 2676, 2680]},
-    "AGUARDA_PO": {"count": 3, "prs": [2580, 2646, 2666]},
-    "DECISÃO_HUMANA": {"count": 1, "prs": [2663]},
-    "FECHADA_SEM_MERGE": {"count": 1, "prs": [2681], "nota": "Fix já presente no main via #2679"},
-    "TOTAL_ANALISADO": 21
+    "MERGEADA": 12,
+    "NÃO_MERGEAR": 10,
+    "AGUARDA_PO": 0,
+    "DECISÃO_HUMANA": 0,
+    "FECHADA_SEM_MERGE": 3,
+    "TOTAL_ANALISADO": 25
   }
 }
