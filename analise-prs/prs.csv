@@ -1,15 +1,15 @@
 number,titulo,autor,draft,veredito,motivo_resumido,sha_main_apos,merged_at,v1_valida,v2_regressao,v3_implementada,v4_regra_negocio,evidencia_chave
-3129,ci workflows,NÃO VERIFICADO,false,PROCESSADA_EXTERNA,ci_workflows — fora do escopo,,,,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,progresso.json sessão anterior
-3137,ci workflows,NÃO VERIFICADO,false,PROCESSADA_EXTERNA,ci_workflows — fora do escopo,,,,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,progresso.json sessão anterior
+3129,ci(e2e) reduzir pressao runners,claude,false,PROCESSADA_EXTERNA,ci_workflows — 8 arquivos todos em .github/workflows/,,,,NÃO,NÃO VERIFICADO,NÃO VERIFICADO,NÃO,SHA 1cd14bd9; 8 workflow files confirmados via GraphQL; mandato proíbe
+3137,fix(ci) impedir falso negativo detector E2E,claude,false,PROCESSADA_EXTERNA,ci_workflows — 8 workflows + .github/scripts/e2e-relevance.mjs + package.json,,,,NÃO,NÃO VERIFICADO,NÃO VERIFICADO,NÃO,SHA e97fcf2e; 10 arquivos confirmados via GraphQL; mandato proíbe
 3179,fix preflight db-apply-migration,claude,true,BLOQUEADO_DRAFT,draft:true — merge bloqueado API,,,SIM,RISCO,NÃO,INCERTA,draft:true HTTP 405
-3203,NÃO VERIFICADO,NÃO VERIFICADO,false,NAO_MERGEAR,CONFLICTING — duplicata #3273 (SHA 1aad6831),,,NÃO,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,mergeable:CONFLICTING
+3203,fix scripts static-pass exit codes,NÃO VERIFICADO,false,NAO_MERGEAR,baseline JSON desatualizados — base antiga provavelmente CONFLICTING com main atual,,,NÃO,NÃO,PARCIALMENTE,NÃO VERIFICADO,SHA 1aad6831; NÃO é duplicata de #3273 (SHAs diferentes); 5 JSONs de baseline
 3210,release 1.9.0,Lovable,false,NAO_MERGEAR,.github/workflows/ + 192 files + mergeable:false,,,INCERTA,NÃO VERIFICADO,PARCIALMENTE,NÃO VERIFICADO,mergeable:false 192 changed_files
 3214,NAO MERGEAR sem aprovação PO,NÃO VERIFICADO,false,NAO_MERGEAR,body PR diz NAO MERGEAR + mergeable:false,,,NÃO,NÃO VERIFICADO,NÃO VERIFICADO,NÃO,body PR instrução explícita
 3228,feat e2e color swatch grid,claude,true,NAO_MERGEAR,draft:true + .github/workflows/,,,INCERTA,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,duplo bloqueio
 3243,feat categories.level + full_path_readable,NÃO VERIFICADO,false,NAO_MERGEAR,merge conflict HTTP 405,,,SIM,NÃO VERIFICADO,PARCIALMENTE,SIM,HTTP 405 no merge
 3247,feat múltiplos workflows e2e,claude,true,NAO_MERGEAR,draft:true + 14 .github/workflows/,,,INCERTA,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,duplo bloqueio
 3250,feat CREATE INDEX idx_sds_summary_date,claude,true,AGUARDA_PO,draft:true — PO precisa promover,,,SIM,NÃO,NÃO,SIM,Gate Final check_run_id=128951479367 success
-3251,fix cron unschedule,NÃO VERIFICADO,false,NAO_MERGEAR,cron.unschedule não idempotente,,,INCERTA,POTENCIAL,NÃO VERIFICADO,NÃO,sem EXCEPTION handler no diff
+3251,fix cron unschedule,NÃO VERIFICADO,false,NAO_MERGEAR,cron.unschedule não idempotente + destrutivo,,,INCERTA,SIM,NÃO VERIFICADO,NÃO,cron.unschedule sem EXCEPTION handler; operação destrutiva
 3255,fix DROP FUNCTION,NÃO VERIFICADO,false,NAO_MERGEAR,DROP FUNCTION — mandato proíbe,,,INCERTA,SIM,NÃO VERIFICADO,NÃO,DROP FUNCTION no diff
 3256,fix DROP POLICY + RLS,NÃO VERIFICADO,true,NAO_MERGEAR,DROP POLICY + draft:true,,,INCERTA,SIM,NÃO VERIFICADO,NÃO,DROP POLICY + duplo bloqueio
 3257,fix migrations RLS idempotencia,claude,false,MERGEADA_AGENTE,,6b859b0fbfa95e34493900cf0137402e95e46823,2026-11-09T15:46:32Z,SIM,NÃO,NÃO,SIM,check_run_id=128955748854 success
@@ -17,7 +17,7 @@ number,titulo,autor,draft,veredito,motivo_resumido,sha_main_apos,merged_at,v1_va
 3263,DUPLICATA de #3261,claude,false,NAO_MERGEAR,duplicata #3261 (mesmo conteúdo),,,NÃO,SIM,SIM,NÃO,head SHA idêntico a #3261
 3264,feat view vw_products_min_quantity,NÃO VERIFICADO,false,MERGEADA_AGENTE,,908f30abba7b3fa1b46583ceae3cd0eaee872500,2026-11-09T18:50:00Z,SIM,NÃO,NÃO,SIM,CREATE OR REPLACE VIEW + 8321 produtos pós-merge
 3265,test regressoes Kit Builder,claude,false,NAO_MERGEAR,CONFLICTING (6f8930b4),,,INCERTA,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,mergeable:CONFLICTING
-3273,NÃO VERIFICADO — duplicata #3203,NÃO VERIFICADO,false,NAO_MERGEAR,CONFLICTING — duplicata #3203 (SHA 1aad6831),,,NÃO,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,head SHA 1aad6831 idêntico
+3273,chore migrations espelho P-10 categories indexes,adm01-debug,false,NAO_MERGEAR,zero Gate Final CI no head SHA 551ca9d6,,,SIM,NÃO,NÃO,SIM,SHA 551ca9d6; mergeable:true (behind não CONFLICTING); 25+0 diff; CREATE INDEX IF NOT EXISTS; zero Gate Final
 3274,ci workflows,NÃO VERIFICADO,false,PROCESSADA_EXTERNA,ci_workflows — fora do escopo,,,,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,categoria ci_workflows
 3277,NÃO VERIFICADO,NÃO VERIFICADO,false,FECHADA_EXTERNA,Gate Final=FAILURE fechada sem merge,,,NÃO,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,Gate Final=FAILURE
 3278,fix sentinela SHA,claude,false,MERGEADA_EXTERNA,,0818809d,,SIM,NÃO,NÃO,SIM,mergeada por adm01-debug
@@ -34,7 +34,7 @@ number,titulo,autor,draft,veredito,motivo_resumido,sha_main_apos,merged_at,v1_va
 3334,deps @sentry/react 8→11,dependabot,false,NAO_MERGEAR,zero Gate Final CI (c73c1552),,,INCERTA,POTENCIAL,NÃO,INCERTA,zero CI no head SHA
 3337,fix ci referencias invalidas,claude,false,MERGEADA_AGENTE,,6933eb61,,SIM,NÃO,NÃO,SIM,docs-only E14; Gate Final SUCCESS
 3339,NÃO VERIFICADO file-size,NÃO VERIFICADO,false,NAO_MERGEAR,Gate 1=FAILURE file-size regression,,,NÃO,SIM,NÃO VERIFICADO,NÃO VERIFICADO,Gate 1 FAILURE anotação file-size
-3340,docs analise-prs progresso,claude,false,MERGEADA_AGENTE,,,,,SIM,NÃO,NÃO,SIM,docs-only E14; Gate Final SUCCESS
+3340,docs analise-prs progresso,claude,false,MERGEADA_AGENTE,,5a3f679e7b32c652696d955a7c90f867db79abe7,,SIM,NÃO,NÃO,SIM,docs-only; Gate Final SUCCESS; squash SHA 5a3f679e confirmado via GraphQL mergeCommit
 3341,docs recibo deploy edge function,claude,false,MERGEADA_EXTERNA,,,,,SIM,NÃO,NÃO,SIM,mergeada por adm01-debug
 3342,fix ci as-assertions-baseline,claude,false,MERGEADA_EXTERNA,,,,,SIM,NÃO,NÃO,SIM,mergeada por adm01-debug
 3343,chore ci file-size baseline Kit Builder,claude,false,MERGEADA_AGENTE,,78729fc11038,,SIM,NÃO,NÃO,SIM,Gate Final SUCCESS; diff lido
@@ -43,10 +43,10 @@ number,titulo,autor,draft,veredito,motivo_resumido,sha_main_apos,merged_at,v1_va
 3347,NÃO VERIFICADO CI incompleto,NÃO VERIFICADO,false,FECHADA_EXTERNA,CI incompleto fechada sem merge,,,NÃO,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,fechada externamente
 3348,fix tests useKitBuilderQuote,claude,false,MERGEADA_EXTERNA,,b4c1167c,,SIM,NÃO,NÃO,SIM,mergeada externamente
 3349,fix snapshots PriceFreshnessBadge,claude,false,MERGEADA_EXTERNA,,fb4b8c2d,,SIM,NÃO,NÃO,SIM,mergeada por adm01-debug
-3350,NÃO VERIFICADO Gate 1 FAILURE,NÃO VERIFICADO,false,PROCESSADA_EXTERNA,Gate 1 Lint+TypeScript=FAILURE,,,NÃO,SIM,NÃO VERIFICADO,NÃO VERIFICADO,run_id=129233697044 FAILURE
+3350,feat kit-builder FT-083/093/134/139/174 UX batch6 rebuild,adm01-debug,false,MERGEADA_EXTERNA,,86b647b4ee20d84370c5aecd0552f825459dc745,,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,state=MERGED confirmado via GraphQL; mergeada por adm01-debug
 3355,PR entrega desta sessão,claude,false,NAO_MERGEAR,PR de entrega — NUNCA MERGEAR,,,N/A,N/A,N/A,N/A,branch claude_pink/sleepy-cannon-h000nc
 3357,feat e2e-gates spec @smoke,claude,true,NAO_MERGEAR,.github/workflows/ + draft:true,,,INCERTA,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,duplo bloqueio
 3359,docs recibo deploy,claude,false,FECHADA_POSTERIOR,era NAO_MERGEAR CONFLICTING — fechada externamente após análise,,,NÃO,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,mergeable:CONFLICTING
 3360,docs recibo deploy,claude,false,FECHADA_POSTERIOR,era NAO_MERGEAR zero CI — fechada externamente após análise,,,INCERTA,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,zero CI head SHA cd1069d6
-3361,chore registra 611 arquivos não rastreados,claude,true,NAO_MERGEAR,isDraft:true + .github/workflows/ci.yml + supabase/migrations/ + body NAO MERGEAR,,,NÃO,SIM,PARCIALMENTE,NÃO,isDraft:true + 611 ADDED + ci.yml ADDED + body PR instrui não mergear
+3361,chore registra 611 arquivos não rastreados,claude,true,MERGEADA_EXTERNA,,167f5f8de8c8a5063a17774a90373f9bc2caaff1,2026-11-09T19:01:12Z,NÃO,SIM,PARCIALMENTE,NÃO,mergeada externamente por adm01-debug após veredito NAO_MERGEAR desta sessão
 3363,fix(ci) corrige falhas hooks tests e deno typecheck,adm01-debug,true,BLOQUEADO_DRAFT,isDraft:true + Gate Final quality-gate=pending,,,SIM,INCERTA,NÃO,INCERTA,isDraft:true (HTTP 405) + 53 checks vários pending — quality-gate ainda em execução

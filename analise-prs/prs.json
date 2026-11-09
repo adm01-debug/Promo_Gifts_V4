@@ -5,7 +5,7 @@
     "main_sha_inicio_sessao": "0818809dXXXX",
     "main_sha_fim_sessao": "908f30abba7b3fa1b46583ceae3cd0eaee872500",
     "total_prs_inventariadas": 51,
-    "nota_contagem": "51 PRs únicas: 49 do inventário original + #3361 + #3363 detectadas durante sessão. #3359 e #3360 eram NAO_MERGEAR, agora fechadas externamente (FECHADA_POSTERIOR). 29 abertas agora + 22 fechadas/mergeadas = 51."
+    "nota_contagem": "51 PRs únicas: 49 do inventário original + #3361 + #3363 detectadas durante sessão. #3361 mergeada externamente pelo PO. #3359 e #3360 eram NAO_MERGEAR, agora fechadas externamente (FECHADA_POSTERIOR). #3350 reclassificada MERGEADA_EXTERNA. 28 abertas agora + 23 fechadas/mergeadas = 51."
   },
   "prs": [
     {
