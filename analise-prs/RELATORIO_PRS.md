@@ -1,7 +1,7 @@
 # Relatório de PRs — adm01-debug/Promo_Gifts_V4
 
 **Sessão:** session_01VXkRxWq5ZUCmvuNx5e2TGX  
-**Main SHA base:** `78729fc11038f7d0b2bb73ff0c1330f92547658b`
+**Main SHA base:** `78729fc11038f7d0b2bb73ff0c1330f92547658b`  
 **Main SHA atual (sessão 5):** `00c8fa295dbc60bd9dc3f7117f2ebf80350bd110` (PR#3344 absorvido como commit direto)  
 **Data:** 2026-11-09  
 **Branch de entrega:** `claude_pink/sleepy-cannon-h000nc` (PR #2674)
@@ -67,12 +67,13 @@
 
 Verificação Supabase após todos os merges: `products_count=8321` em `doufsxqlfjyuvxuezpln` (2026-11-09).
 
-### Externamente pelo PO (2)
+### Externamente pelo PO (3)
 
 | PR | Merged by |
-|---|---|
+|---|
 | **#3341** | adm01-debug |
 | **#3342** | adm01-debug |
+| **#3344** | adm01-debug (commit direto `00c8fa295dbc`) |
 
 ---
 
@@ -84,12 +85,12 @@ Todas bloqueadas por **runner saturation** desde 12:27Z — GitHub Actions pool 
 |---|---|---|---|
 | **#3346** | fix(tests): vitest regressions | ✓ | DRAFT + Gate Final=FAILURE (run 129178484108, SHA 5c376fe3) |
 | **#3345** | fix(e2e): smoke tests | ✓ | DRAFT + CI queued |
-| ~~**#3344**~~ | fix(tests): consumeUnloadBackup | MERGEADA | cherry_plus=0 → absorvida em main como commit `00c8fa295dbc` |
 | **#3278** | sentinel grandfather | ✓ | DRAFT + CI queued |
 | **#3210** | release 1.9.0 | — | action_required (deploy approval) |
 
 **#3339 e #3332** → reclassificados NAO_MERGEAR (Gate Final=FAILURE com falhas reais — ver tabela acima).  
-**#3137 e #3127** → reclassificados AGUARDA_PO (tocam `.github/workflows/` — confirmado por `git diff --name-only` nesta sessão).
+**#3137 e #3127** → reclassificados AGUARDA_PO (tocam `.github/workflows/` — confirmado por `git diff --name-only` nesta sessão).  
+**#3344** → absorvida em main como commit `00c8fa295dbc` (cherry_plus=0, removida da lista open).
 
 ---
 
@@ -153,8 +154,8 @@ Gate Final queued = saturação de runner (não falha de código). Nenhuma falha
 | `analise-prs/baseline/main-sha.txt` | ✓ |
 | `analise-prs/baseline/state.md` | ✓ |
 | `analise-prs/progresso.json` | ✓ |
-| `analise-prs/prs.json` | ✓ (38 PRs) |
+| `analise-prs/prs.json` | ✓ (37 PRs open + metadados sessão 5) |
 | `analise-prs/prs.csv` | ✓ |
 | `analise-prs/regras-de-negocio.md` | ✓ |
 | `analise-prs/RELATORIO_PRS.md` | ✓ (este arquivo) |
-| `analise-prs/dossies/PR-*.md` | ✓ (170+ arquivos, cobre todas 38 PRs abertas) |
+| `analise-prs/dossies/PR-*.md` | ✓ (182+ arquivos, cobre todas 38 PRs analisadas) |
