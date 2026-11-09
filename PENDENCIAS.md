@@ -176,7 +176,7 @@
   ```
 - **Impacto:** Shadow DB fica sem índices → queries mais lentas em Preview; sem erro funcional; produção não afetada.
 - **Acao necessaria (PO/Dev):**
-  1. Criar migration `supabase/migrations/20260511235970_add_categories_indexes_drift.sql` com `CREATE INDEX IF NOT EXISTS` para cada um (idempotente — no-op em produção onde já existem)
+  1. Criar migration `20260511235970_add_categories_indexes_drift.sql` (em `supabase/migrations/`) com `CREATE INDEX IF NOT EXISTS` para cada um (idempotente — no-op em produção onde já existem)
   2. Abrir PR e aguardar CI verde
   3. Disparar `db-apply-migration.yml` com `version=20260511235970` (DDL em produção — REGRA #8)
 - **Risco:** Baixo — apenas performance de queries no Preview; produção inalterada
@@ -257,7 +257,7 @@
   1. Revisar PR #3266 em https://github.com/adm01-debug/Promo_Gifts_V4/pull/3266
   2. Se aprovado: adicionar label `large-pr-approved` à PR (GitHub UI: PR → Labels → `large-pr-approved`)
   3. CI re-roda automaticamente após o label ser adicionado
-  4. OU: solicitar ao agente que abriu a PR (sessão `01N1ArYR3CFaoFfXHZNhsqHq`) que divida em PRs menores (≤50 arquivos)
+  4. OU: solicitar ao agente que abriu a PR (sessão `01N1ArYR3CFaoFfXHZNhsqHq`) que divida em PRs menores (<=50 arquivos)
 - **Impacto:** Enquanto não resolvido, o run aparece em `is:failure` para o SHA `705eecee` desta branch; não bloqueia `main` pois PR não foi mergeada.
 
 ---
