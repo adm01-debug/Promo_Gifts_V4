@@ -1,7 +1,8 @@
-## Main SHA baseline — 2026-11-09
+## Main SHA baseline — 2026-11-10 (atualizado sessao session_01VXkRxWq5ZUCmvuNx5e2TGX)
 
-SHA atual: c1d47d13bee8089eb62e3c47db1b7b500dcf1042
-SHA anterior (sessao anterior): 6b859b0fbfa95e34493900cf0137402e95e46823
+SHA atual: 293b9287478fba7fa8683b2e15248ed998880c3f
+SHA anterior: c1d47d13bee8089eb62e3c47db1b7b500dcf1042
+SHA anterior-2: 6b859b0fbfa95e34493900cf0137402e95e46823
 
 Main avancou externamente: commits adicionados apos merge #3257 (sha_main_apos 6b859b0f).
 Novo SHA confirmado como base de PR #3357 (criada por adm01-debug em 2026-11-09).

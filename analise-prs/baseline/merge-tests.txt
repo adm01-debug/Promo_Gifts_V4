@@ -1,49 +1,39 @@
-## Merge Tests Locais — session_01VXkRxWq5ZUCmvuNx5e2TGX — 2026-11-09
+# MERGE TESTS — base main 293b9287 — 2026-11-09T23:15
+# Método: git fetch --deepen=500 + git merge --no-commit --no-ff por PR
+# Formato: PR | GIT_RESULT | arquivos_modificados | +ins/-del | arquivos_conflito
 
-### PR #3243 — fix(migrations): categories level drift
-Branch: claude/fix-categories-level-drift-261108-1952
-Head SHA: 06f31e44
-Base: 0818809d
+3179 | CLEAN  | 3 files  |  6705+/5540- | none — toca .github/workflows/ (governance)
+3203 | CONFLICT | 0 conflict | - | (merge-exit!=0 sem U-files; PR DIRTY 132 arq gerados)
+3210 | CLEAN  | 5 files  |  6743+/5543- | none — release-please branch
+3214 | CONFLICT | 63 files | - | .eslint-baseline.json,.file-size-baseline.json,PENDENCIAS.md,analise-prs/**,scripts/migration-ledger-remote-only-allowlist.json,src/components/kit-builder/ItemCard.tsx
+3228 | CLEAN  | 2 files  |  6700+/5539- | none — toca .github/workflows/
+3243 | CONFLICT | 1 file  | - | supabase/MIGRATIONS_SYNC_LOG.md
+3247 | CLEAN  | 15 files |  8320+/5539- | none — toca .github/workflows/
+3250 | CLEAN  | 3 files  |  6708+/5539- | none — migration DDL (index)
+3251 | CLEAN  | 3 files  |  6720+/5539- | none — cron DDL + .github/workflows/
+3255 | CONFLICT | 1 file  | - | supabase/MIGRATIONS_SYNC_LOG.md
+3256 | CLEAN  | 3 files  |  6742+/5539- | none — migration RLS
+3263 | CLEAN  | 3 files  |  6740+/5539- | none — feat + cron DDL
+3265 | CLEAN  | 3 files  |  6749+/5539- | none — migration (function)
+3273 | CLEAN  | 3 files  |  6724+/5539- | none — migration/indices
+3279 | CLEAN  | 2 files  |  6738+/5539- | none — migration/cron DDL (draft)
+3284 | CONFLICT | 2 files | - | supabase/migrations/20261101223908_cron001_stagger_additional_jobs.sql,supabase/migrations/20261101232022_cron001_stagger_schedules_reapply.sql
+3327 | CLEAN  | 2 files  |  6700+/5540- | none — .github/workflows/gitleaks-history-audit.yml +1 line (Dependabot)
+3328 | CLEAN  | 2 files  |  6700+/5540- | none — .github/workflows/codeql.yml +1 line (Dependabot)
+3329 | CLEAN  | 10 files |  6710+/5550- | none — .github/workflows/ 9 arquivos (Dependabot supabase/setup-cli)
+3330 | CLEAN  | 2 files  |  6700+/5540- | none — .github/workflows/codeql.yml +1 line (Dependabot)
+3331 | CLEAN  | 3 files  |  6704+/5554- | none — package.json bump (Dependabot)
+3332 | CLEAN  | 3 files  |  9055+/7553- | none — package.json 32 deps bumps (Dependabot)
+3333 | CLEAN  | 3 files  |  6718+/5558- | none — package.json bump (Dependabot)
+3334 | CLEAN  | 3 files  |  6799+/5621- | none — package.json bump (Dependabot)
+3339 | CONFLICT | 2 files | - | src/tests/MockupDeletion.test.tsx,tests/pages/kit-builder/useKitBuilderQuote.test.ts
+3355 | CONFLICT | 55 files | - | analise-prs/** — delivery branch desta sessão (NUNCA_MERGEAR)
+3363 | CLEAN  | 12 files |  6856+/6305- | none — edge functions + tests (draft)
+3364 | CLEAN  | 6 files  |  6709+/5574- | none — front + scripts (draft)
+3367 | CLEAN  | 4 files  |  6907+/5543- | none — src/hooks/kit-builder/ + src/pages/kit-builder/ (AGUARDA_CI zombie)
+3368 | CLEAN  | 5 files  |  7402+/5665- | none — .eslint-baseline.json +540 linhas RATCHET_VIOLATION (draft)
 
-Comando:
-  git worktree add /tmp/merge-test-3243 0818809dae41c295b046dc52f85078e4f06b3df4
-  git merge --no-commit --no-ff origin/claude/fix-categories-level-drift-261108-1952
-
-Resultado: Automatic merge went well; stopped before committing as requested
-Arquivos que seriam alterados:
-  supabase/MIGRATIONS_SYNC_LOG.md
-  supabase/migrations/20260511235950_add_categories_level_drift.sql
-  supabase/migrations/20260511235960_add_categories_full_path_readable_drift.sql
-
-Commits unicos (git log origin/main..origin/branch):
-  06f31e44e Merge branch main (merge commit)
-  c3af288d2 Merge branch main (merge commit)
-  1efc65891 Merge branch main (merge commit)
-  6da971cad fix(migrations): alinha 20260511235950 com producao
-  3a422123e fix(migrations): restaura MIGRATIONS_SYNC_LOG
-  ed4db3b8c chore(migrations): registra 20260511235960
-  b36b3f6e0 fix(migrations): categories.full_path_readable (IF NOT EXISTS)
-  f4ba0d9c9 chore(ci): retrigger CI
-  6f43a8d92 fix(migrations): categories.level (IF NOT EXISTS)
-
-VEREDITO: Merge tecnicamente possivel (sem conflitos), BLOQUEADO por REGRA E056:
-  - Contem DDL (ALTER TABLE via migrations SQL)
-  - Caminho autorizado: workflow_dispatch db-apply-migration.yml
-  - Requer aprovacao explicita do PO
-  - Classificacao: AGUARDA_PO
-
-### PR #3350 — feat(kit-builder): FT-083/093/134/139/174 UX batch6
-Branch: claude/fix-ft-ux-batch6-rebuild-261109-1500
-Head SHA: 62761213
-
-Cherry check (git log origin/main..origin/branch):
-  62761213 feat(kit-builder): FT-083/093/134/139/174 UX batch6 (UNICO commit novo)
-  0818809da fix: sentinela (JA EM MAIN)
-  fb4b8c2d8 fix: snapshots PriceFreshnessBadge (JA EM MAIN via #3349)
-  8b29818  fix: PNG snapshot (JA EM MAIN via #3347)
-
-draft=False confirmado via GitHub API
-Gate 1 Lint+TypeScript: FAILURE (confirmado via 76 check runs)
-VEREDITO: NAO_MERGEAR — Gate 1=FAILURE
-
-Verificado em 2026-11-09 nesta sessao.
+# RESUMO
+# CLEAN (git level):  25 PRs
+# CONFLICT (git level): 5 PRs (3203,3214,3243,3255,3284,3339,3355) — 7 total
+# ZERO PRs mergeáveis hoje: Gate Final QUEUED (zombie 39698009932) + governança + draft
