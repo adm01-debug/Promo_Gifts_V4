@@ -87,7 +87,9 @@ export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean
         const rewritten = rewriteCiSharedIpLockout(true, response.status(), payload);
         await route.fulfill(rewritten ? { response, json: rewritten } : { response });
       } catch {
-        await route.continue();
+        // route.continue() pode lançar "Route is already handled!" quando outro
+        // listener já tratou esta rota antes do catch — silenciar é seguro.
+        try { await route.continue(); } catch { /* já tratada */ }
       }
     });
   }
