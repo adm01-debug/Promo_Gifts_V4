@@ -227,11 +227,18 @@
 **→ AGUARDA_CI** — base SHA `e70479b` desatualizado vs main `293b9287`; auto-merge squash habilitado pelo PO
 
 ### #3367 `branch claude/fix-ft119-beforeunload-restore-261109-2044`
-1. **Válida?** Talvez — tenta fix de `beforeunload` para restore de backup
-2. **Regressão?** Desconhecido — zero Gate Final no head `051a279b`; behind main
-3. **Implementada no main?** Talvez — #3344 cobre tema relacionado
-4. **Regra correta?** Desconhecido
-**→ NAO_MERGEAR** — branch outra sessão Claude (READ-ONLY) + zero Gate Final + behind main
+1. **Válida?** Sim — adiciona `BackupFullState` interface em `useKitAutoSave.ts`, `persistUnloadBackup()`, e restauração de backup em `KitBuilderPage.tsx` com lógica cross-kit e 5-min age check
+2. **Regressão?** Risco — zero Gate Final no head `051a279b`; behind main `293b9287`; lógica de restore com toast de conflito não testada em CI
+3. **Implementada no main?** Não — `consumeUnloadBackup` e `persistUnloadBackup` ausentes em main
+4. **Regra correta?** Sim — salvaguarda de beforeunload é defensiva; porém branch de outra sessão
+**→ NAO_MERGEAR** — branch outra sessão Claude `claude/fix-ft119-beforeunload-restore-261109-2044` (READ-ONLY) + zero Gate Final + behind main (`e70479b` vs `293b9287`)
+
+### #3368 `fix: remove imports quebrados SmartSuggestions/ActionHistoryPanel/recordAction`
+1. **Válida?** Parcialmente sim — remoções de `SmartSuggestions`, `ActionHistoryPanel` e `recordAction` são corretas (componentes/funções inexistentes causam erros TS + runtime); `existsSync` guard em `check-eslint-baseline.mjs` previne ENOENT por OOM
+2. **Regressão?** Sim — `.eslint-baseline.json` aumenta `totalErrors` de 1 para 298 (+297 erros); Gate 1.9 (ratchet de lint) falha por expansão massiva do baseline sem label `ratchet-override`
+3. **Implementada no main?** Não — `existsSync` guard, remoção de imports quebrados e fix `useMemo`/`restoreItems` em `useSellerCartsPage.ts` ausentes em main `293b9287`
+4. **Regra correta?** Parcialmente — remoções de código corretas; expansão do baseline de lint viola Gate 1.9 (ratchet) explicitamente
+**→ NAO_MERGEAR** — draft:true + branch alheia `claude/fix-broken-cart-imports-261109-2133` (READ-ONLY) + Gate 1.9 ratchet violation (`.eslint-baseline.json` totalErrors 1→298, +297 erros)
 
 ---
 

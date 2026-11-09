@@ -54,3 +54,4 @@ number,titulo,veredito,head_sha,motivo
 3365,fix(ci): guarda check-eslint-baseline contra crash antes de escrever output,AGUARDA_CI,1653f5d3,Gate Final nao rodou no head SHA. Base desatualizado (e70479b vs 293b9287). Auto-merge habilitado pelo PO — aguarda CI verde.
 3366,chore(docs): adiciona 4 segredos E2E ausentes em SEGREDOS.md,MERGEADA_EXTERNA,,mergeada externamente; sha_main_apos=293b9287 merged_at=2026-11-09T21:05:17Z
 3367,branch claude/fix-ft119-beforeunload-restore-261109-2044,NAO_MERGEAR,051a279b,branch de outra sessao Claude (READ-ONLY) + behind main + zero Gate Final
+3368,fix: remove imports quebrados SmartSuggestions/ActionHistoryPanel/recordAction,NAO_MERGEAR,0fe3c008,draft:true + branch claude/fix-broken-cart-imports-261109-2133 outra sessao Claude READ-ONLY + .eslint-baseline.json totalErrors 1->298 Gate 1.9 ratchet violation

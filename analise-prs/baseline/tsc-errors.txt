@@ -1,0 +1,18 @@
+# Baseline TypeScript (tsc) — main
+#
+# SHA de referência: 293b9287478fba7fa8683b2e15248ed998880c3f
+# Data: 2026-11-09
+# Sessão: session_01VXkRxWq5ZUCmvuNx5e2TGX
+
+## SHA 293b9287 (main HEAD atual — 2026-11-09T21:33Z)
+
+Gate Final run #42703616654: conclusion=success (2026-11-09T21:33Z)
+Gate 1 (TypeScript + ESLint): PASS — 0 erros TypeScript confirmados pelo CI
+
+Verificação local (npx tsc --noEmit via node_modules pré-instalados):
+  Erros: 0
+  Arquivos verificados: src/**
+  Nota: npm ci indisponível (registry privado Lovable europe-west1-npm.pkg.dev retorna 403)
+        node_modules pré-instalados usados como workaround (796 pacotes)
+
+Conclusão: TSC baseline = 0 erros em main SHA 293b9287
