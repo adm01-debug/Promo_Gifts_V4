@@ -3,62 +3,33 @@
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 2674,
   "iniciado_em": "2026-10-28T00:00:00Z",
-  "atualizado_em": "2026-11-09T12:30:00Z",
+  "atualizado_em": "2026-11-09T13:30:00Z",
   "contagem_por_veredito": {
-    "MERGEADA": 15,
-    "NÃO_MERGEAR": 10,
+    "MERGEADA": 16,
+    "NÃO_MERGEAR": 12,
     "AGUARDA_CI": 26,
     "AGUARDA_CI_OU_PO": 17,
     "AGUARDA_PO": 4,
     "FECHADA_SEM_MERGE": 3,
-    "TOTAL_ANALISADO": 74
-  },
-  "mergeadas_por_agente_esta_sessao": [
-    {
-      "number": 3337,
-      "sha": "6933eb6122d2ccf333d533d4441891b8d918479b",
-      "titulo": "fix(ci): corrige referências inválidas supabase/migrations/x6 em analise-prs",
-      "tipo": "docs-only E14",
-      "gate_final": "SUCCESS",
-      "gate_final_ref": "5a9579c7e4f6d386f6118a40dada051c7c266a74",
-      "supabase_impacto": "ZERO — zero DDL, zero edge function",
-      "merged_at": "2026-11-09T12:00:00Z"
-    },
-    {
-      "number": 3340,
-      "sha": "5a3f679e7b32c652696d955a7c90f867db79abe7",
-      "titulo": "fix(audit): registrar fn_check_item_fits e vw_products_min_quantity no catálogo Supabase",
-      "tipo": "docs-only E14",
-      "gate_final": "SUCCESS",
-      "gate_final_ref": "confirmado pre-merge via check-runs da PR",
-      "supabase_impacto": "ZERO — zero DDL, zero edge function; fn_check_item_fits e vw_products_min_quantity confirmados em produção doufsxqlfjyuvxuezpln",
-      "merged_at": "2026-11-09T11:30:12Z"
-    }
-  ],
-  "mergeadas_sessoes_anteriores": {
-    "total": 13,
-    "range": "#2580-#3340",
-    "detalhes": "Ver RELATORIO_PRS.md sessoes anteriores"
-  },
-  "nao_mergeadas": {
-    "total": 10,
-    "motivos": "NÃO_MERGEAR: CI failure, conflito, já implementado em main ou supersedida"
-  },
-  "aguardando": {
-    "AGUARDA_CI": "26 PRs com Gate Final ainda não verde",
-    "AGUARDA_CI_OU_PO": "17 PRs que requerem CI verde + decisão do PO",
-    "AGUARDA_PO": "4 PRs: migrations DDL, .github/workflows, segurança — requerem aprovação humana"
+    "TOTAL_ANALISADO": 78
   },
   "gate_final_main_atual": {
     "verificado": true,
-    "sha": "5a3f679e7b32c652696d955a7c90f867db79abe7",
-    "run_id": 42609551247,
+    "sha": "16f4af23df235c2f68b534692d8287ee20eb83c1",
+    "run_id": 42612471759,
     "conclusion": "failure",
-    "job_falhando": "Gate 1 - Lint + TypeScript (job #129134477785)",
+    "job_falhando": "Gate 1 - Lint + TypeScript (job #129147531657)",
     "step_falhando": "Gate 1.9 — Dívida técnica (ratchets TODO/as/file-size/eslint-disable) [step 14]",
-    "causa": "PRE-EXISTENTE — ratchets de dívida técnica excedidos no código-fonte. Não causado pelos merges #3337/#3340 (ambos docs-only). Bloqueio estrutural em main desde antes desta sessão.",
-    "impacto_merges_docs": "ZERO — merges docs-only com bypass E14 continuam seguros (Gate 1 skipped para docs-only)",
-    "verificado_em": "2026-11-09T12:30:00Z"
+    "sub_check_falhando": "file-size baseline (check-file-size-baseline.mjs)",
+    "arquivos_acima_baseline": [
+      "src/components/kit-builder/KitAIPromptDialog.tsx: 598 vs 577 (+21)",
+      "src/hooks/kit-builder/useKitBuilder.ts: 774 vs 761 (+13)",
+      "src/hooks/kit-builder/useKitBuilderPageState.ts: 563 vs 553 (+10)"
+    ],
+    "gate_1_9_as_assertions": "PASSOU (2146=2146) — corrigido via #3342",
+    "gate_6_build": "SKIPPED (DOCS_ONLY=false) — tambem causa falha no Gate Final",
+    "causa": "PRE-EXISTENTE — arquivos do Kit Builder cresceram antes desta sessão. Falha estava mascarada pelo exit precoce do as-assertions check.",
+    "verificado_em": "2026-11-09T13:00:00Z"
   },
-  "bloqueio_geral": "Gate 1.9 (Dívida técnica — ratchets TODO/as/file-size/eslint-disable) falha em main desde antes desta sessão — problema estrutural no código-fonte. PRs de código bloqueadas. PRs docs-only com bypass E14 continuam mergeáveis."
+  "bloqueio_geral": "Gate 1.9 file-size (3 arquivos Kit Builder acima do baseline) — falha pré-existente, agora visível após #3342 corrigir as-assertions. MERGES PAUSADOS per mandato."
 }
