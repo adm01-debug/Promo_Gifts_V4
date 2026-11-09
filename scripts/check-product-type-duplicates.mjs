@@ -39,8 +39,9 @@ if (UPDATE) {
 
 const baselineCount = baseline.count;
 
-if (baselineCount === null) {
-  console.error('❌ Baseline não encontrado. Gere com: node scripts/check-product-type-duplicates.mjs --update');
+// GUARD: baseline `{}` ou `{"count":"abc"}` fazia as comparações com undefined/NaN serem falsas e o gate passar.
+if (!Number.isInteger(baselineCount) || baselineCount < 0) {
+  console.error('❌ Baseline não encontrado ou inválida. Gere com: node scripts/check-product-type-duplicates.mjs --update');
   process.exit(2);
 }
 
