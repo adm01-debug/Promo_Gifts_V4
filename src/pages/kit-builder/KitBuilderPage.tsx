@@ -1,5 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
-import { toast } from 'sonner';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { useKitBuilderPageState } from '@/hooks/kit-builder';
 import { Card, CardContent } from '@/components/ui/card';
@@ -37,34 +36,12 @@ export default function KitBuilderPage() {
     setGuideChapter(chapter);
     setGuideOpen(true);
   };
-  // FT-119: consume any localStorage backup written on accidental tab close / navigation.
-  // Runs once per mount (guarded by ref to survive React Strict Mode double-invoke).
-  const checkedBackupRef = useRef(false);
-  useEffect(() => {
-    if (checkedBackupRef.current) return;
-    checkedBackupRef.current = true;
-    const backup = actions.consumeUnloadBackup();
-    if (!backup) return;
-    const ageMs = Date.now() - backup.savedAt;
-    if (ageMs > 300_000 || !backup.kitId) return; // ignore stale or kit-less backups
-    toast.warning('Alterações não salvas detectadas', {
-      description: 'Você fechou o Kit Maker com edições pendentes.',
-      action: {
-        label: 'Reabrir kit',
-        onClick: () => { window.location.href = `/montar-kit?kit=${backup.kitId}`; },
-      },
-      duration: 10_000,
-    });
-  }, [actions.consumeUnloadBackup]);
 
   const isSummary = state.wizardState.currentStep === 'summary';
   const usesFullWorkspace = ['items', 'personalization', 'summary'].includes(
     state.wizardState.currentStep,
   );
   const handleExportPDF = () => {
-    // Printing is the browser-supported PDF path. It is intentionally explicit
-    // rather than a no-op "Exportar PDF" action while a server renderer is not
-    // part of this module's contract.
     window.print();
   };
 
@@ -87,8 +64,6 @@ export default function KitBuilderPage() {
       const target = event.target as HTMLElement | null;
       const isTextEntry =
         target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.isContentEditable;
-      // Preserve native undo/redo while a user is editing text. Ctrl/Cmd+S
-      // remains available because it is an explicit save operation.
       if (isTextEntry && key !== 's') return;
       if (key === 's') {
         event.preventDefault();
@@ -155,7 +130,6 @@ export default function KitBuilderPage() {
             isAutoSaving={meta.isAutoSaving}
             lastSavedAt={meta.lastSavedAt}
             autoSaveError={meta.autoSaveError}
-            isConflictError={meta.isConflictError}
             onRetryAutoSave={() => {
               void actions.retryAutoSave();
             }}
