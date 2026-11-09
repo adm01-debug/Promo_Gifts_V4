@@ -2,14 +2,14 @@
   "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 2674,
-  "atualizado_em": "2026-11-09T19:30:00Z",
-  "main_sha_final": "c1d47d13bee8089eb62e3c47db1b7b500dcf1042",
-  "todos_diffs_lidos": true,
+  "atualizado_em": "2026-11-09T18:30:00Z",
+  "main_sha_final": "9346b048e8fff01c3be31c7095d8b8ebdd4ebdcc",
   "mergeadas_por_agente_esta_sessao": [
     {"number": 3337, "sha_main_apos": "6933eb61", "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
     {"number": 3340, "titulo": "docs(analise-prs): atualiza progresso", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
     {"number": 3343, "sha_main_apos": "78729fc11038", "titulo": "chore(ci): atualiza file-size baseline Kit Builder", "tipo": "chore/ci", "gate_final": "SUCCESS"},
-    {"number": 3257, "sha_main_apos": "6b859b0fbfa95e34493900cf0137402e95e46823", "titulo": "fix(migrations): idempotencia em RLS deny-all e particoes 2027", "tipo": "fix/migrations-idempotencia", "gate_final": "SUCCESS", "gate_final_check_run_id": 128955748854, "diff_lido_100pct": true, "merged_at": "2026-11-09T15:46:32Z"}
+    {"number": 3257, "sha_main_apos": "6b859b0fbfa95e34493900cf0137402e95e46823", "titulo": "fix(migrations): idempotencia em RLS deny-all e particoes 2027", "tipo": "fix/migrations-idempotencia", "gate_final": "SUCCESS", "gate_final_check_run_id": 128955748854, "diff_lido_100pct": true, "merged_at": "2026-11-09T15:46:32Z"},
+    {"number": 3261, "sha_main_apos": "9346b048e8fff01c3be31c7095d8b8ebdd4ebdcc", "titulo": "chore(migrations): adiciona arquivos espelho CRON-001 (20261101223908, 20261101232022)", "tipo": "repair-only mirror files", "gate_final": "SUCCESS", "gate_final_check_run_id": 128960805201, "head_sha": "f5b6c19499c0517c59edbdff74e0bea3043d63b4", "merged_at": "2026-11-09T17:57:47Z", "nota": "2 mirror files ja aplicados em producao + recibo MIGRATIONS_SYNC_LOG.md"}
   ],
   "mergeadas_externas_esta_sessao": [
     {"number": 3341, "titulo": "docs: recibo deploy edge function", "merged_by": "adm01-debug"},
@@ -39,55 +39,62 @@
     "verificado_via": "mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__execute_sql (SELECT COUNT(*) FROM products WHERE deleted_at IS NULL)"
   },
   "gate_final_main_atual": {
+    "sha": "9346b048e8fff01c3be31c7095d8b8ebdd4ebdcc",
+    "nota": "pos-merge PR#3261 - CI ainda a rodar"
+  },
+  "gate_final_main_baseline_sessao": {
     "sha": "c1d47d13bee8089eb62e3c47db1b7b500dcf1042",
     "run_id": 42652746997,
     "check_run_id": 129290526546,
-    "status": "completed",
     "conclusion": "success",
-    "nota": "SHA atualizado apos merges externos pos-sessao"
-  },
-  "gate_final_main_baseline_sessao": {
-    "sha": "6b859b0fbfa95e34493900cf0137402e95e46823",
-    "run_id": 42648049808,
-    "check_run_id": 129269658289,
-    "conclusion": "success",
-    "completed_at": "2026-11-09T15:51:59Z"
+    "completed_at": "2026-11-09T18:00:00Z"
   },
   "contagem_por_veredito": {
-    "MERGEADA_AGENTE": 4,
+    "MERGEADA_AGENTE": 5,
     "MERGEADA_EXTERNA": 7,
     "FECHADA_EXTERNA": 2,
     "PROCESSADA_EXTERNA": 5,
-    "NAO_MERGEAR": 8,
-    "AGUARDA_PO": 21,
-    "TOTAL_OPEN_RESTANTE": 29,
+    "NAO_MERGEAR": 16,
+    "AGUARDA_PO": 12,
+    "TOTAL_OPEN_RESTANTE": 28,
     "TOTAL_ANALISADAS": 47,
     "VERIFICADO_EXAUSTIVO": true,
-    "TODOS_DIFFS_LIDOS": true,
-    "DOSSIERS_CRIADOS": 29,
-    "nota_reclassificacoes": "#3228/#3247 reclassificados de major_version_bumps para ci_workflows; #3264 reclassificado de major_version_bumps para ddl_migration; major_version_bumps agora vazio"
+    "DOSSIERS_CRIADOS": 29
   },
   "prs_nao_mergear": [
-    {"number": 3203, "motivo": "CONFLICTING/DIRTY — duplicata de #3273 (mesmo head SHA 1aad6831)"},
-    {"number": 3265, "motivo": "test: regressoes Kit Builder — CONFLICTING/DIRTY (6f8930b4)"},
-    {"number": 3273, "motivo": "CONFLICTING/DIRTY — duplicata de #3203 (mesmo head SHA 1aad6831)"},
-    {"number": 3279, "motivo": "PR entrega sessao anterior — CONFLICTING/DIRTY (ca9dae70)"},
-    {"number": 3331, "motivo": "fix(cron) CRON-001 — toca .github/workflows E CONFLICTING/DIRTY (7d6a177a)"},
+    {"number": 3203, "motivo": "CONFLICTING/DIRTY - duplicata de #3273 (mesmo head SHA 1aad6831)"},
+    {"number": 3251, "motivo": "cron.unschedule sem EXCEPTION handler - nao idempotente (mandato: idempotente obrigatorio)"},
+    {"number": 3255, "motivo": "DROP FUNCTION - mandato proibe DROP"},
+    {"number": 3256, "motivo": "DROP POLICY + RLS change - mandato proibe DROP"},
+    {"number": 3263, "motivo": "DUPLICATA de #3261 (mesmo conteudo, confirmado sessao anterior)"},
+    {"number": 3265, "motivo": "test: regressoes Kit Builder - CONFLICTING/DIRTY (6f8930b4)"},
+    {"number": 3273, "motivo": "CONFLICTING/DIRTY - duplicata de #3203 (mesmo head SHA 1aad6831)"},
+    {"number": 3279, "motivo": "PR entrega sessao anterior - CONFLICTING/DIRTY (ca9dae70)"},
+    {"number": 3284, "motivo": "DUPLICATA de #3261 (versoes 20261101223908+20261101232022 identicas) + body diz AGUARDANDO APROVACAO DO PO"},
+    {"number": 3214, "motivo": "mergeable:false DIRTY + 192 changed_files + body diz NAO MERGEAR sem aprovacao explicita do PO"},
+    {"number": 3329, "motivo": "toca 9 arquivos .github/workflows/ (Supabase CLI SHA pins) - mandato proibe"},
+    {"number": 3330, "motivo": "toca .github/workflows/codeql.yml (CodeQL SHA update) - mandato proibe"},
+    {"number": 3331, "motivo": "fix(cron) CRON-001 - toca .github/workflows E CONFLICTING/DIRTY (7d6a177a)"},
     {"number": 3332, "motivo": "npm ci ERESOLVE eslint@10 + SSOT=FAILURE + E2E=FAILURE [dados sessao anterior]"},
     {"number": 3339, "motivo": "Gate 1=FAILURE file-size regression REGRA #10 [dados sessao anterior]"},
-    {"number": 3355, "motivo": "PR de entrega DESTA sessao — NUNCA MERGEAR", "head_sha": "ca9dae70", "pr_entrega": true, "branch": "claude_pink/sleepy-cannon-h000nc"}
+    {"number": 3355, "motivo": "PR de entrega DESTA sessao - NUNCA MERGEAR", "head_sha": "ca9dae70", "pr_entrega": true, "branch": "claude_pink/sleepy-cannon-h000nc"}
   ],
   "prs_aguarda_po": {
-    "count": 21,
+    "count": 12,
     "categorias": {
-      "ci_workflows": [3210, 3228, 3247, 3327, 3328, 3357],
-      "ddl_migration": [3179, 3214, 3243, 3250, 3251, 3255, 3256, 3261, 3263, 3264, 3284, 3329, 3330, 3333, 3334],
-      "major_version_bumps": []
+      "ci_workflows": [3210, 3327, 3328, 3357],
+      "ddl_migration": {
+        "3179": "modifica arquivo migration existente 20261101150000 + rollback - drift risk; confirmar se versao ja esta no ledger de producao antes de mergear",
+        "3243": "ADD COLUMN IF NOT EXISTS categories.level + full_path_readable - aditiva/idempotente MAS zero Gate Final runs no head SHA 06f31e44 - precisa CI verde",
+        "3250": "CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_sds_summary_date - draft:true (precisa PO promover a ready-for-review); gate_final=SUCCESS (check_run_id=128951479367)"
+      },
+      "major_version_bumps": [3228, 3247, 3264, 3333, 3334]
     },
-    "diffs_lidos": {
-      "ci_workflows": "3210 3228 3247 3327 3328 3357 — todos 100%",
-      "ddl_migration": "3179 3214 3243 3250 3251 3255 3256 3261 3263 3264 3284 3329 3330 3333 3334 — todos 100%",
-      "nota": "3129 3137 3274 3290 processadas_externas (ci_workflows, diff lido via categoria)"
+    "notas": {
+      "3333": "framer-motion 11->14 - Dependabot, review_comments:1 pendente, requested_reviewers:[adm01-debug]",
+      "3334": "@sentry/react 8->11 - Dependabot, node engine muda para >=20.19.0 <22.0.0 || >=22.12.0, requested_reviewers:[adm01-debug]",
+      "3250": "Gate Final SUCCESS mas draft:true - merge bloqueado ate PO marcar como ready",
+      "3243": "Zero Gate Final runs - CI nao rodou no head SHA. Verificar se PR tem Gate Final antes de mergear."
     }
   }
 }
