@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `16f4af23df235c2f68b534692d8287ee20eb83c1` (2026-11-09T08:52:41-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `78729fc11038f7d0b2bb73ff0c1330f92547658b` (2026-11-09T09:27:22-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 9262 |
 | arquivos_codigo | 4635 |
-| linhas_codigo | 887655 |
+| linhas_codigo | 887714 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -586,25 +586,25 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38552 nós · 67007 arestas · 2187 comunidades · grafo do commit `16f4af23`
+- 38552 nós · 67007 arestas · 2187 comunidades · grafo do commit `78729fc1`
 - comunidades maiores: ref_lib (779), ref_components (637), ref_integrations (395), nav.ts (364), react-router-dom (361), @tanstack/react-query (346), ref_hooks (321), ref_node_fs (293), scripts (289), ref_utils (286), cors.ts (254), sonner (254)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - RELATORIO_CI.md (53)
-- PENDENCIAS.md (44)
+- PENDENCIAS.md (43)
 - supabase/MIGRATIONS_SYNC_LOG.md (22)
 - analise-prs/progresso.json (14)
-- package.json (14)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (13)
+- package.json (13)
 - .github/workflows/deploy-gates.yml (10)
 - analise-branches/RELATORIO_BRANCHES.md (10)
-- package-lock.json (10)
-- CHANGELOG.md (9)
 - e2e/flows/magazine-publish-smoke.spec.ts (9)
+- package-lock.json (9)
 - analise-prs/RELATORIO_PRS.md (8)
 - AGENTS.md (7)
+- CHANGELOG.md (7)
 - CLAUDE.md (7)
 - .github/workflows/replenishment-quality.yml (6)
 
@@ -1160,6 +1160,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-09 `78729fc` chore(ci): atualiza file-size baseline — Kit Builder +21/+13/+10 linhas
+- 2026-11-09 `29838f1` feat(kit-builder): confirmar substituição ao aplicar composição da IA (FT-134)
+- 2026-11-09 `0387ecb` chore(deps): bump production-minor-patch group com 12 updates
+- 2026-11-09 `3a4d23b` chore: ratchet semanal — baselines melhoradas
+- 2026-11-09 `37bb98e` fix(autoheal): ESLint --fix em 193a750
+- 2026-11-09 `aec7404` chore(ci): métricas semanais 2026-W46
+- 2026-11-09 `d82bd6a` docs: recibo deploy edge functions run 42609591614 (E66)
 - 2026-11-09 `16f4af2` fix(baseline): atualizar .as-assertions-baseline.json para arquivos kit-builder (#3342)
 - 2026-11-09 `5a3f679` fix(audit): registrar fn_check_item_fits e vw_products_min_quantity no catálogo Supabase (#3340)
 - 2026-11-09 `6933eb6` fix(ci): corrige referências inválidas supabase/migrations/x6 em analise-prs (#3337)
@@ -1168,13 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-09 `193a750` fix: corrige typecheck e permissão de script pré-existentes em main (#3320)
 - 2026-11-09 `ae1782f` docs(analise-prs): relatórios definitivos — ciclo merge-prs claude_04 (#3318)
 - 2026-11-09 `b5f3706` docs: progresso v6 + prs.json — balanço correto 29 abertas
-- 2026-11-09 `56cfd7f` docs(analise-prs): progresso.json v5 — balanço 32 correto + SHA final 16995de3 (#3315)
-- 2026-11-09 `16995de` docs(analise-prs): RELATORIO_PRS.md — dossiê completo 32 PRs + META CUMPRIDA (#3314)
-- 2026-11-09 `00493c3` docs(analise-prs): progresso.json v4 — estado real corrigido (13 mergeadas, 32 abertas, zombie bloqueando CI)
-- 2026-11-09 `0dfb3ef` docs(analise-prs): RELATORIO_DEFINITIVO — dossiê completo com evidências de CI
-- 2026-11-09 `9895738` fix(dropbox): exibir título no estado desconectado (#3303)
-- 2026-11-09 `ee6f6c8` feat(kit-builder): guard goToStep etapas não completadas FT-122 (#3292)
-- 2026-11-09 `b520784` fix: scripts static-pass e exit codes (#3266)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

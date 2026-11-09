@@ -2,11 +2,46 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "16f4af23df235c2f68b534692d8287ee20eb83c1",
+  "commit": "78729fc11038f7d0b2bb73ff0c1330f92547658b",
   "branch": "main",
-  "data_commit": "2026-11-09T08:52:41-03:00",
+  "data_commit": "2026-11-09T09:27:22-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "78729fc",
+    "data": "2026-11-09",
+    "assunto": "chore(ci): atualiza file-size baseline — Kit Builder +21/+13/+10 linhas"
+   },
+   {
+    "sha": "29838f1",
+    "data": "2026-11-09",
+    "assunto": "feat(kit-builder): confirmar substituição ao aplicar composição da IA (FT-134)"
+   },
+   {
+    "sha": "0387ecb",
+    "data": "2026-11-09",
+    "assunto": "chore(deps): bump production-minor-patch group com 12 updates"
+   },
+   {
+    "sha": "3a4d23b",
+    "data": "2026-11-09",
+    "assunto": "chore: ratchet semanal — baselines melhoradas"
+   },
+   {
+    "sha": "37bb98e",
+    "data": "2026-11-09",
+    "assunto": "fix(autoheal): ESLint --fix em 193a750"
+   },
+   {
+    "sha": "aec7404",
+    "data": "2026-11-09",
+    "assunto": "chore(ci): métricas semanais 2026-W46"
+   },
+   {
+    "sha": "d82bd6a",
+    "data": "2026-11-09",
+    "assunto": "docs: recibo deploy edge functions run 42609591614 (E66)"
+   },
    {
     "sha": "16f4af2",
     "data": "2026-11-09",
@@ -96,44 +131,9 @@
     "sha": "f68850a",
     "data": "2026-11-09",
     "assunto": "docs(analise-prs): RELATORIO_PRS.md + progresso.json — inventário completo 36 PRs abertas"
-   },
-   {
-    "sha": "ffa5228",
-    "data": "2026-11-09",
-    "assunto": "docs(analise-prs): RELATORIO_META_CUMPRIDA_v3 — 8 runs cancelados, bloqueio runner documentado"
-   },
-   {
-    "sha": "b4d6faf",
-    "data": "2026-11-08",
-    "assunto": "docs(analise-prs): RELATORIO_META_CUMPRIDA_v2 — bloqueio Gate Final documentado"
-   },
-   {
-    "sha": "e456ae7",
-    "data": "2026-11-08",
-    "assunto": "docs(analise-prs): prs.json — inventário completo 36 PRs abertas (#3307)"
-   },
-   {
-    "sha": "7851536",
-    "data": "2026-11-08",
-    "assunto": "docs(analise-prs): RELATORIO_META_CUMPRIDA — versão final com evidências por PR"
-   },
-   {
-    "sha": "5942bb6",
-    "data": "2026-11-08",
-    "assunto": "docs(analise-prs): RELATORIO_META_CUMPRIDA — sessão claude_04"
-   },
-   {
-    "sha": "ba33a10",
-    "data": "2026-11-08",
-    "assunto": "feat(kit-builder): FT-088 validação fn_check_item_fits antes de criar orçamento (#3301)"
-   },
-   {
-    "sha": "36f366b",
-    "data": "2026-11-08",
-    "assunto": "fix(kit-builder): AbortController AI dialog + confetti só em inválido→válido (#3276)"
    }
   ],
-  "arquivos_mudados_7d": 489,
+  "arquivos_mudados_7d": 491,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -176,16 +176,16 @@
     "mudancas": 74
    },
    {
+    "pasta": "src/components/kit-builder",
+    "mudancas": 59
+   },
+   {
     "pasta": "src/pages/admin",
     "mudancas": 59
    },
    {
     "pasta": "src/pages/products",
     "mudancas": 59
-   },
-   {
-    "pasta": "src/components/kit-builder",
-    "mudancas": 57
    },
    {
     "pasta": "RELATORIO_CI.md",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 44
+    "mudancas": 43
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -214,11 +214,11 @@
     "mudancas": 14
    },
    {
-    "arquivo": "package.json",
-    "mudancas": 14
+    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
+    "mudancas": 13
    },
    {
-    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
+    "arquivo": "package.json",
     "mudancas": 13
    },
    {
@@ -230,15 +230,11 @@
     "mudancas": 10
    },
    {
-    "arquivo": "package-lock.json",
-    "mudancas": 10
-   },
-   {
-    "arquivo": "CHANGELOG.md",
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 9
    },
    {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "arquivo": "package-lock.json",
     "mudancas": 9
    },
    {
@@ -247,6 +243,10 @@
    },
    {
     "arquivo": "AGENTS.md",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "CHANGELOG.md",
     "mudancas": 7
    },
    {
@@ -266,11 +266,11 @@
     "mudancas": 6
    },
    {
-    "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 5
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "mudancas": 6
    },
    {
-    "arquivo": "docs/estado/PENDENCIAS.md",
+    "arquivo": "docs/ci/SEGREDOS.md",
     "mudancas": 5
    },
    {
@@ -279,10 +279,6 @@
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 5
    },
    {
@@ -296,23 +292,31 @@
    {
     "arquivo": ".github/workflows/e2e-focused.yml",
     "mudancas": 4
+   },
+   {
+    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
+    "mudancas": 4
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 289
+    "commits": 286
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 16
+    "commits": 18
+   },
+   {
+    "autor": "dependabot[bot]",
+    "commits": 1
    }
   ]
  },
  "contagens": {
   "arquivos_total": 9262,
   "arquivos_codigo": 4635,
-  "linhas_codigo": 887655,
+  "linhas_codigo": 887714,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1828,7 +1832,7 @@
   },
   "src/components": {
    "arquivos": 1332,
-   "linhas": 268714
+   "linhas": 268775
   },
   "src/config": {
    "arquivos": 1,
@@ -1852,7 +1856,7 @@
   },
   "src/hooks": {
    "arquivos": 450,
-   "linhas": 84120
+   "linhas": 84118
   },
   "src/integrations": {
    "arquivos": 11,

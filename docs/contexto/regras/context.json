@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "16f4af23df235c2f68b534692d8287ee20eb83c1",
+  "sha": "78729fc11038f7d0b2bb73ff0c1330f92547658b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 11:59 UTC",
+  "generated_at": "2026-11-09 12:49 UTC",
   "files_total": 9182,
   "code_files": 7869,
-  "code_lines": 1055933
+  "code_lines": 1055992
  },
  "version": "1.3.2",
- "facts_hash": "747eb843caab10a7",
+ "facts_hash": "310ea3f9892f9e4d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -22,12 +22,12 @@
     "in": "package.json"
    },
    "@supabase/supabase-js": {
-    "version": "^2.118.0",
+    "version": "^2.119.0",
     "role": "Supabase (DB/Auth/Storage/Functions)",
     "in": "package.json"
    },
    "@tanstack/react-query": {
-    "version": "^5.104.5",
+    "version": "^5.106.1",
     "role": "Cache/fetch de dados (TanStack Query)",
     "in": "package.json"
    },
@@ -42,7 +42,7 @@
     "in": "package.json"
    },
    "lucide-react": {
-    "version": "1.61.0",
+    "version": "1.70.0",
     "role": "Ícones Lucide",
     "in": "package.json"
    },
@@ -52,12 +52,12 @@
     "in": "package.json"
    },
    "react-hook-form": {
-    "version": "^7.90.0",
+    "version": "^7.91.0",
     "role": "Forms (react-hook-form)",
     "in": "package.json"
    },
    "react-router-dom": {
-    "version": "^7.18.4",
+    "version": "^7.18.5",
     "role": "Roteamento (React Router)",
     "in": "package.json"
    },
@@ -138455,7 +138455,7 @@
   {
    "module": "src/components",
    "files": 1332,
-   "lines": 268713,
+   "lines": 268774,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -138812,7 +138812,7 @@
   {
    "module": "src/hooks",
    "files": 450,
-   "lines": 84120,
+   "lines": 84118,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -189554,13 +189554,13 @@
    {
     "file": "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
     "field": "status",
-    "value": "violations",
+    "value": "unavailable",
     "kind": "escreve"
    },
    {
     "file": "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
     "field": "status",
-    "value": "unavailable",
+    "value": "violations",
     "kind": "escreve"
    },
    {
@@ -196296,6 +196296,12 @@
     "name": "fmtScore",
     "params": "v: number | null",
     "body": "return v === null ? '—' : `${v}/100`;"
+   },
+   {
+    "file": "src/components/kit-builder/KitAIPromptDialog.tsx",
+    "name": "commitApply",
+    "params": "s: Suggestion, composition: KitAIComposition, requestedQuantity?: number,",
+    "body": "onApply(s, composition, requestedQuantity); setOpen(false); clearForm(); toast.success('Composição aplicada — revise variantes, estoque e valores antes de continuar.');"
    },
    {
     "file": "src/components/kit-builder/KitSummary.tsx",
@@ -393787,7 +393793,7 @@
   },
   "src/components/kit-builder/KitAIPromptDialog.tsx": {
    "path": "src/components/kit-builder/KitAIPromptDialog.tsx",
-   "lines": 598,
+   "lines": 658,
    "exports": [
     "function buildAlternativeTitle",
     "function mapKitAiErrorMessage",
@@ -393811,11 +393817,18 @@
     "* Etapa 18: 3 erros de negócio distintos em vez do genérico \"Erro ao gerar",
     "O servidor já devolve mensagens de negócio (sem chave/quota/timeout);"
    ],
-   "doc": "KitAIPromptDialog — briefing estruturado para a edge function kit-ai-builder. A IA devolve intenção semântica; itens, caixas, preços e compatibilidade são resolvidos pelo catálogo carregado e aplicados só após confirmação humana."
+   "doc": "KitAIPromptDialog — briefing estruturado para a edge function kit-ai-builder. A IA devolve intenção semântica; itens, caixas, preços e compatibilidade são resolvidos pelo catálogo carregado e aplicados só após confirmação humana.",
+   "calc_fns": [
+    {
+     "name": "commitApply",
+     "params": "s: Suggestion, composition: KitAIComposition, requestedQuantity?: number,",
+     "body": "onApply(s, composition, requestedQuantity); setOpen(false); clearForm(); toast.success('Composição aplicada — revise variantes, estoque e valores antes de continuar.');"
+    }
+   ]
   },
   "src/components/kit-builder/KitBuilderHeader.tsx": {
    "path": "src/components/kit-builder/KitBuilderHeader.tsx",
-   "lines": 415,
+   "lines": 416,
    "exports": [
     "function KitBuilderHeader"
    ],
@@ -411219,7 +411232,7 @@
   },
   "src/hooks/kit-builder/useKitMinQuantityValidation.ts": {
    "path": "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
-   "lines": 61,
+   "lines": 59,
    "exports": [
     "interface MinQuantityViolation",
     "type KitMinQuantityValidationResult",
@@ -411245,12 +411258,12 @@
     },
     {
      "field": "status",
-     "value": "violations",
+     "value": "unavailable",
      "kind": "escreve"
     },
     {
      "field": "status",
-     "value": "unavailable",
+     "value": "violations",
      "kind": "escreve"
     },
     {
@@ -484404,10 +484417,75 @@
   }
  },
  "git": {
-  "sha": "16f4af23df235c2f68b534692d8287ee20eb83c1",
+  "sha": "78729fc11038f7d0b2bb73ff0c1330f92547658b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "78729fc",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "chore(ci): atualiza file-size baseline — Kit Builder +21/+13/+10 linhas",
+    "files": [
+     ".file-size-baseline.json"
+    ]
+   },
+   {
+    "sha": "29838f1",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "feat(kit-builder): confirmar substituição ao aplicar composição da IA (FT-134)",
+    "files": [
+     "src/components/kit-builder/KitAIPromptDialog.tsx",
+     "src/components/kit-builder/KitBuilderHeader.tsx"
+    ]
+   },
+   {
+    "sha": "0387ecb",
+    "date": "2026-11-09",
+    "author": "dependabot[bot]",
+    "subject": "chore(deps): bump production-minor-patch group com 12 updates",
+    "files": [
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "3a4d23b",
+    "date": "2026-11-09",
+    "author": "github-actions[bot]",
+    "subject": "chore: ratchet semanal — baselines melhoradas",
+    "files": [
+     "bundle-size-baseline.json"
+    ]
+   },
+   {
+    "sha": "37bb98e",
+    "date": "2026-11-09",
+    "author": "github-actions[bot]",
+    "subject": "fix(autoheal): ESLint --fix em 193a750",
+    "files": [
+     "src/hooks/kit-builder/useKitMinQuantityValidation.ts"
+    ]
+   },
+   {
+    "sha": "aec7404",
+    "date": "2026-11-09",
+    "author": "github-actions[bot]",
+    "subject": "chore(ci): métricas semanais 2026-W46",
+    "files": [
+     "docs/ci/METRICAS_SEMANAIS.md"
+    ]
+   },
+   {
+    "sha": "d82bd6a",
+    "date": "2026-11-09",
+    "author": "github-actions[bot]",
+    "subject": "docs: recibo deploy edge functions run 42609591614 (E66)",
+    "files": [
+     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
+    ]
+   },
    {
     "sha": "16f4af2",
     "date": "2026-11-09",
@@ -484674,76 +484752,6 @@
     "files": [
      "analise-prs/RELATORIO_META_CUMPRIDA.md"
     ]
-   },
-   {
-    "sha": "ba33a10",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "feat(kit-builder): FT-088 validação fn_check_item_fits antes de criar orçamento (#3301)",
-    "files": [
-     ".eslint-baseline.json",
-     "src/hooks/kit-builder/useKitFitsValidation.ts",
-     "src/pages/kit-builder/useKitBuilderQuote.ts"
-    ]
-   },
-   {
-    "sha": "36f366b",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(kit-builder): AbortController AI dialog + confetti só em inválido→válido (#3276)",
-    "files": [
-     "src/components/kit-builder/KitAIPromptDialog.tsx",
-     "src/hooks/kit-builder/useKitBuilderPageState.ts"
-    ]
-   },
-   {
-    "sha": "bf42558",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(e2e+kit-builder): tolerance e2e + UI conflito KitBuilderHeader (#3272)",
-    "files": [
-     "src/components/kit-builder/KitBuilderHeader.tsx",
-     "src/hooks/kit-builder/useKitBuilderPageState.ts",
-     "src/pages/kit-builder/KitBuilderPage.tsx"
-    ]
-   },
-   {
-    "sha": "b737d49",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "feat(kit-builder): validação min-quantity via vw_products_min_quantity (#3269)",
-    "files": [
-     "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
-     "src/pages/kit-builder/useKitBuilderQuote.ts"
-    ]
-   },
-   {
-    "sha": "08e10b7",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(kit-builder): arredondamento de preços a 2 casas decimais (#3253)",
-    "files": [
-     "src/lib/kit-builder/price-calculator.ts"
-    ]
-   },
-   {
-    "sha": "4d9fe52",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(mockup-generator): corrige onLogoRemove para usar areaId passado (#3252)",
-    "files": [
-     ".file-size-baseline.json",
-     "src/pages/mockups/MockupGenerator.tsx"
-    ]
-   },
-   {
-    "sha": "39d5ffa",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs(pendencias): adiciona P-19 — drift sistêmico de 220 índices out-of-band (#3300)",
-    "files": [
-     "PENDENCIAS.md"
-    ]
    }
   ],
   "hot_files": [
@@ -484756,11 +484764,11 @@
     4
    ],
    [
-    "scripts/test-approved-plan-database.sh",
+    "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
     2
    ],
    [
-    "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
+    "scripts/test-approved-plan-database.sh",
     2
    ],
    [
@@ -484784,12 +484792,36 @@
     2
    ],
    [
-    "src/pages/kit-builder/useKitBuilderQuote.ts",
-    2
+    ".file-size-baseline.json",
+    1
    ],
    [
-    "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    2
+    "src/components/kit-builder/KitAIPromptDialog.tsx",
+    1
+   ],
+   [
+    "src/components/kit-builder/KitBuilderHeader.tsx",
+    1
+   ],
+   [
+    "package-lock.json",
+    1
+   ],
+   [
+    "package.json",
+    1
+   ],
+   [
+    "bundle-size-baseline.json",
+    1
+   ],
+   [
+    "docs/ci/METRICAS_SEMANAIS.md",
+    1
+   ],
+   [
+    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    1
    ],
    [
     ".as-assertions-baseline.json",
@@ -484801,30 +484833,6 @@
    ],
    [
     ".migration-refs-baseline.json",
-    1
-   ],
-   [
-    "src/pages/tools/DropboxBrowserPage.tsx",
-    1
-   ],
-   [
-    "src/hooks/kit-builder/useKitBuilder.ts",
-    1
-   ],
-   [
-    "scripts/append-edge-deploy-receipt.mjs",
-    1
-   ],
-   [
-    "scripts/append-migration-receipt.mjs",
-    1
-   ],
-   [
-    "scripts/audit-debug.ts",
-    1
-   ],
-   [
-    "scripts/check-build-log.mjs",
     1
    ]
   ]

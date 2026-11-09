@@ -5480,7 +5480,7 @@
   {
    "arquivo": "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
    "hooks_exportados": [],
-   "linhas": 61,
+   "linhas": 59,
    "dominio": "hooks/kit-builder",
    "tabelas": [
     "vw_products_min_quantity"

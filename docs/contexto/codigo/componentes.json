@@ -7957,7 +7957,7 @@
     "KitAIPromptDialog"
    ],
    "export_default": null,
-   "linhas": 598,
+   "linhas": 658,
    "dominio": "components/kit-builder",
    "hooks_locais": [],
    "tabelas": [],
@@ -7971,7 +7971,7 @@
     "KitBuilderHeader"
    ],
    "export_default": null,
-   "linhas": 415,
+   "linhas": 416,
    "dominio": "components/kit-builder",
    "hooks_locais": [
     "useRBAC",
@@ -13725,7 +13725,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 25,
+   "usado_por": 26,
    "orfao": false
   },
   {

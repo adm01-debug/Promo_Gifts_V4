@@ -1,7 +1,7 @@
 # Graph Report - Promo_Gifts_V4  (2026-11-09)
 
 ## Corpus Check
-- 5705 files · ~5,070,438 words
+- 5705 files · ~5,069,594 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 56 file(s) not represented in the graph (top: (none) 27, .css 10, .toml 6)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `16f4af23`
+- Built from commit: `78729fc1`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -1665,7 +1665,7 @@
 - 1. Sumário executivo
 - 2. Metodologia
 - Kit Maker — Cobertura de áreas de gravação (etapa 11)
-- Métricas de CI — 2026-10-26
+- Métricas de CI — 2026-11-09
 - Retrospectiva — Plano CI/CD v2 (100 etapas)
 - 🔧 **AÇÕES NECESSÁRIAS**
 - 13. SIDEBAR
@@ -8746,9 +8746,9 @@ Nodes (6): 2.1 Princípio: documento não é prova, 2.2 Escopo varrido, 2.3 Fren
 Cohesion: 0.33
 Nodes (5): Cobertura real (via `print_area_techniques`), Correção de premissa em relação ao plano, Implicação para a etapa 12, Kit Maker — Cobertura de áreas de gravação (etapa 11), Top 50 produtos ativos mais usados sem área cadastrada
 
-### Community 1652 - "Métricas de CI — 2026-10-26"
+### Community 1652 - "Métricas de CI — 2026-11-09"
 Cohesion: 0.33
-Nodes (5): Alertas, Métricas de CI — 2026-10-26, Por workflow, Resumo, Top 10 por minutos estimados (7d)
+Nodes (5): Alertas, Métricas de CI — 2026-11-09, Por workflow, Resumo, Top 10 por minutos estimados (7d)
 
 ### Community 1653 - "Retrospectiva — Plano CI/CD v2 (100 etapas)"
 Cohesion: 0.33

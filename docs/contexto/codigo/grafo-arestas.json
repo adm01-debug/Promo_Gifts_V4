@@ -4413,6 +4413,7 @@
    "src/lib/kit-builder/index.ts"
   ],
   "src/components/kit-builder/KitAIPromptDialog.tsx": [
+   "src/components/ui/alert-dialog.tsx",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/dialog.tsx",

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `16f4af23df` · branch `main` · 2026-11-09 11:59 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `78729fc110` · branch `main` · 2026-11-09 12:49 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3481,6 +3481,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **fmtScore(v: number | null)** — `src/components/inventory/supplier-reliability/SupplierDrawer.tsx`
   ```
   return v === null ? '—' : `${v}/100`;
+  ```
+- **commitApply(s: Suggestion, composition: KitAIComposition, requestedQuantity?: number,)** — `src/components/kit-builder/KitAIPromptDialog.tsx`
+  ```
+  onApply(s, composition, requestedQuantity); setOpen(false); clearForm(); toast.success('Composição aplicada — revise variantes, estoque e valores antes de continuar.');
   ```
 - **shouldRenderKitStockForecast(status: KitStockStatus)** — `src/components/kit-builder/KitSummary.tsx`
   ```
