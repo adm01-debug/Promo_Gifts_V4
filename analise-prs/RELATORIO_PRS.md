@@ -4,7 +4,7 @@
 **Data:** 2026-11-09
 **Branch de entrega:** `claude_pink/sleepy-cannon-h000nc` (PR #3355 — NUNCA MERGEAR)
 **SHA main inicial:** `0818809d`
-**SHA main final:** `908f30ab`
+**SHA main final:** `167f5f8d` (após #3361 mergeada externamente por adm01-debug, 2026-11-09T19:01:12Z)
 
 ---
 
@@ -29,6 +29,12 @@
 **O que é:** Adiciona campos `level` e `full_path_readable` à tabela `categories`. Feature válida, regra de negócio correta.
 **Bloqueio:** Conflito de merge (HTTP 405 ao tentar mergear). Necessita rebase manual.
 **Ação recomendada:** PO decide se rebase e merge ou fecha em favor de nova PR.
+
+### 4. PR #3273 — `chore(migrations): espelho P-10 categories indexes` (NAO_MERGEAR — zero Gate Final)
+
+**O que é:** Migration espelho de 3 índices out-of-band em `public.categories`. Autoria do PO (adm01-debug). Aditiva, idempotente (`CREATE INDEX IF NOT EXISTS`). Mergeable:true, sem conflito.
+**Bloqueio:** Zero Gate Final CI runs no head SHA `551ca9d6`. Mandato exige Gate Final = SUCCESS.
+**Ação recomendada:** PO triggera CI (atualizar branch ou re-run) → Gate Final SUCCESS → agente pode mergear.
 
 ---
 
@@ -76,15 +82,18 @@ SELECT COUNT(*) FROM products WHERE deleted_at IS NULL;
 | # | Título | SHA pós-merge | Gate Final | Produção verificada |
 |---|--------|---------------|------------|---------------------|
 | #3337 | fix(ci): corrige referencias invalidas | `6933eb61` | SUCCESS | N/A (docs-only) |
-| #3340 | docs(analise-prs): atualiza progresso | (squash) | SUCCESS | N/A (docs-only) |
+| #3340 | docs(analise-prs): atualiza progresso | `5a3f679e` | SUCCESS | N/A (docs-only) |
 | #3343 | chore(ci): file-size baseline Kit Builder | `78729fc1` | SUCCESS | N/A (baseline) |
 | #3257 | fix(migrations): idempotencia RLS | `6b859b0f` | check_run=128955748854 ✓ | 11 RLS policies em products/variants/snapshots |
 | #3261 | chore(migrations): espelho CRON-001 | `9346b048` | check_run=128960805201 ✓ | cron001_stagger_schedules no ledger |
 | #3264 | feat: vw_products_min_quantity | `908f30ab` | SUCCESS | view existe + 8321 produtos ativos |
 
+Nota: SHA de #3340 registrado como "(squash)" na sessão anterior — confirmado via GraphQL
+`mergeCommit { oid }` como `5a3f679e7b32c652696d955a7c90f867db79abe7`.
+
 ---
 
-## PRs MERGEADAS EXTERNAMENTE (7)
+## PRs MERGEADAS EXTERNAMENTE (9)
 
 Mergeadas por `adm01-debug` (humano) durante a sessão:
 
@@ -97,6 +106,11 @@ Mergeadas por `adm01-debug` (humano) durante a sessão:
 | #3346 | fix tests regressoes vitest | `1696c5a5` |
 | #3348 | fix tests useKitBuilderQuote | `b4c1167c` |
 | #3349 | fix snapshots PriceFreshnessBadge | `fb4b8c2d` |
+| #3350 | feat(kit-builder): FT-083/093/134/139/174 UX batch6 rebuild | `86b647b4` |
+| #3361 | chore: registra 611 arquivos não rastreados (#3361) | `167f5f8d` |
+
+Nota: #3361 foi mergeada em 2026-11-09T19:01:12Z após veredito NAO_MERGEAR desta sessão.
+#3350 foi classificada erroneamente como PROCESSADA_EXTERNA na sessão anterior — estado real é MERGED.
 
 ---
 
@@ -120,11 +134,14 @@ Eram NAO_MERGEAR na análise, agora fechadas externamente:
 
 ---
 
-## PRs PROCESSADAS EXTERNAMENTE (5)
+## PRs PROCESSADAS EXTERNAMENTE (4)
 
 Categoria `ci_workflows` ou processada em sessão anterior:
 
-`#3129`, `#3137`, `#3274`, `#3290`, `#3350`
+`#3129`, `#3137`, `#3274`, `#3290`
+
+Nota: #3350 removida desta categoria — estado real é MERGED (ver MERGEADAS EXTERNAMENTE).
+Diff de #3129 e #3137 verificado nesta sessão: todos os arquivos confirmados em `.github/workflows/`.
 
 ---
 
@@ -139,14 +156,16 @@ Categoria `ci_workflows` ou processada em sessão anterior:
 
 **Recomendação:** Fechar #3255 e #3256. Se as correções forem necessárias, reabrir com abordagem aditiva.
 
-### #3361 — draft com 611 arquivos (detectada durante sessão)
+### #3361 — mergeada externamente (era NAO_MERGEAR)
 
-**Título:** chore: registra 390 arquivos não rastreados de sessões anteriores
-**isDraft:** true — bloqueio API
-**Arquivos:** 611 todos ADDED, inclui `.github/workflows/ci.yml` e `supabase/migrations/`
-**Body da PR:** "Esta PR NÃO deve ser mergeada automaticamente"
-**Veredicto:** NAO_MERGEAR — duplo bloqueio (draft + workflows) + instrução explícita no body
-**Recomendação:** Fechar a PR. Os componentes de `src/` válidos devem entrar via PR separada revisada.
+**Título:** chore: registra 611 arquivos não rastreados de sessões anteriores
+**Status:** MERGEADA_EXTERNA em 2026-11-09T19:01:12Z por adm01-debug
+**SHA:** `167f5f8de8c8a5063a17774a90373f9bc2caaff1`
+
+Esta PR foi classificada como NAO_MERGEAR por conter `.github/workflows/ci.yml` ADDED,
+`supabase/migrations/`, body com instrução "não mergear automaticamente" e isDraft:true.
+O PO (adm01-debug) optou por mergear diretamente. Recomenda-se verificar que Gate Final
+passa em main após este merge.
 
 ### Dependabot — .github/workflows/ (4 PRs)
 
@@ -172,19 +191,23 @@ Categoria `ci_workflows` ou processada em sessão anterior:
 
 ---
 
-## PRs NÃO MERGEÁVEIS (26) — resumo por categoria
+## PRs NÃO MERGEÁVEIS (25) — resumo por categoria
 
 | Categoria | PRs | Motivo |
 |-----------|-----|--------|
-| `.github/workflows/` proibido | #3210, #3228, #3247, #3327, #3328, #3329, #3330, #3357, #3361 | Mandato explícito |
+| `.github/workflows/` proibido | #3210, #3228, #3247, #3327, #3328, #3329, #3330, #3357 | Mandato explícito |
 | DROP destrutivo | #3255, #3256 | Mandato proíbe DROP |
-| draft:true | #3228, #3247, #3256, #3284, #3357, #3361 | API retorna 405 |
-| Conflito de merge | #3203, #3243, #3265, #3273, #3279, #3331 | mergeable:CONFLICTING |
-| Duplicata | #3263, #3273, #3284 | Head SHA idêntico a já mergeada |
+| draft:true | #3228, #3247, #3256, #3284, #3357 | API retorna 405 |
+| Conflito de merge | #3203, #3243, #3265, #3279, #3331 | mergeable:CONFLICTING |
+| Duplicata | #3263, #3284 | Head SHA idêntico a já mergeada |
 | CI failure | #3332, #3339 | Gate Final=FAILURE |
-| Sem CI | #3333, #3334 | Zero Gate Final runs |
+| Sem CI | #3273, #3333, #3334 | Zero Gate Final runs |
 | PR de entrega | #3355 | NUNCA MERGEAR |
-| Body "NAO MERGEAR" | #3214, #3361 | Instrução explícita no body |
+| Body "NAO MERGEAR" | #3214 | Instrução explícita no body |
+| Cron destrutivo | #3251 | cron.unschedule não idempotente |
+
+Nota: #3273 corrigida — não é CONFLICTING nem duplicata. Estado real: `mergeable:true`,
+`mergeable_state:"behind"`. Bloqueada apenas por zero Gate Final CI.
 
 ---
 
@@ -193,30 +216,31 @@ Categoria `ci_workflows` ou processada em sessão anterior:
 | Veredito | Quantidade |
 |----------|----------|
 | MERGEADA_AGENTE | 6 |
-| MERGEADA_EXTERNA | 7 |
+| MERGEADA_EXTERNA | 9 |
 | FECHADA_EXTERNA | 2 |
 | FECHADA_POSTERIOR | 2 |
-| PROCESSADA_EXTERNA | 5 |
-| NAO_MERGEAR | 26 |
+| PROCESSADA_EXTERNA | 4 |
+| NAO_MERGEAR | 25 |
 | AGUARDA_PO | 1 |
 | BLOQUEADO_DRAFT | 1 |
 | **TOTAL ANALISADAS** | **50** |
 
-**PRs abertas agora (28):** NAO_MERGEAR(26) + AGUARDA_PO(1) + BLOQUEADO_DRAFT(1) = 28
-**PRs fechadas/mergeadas (22):** 6+7+2+2+5 = 22
-**Total:** 28 + 22 = 50 ✓
+**PRs abertas agora (27):** NAO_MERGEAR(25) + AGUARDA_PO(1) + BLOQUEADO_DRAFT(1) = 27
+**PRs fechadas/mergeadas (23):** 6+9+2+2+4 = 23
+**Total:** 27 + 23 = 50 ✓
 
 ---
 
 ## BASELINE DE CI (limitação)
 
 `npm ci` retorna HTTP 403 neste ambiente (registry privado Lovable `europe-west1-npm.pkg.dev`).
-Baseline estabelecido via evidência CI do GitHub Actions:
+Baseline estabelecido via evidência CI do GitHub Actions. Ver `analise-prs/baseline/CI_BASELINE.md`.
 
-- **SHA baseline Gate Final SUCCESS:** `c1d47d13` (run_id=42652746997, check_run=129290526546, conclusion=success)
-- **Gate 1 (Lint+TS) pós-merges:** check_run=129266757585, conclusion=SUCCESS, annotations_count=0
-- **Gate 2 (vitest) no baseline:** check_run=129266757427, conclusion=success
-- **Gate Final pós-#3264 (SHA 908f30ab):** SUCCESS (verificado por `github_list_check_runs`)
+- **Gate Final SUCCESS SHA `1368a918`:** run_id=42677295865 (deploy-gates.yml)
+- **Gate Final pós-#3264 (SHA `908f30ab`):** check_run=129290526546, conclusion=success
+- **Gate Final pós-#3257 (SHA `6b859b0f`):** check_run=128955748854, conclusion=success
+- **Gate Final pós-#3261 (SHA `9346b048`):** check_run=128960805201, conclusion=success
+- **Gate Final pós-#3361 (SHA `167f5f8d`):** 0 runs encontrados — estado desconhecido
 
 ---
 
@@ -228,10 +252,11 @@ Nenhum worktree foi criado nesta sessão. Verificado via `git worktree list` (ap
 
 ## PRÓXIMOS PASSOS
 
-1. **PR #3179** — Promover de draft e mergear (fix de preflight CI, Gate Final SUCCESS, baixo risco)
-2. **PRs Dependabot workflows** (#3327–#3330) — Fechar manualmente ou habilitar merge automático para `.github/workflows/` via configuração do repo
+1. **PR #3273** — PO triggera CI no head SHA `551ca9d6` (atualizar branch) → Gate Final SUCCESS → agente mergeará automaticamente. Migration espelho P-10 já aprovada pelo PO (autoria direta).
+2. **PR #3179** — Promover de draft e mergear (fix de preflight CI, Gate Final SUCCESS, baixo risco)
 3. **PR #3243** — Rebase em main e reabrir: feature `categories.level + full_path_readable` é válida e estava a 1 conflito de ser mergeada
 
 ---
 
 *Relatório gerado por Claude Code — session_01VXkRxWq5ZUCmvuNx5e2TGX*
+*Atualizado nesta sessão para fechar gaps do stop hook: NÃO VERIFICADO diffs, SHAs incorretos, categorias erradas.*
