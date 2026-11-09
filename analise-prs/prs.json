@@ -4,8 +4,8 @@
     "gerado_em": "2026-11-09T19:30:00Z",
     "main_sha_inicio_sessao": "0818809dXXXX",
     "main_sha_fim_sessao": "908f30abba7b3fa1b46583ceae3cd0eaee872500",
-    "total_prs_inventariadas": 49,
-    "nota_contagem": "51 declaradas no progresso.json inclui algumas PRs contadas em múltiplas categorias durante a sessão; inventário definitivo: 49 PRs únicas"
+    "total_prs_inventariadas": 51,
+    "nota_contagem": "51 PRs únicas: 49 do inventário original + #3361 + #3363 detectadas durante sessão. #3359 e #3360 eram NAO_MERGEAR, agora fechadas externamente (FECHADA_POSTERIOR). 29 abertas agora + 22 fechadas/mergeadas = 51."
   },
   "prs": [
     {
@@ -725,13 +725,13 @@
       "autor": "claude (agente)",
       "draft": false,
       "base": "main",
-      "veredito": "NAO_MERGEAR",
-      "motivo": "docs: recibo deploy — CONFLICTING/DIRTY (mergeable=CONFLICTING)",
+      "veredito": "FECHADA_POSTERIOR",
+      "motivo": "Era NAO_MERGEAR (CONFLICTING) — fechada externamente após análise",
       "v1_valida": "NÃO — conflito com main",
       "v2_regressao": "NÃO VERIFICADO — conflito",
       "v3_implementada": "NÃO VERIFICADO",
       "v4_regra_negocio": "NÃO VERIFICADO",
-      "evidencia": "mergeable: CONFLICTING via github_graphql",
+      "evidencia": "mergeable: CONFLICTING via github_graphql; PR não aparece mais na lista de abertas",
       "dossie": "dossies/PR-3359.md"
     },
     {
@@ -740,14 +740,44 @@
       "autor": "claude (agente)",
       "draft": false,
       "base": "main",
-      "veredito": "NAO_MERGEAR",
-      "motivo": "docs: recibo deploy — zero Gate Final no head SHA (cd1069d6); base SHA desatualizado (9346b048, pre-#3264)",
+      "veredito": "FECHADA_POSTERIOR",
+      "motivo": "Era NAO_MERGEAR (zero Gate Final CI) — fechada externamente após análise",
       "v1_valida": "INCERTA — base SHA desatualizado",
       "v2_regressao": "NÃO VERIFICADO",
       "v3_implementada": "NÃO VERIFICADO",
       "v4_regra_negocio": "NÃO VERIFICADO",
-      "evidencia": "Zero Gate Final CI no head SHA cd1069d6; base SHA pré-#3264 (9346b048)",
+      "evidencia": "Zero Gate Final CI no head SHA cd1069d6; PR não aparece mais na lista de abertas",
       "dossie": "dossies/PR-3360.md"
+    },
+    {
+      "number": 3361,
+      "titulo": "chore: registra 390 arquivos não rastreados de sessões anteriores",
+      "autor": "claude (session_01VXkRxXAsCH5WwNULKteVHd)",
+      "draft": true,
+      "base": "main",
+      "veredito": "NAO_MERGEAR",
+      "motivo": "isDraft:true + .github/workflows/ci.yml ADDED + supabase/migrations/ + body instrui não mergear",
+      "v1_valida": "NÃO — arquivos de sessões antigas sem valor de produto; recovery/*.sql é artefato de sessão",
+      "v2_regressao": "SIM (potencial) — ci.yml ADDED pode conflitar com deploy-gates.yml; recovery/*.sql contém DDL não auditada",
+      "v3_implementada": "PARCIALMENTE — src/components/ provavelmente em main; recovery/ e .lovable/memory/ nunca intencionalmente mergeados",
+      "v4_regra_negocio": "NÃO — REGRA #9: .github/workflows/ exige revisão humana; REGRA #8: migrations só via db-apply-migration.yml",
+      "evidencia": "GraphQL API: isDraft=true, files.totalCount=611, .github/workflows/ci.yml ADDED, body='NÃO deve ser mergeada automaticamente'",
+      "dossie": "dossies/PR-3361.md"
+    },
+    {
+      "number": 3363,
+      "titulo": "fix(ci): corrige falhas de hooks tests e deno typecheck no ci.yml",
+      "autor": "adm01-debug (humano)",
+      "draft": true,
+      "base": "main",
+      "veredito": "BLOQUEADO_DRAFT",
+      "motivo": "isDraft:true + Gate Final quality-gate=pending no momento da análise",
+      "v1_valida": "SIM",
+      "v2_regressao": "INCERTA",
+      "v3_implementada": "NÃO",
+      "v4_regra_negocio": "INCERTA",
+      "evidencia": "isDraft:true (HTTP 405) + 53 checks vários pending — quality-gate ainda em execução; e2e-cleanup reescrito radicalmente",
+      "dossie": "dossies/PR-3363.md"
     }
   ]
 }

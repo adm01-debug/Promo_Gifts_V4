@@ -46,5 +46,7 @@ number,titulo,autor,draft,veredito,motivo_resumido,sha_main_apos,merged_at,v1_va
 3350,NÃO VERIFICADO Gate 1 FAILURE,NÃO VERIFICADO,false,PROCESSADA_EXTERNA,Gate 1 Lint+TypeScript=FAILURE,,,NÃO,SIM,NÃO VERIFICADO,NÃO VERIFICADO,run_id=129233697044 FAILURE
 3355,PR entrega desta sessão,claude,false,NAO_MERGEAR,PR de entrega — NUNCA MERGEAR,,,N/A,N/A,N/A,N/A,branch claude_pink/sleepy-cannon-h000nc
 3357,feat e2e-gates spec @smoke,claude,true,NAO_MERGEAR,.github/workflows/ + draft:true,,,INCERTA,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,duplo bloqueio
-3359,docs recibo deploy,claude,false,NAO_MERGEAR,CONFLICTING,,,NÃO,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,mergeable:CONFLICTING
-3360,docs recibo deploy,claude,false,NAO_MERGEAR,zero Gate Final + base SHA pré-#3264,,,INCERTA,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,zero CI head SHA cd1069d6
+3359,docs recibo deploy,claude,false,FECHADA_POSTERIOR,era NAO_MERGEAR CONFLICTING — fechada externamente após análise,,,NÃO,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,mergeable:CONFLICTING
+3360,docs recibo deploy,claude,false,FECHADA_POSTERIOR,era NAO_MERGEAR zero CI — fechada externamente após análise,,,INCERTA,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,zero CI head SHA cd1069d6
+3361,chore registra 611 arquivos não rastreados,claude,true,NAO_MERGEAR,isDraft:true + .github/workflows/ci.yml + supabase/migrations/ + body NAO MERGEAR,,,NÃO,SIM,PARCIALMENTE,NÃO,isDraft:true + 611 ADDED + ci.yml ADDED + body PR instrui não mergear
+3363,fix(ci) corrige falhas hooks tests e deno typecheck,adm01-debug,true,BLOQUEADO_DRAFT,isDraft:true + Gate Final quality-gate=pending,,,SIM,INCERTA,NÃO,INCERTA,isDraft:true (HTTP 405) + 53 checks vários pending — quality-gate ainda em execução
