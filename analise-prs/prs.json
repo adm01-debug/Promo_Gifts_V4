@@ -4,8 +4,8 @@
     "gerado_em": "2026-11-09T19:30:00Z",
     "main_sha_inicio_sessao": "0818809dXXXX",
     "main_sha_fim_sessao": "908f30abba7b3fa1b46583ceae3cd0eaee872500",
-    "total_prs_inventariadas": 51,
-    "nota_contagem": "51 PRs únicas: 49 do inventário original + #3361 + #3363 detectadas durante sessão. #3361 mergeada externamente pelo PO. #3359 e #3360 eram NAO_MERGEAR, agora fechadas externamente (FECHADA_POSTERIOR). #3350 reclassificada MERGEADA_EXTERNA. 28 abertas agora + 23 fechadas/mergeadas = 51."
+    "total_prs_inventariadas": 52,
+    "nota_contagem": "52 PRs únicas: 49 do inventário original + #3361 + #3363 + #3364 detectadas durante sessão. #3361 mergeada externamente pelo PO. #3359 e #3360 eram NAO_MERGEAR, agora fechadas externamente (FECHADA_POSTERIOR). #3350 reclassificada MERGEADA_EXTERNA. 29 abertas agora + 23 fechadas/mergeadas = 52."
   },
   "prs": [
     {
@@ -54,17 +54,17 @@
     },
     {
       "number": 3203,
-      "titulo": "NÃO VERIFICADO — duplicata de #3273",
+      "titulo": "fix(ci): corrige baseline JSONs desatualizados",
       "autor": "NÃO VERIFICADO",
       "draft": false,
       "base": "main",
       "veredito": "NAO_MERGEAR",
-      "motivo": "CONFLICTING/DIRTY — duplicata de #3273 (mesmo head SHA 1aad6831)",
+      "motivo": "CONFLICTING — baseline JSON desatualizados, conflito com main atual. NÃO é duplicata de #3273 (SHAs diferentes: #3203 head=1aad6831, #3273 head=551ca9d6)",
       "v1_valida": "NÃO — conflito com main",
       "v2_regressao": "NÃO VERIFICADO (conflito impede análise)",
       "v3_implementada": "NÃO VERIFICADO",
       "v4_regra_negocio": "NÃO VERIFICADO",
-      "evidencia": "mergeable: CONFLICTING; head SHA 1aad6831 idêntico a #3273",
+      "evidencia": "head SHA 1aad6831; mergeable: CONFLICTING; 5 JSONs de baseline",
       "dossie": "dossies/PR-3203.md"
     },
     {
@@ -92,7 +92,6 @@
       "motivo": "mergeable:false DIRTY + 192 changed_files + body diz explicitamente 'NAO MERGEAR sem aprovacao explicita do PO'",
       "v1_valida": "NÃO — body da PR instrui a não mergear",
       "v2_regressao": "NÃO VERIFICADO",
-      "v3_regressao": "NÃO VERIFICADO",
       "v4_regra_negocio": "NÃO — instrução explícita no body da PR",
       "evidencia": "Body da PR contém 'NAO MERGEAR'; mergeable:false",
       "dossie": "dossies/PR-3214.md"
@@ -282,17 +281,17 @@
     },
     {
       "number": 3273,
-      "titulo": "NÃO VERIFICADO — duplicata de #3203",
-      "autor": "NÃO VERIFICADO",
+      "titulo": "chore(migrations): espelho P-10 — 3 índices out-of-band de public.categories",
+      "autor": "adm01-debug (humano/PO)",
       "draft": false,
       "base": "main",
       "veredito": "NAO_MERGEAR",
-      "motivo": "CONFLICTING/DIRTY — duplicata de #3203 (mesmo head SHA 1aad6831)",
-      "v1_valida": "NÃO — conflito",
-      "v2_regressao": "NÃO VERIFICADO",
-      "v3_implementada": "NÃO VERIFICADO",
-      "v4_regra_negocio": "NÃO VERIFICADO",
-      "evidencia": "head SHA 1aad6831 idêntico ao de #3203; mergeable: CONFLICTING",
+      "motivo": "Zero Gate Final CI no head SHA 551ca9d6 + Vercel preview deploy FAILURE (dpl_3zCY5HeFMZJYbwCUhzXW2Wghp479). NÃO é CONFLICTING nem duplicata de #3203.",
+      "v1_valida": "SIM — migration espelho de índices out-of-band; autoria do PO",
+      "v2_regressao": "NÃO — puramente aditivo (25+0); CREATE INDEX IF NOT EXISTS",
+      "v3_implementada": "NÃO — ledger ainda não tem estas migrations registradas",
+      "v4_regra_negocio": "SIM — segue REGRA #8 corolário E99; PO (adm01-debug) é o autor",
+      "evidencia": "head SHA 551ca9d6 (diferente de #3203 que é 1aad6831); mergeable:true (behind, sem conflito); 25+0 diff; combined_status=failure por Vercel preview deploy FAILURE dpl_3zCY5HeFMZJYbwCUhzXW2Wghp479; zero Gate Final check runs",
       "dossie": "dossies/PR-3273.md"
     },
     {
@@ -543,12 +542,12 @@
       "draft": false,
       "base": "main",
       "veredito": "MERGEADA_AGENTE",
-      "sha_main_apos": "NÃO VERIFICADO (squash merge)",
+      "sha_main_apos": "5a3f679e7b32c652696d955a7c90f867db79abe7",
       "v1_valida": "SIM — docs-only update de progresso de análise",
       "v2_regressao": "NÃO — docs-only E14",
       "v3_implementada": "NÃO",
       "v4_regra_negocio": "SIM",
-      "evidencia": "docs-only; Gate Final SUCCESS",
+      "evidencia": "docs-only; Gate Final SUCCESS; squash SHA 5a3f679e confirmado via GraphQL mergeCommit",
       "dossie": "dossies/PR-3340.md"
     },
     {
@@ -676,17 +675,18 @@
     },
     {
       "number": 3350,
-      "titulo": "NÃO VERIFICADO — Gate 1 FAILURE",
-      "autor": "NÃO VERIFICADO",
+      "titulo": "feat(kit-builder): FT-083/093/134/139/174 UX batch6 rebuild",
+      "autor": "adm01-debug (humano)",
       "draft": false,
       "base": "main",
-      "veredito": "PROCESSADA_EXTERNA",
-      "motivo": "Gate 1 Lint+TypeScript=FAILURE run_id=129233697044",
-      "v1_valida": "NÃO — Gate 1 FAILURE",
-      "v2_regressao": "SIM — TypeScript errors",
+      "veredito": "MERGEADA_EXTERNA",
+      "sha_main_apos": "86b647b4ee20d84370c5aecd0552f825459dc745",
+      "merged_by": "adm01-debug",
+      "v1_valida": "NÃO VERIFICADO — diff não relido nesta sessão",
+      "v2_regressao": "NÃO VERIFICADO",
       "v3_implementada": "NÃO VERIFICADO",
       "v4_regra_negocio": "NÃO VERIFICADO",
-      "evidencia": "Gate 1 run_id=129233697044: FAILURE confirmado via github_get_workflow_run",
+      "evidencia": "state=MERGED confirmado via GraphQL; mergeada por adm01-debug; sha_main_apos=86b647b4",
       "dossie": "dossies/PR-3350.md"
     },
     {
@@ -755,13 +755,15 @@
       "autor": "claude (session_01VXkRxXAsCH5WwNULKteVHd)",
       "draft": true,
       "base": "main",
-      "veredito": "NAO_MERGEAR",
-      "motivo": "isDraft:true + .github/workflows/ci.yml ADDED + supabase/migrations/ + body instrui não mergear",
-      "v1_valida": "NÃO — arquivos de sessões antigas sem valor de produto; recovery/*.sql é artefato de sessão",
+      "veredito": "MERGEADA_EXTERNA",
+      "sha_main_apos": "167f5f8de8c8a5063a17774a90373f9bc2caaff1",
+      "merged_at": "2026-11-09T19:01:12Z",
+      "merged_by": "adm01-debug",
+      "v1_valida": "NÃO — arquivos de sessões antigas sem valor de produto; .github/workflows/ci.yml ADDED",
       "v2_regressao": "SIM (potencial) — ci.yml ADDED pode conflitar com deploy-gates.yml; recovery/*.sql contém DDL não auditada",
       "v3_implementada": "PARCIALMENTE — src/components/ provavelmente em main; recovery/ e .lovable/memory/ nunca intencionalmente mergeados",
       "v4_regra_negocio": "NÃO — REGRA #9: .github/workflows/ exige revisão humana; REGRA #8: migrations só via db-apply-migration.yml",
-      "evidencia": "GraphQL API: isDraft=true, files.totalCount=611, .github/workflows/ci.yml ADDED, body='NÃO deve ser mergeada automaticamente'",
+      "evidencia": "Mergeada externamente por adm01-debug após veredito NAO_MERGEAR desta sessão; sha_main_apos=167f5f8d",
       "dossie": "dossies/PR-3361.md"
     },
     {
@@ -778,6 +780,23 @@
       "v4_regra_negocio": "INCERTA",
       "evidencia": "isDraft:true (HTTP 405) + 53 checks vários pending — quality-gate ainda em execução; e2e-cleanup reescrito radicalmente",
       "dossie": "dossies/PR-3363.md"
+    },
+    {
+      "number": 3364,
+      "titulo": "fix(ci): baseline incremental mode + remove imports TS2305 de CartUtilComponents",
+      "autor": "adm01-debug (humano/PO)",
+      "draft": true,
+      "base": "main",
+      "head_sha": "610f31a65fdec96f47dbf22797b99231b7abb0e8",
+      "criada_em": "2026-11-09T19:51:21Z",
+      "veredito": "BLOQUEADO_DRAFT",
+      "motivo": "isDraft:true + Gate 1 FAILURE (TypeScript pré-existente em quote-view/ e kitPdfGenerator.ts, não causado por esta PR) + Gate Final FAILURE",
+      "v1_valida": "SIM — resolve ESLint flood de #3361 (mode:full→incremental) e remove TS2305 dead code de CartUtilComponents",
+      "v2_regressao": "BAIXO — workaround reversível; remoção de código que nunca compilou (TS2305)",
+      "v3_implementada": "NÃO",
+      "v4_regra_negocio": "SIM — workaround legítimo para desbloquear CI após flood de 611 arquivos",
+      "evidencia": "isDraft:true (HTTP 405); run_id=42687338284 Gate 1=FAILURE job_id=129397721953 step='Run npm run typecheck'; erros em quote-view/QuoteActionHandlers.ts, QuoteBitrixSync.ts, useQuoteViewData.ts, useQuotesDashboard.ts, kitPdfGenerator.ts — arquivos não tocados por esta PR",
+      "dossie": "dossies/PR-3364.md"
     }
   ]
 }
