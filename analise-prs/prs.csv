@@ -24,6 +24,7 @@ number,titulo,autor,draft,veredito,motivo_resumido,sha_main_apos,merged_at,v1_va
 3279,PR entrega sessão anterior,claude,false,NAO_MERGEAR,CONFLICTING (ca9dae70),,,NÃO,NÃO VERIFICADO,PARCIALMENTE,NÃO VERIFICADO,mergeable:CONFLICTING
 3284,DUPLICATA #3261 — AGUARDA PO,claude,true,NAO_MERGEAR,duplicata #3261 + draft:true,,,NÃO,NÃO VERIFICADO,SIM,NÃO,#3261 já mergeada
 3290,ci workflows,NÃO VERIFICADO,false,PROCESSADA_EXTERNA,ci_workflows — fora do escopo,,,,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,NÃO VERIFICADO,categoria ci_workflows
+3305,feat kit-builder FT-119 backup beforeunload + restore,claude (sessão anterior),false,NAO_MERGEAR,CONFLICTING + CI=FAILURE,,,SIM,INCERTA,NÃO VERIFICADO,SIM,mergeable:CONFLICTING; statusCheckRollup=FAILURE; conflito provável com #3350 kit-builder batch6
 3327,ci codeql-action/init SHA bump,dependabot,false,NAO_MERGEAR,.github/workflows/ — mandato proíbe,,,SIM,NÃO,NÃO,SIM (mas proibido),mandato .github/workflows/
 3328,ci codeql-action/analyze SHA bump,dependabot,false,NAO_MERGEAR,.github/workflows/ — mandato proíbe,,,SIM,NÃO,NÃO,SIM (mas proibido),mandato .github/workflows/
 3329,ci 9 workflows SHAs Dependabot,dependabot,false,NAO_MERGEAR,.github/workflows/ — mandato proíbe,,,SIM,NÃO,NÃO,SIM (mas proibido),9 arquivos workflows via list_pr_files
@@ -51,3 +52,4 @@ number,titulo,autor,draft,veredito,motivo_resumido,sha_main_apos,merged_at,v1_va
 3361,chore registra 611 arquivos não rastreados,claude,true,MERGEADA_EXTERNA,,167f5f8de8c8a5063a17774a90373f9bc2caaff1,2026-11-09T19:01:12Z,NÃO,SIM,PARCIALMENTE,NÃO,mergeada externamente por adm01-debug após veredito NAO_MERGEAR desta sessão
 3363,fix(ci) corrige falhas hooks tests e deno typecheck,adm01-debug,true,BLOQUEADO_DRAFT,isDraft:true + Gate Final quality-gate=pending,,,SIM,INCERTA,NÃO,INCERTA,isDraft:true (HTTP 405) + 53 checks vários pending — quality-gate ainda em execução
 3364,fix(ci) baseline incremental mode + remove imports TS2305 de CartUtilComponents,adm01-debug,true,BLOQUEADO_DRAFT,isDraft:true + Gate 1 FAILURE (TS pré-existente em quote-view) + Gate Final FAILURE,,,SIM,BAIXO,NÃO,SIM,run_id=42687338284 Gate 1=FAILURE job_id=129397721953 typecheck; TS pré-existente não causado por esta PR; isDraft:true HTTP 405
+3365,fix(ci) guarda check-eslint-baseline contra crash antes de escrever output,claude (sessão anterior),false,NAO_MERGEAR,CONFLICTING com main,,,SIM,NÃO,NÃO,SIM,mergeable:CONFLICTING; SHA 1653f5d3; 19 arquivos; fix check-eslint-baseline.mjs +7/-1 + auditoria-supabase docs
