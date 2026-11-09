@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(docs): adiciona 4 segredos E2E ausentes em SEGREDOS.md",
    "chore(e2e): registrar specs @smoke no job e2e-gates",
    "chore: registra 611 arquivos não rastreados de sessões anteriores (#3361)",
    "feat(edge-deploy-log): recibo run 42665634216 — edge functions deploy",
-   "feat(edge-deploy-log): recibo run 42660725884 — edge functions deploy",
-   "feat: versionar view vw_products_min_quantity (FT-079) (#3264)"
+   "feat(edge-deploy-log): recibo run 42660725884 — edge functions deploy"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

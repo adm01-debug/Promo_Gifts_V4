@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "e70479bfc8235c716cb9c09f7ff38a27588b7c23",
+  "sha": "293b9287478fba7fa8683b2e15248ed998880c3f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 20:05 UTC",
+  "generated_at": "2026-11-09 21:15 UTC",
   "files_total": 9794,
   "code_files": 8357,
   "code_lines": 1174878
@@ -517173,10 +517173,21 @@
   }
  },
  "git": {
-  "sha": "e70479bfc8235c716cb9c09f7ff38a27588b7c23",
+  "sha": "293b9287478fba7fa8683b2e15248ed998880c3f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "293b928",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "chore(docs): adiciona 4 segredos E2E ausentes em SEGREDOS.md",
+    "files": [
+     "docs/ci/SEGREDOS.md",
+     "recovery/agent-db/BATCH_D3_D5_COMPLETE.md",
+     "recovery/block17_database_webhooks.md"
+    ]
+   },
    {
     "sha": "e70479b",
     "date": "2026-11-09",
@@ -518072,15 +518083,6 @@
     "files": [
      ".as-assertions-baseline.json"
     ]
-   },
-   {
-    "sha": "5a3f679",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "fix(audit): registrar fn_check_item_fits e vw_products_min_quantity no catálogo Supabase (#3340)",
-    "files": [
-     "audit/supabase-reference-catalog.temporary.json"
-    ]
    }
   ],
   "hot_files": [
@@ -518091,6 +518093,14 @@
    [
     ".file-size-baseline.json",
     3
+   ],
+   [
+    "recovery/agent-db/BATCH_D3_D5_COMPLETE.md",
+    2
+   ],
+   [
+    "recovery/block17_database_webhooks.md",
+    2
    ],
    [
     "src/components/kit-builder/KitAIPromptDialog.tsx",
@@ -518115,6 +518125,10 @@
    [
     "tests/components/pages/KitBuilderPage.test.tsx",
     2
+   ],
+   [
+    "docs/ci/SEGREDOS.md",
+    1
    ],
    [
     ".github/workflows/e2e.yml",
@@ -518150,18 +518164,6 @@
    ],
    [
     ".lovable/memory/features/simulation-price-source-badge.md",
-    1
-   ],
-   [
-    ".lovable/memory/infrastructure/hardening-roadmap.md",
-    1
-   ],
-   [
-    ".lovable/memory/integrations/connections-hub.md",
-    1
-   ],
-   [
-    ".lovable/memory/security/production-hardening-baseline.md",
     1
    ]
   ]

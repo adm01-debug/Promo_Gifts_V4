@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e70479bfc8235c716cb9c09f7ff38a27588b7c23",
+  "commit": "293b9287478fba7fa8683b2e15248ed998880c3f",
   "branch": "main",
-  "data_commit": "2026-11-09T17:03:21-03:00",
+  "data_commit": "2026-11-09T18:05:17-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "293b928",
+    "data": "2026-11-09",
+    "assunto": "chore(docs): adiciona 4 segredos E2E ausentes em SEGREDOS.md"
+   },
    {
     "sha": "e70479b",
     "data": "2026-11-09",
@@ -126,14 +131,9 @@
     "sha": "0387ecb",
     "data": "2026-11-09",
     "assunto": "chore(deps): bump production-minor-patch group com 12 updates"
-   },
-   {
-    "sha": "3a4d23b",
-    "data": "2026-11-09",
-    "assunto": "chore: ratchet semanal — baselines melhoradas"
    }
   ],
-  "arquivos_mudados_7d": 1115,
+  "arquivos_mudados_7d": 1099,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -274,12 +274,12 @@
     "mudancas": 6
    },
    {
-    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "arquivo": "docs/ci/SEGREDOS.md",
     "mudancas": 6
    },
    {
-    "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 5
+    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "mudancas": 6
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
