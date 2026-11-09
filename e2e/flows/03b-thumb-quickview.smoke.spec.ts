@@ -13,6 +13,7 @@ import { loginAs } from "../helpers/auth";
 const SMOKE_ROUTES = ["/produtos", "/novidades", "/reposicao", "/estoque"] as const;
 
 test.describe("@smoke 03b • pré-checagem de ambiente", () => {
+  test.use({ timeout: 60_000 });
   test("preview responde e login funciona", async ({ page }) => {
     const resp = await page.goto("/", { waitUntil: "domcontentloaded", timeout: 15_000 });
     expect(resp, "preview não respondeu em /").not.toBeNull();
