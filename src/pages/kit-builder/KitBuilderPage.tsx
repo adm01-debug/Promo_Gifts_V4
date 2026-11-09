@@ -69,6 +69,29 @@ export default function KitBuilderPage() {
         backup.kitId === state.currentKitId ||
         backup.kitId === state.autoSavedKitId;
 
+      // Guard: if the server already has a newer version saved by another device,
+      // don't silently overwrite — offer an explicit choice instead.
+      const serverHasNewerVersion =
+        typeof backup.revision === 'number' &&
+        typeof state.currentRevision === 'number' &&
+        backup.revision < state.currentRevision;
+
+      if (sameKit && serverHasNewerVersion) {
+        toast.warning('Kit atualizado em outro dispositivo', {
+          description:
+            'Suas edições partem de uma versão anterior. Deseja restaurá-las mesmo assim?',
+          action: {
+            label: 'Restaurar mesmo assim',
+            onClick: () => {
+              actions.restoreFromBackup(backup.fullState!);
+              toast.dismiss();
+            },
+          },
+          duration: 10_000,
+        });
+        return;
+      }
+
       if (sameKit) {
         // If on landing, transition to editor first so the restored content
         // is immediately visible. startFlow must run before loadKit to avoid
@@ -93,15 +116,9 @@ export default function KitBuilderPage() {
           label: backup.kitId ? 'Reabrir kit' : 'Restaurar edições',
           onClick: () => {
             if (backup.kitId) {
-              // Re-escreve o backup para que a nova montagem restaure o fullState
-              // (consumeUnloadBackup já o removeu do localStorage)
               actions.persistUnloadBackup(backup);
               window.location.href = `/montar-kit?kit=${backup.kitId}`;
             } else {
-              // Unsaved new kit backed up without a kit ID: re-persist and
-              // navigate to a clean URL so the new mount restores via Case 1.
-              // This avoids auto-save mistakenly targeting the currently-loaded
-              // kit's ID (startFlow doesn't clear currentKitId/autoSavedKitId).
               actions.persistUnloadBackup(backup);
               window.location.href = '/montar-kit';
             }

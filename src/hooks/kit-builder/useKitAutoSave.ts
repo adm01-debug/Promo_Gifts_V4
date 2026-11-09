@@ -58,6 +58,7 @@ interface AutoSaveResult {
     kitId: string | null;
     snapshot: string;
     savedAt: number;
+    revision?: number | null;
     fullState?: BackupFullState;
   } | null;
   /** Re-persists a backup to localStorage (use before cross-kit navigation to preserve fullState). */
@@ -356,6 +357,7 @@ export function useKitAutoSave(
             kitId: autoSavedKitIdRef.current,
             snapshot: snapshotRef.current,
             savedAt: Date.now(),
+            revision: revisionRef.current,
             fullState,
           }),
         );
@@ -391,6 +393,7 @@ export function useKitAutoSave(
         kitId: string | null;
         snapshot: string;
         savedAt: number;
+        revision?: number | null;
         fullState?: BackupFullState;
       };
     } catch {

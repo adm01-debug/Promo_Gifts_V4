@@ -12,9 +12,9 @@ import {
   useKitBuilder,
   useKitUndoRedo,
   useTemplateSnapshot,
+  type BackupFullState,
 } from '@/hooks/kit-builder';
 import { useKitBuilderQuote, type KitQuoteClient } from '@/pages/kit-builder/useKitBuilderQuote';
-import type { BackupFullState } from '@/hooks/kit-builder/useKitAutoSave';
 import {
   calculateTotalKitPrice,
   type ExternalProductForKit,
@@ -219,6 +219,7 @@ export function useKitBuilderPageState() {
     isSaving: isAutoSaving,
     autoSavedKitId,
     autoSaveError,
+    isConflictError,
     retryLastSave,
     cancelPendingSave,
     acknowledgeManualSave,
@@ -465,18 +466,21 @@ export function useKitBuilderPageState() {
 
   const restoreFromBackup = useCallback(
     (fullState: BackupFullState) => {
-      loadKit({
+      restoreKitSnapshot({
         name: fullState.name,
         kitType: fullState.kitType,
         box: fullState.box,
         items: fullState.items,
         personalization: fullState.personalization,
         kitQuantity: fullState.qty,
-        identity: fullState.identity,
+        identity: fullState.identity ?? undefined,
         notes: fullState.notes,
+        flow: wizardState.flow,
+        aiBriefing,
       });
+      setKitQuantity(fullState.qty);
     },
-    [loadKit],
+    [restoreKitSnapshot, setKitQuantity, wizardState.flow, aiBriefing],
   );
 
   return {
@@ -485,6 +489,7 @@ export function useKitBuilderPageState() {
       wizardState,
       kitQuantity,
       currentKitId,
+      currentRevision,
       autoSavedKitId,
       availableBoxes,
       allAvailableBoxes,
@@ -548,6 +553,7 @@ export function useKitBuilderPageState() {
       isCreatingQuote,
       lastSavedAt,
       autoSaveError,
+      isConflictError,
       pricing,
     },
   };
