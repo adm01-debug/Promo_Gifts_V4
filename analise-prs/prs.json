@@ -1,10 +1,10 @@
 {
   "meta": {
     "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
-    "main_sha": "b4c1167c7ce91e664d23fddc43570d0a61efd048",
+    "main_sha": "0818809dae41c295b046dc52f85078e4f06b3df4",
     "analisado_em": "2026-11-09",
-    "total_open": 36,
-    "total_analisadas": 44
+    "total_open": 35,
+    "total_analisadas": 47
   },
   "mergeadas_por_agente": [
     {"number": 3337, "sha_main_apos": "6933eb61", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
@@ -16,12 +16,18 @@
     {"number": 3342, "merged_by": "adm01-debug"},
     {"number": 3344, "merged_by": "adm01-debug"},
     {"number": 3346, "merged_by": "adm01-debug", "sha_main_apos": "1696c5a5"},
-    {"number": 3348, "merged_by": "external", "sha_main_apos": "b4c1167c"}
+    {"number": 3348, "merged_by": "external", "sha_main_apos": "b4c1167c"},
+    {"number": 3349, "merged_by": "adm01-debug", "sha_main_apos": "fb4b8c2d"},
+    {"number": 3278, "merged_by": "adm01-debug", "sha_main_apos": "0818809d"}
+  ],
+  "fechadas_externas": [
+    {"number": 3277, "motivo": "Gate Final=FAILURE — fechada sem merge"},
+    {"number": 3347, "motivo": "CI incompleto — fechada sem merge"}
   ],
   "open_prs": [
     {"number": 3127, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": ".github/workflows/ + playwright.config.ts mandato proibido"},
     {"number": 3129, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": ".github/workflows/ 8 workflows mandato proibido"},
-    {"number": 3137, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "Altera 8 .github/workflows/ mandato proibido"},
+    {"number": 3137, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": ".github/workflows/ 8 workflows mandato proibido"},
     {"number": 3179, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + .github/workflows/ mandato proibido"},
     {"number": 3203, "draft": false, "user": "adm01-debug", "veredito": "NAO_MERGEAR", "motivo": "Gate Final=FAILURE merge-reports/E2E cancelled, base desatualizada 9b2644b2"},
     {"number": 3210, "draft": false, "user": "github-actions[bot]", "veredito": "AGUARDA_CI", "motivo": "action_required (pending deployment approval)"},
@@ -40,8 +46,6 @@
     {"number": 3265, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "supabase/migrations/ DDL/function REGRA E056"},
     {"number": 3273, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "supabase/migrations/ CREATE INDEX espelho REGRA E056"},
     {"number": 3274, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + .github/workflows/ mandato proibido"},
-    {"number": 3277, "draft": false, "user": "adm01-debug", "veredito": "NAO_MERGEAR", "motivo": "Gate Final=FAILURE run 128980382539 SHA 87c78600"},
-    {"number": 3278, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_CI", "motivo": "DRAFT + Gate Final=SUCCESS"},
     {"number": 3279, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + cron DDL fix REGRA E056"},
     {"number": 3284, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + cron espelho identico #3261 REGRA E056"},
     {"number": 3290, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + .github/workflows/ mandato proibido"},
@@ -53,16 +57,17 @@
     {"number": 3332, "draft": false, "user": "dependabot[bot]", "veredito": "NAO_MERGEAR", "motivo": "npm ci ERESOLVE eslint@10 + SSOT=FAILURE + E2E massivo=FAILURE"},
     {"number": 3333, "draft": false, "user": "dependabot[bot]", "veredito": "AGUARDA_PO", "motivo": "Major bump framer-motion 11->14 breaking API + E2E=FAILURE"},
     {"number": 3334, "draft": false, "user": "dependabot[bot]", "veredito": "AGUARDA_PO", "motivo": "Major bump Sentry 8->11 breaking changes + E2E=FAILURE"},
-    {"number": 3339, "draft": false, "user": "adm01-debug", "veredito": "NAO_MERGEAR", "motivo": "Gate 1=FAILURE file-size 598/774/563 vs baseline 577/761/553"},
-    {"number": 3347, "draft": false, "user": "adm01-debug", "veredito": "AGUARDA_CI", "motivo": "CI incompleto cross-reference QUEUED state=FAILURE"}
+    {"number": 3339, "draft": false, "user": "adm01-debug", "veredito": "NAO_MERGEAR", "motivo": "Gate 1=FAILURE file-size 598/774/563 vs baseline 577/761/553 — REGRA #10 proibe push (codex branch)"},
+    {"number": 3350, "draft": true, "user": "adm01-debug", "veredito": "AGUARDA_PO", "motivo": "DRAFT + feat UX batch6 — aguarda promocao non-draft + revisao PO"}
   ],
   "contagem": {
     "MERGEADA_AGENTE": 3,
-    "MERGEADA_EXTERNA": 5,
-    "NAO_MERGEAR": 6,
-    "AGUARDA_PO": 27,
-    "AGUARDA_CI": 3,
-    "TOTAL_OPEN": 36,
-    "TOTAL_ANALISADAS": 44
+    "MERGEADA_EXTERNA": 7,
+    "FECHADA_EXTERNA": 2,
+    "NAO_MERGEAR": 5,
+    "AGUARDA_CI": 1,
+    "AGUARDA_PO": 28,
+    "TOTAL_OPEN": 35,
+    "TOTAL_ANALISADAS": 47
   }
 }
