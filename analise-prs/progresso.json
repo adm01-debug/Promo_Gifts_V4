@@ -2,7 +2,7 @@
   "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 3355,
-  "atualizado_em": "2026-11-10T02:00:00Z",
+  "atualizado_em": "2026-11-10T02:35:00Z",
   "main_sha_final": "293b9287478fba7fa8683b2e15248ed998880c3f",
   "mergeadas_por_agente_esta_sessao": [
     {"number": 3337, "sha_main_apos": "6933eb61", "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
@@ -29,7 +29,8 @@
     {"number": 3347, "motivo": "CI incompleto — fechada sem merge"},
     {"number": 3357, "motivo": "NAO_MERGEAR (.github/workflows/) — fechada externamente apos analise"},
     {"number": 3359, "motivo": "NAO_MERGEAR CONFLICTING — fechada externamente apos analise"},
-    {"number": 3360, "motivo": "NAO_MERGEAR zero Gate Final — fechada externamente apos analise"}
+    {"number": 3360, "motivo": "NAO_MERGEAR zero Gate Final — fechada externamente apos analise"},
+    {"number": 3365, "motivo": "FECHADA SEM MERGE — state:CLOSED merged:false (confirmado via GraphQL 2026-11-10). Auto-merge habilitado mas nao disparou. Fix de existsSync guard NAO chegou ao main.", "head_sha": "1653f5d3", "verificado_em": "2026-11-10T02:30:00Z"}
   ],
   "processadas_externas": [
     {"number": 3129, "categoria": "ci_workflows"},
@@ -38,7 +39,6 @@
     {"number": 3290, "categoria": "ci_workflows"}
   ],
   "prs_aguarda_ci": [
-    {"number": 3365, "titulo": "fix(ci): guarda check-eslint-baseline contra crash antes de escrever output", "branch": "claude_pink/peaceful-planck-q4ee1i", "head_sha": "1653f5d3", "auto_merge": "squash (habilitado por adm01-debug)", "motivo": "Gate Final nao rodou no head SHA. Base SHA desatualizado (e70479b vs main 293b9287). Fix valido (existsSync antes de JSON.parse) e nao implementado em main. Auto-merge habilitado pelo PO — aguarda CI verde.", "valida": true, "regressao": false, "ja_implementada": false, "regra_correta": true},
     {"number": 3279, "nota_nova_sessao": "sha atualizado ca9dae70->bb59d431; Gate Final FAILURE + Gate 1 FAILURE confirmados (check_run_ids 128978022519, 128938478553)"},
     {"number": 3367, "nota_nova_sessao": "sha atualizado 051a279b->efe31626; CI in_progress + base behind main"},
     {"number": 3265, "nota_nova_sessao": "sha atualizado 6f8930b4->e00a33b4; 0 Gate Final (26 checks sem deploy-gates) + base SHA 898f05c pre-merges"},
@@ -72,15 +72,16 @@
   "contagem_por_veredito": {
     "MERGEADA_AGENTE": 6,
     "MERGEADA_EXTERNA": 10,
-    "FECHADA_EXTERNA": 5,
+    "FECHADA_EXTERNA": 6,
     "PROCESSADA_EXTERNA": 4,
     "NAO_MERGEAR_AINDA_OPEN": 28,
-    "AGUARDA_CI": 1,
+    "AGUARDA_CI": 0,
     "AGUARDA_PO": 1,
     "BLOQUEADO_DRAFT": 1,
-    "TOTAL_OPEN_GITHUB_ATUAL": 31,
-    "TOTAL_ANALISADAS": 56,
+    "TOTAL_OPEN_GITHUB_ATUAL": 30,
+    "TOTAL_ANALISADAS": 57,
     "VERIFICADO_EXAUSTIVO": true,
+    "verificado_exaustivo_evidencia": "57 PRs: 30 abertas (github_list_pull_requests retornou 30, confirmado 2026-11-10); 6 mergeadas pelo agente (SHAs em mergeadas_por_agente_esta_sessao); 10 mergeadas externamente; 6 fechadas sem merge; 4 processadas (ci_workflows); 1 aguarda_po (draft); 1 bloqueado_draft. #3365 confirmada CLOSED via GraphQL. main SHA 293b9287 inalterado (confirmado via GraphQL). Dossiers: 56 (commits ca48271+c64138a) + PR-3368.md (esta sessao). Metodologia: 4 perguntas por PR.",
     "worktrees_ativos": 0
   },
   "prs_nao_mergear_ainda_abertas": [
@@ -101,8 +102,8 @@
     ]
   },
   "analise_completa": {
-    "total_prs_analisadas": 56,
-    "total_open_github": 31,
+    "total_prs_analisadas": 57,
+    "total_open_github": 30,
     "todas_abertas_no_conjunto_analisado": true,
     "metodologia": "Para cada PR: (1) ainda e valida? (2) traz regressao? (3) ja esta implementada no main? (4) a regra de negocio esta correta?",
     "merges_realizados_total": 6,
@@ -119,9 +120,10 @@
     "progresso.json": "commit atual (atualizado)",
     "baseline/main-293b9287.md": "commit 5718071",
     "regras-de-negocio.md": "commit 5718071",
-    "prs.json": "commit atual (atualizado)",
+    "prs.json": "commit 5718071",
     "prs.csv": "commit 5718071",
     "dossies/PR-*.md x55": "commits ca48271 + c64138a",
-    "total_dossiers": 55
+    "dossies/PR-3368.md": "esta sessao (2026-11-10)",
+    "total_dossiers": 56
   }
 }
