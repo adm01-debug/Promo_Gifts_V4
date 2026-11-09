@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "93d3cf02acb654db0df4463e5a3345644b677205",
+  "commit": "5a3f679e7b32c652696d955a7c90f867db79abe7",
   "branch": "main",
-  "data_commit": "2026-11-09T07:55:09-03:00",
+  "data_commit": "2026-11-09T08:30:12-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "5a3f679",
+    "data": "2026-11-09",
+    "assunto": "fix(audit): registrar fn_check_item_fits e vw_products_min_quantity no catálogo Supabase (#3340)"
+   },
+   {
+    "sha": "6933eb6",
+    "data": "2026-11-09",
+    "assunto": "fix(ci): corrige referências inválidas supabase/migrations/x6 em analise-prs (#3337)"
+   },
    {
     "sha": "93d3cf0",
     "data": "2026-11-09",
@@ -121,199 +131,181 @@
     "sha": "bf42558",
     "data": "2026-11-08",
     "assunto": "fix(e2e+kit-builder): tolerance e2e + UI conflito KitBuilderHeader (#3272)"
-   },
-   {
-    "sha": "b737d49",
-    "data": "2026-11-08",
-    "assunto": "feat(kit-builder): validação min-quantity via vw_products_min_quantity (#3269)"
-   },
-   {
-    "sha": "08e10b7",
-    "data": "2026-11-08",
-    "assunto": "fix(kit-builder): arredondamento de preços a 2 casas decimais (#3253)"
    }
   ],
   "arquivos_mudados_7d": 489,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 897
+    "mudancas": 301
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 461
+    "mudancas": 161
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 347
+    "mudancas": 117
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 317
+    "mudancas": 109
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 280
+    "mudancas": 96
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 260
-   },
-   {
-    "pasta": "src/components/inventory",
-    "mudancas": 240
+    "mudancas": 91
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 228
+    "mudancas": 90
+   },
+   {
+    "pasta": "src/components/inventory",
+    "mudancas": 80
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 222
+    "mudancas": 76
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 192
+    "mudancas": 74
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 177
+    "mudancas": 59
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 159
+    "mudancas": 59
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 151
+    "mudancas": 57
+   },
+   {
+    "pasta": "RELATORIO_CI.md",
+    "mudancas": 53
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 147
-   },
-   {
-    "pasta": "docs/arquivo/2026-09",
-    "mudancas": 129
+    "mudancas": 53
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 55
+    "mudancas": 53
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 46
+    "mudancas": 44
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 24
+    "mudancas": 22
    },
    {
     "arquivo": "package.json",
-    "mudancas": 17
+    "mudancas": 15
    },
    {
     "arquivo": "analise-prs/progresso.json",
-    "mudancas": 15
+    "mudancas": 14
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 15
-   },
-   {
-    "arquivo": "package-lock.json",
     "mudancas": 13
    },
    {
+    "arquivo": "package-lock.json",
+    "mudancas": 11
+   },
+   {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 12
-   },
-   {
-    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 12
-   },
-   {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
     "mudancas": 10
    },
    {
-    "arquivo": "AGENTS.md",
+    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
+    "mudancas": 10
+   },
+   {
+    "arquivo": "CHANGELOG.md",
     "mudancas": 9
+   },
+   {
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "AGENTS.md",
+    "mudancas": 7
    },
    {
     "arquivo": "CLAUDE.md",
-    "mudancas": 9
+    "mudancas": 7
    },
    {
     "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 8
+    "mudancas": 6
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 7
+    "mudancas": 6
+   },
+   {
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    "mudancas": 6
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 7
+    "mudancas": 5
    },
    {
     "arquivo": "docs/estado/PENDENCIAS.md",
-    "mudancas": 7
+    "mudancas": 5
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 7
+    "mudancas": 5
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 7
+    "mudancas": 5
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 7
+    "mudancas": 5
+   },
+   {
+    "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
+    "mudancas": 4
    },
    {
     "arquivo": ".github/workflows/ci-security-drift.yml",
-    "mudancas": 6
+    "mudancas": 4
    },
    {
     "arquivo": ".github/workflows/e2e-focused.yml",
-    "mudancas": 6
-   },
-   {
-    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 6
+    "mudancas": 4
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 290
+    "commits": 289
    },
    {
     "autor": "github-actions[bot]",
     "commits": 16
-   },
-   {
-    "autor": "Claude",
-    "commits": 1
-   },
-   {
-    "autor": "Joaquim Ataides",
-    "commits": 1
    }
   ]
  },

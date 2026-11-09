@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "93d3cf02acb654db0df4463e5a3345644b677205",
+  "sha": "5a3f679e7b32c652696d955a7c90f867db79abe7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 11:17 UTC",
+  "generated_at": "2026-11-09 11:37 UTC",
   "files_total": 9182,
   "code_files": 7869,
   "code_lines": 1055933
@@ -484404,10 +484404,29 @@
   }
  },
  "git": {
-  "sha": "93d3cf02acb654db0df4463e5a3345644b677205",
+  "sha": "5a3f679e7b32c652696d955a7c90f867db79abe7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "5a3f679",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "fix(audit): registrar fn_check_item_fits e vw_products_min_quantity no catálogo Supabase (#3340)",
+    "files": [
+     "audit/supabase-reference-catalog.temporary.json"
+    ]
+   },
+   {
+    "sha": "6933eb6",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "fix(ci): corrige referências inválidas supabase/migrations/x6 em analise-prs (#3337)",
+    "files": [
+     "analise-prs/progresso.json",
+     "analise-prs/prs.json"
+    ]
+   },
    {
     "sha": "93d3cf0",
     "date": "2026-11-09",
@@ -484725,55 +484744,6 @@
     "files": [
      "analise-prs/progresso.json"
     ]
-   },
-   {
-    "sha": "8368588",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs(analise-prs): dossiês das 31 novas PRs (#3243–#3292)",
-    "files": [
-     "analise-prs/dossies/PR-3243.md",
-     "analise-prs/dossies/PR-3247.md",
-     "analise-prs/dossies/PR-3248.md",
-     "analise-prs/dossies/PR-3250.md",
-     "analise-prs/dossies/PR-3251.md",
-     "analise-prs/dossies/PR-3252.md",
-     "analise-prs/dossies/PR-3253.md",
-     "analise-prs/dossies/PR-3255.md",
-     "analise-prs/dossies/PR-3256.md",
-     "analise-prs/dossies/PR-3257.md",
-     "analise-prs/dossies/PR-3261.md",
-     "analise-prs/dossies/PR-3263.md",
-     "analise-prs/dossies/PR-3264.md",
-     "analise-prs/dossies/PR-3265.md",
-     "analise-prs/dossies/PR-3266.md",
-     "analise-prs/dossies/PR-3269.md",
-     "analise-prs/dossies/PR-3270.md",
-     "analise-prs/dossies/PR-3272.md",
-     "analise-prs/dossies/PR-3273.md",
-     "analise-prs/dossies/PR-3274.md",
-     "analise-prs/dossies/PR-3275.md",
-     "analise-prs/dossies/PR-3276.md",
-     "analise-prs/dossies/PR-3277.md",
-     "analise-prs/dossies/PR-3278.md",
-     "analise-prs/dossies/PR-3279.md",
-     "analise-prs/dossies/PR-3283.md",
-     "analise-prs/dossies/PR-3284.md",
-     "analise-prs/dossies/PR-3288.md",
-     "analise-prs/dossies/PR-3290.md",
-     "analise-prs/dossies/PR-3291.md",
-     "analise-prs/dossies/PR-3292.md"
-    ]
-   },
-   {
-    "sha": "198d8cf",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs(analise-prs): inventario_prs.json (39 PRs) + progresso.json atualizado",
-    "files": [
-     "analise-prs/inventario_prs.json",
-     "analise-prs/progresso.json"
-    ]
    }
   ],
   "hot_files": [
@@ -484783,7 +484753,7 @@
    ],
    [
     "analise-prs/prs.json",
-    3
+    4
    ],
    [
     "scripts/test-approved-plan-database.sh",
@@ -484822,6 +484792,10 @@
     2
    ],
    [
+    "audit/supabase-reference-catalog.temporary.json",
+    1
+   ],
+   [
     ".migration-refs-baseline.json",
     1
    ],
@@ -484851,10 +484825,6 @@
    ],
    [
     "scripts/check-cloud-status-coverage.mjs",
-    1
-   ],
-   [
-    "scripts/check-critical-path-coverage.mjs",
     1
    ]
   ]

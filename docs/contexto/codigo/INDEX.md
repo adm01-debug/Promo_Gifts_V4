@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `93d3cf02acb654db0df4463e5a3345644b677205` (2026-11-09T07:55:09-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5a3f679e7b32c652696d955a7c90f867db79abe7` (2026-11-09T08:30:12-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,27 +586,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38552 nós · 67007 arestas · 2187 comunidades · grafo do commit `93d3cf02`
+- 38552 nós · 67007 arestas · 2187 comunidades · grafo do commit `5a3f679e`
 - comunidades maiores: ref_lib (779), ref_components (637), ref_integrations (395), nav.ts (364), react-router-dom (361), @tanstack/react-query (346), ref_hooks (321), ref_node_fs (293), scripts (289), ref_utils (286), cors.ts (254), sonner (254)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (55)
-- PENDENCIAS.md (46)
-- supabase/MIGRATIONS_SYNC_LOG.md (24)
-- package.json (17)
-- analise-prs/progresso.json (15)
-- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (15)
-- package-lock.json (13)
-- .github/workflows/deploy-gates.yml (12)
-- analise-branches/RELATORIO_BRANCHES.md (12)
-- CHANGELOG.md (11)
-- e2e/flows/magazine-publish-smoke.spec.ts (11)
-- analise-prs/RELATORIO_PRS.md (10)
-- AGENTS.md (9)
-- CLAUDE.md (9)
-- .github/workflows/replenishment-quality.yml (8)
+- RELATORIO_CI.md (53)
+- PENDENCIAS.md (44)
+- supabase/MIGRATIONS_SYNC_LOG.md (22)
+- package.json (15)
+- analise-prs/progresso.json (14)
+- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (13)
+- package-lock.json (11)
+- .github/workflows/deploy-gates.yml (10)
+- analise-branches/RELATORIO_BRANCHES.md (10)
+- CHANGELOG.md (9)
+- e2e/flows/magazine-publish-smoke.spec.ts (9)
+- analise-prs/RELATORIO_PRS.md (8)
+- AGENTS.md (7)
+- CLAUDE.md (7)
+- .github/workflows/replenishment-quality.yml (6)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1160,6 +1160,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-09 `5a3f679` fix(audit): registrar fn_check_item_fits e vw_products_min_quantity no catálogo Supabase (#3340)
+- 2026-11-09 `6933eb6` fix(ci): corrige referências inválidas supabase/migrations/x6 em analise-prs (#3337)
 - 2026-11-09 `93d3cf0` fix(gate13): remove referência falsa supabase/migrations/x6 nos JSONs de analise-prs
 - 2026-11-09 `4cf3081` fix(ci): congela ref PENDENCIAS.md → migration futura no Gate 1.3 baseline (#3275)
 - 2026-11-09 `193a750` fix: corrige typecheck e permissão de script pré-existentes em main (#3320)
@@ -1173,8 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-09 `ee6f6c8` feat(kit-builder): guard goToStep etapas não completadas FT-122 (#3292)
 - 2026-11-09 `b520784` fix: scripts static-pass e exit codes (#3266)
 - 2026-11-09 `0aab655` feat(e2e): specs E2E rotas públicas — PR #3248 (#3248)
-- 2026-11-09 `d017980` docs(analise-prs): RELATORIO_DOSSIES — dossiê CI por PR com evidências (#3311)
-- 2026-11-09 `f68850a` docs(analise-prs): RELATORIO_PRS.md + progresso.json — inventário completo 36 PRs abertas
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
