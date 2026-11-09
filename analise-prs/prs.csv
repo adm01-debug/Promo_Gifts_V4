@@ -1,37 +1,35 @@
-number,draft,user,veredito,motivo
-3127,false,adm01-debug,AGUARDA_PO,.github/workflows/ + playwright.config.ts mandato proibido
-3129,false,adm01-debug,AGUARDA_PO,.github/workflows/ 8 workflows mandato proibido
-3137,false,adm01-debug,AGUARDA_PO,Altera 8 .github/workflows/ mandato proibido
-3179,true,adm01-debug,AGUARDA_PO,DRAFT + .github/workflows/ mandato proibido
-3203,false,adm01-debug,NAO_MERGEAR,Gate Final=FAILURE merge-reports/E2E cancelled base desatualizada
-3210,false,github-actions[bot],AGUARDA_CI,action_required (pending deployment approval)
-3214,true,adm01-debug,AGUARDA_PO,DRAFT + cron DDL/CRON-001 REGRA E056
-3228,true,adm01-debug,AGUARDA_PO,DRAFT + .github/workflows/ mandato proibido
-3243,false,adm01-debug,AGUARDA_PO,supabase/migrations ALTER TABLE REGRA E056
-3247,true,adm01-debug,AGUARDA_PO,DRAFT + .github/workflows/ mandato proibido
-3250,true,adm01-debug,AGUARDA_PO,DRAFT + CREATE INDEX DDL/aditivo REGRA E056
-3251,true,adm01-debug,AGUARDA_PO,DRAFT + cron remove REGRA E056
-3255,true,adm01-debug,AGUARDA_PO,DRAFT + DROP FUNCTION DDL/destrutivo REGRA E056
-3256,true,adm01-debug,AGUARDA_PO,DRAFT + RLS fix exige teste Postgres temporario + PO
-3257,false,adm01-debug,AGUARDA_PO,supabase/migrations RLS exige teste Postgres temporario + PO
-3261,false,adm01-debug,AGUARDA_PO,supabase/migrations/ cron espelho REGRA E056
-3263,false,adm01-debug,AGUARDA_PO,supabase/migrations/ cron DDL REGRA E056
-3264,false,adm01-debug,AGUARDA_PO,supabase/migrations/ DDL/view REGRA E056
-3265,false,adm01-debug,AGUARDA_PO,supabase/migrations/ DDL/function REGRA E056
-3273,false,adm01-debug,AGUARDA_PO,supabase/migrations/ CREATE INDEX espelho REGRA E056
-3274,true,adm01-debug,AGUARDA_PO,DRAFT + .github/workflows/ mandato proibido
-3277,false,adm01-debug,NAO_MERGEAR,Gate Final=FAILURE run 128980382539 SHA 87c78600
-3278,true,adm01-debug,AGUARDA_CI,DRAFT + Gate Final=SUCCESS
-3279,true,adm01-debug,AGUARDA_PO,DRAFT + cron DDL fix REGRA E056
-3284,true,adm01-debug,AGUARDA_PO,DRAFT + cron espelho identico #3261 REGRA E056
-3290,true,adm01-debug,AGUARDA_PO,DRAFT + .github/workflows/ mandato proibido
-3327,false,dependabot[bot],AGUARDA_PO,.github/workflows/ mandato proibido
-3328,false,dependabot[bot],AGUARDA_PO,.github/workflows/ mandato proibido (CodeQL=FAILURE)
-3329,false,dependabot[bot],NAO_MERGEAR,Gate 1=FAILURE + Gate 5=FAILURE + Migrations x Canonical=FAILURE + workflows prohibited
-3330,false,dependabot[bot],NAO_MERGEAR,CodeQL=FAILURE + Gate 1=FAILURE + Gate E23=FAILURE + workflows prohibited
-3331,false,dependabot[bot],AGUARDA_PO,Major bump date-fns 3->4 breaking API + E2E=FAILURE
-3332,false,dependabot[bot],NAO_MERGEAR,npm ci ERESOLVE eslint@10 + SSOT=FAILURE + E2E massivo=FAILURE
-3333,false,dependabot[bot],AGUARDA_PO,Major bump framer-motion 11->14 breaking API + E2E=FAILURE
-3334,false,dependabot[bot],AGUARDA_PO,Major bump Sentry 8->11 breaking changes + E2E=FAILURE
-3339,false,adm01-debug,NAO_MERGEAR,Gate 1=FAILURE file-size 598/774/563 vs baseline 577/761/553
-3347,false,adm01-debug,AGUARDA_CI,CI incompleto cross-reference QUEUED state=FAILURE
+number,state,draft,user,veredito,motivo,ci_gate
+3127,open,false,adm01-debug,AGUARDA_PO,.github/workflows/ + playwright.config.ts mandato proibido,N/A
+3129,open,false,adm01-debug,AGUARDA_PO,.github/workflows/ 8 workflows mandato proibido,N/A
+3137,open,false,adm01-debug,AGUARDA_PO,Altera 8 .github/workflows/ mandato proibido,N/A
+3179,open,true,adm01-debug,AGUARDA_PO,DRAFT + .github/workflows/ mandato proibido,N/A
+3203,open,false,adm01-debug,NAO_MERGEAR,Gate Final=FAILURE merge-reports/E2E cancelled base desatualizada 9b2644b2,FAILURE
+3210,open,false,github-actions[bot],AGUARDA_CI,action_required (pending deployment approval Supabase Preview),PENDING
+3214,open,true,adm01-debug,AGUARDA_PO,DRAFT + cron DDL/CRON-001 REGRA E056,N/A
+3228,open,true,adm01-debug,AGUARDA_PO,DRAFT + .github/workflows/ mandato proibido,N/A
+3243,open,false,adm01-debug,AGUARDA_PO,supabase/migrations ALTER TABLE REGRA E056,SUCCESS
+3247,open,true,adm01-debug,AGUARDA_PO,DRAFT + .github/workflows/ mandato proibido,N/A
+3250,open,true,adm01-debug,AGUARDA_PO,DRAFT + CREATE INDEX DDL/aditivo REGRA E056,N/A
+3251,open,true,adm01-debug,AGUARDA_PO,DRAFT + cron remove REGRA E056,N/A
+3255,open,true,adm01-debug,AGUARDA_PO,DRAFT + DROP FUNCTION DDL/destrutivo REGRA E056,N/A
+3256,open,true,adm01-debug,AGUARDA_PO,DRAFT + RLS fix exige teste Postgres temporario + PO,N/A
+3257,open,false,adm01-debug,AGUARDA_PO,supabase/migrations RLS exige teste Postgres temporario + PO,SUCCESS
+3261,open,false,adm01-debug,AGUARDA_PO,supabase/migrations/ cron espelho REGRA E056,SUCCESS
+3263,open,false,adm01-debug,AGUARDA_PO,supabase/migrations/ cron DDL REGRA E056,SUCCESS
+3264,open,false,adm01-debug,AGUARDA_PO,supabase/migrations/ DDL/view REGRA E056,SUCCESS
+3265,open,false,adm01-debug,AGUARDA_PO,supabase/migrations/ DDL/function REGRA E056,SUCCESS
+3273,open,false,adm01-debug,AGUARDA_PO,supabase/migrations/ CREATE INDEX espelho REGRA E056,SUCCESS
+3274,open,true,adm01-debug,AGUARDA_PO,DRAFT + .github/workflows/ mandato proibido,N/A
+3279,open,true,adm01-debug,AGUARDA_PO,DRAFT + cron DDL fix REGRA E056,N/A
+3284,open,true,adm01-debug,AGUARDA_PO,DRAFT + cron espelho identico #3261 REGRA E056,N/A
+3290,open,true,adm01-debug,AGUARDA_PO,DRAFT + .github/workflows/ mandato proibido,N/A
+3327,open,false,dependabot[bot],AGUARDA_PO,.github/workflows/ mandato proibido,N/A
+3328,open,false,dependabot[bot],AGUARDA_PO,.github/workflows/ mandato proibido (CodeQL=FAILURE),FAILURE
+3329,open,false,dependabot[bot],NAO_MERGEAR,Gate 1=FAILURE + Gate 5=FAILURE + Migrations x Canonical=FAILURE + .github/workflows prohibited,FAILURE
+3330,open,false,dependabot[bot],NAO_MERGEAR,CodeQL=FAILURE + Gate 1=FAILURE + Gate E23=FAILURE + .github/workflows prohibited,FAILURE
+3331,open,false,dependabot[bot],AGUARDA_PO,Major bump date-fns 3->4 breaking API + E2E=FAILURE,FAILURE
+3332,open,false,dependabot[bot],NAO_MERGEAR,npm ci ERESOLVE eslint@10 + SSOT=FAILURE + E2E massivo=FAILURE,FAILURE
+3333,open,false,dependabot[bot],AGUARDA_PO,Major bump framer-motion 11->14 breaking API + E2E=FAILURE,FAILURE
+3334,open,false,dependabot[bot],AGUARDA_PO,Major bump Sentry 8->11 breaking changes + E2E=FAILURE,FAILURE
+3339,open,false,adm01-debug,NAO_MERGEAR,Gate 1=FAILURE file-size 598/774/563 vs baseline 577/761/553 — REGRA #10 proibe push (codex branch),FAILURE
+3350,open,false,adm01-debug,AGUARDA_CI,Non-draft feat UX batch6 — Gate Final nao rodou no head SHA 627612137535,PENDING

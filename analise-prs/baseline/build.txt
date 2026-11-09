@@ -1,11 +1,13 @@
-Build check — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
-Data: 2026-10-25
+## Build baseline — main HEAD 0818809d — 2026-11-09
 
-NÃO EXECUTADO LOCALMENTE
-Motivo: npm install falha com 403 (registry europe-west1-npm.pkg.dev sem credenciais)
+Executado diretamente: NAO EXECUTADO LOCALMENTE
+Motivo: npm ci falha com 403 em registry privado Lovable
 
-Referência CI (Gate 6 — Build Vite):
-- Run #40214531246 (SHA 4cb4feb4): conclusion=success → Build OK
-- Gate Final completo: success ✅
+CI (Gate 6 - Build):
+- Status em push: main 0818809d: SKIPPED
+- Check run ID: 129236176595 (skipped)
+- Motivo do skip: Gate 1 Lint+TypeScript falhou antes
 
-Evidência: Gate Final run #40214531246 job "build" conclusion=success
+Baseline anterior: NAO EXECUTADO LOCALMENTE
+
+Verificado em sessao: session_01VXkRxWq5ZUCmvuNx5e2TGX

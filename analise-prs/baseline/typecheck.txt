@@ -1,6 +1,13 @@
-## TypeScript baseline — main HEAD e0b569f18 — 2026-10-27
+## TypeScript baseline — main HEAD 0818809d — 2026-11-09
 
-Comando: npx tsc --noEmit
-Resultado: EXIT 0 — zero erros TypeScript em main
+Executado diretamente: NAO EXECUTADO LOCALMENTE
+Motivo: npm ci falha com 403 em registry privado Lovable (europe-west1-npm.pkg.dev)
 
-Verificado em session_01VXkRxWq5ZUCmvuNx5e2TGX
+CI (Gate 1 static-gates, job no PR e push: main):
+- Gate 1 Lint+TypeScript: FAILURE em push: main (pre-existente)
+- Check run 129236175091 (SHA 0818809d): annotation 'Gate 1 Lint+TypeScript falhou (failure)'
+
+Baseline anterior (session anterior, SHA e0b569f18, 2026-10-27): EXIT 0
+SHA atual 0818809d diverge — falha de Gate 1 introducida entre e0b569f18 e 0818809d.
+
+Verificado em sessao: session_01VXkRxWq5ZUCmvuNx5e2TGX

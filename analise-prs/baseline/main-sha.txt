@@ -1,1 +1,7 @@
-4c5fdd72fc301cdcd65851af30204881bab710c4
+## Baseline main SHA — 2026-11-09
+
+SHA atual: 0818809dae41c295b046dc52f85078e4f06b3df4
+Commit: fix: corrige referencia de SHA de sentinela em check-sentinel-sha (PR #3278, merged by adm01-debug)
+Data: 2026-11-09
+
+Verificado em sessao: session_01VXkRxWq5ZUCmvuNx5e2TGX

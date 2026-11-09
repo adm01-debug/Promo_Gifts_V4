@@ -1,18 +1,14 @@
-## ESLint baseline — main HEAD e0b569f18 — 2026-10-27
+## Lint baseline — main HEAD 0818809d — 2026-11-09
 
-Comando: npm run lint (check-eslint-baseline.mjs)
-Resultado: OOM (JavaScript heap out of memory) no container de análise — ESLint não concluiu.
+Executado diretamente: NAO EXECUTADO LOCALMENTE
+Motivo: npm ci falha com 403 em registry privado Lovable
 
-Causa: container de análise tem memória insuficiente para executar ESLint no codebase completo (~2GB heap).
-CI real (GitHub Actions) executa com mais memória — status lá é GREEN (Gate 1 passou em e0b569f18).
+CI (Gate 1 = Lint + TypeScript, job static-gates):
+- Status em push: main 0818809d: FAILURE
+- Check run ID: 129236175091
+- Annotation: 'Gate 1 Lint+TypeScript falhou (failure)'
 
-Linha de base adotada: CI verde em main (run_id 40572329584 = Gate Final PASS).
+Baseline anterior (SHA 4c5fdd72, session anterior): NAO DISPONIVEL (OOM durante execucao)
+Falha pre-existente no main desde pelo menos 2026-11-09T11:33 (SHA 6933eb61).
 
-## Baseline CI Verificado (canônico)
-
-**Baseline CI verificado: Gate Final run_id 40572329584, resultado SUCCESS, inclui Gate 1 (ESLint).**
-**main HEAD:** `e0b569f18`
-**Lint baseline = VERDE no CI.**
-
-Gate Final inclui Gate 1 (ESLint via `static-gates` job). O status SUCCESS confirma que ESLint passou em `e0b569f18`.
-Evidência direta: `github_list_workflow_runs` — run 40572329584, workflow `deploy-gates.yml`, conclusion=`success`, commit=`e0b569f18`.
+Verificado em sessao: session_01VXkRxWq5ZUCmvuNx5e2TGX

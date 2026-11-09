@@ -1,0 +1,29 @@
+## Gate Final — deploy-gates.yml em push: main — 2026-11-09
+
+### CONCLUSAO: Gate Final = FAILURE (PRE-EXISTENTE em main)
+
+Verificado em 3 commits de main:
+
+| SHA | Check Run ID | Conclusao | Falha |
+|---|---|---|---|
+| 6933eb61 (pos #3337) | 129135643236 | FAILURE | Gate 1 Lint+TS + Gate 6 skipped |
+| 78729fc1 (pos #3343) | 129188116924 | FAILURE | Gate 1 Lint+TS + Gate 6 skipped |
+| 0818809d (atual) | 129236175091 | FAILURE | Gate 1 Lint+TS + Gate 6 skipped |
+
+Annotations comuns (run 129236175091 em 0818809d):
+- 'Gate 1 Lint+TypeScript falhou (failure)'
+- 'Gate 6 Build falhou (skipped)'
+- 'Process completed with exit code 1.'
+
+### Causa raiz (suspeita)
+Falha no job static-gates (Gate 1) ativa desde pelo menos 2026-11-09T11:33.
+O run de push em main dispara deploy-gates.yml (confirmado por CLAUDE.md tabela CI).
+Gate 6 (Build) fica skipped porque Gate 1 falha primeiro.
+
+### Impacto nas merges desta sessao
+PRs #3337 e #3340 eram docs-only (E14 exception — paths-ignore: docs/**).
+PR #3343 (chore/ci file-size baseline) — Gate Final via push: FAILURE. Verificar run no PR HEAD.
+
+### Nota: Gate Final em PR HEAD antes do merge
+Para eligibilidade de merge, o gate relevante e o que roda no PR HEAD (pull_request event),
+nao o que roda no merge commit (push: main event). Os dois sao runs diferentes.
