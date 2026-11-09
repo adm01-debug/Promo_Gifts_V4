@@ -7,7 +7,7 @@
     "method": "read-only pg_catalog",
     "relations": "pg_class + pg_namespace (schema public; relkind r/p/v/m/f)",
     "rpcs": "pg_proc + pg_namespace (schema public; prokind f)",
-    "supplemental_rpc_capture": "2026-09-09: seis RPCs magazine_*_atomic e quatorze RPCs magazine_*_v2 confirmadas via pg_catalog no projeto canônico após as migrations 20260909181000–20260909200000. 2026-09-11: save_custom_kit_atomic confirmada via pg_catalog após a migration 20260911130357. 2026-09-12: create_quote_transactional e create_kit_quote_transactional confirmadas via pg_catalog; ambas retornam quotes, são security invoker e têm EXECUTE para authenticated após a migration 20260911172000. 2026-09-12: set_custom_kit_pinned(uuid,boolean) confirmada via pg_catalog após a migration 20260912151000; é security invoker, tem EXECUTE para authenticated e opera com o índice parcial custom_kits_one_pinned_per_user_idx. 2026-09-23: v_kit_component_print_areas_public confirmada via pg_catalog (view em public, join de kit_component_print_areas + product_kit_components + products, is_active=true) — introduzida em src/hooks/kit-builder/useKitBuilderQueries.ts (etapa 12 do plano de finalização do Kit Maker). 2026-09-24: v_kit_component_print_areas_public removida do catalogo — nunca chegou a ser referenciada em codigo de producao; useKitBuilderQueries.ts (etapa 12) trocou para print_area_techniques por product_id ao descobrir, durante revisao, que kit_component_print_areas tem 0% de cobertura real no catalogo ativo (a view em si permanece no banco, security_invoker=true, sem risco, apenas orfa).",
+    "supplemental_rpc_capture": "2026-09-09: seis RPCs magazine_*_atomic e quatorze RPCs magazine_*_v2 confirmadas via pg_catalog no projeto canônico após as migrations 20260909181000–20260909200000. 2026-09-11: save_custom_kit_atomic confirmada via pg_catalog após a migration 20260911130357. 2026-09-12: create_quote_transactional e create_kit_quote_transactional confirmadas via pg_catalog; ambas retornam quotes, são security invoker e têm EXECUTE para authenticated após a migration 20260911172000. 2026-09-12: set_custom_kit_pinned(uuid,boolean) confirmada via pg_catalog após a migration 20260912151000; é security invoker, tem EXECUTE para authenticated e opera com o índice parcial custom_kits_one_pinned_per_user_idx. 2026-09-23: v_kit_component_print_areas_public confirmada via pg_catalog (view em public, join de kit_component_print_areas + product_kit_components + products, is_active=true) — introduzida em src/hooks/kit-builder/useKitBuilderQueries.ts (etapa 12 do plano de finalização do Kit Maker). 2026-09-24: v_kit_component_print_areas_public removida do catalogo — nunca chegou a ser referenciada em codigo de producao; useKitBuilderQueries.ts (etapa 12) trocou para print_area_techniques por product_id ao descobrir, durante revisao, que kit_component_print_areas tem 0% de cobertura real no catalogo ativo (a view em si permanece no banco, security_invoker=true, sem risco, apenas orfa). 2026-11-09: fn_check_item_fits(p_packaging_id uuid, p_product_id uuid, p_current_used_liters numeric DEFAULT 0) confirmada via pg_catalog no projeto canônico; RPC do kit builder para validação de encaixe de itens. vw_products_min_quantity confirmada via pg_views no projeto canônico; view do kit builder para validação de quantidade mínima de produtos.",
     "scope": "Somente nomes de objetos; nenhum dado de aplicação foi consultado."
   },
   "limitations": [
@@ -192,6 +192,7 @@
     "visual_search_feedback",
     "voice_command_logs",
     "vw_medallion_coverage",
+    "vw_products_min_quantity",
     "webhook_deliveries",
     "workspace_notifications"
   ],
@@ -221,6 +222,7 @@
     "fn_admin_sync_external_connections",
     "fn_apply_crm_callback",
     "fn_batch_update_cart_item_sort_order",
+    "fn_check_item_fits",
     "fn_check_login_allowed",
     "fn_get_color_swatches_batch",
     "fn_get_customization_price",
@@ -326,22 +328,14 @@
   "relation_aliases": {
     "customization_price_tables": {
       "target": "tabela_preco_gravacao_oficial",
-      "forms": [
-        "wrapper"
-      ],
-      "receivers": [
-        "dbInvoke"
-      ],
+      "forms": ["wrapper"],
+      "receivers": ["dbInvoke"],
       "reason": "Alias de leitura resolvido por BRIDGE_ALIASES em src/lib/db/postgrest.ts."
     },
     "tecnica_gravacao": {
       "target": "tabela_preco_gravacao_oficial",
-      "forms": [
-        "wrapper"
-      ],
-      "receivers": [
-        "dbInvoke"
-      ],
+      "forms": ["wrapper"],
+      "receivers": ["dbInvoke"],
       "reason": "Alias de leitura resolvido por BRIDGE_ALIASES em src/lib/db/postgrest.ts."
     }
   },
