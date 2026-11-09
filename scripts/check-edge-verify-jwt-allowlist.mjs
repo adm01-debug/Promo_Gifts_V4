@@ -161,7 +161,8 @@ export function diff(liveFunctions, doc) {
 
   const newFindings = falseJwt.filter((slug) => !byslug.has(slug));
   const missingReasons = doc.functions
-    .filter((e) => !e.reason || !String(e.reason).trim())
+    // GUARD: o placeholder gravado por --update-allowlist não é justificativa (exige revisão humana).
+    .filter((e) => !e.reason || !String(e.reason).trim() || /^\s*motivo n[aã]o confirmado/i.test(String(e.reason)))
     .map((e) => e.slug);
   const staleAllowlist = doc.functions.map((e) => e.slug).filter((slug) => !falseJwtSet.has(slug));
 
