@@ -2,15 +2,15 @@
   "meta": {
     "data_analise": "2026-11-08",
     "sessao": "claude_05/youthful-ride-vcdchy",
-    "total_abertos_analisados": 37,
-    "mergeadas_esta_sessao": 5,
+    "total_abertos_analisados": 41,
+    "mergeadas_esta_sessao": 6,
     "mergeadas_sessoes_anteriores": 1,
-    "aguardando_humano": 29,
+    "aguardando_humano": 32,
     "pendente_ci": 2,
-    "pr_mais_recente_analisada": 3284,
-    "nota": "#3267 fechada/não-mergeada excluída. #3249 mergeada sessão anterior. #3245+#3254+#3280 mergeadas por Claude esta sessão. #3281+#3282 mergeadas por adm01-debug esta sessão. #3276+#3277 PENDENTE_CI (Gate Final queued).",
-    "total_prs": 40,
-    "ultima_atualizacao": "2026-11-09T00:00:00Z"
+    "pr_mais_recente_analisada": 3290,
+    "nota": "#3267 fechada/não-mergeada excluída. #3249 mergeada sessão anterior. #3245+#3254+#3280+#3285 mergeadas por Claude esta sessão. #3281+#3282 mergeadas por adm01-debug esta sessão. #3276+#3277 PENDENTE_CI (Gate Final queued). #3287 DECISAO_HUMANA (conflito). #3288+#3290 DECISAO_HUMANA (Draft).",
+    "total_prs": 44,
+    "ultima_atualizacao": "2026-11-09T00:15:00Z"
   },
   "prs": [
     {
@@ -518,6 +518,13 @@
       "tipo": "docs-only CI (Gate E14/E197 bypass)",
       "sessao": "atual",
       "merge_por": "adm01-debug (humano)"
+    },
+    {
+      "number": 3285,
+      "title": "chore: registrar PEND-EL01 — chave ElevenLabs ausente (decisão de custo)",
+      "squash_sha": "5aaebc67dcc55a3b14a684b2e3419f89fc8cf1a6",
+      "tipo": "docs-only (docs/estado/PENDENCIAS.md — Gate E14/E197 bypass)",
+      "sessao": "atual"
     }
   ],
   "regras_bloqueio_summary": {

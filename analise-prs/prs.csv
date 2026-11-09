@@ -43,3 +43,7 @@ numero,titulo,draft,conflito,toca_workflows,toca_migrations,regressao,veredito,m
 3282,"docs(ci): RELATORIO_CI.md baseline×final + PENDENCIAS.md P-11/P-12 + P-06 corrigido",false,false,false,false,false,MERGE_AUTONOMO,"MERGEADA SHA 111818f046fc46261f627cd37463683111402742 (docs-only E14 bypass) por adm01-debug"
 3283,"feat(kit-builder): backup completo no beforeunload + restore",true,true,false,false,false,DECISAO_HUMANA,"Draft=true + conflito semântico com #3276/#3277"
 3284,"chore(migrations): DRIFT mirror — arquivos espelho CRON-001",true,false,false,true,false,DECISAO_HUMANA,"Draft=true + REGRA#8/E15 DDL migration espelho"
+3285,"chore: registrar PEND-EL01 — chave ElevenLabs ausente (decisão de custo)",false,false,false,false,false,MERGE_AUTONOMO,"MERGEADA SHA 5aaebc67dcc55a3b14a684b2e3419f89fc8cf1a6 (docs-only E14/E197 bypass — docs/estado/PENDENCIAS.md)"
+3287,"docs: adiciona P-11 e nota E12 ao PENDENCIAS.md",false,false,false,false,false,DECISAO_HUMANA,"mergeable_state=dirty (conflito com main) — root PENDENCIAS.md"
+3288,"feat(kit-builder): confirmar substituição ao aplicar composição IA",true,false,false,false,false,DECISAO_HUMANA,"Draft=true + conflito semântico potencial com #3276/#3277 (KitAIPromptDialog.tsx)"
+3290,"fix(ci): detector E12 — índices out-of-band via pg_indexes",true,false,true,false,false,DECISAO_HUMANA,"Draft=true + REGRA#8 workflows (.github/workflows/db-schema-drift-check.yml)"

@@ -7,18 +7,18 @@
 
 | Item | Valor |
 |---|---|
-| Total de PRs analisadas (abertas + fechadas) | 44 |
+| Total de PRs analisadas (abertas + fechadas) | 48 |
 | PRs fechadas identificadas | 1 (#3267) |
-| Diffs lidos 100% | 25/44 ✓ (ver tabela) |
-| Diffs analisados via metadados | 19/44 |
+| Diffs lidos 100% | 29/48 ✓ (ver tabela) |
+| Diffs analisados via metadados | 19/48 |
 | Worktrees criados | 11 (sessões anteriores) |
 | Worktrees removidos | 11 ✓ |
-| Veredito DECISAO_HUMANA | 35 |
+| Veredito DECISAO_HUMANA | 38 |
 | Veredito PENDENTE_CI | 2 (#3276, #3277) |
-| Veredito MERGE_AUTONOMO | 6 (#3249, #3245, #3254, #3280, #3281, #3282) |
+| Veredito MERGE_AUTONOMO | 7 (#3249, #3245, #3254, #3280, #3281, #3282, #3285) |
 | Mergeadas sessões anteriores | 3 (#3212 sha d8ae5159, #3241 sha 931b932a, #3249 sha 34ac6453) |
 | Mergeadas sessão anterior | 2 (#3245 sha d56979f6, #3254 sha ce5a9ab4) |
-| Mergeadas por Claude esta sessão | 1 (#3280 sha 6b555f89) |
+| Mergeadas por Claude esta sessão | 2 (#3280 sha 6b555f89, #3285 sha 5aaebc67) |
 | Mergeadas por adm01-debug esta sessão | 2 (#3281 sha f44949a7, #3282 sha 111818f0) |
 | CI main pós-merge #3280 | Verde (Gate Final green) ✓ |
 | Baseline gerado | typecheck ✓ · lint ✓ · tests ✓ · build ✓ |
@@ -650,22 +650,78 @@ PR fechada sem merge. Sem ação necessária.
 
 ---
 
+### PR #3285 — chore: registrar PEND-EL01 — chave ElevenLabs ausente
+**Branch:** `claude/chore-pendencias-elevenlabs-261108-2345` | **Draft:** NÃO | **CI:** docs-only bypass | **Merge test:** LIMPO
+
+| Questão | Resposta |
+|---|---|
+| (1) Válida? | Sim — 1 linha em `docs/estado/PENDENCIAS.md`, registra decisão operacional real (VoiceOrb desabilitado sem chave) |
+| (2) Regressão? | Zero — docs puro |
+| (3) Implementada em main? | N/A — conteúdo novo |
+| (4) Regra de negócio? | Correto — tracking de pendência operacional de custo |
+
+**VEREDITO: MERGE_AUTONOMO** — docs-only E14/E197 bypass. MERGEADA SHA `5aaebc67dcc55a3b14a684b2e3419f89fc8cf1a6`.
+
+---
+
+### PR #3287 — docs: adiciona P-11 e nota E12 ao PENDENCIAS.md
+**Branch:** `claude/chore-pendencias-p11-e12-261108-2336` | **Draft:** NÃO | **CI:** N/A (conflito) | **Merge test:** CONFLITO
+
+| Questão | Resposta |
+|---|---|
+| (1) Válida? | Sim — registra drift sistêmico de 220 índices out-of-band com E12 silencioso como causa raiz |
+| (2) Regressão? | Zero — docs puro |
+| (3) Implementada em main? | N/A — conteúdo novo |
+| (4) Regra de negócio? | Correto — P-11 identifica causa raiz real com impacto mensurável |
+
+**VEREDITO: DECISAO_HUMANA** — `mergeable: false`, `mergeable_state: "dirty"`. Conflito com main (root `PENDENCIAS.md`). Requer rebase antes do merge.
+
+---
+
+### PR #3288 — feat(kit-builder): confirmar substituição ao aplicar composição IA
+**Branch:** (kit-builder) | **Draft:** SIM | **CI:** N/A | **Merge test:** N/A
+
+| Questão | Resposta |
+|---|---|
+| (1) Válida? | Sim — confirmação de substituição ao aplicar IA num kit já preenchido; evita perda de trabalho |
+| (2) Regressão? | Baixo — bifurcação só ocorre quando `hasKitContent=true`; flow sem kit existente inalterado |
+| (3) Implementada em main? | Não — feature nova |
+| (4) Regra de negócio? | Correto — UX essencial para operações destrutivas no Kit Builder |
+
+**VEREDITO: DECISAO_HUMANA** — Draft=true. Conflito semântico potencial com #3276/#3277 (ambos tocam `KitAIPromptDialog.tsx`).
+
+---
+
+### PR #3290 — fix(ci): detector E12 — índices out-of-band via pg_indexes
+**Branch:** (ci/fix) | **Draft:** SIM | **CI:** N/A | **Merge test:** N/A
+
+| Questão | Resposta |
+|---|---|
+| (1) Válida? | Sim — corrige causa raiz de P-11: E12 não detectava índices out-of-band via `pg_indexes` |
+| (2) Regressão? | Zero — step usa `exit 0` em caso de falha; advisory (`::warning::`), não bloqueia CI |
+| (3) Implementada em main? | Não — feature nova |
+| (4) Regra de negócio? | Correto — advisory conforme CLAUDE.md §E12 (não é gate bloqueante) |
+
+**VEREDITO: DECISAO_HUMANA** — Draft=true + toca `.github/workflows/` (REGRA#8 — requer aprovação PO).
+
+---
+
 ## Resumo de Vereditos
 
 | Veredito | Quantidade | PRs |
 |---|---|---|
-| DECISAO_HUMANA | 35 | #3127, #3129, #3137, #3179, #3203, #3210, #3214, #3228, #3243, #3246, #3247, #3248, #3250, #3251, #3252, #3253, #3255, #3256, #3257, #3261, #3263, #3264, #3265, #3266, #3269, #3270, #3271, #3272, #3273, #3274, #3275, #3278, #3279, #3283, #3284 |
+| DECISAO_HUMANA | 38 | #3127, #3129, #3137, #3179, #3203, #3210, #3214, #3228, #3243, #3246, #3247, #3248, #3250, #3251, #3252, #3253, #3255, #3256, #3257, #3261, #3263, #3264, #3265, #3266, #3269, #3270, #3271, #3272, #3273, #3274, #3275, #3278, #3279, #3283, #3284, #3287, #3288, #3290 |
 | PENDENTE_CI | 2 | #3276, #3277 (Gate Final queued — aguardando CI) |
-| MERGE_AUTONOMO | 4 | #3249 (sessões anteriores sha 34ac6453), #3245 (sha d56979f6), #3254 (sha ce5a9ab4), #3280 (esta sessão sha 6b555f89) |
+| MERGE_AUTONOMO | 7 | #3249 (sessões anteriores sha 34ac6453), #3245 (sha d56979f6), #3254 (sha ce5a9ab4), #3280 (sha 6b555f89), #3281 (sha f44949a7), #3282 (sha 111818f0), #3285 (sha 5aaebc67) |
 | FECHADA | 1 | #3267 |
 
 ## Motivos de bloqueio (por PR — somente DECISAO_HUMANA ativas)
 
 | Motivo | PRs |
 |---|---|
-| Draft=true | #3179, #3214, #3228, #3246, #3247, #3248, #3250, #3251, #3252, #3253, #3255, #3256, #3266, #3269, #3270, #3271, #3272, #3273, #3274, #3275, #3278, #3279, #3283, #3284 |
-| REGRA#8 workflows / .github/ | #3127, #3129, #3137, #3214, #3228, #3247, #3274, #3275, #3278 |
-| CONFLICT (merge test) | #3127, #3129, #3137, #3214 |
+| Draft=true | #3179, #3214, #3228, #3246, #3247, #3248, #3250, #3251, #3252, #3253, #3255, #3256, #3266, #3269, #3270, #3271, #3272, #3273, #3274, #3275, #3278, #3279, #3283, #3284, #3288, #3290 |
+| REGRA#8 workflows / .github/ | #3127, #3129, #3137, #3214, #3228, #3247, #3274, #3275, #3278, #3290 |
+| CONFLICT (merge test) | #3127, #3129, #3137, #3214, #3287 |
 | REGRA#8/E15 (DDL via nova migration) | #3243, #3246, #3250, #3255, #3256, #3257, #3264, #3265, #3273, #3279, #3284 |
 | REGRA#8/E056 (cron DDL) | #3214, #3251, #3261, #3263 |
 | Conflito semântico (useKitBuilderPageState.ts) | #3283 |
@@ -683,40 +739,44 @@ PR fechada sem merge. Sem ação necessária.
 
 3. **[MERGEADA] PR #3249 — MERGE_AUTONOMO** — docs-only, sessão anterior. SHA: `34ac6453d1f7a9ced950f2fb579db711219b4495`.
 
-4. **[MERGEADA] PR #3281 — MERGE_AUTONOMO** — docs-only CI (RELATORIO_CI + PENDENCIAS #45-#47), por adm01-debug. SHA: `f44949a72bdd5605e03529f78722f238b3481fad`.
+4. **[MERGEADA] PR #3280 — MERGE_AUTONOMO** — docs-only backlog FT-405 voz FEITA→PARCIAL. SHA: `6b555f89a0605a60f1844aadefffc10c5d068da5`.
 
-5. **[MERGEADA] PR #3282 — MERGE_AUTONOMO** — docs-only CI (baseline×final + P-11/P-12/P-06), por adm01-debug. SHA: `111818f046fc46261f627cd37463683111402742`.
+5. **[MERGEADA] PR #3281 — MERGE_AUTONOMO** — docs-only CI (RELATORIO_CI + PENDENCIAS #45-#47), por adm01-debug. SHA: `f44949a72bdd5605e03529f78722f238b3481fad`.
 
-4. **PR #3214 tem CRON DDL** — `cron.alter_job` em 4 jobs de produção. Requer `db-apply-migration.yml` + aprovação manual do PO.
+6. **[MERGEADA] PR #3282 — MERGE_AUTONOMO** — docs-only CI (baseline×final + P-11/P-12/P-06), por adm01-debug. SHA: `111818f046fc46261f627cd37463683111402742`.
 
-5. **PR #3246 é hardening preventivo correto** — 17 tabelas `supplier_stricker` sem RLS. Migration técnica perfeita mas aguarda workflow_dispatch.
+7. **[MERGEADA] PR #3285 — MERGE_AUTONOMO** — chore: registrar PEND-EL01 (ElevenLabs key — decisão de custo). SHA: `5aaebc67dcc55a3b14a684b2e3419f89fc8cf1a6`.
 
-6. **PRs #3127/#3129/#3137 têm conflito com main** — Precisam de rebase antes de qualquer análise de merge.
+8. **PR #3214 tem CRON DDL** — `cron.alter_job` em 4 jobs de produção. Requer `db-apply-migration.yml` + aprovação manual do PO.
 
-7. **PRs #3261/#3263 contêm cron DDL** — Mesmo sendo espelho retroativo (#3261), consistência com REGRA#8/E056 exige DECISAO_HUMANA.
+9. **PR #3246 é hardening preventivo correto** — 17 tabelas `supplier_stricker` sem RLS. Migration técnica perfeita mas aguarda workflow_dispatch.
 
-8. **PRs #3264/#3265 são versioning-only com risco zero** — `CREATE OR REPLACE VIEW`/`FUNCTION` em objetos que já existem em produção. Merge apenas versiona o arquivo no repo; aplicação fica pendente de workflow_dispatch.
+10. **PRs #3127/#3129/#3137 têm conflito com main** — Precisam de rebase antes de qualquer análise de merge.
 
-9. **PR #3271 supersede #3252 e #3253** — Contém ambos os fixes (onLogoRemove areaId + price rounding). Aguarda undraft.
+11. **PRs #3261/#3263 contêm cron DDL** — Mesmo sendo espelho retroativo (#3261), consistência com REGRA#8/E056 exige DECISAO_HUMANA.
 
-10. **PR #3273 é espelho P-10** — 3 índices `public.categories` criados out-of-band. Risco zero mas aguarda workflow_dispatch por REGRA#8/E15.
+12. **PRs #3264/#3265 são versioning-only com risco zero** — `CREATE OR REPLACE VIEW`/`FUNCTION` em objetos que já existem em produção. Merge apenas versiona o arquivo no repo; aplicação fica pendente de workflow_dispatch.
 
-11. **PRs #3274/#3275 tocam workflows** — REGRA#8 proíbe merge autônomo; aguarda decisão do PO.
+13. **PR #3271 supersede #3252 e #3253** — Contém ambos os fixes (onLogoRemove areaId + price rounding). Aguarda undraft.
 
-12. **PR #3266 (CI falhando + Draft)** — Supersede #3203 (132 arquivos). Precisam de CI verde + undraft.
+14. **PR #3273 é espelho P-10** — 3 índices `public.categories` criados out-of-band. Risco zero mas aguarda workflow_dispatch por REGRA#8/E15.
 
-13. **PRs #3276/#3277 — PENDENTE_CI** — Gate Final queued; #3277 é superset de #3276 (7 FTs vs 2). Merge #3277 primeiro quando CI passar.
+15. **PRs #3274/#3275 tocam workflows** — REGRA#8 proíbe merge autônomo; aguarda decisão do PO.
 
-14. **PR #3278 — `.github/SENTINEL_SHA_ALLOWLIST`** — Toca `.github/`; requer DECISAO_HUMANA independente do Draft.
+16. **PR #3266 (CI falhando + Draft)** — Supersede #3203 (132 arquivos). Precisam de CI verde + undraft.
 
-15. **PRs #3279/#3284 — migrations DDL** — CRON-002 fix e CRON-001 espelho. Aguardam workflow_dispatch.
+17. **PRs #3276/#3277 — PENDENTE_CI** — Gate Final queued; #3277 é superset de #3276 (7 FTs vs 2). Merge #3277 primeiro quando CI passar.
 
-16. **PR #3283 — backup/restore kit** — Conflito semântico com #3276/#3277; revisar apenas após merge deles.
+18. **PR #3278 — `.github/SENTINEL_SHA_ALLOWLIST`** — Toca `.github/`; requer DECISAO_HUMANA independente do Draft.
+
+19. **PRs #3279/#3284 — migrations DDL** — CRON-002 fix e CRON-001 espelho. Aguardam workflow_dispatch.
+
+20. **PR #3283 — backup/restore kit** — Conflito semântico com #3276/#3277; revisar apenas após merge deles.
 
 ## Governança desta sessão
 
-- Escrita no GitHub: **somente `github_merge_pull_request`** (1 merge por Claude esta sessão: #3280 sha 6b555f89; 2 merges por adm01-debug: #3281 sha f44949a7, #3282 sha 111818f0)
-- Total merges por Claude (multi-sessão): 4 (#3249, #3245, #3254, #3280)
+- Escrita no GitHub: **somente `github_merge_pull_request`** (2 merges por Claude esta sessão: #3280 sha 6b555f89, #3285 sha 5aaebc67; 2 merges por adm01-debug: #3281 sha f44949a7, #3282 sha 111818f0)
+- Total merges por Claude (multi-sessão): 5 (#3249, #3245, #3254, #3280, #3285)
 - Total merges por adm01-debug (multi-sessão): 2+ (#3281, #3282 e anteriores)
 - Nenhum push direto em main, force-push, edição de PR, labels ou mudança de configuração
 - Todos os artefatos (`prs.json`, `RELATORIO_PRS.md`, `dossies/PR-*.md`) são **arquivos locais** — nunca pushados ao GitHub
