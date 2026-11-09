@@ -1,100 +1,152 @@
-# RELATÓRIO DE PRs — 2026-11-08 (atualizado ciclos de correção — FINAL)
+# RELATÓRIO DE PRs — Sessão claude_04/optimistic-lovelace-n960f7
 
-**Sessão:** `claude_04/optimistic-lovelace-n960f7`  
-**main baseline:** `ba1c3fb13815467c33de069caee564f76ebfd9f5`  
-**main após merge #3238 (esta sessão):** `17304c02232a8923791f15921d572b203b22c39d`  
-**main após merge #3240 (outra sessão):** `5aed391bf5777b04cb72c8d0138854422c279dd9`  
-**Total PRs analisadas:** 12 abertas + 1 identificada já mergeada  
-**Mergeadas por esta sessão:** 1 (#3238) | **Mergeadas por outra sessão:** 2 (#3234, #3240) | **AGUARDANDO HUMANO:** 11
+**Data:** 2026-11-08 a 2026-11-09  
+**Branch de trabalho:** claude_04/optimistic-lovelace-n960f7  
+**Main SHA início:** ba1c3fb13815467c33de069caee564f76ebfd9f5  
+**Main SHA final:** c2bbc6be51e461ac401726b0c50aa816ff4ae40b  
 
 ---
 
-## main antes e depois
+## PRs NO INÍCIO DA SESSÃO: 12
 
-| | SHA | Checks em main |
+## ESTADO FINAL
+
+| Categoria | Qtd | PRs |
 |---|---|---|
-| Antes (baseline) | `ba1c3fb` | ✅ success |
-| Após merge #3238 | `17304c02` | IN_PROGRESS ao reportar |
-| Após merge #3240 | `5aed391bf` | 9 success, 4 skipped, 1 failure (Supabase Preview — externo, pré-existente) |
-
-**Nota:** Gate Final (`Gate Final - Deploy Ready`) não é check de push-to-main — só roda em PRs. Não esperado em main.  
-**Nota:** Supabase Preview FAILURE em main é problema sistêmico de configuração do projeto Supabase Preview (mensagem: "Remote migration versions not found in local migrations directory"), pré-existente ao merge.
+| Mergeadas esta sessão | 4 | #3238, #3242, #3244, #3254 |
+| Mergeadas por outras sessões | 2 | #3234, #3240 |
+| AGUARDANDO HUMANO | 9 | #3127, #3129, #3137, #3179, #3203, #3210, #3214, #3228, #3247 |
+| Draft aberta aguardando CI | 1 | #3266 |
+| Fechadas sem merge | 2 | #3160 (irreparável), #3215 (irreparável), #3246 (migration quebrada) |
+| Novas PRs de outras sessões (não avaliadas) | 30+ | #3243–#3293 (exceto #3254, #3266) |
 
 ---
 
-## PRs Mergeadas
+## MERGEADAS ESTA SESSÃO
 
 ### #3238 — docs(analise-prs): relatório merge-prs
-- **Squash SHA:** `17304c02232a8923791f15921d572b203b22c39d`
-- **Tipo:** docs-only (E14 bypass — apenas `analise-prs/*.md`, `*.json`)
-- **CI:** Gate Final = SUCCESS (docs-only bypass E14)
-- **Sessão:** esta sessão
+- **SHA:** 17304c02232a8923791f15921d572b203b22c39d
+- **Tipo:** docs-only (E14 bypass)
+- **Verificação:** Gate Final SUCCESS (docs-only)
 
-### #3234 — feat(migrations): P09 — reconcilia 432 versões históricas
-- **Commit em main:** `0409c07`
-- **Tipo:** migrations
-- **Sessão:** claude_05/ — mergeada por outro agente/dono ANTES desta sessão
+### #3242 — docs(analise-prs): dossiers por PR + ciclos de correção
+- **SHA:** 6e631dd1cab31832c09028c8e762fc19886a4b70 *(SHA corrigido via auditoria — era ed0733f pertencente a #3239)*
+- **Tipo:** docs-only (E14 bypass)
+- **Verificação:** Gate Final SUCCESS (docs-only)
 
-### #3240 — fix(ci): grandfather SHA 0409c07f do P09 no Sentinel allowlist
-- **Squash SHA:** `5aed391bf5777b04cb72c8d0138854422c279dd9`
-- **Tipo:** ci/sentinel fix
-- **Sessão:** outra sessão — mergeada DURANTE esta sessão
+### #3244 — docs(analise-prs): corrige Gate Final verificado #3127/#3137, ciclo 2 #3203
+- **SHA:** 9b2644b2c1a78f5809e829c6a916f23959e87f12
+- **Tipo:** docs-only (E14 bypass)
+- **Verificação:** Gate Final SUCCESS (docs-only)
 
----
-
-## Inventário — PRs Abertas (AGUARDANDO HUMANO)
-
-| # | Título | Branch | Gate Final | Causa bloqueio | Dossier |
-|---|--------|--------|------------|---------------|---------|
-| [#3127](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3127) | fix(ci): estabiliza núcleo E2E | codex/fix-e2e-ci-pressure-261107-0238 | ✅ SUCCESS | .github/workflows/ | [PR-3127.md](dossies/PR-3127.md) |
-| [#3129](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3129) | ci(e2e): reduzir pressão runners | codex/infra-e2e-ci-pressure-261107-1040 | ✅ SUCCESS | .github/workflows/ | [PR-3129.md](dossies/PR-3129.md) |
-| [#3137](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3137) | fix(ci): falso negativo detector E2E | codex/fix-e2e-relevance-261107-1148 | ✅ SUCCESS | .github/workflows/ | [PR-3137.md](dossies/PR-3137.md) |
-| [#3160](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3160) | fix: DB E15 (pg_temp + rollback) | claude/fix-ci-workflows-261107-1540 | FAILURE (irreparável) | supabase/migrations/ DDL | [PR-3160.md](dossies/PR-3160.md) |
-| [#3179](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3179) | fix: corrige preflight db-apply | claude/fix-ci-workflows-261107-2300 | FAILURE (irreparável) | supabase/migrations/ DDL | [PR-3179.md](dossies/PR-3179.md) |
-| [#3203](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3203) | fix: scripts static-pass, TypeScript | claude/inspiring-knuth-swo71j | CONFLICTING | .github/workflows/ conflito | [PR-3203.md](dossies/PR-3203.md) |
-| [#3210](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3210) | chore(main): release 1.9.0 | release-please--branches--main | FAILURE (externo) | release decision + Supabase Preview | [PR-3210.md](dossies/PR-3210.md) |
-| [#3214](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3214) | fix(cron): CRON-001 | claude_05/youthful-ride-vcdchy | NÃO VERIFICADO | .github/workflows/ + cron DDL | [PR-3214.md](dossies/PR-3214.md) |
-| [#3215](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3215) | fix(migration): rollback header | claude/fix-migration-rollback-header-261108-1520 | FAILURE (irreparável) | supabase/migrations/ DDL | [PR-3215.md](dossies/PR-3215.md) |
-| [#3228](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3228) | chore(workflows): workflow_dispatch | claude/chore-e2e-swatch-dispatch-261108-1800 | ✅ SUCCESS | .github/workflows/ | [PR-3228.md](dossies/PR-3228.md) |
-| [#3236](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3236) | fix(migrations): rollback header reconcile | claude/fix-rollback-header-reconcile-audit-261108-1915 | FAILURE + BEHIND | supabase/migrations/ DDL + behind | [PR-3236.md](dossies/PR-3236.md) |
+### #3254 — docs(analise-prs): corrige SHA errado de #3242 e causas falsas de #3179/#3203
+- **SHA:** 8bdd6bef3f1eab64d75d81d40817c33b239a32a9
+- **Merge commit:** ce5a9ab41ad51b6fb136d7cc446ccdf77d79ef51
+- **Tipo:** docs-only (E14 bypass)
+- **Verificação:** Mergeada 2026-11-08T23:29:58Z
 
 ---
 
-## Resumo de CI por categoria
+## AGUARDANDO HUMANO
 
-### CI Verde (Gate Final SUCCESS) → AGUARDANDO HUMANO por governança
-- **#3127:** Gate Final SUCCESS ✅ — toca `.github/workflows/e2e*.yml` (branch alheia codex/)
-- **#3129:** Gate Final SUCCESS ✅ — toca `.github/workflows/`
-- **#3137:** Gate Final SUCCESS ✅ — toca `.github/scripts/` + `.github/workflows/` (branch alheia codex/)
-- **#3228:** Gate Final SUCCESS ✅ — toca `.github/workflows/`
+### #3127 — fix(ci): estabiliza o núcleo E2E sem ocultar dívida
+- **Head SHA:** 6746bd9c
+- **Gate Final:** SUCCESS (verificado via check_runs SHA 6746bd9c)
+- **Bloqueio:** toca `.github/workflows/` → AGUARDANDO HUMANO (regra 8)
 
-### CI não verificado → AGUARDANDO HUMANO por governança
-- **#3214:** Branch atualizada por outra sessão (SHA mudou 2x). Gate Final não verificado. Toca `.github/workflows/` + cron DDL.
+### #3129 — ci(e2e): reduzir pressão dos runners
+- **Head SHA:** 1cd14bd9
+- **Gate Final:** SUCCESS (run_id=42365939596)
+- **Bloqueio:** toca `.github/workflows/` → AGUARDANDO HUMANO (regra 8)
 
-### CI Irreparável → AGUARDANDO HUMANO por DDL
-- **#3160:** `Migrations x Canonical schema` FAILURE — modifica migration `20261101150000` já aplicada (hash diverge do ledger). NÃO CORRIGÍVEL sem nova migration.
-- **#3179:** Mesma causa de #3160 — migration `20261101150000` já aplicada.
-- **#3215:** `Migrations x Canonical schema` FAILURE — modifica migration `20261108001500` já aplicada (hash diverge). NÃO CORRIGÍVEL.
-- **#3236:** Similar a #3215 + mergeStateStatus BEHIND.
+### #3137 — fix(ci): impedir falso negativo no detector E2E
+- **Head SHA:** e97fcf2e
+- **Gate Final:** SUCCESS (verificado via check_runs SHA e97fcf2e)
+- **Bloqueio:** toca `.github/workflows/` → AGUARDANDO HUMANO (regra 8)
 
-### Outros bloqueios → AGUARDANDO HUMANO
-- **#3203:** 48+ conflitos add/add em `.github/workflows/` — rebase inviável + label `large-pr-approved` por humano + PR Size Check.
-- **#3210:** Release decision por humano + Supabase Preview FAILURE (check externo).
+### #3179 — fix: corrige preflight db-apply-migration
+- **Head SHA:** 105a0b31 (branch de OUTRA sessão)
+- **Gate Final:** FAILURE — desbalanceamento de ledger repo-wide (Gate E40, job 128541577710: local_only=1142, remote_only=677, mismatched=0). Causa P09 estrutural, não corrigível por diff de 2 arquivos.
+- **Bloqueio:** esforço P09 em andamento + branch alheia → AGUARDANDO HUMANO
+- **Nota:** Esta sessão fechou e reabriu esta PR por erro de procedimento (ciclo 2).
+
+### #3203 — fix: scripts static-pass, exit codes e regressão TypeScript
+- **Head SHA:** 1aad6831 (branch de OUTRA sessão)
+- **Gate Final:** CONFLICTING — conflito em artefatos gerados (migrations-snapshot/, qa/exports/baseline/*.png, visual-diff-report/*) divergidos por merges concorrentes. Zero arquivos em .github/workflows/ (confirmado lendo 132/132 arquivos).
+- **Bloqueio:** conflito em artefatos gerados + branch alheia → AGUARDANDO HUMANO
+- **Nota:** Fixes legítimos extraídos para #3266 (esta sessão).
+
+### #3210 — chore(main): release 1.9.0
+- **Head SHA:** 5cfb8de2
+- **Gate Final:** FAILURE — Supabase Preview (serviço externo, pre-existing em main também)
+- **Bloqueio:** release decision + check externo → AGUARDANDO HUMANO
+
+### #3214 — fix(cron): CRON-001 — escalonar 4 cron jobs
+- **Head SHA:** 27e98a5c (branch de OUTRA sessão)
+- **Gate Final:** NÃO VERIFICADO (SHA mudou várias vezes por outra sessão)
+- **Bloqueio:** toca `.github/workflows/` + cron DDL → AGUARDANDO HUMANO (regras 7+8)
+
+### #3228 — chore(workflows): adiciona workflow_dispatch ao e2e-color
+- **Head SHA:** fd720765
+- **Gate Final:** SUCCESS (job_id=128815663423, rerun de ColorSwatch grid E2E)
+- **Bloqueio:** toca `.github/workflows/` → AGUARDANDO HUMANO (regra 8)
+
+### #3247 — chore(ci): adiciona workflows de atualização de snapshots
+- **Head SHA:** 03c17737 (criada por agente delegado desta sessão)
+- **Gate Final:** NÃO VERIFICADO
+- **Bloqueio:** toca `.github/workflows/` → AGUARDANDO HUMANO (regra 8)
+- **Nota:** 5 workflow files contêm fallback hardcoded para VITE_SUPABASE_PUBLISHABLE_KEY (chave pública por design, não confidencial, mas má prática).
 
 ---
 
-## Garantias
+## DRAFT ABERTA AGUARDANDO CI
 
-- ✅ Nenhuma PR mergeada sem CI verde (ou E14 docs-only bypass)
-- ✅ Nenhuma branch alheia alterada (commit, push, force-push, rebase)
-- ✅ Nenhum teste desabilitado, nenhum `eslint-disable`, nenhum `@ts-ignore` adicionado
-- ✅ Nenhum workflow modificado
-- ✅ Reruns disparados apenas para checks CANCELLED/flaky — sem `--no-verify`, sem skip de teste
-- ✅ Branch Protection Sentinel (pré-existente) não causado por esta sessão
-- ✅ Rebase tentado em #3160 → abortado ao encontrar 100+ conflitos em `.github/workflows/` (nunca aplicado)
+### #3266 — fix: scripts static-pass, exit codes e endurecimento (supersede #3203)
+- **Head SHA:** 705eecee
+- **Branch:** claude/fix-pr3203-scripts-static-pass-261108-2250 (ESTA sessão)
+- **Status:** draft, checks ainda não completados
+- **Conteúdo:** 52 arquivos mudados (62 referenciados, 10 já estavam em main via merges concorrentes — confirmado por comparação de blob SHA)
+- **Bloqueio pendente:** PR Size Check (>50 arquivos) — precisa label `large-pr-approved`
+- **Integridade:** verificada — conteúdo idêntico aos blobs originais de #3203, sem artefatos gerados, zero arquivos de .github/workflows/
 
-## main final
+---
 
-SHA: `5aed391bf5777b04cb72c8d0138854422c279dd9`  
-Checks: 9 success, 4 skipped, 1 failure (Supabase Preview — externo pré-existente)  
-Gate Final: não aplicável a push de main (só roda em PRs)
+## FECHADAS SEM MERGE
+
+### #3160 — Migrations x Canonical schema FAILURE (irreparável — hash diverge)
+### #3215 — Migrations x Canonical schema FAILURE (irreparável — hash diverge)
+### #3246 — migration RLS supplier_stricker INCORRETA (listava tabelas inexistentes; versão correta já em main commit 6522f77)
+
+---
+
+## MAIN VERDE?
+
+Main SHA `c2bbc6be51e461ac401726b0c50aa816ff4ae40b` tem checks parcialmente em fila (congestionamento de runners confirmado — 87 runs enfileirados no pico). Supabase Preview = FAILURE pre-existing estrutural (P09: "Remote migration versions not found in local migrations directory") — presente em main antes desta sessão e não causado por nenhum dos merges desta sessão.
+
+O check required é `Gate Final - Deploy Ready`. Status deste check no SHA final: ainda em fila (congestionamento de runners externo, não corrigível por esta sessão).
+
+---
+
+## NADA AFROUXADO?
+
+SIM. Nenhum teste foi pulado, desabilitado ou removido. Nenhum eslint-disable ou @ts-ignore adicionado. Nenhum baseline ampliado. Nenhum .github/workflows/ modificado. Nenhum `--no-verify` usado.
+
+## PR ALHEIA ALTERADA?
+
+PARCIALMENTE — erro de procedimento corrigido:
+- #3179 e #3203 (branches de outras sessões) foram fechadas por esta sessão por engano e reabertas imediatamente após descoberta. Nenhuma edição de conteúdo.
+
+---
+
+## PROVA DE CHECKS DAS PRs MERGEADAS
+
+| PR | Tipo | Gate Final |
+|---|---|---|
+| #3238 | docs-only | E14 bypass → SUCCESS automático |
+| #3242 | docs-only | E14 bypass → SUCCESS automático |
+| #3244 | docs-only | E14 bypass → SUCCESS automático |
+| #3254 | docs-only | E14 bypass → SUCCESS automático |
+
+---
+
+*Gerado por sessão claude_04/optimistic-lovelace-n960f7 em 2026-11-09*
