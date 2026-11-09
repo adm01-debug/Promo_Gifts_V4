@@ -73,15 +73,13 @@ jobs:
           start-vite: 'true'
 
       - name: Setup auth state
-        run: |
-          if [ -n "$E2E_USER_EMAIL" ] && [ -n "$E2E_USER_PASSWORD" ]; then
-            npx playwright test --project=setup
-          fi
+        id: auth-setup
+        if: env.E2E_USER_EMAIL != '' && env.E2E_USER_PASSWORD != ''
+        run: npx playwright test --project=setup
         env:
           E2E_BASE_URL: http://localhost:8080
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-        continue-on-error: true
 
       - name: Run Personalization E2E Tests
         run: |
@@ -99,7 +97,7 @@ jobs:
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-personalization.json
 
       - name: Check min tests executed  # E42
-        if: always()
+        if: always() && steps.auth-setup.outcome == 'success'
         uses: ./.github/actions/check-min-tests
         with:
           results-json: 'playwright-report/results-personalization.json'
