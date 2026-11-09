@@ -1,0 +1,33 @@
+# Vitest Baseline — Main SHA 78729fc11038f7d0b2bb73ff0c1330f92547658b
+# Session: session_01VXkRxWq5ZUCmvuNx5e2TGX
+# Task: bwy4rcxw1
+# Executado: 2026-11-09T13:05:57Z → 13:21:59Z (1002s)
+# Comando: cd /tmp/baseline-main && npx vitest run --reporter=verbose
+
+## RESUMO
+
+Test Files: 7 failed | 1288 passed | 130 skipped (1425 total)
+Tests:      23 failed | 26228 passed | 1132 skipped | 24 todo (27407 total)
+Snapshots:  4 failed
+
+## TESTES QUE FALHAM (identificados no output capturado)
+
+### tests/pages/kit-builder/useKitBuilderQuote.test.ts
+- FAIL: useKitBuilderQuote — payloads > pula a revalidação apenas quando o ledger confirma o commit perdido
+  AssertionError: expected "vi.fn()" to be called 1 times, but got 2 times
+  at tests/pages/kit-builder/useKitBuilderQuote.test.ts:528:38
+
+### (output parcial — tail -30 capturou apenas fim do log)
+- Linha 480-483: expect(receipts).toHaveLength(1) FALHOU
+  expect(JSON.stringify(receipts)).not.toContain('Nome Sensivel')
+  expect(JSON.stringify(receipts)).not.toContain('segredo@empresa.te…')
+
+## NOTA
+O output completo foi truncado (tail -30 do comando original).
+O exit code do pipeline foi 0 (exit code do tail, não do vitest).
+Vitest com 23 falhas retorna exit code 1 — o valor 0 é artifact do pipe.
+
+## BASELINE ANTERIOR (referência)
+Arquivo: analise-prs/baseline/vitest-per-test-name.txt (SHA 8e1324)
+Contém lista completa de testes que falhavam em commits anteriores.
+Comparação: se PR não adiciona falhas além das 23 listadas acima, não é regressão.
