@@ -196,7 +196,7 @@ rollup=FAILURE por CANCELLED contabilizado como não-SUCCESS.
 | Vercel Preview Comments | COMPLETED | SUCCESS |
 
 **CI vermelho (causa):**  
-- `Supabase Preview` = FAILURE → "Remote migration versions not found". Falha pré-existente em main, não introduzida por esta PR.  
+- `Supabase Preview` = FAILURE → "Remote migration versions not found" (run `42xxx`). Falha pré-existente em main, não introduzida por esta PR.  
 - `Vercel` = FAILURE → preview deploy falhou em cascata após Supabase Preview.  
 **Governance:** release-please, decisão de release autônoma → regra Git item 7.
 
