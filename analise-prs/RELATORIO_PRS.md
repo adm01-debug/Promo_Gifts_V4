@@ -158,6 +158,19 @@ Resultado: `✅ Nenhuma NOVA referência quebrada. (489 entrada(s) legadas na ba
 
 ---
 
+## Gate 3 E2E Smoke — falhas confirmadas pré-existentes em #3321
+
+**Check_run:** 129058312387 (SHA `43cc40cc9f0c3a09842c0042d806eb79e73cf8c0`, run 42586695824)
+
+| # | Spec | Erro | Causa |
+|---|------|------|-------|
+| 1 | `e2e/flows/magazine-publish-smoke.spec.ts:102` | `toast 'Revista publicada com sucesso.' não apareceu` | Fluxo magazine — não exercita kit-builder |
+| 2 | `e2e/smoke.spec.ts:20` | `route.continue: Route is already handled!` em `helpers/auth.ts:90` | Infra de auth E2E — route handler duplicado |
+
+**Veredicto:** NÃO introduzidas por esta PR. PR #3321 toca somente `KitBuilderPage.tsx` (remove duplicata). Correspondem a P-03 (auth timeout) e P-05 (E2E regression) pre-existentes em main.
+
+---
+
 ## Próximos passos
 
 1. **Aprovar e mergear PRs #3265 + #3264** — criam `fn_check_item_fits` e `vw_products_min_quantity` em produção; depois atualizar o catálogo Supabase e Gate Final + Gate 1 passam em toda a stack incluindo main · `supabase/migrations/`
