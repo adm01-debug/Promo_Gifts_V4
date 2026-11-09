@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "8b29818473469f08a66fae2899ed9a1b68878211",
+  "sha": "fb4b8c2d87b1ab06ace206e837083b7bd78ad124",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 14:34 UTC",
+  "generated_at": "2026-11-09 14:50 UTC",
   "files_total": 9182,
   "code_files": 7869,
   "code_lines": 1055970
@@ -484415,10 +484415,19 @@
   }
  },
  "git": {
-  "sha": "8b29818473469f08a66fae2899ed9a1b68878211",
+  "sha": "fb4b8c2d87b1ab06ace206e837083b7bd78ad124",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "fb4b8c2",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "fix(update-snapshots): atualizar snapshots PriceFreshnessBadge para novo class Lucide AlertTriangle",
+    "files": [
+     "src/components/products/__snapshots__/PriceFreshnessBadge.snapshots.test.tsx.snap"
+    ]
+   },
    {
     "sha": "8b29818",
     "date": "2026-11-09",
@@ -484749,15 +484758,6 @@
      "analise-prs/RELATORIO_PRS.md",
      "analise-prs/progresso.json"
     ]
-   },
-   {
-    "sha": "ffa5228",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "docs(analise-prs): RELATORIO_META_CUMPRIDA_v3 — 8 runs cancelados, bloqueio runner documentado",
-    "files": [
-     "analise-prs/RELATORIO_META_CUMPRIDA_v3.md"
-    ]
    }
   ],
   "hot_files": [
@@ -484802,6 +484802,10 @@
     2
    ],
    [
+    "src/components/products/__snapshots__/PriceFreshnessBadge.snapshots.test.tsx.snap",
+    1
+   ],
+   [
     "e2e/flows/03b-thumb-quickview.smoke.spec.ts",
     1
    ],
@@ -484835,10 +484839,6 @@
    ],
    [
     "src/components/kit-builder/KitBuilderHeader.tsx",
-    1
-   ],
-   [
-    "package-lock.json",
     1
    ]
   ]

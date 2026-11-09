@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8b29818473469f08a66fae2899ed9a1b68878211",
+  "commit": "fb4b8c2d87b1ab06ace206e837083b7bd78ad124",
   "branch": "main",
-  "data_commit": "2026-11-09T11:21:49-03:00",
+  "data_commit": "2026-11-09T11:47:01-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "fb4b8c2",
+    "data": "2026-11-09",
+    "assunto": "fix(update-snapshots): atualizar snapshots PriceFreshnessBadge para novo class Lucide AlertTriangle"
+   },
    {
     "sha": "8b29818",
     "data": "2026-11-09",
@@ -126,14 +131,9 @@
     "sha": "9895738",
     "data": "2026-11-09",
     "assunto": "fix(dropbox): exibir título no estado desconectado (#3303)"
-   },
-   {
-    "sha": "ee6f6c8",
-    "data": "2026-11-09",
-    "assunto": "feat(kit-builder): guard goToStep etapas não completadas FT-122 (#3292)"
    }
   ],
-  "arquivos_mudados_7d": 497,
+  "arquivos_mudados_7d": 498,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 161
+    "mudancas": 162
    },
    {
     "pasta": "tests/edge-functions/live",
