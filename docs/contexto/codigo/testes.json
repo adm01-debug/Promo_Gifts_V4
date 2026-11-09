@@ -1047,7 +1047,7 @@
   {
    "arquivo": "e2e/flows/03b-thumb-quickview.smoke.spec.ts",
    "tipo": "e2e",
-   "linhas": 31,
+   "linhas": 32,
    "testa": [],
    "casos": 2
   },
@@ -2104,7 +2104,7 @@
   {
    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
    "tipo": "e2e",
-   "linhas": 159,
+   "linhas": 112,
    "testa": [],
    "casos": 3
   },

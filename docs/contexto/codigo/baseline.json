@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b4c1167c7ce91e664d23fddc43570d0a61efd048",
+  "commit": "8b29818473469f08a66fae2899ed9a1b68878211",
   "branch": "main",
-  "data_commit": "2026-11-09T11:09:34-03:00",
+  "data_commit": "2026-11-09T11:21:49-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "8b29818",
+    "data": "2026-11-09",
+    "assunto": "fix: replace corrupt PNG snapshot and add smoke test timeouts (#3347)"
+   },
    {
     "sha": "b4c1167",
     "data": "2026-11-09",
@@ -126,14 +131,9 @@
     "sha": "ee6f6c8",
     "data": "2026-11-09",
     "assunto": "feat(kit-builder): guard goToStep etapas não completadas FT-122 (#3292)"
-   },
-   {
-    "sha": "b520784",
-    "data": "2026-11-09",
-    "assunto": "fix: scripts static-pass e exit codes (#3266)"
    }
   ],
-  "arquivos_mudados_7d": 496,
+  "arquivos_mudados_7d": 497,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -242,15 +242,11 @@
     "mudancas": 8
    },
    {
-    "arquivo": "AGENTS.md",
-    "mudancas": 7
-   },
-   {
     "arquivo": "CHANGELOG.md",
     "mudancas": 7
    },
    {
-    "arquivo": "CLAUDE.md",
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 7
    },
    {
@@ -258,11 +254,15 @@
     "mudancas": 6
    },
    {
-    "arquivo": "analise-prs/prs.json",
+    "arquivo": "AGENTS.md",
     "mudancas": 6
    },
    {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    "arquivo": "CLAUDE.md",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "analise-prs/prs.json",
     "mudancas": 6
    },
    {
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 9262,
   "arquivos_codigo": 4635,
-  "linhas_codigo": 887738,
+  "linhas_codigo": 887692,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -540,7 +540,7 @@
   },
   "e2e/flows": {
    "arquivos": 183,
-   "linhas": 25338
+   "linhas": 25292
   },
   "e2e/future-stock.spec.ts": {
    "arquivos": 1,

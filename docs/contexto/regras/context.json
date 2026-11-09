@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "b4c1167c7ce91e664d23fddc43570d0a61efd048",
+  "sha": "8b29818473469f08a66fae2899ed9a1b68878211",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 14:14 UTC",
+  "generated_at": "2026-11-09 14:34 UTC",
   "files_total": 9182,
   "code_files": 7869,
-  "code_lines": 1056016
+  "code_lines": 1055970
  },
  "version": "1.3.2",
- "facts_hash": "c358e4c1740461ce",
+ "facts_hash": "143eafdc0975fabd",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -138003,7 +138003,7 @@
   {
    "module": "e2e",
    "files": 625,
-   "lines": 75562,
+   "lines": 75516,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -367975,12 +367975,13 @@
   },
   "e2e/flows/03b-thumb-quickview.smoke.spec.ts": {
    "path": "e2e/flows/03b-thumb-quickview.smoke.spec.ts",
-   "lines": 31,
+   "lines": 32,
    "is_test": true,
    "doc": "Smoke pré-suíte — falha rápido quando o ambiente está quebrado, evitando minutos de CI esperando por timeouts em specs reais. Verifica: 1. Servidor responde 2xx/3xx em `/`. 2. Login funciona (helper loginAs). 3. Rotas-chave da suíte 03b respondem sem 5xx.",
    "temporal": [
     "const resp = await page.goto(\"/\", { waitUntil: \"domcontentloaded\", timeout: 15_000 });",
-    "const resp = await page.goto(route, { waitUntil: \"domcontentloaded\", timeout: 20_000 });"
+    "const resp = await page.goto(route, { waitUntil: \"domcontentloaded\", timeout: 20_000 });",
+    "test.use({ timeout: 60_000 });"
    ],
    "tests": [
     "@smoke 03b • pré-checagem de ambiente",
@@ -371347,14 +371348,11 @@
   },
   "e2e/flows/magazine-preview-sticky-smoke.spec.ts": {
    "path": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-   "lines": 159,
+   "lines": 112,
    "is_test": true,
-   "rule_comments": [
-    "ativa do sticky: o elemento deve estar pinned com 0 ≤ top < 24.",
-    "Hero deve ter saído (rolou para cima → top << 0)",
-    "Preview deve estar pinned: 0 ≤ top < 24."
-   ],
+   "doc": "Magazine Editor — preview da capa alinhado ao Hero e sticky no scroll (xl+).",
    "temporal": [
+    "test.use({ timeout: 300_000 });",
     "timeout: 5_000,",
     "{ timeout: 60_000 },"
    ],
@@ -484417,10 +484415,21 @@
   }
  },
  "git": {
-  "sha": "b4c1167c7ce91e664d23fddc43570d0a61efd048",
+  "sha": "8b29818473469f08a66fae2899ed9a1b68878211",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "8b29818",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "fix: replace corrupt PNG snapshot and add smoke test timeouts (#3347)",
+    "files": [
+     "e2e/flows/03b-thumb-quickview.smoke.spec.ts",
+     "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+     "e2e/quotes/quote-view-no-presentation-mode.spec.ts-snapshots/quote-actions-menu-dark-mobile-chromium-public-linux.png"
+    ]
+   },
    {
     "sha": "b4c1167",
     "date": "2026-11-09",
@@ -484749,15 +484758,6 @@
     "files": [
      "analise-prs/RELATORIO_META_CUMPRIDA_v3.md"
     ]
-   },
-   {
-    "sha": "b4d6faf",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs(analise-prs): RELATORIO_META_CUMPRIDA_v2 — bloqueio Gate Final documentado",
-    "files": [
-     "analise-prs/RELATORIO_META_CUMPRIDA_v2.md"
-    ]
    }
   ],
   "hot_files": [
@@ -484798,12 +484798,20 @@
     2
    ],
    [
-    "analise-prs/RELATORIO_META_CUMPRIDA_v2.md",
+    "analise-prs/RELATORIO_PRS.md",
     2
    ],
    [
-    "analise-prs/RELATORIO_PRS.md",
-    2
+    "e2e/flows/03b-thumb-quickview.smoke.spec.ts",
+    1
+   ],
+   [
+    "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    1
+   ],
+   [
+    "e2e/quotes/quote-view-no-presentation-mode.spec.ts-snapshots/quote-actions-menu-dark-mobile-chromium-public-linux.png",
+    1
    ],
    [
     "src/tests/MockupDeletion.test.tsx",
@@ -484831,14 +484839,6 @@
    ],
    [
     "package-lock.json",
-    1
-   ],
-   [
-    "package.json",
-    1
-   ],
-   [
-    "bundle-size-baseline.json",
     1
    ]
   ]

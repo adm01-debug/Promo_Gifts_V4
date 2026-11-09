@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: replace corrupt PNG snapshot and add smoke test timeouts (#3347)",
    "fix(tests): corrige 5 falhas preexistentes em useKitBuilderQuote (#3348)",
    "fix(tests): corrige regressões vitest — onLogoRemove, consumeUnloadBackup, goToStep, exit codes, mock transactional (#3346)",
    "fix(tests): corrige TypeError consumeUnloadBackup e atualiza baseline de tamanho",
-   "chore(ci): atualiza file-size baseline — Kit Builder +21/+13/+10 linhas",
-   "feat(kit-builder): confirmar substituição ao aplicar composição da IA (FT-134)"
+   "chore(ci): atualiza file-size baseline — Kit Builder +21/+13/+10 linhas"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
