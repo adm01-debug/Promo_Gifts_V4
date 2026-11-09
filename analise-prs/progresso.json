@@ -1,14 +1,47 @@
 {
-  "session": "session_01VXkRxwq5ZUCmvuNx5e2TGX",
+  "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 2674,
   "iniciado_em": "2026-10-28T00:00:00Z",
+  "atualizado_em": "2026-11-09T12:00:00Z",
   "contagem_por_veredito": {
-    "MERGEADA": 12,
+    "MERGEADA": 13,
     "NÃO_MERGEAR": 10,
-    "AGUARDA_PO": 0,
-    "DECISÃO_HUMANA": 0,
+    "AGUARDA_CI": 26,
+    "AGUARDA_CI_OU_PO": 17,
+    "AGUARDA_PO": 4,
     "FECHADA_SEM_MERGE": 3,
-    "TOTAL_ANALISADO": 25
-  }
+    "TOTAL_ANALISADO": 72
+  },
+  "mergeadas_por_agente_esta_sessao": [
+    {
+      "number": 3337,
+      "sha": "6933eb6122d2ccf333d533d4441891b8d918479b",
+      "titulo": "fix(ci): corrige referências inválidas supabase/migrations/x6 em analise-prs",
+      "tipo": "docs-only E14",
+      "gate_final": "SUCCESS",
+      "gate_final_ref": "5a9579c7e4f6d386f6118a40dada051c7c266a74",
+      "supabase_impacto": "ZERO — zero DDL, zero edge function",
+      "merged_at": "2026-11-09T12:00:00Z"
+    }
+  ],
+  "mergeadas_sessoes_anteriores": {
+    "total": 12,
+    "range": "#2580-#2692",
+    "detalhes": "Ver RELATORIO_PRS.md sessoes anteriores"
+  },
+  "nao_mergeadas": {
+    "total": 10,
+    "motivos": "NÃO_MERGEAR: CI failure, conflito, já implementado em main ou supersedida"
+  },
+  "aguardando": {
+    "AGUARDA_CI": "26 PRs com Gate Final ainda não verde",
+    "AGUARDA_CI_OU_PO": "17 PRs que requerem CI verde + decisão do PO",
+    "AGUARDA_PO": "4 PRs: migrations DDL, .github/workflows, segurança — requerem aprovação humana"
+  },
+  "gate_final_main_atual": {
+    "verificado": false,
+    "nota": "Após merge #3337 (SHA 6933eb6), Gate 1.3 do analise-prs foi corrigido. NÃO VERIFICADO."
+  },
+  "bloqueio_geral": "Maioria dos PRs com código têm Gate Final FAILURE por falhas em Gate 1 (Lint+TS) não relacionadas ao diff da PR — problema estrutural em main"
 }
