@@ -19,6 +19,7 @@ import type { Json } from '@/integrations/supabase/types';
 import { newRequestId } from '@/lib/telemetry/requestId';
 import { validateKitStockForQuote } from '@/hooks/kit-builder/useKitStockValidation';
 import { validateKitPricesForQuote } from '@/hooks/kit-builder/useKitPriceValidation';
+import { validateKitMinQuantityForQuote } from '@/hooks/kit-builder/useKitMinQuantityValidation';
 
 export interface KitQuoteClient {
   client_cnpj?: string;
@@ -372,6 +373,21 @@ export function useKitBuilderQuote() {
         if (livePrices.status === 'unavailable') {
           throw new KitQuoteValidationError(
             'Não foi possível confirmar os preços atuais do catálogo. Nenhum orçamento foi criado.',
+          );
+        }
+
+        const liveMinQty = await validateKitMinQuantityForQuote(kitState.items, kitQuantity);
+        if (liveMinQty.status === 'unavailable') {
+          throw new KitQuoteValidationError(
+            'Não foi possível confirmar a quantidade mínima dos itens. Nenhum orçamento foi criado.',
+          );
+        }
+        if (liveMinQty.status === 'violations') {
+          const names = liveMinQty.violations
+            .map((v) => `${v.itemName} (mín. ${v.effectiveMin}, pedido ${v.required})`)
+            .join('; ');
+          throw new KitQuoteValidationError(
+            `Quantidade abaixo do mínimo em ${liveMinQty.violations.length} item(ns): ${names}. Ajuste as quantidades antes de criar o orçamento.`,
           );
         }
 
