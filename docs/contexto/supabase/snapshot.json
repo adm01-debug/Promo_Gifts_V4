@@ -137690,11 +137690,15 @@
               "hits": 1
             },
             {
+              "file": "supabase/migrations/20260515120000_fix_audit_ownership_orphans_uuid_only.sql",
+              "hits": 1
+            },
+            {
               "file": "supabase/migrations/20260515124035_fix_audit_ownership_orphans_only_uuid_columns.sql",
               "hits": 1
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [
             "public.audit_ownership_orphans"
@@ -138739,6 +138743,10 @@
               "hits": 1
             },
             {
+              "file": "src/hooks/useAiUsage.ts",
+              "hits": 1
+            },
+            {
               "file": "supabase/functions/_shared/ai-usage.ts",
               "hits": 1
             },
@@ -138751,7 +138759,7 @@
               "hits": 1
             }
           ],
-          "code_total_files": 4,
+          "code_total_files": 5,
           "cron": [],
           "db": [
             "public.acquire_ai_quota"
@@ -143568,6 +143576,10 @@
               "hits": 1
             },
             {
+              "file": "src/hooks/useFavoriteLists.ts",
+              "hits": 1
+            },
+            {
               "file": "supabase/migrations/20260619000000_fix_favorites_module.sql",
               "hits": 1
             },
@@ -143576,7 +143588,7 @@
               "hits": 2
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [
             "public.restore_favorite_from_trash"
@@ -143680,6 +143692,10 @@
               "hits": 1
             },
             {
+              "file": "src/hooks/useRoleMigration.ts",
+              "hits": 1
+            },
+            {
               "file": "supabase/migrations/20260611135102_p2_acl_01_restore_admin_rpcs_frontend.sql",
               "hits": 1
             },
@@ -143692,7 +143708,7 @@
               "hits": 1
             }
           ],
-          "code_total_files": 4,
+          "code_total_files": 5,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -178028,7 +178044,7 @@
               "hits": 2
             }
           ],
-          "code_total_files": 181,
+          "code_total_files": 182,
           "cron": [],
           "db": [
             "public._can_act_on_behalf_of_others",
@@ -178172,9 +178188,13 @@
             {
               "file": "src/hooks/kit-builder/useKitTemplates.ts",
               "hits": 1
+            },
+            {
+              "file": "src/hooks/useKitTemplates.ts",
+              "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -184671,11 +184691,15 @@
         "callers": {
           "code": [
             {
+              "file": "src/lib/external-db/bridge-telemetry-client.ts",
+              "hits": 1
+            },
+            {
               "file": "supabase/migrations/20260620190500_faxina_tier3b_archive_dead_functions_bulk.sql",
               "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [],
