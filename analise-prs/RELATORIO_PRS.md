@@ -1,7 +1,8 @@
 # Relatório de PRs — adm01-debug/Promo_Gifts_V4
 
 **Sessão:** session_01VXkRxWq5ZUCmvuNx5e2TGX  
-**Main SHA base:** `78729fc11038f7d0b2bb73ff0c1330f92547658b`  
+**Main SHA base:** `78729fc11038f7d0b2bb73ff0c1330f92547658b`
+**Main SHA atual (sessão 5):** `00c8fa295dbc60bd9dc3f7117f2ebf80350bd110` (PR#3344 absorvido como commit direto)  
 **Data:** 2026-11-09  
 **Branch de entrega:** `claude_pink/sleepy-cannon-h000nc` (PR #2674)
 
@@ -81,9 +82,9 @@ Todas bloqueadas por **runner saturation** desde 12:27Z — GitHub Actions pool 
 
 | PR | Título | Draft | Motivo do bloqueio |
 |---|---|---|---|
-| **#3346** | fix(tests): vitest regressions | ✓ | DRAFT + CI queued |
+| **#3346** | fix(tests): vitest regressions | ✓ | DRAFT + Gate Final=FAILURE (run 129178484108, SHA 5c376fe3) |
 | **#3345** | fix(e2e): smoke tests | ✓ | DRAFT + CI queued |
-| **#3344** | fix(tests): consumeUnloadBackup | ✓ | DRAFT + CI queued + rebase após #3343 |
+| ~~**#3344**~~ | fix(tests): consumeUnloadBackup | MERGEADA | cherry_plus=0 → absorvida em main como commit `00c8fa295dbc` |
 | **#3278** | sentinel grandfather | ✓ | DRAFT + CI queued |
 | **#3210** | release 1.9.0 | — | action_required (deploy approval) |
 
@@ -97,11 +98,25 @@ Todas bloqueadas por **runner saturation** desde 12:27Z — GitHub Actions pool 
 | Veredito | Qtd | PRs |
 |---|---|---|
 | MERGEADA_AGENTE | 3 | #3337, #3340, #3343 |
-| MERGEADA_EXTERNA | 2 | #3341, #3342 |
-| NAO_MERGEAR | 4 | #3277, #3203, #3339, #3332 |
+| MERGEADA_EXTERNA | 3 | #3341, #3342, #3344 (cherry_plus=0 → `00c8fa295`) |
+| NAO_MERGEAR | 4 | #3277 (Gate Final=FAILURE run 128980382539), #3203, #3339, #3332 |
 | AGUARDA_PO | 26 | (listadas acima, inclui #3137 e #3127) |
-| AGUARDA_CI | 5 | #3346, #3345, #3344, #3278, #3210 |
-| **TOTAL OPEN** | **38** | ✓ 38 analisadas |
+| AGUARDA_CI | 4 | #3346 (Gate Final=FAILURE run 129178484108), #3345, #3278, #3210 |
+| **TOTAL OPEN** | **37** | ✓ 38 analisadas; #3344 saiu da lista (absorvida em main) |
+
+**Evidência SQL migration PRs (sessão 5):**
+- #3243 `ALTER TABLE categories ADD COLUMN IF NOT EXISTS level` — aditivo idempotente
+- #3250 `CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_sds_summary_date` — aditivo idempotente
+- #3251 `cron.unschedule('image-dimensions-backfill')` — remove cron inativa
+- #3255 `DROP FUNCTION IF EXISTS perf002_drop_unused_snapshot_indexes()` — remove função SECURITY DEFINER perigosa (INCIDENTE PEND-I01)
+- #3256 DROP POLICY ampla + CREATE POLICY restrita a `quotes/` — restringe RLS
+- #3257 DROP POLICY deny_all + CREATE TABLE IF NOT EXISTS `supplier_products_raw_history_p2027_*` — RLS + partições
+- #3261/#3284 `cron.alter_job(292,303,241,276,224,114)` — espelho DDL já aplicada em produção (idempotente)
+- #3263 `cron.unschedule + cron.schedule` process/send-scheduled-reports — FT-005
+- #3264 `CREATE OR REPLACE VIEW vw_products_min_quantity` — versioning-only idempotente
+- #3265 `CREATE OR REPLACE FUNCTION fn_check_item_fits` — versioning-only idempotente
+- #3273 3× `CREATE INDEX IF NOT EXISTS` — espelho out-of-band idempotente
+- #3279 `cron.alter_job(243,276,224,114)` — fix colisões CRON-002
 
 ---
 
