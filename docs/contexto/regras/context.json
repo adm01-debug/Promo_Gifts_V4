@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "898f05c26e7b779ddaa0526b0ee5b533fcd824c5",
+  "sha": "989573864c5b0197b4ee25da44a2ecb5c7fbf27e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 02:34 UTC",
-  "files_total": 9140,
-  "code_files": 7865,
-  "code_lines": 1055591
+  "generated_at": "2026-11-09 05:09 UTC",
+  "files_total": 9181,
+  "code_files": 7869,
+  "code_lines": 1055933
  },
  "version": "1.3.2",
- "facts_hash": "d232f3bcbfbd8cd7",
+ "facts_hash": "a7957397fdfd5421",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1174,7 +1174,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3235,
-   ".ts": 2627,
+   ".ts": 2631,
    ".tsx": 1691,
    ".mjs": 303,
    ".py": 9,
@@ -138002,8 +138002,8 @@
   },
   {
    "module": "e2e",
-   "files": 623,
-   "lines": 75549,
+   "files": 625,
+   "lines": 75562,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -138216,7 +138216,7 @@
   {
    "module": "scripts",
    "files": 270,
-   "lines": 53274,
+   "lines": 53365,
    "tables": [
     "a",
     "contacts",
@@ -138290,7 +138290,6 @@
    ],
    "deps": [
     "#",
-    "@anthropic-ai/sdk",
     "@babel/parser",
     "@lib/y",
     "@supabase/supabase-js",
@@ -138313,7 +138312,8 @@
     "node:net",
     "node:os",
     "node:path",
-    "node:perf_hooks"
+    "node:perf_hooks",
+    "node:process"
    ],
    "imports_modules": [
     "_shared",
@@ -138321,7 +138321,6 @@
     "src/components",
     "src/config",
     "src/hooks",
-    "src/integrations",
     "src/lib",
     "src/pages",
     "src/routes",
@@ -138456,7 +138455,7 @@
   {
    "module": "src/components",
    "files": 1332,
-   "lines": 268687,
+   "lines": 268713,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -138812,8 +138811,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 448,
-   "lines": 83968,
+   "files": 450,
+   "lines": 84120,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -138880,6 +138879,7 @@
     "user_preferences",
     "video_variant_links",
     "voice_command_logs",
+    "vw_products_min_quantity",
     "workspace_notifications"
    ],
    "exports": [
@@ -139306,7 +139306,7 @@
   {
    "module": "src/pages",
    "files": 348,
-   "lines": 81762,
+   "lines": 81822,
    "tables": [
     "ai_insights_cache",
     "ai_usage_events",
@@ -142605,6 +142605,11 @@
      "src/hooks/voice/logVoiceCommand.ts"
     ]
    },
+   "vw_products_min_quantity": {
+    "select": [
+     "src/hooks/kit-builder/useKitMinQuantityValidation.ts"
+    ]
+   },
    "webhook_deliveries": {
     "select": [
      "src/components/admin/connections/FailedDeliveriesPanel.tsx",
@@ -143734,6 +143739,10 @@
     "product_id",
     "video_id"
    ],
+   "vw_products_min_quantity": [
+    "effective_min_quantity",
+    "id"
+   ],
    "webhook_deliveries": [
     "attempt",
     "delivered_at",
@@ -143956,7 +143965,8 @@
    ],
    "DATABASE_URL": [
     "scripts/check-types-inventory-drift.mjs",
-    "scripts/gen-internal-schema.mjs"
+    "scripts/gen-internal-schema.mjs",
+    "scripts/verify-quote-number-hardening.mjs"
    ],
    "DB_URL": [
     "scripts/ai-context/gerar.unit.mjs"
@@ -144356,6 +144366,9 @@
    "MAGAZINE_PUBLIC_TOKEN": [
     "e2e/flows/magazine-smoke.spec.ts"
    ],
+   "MIGRATION_VERSION": [
+    "scripts/validate-migration-target.mjs"
+   ],
    "MODE": [
     "src/lib/sentry.ts",
     "src/pages/system/SystemStatusPage.tsx"
@@ -144410,6 +144423,8 @@
     "scripts/check-draft-canonical-target.mjs",
     "scripts/dry-run-migration-draft.mjs",
     "scripts/map-drafts-to-migrations.mjs",
+    "scripts/validate-migration-target.mjs",
+    "scripts/verify-quote-number-hardening.mjs",
     "tests/scripts/check-infrastructure-drift-snapshots.test.mjs"
    ],
    "PGPASSWORD": [
@@ -144561,6 +144576,7 @@
    "SUPABASE_ACCESS_TOKEN": [
     "scripts/check-ddl-out-of-band.mjs",
     "scripts/check-edge-verify-jwt-allowlist.mjs",
+    "scripts/check-quote-rpc-canonical-readiness.mjs",
     "scripts/check-supabase-linter.mjs",
     "scripts/export-schema-snapshot.mjs",
     "scripts/inventario/gerar-banco.mjs",
@@ -145101,6 +145117,7 @@
     "e2e/helpers/cleanup-client.ts",
     "e2e/helpers/require-env-base-url.ts",
     "scripts/ai-context/gerar.unit.mjs",
+    "scripts/check-quote-rpc-canonical-readiness.mjs",
     "scripts/check-security-definer-acl.mjs",
     "scripts/e2e-check-stock-seed.mjs",
     "scripts/freight-quest-load-test.mjs",
@@ -145280,6 +145297,9 @@
    ],
    "fn_batch_update_cart_item_sort_order": [
     "src/hooks/products/useSellerCarts.ts"
+   ],
+   "fn_check_item_fits": [
+    "src/hooks/kit-builder/useKitFitsValidation.ts"
    ],
    "fn_check_login_allowed": [
     "supabase/functions/check-login/index.ts"
@@ -154588,6 +154608,10 @@
     "msg": "Erro ao aplicar filtro de tamanhos"
    },
    {
+    "file": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "msg": "Alterações não salvas detectadas"
+   },
+   {
     "file": "src/pages/kit-builder/KitLibraryPage.tsx",
     "msg": " className="
    },
@@ -154609,6 +154633,10 @@
    },
    {
     "file": "src/pages/kit-builder/useKitBuilderQuote.ts",
+    "msg": "${liveFits.violations.length} item(ns) não cabem na embalagem selecionada: ${names}. Revise o kit antes de continuar."
+   },
+   {
+    "file": "src/pages/kit-builder/useKitBuilderQuote.ts",
     "msg": "A criação transacional não retornou o orçamento"
    },
    {
@@ -154626,6 +154654,10 @@
    {
     "file": "src/pages/kit-builder/useKitBuilderQuote.ts",
     "msg": "Preço de personalização indisponível para criação do orçamento"
+   },
+   {
+    "file": "src/pages/kit-builder/useKitBuilderQuote.ts",
+    "msg": "Quantidade abaixo do mínimo em ${liveMinQty.violations.length} item(ns): ${names}. Ajuste as quantidades antes de criar o orçamento."
    },
    {
     "file": "src/pages/kit-builder/useKitBuilderQuote.ts",
@@ -157213,19 +157245,19 @@
    },
    {
     "file": "src/components/products/VirtualizedProductGrid.tsx",
-    "text": "* BUG-SCROLL-01 FIX: Chave que muda SOMENTE em filter/sort — NUNCA em load-more."
+    "text": "* BUG-SCROLL-01 FIX: Chave que muda SOMENTE em filter/sort -- NUNCA em load-more."
    },
    {
     "file": "src/components/products/VirtualizedProductGrid.tsx",
-    "text": "// ⚠️ PERF-2026-08-19: Pré-filtra para apenas produtos VISÍVEIS (virtualizados) +"
+    "text": "// PERF-2026-08-19: Pre-filtra para apenas produtos VISIVEIS (virtualizados) +"
    },
    {
     "file": "src/components/products/VirtualizedProductGrid.tsx",
-    "text": "ANTI N+1: prefetch batch de mv_stock_velocity apenas para produtos visíveis"
+    "text": "ANTI N+1: prefetch batch de mv_stock_velocity apenas para produtos visiveis"
    },
    {
     "file": "src/components/products/VirtualizedProductGrid.tsx",
-    "text": "2. scrollTo(0) → SOMENTE quando scrollResetKey muda (filter/sort/viewMode)"
+    "text": "2. scrollTo(0) -> SOMENTE quando scrollResetKey muda (filter/sort/viewMode)"
    },
    {
     "file": "src/components/products/VirtualizedProductGrid.tsx",
@@ -189472,6 +189504,96 @@
     "kind": "compara"
    },
    {
+    "file": "src/hooks/kit-builder/useKitFitsValidation.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitFitsValidation.ts",
+    "field": "status",
+    "value": "skipped",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitFitsValidation.ts",
+    "field": "status",
+    "value": "violations",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitFitsValidation.ts",
+    "field": "status",
+    "value": "skipped",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitFitsValidation.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitFitsValidation.ts",
+    "field": "status",
+    "value": "violations",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitFitsValidation.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
+    "field": "status",
+    "value": "violations",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
+    "field": "status",
+    "value": "unavailable",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
+    "field": "status",
+    "value": "unavailable",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
+    "field": "status",
+    "value": "unavailable",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
+    "field": "status",
+    "value": "violations",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
     "file": "src/hooks/kit-builder/useKitPriceValidation.ts",
     "field": "status",
     "value": "changed",
@@ -191880,6 +192002,18 @@
    {
     "file": "src/pages/kit-builder/useKitBuilderQuote.ts",
     "field": "status",
+    "value": "unavailable",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/kit-builder/useKitBuilderQuote.ts",
+    "field": "status",
+    "value": "violations",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/kit-builder/useKitBuilderQuote.ts",
+    "field": "status",
     "value": "unknown",
     "kind": "compara"
    },
@@ -191887,6 +192021,12 @@
     "file": "src/pages/kit-builder/useKitBuilderQuote.ts",
     "field": "status",
     "value": "unavailable",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/kit-builder/useKitBuilderQuote.ts",
+    "field": "status",
+    "value": "violations",
     "kind": "compara"
    },
    {
@@ -196498,6 +196638,18 @@
     "name": "toRanked",
     "params": "m: Map<string, { quotes: number; orders: number }>, nameFor: (id: string",
     "body": "string | undefined,"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitFitsValidation.ts",
+    "name": "validateKitFitsForQuote",
+    "params": "box: KitBox | null, items: KitItem[],",
+    "body": "if (!box) return { status: 'skipped' }; if (items.length === 0) return { status: 'ok' }; let usedLiters = 0; const violations: FitViolation[] = []; for (const item of items) { try { const { data, error } = await supabase.rpc('fn_check_item_fits', { p_packaging_id: box.id, p_product_id: item.id, p_current_used_liters: usedLiters, }); if (error || !data || (data as FitRow[]).length === 0) continue; const row = (data as FitRow[])[0]; // fits=null means no dimension data — fail-open: skip, do not vi …"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
+    "name": "validateKitMinQuantityForQuote",
+    "params": "items: KitItem[], kitQuantity: number,",
+    "body": "if (items.length === 0) return { status: 'ok' }; const productIds = [...new Set(items.map((item) => item.id))]; let rows: Array<{ id: string; effective_min_quantity: number | null }>; try { const { data, error } = await supabase .from('vw_products_min_quantity') .select('id, effective_min_quantity') .in('id', productIds); if (error || !data) return { status: 'unavailable' }; rows = data; } catch { return { status: 'unavailable' }; } const minByProduct = new Map(rows.map((row) => [row.id, row.eff …"
    },
    {
     "file": "src/hooks/kit-builder/useKitPriceValidation.ts",
@@ -312965,6 +313117,8 @@
       "compara:src/pages/system/SystemStatusPage.tsx",
       "escreve:api/health.ts",
       "escreve:api/ready.ts",
+      "escreve:src/hooks/kit-builder/useKitFitsValidation.ts",
+      "escreve:src/hooks/kit-builder/useKitMinQuantityValidation.ts",
       "escreve:src/lib/auth/invoke-full-scope.ts",
       "escreve:src/pages/admin/DevChallengeExamplesPage.tsx",
       "escreve:src/pages/system/SystemStatusPage.tsx",
@@ -313214,6 +313368,7 @@
       "compara:supabase/functions/_shared/ai-router/index.ts",
       "compara:supabase/functions/full-op-diagnostics/index.ts",
       "escreve:src/components/admin/connections/SmokeTestChecklist.tsx",
+      "escreve:src/hooks/kit-builder/useKitFitsValidation.ts",
       "escreve:src/pages/admin/telemetry/useOptimizationQueue.ts",
       "escreve:supabase/functions/_shared/ai-router/index.ts",
       "escreve:supabase/functions/full-op-diagnostics/index.ts",
@@ -313415,6 +313570,7 @@
      "unavailable": [
       "compara:src/components/kit-builder/KitSummary.tsx",
       "compara:src/pages/kit-builder/useKitBuilderQuote.ts",
+      "escreve:src/hooks/kit-builder/useKitMinQuantityValidation.ts",
       "escreve:src/hooks/kit-builder/useKitPriceValidation.ts"
      ],
      "Concluído": [
@@ -313507,6 +313663,11 @@
       "compara:supabase/migrations/20250103090000_mockup_ai_complete.sql",
       "escreve:supabase/functions/product-webhook/index.ts",
       "escreve:supabase/functions/word-magic/index.ts"
+     ],
+     "violations": [
+      "compara:src/pages/kit-builder/useKitBuilderQuote.ts",
+      "escreve:src/hooks/kit-builder/useKitFitsValidation.ts",
+      "escreve:src/hooks/kit-builder/useKitMinQuantityValidation.ts"
      ],
      "changed": [
       "compara:src/pages/kit-builder/useKitBuilderQuote.ts",
@@ -359451,6 +359612,15 @@
    },
    {
     "kind": "status",
+    "msg": "valor `violations` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/pages/kit-builder/useKitBuilderQuote.ts",
+     "escreve:src/hooks/kit-builder/useKitFitsValidation.ts",
+     "escreve:src/hooks/kit-builder/useKitMinQuantityValidation.ts"
+    ]
+   },
+   {
+    "kind": "status",
     "msg": "valor `changed` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/pages/kit-builder/useKitBuilderQuote.ts",
@@ -366845,7 +367015,7 @@
    "params": [
     {
      "name": "TOLERANCE_PX",
-     "value": "0.5"
+     "value": "1"
     },
     {
      "name": "SAMPLE_CARDS",
@@ -366857,7 +367027,7 @@
     "Vertical: swatch (incluindo ring/scale/glow renderizado) deve caber no container."
    ],
    "temporal": [
-    "await page.waitForSelector('[data-testid=\"product-card\"]', { timeout: 20_000 });"
+    "await page.waitForSelector('[data-testid=\"product-card\"]', { timeout: 60_000 });"
    ],
    "tests": [
     "ProductCard — swatch selecionado não é cortado",
@@ -366866,7 +367036,7 @@
   },
   "e2e/catalog/color-swatch-two-lines-grid.spec.ts": {
    "path": "e2e/catalog/color-swatch-two-lines-grid.spec.ts",
-   "lines": 150,
+   "lines": 145,
    "is_test": true,
    "params": [
     {
@@ -366879,11 +367049,12 @@
     }
    ],
    "rule_comments": [
-    "* E2E — ProductCard no grid: o container de swatches DEVE ter exatamente 2 linhas"
+    "* E2E — ProductCard no grid: o container de swatches DEVE ter exatamente 2 linhas",
+    "aria-label = \"Mais N cores\" — fornece somente o count oculto, não o total"
    ],
    "doc": "E2E — ProductCard no grid: o container de swatches DEVE ter exatamente 2 linhas de altura em TODOS os breakpoints (mobile, tablet, desktop, wide). Fórmula SSOT (ProductColorSwatches.tsx:179): max-h = 2*size + gap-y + 2*py Cobre: 1) Altura ≤ 2 linhas em qualquer card visível (todos os breakpoints). 2 …",
    "temporal": [
-    "await page.waitForSelector('[data-testid=\"product-card\"]', { timeout: 20_000 });"
+    "await page.waitForSelector('[data-testid=\"product-card\"]', { timeout: 60_000 });"
    ],
    "tests": [
     "ProductCard — swatches travados em 2 linhas no grid",
@@ -374599,6 +374770,16 @@
    "lines": 10,
    "is_test": true
   },
+  "e2e/routes/public/colecao-publica.spec.ts": {
+   "path": "e2e/routes/public/colecao-publica.spec.ts",
+   "lines": 9,
+   "is_test": true
+  },
+  "e2e/routes/public/comparar-publica.spec.ts": {
+   "path": "e2e/routes/public/comparar-publica.spec.ts",
+   "lines": 9,
+   "is_test": true
+  },
   "e2e/routes/public/dossie.spec.ts": {
    "path": "e2e/routes/public/dossie.spec.ts",
    "lines": 9,
@@ -375814,7 +375995,7 @@
   },
   "scripts/audit-debug.ts": {
    "path": "scripts/audit-debug.ts",
-   "lines": 72,
+   "lines": 86,
    "tables": [
     {
      "table": "profiles",
@@ -376131,7 +376312,7 @@
   },
   "scripts/check-cloud-status-coverage.mjs": {
    "path": "scripts/check-cloud-status-coverage.mjs",
-   "lines": 102,
+   "lines": 100,
    "env": [
     "COVERAGE_TOLERANCE_PP"
    ],
@@ -376205,7 +376386,7 @@
   },
   "scripts/check-critical-path-coverage.mjs": {
    "path": "scripts/check-critical-path-coverage.mjs",
-   "lines": 100,
+   "lines": 99,
    "env": [
     "COVERAGE_JSON_PATH"
    ],
@@ -376885,7 +377066,7 @@
   },
   "scripts/check-min-tests-executed.mjs": {
    "path": "scripts/check-min-tests-executed.mjs",
-   "lines": 56,
+   "lines": 55,
    "rule_comments": [
     "* E23/E109 — Gate: minimo de testes executados.",
     "projeto; cada workflow deve passar --min explícito para seu contexto)"
@@ -377115,7 +377296,7 @@
   },
   "scripts/check-price-freshness-coverage.mjs": {
    "path": "scripts/check-price-freshness-coverage.mjs",
-   "lines": 136,
+   "lines": 134,
    "env": [
     "COVERAGE_TOLERANCE_PP"
    ],
@@ -377173,9 +377354,11 @@
   },
   "scripts/check-quote-rpc-canonical-readiness.mjs": {
    "path": "scripts/check-quote-rpc-canonical-readiness.mjs",
-   "lines": 193,
+   "lines": 199,
    "env": [
-    "SUPABASE_PROJECT_REF"
+    "SUPABASE_ACCESS_TOKEN",
+    "SUPABASE_PROJECT_REF",
+    "VITE_SUPABASE_URL"
    ],
    "errors": [
     "fixture precisa conter um array rows"
@@ -377983,7 +378166,7 @@
   },
   "scripts/e2e-feature-summary.mjs": {
    "path": "scripts/e2e-feature-summary.mjs",
-   "lines": 374,
+   "lines": 371,
    "env": [
     "E2E_RESULTS_JSON",
     "E2E_SUMMARY_TOP"
@@ -378030,7 +378213,7 @@
   },
   "scripts/e2e-smoke-summary.mjs": {
    "path": "scripts/e2e-smoke-summary.mjs",
-   "lines": 404,
+   "lines": 401,
    "env": [
     "CI",
     "E2E_RESULTS_JSON",
@@ -378041,7 +378224,7 @@
   },
   "scripts/eslint-baseline-generate.mjs": {
    "path": "scripts/eslint-baseline-generate.mjs",
-   "lines": 79,
+   "lines": 87,
    "rule_comments": [
     "* Gera o baseline do ESLint (apenas ERROS, severity=2) agregando",
     "\"counts\": { \"src/foo.ts\": { \"rule-id\": 3, ... }, ... }",
@@ -378492,7 +378675,7 @@
   },
   "scripts/kit-ai-enrichment.js": {
    "path": "scripts/kit-ai-enrichment.js",
-   "lines": 40,
+   "lines": 60,
    "tables": [
     {
      "table": "product_kit_components",
@@ -378890,7 +379073,7 @@
   },
   "scripts/run-smoke-filtered.mjs": {
    "path": "scripts/run-smoke-filtered.mjs",
-   "lines": 60,
+   "lines": 70,
    "rule_comments": [
     "O projeto dedicado é parte do contrato do gate: apenas *smoke.spec.ts,"
    ],
@@ -379032,7 +379215,7 @@
   },
   "scripts/simulate-quote-rpc-proposals.mjs": {
    "path": "scripts/simulate-quote-rpc-proposals.mjs",
-   "lines": 582,
+   "lines": 589,
    "errors": [
     "Offline only: no CLI target or deployment options accepted",
     "Timed out: ${label}"
@@ -379043,6 +379226,7 @@
    "doc": "!/usr/bin/env node",
    "temporal": [
     "const attempt = (input) => spawnSync('docker', args, { input, encoding: 'utf8', timeout: 30000 });",
+    "const dockerCheck = spawnSync('docker', ['info'], { stdio: 'ignore', timeout: 5000 });",
     "spawnSync('docker', args, { input: 'SELECT 1;', encoding: 'utf8', timeout: 2000 }).status ===",
     "timeout: 60000,"
    ],
@@ -379050,7 +379234,7 @@
   },
   "scripts/simulate-signup-migration.mjs": {
    "path": "scripts/simulate-signup-migration.mjs",
-   "lines": 245,
+   "lines": 251,
    "env": [
     "SUPABASE_PROJECT_REF"
    ],
@@ -379074,6 +379258,7 @@
    ],
    "doc": "!/usr/bin/env node",
    "temporal": [
+    "const dockerCheck = spawnSync('docker', ['info'], { stdio: 'ignore', timeout: 5000 });",
     "timeout: 60000,",
     "{ encoding: 'utf8', timeout: 3000 },",
     "{ input: `BEGIN;\\n${migration}\\nCOMMIT;`, encoding: 'utf8', timeout: 30000 },"
@@ -379129,7 +379314,7 @@
   },
   "scripts/ssot-report-markdown.mjs": {
    "path": "scripts/ssot-report-markdown.mjs",
-   "lines": 189,
+   "lines": 195,
    "doc": "!/usr/bin/env node"
   },
   "scripts/ssot-report-summary.mjs": {
@@ -379283,7 +379468,7 @@
   },
   "scripts/typecheck-edge-functions.mjs": {
    "path": "scripts/typecheck-edge-functions.mjs",
-   "lines": 137,
+   "lines": 135,
    "params": [
     {
      "name": "FUNCTIONS_DIR",
@@ -379344,7 +379529,7 @@
   },
   "scripts/validate-lovable-sync-target.mjs": {
    "path": "scripts/validate-lovable-sync-target.mjs",
-   "lines": 161,
+   "lines": 159,
    "env": [
     "GH_TOKEN",
     "GITHUB_TOKEN",
@@ -379371,11 +379556,15 @@
   },
   "scripts/validate-migration-target.mjs": {
    "path": "scripts/validate-migration-target.mjs",
-   "lines": 87,
+   "lines": 95,
    "exports": [
     "const CANONICAL_PROJECT",
     "function validateMigrationTarget",
     "function validateLiveMigrationPooler"
+   ],
+   "env": [
+    "MIGRATION_VERSION",
+    "PGHOST"
    ],
    "params": [
     {
@@ -379424,7 +379613,7 @@
   },
   "scripts/validate-ssot-report.mjs": {
    "path": "scripts/validate-ssot-report.mjs",
-   "lines": 284,
+   "lines": 287,
    "rule_comments": [
     "VALIDAÇÃO RETROATIVA de artefatos de versões anteriores.",
     "* Zero dependências: implementa apenas o subset necessário",
@@ -379492,11 +379681,13 @@
   },
   "scripts/verify-quote-number-hardening.mjs": {
    "path": "scripts/verify-quote-number-hardening.mjs",
-   "lines": 240,
+   "lines": 245,
    "external_urls": [
     "https://api.supabase.com/v1/projects/${encodeURIComponent(projectRef)}/database/query/…"
    ],
    "env": [
+    "DATABASE_URL",
+    "PGHOST",
     "SUPABASE_ACCESS_TOKEN",
     "SUPABASE_PROJECT_REF"
    ],
@@ -379525,7 +379716,7 @@
   },
   "scripts/verify-roboflow-setup.js": {
    "path": "scripts/verify-roboflow-setup.js",
-   "lines": 253,
+   "lines": 251,
    "env": [
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
@@ -380196,7 +380387,7 @@
   },
   "scripts/inventario/gerar-banco.mjs": {
    "path": "scripts/inventario/gerar-banco.mjs",
-   "lines": 223,
+   "lines": 229,
    "exports": [
     "const LIMIARES",
     "function extrairInventario",
@@ -380732,7 +380923,7 @@
   },
   "scripts/supabase_snapshot/snapshot.py": {
    "path": "scripts/supabase_snapshot/snapshot.py",
-   "lines": 1723,
+   "lines": 1733,
    "exports": [
     "def log",
     "def record_error",
@@ -393596,7 +393787,7 @@
   },
   "src/components/kit-builder/KitAIPromptDialog.tsx": {
    "path": "src/components/kit-builder/KitAIPromptDialog.tsx",
-   "lines": 577,
+   "lines": 598,
    "exports": [
     "function buildAlternativeTitle",
     "function mapKitAiErrorMessage",
@@ -393624,7 +393815,7 @@
   },
   "src/components/kit-builder/KitBuilderHeader.tsx": {
    "path": "src/components/kit-builder/KitBuilderHeader.tsx",
-   "lines": 411,
+   "lines": 415,
    "exports": [
     "function KitBuilderHeader"
    ],
@@ -398905,10 +399096,10 @@
     "const VirtualizedProductGrid"
    ],
    "rule_comments": [
-    "* BUG-SCROLL-01 FIX: Chave que muda SOMENTE em filter/sort — NUNCA em load-more.",
-    "// ⚠️ PERF-2026-08-19: Pré-filtra para apenas produtos VISÍVEIS (virtualizados) +",
-    "ANTI N+1: prefetch batch de mv_stock_velocity apenas para produtos visíveis",
-    "2. scrollTo(0) → SOMENTE quando scrollResetKey muda (filter/sort/viewMode)",
+    "* BUG-SCROLL-01 FIX: Chave que muda SOMENTE em filter/sort -- NUNCA em load-more.",
+    "// PERF-2026-08-19: Pre-filtra para apenas produtos VISIVEIS (virtualizados) +",
+    "ANTI N+1: prefetch batch de mv_stock_velocity apenas para produtos visiveis",
+    "2. scrollTo(0) -> SOMENTE quando scrollResetKey muda (filter/sort/viewMode)",
     "scrollResetKey definido: rola ao topo somente em filter/sort/viewMode."
    ],
    "percents": [
@@ -400740,7 +400931,7 @@
   },
   "src/components/quotes/QuoteItemsList.tsx": {
    "path": "src/components/quotes/QuoteItemsList.tsx",
-   "lines": 349,
+   "lines": 350,
    "exports": [
     "function QuoteItemsList"
    ],
@@ -410783,7 +410974,7 @@
   },
   "src/hooks/kit-builder/useKitBuilder.ts": {
    "path": "src/hooks/kit-builder/useKitBuilder.ts",
-   "lines": 761,
+   "lines": 774,
    "exports": [
     "function useKitBuilder"
    ],
@@ -410804,7 +410995,7 @@
   },
   "src/hooks/kit-builder/useKitBuilderPageState.ts": {
    "path": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-   "lines": 553,
+   "lines": 563,
    "exports": [
     "function isKitMakerLandingRoute",
     "function useKitBuilderPageState"
@@ -410954,6 +411145,62 @@
     "useKitComments"
    ]
   },
+  "src/hooks/kit-builder/useKitFitsValidation.ts": {
+   "path": "src/hooks/kit-builder/useKitFitsValidation.ts",
+   "lines": 68,
+   "exports": [
+    "interface FitViolation",
+    "type KitFitsValidationResult",
+    "function validateKitFitsForQuote"
+   ],
+   "rpc": [
+    "fn_check_item_fits"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "skipped",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "violations",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "skipped",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "violations",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    }
+   ],
+   "calc_fns": [
+    {
+     "name": "validateKitFitsForQuote",
+     "params": "box: KitBox | null, items: KitItem[],",
+     "body": "if (!box) return { status: 'skipped' }; if (items.length === 0) return { status: 'ok' }; let usedLiters = 0; const violations: FitViolation[] = []; for (const item of items) { try { const { data, error } = await supabase.rpc('fn_check_item_fits', { p_packaging_id: box.id, p_product_id: item.id, p_current_used_liters: usedLiters, }); if (error || !data || (data as FitRow[]).length === 0) continue; const row = (data as FitRow[])[0]; // fits=null means no dimension data — fail-open: skip, do not vi …"
+    }
+   ]
+  },
   "src/hooks/kit-builder/useKitIdentitySuggestion.ts": {
    "path": "src/hooks/kit-builder/useKitIdentitySuggestion.ts",
    "lines": 54,
@@ -410968,6 +411215,76 @@
    "doc": "useKitIdentitySuggestion — invoca a edge function `kit-identity-suggest` para gerar tag/cor/ícone a partir do nome + itens do kit.",
    "hooks": [
     "useKitIdentitySuggestion"
+   ]
+  },
+  "src/hooks/kit-builder/useKitMinQuantityValidation.ts": {
+   "path": "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
+   "lines": 61,
+   "exports": [
+    "interface MinQuantityViolation",
+    "type KitMinQuantityValidationResult",
+    "function validateKitMinQuantityForQuote"
+   ],
+   "tables": [
+    {
+     "table": "vw_products_min_quantity",
+     "op": "select"
+    }
+   ],
+   "table_cols": {
+    "vw_products_min_quantity": [
+     "effective_min_quantity",
+     "id"
+    ]
+   },
+   "status_values": [
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "violations",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "unavailable",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "unavailable",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "unavailable",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "violations",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    }
+   ],
+   "calc_fns": [
+    {
+     "name": "validateKitMinQuantityForQuote",
+     "params": "items: KitItem[], kitQuantity: number,",
+     "body": "if (items.length === 0) return { status: 'ok' }; const productIds = [...new Set(items.map((item) => item.id))]; let rows: Array<{ id: string; effective_min_quantity: number | null }>; try { const { data, error } = await supabase .from('vw_products_min_quantity') .select('id, effective_min_quantity') .in('id', productIds); if (error || !data) return { status: 'unavailable' }; rows = data; } catch { return { status: 'unavailable' }; } const minByProduct = new Map(rows.map((row) => [row.id, row.eff …"
+    }
    ]
   },
   "src/hooks/kit-builder/useKitPriceValidation.test.ts": {
@@ -430343,9 +430660,12 @@
   },
   "src/pages/kit-builder/KitBuilderPage.tsx": {
    "path": "src/pages/kit-builder/KitBuilderPage.tsx",
-   "lines": 320,
+   "lines": 342,
    "exports": [
     "function KitBuilderPage"
+   ],
+   "errors": [
+    "Alterações não salvas detectadas"
    ],
    "percents": [
     "radial-gradient(ellipse 60% 40% at 100% 100%, hsl(var(--primary) / 0.04), transparent),",
@@ -430427,7 +430747,7 @@
   },
   "src/pages/kit-builder/useKitBuilderQuote.ts": {
    "path": "src/pages/kit-builder/useKitBuilderQuote.ts",
-   "lines": 441,
+   "lines": 468,
    "exports": [
     "interface KitQuoteClient",
     "function useKitBuilderQuote"
@@ -430451,11 +430771,13 @@
     "/orcamentos/"
    ],
    "errors": [
+    "${liveFits.violations.length} item(ns) não cabem na embalagem selecionada: ${names}. Revise o kit antes de continuar.",
     "A criação transacional não retornou o orçamento",
     "Estoque insuficiente em ${liveStock.alerts.length} item(ns). Revise o kit antes de continuar.",
     "Kit sem itens para orçar",
     "O preço de ${livePrices.productNames.join(",
     "Preço de personalização indisponível para criação do orçamento",
+    "Quantidade abaixo do mínimo em ${liveMinQty.violations.length} item(ns): ${names}. Ajuste as quantidades antes de criar o orçamento.",
     "Você precisa estar logado para criar um orçamento."
    ],
    "status_values": [
@@ -430476,12 +430798,27 @@
     },
     {
      "field": "status",
+     "value": "unavailable",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "violations",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
      "value": "unknown",
      "kind": "compara"
     },
     {
      "field": "status",
      "value": "unavailable",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "violations",
      "kind": "compara"
     }
    ],
@@ -432457,7 +432794,7 @@
   },
   "src/pages/mockups/MockupGenerator.tsx": {
    "path": "src/pages/mockups/MockupGenerator.tsx",
-   "lines": 631,
+   "lines": 635,
    "exports": [
     "function MockupGenerator"
    ],
@@ -435276,7 +435613,7 @@
   },
   "src/pages/tools/DropboxBrowserPage.tsx": {
    "path": "src/pages/tools/DropboxBrowserPage.tsx",
-   "lines": 191,
+   "lines": 198,
    "exports": [
     "function DropboxBrowserPage"
    ]
@@ -484067,421 +484404,454 @@
   }
  },
  "git": {
-  "sha": "898f05c26e7b779ddaa0526b0ee5b533fcd824c5",
+  "sha": "989573864c5b0197b4ee25da44a2ecb5c7fbf27e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
    {
-    "sha": "898f05c",
-    "date": "2026-11-08",
+    "sha": "9895738",
+    "date": "2026-11-09",
     "author": "adm01-debug",
-    "subject": "chore(docs): registra P-10 — 3 índices out-of-band em categories sem migration (#3262)",
+    "subject": "fix(dropbox): exibir título no estado desconectado (#3303)",
     "files": [
-     "PENDENCIAS.md"
+     "src/pages/tools/DropboxBrowserPage.tsx"
     ]
    },
    {
-    "sha": "34ac645",
-    "date": "2026-11-08",
+    "sha": "ee6f6c8",
+    "date": "2026-11-09",
     "author": "adm01-debug",
-    "subject": "docs(ci): atualiza RELATORIO_CI com baseline desta sessão e P-06 em correção (#3249)",
+    "subject": "feat(kit-builder): guard goToStep etapas não completadas FT-122 (#3292)",
     "files": [
-     "RELATORIO_CI.md"
+     "src/hooks/kit-builder/useKitBuilder.ts"
     ]
    },
    {
-    "sha": "9b2644b",
-    "date": "2026-11-08",
+    "sha": "b520784",
+    "date": "2026-11-09",
     "author": "adm01-debug",
-    "subject": "docs(analise-prs): corrige Gate Final verificado #3127/#3137, ciclo 2 #3203",
+    "subject": "fix: scripts static-pass e exit codes (#3266)",
+    "files": [
+     "scripts/append-edge-deploy-receipt.mjs",
+     "scripts/append-migration-receipt.mjs",
+     "scripts/audit-debug.ts",
+     "scripts/check-build-log.mjs",
+     "scripts/check-cloud-status-coverage.mjs",
+     "scripts/check-critical-path-coverage.mjs",
+     "scripts/check-min-tests-executed.mjs",
+     "scripts/check-playwright-min-executed.mjs",
+     "scripts/check-price-freshness-coverage.mjs",
+     "scripts/check-quote-rpc-canonical-readiness.mjs",
+     "scripts/check-supabase-linter.mjs",
+     "scripts/contract-testing.mjs",
+     "scripts/e2e-check-stock-seed.mjs",
+     "scripts/e2e-feature-summary.mjs",
+     "scripts/e2e-smoke-summary.mjs",
+     "scripts/e2e/calendar-local.sh",
+     "scripts/e2e/quote-conditions-local.sh",
+     "scripts/e2e/quote-freight-local.sh",
+     "scripts/eslint-baseline-generate.mjs",
+     "scripts/gen-internal-schema.mjs",
+     "scripts/inventario/gerar-banco.mjs",
+     "scripts/kit-ai-enrichment.js",
+     "scripts/kit-enrichment/asia-dims-batch.py",
+     "scripts/kit-enrichment/xbz-dims-batch.py",
+     "scripts/list-users.ts",
+     "scripts/promote-draft-migration.mjs",
+     "scripts/qa/fuzz-configuration-panel-collapse.mjs",
+     "scripts/qa/inject-crm-dead-letters.mjs",
+     "scripts/recalibrate-watermark-thresholds.mjs",
+     "scripts/run-e2e-quotes-undo.mjs",
+     "scripts/run-smoke-filtered.mjs",
+     "scripts/simulate-quote-rpc-proposals.mjs",
+     "scripts/simulate-signup-migration.mjs",
+     "scripts/ssot-report-bump.mjs",
+     "scripts/ssot-report-markdown.mjs",
+     "scripts/stress-quote-number-concurrent.mjs",
+     "scripts/supabase_snapshot/snapshot.py",
+     "scripts/test-approved-plan-database.sh",
+     "scripts/test-magazine-coverage.mjs",
+     "scripts/test-magazine-hardening-v2.sh",
+     "scripts/test-magazine-sql-contracts.sh",
+     "scripts/test-wave1-forward-only-migrations.sh",
+     "scripts/triage-edge-typecheck.mjs",
+     "scripts/typecheck-edge-functions.mjs",
+     "scripts/uptime-probe.sh",
+     "scripts/validate-lovable-sync-target.mjs",
+     "scripts/validate-migration-target.mjs",
+     "scripts/validate-ssot-report.mjs",
+     "scripts/verify-external.ts",
+     "scripts/verify-quote-number-hardening.mjs",
+     "scripts/verify-roboflow-setup.js",
+     "src/components/quotes/QuoteItemsList.tsx"
+    ]
+   },
+   {
+    "sha": "0aab655",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "feat(e2e): specs E2E rotas públicas — PR #3248 (#3248)",
+    "files": [
+     ".claude/CLAUDE.md",
+     "e2e/routes/public/colecao-publica.spec.ts",
+     "e2e/routes/public/comparar-publica.spec.ts"
+    ]
+   },
+   {
+    "sha": "d017980",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "docs(analise-prs): RELATORIO_DOSSIES — dossiê CI por PR com evidências (#3311)",
+    "files": [
+     "analise-prs/RELATORIO_DOSSIES.md"
+    ]
+   },
+   {
+    "sha": "f68850a",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "docs(analise-prs): RELATORIO_PRS.md + progresso.json — inventário completo 36 PRs abertas",
     "files": [
      "analise-prs/RELATORIO_PRS.md",
-     "analise-prs/dossies/PR-3127.md",
-     "analise-prs/dossies/PR-3137.md",
      "analise-prs/progresso.json"
     ]
    },
    {
-    "sha": "ed0733f",
-    "date": "2026-11-08",
+    "sha": "ffa5228",
+    "date": "2026-11-09",
     "author": "adm01-debug",
-    "subject": "chore(migrations): arquivo retroativo 20260611014515 fn_dryrun_standardize_supplier (#3239)",
+    "subject": "docs(analise-prs): RELATORIO_META_CUMPRIDA_v3 — 8 runs cancelados, bloqueio runner documentado",
     "files": [
-     ".migration-refs-baseline.json",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql"
+     "analise-prs/RELATORIO_META_CUMPRIDA_v3.md"
     ]
    },
    {
-    "sha": "6e631dd",
+    "sha": "b4d6faf",
     "date": "2026-11-08",
     "author": "adm01-debug",
-    "subject": "docs(analise-prs): ciclos de correção — 2 mergeadas, 11 AGUARDANDO HUMANO",
+    "subject": "docs(analise-prs): RELATORIO_META_CUMPRIDA_v2 — bloqueio Gate Final documentado",
     "files": [
-     "analise-prs/RELATORIO_PRS.md",
-     "analise-prs/dossies/PR-3127.md",
-     "analise-prs/dossies/PR-3129.md",
-     "analise-prs/dossies/PR-3137.md",
-     "analise-prs/dossies/PR-3160.md",
-     "analise-prs/dossies/PR-3179.md",
-     "analise-prs/dossies/PR-3203.md",
-     "analise-prs/dossies/PR-3210.md",
-     "analise-prs/dossies/PR-3214.md",
-     "analise-prs/dossies/PR-3215.md",
-     "analise-prs/dossies/PR-3228.md",
-     "analise-prs/dossies/PR-3236.md",
-     "analise-prs/progresso.json"
+     "analise-prs/RELATORIO_META_CUMPRIDA_v2.md"
     ]
    },
    {
-    "sha": "d50ae76",
+    "sha": "e456ae7",
     "date": "2026-11-08",
     "author": "adm01-debug",
-    "subject": "fix(migrations): adiciona header Rollback em 20261108001500_reconcile_e2e_cleanup_audit",
+    "subject": "docs(analise-prs): prs.json — inventário completo 36 PRs abertas (#3307)",
     "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
-    ]
-   },
-   {
-    "sha": "931b932",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f (#3241)",
-    "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md"
-    ]
-   },
-   {
-    "sha": "5aed391",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(ci): grandfather SHA 0409c07f do P09 no Sentinel allowlist (#3240)",
-    "files": [
-     ".github/SENTINEL_SHA_ALLOWLIST.txt"
-    ]
-   },
-   {
-    "sha": "17304c0",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs(analise-prs): relatório merge-prs — 12 PRs analisadas, 12 AGUARDANDO HUMANO",
-    "files": [
-     "analise-prs/RELATORIO_PRS.md",
-     "analise-prs/progresso.json",
      "analise-prs/prs.json"
     ]
    },
    {
-    "sha": "0409c07",
+    "sha": "7851536",
     "date": "2026-11-08",
     "author": "adm01-debug",
-    "subject": "feat(migrations): P09 — reconcilia 432 versões históricas no ledger schema_migrations",
+    "subject": "docs(analise-prs): RELATORIO_META_CUMPRIDA — versão final com evidências por PR",
     "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261108020000_p09_reconcile_ledger_schema_migrations.sql",
-     "supabase/rollbacks/20261108020000_rollback.sql"
+     "analise-prs/RELATORIO_META_CUMPRIDA.md"
     ]
    },
    {
-    "sha": "9e4dfbb",
+    "sha": "5942bb6",
     "date": "2026-11-08",
     "author": "adm01-debug",
-    "subject": "docs(ci): inventário final HEAD ba1c3fb — P-08, stub eslint, comparação baseline×final (#3237)",
+    "subject": "docs(analise-prs): RELATORIO_META_CUMPRIDA — sessão claude_04",
     "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md"
+     "analise-prs/RELATORIO_META_CUMPRIDA.md"
     ]
    },
    {
-    "sha": "ba1c3fb",
+    "sha": "ba33a10",
     "date": "2026-11-08",
     "author": "adm01-debug",
-    "subject": "fix(migrations): remove BOM UTF-8 do security_fix_suppliers_v2 — corrige db-schema-drift-check",
+    "subject": "feat(kit-builder): FT-088 validação fn_check_item_fits antes de criar orçamento (#3301)",
     "files": [
-     "PENDENCIAS.md",
-     "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql"
+     ".eslint-baseline.json",
+     "src/hooks/kit-builder/useKitFitsValidation.ts",
+     "src/pages/kit-builder/useKitBuilderQuote.ts"
     ]
    },
    {
-    "sha": "d8ae515",
+    "sha": "36f366b",
     "date": "2026-11-08",
-    "author": "github-actions[bot]",
-    "subject": "docs(edge): registra deploy health-check run 42491776265",
+    "author": "adm01-debug",
+    "subject": "fix(kit-builder): AbortController AI dialog + confetti só em inválido→válido (#3276)",
     "files": [
-     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
+     "src/components/kit-builder/KitAIPromptDialog.tsx",
+     "src/hooks/kit-builder/useKitBuilderPageState.ts"
     ]
    },
    {
-    "sha": "cda45f2",
+    "sha": "bf42558",
     "date": "2026-11-08",
     "author": "adm01-debug",
-    "subject": "docs(ci): P-06 verificado (failure confirmada run #42507854259) + HEAD 11e2be30 (#3233)",
+    "subject": "fix(e2e+kit-builder): tolerance e2e + UI conflito KitBuilderHeader (#3272)",
     "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md"
+     "src/components/kit-builder/KitBuilderHeader.tsx",
+     "src/hooks/kit-builder/useKitBuilderPageState.ts",
+     "src/pages/kit-builder/KitBuilderPage.tsx"
     ]
    },
    {
-    "sha": "11e2be3",
+    "sha": "b737d49",
     "date": "2026-11-08",
     "author": "adm01-debug",
-    "subject": "docs(ci): atualiza RELATORIO_CI e PENDENCIAS com verificação HEAD da97d70d (#3231)",
+    "subject": "feat(kit-builder): validação min-quantity via vw_products_min_quantity (#3269)",
     "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md"
+     "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
+     "src/pages/kit-builder/useKitBuilderQuote.ts"
     ]
    },
    {
-    "sha": "e9ed1f4",
+    "sha": "08e10b7",
     "date": "2026-11-08",
     "author": "adm01-debug",
-    "subject": "chore(pendencias): corrige causas raiz P-01, P-02, P-03 — secrets presentes, erros são reais",
+    "subject": "fix(kit-builder): arredondamento de preços a 2 casas decimais (#3253)",
+    "files": [
+     "src/lib/kit-builder/price-calculator.ts"
+    ]
+   },
+   {
+    "sha": "4d9fe52",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix(mockup-generator): corrige onLogoRemove para usar areaId passado (#3252)",
+    "files": [
+     ".file-size-baseline.json",
+     "src/pages/mockups/MockupGenerator.tsx"
+    ]
+   },
+   {
+    "sha": "39d5ffa",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(pendencias): adiciona P-19 — drift sistêmico de 220 índices out-of-band (#3300)",
     "files": [
      "PENDENCIAS.md"
     ]
    },
    {
-    "sha": "da97d70",
+    "sha": "1a1ee90",
     "date": "2026-11-08",
     "author": "adm01-debug",
-    "subject": "docs(auditoria): corrige status P06 — views já têm security_invoker=true",
+    "subject": "docs(analise-prs): atualiza progresso com resolução fila CI",
     "files": [
-     "auditoria-supabase/ADENDO_2026-10-28.md"
+     "analise-prs/progresso.json"
     ]
    },
    {
-    "sha": "9656107",
+    "sha": "8368588",
     "date": "2026-11-08",
     "author": "adm01-debug",
-    "subject": "docs(ci): atualiza RELATORIO_CI com Gate Final confirmado (a2dda825) (#3227)",
+    "subject": "docs(analise-prs): dossiês das 31 novas PRs (#3243–#3292)",
     "files": [
-     "RELATORIO_CI.md"
+     "analise-prs/dossies/PR-3243.md",
+     "analise-prs/dossies/PR-3247.md",
+     "analise-prs/dossies/PR-3248.md",
+     "analise-prs/dossies/PR-3250.md",
+     "analise-prs/dossies/PR-3251.md",
+     "analise-prs/dossies/PR-3252.md",
+     "analise-prs/dossies/PR-3253.md",
+     "analise-prs/dossies/PR-3255.md",
+     "analise-prs/dossies/PR-3256.md",
+     "analise-prs/dossies/PR-3257.md",
+     "analise-prs/dossies/PR-3261.md",
+     "analise-prs/dossies/PR-3263.md",
+     "analise-prs/dossies/PR-3264.md",
+     "analise-prs/dossies/PR-3265.md",
+     "analise-prs/dossies/PR-3266.md",
+     "analise-prs/dossies/PR-3269.md",
+     "analise-prs/dossies/PR-3270.md",
+     "analise-prs/dossies/PR-3272.md",
+     "analise-prs/dossies/PR-3273.md",
+     "analise-prs/dossies/PR-3274.md",
+     "analise-prs/dossies/PR-3275.md",
+     "analise-prs/dossies/PR-3276.md",
+     "analise-prs/dossies/PR-3277.md",
+     "analise-prs/dossies/PR-3278.md",
+     "analise-prs/dossies/PR-3279.md",
+     "analise-prs/dossies/PR-3283.md",
+     "analise-prs/dossies/PR-3284.md",
+     "analise-prs/dossies/PR-3288.md",
+     "analise-prs/dossies/PR-3290.md",
+     "analise-prs/dossies/PR-3291.md",
+     "analise-prs/dossies/PR-3292.md"
     ]
    },
    {
-    "sha": "e67c132",
+    "sha": "198d8cf",
     "date": "2026-11-08",
     "author": "adm01-debug",
-    "subject": "docs(ci): atualiza RELATORIO_CI.md — HEAD a2dda825 + run #42502537624 (#3225)",
+    "subject": "docs(analise-prs): inventario_prs.json (39 PRs) + progresso.json atualizado",
     "files": [
-     "RELATORIO_CI.md"
+     "analise-prs/inventario_prs.json",
+     "analise-prs/progresso.json"
     ]
    },
    {
-    "sha": "41b5525",
+    "sha": "9ba190f",
     "date": "2026-11-08",
     "author": "adm01-debug",
-    "subject": "docs(auditoria): P09 gap ledger 476 versões + P06 reanálise 24 views + C4 diagnóstico",
+    "subject": "docs(pendencias): registrar P-15 a P-18 — classificação completa de 30 runs is:failure (#3295)",
     "files": [
-     "auditoria-supabase/ADENDO_2026-10-28.md",
-     "auditoria-supabase/P09_INVESTIGACAO_2026-11-08.md"
+     "PENDENCIAS.md"
     ]
    },
    {
-    "sha": "a2dda82",
+    "sha": "4309d10",
     "date": "2026-11-08",
     "author": "adm01-debug",
-    "subject": "docs(ci): grandfathers squash commit 252cc01d + atualiza RELATORIO_CI (#3223)",
+    "subject": "docs(analise-prs): RELATORIO_PRS.md — sessão claude_04 (#3294)",
     "files": [
-     ".github/SENTINEL_SHA_ALLOWLIST.txt",
-     "RELATORIO_CI.md"
+     "analise-prs/RELATORIO_PRS.md"
     ]
    },
    {
-    "sha": "252cc01",
+    "sha": "c2bbc6b",
     "date": "2026-11-08",
     "author": "adm01-debug",
-    "subject": "fix(sentinel): expande Regra 6 e documenta pendências P-01 a P-07",
+    "subject": "docs: P-14 — E2E Magazine Header run stuck queued, risco de nova falha antes de 05:29Z (#3293)",
     "files": [
-     ".github/SENTINEL_SHA_ALLOWLIST.txt",
-     ".github/workflows/sentinel-self-test.yml",
+     "PENDENCIAS.md"
+    ]
+   },
+   {
+    "sha": "5aaebc6",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "chore: registrar PEND-EL01 — chave ElevenLabs ausente (decisão de custo) (#3285)",
+    "files": [
+     "docs/estado/PENDENCIAS.md"
+    ]
+   },
+   {
+    "sha": "6b555f8",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix(backlog): FT-405 Comandos de voz — FEITA → PARCIAL com evidência (#3280)",
+    "files": [
+     "docs/estado/backlog/funcionalidades.md"
+    ]
+   },
+   {
+    "sha": "cd46c78",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(ci): P-13 — run 42534854809 cancelado por runner saturation; tabela prova conclusão (#3289)",
+    "files": [
+     "PENDENCIAS.md"
+    ]
+   },
+   {
+    "sha": "c132f58",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "chore: atualiza RELATORIO_BRANCHES com estado pós-sessão (PRs #3279 e #3284)",
+    "files": [
+     "analise-branches/RELATORIO_BRANCHES.md"
+    ]
+   },
+   {
+    "sha": "111818f",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "docs(ci): RELATORIO_CI.md baseline×final + PENDENCIAS.md P-11/P-12 + P-06 corrigido (#3282)",
+    "files": [
      "PENDENCIAS.md",
-     "RELATORIO_CI.md",
-     "scripts/sentinel-check.sh"
-    ]
-   },
-   {
-    "sha": "93ae29d",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs(ci): atualiza RELATORIO_CI.md para HEAD 9a89d9f0 e Gate Final #42501464198",
-    "files": [
      "RELATORIO_CI.md"
     ]
    },
    {
-    "sha": "9a89d9f",
+    "sha": "f44949a",
     "date": "2026-11-08",
     "author": "adm01-debug",
-    "subject": "docs(ci): completa RELATORIO_CI.md e PENDENCIAS.md com prova de conclusão do stop hook (#3221)",
+    "subject": "docs: RELATORIO_CI.md + PENDENCIAS itens #45-#47 (sessão 2026-11-08) (#3281)",
     "files": [
      "PENDENCIAS.md",
      "RELATORIO_CI.md"
-    ]
-   },
-   {
-    "sha": "aab5deb",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs(ci): corrige npm test e HEAD no RELATORIO_CI.md (#3219)",
-    "files": [
-     "RELATORIO_CI.md"
-    ]
-   },
-   {
-    "sha": "f322318",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "feat: adiciona RELATORIO_CI.md e P35 em PENDENCIAS.md",
-    "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md"
-    ]
-   },
-   {
-    "sha": "1d3dafa",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(scripts): corrige scripts, edge functions e baselines (#3201)",
-    "files": [
-     ".any-type-baseline.json",
-     ".cart-header-fuzz.json",
-     ".migration-refs-baseline.json",
-     ".orphan-labels-baseline.json",
-     "docs/DB_FRONTEND_COVERAGE.md",
-     "docs/E2E_SMOKE_COVERAGE.md",
-     "scripts/check-env.mjs",
-     "scripts/check-no-db-push.mjs",
-     "scripts/check-quote-rpc-canonical-readiness.mjs",
-     "scripts/ci-metrics.mjs",
-     "scripts/gen-internal-schema.mjs",
-     "scripts/kit-ai-enrichment.js",
-     "scripts/observability-check.mjs",
-     "scripts/plan-status.mjs",
-     "scripts/qa/audit-freight-block.mjs",
-     "scripts/qa/fuzz-calendar-proportional.mjs",
-     "scripts/qa/fuzz-calendar-tokens.mjs",
-     "scripts/qa/simulate-freight-label-alignment.mjs",
-     "scripts/qa/validate-quote-conditions-workflows.mjs",
-     "supabase/functions/_shared/cors-snapshot.json",
-     "supabase/functions/ema-pipeline-health/index.ts",
-     "supabase/functions/mcp-query/index.ts",
-     "supabase/functions/migrate-helper/index.ts",
-     "supabase/functions/product-visual-search/index.ts",
-     "supabase/functions/xbz-image-uploader/index.ts",
-     "tests/components/pages/KitBuilderPage.test.tsx"
-    ]
-   },
-   {
-    "sha": "d03ee55",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs(auditoria): encerra P06 e P15 — migrations posteriores tornam proposta obsoleta",
-    "files": [
-     "auditoria-supabase/ADENDO_2026-10-28.md",
-     "auditoria-supabase/analise-impacto/APROVACAO_FASE_B_IMPACTO.md"
-    ]
-   },
-   {
-    "sha": "46ec263",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(ci): reconhecer migration 20261107180000 reconciliada (#3211)",
-    "files": [
-     "scripts/migration-ledger-remote-only-allowlist.json"
-    ]
-   },
-   {
-    "sha": "b45d233",
-    "date": "2026-11-08",
-    "author": "github-actions[bot]",
-    "subject": "docs(db): registrar recibo E15 da migration 20261107180000 (#3209)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
    }
   ],
   "hot_files": [
    [
-    "RELATORIO_CI.md",
-    13
-   ],
-   [
     "PENDENCIAS.md",
-    10
-   ],
-   [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    4
-   ],
-   [
-    "analise-prs/RELATORIO_PRS.md",
-    3
+    6
    ],
    [
     "analise-prs/progresso.json",
     3
    ],
    [
-    ".github/SENTINEL_SHA_ALLOWLIST.txt",
-    3
-   ],
-   [
-    "auditoria-supabase/ADENDO_2026-10-28.md",
-    3
-   ],
-   [
-    "analise-prs/dossies/PR-3127.md",
+    "analise-prs/RELATORIO_PRS.md",
     2
    ],
    [
-    "analise-prs/dossies/PR-3137.md",
+    "analise-prs/RELATORIO_META_CUMPRIDA.md",
     2
    ],
    [
-    ".migration-refs-baseline.json",
+    "src/pages/kit-builder/useKitBuilderQuote.ts",
     2
    ],
    [
-    "supabase/migrations/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
+    "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    2
+   ],
+   [
+    "RELATORIO_CI.md",
+    2
+   ],
+   [
+    "src/pages/tools/DropboxBrowserPage.tsx",
     1
    ],
    [
-    "analise-prs/dossies/PR-3129.md",
+    "src/hooks/kit-builder/useKitBuilder.ts",
     1
    ],
    [
-    "analise-prs/dossies/PR-3160.md",
+    "scripts/append-edge-deploy-receipt.mjs",
     1
    ],
    [
-    "analise-prs/dossies/PR-3179.md",
+    "scripts/append-migration-receipt.mjs",
     1
    ],
    [
-    "analise-prs/dossies/PR-3203.md",
+    "scripts/audit-debug.ts",
     1
    ],
    [
-    "analise-prs/dossies/PR-3210.md",
+    "scripts/check-build-log.mjs",
     1
    ],
    [
-    "analise-prs/dossies/PR-3214.md",
+    "scripts/check-cloud-status-coverage.mjs",
     1
    ],
    [
-    "analise-prs/dossies/PR-3215.md",
+    "scripts/check-critical-path-coverage.mjs",
     1
    ],
    [
-    "analise-prs/dossies/PR-3228.md",
+    "scripts/check-min-tests-executed.mjs",
     1
    ],
    [
-    "analise-prs/dossies/PR-3236.md",
+    "scripts/check-playwright-min-executed.mjs",
+    1
+   ],
+   [
+    "scripts/check-price-freshness-coverage.mjs",
+    1
+   ],
+   [
+    "scripts/check-quote-rpc-canonical-readiness.mjs",
+    1
+   ],
+   [
+    "scripts/check-supabase-linter.mjs",
     1
    ]
   ]

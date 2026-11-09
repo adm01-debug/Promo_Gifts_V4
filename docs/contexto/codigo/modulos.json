@@ -8187,7 +8187,7 @@
    "modulo": "components/kit-builder",
    "arquivos": 47,
    "testes": 0,
-   "linhas": 10594,
+   "linhas": 10619,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -8546,13 +8546,15 @@
     "system_settings",
     "user_roles",
     "video_variant_links",
-    "voice_command_logs"
+    "voice_command_logs",
+    "vw_products_min_quantity"
    ],
    "rpcs": [
     "check_ai_quota",
     "create_kit_quote_transactional",
     "ensure_default_favorite_list",
     "fn_batch_update_cart_item_sort_order",
+    "fn_check_item_fits",
     "fn_get_similar_products",
     "fn_should_apply_kill_switch",
     "fn_super_filtro_product_ids",
@@ -8708,10 +8710,12 @@
     "kit_templates",
     "kit_variants",
     "profiles",
-    "user_roles"
+    "user_roles",
+    "vw_products_min_quantity"
    ],
    "rpcs": [
     "create_kit_quote_transactional",
+    "fn_check_item_fits",
     "get_profile_and_roles",
     "increment_kit_template_usage",
     "log_user_logout",
@@ -9308,6 +9312,7 @@
     "user_roles",
     "video_variant_links",
     "voice_command_logs",
+    "vw_products_min_quantity",
     "workspace_notifications"
    ],
    "rpcs": [
@@ -9320,6 +9325,7 @@
     "ensure_default_favorite_list",
     "execute_role_migration_batch",
     "fn_batch_update_cart_item_sort_order",
+    "fn_check_item_fits",
     "fn_get_color_swatches_batch",
     "fn_get_rupture_alerts",
     "fn_get_similar_products",
@@ -10545,6 +10551,7 @@
     "user_roles",
     "video_variant_links",
     "voice_command_logs",
+    "vw_products_min_quantity",
     "workspace_notifications"
    ],
    "rpcs": [
@@ -10557,6 +10564,7 @@
     "ensure_default_favorite_list",
     "execute_role_migration_batch",
     "fn_batch_update_cart_item_sort_order",
+    "fn_check_item_fits",
     "fn_get_color_swatches_batch",
     "fn_get_rupture_alerts",
     "fn_get_similar_products",
@@ -13432,7 +13440,7 @@
    "modulo": "components/quotes",
    "arquivos": 50,
    "testes": 36,
-   "linhas": 11084,
+   "linhas": 11085,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -19972,9 +19980,9 @@
   },
   {
    "modulo": "hooks/kit-builder",
-   "arquivos": 20,
+   "arquivos": 22,
    "testes": 1,
-   "linhas": 3920,
+   "linhas": 4072,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -20035,10 +20043,12 @@
     "kit_templates",
     "kit_variants",
     "profiles",
-    "user_roles"
+    "user_roles",
+    "vw_products_min_quantity"
    ],
    "rpcs": [
     "create_kit_quote_transactional",
+    "fn_check_item_fits",
     "get_profile_and_roles",
     "increment_kit_template_usage",
     "log_user_logout",
@@ -20073,9 +20083,11 @@
      "kit_comments",
      "kit_templates",
      "kit_variants",
-     "profiles"
+     "profiles",
+     "vw_products_min_quantity"
     ],
     "rpcs": [
+     "fn_check_item_fits",
      "increment_kit_template_usage",
      "set_custom_kit_pinned"
     ]
@@ -23155,6 +23167,7 @@
     "user_roles",
     "video_variant_links",
     "voice_command_logs",
+    "vw_products_min_quantity",
     "workspace_notifications"
    ],
    "rpcs": [
@@ -23167,6 +23180,7 @@
     "ensure_default_favorite_list",
     "execute_role_migration_batch",
     "fn_batch_update_cart_item_sort_order",
+    "fn_check_item_fits",
     "fn_get_color_swatches_batch",
     "fn_get_rupture_alerts",
     "fn_get_similar_products",
@@ -24725,10 +24739,12 @@
     "kit_templates",
     "kit_variants",
     "profiles",
-    "user_roles"
+    "user_roles",
+    "vw_products_min_quantity"
    ],
    "rpcs": [
     "create_kit_quote_transactional",
+    "fn_check_item_fits",
     "get_profile_and_roles",
     "increment_kit_template_usage",
     "log_user_logout",
@@ -27095,6 +27111,7 @@
     "user_roles",
     "video_variant_links",
     "voice_command_logs",
+    "vw_products_min_quantity",
     "webhook_deliveries",
     "workspace_notifications"
    ],
@@ -27112,6 +27129,7 @@
     "execute_role_migration_batch",
     "fn_admin_sync_external_connections",
     "fn_batch_update_cart_item_sort_order",
+    "fn_check_item_fits",
     "fn_get_rupture_alerts",
     "fn_get_similar_products",
     "fn_run_and_persist_smoke_tests",
@@ -29692,7 +29710,7 @@
    "modulo": "pages/kit-builder",
    "arquivos": 3,
    "testes": 0,
-   "linhas": 1510,
+   "linhas": 1559,
    "itens_menu": [],
    "telas": [
     "/meus-kits"
@@ -30055,13 +30073,15 @@
     "system_settings",
     "user_roles",
     "video_variant_links",
-    "voice_command_logs"
+    "voice_command_logs",
+    "vw_products_min_quantity"
    ],
    "rpcs": [
     "check_ai_quota",
     "create_kit_quote_transactional",
     "ensure_default_favorite_list",
     "fn_batch_update_cart_item_sort_order",
+    "fn_check_item_fits",
     "fn_get_similar_products",
     "fn_should_apply_kill_switch",
     "fn_super_filtro_product_ids",
@@ -30804,7 +30824,7 @@
    "modulo": "pages/mockups",
    "arquivos": 6,
    "testes": 5,
-   "linhas": 1370,
+   "linhas": 1374,
    "itens_menu": [
     "Gerador de Mockups",
     "Gerar Mockup",
@@ -32758,7 +32778,7 @@
    "modulo": "pages/tools",
    "arquivos": 9,
    "testes": 0,
-   "linhas": 3095,
+   "linhas": 3102,
    "itens_menu": [
     "Busca por Preço",
     "Magic Up",
@@ -33925,6 +33945,7 @@
     "video_variant_links",
     "visual_search_feedback",
     "voice_command_logs",
+    "vw_products_min_quantity",
     "webhook_deliveries",
     "workspace_notifications"
    ],
@@ -33942,6 +33963,7 @@
     "execute_role_migration_batch",
     "fn_admin_sync_external_connections",
     "fn_batch_update_cart_item_sort_order",
+    "fn_check_item_fits",
     "fn_get_color_swatches_batch",
     "fn_get_reposicao_variants_summary",
     "fn_get_rupture_alerts",

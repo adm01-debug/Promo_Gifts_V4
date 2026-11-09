@@ -148732,11 +148732,15 @@
         "callers": {
           "code": [
             {
+              "file": "src/hooks/kit-builder/useKitFitsValidation.ts",
+              "hits": 1
+            },
+            {
               "file": "supabase/migrations/20260620190500_faxina_tier3b_archive_dead_functions_bulk.sql",
               "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -246515,11 +246519,6 @@
         {
           "publication": "supabase_realtime_messages_publication",
           "schema": "realtime",
-          "table": "messages_2026_11_05"
-        },
-        {
-          "publication": "supabase_realtime_messages_publication",
-          "schema": "realtime",
           "table": "messages_2026_11_06"
         },
         {
@@ -246546,6 +246545,11 @@
           "publication": "supabase_realtime_messages_publication",
           "schema": "realtime",
           "table": "messages_2026_11_11"
+        },
+        {
+          "publication": "supabase_realtime_messages_publication",
+          "schema": "realtime",
+          "table": "messages_2026_11_12"
         }
       ]
     },
@@ -262526,6 +262530,11 @@
     ],
     "webhooks": []
   },
-  "errors": [],
+  "errors": [
+    {
+      "error": "canceling statement due to statement timeout",
+      "section": "cron_runs"
+    }
+  ],
   "format_version": 2
 }

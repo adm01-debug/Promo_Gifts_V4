@@ -104,7 +104,7 @@
   {
    "arquivo": "scripts/audit-debug.ts",
    "descricao": "* Audit Técnico do Sistema - Junho 2026",
-   "linhas": 72,
+   "linhas": 86,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -395,7 +395,7 @@
   {
    "arquivo": "scripts/check-cloud-status-coverage.mjs",
    "descricao": "* Coverage gate dedicado ao CloudStatusBanner e hooks relacionados.",
-   "linhas": 102,
+   "linhas": 100,
    "env": [
     "COVERAGE_TOLERANCE_PP"
    ],
@@ -489,7 +489,7 @@
   {
    "arquivo": "scripts/check-critical-path-coverage.mjs",
    "descricao": "* scripts/check-critical-path-coverage.mjs",
-   "linhas": 100,
+   "linhas": 99,
    "env": [
     "COVERAGE_JSON_PATH"
    ],
@@ -960,7 +960,7 @@
   {
    "arquivo": "scripts/check-min-tests-executed.mjs",
    "descricao": "* E23/E109 — Gate: minimo de testes executados.",
-   "linhas": 56,
+   "linhas": 55,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -1155,7 +1155,7 @@
   {
    "arquivo": "scripts/check-price-freshness-coverage.mjs",
    "descricao": "* Coverage gate dedicado aos arquivos de \"price freshness\".",
-   "linhas": 136,
+   "linhas": 134,
    "env": [
     "COVERAGE_TOLERANCE_PP"
    ],
@@ -1219,9 +1219,11 @@
   {
    "arquivo": "scripts/check-quote-rpc-canonical-readiness.mjs",
    "descricao": "* Bloqueia a promocao do consumidor transacional de orcamentos enquanto o",
-   "linhas": 193,
+   "linhas": 199,
    "env": [
-    "SUPABASE_PROJECT_REF"
+    "SUPABASE_ACCESS_TOKEN",
+    "SUPABASE_PROJECT_REF",
+    "VITE_SUPABASE_URL"
    ],
    "npm_scripts": [
     "check:quote-rpc:canonical"
@@ -1816,7 +1818,7 @@
   {
    "arquivo": "scripts/e2e-feature-summary.mjs",
    "descricao": "* e2e-feature-summary — Agrupa resultados Playwright por FEATURE.",
-   "linhas": 374,
+   "linhas": 371,
    "env": [
     "E2E_RESULTS_JSON",
     "E2E_SUMMARY_TOP"
@@ -1863,7 +1865,7 @@
   {
    "arquivo": "scripts/e2e-smoke-summary.mjs",
    "descricao": "* e2e-smoke-summary — Resumo dedicado da suíte SMOKE por funcionalidade.",
-   "linhas": 404,
+   "linhas": 401,
    "env": [
     "CI",
     "E2E_RESULTS_JSON",
@@ -1880,7 +1882,7 @@
   {
    "arquivo": "scripts/eslint-baseline-generate.mjs",
    "descricao": "* Gera o baseline do ESLint (apenas ERROS, severity=2) agregando",
-   "linhas": 79,
+   "linhas": 87,
    "env": [],
    "npm_scripts": [
     "lint:baseline:update"
@@ -2178,7 +2180,7 @@
   {
    "arquivo": "scripts/inventario/gerar-banco.mjs",
    "descricao": "* Inventario do banco oficial -> inventario/estado/banco.json (fonte de consulta dos agentes).",
-   "linhas": 223,
+   "linhas": 229,
    "env": [
     "SUPABASE_ACCESS_TOKEN",
     "SUPABASE_PROJECT_REF"
@@ -2210,7 +2212,7 @@
   {
    "arquivo": "scripts/kit-ai-enrichment.js",
    "descricao": "Kit AI Enrichment Pipeline SUPABASE_URL=... SUPABASE_SERVICE_KEY=... BATCH_SIZE=50 DRY_RUN=true node kit-ai-enrichment.js",
-   "linhas": 40,
+   "linhas": 60,
    "env": [
     "BATCH_SIZE",
     "DRY_RUN",
@@ -2549,7 +2551,7 @@
   {
    "arquivo": "scripts/run-smoke-filtered.mjs",
    "descricao": "* run-smoke-filtered — wrapper opcional do `test:e2e:smoke` com filtro por tag/título.",
-   "linhas": 60,
+   "linhas": 70,
    "env": [],
    "npm_scripts": [
     "test:e2e:smoke"
@@ -2655,7 +2657,7 @@
   {
    "arquivo": "scripts/simulate-quote-rpc-proposals.mjs",
    "descricao": "* Offline PostgreSQL 17 fixture. NEVER connects to or applies SQL to Supabase. Container has no network, published ports or host data mounts. Only its tmpfs is removed.",
-   "linhas": 582,
+   "linhas": 589,
    "env": [],
    "npm_scripts": [
     "test:quote-rpc:postgres"
@@ -2666,7 +2668,7 @@
   {
    "arquivo": "scripts/simulate-signup-migration.mjs",
    "descricao": "* Isolated diagnostic, never applies SQL to Supabase. No published port or host data volume. Reads the eight functions in the signup/profile/role/discount-limit trigger chain.",
-   "linhas": 245,
+   "linhas": 251,
    "env": [
     "SUPABASE_PROJECT_REF"
    ],
@@ -2715,7 +2717,7 @@
   {
    "arquivo": "scripts/ssot-report-markdown.mjs",
    "descricao": "* ssot-report-markdown.mjs — Converte ssot-report.json em Markdown para revisão de PR.",
-   "linhas": 189,
+   "linhas": 195,
    "env": [],
    "npm_scripts": [
     "ssot:report:markdown"
@@ -2797,7 +2799,7 @@
   {
    "arquivo": "scripts/supabase_snapshot/snapshot.py",
    "descricao": "Somente leitura no banco (sessão read-only, statement_timeout, lock_timeout). Nunca grava linhas de tabelas, valores de segredos, chaves, senhas ou DSN.",
-   "linhas": 1723,
+   "linhas": 1733,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -2808,7 +2810,7 @@
   {
    "arquivo": "scripts/test-approved-plan-database.sh",
    "descricao": null,
-   "linhas": 103,
+   "linhas": 108,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2850,7 +2852,7 @@
   {
    "arquivo": "scripts/test-magazine-hardening-v2.sh",
    "descricao": "E47: use grep -rE (available on all runners) instead of rg to prevent silent pass on missing binary",
-   "linhas": 246,
+   "linhas": 251,
    "env": [],
    "npm_scripts": [
     "test:magazine:sql"
@@ -2861,7 +2863,7 @@
   {
    "arquivo": "scripts/test-magazine-sql-contracts.sh",
    "descricao": null,
-   "linhas": 33,
+   "linhas": 36,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2870,7 +2872,7 @@
   {
    "arquivo": "scripts/test-wave1-forward-only-migrations.sh",
    "descricao": null,
-   "linhas": 29,
+   "linhas": 34,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2912,7 +2914,7 @@
   {
    "arquivo": "scripts/typecheck-edge-functions.mjs",
    "descricao": "* Typecheck all Supabase Edge Functions using `deno check`.",
-   "linhas": 137,
+   "linhas": 135,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2977,7 +2979,7 @@
   {
    "arquivo": "scripts/validate-lovable-sync-target.mjs",
    "descricao": "* Valida que o bot de sync da Lovable está direcionando PRs para `main`",
-   "linhas": 161,
+   "linhas": 159,
    "env": [
     "GH_TOKEN",
     "GITHUB_TOKEN",
@@ -2992,8 +2994,11 @@
   {
    "arquivo": "scripts/validate-migration-target.mjs",
    "descricao": "Shared pooler hosts do not identify a project; the user suffix must do so.",
-   "linhas": 87,
-   "env": [],
+   "linhas": 95,
+   "env": [
+    "MIGRATION_VERSION",
+    "PGHOST"
+   ],
    "npm_scripts": [],
    "workflows": [
     "db-apply-migration.yml",
@@ -3024,7 +3029,7 @@
   {
    "arquivo": "scripts/validate-ssot-report.mjs",
    "descricao": "* validate-ssot-report.mjs — Valida ssot-report.json contra",
-   "linhas": 284,
+   "linhas": 287,
    "env": [],
    "npm_scripts": [
     "ssot:report:validate"
@@ -3075,8 +3080,10 @@
   {
    "arquivo": "scripts/verify-quote-number-hardening.mjs",
    "descricao": "* verify-quote-number-hardening",
-   "linhas": 240,
+   "linhas": 245,
    "env": [
+    "DATABASE_URL",
+    "PGHOST",
     "SUPABASE_ACCESS_TOKEN",
     "SUPABASE_PROJECT_REF"
    ],
@@ -3089,7 +3096,7 @@
   {
    "arquivo": "scripts/verify-roboflow-setup.js",
    "descricao": "* scripts/verify-roboflow-setup.js",
-   "linhas": 253,
+   "linhas": 251,
    "env": [
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"

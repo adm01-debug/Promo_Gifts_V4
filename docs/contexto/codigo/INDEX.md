@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `898f05c26e7b779ddaa0526b0ee5b533fcd824c5` (2026-11-08T19:41:56-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `989573864c5b0197b4ee25da44a2ecb5c7fbf27e` (2026-11-09T00:34:24-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4317), SQL (3235), Markdown (911), JavaScript (310), YAML (107), JSON (93), Shell (19), CSS (13)
+- linguagens: TypeScript (4321), SQL (3235), Markdown (947), JavaScript (310), YAML (107), JSON (94), Shell (19), CSS (13)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,37 +34,37 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 9220 |
-| arquivos_codigo | 4631 |
-| linhas_codigo | 887313 |
+| arquivos_total | 9261 |
+| arquivos_codigo | 4635 |
+| linhas_codigo | 887655 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
 | itens_menu | 69 |
 | modulos | 158 |
 | componentes | 1123 |
-| hooks | 414 |
+| hooks | 416 |
 | edge_functions | 111 |
 | tabelas | 544 |
 | migrations | 3047 |
 | cron_jobs | 120 |
-| testes | 2200 |
+| testes | 2202 |
 | workflows | 94 |
 | scripts | 257 |
-| docs_md | 911 |
+| docs_md | 947 |
 
 ## Onde ficam as coisas
 - telas: src/pages (111), src/components (3), api/health.ts (1)
 - componentes: src/components (931), src/pages (175), src/contexts (10)
-- hooks: src/hooks (287), src/components (75), src/pages (32)
+- hooks: src/hooks (289), src/components (75), src/pages (32)
 - servicos_logica: src/lib (224), src/utils (30), src/services (9)
-- testes: tests/ (807), e2e/ (622), co-localizado (__tests__) (605)
+- testes: tests/ (807), e2e/ (624), co-localizado (__tests__) (605)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/graphify (4), scripts/inventario (4), scripts/ai-context (2)
 - docs: docs (144), (raiz) (13), .github (4)
 - nomenclatura: {"componentes":"PascalCase (95%)","hooks":"use + PascalCase","servicos":"kebab-case (52%)","edge_functions":"kebab-case (99%)","tabelas":"snake_case (86%)"}
-- instruções para agentes no repo: AGENTS.md, CLAUDE.md
+- instruções para agentes no repo: .claude/CLAUDE.md, AGENTS.md, CLAUDE.md
 
 ## Módulos (menu → domínio)
 | módulo | itens de menu | telas/rotas | arquivos | hooks locais | edges | tabelas |
@@ -88,9 +88,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | components/filters | 0 | 0 | 23 | 269 | 4 | 42 |
 | components/intelligence | 0 | 0 | 27 | 289 | 4 | 44 |
 | components/inventory | 0 | 0 | 40 | 318 | 5 | 47 |
-| components/kit-builder | 0 | 0 | 47 | 294 | 4 | 51 |
-| components/kit-library | 0 | 0 | 7 | 26 | 0 | 8 |
-| components/layout | 0 | 4 | 18 | 437 | 8 | 82 |
+| components/kit-builder | 0 | 0 | 47 | 294 | 4 | 52 |
+| components/kit-library | 0 | 0 | 7 | 26 | 0 | 9 |
+| components/layout | 0 | 4 | 18 | 437 | 8 | 83 |
 | components/magic-up | 0 | 0 | 18 | 268 | 4 | 41 |
 | components/mockup | 0 | 0 | 39 | 271 | 4 | 41 |
 | components/notifications | 0 | 0 | 7 | 31 | 0 | 8 |
@@ -115,7 +115,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks/crm | 0 | 0 | 7 | 24 | 0 | 3 |
 | hooks/favorites | 0 | 0 | 8 | 268 | 4 | 41 |
 | hooks/intelligence | 0 | 0 | 39 | 271 | 4 | 41 |
-| hooks/kit-builder | 0 | 0 | 20 | 24 | 0 | 8 |
+| hooks/kit-builder | 0 | 0 | 22 | 24 | 0 | 9 |
 | hooks/mockup | 0 | 0 | 9 | 268 | 4 | 41 |
 | hooks/products | 0 | 0 | 71 | 278 | 4 | 41 |
 | hooks/quotes | 0 | 0 | 21 | 302 | 4 | 52 |
@@ -126,7 +126,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks/ui | 0 | 0 | 18 | 31 | 0 | 8 |
 | hooks/voice | 0 | 0 | 10 | 1 | 2 | 1 |
 | integrations/supabase | 0 | 0 | 7 | 3 | 0 | 2 |
-| lib | 0 | 0 | 57 | 426 | 8 | 81 |
+| lib | 0 | 0 | 57 | 426 | 8 | 82 |
 | lib/access | 0 | 0 | 6 | 3 | 0 | 3 |
 | lib/auth | 0 | 0 | 19 | 12 | 0 | 5 |
 | lib/bi | 0 | 0 | 7 | 9 | 0 | 2 |
@@ -140,20 +140,20 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | lib/validations | 0 | 0 | 5 | 0 | 0 | 0 |
 | pages | 3 | 7 | 7 | 336 | 5 | 61 |
 | pages/__visual | 0 | 9 | 9 | 282 | 4 | 50 |
-| pages/admin | 17 | 40 | 59 | 413 | 13 | 100 |
+| pages/admin | 17 | 40 | 59 | 413 | 13 | 101 |
 | pages/auth | 0 | 7 | 11 | 12 | 0 | 3 |
 | pages/bi | 3 | 3 | 3 | 303 | 4 | 44 |
 | pages/clients | 0 | 3 | 3 | 278 | 5 | 41 |
 | pages/collections | 2 | 2 | 3 | 302 | 5 | 46 |
 | pages/dev | 0 | 8 | 8 | 2 | 0 | 0 |
-| pages/kit-builder | 0 | 1 | 3 | 294 | 4 | 51 |
+| pages/kit-builder | 0 | 1 | 3 | 294 | 4 | 52 |
 | pages/magazine | 1 | 6 | 64 | 82 | 2 | 10 |
 | pages/mockups | 3 | 2 | 6 | 272 | 5 | 41 |
 | pages/products | 9 | 10 | 24 | 331 | 5 | 56 |
 | pages/quotes | 3 | 7 | 13 | 295 | 4 | 50 |
 | pages/system | 1 | 3 | 3 | 287 | 4 | 44 |
 | pages/tools | 6 | 8 | 9 | 291 | 5 | 50 |
-| routes | 0 | 0 | 9 | 502 | 16 | 111 |
+| routes | 0 | 0 | 9 | 502 | 16 | 112 |
 | services | 0 | 0 | 9 | 45 | 2 | 15 |
 | stores | 0 | 0 | 8 | 0 | 0 | 1 |
 | types | 0 | 0 | 19 | 0 | 0 | 1 |
@@ -575,7 +575,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - edges_orfas: 62 — ex.: analyze-logo-colors, anonymize-user, audit-suite
 - edges_chamadas_sem_pasta: 1 — ex.: receive-quote-sync
 - tabelas_sem_rls: 36 — ex.: _backup_quotes_orgid_null_20260614, _bkp_asia_raw_pre_fix_referencia, binding_colors
-- tabelas_usadas_sem_definicao: 9 — ex.: ai_models, avatars, categories_tree_visual
+- tabelas_usadas_sem_definicao: 10 — ex.: ai_models, avatars, categories_tree_visual
 - tabelas_com_drift_migration_vs_types: 0
 - rpcs_sem_definicao: 5 — ex.: fn_get_color_swatches_batch, fn_get_reposicao_variants_summary, fn_rupture_health_check
 - componentes_orfaos: 80 — ex.: src/components/admin/connections/ConnectionErrorDetailsDialog.tsx, src/components/admin/connections/ErrorDetailsDialog.tsx, src/components/admin/DiscountApprovalQueue.tsx
@@ -586,27 +586,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38195 nós · 66693 arestas · 2157 comunidades · grafo do commit `898f05c2`
-- comunidades maiores: ref_integrations (502), lucide-react (476), ref_components (453), vitest (420), nav.ts (355), ref_node_fs (332), ref_hooks (328), ref_lib (319), react-router-dom (299), scripts (289), react (270), cors.ts (259)
+- 38500 nós · 66956 arestas · 2163 comunidades · grafo do commit `98957386`
+- comunidades maiores: ref_lib (474), @testing-library/react (353), ref_hooks (343), ref_node_fs (325), ref_integrations (324), sonner (316), react-router-dom (304), scripts (289), @tanstack/react-query (287), ref_components (260), react (254), ref_contexts (253)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (69)
-- PENDENCIAS.md (52)
-- supabase/MIGRATIONS_SYNC_LOG.md (22)
-- package.json (21)
-- package-lock.json (15)
-- CHANGELOG.md (13)
-- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (13)
+- RELATORIO_CI.md (60)
+- PENDENCIAS.md (50)
+- supabase/MIGRATIONS_SYNC_LOG.md (23)
+- package.json (17)
+- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (14)
+- package-lock.json (12)
 - .github/workflows/deploy-gates.yml (11)
-- analise-branches/RELATORIO_BRANCHES.md (9)
-- e2e/flows/magazine-publish-smoke.spec.ts (9)
-- docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (8)
-- AGENTS.md (7)
-- CLAUDE.md (7)
-- .github/workflows/replenishment-quality.yml (6)
-- analise-prs/RELATORIO_PRS.md (6)
+- analise-branches/RELATORIO_BRANCHES.md (11)
+- CHANGELOG.md (10)
+- analise-prs/progresso.json (10)
+- e2e/flows/magazine-publish-smoke.spec.ts (10)
+- analise-prs/RELATORIO_PRS.md (9)
+- AGENTS.md (8)
+- CLAUDE.md (8)
+- .github/workflows/replenishment-quality.yml (7)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1004,10 +1004,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
-- `PENDENCIAS.md` — PENDENCIAS.md — Workflows com falha não corrigível nesta sessão (201 linhas)
+- `PENDENCIAS.md` — PENDENCIAS.md — Workflows com falha não corrigível nesta sessão (378 linhas)
 - `PERFORMANCE-ANALYSIS.md` — 🔍 Relatório de Análise de Performance - MainLayout (195 linhas)
 - `README.md` — 🎁 Promo Brindes — Plataforma de Vendas de Brindes Promocionais (842 linhas)
-- `RELATORIO_CI.md` — RELATORIO CI - Prova de Conclusao do Stop Hook (151 linhas)
+- `RELATORIO_CI.md` — RELATORIO_CI.md — Baseline × Final CI (96 linhas)
 - `RELATORIO_CI_P34.md` — RELATORIO_CI_P34.md — Prova Final Sessão P34 (2026-10-30) (64 linhas)
 - `SECURITY.md` — Política de Segurança — Promo Gifts (89 linhas)
 - `STATUS.md` — 📡 Status do Projeto (19 linhas)
@@ -1160,21 +1160,21 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
-- 2026-11-08 `898f05c` chore(docs): registra P-10 — 3 índices out-of-band em categories sem migration (#3262)
-- 2026-11-08 `34ac645` docs(ci): atualiza RELATORIO_CI com baseline desta sessão e P-06 em correção (#3249)
-- 2026-11-08 `9b2644b` docs(analise-prs): corrige Gate Final verificado #3127/#3137, ciclo 2 #3203
-- 2026-11-08 `ed0733f` chore(migrations): arquivo retroativo 20260611014515 fn_dryrun_standardize_supplier (#3239)
-- 2026-11-08 `6e631dd` docs(analise-prs): ciclos de correção — 2 mergeadas, 11 AGUARDANDO HUMANO
-- 2026-11-08 `d50ae76` fix(migrations): adiciona header Rollback em 20261108001500_reconcile_e2e_cleanup_audit
-- 2026-11-08 `931b932` docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f (#3241)
-- 2026-11-08 `5aed391` fix(ci): grandfather SHA 0409c07f do P09 no Sentinel allowlist (#3240)
-- 2026-11-08 `17304c0` docs(analise-prs): relatório merge-prs — 12 PRs analisadas, 12 AGUARDANDO HUMANO
-- 2026-11-08 `0409c07` feat(migrations): P09 — reconcilia 432 versões históricas no ledger schema_migrations
-- 2026-11-08 `9e4dfbb` docs(ci): inventário final HEAD ba1c3fb — P-08, stub eslint, comparação baseline×final (#3237)
-- 2026-11-08 `ba1c3fb` fix(migrations): remove BOM UTF-8 do security_fix_suppliers_v2 — corrige db-schema-drift-check
-- 2026-11-08 `d8ae515` docs(edge): registra deploy health-check run 42491776265
-- 2026-11-08 `cda45f2` docs(ci): P-06 verificado (failure confirmada run #42507854259) + HEAD 11e2be30 (#3233)
-- 2026-11-08 `11e2be3` docs(ci): atualiza RELATORIO_CI e PENDENCIAS com verificação HEAD da97d70d (#3231)
+- 2026-11-09 `9895738` fix(dropbox): exibir título no estado desconectado (#3303)
+- 2026-11-09 `ee6f6c8` feat(kit-builder): guard goToStep etapas não completadas FT-122 (#3292)
+- 2026-11-09 `b520784` fix: scripts static-pass e exit codes (#3266)
+- 2026-11-09 `0aab655` feat(e2e): specs E2E rotas públicas — PR #3248 (#3248)
+- 2026-11-09 `d017980` docs(analise-prs): RELATORIO_DOSSIES — dossiê CI por PR com evidências (#3311)
+- 2026-11-09 `f68850a` docs(analise-prs): RELATORIO_PRS.md + progresso.json — inventário completo 36 PRs abertas
+- 2026-11-09 `ffa5228` docs(analise-prs): RELATORIO_META_CUMPRIDA_v3 — 8 runs cancelados, bloqueio runner documentado
+- 2026-11-08 `b4d6faf` docs(analise-prs): RELATORIO_META_CUMPRIDA_v2 — bloqueio Gate Final documentado
+- 2026-11-08 `e456ae7` docs(analise-prs): prs.json — inventário completo 36 PRs abertas (#3307)
+- 2026-11-08 `7851536` docs(analise-prs): RELATORIO_META_CUMPRIDA — versão final com evidências por PR
+- 2026-11-08 `5942bb6` docs(analise-prs): RELATORIO_META_CUMPRIDA — sessão claude_04
+- 2026-11-08 `ba33a10` feat(kit-builder): FT-088 validação fn_check_item_fits antes de criar orçamento (#3301)
+- 2026-11-08 `36f366b` fix(kit-builder): AbortController AI dialog + confetti só em inválido→válido (#3276)
+- 2026-11-08 `bf42558` fix(e2e+kit-builder): tolerance e2e + UI conflito KitBuilderHeader (#3272)
+- 2026-11-08 `b737d49` feat(kit-builder): validação min-quantity via vw_products_min_quantity (#3269)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

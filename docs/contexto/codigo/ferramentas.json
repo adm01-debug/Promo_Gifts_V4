@@ -3,12 +3,12 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4317)",
+   "TypeScript (4321)",
    "SQL (3235)",
-   "Markdown (911)",
+   "Markdown (947)",
    "JavaScript (310)",
    "YAML (107)",
-   "JSON (93)",
+   "JSON (94)",
    "Shell (19)",
    "CSS (13)"
   ],
@@ -3546,7 +3546,7 @@
   {
    "arquivo": "PENDENCIAS.md",
    "titulo": "PENDENCIAS.md — Workflows com falha não corrigível nesta sessão",
-   "linhas": 201
+   "linhas": 378
   },
   {
    "arquivo": "PERFORMANCE-ANALYSIS.md",
@@ -3560,8 +3560,8 @@
   },
   {
    "arquivo": "RELATORIO_CI.md",
-   "titulo": "RELATORIO CI - Prova de Conclusao do Stop Hook",
-   "linhas": 151
+   "titulo": "RELATORIO_CI.md — Baseline × Final CI",
+   "linhas": 96
   },
   {
    "arquivo": "RELATORIO_CI_P34.md",

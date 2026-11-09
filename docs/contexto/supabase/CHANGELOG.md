@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-09 05:11 UTC
+
+- **functions** alterado (1): `public.fn_check_item_fits(p_packaging_id uuid, p_product_id uuid, p_current_used_liters numeric)`
+- **realtime** adicionado (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_12`
+- **realtime** removido (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_05`
+
 ## 2026-11-08 21:01 UTC
 
 - **functions** alterado (2): `public.fn_standardize_supplier(p_supplier_id uuid, p_limit integer)`, `public.is_admin_or_above(_user_id uuid)`

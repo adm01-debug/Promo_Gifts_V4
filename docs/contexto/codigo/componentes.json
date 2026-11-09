@@ -7957,7 +7957,7 @@
     "KitAIPromptDialog"
    ],
    "export_default": null,
-   "linhas": 577,
+   "linhas": 598,
    "dominio": "components/kit-builder",
    "hooks_locais": [],
    "tabelas": [],
@@ -7971,7 +7971,7 @@
     "KitBuilderHeader"
    ],
    "export_default": null,
-   "linhas": 411,
+   "linhas": 415,
    "dominio": "components/kit-builder",
    "hooks_locais": [
     "useRBAC",
@@ -12280,7 +12280,7 @@
     "QuoteItemsList"
    ],
    "export_default": null,
-   "linhas": 349,
+   "linhas": 350,
    "dominio": "components/quotes",
    "hooks_locais": [],
    "tabelas": [],
@@ -16318,7 +16318,7 @@
     "KitBuilderPage"
    ],
    "export_default": "KitBuilderPage",
-   "linhas": 320,
+   "linhas": 342,
    "dominio": "pages/kit-builder",
    "hooks_locais": [
     "useKitBuilderPageState",
@@ -17054,7 +17054,7 @@
     "MockupGenerator"
    ],
    "export_default": "MockupGenerator",
-   "linhas": 631,
+   "linhas": 635,
    "dominio": "pages/mockups",
    "hooks_locais": [
     "useAuth",
@@ -17632,7 +17632,7 @@
     "DropboxBrowserPage"
    ],
    "export_default": "DropboxBrowserPage",
-   "linhas": 191,
+   "linhas": 198,
    "dominio": "pages/tools",
    "hooks_locais": [
     "useDropboxFiles"

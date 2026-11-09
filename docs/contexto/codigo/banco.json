@@ -52035,6 +52035,7 @@
   "mv_material_group_stats",
   "sync_logs",
   "v_commemorative_dates_with_colors",
+  "vw_products_min_quantity",
   "xbz_image_import_staging"
  ],
  "rpcs_usadas_no_codigo": [
@@ -52170,6 +52171,11 @@
   },
   {
    "nome": "fn_batch_update_cart_item_sort_order",
+   "definida": true,
+   "usada_em": 1
+  },
+  {
+   "nome": "fn_check_item_fits",
    "definida": true,
    "usada_em": 1
   },

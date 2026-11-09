@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 414,
+ "total": 416,
  "hooks": [
   {
    "arquivo": "scripts/ai-context/cenarios.mjs",
@@ -5313,7 +5313,7 @@
    "hooks_exportados": [
     "useKitBuilder"
    ],
-   "linhas": 761,
+   "linhas": 774,
    "dominio": "hooks/kit-builder",
    "tabelas": [],
    "rpcs": [],
@@ -5336,7 +5336,7 @@
    "hooks_exportados": [
     "useKitBuilderPageState"
    ],
-   "linhas": 553,
+   "linhas": 563,
    "dominio": "hooks/kit-builder",
    "tabelas": [],
    "rpcs": [],
@@ -5351,6 +5351,7 @@
     "useKitBuilder",
     "useKitBuilderQuote",
     "useKitUndoRedo",
+    "useRef",
     "useSearchParams",
     "useState",
     "useTemplateSnapshot"
@@ -5438,6 +5439,24 @@
    "coberto_por_testes": 0
   },
   {
+   "arquivo": "src/hooks/kit-builder/useKitFitsValidation.ts",
+   "hooks_exportados": [],
+   "linhas": 68,
+   "dominio": "hooks/kit-builder",
+   "tabelas": [],
+   "rpcs": [
+    "fn_check_item_fits"
+   ],
+   "edges": [],
+   "hooks_internos": [],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/pages/kit-builder/useKitBuilderQuote.ts"
+   ],
+   "coberto_por_testes": 0
+  },
+  {
    "arquivo": "src/hooks/kit-builder/useKitIdentitySuggestion.ts",
    "hooks_exportados": [
     "useKitIdentitySuggestion"
@@ -5455,6 +5474,24 @@
    "usado_por": 1,
    "usado_por_arquivos": [
     "src/hooks/kit-builder/index.ts"
+   ],
+   "coberto_por_testes": 0
+  },
+  {
+   "arquivo": "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
+   "hooks_exportados": [],
+   "linhas": 61,
+   "dominio": "hooks/kit-builder",
+   "tabelas": [
+    "vw_products_min_quantity"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/pages/kit-builder/useKitBuilderQuote.ts"
    ],
    "coberto_por_testes": 0
   },
@@ -9541,7 +9578,7 @@
    "hooks_exportados": [
     "useKitBuilderQuote"
    ],
-   "linhas": 441,
+   "linhas": 468,
    "dominio": "pages/kit-builder",
    "tabelas": [
     "kit_quote_requests"

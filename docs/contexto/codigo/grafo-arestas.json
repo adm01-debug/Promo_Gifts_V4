@@ -8615,9 +8615,17 @@
    "src/lib/logger.ts",
    "src/lib/security/sanitize-error.ts"
   ],
+  "src/hooks/kit-builder/useKitFitsValidation.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/kit-builder/index.ts"
+  ],
   "src/hooks/kit-builder/useKitIdentitySuggestion.ts": [
    "src/lib/edge/safeInvokeCall.ts",
    "src/lib/security/sanitize-error.ts"
+  ],
+  "src/hooks/kit-builder/useKitMinQuantityValidation.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/kit-builder/index.ts"
   ],
   "src/hooks/kit-builder/useKitPriceValidation.ts": [
    "src/lib/db/postgrest.ts",
@@ -11291,6 +11299,8 @@
   ],
   "src/pages/kit-builder/useKitBuilderQuote.ts": [
    "src/contexts/AuthContext.tsx",
+   "src/hooks/kit-builder/useKitFitsValidation.ts",
+   "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
    "src/hooks/kit-builder/useKitPriceValidation.ts",
    "src/hooks/kit-builder/useKitStockValidation.ts",
    "src/integrations/supabase/client.ts",

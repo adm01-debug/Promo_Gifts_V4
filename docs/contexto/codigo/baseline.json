@@ -2,228 +2,224 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "898f05c26e7b779ddaa0526b0ee5b533fcd824c5",
+  "commit": "989573864c5b0197b4ee25da44a2ecb5c7fbf27e",
   "branch": "main",
-  "data_commit": "2026-11-08T19:41:56-03:00",
+  "data_commit": "2026-11-09T00:34:24-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
    {
-    "sha": "898f05c",
-    "data": "2026-11-08",
-    "assunto": "chore(docs): registra P-10 — 3 índices out-of-band em categories sem migration (#3262)"
+    "sha": "9895738",
+    "data": "2026-11-09",
+    "assunto": "fix(dropbox): exibir título no estado desconectado (#3303)"
    },
    {
-    "sha": "34ac645",
-    "data": "2026-11-08",
-    "assunto": "docs(ci): atualiza RELATORIO_CI com baseline desta sessão e P-06 em correção (#3249)"
+    "sha": "ee6f6c8",
+    "data": "2026-11-09",
+    "assunto": "feat(kit-builder): guard goToStep etapas não completadas FT-122 (#3292)"
    },
    {
-    "sha": "9b2644b",
-    "data": "2026-11-08",
-    "assunto": "docs(analise-prs): corrige Gate Final verificado #3127/#3137, ciclo 2 #3203"
+    "sha": "b520784",
+    "data": "2026-11-09",
+    "assunto": "fix: scripts static-pass e exit codes (#3266)"
    },
    {
-    "sha": "ed0733f",
-    "data": "2026-11-08",
-    "assunto": "chore(migrations): arquivo retroativo 20260611014515 fn_dryrun_standardize_supplier (#3239)"
+    "sha": "0aab655",
+    "data": "2026-11-09",
+    "assunto": "feat(e2e): specs E2E rotas públicas — PR #3248 (#3248)"
    },
    {
-    "sha": "6e631dd",
-    "data": "2026-11-08",
-    "assunto": "docs(analise-prs): ciclos de correção — 2 mergeadas, 11 AGUARDANDO HUMANO"
+    "sha": "d017980",
+    "data": "2026-11-09",
+    "assunto": "docs(analise-prs): RELATORIO_DOSSIES — dossiê CI por PR com evidências (#3311)"
    },
    {
-    "sha": "d50ae76",
-    "data": "2026-11-08",
-    "assunto": "fix(migrations): adiciona header Rollback em 20261108001500_reconcile_e2e_cleanup_audit"
+    "sha": "f68850a",
+    "data": "2026-11-09",
+    "assunto": "docs(analise-prs): RELATORIO_PRS.md + progresso.json — inventário completo 36 PRs abertas"
    },
    {
-    "sha": "931b932",
-    "data": "2026-11-08",
-    "assunto": "docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f (#3241)"
+    "sha": "ffa5228",
+    "data": "2026-11-09",
+    "assunto": "docs(analise-prs): RELATORIO_META_CUMPRIDA_v3 — 8 runs cancelados, bloqueio runner documentado"
    },
    {
-    "sha": "5aed391",
+    "sha": "b4d6faf",
     "data": "2026-11-08",
-    "assunto": "fix(ci): grandfather SHA 0409c07f do P09 no Sentinel allowlist (#3240)"
+    "assunto": "docs(analise-prs): RELATORIO_META_CUMPRIDA_v2 — bloqueio Gate Final documentado"
    },
    {
-    "sha": "17304c0",
+    "sha": "e456ae7",
     "data": "2026-11-08",
-    "assunto": "docs(analise-prs): relatório merge-prs — 12 PRs analisadas, 12 AGUARDANDO HUMANO"
+    "assunto": "docs(analise-prs): prs.json — inventário completo 36 PRs abertas (#3307)"
    },
    {
-    "sha": "0409c07",
+    "sha": "7851536",
     "data": "2026-11-08",
-    "assunto": "feat(migrations): P09 — reconcilia 432 versões históricas no ledger schema_migrations"
+    "assunto": "docs(analise-prs): RELATORIO_META_CUMPRIDA — versão final com evidências por PR"
    },
    {
-    "sha": "9e4dfbb",
+    "sha": "5942bb6",
     "data": "2026-11-08",
-    "assunto": "docs(ci): inventário final HEAD ba1c3fb — P-08, stub eslint, comparação baseline×final (#3237)"
+    "assunto": "docs(analise-prs): RELATORIO_META_CUMPRIDA — sessão claude_04"
    },
    {
-    "sha": "ba1c3fb",
+    "sha": "ba33a10",
     "data": "2026-11-08",
-    "assunto": "fix(migrations): remove BOM UTF-8 do security_fix_suppliers_v2 — corrige db-schema-drift-check"
+    "assunto": "feat(kit-builder): FT-088 validação fn_check_item_fits antes de criar orçamento (#3301)"
    },
    {
-    "sha": "d8ae515",
+    "sha": "36f366b",
     "data": "2026-11-08",
-    "assunto": "docs(edge): registra deploy health-check run 42491776265"
+    "assunto": "fix(kit-builder): AbortController AI dialog + confetti só em inválido→válido (#3276)"
    },
    {
-    "sha": "cda45f2",
+    "sha": "bf42558",
     "data": "2026-11-08",
-    "assunto": "docs(ci): P-06 verificado (failure confirmada run #42507854259) + HEAD 11e2be30 (#3233)"
+    "assunto": "fix(e2e+kit-builder): tolerance e2e + UI conflito KitBuilderHeader (#3272)"
    },
    {
-    "sha": "11e2be3",
+    "sha": "b737d49",
     "data": "2026-11-08",
-    "assunto": "docs(ci): atualiza RELATORIO_CI e PENDENCIAS com verificação HEAD da97d70d (#3231)"
+    "assunto": "feat(kit-builder): validação min-quantity via vw_products_min_quantity (#3269)"
    },
    {
-    "sha": "e9ed1f4",
+    "sha": "08e10b7",
     "data": "2026-11-08",
-    "assunto": "chore(pendencias): corrige causas raiz P-01, P-02, P-03 — secrets presentes, erros são reais"
+    "assunto": "fix(kit-builder): arredondamento de preços a 2 casas decimais (#3253)"
    },
    {
-    "sha": "da97d70",
+    "sha": "4d9fe52",
     "data": "2026-11-08",
-    "assunto": "docs(auditoria): corrige status P06 — views já têm security_invoker=true"
+    "assunto": "fix(mockup-generator): corrige onLogoRemove para usar areaId passado (#3252)"
    },
    {
-    "sha": "9656107",
+    "sha": "39d5ffa",
     "data": "2026-11-08",
-    "assunto": "docs(ci): atualiza RELATORIO_CI com Gate Final confirmado (a2dda825) (#3227)"
+    "assunto": "docs(pendencias): adiciona P-19 — drift sistêmico de 220 índices out-of-band (#3300)"
    },
    {
-    "sha": "e67c132",
+    "sha": "1a1ee90",
     "data": "2026-11-08",
-    "assunto": "docs(ci): atualiza RELATORIO_CI.md — HEAD a2dda825 + run #42502537624 (#3225)"
+    "assunto": "docs(analise-prs): atualiza progresso com resolução fila CI"
    },
    {
-    "sha": "41b5525",
+    "sha": "8368588",
     "data": "2026-11-08",
-    "assunto": "docs(auditoria): P09 gap ledger 476 versões + P06 reanálise 24 views + C4 diagnóstico"
+    "assunto": "docs(analise-prs): dossiês das 31 novas PRs (#3243–#3292)"
    },
    {
-    "sha": "a2dda82",
+    "sha": "198d8cf",
     "data": "2026-11-08",
-    "assunto": "docs(ci): grandfathers squash commit 252cc01d + atualiza RELATORIO_CI (#3223)"
+    "assunto": "docs(analise-prs): inventario_prs.json (39 PRs) + progresso.json atualizado"
    },
    {
-    "sha": "252cc01",
+    "sha": "9ba190f",
     "data": "2026-11-08",
-    "assunto": "fix(sentinel): expande Regra 6 e documenta pendências P-01 a P-07"
+    "assunto": "docs(pendencias): registrar P-15 a P-18 — classificação completa de 30 runs is:failure (#3295)"
    },
    {
-    "sha": "93ae29d",
+    "sha": "4309d10",
     "data": "2026-11-08",
-    "assunto": "docs(ci): atualiza RELATORIO_CI.md para HEAD 9a89d9f0 e Gate Final #42501464198"
+    "assunto": "docs(analise-prs): RELATORIO_PRS.md — sessão claude_04 (#3294)"
    },
    {
-    "sha": "9a89d9f",
+    "sha": "c2bbc6b",
     "data": "2026-11-08",
-    "assunto": "docs(ci): completa RELATORIO_CI.md e PENDENCIAS.md com prova de conclusão do stop hook (#3221)"
+    "assunto": "docs: P-14 — E2E Magazine Header run stuck queued, risco de nova falha antes de 05:29Z (#3293)"
    },
    {
-    "sha": "aab5deb",
+    "sha": "5aaebc6",
     "data": "2026-11-08",
-    "assunto": "docs(ci): corrige npm test e HEAD no RELATORIO_CI.md (#3219)"
+    "assunto": "chore: registrar PEND-EL01 — chave ElevenLabs ausente (decisão de custo) (#3285)"
    }
   ],
-  "arquivos_mudados_7d": 390,
+  "arquivos_mudados_7d": 488,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 313
+    "mudancas": 600
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 164
+    "mudancas": 312
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 117
+    "mudancas": 232
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 109
+    "mudancas": 213
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 96
+    "mudancas": 188
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 94
-   },
-   {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 90
+    "mudancas": 177
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 80
+    "mudancas": 160
+   },
+   {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 159
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 76
+    "mudancas": 149
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 74
-   },
-   {
-    "pasta": "RELATORIO_CI.md",
-    "mudancas": 69
+    "mudancas": 133
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 59
+    "mudancas": 118
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 59
+    "mudancas": 109
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 56
+    "mudancas": 104
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 53
+    "mudancas": 100
+   },
+   {
+    "pasta": "docs/arquivo/2026-09",
+    "mudancas": 86
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 69
+    "mudancas": 60
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 52
+    "mudancas": 50
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 22
+    "mudancas": 23
    },
    {
     "arquivo": "package.json",
-    "mudancas": 21
-   },
-   {
-    "arquivo": "package-lock.json",
-    "mudancas": 15
-   },
-   {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 13
+    "mudancas": 17
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 13
+    "mudancas": 14
+   },
+   {
+    "arquivo": "package-lock.json",
+    "mudancas": 12
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
@@ -231,81 +227,85 @@
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 9
+    "mudancas": 11
    },
    {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "AGENTS.md",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "CLAUDE.md",
-    "mudancas": 7
-   },
-   {
-    "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 6
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 10
    },
    {
     "arquivo": "analise-prs/progresso.json",
-    "mudancas": 5
+    "mudancas": 10
+   },
+   {
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "mudancas": 10
+   },
+   {
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "AGENTS.md",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "CLAUDE.md",
+    "mudancas": 8
+   },
+   {
+    "arquivo": ".github/workflows/replenishment-quality.yml",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    "mudancas": 7
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 5
+    "mudancas": 6
    },
    {
-    "arquivo": "docs/estado/backlog/funcionalidades.md",
-    "mudancas": 5
+    "arquivo": "docs/estado/PENDENCIAS.md",
+    "mudancas": 6
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 5
+    "mudancas": 6
+   },
+   {
+    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "mudancas": 6
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 5
-   },
-   {
-    "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
-    "mudancas": 4
+    "mudancas": 6
    },
    {
     "arquivo": ".github/workflows/ci-security-drift.yml",
-    "mudancas": 4
+    "mudancas": 5
    },
    {
     "arquivo": ".github/workflows/e2e-focused.yml",
-    "mudancas": 4
+    "mudancas": 5
    },
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 4
+    "mudancas": 5
+   },
+   {
+    "arquivo": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
+    "mudancas": 5
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 315
+    "commits": 308
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 21
+    "commits": 16
    },
    {
     "autor": "Joaquim Ataides",
@@ -318,24 +318,24 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9220,
-  "arquivos_codigo": 4631,
-  "linhas_codigo": 887313,
+  "arquivos_total": 9261,
+  "arquivos_codigo": 4635,
+  "linhas_codigo": 887655,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
   "modulos": 158,
   "componentes": 1123,
-  "hooks": 414,
+  "hooks": 416,
   "edge_functions": 111,
   "tabelas": 544,
   "migrations": 3047,
   "cron_jobs": 120,
-  "testes": 2200,
+  "testes": 2202,
   "workflows": 94,
   "scripts": 257,
-  "docs_md": 911
+  "docs_md": 947
  },
  "por_pasta": {
   ".github/scripts": {
@@ -432,7 +432,7 @@
   },
   "e2e/catalog": {
    "arquivos": 32,
-   "linhas": 4342
+   "linhas": 4337
   },
   "e2e/catalog-exhaustive-validation.spec.ts": {
    "arquivos": 1,
@@ -799,8 +799,8 @@
    "linhas": 171
   },
   "e2e/routes": {
-   "arquivos": 89,
-   "linhas": 4755
+   "arquivos": 91,
+   "linhas": 4773
   },
   "e2e/scripts": {
    "arquivos": 3,
@@ -928,7 +928,7 @@
   },
   "scripts/audit-debug.ts": {
    "arquivos": 1,
-   "linhas": 72
+   "linhas": 86
   },
   "scripts/build-cors-snapshot.mjs": {
    "arquivos": 1,
@@ -1020,7 +1020,7 @@
   },
   "scripts/check-cloud-status-coverage.mjs": {
    "arquivos": 1,
-   "linhas": 102
+   "linhas": 100
   },
   "scripts/check-cnpj-render.mjs": {
    "arquivos": 1,
@@ -1052,7 +1052,7 @@
   },
   "scripts/check-critical-path-coverage.mjs": {
    "arquivos": 1,
-   "linhas": 100
+   "linhas": 99
   },
   "scripts/check-cron-drift.mjs": {
    "arquivos": 1,
@@ -1208,7 +1208,7 @@
   },
   "scripts/check-min-tests-executed.mjs": {
    "arquivos": 1,
-   "linhas": 56
+   "linhas": 55
   },
   "scripts/check-mojibake.mjs": {
    "arquivos": 1,
@@ -1276,7 +1276,7 @@
   },
   "scripts/check-price-freshness-coverage.mjs": {
    "arquivos": 1,
-   "linhas": 136
+   "linhas": 134
   },
   "scripts/check-product-type-duplicates.mjs": {
    "arquivos": 1,
@@ -1296,7 +1296,7 @@
   },
   "scripts/check-quote-rpc-canonical-readiness.mjs": {
    "arquivos": 1,
-   "linhas": 193
+   "linhas": 199
   },
   "scripts/check-removed-phrases.mjs": {
    "arquivos": 1,
@@ -1476,7 +1476,7 @@
   },
   "scripts/e2e-feature-summary.mjs": {
    "arquivos": 1,
-   "linhas": 374
+   "linhas": 371
   },
   "scripts/e2e-mock-auth-setup.mjs": {
    "arquivos": 1,
@@ -1488,11 +1488,11 @@
   },
   "scripts/e2e-smoke-summary.mjs": {
    "arquivos": 1,
-   "linhas": 404
+   "linhas": 401
   },
   "scripts/eslint-baseline-generate.mjs": {
    "arquivos": 1,
-   "linhas": 79
+   "linhas": 87
   },
   "scripts/eslint-baseline-scope-add.mjs": {
    "arquivos": 1,
@@ -1568,11 +1568,11 @@
   },
   "scripts/inventario": {
    "arquivos": 3,
-   "linhas": 604
+   "linhas": 610
   },
   "scripts/kit-ai-enrichment.js": {
    "arquivos": 1,
-   "linhas": 40
+   "linhas": 60
   },
   "scripts/kit-enrichment": {
    "arquivos": 2,
@@ -1668,7 +1668,7 @@
   },
   "scripts/run-smoke-filtered.mjs": {
    "arquivos": 1,
-   "linhas": 60
+   "linhas": 70
   },
   "scripts/seo-sanity-check.mjs": {
    "arquivos": 1,
@@ -1696,11 +1696,11 @@
   },
   "scripts/simulate-quote-rpc-proposals.mjs": {
    "arquivos": 1,
-   "linhas": 582
+   "linhas": 589
   },
   "scripts/simulate-signup-migration.mjs": {
    "arquivos": 1,
-   "linhas": 245
+   "linhas": 251
   },
   "scripts/smoke-tests.mjs": {
    "arquivos": 1,
@@ -1716,7 +1716,7 @@
   },
   "scripts/ssot-report-markdown.mjs": {
    "arquivos": 1,
-   "linhas": 189
+   "linhas": 195
   },
   "scripts/ssot-report-summary.mjs": {
    "arquivos": 1,
@@ -1740,7 +1740,7 @@
   },
   "scripts/supabase_snapshot": {
    "arquivos": 2,
-   "linhas": 2545
+   "linhas": 2555
   },
   "scripts/test-critical-coverage.mjs": {
    "arquivos": 1,
@@ -1764,7 +1764,7 @@
   },
   "scripts/typecheck-edge-functions.mjs": {
    "arquivos": 1,
-   "linhas": 137
+   "linhas": 135
   },
   "scripts/update-any-type-baseline.mjs": {
    "arquivos": 1,
@@ -1784,11 +1784,11 @@
   },
   "scripts/validate-lovable-sync-target.mjs": {
    "arquivos": 1,
-   "linhas": 161
+   "linhas": 159
   },
   "scripts/validate-migration-target.mjs": {
    "arquivos": 1,
-   "linhas": 87
+   "linhas": 95
   },
   "scripts/validate-quote-summary-undo.mjs": {
    "arquivos": 1,
@@ -1800,7 +1800,7 @@
   },
   "scripts/validate-ssot-report.mjs": {
    "arquivos": 1,
-   "linhas": 284
+   "linhas": 287
   },
   "scripts/validate-supabase-config.mjs": {
    "arquivos": 1,
@@ -1816,11 +1816,11 @@
   },
   "scripts/verify-quote-number-hardening.mjs": {
    "arquivos": 1,
-   "linhas": 240
+   "linhas": 245
   },
   "scripts/verify-roboflow-setup.js": {
    "arquivos": 1,
-   "linhas": 253
+   "linhas": 251
   },
   "scripts/wraparound-monitor-check.mjs": {
    "arquivos": 1,
@@ -1836,7 +1836,7 @@
   },
   "src/components": {
    "arquivos": 1332,
-   "linhas": 268688
+   "linhas": 268714
   },
   "src/config": {
    "arquivos": 1,
@@ -1859,8 +1859,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 448,
-   "linhas": 83968
+   "arquivos": 450,
+   "linhas": 84120
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1880,7 +1880,7 @@
   },
   "src/pages": {
    "arquivos": 348,
-   "linhas": 81762
+   "linhas": 81822
   },
   "src/routes": {
    "arquivos": 14,
@@ -2210,7 +2210,7 @@
   },
   {
    "arquivo": "scripts/supabase_snapshot/snapshot.py",
-   "linhas": 1723
+   "linhas": 1733
   },
   {
    "arquivo": "eslint.config.js",
@@ -2303,7 +2303,7 @@
  ],
  "qualidade": {
   "any": 568,
-  "console_log": 1233,
+  "console_log": 1270,
   "ts_ignore": 0,
   "eslint_disable": 6,
   "todos": 74,
@@ -2895,6 +2895,7 @@
    "mv_material_group_stats",
    "sync_logs",
    "v_commemorative_dates_with_colors",
+   "vw_products_min_quantity",
    "xbz_image_import_staging"
   ],
   "tabelas_com_drift_migration_vs_types": [],

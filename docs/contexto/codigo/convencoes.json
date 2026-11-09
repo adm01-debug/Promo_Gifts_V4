@@ -13,7 +13,7 @@
    "src/contexts (10)"
   ],
   "hooks": [
-   "src/hooks (287)",
+   "src/hooks (289)",
    "src/components (75)",
    "src/pages (32)"
   ],
@@ -24,7 +24,7 @@
   ],
   "testes": [
    "tests/ (807)",
-   "e2e/ (622)",
+   "e2e/ (624)",
    "co-localizado (__tests__) (605)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,17 +61,18 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
-   "chore(docs): registra P-10 — 3 índices out-of-band em categories sem migration (#3262)",
-   "docs(ci): atualiza RELATORIO_CI com baseline desta sessão e P-06 em correção (#3249)",
-   "docs(analise-prs): corrige Gate Final verificado #3127/#3137, ciclo 2 #3203",
-   "chore(migrations): arquivo retroativo 20260611014515 fn_dryrun_standardize_supplier (#3239)",
-   "docs(analise-prs): ciclos de correção — 2 mergeadas, 11 AGUARDANDO HUMANO"
+   "fix(dropbox): exibir título no estado desconectado (#3303)",
+   "feat(kit-builder): guard goToStep etapas não completadas FT-122 (#3292)",
+   "fix: scripts static-pass e exit codes (#3266)",
+   "feat(e2e): specs E2E rotas públicas — PR #3248 (#3248)",
+   "docs(analise-prs): RELATORIO_DOSSIES — dossiê CI por PR com evidências (#3311)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
  "codeowners": ".github/CODEOWNERS",
  "contributing": "CONTRIBUTING.md",
  "instrucoes_agentes": [
+  ".claude/CLAUDE.md",
   "AGENTS.md",
   "CLAUDE.md"
  ],

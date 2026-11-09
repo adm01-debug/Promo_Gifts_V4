@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `898f05c26e` · branch `main` · 2026-11-09 02:34 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `989573864c` · branch `main` · 2026-11-09 05:09 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1793,7 +1793,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `not_ready` | escreve | `api/ready.ts` |
 | `status` | `number` | compara | `src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`src/contexts/SellerCartContext.tsx`<br>`src/lib/crm-db.ts`<br>`src/lib/db-retry.ts`<br>… +6 |
 | `status` | `offline` | compara | `src/components/quotes/QuoteAutoSave.tsx` |
-| `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`src/components/admin/connections/ConnectionsOverviewFilters.tsx`<br>`src/components/admin/connections/ExternalConnectionsSyncLogPanel.tsx`<br>`src/components/admin/connections/KeysValidationTab.tsx`<br>… +8 |
+| `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`src/components/admin/connections/ConnectionsOverviewFilters.tsx`<br>`src/components/admin/connections/ExternalConnectionsSyncLogPanel.tsx`<br>`src/components/admin/connections/KeysValidationTab.tsx`<br>… +10 |
 | `status` | `order` | compara | `src/components/dashboard/MyClientsWidget.tsx` |
 | `status` | `out-of-stock` | compara, escreve | `src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductQuickView.tsx`<br>`src/lib/comparison-utils.ts`<br>… +2 |
 | `status` | `out_of_stock` | compara | `src/components/inventory/StockDashboard.tsx`<br>`src/components/inventory/VariantStockTable.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>… +1 |
@@ -1819,7 +1819,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `saving` | compara | `src/components/quotes/QuoteAutoSave.tsx` |
 | `status` | `sent` | compara, escreve, filtra | `src/components/dashboard/QuickActionsPanel.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/pages/quotes/QuoteViewPage.tsx`<br>`src/pages/quotes/quote-view/QuoteActionHandlers.ts`<br>`src/pages/quotes/quote-view/QuoteBitrixSync.ts`<br>… +6 |
 | `status` | `short` | compara, escreve | `src/components/admin/connections/MaskedSuffixBadge.tsx`<br>`src/lib/masked-suffix.ts` |
-| `status` | `skipped` | compara, escreve | `src/components/admin/connections/SmokeTestChecklist.tsx`<br>`src/pages/admin/telemetry/useOptimizationQueue.ts`<br>`supabase/functions/_shared/ai-router/index.ts`<br>`supabase/functions/full-op-diagnostics/index.ts`<br>`supabase/functions/health-check/index.ts` |
+| `status` | `skipped` | compara, escreve | `src/components/admin/connections/SmokeTestChecklist.tsx`<br>`src/hooks/kit-builder/useKitFitsValidation.ts`<br>`src/pages/admin/telemetry/useOptimizationQueue.ts`<br>`supabase/functions/_shared/ai-router/index.ts`<br>`supabase/functions/full-op-diagnostics/index.ts`<br>… +1 |
 | `status` | `skipped_claim_error` | escreve | `supabase/functions/webhook-dispatcher/index.ts` |
 | `status` | `skipped_duplicate` | escreve | `supabase/functions/webhook-dispatcher/index.ts` |
 | `status` | `slow` | compara | `src/pages/auth/SSOCallbackPage.tsx` |
@@ -1831,7 +1831,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `success` | compara, escreve | `src/components/admin/connections/FailedDeliveriesPanel.tsx`<br>`src/components/admin/security/keys/audit/McpAuditRow.tsx`<br>`src/components/kit-builder/VolumeIndicator.tsx`<br>`src/hooks/intelligence/useAiUsage.ts`<br>`src/pages/admin/AdminClientPerformancePage.tsx`<br>… +16 |
 | `status` | `super` | compara | `src/components/bi/ClientCategoryRadar.tsx` |
 | `status` | `unauthorized` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
-| `status` | `unavailable` | compara, escreve | `src/components/kit-builder/KitSummary.tsx`<br>`src/hooks/kit-builder/useKitPriceValidation.ts`<br>`src/pages/kit-builder/useKitBuilderQuote.ts` |
+| `status` | `unavailable` | compara, escreve | `src/components/kit-builder/KitSummary.tsx`<br>`src/hooks/kit-builder/useKitMinQuantityValidation.ts`<br>`src/hooks/kit-builder/useKitPriceValidation.ts`<br>`src/pages/kit-builder/useKitBuilderQuote.ts` |
 | `status` | `unchanged` | escreve | `src/hooks/kit-builder/useKitPriceValidation.ts` |
 | `status` | `unconfigured` | compara | `src/components/admin/connections/DataSourceDebugTab.tsx` |
 | `status` | `underindex` | compara | `src/components/bi/ClientCategoryRadar.tsx` |
@@ -1840,6 +1840,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `valid` | compara, escreve | `src/components/admin/connections/MaskedSuffixBadge.tsx`<br>`src/lib/masked-suffix.ts` |
 | `status` | `verified` | compara, escreve | `src/components/security/MfaChallengeDialog.tsx`<br>`src/components/security/MfaEnrollmentDialog.tsx`<br>`src/services/authService.ts` |
 | `status` | `viewed` | compara | `src/components/quotes/QuotesStatusChips.tsx`<br>`supabase/functions/quote-followup-reminders/index.ts` |
+| `status` | `violations` | compara, escreve | `src/hooks/kit-builder/useKitFitsValidation.ts`<br>`src/hooks/kit-builder/useKitMinQuantityValidation.ts`<br>`src/pages/kit-builder/useKitBuilderQuote.ts` |
 | `status` | `warming` | compara | `src/components/system/CloudStatusBanner.tsx` |
 | `status` | `warning` | compara | `src/pages/admin/AdminClientPerformancePage.tsx`<br>`src/pages/system/SystemStatusPage.tsx` |
 | `step` | `cancel` | compara, escreve | `src/hooks/auth/useStepUpAuth.ts`<br>`supabase/functions/step-up-verify/index.ts` |
@@ -1853,8 +1854,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `step` | `importing` | compara | `src/components/admin/products/BulkImportDialog.tsx` |
 | `step` | `intro` | compara | `src/components/security/MfaEnrollmentDialog.tsx` |
 | `step` | `items` | compara | `src/hooks/quotes/useQuoteBuilderState.helpers.ts` |
-| `step` | `layout` | compara | `src/pages/magazine/MagazineEditorPage.tsx`<br>`src/pages/magazine/utils/stepValidation.ts` |
-| … +92 linhas — lista completa em `context.json` | | | |
+| … +93 linhas — lista completa em `context.json` | | | |
 
 ### E.4 Enums e listas de valores
 
@@ -3709,6 +3709,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **toRanked(m: Map<string, { quotes: number; orders: number }>, nameFor: (id: string)** — `src/hooks/intelligence/useZeroResultSubstitutes.ts`
   ```
   string | undefined,
+  ```
+- **validateKitFitsForQuote(box: KitBox | null, items: KitItem[],)** — `src/hooks/kit-builder/useKitFitsValidation.ts`
+  ```
+  if (!box) return { status: 'skipped' }; if (items.length === 0) return { status: 'ok' }; let usedLiters = 0; const violations: FitViolation[] = []; for (const item of items) { try { const { data, error } = await supabase.rpc('fn_check_item_fits', { p_packaging_id: box.id, p_product_id: item.id, p_current_used_liters: usedLiters, }); if (error || !data || (data as FitRow[]).length === 0) continue; const row = (data as FitRow[])[0]; // fits=null means no dimension data — fail-open: skip, do not vi …
+  ```
+- **validateKitMinQuantityForQuote(items: KitItem[], kitQuantity: number,)** — `src/hooks/kit-builder/useKitMinQuantityValidation.ts`
+  ```
+  if (items.length === 0) return { status: 'ok' }; const productIds = [...new Set(items.map((item) => item.id))]; let rows: Array<{ id: string; effective_min_quantity: number | null }>; try { const { data, error } = await supabase .from('vw_products_min_quantity') .select('id, effective_min_quantity') .in('id', productIds); if (error || !data) return { status: 'unavailable' }; rows = data; } catch { return { status: 'unavailable' }; } const minByProduct = new Map(rows.map((row) => [row.id, row.eff …
   ```
 - **priceInCents(value: number)** — `src/hooks/kit-builder/useKitPriceValidation.ts`
   ```
@@ -6032,7 +6040,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Erro ao adicionar localização | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
 | Erro ao associar técnica | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
 | Erro ao atualizar componente | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
-| … +973 linhas — lista completa em `context.json` | |
+| … +976 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6841,8 +6849,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | apenas registramos telemetria — sem toast duplicado. | `src/components/products/QuickAddToQuote.tsx` |
 | - Lazy: busca o Product completo via useProduct apenas quando o usuário abre | `src/components/products/QuickViewThumb.tsx` |
 | - Limite configurável (`maxResults`) | `src/components/products/SmartRecommendations.tsx` |
-| * BUG-SCROLL-01 FIX: Chave que muda SOMENTE em filter/sort — NUNCA em load-more. | `src/components/products/VirtualizedProductGrid.tsx` |
-| // ⚠️ PERF-2026-08-19: Pré-filtra para apenas produtos VISÍVEIS (virtualizados) + | `src/components/products/VirtualizedProductGrid.tsx` |
-| ANTI N+1: prefetch batch de mv_stock_velocity apenas para produtos visíveis | `src/components/products/VirtualizedProductGrid.tsx` |
-| 2. scrollTo(0) → SOMENTE quando scrollResetKey muda (filter/sort/viewMode) | `src/components/products/VirtualizedProductGrid.tsx` |
+| * BUG-SCROLL-01 FIX: Chave que muda SOMENTE em filter/sort -- NUNCA em load-more. | `src/components/products/VirtualizedProductGrid.tsx` |
+| // PERF-2026-08-19: Pre-filtra para apenas produtos VISIVEIS (virtualizados) + | `src/components/products/VirtualizedProductGrid.tsx` |
+| ANTI N+1: prefetch batch de mv_stock_velocity apenas para produtos visiveis | `src/components/products/VirtualizedProductGrid.tsx` |
+| 2. scrollTo(0) -> SOMENTE quando scrollResetKey muda (filter/sort/viewMode) | `src/components/products/VirtualizedProductGrid.tsx` |
 | … +1154 linhas — lista completa em `context.json` | |

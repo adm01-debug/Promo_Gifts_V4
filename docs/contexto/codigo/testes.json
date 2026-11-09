@@ -5,10 +5,10 @@
   "vitest",
   "playwright"
  ],
- "total": 2200,
+ "total": 2202,
  "por_tipo": {
   "contrato": 56,
-  "e2e": 632,
+  "e2e": 634,
   "pytest": 2,
   "qa": 17,
   "unit": 1493
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "e2e/",
-   "arquivos": 622
+   "arquivos": 624
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -620,7 +620,7 @@
   {
    "arquivo": "e2e/catalog/color-swatch-two-lines-grid.spec.ts",
    "tipo": "e2e",
-   "linhas": 150,
+   "linhas": 145,
    "testa": [],
    "casos": 2
   },
@@ -3877,6 +3877,20 @@
    "arquivo": "e2e/routes/public/approve.spec.ts",
    "tipo": "e2e",
    "linhas": 10,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "e2e/routes/public/colecao-publica.spec.ts",
+   "tipo": "e2e",
+   "linhas": 9,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "e2e/routes/public/comparar-publica.spec.ts",
+   "tipo": "e2e",
+   "linhas": 9,
    "testa": [],
    "casos": 0
   },
@@ -19633,7 +19647,9 @@
    "src/hooks/kit-builder/useCustomKitsRealtime.ts",
    "src/hooks/kit-builder/useDuplicateKitDetector.ts",
    "src/hooks/kit-builder/useKitCollaboration.ts",
+   "src/hooks/kit-builder/useKitFitsValidation.ts",
    "src/hooks/kit-builder/useKitIdentitySuggestion.ts",
+   "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
    "src/hooks/kit-builder/useKitStockForecast.ts",
    "src/hooks/kit-builder/useKitTemplates.ts",
    "src/hooks/kit-builder/useKitVariants.ts",

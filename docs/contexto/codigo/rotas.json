@@ -6168,11 +6168,13 @@
     "profiles",
     "role_migration_batches",
     "role_migration_items",
-    "user_roles"
+    "user_roles",
+    "vw_products_min_quantity"
    ],
    "rpcs": [
     "create_kit_quote_transactional",
     "execute_role_migration_batch",
+    "fn_check_item_fits",
     "get_profile_and_roles",
     "increment_kit_template_usage",
     "log_user_logout",
@@ -6191,7 +6193,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 95
+   "arquivos_puxados": 97
   },
   {
    "protegida": false,
@@ -24116,10 +24118,12 @@
     "kit_templates",
     "kit_variants",
     "profiles",
-    "user_roles"
+    "user_roles",
+    "vw_products_min_quantity"
    ],
    "rpcs": [
     "create_kit_quote_transactional",
+    "fn_check_item_fits",
     "get_profile_and_roles",
     "increment_kit_template_usage",
     "log_user_logout",
@@ -24139,7 +24143,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 93
+   "arquivos_puxados": 95
   },
   {
    "protegida": false,

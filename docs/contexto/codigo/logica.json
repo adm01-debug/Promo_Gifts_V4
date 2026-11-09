@@ -403,7 +403,7 @@
     "uslug",
     "write"
    ],
-   "linhas": 1723,
+   "linhas": 1733,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -597,7 +597,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 294,
+   "usado_por": 296,
    "usado_por_modulos": [
     "components/admin",
     "components/ai",
@@ -4144,7 +4144,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 57,
+   "usado_por": 59,
    "usado_por_modulos": [
     "components/dashboard",
     "components/kit-builder",
