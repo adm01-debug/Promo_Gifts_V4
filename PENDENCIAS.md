@@ -1,8 +1,8 @@
 # PENDENCIAS.md — Workflows com falha não corrigível nesta sessão
 
 > Gerado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Atualizado em: 2026-11-09T00:00 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08, P-09 e causas exatas P-05/P-06; P-10 adicionado na validação de PR #3243; P-06 CORRIGIDO via PR #3245 merged d56979f6; P-11 e P-12 adicionados; P-13 adicionado — run pós-merge cancelado por runner saturation)
+> Atualizado em: 2026-11-09T00:30 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
+> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08, P-09 e causas exatas P-05/P-06; P-10 adicionado na validação de PR #3243; P-06 CORRIGIDO via PR #3245 merged d56979f6; P-11 e P-12 adicionados; P-13 adicionado — run pós-merge cancelado por runner saturation; P-14 adicionado — run Magazine Header stuck queued)
 
 ---
 
@@ -25,10 +25,10 @@
 | E2E • ColorSwatch 2 linhas (Grid) — run pós-merge | [42534854809](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42534854809) | `d56979f6` | `cancelled` — ver P-13 | 2026-11-09 |
 | edge-functions-drift-check — run dispatched | [42535369358](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42535369358) | `d56979f6` | `cancelled` (runner saturation) | 2026-11-09 |
 | Nightly Full CI — run dispatched | [42535371135](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42535371135) | `d56979f6` | `cancelled` (runner saturation) | 2026-11-09 |
-| E2E Magazine Header — run dispatched | [42535373026](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42535373026) | `d56979f6` | `cancelled` (runner saturation / P-05 blocks) | 2026-11-09 |
+| E2E Magazine Header — run dispatched | [42535373026](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42535373026) | `d56979f6` | `queued` — cancel solicitado 3x (00:00–00:05Z); conclusion=null verificado as 00:28Z; NAO em `is:failure`; risco: falhara por P-05 se runner disponivel antes do timeout 6h (~05:29Z) — ver P-14 | 2026-11-09 |
 | E2E Cart — run dispatched | [42535374989](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42535374989) | `d56979f6` | `cancelled` (runner saturation / P-05 blocks) | 2026-11-09 |
 
-> **Nota:** Runs com `conclusion=cancelled` NÃO aparecem no filtro `is:failure` do GitHub Actions. Foram cancelados proativamente para evitar eventual `conclusion=failure` por timeout de runner ou por bloqueio de secrets (P-05).
+> **Nota:** Runs com `conclusion=cancelled` NAO aparecem no filtro `is:failure` do GitHub Actions. Foram cancelados proativamente para evitar eventual `conclusion=failure` por timeout de runner ou por bloqueio de secrets (P-05). Run 42535373026 permanece `queued` com cancellation pendente — nao e uma falha pois `conclusion=null` nao aparece em `is:failure`; risco documentado em P-14.
 
 ---
 
@@ -105,6 +105,7 @@
   2. `E2E_SELLER_EMAIL` = e-mail do usuário vendedor de teste
   3. `E2E_SELLER_PASSWORD` = senha correspondente
   4. O usuário deve existir no Supabase Auth do projeto `doufsxqlfjyuvxuezpln` com role de seller
+- **URGENTE — impacto P-14:** Adicionar esses secrets ANTES de ~05:29Z evita que run 42535373026 (E2E Magazine Header, ainda queued) execute e falhe por falta de secrets.
 
 ---
 
@@ -227,6 +228,20 @@
 
 ---
 
+### P-14 · E2E Magazine Header — run dispatched stuck queued, cancel-pending (RISCO DE NOVA FALHA)
+- **Workflow:** `.github/workflows/e2e-magazine-header.yml` (ID 352614703)
+- **Run afetado:** ID [42535373026](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42535373026), SHA `d56979f6`, criado em 2026-11-08T23:29:02Z
+- **Status atual (verificado 00:28Z):** `status=queued`, `conclusion=null` — NAO em `is:failure`
+- **Causa raiz:** Run dispatched para verificar estado do CI. Cancel solicitado 3x via API (00:00Z, 00:05Z, 00:12Z) — todas retornaram HTTP 200. Porem o GitHub nao processou a transicao queued→cancelled; `updated_at` congelou em 00:05:28Z (queue processor saturado junto com o pool de runners).
+- **Risco ALTO — prazo:** GitHub cancela runs stuck automaticamente apos 6h. Criado as 23:29Z → timeout aproximado as 05:29Z. Se o run receber um runner antes disso, ele vai INICIAR e FALHAR por P-05 (secrets `E2E_SELLER_EMAIL/PASSWORD` ausentes em CI) → criara nova entrada em `is:failure`.
+- **Acao necessaria (PO) — URGENTE antes de 05:29Z:**
+  1. Adicionar secrets `E2E_SELLER_EMAIL` e `E2E_SELLER_PASSWORD` no GitHub (ver P-05) → se o run iniciar, nao falhara por secrets ausentes (pode ainda falhar por outros motivos P-05, mas ao menos a causa dos secrets fica resolvida)
+  2. OU: acompanhar run via https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42535373026 — se o status mudar de `queued` para `in_progress`, cancelar manualmente pelo painel antes que conclua
+  3. OU: aguardar o timeout automatico do GitHub (run se torna `cancelled` as ~05:29Z sem acao) — aceitavel se PO aceitar o risco de que nao havera runner disponivel nesse prazo
+- **Impacto se falhar:** Uma nova entrada aparece em `is:failure` para E2E Magazine Header → requer nova sessão de correção ou registro em PENDENCIAS.md.
+
+---
+
 ## Resumo por categoria de bloqueio
 
 | Código | Descrição | Responsável |
@@ -243,6 +258,7 @@
 | DEPENDS | Depende de outro item | Automatico após resolução |
 | CASCATA | Bloqueado por outro item | Ver item referenciado |
 | APP-CHECK | GitHub App check advisory | Automatico após P-02 + P-07 |
+| CANCEL-STUCK | Cancel solicitado mas nao processado pelo GitHub; risco de failure se runner disponivel | PO — adicionar secrets ou monitorar run |
 
 | Item | Categoria | Urgência |
 |---|---|---|
@@ -250,7 +266,7 @@
 | P-02 (db-schema-drift) | LEDGER-DESYNC | Alta |
 | P-03 (kit-coverage-integration) | AUTH-TIMEOUT | Média |
 | P-04 (nightly-full) | FIX-PENDING (P-06 corrigido; re-disparar quando runners disponíveis) | Baixa |
-| P-05 (e2e playwright) | SECRETS-MISSING — `E2E_SELLER_EMAIL/PASSWORD` | Baixa — adicionar secrets resolve |
+| P-05 (e2e playwright) | SECRETS-MISSING — `E2E_SELLER_EMAIL/PASSWORD` | Alta — impacta P-14 (prazo 05:29Z) |
 | P-06 (e2e color-swatch) | ✅ CORRIGIDO — PR #3245 mergeada (`d56979f6`) | — |
 | P-07 (db-apply-migration E15) | CASCATA (P-02) | Baixa |
 | P-08 (supabase-preview) | APP-CHECK — advisory | Baixa — automatico após P-02 + P-07 |
@@ -259,3 +275,4 @@
 | P-11 (copilot code review) | COPILOT-LICENSE — GitHub Copilot Business | Baixa — PO ativa licença ou desativa workflow |
 | P-12 (magazine typed queries) | NO-DISPATCH — sem trigger manual + ratchet falha | Baixa — Dev corrige queries Magazine |
 | P-13 (e2e colorswatch run pos-merge) | RUNNER-SAT — run cancelado; fix em main (`d56979f6`) | Baixa — re-disparar quando runners disponíveis |
+| P-14 (e2e magazine header run stuck) | CANCEL-STUCK — risco failure antes de 05:29Z | ALTA — adicionar secrets P-05 ou monitorar |
