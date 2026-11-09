@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5a3f679e7b32c652696d955a7c90f867db79abe7",
+  "commit": "16f4af23df235c2f68b534692d8287ee20eb83c1",
   "branch": "main",
-  "data_commit": "2026-11-09T08:30:12-03:00",
+  "data_commit": "2026-11-09T08:52:41-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "16f4af2",
+    "data": "2026-11-09",
+    "assunto": "fix(baseline): atualizar .as-assertions-baseline.json para arquivos kit-builder (#3342)"
+   },
    {
     "sha": "5a3f679",
     "data": "2026-11-09",
@@ -126,11 +131,6 @@
     "sha": "36f366b",
     "data": "2026-11-08",
     "assunto": "fix(kit-builder): AbortController AI dialog + confetti só em inválido→válido (#3276)"
-   },
-   {
-    "sha": "bf42558",
-    "data": "2026-11-08",
-    "assunto": "fix(e2e+kit-builder): tolerance e2e + UI conflito KitBuilderHeader (#3272)"
    }
   ],
   "arquivos_mudados_7d": 489,
@@ -210,11 +210,11 @@
     "mudancas": 22
    },
    {
-    "arquivo": "package.json",
-    "mudancas": 15
+    "arquivo": "analise-prs/progresso.json",
+    "mudancas": 14
    },
    {
-    "arquivo": "analise-prs/progresso.json",
+    "arquivo": "package.json",
     "mudancas": 14
    },
    {
@@ -222,15 +222,15 @@
     "mudancas": 13
    },
    {
-    "arquivo": "package-lock.json",
-    "mudancas": 11
-   },
-   {
     "arquivo": ".github/workflows/deploy-gates.yml",
     "mudancas": 10
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
+    "mudancas": 10
+   },
+   {
+    "arquivo": "package-lock.json",
     "mudancas": 10
    },
    {
