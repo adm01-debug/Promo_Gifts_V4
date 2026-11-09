@@ -2,7 +2,7 @@
   "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 2674,
-  "atualizado_em": "2026-11-09T16:00:00Z",
+  "atualizado_em": "2026-11-09T16:30:00Z",
   "main_sha_final": "6b859b0fbfa95e34493900cf0137402e95e46823",
   "mergeadas_por_agente_esta_sessao": [
     {"number": 3337, "sha_main_apos": "6933eb61", "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
@@ -45,7 +45,7 @@
     "NAO_MERGEAR": 6,
     "AGUARDA_CI": 1,
     "AGUARDA_PO": 27,
-    "TOTAL_OPEN_RESTANTE": 33,
+    "TOTAL_OPEN_RESTANTE": 29,
     "TOTAL_ANALISADAS": 47,
     "VERIFICADO_EXAUSTIVO": true
   },
