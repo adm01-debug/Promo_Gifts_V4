@@ -371,14 +371,20 @@ export function useKitBuilderPageState() {
   }, [productIdParam, kitIdParam]);
 
   // Effects (Confetti, Title, etc.)
+  const prevIsValidRef = useRef(false);
   useEffect(() => {
-    if (kitState.isValid && kitState.items.length > 0) {
-      confetti({
-        particleCount: 60,
-        spread: 70,
-        origin: { y: 0.85, x: 0.5 },
-        colors: [kitState.identity?.color || '#3B82F6'],
-      });
+    const wasValid = prevIsValidRef.current;
+    prevIsValidRef.current = kitState.isValid;
+    // Only fire when transitioning invalid→valid, and respect prefers-reduced-motion
+    if (!wasValid && kitState.isValid && kitState.items.length > 0) {
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        confetti({
+          particleCount: 60,
+          spread: 70,
+          origin: { y: 0.85, x: 0.5 },
+          colors: [kitState.identity?.color || '#3B82F6'],
+        });
+      }
     }
   }, [kitState.identity?.color, kitState.isValid, kitState.items.length]);
 
