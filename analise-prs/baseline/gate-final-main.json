@@ -1,32 +1,11 @@
 {
-  "checked_at": "2026-11-09T23:30:00Z",
-  "main_head_sha_this_session": "0818809dae41c295b046dc52f85078e4f06b3df4",
-  "main_head_sha_latest": "944ff2dd03ecd26ac0925dd8e8de80d92591b4ad",
-  "quality_gate_on_0818809d": {
-    "workflow": "CI Security & Drift Checks",
-    "run_id": 42638435929,
-    "job_id": 129233708408,
-    "job_name": "quality-gate",
-    "conclusion": "SUCCESS",
-    "steps_all_pass": true,
-    "lint": "SUCCESS",
-    "typescript_check": "SUCCESS",
-    "build": "SUCCESS",
-    "e2e_tests": "SUCCESS",
-    "security_gates": "SUCCESS"
-  },
-  "deploy_gates_on_944ff2dd": {
-    "run_id": 42644703783,
-    "status": "queued",
-    "conclusion": null,
-    "note": "New push by adm01-debug after this session started — still queued"
-  },
-  "supabase_production": {
-    "project_id": "doufsxqlfjyuvxuezpln",
-    "products_count": 8321,
-    "verified_at": "2026-11-09T23:30:00Z",
-    "status": "healthy",
-    "query": "SELECT COUNT(*) as total_products FROM products WHERE deleted_at IS NULL",
-    "verified_via": "mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__execute_sql"
-  }
+  "sha": "6b859b0fbfa95e34493900cf0137402e95e46823",
+  "run_id": 42648049808,
+  "run_number": 11033,
+  "conclusion": "success",
+  "status": "completed",
+  "created_at": "2026-11-09T15:46:36Z",
+  "updated_at": "2026-11-09T15:51:59Z",
+  "display_title": "fix(migrations): idempotencia em RLS deny-all e particoes 2027 (#3257)",
+  "html_url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42648049808"
 }

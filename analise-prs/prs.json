@@ -6,14 +6,13 @@
     "analisado_em": "2026-11-09",
     "total_open": 33,
     "total_analisadas": 47,
-    "mergeadas_esta_sessao": [3257],
-    "gate_final_novo_main": {"run_id": 42648049808, "status": "in_progress", "verificado_em": "2026-11-09T15:46:41Z"}
+    "gate_final_main": {"run_id": 42648049808, "status": "completed", "conclusion": "success", "verificado_em": "2026-11-09T15:51:59Z"}
   },
   "mergeadas_por_agente": [
     {"number": 3337, "sha_main_apos": "6933eb61", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
     {"number": 3340, "tipo": "docs-only E14", "gate_final": "SUCCESS"},
     {"number": 3343, "sha_main_apos": "78729fc1", "tipo": "chore/ci", "gate_final": "SUCCESS"},
-    {"number": 3257, "sha_main_apos": "6b859b0f", "tipo": "fix/migrations-idempotencia", "gate_final": "SUCCESS", "merged_at": "2026-11-09T15:46:32Z", "diff_lido_100pct": true}
+    {"number": 3257, "sha_main_apos": "6b859b0f", "tipo": "fix/migrations-idempotencia", "gate_final": "SUCCESS", "merged_at": "2026-11-09T15:46:32Z", "diff_lido_100pct": true, "gate_final_main_run_id": 42648049808}
   ],
   "mergeadas_externas": [
     {"number": 3341, "merged_by": "adm01-debug"},
