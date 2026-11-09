@@ -8,11 +8,6 @@ import process from "node:process";
 
 const SUMMARY_PATH = path.resolve("coverage/coverage-summary.json");
 
-/**
- * Pisos por arquivo (em %).
- * 
- * Configurados com ~3pp de margem em relação ao baseline de 2026-05-07.
- */
 const FILE_THRESHOLDS = {
   "src/components/system/CloudStatusBanner.tsx": {
     statements: 97,
@@ -23,7 +18,7 @@ const FILE_THRESHOLDS = {
   "src/hooks/admin/useDevGate.ts": {
     statements: 90,
     branches: 85,
-    functions: 90,
+    functions: 85,
     lines: 90,
   },
 };

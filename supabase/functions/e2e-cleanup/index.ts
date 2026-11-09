@@ -124,7 +124,7 @@ Deno.serve(async (req) => {
 
   await writeAudit(supabase, auditRow);
 
-  log.info("cleanup_complete", auditRow);
+  log.info("cleanup_complete", { ...auditRow });
 
   return log.respond(
     new Response(

@@ -10,7 +10,7 @@ import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { resolveCredential } from "../_shared/credentials.ts";
 
 const cors = buildPublicCorsHeaders({ allowMethods: "POST, OPTIONS" });
-const baseLog = createStructuredLogger({ fn: "quote-sync-promo-champions" });
+const baseLog = createStructuredLogger({ fn: "quote-sync-promo-champions", requestId: "module-init" });
 
 const CHAMPIONS_URL =
   "https://rapjswienfhkobhlamxb.supabase.co/functions/v1/receive-quote-sync";
@@ -300,12 +300,6 @@ export async function handler(req: Request): Promise<Response> {
  * Normaliza um timestamp arbitrário (ISO com/sem "Z", com/sem microssegundos,
  * offset ±HH:MM etc.) para o ISO canônico UTC produzido por `Date#toISOString()`:
  *   "YYYY-MM-DDTHH:mm:ss.sssZ"
- *
- * Usado na `correlation_key` para garantir que a MESMA quote/updated_at gere
- * SEMPRE a mesma chave, independentemente de como o Postgres/driver formatar.
- *
- * Fallback: se `ts` for null/undefined → null; se for inparsável → devolve
- * a string original (não bloqueia o fluxo; apenas perde o efeito de dedup).
  */
 function normalizeTs(ts: string | null | undefined): string | null {
   if (ts === null || ts === undefined || ts === "") return null;

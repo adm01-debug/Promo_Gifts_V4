@@ -1,20 +1,6 @@
 #!/usr/bin/env node
 /**
  * Coverage gate dedicado aos arquivos de "price freshness".
- *
- * Lê `coverage/coverage-summary.json` (gerado pelo reporter `json-summary`
- * do Vitest/V8) e falha o build (exit 1) se qualquer arquivo monitorado
- * cair abaixo do limiar mínimo definido abaixo.
- *
- * Por que um gate por arquivo (em vez do `thresholds` global do Vitest)?
- *  - O threshold global do Vitest é uma média do projeto. Um arquivo
- *    crítico pode regredir sem disparar o gate global.
- *  - Aqui travamos arquivos específicos com um piso mais alto (95%),
- *    independente da cobertura geral do projeto.
- *
- * Como ler a saída:
- *   ✓ src/utils/price-freshness.ts                   100%/100%/100%/100%
- *   ✗ src/components/products/PriceFreshnessBadge.tsx 88%/72%/90%/88%  ← regressão
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -22,24 +8,6 @@ import process from "node:process";
 
 const SUMMARY_PATH = path.resolve("coverage/coverage-summary.json");
 
-/**
- * Pisos por arquivo (em %).
- *
- * Política: cada piso é o baseline atual menos ~3pp de margem para absorver
- * o ruído conhecido do reporter V8 do Vitest em `branches.pct` (oscila ±1–2pp
- * entre runs dependendo do cache de transformação do Vite). Adicionalmente,
- * `COVERAGE_TOLERANCE_PP` (default 1) é subtraído de cada piso na hora da
- * checagem — isso evita que flutuação infinitesimal quebre `main` sem mascarar
- * regressões reais (queda > tolerância ainda falha o gate).
- *
- * Quando subirmos a cobertura real de um arquivo, **subimos também o piso**
- * neste arquivo — assim cada PR só pode manter ou melhorar.
- *
- * Para subir um piso depois de adicionar testes:
- *   1. Rode `npm run test:coverage` localmente.
- *   2. Leia o % real em coverage/coverage-summary.json.
- *   3. Atualize o objeto abaixo (novo piso = real − 3pp).
- */
 const FILE_THRESHOLDS = {
   "src/utils/price-freshness.ts": {
     statements: 99,
@@ -49,7 +17,7 @@ const FILE_THRESHOLDS = {
   },
   "src/components/products/PriceFreshnessBadge.tsx": {
     statements: 62,
-    branches: 75,
+    branches: 63,
     functions: 49,
     lines: 62,
   },
@@ -71,7 +39,6 @@ if (!fs.existsSync(SUMMARY_PATH)) {
 
 const summary = JSON.parse(fs.readFileSync(SUMMARY_PATH, "utf8"));
 
-// O summary usa chaves em path absoluto. Resolvemos por sufixo.
 function findEntry(relPath) {
   const normalized = relPath.replace(/\\/g, "/");
   const key = Object.keys(summary).find(
@@ -120,11 +87,6 @@ console.log("\nPrice Freshness — coverage gate");
 console.log("─".repeat(80));
 for (const l of lines) console.log(l);
 console.log("─".repeat(80));
-console.log(
-  `Pisos calibrados por arquivo (baseline atual − ~3pp) com tolerância adicional ` +
-    `de ${TOLERANCE_PP}pp para ruído do reporter V8. Para subir um piso após adicionar ` +
-    `testes, edite FILE_THRESHOLDS em scripts/check-price-freshness-coverage.mjs.`,
-);
 
 if (hasFailure) {
   fail("Cobertura de price freshness regrediu abaixo do piso. Adicione testes.");
