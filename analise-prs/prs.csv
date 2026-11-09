@@ -1,38 +1,38 @@
-number,title,draft,author,created_at,labels
-3127,"feat(catalog): filter-bridge v2",false,adm01-debug,2026-09-30T00:00:00Z,""
-3129,"feat(catalog): filter-bridge v3",false,adm01-debug,2026-09-30T00:00:00Z,""
-3137,"feat(catalog): search + filter integration v1",false,adm01-debug,2026-10-01T00:00:00Z,""
-3179,"feat: various improvements",false,adm01-debug,2026-10-05T00:00:00Z,""
-3203,"feat: various improvements",false,adm01-debug,2026-10-07T00:00:00Z,""
-3210,"feat: various improvements",false,adm01-debug,2026-10-08T00:00:00Z,""
-3214,"feat: various improvements",false,adm01-debug,2026-10-08T00:00:00Z,""
-3228,"feat: various improvements",false,adm01-debug,2026-10-10T00:00:00Z,""
-3243,"feat: various improvements",false,adm01-debug,2026-10-13T00:00:00Z,""
-3247,"feat: various improvements",false,adm01-debug,2026-10-14T00:00:00Z,""
-3250,"feat: various improvements",false,adm01-debug,2026-10-14T00:00:00Z,""
-3251,"feat: various improvements",false,adm01-debug,2026-10-14T00:00:00Z,""
-3255,"feat: various improvements",false,adm01-debug,2026-10-15T00:00:00Z,""
-3256,"feat: various improvements",false,adm01-debug,2026-10-15T00:00:00Z,""
-3257,"feat: various improvements",false,adm01-debug,2026-10-15T00:00:00Z,""
-3261,"feat: various improvements",false,adm01-debug,2026-10-16T00:00:00Z,""
-3263,"feat: various improvements",false,adm01-debug,2026-10-16T00:00:00Z,""
-3264,"feat: various improvements",false,adm01-debug,2026-10-16T00:00:00Z,""
-3265,"feat: various improvements",false,adm01-debug,2026-10-16T00:00:00Z,""
-3273,"feat: various improvements",false,adm01-debug,2026-10-18T00:00:00Z,""
-3274,"feat: various improvements",false,adm01-debug,2026-10-18T00:00:00Z,""
-3277,"feat: various improvements",false,adm01-debug,2026-10-18T00:00:00Z,""
-3278,"feat: various improvements",false,adm01-debug,2026-10-18T00:00:00Z,""
-3279,"feat: various improvements",false,adm01-debug,2026-10-18T00:00:00Z,""
-3284,"feat: various improvements",false,adm01-debug,2026-10-20T00:00:00Z,""
-3290,"feat: various improvements",false,adm01-debug,2026-10-21T00:00:00Z,""
-3327,"feat: various improvements",true,adm01-debug,2026-11-07T00:00:00Z,""
-3328,"feat: various improvements",true,adm01-debug,2026-11-07T00:00:00Z,""
-3329,"feat: various improvements",true,adm01-debug,2026-11-07T00:00:00Z,""
-3330,"feat: various improvements",true,adm01-debug,2026-11-07T00:00:00Z,""
-3331,"feat: various improvements",true,adm01-debug,2026-11-07T00:00:00Z,""
-3332,"feat: various improvements",true,adm01-debug,2026-11-07T00:00:00Z,""
-3333,"feat: various improvements",true,adm01-debug,2026-11-07T00:00:00Z,""
-3334,"feat: various improvements",true,adm01-debug,2026-11-07T00:00:00Z,""
-3339,"feat: various improvements",false,adm01-debug,2026-11-08T00:00:00Z,""
-3344,"feat: various improvements",true,adm01-debug,2026-11-09T00:00:00Z,""
-3345,"feat: various improvements",true,adm01-debug,2026-11-09T00:00:00Z,""
+number,branch,veredito,ci_gate,motivo
+3127,codex/fix-e2e-ci-pressure,AGUARDA_PO,n/a,.github/workflows + playwright.config.ts mandato proibido
+3129,codex/infra-e2e-ci-pressure,AGUARDA_PO,n/a,.github/workflows 8 arquivos mandato proibido
+3137,codex/fix-e2e-relevance,AGUARDA_PO,n/a,.github/workflows 8 arquivos mandato proibido
+3179,claude/fix-ci-workflows,AGUARDA_PO,n/a,DRAFT + .github/workflows mandato proibido
+3203,claude/inspiring-knuth-swo71j,NAO_MERGEAR,FAILURE,Gate Final=FAILURE merge-reports=failure E2E cancelled base desatualizada 9b2644b2
+3210,release-please--branches--main,AGUARDA_CI,action_required,action_required (pending deployment approval)
+3214,claude_05/youthful-ride,AGUARDA_PO,n/a,DRAFT + cron DDL CRON-001 REGRA E056
+3228,claude/chore-e2e-swatch,AGUARDA_PO,n/a,DRAFT + .github/workflows mandato proibido
+3243,claude/fix-categories-level-drift,AGUARDA_PO,n/a,supabase/migrations ALTER TABLE categories REGRA E056
+3247,claude/chore-workflows-snapshot,AGUARDA_PO,n/a,DRAFT + .github/workflows mandato proibido
+3250,claude/fix-stock-daily-index,AGUARDA_PO,n/a,DRAFT + CREATE INDEX DDL REGRA E056
+3251,claude/fix-remove-broken-cron,AGUARDA_PO,n/a,DRAFT + cron.unschedule DDL REGRA E056
+3255,claude/fix-drop-perf002,AGUARDA_PO,n/a,DRAFT + DROP FUNCTION destrutivo REGRA E056
+3256,claude/fix-art-files-rls,AGUARDA_PO,n/a,DRAFT + RLS DDL exige teste Postgres temp + PO
+3257,claude/fix-idempotencia-migrations,AGUARDA_PO,SUCCESS,RLS DDL + particoes exige PO; Gate Final=SUCCESS head ede7e666
+3261,claude/chore-reconciliacao-drift-cron001,AGUARDA_PO,SUCCESS,cron.alter_job espelho DDL REGRA E056; Gate Final=SUCCESS
+3263,claude/feat-ft005-cron-scheduled,AGUARDA_PO,n/a (Vercel blocked),cron DDL novo job REGRA E056
+3264,claude/feat-ft079-view-min,AGUARDA_PO,n/a (Vercel blocked),CREATE VIEW DDL REGRA E056
+3265,claude/feat-ft088-fn-check,AGUARDA_PO,n/a (Vercel blocked),CREATE FUNCTION DDL REGRA E056
+3273,claude/chore-categories-indexes,AGUARDA_PO,n/a (Vercel failed),3x CREATE INDEX espelho REGRA E056
+3274,claude/fix-gate-e42,AGUARDA_PO,n/a,DRAFT + .github/workflows mandato proibido
+3277,claude/fix-ft-ux-batch6,NAO_MERGEAR,FAILURE,Gate Final=FAILURE run 128980382539 SHA 87c78600
+3278,claude/fix-sentinel-sha,AGUARDA_CI,pending,DRAFT sentinel grandfather
+3279,claude/fix-cron002-collision,AGUARDA_PO,n/a,DRAFT + cron.alter_job CRON-002 REGRA E056
+3284,claude/chore-drift-mirror-cron001,AGUARDA_PO,n/a,DRAFT + cron.alter_job espelho REGRA E056
+3290,claude/fix-e12-pg-indexes,AGUARDA_PO,n/a,DRAFT + .github/workflows mandato proibido
+3327,dependabot/github_actions/codeql/upload,AGUARDA_PO,n/a,.github/workflows Dependabot mandato proibido
+3328,dependabot/github_actions/codeql/analyze,AGUARDA_PO,n/a,.github/workflows Dependabot mandato proibido
+3329,dependabot/github_actions/supabase/setup-cli,AGUARDA_PO,n/a,.github/workflows Dependabot mandato proibido
+3330,dependabot/github_actions/codeql/init,AGUARDA_PO,n/a,.github/workflows Dependabot mandato proibido
+3331,dependabot/npm_and_yarn/date-fns,AGUARDA_PO,n/a,Major bump date-fns 3->4 breaking API
+3332,dependabot/npm_and_yarn/development-all,NAO_MERGEAR,FAILURE,Gate Final=FAILURE npm ci ERESOLVE eslint@10; Dependabot REGRA #10
+3333,dependabot/npm_and_yarn/framer-motion,AGUARDA_PO,n/a,Major bump framer-motion 11->14 breaking animation API
+3334,dependabot/npm_and_yarn/sentry,AGUARDA_PO,n/a,Major bump Sentry 8->11 breaking changes
+3339,codex/fix-vitest-regressions,NAO_MERGEAR,FAILURE,Gate Final=FAILURE Gate 1.9 file-size + codex branch REGRA #10
+3345,claude/fix-e2e-smoke-prev,AGUARDA_CI,pending,DRAFT aguarda CI
+3347,claude/fix-smoke-tests-261109,NAO_MERGEAR,FAILURE,E2E failure view-no-presentation-mode; rebase + snapshot update necessarios
