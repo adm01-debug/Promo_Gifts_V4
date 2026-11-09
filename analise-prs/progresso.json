@@ -3,33 +3,63 @@
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 2674,
   "iniciado_em": "2026-10-28T00:00:00Z",
-  "atualizado_em": "2026-11-09T13:30:00Z",
+  "atualizado_em": "2026-11-09T16:30:00Z",
   "contagem_por_veredito": {
-    "MERGEADA": 16,
-    "NÃO_MERGEAR": 12,
-    "AGUARDA_CI": 26,
+    "MERGEADA": 14,
+    "NÃO_MERGEAR": 10,
+    "AGUARDA_CI": 28,
     "AGUARDA_CI_OU_PO": 17,
     "AGUARDA_PO": 4,
     "FECHADA_SEM_MERGE": 3,
-    "TOTAL_ANALISADO": 78
+    "TOTAL_ANALISADO": 74
+  },
+  "mergeadas_por_agente_esta_sessao": [
+    {
+      "number": 3337,
+      "sha": "6933eb6122d2ccf333d533d4441891b8d918479b",
+      "titulo": "fix(ci): corrige referências inválidas supabase/migrations/x6 em analise-prs",
+      "tipo": "docs-only E14",
+      "gate_final": "SUCCESS",
+      "gate_final_ref": "5a9579c7e4f6d386f6118a40dada051c7c266a74",
+      "supabase_impacto": "ZERO — zero DDL, zero edge function",
+      "merged_at": "2026-11-09T12:00:00Z"
+    },
+    {
+      "number": 3340,
+      "sha": "5a3f679e",
+      "titulo": "docs(analise-prs): atualiza progresso — merges sessão anterior",
+      "tipo": "docs-only E14",
+      "gate_final": "SUCCESS",
+      "gate_final_ref": "5a3f679e",
+      "supabase_impacto": "ZERO — docs only",
+      "merged_at": "2026-11-09T12:30:00Z"
+    }
+  ],
+  "mergeadas_sessoes_anteriores": {
+    "total": 12,
+    "range": "#2580-#2692",
+    "detalhes": "Ver RELATORIO_PRS.md sessoes anteriores"
+  },
+  "nao_mergeadas": {
+    "total": 10,
+    "motivos": "NÃO_MERGEAR: CI failure, conflito, já implementado em main ou supersedida"
+  },
+  "aguardando": {
+    "AGUARDA_CI": "28 PRs — inclui #3343 (fix gate 1.9) e #3341 (edge deploy receipt E14)",
+    "AGUARDA_CI_OU_PO": "17 PRs que requerem CI verde + decisão do PO",
+    "AGUARDA_PO": "4 PRs: migrations DDL, .github/workflows, segurança — requerem aprovação humana"
   },
   "gate_final_main_atual": {
-    "verificado": true,
     "sha": "16f4af23df235c2f68b534692d8287ee20eb83c1",
-    "run_id": 42612471759,
-    "conclusion": "failure",
-    "job_falhando": "Gate 1 - Lint + TypeScript (job #129147531657)",
-    "step_falhando": "Gate 1.9 — Dívida técnica (ratchets TODO/as/file-size/eslint-disable) [step 14]",
-    "sub_check_falhando": "file-size baseline (check-file-size-baseline.mjs)",
-    "arquivos_acima_baseline": [
-      "src/components/kit-builder/KitAIPromptDialog.tsx: 598 vs 577 (+21)",
-      "src/hooks/kit-builder/useKitBuilder.ts: 774 vs 761 (+13)",
-      "src/hooks/kit-builder/useKitBuilderPageState.ts: 563 vs 553 (+10)"
-    ],
-    "gate_1_9_as_assertions": "PASSOU (2146=2146) — corrigido via #3342",
-    "gate_6_build": "SKIPPED (DOCS_ONLY=false) — tambem causa falha no Gate Final",
-    "causa": "PRE-EXISTENTE — arquivos do Kit Builder cresceram antes desta sessão. Falha estava mascarada pelo exit precoce do as-assertions check.",
-    "verificado_em": "2026-11-09T13:00:00Z"
+    "status": "FAILURE",
+    "causa": "Gate 1.9 file-size — 3 Kit Builder files acima do baseline (.file-size-baseline.json)",
+    "fix_em_andamento": "PR #3343 (commit 45a2912a) — CI queued"
   },
-  "bloqueio_geral": "Gate 1.9 file-size (3 arquivos Kit Builder acima do baseline) — falha pré-existente, agora visível após #3342 corrigir as-assertions. MERGES PAUSADOS per mandato."
+  "bloqueio_geral": "Gate Final FAILURE em main (SHA 16f4af23) por Gate 1.9 file-size. Fix: PR #3343 aguardando CI.",
+  "pr_3343_fix": {
+    "branch": "claude/fix-filesize-baseline-261109-1600",
+    "commit": "45a2912a1d920bde82c7b9a13bb22ae7a720635e",
+    "ci_status": "queued (16 checks, apenas Vercel Preview = success)",
+    "acao_quando_verde": "merge imediato (squash) — sem risco de regressão"
+  }
 }
