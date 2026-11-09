@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): corrige Gate E42 e2e-personalization com auth-setup step condicional (#3274)",
    "fix(ci): atualiza baseline Gate 1.3 — remove referência já resolvida de 20260511235970 (#3352)",
    "chore(sentinel): grandfather SHA fb4b8c2d87 do PR #3349 (#3351)",
    "fix: corrige referência de SHA de sentinela em check-sentinel-sha (#3278)",
-   "fix(update-snapshots): atualizar snapshots PriceFreshnessBadge para novo class Lucide AlertTriangle",
-   "fix: replace corrupt PNG snapshot and add smoke test timeouts (#3347)"
+   "fix(update-snapshots): atualizar snapshots PriceFreshnessBadge para novo class Lucide AlertTriangle"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

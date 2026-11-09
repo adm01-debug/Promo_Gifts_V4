@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "973864d73691eb2b82d6a151b6b6398cec8286be",
+  "sha": "defe2940731929fd9cc50425a8d8b15fafc79863",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 15:12 UTC",
+  "generated_at": "2026-11-09 15:26 UTC",
   "files_total": 9182,
   "code_files": 7869,
   "code_lines": 1055970
@@ -484415,10 +484415,20 @@
   }
  },
  "git": {
-  "sha": "973864d73691eb2b82d6a151b6b6398cec8286be",
+  "sha": "defe2940731929fd9cc50425a8d8b15fafc79863",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "defe294",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "fix(ci): corrige Gate E42 e2e-personalization com auth-setup step condicional (#3274)",
+    "files": [
+     ".github/workflows/e2e-personalization.yml",
+     ".migration-refs-baseline.json"
+    ]
+   },
    {
     "sha": "973864d",
     "date": "2026-11-09",
@@ -484696,66 +484706,6 @@
     "files": [
      "src/hooks/kit-builder/useKitBuilder.ts"
     ]
-   },
-   {
-    "sha": "b520784",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "fix: scripts static-pass e exit codes (#3266)",
-    "files": [
-     "scripts/append-edge-deploy-receipt.mjs",
-     "scripts/append-migration-receipt.mjs",
-     "scripts/audit-debug.ts",
-     "scripts/check-build-log.mjs",
-     "scripts/check-cloud-status-coverage.mjs",
-     "scripts/check-critical-path-coverage.mjs",
-     "scripts/check-min-tests-executed.mjs",
-     "scripts/check-playwright-min-executed.mjs",
-     "scripts/check-price-freshness-coverage.mjs",
-     "scripts/check-quote-rpc-canonical-readiness.mjs",
-     "scripts/check-supabase-linter.mjs",
-     "scripts/contract-testing.mjs",
-     "scripts/e2e-check-stock-seed.mjs",
-     "scripts/e2e-feature-summary.mjs",
-     "scripts/e2e-smoke-summary.mjs",
-     "scripts/e2e/calendar-local.sh",
-     "scripts/e2e/quote-conditions-local.sh",
-     "scripts/e2e/quote-freight-local.sh",
-     "scripts/eslint-baseline-generate.mjs",
-     "scripts/gen-internal-schema.mjs",
-     "scripts/inventario/gerar-banco.mjs",
-     "scripts/kit-ai-enrichment.js",
-     "scripts/kit-enrichment/asia-dims-batch.py",
-     "scripts/kit-enrichment/xbz-dims-batch.py",
-     "scripts/list-users.ts",
-     "scripts/promote-draft-migration.mjs",
-     "scripts/qa/fuzz-configuration-panel-collapse.mjs",
-     "scripts/qa/inject-crm-dead-letters.mjs",
-     "scripts/recalibrate-watermark-thresholds.mjs",
-     "scripts/run-e2e-quotes-undo.mjs",
-     "scripts/run-smoke-filtered.mjs",
-     "scripts/simulate-quote-rpc-proposals.mjs",
-     "scripts/simulate-signup-migration.mjs",
-     "scripts/ssot-report-bump.mjs",
-     "scripts/ssot-report-markdown.mjs",
-     "scripts/stress-quote-number-concurrent.mjs",
-     "scripts/supabase_snapshot/snapshot.py",
-     "scripts/test-approved-plan-database.sh",
-     "scripts/test-magazine-coverage.mjs",
-     "scripts/test-magazine-hardening-v2.sh",
-     "scripts/test-magazine-sql-contracts.sh",
-     "scripts/test-wave1-forward-only-migrations.sh",
-     "scripts/triage-edge-typecheck.mjs",
-     "scripts/typecheck-edge-functions.mjs",
-     "scripts/uptime-probe.sh",
-     "scripts/validate-lovable-sync-target.mjs",
-     "scripts/validate-migration-target.mjs",
-     "scripts/validate-ssot-report.mjs",
-     "scripts/verify-external.ts",
-     "scripts/verify-quote-number-hardening.mjs",
-     "scripts/verify-roboflow-setup.js",
-     "src/components/quotes/QuoteItemsList.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -484764,12 +484714,12 @@
     5
    ],
    [
-    "analise-prs/prs.json",
+    ".migration-refs-baseline.json",
     3
    ],
    [
-    ".migration-refs-baseline.json",
-    2
+    "analise-prs/prs.json",
+    3
    ],
    [
     ".github/SENTINEL_SHA_ALLOWLIST.txt",
@@ -484792,12 +484742,12 @@
     2
    ],
    [
-    "scripts/test-approved-plan-database.sh",
+    "analise-prs/RELATORIO_DEFINITIVO.md",
     2
    ],
    [
-    "analise-prs/RELATORIO_DEFINITIVO.md",
-    2
+    ".github/workflows/e2e-personalization.yml",
+    1
    ],
    [
     "PENDENCIAS.md",

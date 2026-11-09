@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "973864d73691eb2b82d6a151b6b6398cec8286be",
+  "commit": "defe2940731929fd9cc50425a8d8b15fafc79863",
   "branch": "main",
-  "data_commit": "2026-11-09T12:08:45-03:00",
+  "data_commit": "2026-11-09T12:25:03-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "defe294",
+    "data": "2026-11-09",
+    "assunto": "fix(ci): corrige Gate E42 e2e-personalization com auth-setup step condicional (#3274)"
+   },
    {
     "sha": "973864d",
     "data": "2026-11-09",
@@ -126,11 +131,6 @@
     "sha": "56cfd7f",
     "data": "2026-11-09",
     "assunto": "docs(analise-prs): progresso.json v5 — balanço 32 correto + SHA final 16995de3 (#3315)"
-   },
-   {
-    "sha": "16995de",
-    "data": "2026-11-09",
-    "assunto": "docs(analise-prs): RELATORIO_PRS.md — dossiê completo 32 PRs + META CUMPRIDA (#3314)"
    }
   ],
   "arquivos_mudados_7d": 498,
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "analise-prs/progresso.json",
-    "mudancas": 14
+    "mudancas": 13
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
@@ -238,11 +238,11 @@
     "mudancas": 9
    },
    {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 8
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 7
    },
    {
-    "arquivo": "CHANGELOG.md",
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
     "mudancas": 7
    },
    {

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `973864d73691eb2b82d6a151b6b6398cec8286be` (2026-11-09T12:08:45-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `defe2940731929fd9cc50425a8d8b15fafc79863` (2026-11-09T12:25:03-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,7 +586,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38553 nós · 67009 arestas · 2172 comunidades · grafo do commit `973864d7`
+- 38553 nós · 67009 arestas · 2172 comunidades · grafo do commit `defe2940`
 - comunidades maiores: ref_lib (745), ref_components (613), ref_integrations (536), ref_hooks (329), gotoAndSettle (321), react-router-dom (309), ref_node_fs (299), scripts (289), ref_types (277), @playwright/test (264), getCorsHeaders (254), ProductCard.tsx (248)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -595,15 +595,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - RELATORIO_CI.md (53)
 - PENDENCIAS.md (44)
 - supabase/MIGRATIONS_SYNC_LOG.md (22)
-- analise-prs/progresso.json (14)
+- analise-prs/progresso.json (13)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (13)
 - package.json (13)
 - analise-branches/RELATORIO_BRANCHES.md (10)
 - .github/workflows/deploy-gates.yml (9)
 - e2e/flows/magazine-publish-smoke.spec.ts (9)
 - package-lock.json (9)
-- analise-prs/RELATORIO_PRS.md (8)
 - CHANGELOG.md (7)
+- analise-prs/RELATORIO_PRS.md (7)
 - e2e/flows/magazine-preview-sticky-smoke.spec.ts (7)
 - .github/SENTINEL_SHA_ALLOWLIST.txt (6)
 - .github/workflows/replenishment-quality.yml (6)
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-09 `defe294` fix(ci): corrige Gate E42 e2e-personalization com auth-setup step condicional (#3274)
 - 2026-11-09 `973864d` fix(ci): atualiza baseline Gate 1.3 — remove referência já resolvida de 20260511235970 (#3352)
 - 2026-11-09 `586f454` chore(sentinel): grandfather SHA fb4b8c2d87 do PR #3349 (#3351)
 - 2026-11-09 `0818809` fix: corrige referência de SHA de sentinela em check-sentinel-sha (#3278)
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-09 `3a4d23b` chore: ratchet semanal — baselines melhoradas
 - 2026-11-09 `37bb98e` fix(autoheal): ESLint --fix em 193a750
 - 2026-11-09 `aec7404` chore(ci): métricas semanais 2026-W46
-- 2026-11-09 `d82bd6a` docs: recibo deploy edge functions run 42609591614 (E66)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
