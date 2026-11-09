@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T16:00:00.000Z",
+  "generatedAt": "2026-11-09T14:00:00.000Z",
   "description": "Baseline de arquivos src/ com mais de 500 linhas (excluindo testes). Falha em arquivo novo acima do limite ou em crescimento.",
   "maxLines": 500,
   "meta": {
@@ -48,7 +48,7 @@
     "src/components/inventory/VariantStockTable.tsx": 817,
     "src/components/kit-builder/BoxSelector.tsx": 1273,
     "src/components/kit-builder/ItemSelector.tsx": 590,
-    "src/components/kit-builder/KitAIPromptDialog.tsx": 598,
+    "src/components/kit-builder/KitAIPromptDialog.tsx": 658,
     "src/components/kit-builder/KitMakerLanding.tsx": 565,
     "src/components/kit-builder/PersonalizationConfig.tsx": 1410,
     "src/components/layout/Header.tsx": 561,
