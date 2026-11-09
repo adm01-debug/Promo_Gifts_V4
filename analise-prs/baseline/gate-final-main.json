@@ -7,5 +7,18 @@
   "created_at": "2026-11-09T15:46:36Z",
   "updated_at": "2026-11-09T15:51:59Z",
   "display_title": "fix(migrations): idempotencia em RLS deny-all e particoes 2027 (#3257)",
-  "html_url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42648049808"
+  "html_url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42648049808",
+  "verificado_em": "2026-11-09T15:51:59Z",
+  "prs_merged_por_agente": ["3337", "3340", "3343", "3257"],
+  "gates_confirmados": {
+    "Gate 0 SSOT": {"check_run_id": 129266551386, "conclusion": "success"},
+    "Gate 1 Lint+TS": {"check_run_id": 129266757585, "conclusion": "success"},
+    "Gate 2 Unit Tests": {"check_run_id": 129266757427, "conclusion": "success"},
+    "Gate 2.5 PG Integrity": {"check_run_id": 129266757467, "conclusion": "success"},
+    "Gate 3 E2E Smoke": {"check_run_id": 129266808851, "conclusion": "success"},
+    "Gate 5 SEO": {"check_run_id": 129266757809, "conclusion": "success"},
+    "Gate 5.5 RPC": {"check_run_id": 129266757602, "conclusion": "success"},
+    "Gate 6 Build": {"check_run_id": 129269100596, "conclusion": "success"},
+    "Gate Final": {"check_run_id": 129269658289, "conclusion": "success"}
+  }
 }

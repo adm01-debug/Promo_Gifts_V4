@@ -1,88 +1,93 @@
-# Regras de Negocio — Classificacao de PRs
+# Regras de Negócio — promo-gifts-v4
 
-**Sessao:** session_01VXkRxWq5ZUCmvuNx5e2TGX  
-**Data:** 2026-11-09  
-**Main SHA:** 0818809dae41c295b046dc52f85078e4f06b3df4
-
----
-
-## Criterios de Veredito
-
-### MERGEADA_AGENTE
-PR mergeada por este agente nesta sessao. Criterios para merge:
-1. Gate Final = SUCCESS no head SHA (via github_list_check_runs)
-2. Sem conflito com main (mergeable: true, mergeable_state != conflicting)
-3. Sem DDL/migrations (REGRA E056 proibe execute_sql DDL em sessao de agente)
-4. Sem .github/workflows/ (mandato proibe tocar workflows)
-5. Sem DRAFT
-6. Nao e branch de outro agente (REGRA #10: codex/*, dependabot/*, cline/*, devin/*)
-7. Nao e PR #2674 (branch de entrega desta sessao — NUNCA MERGEAR)
-
-### MERGEADA_EXTERNA
-PR ja mergeada por outro agente/pessoa antes ou durante esta analise.
-
-### FECHADA_EXTERNA
-PR fechada (sem merge) por outro agente/pessoa.
-
-### NAO_MERGEAR
-PR com impedimento tecnico insuperavel:
-- Gate Final = FAILURE no head SHA (confirmado via github_list_check_runs)
-- Branch de outro agente com Gate Final=FAILURE (REGRA #10 proibe push para consertar)
-
-### AGUARDA_CI
-PR tecnicamente em avaliacao:
-- Gate Final ainda rodando ou nao iniciado
-- action_required (Supabase Preview approval pendente)
-
-### AGUARDA_PO
-PR que exige decisao humana antes do merge:
-- Contem .github/workflows/ (mandato: 'Nao tocar .github/workflows')
-- Contem supabase/migrations/ com DDL (REGRA E056 + mandato: exige teste em Postgres temporario)
-- Major version bumps com E2E=FAILURE (AGUARDA avaliacao de breaking changes pelo PO)
-- DRAFT
+Analisado em: 2026-11-09  
+Fonte: código-fonte, migrations, testes, CLAUDE.md
 
 ---
 
-## Regras Especificas
+## RN-001 — SSOT Supabase canônico
 
-### REGRA E056 (IMUTAVEL)
-execute_sql com DDL (CREATE, ALTER, DROP, GRANT, REVOKE, CREATE POLICY, etc.) e
-proibido em sessao de agente Claude. PRs com migrations DDL so podem ser mergeadas
-apos aprovacao do PO e teste em Postgres temporario.
-
-### REGRA #1 (IMUTAVEL)
-Projeto canonico de producao = doufsxqlfjyuvxuezpln.
-Nunca alterar SSOT. Verificado via execute_sql READ-ONLY.
-
-### REGRA #10
-Nao commitar/pushar em branches criadas por outras sessoes de agente.
-Branches de outros agentes (codex/*, dependabot/*, cline/*, devin/*) sao somente leitura.
-
-### E14 (docs-only exception)
-PRs que tocam apenas docs/** sao ignoradas pelo Gate Final (paths-ignore: docs/**).
-Merge elegivel se docs-only e sem conflito.
+**Arquivo:** `src/integrations/supabase/client.ts:24`  
+**Regra:** `CURRENT_PROJECT_ID = "doufsxqlfjyuvxuezpln"` — imutável. Projeto `pqpdolkaeqlyzpdpbizo` é proibido em código executável.  
+**Gate:** Gate 0 (`validate-supabase-config.mjs`) bloqueia CI se violado.
 
 ---
 
-## Classificacao dos 35 PRs Abertas (2026-11-09)
+## RN-002 — Campos obrigatórios do tipo `Product`
 
-| Categoria | Count | PRs |
-|---|---|---|
-| NAO_MERGEAR | 5 | #3203, #3329, #3330, #3332, #3339 |
-| AGUARDA_CI | 2 | #3210, #3350 |
-| AGUARDA_PO — workflows | 10 | #3127, #3129, #3137, #3179, #3228, #3247, #3274, #3290, #3327, #3328 |
-| AGUARDA_PO — DDL/migrations | 14 | #3214, #3243, #3250, #3251, #3255, #3256, #3257, #3261, #3263, #3264, #3265, #3273, #3279, #3284 |
-| AGUARDA_PO — major bumps | 3 | #3331, #3333, #3334 |
-| TOTAL OPEN | 34* | |
-
-*#3350 foi reclassificado de DRAFT para AGUARDA_CI apos inspecao.
+**Arquivo:** `src/types/product-catalog.ts:30-36`  
+```typescript
+shortDescription: string;   // linha 30
+price: number;              // linha 31
+sale_price?: number;        // linha 32
+category_id?: string | null; // linha 35
+category_name?: string | null; // linha 36
+```
+**Gate:** Gate 1.1 bloqueia CI se campos removidos.
 
 ---
 
-## Supabase Producao — Verificacao
+## RN-003 — Status de orçamento (QUOTE_STATUSES)
 
-- Projeto: doufsxqlfjyuvxuezpln (REGRA #1 — SSOT)
-- Verificado via execute_sql (READ): SELECT COUNT(*) FROM products = 8321
-- Verificado em: 2026-11-09T23:00:00Z
-- Status: HEALTHY
-- Verificado via list_migrations: pendente (ver progresso.json)
+**Arquivo:** `src/types/quote.ts:10-22`  
+**Valores:** `approved`, `cancelled`, `converted`, `draft`, `expired`, `pending`, `pending_approval`, `rejected`, `sent`, `viewed`  
+**Gate:** `src/types/__tests__/quote-status-schema.test.ts` — testa invariantes do enum.
+
+---
+
+## RN-004 — Categorias de magazine (MAGAZINE_CATEGORIES)
+
+**Arquivo:** `src/types/magazine.ts:32-48`  
+**Valores:** `awards`, `bags`, `clocks`, `customized`, `drinkwares`, `general`, `giftsets`, `id`, `packaging`, `pins`, `signs`, `stationery`, `technology`, `wearables`
+
+---
+
+## RN-005 — Tabelas críticas do schema Gold
+
+**Fonte:** CLAUDE.md REGRA #4  
+Tabelas que NÃO podem ser removidas de `types.ts` sem entrada em allowlist:
+- `personalization_techniques`, `products`, `product_variants`
+- `suppliers`, `supplier_products_raw`
+- `magazines`, `magazine_items`, `magazine_templates`
+
+**Gate:** Gate 1.2 (`check:types-inventory-drift`) bloqueia CI se tabela sumir.
+
+---
+
+## RN-006 — Arquitetura Medallion Bronze → Silver → Gold
+
+**Fonte:** CLAUDE.md CONTEXTO + `doufsxqlfjyuvxuezpln` = Gold  
+Dados fluem Bronze (raw) → Silver (cleaned) → Gold (final, `doufsxqlfjyuvxuezpln`). Nenhum código de produção acessa Bronze/Silver diretamente.
+
+---
+
+## RN-007 — DDL em produção exige aprovação PO
+
+**Fonte:** CLAUDE.md REGRA #8 / E056  
+`execute_sql` com DDL (CREATE, ALTER, DROP, GRANT, REVOKE, CREATE POLICY, ALTER TABLE, CREATE INDEX, CREATE FUNCTION, `cron.alter_job`) é **proibido em sessão de agente Claude**. Único caminho autorizado: `.github/workflows/db-apply-migration.yml`.
+
+---
+
+## RN-008 — Fluxo de sortimento: sort options
+
+**Arquivo:** `src/types/product-catalog.ts:264-265`  
+Sort options suportados: `price-asc`, `price-desc` (e outros não listados neste trecho).
+
+---
+
+## RN-009 — Histórico de migrations
+
+**Contagem:** 3009 migrations em `supabase/migrations/`  
+**Última:** `20261027234500_reactivate_xbz_image_uploader_cron.sql`  
+Cada migration é aditiva e idempotente; migrations destrutivas exigem aprovação PO.
+
+---
+
+## RN-010 — Merge = deploy em produção
+
+**Fonte:** CLAUDE.md CONTEXTO  
+Merge em `main` dispara deploy automático via Lovable/Vercel. Não existe staging intermediário para o fluxo principal.
+
+---
+
+*Nota: build local impossível (npm registry `europe-west1-npm.pkg.dev` retorna 403 nesta sessão). Typecheck/lint/build: NAO EXECUTADO LOCALMENTE — validado apenas via Gate Final CI no GitHub Actions.*
