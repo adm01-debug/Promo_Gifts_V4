@@ -37,7 +37,7 @@
     {"number": 3273, "branch": "claude/chore-categories-indexes-espelho-261108-1200", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "migration/indices producao"},
     {"number": 3274, "branch": "claude/fix-gate-e42-261108-2325", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "toca .github/workflows/"},
     {"number": 3275, "branch": "claude/fix-gate13-migration-refs-261108-1200", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "toca .github/workflows/"},
-    {"number": 3277, "branch": "claude/fix-ft-ux-batch6-261101-2230", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "456 arquivos DIRTY: .github/workflows/x35 + supabase/migrations/x6"},
+    {"number": 3277, "branch": "claude/fix-ft-ux-batch6-261101-2230", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "456 arquivos DIRTY: .github/workflows/x35 + supabase/migrations/ (x6 arquivos)"},
     {"number": 3278, "branch": "claude/fix-sentinel-sha-d50ae76-261108-2330", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "sentinel allowlist expansion — aprovacao de seguranca"},
     {"number": 3279, "branch": "claude/fix-cron002-collision-stagger-261108-2300", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "migration/cron DDL producao"},
     {"number": 3283, "branch": "claude/feat-ft119-beforeunload-restore-261108-0100", "estado": "FECHADA_SEM_MERGE", "motivo": "SUPEQSECIDA por #3305 — branch DIRTY — fechada esta sessao"},

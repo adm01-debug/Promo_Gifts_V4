@@ -82,7 +82,7 @@
     {"number": 3273, "motivo": "migration/indices producao"},
     {"number": 3274, "motivo": "toca .github/workflows/"},
     {"number": 3275, "motivo": "toca .github/workflows/"},
-    {"number": 3277, "motivo": "456 arquivos DIRTY: .github/workflows/x35 + supabase/migrations/x6"},
+    {"number": 3277, "motivo": "456 arquivos DIRTY: .github/workflows/x35 + supabase/migrations/ (x6 arquivos)"},
     {"number": 3278, "motivo": "sentinel allowlist expansion — aprovacao de seguranca"},
     {"number": 3279, "motivo": "migration/cron DDL producao"},
     {"number": 3284, "motivo": "migration/drift DDL"},
