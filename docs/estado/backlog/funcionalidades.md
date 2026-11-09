@@ -664,7 +664,7 @@ Legenda camada: FE/Edge/DB/Doc. Sev: A/M/B. Esforco: P(<1d)/M(1-3d)/G(>3d).
 | FT-402 | F5-027 | Multi-organizacao | AUSENTE (por decisao) | src/contexts/OrganizationContext.tsx:2 "SINGLE-TENANT" | FE | B | - | A01 RP-023 |
 | FT-403 | F5-028 | BI cliente 360 com dados reais | PARCIAL | useClientBI.ts:61 `isMock:true`; ClientOverview360.tsx:80 "Dados simulados" | FE+DB | M | M | A01 RP-042 |
 | FT-404 | F5-029 | Follow-up de orcamento no FE | AUSENTE (por decisao) | gate scripts/check-no-followup-frontend.mjs; backend vivo supabase/functions/quote-followup-reminders | FE | B | - | A01 RP-006 |
-| FT-405 | F5-030 | Comandos de voz | FEITA (reorganizada) | src/hooks/voice/{processTranscript,playTtsAudio,useVoiceHistory}.ts; hooks citados no doc inexistentes (doc obsoleta) | FE | B | P (doc) | A01 RP-061 |
+| FT-405 | F5-030 | Comandos de voz | PARCIAL | useSpeechRecognition.ts: Web Speech API nativo OK (SmartSearchInput/AdvancedSearch); useVoiceAgent.ts chama invokeEdge('elevenlabs-scribe-token') sem chave ElevenLabs em prod — fluxo VoiceOrb/ElevenLabs inoperante | FE | B | P | A01 RP-061 |
 | FT-406 | F5-031 | Feature `packagings` | AUSENTE | 0 em src/ (hits so tipos magazine/catalog) | DB+FE | B | G | A01 RP-066 |
 | FT-407 | F5-032 | WebAuthn/Passkeys | AUSENTE | grep webauthn/passkey em src e edges: 0 | FE+Edge | M | G | A01 RP-026 |
 | FT-408 | F5-033 | Push Web real | PARCIAL | assinatura/permissao: src/hooks/ui/usePushNotifications.tsx:49; handler public/sw.js:602; sem VAPID nem envio server-side | FE+Edge | M | M | A02 FD-039 / RP-046 |
@@ -681,4 +681,4 @@ Legenda camada: FE/Edge/DB/Doc. Sev: A/M/B. Esforco: P(<1d)/M(1-3d)/G(>3d).
 Q10-Q12 (RLS/partitions/service_role/required checks), Q19 TTL logs, Q20 `check-security-headers.mjs` (ausente), Q22 bun.lock (ausente do repo agora = feito), Q08 runner CI, PENDENCIAS.md P1-P68 (CI).
 
 ### Contagem por estado
-37 itens: FEITA 7 | PARCIAL 15 | AUSENTE 15 (inclui 2 AUSENTE por decisao: F5-027, F5-029). Itens F5-011/012 agregam varias features.
+37 itens: FEITA 6 | PARCIAL 16 | AUSENTE 15 (inclui 2 AUSENTE por decisao: F5-027, F5-029). Itens F5-011/012 agregam varias features.

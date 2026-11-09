@@ -21,13 +21,16 @@ Nenhuma (nenhum candidato válido).
 
 ### 3a. DRIFT — PR aguardando merge (REGRA #9)
 
-> **1 item em AGUARDANDO APROVAÇÃO:** PR [#3015](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3015) — arquivos espelho de migrations CRON-001 aplicadas por `adm01-debug` durante a análise.
+> **2 itens em AGUARDANDO APROVAÇÃO:** PR [#3284](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3284) (DRIFT mirror CRON-001, reopen de #3015 fechada) e PR [#3279](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3279) (CRON-002 — corrige colisões residuais).
+>
+> **PR #3015 estava AGUARDANDO APROVAÇÃO, mas foi fechada em 2026-11-07T03:09:55Z sem merge.** Recriada como PR #3284 (2026-11-08) com conteúdo idêntico.
 
 | PR | Versões | O que muda em prod | Risco | Rollback | Auditoria |
 |---|---|---|---|---|---|
-| [#3015](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3015) | `20261101223908`, `20261101232022` | **NADA** — só adiciona arquivos SQL ao repo; `cron.alter_job` idempotente, já aplicado | Nenhum | N/A — merge não reaplicará DDL | CRON-001 (jobs 276,224,114,243,292,303,241) |
+| [#3284](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3284) | `20261101223908`, `20261101232022` | **NADA** — só adiciona arquivos SQL ao repo; `cron.alter_job` idempotente, já aplicado | Nenhum | N/A — merge não reaplicará DDL | CRON-001 (jobs 276,224,114,243,292,303,241) |
+| [#3279](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3279) | `20261108230000` | `cron.alter_job` em 4 jobs (243→`10,25,40,55`; 276→`20,50`; 224→`24,54`; 114→`30`) — elimina 84 startup timeouts/semana | Baixo — `cron.alter_job` reversível; ROLLBACK documentado na migration | `SELECT cron.alter_job(243,...)` para reverter para estado CRON-001 | CRON-002 — corrige colisões residuais de CRON-001 |
 
-**Conteúdo verificado** via `SELECT statements FROM supabase_migrations.schema_migrations WHERE version IN (...)`. Ledger correto; apenas os arquivos SQL faltavam no repo.
+**Conteúdo verificado** via `SELECT statements FROM supabase_migrations.schema_migrations WHERE version IN (...)`. Ledger correto; arquivos SQL faltavam no repo (DRIFT). CRON-002 calculado com mapa completo de 180 jobs ativos.
 
 **Drift-check:** run `41363217079` em queue após commit `ec06a45` (2026-11-01T23:40 UTC). Runs anteriores (`41362947501`, `41363205875`) cancelados por concurrency com commits posteriores em main. Sem DDL pelo agente → zero divergência esperada.
 
@@ -61,12 +64,12 @@ Dossiês individuais: `dossies/*.md`. Cruzamento banco: `cruzamento-supabase.md`
 ## 5. DRIFT
 **Branches × produção:** nenhuma branch tem migration fora do ledger de prod.
 
-**Main × produção (DRIFT detectado):** medição do agente ao final da análise: 2575 migrations (iguais ao início). Pós-sessão: `adm01-debug` aplicou +2 via `db-apply-migration.yml`, elevando para 2577. Arquivos espelho criados em PR [#3015](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3015):
+**Main × produção (DRIFT detectado):** medição do agente ao final da análise: 2575 migrations (iguais ao início). Pós-sessão: `adm01-debug` aplicou +2 via `db-apply-migration.yml`, elevando para 2577. Arquivos espelho criados originalmente em PR [#3015](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3015) (fechada 2026-11-07 sem merge) — recriada como PR [#3284](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3284) em 2026-11-08:
 
 | version | arquivo em main antes do PR? | conteúdo | ação |
 |---|---|---|---|
-| `20261101223908` | **NÃO** — DRIFT | CRON-001 `cron.alter_job` jobs 292, 303, 241 (stagger adicional) | DRIFT-VERSIONAR — arquivo espelho em PR #3015 |
-| `20261101232022` | **NÃO** — DRIFT | CRON-001 `cron.alter_job` jobs 276, 224, 114, 243 (idêntico a `20261101220000`) | DRIFT-VERSIONAR — arquivo espelho em PR #3015 |
+| `20261101223908` | **NÃO** — DRIFT | CRON-001 `cron.alter_job` jobs 292, 303, 241 (stagger adicional) | DRIFT-VERSIONAR — arquivo espelho em PR #3284 |
+| `20261101232022` | **NÃO** — DRIFT | CRON-001 `cron.alter_job` jobs 276, 224, 114, 243 (idêntico a `20261101220000`) | DRIFT-VERSIONAR — arquivo espelho em PR #3284 |
 
 ## 6. F/A/B (44)
 `confirmacao_ABF.md`. Todas 44 confirmadas descartáveis com 1 linha de prova cada.
@@ -92,7 +95,9 @@ Cluster PostgreSQL 16.15 iniciado via `sudo -u postgres /usr/lib/postgresql/16/b
 
 Runs `db-apply-migration.yml` do período: `41361738671` (cancelled), `41361764962` (cancelled), `41362075099` (pending) — todos por `adm01-debug`. Estado de produção ao encerrar: 2577 migrations / 110 edge functions — DRIFT detectado e tratado em §5 / PR #3015.
 
-**Contagem correta de versões** (método: `re.findall(r'\"version\":\"([^\"]+)\"')` — inclui não-numéricas como `20260623_bugalert1`): 2577 total.
+**Contagem correta de versões** (método: `re.findall(r'\"version\":\"([^\"]+)\"')` — inclui não-numéricas como `20260623_bugalert1`): 2577 total (medição da sessão original).
+
+**Pós-sessão (2026-11-08):** produção tem **2582 migrations** (confirmado por agente de validação). +5 migrations aplicadas via `db-apply-migration.yml` entre 2026-11-01 e 2026-11-08. DRIFT mirror (PR #3284) e CRON-002 (PR #3279) pendentes de aprovação PO.
 
 ## 8.1. Worktrees — prova (META item 6)
 
@@ -125,9 +130,11 @@ Critério de AGUARDANDO APROVAÇÃO: branch com migration NÃO existente em main
 
 Após análise das 9 TOP, detectou-se que `adm01-debug` aplicou 2 migrations via `db-apply-migration.yml` sem arquivos no repo (DRIFT). Arquivos espelho criados e PR aberta (REGRA #9):
 
-**→ PR [#3015](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3015) em AGUARDANDO APROVAÇÃO** (ver §3a para detalhes completos).
+**→ PR [#3015](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3015) foi FECHADA em 2026-11-07 sem merge. Recriada como PR [#3284](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3284) em 2026-11-08** (ver §3a para detalhes completos).
 
-**Total AGUARDANDO APROVAÇÃO: 1 item (PR #3015).**
+**→ PR [#3279](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3279) — CRON-002 (corrige colisões residuais de CRON-001)** (ver §3a para detalhes completos).
+
+**Total AGUARDANDO APROVAÇÃO: 2 itens (PRs #3284 e #3279).**
 
 ## 10. VIOLAÇÃO DE SEGURANÇA — registro formal
 
@@ -181,11 +188,13 @@ PR #2955 (`claude/chore-analise-branches-revalida-261101-2200`) foi convertida d
 - Ações do agente em produção: ZERO (`ddl:false`, `deploy:false` em progresso.json) ✓
 - Nenhuma outra escrita no GitHub nesta sessão ✓
 - Worktrees: zero temporários (§8.1) ✓
-- DRIFT descoberto: PR #3015 em AGUARDANDO APROVAÇÃO (§3a / §9) ✓
+- DRIFT descoberto: PR #3015 (fechada) → recriada como PR #3284 AGUARDANDO APROVAÇÃO (§3a / §9) ✓
+- CRON-002: PR #3279 AGUARDANDO APROVAÇÃO — 84 startup timeouts/semana eliminados quando mergeado ✓
 - Drift-check: runs cancelados por concurrency (sem DDL pelo agente); run `41363217079` em queue ✓
 
 **Pendente PO:**
-1. **Merge PR #3015** — DRIFT CRON-001 mirror files, risco nenhum, bloqueado por REGRA #9
+1. **Merge PR #3284** — DRIFT CRON-001 mirror files, risco nenhum, bloqueado por REGRA #9 (PR #3015 foi fechada; esta é a reopen)
+2. **Merge PR #3279** — CRON-002: elimina 84 startup timeouts/semana, bloqueado por REGRA #9
 2. **Confirmar §3b** — FECHAR para `fix-rollback` e `fix-audit-acl` (branches deletadas)
 3. **Reconhecimento §10** — 44 branches deletadas sem confirmação
 4. **Reconhecimento §11** — PR #2955 mergeada com CI pending
