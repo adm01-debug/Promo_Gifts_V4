@@ -62,8 +62,16 @@ const NON_TX_DDL = [
 const CONCURRENTLY_PATTERNS = [
   /\bCONCURRENTLY\b/i,
 ];
+// `i`: `begin;`/`commit;` minúsculos também conflitam com psql -1. `END;` fica de fora de
+// propósito (fecha bloco PL/pgSQL em qualquer corpo de função).
 const TOP_LEVEL_TX_PATTERNS = [
-  /^\s*(BEGIN|COMMIT|ROLLBACK)\s*;/m,
+  /^\s*(?:BEGIN|COMMIT|ROLLBACK|ABORT)(?:\s+(?:TRANSACTION|WORK))?\s*;/im,
+  /^\s*START\s+TRANSACTION\b[^;]*;/im,
+];
+// Header promete: VACUUM e ALTER SYSTEM bloqueiam SEMPRE (não rodam em transação).
+const ALWAYS_BLOCKING_NON_TX = [
+  [/^\s*VACUUM\b/im, 'VACUUM detectado: não roda dentro de transação (psql -1). Execute fora da migration.'],
+  [/^\s*ALTER\s+SYSTEM\b/im, 'ALTER SYSTEM detectado: não roda dentro de transação e não é permitido em migration.'],
 ];
 const ALTER_TYPE_ADD_VALUE = /ALTER\s+TYPE\s+\S+\s+ADD\s+VALUE\b/i;
 
@@ -160,6 +168,9 @@ export function detectBlockingDdl(sqlContent, { hasTransactionNoneOptOut = false
       'DROP sem IF EXISTS detectado: use DROP … IF EXISTS para evitar erro se o objeto não existir.',
     );
   }
+  for (const [re, message] of ALWAYS_BLOCKING_NON_TX) {
+    if (re.test(executable)) blocking.push(message);
+  }
 
   return blocking;
 }
@@ -202,28 +213,44 @@ export function detectNonTransactionalDdl(sqlContent) {
  * E066: detecta funções com SECURITY DEFINER sem pg_temp no SET search_path.
  * Retorna array de nomes de funções problemáticas.
  */
+/**
+ * Cabeçalho + cauda (atributos) de cada CREATE FUNCTION: o corpo `$tag$…$tag$` é descartado
+ * e o que vem DEPOIS dele até o `;` conta (`$$ LANGUAGE plpgsql SECURITY DEFINER SET …`).
+ */
+function functionAttributeBlocks(executable) {
+  const blocks = [];
+  const re = /CREATE\s+(?:OR\s+REPLACE\s+)?FUNCTION\s+([\w."]+)\s*\(/gi;
+  let m;
+  while ((m = re.exec(executable)) !== null) {
+    const rest = executable.slice(m.index);
+    const tag = /\$[A-Za-z_]*\$/.exec(rest);
+    const semi = rest.indexOf(';');
+    let attrs;
+    if (tag && (semi === -1 || tag.index < semi)) {
+      const close = rest.indexOf(tag[0], tag.index + tag[0].length);
+      const after = close === -1 ? '' : rest.slice(close + tag[0].length);
+      const end = after.indexOf(';');
+      attrs = rest.slice(0, tag.index) + ' ' + (end === -1 ? after : after.slice(0, end));
+    } else {
+      attrs = semi === -1 ? rest : rest.slice(0, semi);
+    }
+    blocks.push({ name: m[1], attrs });
+  }
+  return blocks;
+}
+
+/**
+ * E066: detecta funções com SECURITY DEFINER sem pg_temp no SET search_path.
+ * Retorna array de nomes de funções problemáticas.
+ */
 export function detectSecurityDefinerWithoutPgTemp(sqlContent) {
   const executable = sqlContent.replace(/--[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
   const results = [];
-  // Captura blocos CREATE [OR REPLACE] FUNCTION ... SECURITY DEFINER
-  const fnRe = /CREATE\s+(?:OR\s+REPLACE\s+)?FUNCTION\s+([\w.]+)\s*\([^)]*\)[^;]*?SECURITY\s+DEFINER/gi;
-  let m;
-  while ((m = fnRe.exec(executable)) !== null) {
-    const fnName = m[1];
-    // Extrai o bloco da função até o próximo $$ ou LANGUAGE
-    const startIdx = m.index;
-    const snippet = executable.slice(startIdx, startIdx + 2000);
-    // Verifica se há SET search_path sem pg_temp
+  for (const { name, attrs } of functionAttributeBlocks(executable)) {
+    if (!/SECURITY\s+DEFINER/i.test(attrs)) continue;
     // pg_temp só vale dentro do valor do SET search_path (não no corpo da função)
-    const setPathMatch = /SET\s+search_path\s*(?:=|TO\b)([\s\S]*?)(?=\b(?:AS|LANGUAGE|SECURITY|STABLE|VOLATILE|IMMUTABLE|SET|COST|ROWS|PARALLEL|STRICT|RETURNS|CALLED|LEAKPROOF)\b|\$(?:[A-Za-z_]\w*)?\$|;|$)/i.exec(snippet);
-    const hasSetPath = setPathMatch !== null;
-    const hasPgTemp = hasSetPath && /pg_temp/i.test(setPathMatch[1]);
-    if (hasSetPath && !hasPgTemp) {
-      results.push(fnName);
-    } else if (!hasSetPath) {
-      // Sem SET search_path algum — também problemático
-      results.push(fnName);
-    }
+    const setPathMatch = /SET\s+search_path\s*(?:=|TO\b)([\s\S]*?)(?=\b(?:AS|LANGUAGE|SECURITY|STABLE|VOLATILE|IMMUTABLE|SET|COST|ROWS|PARALLEL|STRICT|RETURNS|CALLED|LEAKPROOF)\b|\$(?:[A-Za-z_]\w*)?\$|;|$)/i.exec(attrs);
+    if (!setPathMatch || !/pg_temp/i.test(setPathMatch[1])) results.push(name);
   }
   return results;
 }
@@ -235,10 +262,15 @@ export function detectSecurityDefinerWithoutPgTemp(sqlContent) {
 export function detectExtensionWithoutSchema(sqlContent) {
   const executable = sqlContent.replace(/--[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
   const results = [];
-  const re = /CREATE\s+EXTENSION\s+(?:IF\s+NOT\s+EXISTS\s+)?["']?(\w+)["']?(?!\s+WITH\s+SCHEMA)/gi;
+  // O nome é consumido inteiro (aspas incluídas) e a cauda do statement é checada à parte:
+  // com lookahead negativo direto o regex fazia backtrack no nome ("pg_trg") e bloqueava
+  // até `CREATE EXTENSION pg_trgm WITH SCHEMA extensions` (correto).
+  const re = /CREATE\s+EXTENSION\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:"([^"]+)"|(\w+))([^;]*)/gi;
   let m;
   while ((m = re.exec(executable)) !== null) {
-    results.push(m[1]);
+    if (!/\bWITH\s+SCHEMA\s+"?extensions"?\b|\bSCHEMA\s+"?extensions"?\b/i.test(m[3])) {
+      results.push(m[1] ?? m[2]);
+    }
   }
   return results;
 }

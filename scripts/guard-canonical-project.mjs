@@ -183,11 +183,21 @@ function runRuntimePhase() {
   console.log('\x1b[32m[OK]\x1b[0m Runtime code limpo.');
 
   console.log('[CI Guard] Fase 2/3 — Arquivos críticos contêm ID canônico…');
-  const criticalFiles = ['src/integrations/supabase/client.ts', 'supabase/config.toml'];
-  for (const file of criticalFiles) {
-    if (!fs.existsSync(file)) continue;
-    if (!fs.readFileSync(file, 'utf8').includes(CANONICAL_ID)) {
-      console.error('\x1b[31m[ERROR]\x1b[0m ID canônico ausente em ' + file);
+  // GUARD: o ID tem de estar na declaração real (não em comentário nem "em qualquer lugar"
+  // do arquivo) e o arquivo crítico não pode estar ausente.
+  const escapedId = CANONICAL_ID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const criticalFiles = [
+    ['src/integrations/supabase/client.ts', new RegExp('^[ \\t]*(?:export\\s+)?const\\s+CURRENT_PROJECT_ID\\s*=\\s*["\']' + escapedId + '["\']', 'm')],
+    ['supabase/config.toml', new RegExp('^[ \\t]*project_id\\s*=\\s*"' + escapedId + '"', 'm')],
+  ];
+  for (const [file, declaration] of criticalFiles) {
+    if (!fs.existsSync(file)) {
+      console.error('\x1b[31m[ERROR]\x1b[0m arquivo crítico ausente: ' + file);
+      return { ok: false, hits: [file + ' :: missing critical file'] };
+    }
+    const code = fs.readFileSync(file, 'utf8').replace(/^[ \t]*(?:\/\/|#).*$/gm, '');
+    if (!declaration.test(code)) {
+      console.error('\x1b[31m[ERROR]\x1b[0m declaração do ID canônico ausente em ' + file);
       return { ok: false, hits: [file + ' :: missing canonical id'] };
     }
   }
