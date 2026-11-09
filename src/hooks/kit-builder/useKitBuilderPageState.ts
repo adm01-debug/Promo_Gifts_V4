@@ -26,7 +26,6 @@ import {
   type KitBuilderFlow,
   type KitType,
 } from '@/lib/kit-builder';
-import type { KitOrigin } from '@/lib/kit-builder/types';
 import { logger } from '@/lib/logger';
 import { OCCASIONS, type Occasion } from '@/components/kit-builder/KitOccasionSelector';
 
@@ -226,11 +225,9 @@ export function useKitBuilderPageState() {
     isSaving: isAutoSaving,
     autoSavedKitId,
     autoSaveError,
-    isConflictError,
     retryLastSave,
     cancelPendingSave,
     acknowledgeManualSave,
-    consumeUnloadBackup,
   } = useKitAutoSave(
     kitState,
     kitQuantity,
@@ -371,20 +368,18 @@ export function useKitBuilderPageState() {
   }, [productIdParam, kitIdParam]);
 
   // Effects (Confetti, Title, etc.)
-  const prevIsValidRef = useRef(false);
   useEffect(() => {
-    const wasValid = prevIsValidRef.current;
-    prevIsValidRef.current = kitState.isValid;
-    // Only fire when transitioning invalid→valid, and respect prefers-reduced-motion
-    if (!wasValid && kitState.isValid && kitState.items.length > 0) {
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        confetti({
-          particleCount: 60,
-          spread: 70,
-          origin: { y: 0.85, x: 0.5 },
-          colors: [kitState.identity?.color || '#3B82F6'],
-        });
-      }
+    if (
+      kitState.isValid &&
+      kitState.items.length > 0 &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      confetti({
+        particleCount: 60,
+        spread: 70,
+        origin: { y: 0.85, x: 0.5 },
+        colors: [kitState.identity?.color || '#3B82F6'],
+      });
     }
   }, [kitState.identity?.color, kitState.isValid, kitState.items.length]);
 
@@ -455,7 +450,7 @@ export function useKitBuilderPageState() {
   );
 
   const startFlow = useCallback(
-    (flow: 'box-first' | 'items-first', origin?: KitOrigin) => {
+    (flow: 'box-first' | 'items-first', origin?: import('@/lib/kit-builder/types').KitOrigin) => {
       startNewFlow(flow, origin);
       setQuoteClient({});
       setAIBriefing(undefined);
@@ -547,7 +542,6 @@ export function useKitBuilderPageState() {
       applyAISuggestion,
       startFlow,
       setKitOrigin,
-      consumeUnloadBackup,
     },
     meta: {
       isSaving,
@@ -555,7 +549,6 @@ export function useKitBuilderPageState() {
       isCreatingQuote,
       lastSavedAt,
       autoSaveError,
-      isConflictError,
       pricing,
     },
   };

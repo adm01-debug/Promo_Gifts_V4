@@ -27,11 +27,10 @@ import {
   type KitBox,
   type KitItem,
 } from '@/lib/kit-builder';
-import type { KitOrigin } from '@/lib/kit-builder/types';
 import { useKitTemplates } from '@/hooks/kit-builder';
 
 interface KitMakerLandingProps {
-  onStart: (flow: 'box-first' | 'items-first', origin?: KitOrigin) => void;
+  onStart: (flow: 'box-first' | 'items-first', origin?: import('@/lib/kit-builder/types').KitOrigin) => void;
   occasion: Occasion | null;
   onOccasionChange: (occasion: Occasion | null) => void;
   aiCatalogItems: KitItem[];
@@ -58,7 +57,7 @@ interface FeaturedProduct {
 const BENEFITS = [
   {
     title: 'Validação inteligente',
-    description: 'Compatibilidade, ocupação e peso são verificados durante a montagem.',
+    description: 'Compatibilidade e ocupação são verificados durante a montagem.',
     Icon: PackageCheck,
   },
   {
