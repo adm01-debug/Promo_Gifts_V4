@@ -33,7 +33,7 @@ export async function validateKitMinQuantityForQuote(
       .select('id, effective_min_quantity')
       .in('id', productIds);
     if (error || !data) return { status: 'unavailable' };
-    rows = data;
+    rows = data.filter((r): r is { id: string; effective_min_quantity: number | null } => r.id !== null);
   } catch {
     return { status: 'unavailable' };
   }
