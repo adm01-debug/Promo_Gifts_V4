@@ -1,7 +1,22 @@
 ## Baseline main SHA — 2026-11-09
 
-SHA atual: 0818809dae41c295b046dc52f85078e4f06b3df4
-Commit: fix: corrige referencia de SHA de sentinela em check-sentinel-sha (PR #3278, merged by adm01-debug)
+SHA atual: 6b859b0fbfa95e34493900cf0137402e95e46823
+Commit: fix(migrations): idempotencia em RLS deny-all e particoes 2027 (PR #3257, merged by agente)
 Data: 2026-11-09
+
+Gate Final check_run_id: 129269658289
+Gate Final conclusao: success
+Gate Final run_id: 42648049808
+
+Gates confirmados neste SHA:
+- Gate 0 SSOT: id=129266551386, conclusion=success
+- Gate 1 Lint+TS: id=129266757585, conclusion=success
+- Gate 2 Unit Tests: id=129266757427, conclusion=success
+- Gate 2.5 PG Integrity: id=129266757467, conclusion=success
+- Gate 3 E2E Smoke: id=129266808851, conclusion=success
+- Gate 5 SEO: id=129266757809, conclusion=success
+- Gate 5.5 RPC: id=129266757602, conclusion=success
+- Gate 6 Build: id=129269100596, conclusion=success
+- Gate Final: id=129269658289, conclusion=success
 
 Verificado em sessao: session_01VXkRxWq5ZUCmvuNx5e2TGX
