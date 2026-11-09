@@ -1,8 +1,8 @@
 # PENDENCIAS.md — Workflows com falha não corrigível nesta sessão
 
 > Gerado em: 2026-11-08 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Atualizado em: 2026-11-09T00:30 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
-> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08, P-09 e causas exatas P-05/P-06; P-10 adicionado na validação de PR #3243; P-06 CORRIGIDO via PR #3245 merged d56979f6; P-11 e P-12 adicionados; P-13 adicionado — run pós-merge cancelado por runner saturation; P-14 adicionado — run Magazine Header stuck queued)
+> Atualizado em: 2026-11-09T00:45 · Sessão: https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
+> Critério: "último run na main = failure" (inventário de 2026-11-08T15h BRT; atualizado com P-08, P-09 e causas exatas P-05/P-06; P-10 adicionado na validação de PR #3243; P-06 CORRIGIDO via PR #3245 merged d56979f6; P-11 e P-12 adicionados; P-13 adicionado — run pós-merge cancelado por runner saturation; P-14 adicionado — run Magazine Header stuck queued; P-15–P-18 adicionados — sessão claude_05, classificação completa de 30 runs is:failure)
 
 ---
 
@@ -242,6 +242,78 @@
 
 ---
 
+### P-15 · PR Size Guard — PR #3266 excede 50 arquivos
+- **Workflow:** `.github/workflows/required-checks-guard.yml` (ou equivalente PR size check)
+- **Run falhante:** ID [42533717923](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42533717923), SHA `705eecee`, `conclusion=failure`
+- **Branch:** `claude/fix-pr3203-scripts-static-pass-261108-2250`
+- **PR:** [#3266](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3266) (sessão `01N1ArYR3CFaoFfXHZNhsqHq`)
+- **Causa raiz exata:** PR com 52 arquivos alterados excede o limite de 50 arquivos por PR. Erro exato do log:
+  ```
+  PR com 52 arquivos (>50) exige o label 'large-pr-approved'
+  ```
+  O guard bloqueia PRs grandes sem aprovação explícita do PO via label.
+- **Bloqueio real:** A PR não tem o label `large-pr-approved` adicionado.
+- **Acao necessaria (PO):**
+  1. Revisar PR #3266 em https://github.com/adm01-debug/Promo_Gifts_V4/pull/3266
+  2. Se aprovado: adicionar label `large-pr-approved` à PR (GitHub UI: PR → Labels → `large-pr-approved`)
+  3. CI re-roda automaticamente após o label ser adicionado
+  4. OU: solicitar ao agente que abriu a PR (sessão `01N1ArYR3CFaoFfXHZNhsqHq`) que divida em PRs menores (≤50 arquivos)
+- **Impacto:** Enquanto não resolvido, o run aparece em `is:failure` para o SHA `705eecee` desta branch; não bloqueia `main` pois PR não foi mergeada.
+
+---
+
+### P-16 · TS Unused Locals Ratchet — 1 unused local introduzido
+- **Workflow:** `.github/workflows/ts-unused-ratchet.yml` (ou `tsc-ratchet`)
+- **Run falhante:** ID [42533609333](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42533609333), SHA `2eecbd1c`, `conclusion=failure`
+- **Branch:** `claude/fix-price-rounding-mockup-261108-2305` (sessão `01N1ArYR3CFaoFfXHZNhsqHq`)
+- **Causa raiz exata:** 1 nova variável local não utilizada introduzida no commit `2eecbd1c`. Erro exato do log:
+  ```
+  FALHA noUnusedLocals ratchet: 1 erros (baseline: 0). Novos erros introduzidos: 1
+  ```
+  O ratchet em `scripts/tsc-unused-ratchet.sh` proíbe aumentar o baseline de erros `noUnusedLocals`.
+- **Bloqueio real:** A variável introduzida no SHA `2eecbd1c` não é utilizada — TypeScript com `noUnusedLocals: true` a detecta.
+- **Acao necessaria (agente/Dev):**
+  1. Localizar a variável não utilizada no diff do SHA `2eecbd1c` em `claude/fix-price-rounding-mockup-261108-2305`
+  2. Remover a declaração da variável ou utilizá-la corretamente
+  3. Commitar na mesma branch; CI re-roda automaticamente
+  4. Responsável: agente da sessão `01N1ArYR3CFaoFfXHZNhsqHq` (autora da branch)
+- **Impacto:** Enquanto não resolvido, o run aparece em `is:failure` para o SHA `2eecbd1c`; não bloqueia `main` pois PR não foi mergeada.
+
+---
+
+### P-17 · Stale branch intermediate failures — branch squash-mergeada (histórico)
+- **Descrição:** Conjunto de 6 runs `is:failure` em commits intermediários da branch `claude/fix-p06-product-card-desktop-261108-2043` (sessão `01Gd4dBfqdiob6wbwpb5cQLj`), que foi squash-mergeada em `main` como `d56979f6` via PR #3245.
+- **Runs afetados (todos históricos, branch morta):**
+  | Run ID | SHA | Workflow | Falha |
+  |---|---|---|---|
+  | [42533848046](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42533848046) | `a21e4960` | E2E ColorSwatch | Assertions falharam (76 min) em commit pós-squash da branch orphan |
+  | [42530352322](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42530352322) | `18cbb0b1` | Bundle size build | Vite/rollup build failure por UTF-8 corrompido (commit intermediário) |
+  | [42526386708](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42526386708) | `242c13af` | Bundle size build | Build failure (commit intermediário com UTF-8 corrompido) |
+  | [42526386616](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42526386616) | `242c13af` | E2E ColorSwatch | Falha pré-fix (sem data-skeleton, timeout 20s) |
+  | [42522184271](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42522184271) | `88275ead` | E2E ColorSwatch | Falha pré-fix |
+  | [42522184223](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42522184223) | `88275ead` | Bundle size build | Build failure (commit intermediário) |
+- **Status:** TODOS CORRIGIDOS em `main` via squash `d56979f6`. Os runs `is:failure` são artefatos permanentes do histórico de commits da branch durante o desenvolvimento — não representam falhas no código atual de `main`.
+- **Causa dos runs em `is:failure`:** GitHub Actions mantém o registro de runs para todos os SHAs, mesmo de branches deletadas. Squash merge cria um novo SHA (`d56979f6`) descartando o histórico da branch; os runs dos commits intermediários (`88275ead`, `242c13af`, `18cbb0b1`, `a21e4960`) permanecem com `conclusion=failure` para sempre.
+- **Acao necessaria:** Nenhuma — histórico imutável. O código corrigido está em `main` (SHA `d56979f6`). Verificar sempre o estado do HEAD de `main`, não de branches mortas.
+
+---
+
+### P-18 · Required Checks Guard + Deploy Gates — cascata via P-12
+- **Workflows:** `.github/workflows/required-checks-guard.yml` e `.github/workflows/deploy-gates.yml`
+- **Runs falhantes:**
+  | Run ID | SHA | Workflow | Falha |
+  |---|---|---|---|
+  | [42523613235](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42523613235) | `03c17737` | Required Checks Guard | Cascata de P-12 |
+  | [42523613379](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42523613379) | `03c17737` | Deploy Gates | Cascata de P-12 |
+- **Branch:** `claude/chore-workflows-snapshot-261108-2230` (sessão `01N1ArYR3CFaoFfXHZNhsqHq`)
+- **PR:** [#3247](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3247) (sessão `01N1ArYR3CFaoFfXHZNhsqHq`)
+- **Causa raiz:** Magazine typed queries (P-12) falha no SHA `03c17737` por ratchet de queries sem tipo no módulo Magazine. Required Checks Guard e Deploy Gates exigem que todos os checks obrigatórios passem — quando P-12 falha, esses workflows também falham em cascata.
+- **Bloqueio real:** P-12 (Magazine typed queries) precisa ser corrigido antes que esses workflows possam passar.
+- **Acao necessaria:** Resolver P-12 primeiro (corrigir queries Magazine com FROM sem tipo explícito). Após P-12 verde, Required Checks Guard e Deploy Gates passarão automaticamente no próximo run.
+- **Impacto:** Enquanto não resolvido, os runs aparecem em `is:failure` para o SHA `03c17737`; não bloqueiam `main` se PR #3247 não for mergeada com esses checks vermelhos.
+
+---
+
 ## Resumo por categoria de bloqueio
 
 | Código | Descrição | Responsável |
@@ -259,6 +331,9 @@
 | CASCATA | Bloqueado por outro item | Ver item referenciado |
 | APP-CHECK | GitHub App check advisory | Automatico após P-02 + P-07 |
 | CANCEL-STUCK | Cancel solicitado mas nao processado pelo GitHub; risco de failure se runner disponivel | PO — adicionar secrets ou monitorar run |
+| LABEL-MISSING | PR > 50 arquivos sem label `large-pr-approved` | PO — adicionar label ou dividir PR |
+| RATCHET-FAIL | Ratchet de qualidade aumentado por novo código | Agente/Dev — corrigir unused local na branch |
+| STALE-BRANCH | Falhas em commits intermediários de branch squash-mergeada | Nenhuma — histórico imutável; fix em main |
 
 | Item | Categoria | Urgência |
 |---|---|---|
@@ -273,6 +348,10 @@
 | P-09 (sentinel 0409c07f) | ✅ CORRIGIDO — PR #3240 mergeada (`5aed391b`) | — |
 | P-10 (categories indexes out-of-band) | DRIFT-INDEX — 3 índices `categories` sem migration | Baixa |
 | P-11 (copilot code review) | COPILOT-LICENSE — GitHub Copilot Business | Baixa — PO ativa licença ou desativa workflow |
-| P-12 (magazine typed queries) | NO-DISPATCH — sem trigger manual + ratchet falha | Baixa — Dev corrige queries Magazine |
+| P-12 (magazine typed queries) | NO-DISPATCH — sem trigger manual + ratchet falha | Média — bloqueia P-18 em cascata |
 | P-13 (e2e colorswatch run pos-merge) | RUNNER-SAT — run cancelado; fix em main (`d56979f6`) | Baixa — re-disparar quando runners disponíveis |
 | P-14 (e2e magazine header run stuck) | CANCEL-STUCK — risco failure antes de 05:29Z | ALTA — adicionar secrets P-05 ou monitorar |
+| P-15 (pr-size-guard PR #3266) | LABEL-MISSING — 52 arquivos sem `large-pr-approved` | Média — PO aprova ou divide a PR |
+| P-16 (ts-unused-ratchet branch fix-price-rounding) | RATCHET-FAIL — 1 unused local | Baixa — agente da sessão `01N1ArYR3CFaoFfXHZNhsqHq` corrige |
+| P-17 (stale branch intermediary failures) | STALE-BRANCH — histórico imutável de branch morta | Nenhuma — código correto em main |
+| P-18 (required-checks + deploy-gates cascata P-12) | CASCATA (P-12) | Média — automatico após P-12 resolvido |
