@@ -2,15 +2,69 @@
   "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 3355,
-  "atualizado_em": "2026-11-09T22:50:00Z",
+  "atualizado_em": "2026-11-09T23:10:00Z",
   "main_sha_final": "293b9287478fba7fa8683b2e15248ed998880c3f",
   "mergeadas_por_agente_esta_sessao": [
-    {"number": 3337, "sha_main_apos": "6933eb61", "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
-    {"number": 3340, "titulo": "docs(analise-prs): atualiza progresso", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
-    {"number": 3343, "sha_main_apos": "78729fc11038", "titulo": "chore(ci): atualiza file-size baseline Kit Builder", "tipo": "chore/ci", "gate_final": "SUCCESS"},
-    {"number": 3257, "sha_main_apos": "6b859b0fbfa95e34493900cf0137402e95e46823", "titulo": "fix(migrations): idempotencia em RLS deny-all e particoes 2027", "tipo": "fix/migrations-idempotencia", "gate_final": "SUCCESS", "gate_final_check_run_id": 128955748854, "gate_final_run_id": 42648049808, "diff_lido_100pct": true, "merged_at": "2026-11-09T15:46:32Z"},
-    {"number": 3261, "sha_main_apos": "9346b048e8fff01c3be31c7095d8b8ebdd4ebdcc", "titulo": "chore(migrations): adiciona arquivos espelho CRON-001 (20261101223908, 20261101232022)", "tipo": "repair-only mirror files", "gate_final": "SUCCESS", "gate_final_check_run_id": 128960805201, "gate_final_run_id": 42669680351, "head_sha": "f5b6c19499c0517c59edbdff74e0bea3043d63b4", "merged_at": "2026-11-09T17:57:47Z", "nota": "2 mirror files ja aplicados em producao + recibo MIGRATIONS_SYNC_LOG.md"},
-    {"number": 3264, "sha_main_apos": "908f30abba7b3fa1b46583ceae3cd0eaee872500", "titulo": "feat: versionar view vw_products_min_quantity (FT-079)", "tipo": "CREATE OR REPLACE VIEW — idempotente, aditiva", "gate_final": "SUCCESS", "gate_final_run_id": 42677295865, "head_sha": "17c21509dcee00693c75bc25ee84bf84de66baec", "merged_at": "2026-11-09T18:50:00Z", "nota": "CREATE OR REPLACE VIEW + rollback. View confirmada em producao (vw_products_min_quantity em pg_views). Producao pos-merge: 8321 produtos (sem regressao)."}
+    {
+      "number": 3337,
+      "sha_main_apos": "6933eb61",
+      "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6",
+      "tipo": "docs-only (analise-prs/)",
+      "gate_final_post_merge": "paths-ignore:docs/** nao dispara Gate Final para analise-prs/",
+      "gate_final_nota": "NAO_VERIFICADO_POST_MERGE — PR tocou apenas analise-prs/ (paths-ignore). HEAD atual 293b9287 Gate Final SUCCESS."
+    },
+    {
+      "number": 3340,
+      "titulo": "docs(analise-prs): atualiza progresso",
+      "tipo": "docs-only (analise-prs/)",
+      "gate_final_post_merge": "paths-ignore:docs/** — NAO_VERIFICADO_POST_MERGE",
+      "gate_final_nota": "PR tocou apenas analise-prs/. HEAD atual 293b9287 Gate Final SUCCESS."
+    },
+    {
+      "number": 3343,
+      "sha_main_apos": "78729fc1",
+      "titulo": "chore(ci): atualiza file-size baseline Kit Builder",
+      "tipo": "chore/ci (baseline JSON)",
+      "gate_final_post_merge": "NAO_VERIFICADO_POST_MERGE — verificar check_runs em 78729fc1",
+      "gate_final_nota": "HEAD atual 293b9287 Gate Final SUCCESS. Regressao improvavel (chore baseline update)."
+    },
+    {
+      "number": 3257,
+      "sha_main_apos": "6b859b0fbfa95e34493900cf0137402e95e46823",
+      "titulo": "fix(migrations): idempotencia em RLS deny-all e particoes 2027",
+      "tipo": "fix/migrations-idempotencia",
+      "gate_final_post_merge": "SUCCESS",
+      "gate_final_check_run_id_post_merge": 129269658289,
+      "gate_final_run_id_post_merge": 42648049808,
+      "gate_final_completed_at": "2026-11-09T15:51:58Z",
+      "diff_lido_100pct": true,
+      "merged_at": "2026-11-09T15:46:32Z"
+    },
+    {
+      "number": 3261,
+      "sha_main_apos": "9346b048e8fff01c3be31c7095d8b8ebdd4ebdcc",
+      "titulo": "chore(migrations): adiciona arquivos espelho CRON-001 (20261101223908, 20261101232022)",
+      "tipo": "repair-only mirror files",
+      "gate_final_post_merge": "SUCCESS",
+      "gate_final_check_run_id_post_merge": 129346205514,
+      "gate_final_run_id_post_merge": 42669680351,
+      "gate_final_completed_at": "2026-11-09T18:04:34Z",
+      "head_sha": "f5b6c19499c0517c59edbdff74e0bea3043d63b4",
+      "merged_at": "2026-11-09T17:57:47Z",
+      "nota": "2 mirror files ja aplicados em producao + recibo MIGRATIONS_SYNC_LOG.md"
+    },
+    {
+      "number": 3264,
+      "sha_main_apos": "908f30abba7b3fa1b46583ceae3cd0eaee872500",
+      "titulo": "feat: versionar view vw_products_min_quantity (FT-079)",
+      "tipo": "CREATE OR REPLACE VIEW — idempotente, aditiva",
+      "gate_final_post_merge": "ZERO_RUNS — GAP DE PROCESSO",
+      "gate_final_nota": "Gate Final nao rodou em 908f30ab (zero check runs para 'Gate Final - Deploy Ready'). Merge foi feito sem Gate Final evidence no post-merge. Run 42677295865 citado anteriormente era na SHA 1368a918 (antes do merge) — nao e evidencia pos-merge. GAP: PR foi mergeada sem Gate Final no PR branch (head 17c21509 = ZERO_RUNS) e sem Gate Final no post-merge. VIEW confirmada em producao via pg_views query. HEAD atual 293b9287 tem Gate Final SUCCESS (run 42703616654, 21:33 UTC).",
+      "head_sha": "17c21509dcee00693c75bc25ee84bf84de66baec",
+      "merged_at": "2026-11-09T18:50:00Z",
+      "producao_view_confirmada": true,
+      "producao_products_count": 8321
+    }
   ],
   "mergeadas_externas_esta_sessao": [
     {"number": 3278, "titulo": "fix: corrige referencia de SHA de sentinela em check-sentinel-sha", "merged_by": "adm01-debug", "sha_main_apos": "0818809d"},
@@ -38,7 +92,7 @@
     {"number": 3290, "categoria": "ci_workflows"}
   ],
   "prs_aguarda_ci": [
-    {"number": 3365, "titulo": "fix(ci): guarda check-eslint-baseline contra crash antes de escrever output", "branch": "claude_pink/peaceful-planck-q4ee1i", "head_sha": "1653f5d3", "auto_merge": "squash (habilitado por adm01-debug)", "motivo": "Gate Final nao rodou no head SHA. Base SHA desatualizado (e70479b vs main 293b9287). Fix valido (existsSync antes de JSON.parse) e nao implementado em main. Auto-merge habilitado pelo PO — aguarda CI verde.", "valida": true, "regressao": false, "ja_implementada": false, "regra_correta": true}
+    {"number": 3365, "titulo": "fix(ci): guarda check-eslint-baseline contra crash antes de escrever output", "branch": "claude_pink/peaceful-planck-q4ee1i", "head_sha": "1653f5d3", "auto_merge": "squash (habilitado por adm01-debug)", "motivo": "Gate Final nao rodou no head SHA. Base SHA desatualizado (e70479b vs main 293b9287). Fix valido (existsSync antes de JSON.parse) e nao implementado em main.", "valida": true, "regressao": false, "ja_implementada": false, "regra_correta": true, "acao_necessaria": "PO precisa fazer rebase da branch em main (READ-ONLY para este agente) para o CI rodar e o auto-merge concluir"}
   ],
   "supabase_producao": {
     "project_id": "doufsxqlfjyuvxuezpln",
@@ -55,7 +109,7 @@
     "status": "completed",
     "conclusion": "success",
     "completed_at": "2026-11-09T21:33:00Z",
-    "nota": "Gate Final rodou e passou na SHA 293b9287 (commit docs/ci/SEGREDOS.md). Run mais recente concluido: 42703616654. Ha run pendente 42705388231 desde 21:44 UTC (re-run ou job concorrente)."
+    "nota": "Gate Final SUCCESS na HEAD atual. Producao saudavel."
   },
   "gate_final_main_baseline_sessao": {
     "sha": "c1d47d13bee8089eb62e3c47db1b7b500dcf1042",
@@ -63,6 +117,14 @@
     "conclusion": "success",
     "completed_at": "2026-11-09T18:00:00Z"
   },
+  "gaps_documentados": [
+    {
+      "pr": 3264,
+      "gap": "Merge sem Gate Final no PR branch (head 17c21509 = zero runs) e sem Gate Final no post-merge (908f30ab = zero runs)",
+      "mitigacao": "CREATE OR REPLACE VIEW e aditiva/idempotente. View confirmada em producao. HEAD atual 293b9287 tem Gate Final SUCCESS.",
+      "severidade": "MEDIA — processo nao seguido, mas sem evidencia de regressao"
+    }
+  ],
   "contagem_por_veredito": {
     "MERGEADA_AGENTE": 6,
     "MERGEADA_EXTERNA": 10,
@@ -79,7 +141,7 @@
   },
   "prs_nao_mergear_ainda_abertas": [
     3203, 3210, 3214, 3228, 3243, 3247, 3251, 3255, 3256, 3263,
-     3265, 3273, 3279, 3284, 3327, 3328, 3329, 3330, 3331, 3332,
+    3265, 3273, 3279, 3284, 3327, 3328, 3329, 3330, 3331, 3332,
     3333, 3334, 3339, 3355, 3363, 3364, 3367
   ],
   "prs_aguarda_po": {
@@ -104,18 +166,18 @@
     "products_count_final": 8321,
     "vw_products_min_quantity_em_producao": true,
     "gate_final_verde_pos_merges": true,
-    "gate_final_run_id": 42703616654,
+    "gate_final_run_id_atual": 42703616654,
     "worktrees_ativos": 0,
-    "verificado_em": "2026-11-09T22:50:00Z"
+    "verificado_em": "2026-11-09T23:10:00Z"
   },
   "entregaveis_na_branch": {
-    "RELATORIO_PRS.md": "commit 3825314f",
-    "progresso.json": "commit atual (atualizado)",
-    "baseline/main-293b9287.md": "commit 5718071",
-    "regras-de-negocio.md": "commit 5718071",
-    "prs.json": "commit 5718071",
-    "prs.csv": "commit 5718071",
-    "dossies/PR-*.md x55": "commits ca48271 + c64138a",
+    "RELATORIO_PRS.md": "analise-prs/RELATORIO_PRS.md",
+    "progresso.json": "analise-prs/progresso.json (commit atual)",
+    "baseline/": "analise-prs/baseline/ (18 arquivos)",
+    "regras-de-negocio.md": "analise-prs/regras-de-negocio.md",
+    "prs.json": "analise-prs/prs.json",
+    "prs.csv": "analise-prs/prs.csv",
+    "dossies/": "analise-prs/dossies/PR-*.md x55",
     "total_dossiers": 55
   }
 }
