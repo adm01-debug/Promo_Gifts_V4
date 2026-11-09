@@ -63,7 +63,7 @@
 
 **Causa raiz confirmada:** Run `39698009932` (Contract Tests, branch `claude/laughing-cori-o9w35e`) está em estado zombie `in_progress` desde 2026-10-22T00:09:55Z (18+ dias). `updated_at: 2026-10-22T00:11:10Z` — runner parou de reportar ~1 min após iniciar.
 
-- Tentativa de cancel via API: 409 "Cannot cancel a workflow run that is not in progress"
+- Tentativa de cancel via API: 409 "Cannot cancel a workflow run that is not in progress" (run está num estado inconsistente que a API não consegue cancelar)
 - Tentativa de force_cancel via API: 409 idem
 - **Requer intervenção humana:** cancelar manualmente em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39698009932
 
