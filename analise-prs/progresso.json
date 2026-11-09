@@ -31,25 +31,30 @@
   "prs_aguarda_ci": [
     {"number": 3346, "titulo": "fix(tests): corrige regressões vitest onLogoRemove, consumeUnloadBackup", "draft": true, "head_sha": "5c376fe3bc451b27f42c25e08c05b0acec388d3d", "motivo": "DRAFT, todos checks queued — runner saturation"},
     {"number": 3345, "draft": true, "motivo": "DRAFT, todos checks queued — runner saturation"},
-    {"number": 3344, "motivo": "CI red — NÃO_MERGEAR até fix"},
-    {"number": 3339, "motivo": "REGRA #10 — codex/* branch, merge possível se CI verde"},
     {"number": 3290, "draft": true, "motivo": "DRAFT"},
     {"number": 3278, "draft": true, "motivo": "DRAFT"},
     {"number": 3214, "draft": true, "motivo": "DRAFT"},
-    {"number": 3210, "motivo": "release-please, checks queued"},
-    {"number": 3137, "motivo": "REGRA #10 — codex/* branch"},
-    {"number": 3129, "motivo": "REGRA #10 — codex/* branch"},
-    {"number": 3127, "motivo": "REGRA #10 — codex/* branch"}
+    {"number": 3137, "motivo": "codex/* — Gate 1=cancelled, sem Gate Final"},
+    {"number": 3127, "motivo": "codex/* — sem Gate Final ainda"}
+  ],
+  "prs_nao_mergear_adicional": [
+    {"number": 3339, "motivo": "Gate Final=FAILURE, codex/* branch"},
+    {"number": 3344, "motivo": "Gate Final=FAILURE, Gate 1=FAILURE — precisa rebase"}
+  ],
+  "prs_aguarda_po_adicional": [
+    {"number": 3210, "motivo": "release-please 1.9.0 — contém migration (Supabase Preview FAILURE: categories.level), AGUARDA_PO"},
+    {"number": 3129, "motivo": "codex/infra-e2e-ci-pressure — Gate Final=SUCCESS mas altera 8 workflows (.github/), AGUARDA_PO"}
   ],
   "contagem_por_veredito": {
     "MERGEADA_AGENTE": 3,
     "MERGEADA_EXTERNA": 2,
-    "NÃO_MERGEAR": 3,
-    "AGUARDA_CI": 11,
+    "NÃO_MERGEAR": 5,
+    "AGUARDA_CI": 7,
     "AGUARDA_CI_OU_PO": 1,
-    "AGUARDA_PO": 24,
-    "TOTAL_OPEN_PRs": 38
+    "AGUARDA_PO": 26,
+    "TOTAL_OPEN_PRs": 38,
+    "VERIFICADO_EXAUSTIVO": true
   },
-  "atualizado_em_sessao2": "2026-11-09T18:00:00Z",
-  "nota": "PR #3346 é novo (criado por outro agente Claude após sessão 1). PR #3277 e #3203 confirmados Gate Final=FAILURE (merge-reports)."
+  "atualizado_em_sessao3": "2026-11-09T19:00:00Z",
+  "nota": "Sessão 3: análise completa dos 38 PRs. #3339=NÃO_MERGEAR(Gate Final=FAILURE). #3129=AGUARDA_PO(modifica .github/workflows). #3210=AGUARDA_PO(release-please+migration). #3127/#3137=AGUARDA_CI(sem Gate Final). Sem mais merges possíveis além dos 3 já feitos."
 }
