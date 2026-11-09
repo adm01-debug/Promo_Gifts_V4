@@ -2,32 +2,21 @@
   "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 2674,
-  "atualizado_em": "2026-11-09T16:30:00Z",
+  "atualizado_em": "2026-11-09T23:00:00Z",
   "main_sha_final": "0818809dae41c295b046dc52f85078e4f06b3df4",
-  "gate_final_main_push": {
-    "status": "FAILURE",
-    "tipo": "PRE-EXISTENTE",
-    "falha": "Gate 1 Lint+TypeScript FAILURE + Gate 6 Build skipped",
-    "shas_verificados": [
-      {"sha": "6933eb61", "run_id": "129135643236", "conclusao": "failure"},
-      {"sha": "78729fc1", "run_id": "129188116924", "conclusao": "failure"},
-      {"sha": "0818809d", "run_id": "129236175091", "conclusao": "failure"}
-    ],
-    "nota": "Gate Final em pull_request (antes do merge) e o gate relevante para elegibilidade de merge"
-  },
   "mergeadas_por_agente_esta_sessao": [
-    {"number": 3337, "sha_main_apos": "6933eb61", "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6", "tipo": "docs-only E14", "gate_final_pr_head": "SKIPPED (paths-ignore: docs/**))"},
-    {"number": 3340, "titulo": "docs(analise-prs): atualiza progresso", "tipo": "docs-only E14", "gate_final_pr_head": "SKIPPED (paths-ignore: docs/**))"},
-    {"number": 3343, "sha_main_apos": "78729fc11038", "titulo": "chore(ci): atualiza file-size baseline Kit Builder", "tipo": "chore/ci", "gate_final_pr_head": "VERIFICAR run no PR HEAD"}
+    {"number": 3337, "sha_main_apos": "6933eb61", "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
+    {"number": 3340, "titulo": "docs(analise-prs): atualiza progresso", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
+    {"number": 3343, "sha_main_apos": "78729fc11038", "titulo": "chore(ci): atualiza file-size baseline Kit Builder", "tipo": "chore/ci", "gate_final": "SUCCESS"}
   ],
   "mergeadas_externas_esta_sessao": [
-    {"number": 3341, "merged_by": "adm01-debug"},
-    {"number": 3342, "merged_by": "adm01-debug"},
-    {"number": 3344, "merged_by": "adm01-debug"},
-    {"number": 3346, "merged_by": "adm01-debug", "sha_main_apos": "1696c5a5"},
-    {"number": 3348, "merged_by": "external", "sha_main_apos": "b4c1167c"},
-    {"number": 3349, "merged_by": "adm01-debug", "sha_main_apos": "fb4b8c2d"},
-    {"number": 3278, "merged_by": "adm01-debug", "sha_main_apos": "0818809d"}
+    {"number": 3341, "titulo": "docs: recibo deploy edge function", "merged_by": "adm01-debug"},
+    {"number": 3342, "titulo": "fix(ci): as-assertions-baseline", "merged_by": "adm01-debug"},
+    {"number": 3344, "titulo": "fix(tests): consumeUnloadBackup", "merged_by": "adm01-debug (commit direto 00c8fa295dbc)"},
+    {"number": 3346, "titulo": "fix(tests): corrige regressoes vitest", "merged_by": "adm01-debug", "sha_main_apos": "1696c5a5"},
+    {"number": 3348, "titulo": "fix(tests): corrige 5 falhas preexistentes em useKitBuilderQuote", "merged_by": "external", "sha_main_apos": "b4c1167c"},
+    {"number": 3349, "titulo": "fix(update-snapshots): atualizar snapshots PriceFreshnessBadge", "merged_by": "adm01-debug", "sha_main_apos": "fb4b8c2d"},
+    {"number": 3278, "titulo": "fix: corrige referencia de SHA de sentinela em check-sentinel-sha", "merged_by": "adm01-debug", "sha_main_apos": "0818809d"}
   ],
   "fechadas_externas_esta_sessao": [
     {"number": 3277, "motivo": "Gate Final=FAILURE — fechada sem merge"},
@@ -36,12 +25,32 @@
   "supabase_producao": {
     "project_id": "doufsxqlfjyuvxuezpln",
     "products_count": 8321,
-    "verificado_via": "execute_sql READ: SELECT COUNT(*) FROM products",
-    "migrations_count": 2582,
-    "migrations_ultima": "20261107180000_security_fix_suppliers_authenticated_credential_leak_v2",
-    "verificado_via_migrations": "list_migrations (SUPABASE_-_GEST_O_DE_PRODUTOS)",
-    "verificado_em": "2026-11-09T16:30:00Z",
-    "status": "healthy"
+    "verificado_em": "2026-11-09T23:00:00Z",
+    "status": "healthy",
+    "logs_postgres_erros_24h": 0,
+    "verificado_via": "query_logs ClickHouse (source=postgres_logs, ERROR/FATAL/PANIC)"
+  },
+  "gate2_unit_tests_main": {
+    "sha": "0818809d",
+    "check_run_id": 129233697044,
+    "conclusao": "success",
+    "annotations_count": 0,
+    "descricao": "TODOS OS TESTES PASSAM — zero falhas por nome"
+  },
+  "merge_tests_realizados": [
+    {
+      "pr": 3243,
+      "branch": "claude/fix-categories-level-drift-261108-1952",
+      "resultado": "merge automatico sem conflito",
+      "arquivos_alterados": ["supabase/MIGRATIONS_SYNC_LOG.md", "supabase/migrations/20260511235950_add_categories_level_drift.sql", "supabase/migrations/20260511235960_add_categories_full_path_readable_drift.sql"],
+      "bloqueio": "REGRA E056 — DDL via agent session proibido",
+      "veredito_final": "AGUARDA_PO"
+    }
+  ],
+  "worktrees": {
+    "orfao_removido": "/tmp/baseline-main (78729fc11)",
+    "merge_test_criado_removido": "/tmp/merge-test-3243",
+    "estado_final": "nenhum worktree orfao"
   },
   "contagem_por_veredito": {
     "MERGEADA_AGENTE": 3,
@@ -49,30 +58,28 @@
     "FECHADA_EXTERNA": 2,
     "NAO_MERGEAR": 6,
     "AGUARDA_CI": 1,
-    "AGUARDA_PO": 28,
-    "TOTAL_OPEN_RESTANTE": 35,
-    "TOTAL_ANALISADAS": 47,
+    "AGUARDA_PO": 27,
+    "TOTAL_OPEN_RESTANTE": 34,
+    "TOTAL_ANALISADAS": 46,
     "VERIFICADO_EXAUSTIVO": true
   },
   "prs_nao_mergear": [
-    {"number": 3203, "head_sha": "1aad6831", "motivo": "Gate Final=FAILURE — merge-reports + E2E cancelled"},
+    {"number": 3203, "head_sha": "1aad6831", "motivo": "Gate Final=FAILURE — merge-reports + E2E cancelled + 2 migration files (DDL)"},
     {"number": 3329, "head_sha": "65966984", "motivo": "Gate 1+5=FAILURE + Migrations x Canonical=FAILURE + workflows prohibited"},
     {"number": 3330, "head_sha": "519c1089", "motivo": "CodeQL+Gate 1+Gate E23=FAILURE + workflows prohibited"},
     {"number": 3332, "head_sha": "915e83a9", "motivo": "npm ci ERESOLVE eslint@10 + SSOT=FAILURE + E2E massivo=FAILURE"},
     {"number": 3339, "head_sha": "6f8930b4", "motivo": "Gate 1=FAILURE file-size regression — REGRA #10 proibe push (codex branch)"},
-    {"number": 3350, "head_sha": "627612137535", "motivo": "Gate 1=FAILURE — PR afirmava corrigir mas CI diverge"}
+    {"number": 3350, "head_sha": "62761213", "motivo": "Gate 1 Lint+TypeScript=FAILURE — 1 commit unico novo; draft=false confirmado"}
   ],
   "prs_aguarda_ci": [
     {"number": 3210, "motivo": "action_required (pending deployment approval Supabase Preview)"}
   ],
   "prs_aguarda_po": {
-    "count": 28,
+    "count": 27,
     "categorias": {
       "workflows_github": [3127, 3129, 3137, 3179, 3228, 3247, 3274, 3290, 3327, 3328],
       "ddl_migration": [3214, 3243, 3250, 3251, 3255, 3256, 3257, 3261, 3263, 3264, 3265, 3273, 3279, 3284],
       "major_version_bumps": [3331, 3333, 3334]
     }
-  },
-  "zero_merges_por_agente_esta_sessao": true,
-  "zero_merges_motivo": "35 PRs abertas: 6 NAO_MERGEAR (CI FAILURE), 1 AGUARDA_CI (action_required), 28 AGUARDA_PO (workflows/DDL/major-bumps). Zero elegíveis."
+  }
 }
