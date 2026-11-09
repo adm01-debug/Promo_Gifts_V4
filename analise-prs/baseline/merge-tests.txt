@@ -32,8 +32,12 @@
 3364 | CLEAN  | 6 files  |  6709+/5574- | none — front + scripts (draft)
 3367 | CLEAN  | 4 files  |  6907+/5543- | none — src/hooks/kit-builder/ + src/pages/kit-builder/ (AGUARDA_CI zombie)
 3368 | CLEAN  | 5 files  |  7402+/5665- | none — .eslint-baseline.json +540 linhas RATCHET_VIOLATION (draft)
+3369 | DIRTY  | - | - | analise-prs/RELATORIO_PRS.md,analise-prs/baseline/build.txt,analise-prs/baseline/lint.txt,analise-prs/baseline/main-sha.txt,analise-prs/baseline/state.md — base 5098c8d4; CLEAN contra 293b9287
+3370 | DIRTY  | - | - | analise-prs/RELATORIO_PRS.md,analise-prs/baseline/build.txt,analise-prs/baseline/lint.txt,analise-prs/baseline/main-sha.txt,analise-prs/baseline/state.md — base 5098c8d4; CLEAN contra 293b9287
+3371 | DIRTY  | - | - | analise-prs/RELATORIO_PRS.md,analise-prs/baseline/build.txt,analise-prs/baseline/lint.txt,analise-prs/baseline/main-sha.txt,analise-prs/baseline/state.md — base 5098c8d4; CLEAN contra 293b9287
 
 # RESUMO
-# CLEAN (git level):  25 PRs
-# CONFLICT (git level): 5 PRs (3203,3214,3243,3255,3284,3339,3355) — 7 total
-# ZERO PRs mergeáveis hoje: Gate Final QUEUED (zombie 39698009932) + governança + draft
+# CLEAN (git level, base 293b9287):  28 PRs
+# DIRTY (conflito analise-prs/ por delivery branch, base 5098c8d4): 3 PRs (3369,3370,3371) — CLEAN contra base original 293b9287
+# CONFLICT (git level): 7 PRs (3203,3214,3243,3255,3284,3339,3355)
+# ZERO PRs mergeáveis hoje: Gate Final QUEUED (zombie 39698009932) + governança + draft + DIRTY
