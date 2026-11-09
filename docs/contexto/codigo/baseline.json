@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0818809dae41c295b046dc52f85078e4f06b3df4",
+  "commit": "973864d73691eb2b82d6a151b6b6398cec8286be",
   "branch": "main",
-  "data_commit": "2026-11-09T11:49:19-03:00",
+  "data_commit": "2026-11-09T12:08:45-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "973864d",
+    "data": "2026-11-09",
+    "assunto": "fix(ci): atualiza baseline Gate 1.3 — remove referência já resolvida de 20260511235970 (#3352)"
+   },
+   {
+    "sha": "586f454",
+    "data": "2026-11-09",
+    "assunto": "chore(sentinel): grandfather SHA fb4b8c2d87 do PR #3349 (#3351)"
+   },
    {
     "sha": "0818809",
     "data": "2026-11-09",
@@ -121,16 +131,6 @@
     "sha": "16995de",
     "data": "2026-11-09",
     "assunto": "docs(analise-prs): RELATORIO_PRS.md — dossiê completo 32 PRs + META CUMPRIDA (#3314)"
-   },
-   {
-    "sha": "00493c3",
-    "data": "2026-11-09",
-    "assunto": "docs(analise-prs): progresso.json v4 — estado real corrigido (13 mergeadas, 32 abertas, zombie bloqueando CI)"
-   },
-   {
-    "sha": "0dfb3ef",
-    "data": "2026-11-09",
-    "assunto": "docs(analise-prs): RELATORIO_DEFINITIVO — dossiê completo com evidências de CI"
    }
   ],
   "arquivos_mudados_7d": 498,
@@ -250,6 +250,10 @@
     "mudancas": 7
    },
    {
+    "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
+    "mudancas": 6
+   },
+   {
     "arquivo": ".github/workflows/replenishment-quality.yml",
     "mudancas": 6
    },
@@ -268,10 +272,6 @@
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 6
-   },
-   {
-    "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
-    "mudancas": 5
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
