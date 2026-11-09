@@ -70,6 +70,10 @@ export default function KitBuilderPage() {
         backup.kitId === state.autoSavedKitId;
 
       if (sameKit) {
+        // If on landing, transition to editor first so the restored content
+        // is immediately visible. startFlow must run before loadKit to avoid
+        // startNewFlow clearing the data that restoreFromBackup just loaded.
+        if (state.isLanding) actions.startFlow('items-first', 'manual');
         actions.restoreFromBackup(backup.fullState);
         toast.info('Alterações restauradas', {
           description: 'Suas edições não salvas foram recuperadas automaticamente.',
@@ -78,13 +82,24 @@ export default function KitBuilderPage() {
         return;
       }
 
-      // Case 2: different kit loaded — offer to switch and restore.
+      // Case 2: different kit loaded.
+      // When backup.kitId is set, navigate to that kit so the content is
+      // restored under the correct identity — calling restoreFromBackup here
+      // would load the data but keep currentKitId pointing at the current kit,
+      // causing auto-save to overwrite it after 5 s.
       toast.warning('Edições não salvas de outro kit', {
         description: 'Você fechou o Kit Maker com edições pendentes em outro kit.',
         action: {
-          label: 'Restaurar edições',
+          label: backup.kitId ? 'Reabrir kit' : 'Restaurar edições',
           onClick: () => {
-            actions.restoreFromBackup(backup.fullState!);
+            if (backup.kitId) {
+              window.location.href = `/montar-kit?kit=${backup.kitId}`;
+            } else {
+              // Unsaved new kit: start a fresh flow so auto-save creates a new
+              // record instead of overwriting the currently loaded kit.
+              actions.startFlow('items-first', 'manual');
+              actions.restoreFromBackup(backup.fullState!);
+            }
             toast.dismiss();
           },
         },
@@ -105,7 +120,7 @@ export default function KitBuilderPage() {
       },
       duration: 10_000,
     });
-  }, [state.isHydrating, state.currentKitId, state.autoSavedKitId, actions]);
+  }, [state.isHydrating, state.currentKitId, state.autoSavedKitId, state.isLanding, actions]);
 
   useKitWizardShortcuts({
     enabled: !state.isLanding,
