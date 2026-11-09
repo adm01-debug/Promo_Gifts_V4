@@ -2,7 +2,7 @@
   "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
   "branch": "claude_pink/sleepy-cannon-h000nc",
   "pr_entrega": 3355,
-  "atualizado_em": "2026-11-09T23:30:00Z",
+  "atualizado_em": "2026-11-10T00:15:00Z",
   "main_sha_final": "293b9287478fba7fa8683b2e15248ed998880c3f",
   "mergeadas_por_agente_esta_sessao": [
     {"number": 3337, "sha_main_apos": "6933eb61", "titulo": "fix(ci): corrige referencias invalidas supabase/migrations/x6", "tipo": "docs-only E14", "gate_final": "SUCCESS"},
@@ -41,7 +41,10 @@
     {"number": 3365, "titulo": "fix(ci): guarda check-eslint-baseline contra crash antes de escrever output", "branch": "claude_pink/peaceful-planck-q4ee1i", "head_sha": "1653f5d3", "auto_merge": "squash (habilitado por adm01-debug)", "motivo": "Gate Final nao rodou no head SHA. Base SHA desatualizado (e70479b vs main 293b9287). Fix valido (existsSync antes de JSON.parse) e nao implementado em main. Auto-merge habilitado pelo PO — aguarda CI verde.", "valida": true, "regressao": false, "ja_implementada": false, "regra_correta": true},
     {"number": 3279, "nota_nova_sessao": "sha atualizado ca9dae70->bb59d431; Gate Final FAILURE + Gate 1 FAILURE confirmados (check_run_ids 128978022519, 128938478553)"},
     {"number": 3367, "nota_nova_sessao": "sha atualizado 051a279b->efe31626; CI in_progress + base behind main"},
-    {"number": 3265, "nota_nova_sessao": "sha atualizado 6f8930b4->e00a33b4; 0 Gate Final (26 checks sem deploy-gates) + base SHA 898f05c pre-merges"}
+    {"number": 3265, "nota_nova_sessao": "sha atualizado 6f8930b4->e00a33b4; 0 Gate Final (26 checks sem deploy-gates) + base SHA 898f05c pre-merges"},
+    {"number": 3263, "nota_nova_sessao": "CORRECAO: nao e duplicata de #3261; e feat: versionar cron jobs FT-005, head=d3c137568bdb56537e69a9460657ef23868f2ca9, branch=claude/feat-ft005-cron-scheduled-reports-20261108-2310 (outra sessao Claude READ-ONLY), base 898f05c (desatualizado vs 293b9287), DDL pg_cron exige PO via db-apply-migration.yml"},
+    {"number": 3203, "nota_nova_sessao": "CORRECAO: nao e duplicata de #3273; e fix: scripts — static-pass, head=1aad6831, branch=claude/inspiring-knuth-swo71j (outra sessao Claude READ-ONLY), run_id=42454762726 merge-reports=FAILURE (check_run_id 128946229804), e2e-shard jobs=CANCELLED, base 9b2644b2 desatualizado vs 293b9287"},
+    {"number": 3355, "nota_nova_sessao": "head_sha atualizado ca9dae70->c6cc165c (ultimo push desta sessao)"}
   ],
   "supabase_producao": {
     "project_id": "doufsxqlfjyuvxuezpln",
@@ -109,14 +112,14 @@
     "gate_final_verde_pos_merges": true,
     "gate_final_run_id": 42703616654,
     "worktrees_ativos": 0,
-    "verificado_em": "2026-11-09T23:30:00Z"
+    "verificado_em": "2026-11-09T22:50:00Z"
   },
   "entregaveis_na_branch": {
     "RELATORIO_PRS.md": "commit 3825314f",
     "progresso.json": "commit atual (atualizado)",
     "baseline/main-293b9287.md": "commit 5718071",
     "regras-de-negocio.md": "commit 5718071",
-    "prs.json": "commit afe38f8b (atualizado 2026-11-09T23:30)",
+    "prs.json": "commit atual (corrigido #3203 #3263 #3355)",
     "prs.csv": "commit 5718071",
     "dossies/PR-*.md x55": "commits ca48271 + c64138a",
     "total_dossiers": 55
