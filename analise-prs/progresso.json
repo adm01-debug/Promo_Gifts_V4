@@ -14,8 +14,8 @@
   ],
   "gate_final_main_atual": {
     "sha": "78729fc11038f7d0b2bb73ff0c1330f92547658b",
-    "status": "queued",
-    "causa": "Runner saturation - 44 checks queued desde 12:30Z (5+ horas)"
+    "status": "SUCCESS",
+    "causa": "Gate Final só dispara em pull_request, não em push para main. Vercel combined_status=success (deploy confirmado). SHA 78729fc11038 = main atual após merge PR #3343."
   },
   "supabase_producao": {
     "project_id": "doufsxqlfjyuvxuezpln",
@@ -23,6 +23,33 @@
     "verificado_em": "2026-11-09T16:30:00Z",
     "status": "healthy"
   },
-  "prs_aguarda_ci_runner": "35 PRs com gates queued por runner saturation - inclui #3344, #3345 (draft) e os 33 PRs analisados pelo fork agent",
-  "bloqueio_geral": "Runner saturation GitHub Actions impede CI em todos os PRs abertos"
+  "prs_nao_mergear": [
+    {"number": 3344, "motivo": "Gate Final=FAILURE, Gate 1 (Lint+TS)=FAILURE, head SHA 6f8930b4 — precisa rebase em main após #3343"},
+    {"number": 3277, "motivo": "Gate Final=FAILURE, merge-reports=failure, head SHA 87c78600 — base desatualizada (d56979f6), precisa rebase em main=78729fc1"},
+    {"number": 3203, "motivo": "Gate Final=FAILURE, merge-reports=failure + e2e cancelled, head SHA 1aad6831 — base desatualizada (9b2644b2)"}
+  ],
+  "prs_aguarda_ci": [
+    {"number": 3346, "titulo": "fix(tests): corrige regressões vitest onLogoRemove, consumeUnloadBackup", "draft": true, "head_sha": "5c376fe3bc451b27f42c25e08c05b0acec388d3d", "motivo": "DRAFT, todos checks queued — runner saturation"},
+    {"number": 3345, "draft": true, "motivo": "DRAFT, todos checks queued — runner saturation"},
+    {"number": 3344, "motivo": "CI red — NÃO_MERGEAR até fix"},
+    {"number": 3339, "motivo": "REGRA #10 — codex/* branch, merge possível se CI verde"},
+    {"number": 3290, "draft": true, "motivo": "DRAFT"},
+    {"number": 3278, "draft": true, "motivo": "DRAFT"},
+    {"number": 3214, "draft": true, "motivo": "DRAFT"},
+    {"number": 3210, "motivo": "release-please, checks queued"},
+    {"number": 3137, "motivo": "REGRA #10 — codex/* branch"},
+    {"number": 3129, "motivo": "REGRA #10 — codex/* branch"},
+    {"number": 3127, "motivo": "REGRA #10 — codex/* branch"}
+  ],
+  "contagem_por_veredito": {
+    "MERGEADA_AGENTE": 3,
+    "MERGEADA_EXTERNA": 2,
+    "NÃO_MERGEAR": 3,
+    "AGUARDA_CI": 11,
+    "AGUARDA_CI_OU_PO": 1,
+    "AGUARDA_PO": 24,
+    "TOTAL_OPEN_PRs": 38
+  },
+  "atualizado_em_sessao2": "2026-11-09T18:00:00Z",
+  "nota": "PR #3346 é novo (criado por outro agente Claude após sessão 1). PR #3277 e #3203 confirmados Gate Final=FAILURE (merge-reports)."
 }
