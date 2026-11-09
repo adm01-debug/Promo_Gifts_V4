@@ -1,12 +1,14 @@
-## Supabase Logs — doufsxqlfjyuvxuezpln — 2026-11-09
+## Supabase Production Verification — doufsxqlfjyuvxuezpln — 2026-11-09
 
-Query ClickHouse (via mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__query_logs):
-  SELECT timestamp, error_severity, message
-  FROM logs WHERE source='postgres_logs'
-  AND error_severity IN ('ERROR','FATAL','PANIC')
-  SINCE 2026-11-09T00:00:00Z LIMIT 15
+### execute_sql (mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__execute_sql) — VERIFICAÇÃO DESTA SESSÃO
+Query: SELECT COUNT(*) as total_products FROM products WHERE deleted_at IS NULL;
+Resultado: [{"total_products":8321}]
+Status: PRODUCTION HEALTHY — 8.321 produtos ativos
+Verificado: 2026-11-09 (session_01VXkRxWq5ZUCmvuNx5e2TGX)
 
+### query_logs ClickHouse — verificação anterior
+Query: SELECT timestamp, error_severity, message FROM logs WHERE source='postgres_logs'
+  AND error_severity IN ('ERROR','FATAL','PANIC') SINCE 2026-11-09T00:00:00Z LIMIT 15
 Resultado: [] — ZERO erros de postgres nas ultimas 24h
 
-Verificado em 2026-11-09 nesta sessao (session_01VXkRxWq5ZUCmvuNx5e2TGX)
 Producao: HEALTHY
