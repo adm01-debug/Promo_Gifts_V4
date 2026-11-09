@@ -122,6 +122,9 @@ export function useKitAutoSave(
   const revisionRef = useRef<number | null>(currentRevision);
   const enabledRef = useRef(enabled);
   const contextRef = useRef(context);
+  // Set to true by persistUnloadBackup immediately before cross-kit navigation
+  // so the beforeunload handler won't overwrite the just-persisted backup.
+  const suppressNextUnloadBackupRef = useRef(false);
 
   // Update mutable callback inputs only after React commits the render. Writing
   // refs during render can leak an abandoned concurrent render into a timer.
@@ -330,6 +333,10 @@ export function useKitAutoSave(
       // Only write backup when there is a pending unsaved edit (timer still
       // scheduled or save in-flight) to avoid overwriting a clean saved state.
       if (!timerRef.current && !saveInFlightRef.current && !saveQueuedRef.current) return;
+      if (suppressNextUnloadBackupRef.current) {
+        suppressNextUnloadBackupRef.current = false;
+        return;
+      }
       try {
         const key = `${LS_BACKUP_KEY_PREFIX}-${user.id}`;
         const ks = kitStateRef.current;
@@ -401,6 +408,7 @@ export function useKitAutoSave(
       if (!user?.id) return;
       try {
         const key = `${LS_BACKUP_KEY_PREFIX}-${user.id}`;
+        suppressNextUnloadBackupRef.current = true;
         localStorage.setItem(key, JSON.stringify(backup));
       } catch {
         // localStorage indisponível — falha silenciosa
