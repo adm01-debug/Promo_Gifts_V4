@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "944ff2dd03ecd26ac0925dd8e8de80d92591b4ad",
+  "sha": "634b93ef05b9f94addc775060c66393e979bc174",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 15:35 UTC",
+  "generated_at": "2026-11-09 15:46 UTC",
   "files_total": 9182,
   "code_files": 7869,
   "code_lines": 1055852
@@ -484383,10 +484383,19 @@
   }
  },
  "git": {
-  "sha": "944ff2dd03ecd26ac0925dd8e8de80d92591b4ad",
+  "sha": "634b93ef05b9f94addc775060c66393e979bc174",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "634b93e",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "fix(ci): atualiza baseline file-size NoveltyProductGrid 863→865 (#3354)",
+    "files": [
+     ".file-size-baseline.json"
+    ]
+   },
    {
     "sha": "944ff2d",
     "date": "2026-11-09",
@@ -484673,21 +484682,16 @@
     "files": [
      "analise-prs/progresso.json"
     ]
-   },
-   {
-    "sha": "0dfb3ef",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "docs(analise-prs): RELATORIO_DEFINITIVO — dossiê completo com evidências de CI",
-    "files": [
-     "analise-prs/RELATORIO_DEFINITIVO.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "analise-prs/progresso.json",
     5
+   ],
+   [
+    ".file-size-baseline.json",
+    3
    ],
    [
     ".migration-refs-baseline.json",
@@ -484718,15 +484722,7 @@
     2
    ],
    [
-    ".file-size-baseline.json",
-    2
-   ],
-   [
     "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
-    2
-   ],
-   [
-    "analise-prs/RELATORIO_DEFINITIVO.md",
     2
    ],
    [
@@ -484763,6 +484759,10 @@
    ],
    [
     ".github/workflows/e2e-personalization.yml",
+    1
+   ],
+   [
+    "PENDENCIAS.md",
     1
    ]
   ]

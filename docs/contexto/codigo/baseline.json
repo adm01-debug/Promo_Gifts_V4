@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "944ff2dd03ecd26ac0925dd8e8de80d92591b4ad",
+  "commit": "634b93ef05b9f94addc775060c66393e979bc174",
   "branch": "main",
-  "data_commit": "2026-11-09T12:26:29-03:00",
+  "data_commit": "2026-11-09T12:42:27-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "634b93e",
+    "data": "2026-11-09",
+    "assunto": "fix(ci): atualiza baseline file-size NoveltyProductGrid 863→865 (#3354)"
+   },
    {
     "sha": "944ff2d",
     "data": "2026-11-09",
@@ -126,11 +131,6 @@
     "sha": "193a750",
     "data": "2026-11-09",
     "assunto": "fix: corrige typecheck e permissão de script pré-existentes em main (#3320)"
-   },
-   {
-    "sha": "ae1782f",
-    "data": "2026-11-09",
-    "assunto": "docs(analise-prs): relatórios definitivos — ciclo merge-prs claude_04 (#3318)"
    }
   ],
   "arquivos_mudados_7d": 502,
