@@ -108,7 +108,7 @@ jobs:
           : "${SUPABASE_ACCESS_TOKEN:?SUPABASE_ACCESS_TOKEN não configurado}"
       - name: Install Supabase CLI
         if: steps.check_paths.outputs.needs_drift != 'false'
-        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
+        uses: supabase/setup-cli@689adcfb80d947100a1eab127289b97d1fb07b13 # v2
         with:
           version: 2.101.0
 
