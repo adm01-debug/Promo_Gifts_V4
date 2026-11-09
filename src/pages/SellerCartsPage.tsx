@@ -21,7 +21,6 @@ import {
   getStatusCfg,
   STATUS_CONFIG,
   CartItemSkeleton,
-  FollowUpTimer,
   CompareCartsDialog,
   MobileSummarySheet,
   formatCurrency,
@@ -323,7 +322,6 @@ function SellerCartsContent() {
               </div>
             </Card>
 
-            <FollowUpTimer createdAt={s.activeCart.created_at} />
 
             {/* Notas sempre visíveis */}
             <div className="group/notes space-y-2 rounded-xl border border-border/30 bg-card/40 p-3">
