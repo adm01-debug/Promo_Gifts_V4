@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib/missing-prerequisite.sh"
 if [[ -z "${DATABASE_URL:-}" ]]; then
-  echo "[test-magazine-sql-contracts] static-pass: DATABASE_URL ausente; teste ignorado."
-  exit 0
+  missing_prerequisite "test-magazine-sql-contracts" "DATABASE_URL ausente" 1
 fi
 
 PSQL=(psql "$DATABASE_URL" -X -v ON_ERROR_STOP=1)

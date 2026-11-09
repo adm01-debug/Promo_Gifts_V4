@@ -1,12 +1,12 @@
 
 import { createClient } from '@supabase/supabase-js';
+import { missingPrerequisite } from './lib/missing-prerequisite.mjs';
 
 const url = process.env.SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!url || !key) {
-  console.log('[list-users] static-pass: SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY ausentes; ignorado.');
-  process.exit(0);
+  missingPrerequisite('list-users', 'SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY ausentes', { exitCode: 1 });
 }
 
 const supabase = createClient(url, key);

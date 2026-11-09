@@ -21,6 +21,7 @@
  * config que o app usa). Não exige service_role.
  */
 import { readFileSync } from 'node:fs';
+import { missingPrerequisite } from './lib/missing-prerequisite.mjs';
 
 function loadEnv() {
   try {
@@ -39,8 +40,7 @@ const URL = process.env.VITE_SUPABASE_URL;
 const KEY = process.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
 if (!URL || !KEY) {
-  console.log('[e2e-check-stock-seed] static-pass: credenciais Supabase ausentes; verificação de seed ignorada.');
-  process.exit(0);
+  missingPrerequisite('e2e-check-stock-seed', 'VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY ausentes', { exitCode: 1 });
 }
 
 const headers = { apikey: KEY, Authorization: `Bearer ${KEY}` };

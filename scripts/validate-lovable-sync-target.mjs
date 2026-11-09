@@ -19,6 +19,7 @@
  */
 
 import { writeFileSync } from "node:fs";
+import { missingPrerequisite } from "./lib/missing-prerequisite.mjs";
 
 const TOKEN = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
 const OWNER = process.env.OWNER;
@@ -26,8 +27,10 @@ const REPO = process.env.REPO;
 const BOT_LOGIN = process.env.LOVABLE_BOT_LOGIN || "lovable[bot]";
 
 if (!TOKEN || !OWNER || !REPO) {
-  console.log('[validate-lovable-sync-target] static-pass: GH_TOKEN/OWNER/REPO ausentes; validação ignorada.');
-  process.exit(0);
+  missingPrerequisite("validate-lovable-sync-target", "GH_TOKEN/OWNER/REPO ausentes", {
+    exitCode: 2,
+    hint: "Use: GH_TOKEN=... OWNER=... REPO=... node scripts/validate-lovable-sync-target.mjs",
+  });
 }
 
 const API = "https://api.github.com";
