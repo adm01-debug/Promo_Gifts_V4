@@ -121,6 +121,7 @@ function makeState(currentStep: string, overrides: Record<string, unknown> = {})
       setBoxPersonalization: vi.fn(),
       setItemPersonalization: vi.fn(),
       setNotes: vi.fn(),
+      consumeUnloadBackup: vi.fn().mockReturnValue(null),
       canUndo: false,
       canRedo: false,
       consumeUnloadBackup: vi.fn().mockReturnValue(null),
