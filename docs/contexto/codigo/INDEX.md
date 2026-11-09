@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6b859b0fbfa95e34493900cf0137402e95e46823` (2026-11-09T12:46:32-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c1d47d13bee8089eb62e3c47db1b7b500dcf1042` (2026-11-09T13:14:30-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,7 +586,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38553 nós · 67008 arestas · 2172 comunidades · grafo do commit `6b859b0f`
+- 38553 nós · 67008 arestas · 2172 comunidades · grafo do commit `c1d47d13`
 - comunidades maiores: ref_lib (745), ref_components (613), ref_integrations (536), ref_hooks (329), gotoAndSettle (321), react-router-dom (309), ref_node_fs (299), scripts (289), ref_types (277), @playwright/test (264), getCorsHeaders (254), ProductCard.tsx (248)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -595,7 +595,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - RELATORIO_CI.md (53)
 - PENDENCIAS.md (44)
 - supabase/MIGRATIONS_SYNC_LOG.md (22)
-- analise-prs/progresso.json (13)
+- analise-prs/progresso.json (14)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (13)
 - package.json (13)
 - analise-branches/RELATORIO_BRANCHES.md (10)
@@ -604,9 +604,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - package-lock.json (9)
 - CHANGELOG.md (7)
 - analise-prs/RELATORIO_PRS.md (7)
+- analise-prs/prs.json (7)
 - e2e/flows/magazine-preview-sticky-smoke.spec.ts (7)
 - .github/SENTINEL_SHA_ALLOWLIST.txt (6)
-- .github/workflows/replenishment-quality.yml (6)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-09 `c1d47d1` chore(tracking): progresso.json v7 — #3257 e #3275 MERGED, #3338 fechada (#3356)
 - 2026-11-09 `6b859b0` fix(migrations): idempotência em RLS deny-all e partições 2027 (#3257)
 - 2026-11-09 `634b93e` fix(ci): atualiza baseline file-size NoveltyProductGrid 863→865 (#3354)
 - 2026-11-09 `944ff2d` fix(kit-builder): remove bloco FT-119 incompleto e corrige type imports (#3350)
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-09 `1696c5a` fix(tests): corrige regressões vitest — onLogoRemove, consumeUnloadBackup, goToStep, exit codes, mock transactional (#33
 - 2026-11-09 `00c8fa2` fix(tests): corrige TypeError consumeUnloadBackup e atualiza baseline de tamanho
 - 2026-11-09 `78729fc` chore(ci): atualiza file-size baseline — Kit Builder +21/+13/+10 linhas
-- 2026-11-09 `29838f1` feat(kit-builder): confirmar substituição ao aplicar composição da IA (FT-134)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

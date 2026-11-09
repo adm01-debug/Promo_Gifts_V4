@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "6b859b0fbfa95e34493900cf0137402e95e46823",
+  "sha": "c1d47d13bee8089eb62e3c47db1b7b500dcf1042",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 15:50 UTC",
+  "generated_at": "2026-11-09 16:27 UTC",
   "files_total": 9182,
   "code_files": 7869,
   "code_lines": 1055862
@@ -484383,10 +484383,20 @@
   }
  },
  "git": {
-  "sha": "6b859b0fbfa95e34493900cf0137402e95e46823",
+  "sha": "c1d47d13bee8089eb62e3c47db1b7b500dcf1042",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "c1d47d1",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "chore(tracking): progresso.json v7 — #3257 e #3275 MERGED, #3338 fechada (#3356)",
+    "files": [
+     "analise-prs/progresso.json",
+     "analise-prs/prs.json"
+    ]
+   },
    {
     "sha": "6b859b0",
     "date": "2026-11-09",
@@ -484674,20 +484684,15 @@
     "files": [
      "analise-prs/progresso.json"
     ]
-   },
-   {
-    "sha": "16995de",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "docs(analise-prs): RELATORIO_PRS.md — dossiê completo 32 PRs + META CUMPRIDA (#3314)",
-    "files": [
-     "analise-prs/RELATORIO_PRS.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "analise-prs/progresso.json",
+    5
+   ],
+   [
+    "analise-prs/prs.json",
     4
    ],
    [
@@ -484696,10 +484701,6 @@
    ],
    [
     ".migration-refs-baseline.json",
-    3
-   ],
-   [
-    "analise-prs/prs.json",
     3
    ],
    [
