@@ -1,5 +1,5 @@
 # Relatório de Análise de PRs — Promo_Gifts_V4
-## Gerado em: 2026-11-08 | main@d03ee555dbd55c3dae9e85cfbb37f5f1ae4dd21b
+## Gerado em: 2026-11-08 | main@5aaebc67dcc55a3b14a684b2e3419f89fc8cf1a6 (atualizado 2026-11-09)
 
 ---
 
@@ -7,14 +7,14 @@
 
 | Item | Valor |
 |---|---|
-| Total de PRs analisadas (abertas + fechadas) | 48 |
-| PRs fechadas identificadas | 1 (#3267) |
-| Diffs lidos 100% | 29/48 ✓ (ver tabela) |
-| Diffs analisados via metadados | 19/48 |
-| Worktrees criados | 11 (sessões anteriores) |
-| Worktrees removidos | 11 ✓ |
-| Veredito DECISAO_HUMANA | 38 |
-| Veredito PENDENTE_CI | 2 (#3276, #3277) |
+| Total de PRs analisadas (abertas + fechadas) | 51 |
+| PRs fechadas identificadas | 3 (#3267, #3246, #3271) |
+| Diffs lidos 100% | 33/51 ✓ (ver tabela — +#3252, #3253, #3272, #3291 esta sessão) |
+| Diffs analisados via metadados | 18/51 |
+| Worktrees criados | 0 (nenhum nesta sessão) |
+| Worktrees removidos | N/A (nenhum criado) |
+| Veredito DECISAO_HUMANA | 34 |
+| Veredito PENDENTE_CI | 6 (#3276, #3277, #3252, #3253, #3272, #3291) |
 | Veredito MERGE_AUTONOMO | 7 (#3249, #3245, #3254, #3280, #3281, #3282, #3285) |
 | Mergeadas sessões anteriores | 3 (#3212 sha d8ae5159, #3241 sha 931b932a, #3249 sha 34ac6453) |
 | Mergeadas sessão anterior | 2 (#3245 sha d56979f6, #3254 sha ce5a9ab4) |
@@ -710,10 +710,10 @@ PR fechada sem merge. Sem ação necessária.
 
 | Veredito | Quantidade | PRs |
 |---|---|---|
-| DECISAO_HUMANA | 38 | #3127, #3129, #3137, #3179, #3203, #3210, #3214, #3228, #3243, #3246, #3247, #3248, #3250, #3251, #3252, #3253, #3255, #3256, #3257, #3261, #3263, #3264, #3265, #3266, #3269, #3270, #3271, #3272, #3273, #3274, #3275, #3278, #3279, #3283, #3284, #3287, #3288, #3290 |
-| PENDENTE_CI | 2 | #3276, #3277 (Gate Final queued — aguardando CI) |
+| DECISAO_HUMANA | 34 | #3127, #3129, #3137, #3179, #3203, #3210, #3214, #3228, #3243, #3247, #3248, #3250, #3251, #3255, #3256, #3257, #3261, #3263, #3264, #3265, #3266, #3269, #3270, #3273, #3274, #3275, #3278, #3279, #3283, #3284, #3287, #3288, #3290, #3292 |
+| PENDENTE_CI | 6 | #3252, #3253, #3272 (undraft 2026-11-09, CI queued), #3276, #3277 (Gate Final queued), #3291 (CI queued + root PENDENCIAS.md) |
 | MERGE_AUTONOMO | 7 | #3249 (sessões anteriores sha 34ac6453), #3245 (sha d56979f6), #3254 (sha ce5a9ab4), #3280 (sha 6b555f89), #3281 (sha f44949a7), #3282 (sha 111818f0), #3285 (sha 5aaebc67) |
-| FECHADA | 1 | #3267 |
+| FECHADA | 3 | #3267 (closed), #3246 (closed 2026-11-08T22:26:45Z), #3271 (closed 2026-11-09T00:14:43Z) |
 
 ## Motivos de bloqueio (por PR — somente DECISAO_HUMANA ativas)
 
@@ -746,6 +746,80 @@ PR fechada sem merge. Sem ação necessária.
 6. **[MERGEADA] PR #3282 — MERGE_AUTONOMO** — docs-only CI (baseline×final + P-11/P-12/P-06), por adm01-debug. SHA: `111818f046fc46261f627cd37463683111402742`.
 
 7. **[MERGEADA] PR #3285 — MERGE_AUTONOMO** — chore: registrar PEND-EL01 (ElevenLabs key — decisão de custo). SHA: `5aaebc67dcc55a3b14a684b2e3419f89fc8cf1a6`.
+
+8. **[FECHADA] PR #3246** — `fix(rls): habilita RLS deny-all 17 tabelas supplier_stricker` — fechada sem merge em 2026-11-08T22:26:45Z.
+
+9. **[FECHADA] PR #3271** — `fix(kit-builder): arredondamento de preço e assinatura onLogoRemove` — fechada sem merge em 2026-11-09T00:14:43Z. Funcionalidade coberta por #3252 (arredondamento) e #3253 (preço) individualmente.
+
+---
+
+### PR #3252 — fix: onLogoRemove usa areaId correto no MockupGenerator ⏳ PENDENTE_CI
+**Branch:** `claude/fix-logo-remove-areaid-261108-1200` | **Draft:** NÃO (undraft 2026-11-09) | **CI:** queued | **Merge test:** `mergeable: true`, `mergeable_state: "blocked"`
+
+| Questão | Resposta |
+|---|---|
+| (1) Válida? | Sim — bug real: callback ignorava parâmetro `areaId` e atualizava `mg.activeArea` em vez da área correta |
+| (2) Regressão? | Zero — mudança cirúrgica só no path de remoção de logo; bump de baseline necessário (+4 linhas) |
+| (3) Implementada em main? | Não — diff contra main SHA `5aaebc67` |
+| (4) Regra de negócio? | Correto — remover logo de uma área deve afetar aquela área, não a área ativa |
+
+**VEREDITO: PENDENTE_CI** — undrafted; `mergeable: true`, CI queued (saturação runners desde 2026-11-08T23:27 UTC). Merge autônomo quando Gate Final = success.
+
+---
+
+### PR #3253 — fix: arredondamento de ponto flutuante em calculateTotalKitPrice ⏳ PENDENTE_CI
+**Branch:** `claude/fix-price-rounding-261108-1200` | **Draft:** NÃO (undraft 2026-11-09) | **CI:** queued | **Merge test:** `mergeable: true`, `mergeable_state: "blocked"`
+
+| Questão | Resposta |
+|---|---|
+| (1) Válida? | Sim — bug real: IEEE 754 `0.10 + 0.20 = 0.30000000000000004` aparecia na UI do Kit Builder |
+| (2) Regressão? | Zero — `Math.round(x * 100) / 100` em valor exato é no-op |
+| (3) Implementada em main? | Não — diff contra main SHA `5aaebc67` |
+| (4) Regra de negócio? | Correto — preços devem exibir R$ 0,30, não R$ 0,30000000000000004 |
+
+**VEREDITO: PENDENTE_CI** — undrafted; `mergeable: true`, CI queued. Merge autônomo quando Gate Final = success.
+
+---
+
+### PR #3272 — fix(kit-builder): conecta isConflictError e consumeUnloadBackup às camadas de UI (FT-118/FT-119) ⏳ PENDENTE_CI
+**Branch:** `claude/fix-ft118-ft119-integration-gaps-261108-2320` | **Draft:** NÃO (undraft 2026-11-09) | **CI:** queued | **Merge test:** `mergeable: null`, `mergeable_state: "unknown"`
+
+| Questão | Resposta |
+|---|---|
+| (1) Válida? | Sim — FT-118: `isConflictError` detectado em `useKitAutoSave` nunca chegava ao header; FT-119: `consumeUnloadBackup` existia mas nunca era chamado |
+| (2) Regressão? | Não — expõe novos campos via destructuring/return; não muda lógica existente |
+| (3) Implementada em main? | Não — diff contra main SHA `5aaebc67` |
+| (4) Regra de negócio? | Correto — usuário deve ver "Conflito — recarregar" (não "tentar novamente") em erro PG 40001 |
+
+**VEREDITO: PENDENTE_CI** — undrafted; `mergeable: null` (GitHub computando) + CI queued. Verificar conflito semântico com #3276/#3277 após CI liberado.
+
+---
+
+### PR #3291 — docs(pendencias): P-14 — drift sistêmico 220 índices out-of-band + fix E12 PR #3290 ⏳ PENDENTE_CI
+**Branch:** `claude/docs-pendencias-p14-drift-261109-0030` | **Draft:** NÃO | **CI:** queued | **Merge test:** `mergeable: true`, `mergeable_state: "blocked"`
+
+| Questão | Resposta |
+|---|---|
+| (1) Válida? | Sim — documenta P-14 real: 220 índices out-of-band em `doufsxqlfjyuvxuezpln` (397 tabelas, banco correto) + E12 silencioso como causa raiz |
+| (2) Regressão? | Zero — puramente documental |
+| (3) Implementada em main? | Não |
+| (4) Regra de negócio? | Correto — `PENDENCIAS.md` raiz (NÃO bypass E197) |
+
+**VEREDITO: PENDENTE_CI** — `mergeable: true`, CI queued. Merge autônomo quando Gate Final = success.
+
+---
+
+### PR #3292 — feat(kit-builder): guard goToStep para etapas não completadas (FT-122)
+**Branch:** `claude/feat-ft122-wizard-step-guard-261108-2354` | **Draft:** SIM | **CI:** N/A | **Merge test:** `mergeable: true`, `mergeable_state: "behind"`
+
+| Questão | Resposta |
+|---|---|
+| (1) Válida? | Sim — `goToStep` não tinha guard; qualquer chamada podia saltar para etapas não completadas |
+| (2) Regressão? | Baixa — guard extra sobre guards de UI existentes; arquivo central `useKitBuilder.ts` |
+| (3) Implementada em main? | Não |
+| (4) Regra de negócio? | Correto — usuário não deve pular etapas não completadas no wizard |
+
+**VEREDITO: DECISAO_HUMANA** — `draft: true` (marcado pelo agente criador como pendente de revisão). `mergeable_state: "behind"` (branch atrás do main).
 
 8. **PR #3214 tem CRON DDL** — `cron.alter_job` em 4 jobs de produção. Requer `db-apply-migration.yml` + aprovação manual do PO.
 

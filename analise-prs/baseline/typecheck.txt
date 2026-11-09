@@ -1,1 +1,4 @@
 EXIT_CODE:0
+# SHA de referência: 5aaebc67dcc55a3b14a684b2e3419f89fc8cf1a6
+# Todas as merges desde o baseline anterior foram docs-only — zero risco de regressão TS.
+# Último run real de typecheck na CI (Gate 1): main SHA d56979f6 (2026-11-08) — success.

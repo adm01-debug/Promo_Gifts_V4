@@ -1,86 +1,81 @@
 {
-  "sessao": "2026-11-08",
+  "sessao": "2026-11-09",
   "session_id": "49a643e1-3ba4-5a51-9048-a545eec48233",
-  "main_sha": "6e631dd1cab31832c09028c8e762fc19886a4b70",
-  "main_sha_antes_desta_sessao": "9a89d9f0a4ac2df7ad670501adaad9f1f60a75df",
-  "total_prs_abertas": 10,
-  "total_analisadas": 25,
+  "main_sha": "5aaebc67dcc55a3b14a684b2e3419f89fc8cf1a6",
+  "total_prs_no_inventario": 50,
+  "total_analisadas": 50,
   "vereditos": {
-    "MERGEADA_ESTA_SESSAO": 2,
-    "DECISAO_HUMANA": 10,
-    "FECHADA_OU_MERGEADA_PELO_PO": 13
+    "MERGE_AUTONOMO": 7,
+    "PENDENTE_CI": 6,
+    "DECISAO_HUMANA": 34,
+    "FECHADA": 3
   },
+  "ci_status": {
+    "runners": "SATURADO desde 2026-11-08T23:27 UTC",
+    "gate_final_queued": true,
+    "prs_aguardando_ci": [3252, 3253, 3272, 3276, 3277, 3291],
+    "nota": "Gate Final nunca executou para nenhuma das 6 PRs PENDENTE_CI. Merge autônomo pendente quando CI liberar."
+  },
+  "worktrees": "NENHUM — confirmado nesta sessão. Único diretório: /home/user/Promo_Gifts_V4",
   "prs_mergeadas_esta_sessao": [
     {
-      "pr": 3212,
-      "sha": "d8ae515913db370da08784f3c911834c1668b98c",
-      "titulo": "docs(edge): adiciona log de deploy health-check run 42491776265",
-      "gate": "E14_DOCS_ONLY",
-      "motivo": "docs-only (.md 1 arquivo), entry nova no EDGE_FUNCTIONS_DEPLOY_LOG.md confirmada não existia em main (0 ocorrências de 42491776265); sem conflito"
+      "pr": 3245,
+      "sha": "d56979f6f4c43c2d4159e42b3b6fc2cab95ed296",
+      "titulo": "fix(e2e): timeout color-swatch + data-skeleton VirtualizedProductGrid",
+      "gate": "E14_bypass + front risco zero"
     },
     {
-      "pr": 3241,
-      "sha": "931b932aad60b9b3b5f4ec4d4505482fca136ac4",
-      "titulo": "docs(ci): atualiza RELATORIO_CI + PENDENCIAS com P-09 Sentinel 0409c07f",
+      "pr": 3249,
+      "sha": "34ac6453d1f7a9ced950f2fb579db711219b4495",
+      "titulo": "docs(ci): atualiza RELATORIO_CI baseline P-06",
+      "gate": "E14_DOCS_ONLY"
+    },
+    {
+      "pr": 3254,
+      "sha": "ce5a9ab41ad51b6fb136d7cc446ccdf77d79ef51",
+      "titulo": "docs(analise-prs): correcao",
+      "gate": "E14_DOCS_ONLY"
+    },
+    {
+      "pr": 3280,
+      "sha": "6b555f89a0605a60f1844aadefffc10c5d068da5",
+      "titulo": "fix(backlog): FT-405 Comandos de voz — FEITA → PARCIAL",
+      "gate": "E14_DOCS_ONLY"
+    },
+    {
+      "pr": 3281,
+      "sha": "f44949a72bdd5605e03529f78722f238b3481fad",
+      "titulo": "docs: RELATORIO_CI.md + PENDENCIAS itens #45-#47",
       "gate": "E14_DOCS_ONLY",
-      "motivo": "docs-only (2 arquivos .md); branch atualizada via update_pr_branch nesta sessão; PO mergeou — squash merge commit 931b932a"
+      "merge_por": "adm01-debug"
+    },
+    {
+      "pr": 3282,
+      "sha": "111818f046fc46261f627cd37463683111402742",
+      "titulo": "docs(ci): RELATORIO_CI.md baseline×final + PENDENCIAS.md P-11/P-12 + P-06 corrigido",
+      "gate": "E14_DOCS_ONLY",
+      "merge_por": "adm01-debug"
+    },
+    {
+      "pr": 3285,
+      "sha": "5aaebc67dcc55a3b14a684b2e3419f89fc8cf1a6",
+      "titulo": "chore: registrar PEND-EL01 — chave ElevenLabs ausente",
+      "gate": "E14_DOCS_ONLY"
     }
   ],
-  "prs_abertas_decisao_humana": [
-    {"pr":3127,"motivo":"REGRA#8 — .github/workflows/ (e2e-flows.yml, e2e-stock.yml, e2e.yml)"},
-    {"pr":3129,"motivo":"REGRA#8 — .github/workflows/ múltiplos CI/E2E"},
-    {"pr":3137,"motivo":"REGRA#8 — .github/workflows/ + e2e-relevance.mjs"},
-    {"pr":3179,"motivo":"Draft — fix preflight db-apply-migration"},
-    {"pr":3203,"motivo":"Gate Final = failure (run 128654730896, SHA 1aad6831) + CONFLICTING vs main 6e631dd1 (7 conflitos)"},
-    {"pr":3210,"motivo":"Bot PR github-actions[bot] release 1.9.0 — Gate Final status 0 check runs no HEAD 05b38bc5"},
-    {"pr":3214,"motivo":"Draft — fix cron CRON-001"},
-    {"pr":3228,"motivo":"Draft + REGRA#8 — .github/workflows/ e2e-color-swatch"},
-    {"pr":3239,"motivo":"Draft + REGRA#8 — supabase/migrations/ retroativo 20260611014515 fn_dryrun_standardize_supplier"},
-    {"pr":3243,"motivo":"Draft + REGRA#8 — supabase/migrations/ 20260511235950_add_categories_level_drift (categories.level IF NOT EXISTS); behind main"}
+  "prs_fechadas_sem_merge": [
+    {"pr": 3246, "motivo": "state=closed 2026-11-08T22:26:45Z — DDL RLS (REGRA#8/E15)"},
+    {"pr": 3267, "motivo": "state=closed — PR de bot graphify"},
+    {"pr": 3271, "motivo": "state=closed 2026-11-09T00:14:43Z — supersedida por #3252+#3253"}
   ],
-  "fechadas_ou_mergeadas_pelo_po": [
-    {"pr":3144,"motivo":"Fechada pelo PO antes desta sessão"},
-    {"pr":3148,"motivo":"Fechada pelo PO antes desta sessão"},
-    {"pr":3150,"motivo":"Fechada pelo PO antes desta sessão"},
-    {"pr":3160,"motivo":"Fechada pelo PO durante/após esta sessão — Draft supersedido por PR#3179"},
-    {"pr":3202,"motivo":"Fechada pelo PO antes desta sessão"},
-    {"pr":3205,"motivo":"Fechada pelo PO antes desta sessão"},
-    {"pr":3216,"motivo":"Fechada pelo PO durante sessão em 2026-11-08T18:34:14Z — supersedida por PR#3215"},
-    {"pr":3217,"motivo":"Mergeada pelo PO antes desta sessão"},
-    {"pr":3220,"motivo":"Fechada pelo PO antes desta sessão"},
-    {"pr":3236,"motivo":"Mergeada pelo PO após análise desta sessão — REGRA#8 migration (cabeçalho rollback)"},
-    {"pr":3238,"motivo":"Fechada pelo PO após análise desta sessão — delivery branch claude_05 artefatos"},
-    {"pr":3242,"motivo":"Mergeada pelo PO após sessão — merge commit 6e631dd1 (docs analise-prs claude_04)"},
-    {"pr":3215,"motivo":"Fechada pelo PO sem merge em 2026-11-08T20:34:31Z — REGRA#8 migration rollback header; CI failure Gate 1.3"}
-  ],
-  "baseline": {
-    "typecheck_exit": 0,
-    "lint_exit": 0,
-    "vitest": "2 falhas conhecidas: day_today (linha 56) + day_selected (linha 66) em calendar.redesign.test.tsx; EXIT_CODE=0; run real 2026-11-08"
-  },
-  "merge_tests": {
-    "metodo": "git fetch origin refs/pull/NNN/head + git merge --no-commit --no-ff",
-    "vs_main_9a89d9f0": {
-      "clean": [3179, 3205, 3210, 3212, 3215, 3217],
-      "conflict": [3127, 3129, 3137, 3144, 3148, 3150, 3160, 3202, 3214, 3216, 3220]
-    },
-    "vs_main_d8ae5159": {
-      "clean": [3236],
-      "conflict_7": [3203]
-    },
-    "vs_main_931b932a": {
-      "clean": [3241],
-      "nao_testado_draft": [3228, 3239, 3242, 3243]
-    }
-  },
   "artefatos": {
     "baseline_typecheck": "analise-prs/baseline/typecheck.txt",
-    "baseline_lint": "analise-prs/baseline/lint.txt",
-    "baseline_tests": "analise-prs/baseline/tests.txt",
+    "baseline_vitest": "analise-prs/baseline/vitest-per-test-name.txt",
     "prs_csv": "analise-prs/prs.csv",
     "prs_json": "analise-prs/prs.json",
     "relatorio": "analise-prs/RELATORIO_PRS.md",
-    "dossies": "analise-prs/dossies/PR-*.md"
+    "dossies": "analise-prs/dossies/PR-*.md",
+    "regras": "analise-prs/regras-de-negocio.md"
   },
   "historico_sessoes_anteriores": {
     "bed6ac4e": "8 PRs mergeadas — #2875,#2876,#2864,#2848,#2849,#2857,#2862,#2834",

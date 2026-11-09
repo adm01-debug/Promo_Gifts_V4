@@ -1,16 +1,17 @@
 {
   "meta": {
-    "data_analise": "2026-11-08",
+    "data_analise": "2026-11-09",
     "sessao": "claude_05/youthful-ride-vcdchy",
-    "total_abertos_analisados": 41,
-    "mergeadas_esta_sessao": 6,
-    "mergeadas_sessoes_anteriores": 1,
-    "aguardando_humano": 32,
-    "pendente_ci": 2,
-    "pr_mais_recente_analisada": 3290,
-    "nota": "#3267 fechada/não-mergeada excluída. #3249 mergeada sessão anterior. #3245+#3254+#3280+#3285 mergeadas por Claude esta sessão. #3281+#3282 mergeadas por adm01-debug esta sessão. #3276+#3277 PENDENTE_CI (Gate Final queued). #3287 DECISAO_HUMANA (conflito). #3288+#3290 DECISAO_HUMANA (Draft).",
-    "total_prs": 44,
-    "ultima_atualizacao": "2026-11-09T00:15:00Z"
+    "main_sha": "5aaebc67dcc55a3b14a684b2e3419f89fc8cf1a6",
+    "total_prs": 50,
+    "total_abertos_analisados": 50,
+    "merge_autonomo": 7,
+    "pendente_ci": 6,
+    "decisao_humana": 34,
+    "fechada": 3,
+    "pr_mais_recente_analisada": 3292,
+    "nota": "50 PRs analisadas. MERGE_AUTONOMO(7): #3245,#3249,#3254,#3280,#3281,#3282,#3285. PENDENTE_CI(6): #3252,#3253,#3272,#3276,#3277,#3291 — Gate Final queued (saturação runners desde 2026-11-08T23:27 UTC). FECHADA(3): #3246,#3267,#3271 (state=closed). DECISAO_HUMANA(34): Draft / workflows / DDL / conflito.",
+    "ultima_atualizacao": "2026-11-09T00:45:00Z"
   },
   "prs": [
     {
@@ -180,26 +181,22 @@
     },
     {
       "number": 3252,
-      "title": "fix: onLogoRemove usa areaId correto no MockupGenerator",
-      "draft": true,
-      "mergeable_state": "unknown",
+      "title": "fix: onLogoRemove areaId (MockupGenerator.tsx:353)",
+      "draft": false,
+      "mergeable_state": "blocked",
       "head": "claude/fix-logo-remove-areaid-261108-1200",
-      "veredito": "DECISAO_HUMANA",
-      "motivos": [
-        "Draft=true"
-      ],
+      "veredito": "PENDENTE_CI",
+      "motivo": "CI queued (Gate Final) + undrafted 2026-11-09. Aguardando saturação de runners liberada.",
       "sessao": "anterior"
     },
     {
       "number": 3253,
-      "title": "fix: arredondamento de ponto flutuante em calculateTotalKitPrice",
-      "draft": true,
-      "mergeable_state": "unknown",
+      "title": "fix: float rounding price-calculator.ts",
+      "draft": false,
+      "mergeable_state": "blocked",
       "head": "claude/fix-price-rounding-261108-1200",
-      "veredito": "DECISAO_HUMANA",
-      "motivos": [
-        "Draft=true"
-      ],
+      "veredito": "PENDENTE_CI",
+      "motivo": "CI queued (Gate Final) + undrafted 2026-11-09. Aguardando saturação de runners liberada.",
       "sessao": "anterior"
     },
     {
@@ -344,25 +341,20 @@
     {
       "number": 3271,
       "title": "fix(kit-builder): arredondamento de preço e assinatura onLogoRemove",
-      "draft": true,
-      "mergeable_state": "unknown",
+      "draft": false,
       "head": "claude/fix-price-rounding-mockup-261108-2305",
-      "veredito": "DECISAO_HUMANA",
-      "motivos": [
-        "Draft=true"
-      ],
+      "veredito": "FECHADA",
+      "motivo": "state=closed não mergeada 2026-11-09T00:14:43Z — supersedida por #3252+#3253 separadas.",
       "sessao": "atual"
     },
     {
       "number": 3272,
-      "title": "fix(kit-builder): conecta isConflictError e consumeUnloadBacklog",
-      "draft": true,
+      "title": "fix(kit-builder): conecta isConflictError e consumeUnloadBackup às camadas de UI (FT-118/FT-119)",
+      "draft": false,
       "mergeable_state": "unknown",
       "head": "claude/fix-ft118-ft119-integration-gaps-261108-2320",
-      "veredito": "DECISAO_HUMANA",
-      "motivos": [
-        "Draft=true"
-      ],
+      "veredito": "PENDENTE_CI",
+      "motivo": "CI queued (Gate Final) + undrafted 2026-11-09 + mergeable_state=unknown. Aguardando saturação de runners.",
       "sessao": "atual"
     },
     {
@@ -472,6 +464,68 @@
       ],
       "head_sha": "unknown",
       "analisada_em": "2026-11-08T23:39:06Z"
+    },
+    {
+      "number": 3246,
+      "title": "fix(rls): habilita RLS deny-all 17 tabelas supplier_stricker",
+      "draft": false,
+      "veredito": "FECHADA",
+      "motivo": "state=closed não mergeada 2026-11-08T22:26:45Z — DDL RLS (REGRA#8/E15) + fechada sem merge.",
+      "sessao": "atual"
+    },
+    {
+      "number": 3267,
+      "title": "graphify GRAPH_REPORT update",
+      "draft": false,
+      "veredito": "FECHADA",
+      "motivo": "state=closed não mergeada — PR de bot graphify fechada sem merge.",
+      "sessao": "atual"
+    },
+    {
+      "number": 3287,
+      "title": "docs: adiciona P-11 e nota E12 ao PENDENCIAS.md",
+      "draft": false,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "mergeable_state=dirty (conflito com main) — root PENDENCIAS.md. Substituída por #3291.",
+      "sessao": "atual"
+    },
+    {
+      "number": 3288,
+      "title": "feat(kit-builder): confirmar substituição ao aplicar composição IA",
+      "draft": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "Draft=true + conflito semântico potencial com #3276/#3277 (KitAIPromptDialog.tsx).",
+      "sessao": "atual"
+    },
+    {
+      "number": 3290,
+      "title": "fix(ci): detector E12 — índices out-of-band via pg_indexes",
+      "draft": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "Draft=true + REGRA#8 workflows (.github/workflows/db-schema-drift-check.yml).",
+      "sessao": "atual"
+    },
+    {
+      "number": 3291,
+      "title": "docs(pendencias): P-14 — drift sistêmico 220 índices out-of-band + fix E12 PR #3290",
+      "draft": false,
+      "mergeable_state": "blocked",
+      "head": "claude/docs-pendencias-p14-drift-261109-0030",
+      "head_sha": "86cdec9ac4efecc7879ec85ac53623eb66e6d624",
+      "veredito": "PENDENTE_CI",
+      "motivo": "CI queued (Gate Final) + root PENDENCIAS.md sem bypass E197. Aguardando saturação de runners.",
+      "sessao": "atual"
+    },
+    {
+      "number": 3292,
+      "title": "feat(kit-builder): guard goToStep para etapas não completadas (FT-122)",
+      "draft": true,
+      "mergeable_state": "behind",
+      "head": "claude/feat-ft122-wizard-step-guard-261108-2354",
+      "head_sha": "ba66f6d386e6d7c6cb9687aaa6b06c7efb8d69a6",
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "Draft=true + mergeable_state=behind (branch atrás do main). Aguarda undraft + update da branch pelo PO.",
+      "sessao": "atual"
     }
   ],
   "mergeadas": [
