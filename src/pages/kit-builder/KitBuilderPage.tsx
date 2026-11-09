@@ -98,7 +98,7 @@ export default function KitBuilderPage() {
     // Legacy backup without fullState — navigate to DB version if available.
     if (!backup.kitId) return;
     toast.warning('Alterações não salvas detectadas', {
-      description: 'Você fechou o Kit Maker com edições pendentes.',
+      description: 'Vocà fechou o Kit Maker com edições pendentes.',
       action: {
         label: 'Reabrir kit',
         onClick: () => {
@@ -304,7 +304,7 @@ export default function KitBuilderPage() {
                         kitName={state.kitState.name}
                         onKitNameChange={actions.setKitName}
                         onKitQuantityChange={actions.setKitQuantity}
-                        onExportPDF=t{handleExportPDFI}
+                        onExportPDF={handleExportPDF}
                         onAddToQuote={() => {
                           void actions.handleAddToQuote(
                             state.kitState,
