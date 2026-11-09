@@ -226,9 +226,11 @@ export function useKitBuilderPageState() {
     isSaving: isAutoSaving,
     autoSavedKitId,
     autoSaveError,
+    isConflictError,
     retryLastSave,
     cancelPendingSave,
     acknowledgeManualSave,
+    consumeUnloadBackup,
   } = useKitAutoSave(
     kitState,
     kitQuantity,
@@ -539,6 +541,7 @@ export function useKitBuilderPageState() {
       applyAISuggestion,
       startFlow,
       setKitOrigin,
+      consumeUnloadBackup,
     },
     meta: {
       isSaving,
@@ -546,6 +549,7 @@ export function useKitBuilderPageState() {
       isCreatingQuote,
       lastSavedAt,
       autoSaveError,
+      isConflictError,
       pricing,
     },
   };
