@@ -1878,10 +1878,6 @@
       "ref": "supabase/migrations/20261015150000"
     },
     {
-      "file": "PENDENCIAS.md",
-      "ref": "supabase/migrations/20260511235970_add_categories_indexes_drift.sql"
-    },
-    {
       "file": "qa/reports/magazine-exhaustive-validation-2026-07-15.md",
       "ref": "qa/migrations-draft/2026-07-12_magazine_items_unique_product.sql"
     },
