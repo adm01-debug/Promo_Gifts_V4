@@ -13,6 +13,7 @@ import {
   useKitUndoRedo,
   useTemplateSnapshot,
 } from '@/hooks/kit-builder';
+import type { BackupFullState } from '@/hooks/kit-builder/useKitAutoSave';
 import { useKitBuilderQuote, type KitQuoteClient } from '@/pages/kit-builder/useKitBuilderQuote';
 import {
   calculateTotalKitPrice,
@@ -488,6 +489,22 @@ export function useKitBuilderPageState() {
     setOccasion(null);
   }, [resetKit]);
 
+  const restoreFromBackup = useCallback(
+    (fullState: BackupFullState) => {
+      loadKit({
+        name: fullState.name,
+        kitType: fullState.kitType,
+        box: fullState.box,
+        items: fullState.items,
+        personalization: fullState.personalization,
+        kitQuantity: fullState.qty,
+        identity: fullState.identity,
+        notes: fullState.notes,
+      });
+    },
+    [loadKit],
+  );
+
   return {
     state: {
       kitState,
@@ -548,6 +565,7 @@ export function useKitBuilderPageState() {
       startFlow,
       setKitOrigin,
       consumeUnloadBackup,
+      restoreFromBackup,
     },
     meta: {
       isSaving,

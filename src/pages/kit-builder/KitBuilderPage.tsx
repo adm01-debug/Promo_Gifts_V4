@@ -37,26 +37,6 @@ export default function KitBuilderPage() {
     setGuideChapter(chapter);
     setGuideOpen(true);
   };
-  // FT-119: consume any localStorage backup written on accidental tab close / navigation.
-  // Runs once per mount (guarded by ref to survive React Strict Mode double-invoke).
-  const checkedBackupRef = useRef(false);
-  useEffect(() => {
-    if (checkedBackupRef.current) return;
-    checkedBackupRef.current = true;
-    const backup = actions.consumeUnloadBackup();
-    if (!backup) return;
-    const ageMs = Date.now() - backup.savedAt;
-    if (ageMs > 300_000 || !backup.kitId) return; // ignore stale or kit-less backups
-    toast.warning('Alterações não salvas detectadas', {
-      description: 'Você fechou o Kit Maker com edições pendentes.',
-      action: {
-        label: 'Reabrir kit',
-        onClick: () => { window.location.href = `/montar-kit?kit=${backup.kitId}`; },
-      },
-      duration: 10_000,
-    });
-  }, [actions.consumeUnloadBackup]);
-
   const isSummary = state.wizardState.currentStep === 'summary';
   const usesFullWorkspace = ['items', 'personalization', 'summary'].includes(
     state.wizardState.currentStep,
@@ -67,6 +47,67 @@ export default function KitBuilderPage() {
     // part of this module's contract.
     window.print();
   };
+
+  // Restore unsaved edits from beforeunload backup once hydration finishes.
+  // Runs at most once per mount; avoids running during the hydration pass so
+  // loadKit doesn't race with the kit loader's own setState calls.
+  const checkedBackupRef = useRef(false);
+  useEffect(() => {
+    if (state.isHydrating) return;
+    if (checkedBackupRef.current) return;
+    checkedBackupRef.current = true;
+
+    const backup = actions.consumeUnloadBackup();
+    if (!backup) return;
+
+    const ageMs = Date.now() - backup.savedAt;
+    // Ignore backups older than 5 minutes — session likely ended intentionally.
+    if (ageMs > 300_000) return;
+
+    if (backup.fullState) {
+      // Case 1: same kit (or brand-new unsaved kit) — auto-restore silently.
+      const sameKit =
+        (!backup.kitId && !state.currentKitId) ||
+        backup.kitId === state.currentKitId ||
+        backup.kitId === state.autoSavedKitId;
+
+      if (sameKit) {
+        actions.restoreFromBackup(backup.fullState);
+        toast.info('Alterações restauradas', {
+          description: 'Suas edições não salvas foram recuperadas automaticamente.',
+          duration: 5_000,
+        });
+        return;
+      }
+
+      // Case 2: different kit loaded — offer to switch and restore.
+      toast.warning('Edições não salvas de outro kit', {
+        description: 'Você fechou o Kit Maker com edições pendentes em outro kit.',
+        action: {
+          label: 'Restaurar edições',
+          onClick: () => {
+            actions.restoreFromBackup(backup.fullState!);
+            toast.dismiss();
+          },
+        },
+        duration: 10_000,
+      });
+      return;
+    }
+
+    // Legacy backup without fullState — navigate to DB version if available.
+    if (!backup.kitId) return;
+    toast.warning('Alterações não salvas detectadas', {
+      description: 'Você fechou o Kit Maker com edições pendentes.',
+      action: {
+        label: 'Reabrir kit',
+        onClick: () => {
+          window.location.href = `/montar-kit?kit=${backup.kitId}`;
+        },
+      },
+      duration: 10_000,
+    });
+  }, [state.isHydrating, state.currentKitId, state.autoSavedKitId, actions]);
 
   useKitWizardShortcuts({
     enabled: !state.isLanding,
