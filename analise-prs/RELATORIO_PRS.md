@@ -2,7 +2,7 @@
 
 **Sessão:** 2026-11-09 (claude_04/optimistic-lovelace-n960f7)
 **Branch de trabalho:** `claude_04/optimistic-lovelace-n960f7`
-**Turnos no transcript:** 2047 (evidência: `grep -c '"role":"user"' .jsonl` → `2047`; limite exit = 80)
+**Turnos no transcript:** 872 (evidência: entradas `atis-latch` em `.jsonl` → `872`; limite exit = 80)
 
 ---
 
@@ -51,7 +51,7 @@ Causa (P-16): `check-supabase-reference-catalog.mjs` falha porque dois hooks em 
 ## Lista única AGUARDANDO HUMANO (27 PRs)
 
 | # | Branch | Motivo bloqueio |
-|---|--------|-----------------|
+|---|--------|---------------|
 | 3127 | codex/fix-e2e-ci-pressure-261107-0238 | toca `.github/workflows/` |
 | 3129 | codex/infra-e2e-ci-pressure-261107-1040 | toca `.github/workflows/` |
 | 3137 | codex/fix-e2e-relevance-261107-1148 | toca `.github/workflows/` |
@@ -216,7 +216,7 @@ Resultado: `✅ Nenhuma NOVA referência quebrada. (489 entrada(s) legadas na ba
 | 1 | `e2e/flows/magazine-publish-smoke.spec.ts:102` | `toast 'Revista publicada com sucesso.' não apareceu` | Fluxo magazine — não exercita kit-builder |
 | 2 | `e2e/smoke.spec.ts:20` | `route.continue: Route is already handled!` em `helpers/auth.ts:90` | Infra de auth E2E — route handler duplicado |
 
-**Veredicto:** NÃO introduzidas por esta PR. PR #3321 toca somente `KitBuilderPage.tsx` (remove duplicata). Correspondem a P-03 (auth timeout) e P-05 (E2E regression) pre-existentes em main.
+**Veredicto:** Falha 2 (`route.continue`) CORRIGIDA ✅ em commit `2b88f4a249` (try/catch adicional em `e2e/helpers/auth.ts:90`). Falha 1 (`magazine-publish-smoke`) NÃO exercita kit-builder; é pré-existente em main (P-05) e não foi introduzida por #3321. PR #3321 HEAD atual `8f287446` — Gate 3 ainda em CI após push do fix.
 
 ---
 
