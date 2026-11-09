@@ -60,6 +60,13 @@ interface AutoSaveResult {
     savedAt: number;
     fullState?: BackupFullState;
   } | null;
+  /** Re-persists a backup to localStorage (use before cross-kit navigation to preserve fullState). */
+  persistUnloadBackup: (backup: {
+    kitId: string | null;
+    snapshot: string;
+    savedAt: number;
+    fullState?: BackupFullState;
+  }) => void;
 }
 
 export function useKitAutoSave(
@@ -212,7 +219,7 @@ export function useKitAutoSave(
         });
       }
     }
-  }, [user?.id, currentKitId]);
+  }, [user?.id, currentKitId]); // FIX: dependências mutáveis são lidas pelos refs acima
 
   useEffect(() => {
     saveToDbRef.current = saveToDb;
@@ -384,6 +391,24 @@ export function useKitAutoSave(
     }
   }, [user?.id]);
 
+  const persistUnloadBackup = useCallback(
+    (backup: {
+      kitId: string | null;
+      snapshot: string;
+      savedAt: number;
+      fullState?: BackupFullState;
+    }) => {
+      if (!user?.id) return;
+      try {
+        const key = `${LS_BACKUP_KEY_PREFIX}-${user.id}`;
+        localStorage.setItem(key, JSON.stringify(backup));
+      } catch {
+        // localStorage indisponível — falha silenciosa
+      }
+    },
+    [user?.id],
+  );
+
   return {
     lastSavedAt,
     isSaving,
@@ -394,5 +419,6 @@ export function useKitAutoSave(
     cancelPendingSave,
     acknowledgeManualSave,
     consumeUnloadBackup,
+    persistUnloadBackup,
   };
 }

@@ -93,6 +93,9 @@ export default function KitBuilderPage() {
           label: backup.kitId ? 'Reabrir kit' : 'Restaurar edições',
           onClick: () => {
             if (backup.kitId) {
+              // Re-escreve o backup para que a nova montagem restaure o fullState
+              // (consumeUnloadBackup já o removeu do localStorage)
+              actions.persistUnloadBackup(backup);
               window.location.href = `/montar-kit?kit=${backup.kitId}`;
             } else {
               // Unsaved new kit: start a fresh flow so auto-save creates a new

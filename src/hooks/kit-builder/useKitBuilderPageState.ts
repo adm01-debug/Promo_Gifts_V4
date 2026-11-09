@@ -223,6 +223,7 @@ export function useKitBuilderPageState() {
     cancelPendingSave,
     acknowledgeManualSave,
     consumeUnloadBackup,
+    persistUnloadBackup,
   } = useKitAutoSave(
     kitState,
     kitQuantity,
@@ -538,6 +539,7 @@ export function useKitBuilderPageState() {
       startFlow,
       setKitOrigin,
       consumeUnloadBackup,
+      persistUnloadBackup,
       restoreFromBackup,
     },
     meta: {
