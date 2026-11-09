@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "78729fc11038f7d0b2bb73ff0c1330f92547658b",
+  "sha": "00c8fa295dbc60bd9dc3f7117f2ebf80350bd110",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 12:49 UTC",
+  "generated_at": "2026-11-09 13:28 UTC",
   "files_total": 9182,
   "code_files": 7869,
-  "code_lines": 1055992
+  "code_lines": 1055993
  },
  "version": "1.3.2",
- "facts_hash": "310ea3f9892f9e4d",
+ "facts_hash": "6cf84896c9b323f5",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -140493,7 +140493,7 @@
   {
    "module": "tests",
    "files": 821,
-   "lines": 125364,
+   "lines": 125365,
    "tables": [
     "bot_detection_log",
     "companies",
@@ -470334,7 +470334,7 @@
   },
   "tests/components/pages/KitBuilderPage.test.tsx": {
    "path": "tests/components/pages/KitBuilderPage.test.tsx",
-   "lines": 228,
+   "lines": 229,
    "is_test": true,
    "tests": [
     "KitBuilderPage",
@@ -484417,10 +484417,20 @@
   }
  },
  "git": {
-  "sha": "78729fc11038f7d0b2bb73ff0c1330f92547658b",
+  "sha": "00c8fa295dbc60bd9dc3f7117f2ebf80350bd110",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "00c8fa2",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "fix(tests): corrige TypeError consumeUnloadBackup e atualiza baseline de tamanho",
+    "files": [
+     ".file-size-baseline.json",
+     "tests/components/pages/KitBuilderPage.test.tsx"
+    ]
+   },
    {
     "sha": "78729fc",
     "date": "2026-11-09",
@@ -484743,15 +484753,6 @@
     "files": [
      "analise-prs/RELATORIO_META_CUMPRIDA.md"
     ]
-   },
-   {
-    "sha": "5942bb6",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs(analise-prs): RELATORIO_META_CUMPRIDA — sessão claude_04",
-    "files": [
-     "analise-prs/RELATORIO_META_CUMPRIDA.md"
-    ]
    }
   ],
   "hot_files": [
@@ -484762,6 +484763,10 @@
    [
     "analise-prs/prs.json",
     4
+   ],
+   [
+    ".file-size-baseline.json",
+    2
    ],
    [
     "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
@@ -484788,11 +484793,7 @@
     2
    ],
    [
-    "analise-prs/RELATORIO_META_CUMPRIDA.md",
-    2
-   ],
-   [
-    ".file-size-baseline.json",
+    "tests/components/pages/KitBuilderPage.test.tsx",
     1
    ],
    [

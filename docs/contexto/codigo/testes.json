@@ -12944,7 +12944,7 @@
   {
    "arquivo": "tests/components/pages/KitBuilderPage.test.tsx",
    "tipo": "unit",
-   "linhas": 228,
+   "linhas": 229,
    "testa": [
     "src/pages/kit-builder/KitBuilderPage.tsx"
    ],
