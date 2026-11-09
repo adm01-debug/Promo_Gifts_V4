@@ -2,11 +2,41 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "989573864c5b0197b4ee25da44a2ecb5c7fbf27e",
+  "commit": "ae1782f75538bc6834f1d1c680e51411847ae747",
   "branch": "main",
-  "data_commit": "2026-11-09T00:34:24-03:00",
+  "data_commit": "2026-11-09T01:58:30-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ae1782f",
+    "data": "2026-11-09",
+    "assunto": "docs(analise-prs): relatórios definitivos — ciclo merge-prs claude_04 (#3318)"
+   },
+   {
+    "sha": "b5f3706",
+    "data": "2026-11-09",
+    "assunto": "docs: progresso v6 + prs.json — balanço correto 29 abertas"
+   },
+   {
+    "sha": "56cfd7f",
+    "data": "2026-11-09",
+    "assunto": "docs(analise-prs): progresso.json v5 — balanço 32 correto + SHA final 16995de3 (#3315)"
+   },
+   {
+    "sha": "16995de",
+    "data": "2026-11-09",
+    "assunto": "docs(analise-prs): RELATORIO_PRS.md — dossiê completo 32 PRs + META CUMPRIDA (#3314)"
+   },
+   {
+    "sha": "00493c3",
+    "data": "2026-11-09",
+    "assunto": "docs(analise-prs): progresso.json v4 — estado real corrigido (13 mergeadas, 32 abertas, zombie bloqueando CI)"
+   },
+   {
+    "sha": "0dfb3ef",
+    "data": "2026-11-09",
+    "assunto": "docs(analise-prs): RELATORIO_DEFINITIVO — dossiê completo com evidências de CI"
+   },
    {
     "sha": "9895738",
     "data": "2026-11-09",
@@ -101,207 +131,177 @@
     "sha": "1a1ee90",
     "data": "2026-11-08",
     "assunto": "docs(analise-prs): atualiza progresso com resolução fila CI"
-   },
-   {
-    "sha": "8368588",
-    "data": "2026-11-08",
-    "assunto": "docs(analise-prs): dossiês das 31 novas PRs (#3243–#3292)"
-   },
-   {
-    "sha": "198d8cf",
-    "data": "2026-11-08",
-    "assunto": "docs(analise-prs): inventario_prs.json (39 PRs) + progresso.json atualizado"
-   },
-   {
-    "sha": "9ba190f",
-    "data": "2026-11-08",
-    "assunto": "docs(pendencias): registrar P-15 a P-18 — classificação completa de 30 runs is:failure (#3295)"
-   },
-   {
-    "sha": "4309d10",
-    "data": "2026-11-08",
-    "assunto": "docs(analise-prs): RELATORIO_PRS.md — sessão claude_04 (#3294)"
-   },
-   {
-    "sha": "c2bbc6b",
-    "data": "2026-11-08",
-    "assunto": "docs: P-14 — E2E Magazine Header run stuck queued, risco de nova falha antes de 05:29Z (#3293)"
-   },
-   {
-    "sha": "5aaebc6",
-    "data": "2026-11-08",
-    "assunto": "chore: registrar PEND-EL01 — chave ElevenLabs ausente (decisão de custo) (#3285)"
    }
   ],
-  "arquivos_mudados_7d": 488,
+  "arquivos_mudados_7d": 489,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 600
+    "mudancas": 1195
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 312
+    "mudancas": 612
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 232
+    "mudancas": 462
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 213
+    "mudancas": 421
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 188
+    "mudancas": 372
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 177
+    "mudancas": 342
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 160
+    "mudancas": 320
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 159
+    "mudancas": 297
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 149
+    "mudancas": 295
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 133
+    "mudancas": 251
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 118
+    "mudancas": 236
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 109
+    "mudancas": 209
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 104
+    "mudancas": 198
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 100
+    "mudancas": 194
    },
    {
     "pasta": "docs/arquivo/2026-09",
-    "mudancas": 86
+    "mudancas": 172
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 60
+    "mudancas": 57
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 50
+    "mudancas": 47
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 23
+    "mudancas": 25
    },
    {
     "arquivo": "package.json",
-    "mudancas": 17
+    "mudancas": 18
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 14
-   },
-   {
-    "arquivo": "package-lock.json",
-    "mudancas": 12
-   },
-   {
-    "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 10
+    "mudancas": 16
    },
    {
     "arquivo": "analise-prs/progresso.json",
-    "mudancas": 10
+    "mudancas": 15
    },
    {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 10
+    "arquivo": "package-lock.json",
+    "mudancas": 14
+   },
+   {
+    "arquivo": ".github/workflows/deploy-gates.yml",
+    "mudancas": 13
+   },
+   {
+    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
+    "mudancas": 13
+   },
+   {
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 12
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 9
+    "mudancas": 12
+   },
+   {
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "mudancas": 12
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 8
+    "mudancas": 10
    },
    {
     "arquivo": "CLAUDE.md",
-    "mudancas": 8
+    "mudancas": 10
    },
    {
     "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 7
+    "mudancas": 9
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 7
+    "mudancas": 9
+   },
+   {
+    "arquivo": "analise-prs/prs.json",
+    "mudancas": 8
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 6
+    "mudancas": 8
    },
    {
     "arquivo": "docs/estado/PENDENCIAS.md",
-    "mudancas": 6
+    "mudancas": 8
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 6
+    "mudancas": 8
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 6
+    "mudancas": 8
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 6
+    "mudancas": 8
    },
    {
     "arquivo": ".github/workflows/ci-security-drift.yml",
-    "mudancas": 5
+    "mudancas": 7
    },
    {
     "arquivo": ".github/workflows/e2e-focused.yml",
-    "mudancas": 5
+    "mudancas": 7
    },
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
-    "mudancas": 5
+    "mudancas": 7
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 308
+    "commits": 299
    },
    {
     "autor": "github-actions[bot]",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9261,
+  "arquivos_total": 9262,
   "arquivos_codigo": 4635,
   "linhas_codigo": 887655,
   "rotas": 138,
@@ -335,7 +335,7 @@
   "testes": 2202,
   "workflows": 94,
   "scripts": 257,
-  "docs_md": 947
+  "docs_md": 948
  },
  "por_pasta": {
   ".github/scripts": {

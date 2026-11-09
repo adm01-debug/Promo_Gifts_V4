@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
-   "fix(dropbox): exibir título no estado desconectado (#3303)",
-   "feat(kit-builder): guard goToStep etapas não completadas FT-122 (#3292)",
-   "fix: scripts static-pass e exit codes (#3266)",
-   "feat(e2e): specs E2E rotas públicas — PR #3248 (#3248)",
-   "docs(analise-prs): RELATORIO_DOSSIES — dossiê CI por PR com evidências (#3311)"
+   "docs(analise-prs): relatórios definitivos — ciclo merge-prs claude_04 (#3318)",
+   "docs: progresso v6 + prs.json — balanço correto 29 abertas",
+   "docs(analise-prs): progresso.json v5 — balanço 32 correto + SHA final 16995de3 (#3315)",
+   "docs(analise-prs): RELATORIO_PRS.md — dossiê completo 32 PRs + META CUMPRIDA (#3314)",
+   "docs(analise-prs): progresso.json v4 — estado real corrigido (13 mergeadas, 32 abertas, zombie bloqueando CI)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

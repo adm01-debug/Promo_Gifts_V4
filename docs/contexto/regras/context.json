@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "989573864c5b0197b4ee25da44a2ecb5c7fbf27e",
+  "sha": "ae1782f75538bc6834f1d1c680e51411847ae747",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 05:09 UTC",
-  "files_total": 9181,
+  "generated_at": "2026-11-09 05:48 UTC",
+  "files_total": 9182,
   "code_files": 7869,
   "code_lines": 1055933
  },
@@ -484404,10 +484404,67 @@
   }
  },
  "git": {
-  "sha": "989573864c5b0197b4ee25da44a2ecb5c7fbf27e",
+  "sha": "ae1782f75538bc6834f1d1c680e51411847ae747",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "ae1782f",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "docs(analise-prs): relatórios definitivos — ciclo merge-prs claude_04 (#3318)",
+    "files": [
+     "analise-prs/RELATORIO_DEFINITIVO.md",
+     "analise-prs/RELATORIO_DOSSIES.md",
+     "analise-prs/RELATORIO_META_CUMPRIDA_v2.md"
+    ]
+   },
+   {
+    "sha": "b5f3706",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "docs: progresso v6 + prs.json — balanço correto 29 abertas",
+    "files": [
+     "analise-prs/progresso.json",
+     "analise-prs/prs.json"
+    ]
+   },
+   {
+    "sha": "56cfd7f",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "docs(analise-prs): progresso.json v5 — balanço 32 correto + SHA final 16995de3 (#3315)",
+    "files": [
+     "analise-prs/progresso.json"
+    ]
+   },
+   {
+    "sha": "16995de",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "docs(analise-prs): RELATORIO_PRS.md — dossiê completo 32 PRs + META CUMPRIDA (#3314)",
+    "files": [
+     "analise-prs/RELATORIO_PRS.md"
+    ]
+   },
+   {
+    "sha": "00493c3",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "docs(analise-prs): progresso.json v4 — estado real corrigido (13 mergeadas, 32 abertas, zombie bloqueando CI)",
+    "files": [
+     "analise-prs/progresso.json"
+    ]
+   },
+   {
+    "sha": "0dfb3ef",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "docs(analise-prs): RELATORIO_DEFINITIVO — dossiê completo com evidências de CI",
+    "files": [
+     "analise-prs/RELATORIO_DEFINITIVO.md"
+    ]
+   },
    {
     "sha": "9895738",
     "date": "2026-11-09",
@@ -484715,75 +484772,35 @@
     "files": [
      "PENDENCIAS.md"
     ]
-   },
-   {
-    "sha": "5aaebc6",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "chore: registrar PEND-EL01 — chave ElevenLabs ausente (decisão de custo) (#3285)",
-    "files": [
-     "docs/estado/PENDENCIAS.md"
-    ]
-   },
-   {
-    "sha": "6b555f8",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(backlog): FT-405 Comandos de voz — FEITA → PARCIAL com evidência (#3280)",
-    "files": [
-     "docs/estado/backlog/funcionalidades.md"
-    ]
-   },
-   {
-    "sha": "cd46c78",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs(ci): P-13 — run 42534854809 cancelado por runner saturation; tabela prova conclusão (#3289)",
-    "files": [
-     "PENDENCIAS.md"
-    ]
-   },
-   {
-    "sha": "c132f58",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "chore: atualiza RELATORIO_BRANCHES com estado pós-sessão (PRs #3279 e #3284)",
-    "files": [
-     "analise-branches/RELATORIO_BRANCHES.md"
-    ]
-   },
-   {
-    "sha": "111818f",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs(ci): RELATORIO_CI.md baseline×final + PENDENCIAS.md P-11/P-12 + P-06 corrigido (#3282)",
-    "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md"
-    ]
-   },
-   {
-    "sha": "f44949a",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs: RELATORIO_CI.md + PENDENCIAS itens #45-#47 (sessão 2026-11-08) (#3281)",
-    "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md"
-    ]
    }
   ],
   "hot_files": [
    [
-    "PENDENCIAS.md",
+    "analise-prs/progresso.json",
     6
    ],
    [
-    "analise-prs/progresso.json",
+    "analise-prs/RELATORIO_PRS.md",
     3
    ],
    [
-    "analise-prs/RELATORIO_PRS.md",
+    "PENDENCIAS.md",
+    3
+   ],
+   [
+    "analise-prs/RELATORIO_DEFINITIVO.md",
+    2
+   ],
+   [
+    "analise-prs/RELATORIO_DOSSIES.md",
+    2
+   ],
+   [
+    "analise-prs/RELATORIO_META_CUMPRIDA_v2.md",
+    2
+   ],
+   [
+    "analise-prs/prs.json",
     2
    ],
    [
@@ -484796,10 +484813,6 @@
    ],
    [
     "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    2
-   ],
-   [
-    "RELATORIO_CI.md",
     2
    ],
    [
@@ -484840,18 +484853,6 @@
    ],
    [
     "scripts/check-playwright-min-executed.mjs",
-    1
-   ],
-   [
-    "scripts/check-price-freshness-coverage.mjs",
-    1
-   ],
-   [
-    "scripts/check-quote-rpc-canonical-readiness.mjs",
-    1
-   ],
-   [
-    "scripts/check-supabase-linter.mjs",
     1
    ]
   ]
