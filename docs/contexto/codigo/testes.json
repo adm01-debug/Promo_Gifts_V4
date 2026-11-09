@@ -17060,7 +17060,7 @@
   {
    "arquivo": "tests/pages/kit-builder/useKitBuilderQuote.test.ts",
    "tipo": "unit",
-   "linhas": 569,
+   "linhas": 573,
    "testa": [
     "src/lib/db/postgrest.ts",
     "src/pages/kit-builder/useKitBuilderQuote.ts"

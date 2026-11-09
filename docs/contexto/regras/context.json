@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "1696c5a5dc0aa73007785a8c2a26820d99d3f163",
+  "sha": "b4c1167c7ce91e664d23fddc43570d0a61efd048",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 13:56 UTC",
+  "generated_at": "2026-11-09 14:14 UTC",
   "files_total": 9182,
   "code_files": 7869,
-  "code_lines": 1056012
+  "code_lines": 1056016
  },
  "version": "1.3.2",
- "facts_hash": "f72fea91c04136f3",
+ "facts_hash": "c358e4c1740461ce",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -140493,7 +140493,7 @@
   {
    "module": "tests",
    "files": 821,
-   "lines": 125382,
+   "lines": 125386,
    "tables": [
     "bot_detection_log",
     "companies",
@@ -479743,7 +479743,7 @@
   },
   "tests/pages/kit-builder/useKitBuilderQuote.test.ts": {
    "path": "tests/pages/kit-builder/useKitBuilderQuote.test.ts",
-   "lines": 569,
+   "lines": 573,
    "is_test": true,
    "rule_comments": [
     "A RPC injeta quote_id dentro da transação; o cliente não pode criar"
@@ -484417,10 +484417,19 @@
   }
  },
  "git": {
-  "sha": "1696c5a5dc0aa73007785a8c2a26820d99d3f163",
+  "sha": "b4c1167c7ce91e664d23fddc43570d0a61efd048",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "b4c1167",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "fix(tests): corrige 5 falhas preexistentes em useKitBuilderQuote (#3348)",
+    "files": [
+     "tests/pages/kit-builder/useKitBuilderQuote.test.ts"
+    ]
+   },
    {
     "sha": "1696c5a",
     "date": "2026-11-09",
@@ -484749,15 +484758,6 @@
     "files": [
      "analise-prs/RELATORIO_META_CUMPRIDA_v2.md"
     ]
-   },
-   {
-    "sha": "e456ae7",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "docs(analise-prs): prs.json — inventário completo 36 PRs abertas (#3307)",
-    "files": [
-     "analise-prs/prs.json"
-    ]
    }
   ],
   "hot_files": [
@@ -484767,7 +484767,11 @@
    ],
    [
     "analise-prs/prs.json",
-    4
+    3
+   ],
+   [
+    "tests/pages/kit-builder/useKitBuilderQuote.test.ts",
+    2
    ],
    [
     "tests/components/pages/KitBuilderPage.test.tsx",
@@ -484807,10 +484811,6 @@
    ],
    [
     "tests/hooks/useKitBuilder-flow.test.tsx",
-    1
-   ],
-   [
-    "tests/pages/kit-builder/useKitBuilderQuote.test.ts",
     1
    ],
    [

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1696c5a5dc0aa73007785a8c2a26820d99d3f163",
+  "commit": "b4c1167c7ce91e664d23fddc43570d0a61efd048",
   "branch": "main",
-  "data_commit": "2026-11-09T10:50:25-03:00",
+  "data_commit": "2026-11-09T11:09:34-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "b4c1167",
+    "data": "2026-11-09",
+    "assunto": "fix(tests): corrige 5 falhas preexistentes em useKitBuilderQuote (#3348)"
+   },
    {
     "sha": "1696c5a",
     "data": "2026-11-09",
@@ -126,11 +131,6 @@
     "sha": "b520784",
     "data": "2026-11-09",
     "assunto": "fix: scripts static-pass e exit codes (#3266)"
-   },
-   {
-    "sha": "0aab655",
-    "data": "2026-11-09",
-    "assunto": "feat(e2e): specs E2E rotas públicas — PR #3248 (#3248)"
    }
   ],
   "arquivos_mudados_7d": 496,
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 9262,
   "arquivos_codigo": 4635,
-  "linhas_codigo": 887734,
+  "linhas_codigo": 887738,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -2060,7 +2060,7 @@
   },
   "tests/pages": {
    "arquivos": 13,
-   "linhas": 2554
+   "linhas": 2558
   },
   "tests/product-form-improvements.test.ts": {
    "arquivos": 1,
