@@ -295,7 +295,16 @@
     "plan:status": "node scripts/plan-status.mjs",
     "e2e:install:all-browsers": "playwright install --with-deps chromium firefox webkit",
     "e2e:editor-sheet": "playwright test e2e/quotes/quote-item-editor-sheet-header.spec.ts --project=chromium-public --project=firefox-public --project=webkit-public",
-    "e2e:editor-sheet:update": "playwright test e2e/quotes/quote-item-editor-sheet-header.spec.ts --project=chromium-public --project=firefox-public --project=webkit-public --update-snapshots"
+    "e2e:editor-sheet:update": "playwright test e2e/quotes/quote-item-editor-sheet-header.spec.ts --project=chromium-public --project=firefox-public --project=webkit-public --update-snapshots",
+    "automation:doctor": "node scripts/automation.mjs doctor",
+    "automation:test": "node scripts/automation.mjs test",
+    "automation:check": "node scripts/automation.mjs check --ref HEAD",
+    "automation:heal": "node scripts/automation.mjs heal --ref origin/main",
+    "automation:nightly": "node scripts/automation.mjs nightly --ref origin/main",
+    "automation:graph": "node scripts/automation.mjs graph",
+    "automation:status": "node scripts/automation.mjs graph status",
+    "automation:install-hooks": "node scripts/automation.mjs install-hooks",
+    "automation:uninstall-hooks": "node scripts/automation.mjs uninstall-hooks"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
