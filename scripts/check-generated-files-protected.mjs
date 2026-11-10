@@ -54,9 +54,15 @@ const baseSha = process.env.GITHUB_BASE_SHA
   || run('git rev-parse HEAD~1 2>/dev/null')
   || 'HEAD~1';
 
-const diffFiles = run(`git diff --name-only "${baseSha}" HEAD -- 2>/dev/null`)
-  .split('\n')
-  .filter(Boolean);
+// GUARD: base inexistente (checkout raso, SHA errado) fazia `run()` devolver '' → "nenhuma redução".
+let diffRaw;
+try {
+  diffRaw = execSync(`git diff --name-only "${baseSha}" HEAD --`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
+} catch (e) {
+  console.error(`❌ check-generated-files-protected: git diff contra ${baseSha} falhou: ${String(e.stderr || e.message).trim().slice(0, 200)}`);
+  process.exit(IS_GATE ? 2 : 0);
+}
+const diffFiles = diffRaw.split('\n').filter(Boolean);
 
 const violations = [];
 

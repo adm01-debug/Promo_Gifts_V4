@@ -3,7 +3,7 @@
  * Gate: garante que frases banidas NÃO reapareçam no código.
  * Exceção: este próprio arquivo + specs E2E que asseguram ausência.
  */
-import { execSync } from 'node:child_process';
+import { searchFixedString } from './lib/fixed-string-search.mjs';
 
 const BANNED = [
   'Modo de seleção ativo',
@@ -17,18 +17,8 @@ const ALLOWLIST = [
 
 let failed = false;
 for (const phrase of BANNED) {
-  let out = '';
-  try {
-    out = execSync(
-      `rg -n --no-heading -F ${JSON.stringify(phrase)} src e2e tests scripts 2>/dev/null || true`,
-      { encoding: 'utf8' },
-    );
-  } catch {
-    /* rg sem matches */
-  }
-  const hits = out
-    .split('\n')
-    .filter(Boolean)
+  // GUARD: sem ripgrep a busca antiga (`rg … || true`) devolvia vazio e o gate dava ✅ sem varrer.
+  const hits = searchFixedString(phrase, ['src', 'e2e', 'tests', 'scripts'])
     .filter((line) => !ALLOWLIST.some((a) => line.startsWith(a + ':')));
   if (hits.length > 0) {
     failed = true;
