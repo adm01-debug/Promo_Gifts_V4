@@ -26,7 +26,6 @@ permissions:
   issues: write
   pull-requests: write
 
-
 defaults:
   run:
     shell: bash
@@ -47,7 +46,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: true  # E179: autoheal precisa de credencial para git push
+          persist-credentials: true # E179: autoheal precisa de credencial para git push
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 2
 
@@ -134,7 +133,7 @@ jobs:
           GIT_PUSH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TRIGGER_MESSAGE: ${{ github.event.head_commit.message }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HUSKY: "0"
+          HUSKY: '0'
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
