@@ -11,26 +11,28 @@
  * `organization_id` para satisfazer a RLS de `quotes`. `perTarget` continua
  * disponível para diagnosticar qualquer alvo que eventualmente falhe.
  */
-import { test, expect, requireAuth } from "../fixtures/test-base";
-import { gotoAndSettle } from "../helpers/nav";
-import { Sel } from "../fixtures/selectors";
-import { seedQuotesForStatusChips, ALL_BADGE_KEYS } from "../helpers/quotes-status-seed";
+import { test, expect, requireLiveDatabaseAuth } from '../fixtures/test-base';
+import { gotoAndSettle } from '../helpers/nav';
+import { Sel } from '../fixtures/selectors';
+import { seedQuotesForStatusChips, ALL_BADGE_KEYS } from '../helpers/quotes-status-seed';
 import {
   QUOTE_ROW_BADGE_STYLES,
   CHIP_TOOLTIPS,
-} from "../../src/components/quotes/QuotesStatusChips";
+} from '../../src/components/quotes/QuotesStatusChips';
 
-test.describe("A11y: tooltips de status (aria-describedby + teclado)", () => {
-  test.beforeEach(() => requireAuth());
+test.describe('A11y: tooltips de status (aria-describedby + teclado)', () => {
+  test.beforeEach(() => requireLiveDatabaseAuth());
 
-  test("badges: cada um dos 14 status expõe tooltip via foco com a copy correta", async ({
+  test('badges: cada um dos 14 status expõe tooltip via foco com a copy correta', async ({
     page,
   }) => {
-    await gotoAndSettle(page, "/orcamentos");
+    await gotoAndSettle(page, '/orcamentos');
     const seed = await seedQuotesForStatusChips(page);
-    if (seed.skipped != null) { test.skip(true, `seed falhou: ${seed.skipped}`); }
-    await gotoAndSettle(page, "/orcamentos");
-    await expect(page.locator(Sel.page.title("orcamentos")).first()).toBeVisible({
+    if (seed.skipped != null) {
+      test.skip(true, `seed falhou: ${seed.skipped}`);
+    }
+    await gotoAndSettle(page, '/orcamentos');
+    await expect(page.locator(Sel.page.title('orcamentos')).first()).toBeVisible({
       timeout: 10_000,
     });
 
@@ -51,41 +53,41 @@ test.describe("A11y: tooltips de status (aria-describedby + teclado)", () => {
       // Foco programático no trigger (igual a Tab para um usuário de teclado).
       await badge.focus();
 
-      const tooltipId = await badge.getAttribute("aria-describedby");
+      const tooltipId = await badge.getAttribute('aria-describedby');
       expect(tooltipId, `aria-describedby ausente em badge ${key}`).toBeTruthy();
 
       const tip = page.locator(Sel.quotesList.statusBadgeTooltip(key)).first();
       await expect(tip).toBeVisible({ timeout: 2_000 });
       // aria-describedby precisa apontar para o tooltip renderizado.
-      await expect(tip).toHaveAttribute("id", tooltipId!);
+      await expect(tip).toHaveAttribute('id', tooltipId!);
       await expect(tip).toHaveText(QUOTE_ROW_BADGE_STYLES[key].description);
 
       // Fecha para o próximo ciclo (Esc é o atalho oficial do Radix).
-      await page.keyboard.press("Escape");
+      await page.keyboard.press('Escape');
     }
   });
 
-  test("chips: foco via teclado abre tooltip com aria-describedby correto", async ({
-    page,
-  }) => {
-    await gotoAndSettle(page, "/orcamentos");
+  test('chips: foco via teclado abre tooltip com aria-describedby correto', async ({ page }) => {
+    await gotoAndSettle(page, '/orcamentos');
     const seed = await seedQuotesForStatusChips(page);
-    if (seed.skipped != null) { test.skip(true, `seed falhou: ${seed.skipped}`); }
-    await gotoAndSettle(page, "/orcamentos");
+    if (seed.skipped != null) {
+      test.skip(true, `seed falhou: ${seed.skipped}`);
+    }
+    await gotoAndSettle(page, '/orcamentos');
 
     for (const chipKey of Object.keys(CHIP_TOOLTIPS)) {
       const chip = page.locator(Sel.quotesList.chip(chipKey));
       if ((await chip.count()) === 0) continue;
 
       await chip.focus();
-      const tooltipId = await chip.getAttribute("aria-describedby");
+      const tooltipId = await chip.getAttribute('aria-describedby');
       expect(tooltipId, `aria-describedby ausente em chip ${chipKey}`).toBeTruthy();
 
       const tip = page.locator(Sel.quotesList.chipTooltip(chipKey)).first();
       await expect(tip).toBeVisible({ timeout: 2_000 });
-      await expect(tip).toHaveAttribute("id", tooltipId!);
+      await expect(tip).toHaveAttribute('id', tooltipId!);
       await expect(tip).toHaveText(CHIP_TOOLTIPS[chipKey]);
-      await page.keyboard.press("Escape");
+      await page.keyboard.press('Escape');
     }
   });
 });

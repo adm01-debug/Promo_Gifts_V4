@@ -19,7 +19,7 @@ const REQUIRED_STAGES = 200;
 
 function readJson(filePath, label) {
   try {
-    return JSON.parse(readFileSync(filePath, 'utf8'));
+    return JSON.parse(readFileSync(filePath, 'utf8').replace(/^﻿/, ''));
   } catch (error) {
     if (error.code === 'ENOENT') return null;
     throw new Error(`${label} inválido: ${error.message}`);

@@ -36,14 +36,12 @@ export default function KitBuilderPage() {
     setGuideChapter(chapter);
     setGuideOpen(true);
   };
+
   const isSummary = state.wizardState.currentStep === 'summary';
   const usesFullWorkspace = ['items', 'personalization', 'summary'].includes(
     state.wizardState.currentStep,
   );
   const handleExportPDF = () => {
-    // Printing is the browser-supported PDF path. It is intentionally explicit
-    // rather than a no-op "Exportar PDF" action while a server renderer is not
-    // part of this module's contract.
     window.print();
   };
 
@@ -66,8 +64,6 @@ export default function KitBuilderPage() {
       const target = event.target as HTMLElement | null;
       const isTextEntry =
         target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.isContentEditable;
-      // Preserve native undo/redo while a user is editing text. Ctrl/Cmd+S
-      // remains available because it is an explicit save operation.
       if (isTextEntry && key !== 's') return;
       if (key === 's') {
         event.preventDefault();

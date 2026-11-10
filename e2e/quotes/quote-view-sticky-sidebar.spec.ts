@@ -8,7 +8,8 @@
  *  - Seção "Versões do Orçamento" entra no viewport após o scroll.
  *  - Scroll interno do `QuoteItemsTable` permanece ativo no fixture com 8 itens.
  */
-import { test, expect, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 import { gotoAndSettle } from '../helpers/nav';
 
 const ROUTE = '/__visual/quote-view-order';
@@ -43,7 +44,7 @@ test('sidebar permanece fixo no viewport ao rolar a página', async ({ page }) =
   const after = await brand.boundingBox();
   expect(after).toBeTruthy();
   expect(
-    Math.abs((after!.y) - (before!.y)),
+    Math.abs(after!.y - before!.y),
     `brand header se moveu ao rolar: ${before!.y} → ${after!.y}`,
   ).toBeLessThanOrEqual(2);
 

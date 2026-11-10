@@ -11,49 +11,47 @@
  *      tenta os POSTs, todos falham, toast de erro é exibido; NÃO há retry
  *      automático nem POSTs duplicados.
  */
-import { test, expect, requireAuth } from "../fixtures/test-base";
-import { installMockAuth, isMockAuthEnabled } from "../helpers/mock-auth";
-import { gotoAndSettle } from "../helpers/nav";
-import { Sel } from "../fixtures/selectors";
-import { seedQuotesForStatusChips } from "../helpers/quotes-status-seed";
+import { test, expect, requireLiveDatabaseAuth } from '../fixtures/test-base';
+import { gotoAndSettle } from '../helpers/nav';
+import { Sel } from '../fixtures/selectors';
+import { seedQuotesForStatusChips } from '../helpers/quotes-status-seed';
 
-test.use({ trace: "retain-on-failure", screenshot: "only-on-failure" });
+test.use({ trace: 'retain-on-failure', screenshot: 'only-on-failure' });
 
 const QUOTES_REST = /\/rest\/v1\/quotes(\?|$)/;
 const UNDO_TOAST = '[data-testid="undo-toast"]';
 const UNDO_BTN = '[data-testid="undo-toast-button"]';
 
-async function selectFirstTwoQuotes(page: import("@playwright/test").Page) {
-  await gotoAndSettle(page, "/orcamentos");
+async function selectFirstTwoQuotes(page: import('@playwright/test').Page) {
+  await gotoAndSettle(page, '/orcamentos');
   const seed = await seedQuotesForStatusChips(page);
-  if (seed.skipped != null) { test.skip(true, `seed falhou: ${seed.skipped}`); }
+  if (seed.skipped != null) {
+    test.skip(true, `seed falhou: ${seed.skipped}`);
+  }
 
-  await gotoAndSettle(page, "/orcamentos");
-  await expect(page.locator(Sel.page.title("orcamentos")).first()).toBeVisible({
+  await gotoAndSettle(page, '/orcamentos');
+  await expect(page.locator(Sel.page.title('orcamentos')).first()).toBeVisible({
     timeout: 10_000,
   });
   await page.locator('button[data-chip-key="all"]').click();
 
-  await page.getByTestId("quotes-select-toggle").click();
-  const rowCheckboxes = page.getByRole("checkbox", {
+  await page.getByTestId('quotes-select-toggle').click();
+  const rowCheckboxes = page.getByRole('checkbox', {
     name: /selecionar orçamento/i,
   });
   await expect(rowCheckboxes.first()).toBeVisible();
   await rowCheckboxes.nth(0).click();
   await rowCheckboxes.nth(1).click();
 
-  await expect(page.getByTestId("quotes-bulk-delete-top")).toContainText("(2)");
+  await expect(page.getByTestId('quotes-bulk-delete-top')).toContainText('(2)');
 }
 
-test.describe("Fluxo: bulk delete + Desfazer restaura orçamentos", () => {
-  test.beforeEach(async ({ page }) => {
-    requireAuth();
-    if (isMockAuthEnabled()) await installMockAuth(page);
+test.describe('Fluxo: bulk delete + Desfazer restaura orçamentos', () => {
+  test.beforeEach(() => {
+    requireLiveDatabaseAuth();
   });
 
-  test("sucesso: DELETE em lote → clicar Desfazer dispara POSTs de restore", async ({
-    page,
-  }) => {
+  test('sucesso: DELETE em lote → clicar Desfazer dispara POSTs de restore', async ({ page }) => {
     test.setTimeout(120_000);
 
     await selectFirstTwoQuotes(page);
@@ -63,12 +61,12 @@ test.describe("Fluxo: bulk delete + Desfazer restaura orçamentos", () => {
     const restorePayloads: unknown[] = [];
     await page.route(QUOTES_REST, async (route, request) => {
       const method = request.method();
-      if (method === "DELETE") {
+      if (method === 'DELETE') {
         deleteCalls += 1;
-        await route.fulfill({ status: 204, body: "" });
+        await route.fulfill({ status: 204, body: '' });
         return;
       }
-      if (method === "POST") {
+      if (method === 'POST') {
         postCalls += 1;
         try {
           const raw = request.postData();
@@ -78,7 +76,7 @@ test.describe("Fluxo: bulk delete + Desfazer restaura orçamentos", () => {
         }
         await route.fulfill({
           status: 201,
-          contentType: "application/json",
+          contentType: 'application/json',
           body: JSON.stringify([{ id: `restored-${postCalls}` }]),
         });
         return;
@@ -87,26 +85,24 @@ test.describe("Fluxo: bulk delete + Desfazer restaura orçamentos", () => {
     });
 
     // Confirma exclusão em lote
-    await page.getByTestId("quotes-bulk-delete-top").click();
+    await page.getByTestId('quotes-bulk-delete-top').click();
 
     // ── Copy SSOT do ConfirmDialog destrutivo (plural — 2 orçamentos) ──
     // Padrão único aprovado (`QuoteViewPage` singular + `QuotesListPage` plural):
     // inclui menção explícita ao tempo de desfazer ("por até 8 segundos").
-    const bulkDialog = page.getByTestId("quotes-bulk-delete-dialog");
+    const bulkDialog = page.getByTestId('quotes-bulk-delete-dialog');
     await expect(bulkDialog).toBeVisible();
     await expect(bulkDialog).toContainText(
-      "Os orçamentos serão removidos — você pode desfazer por até 8 segundos após a confirmação.",
+      'Os orçamentos serão removidos — você pode desfazer por até 8 segundos após a confirmação.',
     );
     // Guarda anti-regressão: o copy antigo NÃO pode reaparecer.
-    await expect(bulkDialog).not.toContainText("Esta ação é destrutiva");
-    await expect(bulkDialog).not.toContainText("por alguns segundos após confirmar");
+    await expect(bulkDialog).not.toContainText('Esta ação é destrutiva');
+    await expect(bulkDialog).not.toContainText('por alguns segundos após confirmar');
 
-    await page.getByTestId("quotes-bulk-delete-confirm").click();
+    await page.getByTestId('quotes-bulk-delete-confirm').click();
 
     // Aguarda 2 DELETEs
-    await expect
-      .poll(() => deleteCalls, { timeout: 20_000 })
-      .toBeGreaterThanOrEqual(2);
+    await expect.poll(() => deleteCalls, { timeout: 20_000 }).toBeGreaterThanOrEqual(2);
 
     // Toast Desfazer aparece — EXATAMENTE 1 com botão, sem toast success duplicado
     const toast = page.locator(UNDO_TOAST);
@@ -127,9 +123,7 @@ test.describe("Fluxo: bulk delete + Desfazer restaura orçamentos", () => {
 
     // Clica Desfazer → aguarda 2 POSTs de restore
     await page.locator(UNDO_BTN).click();
-    await expect
-      .poll(() => postCalls, { timeout: 15_000 })
-      .toBeGreaterThanOrEqual(2);
+    await expect.poll(() => postCalls, { timeout: 15_000 }).toBeGreaterThanOrEqual(2);
 
     // Sem retry silencioso
     const postsAfterUndo = postCalls;
@@ -252,9 +246,7 @@ test.describe("Fluxo: bulk delete + Desfazer restaura orçamentos", () => {
     ).toEqual([]);
   });
 
-  test("restore falha: POST 503 → toast de erro sem duplicatas nem retry", async ({
-    page,
-  }) => {
+  test('restore falha: POST 503 → toast de erro sem duplicatas nem retry', async ({ page }) => {
     test.setTimeout(120_000);
 
     await selectFirstTwoQuotes(page);
@@ -263,44 +255,40 @@ test.describe("Fluxo: bulk delete + Desfazer restaura orçamentos", () => {
     let postCalls = 0;
     await page.route(QUOTES_REST, async (route, request) => {
       const method = request.method();
-      if (method === "DELETE") {
+      if (method === 'DELETE') {
         deleteCalls += 1;
-        await route.fulfill({ status: 204, body: "" });
+        await route.fulfill({ status: 204, body: '' });
         return;
       }
-      if (method === "POST") {
+      if (method === 'POST') {
         postCalls += 1;
         await route.fulfill({
           status: 503,
-          contentType: "application/json",
-          body: JSON.stringify({ message: "unavailable", code: "PGRST503" }),
+          contentType: 'application/json',
+          body: JSON.stringify({ message: 'unavailable', code: 'PGRST503' }),
         });
         return;
       }
       await route.continue();
     });
 
-    await page.getByTestId("quotes-bulk-delete-top").click();
-    await page.getByTestId("quotes-bulk-delete-confirm").click();
+    await page.getByTestId('quotes-bulk-delete-top').click();
+    await page.getByTestId('quotes-bulk-delete-confirm').click();
 
-    await expect
-      .poll(() => deleteCalls, { timeout: 20_000 })
-      .toBeGreaterThanOrEqual(2);
+    await expect.poll(() => deleteCalls, { timeout: 20_000 }).toBeGreaterThanOrEqual(2);
 
     await expect(page.locator(UNDO_TOAST)).toBeVisible({ timeout: 10_000 });
     await page.locator(UNDO_BTN).click();
 
     // Cada snapshot tenta um POST — exatamente 2 (sem retry automático)
-    await expect
-      .poll(() => postCalls, { timeout: 15_000 })
-      .toBeGreaterThanOrEqual(2);
+    await expect.poll(() => postCalls, { timeout: 15_000 }).toBeGreaterThanOrEqual(2);
     const postsAfterUndo = postCalls;
 
     // Aguarda para garantir ausência de retry silencioso
     expect(postCalls).toBe(postsAfterUndo);
 
     // Algum toast de erro/aviso do sonner é exibido (fallback do restore)
-    await expect(page.locator("[data-sonner-toast]").first()).toBeVisible({
+    await expect(page.locator('[data-sonner-toast]').first()).toBeVisible({
       timeout: 10_000,
     });
   });

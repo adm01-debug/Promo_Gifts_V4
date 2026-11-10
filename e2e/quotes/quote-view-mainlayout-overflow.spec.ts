@@ -5,7 +5,8 @@
  *
  * Esta spec roda em chromium/firefox/webkit para garantir consistência.
  */
-import { test, expect, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 import { gotoAndSettle } from '../helpers/nav';
 
 const ROUTE = '/__visual/quote-view-order';
@@ -38,7 +39,10 @@ test('@smoke MainLayout root e html/body NÃO usam overflow-x:hidden', async ({ 
     mainLayout: styles.mainLayout,
   })) {
     expect(value, `${scope} overflow-x=${value} quebra sticky da sidebar`).not.toBe('hidden');
-    expect(['visible', 'clip'], `${scope} overflow-x deve ser visible|clip, veio ${value}`).toContain(value);
+    expect(
+      ['visible', 'clip'],
+      `${scope} overflow-x deve ser visible|clip, veio ${value}`,
+    ).toContain(value);
   }
 });
 

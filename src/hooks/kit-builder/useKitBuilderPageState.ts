@@ -149,8 +149,6 @@ export function useKitBuilderPageState() {
   const kitIdParam = searchParams.get('kit');
   const productIdParam = searchParams.get('product');
   const originParam = searchParams.get('origin');
-  // A direct product entry has already made the first semantic choice, so it
-  // must land in the items-first journey instead of showing an empty box step.
   const initialFlow =
     searchParams.get('flow') === 'items' || productIdParam ? 'items-first' : 'box-first';
 
@@ -163,9 +161,6 @@ export function useKitBuilderPageState() {
   const [isHydrating, setIsHydrating] = useState(Boolean(kitIdParam));
   const hydratedKitIdRef = useRef<string | null>(null);
 
-  // Navigating from the mounted landing page to ?kit=<id> does not remount
-  // this hook. Derive the mode from the URL so a cloned template immediately
-  // opens in the editor instead of remaining behind the landing screen.
   useEffect(() => {
     setIsLanding(isKitMakerLandingRoute(kitIdParam, productIdParam));
   }, [kitIdParam, productIdParam]);
@@ -215,9 +210,6 @@ export function useKitBuilderPageState() {
   } = useKitBuilder({ initialFlow });
 
   const { isSaving, saveKit, savedKits, isLoadingKits } = useCustomKitPersistence();
-  // Keep the library and an open editor coherent when the same authenticated
-  // user edits a kit from another tab/device. The hook degrades to normal
-  // query refetching if Realtime is unavailable.
   useCustomKitsRealtime();
   useTemplateSnapshot();
   const { handleAddToQuote, isCreatingQuote } = useKitBuilderQuote();
@@ -251,10 +243,6 @@ export function useKitBuilderPageState() {
   } = useKitUndoRedo();
   useDuplicateKitDetector();
 
-  // Captura snapshot a cada mudança significativa do kit. O pushSnapshot
-  // deduplica snapshots idênticos e respeita isRestoring (o próprio undo/redo
-  // não gera novo snapshot). Isto liga o undo/redo, que antes era inerte
-  // (pushSnapshot nunca era chamado → canUndo sempre false).
   useEffect(() => {
     if (isHydrating || isRestoring.current) return;
     pushSnapshot({
@@ -285,7 +273,6 @@ export function useKitBuilderPageState() {
     isHydrating,
   ]);
 
-  // undo/redo aplicam o snapshot retornado de volta no estado do kit.
   const undo = useCallback(() => {
     const snap = undoSnapshot();
     if (snap) {
@@ -302,9 +289,6 @@ export function useKitBuilderPageState() {
     }
   }, [redoSnapshot, restoreKitSnapshot]);
 
-  // A saved snapshot must be restored before autosave is allowed to run. This
-  // prevents a blank first render from replacing an existing kit after opening
-  // /montar-kit?kit=<id>.
   useEffect(() => {
     if (!kitIdParam) {
       setIsHydrating(false);
@@ -340,7 +324,6 @@ export function useKitBuilderPageState() {
     setIsHydrating(false);
   }, [isLoadingKits, kitIdParam, loadKit, originParam, savedKits, setKitOrigin]);
 
-  // Load Logic (Simplified for the pattern example)
   useEffect(() => {
     if (productIdParam && !kitIdParam) {
       (async () => {
@@ -368,9 +351,12 @@ export function useKitBuilderPageState() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productIdParam, kitIdParam]);
 
-  // Effects (Confetti, Title, etc.)
   useEffect(() => {
-    if (kitState.isValid && kitState.items.length > 0) {
+    if (
+      kitState.isValid &&
+      kitState.items.length > 0 &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
       confetti({
         particleCount: 60,
         spread: 70,
@@ -398,8 +384,6 @@ export function useKitBuilderPageState() {
       );
       return;
     }
-    // Prevent the debounce timer from racing the explicit save and submitting
-    // a stale revision immediately after the manual operation.
     cancelPendingSave();
     try {
       const kitId = currentKitId || autoSavedKitId || undefined;
@@ -412,8 +396,6 @@ export function useKitBuilderPageState() {
       setCurrentKitId(saved.id);
       setCurrentRevision(saved.revision);
     } catch (error) {
-      // useCustomKitPersistence already displays a sanitized message. Keep the
-      // error observable without producing a second, potentially unsafe toast.
       logger.warn('[kit-builder] Manual save failed:', error);
     }
   }, [
@@ -456,8 +438,6 @@ export function useKitBuilderPageState() {
     [startNewFlow],
   );
 
-  // An occasion is intentionally advisory: it narrows the catalog and selects
-  // a kit type, but it never inserts products or boxes without confirmation.
   const selectOccasion = useCallback(
     (nextOccasion: Occasion | null) => {
       setOccasion(nextOccasion);

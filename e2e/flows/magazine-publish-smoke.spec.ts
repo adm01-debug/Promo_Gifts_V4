@@ -31,18 +31,74 @@
  * um usuário do BD Gold (doufsxqlfjyuvxuezpln). Sem essas variáveis, o
  * teste faz skip automático via `loginAs`.
  */
-import { expect } from '@playwright/test';
+import { expect, type Page, type Response } from '@playwright/test';
 
 import { test } from '../fixtures/test-base';
-import { loginAs, dismissOnboardingTour } from '../helpers/auth';
+import { dismissOnboardingTour, loginAs } from '../helpers/auth';
+import {
+  retryAfterDelayMs,
+  shouldRetryBackendStatus,
+  shouldRetryBrowserError,
+} from '../helpers/http-status';
 import { gotoAndSettle, waitForRouteIdle } from '../helpers/nav';
 import { e2eName } from '../helpers/e2e-resources';
 
 const PUBLIC_TOKEN_RE = /\/revista-publica\/([a-f0-9]{16,64})/i;
+const MAGAZINE_LIST_ATTEMPTS = 3;
+
+function isMagazineListResponse(res: Response) {
+  const url = new URL(res.url());
+  return res.request().method() === 'GET' && url.pathname === '/rest/v1/magazines';
+}
+
+async function openMagazineWhenBackendReady(page: Page): Promise<void> {
+  const trace: string[] = [];
+
+  for (let attempt = 1; attempt <= MAGAZINE_LIST_ATTEMPTS; attempt += 1) {
+    const waitMagazinesReady = page.waitForResponse(isMagazineListResponse, {
+      timeout: 120_000,
+    });
+
+    let response: Response;
+    try {
+      [response] = await Promise.all([waitMagazinesReady, gotoAndSettle(page, '/magazine')]);
+    } catch (error) {
+      trace.push(error instanceof Error ? error.name : 'erro desconhecido');
+      if (!shouldRetryBrowserError(error, attempt, MAGAZINE_LIST_ATTEMPTS)) {
+        const detail = error instanceof Error ? error.message : String(error);
+        throw new Error(
+          `listagem de revistas falhou após ${attempt} tentativa(s); trace: ${trace.join(' -> ')}; ${detail}`,
+        );
+      }
+      continue;
+    }
+
+    await expect(page).toHaveURL(/\/magazine(\/|$)/);
+
+    trace.push(String(response.status()));
+
+    if (response.ok()) {
+      await dismissOnboardingTour(page);
+      await expect(page.getByText('Carregando revistas…')).toBeHidden({ timeout: 120_000 });
+      return;
+    }
+
+    const canRetry = shouldRetryBackendStatus(response.status(), attempt, MAGAZINE_LIST_ATTEMPTS);
+    if (!canRetry) {
+      throw new Error(
+        `listagem de revistas falhou após ${attempt} tentativa(s); trace: ${trace.join(' -> ')}`,
+      );
+    }
+
+    if (response.status() === 429) {
+      const delayMs = retryAfterDelayMs(response.headers()['retry-after']);
+      await new Promise<void>((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+}
 
 test.describe('@smoke Magazine — fluxo autenticado de publicação', () => {
   test.setTimeout(600_000);
-  test.describe.configure({ retries: 1 });
   test('publica revista e copia URL pública gerada', async ({ page, context }) => {
     await loginAs(page);
 
@@ -51,22 +107,7 @@ test.describe('@smoke Magazine — fluxo autenticado de publicação', () => {
     // `/rest/v1/magazines` e engolia o timeout; com isso o teste clicava em
     // "Nova revista" enquanto o PostgREST ainda estava em cold start e deixava
     // leitura + escrita competirem pela mesma conexão.
-    const waitMagazinesReady = page.waitForResponse(
-      (res) => {
-        const url = new URL(res.url());
-        return res.request().method() === 'GET' && url.pathname === '/rest/v1/magazines';
-      },
-      { timeout: 120_000 },
-    );
-    await gotoAndSettle(page, '/magazine');
-    await expect(page).toHaveURL(/\/magazine(\/|$)/);
-    await dismissOnboardingTour(page);
-    const magazinesResponse = await waitMagazinesReady;
-    expect(
-      magazinesResponse.ok(),
-      `listagem de revistas respondeu ${magazinesResponse.status()}`,
-    ).toBe(true);
-    await expect(page.getByText('Carregando revistas…')).toBeHidden({ timeout: 120_000 });
+    await openMagazineWhenBackendReady(page);
 
     await context.grantPermissions(['clipboard-read', 'clipboard-write'], {
       origin: new URL(page.url()).origin,
@@ -84,8 +125,7 @@ test.describe('@smoke Magazine — fluxo autenticado de publicação', () => {
       },
       { timeout: 120_000 },
     );
-    await createBtn.click();
-    const createResponse = await waitCreateResponse;
+    const [createResponse] = await Promise.all([waitCreateResponse, createBtn.click()]);
     expect(createResponse.ok(), `magazine_create_v2 respondeu ${createResponse.status()}`).toBe(
       true,
     );
@@ -125,17 +165,28 @@ test.describe('@smoke Magazine — fluxo autenticado de publicação', () => {
         catalogError.waitFor({ state: 'visible', timeout: 60_000 }),
       ]);
     }
-    test.skip(
-      (await firstProductBtn.count()) === 0,
-      'catálogo de produtos indisponível ou vazio para o usuário de teste',
-    );
+    const selectableProductCount = await firstProductBtn.count();
+    expect(
+      selectableProductCount,
+      'catálogo de produtos indisponível ou vazio: o smoke de publicação não pode ser ignorado',
+    ).toBeGreaterThan(0);
     await firstProductBtn.click();
 
     const addBtn = page.locator('[data-testid="magazine-product-add-btn"]').first();
     await expect(addBtn, "botão 'Adicionar' deve habilitar após seleção").toBeEnabled({
       timeout: 5_000,
     });
-    await addBtn.click();
+    const waitAddResponse = page.waitForResponse(
+      (res) => {
+        const url = new URL(res.url());
+        return (
+          res.request().method() === 'POST' && url.pathname === '/rest/v1/rpc/magazine_add_items_v2'
+        );
+      },
+      { timeout: 120_000 },
+    );
+    const [addResponse] = await Promise.all([waitAddResponse, addBtn.click()]);
+    expect(addResponse.ok(), `magazine_add_items_v2 respondeu ${addResponse.status()}`).toBe(true);
 
     // Aguarda o produto ser persistido na revista antes de navegar ao próximo step.
     // onAdd é async (escrita no Supabase); sem esse wait, goToStep('layout') vê
@@ -143,7 +194,10 @@ test.describe('@smoke Magazine — fluxo autenticado de publicação', () => {
     // "Publicar" — exclusivo dos steps identity/layout — nunca aparece.
     // O ProductsStep exibe role="status">Produtos na revista apenas quando
     // magazine.items.length > 0, logo é prova de que o estado React foi atualizado.
-    await page.getByText('Produtos na revista').waitFor({ state: 'visible', timeout: 20_000 });
+    await expect(
+      page.getByRole('status').filter({ hasText: 'Produtos na revista' }),
+      'produto persistido deve aparecer na revista antes da troca de etapa',
+    ).toBeVisible({ timeout: 60_000 });
 
     // 4) Vai para a etapa "Layout & Gerar" e clica em "Publicar".
     const layoutStep = page.locator('[data-testid="magazine-step-layout"]').first();

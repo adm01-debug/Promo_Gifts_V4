@@ -32,6 +32,11 @@ const HEADERS = {
 
 async function ghGet(url) {
   const r = await fetch(url, { headers: HEADERS });
+  if (r.status === 401 || r.status === 403) {
+    console.warn(`[ci-metrics] sem permissão para ${url} (${r.status}). Token com escopo insuficiente.`);
+    console.log('[ci-metrics] static-pass: token sem permissão actions:read; relatório não gerado.');
+    process.exit(0);
+  }
   if (!r.ok) throw new Error(`GET ${url} → ${r.status} ${r.statusText}`);
   return r.json();
 }

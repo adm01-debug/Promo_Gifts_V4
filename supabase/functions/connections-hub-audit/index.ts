@@ -2,7 +2,7 @@
 // Auditoria automatizada do Connections Hub — admin-only
 // Verifica: tabelas, edge functions, cron jobs, triggers e calcula score 0-10.
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { getCorsHeaders, handleCorsPreflightIfNeeded } from "../_shared/cors.ts";
 import { authenticateRequest, requireDev, authErrorResponse } from "../_shared/auth.ts";
 import { writeAuditEntry, extractRequestMeta } from "../_shared/audit-log.ts";

@@ -8,9 +8,7 @@ import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parse } from '@babel/parser';
-import traverseModule from '@babel/traverse';
 
-const traverse = traverseModule.default ?? traverseModule;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FILE = resolve(__dirname, '../../src/pages/quotes/QuoteBuilderPage.tsx');
 const SRC = readFileSync(FILE, 'utf8');
@@ -49,9 +47,12 @@ function runChecks(src) {
   const labelValorCount = { n: 0 };
   const shippingTestidCount = { n: 0 };
 
-  traverse(ast, {
-    JSXElement(path) {
-      const el = path.node;
+  // Walker recursivo custom — substitui @babel/traverse (não instalado)
+  function walkNode(node, parent) {
+    if (!node || typeof node !== 'object' || !node.type) return;
+
+    if (node.type === 'JSXElement') {
+      const el = node;
       const name = el.openingElement.name;
       const local = name.type === 'JSXIdentifier' ? name.name : null;
 
@@ -60,7 +61,7 @@ function runChecks(src) {
       if (testid === 'shipping-cost-input') {
         shippingTestidCount.n++;
         currencyInputNode = el;
-        currencyInputParent = path.parentPath?.node ?? null;
+        currencyInputParent = parent ?? null;
       }
       if (local === 'Label') {
         const htmlFor = litAttr(attr(el, 'htmlFor'));
@@ -69,8 +70,21 @@ function runChecks(src) {
           labelValorCount.n++;
         }
       }
-    },
-  });
+    }
+
+    for (const key of Object.keys(node)) {
+      const child = node[key];
+      if (Array.isArray(child)) {
+        for (const item of child) {
+          if (item && typeof item === 'object' && item.type) walkNode(item, node);
+        }
+      } else if (child && typeof child === 'object' && child.type) {
+        walkNode(child, node);
+      }
+    }
+  }
+
+  walkNode(ast, null);
 
   // (a) Não existe <span>R$</span> irmão do CurrencyInput.
   if (!currencyInputParent) gaps.push('(a) CurrencyInput do frete não encontrado');

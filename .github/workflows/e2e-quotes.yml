@@ -15,13 +15,33 @@ on:
     paths:
       - 'e2e/**'
       - 'src/components/**'
+      - 'src/hooks/**'
+      - 'src/lib/**'
+      - 'src/routes/**'
+      - 'src/services/**'
+      - 'supabase/functions/e2e-cleanup/**'
       - '.github/workflows/e2e-quotes.yml'
   workflow_dispatch:
     inputs:
       suite:
-        description: 'Suite a executar (vazio = todas)'
-        required: false
-        default: ''
+        description: 'Suite live a executar'
+        required: true
+        type: choice
+        default: all
+        options:
+          - all
+          - responsive
+          - tooltips
+          - undo
+          - conditions
+          - freight-block
+          - item-editor-sheet
+          - items-table-header
+          - row-menu-width
+          - view-no-presentation-mode
+          - view-sticky
+          - summary-collapse-all
+          - summary-sticky-header
 
 # R1 — permissões mínimas
 permissions:
@@ -29,7 +49,7 @@ permissions:
 
 # R2 — PRs cancelam runs anteriores; dispatch não
 concurrency:
-  group: e2e-quotes-${{ github.ref }}
+  group: ${{ github.event_name == 'workflow_dispatch' && 'e2e-quotes-live-canonical' || format('e2e-quotes-pr-{0}', github.ref) }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 defaults:
@@ -46,122 +66,294 @@ jobs:
     with:
       fail_if_missing: true
 
+  matrix_plan:
+    name: Planejar matriz E2E Quotes
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      uses_live_db: ${{ steps.plan.outputs.uses_live_db }}
+    steps:
+      - id: plan
+        name: Selecionar suites reais
+        env:
+          SELECTED_SUITE: ${{ github.event_name == 'workflow_dispatch' && inputs.suite || 'all' }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+
+          const include = [
+            {
+              suite: 'responsive',
+              spec: 'e2e/routes/quotes/quote-list-responsive.spec.ts e2e/quotes/quote-items-table-header-radius.spec.ts',
+              project: 'chromium-authed',
+              pr: true,
+            },
+            {
+              suite: 'tooltips',
+              spec: 'e2e/flows/04m-quotes-*tooltip*.spec.ts',
+              project: 'chromium-authed',
+              pr: true,
+            },
+            {
+              suite: 'undo',
+              spec: 'e2e/flows/04o-*.spec.ts e2e/flows/04p-*.spec.ts e2e/flows/04q-*.spec.ts e2e/flows/04r-*.spec.ts e2e/flows/04s-*.spec.ts',
+              project: 'chromium-authed',
+              pr: false,
+            },
+            {
+              suite: 'conditions',
+              spec: 'e2e/ui/quote-conditions-visual.spec.ts',
+              project: 'chromium-authed',
+              pr: false,
+            },
+            {
+              suite: 'freight-block',
+              spec: 'e2e/visual/quote-freight-block.spec.ts',
+              project: 'chromium-public',
+              pr: true,
+            },
+            {
+              suite: 'item-editor-sheet',
+              spec: 'e2e/quotes/quote-item-editor-sheet-header.spec.ts e2e/quotes/quote-add-product-button.spec.ts',
+              project: 'chromium-public',
+              pr: true,
+            },
+            {
+              suite: 'items-table-header',
+              spec: 'e2e/quotes/quote-items-table-header-radius.spec.ts e2e/quotes/quote-items-inner-scroll.spec.ts',
+              project: 'chromium-public',
+              pr: true,
+            },
+            {
+              suite: 'row-menu-width',
+              spec: 'e2e/quotes/quote-row-menu-width.spec.ts e2e/quotes/quote-row-menu-width-zoom.spec.ts',
+              project: 'chromium-public',
+              pr: false,
+            },
+            {
+              suite: 'view-no-presentation-mode',
+              spec: 'e2e/quotes/quote-view-no-presentation-mode.spec.ts e2e/quotes/quote-view-mainlayout-overflow.spec.ts e2e/quotes/quote-view-overflow-regression.spec.ts',
+              project: 'chromium-public',
+              pr: true,
+            },
+            {
+              suite: 'view-sticky',
+              spec: 'e2e/quotes/quote-view-sticky-sidebar.spec.ts e2e/quotes/quote-view-sticky-visual.spec.ts',
+              project: 'chromium-public',
+              pr: true,
+            },
+            {
+              suite: 'summary-collapse-all',
+              spec: 'e2e/quotes/quote-summary-collapse-all.spec.ts',
+              project: 'chromium-authed',
+              pr: false,
+            },
+            {
+              suite: 'summary-sticky-header',
+              spec: 'e2e/quotes/quote-summary-sticky-header.spec.ts e2e/quotes/quote-summary-sticky-header-visual.spec.ts e2e/quotes/quote-summary-action-buttons.spec.ts e2e/quotes/quote-summary-action-buttons-states.spec.ts',
+              project: 'chromium-authed',
+              pr: false,
+            },
+          ];
+          const selected = process.env.SELECTED_SUITE;
+          const selectedRows = process.env.EVENT_NAME === 'pull_request'
+            ? include.filter((row) => row.pr)
+            : selected === 'all'
+            ? include
+            : include.filter((row) => row.suite === selected);
+          if (selectedRows.length === 0) {
+            throw new Error(`Suite inválida: ${selected}`);
+          }
+          fs.appendFileSync(
+            process.env.GITHUB_OUTPUT,
+            `matrix=${JSON.stringify({ include: selectedRows })}\n` +
+              `uses_live_db=${selectedRows.some((row) => row.project === 'chromium-authed')}\n`,
+          );
+          NODE
+
+  cleanup_before:
+    name: Cleanup canônico antes do E2E live
+    needs: [secrets_check, matrix_plan]
+    if: >-
+      always() &&
+      github.event_name == 'workflow_dispatch' &&
+      needs.secrets_check.result == 'success' &&
+      needs.matrix_plan.result == 'success' &&
+      needs.matrix_plan.outputs.uses_live_db == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    env:
+      CLEANUP_PREFIX: '[E2E] quotes-'
+      E2E_CLEANUP_TOKEN: ${{ secrets.E2E_CLEANUP_TOKEN }}
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      SUPABASE_URL: 'https://doufsxqlfjyuvxuezpln.supabase.co'
+    steps:
+      - name: Limpar resíduos E2E anteriores
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          const required = ['CLEANUP_PREFIX', 'E2E_CLEANUP_TOKEN', 'E2E_USER_EMAIL', 'SUPABASE_URL'];
+          for (const key of required) {
+            if (!process.env[key]) throw new Error(`${key} é obrigatório para cleanup live`);
+          }
+          const endpoint = `${process.env.SUPABASE_URL}/functions/v1/e2e-cleanup`;
+          const idempotencyKey = crypto.randomUUID();
+          let lastError;
+          for (let attempt = 1; attempt <= 3; attempt += 1) {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 20_000);
+            try {
+              const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                  'content-type': 'application/json',
+                  'accept-version': '2',
+                  'x-e2e-cleanup-token': process.env.E2E_CLEANUP_TOKEN,
+                },
+                body: JSON.stringify({
+                  email: process.env.E2E_USER_EMAIL,
+                  dryRun: false,
+                  sellerScope: 'self',
+                  nameFilterPrefix: process.env.CLEANUP_PREFIX,
+                  confirm: true,
+                  idempotency_key: idempotencyKey,
+                }),
+                signal: controller.signal,
+              });
+              const body = await response.json().catch(() => ({}));
+              const errors = Object.keys(body.errors ?? {});
+              if (
+                response.ok &&
+                body.ok === true &&
+                body.dryRun === false &&
+                response.headers.get('x-contract-version') === '2' &&
+                body.cleanupProtocol === 'quotes-prefix-v2' &&
+                body.scope?.mode === 'quotes-prefix' &&
+                body.scope?.nameFilterPrefix === process.env.CLEANUP_PREFIX &&
+                errors.length === 0 &&
+                Number.isInteger(body.deleted?.quotes) &&
+                Number.isInteger(body.deleted?.quote_items)
+              ) {
+                console.log(`Cleanup pre-suite confirmado; quotes=${body.deleted?.quotes ?? 0}`);
+                lastError = undefined;
+                break;
+              }
+              lastError = new Error(
+                `cleanup HTTP ${response.status}: ${body.error ?? 'resposta inválida'}; errors=${errors.join(',')}`,
+              );
+              if (response.status < 500 && response.status !== 429) break;
+            } catch (error) {
+              lastError = error;
+            } finally {
+              clearTimeout(timeout);
+            }
+            if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, attempt * 1_000));
+          }
+          if (lastError) throw lastError;
+          NODE
+
   e2e_matrix:
-    name: E2E · ${{ matrix.suite }}
-    needs: [secrets_check]
+    name: E2E · ${{ matrix.suite }} · ${{ github.event_name == 'pull_request' && 'mock' || 'live' }}
+    needs: [secrets_check, matrix_plan, cleanup_before]
     # E82 — roda em PR (secrets_check skipped) ou em push/dispatch (secrets_check success)
-    if: always() && (needs.secrets_check.result == 'success' || needs.secrets_check.result == 'skipped')
+    if: >-
+      always() &&
+      needs.matrix_plan.result == 'success' &&
+      (needs.secrets_check.result == 'success' || needs.secrets_check.result == 'skipped') &&
+      (needs.cleanup_before.result == 'success' || needs.cleanup_before.result == 'skipped')
     runs-on: ubuntu-24.04
     # R3 — timeout por job
     timeout-minutes: 20
     strategy:
       fail-fast: false
-      matrix:
-        suite:
-          - responsive
-          - tooltips
-          - undo
-          - conditions
-          - freight-block
-          - item-editor-sheet
-          - items-table-header
-          - row-menu-width
-          - view-no-presentation-mode
-          - view-sticky
-          - summary-collapse-all
-          - summary-sticky-header
-        include:
-          - suite: responsive
-            spec: >-
-              e2e/routes/quotes/quote-list-responsive.spec.ts
-              e2e/quotes/quote-items-table-header-radius.spec.ts
-            project: chromium-public
-          - suite: tooltips
-            spec: 'e2e/flows/04m-quotes-status-tooltip*.spec.ts'
-            project: chromium-public
-          - suite: undo
-            spec: >-
-              e2e/flows/04o-*.spec.ts
-              e2e/flows/04p-*.spec.ts
-              e2e/flows/04q-*.spec.ts
-              e2e/flows/04r-*.spec.ts
-              e2e/flows/04s-*.spec.ts
-            project: chromium-authed
-          - suite: conditions
-            spec: 'e2e/ui/quote-conditions-visual.spec.ts'
-            project: chromium-public
-          - suite: freight-block
-            spec: 'e2e/visual/quote-freight-block.spec.ts'
-            project: chromium-public
-          - suite: item-editor-sheet
-            spec: >-
-              e2e/quotes/quote-item-editor-sheet-header.spec.ts
-              e2e/quotes/quote-add-product-button.spec.ts
-            project: chromium-public
-          - suite: items-table-header
-            spec: >-
-              e2e/quotes/quote-items-table-header-radius.spec.ts
-              e2e/quotes/quote-items-inner-scroll.spec.ts
-            project: chromium-public
-          - suite: row-menu-width
-            spec: >-
-              e2e/quotes/quote-row-menu-width.spec.ts
-              e2e/quotes/quote-row-menu-width-zoom.spec.ts
-            project: chromium-public
-          - suite: view-no-presentation-mode
-            spec: >-
-              e2e/quotes/quote-view-no-presentation-mode.spec.ts
-              e2e/quotes/quote-view-mainlayout-overflow.spec.ts
-              e2e/quotes/quote-view-overflow-regression.spec.ts
-            project: chromium-public
-          - suite: view-sticky
-            spec: >-
-              e2e/quotes/quote-view-sticky-sidebar.spec.ts
-              e2e/quotes/quote-view-sticky-visual.spec.ts
-            project: chromium-public
-          - suite: summary-collapse-all
-            spec: 'e2e/quotes/quote-summary-collapse-all.spec.ts'
-            project: chromium-public
-          - suite: summary-sticky-header
-            spec: >-
-              e2e/quotes/quote-summary-sticky-header.spec.ts
-              e2e/quotes/quote-summary-sticky-header-visual.spec.ts
-              e2e/quotes/quote-summary-action-buttons.spec.ts
-              e2e/quotes/quote-summary-action-buttons-states.spec.ts
-            project: chromium-public
+      # Dispatch live serializa suites para que o cleanup do usuário E2E não
+      # apague fixtures de outro job ainda em execução. PR mock segue paralelo.
+      max-parallel: ${{ github.event_name == 'workflow_dispatch' && 1 || 12 }}
+      matrix: ${{ fromJSON(needs.matrix_plan.outputs.matrix) }}
     # R5 — secrets via env:, nunca como argumento CLI
     # E82 — PR: E2E_MOCK_AUTH=1 (sem credenciais reais); push/dispatch: credenciais reais
     env:
       CI: 'true'
       FORCE_COLOR: '0'
-      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
-      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+      VITE_SUPABASE_URL: ${{ github.event_name == 'pull_request' && 'https://doufsxqlfjyuvxuezpln.supabase.co' || secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ github.event_name == 'pull_request' && 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' || secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
       E2E_MOCK_AUTH: ${{ github.event_name == 'pull_request' && '1' || '0' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false  # E32
+          persist-credentials: false # E32
+
+      - name: Validate live Supabase target
+        if: >-
+          github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          if [ -z "${VITE_SUPABASE_URL:-}" ] || [ -z "${VITE_SUPABASE_PUBLISHABLE_KEY:-}" ]; then
+            echo "::error::VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY são obrigatórios no dispatch real."
+            exit 1
+          fi
+          if [ "$VITE_SUPABASE_URL" != "https://doufsxqlfjyuvxuezpln.supabase.co" ]; then
+            echo "::error::O dispatch live deve apontar explicitamente para o banco canônico."
+            exit 1
+          fi
+          case "$VITE_SUPABASE_PUBLISHABLE_KEY" in
+            sb_secret_*)
+              echo "::error::Uma sb_secret jamais pode ser exposta como variável VITE."
+              exit 1
+              ;;
+            sb_publishable_*) ;;
+            eyJ*)
+              node --input-type=module <<'NODE'
+          const key = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+          try {
+            const [, encoded] = key.split('.');
+            const payload = JSON.parse(Buffer.from(encoded, 'base64url').toString('utf8'));
+            if (payload.role !== 'anon') throw new Error(`role=${payload.role ?? 'ausente'}`);
+          } catch (error) {
+            console.error(`::error::Chave JWT pública inválida: ${error.message}`);
+            process.exit(1);
+          }
+          NODE
+              ;;
+            *)
+              echo "::error::Formato de publishable/anon key inválido."
+              exit 1
+              ;;
+          esac
 
       - name: Setup E2E
         uses: ./.github/actions/e2e-setup
 
-      - name: Filtrar suite
-        if: github.event.inputs.suite != '' && github.event.inputs.suite != matrix.suite
-        env:
-          SUITE_FILTER: ${{ github.event.inputs.suite }}
-        run: |
-          echo "::notice::Suite ${{ matrix.suite }} ignorada (filtro: $SUITE_FILTER)"
-          exit 0
-
       - name: Run E2E · ${{ matrix.suite }}
         env:
-          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_USER_EMAIL: ${{ github.event_name == 'workflow_dispatch' && secrets.E2E_USER_EMAIL || '' }}
+          E2E_USER_PASSWORD: ${{ github.event_name == 'workflow_dispatch' && secrets.E2E_USER_PASSWORD || '' }}
+          E2E_TEST_PREFIX: ${{ github.event_name == 'workflow_dispatch' && format('[E2E] quotes-{0}-{1}', github.run_id, github.run_attempt) || '[E2E]' }}
+          PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-${{ matrix.suite }}.json
         run: |
+          EXTRA_ARGS=()
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && \
+             [ "${{ needs.matrix_plan.outputs.uses_live_db }}" = "true" ]; then
+            # O seed é idempotente dentro da rodada, mas dois workers podem
+            # observar o mesmo estado antes do insert. Serializar elimina essa
+            # janela e torna a prova live determinística.
+            EXTRA_ARGS+=(--workers=1)
+          fi
           npx playwright test ${{ matrix.spec }} \
             --project=${{ matrix.project }} \
-            --update-snapshots=missing \
-            --reporter=line,html
+            "${EXTRA_ARGS[@]}" \
+            --reporter=github,line,html,json
+
+      - name: Rejeitar suíte vazia · ${{ matrix.suite }}
+        if: always()
+        uses: ./.github/actions/check-min-tests
+        with:
+          results-json: playwright-report/results-${{ matrix.suite }}.json
+          min: 1
+          max-skipped-ratio: '0.95'
 
       # R6 — retention-days: 14
       - name: Upload report + artifacts
@@ -174,3 +366,109 @@ jobs:
             test-results
           if-no-files-found: ignore
           retention-days: 14
+
+  cleanup_after:
+    name: Cleanup canônico após o E2E live
+    needs: [secrets_check, matrix_plan, cleanup_before, e2e_matrix]
+    if: >-
+      always() &&
+      github.event_name == 'workflow_dispatch' &&
+      needs.matrix_plan.outputs.uses_live_db == 'true' &&
+      needs.cleanup_before.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    env:
+      CLEANUP_PREFIX: ${{ format('[E2E] quotes-{0}-{1}', github.run_id, github.run_attempt) }}
+      E2E_CLEANUP_TOKEN: ${{ secrets.E2E_CLEANUP_TOKEN }}
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      SUPABASE_URL: 'https://doufsxqlfjyuvxuezpln.supabase.co'
+    steps:
+      - name: Remover fixtures criadas pela rodada
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          const required = ['CLEANUP_PREFIX', 'E2E_CLEANUP_TOKEN', 'E2E_USER_EMAIL', 'SUPABASE_URL'];
+          for (const key of required) {
+            if (!process.env[key]) throw new Error(`${key} é obrigatório para cleanup live`);
+          }
+          const endpoint = `${process.env.SUPABASE_URL}/functions/v1/e2e-cleanup`;
+          const idempotencyKey = crypto.randomUUID();
+          let lastError;
+          for (let attempt = 1; attempt <= 3; attempt += 1) {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 20_000);
+            try {
+              const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                  'content-type': 'application/json',
+                  'accept-version': '2',
+                  'x-e2e-cleanup-token': process.env.E2E_CLEANUP_TOKEN,
+                },
+                body: JSON.stringify({
+                  email: process.env.E2E_USER_EMAIL,
+                  dryRun: false,
+                  sellerScope: 'self',
+                  nameFilterPrefix: process.env.CLEANUP_PREFIX,
+                  confirm: true,
+                  idempotency_key: idempotencyKey,
+                }),
+                signal: controller.signal,
+              });
+              const body = await response.json().catch(() => ({}));
+              const errors = Object.keys(body.errors ?? {});
+              if (
+                response.ok &&
+                body.ok === true &&
+                body.dryRun === false &&
+                response.headers.get('x-contract-version') === '2' &&
+                body.cleanupProtocol === 'quotes-prefix-v2' &&
+                body.scope?.mode === 'quotes-prefix' &&
+                body.scope?.nameFilterPrefix === process.env.CLEANUP_PREFIX &&
+                errors.length === 0 &&
+                Number.isInteger(body.deleted?.quotes) &&
+                Number.isInteger(body.deleted?.quote_items)
+              ) {
+                console.log(`Cleanup post-suite confirmado; quotes=${body.deleted?.quotes ?? 0}`);
+                lastError = undefined;
+                break;
+              }
+              lastError = new Error(
+                `cleanup HTTP ${response.status}: ${body.error ?? 'resposta inválida'}; errors=${errors.join(',')}`,
+              );
+              if (response.status < 500 && response.status !== 429) break;
+            } catch (error) {
+              lastError = error;
+            } finally {
+              clearTimeout(timeout);
+            }
+            if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, attempt * 1_000));
+          }
+          if (lastError) throw lastError;
+          NODE
+
+  live_receipt:
+    name: ${{ github.event_name == 'workflow_dispatch' && 'Quotes Live DB · receipt' || 'Quotes Mock DB · receipt' }}
+    needs: [matrix_plan, cleanup_before, e2e_matrix, cleanup_after]
+    if: >-
+      always() &&
+      github.event_name == 'workflow_dispatch' &&
+      needs.matrix_plan.outputs.uses_live_db == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    env:
+      CLEANUP_AFTER_RESULT: ${{ needs.cleanup_after.result }}
+      CLEANUP_BEFORE_RESULT: ${{ needs.cleanup_before.result }}
+      E2E_RESULT: ${{ needs.e2e_matrix.result }}
+      TESTED_SHA: ${{ github.sha }}
+    steps:
+      - name: Validar recibo live completo
+        run: |
+          set -euo pipefail
+          if [ "$CLEANUP_BEFORE_RESULT" != "success" ] || \
+             [ "$E2E_RESULT" != "success" ] || \
+             [ "$CLEANUP_AFTER_RESULT" != "success" ]; then
+            echo "::error::Recibo live inválido: pre=$CLEANUP_BEFORE_RESULT e2e=$E2E_RESULT post=$CLEANUP_AFTER_RESULT"
+            exit 1
+          fi
+          echo "::notice::Quotes live validado no SHA $TESTED_SHA com cleanup pre/post confirmado."

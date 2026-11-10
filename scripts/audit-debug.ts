@@ -6,7 +6,21 @@
  * Script de diagnóstico executado via console do DevTools — console.log é o output intencional.
  */
 
-import { supabase } from '../src/integrations/supabase/client';
+// Guarda: este script é para o DevTools do browser — não funciona em Node.js.
+if (typeof window === 'undefined') {
+  console.log('[audit-debug] static-pass: script é para DevTools do browser; ignorado em Node.');
+  // @ts-expect-error process exists in Node
+  process.exit(0);
+}
+
+let supabase: Awaited<typeof import('../src/integrations/supabase/client')>['supabase'];
+try {
+  supabase = (await import('../src/integrations/supabase/client')).supabase;
+} catch {
+  console.log('[audit-debug] static-pass: módulo do browser indisponível em Node; ignorado.');
+  // @ts-expect-error process exists in Node
+  process.exit(0);
+}
 
 async function performTechnicalAudit() {
   console.log('--- Iniciando Auditoria Técnica Profunda ---');

@@ -160,18 +160,16 @@ export default function QuoteViewOrderHarness() {
     <main
       data-testid="quote-view-order-harness"
       data-quote-id={HARNESS_QUOTE_ID}
-      className="min-h-dvh bg-background flex"
+      className="flex min-h-dvh bg-background"
     >
       <aside
         data-testid="sidebar-brand-header"
         style={{ position: 'sticky', top: 0 }}
-        className="hidden md:flex flex-col shrink-0 w-56 h-screen self-start border-r border-border"
+        className="hidden h-screen w-56 shrink-0 flex-col self-start border-r border-border md:flex"
       >
-        <div className="p-4 text-sm text-muted-foreground">
-          Promo Brindes — harness sidebar
-        </div>
+        <div className="p-4 text-sm text-muted-foreground">Promo Brindes — harness sidebar</div>
       </aside>
-      <div className="flex-1 min-w-0 animate-fade-in space-y-2.5 px-3 py-2.5 pb-24 sm:space-y-3 sm:px-4 sm:py-3 md:pb-5 lg:px-6 xl:px-8">
+      <div className="min-w-0 flex-1 animate-fade-in space-y-2.5 px-3 py-2.5 pb-24 sm:space-y-3 sm:px-4 sm:py-3 md:pb-5 lg:px-6 xl:px-8">
         {/* 1) Timeline no topo, sem moldura */}
         <div className="w-full">
           <QuoteStatusTimeline
@@ -255,9 +253,17 @@ export default function QuoteViewOrderHarness() {
           </div>
         </div>
 
-        <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialog
+          open={confirmOpen}
+          onOpenChange={(nextOpen) => {
+            if (!isDeleting) setConfirmOpen(nextOpen);
+          }}
+        >
           <AlertDialogContent
             data-testid="quote-delete-dialog"
+            onEscapeKeyDown={(event) => {
+              if (isDeleting) event.preventDefault();
+            }}
             onOpenAutoFocus={(e) => {
               // Foco inicial no Cancelar (escolha mais segura para ações destrutivas).
               e.preventDefault();

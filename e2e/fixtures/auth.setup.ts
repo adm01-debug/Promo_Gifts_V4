@@ -51,8 +51,8 @@ setup('authenticate', async ({ page }) => {
     if (process.env.CI && !isForkPR) {
       throw new Error(
         '[auth.setup] E21 — modo estrito: E2E_USER_EMAIL/E2E_USER_PASSWORD ausentes em CI.\n' +
-        'Configure os secrets em Settings → Secrets and variables → Actions.\n' +
-        'Para testes sem autenticação real, use E2E_MOCK_AUTH=1.',
+          'Configure os secrets em Settings → Secrets and variables → Actions.\n' +
+          'Para testes sem autenticação real, use E2E_MOCK_AUTH=1.',
       );
     }
     // Fora do CI, graceful degradation mantida.
@@ -73,18 +73,11 @@ setup('authenticate', async ({ page }) => {
     await page.context().storageState({ path: STORAGE });
   } catch (err) {
     const reason = err instanceof Error ? err.message : String(err);
-    // E21 — modo estrito: em CI, falha de credencial = erro imediato.
-    // Timeout de rede (auth/v1/token pendurado — rate-limit do Supabase em IPs
-    // do GitHub Actions) degrada graciosamente para evitar falso-negativo.
+    // E21 — modo estrito: em CI, qualquer falha de login é erro. Converter
+    // timeout em storage vazio permitia que specs com requireAuth fossem
+    // pulados e o workflow aparentasse sucesso sem cobertura autenticada.
     if (process.env.CI) {
-      const isNetworkTimeout =
-        reason.includes('Timeout aguardando redirect') && reason.includes('PENDENTE');
-      if (!isNetworkTimeout) {
-        throw new Error(`[auth.setup] E21 — login falhou em CI: ${reason}`);
-      }
-      console.warn(
-        `[auth.setup] E21-timeout — auth/v1/token não respondeu em CI (possível rate-limit). Specs autenticados serão pulados.`,
-      );
+      throw new Error(`[auth.setup] E21 — login falhou em CI: ${reason}`);
     }
     console.warn(`[auth.setup] Login falhou — specs autenticados serão pulados. Motivo: ${reason}`);
     fs.writeFileSync(STORAGE, JSON.stringify({ cookies: [], origins: [] }, null, 2), 'utf-8');
