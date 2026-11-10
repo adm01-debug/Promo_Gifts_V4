@@ -12,6 +12,7 @@
 import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { classifyTscRun } from './lib/tsc-run.mjs';
 
 const ROOT = process.cwd();
 const BASELINE_PATH = join(ROOT, '.tsc-tests-baseline.json');
@@ -36,15 +37,15 @@ const res = spawnSync(
   { encoding: 'utf8', maxBuffer: 50 * 1024 * 1024 },
 );
 
-if (res.error) {
-  console.error('❌ tsc falhou ao executar:', res.error.message);
+const output = (res.stdout || '') + (res.stderr || '');
+// GUARD: tsc que não chegou a checar (tsconfig ausente/inválido, OOM) não pode virar
+// "1 erro < baseline" e celebrar drift positivo.
+const run = classifyTscRun({ status: res.status, signal: res.signal, error: res.error, output });
+if (!run.ok) {
+  console.error(`❌ ${run.reason}`);
   process.exit(2);
 }
-
-const output = (res.stdout || '') + (res.stderr || '');
-const ERR_RE = /error TS\d+:/g;
-const matches = output.match(ERR_RE);
-const totalCurrent = matches ? matches.length : 0;
+const totalCurrent = run.count;
 const totalBaseline = baseline.totalErrors ?? 0;
 
 if (UPDATE) {
