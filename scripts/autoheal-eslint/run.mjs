@@ -17,11 +17,11 @@ export function selectFiles(cwd, target = 'HEAD') {
   if (head !== sha) throw new Error('O SHA alvo deve ser o commit atualmente em checkout.');
   return git(['diff', '--name-only', '-z', '--diff-filter=ACMR', `${sha}^`, sha, '--', '*.ts', '*.tsx'], cwd)
     .split('\0')
-    .filter((file) => /^(src|tests|e2e)\/.+\.tsx?$/.test(file));
+    .filter((file) => /^(src|tests|e2e)\/[\s\S]+\.tsx?$/.test(file));
 }
 
 export function fixAndCheck(cwd, files) {
-  if (!Array.isArray(files) || files.some((file) => typeof file !== 'string' || !/^(src|tests|e2e)\/.+\.tsx?$/.test(file) || file.split('/').includes('..'))) {
+  if (!Array.isArray(files) || files.some((file) => typeof file !== 'string' || !/^(src|tests|e2e)\/[\s\S]+\.tsx?$/.test(file) || file.split('/').includes('..'))) {
     throw new Error('Lista de arquivos fora do escopo autorizado.');
   }
   if (files.length === 0) return;
