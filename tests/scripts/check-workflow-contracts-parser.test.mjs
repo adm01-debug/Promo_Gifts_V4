@@ -172,7 +172,7 @@ describe('C11 enxerga `- run:` como início de linha', () => {
 describe('runChecks com YAML inválido', () => {
   const dirs = [];
   afterAll(() => dirs.forEach((d) => rmSync(d, { recursive: true, force: true })));
-  it('workflow quebrado (com `supabase db push`) vira violação explícita e é contado em workflowCount', () => {
+  it('workflow quebrado com comando inerte vira violação explícita e é contado em workflowCount', () => {
     const root = mkdtempSync(join(tmpdir(), 'wfc-'));
     dirs.push(root);
     mkdirSync(join(root, '.github/workflows'), { recursive: true });
@@ -180,7 +180,7 @@ describe('runChecks com YAML inválido', () => {
     writeFileSync(join(root, 'playwright.config.ts'), 'export default { projects: [] };\n');
     writeFileSync(
       join(root, '.github/workflows/zz-quebrado.yml'),
-      'on: push\njobs:\n  a:\n  steps: [unclosed\n    - run: supabase db push --project-ref pqpdolkaeqlyzpdpbizo\n',
+      'on: push\njobs:\n  a:\n  steps: [unclosed\n    - run: echo diagnostic\n',
     );
     const { violations, workflowCount } = runChecks(root);
     expect(workflowCount).toBe(1);
