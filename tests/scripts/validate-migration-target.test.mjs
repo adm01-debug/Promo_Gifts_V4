@@ -63,6 +63,13 @@ describe('controlled migration target', () => {
       ),
     ).toEqual([]);
   });
+  it('target-only validates the canonical connection without inventing a migration version', () => {
+    const { MIGRATION_VERSION: _omitted, ...target } = valid;
+    expect(validateMigrationTarget(target, { targetOnly: true })).toEqual([]);
+    expect(
+      validateMigrationTarget({ ...target, PGDATABASE: 'other' }, { targetOnly: true }),
+    ).toContain('PGDATABASE inesperado');
+  });
   it('workflow routes user input through env and validates PG target before DDL', () => {
     const path = resolve(
       dirname(fileURLToPath(import.meta.url)),
@@ -81,9 +88,10 @@ describe('controlled migration target', () => {
     const guard = steps.findIndex(
       (step) => step.run === 'node scripts/validate-migration-target.mjs --require-live-pooler',
     );
-    const apply = steps.findIndex((step) =>
-      step.run?.includes('psql -X -w -1 -v ON_ERROR_STOP=1') &&
-      step.run?.includes('psql -X -w -v ON_ERROR_STOP=1'),
+    const apply = steps.findIndex(
+      (step) =>
+        step.run?.includes('psql -X -w -1 -v ON_ERROR_STOP=1') &&
+        step.run?.includes('psql -X -w -v ON_ERROR_STOP=1'),
     );
     expect(guard).toBeGreaterThan(-1);
     expect(apply).toBeGreaterThan(guard);
@@ -95,10 +103,14 @@ describe('controlled migration target', () => {
     expect(workflow.jobs.apply.env.MIGRATION_LOCK_TIMEOUT).toBe('1s');
     const run = steps[apply].run;
     const txPath = run.slice(run.indexOf('psql -X -w -1'));
-    expect(txPath.indexOf("SET LOCAL lock_timeout = '${MIGRATION_LOCK_TIMEOUT}'")).toBeGreaterThan(-1);
+    expect(txPath.indexOf("SET LOCAL lock_timeout = '${MIGRATION_LOCK_TIMEOUT}'")).toBeGreaterThan(
+      -1,
+    );
     expect(txPath.indexOf('SET LOCAL statement_timeout')).toBeGreaterThan(-1);
-    expect(txPath.indexOf('SET LOCAL lock_timeout')).toBeLessThan(txPath.indexOf('-f "$MIGRATION_FILE"'));
-    expect(run).toContain("-c \"SET lock_timeout = '${MIGRATION_LOCK_TIMEOUT}'\"");
+    expect(txPath.indexOf('SET LOCAL lock_timeout')).toBeLessThan(
+      txPath.indexOf('-f "$MIGRATION_FILE"'),
+    );
+    expect(run).toContain('-c "SET lock_timeout = \'${MIGRATION_LOCK_TIMEOUT}\'"');
     expect(steps[apply].env.PGSSLMODE).toBe('require');
     expect(steps[guard].env.SUPABASE_ACCESS_TOKEN).toBe('${{ secrets.SUPABASE_ACCESS_TOKEN }}');
     const connection = steps.findIndex((step) => step.run?.includes('BEGIN READ ONLY'));

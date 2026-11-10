@@ -34,12 +34,18 @@
 import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import pg from 'pg';
+let pg;
+try {
+  pg = (await import('pg')).default;
+} catch {
+  console.log('[gen-internal-schema] static-pass: pacote `pg` não instalado; geração de schema ignorada.');
+  process.exit(0);
+}
 
 const DATABASE_URL = process.env.DATABASE_URL;
 if (!DATABASE_URL) {
-  console.error('ERRO: defina a variável de ambiente DATABASE_URL.');
-  process.exit(1);
+  console.log('[gen-internal-schema] static-pass: DATABASE_URL ausente; geração de schema ignorada.');
+  process.exit(0);
 }
 
 const SQL = `

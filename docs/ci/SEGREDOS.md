@@ -7,7 +7,7 @@
 > Este arquivo é validado pelo script `scripts/check-secrets-inventory.mjs` (E40).
 > Rodar: `node scripts/check-secrets-inventory.mjs --gate` para verificar completude.
 
-Última atualização: 2026-11-07 (Gate 1.14 — SUPABASE_TEST_BYPASS_TOKEN adicionado; ci-freight-quality.yml)
+Última atualização: 2026-11-09 (Gate 1.14 — SMOKE_HEALTH_FN_URL, TEST_ADMIN_PASSWORD, TEST_SELLER_PASSWORD, vars.SMOKE_BASE_URL adicionados; ci.yml)
 
 ---
 
@@ -20,10 +20,10 @@
 | `SUPABASE_DB_PASSWORD` | DevOps/PO | Repo | 6 meses | `schema-snapshot-export.yml`, `db-schema-drift-check.yml`, `db-apply-migration.yml` |
 | `SUPABASE_ANON_KEY` | DevOps/PO | Repo | — | `cart-header-quality-gate.yml`, `ci-security-drift.yml`, `restore-seller-cart-rpc.yml` |
 | `SUPABASE_URL` | DevOps/PO | Repo | — | `cart-header-quality-gate.yml`, `ci-security-drift.yml`, `restore-seller-cart-rpc.yml` |
-| `PGHOST` | DevOps/PO | Repo | — | `db-apply-migration.yml`, `drafts-index-check.yml`, `migration-dry-run.yml`, `contexto.yml` |
-| `PGUSER` | DevOps/PO | Repo | — | `db-apply-migration.yml`, `drafts-index-check.yml`, `contexto.yml` |
-| `PGPASSWORD` | DevOps/PO | Repo | 6 meses | `db-apply-migration.yml`, `drafts-index-check.yml`, `migration-dry-run.yml`, `contexto.yml` |
-| `PGDATABASE` | DevOps/PO | Repo | — | `db-apply-migration.yml`, `drafts-index-check.yml`, `contexto.yml` |
+| `PGHOST` | DevOps/PO | Repo | — | `db-apply-migration.yml`, `db-schema-drift-check.yml`, `drafts-index-check.yml`, `migration-dry-run.yml`, `contexto.yml` |
+| `PGUSER` | DevOps/PO | Repo | — | `db-apply-migration.yml`, `db-schema-drift-check.yml`, `drafts-index-check.yml`, `contexto.yml` |
+| `PGPASSWORD` | DevOps/PO | Repo | 6 meses | `db-apply-migration.yml`, `db-schema-drift-check.yml`, `drafts-index-check.yml`, `migration-dry-run.yml`, `contexto.yml` |
+| `PGDATABASE` | DevOps/PO | Repo | — | `db-apply-migration.yml`, `db-schema-drift-check.yml`, `drafts-index-check.yml`, `contexto.yml` |
 | `PGPORT` | DevOps/PO | Repo | — | `db-apply-migration.yml` (3 refs), `drafts-index-check.yml`, `migration-dry-run.yml`, `contexto.yml` — fallback: `5432` se ausente |
 
 > **Nota `SUPABASE_ANON_KEY` vs `VITE_SUPABASE_PUBLISHABLE_KEY`:** dois nomes para o mesmo valor (chave anon/publishable de `doufsxqlfjyuvxuezpln`). Workflows mais antigos usam `SUPABASE_ANON_KEY`; novos usam `VITE_SUPABASE_PUBLISHABLE_KEY`. Ambos são de conhecimento público por design do Supabase — RLS é a camada de segurança real.
@@ -43,9 +43,13 @@ São usados em workflows de E2E/integração que **não fazem parte do Gate Fina
 | `E2E_USER_PASSWORD` | DevOps | Repo | Anual | Senha do usuário comprador padrão — 45 refs em workflows de E2E/integração |
 | `E2E_ADMIN_EMAIL` | DevOps | Repo | Anual | Usuário administrador de testes — deploy-gates.yml, e2e-cart-*.yml (13 refs) |
 | `E2E_ADMIN_PASSWORD` | DevOps | Repo | Anual | Senha do admin de testes — 13 refs |
+| `E2E_CLEANUP_TOKEN` | DevOps | Repo + Supabase Edge | Semestral | Token dedicado do cleanup escopado — `e2e-quotes.yml` e função `e2e-cleanup`; o valor do repo deve corresponder ao secret runtime da Edge |
 | `E2E_DEV_EMAIL` | DevOps | Repo | Anual | Usuário developer (edge-integration-all.yml) — 1 ref |
 | `E2E_DEV_PASSWORD` | DevOps | Repo | Anual | Senha do developer de testes — 1 ref |
 | `SUPABASE_TEST_BYPASS_TOKEN` | DevOps | Repo | Semestral | Token de bypass de segurança para testes de carga/stress — `ci-freight-quality.yml` (1 ref), `scripts/massive-load-test.mjs`, `scripts/fuzz-testing.mjs`, `scripts/stress-burst.mjs`, `scripts/freight-quest-load-test.mjs`. **Deve ser o segredo mais controlado do repo** — contorna regras RLS em ambiente de teste |
+| `TEST_ADMIN_PASSWORD` | DevOps | Repo | Anual | Senha do usuário admin para testes de integração — `ci.yml` (1 ref); opcional, job pulado se não configurado |
+| `TEST_SELLER_PASSWORD` | DevOps | Repo | Anual | Senha do usuário vendedor para testes de integração — `ci.yml` (1 ref); opcional, job pulado se não configurado |
+| `SMOKE_HEALTH_FN_URL` | DevOps | Repo | Sob demanda | URL da edge function de health check para smoke tests — `ci.yml` (1 ref) |
 
 ---
 
@@ -116,6 +120,7 @@ Gerado automaticamente em cada run — não armazenado como secret no repositór
 | `vars.CART_TOTAL_SHARDS` | DevOps | Repo | Número de shards em `cart-invariants-smoke.yml` — default 4 |
 | `vars.E2E_BASE_URL` | DevOps | Repo | URL base para E2E em `ci-freight-quality.yml` |
 | `vars.CI_SKIP_FREIGHT_E2E` | DevOps | Repo | Flag para pular E2E de frete em `freight-quality-gates.yml` |
+| `vars.SMOKE_BASE_URL` | DevOps | Repo | URL base para smoke tests de rota/health — `ci.yml` (2 refs) |
 | `vars.KIT_FIXTURE_ID` | DevOps | Repo | UUID do fixture de kit (alternativa ao secret) — `kit-coverage-integration.yml` |
 
 ---
@@ -171,6 +176,8 @@ Configurados via `supabase secrets set`; obrigatórios para as funções listada
 | `CSRF_SECRET` | Chave CSRF | Semestral | `_shared/security.ts` |
 | `E2E_CLEANUP_RATE_LIMIT_MAX` | Config rate limit | — | `e2e-cleanup/index.ts` |
 | `E2E_CLEANUP_RATE_LIMIT_WINDOW_SECONDS` | Config rate limit | — | `e2e-cleanup/index.ts` |
+| `E2E_CLEANUP_TOKEN` | Token de automação | Semestral | `e2e-cleanup/index.ts`; deve corresponder ao GitHub Actions secret homônimo |
+| `E2E_CLEANUP_ALLOWED_EMAILS` | Allowlist CSV | Sob demanda | `e2e-cleanup/index.ts`; somente contas E2E autorizadas, nunca usuários humanos |
 | `ENVIRONMENT` | Flag de ambiente | — | `cnpj-lookup/index.ts` |
 | `EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY` | Supabase Key (ext) | Semestral | `_shared/ai-router/index.ts` |
 | `EXTERNAL_PROMOBRIND_URL` | URL Supabase (ext) | — | `_shared/ai-router/index.ts` |

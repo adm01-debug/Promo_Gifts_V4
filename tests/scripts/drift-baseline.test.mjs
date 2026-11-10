@@ -21,6 +21,7 @@ import {
   maxNumericVersion,
   prepareWorkdir,
   sanitizeBaselineForReplay,
+  sanitizeReplayMigration,
   replayFileName,
   selectReplayMigrations,
 } from '../../scripts/drift-baseline.mjs';
@@ -74,7 +75,81 @@ describe('replayFileName', () => {
   });
 });
 
+describe('sanitizeReplayMigration', () => {
+  it('remove CONCURRENTLY só de CREATE INDEX executável no shadow', () => {
+    const fileName = '20261101140003_sb0006_index_kit_fk_user_id.sql';
+    const sql = [
+      'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_a ON public.a(id);',
+      '  CREATE UNIQUE INDEX CONCURRENTLY idx_b ON public.b(id);',
+      '-- CREATE INDEX CONCURRENTLY idx_comment ON public.c(id);',
+      "SELECT 'CREATE INDEX CONCURRENTLY idx_text ON public.d(id)';",
+      'DROP INDEX CONCURRENTLY IF EXISTS public.idx_old;',
+    ].join('\n');
+
+    expect(sanitizeReplayMigration(fileName, sql)).toBe(
+      [
+        'CREATE INDEX IF NOT EXISTS idx_a ON public.a(id);',
+        '  CREATE UNIQUE INDEX idx_b ON public.b(id);',
+        '-- CREATE INDEX CONCURRENTLY idx_comment ON public.c(id);',
+        "SELECT 'CREATE INDEX CONCURRENTLY idx_text ON public.d(id)';",
+        'DROP INDEX CONCURRENTLY IF EXISTS public.idx_old;',
+      ].join('\n'),
+    );
+  });
+
+  it('falha fechado se a migration histórica mudar e não tiver exatamente dois índices', () => {
+    const fileName = '20261101140003_sb0006_index_kit_fk_user_id.sql';
+    for (const count of [0, 1, 3]) {
+      const sql = Array.from(
+        { length: count },
+        (_, index) =>
+          `CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_${index} ON public.a(id);`,
+      ).join('\n');
+      expect(() => sanitizeReplayMigration(fileName, sql)).toThrow(
+        new RegExp(`esperado\\(s\\) 2 .* encontrado\\(s\\) ${count}`),
+      );
+    }
+  });
+
+  it('não reescreve migrations fora do allowlist de compatibilidade do pipeline', () => {
+    const sql = 'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_a ON public.a(id);';
+    expect(sanitizeReplayMigration('20261109999999_future.sql', sql)).toBe(sql);
+  });
+});
+
 describe('prepareWorkdir', () => {
+  it('reescreve CONCURRENTLY somente na cópia temporária do replay', () => {
+    const migration = '20261101140003_sb0006_index_kit_fk_user_id.sql';
+    const sourceSql = [
+      'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_a ON public.a(id);',
+      'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_b ON public.b(id);',
+      '',
+    ].join('\n');
+    const root = fixtureRepo({
+      baselineVersion: '20261015140000',
+      ledgerVersions: ['20261015140000'],
+      migrations: [migration],
+    });
+    const source = join(root, 'supabase', 'migrations', migration);
+    writeFileSync(source, sourceSql);
+    const out = join(tmp(), 'wd');
+
+    prepareWorkdir({
+      rootDir: root,
+      outDir: out,
+      appliedVersions: ['20261015140000', '20261101140003'],
+      projectRef: 'x',
+    });
+
+    const delivered = readFileSync(
+      join(out, 'supabase', 'migrations', replayFileName('20261015140000', 1, migration)),
+      'utf8',
+    );
+    expect(delivered).not.toContain('CONCURRENTLY');
+    expect(delivered.match(/^CREATE INDEX/gm)).toHaveLength(2);
+    expect(readFileSync(source, 'utf8')).toBe(sourceSql);
+  });
+
   it('monta config.toml com PG 17, o baseline e o replay renumerado em ordem', () => {
     const root = fixtureRepo({
       baselineVersion: '20261015140000',
@@ -239,6 +314,15 @@ describe('sanitizeBaselineForReplay', () => {
     const delivered = readFileSync(join(mig, '20261015140001_drift_replay_cron_seed.sql'), 'utf8');
     expect(delivered).toContain("cron.schedule('auto-block-offenders'");
     expect(delivered).toContain("cron.schedule('image-dimensions-backfill'");
+    expect(delivered).toContain("'generate-blurhashes'");
+    expect(delivered).toContain('cron.alter_job(job_id := v_id, active := false)');
+    for (const fixedId of [114, 224, 235, 241, 243, 276, 292, 303]) {
+      expect(delivered).toMatch(new RegExp(`\\b${fixedId}\\b`));
+    }
+    expect(delivered).toContain('v_id <> 235');
+    expect(delivered).toContain('conjunto de jobids fixos incompleto');
+    expect(delivered).toContain('pg_publication_tables');
+    expect(delivered).toContain('ALTER PUBLICATION supabase_realtime ADD TABLE auth.users');
     expect(delivered).toContain('cron.unschedule(v_id)');
     expect(delivered).not.toContain('UPDATE cron.job');
   });

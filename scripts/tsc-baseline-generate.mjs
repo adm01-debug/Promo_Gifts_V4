@@ -17,6 +17,7 @@
 import { spawnSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { classifyTscRun } from './lib/tsc-run.mjs';
 
 const ROOT = process.cwd();
 const BASELINE_PATH = join(ROOT, '.tsc-baseline.json');
@@ -28,8 +29,15 @@ const res = spawnSync(process.execPath, [TSC_BIN, '-p', 'tsconfig.app.json', '--
   maxBuffer: 50 * 1024 * 1024,
 });
 
-// tsc com --noEmit retorna 0 se sem erros, !=0 se com erros. Ambos OK pra nós.
+// tsc com --noEmit retorna 0 se sem erros, !=0 se com erros. Ambos OK pra nós —
+// DESDE QUE ele tenha realmente checado. GUARD: sem isso (tsconfig/typescript ausentes, OOM)
+// o total virava 0 e o .tsc-baseline.json versionado era sobrescrito com "0 erros".
 const output = (res.stdout || '') + (res.stderr || '');
+const run = classifyTscRun({ status: res.status, signal: res.signal, error: res.error, output });
+if (!run.ok) {
+  console.error(`❌ ${run.reason} — baseline NÃO foi alterada.`);
+  process.exit(2);
+}
 const lines = output.split('\n');
 
 const ERR_RE = /^(\S+\.tsx?)\(\d+,\d+\): error (TS\d+):/;

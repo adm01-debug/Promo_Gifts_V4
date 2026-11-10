@@ -325,7 +325,7 @@ Novidade desde 11/10: `supabase/baseline/20261015140000_baseline_schema.sql` (62
 | FT-172 | MK-021 | "Limpar" com confirmação | PARCIAL | atalhos removidos (`KeyboardShortcuts.tsx:14,27` só Ctrl+Enter); sem `AlertDialog/confirm` em `MockupConfigPanel.tsx`/`MockupResultCard.tsx` | F | P2 | P | — |
 | FT-173 | MK-027 | Confirmação limite de cores | PARCIAL | aviso em `LogoColorAnalyzer.tsx`; sem confirmação | F | P2 | P | — |
 | FT-174 | MK-029 | Aviso "prévia indicativa" | AUSENTE | rg `prévia indicativa` em `components/mockup` vazio | F | P2 | P | — |
-| FT-175 | MK-030 | Entradas `productId`/state | AUSENTE | `useMockupGenerator.ts:294` lê só `product_id` | F | P2 | P | — |
+| FT-175 | MK-030 | Entradas `productId`/state | IMPLEMENTADO | `useMockupEntryParams` lê `product_id`, `productId`, `technique` e `location.state.preSelectedProduct` | F | P2 | P | — |
 | FT-176 | MK-070/071 | Snapshot sempre / 3 estados de conclusão | AUSENTE | depende de MK-069 (Outro dono) | F | P2 | G | MK-069 |
 | FT-177 | MK-078 | Acessibilidade geral | AUSENTE | sem auditoria WCAG no módulo | F | P2 | G | — |
 | FT-178 | MK-093 | Redesign onda 3 (stepper 4 etapas) | AUSENTE | `MockupWizard.tsx:85` "Crie o mockup com IA", stepper de 6 | F | P2 | G | MK-099 |
@@ -664,7 +664,7 @@ Legenda camada: FE/Edge/DB/Doc. Sev: A/M/B. Esforco: P(<1d)/M(1-3d)/G(>3d).
 | FT-402 | F5-027 | Multi-organizacao | AUSENTE (por decisao) | src/contexts/OrganizationContext.tsx:2 "SINGLE-TENANT" | FE | B | - | A01 RP-023 |
 | FT-403 | F5-028 | BI cliente 360 com dados reais | PARCIAL | useClientBI.ts:61 `isMock:true`; ClientOverview360.tsx:80 "Dados simulados" | FE+DB | M | M | A01 RP-042 |
 | FT-404 | F5-029 | Follow-up de orcamento no FE | AUSENTE (por decisao) | gate scripts/check-no-followup-frontend.mjs; backend vivo supabase/functions/quote-followup-reminders | FE | B | - | A01 RP-006 |
-| FT-405 | F5-030 | Comandos de voz | FEITA (reorganizada) | src/hooks/voice/{processTranscript,playTtsAudio,useVoiceHistory}.ts; hooks citados no doc inexistentes (doc obsoleta) | FE | B | P (doc) | A01 RP-061 |
+| FT-405 | F5-030 | Comandos de voz | PARCIAL | useSpeechRecognition.ts: Web Speech API nativo OK (SmartSearchInput/AdvancedSearch); useVoiceAgent.ts chama invokeEdge('elevenlabs-scribe-token') sem chave ElevenLabs em prod — fluxo VoiceOrb/ElevenLabs inoperante | FE | B | P | A01 RP-061 |
 | FT-406 | F5-031 | Feature `packagings` | AUSENTE | 0 em src/ (hits so tipos magazine/catalog) | DB+FE | B | G | A01 RP-066 |
 | FT-407 | F5-032 | WebAuthn/Passkeys | AUSENTE | grep webauthn/passkey em src e edges: 0 | FE+Edge | M | G | A01 RP-026 |
 | FT-408 | F5-033 | Push Web real | PARCIAL | assinatura/permissao: src/hooks/ui/usePushNotifications.tsx:49; handler public/sw.js:602; sem VAPID nem envio server-side | FE+Edge | M | M | A02 FD-039 / RP-046 |
@@ -681,4 +681,4 @@ Legenda camada: FE/Edge/DB/Doc. Sev: A/M/B. Esforco: P(<1d)/M(1-3d)/G(>3d).
 Q10-Q12 (RLS/partitions/service_role/required checks), Q19 TTL logs, Q20 `check-security-headers.mjs` (ausente), Q22 bun.lock (ausente do repo agora = feito), Q08 runner CI, PENDENCIAS.md P1-P68 (CI).
 
 ### Contagem por estado
-37 itens: FEITA 7 | PARCIAL 15 | AUSENTE 15 (inclui 2 AUSENTE por decisao: F5-027, F5-029). Itens F5-011/012 agregam varias features.
+37 itens: FEITA 6 | PARCIAL 16 | AUSENTE 15 (inclui 2 AUSENTE por decisao: F5-027, F5-029). Itens F5-011/012 agregam varias features.

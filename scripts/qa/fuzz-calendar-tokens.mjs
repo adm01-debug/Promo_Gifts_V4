@@ -49,12 +49,13 @@ const REQUIRED = [
   /select-none/,
   /(?:md:)?w-\[180px\]/,
 ];
+// DayPicker v10 API: day=célula, week=linha (renomeia cell/row do v8)
 const REQUIRED_LITERALS = [
-  `cell: 'flex-1 aspect-square`,
-  `row: 'flex w-full gap-0'`,
+  `day: 'flex-1 aspect-square`,
+  `week: 'flex w-full gap-0'`,
 ];
 const FORBIDDEN_LITERALS = [
-  `cell: 'flex-1 h-9`,
+  `day: 'flex-1 h-9`,
   `mt-1`,
   `bg-primary text-primary-foreground font-semibold hover:bg-primary`, // era o design antigo
 ];

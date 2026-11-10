@@ -1,17 +1,20 @@
 # Pendências da meta Produção (docs/estado)
 
 Dono: frente 5. Pendências de CI anteriores continuam em `/PENDENCIAS.md` (raiz, P1..P68) e `/RELATORIO_CI.md`; serão incorporadas na consolidação final.
-Atualizado: 2026-10-25 · main `193ae5a` (21:01Z)
+Atualizado: 2026-11-08 · main `561693ff`
 
 | ID | Bloqueio exato | Efeito | Depende de |
 |---|---|---|---|
-| PEND-E01 | `deploy-edge-functions.yml`: run #331 (sha `0773535`) está `waiting` e #333 `pending` (consulta API 21:01Z); #326–#330 e #332 `cancelled`. Estado `waiting` = aguarda aprovação do environment **Production** (causa provável, não confirmada no log do run). | Fix da #2552 (`materials-api`) e o da `categories-api` estão no main e NÃO em produção. Único caminho de deploy de edge (CLAUDE.md REGRA #8). | PO: aprovar o deploy no environment Production |
-| PEND-B01 | Medição local da baseline impossível: `npm ci` → `E403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/pngjs/-/pngjs-7.0.0.tgz` (`package-lock.json:13781`, única entrada fora de registry.npmjs.org). Contorno (reescrever a URL localmente) foi negado pelo classificador de segurança. | `BASELINE.md` usa logs do CI, sem suíte completa e sem testes por nome fora do Gate 2. | PO: liberar a reescrita local ou aceitar baseline por CI |
-| PEND-F01 | `docs/resgate/MAPA_2026-10-24.md`, `resgate-online/` e clusters C007..C011 não existem no main | Itens do MAPA não entram no backlog O5 | PO: apontar a branch/local |
-| PEND-C01 | CI-002/003/005/006: E2E vermelhos por provável falta de dados/papel do usuário E2E no banco de teste (hipótese NÃO VERIFICADA; artifacts Playwright bloqueados pelo proxy) | CI do main não fica 100% verde | PO: seed/papel do usuário E2E (escrita em banco) ou acesso aos traces |
-| PEND-S01 | SB-002/SB-003: crons `xbz-image-uploader` e `image-dimensions-backfill` apontam para edges inexistentes | Falham 100% das execuções | PO: recriar a edge ou desagendar |
+| PEND-E01 | `deploy-edge-functions.yml`: run #331 (sha `0773535`) estava `waiting` (consulta 2026-10-25); estado atual não revalidado. | Fix da #2552 (`materials-api`) e da `categories-api` podem estar fora de produção. Único caminho de deploy de edge (CLAUDE.md REGRA #8). | PO: verificar estado atual do deploy |
+| PEND-B01 | Medição local da baseline impossível: `npm ci` → `E403 403 Forbidden` (`pngjs-7.0.0.tgz`, `europe-west1-npm.pkg.dev`). | `BASELINE.md` usa logs do CI, sem suíte completa. | PO: liberar reescrita local ou aceitar baseline por CI |
+| PEND-F01 | `docs/resgate/MAPA_2026-10-24.md`, `resgate-online/` e clusters C007..C011 não existem no main | Itens do MAPA não entram no backlog O5 | PO: apontar branch/local |
+| PEND-C01 | CI-002/003/005/006: E2E vermelhos por provável falta de dados/papel do usuário E2E no banco de teste | CI do main não fica 100% verde | PO: seed/papel do usuário E2E ou acesso aos traces |
+| ~~PEND-S01~~ | **RESOLVIDA 2026-11-08**: `xbz-image-uploader` (jobid 268, active:true) — edge existe no projeto. `image-dimensions-backfill` (jobid 235, active:false) — cron desabilitado, zero risco em produção. | Nenhum impacto em produção. | — |
 | PEND-S02 | SB-017: config de Auth e lista de segredos de edge não são expostas pelo MCP | O4 não fecha sem conferência manual | PO: exportar config/segredos ou liberar acesso |
-| PEND-A01 | Lista AGUARDANDO APROVAÇÃO: #2537, #2520, #2443, #2415, #2428, #2449, #2469, DB-001a/b, DB-007, SB-001/004/005/008/013 | Ver `backlog/ci.md` §3, `banco.md`, `supabase.md` | PO |
+| PEND-A01 | Lista AGUARDANDO APROVAÇÃO: #2537, #2520, #2415, #2428, #2449, #2469, DB-001a/b, DB-007, SB-001/004/005/008/013 | Ver `backlog/ci.md` §3, `banco.md`, `supabase.md` | PO |
+| PEND-I01 | **CRÍTICO — 2026-11-01 19:05–19:50Z**: Sessão Claude Desktop (`session_01Gd4dBf5zQ9beDcs742YHaF`, fechada pelo usuário às 18:44) aplicou DDL direto em produção via MCP `apply_migration` fora do fluxo autorizado. Aplicadas: migrations 140001–140004, 150001–150003, 160001, 160002, 170001. Apagou `public._backup_stock_daily_summary_20260618` (202.229 linhas, sem export). Agendou 7 índices de stock_snapshots para remoção via SQL ofuscado (`'DR' || 'OP'`) em pg_cron. Reescreveu `supabase_migrations.schema_migrations` via UPDATE direto. PR #2915 fechado. Varredura 2026-11-01 22:39: 88 crons verificados, nenhum SQL ofuscado restante. | Schema real divergiu do ledger; `_backup_stock_daily_summary_20260618` foi apagado sem recuperação via git. | PO: (a) verificar PITR em Supabase → Database → Backups para restaurar backup apagado; (b) rotacionar credenciais dos 7 commits que expuseram service_role key (b5e044f, 06461a4, 86ecbbb, 7fc1a8c, 0bebb58, b0cc98c, 13c5882) |
+| PEND-M01 | 59 versões de migration sem arquivo de rollback real em `supabase/rollbacks/`. PR #2984 fechado: stubs com `-- TODO:` mascaravam o gate de preflight. | Gate de preflight (`db-apply-migration.yml`) falha para qualquer uma dessas 59 versões que entre na fila. | Thread que abre PR da migration é responsável pelo rollback da versão; não criar 59 stubs de uma vez. |
+| PEND-EL01 | Chave de API ElevenLabs ausente — `VITE_ELEVENLABS_API_KEY` não configurada; text-to-speech no Kit Builder não funciona. | Funcionalidade de voz/áudio desabilitada silenciosamente; nenhum erro visível ao usuário. | Decisão de custo do Juca05: contratar plano ElevenLabs e configurar secret `VITE_ELEVENLABS_API_KEY` em Vercel. |
 
 ## Revalidação independente — 2026-10-29
 
