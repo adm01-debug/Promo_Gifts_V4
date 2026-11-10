@@ -10,7 +10,10 @@
     "schema-snapshot-export.yml: job 'commit-snapshot' has permissions.contents: write in pull_request workflow — use read or add fork-guard (R11/E180)",
     "codeql.yml: mixed push+PR workflow has cancel-in-progress: false — must be conditional ${{ github.event_name == 'pull_request' }} (C18/R2)",
     "deploy-gates.yml:790: npx gitleaks in run: — package not in node_modules/.bin (install as devDep or use bash alternative) (E96/C26)",
-    "deploy-gates.yml:792: npx gitleaks in run: — package not in node_modules/.bin (install as devDep or use bash alternative) (E96/C26)"
+    "deploy-gates.yml:792: npx gitleaks in run: — package not in node_modules/.bin (install as devDep or use bash alternative) (E96/C26)",
+    "ci.yml: has run: steps but missing defaults.run.shell: bash (R10) — jobs: smoke, quality, coverage, integration-tests, critical-e2e, ref-warning-suite, hooks-tests, price-freshness-tests, cloud-status-tests, edge-functions-typecheck, theme-validation",
+    "ci.yml: action `actions/checkout@v4` not pinned by SHA — use full 40-char commit hash (E73/C16)",
+    "ci.yml: action `actions/setup-node@v4` not pinned by SHA — use full 40-char commit hash (E73/C16)"
   ],
   "_violation_justifications": {
     "deploy-gates.yml/lighthouse/C17": "Gate 4 (Lighthouse CI) é intencionalmente opcional — documentado em CLAUDE.md tabela de gates ('Gate 4 | opcional'). O job lighthouse foi removido de needs: no deploy-ready (E03), portanto falha não bloqueia deploy. continue-on-error:true é necessário para que o workflow geral não fique vermelho quando métricas de Lighthouse variam. Aprovado E19/2026-10-14.",
@@ -20,5 +23,6 @@
     "schema-snapshot-export.yml/R11/E180": "O job 'commit-snapshot' tem permissions.contents: write para commitar snapshot e abrir/atualizar PR. Possui fork-guard explícito na condição 'if:' de nível de job que bloqueia execução a partir de forks. A check estática não alcança guards em 'if:' de nível de job. Aprovado E180/2026-10-18.",
     "codeql.yml/C18/R2": "CodeQL Security Scan não deve ter cancel-in-progress: true — cancelar scan de segurança no meio gera resultados incompletos que podem passar checks falsos-positivos. cancel-in-progress: false é intencional para garantir cobertura completa de segurança. O concurrency group já previne runs paralelos. Aprovado E89/2026-10-19.",
     "deploy-gates.yml/C26/gitleaks": "npx --yes gitleaks usa o flag --yes para download on-demand (não requer devDep). O --yes evita prompt interativo em CI. Alternativa (instalar como devDep) exigiria manter versão de gitleaks em package.json sincronizada com novas CVEs. Download on-demand garante última versão. Falso positivo do check C26. Aprovado E172/2026-10-19."
-  }
+  },
+  "_comment_2026-11-10": "3 entradas de ci.yml (shell strict R10, checkout@v4 e setup-node@v4 sem SHA) são dívida PRÉ-EXISTENTE que só ficou visível depois de corrigir o parser do gate (passos '- uses:'/'- run:' não eram lidos). Pinar por SHA/definir defaults.run.shell no ci.yml é PR de governança dedicado."
 }

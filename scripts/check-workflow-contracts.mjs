@@ -60,8 +60,18 @@ export function checkC1Permissions({ file, doc }) {
   return [];
 }
 
+/**
+ * O workflow dispara em pull_request OU pull_request_target? (`/pull_request\s*:/` não casava
+ * `pull_request_target:` — justamente o gatilho mais perigoso — nem `on: [pull_request]`.)
+ */
+export function hasPullRequestTrigger(doc, text) {
+  const on = doc?.on ?? doc?.[true];
+  const keys = typeof on === 'string' ? [on] : Array.isArray(on) ? on : on && typeof on === 'object' ? Object.keys(on) : [];
+  return keys.some((k) => k === 'pull_request' || k === 'pull_request_target') || /pull_request(?:_target)?\s*:/.test(text);
+}
+
 export function checkC2Concurrency({ file, text, doc }) {
-  const hasPR = /pull_request\s*:/.test(text);
+  const hasPR = hasPullRequestTrigger(doc, text);
   if (!hasPR) return [];
   if (!doc.concurrency) return [`${file}: has pull_request trigger but missing \`concurrency:\``];
   return [];
@@ -112,14 +122,15 @@ export function checkC5NoInjection({ file, text }) {
   let inRun = false;
   let runIndent = -1;
   for (const line of lines) {
-    const runMatch = line.match(/^(\s+)run:\s*(.*)/);
+    // `- run:` (passo escrito com traço) também é um run: — a chave começa 2 colunas depois do traço.
+    const runMatch = line.match(/^(\s+)(-\s+)?run:\s*(.*)/);
     if (runMatch) {
       inRun = true;
-      runIndent = runMatch[1].length;
-      const inline = runMatch[2].trim();
+      runIndent = runMatch[1].length + (runMatch[2] ? runMatch[2].length : 0);
+      const inline = runMatch[3].trim();
       if (INJECTION_RE.test(inline)) return [`${file}: run: block contains potentially injectable expression`];
       // block scalar — content on subsequent lines
-      if (inline === '' || inline === '|' || inline === '>') continue;
+      if (inline === '' || /^[|>][-+]?\d*$/.test(inline)) continue; // `|`, `>`, `|-`, `>-`, `|+`…
       inRun = false;
       continue;
     }
@@ -230,7 +241,7 @@ export function checkC10PersistCredentials({ file, text }) {
 // C11 — workflows with run: steps must declare defaults.run.shell: bash (R10)
 export function checkC11ShellStrict({ file, text, doc }) {
   // Skip if no run: steps present
-  if (!/^\s+run:\s/.test(text) && !/^\s+run:\s*[|>]/.test(text)) return [];
+  if (!/^\s+(?:-\s+)?run:/m.test(text)) return [];
   // Check top-level defaults.run.shell
   const topShell = doc?.defaults?.run?.shell;
   if (topShell === 'bash') return [];
@@ -251,7 +262,7 @@ export function checkC11ShellStrict({ file, text, doc }) {
 // C12 — workflows with pull_request trigger must not have permissions.contents: write (R11)
 // E180: extendido para percorrer jobs.*.permissions além do topo
 export function checkC12NoContentsWriteInPR({ file, text, doc }) {
-  if (!/pull_request\s*:/.test(text)) return [];
+  if (!hasPullRequestTrigger(doc, text)) return [];
   const errors = [];
   // Top-level permissions
   const perms = doc?.permissions;
@@ -339,7 +350,7 @@ const SHA40_RE = /^[0-9a-f]{40}$/;
 export function checkC16ShaPinned({ file, text }) {
   const violations = [];
   const seen = new Set();
-  for (const m of text.matchAll(/^\s+uses:\s+([^#\s]+)/mg)) {
+  for (const m of text.matchAll(/^\s+(?:-\s+)?uses:\s+([^#\s]+)/mg)) {
     const ref = m[1].trim();
     if (ref.startsWith('./') || ref.startsWith('.github/')) continue; // local action
     if (!ref.includes('@')) continue; // no version — already flagged elsewhere
@@ -369,7 +380,7 @@ export function checkC17NoContinueOnErrorJob({ file, doc }) {
 // C18 — workflows with both push: AND pull_request: must use conditional cancel-in-progress
 export function checkC18ConditionalCancel({ file, text, doc }) {
   const hasPush = /^  push\s*:/m.test(text);
-  const hasPR = /pull_request\s*:/.test(text);
+  const hasPR = hasPullRequestTrigger(doc, text);
   if (!hasPush || !hasPR) return [];
   const cancelVal = doc?.concurrency?.['cancel-in-progress'];
   if (cancelVal === undefined || cancelVal === null) return [];
@@ -432,7 +443,7 @@ export function checkC21RetentionDays({ file, text }) {
 // C22 — workflows with pull_request trigger must not contain `git push` in run: steps
 // that can execute during PR context (i.e., in jobs without PR-excluding if: conditions)
 export function checkC22NoGitPushInPR({ file, text, doc }) {
-  if (!/pull_request\s*:/.test(text)) return [];
+  if (!hasPullRequestTrigger(doc, text)) return [];
   const jobs = doc?.jobs || {};
   for (const [, job] of Object.entries(jobs)) {
     if (!job || typeof job !== 'object') continue;
@@ -646,14 +657,17 @@ export function readWorkflowFiles(rootDir) {
     .map((f) => {
       const text = readFileSync(join(dir, f), 'utf-8');
       let doc = null;
+      let parseError = null;
       try {
         doc = yaml.load(text);
-      } catch {
-        /* skip unparseable */
+      } catch (error) {
+        // GUARD: YAML inválido NÃO pode sumir em silêncio (escapava de todos os checks, inclusive
+        // C19/C20 `supabase db push`/projeto proibido, e ainda era contado como "scanned").
+        parseError = String(error?.message ?? error).split('\n')[0];
       }
-      return { file: f, text, doc };
-    })
-    .filter((w) => w.doc && typeof w.doc === 'object');
+      if (!parseError && (!doc || typeof doc !== 'object')) parseError = 'documento YAML vazio ou não é um mapa';
+      return { file: f, text, doc, parseError };
+    });
 }
 
 export function getPlaywrightProjects(rootDir) {
@@ -677,11 +691,16 @@ export function getPackageScripts(rootDir) {
 // ---------------------------------------------------------------------------
 
 export function runChecks(rootDir = ROOT) {
-  const workflows = readWorkflowFiles(rootDir);
+  const allWorkflows = readWorkflowFiles(rootDir);
+  const workflows = allWorkflows.filter((w) => !w.parseError);
   const playwrightProjects = getPlaywrightProjects(rootDir);
   const packageScripts = getPackageScripts(rootDir);
 
   const all = [];
+  // YAML inválido = violação explícita (o workflow não roda no GitHub e escapava dos demais checks).
+  for (const wf of allWorkflows) {
+    if (wf.parseError) all.push(`${wf.file}: YAML inválido — ${wf.parseError}`);
+  }
   for (const wf of workflows) {
     all.push(
       ...checkC1Permissions(wf),
@@ -752,7 +771,7 @@ export function runChecks(rootDir = ROOT) {
       C27: all.filter((v) => v.includes('[C27-warn]')).length,
       C28: all.filter((v) => v.includes('[C28-warn]')).length,
     },
-    workflowCount: workflows.length,
+    workflowCount: allWorkflows.length,
   };
 }
 
