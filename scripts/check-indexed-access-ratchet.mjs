@@ -11,7 +11,8 @@
  *   node scripts/check-indexed-access-ratchet.mjs            # verifica
  *   node scripts/check-indexed-access-ratchet.mjs --update   # regrava baseline
  */
-import { execFileSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
+import { classifyTscRun } from './lib/tsc-run.mjs';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -21,9 +22,7 @@ const UPDATE = process.argv.includes('--update');
 
 function countErrors() {
   console.log('⏳ Rodando tsc -p tsconfig.app.json --noEmit --noUncheckedIndexedAccess ...');
-  let output = '';
-  try {
-    output = execFileSync(
+  const res = spawnSync(
       process.execPath,
       [
         'node_modules/typescript/bin/tsc',
@@ -33,11 +32,16 @@ function countErrors() {
         '--noUncheckedIndexedAccess',
       ],
       { encoding: 'utf8', cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 },
-    );
-  } catch (e) {
-    output = `${e.stdout ?? ''}`;
+  );
+  const output = `${res.stdout ?? ''}${res.stderr ?? ''}`;
+  // GUARD: tsc que não rodou (tsconfig quebrado, sem typescript, OOM) contava 0 erros e o
+  // ratchet comemorava "drift positivo".
+  const run = classifyTscRun({ status: res.status, signal: res.signal, error: res.error, output });
+  if (!run.ok) {
+    console.error(`❌ ${run.reason}`);
+    process.exit(2);
   }
-  return (output.match(/error TS\d+/g) ?? []).length;
+  return run.count;
 }
 
 const current = countErrors();
