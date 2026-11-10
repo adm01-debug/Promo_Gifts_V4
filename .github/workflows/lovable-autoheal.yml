@@ -60,6 +60,9 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
+      - name: Validar contrato do autoheal
+        run: node --test scripts/autoheal-eslint/run.test.mjs
+
       - name: Detectar arquivos TypeScript alterados
         id: changed_files
         env:
