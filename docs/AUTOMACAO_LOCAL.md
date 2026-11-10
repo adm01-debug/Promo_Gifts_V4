@@ -43,17 +43,17 @@ As suites usam fixtures descartáveis e não executam os scripts operacionais do
 
 ## Registro exato dos demais scripts
 
-Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores; não são incluídos automaticamente no novo pipeline. Referência literal indica onde o arquivo é citado, sem garantir que esse caminho rode nem autorização para executar operações contra serviços. Sem referência, o arquivo é mantido manual porque função, parâmetros e ambiente precisam de revisão antes de ativar qualquer gatilho. Scripts novos não cobertos por registro fazem `doctor --static` falhar; não existe registro genérico `scripts/**` para ocultá-los.
+Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores; não são incluídos automaticamente no novo pipeline. Para arquivos TypeScript de apoio sem runner comprovado, o comando listado só valida o inventário; os chamadores originais continuam sendo a referência de execução. Referência literal indica onde o arquivo é citado, sem garantir que esse caminho rode nem autorização para executar operações contra serviços. Sem referência, o arquivo é mantido manual porque função, parâmetros e ambiente precisam de revisão antes de ativar qualquer gatilho. Scripts novos não cobertos por registro fazem `doctor --static` falhar; não existe registro genérico `scripts/**` para ocultá-los.
 
 | Arquivo exato | Invocação manual de inventário | Chamadores literais / justificativa |
 |---|---|---|
-| `scripts/__tests__/calibrate-collapse-thresholds.test.ts` | `bun scripts/__tests__/calibrate-collapse-thresholds.test.ts` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/__tests__/check-bundle-size.test.ts` | `bun scripts/__tests__/check-bundle-size.test.ts` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/__tests__/check-eslint-config-current.test.ts` | `bun scripts/__tests__/check-eslint-config-current.test.ts` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
+| `scripts/__tests__/calibrate-collapse-thresholds.test.ts` | `node scripts/automation.mjs doctor --static` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
+| `scripts/__tests__/check-bundle-size.test.ts` | `node scripts/automation.mjs doctor --static` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
+| `scripts/__tests__/check-eslint-config-current.test.ts` | `node scripts/automation.mjs doctor --static` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
 | `scripts/__tests__/check-invoke-direct-calls.test.mjs` | `node --test scripts/__tests__/check-invoke-direct-calls.test.mjs` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/__tests__/check-package-duplicate-scripts.test.ts` | `bun scripts/__tests__/check-package-duplicate-scripts.test.ts` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/__tests__/promote-draft-migration.test.ts` | `bun scripts/__tests__/promote-draft-migration.test.ts` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/__tests__/stock-benchmark.test.ts` | `bun scripts/__tests__/stock-benchmark.test.ts` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
+| `scripts/__tests__/check-package-duplicate-scripts.test.ts` | `node scripts/automation.mjs doctor --static` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
+| `scripts/__tests__/promote-draft-migration.test.ts` | `node scripts/automation.mjs doctor --static` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
+| `scripts/__tests__/stock-benchmark.test.ts` | `node scripts/automation.mjs doctor --static` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
 | `scripts/ai-context/cenarios.mjs` | `node scripts/ai-context/cenarios.mjs` | .github/workflows/contexto.yml |
 | `scripts/ai-context/gerar.mjs` | `node scripts/ai-context/gerar.mjs` | .github/workflows/contexto.yml |
 | `scripts/ai-context/gerar.unit.mjs` | `node --test scripts/ai-context/gerar.unit.mjs` | .github/workflows/contexto.yml |
@@ -61,7 +61,7 @@ Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores;
 | `scripts/append-migration-receipt.mjs` | `node scripts/append-migration-receipt.mjs` | .github/workflows/db-apply-migration.yml, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/audit-credentials.mjs` | `node scripts/audit-credentials.mjs` | package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/audit-db-frontend-coverage.mjs` | `node scripts/audit-db-frontend-coverage.mjs` | package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
-| `scripts/audit-debug.ts` | `bun scripts/audit-debug.ts` | .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
+| `scripts/audit-debug.ts` | `node scripts/automation.mjs doctor --static` | .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/build-cors-snapshot.mjs` | `node scripts/build-cors-snapshot.mjs` | package.json:scripts, .github/workflows/ci.yml, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/build-drafts-pr-comment.mjs` | `node scripts/build-drafts-pr-comment.mjs` | package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/drafts-index-check.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/build-local-migrations-manifest.mjs` | `node scripts/build-local-migrations-manifest.mjs` | .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
@@ -190,7 +190,7 @@ Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores;
 | `scripts/check-workflow-contracts.mjs` | `node scripts/check-workflow-contracts.mjs` | .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml, .github/workflows/workflow-lint.yml |
 | `scripts/ci-cron-table.mjs` | `node scripts/ci-cron-table.mjs` | .github/workflows/contexto.yml, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/ci-metrics.mjs` | `node scripts/ci-metrics.mjs` | .github/workflows/ci-metrics-weekly.yml, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
-| `scripts/ci-performance-gate.ts` | `bun scripts/ci-performance-gate.ts` | .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
+| `scripts/ci-performance-gate.ts` | `node scripts/automation.mjs doctor --static` | .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/classify-unledgered-migrations.mjs` | `node scripts/classify-unledgered-migrations.mjs` | .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/collect-coverage-ci.mjs` | `node scripts/collect-coverage-ci.mjs` | package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/consolidate-console-snapshot.mjs` | `node scripts/consolidate-console-snapshot.mjs` | package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
@@ -221,7 +221,7 @@ Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores;
 | `scripts/generate-audit-report.mjs` | `node scripts/generate-audit-report.mjs` | .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/nightly-full.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/generate-coverage-report.mjs` | `node scripts/generate-coverage-report.mjs` | package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/generate-theme-report.mjs` | `node scripts/generate-theme-report.mjs` | package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
-| `scripts/generate-theme-report.ts` | `bun scripts/generate-theme-report.ts` | .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
+| `scripts/generate-theme-report.ts` | `node scripts/automation.mjs doctor --static` | .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/graphify/build-sql-graph.py` | `python3 scripts/graphify/build-sql-graph.py` | package.json:scripts, .github/workflows/contexto.yml |
 | `scripts/graphify/enrich-typescript-references.mjs` | `node scripts/graphify/enrich-typescript-references.mjs` | package.json:scripts |
 | `scripts/graphify/graph-metrics.mjs` | `node scripts/graphify/graph-metrics.mjs` | scripts/graphify/postprocess-report.mjs |
@@ -239,7 +239,7 @@ Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores;
 | `scripts/lib/tsc-run.mjs` | `node scripts/lib/tsc-run.mjs` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
 | `scripts/lint-untyped-from.sh` | `sh scripts/lint-untyped-from.sh` | .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/lint-untyped-from.yml, .github/workflows/regenerate-supabase-types.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/list-migration-drafts.mjs` | `node scripts/list-migration-drafts.mjs` | package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/drafts-index-check.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
-| `scripts/list-users.ts` | `bun scripts/list-users.ts` | .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
+| `scripts/list-users.ts` | `node scripts/automation.mjs doctor --static` | .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/magazine-flakiness-report.mjs` | `node scripts/magazine-flakiness-report.mjs` | package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/magazine-flakiness.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/map-drafts-to-migrations.mjs` | `node scripts/map-drafts-to-migrations.mjs` | package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/drafts-index-check.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/massive-load-test.mjs` | `node scripts/massive-load-test.mjs` | package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
@@ -267,7 +267,7 @@ Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores;
 | `scripts/qa/generate-proposal-pdf.mjs` | `node scripts/qa/generate-proposal-pdf.mjs` | .github/workflows/pdf-quality.yml, .github/workflows/pdf-visual-regression.yml |
 | `scripts/qa/inject-crm-dead-letters.mjs` | `node scripts/qa/inject-crm-dead-letters.mjs` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
 | `scripts/qa/simulate-freight-label-alignment.mjs` | `node scripts/qa/simulate-freight-label-alignment.mjs` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/qa/smoke-cart-view-mode-prefs.ts` | `bun scripts/qa/smoke-cart-view-mode-prefs.ts` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
+| `scripts/qa/smoke-cart-view-mode-prefs.ts` | `node scripts/automation.mjs doctor --static` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
 | `scripts/qa/validate-quote-conditions-workflows.mjs` | `node scripts/qa/validate-quote-conditions-workflows.mjs` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
 | `scripts/recalibrate-watermark-thresholds.mjs` | `node scripts/recalibrate-watermark-thresholds.mjs` | package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/e2e-pdf-dialog.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/regras_negocio/generate.py` | `python3 scripts/regras_negocio/generate.py` | .github/workflows/contexto.yml |
@@ -325,7 +325,7 @@ Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores;
 | `scripts/validate-ssot-report.mjs` | `node scripts/validate-ssot-report.mjs` | package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/ssot-supabase.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/validate-supabase-config.mjs` | `node scripts/validate-supabase-config.mjs` | package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/lovable-protected-audit.yml, .github/workflows/prod-health.yml, .github/workflows/ssot-supabase.yml, .github/workflows/supabase-linter-gate.yml, .husky/pre-commit |
 | `scripts/verify-build-integrity.mjs` | `node scripts/verify-build-integrity.mjs` | package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
-| `scripts/verify-external.ts` | `bun scripts/verify-external.ts` | .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
+| `scripts/verify-external.ts` | `node scripts/automation.mjs doctor --static` | .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/verify-quote-number-hardening.mjs` | `node scripts/verify-quote-number-hardening.mjs` | .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/quote-number-hardening-verify.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/verify-roboflow-setup.js` | `node scripts/verify-roboflow-setup.js` | .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
 | `scripts/visual-preview-local.sh` | `sh scripts/visual-preview-local.sh` | package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml |
