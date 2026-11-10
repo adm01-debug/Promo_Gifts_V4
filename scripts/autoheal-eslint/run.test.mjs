@@ -4,6 +4,7 @@ import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync, renameSync
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import { selectFiles, fixAndCheck } from './run.mjs';
 
 function fixture(t) {
@@ -125,7 +126,7 @@ test('workflow valida lint antes de detectar clean e TypeScript antes de PR', ()
 function realEslintFixture(t) {
   const f = fixture(t);
   rmSync(path.join(f.cwd, 'node_modules/eslint'), { recursive: true });
-  symlinkSync(new URL('../../node_modules/eslint', import.meta.url).pathname, path.join(f.cwd, 'node_modules/eslint'), 'dir');
+  symlinkSync(fileURLToPath(new URL('../../node_modules/eslint', import.meta.url)), path.join(f.cwd, 'node_modules/eslint'), 'dir');
   f.write('eslint.config.mjs', `export default [
     { ignores: ['src/ignored.ts'] },
     { files: ['**/*.ts'], rules: { 'no-warning-comments': ['warn', { terms: ['FIXME'], location: 'anywhere' }] } }
