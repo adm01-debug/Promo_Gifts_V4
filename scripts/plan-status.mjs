@@ -146,7 +146,8 @@ export function run(argv = process.argv.slice(2)) {
     console.log(`  🔒 Dependem de decisão externa/PO: ${summary.blocked}`);
     console.log(`  ⏳ Sem conclusão registrada: ${summary.todo}\n`);
     if (!summary.waveZeroClosed) {
-      const waveZero = summary.waves.find(({ wave }) => wave === 0);
+      // fullSummary: com --wave N o resumo filtrado não tem a Onda 0 (mostrava 0/10 mesmo com 5 recibos).
+      const waveZero = fullSummary.waves.find(({ wave }) => wave === 0);
       console.log(`  PORTÃO: Ondas seguintes bloqueadas — Onda 0 verificada ${waveZero?.done ?? 0}/10 (precisa de 10/10).\n`);
     }
     if (filterWave === null && !filterPriority && !filterTrail) {

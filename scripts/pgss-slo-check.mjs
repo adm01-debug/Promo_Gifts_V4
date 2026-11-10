@@ -93,8 +93,15 @@ export function evaluateSloBreaches({ rows, sloTargetsMs = SLO_TARGETS_MS, p95ZS
       continue;
     }
     fnRows.sort((a, b) => new Date(b.captured_at) - new Date(a.captured_at));
-    const latest = fnRows[0];
-    const p95Estimate = latest.mean_exec_time + p95ZScore * (latest.stddev_exec_time ?? 0);
+    // Uma captura tem várias linhas por fn_name (PK captured_at+queryid): avaliar o PIOR p95 da
+    // captura mais recente; antes só a primeira linha contava e [lenta, rápida] vs [rápida, lenta]
+    // davam veredictos diferentes.
+    const estimateOf = (row) => row.mean_exec_time + p95ZScore * (row.stddev_exec_time ?? 0);
+    const newestAt = new Date(fnRows[0].captured_at).getTime();
+    const latest = fnRows
+      .filter((row) => new Date(row.captured_at).getTime() === newestAt)
+      .reduce((worst, row) => (estimateOf(row) > estimateOf(worst) ? row : worst));
+    const p95Estimate = estimateOf(latest);
 
     evaluated.push({
       fnName,
