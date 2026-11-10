@@ -91,12 +91,17 @@ const ROLE_REQUIRED = {
 const CUSTOM_AUTH_PRIMITIVES = [
   /\bauthorize\s*\(\s*req/,
   /requireRole\s*:/,
-  /has_role\s*\(/,
-  /timingSafeEqual\s*\(/,       // custom token comparison
-  /x-admin-token/,              // legado — aceito mas gera warning
-  /SIMULATION_BYPASS_KEY/,      // bypass de teste com resolveCredential
-  /resolveCredential\s*\(/,     // credencial dinâmica via vault
-  /service_role/i,              // service-to-service explícito
+  /\.rpc\s*\(\s*["'](?:is_dev|has_role)["']/, // supabase.rpc("has_role" | "is_dev")
+  /\b(?:has_role|is_dev)\s*\(/,                 // SQL inline / chamada direta
+  /\buser_roles\b/,                         // consulta direta de papéis
+  /auth\s*\.\s*(?:getUser|getClaims)\s*\(/, // identidade do chamador (JWT validado)
+  /\bgetClaims\s*\(/,
+  /timingSafeEqual\s*\(/,                   // custom token comparison
+  /x-admin-token/,                          // legado — aceito mas gera warning
+  /SIMULATION_BYPASS_KEY/,                  // bypass de teste com resolveCredential
+  // GUARD (removidos): `/service_role/i` (toda edge cria client com SUPABASE_SERVICE_ROLE_KEY,
+  // então a regex casava SEMPRE e o E030 nunca barrava nada) e `resolveCredential(` (resolve
+  // QUALQUER segredo, não autentica o chamador).
 ];
 
 const CUSTOM_AUTH_WARNING_ONLY = [
