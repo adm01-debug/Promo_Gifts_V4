@@ -100,7 +100,7 @@ Deno.serve(async (req: Request) => {
 
   const t0 = Date.now();
   try {
-    const { value: supplierId } = await resolveCredential('ASIA_SUPPLIER_ID', supabase);
+    const { value: supplierId } = await resolveCredential('ASIA_SUPPLIER_ID');
     if (!supplierId) {
       log.error('missing_credential', { key: 'ASIA_SUPPLIER_ID' });
       return new Response(JSON.stringify({ ok: false, error: 'missing_credential' }), { status: 500, headers: cors });

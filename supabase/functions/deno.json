@@ -7,6 +7,7 @@
   "lock": false,
   "//imports": "Import map: redireciona esm.sh -> npm: e deno.land -> npm:/jsr: para evitar falhas de TLS/rede no CI. Todas as variantes de Zod redirecionam para npm:zod@3.23.8 (canonico -- issue #52).",
   "imports": {
+    "vitest": "npm:vitest@5.0.5",
     "https://esm.sh/zod@3.23.8": "npm:zod@3.23.8",
     "https://esm.sh/zod@3.22.4": "npm:zod@3.23.8",
     "https://esm.sh/zod@3.22.2": "npm:zod@3.23.8",
