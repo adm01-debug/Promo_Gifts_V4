@@ -7,6 +7,8 @@ Um SHA manual diferente do checkout e recusado para nao analisar arquivos do
 commit errado; a ausencia do commit pai tambem falha explicitamente.
 
 O fix e seguido obrigatoriamente de ESLint sem escrita e com zero warnings.
+Avisos de arquivos ignorados explicitamente sao suprimidos com `--no-warn-ignored`;
+warnings reais continuam bloqueantes com `--max-warnings 0`.
 Erros de configuracao, parser ou ocorrencias remanescentes bloqueiam o workflow
 antes de anunciar codigo limpo ou abrir PR. TypeScript continua obrigatorio.
 
