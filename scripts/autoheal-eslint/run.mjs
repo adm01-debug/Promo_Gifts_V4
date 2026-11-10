@@ -39,7 +39,7 @@ export function fixAndCheck(cwd, files) {
   if (files.length === 0) return;
   const executable = path.join(cwd, 'node_modules/eslint/bin/eslint.js');
   for (const fixing of [true, false]) {
-    const args = [executable, ...(fixing ? ['--fix'] : ['--max-warnings', '0']), '--', ...files];
+    const args = [executable, ...(fixing ? ['--fix'] : ['--max-warnings', '0']), '--no-warn-ignored', '--', ...files];
     const result = spawnSync(process.execPath, args, { cwd, stdio: 'inherit', shell: false });
     if (result.error) throw result.error;
     // Codigo 1 durante o fix pode representar erro ainda nao corrigivel. A
