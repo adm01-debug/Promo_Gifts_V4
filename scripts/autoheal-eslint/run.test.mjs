@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync, renameSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync, renameSync, symlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
@@ -119,4 +119,30 @@ test('workflow valida lint antes de detectar clean e TypeScript antes de PR', ()
   );
   assert.match(workflow, /name: Bloquear resultado com TypeScript invalido apos fix/);
   assert.doesNotMatch(workflow, /eslint\.js --fix.*\|\| true/);
+});
+
+
+function realEslintFixture(t) {
+  const f = fixture(t);
+  rmSync(path.join(f.cwd, 'node_modules/eslint'), { recursive: true });
+  symlinkSync(new URL('../../node_modules/eslint', import.meta.url).pathname, path.join(f.cwd, 'node_modules/eslint'), 'dir');
+  f.write('eslint.config.mjs', `export default [
+    { ignores: ['src/ignored.ts'] },
+    { files: ['**/*.ts'], rules: { 'no-warning-comments': ['warn', { terms: ['FIXME'], location: 'anywhere' }] } }
+  ];\n`);
+  f.write('src/ignored.ts', 'export const ignored = 1;\n');
+  return f;
+}
+
+test('ESLint real ignora apenas aviso de arquivo explicitamente ignorado', (t) => {
+  const f = realEslintFixture(t);
+  const before = readFileSync(path.join(f.cwd, 'src/ignored.ts'), 'utf8');
+  assert.doesNotThrow(() => fixAndCheck(f.cwd, ['src/ignored.ts', 'src/changed.ts']));
+  assert.equal(readFileSync(path.join(f.cwd, 'src/ignored.ts'), 'utf8'), before);
+});
+
+test('ESLint real continua bloqueando warning genuino com ignored na mesma lista', (t) => {
+  const f = realEslintFixture(t);
+  f.write('src/changed.ts', '// FIXME: warning real da fixture\nexport const value = 1;\n');
+  assert.throws(() => fixAndCheck(f.cwd, ['src/ignored.ts', 'src/changed.ts']), /pos-fix falhou/);
 });
