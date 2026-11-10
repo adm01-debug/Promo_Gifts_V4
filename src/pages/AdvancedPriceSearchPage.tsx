@@ -43,7 +43,7 @@ import {
   ProductTableResult,
   ProductListResult,
 } from './advanced-price-search/ResultViews';
-import { formatCurrency, QUANTITY_OPTIONS } from './advanced-price-search/types';
+import { type SearchFilters, formatCurrency, QUANTITY_OPTIONS } from './advanced-price-search/types';
 
 function FilterSection({
   title,
@@ -76,12 +76,22 @@ export default function AdvancedPriceSearchPage() {
     availableColors,
     techniques,
     isLoading,
-    loadingTechniques,
-    updateFilter,
-    toggleColor,
-    handleSearch,
-    handleReset,
+    setFilters,
+    runSearch,
+    resetSearch,
   } = useAdvancedPriceSearch();
+
+  const loadingTechniques = isLoading;
+  const updateFilter = <K extends keyof SearchFilters>(key: K, value: SearchFilters[K]) => {
+    setFilters((current) => ({ ...current, [key]: value }));
+  };
+  const toggleColor = (color: string) => {
+    setFilters((current) => ({ ...current, colors: current.colors.includes(color)
+      ? current.colors.filter((entry) => entry !== color)
+      : [...current.colors, color] }));
+  };
+  const handleSearch = runSearch;
+  const handleReset = resetSearch;
 
   return (
     <MainLayout>

@@ -1,9 +1,16 @@
+import type {
+  Product,
+  RawProductColor,
+  SimulatorPrefill,
+  CartPrefillItem,
+  CollectionPrefillProduct,
+} from './quotes/quote-builder-state-types';
 /**
  * useQuoteBuilderState — Estado centralizado do QuoteBuilder
  * Extrai toda a lógica de estado, cálculos e ações do QuoteBuilderPage.
  */
 
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useParams, useSearchParams, useLocation } from 'react-router-dom';
 import { useSellerDiscountLimits } from '@/hooks/useSellerDiscountLimits';
 import { useDiscountApproval } from '@/hooks/useDiscountApproval';
@@ -12,7 +19,13 @@ import Fuse from 'fuse.js';
 import { format, addDays } from 'date-fns';
 import { toast } from 'sonner';
 import { validateQuoteForm, QUOTE_FIELD_LABELS } from '@/lib/validations';
-import { useQuotes, type QuoteItem, type QuoteItemPersonalization } from '@/hooks/useQuotes';
+import {
+  useQuotes,
+  type Quote,
+  type QuoteItem,
+  type QuoteItemPersonalization,
+} from '@/hooks/useQuotes';
+import type { PromobrindProduct } from '@/lib/external-db';
 import {
   useQuoteTemplates,
   type QuoteTemplate,
@@ -37,23 +50,6 @@ import * as QuoteCalc from '@/logic/quotes/calculations';
 import { useQuoteItems } from '@/hooks/useQuoteItems';
 import { useAutoSaveQuote } from '@/hooks/useAutoSaveQuote';
 
-interface Product {
-  id: string;
-  name: string;
-  sku: string;
-  price: number;
-  images: string[] | null;
-  colors?: { name: string; hex?: string; stock?: number }[];
-  minQuantity?: number;
-  totalStock?: number;
-}
-
-interface RawProductColor {
-  name?: string;
-  hex?: string;
-  stock?: number;
-}
-
 function mapQuoteSearchProduct(
   p: PromobrindProduct,
   getProductImageUrl: (product: PromobrindProduct) => string | null,
@@ -67,7 +63,7 @@ function mapQuoteSearchProduct(
     sku: p.sku,
     price: p.sale_price ?? p.base_price ?? 0,
     images,
-    colors: (p.colors || []).map((c: string | RawProductColor) => {
+    colors: (p.colors || []).map((c: RawProductColor | string) => {
       const name = typeof c === 'string' ? c : c.name || '';
       const hex = (typeof c === 'string' ? undefined : c.hex) || findKnownHex(name) || undefined;
       return { name, hex, stock: typeof c === 'string' ? undefined : c.stock };
@@ -76,7 +72,7 @@ function mapQuoteSearchProduct(
     totalStock:
       p.stock_quantity ??
       (p.colors || []).reduce(
-        (sum: number, c: string | RawProductColor) =>
+        (sum: number, c: RawProductColor | string) =>
           sum + (typeof c === 'object' ? (c.stock ?? 0) : 0),
         0,
       ),
@@ -126,7 +122,7 @@ export function useQuoteBuilderState() {
   const [contactInfo, setContactInfo] = useState<SelectedContactInfo | null>(null);
   const [validityDays, setValidityDays] = useState('7');
   const [validUntil, setValidUntil] = useState(format(addDays(new Date(), 7), 'yyyy-MM-dd'));
-  const [discountType, setDiscountType] = useState<'percent' | 'amount'>('percent');
+  const [discountType, setDiscountType] = useState<'amount' | 'percent'>('percent');
   const [discountValue, setDiscountValue] = useState(0);
   /** Margem de negociação interna 0–50%. Default 0 (desligado). */
   const [negotiationMarkup, setNegotiationMarkup] = useState(0);
@@ -152,8 +148,9 @@ export function useQuoteBuilderState() {
   const [currentStatus, setCurrentStatus] = useState('draft');
 
   const [paymentTerms, setPaymentTerms] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('');
   const [deliveryTime, setDeliveryTime] = useState('');
-  const [deliveryMode, setDeliveryMode] = useState<'prazo' | 'data'>('prazo');
+  const [deliveryMode, setDeliveryMode] = useState<'data' | 'prazo'>('prazo');
   const [deliveryDate, setDeliveryDate] = useState<Date | undefined>(undefined);
   const [shippingType, setShippingType] = useState('');
   const [shippingCost, setShippingCost] = useState(0);
@@ -171,18 +168,18 @@ export function useQuoteBuilderState() {
   const activeStep = useMemo((): QuoteBuilderStep => {
     if (!clientId) return 'client';
     if (items.length === 0) return 'items';
-    if (!paymentTerms || !deliveryTime || !shippingType) return 'conditions';
+    if (!paymentMethod || !paymentTerms || !deliveryTime || !shippingType) return 'conditions';
     return 'review';
-  }, [clientId, items.length, paymentTerms, deliveryTime, shippingType]);
+  }, [clientId, items.length, paymentMethod, paymentTerms, deliveryTime, shippingType]);
 
   const completedSteps = useMemo((): QuoteBuilderStep[] => {
     const steps: QuoteBuilderStep[] = [];
     if (clientId) steps.push('client');
     if (items.length > 0) steps.push('items');
-    if (paymentTerms && deliveryTime && shippingType) steps.push('conditions');
+    if (paymentMethod && paymentTerms && deliveryTime && shippingType) steps.push('conditions');
     // No review, we only mark as completed if saved
     return steps;
-  }, [clientId, items.length, paymentTerms, deliveryTime, shippingType]);
+  }, [clientId, items.length, paymentMethod, paymentTerms, deliveryTime, shippingType]);
   // ── AutoSave ──
   const { clearAutoSave } = useAutoSaveQuote({
     enabled: !!clientId && items.length > 0 && !isEditMode,
@@ -196,6 +193,7 @@ export function useQuoteBuilderState() {
       discountValue,
       negotiationMarkup,
       paymentTerms,
+      paymentMethod,
       deliveryTime,
       shippingType,
       shippingCost,
@@ -211,6 +209,7 @@ export function useQuoteBuilderState() {
         if (saved.clientId) setClientId(saved.clientId);
         if (saved.contactId) setContactId(saved.contactId);
         if (saved.items) setItems(saved.items);
+        if (saved.paymentMethod) setPaymentMethod(saved.paymentMethod);
         // ... outros campos conforme necessário
       }
     },
@@ -257,12 +256,13 @@ export function useQuoteBuilderState() {
         if (typeof quote.negotiation_markup_percent === 'number')
           setNegotiationMarkup(quote.negotiation_markup_percent);
         if (quote.payment_terms) setPaymentTerms(quote.payment_terms);
+        if (quote.payment_method) setPaymentMethod(quote.payment_method);
         if (quote.shipping_type) setShippingType(quote.shipping_type);
         if (quote.shipping_cost) setShippingCost(quote.shipping_cost);
         if (quote.delivery_time) {
           if (quote.delivery_time.startsWith('date:')) {
             setDeliveryMode('data');
-            setDeliveryDate(new Date(quote.delivery_time.slice(5) + 'T12:00:00'));
+            setDeliveryDate(new Date(`${quote.delivery_time.slice(5)}T12:00:00`));
           } else {
             setDeliveryMode('prazo');
           }
@@ -272,21 +272,13 @@ export function useQuoteBuilderState() {
       }
       setLoadingQuote(false);
     });
-  }, [isEditMode, quoteId]);
+  }, [isEditMode, quoteId, fetchQuote, setItems]);
 
   // ── Pre-fill from simulator ──
   useEffect(() => {
     const state = location.state as {
       fromSimulator?: boolean;
-      simulationData?: {
-        product?: { id: string; name: string; sku?: string; imageUrl?: string; price?: number };
-        quantity?: number;
-        personalizations?: Array<{
-          technique?: { id: string; name: string };
-          specs?: { colors?: number; width?: number; height?: number };
-          pricing?: { setupPrice?: number; unitPrice?: number; totalPrice?: number };
-        }>;
-      };
+      simulationData?: SimulatorPrefill;
     } | null;
     if (!state?.fromSimulator || !state.simulationData) return;
     const { product, quantity, personalizations } = state.simulationData;
@@ -319,7 +311,7 @@ export function useQuoteBuilderState() {
       `Produto "${product.name}" importado do simulador com ${quotePersonalizations.length} gravação(ões)`,
     );
     window.history.replaceState({}, document.title);
-  }, [location.state]);
+  }, [location.state, setActiveItemIndex, setExpandedItems, setItems]);
 
   // ── Pre-fill from cart ──
   useEffect(() => {
@@ -328,16 +320,7 @@ export function useQuoteBuilderState() {
       companyId?: string;
       companyName?: string;
       companyLocation?: string;
-      items?: Array<{
-        product_id: string;
-        product_name: string;
-        product_sku?: string;
-        product_image_url?: string;
-        quantity: number;
-        unit_price: number;
-        color_name?: string;
-        color_hex?: string;
-      }>;
+      items?: Array<CartPrefillItem>;
     } | null;
     if (!state?.fromCart || !state.items?.length) return;
     if (state.companyId) setClientId(state.companyId);
@@ -362,22 +345,13 @@ export function useQuoteBuilderState() {
       description: companyLabel || undefined,
     });
     window.history.replaceState({}, document.title);
-  }, [location.state]);
+  }, [location.state, setItems]);
 
   // ── Pre-fill from collection ──
   useEffect(() => {
     const state = location.state as {
       fromCollection?: string;
-      preloadProducts?: Array<{
-        product_id: string;
-        product_name: string;
-        product_sku?: string;
-        product_image_url?: string | null;
-        unit_price: number;
-        quantity: number;
-        color_name?: string | null;
-        color_hex?: string | null;
-      }>;
+      preloadProducts?: Array<CollectionPrefillProduct>;
     } | null;
     if (!state?.fromCollection || !state.preloadProducts?.length) return;
     const collectionItems: QuoteItem[] = state.preloadProducts.map((p) => ({
@@ -396,10 +370,13 @@ export function useQuoteBuilderState() {
       `${collectionItems.length} produto(s) importado(s) da coleção "${state.fromCollection}"`,
     );
     window.history.replaceState({}, document.title);
-  }, [location.state]);
+  }, [location.state, setItems]);
 
   // ── Pre-fill from URL params (single product or bulk items[]) ──
+  const didPrefillUrl = useRef(false);
   useEffect(() => {
+    if (didPrefillUrl.current) return;
+    didPrefillUrl.current = true;
     if (isEditMode) return;
     // Avoid duplicating if items already exist (e.g. restored draft)
     if (items.length > 0) return;
@@ -462,7 +439,7 @@ export function useQuoteBuilderState() {
     }
     // Clean URL params without triggering React Router re-render
     window.history.replaceState({}, document.title, location.pathname);
-  }, []);
+  }, [isEditMode, items.length, location.pathname, searchParams, setActiveItemIndex, setItems]);
 
   const { data: products } = useQuery({
     queryKey: ['quote-products-promobrind-search', debouncedProductSearch],
@@ -474,7 +451,7 @@ export function useQuoteBuilderState() {
 
   const filteredProducts = useMemo(() => {
     return products || [];
-  }, [products, productSearch]);
+  }, [products]);
 
   // ── Calculations ──
   const formatCurrency = useCallback((value: number) => {
@@ -551,6 +528,10 @@ export function useQuoteBuilderState() {
 
   // ── Template ──
   const applyTemplate = useCallback((template: QuoteTemplate) => {
+    if (template.items_data === null) {
+      toast.error(template.items_error);
+      return;
+    }
     const newItems: QuoteItem[] = template.items_data.map((item) => ({
       product_id: item.productId || '',
       product_name: item.productName,
@@ -583,7 +564,7 @@ export function useQuoteBuilderState() {
       setValidUntil(format(addDays(new Date(), template.validity_days), 'yyyy-MM-dd'));
     setTemplateApplied(template.name);
     toast.success(`Template "${template.name}" aplicado!`);
-  }, []);
+  }, [setItems]);
 
   const getTemplateItems = useCallback((): QuoteTemplateItem[] => {
     return items.map((item) => ({
@@ -612,13 +593,23 @@ export function useQuoteBuilderState() {
       validateQuoteForm({
         clientId,
         contactId,
+        paymentMethod,
         paymentTerms,
         deliveryTime,
         shippingType,
         shippingCost,
         itemsCount: items.length,
       }),
-    [clientId, contactId, paymentTerms, deliveryTime, shippingType, shippingCost, items],
+    [
+      clientId,
+      contactId,
+      paymentMethod,
+      paymentTerms,
+      deliveryTime,
+      shippingType,
+      shippingCost,
+      items,
+    ],
   );
 
   const isFormValid = validationErrors.length === 0;
@@ -638,7 +629,7 @@ export function useQuoteBuilderState() {
 
   // ── Save ──
   const handleSaveQuote = useCallback(
-    async (status: 'draft' | 'pending' | 'pending_approval' = 'draft', sellerNotes?: string) => {
+    async (status: 'draft' | 'pending_approval' | 'pending' = 'draft', sellerNotes?: string) => {
       if (status === 'draft') {
         if (!isDraftValid) {
           toast.error('Selecione uma empresa para salvar o rascunho.');
@@ -675,7 +666,7 @@ export function useQuoteBuilderState() {
 
       const effectiveStatus = status === 'pending_approval' ? 'pending_approval' : status;
 
-      const quoteData = {
+      const quoteData: Partial<Quote> = {
         client_id: clientId || undefined,
         client_name: contactInfo?.name || undefined,
         client_company: companyInfo?.name || undefined,
@@ -690,6 +681,7 @@ export function useQuoteBuilderState() {
         internal_notes: internalNotes || undefined,
         valid_until: validUntil || undefined,
         payment_terms: paymentTerms || undefined,
+        payment_method: paymentMethod || undefined,
         delivery_time: deliveryTime || undefined,
         shipping_type: shippingType || undefined,
         shipping_cost:
@@ -703,11 +695,11 @@ export function useQuoteBuilderState() {
       }
 
       // If pending_approval, create approval request usando desconto REAL (não aparente)
-      if (result && status === 'pending_approval' && maxDiscountPercent !== null) {
+      if (result?.id && status === 'pending_approval' && maxDiscountPercent !== null) {
         await requestApproval(result.id, realDiscountPercent, maxDiscountPercent, sellerNotes);
       }
 
-      if (result) {
+      if (result?.id) {
         clearAutoSave();
         navigate(`/orcamentos/${result.id}`);
       }
@@ -727,6 +719,7 @@ export function useQuoteBuilderState() {
       internalNotes,
       validUntil,
       paymentTerms,
+      paymentMethod,
       deliveryTime,
       shippingType,
       shippingCost,
@@ -781,6 +774,8 @@ export function useQuoteBuilderState() {
     currentStatus,
     paymentTerms,
     setPaymentTerms,
+    paymentMethod,
+    setPaymentMethod,
     deliveryTime,
     setDeliveryTime,
     deliveryMode,

@@ -134,6 +134,7 @@ export function useStockVelocity(productId: string | undefined) {
     retry: (failureCount, error: unknown) => {
       const msg = error instanceof Error ? error.message : '';
       if (msg.includes('not been populated')) return false;
+      return false;
     },
   });
 }
@@ -168,19 +169,15 @@ export function useProductIntelligenceData(productId: string | undefined) {
     retry: (failureCount, error: unknown) => {
       const msg = error instanceof Error ? error.message : '';
       if (msg.includes('not been populated')) return false;
+      return false;
     },
   });
 }
 
 // ---------- Helpers ----------
 
-export type IntelligenceFlag = 
-  | 'hot-product'
-  | 'stockout-risk'
-  | 'stagnant'
-  | 'negotiation-opportunity'
-  | 'frequent-restock'
-  | 'class-a';
+export type IntelligenceFlag =
+  'class-a' | 'frequent-restock' | 'hot-product' | 'negotiation-opportunity' | 'stagnant' | 'stockout-risk';
 
 export function getActiveFlags(data: ProductIntelligenceData | null): IntelligenceFlag[] {
   if (!data) return [];
@@ -199,17 +196,20 @@ export function getActiveFlags(data: ProductIntelligenceData | null): Intelligen
  * Opcionalmente filtra por supplier_id.
  */
 export function aggregateDailySummaryByDate(summaries: StockDailySummary[], supplierId?: string) {
-  const filtered = supplierId ? summaries.filter(s => s.supplier_id === supplierId) : summaries;
-  const map = new Map<string, {
-    date: string;
-    stockClose: number;
-    depleted: number;
-    restocked: number;
-    restockDetected: boolean;
-    costPriceClose: number | null;
-    _costWeightedSum: number;
-    _costWeightedCount: number;
-  }>();
+  const filtered = supplierId ? summaries.filter((s) => s.supplier_id === supplierId) : summaries;
+  const map = new Map<
+    string,
+    {
+      date: string;
+      stockClose: number;
+      depleted: number;
+      restocked: number;
+      restockDetected: boolean;
+      costPriceClose: number | null;
+      _costWeightedSum: number;
+      _costWeightedCount: number;
+    }
+  >();
 
   for (const s of filtered) {
     const existing = map.get(s.summary_date);
@@ -248,5 +248,5 @@ export function aggregateDailySummaryByDate(summaries: StockDailySummary[], supp
  * Extrai supplier_ids únicos dos summaries.
  */
 export function extractUniqueSupplierIds(summaries: StockDailySummary[]): string[] {
-  return [...new Set(summaries.map(s => s.supplier_id).filter(Boolean))];
+  return [...new Set(summaries.map((s) => s.supplier_id).filter(Boolean))];
 }

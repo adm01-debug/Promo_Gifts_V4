@@ -15,12 +15,15 @@ import {
   type SellerRanking,
 } from '@/hooks/intelligence/useSalesHistory';
 
-export function useSalesHistoryMacro(days = 30) {
+export function useSalesHistoryMacro(days = 30, productId?: string) {
   const { user } = useAuth();
   const scope = useSalesScope();
+  const productFilter = productId?.trim() || undefined;
 
   return useQuery({
-    queryKey: ['sales-history-macro', days, scope, user?.id],
+    queryKey: productFilter
+      ? ['sales-history-macro', days, scope, user?.id, productFilter]
+      : ['sales-history-macro', days, scope, user?.id],
     queryFn: async (): Promise<{ daily: DailySalesPoint[]; kpis: SalesKpis }> => {
       const cutoff = new Date();
       cutoff.setDate(cutoff.getDate() - days);
@@ -87,10 +90,10 @@ export function useSalesHistoryMacro(days = 30) {
               .select(select)
               .gte('created_at', cutoffStr)
               .order('created_at', { ascending: true })
-              .order('id', { ascending: true })
-              .range(from, to);
+              .order('id', { ascending: true });
             if (batch) q = q.in(fkColumn, batch);
-            return q as PromiseLike<{ data: T[] | null; error: unknown }>;
+            if (productFilter) q = q.eq('product_id', productFilter);
+            return q.range(from, to) as PromiseLike<{ data: T[] | null; error: unknown }>;
           });
           rows.push(...page);
         }

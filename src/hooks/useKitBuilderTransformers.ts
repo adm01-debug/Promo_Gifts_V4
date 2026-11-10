@@ -3,7 +3,8 @@
  * Pure functions to transform external DB products into Kit types.
  */
 
-import { getProductImageUrl, getProductPrice } from '@/lib/external-db';
+import { getProductImageUrl, type PromobrindProduct } from '@/lib/external-db';
+import { resolveKitCatalogPrice } from '@/lib/kit-builder/pricing-availability';
 import {
   type KitBox,
   type KitItem,
@@ -14,7 +15,14 @@ import {
   estimateDefaultDimensions,
 } from '@/lib/kit-builder';
 
-function resolveProductMaterial(product: ExternalProductForKit): string | undefined {
+type KitProductInput = Omit<ExternalProductForKit, 'allows_personalization' | 'colors' | 'image_url' | 'is_kit'> & {
+  image_url?: string | null;
+  colors?: ExternalProductForKit['colors'] | PromobrindProduct['colors'];
+  allows_personalization?: boolean | null;
+  is_kit?: boolean | null;
+};
+
+function resolveProductMaterial(product: KitProductInput): string | undefined {
   if (product.material) return product.material;
   if (!Array.isArray(product.materials) || product.materials.length === 0) return undefined;
 
@@ -28,7 +36,7 @@ function resolveProductMaterial(product: ExternalProductForKit): string | undefi
   return undefined;
 }
 
-export function transformToKitBox(product: ExternalProductForKit): KitBox | null {
+export function transformToKitBox(product: KitProductInput): KitBox | null {
   let dimensions: { width: number; height: number; depth: number } | null = null;
 
   const wMm = mmToCm(product.width_mm);
@@ -62,7 +70,7 @@ export function transformToKitBox(product: ExternalProductForKit): KitBox | null
     name: product.name,
     sku: product.sku,
     imageUrl: getProductImageUrl(product),
-    price: getProductPrice(product),
+    ...resolveKitCatalogPrice(product),
     internalWidth: dimensions.width,
     internalHeight: dimensions.height,
     internalDepth: dimensions.depth,
@@ -73,7 +81,7 @@ export function transformToKitBox(product: ExternalProductForKit): KitBox | null
   };
 }
 
-export function transformToKitItem(product: ExternalProductForKit, category?: string): KitItem {
+export function transformToKitItem(product: KitProductInput, category?: string): KitItem {
   let dimensions: { width: number; height: number; depth: number } | null = null;
 
   const wMm = mmToCm(product.width_mm);
@@ -94,7 +102,7 @@ export function transformToKitItem(product: ExternalProductForKit, category?: st
     name: product.name,
     sku: product.sku,
     imageUrl: getProductImageUrl(product),
-    price: getProductPrice(product),
+    ...resolveKitCatalogPrice(product),
     width: dimensions.width,
     height: dimensions.height,
     depth: dimensions.depth,

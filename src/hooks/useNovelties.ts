@@ -43,7 +43,7 @@ export interface NoveltyWithDetails {
   detected_at: string;
   expires_at: string;
   days_remaining: number;
-  status: 'active' | 'expiring_soon' | 'expired';
+  status: 'active' | 'expired' | 'expiring_soon';
   is_highlighted: boolean;
   is_active: boolean;
   stock_quantity: number;
@@ -202,7 +202,7 @@ export function useNoveltiesWithDetails(options: UseNoveltiesOptions = {}) {
 /**
  * Hook para buscar novidades expirando em breve (≤ maxDays restantes)
  */
-export function useExpiringNovelties(maxDays: number = 7) {
+export function useExpiringNovelties(maxDays = 7) {
   return useQuery<NoveltyWithDetails[]>({
     queryKey: ['expiring-novelties', maxDays],
     queryFn: async () => {

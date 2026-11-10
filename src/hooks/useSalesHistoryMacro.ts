@@ -54,7 +54,7 @@ export function useSalesHistoryMacro(days = 30) {
 
       // Fetch quotes/orders for seller info + status
       const quoteIds = [...new Set((quoteItems || []).map(q => q.quote_id))];
-      const orderIds = [...new Set((orderItems || []).map(o => o.order_id).filter(Boolean))] as string[];
+      const orderIds = [...new Set((orderItems || []).map(o => o.order_id).filter((id): id is string => typeof id === 'string'))];
 
       const [quotesRes, ordersRes] = await Promise.all([
         quoteIds.length > 0
@@ -70,18 +70,20 @@ export function useSalesHistoryMacro(days = 30) {
       const quotesMap: Record<string, { seller_id: string }> = {};
       for (const q of quotesRes.data || []) quotesMap[q.id] = { seller_id: q.seller_id };
 
-      const ordersMap: Record<string, { seller_id: string }> = {};
+      const ordersMap: Record<string, { seller_id: string | null }> = {};
       for (const o of ordersRes.data || []) ordersMap[o.id] = { seller_id: o.seller_id };
 
       // Seller names
       const allSellerIds = [...new Set([
         ...Object.values(quotesMap).map(q => q.seller_id),
         ...Object.values(ordersMap).map(o => o.seller_id),
-      ])];
+      ].filter((id): id is string => typeof id === 'string' && id.length > 0))];
       const sellerNames: Record<string, string> = {};
       if (allSellerIds.length > 0) {
         const { data: profiles } = await supabase.from('profiles').select('user_id, full_name').in('user_id', allSellerIds);
-        for (const p of profiles || []) sellerNames[p.user_id] = p.full_name || 'Vendedor';
+        for (const p of profiles || []) {
+          if (p.user_id) sellerNames[p.user_id] = p.full_name || 'Vendedor';
+        }
       }
 
       // Aggregate daily

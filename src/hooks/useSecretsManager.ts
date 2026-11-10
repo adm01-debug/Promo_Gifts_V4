@@ -32,7 +32,7 @@ export interface RotationHistoryEntry {
   previous_suffix: string | null;
   new_suffix: string | null;
   notes: string | null;
-  action_type?: "set" | "rotate";
+  action_type?: "rotate" | "set";
 }
 
 export interface SecretMutationResult {
@@ -76,15 +76,22 @@ type InvokeBody = {
   [key: string]: unknown;
 };
 
+interface SecretsManagerResponse extends Partial<SecretMutationResult> {
+  secrets?: unknown;
+  history?: unknown;
+  message?: string;
+  [key: string]: unknown;
+}
+
 async function invokeSecretsManager(body: InvokeBody): Promise<{
-  data: { ok?: boolean; secrets?: unknown; history?: unknown; message?: string; [k: string]: unknown } | null;
+  data: SecretsManagerResponse | null;
   error: { message: string; context?: Response } | null;
   requestId: string;
   status?: number;
 }> {
   const requestId = newRequestId();
   const startedAt = performance.now();
-  const { data, error } = await supabase.functions.invoke("secrets-manager", {
+  const { data, error } = await supabase.functions.invoke<SecretsManagerResponse>("secrets-manager", {
     body,
     headers: { [REQUEST_ID_HEADER]: requestId },
   });
@@ -112,7 +119,7 @@ async function invokeSecretsManager(body: InvokeBody): Promise<{
   });
 
   return {
-    data: data as Record<string, unknown> | null,
+    data,
     error: error as { message: string; context?: Response } | null,
     requestId,
     status,
@@ -181,7 +188,7 @@ export function useSecretsManager() {
       }
       return { ok: false, error: normalizeError(payload ?? { message: error.message }, error.message) };
     }
-    if (data && data.ok === false) {
+    if (data?.ok === false) {
       return { ok: false, error: normalizeError(data) };
     }
     return {
@@ -204,7 +211,7 @@ export function useSecretsManager() {
       }
       return { ok: false, error: normalizeError(payload ?? { message: error.message }, error.message) };
     }
-    if (data && data.ok === false) {
+    if (data?.ok === false) {
       return { ok: false, error: normalizeError(data) };
     }
     return {
@@ -231,7 +238,7 @@ export function useSecretsManager() {
     if (error) {
       return { ok: false, error: normalizeError({ message: error.message }, error.message) };
     }
-    if (data && data.ok === false) {
+    if (data?.ok === false) {
       return { ok: false, error: normalizeError(data) };
     }
     return { ok: true, message: data?.message };

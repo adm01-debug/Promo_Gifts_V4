@@ -5,7 +5,7 @@ export interface VoiceCommandRecord {
   command: string;
   normalizedCommand: string;
   timestamp: Date;
-  type: 'filter' | 'search' | 'navigation' | 'sort' | 'clear' | 'unknown';
+  type: 'clear' | 'filter' | 'navigation' | 'search' | 'sort' | 'unknown';
   successful: boolean;
 }
 
@@ -68,7 +68,7 @@ export const useVoiceCommandHistory = (): UseVoiceCommandHistoryReturn => {
         const parsed = JSON.parse(stored);
         return parsed.map((item: { transcript?: string; command?: string; timestamp?: string; type?: string }) => ({
           ...item,
-          timestamp: new Date(item.timestamp),
+          timestamp: new Date(item.timestamp === undefined ? NaN : item.timestamp),
         }));
       }
     } catch (error) {
@@ -89,7 +89,7 @@ export const useVoiceCommandHistory = (): UseVoiceCommandHistoryReturn => {
   const addCommand = useCallback((
     command: string,
     type?: VoiceCommandRecord['type'],
-    successful: boolean = true
+    successful = true
   ) => {
     const normalizedCommand = normalizeCommand(command);
     const detectedType = type || detectCommandType(command);

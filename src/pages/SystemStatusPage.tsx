@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { invokeCrmDb } from "@/lib/crm-db";
+import { invokeCrmBatch } from "@/lib/crm-db";
 import {
   CheckCircle,
   XCircle,
@@ -20,14 +20,14 @@ import { PageSEO } from "@/components/seo/PageSEO";
 
 interface StatusItem {
   name: string;
-  status: "ok" | "error" | "warning" | "loading";
+  status: "error" | "loading" | "ok" | "warning";
   message: string;
   icon: React.ReactNode;
 }
 
 interface CrmTableCheck {
   name: string;
-  status: "ok" | "error" | "loading";
+  status: "error" | "loading" | "ok";
   rowCount?: number;
   message: string;
 }
@@ -167,29 +167,14 @@ export default function SystemStatusPage() {
     }));
     setCrmTables([...tableResults]);
 
-    const batchResult = await invokeCrmDb<
-      { success: boolean; results: Array<{ success: boolean; data?: { records: unknown[]; count: number }; error?: string; unavailable?: boolean; warning?: string }> }
-    >({
-      table: "companies", // ignored for batch
-      operation: "batch",
-      queries: CRM_CRITICAL_TABLES.map((t) => ({
-        table: t,
+    try {
+      const results = await invokeCrmBatch(CRM_CRITICAL_TABLES.map((table) => ({
+        table,
         select: "id",
         limit: 1,
-      })),
-    });
-
-    if (batchResult.error || !batchResult.data?.results) {
-      setCrmTables(
-        CRM_CRITICAL_TABLES.map((t) => ({
-          name: t,
-          status: "error" as const,
-          message: batchResult.error || "Falha na verificação em lote",
-        }))
-      );
-    } else {
+      })));
       const updatedResults = CRM_CRITICAL_TABLES.map((t, i) => {
-        const r = batchResult.data!.results[i];
+        const r = results[i];
         if (!r) return { name: t, status: "error" as const, message: "Sem resposta" };
         if (r.unavailable) return { name: t, status: "error" as const, message: r.warning || "Tabela ausente" };
         if (!r.success) return { name: t, status: "error" as const, message: r.error || "Erro desconhecido" };
@@ -201,9 +186,13 @@ export default function SystemStatusPage() {
         };
       });
       setCrmTables(updatedResults);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Falha na verificação em lote";
+      setCrmTables(CRM_CRITICAL_TABLES.map((name) => ({ name, status: "error", message })));
+    } finally {
+      setIsCheckingCrm(false);
     }
 
-    setIsCheckingCrm(false);
   };
 
   useEffect(() => {
@@ -211,7 +200,7 @@ export default function SystemStatusPage() {
     runCrmHealthCheck();
   }, []);
 
-  const getStatusIcon = (status: "ok" | "error" | "warning" | "loading") => {
+  const getStatusIcon = (status: "error" | "loading" | "ok" | "warning") => {
     switch (status) {
       case "ok":
         return <CheckCircle className="h-5 w-5 text-primary" />;
@@ -224,7 +213,7 @@ export default function SystemStatusPage() {
     }
   };
 
-  const getStatusBadge = (status: "ok" | "error" | "warning" | "loading") => {
+  const getStatusBadge = (status: "error" | "loading" | "ok" | "warning") => {
     switch (status) {
       case "ok":
         return <Badge className="bg-primary/20 text-primary border-primary/30">OK</Badge>;

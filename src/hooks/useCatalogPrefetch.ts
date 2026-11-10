@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
 import { invokeBatchBridge } from '@/lib/external-db';
-import { mapLightweightToProduct, PRODUCT_SELECT_LIGHTWEIGHT, CATALOG_PAGE_SIZE, CATALOG_BATCH_PAGES } from '@/hooks/useProductsLightweight';
+import { mapLightweightToProduct, isLightweightCatalogRecord, PRODUCT_SELECT_LIGHTWEIGHT, CATALOG_PAGE_SIZE, CATALOG_BATCH_PAGES } from '@/hooks/useProductsLightweight';
 
 /**
  * Prefetch do catálogo SOMENTE após autenticação (#6).
@@ -39,7 +39,10 @@ export function useCatalogPrefetch() {
           let lastPageSize = 0;
           for (const result of batchResults) {
             if (result.success && result.data?.records) {
-              products.push(...(result.data.records as unknown[]).map(mapLightweightToProduct));
+              products.push(...result.data.records.map((record) => {
+                if (!isLightweightCatalogRecord(record)) throw new TypeError('Invalid lightweight catalog record');
+                return mapLightweightToProduct(record);
+              }));
               lastPageSize = result.data.records.length;
               if (result.data.count !== null && totalEstimate === null) {
                 totalEstimate = result.data.count as number;

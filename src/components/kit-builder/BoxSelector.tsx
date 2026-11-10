@@ -1,3 +1,4 @@
+import { formatKitLinePrice, hasKnownKitPrice } from '@/lib/kit-builder/pricing-availability';
 /**
  * Box Selector
  * Seletor de caixa/embalagem para o kit com filtros avançados
@@ -43,44 +44,15 @@ import { FavoriteToggleButton } from './FavoriteToggleButton';
 import {
   formatVolume,
   formatDimensions,
-  formatCurrency,
   rankBoxesForItems,
   calculateTotalItemsVolume,
   getKitItemLineId,
-  type KitBox,
-  type KitItem,
-  type BoxFilters,
 } from '@/lib/kit-builder';
 import { BoxComparisonDialog } from './BoxComparisonDialog';
-
-type BoxSortMode = 'occupancy' | 'price' | 'score';
-type BoxViewMode = 'grid' | 'list';
+import type { BoxSelectorProps, BoxSortMode, BoxViewMode } from './BoxSelector.types';
+export type { BoxSelectorProps, BoxSortMode, BoxViewMode } from './BoxSelector.types';
 
 const BOX_VIEW_PREFERENCE_KEY = 'kit-maker-boxes-view';
-
-interface BoxSelectorProps {
-  boxes: KitBox[];
-  /**
-   * Catálogo completo (sem nenhum filtro aplicado) — usado só para listar
-   * todos os materiais possíveis no checkbox de filtro, mesmo quando um
-   * filtro ativo zera a contagem de algum deles. Sem isso o checkbox some
-   * em vez de aparecer desabilitado. Se omitido, cai para `boxes`.
-   */
-  allBoxes?: KitBox[];
-  selectedBox: KitBox | null;
-  kitItems?: KitItem[];
-  isLoading: boolean;
-  filters: BoxFilters;
-  onFiltersChange: (filters: BoxFilters) => void;
-  onSelect: (box: KitBox) => void;
-  onClear: () => void;
-  errorMessage?: string | null;
-  onRetry?: () => void;
-  /** Navigates back to the items step, preserving state. */
-  onEditItems?: () => void;
-  /** Reopens the shared Kit Maker onboarding tour. */
-  onOpenGuide?: () => void;
-}
 
 export function BoxSelector({
   boxes,
@@ -205,7 +177,11 @@ export function BoxSelector({
   }, [materialFilteredBoxes]);
 
   const maxPrice = useMemo(
-    () => Math.max(10, ...materialFilteredBoxes.map((box) => Math.ceil(box.price))),
+    () =>
+      Math.max(
+        10,
+        ...materialFilteredBoxes.filter(hasKnownKitPrice).map((box) => Math.ceil(box.price)),
+      ),
     [materialFilteredBoxes],
   );
 
@@ -216,7 +192,15 @@ export function BoxSelector({
 
   const sortedRecommendations = useMemo(() => {
     if (sortMode === 'price') {
-      return [...recommendations].sort((a, b) => a.box.price - b.box.price);
+      return [...recommendations].sort((a, b) =>
+        !hasKnownKitPrice(a.box)
+          ? hasKnownKitPrice(b.box)
+            ? 1
+            : 0
+          : !hasKnownKitPrice(b.box)
+            ? -1
+            : a.box.price - b.box.price,
+      );
     }
     if (sortMode === 'occupancy') {
       return [...recommendations].sort((a, b) => b.usagePercent - a.usagePercent);
@@ -243,9 +227,14 @@ export function BoxSelector({
     if (bestRecommendation.status === 'compatible') reasons.push('Comporta todos os itens');
     const freeSpace = Math.max(0, 100 - bestRecommendation.usagePercent);
     reasons.push(`Espaço livre de ${Math.round(freeSpace)}%`);
-    const isCheapest = compatibleRecommendations.every(
-      (r) => r.box.id === bestRecommendation.box.id || r.box.price >= bestRecommendation.box.price,
-    );
+    const isCheapest =
+      hasKnownKitPrice(bestRecommendation.box) &&
+      compatibleRecommendations.every(
+        (r) =>
+          r.box.id === bestRecommendation.box.id ||
+          !hasKnownKitPrice(r.box) ||
+          r.box.price >= bestRecommendation.box.price,
+      );
     if (isCheapest && compatibleRecommendations.length > 1) {
       reasons.push('Menor preço entre as compatíveis');
     }
@@ -395,9 +384,7 @@ export function BoxSelector({
                   <Box className="h-4 w-4 text-muted-foreground" />
                   <span>{formatVolume(selectedBox.internalVolume)}</span>
                 </div>
-                <div className="font-semibold text-primary">
-                  {formatCurrency(selectedBox.price)}
-                </div>
+                <div className="font-semibold text-primary">{formatKitLinePrice(selectedBox)}</div>
               </div>
             </div>
             <Button variant="outline" size="sm" onClick={onClear}>
@@ -937,7 +924,7 @@ export function BoxSelector({
                           </Badge>
                         )}
                         <span className="flex-shrink-0 text-sm font-semibold text-primary">
-                          {formatCurrency(box.price)}
+                          {formatKitLinePrice(box)}
                         </span>
                         <FavoriteToggleButton productId={box.id} productName={box.name} />
                         <Button
@@ -1012,7 +999,7 @@ export function BoxSelector({
                             )}
                           </div>
                           <p className="mt-1 font-semibold text-primary">
-                            {formatCurrency(box.price)}
+                            {formatKitLinePrice(box)}
                           </p>
                           {shouldExplain && (
                             <div className="mt-3 space-y-2">
@@ -1231,7 +1218,7 @@ export function BoxSelector({
                   </p>
                 )}
                 <p className="font-semibold text-primary">
-                  {formatCurrency(focusedRecommendation.box.price)} / un
+                  {formatKitLinePrice(focusedRecommendation.box)} / un
                 </p>
                 {kitItems.length === 0 && (
                   <p className="rounded-md bg-muted/50 p-2 text-[11px] text-muted-foreground">

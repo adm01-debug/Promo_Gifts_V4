@@ -2,7 +2,7 @@
  * QuotesConfigurableList - Lista de orçamentos com colunas fixas, paginação e seleção em massa.
  */
 
-import { useState, useMemo, useCallback, useEffect, useRef, type HTMLAttributes } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { renderQuoteCell } from './QuoteListCellRenderer';
 import { useQuoteClientLogos } from '@/hooks/quotes/useQuoteClientLogos';
 import { useQuoteItemCounts } from '@/hooks/quotes/useQuoteItemCounts';
@@ -28,9 +28,14 @@ import {
   RefreshCw,
   Loader2,
   AlertTriangle,
+  CheckCircle2,
 } from 'lucide-react';
 
 import type { Quote } from '@/hooks/quotes';
+import type { ColumnDef, PrefetchRowProps, QuotesConfigurableListProps } from './quoteList.types';
+export type { ColumnDef, PrefetchRowProps, QuotesConfigurableListProps } from './quoteList.types';
+import { useAuth } from '@/contexts/AuthContext';
+import { isValidQuoteTransition } from '@/lib/quote-status-config';
 
 import { useBulkSelection } from '@/hooks/common';
 
@@ -52,9 +57,6 @@ function prefetchQuoteRoutes(): void {
 }
 
 /** Wrapper que aplica `usePrefetchOnHover` no <div> da linha do orçamento. */
-interface PrefetchRowProps extends HTMLAttributes<HTMLDivElement> {
-  prefetch: () => void;
-}
 function PrefetchRow({ prefetch, children, ...rest }: PrefetchRowProps) {
   const handlers = usePrefetchOnHover(prefetch);
   return (
@@ -65,14 +67,6 @@ function PrefetchRow({ prefetch, children, ...rest }: PrefetchRowProps) {
 }
 
 // ── Column definitions ──
-export interface ColumnDef {
-  id: string;
-  label: string;
-  width: string;
-  align?: 'center' | 'left' | 'right';
-  required?: boolean;
-}
-
 const ALL_COLUMNS: ColumnDef[] = [
   { id: 'client', label: 'Empresa', width: 'minmax(220px, 1.4fr)', required: true },
   { id: 'contact', label: 'Contato', width: 'minmax(140px, 0.9fr)' },
@@ -85,22 +79,6 @@ const ALL_COLUMNS: ColumnDef[] = [
   { id: 'quote_number', label: 'Nº Orçamento', width: '120px' },
 ];
 
-// ── Props ──
-interface QuotesConfigurableListProps {
-  quotes: Quote[];
-  onDelete: (id: string) => void;
-  onBulkDelete: (ids: string[]) => void;
-  onBulkStatusChange?: (ids: string[], status: string) => void;
-  onBulkExport?: (ids: string[]) => void;
-  onDuplicate: (id: string) => void;
-  /** Background refetch em andamento — usado para "Carregando mais..." */
-  isFetching?: boolean;
-  /** Mensagem de erro vinda do hook pai; renderiza banner com retry */
-  loadError?: string | null;
-  /** Callback do botão "Tentar novamente" */
-  onRetry?: () => void;
-}
-
 const PAGE_SIZE = 25;
 
 export function QuotesConfigurableList({
@@ -110,11 +88,13 @@ export function QuotesConfigurableList({
   onBulkStatusChange: _onBulkStatusChange,
   onBulkExport: _onBulkExport,
   onDuplicate,
+  onMarkApproved,
   isFetching = false,
   loadError = null,
   onRetry,
 }: QuotesConfigurableListProps) {
   const navigate = useNavigate();
+  const { user, isSeller, canManage, rolesLoaded } = useAuth();
 
   // ── Infinite scroll via IntersectionObserver ──
   // Sentinel logo após a última linha; quando entra no viewport do container,
@@ -439,6 +419,14 @@ export function QuotesConfigurableList({
                 paginatedQuotes.map((quote) => {
                   const quoteId = quote.id;
                   const selected = Boolean(quoteId && isSelected(quoteId)) || allPagesSelected;
+                  const canMarkApproved = Boolean(
+                    onMarkApproved &&
+                    quoteId &&
+                    user &&
+                    rolesLoaded &&
+                    (canManage || (isSeller && quote.seller_id === user.id)) &&
+                    isValidQuoteTransition(quote.status, 'approved'),
+                  );
 
                   return (
                     <PrefetchRow
@@ -538,6 +526,16 @@ export function QuotesConfigurableList({
                               <Copy className="mr-2 h-4 w-4" /> Duplicar
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
+                            {canMarkApproved && (
+                              <DropdownMenuItem
+                                data-testid={`quote-row-menu-approve-${quote.id}`}
+                                onClick={() => {
+                                  if (canMarkApproved && quoteId) void onMarkApproved?.(quoteId);
+                                }}
+                              >
+                                <CheckCircle2 className="mr-2 h-4 w-4" /> Aprovar
+                              </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem
                               data-testid={`quote-row-menu-delete-${quote.id}`}
                               className="text-destructive"

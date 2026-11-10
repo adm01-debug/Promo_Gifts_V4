@@ -1190,3 +1190,25 @@ sem DDL de schema, sem risco de dado). **Nenhuma DDL nova é executada por esta 
 |---|---|---|---|
 | `20261101223908` | `cron001_stagger_additional_jobs` | `819350cc0006cbc218b74bd2cd6dee7049586ed6479109b7dcd828f3807ee811` | arquivo retroativo — `cron.alter_job` jobs 292/303/241 confirmado em produção via ledger; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
 | `20261101232022` | `cron001_stagger_schedules_reapply` | `8fe64496a5dba8e27be274a41522bf9a1988be3f5e912b712c1ce1ddd2d93dad` | arquivo retroativo — `cron.alter_job` jobs 276/224/114/243 (idêntico a `20261101220000`) confirmado em produção via ledger; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
+
+## E15 — migrações preparadas, pendentes de revisão
+
+Estes registros documentam apenas o preparo local para a revisão solicitada.
+Os hashes SHA-256 abaixo identificam os arquivos da proposta; não são recibos de
+aplicação. Não há data UTC, executor, MD5 de statements nem pós-check de aplicação
+a registrar nesta etapa. Os recibos confirmados e o ledger hash histórico permanecem
+inalterados.
+
+| versão | arquivo da migration | sha256 arquivo | rollback | sha256 rollback | status |
+|---|---|---|---|---|---|
+| `20261110022404` | `20261110022404_restore_quote_comments_scoped_threads.sql` | `ffafbad5c04e75167e425c7684e42a97403591210834b8aabaea944f10eb73cd` | `20261110022404_rollback.sql` | `3845e99bc576da7914e201e1954e9c73c09c6d57df5495c30e37509424cc4b0e` | PREPARADA — PENDENTE DE REVISÃO |
+| `20261110024530` | `20261110024530_restore_device_trust_contract.sql` | `25c7492e841e8ebc4ddc0288c45574ed3ce48fb05fb7c9d53b5bf516b931c83b` | `20261110024530_rollback.sql` | `6d4ff05d31f1177bf57469a47ad880af50992022f220d0cf56ed7581aaa7025d` | PREPARADA — PENDENTE DE REVISÃO |
+
+A aplicação em produção continua pendente da revisão e deve ocorrer exclusivamente
+pelo workflow `db-apply-migration.yml` (E15). Somente após uma aplicação confirmada
+poderá ser acrescentado o respectivo recibo real de execução.
+
+Os testes SQL isolados já preparados podem ser reproduzidos com
+`npm run test:quote-comments:sql` e `npm run test:device-trust:sql`; ambos usam
+PostgreSQL descartável local e não aplicam a proposta ao banco de produção.
+Eles não foram reexecutados nesta atualização documental.

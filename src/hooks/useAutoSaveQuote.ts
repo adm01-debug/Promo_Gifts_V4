@@ -28,8 +28,10 @@ export function migratePayload<T>(
 ): AutoSavePayload<T> | null {
   if (!payload) return null;
 
+  const version = typeof payload === 'object' && 'version' in payload ? payload.version : undefined;
+
   // Se for um payload antigo sem versão (v1)
-  if (!payload.version) {
+  if (!version) {
     logger.debug('[AutoSave] Migrating from v1 to v2');
     return {
       version: currentVersion,
@@ -40,7 +42,7 @@ export function migratePayload<T>(
 
   // Se a versão do payload for maior que a atual, tratamos como inseguro
   // e retornamos null para evitar corrupção de estado (o usuário perderá o rascunho, mas não quebrará o app)
-  if (payload.version > currentVersion) {
+  if (typeof version !== 'number' || version > currentVersion) {
     console.warn(
       '[AutoSave] Future payload version detected, skipping restore to prevent state corruption',
     );
@@ -64,6 +66,11 @@ export function useAutoSaveQuote<T>({
   key = 'quote_builder_autosave',
 }: AutoSaveOptions<T>) {
   const lastSavedRef = useRef<string>('');
+  const onRestoreRef = useRef(onRestore);
+  const canRestore = Boolean(onRestore);
+  useEffect(() => {
+    onRestoreRef.current = onRestore;
+  }, [onRestore]);
 
   // Efeito de carregamento inicial (Restaurar)
   useEffect(() => {
@@ -77,8 +84,8 @@ export function useAutoSaveQuote<T>({
         // Aplica migrações se necessário
         const migrated = migratePayload<T>(payload);
 
-        if (migrated && migrated.data && onRestore) {
-          onRestore(migrated.data);
+        if (migrated && migrated.data && onRestoreRef.current) {
+          onRestoreRef.current(migrated.data);
           // Atualiza o lastSavedRef para evitar salvar logo em seguida se nada mudou
           lastSavedRef.current = JSON.stringify(migrated.data);
         }
@@ -86,7 +93,7 @@ export function useAutoSaveQuote<T>({
         console.error('Failed to parse/migrate autosave data', e);
       }
     }
-  }, [enabled, key, onRestore]); // Adicionado dependências seguras
+  }, [enabled, key, canRestore]);
 
   // Efeito de salvamento (Debounced)
   useEffect(() => {
@@ -100,7 +107,7 @@ export function useAutoSaveQuote<T>({
 
       const payload: AutoSavePayload<T> = {
         version: AUTOSAVE_SCHEMA_VERSION,
-        data: data,
+        data,
         savedAt: new Date().toISOString(),
       };
 

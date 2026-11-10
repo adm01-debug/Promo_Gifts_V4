@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import type { TechniqueSettings } from '@/types/simulation';
+import { serializeJsonValue } from '@/lib/json-value';
 
 interface SimulatorPreferences {
   lastQuantity: number;
@@ -16,7 +17,7 @@ interface SimulatorPreferences {
   lastTechniqueSettings: Record<string, TechniqueSettings>;
   defaultColors: number;
   defaultAreaCm2: number;
-  preferredView: 'cards' | 'table' | 'matrix';
+  preferredView: 'cards' | 'matrix' | 'table';
   autoExpandResults: boolean;
   showUpsellSuggestions: boolean;
 }
@@ -81,10 +82,11 @@ export function useSimulatorPreferences() {
       const { error } = await supabase
         .from('profiles')
         .update({
-          preferences: {
-            ...existingPrefs,
-            simulator: prefs,
-          } as Record<string, unknown>,
+          preferences:
+            serializeJsonValue({
+              ...existingPrefs,
+              simulator: prefs,
+            }) ?? {},
         })
         .eq('user_id', user.id);
 
@@ -185,7 +187,7 @@ export function useSimulatorPreferences() {
   );
 
   const setPreferredView = useCallback(
-    (view: 'cards' | 'table' | 'matrix') => {
+    (view: 'cards' | 'matrix' | 'table') => {
       savePreferences({ preferredView: view });
     },
     [savePreferences],

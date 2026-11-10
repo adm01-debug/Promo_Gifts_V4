@@ -34656,6 +34656,55 @@ export type Database = {
         }
         Relationships: []
       }
+      // Expected contract for the reviewed quote_comments restoration migration; not yet applied live.
+      quote_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_edited: boolean
+          parent_id: string | null
+          quote_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_edited?: boolean
+          parent_id?: string | null
+          quote_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_edited?: boolean
+          parent_id?: string | null
+          quote_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quote_comments_parent_quote_fkey"
+            columns: ["parent_id", "quote_id"]
+            isOneToOne: false
+            referencedRelation: "quote_comments"
+            referencedColumns: ["id", "quote_id"]
+          },
+          {
+            foreignKeyName: "quote_comments_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quote_history: {
         Row: {
           action: string
@@ -42480,12 +42529,14 @@ export type Database = {
         }
         Relationships: []
       }
+      // Expected is_trusted contract for reviewed migration 20261110024530; not yet applied live.
       user_known_devices: {
         Row: {
           created_at: string
           device_name: string | null
           fingerprint: string
           id: string
+          is_trusted: boolean
           last_seen_at: string
           user_id: string
         }
@@ -42494,6 +42545,7 @@ export type Database = {
           device_name?: string | null
           fingerprint: string
           id?: string
+          is_trusted?: boolean
           last_seen_at?: string
           user_id: string
         }
@@ -42502,6 +42554,7 @@ export type Database = {
           device_name?: string | null
           fingerprint?: string
           id?: string
+          is_trusted?: boolean
           last_seen_at?: string
           user_id?: string
         }

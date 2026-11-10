@@ -4,47 +4,51 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Cloud, CloudOff, Check, Loader2, AlertCircle } from 'lucide-react';
+import { Cloud, CloudOff, Check, Loader2, AlertCircle, RotateCcw } from 'lucide-react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 import { logger } from '@/lib/logger';
+import type { QuoteAutoSaveProps, QuoteDraft } from './QuoteAutoSave.types';
+export type { QuoteAutoSaveProps, QuoteDraft } from './QuoteAutoSave.types';
 import {
   QUOTE_AUTOSAVE_STATUS_TEXT,
   QUOTE_AUTOSAVE_ARIA_LABEL,
   type SaveStatus,
 } from './quoteAutoSaveStatus';
 
-interface QuoteDraft {
-  id: string;
-  data: unknown;
-  savedAt: string;
-  version: number;
-}
-
-interface QuoteAutoSaveProps {
-  quoteId?: string;
-  data: unknown;
-  onChange?: (hasUnsavedChanges: boolean) => void;
-  debounceMs?: number;
-  className?: string;
-  /** Timestamp (Date.now()) set by the parent after a successful server save.
-   *  When it changes, the "unsaved changes" baseline is reset so the indicator
-   *  clears without needing to navigate away and back. */
-  serverSavedAt?: number;
-}
-
 const STORAGE_KEY_PREFIX = 'quote_draft_';
 const MAX_VERSIONS = 5;
+
+function isRecoverableDraft(value: unknown, quoteId: string): value is QuoteDraft {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  return (
+    'id' in value &&
+    value.id === quoteId &&
+    'version' in value &&
+    typeof value.version === 'number' &&
+    Number.isSafeInteger(value.version) &&
+    value.version > 0 &&
+    'savedAt' in value &&
+    typeof value.savedAt === 'string' &&
+    Number.isFinite(Date.parse(value.savedAt)) &&
+    'data' in value &&
+    value.data !== null &&
+    typeof value.data === 'object' &&
+    !Array.isArray(value.data)
+  );
+}
 
 export function QuoteAutoSave({
   quoteId,
   data,
   onChange,
+  onRestore,
   debounceMs = 2000,
   className,
   serverSavedAt,
@@ -52,6 +56,13 @@ export function QuoteAutoSave({
   const [status, setStatus] = useState<SaveStatus>('idle');
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [recoverableDraft, setRecoverableDraft] = useState<QuoteDraft | null>(null);
+  const [isRestoring, setIsRestoring] = useState(false);
+  const [restoreError, setRestoreError] = useState<string | null>(null);
+  const restoringRef = useRef<string | null>(null);
+  const restoredDataRef = useRef<Record<string, unknown> | null>(null);
+  const recoveryKeyRef = useRef<string | null>(null);
+  const onRestoreRef = useRef(onRestore);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -62,9 +73,57 @@ export function QuoteAutoSave({
   useEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
+  useEffect(() => {
+    onRestoreRef.current = onRestore;
+  }, [onRestore]);
 
   // Storage key único para este orçamento
   const storageKey = `${STORAGE_KEY_PREFIX}${quoteId || 'new'}`;
+  const restoreEnabled = Boolean(onRestore);
+  useEffect(() => {
+    if (!restoreEnabled || recoveryKeyRef.current === storageKey) return;
+    recoveryKeyRef.current = storageKey;
+    setRecoverableDraft(null);
+    setRestoreError(null);
+    setIsRestoring(false);
+    restoredDataRef.current = null;
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (!stored) return;
+      const candidate: unknown = JSON.parse(stored);
+      if (isRecoverableDraft(candidate, quoteId || 'new')) setRecoverableDraft(candidate);
+    } catch {
+      // Invalid or inaccessible snapshots remain untouched; autosave still works.
+    }
+  }, [quoteId, restoreEnabled, storageKey]);
+
+  const restoreDraft = async () => {
+    const restore = onRestoreRef.current;
+    if (!restore || !recoverableDraft || restoringRef.current === storageKey) return;
+    const key = storageKey;
+    restoringRef.current = key;
+    setIsRestoring(true);
+    setRestoreError(null);
+    try {
+      await restore(recoverableDraft.data);
+      if (mountedRef.current && recoveryKeyRef.current === key) {
+        const savedData = recoverableDraft.data;
+        if (savedData && typeof savedData === 'object' && !Array.isArray(savedData)) {
+          restoredDataRef.current = Object.fromEntries(Object.entries(savedData));
+        }
+        setRecoverableDraft(null);
+      }
+    } catch (error) {
+      if (mountedRef.current && recoveryKeyRef.current === key) {
+        setRestoreError(
+          error instanceof Error ? error.message : 'Não foi possível restaurar o rascunho.',
+        );
+      }
+    } finally {
+      if (restoringRef.current === key) restoringRef.current = null;
+      if (mountedRef.current && recoveryKeyRef.current === key) setIsRestoring(false);
+    }
+  };
 
   // Cleanup timers on unmount
   // BUG-H FIX: clear edit-mode localStorage entries on unmount to prevent orphan accumulation
@@ -154,9 +213,17 @@ export function QuoteAutoSave({
       }
 
       // Criar nova versão
+      const currentData = dataRef.current;
+      const draftData =
+        restoredDataRef.current &&
+        currentData &&
+        typeof currentData === 'object' &&
+        !Array.isArray(currentData)
+          ? { ...restoredDataRef.current, ...currentData }
+          : currentData;
       const newDraft: QuoteDraft = {
         id: quoteId || 'new',
-        data: dataRef.current,
+        data: draftData,
         savedAt: new Date().toISOString(),
         version: Date.now(),
       };
@@ -332,6 +399,29 @@ export function QuoteAutoSave({
               <Badge variant="outline" className="h-5 text-[10px]">
                 {QUOTE_AUTOSAVE_STATUS_TEXT.unsavedBadge}
               </Badge>
+            )}
+            {onRestore &&
+              recoverableDraft &&
+              JSON.stringify(recoverableDraft.data) !== JSON.stringify(data) && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 gap-1 text-xs"
+                  onClick={() => {
+                    void restoreDraft();
+                  }}
+                  disabled={isRestoring}
+                  data-testid="quote-autosave-restore"
+                >
+                  <RotateCcw className="h-3 w-3" />
+                  Restaurar rascunho
+                </Button>
+              )}
+            {restoreError && (
+              <span role="alert" className="text-xs text-destructive">
+                {restoreError}
+              </span>
             )}
           </div>
         </TooltipTrigger>

@@ -398,7 +398,7 @@ export default function Auth() {
                       <Button
                         type="button"
                         data-testid="login-forgot-link"
-                        variant="link-primary"
+                        variant="link"
                         className="h-auto p-0 text-sm"
                         onClick={() => setShowForgotPassword(true)}
                       >

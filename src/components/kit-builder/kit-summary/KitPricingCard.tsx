@@ -1,3 +1,4 @@
+import { hasKnownKitPrices } from '@/lib/kit-builder/pricing-availability';
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -27,6 +28,7 @@ export function KitPricingCard({
   const breakdown = generatePriceBreakdown(box, items, personalization, kitQuantity);
   const [basis, setBasis] = useState<'kit' | 'lote'>('lote');
   const divisor = basis === 'kit' ? kitQuantity || 1 : 1;
+  const pricesKnown = hasKnownKitPrices(kitState);
 
   return (
     <>
@@ -48,7 +50,12 @@ export function KitPricingCard({
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            {breakdown.map((item, index) => (
+            {!pricesKnown && (
+              <p role="status" className="text-sm text-muted-foreground">
+                Não informado — aguarde preços válidos do catálogo.
+              </p>
+            )}
+            {(pricesKnown ? breakdown : []).map((item, index) => (
               <div
                 key={index}
                 className={cn(
@@ -88,7 +95,9 @@ export function KitPricingCard({
               <span>
                 Produtos ({kitQuantity} {kitQuantity === 1 ? 'kit' : 'kits'})
               </span>
-              <span>{formatCurrency(pricing.subtotal / divisor)}</span>
+              <span>
+                {pricesKnown ? formatCurrency(pricing.subtotal / divisor) : 'Não informado'}
+              </span>
             </div>
             {pricing.personalizationPrice > 0 && (
               <div className="flex justify-between text-sm text-primary">
@@ -104,11 +113,11 @@ export function KitPricingCard({
                 {basis === 'kit' ? 'Total por kit' : 'Total do lote'}
               </p>
               <p className="text-sm text-muted-foreground">
-                {formatCurrency(pricing.unitPrice)}/kit
+                {pricesKnown ? formatCurrency(pricing.unitPrice) : 'Não informado'}/kit
               </p>
             </div>
             <p data-testid="kit-summary-total" className="text-2xl font-bold text-primary">
-              {formatCurrency(pricing.total / divisor)}
+              {pricesKnown ? formatCurrency(pricing.total / divisor) : 'Não informado'}
             </p>
           </div>
         </CardContent>
@@ -139,7 +148,7 @@ export function KitPricingCard({
                 >
                   <p className="text-[11px] text-muted-foreground">{qty} kits</p>
                   <p className={cn('text-sm font-bold', isCurrentQty && 'text-primary')}>
-                    {formatCurrency(qtyPricing.unitPrice)}
+                    {pricesKnown ? formatCurrency(qtyPricing.unitPrice) : 'Não informado'}
                   </p>
                   <p className="text-[10px] text-muted-foreground">/kit</p>
                 </button>

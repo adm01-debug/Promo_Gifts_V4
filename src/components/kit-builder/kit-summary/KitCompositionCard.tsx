@@ -1,3 +1,4 @@
+import { formatKitLinePrice } from '@/lib/kit-builder/pricing-availability';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -73,7 +74,7 @@ export function KitCompositionCard({
                 </p>
               </div>
               <div className="flex-shrink-0 text-right">
-                <p className="font-semibold">{formatCurrency(box.price)}</p>
+                <p className="font-semibold">{formatKitLinePrice(box)}</p>
                 <p className="text-xs text-muted-foreground">por kit</p>
               </div>
               {onEditBox && (
@@ -198,9 +199,9 @@ export function KitCompositionCard({
                     </div>
                   </td>
                   <td className="py-2 text-center">{item.quantity}x</td>
-                  <td className="py-2 text-right">{formatCurrency(item.price)}</td>
+                  <td className="py-2 text-right">{formatKitLinePrice(item)}</td>
                   <td className="py-2 text-right font-medium">
-                    {formatCurrency(item.price * item.quantity)}
+                    {formatKitLinePrice(item, item.quantity)}
                   </td>
                 </tr>
               );
@@ -221,8 +222,8 @@ export function KitCompositionCard({
               <tr>
                 <td className="py-2">Caixa — {box.name}</td>
                 <td className="py-2 text-center">1x</td>
-                <td className="py-2 text-right">{formatCurrency(box.price)}</td>
-                <td className="py-2 text-right font-medium">{formatCurrency(box.price)}</td>
+                <td className="py-2 text-right">{formatKitLinePrice(box)}</td>
+                <td className="py-2 text-right font-medium">{formatKitLinePrice(box)}</td>
               </tr>
             )}
           </tbody>

@@ -57,6 +57,7 @@ export default function SimuladorWizard() {
   const location = useLocation();
   const navigate = useNavigate();
   const wizard = useSimulatorWizard();
+  const { selectProduct } = wizard;
   const {
     drafts,
     saveDraft,
@@ -86,14 +87,14 @@ export default function SimuladorWizard() {
         categoryName: preSelectedProduct.categoryName,
       };
 
-      wizard.selectProduct(product);
+      selectProduct(product);
 
       toast.success(`${preSelectedProduct.name} selecionado`, {
         description: 'Continue configurando a personalização',
         duration: 3000,
       });
     }
-  }, [location.state, wizard.selectProduct]);
+  }, [location.state, selectProduct]);
 
   const isInPersonalizationFlow =
     wizard.selectedProduct !== null && wizard.currentStep !== 'product';

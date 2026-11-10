@@ -10,8 +10,9 @@ import { useLocation } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useBadgeVisibilityStore } from '@/stores/useBadgeVisibilityStore';
 import type { IntelligenceBadge } from '@/hooks/products';
+import type { IntelligenceBadge as LegacyIntelligenceBadge } from '@/hooks/useProductIntelligenceBadges';
 
-type IntelligenceBadgeType = IntelligenceBadge['type'];
+type IntelligenceBadgeType = IntelligenceBadge['type'] | LegacyIntelligenceBadge['type'];
 
 const badgeConfig: Record<
   IntelligenceBadgeType,
@@ -60,10 +61,27 @@ const badgeConfig: Record<
     icon: Tag,
     colors: 'bg-primary/15 text-primary border-primary/30',
   },
+  emergente: {
+    icon: Rocket,
+    colors: 'bg-primary/15 text-primary border-primary/30',
+    animation: 'animate-pulse',
+  },
+  normal: {
+    icon: Tag,
+    colors: 'bg-muted text-muted-foreground border-border',
+  },
+  'on-sale': {
+    icon: Tag,
+    colors: 'bg-primary/15 text-primary border-primary/30',
+  },
+  popular: {
+    icon: Star,
+    colors: 'bg-primary/15 text-primary border-primary/30',
+  },
 };
 
 interface IntelligenceBadgesProps {
-  badges: IntelligenceBadge[];
+  badges: Array<IntelligenceBadge | LegacyIntelligenceBadge>;
   turnoverScore?: number | null;
   isDemo?: boolean;
   className?: string;
@@ -96,6 +114,8 @@ export function IntelligenceBadges({
       {badges.map((badge) => {
         const config = badgeConfig[badge.type];
         const Icon = config.icon;
+        const icon = 'emoji' in badge ? badge.emoji : badge.icon;
+        const description = 'tooltip' in badge ? badge.tooltip : badge.description;
 
         return (
           <Tooltip key={badge.type}>
@@ -110,7 +130,7 @@ export function IntelligenceBadges({
                   )}
                 >
                   <Icon className="h-3.5 w-3.5" />
-                  {badge.icon} {badge.label}
+                  {icon} {badge.label}
                 </Badge>
               </div>
             </TooltipTrigger>
@@ -120,12 +140,11 @@ export function IntelligenceBadges({
               data-testid={`intelligence-badge-${badge.type}-tooltip`}
             >
               <p className="font-medium">{badge.label}</p>
-              {badge.description ? (
-                <p className="mt-1 text-xs text-muted-foreground">{badge.description}</p>
+              {description ? (
+                <p className="mt-1 text-xs text-muted-foreground">{description}</p>
               ) : null}
             </TooltipContent>
           </Tooltip>
-
         );
       })}
 

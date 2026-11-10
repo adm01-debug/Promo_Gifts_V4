@@ -57,7 +57,7 @@ export default function CollectionsPage() {
     selectedCollectionIds, hintDismissed, setHintDismissed,
     formData, setFormData, isSelectionMode,
     toggleSelectCollection, selectAllLocal, clearSelection,
-    handleCreate, handleUpdate, handleDelete, handleClone, openEdit,
+    createCollection, handleCreate, handleUpdate, handleDelete, handleClone, openEdit,
     handleSendSelectedToQuote, resetForm, updateCollection,
     selectedSummary, totalProducts, totalCollections,
     gridClasses, filteredExternal, filteredLocal, navigate,
@@ -298,7 +298,7 @@ export default function CollectionsPage() {
                   productCounts={externalProductCounts}
                   onNavigate={(id) => navigate(`/colecoes/${id}`)}
                   onDuplicate={(col) => {
-                    createCollection(col.name, col.description || undefined, col.color || defaultColors[0], col.icon || defaultIcons[0]);
+                    createCollection(col.name, col.description || undefined, ('color' in col && typeof col.color === 'string' ? col.color : defaultColors[0]), col.icon || defaultIcons[0]);
                   }}
                 />
               ) : (
@@ -311,7 +311,7 @@ export default function CollectionsPage() {
                       viewMode={viewMode === "list" ? "list" : "grid"}
                       onNavigate={() => navigate(`/colecoes/${collection.id}`)}
                       onDuplicate={() => {
-                        createCollection(collection.name, collection.description || undefined, collection.color || defaultColors[0], collection.icon || defaultIcons[0]);
+                        createCollection(collection.name, collection.description || undefined, ('color' in collection && typeof collection.color === 'string' ? collection.color : defaultColors[0]), collection.icon || defaultIcons[0]);
                       }}
                       index={idx}
                     />

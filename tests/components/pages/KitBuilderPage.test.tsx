@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import type React from "react";
+import { MemoryRouter } from "react-router-dom";
 
 vi.mock("@/components/seo/PageSEO", () => ({
   PageSEO: () => null,
@@ -124,7 +125,6 @@ function makeState(currentStep: string, overrides: Record<string, unknown> = {})
       consumeUnloadBackup: vi.fn().mockReturnValue(null),
       canUndo: false,
       canRedo: false,
-      consumeUnloadBackup: vi.fn().mockReturnValue(null),
     },
     meta: {
       isSaving: false,
@@ -225,5 +225,56 @@ describe("KitBuilderPage", () => {
     render(<KitBuilderPage />);
 
     expect(screen.getByTestId("kit-summary")).toBeInTheDocument();
+  });
+  it('preserva a tela existente para quantidade já verificada', async () => {
+    mockUseKitBuilderPageState.mockReturnValue(makeState('summary'));
+    const view = render(<KitBuilderPage />);
+    await screen.findByTestId('kit-summary');
+    const originalMarkup = view.container.innerHTML;
+    mockUseKitBuilderPageState.mockReturnValue(
+      makeState('summary', {
+        quantityNeedsConfirmation: false,
+        isHydrating: false,
+        hydrationError: null,
+      }),
+    );
+    view.rerender(<KitBuilderPage />);
+    expect(view.container.innerHTML).toBe(originalMarkup);
+    expect(screen.queryByText(/Quantidade não informada/)).not.toBeInTheDocument();
+  });
+
+  it('pede confirmação explícita do preset para quantidade histórica ausente sem chamar salvar', () => {
+    const model = makeState('summary', { quantityNeedsConfirmation: true, kitQuantity: 1 });
+    mockUseKitBuilderPageState.mockReturnValue(model);
+    render(<KitBuilderPage />);
+    expect(screen.getByRole('alert')).toHaveTextContent('Quantidade não informada');
+    expect(model.actions.setKitQuantity).not.toHaveBeenCalled();
+    expect(model.actions.handleSaveKit).not.toHaveBeenCalled();
+    screen.getByRole('button', { name: 'Confirmar 1 kit' }).click();
+    expect(model.actions.setKitQuantity).toHaveBeenCalledExactlyOnceWith(1);
+    expect(model.actions.handleSaveKit).not.toHaveBeenCalled();
+  });
+
+  it('bloqueia a edição durante a hidratação do snapshot', () => {
+    mockUseKitBuilderPageState.mockReturnValue(makeState('summary', { isHydrating: true }));
+    render(<KitBuilderPage />);
+    expect(screen.getByRole('status')).toHaveTextContent('Carregando kit salvo');
+    expect(screen.queryByTestId('kit-builder-header')).not.toBeInTheDocument();
+  });
+
+  it('mantém o erro original e a biblioteca acessível sem regravar rascunho inválido', () => {
+    const model = makeState('summary', { hydrationError: 'Snapshot histórico incompatível' });
+    mockUseKitBuilderPageState.mockReturnValue(model);
+    render(
+      <MemoryRouter>
+        <KitBuilderPage />
+      </MemoryRouter>,
+    );
+    expect(screen.getByRole('alert')).toHaveTextContent('Snapshot histórico incompatível');
+    expect(screen.getByRole('link', { name: 'Voltar à biblioteca de kits' })).toHaveAttribute(
+      'href',
+      '/meus-kits',
+    );
+    expect(model.actions.handleSaveKit).not.toHaveBeenCalled();
   });
 });

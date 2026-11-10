@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { useDevGate } from '@/hooks/useDevGate';
 import { useBridgeStatusBanner } from '@/hooks/useBridgeStatusBanner';
 
-export const BridgeStatusBanner = memo(function BridgeStatusBanner() {
+function BridgeStatusBanner() {
   const { isAllowed } = useDevGate();
   const { unavailable, reason, closeUnavailable, reload } = useBridgeStatusBanner(isAllowed);
 
@@ -60,4 +60,7 @@ export const BridgeStatusBanner = memo(function BridgeStatusBanner() {
       </div>
     </div>
   );
-});
+}
+
+const MemoizedBridgeStatusBanner = memo(BridgeStatusBanner);
+export { MemoizedBridgeStatusBanner as BridgeStatusBanner };

@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { logger } from "@/lib/logger";
+import { normalizeBitrixQuoteId } from "./quoteBitrixId";
 
 export function formatCurrency(value: number): string {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -63,9 +64,14 @@ export async function handleSyncBitrix(params: {
   userEmail: string | undefined;
   logQuoteHistory: (qId: string, action: string, desc: string, meta?: Record<string, unknown>) => Promise<void>;
   setQuote: React.Dispatch<React.SetStateAction<Quote | null>>;
-  selectCrmById: <T>(table: string, id: string) => Promise<T>;
+  selectCrmById: <T>(table: string, id: string) => Promise<T | null>;
 }): Promise<void> {
   const { quote, proposalData, logQuoteHistory, setQuote, userEmail, selectCrmById } = params;
+  const quoteId = quote.id;
+  if (!quoteId) {
+    toast.error("Salve o orçamento antes de sincronizar com o Bitrix24");
+    return;
+  }
 
   let effectiveBitrixCompanyId = params.bitrixCompanyId;
   if (!effectiveBitrixCompanyId && quote.client_id) {
@@ -94,15 +100,15 @@ export async function handleSyncBitrix(params: {
     toast.warning(`${itemsSemBitrixId.length} produto(s) excluído(s) da sincronização`, { description: `Sem ID Bitrix24: ${nomes}`, duration: 7000 });
   }
 
-  logQuoteHistory(quote.id, "sync_started", "Sincronização com Bitrix24 iniciada").catch(() => {});
+  logQuoteHistory(quoteId, "sync_started", "Sincronização com Bitrix24 iniciada").catch(() => {});
 
   // Generate and upload PDF
   let pdfStorageUrl: string | undefined;
   let filename: string | undefined;
   try {
     const blob = await generateProposalPDFv2(proposalData, { isDraft: quote.status === "draft" });
-    filename = `proposta-${(quote.quote_number || quote.id).replace(/\s+/g, "")}.pdf`;
-    const storagePath = `quotes/${quote.id}/${filename}`;
+    filename = `proposta-${(quote.quote_number || quoteId).replace(/\s+/g, "")}.pdf`;
+    const storagePath = `quotes/${quoteId}/${filename}`;
     const { error: uploadError } = await supabase.storage
       .from("art-files")
       .upload(storagePath, blob, { contentType: "application/pdf", upsert: true });
@@ -122,19 +128,18 @@ export async function handleSyncBitrix(params: {
     },
   });
 
-  if (error || !data?.success) throw new Error(data?.error || error?.message || "Erro desconhecido");
+  if (error || !(data?.ok === true || data?.success === true)) throw new Error(data?.error || error?.message || "Erro desconhecido");
 
   const result = data.result;
-  const parsedBitrixId = result?.quote_id ? Number(result.quote_id) : null;
-  const bitrixQuoteIdFromResponse = parsedBitrixId && !isNaN(parsedBitrixId) ? parsedBitrixId : null;
+  const bitrixQuoteIdFromResponse = normalizeBitrixQuoteId(result?.quote_id);
 
-  const crmUpdates: Record<string, unknown> = { status: "sent" };
+  const crmUpdates: Pick<Quote, 'bitrix_quote_id' | 'status'> = { status: "sent" };
   if (bitrixQuoteIdFromResponse) crmUpdates.bitrix_quote_id = bitrixQuoteIdFromResponse;
 
   // rls-allow: update por id; RLS valida ownership
-  try { await supabase.from("quotes").update(crmUpdates).eq("id", quote.id); } catch { /* ignore */ }
+  try { await supabase.from("quotes").update(crmUpdates).eq("id", quoteId); } catch { /* ignore */ }
 
-  await logQuoteHistory(quote.id, "sync_success",
+  await logQuoteHistory(quoteId, "sync_success",
     `Sincronizado com Bitrix24${bitrixQuoteIdFromResponse ? ` — ID Bitrix: ${bitrixQuoteIdFromResponse}` : ""}`,
     { newValue: bitrixQuoteIdFromResponse ? String(bitrixQuoteIdFromResponse) : undefined }
   );

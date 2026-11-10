@@ -1,7 +1,8 @@
+import type { DateRange, ProductView, SearchRow, AggregatedProduct, AggregatedSearch } from './trends/TrendsPage.types';
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { untypedFrom } from '@/lib/supabase-untyped';
+import { supabase } from '@/integrations/supabase/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
@@ -42,44 +43,7 @@ import {
 } from './trends/trends-mock';
 import { Badge } from '@/components/ui/badge';
 
-type DateRange = '7d' | '30d' | '90d';
-
 const RANGE_TO_DAYS: Record<DateRange, number> = { '7d': 7, '30d': 30, '90d': 90 };
-
-interface ProductView {
-  product_id: string | null;
-  product_name: string | null;
-  product_sku: string | null;
-  view_type: string | null;
-  created_at: string;
-}
-
-interface SearchRow {
-  search_term: string;
-  results_count: number;
-  created_at: string;
-}
-
-interface AggregatedProduct {
-  id: string;
-  name: string;
-  sku?: string;
-  views: number;
-  details: number;
-  compares: number;
-  favorites: number;
-  recentViews: number;
-  baselineViews: number;
-  trendingScore: number;
-  classification: 'rising' | 'stable' | 'falling' | 'new';
-}
-
-interface AggregatedSearch {
-  term: string;
-  count: number;
-  totalResults: number;
-  avgResults: number;
-}
 
 export default function TrendsPage() {
   const { user, canManage } = useAuth();
@@ -114,7 +78,7 @@ export default function TrendsPage() {
   } = useQuery({
     queryKey: ['trends-products', dateRange, scopeKey],
     queryFn: async (): Promise<AggregatedProduct[]> => {
-      let q = untypedFrom('product_views')
+      let q = supabase.from('product_views')
         .select('product_id, product_name, product_sku, view_type, created_at, seller_id')
         .gte('created_at', sincePrevious)
         .order('created_at', { ascending: false });
@@ -189,7 +153,7 @@ export default function TrendsPage() {
   } = useQuery({
     queryKey: ['trends-searches', dateRange, scopeKey],
     queryFn: async () => {
-      let q = untypedFrom('search_analytics')
+      let q = supabase.from('search_analytics')
         .select('search_term, results_count, created_at, seller_id')
         .gte('created_at', sincePrevious)
         .order('created_at', { ascending: false });
@@ -237,8 +201,8 @@ export default function TrendsPage() {
   const { data: dailyData, isLoading: loadingDaily } = useQuery({
     queryKey: ['trends-daily', dateRange, scopeKey],
     queryFn: async () => {
-      const buildQ = (table: string, since: string) => {
-        let q = untypedFrom(table).select('created_at, seller_id').gte('created_at', since);
+      const buildQ = (table: 'product_views' | 'search_analytics', since: string) => {
+        let q = supabase.from(table).select('created_at, seller_id').gte('created_at', since);
         if (sellerScope) q = q.eq('seller_id', sellerScope);
         return q;
       };
@@ -246,7 +210,8 @@ export default function TrendsPage() {
         buildQ('product_views', sincePrevious),
         buildQ('search_analytics', sincePrevious),
       ]);
-      if (ve || se) throw ve || se;
+      if (ve) throw ve;
+      if (se) throw se;
 
       // Buckets atual + anterior (mesmo número de dias)
       const cur = new Map<string, { date: string; views: number; searches: number }>();
@@ -298,18 +263,22 @@ export default function TrendsPage() {
   const { data: kpiSnapshot } = useQuery({
     queryKey: ['trends-kpi-snapshot', dateRange, scopeKey],
     queryFn: async () => {
-      const buildQ = (table: string, fields: string) => {
-        let q = untypedFrom(table).select(fields).gte('created_at', sincePrevious);
-        if (sellerScope) q = q.eq('seller_id', sellerScope);
-        return q;
-      };
-      const [{ data: vAll }, { data: sAll }] = await Promise.all([
-        buildQ('product_views', 'product_id, product_name, created_at, seller_id'),
-        buildQ('search_analytics', 'search_term, created_at, seller_id'),
+      let viewsQuery = supabase.from('product_views')
+        .select('product_id, product_name, created_at, seller_id').gte('created_at', sincePrevious);
+      let searchesQuery = supabase.from('search_analytics')
+        .select('search_term, created_at, seller_id').gte('created_at', sincePrevious);
+      if (sellerScope) {
+        viewsQuery = viewsQuery.eq('seller_id', sellerScope);
+        searchesQuery = searchesQuery.eq('seller_id', sellerScope);
+      }
+      const [{ data: vAll, error: viewsError }, { data: sAll, error: searchesError }] = await Promise.all([
+        viewsQuery, searchesQuery,
       ]);
-      const split = (
-        rows: Array<{ created_at: string }>,
-        keyFn: (r: Record<string, unknown>) => string | null,
+      if (viewsError) throw viewsError;
+      if (searchesError) throw searchesError;
+      const split = <Row extends { created_at: string }>(
+        rows: Row[],
+        keyFn: (row: Row) => string | null,
       ) => {
         let curTotal = 0,
           prevTotal = 0;

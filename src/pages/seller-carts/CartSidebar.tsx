@@ -5,7 +5,8 @@
  * 3) Mais ações (DropdownMenu) + Health Checklist + Outros carrinhos
  */
 import { useState } from "react";
-import { type SellerCart } from "@/hooks/useSellerCarts";
+import { type SellerCart } from "@/hooks/products";
+import { isSuggestionProduct, SmartSuggestions, ActionHistoryPanel } from "@/components/cart/LegacyCartInsights";
 import { type CartTemplateItem } from "@/hooks/useCartTemplates";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +18,7 @@ import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  formatCurrency, getStatusCfg, SmartSuggestions, ActionHistoryPanel,
+  formatCurrency, getStatusCfg,
 } from "@/components/cart/CartUtilComponents";
 import { CartHealthChecklist } from "@/components/cart/CartHealthChecklist";
 import { CartActionsMenu } from "@/components/cart/CartActionsMenu";
@@ -155,7 +156,7 @@ export function CartSidebar({
         <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
           <Sparkles className="h-3.5 w-3.5 text-warning fill-warning/20" /> Inteligência de Vendas
         </h4>
-        <SmartSuggestions cart={cart} allProducts={allProducts} isLoading={isLoadingProducts} />
+        <SmartSuggestions cart={cart} allProducts={allProducts.filter(isSuggestionProduct)} isLoading={isLoadingProducts} />
         <ActionHistoryPanel cartId={cart.id} />
         {cartAge >= 3 && (
           <p className="text-[10px] text-warning bg-warning/5 rounded-lg px-2.5 py-1.5 border border-warning/10">

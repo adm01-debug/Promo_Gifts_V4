@@ -58,7 +58,7 @@ function cacheKey(client: ClientProfile, products: ProductForRecommendation[]): 
 }
 
 /** Delay com promise */
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = (ms: number) => new Promise((resolve) => { setTimeout(resolve, ms); });
 
 /** Verifica se o erro é retentável (5xx) */
 function isRetryable(status: number): boolean {
@@ -121,7 +121,7 @@ export function useAIRecommendations() {
           }
 
           if (attempt > 0) {
-            await delay(INITIAL_BACKOFF_MS * Math.pow(2, attempt - 1));
+            await delay(INITIAL_BACKOFF_MS * (2 ** (attempt - 1)));
           }
 
           try {

@@ -69,6 +69,7 @@ function scrollToStep(step: number, highlight = false): void {
 
 export default function MockupGenerator() {
   const mg = useMockupGenerator();
+  const { getProductImage, setLastSavedRecordId, setLastSavedMockupUrl, fetchHistory } = mg;
   const { profile } = useAuth();
   const user = mg.user;
   const { getProductById } = useProductsContext();
@@ -131,7 +132,7 @@ export default function MockupGenerator() {
       product: {
         name: mg.selectedProduct.name,
         sku: mg.selectedProduct.sku,
-        imageUrl: mg.getProductImage() || undefined,
+        imageUrl: getProductImage() || undefined,
         color: mg.productSelection?.colorName,
         colorHex: mg.productSelection?.colorHex,
         material: mg.selectedProduct.materials?.[0],
@@ -159,13 +160,13 @@ export default function MockupGenerator() {
     };
 
     return { data: approvalData, recordId: mg.lastSavedRecordId, userId: user.id };
-  }, [mg.lastSavedRecordId, mg.lastSavedMockupUrl, mg.lastSavedLayoutMode, user?.id, mg.selectedProduct, mg.selectedTechnique, mg.selectedClient, mg.activeArea?.logoWidth, mg.activeArea?.logoHeight, mg.activeArea?.name, mg.generatedMockup, profile, mg.techniqueColorConfig?.colorCount, mg.logoColorAnalysis.colors, mg.productSelection?.colorName, mg.productSelection?.colorHex, mg.getProductImage]);
+  }, [mg.lastSavedRecordId, mg.lastSavedMockupUrl, mg.lastSavedLayoutMode, user?.id, mg.selectedProduct, mg.selectedTechnique, mg.selectedClient, mg.activeArea?.logoWidth, mg.activeArea?.logoHeight, mg.activeArea?.name, mg.generatedMockup, profile, mg.techniqueColorConfig?.colorCount, mg.logoColorAnalysis.colors, mg.productSelection?.colorName, mg.productSelection?.colorHex, getProductImage]);
 
   const handleLayoutCaptured = useCallback(() => {
-    mg.setLastSavedRecordId(null);
-    mg.setLastSavedMockupUrl(null);
-    mg.fetchHistory();
-  }, [mg.setLastSavedRecordId, mg.setLastSavedMockupUrl, mg.fetchHistory]);
+    setLastSavedRecordId(null);
+    setLastSavedMockupUrl(null);
+    fetchHistory();
+  }, [setLastSavedRecordId, setLastSavedMockupUrl, fetchHistory]);
 
   return (
     <MainLayout>
@@ -298,7 +299,7 @@ export default function MockupGenerator() {
                    artAttachments={mg.artAttachments}
                    onArtAttachmentsChange={mg.setArtAttachments}
                    userId={user?.id}
-                 />
+                />
 
                 <div className="space-y-4 lg:sticky lg:top-24 lg:self-start transition-all duration-300">
                   {mg.selectedProduct && mg.getProductImage() && mg.activeArea ? (
@@ -414,7 +415,8 @@ export default function MockupGenerator() {
                     if (suggestion.position) {
                       mg.updateActiveArea({ positionX: suggestion.position.x, positionY: suggestion.position.y });
                     }
-                  }} />
+                  }}
+                  />
                 </div>
               </div>
             </Suspense>

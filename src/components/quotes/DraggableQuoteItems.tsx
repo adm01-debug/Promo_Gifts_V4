@@ -28,7 +28,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { PriceFreshnessBadge } from "@/components/products/PriceFreshnessBadge";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -101,7 +100,7 @@ function SortableItem({
 
   const hasPersonalizations = item.personalizations && item.personalizations.length > 0;
   const personalizationTotal = (item.personalizations || []).reduce(
-    (sum, p) => sum + (p.total_cost || 0),
+    (sum, p) => sum + (typeof p.total_cost === "number" && Number.isFinite(p.total_cost) ? p.total_cost : 0),
     0
   );
   const itemTotal = item.quantity * item.unit_price + personalizationTotal;
@@ -129,7 +128,8 @@ function SortableItem({
         <div className={cn(
           "p-4 bg-card z-10",
           isExpanded && "sticky top-0 border-b border-border/50 shadow-sm"
-        )}>
+        )}
+        >
           <div className="flex items-start gap-3">
             {/* Drag Handle */}
             <button
@@ -151,7 +151,8 @@ function SortableItem({
                 <img
                   src={item.product_image_url}
                   alt={item.product_name}
-                  className="w-full h-full object-cover" loading="lazy" />
+                  className="w-full h-full object-cover" loading="lazy"
+                />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <Package className="h-6 w-6 text-muted-foreground" />
@@ -198,7 +199,8 @@ function SortableItem({
                   size="icon"
                   className="h-8 w-8 shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10"
                   onClick={onRemove}
-                 aria-label="Excluir"><Trash2 className="h-4 w-4" />
+                 aria-label="Excluir"
+                ><Trash2 className="h-4 w-4" />
                 </Button>
               </div>
 
@@ -381,7 +383,8 @@ export function DraggableQuoteItems({
                     <img
                       src={activeItem.product_image_url}
                       alt={activeItem.product_name}
-                      className="w-full h-full object-cover rounded-lg" loading="lazy" />
+                      className="w-full h-full object-cover rounded-lg" loading="lazy"
+                    />
                   ) : (
                     <Package className="h-5 w-5 text-muted-foreground" />
                   )}

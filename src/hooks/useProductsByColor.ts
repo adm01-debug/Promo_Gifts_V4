@@ -37,17 +37,25 @@ export function useProductsByColor({
   );
 
   const filterKey = useMemo(() =>
-    [...colorGroups].sort().join(',') + '|' +
-    [...colorVariations].sort().join(',') + '|' +
-    [...colorNuances].sort().join(',') + '|' +
-    [...colors].sort().join(','),
+    `${[...colorGroups].sort().join(',')}|${[...colorVariations].sort().join(',')}|${[...colorNuances].sort().join(',')}|${[...colors].sort().join(',')}`,
     [colorGroups, colorVariations, colorNuances, colors]
   );
+
+  const selectedFiltersRef = useRef({ colorGroups, colorVariations, colorNuances, colors });
+  useEffect(() => {
+    selectedFiltersRef.current = { colorGroups, colorVariations, colorNuances, colors };
+  }, [colorGroups, colorVariations, colorNuances, colors]);
 
   const lastFetchedKey = useRef('');
   const isFetchingRef = useRef(false);
 
   const fetchProductIds = useCallback(async () => {
+    const {
+      colorGroups: selectedGroups,
+      colorVariations: selectedVariations,
+      colorNuances: selectedNuances,
+      colors: selectedColors,
+    } = selectedFiltersRef.current;
     if (isFetchingRef.current) return;
     if (lastFetchedKey.current === filterKey) return;
 
@@ -96,13 +104,13 @@ export function useProductsByColor({
       const targetColorIds = new Set<string>();
 
       // From colorVariations (slug -> variation id)
-      for (const slug of colorVariations) {
+      for (const slug of selectedVariations) {
         const variation = variationsBySlug.get(slug);
-        if (variation) targetColorIds.add(variation.id);
+        if (typeof variation?.id === 'string') targetColorIds.add(variation.id);
       }
 
       // From colorGroups (slug -> group id -> all variations in that group)
-      for (const slug of colorGroups) {
+      for (const slug of selectedGroups) {
         const groupId = groupsBySlug.get(slug);
         if (groupId) {
           for (const v of variationsData) {
@@ -114,7 +122,7 @@ export function useProductsByColor({
       }
 
       // From legacy color names: match variation names
-      for (const colorName of colors) {
+      for (const colorName of selectedColors) {
         const lower = colorName.toLowerCase();
         for (const v of variationsData) {
           if (((v as Record<string, unknown>).name as string)?.toLowerCase() === lower) {
@@ -123,7 +131,7 @@ export function useProductsByColor({
         }
       }
 
-      if (targetColorIds.size === 0 && colorNuances.length === 0) {
+      if (targetColorIds.size === 0 && selectedNuances.length === 0) {
         // No matching color_ids found — no products match
         setProductIds(new Set());
         lastFetchedKey.current = filterKey;

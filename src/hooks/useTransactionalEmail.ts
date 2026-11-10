@@ -4,10 +4,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export type EmailEventType =
-  | "quote_sent"
-  | "quote_approved"
-  | "quote_rejected"
-  | "order_created";
+  "order_created" | "quote_approved" | "quote_rejected" | "quote_sent";
 
 interface SendEmailParams {
   event_type: EmailEventType;

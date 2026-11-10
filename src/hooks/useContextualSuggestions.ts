@@ -4,14 +4,14 @@ import { useLocation } from 'react-router-dom';
 export interface ContextualSuggestion {
   id: string;
   text: string;
-  type: 'filter' | 'navigation' | 'action' | 'search';
+  type: 'action' | 'filter' | 'navigation' | 'search';
   icon: string;
   priority: number;
 }
 
 interface RouteContext {
   route: string;
-  section: 'products' | 'quotes' | 'orders' | 'clients' | 'collections' | 'admin' | 'other';
+  section: 'admin' | 'clients' | 'collections' | 'orders' | 'other' | 'products' | 'quotes';
   entityId?: string;
 }
 
@@ -201,7 +201,7 @@ export const useContextualSuggestions = (options: UseContextualSuggestionsOption
     let entityId: string | undefined;
 
     for (const [pattern, sectionType] of Object.entries(ROUTE_PATTERNS)) {
-      if (pathname === pattern || pathname.startsWith(pattern + '/')) {
+      if (pathname === pattern || pathname.startsWith(`${pattern}/`)) {
         section = sectionType;
         // Extract entity ID if present
         const parts = pathname.split('/');
@@ -253,7 +253,7 @@ export const useContextualSuggestions = (options: UseContextualSuggestionsOption
       .filter(s => s.text.toLowerCase().includes(normalizedQuery))
       .sort((a, b) => {
         // Prioritize starts-with matches
-        const aStartsWith = s => s.text.toLowerCase().startsWith(normalizedQuery);
+        const aStartsWith = (s: ContextualSuggestion) => s.text.toLowerCase().startsWith(normalizedQuery);
         if (aStartsWith(a) && !aStartsWith(b)) return -1;
         if (!aStartsWith(a) && aStartsWith(b)) return 1;
         return b.priority - a.priority;

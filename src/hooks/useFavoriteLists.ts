@@ -117,7 +117,7 @@ export function useFavoriteLists() {
   });
 
   const updateList = useMutation({
-    mutationFn: async ({ id, ...patch }: Partial<FavoriteList> & { id: string }) => {
+    mutationFn: async ({ id, item_count: _derivedCount, ...patch }: Partial<FavoriteList> & { id: string }) => {
       const { data, error } = await supabase
         .from('favorite_lists')
         .update(patch)

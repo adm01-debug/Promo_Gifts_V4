@@ -38,6 +38,8 @@ export interface QuoteTemplate {
   is_default: boolean;
   template_data: Record<string, unknown>;
   items: QuoteTemplateItem[];
+  raw_items?: QuoteTemplateRow['items'];
+  raw_template_data?: QuoteTemplateRow['template_data'];
   discount_percent: number;
   discount_amount: number;
   notes?: string;
@@ -63,9 +65,13 @@ export interface CreateTemplateInput {
   validity_days?: number;
 }
 
+const templateSourceRows = new WeakMap<QuoteTemplate, QuoteTemplateRow>();
+
 function transformTemplates(data: QuoteTemplateRow[]): QuoteTemplate[] {
-  return (data || []).map((item) => ({
+  const templates = (data || []).map((item) => ({
     ...item,
+    raw_items: item.items,
+    raw_template_data: item.template_data,
     is_default: item.is_default ?? false,
     items: Array.isArray(item.items) ? (item.items as unknown as QuoteTemplateItem[]) : [],
     template_data:
@@ -76,6 +82,26 @@ function transformTemplates(data: QuoteTemplateRow[]): QuoteTemplate[] {
     discount_amount: item.discount_amount ?? 0,
     validity_days: item.validity_days ?? 30,
   })) as unknown as QuoteTemplate[];
+  templates.forEach((template, index) => {
+    const source = data[index];
+    if (source) templateSourceRows.set(template, source);
+  });
+  return templates;
+}
+
+function templateCopyPayload(
+  template: QuoteTemplate,
+  creatorId: string,
+  sellerId: string,
+  name: string,
+): TablesInsert<'quote_templates'> {
+  const source = templateSourceRows.get(template);
+  if (!source) throw new Error('Dados originais do template indisponíveis. Recarregue antes de copiar.');
+  const {
+    id: _id, created_by: _createdBy, created_at: _createdAt, updated_at: _updatedAt,
+    seller_id: _sellerId, name: _name, is_default: _isDefault, ...data
+  } = source;
+  return { ...structuredClone(data), created_by: creatorId, seller_id: sellerId, name, is_default: false };
 }
 
 // ============================================
@@ -193,6 +219,7 @@ export function useQuoteTemplates() {
 
         const insertPayload: TablesInsert<'quote_templates'> = {
           seller_id: user.id,
+          created_by: user.id,
           name: input.name,
           description: input.description || null,
           is_default: input.is_default || false,
@@ -213,6 +240,7 @@ export function useQuoteTemplates() {
           .select('*');
 
         if (insErr) throw new Error(insErr.message);
+        if (!inserted?.[0]) throw new Error('O banco não confirmou a gravação do template.');
 
         toast({
           title: 'Template criado',
@@ -262,6 +290,7 @@ export function useQuoteTemplates() {
           .select('*');
 
         if (updErr) throw new Error(updErr.message);
+        if (!result?.[0]) throw new Error('Nenhum template foi atualizado. Verifique sua permissão de edição.');
 
         toast({ title: 'Template atualizado', description: 'Alterações salvas com sucesso' });
         await fetchTemplates();
@@ -284,8 +313,9 @@ export function useQuoteTemplates() {
       if (!user) return false;
 
       try {
-        const { error: delErr } = await supabase.from('quote_templates').delete().eq('id', id);
+        const { data: deleted, error: delErr } = await supabase.from('quote_templates').delete().eq('id', id).select('id');
         if (delErr) throw new Error(delErr.message);
+        if (!deleted?.length) throw new Error('Nenhum template foi excluído. Verifique sua permissão de exclusão.');
 
         toast({ title: 'Template excluído', description: 'Template removido com sucesso' });
         await fetchTemplates();
@@ -314,22 +344,27 @@ export function useQuoteTemplates() {
     async (id: string) => {
       const template = templates.find((t) => t.id === id);
       if (!template) return null;
-
-      return createTemplate({
-        name: `${template.name} (Cópia)`,
-        description: template.description,
-        is_default: false,
-        items: template.items,
-        discount_percent: template.discount_percent,
-        discount_amount: template.discount_amount,
-        notes: template.notes,
-        internal_notes: template.internal_notes,
-        payment_terms: template.payment_terms,
-        delivery_time: template.delivery_time,
-        validity_days: template.validity_days,
-      });
+      if (!user) {
+        toast({ title: 'Erro', description: 'Você precisa estar logado para criar templates', variant: 'destructive' });
+        return null;
+      }
+      const name = `${template.name} (Cópia)`;
+      try {
+        const insertPayload = templateCopyPayload(template, user.id, user.id, name);
+        const { data: inserted, error: insErr } = await supabase
+          .from('quote_templates').insert(insertPayload).select('*');
+        if (insErr) throw new Error(insErr.message);
+        if (!inserted?.[0]) throw new Error('O banco não confirmou a gravação do template.');
+        toast({ title: 'Template criado', description: `Template "${name}" salvo com sucesso` });
+        await fetchTemplates();
+        return inserted?.[0] || null;
+      } catch (err) {
+        logger.error('Error creating quote template:', err);
+        toast({ title: 'Erro', description: 'Não foi possível criar o template', variant: 'destructive' });
+        return null;
+      }
     },
-    [templates, createTemplate],
+    [templates, user, toast, fetchTemplates],
   );
 
   const cloneTemplateToSeller = useCallback(
@@ -350,21 +385,11 @@ export function useQuoteTemplates() {
       }
 
       try {
-        const insertPayload: TablesInsert<'quote_templates'> = {
-          seller_id: targetSellerId,
-          name: `${template.name} (Clonado)`,
-          description: template.description || null,
-          is_default: false,
-          items: structuredClone(template.items ?? []) as unknown as Json,
-          template_data: structuredClone(template.template_data ?? {}) as unknown as Json,
-          discount_percent: template.discount_percent || 0,
-          discount_amount: template.discount_amount || 0,
-          notes: template.notes || null,
-          internal_notes: template.internal_notes || null,
-          payment_terms: template.payment_terms || null,
-          delivery_time: template.delivery_time || null,
-          validity_days: template.validity_days || 30,
-        };
+        const insertPayload = templateCopyPayload(template, user.id, targetSellerId, `${template.name} (Clonado)`);
+        if (targetSellerId !== user.id && insertPayload.is_active !== true) {
+          toast({ title: 'O vendedor não terá acesso à cópia', description: 'O template não está ativo. A política atual permite que somente o autor veja essa cópia. Nenhuma cópia foi criada.', variant: 'destructive' });
+          return null;
+        }
 
         const { data: inserted, error: insErr } = await supabase
           .from('quote_templates')
@@ -372,6 +397,7 @@ export function useQuoteTemplates() {
           .select('*');
 
         if (insErr) throw new Error(insErr.message);
+        if (!inserted?.[0]) throw new Error('O banco não confirmou a gravação do template.');
 
         const targetSeller = sellers.find((s) => s.id === targetSellerId);
         toast({

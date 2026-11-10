@@ -1,3 +1,4 @@
+import { Skeleton as BaseSkeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -18,7 +19,8 @@ const shimmer = {
 
 export function Skeleton({ className, animate = true }: SkeletonProps) {
   return (
-    <div 
+    <BaseSkeleton
+      animate={false}
       className={cn(
         "relative overflow-hidden rounded-md bg-muted",
         className
@@ -32,7 +34,7 @@ export function Skeleton({ className, animate = true }: SkeletonProps) {
           transition={shimmer.transition}
         />
       )}
-    </div>
+    </BaseSkeleton>
   );
 }
 

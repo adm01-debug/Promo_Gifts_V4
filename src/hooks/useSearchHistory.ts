@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-export type HistoryType = 'product' | 'company' | 'general';
+export type HistoryType = 'company' | 'general' | 'product';
 
 export interface HistoryItem {
   id: string;

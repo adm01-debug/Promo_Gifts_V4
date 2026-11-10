@@ -48,12 +48,12 @@ export function useCategoriesTree() {
   // Fetch category icons from Supabase
   const fetchCategoryIcons = useCallback(async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error: queryError } = await supabase
         .from('category_icons')
         .select('category_name, icon')
         .eq('is_active', true);
 
-      if (error) throw error;
+      if (queryError) throw queryError;
       
       const iconMap = new Map<string, string>();
       (data as CategoryIcon[] || []).forEach(item => {
@@ -205,7 +205,8 @@ export function useCategoriesTree() {
     while (current) {
       path.unshift(current);
       if (current.parent_id) {
-        current = categories.find(cat => cat.id === current!.parent_id);
+        const parentId = current.parent_id;
+        current = categories.find(cat => cat.id === parentId);
       } else {
         current = undefined;
       }

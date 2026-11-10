@@ -56,7 +56,7 @@ export function useComparisonWeights() {
     if (!user) return;
     await supabase.from("user_preferences").upsert({
       user_id: user.id,
-      comparison_weights: next as Record<string, number>,
+      comparison_weights: { ...next },
     }, { onConflict: "user_id" });
   }, []);
 

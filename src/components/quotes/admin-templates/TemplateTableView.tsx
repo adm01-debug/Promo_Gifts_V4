@@ -12,9 +12,9 @@ import { exportSingleTemplate } from "@/utils/templateExport";
 
 interface TemplateTableViewProps {
   templates: QuoteTemplate[];
-  getSellerName: (sellerId: string) => string;
-  formatCurrency: (value: number) => string;
-  calculateTotal: (template: QuoteTemplate) => number;
+  getSellerName: (sellerId: string | null) => string;
+  formatCurrency: (value: number | null) => string;
+  calculateTotal: (template: QuoteTemplate) => number | null;
   onEdit?: (template: QuoteTemplate) => void;
   onClone: (templateId: string) => void;
   onDelete: (templateId: string) => void;
@@ -29,20 +29,20 @@ export function TemplateTableView({ templates, getSellerName, formatCurrency, ca
             <TableRow>
               <TableHead>Template</TableHead><TableHead>Vendedor</TableHead><TableHead className="text-center">Itens</TableHead>
               <TableHead className="text-right">Valor</TableHead><TableHead className="text-center">Status</TableHead>
-              <TableHead className="text-right">Atualizado</TableHead><TableHead className="w-[50px]"></TableHead>
+              <TableHead className="text-right">Atualizado</TableHead><TableHead className="w-[50px]" />
             </TableRow>
           </TableHeader>
           <TableBody>
             {templates.map((template) => (
               <TableRow key={template.id}>
                 <TableCell>
-                  <div><div className="font-medium">{template.name}</div>{template.description && <div className="text-sm text-muted-foreground truncate max-w-[200px]">{template.description}</div>}</div>
+                  <div><div className="font-medium">{template.name}</div>{template.items_error && <p role="alert" className="text-sm text-destructive">{template.items_error}</p>}{template.description && <div className="text-sm text-muted-foreground truncate max-w-[200px]">{template.description}</div>}</div>
                 </TableCell>
                 <TableCell><div className="flex items-center gap-2"><User className="h-4 w-4 text-muted-foreground" /><span className="text-sm">{getSellerName(template.seller_id)}</span></div></TableCell>
-                <TableCell className="text-center"><Badge variant="secondary">{template.items_data.length}</Badge></TableCell>
+                <TableCell className="text-center"><Badge variant="secondary">{template.items_data?.length ?? (Array.isArray(template.items) ? template.items.length : "—")}</Badge></TableCell>
                 <TableCell className="text-right font-medium">{formatCurrency(calculateTotal(template))}</TableCell>
                 <TableCell className="text-center">{template.is_default && <Badge variant="outline" className="gap-1"><Star className="h-3 w-3 fill-current" />Padrão</Badge>}</TableCell>
-                <TableCell className="text-right text-sm text-muted-foreground">{format(new Date(template.updated_at), "dd/MM/yy", { locale: ptBR })}</TableCell>
+                <TableCell className="text-right text-sm text-muted-foreground">{template.updated_at && Number.isFinite(Date.parse(template.updated_at)) ? format(new Date(template.updated_at), "dd/MM/yy", { locale: ptBR }) : "Data não informada"}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Mais opções"><MoreVertical className="h-4 w-4" /></Button></DropdownMenuTrigger>

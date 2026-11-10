@@ -1,18 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import type { Json } from '@/integrations/supabase/types';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface AllowedCountry {
   id: string;
   country_code: string;
   country_name: string;
-  is_active: boolean;
-  created_at: string;
+  is_active: boolean | null;
+  created_at: string | null;
 }
 
 interface GeoBlockingSettings {
+  [key: string]: Json | undefined;
   enabled: boolean;
-  mode: 'whitelist' | 'blacklist';
+  mode: 'blacklist' | 'whitelist';
 }
 
 export function useGeoBlocking() {

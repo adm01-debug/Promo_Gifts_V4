@@ -1,44 +1,22 @@
+import type {
+  CollectionVariantInfo,
+  CollectionProductItem,
+  Collection,
+  DbCollectionRow,
+  DbCollectionItemRow,
+} from './collections/collection-types';
+export type {
+  Collection,
+  CollectionProductItem,
+  CollectionVariantInfo,
+} from './collections/collection-types';
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { type Product } from "@/hooks/useProducts";
+import type { TablesUpdate } from '@/integrations/supabase/types';
 
 const LEGACY_STORAGE_KEY = "product-collections";
-
-export interface CollectionVariantInfo {
-  color_name?: string | null;
-  color_hex?: string | null;
-  size_code?: string | null;
-  variant_id?: string | null;
-  thumbnail?: string | null;
-}
-
-export interface CollectionProductItem {
-  productId: string;
-  variant?: CollectionVariantInfo;
-  notes?: string;
-  priceAtSave?: number | null;
-  addedAt?: string | null;
-}
-
-export interface Collection {
-  id: string;
-  name: string;
-  description?: string;
-  color: string;
-  icon: string;
-  isFeatured: boolean;
-  clientId?: string | null;
-  clientName?: string | null;
-  shareToken?: string | null;
-  shareExpiresAt?: string | null;
-  isPublic?: boolean;
-  /** @deprecated Use productItems instead */
-  productIds: string[];
-  productItems: CollectionProductItem[];
-  createdAt: string;
-  updatedAt: string;
-}
 
 const DEFAULT_COLORS = [
   "#8B5CF6", "#EC4899", "#F59E0B", "#10B981",
@@ -46,34 +24,6 @@ const DEFAULT_COLORS = [
 ];
 
 const DEFAULT_ICONS = ["📁", "⭐", "🎁", "💼", "🎯", "💡", "🔥", "❤️"];
-
-interface DbCollectionRow {
-  id: string;
-  name: string;
-  description: string | null;
-  icon_color: string | null;
-  icon: string | null;
-  is_featured: boolean | null;
-  client_id: string | null;
-  client_name: string | null;
-  share_token: string | null;
-  share_expires_at: string | null;
-  is_public: boolean | null;
-  created_at: string;
-  updated_at: string;
-}
-
-interface DbCollectionItemRow {
-  product_id: string;
-  color_name: string | null;
-  color_hex: string | null;
-  thumbnail_url: string | null;
-  notes: string | null;
-  price_at_save: number | null;
-  created_at: string;
-  collection_id: string;
-  sort_order: number | null;
-}
 
 /** Convert DB rows to Collection interface */
 function dbToCollection(
@@ -198,7 +148,7 @@ export function useCollections() {
                   const items = (col.productItems || col.productIds?.map((id: string) => ({ productId: id })) || []);
                   if (items.length > 0) {
                     await supabase.from("collection_items").insert(
-                      items.map((item: { productId?: string; variant?: CollectionVariantInfo } | string, idx: number) => {
+                      items.map((item: string | { productId?: string; variant?: CollectionVariantInfo }, idx: number) => {
                         const isObj = typeof item === 'object';
                         return {
                           collection_id: newCol.id,
@@ -289,7 +239,7 @@ export function useCollections() {
   );
 
   const updateCollection = useCallback(
-    (id: string, updates: Partial<Omit<Collection, "id" | "createdAt">>) => {
+    (id: string, updates: Partial<Omit<Collection, "createdAt" | "id">>) => {
       setCollections((prev) =>
         prev.map((col) =>
           col.id === id
@@ -299,7 +249,7 @@ export function useCollections() {
       );
 
       // Persist
-      const dbUpdates: Record<string, unknown> = {};
+      const dbUpdates: TablesUpdate<'collections'> = {};
       if (updates.name !== undefined) dbUpdates.name = updates.name;
       if (updates.description !== undefined) dbUpdates.description = updates.description;
       if (updates.color !== undefined) dbUpdates.icon_color = updates.color;

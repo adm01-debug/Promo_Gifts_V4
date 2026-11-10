@@ -7,12 +7,11 @@
  * - Código de orçamento automático
  */
 
-import { useMemo, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { 
   Calculator, 
   Clock, 
@@ -27,7 +26,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { cn } from '@/lib/utils';
 import { 
   useCustomizationPriceLegacy, 
-  useFaixasPrecoOficial, 
   type CustomizationPriceV2 
 } from '@/hooks/useGravacaoV2';
 import { formatCurrency, formatNumber } from './utils';
@@ -47,11 +45,11 @@ export function QuantityAndResult({
   product,
   technique,
   colors,
-  sizeModifier,
+  sizeModifier: _sizeModifier,
   quantity,
   onQuantityChange,
 }: QuantityAndResultProps) {
-  const { calculatePrice, loading: priceLoading } = useCustomizationPriceLegacy();
+  const { calculatePrice, loading: _priceLoading } = useCustomizationPriceLegacy();
   const [priceData, setPriceData] = useState<CustomizationPriceV2 | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -232,7 +230,8 @@ export function QuantityAndResult({
                       <span className={cn(
                         "font-medium",
                         priceData.minimum_applied && "text-warning dark:text-warning"
-                      )}>
+                      )}
+                      >
                         {formatCurrency(priceData.total_price)}
                       </span>
                     </div>

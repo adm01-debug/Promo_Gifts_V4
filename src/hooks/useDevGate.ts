@@ -1,4 +1,4 @@
-import { useMemo, useSyncExternalStore, useState, useEffect } from 'react';
+import { useMemo, useSyncExternalStore, useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { devInfraGate } from '@/lib/system/dev-gate/DevInfraGate';
 
@@ -19,7 +19,11 @@ export function useDevGate() {
   // Otimização: Estabilizamos a referência das roles usando uma stringificação leve.
   // Isso evita que o hook dispare re-renders se o AuthContext retornar uma nova instância de array com os mesmos dados.
   const rolesKey = safeRoles.join(',');
-  const stableRoles = useMemo(() => safeRoles, [rolesKey]);
+  const rolesCache = useRef({ key: rolesKey, value: safeRoles });
+  if (rolesCache.current.key !== rolesKey) {
+    rolesCache.current = { key: rolesKey, value: safeRoles };
+  }
+  const stableRoles = rolesCache.current.value;
 
   const isAllowedStore = useSyncExternalStore(
     (onStoreChange) => devInfraGate.subscribe(onStoreChange),

@@ -39,6 +39,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { QuoteHistoryPanel } from '@/components/quotes/QuoteHistoryPanel';
+import { QuoteCommentsSection } from '@/components/quotes/QuoteCommentsSection';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { toast } from 'sonner';
 import { showUndoToast } from '@/utils/undoToast';
@@ -60,21 +61,12 @@ import { QuoteTotalsSummary } from '@/components/quotes/QuoteTotalsSummary';
 import { qvType, qvSpacing } from '@/components/quotes/quote-view-typography';
 import { SectionEyebrow } from '@/components/quotes/SectionEyebrow';
 import { PdfGenerationDialog } from '@/components/quotes/PdfGenerationDialog';
-import { QUOTE_STATUS_CONFIG } from '@/lib/quote-status-config';
+import { statusConfig } from '@/components/quotes/quote-view-status-config';
 import { useQuoteViewData } from '@/pages/quotes/quote-view/useQuoteViewData';
 import { QuoteUnavailableState } from '@/pages/quotes/quote-view/QuoteUnavailableState';
 
 import { applyNegotiationMarkup } from '@/hooks/quotes/quoteMarkup';
 
-const statusConfig = Object.fromEntries(
-  Object.entries(QUOTE_STATUS_CONFIG).map(([k, v]) => [
-    k,
-    { label: v.label, variant: v.badgeVariant },
-  ]),
-) as Record<
-  string,
-  { label: string; variant: 'default' | 'destructive' | 'outline' | 'secondary' }
->;
 
 export default function QuoteViewPage() {
   const { id } = useParams<{ id: string }>();
@@ -507,6 +499,8 @@ export default function QuoteViewPage() {
             )}
           </CardContent>
         </Card>
+
+        {id && <QuoteCommentsSection key={id} quoteId={id} />}
 
         {id && <QuoteVersionHistory quoteId={id} currentQuoteId={id} />}
 

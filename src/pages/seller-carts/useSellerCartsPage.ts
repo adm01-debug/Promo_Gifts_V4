@@ -8,8 +8,8 @@ import { useSellerCartContext } from '@/contexts/SellerCartContext';
 import { type SellerCart } from '@/hooks/useSellerCarts';
 import { useCartTemplates, type CartTemplateItem } from '@/hooks/useCartTemplates';
 import { ProductsContext } from '@/contexts/ProductsContext';
+import { recordAction } from '@/components/cart/LegacyCartInsights';
 import {
-  recordAction,
   exportCartToCSV,
   exportCartToPDF,
   shareCartLink,
@@ -56,7 +56,7 @@ export function useSellerCartsPage() {
   const { templates, saveTemplate, deleteTemplate } = useCartTemplates();
 
   const productsCtx = useContext(ProductsContext);
-  const allProducts = productsCtx?.products || [];
+  const allProducts = useMemo(() => productsCtx?.products || [], [productsCtx?.products]);
   const isLoadingProducts = productsCtx?.isLoading || false;
 
   const [showNewCart, setShowNewCart] = useState(false);
@@ -67,7 +67,7 @@ export function useSellerCartsPage() {
 
   const [cartNotesOpen, setCartNotesOpen] = useState(false);
   const [localCartNotes, setLocalCartNotes] = useState('');
-  const debounceNotesRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceNotesRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const stockMap = useMemo(() => {
     const map = new Map<string, number>();
@@ -245,7 +245,7 @@ export function useSellerCartsPage() {
         restoreItems(activeCart.id, addItems);
       },
     });
-  }, [clearCart, activeCart, addToActiveCart]);
+  }, [clearCart, activeCart, restoreItems]);
 
   const handleSaveTemplate = useCallback(
     (name: string, description: string) => {

@@ -4,9 +4,10 @@
 import {
   Package, FileText, Calculator, Settings, Home, Palette, Layers, Box,
   Calendar, Zap, BarChart3, Filter, PlusCircle, RefreshCw, Download,
-  Printer, HelpCircle, Moon, Sun, BookOpen, Grid,
+  Printer, HelpCircle, Moon, BookOpen, Grid,
 } from "lucide-react";
 import type { ReactNode } from "react";
+import type { useTheme } from "@/contexts/ThemeContext";
 
 export interface CommandAction {
   id: string;
@@ -16,9 +17,9 @@ export interface CommandAction {
   shortcut?: string;
   action: () => void;
   keywords?: string[];
-  category: "navigation" | "action" | "recent" | "quick" | "settings" | "help";
+  category: "action" | "help" | "navigation" | "quick" | "recent" | "settings";
   badge?: string;
-  badgeVariant?: "default" | "secondary" | "destructive" | "outline";
+  badgeVariant?: "default" | "destructive" | "outline" | "secondary";
   /**
    * Path da rota associada (quando aplicável). Permite que
    * `filterByRoutePermission` esconda a ação para usuários que não
@@ -29,7 +30,7 @@ export interface CommandAction {
 
 export interface RecentItem {
   id: string;
-  type: "product" | "client" | "quote" | "page";
+  type: "client" | "page" | "product" | "quote";
   label: string;
   path: string;
   timestamp: number;
@@ -39,12 +40,12 @@ export const RECENT_ITEMS_KEY = "command-bar-recent";
 
 interface BuildActionsParams {
   goTo: (path: string, label: string, type?: RecentItem["type"]) => void;
-  actualTheme: string;
-  setTheme: (t: string) => void;
+  actualTheme: ReturnType<typeof useTheme>["actualTheme"];
+  setTheme: ReturnType<typeof useTheme>["setTheme"];
   setOpen: (v: boolean) => void;
 }
 
-export function buildActions({ goTo, actualTheme, setTheme, setOpen }: BuildActionsParams): CommandAction[] {
+export function buildActions({ goTo, setTheme, setOpen }: BuildActionsParams): CommandAction[] {
   return [
     // Quick Actions
     {
@@ -222,11 +223,11 @@ export function buildActions({ goTo, actualTheme, setTheme, setOpen }: BuildActi
     },
     {
       id: "theme-toggle",
-      label: actualTheme === "dark" ? "Modo Claro" : "Modo Escuro",
-      description: "Alternar tema do sistema",
-      icon: actualTheme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />,
+      label: "Modo Escuro",
+      description: "Manter o tema escuro do sistema",
+      icon: <Moon className="h-4 w-4" />,
       shortcut: "⌘D",
-      action: () => { setTheme(actualTheme === "dark" ? "light" : "dark"); },
+      action: () => { setTheme("dark"); },
       keywords: ["tema", "theme", "dark", "light", "escuro", "claro"],
       category: "settings",
     },

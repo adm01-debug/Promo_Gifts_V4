@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { 
   useExternalCategories, 
   useExternalTechniques, 
@@ -45,18 +45,26 @@ export function useAdvancedFilters() {
   const suppliersDB = useExternalSuppliers();
   const colorGroupsDB = useExternalDatabase<ColorGroupData>('color_groups');
   const tagsDB = useExternalDatabase<TagData>('tags');
+  const initialFetchers = useRef({
+    categories: categoriesDB.fetchAll,
+    techniques: techniquesDB.fetchAll,
+    suppliers: suppliersDB.fetchAll,
+    colorGroups: colorGroupsDB.fetchAll,
+    tags: tagsDB.fetchAll,
+  });
 
   // Buscar dados iniciais
   useEffect(() => {
+    const fetchers = initialFetchers.current;
     const loadFilterOptions = async () => {
       setIsLoading(true);
       try {
         await Promise.all([
-          categoriesDB.fetchAll({ filters: { is_active: true }, limit: 500 }),
-          techniquesDB.fetchAll({ filters: { is_active: true }, limit: 100 }),
-          suppliersDB.fetchAll({ limit: 100 }),
-          colorGroupsDB.fetchAll({ filters: { is_active: true }, limit: 100 }),
-          tagsDB.fetchAll({ limit: 200 }),
+          fetchers.categories({ filters: { is_active: true }, limit: 500 }),
+          fetchers.techniques({ filters: { is_active: true }, limit: 100 }),
+          fetchers.suppliers({ limit: 100 }),
+          fetchers.colorGroups({ filters: { is_active: true }, limit: 100 }),
+          fetchers.tags({ limit: 200 }),
         ]);
       } catch (error) {
         console.error('Erro ao carregar opções de filtros:', error);
@@ -91,7 +99,7 @@ export function useAdvancedFilters() {
       if (cat.parentId) {
         const parent = categoryMap.get(cat.parentId);
         if (parent) {
-          parent.children = parent.children || [];
+          parent.children ||= [];
           parent.children.push(cat);
         }
       } else {
@@ -211,7 +219,9 @@ export function useAdvancedFilters() {
     if (filters.ramosAtividade.length) count += filters.ramosAtividade.length;
     if (filters.segmentosAtividade.length) count += filters.segmentosAtividade.length;
     if (filters.priceRange[0] > 0 || filters.priceRange[1] < 1000) count++;
-    if (filters.quantityRange[0] > 1 || filters.quantityRange[1] < 10000) count++;
+    const quantityRange = 'quantityRange' in filters ? filters.quantityRange : undefined;
+    if (Array.isArray(quantityRange) && typeof quantityRange[0] === 'number' &&
+      typeof quantityRange[1] === 'number' && (quantityRange[0] > 1 || quantityRange[1] < 10000)) count++;
     if (filters.stockStatus !== 'all') count++;
     if (filters.isKit) count++;
     if (filters.isFeatured) count++;

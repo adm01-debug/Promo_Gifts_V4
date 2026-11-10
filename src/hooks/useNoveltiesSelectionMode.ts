@@ -23,13 +23,14 @@ export function noveltyToProduct(n: NoveltyWithDetails): Product {
     id: n.product_id,
     name: n.product_name,
     description: n.product_description,
+    shortDescription: n.product_description ?? '',
     category_id: n.category_id,
     category_name: n.category_name,
     price: n.base_price || 0,
     image_url: n.product_image || undefined,
     images: n.product_image ? [n.product_image] : [],
     sku: n.product_sku || "",
-    stock: 0,
+    stock: n.stock_quantity,
     created_at: n.detected_at,
     colors: [],
     materials: [],
@@ -37,7 +38,7 @@ export function noveltyToProduct(n: NoveltyWithDetails): Product {
     brand: null,
     is_active: n.is_active,
     minQuantity: 1,
-    stockStatus: "in-stock",
+    stockStatus: n.stock_status,
     featured: n.is_highlighted,
     newArrival: true,
     onSale: false,
@@ -45,8 +46,9 @@ export function noveltyToProduct(n: NoveltyWithDetails): Product {
     gender: null,
     category: { id: n.category_id || "", name: n.category_name || "" },
     supplier: { id: n.supplier_id || "", name: n.supplier_name || "" },
-    tags: { featured: n.is_highlighted, newArrival: true, onSale: false, isKit: false },
-  } as Product;
+    tags: { ...{ featured: n.is_highlighted, newArrival: true, onSale: false, isKit: false },
+      publicoAlvo: [], datasComemorativas: [], endomarketing: [], ramo: [], nicho: [] },
+  };
 }
 
 export function useNoveltiesSelectionMode({

@@ -84,7 +84,6 @@ export function useGlobalShortcuts(handlers?: ShortcutHandlers) {
       if ((e.key === "C" || e.key === "c") && e.shiftKey && !isInput) {
         e.preventDefault();
         handlers?.onToggleCart?.();
-        return;
       }
     },
     [navigate, openOracle, handlers]

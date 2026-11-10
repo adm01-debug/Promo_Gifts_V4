@@ -1,3 +1,4 @@
+import type { BatchMockup, MockupAnnotation, MockupTechnique } from './mockup/state-types';
 /**
  * useMockupGenerator — Core business logic hook for MockupGenerator page
  *
@@ -27,6 +28,7 @@ import type { TechniqueColorConfig } from '@/components/mockup/techniqueColorUti
 import { invokeWithRetry, extractFunctionErrorMessage } from '@/lib/external-db/invoke';
 import { adaptTabelaPrecoRows } from '@/lib/personalization/adapters';
 import type { PersonalizationArea } from '@/components/mockup/MultiAreaManager';
+import type { ArtFileAttachment } from '@/components/mockup/ArtFileUpload';
 import type { MockupProductSelection } from '@/components/mockup/MockupProductSelector';
 import type { MockupClient } from '@/components/mockup/MockupConfigPanel';
 import {
@@ -42,6 +44,10 @@ import {
 
 // Re-export types for consumers
 export type { Technique, GeneratedMockup };
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
 
 export function useMockupGenerator() {
   const { user } = useAuth();
@@ -61,9 +67,7 @@ export function useMockupGenerator() {
 
   // Selection state
   const [productSelection, setProductSelection] = useState<MockupProductSelection | null>(null);
-  const [selectedTechnique, setSelectedTechnique] = useState<
-    Technique | TechniqueWithLimits | null
-  >(null);
+  const [selectedTechnique, setSelectedTechnique] = useState<MockupTechnique>(null);
   const [selectedClient, setSelectedClient] = useState<MockupClient | null>(null);
 
   // Multi-area
@@ -74,15 +78,11 @@ export function useMockupGenerator() {
 
   // Generation
   const [generatedMockup, setGeneratedMockup] = useState<string | null>(null);
-  const [generatedBatchMockups, setGeneratedBatchMockups] = useState<
-    { areaName: string; url: string }[]
-  >([]);
-  const [artAttachments, setArtAttachments] = useState<unknown[]>([]);
+  const [generatedBatchMockups, setGeneratedBatchMockups] = useState<BatchMockup[]>([]);
+  const [artAttachments, setArtAttachments] = useState<ArtFileAttachment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [generationError, setGenerationError] = useState<string | null>(null);
-  const [mockupAnnotations, setMockupAnnotations] = useState<
-    { id: string; x: number; y: number; text: string }[]
-  >([]);
+  const [mockupAnnotations, setMockupAnnotations] = useState<MockupAnnotation[]>([]);
   const [beforeImage, setBeforeImage] = useState<string | null>(null);
 
   // Technique color configuration
@@ -138,8 +138,7 @@ export function useMockupGenerator() {
   const historyClients = useMemo(() => {
     if (!mockupHistory.length) return [];
     const map = new Map<string, { id: string; name: string }>();
-    for (let i = 0; i < mockupHistory.length; i++) {
-      const m = mockupHistory[i];
+    for (const m of mockupHistory) {
       const clientKey = m.client_id || m.client_name;
       if (clientKey && m.client_name && !map.has(clientKey)) {
         map.set(clientKey, { id: m.client_id || m.client_name, name: m.client_name });
@@ -166,7 +165,7 @@ export function useMockupGenerator() {
         maxWidthCm: widths.length ? Math.max(...widths) : null,
         maxHeightCm: heights.length ? Math.max(...heights) : null,
         maxColors: colors.length ? Math.max(...colors) : null,
-        isCurved: opts.some((o: CustomizationOption) => o.is_curved === true),
+        isCurved: opts.some((o: CustomizationOption) => o.is_curved),
         techniquesAvailable: opts.length,
       };
     });
@@ -361,9 +360,10 @@ export function useMockupGenerator() {
         toast.error('Erro ao carregar técnicas. Tente recarregar a página.');
         return;
       }
-      const records = adaptTabelaPrecoRows(
-        techniquesRes?.data?.records || techniquesRes?.records || [],
-      );
+      const envelope = isRecord(techniquesRes) ? techniquesRes : {};
+      const nested = isRecord(envelope.data) ? envelope.data : {};
+      const rawRows = nested.records ?? envelope.records;
+      const records = adaptTabelaPrecoRows(Array.isArray(rawRows) ? rawRows.filter(isRecord) : []);
       const techniquesData = records.map((r) => ({
         id: r.id,
         name: r.name ?? r.nome ?? '',
@@ -568,7 +568,7 @@ export function useMockupGenerator() {
             setLastSavedRecordId(recordId);
           }
         }
-        setGeneratedMockup(result.batchResults[0]?.url || result.singleUrl);
+        setGeneratedMockup(result.batchResults[0]?.url || result.singleUrl || null);
         setGeneratedBatchMockups(result.batchResults);
         toast.success(`${result.batchResults.length} mockups gerados com sucesso!`);
       }
@@ -586,7 +586,7 @@ export function useMockupGenerator() {
   const downloadMockup = async (url?: string) => {
     const mockupUrl = url || generatedMockup;
     if (!mockupUrl) return;
-    await downloadMockupAsPdf(mockupUrl, selectedProduct?.sku, selectedTechnique?.name);
+    await downloadMockupAsPdf(mockupUrl, selectedProduct, selectedTechnique);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -632,7 +632,7 @@ export function useMockupGenerator() {
   const handleShareMockup = (mockup: GeneratedMockup) => {
     const text = `Confira o mockup: ${mockup.product_name} com ${mockup.technique_name}`;
     window.open(
-      `https://wa.me/?text=${encodeURIComponent(text + '\n' + mockup.mockup_url)}`,
+      `https://wa.me/?text=${encodeURIComponent(`${text}\n${mockup.mockup_url}`)}`,
       '_blank',
     );
   };

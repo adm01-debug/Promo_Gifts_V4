@@ -56,8 +56,8 @@ export function useSupplierComparison(product: Product | null | undefined) {
       max: Math.max(...allProducts.map((p) => p.price)),
     };
 
-    const alternatives: SupplierProduct[] = similarProducts.map((product) => {
-      const priceDiff = product.price - baseProduct.price;
+    const alternatives: SupplierProduct[] = similarProducts.map((alternativeProduct) => {
+      const priceDiff = alternativeProduct.price - baseProduct.price;
       const priceDiffPercent = baseProduct.price > 0
         ? (priceDiff / baseProduct.price) * 100
         : 0;
@@ -66,9 +66,9 @@ export function useSupplierComparison(product: Product | null | undefined) {
         product,
         priceDiff,
         priceDiffPercent,
-        stockAdvantage: product.stock > baseProduct.stock,
-        isLowestPrice: product.price === lowestPrice,
-        isBestStock: product.stock === highestStock,
+        stockAdvantage: alternativeProduct.stock > baseProduct.stock,
+        isLowestPrice: alternativeProduct.price === lowestPrice,
+        isBestStock: alternativeProduct.stock === highestStock,
       };
     });
 
@@ -105,7 +105,7 @@ function calculateNameSimilarity(name1: string, name2: string): number {
 
 export function getSupplierProductsInCategory(
   products: Product[],
-  categoryId: string | number
+  categoryId: number | string
 ): Map<string, Product[]> {
   const supplierMap = new Map<string, Product[]>();
 

@@ -2,7 +2,7 @@
  * useQuotes — Hook de orçamentos (refatorado)
  * Tipos em quotes/quoteTypes.ts, helpers em quotes/quoteHelpers.ts
  */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { invokeExternalDb } from '@/lib/external-db';
 import { useAuth } from '@/contexts/AuthContext';
@@ -12,6 +12,8 @@ import { applySellerScope } from '@/lib/auth/apply-seller-scope';
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
 import { toast } from 'sonner';
 import type { Quote, QuoteItem, PersonalizationTechnique } from './quotes/quoteTypes';
+import type { Tables } from '@/integrations/supabase/types';
+import { serializeJsonValue } from '@/lib/json-value';
 import {
   calculateQuoteTotals,
   buildInsertPayload,
@@ -39,7 +41,7 @@ export function useQuotes() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchQuotes = async () => {
+  const fetchQuotes = useCallback(async () => {
     if (!user) return;
     setIsLoading(true);
     setError(null);
@@ -64,9 +66,9 @@ export function useQuotes() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user, scope]);
 
-  const fetchQuote = async (quoteId: string): Promise<Quote | null> => {
+  const fetchQuote = useCallback(async (quoteId: string): Promise<Quote | null> => {
     setIsLoading(true);
     try {
       const { data: quoteData, error: qErr } = await supabase
@@ -85,7 +87,7 @@ export function useQuotes() {
         .order('sort_order', { ascending: true });
 
       const itemIds = (itemsData || []).map((i) => i.id);
-      let allPersonalizations: Record<string, unknown>[] = [];
+      let allPersonalizations: Tables<'quote_item_personalizations'>[] = [];
       if (itemIds.length > 0) {
         const { data: persData } = await supabase
           .from('quote_item_personalizations')
@@ -96,7 +98,37 @@ export function useQuotes() {
 
       const items: QuoteItem[] = (itemsData || []).map((item) => ({
         ...item,
-        personalizations: allPersonalizations.filter((p) => p.quote_item_id === item.id),
+        product_id: item.product_id ?? '',
+        product_sku: item.product_sku ?? undefined,
+        product_image_url: item.product_image_url ?? undefined,
+        has_personalization: item.has_personalization ?? undefined,
+        personalization_cost: item.personalization_cost ?? undefined,
+        discount_percentage: item.discount_percentage ?? undefined,
+        discount_amount: item.discount_amount ?? undefined,
+        color_name: item.color_name ?? undefined,
+        color_hex: item.color_hex ?? undefined,
+        notes: item.notes ?? undefined,
+        sort_order: item.sort_order ?? undefined,
+        mockup_urls: Array.isArray(item.mockup_urls)
+          ? item.mockup_urls.filter((url): url is string => typeof url === 'string')
+          : undefined,
+        artwork_urls: Array.isArray(item.artwork_urls)
+          ? item.artwork_urls.filter((url): url is string => typeof url === 'string')
+          : undefined,
+        personalizations: allPersonalizations
+          .filter((p) => p.quote_item_id === item.id)
+          .map((p) => ({
+            ...p,
+            technique_id: p.technique_id ?? '',
+            technique_name: p.technique_name ?? undefined,
+            location_code: p.location_code ?? undefined,
+            location_name: p.location_name ?? undefined,
+            personalized_quantity: p.personalized_quantity ?? undefined,
+            area_cm2: p.area_cm2 ?? undefined,
+            width_cm: p.width_cm ?? undefined,
+            height_cm: p.height_cm ?? undefined,
+            notes: p.notes ?? undefined,
+          })),
       }));
 
       return { ...quoteData, items } as Quote;
@@ -108,7 +140,7 @@ export function useQuotes() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   const logQuoteHistory = async (
     quoteId: string,
@@ -131,7 +163,7 @@ export function useQuotes() {
         field_changed: options?.fieldChanged || null,
         old_value: options?.oldValue || null,
         new_value: options?.newValue || null,
-        metadata: options?.metadata || {},
+        metadata: serializeJsonValue(options?.metadata ?? {}) ?? {},
       });
     } catch (err) {
       console.error('Error logging history:', err);
@@ -421,7 +453,7 @@ export function useQuotes() {
       fetchQuotes();
       fetchTechniques();
     }
-  }, [user]);
+  }, [user, fetchQuotes]);
 
   return {
     quotes,

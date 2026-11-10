@@ -22,7 +22,7 @@ export type ColdStartIncident = {
   id: string;
   startedAt: number;
   endedAt?: number;
-  outcome: 'recovered' | 'unavailable' | 'in_progress';
+  outcome: 'in_progress' | 'recovered' | 'unavailable';
   attempts: RetryAttempt[];
   finalReason?: string;
 };

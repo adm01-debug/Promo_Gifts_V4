@@ -202,11 +202,11 @@ export interface PromobrindProduct {
   has_colors?: boolean | null;
 }
 
-export function getProductImageUrl(product: PromobrindProduct): string | null {
+export function getProductImageUrl(product: Partial<Pick<PromobrindProduct, 'image_url' | 'images' | 'primary_image_url'>>): string | null {
   return product.primary_image_url || product.image_url || (product.images?.[0] ?? null);
 }
 
-export function getProductPrice(product: PromobrindProduct): number {
+export function getProductPrice(product: Pick<PromobrindProduct, 'base_price' | 'sale_price'>): number {
   return product.sale_price ?? product.base_price ?? 0;
 }
 

@@ -3,6 +3,7 @@
  * Refatorado: lógica em useQuoteBuilderState, UI em sub-componentes.
  */
 
+import { useState } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { cn } from '@/lib/utils';
@@ -34,14 +35,14 @@ import {
   Sparkles,
   ExternalLink,
 } from 'lucide-react';
-import { toast } from 'sonner';
 import { format, addDays } from 'date-fns';
 
 import { QuoteTemplateSelector } from '@/components/quotes/QuoteTemplateSelector';
 import { SaveAsTemplateButton } from '@/components/quotes/SaveAsTemplateButton';
 import { QuoteProductCustomization } from '@/components/quotes/QuoteProductCustomization';
 import { CompanyContactSelector } from '@/components/quotes/CompanyContactSelector';
-import { QuoteAutoSave } from '@/components/quotes/QuoteAutoSave';
+import { QuoteBuilderDraftRecovery } from '@/components/quotes/QuoteBuilderDraftRecovery';
+import { QuoteBuilderPaymentMethodField } from '@/components/quotes/QuoteBuilderPaymentMethodField';
 import { DraggableQuoteItems } from '@/components/quotes/DraggableQuoteItems';
 import { QuoteBuilderStepper } from '@/components/quotes/QuoteBuilderStepper';
 import { QuoteBuilderSummaryColumn } from '@/components/quotes/QuoteBuilderSummaryColumn';
@@ -52,9 +53,10 @@ import { UnsavedChangesDialog } from '@/components/common/UnsavedChangesDialog';
 
 export default function QuoteBuilderPage() {
   const s = useQuoteBuilderState();
+  const [hasUnsavedData, setHasUnsavedData] = useState(false);
   const { showDialog, guardNavigation, confirmLeave, cancelLeave, message } =
     useUnsavedChangesGuard({
-      hasUnsavedChanges: s.hasUnsavedData,
+      hasUnsavedChanges: hasUnsavedData,
     });
 
   if (s.loadingQuote) {
@@ -76,29 +78,7 @@ export default function QuoteBuilderPage() {
         noIndex
       />
 
-      <QuoteAutoSave
-        quoteId={s.quoteId}
-        data={{
-          clientId: s.clientId,
-          validUntil: s.validUntil,
-          discountType: s.discountType,
-          discountValue: s.discountValue,
-          notes: s.notes,
-          internalNotes: s.internalNotes,
-          items: s.items,
-        }}
-        onRestore={(data) => {
-          s.setClientId(data.clientId || '');
-          s.setValidUntil(data.validUntil || format(addDays(new Date(), 30), 'yyyy-MM-dd'));
-          s.setDiscountType(data.discountType || 'percent');
-          s.setDiscountValue(data.discountValue || 0);
-          s.setNotes(data.notes || '');
-          s.setInternalNotes(data.internalNotes || '');
-          s.setItems(data.items || []);
-          toast.success('Rascunho restaurado!');
-        }}
-        className="fixed right-4 top-20 z-40"
-      />
+      <QuoteBuilderDraftRecovery state={s} onChange={setHasUnsavedData} />
 
       <div className="mx-auto w-full max-w-[1920px] animate-fade-in space-y-3 px-3 py-3 pb-24 sm:space-y-4 sm:px-4 sm:py-4 md:pb-6 lg:px-6 xl:px-8">
         {/* Header */}
@@ -280,6 +260,8 @@ export default function QuoteBuilderPage() {
                   Condições
                 </h3>
 
+                <QuoteBuilderPaymentMethodField state={s} />
+
                 {/* Pagamento */}
                 <div className="space-y-1">
                   <Label
@@ -405,7 +387,7 @@ export default function QuoteBuilderPage() {
                             s.setDeliveryTime(date ? `date:${format(date, 'yyyy-MM-dd')}` : '');
                           }}
                           disabled={(date) => date < new Date()}
-                          initialFocus
+                          autoFocus
                         />
                       </PopoverContent>
                     </Popover>
@@ -530,7 +512,16 @@ export default function QuoteBuilderPage() {
                       return (
                         <div className="space-y-3">
                           <DraggableQuoteItems
-                            items={[item]}
+                            items={[
+                              {
+                                ...item,
+                                id: item.id ?? `draft:${item.product_id}:${idx}`,
+                                product_sku: item.product_sku ?? '',
+                                personalizations: item.personalizations?.map((entry) => ({
+                                  ...entry,
+                                })),
+                              },
+                            ]}
                             onReorder={() => {}}
                             onUpdateQuantity={(_, qty) => s.updateItemQuantity(idx, qty)}
                             onUpdatePrice={(_, price) => s.updateItemPrice(idx, price)}

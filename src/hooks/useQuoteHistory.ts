@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { serializeJsonValue } from "@/lib/json-value";
 
 export interface QuoteHistoryEntry {
   id: string;
@@ -56,7 +57,7 @@ export function useQuoteHistory() {
     if (!user) return false;
 
     try {
-      await supabase.from("quote_history").insert({
+      const { error } = await supabase.from("quote_history").insert({
         quote_id: quoteId,
         user_id: user.id,
         action,
@@ -64,8 +65,9 @@ export function useQuoteHistory() {
         field_changed: options?.fieldChanged || null,
         old_value: options?.oldValue || null,
         new_value: options?.newValue || null,
-        metadata: options?.metadata || {},
-      } as Record<string, unknown>);
+        metadata: serializeJsonValue(options?.metadata ?? {}) ?? {},
+      });
+      if (error) throw error;
       return true;
     } catch (err) {
       console.error("Error adding history entry:", err);

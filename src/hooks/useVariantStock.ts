@@ -27,8 +27,8 @@ export function useVariantStock() {
     refetchOnMount: false,
   });
 
-  const productStocks = data?.productStocks ?? [];
-  const rawAlerts = data?.alerts ?? [];
+  const productStocks = useMemo(() => data?.productStocks ?? [], [data?.productStocks]);
+  const rawAlerts = useMemo(() => data?.alerts ?? [], [data?.alerts]);
   const futureStock = data?.futureStock ?? [];
 
   const alerts = useMemo(() => {
@@ -271,7 +271,7 @@ export function useVariantStock() {
   }, [rawAlerts]);
 
   const dismissAlertsBySeverity = useCallback(
-    (severity: 'error' | 'warning' | 'info') => {
+    (severity: 'error' | 'info' | 'warning') => {
       setDismissedAlerts((prev) => {
         const next = new Set(prev);
         rawAlerts.filter((a) => a.severity === severity).forEach((a) => next.add(a.id));

@@ -23,14 +23,14 @@ interface SpeechRecognitionEvent extends Event {
 
 interface SpeechRecognitionResultList {
   length: number;
-  item(index: number): SpeechRecognitionResultItem;
+  item: (index: number) => SpeechRecognitionResultItem;
   [index: number]: SpeechRecognitionResultItem;
 }
 
 interface SpeechRecognitionResultItem {
   isFinal: boolean;
   length: number;
-  item(index: number): SpeechRecognitionAlternative;
+  item: (index: number) => SpeechRecognitionAlternative;
   [index: number]: SpeechRecognitionAlternative;
 }
 
@@ -41,13 +41,13 @@ interface SpeechRecognitionAlternative {
 
 interface SpeechRecognitionErrorEvent extends Event {
   error: string;
-  message: string;
+  message?: string;
 }
 
 declare global {
   interface Window {
-    SpeechRecognition: new () => SpeechRecognition;
-    webkitSpeechRecognition: new () => SpeechRecognition;
+    SpeechRecognition: typeof globalThis.SpeechRecognition;
+    webkitSpeechRecognition: typeof globalThis.SpeechRecognition;
   }
 }
 
@@ -55,10 +55,10 @@ interface SpeechRecognition extends EventTarget {
   continuous: boolean;
   interimResults: boolean;
   lang: string;
-  start(): void;
-  stop(): void;
-  abort(): void;
-  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  start: () => void;
+  stop: () => void;
+  abort: () => void;
+  onresult: ((event: globalThis.SpeechRecognitionEvent) => void) | null;
   onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
   onend: (() => void) | null;
   onstart: (() => void) | null;

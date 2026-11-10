@@ -32,6 +32,27 @@ export interface SizeOption {
   tableFullcode: string;
 }
 
+interface TechniquePriceTableRow {
+  id: string;
+  table_code: string;
+  table_code_option: string | null;
+  table_fullcode: string | null;
+  customization_type_name: string;
+  max_colors: number | null;
+  max_area_width_cm: number | null;
+  max_area_height_cm: number | null;
+  price_by_color: boolean | null;
+  price_by_area: boolean | null;
+  setup_price: number | null;
+  handling_price: number | null;
+}
+
+interface TechniquePriceTablesResponse {
+  success: boolean;
+  error?: string;
+  data?: { records?: TechniquePriceTableRow[] };
+}
+
 export function useTechniquePricing(techniqueCode: string | null) {
   const [priceOptions, setPriceOptions] = useState<TechniquePriceOption[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,7 +70,7 @@ export function useTechniquePricing(techniqueCode: string | null) {
 
       try {
         // Buscar todas as tabelas que contêm o código da técnica
-        const { data, error: invokeError } = await supabase.functions.invoke('external-db-bridge', {
+        const { data, error: invokeError } = await supabase.functions.invoke<TechniquePriceTablesResponse>('external-db-bridge', {
           body: {
             table: 'customization_price_tables',
             operation: 'select',
@@ -60,22 +81,22 @@ export function useTechniquePricing(techniqueCode: string | null) {
         });
 
         if (invokeError) throw new Error(invokeError.message);
-        if (!data.success) throw new Error(data.error || 'Erro ao buscar tabelas de preço');
+        if (!data?.success) throw new Error(data?.error || 'Erro ao buscar tabelas de preço');
 
-        const records = data.data.records || [];
+        const records = data.data?.records || [];
         
         // Filtrar tabelas que correspondem ao código da técnica
-        const matchingTables = records.filter((t: Record<string, unknown>) => {
+        const matchingTables = records.filter((t) => {
           const code = techniqueCode.toLowerCase();
-          const tableCode = ((t.table_code as string) || '').toLowerCase();
-          const fullCode = ((t.table_fullcode as string) || '').toLowerCase();
+          const tableCode = (t.table_code || '').toLowerCase();
+          const fullCode = (t.table_fullcode || '').toLowerCase();
           
           return tableCode.includes(code) || 
                  code.includes(tableCode) ||
                  fullCode.includes(code);
         });
 
-        const options: TechniquePriceOption[] = matchingTables.map((t: Record<string, unknown>) => ({
+        const options: TechniquePriceOption[] = matchingTables.map((t) => ({
           id: t.id,
           tableCode: t.table_code,
           tableCodeOption: t.table_code_option,
