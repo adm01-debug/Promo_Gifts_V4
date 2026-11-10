@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "82bafd9f0aaba50467e95f7d9e06582baf7b2810",
+  "commit": "1dcb3b6b0ec1bd2c11fe51391d2de9f80f75f50a",
   "branch": "main",
-  "data_commit": "2026-11-09T21:42:59-03:00",
+  "data_commit": "2026-11-10T01:42:29Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "1dcb3b6",
+    "data": "2026-11-10",
+    "assunto": "fix(autoheal): ESLint --fix automático [autoheal] (#3386)"
+   },
    {
     "sha": "82bafd9",
     "data": "2026-11-09",
@@ -126,11 +131,6 @@
     "sha": "78729fc",
     "data": "2026-11-09",
     "assunto": "chore(ci): atualiza file-size baseline — Kit Builder +21/+13/+10 linhas"
-   },
-   {
-    "sha": "29838f1",
-    "data": "2026-11-09",
-    "assunto": "feat(kit-builder): confirmar substituição ao aplicar composição da IA (FT-134)"
    }
   ],
   "arquivos_mudados_7d": 1100,
