@@ -30,8 +30,14 @@ if [ "$1" = "--check-ratchet" ]; then
     exit 0
   fi
 
+  for v in "$current_baseline" "$base_baseline"; do
+    case "$v" in
+      ''|*[!0-9]*) echo "ERRO: baseline inválida (esperado um inteiro): '$v'."; exit 2 ;;
+    esac
+  done
+
   # Compara numericamente (ambos são inteiros)
-  if [ "$current_baseline" -gt "$base_baseline" ] 2>/dev/null; then
+  if [ "$current_baseline" -gt "$base_baseline" ]; then
     labels="${GITHUB_LABELS:-}"
     case "$labels" in
       *ratchet-override*)
@@ -63,7 +69,17 @@ if [ ! -x "$TSC_BIN" ]; then
   echo "ERRO: $TSC_BIN não encontrado — rode 'npm ci' antes do ratchet."
   exit 1
 fi
-count=$("$TSC_BIN" -p tsconfig.app.json --noUnusedLocals --noEmit 2>&1 | grep -c "error TS" || true)
+# GUARD: tsc que não chegou a checar (OOM, tsconfig quebrado) não pode virar "0 erros".
+tsc_out=$(mktemp)
+"$TSC_BIN" -p tsconfig.app.json --noUnusedLocals --noEmit > "$tsc_out" 2>&1
+tsc_status=$?
+count=$(grep -c "error TS" "$tsc_out" || true)
+infra=$(grep "error TS" "$tsc_out" | grep -vcE '^[^ ]+\.[cm]?tsx?\([0-9]+,[0-9]+\): error TS' || true)
+rm -f "$tsc_out"
+if [ "$tsc_status" -gt 2 ] || [ "${infra:-0}" -gt 0 ] || { [ "$tsc_status" -ne 0 ] && [ "$count" -eq 0 ]; }; then
+  echo "ERRO: tsc não conseguiu checar o projeto (status=$tsc_status, diagnósticos de infra=${infra:-0}, erros=$count)."
+  exit 2
+fi
 
 if [ "$1" = "--update" ]; then
   # Guarda de regressão: se a baseline em main for menor, recusar o aumento
@@ -71,6 +87,9 @@ if [ "$1" = "--update" ]; then
   # workflow via RATCHET_OVERRIDE=1).
   if [ -f "$BASELINE_FILE" ]; then
     current_baseline=$(cat "$BASELINE_FILE")
+    case "$current_baseline" in
+      ''|*[!0-9]*) echo "ERRO: $BASELINE_FILE inválido (esperado um inteiro): '$current_baseline'."; exit 2 ;;
+    esac
     if [ "$count" -gt "$current_baseline" ] && [ "${RATCHET_OVERRIDE:-0}" != "1" ]; then
       echo "ERRO: --update aumentaria a baseline de $current_baseline para $count erros."
       echo "Isso é uma regressão. Para permitir explicitamente, adicione o label"
@@ -89,6 +108,9 @@ if [ ! -f "$BASELINE_FILE" ]; then
 fi
 
 baseline=$(cat "$BASELINE_FILE")
+case "$baseline" in
+  ''|*[!0-9]*) echo "ERRO: $BASELINE_FILE inválido (esperado um inteiro): '$baseline'."; exit 2 ;;
+esac
 
 if [ "$count" -gt "$baseline" ]; then
   echo "FALHA noUnusedLocals ratchet: $count erros (baseline: $baseline)"
