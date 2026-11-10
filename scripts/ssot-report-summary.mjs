@@ -19,7 +19,7 @@ const argv = process.argv.slice(2);
 const inArg = argv.find((a) => a.startsWith('--in='));
 const IN_PATH = inArg ? inArg.slice(5) : 'ssot-report.json';
 
-const NOISE = /^(?:npm (?:warn|notice|info)|>|\s*$|===|---)/i;
+const NOISE = /^(?:npm (?:warn|notice|info)|>|\s*$|===|---|✅|✓|\[ok\])/i;
 
 function countErrorLines(text) {
   return String(text || '')
@@ -35,7 +35,9 @@ function fmtMs(ms) {
 }
 
 function build(report) {
-  const gates = Array.isArray(report.details) ? report.details : [];
+  // `null`/não-objeto (relatório truncado) → relatório vazio em vez de TypeError (o script promete exit 0).
+  if (!report || typeof report !== 'object') report = {};
+  const gates = Array.isArray(report?.details) ? report.details : [];
   const total = gates.length;
   const passed = gates.filter((g) => g.ok).length;
   const failed = total - passed;

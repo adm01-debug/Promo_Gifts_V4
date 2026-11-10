@@ -23,7 +23,12 @@ const DOW_NAMES = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 const args = process.argv.slice(2);
 const JSON_MODE = args.includes('--json');
 const minSpacingArg = args.indexOf('--min-spacing');
-const MIN_SPACING = minSpacingArg !== -1 ? parseInt(args[minSpacingArg + 1]) : 20;
+const MIN_SPACING = minSpacingArg !== -1 ? parseInt(args[minSpacingArg + 1], 10) : 20;
+// GUARD: `--min-spacing` sem valor/não numérico virava NaN e o gate dizia "0 colisões … ≥NaN min" (exit 0).
+if (!Number.isInteger(MIN_SPACING) || MIN_SPACING < 0) {
+  console.error(`❌ --min-spacing inválido: "${args[minSpacingArg + 1] ?? ''}" (esperado inteiro >= 0).`);
+  process.exit(2);
+}
 
 // Patterns that indicate a workflow uses a privileged token (PAT or read-only service token)
 const PRIVILEGED_PATTERNS = [
