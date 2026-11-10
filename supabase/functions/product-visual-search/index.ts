@@ -15,6 +15,7 @@ import { getCorsHeaders } from '../_shared/cors.ts';
 import { authenticateRequest } from '../_shared/auth.ts';
 import { runBotProtection } from '../_shared/bot-protection.ts';
 import { getOrCreateRequestId } from '../_shared/request-id.ts';
+import { createStructuredLogger } from '../_shared/structured-logger.ts';
 import { resolveCredential } from '../_shared/credentials.ts';
 import { z } from '../_shared/zod-validate.ts';
 
@@ -284,6 +285,8 @@ Deno.serve(async (req: Request) => {
   }
 
   const requestId = getOrCreateRequestId(req);
+  const log = createStructuredLogger({ fn: 'product-visual-search', requestId, req });
+  log.info('request_start');
 
   let userId: string | undefined;
 

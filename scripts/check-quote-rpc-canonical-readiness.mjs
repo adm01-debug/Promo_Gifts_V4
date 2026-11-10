@@ -125,8 +125,14 @@ async function loadRows() {
     return { kind: 'fixture', rows };
   }
 
-  if (process.env.SUPABASE_PROJECT_REF !== CANONICAL_PROJECT_REF) {
+  if (process.env.SUPABASE_PROJECT_REF && process.env.SUPABASE_PROJECT_REF !== CANONICAL_PROJECT_REF) {
     return { kind: 'wrong-project' };
+  }
+  if (!process.env.SUPABASE_PROJECT_REF && !process.env.SUPABASE_ACCESS_TOKEN) {
+    const url = (process.env.VITE_SUPABASE_URL ?? '').replace(/\/$/, '');
+    if (!url.includes(CANONICAL_PROJECT_REF)) {
+      return { kind: 'missing-config' };
+    }
   }
   return querySupabaseReadOnly(SQL);
 }

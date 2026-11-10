@@ -31,11 +31,11 @@ name: Deploy Gates
 #  1.17 codeowners-coverage — CODEOWNERS coverage de gate files (E72/GAP 2026-10)
 #  1.18 conflict-ledger   — ledger de conflitos semânticos (E188)
 #  E23  secret-scan       — gitleaks bloqueante (E172)
-#  E23  secrets-check      — verifica presença de secrets E2E (saída has_e2e)
+#  E23  secrets-check      — informa disponibilidade de credenciais E2E (não bloqueante)
 #  E89  cron-spacing       — workflows privilegiados espaçados ≥ 20 min (GAP-4)
 #  2    unit-tests         — vitest
 #  2.5  pg-integrity       — integridade transacional PostgreSQL
-#  3    e2e-smoke          — Playwright smoke (login + dashboard), se has_e2e=true
+#  3    e2e-smoke          — Playwright smoke; Gate Final reprova skip em execução confiável
 #  4    lighthouse         — perf≥75 a11y≥90 seo≥95 pwa≥80 (opcional)
 #  5    seo-sanity         — canonical/og:url/twitter:url corretos
 #  5.5  rpc-restore-cart   — RPC restore_seller_cart presente no canônico
@@ -55,6 +55,7 @@ concurrency:
 
 permissions:
   contents: read
+  pull-requests: read
 
 
 defaults:
@@ -78,7 +79,7 @@ jobs:
           persist-credentials: false
       - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         id: filter
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
         with:
           filters: |
             code:
@@ -107,6 +108,9 @@ jobs:
           else
             echo "docs_only=false" >> "$GITHUB_OUTPUT"
           fi
+
+  e2e-relevance:
+    uses: ./.github/workflows/_e2e-relevance.yml
 
   # ============================================================
   # GATE 0: SSOT Supabase — DEVE PASSAR antes de todos os outros
@@ -165,6 +169,9 @@ jobs:
         with:
           fail-on-severity: high
           allow-licenses: MIT, Apache-2.0, ISC, BSD-2-Clause, BSD-3-Clause, 0BSD, CC0-1.0, Unlicense, CC-BY-4.0, Python-2.0
+          # psycopg (LGPL-3.0): driver Postgres do coletor scripts/supabase_snapshot/, roda só no runner do
+          # contexto.yml — não entra no bundle nem é distribuído. Exceção por pacote; a lista acima não muda.
+          allow-dependencies-licenses: pkg:pypi/psycopg
 
   lint-typecheck:
     name: Gate 1 - Lint + TypeScript
@@ -313,14 +320,18 @@ jobs:
           # Cobertura do manifest de autorização — o script existia órfão
           # de workflow (achado da validação exaustiva 2026-10).
           node scripts/check-edge-authorization.mjs
-      # Gate 1.13 — Baseline assinado de RLS policies (auditoria 20-dim Onda 3).
-      # Bloqueante quando credenciado; sem SUPABASE_ACCESS_TOKEN (forks) ou com
-      # baseline pendente de seed inicial, degrada para static-pass.
-      - name: Gate 1.13 — Policies baseline vs pg_policies live (bloqueante c/ credenciais)
-        if: needs.changes.outputs.docs_only != 'true'
-        run: node scripts/check-policies-baseline.mjs
+      # Gate 1.13 — comparação live obrigatória em push e PRs do mesmo repositório.
+      # Forks não recebem SUPABASE_ACCESS_TOKEN; neles roda apenas a validação estática.
+      - name: Gate 1.13 — Policies baseline vs pg_policies live (obrigatório)
+        if: needs.changes.outputs.docs_only != 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+        run: node scripts/check-policies-baseline.mjs --require-live
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
+      - name: Gate 1.13 — Policies baseline estático em PR de fork
+        if: needs.changes.outputs.docs_only != 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+        run: node scripts/check-policies-baseline.mjs
+        env:
           SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
       - name: Gate 1.13.1 — RLS sem policy (E045)
         if: needs.changes.outputs.docs_only != 'true'
@@ -330,7 +341,10 @@ jobs:
           SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
       - name: Gate 1.13.2 — Anon-insert rate guard manifest (E049)
         if: needs.changes.outputs.docs_only != 'true'
-        run: node scripts/check-anon-insert-rate-guard.mjs --gate
+        run: node scripts/check-anon-insert-rate-guard.mjs --gate --require-live
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
       - name: Gate 1.13.3 — Migration receipts (E055)
         if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/check-migration-receipts.mjs --gate
@@ -398,7 +412,7 @@ jobs:
             fi
           done
           # _shared/ é o helper aprovado — excluir da busca de literal wildcard (E95)
-          literal=$(grep -rl "'Access-Control-Allow-Origin': '\*'" supabase/functions/ \
+          literal=$(grep -Frl "'Access-Control-Allow-Origin': '*'" supabase/functions/ \
                      --exclude-dir=_shared || true)
           if [ -n "$literal" ]; then
             echo "FAIL: literal 'Access-Control-Allow-Origin: *' em:"
@@ -506,21 +520,22 @@ jobs:
           SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
 
   # ============================================================
-  # GATE E23: Verifica presença de secrets E2E
-  # Saída has_e2e=true habilita o Gate 3 (e2e-smoke).
-  # Sem os secrets, e2e-smoke é skipped graciosamente (E21+E23).
+  # GATE E23: informa a disponibilidade de secrets E2E.
+  # Não é bloqueante de forma independente; o Gate Final decide se um skip do Gate 3 é permitido.
   # ============================================================
   secrets-check:
     name: Gate E23 - Verifica secrets E2E
     needs: [ssot-gate]
     uses: ./.github/workflows/_secrets-check.yml
+    with:
+      fail_if_missing: true  # E007: falhar se credenciais E2E ausentes
     secrets: inherit
 
   e2e-smoke:
     name: Gate 3 - E2E Smoke
     runs-on: ubuntu-24.04
-    timeout-minutes: 20  # E24: E2E shard ≤ 20 min (aumentado de 15 — smoke levava ~14.5 min na prática)
-    needs: [ssot-gate, secrets-check, changes]
+    timeout-minutes: 30  # E24: E2E shard ≤ 30 min (aumentado de 20 — smoke estourou 20 min em 22:39Z por saturação Auth transitória)
+    needs: [ssot-gate, secrets-check, changes, e2e-relevance]
     if: always() && needs.ssot-gate.result == 'success' && needs.secrets-check.result == 'success' && (needs.changes.result == 'skipped' || needs.changes.outputs.docs_only != 'true')
     # E015+E14: sem guard de auth — Gate 3 executa quando há código; docs-only faz skip gracioso
     env:
@@ -531,15 +546,30 @@ jobs:
         with:
           persist-credentials: false  # E32
       - name: Setup Node CI
+        if: needs.e2e-relevance.outputs.relevant != 'false'
         uses: ./.github/actions/setup-node-ci
+      - name: Cache Playwright browsers
+        if: needs.e2e-relevance.outputs.relevant != 'false'
+        id: cache-playwright
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
       - name: Install Playwright browsers
+        if: needs.e2e-relevance.outputs.relevant != 'false' && steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
       # E16: checks de smoke migrados de e2e.yml (único dono de chromium-smoke).
       - name: Validar doc de auditoria do smoke (drift check)
+        if: needs.e2e-relevance.outputs.relevant != 'false'
         run: node scripts/e2e-smoke-coverage-doc.mjs --check
       - name: Validar tags @smoke no spec do gate
+        if: needs.e2e-relevance.outputs.relevant != 'false'
         run: node scripts/check-smoke-tags.mjs
+      - name: Bypass E2E para mudança exclusivamente unitária
+        if: needs.e2e-relevance.outputs.relevant == 'false'
+        run: echo "::notice::Mudança sem impacto de runtime/E2E; Gate 3 aprovado sem acessar o Supabase de produção."
       - name: Run Playwright smoke tests
+        if: needs.e2e-relevance.outputs.relevant != 'false'
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
@@ -547,8 +577,6 @@ jobs:
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
           E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
-          # E015: mock auth ativo por padrão — evita falha E21 em CI com creds inválidas
-          E2E_MOCK_AUTH: '1'
         run: |
           set -euo pipefail
           if [ ! -d "e2e" ] && [ ! -d "tests/e2e" ] && [ ! -d "playwright" ]; then
@@ -758,7 +786,7 @@ jobs:
             BASE="HEAD~1"
           fi
           changed=$(git diff --name-only "${BASE}...${HEAD_SHA}" 2>/dev/null | \
-            grep -cE '^supabase/(migrations/|baseline/|config\.toml)|^scripts/drift-baseline\.mjs|\.github/workflows/db-schema-drift-check\.yml' \
+            grep -cE '^supabase/(migrations/|baseline/|config\.toml)|^scripts/(drift-baseline|check-event-triggers-drift|check-cron-drift)\.mjs|\.github/workflows/db-schema-drift-check\.yml' \
             || echo 0)
           if [ "$changed" -gt 0 ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -822,7 +850,6 @@ jobs:
       - lint-typecheck
       - unit-tests
       - database-integrity
-      - secrets-check
       - e2e-smoke
       - secret-scan
       # lighthouse removido de needs (Gate 4 optional, continue-on-error:true — E03)
@@ -840,7 +867,6 @@ jobs:
           R_LINT:          ${{ needs.lint-typecheck.result }}
           R_UNIT:          ${{ needs.unit-tests.result }}
           R_DB_INT:        ${{ needs.database-integrity.result }}
-          R_SECRETS:       ${{ needs.secrets-check.result }}
           R_E2E:           ${{ needs.e2e-smoke.result }}
           R_SEO:           ${{ needs.seo-sanity.result }}
           R_RESTORE:       ${{ needs.restore-cart-rpc-gate.result }}
@@ -872,7 +898,6 @@ jobs:
           ok_gate "$R_UNIT"  "Gate 2 Unit Tests"
           [[ "$R_SEO"       == "success" ]] || fail_gate "Gate 5 SEO Sanity falhou (${R_SEO})"
           ok_gate "$R_BUILD" "Gate 6 Build"
-          [[ "$R_SECRETS"      == "success" ]] || fail_gate "Gate E23 Secrets Check falhou (${R_SECRETS})"
           [[ "$R_SECRET_SCAN"  == "success" ]] || fail_gate "Gate E23 Secret Scan (gitleaks) falhou (${R_SECRET_SCAN})"
           # E040: schema-drift-gate é bloqueante quando mudanças de schema foram detectadas; skip = sem mudança
           [[ "$R_SCHEMA_DRIFT" == "success" || "$R_SCHEMA_DRIFT" == "skipped" ]] || \
@@ -906,15 +931,14 @@ jobs:
               fail_gate "Gate 5.5 restore-cart falhou (${R_RESTORE}) — fora de fork/Dependabot"
           fi
 
-          # ── Gate 3 e2e-smoke: skip em docs-only (E14) ou PR sem has_e2e (E21+E23) ──
-          # Em push para main: E2E_USER_* existem (09/10); skip = falha de configuração.
+          # ── Gate 3 e2e-smoke: skip só em docs-only ou PR de fork sem secrets ──
           if [[ "$R_E2E" == "skipped" ]]; then
             if [[ "$DOCS_ONLY" == "true" ]]; then
               echo "::notice::Gate 3 e2e-smoke skipped (docs-only PR — E14)"
-            elif [[ "$GITHUB_EVENT_NAME" != "pull_request" ]]; then
-              fail_gate "Gate 3 e2e-smoke skipped não permitido em push — verifique secrets E2E_USER_EMAIL/PASSWORD"
+            elif [[ "$GITHUB_EVENT_NAME" == "pull_request" && "$IS_FORK" == "true" ]]; then
+              echo "::warning::Gate 3 e2e-smoke skipped (PR de fork sem secrets E2E — E59)"
             else
-              echo "::warning::Gate 3 e2e-smoke skipped (has_e2e=false em PR)"
+              fail_gate "Gate 3 e2e-smoke skipped em execução confiável — verifique secrets E2E_USER_EMAIL/PASSWORD"
             fi
           elif [[ "$R_E2E" != "success" ]]; then
             fail_gate "Gate 3 E2E Smoke falhou (${R_E2E})"

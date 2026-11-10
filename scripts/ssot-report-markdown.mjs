@@ -30,7 +30,13 @@ function readInput() {
     );
     process.exit(2);
   }
-  return readFileSync(0, 'utf8');
+  // stdin fechado sem dados (ex.: chamada direta sem pipe ou --in) → static-pass
+  const raw = readFileSync(0, 'utf8');
+  if (!raw.trim()) {
+    console.log('[ssot-report-markdown] static-pass: sem --in e stdin vazio; relatório ignorado.');
+    process.exit(0);
+  }
+  return raw;
 }
 
 let report;
@@ -47,10 +53,11 @@ const esc = (s) =>
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
     .replace(/\|/g, '\\|')
     .replace(/\r?\n/g, ' ');
 const fence = (s, lang = '') =>
-  '```' + lang + '\n' + String(s ?? '').replace(/```/g, '`\u200b``') + '\n```';
+  '```' + lang + '\n' + String(s ?? '').replace(/```/g, '`​``') + '\n```';
 const badge = (ok) => (ok ? '🟢 PASS' : '🔴 FAIL');
 
 // Heurística: conta linhas do stderr que "parecem erro" para dar sinal ao revisor.

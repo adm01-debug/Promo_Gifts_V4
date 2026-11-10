@@ -21,6 +21,7 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { classifyTscRun } from './lib/tsc-run.mjs';
 
 const ROOT = process.cwd();
 const BASELINE_PATH = join(ROOT, '.tsc-baseline.json');
@@ -43,12 +44,13 @@ const res = spawnSync(process.execPath, [TSC_BIN, '-p', 'tsconfig.app.json', '--
   maxBuffer: 50 * 1024 * 1024,
 });
 
-if (res.status === null || res.error) {
-  console.error('❌ tsc falhou ao executar:', res.error?.message || 'desconhecido');
+const output = (res.stdout || '') + (res.stderr || '');
+// GUARD: sem tsc confiável a contagem seria 0 e o gate passaria (fail-open).
+const run = classifyTscRun({ status: res.status, signal: res.signal, error: res.error, output });
+if (!run.ok) {
+  console.error(`❌ ${run.reason}`);
   process.exit(2);
 }
-
-const output = (res.stdout || '') + (res.stderr || '');
 const lines = output.split('\n');
 
 const ERR_RE = /^(\S+\.tsx?)\(\d+,\d+\): error (TS\d+):/;

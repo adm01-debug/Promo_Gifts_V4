@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { untypedFrom } from '@/lib/supabase-untyped';
 import { searchCache } from './searchCache';
+import { useQuickSuggestions } from './useQuickSuggestions';
 import { pushRecentSearch } from './EmptySearchState';
 import { useDebounce, useSearchHistory } from '@/hooks/common';
 import {
@@ -278,6 +279,7 @@ export function useGlobalSearch() {
   // ── Popular products ──
   // product_popularity_30d view was removed; return empty until a replacement is created.
   const popularProducts: PopularProduct[] = [];
+  const quickSuggestions = useQuickSuggestions();
 
   // ── Typing suggestions ──
   useEffect(() => {
@@ -905,10 +907,7 @@ export function useGlobalSearch() {
     searchError,
     popularProducts,
     typingSuggestions,
-    // quickSuggestions: campo obrigatorio em GlobalSearchIdleState.
-    // Retorna [] por ora — o componente nao renderiza a secao quando vazio.
-    // Futuramente pode ser populado com sugestoes dinamicas.
-    quickSuggestions: [] as QuickSuggestion[],
+    quickSuggestions,
     voiceOverlayOpen,
     setVoiceOverlayOpen,
     handleOpenVoiceOverlay,

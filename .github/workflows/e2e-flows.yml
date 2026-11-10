@@ -7,10 +7,11 @@ name: E2E — Critical Flows & Error Boundaries
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
-    paths:  # E14: evitar CI em PRs doc-only
+    paths:
       - 'src/**'
+      - '!src/**/__tests__/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
       - 'e2e/**'
       - 'public/**'
       - 'package*.json'
@@ -18,6 +19,22 @@ on:
       - 'playwright.config.*'
       - 'vite.config.*'
       - '.github/workflows/e2e-flows.yml'
+      - '.github/scripts/e2e-relevance.mjs'
+  pull_request:
+    branches: [main]
+    paths:  # E14: evitar CI em PRs doc-only
+      - 'src/**'
+      - '!src/**/__tests__/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
+      - 'e2e/**'
+      - 'public/**'
+      - 'package*.json'
+      - '.nvmrc'
+      - 'playwright.config.*'
+      - 'vite.config.*'
+      - '.github/workflows/e2e-flows.yml'
+      - '.github/scripts/e2e-relevance.mjs'
   workflow_dispatch:
 
 concurrency:
@@ -32,6 +49,7 @@ env:
   VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
 permissions:
   contents: read
+  pull-requests: read
 
 
 defaults:
@@ -39,8 +57,13 @@ defaults:
     shell: bash
 
 jobs:
+  e2e-relevance:
+    uses: ./.github/workflows/_e2e-relevance.yml
+
   e2e-error-boundaries:
     name: E2E — Error Boundaries (sem auth)
+    needs: [e2e-relevance]
+    if: needs.e2e-relevance.outputs.relevant == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
 
@@ -82,6 +105,7 @@ jobs:
 
   e2e-full-flows:
     name: E2E — Full User Flows (authed)
+    needs: [e2e-error-boundaries]
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     if: github.event_name == 'push' || github.event_name == 'pull_request'
@@ -112,6 +136,7 @@ jobs:
             e2e/flows/25-quote-full-flow.spec.ts \
             e2e/flows/30-quote-wizard-validations.spec.ts \
             --project=chromium-authed \
+            --no-deps \
             --reporter=github,list,html,json
         env:
           E2E_BASE_URL: http://localhost:8080
@@ -125,6 +150,7 @@ jobs:
           npx playwright test \
             e2e/flows/26-catalog-to-kit-flow.spec.ts \
             --project=chromium-authed \
+            --no-deps \
             --reporter=github,list,html,json
         env:
           E2E_BASE_URL: http://localhost:8080
@@ -138,6 +164,7 @@ jobs:
           npx playwright test \
             e2e/flows/27-admin-critical-routes.spec.ts \
             --project=chromium-authed \
+            --no-deps \
             --reporter=github,list,html,json
         env:
           E2E_BASE_URL: http://localhost:8080
@@ -155,6 +182,7 @@ jobs:
           npx playwright test \
             e2e/flows/sidebar-tooltips.spec.ts \
             --project=chromium-authed \
+            --no-deps \
             --reporter=github,list,html,json
         env:
           E2E_BASE_URL: http://localhost:8080
@@ -168,6 +196,7 @@ jobs:
           npx playwright test \
             e2e/flows/sidebar-tooltips.spec.ts \
             --project=mobile-chrome \
+            --no-deps \
             --reporter=github,list,html,json
         env:
           E2E_BASE_URL: http://localhost:8080
@@ -181,6 +210,8 @@ jobs:
         uses: ./.github/actions/check-min-tests
         with:
           results-json: 'playwright-report/results-quote-flow.json'
+          # 25-quote-full-flow (6) + 30-quote-wizard-validations (3) = 9 testes
+          min: '9'
 
       - name: Upload full flows report
         if: always()
@@ -193,6 +224,7 @@ jobs:
 
   e2e-mobile:
     name: E2E — Mobile Critical Routes
+    needs: [e2e-full-flows]
     runs-on: ubuntu-24.04
     timeout-minutes: 20
 

@@ -19,6 +19,8 @@ import type { Json } from '@/integrations/supabase/types';
 import { newRequestId } from '@/lib/telemetry/requestId';
 import { validateKitStockForQuote } from '@/hooks/kit-builder/useKitStockValidation';
 import { validateKitPricesForQuote } from '@/hooks/kit-builder/useKitPriceValidation';
+import { validateKitMinQuantityForQuote } from '@/hooks/kit-builder/useKitMinQuantityValidation';
+import { validateKitFitsForQuote } from '@/hooks/kit-builder/useKitFitsValidation';
 
 export interface KitQuoteClient {
   client_cnpj?: string;
@@ -69,7 +71,12 @@ function readRetryReceipt(fingerprint: string): RetryableQuoteOperation | null {
       typeof value.kitGroupId === 'string' &&
       (value.sourceKitId === null || typeof value.sourceKitId === 'string')
     ) {
-      return { id: value.id, fingerprint, kitGroupId: value.kitGroupId, sourceKitId: value.sourceKitId };
+      return {
+        id: value.id,
+        fingerprint,
+        kitGroupId: value.kitGroupId,
+        sourceKitId: value.sourceKitId,
+      };
     }
   } catch {
     // Storage can be disabled by the browser. In-memory retry remains safe.
@@ -79,10 +86,7 @@ function readRetryReceipt(fingerprint: string): RetryableQuoteOperation | null {
 
 function writeRetryReceipt(operation: RetryableQuoteOperation): void {
   try {
-    globalThis.sessionStorage?.setItem(
-      operation.fingerprint,
-      JSON.stringify(operation),
-    );
+    globalThis.sessionStorage?.setItem(operation.fingerprint, JSON.stringify(operation));
   } catch {
     // An unavailable storage must not prevent a commercially valid submission.
   }
@@ -103,7 +107,7 @@ function toPersonalizationPayload(
   const width = personalization.width ?? null;
   const height = personalization.height ?? null;
   const unitCost = personalization.estimatedPrice;
-  if (typeof unitCost !== 'number' || !Number.isFinite(unitCost) || unitCost < 0) {
+  if (typeof unitCost !== 'number' || !Number.isFinite(unitCost) || unitCost <= 0) {
     throw new Error('Preço de personalização indisponível para criação do orçamento');
   }
   const productionNotes = [
@@ -333,8 +337,8 @@ export function useKitBuilderQuote() {
         retryableRequestRef.current?.fingerprint === fingerprint ||
         (sourceKitId && retryableRequestRef.current?.fingerprint === unsavedFingerprint)
           ? retryableRequestRef.current
-          : readRetryReceipt(fingerprint) ??
-            (sourceKitId ? readRetryReceipt(unsavedFingerprint) : null);
+          : (readRetryReceipt(fingerprint) ??
+            (sourceKitId ? readRetryReceipt(unsavedFingerprint) : null));
       // A real source-kit change is a new operation. Only an initially absent
       // id may later become populated by autosave without changing identity.
       const recoverableOperation =
@@ -375,6 +379,21 @@ export function useKitBuilderQuote() {
           );
         }
 
+        const liveMinQty = await validateKitMinQuantityForQuote(kitState.items, kitQuantity);
+        if (liveMinQty.status === 'unavailable') {
+          throw new KitQuoteValidationError(
+            'Não foi possível confirmar a quantidade mínima dos itens. Nenhum orçamento foi criado.',
+          );
+        }
+        if (liveMinQty.status === 'violations') {
+          const names = liveMinQty.violations
+            .map((v) => `${v.itemName} (mín. ${v.effectiveMin}, pedido ${v.required})`)
+            .join('; ');
+          throw new KitQuoteValidationError(
+            `Quantidade abaixo do mínimo em ${liveMinQty.violations.length} item(ns): ${names}. Ajuste as quantidades antes de criar o orçamento.`,
+          );
+        }
+
         const liveStock = await validateKitStockForQuote(kitState.items, kitState.box, kitQuantity);
         if (liveStock.status === 'unknown') {
           throw new KitQuoteValidationError(
@@ -384,6 +403,14 @@ export function useKitBuilderQuote() {
         if (liveStock.status === 'unavailable') {
           throw new KitQuoteValidationError(
             `Estoque insuficiente em ${liveStock.alerts.length} item(ns). Revise o kit antes de continuar.`,
+          );
+        }
+
+        const liveFits = await validateKitFitsForQuote(kitState.box, kitState.items);
+        if (liveFits.status === 'violations') {
+          const names = liveFits.violations.map((v) => v.itemName).join(', ');
+          throw new KitQuoteValidationError(
+            `${liveFits.violations.length} item(ns) não cabem na embalagem selecionada: ${names}. Revise o kit antes de continuar.`,
           );
         }
       }

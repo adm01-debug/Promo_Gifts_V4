@@ -18,8 +18,16 @@
       "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
     },
     {
-      "file": "analise-prs/dossies/PR-2731.md",
-      "ref": "supabase/migrations/20261029160339_add_kill_switch_hits_anon_rate_guard.sql"
+      "file": "analise-prs/dossies/PR-2426.md",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
+    },
+    {
+      "file": "analise-prs/dossies/PR-2432.md",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
+    },
+    {
+      "file": "analise-prs/dossies/PR-2714.md",
+      "ref": "supabase/migrations/20261027200000_supplier_stricker_rls_deny_all.sql"
     },
     {
       "file": "CONTRIBUTING.md",
@@ -1067,10 +1075,6 @@
     },
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
-      "ref": "supabase/migrations/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
       "ref": "supabase/migrations/20260611120000_fix_standardize_variant_fcode_fhex_swallowed_by_comment.sql"
     },
     {
@@ -1364,10 +1368,6 @@
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
       "ref": "supabase/migrations/20260610120000_silver_depara_01_apply_transform_color_resolver.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
-      "ref": "supabase/migrations/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql"
     },
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
@@ -1871,6 +1871,10 @@
     },
     {
       "file": "inventario/branches.json",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
+    },
+    {
+      "file": "inventario/branches.json",
       "ref": "supabase/migrations/20261015150000"
     },
     {
@@ -1884,6 +1888,30 @@
     {
       "file": "qa/reports/magazine-publish-fuzz-2026-07-15.md",
       "ref": "qa/migrations-draft/2026-07-15_magazine_public_token_trigger.sql"
+    },
+    {
+      "file": "scripts/ai-context/cenarios.mjs",
+      "ref": "supabase/migrations/001.sql"
+    },
+    {
+      "file": "scripts/ai-context/cenarios.mjs",
+      "ref": "supabase/migrations/1.sql"
+    },
+    {
+      "file": "scripts/ai-context/gerar.unit.mjs",
+      "ref": "supabase/migrations/_foreign/singu/001_foreign.sql"
+    },
+    {
+      "file": "scripts/ai-context/gerar.unit.mjs",
+      "ref": "supabase/migrations/_superseded/000_old.sql"
+    },
+    {
+      "file": "scripts/ai-context/gerar.unit.mjs",
+      "ref": "supabase/migrations/001_init.sql"
+    },
+    {
+      "file": "scripts/ai-context/gerar.unit.mjs",
+      "ref": "supabase/migrations/002_evolve.sql"
     },
     {
       "file": "scripts/build-drafts-pr-comment.mjs",

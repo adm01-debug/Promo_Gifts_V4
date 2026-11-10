@@ -219,7 +219,12 @@ export const ProductCard = memo(
 
       // BUG-4 FIX: Sincronização de cor selecionada entre Grid e PDP via store
       const setSelectedColor = useProductSelectionStore((s) => s.setSelectedColor);
+      const setSelectedVariant = useProductSelectionStore((s) => s.setSelectedVariant);
+      const clearSelectedColor = useProductSelectionStore((s) => s.clearSelectedColor);
       const selectedColorFromStore = useProductSelectionStore((s) => s.selectedColors[product.id]);
+      const selectedVariantIdFromStore = useProductSelectionStore(
+        (s) => s.selectedVariantIds[product.id],
+      );
 
       // Carrega variantes (com estoque/foto por cor) assim que o usuário interage com o card
       // — hover OU clique de cor — para evitar latência percebida no clique da bolinha.
@@ -246,6 +251,8 @@ export const ProductCard = memo(
         stock_quantity: product.stock ?? 0,
         color_swatches: productSwatchesData,
         has_colors: !!productSwatchesData?.length,
+        selected_color_name: selectedColorFromStore ?? null,
+        selected_variant_id: selectedVariantIdFromStore ?? null,
       });
       const useSwatchesV2 = swatchesV2Enabled && (productSwatchesData?.length ?? 0) > 0;
 
@@ -486,15 +493,14 @@ export const ProductCard = memo(
         }
       };
 
-      // Multi-variant carousel — `allMatchingVariants` é derivado acima
-      // (TDZ FIX: precisa estar antes do primeiro useEffect que o consome).
+      // Multi-variant carousel: allMatchingVariants precede o primeiro useEffect (TDZ).
       const hasMultipleVariants = allMatchingVariants.length > 1;
       const safeVariantIdx = hasMultipleVariants
         ? Math.min(activeVariantIdx, allMatchingVariants.length - 1)
         : 0;
       const currentVariant = hasMultipleVariants ? allMatchingVariants[safeVariantIdx] : null;
-      const activeColorName =
-        currentVariant?.name || getActiveColorName(product, activeColorFilter);
+      const fallbackColor = () => getActiveColorName(product, activeColorFilter);
+      const activeColorName = currentVariant?.name || selectedColorFromStore || fallbackColor();
 
       // Se houver uma cor ativa (selecionada ou filtrada), forçamos a imagem dessa cor
       const currentImageUrl = useMemo(() => {
@@ -615,7 +621,8 @@ export const ProductCard = memo(
               actionBusyRef.current ||
               variantPickerOpen ||
               collectionModalOpen ||
-              quickViewOpen
+              quickViewOpen ||
+              (e.target instanceof Element && e.target.closest('[role="radiogroup"]'))
             ) {
               e.stopPropagation();
               return;
@@ -807,7 +814,7 @@ export const ProductCard = memo(
                   swatchV2.selectVariant(variantId);
                   const sw = swatchV2.swatches.find((s) => s.variant_id === variantId);
                   if (sw?.color_name) {
-                    setSelectedColor(product.id, sw.color_name);
+                    setSelectedVariant(product.id, variantId, sw.color_name);
                     const currentUrl = new URL(window.location.href);
                     currentUrl.searchParams.set('cor', sw.color_name);
                     currentUrl.searchParams.set('pid', product.id);
@@ -820,11 +827,7 @@ export const ProductCard = memo(
                 onReset={() => {
                   feedback.light();
                   swatchV2.resetActive();
-                  useProductSelectionStore.setState((state) => {
-                    const next = { ...state.selectedColors };
-                    delete next[product.id];
-                    return { selectedColors: next };
-                  });
+                  clearSelectedColor(product.id);
                   setImageLoaded(false);
                   const currentUrl = new URL(window.location.href);
                   if (currentUrl.searchParams.get('pid') === product.id) {
@@ -866,11 +869,7 @@ export const ProductCard = memo(
                 onClear={() => {
                   feedback.light();
                   setActiveVariantIdx(0);
-                  useProductSelectionStore.setState((state) => {
-                    const next = { ...state.selectedColors };
-                    delete next[product.id];
-                    return { selectedColors: next };
-                  });
+                  clearSelectedColor(product.id);
                   setImageLoaded(false);
                   const currentUrl = new URL(window.location.href);
                   if (currentUrl.searchParams.get('pid') === product.id) {

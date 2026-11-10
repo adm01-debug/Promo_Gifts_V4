@@ -82,6 +82,30 @@ export function changedMigrationFilenames(diffOutput) {
 }
 
 /**
+ * Extrai arquivos adicionados ou renomeados no diff name-status.
+ * Uma migration pendente renomeada para uma nova versão é uma adição lógica:
+ * a versão antiga deixa de existir no checkout e a nova pode ter recibo
+ * "pendente" até ser aplicada via E15. Sem tratar R como A, Git reconhece
+ * renomeações de alto conteúdo compartilhado como `Rnnn` e o gate rejeita
+ * incorretamente essa substituição segura.
+ */
+export function addedOrRenamedMigrationFilenames(nameStatusOutput) {
+  const filenames = [];
+  for (const line of nameStatusOutput.split('\n')) {
+    const cells = line.split('\t');
+    const status = cells[0] ?? '';
+    const candidate = status === 'A' ? cells[1] : /^R\d+$/.test(status) ? cells[2] : null;
+    if (
+      candidate?.startsWith(MIGRATION_PATH_PREFIX)
+      && candidate.endsWith('.sql')
+    ) {
+      filenames.push(candidate.slice(MIGRATION_PATH_PREFIX.length));
+    }
+  }
+  return filenames;
+}
+
+/**
  * Conta quantas vezes cada versão aparece em backticks no log.
  * Retorna Map<version, count>.
  *
@@ -266,16 +290,17 @@ export function runCheck({
     };
   }
 
-  // E75: extrai filenames com diff-filter A (adicionados) para validação pendente
+  // E75: adicionadas e renomeadas para uma nova versão contam como inclusão
+  // lógica; renomeações detectadas pelo Git aparecem como Rnnn, não como A.
   let addedFilenames = null;
   if (injectedDiffOutput === null) {
     try {
       const addedOutput = execFileSync(
         'git',
-        ['diff', '--name-only', '--diff-filter=A', `origin/${baseRef}...HEAD`, '--', MIGRATIONS_RELATIVE_DIR],
+        ['diff', '--name-status', '--diff-filter=AR', `origin/${baseRef}...HEAD`, '--', MIGRATIONS_RELATIVE_DIR],
         { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] },
       );
-      addedFilenames = changedMigrationFilenames(addedOutput);
+      addedFilenames = addedOrRenamedMigrationFilenames(addedOutput);
     } catch {
       addedFilenames = null;
     }

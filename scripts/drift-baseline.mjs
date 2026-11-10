@@ -25,7 +25,7 @@
  *   prepare-workdir --ledger <json do migration list> --out <dir>
  *   filter-diff --diff <arquivo> --allowlist <arquivo> [--workdir <dir>]   (imprime o resíduo)
  */
-import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseSupabaseMigrationLedgerOutput } from './check-supabase-migration-ledger.mjs';
@@ -72,12 +72,12 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON SEQUENCES FROM anon, aut
 ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON FUNCTIONS FROM anon, authenticated, service_role;
 `;
 
-// O baseline não carrega linhas do pg_cron (só schema), mas as migrations
-// 20261024180003 (job `auto-block-offenders`) e 20261024190001 (jobid 235) exigem jobs já existentes. Em produção
-// ele vem de 20260623171736; no shadow, que parte do baseline, nunca existe e o
-// replay aborta com "job auto-block-offenders não encontrado". Esta semente é
-// gravada como migration B+1 na pasta temporária (jobs são dado, não schema:
-// não alteram o diff). Idempotente e tolerante a shadow sem pg_cron.
+// O baseline não carrega certos dados de infraestrutura, mas migrations de
+// replay dependem deles: linhas do pg_cron usadas por 20261024180003,
+// 20261024190001 e 20261027180000, além da associação auth.users →
+// supabase_realtime removida por 20261101140001. Em produção esses estados
+// vieram antes do baseline; no shadow, que parte do dump sem dados, não existem.
+// Esta semente B+1 recria apenas as pré-condições históricas e é idempotente.
 export const REPLAY_CRON_SEED_FILE = 'drift_replay_cron_seed.sql';
 export const REPLAY_CRON_SEED_SQL = `
 -- Semente de jobs do pg_cron para o replay (scripts/drift-baseline.mjs).
@@ -85,24 +85,105 @@ DO $seed$
 DECLARE
   v_id bigint;
   v_n int := 0;
+  v_fixed_ids bigint[] := ARRAY[114, 224, 235, 241, 243, 276, 292, 303]::bigint[];
+  v_late_ids bigint[] := ARRAY[241, 243, 276, 292, 303]::bigint[];
 BEGIN
   IF to_regclass('cron.job') IS NOT NULL
      AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'auto-block-offenders') THEN
     PERFORM cron.schedule('auto-block-offenders', '1,6,11,16,21,26,31,36,41,46,51,56 * * * *', 'SELECT 1');
   END IF;
-  -- 20261024190001 e 20261025002500 exigem este job com jobid=235. O role do
-  -- replay não tem UPDATE em cron.job: avança a sequence agendando/removendo
-  -- jobs temporários até o próximo jobid ser 235.
+  -- 20261024190001 exige este job com jobid=235. Migrations
+  -- posteriores alteram jobs pelos IDs fixos 114/224/241/243/276/292/303.
+  -- O role do replay não tem UPDATE em cron.job: avança a sequence por meio da
+  -- API pública, preservando somente os IDs que o histórico exige.
   IF to_regclass('cron.job') IS NOT NULL
      AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'image-dimensions-backfill') THEN
     LOOP
-      v_id := cron.schedule('drift-seed-tmp-' || v_n, '0 * * * *', 'SELECT 1');
+      v_id := cron.schedule('drift-seed-tmp-' || v_n, '0 0 1 1 *', 'SELECT 1');
       v_n := v_n + 1;
-      EXIT WHEN v_id >= 234 OR v_n > 1000;
-      PERFORM cron.unschedule(v_id);
+      IF NOT (v_id = ANY(ARRAY[114, 224]::bigint[])) THEN
+        PERFORM cron.unschedule(v_id);
+      END IF;
+      EXIT WHEN v_id >= 234;
+      IF v_n > 1000 THEN
+        RAISE EXCEPTION 'drift replay: não foi possível alcançar o jobid 234';
+      END IF;
     END LOOP;
-    PERFORM cron.unschedule(v_id);
-    PERFORM cron.schedule('image-dimensions-backfill', '0 * * * *', 'SELECT 1');
+    v_id := cron.schedule('image-dimensions-backfill', '0 * * * *', 'SELECT 1');
+    IF v_id <> 235 THEN
+      RAISE EXCEPTION 'drift replay: image-dimensions-backfill recebeu jobid %, esperado 235', v_id;
+    END IF;
+  END IF;
+  IF to_regclass('cron.job') IS NOT NULL
+     AND NOT EXISTS (
+       SELECT 1 FROM cron.job WHERE jobid = 235 AND jobname = 'image-dimensions-backfill'
+     ) THEN
+    RAISE EXCEPTION 'drift replay: jobid 235 não pertence a image-dimensions-backfill';
+  END IF;
+  -- 20261027180000 exige o job legado presente e inativo antes de reativá-lo
+  -- com */10. O dump de schema não preserva linhas de cron.job, então criamos
+  -- somente o estado mínimo da pré-condição; a migration real continua sendo
+  -- responsável por alterar schedule/active e validar a pós-condição.
+  IF to_regclass('cron.job') IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'generate-blurhashes') THEN
+    v_id := cron.schedule(
+      'generate-blurhashes',
+      '1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59 * * * *',
+      'SELECT 1'
+    );
+    PERFORM cron.alter_job(job_id := v_id, active := false);
+  END IF;
+  -- Avança até o maior ID fixo restante. Jobs intermediários são removidos;
+  -- placeholders nos IDs históricos ficam com comando inofensivo SELECT 1 e
+  -- terão apenas o schedule alterado pelas migrations reais.
+  IF to_regclass('cron.job') IS NOT NULL
+     AND EXISTS (
+       SELECT 1
+       FROM unnest(v_late_ids) AS required(jobid)
+       WHERE NOT EXISTS (SELECT 1 FROM cron.job AS job WHERE job.jobid = required.jobid)
+     ) THEN
+    LOOP
+      v_id := cron.schedule('drift-seed-tmp-' || v_n, '0 0 1 1 *', 'SELECT 1');
+      v_n := v_n + 1;
+      IF NOT (v_id = ANY(v_late_ids)) THEN
+        PERFORM cron.unschedule(v_id);
+      END IF;
+      EXIT WHEN NOT EXISTS (
+        SELECT 1
+        FROM unnest(v_late_ids) AS required(jobid)
+        WHERE NOT EXISTS (SELECT 1 FROM cron.job AS job WHERE job.jobid = required.jobid)
+      );
+      IF v_id >= 303 OR v_n > 1000 THEN
+        RAISE EXCEPTION 'drift replay: não foi possível materializar os jobids fixos até 303 (último=%)', v_id;
+      END IF;
+    END LOOP;
+  END IF;
+  IF to_regclass('cron.job') IS NOT NULL
+     AND EXISTS (
+       SELECT 1
+       FROM unnest(v_fixed_ids) AS required(jobid)
+       WHERE NOT EXISTS (SELECT 1 FROM cron.job AS job WHERE job.jobid = required.jobid)
+     ) THEN
+    RAISE EXCEPTION 'drift replay: conjunto de jobids fixos incompleto';
+  END IF;
+END
+$seed$;
+
+-- 20261101140001 prova a remoção de auth.users da publication. O dump de
+-- schema preserva a publication, mas não sua lista de tabelas; restaure somente
+-- a associação que a migration histórica precisa remover.
+DO $seed$
+BEGIN
+  IF to_regclass('auth.users') IS NOT NULL
+     AND EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime')
+     AND NOT EXISTS (
+       SELECT 1
+       FROM pg_publication_tables
+       WHERE pubname = 'supabase_realtime'
+         AND schemaname = 'auth'
+         AND tablename = 'users'
+     ) THEN
+    EXECUTE 'ALTER PUBLICATION supabase_realtime ADD TABLE auth.users';
   END IF;
 END
 $seed$;
@@ -261,6 +342,35 @@ export function replayFileName(baselineVersion, index, original) {
   return `${version}_${original}`;
 }
 
+// O Supabase CLI aplica migrations de replay via pipeline do libpq. PostgreSQL
+// recusa CREATE INDEX CONCURRENTLY nesse modo, embora a mesma migration seja
+// válida no workflow oficial (sessão standalone). No shadow descartável não há
+// tráfego concorrente; remover apenas CONCURRENTLY preserva o índice resultante
+// sem alterar o arquivo histórico nem esconder outros erros SQL.
+const REPLAY_PIPELINE_REWRITES = new Map([
+  ['20261101140003_sb0006_index_kit_fk_user_id.sql', { concurrentlyIndexes: 2 }],
+]);
+
+export function sanitizeReplayMigration(fileName, sql) {
+  const expected = REPLAY_PIPELINE_REWRITES.get(fileName)?.concurrentlyIndexes;
+  if (expected === undefined) return sql;
+
+  let rewritten = 0;
+  const output = sql.replace(
+    /^(\s*CREATE\s+(?:UNIQUE\s+)?INDEX)\s+CONCURRENTLY\b/gim,
+    (statement) => {
+      rewritten += 1;
+      return statement.replace(/\s+CONCURRENTLY$/i, '');
+    },
+  );
+  if (rewritten !== expected) {
+    throw new Error(
+      `${fileName}: esperado(s) ${expected} CREATE INDEX CONCURRENTLY no replay; encontrado(s) ${rewritten}`,
+    );
+  }
+  return output;
+}
+
 export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef }) {
   // projectRef entra numa string TOML: aspas/quebra de linha reescreveriam o
   // config.toml (ex.: trocar major_version do shadow).
@@ -286,7 +396,8 @@ export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef })
   // cron.job já está sem privilégio. As migrations replayadas começam em B+2.
   writeFileSync(join(outMigrations, replayFileName(baseline.version, 0, REPLAY_CRON_SEED_FILE)), REPLAY_CRON_SEED_SQL);
   replay.forEach((f, i) => {
-    copyFileSync(join(migrationsDir, f), join(outMigrations, replayFileName(baseline.version, i + 1, f)));
+    const replaySql = sanitizeReplayMigration(f, readFileSync(join(migrationsDir, f), 'utf8'));
+    writeFileSync(join(outMigrations, replayFileName(baseline.version, i + 1, f)), replaySql);
   });
   return {
     baselineVersion: baseline.version,
@@ -422,26 +533,45 @@ function roundTripRewrite(line, counts) {
 export function sanitizeBaselineForReplay(sql) {
   const kept = [];
   const removed = [];
-  const rewrites = { varcharArrayCasts: 0, policyRoleOrders: 0 };
+  const rewrites = { varcharArrayCasts: 0, policyRoleOrders: 0, materializedViewPopulation: 0 };
   const state = { quote: false, ident: false, dollar: null };
   const inLiteral = () => state.quote || state.ident || state.dollar;
   let skipping = false;
+  let inMaterializedView = false;
   sql.split('\n').forEach((line, index) => {
     const atStatementStart = !skipping && !inLiteral();
     if (atStatementStart && isStatementMissingFromDump(line)) {
       skipping = true;
       removed.push({ line: index + 1, statement: line.trim().slice(0, 90) });
     }
+    if (!skipping && !inLiteral() && /^\s*CREATE\s+MATERIALIZED\s+VIEW\b/i.test(line)) {
+      inMaterializedView = true;
+    }
+    // Schema-only dumps create materialized views with WITH NO DATA even when
+    // the live object is populated. That catalog flag is not schema drift. The
+    // shadow has empty source tables, so omit only this standalone pg_dump
+    // clause to align relispopulated without suppressing query-definition DDL.
+    const materializedViewNoData = inMaterializedView
+      && /^([ \t]*)WITH\s+NO\s+DATA;[ \t]*$/i.exec(line);
     const startedOutside = !skipping && !inLiteral();
     const terminated = scanLine(line, state);
     // `$` na linha só impede a reescrita quando pode ser dollar-quote (corpo de
     // função inline); policy tem `$` legítimo em regex de string ('…$').
     const rewritable = startedOutside && !inLiteral() && (!line.includes('$') || line.startsWith('CREATE POLICY '));
     if (skipping) {
-      if (terminated && !inLiteral()) skipping = false;
+      if (terminated && !inLiteral()) {
+        skipping = false;
+        inMaterializedView = false;
+      }
       return;
     }
-    kept.push(rewritable ? roundTripRewrite(line, rewrites) : line);
+    if (materializedViewNoData) {
+      rewrites.materializedViewPopulation += 1;
+      kept.push(`${materializedViewNoData[1]};`);
+    } else {
+      kept.push(rewritable ? roundTripRewrite(line, rewrites) : line);
+    }
+    if (terminated && !inLiteral()) inMaterializedView = false;
   });
   return { sql: kept.join('\n'), removed, rewrites };
 }

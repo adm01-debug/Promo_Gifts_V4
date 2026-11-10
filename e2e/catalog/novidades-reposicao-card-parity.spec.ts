@@ -12,6 +12,80 @@ import { gotoAndSettle } from '../helpers/nav';
 
 const TOL_PX = 4;
 
+type RouteReadinessDiagnostics = {
+  url: string;
+  readyState: string;
+  title: string;
+  rootChildCount: number;
+  rootText: string;
+  authLoading: boolean;
+  nprogressBusy: boolean;
+  resources: Array<{
+    name: string;
+    initiatorType: string;
+    durationMs: number;
+    transferSize: number;
+    responseStatus: number | null;
+  }>;
+};
+
+async function captureRouteReadinessDiagnostics(
+  page: import('@playwright/test').Page,
+): Promise<RouteReadinessDiagnostics> {
+  return page.evaluate(() => {
+    const root = document.querySelector('#root');
+    const resources = performance
+      .getEntriesByType('resource')
+      .filter(
+        (entry): entry is PerformanceResourceTiming => entry instanceof PerformanceResourceTiming,
+      )
+      .filter((entry) => entry.initiatorType === 'script' || entry.initiatorType === 'fetch')
+      .slice(-80)
+      .map((entry) => ({
+        name: entry.name,
+        initiatorType: entry.initiatorType,
+        durationMs: Math.round(entry.duration),
+        transferSize: entry.transferSize,
+        responseStatus:
+          'responseStatus' in entry && typeof entry.responseStatus === 'number'
+            ? entry.responseStatus
+            : null,
+      }));
+
+    return {
+      url: window.location.href,
+      readyState: document.readyState,
+      title: document.title,
+      rootChildCount: root?.children.length ?? 0,
+      rootText: (root?.textContent ?? '').replace(/\s+/g, ' ').trim().slice(0, 2_000),
+      authLoading: document.querySelector('[data-state="loading"]') !== null,
+      nprogressBusy: document.documentElement.classList.contains('nprogress-busy'),
+      resources,
+    };
+  });
+}
+
+async function expectRouteTitle(
+  page: import('@playwright/test').Page,
+  testInfo: import('@playwright/test').TestInfo,
+  testId: string,
+  timeout = 45_000,
+) {
+  try {
+    await expect(page.getByTestId(testId)).toBeVisible({ timeout });
+  } catch (error) {
+    const diagnostics = await captureRouteReadinessDiagnostics(page);
+    await testInfo.attach('route-readiness-diagnostics.json', {
+      body: Buffer.from(JSON.stringify(diagnostics, null, 2)),
+      contentType: 'application/json',
+    });
+    throw new Error(
+      `[route-readiness] ${testId} ausente após ${timeout}ms: ${JSON.stringify(diagnostics)}`,
+      { cause: error },
+    );
+  }
+}
+
 /**
  * Tolerância por breakpoint — refletindo as regras do BaseProductGridCard:
  *  - mobile  (< 640): min-h-[400px] — px-snap pode variar até 3px no DPR mobile.
@@ -56,7 +130,8 @@ async function measureFirstCard(page: import('@playwright/test').Page, listSelec
     const isEmptyDatasetTimeout =
       e instanceof Error &&
       (e.constructor.name === 'TimeoutError' ||
-       (msg.includes('toBeVisible') && (msg.includes('Timeout') || msg.includes('element(s) not found'))));
+        (msg.includes('toBeVisible') &&
+          (msg.includes('Timeout') || msg.includes('element(s) not found'))));
     if (!isEmptyDatasetTimeout) throw e;
     return null;
   }
@@ -68,9 +143,9 @@ async function measureFirstCard(page: import('@playwright/test').Page, listSelec
   const img = first.locator('img').first();
   const imgBox = (await img.count()) > 0 ? await img.boundingBox() : null;
   // Rodapé (preço + estoque) — usado para validar alinhamento bottom.
-  const footer = first.locator(
-    '[data-testid="product-card-footer"], [data-testid$="-card-footer"]',
-  ).first();
+  const footer = first
+    .locator('[data-testid="product-card-footer"], [data-testid$="-card-footer"]')
+    .first();
   // boundingBox() retorna null para elementos em rows absolutamente posicionados
   // do virtualizer; getBoundingClientRect() via evaluate é mais robusto.
   let footerBox: { x: number; y: number; width: number; height: number } | null = null;
@@ -89,7 +164,20 @@ async function measureFirstCard(page: import('@playwright/test').Page, listSelec
 }
 
 test.describe('Paridade visual — cards Novidades vs Reposição', () => {
+  // Falha fechada: se um deep-link autenticado não consegue montar a rota,
+  // interrompe a suíte antes de gerar treze resultados enganadores e centenas
+  // de megabytes de vídeo. O retry desta barreira continua exercitando um boot
+  // inteiramente novo; não transforma uma falha funcional em skip.
+  test.describe.configure({ mode: 'serial' });
   test.beforeEach(() => requireAuth());
+
+  test('deep-link autenticado de Novidades conclui o boot', async ({ page }, testInfo) => {
+    // Intencional: a barreira mede o deep-link bruto e precisa capturar o DOM
+    // antes que os waits best-effort de gotoAndSettle consumam o timeout.
+    // eslint-disable-next-line no-restricted-syntax
+    await page.goto('/novidades', { waitUntil: 'domcontentloaded', timeout: 20_000 });
+    await expectRouteTitle(page, testInfo, 'page-title-novidades');
+  });
 
   test('cards têm mesmas dimensões e imagem 1:1 nos dois módulos', async ({ page }, testInfo) => {
     // Novidades
@@ -99,7 +187,10 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       page,
       'div[role="list"][aria-label="Grade de novidades"]',
     );
-    if (!novelty?.box) { test.skip(true, '[E108] Sem novidades no dataset (ambiente sem dados).'); return; }
+    if (!novelty?.box) {
+      test.skip(true, '[E108] Sem novidades no dataset (ambiente sem dados).');
+      return;
+    }
     await testInfo.attach('novidades.png', {
       body: await page.screenshot({ fullPage: false }),
       contentType: 'image/png',
@@ -112,7 +203,10 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       page,
       'div[role="list"][aria-label^="Grade de produtos repostos"]',
     );
-    if (!repl?.box) { test.skip(true, '[E108] Sem reposições no dataset (ambiente sem dados).'); return; }
+    if (!repl?.box) {
+      test.skip(true, '[E108] Sem reposições no dataset (ambiente sem dados).');
+      return;
+    }
     await testInfo.attach('reposicao.png', {
       body: await page.screenshot({ fullPage: false }),
       contentType: 'image/png',
@@ -149,7 +243,10 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
     });
 
     // 1) Larguras devem ser idênticas (mesmo grid responsivo).
-    expect(widthDiff, `widthDiff=${widthDiff.toFixed(2)}px excede tolerância ${TOL_PX}px`).toBeLessThanOrEqual(TOL_PX);
+    expect(
+      widthDiff,
+      `widthDiff=${widthDiff.toFixed(2)}px excede tolerância ${TOL_PX}px`,
+    ).toBeLessThanOrEqual(TOL_PX);
 
     // 2) Alturas não são comparadas entre módulos — Reposição tem sparkline
     // extra (renderFooterExtras, h-7=28px) que intencionalmente aumenta a
@@ -166,15 +263,26 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
     }
   });
 
-  test('rodapé (preço/estoque) está alinhado ao bottom em ambos os módulos', async ({ page }, testInfo) => {
+  test('rodapé (preço/estoque) está alinhado ao bottom em ambos os módulos', async ({
+    page,
+  }, testInfo) => {
     await gotoAndSettle(page, '/novidades');
     await expect(page.getByTestId('page-title-novidades')).toBeVisible({ timeout: 30_000 });
     const novelty = await measureFirstCard(
       page,
       'div[role="list"][aria-label="Grade de novidades"]',
     );
-    if (!novelty?.box) { test.skip(true, '[E108] Sem novidades no dataset (ambiente sem dados).'); return; }
-    if (!novelty.footerBox) { test.skip(true, '[E108] Footer de novidade ausente (data-testid$=-card-footer não encontrado).'); return; }
+    if (!novelty?.box) {
+      test.skip(true, '[E108] Sem novidades no dataset (ambiente sem dados).');
+      return;
+    }
+    if (!novelty.footerBox) {
+      test.skip(
+        true,
+        '[E108] Footer de novidade ausente (data-testid$=-card-footer não encontrado).',
+      );
+      return;
+    }
 
     await gotoAndSettle(page, '/reposicao');
     await expect(page.getByTestId('page-title-reposicao')).toBeVisible({ timeout: 30_000 });
@@ -182,13 +290,24 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       page,
       'div[role="list"][aria-label^="Grade de produtos repostos"]',
     );
-    if (!repl?.box) { test.skip(true, '[E108] Sem reposições no dataset (ambiente sem dados).'); return; }
-    if (!repl.footerBox) { test.skip(true, '[E108] Footer de reposição ausente (data-testid$=-card-footer não encontrado).'); return; }
+    if (!repl?.box) {
+      test.skip(true, '[E108] Sem reposições no dataset (ambiente sem dados).');
+      return;
+    }
+    if (!repl.footerBox) {
+      test.skip(
+        true,
+        '[E108] Footer de reposição ausente (data-testid$=-card-footer não encontrado).',
+      );
+      return;
+    }
 
     // Distância entre bottom do footer e bottom do card = padding interno.
     // Em ambos os módulos deve ser ~igual (mesmo p-3 do BaseProductGridCard).
-    const novGap = novelty!.box!.y + novelty!.box!.height - (novelty!.footerBox!.y + novelty!.footerBox!.height);
-    const replGap = repl!.box!.y + repl!.box!.height - (repl!.footerBox!.y + repl!.footerBox!.height);
+    const novGap =
+      novelty!.box!.y + novelty!.box!.height - (novelty!.footerBox!.y + novelty!.footerBox!.height);
+    const replGap =
+      repl!.box!.y + repl!.box!.height - (repl!.footerBox!.y + repl!.footerBox!.height);
     const gapDiff = Math.abs(novGap - replGap);
 
     // eslint-disable-next-line no-console
@@ -216,8 +335,13 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
     // novGap: apenas p-3 (12px) separa o footer do bottom do card.
     // replGap: footer é seguido de conteúdo extra do card (sparkline + outros extras ≈ 86px medido em 2026-10-27).
     // gapDiff cross-módulo não é comparável — Reposição tem content intencional abaixo do footer.
-    expect(novGap, `novGap=${novGap.toFixed(2)}px alto — rodapé não ancora ao bottom`).toBeLessThan(24);
-    expect(replGap, `replGap=${replGap.toFixed(2)}px alto — rodapé não ancora ao bottom`).toBeLessThan(100);
+    expect(novGap, `novGap=${novGap.toFixed(2)}px alto — rodapé não ancora ao bottom`).toBeLessThan(
+      24,
+    );
+    expect(
+      replGap,
+      `replGap=${replGap.toFixed(2)}px alto — rodapé não ancora ao bottom`,
+    ).toBeLessThan(100);
   });
 
   test('screenshot diff por viewport (artefato)', async ({ page }, testInfo) => {
@@ -257,8 +381,9 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
   });
 
   // Viewports extras (além dos 5 projects do playwright.config) para validar
-  // que a altura responsiva do BaseProductGridCard (h-[400px] mobile,
-  // sm:h-[430px] desktop) se mantém fixa também em tablets.
+  // que os cards permanecem alinhados dentro de cada linha também em tablets.
+  // As linhas são virtualizadas e o card usa min-height; comparar alturas de
+  // linhas diferentes confundia variação legítima de conteúdo com desalinhamento.
   const EXTRA_VIEWPORTS = [
     { w: 600, h: 900, label: 'tablet-sm-600' },
     { w: 768, h: 1024, label: 'tablet-768' },
@@ -268,7 +393,9 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
   ] as const;
 
   for (const vp of EXTRA_VIEWPORTS) {
-    test(`altura fixa do card em viewport ${vp.label} (${vp.w}x${vp.h})`, async ({ page }) => {
+    test(`cards alinhados por linha em viewport ${vp.label} (${vp.w}x${vp.h})`, async ({
+      page,
+    }) => {
       await page.setViewportSize({ width: vp.w, height: vp.h });
       await gotoAndSettle(page, '/reposicao');
       await expect(page.getByTestId('page-title-reposicao')).toBeVisible({ timeout: 30_000 });
@@ -276,24 +403,46 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
         'div[role="list"][aria-label^="Grade de produtos repostos"] >> [role="listitem"]',
       );
       const count = await items.count();
-      if (count === 0) { test.skip(true, `[E108] Sem reposições em ${vp.label} (ambiente sem dados).`); return; }
-      const sampleSize = Math.min(count, 6);
-      const heights: number[] = [];
-      for (let i = 0; i < sampleSize; i++) {
-        const b = await items.nth(i).boundingBox();
-        if (b) heights.push(b.height);
+      if (count === 0) {
+        test.skip(true, `[E108] Sem reposições em ${vp.label} (ambiente sem dados).`);
+        return;
       }
-      const min = Math.min(...heights);
-      const max = Math.max(...heights);
-      const expected = vp.w < 640 ? 400 : 420;
+      const sampleSize = Math.min(count, 6);
+      const samples = await items.evaluateAll((elements) =>
+        elements.slice(0, 6).flatMap((element) => {
+          const row = element.closest<HTMLElement>('[data-index]');
+          if (!row) return [];
+          return [
+            { row: row.dataset.index ?? 'unknown', height: element.getBoundingClientRect().height },
+          ];
+        }),
+      );
+      const heightsByRow = new Map<string, number[]>();
+      for (const sample of samples) {
+        const rowHeights = heightsByRow.get(sample.row) ?? [];
+        rowHeights.push(sample.height);
+        heightsByRow.set(sample.row, rowHeights);
+      }
       const tol = tolForViewport(vp.w);
+      const rowSpreads = [...heightsByRow].map(([row, heights]) => ({
+        row,
+        spread: Math.max(...heights) - Math.min(...heights),
+      }));
       // eslint-disable-next-line no-console
       console.log(
-        `[card-parity:viewport ${vp.label}] expected=${expected}px min=${min} max=${max} spread=${(max - min).toFixed(2)}px tol=${tol}px`,
+        `[card-parity:viewport ${vp.label}] sample=${sampleSize} ` +
+          `rowSpreads=[${rowSpreads.map(({ row, spread }) => `${row}:${spread.toFixed(2)}px`).join(', ')}] tol=${tol}px`,
       );
-      expect(max - min, `cards variam em ${vp.label}: spread=${(max - min).toFixed(2)}px`).toBeLessThanOrEqual(tol);
-      // Altura absoluta não verificada: cards de Reposição têm sparkline extra (~32px)
-      // que os torna intencionalmente mais altos que o min-h-[420px] baseline.
+      expect(rowSpreads.length, `nenhuma linha mensurável em ${vp.label}`).toBeGreaterThan(0);
+      for (const { row, spread } of rowSpreads) {
+        expect(
+          spread,
+          `cards desalinhados na linha ${row} em ${vp.label}: spread=${spread.toFixed(2)}px`,
+        ).toBeLessThanOrEqual(tol);
+      }
+      // A altura absoluta e diferenças entre linhas são legítimas: o card tem
+      // min-h, e textos/swatches variam com o produto. O contrato é alinhamento
+      // dos itens que compartilham a mesma linha do grid.
 
       // Baseline screenshot diff por viewport (snapshot persistente).
       const card = items.first();
@@ -338,7 +487,10 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
         'div[role="list"][aria-label^="Grade de produtos repostos"] >> [role="listitem"]',
       );
       const count = await items.count();
-      if (count === 0) { test.skip(true, `[E108] Sem reposições no modo ${cols} colunas (ambiente sem dados).`); return; }
+      if (count === 0) {
+        test.skip(true, `[E108] Sem reposições no modo ${cols} colunas (ambiente sem dados).`);
+        return;
+      }
 
       const sampleSize = Math.min(count, cols * 2);
       const heights: number[] = [];
@@ -358,8 +510,14 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       );
       // Tolerância maior para altura: em colunas estreitas os badges de categoria podem
       // quebrar em mais linhas, causando variação legítima de até ~48px entre cards.
-      expect(hSpread, `altura varia em ${cols} colunas: ${hSpread.toFixed(2)}px`).toBeLessThanOrEqual(48);
-      expect(wSpread, `largura varia em ${cols} colunas: ${wSpread.toFixed(2)}px`).toBeLessThanOrEqual(TOL_PX);
+      expect(
+        hSpread,
+        `altura varia em ${cols} colunas: ${hSpread.toFixed(2)}px`,
+      ).toBeLessThanOrEqual(48);
+      expect(
+        wSpread,
+        `largura varia em ${cols} colunas: ${wSpread.toFixed(2)}px`,
+      ).toBeLessThanOrEqual(TOL_PX);
 
       // Baseline screenshot diff por modo de colunas.
       try {
@@ -427,8 +585,13 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       if (gaps.length < 2) continue;
       const spread = Math.max(...gaps) - Math.min(...gaps);
       // eslint-disable-next-line no-console
-      console.log(`[card-parity:footer cols ${cols}] sample=${gaps.length} spread=${spread.toFixed(2)}px`);
-      expect(spread, `rodapé desalinhado em ${cols} colunas: ${spread.toFixed(2)}px`).toBeLessThanOrEqual(TOL_PX);
+      console.log(
+        `[card-parity:footer cols ${cols}] sample=${gaps.length} spread=${spread.toFixed(2)}px`,
+      );
+      expect(
+        spread,
+        `rodapé desalinhado em ${cols} colunas: ${spread.toFixed(2)}px`,
+      ).toBeLessThanOrEqual(TOL_PX);
       expect(Math.max(...gaps), `rodapé não ancora ao bottom em ${cols} colunas`).toBeLessThan(32);
     }
   });
@@ -449,7 +612,9 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
           'div[role="list"][aria-label^="Grade de produtos repostos"] >> [role="listitem"]',
         );
         const count = await items.count();
-        if (count === 0) { test.skip(true, `[E108] Sem reposições em dsf=${dsf} (ambiente sem dados).`); }
+        if (count === 0) {
+          test.skip(true, `[E108] Sem reposições em dsf=${dsf} (ambiente sem dados).`);
+        }
         const sampleSize = Math.min(count, 6);
         const heights: number[] = [];
         for (let i = 0; i < sampleSize; i++) {
@@ -462,8 +627,14 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
           `[card-parity:dsf ${dsf}] min=${Math.min(...heights)} max=${Math.max(...heights)} spread=${spread.toFixed(2)}px`,
         );
         // Em CSS-px a altura (min-h-[420px]) permanece independente do dsf.
-        expect(spread, `spread=${spread.toFixed(2)}px excede ${TOL_PX}px em dsf=${dsf}`).toBeLessThanOrEqual(TOL_PX);
-        expect(Math.abs(Math.min(...heights) - 420), `altura ≠ 420px em dsf=${dsf}`).toBeLessThanOrEqual(TOL_PX);
+        expect(
+          spread,
+          `spread=${spread.toFixed(2)}px excede ${TOL_PX}px em dsf=${dsf}`,
+        ).toBeLessThanOrEqual(TOL_PX);
+        expect(
+          Math.abs(Math.min(...heights) - 420),
+          `altura ≠ 420px em dsf=${dsf}`,
+        ).toBeLessThanOrEqual(TOL_PX);
       } finally {
         await ctx.close();
       }
@@ -485,7 +656,10 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       'div[role="list"][aria-label="Lista de produtos repostos"] >> [role="listitem"]',
     );
     const count = await items.count();
-    if (count === 0) { test.skip(true, '[E108] Sem reposições no dataset (modo lista, ambiente sem dados).'); return; }
+    if (count === 0) {
+      test.skip(true, '[E108] Sem reposições no dataset (modo lista, ambiente sem dados).');
+      return;
+    }
     const sampleSize = Math.min(count, 6);
     const { heights, widths } = await sampleHeights(items, sampleSize);
     const hSpread = Math.max(...heights) - Math.min(...heights);
@@ -496,7 +670,9 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
     );
     // Modo lista: ProductListItem tem altura variável por design (sem min-h fixo, conteúdo varia).
     // Só verifica largura — consistência horizontal do layout.
-    expect(wSpread, `largura varia no modo lista: ${wSpread.toFixed(2)}px`).toBeLessThanOrEqual(TOL_PX);
+    expect(wSpread, `largura varia no modo lista: ${wSpread.toFixed(2)}px`).toBeLessThanOrEqual(
+      TOL_PX,
+    );
 
     // Baseline screenshot do modo lista.
     try {

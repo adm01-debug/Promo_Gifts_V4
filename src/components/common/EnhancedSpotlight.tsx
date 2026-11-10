@@ -182,7 +182,8 @@ export function EnhancedSpotlight() {
   // Focus input when opened
   useEffect(() => {
     if (isOpen && inputRef.current) {
-      setTimeout(() => inputRef.current?.focus(), 50);
+      const tid = setTimeout(() => inputRef.current?.focus(), 50);
+      return () => clearTimeout(tid);
     }
   }, [isOpen]);
 

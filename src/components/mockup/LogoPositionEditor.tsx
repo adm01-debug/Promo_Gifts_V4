@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Move } from 'lucide-react';
 import { useProductBounds } from '@/hooks/products';
 import { logger } from '@/lib/logger';
+import { cmParaPx } from '@/lib/mockup-geometry';
 import type { TechniqueColorConfig } from './techniqueColorUtils';
 import { getTechniqueFilter } from './logo-editor/logoTechniqueFilters';
 import { useElementSize } from './logo-editor/useElementSize';
@@ -63,8 +64,6 @@ export const LogoPositionEditor = memo(
     const { ref: containerRef, size: containerSize } = useElementSize<HTMLDivElement>();
     const productBounds = useProductBounds(productImageUrl);
     const { processedLogoUrl } = useLogoProcessing(logoPreview, techniqueColorConfig);
-    const { handlePointerDown } = useLogoDrag(containerRef, positionX, positionY, onPositionChange);
-
     const techniqueFilter = useMemo(
       () => getTechniqueFilter(techniqueCode, techniqueName),
       [techniqueCode, techniqueName],
@@ -96,11 +95,6 @@ export const LogoPositionEditor = memo(
 
       const containerW = containerSize.width || 400;
       const containerH = containerSize.height || containerW;
-      const prodH = productHeightCm && productHeightCm > 0 ? productHeightCm : null;
-      const prodW = productWidthCm && productWidthCm > 0 ? productWidthCm : null;
-      const effectiveMaxW = maxWidth && maxWidth > 0 ? maxWidth : null;
-      const effectiveMaxH = maxHeight && maxHeight > 0 ? maxHeight : null;
-
       const imgAR = productBounds.imageAspectRatio || 1;
       const containerAR = containerW / containerH;
       let renderedImgW: number, renderedImgH: number;
@@ -112,29 +106,27 @@ export const LogoPositionEditor = memo(
         renderedImgW = containerH * imgAR;
       }
 
-      const physW = prodW || (prodH ? prodH * 0.4 : effectiveMaxW ? effectiveMaxW * 2 : 8);
-      const physH = prodH || (prodW ? prodW * 2.5 : effectiveMaxH ? effectiveMaxH * 2.5 : 20);
+      const { widthPx, heightPx, physW, physH, estimated } = cmParaPx({
+        logoWidthCm: logoWidth,
+        logoHeightCm: logoHeight,
+        renderedImgW,
+        renderedImgH,
+        fractionX: productBounds.fractionX,
+        fractionY: productBounds.fractionY,
+        productWidthCm,
+        productHeightCm,
+        maxWidthCm: maxWidth,
+        maxHeightCm: maxHeight,
+      });
 
-      if (!prodH && !prodW) {
+      if (estimated) {
         logger.warn('[LogoPositionEditor] Product physical dims missing — using estimates:', {
           physW,
           physH,
         });
       }
 
-      const scaleByW = (renderedImgW * productBounds.fractionX) / physW;
-      const scaleByH = (renderedImgH * productBounds.fractionY) / physH;
-      const cmToPx = Math.min(scaleByW, scaleByH);
-
-      const rawW = logoWidth * cmToPx;
-      const rawH = logoHeight * cmToPx;
-      const minPx = 40;
-      if (rawW < minPx && rawH < minPx) {
-        const boost = minPx / Math.max(rawW, rawH);
-        return { widthPx: rawW * boost, heightPx: rawH * boost };
-      }
-
-      return { widthPx: rawW, heightPx: rawH };
+      return { widthPx, heightPx };
     }, [
       boundsReady,
       logoWidth,
@@ -147,6 +139,12 @@ export const LogoPositionEditor = memo(
       productWidthCm,
       productBounds,
     ]);
+
+    const { handlePointerDown, handleKeyDown } = useLogoDrag(containerRef, positionX, positionY, onPositionChange, {
+      logoWidthPx: logoDisplay?.widthPx,
+      logoHeightPx: logoDisplay?.heightPx,
+      rotationDeg: logoRotation,
+    });
 
     const userScaleFactor = (logoScale || 100) / 100;
 
@@ -182,7 +180,14 @@ export const LogoPositionEditor = memo(
             colorConfigFilter={colorConfigFilter}
             techniqueColorConfig={techniqueColorConfig}
             techniqueName={techniqueName}
+            productWidthCm={productWidthCm}
+            productHeightCm={productHeightCm}
+            maxWidthCm={maxWidth}
+            maxHeightCm={maxHeight}
+            logoWidthCm={logoWidth}
+            logoHeightCm={logoHeight}
             onPointerDown={handlePointerDown}
+            onKeyDown={handleKeyDown}
             onColorConfigClick={onColorConfigClick}
           />
 

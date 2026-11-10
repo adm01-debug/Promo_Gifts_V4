@@ -216,21 +216,30 @@ jobs:
             exit 0
           fi
           TODAY=$(date -u +"%Y-%m-%d")
-          mkdir -p /tmp/e072-recovery
+          RECOVERY_STAGING=$(mktemp -d)
+          trap 'rm -rf "$RECOVERY_STAGING"' EXIT
           # Schema-only: reaproveita o baseline já gerado nesta execução (evita 2º pg_dump)
-          cp "${bases[0]}" "/tmp/e072-recovery/BACKUP_SCHEMA_ONLY_${TODAY}.sql"
-          # Ledger de migrations
+          cp "${bases[0]}" "$RECOVERY_STAGING/BACKUP_SCHEMA_ONLY_${TODAY}.sql"
+          # Ledger de migrations. Grava em staging para nunca publicar arquivo
+          # parcial/vazio quando o runner não alcança o host IPv6 do Postgres.
           PGPASSWORD="${SUPABASE_DB_PASSWORD}" psql \
             -h "db.${SUPABASE_PROJECT_REF}.supabase.co" \
             -U postgres \
             -d postgres \
             -c "COPY (SELECT version, inserted_at FROM supabase_migrations.schema_migrations ORDER BY version) TO STDOUT WITH CSV HEADER;" \
-            > "/tmp/e072-recovery/LEDGER_DATA_${TODAY}.sql"
+            > "$RECOVERY_STAGING/LEDGER_DATA_${TODAY}.sql"
+          test -s "$RECOVERY_STAGING/LEDGER_DATA_${TODAY}.sql"
+          test "$(wc -l < "$RECOVERY_STAGING/LEDGER_DATA_${TODAY}.sql")" -gt 1
           # Checksums SHA256
-          sha256sum \
-            "/tmp/e072-recovery/BACKUP_SCHEMA_ONLY_${TODAY}.sql" \
-            "/tmp/e072-recovery/LEDGER_DATA_${TODAY}.sql" \
-            > "/tmp/e072-recovery/BACKUP_CHECKSUMS_${TODAY}.txt"
+          (
+            cd "$RECOVERY_STAGING"
+            sha256sum \
+              "BACKUP_SCHEMA_ONLY_${TODAY}.sql" \
+              "LEDGER_DATA_${TODAY}.sql" \
+              > "BACKUP_CHECKSUMS_${TODAY}.txt"
+          )
+          mkdir -p /tmp/e072-recovery
+          cp "$RECOVERY_STAGING"/* /tmp/e072-recovery/
           echo "::notice::E072: Recovery dump → BACKUP_SCHEMA_ONLY_${TODAY}.sql + LEDGER_DATA_${TODAY}.sql + checksums OK."
 
       - name: Upload snapshot artifacts
@@ -256,6 +265,7 @@ jobs:
     name: Commit snapshot to bot/schema-snapshot
     needs: export
     if: >-
+      !cancelled() &&
       (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') &&
       needs.export.result == 'success'
     runs-on: ubuntu-24.04
@@ -332,21 +342,32 @@ jobs:
 
           # E072: copia recovery dump para docs/db/ (substitui versões datadas anteriores)
           RECOV="${{ runner.temp }}/e072-recovery"
-          if compgen -G "${RECOV}/BACKUP_SCHEMA_ONLY_*.sql" > /dev/null 2>&1; then
+          shopt -s nullglob
+          recovery_schema=("${RECOV}"/BACKUP_SCHEMA_ONLY_*.sql)
+          recovery_ledger=("${RECOV}"/LEDGER_DATA_*.sql)
+          recovery_checksums=("${RECOV}"/BACKUP_CHECKSUMS_*.txt)
+          if [ "${#recovery_schema[@]}" -eq 1 ] \
+             && [ "${#recovery_ledger[@]}" -eq 1 ] \
+             && [ "${#recovery_checksums[@]}" -eq 1 ] \
+             && [ -s "${recovery_schema[0]}" ] \
+             && [ -s "${recovery_ledger[0]}" ] \
+             && [ "$(wc -l < "${recovery_ledger[0]}")" -gt 1 ] \
+             && [ -s "${recovery_checksums[0]}" ] \
+             && (cd "$RECOV" && sha256sum -c "$(basename "${recovery_checksums[0]}")"); then
             mkdir -p docs/db
             find docs/db -maxdepth 1 \
               \( -name 'BACKUP_SCHEMA_ONLY_*.sql' \
                  -o -name 'LEDGER_DATA_*.sql' \
                  -o -name 'BACKUP_CHECKSUMS_*.txt' \) \
               -delete 2>/dev/null || true
-            cp "${RECOV}"/BACKUP_SCHEMA_ONLY_*.sql \
-               "${RECOV}"/LEDGER_DATA_*.sql \
-               "${RECOV}"/BACKUP_CHECKSUMS_*.txt \
+            cp "${recovery_schema[0]}" \
+               "${recovery_ledger[0]}" \
+               "${recovery_checksums[0]}" \
                docs/db/
             ls docs/db/BACKUP_SCHEMA_ONLY_*.sql docs/db/LEDGER_DATA_*.sql docs/db/BACKUP_CHECKSUMS_*.txt
             echo "::notice::E072: Recovery dump copiado para docs/db/."
           else
-            echo "::notice::E072: Recovery dump ausente — docs/db/ não atualizado."
+            echo "::notice::E072: Recovery dump ausente, incompleto ou inválido — docs/db/ anterior preservado."
           fi
 
       - name: Credencial de push sem token em disco (E32)

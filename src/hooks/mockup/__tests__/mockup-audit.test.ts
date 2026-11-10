@@ -15,243 +15,14 @@ function readSrc(relativePath: string) {
 }
 
 // =====================================================================
-// T7 — getTechniquePrompt pure function tests
-// =====================================================================
-
-const TECHNIQUE_PROMPTS: Record<string, string> = {
-  bordado: 'as professional machine embroidery with visible thread stitch texture',
-  silk: 'as screen printed with flat solid colors, matte finish',
-  dtf: 'as DTF printed transfer with vibrant colors, slight glossy finish',
-  laser: 'as laser engraved, etched into the material surface, monochromatic',
-  laser_co2: 'as CO2 laser engraved with precise etching on organic materials',
-  laser_fibra: 'as fiber laser marked on metal with high-contrast permanent mark',
-  sublimacao: 'as sublimation printed, colors absorbed seamlessly into the material',
-  tampografia: 'as pad printed with slightly glossy ink, precise small details',
-  hot_stamping: 'as hot stamped with metallic foil finish, shiny reflective surface',
-  adesivo: 'as vinyl sticker/decal applied to surface',
-  uv: 'as UV printed with raised ink texture, vibrant colors',
-  transfer: 'as heat transfer vinyl, smooth finish with slight sheen',
-  default: 'as professionally printed/applied logo',
-};
-
-type TechniqueInput = { id: string; name: string; code: string | null };
-
-function getTechniquePromptFixed(technique: TechniqueInput): string {
-  const code = technique.code?.toLowerCase() || technique.name.toLowerCase();
-  for (const [key, prompt] of Object.entries(TECHNIQUE_PROMPTS)) {
-    if (key === 'default') continue;
-    if (code.includes(key) || technique.name.toLowerCase().includes(key)) return prompt;
-  }
-  return TECHNIQUE_PROMPTS.default;
-}
-
-function getTechniquePromptBUGGY(technique: TechniqueInput): string {
-  const code = technique.code?.toLowerCase() || technique.name.toLowerCase();
-  for (const [key, prompt] of Object.entries(TECHNIQUE_PROMPTS)) {
-    if (code.includes(key) || technique.name.toLowerCase().includes(key)) return prompt;
-  }
-  return TECHNIQUE_PROMPTS.default;
-}
-
-describe('T7 — getTechniquePrompt: "default" nao deve ser matchado no loop', () => {
-  it('silk -> retorna prompt correto de silk', () => {
-    expect(getTechniquePromptFixed({ id: '1', name: 'Serigrafia', code: 'silk' })).toBe(
-      TECHNIQUE_PROMPTS.silk,
-    );
-  });
-  it('laser -> retorna prompt correto de laser', () => {
-    expect(getTechniquePromptFixed({ id: '2', name: 'Laser Gravacao', code: 'laser' })).toBe(
-      TECHNIQUE_PROMPTS.laser,
-    );
-  });
-  it('bordado -> retorna prompt correto de bordado', () => {
-    expect(getTechniquePromptFixed({ id: '3', name: 'Bordado', code: 'bordado' })).toBe(
-      TECHNIQUE_PROMPTS.bordado,
-    );
-  });
-  it('tecnica desconhecida -> retorna fallback default', () => {
-    expect(getTechniquePromptFixed({ id: '4', name: 'Nova Tecnica', code: null })).toBe(
-      TECHNIQUE_PROMPTS.default,
-    );
-  });
-  it('code contendo "default" como substring NAO interrompe loop prematuramente', () => {
-    expect(
-      getTechniquePromptFixed({ id: '5', name: 'Laser Special', code: 'laser-default-special' }),
-    ).toBe(TECHNIQUE_PROMPTS.laser);
-  });
-  it('[REGRESSAO] versao buggy pode falhar no caso acima', () => {
-    const t = { id: '5', name: 'Laser Special', code: 'laser-default-special' };
-    expect(getTechniquePromptFixed(t)).toBe(TECHNIQUE_PROMPTS.laser);
-    expect([TECHNIQUE_PROMPTS.laser, TECHNIQUE_PROMPTS.default]).toContain(
-      getTechniquePromptBUGGY(t),
-    );
-  });
-  it('uv -> retorna prompt de UV', () => {
-    expect(getTechniquePromptFixed({ id: '6', name: 'UV Digital', code: 'uv' })).toBe(
-      TECHNIQUE_PROMPTS.uv,
-    );
-  });
-  it('sublimacao -> retorna prompt de sublimacao', () => {
-    expect(getTechniquePromptFixed({ id: '7', name: 'Sublimacao', code: 'sublimacao' })).toBe(
-      TECHNIQUE_PROMPTS.sublimacao,
-    );
-  });
-});
-
-// =====================================================================
-// STATIC ANALYSIS — mockupGenerationService.ts
-// =====================================================================
-
-describe('Analise estatica — mockupGenerationService.ts', () => {
-  let src: string;
-  beforeEach(() => {
-    src = readSrc('src/hooks/mockup/mockupGenerationService.ts');
-  });
-
-  describe('T4 — campos top-level no INSERT', () => {
-    it('logo_url como coluna top-level', () => {
-      expect(src).toContain('logo_url: logoUrl');
-    });
-    it('position_x como coluna top-level', () => {
-      expect(src).toContain('position_x: area.positionX');
-    });
-    it('position_y como coluna top-level', () => {
-      expect(src).toContain('position_y: area.positionY');
-    });
-    it('logo_width_cm como coluna top-level', () => {
-      expect(src).toContain('logo_width_cm: area.logoWidth');
-    });
-    it('logo_height_cm como coluna top-level', () => {
-      expect(src).toContain('logo_height_cm: area.logoHeight');
-    });
-  });
-
-  describe('T6 — deleteMockupFromDb com owner scope', () => {
-    it('assinatura inclui userId?', () => {
-      expect(src).toMatch(/deleteMockupFromDb\s*\(\s*id\s*:\s*string\s*,\s*userId\?/);
-    });
-    it('filtro user_id aplicado quando userId presente', () => {
-      expect(src).toContain("query.eq('user_id', userId)");
-    });
-  });
-
-  describe('T7 — continue guard no loop de getTechniquePrompt', () => {
-    it('codigo-fonte contem o continue guard para chave "default"', () => {
-      expect(src).toContain("if (key === 'default') continue;");
-    });
-  });
-
-  describe('T8 — fetchMockupHistory com LIMIT 200', () => {
-    it('query usa .limit(200)', () => {
-      expect(src).toContain('.limit(200)');
-    });
-    it('nenhum limit menor que 200 presente', () => {
-      expect(src).not.toMatch(/\.limit\((0|[1-9]\d?|1\d{2})\)[^;]/);
-    });
-  });
-
-  describe('T10 — thumbnail_url = mockupUrl', () => {
-    it('thumbnail_url recebe mockupUrl', () => {
-      expect(src).toContain('thumbnail_url: mockupUrl');
-    });
-    it('thumbnail_url NAO usa logoUrl', () => {
-      expect(src).not.toContain('thumbnail_url: logoUrl');
-    });
-  });
-
-  describe('BUG-C — timeout via Promise.race', () => {
-    it('usa Promise.race', () => {
-      expect(src).toContain('Promise.race');
-    });
-    it('GENERATE_TIMEOUT_MS definida', () => {
-      expect(src).toContain('GENERATE_TIMEOUT_MS');
-    });
-    it('timeout >= 30000 ms', () => {
-      const match = /GENERATE_TIMEOUT_MS\s*=\s*(\d+)/.exec(src);
-      expect(match).not.toBeNull();
-      expect(parseInt(match![1], 10)).toBeGreaterThanOrEqual(30_000);
-    });
-    it('mensagem de timeout em PT-BR', () => {
-      expect(src).toContain('Tempo esgotado ao gerar mockup');
-    });
-  });
-
-  describe('BUG-E — SVG pre-validado antes da edge function', () => {
-    it('funcao assertNotSvg definida', () => {
-      expect(src).toContain('function assertNotSvg');
-    });
-    it('valida SVG antes do caminho que invoca a edge function', () => {
-      const generateMockupApiBlock = src.split('export async function generateMockupApi')[1];
-      expect(generateMockupApiBlock).toBeDefined();
-
-      const validationPos = generateMockupApiBlock.indexOf('assertNotSvg(areasWithLogos)');
-      const invocationPos = generateMockupApiBlock.indexOf(
-        'invokeMockupForArea(params, areasWithLogos[0])',
-      );
-
-      expect(validationPos).toBeGreaterThan(-1);
-      expect(invocationPos).toBeGreaterThan(-1);
-      expect(validationPos).toBeLessThan(invocationPos);
-    });
-    it('detecta data URL SVG', () => {
-      expect(src).toMatch(/area\.logoPreview\??\.\s*startsWith\('data:image\/svg'\)/);
-    });
-    it('mensagem de erro SVG em PT-BR', () => {
-      expect(src).toContain('SVG não são suportados');
-    });
-  });
-
-  describe('BUG-I — single-area path envia somente a area processada', () => {
-    it('single-area body.areas NAO usa areasWithLogos.map', () => {
-      const singleAreaBlock = src.split('if (areasWithLogos.length === 1)')[1];
-      expect(singleAreaBlock).toBeDefined();
-      const beforeBatch = singleAreaBlock.split('// BATCH')[0];
-      expect(beforeBatch).not.toContain('areasWithLogos.map');
-    });
-  });
-});
-
-// =====================================================================
-// STATIC ANALYSIS — useMockupGenerator.ts
+// STATIC ANALYSIS — useMockupGenerator.ts (guardas de runtime mantidas:
+// ainda sem teste de comportamento equivalente do hook na main)
 // =====================================================================
 
 describe('Analise estatica — useMockupGenerator.ts', () => {
   let src: string;
   beforeEach(() => {
     src = readSrc('src/hooks/mockup/useMockupGenerator.ts');
-  });
-
-  describe('T1/T2 — 7 handlers envolvidos em useCallback com deps corretas', () => {
-    const handlers = [
-      'saveMockupToHistory',
-      'generateMockup',
-      'downloadMockup',
-      'deleteMockup',
-      'resetForm',
-      'handleShareMockup',
-      'loadFromHistory',
-    ] as const;
-
-    it.each(handlers)('%s usa useCallback', (fn) => {
-      expect(src).toMatch(new RegExp(`const\\s+${fn}\\s*=\\s*useCallback`));
-    });
-
-    it('saveMockupToHistory: array de deps inclui todas as closures criticas', () => {
-      expect(src).toContain(
-        '[user, selectedProduct, selectedTechnique, selectedClient, mockupAnnotations]',
-      );
-    });
-
-    it('deleteMockup: deps incluem mockupToDelete e user', () => {
-      expect(src).toContain('[mockupToDelete, user]');
-    });
-
-    it('eslint-disable comments removidos (NAO mais necessarios)', () => {
-      // Nota: era necessario na versao buggy sem useCallback
-      expect(src).not.toMatch(
-        /eslint-disable-next-line react-hooks\/exhaustive-deps\s*\nconst\s+(saveMockupToHistory|generateMockup|downloadMockup|deleteMockup|resetForm|handleShareMockup|loadFromHistory)/,
-      );
-    });
   });
 
   describe('T3 — Memory leaks: cleanup de timeouts', () => {
@@ -271,11 +42,13 @@ describe('Analise estatica — useMockupGenerator.ts', () => {
   });
 
   describe('T5 — Batch DB saves: Promise.allSettled', () => {
+    // A gravação do lote vive em mockupGeneratorModel.saveBatchResults (usada pelo hook).
+    const modelSrc = readSrc('src/hooks/mockup/mockupGeneratorModel.ts');
     it('usa Promise.allSettled', () => {
-      expect(src).toContain('Promise.allSettled');
+      expect(modelSrc).toContain('Promise.allSettled');
     });
     it('resultado filtrado por "fulfilled"', () => {
-      expect(src).toContain("res.status === 'fulfilled'");
+      expect(modelSrc).toContain("res.status === 'fulfilled'");
     });
   });
 
@@ -286,17 +59,19 @@ describe('Analise estatica — useMockupGenerator.ts', () => {
   });
 
   describe('T9 — URL params preservados', () => {
+    // A leitura dos params de entrada vive em useMockupEntryParams (usado pelo hook).
+    const entrySrc = readSrc('src/hooks/mockup/useMockupEntryParams.ts');
     it('usa URLSearchParams.delete para product_id', () => {
-      expect(src).toContain("newParams.delete('product_id')");
+      expect(entrySrc).toContain("newParams.delete('product_id')");
     });
     it('usa URLSearchParams.delete para technique', () => {
-      expect(src).toContain("newParams.delete('technique')");
+      expect(entrySrc).toContain("newParams.delete('technique')");
     });
     it('NAO usa replaceState com pathname puro', () => {
-      expect(src).not.toContain("replaceState({}, '', window.location.pathname)");
+      expect(entrySrc).not.toContain("replaceState({}, '', window.location.pathname)");
     });
     it('URL final preserva params extras', () => {
-      expect(src).toMatch(/newSearch\s*\?\s*`\?\${newSearch}`\s*:\s*''/);
+      expect(entrySrc).toMatch(/newSearch\s*\?\s*`\?\${newSearch}`\s*:\s*''/);
     });
   });
 
@@ -640,26 +415,6 @@ describe('Analise estatica — MockupResultCard.tsx', () => {
 });
 
 // =====================================================================
-// STATIC ANALYSIS — SaveTemplateDialog.tsx
-// =====================================================================
-
-describe('Analise estatica — SaveTemplateDialog.tsx', () => {
-  let src: string;
-  beforeEach(() => {
-    src = readSrc('src/components/mockup/SaveTemplateDialog.tsx');
-  });
-
-  describe('a11y — label associado ao input via htmlFor/id', () => {
-    it('Input tem id="template-name-input"', () => {
-      expect(src).toContain('id="template-name-input"');
-    });
-    it('label tem htmlFor="template-name-input"', () => {
-      expect(src).toContain('htmlFor="template-name-input"');
-    });
-  });
-});
-
-// =====================================================================
 // STATIC ANALYSIS — MockupAnnotations.tsx
 // =====================================================================
 
@@ -798,27 +553,6 @@ describe('Analise estatica — ProductSearchCombobox.tsx', () => {
     });
     it('botao de limpar usa aria-label descritivo', () => {
       expect(src).toContain('aria-label="Remover produto selecionado"');
-    });
-  });
-});
-
-// =====================================================================
-// STATIC ANALYSIS — TemplateSelector.tsx
-// =====================================================================
-
-describe('Analise estatica — TemplateSelector.tsx', () => {
-  let src: string;
-  beforeEach(() => {
-    src = readSrc('src/components/mockup/TemplateSelector.tsx');
-  });
-
-  describe('a11y — aria-label contextual no botao de excluir template', () => {
-    it('botao de excluir usa aria-label com nome do template', () => {
-      expect(src).toContain('aria-label={`Excluir template ');
-      expect(src).toContain('template.name}`}');
-    });
-    it('aria-label generico "Excluir" nao existe mais', () => {
-      expect(src).not.toContain('aria-label="Excluir"');
     });
   });
 });
@@ -1398,32 +1132,6 @@ describe('Analise estatica — MockupResultCard.tsx (alt text)', () => {
 });
 
 // =====================================================================
-// STATIC ANALYSIS — GenerateButton.tsx (reduced-motion)
-// =====================================================================
-
-describe('Analise estatica — GenerateButton.tsx (reduced-motion)', () => {
-  let src: string;
-  beforeEach(() => {
-    src = readSrc('src/components/mockup/GenerateButton.tsx');
-  });
-
-  describe('prefers-reduced-motion: suprime animacoes decorativas', () => {
-    it('importa useReducedMotion para respeitar preferencia do SO', () => {
-      expect(src).toContain('useReducedMotion');
-    });
-    it('hover e tap scale sao suprimidos quando reducedMotion esta ativo', () => {
-      expect(src).toContain('!reducedMotion ? { scale: 1.02 }');
-    });
-    it('pulso de glow nao anima quando reducedMotion esta ativo', () => {
-      expect(src).toContain('reducedMotion ? { opacity: 0.5 }');
-    });
-    it('transicao de pulso tem duration zero quando reducedMotion esta ativo', () => {
-      expect(src).toContain('reducedMotion ? { duration: 0 }');
-    });
-  });
-});
-
-// =====================================================================
 // STATIC ANALYSIS — aria-label em controles de formulario (6 arquivos)
 // =====================================================================
 
@@ -1784,34 +1492,14 @@ describe('Analise estatica — TechniqueTooltip.tsx (aria-hidden em icones do ho
   });
 });
 
-describe('Analise estatica — GenerateButton.tsx (aria-hidden em icones decorativos)', () => {
-  let src: string;
-  beforeEach(() => {
-    src = readSrc('src/components/mockup/GenerateButton.tsx');
-  });
-
-  it('icone Loader2 no estado gerando tem aria-hidden', () => {
-    expect(src).toContain('<Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true"');
-  });
-  it('icone Sparkles no estado padrao tem aria-hidden', () => {
-    expect(src).toContain('<Sparkles className="mr-2 h-5 w-5" aria-hidden="true"');
-  });
-});
-
 describe('Analise estatica — GeneratingOverlay.tsx (aria-hidden em icones decorativos)', () => {
   let src: string;
   beforeEach(() => {
     src = readSrc('src/components/mockup/GeneratingOverlay.tsx');
   });
 
-  it('icone CurrentIcon animado tem aria-hidden', () => {
-    expect(src).toContain('animate-bounce text-primary" aria-hidden="true"');
-  });
-  it('icone Check no passo concluido tem aria-hidden', () => {
-    expect(src).toContain('<Check className="h-4 w-4" aria-hidden="true"');
-  });
-  it('icone StepIcon no passo atual tem aria-hidden', () => {
-    expect(src).toContain('<StepIcon className="h-4 w-4" aria-hidden="true"');
+  it('icone do spinner tem aria-hidden', () => {
+    expect(src).toMatch(/<Loader2[^>]*aria-hidden="true"/s);
   });
 });
 
@@ -2002,17 +1690,6 @@ describe('Analise estatica — MockupBeforeAfter.tsx (aria-hidden em icones deco
   });
 });
 
-describe('Analise estatica — SaveTemplateDialog.tsx (aria-hidden em icones decorativos)', () => {
-  let src: string;
-  beforeEach(() => {
-    src = readSrc('src/components/mockup/SaveTemplateDialog.tsx');
-  });
-
-  it('icone Save no botao salvar template tem aria-hidden', () => {
-    expect(src).toContain('<Save aria-hidden="true" className="mr-1 h-4 w-4"');
-  });
-});
-
 describe('Analise estatica — MockupAnnotations.tsx (aria-hidden em icones decorativos)', () => {
   let src: string;
   beforeEach(() => {
@@ -2078,35 +1755,6 @@ describe('Analise estatica — MockupSuccessToast.tsx (aria-hidden em icones dec
   });
   it('icone ExternalLink no botao abrir nova aba tem aria-hidden', () => {
     expect(src).toContain('<ExternalLink aria-hidden="true" className="h-4 w-4"');
-  });
-});
-
-describe('Analise estatica — TemplateSelector.tsx (aria-hidden em icones decorativos)', () => {
-  let src: string;
-  beforeEach(() => {
-    src = readSrc('src/components/mockup/TemplateSelector.tsx');
-  });
-
-  it('icone LayoutTemplate no botao trigger tem aria-hidden', () => {
-    expect(src).toContain('<LayoutTemplate aria-hidden="true" className="mr-1 h-4 w-4"');
-  });
-  it('icone dinamico de template (mr-2) no item do menu tem aria-hidden', () => {
-    expect(src).toContain('<template.icon aria-hidden="true" className="mr-2 h-4 w-4"');
-  });
-  it('icone dinamico de template (text-primary) no HoverCard tem aria-hidden', () => {
-    expect(src).toContain('<template.icon aria-hidden="true" className="h-4 w-4 text-primary"');
-  });
-  it('icone User nos templates customizados (mr-2) tem aria-hidden', () => {
-    expect(src).toContain('<User aria-hidden="true" className="mr-2 h-4 w-4 text-primary"');
-  });
-  it('icone Trash2 no botao excluir template tem aria-hidden', () => {
-    expect(src).toContain('<Trash2 aria-hidden="true" className="h-3 w-3"');
-  });
-  it('icone User no HoverCard de template customizado tem aria-hidden', () => {
-    expect(src).toContain('<User aria-hidden="true" className="h-4 w-4 text-primary"');
-  });
-  it('icone Save no item salvar posicionamento tem aria-hidden', () => {
-    expect(src).toContain('<Save aria-hidden="true" className="mr-2 h-4 w-4"');
   });
 });
 

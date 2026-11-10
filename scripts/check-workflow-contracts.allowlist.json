@@ -1,13 +1,10 @@
 {
-  "_comment": "E76/E32/E88/R12/E19 2026-10-14: todas as violações C10 e C13 foram corrigidas. Allowlist contém apenas violações intencionais com justificativa documentada.",
+  "_comment": "E76/E32/E88/R12/E19 2026-10-14: todas as violações C10 e C13 foram corrigidas. Allowlist contém apenas violações intencionais com justificativa documentada. 2026-11-02: removidas 3 entradas mortas (ci-quotes-wizard.yml:362 e e2e-focused.yml) — os workflows não existem mais.",
   "_date": "2026-10-14",
   "_allowlisted_files": [],
   "_allowlisted_violations": [
     "deploy-gates.yml: job `lighthouse` has continue-on-error: true — gate jobs must not hide failures (C17)",
-    "ci-quotes-wizard.yml:362: npm install in run: — use npm ci for reproducible installs (E96/C24)",
-    "e2e-focused.yml: job `e2e_focused` has continue-on-error: true — gate jobs must not hide failures (C17)",
     "deploy-gates.yml: job 'e2e-smoke' sets E2E_USER_* in env: but file has no playwright test call — remove creds (E33/C25)",
-    "e2e-focused.yml: job 'e2e_focused' sets E2E_USER_* in env: but file never references authed playwright project — remove creds (E33/C25)",
     "lovable-autoheal.yml: actions/checkout step missing persist-credentials: false (R9)",
     "policies-baseline.yml: job 'seed' has permissions.contents: write in pull_request workflow — use read or add fork-guard (R11/E180)",
     "schema-snapshot-export.yml: job 'commit-snapshot' has permissions.contents: write in pull_request workflow — use read or add fork-guard (R11/E180)",
@@ -17,10 +14,7 @@
   ],
   "_violation_justifications": {
     "deploy-gates.yml/lighthouse/C17": "Gate 4 (Lighthouse CI) é intencionalmente opcional — documentado em CLAUDE.md tabela de gates ('Gate 4 | opcional'). O job lighthouse foi removido de needs: no deploy-ready (E03), portanto falha não bloqueia deploy. continue-on-error:true é necessário para que o workflow geral não fique vermelho quando métricas de Lighthouse variam. Aprovado E19/2026-10-14.",
-    "ci-quotes-wizard.yml:362/C24": "npm install -D pdf-parse @types/pdf-parse || true — instala devDep opcional de PDF em runtime; '|| true' é intencional pois o teste degrada graciosamente sem o pacote. Não pode ser em npm ci pois o pacote é opcionalmente ausente. Aprovado E96/2026-10-14.",
-    "e2e-focused.yml/e2e_focused/C17": "E2E Focused suites (voice-tooltip, promoflix-player, tooltips-a11y etc.) têm baselines incompletos ou são flaky por natureza. continue-on-error:true é intencional neste workflow para não bloquear CI com falhas de snapshot visual intermitentes — documentado no cabeçalho do arquivo. Aprovado E78/2026-10-15.",
     "deploy-gates.yml/e2e-smoke/C25": "False positive: o job roda 'npm run test:e2e:smoke' que invoca playwright com --project=chromium-smoke (authed). O nome do projeto está em playwright.config.ts, não inline no workflow — a análise estática de texto não alcança. Aprovado E33/2026-10-18.",
-    "e2e-focused.yml/e2e_focused/C25": "O primeiro job 'verify-secrets' valida que E2E_USER_EMAIL/PASSWORD existem como secrets (infraestrutura); os testes focados em si rodam como chromium-public. A presença das creds no job-level env é intencional para o step de verificação de secrets. Aprovado E33/2026-10-18.",
     "lovable-autoheal.yml/R9": "persist-credentials: true é INTENCIONAL (E179/2026-10-18): autoheal precisa de credencial para git push do branch de fix. O step seguinte usa GIT_PUSH_TOKEN para autenticar. Sem credencial persistida, o git push falha silenciosamente. Documentado no comentário do checkout no próprio workflow. Aprovado E179/2026-10-18.",
     "policies-baseline.yml/R11/E180": "O job 'seed' tem permissions.contents: write para poder abrir PR com baseline gerado. Possui fork-guard explícito na condição 'if: github.event.pull_request.head.repo.full_name == github.repository' — forks não chegam a executar. A check estática não alcança guards em 'if:' de nível de job. Aprovado E180/2026-10-18.",
     "schema-snapshot-export.yml/R11/E180": "O job 'commit-snapshot' tem permissions.contents: write para commitar snapshot e abrir/atualizar PR. Possui fork-guard explícito na condição 'if:' de nível de job que bloqueia execução a partir de forks. A check estática não alcança guards em 'if:' de nível de job. Aprovado E180/2026-10-18.",

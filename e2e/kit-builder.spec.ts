@@ -11,6 +11,11 @@ import { loginAs } from "./helpers/auth";
  * Clicking "Começar pelos itens" exits the landing and enters the wizard.
  */
 async function exitLandingState(page: Parameters<typeof loginAs>[0]) {
+  const skipTour = page.getByRole('button', { name: /Pular tour/i });
+  // isVisible() sem timeout retorna false imediatamente se o tour ainda não
+  // montou — o overlay então bloqueia o clique no botão de start.
+  if (await skipTour.isVisible({ timeout: 3000 }).catch(() => false)) await skipTour.click();
+
   const startBtn = page.getByRole('button', { name: /Começar pelos itens/i });
   await expect(startBtn).toBeVisible({ timeout: 10000 });
   await startBtn.click();

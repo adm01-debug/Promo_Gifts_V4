@@ -60,7 +60,7 @@ export function KitOnboardingTour({ open: openProp, onOpenChange }: KitOnboardin
   };
 
   const finish = () => {
-    if (!isControlled) localStorage.setItem(STORAGE_KEY, '1');
+    if (typeof window !== 'undefined') window.localStorage.setItem(STORAGE_KEY, '1');
     close(false);
   };
 
@@ -69,7 +69,13 @@ export function KitOnboardingTour({ open: openProp, onOpenChange }: KitOnboardin
   const current = STEPS[step];
 
   return (
-    <div className="fixed inset-0 z-[80] flex animate-fade-in items-center justify-center bg-background/80 p-4 backdrop-blur-sm">
+    <div
+      data-testid="kit-onboarding-tour"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Tour de boas-vindas do Kit Maker"
+      className="fixed inset-0 z-[80] flex animate-fade-in items-center justify-center bg-background/80 p-4 backdrop-blur-sm"
+    >
       <Card className="relative w-full max-w-md space-y-4 p-6">
         <Button
           variant="ghost"

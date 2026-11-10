@@ -7,7 +7,7 @@
  *  - Posição da 2ª linha estável entre quantidades variadas de cores.
  *
  * Estratégia:
- *  - Visita /catalogo (rota pública), aguarda hidratação.
+ *  - Visita /produtos (rota pública), aguarda hidratação.
  *  - Coleta os 3 primeiros cards QUE TÊM o chip "+N" visível
  *    (deterministicamente diferentes contagens; ordem fixa do catálogo).
  *  - Screenshot por card x viewport (desktop/mobile) com tolerância 2%.
@@ -49,7 +49,7 @@ test.describe('ProductCard — wrap de bolinhas (visual regression)', () => {
   for (const vp of VIEWPORTS) {
     test(`viewport ${vp.name}: até ${SAMPLE_COUNT} cards com overflow`, async ({ page }) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
-      await gotoAndSettle(page, '/catalogo');
+      await gotoAndSettle(page, '/produtos');
       await settleCatalog(page);
 
       const cardsWithOverflow = page.locator(

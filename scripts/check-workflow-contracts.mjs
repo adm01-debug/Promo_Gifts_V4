@@ -536,9 +536,10 @@ export function checkC24NpmInstallInRun({ file, text }) {
   return violations;
 }
 
-// C25 — E2E_USER_* secrets only in workflows that call `playwright test` with authed project (E33)
+// C25 — E2E_USER_* secrets only in authenticated E2E workflows or the one
+// read-only Supabase integration workflow that signs in directly (E33).
 // Authed = project name contains "authed" or "setup" or "chromium-smoke", incl. matrix variables
-// Approach: if the whole file text references any authed project AND has playwright test, OK.
+// The kit coverage exception is exact-file + exact-script + same credential-bearing job.
 export function checkC25E2ECredsOnlyInAuthedJobs({ file, text, doc }) {
   const violations = [];
   if (!doc || !doc.jobs) return violations;
@@ -560,6 +561,18 @@ export function checkC25E2ECredsOnlyInAuthedJobs({ file, text, doc }) {
   if (!anyJobHasCreds) return violations;
 
   if (hasPWTest && fileHasAuthedRef) return violations; // legitimate
+
+  const hasAuthorizedKitCoverageIntegration =
+    file === 'kit-coverage-integration.yml' &&
+    Object.values(doc.jobs).some((job) =>
+      envHasCreds(job.env) &&
+      Array.isArray(job.steps) &&
+      job.steps.some((step) =>
+        typeof step?.run === 'string' &&
+        /\bnpm\s+run\s+test:kit-coverage:integration\b/.test(step.run),
+      ),
+    );
+  if (hasAuthorizedKitCoverageIntegration) return violations;
 
   // Check per-job: flag jobs that set creds but there's no authed usage in the entire file
   for (const [jobId, job] of Object.entries(doc.jobs)) {

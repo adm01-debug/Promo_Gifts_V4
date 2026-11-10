@@ -2,54 +2,62 @@
  * Verifica o texto canônico do tooltip do chip/badge "awaiting" (Pendente Aprovação)
  * em mobile, tablet e desktop. A copy vem do SSOT `QUOTE_ROW_BADGE_STYLES.awaiting.description`.
  */
-import { test, expect, requireAuth } from "../fixtures/test-base";
-import { gotoAndSettle } from "../helpers/nav";
-import { Sel } from "../fixtures/selectors";
-import { seedQuotesForStatusChips } from "../helpers/quotes-status-seed";
-import { QUOTE_ROW_BADGE_STYLES } from "../../src/components/quotes/QuotesStatusChips";
+import { test, expect, requireLiveDatabaseAuth } from '../fixtures/test-base';
+import { gotoAndSettle } from '../helpers/nav';
+import { Sel } from '../fixtures/selectors';
+import { seedQuotesForStatusChips } from '../helpers/quotes-status-seed';
+import { QUOTE_ROW_BADGE_STYLES } from '../../src/components/quotes/QuotesStatusChips';
 
 const VIEWPORTS = [
-  { name: "mobile", width: 390, height: 844 },
-  { name: "tablet", width: 834, height: 1112 },
-  { name: "desktop", width: 1440, height: 900 },
+  { name: 'mobile', width: 390, height: 844 },
+  { name: 'tablet', width: 834, height: 1112 },
+  { name: 'desktop', width: 1440, height: 900 },
 ] as const;
 
 const EXPECTED = QUOTE_ROW_BADGE_STYLES.awaiting.description;
 
 test.describe("Tooltip 'awaiting' — copy canônica por viewport", () => {
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(() => requireLiveDatabaseAuth());
 
   for (const vp of VIEWPORTS) {
     test(`exibe copy correta em ${vp.name} (${vp.width}x${vp.height})`, async ({ page }) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
-      await gotoAndSettle(page, "/orcamentos");
+      await gotoAndSettle(page, '/orcamentos');
       const seed = await seedQuotesForStatusChips(page);
-      if (seed.skipped != null) { test.skip(true, `seed falhou: ${seed.skipped}`); }
-      await gotoAndSettle(page, "/orcamentos");
-      await expect(page.locator(Sel.page.title("orcamentos")).first()).toBeVisible({
+      if (seed.skipped != null) {
+        test.skip(true, `seed falhou: ${seed.skipped}`);
+      }
+      await gotoAndSettle(page, '/orcamentos');
+      await expect(page.locator(Sel.page.title('orcamentos')).first()).toBeVisible({
         timeout: 10_000,
       });
 
       // Sanity: garante que a copy nova está em vigor (regressão da string antiga).
       expect(EXPECTED).toBe(
-        "Orçamento com desconto acima do limite padrão da empresa, enviado para autorização do Gestor Comercial.",
+        'Orçamento com desconto acima do limite padrão da empresa, enviado para autorização do Gestor Comercial.',
       );
 
-      const chip = page.locator(Sel.quotesList.chip("pending_approval"));
-      if ((await chip.count()) > 0) {
+      const chip = page.locator(Sel.quotesList.chip('pending_approval'));
+      const badge = page.locator(Sel.quotesList.statusBadge('awaiting')).first();
+      const [chipCount, badgeCount] = await Promise.all([chip.count(), badge.count()]);
+      expect(
+        chipCount + badgeCount,
+        `seed awaiting não ficou visível em ${vp.name}; tooltip não foi exercitado`,
+      ).toBeGreaterThan(0);
+
+      if (chipCount > 0) {
         await chip.scrollIntoViewIfNeeded();
         await chip.hover();
-        const tip = page.locator(Sel.quotesList.chipTooltip("pending_approval")).first();
+        const tip = page.locator(Sel.quotesList.chipTooltip('pending_approval')).first();
         await expect(tip).toBeVisible({ timeout: 2_000 });
         await expect(tip).toHaveText(EXPECTED);
         await page.mouse.move(0, 0);
       }
 
-      const badge = page.locator(Sel.quotesList.statusBadge("awaiting")).first();
-      if ((await badge.count()) > 0) {
+      if (badgeCount > 0) {
         await badge.scrollIntoViewIfNeeded();
         await badge.hover();
-        const tip = page.locator(Sel.quotesList.statusBadgeTooltip("awaiting")).first();
+        const tip = page.locator(Sel.quotesList.statusBadgeTooltip('awaiting')).first();
         await expect(tip).toBeVisible({ timeout: 2_000 });
         await expect(tip).toHaveText(EXPECTED);
       }

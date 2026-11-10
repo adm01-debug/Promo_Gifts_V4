@@ -64,6 +64,8 @@ on:
       - 'supabase/config.toml'
       - 'supabase/baseline/**'
       - 'scripts/drift-baseline.mjs'
+      - 'scripts/check-event-triggers-drift.mjs'
+      - 'scripts/check-cron-drift.mjs'
       - '.github/workflows/db-schema-drift-check.yml'
   workflow_dispatch:
   # Chamado por schema-snapshot-export.yml antes de girar o baseline: baseline
@@ -83,7 +85,9 @@ permissions:
   # pull-requests: write — removido E92 (não usado neste workflow)
 
 concurrency:
-  group: db-schema-drift-${{ github.ref }}
+  # `github.workflow` é o caller quando reutilizado: separa o standalone do E40
+  # de Deploy Gates e impede que um cancele a evidência do outro no mesmo PR.
+  group: db-schema-drift-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 
@@ -102,6 +106,15 @@ jobs:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
       SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
+      # Pooler session IPv4: o host direto db.<ref> é somente IPv6 e runners
+      # GitHub não têm rota IPv6. Os valores são validados live antes do uso.
+      PGHOST: ${{ secrets.PGHOST }}
+      PGPORT: '5432'
+      PGDATABASE: ${{ secrets.PGDATABASE }}
+      PGUSER: ${{ secrets.PGUSER }}
+      PGPASSWORD: ${{ secrets.PGPASSWORD }}
+      PGSSLMODE: require
+      PGCONNECT_TIMEOUT: '15'
     steps:
       - name: Checkout repo
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -114,14 +127,16 @@ jobs:
         id: guard
         run: |
           set -euo pipefail
-          if [ -z "${SUPABASE_ACCESS_TOKEN:-}" ] || [ -z "${SUPABASE_DB_PASSWORD:-}" ]; then
+          if [ -z "${SUPABASE_ACCESS_TOKEN:-}" ] || [ -z "${SUPABASE_DB_PASSWORD:-}" ] || \
+             [ -z "${PGHOST:-}" ] || [ -z "${PGDATABASE:-}" ] || \
+             [ -z "${PGUSER:-}" ] || [ -z "${PGPASSWORD:-}" ]; then
             {
               echo "## Drift check bloqueado"
               echo
-              echo "SUPABASE_ACCESS_TOKEN e/ou SUPABASE_DB_PASSWORD ausentes."
+              echo "Credenciais Supabase CLI e/ou PG* do pooler ausentes."
               echo "O resultado não pode ser considerado válido sem consulta live ao projeto canônico."
             } >> "$GITHUB_STEP_SUMMARY"
-            echo "::error::SUPABASE_ACCESS_TOKEN e/ou SUPABASE_DB_PASSWORD ausentes; não é permitido pular a validação live."
+            echo "::error::Credenciais Supabase CLI e/ou PG* do pooler ausentes; não é permitido pular a validação live."
             exit 1
           fi
           echo "enabled=true" >> "$GITHUB_OUTPUT"
@@ -137,6 +152,10 @@ jobs:
         uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
         with:
           version: 2.101.0
+
+      - name: Validate canonical session pooler (IPv4)
+        if: steps.guard.outputs.enabled == 'true'
+        run: node scripts/validate-migration-target.mjs --require-live-pooler --target-only
 
       - name: Garante registry ghcr.io (E104 — revertido de ECR por data-limit)
         if: steps.guard.outputs.enabled == 'true'
@@ -155,6 +174,56 @@ jobs:
           set -euo pipefail
           # Senha via SUPABASE_DB_PASSWORD (env do job), nunca como argumento (R5).
           supabase link --project-ref "$SUPABASE_PROJECT_REF"
+
+      - name: Detector E12 — índices out-of-band (pg_indexes)
+        id: e12
+        if: steps.guard.outputs.enabled == 'true'
+        run: |
+          set -euo pipefail
+          # Extrai nomes de índices referenciados em supabase/migrations/
+          grep -rh -i 'CREATE INDEX' supabase/migrations/ \
+            | grep -oP '(?i)CREATE\s+INDEX\s+(?:IF\s+NOT\s+EXISTS\s+)?\K\w+' \
+            | tr '[:upper:]' '[:lower:]' \
+            | sort -u > /tmp/migration_indexes.txt || true
+
+          # Consulta pg_indexes: índices explícitos (exclui _pkey/_key de constraints)
+          psql -t -A -c "
+            SELECT lower(indexname)
+            FROM pg_indexes
+            WHERE schemaname = 'public'
+              AND indexdef LIKE 'CREATE INDEX %'
+              AND indexname NOT LIKE '%_pkey'
+              AND indexname NOT LIKE '%_key'
+            ORDER BY 1
+          " 2>/dev/null > /tmp/pg_indexes.txt || {
+            echo "::warning::E12 — falha ao consultar pg_indexes via pooler; step ignorado"
+            exit 0
+          }
+
+          # Índices em produção sem referência em nenhum arquivo de migration
+          comm -23 /tmp/pg_indexes.txt /tmp/migration_indexes.txt \
+            > /tmp/e12_drift.txt || true
+
+          DRIFT_COUNT=$(wc -l < /tmp/e12_drift.txt | tr -d ' ')
+          echo "e12_drift_count=${DRIFT_COUNT}" >> "$GITHUB_OUTPUT"
+
+          if [ "${DRIFT_COUNT}" -gt 0 ]; then
+            {
+              echo "## E12 — ${DRIFT_COUNT} índice(s) out-of-band em \`public\`"
+              echo
+              echo "Criados diretamente em produção sem migration correspondente."
+              echo "Crie migrations espelho com \`CREATE INDEX IF NOT EXISTS\` (ver P-11 no PENDENCIAS.md)."
+              echo
+              echo '```'
+              head -60 /tmp/e12_drift.txt
+              [ "$(wc -l < /tmp/e12_drift.txt)" -gt 60 ] && echo "... (truncado)"
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning::E12 — ${DRIFT_COUNT} índices out-of-band em public sem migration. Ver job summary."
+          else
+            echo "## E12 — Sem índices out-of-band" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
 
       - name: Ledger parity (repo x canonical)
         if: steps.guard.outputs.enabled == 'true'

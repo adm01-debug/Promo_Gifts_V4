@@ -1,7 +1,7 @@
 import { getCorsHeaders, handleCorsPreflightIfNeeded } from '../_shared/cors.ts';
 import { getCredential } from '../_shared/credentials.ts';
 import { authorizeCron } from '../_shared/dispatcher-auth.ts';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4';
+import { createClient } from 'npm:@supabase/supabase-js@2.49.4';
 import { safeErrorFields } from '../_shared/log-safety.ts';
 
 // CORS headers are now dynamic — use getCorsHeaders(req) inside the handler

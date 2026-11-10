@@ -41,6 +41,7 @@ import {
   RolePermissionsPage,
   RolesPage,
   SellerDiscountLimitsAdminPage,
+  AuditSuitePage,
   SidebarQAPage,
   StorageTestPage,
   AdminCloudflareImagesPage,
@@ -141,6 +142,7 @@ export const adminRoutes = (
       <Route path="/admin/storage-test" element={<StorageTestPage />} />
       <Route path="/admin/qa" element={<QAPage />} />
       <Route path="/admin/qa/sidebar" element={<SidebarQAPage />} />
+      <Route path="/admin/audit-suite" element={<AuditSuitePage />} />
       <Route path="/admin/observabilidade" element={<ObservabilityDashboardPage />} />
       <Route path="/admin/cloudflare-images" element={<AdminCloudflareImagesPage />} />
     </Route>

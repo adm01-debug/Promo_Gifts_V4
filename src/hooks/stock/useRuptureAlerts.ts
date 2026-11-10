@@ -1,10 +1,15 @@
 /**
- * useRuptureAlerts — Consome `mv_stock_rupture_alert` do canônico.
+ * useRuptureAlerts — Consome `mv_stock_rupture_alert` do canônico via RPC.
  * Onda 2: inclui score_composto, confidence_level, anomalia_spike, gap_unidades.
  *
  * FIX 2026-06-22: MAX_ROWS 2000→5000 + filtro neq('nivel_alerta','OK')
  * Root cause: 3.700 RUPTURA (score=100) bloqueavam todos os CRÍTICO/ALERTA/ATENÇÃO
  * quando o LIMIT era 2000. Com neq OK + limit 5000, cobrimos os 4.773 itens não-OK.
+ *
+ * FIX 2026-11-01: SB-0003 — troca .from() por .rpc('fn_get_rupture_alerts').
+ * O SELECT direto na view foi bloqueado (42501) após REVOKE em 20261013171045.
+ * A função SECURITY DEFINER guarda por is_supervisor_or_above(); filtros PostgREST
+ * continuam funcionando sobre o SETOF retornado.
  */
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -58,40 +63,20 @@ export function useRuptureAlerts(): UseRuptureAlertsResult {
   const enabled = isFeatureEnabled('useEmaRupture');
 
   const query = useQuery({
-    queryKey: ['rupture-alerts', 'mv_stock_rupture_alert', 'v5'],
+    queryKey: ['rupture-alerts', 'fn_get_rupture_alerts', 'v5'],
     enabled,
     staleTime: 5 * 60_000,
     gcTime: 15 * 60_000,
     retry: 1,
     queryFn: async (): Promise<RuptureAlertRow[]> => {
-      const client = supabase as unknown as {
-        from: (n: string) => {
-          select: (c: string) => {
-            eq: (k: string, v: boolean) => {
-              neq: (k: string, v: string) => {
-                order: (k: string, o?: { ascending?: boolean }) => {
-                  order: (k: string, o?: { ascending?: boolean }) => {
-                    limit: (n: number) => Promise<{ data: RuptureAlertRow[] | null; error: Error | null }>;
-                  };
-                };
-              };
-            };
-          };
-        };
-      };
-      const { data, error } = await client
-        .from('mv_stock_rupture_alert')
-        .select(
-          'vss_id, variant_id, supplier_id, supplier_name, supplier_sku,' +
-            'nivel_alerta, cobertura_dias, lead_time_efetivo, ema_diaria, stock_total,' +
-            'prioridade, is_preferred, score_composto, confidence_level,' +
-            'anomalia_spike, gap_unidades, valor_estoque_reais',
-        )
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await ((supabase as any)
+        .rpc('fn_get_rupture_alerts')
         .eq('is_preferred', true)
         .neq('nivel_alerta', 'OK')
         .order('prioridade', { ascending: true })
         .order('score_composto', { ascending: false })
-        .limit(MAX_ROWS);
+        .limit(MAX_ROWS) as Promise<{ data: RuptureAlertRow[] | null; error: Error | null }>);
       if (error) throw error;
       return data ?? [];
     },

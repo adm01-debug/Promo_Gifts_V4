@@ -406,33 +406,33 @@ export function useSellerCartsPage() {
     [activeCart, saveTemplate],
   );
 
+  const applyingTemplateRef = useRef(false);
   const handleLoadTemplate = useCallback(
-    (items: CartTemplateItem[]) => {
+    async (items: CartTemplateItem[]) => {
       if (items.length === 0) {
         toast.warning('Template sem itens válidos', {
           description: 'Nenhum item pôde ser carregado. Verifique se o template está correto.',
         });
         return;
       }
-      // silent: cada item entra sem toast individual; mostramos um único
-      // toast agregado abaixo (evita empilhar N toasts ao aplicar template).
-      items.forEach((item) => {
-        addToActiveCart(
-          {
-            product_id: item.product_id,
-            product_name: item.product_name,
-            product_sku: item.product_sku,
-            product_image_url: item.product_image_url,
-            product_price: item.product_price,
-            quantity: item.quantity,
-            color_name: item.color_name,
-            color_hex: item.color_hex,
-          },
-          undefined,
-          { silent: true },
-        );
-      });
-      toast.success('Template aplicado ao carrinho');
+      // Trava na página + silent/sequencial: sem lotes sobrepostos, um único toast no fim.
+      if (applyingTemplateRef.current) {
+        toast.info('Aguarde: um template ainda está sendo aplicado');
+        return;
+      }
+      applyingTemplateRef.current = true;
+      let failed = 0;
+      try {
+        for (const item of items) {
+          const ok = await addToActiveCart({ ...item }, undefined, { silent: true });
+          if (!ok) failed += 1;
+        }
+      } finally {
+        applyingTemplateRef.current = false;
+      }
+      if (!failed) toast.success('Template aplicado ao carrinho');
+      else if (failed === items.length) toast.error('Não foi possível aplicar o template');
+      else toast.warning(`Template parcial: ${failed} de ${items.length} itens falharam`);
     },
     [addToActiveCart],
   );

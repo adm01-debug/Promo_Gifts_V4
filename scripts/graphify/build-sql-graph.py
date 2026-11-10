@@ -4,9 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
-import shutil
 import subprocess
 import tempfile
 from pathlib import Path
@@ -17,20 +17,20 @@ DEFAULT_VERSION = "0.9.91"
 
 def tracked_sql_files(root: Path) -> list[Path]:
     result = subprocess.run(
-        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "--", "*.sql"],
+        ["git", "ls-tree", "-r", "-z", "--name-only", "HEAD"],
         cwd=root,
         check=True,
         capture_output=True,
         text=True,
     )
     files = []
-    for value in result.stdout.splitlines():
-        path = Path(value)
-        if path.is_absolute() or ".." in path.parts:
+    for value in result.stdout.split('\0'):
+        if not value:
             continue
-        source = root / path
-        if source.is_file():
-            files.append(path)
+        path = Path(value)
+        if path.is_absolute() or ".." in path.parts or path.suffix.lower() != ".sql":
+            continue
+        files.append(path)
     return sorted(set(files), key=lambda item: item.as_posix())
 
 
@@ -40,13 +40,26 @@ def build(root: Path, out_dir: Path, version: str) -> dict[str, int | str]:
         raise RuntimeError("Nenhum arquivo SQL rastreado ou não ignorado foi encontrado.")
     out_dir = out_dir.resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
+    input_digest = hashlib.sha256()
+    source_commit = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=root, check=True, capture_output=True, text=True
+    ).stdout.strip()
     with tempfile.TemporaryDirectory(prefix="promo-gifts-sql-map-") as temp:
         corpus = Path(temp) / "sql-corpus"
         corpus.mkdir()
         for relative in files:
             target = corpus / relative
             target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(root / relative, target)
+            content = subprocess.run(
+                ["git", "show", f"HEAD:{relative.as_posix()}"],
+                cwd=root,
+                check=True,
+                capture_output=True,
+            ).stdout
+            target.write_bytes(content)
+            input_digest.update(relative.as_posix().encode("utf-8"))
+            input_digest.update(b"\0")
+            input_digest.update(content)
         subprocess.run(
             [
                 "uv", "tool", "run", "--from", f"graphifyy[sql]=={version}", "graphify", "extract",
@@ -59,12 +72,17 @@ def build(root: Path, out_dir: Path, version: str) -> dict[str, int | str]:
     if not graph_path.is_file():
         raise RuntimeError(f"Graphify não produziu {graph_path}.")
     graph = json.loads(graph_path.read_text(encoding="utf-8"))
-    return {
+    result: dict[str, int | str] = {
+        "source_commit": source_commit,
+        "input_sha256": input_digest.hexdigest(),
         "version": version,
         "sql_files": len(files),
         "nodes": len(graph.get("nodes", [])),
         "edges": len(graph.get("links", graph.get("edges", []))),
     }
+    metadata_path = out_dir / "graphify-out" / "build-metadata.json"
+    metadata_path.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return result
 
 
 def main() -> None:

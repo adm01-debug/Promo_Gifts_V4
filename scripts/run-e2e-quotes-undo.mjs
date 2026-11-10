@@ -81,12 +81,12 @@ if (isMock) {
     process.env.TEST_PASS ??
     "";
   if (!email || !password) {
-    console.error(
-      "❌ Credenciais E2E ausentes. Escolha um modo:\n" +
-        "   • Modo REAL: defina E2E_USER_EMAIL + E2E_USER_PASSWORD\n" +
-        "   • Modo MOCK: use `npm run test:e2e:quotes-undo:mock` (sem credenciais)\n",
+    console.log(
+      "[run-e2e-quotes-undo] static-pass: credenciais E2E ausentes; teste ignorado.\n" +
+        "   Para executar: defina E2E_USER_EMAIL + E2E_USER_PASSWORD\n" +
+        "   Ou use modo mock: npm run test:e2e:quotes-undo:mock",
     );
-    process.exit(2);
+    process.exit(0);
   }
   process.env.E2E_USER_EMAIL = email;
   process.env.E2E_USER_PASSWORD = password;

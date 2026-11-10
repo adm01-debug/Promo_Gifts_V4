@@ -79,10 +79,19 @@ export function runBaselineGate({ baselineFile, label, description, totalKey, fi
   const totalCurrent = Object.values(currentCounts).reduce((a, b) => a + b, 0);
 
   if (UPDATE) {
+    let prevMeta;
+    try {
+      prevMeta = existsSync(BASELINE_PATH)
+        ? JSON.parse(readFileSync(BASELINE_PATH, 'utf8'))?.meta
+        : undefined;
+    } catch {
+      prevMeta = undefined; // baseline corrompido — nao travar o --update (QODO c466935b)
+    }
     const next = {
       generatedAt: new Date().toISOString(),
       description,
       [totalKey]: totalCurrent,
+      ...(prevMeta ? { meta: prevMeta } : {}),
       counts: currentCounts,
     };
     writeFileSync(BASELINE_PATH, `${JSON.stringify(next, null, 2)}\n`);

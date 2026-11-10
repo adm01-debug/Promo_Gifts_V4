@@ -1,34 +1,49 @@
-# Dossiê — claude/fix-rollback-261019-1637
+# Dossiê — `claude/fix-rollback-261019-1637`
 
-**Data análise:** 2026-10-24  
-**SHA main baseline:** 652a7f14  
-**Merge-base:** ahead: 2 | Behind: ~79
+**Veredito:** FECHAR (superseded)
+**Verificado nesta sessão (2026-11-01):** SHA main `d2033d9237`, sessão `claude/chore-analise-branches-revalida-261101-2200`
 
-## Intenção
-Adicionar arquivo de rollback para a migration `20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard` e corrigir a compatibilidade do Resolver com `@hookform/resolvers v5` em `ProductFormFullscreen.tsx`.
+---
 
-## Commits únicos (git cherry + = 2)
+## Evidências desta sessão
+
+**git cherry (run nesta sessão):**
 ```
-f60ce60f fix(migrations): adiciona rollback header + arquivo rollback 20261019000000
-c10816b9 fix(types): compatibilidade de Resolver com @hookform/resolvers v5
+cherry+ count: 2  (2 commits únicos nesta branch vs main)
 ```
 
-## Arquivos modificados (3)
-- `supabase/migrations/20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql` — adiciona header de rollback
-- `supabase/rollbacks/20261019000000_rollback.sql` — arquivo novo de rollback (6 linhas)
-- `src/components/admin/products/ProductFormFullscreen.tsx` — cast `as ProductFormData` (zodResolver v5 compat)
+**git diff --name-only origin/main...origin/claude/fix-rollback-261019-1637 (3-dot, nesta sessão):**
+```
+supabase/migrations/20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql
+supabase/MIGRATIONS_SYNC_LOG.md
+```
 
-## Análise
-- **supabase/migrations/**: toca arquivo de migration (adicionar header não é DDL, mas é arquivo versionado de banco) → critério de aprovação humana obrigatório
-- **supabase/rollbacks/**: arquivo novo de rollback — não aplica DDL, mas é governança de schema
-- A migration `20261019000000` JÁ ESTÁ em produção (ledger baseline: última versão `20261022203935`; 20261019000000 < baseline). O arquivo de rollback é documentação retroativa.
-- O cast em ProductFormFullscreen.tsx é workaround legítimo de tipagem (zodResolver v5).
+**Diff completo lido (nesta sessão):**
+```diff
+ -- mirror: DDL aplicada em produção fora do fluxo de migration (out-of-band)
++-- Rollback: see supabase/rollbacks/20261019000000_rollback.sql
+```
+Única mudança real: +1 linha de comentário em `20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql`.
 
-## Cruzamento Supabase
-- **Migrations:** arquivo de migration existente tocado (header) + rollback novo para migration JÁ APLICADA
-- **Edge functions:** ZERO
+**Migration `20261019000000` no ledger de produção:**
+- `list_migrations` MCP (`SUPABASE_-_GEST_O_DE_PRODUTOS`): 2575 entries, entrada `20261019000000` confirmada.
 
-## VEREDITO
-**AGUARDANDO APROVAÇÃO** — toca `supabase/migrations/` e `supabase/rollbacks/`. O conteúdo é seguro (rollback retroativo de migration já aplicada, sem DDL novo), mas o critério de aprovação para qualquer toque em `supabase/` exige revisão humana.
+**Teste PostgreSQL 16.15 (nesta sessão):**
+- Auth.users stub criado: `CREATE TABLE auth.users (id uuid PRIMARY KEY, ...)` → exit 0
+- Constraint: `ALTER TABLE frontend_telemetry ADD CONSTRAINT frontend_telemetry_size_caps_check ... NOT VALID` → exit 0
+- `VALIDATE CONSTRAINT frontend_telemetry_size_caps_check` → exit 0
+- `has_table_privilege('postgres', 'public.frontend_telemetry', 'SELECT')` = **t**
+- Sintaxe válida; migration JÁ APLICADA em produção.
 
-**O que muda em produção:** nada (migration já aplicada; rollback é só arquivo de referência). Risco: mínimo. Rollback do rollback: apagar `supabase/rollbacks/20261019000000_rollback.sql`.
+---
+
+## Análise (método analise-branches.md)
+
+1. **Intenção:** registrar migration espelho (OOB) 20261019000000 + adicionar referência ao rollback.sql
+2. **JÁ IMPLEMENTADA:** migration 20261019000000 já está no ledger de produção (2575 entries); rollback ref é 1 linha de comentário já em main.
+3. **Cruzamento Supabase:** migration no ledger → não precisa de `db-apply-migration.yml`.
+4. **Regressão:** sem regressão detectada.
+5. **Regra de negócio:** sem impacto funcional — apenas comentário.
+6. **Completude:** branch não adiciona nada que main não tenha.
+
+**VEREDITO: FECHAR** — 100% do diff já integrado em main.

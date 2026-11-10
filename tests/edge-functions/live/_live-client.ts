@@ -68,6 +68,30 @@ const TIMEOUT_MS = Number(readEnv("EDGE_LIVE_TIMEOUT_MS")) || 15_000;
 const RETRY_STATUSES = new Set([502, 503, 504]);
 const RETRY_COUNT = Number(readEnv("EDGE_LIVE_RETRIES")) || 3;
 const RETRY_DELAY_MS = Number(readEnv("EDGE_LIVE_RETRY_DELAY_MS")) || 800;
+/**
+ * Deadline do signInWithPassword em getJwt() — ver nota no MAX_RETRY_BUDGET_MS.
+ * 30s, não 10s: observado em CI real (runs 41539775319 e 41539114390,
+ * 2026-11-02) auth/v1/token respondendo em até 26116ms — 10s disparava
+ * JwtTimeoutError em arquivos diferentes a cada rerun (persistente, não
+ * flaky), derrubando o job por causa do próprio timeout, não por bug.
+ */
+const JWT_TIMEOUT_MS = Number(readEnv("EDGE_LIVE_JWT_TIMEOUT_MS")) || 30_000;
+
+/**
+ * Pior caso de wall-clock de callEdge(): JWT_TIMEOUT_MS (getJwt() é aguardado
+ * ANTES do loop de retry, para roles != anon — achado do Qodo na PR #3057)
+ * + (RETRY_COUNT+1) tentativas, cada uma podendo levar até TIMEOUT_MS (cold
+ * start real, não é só rede), mais o backoff linear entre tentativas
+ * (RETRY_DELAY_MS * (RETRY_COUNT*(RETRY_COUNT+1))/2).
+ * Exportado para _live-suite.ts derivar o timeout do `it()` daqui — timeout do
+ * teste menor que isso cancela a chamada antes do próprio retry terminar
+ * (causa real do timeout de 30s em intelligence-substitute-applied/magic-up-score,
+ * 2026-11-02: 4 tentativas de 15s cada já somam 60s, sem contar o backoff).
+ */
+export const MAX_RETRY_BUDGET_MS =
+  JWT_TIMEOUT_MS +
+  (RETRY_COUNT + 1) * TIMEOUT_MS +
+  RETRY_DELAY_MS * ((RETRY_COUNT * (RETRY_COUNT + 1)) / 2);
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -180,6 +204,14 @@ const ROLE_CREDS: Record<Exclude<EdgeRole, "anon">, { email?: string; password?:
 
 const jwtCache = new Map<EdgeRole, string | null>();
 
+/** Marca especificamente o timeout do sign-in — nunca cacheado como "sem credencial". */
+class JwtTimeoutError extends Error {
+  constructor() {
+    super("getJwt: signInWithPassword timeout");
+    this.name = "JwtTimeoutError";
+  }
+}
+
 /** Retorna o access_token do role (ou null se não há credencial / falha de login). */
 export async function getJwt(role: EdgeRole): Promise<string | null> {
   if (role === "anon") return null;
@@ -196,14 +228,24 @@ export async function getJwt(role: EdgeRole): Promise<string | null> {
     const client = createClient(SUPABASE_URL, ANON_KEY, {
       auth: { persistSession: false, autoRefreshToken: false },
     });
-    const { data, error } = await client.auth.signInWithPassword({
-      email: creds.email,
-      password: creds.password,
-    });
+    // Timeout explícito — sem ele, signInWithPassword() pode ficar pendurado
+    // sem limite e o budget de MAX_RETRY_BUDGET_MS fica sem sentido (achado
+    // do Qodo na PR #3057: a espera do JWT acontece ANTES do retry loop).
+    const { data, error } = await Promise.race([
+      client.auth.signInWithPassword({ email: creds.email, password: creds.password }),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new JwtTimeoutError()), JWT_TIMEOUT_MS)),
+    ]);
     const token = error ? null : (data.session?.access_token ?? null);
     jwtCache.set(role, token);
     return token;
-  } catch {
+  } catch (err) {
+    // Timeout ≠ credencial ausente/inválida (achado Qodo na PR #3057): cachear
+    // null aqui faria um login lento-mas-válido virar "sem credencial" PARA
+    // SEMPRE (cache por role), degradando testes autenticados pra anon/skip
+    // silenciosamente — justo o cenário que esses testes deveriam cobrir.
+    // Deixa propagar: o teste falha alto (erro real), em vez de passar verde
+    // sem ter exercitado o caminho autenticado.
+    if (err instanceof JwtTimeoutError) throw err;
     jwtCache.set(role, null);
     return null;
   }

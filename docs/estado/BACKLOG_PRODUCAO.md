@@ -1,5 +1,7 @@
 # BACKLOG DE PRODUÇÃO (índice único)
 
+> **Revalidação mais recente:** [REVALIDACAO_PLANO_2026-10-31.md](./REVALIDACAO_PLANO_2026-10-31.md). As contagens e bloqueios desta página são o snapshot de 25/10; use a revalidação posterior para PRs, workflows e divergências identificadas depois dessa data. Nenhuma pendência de schema é autorizada por este índice.
+
 Consolida as quatro frentes (main `0773535`, 2026-10-25). O detalhe, a evidência arquivo:linha e o SQL proposto ficam nos arquivos de origem; aqui está o índice com IDs, para nada entrar em O2+ sem ID.
 
 | Camada | Arquivo | IDs | Itens | Estado de partida |

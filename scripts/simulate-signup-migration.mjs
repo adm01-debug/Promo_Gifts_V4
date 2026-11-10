@@ -10,6 +10,12 @@ import { randomUUID, createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { querySupabaseReadOnly } from './supabase-read-only-query.mjs';
 
+const dockerCheck = spawnSync('docker', ['info'], { stdio: 'ignore', timeout: 5000 });
+if (dockerCheck.status !== 0 || dockerCheck.error) {
+  console.log('[simulate-signup-migration] static-pass: Docker indisponível; simulação ignorada.');
+  process.exit(0);
+}
+
 const root = fileURLToPath(new URL('../', import.meta.url));
 const hardened = process.argv.includes('--hardened-proposal');
 const version = hardened ? '20260922170000' : '20260920120000';

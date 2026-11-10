@@ -10,6 +10,7 @@ import { Sparkles, ImageIcon, Loader2, FileText } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from 'sonner';
 import { detectProductBounds } from '@/lib/product-bounds-detector';
+import { cmParaPx } from '@/lib/mockup-geometry';
 import { MockupApprovalPreview } from './MockupApprovalPreview';
 import type { MockupApprovalData } from '@/types/mockup-approval';
 import type { MockupClient } from '@/components/mockup/MockupConfigPanel';
@@ -74,8 +75,9 @@ interface MockupLayoutButtonsProps {
   ) => void;
   /** Callback when layout image is captured from the approval template */
   onLayoutCaptured?: (layoutDataUrl: string) => void;
-  /** Trigger AI mockup generation (async) */
-  onGenerateMockup?: () => Promise<void>;
+  /** Trigger AI mockup generation (async). Pode devolver um resultado tipado
+   * (ex.: recusa por dimensões ausentes) — daí `unknown`, não `void`. */
+  onGenerateMockup?: () => Promise<unknown>;
   /** Whether AI mockup is currently being generated */
   isGeneratingMockup?: boolean;
 }
@@ -217,29 +219,19 @@ export function MockupLayoutButtons({
       // Load logo
       const logoImg = await loadImageWithFallback(activeArea.logoPreview);
 
-      // ── Replicate editor's cm→px scaling logic exactly ──
-      const effectiveMaxW =
-        technique?.maxWidth && technique.maxWidth > 0 ? technique.maxWidth : null;
-      const effectiveMaxH =
-        technique?.maxHeight && technique.maxHeight > 0 ? technique.maxHeight : null;
-      const prodH = productHeightCm && productHeightCm > 0 ? productHeightCm : null;
-      const prodW = productWidthCm && productWidthCm > 0 ? productWidthCm : null;
-
-      const physW = prodW || (prodH ? prodH * 0.4 : effectiveMaxW ? effectiveMaxW * 2 : 8);
-      const physH = prodH || (prodW ? prodW * 2.5 : effectiveMaxH ? effectiveMaxH * 2.5 : 20);
-
-      const scaleByW = (renderedImgW * bounds.fractionX) / physW;
-      const scaleByH = (renderedImgH * bounds.fractionY) / physH;
-      const cmToPx = Math.min(scaleByW, scaleByH);
-
-      let areaW = activeArea.logoWidth * cmToPx;
-      let areaH = activeArea.logoHeight * cmToPx;
-      const minPx = 40;
-      if (areaW < minPx && areaH < minPx) {
-        const boost = minPx / Math.max(areaW, areaH);
-        areaW *= boost;
-        areaH *= boost;
-      }
+      // cm→px: mesma função do editor (SSOT em mockup-geometry)
+      const { widthPx: areaW, heightPx: areaH } = cmParaPx({
+        logoWidthCm: activeArea.logoWidth,
+        logoHeightCm: activeArea.logoHeight,
+        renderedImgW,
+        renderedImgH,
+        fractionX: bounds.fractionX,
+        fractionY: bounds.fractionY,
+        productWidthCm,
+        productHeightCm,
+        maxWidthCm: technique?.maxWidth,
+        maxHeightCm: technique?.maxHeight,
+      });
 
       // Position: same as editor (left/top % of full container/canvas)
       const areaX = (activeArea.positionX / 100) * CANVAS_SIZE - areaW / 2;

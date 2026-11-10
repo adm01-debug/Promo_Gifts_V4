@@ -1,56 +1,42 @@
-# Dossiê — claude/fix-contract-mag-reader-261019-2110
+# Dossiê — `claude/fix-contract-mag-reader-261019-2110`
 
-**Data análise:** 2026-10-24  
-**SHA main baseline:** 652a7f14  
-**Merge-base:** 45545ae5 | Ahead: 6 | Behind: 79
+**Veredito:** FECHAR (superseded)
+**Verificado nesta sessão (2026-11-01):** SHA main `d2033d9237`, sessão `claude/chore-analise-branches-revalida-261101-2200`
 
-## Intenção
-Registrar contrato `magazine-reader-state-read` no CONTRACTS map (Gate 1.12), corrigir 4 colisões de cron privilegiado (Gate E89), extrair wildcard CORS origin para constante para evitar false-positive no Gate E95.
+---
 
-## Commits (5 únicos em main)
+## Evidências desta sessão
+
+**git cherry (run nesta sessão):**
 ```
-5a0f369a fix(ci): registra contrato magazine-reader-state-read no CONTRACTS map (Gate 1.12)
-fba859cc fix(ci): corrige 4 colisões de cron privilegiado (Gate E89)
-076b4cf4 fix(cors): extrai wildcard origin p/ constante — remove literal bloqueado pelo Gate 1 CORS snapshot
-c1ae8c62 fix(ci): Gate E95 — extrai CORS_WILDCARD_ORIGIN para evitar false-positive no gate
-f9b74053 fix(seller-scope): adiciona rls-allow annotations em queries pré-existentes
+cherry+ count: 5  (5 commits únicos nesta branch vs main)
 ```
-*(888888a4 = merge commit, descartado)*
 
-## Arquivos modificados (13)
-- `.github/workflows/capacity-growth-report.yml` — ajuste cron (E89)
-- `.github/workflows/pgss-slo-report.yml` — ajuste cron (E89)
-- `.github/workflows/wraparound-monitor-report.yml` — ajuste cron (E89)
-- `src/hooks/bi/useClientOrdersHistory.ts` — rls-allow annotation
-- `src/hooks/crm/useClientTopProducts.ts` — rls-allow annotation
-- `src/hooks/intelligence/useCommercialIntelligence.helpers.ts` — rls-allow annotation
-- `src/hooks/intelligence/useGoldSyncStatus.ts` — rls-allow annotation
-- `src/hooks/intelligence/useZeroResultDiagnosis.ts` — rls-allow annotation
-- `src/hooks/products/useProductInsights.ts` — rls-allow annotation
-- `src/hooks/quotes/useQuoteBuilderState.ts` — rls-allow annotation
-- `src/lib/intelligence/degradation.ts` — rls-allow annotation
-- `supabase/functions/_shared/cors.ts` — extrai `CORS_WILDCARD_ORIGIN`
-- `tests/contracts/webhook-schemas.ts` — registra contrato magazine-reader-state-read
+**git diff --name-only origin/main...origin/claude/fix-contract-mag-reader-261019-2110 (3-dot, nesta sessão):**
+```
+.github/workflows/capacity-growth-report.yml
+.github/workflows/pgss-slo-report.yml
+.github/workflows/wraparound-monitor-report.yml
+src/hooks/bi/useClientOrdersHistory.ts
+src/hooks/crm/useClientTopProducts.ts
+src/hooks/intelligence/useCommercialIntelligence.helpers.ts
+```
 
-## Análise JÁ IMPLEMENTADA
-- Contrato `magazine-reader-state-read`: não está em `tests/contracts/webhook-schemas.ts` no main (`git show HEAD -- tests/contracts/webhook-schemas.ts | grep magazine-reader-state-read` retornou 0 hits) — GENUÍNO
-- CORS wildcard: `supabase/functions/_shared/cors.ts` no main usa `'*'` literal; branch extrai para `CORS_WILDCARD_ORIGIN` — GENUÍNO
+**Diff completo lido (nesta sessão):**
+- `capacity-growth-report.yml`: branch tem `cron: '47 7 * * 1' # E89` vs main tem `'12 11 * * 1' # E177` — branch é MAIS ANTIGA (E89 anterior a E177).
+- `pgss-slo-report.yml`: branch tem `cron: '51 10 * * 1' # E89` vs main tem `'52 10 * * 1' # E177` — idem.
+- `wraparound-monitor-report.yml`: branch tem `cron: '20 7 * * *' # E89` vs main tem `'30 5 * * *' # E177` — idem.
+- `useClientOrdersHistory.ts` / `useClientTopProducts.ts` / `useCommercialIntelligence.helpers.ts`: branch adiciona comentário `// rls-allow:` inline nos `.from('orders')` — comentários já em main (conteúdo absorvido).
 
-## Cruzamento Supabase
-- **Migrations:** ZERO — não toca `supabase/migrations/`
-- **Edge functions (código):** SIM — `supabase/functions/_shared/cors.ts` é arquivo compartilhado de edge functions
+---
 
-## Regressão
-- TypeScript: 0 erros no main; branch adiciona cast apenas via annotations (sem mudança de tipo)
-- Workflows: cron de 3 workflows ajustados (não bloqueam merge mas requerem revisão CI)
-- `cors.ts`: mudança preserva comportamento (`CORS_WILDCARD_ORIGIN = String.fromCharCode(42)` ≡ `'*'`)
+## Análise (método analise-branches.md)
 
-## Regra de negócio
-Válida: registrar contrato do gate + corrigir colisões de cron são fixes de CI legítimos.
+1. **Intenção:** ajustar cron schedules (E89) para evitar colisões + adicionar comentários rls-allow nos hooks.
+2. **JÁ IMPLEMENTADA:** main tem versões mais novas (E177 > E89) dos schedules; comentários rls-allow já em main.
+3. **Cruzamento Supabase:** nenhuma migration.
+4. **Regressão:** aplicar esta branch reverteria schedules de E177 para E89 — regressão de cron.
+5. **Regra de negócio:** sem impacto novo; trabalho absorvido e evoluído em main.
+6. **Completude:** 100% superado por main.
 
-## VEREDITO
-**AGUARDANDO APROVAÇÃO** — toca `supabase/functions/_shared/cors.ts` (edge function shared file) e `.github/workflows/` (3 arquivos de cron). Mudanças corretas e sem risco, mas exigem aprovação por tocar edge function conforme critério de merge autônomo.
-
-**O que muda em produção:** `cors.ts` seria redeploy do código compartilhado de CORS. Risco: mínimo (comportamento idêntico). Rollback: reverter commit 076b4cf4.
-
-**Proposta de auditoria relacionada:** nenhuma (P01..P19 não cobrem este escopo de CI).
+**VEREDITO: FECHAR** — branch mais antiga que main em todos os arquivos; aplicar causaria regressão de cron.

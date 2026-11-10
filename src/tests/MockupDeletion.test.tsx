@@ -230,6 +230,7 @@ vi.mock('@/components/mockup/MockupConfigPanel', () => ({
     onLogoUpload,
     onLogoRemove,
     onArtAttachmentsChange,
+    activeAreaId,
   }: {
     onProductSelect: (selection: { productId: string }) => void;
     onTechniqueSelect: (technique: { id: string; name: string; code: string } | null) => void;
@@ -238,8 +239,9 @@ vi.mock('@/components/mockup/MockupConfigPanel', () => ({
     onAreasChange: (areas: Array<{ id: string }>) => void;
     onActiveAreaChange: (id: string) => void;
     onLogoUpload: (file: File) => void;
-    onLogoRemove: () => void;
+    onLogoRemove: (areaId: string) => void;
     onArtAttachmentsChange: (items: Array<{ id: string }>) => void;
+    activeAreaId: string;
   }) => (
     <div data-testid="config-panel">
       <button type="button" onClick={() => onProductSelect({ productId: 'product-2' })}>
@@ -275,7 +277,7 @@ vi.mock('@/components/mockup/MockupConfigPanel', () => ({
       >
         Enviar logo
       </button>
-      <button type="button" onClick={onLogoRemove}>
+      <button type="button" onClick={() => onLogoRemove(activeAreaId)}>
         Remover logo
       </button>
       <button type="button" onClick={() => onArtAttachmentsChange([{ id: 'art-2' }])}>
@@ -727,7 +729,7 @@ describe('Mockup Deletion Flow', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Remover logo' }));
     expect(mockMg.logoColorAnalysis.clearAnalysis).toHaveBeenCalled();
-    expect(mockMg.updateActiveArea).toHaveBeenCalledWith({ logoPreview: null, logoFile: null });
+    expect(mockMg.setPersonalizationAreas).toHaveBeenCalledWith(expect.any(Function));
 
     fireEvent.click(screen.getByRole('button', { name: 'Aplicar sugestão completa' }));
     fireEvent.click(screen.getByRole('button', { name: 'Aplicar técnica inexistente' }));

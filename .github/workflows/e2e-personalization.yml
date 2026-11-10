@@ -3,10 +3,11 @@ name: E2E — Personalization Flow
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
-    paths:  # E14: evitar CI em PRs doc-only
+    paths:
       - 'src/**'
+      - '!src/**/__tests__/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
       - 'e2e/**'
       - 'public/**'
       - 'package*.json'
@@ -14,6 +15,22 @@ on:
       - 'playwright.config.*'
       - 'vite.config.*'
       - '.github/workflows/e2e-personalization.yml'
+      - '.github/scripts/e2e-relevance.mjs'
+  pull_request:
+    branches: [main]
+    paths:  # E14: evitar CI em PRs doc-only
+      - 'src/**'
+      - '!src/**/__tests__/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
+      - 'e2e/**'
+      - 'public/**'
+      - 'package*.json'
+      - '.nvmrc'
+      - 'playwright.config.*'
+      - 'vite.config.*'
+      - '.github/workflows/e2e-personalization.yml'
+      - '.github/scripts/e2e-relevance.mjs'
   workflow_dispatch:
 
 concurrency:
@@ -27,6 +44,7 @@ env:
   VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
 permissions:
   contents: read
+  pull-requests: read
 
 
 defaults:
@@ -34,8 +52,13 @@ defaults:
     shell: bash
 
 jobs:
+  e2e-relevance:
+    uses: ./.github/workflows/_e2e-relevance.yml
+
   personalization-tests:
     name: E2E — Personalization Journey
+    needs: [e2e-relevance]
+    if: needs.e2e-relevance.outputs.relevant == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
 
@@ -50,15 +73,13 @@ jobs:
           start-vite: 'true'
 
       - name: Setup auth state
-        run: |
-          if [ -n "$E2E_USER_EMAIL" ] && [ -n "$E2E_USER_PASSWORD" ]; then
-            npx playwright test --project=setup
-          fi
+        id: auth-setup
+        if: env.E2E_USER_EMAIL != '' && env.E2E_USER_PASSWORD != ''
+        run: npx playwright test --project=setup
         env:
           E2E_BASE_URL: http://localhost:8080
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-        continue-on-error: true
 
       - name: Run Personalization E2E Tests
         run: |
@@ -67,6 +88,7 @@ jobs:
             e2e/flows/91-personalization-variant-flow.spec.ts \
             e2e/flows/92-personalization-auth-redirect.spec.ts \
             --project=chromium-authed \
+            --no-deps \
             --reporter=github,list,html,json
         env:
           E2E_BASE_URL: http://localhost:8080
@@ -75,7 +97,7 @@ jobs:
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-personalization.json
 
       - name: Check min tests executed  # E42
-        if: always()
+        if: always() && steps.auth-setup.outcome == 'success'
         uses: ./.github/actions/check-min-tests
         with:
           results-json: 'playwright-report/results-personalization.json'

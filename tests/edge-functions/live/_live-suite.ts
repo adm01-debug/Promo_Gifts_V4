@@ -21,6 +21,7 @@ import {
   describeLive,
   getJwt,
   ALLOW_COSTLY,
+  MAX_RETRY_BUDGET_MS,
   type CallEdgeOptions,
   type EdgeRole,
 } from "./_live-client";
@@ -68,8 +69,13 @@ export interface LiveSuiteDescriptor {
 }
 
 // Requests live (cold start + retry em 5xx) podem passar dos 5s default do
-// vitest. Damos folga generosa por teste.
-const LIVE_TEST_TIMEOUT = Number(process.env.EDGE_LIVE_TEST_TIMEOUT_MS) || 30_000;
+// vitest. O fallback deriva de MAX_RETRY_BUDGET_MS (pior caso real do próprio
+// callEdge) + 20% de margem — um valor fixo menor que esse budget corta a
+// chamada antes do retry terminar (bug real: 2026-11-02, 6 testes de
+// intelligence-substitute-applied/magic-up-score estouraram 30_000ms fixos
+// porque 4 tentativas de 15s já somam 60s).
+const LIVE_TEST_TIMEOUT =
+  Number(process.env.EDGE_LIVE_TEST_TIMEOUT_MS) || Math.ceil(MAX_RETRY_BUDGET_MS * 1.2);
 
 const DEFAULT_INVALID: InvalidInput[] = [
   { label: "JSON inválido", body: '{"broken": ' },
