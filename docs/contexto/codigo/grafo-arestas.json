@@ -55,6 +55,9 @@
   "scripts/check-file-size-baseline.mjs": [
    "scripts/lib/baseline-gate.mjs"
   ],
+  "scripts/check-indexed-access-ratchet.mjs": [
+   "scripts/lib/tsc-run.mjs"
+  ],
   "scripts/check-ledger-manifest-drift.mjs": [
    "scripts/check-result-contract.mjs",
    "scripts/supabase-read-only-query.mjs"
@@ -120,6 +123,12 @@
   "scripts/check-todo-baseline.mjs": [
    "scripts/lib/baseline-gate.mjs"
   ],
+  "scripts/check-tsc-baseline.mjs": [
+   "scripts/lib/tsc-run.mjs"
+  ],
+  "scripts/check-tsc-tests-baseline.mjs": [
+   "scripts/lib/tsc-run.mjs"
+  ],
   "scripts/check-types-inventory-drift.mjs": [
    "scripts/extract-types-inventory.mjs"
   ],
@@ -152,6 +161,9 @@
   ],
   "scripts/test-critical-coverage.mjs": [
    "scripts/check-critical-coverage.mjs"
+  ],
+  "scripts/tsc-baseline-generate.mjs": [
+   "scripts/lib/tsc-run.mjs"
   ],
   "scripts/wraparound-monitor-check.mjs": [
    "scripts/check-result-contract.mjs",

@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 258,
+ "total": 259,
  "scripts": [
   {
    "arquivo": ".github/scripts/e2e-relevance.mjs",
@@ -821,7 +821,7 @@
   {
    "arquivo": "scripts/check-indexed-access-ratchet.mjs",
    "descricao": "* Ratchet advisory: noUncheckedIndexedAccess.",
-   "linhas": 89,
+   "linhas": 93,
    "env": [],
    "npm_scripts": [
     "check:indexed-access-ratchet",
@@ -1622,7 +1622,7 @@
   {
    "arquivo": "scripts/check-tsc-baseline.mjs",
    "descricao": "* Gate de CI: roda tsc e compara com .tsc-baseline.json.",
-   "linhas": 122,
+   "linhas": 124,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -1634,7 +1634,7 @@
   {
    "arquivo": "scripts/check-tsc-tests-baseline.mjs",
    "descricao": "* e compara o total de erros com .tsc-tests-baseline.json.",
-   "linhas": 74,
+   "linhas": 75,
    "env": [],
    "npm_scripts": [
     "typecheck:tests",
@@ -2291,6 +2291,15 @@
    "orfao": false
   },
   {
+   "arquivo": "scripts/lib/tsc-run.mjs",
+   "descricao": "* Classifica uma execução do `tsc --noEmit` para os gates/ratchets de erro TypeScript.",
+   "linhas": 36,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
    "arquivo": "scripts/lint-untyped-from.sh",
    "descricao": "Lint: cruza nomes de tabela chamados via untypedFrom(\"...\") contra o schema gerado em src/integrations/supabase/types.ts. Falha se houver",
    "linhas": 129,
@@ -2923,7 +2932,7 @@
   {
    "arquivo": "scripts/tsc-baseline-generate.mjs",
    "descricao": "* Gera/atualiza .tsc-baseline.json com o snapshot dos erros TypeScript atuais.",
-   "linhas": 68,
+   "linhas": 76,
    "env": [],
    "npm_scripts": [
     "typecheck:baseline:update"
@@ -2934,7 +2943,7 @@
   {
    "arquivo": "scripts/tsc-unused-ratchet.sh",
    "descricao": "scripts/tsc-unused-ratchet.sh Ratchet para noUnusedLocals: falha se a contagem de erros crescer além da baseline.",
-   "linhas": 105,
+   "linhas": 127,
    "env": [],
    "npm_scripts": [],
    "workflows": [

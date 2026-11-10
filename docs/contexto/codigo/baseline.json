@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "293b9287478fba7fa8683b2e15248ed998880c3f",
+  "commit": "82bafd9f0aaba50467e95f7d9e06582baf7b2810",
   "branch": "main",
-  "data_commit": "2026-11-09T18:05:17-03:00",
+  "data_commit": "2026-11-09T21:42:59-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "82bafd9",
+    "data": "2026-11-09",
+    "assunto": "fix(scripts): gates de erro TypeScript falham fechado quando o tsc não chega a checar (#3372)"
+   },
    {
     "sha": "293b928",
     "data": "2026-11-09",
@@ -126,14 +131,9 @@
     "sha": "29838f1",
     "data": "2026-11-09",
     "assunto": "feat(kit-builder): confirmar substituição ao aplicar composição da IA (FT-134)"
-   },
-   {
-    "sha": "0387ecb",
-    "data": "2026-11-09",
-    "assunto": "chore(deps): bump production-minor-patch group com 12 updates"
    }
   ],
-  "arquivos_mudados_7d": 1099,
+  "arquivos_mudados_7d": 1100,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9864,
-  "arquivos_codigo": 5023,
-  "linhas_codigo": 958781,
+  "arquivos_total": 9866,
+  "arquivos_codigo": 5025,
+  "linhas_codigo": 958948,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -328,9 +328,9 @@
   "tabelas": 545,
   "migrations": 3057,
   "cron_jobs": 120,
-  "testes": 2276,
+  "testes": 2277,
   "workflows": 95,
-  "scripts": 258,
+  "scripts": 259,
   "docs_md": 1009
  },
  "por_pasta": {
@@ -1160,7 +1160,7 @@
   },
   "scripts/check-indexed-access-ratchet.mjs": {
    "arquivos": 1,
-   "linhas": 89
+   "linhas": 93
   },
   "scripts/check-invoke-direct-calls.mjs": {
    "arquivos": 1,
@@ -1408,11 +1408,11 @@
   },
   "scripts/check-tsc-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 122
+   "linhas": 124
   },
   "scripts/check-tsc-tests-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 74
+   "linhas": 75
   },
   "scripts/check-types-inventory-drift.mjs": {
    "arquivos": 1,
@@ -1583,8 +1583,8 @@
    "linhas": 381
   },
   "scripts/lib": {
-   "arquivos": 2,
-   "linhas": 207
+   "arquivos": 3,
+   "linhas": 243
   },
   "scripts/list-migration-drafts.mjs": {
    "arquivos": 1,
@@ -1764,7 +1764,7 @@
   },
   "scripts/tsc-baseline-generate.mjs": {
    "arquivos": 1,
-   "linhas": 68
+   "linhas": 76
   },
   "scripts/typecheck-edge-functions.mjs": {
    "arquivos": 1,
@@ -2095,8 +2095,8 @@
    "linhas": 89
   },
   "tests/scripts": {
-   "arquivos": 55,
-   "linhas": 9098
+   "arquivos": 56,
+   "linhas": 9214
   },
   "tests/search": {
    "arquivos": 1,

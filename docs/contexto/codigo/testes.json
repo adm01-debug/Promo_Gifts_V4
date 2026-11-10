@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2276,
+ "total": 2277,
  "por_tipo": {
   "contrato": 56,
   "e2e": 676,
   "pytest": 2,
   "qa": 17,
-  "unit": 1525
+  "unit": 1526
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 862
+   "arquivos": 863
   },
   {
    "padrao": "e2e/",
@@ -18273,6 +18273,15 @@
    "casos": 1
   },
   {
+   "arquivo": "tests/scripts/tsc-run-guard.test.mjs",
+   "tipo": "unit",
+   "linhas": 116,
+   "testa": [
+    "scripts/lib/tsc-run.mjs"
+   ],
+   "casos": 10
+  },
+  {
    "arquivo": "tests/scripts/uptime-probe.test.ts",
    "tipo": "unit",
    "linhas": 102,
@@ -19320,6 +19329,7 @@
   "scripts/graphify/graph-metrics.mjs": 1,
   "scripts/inventario/gerar-banco.mjs": 1,
   "scripts/lib/canonical-pg-connection.mjs": 1,
+  "scripts/lib/tsc-run.mjs": 1,
   "scripts/pgss-slo-check.mjs": 1,
   "scripts/plan-status.mjs": 1,
   "scripts/preflight-migration-apply.mjs": 1,

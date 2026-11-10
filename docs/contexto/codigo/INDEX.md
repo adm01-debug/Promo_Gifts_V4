@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `293b9287478fba7fa8683b2e15248ed998880c3f` (2026-11-09T18:05:17-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `82bafd9f0aaba50467e95f7d9e06582baf7b2810` (2026-11-09T21:42:59-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4709), SQL (3335), Markdown (1009), JavaScript (310), JSON (118), YAML (108), Shell (25), HTML (20)
+- linguagens: TypeScript (4709), SQL (3335), Markdown (1009), JavaScript (312), JSON (118), YAML (108), Shell (25), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 9864 |
-| arquivos_codigo | 5023 |
-| linhas_codigo | 958781 |
+| arquivos_total | 9866 |
+| arquivos_codigo | 5025 |
+| linhas_codigo | 958948 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -48,9 +48,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 545 |
 | migrations | 3057 |
 | cron_jobs | 120 |
-| testes | 2276 |
+| testes | 2277 |
 | workflows | 95 |
-| scripts | 258 |
+| scripts | 259 |
 | docs_md | 1009 |
 
 ## Onde ficam as coisas
@@ -58,10 +58,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (981), src/pages (225), src/contexts (10)
 - hooks: src/hooks (483), src/components (76), src/pages (36)
 - servicos_logica: src/lib (227), src/utils (32), src/services (9)
-- testes: tests/ (862), e2e/ (625), co-localizado (__tests__) (606)
+- testes: tests/ (863), e2e/ (625), co-localizado (__tests__) (606)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
-- scripts: scripts/graphify (4), scripts/inventario (4), scripts/ai-context (2)
+- scripts: scripts/graphify (4), scripts/inventario (4), scripts/lib (3)
 - docs: docs (144), (raiz) (14), .github (4)
 - nomenclatura: {"componentes":"PascalCase (95%)","hooks":"use + PascalCase","servicos":"kebab-case (52%)","edge_functions":"kebab-case (99%)","tabelas":"snake_case (86%)"}
 - instruções para agentes no repo: .claude/CLAUDE.md, AGENTS.md, CLAUDE.md
@@ -588,8 +588,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 41522 nós · 71279 arestas · 2377 comunidades · grafo do commit `293b9287`
-- comunidades maiores: ref_integrations (592), lucide-react (566), ref_lib (564), ref_components (515), react-router-dom (376), ref_hooks (355), @tanstack/react-query (345), gotoAndSettle (337), ref_types (317), sonner (304), react (302), scripts (289)
+- 41542 nós · 71313 arestas · 2377 comunidades · grafo do commit `82bafd9f`
+- comunidades maiores: ref_lib (853), ref_components (724), ref_integrations (494), react-router-dom (361), ref_hooks (350), cors.ts (348), gotoAndSettle (341), @tanstack/react-query (307), react (302), scripts (289), sonner (285), ref_utils (281)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), useExternalDatabase() (src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -1164,6 +1164,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-09 `82bafd9` fix(scripts): gates de erro TypeScript falham fechado quando o tsc não chega a checar (#3372)
 - 2026-11-09 `293b928` chore(docs): adiciona 4 segredos E2E ausentes em SEGREDOS.md
 - 2026-11-09 `e70479b` chore(e2e): registrar specs @smoke no job e2e-gates
 - 2026-11-09 `167f5f8` chore: registra 611 arquivos não rastreados de sessões anteriores (#3361)
@@ -1178,7 +1179,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-09 `944ff2d` fix(kit-builder): remove bloco FT-119 incompleto e corrige type imports (#3350)
 - 2026-11-09 `6ba67b4` fix(ci): adiciona detector E12 pg_indexes out-of-band no Gate 2 (#3290)
 - 2026-11-09 `defe294` fix(ci): corrige Gate E42 e2e-personalization com auth-setup step condicional (#3274)
-- 2026-11-09 `973864d` fix(ci): atualiza baseline Gate 1.3 — remove referência já resolvida de 20260511235970 (#3352)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

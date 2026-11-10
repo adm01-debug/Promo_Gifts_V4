@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `293b928747` · branch `main` · 2026-11-09 21:15 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `82bafd9f0a` · branch `main` · 2026-11-10 01:36 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6442,7 +6442,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (19663 testes em 1964 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (19674 testes em 1965 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6746,7 +6746,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/novelties/NoveltyCards.stockBadge.test.tsx` | 17 | NoveltyCards › StockBadge (fallback de stock_quantity) · getStockStatus com threshold=10 · retorna  · retorna  … |
 | `src/components/ui/__tests__/OptimizedImage.test.tsx` | 17 | OptimizedImage · renders a shimmer or placeholder when loading · applies fade-in, removes blur and resets zoom after onLoad · handles custom configuration correctly … |
 | `src/hooks/common/__tests__/useListUrlState.test.tsx` | 17 | useListUrlState — contrato de /carrinhos (deadline/sort/q) · clearAll remove deadline, sort e q da URL · após clearAll, remontar (simula reload) mantém URL limpa · remove defaults explícitos ao hidratar e preserva filtros ativos e params externos … |
-| … +1664 linhas — lista completa em `context.json` | | |
+| … +1665 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

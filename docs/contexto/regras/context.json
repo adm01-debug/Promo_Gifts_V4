@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "293b9287478fba7fa8683b2e15248ed998880c3f",
+  "sha": "82bafd9f0aaba50467e95f7d9e06582baf7b2810",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-09 21:15 UTC",
-  "files_total": 9794,
-  "code_files": 8357,
-  "code_lines": 1174878
+  "generated_at": "2026-11-10 01:36 UTC",
+  "files_total": 9796,
+  "code_files": 8359,
+  "code_lines": 1175045
  },
  "version": "1.3.2",
- "facts_hash": "a38fc19bbd83f391",
+ "facts_hash": "ac2bff821f85d26a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1185,7 +1185,7 @@
    ".sql": 3335,
    ".ts": 2879,
    ".tsx": 1831,
-   ".mjs": 303,
+   ".mjs": 305,
    ".py": 9,
    ".js": 7
   },
@@ -146560,8 +146560,8 @@
   },
   {
    "module": "scripts",
-   "files": 271,
-   "lines": 53447,
+   "files": 272,
+   "lines": 53498,
    "tables": [
     "a",
     "contacts",
@@ -148875,8 +148875,8 @@
   },
   {
    "module": "tests",
-   "files": 876,
-   "lines": 134546,
+   "files": 877,
+   "lines": 134662,
    "tables": [
     "bot_detection_log",
     "companies",
@@ -153207,6 +153207,7 @@
     "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
     "tests/scripts/check-quote-rpc-canonical-readiness.test.mjs",
     "tests/scripts/rpc-live-evidence-contract.test.mjs",
+    "tests/scripts/tsc-run-guard.test.mjs",
     "tests/scripts/uptime-probe.test.ts",
     "tests/security/lint-0011-drift.test.ts",
     "tests/security/lint-0029-drift.test.ts",
@@ -287021,6 +287022,50 @@
     "name": "reprova fetch e console.error não mockados em subprocesso hermético"
    },
    {
+    "file": "tests/scripts/tsc-run-guard.test.mjs",
+    "name": "classifyTscRun"
+   },
+   {
+    "file": "tests/scripts/tsc-run-guard.test.mjs",
+    "name": "conta só diagnósticos de código"
+   },
+   {
+    "file": "tests/scripts/tsc-run-guard.test.mjs",
+    "name": "status 0 sem erros é ok com 0"
+   },
+   {
+    "file": "tests/scripts/tsc-run-guard.test.mjs",
+    "name": "gates com tsc quebrado falham fechado (exit 2)"
+   },
+   {
+    "file": "tests/scripts/tsc-run-guard.test.mjs",
+    "name": "check-tsc-baseline"
+   },
+   {
+    "file": "tests/scripts/tsc-run-guard.test.mjs",
+    "name": "check-tsc-tests-baseline (antes: "
+   },
+   {
+    "file": "tests/scripts/tsc-run-guard.test.mjs",
+    "name": "check-indexed-access-ratchet (antes: -871 erros, exit 0)"
+   },
+   {
+    "file": "tests/scripts/tsc-run-guard.test.mjs",
+    "name": "tsc-baseline-generate não sobrescreve a baseline com 0 erros"
+   },
+   {
+    "file": "tests/scripts/tsc-run-guard.test.mjs",
+    "name": "tsc-unused-ratchet.sh (antes: "
+   },
+   {
+    "file": "tests/scripts/tsc-run-guard.test.mjs",
+    "name": "tsc-unused-ratchet.sh recusa baseline inválida %j"
+   },
+   {
+    "file": "tests/scripts/tsc-run-guard.test.mjs",
+    "name": "tsc-unused-ratchet.sh: com tsc saudável a regressão ainda reprova (exit 1) e a melhora passa (exit 0)"
+   },
+   {
     "file": "tests/scripts/uptime-probe.test.ts",
     "name": "uptime-probe"
    },
@@ -398120,7 +398165,7 @@
   },
   "scripts/check-indexed-access-ratchet.mjs": {
    "path": "scripts/check-indexed-access-ratchet.mjs",
-   "lines": 89,
+   "lines": 93,
    "rule_comments": [
     "* O flag ainda não pode ser ligado no tsconfig (dívida grande). Este check"
    ],
@@ -399116,7 +399161,7 @@
   },
   "scripts/check-tsc-baseline.mjs": {
    "path": "scripts/check-tsc-baseline.mjs",
-   "lines": 122,
+   "lines": 124,
    "params": [
     {
      "name": "MAX_LIST",
@@ -399132,9 +399177,10 @@
   },
   "scripts/check-tsc-tests-baseline.mjs": {
    "path": "scripts/check-tsc-tests-baseline.mjs",
-   "lines": 74,
+   "lines": 75,
    "rule_comments": [
-    "* Política: falha SOMENTE se houver erros NOVOS (total > baseline)."
+    "* Política: falha SOMENTE se houver erros NOVOS (total > baseline).",
+    "GUARD: tsc que não chegou a checar (tsconfig ausente/inválido, OOM) não pode virar"
    ],
    "doc": "!/usr/bin/env node"
   },
@@ -400789,7 +400835,7 @@
   },
   "scripts/tsc-baseline-generate.mjs": {
    "path": "scripts/tsc-baseline-generate.mjs",
-   "lines": 68,
+   "lines": 76,
    "doc": "!/usr/bin/env node"
   },
   "scripts/typecheck-edge-functions.mjs": {
@@ -401878,6 +401924,13 @@
      "params": "env",
      "body": "const candidate = { ...env, SUPABASE_PROJECT_REF: env.SUPABASE_PROJECT_REF || CANONICAL_PROJECT, PGSSLMODE: env.PGSSLMODE || 'require', PGCONNECT_TIMEOUT: env.PGCONNECT_TIMEOUT || '15', }; if (candidate.PGPORT !== '5432') return null; return validateMigrationTarget(candidate, { targetOnly: true }).length ? null : candidate;"
     }
+   ]
+  },
+  "scripts/lib/tsc-run.mjs": {
+   "path": "scripts/lib/tsc-run.mjs",
+   "lines": 36,
+   "exports": [
+    "function classifyTscRun"
    ]
   },
   "scripts/qa/audit-freight-block.mjs": {
@@ -514303,6 +514356,28 @@
     "reprova fetch e console.error não mockados em subprocesso hermético"
    ]
   },
+  "tests/scripts/tsc-run-guard.test.mjs": {
+   "path": "tests/scripts/tsc-run-guard.test.mjs",
+   "lines": 116,
+   "is_test": true,
+   "env": [
+    "PATH"
+   ],
+   "doc": "Regressão: gates de erro TypeScript davam \"drift positivo\"/OK quando o tsc nem chegava a checar (tsconfig ausente/inválido, OOM). Reproduzidos com tsc falso e tsconfig quebrado.",
+   "tests": [
+    "classifyTscRun",
+    "conta só diagnósticos de código",
+    "status 0 sem erros é ok com 0",
+    "gates com tsc quebrado falham fechado (exit 2)",
+    "check-tsc-baseline",
+    "check-tsc-tests-baseline (antes: ",
+    "check-indexed-access-ratchet (antes: -871 erros, exit 0)",
+    "tsc-baseline-generate não sobrescreve a baseline com 0 erros",
+    "tsc-unused-ratchet.sh (antes: ",
+    "tsc-unused-ratchet.sh recusa baseline inválida %j",
+    "tsc-unused-ratchet.sh: com tsc saudável a regressão ainda reprova (exit 1) e a melhora passa (exit 0)"
+   ]
+  },
   "tests/scripts/uptime-probe.test.ts": {
    "path": "tests/scripts/uptime-probe.test.ts",
    "lines": 102,
@@ -517173,10 +517248,25 @@
   }
  },
  "git": {
-  "sha": "293b9287478fba7fa8683b2e15248ed998880c3f",
+  "sha": "82bafd9f0aaba50467e95f7d9e06582baf7b2810",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "82bafd9",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "fix(scripts): gates de erro TypeScript falham fechado quando o tsc não chega a checar (#3372)",
+    "files": [
+     "scripts/check-indexed-access-ratchet.mjs",
+     "scripts/check-tsc-baseline.mjs",
+     "scripts/check-tsc-tests-baseline.mjs",
+     "scripts/lib/tsc-run.mjs",
+     "scripts/tsc-baseline-generate.mjs",
+     "scripts/tsc-unused-ratchet.sh",
+     "tests/scripts/tsc-run-guard.test.mjs"
+    ]
+   },
    {
     "sha": "293b928",
     "date": "2026-11-09",
@@ -518074,15 +518164,6 @@
     "files": [
      "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
     ]
-   },
-   {
-    "sha": "16f4af2",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "fix(baseline): atualizar .as-assertions-baseline.json para arquivos kit-builder (#3342)",
-    "files": [
-     ".as-assertions-baseline.json"
-    ]
    }
   ],
   "hot_files": [
@@ -518127,6 +518208,34 @@
     2
    ],
    [
+    "scripts/check-indexed-access-ratchet.mjs",
+    1
+   ],
+   [
+    "scripts/check-tsc-baseline.mjs",
+    1
+   ],
+   [
+    "scripts/check-tsc-tests-baseline.mjs",
+    1
+   ],
+   [
+    "scripts/lib/tsc-run.mjs",
+    1
+   ],
+   [
+    "scripts/tsc-baseline-generate.mjs",
+    1
+   ],
+   [
+    "scripts/tsc-unused-ratchet.sh",
+    1
+   ],
+   [
+    "tests/scripts/tsc-run-guard.test.mjs",
+    1
+   ],
+   [
     "docs/ci/SEGREDOS.md",
     1
    ],
@@ -518136,34 +518245,6 @@
    ],
    [
     ".github/workflows/ci.yml",
-    1
-   ],
-   [
-    ".lovable/memory/features/business-intelligence-module.md",
-    1
-   ],
-   [
-    ".lovable/memory/features/collections-public-share-system.md",
-    1
-   ],
-   [
-    ".lovable/memory/features/collections-roadmap.md",
-    1
-   ],
-   [
-    ".lovable/memory/features/favorites-roadmap.md",
-    1
-   ],
-   [
-    ".lovable/memory/features/kit-library-system.md",
-    1
-   ],
-   [
-    ".lovable/memory/features/quote-system-master-spec.md",
-    1
-   ],
-   [
-    ".lovable/memory/features/simulation-price-source-badge.md",
     1
    ]
   ]
