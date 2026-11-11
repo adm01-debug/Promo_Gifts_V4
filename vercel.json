@@ -1,5 +1,15 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": {
+    "deploymentEnabled": {
+      "claude/**": false,
+      "claude_05/**": false,
+      "claude_pink/**": false,
+      "codex/**": false,
+      "dependabot/**": false,
+      "release-please--**": false
+    }
+  },
   "rewrites": [
     {
       "source": "/sitemap.xml",
