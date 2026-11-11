@@ -2,14 +2,9 @@ name: E2E · Update Confirm Dialog snapshots
 # Executa `playwright test --update-snapshots` para o spec do ConfirmDialog
 # e faz commit dos PNGs atualizados. Dispara manualmente OU quando o próprio
 # spec é editado.
+# Só manual: atualizar baseline visual em todo push aceitaria qualquer mudança visual sem revisão.
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "e2e/ui/confirm-dialog-visual.spec.ts"
-      - "src/pages/dev/ConfirmDialogHarness.tsx"
-      - ".github/workflows/e2e-update-confirm-dialog-snapshots.yml"
-
 permissions:
   contents: write
 
