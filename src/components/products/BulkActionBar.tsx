@@ -23,7 +23,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { m as motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence, type Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { formatCurrency } from '@/lib/format';
 
@@ -41,7 +41,7 @@ interface BulkActionBarProps {
   selectedTotalValue?: number;
 }
 
-const actionVariants = {
+const actionVariants: Variants = {
   hidden: { opacity: 0, scale: 0.8 },
   visible: (i: number) => ({
     opacity: 1,
