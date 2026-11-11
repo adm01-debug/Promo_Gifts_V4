@@ -1,6 +1,6 @@
 /** Regressão (lote 2): gates que passavam sem verificar nada. Cada caso foi reproduzido na revisão. */
 import { spawnSync } from 'node:child_process';
-import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
@@ -74,7 +74,7 @@ describe('check-todo-baseline não conta a palavra portuguesa "todo"', () => {
     mkdirSync(join(dir, 'src'));
     writeFileSync(join(dir, 'src/a.ts'), "export const t = 'Você conhece todo o catálogo';\n// TODO: remover\n");
     expect(run(dir, 'scripts/check-todo-baseline.mjs', ['--update']).status).toBe(0);
-    expect(JSON.parse(spawnSync('cat', [join(dir, '.todo-baseline.json')], { encoding: 'utf8' }).stdout).productionTodoCount).toBe(1);
+    expect(JSON.parse(readFileSync(join(dir, '.todo-baseline.json'), 'utf8')).productionTodoCount).toBe(1);
   });
 });
 

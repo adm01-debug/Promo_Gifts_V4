@@ -1,20 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import {
-  appendFileSync,
-  chmodSync,
-  cpSync,
-  existsSync,
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  renameSync,
-  rmSync,
-  statSync,
-  symlinkSync,
-  writeFileSync,
-} from 'node:fs';
+import { appendFileSync, chmodSync, closeSync, cpSync, existsSync, fstatSync, mkdirSync, mkdtempSync, openSync, readFileSync, renameSync, rmSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -553,17 +540,27 @@ test('isolamento Git',()=>{
   assert.equal(f.git('diff', '--cached', '--name-only'), '');
 });
 
+/** Inode pelo descritor (sem stat do caminho seguido de escrita no mesmo caminho). */
+function inodeOf(file) {
+  const fd = openSync(file, 'r');
+  try {
+    return fstatSync(fd).ino;
+  } finally {
+    closeSync(fd);
+  }
+}
+
 test('info/exclude append e reversao preservam inode e linhas concorrentes', (t) => {
   const dir = mkdtempSync(join(tmpdir(), 'automation-exclude-'));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const file = join(dir, 'exclude');
   writeFileSync(file, '# contexto original\n*.local\n');
-  const inode = statSync(file).ino;
+  const inode = inodeOf(file);
   const addition = appendExclude(file, () => appendFileSync(file, 'concurrent-before\n'));
   appendFileSync(file, 'concurrent-after\n');
   assert.ok(text(file).includes('/.tools/repo-automation/'));
   assert.equal(removeExclude(file, addition), true);
-  assert.equal(statSync(file).ino, inode);
+  assert.equal(inodeOf(file), inode);
   assert.ok(text(file).startsWith('# contexto original\n*.local\nconcurrent-before\n'));
   assert.ok(text(file).endsWith('concurrent-after\n'));
   assert.equal(text(file).includes('/.tools/repo-automation/'), false);

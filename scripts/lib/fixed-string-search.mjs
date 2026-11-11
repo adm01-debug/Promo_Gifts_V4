@@ -8,7 +8,7 @@
  * Formato de retorno idêntico ao `rg -n --no-heading`: `caminho:linha:texto`.
  */
 import { spawnSync } from 'node:child_process';
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { closeSync, existsSync, fstatSync, openSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'coverage', 'playwright-report', 'test-results']);
@@ -29,8 +29,19 @@ function nativeSearch(phrase, paths) {
       }
       return;
     }
-    if (!st.isFile() || st.size > MAX_BYTES) return;
-    const text = readFileSync(target, 'utf8');
+    if (!st.isFile()) return;
+    // Lê pelo MESMO descritor que foi verificado (sem janela entre checar e ler o caminho).
+    let text;
+    let fd;
+    try {
+      fd = openSync(target, 'r');
+      if (fstatSync(fd).size > MAX_BYTES) return;
+      text = readFileSync(fd, 'utf8');
+    } catch {
+      return;
+    } finally {
+      if (fd !== undefined) closeSync(fd);
+    }
     if (text.includes('\u0000') || !text.includes(phrase)) return;
     text.split(/\r?\n/).forEach((line, index) => {
       if (line.includes(phrase)) hits.push(`${target}:${index + 1}:${line}`);

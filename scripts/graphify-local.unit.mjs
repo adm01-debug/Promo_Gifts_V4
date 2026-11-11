@@ -9,7 +9,6 @@ import {
   readdir,
   symlink,
   open,
-  lstat,
   rename,
   truncate,
 } from 'node:fs/promises';
@@ -392,9 +391,10 @@ for (const mode of ['symlink', 'regular', 'write'])
     await writeFile(f.graph, original);
     const target = path.join(f.dir, 'replacement.json');
     await writeFile(target, replacement);
-    const originalStats = await lstat(f.graph, { bigint: true });
+    // Inode lido pelo descritor aberto (sem checar o caminho e reabri-lo depois).
     const probe = await open(f.graph, 'r'),
       prototype = Object.getPrototypeOf(probe);
+    const originalStats = await probe.stat({ bigint: true });
     await probe.close();
     const stat = prototype.stat;
     let swapped = false;
