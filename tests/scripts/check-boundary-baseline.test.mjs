@@ -10,7 +10,9 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SCRIPT = join(ROOT, 'scripts/check-boundary-baseline.mjs');
 
 function runGate(sandbox, args = []) {
-  return spawnSync(process.execPath, [SCRIPT, ...args], { cwd: sandbox, encoding: 'utf8' });
+  // maxBuffer alto: com 100k violações a saída passa de 1 MB (padrão do spawnSync) e o Node
+  // mataria o filho com SIGTERM — falso positivo de "processo morreu por sinal".
+  return spawnSync(process.execPath, [SCRIPT, ...args], { cwd: sandbox, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 });
 }
 
 function makeSandbox(prefix) {

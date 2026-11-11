@@ -21,6 +21,14 @@ function makeTempRepo() {
   mkdirSync(join(dir, 'src'), { recursive: true });
   // Arquivo limpo — nenhuma menção ao ID proibido.
   writeFileSync(join(dir, 'src', 'index.ts'), 'export const ok = true;\n');
+  // Arquivos críticos da fase 2 (o guard falha fechado se faltarem — #3371).
+  mkdirSync(join(dir, 'src', 'integrations', 'supabase'), { recursive: true });
+  writeFileSync(
+    join(dir, 'src', 'integrations', 'supabase', 'client.ts'),
+    "export const CURRENT_PROJECT_ID = 'doufsxqlfjyuvxuezpln';\n",
+  );
+  mkdirSync(join(dir, 'supabase'), { recursive: true });
+  writeFileSync(join(dir, 'supabase', 'config.toml'), 'project_id = "doufsxqlfjyuvxuezpln"\n');
   return dir;
 }
 
