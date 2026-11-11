@@ -21,7 +21,7 @@ import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
 import { buildInventory, summarize } from './inventory.mjs';
 import { selectWorkflows } from './select.mjs';
-import { buildEvent, emulateAlwaysJob, neutralizeUnverifiable, prepareClone, prepareShims, runWorkflow, verdict, writeJson } from './run-act.mjs';
+import { assertNoGithubTokenInSecrets, buildEvent, emulateAlwaysJob, neutralizeUnverifiable, prepareClone, prepareShims, runWorkflow, verdict, writeJson } from './run-act.mjs';
 import { classifyStep } from './inventory.mjs';
 import { runJobNative } from './native.mjs';
 import { compareResults, fetchGithubChecks } from './compare.mjs';
@@ -72,6 +72,7 @@ function secretsFile(opt) {
   const f = opt ?? join(homedir(), '.config', 'ci-local', 'secrets.env');
   if (!existsSync(f)) return { file: null, names: [] };
   const names = readFileSync(f, 'utf8').split('\n').map((l) => l.match(/^\s*([A-Za-z_]\w*)\s*=/)?.[1]).filter(Boolean);
+  assertNoGithubTokenInSecrets(names);
   return { file: f, names };
 }
 
@@ -92,7 +93,7 @@ function cmdList(o) {
   const inv = buildInventory(ROOT);
   const sum = summarize(inv);
   const files = changedFiles(o.base, o.sha);
-  const sel = selectWorkflows(inv, { event: o.event, branch: headRef(), changedFiles: files, all: o.all });
+  const sel = selectWorkflows(inv, { event: o.event, branch: headRef(), baseBranch: o.base.replace(/^origin\//, ''), changedFiles: files, all: o.all });
   const runs = sel.filter((s) => s.run);
   if (o.json) return console.log(JSON.stringify({ summary: sum, changedFiles: files, selection: sel.map((s) => ({ file: s.wf.file, run: s.run, reason: s.reason, jobs: s.wf.jobs })) }, null, 2));
   console.log(`Workflows: ${sum.workflows} · jobs: ${sum.jobs} · roda local: ${sum.byCls.local} · precisa segredo: ${sum.byCls.secret} · só GitHub: ${sum.byCls['github-only']}`);
@@ -115,7 +116,7 @@ async function cmdRun(o) {
   const inv = buildInventory(ROOT);
   const sha = git('rev-parse', o.sha);
   const files = changedFiles(o.base, o.sha);
-  let sel = selectWorkflows(inv, { event: o.event, branch: headRef(), changedFiles: files, all: o.all }).filter((s) => s.run);
+  let sel = selectWorkflows(inv, { event: o.event, branch: headRef(), baseBranch: o.base.replace(/^origin\//, ''), changedFiles: files, all: o.all }).filter((s) => s.run);
   if (o.workflows.length) sel = sel.filter((s) => o.workflows.includes(s.wf.file));
   if (o.exclude.length) sel = sel.filter((s) => !o.exclude.includes(s.wf.file));
   if (!sel.length) {
@@ -168,13 +169,23 @@ async function cmdRun(o) {
       const v = verdict(r, byId.get(r.jobId), { secretsProvided: sec.names });
       jobs.push({ check: r.check, jobId: r.jobId, status: v.status, why: v.why ?? '' });
     }
-    const byJobId = new Map(jobs.map((j) => [j.jobId, j]));
+    // Matrix: várias pernas com o mesmo jobId — o need vale pela PIOR perna.
+    const rank = { FALHOU: 0, 'não executado': 1, inconclusivo: 2, 'só GitHub': 3, 'ok-parcial': 4, pulado: 5, ok: 6 };
+    const byJobId = new Map();
+    for (const j of jobs) {
+      const prev = byJobId.get(j.jobId);
+      if (!prev || (rank[j.status] ?? 0) < (rank[prev.status] ?? 0)) byJobId.set(j.jobId, j);
+    }
     for (const j of s.wf.jobs) {
       if (res.jobs.some((r) => r.jobId === j.id)) continue;
       const em = res.timedOut ? null : emulateAlwaysJob(j, byJobId);
       jobs.push(em
         ? { check: j.name, jobId: j.id, status: em.status, why: em.why }
         : { check: j.name, jobId: j.id, status: res.timedOut ? 'FALHOU' : 'não executado', why: res.timedOut ? `timeout de ${o.timeout} min` : 'job não reportou' });
+    }
+    // act quebrou (exit ≠ 0) sem nenhum job reprovado: não é "verde" — é falha da execução.
+    if (!res.timedOut && res.exitCode !== 0 && !res.jobs.some((r) => r.result === 'failure')) {
+      jobs.push({ check: `(act) ${s.wf.file}`, jobId: '_act', status: 'FALHOU', why: `act saiu com ${res.exitCode ?? res.signal} sem job falho reportado (ver logs/${s.wf.file}.jsonl)` });
     }
     const bad = jobs.filter((j) => j.status === 'FALHOU').length;
     // (ok-parcial conta como passou: só os passos sem segredo/GitHub não foram verificados)
@@ -201,7 +212,7 @@ function finish(report, dir, o) {
   console.log(`\nResumo: ok ${c('ok')} · ok-parcial ${c('ok-parcial')} · FALHOU ${c('FALHOU')} · inconclusivo ${c('inconclusivo')} · só GitHub ${c('só GitHub')} · pulado ${c('pulado')}`);
   console.log(`Relatório: ${join(dir, 'report.md')}`);
   if (c('FALHOU')) return 1;
-  if (o.strict && c('inconclusivo')) return 3;
+  if (o.strict && (c('inconclusivo') || c('não executado'))) return 3;
   return 0;
 }
 
@@ -210,7 +221,7 @@ const HEAVY = /playwright\s+test|run test:e2e|lhci|lighthouse|stryker|mutation/i
 async function cmdFast(o) {
   const inv = buildInventory(ROOT);
   const files = changedFiles(o.base, o.sha);
-  let sel = selectWorkflows(inv, { event: 'pull_request', branch: headRef(), changedFiles: files, all: o.all }).filter((s) => s.run);
+  let sel = selectWorkflows(inv, { event: 'pull_request', branch: headRef(), baseBranch: o.base.replace(/^origin\//, ''), changedFiles: files, all: o.all }).filter((s) => s.run);
   if (o.workflows.length) sel = sel.filter((s) => o.workflows.includes(s.wf.file));
   const sha = git('rev-parse', 'HEAD');
   const baseSha = git('rev-parse', o.base);
