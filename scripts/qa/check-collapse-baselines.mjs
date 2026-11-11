@@ -35,6 +35,11 @@ const args = new Map(
 const only = args.get("viewport");
 const VIEWPORTS = ["mobile", "tablet", "desktop"].filter((v) => !only || v === only);
 const STATES = ["expanded", "collapsed"];
+// GUARD: --viewport desconhecido (typo) esvaziava a lista e o script dizia "Baselines OK (0 viewport(s))".
+if (only && VIEWPORTS.length === 0) {
+  console.error(`❌ viewport desconhecido: "${only}" (use mobile, tablet ou desktop).`);
+  process.exit(2);
+}
 
 /** Aceita 'location-panel-{st}-{vp}.png' ou 'location-panel-{st}-{vp}-*.png' */
 function baselineExists(snapDir, st, vp) {

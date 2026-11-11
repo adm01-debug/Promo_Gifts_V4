@@ -33,7 +33,11 @@ const SYSTEM_TABLES = new Set([
 
 function scan() {
   const counts = new Map();
-  if (!existsSync(MIGRATIONS_DIR)) return counts;
+  // GUARD: diretório renomeado/ausente dava "atual: 0" e o gate comemorava.
+  if (!existsSync(MIGRATIONS_DIR)) {
+    console.error(`❌ ${MIGRATIONS_DIR} não encontrado — não há o que varrer.`);
+    process.exit(2);
+  }
 
   const CREATE_TABLE_RE = /create\s+table\s+(?:if\s+not\s+exists\s+)?([\w."']+)/gi;
 
