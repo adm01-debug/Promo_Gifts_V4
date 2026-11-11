@@ -10,7 +10,6 @@
  */
 
 import { execFileSync } from 'child_process';
-import path from 'path';
 
 const THRESHOLD = 0.20; // 20% de redução dispara a falha
 
