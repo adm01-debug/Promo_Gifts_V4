@@ -1,9 +1,60 @@
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
+import { createServer } from 'node:http';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
+const openServers = [];
+
+afterEach(async () => {
+  await Promise.all(
+    openServers.splice(0).map(
+      (server) =>
+        new Promise((resolveClose, rejectClose) => {
+          server.close((error) => (error ? rejectClose(error) : resolveClose()));
+        }),
+    ),
+  );
+});
+
+async function startServer(handler) {
+  const server = createServer((request, response) => {
+    Promise.resolve(handler(request, response)).catch((error) => {
+      response.writeHead(500, { 'content-type': 'application/json' });
+      response.end(JSON.stringify({ error: error.message }));
+    });
+  });
+  openServers.push(server);
+  await new Promise((resolveListen, rejectListen) => {
+    server.once('error', rejectListen);
+    server.listen(0, '127.0.0.1', resolveListen);
+  });
+  const address = server.address();
+  if (!address || typeof address === 'string') throw new Error('Servidor de fixture sem porta TCP.');
+  return `http://127.0.0.1:${address.port}`;
+}
+
+// spawn assíncrono (não spawnSync): este teste hospeda um servidor HTTP no
+// mesmo processo e o processo filho chama esse servidor via fetch — usar
+// spawnSync aqui bloquearia o event loop e causaria deadlock determinístico.
+function runAsync(env) {
+  return new Promise((resolveRun, rejectRun) => {
+    const child = spawn(
+      process.execPath,
+      [resolve(ROOT, 'scripts/check-quote-rpc-canonical-readiness.mjs'), '--require-live'],
+      { cwd: ROOT, env: { PATH: process.env.PATH ?? '', ...env } },
+    );
+    let output = '';
+    child.stdout.on('data', (chunk) => (output += chunk));
+    child.stderr.on('data', (chunk) => (output += chunk));
+    child.once('error', rejectRun);
+    child.once('close', (exitCode) => {
+      const payload = [...output.matchAll(/\] result=(\{.+\})$/gm)].at(-1)?.[1];
+      resolveRun({ exitCode, output, result: payload ? JSON.parse(payload) : null });
+    });
+  });
+}
 
 function run(fixture, extra = []) {
   const result = spawnSync(
@@ -72,5 +123,27 @@ describe('quote RPC canonical readiness gate', () => {
     );
     expect(result.status).toBe(1);
     expect(`${result.stdout}${result.stderr}`).toContain('"reason":"wrong_project"');
+  });
+
+  it('nao consulta um VITE_SUPABASE_URL nao-canonico quando falta SUPABASE_PROJECT_REF (ex.: .env local do pqp)', async () => {
+    let hit = false;
+    const url = await startServer((_request, response) => {
+      hit = true;
+      response.writeHead(200, { 'content-type': 'application/json' });
+      response.end(JSON.stringify([]));
+    });
+
+    const outcome = await runAsync({
+      // SUPABASE_ACCESS_TOKEN sozinho (sem SUPABASE_PROJECT_REF) não habilita
+      // a Management API — querySupabaseReadOnly cairia no fallback pg-meta
+      // usando VITE_SUPABASE_URL, que aqui aponta para um projeto não-canônico.
+      SUPABASE_ACCESS_TOKEN: 'fake-pat-sem-project-ref',
+      VITE_SUPABASE_URL: url,
+      SUPABASE_SERVICE_ROLE_KEY: 'fake-service-role-key',
+    });
+
+    expect(hit).toBe(false);
+    expect(outcome.exitCode).toBe(2);
+    expect(outcome.result).toMatchObject({ reason: 'missing_credentials' });
   });
 });
