@@ -11,10 +11,12 @@
  * Uso: node scripts/inventario/gerar-rotas.mjs
  */
 import { readdirSync, readFileSync, existsSync, writeFileSync, mkdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const RAIZ = fileURLToPath(new URL('../../', import.meta.url));
+// fileURLToPath(string): funciona com espaço/acento no caminho e também sob o jsdom do vitest
+// (lá o URL global não é o do Node e fileURLToPath(new URL(...)) lança "must be of scheme file").
+const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..', '..') + sep;
 const OUT = join(RAIZ, 'inventario/estado');
 // Acesso a tabela: .from('t') (fora storage), untypedFrom/goldFrom('t') e { table: 't' } (dbInvoke e afins)
 const ACESSO_TABELA = /(?<!storage\s*)(?:\.from|\buntypedFrom|\bgoldFrom)(?:<[^>(]*>)?\(\s*['"`]([A-Za-z_][\w.]*)['"`]|\btable:\s*['"`]([A-Za-z_][\w.]*)['"`]/g;

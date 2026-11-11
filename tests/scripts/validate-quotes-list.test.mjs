@@ -59,16 +59,6 @@ function makeSandbox(prefix) {
   return sandbox;
 }
 
-/** Cria um `npx` fake executável num diretório próprio e retorna o diretório. */
-function makeFakeNpx(sandbox, script) {
-  const bin = join(sandbox, 'fakebin');
-  mkdirSync(bin, { recursive: true });
-  const npxPath = join(bin, 'npx');
-  writeFileSync(npxPath, script);
-  chmodSync(npxPath, 0o755);
-  return bin;
-}
-
 // Conteúdo mínimo que satisfaz todos os invariantes estáticos do passo 1
 // (ordem/alinhamento das colunas, testids, aria-labels) — ver `must(...)` em
 // scripts/validate-quotes-list.mjs.
@@ -138,60 +128,51 @@ function setupSandboxRepo(sandbox) {
   writeFileSync(join(dir, 'QuoteListCellRenderer.tsx'), CELL_TSX);
 }
 
-// Reproduz byte a byte a saída real observada ao rodar `npx tsgo --noEmit`
-// neste repo: `tsgo` não é dependência de ninguém, então `npx` tenta buscá-lo
-// no registro do npm e recebe 404.
-const FAKE_NPX_TSGO_UNRESOLVED = `#!/usr/bin/env bash
-if [ "$1" = "tsgo" ]; then
-  cat <<'EOF'
-npm error code E404
-npm error 404 Not Found - GET https://registry.npmjs.org/tsgo - Not found
-npm error 404
-npm error 404  'tsgo@*' is not in this registry.
-npm error 404
-npm error 404 Note that you can also install from a
-npm error 404 tarball, folder, http url, or git url.
-npm error A complete log of this run can be found in: /root/.npm/_logs/fake-debug.log
-EOF
-  exit 1
-fi
-echo "Tests 1 passed (1)"
+// O script roda os binários LOCAIS (node_modules/.bin/tsc e node_modules/.bin/vitest), nunca
+// `npx` — o antigo `npx tsgo` resolvia um pacote inexistente no registro e o passo "passava" sem
+// rodar nada. Os fakes abaixo substituem esses binários dentro do sandbox.
+const FAKE_VITEST_OK = `#!/usr/bin/env bash
+echo " Test Files  1 passed (1)"
+echo "      Tests  3 passed (3)"
 exit 0
 `;
-
-const FAKE_NPX_TSGO_CLEAN = `#!/usr/bin/env bash
-if [ "$1" = "tsgo" ]; then
-  exit 0
-fi
-echo "Tests 1 passed (1)"
+const FAKE_TSC_CLEAN = `#!/usr/bin/env bash
 exit 0
 `;
-
-const FAKE_NPX_TSGO_REAL_ERROR = `#!/usr/bin/env bash
-if [ "$1" = "tsgo" ]; then
-  echo "src/components/quotes/QuotesConfigurableList.tsx(42,10): error TS2322: Type mismatch"
-  exit 1
-fi
-echo "Tests 1 passed (1)"
-exit 0
+const FAKE_TSC_TARGET_ERROR = `#!/usr/bin/env bash
+echo "src/components/quotes/QuotesConfigurableList.tsx(42,10): error TS2322: Type mismatch"
+exit 2
+`;
+// Erro só num arquivo importado pela lista (não é alvo): o passo não deve reprovar a lista.
+const FAKE_TSC_IMPORTED_ONLY_ERROR = `#!/usr/bin/env bash
+echo "src/lib/other/helper.ts(7,3): error TS2345: Argument of type 'x' is not assignable"
+exit 2
+`;
+// tsc morto por sinal (ex.: OOM do V8): nunca pode virar "0 erros".
+const FAKE_TSC_KILLED = `#!/usr/bin/env bash
+kill -9 $$
 `;
 
-function runScript({ fakeNpxScript, env } = {}) {
+function writeBin(sandbox, name, script) {
+  const bin = join(sandbox, 'node_modules', '.bin');
+  mkdirSync(bin, { recursive: true });
+  const p = join(bin, name);
+  writeFileSync(p, script);
+  chmodSync(p, 0o755);
+}
+
+function runScript({ tsc = FAKE_TSC_CLEAN, vitest = FAKE_VITEST_OK, env } = {}) {
   const sandbox = makeSandbox('validate-quotes-list-');
   setupSandboxRepo(sandbox);
   const reportDir = join(sandbox, 'report-out');
   mkdirSync(reportDir, { recursive: true });
-  const bin = fakeNpxScript ? makeFakeNpx(sandbox, fakeNpxScript) : null;
+  if (tsc) writeBin(sandbox, 'tsc', tsc);
+  if (vitest) writeBin(sandbox, 'vitest', vitest);
 
   const res = spawnSync('node', [REAL_SCRIPT], {
     cwd: sandbox,
     encoding: 'utf8',
-    env: {
-      ...process.env,
-      ...(bin ? { PATH: `${bin}:${process.env.PATH}` } : {}),
-      TMPDIR: reportDir,
-      ...env,
-    },
+    env: { ...process.env, TMPDIR: reportDir, ...env },
   });
   return { ...res, sandbox, reportDir };
 }
@@ -206,60 +187,84 @@ function readReport(reportDir) {
   return JSON.parse(readFileSync(join(reportDir, sub, 'validation-report.json'), 'utf8'));
 }
 
-test('BUG 1 — tsgo não resolvido pelo npx (erro 404 real) não deve ser reportado como "pass (0 erros)"', () => {
-  const res = runScript({ fakeNpxScript: FAKE_NPX_TSGO_UNRESOLVED });
+const TS_STEP = 'Type-check (tsc, apenas o grafo de imports da lista)';
+const tsStepOf = (report) => report.steps.find((s) => s.name === TS_STEP);
 
-  // Sem a correção, isto dava exit 0 e "✅ TUDO OK" mesmo sem o tsgo ter
-  // rodado de verdade — o falso-positivo que este teste prova que não existe
-  // mais.
+test('BUG 1 — tsc ausente (não executou) não é reportado como "pass (0 erros)"', () => {
+  const res = runScript({ tsc: null });
+
   expect(res.status).toBe(1);
-  expect(res.stdout).toMatch(/❌ Type-check \(tsgo\)/);
-  expect(res.stdout).not.toMatch(/✅ Type-check \(tsgo\)/);
-  expect(res.stdout).toMatch(/tsgo não executou/i);
-
+  expect(res.stdout).toContain(`❌ ${TS_STEP}`);
+  expect(res.stdout).toMatch(/tsc não executou/i);
   const report = readReport(res.reportDir);
-  const tsStep = report.steps.find((s) => s.name === 'Type-check (tsgo)');
-  expect(tsStep.status).toBe('fail');
-  expect(tsStep.error).toMatch(/npm error/);
+  expect(tsStepOf(report).status).toBe('fail');
   expect(report.ok).toBe(false);
 });
 
-test('não regride o caminho feliz: tsgo roda limpo (sem erros reais) continua passando', () => {
-  const res = runScript({ fakeNpxScript: FAKE_NPX_TSGO_CLEAN });
+test('não regride o caminho feliz: tsc limpo continua passando', () => {
+  const res = runScript();
 
   expect(res.status).toBe(0);
-  expect(res.stdout).toMatch(/✅ Type-check \(tsgo\)/);
+  expect(res.stdout).toContain(`✅ ${TS_STEP}`);
   const report = readReport(res.reportDir);
-  expect(report.steps.find((s) => s.name === 'Type-check (tsgo)').status).toBe('pass');
+  expect(tsStepOf(report).status).toBe('pass');
   expect(report.ok).toBe(true);
 });
 
-test('não regride a detecção de erro real de TS nos arquivos-alvo (continua falhando, com o erro real na mensagem)', () => {
-  const res = runScript({ fakeNpxScript: FAKE_NPX_TSGO_REAL_ERROR });
+test('não regride a detecção de erro real de TS nos arquivos-alvo (falha, com o erro real na mensagem)', () => {
+  const res = runScript({ tsc: FAKE_TSC_TARGET_ERROR });
 
   expect(res.status).toBe(1);
-  expect(res.stdout).toMatch(/❌ Type-check \(tsgo\)/);
+  expect(res.stdout).toContain(`❌ ${TS_STEP}`);
   expect(res.stdout).toMatch(/TS2322/);
-  expect(res.stdout).not.toMatch(/tsgo não executou/i);
-
   const report = readReport(res.reportDir);
-  const tsStep = report.steps.find((s) => s.name === 'Type-check (tsgo)');
-  expect(tsStep.status).toBe('fail');
-  expect(tsStep.error).toMatch(/TS2322/);
+  expect(tsStepOf(report).status).toBe('fail');
+  expect(tsStepOf(report).error).toMatch(/TS2322/);
 });
 
-test('BUG 2 — falha ao salvar o relatório (TMPDIR inválido) não deve derrubar o processo com stack trace cru', () => {
-  const res = runScript({
-    fakeNpxScript: FAKE_NPX_TSGO_CLEAN,
-    env: { TMPDIR: '/este/diretorio/nao/existe/de/verdade' },
-  });
+test('erro de TS só em arquivo importado (não-alvo) não reprova a lista, mas é contabilizado', () => {
+  const res = runScript({ tsc: FAKE_TSC_IMPORTED_ONLY_ERROR });
 
-  // Sem a correção, isto era um crash: `Error: ENOENT ... at Object.writeFileSync`
-  // no stderr, sem a linha final "Resultado: ...".
+  expect(res.status).toBe(0);
+  const step = tsStepOf(readReport(res.reportDir));
+  expect(step.status).toBe('pass');
+  expect(step.detail.errorsInImportedFiles).toBe(1);
+});
+
+test('tsc morto por sinal (OOM) falha fechado em vez de virar "0 erros"', () => {
+  const res = runScript({ tsc: FAKE_TSC_KILLED });
+
+  expect(res.status).toBe(1);
+  const step = tsStepOf(readReport(res.reportDir));
+  expect(step.status).toBe('fail');
+  expect(step.error).toMatch(/interrompido|possível OOM/);
+});
+
+test('vitest ausente falha fechado (sem fallback para npx/registro)', () => {
+  const res = runScript({ vitest: null });
+
+  expect(res.status).toBe(1);
+  expect(res.stdout).toMatch(/vitest não executou/);
+  expect(readReport(res.reportDir).ok).toBe(false);
+});
+
+test('BUG 2 — TMPDIR inválido não derruba o processo nem o type-check; só o relatório deixa de ser salvo', () => {
+  const res = runScript({ env: { TMPDIR: '/este/diretorio/nao/existe/de/verdade' } });
+
+  // Sem a correção: crash `Error: ENOENT ... at Object.writeFileSync` e, depois, o tsconfig
+  // temporário do type-check também ia para TMPDIR e reprovava a lista sem motivo.
   expect(res.stderr).not.toMatch(/at Object\.writeFileSync/);
   expect(res.stdout).toMatch(/Não foi possível salvar o relatório/);
-  // Os 3 passos de fato rodaram e passaram — o resumo final precisa refletir
-  // isso corretamente mesmo sem conseguir persistir o JSON.
+  expect(res.stdout).toContain(`✅ ${TS_STEP}`);
   expect(res.stdout).toMatch(/Resultado: ✅ TUDO OK/);
   expect(res.status).toBe(0);
+});
+
+test('o tsconfig temporário do type-check é removido ao final', () => {
+  const res = runScript();
+
+  expect(res.status).toBe(0);
+  const cache = join(res.sandbox, 'node_modules', '.cache');
+  const leftovers = existsSync(cache) ? readdirSync(cache).filter((d) => d.startsWith('quotes-list-tsc-')) : [];
+  expect(leftovers).toEqual([]);
 });

@@ -23,11 +23,11 @@ afterEach(() => {
 function fakeBunx(exitCode) {
   const bin = mkdtempSync(join(tmpdir(), 'update-baseline-bin-'));
   dirs.push(bin);
-  writeFileSync(
-    join(bin, 'bunx'),
-    `#!/bin/sh\necho "fake bunx $*"\nexit ${exitCode}\n`,
-  );
-  chmodSync(join(bin, 'bunx'), 0o755);
+  // O script roda o Playwright via npx (o projeto usa npm; bunx não é dependência).
+  for (const name of ['npx', 'bunx']) {
+    writeFileSync(join(bin, name), `#!/bin/sh\necho "fake ${name} $*"\nexit ${exitCode}\n`);
+    chmodSync(join(bin, name), 0o755);
+  }
   return bin;
 }
 

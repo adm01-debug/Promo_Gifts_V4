@@ -147,7 +147,10 @@ describe('CLI static-pass never masks an explicitly wrong project ref', () => {
     expect(result.stderr).toContain('Project ref não canônico');
   });
 
-  it('keeps static-pass when nothing at all is configured (no project ref either)', () => {
+  // A guarda só roda nos workflows que aplicam migration em produção
+  // (db-apply-migration, db-schema-drift-check); lá, nada configurado = segredo
+  // ausente/mal configurado, e nunca pode virar static-pass/exit 0.
+  it('fails closed even when nothing at all is configured (no static-pass)', () => {
     const env = { ...process.env };
     for (const key of [
       'SUPABASE_PROJECT_REF',
@@ -160,8 +163,9 @@ describe('CLI static-pass never masks an explicitly wrong project ref', () => {
       delete env[key];
     }
     const result = spawnSync('node', [SCRIPT], { cwd: ROOT, encoding: 'utf8', env });
-    expect(result.status).toBe(0);
-    expect(result.stdout).toContain('static-pass');
+    expect(result.status).toBe(1);
+    expect(result.stdout).not.toContain('static-pass');
+    expect(result.stderr).toContain('PGHOST ausente');
   });
 });
 

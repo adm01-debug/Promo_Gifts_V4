@@ -151,14 +151,16 @@ describe('check-mojibake.mjs — regressão: subdiretório ilegível não deve d
   // do spread `[...walk(ROOT)]`, descartando TODOS os arquivos já
   // enumerados (inclusive os que continham mojibake real) e terminando com
   // exit=2 ("Falha ao acessar"), em vez de exit=1 reportando o achado real.
-  // Este teste roda como usuário não-root (nobody) para reproduzir EACCES de
-  // fato; se "nobody" não existir no ambiente, o cenário é pulado.
+  // EACCES só acontece para não-root. Rodando como root, o cenário troca para
+  // "nobody" via su (sem senha só funciona para root); rodando como usuário
+  // comum (WSL, runner do Actions), o chmod 000 já basta e o script roda direto.
+  const isRoot = typeof process.getuid === 'function' && process.getuid() === 0;
   const hasNobody = (() => {
     const probe = spawnSync('id', ['nobody'], { encoding: 'utf8' });
     return probe.status === 0;
   })();
 
-  test.skipIf(!hasNobody)(
+  test.skipIf(isRoot && !hasNobody)(
     'mojibake em subdiretório legível ainda é reportado quando outro subdiretório é ilegível',
     () => {
       const sandbox = mkdtempSync(join(tmpdir(), 'mojibake-eacces-'));
@@ -174,11 +176,13 @@ describe('check-mojibake.mjs — regressão: subdiretório ilegível não deve d
         chmodSync(unreadableDir, 0o000);
 
         try {
-          const result = spawnSync(
-            'su',
-            ['-s', '/bin/bash', 'nobody', '-c', `${process.execPath} ${SCRIPT} ${sandbox}`],
-            { encoding: 'utf8' },
-          );
+          const result = isRoot
+            ? spawnSync(
+                'su',
+                ['-s', '/bin/bash', 'nobody', '-c', `${process.execPath} ${SCRIPT} ${sandbox}`],
+                { encoding: 'utf8' },
+              )
+            : spawnSync(process.execPath, [SCRIPT, sandbox], { encoding: 'utf8' });
 
           assert.equal(
             result.status,

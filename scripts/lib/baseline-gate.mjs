@@ -116,7 +116,7 @@ export function runBaselineGate({ baselineFile, label, description, totalKey, fi
   try {
     baseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
   } catch (error) {
-    console.error(`❌ ${baselineFile} ilegível ou com JSON inválido (${error.message}). Regere com --update.`);
+    console.error(`❌ ${baselineFile} ilegível ou inválido (JSON corrompido): ${error.message}. Regere com --update.`);
     process.exit(2);
   }
   const baselineCounts = baseline.counts ?? {};
