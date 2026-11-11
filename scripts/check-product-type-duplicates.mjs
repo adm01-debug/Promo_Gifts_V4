@@ -24,9 +24,12 @@ try {
   if (e.code !== 'ENOENT') throw e;
 }
 
-// Contar ocorrências
+// Contar ocorrências (total de linhas que casam, não número de arquivos —
+// `grep -c` + filtro ":0" + `wc -l` contava ARQUIVOS com >=1 match, então uma
+// 2a `interface Product` adicionada a um arquivo que já tinha uma não
+// incrementava o contador e furava o ratchet).
 const out = execSync(
-  'grep -rc "interface Product\\b" src/ | grep -v ":0" | wc -l',
+  'grep -rh "interface Product\\b" src/ | wc -l',
   { cwd: ROOT, encoding: 'utf8' },
 ).trim();
 const currentCount = parseInt(out, 10);
