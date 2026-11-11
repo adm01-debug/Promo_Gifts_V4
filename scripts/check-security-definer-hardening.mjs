@@ -107,8 +107,13 @@ for (const path of ADDED_FILES) {
   const hasMarker = /--\s*rls-helper:/i.test(lower);
   // `[^;]*` (não cruza statements): `REVOKE … FROM PUBLIC; GRANT … TO anon` não é revoke de anon.
   // `ALL [PRIVILEGES]` inclui EXECUTE: vale tanto para o REVOKE quanto para o GRANT.
-  const hasRevokeAnon = /revoke\s+(?:execute|all(?:\s+privileges)?)\b[^;]*\bfrom\b[^;]*\banon\b/i.test(content) || hasMarker;
-  const grantsAnon = /grant\s+(?:execute|all(?:\s+privileges)?)\b[^;]*\bto\b[^;]*\banon\b/i.test(content) && !hasMarker;
+  // Só conta privilégio de FUNÇÃO: `REVOKE ALL ON TABLE … FROM anon` não protege a função, e
+  // `GRANT ALL ON TABLE … TO anon` não a expõe. GRANT a PUBLIC também expõe (anon herda de PUBLIC).
+  const ON_FN = String.raw`\s+on\s+(?:functions?|routines?|all\s+(?:functions|routines)\s+in\s+schema)\b`;
+  const hasRevokeAnon =
+    new RegExp(String.raw`revoke\s+(?:execute|all(?:\s+privileges)?)` + ON_FN + String.raw`[^;]*\bfrom\b[^;]*\banon\b`, 'i').test(content) || hasMarker;
+  const grantsAnon =
+    new RegExp(String.raw`grant\s+(?:execute|all(?:\s+privileges)?)` + ON_FN + String.raw`[^;]*\bto\b[^;]*\b(?:anon|public)\b`, 'i').test(content) && !hasMarker;
 
   if (!hasSearchPath || !hasRevokeAnon || grantsAnon) {
     offenders.push({

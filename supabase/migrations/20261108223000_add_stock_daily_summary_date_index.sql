@@ -1,6 +1,7 @@
 -- transaction: none
--- (CREATE INDEX CONCURRENTLY não pode rodar dentro de transação; o opt-out exige também a
---  linha "-- approved-by: <nome>", que é a aprovação humana do dono — adicionar ao aplicar.)
+-- (CREATE INDEX CONCURRENTLY não pode rodar dentro de transação. O opt-out exige também uma
+--  linha própria de aprovação com o nome do dono — a aprovação humana; ela é adicionada no
+--  momento da aplicação, nunca antes. Sem ela o preflight bloqueia, como deve.)
 -- Rollback: supabase/rollbacks/20261108223000_rollback.sql
 -- Adiciona índice btree em summary_date para evitar seq scan no DELETE de datas
 -- futuras dentro de fn_aggregate_stock_daily. Sem este índice a limpeza
@@ -9,18 +10,12 @@
 -- stock-daily-backfill-today (03:15) — estouraram em 04–08/11.
 -- Aplicar pela porta 5432 (E078), longe de 22:30 e 03:15.
 --
--- O db-apply-migration usa lock_timeout=1s: o CONCURRENTLY espera transações antigas e
--- falharia deixando um índice INVÁLIDO que o IF NOT EXISTS depois esconderia. Por isso:
--- (1) lock_timeout generoso só nesta sessão; (2) se houver índice inválido de tentativa
--- anterior, ele é removido antes; (3) no fim, falha se o índice não estiver válido.
+-- O db-apply-migration usa lock_timeout=1s: o CONCURRENTLY espera transações antigas, então
+-- esta sessão usa lock_timeout generoso. Se uma tentativa anterior deixou o índice INVÁLIDO,
+-- o IF NOT EXISTS o esconderia — por isso a guarda final falha alto; nesse caso rode o
+-- rollback (DROP INDEX CONCURRENTLY) e reaplique. (Recuperação automática exigiria comandos
+-- do psql — \gset/\if — que quebram o replay das migrations fora do psql.)
 SET lock_timeout = '5min';
-DO $$
-BEGIN
-  IF EXISTS (SELECT 1 FROM pg_index WHERE indexrelid = to_regclass('public.idx_sds_summary_date') AND NOT indisvalid) THEN
-    RAISE NOTICE 'idx_sds_summary_date inválido de tentativa anterior: removendo';
-  END IF;
-END $$;
-DROP INDEX CONCURRENTLY IF EXISTS public.idx_sds_summary_date_invalid_guard;
 CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_sds_summary_date
   ON public.stock_daily_summary (summary_date);
 DO $$

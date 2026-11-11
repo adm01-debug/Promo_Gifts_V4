@@ -477,7 +477,7 @@ export function useKitBuilderPageState() {
         kitQuantity: fullState.qty,
         identity: fullState.identity ?? undefined,
         notes: fullState.notes,
-        flow: wizardState.flow,
+        flow: flowOverride ?? wizardState.flow,
         aiBriefing,
       });
       setKitQuantity(fullState.qty);

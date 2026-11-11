@@ -361,3 +361,22 @@ describe('detectSecurityDefinerWithoutPgTemp', () => {
     expect(detectSecurityDefinerWithoutPgTemp(sql)).toEqual(['public.f']);
   });
 });
+
+describe('parseOptOut — aprovação humana não pode ser forjada por texto explicativo', () => {
+  it('linha própria "-- approved-by: nome" vale', () => {
+    expect(parseOptOut('-- transaction: none\n-- approved-by: comercial@empresa.com.br (E069)\nSELECT 1;').approvedBy).toBe('comercial@empresa.com.br (E069)');
+  });
+  it('approved-by citado no meio de um comentário NÃO vale (falso aprovador)', () => {
+    const sql = '-- transaction: none\n-- (o opt-out exige também a\n--  linha "-- approved-by: <nome>", que é a aprovação humana do dono — adicionar ao aplicar.)\nSELECT 1;';
+    expect(parseOptOut(sql).approvedBy).toBeNull();
+  });
+  it('marcador <nome> não vale como aprovador', () => {
+    expect(parseOptOut('-- transaction: none\n-- approved-by: <nome>\nSELECT 1;').approvedBy).toBeNull();
+  });
+  it('a 20261108223000 da pilha fica SEM aprovação até o dono adicioná-la', async () => {
+    const { readdirSync, readFileSync } = await import('node:fs');
+    const dir = resolve(dirname(fileURLToPath(import.meta.url)), '../../supabase/migrations');
+    const f = readdirSync(dir).find((n) => n.startsWith('20261108223000_'));
+    expect(parseOptOut(readFileSync(join(dir, f), 'utf8'))).toMatchObject({ transactionNone: true, approvedBy: null });
+  });
+});
