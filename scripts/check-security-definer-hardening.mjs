@@ -18,15 +18,18 @@
  * Uso CI: rodar com `node scripts/check-security-definer-hardening.mjs`.
  * Em PR: compara HEAD vs base.
  */
-import { execSync } from 'node:child_process';
+import { execSync, execFileSync } from 'node:child_process';
 import { readFileSync, existsSync } from 'node:fs';
 
 const ADDED_FILES = (() => {
-  // Em CI: GITHUB_BASE_REF aponta para base da PR.
+  // Em CI: GITHUB_BASE_REF aponta para base da PR. Vem de env (nome de branch),
+  // então nunca interpolar em shell string — execFileSync passa como argv
+  // literal, sem passar por `sh -c`, fechando o vetor de injeção de comando.
   const baseRef = process.env.GITHUB_BASE_REF || 'main';
   try {
-    const out = execSync(
-      `git diff --name-only --diff-filter=A origin/${baseRef}...HEAD -- 'supabase/migrations/*.sql'`,
+    const out = execFileSync(
+      'git',
+      ['diff', '--name-only', '--diff-filter=A', `origin/${baseRef}...HEAD`, '--', 'supabase/migrations/*.sql'],
       { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] },
     );
     return out.split('\n').filter(Boolean);
