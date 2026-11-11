@@ -1,3 +1,5 @@
+// Historical contract: the endpoint was decommissioned in #557.
+// These assertions cover recovered pure helpers, not active handleSelect/handleBatch routing.
 // Tests for the refined heavy-select detection.
 //
 // Cobre dois aspectos da heurística:
@@ -12,7 +14,7 @@ import {
   callerSelectIsHeavy,
   resolveProductsSelect,
   HEAVY_PRODUCT_COLUMNS,
-} from "./index.ts";
+} from "./legacy-contracts.ts";
 
 // ────────────────────────────────────────────────────────────────────────────
 // extractBaseColumn — tokenização

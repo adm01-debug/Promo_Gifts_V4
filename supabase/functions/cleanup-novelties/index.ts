@@ -91,7 +91,7 @@ Deno.serve(async (req) => {
         };
         for (const field of extraClearFields) updateData[field] = null;
 
-        const ids = expired.map((p: { id: string }) => p.id);
+        const ids = expired.map((p) => p.id);
         for (let i = 0; i < ids.length; i += UPDATE_BATCH) {
           const batch = ids.slice(i, i + UPDATE_BATCH);
           const { error: updateError } = await db
