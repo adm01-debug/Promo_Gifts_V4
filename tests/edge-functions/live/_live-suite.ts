@@ -25,7 +25,14 @@ import {
   type CallEdgeOptions,
   type EdgeRole,
 } from "./_live-client";
-import { expectedAnonStatuses, happyPathRole, isDestructive, SUPPORTS_DRY_RUN } from "./_authz";
+import {
+  expectedAnonStatuses,
+  FAIL_CLOSED_WHEN_UNCONFIGURED,
+  happyPathRole,
+  isDestructive,
+  LENIENT_BODY,
+  SUPPORTS_DRY_RUN,
+} from "./_authz";
 import { errorEnvelopeSchema, type Schema } from "./_schemas";
 
 type Body = CallEdgeOptions["body"];
@@ -131,8 +138,9 @@ export function runLiveSuite(desc: LiveSuiteDescriptor): void {
 
     const invalids = [...DEFAULT_INVALID, ...(desc.invalidInputs ?? [])];
     for (const inv of invalids) {
-      it(`input inválido (${inv.label}) → sem crash 5xx`, async () => {
-        const useRole = inv.role ?? (anon.mode === "reject" ? role : "anon");
+      it(`input inválido (${inv.label}) → sem crash 5xx`, async (ctx) => {
+        // LENIENT_BODY: autenticado, a função executaria de verdade com valores padrão.
+        const useRole = inv.role ?? (anon.mode === "reject" && !LENIENT_BODY.has(fn) ? role : "anon");
         // Se o tier exige role e não há credencial, a chamada vira 401 (ainda <500).
         const res = await callEdge(fn, {
           method,
@@ -141,6 +149,15 @@ export function runLiveSuite(desc: LiveSuiteDescriptor): void {
           headers: { ...baseHeaders, ...inv.headers },
           body: inv.body,
         });
+        if (
+          res.status === 503 &&
+          FAIL_CLOSED_WHEN_UNCONFIGURED.has(fn) &&
+          (res.json as { error?: string } | null)?.error === "service_misconfigured"
+        ) {
+          console.warn(`[live] ${fn}: 503 service_misconfigured (credencial de integração ausente no ambiente) — teste pulado`);
+          ctx.skip();
+          return;
+        }
         expectNoCrash(res.status, inv.label);
         // Quando alcançamos o handler autenticado, esperamos 4xx (validação).
         if (useRole !== "anon" && (await getJwt(useRole)) && res.status !== 401 && res.status !== 403) {
