@@ -11,7 +11,8 @@
 -- Remove a política excessivamente ampla
 DROP POLICY IF EXISTS "art_files_public_read" ON storage.objects;
 
--- Cria política restrita ao path quotes/ (uso legítimo pelo Bitrix24)
+-- Cria política restrita ao path quotes/ (uso legítimo pelo Bitrix24). DROP antes: reaplicável.
+DROP POLICY IF EXISTS "art_files_quotes_public_read" ON storage.objects;
 CREATE POLICY "art_files_quotes_public_read"
 ON storage.objects FOR SELECT
 TO public
@@ -23,6 +24,7 @@ USING (
 -- Garante que usuários autenticados (vendedores, admins) mantêm acesso a todos
 -- os arquivos do bucket (mockups, logos, layouts). Sem esta policy eles perderiam
 -- SELECT após o DROP da policy anterior que era a única cobertura deles.
+DROP POLICY IF EXISTS "art_files_auth_read" ON storage.objects;
 CREATE POLICY "art_files_auth_read"
 ON storage.objects FOR SELECT
 TO authenticated

@@ -120,11 +120,12 @@ const VERSION_RE = /^\d{6,19}(?:_[A-Za-z0-9]+)*$/;
  */
 export function parseOptOut(sqlContent, headLines = 40) {
   const lines = sqlContent.split('\n').slice(0, headLines);
-  const transactionNone = lines.some((l) => /--\s*transaction\s*:\s*none\b/i.test(l));
-  const approvedByLine = lines.find((l) => /--\s*approved-by\s*:/i.test(l));
-  const approvedBy = approvedByLine
-    ? (approvedByLine.split(/approved-by\s*:/i)[1] || '').trim() || null
-    : null;
+  // A marca só vale como LINHA própria de comentário (`-- approved-by: nome`), nunca citada
+  // no meio de um texto explicativo, e o nome não pode ser um marcador como `<nome>`.
+  const transactionNone = lines.some((l) => /^\s*--\s*transaction\s*:\s*none\b/i.test(l));
+  const approvedByLine = lines.find((l) => /^\s*--\s*approved-by\s*:/i.test(l));
+  const rawApprover = approvedByLine ? (approvedByLine.split(/approved-by\s*:/i)[1] || '').trim() : '';
+  const approvedBy = rawApprover && !/^[<"'`]|[<>]/.test(rawApprover) ? rawApprover : null;
   return { transactionNone, approvedBy };
 }
 
