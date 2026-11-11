@@ -265,6 +265,19 @@ describe('detectBlockingDdl (E63)', () => {
     const r = detectBlockingDdl('DROP TABLE IF EXISTS public.foo;');
     expect(r.filter((m) => m.toLowerCase().includes('drop'))).toHaveLength(0);
   });
+
+  it('não bloqueia DDL perigosa citada só dentro de um bloco de comentário /* */', () => {
+    const sql = [
+      '/* histórico: antes desta migration tínhamos',
+      '   DROP TABLE public.foo;',
+      '   removido manualmente em 2026-01, mantido aqui só como nota. */',
+      'CREATE VIEW public.x AS SELECT 1;',
+    ].join('\n');
+    // Antes da correção: só comentários de linha (--) eram removidos antes
+    // de testar os padrões bloqueantes — um DROP sem IF EXISTS dentro de um
+    // bloco /* ... */ (puramente documentação) bloqueava a migration à toa.
+    expect(detectBlockingDdl(sql)).toEqual([]);
+  });
 });
 
 describe('evaluatePreflight — --expect-applied (pós-aplicação)', () => {

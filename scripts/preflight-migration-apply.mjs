@@ -131,8 +131,11 @@ export function parseOptOut(sqlContent, headLines = 40) {
  */
 export function detectBlockingDdl(sqlContent, { hasTransactionNoneOptOut = false } = {}) {
   const blocking = [];
-  // Strip single-line SQL comments so patterns in rollback headers don't trigger.
-  const executable = sqlContent.replace(/--[^\n]*/g, '');
+  // Strip single-line e block SQL comments — mesmo tratamento das demais
+  // detecções (detectCreateIndexWithoutConcurrently, detectSecurityDefiner...,
+  // detectExtensionWithoutSchema), senão um `/* ... DROP TABLE x; ... */`
+  // documentando histórico (sem IF EXISTS) bloqueia a migration por engano.
+  const executable = sqlContent.replace(/--[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
 
   if (!hasTransactionNoneOptOut) {
     if (CONCURRENTLY_PATTERNS.some((re) => re.test(executable))) {
