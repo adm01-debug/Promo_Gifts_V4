@@ -130,6 +130,7 @@ export function classifyJob(jobId, job, ctx = {}) {
     services: Object.keys(job?.services ?? {}),
     reusable: job?.uses ?? null,
     runsOn: job?.['runs-on'] ?? null,
+    always: /\balways\(\)/.test(String(job?.if ?? '')),
   };
 }
 

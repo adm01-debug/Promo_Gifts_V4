@@ -24,6 +24,7 @@ Relatórios e logs: `.ci-local/runs/<id>/report.md`, `report.json` e `logs/` (ig
 | Resultado | Significado |
 |---|---|
 | `ok` | passou igual ao GitHub |
+| `ok-parcial` | job verde; só os passos que exigem segredo ausente/API do GitHub não foram verificados |
 | `FALHOU` | falha real — o passo que quebrou não depende de segredo nem da API do GitHub |
 | `inconclusivo` | o passo que falhou precisa de um segredo que você não forneceu |
 | `só GitHub` | depende da API/infra do GitHub (dependency-review, CodeQL, comentar PR, abrir issue, attest/OIDC) |
@@ -57,7 +58,10 @@ O `.secrets` padrão do act **nunca** é lido; só esse arquivo (ou `--secrets <
 |---|---|---|
 | `dorny/paths-filter` em PR | lista arquivos pela API (número da PR) | shim `scripts/ci-local/shims/paths-filter` com o **mesmo contrato**, via `git diff` contra a base do evento |
 | Evento | payload real | payload sintético coerente (`head`/`base`/labels) em `.ci-local/runs/<id>/event.json` |
-| Concorrência | runners do GitHub | `--jobs N` (padrão 2) — limite para não esgotar memória do WSL |
+| `upload-artifact`/`download-artifact` v4+ | serviço de artefatos do GitHub | shims com o mesmo contrato, gravando em `.ci-local/runs/<id>/artifacts` (montado em todos os contêineres) — o servidor do act não fala o protocolo novo |
+| Passos que exigem segredo ausente / API do GitHub | rodam com credenciais | `continue-on-error` **só no clone**; saem como `ok-parcial` (job verde, passo não verificado) para que os jobs dependentes rodem |
+| Job `if: always()` após falha num workflow reutilizável (ex.: Gate Final) | roda e agrega os `needs` | o act não o executa; o veredito é **EMULADO** a partir dos `needs` e marcado como tal |
+| Concorrência | runners do GitHub | `--jobs N` (padrão 2) — com mais jobs pesados em paralelo (E2E + build + vitest), testes com prazo curto estouram por lentidão da máquina, não por defeito |
 
 ## Requisitos
 

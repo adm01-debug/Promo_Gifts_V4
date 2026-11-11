@@ -21,7 +21,7 @@ import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
 import { buildInventory, summarize } from './inventory.mjs';
 import { selectWorkflows } from './select.mjs';
-import { buildEvent, neutralizeUnverifiable, prepareClone, prepareShims, runWorkflow, verdict, writeJson } from './run-act.mjs';
+import { buildEvent, emulateAlwaysJob, neutralizeUnverifiable, prepareClone, prepareShims, runWorkflow, verdict, writeJson } from './run-act.mjs';
 import { classifyStep } from './inventory.mjs';
 import { runJobNative } from './native.mjs';
 import { compareResults, fetchGithubChecks } from './compare.mjs';
@@ -168,8 +168,13 @@ async function cmdRun(o) {
       const v = verdict(r, byId.get(r.jobId), { secretsProvided: sec.names });
       jobs.push({ check: r.check, jobId: r.jobId, status: v.status, why: v.why ?? '' });
     }
+    const byJobId = new Map(jobs.map((j) => [j.jobId, j]));
     for (const j of s.wf.jobs) {
-      if (!res.jobs.some((r) => r.jobId === j.id)) jobs.push({ check: j.name, jobId: j.id, status: res.timedOut ? 'FALHOU' : 'não executado', why: res.timedOut ? `timeout de ${o.timeout} min` : 'job não reportou' });
+      if (res.jobs.some((r) => r.jobId === j.id)) continue;
+      const em = res.timedOut ? null : emulateAlwaysJob(j, byJobId);
+      jobs.push(em
+        ? { check: j.name, jobId: j.id, status: em.status, why: em.why }
+        : { check: j.name, jobId: j.id, status: res.timedOut ? 'FALHOU' : 'não executado', why: res.timedOut ? `timeout de ${o.timeout} min` : 'job não reportou' });
     }
     const bad = jobs.filter((j) => j.status === 'FALHOU').length;
     // (ok-parcial conta como passou: só os passos sem segredo/GitHub não foram verificados)
