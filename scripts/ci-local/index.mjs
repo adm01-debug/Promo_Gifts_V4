@@ -145,7 +145,7 @@ async function cmdRun(o) {
       neutralized += n;
     }
   }
-  const shimArgs = prepareShims({ root: ROOT, workflowsText: inv.map((w) => w.text ?? '').join('\n'), dest: join(OUT, 'shims') });
+  const shimArgs = prepareShims({ root: ROOT, workflowsText: inv.map((w) => w.text ?? '').join('\n'), dest: join(OUT, 'shims'), artifactsDir: join(dir, 'artifacts') });
   const sec = secretsFile(o.secrets);
   console.log(`${sel.length} workflow(s) · evento ${o.event} · segredos: ${sec.names.length ? sec.names.join(', ') : 'nenhum'} · passos neutralizados no clone: ${neutralized}\n`);
 

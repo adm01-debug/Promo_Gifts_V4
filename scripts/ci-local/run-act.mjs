@@ -21,16 +21,35 @@ const GITHUB_URL = 'https://github.com/adm01-debug/Promo_Gifts_V4.git';
  * argumentos --local-repository para cada ref usada nos workflows.
  * Hoje: dorny/paths-filter (lista de arquivos da PR via API → git diff local).
  */
-export function prepareShims({ root, workflowsText, dest }) {
-  const src = join(root, 'scripts', 'ci-local', 'shims', 'paths-filter');
-  const dir = join(dest, 'paths-filter');
-  rmSync(dir, { recursive: true, force: true });
-  mkdirSync(join(dir, 'vendor'), { recursive: true });
-  cpSync(src, dir, { recursive: true });
-  cpSync(join(root, 'node_modules', 'js-yaml', 'dist', 'js-yaml.mjs'), join(dir, 'vendor', 'js-yaml.mjs'));
-  cpSync(join(root, 'node_modules', 'picomatch'), join(dir, 'vendor', 'picomatch'), { recursive: true });
-  const refs = [...new Set([...workflowsText.matchAll(/dorny\/paths-filter@([0-9A-Za-z._-]+)/g)].map((m) => m[1]))];
-  return refs.flatMap((ref) => ['--local-repository', `dorny/paths-filter@${ref}=${dir}`]);
+export function prepareShims({ root, workflowsText, dest, artifactsDir }) {
+  const base = join(root, 'scripts', 'ci-local', 'shims');
+  const args = [];
+  const refsOf = (action) => [...new Set([...workflowsText.matchAll(new RegExp(`${action.replace('/', '\\/')}@([0-9A-Za-z._-]+)`, 'g'))].map((m) => m[1]))];
+  const stage = (shim, vendor = false) => {
+    const dir = join(dest, shim);
+    rmSync(dir, { recursive: true, force: true });
+    cpSync(join(base, shim), dir, { recursive: true });
+    cpSync(join(base, 'artifact-store.mjs'), join(dir, 'artifact-store.mjs'));
+    if (vendor) {
+      mkdirSync(join(dir, 'vendor'), { recursive: true });
+      cpSync(join(root, 'node_modules', 'js-yaml', 'dist', 'js-yaml.mjs'), join(dir, 'vendor', 'js-yaml.mjs'));
+      cpSync(join(root, 'node_modules', 'picomatch'), join(dir, 'vendor', 'picomatch'), { recursive: true });
+    }
+    return dir;
+  };
+  // paths-filter: lista de arquivos da PR via API → git diff local.
+  const pf = stage('paths-filter', true);
+  for (const ref of refsOf('dorny/paths-filter')) args.push('--local-repository', `dorny/paths-filter@${ref}=${pf}`);
+  // upload/download-artifact v4+: protocolo novo que o servidor do act não entende → diretório compartilhado.
+  const up = stage('upload-artifact');
+  const down = stage('download-artifact');
+  for (const ref of refsOf('actions/upload-artifact')) args.push('--local-repository', `actions/upload-artifact@${ref}=${up}`);
+  for (const ref of refsOf('actions/download-artifact')) args.push('--local-repository', `actions/download-artifact@${ref}=${down}`);
+  if (artifactsDir) {
+    mkdirSync(artifactsDir, { recursive: true });
+    args.push('--container-options', `-v ${artifactsDir}:/ci-local-artifacts`);
+  }
+  return args;
 }
 
 function git(cwd, ...args) {
