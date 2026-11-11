@@ -27,9 +27,7 @@ interface KitPdfOptions {
 const PRIMARY = [30, 64, 175] as const; // blue-700
 const GRAY_800 = [31, 41, 55] as const;
 const GRAY_500 = [107, 114, 128] as const;
-const _GRAY_200 = [229, 231, 235] as const;
 const WHITE = [255, 255, 255] as const;
-const _GREEN = [16, 185, 129] as const;
 
 function hexToRgb(hex?: string): readonly [number, number, number] | null {
   if (!hex) return null;

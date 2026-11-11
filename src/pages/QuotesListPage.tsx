@@ -89,7 +89,6 @@ export default function QuotesListPage() {
   }, [quotes]);
 
   // ── Funil + ciclo médio ──
-  const _allQuoteIds = useMemo(() => quotes.map((q) => q.id!).filter(Boolean), [quotes]);
   const funnelData = useQuoteFunnel(quotes, {});
 
   // ── Fuse.js fuzzy search ──
