@@ -57,7 +57,7 @@ O `.secrets` padrão do act **nunca** é lido; só esse arquivo (ou `--secrets <
 |---|---|---|
 | `dorny/paths-filter` em PR | lista arquivos pela API (número da PR) | shim `scripts/ci-local/shims/paths-filter` com o **mesmo contrato**, via `git diff` contra a base do evento |
 | Evento | payload real | payload sintético coerente (`head`/`base`/labels) em `.ci-local/runs/<id>/event.json` |
-| Concorrência | runners do GitHub | `--jobs N` (padrão 4) — limite para não esgotar memória do WSL |
+| Concorrência | runners do GitHub | `--jobs N` (padrão 2) — limite para não esgotar memória do WSL |
 
 ## Requisitos
 
