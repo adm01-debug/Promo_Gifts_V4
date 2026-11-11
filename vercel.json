@@ -3,11 +3,17 @@
   "git": {
     "deploymentEnabled": {
       "claude/**": false,
+      "claude_04/**": false,
       "claude_05/**": false,
       "claude_pink/**": false,
       "codex/**": false,
       "dependabot/**": false,
-      "release-please--**": false
+      "release-please--**": false,
+      "autoheal/**": false,
+      "bot/**": false,
+      "ci-metrics/**": false,
+      "Github_Copilot*": false,
+      "e66-edge-deploy-receipt-*": false
     }
   },
   "rewrites": [
