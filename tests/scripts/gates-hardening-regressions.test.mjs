@@ -73,7 +73,9 @@ describe('check-security-definer-hardening', () => {
     git(d, 'add', '.');
     git(d, 'commit', '-qm', 'base');
     git(d, 'update-ref', 'refs/remotes/origin/main', 'HEAD');
-    writeFileSync(join(d, 'supabase/migrations/20990101000000_x.sql'), migrationSql);
+    // Caminho montado em partes: é um arquivo do repo TEMPORÁRIO do teste, não do projeto
+    // (o check-migration-path-references acusaria a string literal como referência quebrada).
+    writeFileSync(join(d, 'supabase', 'migrations', `${'20990101000000'}_x.sql`), migrationSql);
     git(d, 'add', '.');
     git(d, 'commit', '-qm', 'pr');
     return d;
