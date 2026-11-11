@@ -115,6 +115,7 @@ Deno.serve(async (req) => {
     const test3: TestResult = { name: "Concurrency & Uniqueness", passed: false, details: "", logs: [] };
     try {
       const { data: cart } = await s1Client.from("seller_carts").select("id").limit(1).single();
+      if (!cart) throw new Error("Nenhum seller_carts visível para o usuário S1 — impossível simular concorrência");
       // Simulate 50 simultaneous additions of the same product
       const productId = crypto.randomUUID(); 
       const promises = Array.from({ length: 50 }).map(() => 

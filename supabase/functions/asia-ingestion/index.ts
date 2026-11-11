@@ -1,4 +1,4 @@
-﻿import { createClient } from 'npm:@supabase/supabase-js@2.119.0';
+﻿import { createClient } from 'npm:@supabase/supabase-js@2.49.4';
 import { authorizeCron } from '../_shared/dispatcher-auth.ts';
 import { createStructuredLogger } from '../_shared/structured-logger.ts';
 import { getOrCreateRequestId } from '../_shared/request-id.ts';
