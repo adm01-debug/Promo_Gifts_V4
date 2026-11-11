@@ -7,7 +7,7 @@
     "method": "read-only pg_catalog",
     "relations": "pg_class + pg_namespace (schema public; relkind r/p/v/m/f)",
     "rpcs": "pg_proc + pg_namespace (schema public; prokind f)",
-    "supplemental_rpc_capture": "2026-09-09: seis RPCs magazine_*_atomic e quatorze RPCs magazine_*_v2 confirmadas via pg_catalog no projeto canônico após as migrations 20260909181000–20260909200000. 2026-09-11: save_custom_kit_atomic confirmada via pg_catalog após a migration 20260911130357. 2026-09-12: create_quote_transactional e create_kit_quote_transactional confirmadas via pg_catalog; ambas retornam quotes, são security invoker e têm EXECUTE para authenticated após a migration 20260911172000. 2026-09-12: set_custom_kit_pinned(uuid,boolean) confirmada via pg_catalog após a migration 20260912151000; é security invoker, tem EXECUTE para authenticated e opera com o índice parcial custom_kits_one_pinned_per_user_idx. 2026-09-23: v_kit_component_print_areas_public confirmada via pg_catalog (view em public, join de kit_component_print_areas + product_kit_components + products, is_active=true) — introduzida em src/hooks/kit-builder/useKitBuilderQueries.ts (etapa 12 do plano de finalização do Kit Maker). 2026-09-24: v_kit_component_print_areas_public removida do catalogo — nunca chegou a ser referenciada em codigo de producao; useKitBuilderQueries.ts (etapa 12) trocou para print_area_techniques por product_id ao descobrir, durante revisao, que kit_component_print_areas tem 0% de cobertura real no catalogo ativo (a view em si permanece no banco, security_invoker=true, sem risco, apenas orfa). 2026-11-09: fn_check_item_fits(p_packaging_id uuid, p_product_id uuid, p_current_used_liters numeric DEFAULT 0) confirmada via pg_catalog no projeto canônico; RPC do kit builder para validação de encaixe de itens. vw_products_min_quantity confirmada via pg_views no projeto canônico; view do kit builder para validação de quantidade mínima de produtos.",
+    "supplemental_rpc_capture": "2026-09-09: seis RPCs magazine_*_atomic e quatorze RPCs magazine_*_v2 confirmadas via pg_catalog no projeto canônico após as migrations 20260909181000–20260909200000. 2026-09-11: save_custom_kit_atomic confirmada via pg_catalog após a migration 20260911130357. 2026-09-12: create_quote_transactional e create_kit_quote_transactional confirmadas via pg_catalog; ambas retornam quotes, são security invoker e têm EXECUTE para authenticated após a migration 20260911172000. 2026-09-12: set_custom_kit_pinned(uuid,boolean) confirmada via pg_catalog após a migration 20260912151000; é security invoker, tem EXECUTE para authenticated e opera com o índice parcial custom_kits_one_pinned_per_user_idx. 2026-09-23: v_kit_component_print_areas_public confirmada via pg_catalog (view em public, join de kit_component_print_areas + product_kit_components + products, is_active=true) — introduzida em src/hooks/kit-builder/useKitBuilderQueries.ts (etapa 12 do plano de finalização do Kit Maker). 2026-09-24: v_kit_component_print_areas_public removida do catalogo — nunca chegou a ser referenciada em codigo de producao; useKitBuilderQueries.ts (etapa 12) trocou para print_area_techniques por product_id ao descobrir, durante revisao, que kit_component_print_areas tem 0% de cobertura real no catalogo ativo (a view em si permanece no banco, security_invoker=true, sem risco, apenas orfa). 2026-11-09: fn_check_item_fits(p_packaging_id uuid, p_product_id uuid, p_current_used_liters numeric DEFAULT 0) confirmada via pg_catalog no projeto canônico; RPC do kit builder para validação de encaixe de itens. vw_products_min_quantity confirmada via pg_views no projeto canônico; view do kit builder para validação de quantidade mínima de produtos. 2026-11-11: tabela user_allowed_ips e RPC record_platform_failure confirmadas via pg_catalog no projeto canônico (consumidores reintroduzidos por #3361).",
     "scope": "Somente nomes de objetos; nenhum dado de aplicação foi consultado."
   },
   "limitations": [
@@ -170,6 +170,7 @@
     "tags",
     "tecnicas_gravacao",
     "user_2fa_settings",
+    "user_allowed_ips",
     "user_comparisons",
     "user_ip_allowlist",
     "user_known_devices",
@@ -305,6 +306,7 @@
     "process_notifications_queue",
     "record_dev_route_telemetry",
     "record_mcp_access_violation",
+    "record_platform_failure",
     "record_public_token_failure",
     "register_ai_routing_decision",
     "release_webhook_delivery_lock",
@@ -328,14 +330,22 @@
   "relation_aliases": {
     "customization_price_tables": {
       "target": "tabela_preco_gravacao_oficial",
-      "forms": ["wrapper"],
-      "receivers": ["dbInvoke"],
+      "forms": [
+        "wrapper"
+      ],
+      "receivers": [
+        "dbInvoke"
+      ],
       "reason": "Alias de leitura resolvido por BRIDGE_ALIASES em src/lib/db/postgrest.ts."
     },
     "tecnica_gravacao": {
       "target": "tabela_preco_gravacao_oficial",
-      "forms": ["wrapper"],
-      "receivers": ["dbInvoke"],
+      "forms": [
+        "wrapper"
+      ],
+      "receivers": [
+        "dbInvoke"
+      ],
       "reason": "Alias de leitura resolvido por BRIDGE_ALIASES em src/lib/db/postgrest.ts."
     }
   },
@@ -435,6 +445,14 @@
       "occurrences": 1,
       "stage": 102,
       "reason": "RPC ausente no canonico (confirmado via pg_catalog em 2026-11-02, zero linhas em pg_proc; tambem ausente de supabase_migrations.schema_migrations). Existe migration pronta no repo (supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql, incidente SB-0003) que cria a funcao, mas nunca foi aplicada em producao via db-apply-migration.yml. Consumidor ativo: useRuptureAlerts.ts, feature flag useEmaRupture. Remover esta excecao e registrar o RPC como confirmado so depois do PO rodar essa migration no canonico."
+    },
+    {
+      "kind": "relation",
+      "name": "quote_comments",
+      "file": "src/hooks/useQuoteComments.ts",
+      "occurrences": 5,
+      "stage": "pr3390",
+      "reason": "Tabela ausente no canônico (pg_class sem linha em 2026-11-11; ausente de schema_migrations). Consumidor reintroduzido por #3361. Migration pronta no repo (supabase/migrations/20261110022404_restore_quote_comments_scoped_threads.sql), aguardando revisão do dono antes do E15; remover esta exceção quando aplicada."
     }
   ],
   "dynamic_baseline": [
@@ -821,6 +839,38 @@
       "occurrences": 1,
       "stage": 100,
       "reason": "Despacho dinâmico: `untypedFrom(resolveTable(table))` — resolveTable converte slug para nome de tabela; inventariado na etapa 100 do PLANO_WORKFLOWS_CI_V2."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/useCollections.ts",
+      "receiver": "supabase",
+      "occurrences": 2,
+      "stage": "pr3390",
+      "reason": "Despacho dinâmico legado reintroduzido por #3361 (arquivos de sessões anteriores); inventariado em 2026-11-11, nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/useDevAccessAudit.ts",
+      "receiver": "supabase",
+      "occurrences": 1,
+      "stage": "pr3390",
+      "reason": "Despacho dinâmico legado reintroduzido por #3361 (arquivos de sessões anteriores); inventariado em 2026-11-11, nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/pages/SystemStatusPage.tsx",
+      "receiver": "supabase",
+      "occurrences": 1,
+      "stage": "pr3390",
+      "reason": "Despacho dinâmico legado reintroduzido por #3361 (arquivos de sessões anteriores); inventariado em 2026-11-11, nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/pages/TrendsPage.tsx",
+      "receiver": "supabase",
+      "occurrences": 1,
+      "stage": "pr3390",
+      "reason": "Despacho dinâmico legado reintroduzido por #3361 (arquivos de sessões anteriores); inventariado em 2026-11-11, nova ocorrência exige revisão de contrato."
     }
   ]
 }
