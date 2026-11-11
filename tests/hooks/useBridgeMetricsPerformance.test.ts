@@ -1,64 +1,109 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { BridgeCallSample } from '@/lib/telemetry/bridgeCallMetrics';
 import { useBridgeMetrics } from '@/hooks/dev/useBridgeMetrics';
-import * as bridgeCallMetrics from '@/lib/telemetry/bridgeCallMetrics';
-import * as longTaskWatchdog from '@/lib/telemetry/longTaskWatchdog';
 
-describe('useBridgeMetrics Rerenders & Resubscriptions', () => {
+const store = vi.hoisted(() => ({
+  samples: [] as readonly BridgeCallSample[],
+  notify: undefined as (() => void) | undefined,
+  unsubscribe: vi.fn(),
+  subscribe: vi.fn(),
+  clear: vi.fn(),
+}));
+
+vi.mock('@/lib/telemetry/bridgeCallMetrics', () => ({
+  getBridgeSamples: () => store.samples,
+  subscribeBridgeCalls: (notify: () => void) => {
+    store.subscribe(notify);
+    store.notify = notify;
+    return store.unsubscribe;
+  },
+  clearBridgeSamples: () => store.clear(),
+}));
+
+const sample = (overrides: Partial<BridgeCallSample> = {}): BridgeCallSample => ({
+  id: 1,
+  ts: 100,
+  bridge: 'crm-db-bridge',
+  op: 'select',
+  target: 'products',
+  durationMs: 80,
+  reqBytes: 20,
+  respBytes: 120,
+  ok: true,
+  ...overrides,
+});
+
+describe('Bridge metrics stable subscription and current snapshots', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Limpar localStorage simulado se necessário
+    store.samples = [];
+    store.notify = undefined;
   });
 
-  it('should not resubscribe to telemetry when toggle open/paused', () => {
-    const unsubCallsSpy = vi.fn();
-    const subCallsSpy = vi.spyOn(bridgeCallMetrics, 'subscribeBridgeCalls').mockReturnValue(unsubCallsSpy);
-    
-    const { result, rerender } = renderHook(({ isAllowed }) => useBridgeMetrics(isAllowed), {
-      initialProps: { isAllowed: true }
-    });
-
-    // Primeira inscrição no mount
-    expect(subCallsSpy).toHaveBeenCalledTimes(1);
-
-    // Mudar open (via setOpen exposto pelo hook)
-    act(() => {
-      result.current.setOpen(true);
-    });
-    
-    // Rerenderiza por causa do setOpen, mas subscribeBridgeCalls não deve ser chamado de novo
-    // porque useSyncExternalStore mantém a subscrição enquanto o componente estiver montado
-    // e o primeiro argumento (subscribe) for estável.
-    expect(subCallsSpy).toHaveBeenCalledTimes(1);
-
-    // Mudar paused
-    act(() => {
-      result.current.setPaused(true);
-    });
-    expect(subCallsSpy).toHaveBeenCalledTimes(1);
-
-    // Rerender com props diferentes (não relacionadas ao subscribe)
-    rerender({ isAllowed: true });
-    expect(subCallsSpy).toHaveBeenCalledTimes(1);
+  it('does not resubscribe across open/filter state and parent rerenders', () => {
+    const { result, rerender, unmount } = renderHook(() => useBridgeMetrics());
+    act(() => result.current.setOpen(true));
+    expect(result.current.open).toBe(true);
+    act(() => result.current.setFilter({ method: 'select', minLatency: 50 }));
+    expect(result.current.filter).toEqual({ method: 'select', minLatency: 50 });
+    act(() => result.current.setOpen(false));
+    rerender();
+    expect(store.subscribe).toHaveBeenCalledTimes(1);
+    unmount();
+    expect(store.unsubscribe).toHaveBeenCalledTimes(1);
   });
 
-  it('should maintain stable selector callbacks using useCallback', () => {
-    // Verificamos se o hook está usando useCallback internamente para o getSnapshot
-    // Embora não possamos ver o useCallback diretamente sem inspecionar o código,
-    // podemos testar o comportamento de estabilidade se tivéssemos acesso ao useSyncExternalStore mockado.
-    // Como estamos usando a implementação real, focamos no efeito prático.
-    
-    const { result } = renderHook(() => useBridgeMetrics(true));
-    
-    // Capturamos o estado inicial
-    const initialSamples = result.current.samples;
-    
-    act(() => {
-      // Forçamos uma mudança de estado que dispararia um rerender
-      result.current.setFilter('slow');
-    });
+  it('keeps clear stable across rerenders and delegates to telemetry', () => {
+    const { result } = renderHook(() => useBridgeMetrics());
+    const clear = result.current.clear;
+    act(() => result.current.setOpen(true));
+    expect(result.current.clear).toBe(clear);
+    act(() => result.current.clear());
+    expect(store.clear).toHaveBeenCalledTimes(1);
+  });
 
-    // Se o filtro mudou, samples deve ser um novo array (devido ao useMemo no hook)
-    expect(result.current.samples).not.toBe(initialSamples);
+  it.each([
+    {
+      name: 'empty',
+      samples: [],
+      summary: { total: 0, avg: 0, totalResp: 0, errors: 0, last20: 0 },
+    },
+    {
+      name: 'success',
+      samples: [sample()],
+      summary: { total: 1, avg: 80, totalResp: 120, errors: 0, last20: 1 },
+    },
+    {
+      name: 'fallback error',
+      samples: [sample({ ok: false })],
+      summary: { total: 1, avg: 80, totalResp: 120, errors: 1, last20: 1 },
+    },
+    {
+      name: 'mixed',
+      samples: [sample(), sample({ id: 2, durationMs: 100, respBytes: 80, status: 404 })],
+      summary: { total: 2, avg: 90, totalResp: 200, errors: 1, last20: 2 },
+    },
+  ])('reports the $name snapshot', ({ samples, summary }) => {
+    store.samples = samples;
+    const { result } = renderHook(() => useBridgeMetrics());
+    expect(result.current.entries).toHaveLength(samples.length);
+    expect(result.current.summary).toEqual(summary);
+  });
+
+  it('updates entries from store notifications rather than removed samples API', () => {
+    const { result } = renderHook(() => useBridgeMetrics());
+    act(() => {
+      store.samples = [sample({ target: undefined, status: 201 })];
+      store.notify?.();
+    });
+    expect(result.current.entries[0]).toMatchObject({
+      id: '1',
+      method: 'select',
+      url: 'crm-db-bridge/',
+      status: 201,
+    });
+    expect(result.current.summary.total).toBe(1);
+    expect(store.subscribe).toHaveBeenCalledTimes(1);
   });
 });
