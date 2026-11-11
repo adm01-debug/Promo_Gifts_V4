@@ -40,8 +40,8 @@ describe("check-security-definer-hardening", () => {
     });
 
     expect(existsSync(marker)).toBe(false);
-    // Sem o remote/ref válido, o script cai no fallback de `git status` e
-    // termina normalmente (sem migrations novas neste worktree de teste).
-    expect(outcome.exitCode).toBe(0);
+    // Ref com caracteres fora de [A-Za-z0-9._/-] é recusada antes de chegar ao
+    // git (fail-closed, exit 2) — antes caía no fallback e aprovava sem comparar.
+    expect(outcome.exitCode).toBe(2);
   });
 });

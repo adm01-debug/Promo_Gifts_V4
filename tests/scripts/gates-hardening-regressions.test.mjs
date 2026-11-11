@@ -1,7 +1,7 @@
 // Regressões de gates endurecidos na integração #3400 que nenhum teste protegia
 // (achadas por mutação: sabotar a correção não derrubava teste algum).
 import { afterEach, describe, expect, it } from 'vitest';
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { createServer } from 'node:http';
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -96,6 +96,20 @@ ${acl}`;
     expect(r.status, r.stdout + r.stderr).toBe(0);
   });
 
+  it('GRANT ALL … TO anon também conta como concessão pública', () => {
+    const d = prRepo(SD('REVOKE ALL ON FUNCTION public.f() FROM PUBLIC, anon;\nGRANT ALL ON FUNCTION public.f() TO anon;'));
+    const r = run('check-security-definer-hardening.mjs', d, { GITHUB_ACTIONS: 'true', GITHUB_BASE_REF: 'main' });
+    expect(r.status, r.stdout + r.stderr).toBe(1);
+    expect(r.stderr).toMatch(/CONCEDE/);
+  });
+
+  it('REVOKE só de PUBLIC (sem anon) continua reprovando', () => {
+    const d = prRepo(SD('REVOKE ALL ON FUNCTION public.f() FROM PUBLIC;'));
+    const r = run('check-security-definer-hardening.mjs', d, { GITHUB_ACTIONS: 'true', GITHUB_BASE_REF: 'main' });
+    expect(r.status, r.stdout + r.stderr).toBe(1);
+    expect(r.stderr).toMatch(/FALTA: REVOKE/);
+  });
+
   it('GITHUB_BASE_REF iniciado por "-" (opção do git) é rejeitado sem executar nada', () => {
     const d = prRepo(SD('REVOKE ALL ON FUNCTION public.f() FROM PUBLIC, anon;'));
     const marker = join(d, 'pwned');
@@ -132,13 +146,18 @@ describe('check-restore-seller-cart-rpc', () => {
     await new Promise((r) => server.listen(0, '127.0.0.1', r));
     const url = `http://127.0.0.1:${server.address().port}`;
     try {
-      const r = await new Promise((resolveRun) => {
-        const child = spawnSync(process.execPath, [join(ROOT, 'scripts/check-restore-seller-cart-rpc.mjs')], {
+      // spawn assíncrono: spawnSync bloquearia o event loop e o servidor fixture (mesmo processo) nunca responderia.
+      const r = await new Promise((resolveRun, reject) => {
+        const child = spawn(process.execPath, [join(ROOT, 'scripts/check-restore-seller-cart-rpc.mjs')], {
           cwd: ROOT,
-          encoding: 'utf8',
           env: { PATH: process.env.PATH, SUPABASE_URL: url, SUPABASE_SERVICE_ROLE_KEY: 'k', STRICT: '1' },
         });
-        resolveRun(child);
+        let stdout = '';
+        let stderr = '';
+        child.stdout.on('data', (b) => (stdout += b));
+        child.stderr.on('data', (b) => (stderr += b));
+        child.on('error', reject);
+        child.on('close', (status) => resolveRun({ status, stdout, stderr }));
       });
       expect(r.status).not.toBe(0);
       expect(`${r.stdout}${r.stderr}`).toMatch(/503/);

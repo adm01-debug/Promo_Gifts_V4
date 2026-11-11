@@ -106,8 +106,9 @@ for (const path of ADDED_FILES) {
   // Aceita revoke explícito OU comentário marcador para helper de RLS.
   const hasMarker = /--\s*rls-helper:/i.test(lower);
   // `[^;]*` (não cruza statements): `REVOKE … FROM PUBLIC; GRANT … TO anon` não é revoke de anon.
-  const hasRevokeAnon = /revoke\s+execute[^;]*\bfrom\b[^;]*\banon\b/i.test(content) || hasMarker;
-  const grantsAnon = /grant\s+execute[^;]*\bto\b[^;]*\banon\b/i.test(content) && !hasMarker;
+  // `ALL [PRIVILEGES]` inclui EXECUTE: vale tanto para o REVOKE quanto para o GRANT.
+  const hasRevokeAnon = /revoke\s+(?:execute|all(?:\s+privileges)?)\b[^;]*\bfrom\b[^;]*\banon\b/i.test(content) || hasMarker;
+  const grantsAnon = /grant\s+(?:execute|all(?:\s+privileges)?)\b[^;]*\bto\b[^;]*\banon\b/i.test(content) && !hasMarker;
 
   if (!hasSearchPath || !hasRevokeAnon || grantsAnon) {
     offenders.push({
