@@ -90,10 +90,18 @@ const staticOk = step('Invariantes estáticas de layout', () => {
 
 // ─── 2. Type-check ──────────────────────────────────────────────────────────
 const tsOk = step('Type-check (tsgo)', () => {
-  const out = execSync(
-    'npx tsgo --noEmit 2>&1 | grep -E "QuotesConfigurableList|QuoteListCellRenderer|lib/quotes/expiration" || true',
-    { encoding: 'utf8', stdio: 'pipe' },
-  );
+  const raw = execSync('npx tsgo --noEmit 2>&1 || true', { encoding: 'utf8', stdio: 'pipe' });
+  // `npx` resolve "tsgo" via registro (pacote inexistente/sem rede) em vez de
+  // rodar o compilador: a saída é um erro de npm, não um diagnóstico do TS.
+  // Sem esta guarda, nenhuma das linhas abaixo bate no grep de arquivos e o
+  // passo reporta falso "pass (0 erros)" mesmo sem o type-check ter rodado.
+  if (/^npm error\b/im.test(raw)) {
+    throw new Error(`tsgo não executou (npx falhou ao resolvê-lo):\n${raw.trim()}`);
+  }
+  const out = raw
+    .split('\n')
+    .filter((l) => /QuotesConfigurableList|QuoteListCellRenderer|lib\/quotes\/expiration/.test(l))
+    .join('\n');
   if (out.trim()) throw new Error(out);
   return { errors: 0 };
 });
@@ -115,9 +123,15 @@ const vitestOk = step('Vitest · src/lib/quotes/__tests__/expiration.test.ts', (
 // ─── Relatório ───────────────────────────────────────────────────────────────
 report.finishedAt = new Date().toISOString();
 report.ok = staticOk && tsOk && vitestOk;
-fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2));
-
 console.log('\n────────────────────────────────────────');
-console.log(`Relatório salvo em ${REPORT_PATH}`);
+try {
+  fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2));
+  console.log(`Relatório salvo em ${REPORT_PATH}`);
+} catch (err) {
+  // Falha ao gravar o relatório (ex.: TMPDIR inválido/sem permissão) não deve
+  // derrubar o processo com stack trace cru — os 3 passos já rodaram e seus
+  // resultados já são conhecidos; apenas avisamos que o JSON não foi salvo.
+  console.log(`⚠️  Não foi possível salvar o relatório em ${REPORT_PATH}: ${err.message ?? err}`);
+}
 console.log(`Resultado: ${report.ok ? '✅ TUDO OK' : '❌ FALHAS'}`);
 process.exit(report.ok ? 0 : 1);

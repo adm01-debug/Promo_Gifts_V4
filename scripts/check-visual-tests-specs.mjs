@@ -16,7 +16,14 @@ import { resolve } from 'node:path';
 const WORKFLOW = '.github/workflows/visual-tests.yml';
 const ROOT = process.cwd();
 
-const yaml = readFileSync(resolve(ROOT, WORKFLOW), 'utf8');
+const yamlRaw = readFileSync(resolve(ROOT, WORKFLOW), 'utf8');
+// Ignora linhas 100% comentário: um spec só citado em comentário (ex.: "#
+// removido: foo.spec.ts") nunca é passado ao Playwright e não deve derrubar
+// o gate por um arquivo que nunca existiu de fato no comando.
+const yaml = yamlRaw
+  .split('\n')
+  .filter((line) => !line.trim().startsWith('#'))
+  .join('\n');
 
 // Coleta caminhos *.spec.ts passados como args (começam com letra/dígito,
 // excluindo globs como '**/*.spec.ts-snapshots/**').
@@ -40,10 +47,16 @@ if (missing.length > 0) {
 }
 
 const missingBaselines = unique.filter((p) => {
-  const source = readFileSync(resolve(ROOT, p), 'utf8');
-  if (!/toHaveScreenshot|toMatchSnapshot/.test(source)) return false;
-  const dir = resolve(ROOT, `${p}-snapshots`);
-  return !existsSync(dir) || readdirSync(dir).filter((name) => !name.startsWith('.')).length === 0;
+  try {
+    const source = readFileSync(resolve(ROOT, p), 'utf8');
+    if (!/toHaveScreenshot|toMatchSnapshot/.test(source)) return false;
+    const dir = resolve(ROOT, `${p}-snapshots`);
+    return !existsSync(dir) || readdirSync(dir).filter((name) => !name.startsWith('.')).length === 0;
+  } catch {
+    // Spec ou diretório de baseline ilegível (ex.: permissão negada): trata
+    // como baseline ausente em vez de derrubar o processo com stack trace.
+    return true;
+  }
 });
 
 if (missingBaselines.length > 0) {

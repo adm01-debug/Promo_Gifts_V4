@@ -37,9 +37,20 @@ const fail = (msg) => {
 };
 
 function walk(dir, out = []) {
-  for (const name of readdirSync(dir)) {
+  let entries;
+  try {
+    entries = readdirSync(dir);
+  } catch {
+    return out;
+  }
+  for (const name of entries) {
     const p = join(dir, name);
-    const s = statSync(p);
+    let s;
+    try {
+      s = statSync(p);
+    } catch {
+      continue;
+    }
     if (s.isDirectory()) {
       if (['node_modules', '.git', 'dist', 'build', 'playwright-report', 'test-results'].includes(name)) continue;
       walk(p, out);

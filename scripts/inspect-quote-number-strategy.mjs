@@ -19,11 +19,11 @@
  *
  * NÃO executa nenhum DDL nem DML — apenas SELECT em catálogo + agregações.
  */
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 
 const q = (sql) => {
   try {
-    return execSync(`psql -At -F '|' -c ${JSON.stringify(sql)}`, {
+    return execFileSync('psql', ['-At', '-F', '|', '-c', sql], {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'pipe'],
     }).trim();

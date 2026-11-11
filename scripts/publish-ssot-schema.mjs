@@ -124,7 +124,12 @@ const stripUpdatedAt = (text) => {
 };
 const immutableViolations = [];
 if (existsSync(versionedOut)) {
-  const existing = readFileSync(versionedOut, 'utf8');
+  let existing;
+  try {
+    existing = readFileSync(versionedOut, 'utf8');
+  } catch (e) {
+    fail(2, `falha ao ler ${versionedOut}: ${e.message}`);
+  }
   if (stripUpdatedAt(existing) !== stripUpdatedAt(publishedText)) {
     immutableViolations.push(
       `${versionedOut} já existe com conteúdo divergente — snapshot imutável não pode mudar. Bumpe a versão antes de alterar o schema.`,
@@ -165,7 +170,7 @@ if (CHECK) {
     let cur;
     try { cur = readFileSync(filePath, 'utf8'); } catch (e) {
       if (e.code === 'ENOENT') { drift.push(`ausente: ${filePath}`); return; }
-      throw e;
+      fail(2, `falha ao ler ${filePath}: ${e.message}`);
     }
     if (normSchema(cur) !== normSchema(expected)) drift.push(`stale: ${filePath}`);
   };
@@ -197,7 +202,11 @@ mkdirSync(dirname(LATEST_OUT), { recursive: true });
 const normJson = (s) => { try { const o = JSON.parse(s); delete o.generatedAt; if (o['x-published']) delete o['x-published'].updatedAt; return JSON.stringify(o); } catch { return s; } };
 const writeIfChanged = (path, content) => {
   try { if (normJson(readFileSync(path, 'utf8')) === normJson(content)) return; } catch {}
-  writeFileSync(path, content);
+  try {
+    writeFileSync(path, content);
+  } catch (e) {
+    fail(2, `falha ao escrever ${path}: ${e.message}`);
+  }
 };
 
 writeIfChanged(LATEST_OUT, publishedText);
