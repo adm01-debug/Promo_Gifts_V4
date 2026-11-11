@@ -8,24 +8,24 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (981)",
-   "src/pages (225)",
-   "src/contexts (10)"
+   "src/components (932)",
+   "src/pages (175)",
+   "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (483)",
-   "src/components (76)",
-   "src/pages (36)"
+   "src/hooks (292)",
+   "recovery/src-legacy (196)",
+   "src/components (75)"
   ],
   "servicos_logica": [
-   "src/lib (227)",
-   "src/utils (32)",
+   "src/lib (224)",
+   "src/utils (30)",
    "src/services (9)"
   ],
   "testes": [
-   "tests/ (863)",
+   "tests/ (862)",
    "e2e/ (625)",
-   "co-localizado (__tests__) (606)"
+   "co-localizado (__tests__) (618)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
-   "fix(autoheal): ESLint --fix automático [autoheal] (#3386)",
-   "fix(scripts): gates de erro TypeScript falham fechado quando o tsc não chega a checar (#3372)",
-   "chore(docs): adiciona 4 segredos E2E ausentes em SEGREDOS.md",
-   "chore(e2e): registrar specs @smoke no job e2e-gates",
-   "chore: registra 611 arquivos não rastreados de sessões anteriores (#3361)"
+   "chore(repo): quarentena dos 316 arquivos obsoletos da #3361 (#3398)",
+   "fix: restaura useDevGate original (stableRoles tipado como AppRole[])",
+   "test: cobertura da busca global e testes de hooks Bridge/DevGate alinhados à API atual",
+   "fix(ci): ci.yml dentro dos contratos e catracas sem regressão nos 8 arquivos da #3361 que ficam em src/",
+   "fix(ci): tira migrations legadas da #3361 da pasta canônica (Gate 1.3)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

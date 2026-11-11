@@ -5,7 +5,7 @@
   "urls": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
-  "itens_menu": 70,
+  "itens_menu": 69,
   "lazy": 165
  },
  "urls": [
@@ -36542,7 +36542,7 @@
    "grupo": null,
    "papeis": [],
    "papeis_nao_resolvidos": null,
-   "definido_em": "src/hooks/useOnboarding.ts",
+   "definido_em": "src/hooks/ui/useOnboarding.ts",
    "resolve_para": "src/pages/bi/TrendsPage.tsx"
   },
   {
@@ -36573,21 +36573,12 @@
    "resolve_para": null
   },
   {
-   "rotulo": "Bem-vindo ao Promo Gifts!",
-   "destino": "welcome",
-   "grupo": null,
-   "papeis": [],
-   "papeis_nao_resolvidos": null,
-   "definido_em": "src/hooks/useOnboarding.ts",
-   "resolve_para": null
-  },
-  {
    "rotulo": "Busca Inteligente",
    "destino": "search",
    "grupo": null,
    "papeis": [],
    "papeis_nao_resolvidos": null,
-   "definido_em": "src/hooks/useOnboarding.ts",
+   "definido_em": "src/hooks/ui/useOnboarding.ts",
    "resolve_para": null
   },
   {
@@ -36623,7 +36614,7 @@
    "grupo": null,
    "papeis": [],
    "papeis_nao_resolvidos": null,
-   "definido_em": "src/hooks/useOnboarding.ts",
+   "definido_em": "src/hooks/ui/useOnboarding.ts",
    "resolve_para": "src/pages/Index.tsx"
   },
   {
@@ -36632,7 +36623,7 @@
    "grupo": null,
    "papeis": [],
    "papeis_nao_resolvidos": null,
-   "definido_em": "src/hooks/useOnboarding.ts",
+   "definido_em": "src/hooks/ui/useOnboarding.ts",
    "resolve_para": null
   },
   {
@@ -36641,7 +36632,7 @@
    "grupo": null,
    "papeis": [],
    "papeis_nao_resolvidos": null,
-   "definido_em": "src/hooks/useOnboarding.ts",
+   "definido_em": "src/hooks/ui/useOnboarding.ts",
    "resolve_para": null
   },
   {
@@ -36668,7 +36659,7 @@
    "grupo": null,
    "papeis": [],
    "papeis_nao_resolvidos": null,
-   "definido_em": "src/hooks/useOnboarding.ts",
+   "definido_em": "src/hooks/ui/useOnboarding.ts",
    "resolve_para": "src/pages/collections/CollectionsPage.tsx"
   },
   {
@@ -36677,7 +36668,7 @@
    "grupo": null,
    "papeis": [],
    "papeis_nao_resolvidos": null,
-   "definido_em": "src/hooks/useOnboarding.ts",
+   "definido_em": "src/hooks/ui/useOnboarding.ts",
    "resolve_para": "src/pages/products/ComparePage.tsx"
   },
   {
@@ -36731,7 +36722,7 @@
    "grupo": null,
    "papeis": [],
    "papeis_nao_resolvidos": null,
-   "definido_em": "src/hooks/useOnboarding.ts",
+   "definido_em": "src/hooks/ui/useOnboarding.ts",
    "resolve_para": null
   },
   {
@@ -36785,7 +36776,7 @@
    "grupo": null,
    "papeis": [],
    "papeis_nao_resolvidos": null,
-   "definido_em": "src/hooks/useOnboarding.ts",
+   "definido_em": "src/hooks/ui/useOnboarding.ts",
    "resolve_para": "src/pages/mockups/MockupGenerator.tsx"
   },
   {
@@ -36803,7 +36794,7 @@
    "grupo": null,
    "papeis": [],
    "papeis_nao_resolvidos": null,
-   "definido_em": "src/hooks/useOnboarding.ts",
+   "definido_em": "src/hooks/ui/useOnboarding.ts",
    "resolve_para": "src/pages/quotes/QuotesListPage.tsx"
   },
   {
@@ -36830,7 +36821,7 @@
    "grupo": null,
    "papeis": [],
    "papeis_nao_resolvidos": null,
-   "definido_em": "src/components/navigation/DynamicBreadcrumbs.tsx",
+   "definido_em": "src/components/mobile/SmartMobileNav.tsx",
    "resolve_para": "src/pages/Index.tsx"
   },
   {
@@ -37010,7 +37001,7 @@
    "grupo": null,
    "papeis": [],
    "papeis_nao_resolvidos": null,
-   "definido_em": "src/hooks/useOnboarding.ts",
+   "definido_em": "src/hooks/ui/useOnboarding.ts",
    "resolve_para": null
   },
   {
@@ -37073,7 +37064,7 @@
    "grupo": null,
    "papeis": [],
    "papeis_nao_resolvidos": null,
-   "definido_em": "src/hooks/useOnboarding.ts",
+   "definido_em": "src/hooks/ui/useOnboarding.ts",
    "resolve_para": "src/pages/tools/SimuladorWizard.tsx"
   },
   {

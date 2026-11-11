@@ -1,17 +1,17 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 298,
+ "total": 293,
  "por_camada": {
   "api": 3,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 227,
+  "lib": 224,
   "python": 7,
   "services": 9,
   "stores": 8,
-  "utils": 32
+  "utils": 30
  },
  "arquivos": [
   {
@@ -488,7 +488,6 @@
    "papeis": [],
    "usado_por": 2,
    "usado_por_modulos": [
-    "pages",
     "pages/products"
    ],
    "coberto_por_testes": 0,
@@ -519,7 +518,6 @@
    "usado_por": 3,
    "usado_por_modulos": [
     "components/admin",
-    "hooks",
     "hooks/common"
    ],
    "coberto_por_testes": 0,
@@ -664,7 +662,6 @@
     "pages/magazine",
     "pages/mockups",
     "pages/products",
-    "pages/quote-view",
     "pages/quotes",
     "pages/system",
     "pages/tools",
@@ -672,7 +669,7 @@
     "stores",
     "utils"
    ],
-   "coberto_por_testes": 47,
+   "coberto_por_testes": 48,
    "orfao": false
   },
   {
@@ -846,7 +843,6 @@
     "components/admin",
     "components/cart",
     "components/filters",
-    "hooks",
     "hooks/admin",
     "hooks/collections",
     "hooks/common",
@@ -861,7 +857,6 @@
     "hooks/simulator",
     "integrations/supabase",
     "lib/kit-builder",
-    "pages",
     "pages/admin",
     "pages/kit-builder",
     "pages/quotes",
@@ -1186,9 +1181,7 @@
    "flags": [],
    "papeis": [],
    "usado_por": 2,
-   "usado_por_modulos": [
-    "hooks"
-   ],
+   "usado_por_modulos": [],
    "coberto_por_testes": 2,
    "orfao": false
   },
@@ -1222,7 +1215,6 @@
    "usado_por_modulos": [
     "components/auth",
     "lib/auth",
-    "pages",
     "pages/auth"
    ],
    "coberto_por_testes": 0,
@@ -1692,7 +1684,6 @@
    "usado_por": 9,
    "usado_por_modulos": [
     "components/common",
-    "hooks",
     "hooks/intelligence",
     "hooks/quotes",
     "lib/auth",
@@ -1750,10 +1741,8 @@
    "usado_por": 6,
    "usado_por_modulos": [
     "components/bi",
-    "hooks",
     "hooks/bi",
     "hooks/crm",
-    "pages",
     "pages/bi"
    ],
    "coberto_por_testes": 0,
@@ -2050,7 +2039,6 @@
    "usado_por": 6,
    "usado_por_modulos": [
     "components/errors",
-    "hooks",
     "hooks/common",
     "lib",
     "pages/magazine"
@@ -2089,7 +2077,6 @@
    "usado_por_modulos": [
     "components/system",
     "contexts",
-    "hooks",
     "hooks/ui",
     "lib/external-db"
    ],
@@ -2146,7 +2133,6 @@
    "usado_por": 6,
    "usado_por_modulos": [
     "components/admin",
-    "hooks",
     "hooks/intelligence"
    ],
    "coberto_por_testes": 2,
@@ -2171,7 +2157,6 @@
    "usado_por": 4,
    "usado_por_modulos": [
     "components/admin",
-    "hooks",
     "hooks/intelligence"
    ],
    "coberto_por_testes": 0,
@@ -2240,18 +2225,14 @@
     "components/products",
     "components/quotes",
     "components/search",
-    "hooks",
     "hooks/bi",
     "hooks/crm",
     "hooks/intelligence",
     "hooks/products",
     "hooks/quotes",
     "hooks/simulation",
-    "pages",
     "pages/magazine",
-    "pages/quote-view",
     "pages/quotes",
-    "pages/quotes-dashboard",
     "pages/system"
    ],
    "coberto_por_testes": 2,
@@ -2682,7 +2663,6 @@
    "usado_por": 4,
    "usado_por_modulos": [
     "components/admin",
-    "hooks",
     "hooks/intelligence"
    ],
    "coberto_por_testes": 2,
@@ -2821,38 +2801,13 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 5,
+   "usado_por": 3,
    "usado_por_modulos": [
     "hooks",
     "lib",
     "lib/external-db"
    ],
-   "coberto_por_testes": 4,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/lib/external-db/bridge-telemetry-client.ts",
-   "camada": "lib",
-   "exports": [
-    "startBridgeTelemetry"
-   ],
-   "export_default": null,
-   "linhas": 70,
-   "tabelas": [],
-   "rpcs": [
-    "record_platform_failure"
-   ],
-   "edges": [],
-   "env": [],
-   "externos": [],
-   "zod_schemas": 0,
-   "flags": [],
-   "papeis": [],
-   "usado_por": 1,
-   "usado_por_modulos": [
-    "hooks"
-   ],
-   "coberto_por_testes": 0,
+   "coberto_por_testes": 5,
    "orfao": false
   },
   {
@@ -2889,35 +2844,6 @@
     "lib/external-db"
    ],
    "coberto_por_testes": 5,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/lib/external-db/cold-start-recorder.ts",
-   "camada": "lib",
-   "exports": [
-    "ColdStartIncident",
-    "RetryAttempt",
-    "clearColdStartIncidents",
-    "getColdStartIncidents",
-    "startColdStartRecorder",
-    "subscribeColdStartIncidents"
-   ],
-   "export_default": null,
-   "linhas": 114,
-   "tabelas": [],
-   "rpcs": [],
-   "edges": [],
-   "env": [],
-   "externos": [],
-   "zod_schemas": 0,
-   "flags": [],
-   "papeis": [],
-   "usado_por": 2,
-   "usado_por_modulos": [
-    "components/admin",
-    "hooks"
-   ],
-   "coberto_por_testes": 0,
    "orfao": false
   },
   {
@@ -3031,8 +2957,6 @@
     "components/admin",
     "components/products",
     "components/search",
-    "hooks",
-    "hooks/gravacao",
     "hooks/intelligence",
     "hooks/products",
     "hooks/quotes",
@@ -3064,7 +2988,6 @@
    "papeis": [],
    "usado_por": 4,
    "usado_por_modulos": [
-    "hooks",
     "hooks/intelligence",
     "lib/external-db"
    ],
@@ -3421,7 +3344,6 @@
    "papeis": [],
    "usado_por": 2,
    "usado_por_modulos": [
-    "hooks",
     "lib/external-db"
    ],
    "coberto_por_testes": 1,
@@ -3498,7 +3420,6 @@
    "usado_por": 3,
    "usado_por_modulos": [
     "components/admin",
-    "hooks",
     "hooks/intelligence"
    ],
    "coberto_por_testes": 0,
@@ -3525,7 +3446,6 @@
     "components/pricing",
     "components/products",
     "components/simulator",
-    "hooks",
     "hooks/mockup",
     "hooks/products",
     "hooks/simulation",
@@ -3611,7 +3531,6 @@
    "papeis": [],
    "usado_por": 7,
    "usado_por_modulos": [
-    "hooks",
     "hooks/simulation",
     "lib/external-db"
    ],
@@ -3729,7 +3648,6 @@
    "papeis": [],
    "usado_por": 2,
    "usado_por_modulos": [
-    "hooks",
     "hooks/mockup"
    ],
    "coberto_por_testes": 2,
@@ -4233,11 +4151,9 @@
     "components/dashboard",
     "components/kit-builder",
     "components/kit-library",
-    "hooks",
     "hooks/kit-builder",
     "pages/admin",
-    "pages/kit-builder",
-    "utils"
+    "pages/kit-builder"
    ],
    "coberto_por_testes": 25,
    "orfao": false
@@ -4285,7 +4201,6 @@
    "papeis": [],
    "usado_por": 2,
    "usado_por_modulos": [
-    "hooks",
     "lib/kit-builder"
    ],
    "coberto_por_testes": 0,
@@ -4393,11 +4308,10 @@
    "usado_por": 16,
    "usado_por_modulos": [
     "components/kit-builder",
-    "hooks",
     "hooks/kit-builder",
     "lib/kit-builder"
    ],
-   "coberto_por_testes": 5,
+   "coberto_por_testes": 6,
    "orfao": false
   },
   {
@@ -4479,32 +4393,10 @@
    "papeis": [],
    "usado_por": 2,
    "usado_por_modulos": [
-    "pages",
     "pages/kit-builder"
    ],
    "coberto_por_testes": 1,
    "orfao": false
-  },
-  {
-   "arquivo": "src/lib/kit-og-image.ts",
-   "camada": "lib",
-   "exports": [
-    "generateKitOgImage"
-   ],
-   "export_default": null,
-   "linhas": 115,
-   "tabelas": [],
-   "rpcs": [],
-   "edges": [],
-   "env": [],
-   "externos": [],
-   "zod_schemas": 0,
-   "flags": [],
-   "papeis": [],
-   "usado_por": 0,
-   "usado_por_modulos": [],
-   "coberto_por_testes": 0,
-   "orfao": true
   },
   {
    "arquivo": "src/lib/latency-percentiles.ts",
@@ -4555,7 +4447,6 @@
     "components/inventory",
     "components/layout",
     "components/quotes",
-    "pages",
     "pages/admin",
     "pages/mockups",
     "pages/products",
@@ -4645,7 +4536,6 @@
     "pages/auth",
     "pages/kit-builder",
     "pages/products",
-    "pages/quote-view",
     "pages/quotes",
     "pages/tools",
     "services",
@@ -4861,7 +4751,6 @@
    "papeis": [],
    "usado_por": 2,
    "usado_por_modulos": [
-    "components/command",
     "components/common"
    ],
    "coberto_por_testes": 2,
@@ -4927,7 +4816,6 @@
    "usado_por": 5,
    "usado_por_modulos": [
     "components/notifications",
-    "hooks",
     "hooks/ui"
    ],
    "coberto_por_testes": 9,
@@ -5132,7 +5020,6 @@
     "components/admin",
     "components/products",
     "components/simulator",
-    "hooks",
     "hooks/mockup",
     "hooks/products",
     "hooks/simulation",
@@ -5458,7 +5345,6 @@
    "papeis": [],
    "usado_por": 6,
    "usado_por_modulos": [
-    "hooks",
     "hooks/simulation",
     "lib/personalization",
     "pages/admin"
@@ -5485,7 +5371,6 @@
    "papeis": [],
    "usado_por": 5,
    "usado_por_modulos": [
-    "hooks",
     "hooks/simulation",
     "lib/personalization",
     "pages/admin"
@@ -5728,7 +5613,6 @@
    "usado_por": 3,
    "usado_por_modulos": [
     "components/mockup",
-    "hooks",
     "hooks/products"
    ],
    "coberto_por_testes": 0,
@@ -5852,7 +5736,6 @@
    "papeis": [],
    "usado_por": 6,
    "usado_por_modulos": [
-    "hooks",
     "hooks/products",
     "hooks/tecnicas"
    ],
@@ -5884,9 +5767,7 @@
    "usado_por_modulos": [
     "components/quotes",
     "hooks/quotes",
-    "pages",
     "pages/quotes",
-    "pages/quotes-dashboard",
     "services"
    ],
    "coberto_por_testes": 3,
@@ -6293,7 +6174,6 @@
    "papeis": [],
    "usado_por": 3,
    "usado_por_modulos": [
-    "hooks",
     "hooks/quotes"
    ],
    "coberto_por_testes": 0,
@@ -6351,7 +6231,6 @@
     "components/kit-builder",
     "components/magic-up",
     "contexts",
-    "hooks",
     "hooks/admin",
     "hooks/auth",
     "hooks/collections",
@@ -6568,8 +6447,7 @@
    "usado_por_modulos": [
     "components/intelligence",
     "components/inventory",
-    "components/products",
-    "hooks"
+    "components/products"
    ],
    "coberto_por_testes": 1,
    "orfao": false
@@ -6638,7 +6516,6 @@
     "hooks/ui",
     "lib",
     "lib/db",
-    "pages",
     "pages/admin",
     "pages/bi"
    ],
@@ -6793,7 +6670,7 @@
     "lib/system",
     "pages"
    ],
-   "coberto_por_testes": 4,
+   "coberto_por_testes": 5,
    "orfao": false
   },
   {
@@ -6894,9 +6771,7 @@
    "flags": [],
    "papeis": [],
    "usado_por": 1,
-   "usado_por_modulos": [
-    "components/admin"
-   ],
+   "usado_por_modulos": [],
    "coberto_por_testes": 0,
    "orfao": false
   },
@@ -6927,8 +6802,6 @@
    "papeis": [],
    "usado_por": 12,
    "usado_por_modulos": [
-    "components/admin",
-    "components/dev",
     "hooks/dev",
     "lib",
     "lib/external-db",
@@ -7015,7 +6888,7 @@
    "papeis": [],
    "usado_por": 0,
    "usado_por_modulos": [],
-   "coberto_por_testes": 4,
+   "coberto_por_testes": 2,
    "orfao": true
   },
   {
@@ -7158,7 +7031,6 @@
    "usado_por": 17,
    "usado_por_modulos": [
     "components/admin",
-    "hooks",
     "hooks/admin",
     "integrations/supabase",
     "lib",
@@ -7248,7 +7120,6 @@
    "usado_por": 4,
    "usado_por_modulos": [
     "components/admin",
-    "hooks",
     "hooks/admin"
    ],
    "coberto_por_testes": 1,
@@ -7279,7 +7150,6 @@
     "components/layout",
     "components/quotes",
     "contexts",
-    "hooks",
     "hooks/auth",
     "hooks/customization",
     "hooks/intelligence",
@@ -7320,7 +7190,6 @@
     "components/catalog",
     "components/categories",
     "components/filters",
-    "hooks",
     "hooks/products"
    ],
    "coberto_por_testes": 3,
@@ -7383,11 +7252,10 @@
    "usado_por_modulos": [
     "components",
     "components/settings",
-    "hooks",
     "hooks/common",
     "pages/admin"
    ],
-   "coberto_por_testes": 6,
+   "coberto_por_testes": 5,
    "orfao": false
   },
   {
@@ -7442,7 +7310,6 @@
    "usado_por": 4,
    "usado_por_modulos": [
     "components/intelligence",
-    "pages",
     "pages/bi",
     "pages/trends"
    ],
@@ -7468,7 +7335,6 @@
    "usado_por": 3,
    "usado_por_modulos": [
     "components/admin",
-    "pages",
     "pages/bi"
    ],
    "coberto_por_testes": 0,
@@ -7551,13 +7417,9 @@
     "pages/kit-builder",
     "pages/magazine",
     "pages/magic-up",
-    "pages/mockup-generator",
     "pages/mockups",
-    "pages/product-detail",
-    "pages/product-match",
     "pages/products",
     "pages/quotes",
-    "pages/seller-carts",
     "pages/system",
     "pages/tools",
     "pages/trends",
@@ -7656,9 +7518,7 @@
    "papeis": [],
    "usado_por": 5,
    "usado_por_modulos": [
-    "hooks",
     "hooks/quotes",
-    "pages",
     "pages/auth"
    ],
    "coberto_por_testes": 0,
@@ -7903,7 +7763,6 @@
    "usado_por_modulos": [
     "components/admin",
     "components/filters",
-    "hooks",
     "hooks/products"
    ],
    "coberto_por_testes": 0,
@@ -8032,7 +7891,6 @@
    "usado_por": 5,
    "usado_por_modulos": [
     "components/admin",
-    "hooks",
     "hooks/crm"
    ],
    "coberto_por_testes": 0,
@@ -8094,9 +7952,7 @@
     "components/expert",
     "components/quotes",
     "components/search",
-    "hooks",
-    "hooks/ui",
-    "pages"
+    "hooks/ui"
    ],
    "coberto_por_testes": 0,
    "orfao": false
@@ -8159,11 +8015,9 @@
     "components/novelties",
     "components/products",
     "components/replenishments",
-    "hooks",
     "hooks/common",
     "hooks/comparison",
     "hooks/products",
-    "pages",
     "pages/collections",
     "pages/filters",
     "pages/products"
@@ -8200,11 +8054,9 @@
     "components/novelties",
     "components/products",
     "components/replenishments",
-    "hooks",
     "hooks/common",
     "hooks/favorites",
     "hooks/products",
-    "pages",
     "pages/collections",
     "pages/filters",
     "pages/products"
@@ -8259,7 +8111,6 @@
    "usado_por": 4,
    "usado_por_modulos": [
     "components/products",
-    "pages",
     "pages/products"
    ],
    "coberto_por_testes": 0,
@@ -8527,10 +8378,9 @@
    "papeis": [],
    "usado_por": 2,
    "usado_por_modulos": [
-    "hooks",
     "hooks/simulation"
    ],
-   "coberto_por_testes": 1,
+   "coberto_por_testes": 0,
    "orfao": false
   },
   {
@@ -8578,7 +8428,6 @@
    "usado_por": 5,
    "usado_por_modulos": [
     "components/products",
-    "pages/product-detail",
     "pages/products"
    ],
    "coberto_por_testes": 3,
@@ -8635,7 +8484,6 @@
    "papeis": [],
    "usado_por": 2,
    "usado_por_modulos": [
-    "pages",
     "pages/quotes"
    ],
    "coberto_por_testes": 0,
@@ -8696,9 +8544,7 @@
     "components/ui",
     "hooks/mockup",
     "lib/external-db",
-    "pages",
     "pages/admin",
-    "pages/product-match",
     "pages/products",
     "pages/tools"
    ],
@@ -8743,31 +8589,6 @@
    ],
    "coberto_por_testes": 1,
    "orfao": false
-  },
-  {
-   "arquivo": "src/utils/kitPdfGenerator.ts",
-   "camada": "utils",
-   "exports": [
-    "downloadKitPDF",
-    "generateKitPDF"
-   ],
-   "export_default": null,
-   "linhas": 444,
-   "tabelas": [],
-   "rpcs": [],
-   "edges": [],
-   "env": [],
-   "externos": [
-    "jspdf",
-    "jspdf-autotable"
-   ],
-   "zod_schemas": 0,
-   "flags": [],
-   "papeis": [],
-   "usado_por": 0,
-   "usado_por_modulos": [],
-   "coberto_por_testes": 0,
-   "orfao": true
   },
   {
    "arquivo": "src/utils/laser-logo-processor.ts",
@@ -8841,7 +8662,7 @@
     "pages/products",
     "utils"
    ],
-   "coberto_por_testes": 10,
+   "coberto_por_testes": 9,
    "orfao": false
   },
   {
@@ -8977,13 +8798,11 @@
     "components/admin",
     "components/products",
     "components/quotes",
-    "hooks",
     "hooks/quotes",
     "pages/admin",
-    "pages/product-detail",
     "pages/products"
    ],
-   "coberto_por_testes": 8,
+   "coberto_por_testes": 7,
    "orfao": false
   },
   {
@@ -9006,7 +8825,6 @@
    "papeis": [],
    "usado_por": 3,
    "usado_por_modulos": [
-    "hooks",
     "hooks/products",
     "utils"
    ],
@@ -9032,7 +8850,6 @@
    "usado_por": 4,
    "usado_por_modulos": [
     "contexts",
-    "hooks",
     "hooks/products",
     "services"
    ],
@@ -9064,13 +8881,11 @@
    "usado_por": 13,
    "usado_por_modulos": [
     "components/search",
-    "hooks",
     "hooks/common",
     "hooks/intelligence",
     "hooks/products",
     "hooks/quotes",
     "hooks/simulation",
-    "pages/product-match",
     "pages/products"
    ],
    "coberto_por_testes": 0,
@@ -9096,7 +8911,6 @@
    "usado_por": 6,
    "usado_por_modulos": [
     "components/products",
-    "hooks",
     "hooks/products",
     "pages/filters"
    ],
@@ -9154,7 +8968,6 @@
    "usado_por": 7,
    "usado_por_modulos": [
     "components/quotes",
-    "pages/quote-view",
     "pages/quotes"
    ],
    "coberto_por_testes": 5,
@@ -9208,33 +9021,6 @@
    "usado_por_modulos": [],
    "coberto_por_testes": 0,
    "orfao": true
-  },
-  {
-   "arquivo": "src/utils/templateExport.ts",
-   "camada": "utils",
-   "exports": [
-    "ExportedTemplate",
-    "exportSingleTemplate",
-    "exportTemplatesToJson",
-    "readTemplateFile",
-    "validateImportedTemplates"
-   ],
-   "export_default": null,
-   "linhas": 107,
-   "tabelas": [],
-   "rpcs": [],
-   "edges": [],
-   "env": [],
-   "externos": [],
-   "zod_schemas": 0,
-   "flags": [],
-   "papeis": [],
-   "usado_por": 4,
-   "usado_por_modulos": [
-    "components/quotes"
-   ],
-   "coberto_por_testes": 0,
-   "orfao": false
   },
   {
    "arquivo": "src/utils/viacep.ts",

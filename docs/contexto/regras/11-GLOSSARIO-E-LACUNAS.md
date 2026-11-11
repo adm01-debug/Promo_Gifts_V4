@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1dcb3b6b0e` · branch `main` · 2026-11-10 01:47 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `15c2a4cb34` · branch `main` · 2026-11-11 18:55 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -348,9 +348,9 @@
 |---|---|---|
 | status | valor `not_ready` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:api/ready.ts` |
 | status | valor `ready` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/kit-builder/persistence.ts`<br>`escreve:api/ready.ts` |
+| status | valor `number` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`compara:src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`compara:src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`compara:src/contexts/SellerCartContext.tsx` |
 | status | valor `fulfilled` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/admin/connections/CredentialsChangedBanner.tsx`<br>`compara:src/components/admin/connections/GlobalRefreshFromDbButton.tsx`<br>`compara:src/hooks/mockup/mockupGenerationService.ts`<br>`compara:src/hooks/mockup/mockupGeneratorModel.ts` |
 | status | valor `step_up_error` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`compara:src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>`compara:src/components/admin/security/keys/UpdateMcpKeyDialog.tsx`<br>`compara:src/pages/admin/DevChallengeExamplesPage.tsx` |
-| status | valor `number` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`compara:src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`compara:src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`compara:src/contexts/SellerCartContext.tsx` |
 | status | valor `Status` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/components/audit/AuditHistory.tsx` |
 | status | valor `PASSED` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/audit/AuditReport.tsx` |
 | status | valor `aligned` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/components/bi/ClientCategoryRadar.tsx` |
@@ -381,16 +381,22 @@
 | status | valor `duplicate_ignored` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/receive-crm-callback/index.ts` |
 | status | valor `skipped_claim_error` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/webhook-dispatcher/index.ts` |
 | status | valor `skipped_duplicate` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/webhook-dispatcher/index.ts` |
+| status | valor `request` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/step-up-verify/index.ts`<br>`escreve:recovery/src-legacy/src/hooks/useStepUpAuth.ts`<br>`escreve:src/hooks/auth/useStepUpAuth.ts`<br>`escreve:supabase/functions/step-up-verify/index.ts` |
+| status | valor `verify_password` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/step-up-verify/index.ts`<br>`escreve:recovery/src-legacy/src/hooks/useStepUpAuth.ts`<br>`escreve:src/hooks/auth/useStepUpAuth.ts`<br>`escreve:supabase/functions/step-up-verify/index.ts` |
+| status | valor `verify_otp` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/step-up-verify/index.ts`<br>`escreve:recovery/src-legacy/src/hooks/useStepUpAuth.ts`<br>`escreve:src/hooks/auth/useStepUpAuth.ts`<br>`escreve:supabase/functions/step-up-verify/index.ts` |
+| status | valor `cancel` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/step-up-verify/index.ts`<br>`escreve:recovery/src-legacy/src/hooks/useStepUpAuth.ts`<br>`escreve:src/hooks/auth/useStepUpAuth.ts` |
 | status | valor `password` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/auth/StepUpAuthDialog.tsx` |
 | status | valor `otp` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/auth/StepUpAuthDialog.tsx` |
 | status | valor `intro` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/security/MfaEnrollmentDialog.tsx` |
 | status | valor `qr` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/security/MfaEnrollmentDialog.tsx` |
 | status | valor `verify` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/security/MfaEnrollmentDialog.tsx` |
-| status | valor `request` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/step-up-verify/index.ts`<br>`escreve:src/hooks/auth/useStepUpAuth.ts`<br>`escreve:src/hooks/useStepUpAuth.ts`<br>`escreve:supabase/functions/step-up-verify/index.ts` |
-| status | valor `verify_password` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/step-up-verify/index.ts`<br>`escreve:src/hooks/auth/useStepUpAuth.ts`<br>`escreve:src/hooks/useStepUpAuth.ts`<br>`escreve:supabase/functions/step-up-verify/index.ts` |
-| status | valor `verify_otp` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/step-up-verify/index.ts`<br>`escreve:src/hooks/auth/useStepUpAuth.ts`<br>`escreve:src/hooks/useStepUpAuth.ts`<br>`escreve:supabase/functions/step-up-verify/index.ts` |
-| status | valor `cancel` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/step-up-verify/index.ts`<br>`escreve:src/hooks/auth/useStepUpAuth.ts`<br>`escreve:src/hooks/useStepUpAuth.ts` |
 | status | valor `specs` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:src/types/domain/simulator-wizard.ts`<br>`escreve:src/types/domain/simulator-wizard.ts` |
+| status | valor `Criados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
+| status | valor `Enviados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
+| status | valor `Respondidos` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
+| status | valor `Aprovados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
+| status | valor `generating` para `stage` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/quotes/PdfGenerationDialog.tsx` |
+| status | valor `ready` para `stage` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/quotes/PdfGenerationDialog.tsx` |
 | status | valor `mixed` para `state` usado no código não existe em nenhum enum do banco/TS | `escreve:src/components/admin/connections/ConnectionRowSourceBadge.tsx` |
 | status | valor `CLOSED` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/admin/telemetry/BreakerStatusCard.tsx` |
 | status | valor `OPEN` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/admin/telemetry/BreakerStatusCard.tsx`<br>`compara:supabase/functions/_shared/circuit-breaker.ts` |
@@ -403,12 +409,6 @@
 | status | valor `installed` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/sw-register.ts` |
 | status | valor `selected` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/__visual/DatePickerFieldHarness.tsx` |
 | status | valor `syncing` para `cf_sync_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/AdminCloudflareImagesPage.tsx` |
-| status | valor `generating` para `stage` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/quotes/PdfGenerationDialog.tsx` |
-| status | valor `ready` para `stage` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/quotes/PdfGenerationDialog.tsx` |
-| status | valor `Criados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
-| status | valor `Enviados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
-| status | valor `Respondidos` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
-| status | valor `Aprovados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
 | status | valor `ready` para `cloudflare_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/external-db/products-detail.ts` |
 | status | valor `synced` para `sync_status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/product-webhook/index.ts` |
 | coluna | coluna `admin_notes` usada no código não existe no schema de `discount_approval_requests` |  |
@@ -427,12 +427,10 @@
 | coluna | coluna `selected_packaging_name` usada no código não existe no schema de `quote_items` |  |
 | coluna | coluna `selected_packaging_unit_cost` usada no código não existe no schema de `quote_items` |  |
 | coluna | coluna `updated_at` usada no código não existe no schema de `quote_items` |  |
-| coluna | coluna `avatar_url` usada no código não existe no schema de `profiles` |  |
-| coluna | coluna `bitrix_id` usada no código não existe no schema de `profiles` |  |
-| coluna | coluna `count` usada no código não existe no schema de `profiles` |  |
-| coluna | coluna `component_name` usada no código não existe no schema de `product_kit_components` |  |
-| coluna | coluna `component_type_code` usada no código não existe no schema de `product_kit_components` |  |
-| coluna | coluna `enrichment_status` usada no código não existe no schema de `product_kit_components` |  |
+| coluna | coluna `is_public` usada no código não existe no schema de `collections` |  |
+| coluna | coluna `share_expires_at` usada no código não existe no schema de `collections` |  |
+| coluna | coluna `share_token` usada no código não existe no schema de `collections` |  |
+| coluna | coluna `total` usada no código não existe no schema de `orders` |  |
 | coluna | coluna `bitrix_deal_id` usada no código não existe no schema de `quotes` |  |
 | coluna | coluna `bitrix_quote_id` usada no código não existe no schema de `quotes` |  |
 | coluna | coluna `client_response` usada no código não existe no schema de `quotes` |  |
@@ -449,9 +447,45 @@
 | coluna | coluna `synced_to_bitrix` usada no código não existe no schema de `quotes` |  |
 | coluna | coluna `updated_at` usada no código não existe no schema de `quotes` |  |
 | coluna | coluna `version` usada no código não existe no schema de `quotes` |  |
+| coluna | coluna `filter_states` usada no código não existe no schema de `user_preferences` |  |
+| coluna | coluna `env_key` usada no código não existe no schema de `external_connections` |  |
+| coluna | coluna `is_pinned` usada no código não existe no schema de `custom_kits` |  |
+| coluna | coluna `device_fingerprint` usada no código não existe no schema de `user_known_devices` |  |
+| coluna | coluna `avatar_url` usada no código não existe no schema de `profiles` |  |
+| coluna | coluna `bitrix_id` usada no código não existe no schema de `profiles` |  |
+| coluna | coluna `count` usada no código não existe no schema de `profiles` |  |
+| coluna | coluna `aspect_ratio` usada no código não existe no schema de `magic_up_generations` |  |
+| coluna | coluna `channel` usada no código não existe no schema de `magic_up_generations` |  |
+| coluna | coluna `copy_pack` usada no código não existe no schema de `magic_up_generations` |  |
+| coluna | coluna `metadata` usada no código não existe no schema de `magic_up_generations` |  |
+| coluna | coluna `quality_score` usada no código não existe no schema de `magic_up_generations` |  |
+| coluna | coluna `status` usada no código não existe no schema de `magic_up_generations` |  |
+| coluna | coluna `ai_description` usada no código não existe no schema de `products` |  |
+| coluna | coluna `ai_generated_at` usada no código não existe no schema de `products` |  |
+| coluna | coluna `ai_summary` usada no código não existe no schema de `products` |  |
+| coluna | coluna `ai_title` usada no código não existe no schema de `products` |  |
+| coluna | coluna `ai_version` usada no código não existe no schema de `products` |  |
+| coluna | coluna `category_id` usada no código não existe no schema de `products` |  |
+| coluna | coluna `category_name` usada no código não existe no schema de `products` |  |
+| coluna | coluna `images` usada no código não existe no schema de `products` |  |
+| coluna | coluna `is_deleted` usada no código não existe no schema de `products` |  |
+| coluna | coluna `locked_fields` usada no código não existe no schema de `products` |  |
+| coluna | coluna `price` usada no código não existe no schema de `products` |  |
+| coluna | coluna `primary_image_url` usada no código não existe no schema de `products` |  |
+| coluna | coluna `sale_price` usada no código não existe no schema de `products` |  |
+| coluna | coluna `sku` usada no código não existe no schema de `products` |  |
+| coluna | coluna `stock_quantity` usada no código não existe no schema de `products` |  |
+| coluna | coluna `tags` usada no código não existe no schema de `products` |  |
+| coluna | coluna `view_count` usada no código não existe no schema de `products` |  |
+| coluna | coluna `created_at` usada no código não existe no schema de `quote_item_personalizations` |  |
+| coluna | coluna `updated_at` usada no código não existe no schema de `quote_item_personalizations` |  |
+| coluna | coluna `permission_id` usada no código não existe no schema de `role_permissions` |  |
 | coluna | coluna `id` usada no código não existe no schema de `seller_discount_limits` |  |
 | coluna | coluna `notes` usada no código não existe no schema de `seller_discount_limits` |  |
-| coluna | coluna `env_key` usada no código não existe no schema de `external_connections` |  |
+| coluna | coluna `user_id` usada no código não existe no schema de `generated_mockups` |  |
+| coluna | coluna `component_name` usada no código não existe no schema de `product_kit_components` |  |
+| coluna | coluna `component_type_code` usada no código não existe no schema de `product_kit_components` |  |
+| coluna | coluna `enrichment_status` usada no código não existe no schema de `product_kit_components` |  |
 | coluna | coluna `dns_ms` usada no código não existe no schema de `connection_test_history` |  |
 | coluna | coluna `download_ms` usada no código não existe no schema de `connection_test_history` |  |
 | coluna | coluna `request_url` usada no código não existe no schema de `connection_test_history` |  |
@@ -479,43 +513,9 @@
 | coluna | coluna `source` usada no código não existe no schema de `admin_audit_log` |  |
 | coluna | coluna `started_at` usada no código não existe no schema de `admin_audit_log` |  |
 | coluna | coluna `status` usada no código não existe no schema de `admin_audit_log` |  |
-| coluna | coluna `is_public` usada no código não existe no schema de `collections` |  |
-| coluna | coluna `share_expires_at` usada no código não existe no schema de `collections` |  |
-| coluna | coluna `share_token` usada no código não existe no schema de `collections` |  |
 | coluna | coluna `changed_at` usada no código não existe no schema de `price_history` |  |
 | coluna | coluna `new_values` usada no código não existe no schema de `price_history` |  |
-| coluna | coluna `total` usada no código não existe no schema de `orders` |  |
-| coluna | coluna `is_pinned` usada no código não existe no schema de `custom_kits` |  |
 | coluna | coluna `category` usada no código não existe no schema de `saved_filters` |  |
-| coluna | coluna `user_id` usada no código não existe no schema de `generated_mockups` |  |
-| coluna | coluna `aspect_ratio` usada no código não existe no schema de `magic_up_generations` |  |
-| coluna | coluna `channel` usada no código não existe no schema de `magic_up_generations` |  |
-| coluna | coluna `copy_pack` usada no código não existe no schema de `magic_up_generations` |  |
-| coluna | coluna `metadata` usada no código não existe no schema de `magic_up_generations` |  |
-| coluna | coluna `quality_score` usada no código não existe no schema de `magic_up_generations` |  |
-| coluna | coluna `status` usada no código não existe no schema de `magic_up_generations` |  |
-| coluna | coluna `device_fingerprint` usada no código não existe no schema de `user_known_devices` |  |
-| coluna | coluna `filter_states` usada no código não existe no schema de `user_preferences` |  |
-| coluna | coluna `ai_description` usada no código não existe no schema de `products` |  |
-| coluna | coluna `ai_generated_at` usada no código não existe no schema de `products` |  |
-| coluna | coluna `ai_summary` usada no código não existe no schema de `products` |  |
-| coluna | coluna `ai_title` usada no código não existe no schema de `products` |  |
-| coluna | coluna `ai_version` usada no código não existe no schema de `products` |  |
-| coluna | coluna `category_id` usada no código não existe no schema de `products` |  |
-| coluna | coluna `category_name` usada no código não existe no schema de `products` |  |
-| coluna | coluna `images` usada no código não existe no schema de `products` |  |
-| coluna | coluna `is_deleted` usada no código não existe no schema de `products` |  |
-| coluna | coluna `locked_fields` usada no código não existe no schema de `products` |  |
-| coluna | coluna `price` usada no código não existe no schema de `products` |  |
-| coluna | coluna `primary_image_url` usada no código não existe no schema de `products` |  |
-| coluna | coluna `sale_price` usada no código não existe no schema de `products` |  |
-| coluna | coluna `sku` usada no código não existe no schema de `products` |  |
-| coluna | coluna `stock_quantity` usada no código não existe no schema de `products` |  |
-| coluna | coluna `tags` usada no código não existe no schema de `products` |  |
-| coluna | coluna `view_count` usada no código não existe no schema de `products` |  |
-| coluna | coluna `created_at` usada no código não existe no schema de `quote_item_personalizations` |  |
-| coluna | coluna `updated_at` usada no código não existe no schema de `quote_item_personalizations` |  |
-| coluna | coluna `permission_id` usada no código não existe no schema de `role_permissions` |  |
 | coluna | coluna `received_at` usada no código não existe no schema de `crm_callback_events` |  |
 | coluna | coluna `color_code` usada no código não existe no schema de `product_variants` |  |
 | coluna | coluna `color_hex` usada no código não existe no schema de `product_variants` |  |
@@ -568,7 +568,7 @@
 | tabela | tabela `payments` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `pg_class` usada no código não existe nas migrations/types do repo | `tests/security/rls-validation.test.ts` |
 | tabela | tabela `produtos` usada no código não existe nas migrations/types do repo | `tests/scripts/inventario-banco.test.mjs` |
-| tabela | tabela `quote_comments` usada no código não existe nas migrations/types do repo | `src/hooks/useQuoteComments.ts` |
+| tabela | tabela `quote_comments` usada no código não existe nas migrations/types do repo | `recovery/src-legacy/src/hooks/useQuoteComments.ts` |
 | tabela | tabela `runtime_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `so_teste` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
 | tabela | tabela `some_table` usada no código não existe nas migrations/types do repo | `src/lib/intelligence/degradation.ts` |
@@ -582,40 +582,40 @@
 | tabela | tabela `tx` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
 | tabela | tabela `x` usada no código não existe nas migrations/types do repo | `scripts/inventario/gerar-banco.mjs`<br>`supabase/migrations/20260627130450_reconcile_unarchive_7_live_tables_faxina20260620.sql` |
 | tabela | tabela `xbz_image_import_staging` usada no código não existe nas migrations/types do repo | `supabase/functions/xbz-image-uploader/index.ts` |
-| rls | `audit_log`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/hooks/useAuditLog.ts` |
+| rls | `audit_log`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useAuditLog.ts` |
 | rls | `bitrix_deals`: RLS ligado sem nenhuma política → só service_role acessa |  |
-| rls | `collection_items`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
-| rls | `collection_items`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
-| rls | `collection_items`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
-| rls | `collection_items`: front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
-| rls | `collections`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
-| rls | `collections`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/components/collections/ShareCollectionDialog.tsx`<br>`src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
-| rls | `collections`: front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
+| rls | `collection_items`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useCollections.ts`<br>`src/hooks/collections/useCollections.ts` |
+| rls | `collection_items`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useCollections.ts`<br>`src/hooks/collections/useCollections.ts` |
+| rls | `collection_items`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useCollections.ts`<br>`src/hooks/collections/useCollections.ts` |
+| rls | `collection_items`: front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useCollections.ts`<br>`src/hooks/collections/useCollections.ts` |
+| rls | `collections`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useCollections.ts`<br>`src/hooks/collections/useCollections.ts` |
+| rls | `collections`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/components/collections/ShareCollectionDialog.tsx`<br>`recovery/src-legacy/src/hooks/useCollections.ts`<br>`src/hooks/collections/useCollections.ts` |
+| rls | `collections`: front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useCollections.ts`<br>`src/hooks/collections/useCollections.ts` |
 | rls | `e2e_cleanup_rate_limit`: RLS ligado sem nenhuma política → só service_role acessa |  |
 | rls | `edge_function_invocations`: RLS ligado sem nenhuma política → só service_role acessa |  |
-| rls | `expert_conversations`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/intelligence/useExpertConversations.tsx`<br>`src/hooks/useExpertConversations.tsx` |
-| rls | `expert_messages`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/intelligence/useExpertConversations.tsx`<br>`src/hooks/useExpertConversations.tsx` |
+| rls | `expert_conversations`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useExpertConversations.tsx`<br>`src/hooks/intelligence/useExpertConversations.tsx` |
+| rls | `expert_messages`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useExpertConversations.tsx`<br>`src/hooks/intelligence/useExpertConversations.tsx` |
 | rls | `external_connections_sync_log`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/connections/ExternalConnectionsSyncLogPanel.tsx`<br>`src/components/admin/connections/LastSyncRunPanel.tsx` |
 | rls | `file_scan_logs`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/security/SecureUploadManager.tsx` |
-| rls | `geo_allowed_countries`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/useGeoBlocking.ts` |
-| rls | `geo_allowed_countries`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/hooks/useGeoBlocking.ts` |
-| rls | `geo_allowed_countries`: front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `src/hooks/useGeoBlocking.ts` |
+| rls | `geo_allowed_countries`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useGeoBlocking.ts` |
+| rls | `geo_allowed_countries`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useGeoBlocking.ts` |
+| rls | `geo_allowed_countries`: front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useGeoBlocking.ts` |
 | rls | `integration_credentials`: RLS ligado sem nenhuma política → só service_role acessa |  |
-| rls | `magic_up_generations`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/search/useGlobalSearch.ts`<br>`src/hooks/intelligence/useMagicUpGeneration.ts`<br>`src/hooks/intelligence/useMagicUpState.helpers.ts`<br>`src/hooks/useMagicUpGeneration.ts` |
-| rls | `mockup_drafts`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/mockup/useMockupDraft.ts`<br>`src/hooks/useMockupDraft.ts` |
+| rls | `magic_up_generations`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useMagicUpGeneration.ts`<br>`recovery/src-legacy/src/hooks/useMagicUpState.ts`<br>`src/components/search/useGlobalSearch.ts`<br>`src/hooks/intelligence/useMagicUpGeneration.ts` |
+| rls | `mockup_drafts`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useMockupDraft.ts`<br>`src/hooks/mockup/useMockupDraft.ts` |
 | rls | `product_materials`: RLS ligado sem nenhuma política → só service_role acessa |  |
-| rls | `product_price_freshness_overrides`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/hooks/products/useProductFreshnessOverride.ts`<br>`src/hooks/useProductFreshnessOverride.ts` |
-| rls | `role_migration_batches`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/admin/useRoleMigration.ts`<br>`src/hooks/useRoleMigration.ts` |
-| rls | `role_migration_items`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/admin/useRoleMigration.ts`<br>`src/hooks/useRoleMigration.ts` |
-| rls | `security_settings`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/useGeoBlocking.ts` |
-| rls | `seller_cart_items`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts`<br>`src/hooks/useSellerCarts.ts` |
-| rls | `seller_carts`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts`<br>`src/hooks/useSellerCarts.ts` |
+| rls | `product_price_freshness_overrides`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useProductFreshnessOverride.ts`<br>`src/hooks/products/useProductFreshnessOverride.ts` |
+| rls | `role_migration_batches`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useRoleMigration.ts`<br>`src/hooks/admin/useRoleMigration.ts` |
+| rls | `role_migration_items`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useRoleMigration.ts`<br>`src/hooks/admin/useRoleMigration.ts` |
+| rls | `security_settings`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useGeoBlocking.ts` |
+| rls | `seller_cart_items`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useSellerCarts.ts`<br>`src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
+| rls | `seller_carts`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useSellerCarts.ts`<br>`src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
 | rls | `supplier_products_raw`: RLS ligado sem nenhuma política → só service_role acessa |  |
 | rls | `tabela_preco_gravacao_oficial`: RLS ligado sem nenhuma política → só service_role acessa | `src/lib/external-db/rpc-native.ts` |
-| rls | `user_comparisons`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/compare/ShareComparisonDialog.tsx`<br>`src/hooks/comparison/useComparisonSync.ts`<br>`src/hooks/useComparisonSync.ts` |
-| rls | `user_onboarding`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/hooks/ui/useOnboarding.ts`<br>`src/hooks/useOnboarding.ts` |
-| rls | `user_onboarding`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/ui/useOnboarding.ts`<br>`src/hooks/useOnboarding.ts` |
-| rls | `user_onboarding`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/hooks/ui/useOnboarding.ts`<br>`src/hooks/useOnboarding.ts` |
+| rls | `user_comparisons`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/components/compare/ShareComparisonDialog.tsx`<br>`recovery/src-legacy/src/hooks/useComparisonSync.ts`<br>`src/hooks/comparison/useComparisonSync.ts` |
+| rls | `user_onboarding`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useOnboarding.ts`<br>`src/hooks/ui/useOnboarding.ts` |
+| rls | `user_onboarding`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useOnboarding.ts`<br>`src/hooks/ui/useOnboarding.ts` |
+| rls | `user_onboarding`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useOnboarding.ts`<br>`src/hooks/ui/useOnboarding.ts` |
 | dinheiro | `ops.pgss_history.total_exec_time` guarda dinheiro em `double precision NOT NULL` (ponto flutuante) — arredondamento imprevisível; padrão é numeric |  |
 | edge | edge function `a` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
 | edge | edge function `b` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |

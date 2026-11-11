@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2277,
+ "total": 2290,
  "por_tipo": {
-  "contrato": 56,
+  "contrato": 57,
   "e2e": 676,
   "pytest": 2,
   "qa": 17,
-  "unit": 1526
+  "unit": 1538
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 863
+   "arquivos": 862
   },
   {
    "padrao": "e2e/",
@@ -24,11 +24,11 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 606
+   "arquivos": 618
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 139
+   "arquivos": 141
   },
   {
    "padrao": "outro",
@@ -4443,6 +4443,105 @@
    "casos": 4
   },
   {
+   "arquivo": "recovery/src-legacy/src/hooks/useAdvancedFilters.unit.test.tsx",
+   "tipo": "unit",
+   "linhas": 158,
+   "testa": [
+    "recovery/src-legacy/src/hooks/useAdvancedFilters.ts",
+    "recovery/src-legacy/src/hooks/useExternalDatabase.ts",
+    "src/constants/filters.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/hooks/useGenericFuzzySearch.unit.test.tsx",
+   "tipo": "unit",
+   "linhas": 71,
+   "testa": [
+    "recovery/src-legacy/src/hooks/useGenericFuzzySearch.ts"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/hooks/useIPValidation.test.ts",
+   "tipo": "unit",
+   "linhas": 277,
+   "testa": [
+    "recovery/src-legacy/src/hooks/useIPValidation.ts",
+    "src/integrations/supabase/client.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/hooks/useLoginAttempts.unit.test.tsx",
+   "tipo": "unit",
+   "linhas": 49,
+   "testa": [
+    "recovery/src-legacy/src/hooks/useLoginAttempts.ts"
+   ],
+   "casos": 1
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/Auth.test.tsx",
+   "tipo": "unit",
+   "linhas": 80,
+   "testa": [
+    "recovery/src-legacy/src/pages/Auth.tsx"
+   ],
+   "casos": 3
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/test/setup.ts",
+   "tipo": "unit",
+   "linhas": 16,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/tests/ThemeInitializer.test.tsx",
+   "tipo": "unit",
+   "linhas": 84,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/utils/__tests__/color-matching.test.ts",
+   "tipo": "unit",
+   "linhas": 73,
+   "testa": [],
+   "casos": 9
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/utils/masks.unit.test.tsx",
+   "tipo": "unit",
+   "linhas": 45,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/utils/price-freshness.test.ts",
+   "tipo": "unit",
+   "linhas": 137,
+   "testa": [],
+   "casos": 15
+  },
+  {
+   "arquivo": "recovery/src-legacy/tests/components/command/GlobalCommandBar.test.tsx",
+   "tipo": "unit",
+   "linhas": 32,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "recovery/src-legacy/tests/hooks/useQuoteTemplates.test.tsx",
+   "tipo": "unit",
+   "linhas": 34,
+   "testa": [
+    "src/contexts/AuthContext.tsx"
+   ],
+   "casos": 1
+  },
+  {
    "arquivo": "scripts/__tests__/calibrate-collapse-thresholds.test.ts",
    "tipo": "unit",
    "linhas": 45,
@@ -6872,6 +6971,43 @@
    "casos": 6
   },
   {
+   "arquivo": "src/components/search/__tests__/AdvancedSearch.test.tsx",
+   "tipo": "unit",
+   "linhas": 247,
+   "testa": [
+    "src/components/search/AdvancedSearch.tsx",
+    "src/components/ui/tooltip.tsx"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "src/components/search/__tests__/EmptySearchState.test.tsx",
+   "tipo": "unit",
+   "linhas": 77,
+   "testa": [
+    "src/components/search/EmptySearchState.tsx"
+   ],
+   "casos": 6
+  },
+  {
+   "arquivo": "src/components/search/__tests__/FloatingParticles.test.tsx",
+   "tipo": "unit",
+   "linhas": 112,
+   "testa": [
+    "src/components/search/voice/FloatingParticles.tsx"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "src/components/search/__tests__/GlobalSearch.test.tsx",
+   "tipo": "unit",
+   "linhas": 178,
+   "testa": [
+    "src/components/search/GlobalSearch.tsx"
+   ],
+   "casos": 10
+  },
+  {
    "arquivo": "src/components/search/__tests__/GlobalSearchIdleState.test.tsx",
    "tipo": "unit",
    "linhas": 88,
@@ -6881,6 +7017,16 @@
     "src/components/ui/tooltip.tsx"
    ],
    "casos": 3
+  },
+  {
+   "arquivo": "src/components/search/__tests__/GlobalSearchIdleStateInteractions.test.tsx",
+   "tipo": "unit",
+   "linhas": 93,
+   "testa": [
+    "src/components/search/GlobalSearchIdleState.tsx",
+    "src/components/ui/command.tsx"
+   ],
+   "casos": 6
   },
   {
    "arquivo": "src/components/search/__tests__/GlobalSearchPaletteShortcuts.test.tsx",
@@ -6937,6 +7083,36 @@
    "casos": 26
   },
   {
+   "arquivo": "src/components/search/__tests__/SearchWithSuggestions.test.tsx",
+   "tipo": "unit",
+   "linhas": 126,
+   "testa": [
+    "src/components/search/SearchWithSuggestions.tsx"
+   ],
+   "casos": 6
+  },
+  {
+   "arquivo": "src/components/search/__tests__/SmartSearchInput.test.tsx",
+   "tipo": "unit",
+   "linhas": 221,
+   "testa": [
+    "src/components/search/SmartSearchInput.tsx",
+    "src/components/ui/tooltip.tsx"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/components/search/__tests__/useGlobalSearch.test.ts",
+   "tipo": "unit",
+   "linhas": 558,
+   "testa": [
+    "src/components/search/searchCache.ts",
+    "src/components/search/useGlobalSearch.ts",
+    "src/integrations/supabase/client.ts"
+   ],
+   "casos": 23
+  },
+  {
    "arquivo": "src/components/search/__tests__/useQuickSuggestions.test.ts",
    "tipo": "unit",
    "linhas": 27,
@@ -6945,6 +7121,42 @@
     "src/hooks/products/useCategoryIcons.ts"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "src/components/search/__tests__/VisualSearchButton.test.tsx",
+   "tipo": "unit",
+   "linhas": 113,
+   "testa": [
+    "src/components/search/VisualSearchButton.tsx"
+   ],
+   "casos": 6
+  },
+  {
+   "arquivo": "src/components/search/__tests__/VoiceOverlaySections.test.tsx",
+   "tipo": "unit",
+   "linhas": 73,
+   "testa": [
+    "src/components/search/voice/VoiceOverlaySections.tsx"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "src/components/search/__tests__/VoiceSearchOverlay.test.tsx",
+   "tipo": "unit",
+   "linhas": 429,
+   "testa": [
+    "src/components/search/VoiceSearchOverlay.tsx"
+   ],
+   "casos": 43
+  },
+  {
+   "arquivo": "src/components/search/__tests__/VoiceSearchOverlayConnected.test.tsx",
+   "tipo": "unit",
+   "linhas": 101,
+   "testa": [
+    "src/components/search/VoiceSearchOverlayConnected.tsx"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "src/components/shared/__tests__/Clickable.fuzz.test.tsx",
@@ -8272,45 +8484,6 @@
    "casos": 3
   },
   {
-   "arquivo": "src/hooks/useAdvancedFilters.unit.test.tsx",
-   "tipo": "unit",
-   "linhas": 158,
-   "testa": [
-    "src/constants/filters.ts",
-    "src/hooks/useAdvancedFilters.ts",
-    "src/hooks/useExternalDatabase.ts"
-   ],
-   "casos": 8
-  },
-  {
-   "arquivo": "src/hooks/useGenericFuzzySearch.unit.test.tsx",
-   "tipo": "unit",
-   "linhas": 71,
-   "testa": [
-    "src/hooks/useGenericFuzzySearch.ts"
-   ],
-   "casos": 7
-  },
-  {
-   "arquivo": "src/hooks/useIPValidation.test.ts",
-   "tipo": "unit",
-   "linhas": 277,
-   "testa": [
-    "src/hooks/useIPValidation.ts",
-    "src/integrations/supabase/client.ts"
-   ],
-   "casos": 11
-  },
-  {
-   "arquivo": "src/hooks/useLoginAttempts.unit.test.tsx",
-   "tipo": "unit",
-   "linhas": 49,
-   "testa": [
-    "src/hooks/useLoginAttempts.ts"
-   ],
-   "casos": 1
-  },
-  {
    "arquivo": "src/hooks/useProductColorSwatch.test.tsx",
    "tipo": "unit",
    "linhas": 162,
@@ -9397,16 +9570,6 @@
     "src/pages/auth/SSOCallbackPage.tsx"
    ],
    "casos": 7
-  },
-  {
-   "arquivo": "src/pages/Auth.test.tsx",
-   "tipo": "unit",
-   "linhas": 80,
-   "testa": [
-    "src/components/ui/toaster.tsx",
-    "src/pages/Auth.tsx"
-   ],
-   "casos": 3
   },
   {
    "arquivo": "src/pages/auth/__tests__/auth-copy.smoke.test.ts",
@@ -10638,13 +10801,6 @@
    "casos": 0
   },
   {
-   "arquivo": "src/test/setup.ts",
-   "tipo": "unit",
-   "linhas": 16,
-   "testa": [],
-   "casos": 0
-  },
-  {
    "arquivo": "src/tests/AdminLayout.test.tsx",
    "tipo": "unit",
    "linhas": 143,
@@ -10971,17 +11127,6 @@
    "casos": 2
   },
   {
-   "arquivo": "src/tests/ThemeInitializer.test.tsx",
-   "tipo": "unit",
-   "linhas": 84,
-   "testa": [
-    "src/components/ThemeInitializer.tsx",
-    "src/contexts/ThemeContext.tsx",
-    "src/lib/theme-presets.ts"
-   ],
-   "casos": 3
-  },
-  {
    "arquivo": "src/tests/ThemeRuntime.test.tsx",
    "tipo": "unit",
    "linhas": 49,
@@ -11097,15 +11242,6 @@
     "src/utils/undoToast.tsx"
    ],
    "casos": 18
-  },
-  {
-   "arquivo": "src/utils/__tests__/color-matching.test.ts",
-   "tipo": "unit",
-   "linhas": 73,
-   "testa": [
-    "src/utils/color-matching.ts"
-   ],
-   "casos": 9
   },
   {
    "arquivo": "src/utils/__tests__/image-utils.blurhash.test.ts",
@@ -11242,24 +11378,6 @@
     "src/utils/masks.ts"
    ],
    "casos": 24
-  },
-  {
-   "arquivo": "src/utils/masks.unit.test.tsx",
-   "tipo": "unit",
-   "linhas": 45,
-   "testa": [
-    "src/utils/masks.ts"
-   ],
-   "casos": 8
-  },
-  {
-   "arquivo": "src/utils/price-freshness.test.ts",
-   "tipo": "unit",
-   "linhas": 137,
-   "testa": [
-    "src/utils/price-freshness.ts"
-   ],
-   "casos": 15
   },
   {
    "arquivo": "supabase/functions/_shared/connection-test-runner.test.ts",
@@ -12321,15 +12439,6 @@
     "src/lib/cloud-status.ts"
    ],
    "casos": 12
-  },
-  {
-   "arquivo": "tests/components/command/GlobalCommandBar.test.tsx",
-   "tipo": "unit",
-   "linhas": 32,
-   "testa": [
-    "src/components/command/GlobalCommandBar.tsx"
-   ],
-   "casos": 2
   },
   {
    "arquivo": "tests/components/dependency-compatibility-react19.test.tsx",
@@ -13936,7 +14045,6 @@
    "linhas": 143,
    "testa": [
     "src/components/ui/tooltip.tsx",
-    "src/pages/ComparePage.tsx",
     "src/stores/useComparisonStore.ts"
    ],
    "casos": 2
@@ -13954,7 +14062,6 @@
    "linhas": 330,
    "testa": [
     "src/components/ui/tooltip.tsx",
-    "src/pages/ComparePage.tsx",
     "src/stores/useComparisonStore.ts"
    ],
    "casos": 7
@@ -13972,7 +14079,6 @@
    "linhas": 130,
    "testa": [
     "src/components/ui/tooltip.tsx",
-    "src/pages/ComparePage.tsx",
     "src/stores/useComparisonStore.ts"
    ],
    "casos": 3
@@ -13983,7 +14089,6 @@
    "linhas": 122,
    "testa": [
     "src/components/ui/tooltip.tsx",
-    "src/pages/ComparePage.tsx",
     "src/stores/useComparisonStore.ts"
    ],
    "casos": 2
@@ -14001,7 +14106,6 @@
    "linhas": 134,
    "testa": [
     "src/components/ui/tooltip.tsx",
-    "src/pages/ComparePage.tsx",
     "src/stores/useComparisonStore.ts"
    ],
    "casos": 4
@@ -14030,7 +14134,6 @@
     "src/contexts/AuthContext.tsx",
     "src/contexts/ProductsContext.tsx",
     "src/integrations/supabase/client.ts",
-    "src/pages/FavoritesPage.tsx",
     "src/stores/useFavoritesStore.ts"
    ],
    "casos": 5
@@ -14075,7 +14178,6 @@
    "linhas": 117,
    "testa": [
     "src/components/ui/tooltip.tsx",
-    "src/pages/QuoteBuilderPage.tsx",
     "src/stores/useComparisonStore.ts"
    ],
    "casos": 4
@@ -14086,7 +14188,6 @@
    "linhas": 104,
    "testa": [
     "src/components/ui/tooltip.tsx",
-    "src/pages/QuoteBuilderPage.tsx",
     "src/stores/useComparisonStore.ts"
    ],
    "casos": 3
@@ -14103,8 +14204,7 @@
    "tipo": "e2e",
    "linhas": 162,
    "testa": [
-    "src/components/ui/tooltip.tsx",
-    "src/pages/QuoteBuilderPage.tsx"
+    "src/components/ui/tooltip.tsx"
    ],
    "casos": 5
   },
@@ -14113,8 +14213,7 @@
    "tipo": "e2e",
    "linhas": 113,
    "testa": [
-    "src/components/ui/tooltip.tsx",
-    "src/pages/QuoteBuilderPage.tsx"
+    "src/components/ui/tooltip.tsx"
    ],
    "casos": 3
   },
@@ -14123,8 +14222,7 @@
    "tipo": "e2e",
    "linhas": 120,
    "testa": [
-    "src/components/ui/tooltip.tsx",
-    "src/pages/QuoteBuilderPage.tsx"
+    "src/components/ui/tooltip.tsx"
    ],
    "casos": 4
   },
@@ -15744,34 +15842,33 @@
   {
    "arquivo": "tests/hooks/useBridgeMetricsCleanup.test.ts",
    "tipo": "unit",
-   "linhas": 56,
+   "linhas": 60,
    "testa": [
     "src/hooks/dev/useBridgeMetrics.ts",
-    "src/lib/telemetry/bridgeCallMetrics.ts",
-    "src/lib/telemetry/longTaskWatchdog.ts"
+    "src/lib/external-db/bridge-status-events.ts",
+    "src/lib/telemetry/bridgeCallMetrics.ts"
    ],
-   "casos": 2
+   "casos": 1
   },
   {
    "arquivo": "tests/hooks/useBridgeMetricsPerformance.test.ts",
    "tipo": "unit",
-   "linhas": 65,
+   "linhas": 110,
    "testa": [
     "src/hooks/dev/useBridgeMetrics.ts",
-    "src/lib/telemetry/bridgeCallMetrics.ts",
-    "src/lib/telemetry/longTaskWatchdog.ts"
+    "src/lib/telemetry/bridgeCallMetrics.ts"
    ],
-   "casos": 2
+   "casos": 4
   },
   {
    "arquivo": "tests/hooks/useBridgeStatusBanner.test.ts",
    "tipo": "unit",
-   "linhas": 116,
+   "linhas": 102,
    "testa": [
     "src/hooks/useBridgeStatusBanner.ts",
     "src/lib/external-db/bridge-status-events.ts"
    ],
-   "casos": 5
+   "casos": 6
   },
   {
    "arquivo": "tests/hooks/useBulkSelection-extended.test.ts",
@@ -15929,6 +16026,16 @@
     "src/hooks/common/useDebouncedFilters.ts"
    ],
    "casos": 3
+  },
+  {
+   "arquivo": "tests/hooks/useDevGate.ssr-contract.test.tsx",
+   "tipo": "contrato",
+   "linhas": 53,
+   "testa": [
+    "src/hooks/admin/useDevGate.ts",
+    "src/lib/system/dev-gate/DevInfraGate.ts"
+   ],
+   "casos": 2
   },
   {
    "arquivo": "tests/hooks/useDevGate.test.ts",
@@ -16327,16 +16434,6 @@
    "casos": 13
   },
   {
-   "arquivo": "tests/hooks/useQuoteTemplates.test.tsx",
-   "tipo": "unit",
-   "linhas": 34,
-   "testa": [
-    "src/contexts/AuthContext.tsx",
-    "src/hooks/useQuoteTemplates.ts"
-   ],
-   "casos": 1
-  },
-  {
    "arquivo": "tests/hooks/useRBAC.test.tsx",
    "tipo": "unit",
    "linhas": 122,
@@ -16524,7 +16621,7 @@
    "tipo": "unit",
    "linhas": 218,
    "testa": [
-    "src/hooks/useTechniquePricing.ts"
+    "src/hooks/simulation/useTechniquePricing.ts"
    ],
    "casos": 16
   },
@@ -17676,8 +17773,8 @@
    "tipo": "unit",
    "linhas": 573,
    "testa": [
-    "src/hooks/useKitBuilder.ts",
     "src/lib/db/postgrest.ts",
+    "src/lib/kit-builder/types.ts",
     "src/pages/kit-builder/useKitBuilderQuote.ts"
    ],
    "casos": 20
@@ -19297,6 +19394,12 @@
   "api/ready.ts": 1,
   "api/sitemap.ts": 1,
   "playwright.config.ts": 1,
+  "recovery/src-legacy/src/hooks/useAdvancedFilters.ts": 1,
+  "recovery/src-legacy/src/hooks/useExternalDatabase.ts": 1,
+  "recovery/src-legacy/src/hooks/useGenericFuzzySearch.ts": 1,
+  "recovery/src-legacy/src/hooks/useIPValidation.ts": 1,
+  "recovery/src-legacy/src/hooks/useLoginAttempts.ts": 1,
+  "recovery/src-legacy/src/pages/Auth.tsx": 1,
   "scripts/append-edge-deploy-receipt.mjs": 1,
   "scripts/append-migration-receipt.mjs": 1,
   "scripts/capacity-growth-projection.mjs": 1,
@@ -19341,7 +19444,7 @@
   "src/components/BridgeStatusBanner.tsx": 4,
   "src/components/LoadingScreen.tsx": 1,
   "src/components/RoleBadge.tsx": 1,
-  "src/components/ThemeInitializer.tsx": 3,
+  "src/components/ThemeInitializer.tsx": 2,
   "src/components/a11y/AriaLive.tsx": 6,
   "src/components/a11y/index.ts": 2,
   "src/components/admin/DiscountApprovalHeaderBadge.tsx": 1,
@@ -19378,7 +19481,6 @@
   "src/components/cart/cartCompanyCnpj.ts": 2,
   "src/components/catalog/BulkVariantWizard.tsx": 1,
   "src/components/catalog/CatalogToolbar.tsx": 4,
-  "src/components/command/GlobalCommandBar.tsx": 1,
   "src/components/common/BulkSelectionBar.tsx": 1,
   "src/components/common/IntelligenceBadges.tsx": 1,
   "src/components/common/PersistentBreadcrumbs.tsx": 2,
@@ -19562,14 +19664,23 @@
   "src/components/quotes/quoteAutoSaveStatus.ts": 1,
   "src/components/replenishments/ReplenishmentCards.tsx": 4,
   "src/components/replenishments/ReplenishmentToolbar.tsx": 1,
+  "src/components/search/AdvancedSearch.tsx": 1,
+  "src/components/search/EmptySearchState.tsx": 1,
+  "src/components/search/GlobalSearch.tsx": 1,
   "src/components/search/GlobalSearchHelpers.tsx": 1,
-  "src/components/search/GlobalSearchIdleState.tsx": 1,
+  "src/components/search/GlobalSearchIdleState.tsx": 2,
   "src/components/search/GlobalSearchPalette.tsx": 2,
   "src/components/search/HighlightMatch.tsx": 2,
-  "src/components/search/VoiceSearchOverlay.tsx": 1,
-  "src/components/search/searchCache.ts": 1,
-  "src/components/search/useGlobalSearch.ts": 1,
+  "src/components/search/SearchWithSuggestions.tsx": 1,
+  "src/components/search/SmartSearchInput.tsx": 1,
+  "src/components/search/VisualSearchButton.tsx": 1,
+  "src/components/search/VoiceSearchOverlay.tsx": 2,
+  "src/components/search/VoiceSearchOverlayConnected.tsx": 1,
+  "src/components/search/searchCache.ts": 2,
+  "src/components/search/useGlobalSearch.ts": 2,
   "src/components/search/useQuickSuggestions.ts": 1,
+  "src/components/search/voice/FloatingParticles.tsx": 1,
+  "src/components/search/voice/VoiceOverlaySections.tsx": 1,
   "src/components/security/SecurityDashboard.tsx": 1,
   "src/components/seo/PageSEO.tsx": 1,
   "src/components/shared/Clickable.tsx": 2,
@@ -19587,7 +19698,7 @@
   "src/components/ui/avatar.tsx": 1,
   "src/components/ui/button.tsx": 5,
   "src/components/ui/calendar.tsx": 3,
-  "src/components/ui/command.tsx": 1,
+  "src/components/ui/command.tsx": 2,
   "src/components/ui/currency-input.tsx": 4,
   "src/components/ui/date-picker-field.tsx": 1,
   "src/components/ui/dialog.tsx": 2,
@@ -19597,8 +19708,7 @@
   "src/components/ui/label.tsx": 3,
   "src/components/ui/popover.tsx": 2,
   "src/components/ui/select.tsx": 6,
-  "src/components/ui/toaster.tsx": 1,
-  "src/components/ui/tooltip.tsx": 109,
+  "src/components/ui/tooltip.tsx": 111,
   "src/components/ui/truncated-tooltip.tsx": 1,
   "src/components/workflows/WorkflowEditDialog.tsx": 1,
   "src/constants/filters.ts": 7,
@@ -19608,10 +19718,10 @@
   "src/contexts/OrganizationContext.tsx": 2,
   "src/contexts/ProductsContext.tsx": 3,
   "src/contexts/SellerCartContext.tsx": 9,
-  "src/contexts/ThemeContext.tsx": 17,
+  "src/contexts/ThemeContext.tsx": 16,
   "src/hooks/admin/index.ts": 5,
   "src/hooks/admin/useAllowedIPs.ts": 2,
-  "src/hooks/admin/useDevGate.ts": 13,
+  "src/hooks/admin/useDevGate.ts": 14,
   "src/hooks/admin/useGeoBlocking.ts": 1,
   "src/hooks/admin/useIPValidation.ts": 3,
   "src/hooks/admin/useIntelligenceBadgeSettings.ts": 3,
@@ -19740,7 +19850,7 @@
   "src/hooks/simulation/useGravacaoPriceV2.ts": 3,
   "src/hooks/simulation/useLogoColorAnalysis.ts": 2,
   "src/hooks/simulation/usePrintAreas.ts": 2,
-  "src/hooks/simulation/useTechniquePricing.ts": 1,
+  "src/hooks/simulation/useTechniquePricing.ts": 2,
   "src/hooks/simulator/useUndoRedo.ts": 1,
   "src/hooks/simulator/wizardReducer.ts": 1,
   "src/hooks/stock/stockAlerts.ts": 2,
@@ -19756,23 +19866,15 @@
   "src/hooks/ui/useScroll.ts": 1,
   "src/hooks/ui/useScrollLockFix.ts": 1,
   "src/hooks/ui/useWorkspaceNotifications.tsx": 9,
-  "src/hooks/useAdvancedFilters.ts": 1,
   "src/hooks/useBridgeStatusBanner.ts": 2,
   "src/hooks/useDevGate.ts": 5,
-  "src/hooks/useExternalDatabase.ts": 1,
   "src/hooks/useFutureStockPreference.ts": 2,
-  "src/hooks/useGenericFuzzySearch.ts": 1,
-  "src/hooks/useIPValidation.ts": 1,
-  "src/hooks/useKitBuilder.ts": 1,
-  "src/hooks/useLoginAttempts.ts": 1,
   "src/hooks/useProductColorSwatch.ts": 2,
-  "src/hooks/useQuoteTemplates.ts": 1,
   "src/hooks/useReplenishments.ts": 1,
-  "src/hooks/useTechniquePricing.ts": 1,
   "src/hooks/voice/processTranscript.ts": 2,
   "src/hooks/voice/retry.ts": 2,
   "src/hooks/voice/types.ts": 1,
-  "src/integrations/supabase/client.ts": 47,
+  "src/integrations/supabase/client.ts": 48,
   "src/integrations/supabase/gold-relations.ts": 1,
   "src/integrations/supabase/types.ts": 3,
   "src/lib/access/access-policy.ts": 1,
@@ -19815,7 +19917,7 @@
   "src/lib/error-reporter.ts": 1,
   "src/lib/external-db-prewarm.ts": 1,
   "src/lib/external-db/batch-import.ts": 1,
-  "src/lib/external-db/bridge-status-events.ts": 4,
+  "src/lib/external-db/bridge-status-events.ts": 5,
   "src/lib/external-db/bridge.ts": 5,
   "src/lib/external-db/immutableCache.ts": 1,
   "src/lib/external-db/index.ts": 3,
@@ -19851,7 +19953,7 @@
   "src/lib/kit-builder/item-sort.ts": 1,
   "src/lib/kit-builder/persistence.ts": 1,
   "src/lib/kit-builder/price-calculator.ts": 2,
-  "src/lib/kit-builder/types.ts": 5,
+  "src/lib/kit-builder/types.ts": 6,
   "src/lib/kit-builder/volume-calculator.ts": 1,
   "src/lib/kit-builder/weight.ts": 1,
   "src/lib/kit-library/buildCustomKitInsert.ts": 1,
@@ -19899,13 +20001,13 @@
   "src/lib/supabase-untyped.ts": 1,
   "src/lib/supplier-colors.ts": 2,
   "src/lib/sw-register.ts": 1,
-  "src/lib/system/dev-gate/DevInfraGate.ts": 4,
+  "src/lib/system/dev-gate/DevInfraGate.ts": 5,
   "src/lib/system/dev-gate/providers.ts": 1,
   "src/lib/system/dev-gate/types.ts": 2,
   "src/lib/telemetry/bridgeCallMetrics.ts": 6,
   "src/lib/telemetry/correlationId.ts": 3,
   "src/lib/telemetry/instrumentationControl.ts": 1,
-  "src/lib/telemetry/longTaskWatchdog.ts": 4,
+  "src/lib/telemetry/longTaskWatchdog.ts": 2,
   "src/lib/telemetry/navigationMetrics.ts": 1,
   "src/lib/telemetry/requestId.ts": 2,
   "src/lib/telemetry/restoreEventSchema.ts": 3,
@@ -19913,7 +20015,7 @@
   "src/lib/telemetry/secretsManagerCallMetrics.ts": 1,
   "src/lib/telemetry/structuredLogger.ts": 3,
   "src/lib/textUtils.ts": 3,
-  "src/lib/theme-presets.ts": 6,
+  "src/lib/theme-presets.ts": 5,
   "src/lib/to-error-message.ts": 1,
   "src/lib/trending-score.ts": 1,
   "src/lib/utils.ts": 6,
@@ -19922,12 +20024,8 @@
   "src/lib/validations/quoteSchema.ts": 2,
   "src/lib/variant-matching.ts": 1,
   "src/logic/quotes/calculations.ts": 4,
-  "src/pages/Auth.tsx": 1,
-  "src/pages/ComparePage.tsx": 5,
-  "src/pages/FavoritesPage.tsx": 1,
   "src/pages/Index.tsx": 2,
   "src/pages/NotFound.tsx": 2,
-  "src/pages/QuoteBuilderPage.tsx": 5,
   "src/pages/Simulation.tsx": 1,
   "src/pages/admin/AdminConexoesPage.tsx": 2,
   "src/pages/admin/AdminConexoesStatusPage.tsx": 1,
@@ -20040,15 +20138,14 @@
   "src/utils/cnpj-schema.ts": 4,
   "src/utils/color-group-hex.ts": 1,
   "src/utils/color-image-resolver.ts": 2,
-  "src/utils/color-matching.ts": 1,
   "src/utils/color-variant-carousel.ts": 1,
   "src/utils/colorSorting.ts": 3,
   "src/utils/currency.ts": 1,
   "src/utils/image-utils.ts": 4,
   "src/utils/imageProxy.ts": 1,
   "src/utils/laser-logo-processor.ts": 1,
-  "src/utils/masks.ts": 10,
-  "src/utils/price-freshness.ts": 8,
+  "src/utils/masks.ts": 9,
+  "src/utils/price-freshness.ts": 7,
   "src/utils/product-colors.ts": 1,
   "src/utils/product-mapper.ts": 3,
   "src/utils/product-sorting.ts": 4,
@@ -20197,6 +20294,197 @@
    "src/pages/tools/VisualSearchPage.tsx"
   ],
   "hooks": [
+   "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
+   "recovery/src-legacy/src/hooks/gravacao/useFornecedoresGravacao.ts",
+   "recovery/src-legacy/src/hooks/gravacao/useVariantesGravacao.ts",
+   "recovery/src-legacy/src/hooks/use-mobile.tsx",
+   "recovery/src-legacy/src/hooks/use-toast.ts",
+   "recovery/src-legacy/src/hooks/useAccessSecurity.ts",
+   "recovery/src-legacy/src/hooks/useAdminKitTemplates.ts",
+   "recovery/src-legacy/src/hooks/useAIRecommendations.ts",
+   "recovery/src-legacy/src/hooks/useAiRouter.ts",
+   "recovery/src-legacy/src/hooks/useAiUsage.ts",
+   "recovery/src-legacy/src/hooks/useAllowedIPs.ts",
+   "recovery/src-legacy/src/hooks/useAppBootstrap.ts",
+   "recovery/src-legacy/src/hooks/useAuditLog.ts",
+   "recovery/src-legacy/src/hooks/useAutoSaveQuote.ts",
+   "recovery/src-legacy/src/hooks/useBulkSelection.ts",
+   "recovery/src-legacy/src/hooks/useCartTemplates.ts",
+   "recovery/src-legacy/src/hooks/useCatalogFiltering.ts",
+   "recovery/src-legacy/src/hooks/useCatalogPrefetch.ts",
+   "recovery/src-legacy/src/hooks/useCatalogRealStats.ts",
+   "recovery/src-legacy/src/hooks/useCatalogState.ts",
+   "recovery/src-legacy/src/hooks/useCategories.ts",
+   "recovery/src-legacy/src/hooks/useCategoriesTree.ts",
+   "recovery/src-legacy/src/hooks/useCategoryIcons.ts",
+   "recovery/src-legacy/src/hooks/useClientTopProducts.ts",
+   "recovery/src-legacy/src/hooks/useCloudStatus.ts",
+   "recovery/src-legacy/src/hooks/useCollections.ts",
+   "recovery/src-legacy/src/hooks/useCollectionsGlobalShortcuts.ts",
+   "recovery/src-legacy/src/hooks/useColorEnrichment.ts",
+   "recovery/src-legacy/src/hooks/useColors.ts",
+   "recovery/src-legacy/src/hooks/useColorSystem.ts",
+   "recovery/src-legacy/src/hooks/useCommemorativeDates.ts",
+   "recovery/src-legacy/src/hooks/useCommercialIntelligence.ts",
+   "recovery/src-legacy/src/hooks/useComparison.ts",
+   "recovery/src-legacy/src/hooks/useComparisonScore.ts",
+   "recovery/src-legacy/src/hooks/useComparisonShortcuts.ts",
+   "recovery/src-legacy/src/hooks/useComparisonSync.ts",
+   "recovery/src-legacy/src/hooks/useComparisonWeights.ts",
+   "recovery/src-legacy/src/hooks/useConnectionsOverview.ts",
+   "recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts",
+   "recovery/src-legacy/src/hooks/useConnectionTestDetails.ts",
+   "recovery/src-legacy/src/hooks/useConnectionTester.ts",
+   "recovery/src-legacy/src/hooks/useConnectionTestHistory.ts",
+   "recovery/src-legacy/src/hooks/useConsecutiveFailures.ts",
+   "recovery/src-legacy/src/hooks/useContextualSuggestions.ts",
+   "recovery/src-legacy/src/hooks/useCrmCompanies.ts",
+   "recovery/src-legacy/src/hooks/useCurrentOrgId.ts",
+   "recovery/src-legacy/src/hooks/useCurrentSection.ts",
+   "recovery/src-legacy/src/hooks/useCustomizationPrice.ts",
+   "recovery/src-legacy/src/hooks/useCustomKitPersistence.ts",
+   "recovery/src-legacy/src/hooks/useCustomKitsRealtime.ts",
+   "recovery/src-legacy/src/hooks/useDebounce.ts",
+   "recovery/src-legacy/src/hooks/useDebouncedFilters.ts",
+   "recovery/src-legacy/src/hooks/useDevAccessAudit.ts",
+   "recovery/src-legacy/src/hooks/useDeviceDetection.ts",
+   "recovery/src-legacy/src/hooks/useDiscountApproval.ts",
+   "recovery/src-legacy/src/hooks/useDropboxFiles.ts",
+   "recovery/src-legacy/src/hooks/useDuplicateKitDetector.ts",
+   "recovery/src-legacy/src/hooks/useEnrichedFavoriteItems.ts",
+   "recovery/src-legacy/src/hooks/useEntitySelectionMode.ts",
+   "recovery/src-legacy/src/hooks/useErrorHandler.ts",
+   "recovery/src-legacy/src/hooks/useExpertConversations.tsx",
+   "recovery/src-legacy/src/hooks/useExternalCategoriesQuery.ts",
+   "recovery/src-legacy/src/hooks/useExternalCollections.ts",
+   "recovery/src-legacy/src/hooks/useExternalDbInspect.ts",
+   "recovery/src-legacy/src/hooks/useExternalSimulator.ts",
+   "recovery/src-legacy/src/hooks/useExternalVariantStock.ts",
+   "recovery/src-legacy/src/hooks/useFavoriteLists.ts",
+   "recovery/src-legacy/src/hooks/useFavoriteQuickAdd.ts",
+   "recovery/src-legacy/src/hooks/useFavorites.ts",
+   "recovery/src-legacy/src/hooks/useFavoritesGlobalShortcuts.ts",
+   "recovery/src-legacy/src/hooks/useFavoritesPageState.ts",
+   "recovery/src-legacy/src/hooks/useGeoBlocking.ts",
+   "recovery/src-legacy/src/hooks/useGlobalShortcuts.ts",
+   "recovery/src-legacy/src/hooks/useGravacaoPriceV2.ts",
+   "recovery/src-legacy/src/hooks/useGravacaoV2.ts",
+   "recovery/src-legacy/src/hooks/useInfiniteScroll.ts",
+   "recovery/src-legacy/src/hooks/useKitAutoSave.ts",
+   "recovery/src-legacy/src/hooks/useKitBuilder.ts",
+   "recovery/src-legacy/src/hooks/useKitBuilderPageState.ts",
+   "recovery/src-legacy/src/hooks/useKitBuilderQueries.ts",
+   "recovery/src-legacy/src/hooks/useKitBuilderTransformers.ts",
+   "recovery/src-legacy/src/hooks/useKitCollaboration.ts",
+   "recovery/src-legacy/src/hooks/useKitIdentitySuggestion.ts",
+   "recovery/src-legacy/src/hooks/useKitStockForecast.ts",
+   "recovery/src-legacy/src/hooks/useKitStockValidation.ts",
+   "recovery/src-legacy/src/hooks/useKitTemplates.ts",
+   "recovery/src-legacy/src/hooks/useKitUndoRedo.ts",
+   "recovery/src-legacy/src/hooks/useKitVariants.ts",
+   "recovery/src-legacy/src/hooks/useKitWizardShortcuts.ts",
+   "recovery/src-legacy/src/hooks/useLoginRateLimit.ts",
+   "recovery/src-legacy/src/hooks/useLogoColorAnalysis.ts",
+   "recovery/src-legacy/src/hooks/useMagicUpGeneration.ts",
+   "recovery/src-legacy/src/hooks/useMagicUpState.ts",
+   "recovery/src-legacy/src/hooks/useMarketIntelligenceMacro.ts",
+   "recovery/src-legacy/src/hooks/useMaterialFilter.ts",
+   "recovery/src-legacy/src/hooks/useMaterialGroups.ts",
+   "recovery/src-legacy/src/hooks/useMaterialTypes.ts",
+   "recovery/src-legacy/src/hooks/useMockupDraft.ts",
+   "recovery/src-legacy/src/hooks/useMockupGenerator.ts",
+   "recovery/src-legacy/src/hooks/useMockupTechniques.ts",
+   "recovery/src-legacy/src/hooks/useNotifications.ts",
+   "recovery/src-legacy/src/hooks/useNovelties.ts",
+   "recovery/src-legacy/src/hooks/useNoveltiesSelectionMode.ts",
+   "recovery/src-legacy/src/hooks/useOnboarding.ts",
+   "recovery/src-legacy/src/hooks/usePasswordBreachCheck.tsx",
+   "recovery/src-legacy/src/hooks/usePasswordResetRequests.ts",
+   "recovery/src-legacy/src/hooks/usePositionHistory.ts",
+   "recovery/src-legacy/src/hooks/usePrintAreas.ts",
+   "recovery/src-legacy/src/hooks/useProductAnalytics.ts",
+   "recovery/src-legacy/src/hooks/useProductBounds.ts",
+   "recovery/src-legacy/src/hooks/useProductCustomizationOptions.ts",
+   "recovery/src-legacy/src/hooks/useProductFreshnessOverride.ts",
+   "recovery/src-legacy/src/hooks/useProductFuzzySearch.ts",
+   "recovery/src-legacy/src/hooks/useProductImages.ts",
+   "recovery/src-legacy/src/hooks/useProductInsights.ts",
+   "recovery/src-legacy/src/hooks/useProductIntelligenceBadges.ts",
+   "recovery/src-legacy/src/hooks/useProductMatch.ts",
+   "recovery/src-legacy/src/hooks/useProductRecommendations.ts",
+   "recovery/src-legacy/src/hooks/useProducts.ts",
+   "recovery/src-legacy/src/hooks/useProductsByCategory.ts",
+   "recovery/src-legacy/src/hooks/useProductsByColor.ts",
+   "recovery/src-legacy/src/hooks/useProductsByMaterial.ts",
+   "recovery/src-legacy/src/hooks/useProductSeoAI.ts",
+   "recovery/src-legacy/src/hooks/useProductsLightweight.ts",
+   "recovery/src-legacy/src/hooks/useProductSupplierSources.ts",
+   "recovery/src-legacy/src/hooks/useProdutoPersonalizacao.ts",
+   "recovery/src-legacy/src/hooks/useProdutoRamoAtividade.ts",
+   "recovery/src-legacy/src/hooks/usePromoSalesRanking.ts",
+   "recovery/src-legacy/src/hooks/usePushNotifications.tsx",
+   "recovery/src-legacy/src/hooks/useQuoteBuilderState.ts",
+   "recovery/src-legacy/src/hooks/useQuoteComments.ts",
+   "recovery/src-legacy/src/hooks/useQuoteFunnel.ts",
+   "recovery/src-legacy/src/hooks/useQuoteHistory.ts",
+   "recovery/src-legacy/src/hooks/useQuoteItems.ts",
+   "recovery/src-legacy/src/hooks/useQuotes.ts",
+   "recovery/src-legacy/src/hooks/useQuoteTemplates.ts",
+   "recovery/src-legacy/src/hooks/useQuoteVersions.ts",
+   "recovery/src-legacy/src/hooks/useRamoAtividade.ts",
+   "recovery/src-legacy/src/hooks/useRamoAtividadeFilho.ts",
+   "recovery/src-legacy/src/hooks/useRamoAtividadeFilter.ts",
+   "recovery/src-legacy/src/hooks/useRBAC.tsx",
+   "recovery/src-legacy/src/hooks/useRecentlyViewed.ts",
+   "recovery/src-legacy/src/hooks/useRecentProducts.ts",
+   "recovery/src-legacy/src/hooks/useReducedMotion.ts",
+   "recovery/src-legacy/src/hooks/useReplenishmentsSelectionMode.ts",
+   "recovery/src-legacy/src/hooks/useRetestCooldownSetting.ts",
+   "recovery/src-legacy/src/hooks/useRoleMigration.ts",
+   "recovery/src-legacy/src/hooks/useSalesGoals.ts",
+   "recovery/src-legacy/src/hooks/useSalesHistory.ts",
+   "recovery/src-legacy/src/hooks/useSalesHistoryMacro.ts",
+   "recovery/src-legacy/src/hooks/useScheduledReports.ts",
+   "recovery/src-legacy/src/hooks/useScroll.ts",
+   "recovery/src-legacy/src/hooks/useScrollLockFix.ts",
+   "recovery/src-legacy/src/hooks/useSearch.ts",
+   "recovery/src-legacy/src/hooks/useSearchHistory.ts",
+   "recovery/src-legacy/src/hooks/useSecretsManager.ts",
+   "recovery/src-legacy/src/hooks/useSellerCarts.ts",
+   "recovery/src-legacy/src/hooks/useSellerDiscountLimits.ts",
+   "recovery/src-legacy/src/hooks/useSimilarKits.ts",
+   "recovery/src-legacy/src/hooks/useSimilarProducts.ts",
+   "recovery/src-legacy/src/hooks/useSimulation.ts",
+   "recovery/src-legacy/src/hooks/useSimulatorPreferences.ts",
+   "recovery/src-legacy/src/hooks/useSparklineSales.tsx",
+   "recovery/src-legacy/src/hooks/useSpeechRecognition.ts",
+   "recovery/src-legacy/src/hooks/useStepUpAuth.ts",
+   "recovery/src-legacy/src/hooks/useStockHistory.ts",
+   "recovery/src-legacy/src/hooks/useSupplierComparison.ts",
+   "recovery/src-legacy/src/hooks/useSupplierFiscalData.ts",
+   "recovery/src-legacy/src/hooks/useSupplierNames.ts",
+   "recovery/src-legacy/src/hooks/useSuppliers.ts",
+   "recovery/src-legacy/src/hooks/useSupplierSalesRanking.ts",
+   "recovery/src-legacy/src/hooks/useSupplierTrust.ts",
+   "recovery/src-legacy/src/hooks/useTechniquePricing.ts",
+   "recovery/src-legacy/src/hooks/useTechniquePricingOptions.ts",
+   "recovery/src-legacy/src/hooks/useTechniqueRecommendations.ts",
+   "recovery/src-legacy/src/hooks/useTecnicasUnificadas.ts",
+   "recovery/src-legacy/src/hooks/useTemplateSnapshot.ts",
+   "recovery/src-legacy/src/hooks/useTransactionalEmail.ts",
+   "recovery/src-legacy/src/hooks/useUndoStack.ts",
+   "recovery/src-legacy/src/hooks/useUnsavedChangesGuard.ts",
+   "recovery/src-legacy/src/hooks/useUrlState.ts",
+   "recovery/src-legacy/src/hooks/useVariantStock.ts",
+   "recovery/src-legacy/src/hooks/useVariantSupplierSources.ts",
+   "recovery/src-legacy/src/hooks/useVideoVariantLinks.ts",
+   "recovery/src-legacy/src/hooks/useVoiceAgent.ts",
+   "recovery/src-legacy/src/hooks/useVoiceCommandHistory.ts",
+   "recovery/src-legacy/src/hooks/useWorkspaceNotifications.tsx",
+   "recovery/src-legacy/src/pages/mockup-generator/MockupTechniqueHandlers.tsx",
+   "recovery/src-legacy/src/pages/quote-view/useQuoteViewData.ts",
+   "recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts",
+   "recovery/src-legacy/src/pages/seller-carts/useSellerCartsPage.ts",
    "scripts/ai-context/cenarios.mjs",
    "src/components/a11y/AccessibilityProvider.tsx",
    "src/components/admin/badges-manager/useBadgesManager.ts",
@@ -20311,9 +20599,7 @@
    "src/hooks/favorites/useFavoriteQuickAdd.ts",
    "src/hooks/favorites/useFavoritesGlobalShortcuts.ts",
    "src/hooks/favorites/useFavoritesPageState.ts",
-   "src/hooks/gravacao/useFornecedoresGravacao.ts",
    "src/hooks/gravacao/useTecnicasGravacao.ts",
-   "src/hooks/gravacao/useVariantesGravacao.ts",
    "src/hooks/intelligence/useAiRouter.ts",
    "src/hooks/intelligence/useAiUsage.ts",
    "src/hooks/intelligence/useCommemorativeDates.ts",
@@ -20419,190 +20705,9 @@
    "src/hooks/ui/usePushNotifications.tsx",
    "src/hooks/ui/useReducedMotion.ts",
    "src/hooks/ui/useSlashCommands.ts",
-   "src/hooks/use-mobile.tsx",
    "src/hooks/use-overlay-interactivity.ts",
-   "src/hooks/use-toast.ts",
-   "src/hooks/useAccessSecurity.ts",
-   "src/hooks/useAdminKitTemplates.ts",
-   "src/hooks/useAIRecommendations.ts",
-   "src/hooks/useAiRouter.ts",
-   "src/hooks/useAiUsage.ts",
-   "src/hooks/useAllowedIPs.ts",
-   "src/hooks/useAppBootstrap.ts",
-   "src/hooks/useAuditLog.ts",
-   "src/hooks/useAutoSaveQuote.ts",
-   "src/hooks/useBulkSelection.ts",
-   "src/hooks/useCartTemplates.ts",
-   "src/hooks/useCatalogFiltering.ts",
-   "src/hooks/useCatalogPrefetch.ts",
-   "src/hooks/useCatalogRealStats.ts",
-   "src/hooks/useCatalogState.ts",
-   "src/hooks/useCategories.ts",
-   "src/hooks/useCategoriesTree.ts",
-   "src/hooks/useCategoryIcons.ts",
-   "src/hooks/useClientTopProducts.ts",
-   "src/hooks/useCloudStatus.ts",
-   "src/hooks/useCollections.ts",
-   "src/hooks/useCollectionsGlobalShortcuts.ts",
-   "src/hooks/useColorEnrichment.ts",
-   "src/hooks/useColors.ts",
-   "src/hooks/useColorSystem.ts",
-   "src/hooks/useCommemorativeDates.ts",
-   "src/hooks/useCommercialIntelligence.ts",
-   "src/hooks/useComparison.ts",
-   "src/hooks/useComparisonScore.ts",
-   "src/hooks/useComparisonShortcuts.ts",
-   "src/hooks/useComparisonSync.ts",
-   "src/hooks/useComparisonWeights.ts",
-   "src/hooks/useConnectionsOverview.ts",
-   "src/hooks/useConnectionsOverviewFilters.ts",
-   "src/hooks/useConnectionTestDetails.ts",
-   "src/hooks/useConnectionTester.ts",
-   "src/hooks/useConnectionTestHistory.ts",
-   "src/hooks/useConsecutiveFailures.ts",
-   "src/hooks/useContextualSuggestions.ts",
-   "src/hooks/useCrmCompanies.ts",
-   "src/hooks/useCurrentOrgId.ts",
-   "src/hooks/useCurrentSection.ts",
-   "src/hooks/useCustomizationPrice.ts",
-   "src/hooks/useCustomKitPersistence.ts",
-   "src/hooks/useCustomKitsRealtime.ts",
-   "src/hooks/useDebounce.ts",
-   "src/hooks/useDebouncedFilters.ts",
-   "src/hooks/useDevAccessAudit.ts",
-   "src/hooks/useDeviceDetection.ts",
-   "src/hooks/useDiscountApproval.ts",
-   "src/hooks/useDropboxFiles.ts",
-   "src/hooks/useDuplicateKitDetector.ts",
-   "src/hooks/useEnrichedFavoriteItems.ts",
-   "src/hooks/useEntitySelectionMode.ts",
-   "src/hooks/useErrorHandler.ts",
-   "src/hooks/useExpertConversations.tsx",
-   "src/hooks/useExternalCategoriesQuery.ts",
-   "src/hooks/useExternalCollections.ts",
-   "src/hooks/useExternalDbInspect.ts",
-   "src/hooks/useExternalSimulator.ts",
-   "src/hooks/useExternalVariantStock.ts",
-   "src/hooks/useFavoriteLists.ts",
-   "src/hooks/useFavoriteQuickAdd.ts",
-   "src/hooks/useFavorites.ts",
-   "src/hooks/useFavoritesGlobalShortcuts.ts",
-   "src/hooks/useFavoritesPageState.ts",
-   "src/hooks/useGeoBlocking.ts",
-   "src/hooks/useGlobalShortcuts.ts",
-   "src/hooks/useGravacaoPriceV2.ts",
-   "src/hooks/useGravacaoV2.ts",
    "src/hooks/useHorizontalScroll.ts",
-   "src/hooks/useInfiniteScroll.ts",
-   "src/hooks/useKitAutoSave.ts",
-   "src/hooks/useKitBuilderPageState.ts",
-   "src/hooks/useKitBuilderQueries.ts",
-   "src/hooks/useKitBuilderTransformers.ts",
-   "src/hooks/useKitCollaboration.ts",
-   "src/hooks/useKitIdentitySuggestion.ts",
-   "src/hooks/useKitStockForecast.ts",
-   "src/hooks/useKitStockValidation.ts",
-   "src/hooks/useKitTemplates.ts",
-   "src/hooks/useKitUndoRedo.ts",
-   "src/hooks/useKitVariants.ts",
-   "src/hooks/useKitWizardShortcuts.ts",
-   "src/hooks/useLoginRateLimit.ts",
-   "src/hooks/useLogoColorAnalysis.ts",
-   "src/hooks/useMagicUpGeneration.ts",
-   "src/hooks/useMagicUpState.ts",
-   "src/hooks/useMarketIntelligenceMacro.ts",
-   "src/hooks/useMaterialFilter.ts",
-   "src/hooks/useMaterialGroups.ts",
-   "src/hooks/useMaterialTypes.ts",
-   "src/hooks/useMockupDraft.ts",
-   "src/hooks/useMockupGenerator.ts",
-   "src/hooks/useMockupTechniques.ts",
    "src/hooks/useNavigationAnalytics.ts",
-   "src/hooks/useNotifications.ts",
-   "src/hooks/useNovelties.ts",
-   "src/hooks/useNoveltiesSelectionMode.ts",
-   "src/hooks/useOnboarding.ts",
-   "src/hooks/usePasswordBreachCheck.tsx",
-   "src/hooks/usePasswordResetRequests.ts",
-   "src/hooks/usePositionHistory.ts",
-   "src/hooks/usePrintAreas.ts",
-   "src/hooks/useProductAnalytics.ts",
-   "src/hooks/useProductBounds.ts",
-   "src/hooks/useProductCustomizationOptions.ts",
-   "src/hooks/useProductFreshnessOverride.ts",
-   "src/hooks/useProductFuzzySearch.ts",
-   "src/hooks/useProductImages.ts",
-   "src/hooks/useProductInsights.ts",
-   "src/hooks/useProductIntelligenceBadges.ts",
-   "src/hooks/useProductMatch.ts",
-   "src/hooks/useProductRecommendations.ts",
-   "src/hooks/useProducts.ts",
-   "src/hooks/useProductsByCategory.ts",
-   "src/hooks/useProductsByColor.ts",
-   "src/hooks/useProductsByMaterial.ts",
-   "src/hooks/useProductSeoAI.ts",
-   "src/hooks/useProductsLightweight.ts",
-   "src/hooks/useProductSupplierSources.ts",
-   "src/hooks/useProdutoPersonalizacao.ts",
-   "src/hooks/useProdutoRamoAtividade.ts",
-   "src/hooks/usePromoSalesRanking.ts",
-   "src/hooks/usePushNotifications.tsx",
-   "src/hooks/useQuoteBuilderState.ts",
-   "src/hooks/useQuoteComments.ts",
-   "src/hooks/useQuoteFunnel.ts",
-   "src/hooks/useQuoteHistory.ts",
-   "src/hooks/useQuoteItems.ts",
-   "src/hooks/useQuotes.ts",
-   "src/hooks/useQuoteVersions.ts",
-   "src/hooks/useRamoAtividade.ts",
-   "src/hooks/useRamoAtividadeFilho.ts",
-   "src/hooks/useRamoAtividadeFilter.ts",
-   "src/hooks/useRBAC.tsx",
-   "src/hooks/useRecentlyViewed.ts",
-   "src/hooks/useRecentProducts.ts",
-   "src/hooks/useReducedMotion.ts",
-   "src/hooks/useReplenishmentsSelectionMode.ts",
-   "src/hooks/useRetestCooldownSetting.ts",
-   "src/hooks/useRoleMigration.ts",
-   "src/hooks/useSalesGoals.ts",
-   "src/hooks/useSalesHistory.ts",
-   "src/hooks/useSalesHistoryMacro.ts",
-   "src/hooks/useScheduledReports.ts",
-   "src/hooks/useScroll.ts",
-   "src/hooks/useScrollLockFix.ts",
-   "src/hooks/useSearch.ts",
-   "src/hooks/useSearchHistory.ts",
-   "src/hooks/useSecretsManager.ts",
-   "src/hooks/useSellerCarts.ts",
-   "src/hooks/useSellerDiscountLimits.ts",
-   "src/hooks/useSimilarKits.ts",
-   "src/hooks/useSimilarProducts.ts",
-   "src/hooks/useSimulation.ts",
-   "src/hooks/useSimulatorPreferences.ts",
-   "src/hooks/useSparklineSales.tsx",
-   "src/hooks/useSpeechRecognition.ts",
-   "src/hooks/useStepUpAuth.ts",
-   "src/hooks/useStockHistory.ts",
-   "src/hooks/useSupplierComparison.ts",
-   "src/hooks/useSupplierFiscalData.ts",
-   "src/hooks/useSupplierNames.ts",
-   "src/hooks/useSuppliers.ts",
-   "src/hooks/useSupplierSalesRanking.ts",
-   "src/hooks/useSupplierTrust.ts",
-   "src/hooks/useTechniquePricingOptions.ts",
-   "src/hooks/useTechniqueRecommendations.ts",
-   "src/hooks/useTecnicasUnificadas.ts",
-   "src/hooks/useTemplateSnapshot.ts",
-   "src/hooks/useTransactionalEmail.ts",
-   "src/hooks/useUndoStack.ts",
-   "src/hooks/useUnsavedChangesGuard.ts",
-   "src/hooks/useUrlState.ts",
-   "src/hooks/useVariantStock.ts",
-   "src/hooks/useVariantSupplierSources.ts",
-   "src/hooks/useVideoVariantLinks.ts",
-   "src/hooks/useVoiceAgent.ts",
-   "src/hooks/useVoiceCommandHistory.ts",
-   "src/hooks/useWorkspaceNotifications.tsx",
    "src/hooks/voice/useVoiceHistory.ts",
    "src/hooks/word-magic/useWordMagic.ts",
    "src/lib/auth/visibility-scope.ts",
@@ -20624,12 +20729,8 @@
    "src/pages/magazine/hooks/useMagazineBookmarks.ts",
    "src/pages/magazine/hooks/usePageZoom.ts",
    "src/pages/magazine/hooks/usePresentationMode.ts",
-   "src/pages/mockup-generator/MockupTechniqueHandlers.tsx",
    "src/pages/products/seller-carts/useSellerCartsPage.ts",
-   "src/pages/quote-view/useQuoteViewData.ts",
-   "src/pages/quotes-dashboard/useQuotesDashboard.ts",
    "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
-   "src/pages/seller-carts/useSellerCartsPage.ts",
    "src/stores/oracleVoiceBridge.ts",
    "src/stores/useRecentlyViewedStore.ts",
    "src/stores/useSearchStore.ts",

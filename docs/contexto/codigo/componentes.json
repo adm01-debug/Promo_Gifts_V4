@@ -2,14 +2,14 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "total": 1225,
- "orfaos": 104,
+ "orfaos": 162,
  "nomes_duplicados": {
   "AdvancedPriceSearchPage": [
-   "src/pages/AdvancedPriceSearchPage.tsx",
+   "recovery/src-legacy/src/pages/AdvancedPriceSearchPage.tsx",
    "src/pages/tools/AdvancedPriceSearchPage.tsx"
   ],
   "Auth": [
-   "src/pages/Auth.tsx",
+   "recovery/src-legacy/src/pages/Auth.tsx",
    "src/pages/auth/Auth.tsx"
   ],
   "BreadcrumbItem": [
@@ -21,15 +21,15 @@
    "src/components/products/VariantGridMatrix.tsx"
   ],
   "BusinessIntelligencePage": [
-   "src/pages/bi/BusinessIntelligencePage.tsx",
-   "src/pages/BusinessIntelligencePage.tsx"
+   "recovery/src-legacy/src/pages/BusinessIntelligencePage.tsx",
+   "src/pages/bi/BusinessIntelligencePage.tsx"
   ],
   "CardSkeleton": [
-   "src/components/loading/SkeletonShimmer.tsx",
+   "recovery/src-legacy/src/components/loading/SkeletonShimmer.tsx",
    "src/pages/admin/telemetry/TelemetrySkeletons.tsx"
   ],
   "CartActionsMenu": [
-   "src/components/cart/CartActionsMenu.tsx",
+   "recovery/src-legacy/src/components/cart/CartActionsMenu.tsx",
    "src/pages/products/seller-carts/CartActionsMenu.tsx"
   ],
   "CartItemSkeleton": [
@@ -37,47 +37,47 @@
    "src/components/cart/CartUtilComponents.tsx"
   ],
   "CartSidebar": [
-   "src/pages/products/seller-carts/CartSidebar.tsx",
-   "src/pages/seller-carts/CartSidebar.tsx"
+   "recovery/src-legacy/src/pages/seller-carts/CartSidebar.tsx",
+   "src/pages/products/seller-carts/CartSidebar.tsx"
   ],
   "CategoryIcon": [
    "src/components/ui/CategoryIcon.tsx",
    "src/pages/magazine/utils/categoryIcons.tsx"
   ],
   "ClientCardSkeleton": [
-   "src/components/common/ContextualSkeleton.tsx",
+   "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
    "src/components/loading/ModernSkeletons.tsx"
   ],
   "ClientComparatorPage": [
-   "src/pages/ClientComparatorPage.tsx",
+   "recovery/src-legacy/src/pages/ClientComparatorPage.tsx",
    "src/pages/clients/ClientComparatorPage.tsx"
   ],
   "ClientDetailPage": [
-   "src/pages/ClientDetailPage.tsx",
+   "recovery/src-legacy/src/pages/ClientDetailPage.tsx",
    "src/pages/clients/ClientDetailPage.tsx"
   ],
   "ClientsPage": [
-   "src/pages/clients/ClientsPage.tsx",
-   "src/pages/ClientsPage.tsx"
+   "recovery/src-legacy/src/pages/ClientsPage.tsx",
+   "src/pages/clients/ClientsPage.tsx"
   ],
   "CollectionDetailPage": [
-   "src/pages/CollectionDetailPage.tsx",
+   "recovery/src-legacy/src/pages/CollectionDetailPage.tsx",
    "src/pages/collections/CollectionDetailPage.tsx"
   ],
   "CollectionsPage": [
-   "src/pages/collections/CollectionsPage.tsx",
-   "src/pages/CollectionsPage.tsx"
+   "recovery/src-legacy/src/pages/CollectionsPage.tsx",
+   "src/pages/collections/CollectionsPage.tsx"
   ],
   "CommercialIntelligencePage": [
-   "src/pages/bi/CommercialIntelligencePage.tsx",
-   "src/pages/CommercialIntelligencePage.tsx"
+   "recovery/src-legacy/src/pages/CommercialIntelligencePage.tsx",
+   "src/pages/bi/CommercialIntelligencePage.tsx"
   ],
   "CompareCartsDialog": [
    "src/components/cart/cart-utils/CartDialogs.tsx",
    "src/components/cart/CartUtilComponents.tsx"
   ],
   "ComparePage": [
-   "src/pages/ComparePage.tsx",
+   "recovery/src-legacy/src/pages/ComparePage.tsx",
    "src/pages/products/ComparePage.tsx"
   ],
   "ConfirmDialog": [
@@ -85,16 +85,16 @@
    "src/components/ui/ConfirmDialog.tsx"
   ],
   "DashboardSkeleton": [
-   "src/components/common/ContextualSkeleton.tsx",
+   "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
    "src/components/layout/SkeletonLoaders.tsx",
    "src/components/loading/ModernSkeletons.tsx"
   ],
   "DeleteMockupDialog": [
-   "src/pages/mockup-generator/MockupDialogs.tsx",
+   "recovery/src-legacy/src/pages/mockup-generator/MockupDialogs.tsx",
    "src/pages/mockups/mockup-generator/MockupDialogs.tsx"
   ],
   "DropboxBrowserPage": [
-   "src/pages/DropboxBrowserPage.tsx",
+   "recovery/src-legacy/src/pages/DropboxBrowserPage.tsx",
    "src/pages/tools/DropboxBrowserPage.tsx"
   ],
   "EMPTY_FILTERS": [
@@ -102,11 +102,11 @@
    "src/components/dashboard/widget-filters/WidgetFiltersBar.tsx"
   ],
   "EngravingRegistrationContent": [
-   "src/pages/EngravingRegistrationPage.tsx",
+   "recovery/src-legacy/src/pages/EngravingRegistrationPage.tsx",
    "src/pages/tools/EngravingRegistrationPage.tsx"
   ],
   "ExternalDatabaseTest": [
-   "src/pages/ExternalDatabaseTest.tsx",
+   "recovery/src-legacy/src/pages/ExternalDatabaseTest.tsx",
    "src/pages/system/ExternalDatabaseTest.tsx"
   ],
   "FadeInView": [
@@ -114,7 +114,7 @@
    "src/components/effects/PageTransition.tsx"
   ],
   "FavoritesPage": [
-   "src/pages/FavoritesPage.tsx",
+   "recovery/src-legacy/src/pages/FavoritesPage.tsx",
    "src/pages/products/FavoritesPage.tsx"
   ],
   "FilterSection": [
@@ -122,7 +122,7 @@
    "src/components/filters/FilterSection.tsx"
   ],
   "FiltersPage": [
-   "src/pages/FiltersPage.tsx",
+   "recovery/src-legacy/src/pages/FiltersPage.tsx",
    "src/pages/products/FiltersPage.tsx"
   ],
   "GroupSeparator": [
@@ -138,12 +138,12 @@
    "src/components/ui/hover-card.tsx"
   ],
   "KitBuilderPage": [
-   "src/pages/kit-builder/KitBuilderPage.tsx",
-   "src/pages/KitBuilderPage.tsx"
+   "recovery/src-legacy/src/pages/KitBuilderPage.tsx",
+   "src/pages/kit-builder/KitBuilderPage.tsx"
   ],
   "KitLibraryPage": [
-   "src/pages/kit-builder/KitLibraryPage.tsx",
-   "src/pages/KitLibraryPage.tsx"
+   "recovery/src-legacy/src/pages/KitLibraryPage.tsx",
+   "src/pages/kit-builder/KitLibraryPage.tsx"
   ],
   "LoadingButton": [
    "src/components/ui/LoadingButton.tsx",
@@ -154,19 +154,19 @@
    "src/components/loading/LoadingOverlay.tsx"
   ],
   "MATCH_TYPE_CONFIG": [
-   "src/pages/product-match/MatchCards.tsx",
+   "recovery/src-legacy/src/pages/product-match/MatchCards.tsx",
    "src/pages/products/product-match/MatchCards.tsx"
   ],
   "MagicUp": [
-   "src/pages/MagicUp.tsx",
+   "recovery/src-legacy/src/pages/MagicUp.tsx",
    "src/pages/tools/MagicUp.tsx"
   ],
   "MatchCard": [
-   "src/pages/product-match/MatchCards.tsx",
+   "recovery/src-legacy/src/pages/product-match/MatchCards.tsx",
    "src/pages/products/product-match/MatchCards.tsx"
   ],
   "MatchFiltersPanel": [
-   "src/pages/product-match/MatchFiltersPanel.tsx",
+   "recovery/src-legacy/src/pages/product-match/MatchFiltersPanel.tsx",
    "src/pages/products/product-match/MatchFiltersPanel.tsx"
   ],
   "MiniStatCard": [
@@ -178,96 +178,96 @@
    "src/components/cart/CartUtilComponents.tsx"
   ],
   "MockupEmptyState": [
-   "src/pages/mockup-generator/MockupEmptyState.tsx",
+   "recovery/src-legacy/src/pages/mockup-generator/MockupEmptyState.tsx",
    "src/pages/mockups/mockup-generator/MockupEmptyState.tsx"
   ],
   "MockupGenerator": [
-   "src/pages/MockupGenerator.tsx",
+   "recovery/src-legacy/src/pages/MockupGenerator.tsx",
    "src/pages/mockups/MockupGenerator.tsx"
   ],
   "MockupHistoryPage": [
-   "src/pages/MockupHistoryPage.tsx",
+   "recovery/src-legacy/src/pages/MockupHistoryPage.tsx",
    "src/pages/mockups/MockupHistoryPage.tsx"
   ],
   "MockupHistorySkeleton": [
-   "src/components/loading/ModernSkeletons.tsx",
-   "src/components/mockup/MockupSkeleton.tsx"
+   "recovery/src-legacy/src/components/mockup/MockupSkeleton.tsx",
+   "src/components/loading/ModernSkeletons.tsx"
   ],
   "MockupPageSkeleton": [
-   "src/components/loading/ModernSkeletons.tsx",
-   "src/components/mockup/MockupSkeleton.tsx"
+   "recovery/src-legacy/src/components/mockup/MockupSkeleton.tsx",
+   "src/components/loading/ModernSkeletons.tsx"
   ],
   "MockupSkeleton": [
-   "src/components/loading/ModernSkeletons.tsx",
-   "src/components/mockup/MockupSkeleton.tsx"
+   "recovery/src-legacy/src/components/mockup/MockupSkeleton.tsx",
+   "src/components/loading/ModernSkeletons.tsx"
   ],
   "MockupToolbar": [
-   "src/pages/mockup-generator/MockupToolbar.tsx",
+   "recovery/src-legacy/src/pages/mockup-generator/MockupToolbar.tsx",
    "src/pages/mockups/mockup-generator/MockupToolbar.tsx"
   ],
   "NoveltiesPage": [
-   "src/pages/NoveltiesPage.tsx",
+   "recovery/src-legacy/src/pages/NoveltiesPage.tsx",
    "src/pages/products/NoveltiesPage.tsx"
   ],
   "OrderTimelineSkeleton": [
-   "src/components/common/ContextualSkeleton.tsx",
+   "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
    "src/components/loading/ModernSkeletons.tsx"
   ],
   "PageHeaderSkeleton": [
-   "src/components/loading/ModernSkeletons.tsx",
-   "src/components/loading/SkeletonShimmer.tsx"
+   "recovery/src-legacy/src/components/loading/SkeletonShimmer.tsx",
+   "src/components/loading/ModernSkeletons.tsx"
   ],
   "PermissionsPage": [
-   "src/pages/admin/PermissionsPage.tsx",
-   "src/pages/PermissionsPage.tsx"
+   "recovery/src-legacy/src/pages/PermissionsPage.tsx",
+   "src/pages/admin/PermissionsPage.tsx"
   ],
   "PriceSimulatorPage": [
-   "src/pages/PriceSimulatorPage.tsx",
+   "recovery/src-legacy/src/pages/PriceSimulatorPage.tsx",
    "src/pages/tools/PriceSimulatorPage.tsx"
   ],
   "ProductCardSkeleton": [
-   "src/components/common/ContextualSkeleton.tsx",
-   "src/components/loading/ModernSkeletons.tsx",
-   "src/components/loading/SkeletonShimmer.tsx",
-   "src/components/products/ProductCardSkeleton.tsx"
+   "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
+   "recovery/src-legacy/src/components/loading/SkeletonShimmer.tsx",
+   "recovery/src-legacy/src/components/products/ProductCardSkeleton.tsx",
+   "src/components/loading/ModernSkeletons.tsx"
   ],
   "ProductDetail": [
-   "src/pages/ProductDetail.tsx",
+   "recovery/src-legacy/src/pages/ProductDetail.tsx",
    "src/pages/products/ProductDetail.tsx"
   ],
   "ProductDetailHero": [
-   "src/pages/product-detail/ProductDetailHero.tsx",
+   "recovery/src-legacy/src/pages/product-detail/ProductDetailHero.tsx",
    "src/pages/products/product-detail/ProductDetailHero.tsx"
   ],
   "ProductDetailSkeleton": [
+   "recovery/src-legacy/src/components/products/ProductDetailSkeleton.tsx",
    "src/components/layout/SkeletonLoaders.tsx",
-   "src/components/loading/ModernSkeletons.tsx",
-   "src/components/products/ProductDetailSkeleton.tsx"
+   "src/components/loading/ModernSkeletons.tsx"
   ],
   "ProductEngravingSection": [
    "src/components/admin/products/sections/ProductEngravingSection.tsx",
    "src/components/products/ProductEngravingSection.tsx"
   ],
   "ProductGridSkeleton": [
+   "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
+   "recovery/src-legacy/src/components/products/ProductCardSkeleton.tsx",
    "src/components/bi/BISkeletons.tsx",
-   "src/components/common/ContextualSkeleton.tsx",
-   "src/components/loading/ModernSkeletons.tsx",
-   "src/components/products/ProductCardSkeleton.tsx"
+   "src/components/loading/ModernSkeletons.tsx"
   ],
   "ProductListItemSkeleton": [
-   "src/components/loading/ModernSkeletons.tsx",
-   "src/components/products/ProductListItemSkeleton.tsx"
+   "recovery/src-legacy/src/components/products/ProductListItemSkeleton.tsx",
+   "src/components/loading/ModernSkeletons.tsx"
   ],
   "ProductListSkeleton": [
-   "src/components/loading/ModernSkeletons.tsx",
-   "src/components/products/ProductListItemSkeleton.tsx"
+   "recovery/src-legacy/src/components/products/ProductListItemSkeleton.tsx",
+   "src/components/loading/ModernSkeletons.tsx"
   ],
   "ProductLoaderAndColorSelector": [
    "src/components/mockup/MockupColorSelector.tsx",
    "src/components/mockup/MockupProductSelector.tsx"
   ],
   "ProductMatchPage": [
-   "src/pages/ProductMatchPage.tsx",
+   "recovery/src-legacy/src/pages/ProductMatchPage.tsx",
    "src/pages/products/ProductMatchPage.tsx"
   ],
   "ProductPersonalizationManager": [
@@ -275,7 +275,7 @@
    "src/components/admin/ProductPersonalizationManager.tsx"
   ],
   "ProductSearchPanel": [
-   "src/pages/product-match/ProductSearchPanel.tsx",
+   "recovery/src-legacy/src/pages/product-match/ProductSearchPanel.tsx",
    "src/pages/products/product-match/ProductSearchPanel.tsx"
   ],
   "ProductSelector": [
@@ -283,79 +283,79 @@
    "src/components/admin/personalization/ProductSelector.tsx"
   ],
   "QuoteBuilderPage": [
-   "src/pages/QuoteBuilderPage.tsx",
+   "recovery/src-legacy/src/pages/QuoteBuilderPage.tsx",
    "src/pages/quotes/QuoteBuilderPage.tsx"
   ],
   "QuoteCardSkeleton": [
-   "src/components/common/ContextualSkeleton.tsx",
+   "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
    "src/components/loading/ModernSkeletons.tsx"
   ],
   "QuoteListSkeleton": [
-   "src/components/common/ContextualSkeleton.tsx",
+   "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
    "src/components/loading/ModernSkeletons.tsx"
   ],
   "QuoteViewPage": [
-   "src/pages/quotes/QuoteViewPage.tsx",
-   "src/pages/QuoteViewPage.tsx"
+   "recovery/src-legacy/src/pages/QuoteViewPage.tsx",
+   "src/pages/quotes/QuoteViewPage.tsx"
   ],
   "QuotesDashboardPage": [
-   "src/pages/quotes/QuotesDashboardPage.tsx",
-   "src/pages/QuotesDashboardPage.tsx"
+   "recovery/src-legacy/src/pages/QuotesDashboardPage.tsx",
+   "src/pages/quotes/QuotesDashboardPage.tsx"
   ],
   "QuotesKanbanPage": [
-   "src/pages/quotes/QuotesKanbanPage.tsx",
-   "src/pages/QuotesKanbanPage.tsx"
+   "recovery/src-legacy/src/pages/QuotesKanbanPage.tsx",
+   "src/pages/quotes/QuotesKanbanPage.tsx"
   ],
   "QuotesListPage": [
-   "src/pages/quotes/QuotesListPage.tsx",
-   "src/pages/QuotesListPage.tsx"
+   "recovery/src-legacy/src/pages/QuotesListPage.tsx",
+   "src/pages/quotes/QuotesListPage.tsx"
   ],
   "RankBadge": [
    "src/components/intelligence/RankingResultRow.tsx",
    "src/components/search/GlobalSearchHelpers.tsx"
   ],
   "RateLimitDashboardPage": [
-   "src/pages/RateLimitDashboardPage.tsx",
+   "recovery/src-legacy/src/pages/RateLimitDashboardPage.tsx",
    "src/pages/system/RateLimitDashboardPage.tsx"
   ],
   "ReplenishmentsPage": [
-   "src/pages/products/ReplenishmentsPage.tsx",
-   "src/pages/ReplenishmentsPage.tsx"
+   "recovery/src-legacy/src/pages/ReplenishmentsPage.tsx",
+   "src/pages/products/ReplenishmentsPage.tsx"
   ],
   "ResetPassword": [
-   "src/pages/auth/ResetPassword.tsx",
-   "src/pages/ResetPassword.tsx"
+   "recovery/src-legacy/src/pages/ResetPassword.tsx",
+   "src/pages/auth/ResetPassword.tsx"
   ],
   "RolePermissionsPage": [
-   "src/pages/admin/RolePermissionsPage.tsx",
-   "src/pages/RolePermissionsPage.tsx"
+   "recovery/src-legacy/src/pages/RolePermissionsPage.tsx",
+   "src/pages/admin/RolePermissionsPage.tsx"
   ],
   "RolesPage": [
-   "src/pages/admin/RolesPage.tsx",
-   "src/pages/RolesPage.tsx"
+   "recovery/src-legacy/src/pages/RolesPage.tsx",
+   "src/pages/admin/RolesPage.tsx"
   ],
   "SSOCallbackPage": [
-   "src/pages/auth/SSOCallbackPage.tsx",
-   "src/pages/SSOCallbackPage.tsx"
+   "recovery/src-legacy/src/pages/SSOCallbackPage.tsx",
+   "src/pages/auth/SSOCallbackPage.tsx"
   ],
   "SaveTemplateDialog": [
-   "src/components/cart/cart-utils/CartDialogs.tsx",
-   "src/components/mockup/SaveTemplateDialog.tsx"
+   "recovery/src-legacy/src/components/mockup/SaveTemplateDialog.tsx",
+   "src/components/cart/cart-utils/CartDialogs.tsx"
   ],
   "SelectedProductCard": [
-   "src/pages/product-match/MatchCards.tsx",
+   "recovery/src-legacy/src/pages/product-match/MatchCards.tsx",
    "src/pages/products/product-match/MatchCards.tsx"
   ],
   "SellerCartsPage": [
-   "src/pages/products/SellerCartsPage.tsx",
-   "src/pages/SellerCartsPage.tsx"
+   "recovery/src-legacy/src/pages/SellerCartsPage.tsx",
+   "src/pages/products/SellerCartsPage.tsx"
   ],
   "SimuladorWizard": [
-   "src/pages/SimuladorWizard.tsx",
+   "recovery/src-legacy/src/pages/SimuladorWizard.tsx",
    "src/pages/tools/SimuladorWizard.tsx"
   ],
   "Skeleton": [
-   "src/components/common/ContextualSkeleton.tsx",
+   "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
    "src/components/ui/skeleton.tsx"
   ],
   "SkipToContent": [
@@ -363,27 +363,27 @@
    "src/components/common/SkipToContent.tsx"
   ],
   "SparklineSalesData": [
-   "src/hooks/intelligence/useSparklineSales.tsx",
-   "src/hooks/useSparklineSales.tsx"
+   "recovery/src-legacy/src/hooks/useSparklineSales.tsx",
+   "src/hooks/intelligence/useSparklineSales.tsx"
   ],
   "SparklineSalesProvider": [
-   "src/hooks/intelligence/useSparklineSales.tsx",
-   "src/hooks/useSparklineSales.tsx"
+   "recovery/src-legacy/src/hooks/useSparklineSales.tsx",
+   "src/hooks/intelligence/useSparklineSales.tsx"
   ],
   "StatCard": [
    "src/components/inventory/StockStatCard.tsx",
    "src/components/ui/stat-card.tsx"
   ],
   "StatCardSkeleton": [
-   "src/components/common/ContextualSkeleton.tsx",
+   "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
    "src/components/loading/ModernSkeletons.tsx"
   ],
   "StatsCardSkeleton": [
-   "src/components/loading/ModernSkeletons.tsx",
-   "src/components/loading/SkeletonShimmer.tsx"
+   "recovery/src-legacy/src/components/loading/SkeletonShimmer.tsx",
+   "src/components/loading/ModernSkeletons.tsx"
   ],
   "StatsGridSkeleton": [
-   "src/components/common/ContextualSkeleton.tsx",
+   "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
    "src/components/loading/ModernSkeletons.tsx"
   ],
   "StockBadge": [
@@ -392,29 +392,29 @@
    "src/components/simulator/StockAlert.tsx"
   ],
   "StockDashboardPage": [
-   "src/pages/admin/StockDashboardPage.tsx",
-   "src/pages/StockDashboardPage.tsx"
+   "recovery/src-legacy/src/pages/StockDashboardPage.tsx",
+   "src/pages/admin/StockDashboardPage.tsx"
   ],
   "SystemStatusPage": [
-   "src/pages/system/SystemStatusPage.tsx",
-   "src/pages/SystemStatusPage.tsx"
+   "recovery/src-legacy/src/pages/SystemStatusPage.tsx",
+   "src/pages/system/SystemStatusPage.tsx"
   ],
   "TableRowSkeleton": [
-   "src/components/common/ContextualSkeleton.tsx",
-   "src/components/loading/ModernSkeletons.tsx",
-   "src/components/loading/SkeletonShimmer.tsx"
+   "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
+   "recovery/src-legacy/src/components/loading/SkeletonShimmer.tsx",
+   "src/components/loading/ModernSkeletons.tsx"
   ],
   "TableSkeleton": [
-   "src/components/common/ContextualSkeleton.tsx",
-   "src/components/loading/ModernSkeletons.tsx",
-   "src/components/loading/SkeletonShimmer.tsx"
+   "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
+   "recovery/src-legacy/src/components/loading/SkeletonShimmer.tsx",
+   "src/components/loading/ModernSkeletons.tsx"
   ],
   "TechniqueCard": [
    "src/components/products/customization/TechniqueCard.tsx",
    "src/components/simulator/TechniqueCard.tsx"
   ],
   "TechniqueChangeDialog": [
-   "src/pages/mockup-generator/MockupDialogs.tsx",
+   "recovery/src-legacy/src/pages/mockup-generator/MockupDialogs.tsx",
    "src/pages/mockups/mockup-generator/MockupDialogs.tsx"
   ],
   "TechniqueSelector": [
@@ -422,12 +422,12 @@
    "src/components/pricing/simulator/TechniqueSelector.tsx"
   ],
   "Toaster": [
-   "src/components/ui/sonner.tsx",
-   "src/components/ui/toaster.tsx"
+   "recovery/src-legacy/src/components/ui/toaster.tsx",
+   "src/components/ui/sonner.tsx"
   ],
   "TrendsPage": [
-   "src/pages/bi/TrendsPage.tsx",
-   "src/pages/TrendsPage.tsx"
+   "recovery/src-legacy/src/pages/TrendsPage.tsx",
+   "src/pages/bi/TrendsPage.tsx"
   ],
   "UnsavedChangesDialog": [
    "src/components/common/UnsavedChangesDialog.tsx",
@@ -447,6 +447,1637 @@
    "tabelas": [
     "messages"
    ],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/admin/CatalogQualityDashboard.tsx",
+   "exports": [
+    "CatalogQualityDashboard"
+   ],
+   "export_default": null,
+   "linhas": 123,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [
+    "product_sync_logs"
+   ],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/admin/telemetry/BridgeAlertsCard.tsx",
+   "exports": [
+    "BridgeAlertsCard"
+   ],
+   "export_default": "BridgeAlertsCard",
+   "linhas": 238,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx",
+   "exports": [
+    "BridgeCallDetailDrawer"
+   ],
+   "export_default": "BridgeCallDetailDrawer",
+   "linhas": 189,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/admin/telemetry/BridgesLiveCard.tsx",
+   "exports": [
+    "BridgesLiveCard"
+   ],
+   "export_default": "BridgesLiveCard",
+   "linhas": 315,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/admin/telemetry/ColdStartRetriesPanel.tsx",
+   "exports": [
+    "ColdStartRetriesPanel"
+   ],
+   "export_default": null,
+   "linhas": 179,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/admin/telemetry/EdgeFunctionLogsPanel.tsx",
+   "exports": [
+    "EdgeFunctionLogsPanel"
+   ],
+   "export_default": null,
+   "linhas": 535,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
+   "exports": [
+    "PlatformFailureAlertBanner"
+   ],
+   "export_default": null,
+   "linhas": 161,
+   "dominio": null,
+   "hooks_locais": [
+    "usePlatformFailureAlert"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx",
+   "exports": [
+    "PlatformFailureCards"
+   ],
+   "export_default": null,
+   "linhas": 128,
+   "dominio": null,
+   "hooks_locais": [
+    "usePlatformFailureMetrics"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/cart/CartActionsMenu.tsx",
+   "exports": [
+    "CartActionsMenu"
+   ],
+   "export_default": null,
+   "linhas": 71,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/cart/CartHealthChecklist.tsx",
+   "exports": [
+    "CartHealthChecklist"
+   ],
+   "export_default": null,
+   "linhas": 162,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/collections/ShareCollectionDialog.tsx",
+   "exports": [
+    "ShareCollectionDialog"
+   ],
+   "export_default": null,
+   "linhas": 171,
+   "dominio": null,
+   "hooks_locais": [
+    "useCollectionsContext"
+   ],
+   "tabelas": [
+    "collections"
+   ],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/command/CommandActionGroup.tsx",
+   "exports": [
+    "CommandActionGroup"
+   ],
+   "export_default": null,
+   "linhas": 54,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/command/commandActions.tsx",
+   "exports": [
+    "CommandAction",
+    "RECENT_ITEMS_KEY",
+    "RecentItem"
+   ],
+   "export_default": null,
+   "linhas": 255,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
+   "exports": [
+    "GlobalCommandBar"
+   ],
+   "export_default": null,
+   "linhas": 206,
+   "dominio": null,
+   "hooks_locais": [
+    "useAuth",
+    "useCommandBar",
+    "useTheme"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
+   "exports": [
+    "ClientCardSkeleton",
+    "DashboardSkeleton",
+    "OrderTimelineSkeleton",
+    "ProductCardSkeleton",
+    "ProductGridSkeleton",
+    "QuoteCardSkeleton",
+    "QuoteListSkeleton",
+    "Skeleton",
+    "StatCardSkeleton",
+    "StatsGridSkeleton",
+    "TableRowSkeleton",
+    "TableSkeleton"
+   ],
+   "export_default": null,
+   "linhas": 252,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/compare/ComparisonWeightsPopover.tsx",
+   "exports": [
+    "ComparisonWeightsPopover"
+   ],
+   "export_default": null,
+   "linhas": 68,
+   "dominio": null,
+   "hooks_locais": [
+    "useComparisonWeights"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/compare/ShareComparisonDialog.tsx",
+   "exports": [
+    "ShareComparisonDialog"
+   ],
+   "export_default": null,
+   "linhas": 134,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [
+    "user_comparisons"
+   ],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/dev/metrics/BridgeCallItem.tsx",
+   "exports": [
+    "BridgeCallItem"
+   ],
+   "export_default": null,
+   "linhas": 31,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/favorites/ExportFavoritesButton.tsx",
+   "exports": [
+    "ExportFavoritesButton"
+   ],
+   "export_default": null,
+   "linhas": 244,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/favorites/FavoritePresentationLauncher.tsx",
+   "exports": [
+    "FavoritePresentationLauncher"
+   ],
+   "export_default": null,
+   "linhas": 45,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/favorites/ShareListDialog.tsx",
+   "exports": [
+    "ShareListDialog"
+   ],
+   "export_default": null,
+   "linhas": 106,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/loading/SkeletonShimmer.tsx",
+   "exports": [
+    "AvatarSkeleton",
+    "CardSkeleton",
+    "ChartSkeleton",
+    "FormSkeleton",
+    "ListItemSkeleton",
+    "PageHeaderSkeleton",
+    "PageSkeleton",
+    "ProductCardSkeleton",
+    "SkeletonShimmer",
+    "StatsCardSkeleton",
+    "TableRowSkeleton",
+    "TableSkeleton",
+    "TextSkeleton"
+   ],
+   "export_default": null,
+   "linhas": 357,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/mockup/GenerateButton.tsx",
+   "exports": [
+    "GenerateButton"
+   ],
+   "export_default": null,
+   "linhas": 69,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/mockup/MockupSkeleton.tsx",
+   "exports": [
+    "MockupHistorySkeleton",
+    "MockupPageSkeleton",
+    "MockupSkeleton"
+   ],
+   "export_default": null,
+   "linhas": 254,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/mockup/SaveTemplateDialog.tsx",
+   "exports": [
+    "SaveTemplateDialog"
+   ],
+   "export_default": null,
+   "linhas": 74,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/mockup/TemplateSelector.tsx",
+   "exports": [
+    "ProductTemplate",
+    "TemplateSelector"
+   ],
+   "export_default": null,
+   "linhas": 174,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/navigation/DynamicBreadcrumbs.tsx",
+   "exports": [
+    "CompactBreadcrumbs",
+    "DynamicBreadcrumbs"
+   ],
+   "export_default": null,
+   "linhas": 199,
+   "dominio": null,
+   "hooks_locais": [
+    "useAuth"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/pricing/simulator/PriceResultV51.tsx",
+   "exports": [
+    "PriceResultV51",
+    "QuoteCodeBadge"
+   ],
+   "export_default": null,
+   "linhas": 277,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/pricing/simulator/QuantityAndResult.tsx",
+   "exports": [
+    "QuantityAndResult"
+   ],
+   "export_default": null,
+   "linhas": 296,
+   "dominio": null,
+   "hooks_locais": [
+    "useCustomizationPriceLegacy"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/products/EnhancedProductCard.tsx",
+   "exports": [
+    "EnhancedProductCard"
+   ],
+   "export_default": null,
+   "linhas": 451,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/products/ProductCardSkeleton.tsx",
+   "exports": [
+    "ProductCardInlineSkeleton",
+    "ProductCardSkeleton",
+    "ProductGridSkeleton"
+   ],
+   "export_default": null,
+   "linhas": 138,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/products/ProductDetailSkeleton.tsx",
+   "exports": [
+    "ProductDetailSkeleton"
+   ],
+   "export_default": null,
+   "linhas": 127,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/products/ProductListItemSkeleton.tsx",
+   "exports": [
+    "ProductListItemSkeleton",
+    "ProductListSkeleton"
+   ],
+   "export_default": null,
+   "linhas": 62,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/quotes/admin-templates/TemplateGridView.tsx",
+   "exports": [
+    "TemplateGridView"
+   ],
+   "export_default": null,
+   "linhas": 72,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/quotes/admin-templates/TemplateTableView.tsx",
+   "exports": [
+    "TemplateTableView"
+   ],
+   "export_default": null,
+   "linhas": 66,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/quotes/AdminTemplateDialogs.tsx",
+   "exports": [
+    "TemplateCloneDialog",
+    "TemplateDeleteDialog"
+   ],
+   "export_default": null,
+   "linhas": 73,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/quotes/AdminTemplatesManager.tsx",
+   "exports": [
+    "AdminTemplatesManager"
+   ],
+   "export_default": null,
+   "linhas": 105,
+   "dominio": null,
+   "hooks_locais": [
+    "useQuoteTemplates"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/quotes/DraggableQuoteItems.tsx",
+   "exports": [
+    "DraggableQuoteItems"
+   ],
+   "export_default": null,
+   "linhas": 401,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/quotes/QuoteCommentsSection.tsx",
+   "exports": [
+    "QuoteCommentsSection"
+   ],
+   "export_default": null,
+   "linhas": 272,
+   "dominio": null,
+   "hooks_locais": [
+    "useAuth",
+    "useQuoteComments"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx",
+   "exports": [
+    "QuoteRowQuickActions"
+   ],
+   "export_default": null,
+   "linhas": 135,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/quotes/QuotesFunnelChart.tsx",
+   "exports": [
+    "QuotesFunnelChart"
+   ],
+   "export_default": null,
+   "linhas": 79,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/quotes/QuoteTemplateForm.tsx",
+   "exports": [
+    "QuoteTemplateForm"
+   ],
+   "export_default": null,
+   "linhas": 294,
+   "dominio": null,
+   "hooks_locais": [
+    "useQuoteTemplates"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/quotes/QuoteTemplatePicker.tsx",
+   "exports": [
+    "QuoteTemplatePicker"
+   ],
+   "export_default": null,
+   "linhas": 48,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [
+    "quote_templates"
+   ],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/quotes/QuoteTemplateSelector.tsx",
+   "exports": [
+    "QuoteTemplateSelector"
+   ],
+   "export_default": null,
+   "linhas": 56,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/quotes/QuoteTemplatesList.tsx",
+   "exports": [
+    "QuoteTemplatesList"
+   ],
+   "export_default": null,
+   "linhas": 398,
+   "dominio": null,
+   "hooks_locais": [
+    "useQuoteTemplates"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/quotes/SaveAsTemplateButton.tsx",
+   "exports": [
+    "SaveAsTemplateButton"
+   ],
+   "export_default": null,
+   "linhas": 79,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/search/SmartSuggestions.tsx",
+   "exports": [
+    "InlineSuggestions",
+    "SmartFilters",
+    "SmartSuggestions"
+   ],
+   "export_default": null,
+   "linhas": 341,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/ui/toast.tsx",
+   "exports": [
+    "Toast",
+    "ToastAction",
+    "ToastClose",
+    "ToastDescription",
+    "ToastProvider",
+    "ToastTitle",
+    "ToastViewport"
+   ],
+   "export_default": null,
+   "linhas": 115,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/components/ui/toaster.tsx",
+   "exports": [
+    "Toaster"
+   ],
+   "export_default": null,
+   "linhas": 43,
+   "dominio": null,
+   "hooks_locais": [
+    "useToast"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/hooks/useSparklineSales.tsx",
+   "exports": [
+    "SparklineSalesData",
+    "SparklineSalesProvider"
+   ],
+   "export_default": null,
+   "linhas": 140,
+   "dominio": null,
+   "hooks_locais": [
+    "useSparklineData"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/AdvancedPriceSearchPage.tsx",
+   "exports": [
+    "AdvancedPriceSearchPage"
+   ],
+   "export_default": "AdvancedPriceSearchPage",
+   "linhas": 422,
+   "dominio": null,
+   "hooks_locais": [
+    "useAdvancedPriceSearch"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/Auth.tsx",
+   "exports": [
+    "Auth"
+   ],
+   "export_default": "Auth",
+   "linhas": 476,
+   "dominio": null,
+   "hooks_locais": [
+    "useAuth",
+    "useIPValidation",
+    "useToast"
+   ],
+   "tabelas": [],
+   "edges": [
+    "get-visitor-info"
+   ],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/BusinessIntelligencePage.tsx",
+   "exports": [
+    "BusinessIntelligencePage"
+   ],
+   "export_default": "BusinessIntelligencePage",
+   "linhas": 359,
+   "dominio": null,
+   "hooks_locais": [
+    "useBICategoryFocus",
+    "useClientSeasonality",
+    "useCrmCompany",
+    "useSeasonalPeakNotifications"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/ClientComparatorPage.tsx",
+   "exports": [
+    "ClientComparatorPage"
+   ],
+   "export_default": "ClientComparatorPage",
+   "linhas": 91,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/ClientDetailPage.tsx",
+   "exports": [
+    "ClientDetailPage"
+   ],
+   "export_default": "ClientDetailPage",
+   "linhas": 91,
+   "dominio": null,
+   "hooks_locais": [
+    "useClientTopProducts",
+    "useCrmCompany"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/ClientsPage.tsx",
+   "exports": [
+    "ClientsPage"
+   ],
+   "export_default": "ClientsPage",
+   "linhas": 236,
+   "dominio": null,
+   "hooks_locais": [
+    "useCrmCompanies",
+    "useSearchHistory"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/CollectionDetailPage.tsx",
+   "exports": [
+    "CollectionDetailPage"
+   ],
+   "export_default": "CollectionDetailPage",
+   "linhas": 733,
+   "dominio": null,
+   "hooks_locais": [
+    "useCollectionsContext",
+    "useComparisonStore",
+    "useExternalCollectionProducts",
+    "useExternalCollections",
+    "useFavoritesStore",
+    "useProductsContext"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/CollectionsPage.tsx",
+   "exports": [
+    "CollectionsPage"
+   ],
+   "export_default": "CollectionsPage",
+   "linhas": 356,
+   "dominio": null,
+   "hooks_locais": [
+    "useCollectionsGlobalShortcuts",
+    "useCollectionsPageState"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/CommercialIntelligencePage.tsx",
+   "exports": [
+    "CommercialIntelligencePage"
+   ],
+   "export_default": "CommercialIntelligencePage",
+   "linhas": 122,
+   "dominio": null,
+   "hooks_locais": [
+    "useDebouncedFilters"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/ComparePage.tsx",
+   "exports": [
+    "ComparePage"
+   ],
+   "export_default": "ComparePage",
+   "linhas": 396,
+   "dominio": null,
+   "hooks_locais": [
+    "useComparisonShortcuts",
+    "useComparisonStore",
+    "useComparisonSync",
+    "useProductsContext"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/DropboxBrowserPage.tsx",
+   "exports": [
+    "DropboxBrowserPage"
+   ],
+   "export_default": "DropboxBrowserPage",
+   "linhas": 171,
+   "dominio": null,
+   "hooks_locais": [
+    "useDropboxFiles"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/EngravingRegistrationPage.tsx",
+   "exports": [
+    "EngravingRegistrationContent"
+   ],
+   "export_default": null,
+   "linhas": 75,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/ExternalDatabaseTest.tsx",
+   "exports": [
+    "ExternalDatabaseTest"
+   ],
+   "export_default": "ExternalDatabaseTest",
+   "linhas": 227,
+   "dominio": null,
+   "hooks_locais": [
+    "useExternalCompanies",
+    "useExternalProducts"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/FavoritesPage.tsx",
+   "exports": [
+    "FavoritesPage"
+   ],
+   "export_default": "FavoritesPage",
+   "linhas": 715,
+   "dominio": null,
+   "hooks_locais": [
+    "useCatalogSelection",
+    "useEnrichedFavoriteItems",
+    "useFavoriteLists",
+    "useFavoriteTrash",
+    "useFavoritesGlobalShortcuts",
+    "useFavoritesStore",
+    "useLegacyFavoritesMigration",
+    "useProductsContext",
+    "useUndoStack"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/FiltersPage.tsx",
+   "exports": [
+    "FiltersPage"
+   ],
+   "export_default": "FiltersPage",
+   "linhas": 491,
+   "dominio": null,
+   "hooks_locais": [
+    "useComparisonStore",
+    "useFavoritesStore",
+    "useFiltersPageState",
+    "useFiltersSelectionMode",
+    "useOracleVoiceBridge"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/KitBuilderPage.tsx",
+   "exports": [
+    "KitBuilderPage"
+   ],
+   "export_default": "KitBuilderPage",
+   "linhas": 123,
+   "dominio": null,
+   "hooks_locais": [
+    "useKitBuilderPageState"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/KitLibraryPage.tsx",
+   "exports": [
+    "KitLibraryPage"
+   ],
+   "export_default": "KitLibraryPage",
+   "linhas": 533,
+   "dominio": null,
+   "hooks_locais": [
+    "useAuth",
+    "useCustomKitPersistence",
+    "useKitTemplates"
+   ],
+   "tabelas": [
+    "custom_kits"
+   ],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/MagicUp.tsx",
+   "exports": [
+    "MagicUp"
+   ],
+   "export_default": "MagicUp",
+   "linhas": 120,
+   "dominio": null,
+   "hooks_locais": [
+    "useMagicUpState"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/mockup-generator/MockupDialogs.tsx",
+   "exports": [
+    "DeleteMockupDialog",
+    "TechniqueChangeDialog"
+   ],
+   "export_default": null,
+   "linhas": 82,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/mockup-generator/MockupEmptyState.tsx",
+   "exports": [
+    "MockupEmptyState"
+   ],
+   "export_default": null,
+   "linhas": 88,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/mockup-generator/MockupToolbar.tsx",
+   "exports": [
+    "MockupToolbar"
+   ],
+   "export_default": null,
+   "linhas": 85,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/MockupGenerator.tsx",
+   "exports": [
+    "MockupGenerator"
+   ],
+   "export_default": "MockupGenerator",
+   "linhas": 491,
+   "dominio": null,
+   "hooks_locais": [
+    "useAuth",
+    "useKeyboardShortcuts",
+    "useMockupGenerator",
+    "useProductsContext",
+    "useTechniqueHandlers"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/MockupHistoryPage.tsx",
+   "exports": [
+    "MockupHistoryPage"
+   ],
+   "export_default": "MockupHistoryPage",
+   "linhas": 281,
+   "dominio": null,
+   "hooks_locais": [
+    "useAuth",
+    "useDebounce"
+   ],
+   "tabelas": [
+    "generated_mockups"
+   ],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/NoveltiesPage.tsx",
+   "exports": [
+    "NoveltiesPage"
+   ],
+   "export_default": "NoveltiesPage",
+   "linhas": 52,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/PermissionsPage.tsx",
+   "exports": [
+    "PermissionsPage"
+   ],
+   "export_default": "PermissionsPage",
+   "linhas": 244,
+   "dominio": null,
+   "hooks_locais": [
+    "useToast"
+   ],
+   "tabelas": [
+    "permissions"
+   ],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/PriceSimulatorPage.tsx",
+   "exports": [
+    "PriceSimulatorPage"
+   ],
+   "export_default": "PriceSimulatorPage",
+   "linhas": 66,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/product-detail/ProductDetailHero.tsx",
+   "exports": [
+    "ProductDetailHero"
+   ],
+   "export_default": null,
+   "linhas": 495,
+   "dominio": null,
+   "hooks_locais": [
+    "useProductFreshnessOverride"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/product-match/MatchCards.tsx",
+   "exports": [
+    "MATCH_TYPE_CONFIG",
+    "MatchCard",
+    "SelectedProductCard"
+   ],
+   "export_default": null,
+   "linhas": 207,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/product-match/MatchFiltersPanel.tsx",
+   "exports": [
+    "MatchFiltersPanel"
+   ],
+   "export_default": null,
+   "linhas": 99,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/product-match/ProductSearchPanel.tsx",
+   "exports": [
+    "ProductSearchPanel"
+   ],
+   "export_default": null,
+   "linhas": 93,
+   "dominio": null,
+   "hooks_locais": [
+    "useDebounce",
+    "useProducts"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/ProductDetail.tsx",
+   "exports": [
+    "ProductDetail"
+   ],
+   "export_default": "ProductDetail",
+   "linhas": 397,
+   "dominio": null,
+   "hooks_locais": [
+    "useFavoritesStore",
+    "useProduct",
+    "useProductAnalytics",
+    "useProductIntelligenceBadges",
+    "useRecentlyViewedStore",
+    "useSimilarProducts",
+    "useSupplierTrust",
+    "useToast"
+   ],
+   "tabelas": [
+    "product_views"
+   ],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/ProductMatchPage.tsx",
+   "exports": [
+    "ProductMatchPage"
+   ],
+   "export_default": "ProductMatchPage",
+   "linhas": 213,
+   "dominio": null,
+   "hooks_locais": [
+    "useProductMatch",
+    "useProducts"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/QuoteBuilderPage.tsx",
+   "exports": [
+    "QuoteBuilderPage"
+   ],
+   "export_default": "QuoteBuilderPage",
+   "linhas": 626,
+   "dominio": null,
+   "hooks_locais": [
+    "useQuoteBuilderState",
+    "useUnsavedChangesGuard"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/QuotesDashboardPage.tsx",
+   "exports": [
+    "QuotesDashboardPage"
+   ],
+   "export_default": "QuotesDashboardPage",
+   "linhas": 404,
+   "dominio": null,
+   "hooks_locais": [
+    "useQuotesDashboard"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/QuotesKanbanPage.tsx",
+   "exports": [
+    "QuotesKanbanPage"
+   ],
+   "export_default": "QuotesKanbanPage",
+   "linhas": 208,
+   "dominio": null,
+   "hooks_locais": [
+    "useQuotes"
+   ],
+   "tabelas": [
+    "bitrix_clients"
+   ],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/QuotesListPage.tsx",
+   "exports": [
+    "QuotesListPage"
+   ],
+   "export_default": "QuotesListPage",
+   "linhas": 478,
+   "dominio": null,
+   "hooks_locais": [
+    "useQuoteFunnel",
+    "useQuotes"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/QuoteTemplatesPage.tsx",
+   "exports": [
+    "QuoteTemplatesPage"
+   ],
+   "export_default": "QuoteTemplatesPage",
+   "linhas": 105,
+   "dominio": null,
+   "hooks_locais": [
+    "useQuoteTemplates"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/QuoteViewPage.tsx",
+   "exports": [
+    "QuoteViewPage"
+   ],
+   "export_default": "QuoteViewPage",
+   "linhas": 326,
+   "dominio": null,
+   "hooks_locais": [
+    "useDiscountApproval",
+    "useQuoteViewData"
+   ],
+   "tabelas": [
+    "quotes"
+   ],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/RateLimitDashboardPage.tsx",
+   "exports": [
+    "RateLimitDashboardPage"
+   ],
+   "export_default": "RateLimitDashboardPage",
+   "linhas": 182,
+   "dominio": null,
+   "hooks_locais": [
+    "useToast"
+   ],
+   "tabelas": [
+    "login_attempts"
+   ],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/ReplenishmentsPage.tsx",
+   "exports": [
+    "ReplenishmentsPage"
+   ],
+   "export_default": "ReplenishmentsPage",
+   "linhas": 29,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/ResetPassword.tsx",
+   "exports": [
+    "ResetPassword"
+   ],
+   "export_default": "ResetPassword",
+   "linhas": 289,
+   "dominio": null,
+   "hooks_locais": [
+    "useToast"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/RolePermissionsPage.tsx",
+   "exports": [
+    "RolePermissionsPage"
+   ],
+   "export_default": "RolePermissionsPage",
+   "linhas": 426,
+   "dominio": null,
+   "hooks_locais": [
+    "useToast"
+   ],
+   "tabelas": [
+    "permissions",
+    "role_permissions"
+   ],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/RolesPage.tsx",
+   "exports": [
+    "RolesPage"
+   ],
+   "export_default": "RolesPage",
+   "linhas": 203,
+   "dominio": null,
+   "hooks_locais": [
+    "useToast"
+   ],
+   "tabelas": [
+    "roles"
+   ],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/seller-carts/CartSidebar.tsx",
+   "exports": [
+    "CartSidebar"
+   ],
+   "export_default": null,
+   "linhas": 261,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/SellerCartsPage.tsx",
+   "exports": [
+    "SellerCartsPage"
+   ],
+   "export_default": "SellerCartsPage",
+   "linhas": 481,
+   "dominio": null,
+   "hooks_locais": [
+    "useSellerCartsPage"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/SimuladorWizard.tsx",
+   "exports": [
+    "SimuladorWizard"
+   ],
+   "export_default": "SimuladorWizard",
+   "linhas": 355,
+   "dominio": null,
+   "hooks_locais": [
+    "useSimulatorWizard",
+    "useWizardDrafts"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/SSOCallbackPage.tsx",
+   "exports": [
+    "SSOCallbackPage"
+   ],
+   "export_default": "SSOCallbackPage",
+   "linhas": 180,
+   "dominio": null,
+   "hooks_locais": [
+    "useAuth"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/StockDashboardPage.tsx",
+   "exports": [
+    "StockDashboardPage"
+   ],
+   "export_default": "StockDashboardPage",
+   "linhas": 15,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/SystemStatusPage.tsx",
+   "exports": [
+    "SystemStatusPage"
+   ],
+   "export_default": "SystemStatusPage",
+   "linhas": 418,
+   "dominio": null,
+   "hooks_locais": [],
+   "tabelas": [
+    "profiles"
+   ],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/pages/TrendsPage.tsx",
+   "exports": [
+    "TrendsPage"
+   ],
+   "export_default": "TrendsPage",
+   "linhas": 546,
+   "dominio": null,
+   "hooks_locais": [
+    "useAuth",
+    "useToast",
+    "useUrlBoolean"
+   ],
+   "tabelas": [],
    "edges": [],
    "usado_por": 0,
    "orfao": true
@@ -682,22 +2313,6 @@
    "edges": [],
    "usado_por": 1,
    "orfao": false
-  },
-  {
-   "arquivo": "src/components/admin/CatalogQualityDashboard.tsx",
-   "exports": [
-    "CatalogQualityDashboard"
-   ],
-   "export_default": null,
-   "linhas": 123,
-   "dominio": "components/admin",
-   "hooks_locais": [],
-   "tabelas": [
-    "product_sync_logs"
-   ],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
   },
   {
    "arquivo": "src/components/admin/connections/AiModelsTab.tsx",
@@ -3907,62 +5522,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/components/admin/telemetry/BridgeAlertsCard.tsx",
-   "exports": [
-    "BridgeAlertsCard"
-   ],
-   "export_default": "BridgeAlertsCard",
-   "linhas": 238,
-   "dominio": "components/admin",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
-  },
-  {
-   "arquivo": "src/components/admin/telemetry/BridgeCallDetailDrawer.tsx",
-   "exports": [
-    "BridgeCallDetailDrawer"
-   ],
-   "export_default": "BridgeCallDetailDrawer",
-   "linhas": 189,
-   "dominio": "components/admin",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/admin/telemetry/BridgesLiveCard.tsx",
-   "exports": [
-    "BridgesLiveCard"
-   ],
-   "export_default": "BridgesLiveCard",
-   "linhas": 315,
-   "dominio": "components/admin",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
-  },
-  {
-   "arquivo": "src/components/admin/telemetry/ColdStartRetriesPanel.tsx",
-   "exports": [
-    "ColdStartRetriesPanel"
-   ],
-   "export_default": null,
-   "linhas": 179,
-   "dominio": "components/admin",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
-  },
-  {
    "arquivo": "src/components/admin/telemetry/ColdVsWarmCrmCard.tsx",
    "exports": [
     "ColdVsWarmCrmCard"
@@ -3991,20 +5550,6 @@
    "edges": [],
    "usado_por": 1,
    "orfao": false
-  },
-  {
-   "arquivo": "src/components/admin/telemetry/EdgeFunctionLogsPanel.tsx",
-   "exports": [
-    "EdgeFunctionLogsPanel"
-   ],
-   "export_default": null,
-   "linhas": 535,
-   "dominio": "components/admin",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
   },
   {
    "arquivo": "src/components/admin/telemetry/EdgeInvokeLivePanel.tsx",
@@ -4081,38 +5626,6 @@
    "edges": [],
    "usado_por": 1,
    "orfao": false
-  },
-  {
-   "arquivo": "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
-   "exports": [
-    "PlatformFailureAlertBanner"
-   ],
-   "export_default": null,
-   "linhas": 161,
-   "dominio": "components/admin",
-   "hooks_locais": [
-    "usePlatformFailureAlert"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
-  },
-  {
-   "arquivo": "src/components/admin/telemetry/PlatformFailureCards.tsx",
-   "exports": [
-    "PlatformFailureCards"
-   ],
-   "export_default": null,
-   "linhas": 128,
-   "dominio": "components/admin",
-   "hooks_locais": [
-    "usePlatformFailureMetrics"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
   },
   {
    "arquivo": "src/components/admin/telemetry/ProductsListingLatencyAlert.tsx",
@@ -4958,20 +6471,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/components/cart/CartActionsMenu.tsx",
-   "exports": [
-    "CartActionsMenu"
-   ],
-   "export_default": null,
-   "linhas": 71,
-   "dominio": "components/cart",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
    "arquivo": "src/components/cart/CartCompanyPicker.tsx",
    "exports": [
     "CartCompanyPicker"
@@ -5031,20 +6530,6 @@
     "useCrmCompanies",
     "useSellerCartContextSafe"
    ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/cart/CartHealthChecklist.tsx",
-   "exports": [
-    "CartHealthChecklist"
-   ],
-   "export_default": null,
-   "linhas": 162,
-   "dominio": "components/cart",
-   "hooks_locais": [],
    "tabelas": [],
    "edges": [],
    "usado_por": 1,
@@ -5298,7 +6783,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 2,
+   "usado_por": 1,
    "orfao": false
   },
   {
@@ -5523,24 +7008,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/components/collections/ShareCollectionDialog.tsx",
-   "exports": [
-    "ShareCollectionDialog"
-   ],
-   "export_default": null,
-   "linhas": 171,
-   "dominio": "components/collections",
-   "hooks_locais": [
-    "useCollectionsContext"
-   ],
-   "tabelas": [
-    "collections"
-   ],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
    "arquivo": "src/components/collections/SortableProductItem.tsx",
    "exports": [
     "SortableProductItem"
@@ -5553,54 +7020,6 @@
    "edges": [],
    "usado_por": 2,
    "orfao": false
-  },
-  {
-   "arquivo": "src/components/command/CommandActionGroup.tsx",
-   "exports": [
-    "CommandActionGroup"
-   ],
-   "export_default": null,
-   "linhas": 54,
-   "dominio": "components/command",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/command/commandActions.tsx",
-   "exports": [
-    "CommandAction",
-    "RECENT_ITEMS_KEY",
-    "RecentItem"
-   ],
-   "export_default": null,
-   "linhas": 255,
-   "dominio": "components/command",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 2,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/command/GlobalCommandBar.tsx",
-   "exports": [
-    "GlobalCommandBar"
-   ],
-   "export_default": null,
-   "linhas": 206,
-   "dominio": "components/command",
-   "hooks_locais": [
-    "useAuth",
-    "useCommandBar",
-    "useTheme"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
   },
   {
    "arquivo": "src/components/common/BackButton.tsx",
@@ -5659,31 +7078,6 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 2,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/common/ContextualSkeleton.tsx",
-   "exports": [
-    "ClientCardSkeleton",
-    "DashboardSkeleton",
-    "OrderTimelineSkeleton",
-    "ProductCardSkeleton",
-    "ProductGridSkeleton",
-    "QuoteCardSkeleton",
-    "QuoteListSkeleton",
-    "Skeleton",
-    "StatCardSkeleton",
-    "StatsGridSkeleton",
-    "TableRowSkeleton",
-    "TableSkeleton"
-   ],
-   "export_default": null,
-   "linhas": 252,
-   "dominio": "components/common",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
    "orfao": false
   },
   {
@@ -6162,22 +7556,6 @@
    "orfao": true
   },
   {
-   "arquivo": "src/components/compare/ComparisonWeightsPopover.tsx",
-   "exports": [
-    "ComparisonWeightsPopover"
-   ],
-   "export_default": null,
-   "linhas": 68,
-   "dominio": "components/compare",
-   "hooks_locais": [
-    "useComparisonWeights"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
-  },
-  {
    "arquivo": "src/components/compare/ExportComparisonButton.tsx",
    "exports": [
     "ExportComparisonButton"
@@ -6301,22 +7679,6 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 2,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/compare/ShareComparisonDialog.tsx",
-   "exports": [
-    "ShareComparisonDialog"
-   ],
-   "export_default": null,
-   "linhas": 134,
-   "dominio": "components/compare",
-   "hooks_locais": [],
-   "tabelas": [
-    "user_comparisons"
-   ],
-   "edges": [],
-   "usado_por": 1,
    "orfao": false
   },
   {
@@ -6589,20 +7951,6 @@
    "edges": [],
    "usado_por": 4,
    "orfao": false
-  },
-  {
-   "arquivo": "src/components/dev/metrics/BridgeCallItem.tsx",
-   "exports": [
-    "BridgeCallItem"
-   ],
-   "export_default": null,
-   "linhas": 31,
-   "dominio": "components/dev",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
   },
   {
    "arquivo": "src/components/dev/metrics/BridgeMetricsSummary.tsx",
@@ -6920,20 +8268,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/components/favorites/ExportFavoritesButton.tsx",
-   "exports": [
-    "ExportFavoritesButton"
-   ],
-   "export_default": null,
-   "linhas": 244,
-   "dominio": "components/favorites",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
-  },
-  {
    "arquivo": "src/components/favorites/FavoriteListsSidebar.tsx",
    "exports": [
     "FavoriteListsSidebar"
@@ -6945,20 +8279,6 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 2,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/favorites/FavoritePresentationLauncher.tsx",
-   "exports": [
-    "FavoritePresentationLauncher"
-   ],
-   "export_default": null,
-   "linhas": 45,
-   "dominio": "components/favorites",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
    "orfao": false
   },
   {
@@ -7088,20 +8408,6 @@
    ],
    "export_default": null,
    "linhas": 175,
-   "dominio": "components/favorites",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
-  },
-  {
-   "arquivo": "src/components/favorites/ShareListDialog.tsx",
-   "exports": [
-    "ShareListDialog"
-   ],
-   "export_default": null,
-   "linhas": 106,
    "dominio": "components/favorites",
    "hooks_locais": [],
    "tabelas": [],
@@ -9550,32 +10856,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/components/loading/SkeletonShimmer.tsx",
-   "exports": [
-    "AvatarSkeleton",
-    "CardSkeleton",
-    "ChartSkeleton",
-    "FormSkeleton",
-    "ListItemSkeleton",
-    "PageHeaderSkeleton",
-    "PageSkeleton",
-    "ProductCardSkeleton",
-    "SkeletonShimmer",
-    "StatsCardSkeleton",
-    "TableRowSkeleton",
-    "TableSkeleton",
-    "TextSkeleton"
-   ],
-   "export_default": null,
-   "linhas": 357,
-   "dominio": "components/loading",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
-  },
-  {
    "arquivo": "src/components/LoadingScreen.tsx",
    "exports": [
     "LoadingScreen"
@@ -9968,20 +11248,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/components/mockup/GenerateButton.tsx",
-   "exports": [
-    "GenerateButton"
-   ],
-   "export_default": null,
-   "linhas": 69,
-   "dominio": "components/mockup",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
-  },
-  {
    "arquivo": "src/components/mockup/GeneratingOverlay.tsx",
    "exports": [
     "GeneratingOverlay"
@@ -10250,22 +11516,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/components/mockup/MockupSkeleton.tsx",
-   "exports": [
-    "MockupHistorySkeleton",
-    "MockupPageSkeleton",
-    "MockupSkeleton"
-   ],
-   "export_default": null,
-   "linhas": 254,
-   "dominio": "components/mockup",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
    "arquivo": "src/components/mockup/MockupSuccessToast.tsx",
    "exports": [
     "MockupSuccessToast"
@@ -10307,7 +11557,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 10,
+   "usado_por": 9,
    "orfao": false
   },
   {
@@ -10323,20 +11573,6 @@
    "edges": [],
    "usado_por": 1,
    "orfao": false
-  },
-  {
-   "arquivo": "src/components/mockup/SaveTemplateDialog.tsx",
-   "exports": [
-    "SaveTemplateDialog"
-   ],
-   "export_default": null,
-   "linhas": 74,
-   "dominio": "components/mockup",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
   },
   {
    "arquivo": "src/components/mockup/ShareMenu.tsx",
@@ -10392,21 +11628,6 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/mockup/TemplateSelector.tsx",
-   "exports": [
-    "ProductTemplate",
-    "TemplateSelector"
-   ],
-   "export_default": null,
-   "linhas": 174,
-   "dominio": "components/mockup",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
    "usado_por": 0,
    "orfao": true
   },
@@ -10427,23 +11648,6 @@
    "edges": [],
    "usado_por": 1,
    "orfao": false
-  },
-  {
-   "arquivo": "src/components/navigation/DynamicBreadcrumbs.tsx",
-   "exports": [
-    "CompactBreadcrumbs",
-    "DynamicBreadcrumbs"
-   ],
-   "export_default": null,
-   "linhas": 199,
-   "dominio": "components/navigation",
-   "hooks_locais": [
-    "useAuth"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
   },
   {
    "arquivo": "src/components/notifications/badge-stats/EfficiencyGrid.tsx",
@@ -11020,21 +12224,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/components/pricing/simulator/PriceResultV51.tsx",
-   "exports": [
-    "PriceResultV51",
-    "QuoteCodeBadge"
-   ],
-   "export_default": null,
-   "linhas": 277,
-   "dominio": "components/pricing",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
-  },
-  {
    "arquivo": "src/components/pricing/simulator/ProductSearch.tsx",
    "exports": [
     "ProductSearch"
@@ -11064,22 +12253,6 @@
    "edges": [],
    "usado_por": 1,
    "orfao": false
-  },
-  {
-   "arquivo": "src/components/pricing/simulator/QuantityAndResult.tsx",
-   "exports": [
-    "QuantityAndResult"
-   ],
-   "export_default": null,
-   "linhas": 296,
-   "dominio": "components/pricing",
-   "hooks_locais": [
-    "useCustomizationPriceLegacy"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
   },
   {
    "arquivo": "src/components/pricing/simulator/StepIndicator.tsx",
@@ -11305,20 +12478,6 @@
    "edges": [],
    "usado_por": 1,
    "orfao": false
-  },
-  {
-   "arquivo": "src/components/products/EnhancedProductCard.tsx",
-   "exports": [
-    "EnhancedProductCard"
-   ],
-   "export_default": null,
-   "linhas": 451,
-   "dominio": "components/products",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
   },
   {
    "arquivo": "src/components/products/FutureStockModal.tsx",
@@ -11609,7 +12768,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 11,
+   "usado_por": 10,
    "orfao": false
   },
   {
@@ -11702,22 +12861,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/components/products/ProductCardSkeleton.tsx",
-   "exports": [
-    "ProductCardInlineSkeleton",
-    "ProductCardSkeleton",
-    "ProductGridSkeleton"
-   ],
-   "export_default": null,
-   "linhas": 138,
-   "dominio": "components/products",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
-  },
-  {
    "arquivo": "src/components/products/ProductCategoryBadges.tsx",
    "exports": [
     "ProductCategoryBadges"
@@ -11778,20 +12921,6 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 3,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/products/ProductDetailSkeleton.tsx",
-   "exports": [
-    "ProductDetailSkeleton"
-   ],
-   "export_default": null,
-   "linhas": 127,
-   "dominio": "components/products",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
    "orfao": false
   },
   {
@@ -11944,21 +13073,6 @@
    "edges": [],
    "usado_por": 8,
    "orfao": false
-  },
-  {
-   "arquivo": "src/components/products/ProductListItemSkeleton.tsx",
-   "exports": [
-    "ProductListItemSkeleton",
-    "ProductListSkeleton"
-   ],
-   "export_default": null,
-   "linhas": 62,
-   "dominio": "components/products",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
   },
   {
    "arquivo": "src/components/products/ProductPersonalizationRules.tsx",
@@ -12683,65 +13797,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/components/quotes/admin-templates/TemplateGridView.tsx",
-   "exports": [
-    "TemplateGridView"
-   ],
-   "export_default": null,
-   "linhas": 72,
-   "dominio": "components/quotes",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/quotes/admin-templates/TemplateTableView.tsx",
-   "exports": [
-    "TemplateTableView"
-   ],
-   "export_default": null,
-   "linhas": 66,
-   "dominio": "components/quotes",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/quotes/AdminTemplateDialogs.tsx",
-   "exports": [
-    "TemplateCloneDialog",
-    "TemplateDeleteDialog"
-   ],
-   "export_default": null,
-   "linhas": 73,
-   "dominio": "components/quotes",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/quotes/AdminTemplatesManager.tsx",
-   "exports": [
-    "AdminTemplatesManager"
-   ],
-   "export_default": null,
-   "linhas": 105,
-   "dominio": "components/quotes",
-   "hooks_locais": [
-    "useQuoteTemplates"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
    "arquivo": "src/components/quotes/ClientPicker.tsx",
    "exports": [
     "ClientData",
@@ -12817,20 +13872,6 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 6,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/quotes/DraggableQuoteItems.tsx",
-   "exports": [
-    "DraggableQuoteItems"
-   ],
-   "export_default": null,
-   "linhas": 401,
-   "dominio": "components/quotes",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
    "orfao": false
   },
   {
@@ -13133,23 +14174,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/components/quotes/QuoteCommentsSection.tsx",
-   "exports": [
-    "QuoteCommentsSection"
-   ],
-   "export_default": null,
-   "linhas": 272,
-   "dominio": "components/quotes",
-   "hooks_locais": [
-    "useAuth",
-    "useQuoteComments"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
    "arquivo": "src/components/quotes/QuoteConcurrencyAlert.tsx",
    "exports": [
     "QuoteConcurrencyAlert"
@@ -13313,20 +14337,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/components/quotes/QuoteRowQuickActions.tsx",
-   "exports": [
-    "QuoteRowQuickActions"
-   ],
-   "export_default": null,
-   "linhas": 135,
-   "dominio": "components/quotes",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
-  },
-  {
    "arquivo": "src/components/quotes/QuotesConfigurableList.tsx",
    "exports": [
     "ColumnDef",
@@ -13344,20 +14354,6 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 2,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/quotes/QuotesFunnelChart.tsx",
-   "exports": [
-    "QuotesFunnelChart"
-   ],
-   "export_default": null,
-   "linhas": 79,
-   "dominio": "components/quotes",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
    "orfao": false
   },
   {
@@ -13409,68 +14405,6 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 3,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/quotes/QuoteTemplateForm.tsx",
-   "exports": [
-    "QuoteTemplateForm"
-   ],
-   "export_default": null,
-   "linhas": 294,
-   "dominio": "components/quotes",
-   "hooks_locais": [
-    "useQuoteTemplates"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 2,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/quotes/QuoteTemplatePicker.tsx",
-   "exports": [
-    "QuoteTemplatePicker"
-   ],
-   "export_default": null,
-   "linhas": 48,
-   "dominio": "components/quotes",
-   "hooks_locais": [],
-   "tabelas": [
-    "quote_templates"
-   ],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
-  },
-  {
-   "arquivo": "src/components/quotes/QuoteTemplateSelector.tsx",
-   "exports": [
-    "QuoteTemplateSelector"
-   ],
-   "export_default": null,
-   "linhas": 56,
-   "dominio": "components/quotes",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/quotes/QuoteTemplatesList.tsx",
-   "exports": [
-    "QuoteTemplatesList"
-   ],
-   "export_default": null,
-   "linhas": 398,
-   "dominio": "components/quotes",
-   "hooks_locais": [
-    "useQuoteTemplates"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 2,
    "orfao": false
   },
   {
@@ -13532,20 +14466,6 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 2,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/quotes/SaveAsTemplateButton.tsx",
-   "exports": [
-    "SaveAsTemplateButton"
-   ],
-   "export_default": null,
-   "linhas": 79,
-   "dominio": "components/quotes",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
    "orfao": false
   },
   {
@@ -13935,22 +14855,6 @@
    "edges": [],
    "usado_por": 1,
    "orfao": false
-  },
-  {
-   "arquivo": "src/components/search/SmartSuggestions.tsx",
-   "exports": [
-    "InlineSuggestions",
-    "SmartFilters",
-    "SmartSuggestions"
-   ],
-   "export_default": null,
-   "linhas": 341,
-   "dominio": "components/search",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
   },
   {
    "arquivo": "src/components/search/VisualSearchButton.tsx",
@@ -15713,42 +16617,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/components/ui/toast.tsx",
-   "exports": [
-    "Toast",
-    "ToastAction",
-    "ToastClose",
-    "ToastDescription",
-    "ToastProvider",
-    "ToastTitle",
-    "ToastViewport"
-   ],
-   "export_default": null,
-   "linhas": 115,
-   "dominio": "components/ui",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 2,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/ui/toaster.tsx",
-   "exports": [
-    "Toaster"
-   ],
-   "export_default": null,
-   "linhas": 43,
-   "dominio": "components/ui",
-   "hooks_locais": [
-    "useToast"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
-  },
-  {
    "arquivo": "src/components/ui/toggle-group.tsx",
    "exports": [
     "ToggleGroup",
@@ -16084,23 +16952,6 @@
    "edges": [],
    "usado_por": 3,
    "orfao": false
-  },
-  {
-   "arquivo": "src/hooks/useSparklineSales.tsx",
-   "exports": [
-    "SparklineSalesData",
-    "SparklineSalesProvider"
-   ],
-   "export_default": null,
-   "linhas": 140,
-   "dominio": "hooks",
-   "hooks_locais": [
-    "useSparklineData"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
   },
   {
    "arquivo": "src/pages/__visual/CalendarHarness.tsx",
@@ -16999,43 +17850,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 2,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/AdvancedPriceSearchPage.tsx",
-   "exports": [
-    "AdvancedPriceSearchPage"
-   ],
-   "export_default": "AdvancedPriceSearchPage",
-   "linhas": 422,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useAdvancedPriceSearch"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/Auth.tsx",
-   "exports": [
-    "Auth"
-   ],
-   "export_default": "Auth",
-   "linhas": 476,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useAuth",
-    "useIPValidation",
-    "useToast"
-   ],
-   "tabelas": [],
-   "edges": [
-    "get-visitor-info"
-   ],
-   "usado_por": 0,
+   "usado_por": 1,
    "orfao": false
   },
   {
@@ -17073,7 +17888,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 7,
+   "usado_por": 6,
    "orfao": false
   },
   {
@@ -17235,56 +18050,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/pages/BusinessIntelligencePage.tsx",
-   "exports": [
-    "BusinessIntelligencePage"
-   ],
-   "export_default": "BusinessIntelligencePage",
-   "linhas": 359,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useBICategoryFocus",
-    "useClientSeasonality",
-    "useCrmCompany",
-    "useSeasonalPeakNotifications"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/ClientComparatorPage.tsx",
-   "exports": [
-    "ClientComparatorPage"
-   ],
-   "export_default": "ClientComparatorPage",
-   "linhas": 91,
-   "dominio": "pages",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/ClientDetailPage.tsx",
-   "exports": [
-    "ClientDetailPage"
-   ],
-   "export_default": "ClientDetailPage",
-   "linhas": 91,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useClientTopProducts",
-    "useCrmCompany"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
    "arquivo": "src/pages/clients/ClientComparatorPage.tsx",
    "exports": [
     "ClientComparatorPage"
@@ -17334,44 +18099,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/pages/ClientsPage.tsx",
-   "exports": [
-    "ClientsPage"
-   ],
-   "export_default": "ClientsPage",
-   "linhas": 236,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useCrmCompanies",
-    "useSearchHistory"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/CollectionDetailPage.tsx",
-   "exports": [
-    "CollectionDetailPage"
-   ],
-   "export_default": "CollectionDetailPage",
-   "linhas": 733,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useCollectionsContext",
-    "useComparisonStore",
-    "useExternalCollectionProducts",
-    "useExternalCollections",
-    "useFavoritesStore",
-    "useProductsContext"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
    "arquivo": "src/pages/collections/CollectionDetailPage.tsx",
    "exports": [
     "CollectionDetailPage"
@@ -17407,58 +18134,6 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 3,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/CollectionsPage.tsx",
-   "exports": [
-    "CollectionsPage"
-   ],
-   "export_default": "CollectionsPage",
-   "linhas": 356,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useCollectionsGlobalShortcuts",
-    "useCollectionsPageState"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/CommercialIntelligencePage.tsx",
-   "exports": [
-    "CommercialIntelligencePage"
-   ],
-   "export_default": "CommercialIntelligencePage",
-   "linhas": 122,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useDebouncedFilters"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/ComparePage.tsx",
-   "exports": [
-    "ComparePage"
-   ],
-   "export_default": "ComparePage",
-   "linhas": 396,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useComparisonShortcuts",
-    "useComparisonStore",
-    "useComparisonSync",
-    "useProductsContext"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
    "orfao": false
   },
   {
@@ -17594,97 +18269,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/pages/DropboxBrowserPage.tsx",
-   "exports": [
-    "DropboxBrowserPage"
-   ],
-   "export_default": "DropboxBrowserPage",
-   "linhas": 171,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useDropboxFiles"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/EngravingRegistrationPage.tsx",
-   "exports": [
-    "EngravingRegistrationContent"
-   ],
-   "export_default": null,
-   "linhas": 75,
-   "dominio": "pages",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/ExternalDatabaseTest.tsx",
-   "exports": [
-    "ExternalDatabaseTest"
-   ],
-   "export_default": "ExternalDatabaseTest",
-   "linhas": 227,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useExternalCompanies",
-    "useExternalProducts"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/FavoritesPage.tsx",
-   "exports": [
-    "FavoritesPage"
-   ],
-   "export_default": "FavoritesPage",
-   "linhas": 715,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useCatalogSelection",
-    "useEnrichedFavoriteItems",
-    "useFavoriteLists",
-    "useFavoriteTrash",
-    "useFavoritesGlobalShortcuts",
-    "useFavoritesStore",
-    "useLegacyFavoritesMigration",
-    "useProductsContext",
-    "useUndoStack"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/FiltersPage.tsx",
-   "exports": [
-    "FiltersPage"
-   ],
-   "export_default": "FiltersPage",
-   "linhas": 491,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useComparisonStore",
-    "useFavoritesStore",
-    "useFiltersPageState",
-    "useFiltersSelectionMode",
-    "useOracleVoiceBridge"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
    "arquivo": "src/pages/Index.tsx",
    "exports": [
     "Index"
@@ -17735,42 +18319,6 @@
    ],
    "edges": [],
    "usado_por": 2,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/KitBuilderPage.tsx",
-   "exports": [
-    "KitBuilderPage"
-   ],
-   "export_default": "KitBuilderPage",
-   "linhas": 123,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useKitBuilderPageState"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/KitLibraryPage.tsx",
-   "exports": [
-    "KitLibraryPage"
-   ],
-   "export_default": "KitLibraryPage",
-   "linhas": 533,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useAuth",
-    "useCustomKitPersistence",
-    "useKitTemplates"
-   ],
-   "tabelas": [
-    "custom_kits"
-   ],
-   "edges": [],
-   "usado_por": 0,
    "orfao": false
   },
   {
@@ -18398,7 +18946,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 2,
+   "usado_por": 1,
    "orfao": false
   },
   {
@@ -18412,7 +18960,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 2,
+   "usado_por": 1,
    "orfao": false
   },
   {
@@ -18427,104 +18975,6 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/MagicUp.tsx",
-   "exports": [
-    "MagicUp"
-   ],
-   "export_default": "MagicUp",
-   "linhas": 120,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useMagicUpState"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/mockup-generator/MockupDialogs.tsx",
-   "exports": [
-    "DeleteMockupDialog",
-    "TechniqueChangeDialog"
-   ],
-   "export_default": null,
-   "linhas": 82,
-   "dominio": "pages/mockup-generator",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/mockup-generator/MockupEmptyState.tsx",
-   "exports": [
-    "MockupEmptyState"
-   ],
-   "export_default": null,
-   "linhas": 88,
-   "dominio": "pages/mockup-generator",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/mockup-generator/MockupToolbar.tsx",
-   "exports": [
-    "MockupToolbar"
-   ],
-   "export_default": null,
-   "linhas": 85,
-   "dominio": "pages/mockup-generator",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/MockupGenerator.tsx",
-   "exports": [
-    "MockupGenerator"
-   ],
-   "export_default": "MockupGenerator",
-   "linhas": 491,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useAuth",
-    "useKeyboardShortcuts",
-    "useMockupGenerator",
-    "useProductsContext",
-    "useTechniqueHandlers"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/MockupHistoryPage.tsx",
-   "exports": [
-    "MockupHistoryPage"
-   ],
-   "export_default": "MockupHistoryPage",
-   "linhas": 281,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useAuth",
-    "useDebounce"
-   ],
-   "tabelas": [
-    "generated_mockups"
-   ],
-   "edges": [],
-   "usado_por": 0,
    "orfao": false
   },
   {
@@ -18620,157 +19070,6 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/NoveltiesPage.tsx",
-   "exports": [
-    "NoveltiesPage"
-   ],
-   "export_default": "NoveltiesPage",
-   "linhas": 52,
-   "dominio": "pages",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/PermissionsPage.tsx",
-   "exports": [
-    "PermissionsPage"
-   ],
-   "export_default": "PermissionsPage",
-   "linhas": 244,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useToast"
-   ],
-   "tabelas": [
-    "permissions"
-   ],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/PriceSimulatorPage.tsx",
-   "exports": [
-    "PriceSimulatorPage"
-   ],
-   "export_default": "PriceSimulatorPage",
-   "linhas": 66,
-   "dominio": "pages",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/product-detail/ProductDetailHero.tsx",
-   "exports": [
-    "ProductDetailHero"
-   ],
-   "export_default": null,
-   "linhas": 495,
-   "dominio": "pages/product-detail",
-   "hooks_locais": [
-    "useProductFreshnessOverride"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/product-match/MatchCards.tsx",
-   "exports": [
-    "MATCH_TYPE_CONFIG",
-    "MatchCard",
-    "SelectedProductCard"
-   ],
-   "export_default": null,
-   "linhas": 207,
-   "dominio": "pages/product-match",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/product-match/MatchFiltersPanel.tsx",
-   "exports": [
-    "MatchFiltersPanel"
-   ],
-   "export_default": null,
-   "linhas": 99,
-   "dominio": "pages/product-match",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/product-match/ProductSearchPanel.tsx",
-   "exports": [
-    "ProductSearchPanel"
-   ],
-   "export_default": null,
-   "linhas": 93,
-   "dominio": "pages/product-match",
-   "hooks_locais": [
-    "useDebounce",
-    "useProducts"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/ProductDetail.tsx",
-   "exports": [
-    "ProductDetail"
-   ],
-   "export_default": "ProductDetail",
-   "linhas": 397,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useFavoritesStore",
-    "useProduct",
-    "useProductAnalytics",
-    "useProductIntelligenceBadges",
-    "useRecentlyViewedStore",
-    "useSimilarProducts",
-    "useSupplierTrust",
-    "useToast"
-   ],
-   "tabelas": [
-    "product_views"
-   ],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/ProductMatchPage.tsx",
-   "exports": [
-    "ProductMatchPage"
-   ],
-   "export_default": "ProductMatchPage",
-   "linhas": 213,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useProductMatch",
-    "useProducts"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
    "orfao": false
   },
   {
@@ -19071,23 +19370,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/pages/QuoteBuilderPage.tsx",
-   "exports": [
-    "QuoteBuilderPage"
-   ],
-   "export_default": "QuoteBuilderPage",
-   "linhas": 626,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useQuoteBuilderState",
-    "useUnsavedChangesGuard"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
    "arquivo": "src/pages/quotes/components/DeliveryModeToggle.tsx",
    "exports": [
     "DeliveryMode",
@@ -19204,207 +19486,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/pages/QuotesDashboardPage.tsx",
-   "exports": [
-    "QuotesDashboardPage"
-   ],
-   "export_default": "QuotesDashboardPage",
-   "linhas": 404,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useQuotesDashboard"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/QuotesKanbanPage.tsx",
-   "exports": [
-    "QuotesKanbanPage"
-   ],
-   "export_default": "QuotesKanbanPage",
-   "linhas": 208,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useQuotes"
-   ],
-   "tabelas": [
-    "bitrix_clients"
-   ],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/QuotesListPage.tsx",
-   "exports": [
-    "QuotesListPage"
-   ],
-   "export_default": "QuotesListPage",
-   "linhas": 478,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useQuoteFunnel",
-    "useQuotes"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/QuoteTemplatesPage.tsx",
-   "exports": [
-    "QuoteTemplatesPage"
-   ],
-   "export_default": "QuoteTemplatesPage",
-   "linhas": 105,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useQuoteTemplates"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/QuoteViewPage.tsx",
-   "exports": [
-    "QuoteViewPage"
-   ],
-   "export_default": "QuoteViewPage",
-   "linhas": 326,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useDiscountApproval",
-    "useQuoteViewData"
-   ],
-   "tabelas": [
-    "quotes"
-   ],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/RateLimitDashboardPage.tsx",
-   "exports": [
-    "RateLimitDashboardPage"
-   ],
-   "export_default": "RateLimitDashboardPage",
-   "linhas": 182,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useToast"
-   ],
-   "tabelas": [
-    "login_attempts"
-   ],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/ReplenishmentsPage.tsx",
-   "exports": [
-    "ReplenishmentsPage"
-   ],
-   "export_default": "ReplenishmentsPage",
-   "linhas": 29,
-   "dominio": "pages",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/ResetPassword.tsx",
-   "exports": [
-    "ResetPassword"
-   ],
-   "export_default": "ResetPassword",
-   "linhas": 289,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useToast"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/RolePermissionsPage.tsx",
-   "exports": [
-    "RolePermissionsPage"
-   ],
-   "export_default": "RolePermissionsPage",
-   "linhas": 426,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useToast"
-   ],
-   "tabelas": [
-    "permissions",
-    "role_permissions"
-   ],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/RolesPage.tsx",
-   "exports": [
-    "RolesPage"
-   ],
-   "export_default": "RolesPage",
-   "linhas": 203,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useToast"
-   ],
-   "tabelas": [
-    "roles"
-   ],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/seller-carts/CartSidebar.tsx",
-   "exports": [
-    "CartSidebar"
-   ],
-   "export_default": null,
-   "linhas": 261,
-   "dominio": "pages/seller-carts",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/SellerCartsPage.tsx",
-   "exports": [
-    "SellerCartsPage"
-   ],
-   "export_default": "SellerCartsPage",
-   "linhas": 481,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useSellerCartsPage"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
    "arquivo": "src/pages/SidebarQAPage.tsx",
    "exports": [
     "SidebarQAPage"
@@ -19419,23 +19500,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/pages/SimuladorWizard.tsx",
-   "exports": [
-    "SimuladorWizard"
-   ],
-   "export_default": "SimuladorWizard",
-   "linhas": 355,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useSimulatorWizard",
-    "useWizardDrafts"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
    "arquivo": "src/pages/Simulation.tsx",
    "exports": [
     "SimulationPage"
@@ -19447,36 +19511,6 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/SSOCallbackPage.tsx",
-   "exports": [
-    "SSOCallbackPage"
-   ],
-   "export_default": "SSOCallbackPage",
-   "linhas": 180,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useAuth"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/StockDashboardPage.tsx",
-   "exports": [
-    "StockDashboardPage"
-   ],
-   "export_default": "StockDashboardPage",
-   "linhas": 15,
-   "dominio": "pages",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
    "orfao": false
   },
   {
@@ -19532,22 +19566,6 @@
    ],
    "edges": [],
    "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/SystemStatusPage.tsx",
-   "exports": [
-    "SystemStatusPage"
-   ],
-   "export_default": "SystemStatusPage",
-   "linhas": 418,
-   "dominio": "pages",
-   "hooks_locais": [],
-   "tabelas": [
-    "profiles"
-   ],
-   "edges": [],
-   "usado_por": 0,
    "orfao": false
   },
   {
@@ -19703,7 +19721,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 2,
+   "usado_por": 1,
    "orfao": false
   },
   {
@@ -19717,25 +19735,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 2,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/pages/TrendsPage.tsx",
-   "exports": [
-    "TrendsPage"
-   ],
-   "export_default": "TrendsPage",
-   "linhas": 546,
-   "dominio": "pages",
-   "hooks_locais": [
-    "useAuth",
-    "useToast",
-    "useUrlBoolean"
-   ],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
+   "usado_por": 1,
    "orfao": false
   },
   {

@@ -8,10 +8,10 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3057,
+ "migrations": 3050,
  "seeds": [],
  "avisos": [
-  "318 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
+  "317 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
  ],
  "extensoes": [
   "http",
@@ -414,7 +414,6 @@
   "consume_step_up_token",
   "convert_quote_to_order",
   "convert_string_to_unit",
-  "create_default_notification_preferences",
   "create_default_print_areas_for_product",
   "create_kit_quote_transactional",
   "create_material_with_equivalence",
@@ -1433,7 +1432,6 @@
   "update_mockup_job_progress",
   "update_mockup_updated_at",
   "update_notebook_tables_timestamp",
-  "update_notification_updated_at",
   "update_parent_children_count",
   "update_preferred_suppliers",
   "update_print_area_images_updated_at",
@@ -1529,13 +1527,6 @@
    "evento": "insert",
    "tabela": "auth.users",
    "funcao": "handle_new_user"
-  },
-  {
-   "nome": "on_user_created_preferences",
-   "quando": "after",
-   "evento": "insert",
-   "tabela": "auth.users",
-   "funcao": "create_default_notification_preferences"
   },
   {
    "nome": "trigger_create_credit_account",
@@ -2166,13 +2157,6 @@
    "evento": "update",
    "tabela": "mockup_templates",
    "funcao": "update_updated_at_column"
-  },
-  {
-   "nome": "trigger_update_notification_updated_at",
-   "quando": "before",
-   "evento": "update",
-   "tabela": "notifications",
-   "funcao": "update_notification_updated_at"
   },
   {
    "nome": "trg_optimization_queue_updated_at",
@@ -24974,88 +24958,11 @@
      "default": "NOW()",
      "ref": null
     },
-    "digest_days": {
-     "tipo": "int[]",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "digest_enabled": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "digest_frequency": {
-     "tipo": "text",
-     "nn": false,
-     "pk": false,
-     "default": "'daily'",
-     "ref": null
-    },
-    "digest_time": {
-     "tipo": "time",
-     "nn": false,
-     "pk": false,
-     "default": "'09:00:00'",
-     "ref": null
-    },
-    "dnd_days": {
-     "tipo": "int[]",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "dnd_enabled": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "dnd_end_time": {
-     "tipo": "time",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "dnd_start_time": {
-     "tipo": "time",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "email_enabled": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "true",
-     "ref": null
-    },
     "email_notifications": {
      "tipo": "boolean",
      "nn": false,
      "pk": false,
      "default": "true",
-     "ref": null
-    },
-    "grouping_enabled": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "true",
-     "ref": null
-    },
-    "grouping_window_minutes": {
-     "tipo": "int",
-     "nn": false,
-     "pk": false,
-     "default": "5",
      "ref": null
     },
     "id": {
@@ -25079,27 +24986,6 @@
      "default": "true",
      "ref": null
     },
-    "phone_number": {
-     "tipo": "text",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "preferences": {
-     "tipo": "jsonb",
-     "nn": false,
-     "pk": false,
-     "default": "'{ \"approval\": {\"channels\": [\"in_app\"",
-     "ref": null
-    },
-    "push_enabled": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "true",
-     "ref": null
-    },
     "push_notifications": {
      "tipo": "boolean",
      "nn": false,
@@ -25112,13 +24998,6 @@
      "nn": false,
      "pk": false,
      "default": "true",
-     "ref": null
-    },
-    "sms_enabled": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
      "ref": null
     },
     "system_announcements": {
@@ -25138,20 +25017,6 @@
     "user_id": {
      "tipo": "uuid",
      "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "whatsapp_enabled": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "whatsapp_number": {
-     "tipo": "text",
-     "nn": false,
      "pk": false,
      "default": null,
      "ref": null
@@ -25184,12 +25049,6 @@
      "tipo": "permissive"
     },
     {
-     "nome": "Users can manage own preferences",
-     "comando": "all",
-     "para": "public",
-     "tipo": "permissive"
-    },
-    {
      "nome": "users_manage_own_notification_prefs",
      "comando": "all",
      "para": "authenticated",
@@ -25203,10 +25062,8 @@
     }
    ],
    "indices": [],
-   "fks": [
-    "user_id->auth"
-   ],
-   "criada_em": "002_notification_preferences.sql",
+   "fks": [],
+   "criada_em": "20250103080000_complete_schema.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
@@ -25216,13 +25073,6 @@
   "notification_templates": {
    "colunas": {
     "body_template": {
-     "tipo": "text",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "channel": {
      "tipo": "text",
      "nn": true,
      "pk": false,
@@ -25243,20 +25093,6 @@
      "default": "NOW()",
      "ref": null
     },
-    "default_priority": {
-     "tipo": "int",
-     "nn": false,
-     "pk": false,
-     "default": "1",
-     "ref": null
-    },
-    "event_type": {
-     "tipo": "text",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
     "id": {
      "tipo": "uuid",
      "nn": false,
@@ -25271,13 +25107,6 @@
      "default": "true",
      "ref": null
     },
-    "message_template": {
-     "tipo": "text",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
     "name": {
      "tipo": "text",
      "nn": true,
@@ -25288,20 +25117,6 @@
     "subject": {
      "tipo": "text",
      "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "system": {
-     "tipo": "text",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "title_template": {
-     "tipo": "text",
-     "nn": true,
      "pk": false,
      "default": null,
      "ref": null
@@ -25350,7 +25165,7 @@
    ],
    "indices": [],
    "fks": [],
-   "criada_em": "003_notification_templates.sql",
+   "criada_em": "20250103030000_seed_final.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
@@ -25359,39 +25174,11 @@
   },
   "notifications": {
    "colunas": {
-    "action_data": {
-     "tipo": "jsonb",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "action_label": {
-     "tipo": "text",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
     "action_url": {
      "tipo": "text",
      "nn": false,
      "pk": false,
      "default": null,
-     "ref": null
-    },
-    "category": {
-     "tipo": "text",
-     "nn": false,
-     "pk": false,
-     "default": "'system'",
-     "ref": null
-    },
-    "channels": {
-     "tipo": "text[]",
-     "nn": false,
-     "pk": false,
-     "default": "ARRAY['in_app']",
      "ref": null
     },
     "created_at": {
@@ -25408,53 +25195,11 @@
      "default": "'{}'",
      "ref": null
     },
-    "delivered_at": {
-     "tipo": "timestamptz",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "delivery_status": {
-     "tipo": "jsonb",
-     "nn": false,
-     "pk": false,
-     "default": "'{}'::jsonb",
-     "ref": null
-    },
-    "expires_at": {
-     "tipo": "timestamptz",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "group_count": {
-     "tipo": "int",
-     "nn": false,
-     "pk": false,
-     "default": "1",
-     "ref": null
-    },
-    "group_key": {
-     "tipo": "text",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
     "id": {
      "tipo": "uuid",
      "nn": true,
      "pk": true,
      "default": "gen_random_uuid()",
-     "ref": null
-    },
-    "is_grouped": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
      "ref": null
     },
     "is_read": {
@@ -25492,34 +25237,6 @@
      "default": null,
      "ref": null
     },
-    "scheduled_for": {
-     "tipo": "timestamptz",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "source_entity_id": {
-     "tipo": "uuid",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "source_entity_type": {
-     "tipo": "text",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "source_system": {
-     "tipo": "text",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
     "title": {
      "tipo": "text",
      "nn": true,
@@ -25534,13 +25251,6 @@
      "default": null,
      "ref": null
     },
-    "updated_at": {
-     "tipo": "timestamptz",
-     "nn": false,
-     "pk": false,
-     "default": "NOW()",
-     "ref": null
-    },
     "user_id": {
      "tipo": "uuid",
      "nn": true,
@@ -25551,18 +25261,6 @@
    },
    "rls": true,
    "policies": [
-    {
-     "nome": "Systems can create notifications",
-     "comando": "insert",
-     "para": "public",
-     "tipo": "permissive"
-    },
-    {
-     "nome": "Users can delete own notifications",
-     "comando": "delete",
-     "para": "public",
-     "tipo": "permissive"
-    },
     {
      "nome": "Users can delete their own notifications",
      "comando": "delete",
@@ -25618,11 +25316,6 @@
      "unico": false
     },
     {
-     "nome": "idx_notifications_group",
-     "colunas": "group_key",
-     "unico": false
-    },
-    {
      "nome": "idx_notifications_is_read",
      "colunas": "user_id, is_read",
      "unico": false
@@ -25630,21 +25323,6 @@
     {
      "nome": "idx_notifications_read",
      "colunas": "is_read",
-     "unico": false
-    },
-    {
-     "nome": "idx_notifications_scheduled",
-     "colunas": "scheduled_for",
-     "unico": false
-    },
-    {
-     "nome": "idx_notifications_source",
-     "colunas": "source_system, source_entity_type, source_entity_id",
-     "unico": false
-    },
-    {
-     "nome": "idx_notifications_unread",
-     "colunas": "user_id, is_read",
      "unico": false
     },
     {
@@ -25658,15 +25336,11 @@
      "unico": false
     }
    ],
-   "fks": [
-    "user_id->auth"
-   ],
-   "criada_em": "001_notification_system.sql",
+   "fks": [],
+   "criada_em": "20250103080000_complete_schema.sql",
    "usada_no_front": 1,
    "usada_em_edges": [],
-   "triggers": [
-    "trigger_update_notification_updated_at"
-   ],
+   "triggers": [],
    "sem_rls": false,
    "nao_usada": false
   },
@@ -37105,13 +36779,6 @@
      "default": "NOW()",
      "ref": null
     },
-    "device_type": {
-     "tipo": "text",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
     "endpoint": {
      "tipo": "text",
      "nn": true,
@@ -37236,7 +36903,7 @@
    "fks": [
     "user_id->auth"
    ],
-   "criada_em": "005_push_subscriptions.sql",
+   "criada_em": "20250103080000_complete_schema.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
@@ -51375,113 +51042,12 @@
    "nao_usada": false
   },
   "webhook_configs": {
-   "colunas": {
-    "created_at": {
-     "tipo": "timestamptz",
-     "nn": false,
-     "pk": false,
-     "default": "NOW()",
-     "ref": null
-    },
-    "events": {
-     "tipo": "text[]",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "failed_calls": {
-     "tipo": "int",
-     "nn": false,
-     "pk": false,
-     "default": "0",
-     "ref": null
-    },
-    "id": {
-     "tipo": "uuid",
-     "nn": false,
-     "pk": true,
-     "default": "gen_random_uuid()",
-     "ref": null
-    },
-    "is_active": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "true",
-     "ref": null
-    },
-    "last_triggered_at": {
-     "tipo": "timestamptz",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "max_retries": {
-     "tipo": "int",
-     "nn": false,
-     "pk": false,
-     "default": "3",
-     "ref": null
-    },
-    "name": {
-     "tipo": "text",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "retry_delay_seconds": {
-     "tipo": "int",
-     "nn": false,
-     "pk": false,
-     "default": "60",
-     "ref": null
-    },
-    "secret": {
-     "tipo": "text",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "system": {
-     "tipo": "text",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "total_calls": {
-     "tipo": "int",
-     "nn": false,
-     "pk": false,
-     "default": "0",
-     "ref": null
-    },
-    "url": {
-     "tipo": "text",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "user_id": {
-     "tipo": "uuid",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": "auth"
-    }
-   },
+   "colunas": {},
    "rls": true,
    "policies": [],
    "indices": [],
-   "fks": [
-    "user_id->auth"
-   ],
-   "criada_em": "003_notification_templates.sql",
+   "fks": [],
+   "criada_em": null,
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
@@ -51904,84 +51470,12 @@
    "nao_usada": true
   },
   "webhook_logs": {
-   "colunas": {
-    "attempt_number": {
-     "tipo": "int",
-     "nn": false,
-     "pk": false,
-     "default": "1",
-     "ref": null
-    },
-    "created_at": {
-     "tipo": "timestamptz",
-     "nn": false,
-     "pk": false,
-     "default": "NOW()",
-     "ref": null
-    },
-    "event_type": {
-     "tipo": "text",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "id": {
-     "tipo": "uuid",
-     "nn": false,
-     "pk": true,
-     "default": "gen_random_uuid()",
-     "ref": null
-    },
-    "payload": {
-     "tipo": "jsonb",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "response_body": {
-     "tipo": "text",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "status_code": {
-     "tipo": "int",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "success": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "webhook_id": {
-     "tipo": "uuid",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": "webhook_configs"
-    }
-   },
+   "colunas": {},
    "rls": true,
    "policies": [],
-   "indices": [
-    {
-     "nome": "idx_webhook_logs_webhook",
-     "colunas": "webhook_id, created_at DESC",
-     "unico": false
-    }
-   ],
-   "fks": [
-    "webhook_id->webhook_configs"
-   ],
-   "criada_em": "003_notification_templates.sql",
+   "indices": [],
+   "fks": [],
+   "criada_em": null,
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],

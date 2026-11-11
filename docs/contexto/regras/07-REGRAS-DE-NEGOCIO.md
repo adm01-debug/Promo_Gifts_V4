@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1dcb3b6b0e` · branch `main` · 2026-11-10 01:47 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `15c2a4cb34` · branch `main` · 2026-11-11 18:55 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1248,7 +1248,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `vault_set_secret` | unauthorized: only dev role can write to vault | `supabase/migrations/20260513000000_reconcile_orphan_functions_from_prod.sql` |
 | `validate_quote_real_discount` | Vendedor sem limite de desconto cadastrado. Solicite ao administrador o cadastro em seller_discount_limits, ou peca aprovacao para o desconto de %%%. | `supabase/migrations/20260514165252_onda7_validate_quote_real_discount_fail_closed_null.sql` |
 | `validate_quote_real_discount` | Desconto real (%%%) excede o limite do vendedor (%%%). Solicite aprovacao antes de salvar. | `supabase/migrations/20260514165252_onda7_validate_quote_real_discount_fail_closed_null.sql` |
-| `audit_ownership_orphans` | audit_ownership_orphans: acesso negado | `supabase/migrations/20260515124035_fix_audit_ownership_orphans_only_uuid_columns.sql` |
 | `create_organization_with_owner` | Not authenticated | `supabase/migrations/20260519230000_harden_create_organization_with_owner.sql` |
 | `create_organization_with_owner` | Organization name is required | `supabase/migrations/20260519230000_harden_create_organization_with_owner.sql` |
 | `create_organization_with_owner` | Organization slug is required | `supabase/migrations/20260519230000_harden_create_organization_with_owner.sql` |
@@ -1421,6 +1420,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `magazine_update_metadata_atomic` | magazine_title_invalid | `supabase/migrations/20260909190400_magazine_page_order_numeric_version.sql` |
 | `magazine_update_metadata_atomic` | magazine_subtitle_invalid | `supabase/migrations/20260909190400_magazine_page_order_numeric_version.sql` |
 | `magazine_update_metadata_atomic` | magazine_branding_invalid | `supabase/migrations/20260909190400_magazine_page_order_numeric_version.sql` |
+| `magazine_update_metadata_atomic` | magazine_content_invalid | `supabase/migrations/20260909190400_magazine_page_order_numeric_version.sql` |
 | … +117 linhas — lista completa em `context.json` | | |
 
 ## E. Estados, máquinas de estado e transições
@@ -1564,10 +1564,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Campo | Valor | Uso | Onde |
 |---|---|---|---|
 | `type` | `ADD_PERSONALIZATION` | compara, escreve | `src/hooks/simulator/useWizardPricing.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
-| `type` | `ADD_TOAST` | compara, escreve | `src/hooks/use-toast.ts` |
+| `type` | `ADD_TOAST` | compara, escreve | `recovery/src-legacy/src/hooks/use-toast.ts` |
 | `type` | `CANCEL_PERSONALIZATION` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
 | `type` | `CLEAR` | compara, escreve | `src/hooks/simulation/usePositionHistory.ts` |
-| `type` | `DISMISS_TOAST` | compara, escreve | `src/hooks/use-toast.ts` |
+| `type` | `DISMISS_TOAST` | compara, escreve | `recovery/src-legacy/src/hooks/use-toast.ts` |
 | `type` | `DUPLICATE_PERSONALIZATION` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
 | `type` | `EDIT_PERSONALIZATION` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
 | `type` | `LOAD_DRAFT` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
@@ -1576,7 +1576,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `REDO` | compara, escreve | `src/hooks/simulation/usePositionHistory.ts` |
 | `type` | `REMOVE_ALL_PERSONALIZATIONS` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
 | `type` | `REMOVE_PERSONALIZATION` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
-| `type` | `REMOVE_TOAST` | compara, escreve | `src/hooks/use-toast.ts` |
+| `type` | `REMOVE_TOAST` | compara, escreve | `recovery/src-legacy/src/hooks/use-toast.ts` |
 | `type` | `RESET_WIZARD` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
 | `type` | `SELECT_COMPARISON` | compara, escreve | `src/hooks/simulator/useWizardPricing.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
 | `type` | `SELECT_LOCATION` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
@@ -1592,10 +1592,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `UNDO` | compara, escreve | `src/hooks/simulation/usePositionHistory.ts` |
 | `type` | `UPDATE_PERSONALIZATION` | compara, escreve | `src/hooks/simulator/useWizardPricing.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
 | `type` | `UPDATE_SPECS` | compara, escreve | `src/hooks/simulator/useSimulatorWizard.ts`<br>`src/hooks/simulator/wizardReducer.ts`<br>`src/types/domain/simulator-wizard.ts` |
-| `type` | `UPDATE_TOAST` | compara, escreve | `src/hooks/use-toast.ts` |
+| `type` | `UPDATE_TOAST` | compara, escreve | `recovery/src-legacy/src/hooks/use-toast.ts` |
 | `type` | `__REDO__` | compara, escreve | `src/hooks/simulator/useUndoRedo.ts` |
 | `type` | `__UNDO__` | compara, escreve | `src/hooks/simulator/useUndoRedo.ts` |
-| `type` | `action` | compara, escreve | `src/components/search/GlobalSearchIdleState.tsx`<br>`src/hooks/intelligence/useContextualSuggestions.ts`<br>`src/hooks/useContextualSuggestions.ts` |
+| `type` | `action` | compara, escreve | `recovery/src-legacy/src/hooks/useContextualSuggestions.ts`<br>`src/components/search/GlobalSearchIdleState.tsx`<br>`src/hooks/intelligence/useContextualSuggestions.ts` |
 | `type` | `addProduct` | compara, escreve | `test-hooks-safety.mjs` |
 | `type` | `add_position` | escreve | `src/components/pricing/simulator/upsell/upsell-engine.ts` |
 | `type` | `added` | compara | `src/lib/query-config.ts` |
@@ -1607,61 +1607,61 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `bag` | escreve | `supabase/functions/generate-ad-image/index.ts` |
 | `type` | `base64` | escreve | `supabase/functions/_shared/ai-router/anthropic-native.ts` |
 | `type` | `basic` | compara | `public/sw.js` |
-| `type` | `best-seller` | compara, escreve | `src/components/products/ProductCard.tsx`<br>`src/hooks/products/useProductIntelligenceBadges.ts`<br>`src/hooks/useProductIntelligenceBadges.ts`<br>`src/pages/products/product-detail/ProductDetailHero.tsx` |
+| `type` | `best-seller` | compara, escreve | `recovery/src-legacy/src/hooks/useProductIntelligenceBadges.ts`<br>`src/components/products/ProductCard.tsx`<br>`src/hooks/products/useProductIntelligenceBadges.ts`<br>`src/pages/products/product-detail/ProductDetailHero.tsx` |
 | `type` | `bitmap` | escreve | `src/types/canvas-confetti.d.ts` |
 | `type` | `bitrix24` | compara, escreve | `src/components/admin/connections/SecretField.utils.ts`<br>`supabase/functions/_shared/connection-test-runner.ts` |
 | `type` | `boolean` | compara, escreve | `src/lib/telemetry/bridgeCallMetrics.ts`<br>`supabase/functions/voice-agent/systemPrompt.ts` |
 | `type` | `bottle` | escreve | `supabase/functions/generate-ad-image/index.ts` |
 | `type` | `bulk` | compara, escreve | `src/components/admin/products/image-gallery/ProductImageGallery.tsx`<br>`src/components/admin/products/image-gallery/useProductImageGallery.ts` |
 | `type` | `cart_template` | escreve | `src/components/search/useGlobalSearch.ts` |
-| `type` | `category` | compara, escreve | `src/components/search/AdvancedSearch.tsx`<br>`src/components/search/SearchResultGroups.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/components/search/useGlobalSearch.ts`<br>`src/hooks/common/useSearch.ts`<br>… +3 |
+| `type` | `category` | compara, escreve | `recovery/src-legacy/src/hooks/useSearch.ts`<br>`src/components/search/AdvancedSearch.tsx`<br>`src/components/search/SearchResultGroups.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/components/search/useGlobalSearch.ts`<br>… +3 |
 | `type` | `change` | compara, escreve | `src/pages/products/seller-carts/cartViewModePrefs.ts`<br>`src/pages/products/seller-carts/cartViewModeTelemetry.ts` |
 | `type` | `childList` | compara | `src/hooks/ui/useScrollLockFix.ts` |
 | `type` | `cif` | compara | `src/components/pdf/ProposalHtmlTemplate.tsx` |
 | `type` | `class-a` | escreve | `src/hooks/products/useProductIntelligenceBadges.ts` |
-| `type` | `clear` | escreve | `src/hooks/intelligence/useVoiceCommandHistory.ts`<br>`src/pages/seller-carts/useSellerCartsPage.ts` |
+| `type` | `clear` | escreve | `recovery/src-legacy/src/pages/seller-carts/useSellerCartsPage.ts`<br>`src/hooks/intelligence/useVoiceCommandHistory.ts` |
 | `type` | `client` | compara, escreve | `src/components/search/useGlobalSearch.ts` |
 | `type` | `collection` | compara, escreve | `src/components/search/useGlobalSearch.ts` |
 | `type` | `command` | compara, escreve | `src/components/search/GlobalSearchPalette.tsx`<br>`src/components/search/useGlobalSearch.ts` |
-| `type` | `company` | escreve | `src/components/bi/ClientSelector.tsx`<br>`src/components/cart/CartCompanyPicker.tsx`<br>`src/components/quotes/company-contact/CompanySearchDropdown.tsx`<br>`src/pages/ClientsPage.tsx`<br>`src/pages/clients/ClientsPage.tsx` |
+| `type` | `company` | escreve | `recovery/src-legacy/src/pages/ClientsPage.tsx`<br>`src/components/bi/ClientSelector.tsx`<br>`src/components/cart/CartCompanyPicker.tsx`<br>`src/components/quotes/company-contact/CompanySearchDropdown.tsx`<br>`src/pages/clients/ClientsPage.tsx` |
 | `type` | `complementary` | escreve | `src/components/pricing/simulator/upsell/upsell-engine.ts` |
 | `type` | `component` | escreve | `src/components/search/useGlobalSearch.ts` |
 | `type` | `conversation` | compara, escreve | `src/components/search/useGlobalSearch.ts` |
-| `type` | `critical` | compara, escreve | `src/components/inventory/StockAlertDialogs.tsx`<br>`src/hooks/stock/stockAlerts.ts`<br>`src/hooks/ui/usePushNotifications.tsx`<br>`src/hooks/usePushNotifications.tsx` |
+| `type` | `critical` | compara, escreve | `recovery/src-legacy/src/hooks/usePushNotifications.tsx`<br>`src/components/inventory/StockAlertDialogs.tsx`<br>`src/hooks/stock/stockAlerts.ts`<br>`src/hooks/ui/usePushNotifications.tsx` |
 | `type` | `daily_reset` | escreve | `src/pages/products/seller-carts/cartViewModePrefs.ts` |
 | `type` | `declining` | escreve | `src/hooks/products/useProductIntelligenceBadges.ts` |
-| `type` | `degraded` | compara, escreve | `src/hooks/useBridgeStatusBanner.ts`<br>`src/lib/external-db/bridge-status-events.ts`<br>`src/lib/external-db/cold-start-recorder.ts`<br>`src/lib/external-db/invoke.ts` |
+| `type` | `degraded` | compara, escreve | `recovery/src-legacy/src/lib/external-db/cold-start-recorder.ts`<br>`src/hooks/useBridgeStatusBanner.ts`<br>`src/lib/external-db/bridge-status-events.ts`<br>`src/lib/external-db/invoke.ts` |
 | `type` | `dragenter` | compara | `src/components/search/VisualSearchButton.tsx` |
 | `type` | `dragleave` | compara | `src/components/search/VisualSearchButton.tsx` |
 | `type` | `dragover` | compara | `src/components/search/VisualSearchButton.tsx` |
 | `type` | `drinkware` | escreve | `supabase/functions/generate-ad-image/index.ts` |
-| `type` | `duplicate` | escreve | `src/pages/seller-carts/useSellerCartsPage.ts` |
+| `type` | `duplicate` | escreve | `recovery/src-legacy/src/pages/seller-carts/useSellerCartsPage.ts` |
 | `type` | `email` | escreve | `src/services/authService.ts` |
-| `type` | `emergente` | escreve | `src/hooks/useProductIntelligenceBadges.ts` |
+| `type` | `emergente` | escreve | `recovery/src-legacy/src/hooks/useProductIntelligenceBadges.ts` |
 | `type` | `emerging` | escreve | `src/hooks/products/useProductIntelligenceBadges.ts` |
 | `type` | `ending-soon` | compara | `src/components/products/ProductStatusBadge.tsx` |
 | `type` | `error` | compara, escreve | `src/components/a11y/AriaLive.tsx`<br>`src/components/admin/connections/useIncidentTimeline72h.ts`<br>`src/components/admin/connections/useRecentIncidents.ts`<br>`src/hooks/ui/useWorkspaceNotifications.tsx`<br>`supabase/functions/connections-health-check/index.ts` |
 | `type` | `event` | escreve | `src/lib/telemetry/navigationMetrics.ts`<br>`src/utils/performance-budget.ts`<br>`supabase/functions/crm-callback-alerts/index.ts` |
-| `type` | `featured` | compara, escreve | `src/components/novelties/NoveltyCards.tsx`<br>`src/components/novelties/NoveltyProductGrid.tsx`<br>`src/components/products/ProductCard.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductStatusBadge.tsx`<br>… +2 |
-| `type` | `filter` | compara, escreve | `src/components/search/GlobalSearchIdleState.tsx`<br>`src/hooks/intelligence/useContextualSuggestions.ts`<br>`src/hooks/useContextualSuggestions.ts`<br>`src/hooks/useVoiceCommandHistory.ts` |
+| `type` | `featured` | compara, escreve | `recovery/src-legacy/src/hooks/useProductIntelligenceBadges.ts`<br>`src/components/novelties/NoveltyCards.tsx`<br>`src/components/novelties/NoveltyProductGrid.tsx`<br>`src/components/products/ProductCard.tsx`<br>`src/components/products/ProductListItem.tsx`<br>… +2 |
+| `type` | `filter` | compara, escreve | `recovery/src-legacy/src/hooks/useContextualSuggestions.ts`<br>`recovery/src-legacy/src/hooks/useVoiceCommandHistory.ts`<br>`src/components/search/GlobalSearchIdleState.tsx`<br>`src/hooks/intelligence/useContextualSuggestions.ts` |
 | `type` | `fob` | compara | `src/components/pdf/ProposalHtmlTemplate.tsx` |
 | `type` | `fob_pre` | compara | `src/components/pdf/ProposalHtmlTemplate.tsx` |
 | `type` | `frequent-restock` | escreve | `src/hooks/products/useProductIntelligenceBadges.ts` |
 | `type` | `function` | escreve | `supabase/functions/_shared/ai-router/openai-bridge.ts`<br>`supabase/functions/comparison-ai-advisor/index.ts`<br>`supabase/functions/generate-product-seo/index.ts`<br>`supabase/functions/kit-ai-builder/index.ts`<br>`supabase/functions/kit-identity-suggest/index.ts`<br>… +4 |
-| `type` | `general` | compara, escreve | `src/components/intelligence/RankingFilterToolbar.tsx`<br>`src/components/search/EmptySearchState.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/components/search/useGlobalSearch.ts`<br>`src/hooks/common/useSearch.ts`<br>… +1 |
+| `type` | `general` | compara, escreve | `recovery/src-legacy/src/hooks/useSearch.ts`<br>`src/components/intelligence/RankingFilterToolbar.tsx`<br>`src/components/search/EmptySearchState.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/components/search/useGlobalSearch.ts`<br>… +1 |
 | `type` | `headwear` | escreve | `supabase/functions/generate-ad-image/index.ts` |
-| `type` | `history` | compara, escreve | `src/components/catalog/CatalogHeader.tsx`<br>`src/components/search/AdvancedSearch.tsx`<br>`src/components/search/SearchResultGroups.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/hooks/common/useSearch.ts`<br>… +1 |
+| `type` | `history` | compara, escreve | `recovery/src-legacy/src/hooks/useSearch.ts`<br>`src/components/catalog/CatalogHeader.tsx`<br>`src/components/search/AdvancedSearch.tsx`<br>`src/components/search/SearchResultGroups.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>… +1 |
 | `type` | `hot-item` | compara, escreve | `src/components/products/ProductCard.tsx`<br>`src/hooks/products/useProductIntelligenceBadges.ts`<br>`src/pages/products/product-detail/ProductDetailHero.tsx` |
 | `type` | `image` | escreve | `supabase/functions/_shared/ai-router/anthropic-native.ts` |
 | `type` | `image_url` | compara, escreve | `supabase/functions/_shared/ai-router/anthropic-native.ts`<br>`supabase/functions/_shared/ai-router/google-genai.ts`<br>`supabase/functions/analyze-logo-colors/index.ts`<br>`supabase/functions/generate-ad-image/index.ts`<br>`supabase/functions/magic-up-score/index.ts`<br>… +1 |
 | `type` | `in_app_enabled` | escreve | `src/components/notifications/NotificationPreferences.tsx` |
-| `type` | `info` | compara, escreve | `src/hooks/bi/useSeasonalPeakNotifications.ts`<br>`src/hooks/ui/usePushNotifications.tsx`<br>`src/hooks/usePushNotifications.tsx`<br>`src/hooks/useWorkspaceNotifications.tsx`<br>`src/lib/access/request-dev-access.ts`<br>… +1 |
+| `type` | `info` | compara, escreve | `recovery/src-legacy/src/hooks/usePushNotifications.tsx`<br>`recovery/src-legacy/src/hooks/useWorkspaceNotifications.tsx`<br>`src/hooks/bi/useSeasonalPeakNotifications.ts`<br>`src/hooks/ui/usePushNotifications.tsx`<br>`src/lib/access/request-dev-access.ts`<br>… +1 |
 | `type` | `json` | escreve | `supabase/functions/cors-audit/index.ts` |
 | `type` | `json_object` | escreve | `supabase/functions/word-magic/index.ts` |
 | `type` | `json_schema` | compara, escreve | `supabase/functions/_shared/ai-router/openai-bridge.ts`<br>`supabase/functions/_shared/ai-router/openai-compatible.ts` |
 | `type` | `kit` | compara, escreve | `src/components/novelties/NoveltyProductGrid.tsx`<br>`src/components/products/ProductCard.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductStatusBadge.tsx`<br>`src/components/search/useGlobalSearch.ts`<br>… +1 |
 | `type` | `largest-contentful-paint` | escreve | `src/lib/telemetry/navigationMetrics.ts`<br>`src/utils/performance-budget.ts` |
-| `type` | `last-units` | escreve | `src/hooks/products/useProductIntelligenceBadges.ts`<br>`src/hooks/useProductIntelligenceBadges.ts` |
+| `type` | `last-units` | escreve | `recovery/src-legacy/src/hooks/useProductIntelligenceBadges.ts`<br>`src/hooks/products/useProductIntelligenceBadges.ts` |
 | `type` | `layout-shift` | escreve | `src/lib/telemetry/navigationMetrics.ts`<br>`src/utils/performance-budget.ts` |
 | `type` | `limited-stock` | compara | `src/components/products/ProductStatusBadge.tsx` |
 | `type` | `longtask` | escreve | `src/lib/telemetry/navigationMetrics.ts` |
@@ -1673,17 +1673,17 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `media` | escreve | `src/components/search/useGlobalSearch.ts` |
 | `type` | `mixed` | compara, escreve | `src/components/search/GlobalSearchPalette.tsx`<br>`src/components/search/useGlobalSearch.ts`<br>`supabase/functions/semantic-search/index.ts` |
 | `type` | `mockup` | escreve | `src/components/search/useGlobalSearch.ts` |
-| `type` | `monthly` | compara, escreve | `src/hooks/intelligence/useSalesGoals.ts`<br>`src/hooks/useSalesGoals.ts` |
-| `type` | `move` | escreve | `src/pages/seller-carts/useSellerCartsPage.ts` |
+| `type` | `monthly` | compara, escreve | `recovery/src-legacy/src/hooks/useSalesGoals.ts`<br>`src/hooks/intelligence/useSalesGoals.ts` |
+| `type` | `move` | escreve | `recovery/src-legacy/src/pages/seller-carts/useSellerCartsPage.ts` |
 | `type` | `n8n` | compara, escreve | `src/components/admin/connections/SecretField.utils.ts`<br>`supabase/functions/_shared/connection-test-runner.ts` |
-| `type` | `navigation` | compara, escreve | `src/components/search/GlobalSearchIdleState.tsx`<br>`src/hooks/useContextualSuggestions.ts` |
-| `type` | `new-arrival` | escreve | `src/hooks/products/useProductIntelligenceBadges.ts`<br>`src/hooks/useProductIntelligenceBadges.ts` |
-| `type` | `normal` | escreve | `src/hooks/useProductIntelligenceBadges.ts` |
+| `type` | `navigation` | compara, escreve | `recovery/src-legacy/src/hooks/useContextualSuggestions.ts`<br>`src/components/search/GlobalSearchIdleState.tsx` |
+| `type` | `new-arrival` | escreve | `recovery/src-legacy/src/hooks/useProductIntelligenceBadges.ts`<br>`src/hooks/products/useProductIntelligenceBadges.ts` |
+| `type` | `normal` | escreve | `recovery/src-legacy/src/hooks/useProductIntelligenceBadges.ts` |
 | `type` | `notebook` | escreve | `supabase/functions/generate-ad-image/index.ts` |
 | `type` | `novelty` | compara | `src/components/novelties/NoveltyProductGrid.tsx`<br>`src/components/products/ProductCard.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductStatusBadge.tsx` |
 | `type` | `number` | compara, escreve | `src/components/admin/products/ProductFormFullscreen.tsx`<br>`src/components/admin/products/SupplierFiscalInfo.tsx`<br>`src/lib/telemetry/bridgeCallMetrics.ts`<br>`supabase/functions/kit-ai-builder/index.ts`<br>`supabase/functions/mcp-server/index.ts`<br>… +1 |
 | `type` | `object` | compara, escreve | `src/lib/telemetry/bridgeCallMetrics.ts`<br>`supabase/functions/comparison-ai-advisor/index.ts`<br>`supabase/functions/generate-product-seo/index.ts`<br>`supabase/functions/kit-ai-builder/index.ts`<br>`supabase/functions/kit-identity-suggest/index.ts`<br>… +5 |
-| `type` | `on-sale` | escreve | `src/hooks/useProductIntelligenceBadges.ts` |
+| `type` | `on-sale` | escreve | `recovery/src-legacy/src/hooks/useProductIntelligenceBadges.ts` |
 | `type` | `openWindow` | escreve | `tests/sw/sw-harness.ts` |
 | `type` | `order` | escreve | `src/hooks/products/useProductInsights.ts` |
 | `type` | `out-of-stock` | compara | `src/components/products/ProductStatusBadge.tsx` |
@@ -1691,39 +1691,39 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `packaging` | compara | `src/components/products/ProductCard.tsx`<br>`src/components/products/ProductStatusBadge.tsx` |
 | `type` | `path` | escreve | `src/types/canvas-confetti.d.ts` |
 | `type` | `pen` | escreve | `supabase/functions/generate-ad-image/index.ts` |
-| `type` | `popular` | escreve | `src/hooks/useProductIntelligenceBadges.ts` |
+| `type` | `popular` | escreve | `recovery/src-legacy/src/hooks/useProductIntelligenceBadges.ts` |
 | `type` | `price_drop` | escreve, filtra | `supabase/functions/comparison-price-watcher/index.ts` |
-| `type` | `product` | compara, escreve | `src/components/command/commandActions.tsx`<br>`src/components/search/AdvancedSearch.tsx`<br>`src/components/search/SearchResultGroups.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/components/search/useGlobalSearch.ts`<br>… +5 |
-| `type` | `promotion` | compara, escreve | `src/components/novelties/NoveltyProductGrid.tsx`<br>`src/components/products/ProductCard.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductStatusBadge.tsx`<br>`src/components/search/SmartSuggestions.tsx` |
+| `type` | `product` | compara, escreve | `recovery/src-legacy/src/components/command/commandActions.tsx`<br>`recovery/src-legacy/src/hooks/useSearch.ts`<br>`recovery/src-legacy/src/pages/FiltersPage.tsx`<br>`src/components/search/AdvancedSearch.tsx`<br>`src/components/search/SearchResultGroups.tsx`<br>… +5 |
+| `type` | `promotion` | compara, escreve | `recovery/src-legacy/src/components/search/SmartSuggestions.tsx`<br>`src/components/novelties/NoveltyProductGrid.tsx`<br>`src/components/products/ProductCard.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductStatusBadge.tsx` |
 | `type` | `publish` | compara, escreve | `test-hooks-safety.mjs` |
-| `type` | `qty` | escreve | `src/pages/seller-carts/useSellerCartsPage.ts` |
+| `type` | `qty` | escreve | `recovery/src-legacy/src/pages/seller-carts/useSellerCartsPage.ts` |
 | `type` | `quantity_tier` | escreve | `src/components/pricing/simulator/upsell/upsell-engine.ts` |
-| `type` | `quarterly` | compara | `src/hooks/intelligence/useSalesGoals.ts`<br>`src/hooks/useSalesGoals.ts` |
-| `type` | `quote` | compara, escreve | `src/components/search/useGlobalSearch.ts`<br>`src/hooks/products/useProductInsights.ts`<br>`src/hooks/useProductInsights.ts` |
-| `type` | `quote_comment` | escreve | `src/hooks/useQuoteComments.ts` |
+| `type` | `quarterly` | compara | `recovery/src-legacy/src/hooks/useSalesGoals.ts`<br>`src/hooks/intelligence/useSalesGoals.ts` |
+| `type` | `quote` | compara, escreve | `recovery/src-legacy/src/hooks/useProductInsights.ts`<br>`src/components/search/useGlobalSearch.ts`<br>`src/hooks/products/useProductInsights.ts` |
+| `type` | `quote_comment` | escreve | `recovery/src-legacy/src/hooks/useQuoteComments.ts` |
 | `type` | `react_error_boundary` | escreve | `src/components/errors/EnhancedErrorBoundary.tsx` |
-| `type` | `recent` | escreve | `src/components/search/SmartSuggestions.tsx` |
-| `type` | `recommended` | escreve | `src/components/search/SmartSuggestions.tsx` |
-| `type` | `recovered` | compara, escreve | `src/hooks/useBridgeStatusBanner.ts`<br>`src/lib/external-db/bridge-status-events.ts`<br>`src/lib/external-db/bridge-telemetry-client.ts`<br>`src/lib/external-db/cold-start-recorder.ts`<br>`src/lib/external-db/invoke.ts` |
-| `type` | `recovery` | compara | `src/pages/ResetPassword.tsx`<br>`src/pages/auth/ResetPassword.tsx` |
-| `type` | `related` | escreve | `src/components/search/SmartSuggestions.tsx` |
-| `type` | `remove` | escreve | `src/pages/seller-carts/useSellerCartsPage.ts` |
+| `type` | `recent` | escreve | `recovery/src-legacy/src/components/search/SmartSuggestions.tsx` |
+| `type` | `recommended` | escreve | `recovery/src-legacy/src/components/search/SmartSuggestions.tsx` |
+| `type` | `recovered` | compara, escreve | `recovery/src-legacy/src/lib/external-db/bridge-telemetry-client.ts`<br>`recovery/src-legacy/src/lib/external-db/cold-start-recorder.ts`<br>`src/hooks/useBridgeStatusBanner.ts`<br>`src/lib/external-db/bridge-status-events.ts`<br>`src/lib/external-db/invoke.ts` |
+| `type` | `recovery` | compara | `recovery/src-legacy/src/pages/ResetPassword.tsx`<br>`src/pages/auth/ResetPassword.tsx` |
+| `type` | `related` | escreve | `recovery/src-legacy/src/components/search/SmartSuggestions.tsx` |
+| `type` | `remove` | escreve | `recovery/src-legacy/src/pages/seller-carts/useSellerCartsPage.ts` |
 | `type` | `removeItem` | compara, escreve | `test-hooks-safety.mjs` |
 | `type` | `rotate` | compara, escreve | `src/components/admin/connections/RotationHistoryDialog.tsx` |
-| `type` | `search` | compara, escreve | `src/components/search/GlobalSearchIdleState.tsx`<br>`src/hooks/useContextualSuggestions.ts` |
-| `type` | `security` | compara, escreve, filtra | `src/components/security/useSecurityData.ts`<br>`src/hooks/ui/usePushNotifications.tsx`<br>`src/hooks/usePushNotifications.tsx`<br>`supabase/functions/detect-new-device/index.ts` |
+| `type` | `search` | compara, escreve | `recovery/src-legacy/src/hooks/useContextualSuggestions.ts`<br>`src/components/search/GlobalSearchIdleState.tsx` |
+| `type` | `security` | compara, escreve, filtra | `recovery/src-legacy/src/hooks/usePushNotifications.tsx`<br>`src/components/security/useSecurityData.ts`<br>`src/hooks/ui/usePushNotifications.tsx`<br>`supabase/functions/detect-new-device/index.ts` |
 | `type` | `setBranding` | compara, escreve | `test-hooks-safety.mjs` |
 | `type` | `setTitle` | compara, escreve | `test-hooks-safety.mjs` |
 | `type` | `simulator_error_boundary` | escreve | `src/components/simulator/wizard/SimulatorErrorBoundary.tsx` |
 | `type` | `single` | compara, escreve | `src/components/admin/products/image-gallery/ProductImageGallery.tsx` |
 | `type` | `solid` | escreve | `src/lib/bi/pptxGenerator.ts` |
-| `type` | `spring` | escreve | `src/components/admin/connections/RotateSecretConfirmDialog.tsx`<br>`src/components/admin/connections/SaveSecretConfirmDialog.tsx`<br>`src/components/catalog/CatalogToolbar.tsx`<br>`src/components/collections/AddToCollectionModal.tsx`<br>`src/components/collections/CollectionDetailHeader.tsx`<br>… +24 |
+| `type` | `spring` | escreve | `recovery/src-legacy/src/pages/CollectionsPage.tsx`<br>`recovery/src-legacy/src/pages/FavoritesPage.tsx`<br>`recovery/src-legacy/src/pages/FiltersPage.tsx`<br>`src/components/admin/connections/RotateSecretConfirmDialog.tsx`<br>`src/components/admin/connections/SaveSecretConfirmDialog.tsx`<br>… +24 |
 | `type` | `stockout_predicted` | escreve | `src/hooks/stock/stockAlerts.ts` |
 | `type` | `string` | compara, escreve | `src/lib/error-reporter.ts`<br>`src/lib/telemetry/bridgeCallMetrics.ts`<br>`supabase/functions/comparison-ai-advisor/index.ts`<br>`supabase/functions/generate-product-seo/index.ts`<br>`supabase/functions/kit-ai-builder/index.ts`<br>… +6 |
 | `type` | `success` | escreve | `supabase/functions/collections-watcher/index.ts`<br>`supabase/functions/favorites-watcher/index.ts` |
 | `type` | `suggestion` | escreve | `eslint.config.js` |
-| `type` | `supabase` | compara, escreve | `src/components/admin/connections/SecretField.utils.ts`<br>`src/hooks/common/useConsecutiveFailures.ts`<br>`src/hooks/useConnectionsOverview.ts`<br>`src/hooks/useConsecutiveFailures.ts`<br>`src/pages/admin/AdminConexoesStatusPage.tsx`<br>… +1 |
-| `type` | `supplier` | compara, escreve | `src/components/search/AdvancedSearch.tsx`<br>`src/components/search/SearchResultGroups.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/hooks/common/useSearch.ts`<br>`src/hooks/useSearch.ts`<br>… +2 |
+| `type` | `supabase` | compara, escreve | `recovery/src-legacy/src/hooks/useConnectionsOverview.ts`<br>`recovery/src-legacy/src/hooks/useConsecutiveFailures.ts`<br>`src/components/admin/connections/SecretField.utils.ts`<br>`src/hooks/common/useConsecutiveFailures.ts`<br>`src/pages/admin/AdminConexoesStatusPage.tsx`<br>… +1 |
+| `type` | `supplier` | compara, escreve | `recovery/src-legacy/src/hooks/useSearch.ts`<br>`src/components/search/AdvancedSearch.tsx`<br>`src/components/search/SearchResultGroups.tsx`<br>`src/components/search/SmartSearchInput.tsx`<br>`src/hooks/common/useSearch.ts`<br>… +2 |
 | `type` | `tag` | escreve | `tests/a11y/axe-helper.ts` |
 | `type` | `tech` | escreve | `supabase/functions/generate-ad-image/index.ts` |
 | `type` | `technique_upgrade` | escreve | `src/components/pricing/simulator/upsell/upsell-engine.ts` |
@@ -1733,9 +1733,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `tool` | compara | `src/components/workflows/WorkflowCanvas.tsx` |
 | `type` | `tool_use` | compara | `supabase/functions/_shared/ai-router/anthropic-native.ts` |
 | `type` | `transient_edge_runtime` | escreve | `src/lib/error-reporter.ts` |
-| `type` | `trending` | compara, escreve | `src/components/products/ProductStatusBadge.tsx`<br>`src/components/search/SmartSuggestions.tsx` |
+| `type` | `trending` | compara, escreve | `recovery/src-legacy/src/components/search/SmartSuggestions.tsx`<br>`src/components/products/ProductStatusBadge.tsx` |
 | `type` | `umbrella` | escreve | `supabase/functions/generate-ad-image/index.ts` |
-| `type` | `unavailable` | compara, escreve | `src/hooks/useBridgeStatusBanner.ts`<br>`src/lib/external-db/bridge-status-events.ts`<br>`src/lib/external-db/bridge-telemetry-client.ts`<br>`src/lib/external-db/cold-start-recorder.ts`<br>`src/lib/external-db/invoke.ts` |
+| `type` | `unavailable` | compara, escreve | `recovery/src-legacy/src/lib/external-db/bridge-telemetry-client.ts`<br>`recovery/src-legacy/src/lib/external-db/cold-start-recorder.ts`<br>`src/hooks/useBridgeStatusBanner.ts`<br>`src/lib/external-db/bridge-status-events.ts`<br>`src/lib/external-db/invoke.ts` |
 | `type` | `unhandled_error` | escreve | `src/lib/error-reporter.ts` |
 | `type` | `unhandled_promise_rejection` | escreve | `src/lib/error-reporter.ts` |
 | `type` | `update_stock` | compara, escreve | `src/components/admin/products/useProductVariants.ts`<br>`src/components/products/VariantGridMatrix.tsx` |
@@ -1743,11 +1743,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `urgency` | compara | `src/components/products/ProductStatusBadge.tsx` |
 | `type` | `urgent` | compara | `supabase/functions/send-notification/index.ts` |
 | `type` | `url` | escreve | `supabase/functions/_shared/ai-router/anthropic-native.ts` |
-| `type` | `view` | escreve | `src/hooks/products/useProductInsights.ts`<br>`src/hooks/useProductInsights.ts` |
-| `type` | `warning` | compara, escreve | `src/components/admin/connections/useIncidentTimeline72h.ts`<br>`src/components/admin/connections/useRecentIncidents.ts`<br>`src/hooks/useDiscountApproval.ts`<br>`src/lib/access/log-access-denied.ts`<br>`supabase/functions/connections-health-check/index.ts` |
+| `type` | `view` | escreve | `recovery/src-legacy/src/hooks/useProductInsights.ts`<br>`src/hooks/products/useProductInsights.ts` |
+| `type` | `warning` | compara, escreve | `recovery/src-legacy/src/hooks/useDiscountApproval.ts`<br>`src/components/admin/connections/useIncidentTimeline72h.ts`<br>`src/components/admin/connections/useRecentIncidents.ts`<br>`src/lib/access/log-access-denied.ts`<br>`supabase/functions/connections-health-check/index.ts` |
 | `type` | `webhook_outbound` | compara | `supabase/functions/_shared/connection-test-runner.ts` |
 | `type` | `websearch` | escreve | `src/lib/db/postgrest.ts` |
-| `type` | `weekly` | compara | `src/hooks/intelligence/useSalesGoals.ts`<br>`src/hooks/useSalesGoals.ts` |
+| `type` | `weekly` | compara | `recovery/src-legacy/src/hooks/useSalesGoals.ts`<br>`src/hooks/intelligence/useSalesGoals.ts` |
 | `type` | `window` | escreve | `public/sw.js` |
 | `status` | `APPLIED` | escreve | `src/lib/theme-presets-css-vars-patch.ts` |
 | `status` | `CHANNEL_ERROR` | compara | `src/components/dashboard/MyDiscountRequestsWidget.tsx`<br>`src/hooks/kit-builder/useCustomKitsRealtime.ts`<br>`src/hooks/kit-builder/useKitCollaboration.ts`<br>`src/hooks/quotes/useQuotes.ts`<br>`src/hooks/ui/usePushNotifications.tsx`<br>… +1 |
@@ -1761,12 +1761,12 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `TIMED_OUT` | compara | `src/components/dashboard/MyDiscountRequestsWidget.tsx`<br>`src/hooks/kit-builder/useCustomKitsRealtime.ts`<br>`src/hooks/kit-builder/useKitCollaboration.ts`<br>`src/hooks/quotes/useQuotes.ts`<br>`src/hooks/ui/usePushNotifications.tsx`<br>… +1 |
 | `status` | `UNKNOWN` | compara | `src/hooks/stock/useEmaRiskSummary.ts` |
 | `status` | `WARN` | compara | `src/components/inventory/StockHeroRiskBanner.tsx` |
-| `status` | `active` | compara, escreve, filtra | `src/components/admin/connections/Bitrix24Tab.tsx`<br>`src/components/admin/connections/ConnectionStatusBadge.tsx`<br>`src/components/admin/connections/DataSourceDebugTab.tsx`<br>`src/components/admin/connections/N8nTab.tsx`<br>`src/components/admin/security/keys/McpKeyDetailsDrawer.tsx`<br>… +9 |
+| `status` | `active` | compara, escreve, filtra | `recovery/src-legacy/src/hooks/useNovelties.ts`<br>`src/components/admin/connections/Bitrix24Tab.tsx`<br>`src/components/admin/connections/ConnectionStatusBadge.tsx`<br>`src/components/admin/connections/DataSourceDebugTab.tsx`<br>`src/components/admin/connections/N8nTab.tsx`<br>… +9 |
 | `status` | `aging` | compara | `src/components/products/PriceFreshnessBadge.tsx`<br>`src/utils/price-freshness.ts` |
 | `status` | `aligned` | escreve | `src/components/bi/ClientCategoryRadar.tsx` |
-| `status` | `all` | compara, escreve | `src/components/admin/DiscountApprovalFilterBar.tsx`<br>`src/components/admin/connections/ConnectionsOverviewFilters.tsx`<br>`src/components/admin/security/keys/useMcpKeys.ts`<br>`src/components/dashboard/MyDiscountRequestsWidget.tsx`<br>`src/components/dashboard/MyRecentQuotesWidget.tsx`<br>… +12 |
+| `status` | `all` | compara, escreve | `recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/admin/DiscountApprovalFilterBar.tsx`<br>`src/components/admin/connections/ConnectionsOverviewFilters.tsx`<br>`src/components/admin/security/keys/useMcpKeys.ts`<br>… +12 |
 | `status` | `already_applied` | escreve | `supabase/functions/crm-callback-reprocess/index.ts` |
-| `status` | `approved` | compara, escreve | `recovery/block04_functions.sql`<br>`recovery/full-public-schema.sql`<br>`recovery/patches/D4.2_quote_advanced/functions.sql`<br>`src/components/admin/DiscountManagementPanel.tsx`<br>`src/components/admin/PasswordResetApproval.tsx`<br>… +26 |
+| `status` | `approved` | compara, escreve | `recovery/block04_functions.sql`<br>`recovery/full-public-schema.sql`<br>`recovery/patches/D4.2_quote_advanced/functions.sql`<br>`recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx`<br>`recovery/src-legacy/src/hooks/usePasswordResetRequests.ts`<br>… +26 |
 | `status` | `archived` | compara, escreve | `src/lib/kit-builder/persistence.ts`<br>`src/pages/kit-builder/KitLibraryPage.tsx`<br>`src/pages/magazine/MagazineEditorPage.tsx`<br>`src/pages/magazine/pg.ts`<br>`src/types/magazine.ts`<br>… +1 |
 | `status` | `auth_failed` | escreve | `supabase/functions/e2e-cleanup/handler_characterization_test.ts` |
 | `status` | `available` | compara | `src/components/kit-builder/KitSummary.tsx` |
@@ -1778,74 +1778,74 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `completed` | compara | `src/lib/inventory/future-stock-stats.ts` |
 | `status` | `confirmed` | compara, escreve | `src/hooks/stock/stockFetcher.ts`<br>`src/lib/inventory/future-stock-stats.ts`<br>`src/pages/auth/SSOCallbackPage.tsx` |
 | `status` | `confirming` | compara | `src/pages/auth/SSOCallbackPage.tsx` |
-| `status` | `converted` | compara, filtra | `src/components/quotes/MarginInsightBadge.tsx`<br>`src/components/quotes/QuoteRowQuickActions.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/hooks/quotes/useQuoteFunnel.ts`<br>`src/hooks/useQuoteFunnel.ts`<br>… +1 |
-| `status` | `crit` | compara | `src/components/admin/telemetry/PlatformFailureCards.tsx` |
-| `status` | `critical` | compara | `src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>`src/hooks/useVariantStock.ts`<br>`src/lib/inventory/stock-filter.ts`<br>… +1 |
+| `status` | `converted` | compara, filtra | `recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx`<br>`recovery/src-legacy/src/hooks/useQuoteFunnel.ts`<br>`src/components/quotes/MarginInsightBadge.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/hooks/quotes/useQuoteFunnel.ts`<br>… +1 |
+| `status` | `crit` | compara | `recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx` |
+| `status` | `critical` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>`src/lib/inventory/stock-filter.ts`<br>… +1 |
 | `status` | `degraded` | compara, escreve | `api/ready.ts`<br>`src/components/system/CloudStatusBanner.tsx`<br>`src/lib/external-db/invoke.ts` |
 | `status` | `delivered` | compara, escreve | `src/components/common/StatusTimeline.tsx`<br>`supabase/functions/semantic-search/index.ts` |
 | `status` | `denied` | compara, escreve, filtra | `src/components/admin/security/keys/audit/McpAuditRow.tsx`<br>`src/components/admin/security/keys/audit/useStepUpAttempts.ts`<br>`supabase/functions/connections-hub-audit/index.ts`<br>`supabase/functions/mcp-keys-issue/index.ts`<br>`supabase/functions/mcp-keys-revoke/index.ts`<br>… +4 |
 | `status` | `destructive` | compara | `src/components/kit-builder/VolumeIndicator.tsx`<br>`src/pages/admin/AdminClientPerformancePage.tsx` |
 | `status` | `done` | compara | `src/pages/admin/telemetry/useOptimizationQueue.ts` |
-| `status` | `down` | compara | `src/components/system/CloudStatusBanner.tsx`<br>`src/hooks/ui/useCloudStatus.ts`<br>`src/hooks/useCloudStatus.ts`<br>`src/lib/external-db/invoke.ts` |
-| `status` | `draft` | compara, escreve, filtra | `src/components/dashboard/MyRecentQuotesWidget.tsx`<br>`src/components/dashboard/RecentKitsWidget.tsx`<br>`src/components/expert/chat/useExpertChat.ts`<br>`src/components/magic-up/MagicUpCampaignPanel.tsx`<br>`src/components/quotes/QuoteBuilderSummaryColumn.tsx`<br>… +40 |
+| `status` | `down` | compara | `recovery/src-legacy/src/hooks/useCloudStatus.ts`<br>`src/components/system/CloudStatusBanner.tsx`<br>`src/hooks/ui/useCloudStatus.ts`<br>`src/lib/external-db/invoke.ts` |
+| `status` | `draft` | compara, escreve, filtra | `recovery/src-legacy/src/hooks/useKitAutoSave.ts`<br>`recovery/src-legacy/src/hooks/useKitTemplates.ts`<br>`recovery/src-legacy/src/hooks/useMagicUpGeneration.ts`<br>`recovery/src-legacy/src/hooks/useMagicUpState.ts`<br>`recovery/src-legacy/src/hooks/useQuoteBuilderState.ts`<br>… +40 |
 | `status` | `duplicate_ignored` | escreve | `supabase/functions/receive-crm-callback/index.ts` |
 | `status` | `em_separacao` | escreve | `src/hooks/products/useSellerCarts.ts` |
 | `status` | `empty` | escreve | `src/components/admin/connections/KeysValidationTab.tsx` |
-| `status` | `error` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>`src/components/admin/security/keys/UpdateMcpKeyDialog.tsx`<br>… +22 |
+| `status` | `error` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>`src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>… +22 |
 | `status` | `expired` | compara | `src/components/admin/security/keys/McpKeyDetailsDrawer.tsx`<br>`src/components/admin/security/keys/McpKeyRow.tsx`<br>`src/components/admin/security/keys/useMcpKeys.ts`<br>`src/components/quotes/QuoteStatusTimeline.tsx`<br>`src/components/quotes/QuoteValidityBanner.tsx`<br>… +4 |
 | `status` | `expiring_soon` | compara | `src/components/novelties/NoveltyCards.tsx` |
-| `status` | `fail` | compara, escreve | `src/components/admin/connections/ConnectionTestHistoryPanel.tsx`<br>`src/hooks/intelligence/useConnectionsOverviewFilters.ts`<br>`src/hooks/useConnectionsOverviewFilters.ts`<br>`supabase/functions/full-op-diagnostics/index.ts` |
-| `status` | `failed` | compara, escreve | `src/components/admin/CatalogQualityDashboard.tsx`<br>`src/components/admin/connections/SmokeTestChecklist.tsx`<br>`src/pages/admin/telemetry/useOptimizationQueue.ts`<br>`src/pages/auth/SSOCallbackPage.tsx`<br>`supabase/functions/crm-callback-reprocess/index.ts`<br>… +1 |
+| `status` | `fail` | compara, escreve | `recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`src/components/admin/connections/ConnectionTestHistoryPanel.tsx`<br>`src/hooks/intelligence/useConnectionsOverviewFilters.ts`<br>`supabase/functions/full-op-diagnostics/index.ts` |
+| `status` | `failed` | compara, escreve | `recovery/src-legacy/src/components/admin/CatalogQualityDashboard.tsx`<br>`src/components/admin/connections/SmokeTestChecklist.tsx`<br>`src/pages/admin/telemetry/useOptimizationQueue.ts`<br>`src/pages/auth/SSOCallbackPage.tsx`<br>`supabase/functions/crm-callback-reprocess/index.ts`<br>… +1 |
 | `status` | `forbidden` | escreve | `supabase/functions/e2e-cleanup/handler_characterization_test.ts`<br>`supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `fresh` | compara | `src/components/products/PriceFreshnessBadge.tsx` |
 | `status` | `fulfilled` | compara, escreve | `src/components/admin/connections/CredentialsChangedBanner.tsx`<br>`src/components/admin/connections/GlobalRefreshFromDbButton.tsx`<br>`src/hooks/mockup/mockupGenerationService.ts`<br>`src/hooks/mockup/mockupGeneratorModel.ts`<br>`src/hooks/quotes/useQuoteBuilderState.helpers.ts`<br>… +7 |
 | `status` | `gap` | compara, escreve | `src/components/bi/ClientCategoryRadar.tsx` |
-| `status` | `healthy` | compara, escreve | `src/components/system/CloudStatusBanner.tsx`<br>`src/components/system/CloudStatusDot.tsx`<br>`src/contexts/CloudStatusContext.tsx`<br>`src/hooks/ui/useCloudStatus.ts`<br>`src/hooks/useCloudStatus.ts`<br>… +1 |
+| `status` | `healthy` | compara, escreve | `recovery/src-legacy/src/hooks/useCloudStatus.ts`<br>`src/components/system/CloudStatusBanner.tsx`<br>`src/components/system/CloudStatusDot.tsx`<br>`src/contexts/CloudStatusContext.tsx`<br>`src/hooks/ui/useCloudStatus.ts`<br>… +1 |
 | `status` | `idle` | compara, escreve | `src/components/admin/connections/SmokeTestChecklist.tsx`<br>`src/components/quotes/QuoteAutoSave.tsx`<br>`src/hooks/kit-builder/useKitStockValidation.ts`<br>`src/pages/auth/postLoginGuards.ts` |
-| `status` | `in-stock` | compara | `src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductQuickView.tsx`<br>`src/components/products/table-view/ProductTableRow.tsx`<br>`src/lib/comparison-utils.ts`<br>… +3 |
-| `status` | `in_stock` | compara, escreve | `src/components/inventory/StockDashboard.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/useVariantStock.ts`<br>`src/types/stock.ts` |
+| `status` | `in-stock` | compara | `recovery/src-legacy/src/pages/ComparePage.tsx`<br>`recovery/src-legacy/src/pages/product-detail/ProductDetailHero.tsx`<br>`src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductQuickView.tsx`<br>… +3 |
+| `status` | `in_stock` | compara, escreve | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/types/stock.ts` |
 | `status` | `in_transit` | compara | `src/lib/inventory/future-stock-stats.ts` |
-| `status` | `incoming` | compara | `src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/useVariantStock.ts`<br>`src/lib/inventory/stock-filter.ts`<br>`src/types/stock.ts` |
+| `status` | `incoming` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/lib/inventory/stock-filter.ts`<br>`src/types/stock.ts` |
 | `status` | `incompatible` | compara, escreve | `src/components/kit-builder/BoxComparisonDialog.tsx`<br>`src/components/kit-builder/BoxSelector.tsx`<br>`src/lib/kit-builder/ai-composition.ts`<br>`src/lib/kit-builder/box-recommendations.ts` |
 | `status` | `inconclusive` | compara, escreve | `src/components/kit-builder/BoxComparisonDialog.tsx`<br>`src/components/kit-builder/BoxSelector.tsx`<br>`src/lib/kit-builder/box-recommendations.ts` |
 | `status` | `insufficient_data` | escreve | `src/pages/admin/telemetry/useRegressionGuardrail.ts` |
 | `status` | `invalid` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
-| `status` | `loading` | compara, escreve | `src/components/ui/StatusBadge.tsx`<br>`src/pages/SystemStatusPage.tsx`<br>`src/pages/system/SystemStatusPage.tsx` |
-| `status` | `low-stock` | compara | `src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/inventory/StockBadge.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductQuickView.tsx`<br>… +5 |
-| `status` | `low_stock` | compara | `src/components/inventory/StockDashboard.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>`src/hooks/useVariantStock.ts`<br>… +2 |
+| `status` | `loading` | compara, escreve | `recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>`src/components/ui/StatusBadge.tsx`<br>`src/pages/system/SystemStatusPage.tsx` |
+| `status` | `low-stock` | compara | `recovery/src-legacy/src/pages/ComparePage.tsx`<br>`recovery/src-legacy/src/pages/product-detail/ProductDetailHero.tsx`<br>`src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/inventory/StockBadge.tsx`<br>… +5 |
+| `status` | `low_stock` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>… +2 |
 | `status` | `missing` | compara, escreve | `src/components/admin/connections/MaskedSuffixBadge.tsx`<br>`src/lib/masked-suffix.ts` |
 | `status` | `none` | compara | `src/lib/carts/shipping-deadline.ts`<br>`src/pages/products/seller-carts/useSellerCartsPage.ts` |
 | `status` | `not_found` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `not_ready` | escreve | `api/ready.ts` |
-| `status` | `novo` | escreve | `src/hooks/useSellerCarts.ts` |
-| `status` | `number` | compara | `src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`src/contexts/SellerCartContext.tsx`<br>`src/lib/crm-db.ts`<br>… +7 |
+| `status` | `novo` | escreve | `recovery/src-legacy/src/hooks/useSellerCarts.ts` |
+| `status` | `number` | compara | `recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`src/contexts/SellerCartContext.tsx`<br>`src/lib/crm-db.ts`<br>… +7 |
 | `status` | `offline` | compara | `src/components/quotes/QuoteAutoSave.tsx` |
-| `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`src/components/admin/connections/ConnectionsOverviewFilters.tsx`<br>`src/components/admin/connections/ExternalConnectionsSyncLogPanel.tsx`<br>`src/components/admin/connections/KeysValidationTab.tsx`<br>… +14 |
+| `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx`<br>`recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>… +14 |
 | `status` | `order` | compara | `src/components/dashboard/MyClientsWidget.tsx` |
-| `status` | `out-of-stock` | compara, escreve | `src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductQuickView.tsx`<br>`src/lib/comparison-utils.ts`<br>… +4 |
-| `status` | `out_of_stock` | compara | `src/components/inventory/StockDashboard.tsx`<br>`src/components/inventory/VariantStockTable.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>… +2 |
+| `status` | `out-of-stock` | compara, escreve | `recovery/src-legacy/src/pages/ComparePage.tsx`<br>`recovery/src-legacy/src/pages/product-detail/ProductDetailHero.tsx`<br>`src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/products/ProductListItem.tsx`<br>… +4 |
+| `status` | `out_of_stock` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/components/inventory/VariantStockTable.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>… +2 |
 | `status` | `overdue` | compara | `src/lib/carts/shipping-deadline.ts`<br>`src/pages/products/CartsListPage.tsx` |
 | `status` | `overstocked` | compara | `src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/types/stock.ts` |
 | `status` | `partial` | compara, escreve | `src/lib/inventory/future-stock-stats.ts`<br>`supabase/functions/anonymize-user/index.ts` |
 | `status` | `pass` | compara, escreve | `supabase/functions/full-op-diagnostics/index.ts` |
 | `status` | `passed` | compara, escreve | `src/components/admin/connections/SmokeTestChecklist.tsx` |
-| `status` | `pending` | compara, escreve, filtra | `src/components/admin/DiscountApprovalFilterBar.tsx`<br>`src/components/admin/DiscountApprovalHeaderBadge.tsx`<br>`src/components/admin/DiscountApprovalQueue.tsx`<br>`src/components/admin/DiscountManagementPanel.tsx`<br>`src/components/admin/PasswordResetApproval.tsx`<br>… +22 |
-| `status` | `pending_approval` | compara, escreve | `src/components/quotes/QuoteKanbanBoard.tsx`<br>`src/components/quotes/QuoteStatusTimeline.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/hooks/quotes/useDiscountApproval.ts`<br>`src/hooks/quotes/useQuoteBuilderState.ts`<br>… +5 |
+| `status` | `pending` | compara, escreve, filtra | `recovery/src-legacy/src/hooks/useDiscountApproval.ts`<br>`recovery/src-legacy/src/hooks/usePasswordResetRequests.ts`<br>`recovery/src-legacy/src/pages/QuoteViewPage.tsx`<br>`src/components/admin/DiscountApprovalFilterBar.tsx`<br>`src/components/admin/DiscountApprovalHeaderBadge.tsx`<br>… +22 |
+| `status` | `pending_approval` | compara, escreve | `recovery/src-legacy/src/hooks/useDiscountApproval.ts`<br>`recovery/src-legacy/src/hooks/useQuoteBuilderState.ts`<br>`recovery/src-legacy/src/pages/QuoteViewPage.tsx`<br>`src/components/quotes/QuoteKanbanBoard.tsx`<br>`src/components/quotes/QuoteStatusTimeline.tsx`<br>… +5 |
 | `status` | `processing` | compara, escreve | `src/components/ui/StatusBadge.tsx`<br>`supabase/functions/product-webhook/index.ts`<br>`supabase/functions/word-magic/index.ts`<br>`supabase/migrations/20250103090000_mockup_ai_complete.sql` |
-| `status` | `pronto_orcamento` | compara | `src/components/cart/CartHealthChecklist.tsx` |
+| `status` | `pronto_orcamento` | compara | `recovery/src-legacy/src/components/cart/CartHealthChecklist.tsx` |
 | `status` | `published` | compara, escreve, filtra | `src/lib/security/magazine-guard.ts`<br>`src/pages/magazine/MagazineEditorPage.tsx`<br>`src/pages/magazine/MagazineListPage.tsx`<br>`src/pages/magazine/PublicMagazineView.tsx`<br>`src/pages/magazine/hooks/useMagazineGoldImport.ts`<br>… +8 |
 | `status` | `quote` | compara | `src/components/dashboard/MyClientsWidget.tsx` |
 | `status` | `quote_not_found` | escreve | `supabase/functions/crm-callback-reprocess/index.ts` |
 | `status` | `rate_limited` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `ready` | compara, escreve | `api/ready.ts`<br>`src/lib/kit-builder/persistence.ts` |
 | `status` | `regression` | compara | `src/components/admin/telemetry/RegressionGuardrailBanner.tsx` |
-| `status` | `rejected` | compara, escreve | `src/components/admin/DiscountManagementPanel.tsx`<br>`src/components/admin/PasswordResetApproval.tsx`<br>`src/components/admin/products/useProductsManager.ts`<br>`src/components/dashboard/MyDiscountRequestsWidget.tsx`<br>`src/components/dashboard/QuickActionsPanel.tsx`<br>… +13 |
+| `status` | `rejected` | compara, escreve | `recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx`<br>`recovery/src-legacy/src/hooks/usePasswordResetRequests.ts`<br>`recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`src/components/admin/DiscountManagementPanel.tsx`<br>`src/components/admin/PasswordResetApproval.tsx`<br>… +13 |
 | `status` | `reprocessed` | escreve | `supabase/functions/crm-callback-reprocess/index.ts` |
 | `status` | `revoked` | compara | `src/components/admin/security/keys/McpKeyRow.tsx`<br>`src/components/admin/security/keys/useMcpKeys.ts` |
 | `status` | `running` | compara, escreve | `src/components/admin/connections/SmokeTestChecklist.tsx`<br>`src/components/admin/telemetry/OptimizationQueuePanel.tsx`<br>`tests/p0/_mocks.ts` |
 | `status` | `saved` | compara | `src/components/quotes/QuoteAutoSave.tsx` |
 | `status` | `saving` | compara | `src/components/quotes/QuoteAutoSave.tsx` |
-| `status` | `sent` | compara, escreve, filtra | `src/components/dashboard/QuickActionsPanel.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/hooks/useSalesHistory.ts`<br>`src/hooks/useSalesHistoryMacro.ts`<br>`src/pages/QuoteViewPage.tsx`<br>… +11 |
+| `status` | `sent` | compara, escreve, filtra | `recovery/src-legacy/src/hooks/useSalesHistory.ts`<br>`recovery/src-legacy/src/hooks/useSalesHistoryMacro.ts`<br>`recovery/src-legacy/src/pages/QuoteViewPage.tsx`<br>`recovery/src-legacy/src/pages/quote-view/QuoteActionHandlers.ts`<br>`recovery/src-legacy/src/pages/quote-view/QuoteBitrixSync.ts`<br>… +11 |
 | `status` | `short` | compara, escreve | `src/components/admin/connections/MaskedSuffixBadge.tsx`<br>`src/lib/masked-suffix.ts` |
 | `status` | `skipped` | compara, escreve | `src/components/admin/connections/SmokeTestChecklist.tsx`<br>`src/hooks/kit-builder/useKitFitsValidation.ts`<br>`src/pages/admin/telemetry/useOptimizationQueue.ts`<br>`supabase/functions/_shared/ai-router/index.ts`<br>`supabase/functions/full-op-diagnostics/index.ts`<br>… +1 |
 | `status` | `skipped_claim_error` | escreve | `supabase/functions/webhook-dispatcher/index.ts` |
@@ -1856,7 +1856,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `started` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `step_up_error` | compara, escreve | `src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>`src/components/admin/security/keys/UpdateMcpKeyDialog.tsx`<br>`src/lib/auth/invoke-full-scope.ts`<br>`src/pages/admin/DevChallengeExamplesPage.tsx` |
 | `status` | `string` | compara | `src/lib/products/stock-status.ts` |
-| `status` | `success` | compara, escreve | `src/components/admin/connections/FailedDeliveriesPanel.tsx`<br>`src/components/admin/security/keys/audit/McpAuditRow.tsx`<br>`src/components/kit-builder/VolumeIndicator.tsx`<br>`src/hooks/intelligence/useAiUsage.ts`<br>`src/hooks/useAiUsage.ts`<br>… +17 |
+| `status` | `success` | compara, escreve | `recovery/src-legacy/src/hooks/useAiUsage.ts`<br>`src/components/admin/connections/FailedDeliveriesPanel.tsx`<br>`src/components/admin/security/keys/audit/McpAuditRow.tsx`<br>`src/components/kit-builder/VolumeIndicator.tsx`<br>`src/hooks/intelligence/useAiUsage.ts`<br>… +17 |
 | `status` | `super` | compara | `src/components/bi/ClientCategoryRadar.tsx` |
 | `status` | `unauthorized` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `unavailable` | compara, escreve | `src/components/kit-builder/KitSummary.tsx`<br>`src/hooks/kit-builder/useKitMinQuantityValidation.ts`<br>`src/hooks/kit-builder/useKitPriceValidation.ts`<br>`src/pages/kit-builder/useKitBuilderQuote.ts` |
@@ -1896,6 +1896,28 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | action | `INSERT`, `UPDATE`, `DELETE`, `TRUNCATE`, `ERROR` | banco |
 | equality_op | `eq`, `neq`, `lt`, `lte`, `gt`, `gte`, `in`, `like`, `ilike`, `is`, `match`, `imatch`, `isdistinct` | banco |
 | buckettype | `STANDARD`, `ANALYTICS`, `VECTOR` | banco |
+| AiApiFormat | openai_compatible \| anthropic_native \| google_native \| custom | `recovery/src-legacy/src/hooks/useAiRouter.ts` |
+| AuditAction | INSERT \| UPDATE \| DELETE | `recovery/src-legacy/src/hooks/useAuditLog.ts` |
+| AuditEntityType | products \| product_variants \| product_images \| product_videos \| quotes \| quote_items \| orders \| order_items \| suppliers \| categories \| material_types \| color_variations \| companies \| company_contacts | `recovery/src-legacy/src/hooks/useAuditLog.ts` |
+| ViewMode | grid \| list \| table | `recovery/src-legacy/src/hooks/useCatalogState.ts` |
+| SortOption | relevance \| name \| price-asc \| price-desc \| stock \| newest \| color-match \| best-seller-supplier \| best-seller-promo | `recovery/src-legacy/src/hooks/useCatalogState.ts` |
+| ConnectionType | supabase \| bitrix24 \| n8n \| mcp \| webhook_outbound | `recovery/src-legacy/src/hooks/useConnectionTester.ts` |
+| ErrorKind | timeout \| network \| dns \| http \| auth \| config \| unknown | `recovery/src-legacy/src/hooks/useConnectionTester.ts` |
+| OverviewStatusFilter | all \| ok \| fail | `recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts` |
+| OverviewWindowFilter | any \| 5m \| 1h \| 24h \| 7d \| never | `recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts` |
+| DEV_EXPECTED_TABLES | "admin_audit_log", "ai_usage_logs", "ai_usage_quotas", "bot_detection_log", "external_connections_sync_log", "integration_credentials", "inbound_webhook_endpoints", "inbound_webhook_events", "ip_access_control", | `recovery/src-legacy/src/hooks/useDevAccessAudit.ts` |
+| EXTERNAL_CATEGORIES_QUERY_KEY | 'external-categories' | `recovery/src-legacy/src/hooks/useExternalCategoriesQuery.ts` |
+| ALLOWED_FRESHNESS_THRESHOLDS | 30, 60, 90 | `recovery/src-legacy/src/hooks/useProductFreshnessOverride.ts` |
+| RoleName | dev \| supervisor \| agente | `recovery/src-legacy/src/hooks/useRBAC.tsx` |
+| RETEST_COOLDOWN_PRESETS_MS | 3000, 10_000, 30_000, 60_000 | `recovery/src-legacy/src/hooks/useRetestCooldownSetting.ts` |
+| ReportFrequency | daily \| weekly \| monthly | `recovery/src-legacy/src/hooks/useScheduledReports.ts` |
+| ReportType | sales \| quotes \| clients \| products \| orders | `recovery/src-legacy/src/hooks/useScheduledReports.ts` |
+| HistoryType | product \| company \| general | `recovery/src-legacy/src/hooks/useSearchHistory.ts` |
+| CartStatus | novo \| em_negociacao \| pronto_orcamento | `recovery/src-legacy/src/hooks/useSellerCarts.ts` |
+| StepUpAction | promote_dev \| demote_dev \| mcp_full_issue \| mcp_full_escalate \| mcp_key_revoke \| mcp_key_rotate \| secret_rotation \| secret_revoke | `recovery/src-legacy/src/hooks/useStepUpAuth.ts` |
+| IntelligenceFlag | hot-product \| stockout-risk \| stagnant \| negotiation-opportunity \| frequent-restock \| class-a | `recovery/src-legacy/src/hooks/useStockHistory.ts` |
+| SortOption | recommended \| price_asc \| price_desc \| time_asc \| time_desc \| popularity | `recovery/src-legacy/src/hooks/useTechniqueRecommendations.ts` |
+| EmailEventType | quote_sent \| quote_approved \| quote_rejected \| order_created | `recovery/src-legacy/src/hooks/useTransactionalEmail.ts` |
 | DiscountApprovalStatus | all \| approved \| pending \| rejected | `src/components/admin/DiscountApprovalFilterBar.tsx` |
 | BADGE_CATEGORIES | 'status_estoque', 'novidade', 'curadoria', 'comercial', 'inteligencia', 'atributo', 'acao', 'sistema', | `src/components/admin/badges-manager/types.ts` |
 | SOURCE_KINDS | 'computed', 'manual', 'pipeline', 'intelligence', 'ui_only', 'hybrid', | `src/components/admin/badges-manager/types.ts` |
@@ -1955,31 +1977,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | DatePickerFieldVariant | compact \| input | `src/components/ui/date-picker-field.tsx` |
 | StatVariant | danger \| default \| info \| orange \| success \| warning | `src/components/ui/stat-card.tsx` |
 | AppRole | admin \| agente \| coordenador \| dev \| manager \| supervisor \| vendedor | `src/contexts/AuthContext.tsx` |
-| AiApiFormat | openai_compatible \| anthropic_native \| google_native \| custom | `src/hooks/useAiRouter.ts` |
-| AuditAction | INSERT \| UPDATE \| DELETE | `src/hooks/useAuditLog.ts` |
-| AuditEntityType | products \| product_variants \| product_images \| product_videos \| quotes \| quote_items \| orders \| order_items \| suppliers \| categories \| material_types \| color_variations \| companies \| company_contacts | `src/hooks/useAuditLog.ts` |
-| ViewMode | grid \| list \| table | `src/hooks/useCatalogState.ts` |
-| SortOption | relevance \| name \| price-asc \| price-desc \| stock \| newest \| color-match \| best-seller-supplier \| best-seller-promo | `src/hooks/useCatalogState.ts` |
-| ConnectionType | supabase \| bitrix24 \| n8n \| mcp \| webhook_outbound | `src/hooks/useConnectionTester.ts` |
-| ErrorKind | timeout \| network \| dns \| http \| auth \| config \| unknown | `src/hooks/useConnectionTester.ts` |
-| OverviewStatusFilter | all \| ok \| fail | `src/hooks/useConnectionsOverviewFilters.ts` |
-| OverviewWindowFilter | any \| 5m \| 1h \| 24h \| 7d \| never | `src/hooks/useConnectionsOverviewFilters.ts` |
-| DEV_EXPECTED_TABLES | "admin_audit_log", "ai_usage_logs", "ai_usage_quotas", "bot_detection_log", "external_connections_sync_log", "integration_credentials", "inbound_webhook_endpoints", "inbound_webhook_events", "ip_access_control", | `src/hooks/useDevAccessAudit.ts` |
-| EXTERNAL_CATEGORIES_QUERY_KEY | 'external-categories' | `src/hooks/useExternalCategoriesQuery.ts` |
 | FUTURE_STOCK_WINDOWS | 7, 15, 30 | `src/hooks/useFutureStockPreference.ts` |
-| ALLOWED_FRESHNESS_THRESHOLDS | 30, 60, 90 | `src/hooks/useProductFreshnessOverride.ts` |
-| RoleName | dev \| supervisor \| agente | `src/hooks/useRBAC.tsx` |
-| ReplenishmentStatus | active \| expiring_soon \| expired | `src/hooks/useReplenishments.ts` |
+| ReplenishmentStatus | active \| expired \| expiring_soon | `src/hooks/useReplenishments.ts` |
 | StockStatus | in-stock \| low-stock \| out-of-stock | `src/hooks/useReplenishments.ts` |
-| RETEST_COOLDOWN_PRESETS_MS | 3000, 10_000, 30_000, 60_000 | `src/hooks/useRetestCooldownSetting.ts` |
-| ReportFrequency | daily \| weekly \| monthly | `src/hooks/useScheduledReports.ts` |
-| ReportType | sales \| quotes \| clients \| products \| orders | `src/hooks/useScheduledReports.ts` |
-| HistoryType | product \| company \| general | `src/hooks/useSearchHistory.ts` |
-| CartStatus | novo \| em_negociacao \| pronto_orcamento | `src/hooks/useSellerCarts.ts` |
-| StepUpAction | promote_dev \| demote_dev \| mcp_full_issue \| mcp_full_escalate \| mcp_key_revoke \| mcp_key_rotate \| secret_rotation \| secret_revoke | `src/hooks/useStepUpAuth.ts` |
-| IntelligenceFlag | hot-product \| stockout-risk \| stagnant \| negotiation-opportunity \| frequent-restock \| class-a | `src/hooks/useStockHistory.ts` |
-| SortOption | recommended \| price_asc \| price_desc \| time_asc \| time_desc \| popularity | `src/hooks/useTechniqueRecommendations.ts` |
-| EmailEventType | quote_sent \| quote_approved \| quote_rejected \| order_created | `src/hooks/useTransactionalEmail.ts` |
 | AuditAction | DELETE \| INSERT \| UPDATE | `src/hooks/admin/useAuditLog.ts` |
 | AuditEntityType | categories \| color_variations \| companies \| company_contacts \| material_types \| order_items \| orders \| product_images \| product_variants \| product_videos \| products \| quote_items \| quotes \| suppliers | `src/hooks/admin/useAuditLog.ts` |
 | DEV_EXPECTED_TABLES | 'admin_audit_log', 'ai_usage_logs', 'ai_usage_quotas', 'bot_detection_log', 'external_connections_sync_log', 'integration_credentials', 'inbound_webhook_endpoints', 'inbound_webhook_events', 'ip_access_control', | `src/hooks/admin/useDevAccessAudit.ts` |
@@ -3021,6 +3021,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 
 | Campo | Restrições | Arquivo |
 |---|---|---|
+| `days` | type=number, min=1, max=365 | `recovery/src-legacy/src/components/favorites/ShareListDialog.tsx` |
+| `validity` | type=number, min=1, max=365 | `recovery/src-legacy/src/components/quotes/QuoteTemplateForm.tsx` |
+| `discount_percent` | type=number, min=0, max=100, step=0.1 | `recovery/src-legacy/src/components/quotes/QuoteTemplateForm.tsx` |
+| `discount_amount` | type=number, min=0, step=0.01 | `recovery/src-legacy/src/components/quotes/QuoteTemplateForm.tsx` |
+| `login-email` | type=email | `recovery/src-legacy/src/pages/Auth.tsx` |
 | `ids.min` | min, type=number, min=0, max=100, step=0.5, min | `src/components/admin/DiscountApprovalFilterBar.tsx` |
 | `ids.max` | max, type=number, min=0, max=100, step=0.5, max | `src/components/admin/DiscountApprovalFilterBar.tsx` |
 | `bf-key` | disabled=isEdit, min | `src/components/admin/badges-manager/BadgeFormDialog.tsx` |
@@ -3074,7 +3079,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `forgot-email` | type=email | `src/components/auth/ForgotPasswordForm.tsx` |
 | `su-pwd` | type=password | `src/components/auth/StepUpAuthDialog.tsx` |
 | `su-otp` | pattern=[0-9]{6, max | `src/components/auth/StepUpAuthDialog.tsx` |
-| `days` | type=number, min=1, max=365 | `src/components/favorites/ShareListDialog.tsx` |
 | `po-qty` | type=number, min=1 | `src/components/inventory/PurchaseOrderModal.tsx` |
 | `markup` | type=number, min=0, max=500, step=5 | `src/components/kit-builder/KitMarginSimulator.tsx` |
 | `kit-qty` | type=number, min=1 | `src/components/kit-builder/kit-summary/KitIdentificationCard.tsx` |
@@ -3082,15 +3086,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `custom-qty` | type=number, min=minQuantity | `src/components/products/inline-price/QuantityCalculator.tsx` |
 | `custom-qty-col` | type=number, min=minQuantity | `src/components/products/inline-price/QuantityCalculator.tsx` |
 | `quote-client-email` | type=email | `src/components/quotes/ClientPicker.tsx` |
-| `validity` | type=number, min=1, max=365 | `src/components/quotes/QuoteTemplateForm.tsx` |
-| `discount_percent` | type=number, min=0, max=100, step=0.1 | `src/components/quotes/QuoteTemplateForm.tsx` |
-| `discount_amount` | type=number, min=0, step=0.01 | `src/components/quotes/QuoteTemplateForm.tsx` |
 | `visual-search-input` | accept=image/*, disabled=isLoading | `src/components/search/VisualSearchButton.tsx` |
 | `fieldId` | required=required | `src/components/ui/LabeledField.tsx` |
 | `fieldId` | required=required | `src/components/ui/LabeledField.tsx` |
 | `resolvedId` | disabled, disabled | `src/components/ui/input.tsx` |
 | `resolvedId` | min, disabled, disabled | `src/components/ui/textarea.tsx` |
-| `login-email` | type=email | `src/pages/Auth.tsx` |
 | `exp` | type=datetime-local | `src/pages/admin/AdminSegurancaAcessoPage.tsx` |
 | `best-seller-threshold` | type=number, min=1, step=1, disabled=!draft.bestSeller.enabled, min | `src/pages/admin/IntelligenceBadgeSettingsPage.tsx` |
 | `tpl-price` | type=number, step=0.01 | `src/pages/admin/KitTemplatesAdminPage.tsx` |
@@ -3365,6 +3365,166 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const url = new URL(request.url); if (url.hostname.includes('.supabase.co')) return true; if (request.headers.has('Authorization')) return true; if (request.method !== 'GET') return true; return false;
   ```
+- **generateToken()** — `recovery/src-legacy/src/components/collections/ShareCollectionDialog.tsx`
+  ```
+  setBusy(true); try { const expires = new Date(); expires.setDate(expires.getDate() + 30); const { data, error } = await supabase .from("collections") .update({ share_token: crypto.randomUUID(), share_expires_at: expires.toISOString(), is_public: true, }) .eq("id", collectionId) .select("share_token, share_expires_at, is_public") .single(); if (error) throw error; updateCollection(collectionId, { shareToken: data.share_token, shareExpiresAt: data.share_expires_at, isPublic: true, }); const url = …
+  ```
+- **generateLink()** — `recovery/src-legacy/src/components/compare/ShareComparisonDialog.tsx`
+  ```
+  setGenerating(true); try { const { data: userData } = await supabase.auth.getUser(); if (!userData.user) { toast.error("Faça login para compartilhar"); return; } const days = parseInt(expiresIn, 10); const expiresAt = new Date(Date.now() + days * 86400000).toISOString(); const { data, error } = await supabase .from("user_comparisons") .insert({ user_id: userData.user.id, client_id: clientId ?? null, client_name: clientName ?? null, items: JSON.parse(JSON.stringify(compareItems)), is_public: true …
+  ```
+- **GenerateButton({ onClick, isGenerating, disabled = false, hasAllRequirements = true, label = "Gerar Mockup com IA", className, }: Gener)** — `recovery/src-legacy/src/components/mockup/GenerateButton.tsx`
+  ```
+  const isReady = hasAllRequirements && !disabled && !isGenerating; return ( <motion.div whileHover={isReady ? { scale: 1.02 } : undefined} whileTap={isReady ? { scale: 0.98 } : undefined} className={cn("relative", className)} > {isReady && ( <motion.span aria-hidden className="absolute inset-0 rounded-md bg-primary/40 blur-md" animate={{ opacity: [0.3, 0.7, 0.3] }} transition={{ duration: 2, repeat: Infinity }} /> )} <Button type="button" size="lg" onClick={onClick} disabled={disabled || isGenera …
+  ```
+- **PriceResultV51({ productName, productPrice, quantity, priceData, showDetails = true, }: PriceResultV51Props)** — `recovery/src-legacy/src/components/pricing/simulator/PriceResultV51.tsx`
+  ```
+  const [copied, setCopied] = useState(false); // Cálculos derivados const productTotal = productPrice * quantity; const grandTotal = productTotal + priceData.total_price; const unitTotal = grandTotal / quantity; const handleCopyCode = () => { navigator.clipboard.writeText(priceData.codigo_orcamento); setCopied(true); toast.success('Código copiado!'); setTimeout(() => setCopied(false), 2000); }; return ( <Card className="border-primary/30 bg-primary/5"> <CardHeader className="pb-3"> <div className …
+  ```
+- **calculate()** — `recovery/src-legacy/src/components/pricing/simulator/QuantityAndResult.tsx`
+  ```
+  setIsCalculating(true); setError(null); try { // Usar o ID da técnica como ID da área const result = await calculatePrice(technique.id, quantity, colors); if (result?.success) { setPriceData(result); } else { setError('Erro ao calcular preço'); setPriceData(null); } } catch (err) { setError(err instanceof Error ? err.message : 'Erro desconhecido'); setPriceData(null); } finally { setIsCalculating(false); }
+  ```
+- **formatPrice(price: number)** — `recovery/src-legacy/src/components/products/EnhancedProductCard.tsx`
+  ```
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", }).format(price);
+  ```
+- **formatCurrency(value: number)** — `recovery/src-legacy/src/components/quotes/AdminTemplatesManager.tsx`
+  ```
+  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
+  ```
+- **calculateTotal(template: QuoteTemplate)** — `recovery/src-legacy/src/components/quotes/AdminTemplatesManager.tsx`
+  ```
+  const itemsTotal = template.items_data.reduce((sum, item) => { const personalizationCost = item.personalizations?.reduce((pSum, p) => pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0), 0) || 0; return sum + item.quantity * item.unitPrice + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;
+  ```
+- **formatCurrency(value: number)** — `recovery/src-legacy/src/components/quotes/QuoteTemplateForm.tsx`
+  ```
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", }).format(value);
+  ```
+- **calculateTotal()** — `recovery/src-legacy/src/components/quotes/QuoteTemplateForm.tsx`
+  ```
+  const itemsTotal = (formData.items_data || []).reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = formData.discount_percent && formData.discount_percent > 0 ? itemsTotal * (formData.discount_percent / 100) : formData.discount_amount || 0; return ite …
+  ```
+- **formatCurrency(value: number)** — `recovery/src-legacy/src/components/quotes/QuoteTemplatesList.tsx`
+  ```
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", }).format(value);
+  ```
+- **calculateTemplateTotal(template: QuoteTemplate)** — `recovery/src-legacy/src/components/quotes/QuoteTemplatesList.tsx`
+  ```
+  const itemsTotal = template.items_data.reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;
+  ```
+- **generateDeviceFingerprint()** — `recovery/src-legacy/src/hooks/useDeviceDetection.ts`
+  ```
+  const components = [ navigator.userAgent, navigator.language, navigator.platform, screen.width, screen.height, screen.colorDepth, new Date().getTimezoneOffset(), navigator.hardwareConcurrency || 'unknown', (navigator as Navigator & { deviceMemory?: number }).deviceMemory || 'unknown', ]; const fingerprint = components.join('|'); // Simple hash function let hash = 0; for (let i = 0; i < fingerprint.length; i++) { const char = fingerprint.charCodeAt(i); hash = ((hash << 5) - hash) + char; hash = h …
+  ```
+- **mapPriceResponseToFlat(resp: Record<string, unknown>)** — `recovery/src-legacy/src/hooks/useGravacaoPriceV2.ts`
+  ```
+  return adaptPriceResponse(resp);
+  ```
+- **calculateCustomizationPrice(params: CalculatePriceParams)** — `recovery/src-legacy/src/hooks/useGravacaoPriceV2.ts`
+  ```
+  const result = await invokeExternalRpc<CustomizationPriceResponse>( 'fn_get_customization_price', { p_area_id: params.areaId, p_quantidade: params.quantidade, p_num_cores: params.numCores ?? 1, p_largura_cm: params.larguraCm ?? null, p_altura_cm: params.alturaCm ?? null, } ); return adaptPriceResponse(result);
+  ```
+- **generateMockup()** — `recovery/src-legacy/src/hooks/useMockupGenerator.ts`
+  ```
+  const areasWithLogos = personalizationAreas.filter((a) => a.logoPreview); if (!selectedClient || !productSelection || !selectedTechnique || areasWithLogos.length === 0) { toast.error('Selecione empresa, produto, técnica e faça upload de pelo menos um logo'); return; } const productImage = getProductImage(); if (!productImage) { toast.error('O produto selecionado não possui imagem'); return; } setIsLoading(true); setGeneratedMockup(null); setGeneratedBatchMockups([]); setGenerationError(null); se …
+  ```
+- **calcDaysRemaining(createdAt: string)** — `recovery/src-legacy/src/hooks/useNovelties.ts`
+  ```
+  const created = new Date(createdAt).getTime(); const now = Date.now(); const elapsed = Math.floor((now - created) / (1000 * 60 * 60 * 24)); return Math.max(0, NOVELTY_WINDOW_DAYS - elapsed);
+  ```
+- **calculateMatchScore(source: Product, candidate: Product)** — `recovery/src-legacy/src/hooks/useProductMatch.ts`
+  ```
+  score: number; reasons: string[]
+  ```
+- **calculateNextRun(frequency: ReportFrequency)** — `recovery/src-legacy/src/hooks/useScheduledReports.ts`
+  ```
+  const now = new Date(); switch (frequency) { case 'daily': return new Date(now.getTime() + 24 * 60 * 60 * 1000); case 'weekly': return new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); case 'monthly': { const next = new Date(now); next.setMonth(next.getMonth() + 1); return next; } }
+  ```
+- **calculateNameSimilarity(name1: string, name2: string)** — `recovery/src-legacy/src/hooks/useSupplierComparison.ts`
+  ```
+  if (!name1?.trim() || !name2?.trim()) return 0; const words1 = name1.toLowerCase().split(/\s+/).filter(w => w.length >= 3 && !STOP_WORDS.has(w)); const words2 = name2.toLowerCase().split(/\s+/).filter(w => w.length >= 3 && !STOP_WORDS.has(w)); if (words1.length === 0 || words2.length === 0) return 0; const commonWords = words1.filter((word) => words2.some((w) => w.includes(word) || word.includes(w)) ); return commonWords.length / Math.max(words1.length, words2.length);
+  ```
+- **fetchPriceOptions()** — `recovery/src-legacy/src/hooks/useTechniquePricing.ts`
+  ```
+  setIsLoading(true); setError(null); try { // Buscar todas as tabelas que contêm o código da técnica const { data, error: invokeError } = await supabase.functions.invoke('external-db-bridge', { body: { table: 'customization_price_tables', operation: 'select', select: 'id,table_code,table_code_option,table_fullcode,customization_type_name,max_colors,max_area_width_cm,max_area_height_cm,price_by_color,price_by_area,setup_price,handling_price', filters: { is_active: true }, limit: 100, }, }); if (in …
+  ```
+- **calculateRecommendationScore(technique: Technique, keywords: string[],)** — `recovery/src-legacy/src/hooks/useTechniqueRecommendations.ts`
+  ```
+  score: number; matchedKeywords: string[]; reason: string
+  ```
+- **extractPriceTiers(table: CustomizationPriceTable)** — `recovery/src-legacy/src/hooks/useTecnicasUnificadas.ts`
+  ```
+  const tiers: PriceTier[] = []; for (let i = 1; i <= 15; i++) { const minQty = table[`min_qty_${i}`] as number | undefined; const price = table[`price_${i}`] as number | undefined; const sla = table[`sla_${i}`] as number | undefined; if (minQty !== undefined && minQty !== null && price !== undefined && price !== null) { const nextMinQty = table[`min_qty_${i + 1}`] as number | undefined; const maxQty = nextMinQty ? nextMinQty - 1 : null; tiers.push({ tierIndex: i, minQuantity: minQty, maxQuantity: …
+  ```
+- **calculatePriceForQuantityLegacy(table: CustomizationPriceTable, quantity: number,)** — `recovery/src-legacy/src/hooks/useTecnicasUnificadas.ts`
+  ```
+  const tiers = extractPriceTiers(table); if (tiers.length === 0) return null; let selectedTier = tiers[0]; for (const tier of tiers) { if (quantity >= tier.minQuantity) { selectedTier = tier; } } const unitPrice = selectedTier.unitPrice; const totalPrice = unitPrice * quantity; const setupPrice = table.setup_price || 0; const handlingPrice = table.handling_price || 0; const grandTotal = totalPrice + setupPrice + handlingPrice; const minTierPrice = tiers[0].unitPrice; const savingsPerUnit = minTie …
+  ```
+- **calculateColorSummary(variants: VariantWithStock[], stockEntries: StockEntry[])** — `recovery/src-legacy/src/hooks/useVariantSupplierSources.ts`
+  ```
+  const colorMap = new Map<string, ColorSummary>(); // Agregar estoque atual por cor for (const v of variants) { const name = v.color_name || 'Sem cor'; const existing = colorMap.get(name); if (existing) { existing.currentStock += v.stock_quantity || 0; } else { colorMap.set(name, { name, hex: v.color_hex, thumbnail: v.selected_thumbnail, currentStock: v.stock_quantity || 0, incomingTotal: 0, incomingCount: 0, }); } } // Agregar previsões de reposição por cor for (const entry of stockEntries) { co …
+  ```
+- **generateSlug(nome: string)** — `recovery/src-legacy/src/hooks/gravacao/useVariantesGravacao.ts`
+  ```
+  return nome .toLowerCase() .normalize('NFD') .replace(/[\u0300-\u036f]/g, '') .replace(/[^a-z0-9]+/g, '-') .replace(/(^-|-$)/g, '');
+  ```
+- **generateKitOgImage(input: KitOgInput)** — `recovery/src-legacy/src/lib/kit-og-image.ts`
+  ```
+  if (typeof document === "undefined") return null; try { const canvas = document.createElement("canvas"); canvas.width = 1200; canvas.height = 630; const ctx = canvas.getContext("2d"); if (!ctx) return null; const color = input.color && /^#[0-9a-f]{6}$/i.test(input.color) ? input.color : "#3B82F6"; // Background gradient diagonal const grad = ctx.createLinearGradient(0, 0, 1200, 630); grad.addColorStop(0, color); grad.addColorStop(1, shade(color, -30)); ctx.fillStyle = grad; ctx.fillRect(0, 0, 12 …
+  ```
+- **validateAndRedirect(userId: string, email: string)** — `recovery/src-legacy/src/pages/Auth.tsx`
+  ```
+  try { const ipValidation = await validateIPForAuthenticatedUser(userId); if (!ipValidation.isAllowed && ipValidation.hasRestrictions) { await signOut(); const reason = ipValidation.reason || 'access_blocked'; await logLoginAttempt(email, userId, false, `${reason}: ${ipValidation.error}`); setIpBlocked(true); setBlockedIP(ipValidation.currentIP); toast({ variant: 'destructive', title: 'Acesso Bloqueado', description: ipValidation.error || `Seu IP (${ipValidation.currentIP}) não está autorizado.`, …
+  ```
+- **formatCurrency(value: number)** — `recovery/src-legacy/src/pages/ComparePage.tsx`
+  ```
+  
+  ```
+- **PriceSimulatorPage()** — `recovery/src-legacy/src/pages/PriceSimulatorPage.tsx`
+  ```
+  return ( <MainLayout> <PageSEO title="Simulador de Preços" description="Simule preços de brindes com personalização, quantidades e custos." path="/simulador-precos" /> <div className="mx-auto w-full max-w-[1920px] animate-fade-in space-y-3 px-3 py-3 pb-24 sm:space-y-4 sm:px-4 sm:py-4 md:pb-6 lg:px-6 xl:px-8"> {/* Hero Header — #1 */} <div className="flex flex-col gap-1"> <h1 data-testid="page-title-simulador-precos" className="font-display text-2xl font-bold tracking-tight text-foreground sm:tex …
+  ```
+- **formatCurrency(value: number)** — `recovery/src-legacy/src/pages/QuotesListPage.tsx`
+  ```
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);
+  ```
+- **formatPrice(price: number)** — `recovery/src-legacy/src/pages/product-detail/ProductDetailHero.tsx`
+  ```
+  
+  ```
+- **formatPrice(value: number)** — `recovery/src-legacy/src/pages/product-match/MatchCards.tsx`
+  ```
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+  ```
+- **formatPrice(value: number)** — `recovery/src-legacy/src/pages/product-match/ProductSearchPanel.tsx`
+  ```
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+  ```
+- **formatCurrency(value: number)** — `recovery/src-legacy/src/pages/quote-view/QuoteActionHandlers.ts`
+  ```
+  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  ```
+- **calcPersTotal(totalCost: number, qty: number)** — `recovery/src-legacy/src/pages/quote-view/QuoteActionHandlers.ts`
+  ```
+  if (qty <= 0) return totalCost; const roundedUnit = Math.round((totalCost / qty) * 100) / 100; return Math.round(roundedUnit * qty * 100) / 100;
+  ```
+- **formatCurrency(value: number)** — `recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts`
+  ```
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+  ```
+- **drawPriceBreakdown(doc: jsPDF, kitState: KitState, kitQuantity: number, y: number,)** — `recovery/src-legacy/src/utils/kitPdfGenerator.ts`
+  ```
+  const { box, items, personalization } = kitState; const breakdown = generatePriceBreakdown(box, items, personalization, kitQuantity); const pricing = calculateTotalKitPrice(box, items, personalization, kitQuantity); y = drawSectionTitle(doc, 'Detalhamento de Preços', y); const rows = breakdown.map((item) => [ item.isPersonalization ? ` ↳ ${item.label}` : item.label, item.quantity ? String(item.quantity) : '-', formatCurrency(item.unitPrice), formatCurrency(item.totalPrice), ]); autoTable(doc, { …
+  ```
+- **generateKitPDF(options: KitPdfOptions)** — `recovery/src-legacy/src/utils/kitPdfGenerator.ts`
+  ```
+  const { kitState, kitQuantity, kitName } = options; const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' }); let y = drawHeader(doc, kitName, 0, options.orgName, options.orgLogoUrl, kitState.identity); // KPI cards y = drawKpiCards(doc, kitState, kitQuantity, y); // Composition section y = drawSectionTitle(doc, 'Composição do Kit', y); y = drawCompositionTable(doc, kitState, y); // Box info line if (kitState.box) { doc.setFontSize(7); doc.setFont('helvetica', 'normal'); doc. …
+  ```
+- **validateImportedTemplates(data: unknown)** — `recovery/src-legacy/src/utils/templateExport.ts`
+  ```
+  if (!data || typeof data !== 'object') return null; const obj = data as Record<string, unknown>; if (!obj.version || !obj.templates || !Array.isArray(obj.templates)) { return null; } // Validate each template has required fields for (const template of obj.templates) { if (typeof template !== 'object' || !template) return null; const t = template as Record<string, unknown>; if (!t.name || typeof t.name !== 'string') return null; } return data as ExportedTemplate;
+  ```
 - **DiscountApprovalAuditTrail({ requestId, defaultOpen = false }: Props)** — `src/components/admin/DiscountApprovalAuditTrail.tsx`
   ```
   const [search, setSearch] = useState(''); const { data, isLoading } = useQuery({ queryKey: ['discount-approval-audit', requestId], queryFn: async () => { const { data: rows, error } = await supabase // rls-allow: SELECT permitido a admin/supervisor/seller dono via policy daa_select_scope .from('discount_approval_audit') .select( 'id, event, actor_role, actor_id, requested_discount_percent, max_allowed_percent, real_discount_percent, admin_notes, seller_notes, created_at, actor:actor_id(full_name …
@@ -3433,17 +3593,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   return ( <div className={cn('flex flex-col space-y-0.5', className)}> <span className={cn( 'font-medium tracking-tight text-muted-foreground opacity-70 transition-opacity group-hover:opacity-100', className?.includes('flex-row') ? 'text-[8px]' : 'text-[10px]', )} > {label} </span> <span data-testid={testId} className={cn( 'font-bold tabular-nums', className?.includes('flex-row') ? 'text-[11px]' : 'text-sm', isPrimary ? 'text-primary' : 'text-foreground', )} > {formatCurrency(value)} </span> </di …
   ```
-- **generateToken()** — `src/components/collections/ShareCollectionDialog.tsx`
-  ```
-  setBusy(true); try { const expires = new Date(); expires.setDate(expires.getDate() + 30); const { data, error } = await supabase .from("collections") .update({ share_token: crypto.randomUUID(), share_expires_at: expires.toISOString(), is_public: true, }) .eq("id", collectionId) .select("share_token, share_expires_at, is_public") .single(); if (error) throw error; updateCollection(collectionId, { shareToken: data.share_token, shareExpiresAt: data.share_expires_at, isPublic: true, }); const url = …
-  ```
 - **PriceSparkline({ productId, className }: Props)** — `src/components/compare/PriceSparkline.tsx`
   ```
   const [data, setData] = useState<PricePoint[]>([]); const [loading, setLoading] = useState(true); useEffect(() => { let cancelled = false; (async () => { try { const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(); const { data: rows } = await supabase .from('price_history') .select('changed_at,new_values') .eq('variant_id', productId) .gte('changed_at', since) .order('changed_at', { ascending: true }) .limit(60); if (cancelled) return; const points = (rows ?? []).map((r) = …
-  ```
-- **generateLink()** — `src/components/compare/ShareComparisonDialog.tsx`
-  ```
-  setGenerating(true); try { const { data: userData } = await supabase.auth.getUser(); if (!userData.user) { toast.error("Faça login para compartilhar"); return; } const days = parseInt(expiresIn, 10); const expiresAt = new Date(Date.now() + days * 86400000).toISOString(); const { data, error } = await supabase .from("user_comparisons") .insert({ user_id: userData.user.id, client_id: clientId ?? null, client_name: clientName ?? null, items: JSON.parse(JSON.stringify(compareItems)), is_public: true …
   ```
 - **formatCurrency(value: number)** — `src/components/compare/SupplierComparisonModal.tsx`
   ```
@@ -3565,10 +3717,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   if (!file.name.toLowerCase().endsWith('.pdf')) return true; try { const head = new Uint8Array(await file.slice(0, 4).arrayBuffer()); return String.fromCharCode(...head) === '%PDF'; } catch { return true; }
   ```
-- **GenerateButton({ onClick, isGenerating, disabled = false, hasAllRequirements = true, label = "Gerar Mockup com IA", className, }: Gener)** — `src/components/mockup/GenerateButton.tsx`
-  ```
-  const isReady = hasAllRequirements && !disabled && !isGenerating; return ( <motion.div whileHover={isReady ? { scale: 1.02 } : undefined} whileTap={isReady ? { scale: 0.98 } : undefined} className={cn("relative", className)} > {isReady && ( <motion.span aria-hidden className="absolute inset-0 rounded-md bg-primary/40 blur-md" animate={{ opacity: [0.3, 0.7, 0.3] }} transition={{ duration: 2, repeat: Infinity }} /> )} <Button type="button" size="lg" onClick={onClick} disabled={disabled || isGenera …
-  ```
 - **formatCurrency(value: number)** — `src/components/mockup/MockupProductSelector.tsx`
   ```
   
@@ -3617,14 +3765,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   if (engravings.length === 0) { setCalculations([]); return; } setIsCalculating(true); const results = await Promise.all( engravings.map(async (engraving) => { try { // Usar ID da área da técnica selecionada // Assumindo que technique.id é o ID da área de impressão const areaId = engraving.technique.id; const priceData = await calculatePrice(areaId, quantity, engraving.colors || 1); return { engraving, priceData, loading: false, error: priceData?.success === false ? 'Erro no cálculo' : null, }; } …
   ```
-- **PriceResultV51({ productName, productPrice, quantity, priceData, showDetails = true, }: PriceResultV51Props)** — `src/components/pricing/simulator/PriceResultV51.tsx`
-  ```
-  const [copied, setCopied] = useState(false); // Cálculos derivados const productTotal = productPrice * quantity; const grandTotal = productTotal + priceData.total_price; const unitTotal = grandTotal / quantity; const handleCopyCode = () => { navigator.clipboard.writeText(priceData.codigo_orcamento); setCopied(true); toast.success('Código copiado!'); setTimeout(() => setCopied(false), 2000); }; return ( <Card className="border-primary/30 bg-primary/5"> <CardHeader className="pb-3"> <div className …
-  ```
-- **calculate()** — `src/components/pricing/simulator/QuantityAndResult.tsx`
-  ```
-  setIsCalculating(true); setError(null); try { // Usar o ID da técnica como ID da área const result = await calculatePrice(technique.id, quantity, colors); if (result?.success) { setPriceData(result); } else { setError('Erro ao calcular preço'); setPriceData(null); } } catch (err) { setError(err instanceof Error ? err.message : 'Erro desconhecido'); setPriceData(null); } finally { setIsCalculating(false); }
-  ```
 - **formatCurrency(value: number)** — `src/components/pricing/simulator/utils.ts`
   ```
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);
@@ -3636,10 +3776,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **formatPrice(price: number)** — `src/components/products/BaseProductGridCard.tsx`
   ```
   return baseCardPriceFormatter.format(price);
-  ```
-- **formatPrice(price: number)** — `src/components/products/EnhancedProductCard.tsx`
-  ```
-  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", }).format(price);
   ```
 - **extractPriceTiersFromSource(source: SupplierSourcePricing, basePrice: number,)** — `src/components/products/InlinePriceCalculator.tsx`
   ```
@@ -3697,14 +3833,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   return `📦 *ITEM DO KIT* 📦 *${item.productName}* Parte do Kit: ${product.name} ${item.description || ''} ${item.material ? `🧵 Material: ${item.material}` : ''} ${item.weightG ? `⚖️ Peso: ${item.weightG}g` : ''} 💰 Kit completo a partir de ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price)}/un 📦 Qtd mínima: ${product.minQuantity} kits Promo Brindes - Brindes com Excelência!`;
   ```
-- **formatCurrency(value: number)** — `src/components/quotes/AdminTemplatesManager.tsx`
-  ```
-  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
-  ```
-- **calculateTotal(template: QuoteTemplate)** — `src/components/quotes/AdminTemplatesManager.tsx`
-  ```
-  const itemsTotal = template.items_data.reduce((sum, item) => { const personalizationCost = item.personalizations?.reduce((pSum, p) => pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0), 0) || 0; return sum + item.quantity * item.unitPrice + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;
-  ```
 - **round2(n: number)** — `src/components/quotes/QuoteItemsTable.tsx`
   ```
   Math.round((n + Number.EPSILON) * 100) / 100;
@@ -3712,22 +3840,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **formatCurrency(value: number)** — `src/components/quotes/QuoteListCellRenderer.tsx`
   ```
   
-  ```
-- **formatCurrency(value: number)** — `src/components/quotes/QuoteTemplateForm.tsx`
-  ```
-  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", }).format(value);
-  ```
-- **calculateTotal()** — `src/components/quotes/QuoteTemplateForm.tsx`
-  ```
-  const itemsTotal = (formData.items_data || []).reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = formData.discount_percent && formData.discount_percent > 0 ? itemsTotal * (formData.discount_percent / 100) : formData.discount_amount || 0; return ite …
-  ```
-- **formatCurrency(value: number)** — `src/components/quotes/QuoteTemplatesList.tsx`
-  ```
-  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", }).format(value);
-  ```
-- **calculateTemplateTotal(template: QuoteTemplate)** — `src/components/quotes/QuoteTemplatesList.tsx`
-  ```
-  const itemsTotal = template.items_data.reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;
   ```
 - **hasDiscountWorkflow(q: Quote)** — `src/components/quotes/QuotesStatusChips.tsx`
   ```
@@ -3749,30 +3861,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   if (!allowNegative && n < 0) return 'Valores negativos não são permitidos.'; if (n < min) return `Valor mínimo é ${formatBR(min)}.`; if (typeof max === 'number' && n > max) return `Valor máximo é ${formatBR(max)}.`; return null;
   ```
-- **generateDeviceFingerprint()** — `src/hooks/useDeviceDetection.ts`
-  ```
-  const components = [ navigator.userAgent, navigator.language, navigator.platform, screen.width, screen.height, screen.colorDepth, new Date().getTimezoneOffset(), navigator.hardwareConcurrency || 'unknown', (navigator as Navigator & { deviceMemory?: number }).deviceMemory || 'unknown', ]; const fingerprint = components.join('|'); // Simple hash function let hash = 0; for (let i = 0; i < fingerprint.length; i++) { const char = fingerprint.charCodeAt(i); hash = ((hash << 5) - hash) + char; hash = h …
-  ```
-- **mapPriceResponseToFlat(resp: Record<string, unknown>)** — `src/hooks/useGravacaoPriceV2.ts`
-  ```
-  return adaptPriceResponse(resp);
-  ```
-- **calculateCustomizationPrice(params: CalculatePriceParams)** — `src/hooks/useGravacaoPriceV2.ts`
-  ```
-  const result = await invokeExternalRpc<CustomizationPriceResponse>( 'fn_get_customization_price', { p_area_id: params.areaId, p_quantidade: params.quantidade, p_num_cores: params.numCores ?? 1, p_largura_cm: params.larguraCm ?? null, p_altura_cm: params.alturaCm ?? null, } ); return adaptPriceResponse(result);
-  ```
-- **generateMockup()** — `src/hooks/useMockupGenerator.ts`
-  ```
-  const areasWithLogos = personalizationAreas.filter((a) => a.logoPreview); if (!selectedClient || !productSelection || !selectedTechnique || areasWithLogos.length === 0) { toast.error('Selecione empresa, produto, técnica e faça upload de pelo menos um logo'); return; } const productImage = getProductImage(); if (!productImage) { toast.error('O produto selecionado não possui imagem'); return; } setIsLoading(true); setGeneratedMockup(null); setGeneratedBatchMockups([]); setGenerationError(null); se …
-  ```
-- **calcDaysRemaining(createdAt: string)** — `src/hooks/useNovelties.ts`
-  ```
-  const created = new Date(createdAt).getTime(); const now = Date.now(); const elapsed = Math.floor((now - created) / (1000 * 60 * 60 * 24)); return Math.max(0, NOVELTY_WINDOW_DAYS - elapsed);
-  ```
-- **calculateMatchScore(source: Product, candidate: Product)** — `src/hooks/useProductMatch.ts`
-  ```
-  score: number; reasons: string[]
-  ```
 - **calcDaysSinceReplenishment(updatedAt: string)** — `src/hooks/useReplenishments.ts`
   ```
   const updated = new Date(updatedAt).getTime(); if (Number.isNaN(updated)) return REPLENISHMENT_WINDOW_DAYS; return Math.max(0, Math.floor((Date.now() - updated) / (1000 * 60 * 60 * 24)));
@@ -3780,34 +3868,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **calcDaysRemaining(updatedAt: string)** — `src/hooks/useReplenishments.ts`
   ```
   const elapsed = calcDaysSinceReplenishment(updatedAt); return Math.max(0, REPLENISHMENT_WINDOW_DAYS - elapsed);
-  ```
-- **calculateNextRun(frequency: ReportFrequency)** — `src/hooks/useScheduledReports.ts`
-  ```
-  const now = new Date(); switch (frequency) { case 'daily': return new Date(now.getTime() + 24 * 60 * 60 * 1000); case 'weekly': return new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); case 'monthly': { const next = new Date(now); next.setMonth(next.getMonth() + 1); return next; } }
-  ```
-- **calculateNameSimilarity(name1: string, name2: string)** — `src/hooks/useSupplierComparison.ts`
-  ```
-  if (!name1?.trim() || !name2?.trim()) return 0; const words1 = name1.toLowerCase().split(/\s+/).filter(w => w.length >= 3 && !STOP_WORDS.has(w)); const words2 = name2.toLowerCase().split(/\s+/).filter(w => w.length >= 3 && !STOP_WORDS.has(w)); if (words1.length === 0 || words2.length === 0) return 0; const commonWords = words1.filter((word) => words2.some((w) => w.includes(word) || word.includes(w)) ); return commonWords.length / Math.max(words1.length, words2.length);
-  ```
-- **fetchPriceOptions()** — `src/hooks/useTechniquePricing.ts`
-  ```
-  setIsLoading(true); setError(null); try { // Buscar todas as tabelas que contêm o código da técnica const { data, error: invokeError } = await supabase.functions.invoke('external-db-bridge', { body: { table: 'customization_price_tables', operation: 'select', select: 'id,table_code,table_code_option,table_fullcode,customization_type_name,max_colors,max_area_width_cm,max_area_height_cm,price_by_color,price_by_area,setup_price,handling_price', filters: { is_active: true }, limit: 100, }, }); if (in …
-  ```
-- **calculateRecommendationScore(technique: Technique, keywords: string[],)** — `src/hooks/useTechniqueRecommendations.ts`
-  ```
-  score: number; matchedKeywords: string[]; reason: string
-  ```
-- **extractPriceTiers(table: CustomizationPriceTable)** — `src/hooks/useTecnicasUnificadas.ts`
-  ```
-  const tiers: PriceTier[] = []; for (let i = 1; i <= 15; i++) { const minQty = table[`min_qty_${i}`] as number | undefined; const price = table[`price_${i}`] as number | undefined; const sla = table[`sla_${i}`] as number | undefined; if (minQty !== undefined && minQty !== null && price !== undefined && price !== null) { const nextMinQty = table[`min_qty_${i + 1}`] as number | undefined; const maxQty = nextMinQty ? nextMinQty - 1 : null; tiers.push({ tierIndex: i, minQuantity: minQty, maxQuantity: …
-  ```
-- **calculatePriceForQuantityLegacy(table: CustomizationPriceTable, quantity: number,)** — `src/hooks/useTecnicasUnificadas.ts`
-  ```
-  const tiers = extractPriceTiers(table); if (tiers.length === 0) return null; let selectedTier = tiers[0]; for (const tier of tiers) { if (quantity >= tier.minQuantity) { selectedTier = tier; } } const unitPrice = selectedTier.unitPrice; const totalPrice = unitPrice * quantity; const setupPrice = table.setup_price || 0; const handlingPrice = table.handling_price || 0; const grandTotal = totalPrice + setupPrice + handlingPrice; const minTierPrice = tiers[0].unitPrice; const savingsPerUnit = minTie …
-  ```
-- **calculateColorSummary(variants: VariantWithStock[], stockEntries: StockEntry[])** — `src/hooks/useVariantSupplierSources.ts`
-  ```
-  const colorMap = new Map<string, ColorSummary>(); // Agregar estoque atual por cor for (const v of variants) { const name = v.color_name || 'Sem cor'; const existing = colorMap.get(name); if (existing) { existing.currentStock += v.stock_quantity || 0; } else { colorMap.set(name, { name, hex: v.color_hex, thumbnail: v.selected_thumbnail, currentStock: v.stock_quantity || 0, incomingTotal: 0, incomingCount: 0, }); } } // Agregar previsões de reposição por cor for (const entry of stockEntries) { co …
   ```
 - **generateDeviceFingerprint()** — `src/hooks/admin/useDeviceDetection.ts`
   ```
@@ -3852,10 +3912,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **calculateCustomizationTotal(quantidade: number, numCores: number, tabela: TabelaPrecoOficial, faixas: FaixaPrecoOficial[], markupPercent = 115,)** — `src/hooks/gravacao/gravacao-constants.ts`
   ```
   const faixa = findPriceTier(quantidade, faixas); const markupMultiplier = 1 + markupPercent / 100; if (!faixa) { return { faixa: null, custoUnitarioBase: 0, custoUnitarioTotal: 0, custoSetup: 0, custoManuseio: 0, custoTotalPecas: 0, precoUnitario: 0, precoMinimoUnitario: 0, subtotalPecas: 0, faturamentoMinimoGravacao: tabela.faturamento_minimo || 0, minimumApplied: false, total: 0, margemPercent: 0, prazoDias: null as number | null, }; } const custoUnitarioBase = faixa.preco_unitario; const cust …
-  ```
-- **generateSlug(nome: string)** — `src/hooks/gravacao/useVariantesGravacao.ts`
-  ```
-  return nome .toLowerCase() .normalize('NFD') .replace(/[\u0300-\u036f]/g, '') .replace(/[^a-z0-9]+/g, '-') .replace(/(^-|-$)/g, '');
   ```
 - **calculateNextRun(frequency: ReportFrequency)** — `src/hooks/intelligence/useScheduledReports.ts`
   ```
@@ -4072,10 +4128,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **convertToPng(file: File)** — `src/lib/image-converter.ts`
   ```
   return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); // Use a reasonable max size to avoid memory issues const maxDim = 2048; let width = img.naturalWidth || img.width; let height = img.naturalHeight || img.height; // For SVGs with no intrinsic size, default to 512 if (width === 0 || height === 0) { width = 512; height = 512; } // Scale down if too large if …
-  ```
-- **generateKitOgImage(input: KitOgInput)** — `src/lib/kit-og-image.ts`
-  ```
-  if (typeof document === "undefined") return null; try { const canvas = document.createElement("canvas"); canvas.width = 1200; canvas.height = 630; const ctx = canvas.getContext("2d"); if (!ctx) return null; const color = input.color && /^#[0-9a-f]{6}$/i.test(input.color) ? input.color : "#3B82F6"; // Background gradient diagonal const grad = ctx.createLinearGradient(0, 0, 1200, 630); grad.addColorStop(0, color); grad.addColorStop(1, shade(color, -30)); ctx.fillStyle = grad; ctx.fillRect(0, 0, 12 …
   ```
 - **countTotalAreas(groups: GroupedPrintArea[])** — `src/lib/print-area-grouping.ts`
   ```
@@ -4525,22 +4577,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   if (realSubtotal <= 0) return 0; const finalBeforeShipping = Math.max(0, presentedSubtotal - discountAmount); // SSOT: Arredondamento para 2 casas decimais no percentual; Math.max(0,...) evita negativo quando markup > desconto return round2(Math.max(0, ((realSubtotal - finalBeforeShipping) / realSubtotal) * 100));
   ```
-- **validateAndRedirect(userId: string, email: string)** — `src/pages/Auth.tsx`
-  ```
-  try { const ipValidation = await validateIPForAuthenticatedUser(userId); if (!ipValidation.isAllowed && ipValidation.hasRestrictions) { await signOut(); const reason = ipValidation.reason || 'access_blocked'; await logLoginAttempt(email, userId, false, `${reason}: ${ipValidation.error}`); setIpBlocked(true); setBlockedIP(ipValidation.currentIP); toast({ variant: 'destructive', title: 'Acesso Bloqueado', description: ipValidation.error || `Seu IP (${ipValidation.currentIP}) não está autorizado.`, …
-  ```
-- **formatCurrency(value: number)** — `src/pages/ComparePage.tsx`
-  ```
-  
-  ```
-- **PriceSimulatorPage()** — `src/pages/PriceSimulatorPage.tsx`
-  ```
-  return ( <MainLayout> <PageSEO title="Simulador de Preços" description="Simule preços de brindes com personalização, quantidades e custos." path="/simulador-precos" /> <div className="mx-auto w-full max-w-[1920px] animate-fade-in space-y-3 px-3 py-3 pb-24 sm:space-y-4 sm:px-4 sm:py-4 md:pb-6 lg:px-6 xl:px-8"> {/* Hero Header — #1 */} <div className="flex flex-col gap-1"> <h1 data-testid="page-title-simulador-precos" className="font-display text-2xl font-bold tracking-tight text-foreground sm:tex …
-  ```
-- **formatCurrency(value: number)** — `src/pages/QuotesListPage.tsx`
-  ```
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);
-  ```
 - **formatCurrency(val: number)** — `src/pages/admin/AdminAiUsagePage.tsx`
   ```
   `$${val.toFixed(4)}`;
@@ -4629,18 +4665,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   return ( <div className="space-y-2"> {/* Toggle Modo Rápido (Nano Banana / Gemini 2.5 Flash Image) Desativado: usa Gemini 3 Pro (qualidade máxima, mais lento e caro). Ativado: usa Gemini 2.5 Flash Image ("nano-banana"), ideal para iterações e refinamentos baratos antes de gerar a versão final. */} <label className={cn( 'flex cursor-pointer items-center justify-between gap-3 rounded-lg border px-3 py-2 transition-colors', m.fastMode ? 'border-warning/60 bg-warning/10' : 'border-border bg-muted/30 …
   ```
-- **formatPrice(price: number)** — `src/pages/product-detail/ProductDetailHero.tsx`
-  ```
-  
-  ```
-- **formatPrice(value: number)** — `src/pages/product-match/MatchCards.tsx`
-  ```
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-  ```
-- **formatPrice(value: number)** — `src/pages/product-match/ProductSearchPanel.tsx`
-  ```
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-  ```
 - **ShippingDeadlinePicker({ id = 'cart-shipping-deadline', 'data-testid': dataTestId = 'cart-shipping-deadline-input', 'aria-invalid': ariaInvalid)** — `src/pages/products/SellerCartsPage.tsx`
   ```
   const today = React.useMemo(() => startOfDay(new Date()), []); return ( <DatePickerField id={id} data-testid={dataTestId} variant="compact" className={className} aria-label="Prazo para envio" aria-invalid={ariaInvalidProp ?? (hasError || undefined)} aria-describedby={ ariaDescribedbyProp ?? (hasError ? 'cart-shipping-deadline-error' : undefined) } value={value ?? ''} onChange={(next) => onChange(next === '' ? null : next)} minDate={today} placeholder="dd/mm/aaaa" /> );
@@ -4657,14 +4681,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
   ```
-- **formatCurrency(value: number)** — `src/pages/quote-view/QuoteActionHandlers.ts`
-  ```
-  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-  ```
-- **calcPersTotal(totalCost: number, qty: number)** — `src/pages/quote-view/QuoteActionHandlers.ts`
-  ```
-  if (qty <= 0) return totalCost; const roundedUnit = Math.round((totalCost / qty) * 100) / 100; return Math.round(roundedUnit * qty * 100) / 100;
-  ```
 - **formatCurrency(value: number)** — `src/pages/quotes/quote-view/QuoteActionHandlers.ts`
   ```
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -4674,10 +4690,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   return totalCost;
   ```
 - **formatCurrency(value: number)** — `src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts`
-  ```
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-  ```
-- **formatCurrency(value: number)** — `src/pages/quotes-dashboard/useQuotesDashboard.ts`
   ```
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
   ```
@@ -4724,14 +4736,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **canNavigateToStep(targetStep: WizardStep, state: SimulatorWizardState)** — `src/types/domain/simulator-wizard.ts`
   ```
   const targetIndex = getStepIndex(targetStep); const currentIndex = getStepIndex(state.currentStep); // Sempre pode voltar if (targetIndex <= currentIndex) return true; // Se já tem personalizações, pode ir direto ao comparativo (resumo) if (targetStep === 'comparison' && state.personalizations.length > 0) return true; for (let i = 0; i < targetIndex; i++) { if (!isStepComplete(WIZARD_STEPS[i], state)) { return false; } } return true;
-  ```
-- **drawPriceBreakdown(doc: jsPDF, kitState: KitState, kitQuantity: number, y: number,)** — `src/utils/kitPdfGenerator.ts`
-  ```
-  const { box, items, personalization } = kitState; const breakdown = generatePriceBreakdown(box, items, personalization, kitQuantity); const pricing = calculateTotalKitPrice(box, items, personalization, kitQuantity); y = drawSectionTitle(doc, 'Detalhamento de Preços', y); const rows = breakdown.map((item) => [ item.isPersonalization ? ` ↳ ${item.label}` : item.label, item.quantity ? String(item.quantity) : '-', formatCurrency(item.unitPrice), formatCurrency(item.totalPrice), ]); autoTable(doc, { …
-  ```
-- **generateKitPDF(options: KitPdfOptions)** — `src/utils/kitPdfGenerator.ts`
-  ```
-  const { kitState, kitQuantity, kitName } = options; const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' }); let y = drawHeader(doc, kitName, 0, options.orgName, options.orgLogoUrl, kitState.identity); // KPI cards y = drawKpiCards(doc, kitState, kitQuantity, y); // Composition section y = drawSectionTitle(doc, 'Composição do Kit', y); y = drawCompositionTable(doc, kitState, y); // Box info line if (kitState.box) { doc.setFontSize(7); doc.setFont('helvetica', 'normal'); doc. …
   ```
 - **validateCnpj(value: string)** — `src/utils/masks.ts`
   ```
@@ -4788,10 +4792,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **generateProposalPDFv2(data: ProposalTemplateData, options?: { isDraft?: boolean },)** — `src/utils/proposalPdfReactGenerator.ts`
   ```
   const [jsPDF, html2canvas] = await Promise.all([getJsPDF(), getHtml2Canvas()]); const container = document.createElement('div'); container.style.position = 'fixed'; container.style.top = '-10000px'; container.style.left = '-10000px'; container.style.zIndex = '-9999'; container.style.pointerEvents = 'none'; document.body.appendChild(container); // FIX #1: declarar root fora do try para garantir unmount no finally externo let root: ReturnType<typeof ReactDOM.createRoot> | null = null; try { root = …
-  ```
-- **validateImportedTemplates(data: unknown)** — `src/utils/templateExport.ts`
-  ```
-  if (!data || typeof data !== 'object') return null; const obj = data as Record<string, unknown>; if (!obj.version || !obj.templates || !Array.isArray(obj.templates)) { return null; } // Validate each template has required fields for (const template of obj.templates) { if (typeof template !== 'object' || !template) return null; const t = template as Record<string, unknown>; if (!t.name || typeof t.name !== 'string') return null; } return data as ExportedTemplate;
   ```
 - **rankOf(r: AppRole | string | null,)** — `supabase/functions/_shared/authorize.ts`
   ```
@@ -4970,6 +4970,26 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 
 | Trecho | Arquivo |
 |---|---|
+| `* - Amarelo (warning): falhas dentro do esperado (<2% taxa).` | `recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx` |
+| `* - Vermelho (destructive): pico de falhas (>2% taxa) ou delta crescente.` | `recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx` |
+| `transition={{ delay: idx * 0.05 }}` | `recovery/src-legacy/src/components/cart/CartHealthChecklist.tsx` |
+| `const imgH = cellH * 0.55;` | `recovery/src-legacy/src/components/favorites/ExportFavoritesButton.tsx` |
+| `doc.text(formatCurrency(p.price ?? 0), x + 4, y + cellH * 0.6 + 22);` | `recovery/src-legacy/src/components/favorites/ExportFavoritesButton.tsx` |
+| `doc.text(name, x + 4, y + cellH * 0.6 + 4);` | `recovery/src-legacy/src/components/favorites/ExportFavoritesButton.tsx` |
+| `doc.text(noteLines, x + 4, y + cellH * 0.6 + 33);` | `recovery/src-legacy/src/components/favorites/ExportFavoritesButton.tsx` |
+| `doc.text(p.sku ?? "—", x + 4, y + cellH * 0.6 + 14);` | `recovery/src-legacy/src/components/favorites/ExportFavoritesButton.tsx` |
+| `if (variant) doc.text(`Cor: ${variant}`, x + 4, y + cellH * 0.6 + 28);` | `recovery/src-legacy/src/components/favorites/ExportFavoritesButton.tsx` |
+| `transition={{ delay: index * 0.05 }}` | `recovery/src-legacy/src/components/navigation/DynamicBreadcrumbs.tsx` |
+| `transition={{ delay: index * 0.05 }}` | `recovery/src-legacy/src/components/search/SmartSuggestions.tsx` |
+| `* useNoveltiesSelectionMode and useReplenishmentsSelectionMode were 95%` | `recovery/src-legacy/src/hooks/useEntitySelectionMode.ts` |
+| `/** Margem de negociação interna 0–50%. Default 0 (desligado). */` | `recovery/src-legacy/src/hooks/useQuoteBuilderState.ts` |
+| `score += popularityScore * 0.3; // 30% do peso para popularidade` | `recovery/src-legacy/src/hooks/useTechniqueRecommendations.ts` |
+| `const aScore = a.count * 0.7 + aRecency * 10 * 0.3;` | `recovery/src-legacy/src/hooks/useVoiceCommandHistory.ts` |
+| `const bScore = b.count * 0.7 + bRecency * 10 * 0.3;` | `recovery/src-legacy/src/hooks/useVoiceCommandHistory.ts` |
+| `transition={{ delay: idx * 0.08, type: "spring", stiffness: 400, damping: 25 }}` | `recovery/src-legacy/src/pages/CollectionsPage.tsx` |
+| `radial-gradient(ellipse 60% 40% at 100% 100%, hsl(var(--primary) / 0.04), transparent),` | `recovery/src-legacy/src/pages/KitBuilderPage.tsx` |
+| `radial-gradient(ellipse 80% 50% at 50% -20%, hsl(var(--primary) / 0.08), transparent),` | `recovery/src-legacy/src/pages/KitBuilderPage.tsx` |
+| `<SelectItem value="50_50">50% entrada / 50% após entrega</SelectItem>` | `recovery/src-legacy/src/pages/QuoteBuilderPage.tsx` |
 | `<span>0%</span>` | `src/components/admin/DiscountManagementPanel.tsx` |
 | `<span>100%</span>` | `src/components/admin/DiscountManagementPanel.tsx` |
 | `transition={{ delay: idx * 0.02 }}` | `src/components/admin/DiscountManagementPanel.tsx` |
@@ -4983,14 +5003,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `* ou sucesso 24h entre 70% e 95%,` | `src/components/admin/connections/usePulseBarStatus.ts` |
 | `A chave será exibida apenas uma vez. Geração 100% server-side com validação de` | `src/components/admin/security/keys/McpKeysList.tsx` |
 | `return values[Math.floor(values.length * 0.5)] ?? null;` | `src/components/admin/telemetry/EdgeInvokeLivePanel.tsx` |
-| `* - Amarelo (warning): falhas dentro do esperado (<2% taxa).` | `src/components/admin/telemetry/PlatformFailureCards.tsx` |
-| `* - Vermelho (destructive): pico de falhas (>2% taxa) ou delta crescente.` | `src/components/admin/telemetry/PlatformFailureCards.tsx` |
 | `transition={{ delay: idx * 0.05 }}` | `src/components/ai/AIMockupAssistant.tsx` |
 | `mas representa &lt;5% das compras do cliente — oportunidade clara.` | `src/components/bi/ClientCategoryRadar.tsx` |
 | `priceFrom: Math.round(t.avgPrice * 0.9),` | `src/components/bi/ClientHealthHero.tsx` |
 | `* Heurística: empresas do mesmo ramo + (LTV agregado de quotes ±30% do cliente atual)` | `src/components/bi/ClientLookalikes.tsx` |
 | `// Heurística: cliente / (cliente + 1.5 × média setor) — capped 5..95%` | `src/components/bi/ClientVsIndustryComparison.tsx` |
-| `transition={{ delay: idx * 0.05 }}` | `src/components/cart/CartHealthChecklist.tsx` |
 | `* Evita a imagem gigante quando a coluna ocupa 100% da largura da página.` | `src/components/cart/SortableCartItem.tsx` |
 | `transition={{ delay: index * 0.03 }}` | `src/components/cart/SortableCartItem.tsx` |
 | `delay: idx * 0.03,` | `src/components/collections/AddToCollectionModal.tsx` |
@@ -5012,12 +5029,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `delay: 0.5 + i * 0.05,` | `src/components/effects/SuccessCelebration.tsx` |
 | `delay: i * 0.3,` | `src/components/effects/SuccessCelebration.tsx` |
 | `delay: i * 0.2,` | `src/components/expert/chat/ChatMessageList.tsx` |
-| `const imgH = cellH * 0.55;` | `src/components/favorites/ExportFavoritesButton.tsx` |
-| `doc.text(formatCurrency(p.price ?? 0), x + 4, y + cellH * 0.6 + 22);` | `src/components/favorites/ExportFavoritesButton.tsx` |
-| `doc.text(name, x + 4, y + cellH * 0.6 + 4);` | `src/components/favorites/ExportFavoritesButton.tsx` |
-| `doc.text(noteLines, x + 4, y + cellH * 0.6 + 33);` | `src/components/favorites/ExportFavoritesButton.tsx` |
-| `doc.text(p.sku ?? "—", x + 4, y + cellH * 0.6 + 14);` | `src/components/favorites/ExportFavoritesButton.tsx` |
-| `if (variant) doc.text(`Cor: ${variant}`, x + 4, y + cellH * 0.6 + 28);` | `src/components/favorites/ExportFavoritesButton.tsx` |
 | `const getBarOpacity = (i: number) => Math.max(1 - i * 0.06, 0.35);` | `src/components/intelligence/CategoryRanking.tsx` |
 | `const getOpacity = (i: number) => Math.max(1 - i * 0.08, 0.4);` | `src/components/intelligence/SegmentAnalysis.tsx` |
 | `const getBarOpacity = (i: number) => Math.max(1 - i * 0.07, 0.4);` | `src/components/intelligence/SupplierSales.tsx` |
@@ -5031,7 +5042,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `// A divisória fica entre 2% e 98% para o puxador não sair do quadro.` | `src/components/mockup/MockupBeforeAfter.tsx` |
 | `* caber, sem nunca ampliar acima de 100%.` | `src/components/mockup/approval/MockupApprovalPreview.tsx` |
 | `Resetar 100%` | `src/components/mockup/logo-editor/LogoSizeControls.tsx` |
-| `transition={{ delay: index * 0.05 }}` | `src/components/navigation/DynamicBreadcrumbs.tsx` |
 | `* visual entre as duas variações. Valor atual reflete redução de 20%` | `src/components/pdf/ProposalStyles.ts` |
 | `if (colors > 1 && matchingTable.price_by_color) modifiedUnitPrice *= 1 + (colors - 1) * 0.1;` | `src/components/pricing/calculator/QuantityComparisonTable.tsx` |
 | `/** Limiar alto: se faltar ≤15%, prioridade alta */` | `src/components/pricing/simulator/upsell/upsell-engine.ts` |
@@ -5059,7 +5069,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `— ex.: 5 = 5%.` | `src/components/quotes/QuoteBuilderSummaryPricing.tsx` |
 | `transition={{ duration: 0.15, delay: 0.2 + i * 0.04 }}` | `src/components/search/GlobalSearchIdleState.tsx` |
 | `transition={{ duration: 0.15, delay: 0.28 + i * 0.03 }}` | `src/components/search/GlobalSearchIdleState.tsx` |
-| `transition={{ delay: index * 0.05 }}` | `src/components/search/SmartSuggestions.tsx` |
 | `const lineAlpha = (1 - dist / CONNECTION_DIST) * Math.min(alphas[i], alphas[j]) * 0.6;` | `src/components/search/voice/FloatingParticles.tsx` |
 | `const speed = (Math.random() * 0.5 + 0.5) * cfg.speed;` | `src/components/search/voice/FloatingParticles.tsx` |
 | `ctx.arc(p.x, p.y, p.size * 0.6, 0, Math.PI * 2);` | `src/components/search/voice/FloatingParticles.tsx` |
@@ -5083,11 +5092,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `const COVERAGE = 0.9; // element must span >=90% of the viewport in both axes` | `src/components/system/RootInteractivityGuard.tsx` |
 | `* A match por identidade de objeto (match === t) é O(1) e 100% confiável —` | `src/components/ui/alert-dialog.tsx` |
 | `// (match por identidade de objeto, 100% robusto, independe de displayName).` | `src/components/ui/alert-dialog.tsx` |
-| `* useNoveltiesSelectionMode and useReplenishmentsSelectionMode were 95%` | `src/hooks/useEntitySelectionMode.ts` |
-| `/** Margem de negociação interna 0–50%. Default 0 (desligado). */` | `src/hooks/useQuoteBuilderState.ts` |
-| `score += popularityScore * 0.3; // 30% do peso para popularidade` | `src/hooks/useTechniqueRecommendations.ts` |
-| `const aScore = a.count * 0.7 + aRecency * 10 * 0.3;` | `src/hooks/useVoiceCommandHistory.ts` |
-| `const bScore = b.count * 0.7 + bRecency * 10 * 0.3;` | `src/hooks/useVoiceCommandHistory.ts` |
 | `const p95Index = Math.max(0, Math.ceil(sorted.length * 0.95) - 1);` | `src/hooks/auth/useAuthHydrationMetrics.ts` |
 | `priceFrom: Math.round(Number(p.avg_unit_price) * 0.85) \|\| 0,` | `src/hooks/bi/useClientAffinity.ts` |
 | `avgTicket: MOCK_CLIENT_STATS.avgTicket * 0.92,` | `src/hooks/bi/useClientBI.ts` |
@@ -5154,10 +5158,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `cost *= 1 + (positions - 1) * 0.25; // +25% por posição adicional` | `src/lib/personalization/validators.ts` |
 | `realDiscountPercent > maxDiscountPercent * 0.7 &&` | `src/lib/quotes/discount-validation-messages.ts` |
 | `* Sample rate: 10% (configurável via VITE_NAV_METRICS_SAMPLE_RATE).` | `src/lib/telemetry/navigationMetrics.ts` |
-| `transition={{ delay: idx * 0.08, type: "spring", stiffness: 400, damping: 25 }}` | `src/pages/CollectionsPage.tsx` |
-| `radial-gradient(ellipse 60% 40% at 100% 100%, hsl(var(--primary) / 0.04), transparent),` | `src/pages/KitBuilderPage.tsx` |
-| `radial-gradient(ellipse 80% 50% at 50% -20%, hsl(var(--primary) / 0.08), transparent),` | `src/pages/KitBuilderPage.tsx` |
-| `<SelectItem value="50_50">50% entrada / 50% após entrega</SelectItem>` | `src/pages/QuoteBuilderPage.tsx` |
 | `Item <strong>hover</strong>: fundo accent ~70% + texto mais forte (sem brilho).` | `src/pages/SidebarQAPage.tsx` |
 | `// Evita PGRST204/23502/23514 que tornavam o formulário 100% inoperante.` | `src/pages/admin/AdminProductFormPage.tsx` |
 | `custom={2.5 + i * 0.05}` | `src/pages/admin/AdminTemasPage.tsx` |
@@ -5242,6 +5242,48 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `IMAGE_CACHE_MAX` | `500` | `public/sw.js` |
 | `IMAGE_CACHE_TTL` | `90` | `public/sw.js` |
 | `STALE_BUST_WINDOW_MS` | `120000` | `public/sw.js` |
+| `RECENT_LIMIT` | `20` | `recovery/src-legacy/src/components/admin/telemetry/BridgesLiveCard.tsx` |
+| `MOBILE_BREAKPOINT` | `768` | `recovery/src-legacy/src/hooks/use-mobile.tsx` |
+| `TOAST_LIMIT` | `1` | `recovery/src-legacy/src/hooks/use-toast.ts` |
+| `TOAST_REMOVE_DELAY` | `1000000` | `recovery/src-legacy/src/hooks/use-toast.ts` |
+| `MAX_RETRIES` | `2` | `recovery/src-legacy/src/hooks/useAIRecommendations.ts` |
+| `INITIAL_BACKOFF_MS` | `500` | `recovery/src-legacy/src/hooks/useAIRecommendations.ts` |
+| `AUTOSAVE_SCHEMA_VERSION` | `2` | `recovery/src-legacy/src/hooks/useAutoSaveQuote.ts` |
+| `ITEMS_PER_PAGE` | `36` | `recovery/src-legacy/src/hooks/useCatalogState.ts` |
+| `HEALTHY_INTERVAL` | `60` | `recovery/src-legacy/src/hooks/useCloudStatus.ts` |
+| `DOWN_AUTO_STOP_MS` | `30` | `recovery/src-legacy/src/hooks/useCloudStatus.ts` |
+| `CHUNK` | `80` | `recovery/src-legacy/src/hooks/useColorEnrichment.ts` |
+| `MAX_COMPARE_ITEMS` | `4` | `recovery/src-legacy/src/hooks/useComparison.ts` |
+| `AUTO_SAVE_DELAY_MS` | `5000` | `recovery/src-legacy/src/hooks/useKitAutoSave.ts` |
+| `BUFFER_DAYS` | `3` | `recovery/src-legacy/src/hooks/useKitStockForecast.ts` |
+| `MAX_HISTORY` | `30` | `recovery/src-legacy/src/hooks/useKitUndoRedo.ts` |
+| `MAX_ATTEMPTS` | `5` | `recovery/src-legacy/src/hooks/useLoginRateLimit.ts` |
+| `LOCKOUT_MS` | `5` | `recovery/src-legacy/src/hooks/useLoginRateLimit.ts` |
+| `MAX_SIZE` | `200` | `recovery/src-legacy/src/hooks/useLogoColorAnalysis.ts` |
+| `AUTO_SAVE_DELAY` | `2000` | `recovery/src-legacy/src/hooks/useMockupDraft.ts` |
+| `NOVELTY_WINDOW_DAYS` | `30` | `recovery/src-legacy/src/hooks/useNovelties.ts` |
+| `BRIDGE_TABLE` | `'variant_supplier_sources'` | `recovery/src-legacy/src/hooks/useProductSupplierSources.ts` |
+| `CHUNK` | `50` | `recovery/src-legacy/src/hooks/useProductsByColor.ts` |
+| `CATALOG_PAGE_SIZE` | `500` | `recovery/src-legacy/src/hooks/useProductsLightweight.ts` |
+| `CATALOG_BATCH_PAGES` | `4` | `recovery/src-legacy/src/hooks/useProductsLightweight.ts` |
+| `MAX_RECENT_PRODUCTS` | `5` | `recovery/src-legacy/src/hooks/useRecentProducts.ts` |
+| `MAX_ITEMS` | `10` | `recovery/src-legacy/src/hooks/useRecentlyViewed.ts` |
+| `DEFAULT_MS` | `3000` | `recovery/src-legacy/src/hooks/useRetestCooldownSetting.ts` |
+| `MAX_HISTORY` | `10` | `recovery/src-legacy/src/hooks/useSearchHistory.ts` |
+| `BATCH_SIZE` | `50` | `recovery/src-legacy/src/hooks/useSparklineSales.tsx` |
+| `MAX_STACK` | `10` | `recovery/src-legacy/src/hooks/useUndoStack.ts` |
+| `TTL_MS` | `30` | `recovery/src-legacy/src/hooks/useUndoStack.ts` |
+| `ERROR_RESET_DELAY_MS` | `5000` | `recovery/src-legacy/src/hooks/useVoiceAgent.ts` |
+| `PROCESSING_ERROR_RESET_DELAY_MS` | `3000` | `recovery/src-legacy/src/hooks/useVoiceAgent.ts` |
+| `SESSION_START_TIMEOUT_MS` | `4000` | `recovery/src-legacy/src/hooks/useVoiceAgent.ts` |
+| `MAX_HISTORY` | `100` | `recovery/src-legacy/src/hooks/useVoiceCommandHistory.ts` |
+| `RECENT_LIMIT` | `5` | `recovery/src-legacy/src/hooks/useVoiceCommandHistory.ts` |
+| `FREQUENT_LIMIT` | `6` | `recovery/src-legacy/src/hooks/useVoiceCommandHistory.ts` |
+| `CACHE_TTL_MS` | `60` | `recovery/src-legacy/src/hooks/useWorkspaceNotifications.tsx` |
+| `PREFETCH_MIN_INTERVAL_MS` | `5` | `recovery/src-legacy/src/hooks/useWorkspaceNotifications.tsx` |
+| `THROTTLE_MS` | `4000` | `recovery/src-legacy/src/lib/external-db/bridge-telemetry-client.ts` |
+| `MAX_INCIDENTS` | `25` | `recovery/src-legacy/src/lib/external-db/cold-start-recorder.ts` |
+| `MAX_CLIENTS` | `3` | `recovery/src-legacy/src/pages/ClientComparatorPage.tsx` |
 | `DEPLOY_VERSION` | `'2026.07.06.1220'` | `src/deploy-version.ts` |
 | `PDF_LAYOUT_MILESTONE` | `'pdf-layout-v1-2026-07-06'` | `src/deploy-version.ts` |
 | `MESSAGE_ROTATION_MS` | `2500` | `src/components/LoadingScreen.tsx` |
@@ -5260,7 +5302,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `ALL_CREATORS` | `'__all__'` | `src/components/admin/security/keys/McpKeysFilters.tsx` |
 | `PAGE_SIZE` | `50` | `src/components/admin/security/keys/audit/useMcpAuditFeed.ts` |
 | `POLL_MS` | `15` | `src/components/admin/telemetry/BreakerStatusCard.tsx` |
-| `RECENT_LIMIT` | `20` | `src/components/admin/telemetry/BridgesLiveCard.tsx` |
 | `POLL_MS` | `30` | `src/components/admin/telemetry/ColdVsWarmCrmCard.tsx` |
 | `SLOW_REDIRECT_MS` | `6000` | `src/components/auth/SocialLoginButtons.tsx` |
 | `REDIRECT_TIMEOUT_MS` | `15000` | `src/components/auth/SocialLoginButtons.tsx` |
@@ -5367,49 +5408,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `SIDEBAR_COOKIE_MAX_AGE` | `60` | `src/components/ui/sidebar.tsx` |
 | `SIDEBAR_WIDTH` | `'16rem'` | `src/components/ui/sidebar.tsx` |
 | `SIDEBAR_WIDTH_MOBILE` | `'18rem'` | `src/components/ui/sidebar.tsx` |
-| `MOBILE_BREAKPOINT` | `768` | `src/hooks/use-mobile.tsx` |
-| `TOAST_LIMIT` | `1` | `src/hooks/use-toast.ts` |
-| `TOAST_REMOVE_DELAY` | `1000000` | `src/hooks/use-toast.ts` |
-| `MAX_RETRIES` | `2` | `src/hooks/useAIRecommendations.ts` |
-| `INITIAL_BACKOFF_MS` | `500` | `src/hooks/useAIRecommendations.ts` |
-| `AUTOSAVE_SCHEMA_VERSION` | `2` | `src/hooks/useAutoSaveQuote.ts` |
 | `TOAST_ID_DEGRADED` | `'bridge-degraded'` | `src/hooks/useBridgeStatusBanner.ts` |
 | `TOAST_ID_UNAVAILABLE` | `'bridge-unavailable'` | `src/hooks/useBridgeStatusBanner.ts` |
-| `ITEMS_PER_PAGE` | `36` | `src/hooks/useCatalogState.ts` |
-| `HEALTHY_INTERVAL` | `60` | `src/hooks/useCloudStatus.ts` |
-| `DOWN_AUTO_STOP_MS` | `30` | `src/hooks/useCloudStatus.ts` |
-| `CHUNK` | `80` | `src/hooks/useColorEnrichment.ts` |
-| `MAX_COMPARE_ITEMS` | `4` | `src/hooks/useComparison.ts` |
 | `LINE_HEIGHT` | `16` | `src/hooks/useHorizontalScroll.ts` |
-| `AUTO_SAVE_DELAY_MS` | `5000` | `src/hooks/useKitAutoSave.ts` |
-| `BUFFER_DAYS` | `3` | `src/hooks/useKitStockForecast.ts` |
-| `MAX_HISTORY` | `30` | `src/hooks/useKitUndoRedo.ts` |
-| `MAX_ATTEMPTS` | `5` | `src/hooks/useLoginRateLimit.ts` |
-| `LOCKOUT_MS` | `5` | `src/hooks/useLoginRateLimit.ts` |
-| `MAX_SIZE` | `200` | `src/hooks/useLogoColorAnalysis.ts` |
-| `AUTO_SAVE_DELAY` | `2000` | `src/hooks/useMockupDraft.ts` |
-| `NOVELTY_WINDOW_DAYS` | `30` | `src/hooks/useNovelties.ts` |
-| `BRIDGE_TABLE` | `'variant_supplier_sources'` | `src/hooks/useProductSupplierSources.ts` |
-| `CHUNK` | `50` | `src/hooks/useProductsByColor.ts` |
-| `CATALOG_PAGE_SIZE` | `500` | `src/hooks/useProductsLightweight.ts` |
-| `CATALOG_BATCH_PAGES` | `4` | `src/hooks/useProductsLightweight.ts` |
-| `MAX_RECENT_PRODUCTS` | `5` | `src/hooks/useRecentProducts.ts` |
-| `MAX_ITEMS` | `10` | `src/hooks/useRecentlyViewed.ts` |
 | `REPLENISHMENT_WINDOW_DAYS` | `30` | `src/hooks/useReplenishments.ts` |
 | `MIN_REPLENISHMENT_DELTA_MS` | `86` | `src/hooks/useReplenishments.ts` |
-| `DEFAULT_MS` | `3000` | `src/hooks/useRetestCooldownSetting.ts` |
-| `MAX_HISTORY` | `10` | `src/hooks/useSearchHistory.ts` |
-| `BATCH_SIZE` | `50` | `src/hooks/useSparklineSales.tsx` |
-| `MAX_STACK` | `10` | `src/hooks/useUndoStack.ts` |
-| `TTL_MS` | `30` | `src/hooks/useUndoStack.ts` |
-| `ERROR_RESET_DELAY_MS` | `5000` | `src/hooks/useVoiceAgent.ts` |
-| `PROCESSING_ERROR_RESET_DELAY_MS` | `3000` | `src/hooks/useVoiceAgent.ts` |
-| `SESSION_START_TIMEOUT_MS` | `4000` | `src/hooks/useVoiceAgent.ts` |
-| `MAX_HISTORY` | `100` | `src/hooks/useVoiceCommandHistory.ts` |
-| `RECENT_LIMIT` | `5` | `src/hooks/useVoiceCommandHistory.ts` |
-| `FREQUENT_LIMIT` | `6` | `src/hooks/useVoiceCommandHistory.ts` |
-| `CACHE_TTL_MS` | `60` | `src/hooks/useWorkspaceNotifications.tsx` |
-| `PREFETCH_MIN_INTERVAL_MS` | `5` | `src/hooks/useWorkspaceNotifications.tsx` |
 | `REFRESH_INTERVAL_MS` | `30` | `src/hooks/admin/useKillSwitchObservability.ts` |
 | `DEFAULT_MS` | `3000` | `src/hooks/admin/useRetestCooldownSetting.ts` |
 | `DEFAULT_LIMIT` | `1000` | `src/hooks/admin/useV4Callbacks.ts` |
@@ -5533,9 +5536,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `SHARED_RELOAD_PARAM` | `'__bare'` | `src/lib/chunk-recovery.ts` |
 | `SHARED_RELOAD_TS_PARAM` | `'__bart'` | `src/lib/chunk-recovery.ts` |
 | `SHARED_RELOAD_MAX` | `2` | `src/lib/chunk-recovery.ts` |
-| `SHARED_RELOAD_WINDOW_MS` | `20` | `src/lib/chunk-recovery.ts` |
-| `CACHE_MS` | `15` | `src/lib/cloud-status.ts` |
-| `PROBE_TIMEOUT_MS` | `5000` | `src/lib/cloud-status.ts` |
 | … +326 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
@@ -5615,6 +5615,104 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `WHERE delivered_at < now() - interval '90 days'` | `recovery/patches/D6_advisor_fixes/patch.sql` |
 | `WHERE occurred_at < now() - interval '90 days'` | `recovery/patches/D6_advisor_fixes/patch.sql` |
 | `WHERE received_at < now() - interval '90 days'` | `recovery/patches/D6_advisor_fixes/patch.sql` |
+| `setTimeout(() => setCopied(null), 1500);` | `recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx` |
+| `setTimeout(() => setCopied(false), 2500);` | `recovery/src-legacy/src/components/compare/ShareComparisonDialog.tsx` |
+| `setTimeout(() => setCopied(false), 2000);` | `recovery/src-legacy/src/components/favorites/ShareListDialog.tsx` |
+| `setTimeout(() => setCopied(false), 2000);` | `recovery/src-legacy/src/components/pricing/simulator/PriceResultV51.tsx` |
+| `setTimeout(() => setCopied(false), 2000);` | `recovery/src-legacy/src/components/pricing/simulator/QuantityAndResult.tsx` |
+| `staleTime: 30 * 60 * 1000, // Matching useProductsCatalog staleTime` | `recovery/src-legacy/src/hooks/useCatalogPrefetch.ts` |
+| `gcTime: 60 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useCatalogRealStats.ts` |
+| `staleTime: 30 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useCatalogRealStats.ts` |
+| `setTimeout(() => fetchNextPage(), 1000);` | `recovery/src-legacy/src/hooks/useCatalogState.ts` |
+| `staleTime: 30 * 60 * 1000, // 30 min (dados estáveis)` | `recovery/src-legacy/src/hooks/useCategories.ts` |
+| `staleTime: 30 * 60 * 1000, // 30 min (dados estáveis)` | `recovery/src-legacy/src/hooks/useCategoryIcons.ts` |
+| `staleTime: 10 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useClientTopProducts.ts` |
+| `gcTime: 10 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useColorEnrichment.ts` |
+| `gcTime: 24 * 60 * 60 * 1000, // 24 horas` | `recovery/src-legacy/src/hooks/useColorSystem.ts` |
+| `staleTime: 60 * 60 * 1000, // 1 hora` | `recovery/src-legacy/src/hooks/useColorSystem.ts` |
+| `gcTime: 1000 * 60 * 60, // 1 hora` | `recovery/src-legacy/src/hooks/useCommemorativeDates.ts` |
+| `"24h": 24 * 60 * 60_000,` | `recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts` |
+| `"7d": 7 * 24 * 60 * 60_000,` | `recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts` |
+| `staleTime: 10 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useCrmCompanies.ts` |
+| `staleTime: 15 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useCrmCompanies.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useCrmCompanies.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useExternalCollections.ts` |
+| `staleTime: 5 * 60 * 1000, // 5 minutos` | `recovery/src-legacy/src/hooks/useExternalCollections.ts` |
+| `gcTime: 60 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useExternalVariantStock.ts` |
+| `staleTime: 15 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useExternalVariantStock.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useGravacaoPriceV2.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useGravacaoV2.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useKitBuilderQueries.ts` |
+| `staleTime: 2 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useKitStockForecast.ts` |
+| `const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();` | `recovery/src-legacy/src/hooks/useLoginAttempts.ts` |
+| `const last7d = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();` | `recovery/src-legacy/src/hooks/useLoginAttempts.ts` |
+| `const LOCKOUT_MS = 5 * 60 * 1000; // 5 minutes` | `recovery/src-legacy/src/hooks/useLoginRateLimit.ts` |
+| `staleTime: 10 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useMarketIntelligenceMacro.ts` |
+| `gcTime: 30 * 60 * 1000, // 30 minutos` | `recovery/src-legacy/src/hooks/useMaterialGroups.ts` |
+| `staleTime: 5 * 60 * 1000, // 5 minutos` | `recovery/src-legacy/src/hooks/useMaterialGroups.ts` |
+| `gcTime: 30 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useMaterialTypes.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useMaterialTypes.ts` |
+| `setTimeout(() => setShowDraftRestoredNotice(false), 5000);` | `recovery/src-legacy/src/hooks/useMockupGenerator.ts` |
+| `staleTime: 10 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useMockupTechniques.ts` |
+| `const elapsed = Math.floor((now - created) / (1000 * 60 * 60 * 24));` | `recovery/src-legacy/src/hooks/useNovelties.ts` |
+| `staleTime: 2 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useNovelties.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useNovelties.ts` |
+| `staleTime: 10 * 60 * 1000,` | `recovery/src-legacy/src/hooks/usePrintAreas.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/usePrintAreas.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useProductCustomizationOptions.ts` |
+| `staleTime: 15 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useProductImages.ts` |
+| `staleTime: 15 * 60 * 1000, // Aumentado para 15 min (dados estáveis)` | `recovery/src-legacy/src/hooks/useProductImages.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useProductInsights.ts` |
+| `staleTime: 10 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useProductRecommendations.ts` |
+| `staleTime: 15 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useProductRecommendations.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useProductRecommendations.ts` |
+| `gcTime: 30 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useProducts.ts` |
+| `gcTime: 60 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useProducts.ts` |
+| `staleTime: 10 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useProducts.ts` |
+| `staleTime: 15 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useProducts.ts` |
+| `gcTime: 10 * 60 * 1000, // 10 minutos` | `recovery/src-legacy/src/hooks/useProductsByMaterial.ts` |
+| `staleTime: 2 * 60 * 1000, // 2 minutos` | `recovery/src-legacy/src/hooks/useProductsByMaterial.ts` |
+| `gcTime: 120 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useProductsLightweight.ts` |
+| `staleTime: 30 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useProductsLightweight.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useProdutoRamoAtividade.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/usePromoSalesRanking.ts` |
+| `const [validUntil, setValidUntil] = useState(format(addDays(new Date(), 7), 'yyyy-MM-dd'));` | `recovery/src-legacy/src/hooks/useQuoteBuilderState.ts` |
+| `setValidUntil(quote.valid_until \|\| format(addDays(new Date(), 30), 'yyyy-MM-dd'));` | `recovery/src-legacy/src/hooks/useQuoteBuilderState.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useQuoteBuilderState.ts` |
+| `return sum + (end - start) / (1000 * 60 * 60 * 24);` | `recovery/src-legacy/src/hooks/useQuoteFunnel.ts` |
+| `gcTime: 10 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useRBAC.tsx` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useRBAC.tsx` |
+| `setTimeout(() => { if (lastAddedRef.current === productId) { lastAddedRef.current = null; } }, 1000);` | `recovery/src-legacy/src/hooks/useRecentlyViewed.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useSalesHistory.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useSalesHistoryMacro.ts` |
+| `return new Date(now.getTime() + 24 * 60 * 60 * 1000);` | `recovery/src-legacy/src/hooks/useScheduledReports.ts` |
+| `return new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);` | `recovery/src-legacy/src/hooks/useScheduledReports.ts` |
+| `gcTime: 30 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useSimilarProducts.ts` |
+| `staleTime: 10 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useSimilarProducts.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useSimulation.ts` |
+| `setTimeout(() => { saveToCloudMutation.mutate(updated); }, 2000);` | `recovery/src-legacy/src/hooks/useSimulatorPreferences.ts` |
+| `staleTime: 5 * 60 * 1000, // 5 minutes` | `recovery/src-legacy/src/hooks/useSimulatorPreferences.ts` |
+| `gcTime: 120 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useSparklineSales.tsx` |
+| `staleTime: 60 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useSparklineSales.tsx` |
+| `staleTime: 10 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useStockHistory.ts` |
+| `staleTime: 30 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useStockHistory.ts` |
+| `{ enabled: !!product && !!categoryName, staleTime: 10 * 60 * 1000 }` | `recovery/src-legacy/src/hooks/useSupplierComparison.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useSupplierFiscalData.ts` |
+| `staleTime: 60 * 60 * 1000, // 1h cache — supplier names rarely change` | `recovery/src-legacy/src/hooks/useSupplierNames.ts` |
+| `staleTime: 10 * 60 * 1000, // 10 min cache` | `recovery/src-legacy/src/hooks/useSupplierSalesRanking.ts` |
+| `staleTime: 10 * 60 * 1000, // 10 min cache` | `recovery/src-legacy/src/hooks/useSupplierTrust.ts` |
+| `gcTime: 30 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useVariantStock.ts` |
+| `staleTime: 10 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useVariantStock.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/useVariantSupplierSources.ts` |
+| `const aRecency = 1 / (1 + (now - a.lastUsed.getTime()) / (1000 * 60 * 60 * 24));` | `recovery/src-legacy/src/hooks/useVoiceCommandHistory.ts` |
+| `const bRecency = 1 / (1 + (now - b.lastUsed.getTime()) / (1000 * 60 * 60 * 24));` | `recovery/src-legacy/src/hooks/useVoiceCommandHistory.ts` |
+| `staleTime: 10 * 60 * 1000,` | `recovery/src-legacy/src/hooks/gravacao/useFornecedoresGravacao.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/hooks/gravacao/useVariantesGravacao.ts` |
+| `staleTime: 5 * 60 * 1000,` | `recovery/src-legacy/src/pages/ProductDetail.tsx` |
+| `s.setValidUntil(data.validUntil \|\| format(addDays(new Date(), 30), 'yyyy-MM-dd'));` | `recovery/src-legacy/src/pages/QuoteBuilderPage.tsx` |
+| `setTimeout(() => { navigate('/'); }, 3000);` | `recovery/src-legacy/src/pages/ResetPassword.tsx` |
+| `startDate = subMonths(startOfMonth(now), 11);` | `recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts` |
+| `startDate = subMonths(startOfMonth(now), 2);` | `recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts` |
 | `const timer = setTimeout(() => setAnnouncement(null), 1000);` | `src/components/a11y/AccessibilityProvider.tsx` |
 | `const timer = setTimeout(() => setAssertiveMessage(''), 1000);` | `src/components/a11y/AriaLive.tsx` |
 | `const timer = setTimeout(() => setPoliteMessage(''), 1000);` | `src/components/a11y/AriaLive.tsx` |
@@ -5667,7 +5765,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();` | `src/components/admin/security/TopOffenderIpsCard.tsx` |
 | `const days = Math.floor(ms / (24 * 60 * 60 * 1000));` | `src/components/admin/security/keys/McpKeyRow.tsx` |
 | `const maxMs = FULL_SCOPE_MAX_TTL_DAYS * 24 * 60 * 60 * 1000;` | `src/components/admin/security/keys/UpdateMcpKeyDialog.tsx` |
-| `setTimeout(() => setCopied(null), 1500);` | `src/components/admin/telemetry/BridgeCallDetailDrawer.tsx` |
 | `c1h: countInWindow(rows, source, 60 * 60 * 1000),` | `src/components/admin/telemetry/QuoteBuilderHandoffCard.tsx` |
 | `c24h: countInWindow(rows, source, 24 * 60 * 60 * 1000),` | `src/components/admin/telemetry/QuoteBuilderHandoffCard.tsx` |
 | `c7d: countInWindow(rows, source, 7 * 24 * 60 * 60 * 1000),` | `src/components/admin/telemetry/QuoteBuilderHandoffCard.tsx` |
@@ -5685,14 +5782,12 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/components/collections/CollectionsHeatmap.tsx` |
 | `const CACHE_TTL_MS = 30 * 60 * 1000;` | `src/components/compare/AIComparisonAdvisor.tsx` |
 | `const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();` | `src/components/compare/PriceSparkline.tsx` |
-| `setTimeout(() => setCopied(false), 2500);` | `src/components/compare/ShareComparisonDialog.tsx` |
 | `staleTime: 10 * 60 * 1000,` | `src/components/compare/SimilarProductsRail.tsx` |
 | `this.copyTimer = setTimeout(() => { this.copyTimer = null; this.setState({ copied: false }); }, 2000);` | `src/components/errors/EnhancedErrorBoundary.tsx` |
 | `setTimeout(() => setCopiedId(null), 2000);` | `src/components/expert/chat/useExpertChat.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/components/favorites/FavoritesClientPicker.tsx` |
 | `staleTime: 30 * 60 * 1000,` | `src/components/favorites/FavoritesEmptyStateSmart.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/components/favorites/FavoritesHeatmap.tsx` |
-| `setTimeout(() => setCopied(false), 2000);` | `src/components/favorites/ShareListDialog.tsx` |
 | `const WINDOW_MS = 5 * 60 * 1000;` | `src/components/intelligence/RealtimeBadge.tsx` |
 | `const diffDays = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));` | `src/components/inventory/FutureStockDialog.tsx` |
 | `return Math.ceil(diff / (1000 * 60 * 60 * 24));` | `src/components/inventory/FutureStockDialog.tsx` |
@@ -5712,8 +5807,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `cursorTimer.current = setTimeout(() => setCursorHidden(true), 3000);` | `src/components/presentation/PresentationMode.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/components/pricing/ProductPriceSimulator.tsx` |
 | `setTimeout(() => setCopied(null), 2000);` | `src/components/pricing/simulator/MultiEngravingResult.tsx` |
-| `setTimeout(() => setCopied(false), 2000);` | `src/components/pricing/simulator/PriceResultV51.tsx` |
-| `setTimeout(() => setCopied(false), 2000);` | `src/components/pricing/simulator/QuantityAndResult.tsx` |
 | `(1000 * 60 * 60 * 24),` | `src/components/products/FutureStockModal.tsx` |
 | `return !isBefore(entryDate, todayStart) && isBefore(entryDate, addDays(todayStart, 31));` | `src/components/products/FutureStockModal.tsx` |
 | `return !isBefore(entryDate, todayStart) && isBefore(entryDate, addDays(todayStart, 8));` | `src/components/products/FutureStockModal.tsx` |
@@ -5734,95 +5827,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `setTimeout(() => setCopied(false), 2000);` | `src/components/security/TwoFactorSetup.tsx` |
 | `const buffer = 5 * 60 * 1000;` | `src/contexts/AuthContext.tsx` |
 | `const warningTime = timeToExpiry - 2 * 60 * 1000;` | `src/contexts/AuthContext.tsx` |
-| `staleTime: 30 * 60 * 1000, // Matching useProductsCatalog staleTime` | `src/hooks/useCatalogPrefetch.ts` |
-| `gcTime: 60 * 60 * 1000,` | `src/hooks/useCatalogRealStats.ts` |
-| `staleTime: 30 * 60 * 1000,` | `src/hooks/useCatalogRealStats.ts` |
-| `setTimeout(() => fetchNextPage(), 1000);` | `src/hooks/useCatalogState.ts` |
-| `staleTime: 30 * 60 * 1000, // 30 min (dados estáveis)` | `src/hooks/useCategories.ts` |
-| `staleTime: 30 * 60 * 1000, // 30 min (dados estáveis)` | `src/hooks/useCategoryIcons.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/useClientTopProducts.ts` |
-| `gcTime: 10 * 60 * 1000,` | `src/hooks/useColorEnrichment.ts` |
-| `gcTime: 24 * 60 * 60 * 1000, // 24 horas` | `src/hooks/useColorSystem.ts` |
-| `staleTime: 60 * 60 * 1000, // 1 hora` | `src/hooks/useColorSystem.ts` |
-| `gcTime: 1000 * 60 * 60, // 1 hora` | `src/hooks/useCommemorativeDates.ts` |
-| `"24h": 24 * 60 * 60_000,` | `src/hooks/useConnectionsOverviewFilters.ts` |
-| `"7d": 7 * 24 * 60 * 60_000,` | `src/hooks/useConnectionsOverviewFilters.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/useCrmCompanies.ts` |
-| `staleTime: 15 * 60 * 1000,` | `src/hooks/useCrmCompanies.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useCrmCompanies.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useExternalCollections.ts` |
-| `staleTime: 5 * 60 * 1000, // 5 minutos` | `src/hooks/useExternalCollections.ts` |
-| `gcTime: 60 * 60 * 1000,` | `src/hooks/useExternalVariantStock.ts` |
-| `staleTime: 15 * 60 * 1000,` | `src/hooks/useExternalVariantStock.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useGravacaoPriceV2.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useGravacaoV2.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useKitBuilderQueries.ts` |
-| `staleTime: 2 * 60 * 1000,` | `src/hooks/useKitStockForecast.ts` |
-| `const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();` | `src/hooks/useLoginAttempts.ts` |
-| `const last7d = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();` | `src/hooks/useLoginAttempts.ts` |
-| `const LOCKOUT_MS = 5 * 60 * 1000; // 5 minutes` | `src/hooks/useLoginRateLimit.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/useMarketIntelligenceMacro.ts` |
-| `gcTime: 30 * 60 * 1000, // 30 minutos` | `src/hooks/useMaterialGroups.ts` |
-| `staleTime: 5 * 60 * 1000, // 5 minutos` | `src/hooks/useMaterialGroups.ts` |
-| `gcTime: 30 * 60 * 1000,` | `src/hooks/useMaterialTypes.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useMaterialTypes.ts` |
-| `setTimeout(() => setShowDraftRestoredNotice(false), 5000);` | `src/hooks/useMockupGenerator.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/useMockupTechniques.ts` |
-| `const elapsed = Math.floor((now - created) / (1000 * 60 * 60 * 24));` | `src/hooks/useNovelties.ts` |
-| `staleTime: 2 * 60 * 1000,` | `src/hooks/useNovelties.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useNovelties.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/usePrintAreas.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/usePrintAreas.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useProductCustomizationOptions.ts` |
-| `staleTime: 15 * 60 * 1000,` | `src/hooks/useProductImages.ts` |
-| `staleTime: 15 * 60 * 1000, // Aumentado para 15 min (dados estáveis)` | `src/hooks/useProductImages.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useProductInsights.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/useProductRecommendations.ts` |
-| `staleTime: 15 * 60 * 1000,` | `src/hooks/useProductRecommendations.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useProductRecommendations.ts` |
-| `gcTime: 30 * 60 * 1000,` | `src/hooks/useProducts.ts` |
-| `gcTime: 60 * 60 * 1000,` | `src/hooks/useProducts.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/useProducts.ts` |
-| `staleTime: 15 * 60 * 1000,` | `src/hooks/useProducts.ts` |
-| `gcTime: 10 * 60 * 1000, // 10 minutos` | `src/hooks/useProductsByMaterial.ts` |
-| `staleTime: 2 * 60 * 1000, // 2 minutos` | `src/hooks/useProductsByMaterial.ts` |
-| `gcTime: 120 * 60 * 1000,` | `src/hooks/useProductsLightweight.ts` |
-| `staleTime: 30 * 60 * 1000,` | `src/hooks/useProductsLightweight.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useProdutoRamoAtividade.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/usePromoSalesRanking.ts` |
-| `const [validUntil, setValidUntil] = useState(format(addDays(new Date(), 7), 'yyyy-MM-dd'));` | `src/hooks/useQuoteBuilderState.ts` |
-| `setValidUntil(quote.valid_until \|\| format(addDays(new Date(), 30), 'yyyy-MM-dd'));` | `src/hooks/useQuoteBuilderState.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useQuoteBuilderState.ts` |
-| `return sum + (end - start) / (1000 * 60 * 60 * 24);` | `src/hooks/useQuoteFunnel.ts` |
-| `gcTime: 10 * 60 * 1000,` | `src/hooks/useRBAC.tsx` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useRBAC.tsx` |
-| `setTimeout(() => { if (lastAddedRef.current === productId) { lastAddedRef.current = null; } }, 1000);` | `src/hooks/useRecentlyViewed.ts` |
 | `return Math.max(0, Math.floor((Date.now() - updated) / (1000 * 60 * 60 * 24)));` | `src/hooks/useReplenishments.ts` |
 | `staleTime: 2 * 60 * 1000,` | `src/hooks/useReplenishments.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/useReplenishments.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useSalesHistory.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useSalesHistoryMacro.ts` |
-| `return new Date(now.getTime() + 24 * 60 * 60 * 1000);` | `src/hooks/useScheduledReports.ts` |
-| `return new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);` | `src/hooks/useScheduledReports.ts` |
-| `gcTime: 30 * 60 * 1000,` | `src/hooks/useSimilarProducts.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/useSimilarProducts.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useSimulation.ts` |
-| `setTimeout(() => { saveToCloudMutation.mutate(updated); }, 2000);` | `src/hooks/useSimulatorPreferences.ts` |
-| `staleTime: 5 * 60 * 1000, // 5 minutes` | `src/hooks/useSimulatorPreferences.ts` |
-| `gcTime: 120 * 60 * 1000,` | `src/hooks/useSparklineSales.tsx` |
-| `staleTime: 60 * 60 * 1000,` | `src/hooks/useSparklineSales.tsx` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/useStockHistory.ts` |
-| `staleTime: 30 * 60 * 1000,` | `src/hooks/useStockHistory.ts` |
-| `{ enabled: !!product && !!categoryName, staleTime: 10 * 60 * 1000 }` | `src/hooks/useSupplierComparison.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useSupplierFiscalData.ts` |
-| `staleTime: 60 * 60 * 1000, // 1h cache — supplier names rarely change` | `src/hooks/useSupplierNames.ts` |
-| `staleTime: 10 * 60 * 1000, // 10 min cache` | `src/hooks/useSupplierSalesRanking.ts` |
-| `staleTime: 10 * 60 * 1000, // 10 min cache` | `src/hooks/useSupplierTrust.ts` |
-| `gcTime: 30 * 60 * 1000,` | `src/hooks/useVariantStock.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/useVariantStock.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/useVariantSupplierSources.ts` |
-| `const aRecency = 1 / (1 + (now - a.lastUsed.getTime()) / (1000 * 60 * 60 * 24));` | `src/hooks/useVoiceCommandHistory.ts` |
-| `const bRecency = 1 / (1 + (now - b.lastUsed.getTime()) / (1000 * 60 * 60 * 24));` | `src/hooks/useVoiceCommandHistory.ts` |
 | `const ipTimeout = setTimeout(() => ipCtrl.abort(), 5000);` | `src/hooks/admin/useIPValidation.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/admin/useSystemSettings.ts` |
 | `const bucketMs = granularity === 'hour' ? 60 * 60 * 1000 : 24 * 60 * 60 * 1000;` | `src/hooks/admin/useV4Callbacks.ts` |
@@ -5835,13 +5842,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientAffinity.ts` |
 | `const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;` | `src/hooks/bi/useClientCategoryAffinity.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientCategoryAffinity.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientOrdersHistory.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/bi/useClientSeasonality.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientVsIndustry.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/bi/useIndustryCategoryTrends.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/bi/useIndustryTrends.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/collections/useExternalCollections.ts` |
-| `staleTime: 5 * 60 * 1000, // 5 minutos` | `src/hooks/collections/useExternalCollections.ts` |
 | … +379 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
@@ -5849,7 +5849,33 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Limite | Arquivo |
 |---|---|
 | 50 | `recovery/RealtimeMessagesExample.tsx` |
-| 50 | `src/components/admin/CatalogQualityDashboard.tsx` |
+| 50 | `recovery/src-legacy/src/components/admin/CatalogQualityDashboard.tsx` |
+| 1 | `recovery/src-legacy/src/hooks/useAccessSecurity.ts` |
+| 50 | `recovery/src-legacy/src/hooks/useAccessSecurity.ts` |
+| 1 | `recovery/src-legacy/src/hooks/useCollections.ts` |
+| 1 | `recovery/src-legacy/src/hooks/useComparisonSync.ts` |
+| 1 | `recovery/src-legacy/src/hooks/useDevAccessAudit.ts` |
+| 1 | `recovery/src-legacy/src/hooks/useDiscountApproval.ts` |
+| 50 | `recovery/src-legacy/src/hooks/useDuplicateKitDetector.ts` |
+| 1 | `recovery/src-legacy/src/hooks/useFavoriteLists.ts` |
+| 30 | `recovery/src-legacy/src/hooks/useMagicUpState.ts` |
+| 50 | `recovery/src-legacy/src/hooks/useMagicUpState.ts` |
+| 3 | `recovery/src-legacy/src/hooks/useProductInsights.ts` |
+| 20 | `recovery/src-legacy/src/hooks/useProductRecommendations.ts` |
+| 200 | `recovery/src-legacy/src/hooks/useQuoteHistory.ts` |
+| 200 | `recovery/src-legacy/src/hooks/useQuoteTemplates.ts` |
+| 500 | `recovery/src-legacy/src/hooks/useQuoteTemplates.ts` |
+| 1 | `recovery/src-legacy/src/hooks/useQuoteVersions.ts` |
+| 500 | `recovery/src-legacy/src/hooks/useQuotes.ts` |
+| 50 | `recovery/src-legacy/src/hooks/useRoleMigration.ts` |
+| 5000 | `recovery/src-legacy/src/hooks/useSalesHistory.ts` |
+| 2000 | `recovery/src-legacy/src/hooks/useSalesHistoryMacro.ts` |
+| 5000 | `recovery/src-legacy/src/hooks/useSalesHistoryMacro.ts` |
+| 50 | `recovery/src-legacy/src/hooks/useSimilarKits.ts` |
+| 50 | `recovery/src-legacy/src/hooks/useSimulation.ts` |
+| 50 | `recovery/src-legacy/src/hooks/useWorkspaceNotifications.tsx` |
+| 100 | `recovery/src-legacy/src/pages/RateLimitDashboardPage.tsx` |
+| 1 | `recovery/src-legacy/src/pages/SystemStatusPage.tsx` |
 | 1 | `src/components/admin/DiscountApprovalHeaderBadge.tsx` |
 | 100 | `src/components/admin/DiscountNotificationFilterPanel.tsx` |
 | 100 | `src/components/admin/MockupPromptManager.tsx` |
@@ -5892,30 +5918,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | 5 | `src/components/search/useGlobalSearch.ts` |
 | 10 | `src/components/security/useSecurityData.ts` |
 | 20 | `src/components/security/useSecurityData.ts` |
-| 1 | `src/hooks/useAccessSecurity.ts` |
-| 50 | `src/hooks/useAccessSecurity.ts` |
-| 1 | `src/hooks/useCollections.ts` |
-| 1 | `src/hooks/useComparisonSync.ts` |
-| 1 | `src/hooks/useDevAccessAudit.ts` |
-| 1 | `src/hooks/useDiscountApproval.ts` |
-| 50 | `src/hooks/useDuplicateKitDetector.ts` |
-| 1 | `src/hooks/useFavoriteLists.ts` |
-| 30 | `src/hooks/useMagicUpState.ts` |
-| 50 | `src/hooks/useMagicUpState.ts` |
-| 3 | `src/hooks/useProductInsights.ts` |
-| 20 | `src/hooks/useProductRecommendations.ts` |
-| 200 | `src/hooks/useQuoteHistory.ts` |
-| 200 | `src/hooks/useQuoteTemplates.ts` |
-| 500 | `src/hooks/useQuoteTemplates.ts` |
-| 1 | `src/hooks/useQuoteVersions.ts` |
-| 500 | `src/hooks/useQuotes.ts` |
-| 50 | `src/hooks/useRoleMigration.ts` |
-| 5000 | `src/hooks/useSalesHistory.ts` |
-| 2000 | `src/hooks/useSalesHistoryMacro.ts` |
-| 5000 | `src/hooks/useSalesHistoryMacro.ts` |
-| 50 | `src/hooks/useSimilarKits.ts` |
-| 50 | `src/hooks/useSimulation.ts` |
-| 50 | `src/hooks/useWorkspaceNotifications.tsx` |
 | 1 | `src/hooks/admin/useDevAccessAudit.ts` |
 | 200 | `src/hooks/admin/useDeviceDetection.ts` |
 | 100 | `src/hooks/admin/useKillSwitchObservability.ts` |
@@ -5966,8 +5968,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | 1 | `src/lib/external-db/rpc-native.ts` |
 | 0 | `src/lib/supabase/rls-validator.ts` |
 | 1 | `src/lib/supabase/rls-validator.ts` |
-| 100 | `src/pages/RateLimitDashboardPage.tsx` |
-| 1 | `src/pages/SystemStatusPage.tsx` |
 | 2000 | `src/pages/admin/AdminCloudflareImagesPage.tsx` |
 | 100 | `src/pages/admin/AdminSegurancaAcessoPage.tsx` |
 | 200 | `src/pages/admin/AdminSegurancaAcessoPage.tsx` |
@@ -6073,6 +6073,195 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ).or(page.getByText(/erro\|indispon\|tente novamente/i)).first()).toBeVisible({           timeout: 10_000,         });       }     });      test(label( | `e2e/routes/_factories.ts` |
 | ).or(page.getByText(/inválid\|erro\|falhou/i)).first().isVisible({ timeout: 8000 }).catch(() => false);       expect(ok).toBe(true);     });      test(label( | `e2e/routes/_factories.ts` |
 | ❌ Erro crítico: Rotas não resolvidas detectadas para o papel [${role}]: ${unresolved.join( | `e2e/scripts/generate-fixtures.ts` |
+| Não foi possível copiar | `recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx` |
+| Falha ao copiar | `recovery/src-legacy/src/components/admin/telemetry/EdgeFunctionLogsPanel.tsx` |
+| ; import { Badge } from  | `recovery/src-legacy/src/components/admin/telemetry/PlatformFailureAlertBanner.tsx` |
+| Erro ao gerar link: ${(e as Error).message} | `recovery/src-legacy/src/components/collections/ShareCollectionDialog.tsx` |
+| Erro ao revogar: ${(e as Error).message} | `recovery/src-legacy/src/components/collections/ShareCollectionDialog.tsx` |
+| Erro ao gerar link | `recovery/src-legacy/src/components/compare/ShareComparisonDialog.tsx` |
+| Falha ao gerar link público | `recovery/src-legacy/src/components/compare/ShareComparisonDialog.tsx` |
+| Faça login para compartilhar | `recovery/src-legacy/src/components/compare/ShareComparisonDialog.tsx` |
+| Erro ao exportar CSV: ${(e as Error).message} | `recovery/src-legacy/src/components/favorites/ExportFavoritesButton.tsx` |
+| Erro ao exportar JSON: ${(e as Error).message} | `recovery/src-legacy/src/components/favorites/ExportFavoritesButton.tsx` |
+| Erro ao exportar PDF: ${(e as Error).message} | `recovery/src-legacy/src/components/favorites/ExportFavoritesButton.tsx` |
+| Falha ao copiar link | `recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx` |
+| Créditos de IA esgotados. Contate o administrador. | `recovery/src-legacy/src/hooks/useAIRecommendations.ts` |
+| Erro ao gerar recomendações: ${response.status} ${errText} | `recovery/src-legacy/src/hooks/useAIRecommendations.ts` |
+| Limite de requisições excedido. Tente novamente em alguns minutos. | `recovery/src-legacy/src/hooks/useAIRecommendations.ts` |
+| Nome do cliente é obrigatório | `recovery/src-legacy/src/hooks/useAIRecommendations.ts` |
+| Usuário não autenticado | `recovery/src-legacy/src/hooks/useAIRecommendations.ts` |
+| É necessário fornecer pelo menos um produto | `recovery/src-legacy/src/hooks/useAIRecommendations.ts` |
+| Cidade já cadastrada | `recovery/src-legacy/src/hooks/useAccessSecurity.ts` |
+| Erro ao adicionar IP | `recovery/src-legacy/src/hooks/useAccessSecurity.ts` |
+| Erro ao adicionar cidade | `recovery/src-legacy/src/hooks/useAccessSecurity.ts` |
+| Erro ao atualizar IP | `recovery/src-legacy/src/hooks/useAccessSecurity.ts` |
+| Erro ao atualizar cidade | `recovery/src-legacy/src/hooks/useAccessSecurity.ts` |
+| Erro ao atualizar configurações | `recovery/src-legacy/src/hooks/useAccessSecurity.ts` |
+| Erro ao remover IP | `recovery/src-legacy/src/hooks/useAccessSecurity.ts` |
+| Erro ao remover cidade | `recovery/src-legacy/src/hooks/useAccessSecurity.ts` |
+| IP já cadastrado | `recovery/src-legacy/src/hooks/useAccessSecurity.ts` |
+| Erro ao remover | `recovery/src-legacy/src/hooks/useAdminKitTemplates.ts` |
+| Erro: ${err.message} | `recovery/src-legacy/src/hooks/useAdminKitTemplates.ts` |
+| Erro ao atualizar modelo | `recovery/src-legacy/src/hooks/useAiRouter.ts` |
+| Erro ao atualizar provider | `recovery/src-legacy/src/hooks/useAiRouter.ts` |
+| Erro ao atualizar roteamento | `recovery/src-legacy/src/hooks/useAiRouter.ts` |
+| Erro ao criar modelo | `recovery/src-legacy/src/hooks/useAiRouter.ts` |
+| Erro ao criar provider | `recovery/src-legacy/src/hooks/useAiRouter.ts` |
+| Erro ao criar roteamento | `recovery/src-legacy/src/hooks/useAiRouter.ts` |
+| Erro ao remover modelo | `recovery/src-legacy/src/hooks/useAiRouter.ts` |
+| Erro ao remover provider | `recovery/src-legacy/src/hooks/useAiRouter.ts` |
+| Erro ao remover roteamento | `recovery/src-legacy/src/hooks/useAiRouter.ts` |
+| Not authenticated | `recovery/src-legacy/src/hooks/useAiUsage.ts` |
+| Não autenticado | `recovery/src-legacy/src/hooks/useCartTemplates.ts` |
+| Failed to fetch category icons: ${error.message} | `recovery/src-legacy/src/hooks/useCategoryIcons.ts` |
+| Erro ao buscar grupos de cores: ${groupsResponse.error.message} | `recovery/src-legacy/src/hooks/useColorSystem.ts` |
+| Erro ao buscar variações de cores: ${variationsResponse.error.message} | `recovery/src-legacy/src/hooks/useColorSystem.ts` |
+| Usuário não autenticado | `recovery/src-legacy/src/hooks/useCommemorativeDates.ts` |
+| Erro ao testar conexão | `recovery/src-legacy/src/hooks/useConnectionTester.ts` |
+| Não foi possível carregar a lista de empresas. | `recovery/src-legacy/src/hooks/useCrmCompanies.ts` |
+| Erro ao alterar destaque | `recovery/src-legacy/src/hooks/useCustomKitPersistence.ts` |
+| Erro ao remover: ${err.message} | `recovery/src-legacy/src/hooks/useCustomKitPersistence.ts` |
+| Erro ao salvar kit: ${err.message} | `recovery/src-legacy/src/hooks/useCustomKitPersistence.ts` |
+| Usuário não autenticado | `recovery/src-legacy/src/hooks/useCustomKitPersistence.ts` |
+| Erro ao responder solicitação | `recovery/src-legacy/src/hooks/useDiscountApproval.ts` |
+| Erro ao solicitar aprovação | `recovery/src-legacy/src/hooks/useDiscountApproval.ts` |
+| Erro Dropbox | `recovery/src-legacy/src/hooks/useDropboxFiles.ts` |
+| Erro inesperado. Tente recarregar a página. | `recovery/src-legacy/src/hooks/useErrorHandler.ts` |
+| Erro ao criar conversa | `recovery/src-legacy/src/hooks/useExpertConversations.tsx` |
+| Erro ao excluir conversa | `recovery/src-legacy/src/hooks/useExpertConversations.tsx` |
+| Erro ao atualizar: ${error.message} | `recovery/src-legacy/src/hooks/useExternalCollections.ts` |
+| Erro ao criar coleção: ${error.message} | `recovery/src-legacy/src/hooks/useExternalCollections.ts` |
+| Erro ao excluir: ${error.message} | `recovery/src-legacy/src/hooks/useExternalCollections.ts` |
+| Erro: ${error.message} | `recovery/src-legacy/src/hooks/useExternalCollections.ts` |
+| Erro ao inspecionar banco externo | `recovery/src-legacy/src/hooks/useExternalDbInspect.ts` |
+| Erro ao atualizar lista: ${e.message} | `recovery/src-legacy/src/hooks/useFavoriteLists.ts` |
+| Erro ao criar lista: ${e.message} | `recovery/src-legacy/src/hooks/useFavoriteLists.ts` |
+| Erro ao mover: ${e.message} | `recovery/src-legacy/src/hooks/useFavoriteLists.ts` |
+| Erro ao salvar: ${e.message} | `recovery/src-legacy/src/hooks/useFavoriteLists.ts` |
+| Item não encontrado na lixeira | `recovery/src-legacy/src/hooks/useFavoriteLists.ts` |
+| Nada para desfazer | `recovery/src-legacy/src/hooks/useFavoriteLists.ts` |
+| Não é possível excluir a lista padrão | `recovery/src-legacy/src/hooks/useFavoriteLists.ts` |
+| not-authenticated | `recovery/src-legacy/src/hooks/useFavoriteLists.ts` |
+| Volume excedido | `recovery/src-legacy/src/hooks/useKitBuilder.ts` |
+| Kit não definido | `recovery/src-legacy/src/hooks/useKitCollaboration.ts` |
+| Kit ou usuário inválido | `recovery/src-legacy/src/hooks/useKitCollaboration.ts` |
+| Usuário não encontrado para esse email | `recovery/src-legacy/src/hooks/useKitCollaboration.ts` |
+| Sugestão incompleta | `recovery/src-legacy/src/hooks/useKitIdentitySuggestion.ts` |
+| Erro ao clonar: ${err.message} | `recovery/src-legacy/src/hooks/useKitTemplates.ts` |
+| Usuário não autenticado | `recovery/src-legacy/src/hooks/useKitTemplates.ts` |
+| Erro: ${e.message} | `recovery/src-legacy/src/hooks/useKitVariants.ts` |
+| Kit master não definido | `recovery/src-legacy/src/hooks/useKitVariants.ts` |
+| Erro ao baixar imagem | `recovery/src-legacy/src/hooks/useMagicUpGeneration.ts` |
+| Imagem gerada, mas não foi salva no histórico. | `recovery/src-legacy/src/hooks/useMagicUpGeneration.ts` |
+| Erro ao carregar logo | `recovery/src-legacy/src/hooks/useMagicUpState.ts` |
+| Erro ao carregar produtos | `recovery/src-legacy/src/hooks/useMagicUpState.ts` |
+| Erro ao salvar Brand Kit | `recovery/src-legacy/src/hooks/useMagicUpState.ts` |
+| Erro ao salvar campanha | `recovery/src-legacy/src/hooks/useMagicUpState.ts` |
+| Faça login para salvar Brand Kit | `recovery/src-legacy/src/hooks/useMagicUpState.ts` |
+| Faça login para salvar campanhas | `recovery/src-legacy/src/hooks/useMagicUpState.ts` |
+| Imagem muito grande (máx. 10MB) | `recovery/src-legacy/src/hooks/useMagicUpState.ts` |
+| Selecione uma empresa para salvar o Brand Kit | `recovery/src-legacy/src/hooks/useMagicUpState.ts` |
+| Selecione uma imagem válida | `recovery/src-legacy/src/hooks/useMagicUpState.ts` |
+| A imagem deve ter no máximo 5MB | `recovery/src-legacy/src/hooks/useMockupGenerator.ts` |
+| Erro ao carregar dados. Tente novamente. | `recovery/src-legacy/src/hooks/useMockupGenerator.ts` |
+| Erro ao carregar técnicas. Tente recarregar a página. | `recovery/src-legacy/src/hooks/useMockupGenerator.ts` |
+| Erro ao converter imagem. Tente usar PNG ou JPG. | `recovery/src-legacy/src/hooks/useMockupGenerator.ts` |
+| Erro ao excluir mockup | `recovery/src-legacy/src/hooks/useMockupGenerator.ts` |
+| O produto selecionado não possui imagem | `recovery/src-legacy/src/hooks/useMockupGenerator.ts` |
+| Por favor, selecione uma imagem válida | `recovery/src-legacy/src/hooks/useMockupGenerator.ts` |
+| Selecione empresa, produto, técnica e faça upload de pelo menos um logo | `recovery/src-legacy/src/hooks/useMockupGenerator.ts` |
+| Erro ao verificar senha | `recovery/src-legacy/src/hooks/usePasswordBreachCheck.tsx` |
+| Solicitação não encontrada | `recovery/src-legacy/src/hooks/usePasswordResetRequests.ts` |
+| Validade inválida — use 30, 60 ou 90 dias. | `recovery/src-legacy/src/hooks/useProductFreshnessOverride.ts` |
+| Preencha o nome do produto antes de gerar. | `recovery/src-legacy/src/hooks/useProductSeoAI.ts` |
+| Erro ao adicionar fonte | `recovery/src-legacy/src/hooks/useProductSupplierSources.ts` |
+| Erro ao atualizar fonte | `recovery/src-legacy/src/hooks/useProductSupplierSources.ts` |
+| Erro ao definir preferencial | `recovery/src-legacy/src/hooks/useProductSupplierSources.ts` |
+| Erro ao remover fonte | `recovery/src-legacy/src/hooks/useProductSupplierSources.ts` |
+| ,         requireInteraction: type ===  | `recovery/src-legacy/src/hooks/usePushNotifications.tsx` |
+| Confirme os preços defasados antes de fechar o orçamento | `recovery/src-legacy/src/hooks/useQuoteBuilderState.ts` |
+| Preencha os campos obrigatórios: ${missing} | `recovery/src-legacy/src/hooks/useQuoteBuilderState.ts` |
+| Selecione uma empresa para salvar o rascunho. | `recovery/src-legacy/src/hooks/useQuoteBuilderState.ts` |
+| Erro ao adicionar comentário | `recovery/src-legacy/src/hooks/useQuoteComments.ts` |
+| Erro ao atualizar comentário | `recovery/src-legacy/src/hooks/useQuoteComments.ts` |
+| Erro ao remover comentário | `recovery/src-legacy/src/hooks/useQuoteComments.ts` |
+| Apenas administradores podem clonar templates entre vendedores | `recovery/src-legacy/src/hooks/useQuoteTemplates.ts` |
+| Não foi possível atualizar o template | `recovery/src-legacy/src/hooks/useQuoteTemplates.ts` |
+| Não foi possível clonar o template | `recovery/src-legacy/src/hooks/useQuoteTemplates.ts` |
+| Não foi possível criar o template | `recovery/src-legacy/src/hooks/useQuoteTemplates.ts` |
+| Não foi possível excluir o template | `recovery/src-legacy/src/hooks/useQuoteTemplates.ts` |
+| Template não encontrado | `recovery/src-legacy/src/hooks/useQuoteTemplates.ts` |
+| Você precisa estar logado para criar templates | `recovery/src-legacy/src/hooks/useQuoteTemplates.ts` |
+| Erro ao criar nova versão | `recovery/src-legacy/src/hooks/useQuoteVersions.ts` |
+| Orçamento não encontrado | `recovery/src-legacy/src/hooks/useQuoteVersions.ts` |
+| Usuário não autenticado | `recovery/src-legacy/src/hooks/useQuoteVersions.ts` |
+| Erro ao atualizar orçamento | `recovery/src-legacy/src/hooks/useQuotes.ts` |
+| Erro ao atualizar status | `recovery/src-legacy/src/hooks/useQuotes.ts` |
+| Erro ao carregar orçamento | `recovery/src-legacy/src/hooks/useQuotes.ts` |
+| Erro ao carregar orçamentos | `recovery/src-legacy/src/hooks/useQuotes.ts` |
+| Erro ao criar orçamento | `recovery/src-legacy/src/hooks/useQuotes.ts` |
+| Erro ao duplicar | `recovery/src-legacy/src/hooks/useQuotes.ts` |
+| Erro ao excluir orçamento | `recovery/src-legacy/src/hooks/useQuotes.ts` |
+| Erro ao sincronizar | `recovery/src-legacy/src/hooks/useQuotes.ts` |
+| Erro ao testar webhook | `recovery/src-legacy/src/hooks/useQuotes.ts` |
+| Falha ao inserir orçamento | `recovery/src-legacy/src/hooks/useQuotes.ts` |
+| Falha na conexão com N8N | `recovery/src-legacy/src/hooks/useQuotes.ts` |
+| Orçamento não encontrado | `recovery/src-legacy/src/hooks/useQuotes.ts` |
+| Usuário não autenticado | `recovery/src-legacy/src/hooks/useQuotes.ts` |
+| Erro ao atualizar: ${error.message} | `recovery/src-legacy/src/hooks/useRamoAtividade.ts` |
+| Erro ao criar: ${error.message} | `recovery/src-legacy/src/hooks/useRamoAtividade.ts` |
+| Erro ao remover: ${error.message} | `recovery/src-legacy/src/hooks/useRamoAtividade.ts` |
+| Erro ao atualizar: ${error.message} | `recovery/src-legacy/src/hooks/useRamoAtividadeFilho.ts` |
+| Erro ao criar: ${error.message} | `recovery/src-legacy/src/hooks/useRamoAtividadeFilho.ts` |
+| Erro ao remover: ${error.message} | `recovery/src-legacy/src/hooks/useRamoAtividadeFilho.ts` |
+| Não foi possível salvar o cooldown | `recovery/src-legacy/src/hooks/useRetestCooldownSetting.ts` |
+| Erro ao atualizar progresso | `recovery/src-legacy/src/hooks/useSalesGoals.ts` |
+| Erro ao criar meta | `recovery/src-legacy/src/hooks/useSalesGoals.ts` |
+| Not authenticated | `recovery/src-legacy/src/hooks/useSalesGoals.ts` |
+| Erro ao agendar relatório | `recovery/src-legacy/src/hooks/useScheduledReports.ts` |
+| Erro ao atualizar relatório | `recovery/src-legacy/src/hooks/useScheduledReports.ts` |
+| Erro ao excluir relatório | `recovery/src-legacy/src/hooks/useScheduledReports.ts` |
+| Usuário não autenticado | `recovery/src-legacy/src/hooks/useScheduledReports.ts` |
+| Erro ao listar credenciais | `recovery/src-legacy/src/hooks/useSecretsManager.ts` |
+| Falha ao carregar histórico | `recovery/src-legacy/src/hooks/useSecretsManager.ts` |
+| Carrinho não encontrado | `recovery/src-legacy/src/hooks/useSellerCarts.ts` |
+| Item não encontrado | `recovery/src-legacy/src/hooks/useSellerCarts.ts` |
+| Não autenticado | `recovery/src-legacy/src/hooks/useSellerCarts.ts` |
+| Você já tem 3 carrinhos ativos. Finalize ou exclua um antes de criar outro. | `recovery/src-legacy/src/hooks/useSellerCarts.ts` |
+| Erro ao definir limite de desconto | `recovery/src-legacy/src/hooks/useSellerDiscountLimits.ts` |
+| Erro ao remover limite | `recovery/src-legacy/src/hooks/useSellerDiscountLimits.ts` |
+| No valid group IDs | `recovery/src-legacy/src/hooks/useSimilarProducts.ts` |
+| Cálculo oficial indisponível para ${fallback} técnica(s). Os valores marcados são estimativas — revise antes de fechar. | `recovery/src-legacy/src/hooks/useSimulation.ts` |
+| Dados incompletos | `recovery/src-legacy/src/hooks/useSimulation.ts` |
+| Erro ao calcular simulação | `recovery/src-legacy/src/hooks/useSimulation.ts` |
+| Erro ao excluir simulação | `recovery/src-legacy/src/hooks/useSimulation.ts` |
+| Erro ao salvar simulação | `recovery/src-legacy/src/hooks/useSimulation.ts` |
+| Nenhuma simulação para salvar | `recovery/src-legacy/src/hooks/useSimulation.ts` |
+| Selecione um produto e pelo menos uma técnica | `recovery/src-legacy/src/hooks/useSimulation.ts` |
+| Erro ao salvar template: ${err.message} | `recovery/src-legacy/src/hooks/useTemplateSnapshot.ts` |
+| Erro ao remover vínculo | `recovery/src-legacy/src/hooks/useVideoVariantLinks.ts` |
+| Erro ao vincular vídeo | `recovery/src-legacy/src/hooks/useVideoVariantLinks.ts` |
+|                        data-testid= | `recovery/src-legacy/src/pages/Auth.tsx` |
+| Não foi possível restaurar | `recovery/src-legacy/src/pages/CollectionDetailPage.tsx` |
+| Erro ao duplicar | `recovery/src-legacy/src/pages/KitLibraryPage.tsx` |
+| Erro ao excluir | `recovery/src-legacy/src/pages/KitLibraryPage.tsx` |
+| Não autenticado | `recovery/src-legacy/src/pages/KitLibraryPage.tsx` |
+| ; import { Badge } from  | `recovery/src-legacy/src/pages/MockupGenerator.tsx` |
+| Não foi possível excluir o mockup. Tente novamente. | `recovery/src-legacy/src/pages/MockupGenerator.tsx` |
+| Erro ao remover mockup | `recovery/src-legacy/src/pages/MockupHistoryPage.tsx` |
+| Erro ao cancelar | `recovery/src-legacy/src/pages/QuoteViewPage.tsx` |
+| Erro ao carregar dados | `recovery/src-legacy/src/pages/RolePermissionsPage.tsx` |
+| Erro ao salvar | `recovery/src-legacy/src/pages/RolePermissionsPage.tsx` |
+| Limite de 3 carrinhos atingido | `recovery/src-legacy/src/pages/SellerCartsPage.tsx` |
+| Sem dados | `recovery/src-legacy/src/pages/TrendsPage.tsx` |
+| ${itemsSemBitrixId.length} produto(s) excluído(s) da sincronização | `recovery/src-legacy/src/pages/quote-view/QuoteActionHandlers.ts` |
+| Empresa sem ID Bitrix24 | `recovery/src-legacy/src/pages/quote-view/QuoteActionHandlers.ts` |
+| Nenhum produto com ID Bitrix24 | `recovery/src-legacy/src/pages/quote-view/QuoteActionHandlers.ts` |
+| ${itemsSemBitrixId.length} produto(s) excluído(s) da sincronização | `recovery/src-legacy/src/pages/quote-view/QuoteBitrixSync.ts` |
+| Empresa sem ID Bitrix24 | `recovery/src-legacy/src/pages/quote-view/QuoteBitrixSync.ts` |
+| Nenhum produto com ID Bitrix24 | `recovery/src-legacy/src/pages/quote-view/QuoteBitrixSync.ts` |
+| Erro ao gerar PDF | `recovery/src-legacy/src/pages/quote-view/useQuoteViewData.ts` |
+| Erro ao sincronizar | `recovery/src-legacy/src/pages/quote-view/useQuoteViewData.ts` |
 | --slug=<slug> é obrigatório. | `scripts/append-edge-deploy-receipt.mjs` |
 | Opção desconhecida: ${arg}. | `scripts/append-edge-deploy-receipt.mjs` |
 | nenhuma tabela Markdown encontrada na seção  | `scripts/append-edge-deploy-receipt.mjs` |
@@ -6134,195 +6323,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | mais de um baseline em ${BASELINE_DIR}: ${found.join( | `scripts/drift-baseline.mjs` |
 | nenhum baseline em ${BASELINE_DIR} | `scripts/drift-baseline.mjs` |
 | project ref inválido: ${JSON.stringify(projectRef)} | `scripts/drift-baseline.mjs` |
-| ${res.status} ${path}: ${await res.text()} | `scripts/e2e-check-stock-seed.mjs` |
-| SMOKE_COVERAGE não encontrado em 20-all-features-smoke.spec.ts | `scripts/e2e-smoke-coverage-doc.mjs` |
-| Categoria Database em formato não suportado; não interpretar como lista vazia. | `scripts/extract-types-inventory.mjs` |
-| Membro não suportado em ${fileName}: ${schemaName}.${name}. | `scripts/extract-types-inventory.mjs` |
-| Nenhum schema reconhecido em ${fileName}; inventário vazio não é prova de paridade. | `scripts/extract-types-inventory.mjs` |
-| Não encontrei  | `scripts/extract-types-inventory.mjs` |
-| Schema ${schemaName} em formato não suportado em ${fileName}. | `scripts/extract-types-inventory.mjs` |
-| Tipo sem declaração em ${fileName}. | `scripts/extract-types-inventory.mjs` |
-| TypeScript inválido em ${fileName}: ${ts.flattenDiagnosticMessageText(sourceFile.parseDiagnostics[0].messageText,  | `scripts/extract-types-inventory.mjs` |
-| Corpus de fuzz inválido:\n- ${errors.join( | `scripts/fuzz-edge-uploads.mjs` |
-| Crash detectado: HTTP ${res.status} em  | `scripts/fuzz-edge-uploads.mjs` |
-| Resposta refletiu payload XSS sem escape em ${path} | `scripts/fuzz-edge-uploads.mjs` |
-| [fuzz-edge-uploads] BLOQUEADO: produção exige ALLOW_PROD_LOAD=1 em dispatch gated. | `scripts/fuzz-edge-uploads.mjs` |
-| [${spec.name}] payload ${index} inválido: ${error.message} | `scripts/fuzz-testing.mjs` |
-| [fuzz-testing] BLOQUEADO: produção exige ALLOW_PROD_LOAD=1 em dispatch gated. | `scripts/fuzz-testing.mjs` |
-| payload não serializável: ${typeof payload} | `scripts/fuzz-testing.mjs` |
-| rawBody deve ser string; recebido ${typeof rawBody} | `scripts/fuzz-testing.mjs` |
-| ${label} inválido: ${error.message} | `scripts/plan-status.mjs` |
-| Esperadas ${REQUIRED_STAGES} etapas únicas; encontradas ${stages.length} (${ids.size} IDs únicos). | `scripts/plan-status.mjs` |
-| Etapa(s) sem critério Pronto: ${missing.join( | `scripts/plan-status.mjs` |
-| Formato de evidências inválido; esperado schemaVersion 1 e objeto records. | `scripts/plan-status.mjs` |
-| Recibo de ${id} precisa registrar criterion, exitCode 0, evidência, data e SHA completo. | `scripts/plan-status.mjs` |
-| Recibo inválido para ${id}. | `scripts/plan-status.mjs` |
-| db unreachable | `scripts/simulate-ai-key-scenarios.mjs` |
-| Offline only: no CLI target or deployment options accepted | `scripts/simulate-quote-rpc-proposals.mjs` |
-| Timed out: ${label} | `scripts/simulate-quote-rpc-proposals.mjs` |
-| Canonical project ref required | `scripts/simulate-signup-migration.mjs` |
-| Disabled trigger was not rejected | `scripts/simulate-signup-migration.mjs` |
-| Duplicate application did not fail as expected | `scripts/simulate-signup-migration.mjs` |
-| Expected five default role grants, including two malicious metadata cases | `scripts/simulate-signup-migration.mjs` |
-| Explicit administrative promotion was blocked | `scripts/simulate-signup-migration.mjs` |
-| Isolated PostgreSQL unavailable | `scripts/simulate-signup-migration.mjs` |
-| Live trigger inventory unavailable | `scripts/simulate-signup-migration.mjs` |
-| Missing trigger definition | `scripts/simulate-signup-migration.mjs` |
-| Postcondition failure did not roll back function replacement | `scripts/simulate-signup-migration.mjs` |
-| Role-to-profile synchronization failed | `scripts/simulate-signup-migration.mjs` |
-| Snapshot function unavailable: ${name} | `scripts/simulate-signup-migration.mjs` |
-| Unexpected function drift was not rejected | `scripts/simulate-signup-migration.mjs` |
-| Zero-discount default limits were not preserved | `scripts/simulate-signup-migration.mjs` |
-| timeout >${ms}ms (${label}) | `scripts/smoke-tests.mjs` |
-| GitHub ${r.status} em ${path}: ${body.slice(0, 200)} | `scripts/validate-lovable-sync-target.mjs` |
-| ${label} — ${detail} | `scripts/validate-quotes-list.mjs` |
-| ALL_COLUMNS não encontrado | `scripts/validate-quotes-list.mjs` |
-| Management API ${response.status}: ${detail} | `scripts/verify-quote-number-hardening.mjs` |
-| Management API retornou payload inesperado | `scripts/verify-quote-number-hardening.mjs` |
-| Database error: ${response.status} - ${text} | `scripts/verify-roboflow-setup.js` |
-| ${msg}: esperado ${JSON.stringify(b)} obtido ${JSON.stringify(a)} | `scripts/ai-context/cenarios.mjs` |
-| Nenhum arquivo SQL rastreado ou não ignorado foi encontrado. | `scripts/graphify/build-sql-graph.py` |
-| Graphify JSON inválido: esperado nodes e links. | `scripts/graphify/enrich-typescript-references.mjs` |
-| GRAPH_REPORT.md não contém a seção Knowledge Gaps. | `scripts/graphify/graph-metrics.mjs` |
-| Graphify JSON inválido: esperado nodes e links. | `scripts/graphify/graph-metrics.mjs` |
-| --entrada exige o caminho do arquivo com a resposta do banco.sql | `scripts/inventario/gerar-banco.mjs` |
-| consulta read-only falhou (HTTP ${sql.status}). | `scripts/inventario/gerar-banco.mjs` |
-| entrada sem as chaves: ${faltando.join( | `scripts/inventario/gerar-banco.mjs` |
-| entrada sem tabelas | `scripts/inventario/gerar-banco.mjs` |
-| format_version ${dado.format_version} desconhecido (esperado 1) | `scripts/inventario/gerar-banco.mjs` |
-| lista de edge functions falhou (HTTP ${fns.status}). | `scripts/inventario/gerar-banco.mjs` |
-| lista de edge functions invalida | `scripts/inventario/gerar-banco.mjs` |
-| resposta sem JSON reconhecivel | `scripts/inventario/gerar-banco.mjs` |
-| sem --entrada e sem SUPABASE_ACCESS_TOKEN: nada para ler (veja o cabecalho do script). | `scripts/inventario/gerar-banco.mjs` |
-| CART_VIEW_MODE_DEFAULT deveria ser  | `scripts/qa/smoke-cart-view-mode-prefs.ts` |
-| Com storage bloqueado esperado  | `scripts/qa/smoke-cart-view-mode-prefs.ts` |
-| Load 2 esperado {grid, reset=false}, got ${JSON.stringify(second)} | `scripts/qa/smoke-cart-view-mode-prefs.ts` |
-| Load inicial esperado {list, reset=true}, got ${JSON.stringify(first)} | `scripts/qa/smoke-cart-view-mode-prefs.ts` |
-| Reload em storage bloqueado esperado  | `scripts/qa/smoke-cart-view-mode-prefs.ts` |
-| SecurityError | `scripts/qa/smoke-cart-view-mode-prefs.ts` |
-| Sem window esperado backend  | `scripts/qa/smoke-cart-view-mode-prefs.ts` |
-| O teste offline não permite consultas ao banco | `scripts/supabase_snapshot/test_snapshot.py` |
-| banco indisponível na fixture | `scripts/supabase_snapshot/test_snapshot.py` |
-| catálogo indisponível na fixture | `scripts/supabase_snapshot/test_snapshot.py` |
-| permission denied for schema auth | `scripts/supabase_snapshot/test_snapshot.py` |
-| relation  | `scripts/supabase_snapshot/test_snapshot.py` |
-| statement timeout simulado | `scripts/supabase_snapshot/test_snapshot.py` |
-| view removida depois da consulta ao catálogo | `scripts/supabase_snapshot/test_snapshot.py` |
-| view sem permissão na fixture | `scripts/supabase_snapshot/test_snapshot.py` |
-| Elemento root nao encontrado no DOM | `src/main.tsx` |
-|        aria-live= | `src/components/BridgeStatusBanner.tsx` |
-|  aria-live= | `src/components/a11y/AccessibilityProvider.tsx` |
-| useA11y must be used within an AccessibilityProvider | `src/components/a11y/AccessibilityProvider.tsx` |
-|  aria-live= | `src/components/a11y/AriaLive.tsx` |
-| useAriaLive must be used within an AriaLiveProvider | `src/components/a11y/AriaLive.tsx` |
-|          data-testid= | `src/components/access/DevAccessDeniedPage.tsx` |
-| Aguarde um instante | `src/components/access/DevAccessDeniedPage.tsx` |
-| Falha ao copiar link | `src/components/access/DevAccessDeniedPage.tsx` |
-| Falha ao enviar solicitação | `src/components/access/DevAccessDeniedPage.tsx` |
-|          data-testid= | `src/components/access/UnauthorizedPage.tsx` |
-| ; import { Button } from  | `src/components/admin/DevAccessAuditAlert.tsx` |
-| Não foi possível gerar o PDF | `src/components/admin/DiscountApprovalAuditTrail.tsx` |
-| Não foi possível marcar como lida | `src/components/admin/DiscountNotificationFilterPanel.tsx` |
-| Não foi possível marcar como lidas | `src/components/admin/DiscountNotificationFilterPanel.tsx` |
-| Erro ao enviar imagem | `src/components/admin/ImageUploadButton.tsx` |
-| Erro ao remover imagem | `src/components/admin/ImageUploadButton.tsx` |
-| Erro ao carregar configurações | `src/components/admin/MockupPromptManager.tsx` |
-| Erro ao carregar histórico | `src/components/admin/MockupPromptManager.tsx` |
-| Erro ao criar prompt | `src/components/admin/MockupPromptManager.tsx` |
-| Erro ao salvar | `src/components/admin/MockupPromptManager.tsx` |
-| Já existe um prompt para essa técnica | `src/components/admin/MockupPromptManager.tsx` |
-| ; import { toast } from  | `src/components/admin/OwnershipRepairDialog.tsx` |
-| Falha no reparo: ${toErrorMessage(e)} | `src/components/admin/OwnershipRepairDialog.tsx` |
-| Erro ao reordenar componentes | `src/components/admin/ProductPersonalizationManager.tsx` |
-| Falha ao rodar testes: ${toErrorMessage(e)} | `src/components/admin/RlsIntegrationTestsDialog.tsx` |
-| RLS ${res.summary.failed} falha(s) em ${res.summary.total} casos | `src/components/admin/RlsIntegrationTestsDialog.tsx` |
-| sem resposta | `src/components/admin/RlsIntegrationTestsDialog.tsx` |
-| Não autenticado | `src/components/admin/SellerDiscountLimitsPanel.tsx` |
-| Chave inválida | `src/components/admin/badges-manager/BadgeFormDialog.tsx` |
-| Config inválido | `src/components/admin/badges-manager/BadgeFormDialog.tsx` |
-| Nome obrigatório | `src/components/admin/badges-manager/BadgeFormDialog.tsx` |
-| Posicionamento obrigatório | `src/components/admin/badges-manager/BadgeFormDialog.tsx` |
-| Falha ao alternar status | `src/components/admin/badges-manager/useBadgesManager.ts` |
-| Falha ao atualizar badge | `src/components/admin/badges-manager/useBadgesManager.ts` |
-| Falha ao criar badge | `src/components/admin/badges-manager/useBadgesManager.ts` |
-| Falha ao remover badge | `src/components/admin/badges-manager/useBadgesManager.ts` |
-| Falha ao alterar o intervalo | `src/components/admin/connections/AutoTestIntervalCard.tsx` |
-| Não foi possível ler o intervalo atual | `src/components/admin/connections/AutoTestIntervalCard.tsx` |
-|  aria-live= | `src/components/admin/connections/CardSourceDiagnostic.tsx` |
-| ; import { Badge } from  | `src/components/admin/connections/CardSourceDiagnostic.tsx` |
-|        aria-live= | `src/components/admin/connections/ConnectionPreflightAlert.tsx` |
-|                        className= | `src/components/admin/connections/ConnectionTestDetailsDialog.tsx` |
-| Não foi possível atualizar o auto-teste | `src/components/admin/connections/ConnectionsOverviewTable.tsx` |
-| Testes cancelados | `src/components/admin/connections/ConnectionsOverviewTable.tsx` |
-| Falha ao reiniciar métricas | `src/components/admin/connections/CredentialCacheMetricsPanel.tsx` |
-| Atualização parcial | `src/components/admin/connections/CredentialsChangedBanner.tsx` |
-| Falha ao recarregar credenciais | `src/components/admin/connections/CredentialsSourceIndicator.tsx` |
-| Não foi possível copiar | `src/components/admin/connections/ErrorDetailsDialog.tsx` |
-| Falha ao exportar | `src/components/admin/connections/ExportButton.tsx` |
-| ; import { ScrollArea } from  | `src/components/admin/connections/ExternalConnectionsSyncLogPanel.tsx` |
-| Falha ao reenviar | `src/components/admin/connections/FailedDeliveriesPanel.tsx` |
-| Reenviado, mas o destino respondeu com erro | `src/components/admin/connections/FailedDeliveriesPanel.tsx` |
-| Falha ao alterar a janela | `src/components/admin/connections/FailureWindowCard.tsx` |
-| Não foi possível ler a janela atual | `src/components/admin/connections/FailureWindowCard.tsx` |
-| Falha ao copiar | `src/components/admin/connections/FieldSourceDrillDownDialog.tsx` |
-| Erro ao testar credenciais | `src/components/admin/connections/GitHubCredentialsTester.tsx` |
-| Falha na validação | `src/components/admin/connections/GitHubCredentialsTester.tsx` |
-| Resposta inválida do servidor | `src/components/admin/connections/GitHubCredentialsTester.tsx` |
-| Atualização parcial | `src/components/admin/connections/GlobalRefreshFromDbButton.tsx` |
-| Falha ao atualizar do banco | `src/components/admin/connections/GlobalRefreshFromDbButton.tsx` |
-| Falha na auditoria: ${toErrorMessage(err)} | `src/components/admin/connections/IntegrationsHealthCard.tsx` |
-| Falha ao emitir chave | `src/components/admin/connections/IssueMcpKeyForm.tsx` |
-| Não foi possível emitir a chave | `src/components/admin/connections/IssueMcpKeyForm.tsx` |
-| Falha ao executar sincronização | `src/components/admin/connections/LastSyncRunPanel.tsx` |
-| Erro ao carregar chaves | `src/components/admin/connections/McpTab.tsx` |
-| Erro ao revogar | `src/components/admin/connections/McpTab.tsx` |
-| Falha ao atualizar cache | `src/components/admin/connections/RefreshFromDbButton.tsx` |
-| Tempo esgotado | `src/components/admin/connections/RetestButton.tsx` |
-|                className= | `src/components/admin/connections/SaveSecretConfirmDialog.tsx` |
-|        className={cn(          | `src/components/admin/connections/SecretErrorAlert.tsx` |
-|              aria-live= | `src/components/admin/connections/SecretField.tsx` |
-|  aria-live= | `src/components/admin/connections/SecretsManagerHealthPanel.tsx` |
-| ; import {   Activity,   Clock,   Copy,   Lock,   PlayCircle,   RefreshCw,   ShieldAlert,   Zap,   CheckCircle2,   XCircle, } from  | `src/components/admin/connections/SecretsManagerHealthPanel.tsx` |
-| Falha de rede ao chamar secrets-manager | `src/components/admin/connections/SecretsManagerHealthPanel.tsx` |
-| Não foi possível copiar | `src/components/admin/connections/SecretsManagerHealthPanel.tsx` |
-| secrets-manager falhou | `src/components/admin/connections/SecretsManagerHealthPanel.tsx` |
-| Não foi possível copiar. | `src/components/admin/connections/SmokeTestChecklist.tsx` |
-| Selecione uma credencial para testar. | `src/components/admin/connections/SmokeTestChecklist.tsx` |
-| ${failed} de ${tested.length} conexões com falha | `src/components/admin/connections/TestAllConnectionsButton.tsx` |
-| Nenhuma conexão testável | `src/components/admin/connections/TestAllConnectionsButton.tsx` |
-| Destino respondeu com erro | `src/components/admin/connections/WebhookPlaygroundPanel.tsx` |
-| Falha ao disparar | `src/components/admin/connections/WebhookPlaygroundPanel.tsx` |
-| Selecione webhook e evento | `src/components/admin/connections/WebhookPlaygroundPanel.tsx` |
-| Erro ao criar endpoint | `src/components/admin/connections/WebhooksTab.tsx` |
-| Erro ao criar webhook | `src/components/admin/connections/WebhooksTab.tsx` |
-| Erro ao reativar webhook | `src/components/admin/connections/WebhooksTab.tsx` |
-| Erro ao remover webhook | `src/components/admin/connections/WebhooksTab.tsx` |
-| Preencha nome e sistema | `src/components/admin/connections/WebhooksTab.tsx` |
-| Preencha nome, URL e ao menos um evento | `src/components/admin/connections/WebhooksTab.tsx` |
-| Erro ao adicionar componente — tabela pode não existir | `src/components/admin/hooks/useGroupPersonalization.ts` |
-| Erro ao adicionar localização | `src/components/admin/hooks/useGroupPersonalization.ts` |
-| Erro ao associar técnica | `src/components/admin/hooks/useGroupPersonalization.ts` |
-| Erro ao atualizar componente | `src/components/admin/hooks/useGroupPersonalization.ts` |
-| Erro ao atualizar localização | `src/components/admin/hooks/useGroupPersonalization.ts` |
-| Erro ao atualizar técnica | `src/components/admin/hooks/useGroupPersonalization.ts` |
-| Erro ao remover componente | `src/components/admin/hooks/useGroupPersonalization.ts` |
-| Erro ao remover localização | `src/components/admin/hooks/useGroupPersonalization.ts` |
-| Erro ao remover técnica | `src/components/admin/hooks/useGroupPersonalization.ts` |
-| Erro ao copiar regras do grupo | `src/components/admin/personalization/GroupInheritance.tsx` |
-| Grupo não possui componentes configurados | `src/components/admin/personalization/GroupInheritance.tsx` |
-| Erro ao adicionar componente | `src/components/admin/personalization/usePersonalizationData.ts` |
-| Erro ao adicionar localização | `src/components/admin/personalization/usePersonalizationData.ts` |
-| Erro ao associar técnica | `src/components/admin/personalization/usePersonalizationData.ts` |
-| Erro ao atualizar componente | `src/components/admin/personalization/usePersonalizationData.ts` |
-| Erro ao atualizar localização | `src/components/admin/personalization/usePersonalizationData.ts` |
-| Erro ao atualizar modo | `src/components/admin/personalization/usePersonalizationData.ts` |
-| Erro ao atualizar técnica | `src/components/admin/personalization/usePersonalizationData.ts` |
-| Erro ao remover componente | `src/components/admin/personalization/usePersonalizationData.ts` |
-| Erro ao remover localização | `src/components/admin/personalization/usePersonalizationData.ts` |
-| Erro ao remover técnica | `src/components/admin/personalization/usePersonalizationData.ts` |
-| Erro ao adicionar componente | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
-| Erro ao adicionar localização | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
-| Erro ao associar técnica | `src/components/admin/personalization-manager/usePersonalizationManager.ts` |
 | … +1165 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
@@ -6341,6 +6341,13 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `recovery/patches/D4.3_ownership_audit/functions.sql` |
 | `dev` | `recovery/patches/D4.3_ownership_audit/functions.sql` |
 | `vendedor` | `recovery/patches/D5_misc_cross_cutting/functions.sql` |
+| `granted` | `recovery/src-legacy/src/hooks/usePushNotifications.tsx` |
+| `dev` | `recovery/src-legacy/src/hooks/useRBAC.tsx` |
+| `roleName` | `recovery/src-legacy/src/hooks/useRBAC.tsx` |
+| `supervisor` | `recovery/src-legacy/src/hooks/useRBAC.tsx` |
+| `perm` | `recovery/src-legacy/src/pages/RolePermissionsPage.tsx` |
+| `permissionId` | `recovery/src-legacy/src/pages/RolePermissionsPage.tsx` |
+| `role` | `recovery/src-legacy/src/pages/RolePermissionsPage.tsx` |
 | `agent` | `src/components/access/DevAccessDeniedPage.tsx` |
 | `agente` | `src/components/access/DevAccessDeniedPage.tsx` |
 | `string` | `src/components/access/DevAccessDeniedPage.tsx` |
@@ -6357,10 +6364,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `assistant` | `src/components/expert/chat/useExpertChat.ts` |
 | `user` | `src/components/expert/chat/useExpertChat.ts` |
 | `denied` | `src/components/security/PushNotificationSettings.tsx` |
-| `granted` | `src/hooks/usePushNotifications.tsx` |
-| `dev` | `src/hooks/useRBAC.tsx` |
-| `roleName` | `src/hooks/useRBAC.tsx` |
-| `supervisor` | `src/hooks/useRBAC.tsx` |
 | `dev` | `src/hooks/auth/useRBAC.tsx` |
 | `roleName` | `src/hooks/auth/useRBAC.tsx` |
 | `supervisor` | `src/hooks/auth/useRBAC.tsx` |
@@ -6372,9 +6375,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `supervisor` | `src/lib/auth/visibility-scope.ts` |
 | `admin` | `src/lib/rbac/route-matrix.ts` |
 | `dev` | `src/lib/rbac/route-matrix.ts` |
-| `perm` | `src/pages/RolePermissionsPage.tsx` |
-| `permissionId` | `src/pages/RolePermissionsPage.tsx` |
-| `role` | `src/pages/RolePermissionsPage.tsx` |
 | `vendedor` | `src/pages/admin/AdminPromoverUsuarioPage.tsx` |
 | `dev` | `src/pages/admin/AdminRbacRoutesPage.tsx` |
 | `public` | `src/pages/admin/AdminRbacRoutesPage.tsx` |
@@ -6442,7 +6442,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (19674 testes em 1965 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (19837 testes em 1978 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6486,6 +6486,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/receive-crm-callback.fuzz.test.ts` | 53 | SOURCE PARITY — código de produção contém as funções esperadas · timingSafeEqual continua constant-time (XOR loop, sem early-return) · verify_jwt=false via config.toml (auth é 100% inline) · usa service_role — nunca ANON — para writes … |
 | `tests/regression/freight-quest-regression-suite.test.ts` | 53 | REG-CALC: regressões de cálculo de frete · REG-CALC-01: exatamente 1kg não ultrapassa faixa SEDEX (≤ inclui limite) · REG-CALC-02: 1001g (1.001kg) entra na próxima faixa SEDEX (R$35) · REG-CALC-03: cálculo para 100 kits de 300g = 30kg total → faixa ≤30kg … |
 | `tests/rls/critical-tables-rls.test.ts` | 53 | RLS: quotes · has RLS enabled (policies exist) · only allows authenticated users · sellers can only manage their own quotes … |
+| `src/components/search/__tests__/VoiceSearchOverlay.test.tsx` | 52 | VoiceSearchOverlay · Rendering · renders when open · does not render when closed … |
 | `src/hooks/mockup/__tests__/mockupGenerationService.test.ts` | 52 | getTechniquePrompt · maps known technique codes to their prompts · maps the remaining known codes (uv, sublimacao) · falls back to default for unknown techniques … |
 | `tests/components/search/VoiceSearchOverlay.test.tsx` | 52 | VoiceSearchOverlay · Rendering · renders when open · does not render when closed … |
 | `tests/e2e/tools-simulator.test.ts` | 51 | E2E Tools — Simulator Wizard · has 4 steps · starts at product · ends at summary … |
@@ -6595,6 +6596,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/unit/connection-error-copy.test.ts` | 26 | getErrorCopy · returns timeout copy for kind= · includes timeoutMs in hint when provided · returns network copy for kind= … |
 | `src/components/cart/__tests__/cartCompanyCnpj.test.ts` | 25 | resolveCartCompanyCnpj · caminho 1 — CRM entrega CNPJ (fonte preferida) · CNPJ cru (14 dígitos) é mascarado para exibição · CNPJ já mascarado é re-normalizado e mascarado consistentemente … |
 | `src/components/inventory/__tests__/product-risk-detail.test.tsx` | 25 | ProductRiskDetail — loading state · renders loading spinner when isLoading=true · ProductRiskDetail — error state · renders error message when summary has error and no data … |
+| `src/components/search/__tests__/useGlobalSearch.test.ts` | 25 | useGlobalSearch · expõe estado inicial e sugestões rápidas · limpa resultados para consultas com menos de 3 caracteres sem chamar a IA · busca mista monta resultados de produtos, clientes, orçamentos e tabelas auxiliares … |
 | `src/lib/auth/__tests__/post-login-redirect.test.ts` | 25 | clearPostLoginRedirect · remove a chave do sessionStorage quando ela existe · nao lanca erro quando sessionStorage esta vazio · nao lanca erro quando sessionStorage.removeItem lanca excecao … |
 | `src/utils/__tests__/cnpj-gap-hunt.test.ts` | 25 | G1 — maskCnpj com input já mascarado não duplica separadores · idempotência: mask(mask(x)) === mask(x) · input parcial mascarado não gera pontuação órfã · G2 — normalizeCnpj com surrogate pairs / emoji / unicode invisível … |
 | `tests/contracts/webhooks.contract.test.ts` | 25 | contract: webhook-inbound v1 (passthrough) · aceita qualquer objeto (compat com produção) · aceita array (compat — v1 é any) · body vazio → 400 missing_body … |
@@ -6668,6 +6670,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/favorites-module.spec.ts` | 20 | Favorites Module - Public Access (No Auth) · should redirect to auth when accessing /favoritos unauthenticated · should display auth page when accessing /favoritos · should not expose favorites data to unauthenticated users … |
 | `e2e/visual-search-module.spec.ts` | 20 | Visual Search Module - Public Access (No Auth) · should redirect to auth when accessing /raio-x unauthenticated · should display auth page when accessing /raio-x · should not expose visual search data to unauthenticated users … |
 | `e2e/ui/cart-delete-header-popover-exhaustive.spec.ts` | 20 | CartHeaderButton — exaustivo (delete via popover) · happy path — clique → dialog → confirmar → 1 DELETE → cartão some @smoke · carrinho expandido com itens — lixeira abre dialog mesmo após fechamento do popover · DELETE 200 com 0 linhas removidas — trata como erro e mantém o carrinho … |
+| `recovery/src-legacy/src/utils/price-freshness.test.ts` | 20 | Price Freshness Utility · formatPriceDateShort · formats date in pt-BR short format · formatPriceDateLong … |
 | `src/components/cart/__tests__/PopoverQtyInput.exhaustive.test.tsx` | 20 | normalizeQty — property-based (1000 amostras) · resultado sempre em [MIN_QTY, MAX_QTY] ou null · idempotência: normalize(String(normalize(x))) === normalize(x) · respeita a extração de dígitos por regex /[^0-9]/g … |
 | `src/components/inventory/__tests__/FutureStockDialog.test.tsx` | 20 | FutureStockDialog — render states · não renderiza conteúdo quando open=false · mostra estado vazio quando não há entradas · renderiza título, badge de contagem e KPIs com dados … |
 | `src/components/inventory/__tests__/VariantStockRowActions.test.tsx` | 20 | VariantStockRowActions · Copiar SKU · copia o SKU da variação no clipboard e emite toast de sucesso · mostra erro profissional se clipboard falhar (sem fallback disponível) · VariantStockRowActions · Carrinho … |
@@ -6680,7 +6683,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/pages/quotes/__tests__/useQuotesListPage.expiring.test.ts` | 20 | useQuotesListPage — filtro  · I1: exclui quotes com status=expired mesmo com valid_until futuro · I2: exclui valid_until no passado (mesmo status=pending) · I3: exclui quotes sem valid_until … |
 | `src/pages/quotes/__tests__/useQuotesListPage.test.ts` | 20 | useQuotesListPage — onlyPendingStatuses · false quando lista está vazia · true quando todos os quotes são pending · false quando há mix de status … |
 | `src/tests/ProductSortingRelevance.test.ts` | 20 | SORT_OPTIONS — contrato do seletor · expõe exatamente as 7 opções esperadas, na ordem da UI · todas as opções têm label não vazia · sortProducts — Nome (A-Z) … |
-| `src/utils/price-freshness.test.ts` | 20 | Price Freshness Utility · formatPriceDateShort · formats date in pt-BR short format · formatPriceDateLong … |
 | `src/utils/__tests__/quote-number.exhaustive.test.ts` | 20 | quote-number · normalização e validação exaustivas · idempotência · normalizar(%s) é idempotente · saneamento de espaços … |
 | `supabase/functions/external-db-bridge/applyFiltersAndSwap.integration.test.ts` | 20 | applyFilters: nunca chama .select() (filtro vazio) · applyFilters: nunca chama .select() (filtros simples eq) · applyFilters: nunca chama .select() (operadores PostgREST string) · applyFilters: nunca chama .select() (sufixos _gte/_lte/_isnull/_notnull) … |
 | `tests/edge-functions/integration/cnpj-lookup.test.ts` | 20 | cnpj-lookup · happy path · retorna 200 com dados da empresa para CNPJ válido formatado · aceita CNPJ sem formatação (somente dígitos) … |
@@ -6744,18 +6746,16 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/inventory/__tests__/StockBadge.test.tsx` | 17 | StockBadge — getStockStatus helper · returns out-of-stock for zero quantity · returns low-stock at or below threshold · returns in-stock above threshold … |
 | `src/components/inventory/__tests__/bulk-add-to-collection-modal.test.tsx` | 17 | BulkAddToCollectionModal — initial state · renders dialog title with correct count (2 variações) · renders  · shows empty state when no collections … |
 | `src/components/novelties/NoveltyCards.stockBadge.test.tsx` | 17 | NoveltyCards › StockBadge (fallback de stock_quantity) · getStockStatus com threshold=10 · retorna  · retorna  … |
-| `src/components/ui/__tests__/OptimizedImage.test.tsx` | 17 | OptimizedImage · renders a shimmer or placeholder when loading · applies fade-in, removes blur and resets zoom after onLoad · handles custom configuration correctly … |
-| `src/hooks/common/__tests__/useListUrlState.test.tsx` | 17 | useListUrlState — contrato de /carrinhos (deadline/sort/q) · clearAll remove deadline, sort e q da URL · após clearAll, remontar (simula reload) mantém URL limpa · remove defaults explícitos ao hidratar e preserva filtros ativos e params externos … |
-| … +1665 linhas — lista completa em `context.json` | | |
+| … +1678 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
 | Evento | Arquivo |
 |---|---|
+| `recovered` | `recovery/src-legacy/src/lib/external-db/bridge-telemetry-client.ts` |
+| `unavailable` | `recovery/src-legacy/src/lib/external-db/bridge-telemetry-client.ts` |
 | `added` | `src/lib/query-config.ts` |
 | `updated` | `src/lib/query-config.ts` |
-| `recovered` | `src/lib/external-db/bridge-telemetry-client.ts` |
-| `unavailable` | `src/lib/external-db/bridge-telemetry-client.ts` |
 | `change` | `src/pages/products/seller-carts/cartViewModeTelemetry.ts` |
 | `create` | `supabase/functions/manage-users/index.ts` |
 | `delete` | `supabase/functions/manage-users/index.ts` |
@@ -6791,6 +6791,39 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `notify_hardening_regression` | `recovery/patches/D4.6_security_auth/functions.sql` |
 | `notify_new_order` | `recovery/patches/D5_misc_cross_cutting/functions.sql` |
 | `notify_quote_client_response` | `recovery/sql/01_missing_functions.sql` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useCategoriesTree.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useColorSystem.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useCommemorativeDates.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useConnectionTestDetails.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useConnectionTestHistory.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useConnectionTester.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useConsecutiveFailures.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useDeviceDetection.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useDropboxFiles.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useExternalCategoriesQuery.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useExternalDatabase.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useExternalDbInspect.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useExternalSimulator.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useIPValidation.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useKitIdentitySuggestion.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useLogoColorAnalysis.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useMagicUpGeneration.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/usePrintAreas.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useProductSeoAI.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useProductSupplierSources.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useProductsByCategory.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useProdutoRamoAtividade.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useQuotes.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useSecretsManager.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useStepUpAuth.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useTechniquePricing.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useTechniquePricingOptions.ts` |
+| `invoke(` | `recovery/src-legacy/src/hooks/useTransactionalEmail.ts` |
+| `notify` | `recovery/src-legacy/src/lib/external-db/cold-start-recorder.ts` |
+| `invoke(` | `recovery/src-legacy/src/pages/Auth.tsx` |
+| `.add('ring-2'` | `recovery/src-legacy/src/pages/MockupGenerator.tsx` |
+| `invoke(` | `recovery/src-legacy/src/pages/quote-view/QuoteActionHandlers.ts` |
+| `invoke(` | `recovery/src-legacy/src/pages/quote-view/QuoteBitrixSync.ts` |
 | `.add('high-contrast'` | `src/components/a11y/AccessibilityProvider.tsx` |
 | `.add('keyboard-mode'` | `src/components/a11y/AccessibilityProvider.tsx` |
 | `invoke(` | `src/components/admin/OwnershipRepairDialog.tsx` |
@@ -6804,34 +6837,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `notify` | `src/components/quotes/QuoteProductColorSelector.tsx` |
 | `invoke(` | `src/contexts/DevChallengeContext.tsx` |
 | `.add('dark'` | `src/contexts/ThemeContext.tsx` |
-| `invoke(` | `src/hooks/useCategoriesTree.ts` |
-| `invoke(` | `src/hooks/useColorSystem.ts` |
-| `invoke(` | `src/hooks/useCommemorativeDates.ts` |
-| `invoke(` | `src/hooks/useConnectionTestDetails.ts` |
-| `invoke(` | `src/hooks/useConnectionTestHistory.ts` |
-| `invoke(` | `src/hooks/useConnectionTester.ts` |
-| `invoke(` | `src/hooks/useConsecutiveFailures.ts` |
-| `invoke(` | `src/hooks/useDeviceDetection.ts` |
-| `invoke(` | `src/hooks/useDropboxFiles.ts` |
-| `invoke(` | `src/hooks/useExternalCategoriesQuery.ts` |
-| `invoke(` | `src/hooks/useExternalDatabase.ts` |
-| `invoke(` | `src/hooks/useExternalDbInspect.ts` |
-| `invoke(` | `src/hooks/useExternalSimulator.ts` |
-| `invoke(` | `src/hooks/useIPValidation.ts` |
-| `invoke(` | `src/hooks/useKitIdentitySuggestion.ts` |
-| `invoke(` | `src/hooks/useLogoColorAnalysis.ts` |
-| `invoke(` | `src/hooks/useMagicUpGeneration.ts` |
-| `invoke(` | `src/hooks/usePrintAreas.ts` |
-| `invoke(` | `src/hooks/useProductSeoAI.ts` |
-| `invoke(` | `src/hooks/useProductSupplierSources.ts` |
-| `invoke(` | `src/hooks/useProductsByCategory.ts` |
-| `invoke(` | `src/hooks/useProdutoRamoAtividade.ts` |
-| `invoke(` | `src/hooks/useQuotes.ts` |
-| `invoke(` | `src/hooks/useSecretsManager.ts` |
-| `invoke(` | `src/hooks/useStepUpAuth.ts` |
-| `invoke(` | `src/hooks/useTechniquePricing.ts` |
-| `invoke(` | `src/hooks/useTechniquePricingOptions.ts` |
-| `invoke(` | `src/hooks/useTransactionalEmail.ts` |
 | `invoke(` | `src/hooks/admin/useV4Callbacks.ts` |
 | `invoke(` | `src/hooks/intelligence/useExternalDatabase.ts` |
 | `invoke(` | `src/hooks/products/useCategoriesTree.ts` |
@@ -6844,13 +6849,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `.add('theme-transitioning'` | `src/lib/theme-presets.ts` |
 | `notify` | `src/lib/access/log-access-denied.ts` |
 | `notify` | `src/lib/edge/invokeTelemetrySink.ts` |
-| `notify` | `src/lib/external-db/cold-start-recorder.ts` |
 | `invoke(` | `src/lib/security/sanitize-error.ts` |
 | `notify` | `src/lib/telemetry/instrumentationControl.ts` |
 | `notifyRouteChange` | `src/lib/telemetry/navigationMetrics.ts` |
 | `invoke(` | `src/lib/telemetry/requestId.ts` |
-| `invoke(` | `src/pages/Auth.tsx` |
-| `.add('ring-2'` | `src/pages/MockupGenerator.tsx` |
 | `.add('dark'` | `src/pages/__visual/CalendarHarness.tsx` |
 | `.add('dark'` | `src/pages/__visual/DatePickerFieldHarness.tsx` |
 | `.add("dark"` | `src/pages/__visual/PreviewButtonHarness.tsx` |
@@ -6862,8 +6864,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `publish(` | `src/pages/magazine/useMagazinePublish.ts` |
 | `notifyRemoteDisabled` | `src/pages/magazine/hooks/useMagazineReaderState.ts` |
 | `.add('ring-2'` | `src/pages/mockups/MockupGenerator.tsx` |
-| `invoke(` | `src/pages/quote-view/QuoteActionHandlers.ts` |
-| `invoke(` | `src/pages/quote-view/QuoteBitrixSync.ts` |
 | `publish(` | `src/services/magazineService.ts` |
 | `invoke(` | `supabase/functions/bitrix-sync/handler_characterization_test.ts` |
 | `notifyAdmins` | `supabase/functions/connections-health-check/index.ts` |
@@ -6959,6 +6959,87 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | FROM cron.job_run_details ORDER BY start_time DESC LIMIT 50; | `recovery/block11_cron_jobs.sql` |
 | FROM public.quote_approval_tokens WHERE token = _token LIMIT 1; | `recovery/full-public-schema.sql` |
 | FROM public.quote_approval_tokens WHERE token = _token LIMIT 1; | `recovery/patches/D4.2_quote_advanced/functions.sql` |
+| * Sem persistência (memória apenas). Atualiza em tempo real via subscribe. | `recovery/src-legacy/src/components/admin/telemetry/BridgesLiveCard.tsx` |
+| ultrapassa o limite configurado, mostra um alerta destacado com | `recovery/src-legacy/src/components/admin/telemetry/PlatformFailureAlertBanner.tsx` |
+| Improved variant detection: if SKU is composite (contains '-'), it MUST have color_name or notes | `recovery/src-legacy/src/components/cart/CartHealthChecklist.tsx` |
+| usado em contextos onde o componente atua como navegador de seleção (não apenas exibição). | `recovery/src-legacy/src/components/categories/CategoryTreeNavigator.tsx` |
+| Recents — também filtrados por permissão (recente pode ter sido | `recovery/src-legacy/src/components/command/GlobalCommandBar.tsx` |
+| - Setup = PISO MÍNIMO (não é somado!) | `recovery/src-legacy/src/components/pricing/simulator/PriceResultV51.tsx` |
+| Faturamento mínimo (se aplicado) */} | `recovery/src-legacy/src/components/pricing/simulator/PriceResultV51.tsx` |
+| Markup info (apenas em modo detalhes) */} | `recovery/src-legacy/src/components/pricing/simulator/PriceResultV51.tsx` |
+| - Faturamento mínimo (setup como piso, não soma!) | `recovery/src-legacy/src/components/pricing/simulator/QuantityAndResult.tsx` |
+| Faturamento mínimo aplicado */} | `recovery/src-legacy/src/components/pricing/simulator/QuantityAndResult.tsx` |
+| - Tratamento específico para 429 (rate limit) e 402 (créditos) | `recovery/src-legacy/src/hooks/useAIRecommendations.ts` |
+| ").limit(1).single(), | `recovery/src-legacy/src/hooks/useAccessSecurity.ts` |
+| ").order("created_at", { ascending: false }).limit(50), | `recovery/src-legacy/src/hooks/useAccessSecurity.ts` |
+| já está conforme o schema, deve "just work". | `recovery/src-legacy/src/hooks/useAiRouter.ts` |
+| * Capabilities REQUIRED como objeto (não array!). | `recovery/src-legacy/src/hooks/useAiRouter.ts` |
+| * Helper para calcular apenas os campos alterados em um UPDATE | `recovery/src-legacy/src/hooks/useAuditLog.ts` |
+| Business Logic - Do not change sorting behavior | `recovery/src-legacy/src/hooks/useCatalogFiltering.ts` |
+| * Prefetch do catálogo SOMENTE após autenticação (#6). | `recovery/src-legacy/src/hooks/useCatalogPrefetch.ts` |
+| Priority 3: selected_thumbnail (only if not the main product image) | `recovery/src-legacy/src/hooks/useColorEnrichment.ts` |
+| @param limit - Limite de resultados (padrão: 100) | `recovery/src-legacy/src/hooks/useCommemorativeDates.ts` |
+| Armazena apenas IDs no localStorage; resolução para objetos Product é | `recovery/src-legacy/src/hooks/useComparison.ts` |
+| Analytics (sem lookup – apenas ID) | `recovery/src-legacy/src/hooks/useComparison.ts` |
+| Deve ser chamado pelo contexto/provider que tem acesso a `getProductsByIds`. | `recovery/src-legacy/src/hooks/useComparison.ts` |
+| Retry automático com backoff apenas para erros que parecem temporários | `recovery/src-legacy/src/hooks/useCrmCompanies.ts` |
+| * Fixa/desfixa kit em destaque (apenas 1 por usuário). */ | `recovery/src-legacy/src/hooks/useCustomKitPersistence.ts` |
+| If dimensions are required but not provided, don't calculate | `recovery/src-legacy/src/hooks/useCustomizationPrice.ts` |
+| * Para usuários com role `dev`, executa um SELECT mínimo (id LIMIT 1) em cada | `recovery/src-legacy/src/hooks/useDevAccessAudit.ts` |
+| RLS / "permission denied" é classificado como bloqueio inesperado. | `recovery/src-legacy/src/hooks/useDevAccessAudit.ts` |
+| * Não consome dados reais; apenas dispara o gate de RLS. Roda uma vez ao | `recovery/src-legacy/src/hooks/useDevAccessAudit.ts` |
+| * Tabelas sensíveis que um dev DEVE conseguir ler. */ | `recovery/src-legacy/src/hooks/useDevAccessAudit.ts` |
+| Códigos típicos de RLS / permissão | `recovery/src-legacy/src/hooks/useDevAccessAudit.ts` |
+| * useDiscountApproval — Gerencia solicitações de aprovação de desconto | `recovery/src-legacy/src/hooks/useDiscountApproval.ts` |
+| Múltiplas listas e sem shift → o caller deve mostrar picker | `recovery/src-legacy/src/hooks/useFavoriteQuickAdd.ts` |
+| Mínimo de caracteres para buscar (default: 2) | `recovery/src-legacy/src/hooks/useGenericFuzzySearch.ts` |
+| Máximo de resultados (default: todos) | `recovery/src-legacy/src/hooks/useGenericFuzzySearch.ts` |
+| Aplicar limite se especificado | `recovery/src-legacy/src/hooks/useGenericFuzzySearch.ts` |
+| Este arquivo mantém apenas os hooks React. | `recovery/src-legacy/src/hooks/useGravacaoV2.ts` |
+| Validação completa acontece após login via edge function | `recovery/src-legacy/src/hooks/useIPValidation.ts` |
+| Em caso de erro na validação, permitir acesso (fail-open) | `recovery/src-legacy/src/hooks/useIPValidation.ts` |
+| Weight validation | `recovery/src-legacy/src/hooks/useKitBuilder.ts` |
+| * Hook para validação de estoque dos itens do Kit Builder | `recovery/src-legacy/src/hooks/useKitStockValidation.ts` |
+| Allow only if completed or current | `recovery/src-legacy/src/hooks/useKitWizardShortcuts.ts` |
+| * useMockupGenerator — Core business logic hook for MockupGenerator page | `recovery/src-legacy/src/hooks/useMockupGenerator.ts` |
+| Limite efetivo = menor entre técnica e área (se ambos definidos) | `recovery/src-legacy/src/hooks/useMockupGenerator.ts` |
+| * Converts NoveltyWithDetails to Product (minimum fields required by BulkVariantWizard). | `recovery/src-legacy/src/hooks/useNoveltiesSelectionMode.ts` |
+| Keep within max limit | `recovery/src-legacy/src/hooks/usePositionHistory.ts` |
+| - Escrita: somente admin (RLS). | `recovery/src-legacy/src/hooks/useProductFreshnessOverride.ts` |
+| - Fuse index é recriado apenas quando os produtos mudam (referência estável) | `recovery/src-legacy/src/hooks/useProductFuzzySearch.ts` |
+| - Busca com debounce deve ser feita pelo consumidor (ex: useDebounce) | `recovery/src-legacy/src/hooks/useProductFuzzySearch.ts` |
+| Recriar Fuse index apenas quando a lista de produtos realmente muda | `recovery/src-legacy/src/hooks/useProductFuzzySearch.ts` |
+| * Busca apenas a imagem principal de um produto | `recovery/src-legacy/src/hooks/useProductImages.ts` |
+| * Hook para buscar apenas a imagem principal | `recovery/src-legacy/src/hooks/useProductImages.ts` |
+| ── Desconto REAL (sobre subtotal real) — usado para alçada ── | `recovery/src-legacy/src/hooks/useQuoteBuilderState.ts` |
+| ── Validation ── | `recovery/src-legacy/src/hooks/useQuoteBuilderState.ts` |
+| ── Discount limit check ── | `recovery/src-legacy/src/hooks/useQuoteBuilderState.ts` |
+| If pending_approval, create approval request usando desconto REAL (não aparente) | `recovery/src-legacy/src/hooks/useQuoteBuilderState.ts` |
+| - 'dev' → apenas dev | `recovery/src-legacy/src/hooks/useRBAC.tsx` |
+| * Converts ReplenishmentWithDetails to Product (minimum fields required by BulkVariantWizard). | `recovery/src-legacy/src/hooks/useReplenishmentsSelectionMode.ts` |
+| Fetch quote items for this product (handle 1000-row limit) | `recovery/src-legacy/src/hooks/useSalesHistory.ts` |
+| Fetch order items for this product (handle 1000-row limit) | `recovery/src-legacy/src/hooks/useSalesHistory.ts` |
+| * useScrollDirection - Hook simplificado apenas para direção | `recovery/src-legacy/src/hooks/useScroll.ts` |
+| Apenas erros de auth/permissão limpam (estado real desconhecido). | `recovery/src-legacy/src/hooks/useSecretsManager.ts` |
+| * useSellerDiscountLimits — Gerencia limites de desconto por vendedor | `recovery/src-legacy/src/hooks/useSellerDiscountLimits.ts` |
+| Fetch own limit (for sellers) | `recovery/src-legacy/src/hooks/useSellerDiscountLimits.ts` |
+| Set/update limit for a seller | `recovery/src-legacy/src/hooks/useSellerDiscountLimits.ts` |
+| Delete limit | `recovery/src-legacy/src/hooks/useSellerDiscountLimits.ts` |
+| Se não há variação, criar opções de 1 até o máximo | `recovery/src-legacy/src/hooks/useTechniquePricing.ts` |
+| Substitui useState quando o estado deve persistir no histórico/URL. | `recovery/src-legacy/src/hooks/useUrlState.ts` |
+| === useScribe MUST be called unconditionally === | `recovery/src-legacy/src/hooks/useVoiceAgent.ts` |
+| === Request microphone permission explicitly === | `recovery/src-legacy/src/hooks/useVoiceAgent.ts` |
+| Stop all tracks immediately — we just needed permission | `recovery/src-legacy/src/hooks/useVoiceAgent.ts` |
+| 1. Request microphone permission first | `recovery/src-legacy/src/hooks/useVoiceAgent.ts` |
+| Sem dependências externas; apenas Canvas API. | `recovery/src-legacy/src/lib/kit-og-image.ts` |
+| Fire-and-forget — falha de telemetria não pode quebrar o app. | `recovery/src-legacy/src/lib/external-db/bridge-telemetry-client.ts` |
+| * Business Intelligence — Central de inteligência comercial 360° por cliente. | `recovery/src-legacy/src/pages/BusinessIntelligencePage.tsx` |
+| * Business logic in useMockupGenerator hook. | `recovery/src-legacy/src/pages/MockupGenerator.tsx` |
+| Atalho para Business Analytics do cliente — substitui o antigo painel de Recomendações IA, | `recovery/src-legacy/src/pages/QuoteBuilderPage.tsx` |
+| $%^&*(),.?":{}\|<>]/, 'Senha deve conter caractere especial'), | `recovery/src-legacy/src/pages/ResetPassword.tsx` |
+| * useQuotesDashboard — Business logic hook for QuotesDashboardPage. | `recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts` |
+| * useSellerCartsPage — Business logic hook for SellerCartsPage | `recovery/src-legacy/src/pages/seller-carts/useSellerCartsPage.ts` |
+| Validate each template has required fields | `recovery/src-legacy/src/utils/templateExport.ts` |
 | * Mostra apenas o ícone (modo compacto, ex.: sidebar colapsada). */ | `src/components/RoleBadge.tsx` |
 | * Caminho bloqueado (apenas pathname, ex: "/admin/telemetria"). */ | `src/components/access/DevAccessDeniedPage.tsx` |
 | Se não houver, preservamos o próprio /unauthorized apenas como referência — | `src/components/access/UnauthorizedPage.tsx` |
@@ -7025,9 +7106,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | - Somente FULL (chaves com escopo *) | `src/components/admin/security/keys/McpKeysFilters.tsx` |
 | gateamos por `useUserRole` para evitar mostrar a UI a quem não pode usar. | `src/components/admin/security/role-migration/RoleMigrationPanel.tsx` |
 | apenas colunas reais e não os retorna. | `src/components/admin/suppliers-manager/types.ts` |
-| * Sem persistência (memória apenas). Atualiza em tempo real via subscribe. | `src/components/admin/telemetry/BridgesLiveCard.tsx` |
 | * Não depende da RPC `get_edge_invoke_summary` (draft, REGRA #1). Assim | `src/components/admin/telemetry/EdgeInvokeLivePanel.tsx` |
-| ultrapassa o limite configurado, mostra um alerta destacado com | `src/components/admin/telemetry/PlatformFailureAlertBanner.tsx` |
 | - obriga justificativa (mínimo 10 caracteres) | `src/components/admin/users/PromotionDialog.tsx` |
 | R4: exibida apenas quando o usuário digita texto livre (não é uma ação rápida conhecida) | `src/components/ai/AIMockupAssistant.tsx` |
 | que o pai deve automaticamente focar o formulário de e-mail (sem exigir clique). | `src/components/auth/SocialLoginButtons.tsx` |
@@ -7038,7 +7117,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | INSERTs e cria dois carrinhos, queimando o limite de 3. | `src/components/cart/CartCompanyPicker.tsx` |
 | Roda ANTES do guard de limite: abrir o existente deve funcionar mesmo com 3. | `src/components/cart/CartCompanyPicker.tsx` |
 | de limite: abrir o existente deve funcionar mesmo no limite máximo de carrinhos. | `src/components/cart/CartCompanyPickerDialog.tsx` |
-| Improved variant detection: if SKU is composite (contains '-'), it MUST have color_name or notes | `src/components/cart/CartHealthChecklist.tsx` |
 | usuário possa apenas apertar Enter para tentar de novo (a11y). | `src/components/cart/CartItemErrorAlert.tsx` |
 | - Sanitiza a entrada: aceita apenas dígitos (vírgula, ponto, espaço, letras | `src/components/cart/PopoverQtyInput.tsx` |
 | - Valores vazios / inválidos / abaixo do mínimo revertem ao valor externo | `src/components/cart/PopoverQtyInput.tsx` |
@@ -7050,8 +7128,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Indicador de expansão integrado (seta) - apenas para itens com filhos */} | `src/components/categories/CategorySidebarPanel.tsx` |
 | Emoji da categoria (apenas para raiz com emoji) */} | `src/components/categories/CategorySidebarPanel.tsx` |
 | Auto-expandir apenas os PAIS (não o nó selecionado) | `src/components/categories/CategorySidebarPanel.tsx` |
-| usado em contextos onde o componente atua como navegador de seleção (não apenas exibição). | `src/components/categories/CategoryTreeNavigator.tsx` |
-| Recents — também filtrados por permissão (recente pode ter sido | `src/components/command/GlobalCommandBar.tsx` |
 | * DEPRECATED — mantido apenas para retrocompatibilidade da API antiga | `src/components/common/ConfirmDialog.tsx` |
 | permissão. Ações puramente locais (toggle de tema, abrir help) podem | `src/components/common/spotlight/SpotlightItems.ts` |
 | Admin (visível apenas a admin/dev — filtrado em runtime) | `src/components/common/spotlight/SpotlightItems.ts` |
@@ -7136,80 +7212,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | a caixa cheia é um limite superior: a bbox nunca subestima a marca girada e um | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
 | * Filtro de técnica EFETIVO — o mesmo que a prévia aplica. Decide se há regra. */ | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
 | * true quando a técnica casa uma regra de simulação conhecida (não o `default`). */ | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
-| *  1. `sem_regra`   — técnica sem regra de simulação: NUNCA vira selo de compatível e | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
-| nenhuma medida é exibida (régua só com regra + fronteira oficial). | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
-| 2. `validada`    — técnica com regra + dimensões reais do produto + limites oficiais | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
-| "uv" MUST be last — it's a substring of many technique names | `src/components/mockup/logo-editor/logoTechniqueFilters.ts` |
-| 16 M pixels (~64 M operações) e travava o editor. Acima deste limite o logo é | `src/components/mockup/logo-editor/useLogoProcessing.ts` |
-| * BellBadge — apenas o ícone + contador de não lidas. | `src/components/notifications/NotificationDrawer.tsx` |
-| nem o título do drawer. Re-renderiza apenas quando `isRefetching` muda. | `src/components/notifications/NotificationDrawer.tsx` |
-| * How many consecutive seconds the ratio must stay ≥ threshold to fire the warning. */ | `src/components/notifications/badge-stats/useNotificationsMetricsPanel.ts` |
-| GAP-FIX: remover limit:200 compartilha a cache key ['novelties-details','all',false] com | `src/components/novelties/ExpiringNoveltiesWidget.tsx` |
-| NoveltyProductGrid — elimina a segunda round-trip ao servidor. O componente usa apenas | `src/components/novelties/ExpiringNoveltiesWidget.tsx` |
-| do limite de 2 dias (hot→warm) ou 5 dias (warm→normal) enquanto a página | `src/components/novelties/NoveltiesSection.tsx` |
-| ISSUE-22 FIX: sem limit → cache key ['novelties-details','all',false] compartilhada | `src/components/novelties/NoveltiesSection.tsx` |
-| supplier counts must reflect only the products that match the current | `src/components/novelties/NoveltiesSection.tsx` |
-| FIX (auditoria Novidades, P1-B): sem teto fixo. Antes `{ limit: 400 }` | `src/components/novelties/NoveltyProductGrid.tsx` |
-| Exemplo: selecionar categoria "Têxtil" → fornecedor deve mostrar counts só de têxteis. | `src/components/novelties/NoveltyProductGrid.tsx` |
-| Se search-server-side for adicionado futuramente, DEVE usar normalização | `src/components/novelties/NoveltyProductGrid.tsx` |
-| Escopo INALTERADO: busca somente nas novidades já carregadas em memória. | `src/components/novelties/NoveltyProductGrid.tsx` |
-| (renderizado apenas no modo grid) inalterado. | `src/components/novelties/NoveltyProductGrid.tsx` |
-| ⚠️ PERF-2026-08-19: Pré-filtra para apenas produtos VISÍVEIS (virtualizados). | `src/components/novelties/NoveltyProductGrid.tsx` |
-| grid (virtualizado): usa apenas paginatedProducts (~40-60 visíveis + overscan) | `src/components/novelties/NoveltyProductGrid.tsx` |
-| (VirtualizedNoveltyGrid) carrega cores APENAS para os IDs visíveis | `src/components/novelties/NoveltyProductGrid.tsx` |
-| ⚠️ PERF-2026-08-19: Carrega cores APENAS dos IDs visíveis (virtualizados). | `src/components/novelties/VirtualizedNoveltyGrid.tsx` |
-| Sem validação, "date:nao-e-data" gerava "Entrega até data/e/nao" | `src/components/pdf/ProposalHtmlTemplate.tsx` |
-| bloco de totais (subtotal/desconto/frete/total) | `src/components/pdf/PropostaComercialTailwind.tsx` |
-| Páginas SEM totais (apenas o lembrete enxuto no rodapé — #5b reclama o espaço do #5a): | `src/components/pdf/PropostaComercialTailwind.tsx` |
-| runtime o navegador o IGNORA ("@import rule was ignored…") e as fontes nunca | `src/components/pdf/PropostaComercialTailwind.tsx` |
-| P0 #5: Condições + Termos de aceite APENAS na última página | `src/components/pdf/PropostaComercialTailwind.tsx` |
-| * Regra de negócio: | `src/components/pdf/watermarkTokens.ts` |
-| - alpha DEVE ficar dentro de `WATERMARK_ALPHA_BOUNDS` — abaixo do min a | `src/components/pdf/watermarkTokens.ts` |
-| * Alpha do vermelho. Sobe/desce apenas aqui — o resto propaga. | `src/components/pdf/watermarkTokens.ts` |
-| próprio fundo branco. Marca d'água legível — mas não agressiva — deve | `src/components/pdf/watermarkTokens.ts` |
-| Bug #6  — Coluna "Total" (Qtd × Unitário − Desconto) adicionada | `src/components/pdf/proposal/ProposalProductTable.tsx` |
-| FIX #3a: loading="eager" — o browser DEVE carregar mesmo em offscreen. | `src/components/pdf/proposal/ProposalProductTable.tsx` |
-| Economia (desconto global) — enquadrada como GANHO, não perda. */} | `src/components/pdf/proposal/ProposalTotals.tsx` |
-| Frete row — após desconto, entra no total */} | `src/components/pdf/proposal/ProposalTotals.tsx` |
-| - Faturamento mínimo (setup como piso) | `src/components/pricing/simulator/MultiEngravingResult.tsx` |
-| Supersede guard: a slow Promise.all for an old quantity must not overwrite | `src/components/pricing/simulator/MultiEngravingResult.tsx` |
-| Prazo máximo | `src/components/pricing/simulator/MultiEngravingResult.tsx` |
-| Verificar se algum aplicou faturamento mínimo | `src/components/pricing/simulator/MultiEngravingResult.tsx` |
-| Info sobre faturamento mínimo */} | `src/components/pricing/simulator/MultiEngravingResult.tsx` |
-| - Setup = PISO MÍNIMO (não é somado!) | `src/components/pricing/simulator/PriceResultV51.tsx` |
-| Faturamento mínimo (se aplicado) */} | `src/components/pricing/simulator/PriceResultV51.tsx` |
-| Markup info (apenas em modo detalhes) */} | `src/components/pricing/simulator/PriceResultV51.tsx` |
-| - Faturamento mínimo (setup como piso, não soma!) | `src/components/pricing/simulator/QuantityAndResult.tsx` |
-| Faturamento mínimo aplicado */} | `src/components/pricing/simulator/QuantityAndResult.tsx` |
-| * Máximo de sugestões exibidas (padrão: 3) */ | `src/components/pricing/simulator/upsell/UpsellPlusPlus.tsx` |
-| * Faixas de quantidade com desconto progressivo */ | `src/components/pricing/simulator/upsell/upsell-engine.ts` |
-| min-h apenas: o virtualizer precisa medir a altura real do card. | `src/components/products/BaseProductGridCard.tsx` |
-| - Responsivo: labels escondidos em mobile, apenas ícones | `src/components/products/BulkActionBar.tsx` |
-| Clamping: se o valor controlado ultrapassa o máximo disponível para a | `src/components/products/ColumnSelector.tsx` |
-| 1. Filtrar primeiro apenas por período (usado para o resumo de cores) | `src/components/products/FutureStockModal.tsx` |
-| divergindo no limite do dia (UTC-3) entre ordenação e filtragem. | `src/components/products/FutureStockModal.tsx` |
-| BUG-IPC-01 FIX (2026-06-21): useState(minQuantity) apenas usa o valor inicial — | `src/components/products/InlinePriceCalculator.tsx` |
-| do novo mínimo. Sincronizar explicitamente. | `src/components/products/InlinePriceCalculator.tsx` |
-| deve atualizar `confirmedAt` para que o badge entre no estado "confirmado". | `src/components/products/PriceFreshnessBadge.tsx` |
-| Sem esta prop o badge continua somente leitura (catálogo/PDP padrão). | `src/components/products/PriceFreshnessBadge.tsx` |
-| Só nesse caso enriquecemos o badge com "(limite Yd)" — caso contrário | `src/components/products/PriceFreshnessBadge.tsx` |
-| Sufixo "(limite Yd)" só aparece quando o produto traz threshold próprio. | `src/components/products/PriceFreshnessBadge.tsx` |
-| alerta. Mantém o tooltip (mostra data SSOT + regra) para auditoria. | `src/components/products/PriceFreshnessBadge.tsx` |
-| Sem ação individual configurada → comportamento clássico (somente leitura). | `src/components/products/PriceFreshnessBadge.tsx` |
-| (30/60/90 dias) de UM produto. Visível apenas para admins. | `src/components/products/PriceFreshnessThresholdEditor.tsx` |
-| ── Lazy dialog imports — carregados apenas na primeira abertura ────────────── | `src/components/products/ProductCard.tsx` |
-| Ativado apenas quando filtro de cor ativo — resolve imagem real da variante de cor | `src/components/products/ProductCard.tsx` |
-| Prioridade 3: Se tivermos apenas o nome da cor (ex: seleção manual via swatch) | `src/components/products/ProductCard.tsx` |
-| Dialogs lazy — chunk carregado apenas na primeira abertura (zero custo em memória até então) */} | `src/components/products/ProductCard.tsx` |
-| Monte seu Kit - apenas para produtos que NÃO são kits nativos */} | `src/components/products/ProductCategoryBadges.tsx` |
-| *  Limite default `max=5`; no ProductCard do grid usamos `max=6` (cabe sem | `src/components/products/ProductColorSwatches.tsx` |
-| * Máximo de bolinhas visíveis antes de mostrar `+N`. Default 5. | `src/components/products/ProductColorSwatches.tsx` |
-| Quando true (somente com `wrap`): o container cresce em N linhas via | `src/components/products/ProductColorSwatches.tsx` |
-| DEVE ficar antes dos early returns para respeitar Rules of Hooks. | `src/components/products/ProductColorSwatches.tsx` |
-| para nunca ultrapassar o limite visual de 2 linhas. | `src/components/products/ProductColorSwatches.tsx` |
-| Onda 1: estado de estoque opcional por cor (somente Reposição passa esses campos) | `src/components/products/ProductColorSwatches.tsx` |
-| Badge de reposição prevista (somente Onda 1, quando isUpcoming) */} | `src/components/products/ProductColorSwatches.tsx` |
-| * Regra de exclusividade: se o produto possuir uma opção "CIRCULAR/360°" | `src/components/products/ProductCustomizationOptions.tsx` |
-| Deduplica por location_code: a RPC calcula as options apenas por código, | `src/components/products/ProductEngravingSection.tsx` |
-| Dispara SOMENTE quando o usuário clicou numa bolinha (userSelectedColorName != null). | `src/components/products/ProductListItem.tsx` |
 | … +1242 linhas — lista completa em `context.json` | |

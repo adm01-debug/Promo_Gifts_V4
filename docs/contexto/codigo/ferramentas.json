@@ -3,9 +3,9 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4709)",
-   "SQL (3335)",
-   "Markdown (1009)",
+   "TypeScript (4722)",
+   "SQL (3330)",
+   "Markdown (1010)",
    "JavaScript (312)",
    "JSON (118)",
    "YAML (108)",
@@ -248,7 +248,7 @@
    "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts",
    "test:ci-core:coverage": "TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --coverage --coverage.include=src/lib/theme-presets.ts --coverage.include=src/components/products/ProductSparkline.tsx --coverage.reporter=text --coverage.reporter=json --coverage.reporter=json-summary --coverage.thresholds.lines=50 --coverage.thresholds.functions=50 --coverage.thresholds.branches=30 --coverage.thresholds.statements=50",
    "test:cloud-status": "TZ=America/Sao_Paulo vitest run tests/components/CloudStatusBanner.test.tsx tests/hooks/useDevGate.test.ts",
-   "test:cloud-status-coverage": "TZ=America/Sao_Paulo vitest run tests/components/CloudStatusBanner.test.tsx tests/hooks/useDevGate.test.ts --coverage --coverage.reporter=text --coverage.reporter=json-summary --coverage.include=src/components/system/CloudStatusBanner.tsx --coverage.include=src/hooks/admin/useDevGate.ts && node scripts/check-cloud-status-coverage.mjs",
+   "test:cloud-status-coverage": "TZ=America/Sao_Paulo vitest run tests/components/CloudStatusBanner.test.tsx tests/hooks/useDevGate.test.ts tests/hooks/useDevGate.ssr-contract.test.tsx --coverage --coverage.reporter=text --coverage.reporter=json-summary --coverage.include=src/components/system/CloudStatusBanner.tsx --coverage.include=src/hooks/admin/useDevGate.ts && node scripts/check-cloud-status-coverage.mjs",
    "test:cnpj": "TZ=America/Sao_Paulo vitest run src/utils/masks.test.ts src/utils/cnpj-schema.test.ts \"src/utils/__tests__/cnpj-\" src/components/__tests__/cnpj-render.test.tsx",
    "test:contract": "node scripts/contract-testing.mjs",
    "test:coverage": "TZ=America/Sao_Paulo vitest run --coverage",
@@ -755,7 +755,9 @@
     "edge-functions-typecheck",
     "theme-validation"
    ],
-   "permissoes": [],
+   "permissoes": [
+    "contents: read"
+   ],
    "scripts_usados": [
     "scripts/build-cors-snapshot.mjs",
     "scripts/check-aschild-nesting.mjs",
@@ -5293,6 +5295,10 @@
     "arquivos": 1
    },
    {
+    "host": "site.com",
+    "arquivos": 1
+   },
+   {
     "host": "site.test",
     "arquivos": 1
    },
@@ -5466,11 +5472,11 @@
    },
    {
     "papel": "dev",
-    "ocorrencias": 41
+    "ocorrencias": 42
    },
    {
     "papel": "button",
-    "ocorrencias": 39
+    "ocorrencias": 40
    },
    {
     "papel": "user",

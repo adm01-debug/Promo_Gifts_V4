@@ -2,11 +2,46 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1dcb3b6b0ec1bd2c11fe51391d2de9f80f75f50a",
+  "commit": "15c2a4cb34e64d859c169800888c29fad53d21eb",
   "branch": "main",
-  "data_commit": "2026-11-10T01:42:29Z",
+  "data_commit": "2026-11-11T15:29:48-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "15c2a4c",
+    "data": "2026-11-11",
+    "assunto": "chore(repo): quarentena dos 316 arquivos obsoletos da #3361 (#3398)"
+   },
+   {
+    "sha": "ceea4cc",
+    "data": "2026-11-11",
+    "assunto": "fix: restaura useDevGate original (stableRoles tipado como AppRole[])"
+   },
+   {
+    "sha": "fdc79d9",
+    "data": "2026-11-11",
+    "assunto": "test: cobertura da busca global e testes de hooks Bridge/DevGate alinhados à API atual"
+   },
+   {
+    "sha": "c3a5633",
+    "data": "2026-11-11",
+    "assunto": "fix(ci): ci.yml dentro dos contratos e catracas sem regressão nos 8 arquivos da #3361 que ficam em src/"
+   },
+   {
+    "sha": "3cc75fd",
+    "data": "2026-11-11",
+    "assunto": "fix(ci): tira migrations legadas da #3361 da pasta canônica (Gate 1.3)"
+   },
+   {
+    "sha": "89990fd",
+    "data": "2026-11-11",
+    "assunto": "chore(repo): move 2 testes obsoletos da #3361 que importavam modulos movidos"
+   },
+   {
+    "sha": "5dd9b94",
+    "data": "2026-11-11",
+    "assunto": "chore(repo): move 316 arquivos obsoletos da #3361 de src/ para recovery/src-legacy"
+   },
    {
     "sha": "1dcb3b6",
     "data": "2026-11-10",
@@ -96,45 +131,14 @@
     "sha": "586f454",
     "data": "2026-11-09",
     "assunto": "chore(sentinel): grandfather SHA fb4b8c2d87 do PR #3349 (#3351)"
-   },
-   {
-    "sha": "0818809",
-    "data": "2026-11-09",
-    "assunto": "fix: corrige referência de SHA de sentinela em check-sentinel-sha (#3278)"
-   },
-   {
-    "sha": "fb4b8c2",
-    "data": "2026-11-09",
-    "assunto": "fix(update-snapshots): atualizar snapshots PriceFreshnessBadge para novo class Lucide AlertTriangle"
-   },
-   {
-    "sha": "8b29818",
-    "data": "2026-11-09",
-    "assunto": "fix: replace corrupt PNG snapshot and add smoke test timeouts (#3347)"
-   },
-   {
-    "sha": "b4c1167",
-    "data": "2026-11-09",
-    "assunto": "fix(tests): corrige 5 falhas preexistentes em useKitBuilderQuote (#3348)"
-   },
-   {
-    "sha": "1696c5a",
-    "data": "2026-11-09",
-    "assunto": "fix(tests): corrige regressões vitest — onLogoRemove, consumeUnloadBackup, goToStep, exit codes, mock transactional (#33"
-   },
-   {
-    "sha": "00c8fa2",
-    "data": "2026-11-09",
-    "assunto": "fix(tests): corrige TypeError consumeUnloadBackup e atualiza baseline de tamanho"
-   },
-   {
-    "sha": "78729fc",
-    "data": "2026-11-09",
-    "assunto": "chore(ci): atualiza file-size baseline — Kit Builder +21/+13/+10 linhas"
    }
   ],
-  "arquivos_mudados_7d": 1100,
+  "arquivos_mudados_7d": 1392,
   "pastas_mais_mudadas_30d": [
+   {
+    "pasta": "recovery/src-legacy/src",
+    "mudancas": 316
+   },
    {
     "pasta": "src/components/admin",
     "mudancas": 309
@@ -190,10 +194,6 @@
    {
     "pasta": "src/pages/quotes",
     "mudancas": 53
-   },
-   {
-    "pasta": "src/pages/products",
-    "mudancas": 52
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -214,11 +214,11 @@
     "mudancas": 14
    },
    {
-    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 13
+    "arquivo": "package.json",
+    "mudancas": 14
    },
    {
-    "arquivo": "package.json",
+    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
     "mudancas": 13
    },
    {
@@ -308,30 +308,38 @@
     "commits": 21
    },
    {
+    "autor": "Joaquim Ataides",
+    "commits": 4
+   },
+   {
+    "autor": "Claude",
+    "commits": 2
+   },
+   {
     "autor": "dependabot[bot]",
     "commits": 1
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 9866,
-  "arquivos_codigo": 5025,
-  "linhas_codigo": 958948,
+  "arquivos_total": 9875,
+  "arquivos_codigo": 5038,
+  "linhas_codigo": 961368,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
-  "itens_menu": 70,
-  "modulos": 165,
+  "itens_menu": 69,
+  "modulos": 158,
   "componentes": 1225,
   "hooks": 615,
   "edge_functions": 111,
   "tabelas": 545,
-  "migrations": 3057,
+  "migrations": 3050,
   "cron_jobs": 120,
-  "testes": 2277,
+  "testes": 2290,
   "workflows": 95,
   "scripts": 259,
-  "docs_md": 1009
+  "docs_md": 1010
  },
  "por_pasta": {
   ".github/scripts": {
@@ -901,6 +909,10 @@
   "recovery/RealtimeMessagesExample.tsx": {
    "arquivos": 1,
    "linhas": 248
+  },
+  "recovery/src-legacy": {
+   "arquivos": 315,
+   "linhas": 59593
   },
   "scripts/__tests__": {
    "arquivos": 7,
@@ -1839,8 +1851,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1383,
-   "linhas": 277505
+   "arquivos": 1345,
+   "linhas": 271105
   },
   "src/config": {
    "arquivos": 1,
@@ -1863,16 +1875,16 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 649,
-   "linhas": 118641
+   "arquivos": 453,
+   "linhas": 84563
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66203
   },
   "src/lib": {
-   "arquivos": 330,
-   "linhas": 50859
+   "arquivos": 327,
+   "linhas": 50560
   },
   "src/logic": {
    "arquivos": 4,
@@ -1883,8 +1895,8 @@
    "linhas": 63
   },
   "src/pages": {
-   "arquivos": 405,
-   "linhas": 97308
+   "arquivos": 348,
+   "linhas": 81796
   },
   "src/routes": {
    "arquivos": 14,
@@ -1899,20 +1911,20 @@
    "linhas": 1127
   },
   "src/test": {
-   "arquivos": 4,
-   "linhas": 382
+   "arquivos": 3,
+   "linhas": 366
   },
   "src/tests": {
-   "arquivos": 34,
-   "linhas": 5105
+   "arquivos": 33,
+   "linhas": 5021
   },
   "src/types": {
    "arquivos": 26,
    "linhas": 4426
   },
   "src/utils": {
-   "arquivos": 61,
-   "linhas": 8977
+   "arquivos": 56,
+   "linhas": 8171
   },
   "supabase/functions": {
    "arquivos": 264,
@@ -1991,8 +2003,8 @@
    "linhas": 141
   },
   "tests/components": {
-   "arquivos": 149,
-   "linhas": 32732
+   "arquivos": 148,
+   "linhas": 32700
   },
   "tests/config": {
    "arquivos": 6,
@@ -2036,7 +2048,7 @@
   },
   "tests/hooks": {
    "arquivos": 127,
-   "linhas": 17021
+   "linhas": 17075
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2269,7 +2281,7 @@
    "linhas": 1011
   },
   {
-   "arquivo": "src/hooks/useMagicUpState.ts",
+   "arquivo": "recovery/src-legacy/src/hooks/useMagicUpState.ts",
    "linhas": 955
   },
   {
@@ -2389,6 +2401,12 @@
    "linha": 754,
    "tipo": "FIXME",
    "texto": "', 'HACK', 'XXX'] }],"
+  },
+  {
+   "arquivo": "recovery/src-legacy/src/hooks/useIPValidation.test.ts",
+   "linha": 20,
+   "tipo": "TODO",
+   "texto": "(test-debt): 6 testes falham — mock supabase.functions.invoke retorna shape errado."
   },
   {
    "arquivo": "scripts/ai-context/gerar.mjs",
@@ -2595,12 +2613,6 @@
    "texto": "produto da grade, neutralizando o re-rank/substring client-side por"
   },
   {
-   "arquivo": "src/hooks/useIPValidation.test.ts",
-   "linha": 20,
-   "tipo": "TODO",
-   "texto": "(test-debt): 6 testes falham — mock supabase.functions.invoke retorna shape errado."
-  },
-  {
    "arquivo": "src/lib/sensitive-masking.ts",
    "linha": 8,
    "tipo": "TODO",
@@ -2779,7 +2791,6 @@
    "Ação -> #fab",
    "AI Router -> ai-router",
    "Bem-vindo ao Promo Brindes! -> welcome",
-   "Bem-vindo ao Promo Gifts! -> welcome",
    "Busca Inteligente -> search",
    "Carrinho -> __open_cart__",
    "Central de Notificações -> notifications",
@@ -2911,24 +2922,100 @@
   ],
   "componentes_orfaos": [
    "recovery/RealtimeMessagesExample.tsx",
-   "src/components/admin/CatalogQualityDashboard.tsx",
+   "recovery/src-legacy/src/components/admin/CatalogQualityDashboard.tsx",
+   "recovery/src-legacy/src/components/admin/telemetry/BridgeAlertsCard.tsx",
+   "recovery/src-legacy/src/components/admin/telemetry/BridgesLiveCard.tsx",
+   "recovery/src-legacy/src/components/admin/telemetry/ColdStartRetriesPanel.tsx",
+   "recovery/src-legacy/src/components/admin/telemetry/EdgeFunctionLogsPanel.tsx",
+   "recovery/src-legacy/src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
+   "recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx",
+   "recovery/src-legacy/src/components/cart/CartActionsMenu.tsx",
+   "recovery/src-legacy/src/components/cart/CartHealthChecklist.tsx",
+   "recovery/src-legacy/src/components/collections/ShareCollectionDialog.tsx",
+   "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
+   "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
+   "recovery/src-legacy/src/components/compare/ComparisonWeightsPopover.tsx",
+   "recovery/src-legacy/src/components/compare/ShareComparisonDialog.tsx",
+   "recovery/src-legacy/src/components/dev/metrics/BridgeCallItem.tsx",
+   "recovery/src-legacy/src/components/favorites/ExportFavoritesButton.tsx",
+   "recovery/src-legacy/src/components/favorites/FavoritePresentationLauncher.tsx",
+   "recovery/src-legacy/src/components/favorites/ShareListDialog.tsx",
+   "recovery/src-legacy/src/components/loading/SkeletonShimmer.tsx",
+   "recovery/src-legacy/src/components/mockup/GenerateButton.tsx",
+   "recovery/src-legacy/src/components/mockup/MockupSkeleton.tsx",
+   "recovery/src-legacy/src/components/mockup/SaveTemplateDialog.tsx",
+   "recovery/src-legacy/src/components/mockup/TemplateSelector.tsx",
+   "recovery/src-legacy/src/components/navigation/DynamicBreadcrumbs.tsx",
+   "recovery/src-legacy/src/components/pricing/simulator/PriceResultV51.tsx",
+   "recovery/src-legacy/src/components/pricing/simulator/QuantityAndResult.tsx",
+   "recovery/src-legacy/src/components/products/EnhancedProductCard.tsx",
+   "recovery/src-legacy/src/components/products/ProductCardSkeleton.tsx",
+   "recovery/src-legacy/src/components/products/ProductDetailSkeleton.tsx",
+   "recovery/src-legacy/src/components/products/ProductListItemSkeleton.tsx",
+   "recovery/src-legacy/src/components/quotes/AdminTemplatesManager.tsx",
+   "recovery/src-legacy/src/components/quotes/DraggableQuoteItems.tsx",
+   "recovery/src-legacy/src/components/quotes/QuoteCommentsSection.tsx",
+   "recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx",
+   "recovery/src-legacy/src/components/quotes/QuotesFunnelChart.tsx",
+   "recovery/src-legacy/src/components/quotes/QuoteTemplatePicker.tsx",
+   "recovery/src-legacy/src/components/quotes/QuoteTemplateSelector.tsx",
+   "recovery/src-legacy/src/components/quotes/SaveAsTemplateButton.tsx",
+   "recovery/src-legacy/src/components/search/SmartSuggestions.tsx",
+   "recovery/src-legacy/src/components/ui/toast.tsx",
+   "recovery/src-legacy/src/components/ui/toaster.tsx",
+   "recovery/src-legacy/src/hooks/useSparklineSales.tsx",
+   "recovery/src-legacy/src/pages/AdvancedPriceSearchPage.tsx",
+   "recovery/src-legacy/src/pages/Auth.tsx",
+   "recovery/src-legacy/src/pages/BusinessIntelligencePage.tsx",
+   "recovery/src-legacy/src/pages/ClientComparatorPage.tsx",
+   "recovery/src-legacy/src/pages/ClientDetailPage.tsx",
+   "recovery/src-legacy/src/pages/ClientsPage.tsx",
+   "recovery/src-legacy/src/pages/CollectionDetailPage.tsx",
+   "recovery/src-legacy/src/pages/CollectionsPage.tsx",
+   "recovery/src-legacy/src/pages/CommercialIntelligencePage.tsx",
+   "recovery/src-legacy/src/pages/ComparePage.tsx",
+   "recovery/src-legacy/src/pages/DropboxBrowserPage.tsx",
+   "recovery/src-legacy/src/pages/EngravingRegistrationPage.tsx",
+   "recovery/src-legacy/src/pages/ExternalDatabaseTest.tsx",
+   "recovery/src-legacy/src/pages/FavoritesPage.tsx",
+   "recovery/src-legacy/src/pages/FiltersPage.tsx",
+   "recovery/src-legacy/src/pages/KitBuilderPage.tsx",
+   "recovery/src-legacy/src/pages/KitLibraryPage.tsx",
+   "recovery/src-legacy/src/pages/MagicUp.tsx",
+   "recovery/src-legacy/src/pages/MockupGenerator.tsx",
+   "recovery/src-legacy/src/pages/MockupHistoryPage.tsx",
+   "recovery/src-legacy/src/pages/NoveltiesPage.tsx",
+   "recovery/src-legacy/src/pages/PermissionsPage.tsx",
+   "recovery/src-legacy/src/pages/PriceSimulatorPage.tsx",
+   "recovery/src-legacy/src/pages/ProductDetail.tsx",
+   "recovery/src-legacy/src/pages/ProductMatchPage.tsx",
+   "recovery/src-legacy/src/pages/QuoteBuilderPage.tsx",
+   "recovery/src-legacy/src/pages/QuotesDashboardPage.tsx",
+   "recovery/src-legacy/src/pages/QuotesKanbanPage.tsx",
+   "recovery/src-legacy/src/pages/QuotesListPage.tsx",
+   "recovery/src-legacy/src/pages/QuoteTemplatesPage.tsx",
+   "recovery/src-legacy/src/pages/QuoteViewPage.tsx",
+   "recovery/src-legacy/src/pages/RateLimitDashboardPage.tsx",
+   "recovery/src-legacy/src/pages/ReplenishmentsPage.tsx",
+   "recovery/src-legacy/src/pages/ResetPassword.tsx",
+   "recovery/src-legacy/src/pages/RolePermissionsPage.tsx",
+   "recovery/src-legacy/src/pages/RolesPage.tsx",
+   "recovery/src-legacy/src/pages/SellerCartsPage.tsx",
+   "recovery/src-legacy/src/pages/SimuladorWizard.tsx",
+   "recovery/src-legacy/src/pages/SSOCallbackPage.tsx",
+   "recovery/src-legacy/src/pages/StockDashboardPage.tsx",
+   "recovery/src-legacy/src/pages/SystemStatusPage.tsx",
+   "recovery/src-legacy/src/pages/TrendsPage.tsx",
    "src/components/admin/connections/ConnectionErrorDetailsDialog.tsx",
    "src/components/admin/connections/ErrorDetailsDialog.tsx",
    "src/components/admin/DiscountApprovalQueue.tsx",
    "src/components/admin/ProductPersonalizationManager.tsx",
    "src/components/admin/products/CategorySelect.tsx",
    "src/components/admin/SellerDiscountLimitsPanel.tsx",
-   "src/components/admin/telemetry/BridgeAlertsCard.tsx",
-   "src/components/admin/telemetry/BridgesLiveCard.tsx",
-   "src/components/admin/telemetry/ColdStartRetriesPanel.tsx",
-   "src/components/admin/telemetry/EdgeFunctionLogsPanel.tsx",
-   "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
-   "src/components/admin/telemetry/PlatformFailureCards.tsx",
    "src/components/auth/SupabaseConnectionDebug.tsx",
    "src/components/bi/ExportDossierButton.tsx",
    "src/components/BridgeStatusBanner.tsx",
    "src/components/cart/BundleSuggestionCard.tsx",
-   "src/components/command/GlobalCommandBar.tsx",
    "src/components/common/BulkActionsBar.tsx",
    "src/components/common/GlassElements.tsx",
    "src/components/common/ImageWithFallback.tsx",
@@ -2936,17 +3023,13 @@
    "src/components/common/StatusTimeline.tsx",
    "src/components/common/UrgencyBadge.tsx",
    "src/components/compare/ComparisonShortcutsCheatsheet.tsx",
-   "src/components/compare/ComparisonWeightsPopover.tsx",
    "src/components/compare/FocusModeToggle.tsx",
    "src/components/compare/HistoricalPriceOverlay.tsx",
    "src/components/compare/ImageZoomCell.tsx",
    "src/components/compare/SortableColumnWrapper.tsx",
    "src/components/dev/DevOnlyBridgeOverlay.tsx",
-   "src/components/dev/metrics/BridgeCallItem.tsx",
    "src/components/expert/ExpertChatButton.tsx",
-   "src/components/favorites/ExportFavoritesButton.tsx",
    "src/components/favorites/QuickListPicker.tsx",
-   "src/components/favorites/ShareListDialog.tsx",
    "src/components/filters/FilterSection.tsx",
    "src/components/goals/SalesGoalsCard.tsx",
    "src/components/intelligence/SegmentAnalysis.tsx",
@@ -2965,23 +3048,14 @@
    "src/components/kit-builder/KitVariantsManager.tsx",
    "src/components/kit-builder/SimilarKitsWidget.tsx",
    "src/components/layout/PageHeader.tsx",
-   "src/components/loading/SkeletonShimmer.tsx",
    "src/components/LoadingScreen.tsx",
-   "src/components/mockup/GenerateButton.tsx",
-   "src/components/mockup/SaveTemplateDialog.tsx",
-   "src/components/mockup/TemplateSelector.tsx",
-   "src/components/navigation/DynamicBreadcrumbs.tsx",
+   "src/components/mockup/TemplatePreview.tsx",
    "src/components/novelties/NoveltiesSection.tsx",
    "src/components/personalization/ThemeCustomization.tsx",
-   "src/components/pricing/simulator/PriceResultV51.tsx",
-   "src/components/pricing/simulator/QuantityAndResult.tsx",
-   "src/components/products/EnhancedProductCard.tsx",
    "src/components/products/KitVisualComposition.tsx",
    "src/components/products/PriceHistoryChart.tsx",
-   "src/components/products/ProductCardSkeleton.tsx",
    "src/components/products/ProductHoverPreview.tsx",
    "src/components/products/ProductIntelligence.tsx",
-   "src/components/products/ProductListItemSkeleton.tsx",
    "src/components/products/ProductSectionNav.tsx",
    "src/components/products/ProductVariations.tsx",
    "src/components/products/quick-view/QuickViewGallery.tsx",
@@ -2993,11 +3067,8 @@
    "src/components/quotes/QuoteBuilderNavigation.tsx",
    "src/components/quotes/QuoteCard.tsx",
    "src/components/quotes/QuoteFilters.tsx",
-   "src/components/quotes/QuoteRowQuickActions.tsx",
    "src/components/quotes/QuoteSignaturePad.tsx",
-   "src/components/quotes/QuoteTemplatePicker.tsx",
    "src/components/search/GlobalSearch.tsx",
-   "src/components/search/SmartSuggestions.tsx",
    "src/components/search/voice/VoiceOverlaySections.tsx",
    "src/components/security/SecuritySettings.tsx",
    "src/components/simulator/MockupPreview.tsx",
@@ -3011,9 +3082,7 @@
    "src/components/ui/LabeledField.tsx",
    "src/components/ui/LoadingButton.tsx",
    "src/components/ui/LoadingState.tsx",
-   "src/components/ui/StatusBadge.tsx",
-   "src/components/ui/toaster.tsx",
-   "src/hooks/useSparklineSales.tsx"
+   "src/components/ui/StatusBadge.tsx"
   ],
   "componentes_com_nome_duplicado": [
    "AdvancedPriceSearchPage",

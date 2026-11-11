@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1dcb3b6b0e` · branch `main` · 2026-11-10 01:47 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `15c2a4cb34` · branch `main` · 2026-11-11 18:55 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -1329,40 +1329,40 @@ Middleware matcher (Next.js): nenhum
 
 | Tabela | Problema | Arquivos |
 |---|---|---|
-| `audit_log` | front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/hooks/useAuditLog.ts` |
+| `audit_log` | front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useAuditLog.ts` |
 | `bitrix_deals` | RLS ligado sem nenhuma política → só service_role acessa |  |
-| `collection_items` | front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
-| `collection_items` | front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
-| `collection_items` | front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
-| `collection_items` | front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
-| `collections` | front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
-| `collections` | front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/components/collections/ShareCollectionDialog.tsx`<br>`src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
-| `collections` | front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `src/hooks/collections/useCollections.ts`<br>`src/hooks/useCollections.ts` |
+| `collection_items` | front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useCollections.ts`<br>`src/hooks/collections/useCollections.ts` |
+| `collection_items` | front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useCollections.ts`<br>`src/hooks/collections/useCollections.ts` |
+| `collection_items` | front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useCollections.ts`<br>`src/hooks/collections/useCollections.ts` |
+| `collection_items` | front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useCollections.ts`<br>`src/hooks/collections/useCollections.ts` |
+| `collections` | front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useCollections.ts`<br>`src/hooks/collections/useCollections.ts` |
+| `collections` | front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/components/collections/ShareCollectionDialog.tsx`<br>`recovery/src-legacy/src/hooks/useCollections.ts`<br>`src/hooks/collections/useCollections.ts` |
+| `collections` | front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useCollections.ts`<br>`src/hooks/collections/useCollections.ts` |
 | `e2e_cleanup_rate_limit` | RLS ligado sem nenhuma política → só service_role acessa |  |
 | `edge_function_invocations` | RLS ligado sem nenhuma política → só service_role acessa |  |
-| `expert_conversations` | RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/intelligence/useExpertConversations.tsx`<br>`src/hooks/useExpertConversations.tsx` |
-| `expert_messages` | RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/intelligence/useExpertConversations.tsx`<br>`src/hooks/useExpertConversations.tsx` |
+| `expert_conversations` | RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useExpertConversations.tsx`<br>`src/hooks/intelligence/useExpertConversations.tsx` |
+| `expert_messages` | RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useExpertConversations.tsx`<br>`src/hooks/intelligence/useExpertConversations.tsx` |
 | `external_connections_sync_log` | RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/connections/ExternalConnectionsSyncLogPanel.tsx`<br>`src/components/admin/connections/LastSyncRunPanel.tsx` |
 | `file_scan_logs` | RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/security/SecureUploadManager.tsx` |
-| `geo_allowed_countries` | front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/useGeoBlocking.ts` |
-| `geo_allowed_countries` | front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/hooks/useGeoBlocking.ts` |
-| `geo_allowed_countries` | front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `src/hooks/useGeoBlocking.ts` |
+| `geo_allowed_countries` | front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useGeoBlocking.ts` |
+| `geo_allowed_countries` | front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useGeoBlocking.ts` |
+| `geo_allowed_countries` | front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useGeoBlocking.ts` |
 | `integration_credentials` | RLS ligado sem nenhuma política → só service_role acessa |  |
-| `magic_up_generations` | RLS ligado sem nenhuma política → só service_role acessa | `src/components/search/useGlobalSearch.ts`<br>`src/hooks/intelligence/useMagicUpGeneration.ts`<br>`src/hooks/intelligence/useMagicUpState.helpers.ts`<br>`src/hooks/useMagicUpGeneration.ts`<br>… +1 |
-| `mockup_drafts` | RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/mockup/useMockupDraft.ts`<br>`src/hooks/useMockupDraft.ts` |
+| `magic_up_generations` | RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useMagicUpGeneration.ts`<br>`recovery/src-legacy/src/hooks/useMagicUpState.ts`<br>`src/components/search/useGlobalSearch.ts`<br>`src/hooks/intelligence/useMagicUpGeneration.ts`<br>… +1 |
+| `mockup_drafts` | RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useMockupDraft.ts`<br>`src/hooks/mockup/useMockupDraft.ts` |
 | `product_materials` | RLS ligado sem nenhuma política → só service_role acessa |  |
-| `product_price_freshness_overrides` | front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/hooks/products/useProductFreshnessOverride.ts`<br>`src/hooks/useProductFreshnessOverride.ts` |
-| `role_migration_batches` | RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/admin/useRoleMigration.ts`<br>`src/hooks/useRoleMigration.ts` |
-| `role_migration_items` | RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/admin/useRoleMigration.ts`<br>`src/hooks/useRoleMigration.ts` |
-| `security_settings` | RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/useGeoBlocking.ts` |
-| `seller_cart_items` | RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts`<br>`src/hooks/useSellerCarts.ts` |
-| `seller_carts` | RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts`<br>`src/hooks/useSellerCarts.ts` |
+| `product_price_freshness_overrides` | front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useProductFreshnessOverride.ts`<br>`src/hooks/products/useProductFreshnessOverride.ts` |
+| `role_migration_batches` | RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useRoleMigration.ts`<br>`src/hooks/admin/useRoleMigration.ts` |
+| `role_migration_items` | RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useRoleMigration.ts`<br>`src/hooks/admin/useRoleMigration.ts` |
+| `security_settings` | RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useGeoBlocking.ts` |
+| `seller_cart_items` | RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useSellerCarts.ts`<br>`src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
+| `seller_carts` | RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useSellerCarts.ts`<br>`src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
 | `supplier_products_raw` | RLS ligado sem nenhuma política → só service_role acessa |  |
 | `tabela_preco_gravacao_oficial` | RLS ligado sem nenhuma política → só service_role acessa | `src/lib/external-db/rpc-native.ts` |
-| `user_comparisons` | RLS ligado sem nenhuma política → só service_role acessa | `src/components/compare/ShareComparisonDialog.tsx`<br>`src/hooks/comparison/useComparisonSync.ts`<br>`src/hooks/useComparisonSync.ts` |
-| `user_onboarding` | front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/hooks/ui/useOnboarding.ts`<br>`src/hooks/useOnboarding.ts` |
-| `user_onboarding` | front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `src/hooks/ui/useOnboarding.ts`<br>`src/hooks/useOnboarding.ts` |
-| `user_onboarding` | front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/hooks/ui/useOnboarding.ts`<br>`src/hooks/useOnboarding.ts` |
+| `user_comparisons` | RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/components/compare/ShareComparisonDialog.tsx`<br>`recovery/src-legacy/src/hooks/useComparisonSync.ts`<br>`src/hooks/comparison/useComparisonSync.ts` |
+| `user_onboarding` | front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useOnboarding.ts`<br>`src/hooks/ui/useOnboarding.ts` |
+| `user_onboarding` | front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useOnboarding.ts`<br>`src/hooks/ui/useOnboarding.ts` |
+| `user_onboarding` | front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useOnboarding.ts`<br>`src/hooks/ui/useOnboarding.ts` |
 
 ## Multi-tenancy
 
@@ -1481,7 +1481,6 @@ Middleware matcher (Next.js): nenhum
 | `supplier_stricker.products` | `is_active` |
 | `user_allowed_ips` | `is_active` |
 | `user_ip_allowlist` | `is_active` |
-| `webhook_configs` | `is_active` |
 | `user_sessions` | `is_active` |
 | `achievements` | `is_active` |
 | `rewards` | `is_active` |
@@ -1497,6 +1496,7 @@ Middleware matcher (Next.js): nenhum
 | `_deprecated_silver_images_queue_20260606` | `is_active` |
 | `product_specifications` | `is_active` |
 | `stock_notes` | `deleted_at` |
+| `webhook_configs` | `is_active` |
 
 ## Auditoria (colunas de rastreio)
 
@@ -1962,7 +1962,6 @@ Middleware matcher (Next.js): nenhum
 | `supplier_stricker.stg_optionals` | `price_5` | `numeric(10,4)` |
 | `supplier_customization_raw` | `customization_type` | `text` |
 | `tabela_preco_gravacao_oficial` | `desconto_quarta_cor_mais` | `numeric(5` |
-| `webhook_configs` | `total_calls` | `INT` |
 | `user_points` | `total_points` | `INTEGER` |
 | `sync_jobs` | `total` | `INTEGER` |
 | `personalization_sizes` | `price_modifier` | `NUMERIC(5,2)` |
@@ -1981,3 +1980,4 @@ Middleware matcher (Next.js): nenhum
 | `_deprecated_silver_variants_20260606` | `cost_price_10` | `NUMERIC(12,4)` |
 | `ops.table_size_history` | `total_bytes` | `bigint` |
 | `ops.pgss_history` | `total_exec_time` | `double` |
+| `webhook_configs` | `total_calls` | `INT` |
