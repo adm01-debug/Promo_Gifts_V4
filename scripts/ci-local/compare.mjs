@@ -21,7 +21,7 @@ export function fetchGithubChecks(sha) {
 }
 
 const norm = (s) => {
-  if (['success', 'ok'].includes(s)) return 'ok';
+  if (['success', 'ok', 'ok-parcial'].includes(s)) return 'ok';
   if (['failure', 'FALHOU', 'timed_out', 'startup_failure'].includes(s)) return 'falha';
   if (['skipped', 'pulado', 'neutral', 'não executado'].includes(s)) return 'pulado';
   if (['cancelled'].includes(s)) return 'cancelado';

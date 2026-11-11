@@ -134,11 +134,31 @@ export function classifyJob(jobId, job, ctx = {}) {
 }
 
 export function buildInventory(root) {
-  return loadWorkflows(root).map(({ file, text, doc, parseError }) => {
+  const loaded = loadWorkflows(root);
+  const byFile = new Map(loaded.map((w) => [w.file, w]));
+  return loaded.map(({ file, text, doc, parseError }) => {
     const triggers = normalizeTriggers(doc);
     const topLevelText = yaml.dump({ env: doc?.env ?? {}, defaults: doc?.defaults ?? {} });
     const workflowSecrets = secretsIn(topLevelText);
-    const jobs = Object.entries(doc?.jobs ?? {}).map(([id, job]) => classifyJob(id, job, { workflowSecrets }));
+    const jobs = Object.entries(doc?.jobs ?? {}).map(([id, job]) => {
+      const info = classifyJob(id, job, { workflowSecrets });
+      // Reusable local: os passos reais estão no workflow chamado — junta-os ao job chamador
+      // (é neles que uma falha acontece; o veredito precisa enxergá-los).
+      if (typeof job?.uses === 'string' && job.uses.startsWith('./')) {
+        const called = byFile.get(job.uses.split('/').pop());
+        if (called) {
+          info.calledFile = called.file;
+          info.calledName = called.doc?.name ?? called.file;
+          const calledSecrets = secretsIn(yaml.dump({ env: called.doc?.env ?? {} }));
+          const calledJobs = Object.entries(called.doc?.jobs ?? {}).map(([cid, cjob]) => classifyJob(cid, cjob, { workflowSecrets: calledSecrets }));
+          info.steps.push(...calledJobs.flatMap((cj) => cj.steps));
+          info.secrets = [...new Set([...info.secrets, ...calledJobs.flatMap((cj) => cj.secrets)])].sort();
+          if (info.cls === 'local' && calledJobs.some((cj) => cj.cls === 'secret')) info.cls = 'secret';
+          if (calledJobs.length && calledJobs.every((cj) => cj.cls === 'github-only')) info.cls = 'github-only';
+        }
+      }
+      return info;
+    });
     return { file, name: doc?.name ?? file, triggers, jobs, parseError, text, hasRun: /\brun:/.test(text) };
   });
 }
