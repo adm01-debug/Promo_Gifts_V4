@@ -123,7 +123,7 @@ async function main() {
           apikey: apiKey,
           Authorization: `Bearer ${apiKey}`,
         },
-        body: JSON.stringify({ fname: RPC_NAME }),
+        body: JSON.stringify({ _fname: RPC_NAME }),
       });
       if (existsRes.ok) {
         exists = await existsRes.json();
@@ -164,7 +164,7 @@ async function main() {
           apikey: apiKey,
           Authorization: `Bearer ${apiKey}`,
         },
-        body: JSON.stringify({ fname: RPC_NAME }),
+        body: JSON.stringify({ _fname: RPC_NAME }),
       });
       if (existsRes42883.ok) {
         exists42883 = await existsRes42883.json();
