@@ -60,48 +60,23 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
+      - name: Validar contrato do autoheal
+        run: node --test scripts/autoheal-eslint/run.test.mjs
+
       - name: Detectar arquivos TypeScript alterados
         id: changed_files
         env:
-          EVENT_NAME: ${{ github.event_name }}
           TARGET_SHA: ${{ inputs.target_sha }}
-        run: |
-          set -euo pipefail
+          AUTOHEAL_FILES_PATH: ${{ runner.temp }}/autoheal-files.json
+        run: node scripts/autoheal-eslint/run.mjs select
 
-          if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ -n "$TARGET_SHA" ]; then
-            TARGET="$TARGET_SHA"
-            DIFF_BASE="${TARGET}~1"
-          else
-            TARGET="HEAD"
-            DIFF_BASE="HEAD~1"
-          fi
-
-          if ! git cat-file -e "${DIFF_BASE}" 2>/dev/null; then
-            echo "has_ts_files=false" >> "$GITHUB_OUTPUT"
-            echo "files=" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          CHANGED=$(git diff --name-only "${DIFF_BASE}" "${TARGET}" -- '*.ts' '*.tsx' | grep -E '^(src|tests|e2e)/' || true)  # ok: grep exits 1 when zero files match — empty CHANGED é resultado válido
-
-          if [ -z "$CHANGED" ]; then
-            echo "has_ts_files=false" >> "$GITHUB_OUTPUT"
-            echo "files=" >> "$GITHUB_OUTPUT"
-          else
-            echo "$CHANGED"
-            FILES_FLAT=$(echo "$CHANGED" | tr '\n' ' ' | sed 's/ $//')
-            echo "has_ts_files=true" >> "$GITHUB_OUTPUT"
-            echo "files=$FILES_FLAT" >> "$GITHUB_OUTPUT"
-            echo "count=$(echo "$CHANGED" | wc -l)" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Rodar ESLint --fix nos arquivos alterados
+      - name: Corrigir e validar ESLint nos arquivos alterados
         id: eslint_fix
         if: steps.changed_files.outputs.has_ts_files == 'true'
-        run: |
-          FILES="${{ steps.changed_files.outputs.files }}"
-          echo "ESLint --fix em: $FILES"
-          NODE_OPTIONS="--max-old-space-size=4096" node node_modules/eslint/bin/eslint.js --fix $FILES 2>&1 || true  # ok: autoheal é best-effort; eslint errors são reportados no passo seguinte via git diff
+        env:
+          AUTOHEAL_FILES_PATH: ${{ runner.temp }}/autoheal-files.json
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: node scripts/autoheal-eslint/run.mjs fix
 
       - name: Verificar se há correções a commitar
         id: check_changes
@@ -109,7 +84,7 @@ jobs:
         run: |
           if git diff --quiet; then
             echo "has_fixes=false" >> "$GITHUB_OUTPUT"
-            echo "✅ Nenhuma correção — codebase já estava limpo."
+            echo "✅ Nenhuma correcao necessaria; ESLint validado no escopo alterado."
           else
             echo "has_fixes=true" >> "$GITHUB_OUTPUT"
             git diff --name-only
@@ -254,6 +229,10 @@ jobs:
           labels: bug,Lovable,autoheal
           state: open
 
+      - name: Bloquear resultado com TypeScript invalido apos fix
+        if: steps.tsc_check.outputs.tsc_ok == 'false'
+        run: exit 1
+
       - name: Step Summary
         if: always()
         run: |
@@ -267,7 +246,7 @@ jobs:
             SOURCE_TSC="${{ steps.source_tsc_check.outputs.tsc_ok }}"
             if   [ "$TS"  = "false" ]; then echo "✅ Nenhum arquivo TypeScript alterado."
             elif [ "$SOURCE_TSC" = "false" ]; then echo "❌ **Commit original quebrou o contrato TypeScript.**"
-            elif [ "$FIX" = "false" ]; then echo "✅ ESLint limpo — sem correções."
+            elif [ "$FIX" = "false" ]; then echo "✅ ESLint validado no escopo alterado — sem correcoes."
             elif [ "$TSC" = "true"  ]; then echo "✅ **Correções aplicadas e commitadas.**"
             elif [ "$TSC" = "false" ]; then echo "❌ **Fix quebrou TSC — issue criada.**"
             else echo "⏭ Sem ação necessária."; fi
