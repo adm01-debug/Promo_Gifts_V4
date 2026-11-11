@@ -4,7 +4,7 @@
  *
  * Roda em ordem:
  *   1. Invariantes estáticas de layout (ordem, alinhamento, testids, aria-label)
- *   2. Type-check TypeScript (tsgo)
+ *   2. Type-check TypeScript (tsc -p tsconfig.app.json; falha se o tsc não conseguir checar)
  *   3. Vitest — suite de expiração e suites correlatas
  *
  * Saída: relatório JSON em <tmpdir>/quotes-list-validation-report.json + resumo no stdout.
@@ -13,7 +13,8 @@
  * Uso: node scripts/validate-quotes-list.mjs
  */
 import fs from 'node:fs';
-import { execSync } from 'node:child_process';
+import { execSync, spawnSync } from 'node:child_process';
+import { classifyTscRun } from './lib/tsc-run.mjs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -89,13 +90,35 @@ const staticOk = step('Invariantes estáticas de layout', () => {
 });
 
 // ─── 2. Type-check ──────────────────────────────────────────────────────────
-const tsOk = step('Type-check (tsgo)', () => {
-  const out = execSync(
-    'npx tsgo --noEmit 2>&1 | grep -E "QuotesConfigurableList|QuoteListCellRenderer|lib/quotes/expiration" || true',
-    { encoding: 'utf8', stdio: 'pipe' },
-  );
-  if (out.trim()) throw new Error(out);
-  return { errors: 0 };
+// Antes: `npx tsgo … | grep … || true` — tsgo nem está nas dependências, então o comando
+// falhava, o grep não achava nada e o passo passava SEMPRE. Agora roda o tsc do projeto e só
+// aceita o resultado se o tsc realmente checou (classifyTscRun).
+const TYPECHECK_FILES = [
+  'src/components/quotes/QuotesConfigurableList.tsx',
+  'src/components/quotes/QuoteListCellRenderer.tsx',
+  'src/lib/quotes/expiration',
+];
+
+/** Diagnósticos cujo ARQUIVO (início da linha) é um dos alvos — não a mensagem que o cita. */
+function filterTargetDiagnostics(output, targets = TYPECHECK_FILES) {
+  return String(output)
+    .split('\n')
+    .filter((line) => targets.some((t) => line.startsWith(`${t}.`) || line.startsWith(`${t}(`)))
+    .filter((line) => /error TS\d+:/.test(line));
+}
+
+const tsOk = step('Type-check (tsc -p tsconfig.app.json)', () => {
+  const run = spawnSync('node_modules/.bin/tsc', ['-p', 'tsconfig.app.json', '--noEmit'], {
+    encoding: 'utf8',
+    maxBuffer: 256 * 1024 * 1024,
+    env: { ...process.env, NODE_OPTIONS: process.env.NODE_OPTIONS ?? '--max-old-space-size=4096' },
+  });
+  const output = `${run.stdout ?? ''}${run.stderr ?? ''}`;
+  const verdict = classifyTscRun({ status: run.status, signal: run.signal, error: run.error, output });
+  if (!verdict.ok) throw new Error(verdict.reason);
+  const own = filterTargetDiagnostics(output);
+  if (own.length) throw new Error(own.join('\n'));
+  return { errors: 0, projectErrorsElsewhere: verdict.count };
 });
 
 // ─── 3. Vitest — expiração ──────────────────────────────────────────────────
