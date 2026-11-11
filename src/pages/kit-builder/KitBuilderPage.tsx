@@ -142,7 +142,7 @@ export default function KitBuilderPage() {
       },
       duration: 10_000,
     });
-  }, [state.isHydrating, state.currentKitId, state.autoSavedKitId, state.isLanding, actions]);
+  }, [state.isHydrating, state.currentKitId, state.autoSavedKitId, state.currentRevision, state.isLanding, actions]);
 
   useKitWizardShortcuts({
     enabled: !state.isLanding,
