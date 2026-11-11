@@ -187,7 +187,8 @@ function main() {
     );
     process.exit(1);
   }
-  console.log('\n✅ Todos os rascunhos declaram alvo canônico consistente.');
+  // Com --json o stdout tem de ser SÓ o JSON (consumido por JSON.parse); o resumo vai para stderr.
+  (emitJson ? console.error : console.log)('\n✅ Todos os rascunhos declaram alvo canônico consistente.');
 }
 
 main();
