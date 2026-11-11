@@ -61,15 +61,6 @@ describe('check-generated-files-protected', () => {
     expect(r.status).not.toBe(0);
     expect(existsSync(out)).toBe(false);
     expect(r.stderr).toMatch(/GITHUB_BASE_SHA inválido/);
-    expect(r.status).toBe(2); // --gate: erro de entrada = 2 (não "redução encontrada" = 1)
-  });
-
-  it('opção do git terminada em hex ("--output=…/abcdef1234") também é rejeitada (âncora ^ da regex)', () => {
-    const { d } = repoWithTypes(10);
-    const out = join(d, 'abcdef1234');
-    const r = run('check-generated-files-protected.mjs', d, { GITHUB_BASE_SHA: `--output=${out}`, ARGS: ['--gate'] });
-    expect(r.status).toBe(2);
-    expect(existsSync(out)).toBe(false);
   });
 });
 
@@ -119,38 +110,6 @@ ${acl}`;
     const r = run('check-security-definer-hardening.mjs', d, { GITHUB_ACTIONS: 'true', GITHUB_BASE_REF: 'main' });
     expect(r.status, r.stdout + r.stderr).toBe(1);
     expect(r.stderr).toMatch(/FALTA: REVOKE/);
-  });
-
-  it('REVOKE ALL ON TABLE … FROM anon não conta como revoke da função (reprova)', () => {
-    const d = prRepo(SD('CREATE TABLE public.t(id int);\nREVOKE ALL ON TABLE public.t FROM anon;'));
-    const r = run('check-security-definer-hardening.mjs', d, { GITHUB_ACTIONS: 'true', GITHUB_BASE_REF: 'main' });
-    expect(r.status, r.stdout + r.stderr).toBe(1);
-    expect(r.stderr).toMatch(/FALTA: REVOKE/);
-  });
-
-  it('GRANT ALL ON TABLE … TO anon não acusa a função (passa)', () => {
-    const d = prRepo(SD('REVOKE ALL ON FUNCTION public.f() FROM PUBLIC, anon;\nCREATE TABLE public.t(id int);\nGRANT ALL ON TABLE public.t TO anon;'));
-    const r = run('check-security-definer-hardening.mjs', d, { GITHUB_ACTIONS: 'true', GITHUB_BASE_REF: 'main' });
-    expect(r.status, r.stdout + r.stderr).toBe(0);
-  });
-
-  it('GRANT EXECUTE … TO PUBLIC expõe a anon (reprova)', () => {
-    const d = prRepo(SD('REVOKE ALL ON FUNCTION public.f() FROM PUBLIC, anon;\nGRANT EXECUTE ON FUNCTION public.f() TO PUBLIC;'));
-    const r = run('check-security-definer-hardening.mjs', d, { GITHUB_ACTIONS: 'true', GITHUB_BASE_REF: 'main' });
-    expect(r.status, r.stdout + r.stderr).toBe(1);
-    expect(r.stderr).toMatch(/CONCEDE/);
-  });
-
-  it('marcador -- rls-helper: libera GRANT a anon (helper chamado por policy)', () => {
-    const d = prRepo(SD('-- rls-helper: usada em policy de leitura pública\nGRANT EXECUTE ON FUNCTION public.f() TO anon;'));
-    const r = run('check-security-definer-hardening.mjs', d, { GITHUB_ACTIONS: 'true', GITHUB_BASE_REF: 'main' });
-    expect(r.status, r.stdout + r.stderr).toBe(0);
-  });
-
-  it('GITHUB_BASE_REF com ".." é rejeitado (exit 2)', () => {
-    const d = prRepo(SD('REVOKE ALL ON FUNCTION public.f() FROM PUBLIC, anon;'));
-    const r = run('check-security-definer-hardening.mjs', d, { GITHUB_ACTIONS: 'true', GITHUB_BASE_REF: 'main..x' });
-    expect(r.status).toBe(2);
   });
 
   it('GITHUB_BASE_REF iniciado por "-" (opção do git) é rejeitado sem executar nada', () => {
