@@ -32,7 +32,7 @@
  * `tests/scripts/mutation-test-magazine.test.mjs`.
  */
 import { test, expect, afterEach } from 'vitest';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, chmodSync, readFileSync, existsSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, chmodSync, readFileSync, readdirSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -197,7 +197,13 @@ function runScript({ fakeNpxScript, env } = {}) {
 }
 
 function readReport(reportDir) {
-  return JSON.parse(readFileSync(join(reportDir, 'quotes-list-validation-report.json'), 'utf8'));
+  // O script cria um subdiretório exclusivo via mkdtempSync (nome com
+  // sufixo aleatório) dentro de TMPDIR, em vez de escrever direto em
+  // <reportDir>/quotes-list-validation-report.json (CodeQL: insecure
+  // temporary file) — localiza esse subdiretório antes de ler.
+  const sub = readdirSync(reportDir).find((d) => d.startsWith('quotes-list-'));
+  if (!sub) throw new Error(`relatório não encontrado em ${reportDir}`);
+  return JSON.parse(readFileSync(join(reportDir, sub, 'validation-report.json'), 'utf8'));
 }
 
 test('BUG 1 — tsgo não resolvido pelo npx (erro 404 real) não deve ser reportado como "pass (0 erros)"', () => {

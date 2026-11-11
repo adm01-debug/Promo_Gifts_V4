@@ -7,7 +7,7 @@
  *   2. Type-check TypeScript (tsgo)
  *   3. Vitest — suite de expiração e suites correlatas
  *
- * Saída: relatório JSON em <tmpdir>/quotes-list-validation-report.json + resumo no stdout.
+ * Saída: relatório JSON em diretório temporário exclusivo (mkdtemp) + resumo no stdout.
  * Exit code: 0 quando tudo passa, 1 em qualquer falha.
  *
  * Uso: node scripts/validate-quotes-list.mjs
@@ -17,7 +17,18 @@ import { execSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-const REPORT_PATH = join(tmpdir(), 'quotes-list-validation-report.json');
+// mkdtempSync cria um diretório exclusivo (nome com sufixo aleatório, 0700) em
+// vez de um path fixo e previsível em /tmp compartilhado entre todos os
+// usuários/processos — evita symlink attack / TOCTOU em diretório temp
+// multiusuário (CodeQL: insecure temporary file, CWE-377). Se o próprio
+// TMPDIR for inválido/sem permissão, mkdtempSync falha aqui — REPORT_PATH
+// fica null e o bloco de salvamento abaixo trata isso sem crash.
+let REPORT_PATH = null;
+try {
+  REPORT_PATH = join(fs.mkdtempSync(join(tmpdir(), 'quotes-list-')), 'validation-report.json');
+} catch {
+  // tratado no bloco de salvamento do relatório
+}
 const report = { startedAt: new Date().toISOString(), steps: [] };
 
 function step(name, fn) {
@@ -125,13 +136,16 @@ report.finishedAt = new Date().toISOString();
 report.ok = staticOk && tsOk && vitestOk;
 console.log('\n────────────────────────────────────────');
 try {
+  if (!REPORT_PATH) throw new Error('diretório temporário não pôde ser criado (TMPDIR inválido?)');
   fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2));
   console.log(`Relatório salvo em ${REPORT_PATH}`);
 } catch (err) {
-  // Falha ao gravar o relatório (ex.: TMPDIR inválido/sem permissão) não deve
-  // derrubar o processo com stack trace cru — os 3 passos já rodaram e seus
-  // resultados já são conhecidos; apenas avisamos que o JSON não foi salvo.
-  console.log(`⚠️  Não foi possível salvar o relatório em ${REPORT_PATH}: ${err.message ?? err}`);
+  // Falha ao criar o diretório temp ou gravar o relatório (ex.: TMPDIR
+  // inválido/sem permissão) não deve derrubar o processo com stack trace cru
+  // — os 3 passos já rodaram e seus resultados já são conhecidos; apenas
+  // avisamos que o JSON não foi salvo.
+  const where = REPORT_PATH ? ` em ${REPORT_PATH}` : '';
+  console.log(`⚠️  Não foi possível salvar o relatório${where}: ${err.message ?? err}`);
 }
 console.log(`Resultado: ${report.ok ? '✅ TUDO OK' : '❌ FALHAS'}`);
 process.exit(report.ok ? 0 : 1);
