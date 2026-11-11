@@ -124,7 +124,6 @@ function makeState(currentStep: string, overrides: Record<string, unknown> = {})
       consumeUnloadBackup: vi.fn().mockReturnValue(null),
       canUndo: false,
       canRedo: false,
-      consumeUnloadBackup: vi.fn().mockReturnValue(null),
     },
     meta: {
       isSaving: false,
