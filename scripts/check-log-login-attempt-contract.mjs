@@ -19,7 +19,13 @@ import { dirname, resolve } from "node:path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FILE = resolve(__dirname, "..", "supabase/functions/log-login-attempt/index.ts");
 
-const src = readFileSync(FILE, "utf8");
+let src;
+try {
+  src = readFileSync(FILE, "utf8");
+} catch (err) {
+  console.error(`❌ check-log-login-attempt-contract: não foi possível ler ${FILE}: ${err.message}`);
+  process.exit(1);
+}
 
 // Procura `status: 5xx` em qualquer bloco `new Response(...)` ou `Response.json(...)`.
 const re = /status\s*:\s*5\d{2}\b/g;

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { execSync } from "node:child_process";
-import { mkdtempSync, writeFileSync, mkdirSync, rmSync, cpSync } from "node:fs";
+import { mkdtempSync, writeFileSync, mkdirSync, rmSync, cpSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -100,6 +100,39 @@ describe("check-iframe-sandbox gate", () => {
     try {
       const result = run(dir);
       expect(result.code).toBe(1);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("não deve crashar com stack trace bruto ao encontrar symlink quebrado em src/", () => {
+    const dir = makeSandbox({
+      "src/Safe.tsx":
+        'export const F = () => <iframe sandbox="allow-scripts allow-presentation" src="x" />;',
+    });
+    try {
+      symlinkSync(join(dir, "src", "nao-existe.tsx"), join(dir, "src", "Quebrado.tsx"));
+      const result = run(dir);
+      expect(result.code).toBe(0);
+      expect(result.stdout).toContain("0 violações");
+      expect(result.stderr).not.toContain("ENOENT");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("não deve crashar com stack trace bruto ao encontrar ciclo de symlinks em src/", () => {
+    const dir = makeSandbox({
+      "src/Safe.tsx":
+        'export const F = () => <iframe sandbox="allow-scripts allow-presentation" src="x" />;',
+    });
+    try {
+      mkdirSync(join(dir, "src", "sub"), { recursive: true });
+      symlinkSync(join(dir, "src"), join(dir, "src", "sub", "loop"));
+      const result = run(dir);
+      expect(result.code).toBe(0);
+      expect(result.stdout).toContain("0 violações");
+      expect(result.stderr).not.toContain("ELOOP");
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
