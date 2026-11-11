@@ -2358,6 +2358,54 @@
       "manual": ["node", "scripts/wraparound-monitor-check.mjs"],
       "triggers": ["manual"],
       "reason": "Legado mantido no fluxo existente; referências literais: .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml, .github/workflows/wraparound-monitor-report.yml. O dispatcher não executa esta operação."
+    },
+    {
+      "id": "helper-195f746dca3c",
+      "kind": "helper",
+      "files": ["scripts/lib/fixed-string-search.mjs"],
+      "manual": ["node", "scripts/lib/fixed-string-search.mjs"],
+      "triggers": ["manual", "PR", "pushmain"],
+      "callers": ["scripts/check-no-salvar-alteracoes-draft.mjs", "scripts/check-removed-phrases.mjs"]
+    },
+    {
+      "id": "helper-8fc1af2cb428",
+      "kind": "helper",
+      "files": ["scripts/lib/missing-prerequisite.mjs"],
+      "manual": ["node", "scripts/lib/missing-prerequisite.mjs"],
+      "triggers": ["manual", "PR", "pushmain"],
+      "callers": ["scripts/check-build-log.mjs", "scripts/check-cloud-status-coverage.mjs", "scripts/check-critical-path-coverage.mjs", "scripts/check-min-tests-executed.mjs", "scripts/check-price-freshness-coverage.mjs", "scripts/check-supabase-linter.mjs", "scripts/ci-metrics.mjs", "scripts/contract-testing.mjs", "scripts/e2e-check-stock-seed.mjs", "scripts/e2e-feature-summary.mjs", "scripts/e2e-smoke-summary.mjs", "scripts/gen-internal-schema.mjs", "scripts/inventario/gerar-banco.mjs", "scripts/qa/inject-crm-dead-letters.mjs", "scripts/run-e2e-quotes-undo.mjs", "scripts/run-smoke-filtered.mjs", "scripts/simulate-quote-rpc-proposals.mjs", "scripts/simulate-signup-migration.mjs", "scripts/ssot-report-markdown.mjs", "scripts/stress-quote-number-concurrent.mjs", "scripts/test-magazine-coverage.mjs", "scripts/triage-edge-typecheck.mjs", "scripts/typecheck-edge-functions.mjs", "scripts/validate-lovable-sync-target.mjs", "scripts/validate-ssot-report.mjs", "scripts/verify-quote-number-hardening.mjs"]
+    },
+    {
+      "id": "helper-27137560327a",
+      "kind": "helper",
+      "files": ["scripts/lib/missing-prerequisite.sh"],
+      "manual": ["bash", "scripts/lib/missing-prerequisite.sh"],
+      "triggers": ["manual", "PR", "pushmain"],
+      "callers": ["scripts/test-approved-plan-database.sh", "scripts/test-magazine-hardening-v2.sh", "scripts/test-magazine-sql-contracts.sh", "scripts/test-wave1-forward-only-migrations.sh", "scripts/uptime-probe.sh"]
+    },
+    {
+      "id": "helper-d915aa1ba33f",
+      "kind": "helper",
+      "files": ["scripts/lib/sql-transaction-guard.mjs"],
+      "manual": ["node", "scripts/lib/sql-transaction-guard.mjs"],
+      "triggers": ["manual", "PR", "pushmain"],
+      "callers": ["scripts/dry-run-migration-draft.mjs"]
+    },
+    {
+      "id": "legacy-546c6fb9c971cce7",
+      "kind": "legacy",
+      "files": ["scripts/probe-production-sitemap.py"],
+      "manual": ["python3", "scripts/probe-production-sitemap.py"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: .github/workflows/sitemap-production-preconditions.yml. O dispatcher não executa esta operação."
+    },
+    {
+      "id": "legacy-5f4408540713de99",
+      "kind": "legacy",
+      "files": ["scripts/diagnose-personalization-artifact.py"],
+      "manual": ["python3", "scripts/diagnose-personalization-artifact.py"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: .github/workflows/personalization-trace-diagnostics.yml. O dispatcher não executa esta operação."
     }
   ],
   "ci": [
