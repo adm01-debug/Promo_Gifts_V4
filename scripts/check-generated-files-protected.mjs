@@ -57,6 +57,11 @@ function countLines(ref, filePath) {
 // (fail-open) mesmo com reduções reais não commitadas. Fail-closed: avisa e
 // não afirma "sem violação" quando a comparação nunca rodou de fato.
 const baseSha = process.env.GITHUB_BASE_SHA || git('rev-parse', 'HEAD~1').trim();
+// baseSha vira argumento do git: só SHA hexadecimal (um valor "--output=..." seria lido como opção).
+if (baseSha && !/^[0-9a-fA-F]{7,64}$/.test(baseSha)) {
+  console.error(`❌ check-generated-files-protected: GITHUB_BASE_SHA inválido (${JSON.stringify(baseSha)}) — esperado um SHA.`);
+  process.exit(IS_GATE ? 2 : 1);
+}
 
 if (!baseSha) {
   console.error(
