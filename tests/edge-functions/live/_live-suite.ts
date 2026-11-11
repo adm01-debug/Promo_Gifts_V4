@@ -27,7 +27,6 @@ import {
 } from "./_live-client";
 import {
   expectedAnonStatuses,
-  FAIL_CLOSED_WHEN_UNCONFIGURED,
   happyPathRole,
   isDestructive,
   LENIENT_BODY,
@@ -138,7 +137,7 @@ export function runLiveSuite(desc: LiveSuiteDescriptor): void {
 
     const invalids = [...DEFAULT_INVALID, ...(desc.invalidInputs ?? [])];
     for (const inv of invalids) {
-      it(`input inválido (${inv.label}) → sem crash 5xx`, async (ctx) => {
+      it(`input inválido (${inv.label}) → sem crash 5xx`, async () => {
         // LENIENT_BODY: autenticado, a função executaria de verdade com valores padrão.
         const useRole = inv.role ?? (anon.mode === "reject" && !LENIENT_BODY.has(fn) ? role : "anon");
         // Se o tier exige role e não há credencial, a chamada vira 401 (ainda <500).
@@ -149,15 +148,8 @@ export function runLiveSuite(desc: LiveSuiteDescriptor): void {
           headers: { ...baseHeaders, ...inv.headers },
           body: inv.body,
         });
-        if (
-          res.status === 503 &&
-          FAIL_CLOSED_WHEN_UNCONFIGURED.has(fn) &&
-          (res.json as { error?: string } | null)?.error === "service_misconfigured"
-        ) {
-          console.warn(`[live] ${fn}: 503 service_misconfigured (credencial de integração ausente no ambiente) — teste pulado`);
-          ctx.skip();
-          return;
-        }
+        // 408 sintético = timeout do CLIENTE: a função seguiu executando; não é "4xx de validação".
+        expect(res.timedOut, `${inv.label}: timeout do cliente — a função executou além do limite`).not.toBe(true);
         expectNoCrash(res.status, inv.label);
         // Quando alcançamos o handler autenticado, esperamos 4xx (validação).
         if (useRole !== "anon" && (await getJwt(useRole)) && res.status !== 401 && res.status !== 403) {
