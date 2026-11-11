@@ -8,6 +8,7 @@
 //   npm run ci:local -- --workflow deploy-gates.yml,ci.yml
 //   npm run ci:local:fast                 modo nativo rápido (sem Docker), sem E2E/Lighthouse
 //   npm run ci:local:compare              cruza o último resultado local com os checks do GitHub
+//   npm run ci:local:extras               roda os scripts test:/check: que NENHUM workflow roda (--list só lista)
 //
 // Segredos (opcional): arquivo KEY=VALUE em ~/.config/ci-local/secrets.env (ou --secrets <arq>).
 // Sem eles, jobs que precisam de segredo saem como "inconclusivo", nunca como "falhou".
@@ -23,13 +24,15 @@ import { selectWorkflows } from './select.mjs';
 import { buildEvent, prepareClone, prepareShims, runWorkflow, verdict, writeJson } from './run-act.mjs';
 import { runJobNative } from './native.mjs';
 import { compareResults, fetchGithubChecks } from './compare.mjs';
+import { findUncovered } from './extras.mjs';
+import { spawnSync } from 'node:child_process';
 
 const ROOT = resolve(fileURLToPath(import.meta.url), '../../..');
 const OUT = join(ROOT, '.ci-local');
 
 function parseArgs(argv) {
   const [cmd = 'run', ...rest] = argv;
-  const o = { cmd, event: 'pull_request', base: 'origin/main', sha: 'HEAD', all: false, workflows: [], exclude: [], jobs: 4, timeout: 90, secrets: null, withE2E: false, strict: false, run: 'latest', json: false };
+  const o = { cmd, unsafe: false, listOnly: false, event: 'pull_request', base: 'origin/main', sha: 'HEAD', all: false, workflows: [], exclude: [], jobs: 4, timeout: 90, secrets: null, withE2E: false, strict: false, run: 'latest', json: false };
   for (let i = 0; i < rest.length; i++) {
     const a = rest[i];
     const next = () => rest[++i];
@@ -46,6 +49,8 @@ function parseArgs(argv) {
     else if (a === '--strict') o.strict = true;
     else if (a === '--run') o.run = next();
     else if (a === '--json') o.json = true;
+    else if (a === '--unsafe') o.unsafe = true;
+    else if (a === '--list') o.listOnly = true;
     else if (a === '-h' || a === '--help') o.cmd = 'help';
     else throw new Error(`argumento desconhecido: ${a}`);
   }
@@ -218,6 +223,38 @@ async function cmdFast(o) {
   return finish(report, dir, o);
 }
 
+function cmdExtras(o) {
+  const rows = findUncovered(ROOT);
+  const runnable = rows.filter((r) => r.kind === 'órfão' || (o.withE2E && r.kind === 'órfão-e2e') || (o.unsafe && r.kind === 'inseguro'));
+  const counts = rows.reduce((acc, r) => ((acc[r.kind] = (acc[r.kind] ?? 0) + 1), acc), {});
+  console.log(`Scripts de verificação no package.json: ${rows.length} · ${Object.entries(counts).map(([k, v]) => `${k}: ${v}`).join(' · ')}`);
+  if (o.listOnly) {
+    for (const r of rows.filter((x) => x.kind !== 'coberto')) console.log(`  ${pad(r.kind, 11)} ${pad(r.name, 36)} ${r.body.slice(0, 90)}`);
+    return 0;
+  }
+  // Mesmo comando com nomes diferentes (test / test:run) roda uma vez só.
+  const seen = new Set();
+  const todo = runnable.filter((r) => (seen.has(r.body) ? false : (seen.add(r.body), true)));
+  console.log(`Rodando ${todo.length} script(s) órfão(s)${o.withE2E ? ' (com E2E)' : ' (sem E2E: use --with-e2e)'}${o.unsafe ? ' (com inseguros)' : ''}\n`);
+  const id = `extras-${new Date().toISOString().replace(/[:.]/g, '-')}`;
+  const dir = join(OUT, 'runs', id);
+  mkdirSync(join(dir, 'logs'), { recursive: true });
+  const jobs = [];
+  for (const r of todo) {
+    const t0 = Date.now();
+    process.stdout.write(`▶ npm run ${r.name} … `);
+    const res = spawnSync('npm', ['run', '--silent', r.name], { cwd: ROOT, encoding: 'utf8', maxBuffer: 512 * 1024 * 1024, env: { ...process.env, CI: 'true' }, timeout: o.timeout * 60_000 });
+    writeFileSync(join(dir, 'logs', `${r.name.replace(/[:/]/g, '_')}.log`), `${res.stdout ?? ''}${res.stderr ?? ''}`);
+    const ok = res.status === 0;
+    console.log(`${ok ? '✅' : '❌'} (${Math.round((Date.now() - t0) / 1000)}s)`);
+    if (!ok) console.log(`${res.stdout ?? ''}${res.stderr ?? ''}`.split('\n').slice(-12).map((l) => `      │ ${l}`).join('\n'));
+    jobs.push({ check: `npm run ${r.name}`, status: ok ? 'ok' : 'FALHOU', why: ok ? '' : `exit ${res.status ?? res.signal}` });
+  }
+  const report = { id, sha: git('rev-parse', 'HEAD'), event: 'extras (scripts sem workflow)', workflows: [{ file: 'package.json', jobs }] };
+  writeJson(join(dir, 'report.json'), report);
+  return finish(report, dir, o);
+}
+
 function cmdCompare(o) {
   const id = o.run === 'latest' ? readFileSync(join(OUT, 'latest'), 'utf8').trim() : o.run;
   const report = JSON.parse(readFileSync(join(OUT, 'runs', id, 'report.json'), 'utf8'));
@@ -230,10 +267,10 @@ function cmdCompare(o) {
   return rows.some((r) => r.kind === 'DIVERGE') ? 1 : 0;
 }
 
-const HELP = readFileSync(fileURLToPath(import.meta.url), 'utf8').split('\n').slice(1, 17).map((l) => l.replace(/^\/\/ ?/, '')).join('\n');
+const HELP = readFileSync(fileURLToPath(import.meta.url), 'utf8').split('\n').slice(1, 18).map((l) => l.replace(/^\/\/ ?/, '')).join('\n');
 
 const o = parseArgs(process.argv.slice(2));
-const handlers = { list: cmdList, run: cmdRun, fast: cmdFast, compare: cmdCompare, help: () => console.log(HELP) };
+const handlers = { list: cmdList, run: cmdRun, fast: cmdFast, extras: cmdExtras, compare: cmdCompare, help: () => console.log(HELP) };
 if (!handlers[o.cmd]) {
   console.error(`comando desconhecido: ${o.cmd}\n${HELP}`);
   process.exit(2);
