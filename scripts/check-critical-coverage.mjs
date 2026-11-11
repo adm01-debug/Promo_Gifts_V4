@@ -94,6 +94,7 @@ export function collectFreshnessIssues(summaryPath, trackedFiles, baseDir = proc
 }
 
 export function evaluateCoverageSummary(summary, trackedModules, tolerance = TOLERANCE_PP) {
+  const safeTolerance = Number.isFinite(tolerance) ? tolerance : 1;
   const lines = [];
   let hasFailure = false;
 
@@ -109,7 +110,7 @@ export function evaluateCoverageSummary(summary, trackedModules, tolerance = TOL
 
     const metrics = getMetricSnapshot(entry);
     const violations = Object.entries(config.thresholds).filter(
-      ([metric, min]) => metrics[metric] < min - tolerance,
+      ([metric, min]) => metrics[metric] < min - safeTolerance,
     );
 
     if (violations.length === 0) {
@@ -121,7 +122,7 @@ export function evaluateCoverageSummary(summary, trackedModules, tolerance = TOL
     const detail = violations
       .map(
         ([metric, min]) =>
-          `${metric} ${metrics[metric].toFixed(1)}% < ${(min - tolerance).toFixed(1)}% (piso ${min}% − tol ${tolerance}pp)`,
+          `${metric} ${metrics[metric].toFixed(1)}% < ${(min - safeTolerance).toFixed(1)}% (piso ${min}% − tol ${safeTolerance}pp)`,
       )
       .join(", ");
     lines.push(`✗ ${file.padEnd(60)} ${formatMetrics(metrics)}   ← ${detail}`);

@@ -95,6 +95,8 @@ export default defineConfig({
       // Usa node:test (Node.js native runner) — incompatível com vitest client environment.
       // Roda apenas via `node tests/scripts/check-file-size-baseline.test.mjs`.
       'tests/scripts/check-file-size-baseline.test.mjs',
+      // Idem — node:test. Roda via `node tests/scripts/check-as-assertions-baseline.test.mjs`.
+      'tests/scripts/check-as-assertions-baseline.test.mjs',
     ],
     // CI runners (GitHub Actions ubuntu-latest) têm 2 vCPU (4 vThreads).
     // Default thread pool causava timeout de 75min — mitigado com

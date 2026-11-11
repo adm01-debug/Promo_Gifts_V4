@@ -17,8 +17,9 @@
 
 import { readFileSync, existsSync } from 'fs';
 import { resolve, relative } from 'path';
+import { fileURLToPath } from 'url';
 
-const REPO_ROOT = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
+const REPO_ROOT = fileURLToPath(new URL('..', import.meta.url)).replace(/\/$/, '');
 const CODEOWNERS_PATH = resolve(REPO_ROOT, '.github/CODEOWNERS');
 
 const isGate = process.argv.includes('--gate');
@@ -56,7 +57,14 @@ const GATE_FILES = [
 
 function parseCodowners(path) {
   if (!existsSync(path)) return [];
-  const lines = readFileSync(path, 'utf8').split('\n');
+  let content;
+  try {
+    content = readFileSync(path, 'utf8');
+  } catch (err) {
+    console.error(`[check-codeowners] Não foi possível ler CODEOWNERS (${err.code || err.message}): ${path}`);
+    return [];
+  }
+  const lines = content.split('\n');
   const patterns = [];
   for (const line of lines) {
     const trimmed = line.trim();

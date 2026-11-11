@@ -106,7 +106,14 @@ export function runBaselineGate({ baselineFile, label, description, totalKey, fi
     process.exit(2);
   }
 
-  const baseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
+  let baseline;
+  try {
+    baseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
+  } catch (err) {
+    console.error(`❌ ${baselineFile} inválido (JSON corrompido): ${err.message}`);
+    console.error('Gere novamente com: node <este script> --update');
+    process.exit(2);
+  }
   const baselineCounts = baseline.counts ?? {};
   const totalBaseline = baseline[totalKey] ?? 0;
 

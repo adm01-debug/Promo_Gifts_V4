@@ -17,6 +17,11 @@ async function runBuildAndCheckWarnings() {
   let stdout = '';
   let stderr = '';
 
+  buildProcess.on('error', (err) => {
+    console.error(`❌ Falha ao iniciar o build (${err.code ?? err.message}).`);
+    process.exit(1);
+  });
+
   buildProcess.stdout.on('data', (data) => {
     const chunk = data.toString();
     stdout += chunk;

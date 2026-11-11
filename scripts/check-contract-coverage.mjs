@@ -60,6 +60,11 @@ function parseExemptSet(src) {
 const contractKeys = parseContractKeys(registrySource);
 const exemptKeys = parseExemptSet(registrySource);
 
+if (!existsSync(FN_DIR)) {
+  console.error(`❌ ${FN_DIR} não encontrado.`);
+  process.exit(2);
+}
+
 const fnDirs = readdirSync(FN_DIR, { withFileTypes: true })
   .filter((d) => d.isDirectory() && d.name !== "_shared" && d.name !== "tests")
   .map((d) => d.name);
