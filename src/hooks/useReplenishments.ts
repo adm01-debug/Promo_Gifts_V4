@@ -30,7 +30,7 @@ function calcDaysRemaining(updatedAt: string): number {
 
 // ─── Types ───────────────────────────────────────────────────────
 
-export type ReplenishmentStatus = 'active' | 'expiring_soon' | 'expired';
+export type ReplenishmentStatus = 'active' | 'expired' | 'expiring_soon';
 export type StockStatus = 'in-stock' | 'low-stock' | 'out-of-stock';
 
 export interface ReplenishmentWithDetails {
@@ -191,7 +191,7 @@ export interface UseReplenishmentsOptions {
 export function useReplenishmentsWithDetails(options: UseReplenishmentsOptions = {}) {
   const { limit = 200, onlyHighlighted = false } = options;
 
-  return useQuery<ReplenishmentWithDetails[], Error>({
+  return useQuery<ReplenishmentWithDetails[]>({
     queryKey: ['replenishments-details', limit, onlyHighlighted],
     queryFn: async () => {
       const cutoff = getCutoffDate();
@@ -222,7 +222,7 @@ export function useReplenishmentsWithDetails(options: UseReplenishmentsOptions =
 }
 
 export function useReplenishmentStats() {
-  return useQuery<ReplenishmentStatsDisplay, Error>({
+  return useQuery<ReplenishmentStatsDisplay>({
     queryKey: ['replenishment-stats'],
     queryFn: async () => {
       const cutoff = getCutoffDate();
@@ -319,7 +319,7 @@ export function useReplenishmentStats() {
 }
 
 export function useReplenishmentCount() {
-  return useQuery<number, Error>({
+  return useQuery<number>({
     queryKey: ['replenishment-count'],
     queryFn: async () => {
       const cutoff = getCutoffDate();
