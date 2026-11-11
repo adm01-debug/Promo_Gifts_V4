@@ -4,7 +4,7 @@
  *
  * Roda em ordem:
  *   1. Invariantes estáticas de layout (ordem, alinhamento, testids, aria-label)
- *   2. Type-check TypeScript (tsgo)
+ *   2. Type-check TypeScript (tsc -p tsconfig.app.json; falha se o tsc não conseguir checar)
  *   3. Vitest — suite de expiração e suites correlatas
  *
  * Saída: relatório JSON em <tmpdir>/quotes-list-validation-report.json + resumo no stdout.
@@ -13,7 +13,8 @@
  * Uso: node scripts/validate-quotes-list.mjs
  */
 import fs from 'node:fs';
-import { execSync } from 'node:child_process';
+import { execSync, spawnSync } from 'node:child_process';
+import { classifyTscRun } from './lib/tsc-run.mjs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -89,13 +90,57 @@ const staticOk = step('Invariantes estáticas de layout', () => {
 });
 
 // ─── 2. Type-check ──────────────────────────────────────────────────────────
-const tsOk = step('Type-check (tsgo)', () => {
-  const out = execSync(
-    'npx tsgo --noEmit 2>&1 | grep -E "QuotesConfigurableList|QuoteListCellRenderer|lib/quotes/expiration" || true',
-    { encoding: 'utf8', stdio: 'pipe' },
+// Antes: `npx tsgo … | grep … || true` — tsgo nem está nas dependências, então o comando
+// falhava, o grep não achava nada e o passo passava SEMPRE. Agora roda o tsc do projeto e só
+// aceita o resultado se o tsc realmente checou (classifyTscRun).
+const TYPECHECK_FILES = [
+  'src/components/quotes/QuotesConfigurableList.tsx',
+  'src/components/quotes/QuoteListCellRenderer.tsx',
+  'src/lib/quotes/expiration',
+];
+
+/** Diagnósticos cujo ARQUIVO (início da linha) é um dos alvos — não a mensagem que o cita. */
+function filterTargetDiagnostics(output, targets = TYPECHECK_FILES) {
+  return String(output)
+    .split('\n')
+    .filter((line) => targets.some((t) => line.startsWith(`${t}.`) || line.startsWith(`${t}(`)))
+    .filter((line) => /error TS\d+:/.test(line));
+}
+
+const tsOk = step('Type-check (tsc, apenas o grafo de imports da lista)', () => {
+  // tsconfig temporário que herda o do app mas só inclui os alvos (+ .d.ts globais): o tsc segue
+  // os imports, então erros de tipo reais nesses arquivos aparecem; leva segundos (projeto
+  // inteiro passa de 9 min e estoura 4 GB de heap).
+  const dir = fs.mkdtempSync(join(tmpdir(), 'quotes-list-tsc-'));
+  const cfg = join(dir, 'tsconfig.json');
+  const root = process.cwd();
+  fs.writeFileSync(
+    cfg,
+    JSON.stringify({
+      extends: join(root, 'tsconfig.app.json'),
+      compilerOptions: { noEmit: true, incremental: false },
+      include: [
+        join(root, 'src/**/*.d.ts'),
+        ...TYPECHECK_FILES.map((f) => join(root, f.endsWith('.tsx') ? f : `${f}.ts`)),
+      ],
+    }),
   );
-  if (out.trim()) throw new Error(out);
-  return { errors: 0 };
+  try {
+    const run = spawnSync(join(root, 'node_modules/.bin/tsc'), ['-p', cfg], {
+      cwd: root,
+      encoding: 'utf8',
+      maxBuffer: 256 * 1024 * 1024,
+      env: { ...process.env, NODE_OPTIONS: process.env.NODE_OPTIONS ?? '--max-old-space-size=4096' },
+    });
+    const output = `${run.stdout ?? ''}${run.stderr ?? ''}`;
+    const verdict = classifyTscRun({ status: run.status, signal: run.signal, error: run.error, output });
+    if (!verdict.ok) throw new Error(verdict.reason);
+    const own = filterTargetDiagnostics(output);
+    if (own.length) throw new Error(own.join('\n'));
+    return { errors: 0, errorsInImportedFiles: verdict.count };
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 // ─── 3. Vitest — expiração ──────────────────────────────────────────────────
