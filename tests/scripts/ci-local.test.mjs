@@ -414,3 +414,63 @@ describe('emulação de job always() não executado pelo act', async () => {
     expect(emulateAlwaysJob({ always: true, needs: ['a', 'z'] }, m('ok', 'ok'))).toBeNull();
   });
 });
+
+describe('3ª revisão adversarial (sudo, segredos YAML, docker por comentário, shims, steps desconhecidos, CRLF)', async () => {
+  const ra = await import('../../scripts/ci-local/run-act.mjs');
+  const nat = await import('../../scripts/ci-local/native.mjs');
+  const { mkdtempSync, writeFileSync, readFileSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const { spawnSync } = await import('node:child_process');
+
+  it('sudo / apt-get install / pip install nunca rodam no host (inconclusivo)', () => {
+    for (const s of ['sudo apt-get update', 'apt-get install -y poppler-utils', 'pip install pyyaml', 'python3 -m pip install x', 'if true; then sudo true; fi'])
+      expect(nat.SYSTEM_INSTALL_RE.test(s), s).toBe(true);
+    for (const s of ['npm run build', 'echo pipeline', 'node scripts/sudoku.mjs']) expect(nat.SYSTEM_INSTALL_RE.test(s), s).toBe(false);
+    const doc = { jobs: { j: { steps: [{ name: 'apt', run: 'sudo apt-get install -y x' }] } } };
+    const r = nat.runJobNative({ root: process.cwd(), workflowDoc: doc, jobId: 'j', context: { github: { event_name: 'pull_request', sha: 'x', repository: 'r' } } });
+    expect(r.steps[0].status).toBe('inconclusivo');
+  });
+
+  it('segredos: "NOME: valor", token no meio do valor e export são lidos/recusados como o act faz', () => {
+    expect(() => ra.parseSecretsText(`MY_TOK: ghp_${'a'.repeat(36)}`)).toThrow(/token do GitHub/);
+    expect(() => ra.parseSecretsText(`FOO=Bearer ghp_${'b'.repeat(36)}`)).toThrow(/token do GitHub/);
+    expect(() => ra.parseSecretsText('GITHUB_TOKEN: x')).toThrow(/GITHUB_TOKEN/);
+    expect(ra.parseSecretsText('export A="1"\nB: 2\n# C=3\nD=\'4\'')).toEqual({ A: '1', B: '2', D: '4' });
+  });
+
+  it('docker: comentário não conta; reutilizável/composite local que usa docker conta', () => {
+    expect(ra.workflowNeedsDocker('steps:\n  - run: npm test # necessário para docker pull')).toBe(false);
+    const files = { './.github/workflows/drift.yml': 'steps:\n  - run: docker pull ghcr.io/x' };
+    expect(ra.workflowNeedsDocker('jobs:\n  a:\n    uses: ./.github/workflows/drift.yml', (p) => files[p] ?? '')).toBe(true);
+    expect(ra.workflowNeedsDocker('run: npx supabase db diff --linked')).toBe(true);
+    expect(ra.workflowNeedsDocker('run: supabase --workdir x start')).toBe(true);
+  });
+
+  it('shims barram instalação em qualquer forma e repassam o resto ao binário real', () => {
+    const d = mkdtempSync(join(tmpdir(), 'shims-'));
+    nat.writeInstallShims(d);
+    const run = (script) => spawnSync('bash', ['-c', script], { env: { ...process.env, PATH: `${d}:${process.env.PATH}` }, encoding: 'utf8' });
+    for (const s of ['npm ci', 'npm i', 'npm --prefix x ci', 'CI=1 npm install', 'time npm ci', 'if npm ci; then echo ok; fi', 'npx --yes playwright install --with-deps'])
+      expect(run(s).stderr, s).toMatch(/ignorado no modo nativo/);
+    expect(run('npm --version').stdout.trim()).toMatch(/^\d+\./);
+    expect(run('echo "falhou; npm install resolve"').stdout).toBe('falhou; npm install resolve\n'); // string intacta
+  });
+
+  it('if: steps.<id> de passo que não rodou de fato → inconclusivo, nunca pulado calado', () => {
+    const ev = nat.makeEvaluator({ steps: {} });
+    expect(nat.stepShouldRun("steps.guard.outputs.x == 'true'", { failed: false, evaluate: ev, steps: {} })).toBe(null);
+    expect(nat.stepShouldRun("steps.guard.outputs.x == 'true'", { failed: false, evaluate: ev, steps: { guard: { unknown: true } } })).toBe(null);
+  });
+
+  it('GITHUB_OUTPUT: CRLF lido; delimitador sem fechamento é erro', () => {
+    expect(nat.parseGithubOutput('a=1\r\nb<<EOF\r\nx\r\nEOF\r\n')).toEqual({ a: '1', b: 'x' });
+    expect(() => nat.parseGithubOutput('b<<EOF\nx\n')).toThrow(/delimitador/);
+  });
+
+  it('modo nativo isola a home real (bwrap) quando disponível', () => {
+    const doc = { jobs: { j: { steps: [{ name: 'home', run: 'test ! -e "$(getent passwd $(id -un) | cut -d: -f6)/.config/gh/hosts.yml"' }] } } };
+    const r = nat.runJobNative({ root: process.cwd(), workflowDoc: doc, jobId: 'j', context: { github: { event_name: 'pull_request', sha: 'x', repository: 'r' } } });
+    if (r.sandboxed) expect(r.status).toBe('ok');
+  });
+});
