@@ -38,17 +38,6 @@ export function SaveAsTemplateButton({
     onSaved?.();
   };
 
-  const _initialTemplate = {
-    name: "",
-    description: "",
-    is_default: false,
-    items_data: items,
-    discount_percent: discountPercent,
-    discount_amount: discountAmount,
-    notes,
-    internal_notes: internalNotes,
-    validity_days: 30,
-  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
