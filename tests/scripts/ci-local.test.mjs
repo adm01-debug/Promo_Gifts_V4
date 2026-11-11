@@ -226,3 +226,50 @@ describe('veredito considera TODOS os passos que falharam', async () => {
     expect(v({ result: 'failure', failedSteps: ['Live'] }, info).status).toBe('inconclusivo');
   });
 });
+
+describe('shims locais de upload/download-artifact', () => {
+  it('upload (pasta, glob com !exclusão, artifact-id) → download por nome e por id', async () => {
+    const { mkdtempSync, mkdirSync, writeFileSync, readFileSync, cpSync, existsSync } = await import('node:fs');
+    const { spawnSync } = await import('node:child_process');
+    const { tmpdir } = await import('node:os');
+    const { join, resolve } = await import('node:path');
+    const ROOT = resolve(import.meta.dirname, '../..');
+    const t = mkdtempSync(join(tmpdir(), 'art-shim-'));
+    const shims = join(t, 'shims');
+    for (const s of ['upload-artifact', 'download-artifact']) {
+      cpSync(join(ROOT, 'scripts/ci-local/shims', s), join(shims, s), { recursive: true });
+      cpSync(join(ROOT, 'scripts/ci-local/shims/artifact-store.mjs'), join(shims, s, 'artifact-store.mjs'));
+    }
+    const ws = join(t, 'ws');
+    mkdirSync(join(ws, 'dist/assets'), { recursive: true });
+    writeFileSync(join(ws, 'dist/index.html'), 'html');
+    writeFileSync(join(ws, 'dist/assets/a.js'), 'js');
+    writeFileSync(join(ws, 'dist/assets/a.js.map'), 'map');
+    const store = join(t, 'store');
+    const run = (shim, inputs) => {
+      const out = join(t, `out-${Math.random()}`);
+      writeFileSync(out, '');
+      const env = { ...process.env, GITHUB_WORKSPACE: ws, GITHUB_OUTPUT: out, CI_LOCAL_ARTIFACTS: store };
+      for (const [k, v] of Object.entries(inputs)) env[`INPUT_${k.toUpperCase()}`] = v;
+      const r = spawnSync(process.execPath, [join(shims, shim, 'index.mjs')], { cwd: ws, env, encoding: 'utf8' });
+      return { ...r, out: readFileSync(out, 'utf8') };
+    };
+    const up = run('upload-artifact', { name: 'dist', path: 'dist' });
+    expect(up.status, up.stderr).toBe(0);
+    const id = up.out.match(/artifact-id<<__EOF__\n(\d+)/)[1];
+    const up2 = run('upload-artifact', { name: 'js-only', path: 'dist/**/*.js*\n!dist/**/*.map' });
+    expect(up2.status, up2.stderr).toBe(0);
+    expect(existsSync(join(store, 'dist/index.html'))).toBe(true); // raiz = a própria pasta
+    expect(existsSync(join(store, 'js-only/assets/a.js'))).toBe(true);
+    expect(existsSync(join(store, 'js-only/assets/a.js.map'))).toBe(false); // exclusão "!"
+    const miss = run('upload-artifact', { name: 'x', path: 'nao-existe/**', 'if-no-files-found': 'error' });
+    expect(miss.status).toBe(1);
+    const d1 = run('download-artifact', { name: 'dist', path: 'baixado' });
+    expect(d1.status, d1.stderr).toBe(0);
+    expect(readFileSync(join(ws, 'baixado/assets/a.js'), 'utf8')).toBe('js');
+    const d2 = run('download-artifact', { 'artifact-ids': id, path: 'por-id' });
+    expect(d2.status, d2.stderr).toBe(0);
+    expect(existsSync(join(ws, 'por-id/index.html'))).toBe(true);
+    expect(run('download-artifact', { name: 'inexistente', path: 'z' }).status).toBe(1);
+  });
+});
