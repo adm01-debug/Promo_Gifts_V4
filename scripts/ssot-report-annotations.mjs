@@ -39,7 +39,8 @@ try {
   process.exit(0);
 }
 
-const gates = Array.isArray(report.details) ? report.details : [];
+// `null`/não-objeto no JSON (relatório truncado) não pode virar TypeError: o script promete exit 0 sempre.
+const gates = Array.isArray(report?.details) ? report.details : [];
 const failed = gates.filter((g) => !g.ok);
 
 if (failed.length === 0) {
@@ -83,7 +84,8 @@ function tryLocate(line) {
   return null;
 }
 
-const NOISE = /^(?:npm (?:warn|notice|info)|>|\s*$|===|---)/i;
+// Linhas de SUCESSO do stdout de um gate falho (✅ …) não são erro: antes viravam `::error`.
+const NOISE = /^(?:npm (?:warn|notice|info)|>|\s*$|===|---|✅|✓|\[ok\])/i;
 
 let count = 0;
 for (const g of failed) {

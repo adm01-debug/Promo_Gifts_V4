@@ -16,7 +16,7 @@
 WITH nivel1 AS (
   SELECT DISTINCT
     cv.oid AS v_oid, pv.nspname||'.'||cv.relname AS view_name,
-    COALESCE(cv.reloptions @> ARRAY['security_invoker=true'], false) AS is_invoker,
+    COALESCE((SELECT option_value::boolean FROM pg_options_to_table(cv.reloptions) WHERE option_name = 'security_invoker'), false) AS is_invoker /* o Postgres guarda o literal escrito (=on ou =true) */,
     cd.oid AS d_oid, pd.nspname||'.'||cd.relname AS dep_name, cd.relkind::text AS dep_kind
   FROM pg_class cv JOIN pg_namespace pv ON pv.oid=cv.relnamespace
   JOIN pg_rewrite rw ON rw.ev_class=cv.oid
