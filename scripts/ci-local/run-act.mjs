@@ -11,9 +11,27 @@
 //     padrão do act NUNCA é lido (passamos --secret-file explícito).
 //   • Clone isolado: o worktree do usuário não é tocado nem montado.
 import { spawn, execFileSync } from 'node:child_process';
-import { createWriteStream, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, createWriteStream, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 const GITHUB_URL = 'https://github.com/adm01-debug/Promo_Gifts_V4.git';
+
+/**
+ * Prepara os shims locais (actions que dependem da API do GitHub) e devolve os
+ * argumentos --local-repository para cada ref usada nos workflows.
+ * Hoje: dorny/paths-filter (lista de arquivos da PR via API → git diff local).
+ */
+export function prepareShims({ root, workflowsText, dest }) {
+  const src = join(root, 'scripts', 'ci-local', 'shims', 'paths-filter');
+  const dir = join(dest, 'paths-filter');
+  rmSync(dir, { recursive: true, force: true });
+  mkdirSync(join(dir, 'vendor'), { recursive: true });
+  cpSync(src, dir, { recursive: true });
+  cpSync(join(root, 'node_modules', 'js-yaml', 'dist', 'js-yaml.mjs'), join(dir, 'vendor', 'js-yaml.mjs'));
+  cpSync(join(root, 'node_modules', 'picomatch'), join(dir, 'vendor', 'picomatch'), { recursive: true });
+  const refs = [...new Set([...workflowsText.matchAll(/dorny\/paths-filter@([0-9A-Za-z._-]+)/g)].map((m) => m[1]))];
+  return refs.flatMap((ref) => ['--local-repository', `dorny/paths-filter@${ref}=${dir}`]);
+}
 
 function git(cwd, ...args) {
   return execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
@@ -75,8 +93,25 @@ export function checkName(jobName, matrix) {
   return `${jobName} (${values.map((v) => (typeof v === 'object' ? JSON.stringify(v) : String(v))).join(', ')})`;
 }
 
+/**
+ * Nome de exibição do job a partir do campo `job` do act:
+ *   "<Nome do workflow>/<Nome do job>"                       → "<Nome do job>"
+ *   "<job chamador>/<Nome do workflow chamado>/<Nome do job>" → "<chamador> / <Nome do job>" (como o GitHub)
+ * Nomes de job podem conter "/", então o corte usa os nomes conhecidos (ctx), não split cego.
+ */
+export function displayName(actJob, ctx = {}) {
+  const s = String(actJob).trim();
+  if (ctx.workflowName && s.startsWith(`${ctx.workflowName}/`)) return s.slice(ctx.workflowName.length + 1).trim();
+  for (const { callerId, callerName, calledName } of ctx.reusable ?? []) {
+    const prefix = `${callerId}/${calledName}/`;
+    if (s.startsWith(prefix)) return `${callerName ?? callerId} / ${s.slice(prefix.length).trim()}`;
+  }
+  const i = s.indexOf('/');
+  return i >= 0 ? s.slice(i + 1).trim() : s;
+}
+
 /** Lê o JSONL do act e consolida o resultado final de cada job (com matrix). */
-export function parseActJsonl(lines) {
+export function parseActJsonl(lines, ctx = {}) {
   const jobs = new Map();
   const failedStep = new Map();
   for (const line of lines) {
@@ -87,9 +122,9 @@ export function parseActJsonl(lines) {
       continue;
     }
     if (!o.job) continue;
-    const display = String(o.job).includes('/') ? String(o.job).split('/').slice(1).join('/') : String(o.job);
-    const key = `${o.jobID}|${JSON.stringify(o.matrix ?? {})}`;
-    if (o.stepResult === 'failure' && o.stage === 'Main') failedStep.set(key, o.step);
+    const display = displayName(o.job, ctx);
+    const key = `${o.job}|${JSON.stringify(o.matrix ?? {})}`;
+    if (o.stepResult === 'failure' && o.stage === 'Main' && !failedStep.has(key)) failedStep.set(key, o.step);
     if (o.jobResult) {
       jobs.set(key, {
         jobId: o.jobID,
@@ -104,7 +139,7 @@ export function parseActJsonl(lines) {
 }
 
 /** Roda um workflow inteiro no act; grava o JSONL bruto e devolve os jobs. */
-export function runWorkflow({ cloneDir, workflowFile, event, eventPath, logPath, secretsFile, concurrentJobs = 4, timeoutMs = 90 * 60_000, artifactDir, extraArgs = [] }) {
+export function runWorkflow({ cloneDir, workflowFile, event, eventPath, logPath, secretsFile, concurrentJobs = 4, timeoutMs = 90 * 60_000, artifactDir, extraArgs = [], nameCtx = {} }) {
   return new Promise((resolve) => {
     const args = [
       event,
@@ -137,7 +172,7 @@ export function runWorkflow({ cloneDir, workflowFile, event, eventPath, logPath,
       clearTimeout(timer);
       if (buf) lines.push(buf);
       out.end();
-      resolve({ exitCode: code, signal, timedOut: signal === 'SIGTERM', jobs: parseActJsonl(lines) });
+      resolve({ exitCode: code, signal, timedOut: signal === 'SIGTERM', jobs: parseActJsonl(lines, nameCtx) });
     });
   });
 }
