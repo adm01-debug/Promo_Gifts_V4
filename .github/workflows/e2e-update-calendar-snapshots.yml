@@ -2,7 +2,6 @@ name: E2E · Update Calendar snapshots
 # Executa manualmente OU automaticamente quando o componente do calendário
 # (ou seu spec / harness) mudar, para regenerar os PNGs baseline nos
 # viewports 320/768/1280 e comitar as imagens de volta na branch alvo.
-# Só manual: atualizar baseline visual em todo push aceitaria qualquer mudança visual sem revisão.
 on:
   workflow_dispatch:
     inputs:
@@ -15,6 +14,14 @@ on:
         required: false
         type: boolean
         default: true
+  push:
+    branches: [main]
+    paths:
+      - "src/components/ui/calendar.tsx"
+      - "src/pages/__visual/CalendarHarness.tsx"
+      - "e2e/ui/calendar-visual.spec.ts"
+      - ".github/workflows/e2e-update-calendar-snapshots.yml"
+
 permissions:
   contents: write
   pull-requests: write

@@ -2,9 +2,14 @@ name: E2E · Update Magazine Ring snapshots
 # Executa `playwright test --update-snapshots` para o spec pixel-perfect dos
 # rings do PreviewSidebar (fecha o gap M5 da auditoria Magazine). Dispara
 # manualmente OU quando o próprio spec / harness é editado.
-# Só manual: atualizar baseline visual em todo push aceitaria qualquer mudança visual sem revisão.
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "e2e/ui/magazine-ring-visual.spec.ts"
+      - "src/pages/dev/MagazineRingHarness.tsx"
+      - ".github/workflows/e2e-update-magazine-ring-snapshots.yml"
+
 permissions:
   contents: write
 

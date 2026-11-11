@@ -2,9 +2,14 @@ name: E2E · Update Alert Dialog snapshots
 # Executa `playwright test --update-snapshots` para o spec do AlertDialog
 # e faz commit dos PNGs atualizados. Dispara manualmente OU quando o próprio
 # spec (ou o harness) é editado.
-# Só manual: atualizar baseline visual em todo push aceitaria qualquer mudança visual sem revisão.
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "e2e/ui/alert-dialog-visual.spec.ts"
+      - "src/pages/dev/AlertDialogHarness.tsx"
+      - ".github/workflows/e2e-update-alert-dialog-snapshots.yml"
+
 permissions:
   contents: write
 
