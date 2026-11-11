@@ -21,6 +21,11 @@ export const SUMMARY_PATH = path.resolve(
 );
 
 export const TOLERANCE_PP = Number(process.env.COVERAGE_TOLERANCE_PP ?? "1");
+// GUARD: COVERAGE_TOLERANCE_PP="1pp" virava NaN e qualquer cobertura (até 0%) passava nas comparações.
+if (!Number.isFinite(TOLERANCE_PP) || TOLERANCE_PP < 0) {
+  console.error(`❌ COVERAGE_TOLERANCE_PP inválido: "${process.env.COVERAGE_TOLERANCE_PP}" (esperado número >= 0).`);
+  process.exit(2);
+}
 
 export const CRITICAL_MODULES = {
   "src/pages/products/FiltersPage.tsx": {
