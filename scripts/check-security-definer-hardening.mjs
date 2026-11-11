@@ -18,15 +18,16 @@
  * Uso CI: rodar com `node scripts/check-security-definer-hardening.mjs`.
  * Em PR: compara HEAD vs base.
  */
-import { execSync } from 'node:child_process';
+import { execSync, execFileSync } from 'node:child_process';
 import { readFileSync, existsSync } from 'node:fs';
 
 const IN_CI = process.env.GITHUB_ACTIONS === 'true';
 const BASE_REF = process.env.GITHUB_BASE_REF || 'main';
-const MIGRATIONS_GLOB = "'supabase/migrations/*.sql'";
+// Pathspec literal: passado como argv (execFileSync), nunca por `sh -c`.
+const MIGRATIONS_GLOB = 'supabase/migrations/*.sql';
 
-function gitAddedSince(range) {
-  return execSync(`git diff --name-only --diff-filter=A ${range} -- ${MIGRATIONS_GLOB}`, {
+function gitAddedSince(...revs) {
+  return execFileSync('git', ['diff', '--name-only', '--diff-filter=A', ...revs, '--', MIGRATIONS_GLOB], {
     encoding: 'utf8',
     stdio: ['pipe', 'pipe', 'pipe'],
   })
@@ -35,7 +36,8 @@ function gitAddedSince(range) {
 }
 
 const ADDED_FILES = (() => {
-  // Em CI: GITHUB_BASE_REF aponta para base da PR.
+  // Em CI: GITHUB_BASE_REF aponta para base da PR. Vem de env (nome de branch),
+  // então nunca interpolar em shell string — execFileSync passa como argv literal.
   try {
     return gitAddedSince(`origin/${BASE_REF}...HEAD`);
   } catch {
@@ -43,11 +45,12 @@ const ADDED_FILES = (() => {
     // GUARD: antes o `git diff` falhava, o fallback devolvia [] e o gate dizia
     // "nenhuma migration nova" sem validar nada em toda PR.
     try {
-      execSync(
-        `git fetch --no-tags --depth=1 origin ${BASE_REF}:refs/remotes/origin/${BASE_REF}`,
+      execFileSync(
+        'git',
+        ['fetch', '--no-tags', '--depth=1', 'origin', `${BASE_REF}:refs/remotes/origin/${BASE_REF}`],
         { stdio: ['pipe', 'pipe', 'pipe'] },
       );
-      return gitAddedSince(`origin/${BASE_REF} HEAD`);
+      return gitAddedSince(`origin/${BASE_REF}`, 'HEAD');
     } catch {
       if (IN_CI) {
         console.error(

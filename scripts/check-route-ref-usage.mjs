@@ -220,7 +220,14 @@ function rulePagesNoForwardRef(file, source) {
 
 async function checkFile(file) {
   if (FILE_ALLOWLIST.has(path.relative(ROOT, file))) return;
-  const source = await fs.readFile(file, 'utf8');
+  let source;
+  try {
+    source = await fs.readFile(file, 'utf8');
+  } catch {
+    // Symlink quebrado ou arquivo removido entre o walk() e a leitura —
+    // não é um achado do checker; pula o arquivo em vez de derrubar o gate.
+    return;
+  }
   await ruleGuardsNoForwardRef(file, source);
   ruleNoRefProp(file, source);
   rulePagesNoForwardRef(file, source);

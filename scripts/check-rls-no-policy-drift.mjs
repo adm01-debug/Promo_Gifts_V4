@@ -99,7 +99,7 @@ function loadAllowlist() {
     }
     throw e;
   }
-  const doc = JSON.parse(raw);
+  const doc = JSON.parse(raw.replace(/^\uFEFF/, ''));
   if (!Array.isArray(doc.tables)) {
     process.stderr.write(`[rls-no-policy] allowlist.tables inválida\n`);
     process.exit(2);
@@ -155,7 +155,7 @@ async function main() {
   let actual;
   if (fromFileArg) {
     const p = fromFileArg.slice('--from-file='.length);
-    const raw = JSON.parse(readFileSync(p, 'utf8'));
+    const raw = JSON.parse(readFileSync(p, 'utf8').replace(/^\uFEFF/, ''));
     actual = (Array.isArray(raw) ? raw : raw.tables || []).map((r) =>
       typeof r === 'string' ? r : r.table,
     );

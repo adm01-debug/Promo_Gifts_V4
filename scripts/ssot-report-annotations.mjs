@@ -58,13 +58,23 @@ const RX = [
   /(?<file>(?:[a-zA-Z]:)?[\w./\-@]+\.[a-zA-Z0-9]+):(?<line>\d+)(?!\d)/,
 ];
 
-function esc(s) {
+// Propriedades (title=, file=) usam delimitadores ":" e "," — precisam escapar
+// esses caracteres também. A mensagem (depois do "::") não usa esses
+// delimitadores, e o runner do GitHub Actions não decodifica %3A/%2C ali —
+// escapá-los lá faz a mensagem aparecer com "%3A"/"%2C" literais na UI.
+function escProp(s) {
   return String(s)
     .replace(/%/g, '%25')
     .replace(/\r/g, '%0D')
     .replace(/\n/g, '%0A')
     .replace(/:/g, '%3A')
     .replace(/,/g, '%2C');
+}
+function escData(s) {
+  return String(s)
+    .replace(/%/g, '%25')
+    .replace(/\r/g, '%0D')
+    .replace(/\n/g, '%0A');
 }
 
 function tryLocate(line) {
@@ -104,13 +114,13 @@ for (const g of failed) {
     if (seen.has(key)) continue;
     seen.add(key);
 
-    const props = [`title=${esc(title)}`];
+    const props = [`title=${escProp(title)}`];
     if (loc) {
-      props.push(`file=${esc(loc.file)}`);
+      props.push(`file=${escProp(loc.file)}`);
       if (loc.line) props.push(`line=${loc.line}`);
       if (loc.col) props.push(`col=${loc.col}`);
     }
-    process.stdout.write(`::error ${props.join(',')}::${esc(raw)}\n`);
+    process.stdout.write(`::error ${props.join(',')}::${escData(raw)}\n`);
     count++;
     emittedForGate++;
     if (emittedForGate >= 25) break; // limita ruído por gate
@@ -119,7 +129,7 @@ for (const g of failed) {
   // Se não achou nada útil, emite pelo menos uma annotation resumo.
   if (emittedForGate === 0) {
     const fallback = (g.stderr || g.stdout || `exit=${g.exitCode}`).split(/\r?\n/)[0] || `exit=${g.exitCode}`;
-    process.stdout.write(`::error title=${esc(title)}::${esc(fallback)}\n`);
+    process.stdout.write(`::error title=${escProp(title)}::${escData(fallback)}\n`);
     count++;
   }
 }

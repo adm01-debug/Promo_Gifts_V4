@@ -64,12 +64,15 @@ function isAllowed(pathRef) {
   return ALLOWED_PREFIXES.some((p) => pathRef === p || pathRef.startsWith(p));
 }
 
+const lineCountCache = new Map();
 function countLines(absPath) {
+  if (lineCountCache.has(absPath)) return lineCountCache.get(absPath);
   const buf = readFileSync(absPath);
   // Compatível com CRLF/LF: conta '\n' e soma 1 se não terminar em nova linha.
   let n = 0;
   for (let i = 0; i < buf.length; i++) if (buf[i] === 0x0a) n++;
   if (buf.length > 0 && buf[buf.length - 1] !== 0x0a) n++;
+  lineCountCache.set(absPath, n);
   return n;
 }
 
@@ -100,7 +103,13 @@ for (const docPath of args) {
     errors.push(`Documento não encontrado: ${docPath}`);
     continue;
   }
-  const raw = readFileSync(abs, 'utf8');
+  let raw;
+  try {
+    raw = readFileSync(abs, 'utf8');
+  } catch (err) {
+    errors.push(`${docPath}: erro ao ler (${err.message})`);
+    continue;
+  }
   const cleaned = stripCodeFences(raw);
 
   const seen = new Set();
@@ -151,7 +160,13 @@ for (const docPath of args) {
       continue;
     }
 
-    const total = countLines(target);
+    let total;
+    try {
+      total = countLines(target);
+    } catch (err) {
+      errors.push(`${docPath} → ${full}: erro ao ler (${err.message})`);
+      continue;
+    }
     if (end > total) {
       errors.push(
         `${docPath} → ${full}: linha ${end} não existe (${pathRef} tem ${total} linhas)`,

@@ -54,10 +54,23 @@ const IGNORE_FILE_PATHS = new Set([
 ]);
 
 function walk(dir, out = []) {
-  for (const entry of readdirSync(dir)) {
+  let entries;
+  try {
+    entries = readdirSync(dir);
+  } catch (err) {
+    console.warn(`⚠️  [seller-scope] Não foi possível ler diretório ${dir}: ${err.code ?? err.message}`);
+    return out;
+  }
+  for (const entry of entries) {
     if (IGNORE_DIR.has(entry)) continue;
     const full = join(dir, entry);
-    const st = statSync(full);
+    let st;
+    try {
+      st = statSync(full);
+    } catch (err) {
+      console.warn(`⚠️  [seller-scope] Não foi possível inspecionar ${full}: ${err.code ?? err.message}`);
+      continue;
+    }
     if (st.isDirectory()) walk(full, out);
     else if (/\.(ts|tsx)$/.test(entry)) out.push(full);
   }
@@ -70,7 +83,7 @@ function isIgnored(relPath) {
 }
 
 function findTableRefs(lines, table) {
-  const re = new RegExp(`\\.from\\(\\s*["']${table}["']\\s*\\)`);
+  const re = new RegExp(`\\.from\\(\\s*["'\`]${table}["'\`]\\s*\\)`);
   const refs = [];
   for (let i = 0; i < lines.length; i++) {
     if (re.test(lines[i])) refs.push(i);
@@ -103,7 +116,13 @@ const violations = [];
 for (const file of walk(SRC)) {
   const rel = relative(ROOT, file).replaceAll("\\", "/");
   if (isIgnored(rel)) continue;
-  const src = readFileSync(file, "utf8");
+  let src;
+  try {
+    src = readFileSync(file, "utf8");
+  } catch (err) {
+    console.warn(`⚠️  [seller-scope] Não foi possível ler ${rel}: ${err.code ?? err.message}`);
+    continue;
+  }
   const lines = src.split("\n");
   for (const table of TABLES) {
     for (const idx of findTableRefs(lines, table)) {

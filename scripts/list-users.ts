@@ -15,6 +15,7 @@ async function listUsers() {
   const { data, error } = await supabase.auth.admin.listUsers();
   if (error) {
     console.error('Error listing users:', error.message);
+    process.exitCode = 1;
   } else {
     console.log(`Found ${data.users.length} users.`);
   }

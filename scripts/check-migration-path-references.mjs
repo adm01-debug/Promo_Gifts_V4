@@ -139,7 +139,16 @@ walk(ROOT);
 
 // ---- Baseline (legado congelado) ----
 let baseline = { entries: [] };
-try { baseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8')); } catch (e) { if (e.code !== 'ENOENT') throw e; }
+try {
+  baseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
+} catch (e) {
+  if (e.code !== 'ENOENT') {
+    console.error(`\n❌ Baseline ilegível (${relative(ROOT, BASELINE_PATH)}): ${e.message}`);
+    console.error('\nProvável merge conflict não resolvido ou edição manual quebrou o JSON.');
+    console.error('Corrija o arquivo ou regenere com --update-baseline.\n');
+    process.exit(1);
+  }
+}
 const baselineSet = new Set(
   (baseline.entries || []).map((e) => `${e.file}|${e.ref}`),
 );

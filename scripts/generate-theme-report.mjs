@@ -22,7 +22,7 @@ if (!fs.existsSync(reportDir)) {
 // de falhar hard).
 let failures = [];
 if (fs.existsSync(JSON_FILE)) {
-  failures = JSON.parse(fs.readFileSync(JSON_FILE, 'utf-8'));
+  failures = JSON.parse(fs.readFileSync(JSON_FILE, 'utf-8').replace(/^\uFEFF/, ''));
 } else {
   console.warn('[generate-theme-report] JSON ausente em', JSON_FILE);
   console.warn('[generate-theme-report] Gerando relatório vazio (0 failures).');

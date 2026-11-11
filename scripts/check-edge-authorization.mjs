@@ -31,7 +31,13 @@ const FN_DIR = "supabase/functions";
 const MANIFEST_PATH = `${FN_DIR}/_shared/edge-authz-manifest.ts`;
 
 // 1) Carrega o manifest (parse via regex para evitar import dinâmico de TS)
-const manifestSrc = readFileSync(MANIFEST_PATH, "utf8");
+let manifestSrc;
+try {
+  manifestSrc = readFileSync(MANIFEST_PATH, "utf8");
+} catch (err) {
+  console.error(`❌ [edge-authorization] não foi possível ler ${MANIFEST_PATH}: ${err.message}`);
+  process.exit(2);
+}
 const entries = new Map();
 {
   // Captura name + bloco completo da entrada para parse robusto

@@ -45,18 +45,25 @@ async function checkFile(file) {
   const source = await fs.readFile(file, "utf8");
   const lines = source.split("\n");
 
+  // Ignora comentários de bloco (`/* ... */`, inclusive comentário JSX
+  // `{/* ... */}`) para não gerar falso-positivo em código comentado;
+  // preserva as quebras de linha para não deslocar os números reportados.
+  const scanSource = source.replace(/\/\*[\s\S]*?\*\//g, (c) =>
+    c.replace(/[^\n]/g, " "),
+  );
+
   // Procura `<X asChild>` (com ou sem outras props) e olha as próximas
   // linhas significativas; se o primeiro filho for outro `<Y asChild>`,
   // sem `<span` / `<div` interposto, marca violação.
   const openRe = /<([A-Z][A-Za-z0-9_]*)\s[^>]*?asChild\b[^>]*?>/g;
   let m;
-  while ((m = openRe.exec(source))) {
+  while ((m = openRe.exec(scanSource))) {
     const trigger = m[1];
     const startIdx = m.index;
-    const lineNum = source.slice(0, startIdx).split("\n").length;
+    const lineNum = scanSource.slice(0, startIdx).split("\n").length;
 
     // Busca o próximo token JSX significativo depois deste `>`
-    const tail = source.slice(openRe.lastIndex, openRe.lastIndex + 400);
+    const tail = scanSource.slice(openRe.lastIndex, openRe.lastIndex + 400);
     const nextOpen = /<\s*([A-Za-z][A-Za-z0-9_]*)([\s>])/.exec(tail);
     if (!nextOpen) continue;
     const childTag = nextOpen[1];

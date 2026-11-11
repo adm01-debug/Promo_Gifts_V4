@@ -58,6 +58,10 @@ export function auditSource(src, label = '<source>') {
     errors.push(`${label}: marcadores do bloco ${TITLE} ausentes ou inválidos`);
     return errors;
   }
+  if (src.indexOf(START_MARKER, start + 1) !== -1 || src.indexOf(END_MARKER, end + 1) !== -1) {
+    errors.push(`${label}: múltiplos marcadores do bloco ${TITLE} encontrados — ambíguo`);
+    return errors;
+  }
 
   const block = src.slice(start + START_MARKER.length, end);
   if (!block.includes(TITLE)) {

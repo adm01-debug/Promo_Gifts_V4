@@ -50,9 +50,21 @@ function countLines(ref, filePath) {
   return isNaN(n) ? 0 : n;
 }
 
-const baseSha = process.env.GITHUB_BASE_SHA
-  || run('git rev-parse HEAD~1 2>/dev/null')
-  || 'HEAD~1';
+// GUARD: sem GITHUB_BASE_SHA e sem HEAD~1 resolvível (clone shallow com
+// fetch-depth=1 — padrão do GitHub Actions — ou repo com um único commit),
+// não há base real para comparar. O fallback antigo (`|| 'HEAD~1'`) reusava
+// uma ref que ACABOU de falhar em resolver, então `git diff` também falhava,
+// `run()` engolia o erro como '' e o gate reportava "nenhuma redução"
+// (fail-open) mesmo com reduções reais não commitadas. Fail-closed: avisa e
+// não afirma "sem violação" quando a comparação nunca rodou de fato.
+const baseSha = process.env.GITHUB_BASE_SHA || run('git rev-parse HEAD~1 2>/dev/null');
+
+if (!baseSha) {
+  console.error(
+    '⚠️  check-generated-files-protected: sem base de comparação (GITHUB_BASE_SHA ausente e HEAD~1 não resolve — histórico insuficiente ou clone shallow). Checagem inconclusiva, não é um PASS.',
+  );
+  process.exit(IS_GATE ? 2 : 0);
+}
 
 // GUARD: base inexistente (checkout raso, SHA errado) fazia `run()` devolver '' → "nenhuma redução".
 let diffRaw;

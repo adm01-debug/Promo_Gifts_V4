@@ -90,6 +90,14 @@ function camelize(snake) {
   return snake.replace(/_([a-z0-9])/g, (_, c) => c.toUpperCase());
 }
 
+// Escapa metacaracteres de regex antes de interpolar um nome (tabela/coluna)
+// numa `new RegExp(...)`. Necessário porque nomes vêm do BD (identificadores
+// citados no Postgres podem conter "(", ")", ".", etc.) e um nome assim quebra
+// a construção da regex com SyntaxError, abortando toda a auditoria.
+function escapeRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 // ──────────────────────────────────────────────────────────────────────────────
 // Coleta de schemas
 // ──────────────────────────────────────────────────────────────────────────────
@@ -110,7 +118,9 @@ function fetchInternalSchema() {
     );
     const tables = new Map();
     for (const line of out.trim().split("\n")) {
+      if (!line) continue; // saída vazia (ex.: psql sem linhas) gera "" após trim/split
       const [table, col, type, rows] = line.split("\t");
+      if (!table || !col) continue; // linha malformada/truncada (faltam colunas)
       if (!tables.has(table)) {
         tables.set(table, { rows: Number(rows) || 0, columns: [] });
       }
@@ -242,7 +252,8 @@ function detectUsage(index, table, column) {
   const filesForTable = index.perFile.filter((f) => f.tablesMentioned.has(table));
 
   for (const name of variants) {
-    const wordRe = new RegExp(`\\b${name}\\b`);
+    const safeName = escapeRegExp(name);
+    const wordRe = new RegExp(`\\b${safeName}\\b`);
 
     // READ #1: aparece dentro de uma string .select('...')
     for (const f of index.perFile) {
@@ -252,7 +263,7 @@ function detectUsage(index, table, column) {
     // READ #2: arquivo menciona a tabela E referencia .col / col: / "col"
     if (!read) {
       for (const f of filesForTable) {
-        const acc = new RegExp(`\\.${name}\\b(?![A-Za-z0-9_])|["']${name}["']\\s*:|\\b${name}\\s*:`).test(f.src);
+        const acc = new RegExp(`\\.${safeName}\\b(?![A-Za-z0-9_])|["']${safeName}["']\\s*:|\\b${safeName}\\s*:`).test(f.src);
         if (acc) { read = true; break; }
       }
     }
