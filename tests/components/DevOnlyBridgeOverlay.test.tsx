@@ -1,24 +1,24 @@
 /**
- * DevOnlyBridgeOverlay — wrapper que gateia o BridgeMetricsOverlay por papel `dev`.
+ * DevOnlyBridgeOverlay — wrapper atual que exige o papel `dev` (QA #619).
  *
  * Valida:
  *  - Não-dev: retorna null (sem montar o overlay, sem disparar o lazy import).
  *  - Dev: monta o overlay (via Suspense) — fallback null durante o load.
- *  - Gate desligado (env false) com isDev=true: retorna null.
- *  - Gate ligado por override (localStorage) com isDev=false: monta.
+ *  - Papel dev preserva o acesso do wrapper, que não consulta isAllowed.
+ *  - Override de infraestrutura não substitui o papel dev obrigatório.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { DevOnlyBridgeOverlay } from '@/components/dev/DevOnlyBridgeOverlay';
 
-import { useDevGate } from '@/hooks/useDevGate';
+import { useDevGate } from '@/hooks/admin';
 
-vi.mock('@/hooks/useDevGate', () => ({
+vi.mock('@/hooks/admin', () => ({
   useDevGate: vi.fn(),
 }));
 
-// O overlay real importa telemetria + faz checks de import.meta.env.PROD.
-// Mockamos como um marker simples para validar SOMENTE o gate.
+// O marcador isola o limite lazy; o overlay real e seu hook são exercitados
+// pela suíte tests/unit/system/BridgeMetricsOverlay.test.tsx.
 vi.mock('@/components/dev/BridgeMetricsOverlay', () => ({
   default: () => <div data-testid="bridge-metrics-overlay-mock">overlay</div>,
 }));
@@ -27,7 +27,7 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-describe('DevOnlyBridgeOverlay — gate por papel + SSOT', () => {
+describe('DevOnlyBridgeOverlay — gate atual por papel dev', () => {
   it('NÃO renderiza overlay para usuário não-dev (default do gate)', () => {
     vi.mocked(useDevGate).mockReturnValue({ isAllowed: false, isDev: false });
     const { container } = render(<DevOnlyBridgeOverlay />);
@@ -41,15 +41,16 @@ describe('DevOnlyBridgeOverlay — gate por papel + SSOT', () => {
     expect(await screen.findByTestId('bridge-metrics-overlay-mock')).toBeInTheDocument();
   });
 
-  it('gate SSOT desligado (env=false) bloqueia mesmo dev', () => {
+  it('mantém o acesso do papel dev independentemente do flag isAllowed', async () => {
     vi.mocked(useDevGate).mockReturnValue({ isAllowed: false, isDev: true });
-    const { container } = render(<DevOnlyBridgeOverlay />);
-    expect(container).toBeEmptyDOMElement();
-  });
-
-  it('gate SSOT habilitado por override (localStorage) renderiza mesmo para não-dev', async () => {
-    vi.mocked(useDevGate).mockReturnValue({ isAllowed: true, isDev: false });
     render(<DevOnlyBridgeOverlay />);
     expect(await screen.findByTestId('bridge-metrics-overlay-mock')).toBeInTheDocument();
+  });
+
+  it('override de infraestrutura não libera usuário sem papel dev', () => {
+    vi.mocked(useDevGate).mockReturnValue({ isAllowed: true, isDev: false });
+    const { container } = render(<DevOnlyBridgeOverlay />);
+    expect(container).toBeEmptyDOMElement();
+    expect(screen.queryByTestId('bridge-metrics-overlay-mock')).not.toBeInTheDocument();
   });
 });
