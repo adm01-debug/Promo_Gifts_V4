@@ -33,7 +33,7 @@ const OUT = join(ROOT, '.ci-local');
 
 function parseArgs(argv) {
   const [cmd = 'run', ...rest] = argv;
-  const o = { cmd, unsafe: false, listOnly: false, event: 'pull_request', base: 'origin/main', sha: 'HEAD', all: false, workflows: [], exclude: [], jobs: 4, timeout: 90, secrets: null, withE2E: false, strict: false, run: 'latest', json: false };
+  const o = { cmd, unsafe: false, listOnly: false, event: 'pull_request', base: 'origin/main', sha: 'HEAD', all: false, workflows: [], exclude: [], jobs: 2, timeout: 90, secrets: null, withE2E: false, strict: false, run: 'latest', json: false };
   for (let i = 0; i < rest.length; i++) {
     const a = rest[i];
     const next = () => rest[++i];
