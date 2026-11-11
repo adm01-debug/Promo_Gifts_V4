@@ -13,7 +13,7 @@
  * Uso: node scripts/validate-quotes-list.mjs
  */
 import fs from 'node:fs';
-import { execSync, spawnSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import { classifyTscRun } from './lib/tsc-run.mjs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -122,9 +122,13 @@ const tsOk = step('Type-check (tsc, apenas o grafo de imports da lista)', () => 
   // tsconfig temporário que herda o do app mas só inclui os alvos (+ .d.ts globais): o tsc segue
   // os imports, então erros de tipo reais nesses arquivos aparecem; leva segundos (projeto
   // inteiro passa de 9 min e estoura 4 GB de heap).
-  const dir = fs.mkdtempSync(join(tmpdir(), 'quotes-list-tsc-'));
-  const cfg = join(dir, 'tsconfig.json');
   const root = process.cwd();
+  // tsconfig temporário dentro de node_modules/.cache (existe sempre que o tsc local existe):
+  // não depende de TMPDIR — TMPDIR inválido não pode virar falso "falha de type-check".
+  const cacheDir = join(root, 'node_modules', '.cache');
+  fs.mkdirSync(cacheDir, { recursive: true });
+  const dir = fs.mkdtempSync(join(cacheDir, 'quotes-list-tsc-'));
+  const cfg = join(dir, 'tsconfig.json');
   fs.writeFileSync(
     cfg,
     JSON.stringify({
@@ -156,12 +160,18 @@ const tsOk = step('Type-check (tsc, apenas o grafo de imports da lista)', () => 
 
 // ─── 3. Vitest — expiração ──────────────────────────────────────────────────
 const vitestOk = step('Vitest · src/lib/quotes/__tests__/expiration.test.ts', () => {
-  const raw = execSync(
-    'npx vitest run src/lib/quotes/__tests__/expiration.test.ts --reporter=dot 2>&1',
-    { encoding: 'utf8', stdio: 'pipe' },
+  // Binário local (nunca `npx`): sem ele instalado, npx buscaria o pacote no registro — foi
+  // assim que o antigo `npx tsgo` "passava" sem rodar nada.
+  const run = spawnSync(
+    join(process.cwd(), 'node_modules/.bin/vitest'),
+    ['run', 'src/lib/quotes/__tests__/expiration.test.ts', '--reporter=dot'],
+    { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 },
   );
+  if (run.error) throw new Error(`vitest não executou: ${run.error.message}`);
   // Remove códigos ANSI de cor antes de fazer match.
-  const out = raw.replace(/\x1B\[[0-9;]*[A-Za-z]/g, '');
+  const ansi = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*[A-Za-z]`, 'g');
+  const out = `${run.stdout ?? ''}${run.stderr ?? ''}`.replace(ansi, '');
+  if (run.status !== 0) throw new Error(out.split('\n').slice(-15).join('\n') || `vitest saiu com código ${run.status}`);
   const m = out.match(/Tests\s+(\d+)\s+passed/);
   const failed = /\bfailed\b/i.test(out) && !/0\s+failed/i.test(out);
   if (!m || failed) throw new Error(out.split('\n').slice(-15).join('\n'));
