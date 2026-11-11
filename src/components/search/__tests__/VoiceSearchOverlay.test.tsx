@@ -15,8 +15,8 @@ const MOTION_PROPS = new Set([
   'style', // handled separately if needed
 ]);
 
-const filterMotionProps = (props: Record<string, any>) => {
-  const filtered: Record<string, any> = {};
+const filterMotionProps = (props: Record<string, unknown>) => {
+  const filtered: Record<string, unknown> = {};
   for (const key of Object.keys(props)) {
     if (!MOTION_PROPS.has(key)) filtered[key] = props[key];
   }
@@ -34,7 +34,7 @@ vi.mock("framer-motion", () => {
         rect: "rect", line: "line", path: "path", text: "text",
       };
       const tag = tagMap[prop] || "div";
-      return React.forwardRef(({ children, ...rest }: any, ref: any) =>
+      return React.forwardRef<Element, Record<string, unknown> & { children?: React.ReactNode }>(({ children, ...rest }, ref) =>
         React.createElement(tag, { ...filterMotionProps(rest), ref }, children)
       );
     },
@@ -42,10 +42,10 @@ vi.mock("framer-motion", () => {
   return {
     motion: new Proxy({}, handler),
     m: new Proxy({}, handler),
-    LazyMotion: ({ children }: any) => <>{children}</>,
+    LazyMotion: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
     domMax: {},
     domAnimation: {},
-    AnimatePresence: ({ children }: any) => <>{children}</>,
+    AnimatePresence: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
   };
 });
 
@@ -59,7 +59,7 @@ vi.mock("react-dom", async () => {
   const actual = await vi.importActual("react-dom");
   return {
     ...actual,
-    createPortal: (node: any) => node,
+    createPortal: (node: React.ReactNode) => node,
   };
 });
 
@@ -246,8 +246,8 @@ describe("VoiceSearchOverlay", () => {
 
     it("calls onCommandSelect when clicking suggestion chip", () => {
       const { rerender } = render(<VoiceSearchOverlay {...defaultProps} isOpen={false} phase="idle" />);
-      rerender(<VoiceSearchOverlay {...defaultProps} isOpen={true} phase="listening" />);
-      rerender(<VoiceSearchOverlay {...defaultProps} isOpen={true} phase="idle" />);
+      rerender(<VoiceSearchOverlay {...defaultProps} isOpen phase="listening" />);
+      rerender(<VoiceSearchOverlay {...defaultProps} isOpen phase="idle" />);
       const chip = screen.getByText(/"Quero canetas azuis baratas"/);
       fireEvent.click(chip);
       expect(defaultProps.onCommandSelect).toHaveBeenCalledWith("Quero canetas azuis baratas");
@@ -336,24 +336,24 @@ describe("VoiceSearchOverlay", () => {
       const { rerender } = render(<VoiceSearchOverlay {...defaultProps} isOpen={false} />);
       expect(screen.queryByRole("dialog")).toBeNull();
 
-      rerender(<VoiceSearchOverlay {...defaultProps} isOpen={true} />);
+      rerender(<VoiceSearchOverlay {...defaultProps} isOpen />);
       expect(screen.getByRole("dialog")).toBeDefined();
 
       rerender(<VoiceSearchOverlay {...defaultProps} isOpen={false} />);
       expect(screen.queryByRole("dialog")).toBeNull();
 
-      rerender(<VoiceSearchOverlay {...defaultProps} isOpen={true} />);
+      rerender(<VoiceSearchOverlay {...defaultProps} isOpen />);
       expect(screen.getByRole("dialog")).toBeDefined();
     });
 
     it("resets state when reopened after close", () => {
       const { rerender } = render(
-        <VoiceSearchOverlay {...defaultProps} isOpen={true} phase="error" error="Erro!" />
+        <VoiceSearchOverlay {...defaultProps} isOpen phase="error" error="Erro!" />
       );
       expect(screen.getByText("Erro")).toBeDefined();
 
       rerender(<VoiceSearchOverlay {...defaultProps} isOpen={false} />);
-      rerender(<VoiceSearchOverlay {...defaultProps} isOpen={true} phase="idle" error={null} />);
+      rerender(<VoiceSearchOverlay {...defaultProps} isOpen phase="idle" error={null} />);
       expect(screen.queryByText("Erro!")).toBeNull();
     });
   });

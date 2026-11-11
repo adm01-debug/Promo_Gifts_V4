@@ -163,7 +163,7 @@ describe('GlobalSearch', () => {
     const { onClose, container } = setup();
     fireEvent.click(screen.getByText('Dashboard'));
     expect(h.navigate).toHaveBeenCalledWith('/bi');
-    fireEvent.click(container.querySelector('.fixed.inset-0') as Element);
+    fireEvent.click(container.querySelector('.fixed.inset-0')!);
     expect(onClose).toHaveBeenCalledTimes(2);
   });
 

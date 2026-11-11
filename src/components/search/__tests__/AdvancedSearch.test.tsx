@@ -111,14 +111,14 @@ describe('AdvancedSearch', () => {
     ];
     const { input, onSearch } = setup();
     fireEvent.change(input, { target: { value: 'caneca' } });
-    fireEvent.submit(input.closest('form') as HTMLFormElement);
+    fireEvent.submit(input.closest('form')!);
     expect(onSearch).toHaveBeenCalledWith('caneca');
     expect(h.trackSearch).toHaveBeenCalledWith({ searchTerm: 'caneca', resultsCount: 1 });
   });
 
   it('não submete consulta vazia', () => {
     const { input, onSearch } = setup();
-    fireEvent.submit(input.closest('form') as HTMLFormElement);
+    fireEvent.submit(input.closest('form')!);
     expect(onSearch).not.toHaveBeenCalled();
   });
 

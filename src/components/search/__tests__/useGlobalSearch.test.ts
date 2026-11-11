@@ -50,7 +50,7 @@ const h = vi.hoisted(() => {
     searchCrm: vi.fn(),
     selectCrm: vi.fn(),
     unsubscribe: vi.fn(),
-    authCallback: null as null | ((event: string) => void),
+    authCallback: null as ((event: string) => void) | null,
     history: [] as Array<{ id: string; label: string }>,
     commandAction: vi.fn(),
     isGlobalAIMode: false,
@@ -80,13 +80,15 @@ vi.mock('react-router-dom', () => ({ useNavigate: () => h.navigate }));
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     from: (table: string) => h.makeBuilder(table),
-    rpc: vi.fn(async () => ({ data: h.state.rerank, error: null })),
+    rpc: vi.fn(() => Promise.resolve({ data: h.state.rerank, error: null })),
     auth: {
       onAuthStateChange: (cb: (event: string) => void) => {
         h.authCallback = cb;
         return { data: { subscription: { unsubscribe: h.unsubscribe } } };
       },
-      getUser: vi.fn(async () => ({ data: { user: h.state.userId ? { id: h.state.userId } : null } })),
+      getUser: vi.fn(() =>
+        Promise.resolve({ data: { user: h.state.userId ? { id: h.state.userId } : null } }),
+      ),
     },
   },
 }));
@@ -210,7 +212,7 @@ describe('useGlobalSearch', () => {
   });
 
   it('busca mista monta resultados de produtos, clientes, orçamentos e tabelas auxiliares', async () => {
-    h.fetchPromobrindProducts.mockImplementation(async () => [product()]);
+    h.fetchPromobrindProducts.mockResolvedValue([product()]);
     h.searchCrm.mockResolvedValue([{ id: 'c1', razao_social: 'ACME LTDA', nome_fantasia: '', ramo: '' }]);
     h.selectCrm.mockResolvedValue([
       { id: 'q1', quote_number: 'ORC-1', client_name: 'Acme', status: 'draft', total: 100 },
@@ -290,7 +292,7 @@ describe('useGlobalSearch', () => {
         filters: { category: 'canecas', priceRange: 'low', color: 'azul' },
       }),
     );
-    h.fetchPromobrindProducts.mockImplementation(async () => [
+    h.fetchPromobrindProducts.mockResolvedValue([
       product({ id: 'a', ai_title: 'Caneca Premium IA' }),
       product({ id: 'b', name: 'Caneca Vermelha', colors: [{ label: 'Vermelho' }] }),
       product({ id: 'c', name: 'Caneca Cara', base_price: 500 }),
@@ -313,7 +315,7 @@ describe('useGlobalSearch', () => {
     h.invokeEdge.mockResolvedValue(
       intentResponse({ type: 'product', keywords: ['caneca'], filters: { priceRange: 'high', color: 'roxo' } }),
     );
-    h.fetchPromobrindProducts.mockImplementation(async () => [
+    h.fetchPromobrindProducts.mockResolvedValue([
       product({ id: 'barata', base_price: 10 }),
       product({ id: 'cara', sale_price: 300 }),
     ]);

@@ -22,7 +22,7 @@ const h = vi.hoisted(() => ({
   history: [] as Array<{ id: string; label: string; type: string }>,
   totalProductMatches: 0,
   isListening: false,
-  onVoiceResult: null as null | ((t: string) => void),
+  onVoiceResult: null as ((t: string) => void) | null,
 }));
 
 vi.mock('react-router-dom', () => ({ useNavigate: () => h.navigate }));
@@ -100,7 +100,7 @@ describe('SmartSearchInput', () => {
     fireEvent.click(screen.getByText('Limpar'));
     expect(h.clearHistory).toHaveBeenCalled();
 
-    const row = screen.getByText('boné').parentElement as HTMLElement;
+    const row = screen.getByText('boné').parentElement!;
     fireEvent.click(within(row).getByRole('button'));
     expect(h.removeFromHistory).toHaveBeenCalledWith('history-bone');
 
@@ -202,7 +202,8 @@ describe('SmartSearchInput', () => {
     const input = setup({ onSearch });
     fireEvent.focus(input);
     fireEvent.change(input, { target: { value: 'abc' } });
-    const clear = input.parentElement?.querySelector('.hover\\:bg-destructive\\/10') as HTMLElement;
+    const clear = input.parentElement?.querySelector('.hover\\:bg-destructive\\/10');
+    if (!clear) throw new Error('botão limpar não encontrado');
     fireEvent.click(clear);
     expect(input).toHaveValue('');
     expect(onSearch).toHaveBeenCalledWith('');

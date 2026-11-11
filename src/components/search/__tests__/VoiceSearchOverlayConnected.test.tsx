@@ -10,8 +10,8 @@ const h = vi.hoisted(() => ({
   startListening: vi.fn(),
   stopListening: vi.fn(),
   stopSpeaking: vi.fn(),
-  capturedOnAction: null as null | ((a: Action) => void),
-  lastProps: null as null | Record<string, unknown>,
+  capturedOnAction: null as ((a: Action) => void) | null,
+  lastProps: null as Record<string, unknown> | null,
 }));
 
 vi.mock('@/hooks/voice/useVoiceHistory', () => ({
