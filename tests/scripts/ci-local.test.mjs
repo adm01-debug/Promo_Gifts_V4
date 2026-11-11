@@ -215,3 +215,14 @@ describe('reutilizáveis, neutralização no clone e ok-parcial', async () => {
     expect(v({ result: 'success', failedSteps: [] }, info).status).toBe('ok');
   });
 });
+
+describe('veredito considera TODOS os passos que falharam', async () => {
+  const { verdict: v } = await import('../../scripts/ci-local/run-act.mjs');
+  const info = { cls: 'secret', secrets: ['K'], steps: [{ name: 'Live', cls: 'secret', secrets: ['K'], reasons: [] }, { name: 'Ledger', cls: 'local', secrets: [], reasons: [] }] };
+  it('falha real depois de um passo inconclusivo → FALHOU (não esconde)', () => {
+    expect(v({ result: 'failure', failedSteps: ['Live', 'Ledger'] }, info)).toMatchObject({ status: 'FALHOU', why: 'passo: Ledger' });
+  });
+  it('só passos sem segredo falharam → inconclusivo', () => {
+    expect(v({ result: 'failure', failedSteps: ['Live'] }, info).status).toBe('inconclusivo');
+  });
+});
