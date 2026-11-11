@@ -162,8 +162,8 @@ function slugFromDraft(name) {
 
 function main() {
   const opts = parseArgs();
-  if (!opts.file) usage(2);
   if (!existsSync(DRAFT_DIR)) { err(`Diretório inexistente: ${DRAFT_DIR}`); process.exit(1); }
+  if (!opts.file) usage(2);
   if (!existsSync(MIG_DIR)) mkdirSync(MIG_DIR, { recursive: true });
 
   // ---- Validação prévia de flags do PR (rejeita cedo, antes de mexer em arquivos). ----
