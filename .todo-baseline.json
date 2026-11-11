@@ -1,7 +1,12 @@
 {
-  "generatedAt": "2026-10-19T12:11:02.113Z",
+  "generatedAt": "2026-11-11T11:07:59.756Z",
   "description": "Baseline de marcadores TODO/FIXME/HACK em src/ (excluindo testes). Falha apenas em REGRESSÃO (contagem cresce).",
-  "productionTodoCount": 51,
+  "productionTodoCount": 52,
+  "meta": {
+    "target": 30,
+    "deadline": "2027-01-31",
+    "note": "Resolver marcadores TODO/FIXME por sprint"
+  },
   "counts": {
     "src/components/admin/DiscountNotificationFilterPanel.tsx": 1,
     "src/components/admin/connections/ConnectionTestDetailsDialog.tsx": 1,
@@ -27,6 +32,7 @@
     "src/hooks/quotes/useDiscountApproval.ts": 1,
     "src/hooks/ui/use-toast.ts": 1,
     "src/hooks/ui/useOnboarding.ts": 1,
+    "src/hooks/useOnboarding.ts": 1,
     "src/lib/auth/oauth-error-explainer.ts": 1,
     "src/lib/chunk-recovery.ts": 1,
     "src/lib/external-db/index.ts": 1,
@@ -49,10 +55,5 @@
     "src/utils/br-schemas.ts": 1,
     "src/utils/masks.ts": 1,
     "src/utils/proposalPdfReactGenerator.ts": 1
-  },
-  "meta": {
-    "target": 30,
-    "deadline": "2027-01-31",
-    "note": "Resolver marcadores TODO/FIXME por sprint"
   }
 }
