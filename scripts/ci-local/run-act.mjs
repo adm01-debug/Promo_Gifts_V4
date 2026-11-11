@@ -206,7 +206,12 @@ export function sameStepName(yamlName, actName) {
 }
 
 /** Roda um workflow inteiro no act; grava o JSONL bruto e devolve os jobs. */
-export function runWorkflow({ cloneDir, workflowFile, event, eventPath, logPath, secretsFile, concurrentJobs = 4, timeoutMs = 90 * 60_000, artifactDir, extraArgs = [], nameCtx = {} }) {
+/** O workflow chama docker de dentro de um passo (precisa do socket do daemon)? */
+export function workflowNeedsDocker(text) {
+  return /\bdocker(?:-compose|\s+(?:run|build|compose|exec|pull|load|tag|push|inspect|ps))\b|\bsupabase\s+(?:start|db\s+start)\b/.test(String(text));
+}
+
+export function runWorkflow({ cloneDir, workflowFile, event, eventPath, logPath, secretsFile, concurrentJobs = 4, timeoutMs = 90 * 60_000, artifactDir, extraArgs = [], nameCtx = {}, allowDocker = false }) {
   return new Promise((resolve) => {
     const args = [
       event,
