@@ -96,8 +96,12 @@ export default function KitBuilderPage() {
         // If on landing, transition to editor first so the restored content
         // is immediately visible. startFlow must run before loadKit to avoid
         // startNewFlow clearing the data that restoreFromBackup just loaded.
-        if (state.isLanding) actions.startFlow('items-first', 'manual');
-        actions.restoreFromBackup(backup.fullState);
+        if (state.isLanding) {
+          actions.startFlow('items-first', 'manual');
+          actions.restoreFromBackup(backup.fullState, 'items-first');
+        } else {
+          actions.restoreFromBackup(backup.fullState);
+        }
         toast.info('Alterações restauradas', {
           description: 'Suas edições não salvas foram recuperadas automaticamente.',
           duration: 5_000,

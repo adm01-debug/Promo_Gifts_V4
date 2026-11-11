@@ -1,5 +1,5 @@
 -- Migration: 20260511235959_add_categories_full_path_readable_drift
--- Rollback: ALTER TABLE public.categories DROP COLUMN IF EXISTS full_path_readable;
+-- Rollback: supabase/rollbacks/20260511235959_rollback.sql (espelho: no-op — a coluna já existia em produção)
 -- Context: categories.full_path_readable foi adicionada diretamente em produção (out-of-band)
 -- sem migration registrada. A migration 20260512000000_bootstrap_missing_application_schemas
 -- cria as views classification_audit.v_gaps_acionaveis e v_kits_para_revisao que referenciam
