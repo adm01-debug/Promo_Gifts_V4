@@ -21,29 +21,54 @@
 import { execSync } from 'node:child_process';
 import { readFileSync, existsSync } from 'node:fs';
 
+const IN_CI = process.env.GITHUB_ACTIONS === 'true';
+const BASE_REF = process.env.GITHUB_BASE_REF || 'main';
+const MIGRATIONS_GLOB = "'supabase/migrations/*.sql'";
+
+function gitAddedSince(range) {
+  return execSync(`git diff --name-only --diff-filter=A ${range} -- ${MIGRATIONS_GLOB}`, {
+    encoding: 'utf8',
+    stdio: ['pipe', 'pipe', 'pipe'],
+  })
+    .split('\n')
+    .filter(Boolean);
+}
+
 const ADDED_FILES = (() => {
   // Em CI: GITHUB_BASE_REF aponta para base da PR.
-  const baseRef = process.env.GITHUB_BASE_REF || 'main';
   try {
-    const out = execSync(
-      `git diff --name-only --diff-filter=A origin/${baseRef}...HEAD -- 'supabase/migrations/*.sql'`,
-      { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] },
-    );
-    return out.split('\n').filter(Boolean);
+    return gitAddedSince(`origin/${BASE_REF}...HEAD`);
   } catch {
-    // Fora de PR (ex: rodando local sem origin/main): valida só arquivos
-    // não-rastreados ou modificados.
+    // actions/checkout raso (fetch-depth: 1) não tem origin/<base>: buscar a ponta da base.
+    // GUARD: antes o `git diff` falhava, o fallback devolvia [] e o gate dizia
+    // "nenhuma migration nova" sem validar nada em toda PR.
     try {
-      const out = execSync('git status --porcelain -- "supabase/migrations/*.sql"', {
-        encoding: 'utf8',
-      });
-      return out
-        .split('\n')
-        .filter((l) => /^[AM]/.test(l))
-        .map((l) => l.slice(3).trim())
-        .filter(Boolean);
+      execSync(
+        `git fetch --no-tags --depth=1 origin ${BASE_REF}:refs/remotes/origin/${BASE_REF}`,
+        { stdio: ['pipe', 'pipe', 'pipe'] },
+      );
+      return gitAddedSince(`origin/${BASE_REF} HEAD`);
     } catch {
-      return [];
+      if (IN_CI) {
+        console.error(
+          `❌ check-security-definer-hardening: base origin/${BASE_REF} indisponível no checkout — ` +
+            'não é possível saber quais migrations são novas. Use fetch-depth: 0 ou garanta acesso ao remoto.',
+        );
+        process.exit(2);
+      }
+      // Fora de CI (rodando local sem origin/main): valida arquivos novos, não-rastreados ou modificados.
+      try {
+        const out = execSync('git status --porcelain -- "supabase/migrations/*.sql"', {
+          encoding: 'utf8',
+        });
+        return out
+          .split('\n')
+          .filter((l) => /^(\?\?|[ AM][ AM])\s/.test(l))
+          .map((l) => l.slice(3).trim())
+          .filter(Boolean);
+      } catch {
+        return [];
+      }
     }
   }
 })();
@@ -57,26 +82,29 @@ const offenders = [];
 
 for (const path of ADDED_FILES) {
   if (!existsSync(path)) continue;
-  const content = readFileSync(path, 'utf8');
-  const lower = content.toLowerCase();
+  const raw = readFileSync(path, 'utf8');
+  const lower = raw.toLowerCase();
+  // Comentários não contam como código (um "-- security definer" não torna a função definer).
+  const content = raw.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/--[^\n]*/g, '');
 
-  // Detecta CREATE FUNCTION ... SECURITY DEFINER em qualquer ordem (até 500 chars entre).
-  const hasSdCreate = /create\s+(or\s+replace\s+)?function[\s\S]{0,500}security\s+definer/i.test(
-    content,
-  );
+  // GUARD: SECURITY DEFINER pode vir DEPOIS do corpo ($$ … $$ LANGUAGE plpgsql SECURITY DEFINER);
+  // a janela de 500 caracteres deixava funções longas escaparem.
+  const hasSdCreate =
+    /create\s+(or\s+replace\s+)?function/i.test(content) && /security\s+definer/i.test(content);
   if (!hasSdCreate) continue;
 
   const hasSearchPath = /set\s+search_path\s+to/i.test(content) || /search_path\s*=/i.test(content);
   // Aceita revoke explícito OU comentário marcador para helper de RLS.
-  const hasRevokeAnon =
-    /revoke\s+execute[\s\S]{0,200}\bfrom\b[\s\S]{0,200}\banon\b/i.test(content) ||
-    /--\s*rls-helper:/i.test(lower);
+  const hasMarker = /--\s*rls-helper:/i.test(lower);
+  // `[^;]*` (não cruza statements): `REVOKE … FROM PUBLIC; GRANT … TO anon` não é revoke de anon.
+  const hasRevokeAnon = /revoke\s+execute[^;]*\bfrom\b[^;]*\banon\b/i.test(content) || hasMarker;
+  const grantsAnon = /grant\s+execute[^;]*\bto\b[^;]*\banon\b/i.test(content) && !hasMarker;
 
-  if (!hasSearchPath || !hasRevokeAnon) {
+  if (!hasSearchPath || !hasRevokeAnon || grantsAnon) {
     offenders.push({
       path,
       missing_search_path: !hasSearchPath,
-      missing_revoke_or_marker: !hasRevokeAnon,
+      missing_revoke_or_marker: !hasRevokeAnon || grantsAnon,
     });
   }
 }
