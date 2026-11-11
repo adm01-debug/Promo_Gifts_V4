@@ -1,7 +1,7 @@
 /**
  * Testes para scripts/check-doc-refs.mjs
  *
- * Cobre dois bugs reais encontrados em auditoria adversarial do script:
+ * Cobre bugs reais encontrados em auditoria adversarial do script:
  *
  * 1) Performance O(refs × tamanho do arquivo): `countLines()` relia o
  *    arquivo-alvo do zero para CADA referência `path:linha` encontrada no
@@ -17,9 +17,19 @@
  *    Node em vez do relatório de erro controlado do próprio script.
  *    Corrigido com try/catch (mesmo padrão já usado para `statSync` no
  *    arquivo-alvo, poucas linhas abaixo no script original).
+ *
+ * 3) Crash não tratado em `countLines()` para o ARQUIVO-ALVO (não o
+ *    documento): quando uma referência `path:linha` aponta para um arquivo
+ *    que existe e passa por `statSync().isFile()`, mas não pode ser lido
+ *    (ex.: permissão negada — demonstrado com `setpriv` rodando como
+ *    usuário não-root, já que root ignora bits de permissão), o
+ *    `readFileSync(absPath)` dentro de `countLines()` lançava `EACCES` sem
+ *    tratamento, derrubando o processo com stack trace do Node em vez do
+ *    relatório de erro controlado. Mesma classe do bug 2, mas no lado do
+ *    arquivo-alvo. Corrigido com try/catch ao chamar `countLines()`.
  */
 import { test, expect } from 'vitest';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, chmodSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -123,6 +133,43 @@ test('argumento que é um diretório (não arquivo) reporta erro controlado em v
     expect(stdout + stderr).toMatch(/docs\/weird\.md: erro ao ler/);
     expect(stdout + stderr).toMatch(/EISDIR/);
   } finally {
+    rmSync(sandbox, { recursive: true, force: true });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────
+// Bug 3: crash não tratado quando o ARQUIVO-ALVO (referenciado) existe mas
+// não pode ser lido (ex.: EACCES) ao validar um range de linha.
+// ─────────────────────────────────────────────────────────────────────────
+
+test('arquivo-alvo sem permissão de leitura, referenciado com linha, reporta erro controlado em vez de crashar com EACCES', () => {
+  const sandbox = makeSandbox('doc-refs-eacces-');
+  try {
+    writeFileSync(join(sandbox, 'src/components/NoPerm.tsx'), 'a\nb\nc\n');
+    writeFileSync(join(sandbox, 'docs/noperm.md'), 'Ref: `src/components/NoPerm.tsx:2`\n');
+    chmodSync(join(sandbox, 'src/components/NoPerm.tsx'), 0o000);
+
+    const { code, stdout, stderr } = run(sandbox, ['docs/noperm.md']);
+    const combined = stdout + stderr;
+
+    // Antes da correção: `countLines()` chamava `readFileSync(absPath)` sem
+    // try/catch e o EACCES subia como exceção não tratada (stack trace do
+    // Node, processo morto fora do fluxo de relatório do script).
+    expect(combined).not.toMatch(/at readFileSync/);
+    expect(combined).not.toMatch(/at countLines/);
+    expect(combined).not.toMatch(/at ModuleJob\.run/);
+
+    // Em processos rodando como root, bits de permissão DAC são ignorados
+    // e o cenário de EACCES não é reproduzível — nesse caso só garantimos
+    // ausência de crash cru (já verificado acima).
+    const isRoot = typeof process.getuid === 'function' && process.getuid() === 0;
+    if (!isRoot) {
+      expect(code).toBe(1);
+      expect(combined).toMatch(/docs\/noperm\.md → src\/components\/NoPerm\.tsx:2: erro ao ler/);
+      expect(combined).toMatch(/EACCES/);
+    }
+  } finally {
+    chmodSync(join(sandbox, 'src/components/NoPerm.tsx'), 0o644);
     rmSync(sandbox, { recursive: true, force: true });
   }
 });

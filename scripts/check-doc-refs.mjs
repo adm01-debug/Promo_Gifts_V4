@@ -160,7 +160,13 @@ for (const docPath of args) {
       continue;
     }
 
-    const total = countLines(target);
+    let total;
+    try {
+      total = countLines(target);
+    } catch (err) {
+      errors.push(`${docPath} → ${full}: erro ao ler (${err.message})`);
+      continue;
+    }
     if (end > total) {
       errors.push(
         `${docPath} → ${full}: linha ${end} não existe (${pathRef} tem ${total} linhas)`,
