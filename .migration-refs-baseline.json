@@ -1890,6 +1890,14 @@
       "ref": "qa/migrations-draft/2026-07-15_magazine_public_token_trigger.sql"
     },
     {
+      "file": "RECOVERY_PLAN.md",
+      "ref": "supabase/migrations/_recovery/"
+    },
+    {
+      "file": "recovery/HANDOFF_2026-05-10.md",
+      "ref": "supabase/migrations/2026XXXXXXXXXX_recovery_missing_tables.sql"
+    },
+    {
       "file": "scripts/ai-context/cenarios.mjs",
       "ref": "supabase/migrations/001.sql"
     },
