@@ -9,6 +9,8 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'no
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import yaml from 'js-yaml';
+import { classifyStep } from './inventory.mjs';
+import { tokenlessEnv } from './run-act.mjs';
 
 /** Actions de ambiente: localmente já satisfeitas (node_modules, deno, git). */
 const ENV_ACTIONS = [
@@ -71,6 +73,28 @@ export function stepShouldRun(cond, { failed, evaluate }) {
   return true;
 }
 
+/** `if:` de JOB: só roda o que entende com certeza; o resto NÃO roda (vira inconclusivo). */
+export function jobShouldRun(cond, evaluate) {
+  if (cond === undefined || cond === null || cond === '' || cond === true) return true;
+  if (cond === false) return false;
+  const c = String(cond).replace(/^\$\{\{\s*|\s*\}\}$/g, '').trim();
+  if (/^(always|success)\(\)$/.test(c)) return true;
+  const eq = c.match(/^([\w.\-[\]'"]+)\s*(==|!=)\s*'([^']*)'$/);
+  if (eq) {
+    const left = evaluate(`\${{ ${eq[1]} }}`);
+    return eq[2] === '==' ? left === eq[3] : left !== eq[3];
+  }
+  return null; // não entendido
+}
+
+/** Substitui `${{ inputs.X }}` (defaults do action.yml + `with:` do chamador) nos passos da composite. */
+function bindInputs(steps, inputs) {
+  const sub = (v) => (typeof v === 'string'
+    ? v.replace(/\$\{\{\s*inputs\.([\w-]+)\s*\}\}/g, (_, k) => String(inputs[k] ?? ''))
+    : Array.isArray(v) ? v.map(sub) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, sub(x)])) : v);
+  return steps.map(sub);
+}
+
 function expandSteps(root, steps, depth = 0) {
   const out = [];
   for (const s of steps ?? []) {
@@ -80,13 +104,23 @@ function expandSteps(root, steps, depth = 0) {
       const file = ['action.yml', 'action.yaml'].map((f) => join(dir, f)).find(existsSync);
       const action = file ? yaml.load(readFileSync(file, 'utf8')) : null;
       if (action?.runs?.using === 'composite') {
-        out.push(...expandSteps(root, action.runs.steps, depth + 1).map((x) => ({ ...x, _from: uses })));
+        const defaults = Object.fromEntries(Object.entries(action.inputs ?? {}).map(([k, v]) => [k, v?.default ?? '']));
+        const bound = bindInputs(action.runs.steps ?? [], { ...defaults, ...(s.with ?? {}) });
+        out.push(...expandSteps(root, bound, depth + 1).map((x) => ({ ...x, _from: uses })));
         continue;
       }
     }
     out.push(s);
   }
   return out;
+}
+
+/** Tira do script as linhas de instalação (o node_modules local é reaproveitado; nunca reinstala no worktree). */
+export function stripInstallLines(script) {
+  const re = /^\s*(npm ci|npm install|bun install|npx playwright install)\b.*$/;
+  const lines = String(script).split('\n');
+  const kept = lines.filter((l) => !re.test(l));
+  return { script: kept.join('\n'), removed: lines.length - kept.length };
 }
 
 /**
@@ -108,10 +142,22 @@ export function runJobNative({ root, workflowDoc, jobId, context, secrets = {}, 
   let inconclusive = false;
   const shell = job?.defaults?.run?.shell ?? workflowDoc?.defaults?.run?.shell ?? 'bash';
 
+  const jobRun = jobShouldRun(job.if, evaluate);
+  if (jobRun !== true) {
+    rmSync(tmp, { recursive: true, force: true });
+    return jobRun === false
+      ? { status: 'pulado', steps: [{ name: '(job)', status: 'pulado', why: `if: ${job.if}` }] }
+      : { status: 'inconclusivo', steps: [{ name: '(job)', status: 'inconclusivo', why: `if: do job não avaliável no modo nativo (${job.if}) — use o modo act` }] };
+  }
+
   for (const step of expandSteps(root, job.steps)) {
     const name = step.name ?? step.uses ?? String(step.run ?? '').split('\n')[0].slice(0, 60);
     if (!stepShouldRun(step.if, { failed, evaluate })) {
       results.push({ name, status: 'pulado' });
+      continue;
+    }
+    if (classifyStep(step).cls === 'github-only') {
+      results.push({ name, status: 'pulado', why: 'só GitHub (nunca roda localmente)' });
       continue;
     }
     if (step.uses) {
@@ -120,10 +166,14 @@ export function runJobNative({ root, workflowDoc, jobId, context, secrets = {}, 
       if (!ENV_ACTIONS.includes(u)) inconclusive = true;
       continue;
     }
-    const run = String(step.run ?? '');
-    if (skipInstall && /^\s*(npm ci|npm install|bun install|npx playwright install)\b[^\n]*$/.test(run.trim())) {
-      results.push({ name, status: 'ambiente', why: 'instalação reaproveitada do node_modules local' });
-      continue;
+    let run = String(step.run ?? '');
+    if (skipInstall) {
+      const s = stripInstallLines(run);
+      if (s.removed && !s.script.trim()) {
+        results.push({ name, status: 'ambiente', why: 'instalação reaproveitada do node_modules local' });
+        continue;
+      }
+      run = s.script;
     }
     const neededSecrets = [...run.matchAll(/secrets\.([A-Za-z_]\w*)/g), ...JSON.stringify(step.env ?? {}).matchAll(/secrets\.([A-Za-z_]\w*)/g)]
       .map((m) => m[1]).filter((s) => s !== 'GITHUB_TOKEN' && !(s in secrets));
@@ -133,8 +183,14 @@ export function runJobNative({ root, workflowDoc, jobId, context, secrets = {}, 
       continue;
     }
     const stepEnv = Object.fromEntries(Object.entries({ ...baseEnv, ...step.env }).map(([k, v]) => [k, evaluate(v)]));
+    const wd = step['working-directory'] ? join(root, evaluate(step['working-directory'])) : root;
+    if (!existsSync(wd)) {
+      results.push({ name, status: 'inconclusivo', why: `working-directory não existe localmente: ${wd}` });
+      inconclusive = true;
+      continue;
+    }
     const env = {
-      ...process.env, ...persisted, ...stepEnv, CI: 'true', GITHUB_ACTIONS: 'true',
+      ...tokenlessEnv(join(tmp, 'no-gh')), ...persisted, ...stepEnv, CI: 'true', GITHUB_ACTIONS: 'true',
       GITHUB_ENV: ghEnv, GITHUB_OUTPUT: ghOut, GITHUB_STEP_SUMMARY: ghSummary,
       GITHUB_EVENT_NAME: context.github.event_name, GITHUB_BASE_REF: context.github.base_ref ?? '',
       GITHUB_HEAD_REF: context.github.head_ref ?? '', GITHUB_SHA: context.github.sha, GITHUB_REPOSITORY: context.github.repository,
@@ -148,7 +204,7 @@ export function runJobNative({ root, workflowDoc, jobId, context, secrets = {}, 
       continue;
     }
     const t0 = Date.now();
-    const r = spawnSync(cmd[0], cmd[1], { cwd: step['working-directory'] ? join(root, step['working-directory']) : root, env, encoding: 'utf8', maxBuffer: 512 * 1024 * 1024, timeout: (step['timeout-minutes'] ?? job['timeout-minutes'] ?? 60) * 60_000 });
+    const r = spawnSync(cmd[0], cmd[1], { cwd: wd, env, encoding: 'utf8', maxBuffer: 512 * 1024 * 1024, timeout: (step['timeout-minutes'] ?? job['timeout-minutes'] ?? 60) * 60_000 });
     // GITHUB_ENV persiste para os próximos passos (formato KEY=VAL; heredoc não suportado).
     for (const line of readFileSync(ghEnv, 'utf8').split('\n')) {
       const m = line.match(/^([A-Za-z_]\w*)=(.*)$/);

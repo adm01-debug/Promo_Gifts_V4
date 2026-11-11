@@ -52,7 +52,9 @@ export function pathsAllowed(filter, changedFiles) {
  * @returns {Array<{wf, reason}>} workflows que disparariam, com o motivo (ou motivo de pular).
  */
 export function selectWorkflows(inventory, opts) {
-  const { event, branch, baseBranch = 'main', changedFiles = [], all = false } = opts;
+  const { event, branch, baseBranch = 'main', changedFiles = [], all = false, eventAction = 'synchronize' } = opts;
+  // `types:` ausente em pull_request = opened, synchronize, reopened (padrão do GitHub).
+  const PR_DEFAULT_TYPES = ['opened', 'synchronize', 'reopened'];
   const out = [];
   for (const wf of inventory) {
     const trig = wf.triggers?.[event];
@@ -63,6 +65,13 @@ export function selectWorkflows(inventory, opts) {
     if (trig === undefined) {
       out.push({ wf, run: false, reason: `não dispara em ${event}` });
       continue;
+    }
+    if (event === 'pull_request' || event === 'pull_request_target') {
+      const types = Array.isArray(trig?.types) ? trig.types : typeof trig?.types === 'string' ? [trig.types] : PR_DEFAULT_TYPES;
+      if (!types.includes(eventAction)) {
+        out.push({ wf, run: false, reason: `types: [${types.join(', ')}] não inclui ${eventAction}` });
+        continue;
+      }
     }
     if (all) {
       out.push({ wf, run: true, reason: '--all (filtros ignorados)' });

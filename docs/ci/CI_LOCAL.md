@@ -47,8 +47,15 @@ O `.secrets` padrão do act **nunca** é lido; só esse arquivo (ou `--secrets <
 ## Garantias de segurança
 
 - **Nenhum token do GitHub é repassado**: nada do CI local consegue comentar, abrir issue,
-  fazer push, publicar release ou disparar workflow no GitHub.
-- **Clone isolado** por execução (`.ci-local/clone`): seu working tree não é montado nem alterado.
+  fazer push, publicar release ou disparar workflow no GitHub. Três travas, cada uma suficiente:
+  `-s GITHUB_TOKEN=` (o act, sem isso, roda `gh auth token` sozinho e injeta o seu token em
+  todos os jobs); processo filho sem `GITHUB_TOKEN`/`GH_TOKEN`/`SSH_AUTH_SOCK` e com
+  `GH_CONFIG_DIR` vazio; passos só-GitHub **pulados** (`if: false`) no clone. Um arquivo de
+  segredos que contenha `GITHUB_TOKEN`/`GH_TOKEN` é recusado. Testado com o `gh` logado: o job
+  recebe token vazio.
+- Se o próprio act quebrar (exit ≠ 0 sem job reprovado), o resultado é **FALHOU**, nunca ✅.
+- Falha num passo que não se consegue ligar ao YAML é **FALHOU** (não "inconclusivo").
+- **Clone isolado** por execução (`~/.cache/ci-local/<repo>-<hash>/clone`, fora do repositório para não poluir scanners): seu working tree não é montado nem alterado.
   O act roda o **commit** — commite antes para incluir alterações.
 - Workflows com gatilho de *escrita* em produção só agem com segredo; sem ele, ficam inconclusivos.
 
@@ -62,6 +69,16 @@ O `.secrets` padrão do act **nunca** é lido; só esse arquivo (ou `--secrets <
 | Passos que exigem segredo ausente / API do GitHub | rodam com credenciais | `continue-on-error` **só no clone**; saem como `ok-parcial` (job verde, passo não verificado) para que os jobs dependentes rodem |
 | Job `if: always()` após falha num workflow reutilizável (ex.: Gate Final) | roda e agrega os `needs` | o act não o executa; o veredito é **EMULADO** a partir dos `needs` e marcado como tal |
 | Concorrência | runners do GitHub | `--jobs N` (padrão 2) — com mais jobs pesados em paralelo (E2E + build + vitest), testes com prazo curto estouram por lentidão da máquina, não por defeito |
+
+## Limitações conhecidas (não afetam os workflows atuais do repo)
+
+- Shim do `paths-filter`: `list-files: shell/escape/csv` sem escape de espaços; rename vira
+  added+deleted (no GitHub é `renamed`); `some-with-excludes` cai em `some`. O repo só usa `json`.
+- Shim de `upload-artifact`: nome repetido mescla em vez de dar 409; `include-hidden-files` ignorado.
+- `download-artifact` com `pattern: '{a,b}'` (chaves) não casa; id inexistente em `artifact-ids` é ignorado.
+- Glob de paths usa minimatch (`'**.js'` do GitHub não casa subpastas aqui).
+- Modo `fast`: `if:` de job que não seja `always()`/`success()`/comparação simples não roda (inconclusivo).
+- `extras` pode listar como órfão script que o CI roda por comando cru (`npx vitest run`).
 
 ## Requisitos
 

@@ -174,6 +174,37 @@ export function parseActJsonl(lines, ctx = {}) {
   return [...jobs.values()];
 }
 
+/** Variáveis que dariam escrita no GitHub a um processo filho. */
+export const TOKEN_ENV = ['GITHUB_TOKEN', 'GH_TOKEN', 'GH_ENTERPRISE_TOKEN', 'GITHUB_ENTERPRISE_TOKEN', 'GITHUB_PAT', 'GH_PAT'];
+
+/**
+ * Ambiente do processo filho sem nenhuma credencial do GitHub: tira os tokens, aponta o `gh`
+ * para uma configuração vazia e desliga credential helpers/ssh-agent do git.
+ */
+export function tokenlessEnv(emptyGhDir) {
+  const env = { ...process.env };
+  for (const k of TOKEN_ENV) delete env[k];
+  delete env.SSH_AUTH_SOCK;
+  return { ...env, GH_CONFIG_DIR: emptyGhDir, GIT_TERMINAL_PROMPT: '0', GIT_ASKPASS: '/bin/false', GIT_CONFIG_NOSYSTEM: '1' };
+}
+
+/** Recusa arquivo de segredos que traga credencial do GitHub (o CI local nunca escreve no GitHub). */
+export function assertNoGithubTokenInSecrets(names) {
+  const bad = names.filter((n) => TOKEN_ENV.includes(n));
+  if (bad.length) throw new Error(`arquivo de segredos não pode conter ${bad.join(', ')}: o CI local nunca recebe credencial do GitHub`);
+}
+
+/** Normaliza nome de passo: `${{ … }}` vira curinga e `@ref` final some (o act reporta `uses@sha`). */
+export function sameStepName(yamlName, actName) {
+  const norm = (s) => String(s ?? '').replace(/@[^@\s]+$/, '').trim();
+  const a = norm(yamlName);
+  const b = norm(actName);
+  if (a === b) return true;
+  if (!a.includes('${{')) return false;
+  const re = a.split(/\$\{\{[\s\S]*?\}\}/).map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('.*');
+  return new RegExp(`^${re}$`).test(b);
+}
+
 /** Roda um workflow inteiro no act; grava o JSONL bruto e devolve os jobs. */
 export function runWorkflow({ cloneDir, workflowFile, event, eventPath, logPath, secretsFile, concurrentJobs = 4, timeoutMs = 90 * 60_000, artifactDir, extraArgs = [], nameCtx = {} }) {
   return new Promise((resolve) => {
@@ -183,14 +214,19 @@ export function runWorkflow({ cloneDir, workflowFile, event, eventPath, logPath,
       '-e', eventPath,
       '--json',
       '--secret-file', secretsFile && existsSync(secretsFile) ? secretsFile : '/dev/null',
+      // Sem isto o act roda `gh auth token` sozinho e injeta o token do usuário em
+      // secrets.GITHUB_TOKEN de todos os jobs (provado: API devolveu 200).
+      '-s', 'GITHUB_TOKEN=',
       '--var-file', '/dev/null',
+      '--env-file', '/dev/null',
+      '--input-file', '/dev/null',
       '--concurrent-jobs', String(concurrentJobs),
       '--artifact-server-path', artifactDir,
       ...extraArgs,
     ];
     const out = createWriteStream(logPath);
     const lines = [];
-    const child = spawn('act', args, { cwd: cloneDir, env: { ...process.env, GITHUB_TOKEN: '' } });
+    const child = spawn('act', args, { cwd: cloneDir, env: tokenlessEnv(join(cloneDir, '.no-gh')) });
     let buf = '';
     const onData = (chunk) => {
       out.write(chunk);
@@ -216,13 +252,17 @@ export function runWorkflow({ cloneDir, workflowFile, event, eventPath, logPath,
 /** Junta o resultado do act com a classificação do inventário → veredito local. */
 export function verdict(jobResult, jobInfo, { secretsProvided = [] } = {}) {
   if (!jobResult) return { status: 'não executado', why: 'job não reportou (if: falso, needs pulado ou workflow abortado)' };
+  const findStep = (n) => (jobInfo?.steps ?? []).find((x) => sameStepName(x.name, n));
   if (jobResult.result === 'success') {
-    // Passos neutralizados no clone (segredo ausente / API do GitHub) que falharam: o resto passou.
+    // Passos neutralizados no clone (segredo ausente) que falharam: o resto passou.
     const unverified = (jobResult.failedSteps ?? []).filter((n) => {
-      const st = (jobInfo?.steps ?? []).find((x) => x.name === n);
+      const st = findStep(n);
       return st && (st.cls === 'github-only' || st.secrets.some((x) => !secretsProvided.includes(x)));
     });
-    if (unverified.length) return { status: 'ok-parcial', why: `não verificado(s) sem segredo/GitHub: ${[...new Set(unverified)].join('; ')}` };
+    // Passos só-GitHub são PULADOS no clone (nunca rodam sem token): também não verificados.
+    const skippedGh = (jobInfo?.steps ?? []).filter((x) => x.cls === 'github-only').map((x) => x.name);
+    const all = [...new Set([...unverified, ...skippedGh])];
+    if (all.length) return { status: 'ok-parcial', why: `não verificado(s) sem segredo/GitHub: ${all.join('; ')}` };
     return { status: 'ok' };
   }
   if (jobResult.result === 'skipped') return { status: 'pulado', why: 'if: falso' };
@@ -233,25 +273,24 @@ export function verdict(jobResult, jobInfo, { secretsProvided = [] } = {}) {
   const failed = jobResult.failedSteps?.length ? jobResult.failedSteps : [jobResult.failedStep].filter(Boolean);
   const steps = jobInfo?.steps ?? [];
   const unverifiable = (name) => {
-    const st = steps.find((x) => x.name === name);
+    const st = steps.find((x) => sameStepName(x.name, name));
     if (!st) return null; // passo não mapeado
     if (st.cls === 'github-only') return `passo ${st.name}: ${st.reasons.join(', ')}`;
     const missing = st.secrets.filter((x) => !secretsProvided.includes(x));
     return missing.length ? `passo ${st.name}: segredo(s) ausente(s): ${missing.join(', ')}` : null;
   };
-  const real = failed.find((n) => steps.some((x) => x.name === n) && !unverifiable(n));
+  const isMapped = (n) => steps.some((x) => sameStepName(x.name, n));
+  const real = failed.find((n) => isMapped(n) && !unverifiable(n));
   if (real) return { status: 'FALHOU', why: `passo: ${real}` };
-  const mapped = failed.filter((n) => steps.some((x) => x.name === n));
-  if (mapped.length && mapped.length === failed.length) {
-    const ghOnly = mapped.every((n) => steps.find((x) => x.name === n)?.cls === 'github-only');
-    return { status: ghOnly ? 'só GitHub' : 'inconclusivo', why: mapped.map(unverifiable).join('; ') };
+  // Passo que não se consegue ligar ao YAML NÃO é presumido inconclusivo: falha não provada
+  // como dependente de segredo é falha (nunca esconder regressão real).
+  const unmapped = failed.find((n) => !isMapped(n));
+  if (unmapped) return { status: 'FALHOU', why: `passo: ${unmapped} (não mapeado no YAML; tratado como falha real)` };
+  if (failed.length) {
+    const ghOnly = failed.every((n) => steps.find((x) => sameStepName(x.name, n))?.cls === 'github-only');
+    return { status: ghOnly ? 'só GitHub' : 'inconclusivo', why: failed.map(unverifiable).join('; ') };
   }
-  // Passo não identificado (ex.: falha em action composta) num job que usa segredos: não afirmar regressão.
-  const jobMissing = (jobInfo?.secrets ?? []).filter((x) => !secretsProvided.includes(x));
-  if (jobInfo?.cls === 'secret' && jobMissing.length) {
-    return { status: 'inconclusivo', why: `passo "${failed[0] ?? '?'}" não mapeado; job usa segredo(s) ausente(s): ${jobMissing.join(', ')}` };
-  }
-  return { status: 'FALHOU', why: failed.length ? `passo: ${failed[0]}` : '' };
+  return { status: 'FALHOU', why: 'job falhou sem passo identificado' };
 }
 
 /**
@@ -266,7 +305,13 @@ export function neutralizeUnverifiable(doc, classify, secretsProvided = []) {
     for (const step of job?.steps ?? []) {
       const info = classify(step);
       const missing = info.secrets.filter((x) => !secretsProvided.includes(x));
-      if ((info.cls === 'github-only' || missing.length) && step['continue-on-error'] !== true) {
+      // Só-GitHub (comentar PR, abrir issue, push, release…): PULADO no clone — nunca roda localmente.
+      if (info.cls === 'github-only') {
+        step.if = 'false';
+        n += 1;
+        continue;
+      }
+      if (missing.length && step['continue-on-error'] !== true) {
         step['continue-on-error'] = true;
         n += 1;
       }
@@ -284,9 +329,10 @@ export function emulateAlwaysJob(jobInfo, byJobId) {
   if (!jobInfo?.always || !jobInfo.needs.length) return null;
   const needs = jobInfo.needs.map((n) => byJobId.get(n));
   if (needs.some((n) => !n)) return null;
-  const order = ['FALHOU', 'inconclusivo', 'ok-parcial'];
+  // `não executado`/`só GitHub` num need: o GitHub teria um resultado que não temos → inconclusivo.
+  const order = ['FALHOU', 'não executado', 'inconclusivo', 'só GitHub', 'ok-parcial'];
   const worst = order.find((st) => needs.some((n) => n.status === st));
-  const status = worst ?? 'ok';
+  const status = worst === 'não executado' || worst === 'só GitHub' ? 'inconclusivo' : (worst ?? 'ok');
   const detail = worst ? needs.filter((n) => n.status === worst).map((n) => n.check).join('; ') : '';
   return { status, why: `EMULADO (act não roda always() após falha em reutilizável) a partir de ${needs.length} needs${detail ? ` — ${worst}: ${detail}` : ''}` };
 }

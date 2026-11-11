@@ -207,7 +207,9 @@ describe('reutilizáveis, neutralização no clone e ok-parcial', async () => {
     ] } } };
     expect(neutralizeUnverifiable(doc, cs, ['PROVIDED'])).toBe(2);
     const flags = doc.jobs.a.steps.map((st) => st['continue-on-error'] ?? false);
-    expect(flags).toEqual([false, true, true, false]);
+    expect(flags).toEqual([false, true, false, false]);
+    // só-GitHub é PULADO (nunca roda sem token), não apenas tolerado
+    expect(doc.jobs.a.steps.map((st) => st.if ?? null)).toEqual([null, null, 'false', null]);
   });
   it('job verde com passo neutralizado que falhou → ok-parcial (nunca "ok" puro)', () => {
     const info = { cls: 'secret', secrets: ['K'], steps: [{ name: 'Live', cls: 'secret', secrets: ['K'] }, { name: 'Build', cls: 'local', secrets: [] }] };
@@ -224,6 +226,75 @@ describe('veredito considera TODOS os passos que falharam', async () => {
   });
   it('só passos sem segredo falharam → inconclusivo', () => {
     expect(v({ result: 'failure', failedSteps: ['Live'] }, info).status).toBe('inconclusivo');
+  });
+});
+
+describe('achados da revisão adversarial (token, exit do act, nomes, matrix, types, nativo)', async () => {
+  const ra = await import('../../scripts/ci-local/run-act.mjs');
+  const nat = await import('../../scripts/ci-local/native.mjs');
+  const { selectWorkflows } = await import('../../scripts/ci-local/select.mjs');
+
+  it('act recebe -s GITHUB_TOKEN= e o processo não herda token nem config do gh', async () => {
+    const { readFileSync } = await import('node:fs');
+    const src = readFileSync(`${import.meta.dirname}/../../scripts/ci-local/run-act.mjs`, 'utf8');
+    expect(src).toMatch(/'-s', 'GITHUB_TOKEN='/);
+    const saved = { ...process.env };
+    process.env.GITHUB_TOKEN = 'gho_x';
+    process.env.GH_TOKEN = 'gho_y';
+    process.env.SSH_AUTH_SOCK = '/tmp/agent';
+    try {
+      const env = ra.tokenlessEnv('/tmp/vazio');
+      expect(env.GITHUB_TOKEN).toBeUndefined();
+      expect(env.GH_TOKEN).toBeUndefined();
+      expect(env.SSH_AUTH_SOCK).toBeUndefined();
+      expect(env.GH_CONFIG_DIR).toBe('/tmp/vazio');
+    } finally {
+      for (const k of ['GITHUB_TOKEN', 'GH_TOKEN', 'SSH_AUTH_SOCK']) (k in saved ? (process.env[k] = saved[k]) : delete process.env[k]);
+    }
+  });
+
+  it('arquivo de segredos com token do GitHub é recusado', () => {
+    expect(() => ra.assertNoGithubTokenInSecrets(['SUPABASE_ACCESS_TOKEN', 'GITHUB_TOKEN'])).toThrow(/GITHUB_TOKEN/);
+    expect(() => ra.assertNoGithubTokenInSecrets(['SUPABASE_ACCESS_TOKEN'])).not.toThrow();
+  });
+
+  it('nome com ${{ }} e uses@sha ligam ao passo do YAML', () => {
+    expect(ra.sameStepName('Run E2E · ${{ matrix.suite }}', 'Run E2E · cart')).toBe(true);
+    expect(ra.sameStepName('actions/checkout', 'actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955')).toBe(true);
+    expect(ra.sameStepName('Build', 'Build all')).toBe(false);
+  });
+
+  it('falha real em passo com nome interpolado num job com segredo → FALHOU (não inconclusivo)', () => {
+    const info = { cls: 'secret', secrets: ['API_KEY'], steps: [{ name: 'Teste ${{ matrix.node }}', cls: 'local', secrets: [], reasons: [] }] };
+    expect(ra.verdict({ result: 'failure', failedSteps: ['Teste 20'] }, info).status).toBe('FALHOU');
+    // passo que nem se liga ao YAML também é falha, nunca "inconclusivo"
+    expect(ra.verdict({ result: 'failure', failedSteps: ['algo/desconhecido'] }, info).status).toBe('FALHOU');
+  });
+
+  it('Gate emulado: não executado / só GitHub nos needs → inconclusivo (nunca ok)', () => {
+    const gate = { always: true, needs: ['a', 'b'] };
+    const m = (a, b) => new Map([['a', { check: 'a', status: a }], ['b', { check: 'b', status: b }]]);
+    expect(ra.emulateAlwaysJob(gate, m('ok', 'não executado')).status).toBe('inconclusivo');
+    expect(ra.emulateAlwaysJob(gate, m('ok', 'só GitHub')).status).toBe('inconclusivo');
+    expect(ra.emulateAlwaysJob(gate, m('FALHOU', 'não executado')).status).toBe('FALHOU');
+    expect(ra.emulateAlwaysJob(gate, m('ok', 'ok')).status).toBe('ok');
+  });
+
+  it('pull_request com types: [opened, closed] não dispara em synchronize', () => {
+    const wf = (types) => ({ file: 'x.yml', triggers: { pull_request: types ? { types } : {} }, jobs: [] });
+    const [a, b] = selectWorkflows([wf(['opened', 'closed']), wf(null)], { event: 'pull_request', branch: 'f', changedFiles: ['a'] });
+    expect(a.run).toBe(false);
+    expect(b.run).toBe(true);
+  });
+
+  it('nativo: if: do job não entendido não roda; instalação some do script multi-linha', () => {
+    const ev = nat.makeEvaluator({ github: { event_name: 'pull_request' } });
+    expect(nat.jobShouldRun("github.event_name == 'schedule'", ev)).toBe(false);
+    expect(nat.jobShouldRun("github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'", ev)).toBe(null);
+    expect(nat.jobShouldRun(undefined, ev)).toBe(true);
+    const s = nat.stripInstallLines('set -e\nnpm ci --no-audit\nnpm run build');
+    expect(s.removed).toBe(1);
+    expect(s.script).toBe('set -e\nnpm run build');
   });
 });
 
