@@ -55,10 +55,12 @@ O `.secrets` padrão do act **nunca** é lido; só esse arquivo (ou `--secrets <
   recebe token vazio.
 - **Socket do Docker** só é montado nos workflows que chamam `docker`/`supabase start` num passo
   (com ele, um passo teria acesso de root ao host). Os demais rodam com `--container-daemon-socket -`.
-- **Modo `fast`**: cada passo roda com `HOME` temporário (sem `~/.config/gh`, `~/.netrc`,
-  `~/.gitconfig`); caches de npm/playwright/deno continuam os reais. Comandos de instalação são
-  neutralizados com `:` (nunca instala no worktree nem no host). `if:` que dependa de
-  `needs`/`vars` vira **inconclusivo**; `steps.*.outputs` é lido do `GITHUB_OUTPUT` real.
+- **Modo `fast`**: cada passo roda dentro do `bwrap` (bubblewrap) com a home real **escondida**
+  (sem `~/.config/gh`, `~/.ssh`, `~/.netrc`, `~/.gitconfig`); só o repo, o `.git` comum, o node
+  (`~/.nvm`) e os caches (`~/.npm`, `~/.cache`) ficam visíveis. Sem `bwrap`, o relatório marca
+  "sem isolamento". Instalação de dependências é barrada por shims de `npm/pnpm/yarn/bun/npx` no
+  PATH (o script roda intacto); `sudo`, `apt-get install` e `pip install` nunca rodam no host
+  (inconclusivo). `if:` que dependa de `needs`/`vars` ou de passo que não rodou vira inconclusivo.
 - Se o próprio act quebrar (exit ≠ 0 sem job reprovado), o resultado é **FALHOU**, nunca ✅.
 - Falha num passo que não se consegue ligar ao YAML é **FALHOU** (não "inconclusivo").
 - **Clone isolado** por execução (`~/.cache/ci-local/<repo>-<hash>/clone`, fora do repositório para não poluir scanners): seu working tree não é montado nem alterado.

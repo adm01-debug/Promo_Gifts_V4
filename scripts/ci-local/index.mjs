@@ -22,7 +22,7 @@ import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
 import { buildInventory, summarize } from './inventory.mjs';
 import { selectWorkflows } from './select.mjs';
-import { assertNoGithubTokenInSecrets, workflowNeedsDocker, buildEvent, emulateAlwaysJob, neutralizeUnverifiable, prepareClone, prepareShims, runWorkflow, verdict, writeJson } from './run-act.mjs';
+import { parseSecretsText, workflowNeedsDocker, buildEvent, emulateAlwaysJob, neutralizeUnverifiable, prepareClone, prepareShims, runWorkflow, verdict, writeJson } from './run-act.mjs';
 import { classifyStep } from './inventory.mjs';
 import { runJobNative } from './native.mjs';
 import { compareResults, fetchGithubChecks } from './compare.mjs';
@@ -74,14 +74,9 @@ function changedFiles(base, sha) {
 
 function secretsFile(opt) {
   const f = opt ?? join(homedir(), '.config', 'ci-local', 'secrets.env');
-  if (!existsSync(f)) return { file: null, names: [] };
-  const lines = readFileSync(f, 'utf8').split('\n');
-  // `export NOME=` também é aceito pelo act (godotenv).
-  const names = lines.map((l) => l.match(/^\s*(?:export\s+)?([A-Za-z_]\w*)\s*=/)?.[1]).filter(Boolean);
-  assertNoGithubTokenInSecrets(names);
-  // Token do GitHub gravado com outro nome também é recusado.
-  if (lines.some((l) => /=\s*['"]?(gh[pousr]_|github_pat_)/.test(l))) throw new Error('arquivo de segredos contém um token do GitHub (gh*_ / github_pat_): o CI local nunca recebe credencial do GitHub');
-  return { file: f, names };
+  if (!existsSync(f)) return { file: null, names: [], values: {} };
+  const values = parseSecretsText(readFileSync(f, 'utf8'));
+  return { file: f, names: Object.keys(values), values };
 }
 
 function headRef() {
@@ -166,7 +161,7 @@ async function cmdRun(o) {
       cloneDir: clone.dir, workflowFile: s.wf.file, event: o.event, eventPath,
       logPath: join(dir, 'logs', `${s.wf.file}.jsonl`), secretsFile: sec.file, concurrentJobs: o.jobs,
       timeoutMs: o.timeout * 60_000, artifactDir: join(dir, 'artifacts'), extraArgs: shimArgs,
-      allowDocker: workflowNeedsDocker(readFileSync(join(clone.dir, '.github/workflows', s.wf.file), 'utf8')),
+      allowDocker: workflowNeedsDocker(readFileSync(join(clone.dir, '.github/workflows', s.wf.file), 'utf8'), (p) => readFileSync(join(clone.dir, p.endsWith('.yml') || p.endsWith('.yaml') ? p : `${p}/action.yml`), 'utf8')),
       nameCtx: {
         workflowName: s.wf.name,
         reusable: s.wf.jobs.filter((j) => j.reusable?.startsWith('./')).map((j) => ({ callerId: j.id, callerName: j.name, calledName: j.calledName ?? '' })),
@@ -236,7 +231,7 @@ async function cmdFast(o) {
   const baseSha = git('rev-parse', o.base);
   const context = { github: { event_name: 'pull_request', base_ref: 'main', head_ref: headRef(), sha, repository: 'adm01-debug/Promo_Gifts_V4', event: buildEvent({ event: 'pull_request', sha, baseSha, headRef: headRef() }) }, needs: {}, matrix: {}, vars: {}, inputs: {}, runner: { os: 'Linux', temp: '/tmp' } };
   const sec = secretsFile(o.secrets);
-  const secrets = sec.file ? Object.fromEntries(readFileSync(sec.file, 'utf8').split('\n').map((l) => l.match(/^\s*([A-Za-z_]\w*)\s*=\s*(.*)$/)).filter(Boolean).map((m) => [m[1], m[2]])) : {};
+  const secrets = sec.values;
   const id = `fast-${new Date().toISOString().replace(/[:.]/g, '-')}`;
   const dir = join(OUT, 'runs', id);
   mkdirSync(dir, { recursive: true });

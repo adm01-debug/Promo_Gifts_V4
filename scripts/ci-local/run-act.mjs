@@ -217,9 +217,47 @@ export function matchStep(steps, actName) {
   return wild.length === 1 ? wild[0] : undefined;
 }
 
-/** O workflow chama docker de dentro de um passo (precisa do socket do daemon)? */
-export function workflowNeedsDocker(text) {
-  return /\bdocker(?:-compose|\s+(?:run|build|compose|exec|pull|load|tag|push|inspect|ps))\b|\bsupabase\s+(?:start|db\s+start)\b/.test(String(text));
+const DOCKER_RE = /\bdocker(?:-compose\b|\s+[a-z])|\buses:\s*['"]?docker\/(?:build-push|setup-buildx)|\bsupabase\s+(?:--?\S+(?:\s+(?!start\b|db\b|test\b|functions\b)[^-\s]\S*)?\s+)*(?:start|db\s+(?:start|dump|diff|reset|pull)|test\s+db|functions\s+serve)\b/;
+
+/**
+ * O workflow chama docker de dentro de um passo (precisa do socket do daemon)? Ignora
+ * comentários e segue workflows reutilizáveis/actions compostas locais (`uses: ./…`).
+ * `services:`/`container:`/`uses: docker://` não precisam: o act os cria no daemon do host.
+ */
+export function workflowNeedsDocker(text, readLocal = () => '', seen = new Set()) {
+  const t = String(text).split('\n').map((l) => l.replace(/(^|\s)#.*$/, '')).join('\n');
+  if (DOCKER_RE.test(t)) return true;
+  for (const [, p] of t.matchAll(/uses:\s*['"]?(\.\/[^\s'"@]+)/g)) {
+    if (seen.has(p)) continue;
+    seen.add(p);
+    let sub = '';
+    try {
+      sub = readLocal(p);
+    } catch {
+      sub = '';
+    }
+    if (workflowNeedsDocker(sub, readLocal, seen)) return true;
+  }
+  return false;
+}
+
+/** Token do GitHub em qualquer posição (gh*_ / github_pat_). */
+export const GITHUB_TOKEN_VALUE_RE = /\b(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})/;
+
+/**
+ * Lê um arquivo de segredos como o act (godotenv): `NOME=v`, `export NOME=v`, `NOME: v`,
+ * aspas opcionais. Recusa credencial do GitHub por nome OU por valor.
+ */
+export function parseSecretsText(text) {
+  const values = {};
+  for (const l of String(text).split(/\r?\n/)) {
+    const m = l.match(/^\s*(?:export\s+)?([A-Za-z_]\w*)\s*[=:]\s*(.*?)\s*$/);
+    if (!m || l.trim().startsWith('#')) continue;
+    values[m[1]] = m[2].replace(/^(['"])(.*)\1$/, '$2');
+  }
+  assertNoGithubTokenInSecrets(Object.keys(values));
+  if (String(text).match(GITHUB_TOKEN_VALUE_RE)) throw new Error('arquivo de segredos contém um token do GitHub (gh*_ / github_pat_): o CI local nunca recebe credencial do GitHub');
+  return values;
 }
 
 export function runWorkflow({ cloneDir, workflowFile, event, eventPath, logPath, secretsFile, concurrentJobs = 4, timeoutMs = 90 * 60_000, artifactDir, extraArgs = [], nameCtx = {}, allowDocker = false }) {
