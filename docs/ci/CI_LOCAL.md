@@ -53,6 +53,12 @@ O `.secrets` padrão do act **nunca** é lido; só esse arquivo (ou `--secrets <
   `GH_CONFIG_DIR` vazio; passos só-GitHub **pulados** (`if: false`) no clone. Um arquivo de
   segredos que contenha `GITHUB_TOKEN`/`GH_TOKEN` é recusado. Testado com o `gh` logado: o job
   recebe token vazio.
+- **Socket do Docker** só é montado nos workflows que chamam `docker`/`supabase start` num passo
+  (com ele, um passo teria acesso de root ao host). Os demais rodam com `--container-daemon-socket -`.
+- **Modo `fast`**: cada passo roda com `HOME` temporário (sem `~/.config/gh`, `~/.netrc`,
+  `~/.gitconfig`); caches de npm/playwright/deno continuam os reais. Comandos de instalação são
+  neutralizados com `:` (nunca instala no worktree nem no host). `if:` que dependa de
+  `needs`/`vars` vira **inconclusivo**; `steps.*.outputs` é lido do `GITHUB_OUTPUT` real.
 - Se o próprio act quebrar (exit ≠ 0 sem job reprovado), o resultado é **FALHOU**, nunca ✅.
 - Falha num passo que não se consegue ligar ao YAML é **FALHOU** (não "inconclusivo").
 - **Clone isolado** por execução (`~/.cache/ci-local/<repo>-<hash>/clone`, fora do repositório para não poluir scanners): seu working tree não é montado nem alterado.
@@ -77,7 +83,7 @@ O `.secrets` padrão do act **nunca** é lido; só esse arquivo (ou `--secrets <
 - Shim de `upload-artifact`: nome repetido mescla em vez de dar 409; `include-hidden-files` ignorado.
 - `download-artifact` com `pattern: '{a,b}'` (chaves) não casa; id inexistente em `artifact-ids` é ignorado.
 - Glob de paths usa minimatch (`'**.js'` do GitHub não casa subpastas aqui).
-- Modo `fast`: `if:` de job que não seja `always()`/`success()`/comparação simples não roda (inconclusivo).
+- Modo `fast`: `if:` fora de `always()`/`success()`/`!cancelled()`/comparação simples vira inconclusivo (use o modo act).
 - `extras` pode listar como órfão script que o CI roda por comando cru (`npx vitest run`).
 
 ## Requisitos

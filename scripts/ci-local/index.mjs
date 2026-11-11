@@ -22,7 +22,7 @@ import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
 import { buildInventory, summarize } from './inventory.mjs';
 import { selectWorkflows } from './select.mjs';
-import { assertNoGithubTokenInSecrets, buildEvent, emulateAlwaysJob, neutralizeUnverifiable, prepareClone, prepareShims, runWorkflow, verdict, writeJson } from './run-act.mjs';
+import { assertNoGithubTokenInSecrets, workflowNeedsDocker, buildEvent, emulateAlwaysJob, neutralizeUnverifiable, prepareClone, prepareShims, runWorkflow, verdict, writeJson } from './run-act.mjs';
 import { classifyStep } from './inventory.mjs';
 import { runJobNative } from './native.mjs';
 import { compareResults, fetchGithubChecks } from './compare.mjs';
@@ -75,8 +75,12 @@ function changedFiles(base, sha) {
 function secretsFile(opt) {
   const f = opt ?? join(homedir(), '.config', 'ci-local', 'secrets.env');
   if (!existsSync(f)) return { file: null, names: [] };
-  const names = readFileSync(f, 'utf8').split('\n').map((l) => l.match(/^\s*([A-Za-z_]\w*)\s*=/)?.[1]).filter(Boolean);
+  const lines = readFileSync(f, 'utf8').split('\n');
+  // `export NOME=` também é aceito pelo act (godotenv).
+  const names = lines.map((l) => l.match(/^\s*(?:export\s+)?([A-Za-z_]\w*)\s*=/)?.[1]).filter(Boolean);
   assertNoGithubTokenInSecrets(names);
+  // Token do GitHub gravado com outro nome também é recusado.
+  if (lines.some((l) => /=\s*['"]?(gh[pousr]_|github_pat_)/.test(l))) throw new Error('arquivo de segredos contém um token do GitHub (gh*_ / github_pat_): o CI local nunca recebe credencial do GitHub');
   return { file: f, names };
 }
 
@@ -162,6 +166,7 @@ async function cmdRun(o) {
       cloneDir: clone.dir, workflowFile: s.wf.file, event: o.event, eventPath,
       logPath: join(dir, 'logs', `${s.wf.file}.jsonl`), secretsFile: sec.file, concurrentJobs: o.jobs,
       timeoutMs: o.timeout * 60_000, artifactDir: join(dir, 'artifacts'), extraArgs: shimArgs,
+      allowDocker: workflowNeedsDocker(readFileSync(join(clone.dir, '.github/workflows', s.wf.file), 'utf8')),
       nameCtx: {
         workflowName: s.wf.name,
         reusable: s.wf.jobs.filter((j) => j.reusable?.startsWith('./')).map((j) => ({ callerId: j.id, callerName: j.name, calledName: j.calledName ?? '' })),
