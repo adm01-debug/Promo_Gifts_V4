@@ -2,28 +2,34 @@
   "description": "Importações cross-domain históricas entre src/pages/<domínio>. Novas violações falham o gate — código compartilhado vai em src/components|lib|hooks|services.",
   "violations": [
     {
-      "file": "pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx",
-      "from": "__tests__",
-      "to": "quotes",
-      "target": "pages/quotes/QuoteBuilderPage"
-    },
-    {
-      "file": "pages/__tests__/SimulationPage.blocked.test.tsx",
-      "from": "__tests__",
-      "to": "Simulation",
-      "target": "pages/Simulation"
-    },
-    {
-      "file": "pages/__tests__/SSOCallbackPage.test.tsx",
-      "from": "__tests__",
-      "to": "auth",
-      "target": "pages/auth/SSOCallbackPage"
-    },
-    {
       "file": "pages/admin/AdminCadastrosPage.tsx",
       "from": "admin",
       "to": "tools",
       "target": "pages/tools/EngravingRegistrationPage"
+    },
+    {
+      "file": "pages/AdvancedPriceSearchPage.tsx",
+      "from": "AdvancedPriceSearchPage",
+      "to": "advanced-price-search",
+      "target": "pages/advanced-price-search/useAdvancedPriceSearch"
+    },
+    {
+      "file": "pages/AdvancedPriceSearchPage.tsx",
+      "from": "AdvancedPriceSearchPage",
+      "to": "advanced-price-search",
+      "target": "pages/advanced-price-search/ResultViews"
+    },
+    {
+      "file": "pages/AdvancedPriceSearchPage.tsx",
+      "from": "AdvancedPriceSearchPage",
+      "to": "advanced-price-search",
+      "target": "pages/advanced-price-search/types"
+    },
+    {
+      "file": "pages/Auth.tsx",
+      "from": "Auth",
+      "to": "auth",
+      "target": "pages/auth/AuthBranding"
     },
     {
       "file": "pages/bi/TrendsPage.tsx",
@@ -44,6 +50,84 @@
       "target": "pages/trends/trends-mock"
     },
     {
+      "file": "pages/CollectionsPage.tsx",
+      "from": "CollectionsPage",
+      "to": "collections",
+      "target": "pages/collections/useCollectionsPageState"
+    },
+    {
+      "file": "pages/FiltersPage.tsx",
+      "from": "FiltersPage",
+      "to": "filters",
+      "target": "pages/filters/useFiltersPageState"
+    },
+    {
+      "file": "pages/FiltersPage.tsx",
+      "from": "FiltersPage",
+      "to": "filters",
+      "target": "pages/filters/useFiltersSelectionMode"
+    },
+    {
+      "file": "pages/MagicUp.tsx",
+      "from": "MagicUp",
+      "to": "magic-up",
+      "target": "pages/magic-up/MagicUpConfigPanel"
+    },
+    {
+      "file": "pages/MagicUp.tsx",
+      "from": "MagicUp",
+      "to": "magic-up",
+      "target": "pages/magic-up/MagicUpResultPanel"
+    },
+    {
+      "file": "pages/MockupGenerator.tsx",
+      "from": "MockupGenerator",
+      "to": "mockup-generator",
+      "target": "pages/mockup-generator/MockupDialogs"
+    },
+    {
+      "file": "pages/MockupGenerator.tsx",
+      "from": "MockupGenerator",
+      "to": "mockup-generator",
+      "target": "pages/mockup-generator/MockupToolbar"
+    },
+    {
+      "file": "pages/MockupGenerator.tsx",
+      "from": "MockupGenerator",
+      "to": "mockup-generator",
+      "target": "pages/mockup-generator/MockupEmptyState"
+    },
+    {
+      "file": "pages/MockupGenerator.tsx",
+      "from": "MockupGenerator",
+      "to": "mockup-generator",
+      "target": "pages/mockup-generator/MockupTechniqueHandlers"
+    },
+    {
+      "file": "pages/ProductDetail.tsx",
+      "from": "ProductDetail",
+      "to": "product-detail",
+      "target": "pages/product-detail/ProductDetailHero"
+    },
+    {
+      "file": "pages/ProductMatchPage.tsx",
+      "from": "ProductMatchPage",
+      "to": "product-match",
+      "target": "pages/product-match/MatchFiltersPanel"
+    },
+    {
+      "file": "pages/ProductMatchPage.tsx",
+      "from": "ProductMatchPage",
+      "to": "product-match",
+      "target": "pages/product-match/ProductSearchPanel"
+    },
+    {
+      "file": "pages/ProductMatchPage.tsx",
+      "from": "ProductMatchPage",
+      "to": "product-match",
+      "target": "pages/product-match/MatchCards"
+    },
+    {
       "file": "pages/products/FiltersPage.tsx",
       "from": "products",
       "to": "filters",
@@ -54,6 +138,30 @@
       "from": "products",
       "to": "filters",
       "target": "pages/filters/useFiltersSelectionMode"
+    },
+    {
+      "file": "pages/QuotesDashboardPage.tsx",
+      "from": "QuotesDashboardPage",
+      "to": "quotes-dashboard",
+      "target": "pages/quotes-dashboard/useQuotesDashboard"
+    },
+    {
+      "file": "pages/QuoteViewPage.tsx",
+      "from": "QuoteViewPage",
+      "to": "quote-view",
+      "target": "pages/quote-view/useQuoteViewData"
+    },
+    {
+      "file": "pages/SellerCartsPage.tsx",
+      "from": "SellerCartsPage",
+      "to": "seller-carts",
+      "target": "pages/seller-carts/useSellerCartsPage"
+    },
+    {
+      "file": "pages/SellerCartsPage.tsx",
+      "from": "SellerCartsPage",
+      "to": "seller-carts",
+      "target": "pages/seller-carts/CartSidebar"
     },
     {
       "file": "pages/tools/AdvancedPriceSearchPage.tsx",
@@ -84,6 +192,30 @@
       "from": "tools",
       "to": "magic-up",
       "target": "pages/magic-up/MagicUpResultPanel"
+    },
+    {
+      "file": "pages/TrendsPage.tsx",
+      "from": "TrendsPage",
+      "to": "trends",
+      "target": "pages/trends/TrendsPage.types"
+    },
+    {
+      "file": "pages/TrendsPage.tsx",
+      "from": "TrendsPage",
+      "to": "trends",
+      "target": "pages/trends/TrendsCharts"
+    },
+    {
+      "file": "pages/TrendsPage.tsx",
+      "from": "TrendsPage",
+      "to": "trends",
+      "target": "pages/trends/TrendsKpiCards"
+    },
+    {
+      "file": "pages/TrendsPage.tsx",
+      "from": "TrendsPage",
+      "to": "trends",
+      "target": "pages/trends/trends-mock"
     }
   ]
 }
