@@ -644,7 +644,14 @@ export function readWorkflowFiles(rootDir) {
   return readdirSync(dir)
     .filter((f) => f.endsWith('.yml') || f.endsWith('.yaml'))
     .map((f) => {
-      const text = readFileSync(join(dir, f), 'utf-8');
+      // GUARD: ENOENT/EACCES/EISDIR/ELOOP (symlink quebrado ou em loop) não pode
+      // derrubar o gate com stack trace cru — vira erro de ferramental legível.
+      let text;
+      try {
+        text = readFileSync(join(dir, f), 'utf-8');
+      } catch (error) {
+        throw new Error(`check-workflow-contracts: falha ao ler ${f}: ${error.message}`);
+      }
       let doc = null;
       try {
         doc = yaml.load(text);
@@ -772,7 +779,13 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   // _allowlisted_violations: exact violation strings that are pre-approved (more granular than file-level)
   const allowlistedViolations = new Set(allowlist._allowlisted_violations || []);
 
-  const { violations, counts, workflowCount } = runChecks(ROOT);
+  let violations, counts, workflowCount;
+  try {
+    ({ violations, counts, workflowCount } = runChecks(ROOT));
+  } catch (error) {
+    console.error(`❌ ${error.message}`);
+    process.exit(2);
+  }
 
   const fresh = violations.filter(
     (v) => !allowlistedFiles.has(v.split(':')[0].trim()) && !allowlistedViolations.has(v),
