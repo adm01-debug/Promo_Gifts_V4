@@ -75,7 +75,13 @@ export function runBaselineGate({ baselineFile, label, description, totalKey, fi
   const BASELINE_PATH = join(ROOT, baselineFile);
   const UPDATE = process.argv.includes('--update');
 
-  const currentCounts = Object.fromEntries(scan());
+  let currentCounts;
+  try {
+    currentCounts = Object.fromEntries(scan());
+  } catch (err) {
+    console.error(`❌ Falha ao escanear src/ para ${label}: ${err.message}`);
+    process.exit(2);
+  }
   const totalCurrent = Object.values(currentCounts).reduce((a, b) => a + b, 0);
 
   if (UPDATE) {
