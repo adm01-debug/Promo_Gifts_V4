@@ -113,7 +113,7 @@ for (const path of ADDED_FILES) {
   const hasRevokeAnon =
     new RegExp(String.raw`revoke\s+(?:execute|all(?:\s+privileges)?)` + ON_FN + String.raw`[^;]*\bfrom\b[^;]*\banon\b`, 'i').test(content) || hasMarker;
   const grantsAnon =
-    new RegExp(String.raw`grant\s+(?:execute|all(?:\s+privileges)?)` + ON_FN + String.raw`[^;]*\bto\b[^;]*\b(?:anon|public)\b`, 'i').test(content) && !hasMarker;
+    new RegExp(String.raw`grant\s+(?:execute|all(?:\s+privileges)?)` + ON_FN + String.raw`[^;]*\bto\b[^;]*\b(?:anon|public)\b`, 'i').test(content);
 
   if (!hasSearchPath || !hasRevokeAnon || grantsAnon) {
     offenders.push({
