@@ -129,7 +129,7 @@ async function cmdRun(o) {
     console.log('⚠ Há alterações não commitadas: o act roda o COMMIT (clone isolado). Commite para incluí-las.');
   }
   console.log(`Preparando clone isolado de ${sha.slice(0, 9)} …`);
-  const clone = prepareClone({ repoRoot: ROOT, sha, baseRef: o.base, dest: join(OUT, 'clone') });
+  const clone = prepareClone({ repoRoot: ROOT, sha, baseRef: o.base, dest: join(OUT, 'clone'), headRef: headRef() });
   const sec0 = secretsFile(o.secrets);
   const eventPath = join(dir, 'event.json');
   writeJson(eventPath, buildEvent({ event: o.event, sha, baseSha: clone.baseSha, headRef: headRef() }));

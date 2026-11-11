@@ -38,7 +38,7 @@ function git(cwd, ...args) {
 }
 
 /** Clone raso e independente (sem alternates) do commit alvo + ref origin/<base>. */
-export function prepareClone({ repoRoot, sha, baseRef = 'origin/main', dest, depth = 80 }) {
+export function prepareClone({ repoRoot, sha, baseRef = 'origin/main', dest, depth = 80, headRef = null }) {
   rmSync(dest, { recursive: true, force: true });
   mkdirSync(dest, { recursive: true });
   const commonDir = git(repoRoot, 'rev-parse', '--path-format=absolute', '--git-common-dir');
@@ -59,6 +59,11 @@ export function prepareClone({ repoRoot, sha, baseRef = 'origin/main', dest, dep
     git(dest, 'fetch', '-q', `--depth=${depth}`, `file://${commonDir}`, baseSha);
   }
   git(dest, 'update-ref', 'refs/remotes/origin/main', baseSha);
+  // Gates que comparam origin/<base>...origin/<head> (ex.: E188) precisam do ref do branch da PR.
+  if (headRef && headRef !== 'main' && headRef !== 'detached') {
+    git(dest, 'update-ref', `refs/remotes/origin/${headRef}`, sha);
+    git(dest, 'update-ref', `refs/heads/${headRef}`, sha);
+  }
   git(dest, 'remote', 'set-url', 'origin', GITHUB_URL);
   return { dir: dest, sha, baseSha };
 }
@@ -203,17 +208,31 @@ export function verdict(jobResult, jobInfo, { secretsProvided = [] } = {}) {
   }
   if (jobResult.result === 'skipped') return { status: 'pulado', why: 'if: falso' };
   if (jobInfo?.cls === 'github-only') return { status: 'só GitHub', why: jobInfo.reasons.join('; ') };
-  // Decide pelo PASSO que falhou: só ele pode justificar "inconclusivo"/"só GitHub".
-  const step = jobResult.failedStep ? (jobInfo?.steps ?? []).find((s) => s.name === jobResult.failedStep) : null;
-  if (step?.cls === 'github-only') return { status: 'só GitHub', why: `passo ${step.name}: ${step.reasons.join(', ')}` };
-  const missing = (step?.secrets ?? []).filter((s) => !secretsProvided.includes(s));
-  if (step && missing.length) return { status: 'inconclusivo', why: `passo ${step.name}: segredo(s) ausente(s): ${missing.join(', ')}` };
-  // Passo não identificado (ex.: falha em action composta) num job que usa segredos: não afirmar regressão.
-  const jobMissing = (jobInfo?.secrets ?? []).filter((s) => !secretsProvided.includes(s));
-  if (!step && jobInfo?.cls === 'secret' && jobMissing.length) {
-    return { status: 'inconclusivo', why: `passo "${jobResult.failedStep ?? '?'}" não mapeado; job usa segredo(s) ausente(s): ${jobMissing.join(', ')}` };
+  // Considera TODOS os passos que falharam: basta um "verificável" (não depende de segredo
+  // ausente nem da API do GitHub) para o job ser FALHOU — nunca esconder falha real atrás
+  // de um passo inconclusivo que falhou antes.
+  const failed = jobResult.failedSteps?.length ? jobResult.failedSteps : [jobResult.failedStep].filter(Boolean);
+  const steps = jobInfo?.steps ?? [];
+  const unverifiable = (name) => {
+    const st = steps.find((x) => x.name === name);
+    if (!st) return null; // passo não mapeado
+    if (st.cls === 'github-only') return `passo ${st.name}: ${st.reasons.join(', ')}`;
+    const missing = st.secrets.filter((x) => !secretsProvided.includes(x));
+    return missing.length ? `passo ${st.name}: segredo(s) ausente(s): ${missing.join(', ')}` : null;
+  };
+  const real = failed.find((n) => steps.some((x) => x.name === n) && !unverifiable(n));
+  if (real) return { status: 'FALHOU', why: `passo: ${real}` };
+  const mapped = failed.filter((n) => steps.some((x) => x.name === n));
+  if (mapped.length && mapped.length === failed.length) {
+    const ghOnly = mapped.every((n) => steps.find((x) => x.name === n)?.cls === 'github-only');
+    return { status: ghOnly ? 'só GitHub' : 'inconclusivo', why: mapped.map(unverifiable).join('; ') };
   }
-  return { status: 'FALHOU', why: jobResult.failedStep ? `passo: ${jobResult.failedStep}` : '' };
+  // Passo não identificado (ex.: falha em action composta) num job que usa segredos: não afirmar regressão.
+  const jobMissing = (jobInfo?.secrets ?? []).filter((x) => !secretsProvided.includes(x));
+  if (jobInfo?.cls === 'secret' && jobMissing.length) {
+    return { status: 'inconclusivo', why: `passo "${failed[0] ?? '?'}" não mapeado; job usa segredo(s) ausente(s): ${jobMissing.join(', ')}` };
+  }
+  return { status: 'FALHOU', why: failed.length ? `passo: ${failed[0]}` : '' };
 }
 
 /**
