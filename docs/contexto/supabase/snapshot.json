@@ -2,9 +2,7 @@
   "api": {
     "enabled": false
   },
-  "carried": [
-    "views"
-  ],
+  "carried": [],
   "db": {
     "columns": [
       {
@@ -262556,11 +262554,6 @@
     ],
     "webhooks": []
   },
-  "errors": [
-    {
-      "error": "canceling statement due to statement timeout",
-      "section": "views"
-    }
-  ],
+  "errors": [],
   "format_version": 2
 }
