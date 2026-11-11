@@ -2,14 +2,9 @@ name: E2E · Update Quote Item Editor Sheet snapshots
 # Executa `playwright test --update-snapshots` para os 3 browsers (chromium/firefox/webkit)
 # do spec do QuoteItemEditorSheet e faz commit dos PNGs atualizados.
 # Dispara manualmente OU quando o próprio spec/harness é editado.
+# Só manual: atualizar baseline visual em todo push aceitaria qualquer mudança visual sem revisão.
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'e2e/quotes/quote-item-editor-sheet-header.spec.ts'
-      - 'src/pages/__visual/QuoteItemEditorSheetHarness.tsx'
-      - '.github/workflows/e2e-update-editor-sheet-snapshots.yml'
-
 permissions:
   contents: write
 

@@ -3,14 +3,9 @@ name: E2E · Update Dialog snapshots
 # Executa `playwright test --update-snapshots` para o spec do Dialog
 # e faz commit dos PNGs atualizados. Dispara manualmente OU quando o próprio
 # spec (ou o harness) é editado.
+# Só manual: atualizar baseline visual em todo push aceitaria qualquer mudança visual sem revisão.
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "e2e/ui/dialog-visual.spec.ts"
-      - "src/pages/dev/DialogHarness.tsx"
-      - ".github/workflows/e2e-update-dialog-snapshots.yml"
-
 permissions:
   contents: write
 
