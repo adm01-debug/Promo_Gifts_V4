@@ -21,7 +21,8 @@ import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
 import { buildInventory, summarize } from './inventory.mjs';
 import { selectWorkflows } from './select.mjs';
-import { buildEvent, prepareClone, prepareShims, runWorkflow, verdict, writeJson } from './run-act.mjs';
+import { buildEvent, neutralizeUnverifiable, prepareClone, prepareShims, runWorkflow, verdict, writeJson } from './run-act.mjs';
+import { classifyStep } from './inventory.mjs';
 import { runJobNative } from './native.mjs';
 import { compareResults, fetchGithubChecks } from './compare.mjs';
 import { findUncovered } from './extras.mjs';
@@ -129,11 +130,24 @@ async function cmdRun(o) {
   }
   console.log(`Preparando clone isolado de ${sha.slice(0, 9)} …`);
   const clone = prepareClone({ repoRoot: ROOT, sha, baseRef: o.base, dest: join(OUT, 'clone') });
+  const sec0 = secretsFile(o.secrets);
   const eventPath = join(dir, 'event.json');
   writeJson(eventPath, buildEvent({ event: o.event, sha, baseSha: clone.baseSha, headRef: headRef() }));
+  // Neutraliza (só no clone) passos que exigem segredo ausente ou API do GitHub — ver run-act.mjs.
+  let neutralized = 0;
+  for (const wf of inv) {
+    const file = join(clone.dir, '.github', 'workflows', wf.file);
+    if (!existsSync(file) || wf.parseError) continue;
+    const doc = yaml.load(readFileSync(file, 'utf8'));
+    const n = neutralizeUnverifiable(doc, (st) => classifyStep(st), sec0.names);
+    if (n) {
+      writeFileSync(file, yaml.dump(doc, { lineWidth: -1, noRefs: true }));
+      neutralized += n;
+    }
+  }
   const shimArgs = prepareShims({ root: ROOT, workflowsText: inv.map((w) => w.text ?? '').join('\n'), dest: join(OUT, 'shims') });
   const sec = secretsFile(o.secrets);
-  console.log(`${sel.length} workflow(s) · evento ${o.event} · segredos: ${sec.names.length ? sec.names.join(', ') : 'nenhum'}\n`);
+  console.log(`${sel.length} workflow(s) · evento ${o.event} · segredos: ${sec.names.length ? sec.names.join(', ') : 'nenhum'} · passos neutralizados no clone: ${neutralized}\n`);
 
   const report = { id, sha, base: clone.baseSha, event: o.event, startedAt: new Date().toISOString(), workflows: [] };
   for (const [i, s] of sel.entries()) {
@@ -145,7 +159,7 @@ async function cmdRun(o) {
       timeoutMs: o.timeout * 60_000, artifactDir: join(dir, 'artifacts'), extraArgs: shimArgs,
       nameCtx: {
         workflowName: s.wf.name,
-        reusable: s.wf.jobs.filter((j) => j.reusable?.startsWith('./')).map((j) => ({ callerId: j.id, callerName: j.name, calledName: inv.find((w) => j.reusable.endsWith(`/${w.file}`))?.name ?? '' })),
+        reusable: s.wf.jobs.filter((j) => j.reusable?.startsWith('./')).map((j) => ({ callerId: j.id, callerName: j.name, calledName: j.calledName ?? '' })),
       },
     });
     const jobs = [];
@@ -158,6 +172,7 @@ async function cmdRun(o) {
       if (!res.jobs.some((r) => r.jobId === j.id)) jobs.push({ check: j.name, jobId: j.id, status: res.timedOut ? 'FALHOU' : 'não executado', why: res.timedOut ? `timeout de ${o.timeout} min` : 'job não reportou' });
     }
     const bad = jobs.filter((j) => j.status === 'FALHOU').length;
+    // (ok-parcial conta como passou: só os passos sem segredo/GitHub não foram verificados)
     console.log(`${bad ? `❌ ${bad} falha(s)` : '✅'} (${Math.round((Date.now() - t0) / 1000)}s)`);
     for (const j of jobs.filter((x) => x.status !== 'ok')) console.log(`      ${pad(j.status, 14)} ${j.check}${j.why ? ` — ${j.why}` : ''}`);
     report.workflows.push({ file: s.wf.file, exitCode: res.exitCode, timedOut: res.timedOut, jobs });
@@ -173,12 +188,12 @@ function finish(report, dir, o) {
   const c = (st) => all.filter((j) => j.status === st).length;
   const md = [
     `# CI local — ${report.event} @ ${report.sha.slice(0, 9)}`, '',
-    `ok ${c('ok')} · FALHOU ${c('FALHOU')} · inconclusivo ${c('inconclusivo')} · só GitHub ${c('só GitHub')} · pulado ${c('pulado')} · não executado ${c('não executado')}`, '',
+    `ok ${c('ok')} · ok-parcial ${c('ok-parcial')} · FALHOU ${c('FALHOU')} · inconclusivo ${c('inconclusivo')} · só GitHub ${c('só GitHub')} · pulado ${c('pulado')} · não executado ${c('não executado')}`, '',
     '| workflow | check | resultado | detalhe |', '|---|---|---|---|',
     ...all.map((j) => `| ${j.workflow} | ${j.check} | ${j.status} | ${String(j.why ?? '').replace(/\|/g, '/')} |`),
   ].join('\n');
   writeFileSync(join(dir, 'report.md'), `${md}\n`);
-  console.log(`\nResumo: ok ${c('ok')} · FALHOU ${c('FALHOU')} · inconclusivo ${c('inconclusivo')} · só GitHub ${c('só GitHub')} · pulado ${c('pulado')}`);
+  console.log(`\nResumo: ok ${c('ok')} · ok-parcial ${c('ok-parcial')} · FALHOU ${c('FALHOU')} · inconclusivo ${c('inconclusivo')} · só GitHub ${c('só GitHub')} · pulado ${c('pulado')}`);
   console.log(`Relatório: ${join(dir, 'report.md')}`);
   if (c('FALHOU')) return 1;
   if (o.strict && c('inconclusivo')) return 3;

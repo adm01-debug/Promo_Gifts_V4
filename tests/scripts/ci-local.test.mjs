@@ -186,3 +186,32 @@ describe('shim local de dorny/paths-filter', () => {
     expect(JSON.parse(val('changes'))).toEqual(['code', 'docs_only', 'added_src']);
   });
 });
+
+describe('reutilizáveis, neutralização no clone e ok-parcial', async () => {
+  const { displayName, matchReusable, neutralizeUnverifiable, verdict: v } = await import('../../scripts/ci-local/run-act.mjs');
+  const { classifyStep: cs } = await import('../../scripts/ci-local/inventory.mjs');
+  const ctx = { workflowName: 'Deploy Gates', reusable: [
+    { callerId: 'secrets-check', callerName: 'Gate E23 - Verifica secrets E2E', calledName: '_secrets-check (reusable)' },
+    { callerId: 'e2e-relevance', callerName: 'e2e-relevance', calledName: 'Reusable — E2E Runtime Relevance' },
+  ] };
+  it('act prefixa pelo NOME do chamador (ou id); GitHub mostra "<chamador> / <job>"', () => {
+    expect(displayName('Gate E23 - Verifica secrets E2E/_secrets-check (reusable)/Verifica secrets E2E', ctx)).toBe('Gate E23 - Verifica secrets E2E / Verifica secrets E2E');
+    expect(matchReusable('e2e-relevance/Reusable — E2E Runtime Relevance/Detectar', ctx).callerId).toBe('e2e-relevance');
+  });
+  it('neutraliza só passos com segredo ausente ou API do GitHub', () => {
+    const doc = { jobs: { a: { steps: [
+      { run: 'npm test' },
+      { run: 'x', env: { T: '${{ secrets.SUPABASE_ACCESS_TOKEN }}' } },
+      { uses: 'actions/dependency-review-action@v4' },
+      { run: 'y', env: { K: '${{ secrets.PROVIDED }}' } },
+    ] } } };
+    expect(neutralizeUnverifiable(doc, cs, ['PROVIDED'])).toBe(2);
+    const flags = doc.jobs.a.steps.map((st) => st['continue-on-error'] ?? false);
+    expect(flags).toEqual([false, true, true, false]);
+  });
+  it('job verde com passo neutralizado que falhou → ok-parcial (nunca "ok" puro)', () => {
+    const info = { cls: 'secret', secrets: ['K'], steps: [{ name: 'Live', cls: 'secret', secrets: ['K'] }, { name: 'Build', cls: 'local', secrets: [] }] };
+    expect(v({ result: 'success', failedSteps: ['Live'] }, info).status).toBe('ok-parcial');
+    expect(v({ result: 'success', failedSteps: [] }, info).status).toBe('ok');
+  });
+});

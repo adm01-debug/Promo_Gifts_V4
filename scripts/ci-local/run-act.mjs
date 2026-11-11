@@ -102,12 +102,22 @@ export function checkName(jobName, matrix) {
 export function displayName(actJob, ctx = {}) {
   const s = String(actJob).trim();
   if (ctx.workflowName && s.startsWith(`${ctx.workflowName}/`)) return s.slice(ctx.workflowName.length + 1).trim();
-  for (const { callerId, callerName, calledName } of ctx.reusable ?? []) {
-    const prefix = `${callerId}/${calledName}/`;
-    if (s.startsWith(prefix)) return `${callerName ?? callerId} / ${s.slice(prefix.length).trim()}`;
-  }
+  const hit = matchReusable(s, ctx);
+  if (hit) return `${hit.callerName ?? hit.callerId} / ${hit.rest}`;
   const i = s.indexOf('/');
   return i >= 0 ? s.slice(i + 1).trim() : s;
+}
+
+/** O act prefixa jobs reutilizáveis com o NOME do job chamador (ou o id, se não houver nome). */
+export function matchReusable(actJob, ctx = {}) {
+  const s = String(actJob).trim();
+  for (const r of ctx.reusable ?? []) {
+    for (const head of [r.callerName, r.callerId].filter(Boolean)) {
+      const prefix = `${head}/${r.calledName}/`;
+      if (s.startsWith(prefix)) return { ...r, rest: s.slice(prefix.length).trim() };
+    }
+  }
+  return null;
 }
 
 /** Lê o JSONL do act e consolida o resultado final de cada job (com matrix). */
@@ -124,14 +134,16 @@ export function parseActJsonl(lines, ctx = {}) {
     if (!o.job) continue;
     const display = displayName(o.job, ctx);
     const key = `${o.job}|${JSON.stringify(o.matrix ?? {})}`;
-    if (o.stepResult === 'failure' && o.stage === 'Main' && !failedStep.has(key)) failedStep.set(key, o.step);
+    if (o.stepResult === 'failure' && o.stage === 'Main') failedStep.set(key, [...(failedStep.get(key) ?? []), o.step]);
     if (o.jobResult) {
+      const reusable = matchReusable(o.job, ctx);
       jobs.set(key, {
-        jobId: o.jobID,
+        jobId: reusable ? reusable.callerId : o.jobID,
         check: checkName(display, o.matrix),
         matrix: o.matrix ?? {},
         result: o.jobResult,
-        failedStep: failedStep.get(key) ?? null,
+        failedStep: (failedStep.get(key) ?? [])[0] ?? null,
+        failedSteps: failedStep.get(key) ?? [],
       });
     }
   }
@@ -180,7 +192,15 @@ export function runWorkflow({ cloneDir, workflowFile, event, eventPath, logPath,
 /** Junta o resultado do act com a classificação do inventário → veredito local. */
 export function verdict(jobResult, jobInfo, { secretsProvided = [] } = {}) {
   if (!jobResult) return { status: 'não executado', why: 'job não reportou (if: falso, needs pulado ou workflow abortado)' };
-  if (jobResult.result === 'success') return { status: 'ok' };
+  if (jobResult.result === 'success') {
+    // Passos neutralizados no clone (segredo ausente / API do GitHub) que falharam: o resto passou.
+    const unverified = (jobResult.failedSteps ?? []).filter((n) => {
+      const st = (jobInfo?.steps ?? []).find((x) => x.name === n);
+      return st && (st.cls === 'github-only' || st.secrets.some((x) => !secretsProvided.includes(x)));
+    });
+    if (unverified.length) return { status: 'ok-parcial', why: `não verificado(s) sem segredo/GitHub: ${[...new Set(unverified)].join('; ')}` };
+    return { status: 'ok' };
+  }
   if (jobResult.result === 'skipped') return { status: 'pulado', why: 'if: falso' };
   if (jobInfo?.cls === 'github-only') return { status: 'só GitHub', why: jobInfo.reasons.join('; ') };
   // Decide pelo PASSO que falhou: só ele pode justificar "inconclusivo"/"só GitHub".
@@ -194,6 +214,27 @@ export function verdict(jobResult, jobInfo, { secretsProvided = [] } = {}) {
     return { status: 'inconclusivo', why: `passo "${jobResult.failedStep ?? '?'}" não mapeado; job usa segredo(s) ausente(s): ${jobMissing.join(', ')}` };
   }
   return { status: 'FALHOU', why: jobResult.failedStep ? `passo: ${jobResult.failedStep}` : '' };
+}
+
+/**
+ * Cópia do workflow SÓ para o clone isolado: passos que precisam de segredo ausente ou da API do
+ * GitHub ganham `continue-on-error: true`, para que o resto do job (e os jobs dependentes, como o
+ * Gate Final) rode e seja verificado. Esses passos saem no relatório como "não verificado".
+ * Devolve quantos passos foram neutralizados. O repositório do usuário nunca é alterado.
+ */
+export function neutralizeUnverifiable(doc, classify, secretsProvided = []) {
+  let n = 0;
+  for (const job of Object.values(doc?.jobs ?? {})) {
+    for (const step of job?.steps ?? []) {
+      const info = classify(step);
+      const missing = info.secrets.filter((x) => !secretsProvided.includes(x));
+      if ((info.cls === 'github-only' || missing.length) && step['continue-on-error'] !== true) {
+        step['continue-on-error'] = true;
+        n += 1;
+      }
+    }
+  }
+  return n;
 }
 
 export function writeJson(path, data) {
