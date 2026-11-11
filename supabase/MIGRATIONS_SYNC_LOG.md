@@ -1202,10 +1202,25 @@ Cadeia completa de drift em `public.categories`:
 - `20260511235959` — `full_path_readable` (este PR, pendente)
 - `20260512000000` — bootstrap usa as três em VIEW/MVIEW DDL
 | `20260511235950` | `add_categories_level_drift` | `93610ba1fa022c3050b352f45da4754101f6e7aee6b627a5105e1a0a3e1403aa` | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (REGRA #8: DDL em produção) |
-| `20260511235959` | `add_categories_full_path_readable_drift` | NÃO VERIFICADO | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (REGRA #8: DDL em produção) |
+| `20260511235959` | `add_categories_full_path_readable_drift` | `771cb49312b53e564ef3725ccf7528dfb65752d96476f7bc7c3d686edf678ccb` | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (REGRA #8: DDL em produção) |
 ## 2026-11-09 — DROP `perf002_drop_unused_snapshot_indexes` (PEND-I01)
 Função `public.perf002_drop_unused_snapshot_indexes()` criada como SECURITY DEFINER
 com `authenticated:EXECUTE` via DDL direto (sessão PEND-I01, 2026-11-01). Executa
 DDL por concatenação de string — vetor de escalada de privilégio. Esta migration a
 dropa. Aguardando dispatch via `db-apply-migration.yml` após aprovação do PO (REGRA #8).
 | `20261108223100` | `drop_perf002_incident_ddl_survivor` | `a912697ce92a3b6da285fad499575dc89fb8c2138f1f3b573dbdc9206c717dfa` | pendente — aguardando merge PR #3255 + dispatch `db-apply-migration.yml` (REGRA #8: DDL em produção) |
+
+## 2026-11-11 — Recibos das migrations integradas pela #3400 (lote C)
+
+Conferido no ledger de produção (`supabase_migrations.schema_migrations`) em 2026-11-11: nenhuma destas versões está registrada. Aplicação em produção só via `db-apply-migration.yml` após aprovação do dono (REGRA #8); espelhos via modo repair-only.
+
+| versão | nome | sha256 | status |
+|---|---|---|---|
+| `20261111190000` | `harden_fn_get_rupture_alerts_search_path` | `61e274e6361e729f49b59270362c5db75f3f39bf083887113361aca9f404ad5f` | pendente — endurece search_path de fn_get_rupture_alerts (#3179, sem editar a migration histórica 20261101150000); aplicar depois da 20261101150000 |
+| `20261108030000` | `ft005_cron_scheduled_reports` | `7f9f3b783c80deff3822abf4b6a57ac71bff9444a83c8f9ee19d78642da60586` | espelho — os crons process/send-scheduled-reports já existem em produção com o mesmo agendamento (#3263); registrar via repair-only |
+| `20261108030200` | `ft088_fn_check_item_fits` | `b31bebec36214569a26c8cafb0707166ba6c0a214dc43716f5f5b635420353f3` | espelho — fn_check_item_fits já existe em produção (#3265); registrar via repair-only |
+| `20261108120000` | `p10_categories_indexes_espelho` | `6cb4ae9f62bc37a3bdf54e01eb812a4b8114e51c49bf7c7f796b593db1d8c550` | espelho — os 3 índices de public.categories já existem em produção (#3273); registrar via repair-only |
+| `20261108223000` | `add_stock_daily_summary_date_index` | `e75c0671bbcbe48858667b0529c2684c872bce12e2cd360fb87614505e4b8aa2` | pendente — novo índice CONCURRENTLY (transaction: none) em stock_daily_summary (#3250) |
+| `20261108230000` | `remove_broken_cron_image_dimensions_backfill` | `0750b49301fb1e781b1a5c2a98c28f645da80c7e75de57f89cc09c14818c767c` | pendente — remove o cron inativo image-dimensions-backfill (#3251) |
+| `20261108230100` | `cron002_fix_residual_collisions` | `d505e1d2eec14c476f6cde40bbc42781acd51a597747faacfd566feb20e6c7ac` | pendente — CRON-002: reescalona 4 jobs (#3279; versão ajustada de 230000 para não colidir com #3251) |
+| `20261108235500` | `restrict_art_files_public_read_to_quotes` | `a519ed1dd817c2245a828c9fca2ba7d261d018995d6f6a8c695b879c46006b3e` | pendente — restringe leitura pública de art-files a quotes/ (#3256; todos os objetos atuais já estão em quotes/) |
