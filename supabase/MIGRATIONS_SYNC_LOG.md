@@ -1190,3 +1190,16 @@ sem DDL de schema, sem risco de dado). **Nenhuma DDL nova é executada por esta 
 |---|---|---|---|
 | `20261101223908` | `cron001_stagger_additional_jobs` | `819350cc0006cbc218b74bd2cd6dee7049586ed6479109b7dcd828f3807ee811` | arquivo retroativo — `cron.alter_job` jobs 292/303/241 confirmado em produção via ledger; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
 | `20261101232022` | `cron001_stagger_schedules_reapply` | `8fe64496a5dba8e27be274a41522bf9a1988be3f5e912b712c1ce1ddd2d93dad` | arquivo retroativo — `cron.alter_job` jobs 276/224/114/243 (idêntico a `20261101220000`) confirmado em produção via ledger; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
+## 2026-11-08 — Correção de drift: `categories.level` e `categories.full_path_readable`
+Colunas `public.categories.level` e `public.categories.full_path_readable` existiam em produção sem migration registrada.
+Migration `20260512000000_bootstrap_missing_application_schemas` cria views que referenciam ambas as colunas
+diretamente em DDL (`classification_audit.v_gaps_acionaveis` e `v_kits_para_revisao`), causando
+`SQLSTATE 42703` no shadow DB da Supabase Preview. As migrations (timestamps antes do bootstrap)
+adicionam as colunas com `IF NOT EXISTS` — no-op em produção.
+Cadeia completa de drift em `public.categories`:
+- `20260511235900` — `bitrix_id` (PR #3201, já aplicado)
+- `20260511235950` — `level` (este PR, pendente)
+- `20260511235960` — `full_path_readable` (este PR, pendente)
+- `20260512000000` — bootstrap usa as três em VIEW/MVIEW DDL
+| `20260511235950` | `add_categories_level_drift` | `93610ba1fa022c3050b352f45da4754101f6e7aee6b627a5105e1a0a3e1403aa` | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (REGRA #8: DDL em produção) |
+| `20260511235960` | `add_categories_full_path_readable_drift` | NÃO VERIFICADO | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (REGRA #8: DDL em produção) |
