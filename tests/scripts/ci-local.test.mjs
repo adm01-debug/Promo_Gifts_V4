@@ -294,7 +294,61 @@ describe('achados da revisão adversarial (token, exit do act, nomes, matrix, ty
     expect(nat.jobShouldRun(undefined, ev)).toBe(true);
     const s = nat.stripInstallLines('set -e\nnpm ci --no-audit\nnpm run build');
     expect(s.removed).toBe(1);
-    expect(s.script).toBe('set -e\nnpm run build');
+    expect(s.script).toBe('set -e\n: npm ci --no-audit\nnpm run build');
+    expect(s.onlyInstall).toBe(false);
+  });
+});
+
+describe('2ª revisão adversarial (socket, strip, needs/steps, curinga, HOME, segredos)', async () => {
+  const ra = await import('../../scripts/ci-local/run-act.mjs');
+  const nat = await import('../../scripts/ci-local/native.mjs');
+  const { spawnSync } = await import('node:child_process');
+  const { readFileSync } = await import('node:fs');
+  const bashOk = (script) => spawnSync('bash', ['--noprofile', '--norc', '-e', '-o', 'pipefail', '-c', script], { encoding: 'utf8' });
+
+  it('socket do Docker só é montado em workflow que chama docker num passo', () => {
+    const src = readFileSync(`${import.meta.dirname}/../../scripts/ci-local/run-act.mjs`, 'utf8');
+    expect(src).toMatch(/'--container-daemon-socket', allowDocker \? 'unix:\/\/\/var\/run\/docker\.sock' : '-'/);
+    expect(ra.workflowNeedsDocker('run: npx supabase start')).toBe(true);
+    expect(ra.workflowNeedsDocker('run: docker run --rm alpine true')).toBe(true);
+    expect(ra.workflowNeedsDocker('services:\n  postgres:\n    image: postgres')).toBe(false);
+    expect(ra.workflowNeedsDocker('run: npm test # dockerfile lint')).toBe(false);
+  });
+
+  it('instalação neutralizada mantém if/else, &&, continuação e heredoc válidos (setup-node-ci)', () => {
+    const setup = readFileSync(`${import.meta.dirname}/../../.github/actions/setup-node-ci/action.yml`, 'utf8');
+    const run = setup.match(/run: \|\n((?:\s{8}.*\n)+)/)[1].replace(/^ {8}/gm, '');
+    const s = nat.stripInstallLines(run);
+    expect(s.removed).toBeGreaterThan(0);
+    expect(bashOk(`IGNORE_SCRIPTS=true\n${s.script}`).status).toBe(0);
+    // `npm ci && npm run build && exit 7` preserva a falha do resto da cadeia
+    expect(bashOk(nat.stripInstallLines('npm ci && exit 7').script).status).toBe(7);
+    // continuação de linha não vira comando solto
+    expect(bashOk(nat.stripInstallLines('npm ci \\\n  --ignore-scripts\necho fim').script).status).toBe(0);
+    expect(nat.stripInstallLines('npm ci --no-audit').onlyInstall).toBe(true);
+  });
+
+  it('if: com needs/vars não avaliável → null (inconclusivo), nunca pulado calado; steps.* usa outputs reais', () => {
+    const ctx = { github: { event_name: 'pull_request' }, steps: {} };
+    const ev = nat.makeEvaluator(ctx);
+    expect(nat.jobShouldRun("needs.e2e-gates.result == 'success'", ev)).toBe(null);
+    expect(nat.stepShouldRun("needs.x.outputs.relevant == 'true'", { failed: false, evaluate: ev })).toBe(null);
+    expect(nat.stepShouldRun('${{ !cancelled() }}', { failed: true, evaluate: ev })).toBe(true);
+    ctx.steps.guard = { outputs: nat.parseGithubOutput('enabled=true\nbody<<EOF\na\nb\nEOF\n') };
+    expect(ctx.steps.guard.outputs.body).toBe('a\nb');
+    expect(nat.stepShouldRun("steps.guard.outputs.enabled == 'true'", { failed: false, evaluate: ev })).toBe(true);
+  });
+
+  it('nome curinga não engole a falha de outro passo; exato tem prioridade; ambíguo = não mapeado', () => {
+    const steps = [
+      { name: 'Test ${{ matrix.suite }}', cls: 'secret', secrets: ['K'], reasons: [] },
+      { name: 'Build', cls: 'local', secrets: [], reasons: [] },
+    ];
+    expect(ra.matchStep(steps, 'Build')?.name).toBe('Build');
+    expect(ra.verdict({ result: 'failure', failedSteps: ['Build'] }, { cls: 'secret', secrets: ['K'], steps }).status).toBe('FALHOU');
+    const amb = [{ name: '${{ matrix.a }}', cls: 'secret', secrets: ['K'], reasons: [] }, { name: '${{ matrix.b }}', cls: 'secret', secrets: ['K'], reasons: [] }];
+    expect(ra.matchStep(amb, 'qualquer')).toBeUndefined();
+    expect(ra.verdict({ result: 'failure', failedSteps: ['qualquer'] }, { cls: 'secret', secrets: ['K'], steps: amb }).status).toBe('FALHOU');
   });
 });
 

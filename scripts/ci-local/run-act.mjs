@@ -206,6 +206,17 @@ export function sameStepName(yamlName, actName) {
 }
 
 /** Roda um workflow inteiro no act; grava o JSONL bruto e devolve os jobs. */
+/**
+ * Passo do YAML correspondente ao nome reportado pelo act: nome exato primeiro; curinga
+ * (`${{ }}`) só se casar com UM passo — ambíguo = não mapeado (vira FALHOU, nunca esconde).
+ */
+export function matchStep(steps, actName) {
+  const exact = steps.find((x) => x.name === actName);
+  if (exact) return exact;
+  const wild = steps.filter((x) => sameStepName(x.name, actName));
+  return wild.length === 1 ? wild[0] : undefined;
+}
+
 /** O workflow chama docker de dentro de um passo (precisa do socket do daemon)? */
 export function workflowNeedsDocker(text) {
   return /\bdocker(?:-compose|\s+(?:run|build|compose|exec|pull|load|tag|push|inspect|ps))\b|\bsupabase\s+(?:start|db\s+start)\b/.test(String(text));
@@ -225,6 +236,9 @@ export function runWorkflow({ cloneDir, workflowFile, event, eventPath, logPath,
       '--var-file', '/dev/null',
       '--env-file', '/dev/null',
       '--input-file', '/dev/null',
+      // Socket do Docker dentro do job = root no host (lê ~/.config/gh/hosts.yml, monta /).
+      // Só para workflows que chamam docker num passo; os demais rodam sem ele.
+      '--container-daemon-socket', allowDocker ? 'unix:///var/run/docker.sock' : '-',
       '--concurrent-jobs', String(concurrentJobs),
       '--artifact-server-path', artifactDir,
       ...extraArgs,
@@ -257,7 +271,7 @@ export function runWorkflow({ cloneDir, workflowFile, event, eventPath, logPath,
 /** Junta o resultado do act com a classificação do inventário → veredito local. */
 export function verdict(jobResult, jobInfo, { secretsProvided = [] } = {}) {
   if (!jobResult) return { status: 'não executado', why: 'job não reportou (if: falso, needs pulado ou workflow abortado)' };
-  const findStep = (n) => (jobInfo?.steps ?? []).find((x) => sameStepName(x.name, n));
+  const findStep = (n) => matchStep(jobInfo?.steps ?? [], n);
   if (jobResult.result === 'success') {
     // Passos neutralizados no clone (segredo ausente) que falharam: o resto passou.
     const unverified = (jobResult.failedSteps ?? []).filter((n) => {
@@ -278,13 +292,13 @@ export function verdict(jobResult, jobInfo, { secretsProvided = [] } = {}) {
   const failed = jobResult.failedSteps?.length ? jobResult.failedSteps : [jobResult.failedStep].filter(Boolean);
   const steps = jobInfo?.steps ?? [];
   const unverifiable = (name) => {
-    const st = steps.find((x) => sameStepName(x.name, name));
+    const st = matchStep(steps, name);
     if (!st) return null; // passo não mapeado
     if (st.cls === 'github-only') return `passo ${st.name}: ${st.reasons.join(', ')}`;
     const missing = st.secrets.filter((x) => !secretsProvided.includes(x));
     return missing.length ? `passo ${st.name}: segredo(s) ausente(s): ${missing.join(', ')}` : null;
   };
-  const isMapped = (n) => steps.some((x) => sameStepName(x.name, n));
+  const isMapped = (n) => Boolean(matchStep(steps, n));
   const real = failed.find((n) => isMapped(n) && !unverifiable(n));
   if (real) return { status: 'FALHOU', why: `passo: ${real}` };
   // Passo que não se consegue ligar ao YAML NÃO é presumido inconclusivo: falha não provada
@@ -292,7 +306,7 @@ export function verdict(jobResult, jobInfo, { secretsProvided = [] } = {}) {
   const unmapped = failed.find((n) => !isMapped(n));
   if (unmapped) return { status: 'FALHOU', why: `passo: ${unmapped} (não mapeado no YAML; tratado como falha real)` };
   if (failed.length) {
-    const ghOnly = failed.every((n) => steps.find((x) => sameStepName(x.name, n))?.cls === 'github-only');
+    const ghOnly = failed.every((n) => matchStep(steps, n)?.cls === 'github-only');
     return { status: ghOnly ? 'só GitHub' : 'inconclusivo', why: failed.map(unverifiable).join('; ') };
   }
   return { status: 'FALHOU', why: 'job falhou sem passo identificado' };
