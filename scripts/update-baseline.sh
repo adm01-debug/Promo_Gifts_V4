@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Script para atualizar os baselines visuais após aprovação manual
 echo "🚀 Iniciando atualização dos baselines visuais para a UI de Login..."
