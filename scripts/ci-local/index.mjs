@@ -16,7 +16,8 @@
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { basename, join, resolve } from 'node:path';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
 import { buildInventory, summarize } from './inventory.mjs';
@@ -30,6 +31,9 @@ import { spawnSync } from 'node:child_process';
 
 const ROOT = resolve(fileURLToPath(import.meta.url), '../../..');
 const OUT = join(ROOT, '.ci-local');
+// O clone (cópia inteira do repo) fica FORA do worktree: dentro dele, os scanners do repositório
+// (guards de pre-commit, rg, eslint) varreriam a cópia e acusariam achados duplicados.
+const CLONE_DIR = join(process.env.XDG_CACHE_HOME || join(homedir(), '.cache'), 'ci-local', `${basename(ROOT)}-${createHash('sha1').update(ROOT).digest('hex').slice(0, 8)}`, 'clone');
 
 function parseArgs(argv) {
   const [cmd = 'run', ...rest] = argv;
@@ -130,7 +134,7 @@ async function cmdRun(o) {
     console.log('⚠ Há alterações não commitadas: o act roda o COMMIT (clone isolado). Commite para incluí-las.');
   }
   console.log(`Preparando clone isolado de ${sha.slice(0, 9)} …`);
-  const clone = prepareClone({ repoRoot: ROOT, sha, baseRef: o.base, dest: join(OUT, 'clone'), headRef: headRef() });
+  const clone = prepareClone({ repoRoot: ROOT, sha, baseRef: o.base, dest: CLONE_DIR, headRef: headRef() });
   const sec0 = secretsFile(o.secrets);
   const eventPath = join(dir, 'event.json');
   writeJson(eventPath, buildEvent({ event: o.event, sha, baseSha: clone.baseSha, headRef: headRef() }));
