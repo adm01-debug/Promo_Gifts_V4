@@ -107,18 +107,40 @@ function filterTargetDiagnostics(output, targets = TYPECHECK_FILES) {
     .filter((line) => /error TS\d+:/.test(line));
 }
 
-const tsOk = step('Type-check (tsc -p tsconfig.app.json)', () => {
-  const run = spawnSync('node_modules/.bin/tsc', ['-p', 'tsconfig.app.json', '--noEmit'], {
-    encoding: 'utf8',
-    maxBuffer: 256 * 1024 * 1024,
-    env: { ...process.env, NODE_OPTIONS: process.env.NODE_OPTIONS ?? '--max-old-space-size=4096' },
-  });
-  const output = `${run.stdout ?? ''}${run.stderr ?? ''}`;
-  const verdict = classifyTscRun({ status: run.status, signal: run.signal, error: run.error, output });
-  if (!verdict.ok) throw new Error(verdict.reason);
-  const own = filterTargetDiagnostics(output);
-  if (own.length) throw new Error(own.join('\n'));
-  return { errors: 0, projectErrorsElsewhere: verdict.count };
+const tsOk = step('Type-check (tsc, apenas o grafo de imports da lista)', () => {
+  // tsconfig temporário que herda o do app mas só inclui os alvos (+ .d.ts globais): o tsc segue
+  // os imports, então erros de tipo reais nesses arquivos aparecem; leva segundos (projeto
+  // inteiro passa de 9 min e estoura 4 GB de heap).
+  const dir = fs.mkdtempSync(join(tmpdir(), 'quotes-list-tsc-'));
+  const cfg = join(dir, 'tsconfig.json');
+  const root = process.cwd();
+  fs.writeFileSync(
+    cfg,
+    JSON.stringify({
+      extends: join(root, 'tsconfig.app.json'),
+      compilerOptions: { noEmit: true, incremental: false },
+      include: [
+        join(root, 'src/**/*.d.ts'),
+        ...TYPECHECK_FILES.map((f) => join(root, f.endsWith('.tsx') ? f : `${f}.ts`)),
+      ],
+    }),
+  );
+  try {
+    const run = spawnSync(join(root, 'node_modules/.bin/tsc'), ['-p', cfg], {
+      cwd: root,
+      encoding: 'utf8',
+      maxBuffer: 256 * 1024 * 1024,
+      env: { ...process.env, NODE_OPTIONS: process.env.NODE_OPTIONS ?? '--max-old-space-size=4096' },
+    });
+    const output = `${run.stdout ?? ''}${run.stderr ?? ''}`;
+    const verdict = classifyTscRun({ status: run.status, signal: run.signal, error: run.error, output });
+    if (!verdict.ok) throw new Error(verdict.reason);
+    const own = filterTargetDiagnostics(output);
+    if (own.length) throw new Error(own.join('\n'));
+    return { errors: 0, errorsInImportedFiles: verdict.count };
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 // ─── 3. Vitest — expiração ──────────────────────────────────────────────────
