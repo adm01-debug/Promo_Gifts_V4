@@ -103,7 +103,7 @@ describe('validate-quotes-list · passo de type-check', () => {
       chmodSync(join(dir, 'node_modules/.bin', bin), 0o755);
     }
   };
-  beforeAll(() => { dir = join(tmpdir(), `vql-${process.pid}`); });
+  beforeAll(() => { dir = mkdtempSync(join(tmpdir(), 'vql-')); });
   afterAll(() => rmSync(dir, { recursive: true, force: true }));
   const tsLine = (out) => out.split('\n').find((l) => l.includes('Type-check')) ?? '';
 

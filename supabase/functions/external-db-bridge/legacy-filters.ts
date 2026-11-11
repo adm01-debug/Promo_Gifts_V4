@@ -16,6 +16,19 @@ class InvalidFilterError extends Error {
   }
 }
 
+/** Escapa metacaracteres do LIKE (%, _ e a própria barra) — mesmo helper do crm-db-bridge. */
+export function escapeLikePattern(term: string): string {
+  return term.replace(/[%_\\]/g, (c) => `\\${c}`);
+}
+
+/**
+ * Valor para dentro de `.or()` do PostgREST: entre aspas duplas, com `"` e `\` escapados.
+ * Sem aspas, vírgula/parênteses/ponto no termo de busca injetariam condições extras no filtro.
+ */
+export function quotePostgrestValue(value: string): string {
+  return `"${value.replace(/["\\]/g, (c) => `\\${c}`)}"`;
+}
+
 export function applyFilters(
   query: FilterQuery,
   filters: Record<string, unknown>,
@@ -25,15 +38,14 @@ export function applyFilters(
     if (value === undefined || value === null || value === '') return;
 
     if (key === '_search' && typeof value === 'string') {
-      const escaped = value.replace(/%/g, '\\%').replace(/_/g, '\\_');
-      query = query.or(`name.ilike.%${escaped}%,sku.ilike.%${escaped}%,supplier_reference.ilike.%${escaped}%,brand.ilike.%${escaped}%,description.ilike.%${escaped}%`);
+      const pattern = quotePostgrestValue(`%${escapeLikePattern(value)}%`);
+      query = query.or(['name', 'sku', 'supplier_reference', 'brand', 'description'].map((col) => `${col}.ilike.${pattern}`).join(','));
       return;
     }
 
     // Name prefix search: matches products whose name STARTS with the term (case insensitive)
     if (key === '_name_prefix' && typeof value === 'string') {
-      const escaped = value.replace(/%/g, '\\%').replace(/_/g, '\\_');
-      query = query.ilike('name', `${escaped}%`);
+      query = query.ilike('name', `${escapeLikePattern(value)}%`);
       return;
     }
 

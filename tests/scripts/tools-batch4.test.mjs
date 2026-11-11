@@ -1,6 +1,6 @@
 /** Regressão (lote 4): monitores e ferramentas com veredito dependente de ordem, estouro de pilha ou ref inválida. */
 import { execFileSync, spawnSync } from 'node:child_process';
-import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
@@ -75,7 +75,7 @@ describe('check-file-size-baseline conta linhas reais', () => {
     writeFileSync(join(dir, 'src/passou.ts'), `${'x\n'.repeat(501)}`);
     const r = spawnSync('node', ['scripts/check-file-size-baseline.mjs', '--update'], { cwd: dir, encoding: 'utf8', env: { PATH: process.env.PATH } });
     expect(r.status, r.stderr).toBe(0);
-    const baseline = JSON.parse(spawnSync('cat', [join(dir, '.file-size-baseline.json')], { encoding: 'utf8' }).stdout);
+    const baseline = JSON.parse(readFileSync(join(dir, '.file-size-baseline.json'), 'utf8'));
     const files = baseline.files ?? baseline.sizes ?? baseline;
     const serialized = JSON.stringify(files);
     expect(serialized).toContain('passou.ts');

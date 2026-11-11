@@ -22,7 +22,7 @@ describe('resolveCredential: nunca usar o objeto de retorno como string', () => 
   // Atribuição sem desestruturar É aceitável quando a variável só é usada via propriedade
   // (`res.value`, `res.source`); é bug quando o objeto inteiro é usado (template, argumento, if).
   const usedAsWholeObject = (source, name, from) => {
-    const re = new RegExp(`(?<![\\w$.])${name.replace(/\$/g, '\\$')}(?![\\w$])(?!\\s*\\??\\.)`, 'g');
+    const re = new RegExp(`(?<![\\w$.])${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\w$])(?!\\s*\\??\\.)`, 'g');
     re.lastIndex = from;
     return re.test(source);
   };
