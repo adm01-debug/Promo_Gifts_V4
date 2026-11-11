@@ -21,13 +21,15 @@
  *   - PGHOST/PGUSER/PGPASSWORD/PGDATABASE ou DATABASE_URL (psql).
  */
 import { execSync } from 'node:child_process';
+import { missingPrerequisite } from './lib/missing-prerequisite.mjs';
 
 const projectRef = process.env.SUPABASE_PROJECT_REF;
 const accessToken = process.env.SUPABASE_ACCESS_TOKEN;
 
 if (!accessToken && !projectRef && !process.env.DATABASE_URL && !process.env.PGHOST) {
-  console.log('[verify-quote-number-hardening] static-pass: sem credenciais de banco; verificação ignorada.');
-  process.exit(0);
+  missingPrerequisite('verify-quote-number-hardening', 'sem credenciais de banco (SUPABASE_ACCESS_TOKEN+SUPABASE_PROJECT_REF, DATABASE_URL ou PGHOST)', {
+    exitCode: 1,
+  });
 }
 
 const RETRYABLE_STATUSES = new Set([500, 503, 504, 521, 544]);

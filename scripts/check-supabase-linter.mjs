@@ -23,6 +23,7 @@ import { spawnSync } from "node:child_process";
 import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveMissingPrerequisite } from "./lib/missing-prerequisite.mjs";
 
 const TOKEN = process.env.SUPABASE_ACCESS_TOKEN;
 const REF = process.env.SUPABASE_PROJECT_REF;
@@ -75,10 +76,18 @@ export async function runLinter({
   catalogRunner = runCatalogChecks,
   logger = console,
   sleepFn = (ms) => new Promise((r) => setTimeout(r, ms)),
+  argv = process.argv.slice(2),
+  env = process.env,
 } = {}) {
   if (!token || !ref) {
-    logger.log("[check-supabase-linter] static-pass: credenciais ausentes; auditoria de segurança ignorada.");
-    return 0;
+    // GUARD: sem credenciais o gate de segurança falha fechado no CI (exit 2).
+    const outcome = resolveMissingPrerequisite(
+      "check-supabase-linter",
+      "SUPABASE_ACCESS_TOKEN e SUPABASE_PROJECT_REF ausentes",
+      { exitCode: 2, argv, env },
+    );
+    for (const line of outcome.lines) (outcome.strict ? logger.error : logger.log)(line);
+    return outcome.exitCode;
   }
   if (ref !== CANONICAL_REF) {
     logger.error(`❌ Projeto errado: este gate só audita ${CANONICAL_REF}.`);

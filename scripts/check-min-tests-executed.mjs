@@ -9,6 +9,7 @@
  * projeto; cada workflow deve passar --min explícito para seu contexto)
  */
 import fs from 'fs';
+import { missingPrerequisite } from './lib/missing-prerequisite.mjs';
 
 const args = process.argv.slice(2);
 const reportPath = args.find((a) => !a.startsWith('--')) ?? 'test-results/results.json';
@@ -26,8 +27,10 @@ if (
 }
 
 if (!fs.existsSync(reportPath)) {
-  console.log(`[check-min-tests] static-pass: ${reportPath} ausente; gate ignorado.`);
-  process.exit(0);
+  missingPrerequisite('check-min-tests', `relatorio ${reportPath} ausente`, {
+    exitCode: 1,
+    hint: 'Execute playwright com --reporter=json antes deste gate.',
+  });
 }
 
 let report;

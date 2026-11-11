@@ -12,7 +12,11 @@ import urllib.request, urllib.parse, re, json, sys, time, os
 SUPA = 'https://doufsxqlfjyuvxuezpln.supabase.co'
 KEY  = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '')
 if not KEY:
-    print('[xbz-dims-batch] static-pass: SUPABASE_SERVICE_ROLE_KEY não definida; enriquecimento ignorado.')
+    # GUARD: sem credencial, falha fechado no CI/REQUIRE_LIVE=1; static-pass só fora do CI.
+    if os.environ.get('CI') in ('true', '1') or os.environ.get('GITHUB_ACTIONS') == 'true' or os.environ.get('REQUIRE_LIVE') == '1':
+        print('[xbz-dims-batch] ERRO: SUPABASE_SERVICE_ROLE_KEY não definida. Defina antes de rodar.', file=sys.stderr)
+        sys.exit(1)
+    print('[xbz-dims-batch] static-pass: SUPABASE_SERVICE_ROLE_KEY não definida; nada foi executado (REQUIRE_LIVE=1 torna obrigatório).')
     sys.exit(0)
 DRY  = '--dry' in sys.argv
 LIM  = int(next((a.split('=')[1] for a in sys.argv if a.startswith('--limit=')), '60'))
