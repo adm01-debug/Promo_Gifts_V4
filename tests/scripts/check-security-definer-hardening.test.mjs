@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
  * Regressão: o gate dizia "nenhuma migration nova para validar" em toda PR (checkout raso do
  * Actions não tem origin/<base>) e não via SECURITY DEFINER depois do corpo da função nem
@@ -92,53 +91,5 @@ describe('clone completo (origin/main presente)', () => {
   it('continua validando via diff de três pontos', () => {
     const work = ciCheckout(SD_AFTER_BODY, { shallow: false });
     expect(run(work).status).toBe(1);
-||||||| 1dcb3b6b0e
-=======
-import { spawn } from "node:child_process";
-import { existsSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join, dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
-import { afterEach, describe, expect, it } from "vitest";
-
-const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
-
-function runCheck(env) {
-  return new Promise((resolveRun, rejectRun) => {
-    const child = spawn(process.execPath, [resolve(ROOT, "scripts", "check-security-definer-hardening.mjs")], {
-      cwd: ROOT,
-      env: { PATH: process.env.PATH ?? "", ...env },
-    });
-    let stdout = "";
-    let stderr = "";
-    child.stdout.on("data", (chunk) => (stdout += chunk));
-    child.stderr.on("data", (chunk) => (stderr += chunk));
-    child.once("error", rejectRun);
-    child.once("close", (exitCode) => resolveRun({ exitCode, stdout, stderr }));
-  });
-}
-
-describe("check-security-definer-hardening", () => {
-  let marker;
-
-  afterEach(() => {
-    if (marker && existsSync(marker)) rmSync(marker);
-  });
-
-  it("não executa comando arbitrário quando GITHUB_BASE_REF traz injeção de shell", async () => {
-    marker = join(tmpdir(), `secdef-hardening-injection-${process.pid}-${Date.now()}.marker`);
-    expect(existsSync(marker)).toBe(false);
-
-    const outcome = await runCheck({
-      // Nome de branch malicioso — vindo do ambiente da PR, nunca deve ser
-      // interpolado numa shell string sem escape.
-      GITHUB_BASE_REF: `main$(touch ${marker})`,
-    });
-
-    expect(existsSync(marker)).toBe(false);
-    // Sem o remote/ref válido, o script cai no fallback de `git status` e
-    // termina normalmente (sem migrations novas neste worktree de teste).
-    expect(outcome.exitCode).toBe(0);
->>>>>>> origin/claude/laughing-euler-x5cbhq
   });
 });
