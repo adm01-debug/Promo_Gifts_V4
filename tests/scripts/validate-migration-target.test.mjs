@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -8,6 +9,9 @@ import {
   validateMigrationTarget,
   validateLiveMigrationPooler,
 } from '../../scripts/validate-migration-target.mjs';
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
+const SCRIPT = resolve(ROOT, 'scripts/validate-migration-target.mjs');
 
 const valid = {
   MIGRATION_VERSION: '20260920120000',
@@ -120,6 +124,44 @@ describe('controlled migration target', () => {
     expect(steps[apply].env.PGCONNECT_TIMEOUT).toBe('15');
     const repair = steps.find((step) => step.name === 'migration repair --status applied');
     expect(repair.env.SUPABASE_DB_PASSWORD).toBe('${{ secrets.PGPASSWORD }}');
+  });
+});
+
+describe('CLI static-pass never masks an explicitly wrong project ref', () => {
+  it('fails closed when SUPABASE_PROJECT_REF points at the forbidden project, even with no other env set', () => {
+    const result = spawnSync('node', [SCRIPT], {
+      cwd: ROOT,
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        SUPABASE_PROJECT_REF: 'pqpdolkaeqlyzpdpbizo',
+        MIGRATION_VERSION: '',
+        PGHOST: '',
+        PGUSER: '',
+        PGPASSWORD: '',
+        PGDATABASE: '',
+      },
+    });
+    expect(result.status).toBe(1);
+    expect(result.stdout).not.toContain('static-pass');
+    expect(result.stderr).toContain('Project ref não canônico');
+  });
+
+  it('keeps static-pass when nothing at all is configured (no project ref either)', () => {
+    const env = { ...process.env };
+    for (const key of [
+      'SUPABASE_PROJECT_REF',
+      'MIGRATION_VERSION',
+      'PGHOST',
+      'PGUSER',
+      'PGPASSWORD',
+      'PGDATABASE',
+    ]) {
+      delete env[key];
+    }
+    const result = spawnSync('node', [SCRIPT], { cwd: ROOT, encoding: 'utf8', env });
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('static-pass');
   });
 });
 

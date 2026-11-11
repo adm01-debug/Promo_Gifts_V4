@@ -88,7 +88,13 @@ function main() {
 
   const block = `${BEGIN}\n${table}\n${END}`;
 
-  const current = readFileSync(README, 'utf8');
+  let current;
+  try {
+    current = readFileSync(README, 'utf8');
+  } catch (err) {
+    console.error(`[drafts] não consegui ler ${README}: ${err.code || err.message}`);
+    process.exit(1);
+  }
   const re = new RegExp(`${BEGIN.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[\\s\\S]*?${END}`, 'm');
   if (!re.test(current)) {
     console.error('[drafts] marcadores BEGIN/END não encontrados no README.');

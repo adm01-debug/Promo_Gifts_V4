@@ -1,5 +1,12 @@
 {
+<<<<<<< HEAD
   "generatedAt": "2026-11-09T22:18:58.290Z",
+||||||| 1dcb3b6b0e
+  "generatedAt": "2026-11-09T01:35:14.876Z",
+  "totalErrors": 1,
+=======
+  "generatedAt": "2026-11-11T00:39:24.979Z",
+>>>>>>> origin/claude/laughing-euler-x5cbhq
   "totalErrors": 298,
   "counts": {
     "src/components/BridgeStatusBanner.tsx": {
@@ -532,6 +539,13 @@
     "src/pages/quotes-dashboard/useQuotesDashboard.ts": {
       "@typescript-eslint/prefer-reduce-type-parameter": 2
     },
+<<<<<<< HEAD
+||||||| 1dcb3b6b0e
+=======
+    "src/pages/seller-carts/useSellerCartsPage.ts": {
+      "react-hooks/exhaustive-deps": 3
+    },
+>>>>>>> origin/claude/laughing-euler-x5cbhq
     "src/utils/kitPdfGenerator.ts": {
       "@typescript-eslint/prefer-regexp-exec": 1,
       "@typescript-eslint/sort-type-constituents": 1,

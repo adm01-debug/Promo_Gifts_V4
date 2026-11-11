@@ -63,7 +63,12 @@ const summary = {
 };
 
 if (OUT_PATH) {
-  writeFileSync(OUT_PATH, JSON.stringify(summary, null, 2));
+  try {
+    writeFileSync(OUT_PATH, JSON.stringify(summary, null, 2));
+  } catch (err) {
+    process.stderr.write(`Erro ao escrever --out=${OUT_PATH}: ${err.message}\n`);
+    process.exit(1);
+  }
 }
 
 if (JSON_ONLY) {

@@ -23,6 +23,7 @@ function countAnyInSrc() {
   const counts = {};
 
   for (const pattern of patterns) {
+    const occurrenceRe = new RegExp(pattern, 'g');
     let output = '';
     try {
       output = execSync(
@@ -54,7 +55,12 @@ function countAnyInSrc() {
 
       const file = rawLine.slice(0, colonIdx);
       const relFile = relative(ROOT, file.startsWith('/') ? file : join(ROOT, file));
-      counts[relFile] = (counts[relFile] ?? 0) + 1;
+      // grep -n reporta a linha 1x mesmo com N ocorrências do padrão nela
+      // (ex.: `(a: any, b: any): any`); contar matches evita baseline
+      // divergente do gate (check-any-type-baseline.mjs), que conta por
+      // ocorrência e por isso acusa regressão falsa logo após um --update.
+      const occurrences = (content.match(occurrenceRe) ?? []).length || 1;
+      counts[relFile] = (counts[relFile] ?? 0) + occurrences;
     }
   }
 

@@ -17,35 +17,44 @@
  *   GITHUB_EVENT_PATH — caminho para o payload do evento GitHub Actions
  */
 
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import { existsSync, readFileSync } from 'fs';
 
 const isGate = process.argv.includes('--gate');
 const LEDGER_PATH = 'docs/coordenacao/conflitos-semanticos.md';
 const MERGE_PATTERN = /^merge\(pr-\d+\):/i;
 
-function git(cmd) {
+// Falha real do git (ref inexistente, fora de um repo, etc.) é diferente de
+// "git correu e não achou nada" — sem isto, qualquer erro de git virava um
+// falso-negativo silencioso ("0 merge commits, ok"). Ver tests/scripts/check-conflict-ledger.test.mjs.
+let gitFailed = false;
+
+function git(args) {
   try {
-    return execSync(`git ${cmd}`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim();
+    // execFileSync (sem shell): baseRef/headRef vêm de GITHUB_BASE_REF/GITHUB_HEAD_REF
+    // (nome de branch, inclusive de fork — atacante-controlável) e NUNCA podem passar
+    // por um shell interpolado (era injeção de comando com execSync(`git ${cmd}`)).
+    return execFileSync('git', args, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim();
   } catch {
+    gitFailed = true;
     return '';
   }
 }
 
 function getChangedFiles(baseRef, headRef) {
   if (!baseRef || !headRef) return [];
-  const out = git(`diff --name-only origin/${baseRef}...${headRef}`);
+  const out = git(['diff', '--name-only', `origin/${baseRef}...${headRef}`]);
   return out ? out.split('\n').filter(Boolean) : [];
 }
 
 function getMergeCommits(baseRef, headRef) {
   if (!baseRef || !headRef) return [];
   // Commits no PR que seguem o padrão de resolução de conflito (REGRA #3)
-  const out = git(`log origin/${baseRef}..${headRef} --format=%s --merges`);
+  const out = git(['log', `origin/${baseRef}..${headRef}`, '--format=%s', '--merges']);
   const mergeSubjects = out ? out.split('\n').filter(Boolean) : [];
 
   // Também verificar commits com subject no padrão merge(pr-NNN)
-  const allOut = git(`log origin/${baseRef}..${headRef} --format=%s`);
+  const allOut = git(['log', `origin/${baseRef}..${headRef}`, '--format=%s']);
   const allSubjects = allOut ? allOut.split('\n').filter(Boolean) : [];
 
   const semanticMerges = allSubjects.filter(s => MERGE_PATTERN.test(s));
@@ -63,6 +72,22 @@ if (!baseRef || !headRef) {
 
 const mergeCommits = getMergeCommits(baseRef, headRef);
 const changedFiles = getChangedFiles(baseRef, headRef);
+
+if (gitFailed) {
+  const msg = [
+    `[E188] Não foi possível calcular o diff/log entre origin/${baseRef} e ${headRef}`,
+    `(git falhou — ref inexistente, fetch incompleto ou fora de um repo git).`,
+    `Verificação de ledger de conflitos não pôde ser concluída.`,
+  ].join('\n');
+
+  if (isGate) {
+    console.error(`::error::${msg}`);
+    process.exit(1);
+  } else {
+    console.warn(`⚠️  ${msg}`);
+    process.exit(0);
+  }
+}
 
 console.log(`Commits de merge semântico encontrados: ${mergeCommits.length}`);
 if (mergeCommits.length > 0) {

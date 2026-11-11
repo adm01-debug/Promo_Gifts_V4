@@ -85,7 +85,13 @@ function checkStaticRoutes() {
     log("fail", "static-routes", "nenhum arquivo de rota encontrado");
     return;
   }
-  const src = existing.map((p) => readFileSync(p, "utf8")).join("\n");
+  let src;
+  try {
+    src = existing.map((p) => readFileSync(p, "utf8")).join("\n");
+  } catch (e) {
+    log("fail", "static-routes", `erro ao ler arquivo de rota: ${e.message}`);
+    return;
+  }
   const missing = REQUIRED_ROUTES.filter((r) => !src.includes(`path="${r}"`));
   if (missing.length === 0) {
     log("ok", "static-routes", `${REQUIRED_ROUTES.length} rotas críticas declaradas`);

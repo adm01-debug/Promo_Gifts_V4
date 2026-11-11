@@ -82,10 +82,17 @@ function validateSyncLogIntegrity(content) {
   return [];
 }
 
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function hasReceiptForVersion(logContent, version) {
   // Usa word-boundary numérico para evitar falso positivo por substring.
   // Ex: versão "2026091615572" (13 dígitos) não faz match em "20260916155725".
-  const re = new RegExp(`(?<!\\d)${version}(?!\\d)`);
+  // version é escapado porque pode vir de --from-file ou de dados do ledger
+  // fora do formato canônico de 14 dígitos; sem escape, um metacaractere de
+  // regex (ex.: "(", "*") quebra o RegExp com SyntaxError não tratada.
+  const re = new RegExp(`(?<!\\d)${escapeRegExp(version)}(?!\\d)`);
   // Linha "pendente-only" (contém a versão mas apenas status pendente, sem "aplicada")
   // NÃO conta como recibo — a migration ainda não foi efetivada em produção.
   const lines = logContent.split('\n').filter((l) => re.test(l));

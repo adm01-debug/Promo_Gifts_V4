@@ -58,7 +58,14 @@ const LEGACY_ALLOWLIST = new Set([
 const SNAPSHOT_SIZE = 81; // +3: test-cart-concurrency/limit/rls (CI test edges, Lovable 2026-06-19)
 
 function listEdgeFunctions() {
-  return readdirSync(FN_ROOT)
+  let entries;
+  try {
+    entries = readdirSync(FN_ROOT);
+  } catch (err) {
+    console.error(`\n❌ Não foi possível ler ${FN_ROOT}: ${err.message}\n`);
+    process.exit(1);
+  }
+  return entries
     .filter((name) => !name.startsWith("_"))
     .filter((name) => {
       const p = join(FN_ROOT, name);

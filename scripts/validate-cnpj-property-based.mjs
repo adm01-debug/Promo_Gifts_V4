@@ -5,6 +5,13 @@
  * Uso: node scripts/validate-cnpj-property-based.mjs [N]
  */
 const N = Number(process.argv[2] ?? 5000);
+const MAX_N = 1_000_000;
+if (!Number.isFinite(N) || N < 0 || N > MAX_N) {
+  console.error(
+    `✗ N inválido: ${JSON.stringify(process.argv[2])} — deve ser um número finito entre 0 e ${MAX_N.toLocaleString()}`,
+  );
+  process.exit(1);
+}
 
 function normalizeCnpj(v) {
   return (v ?? '').replace(/\D/g, '').slice(0, 14);

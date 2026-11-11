@@ -9,7 +9,7 @@
  */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 
 const ROOT = process.cwd();
 const FUNCS_DIR = join(ROOT, 'supabase/functions');
@@ -38,9 +38,16 @@ const allDirs = readdirSync(FUNCS_DIR)
 const callers = {};
 for (const dir of allDirs) {
   try {
-    // grep retorna exit 1 se não encontra; capture stderr e ignore
-    const out = execSync(
-      `grep -rE "functions\\.invoke\\(['\\"']${dir}['\\"']|invoke\\(['\\"']${dir}['\\"']" --include='*.ts' --include='*.tsx' src/ 2>/dev/null || true`,
+    // dir vem de readdirSync (nome de diretório pode conter qualquer
+    // caractere exceto '/'); nunca interpolar em string de shell — usar
+    // execFileSync (argv array, sem shell) evita command injection e
+    // escapar os metacaracteres de regex evita pattern inválido/falso-match.
+    const escaped = dir.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const pattern = `functions\\.invoke\\(['"]${escaped}['"]|invoke\\(['"]${escaped}['"]`;
+    // grep retorna exit 1 se não encontra; capturado pelo catch abaixo
+    const out = execFileSync(
+      'grep',
+      ['-rE', pattern, '--include=*.ts', '--include=*.tsx', 'src/'],
       { encoding: 'utf8' }
     );
     callers[dir] = out.trim() ? out.trim().split('\n').length : 0;

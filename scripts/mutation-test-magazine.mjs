@@ -171,7 +171,14 @@ function applyMutation(m) {
     };
   }
   const mutated = current.replace(m.find, m.replace);
-  writeFileSync(m.file, mutated);
+  try {
+    writeFileSync(m.file, mutated);
+  } catch (err) {
+    return {
+      ok: false,
+      error: `Falha ao escrever ${m.file}: ${err.message}`,
+    };
+  }
   return { ok: true };
 }
 
@@ -189,6 +196,7 @@ function runTests() {
   const elapsed = ((Date.now() - started) / 1000).toFixed(1);
   return {
     code: res.status ?? -1,
+    signal: res.signal ?? null,
     stdout: res.stdout ?? '',
     stderr: res.stderr ?? '',
     elapsedSec: elapsed,
@@ -207,6 +215,13 @@ if (baseline.code !== 0) {
 console.log(`[mutation] Baseline OK em ${baseline.elapsedSec}s.\n`);
 
 const results = [];
+// `spawnSync` bloqueia a thread principal: um Ctrl-C (SIGINT) só é entregue ao
+// `vitest` filho (se herdar o process group) e só volta ao controle do script
+// quando o `spawnSync` retorna — os handlers de SIGINT/SIGTERM no topo deste
+// arquivo nunca chegam a disparar enquanto uma rodada está em andamento. Sem
+// este flag, o run interrompido era contado como "KILLED" (falso positivo) e
+// o laço seguia para a próxima mutação, ignorando o Ctrl-C do usuário.
+let interrupted = false;
 
 try {
   for (const m of selected) {
@@ -216,15 +231,31 @@ try {
     if (!apply.ok) {
       console.error(`[mutation] ${m.id} — infra error: ${apply.error}`);
       results.push({ ...m, status: 'ERROR', reason: apply.error });
-      // Restaura antes de continuar.
+      // Restaura antes de continuar (best-effort: nada foi de fato escrito
+      // quando `applyMutation` falhou, então uma falha aqui não é fatal).
       const original = snapshots.get(m.file);
-      if (original !== undefined) writeFileSync(m.file, original);
+      if (original !== undefined) {
+        try {
+          writeFileSync(m.file, original);
+        } catch (err) {
+          console.error(`[mutation] Falha ao restaurar ${m.file} após erro em ${m.id}: ${err.message}`);
+        }
+      }
       continue;
     }
 
     const run = runTests();
     // Restaura imediatamente após a rodada.
     writeFileSync(m.file, snapshots.get(m.file));
+
+    if (run.signal) {
+      console.error(
+        `\n[mutation] ${m.id} — rodada interrompida por sinal (${run.signal}); abortando sem avaliar as mutações restantes.`,
+      );
+      results.push({ ...m, status: 'INTERRUPTED', signal: run.signal });
+      interrupted = true;
+      break;
+    }
 
     const killed = run.code !== 0;
     console.log(
@@ -249,6 +280,14 @@ for (const [file, original] of snapshots) {
     console.error(`[mutation] FATAL — ${file} não voltou ao estado original.`);
     process.exit(2);
   }
+}
+
+// Interrupção real (Ctrl-C chegou ao `vitest` filho): já restauramos tudo
+// acima; aborta aqui para não reportar as mutações restantes como avaliadas
+// nem gerar um mutation score enganoso a partir de um run incompleto.
+if (interrupted) {
+  console.error('[mutation] Execução interrompida pelo usuário — nenhum relatório final foi gerado.');
+  process.exit(130);
 }
 
 // ---------------------------------------------------------------------------

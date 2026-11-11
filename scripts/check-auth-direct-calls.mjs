@@ -44,10 +44,16 @@ try {
 
 const violations = [];
 for (const f of files) {
-  if (ALLOWLIST_PREFIXES.some((p) => f.startsWith(p))) continue;
+  if (ALLOWLIST_PREFIXES.some((p) => (p.endsWith('/') ? f.startsWith(p) : f === p))) continue;
   if (ALLOWLIST_FILES.has(f)) continue;
   if (f.includes('__tests__') || f.endsWith('.test.ts') || f.endsWith('.test.tsx')) continue;
-  const src = readFileSync(f, 'utf8');
+  let src;
+  try {
+    src = readFileSync(f, 'utf8');
+  } catch (err) {
+    console.warn(`⚠️  [auth-direct-calls] Não foi possível ler ${f}: ${err.code ?? err.message}`);
+    continue;
+  }
   const matches = [...src.matchAll(PATTERN)];
   if (matches.length > 0) {
     for (const m of matches) {

@@ -152,6 +152,26 @@ describe("route-ref checker — detecta padrões problemáticos", () => {
     expect(r.code).toBe(0);
   });
 
+  it("não crasha com exceção não tratada ao encontrar symlink .tsx quebrado", () => {
+    // Regressão: symlink apontando para alvo inexistente (arquivo apagado
+    // entre o walk() e a leitura, ou link quebrado) fazia fs.readFile
+    // lançar e derrubar o gate inteiro com exit 2 + stack trace, em vez de
+    // apenas pular o arquivo ilegível.
+    writeFileSync(
+      path.join(work, "src/pages/Outro.tsx"),
+      `export default function Outro() { return null; }\n`,
+    );
+    execSync(
+      `ln -s ${JSON.stringify(path.join(work, "src/pages/nao-existe.tsx"))} ${JSON.stringify(
+        path.join(work, "src/pages/Quebrado.tsx"),
+      )}`,
+    );
+    const r = runChecker(work);
+    expect(r.code, `stderr:\n${r.stderr}`).toBe(0);
+    expect(r.stderr).not.toMatch(/Erro inesperado/);
+    expect(r.stdout).toMatch(/nenhum uso indevido/i);
+  });
+
   it("allowlist '// route-ref-allow:' suprime a violação", () => {
     writeFileSync(
       path.join(work, "src/components/layout/AdminRoute.tsx"),
