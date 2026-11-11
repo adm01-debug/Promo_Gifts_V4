@@ -12,9 +12,9 @@
  */
 import { readdirSync, readFileSync, existsSync, writeFileSync, mkdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const RAIZ = new URL('../../', import.meta.url).pathname;
+const RAIZ = fileURLToPath(new URL('../../', import.meta.url));
 const OUT = join(RAIZ, 'inventario/estado');
 // Acesso a tabela: .from('t') (fora storage), untypedFrom/goldFrom('t') e { table: 't' } (dbInvoke e afins)
 const ACESSO_TABELA = /(?<!storage\s*)(?:\.from|\buntypedFrom|\bgoldFrom)(?:<[^>(]*>)?\(\s*['"`]([A-Za-z_][\w.]*)['"`]|\btable:\s*['"`]([A-Za-z_][\w.]*)['"`]/g;

@@ -141,7 +141,7 @@ async function makeRequest(endpoint) {
     if (endpoint.body) opts.body = JSON.stringify(endpoint.body);
     const res = await fetch(endpoint.url, opts);
     clearTimeout(timer);
-    return { latency: Date.now() - reqStart, ok: res.status < 500 };
+    return { latency: Date.now() - reqStart, ok: res.status >= 200 && res.status < 400 }; // GUARD: 401/404/429 em 100% das chamadas contava como sucesso
   } catch {
     clearTimeout(timer);
     return { latency: Date.now() - reqStart, ok: false };

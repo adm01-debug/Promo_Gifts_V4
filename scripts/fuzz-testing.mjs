@@ -492,6 +492,7 @@ async function runFuzz() {
   let totalRequests = 0;
   let totalCrashes = 0;
   let totalTimeouts = 0;
+  let totalNetErrors = 0;
   let totalStackLeaks = 0;
   const allIssues = [];
 
@@ -511,7 +512,7 @@ async function runFuzz() {
 
     const url = `${SUPABASE_URL}/functions/v1/${spec.endpoint}`;
     const authToken = spec.authRequired ? SERVICE_ROLE_KEY : null;
-    let fnCrashes = 0, fnTimeouts = 0, fnStackLeaks = 0;
+    let fnCrashes = 0, fnTimeouts = 0, fnStackLeaks = 0, fnNetErrors = 0;
     const fnIssues = [];
 
     for (let i = 0; i < payloads.length; i += CONCURRENCY) {
@@ -523,6 +524,7 @@ async function runFuzz() {
         const issues = [];
         if (r.status === 500) issues.push("HTTP 500 — CRASH");
         if (r.error === "TIMEOUT") { issues.push("TIMEOUT"); fnTimeouts++; }
+        else if (r.status === -1) { issues.push(`NETWORK ERROR — ${r.error}`); fnNetErrors++; }
         if (r.body && STACK_TRACE_RE.test(r.body)) issues.push("STACK TRACE LEAK");
         if (issues.some(i => i.includes("500"))) fnCrashes++;
         if (issues.some(i => i.includes("STACK"))) fnStackLeaks++;
@@ -532,17 +534,18 @@ async function runFuzz() {
       }
     }
 
-    return { fn: spec.name, crashes: fnCrashes, timeouts: fnTimeouts, stackLeaks: fnStackLeaks, issues: fnIssues };
+    return { fn: spec.name, crashes: fnCrashes, timeouts: fnTimeouts, stackLeaks: fnStackLeaks, netErrors: fnNetErrors, issues: fnIssues };
   }
 
   for (let i = 0; i < FUNCTION_SPECS.length; i += FUNCTION_CONCURRENCY) {
     const chunk = FUNCTION_SPECS.slice(i, i + FUNCTION_CONCURRENCY);
     const chunkResults = await Promise.all(chunk.map(runFunctionSpec));
     for (const result of chunkResults) {
-      const ok = result.crashes === 0 && result.stackLeaks === 0;
+      const ok = result.crashes === 0 && result.stackLeaks === 0 && result.timeouts === 0 && !result.netErrors;
       console.log(`   ${ok ? "✅" : "❌"} [${result.fn}] Crashes: ${result.crashes} | Timeouts: ${result.timeouts} | StackLeaks: ${result.stackLeaks}`);
       totalCrashes += result.crashes;
       totalTimeouts += result.timeouts;
+      totalNetErrors += result.netErrors ?? 0;
       totalStackLeaks += result.stackLeaks;
       allIssues.push(...result.issues.map(issue => ({ fn: result.fn, ...issue })));
     }
@@ -555,6 +558,7 @@ async function runFuzz() {
   console.log(`Requests enviados: ${totalRequests}`);
   console.log(`Crashes (500):     ${totalCrashes}`);
   console.log(`Timeouts:          ${totalTimeouts}`);
+  console.log(`Erros de rede:     ${totalNetErrors}`);
   console.log(`Stack leaks:       ${totalStackLeaks}`);
   console.log("");
   if (allIssues.length > 0) {
@@ -563,8 +567,9 @@ async function runFuzz() {
     Object.entries(byFunction).sort((a, b) => b[1] - a[1]).forEach(([fn, count]) => console.log(` - ${fn}: ${count}`));
   }
 
-  if (totalCrashes > 0 || totalStackLeaks > 0) {
-    console.error(`❌ FALHOU — ${totalCrashes} crashes e ${totalStackLeaks} stack leaks.`);
+  // GUARD: servidor inalcançável (conexão recusada → status -1) e timeouts reprovam; antes só 500 e stack leak.
+  if (totalCrashes > 0 || totalStackLeaks > 0 || totalTimeouts > 0 || totalNetErrors > 0) {
+    console.error(`❌ FALHOU — ${totalCrashes} crashes, ${totalStackLeaks} stack leaks, ${totalTimeouts} timeouts e ${totalNetErrors} erros de rede.`);
     process.exit(1);
   }
 
