@@ -273,3 +273,19 @@ describe('shims locais de upload/download-artifact', () => {
     expect(run('download-artifact', { name: 'inexistente', path: 'z' }).status).toBe(1);
   });
 });
+
+describe('emulação de job always() não executado pelo act', async () => {
+  const { emulateAlwaysJob } = await import('../../scripts/ci-local/run-act.mjs');
+  const job = { always: true, needs: ['a', 'b'] };
+  const m = (sa, sb) => new Map([['a', { check: 'A', status: sa }], ['b', { check: 'B', status: sb }]]);
+  it('pior resultado dos needs vence, e sai marcado como EMULADO', () => {
+    expect(emulateAlwaysJob(job, m('ok', 'ok')).status).toBe('ok');
+    expect(emulateAlwaysJob(job, m('ok', 'ok-parcial')).status).toBe('ok-parcial');
+    expect(emulateAlwaysJob(job, m('inconclusivo', 'ok-parcial')).status).toBe('inconclusivo');
+    expect(emulateAlwaysJob(job, m('inconclusivo', 'FALHOU'))).toMatchObject({ status: 'FALHOU', why: expect.stringContaining('EMULADO') });
+  });
+  it('não emula sem always() ou com need sem resultado', () => {
+    expect(emulateAlwaysJob({ always: false, needs: ['a'] }, m('ok', 'ok'))).toBeNull();
+    expect(emulateAlwaysJob({ always: true, needs: ['a', 'z'] }, m('ok', 'ok'))).toBeNull();
+  });
+});

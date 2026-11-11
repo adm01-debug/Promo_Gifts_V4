@@ -275,6 +275,22 @@ export function neutralizeUnverifiable(doc, classify, secretsProvided = []) {
   return n;
 }
 
+/**
+ * O act não executa jobs `if: always()` depois que um job reutilizável falha (limitação do act);
+ * no GitHub eles rodam e agregam os `needs` (ex.: Gate Final). Quando isso acontece e todos os
+ * needs reportaram, o veredito é EMULADO a partir deles — e sinalizado como tal.
+ */
+export function emulateAlwaysJob(jobInfo, byJobId) {
+  if (!jobInfo?.always || !jobInfo.needs.length) return null;
+  const needs = jobInfo.needs.map((n) => byJobId.get(n));
+  if (needs.some((n) => !n)) return null;
+  const order = ['FALHOU', 'inconclusivo', 'ok-parcial'];
+  const worst = order.find((st) => needs.some((n) => n.status === st));
+  const status = worst ?? 'ok';
+  const detail = worst ? needs.filter((n) => n.status === worst).map((n) => n.check).join('; ') : '';
+  return { status, why: `EMULADO (act não roda always() após falha em reutilizável) a partir de ${needs.length} needs${detail ? ` — ${worst}: ${detail}` : ''}` };
+}
+
 export function writeJson(path, data) {
   writeFileSync(path, `${JSON.stringify(data, null, 2)}\n`);
 }
