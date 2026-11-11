@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { errorEnvelopeSchema } from "../edge-functions/live/_schemas";
-import { FAIL_CLOSED_WHEN_UNCONFIGURED, isDestructive, LENIENT_BODY } from "../edge-functions/live/_authz";
+import { expectedAnonStatuses, isDestructive, LENIENT_BODY } from "../edge-functions/live/_authz";
 
 describe("suíte live de edge — contratos determinísticos", () => {
   it("envelope aceita fields no formato zod.flatten().fieldErrors (mcp-keys-*)", () => {
@@ -19,8 +19,12 @@ describe("suíte live de edge — contratos determinísticos", () => {
     }
   });
 
+  it("sem JWT só protege se o gateway barrar anon: toda LENIENT_BODY é tier reject", () => {
+    for (const fn of LENIENT_BODY) expect(expectedAnonStatuses(fn).mode, fn).toBe("reject");
+    for (const fn of ["test-contract-orchestrator", "github-credentials-test"]) expect(LENIENT_BODY.has(fn)).toBe(true);
+  });
+
   it("mcp-keys-* validam o corpo de verdade: continuam testadas autenticadas", () => {
     for (const fn of ["mcp-keys-issue", "mcp-keys-revoke", "mcp-keys-rotate", "mcp-keys-update"]) expect(LENIENT_BODY.has(fn)).toBe(false);
-    expect([...FAIL_CLOSED_WHEN_UNCONFIGURED]).toEqual(["test-contract-orchestrator"]);
   });
 });

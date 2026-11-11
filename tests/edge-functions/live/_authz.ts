@@ -156,14 +156,10 @@ export const LENIENT_BODY = new Set<string>([
   "test-cart-limit",
   "test-cart-rls",
   "test-inventory-orchestrator",
+  // não leem o corpo: autenticadas, chamariam integrações reais (external-db-bridge, API do GitHub)
+  "github-credentials-test",
+  "test-contract-orchestrator",
 ]);
-
-/**
- * Funções que falham FECHADO (503 `service_misconfigured`) quando falta credencial de
- * integração no ambiente — comportamento intencional, não crash. O teste é PULADO com aviso
- * (fica visível no relatório) em vez de virar falso verde ou falso vermelho.
- */
-export const FAIL_CLOSED_WHEN_UNCONFIGURED = new Set<string>(["test-contract-orchestrator"]);
 
 /** Funções que suportam dry-run seguro (read-only quando dry_run=true). */
 export const SUPPORTS_DRY_RUN = new Set<string>(["ownership-repair"]);
