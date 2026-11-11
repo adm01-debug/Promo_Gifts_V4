@@ -27,14 +27,10 @@ export const GITHUB_ONLY_ACTIONS = [
   'actions/create-github-app-token',
 ];
 
-/** Comandos em `run:` que escrevem no GitHub ou dependem da API autenticada. */
-const GITHUB_API_RUN = [
-  /\bgh\s+(pr|issue|release|api|run|workflow|label|repo|secret|variable)\b/,
-  /\bgit\s+push\b/,
-  /api\.github\.com/,
-];
-
 const SAFE_SECRETS = new Set(['GITHUB_TOKEN']);
+
+/** Actions de preparação de ambiente (não são "trabalho" do job). */
+const SETUP_ACTIONS = ['actions/checkout', 'actions/setup-node', 'actions/setup-python', 'denoland/setup-deno', 'actions/cache', 'actions/upload-artifact', 'actions/download-artifact', 'supabase/setup-cli', './.github/actions/setup-node-ci'];
 
 export function loadWorkflows(root) {
   const dir = join(root, '.github', 'workflows');
@@ -74,49 +70,61 @@ function actionName(uses) {
   return String(uses).split('@')[0];
 }
 
-/** Classifica um job. `ctx.workflowText` permite herdar segredos de nível de workflow (env:). */
-export function classifyJob(jobId, job, ctx = {}) {
+/** Classifica UM passo: local | secret | github-only (com motivo e segredos). */
+export function classifyStep(step, inherited = []) {
+  const uses = step?.uses ? actionName(step.uses) : '';
   const reasons = [];
-  const jobText = yaml.dump(job ?? {});
-  const steps = Array.isArray(job?.steps) ? job.steps : [];
-  const uses = steps.map((s) => s?.uses).filter(Boolean).map(actionName);
-  if (job?.uses) uses.push(actionName(job.uses));
-
-  const githubOnly = uses.filter((u) => GITHUB_ONLY_ACTIONS.some((p) => u === p || u.startsWith(`${p}/`)));
-  if (githubOnly.length) reasons.push(`usa ${[...new Set(githubOnly)].join(', ')}`);
-
-  const runText = steps.map((s) => s?.run ?? '').join('\n');
-  for (const re of GITHUB_API_RUN) {
-    if (re.test(runText)) {
-      reasons.push(`run: chama ${re.source.replace(/\\[bs]/g, '').replace(/\\/g, '')}`);
-      break;
-    }
-  }
-  // github-script só é github-only quando escreve (comenta, cria issue/label, dispara workflow).
-  const scriptBodies = steps.filter((s) => actionName(s?.uses ?? '') === 'actions/github-script').map((s) => String(s?.with?.script ?? ''));
-  if (scriptBodies.some((b) => /\.(create|update|delete|add|remove|merge|dispatch|createComment|createLabel|addLabels)\w*\(/.test(b))) {
+  if (uses && GITHUB_ONLY_ACTIONS.some((p) => uses === p || uses.startsWith(`${p}/`))) reasons.push(`usa ${uses}`);
+  if (uses === 'actions/github-script' && /\.(create|update|delete|add|remove|merge|dispatch)\w*\(/.test(String(step?.with?.script ?? ''))) {
     reasons.push('github-script escreve via API');
   }
-  // ./.github/actions/ci-issue abre issue no GitHub.
-  if (uses.includes('./.github/actions/ci-issue') && !reasons.length) {
-    // só a etapa de issue depende do GitHub; o job em si roda — o act falha só nessa etapa
-    // quando ela é alcançada (if: failure()). Não rebaixa o job inteiro.
-  }
-  if (job?.permissions && typeof job.permissions === 'object' && job.permissions['id-token'] === 'write') {
-    reasons.push('OIDC (id-token: write)');
-  }
+  if (uses === './.github/actions/ci-issue') reasons.push('abre issue no GitHub');
+  const run = String(step?.run ?? '');
+  if (/\bgh\s+(pr|issue|release|api|run|workflow|label|repo|secret|variable)\b/.test(run)) reasons.push('run: gh (API do GitHub)');
+  else if (/\bgit\s+push\b/.test(run)) reasons.push('run: git push');
+  else if (/api\.github\.com/.test(run)) reasons.push('run: chama api.github.com');
+  // Segredos referenciados no passo; os com fallback (`secrets.X || ...`) não bloqueiam.
+  const text = yaml.dump(step ?? {});
+  const all = secretsIn(text);
+  const withFallback = new Set([...text.matchAll(/secrets\.([A-Za-z_]\w*)\s*\|\|/g)].map((m) => m[1]));
+  const secrets = [...new Set([...all.filter((x) => !withFallback.has(x)), ...inherited])].sort();
+  const cls = reasons.length ? 'github-only' : secrets.length ? 'secret' : 'local';
+  return { name: step?.name ?? (uses || run.split('\n')[0].slice(0, 70)), uses: uses || null, cls, reasons, secrets };
+}
 
-  const secrets = [...new Set([...secretsIn(jobText), ...(ctx.workflowSecrets ?? [])])].sort();
+/**
+ * Classifica um job a partir dos passos. O job é:
+ *   github-only — se TODO o trabalho depende do GitHub (reusable externo, ou todos os passos não-setup são github-only);
+ *   secret      — se algum passo precisa de segredo (o resto roda; falha só vira "inconclusivo" se for nesse passo);
+ *   local       — caso contrário.
+ * `ctx.workflowSecrets`: segredos usados em env: de nível de workflow (herdados por todos os passos).
+ */
+export function classifyJob(jobId, job, ctx = {}) {
+  const jobEnvSecrets = secretsIn(yaml.dump({ env: job?.env ?? {}, container: job?.container ?? {}, services: job?.services ?? {} }));
+  const inherited = [...new Set([...(ctx.workflowSecrets ?? []), ...jobEnvSecrets])];
+  const steps = (Array.isArray(job?.steps) ? job.steps : []).map((st) => classifyStep(st, inherited));
+  const reasons = [];
+  if (job?.permissions && typeof job.permissions === 'object' && job.permissions['id-token'] === 'write') reasons.push('OIDC (id-token: write)');
+  const work = steps.filter((st) => !SETUP_ACTIONS.includes(st.uses ?? ''));
+  const ghSteps = steps.filter((st) => st.cls === 'github-only');
   let cls = 'local';
-  if (reasons.length) cls = 'github-only';
-  else if (secrets.length) cls = 'secret';
-
+  if (job?.uses && !String(job.uses).startsWith('./')) {
+    cls = 'github-only';
+    reasons.push(`reusable externo ${job.uses}`);
+  } else if (work.length && work.every((st) => st.cls === 'github-only')) {
+    cls = 'github-only';
+  } else if (steps.some((st) => st.cls === 'secret') || (job?.uses && secretsIn(yaml.dump(job.with ?? {}) + yaml.dump(job.secrets ?? {})).length)) {
+    cls = 'secret';
+  }
+  for (const st of ghSteps) reasons.push(`${st.name}: ${st.reasons.join(', ')}`);
+  const secrets = [...new Set(steps.flatMap((st) => st.secrets))].sort();
   return {
     id: jobId,
     name: job?.name ?? jobId,
     cls,
     reasons,
     secrets,
+    steps,
     needs: [].concat(job?.needs ?? []),
     matrix: Boolean(job?.strategy?.matrix),
     services: Object.keys(job?.services ?? {}),

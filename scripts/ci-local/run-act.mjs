@@ -12,7 +12,6 @@
 //   • Clone isolado: o worktree do usuário não é tocado nem montado.
 import { spawn, execFileSync } from 'node:child_process';
 import { createWriteStream, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
 
 const GITHUB_URL = 'https://github.com/adm01-debug/Promo_Gifts_V4.git';
 
@@ -79,7 +78,7 @@ export function checkName(jobName, matrix) {
 /** Lê o JSONL do act e consolida o resultado final de cada job (com matrix). */
 export function parseActJsonl(lines) {
   const jobs = new Map();
-  let failedStep = new Map();
+  const failedStep = new Map();
   for (const line of lines) {
     let o;
     try {
@@ -149,8 +148,16 @@ export function verdict(jobResult, jobInfo, { secretsProvided = [] } = {}) {
   if (jobResult.result === 'success') return { status: 'ok' };
   if (jobResult.result === 'skipped') return { status: 'pulado', why: 'if: falso' };
   if (jobInfo?.cls === 'github-only') return { status: 'só GitHub', why: jobInfo.reasons.join('; ') };
-  const missing = (jobInfo?.secrets ?? []).filter((s) => !secretsProvided.includes(s));
-  if (jobInfo?.cls === 'secret' && missing.length) return { status: 'inconclusivo', why: `segredo(s) ausente(s): ${missing.join(', ')}` };
+  // Decide pelo PASSO que falhou: só ele pode justificar "inconclusivo"/"só GitHub".
+  const step = jobResult.failedStep ? (jobInfo?.steps ?? []).find((s) => s.name === jobResult.failedStep) : null;
+  if (step?.cls === 'github-only') return { status: 'só GitHub', why: `passo ${step.name}: ${step.reasons.join(', ')}` };
+  const missing = (step?.secrets ?? []).filter((s) => !secretsProvided.includes(s));
+  if (step && missing.length) return { status: 'inconclusivo', why: `passo ${step.name}: segredo(s) ausente(s): ${missing.join(', ')}` };
+  // Passo não identificado (ex.: falha em action composta) num job que usa segredos: não afirmar regressão.
+  const jobMissing = (jobInfo?.secrets ?? []).filter((s) => !secretsProvided.includes(s));
+  if (!step && jobInfo?.cls === 'secret' && jobMissing.length) {
+    return { status: 'inconclusivo', why: `passo "${jobResult.failedStep ?? '?'}" não mapeado; job usa segredo(s) ausente(s): ${jobMissing.join(', ')}` };
+  }
   return { status: 'FALHOU', why: jobResult.failedStep ? `passo: ${jobResult.failedStep}` : '' };
 }
 
