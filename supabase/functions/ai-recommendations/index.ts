@@ -1,14 +1,14 @@
 import { getCorsHeaders } from '../_shared/cors.ts';
 import { z } from 'npm:zod@3.23.8';
-import { fetchWithBreaker, CircuitOpenError, circuitOpenResponse } from '../_shared/external-fetch.ts';
+import { CircuitOpenError, circuitOpenResponse } from '../_shared/external-fetch.ts';
 import { authenticateRequest, authErrorResponse } from '../_shared/auth.ts';
 import { safeJson } from '../_shared/json-parser.ts';
 import { resolveCredential } from '../_shared/credentials.ts';
 import { safeErrorFields } from '../_shared/log-safety.ts';
 import { applyRateLimit, rateLimiters } from '../_shared/rate-limiter.ts';
 import { assertSwitchEnabled } from '../_shared/kill_switch.ts';
+import { callAiWithTracking } from '../_shared/ai-usage.ts';
 
-const AI_ENDPOINT = 'https://ai.gateway.lovable.dev/v1/chat/completions';
 const AI_MODEL = 'google/gemini-2.5-flash';
 
 const RecommendationRequestSchema = z.object({
@@ -51,14 +51,9 @@ Deno.serve(async (req) => {
       return new Response(rl.body, { status: rl.status, headers });
     }
 
+    // Router multi-provider (v_ai_function_routing_effective) é o caminho primário;
+    // LOVABLE_API_KEY só alimenta o fallback legado e pode estar ausente.
     const { value: LOVABLE_API_KEY } = await resolveCredential('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      console.warn('[ai-recommendations] LOVABLE_API_KEY not configured');
-      return new Response(
-        JSON.stringify({ recommendations: [], insights: 'Serviço de IA não configurado.' }),
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
-      );
-    }
 
     const rawBody = await safeJson(req);
     if (!rawBody) {
@@ -82,22 +77,20 @@ Retorne EXATAMENTE em formato JSON (sem markdown):
 
     let aiResponse: Response;
     try {
-      aiResponse = await fetchWithBreaker('lovable-ai', AI_ENDPOINT, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: AI_MODEL,
+      aiResponse = await callAiWithTracking({
+        userId: user.id,
+        functionName: 'ai-recommendations',
+        model: AI_MODEL,
+        apiKey: LOVABLE_API_KEY ?? '',
+        requestBody: {
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: userPrompt },
           ],
-        }),
+        },
       });
     } catch (aiErr) {
-      console.error('[ai-recommendations] Lovable AI request failed:', safeErrorFields(aiErr));
+      console.error('[ai-recommendations] AI request failed:', safeErrorFields(aiErr));
       return new Response(
         JSON.stringify({ recommendations: [], insights: 'Serviço de IA temporariamente indisponível.' }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
@@ -105,7 +98,7 @@ Retorne EXATAMENTE em formato JSON (sem markdown):
 
     if (!aiResponse.ok) {
       await aiResponse.text();
-      console.error('[ai-recommendations] Lovable AI error:', aiResponse.status);
+      console.error('[ai-recommendations] AI error:', aiResponse.status);
       return new Response(
         JSON.stringify({ recommendations: [], insights: 'Serviço de IA temporariamente indisponível.' }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });

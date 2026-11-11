@@ -5,13 +5,13 @@ import { BiCopilotSchemas } from '../_shared/contracts/schemas/bi-copilot.ts';
 import { safeErrorFields } from '../_shared/log-safety.ts';
 import { assertSwitchEnabled } from '../_shared/kill_switch.ts';
 import { createStructuredLogger } from '../_shared/structured-logger.ts';
-import { getOrCreateRequestId, REQUEST_ID_HEADER } from '../_shared/request-id.ts';
-import { fetchWithBreaker, CircuitOpenError, circuitOpenResponse } from '../_shared/external-fetch.ts';
+import { getOrCreateRequestId } from '../_shared/request-id.ts';
+import { CircuitOpenError, circuitOpenResponse } from '../_shared/external-fetch.ts';
+import { callAiWithTracking, QuotaExceededError } from '../_shared/ai-usage.ts';
 // BUG-009 FIX: import resolveCredential for SSOT credential resolution (DB-first -> env fallback).
 // LOVABLE_API_KEY was previously read at module scope (Deno.env.get at cold-start), which means
 // key rotations via /admin/conexoes had no effect until the isolate was recycled.
 import { resolveCredential } from '../_shared/credentials.ts';
-import { aiNotConfiguredResponse } from '../_shared/ai-credentials.ts';
 /**
  * Edge function `bi-copilot` - responde perguntas do vendedor sobre um cliente
  * com base no contexto BI (score, sazonalidade, afinidade, tendencias, benchmarks).
@@ -43,9 +43,11 @@ Deno.serve(async (req) => {
   const killResponse = await assertSwitchEnabled('edge_bi_copilot', req, corsHeaders);
   if (killResponse) return killResponse;
 
+  let userId: string;
   try {
     const authCtx = await authenticateRequest(req);
     requireRole(authCtx, 'agente');
+    userId = authCtx.userId;
   } catch (authErr) {
     return authErrorResponse(authErr, corsHeaders);
   }
@@ -60,15 +62,8 @@ Deno.serve(async (req) => {
 
     // BUG-009 FIX: resolve LOVABLE_API_KEY inside handler (not at module scope).
     // Supports key rotation without isolate restart via DB-first SSOT.
+    // Router multi-provider é o caminho primário; a chave só alimenta o fallback legado.
     const { value: LOVABLE_API_KEY } = await resolveCredential('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      log.error('missing_config', { reason: 'LOVABLE_API_KEY not set' });
-      return aiNotConfiguredResponse(
-        corsHeaders,
-        'bi-copilot',
-        'Copiloto de BI indisponível no momento. Tente novamente mais tarde.',
-      );
-    }
 
     const systemPrompt = `Voce e um copiloto de Business Intelligence comercial para vendedores B2B de brindes corporativos.
 Voce analisa dados reais de UM cliente especifico e responde perguntas estrategicas com clareza, brevidade e acao.
@@ -90,15 +85,24 @@ ${JSON.stringify(body.context, null, 2)}`;
     ];
 
     log.info('ai_request', { model: MODEL });
-    const aiResponse = await fetchWithBreaker('lovable-ai', 'https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-        [REQUEST_ID_HEADER]: requestId,
-      },
-      body: JSON.stringify({ model: MODEL, messages, temperature: 0.4, max_tokens: 400 }),
-    });
+    let aiResponse: Response;
+    try {
+      aiResponse = await callAiWithTracking({
+        userId,
+        functionName: 'bi-copilot',
+        model: MODEL,
+        apiKey: LOVABLE_API_KEY ?? '',
+        requestBody: { messages, temperature: 0.4, max_tokens: 400 },
+      });
+    } catch (aiErr) {
+      if (aiErr instanceof QuotaExceededError) {
+        return new Response(JSON.stringify({ error: 'Limite de uso de IA atingido. Tente mais tarde.' }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+      log.error('ai_request_failed', safeErrorFields(aiErr));
+      return new Response(JSON.stringify({ error: 'Erro no provedor de IA.' }),
+        { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
 
     if (!aiResponse.ok) {
       await aiResponse.text();
