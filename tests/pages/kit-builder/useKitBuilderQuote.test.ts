@@ -8,7 +8,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import { createSupabaseMock } from '../../helpers/supabase-mock';
-import type { KitState } from '@/hooks/useKitBuilder';
+import type { KitState } from '@/lib/kit-builder/types';
 import { dbInvoke } from '@/lib/db/postgrest';
 
 const { validateKitStockForQuote, validateKitFitsForQuote } = vi.hoisted(() => ({
