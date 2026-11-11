@@ -139,7 +139,7 @@ export function buildInventory(root) {
     const topLevelText = yaml.dump({ env: doc?.env ?? {}, defaults: doc?.defaults ?? {} });
     const workflowSecrets = secretsIn(topLevelText);
     const jobs = Object.entries(doc?.jobs ?? {}).map(([id, job]) => classifyJob(id, job, { workflowSecrets }));
-    return { file, name: doc?.name ?? file, triggers, jobs, parseError, hasRun: /\brun:/.test(text) };
+    return { file, name: doc?.name ?? file, triggers, jobs, parseError, text, hasRun: /\brun:/.test(text) };
   });
 }
 

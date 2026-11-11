@@ -134,3 +134,55 @@ describe('motor nativo: expressões e if:', () => {
     expect(stepShouldRun("github.event_name != 'push'", { failed: false, evaluate: ev })).toBe(true);
   });
 });
+
+describe('nomes de check em workflows reutilizáveis', async () => {
+  const { displayName } = await import('../../scripts/ci-local/run-act.mjs');
+  it('"<chamador>/<workflow chamado>/<job>" vira "<chamador> / <job>" (job com "/" no nome)', () => {
+    const ctx = { workflowName: 'Deploy Gates', reusable: [{ callerId: 'e2e-relevance', callerName: 'e2e-relevance', calledName: 'Reusable — E2E Runtime Relevance' }] };
+    expect(displayName('e2e-relevance/Reusable — E2E Runtime Relevance/Detectar impacto de runtime/E2E  ', ctx)).toBe('e2e-relevance / Detectar impacto de runtime/E2E');
+    expect(displayName('Deploy Gates/Gate 1 - Lint + TypeScript ', ctx)).toBe('Gate 1 - Lint + TypeScript');
+  });
+});
+
+describe('shim local de dorny/paths-filter', () => {
+  it('calcula filtros via git diff com o mesmo contrato de saídas', async () => {
+    const { mkdtempSync, mkdirSync, writeFileSync, readFileSync, cpSync } = await import('node:fs');
+    const { execFileSync } = await import('node:child_process');
+    const { tmpdir } = await import('node:os');
+    const { join, resolve } = await import('node:path');
+    const ROOT = resolve(import.meta.dirname, '../..');
+    const repo = mkdtempSync(join(tmpdir(), 'pf-shim-'));
+    const git = (...a) => execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', '-c', 'commit.gpgsign=false', ...a], { cwd: repo, encoding: 'utf8' }).trim();
+    git('init', '-q');
+    mkdirSync(join(repo, 'docs'));
+    writeFileSync(join(repo, 'docs/a.md'), 'x');
+    git('add', '.');
+    git('commit', '-qm', 'base');
+    const base = git('rev-parse', 'HEAD');
+    mkdirSync(join(repo, 'src'));
+    writeFileSync(join(repo, 'src/app.ts'), 'x');
+    writeFileSync(join(repo, 'docs/b.md'), 'y');
+    git('add', '.');
+    git('commit', '-qm', 'head');
+    const shim = join(repo, '.shim');
+    cpSync(join(ROOT, 'scripts/ci-local/shims/paths-filter'), shim, { recursive: true });
+    mkdirSync(join(shim, 'vendor'));
+    cpSync(join(ROOT, 'node_modules/js-yaml/dist/js-yaml.mjs'), join(shim, 'vendor/js-yaml.mjs'));
+    cpSync(join(ROOT, 'node_modules/picomatch'), join(shim, 'vendor/picomatch'), { recursive: true });
+    writeFileSync(join(repo, 'event.json'), JSON.stringify({ pull_request: { base: { sha: base } } }));
+    writeFileSync(join(repo, 'out.txt'), '');
+    execFileSync(process.execPath, [join(shim, 'index.mjs')], {
+      cwd: repo,
+      env: { ...process.env, GITHUB_EVENT_PATH: join(repo, 'event.json'), GITHUB_OUTPUT: join(repo, 'out.txt'), INPUT_FILTERS: "code:\n  - 'src/**'\ndocs_only:\n  - '**/*.md'\nnada:\n  - 'supabase/**'\nadded_src:\n  - added: 'src/**'\n", 'INPUT_LIST-FILES': 'json' },
+    });
+    const out = readFileSync(join(repo, 'out.txt'), 'utf8');
+    const val = (k) => out.match(new RegExp(`^${k}<<__EOF__\\n([\\s\\S]*?)\\n__EOF__`, 'm'))?.[1];
+    expect(val('code')).toBe('true');
+    expect(val('code_files')).toBe('["src/app.ts"]');
+    expect(val('docs_only')).toBe('true');
+    expect(val('docs_only_count')).toBe('1'); // docs/a.md é da base, não conta
+    expect(val('nada')).toBe('false');
+    expect(val('added_src')).toBe('true');
+    expect(JSON.parse(val('changes'))).toEqual(['code', 'docs_only', 'added_src']);
+  });
+});

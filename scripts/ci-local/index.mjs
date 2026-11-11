@@ -20,7 +20,7 @@ import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
 import { buildInventory, summarize } from './inventory.mjs';
 import { selectWorkflows } from './select.mjs';
-import { buildEvent, prepareClone, runWorkflow, verdict, writeJson } from './run-act.mjs';
+import { buildEvent, prepareClone, prepareShims, runWorkflow, verdict, writeJson } from './run-act.mjs';
 import { runJobNative } from './native.mjs';
 import { compareResults, fetchGithubChecks } from './compare.mjs';
 
@@ -126,6 +126,7 @@ async function cmdRun(o) {
   const clone = prepareClone({ repoRoot: ROOT, sha, baseRef: o.base, dest: join(OUT, 'clone') });
   const eventPath = join(dir, 'event.json');
   writeJson(eventPath, buildEvent({ event: o.event, sha, baseSha: clone.baseSha, headRef: headRef() }));
+  const shimArgs = prepareShims({ root: ROOT, workflowsText: inv.map((w) => w.text ?? '').join('\n'), dest: join(OUT, 'shims') });
   const sec = secretsFile(o.secrets);
   console.log(`${sel.length} workflow(s) · evento ${o.event} · segredos: ${sec.names.length ? sec.names.join(', ') : 'nenhum'}\n`);
 
@@ -136,7 +137,11 @@ async function cmdRun(o) {
     const res = await runWorkflow({
       cloneDir: clone.dir, workflowFile: s.wf.file, event: o.event, eventPath,
       logPath: join(dir, 'logs', `${s.wf.file}.jsonl`), secretsFile: sec.file, concurrentJobs: o.jobs,
-      timeoutMs: o.timeout * 60_000, artifactDir: join(dir, 'artifacts'),
+      timeoutMs: o.timeout * 60_000, artifactDir: join(dir, 'artifacts'), extraArgs: shimArgs,
+      nameCtx: {
+        workflowName: s.wf.name,
+        reusable: s.wf.jobs.filter((j) => j.reusable?.startsWith('./')).map((j) => ({ callerId: j.id, callerName: j.name, calledName: inv.find((w) => j.reusable.endsWith(`/${w.file}`))?.name ?? '' })),
+      },
     });
     const jobs = [];
     const byId = new Map(s.wf.jobs.map((j) => [j.id, j]));
