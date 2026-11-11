@@ -44,7 +44,7 @@ while read -r SHA; do
   FULL_MSG=$(git log -1 --pretty=%B "$SHA")
   AUTHOR=$(git log -1 --pretty=%an "$SHA")
 
-  if RESULT=$(bash "$CHECK" "$SUBJECT" "$FULL_MSG" "$AUTHOR" 2>&1); then
+  if RESULT=$(bash "$CHECK" "$SUBJECT" "$FULL_MSG" "$AUTHOR" "$SHA" 2>&1); then
     printf "%-9s  %-32s  %-10s  %s\n" "${SHA:0:7}" "${AUTHOR:0:32}" "✅ PASS" "$RESULT"
     PASS=$((PASS + 1))
   else
