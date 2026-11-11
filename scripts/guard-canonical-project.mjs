@@ -158,6 +158,13 @@ function runRuntimePhase() {
     try {
       rawHits = execSync(cmd, { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
     } catch (e) {
+      // Status 1 = rg "sem match" (comportamento normal, não é erro).
+      // Qualquer outro status (ex.: 2 = erro real de leitura/flag) deve
+      // falhar fechado — não pode ser interpretado como "sem hits".
+      if (e.status !== 1) {
+        console.error('\x1b[31m[CRITICAL]\x1b[0m rg falhou ao escanear runtime (status ' + e.status + '): ' + (e.stderr || e.message));
+        return { ok: false, hits: ['rg scan error: status=' + e.status] };
+      }
       rawHits = (e.stdout || '').trim().split('\n').filter(Boolean);
     }
   } else {
@@ -168,6 +175,12 @@ function runRuntimePhase() {
         const out = execSync('grep -rIn ' + exDirs + ' ' + exFiles + ' "' + FORBIDDEN_ID + '" "' + dir + '"', { encoding: 'utf8' });
         rawHits = rawHits.concat(out.trim().split('\n').filter(Boolean));
       } catch (ge) {
+        // Mesma regra do rg: status 1 = sem match; qualquer outro status
+        // é erro real de escaneamento e deve falhar fechado.
+        if (ge.status !== 1) {
+          console.error('\x1b[31m[CRITICAL]\x1b[0m grep falhou ao escanear ' + dir + ' (status ' + ge.status + '): ' + (ge.stderr || ge.message));
+          return { ok: false, hits: ['grep scan error: status=' + ge.status + ' dir=' + dir] };
+        }
         rawHits = rawHits.concat((ge.stdout || '').trim().split('\n').filter(Boolean));
       }
     }
