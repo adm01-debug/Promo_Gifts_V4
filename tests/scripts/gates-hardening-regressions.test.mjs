@@ -147,10 +147,24 @@ ${acl}`;
     expect(r.status, r.stdout + r.stderr).toBe(0);
   });
 
+  for (const [nome, x] of [
+    ['ALL FUNCTIONS IN SCHEMA', 'GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO anon;'],
+    ['ALTER DEFAULT PRIVILEGES … ON FUNCTIONS', 'ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT EXECUTE ON FUNCTIONS TO anon;'],
+    ['ON ROUTINE', 'GRANT EXECUTE ON ROUTINE public.f() TO anon;'],
+  ]) {
+    it(`GRANT a anon via ${nome} reprova (CONCEDE)`, () => {
+      const d = prRepo(SD(`REVOKE ALL ON FUNCTION public.f() FROM PUBLIC, anon;\n${x}`));
+      const r = run('check-security-definer-hardening.mjs', d, { GITHUB_ACTIONS: 'true', GITHUB_BASE_REF: 'main' });
+      expect(r.status, r.stdout + r.stderr).toBe(1);
+      expect(r.stderr).toMatch(/CONCEDE/);
+    });
+  }
+
   it('GITHUB_BASE_REF com ".." é rejeitado (exit 2)', () => {
     const d = prRepo(SD('REVOKE ALL ON FUNCTION public.f() FROM PUBLIC, anon;'));
     const r = run('check-security-definer-hardening.mjs', d, { GITHUB_ACTIONS: 'true', GITHUB_BASE_REF: 'main..x' });
     expect(r.status).toBe(2);
+    expect(r.stderr).toMatch(/GITHUB_BASE_REF inválido/); // não um 'base indisponível' qualquer
   });
 
   it('GITHUB_BASE_REF iniciado por "-" (opção do git) é rejeitado sem executar nada', () => {

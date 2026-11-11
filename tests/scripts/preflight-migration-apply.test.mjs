@@ -380,3 +380,26 @@ describe('parseOptOut — aprovação humana não pode ser forjada por texto exp
     expect(parseOptOut(readFileSync(join(dir, f), 'utf8'))).toMatchObject({ transactionNone: true, approvedBy: null });
   });
 });
+
+describe('parseOptOut — mutações que sobreviviam (âncoras e marcadores)', () => {
+  it('approved-by depois de código na mesma linha não vale (âncora ^)', () => {
+    expect(parseOptOut('-- transaction: none\nSELECT 1; -- approved-by: Fulano Real\n').approvedBy).toBeNull();
+  });
+  it('transaction: none depois de código não vale (âncora ^)', () => {
+    expect(parseOptOut('SELECT 1; -- transaction: none\n-- approved-by: Fulano Real\n').transactionNone).toBe(false);
+  });
+  it('indentação antes do -- é aceita', () => {
+    expect(parseOptOut('  -- transaction: none\n  -- approved-by: Fulano Real\n')).toMatchObject({ transactionNone: true, approvedBy: 'Fulano Real' });
+  });
+  it('aspas e <…> no nome não valem', () => {
+    expect(parseOptOut('-- transaction: none\n-- approved-by: "Fulano"\n').approvedBy).toBeNull();
+    expect(parseOptOut('-- transaction: none\n-- approved-by: Fulano <nome>\n').approvedBy).toBeNull();
+  });
+  it('marcadores (TODO, xxx, nome) não valem; a primeira linha com nome real vale', () => {
+    for (const v of ['TODO', 'xxx', 'nome', '...', '-']) expect(parseOptOut(`-- transaction: none\n-- approved-by: ${v}\n`).approvedBy, v).toBeNull();
+    expect(parseOptOut('-- transaction: none\n-- approved-by: <nome>\n-- approved-by: comercial@empresa.com.br\n').approvedBy).toBe('comercial@empresa.com.br');
+  });
+  it('transaction: none-ish não vale como opt-out', () => {
+    expect(parseOptOut('-- transaction: none-ish\n').transactionNone).toBe(false);
+  });
+});

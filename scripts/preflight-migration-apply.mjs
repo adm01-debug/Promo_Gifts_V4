@@ -122,10 +122,14 @@ export function parseOptOut(sqlContent, headLines = 40) {
   const lines = sqlContent.split('\n').slice(0, headLines);
   // A marca só vale como LINHA própria de comentário (`-- approved-by: nome`), nunca citada
   // no meio de um texto explicativo, e o nome não pode ser um marcador como `<nome>`.
-  const transactionNone = lines.some((l) => /^\s*--\s*transaction\s*:\s*none\b/i.test(l));
-  const approvedByLine = lines.find((l) => /^\s*--\s*approved-by\s*:/i.test(l));
-  const rawApprover = approvedByLine ? (approvedByLine.split(/approved-by\s*:/i)[1] || '').trim() : '';
-  const approvedBy = rawApprover && !/^[<"'`]|[<>]/.test(rawApprover) ? rawApprover : null;
+  const transactionNone = lines.some((l) => /^\s*--\s*transaction\s*:\s*none\s*(?:$|\(|—|-\s)/i.test(l));
+  // Considera todas as linhas de aprovação e fica com a primeira que traz um nome real:
+  // começa com letra/dígito, sem `<…>`/aspas e não é marcador (todo, tbd, nome, fulano, xxx).
+  const approvedBy =
+    lines
+      .filter((l) => /^\s*--\s*approved-by\s*:/i.test(l))
+      .map((l) => (l.split(/approved-by\s*:/i)[1] || '').trim())
+      .find((v) => /^[\p{L}\p{N}]/u.test(v) && !/[<>"'`]/.test(v) && !/^(todo|tbd|nome|name|fulano|x+|\.+|-+)$/i.test(v)) ?? null;
   return { transactionNone, approvedBy };
 }
 
