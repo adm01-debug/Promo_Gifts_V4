@@ -157,6 +157,9 @@ function toReplenishment(p: RawProduct): ReplenishmentWithDetails {
 
 // ─── Enrichment ──────────────────────────────────────────────────
 
+const NO_CATEGORIES: { records: CategoryRecord[] } = { records: [] };
+const NO_SUPPLIERS: { records: SupplierRecord[] } = { records: [] };
+
 async function enrichReplenishments(items: ReplenishmentWithDetails[]): Promise<ReplenishmentWithDetails[]> {
   const categoryIds = [...new Set(items.map(n => n.category_id).filter((id): id is string => id !== null))];
   const supplierIds = [...new Set(items.map(n => n.supplier_id).filter((id): id is string => id !== null))];
@@ -164,10 +167,10 @@ async function enrichReplenishments(items: ReplenishmentWithDetails[]): Promise<
   const [catResult, supResult] = await Promise.all([
     categoryIds.length > 0
       ? invokeExternalDb<CategoryRecord>({ table: 'categories', operation: 'select', select: 'id, name', filters: { id: `in.(${categoryIds.join(',')})` }, limit: 500 })
-      : { records: [] as CategoryRecord[] },
+      : NO_CATEGORIES,
     supplierIds.length > 0
       ? invokeExternalDb<SupplierRecord>({ table: 'suppliers', operation: 'select', select: 'id, name, code', filters: { id: `in.(${supplierIds.join(',')})` }, limit: 200 })
-      : { records: [] as SupplierRecord[] },
+      : NO_SUPPLIERS,
   ]);
 
   const catMap = new Map(catResult.records.map(c => [c.id, c.name]));
