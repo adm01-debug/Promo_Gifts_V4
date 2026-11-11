@@ -465,7 +465,9 @@ export function useKitBuilderPageState() {
   }, [resetKit]);
 
   const restoreFromBackup = useCallback(
-    (fullState: BackupFullState) => {
+    // `flowOverride`: quem acabou de chamar startFlow() no mesmo tick passa o fluxo novo,
+    // porque wizardState.flow desta closure ainda é o anterior (evita flow 'box-first' + passo 'items').
+    (fullState: BackupFullState, flowOverride?: 'box-first' | 'items-first') => {
       restoreKitSnapshot({
         name: fullState.name,
         kitType: fullState.kitType,
@@ -475,7 +477,7 @@ export function useKitBuilderPageState() {
         kitQuantity: fullState.qty,
         identity: fullState.identity ?? undefined,
         notes: fullState.notes,
-        flow: wizardState.flow,
+        flow: flowOverride ?? wizardState.flow,
         aiBriefing,
       });
       setKitQuantity(fullState.qty);

@@ -23,6 +23,12 @@ import { readFileSync, existsSync } from 'node:fs';
 
 const IN_CI = process.env.GITHUB_ACTIONS === 'true';
 const BASE_REF = process.env.GITHUB_BASE_REF || 'main';
+// GITHUB_BASE_REF vira argumento do git: execFileSync impede injeção de SHELL, mas um valor
+// começando com "-" ainda seria lido como OPÇÃO do git (ex.: --upload-pack=...). Só nomes de branch.
+if (!/^[A-Za-z0-9][A-Za-z0-9._/-]*$/.test(BASE_REF) || BASE_REF.includes('..')) {
+  console.error(`❌ check-security-definer-hardening: GITHUB_BASE_REF inválido (${JSON.stringify(BASE_REF)}).`);
+  process.exit(2);
+}
 // Pathspec literal: passado como argv (execFileSync), nunca por `sh -c`.
 const MIGRATIONS_GLOB = 'supabase/migrations/*.sql';
 
@@ -100,14 +106,16 @@ for (const path of ADDED_FILES) {
   // Aceita revoke explícito OU comentário marcador para helper de RLS.
   const hasMarker = /--\s*rls-helper:/i.test(lower);
   // `[^;]*` (não cruza statements): `REVOKE … FROM PUBLIC; GRANT … TO anon` não é revoke de anon.
-  const hasRevokeAnon = /revoke\s+execute[^;]*\bfrom\b[^;]*\banon\b/i.test(content) || hasMarker;
-  const grantsAnon = /grant\s+execute[^;]*\bto\b[^;]*\banon\b/i.test(content) && !hasMarker;
+  // `ALL [PRIVILEGES]` inclui EXECUTE: vale tanto para o REVOKE quanto para o GRANT.
+  const hasRevokeAnon = /revoke\s+(?:execute|all(?:\s+privileges)?)\b[^;]*\bfrom\b[^;]*\banon\b/i.test(content) || hasMarker;
+  const grantsAnon = /grant\s+(?:execute|all(?:\s+privileges)?)\b[^;]*\bto\b[^;]*\banon\b/i.test(content) && !hasMarker;
 
   if (!hasSearchPath || !hasRevokeAnon || grantsAnon) {
     offenders.push({
       path,
       missing_search_path: !hasSearchPath,
-      missing_revoke_or_marker: !hasRevokeAnon || grantsAnon,
+      missing_revoke_or_marker: !hasRevokeAnon,
+      grants_anon: grantsAnon,
     });
   }
 }
@@ -123,6 +131,10 @@ console.error('❌ check-security-definer-hardening: migrations novas sem harden
 for (const o of offenders) {
   console.error(`   - ${o.path}`);
   if (o.missing_search_path) console.error('       ⤷ FALTA: SET search_path TO ...');
+  if (o.grants_anon) {
+    console.error('       ⤷ CONCEDE: GRANT EXECUTE … TO anon numa função SECURITY DEFINER (endpoint público).');
+    console.error('         Se for intencional (ex.: RPC pública somente leitura), declare com "-- rls-helper: <motivo>".');
+  }
   if (o.missing_revoke_or_marker)
     console.error(
       "       ⤷ FALTA: REVOKE EXECUTE ... FROM anon (ou comentário '-- rls-helper:' justificando)",

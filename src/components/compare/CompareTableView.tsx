@@ -1,4 +1,4 @@
-﻿/**
+/**
  * CompareTableView — Tabela detalhada de comparação (10/10).
  * Sticky thumbnails ao rolar, hover swatch troca foto, AnimatePresence em colunas,
  * sparkline 30d, badge risco estoque, linha "outros fornecedores".

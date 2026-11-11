@@ -1,39 +1,36 @@
--- CRON-002: Correção de colisões residuais pós-CRON-001 (startup timeouts persistentes)
+-- Rollback: supabase/rollbacks/20261108230100_rollback.sql
+-- CRON-002: reescalona 4 jobs horários para os minutos MENOS ocupados (startup timeouts
+-- residuais pós-CRON-001; só o job 276 falhou nos últimos 3 dias, 2× startup timeout).
 --
--- Diagnóstico: CRON-001 (20261101220000_cron001_stagger_schedules.sql) moveu 4 jobs
--- para novos minutos que introduziram colisões com jobs não mapeados na análise original:
+-- Método (2026-11-11, revisão DBA): agenda real dos 130 crons ativos no canônico
+-- (cron.job WHERE active), expandida para as 24h × 60 min. Para cada job, testados todos os
+-- deslocamentos que mantêm a cadência (4/h a cada 15 min, 2/h a cada 30, 1/h) e escolhido o que
+-- minimiza o PICO de jobs simultâneos no mesmo minuto ao longo do dia (desempate: soma).
+-- A proposta anterior (10,25,40,55 / 20,50 / 24,54 / 30) piorava :10 (4 jobs; 9 às 03:10) e
+-- colocava o 114 junto do stock_daily_aggregation (22:30).
 --
---   jobid 243 (hash-product-images)       → 11,26,41,56: colide IDENTICAMENTE com jobid 213 (sm-category-enqueue)
---   jobid 276 (sm-site-scrape)            → 16,46: colide com 205+306 (1,16,31,46) e 230 (cron job único em :46)
---   jobid 224 (asia-enqueue-new-products) → 21,51: colide com 207+210 (6,21,36,51) e 232 (único em :51)
---   jobid 114 (sync-supplier-timestamps-hourly) → 57: colide com 206+214 (12,27,42,57)
+--   jobid 243 hash-product-images            11,26,41,56 → 9,24,39,54   pico 3 → 2
+--   jobid 276 sm-site-scrape                 16,46       → 11,41        pico 3 → 2
+--   jobid 224 asia-enqueue-new-products      21,51       → 25,55        pico 3 → 2
+--   jobid 114 sync-supplier-timestamps-hourly 57         → 49           pico 2 → 1
 --
--- Evidência de startup timeouts pós-CRON-001 (cron.job_run_details, start_time >= 2026-11-01):
---   jobid 243: 43 falhas, jobid 276: 21 falhas, jobid 224: 16 falhas, jobid 114: 4 falhas
---
--- Metodologia CRON-002: mapeamento de todos os 180 jobs ativos por minuto (:00-:59)
--- para identificar slots com ≤2 jobs existentes e zero sobreposição entre os 4 targets.
---
--- Novos schedules (máx 3 jobs simultâneos em qualquer slot; targets não se sobrepõem entre si):
---   jobid 243: 11,26,41,56 → 10,25,40,55  [:10→3jobs, :25→3jobs, :40→2jobs, :55→2jobs]
---   jobid 276: 16,46       → 20,50         [:20→3jobs, :50→3jobs]
---   jobid 224: 21,51       → 24,54         [:24→3jobs, :54→3jobs]
---   jobid 114: 57          → 30            [:30→2jobs]
---
--- ROLLBACK (reverte para estado CRON-001):
---   SELECT cron.alter_job(243, schedule => '11,26,41,56 * * * *');
---   SELECT cron.alter_job(276, schedule => '16,46 * * * *');
---   SELECT cron.alter_job(224, schedule => '21,51 * * * *');
---   SELECT cron.alter_job(114, schedule => '57 * * * *');
-
--- jobid 243 (hash-product-images): colisão com jobid 213 (sm-category-enqueue, idêntico 11,26,41,56) → move para 10,25,40,55
-SELECT cron.alter_job(243, schedule => '10,25,40,55 * * * *');
-
--- jobid 276 (sm-site-scrape): colisão com 205+306 (1,16,31,46) e 230 (:46) → move para 20,50
-SELECT cron.alter_job(276, schedule => '20,50 * * * *');
-
--- jobid 224 (asia-enqueue-new-products): colisão com 207+210 (6,21,36,51) e 232 (:51) → move para 24,54
-SELECT cron.alter_job(224, schedule => '24,54 * * * *');
-
--- jobid 114 (sync-supplier-timestamps-hourly): colisão com 206+214 (12,27,42,57) → move para 30
-SELECT cron.alter_job(114, schedule => '30 * * * *');
+-- Guarda: só altera se o jobid ainda for o job esperado (jobid é reatribuído se o job for recriado).
+DO $$
+DECLARE
+  plan constant jsonb := '[
+    {"id":243,"name":"hash-product-images","schedule":"9,24,39,54 * * * *"},
+    {"id":276,"name":"sm-site-scrape","schedule":"11,41 * * * *"},
+    {"id":224,"name":"asia-enqueue-new-products","schedule":"25,55 * * * *"},
+    {"id":114,"name":"sync-supplier-timestamps-hourly","schedule":"49 * * * *"}
+  ]';
+  item jsonb;
+BEGIN
+  FOR item IN SELECT * FROM jsonb_array_elements(plan) LOOP
+    IF NOT EXISTS (SELECT 1 FROM cron.job WHERE jobid = (item->>'id')::bigint AND jobname = item->>'name') THEN
+      RAISE EXCEPTION 'CRON-002: jobid % não é mais %; abortando sem alterar nada', item->>'id', item->>'name';
+    END IF;
+  END LOOP;
+  FOR item IN SELECT * FROM jsonb_array_elements(plan) LOOP
+    PERFORM cron.alter_job((item->>'id')::bigint, schedule => item->>'schedule');
+  END LOOP;
+END $$;
