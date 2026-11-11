@@ -81,7 +81,12 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       });
   if (problems.length) {
     const missingCreds = ['PGHOST ausente', 'PGUSER ausente', 'PGPASSWORD ausente', 'PGDATABASE ausente'];
-    const onlyMissing = problems.every((p) => missingCreds.includes(p) ||
+    // Project ref EXPLICITAMENTE errado (não apenas ausente) nunca pode cair no
+    // static-pass: senão SUPABASE_PROJECT_REF=<projeto-proibido> sem PGHOST/
+    // MIGRATION_VERSION setados passaria como "variáveis ausentes" (fail-open).
+    const refExplicitlyWrong =
+      problems.includes('Project ref não canônico') && !!process.env.SUPABASE_PROJECT_REF;
+    const onlyMissing = !refExplicitlyWrong && problems.every((p) => missingCreds.includes(p) ||
       p === 'MIGRATION_VERSION inválida' || p === 'Project ref não canônico' ||
       p === 'Destino PostgreSQL não identifica o projeto canônico' || p === 'PGDATABASE inesperado');
     if (onlyMissing && !process.env.PGHOST && !process.env.MIGRATION_VERSION) {
