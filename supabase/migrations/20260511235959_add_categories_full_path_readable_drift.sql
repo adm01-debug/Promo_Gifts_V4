@@ -1,4 +1,4 @@
--- Migration: 20260511235960_add_categories_full_path_readable_drift
+-- Migration: 20260511235959_add_categories_full_path_readable_drift
 -- Rollback: ALTER TABLE public.categories DROP COLUMN IF EXISTS full_path_readable;
 -- Context: categories.full_path_readable foi adicionada diretamente em produção (out-of-band)
 -- sem migration registrada. A migration 20260512000000_bootstrap_missing_application_schemas

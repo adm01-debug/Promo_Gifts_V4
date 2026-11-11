@@ -1,3 +1,5 @@
+-- transaction: none
+-- (CREATE INDEX CONCURRENTLY não pode rodar dentro de transação)
 -- Rollback: supabase/rollbacks/20261108223000_rollback.sql
 -- Adiciona índice btree em summary_date para evitar seq scan no DELETE de datas
 -- futuras dentro de fn_aggregate_stock_daily. Sem este índice a limpeza

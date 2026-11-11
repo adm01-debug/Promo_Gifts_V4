@@ -1199,10 +1199,10 @@ adicionam as colunas com `IF NOT EXISTS` — no-op em produção.
 Cadeia completa de drift em `public.categories`:
 - `20260511235900` — `bitrix_id` (PR #3201, já aplicado)
 - `20260511235950` — `level` (este PR, pendente)
-- `20260511235960` — `full_path_readable` (este PR, pendente)
+- `20260511235959` — `full_path_readable` (este PR, pendente)
 - `20260512000000` — bootstrap usa as três em VIEW/MVIEW DDL
 | `20260511235950` | `add_categories_level_drift` | `93610ba1fa022c3050b352f45da4754101f6e7aee6b627a5105e1a0a3e1403aa` | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (REGRA #8: DDL em produção) |
-| `20260511235960` | `add_categories_full_path_readable_drift` | NÃO VERIFICADO | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (REGRA #8: DDL em produção) |
+| `20260511235959` | `add_categories_full_path_readable_drift` | NÃO VERIFICADO | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (REGRA #8: DDL em produção) |
 ## 2026-11-09 — DROP `perf002_drop_unused_snapshot_indexes` (PEND-I01)
 Função `public.perf002_drop_unused_snapshot_indexes()` criada como SECURITY DEFINER
 com `authenticated:EXECUTE` via DDL direto (sessão PEND-I01, 2026-11-01). Executa
