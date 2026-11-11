@@ -8,7 +8,7 @@
  * Formato de retorno idêntico ao `rg -n --no-heading`: `caminho:linha:texto`.
  */
 import { spawnSync } from 'node:child_process';
-import { closeSync, existsSync, fstatSync, openSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { closeSync, existsSync, fstatSync, openSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'coverage', 'playwright-report', 'test-results']);
@@ -17,25 +17,22 @@ const MAX_BYTES = 2_000_000; // ignora binários/artefatos enormes (rg também p
 function nativeSearch(phrase, paths) {
   const hits = [];
   const visit = (target) => {
-    let st;
-    try {
-      st = statSync(target);
-    } catch {
-      return;
-    }
-    if (st.isDirectory()) {
-      for (const name of readdirSync(target)) {
-        if (!SKIP_DIRS.has(name)) visit(join(target, name));
-      }
-      return;
-    }
-    if (!st.isFile()) return;
-    // Lê pelo MESMO descritor que foi verificado (sem janela entre checar e ler o caminho).
-    let text;
+    // Abre UMA vez e decide tudo pelo descritor (fstat): sem checar o caminho e reabri-lo
+    // depois — não há janela para trocar arquivo por diretório/link entre a checagem e a leitura.
     let fd;
+    let text;
     try {
       fd = openSync(target, 'r');
-      if (fstatSync(fd).size > MAX_BYTES) return;
+      const st = fstatSync(fd);
+      if (st.isDirectory()) {
+        closeSync(fd);
+        fd = undefined;
+        for (const name of readdirSync(target)) {
+          if (!SKIP_DIRS.has(name)) visit(join(target, name));
+        }
+        return;
+      }
+      if (!st.isFile() || st.size > MAX_BYTES) return;
       text = readFileSync(fd, 'utf8');
     } catch {
       return;
