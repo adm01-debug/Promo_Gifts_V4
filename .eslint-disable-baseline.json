@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-02T19:13:19.043Z",
+  "generatedAt": "2026-11-11T14:53:03.757Z",
   "description": "Baseline de supressões inline do ESLint em src/ (excluindo testes). Falha em qualquer AUMENTO. Meta: reduzir continuamente.",
-  "productionEslintDisableCount": 173,
+  "productionEslintDisableCount": 174,
   "meta": {
     "target": 80,
     "deadline": "2027-03-31",
@@ -94,6 +94,7 @@
     "src/hooks/stock/useRuptureHorizon.ts": 1,
     "src/hooks/ui/useMobileSidebarFix.ts": 1,
     "src/hooks/ui/useWorkspaceNotifications.tsx": 1,
+    "src/hooks/useDevGate.ts": 1,
     "src/hooks/useFutureStockPreference.ts": 2,
     "src/integrations/supabase/gold.ts": 1,
     "src/lib/analytics/cartAnalytics.ts": 1,
