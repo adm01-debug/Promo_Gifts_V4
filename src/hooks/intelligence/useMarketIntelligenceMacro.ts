@@ -1,11 +1,17 @@
 /**
  * Hook para Inteligência de Mercado MACRO (agregada por todos os produtos).
- * Consome stock_daily_summary via external-db-bridge.
+ * Consome a RPC fn_market_intelligence_macro (stock_daily_summary já somado por
+ * dia × fornecedor no banco, só dentro da janela pedida).
  * Retorna dados agregados + breakdown por fornecedor para comparação.
  */
-import { dbInvoke } from '@/lib/db/postgrest';
+import { untypedRpc } from '@/lib/supabase-untyped';
 import { useQuery } from '@tanstack/react-query';
 import type { StockDailySummary } from '@/hooks/intelligence/useStockHistory';
+
+type MacroRow = Pick<
+  StockDailySummary,
+  'stock_close' | 'summary_date' | 'supplier_id' | 'units_depleted' | 'units_restocked'
+>;
 
 export interface MacroMarketPoint {
   date: string;
@@ -53,17 +59,12 @@ export function useMarketIntelligenceMacro(days = 30, supplierId?: string | null
       cutoff.setDate(cutoff.getDate() - days);
       const cutoffStr = cutoff.toISOString().split('T')[0];
 
-      const filters: Record<string, unknown> = {};
-      if (supplierId) filters.supplier_id = supplierId;
-
-      const result = await dbInvoke<StockDailySummary>({
-        table: 'stock_daily_summary',
-        operation: 'select',
-        select: 'summary_date, stock_close, units_depleted, units_restocked, supplier_id',
-        filters,
-        limit: 5000,
-        orderBy: { column: 'summary_date', ascending: true },
+      const { data, error } = await untypedRpc('fn_market_intelligence_macro', {
+        p_days: days,
+        p_supplier_id: supplierId ?? null,
       });
+      if (error) throw error;
+      const rows: MacroRow[] = Array.isArray(data) ? data : [];
 
       // Aggregate by date (for chart)
       const dateMap = new Map<string, MacroMarketPoint>();
@@ -87,7 +88,7 @@ export function useMarketIntelligenceMacro(days = 30, supplierId?: string | null
       d7.setDate(d7.getDate() - 7);
       const d7Str = d7.toISOString().split('T')[0];
 
-      for (const row of result.records) {
+      for (const row of rows) {
         if (row.summary_date < cutoffStr) continue;
 
         // Global aggregation

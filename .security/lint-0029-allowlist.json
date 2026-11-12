@@ -8,6 +8,10 @@
       "reason": "E099 (2026-10-21): função admin para listar sessões ativas — SECURITY DEFINER necessário para acesso a dados de autenticação via service_role; restrita a perfis admin por RLS/verificação interna."
     },
     {
+      "fn": "public.admin_execute_role_migration_batch(_label text, _reason text, _items jsonb, _dry_run boolean)",
+      "reason": "2026-11-12: wrapper da tela /admin/seguranca/migracao-papeis — guarda has_role(auth.uid(), 'dev') + claim JWT aal=aal2 (espelha DevRoute + mfaAal2) e só então repassa para execute_role_migration_batch, que segue restrita a service_role (SEC P1-2) e grava a trilha em admin_audit_log com o auth.uid() real; owner postgres; EXECUTE revogado de PUBLIC/anon."
+    },
+    {
       "fn": "public.admin_revoke_user_sessions(_user_id uuid)",
       "reason": "E099 (2026-10-21): função admin para revogar sessões de usuário — SECURITY DEFINER necessário para manipular auth.sessions via service_role; parâmetro uuid previne injection; restrita a admins."
     },
@@ -34,6 +38,10 @@
     {
       "fn": "public.confirm_notifications_dispatched(p_ids uuid[])",
       "reason": "ACHADO E18 (2026-09-17): UPDATE workspace_notifications SET is_read=true WHERE id=ANY(p_ids), sem nenhuma checagem de auth.uid()/ownership — IDOR, qualquer authenticated marca notificação de outro usuário como lida. Único consumidor real (process-queue) já roda como service_role. REVOKE de authenticated preparado e pendente de aprovação — ver docs/E18_ACHADOS_SECUNDARIOS_AUTHENTICATED_2026-09-17.md e supabase/migrations/20260917061500_e18_revoke_authenticated_authz_gaps.sql."
+    },
+    {
+      "fn": "public.fn_admin_sync_external_connections()",
+      "reason": "connections-sync (2026-11-12): wrapper SECURITY DEFINER com SET search_path = '' cujo corpo exige public.has_role((SELECT auth.uid()), 'admin') e levanta 42501 ('forbidden') para qualquer não-admin. EXECUTE para authenticated é intencional: é o único caminho do front para o sync manual (/admin/conexoes > LastSyncRunPanel -> src/integrations/supabase/gold.ts rpcAdminSyncExternalConnections). A função interna public.sync_external_connections_from_credentials (as 2 sobrecargas) segue sem EXECUTE para anon/authenticated (só service_role). Criado em 20260611183200, revogado por engano em 20260716131209 (SEC P1-2) e devolvido em supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql."
     },
     {
       "fn": "public.fn_anon_catalog_grant_audit_run()",
@@ -138,6 +146,10 @@
     {
       "fn": "public.fn_global_search(p_term text, p_limit integer, p_types text[])",
       "reason": "E18 (2026-09-17): busca pública no catálogo (produtos/coleções/etc.), EXECUTE também concedido a anon; auth.uid() usado internamente sem gate de acesso (mesma classe de fn_super_filtro, já revisado no E17)."
+    },
+    {
+      "fn": "public.fn_insights_cache_count(p_function_name text, p_since timestamp with time zone)",
+      "reason": "20261112120400 (2026-11-12): contagem agregada de dashboard_insights_cache para /admin/consumo-ia; levanta 42501 se nao for can_view_telemetry() (dev/supervisor+); devolve so bigint, nunca payload. REVOKE de PUBLIC/anon na mesma migration."
     },
     {
       "fn": "public.fn_list_deactivation_requests(p_status text, p_limit integer)",
