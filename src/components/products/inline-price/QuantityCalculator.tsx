@@ -16,6 +16,7 @@ interface QuantityCalculatorProps {
   formatPrice: (price: number) => string;
   compact?: boolean;
   isLoading?: boolean;
+  onAddToQuote?: (qty: number, unitPrice: number) => void;
 }
 
 export function QuantityCalculator({
@@ -28,6 +29,7 @@ export function QuantityCalculator({
   formatPrice,
   compact = false,
   isLoading = false,
+  onAddToQuote,
 }: QuantityCalculatorProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     onQuantityChange(Math.max(minQuantity, parseInt(e.target.value) || minQuantity));
@@ -81,11 +83,17 @@ export function QuantityCalculator({
             </div>
           </div>
         </div>
-        <Button className="h-11 w-full gap-2 font-bold" size="lg">
-          <Calculator className="h-4 w-4" />
-          Adicionar {Math.round(customQuantity + Number.EPSILON).toLocaleString('pt-BR')} un ao
-          Orçamento
-        </Button>
+        {onAddToQuote && (
+          <Button
+            className="h-11 w-full gap-2 font-bold"
+            size="lg"
+            onClick={() => onAddToQuote(customQuantity, unitPrice)}
+          >
+            <Calculator className="h-4 w-4" />
+            Adicionar {Math.round(customQuantity + Number.EPSILON).toLocaleString('pt-BR')} un ao
+            Orçamento
+          </Button>
+        )}
       </div>
     );
   }
@@ -138,14 +146,17 @@ export function QuantityCalculator({
           </div>
         </div>
       </div>
-      <Button
-        className="w-full gap-2 font-bold transition-all hover:scale-[1.01] active:scale-[0.99]"
-        size="lg"
-      >
-        <Calculator className="h-4 w-4" />
-        Adicionar {Math.round(customQuantity + Number.EPSILON).toLocaleString('pt-BR')} un ao
-        Orçamento
-      </Button>
+      {onAddToQuote && (
+        <Button
+          className="w-full gap-2 font-bold transition-all hover:scale-[1.01] active:scale-[0.99]"
+          size="lg"
+          onClick={() => onAddToQuote(customQuantity, unitPrice)}
+        >
+          <Calculator className="h-4 w-4" />
+          Adicionar {Math.round(customQuantity + Number.EPSILON).toLocaleString('pt-BR')} un ao
+          Orçamento
+        </Button>
+      )}
     </div>
   );
 }

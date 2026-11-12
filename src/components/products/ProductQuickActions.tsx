@@ -42,6 +42,7 @@ interface ProductQuickActionsProps {
   } | null;
   onConfirmPrice?: () => void;
   priceConfirmedAt?: Date | string | null;
+  onAddToQuote?: (qty: number, unitPrice: number) => void;
 }
 
 type ModalType = 'indicacao' | 'nicho' | 'personalizacao' | 'precos' | null;
@@ -101,6 +102,7 @@ export function ProductQuickActions({
   onRetryNiches,
   selectedVariant,
   onConfirmPrice,
+  onAddToQuote,
 }: ProductQuickActionsProps) {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
 
@@ -229,6 +231,7 @@ export function ProductQuickActions({
             basePrice={basePrice}
             minQuantity={minQuantity}
             defaultOpen
+            onAddToQuote={onAddToQuote}
           />
         </DialogContent>
       </Dialog>

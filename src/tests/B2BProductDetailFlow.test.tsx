@@ -1,10 +1,12 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { ProductDetailHero } from '@/pages/products/product-detail/ProductDetailHero';
 import { BrowserRouter } from 'react-router-dom';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { Product } from '@/hooks/products';
+import { dbInvoke, type InvokeOptions } from '@/lib/db/postgrest';
+import type * as Postgrest from '@/lib/db/postgrest';
 
 // Configurações de Mock
 const mockNavigate = vi.fn();
@@ -17,6 +19,12 @@ vi.mock('react-router-dom', async () => {
 });
 
 const mockAddToActiveCart = vi.fn();
+
+// Passthrough por padrão; o Fluxo 3c injeta faixas de preço da calculadora.
+vi.mock('@/lib/db/postgrest', async (importOriginal) => {
+  const actual = await importOriginal<typeof Postgrest>();
+  return { ...actual, dbInvoke: vi.fn(actual.dbInvoke) };
+});
 
 /**
  * FIX 2026-06-15: mock completo de SellerCartContext.
@@ -163,6 +171,48 @@ describe('B2B Product Detail Flow Integration', () => {
 
     const title = await screen.findByText(/Tabela de Preços/i);
     expect(title).toBeDefined();
+  });
+
+  it('Fluxo 3b: Calculadora de Preços adiciona a quantidade ao orçamento (PM-05)', async () => {
+    renderPDP();
+    fireEvent.click(screen.getByText('Preços'));
+
+    const qtyInput = await screen.findByLabelText('Quantidade');
+    fireEvent.change(qtyInput, { target: { value: '300' } });
+    fireEvent.click(screen.getByRole('button', { name: /Adicionar 300 un ao\s*Orçamento/ }));
+
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    const url = new URL(mockNavigate.mock.calls[0][0] as string, 'http://x');
+    expect(url.pathname).toBe('/orcamentos/novo');
+    expect(url.searchParams.get('product_id')).toBe('prod-123');
+    expect(url.searchParams.get('min_quantity')).toBe('300');
+  });
+
+  it('Fluxo 3c: item entra no orçamento com o preço da faixa exibida, não o preço base', async () => {
+    const realDbInvoke = vi.mocked(dbInvoke).getMockImplementation();
+    const rows: Record<string, unknown[]> = {
+      product_variants: [{ id: 'var-1' }],
+      variant_supplier_sources: [
+        { id: 'src-1', cost_price_1: 5, min_qty_1: 50, cost_price_2: 4, min_qty_2: 500 },
+      ],
+    };
+    vi.mocked(dbInvoke).mockImplementation(<T,>(opts: InvokeOptions) =>
+      Promise.resolve({ records: (rows[opts.table] ?? []) as T[], count: null }),
+    );
+    try {
+      renderPDP();
+      fireEvent.click(screen.getByText('Preços'));
+      // Faixa 500+ un: custo 4 × markup (10,50/5) = R$ 8,40/un (base R$ 10,50).
+      await waitFor(() => expect(screen.getAllByText(/8,40/).length).toBeGreaterThan(0));
+      fireEvent.change(await screen.findByLabelText('Quantidade'), { target: { value: '500' } });
+      fireEvent.click(screen.getByRole('button', { name: /Adicionar 500 un ao\s*Orçamento/ }));
+
+      const url = new URL(mockNavigate.mock.calls[0][0] as string, 'http://x');
+      expect(url.searchParams.get('min_quantity')).toBe('500');
+      expect(url.searchParams.get('product_price')).toBe('8.4');
+    } finally {
+      vi.mocked(dbInvoke).mockImplementation(realDbInvoke!);
+    }
   });
 
   it('Fluxo 4: Verificação de Tags e Nichos (Indicação)', async () => {

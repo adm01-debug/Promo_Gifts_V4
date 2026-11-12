@@ -665,6 +665,26 @@ export function ProductDetailHero({
                   }
                 : null
             }
+            onAddToQuote={(qty, unitPrice) => {
+              const params = new URLSearchParams({
+                product_id: id,
+                product_name: product.name,
+                product_sku: selectedVariation?.sku || product.sku || '',
+                product_price: String(unitPrice > 0 ? unitPrice : (product.price ?? 0)),
+                product_image:
+                  selectedVariation?.images?.[0] ||
+                  selectedVariation?.image ||
+                  product.images?.[0] ||
+                  '',
+                // buildUrlParamQuoteItem usa min_quantity como quantidade inicial do item.
+                min_quantity: String(qty),
+              });
+              if (selectedVariation?.color?.name)
+                params.set('color_name', selectedVariation.color.name);
+              if (selectedVariation?.color?.hex)
+                params.set('color_hex', selectedVariation.color.hex);
+              navigate(`/orcamentos/novo?${params.toString()}`);
+            }}
           />
         </div>
       </div>
