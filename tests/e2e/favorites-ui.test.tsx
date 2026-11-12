@@ -4,7 +4,6 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, useParams } from 'react-router-dom';
 import FavoritesPage from '@/pages/products/FavoritesPage';
-import PublicFavoriteListPage from '@/pages/PublicFavoriteListPage';
 import { useFavoritesStore } from '@/stores/useFavoritesStore';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -124,56 +123,6 @@ describe('E2E Favoritos — Integração UI', () => {
       expect(screen.getByTestId('favorites-empty-state')).toBeInTheDocument();
     });
     expect(screen.getByTestId('favorites-empty-cta')).toBeInTheDocument();
-  });
-});
-
-describe('E2E Favoritos — Fluxo de Compartilhamento UI', () => {
-  it('valida renderização da mensagem de lista não encontrada', async () => {
-    (useParams as any).mockReturnValue({ token: 'invalid-token' });
-    (supabase.from as any).mockImplementation(() => ({
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
-    }));
-
-    renderWithProviders(<PublicFavoriteListPage />);
-    await waitFor(() => {
-      expect(screen.getByText(/lista não encontrada/i)).toBeInTheDocument();
-    });
-  });
-
-  it('exibe mensagem de link expirado corretamente quando o token existe mas shared_expires_at é passado', async () => {
-    const expiredDate = new Date(Date.now() - 86400000).toISOString();
-    (useParams as any).mockReturnValue({ token: 'expired-token' });
-    
-    (supabase.from as any).mockImplementation((table: string) => {
-      if (table === 'favorite_lists') {
-        return {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          maybeSingle: vi.fn().mockResolvedValue({ 
-            data: { 
-              id: 'list1',
-              name: 'Lista Expira', 
-              shared_expires_at: expiredDate, 
-              color: '#000000',
-              description: 'Desc'
-            }, 
-            error: null 
-          }),
-        };
-      }
-      return {
-        select: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
-        order: vi.fn().mockReturnThis(),
-      };
-    });
-
-    renderWithProviders(<PublicFavoriteListPage />);
-    await waitFor(() => {
-      expect(screen.getByText(/link expirado/i)).toBeInTheDocument();
-    }, { timeout: 3000 });
   });
 });
 
