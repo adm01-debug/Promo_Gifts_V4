@@ -114,7 +114,7 @@ Deno.serve(async (req) => {
         method: 'POST',
         headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: 'Promo Gifts <noreply@promogifts.com.br>',
+          from: 'Promo Gifts <noreply@promobrindes.com.br>',
           to: [to],
           subject: subj,
           html: htmlBody,
