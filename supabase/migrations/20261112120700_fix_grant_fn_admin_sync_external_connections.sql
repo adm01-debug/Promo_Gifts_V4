@@ -10,6 +10,10 @@
 -- 42501 para os demais. Menor privilegio: so o wrapper volta a authenticated.
 -- A funcao interna sync_external_connections_from_credentials (as 2 sobrecargas) continua
 -- sem EXECUTE para anon/authenticated (nao e tocada aqui).
+-- Chamada explicita: em producao existem () e (text,text,uuid) com todos os args DEFAULT, entao
+-- "sync_external_connections_from_credentials()" falha com 42725 (not unique). O wrapper chama a
+-- sobrecarga de 3 args (a que grava external_connections_sync_log, lido por LastSyncRunPanel), na
+-- mesma forma usada por trg_sync_external_connections().
 -- NAO re-incluir fn_admin_sync_external_connections em hardening de "revoke from authenticated":
 -- e o unico caminho do front para o sync manual.
 -- Lint 0029 (SECDEF executavel por authenticated): a funcao volta a aparecer no gate
@@ -38,7 +42,7 @@ BEGIN
           OR public.has_role((SELECT auth.uid()), 'admin'::public.app_role)) THEN
     RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501';
   END IF;
-  RETURN public.sync_external_connections_from_credentials();
+  RETURN public.sync_external_connections_from_credentials(NULL::text, 'manual'::text, (SELECT auth.uid()));
 END;
 $function$;
 
@@ -58,6 +62,12 @@ BEGIN
   IF NOT v_secdef OR v_src !~* 'is_dev\s*\(' OR v_src !~* '''admin''' OR v_src !~* '42501' THEN
     RAISE EXCEPTION 'connections-sync: wrapper sem a guarda dev/admin esperada';
   END IF;
+  -- Sem chamada ambigua (42725): o corpo nao pode chamar a sync sem argumentos e a forma usada
+  -- precisa resolver para uma unica sobrecarga.
+  IF v_src ~* 'sync_external_connections_from_credentials\s*\(\s*\)' THEN
+    RAISE EXCEPTION 'connections-sync: wrapper chama sync_external_connections_from_credentials() sem argumentos (ambiguo, 42725)';
+  END IF;
+  EXECUTE 'EXPLAIN SELECT public.sync_external_connections_from_credentials(NULL::text, ''manual''::text, NULL::uuid)';
   IF NOT has_function_privilege('authenticated', 'public.fn_admin_sync_external_connections()', 'EXECUTE')
      OR has_function_privilege('anon', 'public.fn_admin_sync_external_connections()', 'EXECUTE') THEN
     RAISE EXCEPTION 'connections-sync: EXECUTE inesperado (authenticated deve ter; anon nao)';
