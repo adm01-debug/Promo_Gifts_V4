@@ -1845,6 +1845,9 @@
    "scripts/check-result-contract.mjs",
    "scripts/supabase-read-only-query.mjs"
   ],
+  "scripts/round-quality-report.mjs": [
+   "scripts/lib/tsc-run.mjs"
+  ],
   "scripts/simulate-signup-migration.mjs": [
    "scripts/supabase-read-only-query.mjs"
   ],

@@ -18372,11 +18372,11 @@
   {
    "arquivo": "tests/scripts/tsc-run-guard.test.mjs",
    "tipo": "unit",
-   "linhas": 116,
+   "linhas": 132,
    "testa": [
     "scripts/lib/tsc-run.mjs"
    ],
-   "casos": 10
+   "casos": 13
   },
   {
    "arquivo": "tests/scripts/uptime-probe.test.ts",

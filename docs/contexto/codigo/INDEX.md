@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `15c2a4cb34e64d859c169800888c29fad53d21eb` (2026-11-11T15:29:48-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `caeb61be00a4eeef04ef5f5cde5869d9d3719183` (2026-11-11T23:06:08-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 9875 |
 | arquivos_codigo | 5038 |
-| linhas_codigo | 961368 |
+| linhas_codigo | 961403 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -586,8 +586,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 41646 nós · 71233 arestas · 2393 comunidades · grafo do commit `15c2a4cb`
-- comunidades maiores: react (480), lucide-react (428), ref_hooks (406), ref_lib (399), ref_components (393), vitest (374), @tanstack/react-query (360), ref_integrations (349), sonner (299), scripts (289), cors.ts (288), gotoAndSettle (279)
+- 41636 nós · 71233 arestas · 2342 comunidades · grafo do commit `caeb61be`
+- comunidades maiores: ref_lib (553), ref_hooks (402), @tanstack/react-query (398), @testing-library/react (371), react (344), cors.ts (321), ref_components (298), ref_node_fs (296), scripts (289), nav.ts (275), ref_utils (264), concludeCheck (247)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -1162,6 +1162,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-11 `caeb61b` fix(scripts): heap explícito no tsc dos gates para evitar OOM (#3406)
 - 2026-11-11 `15c2a4c` chore(repo): quarentena dos 316 arquivos obsoletos da #3361 (#3398)
 - 2026-11-11 `ceea4cc` fix: restaura useDevGate original (stableRoles tipado como AppRole[])
 - 2026-11-11 `fdc79d9` test: cobertura da busca global e testes de hooks Bridge/DevGate alinhados à API atual
@@ -1176,7 +1177,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-09 `167f5f8` chore: registra 611 arquivos não rastreados de sessões anteriores (#3361)
 - 2026-11-09 `1368a91` feat(edge-deploy-log): recibo run 42665634216 — edge functions deploy
 - 2026-11-09 `9a9c363` feat(edge-deploy-log): recibo run 42660725884 — edge functions deploy
-- 2026-11-09 `908f30a` feat: versionar view vw_products_min_quantity (FT-079) (#3264)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

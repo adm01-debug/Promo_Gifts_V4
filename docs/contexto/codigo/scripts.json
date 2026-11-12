@@ -821,7 +821,7 @@
   {
    "arquivo": "scripts/check-indexed-access-ratchet.mjs",
    "descricao": "* Ratchet advisory: noUncheckedIndexedAccess.",
-   "linhas": 93,
+   "linhas": 94,
    "env": [],
    "npm_scripts": [
     "check:indexed-access-ratchet",
@@ -2293,7 +2293,7 @@
   {
    "arquivo": "scripts/lib/tsc-run.mjs",
    "descricao": "* Classifica uma execução do `tsc --noEmit` para os gates/ratchets de erro TypeScript.",
-   "linhas": 36,
+   "linhas": 53,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2538,7 +2538,7 @@
   {
    "arquivo": "scripts/round-quality-report.mjs",
    "descricao": "* Round Quality Report",
-   "linhas": 258,
+   "linhas": 259,
    "env": [],
    "npm_scripts": [
     "qa:round",
