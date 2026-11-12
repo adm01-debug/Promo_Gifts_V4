@@ -73,6 +73,9 @@ test.describe('Global Search Comprehensive', () => {
     await page.getByRole('button', { name: 'Abrir busca global' }).click();
     const dialog = page.locator('[role="dialog"]');
     await expect(dialog).toBeVisible();
+    // "Atalhos" vem do banco (useCategoryIcons) e entra depois da abertura (~200px de altura):
+    // sem esperar, o snapshot alterna entre a paleta sem e com a seção
+    await expect(dialog.getByRole('group', { name: 'Atalhos rápidos' })).toBeVisible();
     await expect(dialog).toHaveScreenshot('global-search-idle.png');
 
     // 2. Searching State — segura a resposta da busca semântica para o banner de IA ficar estável no snapshot
