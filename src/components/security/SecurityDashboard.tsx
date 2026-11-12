@@ -67,6 +67,7 @@ export function SecurityDashboard() {
 
   const effectiveUserId = selectedUserId || user?.id;
   const isManagingOther = !!selectedUserId && selectedUserId !== user?.id;
+  const canManageIps = roles.includes('admin') || roles.includes('dev');
   const selectedUser = users.find((u) => u.user_id === selectedUserId);
 
   const { metrics, loginAttempts, notifications, is2FAEnabled, allowedIPs } = useSecurityData(
@@ -468,11 +469,7 @@ export function SecurityDashboard() {
         <TabsContent value="ips">
           <IPRestrictionManager
             targetUserId={
-              isManagingOther &&
-              selectedUserId &&
-              (roles.includes('admin') || roles.includes('dev'))
-                ? selectedUserId
-                : undefined
+              isManagingOther && canManageIps ? (selectedUserId ?? undefined) : undefined
             }
           />
         </TabsContent>

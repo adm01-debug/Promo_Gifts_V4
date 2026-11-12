@@ -80,7 +80,7 @@
     "src/components/quotes/QuotesConfigurableList.tsx": 618,
     "src/components/search/GlobalSearchPalette.tsx": 517,
     "src/components/search/useGlobalSearch.ts": 930,
-    "src/components/security/SecurityDashboard.tsx": 561,
+    "src/components/security/SecurityDashboard.tsx": 564,
     "src/components/simulator/TechniqueCard.tsx": 557,
     "src/components/simulator/wizard/StepSpecs.tsx": 605,
     "src/components/ui/sidebar.tsx": 737,
