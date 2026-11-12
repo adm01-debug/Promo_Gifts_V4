@@ -41,11 +41,11 @@ export function DiscountApprovalHeaderBadge() {
       return rawCount || 0;
     },
     enabled: rolesLoaded && Boolean(isAdmin), // rolesLoaded garante JWT pronto
-    retry: 0,              // sem retries: falha = falha, nao flood
-    retryOnMount: false,   // nao re-tenta ao remontar
+    retry: 0, // sem retries: falha = falha, nao flood
+    retryOnMount: false, // nao re-tenta ao remontar
     refetchInterval: 60_000,
-    refetchOnWindowFocus: false,  // evita abort extra ao focar aba
-    refetchOnReconnect: false,    // evita abort extra ao reconectar
+    refetchOnWindowFocus: false, // evita abort extra ao focar aba
+    refetchOnReconnect: false, // evita abort extra ao reconectar
     staleTime: 15_000,
   });
 
