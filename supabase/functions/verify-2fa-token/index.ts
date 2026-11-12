@@ -106,6 +106,20 @@ Deno.serve(async (req: Request) => {
     if (!isAdmin) {
       return json({ success: false, error: 'Permissao insuficiente' }, 403);
     }
+
+    if (!roles.includes('dev')) {
+      const { data: targetRoleRows, error: targetRoleErr } = await admin
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', effectiveUserId);
+      if (targetRoleErr) {
+        console.error('[verify-2fa-token] Erro roles alvo:', targetRoleErr.message);
+        return json({ success: false, error: 'Erro interno' }, 500);
+      }
+      if ((targetRoleRows ?? []).some((r: { role: string }) => r.role === 'dev')) {
+        return json({ success: false, error: 'Permissao insuficiente' }, 403);
+      }
+    }
   }
 
   // Buscar settings do usuario alvo server-side — secret permanece no servidor

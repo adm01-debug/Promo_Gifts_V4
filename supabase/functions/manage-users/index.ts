@@ -125,6 +125,37 @@ Deno.serve(async (req) => {
 
     const payload = parsed.data;
 
+    let requiresDev = false;
+    if (payload.action === 'create') {
+      requiresDev = payload.role === 'dev';
+    } else if (
+      payload.action === 'update_email' ||
+      payload.action === 'update_password' ||
+      payload.action === 'delete'
+    ) {
+      const { data: targetRoleRows, error: targetRoleErr } = await supabaseAdmin
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', payload.user_id);
+      if (targetRoleErr) {
+        log.error('falha ao ler papel do usuário alvo', {
+          target_user_id: payload.user_id,
+          error: targetRoleErr.message,
+        });
+        return jsonRes(corsHeaders, { error: 'Falha ao verificar papel do usuário alvo' }, 500);
+      }
+      requiresDev = (targetRoleRows ?? []).some((r: { role: string }) => r.role === 'dev');
+    }
+    if (requiresDev) {
+      const { data: callerIsDev, error: callerDevErr } = await supabaseAdmin.rpc(
+        'has_role',
+        { _user_id: caller.id, _role: 'dev' }
+      );
+      if (callerDevErr || !callerIsDev) {
+        return jsonRes(corsHeaders, { error: 'Apenas devs podem gerenciar contas Dev' }, 403);
+      }
+    }
+
     if (payload.action === 'create') {
       const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
         email: payload.email,

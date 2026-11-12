@@ -109,7 +109,6 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const userId = user.id;
     const userEmail = user.email || "";
 
     // Obter e validar body da request.
@@ -194,13 +193,13 @@ Deno.serve(async (req: Request) => {
           results.reason = "ip_not_whitelisted";
 
           // Logar tentativa bloqueada
-          await supabaseAdmin.from("access_blocked_log").insert({
-            user_id: userId,
+          const { error: blockLogError } = await supabaseAdmin.from("access_blocked_log").insert({
             email: userEmail,
             ip_address: clientIp,
             block_reason: "ip_not_whitelisted",
             user_agent: userAgent,
           });
+          if (blockLogError) console.error("[validate-access] access_blocked_log insert failed:", blockLogError.message);
         }
       }
     }
@@ -237,8 +236,7 @@ Deno.serve(async (req: Request) => {
             };
 
             // Logar tentativa bloqueada
-            await supabaseAdmin.from("access_blocked_log").insert({
-              user_id: userId,
+            const { error: blockLogError } = await supabaseAdmin.from("access_blocked_log").insert({
               email: userEmail,
               ip_address: clientIp,
               city: geo.city,
@@ -247,6 +245,7 @@ Deno.serve(async (req: Request) => {
               block_reason: "city_not_whitelisted",
               user_agent: userAgent,
             });
+            if (blockLogError) console.error("[validate-access] access_blocked_log insert failed:", blockLogError.message);
           }
         }
       }

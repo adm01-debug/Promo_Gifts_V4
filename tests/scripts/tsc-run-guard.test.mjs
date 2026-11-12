@@ -7,7 +7,7 @@ import { chmodSync, cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
-import { classifyTscRun } from '../../scripts/lib/tsc-run.mjs';
+import { classifyTscRun, tscHeapArgs } from '../../scripts/lib/tsc-run.mjs';
 
 const ROOT = resolve(import.meta.dirname, '../..');
 const dirs = [];
@@ -111,5 +111,21 @@ describe('gates com tsc quebrado falham fechado (exit 2)', () => {
     expect(runIn(dir, 'sh', ['scripts/tsc-unused-ratchet.sh']).status).toBe(1);
     writeFileSync(join(dir, '.tsc-ratchet-baseline'), '5\n');
     expect(runIn(dir, 'sh', ['scripts/tsc-unused-ratchet.sh']).status).toBe(0);
+  });
+});
+
+describe('tscHeapArgs', () => {
+  it('padrão de 6144 MB quando NODE_OPTIONS não define heap', () => {
+    expect(tscHeapArgs({})).toEqual(['--max-old-space-size=6144']);
+    expect(tscHeapArgs({ NODE_OPTIONS: '--enable-source-maps' })).toEqual(['--max-old-space-size=6144']);
+  });
+  it('respeita heap já definido em NODE_OPTIONS (CI)', () => {
+    expect(tscHeapArgs({ NODE_OPTIONS: '--max-old-space-size=4096' })).toEqual([]);
+    expect(tscHeapArgs({ NODE_OPTIONS: '--foo --max-old-space-size 4096' })).toEqual([]);
+  });
+  it('aceita override por TSC_MAX_OLD_SPACE_MB e ignora valor inválido', () => {
+    expect(tscHeapArgs({ TSC_MAX_OLD_SPACE_MB: '8192' })).toEqual(['--max-old-space-size=8192']);
+    expect(tscHeapArgs({ TSC_MAX_OLD_SPACE_MB: 'abc' })).toEqual(['--max-old-space-size=6144']);
+    expect(tscHeapArgs({ TSC_MAX_OLD_SPACE_MB: '-1' })).toEqual(['--max-old-space-size=6144']);
   });
 });

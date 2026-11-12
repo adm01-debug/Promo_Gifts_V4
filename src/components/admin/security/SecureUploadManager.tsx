@@ -26,11 +26,11 @@ import { invokeEdge } from '@/lib/edge/safeInvokeCall';
 interface FileScanLog {
   id: string;
   created_at: string;
-  path: string;
-  hash: string;
-  bucket: string;
-  status_code: number;
-  scan_result?: { malicious?: number } | null;
+  file_name: string;
+  storage_path: string | null;
+  file_hash: string | null;
+  scan_result: string;
+  scan_response?: { status_code?: number; bucket?: string | null; malicious?: number } | null;
 }
 
 export function SecureUploadManager() {
@@ -98,8 +98,8 @@ export function SecureUploadManager() {
 
   const filteredLogs = logs.filter(
     (log) =>
-      log.path.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      log.hash.toLowerCase().includes(searchTerm.toLowerCase()),
+      (log.storage_path ?? log.file_name ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (log.file_hash ?? '').toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -256,31 +256,31 @@ export function SecureUploadManager() {
                       </td>
                       <td
                         className="max-w-[200px] truncate p-3 font-mono text-[11px]"
-                        title={log.path}
+                        title={log.storage_path ?? log.file_name}
                       >
-                        {log.path.split('/').pop()}
+                        {(log.storage_path ?? log.file_name ?? '').split('/').pop()}
                       </td>
                       <td className="p-3">
                         <Badge variant="outline" className="text-[10px] uppercase">
-                          {log.bucket}
+                          {log.scan_response?.bucket ?? '—'}
                         </Badge>
                       </td>
                       <td className="p-3">
-                        {log.status_code === 200 ? (
+                        {log.scan_response?.status_code === 200 ? (
                           <Badge className="gap-1 border-success/20 bg-success/10 text-success hover:bg-success/20">
                             <CheckCircle2 className="h-3 w-3" /> OK
                           </Badge>
                         ) : (
                           <Badge variant="destructive" className="gap-1">
                             <XCircle className="h-3 w-3" />{' '}
-                            {log.status_code === 403 ? 'Bloqueado' : 'Erro'}
+                            {log.scan_response?.status_code === 403 ? 'Bloqueado' : 'Erro'}
                           </Badge>
                         )}
                       </td>
                       <td className="p-3">
-                        {(log.scan_result?.malicious ?? 0) > 0 ? (
+                        {(log.scan_response?.malicious ?? 0) > 0 ? (
                           <span className="font-bold text-destructive">
-                            {log.scan_result?.malicious}!
+                            {log.scan_response?.malicious}!
                           </span>
                         ) : (
                           <span className="text-success">0</span>

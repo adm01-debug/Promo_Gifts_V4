@@ -1216,7 +1216,7 @@ Conferido no ledger de produção (`supabase_migrations.schema_migrations`) em 2
 
 | versão | nome | sha256 | status |
 |---|---|---|---|
-| `20261111190000` | `harden_fn_get_rupture_alerts_search_path` | `b6b9e4d88a91e64fbfaa42579a6f231f7c0d71b3c367548b108b63a845a09766` | pendente — endurece search_path de fn_get_rupture_alerts (#3179, sem editar a migration histórica 20261101150000); em produção: aplicar ESTA e depois registrar a 20261101150000 em repair-only (a 150000 é bloqueada pelo preflight E066 e, se aplicada depois, voltaria o search_path a `public`) |
+| `20261111190000` | `harden_fn_get_rupture_alerts_search_path` | `—` | **removida da pilha antes do merge** — substituída pela `20261112011000_fix_sb0003_fn_get_rupture_alerts` (main, #SB-0003), de efeito idêntico (mesmo corpo com `is_supervisor_or_above`, `search_path = public, pg_catalog, pg_temp`, REVOKE de PUBLIC/anon, GRANT a authenticated). Nunca aplicada. |
 | `20261108030000` | `ft005_cron_scheduled_reports` | `7f9f3b783c80deff3822abf4b6a57ac71bff9444a83c8f9ee19d78642da60586` | espelho — os crons process/send-scheduled-reports já existem em produção com o mesmo agendamento (#3263); registrar via repair-only |
 | `20261108030200` | `ft088_fn_check_item_fits` | `b31bebec36214569a26c8cafb0707166ba6c0a214dc43716f5f5b635420353f3` | espelho — fn_check_item_fits já existe em produção (#3265); registrar via repair-only |
 | `20261108120000` | `p10_categories_indexes_espelho` | `6cb4ae9f62bc37a3bdf54e01eb812a4b8114e51c49bf7c7f796b593db1d8c550` | espelho — os 3 índices de public.categories já existem em produção (#3273); registrar via repair-only |
@@ -1392,3 +1392,14 @@ Versões **já aplicadas em produção** (`supabase_migrations.schema_migrations
 | `20261022194200` | `security_revoke_mcp_kv_get_authenticated` | `fda90b7ceff03b01f4d4ed1b59cefbdc398f3c199eb2e2414adbbf98fea8dfb2` | `20261022194200_security_revoke_mcp_kv_get_authenticated.sql` | aplicada (ledger de produção); recibo retroativo — o registro anterior deste log dizia "pendente" |
 | `20261022194100` | `security_revoke_mockup_approval_links_anon` | `44cf101355cc4e3f20db4267b90a3ca8c2a76afa502dca46a1971f6284838abf` | `20261022194100_security_revoke_mockup_approval_links_anon.sql` | aplicada (ledger de produção); recibo retroativo — o registro anterior deste log dizia "pendente" |
 | `20261022194000` | `security_revoke_external_connections_anon` | `cf143e83a55fc4b709ec382ac05d915c2309588e73ab8fa454f649fe222ff791` | `20261022194000_security_revoke_external_connections_anon.sql` | aplicada (ledger de produção); recibo retroativo — o registro anterior deste log dizia "pendente" |
+
+## 2026-11-12 — SB-0003: `fn_get_rupture_alerts` pendente em produção
+
+A função não existe em produção (verificado via `pg_proc` em 2026-11-12) e o painel de alertas de ruptura
+(`src/hooks/stock/useRuptureAlerts.ts`) depende dela. O preflight de `db-apply-migration.yml` recusava a
+migration por `search_path` sem `pg_temp` e por falta de rollback — corrigido aqui (traz a correção da PR #3179).
+A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão, como manda o gate E15 para migration pendente alterada.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261112011000` | `fix_sb0003_fn_get_rupture_alerts` | `8e081152c457ed572cb3aa349f62027bc7cd461996bb8036f499efb12af6a449` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono) |

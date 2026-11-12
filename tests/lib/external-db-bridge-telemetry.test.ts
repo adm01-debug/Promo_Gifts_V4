@@ -687,20 +687,22 @@ describe("external-db-bridge — Batch Limits", () => {
 });
 
 describe("external-db-bridge — Telemetry Persistence Decision", () => {
+  const shouldPersist = (status: TelemetryMeta["status"]) => status !== "ok";
+
   it("ok queries are NOT persisted", () => {
-    expect("ok" !== "ok").toBe(false); // would skip insert
+    expect(shouldPersist("ok")).toBe(false); // would skip insert
   });
 
   it("slow queries ARE persisted", () => {
-    expect("slow" !== "ok").toBe(true);
+    expect(shouldPersist("slow")).toBe(true);
   });
 
   it("very_slow queries ARE persisted", () => {
-    expect("very_slow" !== "ok").toBe(true);
+    expect(shouldPersist("very_slow")).toBe(true);
   });
 
   it("error queries ARE persisted", () => {
-    expect("error" !== "ok").toBe(true);
+    expect(shouldPersist("error")).toBe(true);
   });
 });
 

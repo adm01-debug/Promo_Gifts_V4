@@ -26,10 +26,18 @@ export function SellerDiscountLimitsPanel() {
   const { data, isLoading } = useQuery({
     queryKey: ['seller-discount-limits'],
     queryFn: async (): Promise<SellerRow[]> => {
+      const { data: roleRows, error: rErr } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .eq('role', 'vendedor');
+      if (rErr) throw rErr;
+      const sellerIds = (roleRows ?? []).map((r) => r.user_id);
+      if (!sellerIds.length) return [];
+
       const { data: profiles, error: pErr } = await supabase
         .from('profiles')
         .select('user_id, full_name, email, role')
-        .eq('role', 'vendedor');
+        .in('user_id', sellerIds);
       if (pErr) throw pErr;
 
       const sellers = (profiles || []).filter(
