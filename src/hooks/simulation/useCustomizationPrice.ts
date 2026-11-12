@@ -19,12 +19,22 @@ export interface CalculatePriceParamsV6 {
   alturaCm?: number | null;
 }
 
+/** Erro de técnica com faixa por dimensão chamada sem largura/altura (Passo 4 da RPC). */
+export function isDimensionRequiredError(message: string | null | undefined): boolean {
+  return !!message && /dimens(õ|o)es obrigat/i.test(message);
+}
+
+export interface CalculatePriceDetailedResult {
+  result: CustomizationPriceResponseV6 | null;
+  error: string | null;
+}
+
 export function useCustomizationPriceCalculator() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const calculatePrice = useCallback(
-    async (params: CalculatePriceParamsV6): Promise<CustomizationPriceResponseV6 | null> => {
+  const calculatePriceDetailed = useCallback(
+    async (params: CalculatePriceParamsV6): Promise<CalculatePriceDetailedResult> => {
       setLoading(true);
       setError(null);
 
@@ -49,22 +59,29 @@ export function useCustomizationPriceCalculator() {
 
         setLoading(false);
         if (!result?.success) {
-          setError(result?.error || 'Erro no cálculo de preço');
-          return null;
+          const message = result?.error || 'Erro no cálculo de preço';
+          setError(message);
+          return { result: null, error: message };
         }
         validateRpcPayload(PRICE_CONTRACT, result as unknown as Record<string, unknown>);
-        return result;
+        return { result, error: null };
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Erro ao calcular preço';
         setError(message);
         setLoading(false);
-        return null;
+        return { result: null, error: message };
       }
     },
     [],
   );
 
-  return { calculatePrice, loading, error };
+  const calculatePrice = useCallback(
+    async (params: CalculatePriceParamsV6): Promise<CustomizationPriceResponseV6 | null> =>
+      (await calculatePriceDetailed(params)).result,
+    [calculatePriceDetailed],
+  );
+
+  return { calculatePrice, calculatePriceDetailed, loading, error };
 }
 
 /**

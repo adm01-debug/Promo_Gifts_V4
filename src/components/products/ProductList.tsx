@@ -34,6 +34,7 @@ export interface ProductListProps {
   externalSelectedIds?: Set<string>;
   /** External toggle handler */
   onToggleSelect?: (id: string) => void;
+  onStatusClick?: (type: string, value?: number | string) => void;
 }
 
 function ProductListItemWrapper({
@@ -104,6 +105,7 @@ export const ProductList = memo(
     selectionMode: externalSelectionMode,
     externalSelectedIds,
     onToggleSelect: externalToggleSelect,
+    onStatusClick,
   }: ProductListProps) => {
     // Determine if we're using external or internal selection state
     const isExternallyControlled =
@@ -296,6 +298,7 @@ export const ProductList = memo(
                 canAddToCompare={canAddToCompare}
                 highlightColors={highlightColors}
                 activeColorFilter={activeColorFilter}
+                onStatusClick={onStatusClick}
               />
             ),
           )}

@@ -8,10 +8,11 @@ import { assert, assertEquals } from "jsr:@std/assert@1";
 const UID = "11111111-1111-4111-8111-111111111111";
 const APP = "http://app.local";
 const CRM = "http://crm.local";
-let ROLE = "vendedor";
+let ROLE: string | null = "vendedor";
 const CRM_UID = "22222222-2222-4222-8222-222222222222";
 let EMAIL: string | null = "vendedor@promobrindes.com.br";
-let CRM_USERS: { id: string }[] = [{ id: CRM_UID }];
+// Sem `email`, a linha devolvida pelo CRM usa o e-mail do chamador (vínculo exato).
+let CRM_USERS: { id: string; email?: string }[] = [{ id: CRM_UID }];
 const crmCalls: string[] = [];
 
 Deno.env.set("SUPABASE_URL", APP);
@@ -29,7 +30,7 @@ globalThis.fetch = (async (input: Request | URL | string) => {
   if (url.startsWith(CRM)) {
     const u = decodeURIComponent(url);
     crmCalls.push(u);
-    if (u.includes("/users?select=id&email=ilike.")) return json(CRM_USERS);
+    if (u.includes("/rest/v1/users?select=id")) return json(CRM_USERS.map((r) => ({ email: EMAIL, ...r })));
     return json([]);
   }
   if (url.includes("/auth/v1/user")) return json({ id: UID, email: EMAIL, aud: "authenticated", role: "authenticated" });
@@ -120,4 +121,91 @@ Deno.test("batch recusa chave de filtro arbitrária / or/and/not", async () => {
     const r = await call({ operation: "batch", queries: [{ table: "companies", filters }] });
     assertEquals(r.body.results[0].status, 400, JSON.stringify(filters));
   }
+});
+
+// ── Gaps cobertos na revisão de 12/11 ───────────────────────────────────────────────
+const usersLookups = (calls: string[]) => calls.filter((c) => c.startsWith(`${CRM}/rest/v1/users?`));
+
+Deno.test("papel nulo / desconhecido cai em vendedor (com filtro de dono), nunca em leitura ampla", async () => {
+  for (const role of [null, "agente", "coordenador"]) {
+    reset(); ROLE = role;
+    const r = await call({ operation: "select", table: "companies" });
+    assertEquals(r.status, 200, String(role));
+    assert(lastData(r.calls, "companies").includes(`user_id=eq.${CRM_UID}`), `${role}: ${lastData(r.calls, "companies")}`);
+  }
+});
+
+Deno.test("e-mail com % e _ : metacaracteres escapados no ilike do vínculo", async () => {
+  reset(); EMAIL = "a%b_c@promobrindes.com.br";
+  const r = await call({ operation: "select", table: "companies" });
+  assertEquals(r.status, 200);
+  const lookup = usersLookups(r.calls).at(-1) ?? "";
+  assert(lookup.includes("email=ilike.a\\%b\\_c@promobrindes.com.br"), lookup);
+});
+
+Deno.test("e-mail com curinga do PostgREST (*) não vincula ao usuário do CRM de outra pessoa", async () => {
+  reset(); EMAIL = "*@promobrindes.com.br";
+  // o ilike do PostgREST trata * como %: o CRM devolve o usuário de OUTRO e-mail
+  CRM_USERS = [{ id: CRM_UID, email: "diretor@promobrindes.com.br" }];
+  const r = await call({ operation: "select", table: "companies" });
+  assertEquals(r.status, 403);
+  assert(String(r.body.error).includes("não está vinculado"), JSON.stringify(r.body));
+  assertEquals(lastData(r.calls, "companies"), "");
+});
+
+Deno.test("dois usuários do CRM com o mesmo e-mail → ambíguo → 403, sem consultar a tabela", async () => {
+  reset(); EMAIL = "duplicado@promobrindes.com.br";
+  CRM_USERS = [{ id: CRM_UID }, { id: "44444444-4444-4444-8444-444444444444" }];
+  const r = await call({ operation: "search", table: "contacts", search: { column: "name", term: "x" } });
+  assertEquals(r.status, 403);
+  assertEquals(lastData(r.calls, "contacts"), "");
+});
+
+Deno.test("cache do vínculo: mesmo e-mail não reconsulta; e-mail trocado reconsulta e usa o novo id", async () => {
+  reset(); EMAIL = "cache-a@promobrindes.com.br";
+  const r1 = await call({ operation: "select", table: "companies" });
+  assertEquals(usersLookups(r1.calls).length, 1);
+  const r2 = await call({ operation: "select", table: "companies" });
+  assertEquals(usersLookups(r2.calls).length, 0, "segunda chamada deve vir do cache");
+  // o usuário troca o e-mail no app → chave nova, consulta nova, id novo
+  const NEW_UID = "55555555-5555-4555-8555-555555555555";
+  EMAIL = "cache-b@promobrindes.com.br"; CRM_USERS = [{ id: NEW_UID }];
+  const r3 = await call({ operation: "select", table: "companies" });
+  assertEquals(usersLookups(r3.calls).length, 1);
+  assert(lastData(r3.calls, "companies").includes(`user_id=eq.${NEW_UID}`), lastData(r3.calls, "companies"));
+});
+
+Deno.test("batch: filtro do cliente em user_id não sobrepõe o escopo (AND com o dono)", async () => {
+  reset();
+  const r = await call({ operation: "batch", queries: [
+    { table: "contacts", filters: { user_id: "99999999-9999-4999-8999-999999999999" } },
+  ] });
+  const u = lastData(r.calls, "contacts");
+  assert(u.includes(`user_id=eq.${CRM_UID}`), u);
+});
+
+Deno.test("search em contacts e contact_emails (vendedor) aplica o escopo", async () => {
+  reset();
+  const c = await call({ operation: "search", table: "contacts", search: { column: "name", term: "ana" } });
+  assertEquals(c.status, 200);
+  assert(lastData(c.calls, "contacts").includes(`user_id=eq.${CRM_UID}`), lastData(c.calls, "contacts"));
+  const e = await call({ operation: "search", table: "contact_emails", search: { column: "email", term: "ana" } });
+  assertEquals(e.status, 200);
+  const u = lastData(e.calls, "contact_emails");
+  assert(u.includes("contacts!inner(user_id)") && u.includes(`contacts.user_id=eq.${CRM_UID}`), u);
+});
+
+Deno.test("customers: vendedor sempre negado (select, search e batch) sem consultar a tabela; supervisor lê", async () => {
+  reset();
+  const s = await call({ operation: "select", table: "customers", filters: { company_id: "c1" } });
+  assertEquals(s.status, 403);
+  assert(String(s.body.error).includes("supervisor"), JSON.stringify(s.body));
+  const q = await call({ operation: "search", table: "customers", search: { column: "name", term: "x" } });
+  assertEquals(q.status, 403);
+  const b = await call({ operation: "batch", queries: [{ table: "customers" }] });
+  assertEquals(b.body.results[0].status, 403);
+  for (const r of [s, q, b]) assertEquals(lastData(r.calls, "customers"), "");
+  reset(); ROLE = "supervisor";
+  const ok = await call({ operation: "select", table: "customers" });
+  assertEquals(ok.status, 200);
 });

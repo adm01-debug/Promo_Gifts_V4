@@ -490,9 +490,14 @@ async function resolveCrmUserId(crm: SupabaseClient, email?: string | null): Pro
   const hit = CRM_USER_CACHE.get(key);
   if (hit && Date.now() - hit.at < CRM_USER_TTL_MS) return hit.id;
   // ilike sem curingas = igualdade sem diferenciar maiúsculas (metacaracteres escapados)
-  const { data, error } = await crm.from("users").select("id").ilike("email", escapeLikePattern(key)).limit(2);
+  const { data, error } = await crm.from("users").select("id,email").ilike("email", escapeLikePattern(key)).limit(2);
   if (error) throw new Error(`vínculo com usuário do CRM: ${error.message}`);
-  const id = data && data.length === 1 ? (data[0] as { id: string }).id : null; // 0 ou ambíguo → sem vínculo
+  // O PostgREST trata `*` no ilike como `%` (o escape acima não cobre): confere a igualdade
+  // exata aqui, para um e-mail com curinga nunca vincular ao usuário do CRM de OUTRA pessoa.
+  const exact = (data ?? []).filter(
+    (r) => String((r as { email?: unknown }).email ?? "").trim().toLowerCase() === key,
+  ) as { id: string }[];
+  const id = exact.length === 1 ? exact[0].id : null; // 0 ou ambíguo → sem vínculo
   CRM_USER_CACHE.set(key, { id, at: Date.now() });
   return id;
 }
