@@ -1,5 +1,8 @@
 // tests/edge-functions/live-client-retry.test.ts — offline: servidor HTTP local lento
 import http from "node:http";
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import type { AddressInfo } from "node:net";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -75,10 +78,6 @@ describe("callEdge: timeout do cliente (AbortError)", () => {
 // ---------------------------------------------------------------------------
 // Reforço de mutantes (12/11): R4 + EDGE_LIVE_RETRIES inválido + 504 re-tentado
 // ---------------------------------------------------------------------------
-import { readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
-
 /** Servidor cujo status por tentativa é decidido por `statusFor(n)` (resposta imediata). */
 async function withStatusServer(statusFor: (n: number) => number, retries: string | undefined) {
   let n = 0;

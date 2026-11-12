@@ -183,6 +183,7 @@ export function runLiveSuite(desc: LiveSuiteDescriptor): void {
         }
         const res = await callEdge(fn, {
           // happy-path executa a função de verdade: timeout não é repetido (sem efeito duplicado/custo)
+          retryOnTimeout: false,
           method: hp.method ?? method,
           query: hp.query ?? query,
           role: hpRole,
