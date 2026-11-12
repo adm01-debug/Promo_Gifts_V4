@@ -12,7 +12,7 @@
  *   node scripts/check-indexed-access-ratchet.mjs --update   # regrava baseline
  */
 import { spawnSync } from 'node:child_process';
-import { classifyTscRun } from './lib/tsc-run.mjs';
+import { classifyTscRun, tscHeapArgs } from './lib/tsc-run.mjs';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -25,6 +25,7 @@ function countErrors() {
   const res = spawnSync(
       process.execPath,
       [
+        ...tscHeapArgs(),
         'node_modules/typescript/bin/tsc',
         '-p',
         'tsconfig.app.json',

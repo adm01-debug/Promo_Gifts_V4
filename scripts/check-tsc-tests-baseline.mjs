@@ -12,7 +12,7 @@
 import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { classifyTscRun } from './lib/tsc-run.mjs';
+import { classifyTscRun, tscHeapArgs } from './lib/tsc-run.mjs';
 
 const ROOT = process.cwd();
 const BASELINE_PATH = join(ROOT, '.tsc-tests-baseline.json');
@@ -33,7 +33,7 @@ try {
 console.log('⏳ Rodando tsc -p tsconfig.eslint.json --noEmit ...');
 const res = spawnSync(
   process.execPath,
-  [TSC_BIN, '-p', 'tsconfig.eslint.json', '--noEmit'],
+  [...tscHeapArgs(), TSC_BIN, '-p', 'tsconfig.eslint.json', '--noEmit'],
   { encoding: 'utf8', maxBuffer: 50 * 1024 * 1024 },
 );
 

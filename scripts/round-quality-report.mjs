@@ -28,6 +28,7 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { tscHeapArgs } from './lib/tsc-run.mjs';
 
 const ROOT = process.cwd();
 const OUT_DIR = join(ROOT, 'qa', 'quality-rounds');
@@ -58,7 +59,7 @@ function runTypescript() {
   if (!existsSync(TSC_BIN)) return { skipped: true, reason: 'tsc não instalado' };
 
   log('⏳ Rodando tsc -p tsconfig.app.json --noEmit ...');
-  const res = spawnSync(process.execPath, [TSC_BIN, '-p', 'tsconfig.app.json', '--noEmit'], {
+  const res = spawnSync(process.execPath, [...tscHeapArgs(), TSC_BIN, '-p', 'tsconfig.app.json', '--noEmit'], {
     encoding: 'utf8',
     maxBuffer: 100 * 1024 * 1024,
   });
