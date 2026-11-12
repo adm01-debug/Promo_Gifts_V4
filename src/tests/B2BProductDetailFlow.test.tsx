@@ -165,6 +165,21 @@ describe('B2B Product Detail Flow Integration', () => {
     expect(title).toBeDefined();
   });
 
+  it('Fluxo 3b: Calculadora de Preços adiciona a quantidade ao orçamento (PM-05)', async () => {
+    renderPDP();
+    fireEvent.click(screen.getByText('Preços'));
+
+    const qtyInput = await screen.findByLabelText('Quantidade');
+    fireEvent.change(qtyInput, { target: { value: '300' } });
+    fireEvent.click(screen.getByRole('button', { name: /Adicionar 300 un ao\s*Orçamento/ }));
+
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    const url = new URL(mockNavigate.mock.calls[0][0] as string, 'http://x');
+    expect(url.pathname).toBe('/orcamentos/novo');
+    expect(url.searchParams.get('product_id')).toBe('prod-123');
+    expect(url.searchParams.get('min_quantity')).toBe('300');
+  });
+
   it('Fluxo 4: Verificação de Tags e Nichos (Indicação)', async () => {
     renderPDP();
 
