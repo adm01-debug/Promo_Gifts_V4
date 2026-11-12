@@ -6,12 +6,12 @@ test.describe('Global Search Comprehensive', () => {
     await loginAs(page);
     await page.goto('/');
     // Garantir que a página carregou
-    await expect(page.locator('button[aria-label="Abrir busca global"]')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Abrir busca global' })).toBeVisible();
   });
 
   test('Open palette with modifier+K and Button click', async ({ page }) => {
     // Test click trigger
-    await page.click('button[aria-label="Abrir busca global"]');
+    await page.getByRole('button', { name: 'Abrir busca global' }).click();
     await expect(page.locator('[role="dialog"]')).toBeVisible();
     await expect(page.locator('input[placeholder*="Buscar produtos"]')).toBeFocused();
     
@@ -39,7 +39,7 @@ test.describe('Global Search Comprehensive', () => {
   });
 
   test('Navigation and Selection in Idle State', async ({ page }) => {
-    await page.click('button[aria-label="Abrir busca global"]');
+    await page.getByRole('button', { name: 'Abrir busca global' }).click();
     
     // In Idle state we have "Mais Populares" or "Recentes"
     const items = page.locator('[cmdk-item]');
@@ -66,7 +66,7 @@ test.describe('Global Search Comprehensive', () => {
     await page.setViewportSize({ width: 1280, height: 800 });
     
     // 1. Idle State
-    await page.click('button[aria-label="Abrir busca global"]');
+    await page.getByRole('button', { name: 'Abrir busca global' }).click();
     const dialog = page.locator('[role="dialog"]');
     await expect(dialog).toBeVisible();
     await expect(dialog).toHaveScreenshot('global-search-idle.png');
