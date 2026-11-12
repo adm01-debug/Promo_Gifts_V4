@@ -309,6 +309,9 @@ export default function AdminProductFormPage() {
       const safeBestsellerExpires = data.is_bestseller
         ? data.is_bestseller_expires_at || in30Days()
         : data.is_bestseller_expires_at || null;
+      const safeNewExpires = data.is_new
+        ? data.is_new_expires_at || in30Days()
+        : data.is_new_expires_at || null;
       const productData: Record<string, unknown> = {
         sku: data.sku,
         name: data.name,
@@ -339,7 +342,7 @@ export default function AdminProductFormPage() {
         is_on_sale: data.is_on_sale,
         is_featured_expires_at: safeFeaturedExpires,
         is_bestseller_expires_at: safeBestsellerExpires,
-        is_new_expires_at: data.is_new_expires_at || null,
+        is_new_expires_at: safeNewExpires,
         is_on_sale_expires_at: data.is_on_sale_expires_at || null,
         has_commercial_packaging: data.has_commercial_packaging,
         is_imported: data.is_imported,
@@ -517,11 +520,12 @@ export default function AdminProductFormPage() {
 
           toast.success('Produto criado! Agora vincule Tags, Ramos, Marketing e Técnicas.');
           navigate(`/admin/cadastros/produto/${newProduct.id}`, { replace: true });
-          return;
+          return true;
         }
         toast.success('Produto criado com sucesso');
         navigate('/admin/cadastros');
       }
+      return true;
     } catch (error: unknown) {
       logger.error('Error saving product:', error);
       toast.error('Erro ao salvar produto');
@@ -677,6 +681,7 @@ export default function AdminProductFormPage() {
               productId={isEdit ? id : undefined}
               onSubmit={handleFormSubmit}
               onCancel={() => navigate('/admin/cadastros')}
+              initialUpdatedAt={isEdit && product ? product.updated_at : undefined}
               isSaving={isSaving}
               isEdit={isEdit}
               engravingFlushRef={engravingFlushRef}

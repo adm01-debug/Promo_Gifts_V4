@@ -1,5 +1,6 @@
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { authorizeCron } from "../_shared/dispatcher-auth.ts";
+import { authenticateRequest, authErrorResponse, requireRole } from "../_shared/auth.ts";
 /**
  * ownership-audit — executa a varredura de propriedade de registros.
  *
@@ -25,12 +26,22 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: getCorsHeaders(req) });
 
   // Cron: exige x-cron-secret para evitar chamadas diretas não autorizadas
-  const cronAuth = await authorizeCron(req, {
-    corsHeaders: {},
-    secretEnvName: "CRON_SECRET",
-    headerName: "x-cron-secret",
-  });
-  if (!cronAuth.ok) return cronAuth.response;
+  const isCronCall = req.headers.has("x-cron-secret");
+  if (isCronCall) {
+    const cronAuth = await authorizeCron(req, {
+      corsHeaders: {},
+      secretEnvName: "CRON_SECRET",
+      headerName: "x-cron-secret",
+    });
+    if (!cronAuth.ok) return cronAuth.response;
+  } else {
+    try {
+      const auth = await authenticateRequest(req);
+      requireRole(auth, "supervisor");
+    } catch (err) {
+      return authErrorResponse(err, corsHeaders);
+    }
+  }
 
   try {
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -44,7 +55,7 @@ Deno.serve(async (req) => {
     });
     if (!contractResult.ok) return contractResult.response;
     contractResponseHeaders = contractResult.responseHeaders;
-    const triggeredBy = contractResult.data.triggered_by ?? "cron";
+    const triggeredBy = isCronCall ? (contractResult.data.triggered_by ?? "cron") : "manual_admin";
 
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
       auth: { persistSession: false, autoRefreshToken: false },

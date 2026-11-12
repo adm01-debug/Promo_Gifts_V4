@@ -116,6 +116,20 @@ export default function FiltersPage() {
     state.setSelectionMode((prev: boolean) => !prev);
   }, [state]);
 
+  const handleStatusClick = useCallback(
+    (type: string) => {
+      const field = {
+        promotion: 'onSale',
+        featured: 'featured',
+        kit: 'isKit',
+        packaging: 'hasCommercialPackaging',
+      }[type] as 'featured' | 'hasCommercialPackaging' | 'isKit' | 'onSale' | undefined;
+      if (field) state.handleFilterChange({ ...state.filters, [field]: true });
+      else if (type === 'novelty') navigate('/novidades');
+    },
+    [state, navigate],
+  );
+
   return (
     <>
       <PageSEO
@@ -640,6 +654,7 @@ export default function FiltersPage() {
                         selectionMode={state.selectionMode}
                         selectedIds={sel.selectedIds}
                         onToggleSelect={sel.toggleSelect}
+                        onStatusClick={handleStatusClick}
                       />
                     ) : state.viewMode === 'list' ? (
                       <div className="scrollbar-products h-[calc(100vh-280px)] min-h-[500px] overflow-y-auto rounded-xl border border-border/40 bg-background p-4 shadow-sm">
@@ -669,6 +684,7 @@ export default function FiltersPage() {
                           selectionMode={state.selectionMode}
                           externalSelectedIds={sel.selectedIds}
                           onToggleSelect={sel.toggleSelect}
+                          onStatusClick={handleStatusClick}
                         />
                       </div>
                     ) : (
