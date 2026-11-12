@@ -392,7 +392,7 @@
 **Required check:** NÃO — `workflow_dispatch` manual, não disparado automaticamente.  
 **Por que não corrijo via código:** A correção exige alterar a migration SQL (`fn_get_rupture_alerts`) + criar o arquivo de rollback. Mudança de função SQL em produção exige aprovação do dono (REGRA #8). Não é introduzida por esta sessão — foi disparado por outro agente/humano no SHA `b5f7d2e`.  
 **O que o dono precisa fazer:**
-1. Corrigir a migration `supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql` — adicionar `SET search_path = pg_catalog, pg_temp` na definição de `fn_get_rupture_alerts`
+1. Corrigir a migration `supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql` (renomeada de `20261101150000` em `52d6c21`) — adicionar `SET search_path = pg_catalog, pg_temp` na definição de `fn_get_rupture_alerts`
 2. Criar `supabase/rollbacks/20261101150000_rollback.sql` com os comandos de reversão
 3. Re-disparar o `db-apply-migration.yml` via `workflow_dispatch` com `version=20261101150000`
 
