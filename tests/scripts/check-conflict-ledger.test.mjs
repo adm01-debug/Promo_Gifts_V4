@@ -248,3 +248,30 @@ describe('check-conflict-ledger: checkout de pull_request do GitHub (só origin/
     expect(r.stderr).toMatch(/Não foi possível calcular/);
   });
 });
+
+describe('check-conflict-ledger: resolveRef — casos adversariais (revisão 12/11)', () => {
+  it('branch local e origin/<branch> divergentes: o nome literal (local) vence', () => {
+    const dir = makeRepo('ledger-prefer-local-', 'feat');
+    commitOnBranch(dir, 'feat', { message: 'merge(pr-5): resolve conflito' });
+    // origin/feat aponta para a base limpa (sem o merge semântico)
+    g(dir, ['update-ref', 'refs/remotes/origin/feat', g(dir, ['rev-parse', 'main']).trim()]);
+    g(dir, ['checkout', '-q', 'main']);
+    const r = run(dir, { GITHUB_BASE_REF: 'main', GITHUB_HEAD_REF: 'feat' }, ['--gate']);
+    expect(r.status).toBe(1);
+  });
+
+  it('PR de fork cujo head_ref coincide com outra branch do repo base NÃO pode passar comparando a branch errada', () => {
+    // checkout de pull_request: só refs/remotes/origin/*, HEAD = merge sintético (detached)
+    const dir = makeRepo('ledger-fork-collide-', 'tmp');
+    commitOnBranch(dir, 'tmp', { message: 'merge(pr-7): resolve conflito' }); // commit do fork
+    const forkSha = g(dir, ['rev-parse', 'tmp']).trim();
+    const baseSha = g(dir, ['rev-parse', 'main']).trim();
+    g(dir, ['update-ref', 'refs/remotes/origin/release', baseSha]); // branch homônima no base
+    g(dir, ['checkout', '-q', '--detach', baseSha]);
+    g(dir, ['merge', '-q', '--no-ff', '-m', 'synthetic', forkSha]);
+    g(dir, ['branch', '-D', 'tmp', 'main']);
+    const r = run(dir, { GITHUB_BASE_REF: 'main', GITHUB_HEAD_REF: 'release' }, ['--gate']);
+    // Hoje: exit 0 ("Nenhum commit de merge semântico") — compara origin/main..origin/release.
+    expect(r.status).not.toBe(0);
+  });
+});
