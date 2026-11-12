@@ -65,8 +65,11 @@ describe('crm-db-bridge — escopo de ownership usa a coluna real do CRM', () =>
     }
   });
 
-  it('vendedor em tabela PII sem dono nem pai com dono (customers) é negado (403), não 500', () => {
-    expect(crmOwnerScope('customers', 'vendedor', 'u1')).toEqual({ kind: 'deny' });
+  it('customers: vendedor filtra pela coluna real vendedor_id (FK → users.id do CRM)', () => {
+    expect(crmOwnerScope('customers', 'vendedor', 'u1')).toEqual({ kind: 'filter', column: 'vendedor_id', value: 'u1' });
+  });
+
+  it('vendedor sem vínculo com o CRM é negado (403), não 500', () => {
     expect(crmOwnerScope('contacts', 'vendedor', undefined)).toEqual({ kind: 'deny' });
   });
 
