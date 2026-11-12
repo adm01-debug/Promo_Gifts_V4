@@ -53,6 +53,9 @@ function makeSandbox(prefix) {
   mkdirSync(join(sandbox, 'scripts'), { recursive: true });
   mkdirSync(join(sandbox, 'src'), { recursive: true });
   copyFileSync(REAL_SCRIPT, join(sandbox, 'scripts/round-quality-report.mjs'));
+  // O script importa scripts/lib/tsc-run.mjs (heap explícito do tsc, #3406): o sandbox precisa dele.
+  mkdirSync(join(sandbox, 'scripts/lib'), { recursive: true });
+  copyFileSync(join(ROOT, 'scripts/lib/tsc-run.mjs'), join(sandbox, 'scripts/lib/tsc-run.mjs'));
   // ROOT do script é `process.cwd()` (não __dirname) — node_modules real via
   // symlink, para usar o tsc/eslint já instalados sem copiar ~870MB.
   symlinkSync(REAL_NODE_MODULES, join(sandbox, 'node_modules'));
