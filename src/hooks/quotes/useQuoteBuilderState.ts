@@ -449,8 +449,13 @@ export function useQuoteBuilderState() {
   useEffect(() => {
     if (isEditMode) return;
     // Drill-down do BI (ClientCategoryRadar) abre o builder com ?clientId=.
+    // Descarta o rascunho do autosave para ele não sobrescrever o cliente vindo do BI.
     const urlClientId = searchParams.get('clientId');
-    if (urlClientId) setClientId(urlClientId);
+    if (urlClientId && /^[0-9a-f-]{36}$/i.test(urlClientId)) {
+      clearAutoSave();
+      setClientId(urlClientId);
+      window.history.replaceState({}, document.title, location.pathname);
+    }
     if (items.length > 0) return;
 
     const rawItems = searchParams.getAll('items[]');

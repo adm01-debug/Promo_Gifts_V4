@@ -108,13 +108,18 @@ export function useAdvancedPriceSearch() {
       let matchingTable = undefined as ProductWithCalculatedPrice['matchingTechnique'];
 
       if (filters.technique !== 'all' && priceTables.length > 0) {
-        // priceTables já vem filtrado pela técnica (grupo_tecnica); prioriza faixa com preço.
+        // priceTables já vem filtrado pela técnica (grupo_tecnica). O grupo tem várias tabelas
+        // (categoria/formato) e a do produto não é resolvida aqui: usa o MENOR preço da faixa
+        // ("a partir de"), de forma determinística.
         const inQuantity = priceTables.filter(
           (t) =>
             t.min_quantity <= filters.minQuantity &&
             (!t.max_quantity || t.max_quantity >= filters.minQuantity),
         );
-        matchingTable = inQuantity.find((t) => t.unit_price > 0) ?? inQuantity[0];
+        matchingTable =
+          inQuantity
+            .filter((t) => t.unit_price > 0)
+            .sort((a, b) => a.unit_price - b.unit_price)[0] ?? inQuantity[0];
 
         if (matchingTable) {
           customizationPrice = matchingTable.unit_price || 0;

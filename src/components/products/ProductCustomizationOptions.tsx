@@ -148,18 +148,14 @@ export function ProductCustomizationOptions({
   onSelectionChangeRef.current = onSelectionChange;
 
   // Gravações confirmadas com outra quantidade: recalcula o preço da faixa e reemite.
-  // Se o editor fechar antes do debounce, o recálculo pendente roda mesmo assim (abaixo).
-  const recalcGenRef = useRef(0);
-  const pendingRecalcRef = useRef<(() => Promise<void>) | null>(null);
   useEffect(() => {
-    const gen = ++recalcGenRef.current;
-    pendingRecalcRef.current = null;
     const stale = Array.from(pricesRef.current.values()).filter(
       (item) => item.price?.quantidade !== undefined && item.price.quantidade !== quantity,
     );
     if (quantity <= 0 || stale.length === 0) return;
 
-    const run = async () => {
+    let cancelled = false;
+    const timer = setTimeout(async () => {
       const results = await Promise.all(
         stale.map(async (item) => ({
           item,
@@ -172,7 +168,7 @@ export function ProductCustomizationOptions({
           }),
         })),
       );
-      if (recalcGenRef.current !== gen) return;
+      if (cancelled) return;
 
       let changed = false;
       results.forEach(({ item, price }) => {
@@ -185,28 +181,13 @@ export function ProductCustomizationOptions({
 
       forceTick((n) => n + 1);
       onSelectionChangeRef.current?.(Array.from(pricesRef.current.values()));
-    };
-    let fired = false;
-    const timer = setTimeout(() => {
-      fired = true;
-      void run();
     }, 400);
 
     return () => {
+      cancelled = true;
       clearTimeout(timer);
-      if (!fired) pendingRecalcRef.current = run;
     };
   }, [quantity, productId, initialPersonalizations.length, calculatePrice]);
-
-  // Desmontagem (editor fechado): executa o recálculo que ainda estava no debounce.
-  useEffect(
-    () => () => {
-      const pending = pendingRecalcRef.current;
-      pendingRecalcRef.current = null;
-      if (pending) void pending();
-    },
-    [],
-  );
 
   // Refs for scrolling and offset calculation
   const stickyHeaderRef = useRef<HTMLDivElement>(null);
