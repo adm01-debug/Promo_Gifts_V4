@@ -52,14 +52,12 @@ import { maskCnpj } from '@/utils/masks';
 export default function BusinessIntelligencePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const initialClient = searchParams.get('clientId');
-  const [clientId, setClientId] = useState<string | null>(initialClient);
+  const clientId = searchParams.get('clientId');
   const [briefingOpen, setBriefingOpen] = useState(false);
   const [copilotOpen, setCopilotOpen] = useState(false);
   const [tourForce, setTourForce] = useState(false);
 
   const handleSelect = (id: string | null) => {
-    setClientId(id);
     if (id) {
       setSearchParams({ clientId: id });
     } else {
