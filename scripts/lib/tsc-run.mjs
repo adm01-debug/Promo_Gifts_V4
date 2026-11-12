@@ -33,3 +33,20 @@ export function classifyTscRun({ status, signal = null, error = null, output }) 
   }
   return { ok: true, count };
 }
+
+/**
+ * Argumentos de heap do V8 para o processo filho do tsc.
+ *
+ * Por quê: com o heap padrão do Node o `tsc -p tsconfig.eslint.json` aborta com
+ * "JavaScript heap out of memory" (SIGABRT) — o gate nunca conclui fora do CI, que injeta
+ * NODE_OPTIONS. Respeita um `--max-old-space-size` já presente em NODE_OPTIONS (o CI decide)
+ * e aceita override via TSC_MAX_OLD_SPACE_MB.
+ *
+ * @param {NodeJS.ProcessEnv} [env]
+ * @returns {string[]}
+ */
+export function tscHeapArgs(env = process.env) {
+  if (/--max-old-space-size[=\s]/.test(env.NODE_OPTIONS ?? '')) return [];
+  const mb = Number.parseInt(env.TSC_MAX_OLD_SPACE_MB ?? '', 10);
+  return [`--max-old-space-size=${Number.isFinite(mb) && mb > 0 ? mb : 6144}`];
+}
