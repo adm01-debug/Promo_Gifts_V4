@@ -345,7 +345,7 @@ Deno.serve(async (req) => {
     // 7b. Auditoria explícita de concessão FULL (correlaciona token/challenge/chave)
     if (full) {
       try {
-        await userClient.rpc("log_full_scope_grant", {
+        const grantArgs = {
           _operation: "issue",
           _key_id: inserted.id,
           _key_prefix: inserted.key_prefix,
@@ -356,7 +356,23 @@ Deno.serve(async (req) => {
           _user_agent: ua,
           _request_id: requestId,
           _extra: { name, target_repo: target_repo ?? null, target_tool: target_tool ?? null },
-        });
+        };
+        const { error: rpcErr } = await userClient.rpc("log_full_scope_grant", grantArgs);
+        // Fallback: a RPC não é executável por authenticated; grava o evento via service_role.
+        const auditErr = rpcErr
+          ? (
+              await admin.from("step_up_audit_log").insert({
+                user_id: userId,
+                action: "mcp_full_issue",
+                target_ref: grantArgs._key_id,
+                event_type: "full_scope_granted",
+                ip_address: grantArgs._ip ?? null,
+                user_agent: grantArgs._user_agent ?? null,
+                metadata: { ...grantArgs, via: "service_role_fallback" },
+              })
+            ).error
+          : null;
+        if (auditErr) throw auditErr;
       } catch (e) {
         // Não falhar a operação por erro de auditoria — mas registrar no admin log
         await writeAuditEntry(admin, {

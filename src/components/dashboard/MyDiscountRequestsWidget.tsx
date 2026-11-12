@@ -67,7 +67,7 @@ type RequestRow = {
 };
 
 export function MyDiscountRequestsWidget() {
-  const { user } = useAuth();
+  const { user, canManage } = useAuth();
   const userId = user?.id;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -229,14 +229,16 @@ export function MyDiscountRequestsWidget() {
               </Badge>
             )}
           </CardTitle>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/admin/descontos')}
-            className="gap-1 text-xs"
-          >
-            Ver todas <ArrowRight className="h-3 w-3" />
-          </Button>
+          {canManage && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/admin/usuarios?tab=discounts')}
+              className="gap-1 text-xs"
+            >
+              Ver todas <ArrowRight className="h-3 w-3" />
+            </Button>
+          )}
         </div>
         <WidgetFiltersBar
           value={filters}

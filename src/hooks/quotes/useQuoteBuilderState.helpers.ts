@@ -445,6 +445,7 @@ export function parseUrlItemsParam(rawItems: string[]): QuoteItem[] {
       unit_price: parseFloat(p.product_price) || 0,
       color_name: p.color_name || undefined,
       color_hex: p.color_hex || undefined,
+      size_code: p.size_code || undefined,
       personalizations: [],
     };
   });
@@ -470,6 +471,7 @@ export function buildUrlParamQuoteItem(searchParams: URLSearchParams): {
     unit_price: parseFloat(searchParams.get('product_price') ?? '') || 0,
     color_name: colorName,
     color_hex: colorHex,
+    size_code: searchParams.get('size_code') || undefined,
     personalizations: [],
   };
   return { newItem, productId, productName, colorName };

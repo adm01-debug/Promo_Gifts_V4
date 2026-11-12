@@ -9,7 +9,7 @@ import { gotoAndSettle, waitForRouteIdle } from "../helpers/nav";
 const XL_VIEWPORT = { width: 1440, height: 900 };
 
 test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
-  test.use({ timeout: 300_000 });
+  test.describe.configure({ timeout: 300_000 });
   test.beforeEach(async ({ page }) => {
     await page.setViewportSize(XL_VIEWPORT);
     await loginAs(page);

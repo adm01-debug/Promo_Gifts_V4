@@ -341,11 +341,11 @@ export default function CollectionDetailPage() {
     const oldIndex = filteredProducts.findIndex((p) => p.id === active.id);
     const newIndex = filteredProducts.findIndex((p) => p.id === over.id);
     if (oldIndex === -1 || newIndex === -1) return;
-    const ordered = arrayMove(
-      filteredProducts.map((p) => p.id),
-      oldIndex,
-      newIndex,
-    );
+    const visible = filteredProducts.map((p) => p.id);
+    const newVisible = arrayMove(visible, oldIndex, newIndex);
+    const full = collectionItems.length > 0 ? collectionItems.map((i) => i.productId) : visible;
+    let k = 0;
+    const ordered = full.map((p) => (visible.includes(p) ? (newVisible[k++] ?? p) : p));
     reorderProducts(collection.id, ordered);
   };
 

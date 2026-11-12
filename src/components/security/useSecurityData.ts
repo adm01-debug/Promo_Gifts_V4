@@ -11,7 +11,6 @@ const db = supabase as unknown as ReturnType<typeof createClient>;
 import { use2FA } from '@/hooks/auth';
 import { useAllowedIPs } from '@/hooks/admin';
 
-
 import { logger } from '@/lib/logger';
 export interface SecurityMetrics {
   score: number;
@@ -66,7 +65,7 @@ export function useSecurityData(
   const { is2FAEnabled, isLoading: is2FALoading } = use2FA(
     isManagingOther ? (selectedUserId ?? undefined) : undefined,
   );
-  const { allowedIPs } = useAllowedIPs();
+  const { allowedIPs } = useAllowedIPs(isManagingOther ? (selectedUserId ?? undefined) : undefined);
   const [metrics, setMetrics] = useState<SecurityMetrics>(defaultMetrics);
   const [loginAttempts, setLoginAttempts] = useState<LoginAttempt[]>([]);
   const [notifications, setNotifications] = useState<SecurityNotification[]>([]);

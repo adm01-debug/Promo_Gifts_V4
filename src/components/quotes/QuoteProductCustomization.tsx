@@ -13,7 +13,6 @@ import { ProductCustomizationOptions } from '@/components/products/ProductCustom
 import type { QuoteItemPersonalization } from '@/hooks/quotes';
 import type { PersonalizationItem, CustomizationPriceResponseV6 } from '@/types/customization';
 
-
 interface QuoteProductCustomizationProps {
   productId: string;
   quantity: number;
@@ -40,7 +39,10 @@ export function QuoteProductCustomization({
   // Auto-confirm: whenever a price is calculated, update the personalization map immediately
   const handleSelectionChange = useCallback(
     (items: PersonalizationItem[]) => {
-      const updated = [...personalizationsRef.current];
+      const emittedCodes = new Set(items.map((i) => i.locationCode));
+      const updated = personalizationsRef.current.filter(
+        (p) => !p.location_code || emittedCodes.has(p.location_code),
+      );
 
       items.forEach((item) => {
         if (!item.price?.success) return;
@@ -54,7 +56,7 @@ export function QuoteProductCustomization({
           positions_count: 1,
           width_cm: item.width,
           height_cm: item.height,
-          personalized_quantity: quantity,
+          personalized_quantity: item.price.quantidade ?? quantity,
           setup_cost: item.price.setup_total,
           unit_cost: item.price.preco_unitario,
           total_cost: item.price.total_cobrado,
@@ -89,7 +91,6 @@ export function QuoteProductCustomization({
 
   const confirmed = existingPersonalizations;
 
-
   return (
     <div className="space-y-4">
       {/* 1) Configurador — auto-confirma ao calcular preço */}
@@ -115,7 +116,7 @@ export function QuoteProductCustomization({
             setup_total: p.setup_cost || 0,
             total_cobrado: p.total_cost || 0,
             nome_tabela: p.technique_name || '',
-            quantidade: quantity,
+            quantidade: p.personalized_quantity ?? quantity,
             num_cores: p.colors_count || 1,
             faixa: { qtd_min: 0, qtd_max: 9999 }, // Placeholder
           } satisfies CustomizationPriceResponseV6,

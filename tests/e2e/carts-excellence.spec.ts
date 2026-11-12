@@ -27,7 +27,7 @@ test.describe("Módulo de Carrinhos - Fluxos Críticos", () => {
     // Assume que já existe um carrinho ativo (ou cria um rápido)
     // Para teste isolado, vamos garantir um carrinho
     await page.goto("/produtos");
-    await page.click('[data-testid="product-card-add"]').first();
+    await page.locator('[data-testid="product-card-add"]').first().click();
     await page.goto("/carrinhos");
 
     // Valida item no carrinho

@@ -1,5 +1,5 @@
 import { getCorsHeaders, handleCorsPreflightIfNeeded } from '../_shared/cors.ts';
-import { createClient } from "npm:@supabase/supabase-js@2.49.4";
+import { authorize } from "../_shared/authorize.ts";
 import { z } from "npm:zod@3.23.8";
 
 const DeviceInfoSchema = z.object({
@@ -30,9 +30,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
   }
 
   try {
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    const auth = await authorize(req);
+    if (!auth.ok) return auth.response;
+    const supabase = auth.supabaseAdmin;
 
     const clientIP = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || 
                      req.headers.get("x-real-ip") || 
@@ -44,14 +44,19 @@ Deno.serve(async (req: Request): Promise<Response> => {
       return jsonRes(corsHeaders, { error: "Invalid input", details: parsed.error.flatten().fieldErrors }, 400);
     }
 
-    const { userId, userEmail, deviceInfo } = parsed.data;
+    const { userId, deviceInfo } = parsed.data;
+    if (userId !== auth.user.id) {
+      return jsonRes(corsHeaders, { error: "Forbidden" }, 403);
+    }
 
     // Check if device is already known
     const { data: existingDevice, error: fetchError } = await supabase
       .from("user_known_devices")
-      .select("*")
+      .select("id")
       .eq("user_id", userId)
-      .eq("device_fingerprint", deviceInfo.fingerprint)
+      .eq("fingerprint", deviceInfo.fingerprint)
+      .order("last_seen_at", { ascending: false })
+      .limit(1)
       .maybeSingle();
 
     if (fetchError) throw fetchError;
@@ -61,17 +66,24 @@ Deno.serve(async (req: Request): Promise<Response> => {
     let deviceId: string | null = null;
 
     if (existingDevice) {
-      isNewIP = existingDevice.ip_address !== clientIP;
       deviceId = existingDevice.id;
 
-      await supabase
+      const { data: lastLogin, error: lastLoginError } = await supabase
+        .from("device_login_notifications")
+        .select("ip_address")
+        .eq("user_id", userId)
+        .eq("device_id", existingDevice.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (lastLoginError) throw lastLoginError;
+      isNewIP = lastLogin?.ip_address != null && lastLogin.ip_address !== clientIP;
+
+      const { error: updateError } = await supabase
         .from("user_known_devices")
-        .update({
-          last_seen_at: new Date().toISOString(),
-          ip_address: clientIP,
-          user_agent: deviceInfo.userAgent,
-        })
+        .update({ last_seen_at: new Date().toISOString() })
         .eq("id", existingDevice.id);
+      if (updateError) throw updateError;
     } else {
       isNewDevice = true;
 
@@ -79,14 +91,10 @@ Deno.serve(async (req: Request): Promise<Response> => {
         .from("user_known_devices")
         .insert({
           user_id: userId,
-          device_fingerprint: deviceInfo.fingerprint,
-          ip_address: clientIP,
-          user_agent: deviceInfo.userAgent,
-          browser_name: deviceInfo.browserName,
-          os_name: deviceInfo.osName,
-          device_type: deviceInfo.deviceType,
+          fingerprint: deviceInfo.fingerprint,
+          device_name: `${deviceInfo.browserName} / ${deviceInfo.osName}`,
         })
-        .select()
+        .select("id")
         .single();
 
       if (insertError) throw insertError;
