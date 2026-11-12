@@ -2,7 +2,7 @@
  * useWizardPricing - Price comparison & recalculation logic for simulator wizard
  */
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { invokeExternalRpc } from '@/lib/external-rpc';
 import type { CustomizationPriceResponse } from '@/hooks/simulation';
@@ -26,6 +26,10 @@ export function useWizardPricing({ state, dispatch }: UseWizardPricingParams) {
   // ============================================
 
   const recalcTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  // Falha no recálculo deixa _needsRecalc=true; o retry redispara o efeito (os guardas de
+  // "Gerar orçamento" chamam retryRecalc em vez de bloquear sem saída).
+  const [recalcRetryTick, setRecalcRetryTick] = useState(0);
+  const retryRecalc = useCallback(() => setRecalcRetryTick((t) => t + 1), []);
 
   useEffect(() => {
     const persToRecalc = state.personalizations.filter((p) => p.pricing._needsRecalc === true);
@@ -33,7 +37,12 @@ export function useWizardPricing({ state, dispatch }: UseWizardPricingParams) {
 
     if (recalcTimerRef.current) clearTimeout(recalcTimerRef.current);
 
+    let cancelled = false;
+    const quantity = state.quantity;
+
     recalcTimerRef.current = setTimeout(async () => {
+      const updates: Array<{ personalizationId: string; pricing: Personalization['pricing'] }> = [];
+      let failed = false;
       for (const pers of persToRecalc) {
         try {
           const tech = state.availableLocations
@@ -47,7 +56,7 @@ export function useWizardPricing({ state, dispatch }: UseWizardPricingParams) {
 
           const rpcParams: Record<string, unknown> = {
             p_area_id: pers.technique.id,
-            p_quantidade: state.quantity,
+            p_quantidade: quantity,
             p_num_cores: effectiveColors,
           };
 
@@ -63,33 +72,51 @@ export function useWizardPricing({ state, dispatch }: UseWizardPricingParams) {
 
           if (result?.success) {
             const flat = adaptPriceResponse(result);
-            dispatch({
-              type: 'RECALC_PERSONALIZATION_PRICING',
-              payload: {
-                personalizationId: pers.id,
-                pricing: {
-                  unitPrice: flat.unit_price,
-                  setupPrice: flat.faturamento_minimo_gravacao,
-                  subtotal: flat.subtotal_pecas,
-                  totalPrice: flat.total_price,
-                  costPerUnit: state.quantity > 0 ? flat.total_price / state.quantity : 0,
-                  budgetCode: flat.codigo_orcamento,
-                  productionDays: flat.production_days,
-                },
+            updates.push({
+              personalizationId: pers.id,
+              pricing: {
+                unitPrice: flat.unit_price,
+                setupPrice: flat.faturamento_minimo_gravacao,
+                subtotal: flat.subtotal_pecas,
+                totalPrice: flat.total_price,
+                costPerUnit: quantity > 0 ? flat.total_price / quantity : 0,
+                budgetCode: flat.codigo_orcamento,
+                productionDays: flat.production_days,
               },
             });
+          } else {
+            failed = true;
           }
         } catch (err) {
+          failed = true;
           logger.warn(`Erro ao recalcular preço para ${pers.technique.name}:`, err);
         }
+        if (cancelled) return;
       }
-      toast.success('Preços recalculados para nova tiragem!');
+      for (const update of updates) {
+        dispatch({ type: 'RECALC_PERSONALIZATION_PRICING', payload: { ...update, quantity } });
+      }
+      if (failed) {
+        toast.error('Não foi possível recalcular o preço da gravação para a nova tiragem.', {
+          action: { label: 'Tentar novamente', onClick: retryRecalc },
+        });
+      } else {
+        toast.success('Preços recalculados para nova tiragem!');
+      }
     }, 600);
 
     return () => {
+      cancelled = true;
       if (recalcTimerRef.current) clearTimeout(recalcTimerRef.current);
     };
-  }, [state.personalizations, state.quantity, state.availableLocations, dispatch]);
+  }, [
+    state.personalizations,
+    state.quantity,
+    state.availableLocations,
+    dispatch,
+    recalcRetryTick,
+    retryRecalc,
+  ]);
 
   // ============================================
   // COMPARAÇÃO DE PREÇOS
@@ -272,7 +299,7 @@ export function useWizardPricing({ state, dispatch }: UseWizardPricingParams) {
     [state, dispatch],
   );
 
-  return { fetchComparisonPrices, confirmTechnique };
+  return { fetchComparisonPrices, confirmTechnique, retryRecalc };
 }
 
 // ============================================

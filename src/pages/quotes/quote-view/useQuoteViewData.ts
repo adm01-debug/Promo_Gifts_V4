@@ -2,7 +2,7 @@
  * Hook to manage QuoteViewPage state and data fetching.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useQuotes, type Quote } from '@/hooks/quotes';
 import { useAuth } from '@/contexts/AuthContext';
@@ -160,7 +160,7 @@ export function useQuoteViewData(id: string | undefined) {
         ? format(new Date(quote.created_at), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })
         : '',
       validUntil: quote.valid_until
-        ? format(new Date(quote.valid_until), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })
+        ? format(parseISO(quote.valid_until), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })
         : '30 dias',
       client: {
         name: quote.client_company || quote.client_name || 'Não especificado',
@@ -257,7 +257,7 @@ export function useQuoteViewData(id: string | undefined) {
     ];
     if (quote?.valid_until) {
       lines.push(
-        `📅 Válida até: ${format(new Date(quote.valid_until), 'dd/MM/yyyy', { locale: ptBR })}`,
+        `📅 Válida até: ${format(parseISO(quote.valid_until), 'dd/MM/yyyy', { locale: ptBR })}`,
       );
     }
     lines.push('', 'Qualquer dúvida, estou à disposição! 😊');
