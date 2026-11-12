@@ -345,7 +345,7 @@ export function DiscountManagementPanel() {
                                     open: true,
                                     userId: seller.user_id,
                                     name: seller.full_name || seller.email || '',
-                                    currentLimit: limit?.max_discount_percent || 5,
+                                    currentLimit: limit?.max_discount_percent ?? 5,
                                     notes: limit?.notes ?? '',
                                   })
                                 }

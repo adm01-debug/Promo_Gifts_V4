@@ -116,6 +116,7 @@ export function PricingPanel() {
   };
 
   const getSimulacao = (tabela: TabelaPrecoTecnica) => {
+    if (tabela.faixas.length === 0) return null;
     const qtd = simuladorQtd[tabela.id] || 100;
     return calcularPreco(tabela, qtd);
   };
@@ -339,17 +340,21 @@ export function PricingPanel() {
                                 </Tooltip>
                               </TableCell>
                               <TableCell className="text-right">
-                                <div className="flex flex-col items-end">
-                                  <span className="font-mono font-semibold text-primary">
-                                    {formatCurrency(simulacao.precoUnitario)}/un
-                                  </span>
-                                  {simulacao.slaDias && (
-                                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                      <Clock className="h-3 w-3" />
-                                      {simulacao.slaDias}d
-                                    </div>
-                                  )}
-                                </div>
+                                {simulacao ? (
+                                  <div className="flex flex-col items-end">
+                                    <span className="font-mono font-semibold text-primary">
+                                      {formatCurrency(simulacao.precoUnitario)}/un
+                                    </span>
+                                    {simulacao.slaDias && (
+                                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                        <Clock className="h-3 w-3" />
+                                        {simulacao.slaDias}d
+                                      </div>
+                                    )}
+                                  </div>
+                                ) : (
+                                  <span className="text-muted-foreground">—</span>
+                                )}
                               </TableCell>
                             </TableRow>
                           );

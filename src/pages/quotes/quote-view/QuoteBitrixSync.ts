@@ -10,6 +10,8 @@ import type { ProposalTemplateData } from '@/components/pdf/ProposalHtmlTemplate
 import type { TablesUpdate } from '@/integrations/supabase/types';
 import type { Quote } from '@/hooks/quotes';
 import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { isValidQuoteTransition } from '@/lib/quote-status-config';
+import { isQuoteStatus } from '@/types/quote';
 
 interface SyncBitrixParams {
   quote: Quote;
@@ -41,6 +43,11 @@ export async function syncQuoteToBitrix({
     return { success: false };
   }
   const quoteId = quote.id;
+
+  if (quote.status === 'approved' || quote.status === 'converted' || quote.status === 'cancelled') {
+    toast.error('Orçamento em status final não pode ser sincronizado com o Bitrix24');
+    return { success: false };
+  }
 
   let effectiveBitrixCompanyId = bitrixCompanyId;
 
@@ -138,18 +145,25 @@ export async function syncQuoteToBitrix({
   const bitrixQuoteIdFromResponse =
     parsedBitrixId && !isNaN(parsedBitrixId) ? String(parsedBitrixId) : null;
 
-  const crmUpdates: TablesUpdate<'quotes'> = { status: 'sent' };
+  const canTransitionToSent =
+    isQuoteStatus(quote.status) && isValidQuoteTransition(quote.status, 'sent');
+  const crmUpdates: TablesUpdate<'quotes'> = {};
+  if (canTransitionToSent) crmUpdates.status = 'sent';
   if (bitrixQuoteIdFromResponse) crmUpdates.bitrix_quote_id = bitrixQuoteIdFromResponse;
 
-  try {
-    const { error: updateError } = await supabase
-      // rls-allow: update por id; RLS valida ownership
-      .from('quotes')
-      .update(crmUpdates)
-      .eq('id', quoteId);
-    if (updateError) throw updateError;
-  } catch (err) {
-    logger.error('Failed to update quote status after Bitrix sync', { err, quoteId });
+  let updatePersisted = true;
+  if (Object.keys(crmUpdates).length > 0) {
+    try {
+      const { error: updateError } = await supabase
+        // rls-allow: update por id; RLS valida ownership
+        .from('quotes')
+        .update(crmUpdates)
+        .eq('id', quoteId);
+      if (updateError) throw updateError;
+    } catch (err) {
+      updatePersisted = false;
+      logger.error('Failed to update quote status after Bitrix sync', { err, quoteId });
+    }
   }
 
   await logQuoteHistory(
@@ -159,12 +173,21 @@ export async function syncQuoteToBitrix({
     { newValue: bitrixQuoteIdFromResponse ?? undefined },
   );
 
+  if (!updatePersisted) {
+    toast.warning('Sincronizado com Bitrix24, mas o vínculo não foi salvo no orçamento', {
+      description: bitrixQuoteIdFromResponse
+        ? `ID Bitrix: ${bitrixQuoteIdFromResponse}`
+        : undefined,
+    });
+    return { success: true, updatedQuote: {} };
+  }
+
   toast.success(result?.message || 'Orçamento sincronizado com Bitrix24!');
 
   return {
     success: true,
     updatedQuote: {
-      status: 'sent',
+      ...(canTransitionToSent ? { status: 'sent' as const } : {}),
       ...(bitrixQuoteIdFromResponse ? { bitrix_quote_id: bitrixQuoteIdFromResponse } : {}),
     },
   };

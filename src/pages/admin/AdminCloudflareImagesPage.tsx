@@ -37,7 +37,8 @@ import { OptimizedImage } from '@/components/ui/OptimizedImage';
 import { getCdnUrl } from '@/utils/image-utils';
 import { getProxiedImageUrl } from '@/utils/imageProxy';
 
-type CfSyncStatus = 'failed' | 'pending' | 'skipped' | 'syncing' | 'verified';
+type CfSyncStatus =
+  'failed' | 'missing' | 'orphaned' | 'pending' | 'uploaded' | 'uploading' | 'verified';
 
 interface CfImage {
   id: string;
@@ -57,7 +58,7 @@ interface CfStats {
   pending: number;
   syncing: number;
   failed: number;
-  skipped: number;
+  missing: number;
   noStatus: number;
 }
 
@@ -71,9 +72,15 @@ const STATUS_CONFIG: Record<
     badgeClass: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
     cardClass: 'border-emerald-200 dark:border-emerald-800',
   },
-  syncing: {
+  uploading: {
     icon: Loader2,
-    label: 'Sincronizando',
+    label: 'Enviando',
+    badgeClass: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+    cardClass: 'border-blue-200 dark:border-blue-800',
+  },
+  uploaded: {
+    icon: Cloud,
+    label: 'Enviado (não verificado)',
     badgeClass: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
     cardClass: 'border-blue-200 dark:border-blue-800',
   },
@@ -89,9 +96,15 @@ const STATUS_CONFIG: Record<
     badgeClass: 'bg-destructive/10 text-destructive',
     cardClass: 'border-destructive/30',
   },
-  skipped: {
+  missing: {
     icon: AlertCircle,
-    label: 'Ignorado',
+    label: 'Ausente no Cloudflare',
+    badgeClass: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+    cardClass: 'border-yellow-200 dark:border-yellow-800',
+  },
+  orphaned: {
+    icon: AlertCircle,
+    label: 'Órfã',
     badgeClass: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
     cardClass: 'border-yellow-200 dark:border-yellow-800',
   },
@@ -114,7 +127,7 @@ function StatusBadge({ status }: { status?: CfSyncStatus | null }) {
         cfg.badgeClass,
       )}
     >
-      <Icon className={cn('h-3 w-3', key === 'syncing' && 'animate-spin')} />
+      <Icon className={cn('h-3 w-3', key === 'uploading' && 'animate-spin')} />
       {cfg.label}
     </span>
   );
@@ -123,7 +136,7 @@ function StatusBadge({ status }: { status?: CfSyncStatus | null }) {
 async function fetchCfImages(): Promise<CfImage[]> {
   const { data, error } = await untypedFrom('product_images')
     .select(
-      'id, product_id, url_cdn, cf_image_id, cf_sync_status, alt_text, is_primary, display_order',
+      'id, product_id, url_cdn, cf_image_id:cloudflare_image_id, cf_sync_status, alt_text, is_primary, display_order',
     )
     .eq('is_active', true)
     .order('display_order', { ascending: true })
@@ -139,7 +152,7 @@ function computeStats(images: CfImage[]): CfStats {
     pending: 0,
     syncing: 0,
     failed: 0,
-    skipped: 0,
+    missing: 0,
     noStatus: 0,
   };
   for (const img of images) {
@@ -150,14 +163,16 @@ function computeStats(images: CfImage[]): CfStats {
       case 'pending':
         stats.pending++;
         break;
-      case 'syncing':
+      case 'uploading':
+      case 'uploaded':
         stats.syncing++;
         break;
       case 'failed':
         stats.failed++;
         break;
-      case 'skipped':
-        stats.skipped++;
+      case 'missing':
+      case 'orphaned':
+        stats.missing++;
         break;
       default:
         stats.noStatus++;
@@ -214,7 +229,12 @@ export default function AdminCloudflareImagesPage() {
     },
     { label: 'Sincronizando', value: stats.syncing, icon: Loader2, className: 'text-blue-500' },
     { label: 'Com Falha', value: stats.failed, icon: CloudOff, className: 'text-destructive' },
-    { label: 'Ignorados', value: stats.skipped, icon: AlertCircle, className: 'text-yellow-500' },
+    {
+      label: 'Ausentes/Órfãs',
+      value: stats.missing,
+      icon: AlertCircle,
+      className: 'text-yellow-500',
+    },
   ];
 
   return (
@@ -285,8 +305,8 @@ export default function AdminCloudflareImagesPage() {
                 {stats.syncing > 0 && (
                   <span className="text-blue-500">{stats.syncing} em progresso</span>
                 )}
-                {stats.skipped > 0 && (
-                  <span className="text-yellow-600">{stats.skipped} ignorados</span>
+                {stats.missing > 0 && (
+                  <span className="text-yellow-600">{stats.missing} ausentes/órfãs</span>
                 )}
               </div>
             </CardContent>
@@ -321,9 +341,11 @@ export default function AdminCloudflareImagesPage() {
               <SelectItem value="all">Todos os status</SelectItem>
               <SelectItem value="verified">Sincronizados</SelectItem>
               <SelectItem value="pending">Pendentes</SelectItem>
-              <SelectItem value="syncing">Sincronizando</SelectItem>
+              <SelectItem value="uploading">Enviando</SelectItem>
+              <SelectItem value="uploaded">Enviados (não verificados)</SelectItem>
               <SelectItem value="failed">Com falha</SelectItem>
-              <SelectItem value="skipped">Ignorados</SelectItem>
+              <SelectItem value="missing">Ausentes no Cloudflare</SelectItem>
+              <SelectItem value="orphaned">Órfãs</SelectItem>
               <SelectItem value="none">Sem status</SelectItem>
             </SelectContent>
           </Select>

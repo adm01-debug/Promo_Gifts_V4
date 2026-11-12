@@ -103,8 +103,7 @@ export default function KitTemplatesAdminPage() {
       tag: editing.tag || null,
       total_price: Number(editing.total_price) || 0,
       is_active: editing.is_active,
-      items_data: [],
-      personalization_data: {},
+      ...(editing.id ? {} : { items_data: [], personalization_data: {} }),
     });
     setEditing(null);
   };

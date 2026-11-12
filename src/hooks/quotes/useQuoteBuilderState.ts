@@ -366,6 +366,7 @@ export function useQuoteBuilderState() {
   useEffect(() => {
     const state = location.state as {
       fromCart?: boolean;
+      handoffSource?: 'fromBiSuggestions' | 'fromCompare';
       companyId?: string;
       companyName?: string;
       companyLocation?: string;
@@ -385,11 +386,13 @@ export function useQuoteBuilderState() {
     // cliente/itens vindos do carrinho quando o hook de autosave habilita.
     // TELEMETRY: registrar handoff carrinho → orçamento (persistido em
     // frontend_telemetry) para detectar regressões do autosave em PROD.
-    trackQuoteHandoff('fromCart', {
+    const handoffMeta = {
       company_id: state.companyId ?? null,
       company_name: state.companyName ?? null,
       items_count: state.items.length,
-    });
+    };
+    if (state.handoffSource) trackQuoteHandoff(state.handoffSource, handoffMeta);
+    else trackQuoteHandoff('fromCart', handoffMeta);
     clearAutoSave();
     if (state.companyId) setClientId(state.companyId);
     const cartItems = mapCartItemsToQuoteItems(state.items);
@@ -399,7 +402,13 @@ export function useQuoteBuilderState() {
         ? `${state.companyName} – ${state.companyLocation}`
         : state.companyName
       : '';
-    toast.success(`${cartItems.length} item(ns) importado(s) do carrinho`, {
+    const originLabel =
+      state.handoffSource === 'fromCompare'
+        ? 'do comparador'
+        : state.handoffSource === 'fromBiSuggestions'
+          ? 'das sugestões'
+          : 'do carrinho';
+    toast.success(`${cartItems.length} item(ns) importado(s) ${originLabel}`, {
       description: companyLabel || undefined,
     });
     window.history.replaceState({}, document.title);
@@ -439,6 +448,14 @@ export function useQuoteBuilderState() {
   // ── Pre-fill from URL params ──
   useEffect(() => {
     if (isEditMode) return;
+    // Drill-down do BI (ClientCategoryRadar) abre o builder com ?clientId=.
+    // Descarta o rascunho do autosave para ele não sobrescrever o cliente vindo do BI.
+    const urlClientId = searchParams.get('clientId');
+    if (urlClientId && /^[0-9a-f-]{36}$/i.test(urlClientId)) {
+      clearAutoSave();
+      setClientId(urlClientId);
+      window.history.replaceState({}, document.title, location.pathname);
+    }
     if (items.length > 0) return;
 
     const rawItems = searchParams.getAll('items[]');
@@ -668,7 +685,16 @@ export function useQuoteBuilderState() {
         }
 
         // BUG-008 FIX: Validate status transition before hitting DB
-        if (isEditMode && quoteId && currentStatus && currentStatus !== status) {
+        const isApprovalRequestFromEditable =
+          status === 'pending_approval' &&
+          ['draft', 'pending', 'pending_approval'].includes(currentStatus ?? '');
+        if (
+          isEditMode &&
+          quoteId &&
+          currentStatus &&
+          currentStatus !== status &&
+          !isApprovalRequestFromEditable
+        ) {
           if (!isValidQuoteTransition(currentStatus as QuoteStatus, status as QuoteStatus)) {
             toast.error(
               `Não é possível alterar o status de "${getQuoteStatusLabel(currentStatus)}" para "${getQuoteStatusLabel(status)}".`,

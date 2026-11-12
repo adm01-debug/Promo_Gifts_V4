@@ -242,12 +242,28 @@ export function ProductPriceSimulator({ className }: ProductPriceSimulatorProps)
 
   // #9 — CTA para criar orçamento
   const handleCreateQuote = useCallback(() => {
-    navigate('/orcamentos', {
+    if (!selectedProduct) return;
+    navigate('/orcamentos/novo', {
       state: {
         fromSimulator: true,
-        product: selectedProduct,
-        engravings,
-        quantity,
+        simulationData: {
+          product: {
+            id: selectedProduct.id,
+            name: selectedProduct.name,
+            sku: selectedProduct.sku,
+            imageUrl: selectedProduct.images?.[0],
+            price: selectedProduct.price,
+          },
+          quantity,
+          personalizations: engravings.map((e) => ({
+            technique: { id: e.technique.id, name: e.technique.techniqueName },
+            location: {
+              locationCode: e.technique.locationCode,
+              locationName: e.technique.locationName,
+            },
+            specs: { colors: e.colors },
+          })),
+        },
       },
     });
   }, [navigate, selectedProduct, engravings, quantity]);

@@ -344,6 +344,10 @@ function ItemPersonalizationCard({
     priceData?.setup_total,
     priceData?.success,
     priceData?.total_cobrado,
+    personalization.estimatedPrice,
+    personalization.setupCost,
+    personalization.totalPrice,
+    personalization.pricedQuantity,
   ]);
 
   const handleToggle = (enabled: boolean) => {

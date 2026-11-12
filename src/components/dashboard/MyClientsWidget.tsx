@@ -28,6 +28,13 @@ const PAGE_SIZE = 100;
 
 type Source = 'order' | 'quote';
 
+type ClientsPageParam = {
+  q: string | null;
+  o: string | null;
+  qDone: boolean;
+  oDone: boolean;
+};
+
 interface ClientRow {
   key: string;
   name: string;
@@ -116,14 +123,13 @@ export function MyClientsWidget() {
   const navigate = useNavigate();
   const [filters, setFilters] = useState<WidgetFiltersValue>(EMPTY_FILTERS);
 
-  // Paginação cursor sobre quotes; orders sempre carrega o lote inicial e
-  // depois acompanha a janela conforme novos quotes chegam (best-effort:
-  // usamos um cursor compartilhado por updated_at).
+  // Paginação com cursor próprio por tabela (updated_at); tabela esgotada
+  // deixa de ser consultada.
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
     queryKey: ['my-clients-widget', userId],
     enabled: !!userId,
     staleTime: 60_000,
-    initialPageParam: null as string | null,
+    initialPageParam: { q: null, o: null, qDone: false, oDone: false } as ClientsPageParam,
     queryFn: async ({ pageParam }) => {
       if (!userId) return { quotes: [], orders: [] };
       const baseQuotes = supabase
@@ -138,23 +144,26 @@ export function MyClientsWidget() {
         .eq('seller_id', userId)
         .order('updated_at', { ascending: false })
         .limit(PAGE_SIZE);
-      const qQuery = pageParam ? baseQuotes.lt('updated_at', pageParam) : baseQuotes;
-      const oQuery = pageParam ? baseOrders.lt('updated_at', pageParam) : baseOrders;
-      const [qRes, oRes] = await Promise.all([qQuery, oQuery]);
+      const qQuery = pageParam.q ? baseQuotes.lt('updated_at', pageParam.q) : baseQuotes;
+      const oQuery = pageParam.o ? baseOrders.lt('updated_at', pageParam.o) : baseOrders;
+      const [qRes, oRes] = await Promise.all([
+        pageParam.qDone ? { data: [], error: null } : qQuery,
+        pageParam.oDone ? { data: [], error: null } : oQuery,
+      ]);
       if (qRes.error) throw qRes.error;
       if (oRes.error) throw oRes.error;
       return { quotes: qRes.data ?? [], orders: oRes.data ?? [] };
     },
-    getNextPageParam: (last) => {
-      const lastQ = last.quotes[last.quotes.length - 1]?.updated_at;
-      const lastO = last.orders[last.orders.length - 1]?.updated_at;
-      const more = last.quotes.length >= PAGE_SIZE || last.orders.length >= PAGE_SIZE;
-      if (!more) return undefined;
-      // Cursor = o mais antigo entre os dois lotes para garantir cobertura.
-      const cursor = [lastQ, lastO]
-        .filter(Boolean)
-        .sort((a, b) => (a ?? '').localeCompare(b ?? ''))[0];
-      return cursor ?? undefined;
+    getNextPageParam: (last, _all, prev) => {
+      const qDone = prev.qDone || last.quotes.length < PAGE_SIZE;
+      const oDone = prev.oDone || last.orders.length < PAGE_SIZE;
+      if (qDone && oDone) return undefined;
+      return {
+        q: last.quotes[last.quotes.length - 1]?.updated_at ?? prev.q,
+        o: last.orders[last.orders.length - 1]?.updated_at ?? prev.o,
+        qDone,
+        oDone,
+      };
     },
   });
 

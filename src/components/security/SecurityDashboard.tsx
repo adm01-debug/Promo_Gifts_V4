@@ -61,12 +61,13 @@ function getScoreIcon(score: number) {
 }
 
 export function SecurityDashboard() {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, roles } = useAuth();
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [users, setUsers] = useState<UserProfile[]>([]);
 
   const effectiveUserId = selectedUserId || user?.id;
   const isManagingOther = !!selectedUserId && selectedUserId !== user?.id;
+  const canManageIps = roles.includes('admin') || roles.includes('dev');
   const selectedUser = users.find((u) => u.user_id === selectedUserId);
 
   const { metrics, loginAttempts, notifications, is2FAEnabled, allowedIPs } = useSecurityData(
@@ -466,7 +467,11 @@ export function SecurityDashboard() {
           />
         </TabsContent>
         <TabsContent value="ips">
-          <IPRestrictionManager />
+          <IPRestrictionManager
+            targetUserId={
+              isManagingOther && canManageIps ? (selectedUserId ?? undefined) : undefined
+            }
+          />
         </TabsContent>
         <TabsContent value="geo">
           <GeoBlockingManager />
