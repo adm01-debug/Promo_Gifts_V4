@@ -200,7 +200,7 @@ const FILTERABLE_COLUMNS: Record<string, Set<string>> = {
   company_social_media: new Set(["id", "company_id", "owner_id"]),
   contact_emails: new Set(["id", "contact_id", "owner_id", "email"]),
   contact_phones: new Set(["id", "contact_id", "owner_id", "phone"]),
-  customers: new Set(["id", "name", "owner_id", "created_at", "updated_at"]),
+  customers: new Set(["id", "name", "owner_id", "company_id", "vendedor_id", "sdr_id", "created_at", "updated_at"]),
   suppliers: new Set(["id", "name", "owner_id", "created_at", "updated_at"]),
   carriers: new Set(["id", "name", "owner_id"]),
 };

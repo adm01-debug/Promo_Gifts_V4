@@ -10,7 +10,8 @@
  * Dois defeitos somados:
  *  1. A coluna de dono real no CRM é `user_id` (src/types/crm.ts — CrmCompany
  *     e CrmContact, "schema mapeado diretamente do banco externo real").
- *     `contact_emails`, `contact_phones` e `customers` não têm coluna de dono.
+ *     `contact_emails` e `contact_phones` não têm coluna de dono (seguem o contato);
+ *     `customers` tem `vendedor_id` (FK customers_vendedor_id_fkey → users.id).
  *  2. A resolução de role só conhecia supervisor/gerente/vendedor; `admin`,
  *     `dev` e `manager` (valores reais do enum app_role) caíam no fallback
  *     "vendedor" e recebiam o filtro — inclusive o dono do sistema.
@@ -36,6 +37,7 @@ export const CRM_PII_TABLES = new Set([
 export const CRM_OWNER_COLUMN: Readonly<Record<string, string>> = {
   companies: "user_id",
   contacts: "user_id",
+  customers: "vendedor_id",
 };
 
 /**
