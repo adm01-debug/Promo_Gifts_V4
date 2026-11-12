@@ -1,7 +1,9 @@
+// Historical contract: the endpoint was decommissioned in #557.
+// These assertions cover recovered pure helpers, not active handleSelect/handleBatch routing.
 // Regression tests for the lightweight-select rule.
 // HARD GUARD: lightweight is ONLY applied when table === 'products' AND limit > 50 AND no id.
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { resolveProductsSelect, LIGHTWEIGHT_LIMIT_THRESHOLD } from "./index.ts";
+import { resolveProductsSelect, LIGHTWEIGHT_LIMIT_THRESHOLD } from "./legacy-contracts.ts";
 
 const LIGHTWEIGHT_PREFIX = "id,name,sku,sale_price"; // start of PRODUCTS_LIGHTWEIGHT_SELECT
 

@@ -1,3 +1,5 @@
+// Historical contract: the endpoint was decommissioned in #557.
+// These assertions cover recovered pure helpers, not active handleSelect/handleBatch routing.
 // Tests para a Rule B (wide-select-listing) com threshold configurável de colunas.
 // Garante que:
 //   1) O threshold default é 25 (compat com testes anteriores).
@@ -9,7 +11,7 @@ import {
   resolveProductsSelect,
   WIDE_SELECT_COLUMN_THRESHOLD,
   logSelectDecision,
-} from "./index.ts";
+} from "./legacy-contracts.ts";
 
 function buildSelect(n: number): string {
   // Usa nomes neutros (col_N) que NÃO estão em HEAVY_PRODUCT_COLUMNS,

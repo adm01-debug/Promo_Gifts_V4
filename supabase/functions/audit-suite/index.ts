@@ -94,7 +94,8 @@ Deno.serve(async (req) => {
     const test2: TestResult = { name: "RLS Isolation", passed: false, details: "", logs: [] };
     try {
       const { data: s1Cart } = await s1Client.from("seller_carts").select("id").limit(1).single();
-      const { data: s2Cart } = await s2Client.from("seller_carts").insert({ company_id: "audit-co-s2", company_name: "S2 Cart", seller_id: s2Id }).select().single();
+      const { data: s2Cart, error: s2CartError } = await s2Client.from("seller_carts").insert({ company_id: "audit-co-s2", company_name: "S2 Cart", seller_id: s2Id }).select().single();
+      if (s2CartError || !s2Cart) throw s2CartError ?? new Error("S2 cart was not created");
       
       // S1 tries to read S2 cart
       const { data: readOther, error: readError } = await s1Client.from("seller_carts").select("*").eq("id", s2Cart.id).maybeSingle();
@@ -114,7 +115,10 @@ Deno.serve(async (req) => {
     // TEST 3: Concurrency / Unique NULLS NOT DISTINCT
     const test3: TestResult = { name: "Concurrency & Uniqueness", passed: false, details: "", logs: [] };
     try {
-      const { data: cart } = await s1Client.from("seller_carts").select("id").limit(1).single();
+      const { data: cart, error: cartError } = await s1Client.from("seller_carts").select("id").limit(1).single();
+      if (cartError || !cart) {
+        throw cartError ?? new Error("Nenhum seller_carts visível para o usuário S1 — impossível simular concorrência");
+      }
       // Simulate 50 simultaneous additions of the same product
       const productId = crypto.randomUUID(); 
       const promises = Array.from({ length: 50 }).map(() => 

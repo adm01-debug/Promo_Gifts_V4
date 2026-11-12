@@ -1,3 +1,5 @@
+// Historical contract: the endpoint was decommissioned in #557.
+// These assertions cover recovered pure helpers, not active handleSelect/handleBatch routing.
 /**
  * Testes de integração — invariantes de `applyFilters` e do swap lightweight.
  *
@@ -20,7 +22,7 @@ import { assertEquals, assert } from "https://deno.land/std@0.224.0/assert/mod.t
 import {
   applyFilters,
   resolveProductsSelect,
-} from "./index.ts";
+} from "./legacy-contracts.ts";
 
 // ────────────────────────────────────────────────────────────────────────────
 // 1) Query-builder spy — registra TODA chamada de método encadeado.

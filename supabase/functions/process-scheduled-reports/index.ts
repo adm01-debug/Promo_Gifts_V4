@@ -92,7 +92,8 @@ Deno.serve(async (req) => {
         }
 
         // Send email via Resend
-        const resendKey = await resolveCredential("RESEND_API_KEY");
+        // resolveCredential devolve { value, source… }; usar o objeto como string mandava "Bearer [object Object]".
+        const { value: resendKey } = await resolveCredential("RESEND_API_KEY");
         if (resendKey) {
           const htmlContent = generateEmailHtml(report.report_name, reportData);
 

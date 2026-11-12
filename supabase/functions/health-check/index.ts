@@ -66,7 +66,7 @@ function getExternalClient(): Promise<SupabaseClient | null> {
   return externalClientPromise;
 }
 
-async function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
+async function withTimeout<T>(p: PromiseLike<T>, ms: number, label: string): Promise<T> {
   return await Promise.race([
     p,
     new Promise<T>((_, reject) =>

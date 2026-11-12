@@ -6,10 +6,14 @@
 // Uso: node scripts/inventario/gerar-repo.mjs   (rode depois do gerar-banco.mjs para contar as chamadas por cron)
 import { readdirSync, readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { join } from 'node:path';
+import { dirname, join, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { edgesChamadasNoCodigo, segredosViaResolver, semComentarios } from './gerar-rotas.mjs';
 
-const RAIZ = new URL('../../', import.meta.url).pathname;
+// fileURLToPath: .pathname deixa %20/%C3%A7 escapados e quebra em caminho com espaço ou acento.
+// fileURLToPath(string): funciona com espaço/acento no caminho e também sob o jsdom do vitest
+// (lá o URL global não é o do Node e fileURLToPath(new URL(...)) lança "must be of scheme file").
+const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..', '..') + sep;
 const FDIR = join(RAIZ, 'supabase/functions');
 const OUT = join(RAIZ, 'inventario/estado');
 mkdirSync(OUT, { recursive: true });

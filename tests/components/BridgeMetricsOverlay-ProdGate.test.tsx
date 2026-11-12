@@ -1,51 +1,126 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render } from '@testing-library/react';
-import BridgeMetricsOverlay from '@/components/dev/BridgeMetricsOverlay';
-import { useDevGate } from '@/hooks/useDevGate';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import type { BridgeCallSample } from '@/lib/telemetry/bridgeCallMetrics';
+import { DevOnlyBridgeOverlay } from '@/components/dev/DevOnlyBridgeOverlay';
 
-vi.mock('@/hooks/useDevGate', () => ({
-  useDevGate: vi.fn(),
+const gate = vi.hoisted(() => ({
+  state: { isAllowed: false, isDev: false },
+  read: vi.fn(),
 }));
 
-vi.mock('@/lib/telemetry/bridgeCallMetrics', () => ({
-  getBridgeSamples: vi.fn(() => []),
-  subscribeBridgeCalls: vi.fn(() => () => {}),
-  clearBridgeSamples: vi.fn(),
-}));
-
-vi.mock('@/lib/telemetry/longTaskWatchdog', () => ({
-  getLongTaskEvents: vi.fn(() => []),
-  subscribeLongTasks: vi.fn(() => () => {}),
-  clearLongTaskEvents: vi.fn(),
-  describeLongTask: vi.fn(),
-}));
-
-describe('BridgeMetricsOverlay - Gating de Produção', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  /**
-   * NOTA SOBRE O TESTE DE PROD:
-   * Em ambientes Vite/Vitest, `import.meta.env.PROD` é frequentemente resolvido em tempo de build 
-   * ou mockado globalmente pelo ambiente de teste como `false`. 
-   * 
-   * O teste abaixo valida que a lógica de gating de RUNTIME (SSOT) está ativa, 
-   * garantindo que mesmo que o guard de build (PROD) falhe por erro de configuração do ambiente,
-   * o overlay ainda respeita a flag de infraestrutura de dev.
-   */
-  
-  it('renderiza normalmente se o gate SSOT aprovar', () => {
-    vi.mocked(useDevGate).mockReturnValue({ isAllowed: true, isDev: true });
-    const { container } = render(<BridgeMetricsOverlay />);
-    expect(container).not.toBeEmptyDOMElement();
-    expect(container.textContent).toContain('bridge metrics');
-  });
-
-  it('retorna null se o gate SSOT REJEITAR (mesmo que seja dev)', () => {
-    vi.mocked(useDevGate).mockReturnValue({ isAllowed: false, isDev: true });
-    const { container } = render(<BridgeMetricsOverlay />);
-    expect(container).toBeEmptyDOMElement();
-  });
+const telemetry = vi.hoisted(() => {
+  const empty: readonly BridgeCallSample[] = Object.freeze([]);
+  return {
+    empty,
+    snapshot: empty,
+    listeners: new Set<() => void>(),
+    subscribe: vi.fn(),
+    unsubscribe: vi.fn(),
+    clear: vi.fn(),
+  };
 });
 
+vi.mock('@/hooks/admin', () => ({ useDevGate: () => gate.read() }));
+
+vi.mock('@/lib/telemetry/bridgeCallMetrics', () => ({
+  getBridgeSamples: () => telemetry.snapshot,
+  subscribeBridgeCalls: (listener: () => void) => {
+    telemetry.subscribe(listener);
+    telemetry.listeners.add(listener);
+    return () => {
+      telemetry.unsubscribe(listener);
+      telemetry.listeners.delete(listener);
+    };
+  },
+  clearBridgeSamples: () => telemetry.clear(),
+}));
+
+describe('DevOnlyBridgeOverlay — autoridade do papel dev e snapshot estável', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    gate.state = { isAllowed: false, isDev: false };
+    gate.read.mockImplementation(() => gate.state);
+    telemetry.snapshot = telemetry.empty;
+    telemetry.listeners.clear();
+  });
+
+  afterEach(cleanup);
+
+  it.each([false, true])(
+    'não monta diagnósticos sem papel dev, mesmo com isAllowed=%s',
+    (isAllowed) => {
+      gate.state = { isAllowed, isDev: false };
+      const { container } = render(<DevOnlyBridgeOverlay />);
+      expect(container).toBeEmptyDOMElement();
+      expect(telemetry.subscribe).not.toHaveBeenCalled();
+      expect(telemetry.listeners.size).toBe(0);
+    },
+  );
+
+  it('monta o overlay real quando o gate confirma o papel dev', async () => {
+    gate.state = { isAllowed: true, isDev: true };
+    render(<DevOnlyBridgeOverlay />);
+    fireEvent.click(await screen.findByTestId('bridge-metrics-toggle'));
+    expect(screen.getByTestId('bridge-metrics-overlay')).toHaveTextContent('Bridge Metrics');
+    expect(screen.getByText('0ms')).toBeInTheDocument();
+    expect(telemetry.subscribe).toHaveBeenCalledTimes(1);
+  });
+
+  it('mantém a decisão isDev do wrapper quando a infraestrutura isAllowed é falsa', async () => {
+    gate.state = { isAllowed: false, isDev: true };
+    render(<DevOnlyBridgeOverlay />);
+    expect(await screen.findByTestId('bridge-metrics-toggle')).toBeInTheDocument();
+    expect(telemetry.subscribe).toHaveBeenCalledTimes(1);
+  });
+
+  it('remove o overlay e a subscrição quando o papel dev é revogado', async () => {
+    gate.state = { isAllowed: true, isDev: true };
+    const { container, rerender } = render(<DevOnlyBridgeOverlay />);
+    await screen.findByTestId('bridge-metrics-toggle');
+    gate.state = { isAllowed: true, isDev: false };
+    rerender(<DevOnlyBridgeOverlay />);
+    expect(container).toBeEmptyDOMElement();
+    expect(telemetry.unsubscribe).toHaveBeenCalledTimes(1);
+    expect(telemetry.listeners.size).toBe(0);
+  });
+
+  it('admite o papel dev sem remontar a subscrição ao mudar somente isAllowed', async () => {
+    const { container, rerender } = render(<DevOnlyBridgeOverlay />);
+    expect(container).toBeEmptyDOMElement();
+    gate.state = { isAllowed: true, isDev: true };
+    rerender(<DevOnlyBridgeOverlay />);
+    fireEvent.click(await screen.findByTestId('bridge-metrics-toggle'));
+    gate.state = { isAllowed: false, isDev: true };
+    rerender(<DevOnlyBridgeOverlay />);
+    expect(screen.getByTestId('bridge-metrics-overlay')).toBeInTheDocument();
+    expect(telemetry.subscribe).toHaveBeenCalledTimes(1);
+  });
+
+  it('o overlay admitido reage à notificação do snapshot e limpa a subscrição ao desmontar', async () => {
+    gate.state = { isAllowed: true, isDev: true };
+    const { unmount } = render(<DevOnlyBridgeOverlay />);
+    fireEvent.click(await screen.findByTestId('bridge-metrics-toggle'));
+    act(() => {
+      telemetry.snapshot = Object.freeze([
+        {
+          id: 1,
+          ts: 100,
+          bridge: 'crm-db-bridge',
+          op: 'select',
+          target: 'products',
+          durationMs: 137,
+          reqBytes: 20,
+          respBytes: 2048,
+          ok: false,
+          status: 503,
+        },
+      ]);
+      for (const listener of telemetry.listeners) listener();
+    });
+    expect(screen.getByText('137ms')).toBeInTheDocument();
+    expect(screen.getByText('2 KB')).toBeInTheDocument();
+    unmount();
+    expect(telemetry.unsubscribe).toHaveBeenCalledTimes(1);
+    expect(telemetry.listeners.size).toBe(0);
+  });
+});
