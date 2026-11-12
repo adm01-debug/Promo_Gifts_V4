@@ -8452,7 +8452,7 @@
    "usado_por_arquivos": [
     "src/components/dev/BridgeMetricsOverlay.tsx"
    ],
-   "coberto_por_testes": 11
+   "coberto_por_testes": 10
   },
   {
    "arquivo": "src/hooks/favorites/useCollectionsGlobalShortcuts.ts",
@@ -13449,7 +13449,7 @@
    "usado_por_arquivos": [
     "src/components/BridgeStatusBanner.tsx"
    ],
-   "coberto_por_testes": 5
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/useFutureStockPreference.ts",

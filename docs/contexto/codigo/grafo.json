@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2748,
- "arestas": 10875,
+ "nos": 2751,
+ "arestas": 10877,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -18,7 +18,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 450
+   "importado_por": 449
   },
   {
    "arquivo": "src/components/ui/card.tsx",
@@ -142,7 +142,7 @@
   },
   {
    "arquivo": "src/hooks/admin/index.ts",
-   "importado_por": 48
+   "importado_por": 50
   },
   {
    "arquivo": "supabase/functions/_shared/request-id.ts",
@@ -161,8 +161,8 @@
    "importado_por": 43
   },
   {
-   "arquivo": "src/components/ui/ConfirmDialog.tsx",
-   "importado_por": 42
+   "arquivo": "supabase/functions/_shared/credentials.ts",
+   "importado_por": 43
   }
  ],
  "ciclos": {

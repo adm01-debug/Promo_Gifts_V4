@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1da62abb605bd1cb5aac8b367da5abed8c0ba031",
+  "commit": "f2408197d090611f9615b11d8674983d0ba5a0b6",
   "branch": "main",
-  "data_commit": "2026-11-12T01:07:30-03:00",
+  "data_commit": "2026-11-12T01:24:35-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "f240819",
+    "data": "2026-11-12",
+    "assunto": "fix(ci): corrige testes, tipos de edge e cobertura que deixam a main vermelha (#3407)"
+   },
    {
     "sha": "1da62ab",
     "data": "2026-11-12",
@@ -126,14 +131,9 @@
     "sha": "944ff2d",
     "data": "2026-11-09",
     "assunto": "fix(kit-builder): remove bloco FT-119 incompleto e corrige type imports (#3350)"
-   },
-   {
-    "sha": "6ba67b4",
-    "data": "2026-11-09",
-    "assunto": "fix(ci): adiciona detector E12 pg_indexes out-of-band no Gate 2 (#3290)"
    }
   ],
-  "arquivos_mudados_7d": 1395,
+  "arquivos_mudados_7d": 1413,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "recovery/src-legacy/src",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 117
+    "mudancas": 121
    },
    {
     "pasta": "src/hooks/products",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 23
+    "mudancas": 22
    },
    {
     "arquivo": "analise-prs/progresso.json",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9876,
-  "arquivos_codigo": 5038,
-  "linhas_codigo": 961403,
+  "arquivos_total": 9884,
+  "arquivos_codigo": 5044,
+  "linhas_codigo": 962527,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 545,
   "migrations": 3050,
   "cron_jobs": 120,
-  "testes": 2290,
+  "testes": 2293,
   "workflows": 95,
   "scripts": 259,
   "docs_md": 1010
@@ -548,7 +548,7 @@
   },
   "e2e/flows": {
    "arquivos": 183,
-   "linhas": 25292
+   "linhas": 25300
   },
   "e2e/future-stock.spec.ts": {
    "arquivos": 1,
@@ -1584,7 +1584,7 @@
   },
   "scripts/inventario": {
    "arquivos": 3,
-   "linhas": 610
+   "linhas": 630
   },
   "scripts/kit-ai-enrichment.js": {
    "arquivos": 1,
@@ -1927,8 +1927,8 @@
    "linhas": 8171
   },
   "supabase/functions": {
-   "arquivos": 264,
-   "linhas": 48159
+   "arquivos": 268,
+   "linhas": 48603
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -2003,8 +2003,8 @@
    "linhas": 141
   },
   "tests/components": {
-   "arquivos": 148,
-   "linhas": 32700
+   "arquivos": 149,
+   "linhas": 33050
   },
   "tests/config": {
    "arquivos": 6,
@@ -2028,7 +2028,7 @@
   },
   "tests/edge-functions": {
    "arquivos": 167,
-   "linhas": 12487
+   "linhas": 12526
   },
   "tests/fixtures": {
    "arquivos": 3,
@@ -2060,7 +2060,7 @@
   },
   "tests/lib": {
    "arquivos": 62,
-   "linhas": 9203
+   "linhas": 9188
   },
   "tests/magazine": {
    "arquivos": 18,
@@ -2076,7 +2076,7 @@
   },
   "tests/observability": {
    "arquivos": 1,
-   "linhas": 65
+   "linhas": 91
   },
   "tests/p0": {
    "arquivos": 6,
@@ -2195,8 +2195,8 @@
    "linhas": 160
   },
   "tests/unit": {
-   "arquivos": 37,
-   "linhas": 5914
+   "arquivos": 38,
+   "linhas": 6166
   },
   "tests/utils": {
    "arquivos": 21,
@@ -2322,8 +2322,8 @@
   }
  ],
  "qualidade": {
-  "any": 690,
-  "console_log": 1279,
+  "any": 683,
+  "console_log": 1281,
   "ts_ignore": 0,
   "eslint_disable": 6,
   "todos": 75,

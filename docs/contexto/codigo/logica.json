@@ -669,7 +669,7 @@
     "stores",
     "utils"
    ],
-   "coberto_por_testes": 48,
+   "coberto_por_testes": 47,
    "orfao": false
   },
   {
@@ -3023,7 +3023,7 @@
     "lib",
     "lib/external-db"
    ],
-   "coberto_por_testes": 1,
+   "coberto_por_testes": 2,
    "orfao": false
   },
   {
@@ -3051,7 +3051,7 @@
    "usado_por_modulos": [
     "lib/external-db"
    ],
-   "coberto_por_testes": 0,
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {
@@ -3248,7 +3248,7 @@
     "hooks/intelligence",
     "lib/external-db"
    ],
-   "coberto_por_testes": 2,
+   "coberto_por_testes": 3,
    "orfao": false
   },
   {
@@ -3315,7 +3315,7 @@
     "lib/db",
     "lib/external-db"
    ],
-   "coberto_por_testes": 0,
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {
@@ -6807,7 +6807,7 @@
     "lib/external-db",
     "lib/telemetry"
    ],
-   "coberto_por_testes": 6,
+   "coberto_por_testes": 9,
    "orfao": false
   },
   {

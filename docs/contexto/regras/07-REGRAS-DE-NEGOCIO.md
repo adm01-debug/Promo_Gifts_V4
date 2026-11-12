@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1da62abb60` · branch `main` · 2026-11-12 04:26 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `f2408197d0` · branch `main` · 2026-11-12 04:56 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2989,7 +2989,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **errorEnvelopeSchema** (`tests/edge-functions/live/_schemas.ts`, z.object):
   ```ts
-  { code: z.string().optional(), error: z.string().optional(), message: z.string().optional(), fields: z.array(fieldIssueSchema).optional(), }
+  { code: z.string().optional(), error: z.string().optional(), message: z.string().optional(), // Lista canônica OU o formato `zod.flatten().fieldErrors` ({ campo: [mensagens] }), // emitido pelas mcp-keys-* (`{ error: "validation_failed", fields }`). fields: z.union([z.array(fieldIssueSchema), z.record(z.string(), z.array(z.string()))]).optional(), }
   ```
 - **healthSchema** (`tests/edge-functions/live/_schemas.ts`, z.object, encadeia refine):
   ```ts
@@ -4901,6 +4901,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   let score = 0; const name = (product.name || '').toLowerCase(); const description = (product.description || '').toLowerCase(); const catName = (categoryMap[product.category_id] || '').toLowerCase(); const materials = normalizeValueList(product.materials) .map((m) => m.toLowerCase()) .join(' '); const tagsText = JSON.stringify(product.tags || {}).toLowerCase(); const allText = `${name} ${description} ${materials} ${tagsText} ${catName}`; for (const term of expansion.searchTerms) { const t = term. …
   ```
+- **applyFilters(query: FilterQuery, filters: Record<string, unknown>, categoryDescendants: string[] | null,)** — `supabase/functions/external-db-bridge/legacy-filters.ts`
+  ```
+  Object.entries(filters).forEach(([key, value]) => { if (value === undefined || value === null || value === '') return; if (key === '_search' && typeof value === 'string') { const pattern = quotePostgrestValue(`%${escapeLikePattern(value)}%`); query = query.or(['name', 'sku', 'supplier_reference', 'brand', 'description'].map((col) => `${col}.ilike.${pattern}`).join(',')); return; } // Name prefix search: matc
+  ```
 - **computeBlurhash(img: ImgRow)** — `supabase/functions/generate-blurhashes/index.ts`
   ```
   id: string; blurhash: string
@@ -5536,7 +5540,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `SHARED_RELOAD_PARAM` | `'__bare'` | `src/lib/chunk-recovery.ts` |
 | `SHARED_RELOAD_TS_PARAM` | `'__bart'` | `src/lib/chunk-recovery.ts` |
 | `SHARED_RELOAD_MAX` | `2` | `src/lib/chunk-recovery.ts` |
-| … +326 linhas — lista completa em `context.json` | | |
+| … +327 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6442,7 +6446,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (19841 testes em 1978 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (19874 testes em 1981 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6599,6 +6603,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/search/__tests__/useGlobalSearch.test.ts` | 25 | useGlobalSearch · expõe estado inicial e sugestões rápidas · limpa resultados para consultas com menos de 3 caracteres sem chamar a IA · busca mista monta resultados de produtos, clientes, orçamentos e tabelas auxiliares … |
 | `src/lib/auth/__tests__/post-login-redirect.test.ts` | 25 | clearPostLoginRedirect · remove a chave do sessionStorage quando ela existe · nao lanca erro quando sessionStorage esta vazio · nao lanca erro quando sessionStorage.removeItem lanca excecao … |
 | `src/utils/__tests__/cnpj-gap-hunt.test.ts` | 25 | G1 — maskCnpj com input já mascarado não duplica separadores · idempotência: mask(mask(x)) === mask(x) · input parcial mascarado não gera pontuação órfã · G2 — normalizeCnpj com surrogate pairs / emoji / unicode invisível … |
+| `tests/components/pages/KitBuilderPage.test.tsx` | 25 | KitBuilderPage · renderiza o passo box (padrão) · renderiza o passo items · renderiza o passo personalization … |
 | `tests/contracts/webhooks.contract.test.ts` | 25 | contract: webhook-inbound v1 (passthrough) · aceita qualquer objeto (compat com produção) · aceita array (compat — v1 é any) · body vazio → 400 missing_body … |
 | `tests/hooks/voice/retry.test.ts` | 25 | withRetry · returns result on first success · retries on retryable error and succeeds · does not retry on non-retryable error … |
 | `tests/integration/magazine-service-fuzz.test.ts` | 25 | magazineService — lifecycle happy path · snapshot legado ao editar título não apaga itens quando INSERT está indisponível · snapshot legado de metadados preserva IDs e ordem dos itens · falha de inclusão rejeita, nunca confirma o snapshot antigo como sucesso … |
@@ -6745,8 +6750,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/cart/__tests__/CartHeaderButton.delete.test.tsx` | 17 | CartHeaderButton — trash button onPointerDown · faz stopPropagation e NÃO faz preventDefault · CartHeaderButton — trash button onClick · chama preventDefault, stopPropagation, setOpen(false) e agenda no rAF … |
 | `src/components/inventory/__tests__/StockBadge.test.tsx` | 17 | StockBadge — getStockStatus helper · returns out-of-stock for zero quantity · returns low-stock at or below threshold · returns in-stock above threshold … |
 | `src/components/inventory/__tests__/bulk-add-to-collection-modal.test.tsx` | 17 | BulkAddToCollectionModal — initial state · renders dialog title with correct count (2 variações) · renders  · shows empty state when no collections … |
-| `src/components/novelties/NoveltyCards.stockBadge.test.tsx` | 17 | NoveltyCards › StockBadge (fallback de stock_quantity) · getStockStatus com threshold=10 · retorna  · retorna  … |
-| … +1678 linhas — lista completa em `context.json` | | |
+| … +1681 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7212,4 +7216,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | a caixa cheia é um limite superior: a bbox nunca subestima a marca girada e um | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
 | * Filtro de técnica EFETIVO — o mesmo que a prévia aplica. Decide se há regra. */ | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
 | * true quando a técnica casa uma regra de simulação conhecida (não o `default`). */ | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
-| … +1242 linhas — lista completa em `context.json` | |
+| … +1246 linhas — lista completa em `context.json` | |

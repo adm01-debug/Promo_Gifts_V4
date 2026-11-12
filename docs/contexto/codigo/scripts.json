@@ -2223,7 +2223,7 @@
   {
    "arquivo": "scripts/inventario/gerar-repo.mjs",
    "descricao": "Inventario das edge functions do repositorio -> inventario/estado/edges.json. Mesmo formato do Zapp_Web_V2.  - linhas, segredos lidos (Deno.env.get no index.ts e nos modulos locais/_shared que ele imp",
-   "linhas": 121,
+   "linhas": 139,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2232,7 +2232,7 @@
   {
    "arquivo": "scripts/inventario/gerar-rotas.mjs",
    "descricao": "* Inventario das rotas do front -> inventario/estado/rotas.json (fonte de consulta dos agentes).",
-   "linhas": 260,
+   "linhas": 262,
    "env": [
     "DEV"
    ],

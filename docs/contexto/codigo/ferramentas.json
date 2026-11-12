@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4722)",
+   "TypeScript (4728)",
    "SQL (3331)",
    "Markdown (1010)",
    "JavaScript (312)",
@@ -4840,7 +4840,7 @@
    },
    {
     "host": "edge-contract.invalid",
-    "arquivos": 5
+    "arquivos": 6
    },
    {
     "host": "fonts.googleapis.com",
@@ -5052,6 +5052,14 @@
    },
    {
     "host": "api.x.com",
+    "arquivos": 1
+   },
+   {
+    "host": "asia-db-contract.invalid",
+    "arquivos": 1
+   },
+   {
+    "host": "asia-supplier-contract.invalid",
     "arquivos": 1
    },
    {

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "1da62abb605bd1cb5aac8b367da5abed8c0ba031",
+  "sha": "f2408197d090611f9615b11d8674983d0ba5a0b6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-12 04:26 UTC",
-  "files_total": 9806,
-  "code_files": 8368,
-  "code_lines": 1177149
+  "generated_at": "2026-11-12 04:56 UTC",
+  "files_total": 9812,
+  "code_files": 8374,
+  "code_lines": 1178273
  },
  "version": "1.3.2",
- "facts_hash": "c0d99b6531a8b093",
+ "facts_hash": "29e63a9bea253dec",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1183,8 +1183,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3331,
-   ".ts": 2880,
-   ".tsx": 1843,
+   ".ts": 2885,
+   ".tsx": 1844,
    ".mjs": 305,
    ".py": 9,
    ".js": 7
@@ -142208,7 +142208,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1597,
+  "components_count": 1598,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -146046,7 +146046,7 @@
   {
    "module": "e2e",
    "files": 626,
-   "lines": 75519,
+   "lines": 75527,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -146516,7 +146516,7 @@
   {
    "module": "scripts",
    "files": 272,
-   "lines": 53517,
+   "lines": 53537,
    "tables": [
     "a",
     "contacts",
@@ -148309,8 +148309,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 264,
-   "lines": 48159,
+   "files": 268,
+   "lines": 48603,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -148545,8 +148545,8 @@
     "supabase/functions/ai-recommendations/kill_switch_contract_test.ts",
     "supabase/functions/analyze-logo-colors/index.ts",
     "supabase/functions/anonymize-user/index.ts",
-    "supabase/functions/asia-ingestion/index.ts",
-    "supabase/functions/audit-suite/index.ts"
+    "supabase/functions/asia-ingestion/credential-client.test.ts",
+    "supabase/functions/asia-ingestion/index.ts"
    ]
   },
   {
@@ -148797,8 +148797,8 @@
   },
   {
    "module": "tests",
-   "files": 876,
-   "lines": 134700,
+   "files": 878,
+   "lines": 135352,
    "tables": [
     "bot_detection_log",
     "companies",
@@ -148836,7 +148836,7 @@
     "_helpers.ts: makeRequest, readBody, expectContractError",
     "webhook-schemas.ts: uuidSchema, nonEmptyString, positiveInt, nonNegativeNumber, emailSchema, ValidationFieldErrorSchema",
     "edge-function-harness.ts: Json, EdgeAuthMock, EdgeRequestContext, EdgePayloadFixtures, EdgeInvocationResult, createEdgeFixtureFactory",
-    "_authz.ts: categoryOf, VERIFY_JWT_FALSE, expectedAnonStatuses, happyPathRole, DESTRUCTIVE, SUPPORTS_DRY_RUN",
+    "_authz.ts: categoryOf, VERIFY_JWT_FALSE, expectedAnonStatuses, happyPathRole, DESTRUCTIVE, LENIENT_BODY",
     "_live-client.ts: SUPABASE_URL, ANON_KEY, SERVICE_ROLE_KEY, LIVE, describeLive, ALLOW_COSTLY",
     "_live-suite.ts: LiveSuiteDescriptor, runLiveSuite",
     "_schemas.ts: errorEnvelopeSchema, healthSchema, catalogListSchema, materialsGroupsSchema, auditReportSchema, nonEmptyObjectSchema",
@@ -153182,9 +153182,7 @@
     "src/lib/sentry.ts",
     "src/main.tsx",
     "tests/__deprecated__/bridge/BridgeMetricsOverlay-ProdGate.test.tsx",
-    "tests/__deprecated__/bridge/DevOnlyBridgeOverlay.test.tsx",
-    "tests/components/BridgeMetricsOverlay-ProdGate.test.tsx",
-    "tests/components/DevOnlyBridgeOverlay.test.tsx"
+    "tests/__deprecated__/bridge/DevOnlyBridgeOverlay.test.tsx"
    ],
    "PRODUCT_WEBHOOK_ALLOWED_ORIGINS": [
     "supabase/functions/product-webhook/index.ts"
@@ -157847,7 +157845,7 @@
     "file": "tests/edge-functions/live/_schemas.ts",
     "name": "errorEnvelopeSchema",
     "kind": "object",
-    "body": "{ code: z.string().optional(), error: z.string().optional(), message: z.string().optional(), fields: z.array(fieldIssueSchema).optional(), }",
+    "body": "{ code: z.string().optional(), error: z.string().optional(), message: z.string().optional(), // Lista canônica OU o formato `zod.flatten().fieldErrors` ({ campo: [mensagens] }), // emitido pelas mcp-keys-* (`{ error: \"validation_failed\", fields }`). fields: z.union([z.array(fieldIssueSchema), z.record(z.string(), z.array(z.string()))]).optional(), }",
     "refines": [],
     "chain": []
    },
@@ -171301,6 +171299,18 @@
     "text": "fonte diferente), causando inconsistência de validação entre edge functions."
    },
    {
+    "file": "supabase/functions/external-db-bridge/legacy-filters.ts",
+    "text": "If we reach here (e.g. internal call site bypassed validation), refuse loudly instead of silently dropping."
+   },
+   {
+    "file": "supabase/functions/external-db-bridge/legacy-select.ts",
+    "text": "em situações onde a decisão é informativa: tabela `products` com qualquer limit,"
+   },
+   {
+    "file": "supabase/functions/external-db-bridge/legacy-select.ts",
+    "text": "ou outras tabelas quando o limit ultrapassa o threshold (poderia ter sido afetado)."
+   },
+   {
     "file": "supabase/functions/external-db-inspect/index.ts",
     "text": "Anti-scraping: bot UA check + rate limit por IP (camada externa antes do auth)"
    },
@@ -172043,6 +172053,10 @@
    {
     "file": "tests/edge-functions/live/_live-suite.ts",
     "text": "ausência apenas se o status já indicar preflight ok (204/200)."
+   },
+   {
+    "file": "tests/edge-functions/live/_live-suite.ts",
+    "text": "408 sintético = timeout do CLIENTE: a função seguiu executando; não é \"4xx de validação\"."
    },
    {
     "file": "tests/edge-functions/live/_live-suite.ts",
@@ -195370,6 +195384,11 @@
     "value": "'quotes-prefix-v2'"
    },
    {
+    "file": "supabase/functions/external-db-bridge/legacy-select.ts",
+    "name": "LIGHTWEIGHT_LIMIT_THRESHOLD",
+    "value": "50"
+   },
+   {
     "file": "supabase/functions/favorites-watcher/index.ts",
     "name": "DEDUPE_WINDOW_HOURS",
     "value": "24"
@@ -210772,6 +210791,12 @@
     "name": "scoreProductRelevance",
     "params": "product: any, expansion: SemanticExpansion, categoryMap: Record<string, string>,",
     "body": "let score = 0; const name = (product.name || '').toLowerCase(); const description = (product.description || '').toLowerCase(); const catName = (categoryMap[product.category_id] || '').toLowerCase(); const materials = normalizeValueList(product.materials) .map((m) => m.toLowerCase()) .join(' '); const tagsText = JSON.stringify(product.tags || {}).toLowerCase(); const allText = `${name} ${description} ${materials} ${tagsText} ${catName}`; for (const term of expansion.searchTerms) { const t = term. …"
+   },
+   {
+    "file": "supabase/functions/external-db-bridge/legacy-filters.ts",
+    "name": "applyFilters",
+    "params": "query: FilterQuery, filters: Record<string, unknown>, categoryDescendants: string[] | null,",
+    "body": "Object.entries(filters).forEach(([key, value]) => { if (value === undefined || value === null || value === '') return; if (key === '_search' && typeof value === 'string') { const pattern = quotePostgrestValue(`%${escapeLikePattern(value)}%`); query = query.or(['name', 'sku', 'supplier_reference', 'brand', 'description'].map((col) => `${col}.ilike.${pattern}`).join(',')); return; } // Name prefix search: matc"
    },
    {
     "file": "supabase/functions/generate-blurhashes/index.ts",
@@ -254776,6 +254801,10 @@
     "name": "webhook-inbound contract: v1 passthrough still parses when explicitly requested"
    },
    {
+    "file": "supabase/functions/asia-ingestion/credential-client.test.ts",
+    "name": "asia-ingestion: SSOT credential client preserves authorization and supplier scope"
+   },
+   {
     "file": "supabase/functions/connections-auto-test/assertServiceClient.test.ts",
     "name": "assertServiceClient: aceita mock com forma de SupabaseClient"
    },
@@ -258809,15 +258838,31 @@
    },
    {
     "file": "tests/components/BridgeMetricsOverlay-ProdGate.test.tsx",
-    "name": "BridgeMetricsOverlay - Gating de Produção"
+    "name": "DevOnlyBridgeOverlay — autoridade do papel dev e snapshot estável"
    },
    {
     "file": "tests/components/BridgeMetricsOverlay-ProdGate.test.tsx",
-    "name": "renderiza normalmente se o gate SSOT aprovar"
+    "name": "não monta diagnósticos sem papel dev, mesmo com isAllowed=%s"
    },
    {
     "file": "tests/components/BridgeMetricsOverlay-ProdGate.test.tsx",
-    "name": "retorna null se o gate SSOT REJEITAR (mesmo que seja dev)"
+    "name": "monta o overlay real quando o gate confirma o papel dev"
+   },
+   {
+    "file": "tests/components/BridgeMetricsOverlay-ProdGate.test.tsx",
+    "name": "mantém a decisão isDev do wrapper quando a infraestrutura isAllowed é falsa"
+   },
+   {
+    "file": "tests/components/BridgeMetricsOverlay-ProdGate.test.tsx",
+    "name": "remove o overlay e a subscrição quando o papel dev é revogado"
+   },
+   {
+    "file": "tests/components/BridgeMetricsOverlay-ProdGate.test.tsx",
+    "name": "admite o papel dev sem remontar a subscrição ao mudar somente isAllowed"
+   },
+   {
+    "file": "tests/components/BridgeMetricsOverlay-ProdGate.test.tsx",
+    "name": "o overlay admitido reage à notificação do snapshot e limpa a subscrição ao desmontar"
    },
    {
     "file": "tests/components/BridgeStatusBanner.test.tsx",
@@ -259001,7 +259046,7 @@
    },
    {
     "file": "tests/components/DevOnlyBridgeOverlay.test.tsx",
-    "name": "DevOnlyBridgeOverlay — gate por papel + SSOT"
+    "name": "DevOnlyBridgeOverlay — gate atual por papel dev"
    },
    {
     "file": "tests/components/DevOnlyBridgeOverlay.test.tsx",
@@ -259013,11 +259058,11 @@
    },
    {
     "file": "tests/components/DevOnlyBridgeOverlay.test.tsx",
-    "name": "gate SSOT desligado (env=false) bloqueia mesmo dev"
+    "name": "mantém o acesso do papel dev independentemente do flag isAllowed"
    },
    {
     "file": "tests/components/DevOnlyBridgeOverlay.test.tsx",
-    "name": "gate SSOT habilitado por override (localStorage) renderiza mesmo para não-dev"
+    "name": "override de infraestrutura não libera usuário sem papel dev"
    },
    {
     "file": "tests/components/DevRoute.test.tsx",
@@ -259478,6 +259523,34 @@
    {
     "file": "tests/components/PriceFreshnessBadge.a11y.test.tsx",
     "name": "compact: SVG marcado com aria-hidden"
+   },
+   {
+    "file": "tests/components/PriceFreshnessBadge.behavior.test.tsx",
+    "name": "confirmação de preço"
+   },
+   {
+    "file": "tests/components/PriceFreshnessBadge.behavior.test.tsx",
+    "name": "confirma uma vez sem acionar o contêiner ou navegação"
+   },
+   {
+    "file": "tests/components/PriceFreshnessBadge.behavior.test.tsx",
+    "name": "oferece CTA curto para aging compacto"
+   },
+   {
+    "file": "tests/components/PriceFreshnessBadge.behavior.test.tsx",
+    "name": "confirmação substitui alerta na variante %s"
+   },
+   {
+    "file": "tests/components/PriceFreshnessBadge.behavior.test.tsx",
+    "name": "confirmação não suprime o estado fresh"
+   },
+   {
+    "file": "tests/components/PriceFreshnessBadge.behavior.test.tsx",
+    "name": "explica quando o preço foi confirmado: %s => %s"
+   },
+   {
+    "file": "tests/components/PriceFreshnessBadge.behavior.test.tsx",
+    "name": "tooltip com informação verificável"
    },
    {
     "file": "tests/components/PriceFreshnessBadge.catalog-visibility.test.tsx",
@@ -263614,6 +263687,70 @@
    {
     "file": "tests/components/pages/KitBuilderPage.test.tsx",
     "name": "renderiza com isCreatingQuote ativo"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "callbacks repassadas aos passos"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "box: retry recarrega caixas, editar itens e guia"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "box: falha no retry não propaga erro"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "items: retry recarrega itens"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "personalization: editar itens volta para o passo items"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "summary: adicionar ao orçamento, editar caixa, salvar rascunho e exportar PDF"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "header: tentar autosave de novo chama retryAutoSave"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "botões Voltar e Continuar navegam no wizard"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "landing"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "aplicar sugestão de IA inicia o fluxo items-first e aplica a sugestão"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "atalhos de edição ficam desligados na landing"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "atalhos de teclado do editor"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "Ctrl+S salva, Ctrl+Z desfaz, Ctrl+Shift+Z e Ctrl+Y refazem"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "sem Ctrl/Cmd nada acontece"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "em campo de texto só Ctrl+S funciona"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "remove o listener ao desmontar"
    },
    {
     "file": "tests/components/pages/MagicUp.test.tsx",
@@ -278445,63 +278582,67 @@
    },
    {
     "file": "tests/lib/bridge.test.ts",
-    "name": "invokeBridge"
+    "name": "invokeBridge permanently OFF: the six historical transport cases now fail closed"
    },
    {
     "file": "tests/lib/bridge.test.ts",
-    "name": "throws if table is missing for non-batch operations"
+    "name": "$name"
    },
    {
     "file": "tests/lib/bridge.test.ts",
-    "name": "allows batch operations without table"
+    "name": "invokeExternalDb uses the actual native REST implementation"
    },
    {
     "file": "tests/lib/bridge.test.ts",
-    "name": "retries on boot errors"
+    "name": "persists an insert to the real write table and returns its rows/count"
    },
    {
     "file": "tests/lib/bridge.test.ts",
-    "name": "throws after max retries"
+    "name": "selects the public view with actual filters, ordering, bounded range and count"
    },
    {
     "file": "tests/lib/bridge.test.ts",
-    "name": "throws on non-retryable errors immediately"
+    "name": "retains the native transient-read retry without invoking the retired Edge"
    },
    {
     "file": "tests/lib/bridge.test.ts",
-    "name": "throws on success:false response"
+    "name": "reports a permission-denied read as the actual empty fallback, without retry or Edge"
    },
    {
     "file": "tests/lib/bridge.test.ts",
-    "name": "invokeExternalDb"
+    "name": "surfaces native write permission errors instead of inventing success"
    },
    {
     "file": "tests/lib/bridge.test.ts",
-    "name": "wraps single non-record responses for mutations"
+    "name": "rejects unscoped %s before creating a mutation builder"
    },
    {
     "file": "tests/lib/bridge.test.ts",
-    "name": "passes through records array for select"
+    "name": "blocks a write to an unlisted table loudly while the bridge is OFF"
    },
    {
     "file": "tests/lib/bridge.test.ts",
-    "name": "invokeExternalDbDelete"
+    "name": "invokeExternalDbDelete retains scoped native mutations"
    },
    {
     "file": "tests/lib/bridge.test.ts",
-    "name": "calls bridge with delete operation"
+    "name": "deletes only the provided id through REST and propagates mutation errors"
    },
    {
     "file": "tests/lib/bridge.test.ts",
-    "name": "invokeBatchBridge"
+    "name": "invokeBatchBridge decomposes reads through bounded native concurrency"
    },
    {
     "file": "tests/lib/bridge.test.ts",
-    "name": "sends all queries in single call when under limit"
+    "name": "executes five real scoped reads rather than one obsolete Edge batch"
    },
    {
     "file": "tests/lib/bridge.test.ts",
-    "name": "chunks queries exceeding batch limit"
+    "name": "runs fifteen reads with at most six in flight and retains input order across reversed completions"
+   },
+   {
+    "file": "tests/lib/bridge.test.ts",
+    "name": "performs no requests for an empty batch"
    },
    {
     "file": "tests/lib/buildCustomKitInsert.test.ts",
@@ -283270,6 +283411,14 @@
    {
     "file": "tests/observability/structured-logger.test.ts",
     "name": "child preserva request_id e prefixa scope"
+   },
+   {
+    "file": "tests/observability/structured-logger.test.ts",
+    "name": "serializa o alias error e encaminha o mesmo erro original sem perder correlação"
+   },
+   {
+    "file": "tests/observability/structured-logger.test.ts",
+    "name": "preserva o nível warn no console nativo com o payload completo"
    },
    {
     "file": "tests/p0/auth-recovery.test.ts",
@@ -289656,6 +289805,26 @@
     "name": "chamadas alternadas com erros diferentes não interferem"
    },
    {
+    "file": "tests/unit/edge-live-suite-catalogs.test.ts",
+    "name": "suíte live de edge — contratos determinísticos"
+   },
+   {
+    "file": "tests/unit/edge-live-suite-catalogs.test.ts",
+    "name": "envelope aceita fields no formato zod.flatten().fieldErrors (mcp-keys-*)"
+   },
+   {
+    "file": "tests/unit/edge-live-suite-catalogs.test.ts",
+    "name": "funções destrutivas tolerantes a corpo inválido nunca recebem JWT no teste de input inválido"
+   },
+   {
+    "file": "tests/unit/edge-live-suite-catalogs.test.ts",
+    "name": "sem JWT só protege se o gateway barrar anon: toda LENIENT_BODY é tier reject"
+   },
+   {
+    "file": "tests/unit/edge-live-suite-catalogs.test.ts",
+    "name": "mcp-keys-* validam o corpo de verdade: continuam testadas autenticadas"
+   },
+   {
     "file": "tests/unit/error-kind-inference.test.ts",
     "name": "inferErrorKind"
    },
@@ -292141,51 +292310,23 @@
    },
    {
     "file": "tests/unit/system/BridgeMetricsOverlay.test.tsx",
-    "name": "BridgeMetricsOverlay"
+    "name": "BridgeMetricsOverlay — compact summary and current dev wrapper"
    },
    {
     "file": "tests/unit/system/BridgeMetricsOverlay.test.tsx",
-    "name": "não deve renderizar nada se isAllowed for false"
+    "name": "role=$role initiallyOpen=$initiallyOpen source=$scenario.name action=$interaction"
    },
    {
     "file": "tests/unit/system/BridgeMetricsOverlay.test.tsx",
-    "name": "deve renderizar o botão de abertura quando fechado"
+    "name": "shows the actual latency class at %ims"
    },
    {
     "file": "tests/unit/system/BridgeMetricsOverlay.test.tsx",
-    "name": "deve chamar setOpen(true) ao clicar no botão de abertura"
+    "name": "shows formatted response size at %i bytes"
    },
    {
     "file": "tests/unit/system/BridgeMetricsOverlay.test.tsx",
-    "name": "deve renderizar a lista de chamadas corretamente"
-   },
-   {
-    "file": "tests/unit/system/BridgeMetricsOverlay.test.tsx",
-    "name": "deve permitir trocar de aba para longtasks"
-   },
-   {
-    "file": "tests/unit/system/BridgeMetricsOverlay.test.tsx",
-    "name": "deve exibir filtros apenas na aba de chamadas"
-   },
-   {
-    "file": "tests/unit/system/BridgeMetricsOverlay.test.tsx",
-    "name": "deve chamar setFilter ao clicar nos botões de filtro"
-   },
-   {
-    "file": "tests/unit/system/BridgeMetricsOverlay.test.tsx",
-    "name": "deve permitir pausar/retomar live updates"
-   },
-   {
-    "file": "tests/unit/system/BridgeMetricsOverlay.test.tsx",
-    "name": "deve mostrar estado "
-   },
-   {
-    "file": "tests/unit/system/BridgeMetricsOverlay.test.tsx",
-    "name": "deve chamar clear ao clicar no botão limpar"
-   },
-   {
-    "file": "tests/unit/system/BridgeMetricsOverlay.test.tsx",
-    "name": "deve fechar o overlay ao clicar no X"
+    "name": "unsubscribes the actual hook when the dev role is removed and restores only permitted UI"
    },
    {
     "file": "tests/unit/system/BridgeMetricsPerformance.test.tsx",
@@ -292213,15 +292354,31 @@
    },
    {
     "file": "tests/unit/system/useBridgeMetrics.test.ts",
-    "name": "useBridgeMetrics"
+    "name": "useBridgeMetrics — snapshot imutável e API atual sem argumento"
    },
    {
     "file": "tests/unit/system/useBridgeMetrics.test.ts",
-    "name": "deve inicializar com valores padrão"
+    "name": "inicializa os valores padrão sem criar um novo snapshot a cada leitura"
    },
    {
     "file": "tests/unit/system/useBridgeMetrics.test.ts",
-    "name": "deve permitir limpar amostras"
+    "name": "limpa as amostras pela fronteira real e observa o snapshot vazio notificado"
+   },
+   {
+    "file": "tests/unit/system/useBridgeMetrics.test.ts",
+    "name": "mantém abertura, filtro e callback clear locais sem reinscrever no store"
+   },
+   {
+    "file": "tests/unit/system/useBridgeMetrics.test.ts",
+    "name": "mapeia a nova referência imutável depois da notificação e preserva a anterior"
+   },
+   {
+    "file": "tests/unit/system/useBridgeMetrics.test.ts",
+    "name": "mantém o estado de abertura independente entre duas instâncias que observam o mesmo snapshot"
+   },
+   {
+    "file": "tests/unit/system/useBridgeMetrics.test.ts",
+    "name": "remove a notificação ao desmontar sem voltar a consultar o snapshot"
    },
    {
     "file": "tests/utils/color-variant-carousel.test.ts",
@@ -341376,6 +341533,7 @@
    "supabase/functions/_shared/token-revocation.ts",
    "supabase/functions/ai-recommendations/kill_switch_contract_test.ts",
    "supabase/functions/anonymize-user/index.ts",
+   "supabase/functions/asia-ingestion/credential-client.test.ts",
    "supabase/functions/asia-ingestion/index.ts",
    "supabase/functions/audit-suite/index.ts",
    "supabase/functions/backfill-image-dimensions/index.ts",
@@ -392597,10 +392755,11 @@
   },
   "e2e/flows/global-search-comprehensive.spec.ts": {
    "path": "e2e/flows/global-search-comprehensive.spec.ts",
-   "lines": 81,
+   "lines": 89,
    "is_test": true,
    "temporal": [
-    "await expect(page).not.toHaveURL(/\\/$/, { timeout: 10000 });"
+    "await expect(page).toHaveURL(/\\/orcamentos\\/novo$/, { timeout: 1000 });",
+    "}).toPass({ timeout: 5000 });"
    ],
    "tests": [
     "Global Search Comprehensive",
@@ -411515,7 +411674,10 @@
   },
   "scripts/inventario/gerar-repo.mjs": {
    "path": "scripts/inventario/gerar-repo.mjs",
-   "lines": 121,
+   "lines": 139,
+   "rule_comments": [
+    "(lá o URL global não é o do Node e fileURLToPath(new URL(...)) lança \"must be of scheme file\")."
+   ],
    "doc": "!/usr/bin/env node Inventario das edge functions do repositorio -> inventario/estado/edges.json. Mesmo formato do Zapp_Web_V2. - linhas, segredos lidos (Deno.env.get no index.ts e nos modulos locais/_shared que ele importa) - quem invoca cada uma: src, migrations, outras edges, cron (banco.json -> c …",
    "side_effects": [
     "invoke("
@@ -411523,7 +411685,7 @@
   },
   "scripts/inventario/gerar-rotas.mjs": {
    "path": "scripts/inventario/gerar-rotas.mjs",
-   "lines": 260,
+   "lines": 262,
    "exports": [
     "function semComentarios",
     "function edgesChamadasNoCodigo",
@@ -411550,6 +411712,9 @@
      "name": "PROFUNDIDADE",
      "value": "4"
     }
+   ],
+   "rule_comments": [
+    "(lá o URL global não é o do Node e fileURLToPath(new URL(...)) lança \"must be of scheme file\")."
    ],
    "doc": "!/usr/bin/env node"
   },
@@ -474947,6 +475112,19 @@
    ],
    "uses_service_role": true
   },
+  "supabase/functions/asia-ingestion/credential-client.test.ts": {
+   "path": "supabase/functions/asia-ingestion/credential-client.test.ts",
+   "lines": 102,
+   "is_test": true,
+   "errors": [
+    "Unexpected isolated fetch: ${request.method} ${url.origin}${url.pathname}"
+   ],
+   "doc": "Real handler + both pinned SDKs; only fetch, environment and serve are isolated. Run: deno test --allow-env --config supabase/functions/deno.json <this file>",
+   "tests": [
+    "asia-ingestion: SSOT credential client preserves authorization and supplier scope"
+   ],
+   "uses_service_role": true
+  },
   "supabase/functions/asia-ingestion/index.ts": {
    "path": "supabase/functions/asia-ingestion/index.ts",
    "lines": 117,
@@ -474990,7 +475168,7 @@
   },
   "supabase/functions/audit-suite/index.ts": {
    "path": "supabase/functions/audit-suite/index.ts",
-   "lines": 153,
+   "lines": 157,
    "tables": [
     {
      "table": "user_roles",
@@ -477257,7 +477435,7 @@
   },
   "supabase/functions/external-db-bridge/applyFiltersAndSwap.integration.test.ts": {
    "path": "supabase/functions/external-db-bridge/applyFiltersAndSwap.integration.test.ts",
-   "lines": 274,
+   "lines": 276,
    "is_test": true,
    "rule_comments": [
     "`products` com `limit > 50` E `!hasId`, em AMBOS os call sites",
@@ -477273,6 +477451,7 @@
     "\", limit: 50 },",
     "\", limit: 1000 },"
    ],
+   "doc": "Historical contract: the endpoint was decommissioned in #557. These assertions cover recovered pure helpers, not active handleSelect/handleBatch routing.",
    "tests": [
     "applyFilters: nunca chama .select() (filtro vazio)",
     "applyFilters: nunca chama .select() (filtros simples eq)",
@@ -477298,7 +477477,7 @@
   },
   "supabase/functions/external-db-bridge/callerSelectIsHeavy.test.ts": {
    "path": "supabase/functions/external-db-bridge/callerSelectIsHeavy.test.ts",
-   "lines": 172,
+   "lines": 174,
    "is_test": true,
    "rule_comments": [
     "2. callerSelectIsHeavy — só deve disparar para colunas REAIS pesadas,",
@@ -477306,7 +477485,7 @@
     "alias: o detector deve olhar para a coluna real, não para o alias.",
     "Embeds têm seu próprio custo, mas o lightweight de products não deve interferir."
    ],
-   "doc": "Tests for the refined heavy-select detection. Cobre dois aspectos da heurística: 1. extractBaseColumn — tokenização correta de selects PostgREST (alias, operadores JSON, embeds), evitando falsos positivos por substring. 2. callerSelectIsHeavy — só deve disparar para colunas REAIS pesadas, e DEVE dis …",
+   "doc": "Historical contract: the endpoint was decommissioned in #557. These assertions cover recovered pure helpers, not active handleSelect/handleBatch routing. Tests for the refined heavy-select detection. Cobre dois aspectos da heurística: 1. extractBaseColumn — tokenização correta de selects PostgREST ( …",
    "tests": [
     "extractBaseColumn: nome simples",
     "extractBaseColumn: alias PostgREST ",
@@ -477337,6 +477516,58 @@
    "path": "supabase/functions/external-db-bridge/index.ts",
    "lines": 40,
    "doc": "supabase/functions/external-db-bridge/index.ts DECOMMISSIONED — returns 410 Gone for all requests. Phase 4B (2026-06-01): bridge permanently killed via kill-switch `edge_external_db_bridge`. All traffic routes to REST native (/rest/v1/). Previous index.ts had ~400 lines importing 6 missing _shared m …"
+  },
+  "supabase/functions/external-db-bridge/legacy-contracts.ts": {
+   "path": "supabase/functions/external-db-bridge/legacy-contracts.ts",
+   "lines": 6,
+   "doc": "Historical pure contracts recovered from 10d607a47^ (before decommission #557). Used by preserved unit tests only; index.ts still returns 410 and imports none of this code."
+  },
+  "supabase/functions/external-db-bridge/legacy-filters.ts": {
+   "path": "supabase/functions/external-db-bridge/legacy-filters.ts",
+   "lines": 131,
+   "exports": [
+    "function escapeLikePattern",
+    "function quotePostgrestValue",
+    "function applyFilters"
+   ],
+   "rule_comments": [
+    "If we reach here (e.g. internal call site bypassed validation), refuse loudly instead of silently dropping."
+   ],
+   "doc": "Historical pure contracts recovered from 10d607a47^ (before decommission #557). Used by preserved unit tests only; index.ts still returns 410 and imports none of this code.",
+   "calc_fns": [
+    {
+     "name": "applyFilters",
+     "params": "query: FilterQuery, filters: Record<string, unknown>, categoryDescendants: string[] | null,",
+     "body": "Object.entries(filters).forEach(([key, value]) => { if (value === undefined || value === null || value === '') return; if (key === '_search' && typeof value === 'string') { const pattern = quotePostgrestValue(`%${escapeLikePattern(value)}%`); query = query.or(['name', 'sku', 'supplier_reference', 'brand', 'description'].map((col) => `${col}.ilike.${pattern}`).join(',')); return; } // Name prefix search: matc"
+    }
+   ]
+  },
+  "supabase/functions/external-db-bridge/legacy-select.ts": {
+   "path": "supabase/functions/external-db-bridge/legacy-select.ts",
+   "lines": 192,
+   "exports": [
+    "const LIGHTWEIGHT_LIMIT_THRESHOLD",
+    "const WIDE_SELECT_COLUMN_THRESHOLD",
+    "const HEAVY_PRODUCT_COLUMNS",
+    "function extractBaseColumn",
+    "function callerSelectIsHeavy",
+    "interface ResolveProductsSelectInput",
+    "interface ResolveProductsSelectResult",
+    "function resolveProductsSelect",
+    "interface SelectDecisionLogContext",
+    "function logSelectDecision"
+   ],
+   "params": [
+    {
+     "name": "LIGHTWEIGHT_LIMIT_THRESHOLD",
+     "value": "50"
+    }
+   ],
+   "rule_comments": [
+    "em situações onde a decisão é informativa: tabela `products` com qualquer limit,",
+    "ou outras tabelas quando o limit ultrapassa o threshold (poderia ter sido afetado)."
+   ],
+   "doc": "Historical pure contracts recovered from 10d607a47^ (before decommission #557). Used by preserved unit tests only; index.ts still returns 410 and imports none of this code."
   },
   "supabase/functions/external-db-bridge/lightweightSelect.e2e.test.ts": {
    "path": "supabase/functions/external-db-bridge/lightweightSelect.e2e.test.ts",
@@ -477424,7 +477655,7 @@
   },
   "supabase/functions/external-db-bridge/resolveProductsSelect.test.ts": {
    "path": "supabase/functions/external-db-bridge/resolveProductsSelect.test.ts",
-   "lines": 80,
+   "lines": 82,
    "is_test": true,
    "rule_comments": [
     "Regression tests for the lightweight-select rule.",
@@ -477437,7 +477668,7 @@
     "': defaults to small-limit (safe fallback)\", () => {",
     "\", limit: null, hasId: false });"
    ],
-   "doc": "Regression tests for the lightweight-select rule. HARD GUARD: lightweight is ONLY applied when table === 'products' AND limit > 50 AND no id.",
+   "doc": "Historical contract: the endpoint was decommissioned in #557. These assertions cover recovered pure helpers, not active handleSelect/handleBatch routing. Regression tests for the lightweight-select rule. HARD GUARD: lightweight is ONLY applied when table === 'products' AND limit > 50 AND no id.",
    "tests": [
     "non-products table: never forces lightweight",
     "products + id present: keeps caller select even at large limit",
@@ -477471,7 +477702,7 @@
   },
   "supabase/functions/external-db-bridge/wideSelectThreshold.test.ts": {
    "path": "supabase/functions/external-db-bridge/wideSelectThreshold.test.ts",
-   "lines": 93,
+   "lines": 95,
    "is_test": true,
    "errors": [
     "log humano não inclui col_threshold=: ${line}",
@@ -477484,7 +477715,7 @@
     "para isolar a Rule B (wide) das demais regras.",
     "Deve incluir o threshold de colunas no payload e na linha humana"
    ],
-   "doc": "Tests para a Rule B (wide-select-listing) com threshold configurável de colunas. Garante que: 1) O threshold default é 25 (compat com testes anteriores). 2) Selects com `cols > threshold` em listagens (limit > 50, sem id) são forçados a lightweight. 3) Selects com `cols <= threshold` mantêm o select …",
+   "doc": "Historical contract: the endpoint was decommissioned in #557. These assertions cover recovered pure helpers, not active handleSelect/handleBatch routing. Tests para a Rule B (wide-select-listing) com threshold configurável de colunas. Garante que: 1) O threshold default é 25 (compat com testes anter …",
    "tests": [
     "wide-threshold: default é 25 (compat)",
     "wide-threshold: cols == threshold NÃO força lightweight",
@@ -480566,7 +480797,7 @@
   },
   "supabase/functions/process-scheduled-reports/index.ts": {
    "path": "supabase/functions/process-scheduled-reports/index.ts",
-   "lines": 194,
+   "lines": 195,
    "tables": [
     {
      "table": "scheduled_reports",
@@ -499627,15 +499858,16 @@
   },
   "tests/components/BridgeMetricsOverlay-ProdGate.test.tsx": {
    "path": "tests/components/BridgeMetricsOverlay-ProdGate.test.tsx",
-   "lines": 52,
+   "lines": 127,
    "is_test": true,
-   "env": [
-    "PROD"
-   ],
    "tests": [
-    "BridgeMetricsOverlay - Gating de Produção",
-    "renderiza normalmente se o gate SSOT aprovar",
-    "retorna null se o gate SSOT REJEITAR (mesmo que seja dev)"
+    "DevOnlyBridgeOverlay — autoridade do papel dev e snapshot estável",
+    "não monta diagnósticos sem papel dev, mesmo com isAllowed=%s",
+    "monta o overlay real quando o gate confirma o papel dev",
+    "mantém a decisão isDev do wrapper quando a infraestrutura isAllowed é falsa",
+    "remove o overlay e a subscrição quando o papel dev é revogado",
+    "admite o papel dev sem remontar a subscrição ao mudar somente isAllowed",
+    "o overlay admitido reage à notificação do snapshot e limpa a subscrição ao desmontar"
    ]
   },
   "tests/components/BridgeStatusBanner.test.tsx": {
@@ -499774,21 +500006,18 @@
   },
   "tests/components/DevOnlyBridgeOverlay.test.tsx": {
    "path": "tests/components/DevOnlyBridgeOverlay.test.tsx",
-   "lines": 56,
+   "lines": 57,
    "is_test": true,
-   "env": [
-    "PROD"
-   ],
    "rule_comments": [
-    "Mockamos como um marker simples para validar SOMENTE o gate."
+    "O marcador isola o limite lazy; o overlay real e seu hook são exercitados"
    ],
-   "doc": "DevOnlyBridgeOverlay — wrapper que gateia o BridgeMetricsOverlay por papel `dev`. Valida: - Não-dev: retorna null (sem montar o overlay, sem disparar o lazy import). - Dev: monta o overlay (via Suspense) — fallback null durante o load. - Gate desligado (env false) com isDev=true: retorna null. - Gat …",
+   "doc": "DevOnlyBridgeOverlay — wrapper atual que exige o papel `dev` (QA #619). Valida: - Não-dev: retorna null (sem montar o overlay, sem disparar o lazy import). - Dev: monta o overlay (via Suspense) — fallback null durante o load. - Papel dev preserva o acesso do wrapper, que não consulta isAllowed. - Ov …",
    "tests": [
-    "DevOnlyBridgeOverlay — gate por papel + SSOT",
+    "DevOnlyBridgeOverlay — gate atual por papel dev",
     "NÃO renderiza overlay para usuário não-dev (default do gate)",
     "renderiza overlay para usuário dev (gate aprovado por role)",
-    "gate SSOT desligado (env=false) bloqueia mesmo dev",
-    "gate SSOT habilitado por override (localStorage) renderiza mesmo para não-dev"
+    "mantém o acesso do papel dev independentemente do flag isAllowed",
+    "override de infraestrutura não libera usuário sem papel dev"
    ]
   },
   "tests/components/DevRoute.test.tsx": {
@@ -500035,6 +500264,20 @@
     "ícone decorativo (não duplica leitura)",
     "icon-only: SVG marcado com aria-hidden",
     "compact: SVG marcado com aria-hidden"
+   ]
+  },
+  "tests/components/PriceFreshnessBadge.behavior.test.tsx": {
+   "path": "tests/components/PriceFreshnessBadge.behavior.test.tsx",
+   "lines": 92,
+   "is_test": true,
+   "tests": [
+    "confirmação de preço",
+    "confirma uma vez sem acionar o contêiner ou navegação",
+    "oferece CTA curto para aging compacto",
+    "confirmação substitui alerta na variante %s",
+    "confirmação não suprime o estado fresh",
+    "explica quando o preço foi confirmado: %s => %s",
+    "tooltip com informação verificável"
    ]
   },
   "tests/components/PriceFreshnessBadge.catalog-visibility.test.tsx": {
@@ -502317,8 +502560,11 @@
   },
   "tests/components/pages/KitBuilderPage.test.tsx": {
    "path": "tests/components/pages/KitBuilderPage.test.tsx",
-   "lines": 230,
+   "lines": 412,
    "is_test": true,
+   "errors": [
+    "${name}.${prop} não foi passado"
+   ],
    "tests": [
     "KitBuilderPage",
     "renderiza o passo box (padrão)",
@@ -502328,7 +502574,23 @@
     "renderiza com isLoading ativo para boxes",
     "renderiza com isLoading ativo para items",
     "renderiza com kit salvo (currentKitId definido)",
-    "renderiza com isCreatingQuote ativo"
+    "renderiza com isCreatingQuote ativo",
+    "callbacks repassadas aos passos",
+    "box: retry recarrega caixas, editar itens e guia",
+    "box: falha no retry não propaga erro",
+    "items: retry recarrega itens",
+    "personalization: editar itens volta para o passo items",
+    "summary: adicionar ao orçamento, editar caixa, salvar rascunho e exportar PDF",
+    "header: tentar autosave de novo chama retryAutoSave",
+    "botões Voltar e Continuar navegam no wizard",
+    "landing",
+    "aplicar sugestão de IA inicia o fluxo items-first e aplica a sugestão",
+    "atalhos de edição ficam desligados na landing",
+    "atalhos de teclado do editor",
+    "Ctrl+S salva, Ctrl+Z desfaz, Ctrl+Shift+Z e Ctrl+Y refazem",
+    "sem Ctrl/Cmd nada acontece",
+    "em campo de texto só Ctrl+S funciona",
+    "remove o listener ao desmontar"
    ]
   },
   "tests/components/pages/MagicUp.test.tsx": {
@@ -506957,13 +507219,14 @@
   },
   "tests/edge-functions/live/_authz.ts": {
    "path": "tests/edge-functions/live/_authz.ts",
-   "lines": 144,
+   "lines": 170,
    "exports": [
     "function categoryOf",
     "const VERIFY_JWT_FALSE",
     "function expectedAnonStatuses",
     "function happyPathRole",
     "const DESTRUCTIVE",
+    "const LENIENT_BODY",
     "const SUPPORTS_DRY_RUN",
     "function isDestructive"
    ],
@@ -506976,7 +507239,7 @@
   },
   "tests/edge-functions/live/_live-client.ts": {
    "path": "tests/edge-functions/live/_live-client.ts",
-   "lines": 259,
+   "lines": 261,
    "exports": [
     "const SUPABASE_URL",
     "const ANON_KEY",
@@ -507028,7 +507291,7 @@
   },
   "tests/edge-functions/live/_live-suite.ts": {
    "path": "tests/edge-functions/live/_live-suite.ts",
-   "lines": 194,
+   "lines": 203,
    "exports": [
     "interface LiveSuiteDescriptor",
     "function runLiveSuite"
@@ -507055,6 +507318,7 @@
     "* Body \"plausível\" usado nos testes de fronteira/validação. */",
     "Quebra silenciosa = 500. O contrato mínimo é nunca crashar.",
     "ausência apenas se o status já indicar preflight ok (204/200).",
+    "408 sintético = timeout do CLIENTE: a função seguiu executando; não é \"4xx de validação\".",
     "Quando alcançamos o handler autenticado, esperamos 4xx (validação).",
     "Erro deve seguir contrato {code|error|message}."
    ],
@@ -507064,7 +507328,7 @@
   },
   "tests/edge-functions/live/_schemas.ts": {
    "path": "tests/edge-functions/live/_schemas.ts",
-   "lines": 77,
+   "lines": 79,
    "exports": [
     "const errorEnvelopeSchema",
     "const healthSchema",
@@ -507085,7 +507349,7 @@
     {
      "name": "errorEnvelopeSchema",
      "kind": "object",
-     "body": "{ code: z.string().optional(), error: z.string().optional(), message: z.string().optional(), fields: z.array(fieldIssueSchema).optional(), }",
+     "body": "{ code: z.string().optional(), error: z.string().optional(), message: z.string().optional(), // Lista canônica OU o formato `zod.flatten().fieldErrors` ({ campo: [mensagens] }), // emitido pelas mcp-keys-* (`{ error: \"validation_failed\", fields }`). fields: z.union([z.array(fieldIssueSchema), z.record(z.string(), z.array(z.string()))]).optional(), }",
      "refines": [],
      "chain": []
     },
@@ -510797,24 +511061,31 @@
   },
   "tests/lib/bridge.test.ts": {
    "path": "tests/lib/bridge.test.ts",
-   "lines": 239,
+   "lines": 224,
    "is_test": true,
+   "errors": [
+    "Unexpected unmocked REST request: ${table}"
+   ],
    "tests": [
-    "invokeBridge",
-    "throws if table is missing for non-batch operations",
-    "allows batch operations without table",
-    "retries on boot errors",
-    "throws after max retries",
-    "throws on non-retryable errors immediately",
-    "throws on success:false response",
-    "invokeExternalDb",
-    "wraps single non-record responses for mutations",
-    "passes through records array for select",
-    "invokeExternalDbDelete",
-    "calls bridge with delete operation",
-    "invokeBatchBridge",
-    "sends all queries in single call when under limit",
-    "chunks queries exceeding batch limit"
+    "invokeBridge permanently OFF: the six historical transport cases now fail closed",
+    "$name",
+    "invokeExternalDb uses the actual native REST implementation",
+    "persists an insert to the real write table and returns its rows/count",
+    "selects the public view with actual filters, ordering, bounded range and count",
+    "retains the native transient-read retry without invoking the retired Edge",
+    "reports a permission-denied read as the actual empty fallback, without retry or Edge",
+    "surfaces native write permission errors instead of inventing success",
+    "rejects unscoped %s before creating a mutation builder",
+    "blocks a write to an unlisted table loudly while the bridge is OFF",
+    "invokeExternalDbDelete retains scoped native mutations",
+    "deletes only the provided id through REST and propagates mutation errors",
+    "invokeBatchBridge decomposes reads through bounded native concurrency",
+    "executes five real scoped reads rather than one obsolete Edge batch",
+    "runs fifteen reads with at most six in flight and retains input order across reversed completions",
+    "performs no requests for an empty batch"
+   ],
+   "side_effects": [
+    "enqueue("
    ]
   },
   "tests/lib/buildCustomKitInsert.test.ts": {
@@ -512881,14 +513152,16 @@
   },
   "tests/observability/structured-logger.test.ts": {
    "path": "tests/observability/structured-logger.test.ts",
-   "lines": 65,
+   "lines": 91,
    "is_test": true,
    "tests": [
     "structuredLogger (client)",
     "emite payload JSON com campos canônicos",
     "encaminha erros para o Sentry com tag request_id",
     "headers() retorna X-Request-Id propagável",
-    "child preserva request_id e prefixa scope"
+    "child preserva request_id e prefixa scope",
+    "serializa o alias error e encaminha o mesmo erro original sem perder correlação",
+    "preserva o nível warn no console nativo com o payload completo"
    ]
   },
   "tests/p0/_mocks.ts": {
@@ -516408,6 +516681,18 @@
     "chamadas alternadas com erros diferentes não interferem"
    ]
   },
+  "tests/unit/edge-live-suite-catalogs.test.ts": {
+   "path": "tests/unit/edge-live-suite-catalogs.test.ts",
+   "lines": 31,
+   "is_test": true,
+   "tests": [
+    "suíte live de edge — contratos determinísticos",
+    "envelope aceita fields no formato zod.flatten().fieldErrors (mcp-keys-*)",
+    "funções destrutivas tolerantes a corpo inválido nunca recebem JWT no teste de input inválido",
+    "sem JWT só protege se o gateway barrar anon: toda LENIENT_BODY é tier reject",
+    "mcp-keys-* validam o corpo de verdade: continuam testadas autenticadas"
+   ]
+  },
   "tests/unit/error-kind-inference.test.ts": {
    "path": "tests/unit/error-kind-inference.test.ts",
    "lines": 145,
@@ -517354,21 +517639,17 @@
   },
   "tests/unit/system/BridgeMetricsOverlay.test.tsx": {
    "path": "tests/unit/system/BridgeMetricsOverlay.test.tsx",
-   "lines": 140,
+   "lines": 210,
    "is_test": true,
    "tests": [
-    "BridgeMetricsOverlay",
-    "não deve renderizar nada se isAllowed for false",
-    "deve renderizar o botão de abertura quando fechado",
-    "deve chamar setOpen(true) ao clicar no botão de abertura",
-    "deve renderizar a lista de chamadas corretamente",
-    "deve permitir trocar de aba para longtasks",
-    "deve exibir filtros apenas na aba de chamadas",
-    "deve chamar setFilter ao clicar nos botões de filtro",
-    "deve permitir pausar/retomar live updates",
-    "deve mostrar estado ",
-    "deve chamar clear ao clicar no botão limpar",
-    "deve fechar o overlay ao clicar no X"
+    "BridgeMetricsOverlay — compact summary and current dev wrapper",
+    "role=$role initiallyOpen=$initiallyOpen source=$scenario.name action=$interaction",
+    "shows the actual latency class at %ims",
+    "shows formatted response size at %i bytes",
+    "unsubscribes the actual hook when the dev role is removed and restores only permitted UI"
+   ],
+   "side_effects": [
+    "notify"
    ]
   },
   "tests/unit/system/BridgeMetricsPerformance.test.tsx": {
@@ -517393,12 +517674,19 @@
   },
   "tests/unit/system/useBridgeMetrics.test.ts": {
    "path": "tests/unit/system/useBridgeMetrics.test.ts",
-   "lines": 36,
+   "lines": 187,
    "is_test": true,
    "tests": [
-    "useBridgeMetrics",
-    "deve inicializar com valores padrão",
-    "deve permitir limpar amostras"
+    "useBridgeMetrics — snapshot imutável e API atual sem argumento",
+    "inicializa os valores padrão sem criar um novo snapshot a cada leitura",
+    "limpa as amostras pela fronteira real e observa o snapshot vazio notificado",
+    "mantém abertura, filtro e callback clear locais sem reinscrever no store",
+    "mapeia a nova referência imutável depois da notificação e preserva a anterior",
+    "mantém o estado de abertura independente entre duas instâncias que observam o mesmo snapshot",
+    "remove a notificação ao desmontar sem voltar a consultar o snapshot"
+   ],
+   "side_effects": [
+    "notify"
    ]
   },
   "tests/utils/color-variant-carousel.test.ts": {
@@ -518081,10 +518369,54 @@
   }
  },
  "git": {
-  "sha": "1da62abb605bd1cb5aac8b367da5abed8c0ba031",
+  "sha": "f2408197d090611f9615b11d8674983d0ba5a0b6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "f240819",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(ci): corrige testes, tipos de edge e cobertura que deixam a main vermelha (#3407)",
+    "files": [
+     "e2e/flows/global-search-comprehensive.spec.ts",
+     "e2e/flows/global-search-comprehensive.spec.ts-snapshots/global-search-idle-chromium-authed-linux.png",
+     "e2e/flows/global-search-comprehensive.spec.ts-snapshots/global-search-searching-chromium-authed-linux.png",
+     "e2e/quotes/quote-view-no-presentation-mode.spec.ts-snapshots/quote-actions-menu-dark-mobile-chromium-public-linux.png",
+     "scripts/inventario/gerar-repo.mjs",
+     "scripts/inventario/gerar-rotas.mjs",
+     "supabase/functions/asia-ingestion/credential-client.test.ts",
+     "supabase/functions/asia-ingestion/index.ts",
+     "supabase/functions/audit-suite/index.ts",
+     "supabase/functions/cleanup-novelties/index.ts",
+     "supabase/functions/deno.json",
+     "supabase/functions/e2e-cleanup/index.ts",
+     "supabase/functions/external-db-bridge/applyFiltersAndSwap.integration.test.ts",
+     "supabase/functions/external-db-bridge/callerSelectIsHeavy.test.ts",
+     "supabase/functions/external-db-bridge/legacy-contracts.ts",
+     "supabase/functions/external-db-bridge/legacy-filters.ts",
+     "supabase/functions/external-db-bridge/legacy-select.ts",
+     "supabase/functions/external-db-bridge/resolveProductsSelect.test.ts",
+     "supabase/functions/external-db-bridge/wideSelectThreshold.test.ts",
+     "supabase/functions/health-check/index.ts",
+     "supabase/functions/process-scheduled-reports/index.ts",
+     "supabase/functions/quote-sync-promo-champions/index.ts",
+     "tests/components/BridgeMetricsOverlay-ProdGate.test.tsx",
+     "tests/components/DevOnlyBridgeOverlay.test.tsx",
+     "tests/components/PriceFreshnessBadge.behavior.test.tsx",
+     "tests/components/pages/KitBuilderPage.test.tsx",
+     "tests/edge-functions/live/_authz.ts",
+     "tests/edge-functions/live/_live-client.ts",
+     "tests/edge-functions/live/_live-suite.ts",
+     "tests/edge-functions/live/_schemas.ts",
+     "tests/lib/bridge.test.ts",
+     "tests/observability/structured-logger.test.ts",
+     "tests/unit/edge-live-suite-catalogs.test.ts",
+     "tests/unit/system/BridgeMetricsOverlay.test.tsx",
+     "tests/unit/system/useBridgeMetrics.test.ts",
+     "vercel.json"
+    ]
+   },
    {
     "sha": "1da62ab",
     "date": "2026-11-12",
@@ -519335,15 +519667,6 @@
      ".github/SENTINEL_SHA_ALLOWLIST.txt",
      "PENDENCIAS.md"
     ]
-   },
-   {
-    "sha": "fb4b8c2",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "fix(update-snapshots): atualizar snapshots PriceFreshnessBadge para novo class Lucide AlertTriangle",
-    "files": [
-     "src/components/products/__snapshots__/PriceFreshnessBadge.snapshots.test.tsx.snap"
-    ]
    }
   ],
   "hot_files": [
@@ -519362,6 +519685,46 @@
    [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     3
+   ],
+   [
+    "supabase/functions/external-db-bridge/applyFiltersAndSwap.integration.test.ts",
+    2
+   ],
+   [
+    "supabase/functions/external-db-bridge/callerSelectIsHeavy.test.ts",
+    2
+   ],
+   [
+    "supabase/functions/external-db-bridge/resolveProductsSelect.test.ts",
+    2
+   ],
+   [
+    "supabase/functions/external-db-bridge/wideSelectThreshold.test.ts",
+    2
+   ],
+   [
+    "tests/components/BridgeMetricsOverlay-ProdGate.test.tsx",
+    2
+   ],
+   [
+    "tests/components/DevOnlyBridgeOverlay.test.tsx",
+    2
+   ],
+   [
+    "tests/lib/bridge.test.ts",
+    2
+   ],
+   [
+    "tests/observability/structured-logger.test.ts",
+    2
+   ],
+   [
+    "tests/unit/system/BridgeMetricsOverlay.test.tsx",
+    2
+   ],
+   [
+    "tests/unit/system/useBridgeMetrics.test.ts",
+    2
    ],
    [
     "PENDENCIAS.md",
@@ -519385,46 +519748,6 @@
    ],
    [
     "scripts/lib/tsc-run.mjs",
-    2
-   ],
-   [
-    "scripts/tsc-baseline-generate.mjs",
-    2
-   ],
-   [
-    "tests/scripts/tsc-run-guard.test.mjs",
-    2
-   ],
-   [
-    "tests/hooks/useBridgeMetricsCleanup.test.ts",
-    2
-   ],
-   [
-    "tests/hooks/useBridgeMetricsPerformance.test.ts",
-    2
-   ],
-   [
-    "tests/hooks/useBridgeStatusBanner.test.ts",
-    2
-   ],
-   [
-    ".github/workflows/ci.yml",
-    2
-   ],
-   [
-    "supabase/migrations/001_notification_system.sql",
-    2
-   ],
-   [
-    "supabase/migrations/002_notification_preferences.sql",
-    2
-   ],
-   [
-    "supabase/migrations/003_notification_templates.sql",
-    2
-   ],
-   [
-    "supabase/migrations/004_notification_functions.sql",
     2
    ]
   ]

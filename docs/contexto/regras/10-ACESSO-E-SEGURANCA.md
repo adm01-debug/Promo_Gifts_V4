@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1da62abb60` · branch `main` · 2026-11-12 04:26 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `f2408197d0` · branch `main` · 2026-11-12 04:56 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -327,7 +327,7 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
-## Onde o RLS é IGNORADO (service_role) — 795 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 796 arquivo(s)
 
 - `auditoria-supabase/propostas/P01_rls_restrictive_correcao.sql`
 - `auditoria-supabase/propostas/P10_func_new_001_fn_cron_guard_revoke.sql`
@@ -441,6 +441,7 @@
 - `supabase/functions/_shared/token-revocation.ts`
 - `supabase/functions/ai-recommendations/kill_switch_contract_test.ts`
 - `supabase/functions/anonymize-user/index.ts`
+- `supabase/functions/asia-ingestion/credential-client.test.ts`
 - `supabase/functions/asia-ingestion/index.ts`
 - `supabase/functions/audit-suite/index.ts`
 - `supabase/functions/backfill-image-dimensions/index.ts`
@@ -478,8 +479,7 @@
 - `supabase/functions/hash-product-images/index.ts`
 - `supabase/functions/health-check/index.ts`
 - `supabase/functions/load-test/index.ts`
-- `supabase/functions/log-login-attempt/index.ts`
-- … +645 (lista completa em `context.json`)
+- … +646 (lista completa em `context.json`)
 
 ## Funções SQL `SECURITY DEFINER` (rodam com privilégio do dono, ignoram RLS)
 

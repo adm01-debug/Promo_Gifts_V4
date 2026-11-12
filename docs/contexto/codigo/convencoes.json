@@ -23,7 +23,7 @@
    "src/services (9)"
   ],
   "testes": [
-   "tests/ (862)",
+   "tests/ (864)",
    "e2e/ (625)",
    "co-localizado (__tests__) (618)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): corrige testes, tipos de edge e cobertura que deixam a main vermelha (#3407)",
    "docs(ci): RELATORIO §33 + PENDENCIAS #45-#52 — baseline + inventário final de workflows",
    "fix: fn_get_rupture_alerts com SECURITY DEFINER e search_path correto",
    "fix(scripts): heap explícito no tsc dos gates para evitar OOM (#3406)",
-   "chore(repo): quarentena dos 316 arquivos obsoletos da #3361 (#3398)",
-   "fix: restaura useDevGate original (stableRoles tipado como AppRole[])"
+   "chore(repo): quarentena dos 316 arquivos obsoletos da #3361 (#3398)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -14741,6 +14741,10 @@
    "supabase/functions/_shared/request-id.ts",
    "supabase/functions/_shared/structured-logger.ts"
   ],
+  "supabase/functions/external-db-bridge/legacy-contracts.ts": [
+   "supabase/functions/external-db-bridge/legacy-filters.ts",
+   "supabase/functions/external-db-bridge/legacy-select.ts"
+  ],
   "supabase/functions/external-db-inspect/index.ts": [
    "supabase/functions/_shared/bot-protection.ts",
    "supabase/functions/_shared/cors.ts",

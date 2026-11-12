@@ -258,13 +258,13 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": false,
-   "testes": 1
+   "testes": 2
   },
   {
    "nome": "audit-suite",
    "entrada": "supabase/functions/audit-suite/index.ts",
    "arquivos": 1,
-   "linhas": 153,
+   "linhas": 157,
    "verify_jwt": true,
    "metodos": [],
    "tabelas": [
@@ -1312,8 +1312,8 @@
   {
    "nome": "external-db-bridge",
    "entrada": "supabase/functions/external-db-bridge/index.ts",
-   "arquivos": 1,
-   "linhas": 40,
+   "arquivos": 4,
+   "linhas": 369,
    "verify_jwt": true,
    "metodos": [],
    "tabelas": [],
@@ -2633,7 +2633,7 @@
    "nome": "process-scheduled-reports",
    "entrada": "supabase/functions/process-scheduled-reports/index.ts",
    "arquivos": 1,
-   "linhas": 194,
+   "linhas": 195,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS"
