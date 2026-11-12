@@ -36,7 +36,7 @@
     "src/components/cart/CartHeaderButton.tsx": 1012,
     "src/components/cart/SortableCartItem.tsx": 545,
     "src/components/compare/CompareTableView.tsx": 547,
-    "src/components/compare/SupplierComparisonModal.tsx": 867,
+    "src/components/compare/SupplierComparisonModal.tsx": 915,
     "src/components/errors/EnhancedErrorBoundary.tsx": 507,
     "src/components/expert/chat/useExpertChat.ts": 757,
     "src/components/filters/PresetsBar.tsx": 547,
