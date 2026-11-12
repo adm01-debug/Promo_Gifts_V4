@@ -114,6 +114,8 @@ export interface EdgeResult {
   headers: Headers;
   text: string;
   json: unknown;
+  /** true quando o CLIENTE abortou por timeout (408 sintético): não é resposta da função. */
+  timedOut?: boolean;
 }
 
 /**
@@ -169,7 +171,7 @@ export async function callEdge(name: string, opts: CallEdgeOptions = {}): Promis
       // AbortError means our client-side timeout fired — not a server crash.
       // Return synthetic 408 so tests can assert status < 500 without throwing.
       if ((err as { name?: string }).name === "AbortError") {
-        return { status: 408, headers: new Headers(), text: "", json: null };
+        return { status: 408, headers: new Headers(), text: "", json: null, timedOut: true };
       }
       throw err;
     } finally {

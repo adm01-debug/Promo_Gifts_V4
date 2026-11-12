@@ -1,7 +1,7 @@
 import { getCorsHeaders, handleCorsPreflightIfNeeded } from '../_shared/cors.ts';
 import { getCredential } from '../_shared/credentials.ts';
 import { authorizeCron } from '../_shared/dispatcher-auth.ts';
-import { createClient } from 'npm:@supabase/supabase-js@2.49.4';
+import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2.49.4';
 import { safeErrorFields } from '../_shared/log-safety.ts';
 
 // CORS headers are now dynamic — use getCorsHeaders(req) inside the handler
@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
 
     // Utilitário: limpa um flag expirado em um banco específico, com paginação completa
     async function cleanExpiredFlag(
-      db: ReturnType<typeof createClient>,
+      db: SupabaseClient,
       dbLabel: string,
       flag: string,
       expiresField: string,
@@ -91,7 +91,7 @@ Deno.serve(async (req) => {
         };
         for (const field of extraClearFields) updateData[field] = null;
 
-        const ids = expired.map((p: { id: string }) => p.id);
+        const ids = expired.map((p) => p.id);
         for (let i = 0; i < ids.length; i += UPDATE_BATCH) {
           const batch = ids.slice(i, i + UPDATE_BATCH);
           const { error: updateError } = await db
