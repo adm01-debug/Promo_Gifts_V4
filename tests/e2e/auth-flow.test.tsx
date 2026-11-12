@@ -135,18 +135,16 @@ describe('E2E Auth — Role Mapping', () => {
   it('admin is a valid role', () => expect(roles).toContain('admin'));
   it('manager is a valid role', () => expect(roles).toContain('manager'));
   it('vendedor is a valid role', () => expect(roles).toContain('vendedor'));
+  const canManage = (role: (typeof roles)[number]) => role === 'admin' || role === 'manager';
   
   it('canManage is true for admin', () => {
-    const role = 'admin';
-    expect(role === 'admin' || role === 'manager').toBe(true);
+    expect(canManage('admin')).toBe(true);
   });
   it('canManage is true for manager', () => {
-    const role = 'manager';
-    expect(role === 'admin' || role === 'manager').toBe(true);
+    expect(canManage('manager')).toBe(true);
   });
   it('canManage is false for vendedor', () => {
-    const role = 'vendedor';
-    expect(role === 'admin' || role === 'manager').toBe(false);
+    expect(canManage('vendedor')).toBe(false);
   });
 });
 
