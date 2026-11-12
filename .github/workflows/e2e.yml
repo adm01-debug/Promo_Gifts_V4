@@ -125,6 +125,9 @@ jobs:
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          # specs de URL-state fazem loginAs(page, 'seller') (e2e/helpers/auth.ts)
+          E2E_SELLER_EMAIL: ${{ secrets.E2E_SELLER_EMAIL }}
+          E2E_SELLER_PASSWORD: ${{ secrets.E2E_SELLER_PASSWORD }}
           E2E_BASE_URL: http://localhost:8080
         run: |
           npx playwright test \

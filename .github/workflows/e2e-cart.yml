@@ -114,6 +114,9 @@ jobs:
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
           E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+          # specs de carrinho fazem loginAs(page, 'seller') (e2e/helpers/auth.ts)
+          E2E_SELLER_EMAIL: ${{ secrets.E2E_SELLER_EMAIL }}
+          E2E_SELLER_PASSWORD: ${{ secrets.E2E_SELLER_PASSWORD }}
         run: |
           npx playwright test ${{ matrix.spec }} \
             --project=${{ matrix.project }} \
