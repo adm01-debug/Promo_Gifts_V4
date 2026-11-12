@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4bda9034cf` · branch `main` · 2026-11-12 06:48 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5f956d2cf1` · branch `main` · 2026-11-12 11:46 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1766,19 +1766,19 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `aligned` | escreve | `src/components/bi/ClientCategoryRadar.tsx` |
 | `status` | `all` | compara, escreve | `recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/admin/DiscountApprovalFilterBar.tsx`<br>`src/components/admin/connections/ConnectionsOverviewFilters.tsx`<br>`src/components/admin/security/keys/useMcpKeys.ts`<br>… +12 |
 | `status` | `already_applied` | escreve | `supabase/functions/crm-callback-reprocess/index.ts` |
-| `status` | `approved` | compara, escreve | `recovery/block04_functions.sql`<br>`recovery/full-public-schema.sql`<br>`recovery/patches/D4.2_quote_advanced/functions.sql`<br>`recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx`<br>`recovery/src-legacy/src/hooks/usePasswordResetRequests.ts`<br>… +26 |
+| `status` | `approved` | compara, escreve | `recovery/block04_functions.sql`<br>`recovery/full-public-schema.sql`<br>`recovery/patches/D4.2_quote_advanced/functions.sql`<br>`recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx`<br>`recovery/src-legacy/src/hooks/usePasswordResetRequests.ts`<br>… +27 |
 | `status` | `archived` | compara, escreve | `src/lib/kit-builder/persistence.ts`<br>`src/pages/kit-builder/KitLibraryPage.tsx`<br>`src/pages/magazine/MagazineEditorPage.tsx`<br>`src/pages/magazine/pg.ts`<br>`src/types/magazine.ts`<br>… +1 |
 | `status` | `auth_failed` | escreve | `supabase/functions/e2e-cleanup/handler_characterization_test.ts` |
 | `status` | `available` | compara | `src/components/kit-builder/KitSummary.tsx` |
 | `status` | `blocked` | compara, escreve | `src/pages/Simulation.tsx`<br>`src/pages/admin/telemetry/useOptimizationQueue.ts`<br>`supabase/functions/simulation-orchestrator/index.ts` |
-| `status` | `cancelled` | compara, escreve | `src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>`src/components/admin/security/keys/UpdateMcpKeyDialog.tsx`<br>`src/components/common/StatusTimeline.tsx`<br>`src/components/quotes/QuoteStatusTimeline.tsx`<br>… +7 |
+| `status` | `cancelled` | compara, escreve | `src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>`src/components/admin/security/keys/UpdateMcpKeyDialog.tsx`<br>`src/components/common/StatusTimeline.tsx`<br>`src/components/quotes/QuoteStatusTimeline.tsx`<br>… +8 |
 | `status` | `changed` | compara, escreve | `src/hooks/kit-builder/useKitPriceValidation.ts`<br>`src/pages/kit-builder/useKitBuilderQuote.ts` |
 | `status` | `client-only` | escreve | `src/components/bi/ClientCategoryRadar.tsx` |
 | `status` | `compatible` | compara | `src/components/kit-builder/BoxComparisonDialog.tsx`<br>`src/components/kit-builder/BoxSelector.tsx`<br>`src/lib/kit-builder/ai-composition.ts` |
 | `status` | `completed` | compara | `src/lib/inventory/future-stock-stats.ts` |
 | `status` | `confirmed` | compara, escreve | `src/hooks/stock/stockFetcher.ts`<br>`src/lib/inventory/future-stock-stats.ts`<br>`src/pages/auth/SSOCallbackPage.tsx` |
 | `status` | `confirming` | compara | `src/pages/auth/SSOCallbackPage.tsx` |
-| `status` | `converted` | compara, filtra | `recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx`<br>`recovery/src-legacy/src/hooks/useQuoteFunnel.ts`<br>`src/components/quotes/MarginInsightBadge.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/hooks/quotes/useQuoteFunnel.ts`<br>… +1 |
+| `status` | `converted` | compara, filtra | `recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx`<br>`recovery/src-legacy/src/hooks/useQuoteFunnel.ts`<br>`src/components/quotes/MarginInsightBadge.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/hooks/quotes/useQuoteFunnel.ts`<br>… +2 |
 | `status` | `crit` | compara | `recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx` |
 | `status` | `critical` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>`src/lib/inventory/stock-filter.ts`<br>… +1 |
 | `status` | `degraded` | compara, escreve | `api/ready.ts`<br>`src/components/system/CloudStatusBanner.tsx`<br>`src/lib/external-db/invoke.ts` |
@@ -1863,7 +1863,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `unchanged` | escreve | `src/hooks/kit-builder/useKitPriceValidation.ts` |
 | `status` | `unconfigured` | compara | `src/components/admin/connections/DataSourceDebugTab.tsx` |
 | `status` | `underindex` | compara | `src/components/bi/ClientCategoryRadar.tsx` |
-| … +114 linhas — lista completa em `context.json` | | | |
+| … +116 linhas — lista completa em `context.json` | | | |
 
 ### E.4 Enums e listas de valores
 
@@ -2084,7 +2084,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | AlertMetric | avgResp \| p95 | `src/lib/telemetry/bridgeAlertThresholds.ts` |
 | BridgeName | crm-db-bridge \| external-db-bridge | `src/lib/telemetry/bridgeCallMetrics.ts` |
 | BridgeOperation | batch \| delete \| handshake \| health \| insert \| invoke \| rpc \| search \| select \| update \| upsert | `src/lib/telemetry/bridgeCallMetrics.ts` |
-| QuoteHandoffSource | fromCart \| fromCollection \| fromSimulator \| fromUrlParams \| fromUrlParamsSingle | `src/lib/telemetry/quoteHandoffTelemetry.ts` |
+| QuoteHandoffSource | fromBiSuggestions \| fromCart \| fromCollection \| fromCompare \| fromSimulator \| fromUrlParams \| fromUrlParamsSingle | `src/lib/telemetry/quoteHandoffTelemetry.ts` |
 | InvalidTransitionReason | db_check_violation \| not_allowed_by_config \| out_of_enum | `src/lib/telemetry/quoteStatusTelemetry.ts` |
 | InvalidTransitionSource | db \| service \| ui | `src/lib/telemetry/quoteStatusTelemetry.ts` |
 | RestoreEventName | restore_failed \| restore_ok \| restore_skipped_empty_snapshot \| restore_start | `src/lib/telemetry/restoreEventSchema.ts` |
@@ -3923,7 +3923,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **validateKitFitsForQuote(box: KitBox | null, items: KitItem[],)** — `src/hooks/kit-builder/useKitFitsValidation.ts`
   ```
-  if (!box) return { status: 'skipped' }; if (items.length === 0) return { status: 'ok' }; let usedLiters = 0; const violations: FitViolation[] = []; for (const item of items) { try { const { data, error } = await supabase.rpc('fn_check_item_fits', { p_packaging_id: box.id, p_product_id: item.id, p_current_used_liters: usedLiters, }); if (error || !data || (data as FitRow[]).length === 0) continue; const row = (data as FitRow[])[0]; // fits=null means no dimension data — fail-open: skip, do not vi …
+  if (!box) return { status: 'skipped' }; if (items.length === 0) return { status: 'ok' }; let usedLiters = 0; const violations: FitViolation[] = []; for (const item of items) { try { const { data, error } = await supabase.rpc('fn_check_item_fits', { p_packaging_id: box.id, p_product_id: item.id, p_current_used_liters: usedLiters, }); const row = error ? undefined : (data as FitRow[] | null)?.[0]; if (!row) continue; const qty = Math.max(1, item.quantity ?? 1); const lineVolume = (row.product_volu …
   ```
 - **validateKitMinQuantityForQuote(items: KitItem[], kitQuantity: number,)** — `src/hooks/kit-builder/useKitMinQuantityValidation.ts`
   ```
@@ -4583,7 +4583,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **computeStats(images: CfImage[])** — `src/pages/admin/AdminCloudflareImagesPage.tsx`
   ```
-  const stats: CfStats = { total: images.length, verified: 0, pending: 0, syncing: 0, failed: 0, skipped: 0, noStatus: 0, }; for (const img of images) { switch (img.cf_sync_status) { case 'verified': stats.verified++; break; case 'pending': stats.pending++; break; case 'syncing': stats.syncing++; break; case 'failed': stats.failed++; break; case 'skipped': stats.skipped++; break; default: stats.noStatus++; } } return stats;
+  const stats: CfStats = { total: images.length, verified: 0, pending: 0, syncing: 0, failed: 0, missing: 0, noStatus: 0, }; for (const img of images) { switch (img.cf_sync_status) { case 'verified': stats.verified++; break; case 'pending': stats.pending++; break; case 'uploading': case 'uploaded': stats.syncing++; break; case 'failed': stats.failed++; break; case 'missing': case 'orphaned': stats.missing++; break; default: stats.noStatus++; } } return stats;
   ```
 - **isMissingPriceFreshnessThresholdColumn(error: unknown)** — `src/pages/admin/AdminProductFormPage.tsx`
   ```
@@ -4944,6 +4944,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **computeImageHash(imageBytes: Uint8Array)** — `supabase/functions/product-visual-search/index.ts`
   ```
   // Uint8Array.from creates an ArrayBuffer-backed view accepted by the Web Crypto // BufferSource type in Deno 2, even when the source view is ArrayBufferLike. const digestInput = Uint8Array.from(imageBytes); const hashBuffer = await crypto.subtle.digest('SHA-256', digestInput); return Array.from(new Uint8Array(hashBuffer)) .map(b => b.toString(16).padStart(2, '0')) .join('');
+  ```
+- **scanMet(a)** — `supabase/functions/secure-upload/index.ts`
+  ```
+  file_name: string; file_size: number | null; mime_type: string | null
   ```
 - **rerankProducts(query: string, products: Array<{ id: string; name?: string; description?: string; tags?: string[]; category?: string }>,)** — `supabase/functions/semantic-search/index.ts`
   ```
@@ -5442,6 +5446,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `SPARKLINE_WINDOW_DAYS` | `90` | `src/hooks/intelligence/useSparklineSales.tsx` |
 | `PAGE_SIZE` | `1000` | `src/hooks/intelligence/useSparklineSales.tsx` |
 | `BATCH_SIZE` | `50` | `src/hooks/intelligence/useSparklineSales.tsx` |
+| `PAGE_SIZE` | `1000` | `src/hooks/intelligence/useStockHistory.ts` |
 | `CHUNK_SIZE` | `100` | `src/hooks/intelligence/useStockVelocityPrefetch.ts` |
 | `ERROR_RESET_DELAY_MS` | `5000` | `src/hooks/intelligence/useVoiceAgent.ts` |
 | `PROCESSING_ERROR_RESET_DELAY_MS` | `3000` | `src/hooks/intelligence/useVoiceAgent.ts` |
@@ -5499,6 +5504,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MATERIAL_POINTS` | `6` | `src/hooks/products/useProductMatch.ts` |
 | `COMPLEMENTARY_POINTS` | `20` | `src/hooks/products/useProductMatch.ts` |
 | `CHUNK` | `50` | `src/hooks/products/useProductsByColor.ts` |
+| `PAGE` | `1000` | `src/hooks/products/useProductsByColor.ts` |
+| `MAX_PAGES` | `50` | `src/hooks/products/useProductsByColor.ts` |
 | `CHUNK` | `100` | `src/hooks/products/useProductsColorsBatch.ts` |
 | `PAGE` | `1000` | `src/hooks/products/useProductsColorsBatch.ts` |
 | `MAX_PAGES` | `50` | `src/hooks/products/useProductsColorsBatch.ts` |
@@ -5537,10 +5544,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `CATALOG_LOW_STOCK_THRESHOLD` | `10` | `src/lib/catalog-stock-status.ts` |
 | `WINDOW_MS` | `30` | `src/lib/chunk-recovery.ts` |
 | `MAX_HARD_RELOADS` | `2` | `src/lib/chunk-recovery.ts` |
-| `SHARED_RELOAD_PARAM` | `'__bare'` | `src/lib/chunk-recovery.ts` |
-| `SHARED_RELOAD_TS_PARAM` | `'__bart'` | `src/lib/chunk-recovery.ts` |
-| `SHARED_RELOAD_MAX` | `2` | `src/lib/chunk-recovery.ts` |
-| … +327 linhas — lista completa em `context.json` | | |
+| … +330 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -5846,7 +5850,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientAffinity.ts` |
 | `const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;` | `src/hooks/bi/useClientCategoryAffinity.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientCategoryAffinity.ts` |
-| … +379 linhas — lista completa em `context.json` | |
+| … +380 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -6001,6 +6005,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | 1 | `supabase/functions/connections-hub-audit/index.ts` |
 | 1 | `supabase/functions/crm-db-bridge/index.ts` |
 | 50 | `supabase/functions/crm-db-bridge/index.ts` |
+| 1 | `supabase/functions/detect-new-device/index.ts` |
 | 1000 | `supabase/functions/e2e-cleanup/index.ts` |
 | 10 | `supabase/functions/expert-chat/index.ts` |
 | 1000 | `supabase/functions/expert-chat/index.ts` |
@@ -6327,7 +6332,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | mais de um baseline em ${BASELINE_DIR}: ${found.join( | `scripts/drift-baseline.mjs` |
 | nenhum baseline em ${BASELINE_DIR} | `scripts/drift-baseline.mjs` |
 | project ref inválido: ${JSON.stringify(projectRef)} | `scripts/drift-baseline.mjs` |
-| … +1165 linhas — lista completa em `context.json` | |
+| … +1171 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6368,6 +6373,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `assistant` | `src/components/expert/chat/useExpertChat.ts` |
 | `user` | `src/components/expert/chat/useExpertChat.ts` |
 | `denied` | `src/components/security/PushNotificationSettings.tsx` |
+| `admin` | `src/components/security/SecurityDashboard.tsx` |
+| `dev` | `src/components/security/SecurityDashboard.tsx` |
 | `dev` | `src/hooks/auth/useRBAC.tsx` |
 | `roleName` | `src/hooks/auth/useRBAC.tsx` |
 | `supervisor` | `src/hooks/auth/useRBAC.tsx` |
@@ -6395,7 +6402,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `assistant` | `supabase/functions/_shared/ai-router/google-genai.ts` |
 | `system` | `supabase/functions/_shared/ai-router/google-genai.ts` |
 | `agente` | `supabase/functions/bi-copilot/index.ts` |
-| `admin` | `supabase/functions/block-ip-temporarily/index.ts` |
 | `agente` | `supabase/functions/categories-api/index.ts` |
 | `agente` | `supabase/functions/comparison-ai-advisor/index.ts` |
 | `admin` | `supabase/functions/connection-tester/index.ts` |
@@ -6404,11 +6410,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `vendedor` | `supabase/functions/crm-db-bridge/index.ts` |
 | `agente` | `supabase/functions/dropbox-list/index.ts` |
 | `user` | `supabase/functions/expert-chat/index.ts` |
-| `admin` | `supabase/functions/force-global-logout/index.ts` |
 | `dev` | `supabase/functions/force-global-logout/index.ts` |
-| `supervisor` | `supabase/functions/force-global-logout/index.ts` |
 | `admin` | `supabase/functions/github-credentials-test/index.ts` |
 | `agente` | `supabase/functions/kit-ai-builder/index.ts` |
+| `dev` | `supabase/functions/manage-users/index.ts` |
 | `supervisor` | `supabase/functions/manage-users/index.ts` |
 | `vendedor` | `supabase/functions/manage-users/index.ts` |
 | `agente` | `supabase/functions/quote-sync/index.ts` |
@@ -6446,7 +6451,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (19879 testes em 1982 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (19885 testes em 1984 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6750,7 +6755,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/cart/__tests__/CartHeaderButton.delete.test.tsx` | 17 | CartHeaderButton — trash button onPointerDown · faz stopPropagation e NÃO faz preventDefault · CartHeaderButton — trash button onClick · chama preventDefault, stopPropagation, setOpen(false) e agenda no rAF … |
 | `src/components/inventory/__tests__/StockBadge.test.tsx` | 17 | StockBadge — getStockStatus helper · returns out-of-stock for zero quantity · returns low-stock at or below threshold · returns in-stock above threshold … |
 | `src/components/inventory/__tests__/bulk-add-to-collection-modal.test.tsx` | 17 | BulkAddToCollectionModal — initial state · renders dialog title with correct count (2 variações) · renders  · shows empty state when no collections … |
-| … +1682 linhas — lista completa em `context.json` | | |
+| … +1684 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

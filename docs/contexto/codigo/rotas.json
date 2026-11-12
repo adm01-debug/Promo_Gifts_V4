@@ -779,7 +779,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 533
+   "arquivos_puxados": 534
   },
   {
    "protegida": false,
@@ -7366,6 +7366,7 @@
    ],
    "flags": [],
    "papeis": [
+    "admin",
     "alert",
     "alertdialog",
     "dev",
@@ -19131,7 +19132,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 499
+   "arquivos_puxados": 500
   },
   {
    "protegida": false,

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4bda9034cfa19cf133a2d1301c965c2d564f966c",
+  "commit": "5f956d2cf110e10da489774bbca3b12413c24039",
   "branch": "main",
-  "data_commit": "2026-11-12T03:29:23-03:00",
+  "data_commit": "2026-11-12T08:22:12-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "5f956d2",
+    "data": "2026-11-12",
+    "assunto": "fix: corrige 62 bugs confirmados em telas, hooks e edge functions (#3424)"
+   },
    {
     "sha": "4bda903",
     "data": "2026-11-12",
@@ -126,26 +131,21 @@
     "sha": "6b859b0",
     "data": "2026-11-09",
     "assunto": "fix(migrations): idempotência em RLS deny-all e partições 2027 (#3257)"
-   },
-   {
-    "sha": "634b93e",
-    "data": "2026-11-09",
-    "assunto": "fix(ci): atualiza baseline file-size NoveltyProductGrid 863→865 (#3354)"
    }
   ],
-  "arquivos_mudados_7d": 1416,
+  "arquivos_mudados_7d": 1482,
   "pastas_mais_mudadas_30d": [
+   {
+    "pasta": "src/components/admin",
+    "mudancas": 318
+   },
    {
     "pasta": "recovery/src-legacy/src",
     "mudancas": 316
    },
    {
-    "pasta": "src/components/admin",
-    "mudancas": 309
-   },
-   {
     "pasta": "src/components/products",
-    "mudancas": 162
+    "mudancas": 164
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -153,11 +153,11 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 107
+    "mudancas": 108
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 104
+    "mudancas": 105
    },
    {
     "pasta": "src/pages/magazine",
@@ -180,12 +180,12 @@
     "mudancas": 78
    },
    {
-    "pasta": "src/components/kit-builder",
-    "mudancas": 62
+    "pasta": "src/pages/admin",
+    "mudancas": 64
    },
    {
-    "pasta": "src/pages/admin",
-    "mudancas": 59
+    "pasta": "src/components/kit-builder",
+    "mudancas": 63
    },
    {
     "pasta": "RELATORIO_CI.md",
@@ -193,7 +193,7 @@
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 53
+    "mudancas": 54
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -219,7 +219,7 @@
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9885,
-  "arquivos_codigo": 5045,
-  "linhas_codigo": 962662,
+  "arquivos_total": 9887,
+  "arquivos_codigo": 5047,
+  "linhas_codigo": 963446,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 545,
   "migrations": 3050,
   "cron_jobs": 120,
-  "testes": 2294,
+  "testes": 2296,
   "workflows": 95,
   "scripts": 259,
   "docs_md": 1010
@@ -1852,7 +1852,7 @@
   },
   "src/components": {
    "arquivos": 1345,
-   "linhas": 271105
+   "linhas": 271350
   },
   "src/config": {
    "arquivos": 1,
@@ -1864,7 +1864,7 @@
   },
   "src/contexts": {
    "arquivos": 20,
-   "linhas": 5359
+   "linhas": 5322
   },
   "src/data": {
    "arquivos": 3,
@@ -1876,7 +1876,7 @@
   },
   "src/hooks": {
    "arquivos": 453,
-   "linhas": 84563
+   "linhas": 84679
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1884,7 +1884,7 @@
   },
   "src/lib": {
    "arquivos": 327,
-   "linhas": 50560
+   "linhas": 50660
   },
   "src/logic": {
    "arquivos": 4,
@@ -1896,7 +1896,7 @@
   },
   "src/pages": {
    "arquivos": 348,
-   "linhas": 81796
+   "linhas": 81880
   },
   "src/routes": {
    "arquivos": 14,
@@ -1904,7 +1904,7 @@
   },
   "src/services": {
    "arquivos": 27,
-   "linhas": 5351
+   "linhas": 5365
   },
   "src/stores": {
    "arquivos": 11,
@@ -1928,7 +1928,7 @@
   },
   "supabase/functions": {
    "arquivos": 268,
-   "linhas": 48603
+   "linhas": 48779
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -2047,8 +2047,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 127,
-   "linhas": 17076
+   "arquivos": 128,
+   "linhas": 17135
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2059,8 +2059,8 @@
    "linhas": 15
   },
   "tests/lib": {
-   "arquivos": 62,
-   "linhas": 9190
+   "arquivos": 63,
+   "linhas": 9217
   },
   "tests/magazine": {
    "arquivos": 18,
@@ -2242,7 +2242,7 @@
   },
   {
    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-   "linhas": 1410
+   "linhas": 1414
   },
   {
    "arquivo": "src/pages/tools/VisualSearchPage.tsx",
@@ -2269,16 +2269,16 @@
    "linhas": 1107
   },
   {
+   "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
+   "linhas": 1042
+  },
+  {
    "arquivo": "src/pages/products/CartsListPage.tsx",
    "linhas": 1037
   },
   {
-   "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
-   "linhas": 1016
-  },
-  {
    "arquivo": "src/components/cart/CartHeaderButton.tsx",
-   "linhas": 1011
+   "linhas": 1012
   },
   {
    "arquivo": "recovery/src-legacy/src/hooks/useMagicUpState.ts",

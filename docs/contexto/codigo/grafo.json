@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 2751,
- "arestas": 10877,
+ "arestas": 10889,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -18,7 +18,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 450
+   "importado_por": 451
   },
   {
    "arquivo": "src/components/ui/card.tsx",
@@ -38,7 +38,7 @@
   },
   {
    "arquivo": "src/contexts/AuthContext.tsx",
-   "importado_por": 237
+   "importado_por": 238
   },
   {
    "arquivo": "src/components/ui/skeleton.tsx",
@@ -70,7 +70,7 @@
   },
   {
    "arquivo": "src/lib/kit-builder/index.ts",
-   "importado_por": 95
+   "importado_por": 96
   },
   {
    "arquivo": "src/components/ui/scroll-area.tsx",
@@ -628,7 +628,7 @@
   {
    "modulo": "contexts",
    "depende_de": 17,
-   "importado_por": 58
+   "importado_por": 59
   },
   {
    "modulo": "components/ui",
@@ -638,7 +638,7 @@
   {
    "modulo": "integrations/supabase",
    "depende_de": 3,
-   "importado_por": 69
+   "importado_por": 70
   },
   {
    "modulo": "hooks/products",
@@ -716,9 +716,9 @@
    "importado_por": 27
   },
   {
-   "modulo": "components/quotes",
-   "depende_de": 22,
-   "importado_por": 5
+   "modulo": "components/catalog",
+   "depende_de": 19,
+   "importado_por": 9
   }
  ],
  "arestas_em": "docs/contexto/codigo/grafo-arestas.json"

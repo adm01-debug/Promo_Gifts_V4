@@ -5029,7 +5029,7 @@
    "hooks_exportados": [
     "useEngravingWizard"
    ],
-   "linhas": 363,
+   "linhas": 368,
    "dominio": "components/admin",
    "tabelas": [],
    "rpcs": [],
@@ -5262,7 +5262,7 @@
    "hooks_exportados": [
     "useSuppliersManager"
    ],
-   "linhas": 777,
+   "linhas": 779,
    "dominio": "components/admin",
    "tabelas": [],
    "rpcs": [],
@@ -5313,18 +5313,23 @@
    "hooks_exportados": [
     "useCatalogSelection"
    ],
-   "linhas": 249,
+   "linhas": 326,
    "dominio": "components/catalog",
-   "tabelas": [],
+   "tabelas": [
+    "favorite_items"
+   ],
    "rpcs": [],
    "edges": [],
    "hooks_internos": [
+    "useAuth",
     "useCallback",
     "useComparisonStore",
     "useEffect",
+    "useFavoriteLists",
     "useFavoritesStore",
     "useMemo",
     "useNavigate",
+    "useQueryClient",
     "useState"
    ],
    "canais_realtime": [],
@@ -5462,7 +5467,7 @@
    "hooks_exportados": [
     "useExpertChat"
    ],
-   "linhas": 749,
+   "linhas": 757,
    "dominio": "components/expert",
    "tabelas": [
     "profiles",
@@ -5478,6 +5483,7 @@
     "useExpertChatTts",
     "useExpertConversations",
     "useNavigate",
+    "useOrganization",
     "useRef",
     "useState"
    ],
@@ -6062,7 +6068,7 @@
    "hooks_exportados": [
     "useSecurityData"
    ],
-   "linhas": 195,
+   "linhas": 194,
    "dominio": "components/security",
    "tabelas": [
     "login_attempts",
@@ -6211,7 +6217,7 @@
     "useRef"
    ],
    "canais_realtime": [],
-   "usado_por": 200,
+   "usado_por": 201,
    "usado_por_arquivos": [
     "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
     "recovery/src-legacy/src/components/navigation/DynamicBreadcrumbs.tsx",
@@ -6301,7 +6307,7 @@
    "hooks_exportados": [
     "useCollectionsContext"
    ],
-   "linhas": 118,
+   "linhas": 81,
    "dominio": "contexts",
    "tabelas": [],
    "rpcs": [],
@@ -6310,11 +6316,8 @@
     "useCallback",
     "useCollections",
     "useContext",
-    "useEffect",
     "useMemo",
-    "useProductsContext",
-    "useRef",
-    "useState"
+    "useProductsContext"
    ],
    "canais_realtime": [],
    "usado_por": 8,
@@ -6402,10 +6405,11 @@
     "useContext"
    ],
    "canais_realtime": [],
-   "usado_por": 6,
+   "usado_por": 7,
    "usado_por_arquivos": [
     "recovery/src-legacy/src/hooks/useCurrentOrgId.ts",
     "recovery/src-legacy/src/hooks/useQuotes.ts",
+    "src/components/expert/chat/useExpertChat.ts",
     "src/components/providers/AppProviders.tsx",
     "src/hooks/common/useCurrentOrgId.ts",
     "src/hooks/common/useOrgData.ts",
@@ -6552,7 +6556,7 @@
    "hooks_exportados": [
     "useAdminKitTemplates"
    ],
-   "linhas": 94,
+   "linhas": 99,
    "dominio": "hooks/admin",
    "tabelas": [
     "kit_templates"
@@ -7592,7 +7596,7 @@
    "hooks_exportados": [
     "useCollections"
    ],
-   "linhas": 711,
+   "linhas": 728,
    "dominio": "hooks/collections",
    "tabelas": [
     "collection_items",
@@ -7605,6 +7609,7 @@
     "useAuth",
     "useCallback",
     "useEffect",
+    "useRef",
     "useState"
    ],
    "canais_realtime": [],
@@ -8529,8 +8534,9 @@
     "useState"
    ],
    "canais_realtime": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_arquivos": [
+    "src/components/catalog/useCatalogSelection.ts",
     "src/hooks/favorites/index.ts"
    ],
    "coberto_por_testes": 1
@@ -9391,7 +9397,7 @@
     "useStockDailySummary",
     "useStockVelocity"
    ],
-   "linhas": 259,
+   "linhas": 278,
    "dominio": "hooks/intelligence",
    "tabelas": [],
    "rpcs": [],
@@ -9810,7 +9816,7 @@
   {
    "arquivo": "src/hooks/kit-builder/useKitFitsValidation.ts",
    "hooks_exportados": [],
-   "linhas": 68,
+   "linhas": 76,
    "dominio": "hooks/kit-builder",
    "tabelas": [],
    "rpcs": [
@@ -9823,7 +9829,7 @@
    "usado_por_arquivos": [
     "src/pages/kit-builder/useKitBuilderQuote.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/kit-builder/useKitIdentitySuggestion.ts",
@@ -9930,7 +9936,7 @@
    "hooks_exportados": [
     "useKitTemplates"
    ],
-   "linhas": 125,
+   "linhas": 150,
    "dominio": "hooks/kit-builder",
    "tabelas": [
     "custom_kits",
@@ -11113,7 +11119,7 @@
    "hooks_exportados": [
     "useProductsByColor"
    ],
-   "linhas": 230,
+   "linhas": 241,
    "dominio": "hooks/products",
    "tabelas": [],
    "rpcs": [],
@@ -11850,7 +11856,7 @@
    "hooks_exportados": [
     "useQuoteBuilderSteps"
    ],
-   "linhas": 570,
+   "linhas": 572,
    "dominio": "hooks/quotes",
    "tabelas": [],
    "rpcs": [],
@@ -11871,7 +11877,7 @@
    "hooks_exportados": [
     "useQuoteBuilderState"
    ],
-   "linhas": 1016,
+   "linhas": 1042,
    "dominio": "hooks/quotes",
    "tabelas": [
     "quotes"
@@ -12197,8 +12203,9 @@
     "useState"
    ],
    "canais_realtime": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_arquivos": [
+    "src/components/products/ProductCustomizationOptions.tsx",
     "src/hooks/simulation/index.ts"
    ],
    "coberto_por_testes": 3
@@ -13888,7 +13895,7 @@
    "hooks_exportados": [
     "useTelemetryData"
    ],
-   "linhas": 152,
+   "linhas": 156,
    "dominio": "pages/admin",
    "tabelas": [
     "query_telemetry"
@@ -13909,7 +13916,7 @@
    "hooks_exportados": [
     "useAdvancedPriceSearch"
    ],
-   "linhas": 194,
+   "linhas": 199,
    "dominio": "pages/advanced-price-search",
    "tabelas": [],
    "rpcs": [],

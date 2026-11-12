@@ -404,26 +404,22 @@
    "nome": "block-ip-temporarily",
    "entrada": "supabase/functions/block-ip-temporarily/index.ts",
    "arquivos": 1,
-   "linhas": 100,
+   "linhas": 81,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
    ],
    "tabelas": [
     "admin_audit_log",
-    "ip_access_control",
-    "user_roles"
+    "ip_access_control"
    ],
    "rpcs": [],
-   "env": [
-    "SUPABASE_ANON_KEY",
-    "SUPABASE_SERVICE_ROLE_KEY",
-    "SUPABASE_URL"
-   ],
+   "env": [],
    "buckets": [],
    "chama_edges": [],
    "hosts_externos": [],
    "usa_shared": [
+    "authorize.ts",
     "block-ip-temporarily.ts",
     "cors.ts",
     "index.ts"
@@ -642,7 +638,7 @@
    "nome": "collections-watcher",
    "entrada": "supabase/functions/collections-watcher/index.ts",
    "arquivos": 2,
-   "linhas": 247,
+   "linhas": 249,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS"
@@ -1060,7 +1056,7 @@
    "nome": "detect-new-device",
    "entrada": "supabase/functions/detect-new-device/index.ts",
    "arquivos": 1,
-   "linhas": 144,
+   "linhas": 152,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1071,14 +1067,12 @@
     "workspace_notifications"
    ],
    "rpcs": [],
-   "env": [
-    "SUPABASE_SERVICE_ROLE_KEY",
-    "SUPABASE_URL"
-   ],
+   "env": [],
    "buckets": [],
    "chama_edges": [],
    "hosts_externos": [],
    "usa_shared": [
+    "authorize.ts",
     "cors.ts"
    ],
    "chamada_pelo_front": [
@@ -1382,7 +1376,7 @@
    "nome": "favorites-watcher",
    "entrada": "supabase/functions/favorites-watcher/index.ts",
    "arquivos": 2,
-   "linhas": 249,
+   "linhas": 246,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS"
@@ -1415,7 +1409,7 @@
    "nome": "force-global-logout",
    "entrada": "supabase/functions/force-global-logout/index.ts",
    "arquivos": 1,
-   "linhas": 111,
+   "linhas": 110,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1424,7 +1418,9 @@
     "admin_audit_log",
     "user_roles"
    ],
-   "rpcs": [],
+   "rpcs": [
+    "admin_revoke_user_sessions"
+   ],
    "env": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -2158,7 +2154,7 @@
    "nome": "manage-users",
    "entrada": "supabase/functions/manage-users/index.ts",
    "arquivos": 1,
-   "linhas": 357,
+   "linhas": 388,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -2282,14 +2278,15 @@
    "nome": "mcp-keys-issue",
    "entrada": "supabase/functions/mcp-keys-issue/index.ts",
    "arquivos": 1,
-   "linhas": 396,
+   "linhas": 412,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
     "POST"
    ],
    "tabelas": [
-    "mcp_api_keys"
+    "mcp_api_keys",
+    "step_up_audit_log"
    ],
    "rpcs": [
     "can_grant_mcp_full",
@@ -2361,14 +2358,15 @@
    "nome": "mcp-keys-rotate",
    "entrada": "supabase/functions/mcp-keys-rotate/index.ts",
    "arquivos": 1,
-   "linhas": 331,
+   "linhas": 347,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
     "POST"
    ],
    "tabelas": [
-    "mcp_api_keys"
+    "mcp_api_keys",
+    "step_up_audit_log"
    ],
    "rpcs": [
     "can_grant_mcp_full",
@@ -2402,14 +2400,15 @@
    "nome": "mcp-keys-update",
    "entrada": "supabase/functions/mcp-keys-update/index.ts",
    "arquivos": 1,
-   "linhas": 333,
+   "linhas": 349,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
     "POST"
    ],
    "tabelas": [
-    "mcp_api_keys"
+    "mcp_api_keys",
+    "step_up_audit_log"
    ],
    "rpcs": [
     "can_grant_mcp_full",
@@ -2709,12 +2708,13 @@
    "nome": "product-webhook",
    "entrada": "supabase/functions/product-webhook/index.ts",
    "arquivos": 3,
-   "linhas": 707,
+   "linhas": 777,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
    ],
    "tabelas": [
+    "categories",
     "product_sync_logs",
     "products",
     "webhook_request_nonces"
@@ -3044,7 +3044,7 @@
    "nome": "secure-upload",
    "entrada": "supabase/functions/secure-upload/index.ts",
    "arquivos": 1,
-   "linhas": 378,
+   "linhas": 405,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -3607,7 +3607,7 @@
    "nome": "validate-access",
    "entrada": "supabase/functions/validate-access/index.ts",
    "arquivos": 1,
-   "linhas": 290,
+   "linhas": 289,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -3646,7 +3646,7 @@
    "nome": "verify-2fa-token",
    "entrada": "supabase/functions/verify-2fa-token/index.ts",
    "arquivos": 1,
-   "linhas": 241,
+   "linhas": 255,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"

@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2294,
+ "total": 2296,
  "por_tipo": {
   "contrato": 57,
   "e2e": 677,
   "pytest": 2,
   "qa": 17,
-  "unit": 1541
+  "unit": 1543
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 864
+   "arquivos": 866
   },
   {
    "padrao": "e2e/",
@@ -15691,6 +15691,16 @@
    "casos": 13
   },
   {
+   "arquivo": "tests/hooks/kit-builder/useKitFitsValidation.test.ts",
+   "tipo": "unit",
+   "linhas": 59,
+   "testa": [
+    "src/hooks/kit-builder/useKitFitsValidation.ts",
+    "src/lib/kit-builder/index.ts"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "tests/hooks/quoteHelpers.priceConfirmed.test.ts",
    "tipo": "unit",
    "linhas": 109,
@@ -17346,6 +17356,15 @@
     "src/lib/db/postgrest.ts"
    ],
    "casos": 14
+  },
+  {
+   "arquivo": "tests/lib/price-tables-technique-group.test.ts",
+   "tipo": "unit",
+   "linhas": 27,
+   "testa": [
+    "src/lib/external-db/price-tables.ts"
+   ],
+   "casos": 2
   },
   {
    "arquivo": "tests/lib/print-area-grouping.test.ts",
@@ -19835,6 +19854,7 @@
   "src/hooks/kit-builder/useKitBuilderPageState.ts": 1,
   "src/hooks/kit-builder/useKitBuilderQueries.ts": 2,
   "src/hooks/kit-builder/useKitBuilderTransformers.ts": 1,
+  "src/hooks/kit-builder/useKitFitsValidation.ts": 1,
   "src/hooks/kit-builder/useKitPriceValidation.ts": 1,
   "src/hooks/kit-builder/useKitStockValidation.ts": 2,
   "src/hooks/kit-builder/useKitUndoRedo.ts": 1,
@@ -19977,6 +19997,7 @@
   "src/lib/external-db/kill-switch-client.ts": 2,
   "src/lib/external-db/kill-switch-telemetry.ts": 1,
   "src/lib/external-db/kit-coverage.ts": 2,
+  "src/lib/external-db/price-tables.ts": 1,
   "src/lib/external-db/product-types.ts": 2,
   "src/lib/external-db/products-lightweight.ts": 1,
   "src/lib/external-db/products.ts": 1,
@@ -20003,7 +20024,7 @@
   "src/lib/inventory/supplier-reliability/score.ts": 1,
   "src/lib/inventory/supplier-reliability/types.ts": 4,
   "src/lib/kit-builder/ai-composition.ts": 1,
-  "src/lib/kit-builder/index.ts": 25,
+  "src/lib/kit-builder/index.ts": 26,
   "src/lib/kit-builder/item-sort.ts": 1,
   "src/lib/kit-builder/persistence.ts": 1,
   "src/lib/kit-builder/price-calculator.ts": 2,
@@ -20679,7 +20700,6 @@
    "src/hooks/kit-builder/useCustomKitsRealtime.ts",
    "src/hooks/kit-builder/useDuplicateKitDetector.ts",
    "src/hooks/kit-builder/useKitCollaboration.ts",
-   "src/hooks/kit-builder/useKitFitsValidation.ts",
    "src/hooks/kit-builder/useKitIdentitySuggestion.ts",
    "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
    "src/hooks/kit-builder/useKitStockForecast.ts",

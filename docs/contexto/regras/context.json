@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "4bda9034cfa19cf133a2d1301c965c2d564f966c",
+  "sha": "5f956d2cf110e10da489774bbca3b12413c24039",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-12 06:48 UTC",
-  "files_total": 9813,
-  "code_files": 8375,
-  "code_lines": 1178408
+  "generated_at": "2026-11-12 11:46 UTC",
+  "files_total": 9815,
+  "code_files": 8377,
+  "code_lines": 1179192
  },
  "version": "1.3.2",
- "facts_hash": "3518495851e5fb84",
+ "facts_hash": "f324b78652530673",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1183,7 +1183,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3331,
-   ".ts": 2885,
+   ".ts": 2887,
    ".tsx": 1845,
    ".mjs": 305,
    ".py": 9,
@@ -135337,7 +135337,7 @@
      "log_user_logout",
      "restore_seller_cart"
     ],
-    "deps_count": 295
+    "deps_count": 296
    },
    {
     "path": "",
@@ -135887,7 +135887,7 @@
      "get_promo_sales_ranking",
      "restore_seller_cart"
     ],
-    "deps_count": 191
+    "deps_count": 192
    },
    {
     "path": "",
@@ -135986,7 +135986,7 @@
      "restore_seller_cart",
      "search_records_rerank"
     ],
-    "deps_count": 371
+    "deps_count": 372
    },
    {
     "path": "/admin/permissoes",
@@ -136032,7 +136032,7 @@
      "log_user_logout",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 55
+    "deps_count": 57
    },
    {
     "path": "/admin/qa/sidebar",
@@ -136686,7 +136686,7 @@
      "restore_favorite_from_trash",
      "restore_seller_cart"
     ],
-    "deps_count": 331
+    "deps_count": 335
    },
    {
     "path": "/ferramentas/bi",
@@ -137299,7 +137299,7 @@
      "respond_discount_approval_transactional",
      "restore_seller_cart"
     ],
-    "deps_count": 277
+    "deps_count": 280
    },
    {
     "path": "/promoflix-playground",
@@ -137710,17 +137710,14 @@
     "methods": [
      "OPTIONS"
     ],
-    "auth": "service_role (ignora RLS) + valida JWT do usuário",
+    "auth": "service_role (ignora RLS) — NÃO valida usuário no código",
     "tables": [
      "admin_audit_log",
      "ip_access_control",
-     "user_roles"
+     "user_roles",
+     "user_token_revocations"
     ],
-    "env": [
-     "SUPABASE_ANON_KEY",
-     "SUPABASE_SERVICE_ROLE_KEY",
-     "SUPABASE_URL"
-    ],
+    "env": [],
     "external": [],
     "invokes": [],
     "doc": "",
@@ -138196,12 +138193,11 @@
     "tables": [
      "device_login_notifications",
      "user_known_devices",
+     "user_roles",
+     "user_token_revocations",
      "workspace_notifications"
     ],
-    "env": [
-     "SUPABASE_SERVICE_ROLE_KEY",
-     "SUPABASE_URL"
-    ],
+    "env": [],
     "external": [],
     "invokes": [],
     "doc": "",
@@ -139078,7 +139074,8 @@
     "auth": "service_role (ignora RLS) + valida JWT do usuário",
     "tables": [
      "admin_audit_log",
-     "mcp_api_keys"
+     "mcp_api_keys",
+     "step_up_audit_log"
     ],
     "env": [
      "SUPABASE_ANON_KEY",
@@ -139126,7 +139123,8 @@
     "auth": "service_role (ignora RLS) + valida JWT do usuário",
     "tables": [
      "admin_audit_log",
-     "mcp_api_keys"
+     "mcp_api_keys",
+     "step_up_audit_log"
     ],
     "env": [
      "SUPABASE_ANON_KEY",
@@ -139150,7 +139148,8 @@
     "auth": "service_role (ignora RLS) + valida JWT do usuário",
     "tables": [
      "admin_audit_log",
-     "mcp_api_keys"
+     "mcp_api_keys",
+     "step_up_audit_log"
     ],
     "env": [
      "SUPABASE_ANON_KEY",
@@ -139361,6 +139360,7 @@
     ],
     "auth": "service_role (ignora RLS) — NÃO valida usuário no código",
     "tables": [
+     "categories",
      "integration_credentials",
      "product_sync_logs",
      "products"
@@ -141246,13 +141246,6 @@
     "file": "src/routes/product-routes.tsx"
    },
    {
-    "path": "/catalogo",
-    "component": "div",
-    "guard": "",
-    "roles": [],
-    "file": "tests/components/DevRoute.test.tsx"
-   },
-   {
     "path": "/clientes",
     "component": "ClientsPage",
     "guard": "",
@@ -141811,6 +141804,13 @@
     "guard": "",
     "roles": [],
     "file": "tests/admin/route-no-error-element.test.tsx"
+   },
+   {
+    "path": "/produtos",
+    "component": "div",
+    "guard": "",
+    "roles": [],
+    "file": "tests/components/DevRoute.test.tsx"
    },
    {
     "path": "/promoflix-playground",
@@ -146755,7 +146755,7 @@
   {
    "module": "src/components",
    "files": 1345,
-   "lines": 271104,
+   "lines": 271349,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -146769,6 +146769,7 @@
     "discount_approval_requests",
     "external_connections",
     "external_connections_sync_log",
+    "favorite_items",
     "file_scan_logs",
     "frontend_telemetry",
     "generated_mockups",
@@ -147020,7 +147021,7 @@
   {
    "module": "src/contexts",
    "files": 20,
-   "lines": 5359,
+   "lines": 5322,
    "tables": [],
    "exports": [
     "AuthContext.tsx: AppRole, Profile, AuthContext, AuthProvider, useAuth",
@@ -147112,7 +147113,7 @@
   {
    "module": "src/hooks",
    "files": 453,
-   "lines": 84563,
+   "lines": 84679,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -147401,7 +147402,7 @@
   {
    "module": "src/lib",
    "files": 328,
-   "lines": 50570,
+   "lines": 50670,
    "tables": [
     "...",
     "companies",
@@ -147606,7 +147607,7 @@
   {
    "module": "src/pages",
    "files": 348,
-   "lines": 81796,
+   "lines": 81880,
    "tables": [
     "ai_insights_cache",
     "ai_usage_events",
@@ -147866,7 +147867,7 @@
   {
    "module": "src/services",
    "files": 27,
-   "lines": 5351,
+   "lines": 5365,
    "tables": [
     "frontend_telemetry",
     "magazine_items",
@@ -148310,7 +148311,7 @@
   {
    "module": "supabase/functions",
    "files": 268,
-   "lines": 48603,
+   "lines": 48779,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -148797,8 +148798,8 @@
   },
   {
    "module": "tests",
-   "files": 878,
-   "lines": 135303,
+   "files": 880,
+   "lines": 135389,
    "tables": [
     "bot_detection_log",
     "companies",
@@ -149249,6 +149250,7 @@
      "supabase/functions/categories-api/index.ts",
      "supabase/functions/expert-chat/index.ts",
      "supabase/functions/product-visual-search/index.ts",
+     "supabase/functions/product-webhook/index.ts",
      "supabase/functions/visual-search/index.ts"
     ]
    },
@@ -149457,6 +149459,9 @@
     ]
    },
    "device_login_notifications": {
+    "select": [
+     "supabase/functions/detect-new-device/index.ts"
+    ],
     "insert": [
      "supabase/functions/detect-new-device/index.ts"
     ]
@@ -149605,6 +149610,7 @@
     "upsert": [
      "recovery/src-legacy/src/hooks/useFavoriteLists.ts",
      "recovery/src-legacy/src/hooks/useFavoriteQuickAdd.ts",
+     "src/components/catalog/useCatalogSelection.ts",
      "src/hooks/favorites/useFavoriteLists.ts"
     ],
     "update": [
@@ -150982,6 +150988,9 @@
    },
    "step_up_audit_log": {
     "insert": [
+     "supabase/functions/mcp-keys-issue/index.ts",
+     "supabase/functions/mcp-keys-rotate/index.ts",
+     "supabase/functions/mcp-keys-update/index.ts",
      "supabase/functions/step-up-verify/index.ts"
     ]
    },
@@ -151192,13 +151201,14 @@
    "user_roles": {
     "select": [
      "recovery/src-legacy/src/hooks/useDiscountApproval.ts",
+     "src/components/admin/SellerDiscountLimitsPanel.tsx",
      "src/components/admin/security/role-migration/RoleMigrationPanel.tsx",
+     "src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
      "src/pages/auth/Auth.tsx",
      "src/services/authService.ts",
      "supabase/functions/_shared/auth.ts",
      "supabase/functions/_shared/authorize.ts",
      "supabase/functions/_shared/dispatcher-auth.ts",
-     "supabase/functions/block-ip-temporarily/index.ts",
      "supabase/functions/connection-tester/index.ts",
      "supabase/functions/connections-health-check/index.ts",
      "supabase/functions/crm-callback-reprocess/index.ts",
@@ -151470,6 +151480,8 @@
     "user_id"
    ],
    "categories": [
+    "bitrix_id",
+    "deleted_at",
     "id",
     "level",
     "name",
@@ -151569,7 +151581,6 @@
     "last_name"
    ],
    "crm_callback_events": [
-    "created_at",
     "crm_quote_id",
     "error_message",
     "event_type",
@@ -151605,6 +151616,11 @@
     "total_pedidos",
     "valor_total_compras",
     "vendedor_nome"
+   ],
+   "device_login_notifications": [
+    "device_id",
+    "ip_address",
+    "user_id"
    ],
    "discount_approval_audit": [
     "actor_id",
@@ -151917,7 +151933,8 @@
     "user_id"
    ],
    "mockup_prompt_configs": [
-    "id"
+    "id",
+    "version"
    ],
    "mockup_prompt_history": [
     "config_id"
@@ -152113,11 +152130,11 @@
     "is_deleted",
     "locked_fields",
     "name",
-    "price",
     "primary_image_url",
     "sale_price",
     "sku",
     "stock_quantity",
+    "supplier_id",
     "tags",
     "view_count"
    ],
@@ -152362,12 +152379,13 @@
    ],
    "step_up_tokens": [
     "action",
+    "consumed",
+    "consumed_at",
     "created_at",
     "expires_at",
     "id",
     "target_ref",
     "token_hash",
-    "used_at",
     "user_id"
    ],
    "stock_notes": [
@@ -152427,8 +152445,11 @@
     "user_id"
    ],
    "user_known_devices": [
-    "device_fingerprint",
+    "fingerprint",
     "id",
+    "user_id"
+   ],
+   "user_notification_preferences": [
     "user_id"
    ],
    "user_onboarding": [
@@ -153339,7 +153360,6 @@
     "supabase/functions/_shared/dispatcher-auth.ts",
     "supabase/functions/_shared/kill_switch.ts",
     "supabase/functions/audit-suite/index.ts",
-    "supabase/functions/block-ip-temporarily/index.ts",
     "supabase/functions/cnpj-lookup/contract_test.ts",
     "supabase/functions/commemorative-dates/index.ts",
     "supabase/functions/connection-tester/index.ts",
@@ -153439,7 +153459,6 @@
     "supabase/functions/audit-suite/index.ts",
     "supabase/functions/backfill-image-dimensions/index.ts",
     "supabase/functions/bitrix-sync/index.ts",
-    "supabase/functions/block-ip-temporarily/index.ts",
     "supabase/functions/bulk-random-passwords/index.ts",
     "supabase/functions/check-login/index.ts",
     "supabase/functions/cleanup-notifications/index.ts",
@@ -153453,7 +153472,6 @@
     "supabase/functions/crm-callback-alerts/index.ts",
     "supabase/functions/crm-callback-reprocess/index.ts",
     "supabase/functions/crm-db-bridge/index.ts",
-    "supabase/functions/detect-new-device/index.ts",
     "supabase/functions/e2e-cleanup/index.ts",
     "supabase/functions/favorites-watcher/index.ts",
     "supabase/functions/force-global-logout/index.ts",
@@ -153569,7 +153587,6 @@
     "supabase/functions/audit-suite/index.ts",
     "supabase/functions/backfill-image-dimensions/index.ts",
     "supabase/functions/bitrix-sync/index.ts",
-    "supabase/functions/block-ip-temporarily/index.ts",
     "supabase/functions/bulk-random-passwords/index.ts",
     "supabase/functions/check-login/index.ts",
     "supabase/functions/cleanup-notifications/index.ts",
@@ -153585,7 +153602,6 @@
     "supabase/functions/crm-callback-alerts/index.ts",
     "supabase/functions/crm-callback-reprocess/index.ts",
     "supabase/functions/crm-db-bridge/index.ts",
-    "supabase/functions/detect-new-device/index.ts",
     "supabase/functions/e2e-cleanup/index.ts",
     "supabase/functions/external-db-inspect/index.ts",
     "supabase/functions/favorites-watcher/index.ts",
@@ -153921,6 +153937,7 @@
     "src/hooks/admin/useAdminSessions.ts"
    ],
    "admin_revoke_user_sessions": [
+    "supabase/functions/force-global-logout/index.ts",
     "supabase/functions/manage-users/index.ts"
    ],
    "audit_ownership_orphans": [
@@ -155722,10 +155739,6 @@
     "column": "is_pinned"
    },
    {
-    "table": "user_known_devices",
-    "column": "device_fingerprint"
-   },
-   {
     "table": "profiles",
     "column": "avatar_url"
    },
@@ -155803,10 +155816,6 @@
    },
    {
     "table": "products",
-    "column": "price"
-   },
-   {
-    "table": "products",
     "column": "primary_image_url"
    },
    {
@@ -155820,6 +155829,10 @@
    {
     "table": "products",
     "column": "stock_quantity"
+   },
+   {
+    "table": "products",
+    "column": "supplier_id"
    },
    {
     "table": "products",
@@ -156120,10 +156133,6 @@
    {
     "table": "categories",
     "column": "level"
-   },
-   {
-    "table": "step_up_tokens",
-    "column": "used_at"
    }
   ]
  },
@@ -159244,7 +159253,7 @@
    {
     "file": "src/lib/telemetry/quoteHandoffTelemetry.ts",
     "name": "QuoteHandoffSource",
-    "values": "fromCart | fromCollection | fromSimulator | fromUrlParams | fromUrlParamsSingle"
+    "values": "fromBiSuggestions | fromCart | fromCollection | fromCompare | fromSimulator | fromUrlParams | fromUrlParamsSingle"
    },
    {
     "file": "src/lib/telemetry/quoteStatusTelemetry.ts",
@@ -161895,6 +161904,10 @@
     "msg": "Selecione uma imagem"
    },
    {
+    "file": "src/components/admin/products/sections/engraving/useEngravingWizard.ts",
+    "msg": "${failed} área(s) de gravação não foram salvas"
+   },
+   {
     "file": "src/components/admin/products/video-gallery/useProductVideoGallery.ts",
     "msg": "Erro ao adicionar vídeo do YouTube"
    },
@@ -162296,6 +162309,10 @@
    },
    {
     "file": "src/components/bi/ConfirmQuoteSuggestionsModal.tsx",
+    "msg": "Os produtos selecionados não estão vinculados ao catálogo."
+   },
+   {
+    "file": "src/components/bi/ConfirmQuoteSuggestionsModal.tsx",
     "msg": "Selecione ao menos 1 produto."
    },
    {
@@ -162333,6 +162350,10 @@
    {
     "file": "src/components/catalog/useCatalogSelection.ts",
     "msg": "Erro ao gerar PDF"
+   },
+   {
+    "file": "src/components/catalog/useCatalogSelection.ts",
+    "msg": "Não foi possível favoritar os produtos"
    },
    {
     "file": "src/components/collections/CollectionsTrashView.tsx",
@@ -162421,6 +162442,10 @@
    {
     "file": "src/components/expert/chat/useExpertChat.ts",
     "msg": "Faça login para salvar orçamentos"
+   },
+   {
+    "file": "src/components/expert/chat/useExpertChat.ts",
+    "msg": "Selecione uma organização para salvar orçamentos"
    },
    {
     "file": "src/components/expert/chat/useExpertChatTts.ts",
@@ -162961,6 +162986,10 @@
    {
     "file": "src/hooks/admin/useAdminKitTemplates.ts",
     "msg": "Operação falhou"
+   },
+   {
+    "file": "src/hooks/admin/useAdminKitTemplates.ts",
+    "msg": "Sem permissão para excluir (apenas dev)"
    },
    {
     "file": "src/hooks/admin/useAdminSessions.ts",
@@ -164776,6 +164805,10 @@
    },
    {
     "file": "src/pages/quotes/quote-view/QuoteBitrixSync.ts",
+    "msg": "Orçamento em status final não pode ser sincronizado com o Bitrix24"
+   },
+   {
+    "file": "src/pages/quotes/quote-view/QuoteBitrixSync.ts",
     "msg": "Orçamento sem identificador válido"
    },
    {
@@ -165621,6 +165654,14 @@
     "value": "denied"
    },
    {
+    "file": "src/components/security/SecurityDashboard.tsx",
+    "value": "admin"
+   },
+   {
+    "file": "src/components/security/SecurityDashboard.tsx",
+    "value": "dev"
+   },
+   {
     "file": "src/hooks/auth/useRBAC.tsx",
     "value": "dev"
    },
@@ -165729,10 +165770,6 @@
     "value": "agente"
    },
    {
-    "file": "supabase/functions/block-ip-temporarily/index.ts",
-    "value": "admin"
-   },
-   {
     "file": "supabase/functions/categories-api/index.ts",
     "value": "agente"
    },
@@ -165766,15 +165803,7 @@
    },
    {
     "file": "supabase/functions/force-global-logout/index.ts",
-    "value": "admin"
-   },
-   {
-    "file": "supabase/functions/force-global-logout/index.ts",
     "value": "dev"
-   },
-   {
-    "file": "supabase/functions/force-global-logout/index.ts",
-    "value": "supervisor"
    },
    {
     "file": "supabase/functions/github-credentials-test/index.ts",
@@ -165783,6 +165812,10 @@
    {
     "file": "supabase/functions/kit-ai-builder/index.ts",
     "value": "agente"
+   },
+   {
+    "file": "supabase/functions/manage-users/index.ts",
+    "value": "dev"
    },
    {
     "file": "supabase/functions/manage-users/index.ts",
@@ -193614,6 +193647,11 @@
     "value": "50"
    },
    {
+    "file": "src/hooks/intelligence/useStockHistory.ts",
+    "name": "PAGE_SIZE",
+    "value": "1000"
+   },
+   {
     "file": "src/hooks/intelligence/useStockVelocityPrefetch.ts",
     "name": "CHUNK_SIZE",
     "value": "100"
@@ -193896,6 +193934,16 @@
    {
     "file": "src/hooks/products/useProductsByColor.ts",
     "name": "CHUNK",
+    "value": "50"
+   },
+   {
+    "file": "src/hooks/products/useProductsByColor.ts",
+    "name": "PAGE",
+    "value": "1000"
+   },
+   {
+    "file": "src/hooks/products/useProductsByColor.ts",
+    "name": "MAX_PAGES",
     "value": "50"
    },
    {
@@ -202255,6 +202303,12 @@
    {
     "file": "src/hooks/quotes/useQuoteBuilderState.ts",
     "field": "status",
+    "value": "pending_approval",
+    "kind": "compara"
+   },
+   {
+    "file": "src/hooks/quotes/useQuoteBuilderState.ts",
+    "field": "status",
     "value": "draft",
     "kind": "compara"
    },
@@ -203905,7 +203959,13 @@
    {
     "file": "src/pages/admin/AdminCloudflareImagesPage.tsx",
     "field": "cf_sync_status",
-    "value": "syncing",
+    "value": "uploading",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/admin/AdminCloudflareImagesPage.tsx",
+    "field": "cf_sync_status",
+    "value": "uploaded",
     "kind": "compara"
    },
    {
@@ -203917,7 +203977,13 @@
    {
     "file": "src/pages/admin/AdminCloudflareImagesPage.tsx",
     "field": "cf_sync_status",
-    "value": "skipped",
+    "value": "missing",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/admin/AdminCloudflareImagesPage.tsx",
+    "field": "cf_sync_status",
+    "value": "orphaned",
     "kind": "compara"
    },
    {
@@ -204913,8 +204979,20 @@
    {
     "file": "src/pages/quotes/quote-view/QuoteBitrixSync.ts",
     "field": "status",
-    "value": "sent",
-    "kind": "escreve"
+    "value": "approved",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/quotes/quote-view/QuoteBitrixSync.ts",
+    "field": "status",
+    "value": "converted",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/quotes/quote-view/QuoteBitrixSync.ts",
+    "field": "status",
+    "value": "cancelled",
+    "kind": "compara"
    },
    {
     "file": "src/pages/quotes/quote-view/QuoteBitrixSync.ts",
@@ -206105,12 +206183,6 @@
     "kind": "escreve"
    },
    {
-    "file": "supabase/functions/block-ip-temporarily/index.ts",
-    "field": "role",
-    "value": "admin",
-    "kind": "compara"
-   },
-   {
     "file": "supabase/functions/cnpj-lookup/index.ts",
     "field": "estado",
     "value": "SP",
@@ -207127,6 +207199,18 @@
    {
     "file": "supabase/functions/manage-users/index.ts",
     "field": "role",
+    "value": "dev",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/functions/manage-users/index.ts",
+    "field": "role",
+    "value": "dev",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/functions/manage-users/index.ts",
+    "field": "role",
     "value": "vendedor",
     "kind": "compara"
    },
@@ -207945,6 +208029,12 @@
     "field": "status",
     "value": "success",
     "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/verify-2fa-token/index.ts",
+    "field": "role",
+    "value": "dev",
+    "kind": "compara"
    },
    {
     "file": "supabase/functions/visual-search/index.ts",
@@ -209326,7 +209416,7 @@
     "file": "src/hooks/kit-builder/useKitFitsValidation.ts",
     "name": "validateKitFitsForQuote",
     "params": "box: KitBox | null, items: KitItem[],",
-    "body": "if (!box) return { status: 'skipped' }; if (items.length === 0) return { status: 'ok' }; let usedLiters = 0; const violations: FitViolation[] = []; for (const item of items) { try { const { data, error } = await supabase.rpc('fn_check_item_fits', { p_packaging_id: box.id, p_product_id: item.id, p_current_used_liters: usedLiters, }); if (error || !data || (data as FitRow[]).length === 0) continue; const row = (data as FitRow[])[0]; // fits=null means no dimension data — fail-open: skip, do not vi …"
+    "body": "if (!box) return { status: 'skipped' }; if (items.length === 0) return { status: 'ok' }; let usedLiters = 0; const violations: FitViolation[] = []; for (const item of items) { try { const { data, error } = await supabase.rpc('fn_check_item_fits', { p_packaging_id: box.id, p_product_id: item.id, p_current_used_liters: usedLiters, }); const row = error ? undefined : (data as FitRow[] | null)?.[0]; if (!row) continue; const qty = Math.max(1, item.quantity ?? 1); const lineVolume = (row.product_volu …"
    },
    {
     "file": "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
@@ -210316,7 +210406,7 @@
     "file": "src/pages/admin/AdminCloudflareImagesPage.tsx",
     "name": "computeStats",
     "params": "images: CfImage[]",
-    "body": "const stats: CfStats = { total: images.length, verified: 0, pending: 0, syncing: 0, failed: 0, skipped: 0, noStatus: 0, }; for (const img of images) { switch (img.cf_sync_status) { case 'verified': stats.verified++; break; case 'pending': stats.pending++; break; case 'syncing': stats.syncing++; break; case 'failed': stats.failed++; break; case 'skipped': stats.skipped++; break; default: stats.noStatus++; } } return stats;"
+    "body": "const stats: CfStats = { total: images.length, verified: 0, pending: 0, syncing: 0, failed: 0, missing: 0, noStatus: 0, }; for (const img of images) { switch (img.cf_sync_status) { case 'verified': stats.verified++; break; case 'pending': stats.pending++; break; case 'uploading': case 'uploaded': stats.syncing++; break; case 'failed': stats.failed++; break; case 'missing': case 'orphaned': stats.missing++; break; default: stats.noStatus++; } } return stats;"
    },
    {
     "file": "src/pages/admin/AdminProductFormPage.tsx",
@@ -210857,6 +210947,12 @@
     "name": "computeImageHash",
     "params": "imageBytes: Uint8Array",
     "body": "// Uint8Array.from creates an ArrayBuffer-backed view accepted by the Web Crypto // BufferSource type in Deno 2, even when the source view is ArrayBufferLike. const digestInput = Uint8Array.from(imageBytes); const hashBuffer = await crypto.subtle.digest('SHA-256', digestInput); return Array.from(new Uint8Array(hashBuffer)) .map(b => b.toString(16).padStart(2, '0')) .join('');"
+   },
+   {
+    "file": "supabase/functions/secure-upload/index.ts",
+    "name": "scanMet",
+    "params": "a",
+    "body": "file_name: string; file_size: number | null; mime_type: string | null"
    },
    {
     "file": "supabase/functions/semantic-search/index.ts",
@@ -212727,6 +212823,10 @@
    {
     "file": "src/pages/admin/DevChallengeExamplesPage.tsx",
     "line": "window.setTimeout(() => setCopied(false), 1800);"
+   },
+   {
+    "file": "src/pages/admin/DiscountRequestDetailPage.tsx",
+    "line": "? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()"
    },
    {
     "file": "src/pages/admin/KitTemplatesMetricsPage.tsx",
@@ -259138,7 +259238,7 @@
    },
    {
     "file": "tests/components/DevRoute.test.tsx",
-    "name": "clicar no CTA leva agente para /catalogo"
+    "name": "clicar no CTA leva agente para /produtos"
    },
    {
     "file": "tests/components/DevRoute.test.tsx",
@@ -277701,6 +277801,18 @@
     "name": "re-indexes appended personalizations to 1..N (no duplicate indices)"
    },
    {
+    "file": "tests/hooks/kit-builder/useKitFitsValidation.test.ts",
+    "name": "validateKitFitsForQuote"
+   },
+   {
+    "file": "tests/hooks/kit-builder/useKitFitsValidation.test.ts",
+    "name": "considera item.quantity no volume da linha"
+   },
+   {
+    "file": "tests/hooks/kit-builder/useKitFitsValidation.test.ts",
+    "name": "mantém fail-open quando fits é null"
+   },
+   {
     "file": "tests/hooks/quotes/quoteHelpers.freight.test.ts",
     "name": "round2 — arredondamento monetário"
    },
@@ -280943,6 +281055,18 @@
    {
     "file": "tests/lib/postgrest-migration.test.ts",
     "name": "routes a write operation to real DML (insert) — no silent SELECT-only no-op"
+   },
+   {
+    "file": "tests/lib/price-tables-technique-group.test.ts",
+    "name": "toTechniqueGroup — nome da técnica → grupo_tecnica"
+   },
+   {
+    "file": "tests/lib/price-tables-technique-group.test.ts",
+    "name": "%s → %s"
+   },
+   {
+    "file": "tests/lib/price-tables-technique-group.test.ts",
+    "name": "técnica sem regra vira código normalizado"
    },
    {
     "file": "tests/lib/print-area-grouping.test.ts",
@@ -332411,6 +332535,10 @@
     "limit": "50"
    },
    {
+    "file": "supabase/functions/detect-new-device/index.ts",
+    "limit": "1"
+   },
+   {
     "file": "supabase/functions/e2e-cleanup/index.ts",
     "limit": "1000"
    },
@@ -334545,6 +334673,7 @@
       "compara:src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
       "compara:src/pages/quotes/QuotesDashboardPage.tsx",
       "compara:src/pages/quotes/QuotesListPage.tsx",
+      "compara:src/pages/quotes/quote-view/QuoteBitrixSync.ts",
       "compara:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
       "compara:supabase/functions/expert-chat/index.ts",
       "compara:supabase/functions/process-scheduled-reports/index.ts",
@@ -334596,6 +334725,7 @@
       "compara:recovery/src-legacy/src/hooks/useQuoteFunnel.ts",
       "compara:src/components/quotes/QuotesStatusChips.tsx",
       "compara:src/hooks/quotes/useQuoteFunnel.ts",
+      "compara:src/pages/quotes/quote-view/QuoteBitrixSync.ts",
       "compara:supabase/functions/expert-chat/index.ts",
       "filtra:src/components/quotes/MarginInsightBadge.tsx"
      ],
@@ -334886,6 +335016,7 @@
       "compara:src/lib/auth/invoke-full-scope.ts",
       "compara:src/lib/inventory/future-stock-stats.ts",
       "compara:src/pages/admin/DevChallengeExamplesPage.tsx",
+      "compara:src/pages/quotes/quote-view/QuoteBitrixSync.ts",
       "escreve:src/lib/auth/invoke-full-scope.ts",
       "escreve:src/pages/admin/DevChallengeExamplesPage.tsx",
       "escreve:src/types/stock.ts"
@@ -335365,7 +335496,6 @@
       "compara:src/lib/auth/visibility-scope.ts",
       "compara:src/lib/rbac/route-matrix.ts",
       "compara:src/pages/admin/AdminUsuariosPage.tsx",
-      "compara:supabase/functions/block-ip-temporarily/index.ts",
       "compara:supabase/functions/connection-tester/index.ts",
       "compara:supabase/functions/github-credentials-test/index.ts",
       "compara:supabase/functions/rls-integration-tests/index.ts",
@@ -335414,8 +335544,10 @@
       "compara:src/pages/admin/AdminRbacRoutesPage.tsx",
       "compara:src/pages/admin/AdminUsuariosPage.tsx",
       "compara:supabase/functions/connection-tester/index.ts",
+      "compara:supabase/functions/manage-users/index.ts",
       "compara:supabase/functions/rls-integration-tests/index.ts",
       "compara:supabase/functions/secrets-manager/index.ts",
+      "compara:supabase/functions/verify-2fa-token/index.ts",
       "escreve:src/lib/rbac/route-matrix.ts",
       "escreve:supabase/functions/simulation-orchestrator/handler_characterization_test.ts"
      ],
@@ -335677,13 +335809,19 @@
       "compara:src/components/admin/products/image-gallery/useProductImageGallery.ts",
       "compara:src/pages/admin/AdminCloudflareImagesPage.tsx"
      ],
-     "syncing": [
+     "uploading": [
+      "compara:src/pages/admin/AdminCloudflareImagesPage.tsx"
+     ],
+     "uploaded": [
       "compara:src/pages/admin/AdminCloudflareImagesPage.tsx"
      ],
      "failed": [
       "compara:src/pages/admin/AdminCloudflareImagesPage.tsx"
      ],
-     "skipped": [
+     "missing": [
+      "compara:src/pages/admin/AdminCloudflareImagesPage.tsx"
+     ],
+     "orphaned": [
       "compara:src/pages/admin/AdminCloudflareImagesPage.tsx"
      ]
     },
@@ -341559,7 +341697,6 @@
    "supabase/functions/backfill-image-dimensions/index.ts",
    "supabase/functions/bitrix-sync/handler_characterization_test.ts",
    "supabase/functions/bitrix-sync/index.ts",
-   "supabase/functions/block-ip-temporarily/index.ts",
    "supabase/functions/bulk-random-passwords/index.ts",
    "supabase/functions/categories-api/index.ts",
    "supabase/functions/check-login/index.ts",
@@ -341576,7 +341713,6 @@
    "supabase/functions/crm-callback-reprocess/index.ts",
    "supabase/functions/crm-db-bridge/creds_health.test.ts",
    "supabase/functions/crm-db-bridge/index.ts",
-   "supabase/functions/detect-new-device/index.ts",
    "supabase/functions/e2e-cleanup/handler_characterization_test.ts",
    "supabase/functions/e2e-cleanup/index.mockups.test.ts",
    "supabase/functions/e2e-cleanup/index.ts",
@@ -381653,7 +381789,14 @@
    },
    {
     "kind": "status",
-    "msg": "valor `syncing` para `cf_sync_status` usado no código não existe em nenhum enum do banco/TS",
+    "msg": "valor `uploaded` para `cf_sync_status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/pages/admin/AdminCloudflareImagesPage.tsx"
+    ]
+   },
+   {
+    "kind": "status",
+    "msg": "valor `orphaned` para `cf_sync_status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/pages/admin/AdminCloudflareImagesPage.tsx"
     ]
@@ -381869,11 +382012,6 @@
    },
    {
     "kind": "coluna",
-    "msg": "coluna `device_fingerprint` usada no código não existe no schema de `user_known_devices`",
-    "where": []
-   },
-   {
-    "kind": "coluna",
     "msg": "coluna `avatar_url` usada no código não existe no schema de `profiles`",
     "where": []
    },
@@ -381969,11 +382107,6 @@
    },
    {
     "kind": "coluna",
-    "msg": "coluna `price` usada no código não existe no schema de `products`",
-    "where": []
-   },
-   {
-    "kind": "coluna",
     "msg": "coluna `primary_image_url` usada no código não existe no schema de `products`",
     "where": []
    },
@@ -381990,6 +382123,11 @@
    {
     "kind": "coluna",
     "msg": "coluna `stock_quantity` usada no código não existe no schema de `products`",
+    "where": []
+   },
+   {
+    "kind": "coluna",
+    "msg": "coluna `supplier_id` usada no código não existe no schema de `products`",
     "where": []
    },
    {
@@ -382365,11 +382503,6 @@
    {
     "kind": "coluna",
     "msg": "coluna `level` usada no código não existe no schema de `categories`",
-    "where": []
-   },
-   {
-    "kind": "coluna",
-    "msg": "coluna `used_at` usada no código não existe no schema de `step_up_tokens`",
     "where": []
    },
    {
@@ -412592,7 +412725,7 @@
    "navigates": [
     "/admin/cadastros",
     "/admin/usuarios",
-    "/catalogo"
+    "/produtos"
    ],
    "errors": [
     "\n        data-testid=",
@@ -413020,7 +413153,7 @@
   },
   "src/components/admin/DiscountNotificationFilterPanel.tsx": {
    "path": "src/components/admin/DiscountNotificationFilterPanel.tsx",
-   "lines": 301,
+   "lines": 305,
    "exports": [
     "function DiscountNotificationFilterPanel"
    ],
@@ -413095,14 +413228,14 @@
   },
   "src/components/admin/InlineEditField.tsx": {
    "path": "src/components/admin/InlineEditField.tsx",
-   "lines": 114,
+   "lines": 116,
    "exports": [
     "function InlineEditField"
    ]
   },
   "src/components/admin/MockupPromptManager.tsx": {
    "path": "src/components/admin/MockupPromptManager.tsx",
-   "lines": 399,
+   "lines": 404,
    "exports": [
     "function MockupPromptManager"
    ],
@@ -413116,12 +413249,12 @@
      "op": "select"
     },
     {
-     "table": "mockup_prompt_history",
-     "op": "insert"
+     "table": "mockup_prompt_configs",
+     "op": "select,update"
     },
     {
-     "table": "mockup_prompt_configs",
-     "op": "update"
+     "table": "mockup_prompt_history",
+     "op": "insert"
     },
     {
      "table": "mockup_prompt_history",
@@ -413140,7 +413273,8 @@
      "name"
     ],
     "mockup_prompt_configs": [
-     "id"
+     "id",
+     "version"
     ],
     "mockup_prompt_history": [
      "config_id"
@@ -413270,11 +413404,15 @@
   },
   "src/components/admin/SellerDiscountLimitsPanel.tsx": {
    "path": "src/components/admin/SellerDiscountLimitsPanel.tsx",
-   "lines": 132,
+   "lines": 140,
    "exports": [
     "function SellerDiscountLimitsPanel"
    ],
    "tables": [
+    {
+     "table": "user_roles",
+     "op": "select"
+    },
     {
      "table": "profiles",
      "op": "select"
@@ -413289,6 +413427,10 @@
     }
    ],
    "table_cols": {
+    "user_roles": [
+     "role",
+     "user_id"
+    ],
     "profiles": [
      "email",
      "full_name",
@@ -417448,9 +417590,12 @@
   },
   "src/components/admin/products/sections/engraving/useEngravingWizard.ts": {
    "path": "src/components/admin/products/sections/engraving/useEngravingWizard.ts",
-   "lines": 363,
+   "lines": 368,
    "exports": [
     "function useEngravingWizard"
+   ],
+   "errors": [
+    "${failed} área(s) de gravação não foram salvas"
    ],
    "rule_comments": [
     "* useEngravingWizard — Business logic for the engraving wizard"
@@ -418575,7 +418720,7 @@
   },
   "src/components/admin/suppliers-manager/useSuppliersManager.ts": {
    "path": "src/components/admin/suppliers-manager/useSuppliersManager.ts",
-   "lines": 777,
+   "lines": 779,
    "exports": [
     "function useSuppliersManager"
    ],
@@ -418761,7 +418906,7 @@
   },
   "src/components/admin/telemetry/QuoteBuilderHandoffCard.tsx": {
    "path": "src/components/admin/telemetry/QuoteBuilderHandoffCard.tsx",
-   "lines": 191,
+   "lines": 195,
    "exports": [
     "function QuoteBuilderHandoffCard"
    ],
@@ -419564,7 +419709,7 @@
   },
   "src/components/bi/ClientCategoryRadar.tsx": {
    "path": "src/components/bi/ClientCategoryRadar.tsx",
-   "lines": 506,
+   "lines": 507,
    "exports": [
     "function ClientCategoryRadar"
    ],
@@ -419725,15 +419870,16 @@
   },
   "src/components/bi/ConfirmQuoteSuggestionsModal.tsx": {
    "path": "src/components/bi/ConfirmQuoteSuggestionsModal.tsx",
-   "lines": 213,
+   "lines": 223,
    "exports": [
     "interface SuggestionItem",
     "function ConfirmQuoteSuggestionsModal"
    ],
    "navigates": [
-    "/orcamentos/novo?"
+    "/orcamentos/novo"
    ],
    "errors": [
+    "Os produtos selecionados não estão vinculados ao catálogo.",
     "Selecione ao menos 1 produto."
    ],
    "rule_comments": [
@@ -419851,7 +419997,7 @@
   },
   "src/components/cart/CartHeaderButton.tsx": {
    "path": "src/components/cart/CartHeaderButton.tsx",
-   "lines": 1011,
+   "lines": 1012,
    "exports": [
     "function CartHeaderButton"
    ],
@@ -420505,7 +420651,7 @@
   },
   "src/components/catalog/CatalogBulkModals.tsx": {
    "path": "src/components/catalog/CatalogBulkModals.tsx",
-   "lines": 71,
+   "lines": 80,
    "exports": [
     "function CatalogBulkModals"
    ],
@@ -420562,15 +420708,22 @@
   },
   "src/components/catalog/useCatalogSelection.ts": {
    "path": "src/components/catalog/useCatalogSelection.ts",
-   "lines": 249,
+   "lines": 326,
    "exports": [
     "function useCatalogSelection"
+   ],
+   "tables": [
+    {
+     "table": "favorite_items",
+     "op": "upsert"
+    }
    ],
    "navigates": [
     "/orcamentos/novo?"
    ],
    "errors": [
-    "Erro ao gerar PDF"
+    "Erro ao gerar PDF",
+    "Não foi possível favoritar os produtos"
    ],
    "rule_comments": [
     "BUG-CS-12: Stale ID removal must not drop products that were already loaded"
@@ -421539,7 +421692,7 @@
   },
   "src/components/dashboard/MyClientsWidget.tsx": {
    "path": "src/components/dashboard/MyClientsWidget.tsx",
-   "lines": 270,
+   "lines": 279,
    "exports": [
     "function MyClientsWidget"
    ],
@@ -421598,7 +421751,7 @@
   },
   "src/components/dashboard/MyDiscountRequestsWidget.tsx": {
    "path": "src/components/dashboard/MyDiscountRequestsWidget.tsx",
-   "lines": 443,
+   "lines": 445,
    "exports": [
     "function MyDiscountRequestsWidget"
    ],
@@ -421625,7 +421778,7 @@
     "dar-seller-${userId}"
    ],
    "navigates": [
-    "/admin/descontos",
+    "/admin/usuarios?tab=discounts",
     "/orcamentos/"
    ],
    "errors": [
@@ -422059,7 +422212,7 @@
   },
   "src/components/engraving/PricingPanel.tsx": {
    "path": "src/components/engraving/PricingPanel.tsx",
-   "lines": 385,
+   "lines": 390,
    "exports": [
     "function PricingPanel"
    ],
@@ -422384,7 +422537,7 @@
   },
   "src/components/expert/chat/useExpertChat.ts": {
    "path": "src/components/expert/chat/useExpertChat.ts",
-   "lines": 749,
+   "lines": 757,
    "exports": [
     "interface Message",
     "function useExpertChat"
@@ -422419,11 +422572,12 @@
     ]
    },
    "navigates": [
-    "/orcamentos/novo?edit="
+    "/orcamentos/"
    ],
    "errors": [
     "Erro ao criar rascunho de orçamento",
-    "Faça login para salvar orçamentos"
+    "Faça login para salvar orçamentos",
+    "Selecione uma organização para salvar orçamentos"
    ],
    "status_values": [
     {
@@ -423040,7 +423194,7 @@
     ]
    },
    "navigates": [
-    "/catalogo?busca="
+    "/produtos?search="
    ],
    "doc": "HotSearchesCard — Buscas Quentes. Top termos buscados (com resultados) no período. Proxy de interesse real do mercado.",
    "pagination": [
@@ -423393,7 +423547,7 @@
     ]
    },
    "navigates": [
-    "/catalogo?busca="
+    "/produtos?search="
    ],
    "doc": "UnmetDemandCard — Demanda Reprimida. Top termos buscados que retornaram 0 resultados = oportunidades perdidas.",
    "pagination": [
@@ -425411,7 +425565,7 @@
   },
   "src/components/kit-builder/PersonalizationConfig.tsx": {
    "path": "src/components/kit-builder/PersonalizationConfig.tsx",
-   "lines": 1410,
+   "lines": 1414,
    "exports": [
     "interface FlatTechnique",
     "function reconcilePersonalizationForTechnique",
@@ -428935,12 +429089,12 @@
   },
   "src/components/pricing/ProductPriceSimulator.tsx": {
    "path": "src/components/pricing/ProductPriceSimulator.tsx",
-   "lines": 427,
+   "lines": 443,
    "exports": [
     "function ProductPriceSimulator"
    ],
    "navigates": [
-    "/orcamentos"
+    "/orcamentos/novo"
    ],
    "params": [
     {
@@ -428954,12 +429108,12 @@
   },
   "src/components/pricing/QuantityPriceCalculator.tsx": {
    "path": "src/components/pricing/QuantityPriceCalculator.tsx",
-   "lines": 261,
+   "lines": 277,
    "exports": [
     "function QuantityPriceCalculator"
    ],
    "navigates": [
-    "/orcamentos"
+    "/orcamentos/novo"
    ],
    "doc": "QuantityPriceCalculator — Main orchestrator. Sub-components extracted to calculator/ folder."
   },
@@ -429734,7 +429888,7 @@
   },
   "src/components/products/ProductCustomizationOptions.tsx": {
    "path": "src/components/products/ProductCustomizationOptions.tsx",
-   "lines": 623,
+   "lines": 670,
    "exports": [
     "function ProductCustomizationOptions"
    ],
@@ -430194,7 +430348,7 @@
   },
   "src/components/products/QuickAddToQuote.tsx": {
    "path": "src/components/products/QuickAddToQuote.tsx",
-   "lines": 396,
+   "lines": 398,
    "exports": [
     "function QuickAddToQuote"
    ],
@@ -432323,7 +432477,7 @@
   },
   "src/components/quotes/QuoteProductCustomization.tsx": {
    "path": "src/components/quotes/QuoteProductCustomization.tsx",
-   "lines": 134,
+   "lines": 135,
    "exports": [
     "function QuoteProductCustomization"
    ],
@@ -435106,7 +435260,7 @@
   },
   "src/components/security/MfaEnrollmentDialog.tsx": {
    "path": "src/components/security/MfaEnrollmentDialog.tsx",
-   "lines": 219,
+   "lines": 222,
    "exports": [
     "function MfaEnrollmentDialog"
    ],
@@ -435157,7 +435311,7 @@
   },
   "src/components/security/SecurityDashboard.tsx": {
    "path": "src/components/security/SecurityDashboard.tsx",
-   "lines": 559,
+   "lines": 564,
    "exports": [
     "function SecurityDashboard"
    ],
@@ -435175,6 +435329,10 @@
      "user_id"
     ]
    },
+   "role_checks": [
+    "admin",
+    "dev"
+   ],
    "doc": "SecurityDashboard — Painel de segurança da conta Refatorado: lógica de dados em useSecurityData.ts"
   },
   "src/components/security/SecuritySettings.tsx": {
@@ -435196,7 +435354,7 @@
   },
   "src/components/security/useSecurityData.ts": {
    "path": "src/components/security/useSecurityData.ts",
-   "lines": 195,
+   "lines": 194,
    "exports": [
     "interface SecurityMetrics",
     "interface LoginAttempt",
@@ -436929,7 +437087,7 @@
   },
   "src/contexts/CollectionsContext.tsx": {
    "path": "src/contexts/CollectionsContext.tsx",
-   "lines": 118,
+   "lines": 81,
    "exports": [
     "function CollectionsProvider",
     "function useCollectionsContext"
@@ -437960,7 +438118,7 @@
   },
   "src/hooks/admin/useAdminKitTemplates.ts": {
    "path": "src/hooks/admin/useAdminKitTemplates.ts",
-   "lines": 94,
+   "lines": 99,
    "exports": [
     "type KitTemplateInput",
     "function useAdminKitTemplates"
@@ -437980,7 +438138,7 @@
     },
     {
      "table": "kit_templates",
-     "op": "delete"
+     "op": "delete,select"
     },
     {
      "table": "kit_templates",
@@ -437994,7 +438152,8 @@
    },
    "errors": [
     "Erro ao remover",
-    "Operação falhou"
+    "Operação falhou",
+    "Sem permissão para excluir (apenas dev)"
    ],
    "doc": "Admin Kit Templates Hook CRUD para a tabela kit_templates (admin only).",
    "hooks": [
@@ -438509,7 +438668,7 @@
   },
   "src/hooks/auth/use2FA.ts": {
    "path": "src/hooks/auth/use2FA.ts",
-   "lines": 199,
+   "lines": 202,
    "exports": [
     "function use2FA"
    ]
@@ -439232,7 +439391,7 @@
   },
   "src/hooks/collections/useCollections.ts": {
    "path": "src/hooks/collections/useCollections.ts",
-   "lines": 711,
+   "lines": 728,
    "exports": [
     "interface CollectionVariantInfo",
     "interface CollectionProductItem",
@@ -442127,7 +442286,7 @@
   },
   "src/hooks/intelligence/useStockHistory.ts": {
    "path": "src/hooks/intelligence/useStockHistory.ts",
-   "lines": 259,
+   "lines": 278,
    "exports": [
     "interface StockDailySummary",
     "interface StockVelocity",
@@ -442144,6 +442303,12 @@
     {
      "name": "IntelligenceFlag",
      "values": "class-a | frequent-restock | hot-product | negotiation-opportunity | stagnant | stockout-risk"
+    }
+   ],
+   "params": [
+    {
+     "name": "PAGE_SIZE",
+     "value": "1000"
     }
    ],
    "rule_comments": [
@@ -442796,7 +442961,7 @@
   },
   "src/hooks/kit-builder/useKitFitsValidation.ts": {
    "path": "src/hooks/kit-builder/useKitFitsValidation.ts",
-   "lines": 68,
+   "lines": 76,
    "exports": [
     "interface FitViolation",
     "type KitFitsValidationResult",
@@ -442846,7 +443011,7 @@
     {
      "name": "validateKitFitsForQuote",
      "params": "box: KitBox | null, items: KitItem[],",
-     "body": "if (!box) return { status: 'skipped' }; if (items.length === 0) return { status: 'ok' }; let usedLiters = 0; const violations: FitViolation[] = []; for (const item of items) { try { const { data, error } = await supabase.rpc('fn_check_item_fits', { p_packaging_id: box.id, p_product_id: item.id, p_current_used_liters: usedLiters, }); if (error || !data || (data as FitRow[]).length === 0) continue; const row = (data as FitRow[])[0]; // fits=null means no dimension data — fail-open: skip, do not vi …"
+     "body": "if (!box) return { status: 'skipped' }; if (items.length === 0) return { status: 'ok' }; let usedLiters = 0; const violations: FitViolation[] = []; for (const item of items) { try { const { data, error } = await supabase.rpc('fn_check_item_fits', { p_packaging_id: box.id, p_product_id: item.id, p_current_used_liters: usedLiters, }); const row = error ? undefined : (data as FitRow[] | null)?.[0]; if (!row) continue; const qty = Math.max(1, item.quantity ?? 1); const lineVolume = (row.product_volu …"
     }
    ]
   },
@@ -443095,7 +443260,7 @@
   },
   "src/hooks/kit-builder/useKitTemplates.ts": {
    "path": "src/hooks/kit-builder/useKitTemplates.ts",
-   "lines": 125,
+   "lines": 150,
    "exports": [
     "interface KitTemplateRow",
     "function useKitTemplates"
@@ -445184,13 +445349,21 @@
   },
   "src/hooks/products/useProductsByColor.ts": {
    "path": "src/hooks/products/useProductsByColor.ts",
-   "lines": 230,
+   "lines": 241,
    "exports": [
     "function useProductsByColor"
    ],
    "params": [
     {
      "name": "CHUNK",
+     "value": "50"
+    },
+    {
+     "name": "PAGE",
+     "value": "1000"
+    },
+    {
+     "name": "MAX_PAGES",
      "value": "50"
     }
    ],
@@ -447261,7 +447434,7 @@
   },
   "src/hooks/quotes/useQuoteBuilderState.helpers.ts": {
    "path": "src/hooks/quotes/useQuoteBuilderState.helpers.ts",
-   "lines": 570,
+   "lines": 572,
    "exports": [
     "function syncValidityDaysFromDate",
     "interface Product",
@@ -447363,7 +447536,7 @@
   },
   "src/hooks/quotes/useQuoteBuilderState.ts": {
    "path": "src/hooks/quotes/useQuoteBuilderState.ts",
-   "lines": 1016,
+   "lines": 1042,
    "exports": [
     "function useQuoteBuilderState"
    ],
@@ -447407,6 +447580,11 @@
     {
      "field": "status",
      "value": "draft",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "pending_approval",
      "kind": "compara"
     },
     {
@@ -454312,7 +454490,7 @@
   },
   "src/lib/external-db/batch-import.ts": {
    "path": "src/lib/external-db/batch-import.ts",
-   "lines": 251,
+   "lines": 260,
    "exports": [
     "type ImportMode",
     "interface ImportRow",
@@ -454748,9 +454926,10 @@
   },
   "src/lib/external-db/price-tables.ts": {
    "path": "src/lib/external-db/price-tables.ts",
-   "lines": 109,
+   "lines": 189,
    "exports": [
     "interface PromobrindPriceTable",
+    "function toTechniqueGroup",
     "function fetchPromobrindPriceTables",
     "function findBestPriceTable"
    ]
@@ -456668,7 +456847,7 @@
   },
   "src/lib/personalization/transformers.ts": {
    "path": "src/lib/personalization/transformers.ts",
-   "lines": 375,
+   "lines": 385,
    "exports": [
     "function rawToTecnicaUnificada",
     "function rawToTabelaPrecoTecnica",
@@ -458724,7 +458903,7 @@
   },
   "src/lib/telemetry/quoteHandoffTelemetry.ts": {
    "path": "src/lib/telemetry/quoteHandoffTelemetry.ts",
-   "lines": 79,
+   "lines": 80,
    "exports": [
     "type QuoteHandoffSource",
     "interface QuoteHandoffMetadata",
@@ -458741,7 +458920,7 @@
    "enums": [
     {
      "name": "QuoteHandoffSource",
-     "values": "fromCart | fromCollection | fromSimulator | fromUrlParams | fromUrlParamsSingle"
+     "values": "fromBiSuggestions | fromCart | fromCollection | fromCompare | fromSimulator | fromUrlParams | fromUrlParamsSingle"
     }
    ],
    "params": [
@@ -459808,7 +459987,7 @@
   },
   "src/pages/admin/AdminCloudflareImagesPage.tsx": {
    "path": "src/pages/admin/AdminCloudflareImagesPage.tsx",
-   "lines": 468,
+   "lines": 490,
    "exports": [
     "function AdminCloudflareImagesPage"
    ],
@@ -459831,7 +460010,12 @@
     },
     {
      "field": "cf_sync_status",
-     "value": "syncing",
+     "value": "uploading",
+     "kind": "compara"
+    },
+    {
+     "field": "cf_sync_status",
+     "value": "uploaded",
      "kind": "compara"
     },
     {
@@ -459841,7 +460025,12 @@
     },
     {
      "field": "cf_sync_status",
-     "value": "skipped",
+     "value": "missing",
+     "kind": "compara"
+    },
+    {
+     "field": "cf_sync_status",
+     "value": "orphaned",
      "kind": "compara"
     }
    ],
@@ -459849,7 +460038,7 @@
     {
      "name": "computeStats",
      "params": "images: CfImage[]",
-     "body": "const stats: CfStats = { total: images.length, verified: 0, pending: 0, syncing: 0, failed: 0, skipped: 0, noStatus: 0, }; for (const img of images) { switch (img.cf_sync_status) { case 'verified': stats.verified++; break; case 'pending': stats.pending++; break; case 'syncing': stats.syncing++; break; case 'failed': stats.failed++; break; case 'skipped': stats.skipped++; break; default: stats.noStatus++; } } return stats;"
+     "body": "const stats: CfStats = { total: images.length, verified: 0, pending: 0, syncing: 0, failed: 0, missing: 0, noStatus: 0, }; for (const img of images) { switch (img.cf_sync_status) { case 'verified': stats.verified++; break; case 'pending': stats.pending++; break; case 'uploading': case 'uploaded': stats.syncing++; break; case 'failed': stats.failed++; break; case 'missing': case 'orphaned': stats.missing++; break; default: stats.noStatus++; } } return stats;"
     }
    ],
    "temporal": [
@@ -460339,7 +460528,7 @@
   },
   "src/pages/admin/DiscountRequestDetailPage.tsx": {
    "path": "src/pages/admin/DiscountRequestDetailPage.tsx",
-   "lines": 280,
+   "lines": 283,
    "exports": [
     "function DiscountRequestDetailPage"
    ],
@@ -460388,6 +460577,9 @@
      "params": "",
      "body": "const { id } = useParams<{ id: string }>(); const navigate = useNavigate(); const { isAdmin, rolesLoaded } = useAuth(); const qc = useQueryClient(); const [adminNotes, setAdminNotes] = useState(''); const { data, isLoading } = useQuery({ queryKey: ['discount-approval-detail', id], queryFn: async () => { if (!id) return null; const { data: row, error } = await supabase // rls-allow: admin via has_role; RLS filtra .from('discount_approval_requests') .select( '*, quotes:quote_id(quote_number, clien …"
     }
+   ],
+   "temporal": [
+    "? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()"
    ]
   },
   "src/pages/admin/EmaHealthPage.tsx": {
@@ -460413,7 +460605,7 @@
   },
   "src/pages/admin/KitTemplatesAdminPage.tsx": {
    "path": "src/pages/admin/KitTemplatesAdminPage.tsx",
-   "lines": 389,
+   "lines": 388,
    "exports": [
     "function KitTemplatesAdminPage"
    ],
@@ -460644,11 +460836,15 @@
   },
   "src/pages/admin/SellerDiscountLimitsAdminPage.tsx": {
    "path": "src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
-   "lines": 558,
+   "lines": 566,
    "exports": [
     "function SellerDiscountLimitsAdminPage"
    ],
    "tables": [
+    {
+     "table": "user_roles",
+     "op": "select"
+    },
     {
      "table": "profiles",
      "op": "select"
@@ -460671,6 +460867,10 @@
     }
    ],
    "table_cols": {
+    "user_roles": [
+     "role",
+     "user_id"
+    ],
     "profiles": [
      "email",
      "full_name",
@@ -461353,7 +461553,7 @@
   },
   "src/pages/admin/telemetry/useTelemetryData.ts": {
    "path": "src/pages/admin/telemetry/useTelemetryData.ts",
-   "lines": 152,
+   "lines": 156,
    "exports": [
     "interface TelemetryRow",
     "type SeverityFilter",
@@ -461437,7 +461637,7 @@
   },
   "src/pages/advanced-price-search/useAdvancedPriceSearch.ts": {
    "path": "src/pages/advanced-price-search/useAdvancedPriceSearch.ts",
-   "lines": 194,
+   "lines": 199,
    "exports": [
     "function useAdvancedPriceSearch"
    ],
@@ -464689,13 +464889,13 @@
   },
   "src/pages/products/ComparePage.tsx": {
    "path": "src/pages/products/ComparePage.tsx",
-   "lines": 426,
+   "lines": 439,
    "exports": [
     "function ComparePage"
    ],
    "navigates": [
     "/",
-    "/orcamentos/novo?",
+    "/orcamentos/novo",
     "/produto/"
    ],
    "doc": "ComparePage — Comparador de produtos (10/10) C1: score, radar, AI advisor, TCO, differences-only. C2: CRM picker, share público, export, sync, CTA orçamento. C3: Duel mode, mobile carousel, presentation, variant sync. C4: similar rail, presentation launcher. C5: shortcuts, ARIA-live, smart empty sta …"
@@ -466788,7 +466988,7 @@
   },
   "src/pages/quotes/quote-view/QuoteBitrixSync.ts": {
    "path": "src/pages/quotes/quote-view/QuoteBitrixSync.ts",
-   "lines": 172,
+   "lines": 195,
    "exports": [
     "function syncQuoteToBitrix"
    ],
@@ -466810,6 +467010,7 @@
     "${itemsSemBitrixId.length} produto(s) excluído(s) da sincronização",
     "Empresa sem ID Bitrix24",
     "Nenhum produto com ID Bitrix24",
+    "Orçamento em status final não pode ser sincronizado com o Bitrix24",
     "Orçamento sem identificador válido"
    ],
    "status_values": [
@@ -466820,8 +467021,18 @@
     },
     {
      "field": "status",
-     "value": "sent",
-     "kind": "escreve"
+     "value": "approved",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "converted",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "cancelled",
+     "kind": "compara"
     },
     {
      "field": "status",
@@ -467378,14 +467589,14 @@
   },
   "src/pages/trends/TrendsCharts.tsx": {
    "path": "src/pages/trends/TrendsCharts.tsx",
-   "lines": 363,
+   "lines": 370,
    "exports": [
     "function ActivityChart",
     "function ProductsTabContent",
     "function SearchesTabContent"
    ],
    "navigates": [
-    "/orcamentos/novo?produto=",
+    "/orcamentos/novo?",
     "/produto/"
    ],
    "doc": "TrendsCharts — Chart and list sections extracted from TrendsPage"
@@ -468655,7 +468866,7 @@
   },
   "src/services/notificationPreferenceService.ts": {
    "path": "src/services/notificationPreferenceService.ts",
-   "lines": 74,
+   "lines": 88,
    "exports": [
     "interface UserNotificationPreference",
     "const notificationPreferenceService"
@@ -468670,6 +468881,11 @@
      "op": "upsert"
     }
    ],
+   "table_cols": {
+    "user_notification_preferences": [
+     "user_id"
+    ]
+   },
    "channels": [
     "user_notification_preferences_realtime:${crypto.randomUUID()}"
    ]
@@ -475448,12 +475664,8 @@
   },
   "supabase/functions/block-ip-temporarily/index.ts": {
    "path": "supabase/functions/block-ip-temporarily/index.ts",
-   "lines": 100,
+   "lines": 81,
    "tables": [
-    {
-     "table": "user_roles",
-     "op": "select"
-    },
     {
      "table": "ip_access_control",
      "op": "insert"
@@ -475463,34 +475675,12 @@
      "op": "insert"
     }
    ],
-   "table_cols": {
-    "user_roles": [
-     "role",
-     "user_id"
-    ]
-   },
-   "env": [
-    "SUPABASE_ANON_KEY",
-    "SUPABASE_SERVICE_ROLE_KEY",
-    "SUPABASE_URL"
-   ],
-   "status_values": [
-    {
-     "field": "role",
-     "value": "admin",
-     "kind": "compara"
-    }
-   ],
-   "role_checks": [
-    "admin"
-   ],
    "rule_comments": [
     "Aceita IPv4, IPv6 e CIDR (validação leve, banco rejeita malformado via type inet)"
    ],
    "temporal": [
     "const expiresAt = new Date(Date.now() + hours * 60 * 60 * 1000).toISOString();"
-   ],
-   "uses_service_role": true
+   ]
   },
   "supabase/functions/bulk-random-passwords/index.ts": {
    "path": "supabase/functions/bulk-random-passwords/index.ts",
@@ -475753,7 +475943,7 @@
   },
   "supabase/functions/collections-watcher/index.ts": {
    "path": "supabase/functions/collections-watcher/index.ts",
-   "lines": 150,
+   "lines": 152,
    "tables": [
     {
      "table": "workspace_notifications",
@@ -475796,7 +475986,7 @@
     "products": [
      "id",
      "name",
-     "price"
+     "sale_price"
     ]
    },
    "env": [
@@ -476521,7 +476711,7 @@
      "value"
     ],
     "crm_callback_events": [
-     "created_at",
+     "received_at",
      "result"
     ]
    },
@@ -476862,10 +477052,14 @@
   },
   "supabase/functions/detect-new-device/index.ts": {
    "path": "supabase/functions/detect-new-device/index.ts",
-   "lines": 144,
+   "lines": 152,
    "tables": [
     {
      "table": "user_known_devices",
+     "op": "select"
+    },
+    {
+     "table": "device_login_notifications",
      "op": "select"
     },
     {
@@ -476887,15 +477081,16 @@
    ],
    "table_cols": {
     "user_known_devices": [
-     "device_fingerprint",
+     "fingerprint",
      "id",
+     "user_id"
+    ],
+    "device_login_notifications": [
+     "device_id",
+     "ip_address",
      "user_id"
     ]
    },
-   "env": [
-    "SUPABASE_SERVICE_ROLE_KEY",
-    "SUPABASE_URL"
-   ],
    "zod": [
     {
      "name": "DeviceInfoSchema",
@@ -476919,7 +477114,9 @@
      "kind": "escreve"
     }
    ],
-   "uses_service_role": true
+   "pagination": [
+    "1"
+   ]
   },
   "supabase/functions/dropbox-list/index.ts": {
    "path": "supabase/functions/dropbox-list/index.ts",
@@ -477808,7 +478005,7 @@
   },
   "supabase/functions/favorites-watcher/index.ts": {
    "path": "supabase/functions/favorites-watcher/index.ts",
-   "lines": 152,
+   "lines": 149,
    "tables": [
     {
      "table": "workspace_notifications",
@@ -477844,7 +478041,6 @@
     "products": [
      "id",
      "name",
-     "price",
      "sale_price"
     ]
    },
@@ -477894,7 +478090,7 @@
   },
   "supabase/functions/force-global-logout/index.ts": {
    "path": "supabase/functions/force-global-logout/index.ts",
-   "lines": 111,
+   "lines": 110,
    "tables": [
     {
      "table": "user_roles",
@@ -477911,15 +478107,16 @@
      "user_id"
     ]
    },
+   "rpc": [
+    "admin_revoke_user_sessions"
+   ],
    "env": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
    ],
    "role_checks": [
-    "admin",
-    "dev",
-    "supervisor"
+    "dev"
    ],
    "uses_service_role": true
   },
@@ -477935,12 +478132,13 @@
    "table_cols": {
     "step_up_tokens": [
      "action",
+     "consumed",
+     "consumed_at",
      "created_at",
      "expires_at",
      "id",
      "target_ref",
      "token_hash",
-     "used_at",
      "user_id"
     ]
    },
@@ -479736,8 +479934,12 @@
   },
   "supabase/functions/manage-users/index.ts": {
    "path": "supabase/functions/manage-users/index.ts",
-   "lines": 357,
+   "lines": 388,
    "tables": [
+    {
+     "table": "user_roles",
+     "op": "select"
+    },
     {
      "table": "user_roles",
      "op": "update"
@@ -479878,11 +480080,22 @@
     },
     {
      "field": "role",
+     "value": "dev",
+     "kind": "compara"
+    },
+    {
+     "field": "role",
+     "value": "dev",
+     "kind": "compara"
+    },
+    {
+     "field": "role",
      "value": "vendedor",
      "kind": "compara"
     }
    ],
    "role_checks": [
+    "dev",
     "supervisor",
     "vendedor"
    ],
@@ -480147,11 +480360,15 @@
   },
   "supabase/functions/mcp-keys-issue/index.ts": {
    "path": "supabase/functions/mcp-keys-issue/index.ts",
-   "lines": 396,
+   "lines": 412,
    "tables": [
     {
      "table": "mcp_api_keys",
      "op": "insert,select"
+    },
+    {
+     "table": "step_up_audit_log",
+     "op": "insert"
     }
    ],
    "table_cols": {
@@ -480374,7 +480591,7 @@
   },
   "supabase/functions/mcp-keys-rotate/index.ts": {
    "path": "supabase/functions/mcp-keys-rotate/index.ts",
-   "lines": 331,
+   "lines": 347,
    "tables": [
     {
      "table": "mcp_api_keys",
@@ -480383,6 +480600,10 @@
     {
      "table": "mcp_api_keys",
      "op": "insert,select"
+    },
+    {
+     "table": "step_up_audit_log",
+     "op": "insert"
     }
    ],
    "table_cols": {
@@ -480461,7 +480682,7 @@
   },
   "supabase/functions/mcp-keys-update/index.ts": {
    "path": "supabase/functions/mcp-keys-update/index.ts",
-   "lines": 333,
+   "lines": 349,
    "tables": [
     {
      "table": "mcp_api_keys",
@@ -480470,6 +480691,10 @@
     {
      "table": "mcp_api_keys",
      "op": "select,update"
+    },
+    {
+     "table": "step_up_audit_log",
+     "op": "insert"
     }
    ],
    "table_cols": {
@@ -481028,7 +481253,7 @@
   },
   "supabase/functions/product-webhook/index.ts": {
    "path": "supabase/functions/product-webhook/index.ts",
-   "lines": 607,
+   "lines": 677,
    "tables": [
     {
      "table": "product_sync_logs",
@@ -481047,16 +481272,31 @@
      "op": "select"
     },
     {
+     "table": "categories",
+     "op": "select"
+    },
+    {
+     "table": "products",
+     "op": "upsert"
+    },
+    {
      "table": "products",
      "op": "upsert"
     }
    ],
    "table_cols": {
     "products": [
+     "category_id",
      "id",
-     "sku"
+     "sku",
+     "supplier_id"
     ],
     "product_sync_logs": [
+     "id"
+    ],
+    "categories": [
+     "bitrix_id",
+     "deleted_at",
      "id"
     ]
    },
@@ -481967,36 +482207,8 @@
   },
   "supabase/functions/secure-upload/index.ts": {
    "path": "supabase/functions/secure-upload/index.ts",
-   "lines": 378,
+   "lines": 405,
    "tables": [
-    {
-     "table": "file_scan_logs",
-     "op": "insert"
-    },
-    {
-     "table": "file_scan_logs",
-     "op": "insert"
-    },
-    {
-     "table": "file_scan_logs",
-     "op": "insert"
-    },
-    {
-     "table": "file_scan_logs",
-     "op": "insert"
-    },
-    {
-     "table": "file_scan_logs",
-     "op": "insert"
-    },
-    {
-     "table": "file_scan_logs",
-     "op": "insert"
-    },
-    {
-     "table": "file_scan_logs",
-     "op": "insert"
-    },
     {
      "table": "file_scan_logs",
      "op": "insert"
@@ -482028,6 +482240,13 @@
    ],
    "rule_comments": [
     "Campos do multipart validados por zod, preservando a regra legada:"
+   ],
+   "calc_fns": [
+    {
+     "name": "scanMet",
+     "params": "a",
+     "body": "file_name: string; file_size: number | null; mime_type: string | null"
+    }
    ],
    "temporal": [
     "const timeoutId = setTimeout(() => controller.abort(), 10000);"
@@ -483169,7 +483388,7 @@
   },
   "supabase/functions/validate-access/index.ts": {
    "path": "supabase/functions/validate-access/index.ts",
-   "lines": 290,
+   "lines": 289,
    "tables": [
     {
      "table": "access_security_settings",
@@ -483248,8 +483467,12 @@
   },
   "supabase/functions/verify-2fa-token/index.ts": {
    "path": "supabase/functions/verify-2fa-token/index.ts",
-   "lines": 241,
+   "lines": 255,
    "tables": [
+    {
+     "table": "user_roles",
+     "op": "select"
+    },
     {
      "table": "user_roles",
      "op": "select"
@@ -483303,6 +483526,11 @@
      "field": "status",
      "value": "success",
      "kind": "escreve"
+    },
+    {
+     "field": "role",
+     "value": "dev",
+     "kind": "compara"
     }
    ],
    "role_checks": [
@@ -500076,7 +500304,7 @@
      "roles": []
     },
     {
-     "path": "/catalogo",
+     "path": "/produtos",
      "component": "div",
      "guard": "",
      "roles": []
@@ -500109,7 +500337,7 @@
     "clicar no CTA leva supervisor para /admin/usuarios",
     "DevRoute — AGENTE/vendedor vê copy de vendedor + CTA Catálogo",
     "agente em ${path} vê 403 com CTA ",
-    "clicar no CTA leva agente para /catalogo",
+    "clicar no CTA leva agente para /produtos",
     "normaliza papel ",
     "DevRoute — botão ",
     "navega de volta para o mesmo path (não para fallback)",
@@ -510598,6 +510826,16 @@
    ],
    "doc": "Smoke test template — helpers para gerar testes mínimos que apenas garantem que o hook não crasha ao montar com providers padrão. Uso: import { smokeHook } from \"../_helpers/smoke-template\"; import { useAlgumaCoisa } from \"@/hooks/useAlgumaCoisa\"; smokeHook(\"useAlgumaCoisa\", () => useAlgumaCoisa());"
   },
+  "tests/hooks/kit-builder/useKitFitsValidation.test.ts": {
+   "path": "tests/hooks/kit-builder/useKitFitsValidation.test.ts",
+   "lines": 59,
+   "is_test": true,
+   "tests": [
+    "validateKitFitsForQuote",
+    "considera item.quantity no volume da linha",
+    "mantém fail-open quando fits é null"
+   ]
+  },
   "tests/hooks/quotes/quoteHelpers.freight.test.ts": {
    "path": "tests/hooks/quotes/quoteHelpers.freight.test.ts",
    "lines": 475,
@@ -512014,6 +512252,16 @@
     "routes update to .update() scoped by id",
     "routes delete to .delete() scoped by id",
     "routes a write operation to real DML (insert) — no silent SELECT-only no-op"
+   ]
+  },
+  "tests/lib/price-tables-technique-group.test.ts": {
+   "path": "tests/lib/price-tables-technique-group.test.ts",
+   "lines": 27,
+   "is_test": true,
+   "tests": [
+    "toTechniqueGroup — nome da técnica → grupo_tecnica",
+    "%s → %s",
+    "técnica sem regra vira código normalizado"
    ]
   },
   "tests/lib/print-area-grouping.test.ts": {
@@ -518406,10 +518654,99 @@
   }
  },
  "git": {
-  "sha": "4bda9034cfa19cf133a2d1301c965c2d564f966c",
+  "sha": "5f956d2cf110e10da489774bbca3b12413c24039",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "5f956d2",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix: corrige 62 bugs confirmados em telas, hooks e edge functions (#3424)",
+    "files": [
+     ".file-size-baseline.json",
+     "src/components/access/DevAccessDeniedPage.tsx",
+     "src/components/admin/DiscountManagementPanel.tsx",
+     "src/components/admin/DiscountNotificationFilterPanel.tsx",
+     "src/components/admin/InlineEditField.tsx",
+     "src/components/admin/MockupPromptManager.tsx",
+     "src/components/admin/SellerDiscountLimitsPanel.tsx",
+     "src/components/admin/products/sections/engraving/useEngravingWizard.ts",
+     "src/components/admin/security/SecureUploadManager.tsx",
+     "src/components/admin/suppliers-manager/useSuppliersManager.ts",
+     "src/components/admin/telemetry/QuoteBuilderHandoffCard.tsx",
+     "src/components/bi/ClientCategoryRadar.tsx",
+     "src/components/bi/ConfirmQuoteSuggestionsModal.tsx",
+     "src/components/cart/CartHeaderButton.tsx",
+     "src/components/catalog/CatalogBulkModals.tsx",
+     "src/components/catalog/useCatalogSelection.ts",
+     "src/components/dashboard/MyClientsWidget.tsx",
+     "src/components/dashboard/MyDiscountRequestsWidget.tsx",
+     "src/components/engraving/PricingPanel.tsx",
+     "src/components/expert/chat/useExpertChat.ts",
+     "src/components/intelligence/HotSearchesCard.tsx",
+     "src/components/intelligence/UnmetDemandCard.tsx",
+     "src/components/kit-builder/PersonalizationConfig.tsx",
+     "src/components/pricing/ProductPriceSimulator.tsx",
+     "src/components/pricing/QuantityPriceCalculator.tsx",
+     "src/components/products/ProductCustomizationOptions.tsx",
+     "src/components/products/QuickAddToQuote.tsx",
+     "src/components/providers/AppBootstrap.tsx",
+     "src/components/quotes/QuoteProductCustomization.tsx",
+     "src/components/security/MfaEnrollmentDialog.tsx",
+     "src/components/security/SecurityDashboard.tsx",
+     "src/components/security/useSecurityData.ts",
+     "src/contexts/CollectionsContext.tsx",
+     "src/hooks/admin/useAdminKitTemplates.ts",
+     "src/hooks/auth/use2FA.ts",
+     "src/hooks/collections/useCollections.ts",
+     "src/hooks/intelligence/useStockHistory.ts",
+     "src/hooks/kit-builder/useKitFitsValidation.ts",
+     "src/hooks/kit-builder/useKitTemplates.ts",
+     "src/hooks/products/useProductsByColor.ts",
+     "src/hooks/quotes/useQuoteBuilderState.helpers.ts",
+     "src/hooks/quotes/useQuoteBuilderState.ts",
+     "src/hooks/quotes/useQuotes.ts",
+     "src/lib/external-db/batch-import.ts",
+     "src/lib/external-db/price-tables.ts",
+     "src/lib/personalization/transformers.ts",
+     "src/lib/telemetry/quoteHandoffTelemetry.ts",
+     "src/pages/admin/AdminCloudflareImagesPage.tsx",
+     "src/pages/admin/DiscountRequestDetailPage.tsx",
+     "src/pages/admin/KitTemplatesAdminPage.tsx",
+     "src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
+     "src/pages/admin/telemetry/useTelemetryData.ts",
+     "src/pages/advanced-price-search/ResultViews.tsx",
+     "src/pages/advanced-price-search/useAdvancedPriceSearch.ts",
+     "src/pages/bi/TrendsPage.tsx",
+     "src/pages/collections/CollectionDetailPage.tsx",
+     "src/pages/products/ComparePage.tsx",
+     "src/pages/quotes/quote-view/QuoteBitrixSync.ts",
+     "src/pages/trends/TrendsCharts.tsx",
+     "src/services/notificationPreferenceService.ts",
+     "src/services/quoteService.ts",
+     "supabase/functions/anonymize-user/index.ts",
+     "supabase/functions/block-ip-temporarily/index.ts",
+     "supabase/functions/collections-watcher/index.ts",
+     "supabase/functions/crm-callback-alerts/index.ts",
+     "supabase/functions/crm-callback-reprocess/index.ts",
+     "supabase/functions/detect-new-device/index.ts",
+     "supabase/functions/favorites-watcher/index.ts",
+     "supabase/functions/force-global-logout/index.ts",
+     "supabase/functions/full-op-diagnostics/index.ts",
+     "supabase/functions/manage-users/index.ts",
+     "supabase/functions/mcp-keys-issue/index.ts",
+     "supabase/functions/mcp-keys-rotate/index.ts",
+     "supabase/functions/mcp-keys-update/index.ts",
+     "supabase/functions/product-webhook/index.ts",
+     "supabase/functions/secure-upload/index.ts",
+     "supabase/functions/validate-access/index.ts",
+     "supabase/functions/verify-2fa-token/index.ts",
+     "tests/components/DevRoute.test.tsx",
+     "tests/hooks/kit-builder/useKitFitsValidation.test.ts",
+     "tests/lib/price-tables-technique-group.test.ts"
+    ]
+   },
    {
     "sha": "4bda903",
     "date": "2026-11-12",
@@ -519711,15 +520048,6 @@
     "files": [
      ".migration-refs-baseline.json"
     ]
-   },
-   {
-    "sha": "586f454",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "chore(sentinel): grandfather SHA fb4b8c2d87 do PR #3349 (#3351)",
-    "files": [
-     ".github/SENTINEL_SHA_ALLOWLIST.txt"
-    ]
    }
   ],
   "hot_files": [
@@ -519738,6 +520066,10 @@
    [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     3
+   ],
+   [
+    ".file-size-baseline.json",
+    2
    ],
    [
     "PENDENCIAS.md",
@@ -519797,10 +520129,6 @@
    ],
    [
     "supabase/functions/external-db-bridge/resolveProductsSelect.test.ts",
-    2
-   ],
-   [
-    "supabase/functions/external-db-bridge/wideSelectThreshold.test.ts",
     2
    ]
   ]

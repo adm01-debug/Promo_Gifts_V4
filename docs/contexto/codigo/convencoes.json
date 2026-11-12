@@ -23,7 +23,7 @@
    "src/services (9)"
   ],
   "testes": [
-   "tests/ (864)",
+   "tests/ (866)",
    "e2e/ (625)",
    "co-localizado (__tests__) (618)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: corrige 62 bugs confirmados em telas, hooks e edge functions (#3424)",
    "fix(tests): corrige erros de TypeScript em testes, mede baseline real (855) e corrige caminho em PENDENCIAS (#3419)",
    "fix(ci): corrige testes, tipos de edge e cobertura que deixam a main vermelha (#3407)",
    "docs(ci): RELATORIO §33 + PENDENCIAS #45-#52 — baseline + inventário final de workflows",
-   "fix: fn_get_rupture_alerts com SECURITY DEFINER e search_path correto",
-   "fix(scripts): heap explícito no tsc dos gates para evitar OOM (#3406)"
+   "fix: fn_get_rupture_alerts com SECURITY DEFINER e search_path correto"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

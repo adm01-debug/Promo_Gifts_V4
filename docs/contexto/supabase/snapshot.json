@@ -138459,6 +138459,10 @@
         "callers": {
           "code": [
             {
+              "file": "supabase/functions/force-global-logout/index.ts",
+              "hits": 1
+            },
+            {
               "file": "supabase/functions/manage-users/index.ts",
               "hits": 1
             },
@@ -138467,7 +138471,7 @@
               "hits": 1
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -179003,7 +179007,7 @@
             },
             {
               "file": "supabase/functions/manage-users/index.ts",
-              "hits": 1
+              "hits": 2
             },
             {
               "file": "supabase/functions/rls-matrix-export/index.ts",

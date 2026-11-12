@@ -3701,7 +3701,7 @@
     "DiscountNotificationFilterPanel"
    ],
    "export_default": null,
-   "linhas": 301,
+   "linhas": 305,
    "dominio": "components/admin",
    "hooks_locais": [
     "useAuth"
@@ -3777,7 +3777,7 @@
     "InlineEditField"
    ],
    "export_default": null,
-   "linhas": 114,
+   "linhas": 116,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -3825,7 +3825,7 @@
     "MockupPromptManager"
    ],
    "export_default": null,
-   "linhas": 399,
+   "linhas": 404,
    "dominio": "components/admin",
    "hooks_locais": [
     "useAuth"
@@ -5333,12 +5333,13 @@
     "SellerDiscountLimitsPanel"
    ],
    "export_default": null,
-   "linhas": 132,
+   "linhas": 140,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [
     "profiles",
-    "seller_discount_limits"
+    "seller_discount_limits",
+    "user_roles"
    ],
    "edges": [],
    "usado_por": 0,
@@ -5649,7 +5650,7 @@
     "QuoteBuilderHandoffCard"
    ],
    "export_default": null,
-   "linhas": 191,
+   "linhas": 195,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [
@@ -6175,7 +6176,7 @@
     "ClientCategoryRadar"
    ],
    "export_default": null,
-   "linhas": 506,
+   "linhas": 507,
    "dominio": "components/bi",
    "hooks_locais": [
     "useBICategoryFocus",
@@ -6314,7 +6315,7 @@
     "SuggestionItem"
    ],
    "export_default": null,
-   "linhas": 213,
+   "linhas": 223,
    "dominio": "components/bi",
    "hooks_locais": [],
    "tabelas": [],
@@ -6524,7 +6525,7 @@
     "CartHeaderButton"
    ],
    "export_default": null,
-   "linhas": 1011,
+   "linhas": 1012,
    "dominio": "components/cart",
    "hooks_locais": [
     "useCrmCompanies",
@@ -6702,7 +6703,7 @@
     "CatalogBulkModals"
    ],
    "export_default": null,
-   "linhas": 71,
+   "linhas": 80,
    "dominio": "components/catalog",
    "hooks_locais": [],
    "tabelas": [],
@@ -6827,7 +6828,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 11,
+   "usado_por": 10,
    "orfao": false
   },
   {
@@ -7786,7 +7787,7 @@
     "MyClientsWidget"
    ],
    "export_default": null,
-   "linhas": 270,
+   "linhas": 279,
    "dominio": "components/dashboard",
    "hooks_locais": [
     "useAuth",
@@ -7806,7 +7807,7 @@
     "MyDiscountRequestsWidget"
    ],
    "export_default": null,
-   "linhas": 443,
+   "linhas": 445,
    "dominio": "components/dashboard",
    "hooks_locais": [
     "useAuth",
@@ -8033,7 +8034,7 @@
     "PricingPanel"
    ],
    "export_default": null,
-   "linhas": 385,
+   "linhas": 390,
    "dominio": "components/engraving",
    "hooks_locais": [
     "useNomesTecnicasPreco",
@@ -9175,7 +9176,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "orfao": false
   },
   {
@@ -10305,7 +10306,7 @@
     "PersonalizationConfig"
    ],
    "export_default": null,
-   "linhas": 1410,
+   "linhas": 1414,
    "dominio": "components/kit-builder",
    "hooks_locais": [
     "useCustomizationPriceReactive",
@@ -12153,7 +12154,7 @@
     "ProductPriceSimulator"
    ],
    "export_default": "ProductPriceSimulator",
-   "linhas": 427,
+   "linhas": 443,
    "dominio": "components/pricing",
    "hooks_locais": [],
    "tabelas": [],
@@ -12167,7 +12168,7 @@
     "QuantityPriceCalculator"
    ],
    "export_default": "QuantityPriceCalculator",
-   "linhas": 261,
+   "linhas": 277,
    "dominio": "components/pricing",
    "hooks_locais": [
     "useCustomizationPricing"
@@ -12913,9 +12914,10 @@
     "ProductCustomizationOptions"
    ],
    "export_default": null,
-   "linhas": 623,
+   "linhas": 670,
    "dominio": "components/products",
    "hooks_locais": [
+    "useCustomizationPriceCalculator",
     "useProductCustomizationOptions"
    ],
    "tabelas": [],
@@ -13281,7 +13283,7 @@
     "QuickAddToQuote"
    ],
    "export_default": null,
-   "linhas": 396,
+   "linhas": 398,
    "dominio": "components/products",
    "hooks_locais": [
     "useSellerCartContext"
@@ -14328,7 +14330,7 @@
     "QuoteProductCustomization"
    ],
    "export_default": null,
-   "linhas": 134,
+   "linhas": 135,
    "dominio": "components/quotes",
    "hooks_locais": [],
    "tabelas": [],
@@ -15052,7 +15054,7 @@
     "MfaEnrollmentDialog"
    ],
    "export_default": null,
-   "linhas": 219,
+   "linhas": 222,
    "dominio": "components/security",
    "hooks_locais": [
     "useAuth"
@@ -15085,7 +15087,7 @@
     "SecurityDashboard"
    ],
    "export_default": null,
-   "linhas": 559,
+   "linhas": 564,
    "dominio": "components/security",
    "hooks_locais": [
     "useAuth",
@@ -16754,7 +16756,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 200,
+   "usado_por": 201,
    "orfao": false
   },
   {
@@ -16797,7 +16799,7 @@
     "CollectionsProvider"
    ],
    "export_default": null,
-   "linhas": 118,
+   "linhas": 81,
    "dominio": "contexts",
    "hooks_locais": [
     "useCollections",
@@ -16857,7 +16859,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 6,
+   "usado_por": 7,
    "orfao": false
   },
   {
@@ -17130,7 +17132,7 @@
     "AdminCloudflareImagesPage"
    ],
    "export_default": "AdminCloudflareImagesPage",
-   "linhas": 468,
+   "linhas": 490,
    "dominio": "pages/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -17568,7 +17570,7 @@
     "DiscountRequestDetailPage"
    ],
    "export_default": "DiscountRequestDetailPage",
-   "linhas": 280,
+   "linhas": 283,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useAuth"
@@ -17619,7 +17621,7 @@
     "KitTemplatesAdminPage"
    ],
    "export_default": "KitTemplatesAdminPage",
-   "linhas": 389,
+   "linhas": 388,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useAdminKitTemplates"
@@ -17776,7 +17778,7 @@
     "SellerDiscountLimitsAdminPage"
    ],
    "export_default": "SellerDiscountLimitsAdminPage",
-   "linhas": 558,
+   "linhas": 566,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useAuth"
@@ -17784,7 +17786,8 @@
    "tabelas": [
     "discount_approval_requests",
     "profiles",
-    "seller_discount_limits"
+    "seller_discount_limits",
+    "user_roles"
    ],
    "edges": [],
    "usado_por": 1,
@@ -19096,7 +19099,7 @@
     "ComparePage"
    ],
    "export_default": "ComparePage",
-   "linhas": 426,
+   "linhas": 439,
    "dominio": "pages/products",
    "hooks_locais": [
     "useComparisonShortcuts",
@@ -19716,7 +19719,7 @@
     "SearchesTabContent"
    ],
    "export_default": null,
-   "linhas": 363,
+   "linhas": 370,
    "dominio": "pages/trends",
    "hooks_locais": [],
    "tabelas": [],

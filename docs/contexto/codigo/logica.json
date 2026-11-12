@@ -597,13 +597,14 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 402,
+   "usado_por": 403,
    "usado_por_modulos": [
     "components/admin",
     "components/ai",
     "components/auth",
     "components/bi",
     "components/cart",
+    "components/catalog",
     "components/collections",
     "components/compare",
     "components/dashboard",
@@ -1738,7 +1739,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 6,
+   "usado_por": 7,
    "usado_por_modulos": [
     "components/bi",
     "hooks/bi",
@@ -2760,7 +2761,7 @@
     "sanitizeImportRow"
    ],
    "export_default": null,
-   "linhas": 251,
+   "linhas": 260,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -3089,10 +3090,11 @@
    "exports": [
     "PromobrindPriceTable",
     "fetchPromobrindPriceTables",
-    "findBestPriceTable"
+    "findBestPriceTable",
+    "toTechniqueGroup"
    ],
    "export_default": null,
-   "linhas": 109,
+   "linhas": 189,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -3105,7 +3107,7 @@
    "usado_por_modulos": [
     "lib/external-db"
    ],
-   "coberto_por_testes": 0,
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {
@@ -4155,7 +4157,7 @@
     "pages/admin",
     "pages/kit-builder"
    ],
-   "coberto_por_testes": 25,
+   "coberto_por_testes": 26,
    "orfao": false
   },
   {
@@ -4263,8 +4265,9 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_modulos": [
+    "hooks/kit-builder",
     "lib/kit-builder"
    ],
    "coberto_por_testes": 2,
@@ -4305,7 +4308,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 16,
+   "usado_por": 17,
    "usado_por_modulos": [
     "components/kit-builder",
     "hooks/kit-builder",
@@ -5491,7 +5494,7 @@
     "transformTechniques"
    ],
    "export_default": null,
-   "linhas": 375,
+   "linhas": 385,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -5763,7 +5766,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 12,
+   "usado_por": 13,
    "usado_por_modulos": [
     "components/quotes",
     "hooks/quotes",
@@ -6965,7 +6968,7 @@
     "trackQuoteHandoff"
    ],
    "export_default": null,
-   "linhas": 79,
+   "linhas": 80,
    "tabelas": [
     "frontend_telemetry"
    ],
@@ -7776,7 +7779,7 @@
     "notificationPreferenceService"
    ],
    "export_default": null,
-   "linhas": 74,
+   "linhas": 88,
    "tabelas": [
     "user_notification_preferences"
    ],

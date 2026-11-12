@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4bda9034cf` · branch `main` · 2026-11-12 06:48 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5f956d2cf1` · branch `main` · 2026-11-12 11:46 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -408,7 +408,8 @@
 | status | valor `suspended` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/hooks/voice/feedbackSounds.ts` |
 | status | valor `installed` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/sw-register.ts` |
 | status | valor `selected` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/__visual/DatePickerFieldHarness.tsx` |
-| status | valor `syncing` para `cf_sync_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/AdminCloudflareImagesPage.tsx` |
+| status | valor `uploaded` para `cf_sync_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/AdminCloudflareImagesPage.tsx` |
+| status | valor `orphaned` para `cf_sync_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/AdminCloudflareImagesPage.tsx` |
 | status | valor `ready` para `cloudflare_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/external-db/products-detail.ts` |
 | status | valor `synced` para `sync_status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/product-webhook/index.ts` |
 | coluna | coluna `admin_notes` usada no código não existe no schema de `discount_approval_requests` |  |
@@ -450,7 +451,6 @@
 | coluna | coluna `filter_states` usada no código não existe no schema de `user_preferences` |  |
 | coluna | coluna `env_key` usada no código não existe no schema de `external_connections` |  |
 | coluna | coluna `is_pinned` usada no código não existe no schema de `custom_kits` |  |
-| coluna | coluna `device_fingerprint` usada no código não existe no schema de `user_known_devices` |  |
 | coluna | coluna `avatar_url` usada no código não existe no schema de `profiles` |  |
 | coluna | coluna `bitrix_id` usada no código não existe no schema de `profiles` |  |
 | coluna | coluna `count` usada no código não existe no schema de `profiles` |  |
@@ -470,11 +470,11 @@
 | coluna | coluna `images` usada no código não existe no schema de `products` |  |
 | coluna | coluna `is_deleted` usada no código não existe no schema de `products` |  |
 | coluna | coluna `locked_fields` usada no código não existe no schema de `products` |  |
-| coluna | coluna `price` usada no código não existe no schema de `products` |  |
 | coluna | coluna `primary_image_url` usada no código não existe no schema de `products` |  |
 | coluna | coluna `sale_price` usada no código não existe no schema de `products` |  |
 | coluna | coluna `sku` usada no código não existe no schema de `products` |  |
 | coluna | coluna `stock_quantity` usada no código não existe no schema de `products` |  |
+| coluna | coluna `supplier_id` usada no código não existe no schema de `products` |  |
 | coluna | coluna `tags` usada no código não existe no schema de `products` |  |
 | coluna | coluna `view_count` usada no código não existe no schema de `products` |  |
 | coluna | coluna `created_at` usada no código não existe no schema de `quote_item_personalizations` |  |
@@ -550,7 +550,6 @@
 | coluna | coluna `url_cdn` usada no código não existe no schema de `product_images` |  |
 | coluna | coluna `width_px` usada no código não existe no schema de `product_images` |  |
 | coluna | coluna `level` usada no código não existe no schema de `categories` |  |
-| coluna | coluna `used_at` usada no código não existe no schema de `step_up_tokens` |  |
 | tabela | tabela `...` usada no código não existe nas migrations/types do repo | `src/lib/supabase-untyped.ts`<br>`supabase/migrations/20260621235500_faxina_restore_18_frontend_referenced_tables_APLICADO.sql` |
 | tabela | tabela `a` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
 | tabela | tabela `avatars` usada no código não existe nas migrations/types do repo | `src/components/admin/users/useUserManagement.ts` |
@@ -646,7 +645,8 @@
 | rpc | RPC `calculate_quote_totals` chamada mas não definida nas migrations/types | `tests/integration/freight-quest/quote-freight-integration.test.ts` |
 | rpc | RPC `check_rls_enabled` chamada mas não definida nas migrations/types | `tests/security/rls-validation.test.ts` |
 | rpc | RPC `dashboard_rpc` chamada mas não definida nas migrations/types | `scripts/ai-context/gerar.unit.mjs` |
-| … +205 linhas — lista completa em `context.json` | | |
+| rpc | RPC `demo` chamada mas não definida nas migrations/types | `scripts/supabase_snapshot/test_snapshot.py` |
+| … +204 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

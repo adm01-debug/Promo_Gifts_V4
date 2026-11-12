@@ -9886,6 +9886,7 @@
     "categories-api",
     "expert-chat",
     "product-visual-search",
+    "product-webhook",
     "visual-search"
    ],
    "triggers": [
@@ -16875,7 +16876,7 @@
     "list_id->favorite_lists"
    ],
    "criada_em": "20260420123931_cfdf94d4-a89e-4f3a-bd30-2a7f43cc62df.sql",
-   "usada_no_front": 4,
+   "usada_no_front": 5,
    "usada_em_edges": [
     "favorites-watcher"
    ],
@@ -43131,6 +43132,9 @@
    "criada_em": "20260425203103_eec2662c-3ad4-48ca-8fcb-f3cbf6be16bc.sql",
    "usada_no_front": 0,
    "usada_em_edges": [
+    "mcp-keys-issue",
+    "mcp-keys-rotate",
+    "mcp-keys-update",
     "step-up-verify"
    ],
    "triggers": [],
@@ -50265,11 +50269,10 @@
     "user_id->profiles"
    ],
    "criada_em": "20251214183243_14916945-c09e-42a0-bdf1-8972c41f9210.sql",
-   "usada_no_front": 5,
+   "usada_no_front": 7,
    "usada_em_edges": [
     "_shared",
     "audit-suite",
-    "block-ip-temporarily",
     "connection-tester",
     "connections-health-check",
     "crm-callback-reprocess",
@@ -52069,7 +52072,7 @@
   {
    "nome": "admin_revoke_user_sessions",
    "definida": true,
-   "usada_em": 1
+   "usada_em": 2
   },
   {
    "nome": "audit_ownership_orphans",

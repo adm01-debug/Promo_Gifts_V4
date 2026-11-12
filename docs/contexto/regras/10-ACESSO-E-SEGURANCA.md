@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4bda9034cf` · branch `main` · 2026-11-12 06:48 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5f956d2cf1` · branch `main` · 2026-11-12 11:46 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -327,7 +327,7 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
-## Onde o RLS é IGNORADO (service_role) — 796 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 794 arquivo(s)
 
 - `auditoria-supabase/propostas/P01_rls_restrictive_correcao.sql`
 - `auditoria-supabase/propostas/P10_func_new_001_fn_cron_guard_revoke.sql`
@@ -447,7 +447,6 @@
 - `supabase/functions/backfill-image-dimensions/index.ts`
 - `supabase/functions/bitrix-sync/handler_characterization_test.ts`
 - `supabase/functions/bitrix-sync/index.ts`
-- `supabase/functions/block-ip-temporarily/index.ts`
 - `supabase/functions/bulk-random-passwords/index.ts`
 - `supabase/functions/categories-api/index.ts`
 - `supabase/functions/check-login/index.ts`
@@ -464,7 +463,6 @@
 - `supabase/functions/crm-callback-reprocess/index.ts`
 - `supabase/functions/crm-db-bridge/creds_health.test.ts`
 - `supabase/functions/crm-db-bridge/index.ts`
-- `supabase/functions/detect-new-device/index.ts`
 - `supabase/functions/e2e-cleanup/handler_characterization_test.ts`
 - `supabase/functions/e2e-cleanup/index.mockups.test.ts`
 - `supabase/functions/e2e-cleanup/index.ts`
@@ -479,7 +477,9 @@
 - `supabase/functions/hash-product-images/index.ts`
 - `supabase/functions/health-check/index.ts`
 - `supabase/functions/load-test/index.ts`
-- … +646 (lista completa em `context.json`)
+- `supabase/functions/log-login-attempt/index.ts`
+- `supabase/functions/log-login-attempt/index_test.ts`
+- … +644 (lista completa em `context.json`)
 
 ## Funções SQL `SECURITY DEFINER` (rodam com privilégio do dono, ignoram RLS)
 
