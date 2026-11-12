@@ -2,9 +2,7 @@
   "api": {
     "enabled": false
   },
-  "carried": [
-    "grants"
-  ],
+  "carried": [],
   "db": {
     "columns": [
       {
@@ -65681,6 +65679,916 @@
         "position": 7,
         "schema": "public",
         "table": "supplier_products_raw_history_p2027_02",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": "gen_random_uuid()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "id",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_03",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_id",
+        "nullable": true,
+        "position": 2,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_03",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_id",
+        "nullable": true,
+        "position": 3,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_03",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_reference",
+        "nullable": true,
+        "position": 4,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_03",
+        "type": "character varying"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "content_hash",
+        "nullable": true,
+        "position": 5,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_03",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_data",
+        "nullable": true,
+        "position": 6,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_03",
+        "type": "jsonb"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "captured_at",
+        "nullable": false,
+        "position": 7,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_03",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": "gen_random_uuid()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "id",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_04",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_id",
+        "nullable": true,
+        "position": 2,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_04",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_id",
+        "nullable": true,
+        "position": 3,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_04",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_reference",
+        "nullable": true,
+        "position": 4,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_04",
+        "type": "character varying"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "content_hash",
+        "nullable": true,
+        "position": 5,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_04",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_data",
+        "nullable": true,
+        "position": 6,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_04",
+        "type": "jsonb"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "captured_at",
+        "nullable": false,
+        "position": 7,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_04",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": "gen_random_uuid()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "id",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_05",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_id",
+        "nullable": true,
+        "position": 2,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_05",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_id",
+        "nullable": true,
+        "position": 3,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_05",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_reference",
+        "nullable": true,
+        "position": 4,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_05",
+        "type": "character varying"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "content_hash",
+        "nullable": true,
+        "position": 5,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_05",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_data",
+        "nullable": true,
+        "position": 6,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_05",
+        "type": "jsonb"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "captured_at",
+        "nullable": false,
+        "position": 7,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_05",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": "gen_random_uuid()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "id",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_06",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_id",
+        "nullable": true,
+        "position": 2,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_06",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_id",
+        "nullable": true,
+        "position": 3,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_06",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_reference",
+        "nullable": true,
+        "position": 4,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_06",
+        "type": "character varying"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "content_hash",
+        "nullable": true,
+        "position": 5,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_06",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_data",
+        "nullable": true,
+        "position": 6,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_06",
+        "type": "jsonb"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "captured_at",
+        "nullable": false,
+        "position": 7,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_06",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": "gen_random_uuid()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "id",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_07",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_id",
+        "nullable": true,
+        "position": 2,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_07",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_id",
+        "nullable": true,
+        "position": 3,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_07",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_reference",
+        "nullable": true,
+        "position": 4,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_07",
+        "type": "character varying"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "content_hash",
+        "nullable": true,
+        "position": 5,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_07",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_data",
+        "nullable": true,
+        "position": 6,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_07",
+        "type": "jsonb"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "captured_at",
+        "nullable": false,
+        "position": 7,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_07",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": "gen_random_uuid()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "id",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_08",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_id",
+        "nullable": true,
+        "position": 2,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_08",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_id",
+        "nullable": true,
+        "position": 3,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_08",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_reference",
+        "nullable": true,
+        "position": 4,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_08",
+        "type": "character varying"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "content_hash",
+        "nullable": true,
+        "position": 5,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_08",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_data",
+        "nullable": true,
+        "position": 6,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_08",
+        "type": "jsonb"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "captured_at",
+        "nullable": false,
+        "position": 7,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_08",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": "gen_random_uuid()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "id",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_09",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_id",
+        "nullable": true,
+        "position": 2,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_09",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_id",
+        "nullable": true,
+        "position": 3,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_09",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_reference",
+        "nullable": true,
+        "position": 4,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_09",
+        "type": "character varying"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "content_hash",
+        "nullable": true,
+        "position": 5,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_09",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_data",
+        "nullable": true,
+        "position": 6,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_09",
+        "type": "jsonb"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "captured_at",
+        "nullable": false,
+        "position": 7,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_09",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": "gen_random_uuid()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "id",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_10",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_id",
+        "nullable": true,
+        "position": 2,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_10",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_id",
+        "nullable": true,
+        "position": 3,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_10",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_reference",
+        "nullable": true,
+        "position": 4,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_10",
+        "type": "character varying"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "content_hash",
+        "nullable": true,
+        "position": 5,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_10",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_data",
+        "nullable": true,
+        "position": 6,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_10",
+        "type": "jsonb"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "captured_at",
+        "nullable": false,
+        "position": 7,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_10",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": "gen_random_uuid()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "id",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_11",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_id",
+        "nullable": true,
+        "position": 2,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_11",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_id",
+        "nullable": true,
+        "position": 3,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_11",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_reference",
+        "nullable": true,
+        "position": 4,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_11",
+        "type": "character varying"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "content_hash",
+        "nullable": true,
+        "position": 5,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_11",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_data",
+        "nullable": true,
+        "position": 6,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_11",
+        "type": "jsonb"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "captured_at",
+        "nullable": false,
+        "position": 7,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_11",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": "gen_random_uuid()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "id",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_12",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_id",
+        "nullable": true,
+        "position": 2,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_12",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_id",
+        "nullable": true,
+        "position": 3,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_12",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_reference",
+        "nullable": true,
+        "position": 4,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_12",
+        "type": "character varying"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "content_hash",
+        "nullable": true,
+        "position": 5,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_12",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "raw_data",
+        "nullable": true,
+        "position": 6,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_12",
+        "type": "jsonb"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "captured_at",
+        "nullable": false,
+        "position": 7,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_12",
         "type": "timestamp with time zone"
       },
       {
@@ -132366,6 +133274,186 @@
       },
       {
         "columns": [
+          "id",
+          "captured_at"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id, captured_at)",
+        "name": "supplier_products_raw_history_p2027_03_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_03",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id, captured_at)",
+        "name": "supplier_products_raw_history_p2027_04_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_04",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id, captured_at)",
+        "name": "supplier_products_raw_history_p2027_05_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_05",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id, captured_at)",
+        "name": "supplier_products_raw_history_p2027_06_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_06",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id, captured_at)",
+        "name": "supplier_products_raw_history_p2027_07_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_07",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id, captured_at)",
+        "name": "supplier_products_raw_history_p2027_08_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_08",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id, captured_at)",
+        "name": "supplier_products_raw_history_p2027_09_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_09",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id, captured_at)",
+        "name": "supplier_products_raw_history_p2027_10_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_10",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id, captured_at)",
+        "name": "supplier_products_raw_history_p2027_11_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_11",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id, captured_at)",
+        "name": "supplier_products_raw_history_p2027_12_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_12",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
           "id"
         ],
         "deferrable": false,
@@ -197599,6 +198687,186 @@
           "table": "supplier_products_raw_history_p2027_02"
         },
         {
+          "grantee": "anon",
+          "privileges": "REFERENCES, TRIGGER",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_03"
+        },
+        {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_03"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_03"
+        },
+        {
+          "grantee": "anon",
+          "privileges": "REFERENCES, TRIGGER",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_04"
+        },
+        {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_04"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_04"
+        },
+        {
+          "grantee": "anon",
+          "privileges": "REFERENCES, TRIGGER",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_05"
+        },
+        {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_05"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_05"
+        },
+        {
+          "grantee": "anon",
+          "privileges": "REFERENCES, TRIGGER",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_06"
+        },
+        {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_06"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_06"
+        },
+        {
+          "grantee": "anon",
+          "privileges": "REFERENCES, TRIGGER",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_07"
+        },
+        {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_07"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_07"
+        },
+        {
+          "grantee": "anon",
+          "privileges": "REFERENCES, TRIGGER",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_08"
+        },
+        {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_08"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_08"
+        },
+        {
+          "grantee": "anon",
+          "privileges": "REFERENCES, TRIGGER",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_09"
+        },
+        {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_09"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_09"
+        },
+        {
+          "grantee": "anon",
+          "privileges": "REFERENCES, TRIGGER",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_10"
+        },
+        {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_10"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_10"
+        },
+        {
+          "grantee": "anon",
+          "privileges": "REFERENCES, TRIGGER",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_11"
+        },
+        {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_11"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_11"
+        },
+        {
+          "grantee": "anon",
+          "privileges": "REFERENCES, TRIGGER",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_12"
+        },
+        {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_12"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "supplier_products_raw_history_p2027_12"
+        },
+        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -215915,6 +217183,156 @@
       },
       {
         "columns": [
+          "id",
+          "captured_at"
+        ],
+        "definition": "CREATE UNIQUE INDEX supplier_products_raw_history_p2027_03_pkey ON public.supplier_products_raw_history_p2027_03 USING btree (id, captured_at)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "supplier_products_raw_history_p2027_03_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_03"
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "definition": "CREATE UNIQUE INDEX supplier_products_raw_history_p2027_04_pkey ON public.supplier_products_raw_history_p2027_04 USING btree (id, captured_at)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "supplier_products_raw_history_p2027_04_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_04"
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "definition": "CREATE UNIQUE INDEX supplier_products_raw_history_p2027_05_pkey ON public.supplier_products_raw_history_p2027_05 USING btree (id, captured_at)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "supplier_products_raw_history_p2027_05_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_05"
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "definition": "CREATE UNIQUE INDEX supplier_products_raw_history_p2027_06_pkey ON public.supplier_products_raw_history_p2027_06 USING btree (id, captured_at)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "supplier_products_raw_history_p2027_06_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_06"
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "definition": "CREATE UNIQUE INDEX supplier_products_raw_history_p2027_07_pkey ON public.supplier_products_raw_history_p2027_07 USING btree (id, captured_at)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "supplier_products_raw_history_p2027_07_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_07"
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "definition": "CREATE UNIQUE INDEX supplier_products_raw_history_p2027_08_pkey ON public.supplier_products_raw_history_p2027_08 USING btree (id, captured_at)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "supplier_products_raw_history_p2027_08_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_08"
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "definition": "CREATE UNIQUE INDEX supplier_products_raw_history_p2027_09_pkey ON public.supplier_products_raw_history_p2027_09 USING btree (id, captured_at)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "supplier_products_raw_history_p2027_09_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_09"
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "definition": "CREATE UNIQUE INDEX supplier_products_raw_history_p2027_10_pkey ON public.supplier_products_raw_history_p2027_10 USING btree (id, captured_at)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "supplier_products_raw_history_p2027_10_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_10"
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "definition": "CREATE UNIQUE INDEX supplier_products_raw_history_p2027_11_pkey ON public.supplier_products_raw_history_p2027_11 USING btree (id, captured_at)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "supplier_products_raw_history_p2027_11_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_11"
+      },
+      {
+        "columns": [
+          "id",
+          "captured_at"
+        ],
+        "definition": "CREATE UNIQUE INDEX supplier_products_raw_history_p2027_12_pkey ON public.supplier_products_raw_history_p2027_12 USING btree (id, captured_at)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "supplier_products_raw_history_p2027_12_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_12"
+      },
+      {
+        "columns": [
           "property_code"
         ],
         "definition": "CREATE INDEX idx_supplier_property_mappings_property ON public.supplier_property_mappings USING btree (property_code)",
@@ -234111,6 +235529,12 @@
         "statements": 1,
         "statements_sha": "80cbe32cddde5073",
         "version": "20261101232022"
+      },
+      {
+        "name": "partitions_supplier_products_raw_history_2027",
+        "statements": 10,
+        "statements_sha": "1ac3885eafbfb44a",
+        "version": "20261104100000"
       },
       {
         "name": "fix_handle_updated_at_search_path",
@@ -252745,6 +254169,156 @@
         "schema": "public"
       },
       {
+        "comment": null,
+        "from_extension": false,
+        "is_partition": true,
+        "kind": "table",
+        "name": "supplier_products_raw_history_p2027_03",
+        "owner": "postgres",
+        "parent": "public.supplier_products_raw_history",
+        "partition_bound": "FOR VALUES FROM ('2027-03-01 00:00:00+00') TO ('2027-04-01 00:00:00+00')",
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": false,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
+        "comment": null,
+        "from_extension": false,
+        "is_partition": true,
+        "kind": "table",
+        "name": "supplier_products_raw_history_p2027_04",
+        "owner": "postgres",
+        "parent": "public.supplier_products_raw_history",
+        "partition_bound": "FOR VALUES FROM ('2027-04-01 00:00:00+00') TO ('2027-05-01 00:00:00+00')",
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": false,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
+        "comment": null,
+        "from_extension": false,
+        "is_partition": true,
+        "kind": "table",
+        "name": "supplier_products_raw_history_p2027_05",
+        "owner": "postgres",
+        "parent": "public.supplier_products_raw_history",
+        "partition_bound": "FOR VALUES FROM ('2027-05-01 00:00:00+00') TO ('2027-06-01 00:00:00+00')",
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": false,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
+        "comment": null,
+        "from_extension": false,
+        "is_partition": true,
+        "kind": "table",
+        "name": "supplier_products_raw_history_p2027_06",
+        "owner": "postgres",
+        "parent": "public.supplier_products_raw_history",
+        "partition_bound": "FOR VALUES FROM ('2027-06-01 00:00:00+00') TO ('2027-07-01 00:00:00+00')",
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": false,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
+        "comment": null,
+        "from_extension": false,
+        "is_partition": true,
+        "kind": "table",
+        "name": "supplier_products_raw_history_p2027_07",
+        "owner": "postgres",
+        "parent": "public.supplier_products_raw_history",
+        "partition_bound": "FOR VALUES FROM ('2027-07-01 00:00:00+00') TO ('2027-08-01 00:00:00+00')",
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": false,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
+        "comment": null,
+        "from_extension": false,
+        "is_partition": true,
+        "kind": "table",
+        "name": "supplier_products_raw_history_p2027_08",
+        "owner": "postgres",
+        "parent": "public.supplier_products_raw_history",
+        "partition_bound": "FOR VALUES FROM ('2027-08-01 00:00:00+00') TO ('2027-09-01 00:00:00+00')",
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": false,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
+        "comment": null,
+        "from_extension": false,
+        "is_partition": true,
+        "kind": "table",
+        "name": "supplier_products_raw_history_p2027_09",
+        "owner": "postgres",
+        "parent": "public.supplier_products_raw_history",
+        "partition_bound": "FOR VALUES FROM ('2027-09-01 00:00:00+00') TO ('2027-10-01 00:00:00+00')",
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": false,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
+        "comment": null,
+        "from_extension": false,
+        "is_partition": true,
+        "kind": "table",
+        "name": "supplier_products_raw_history_p2027_10",
+        "owner": "postgres",
+        "parent": "public.supplier_products_raw_history",
+        "partition_bound": "FOR VALUES FROM ('2027-10-01 00:00:00+00') TO ('2027-11-01 00:00:00+00')",
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": false,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
+        "comment": null,
+        "from_extension": false,
+        "is_partition": true,
+        "kind": "table",
+        "name": "supplier_products_raw_history_p2027_11",
+        "owner": "postgres",
+        "parent": "public.supplier_products_raw_history",
+        "partition_bound": "FOR VALUES FROM ('2027-11-01 00:00:00+00') TO ('2027-12-01 00:00:00+00')",
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": false,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
+        "comment": null,
+        "from_extension": false,
+        "is_partition": true,
+        "kind": "table",
+        "name": "supplier_products_raw_history_p2027_12",
+        "owner": "postgres",
+        "parent": "public.supplier_products_raw_history",
+        "partition_bound": "FOR VALUES FROM ('2027-12-01 00:00:00+00') TO ('2028-01-01 00:00:00+00')",
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": false,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
         "comment": "Mapeamento de properties brutas do fornecedor para códigos normalizados",
         "from_extension": false,
         "is_partition": false,
@@ -262532,11 +264106,6 @@
     ],
     "webhooks": []
   },
-  "errors": [
-    {
-      "error": "canceling statement due to statement timeout",
-      "section": "grants"
-    }
-  ],
+  "errors": [],
   "format_version": 2
 }

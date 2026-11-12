@@ -1,7 +1,5 @@
 # Grants
 
-> ⚠️ Seção `grants` não pôde ser atualizada nesta coleta (ver errors.md); mostrando a versão anterior.
-
 
 Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypass RLS). Grants de sistema (postgres, supabase_*) omitidos.
 
@@ -943,6 +941,36 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.supplier_products_raw_history_p2027_02 | anon | REFERENCES, TRIGGER |
 | public.supplier_products_raw_history_p2027_02 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_products_raw_history_p2027_02 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.supplier_products_raw_history_p2027_03 | anon | REFERENCES, TRIGGER |
+| public.supplier_products_raw_history_p2027_03 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.supplier_products_raw_history_p2027_03 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.supplier_products_raw_history_p2027_04 | anon | REFERENCES, TRIGGER |
+| public.supplier_products_raw_history_p2027_04 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.supplier_products_raw_history_p2027_04 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.supplier_products_raw_history_p2027_05 | anon | REFERENCES, TRIGGER |
+| public.supplier_products_raw_history_p2027_05 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.supplier_products_raw_history_p2027_05 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.supplier_products_raw_history_p2027_06 | anon | REFERENCES, TRIGGER |
+| public.supplier_products_raw_history_p2027_06 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.supplier_products_raw_history_p2027_06 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.supplier_products_raw_history_p2027_07 | anon | REFERENCES, TRIGGER |
+| public.supplier_products_raw_history_p2027_07 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.supplier_products_raw_history_p2027_07 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.supplier_products_raw_history_p2027_08 | anon | REFERENCES, TRIGGER |
+| public.supplier_products_raw_history_p2027_08 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.supplier_products_raw_history_p2027_08 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.supplier_products_raw_history_p2027_09 | anon | REFERENCES, TRIGGER |
+| public.supplier_products_raw_history_p2027_09 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.supplier_products_raw_history_p2027_09 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.supplier_products_raw_history_p2027_10 | anon | REFERENCES, TRIGGER |
+| public.supplier_products_raw_history_p2027_10 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.supplier_products_raw_history_p2027_10 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.supplier_products_raw_history_p2027_11 | anon | REFERENCES, TRIGGER |
+| public.supplier_products_raw_history_p2027_11 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.supplier_products_raw_history_p2027_11 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.supplier_products_raw_history_p2027_12 | anon | REFERENCES, TRIGGER |
+| public.supplier_products_raw_history_p2027_12 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.supplier_products_raw_history_p2027_12 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.supplier_property_mappings | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_property_mappings | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.supplier_replenishment_events | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |

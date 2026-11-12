@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `caeb61be00` · branch `main` · 2026-11-12 02:35 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `52d6c21762` · branch `main` · 2026-11-12 03:46 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -646,7 +646,7 @@
 | rpc | RPC `calculate_quote_totals` chamada mas não definida nas migrations/types | `tests/integration/freight-quest/quote-freight-integration.test.ts` |
 | rpc | RPC `check_rls_enabled` chamada mas não definida nas migrations/types | `tests/security/rls-validation.test.ts` |
 | rpc | RPC `dashboard_rpc` chamada mas não definida nas migrations/types | `scripts/ai-context/gerar.unit.mjs` |
-| … +204 linhas — lista completa em `context.json` | | |
+| … +205 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "caeb61be00a4eeef04ef5f5cde5869d9d3719183",
+  "commit": "52d6c217621aeb1a180f4c20bb962ced4784dc23",
   "branch": "main",
-  "data_commit": "2026-11-11T23:06:08-03:00",
+  "data_commit": "2026-11-12T00:06:45-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "52d6c21",
+    "data": "2026-11-12",
+    "assunto": "fix: fn_get_rupture_alerts com SECURITY DEFINER e search_path correto"
+   },
    {
     "sha": "caeb61b",
     "data": "2026-11-11",
@@ -126,14 +131,9 @@
     "sha": "defe294",
     "data": "2026-11-09",
     "assunto": "fix(ci): corrige Gate E42 e2e-personalization com auth-setup step condicional (#3274)"
-   },
-   {
-    "sha": "973864d",
-    "data": "2026-11-09",
-    "assunto": "fix(ci): atualiza baseline Gate 1.3 — remove referência já resolvida de 20260511235970 (#3352)"
    }
   ],
-  "arquivos_mudados_7d": 1393,
+  "arquivos_mudados_7d": 1395,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "recovery/src-legacy/src",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 23
+    "mudancas": 24
    },
    {
     "arquivo": "analise-prs/progresso.json",
@@ -282,6 +282,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "mudancas": 5
+   },
+   {
     "arquivo": "e2e/helpers/auth.ts",
     "mudancas": 5
    },
@@ -291,10 +295,6 @@
    },
    {
     "arquivo": "src/components/kit-builder/KitBuilderHeader.tsx",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "src/components/kit-builder/KitMakerLanding.tsx",
     "mudancas": 5
    }
   ],
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9875,
+  "arquivos_total": 9876,
   "arquivos_codigo": 5038,
   "linhas_codigo": 961403,
   "rotas": 138,

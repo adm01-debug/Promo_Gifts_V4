@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `caeb61be00` · branch `main` · 2026-11-12 02:35 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `52d6c21762` · branch `main` · 2026-11-12 03:46 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -707,7 +707,6 @@
 - `fn_get_reposicao_metrics`
 - `fn_get_reposicao_variants_summary`
 - `fn_get_repressed_demand`
-- `fn_get_rupture_alerts`
 - `fn_get_similar_products`
 - `fn_get_sm_session_cookie`
 - `fn_get_spot_access_key`

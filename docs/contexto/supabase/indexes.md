@@ -1101,6 +1101,16 @@ Uso e tamanho em `stats.md`.
 | public.supplier_products_raw_history_p2026_12 | supplier_products_raw_history_p2026_12_pkey | btree | id, captured_at | sim | sim |  |
 | public.supplier_products_raw_history_p2027_01 | supplier_products_raw_history_p2027_01_pkey | btree | id, captured_at | sim | sim |  |
 | public.supplier_products_raw_history_p2027_02 | supplier_products_raw_history_p2027_02_pkey | btree | id, captured_at | sim | sim |  |
+| public.supplier_products_raw_history_p2027_03 | supplier_products_raw_history_p2027_03_pkey | btree | id, captured_at | sim | sim |  |
+| public.supplier_products_raw_history_p2027_04 | supplier_products_raw_history_p2027_04_pkey | btree | id, captured_at | sim | sim |  |
+| public.supplier_products_raw_history_p2027_05 | supplier_products_raw_history_p2027_05_pkey | btree | id, captured_at | sim | sim |  |
+| public.supplier_products_raw_history_p2027_06 | supplier_products_raw_history_p2027_06_pkey | btree | id, captured_at | sim | sim |  |
+| public.supplier_products_raw_history_p2027_07 | supplier_products_raw_history_p2027_07_pkey | btree | id, captured_at | sim | sim |  |
+| public.supplier_products_raw_history_p2027_08 | supplier_products_raw_history_p2027_08_pkey | btree | id, captured_at | sim | sim |  |
+| public.supplier_products_raw_history_p2027_09 | supplier_products_raw_history_p2027_09_pkey | btree | id, captured_at | sim | sim |  |
+| public.supplier_products_raw_history_p2027_10 | supplier_products_raw_history_p2027_10_pkey | btree | id, captured_at | sim | sim |  |
+| public.supplier_products_raw_history_p2027_11 | supplier_products_raw_history_p2027_11_pkey | btree | id, captured_at | sim | sim |  |
+| public.supplier_products_raw_history_p2027_12 | supplier_products_raw_history_p2027_12_pkey | btree | id, captured_at | sim | sim |  |
 | public.supplier_property_mappings | idx_supplier_property_mappings_property | btree | property_code | não | sim |  |
 | public.supplier_property_mappings | idx_supplier_property_mappings_supplier_id | btree | supplier_id | não | sim |  |
 | public.supplier_property_mappings | supplier_property_mappings_pkey | btree | id | sim | sim |  |

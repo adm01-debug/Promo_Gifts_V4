@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "caeb61be00a4eeef04ef5f5cde5869d9d3719183",
+  "sha": "52d6c217621aeb1a180f4c20bb962ced4784dc23",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-12 02:35 UTC",
-  "files_total": 9805,
-  "code_files": 8367,
-  "code_lines": 1177143
+  "generated_at": "2026-11-12 03:46 UTC",
+  "files_total": 9806,
+  "code_files": 8368,
+  "code_lines": 1177149
  },
  "version": "1.3.2",
- "facts_hash": "4e9245082ac99209",
+ "facts_hash": "c0d99b6531a8b093",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1182,7 +1182,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3330,
+   ".sql": 3331,
    ".ts": 2880,
    ".tsx": 1843,
    ".mjs": 305,
@@ -76870,19 +76870,6 @@
     "raises": [],
     "tables": []
    },
-   "fn_get_rupture_alerts": {
-    "args": "",
-    "returns": "SETOF public.mv_stock_rupture_alert",
-    "lang": "sql",
-    "src": "supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql",
-    "security_definer": true,
-    "search_path": true,
-    "body": "SELECT * FROM public.mv_stock_rupture_alert WHERE public.is_supervisor_or_above((SELECT auth.uid()))",
-    "raises": [],
-    "tables": [
-     "mv_stock_rupture_alert"
-    ]
-   },
    "cleanup_expired_auth_sessions": {
     "args": "",
     "returns": "void",
@@ -96000,7 +95987,6 @@
    "supabase/migrations/20261101140002_sb0003_replica_identity_full_realtime.sql",
    "supabase/migrations/20261101140003_sb0006_index_kit_fk_user_id.sql",
    "supabase/migrations/20261101140004_sb0005_rls_auth_uid_cache.sql",
-   "supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql",
    "supabase/migrations/20261101150001_sec004b_revoke_fn_cron_guard_authenticated.sql",
    "supabase/migrations/20261101150002_st001_art_files_owner_isolation.sql",
    "supabase/migrations/20261101150003_st002_st003_avatars_recibos_policies.sql",
@@ -96034,6 +96020,7 @@
    "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql",
    "supabase/migrations/20261108020000_p09_reconcile_ledger_schema_migrations.sql",
    "supabase/migrations/20261108030100_ft079_view_products_min_quantity.sql",
+   "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260916202000_rollback.sql",
@@ -96083,6 +96070,7 @@
    "supabase/rollbacks/20261108001500_rollback.sql",
    "supabase/rollbacks/20261108020000_rollback.sql",
    "supabase/rollbacks/20261108030100_rollback.sql",
+   "supabase/rollbacks/20261112011000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -131197,22 +131185,6 @@
    },
    {
     "kind": "revoke",
-    "privs": "all",
-    "object": "fn_get_rupture_alerts",
-    "objkind": "function",
-    "roles": "PUBLIC, anon",
-    "src": "supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql"
-   },
-   {
-    "kind": "grant",
-    "privs": "execute",
-    "object": "fn_get_rupture_alerts",
-    "objkind": "function",
-    "roles": "authenticated",
-    "src": "supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql"
-   },
-   {
-    "kind": "revoke",
     "privs": "execute",
     "object": "fn_cron_guard",
     "objkind": "function",
@@ -131290,6 +131262,22 @@
     "objkind": "table",
     "roles": "service_role",
     "src": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_get_rupture_alerts",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_get_rupture_alerts",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql"
    },
    {
     "kind": "revoke",
@@ -148662,8 +148650,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 50,
-   "lines": 1803,
+   "files": 51,
+   "lines": 1809,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -148719,6 +148707,7 @@
     "supabase/rollbacks/20261108001500_rollback.sql",
     "supabase/rollbacks/20261108020000_rollback.sql",
     "supabase/rollbacks/20261108030100_rollback.sql",
+    "supabase/rollbacks/20261112011000_rollback.sql",
     "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql"
    ]
   },
@@ -328306,19 +328295,6 @@
     "raises": [],
     "tables": []
    },
-   "fn_get_rupture_alerts": {
-    "args": "",
-    "returns": "SETOF public.mv_stock_rupture_alert",
-    "lang": "sql",
-    "src": "supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql",
-    "security_definer": true,
-    "search_path": true,
-    "body": "SELECT * FROM public.mv_stock_rupture_alert WHERE public.is_supervisor_or_above((SELECT auth.uid()))",
-    "raises": [],
-    "tables": [
-     "mv_stock_rupture_alert"
-    ]
-   },
    "cleanup_expired_auth_sessions": {
     "args": "",
     "returns": "void",
@@ -342309,7 +342285,6 @@
    "fn_get_reposicao_metrics",
    "fn_get_reposicao_variants_summary",
    "fn_get_repressed_demand",
-   "fn_get_rupture_alerts",
    "fn_get_similar_products",
    "fn_get_sm_session_cookie",
    "fn_get_spot_access_key",
@@ -377361,22 +377336,6 @@
    },
    {
     "kind": "revoke",
-    "privs": "all",
-    "object": "fn_get_rupture_alerts",
-    "objkind": "function",
-    "roles": "PUBLIC, anon",
-    "src": "supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql"
-   },
-   {
-    "kind": "grant",
-    "privs": "execute",
-    "object": "fn_get_rupture_alerts",
-    "objkind": "function",
-    "roles": "authenticated",
-    "src": "supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql"
-   },
-   {
-    "kind": "revoke",
     "privs": "execute",
     "object": "fn_cron_guard",
     "objkind": "function",
@@ -377454,6 +377413,22 @@
     "objkind": "table",
     "roles": "service_role",
     "src": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_get_rupture_alerts",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_get_rupture_alerts",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql"
    },
    {
     "kind": "revoke",
@@ -382925,6 +382900,13 @@
      "scripts/inventario/gerar-rotas.mjs",
      "scripts/supabase_snapshot/snapshot.py",
      "supabase/functions/_shared/supabase-client-adapter.ts"
+    ]
+   },
+   {
+    "kind": "rpc",
+    "msg": "RPC `fn_get_rupture_alerts` chamada mas não definida nas migrations/types",
+    "where": [
+     "src/hooks/stock/useRuptureAlerts.ts"
     ]
    },
    {
@@ -497194,10 +497176,6 @@
    "path": "supabase/migrations/20261101140004_sb0005_rls_auth_uid_cache.sql",
    "lines": 78
   },
-  "supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql": {
-   "path": "supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql",
-   "lines": 19
-  },
   "supabase/migrations/20261101150001_sec004b_revoke_fn_cron_guard_authenticated.sql": {
    "path": "supabase/migrations/20261101150001_sec004b_revoke_fn_cron_guard_authenticated.sql",
    "lines": 17,
@@ -497339,6 +497317,10 @@
   "supabase/migrations/20261108030100_ft079_view_products_min_quantity.sql": {
    "path": "supabase/migrations/20261108030100_ft079_view_products_min_quantity.sql",
    "lines": 26
+  },
+  "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql": {
+   "path": "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql",
+   "lines": 19
   },
   "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql": {
    "path": "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -497545,6 +497527,10 @@
   "supabase/rollbacks/20261108030100_rollback.sql": {
    "path": "supabase/rollbacks/20261108030100_rollback.sql",
    "lines": 3
+  },
+  "supabase/rollbacks/20261112011000_rollback.sql": {
+   "path": "supabase/rollbacks/20261112011000_rollback.sql",
+   "lines": 6
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -518095,10 +518081,24 @@
   }
  },
  "git": {
-  "sha": "caeb61be00a4eeef04ef5f5cde5869d9d3719183",
+  "sha": "52d6c217621aeb1a180f4c20bb962ced4784dc23",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "52d6c21",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix: fn_get_rupture_alerts com SECURITY DEFINER e search_path correto",
+    "files": [
+     "analise-prs/dossies/PR-3160.md",
+     "analise-prs/dossies/PR-3179.md",
+     "audit/supabase-reference-catalog.temporary.json",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql",
+     "supabase/rollbacks/20261112011000_rollback.sql"
+    ]
+   },
    {
     "sha": "caeb61b",
     "date": "2026-11-11",
@@ -519345,15 +519345,6 @@
      "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
      "e2e/quotes/quote-view-no-presentation-mode.spec.ts-snapshots/quote-actions-menu-dark-mobile-chromium-public-linux.png"
     ]
-   },
-   {
-    "sha": "b4c1167",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "fix(tests): corrige 5 falhas preexistentes em useKitBuilderQuote (#3348)",
-    "files": [
-     "tests/pages/kit-builder/useKitBuilderQuote.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -519372,6 +519363,10 @@
    [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     3
+   ],
+   [
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    2
    ],
    [
     "scripts/check-indexed-access-ratchet.mjs",
@@ -519431,10 +519426,6 @@
    ],
    [
     "supabase/migrations/005_push_subscriptions.sql",
-    2
-   ],
-   [
-    "src/components/BridgeStatusBanner.tsx",
     2
    ]
   ]
