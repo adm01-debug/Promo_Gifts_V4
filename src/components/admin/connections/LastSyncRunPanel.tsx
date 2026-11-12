@@ -1,13 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import {
-  Clock,
-  RefreshCw,
-  Zap,
-  CheckCircle2,
-  AlertCircle,
-  XCircle,
-  Link2,
-} from 'lucide-react';
+import { Clock, RefreshCw, Zap, CheckCircle2, AlertCircle, XCircle, Link2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
