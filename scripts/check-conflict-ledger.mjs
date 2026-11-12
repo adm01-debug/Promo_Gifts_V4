@@ -41,6 +41,24 @@ function git(args) {
   }
 }
 
+/**
+ * No checkout de pull_request do GitHub (fetch-depth: 0) o nome da branch da PR NÃO existe
+ * como ref local — só `origin/<branch>`. Resolve na ordem: nome literal, `origin/<nome>`.
+ * Sem nenhum dos dois, devolve o nome como veio (o git falha e o gate fecha, como antes).
+ * Nunca usa HEAD: no PR ele é o merge sintético base+head, que contaria como "merge commit".
+ */
+function resolveRef(name) {
+  for (const cand of [name, `origin/${name}`]) {
+    try {
+      execFileSync('git', ['rev-parse', '--verify', '--quiet', `${cand}^{commit}`], { stdio: ['pipe', 'pipe', 'pipe'] });
+      return cand;
+    } catch {
+      /* tenta o próximo */
+    }
+  }
+  return name;
+}
+
 function getChangedFiles(baseRef, headRef) {
   if (!baseRef || !headRef) return [];
   const out = git(['diff', '--name-only', `origin/${baseRef}...${headRef}`]);
@@ -63,7 +81,8 @@ function getMergeCommits(baseRef, headRef) {
 }
 
 const baseRef = process.env.GITHUB_BASE_REF || '';
-const headRef = process.env.GITHUB_HEAD_REF || '';
+const headRefRaw = process.env.GITHUB_HEAD_REF || '';
+const headRef = headRefRaw ? resolveRef(headRefRaw) : '';
 
 if (!baseRef || !headRef) {
   console.log('⚠️  GITHUB_BASE_REF / GITHUB_HEAD_REF não definidos — pulando verificação de ledger.');

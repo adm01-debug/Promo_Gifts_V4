@@ -213,3 +213,38 @@ describe('check-conflict-ledger: casos adicionais (sem bug, documentados)', () =
     expect(r.stdout).toMatch(/merge branch side into feat/);
   });
 });
+
+describe('check-conflict-ledger: checkout de pull_request do GitHub (só origin/<branch>)', () => {
+  // No CI a branch da PR não existe como ref local: só refs/remotes/origin/<branch>.
+  // Antes da correção o gate falhava fechado em TODA PR ("Não foi possível calcular o diff").
+  function onlyRemoteHead(prefix, message) {
+    const dir = makeRepo(prefix, 'feat');
+    commitOnBranch(dir, 'feat', { message });
+    const sha = g(dir, ['rev-parse', 'feat']).trim();
+    g(dir, ['checkout', '-q', '--detach', sha]);
+    g(dir, ['update-ref', 'refs/remotes/origin/claude/feat-x', sha]);
+    g(dir, ['branch', '-D', 'feat']);
+    return dir;
+  }
+
+  it('resolve origin/<branch> quando a branch local não existe (sem merge semântico → exit 0)', () => {
+    const dir = onlyRemoteHead('ledger-remote-ok-', 'feat: normal');
+    const r = run(dir, { GITHUB_BASE_REF: 'main', GITHUB_HEAD_REF: 'claude/feat-x' }, ['--gate']);
+    expect(r.status, r.stderr).toBe(0);
+    expect(r.stdout).toMatch(/Nenhum commit de merge semântico/);
+  });
+
+  it('via origin/<branch> continua pegando merge(pr-N) sem ledger (exit 1)', () => {
+    const dir = onlyRemoteHead('ledger-remote-viol-', 'merge(pr-9): resolve conflito');
+    const r = run(dir, { GITHUB_BASE_REF: 'main', GITHUB_HEAD_REF: 'claude/feat-x' }, ['--gate']);
+    expect(r.status).toBe(1);
+    expect(r.stderr).toMatch(/::error::\[E188\]/);
+  });
+
+  it('branch inexistente local e remota continua falhando fechado', () => {
+    const dir = onlyRemoteHead('ledger-remote-none-', 'feat: normal');
+    const r = run(dir, { GITHUB_BASE_REF: 'main', GITHUB_HEAD_REF: 'claude/nao-existe' }, ['--gate']);
+    expect(r.status).not.toBe(0);
+    expect(r.stderr).toMatch(/Não foi possível calcular/);
+  });
+});
