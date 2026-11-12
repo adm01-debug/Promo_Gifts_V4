@@ -1201,3 +1201,11 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261112011000` | `fix_sb0003_fn_get_rupture_alerts` | `8e081152c457ed572cb3aa349f62027bc7cd461996bb8036f499efb12af6a449` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono) |
+
+## 2026-11-12 — regrant de `get_sitemap_public` para anon (pendente de aplicação)
+
+Diagnóstico com a chave pública contra `doufsxqlfjyuvxuezpln`: `permission denied for function get_sitemap_public` (42501) → `/api/sitemap` 503. Aplicar via `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261112023000` | `regrant_get_sitemap_public_anon` | `95a5136bd2e3831fedda4cd35fd1edc5825cb239882b2e23724a2fd858d67b7f` | pendente — aguardando `db-apply-migration.yml` |
