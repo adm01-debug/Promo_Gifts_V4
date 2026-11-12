@@ -46,6 +46,8 @@ São usados em workflows de E2E/integração que **não fazem parte do Gate Fina
 | `E2E_CLEANUP_TOKEN` | DevOps | Repo + Supabase Edge | Semestral | Token dedicado do cleanup escopado — `e2e-quotes.yml` e função `e2e-cleanup`; o valor do repo deve corresponder ao secret runtime da Edge |
 | `E2E_DEV_EMAIL` | DevOps | Repo | Anual | Usuário developer (edge-integration-all.yml) — 1 ref |
 | `E2E_DEV_PASSWORD` | DevOps | Repo | Anual | Senha do developer de testes — 1 ref |
+| `E2E_SELLER_EMAIL` | DevOps | Repo | Anual | Usuário vendedor de testes (`loginAs(page, 'seller')` em `e2e/helpers/auth.ts`) — `e2e-cart.yml`, `e2e.yml` (URL-state de /carrinhos e /orcamentos). Sem ele os specs de vendedor falham por E21 em CI |
+| `E2E_SELLER_PASSWORD` | DevOps | Repo | Anual | Senha do vendedor de testes — `e2e-cart.yml`, `e2e.yml` |
 | `SUPABASE_TEST_BYPASS_TOKEN` | DevOps | Repo | Semestral | Token de bypass de segurança para testes de carga/stress — `ci-freight-quality.yml` (1 ref), `scripts/massive-load-test.mjs`, `scripts/fuzz-testing.mjs`, `scripts/stress-burst.mjs`, `scripts/freight-quest-load-test.mjs`. **Deve ser o segredo mais controlado do repo** — contorna regras RLS em ambiente de teste |
 | `TEST_ADMIN_PASSWORD` | DevOps | Repo | Anual | Senha do usuário admin para testes de integração — `ci.yml` (1 ref); opcional, job pulado se não configurado |
 | `TEST_SELLER_PASSWORD` | DevOps | Repo | Anual | Senha do usuário vendedor para testes de integração — `ci.yml` (1 ref); opcional, job pulado se não configurado |
