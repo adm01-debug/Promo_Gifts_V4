@@ -78,11 +78,14 @@ describe('crm-db-bridge — escopo de ownership usa a coluna real do CRM', () =>
 
   it('o handler não filtra mais por owner_id', () => {
     expect(bridgeSource).not.toMatch(/\.eq\(\s*["']owner_id["']/);
-    expect(bridgeSource).toContain('crmOwnerScope(table, userRole, userId)');
     // o MESMO escopo vale para select, search e batch (antes search/batch devolviam a base inteira)
-    expect(bridgeSource.match(/await applyOwnerScope\(/g)?.length).toBe(3);
-    expect(bridgeSource).toContain('handleSearch(crm, body, auth.userId ?? undefined, auth.userRole)');
-    expect(bridgeSource).toContain('handleBatch(crm, body.queries || [], auth.userId ?? undefined, auth.userRole)');
+    expect(bridgeSource.match(/= applyOwnerScope\(crm, /g)?.length).toBe(3);
+    // o dono no CRM é o usuário do CRM com o mesmo e-mail, não o auth.uid do app
+    expect(bridgeSource).toContain('resolveCrmUserId(crm, auth.email)');
+    expect(bridgeSource).toContain('handleSearch(crm, body, crmOwnerId, auth.userRole)');
+    expect(bridgeSource).toContain('handleBatch(crm, body.queries || [], crmOwnerId, auth.userRole)');
+    // batch bloqueia embedding no select (vazamento comprovado na 5ª revisão)
+    expect(bridgeSource).toMatch(/q\.select && !SELECT_SAFE_RE\.test\(q\.select\)/);
     expect(bridgeSource).toContain('resolveCrmRole(roles)');
   });
 });

@@ -331,6 +331,7 @@ interface BatchQuery {
 interface AuthResult {
   userId: string | null;
   userRole: string;
+  email?: string | null;
   error?: Response;
 }
 
@@ -376,7 +377,7 @@ async function authenticateRequest(req: Request): Promise<AuthResult> {
   const roles = rolesData.map((r: { role: string }) => r.role);
   const userRole = resolveCrmRole(roles);
   console.log(`Authenticated CRM request role=${userRole}`);
-  return { userId: user.id, userRole };
+  return { userId: user.id, userRole, email: user.email ?? null };
 }
 
 // E084: escapar metacaracteres de ILIKE para evitar varredura por prefixo/suffix
@@ -476,33 +477,62 @@ async function generateQuoteNumber(crm: SupabaseClient, data: Record<string, unk
 }
 
 
-/** Limite de ids do pai (contatos do vendedor) usados no filtro `in` das tabelas filhas. */
-const OWNER_VIA_MAX_IDS = 1000;
+/**
+ * Vínculo vendedor → usuário do CRM. O `user_id` do CRM aponta para `public.users` do PRÓPRIO
+ * CRM (outro projeto Supabase), não para o auth.uid deste app — o vínculo é pelo e-mail.
+ * Cache por isolate (10 min) para não consultar o CRM a cada chamada.
+ */
+const CRM_USER_CACHE = new Map<string, { id: string | null; at: number }>();
+const CRM_USER_TTL_MS = 10 * 60_000;
+async function resolveCrmUserId(crm: SupabaseClient, email?: string | null): Promise<string | null> {
+  const key = (email ?? "").trim().toLowerCase();
+  if (!key) return null;
+  const hit = CRM_USER_CACHE.get(key);
+  if (hit && Date.now() - hit.at < CRM_USER_TTL_MS) return hit.id;
+  // ilike sem curingas = igualdade sem diferenciar maiúsculas (metacaracteres escapados)
+  const { data, error } = await crm.from("users").select("id").ilike("email", escapeLikePattern(key)).limit(2);
+  if (error) throw new Error(`vínculo com usuário do CRM: ${error.message}`);
+  const id = data && data.length === 1 ? (data[0] as { id: string }).id : null; // 0 ou ambíguo → sem vínculo
+  CRM_USER_CACHE.set(key, { id, at: Date.now() });
+  return id;
+}
 
 /**
- * Aplica o escopo E081 (vendedor só vê os dele) a uma query de leitura. Devolve a query
- * filtrada, ou `deny` (403), ou `empty` (vendedor sem registros-pai: resultado vazio sem
- * consultar a tabela filha). Mesma regra para select, search e batch.
+ * Aplica o escopo E081 (vendedor só vê os dele) e devolve a query pronta, ou `deny` (403).
+ * Tabelas filhas (e-mails/telefones) usam junção `!inner` com o pai montada no SERVIDOR
+ * (o cliente continua proibido de fazer embedding) — sem lista de ids na URL.
+ * `stripParent`: nome da coluna de junção a remover das linhas antes de responder.
  */
-async function applyOwnerScope(
+function applyOwnerScope(
   crm: SupabaseClient,
-  query: any,
   table: string,
+  select: string,
   userRole?: string,
   userId?: string,
-): Promise<{ kind: "ok"; query: any } | { kind: "deny" } | { kind: "empty" }> {
+): { kind: "ok"; query: any; stripParent?: string } | { kind: "deny" } {
   const scope = crmOwnerScope(table, userRole, userId);
-  if (scope.kind === "none") return { kind: "ok", query };
   if (scope.kind === "deny") return { kind: "deny" };
-  if (scope.kind === "filter") return { kind: "ok", query: query.eq(scope.column, scope.value) };
-  const { data, error } = await crm.from(scope.parent).select("id").eq(scope.parentColumn, scope.value).limit(OWNER_VIA_MAX_IDS);
-  if (error) throw new Error(`escopo de dono via ${scope.parent}: ${error.message}`);
-  const ids = (data ?? []).map((r: { id: string }) => r.id);
-  if (!ids.length) return { kind: "empty" };
-  return { kind: "ok", query: query.in(scope.fk, ids) };
+  if (scope.kind === "none") return { kind: "ok", query: crm.from(table).select(select) };
+  if (scope.kind === "filter") return { kind: "ok", query: crm.from(table).select(select).eq(scope.column, scope.value) };
+  const join = `${scope.parent}!inner(${scope.parentColumn})`;
+  const query = crm.from(table).select(`${select},${join}`).eq(`${scope.parent}.${scope.parentColumn}`, scope.value);
+  return { kind: "ok", query, stripParent: scope.parent };
+}
+
+function stripJoin<T>(rows: T, parent?: string): T {
+  if (!parent || !Array.isArray(rows)) return rows;
+  return rows.map((r) => {
+    if (r && typeof r === "object") {
+      const { [parent]: _omit, ...rest } = r as Record<string, unknown>;
+      return rest;
+    }
+    return r;
+  }) as T;
 }
 
 const OWNER_DENY_MESSAGE = "Leitura desta tabela do CRM requer perfil supervisor";
+const OWNER_UNLINKED_MESSAGE = "Seu usuário não está vinculado a um usuário do CRM (mesmo e-mail). Peça ao supervisor para cadastrá-lo no CRM.";
+const SAFE_IDENT_RE = /^[a-z_][a-z0-9_]*$/i;
 
 async function handleBatch(crm: SupabaseClient, queries: BatchQuery[], userId?: string, userRole?: string): Promise<Response> {
   if (!Array.isArray(queries) || queries.length === 0) {
@@ -520,10 +550,20 @@ async function handleBatch(crm: SupabaseClient, queries: BatchQuery[], userId?: 
       }
       try {
         const queryStart = performance.now();
+        // E082 no batch: mesmo bloqueio de embedding do select (antes, select livre aqui
+        // permitia embutir companies/contatos a partir de tabelas sem escopo).
+        if (q.select && !SELECT_SAFE_RE.test(q.select)) {
+          return { success: false, error: "Campo 'select' inválido (embedding não permitido)", status: 400 };
+        }
+        if (q.filters && Object.keys(q.filters).some((k) => !SAFE_IDENT_RE.test(k) || /^(or|and|not)$/i.test(k))) {
+          return { success: false, error: "Filtro inválido", status: 400 };
+        }
+        if (q.search?.column && !SAFE_IDENT_RE.test(q.search.column)) {
+          return { success: false, error: "Coluna de busca inválida", status: 400 };
+        }
         // E081: mesmo escopo de dono do select (vendedor só vê os dele)
-        const scoped = await applyOwnerScope(crm, crm.from(q.table).select(q.select || "*"), q.table, userRole, userId);
-        if (scoped.kind === "deny") return { success: false, error: OWNER_DENY_MESSAGE, status: 403 };
-        if (scoped.kind === "empty") return { success: true, data: { records: [], count: 0 } };
+        const scoped = applyOwnerScope(crm, q.table, q.select || "*", userRole, userId);
+        if (scoped.kind === "deny") return { success: false, error: userRole === "vendedor" && !userId ? OWNER_UNLINKED_MESSAGE : OWNER_DENY_MESSAGE, status: 403 };
         let query = scoped.query;
         if (q.filters) query = applyFilters(query, q.filters, q.table);
         // E084: escapar metacaracteres do ilike em batch
@@ -544,7 +584,8 @@ async function handleBatch(crm: SupabaseClient, queries: BatchQuery[], userId?: 
           return { success: false, error: error.message };
         }
         console.log(`[batch] Query ${idx} (${q.table}) ${duration}ms, ${(data || []).length} records`);
-        return { success: true, data: { records: data || [], count: (data || []).length } };
+        const records = stripJoin(data || [], scoped.stripParent);
+        return { success: true, data: { records, count: records.length } };
       } catch (err: unknown) {
         return { success: false, error: err instanceof Error ? err.message : "Unknown error" };
       }
@@ -642,9 +683,8 @@ async function handleSelect(crm: SupabaseClient, body: CrmQuery, userId?: string
   // E081: escopo de ownership — vendedor só vê seus próprios registros.
   // BUGFIX: usava `owner_id`, coluna inexistente no CRM (500 em produção);
   // a coluna real é `user_id`; e-mails/telefones seguem o dono do contato.
-  const scoped = await applyOwnerScope(crm, crm.from(table).select(selectFields), table, userRole, userId);
-  if (scoped.kind === "deny") return jsonResponse({ error: OWNER_DENY_MESSAGE }, 403);
-  if (scoped.kind === "empty") return id ? jsonResponse({ error: "not found" }, 404) : jsonResponse({ data: [], count: 0 });
+  const scoped = applyOwnerScope(crm, table, selectFields, userRole, userId);
+  if (scoped.kind === "deny") return jsonResponse({ error: userRole === "vendedor" && !userId ? OWNER_UNLINKED_MESSAGE : OWNER_DENY_MESSAGE }, 403);
   let query = scoped.query;
 
   if (id) {
@@ -654,7 +694,7 @@ async function handleSelect(crm: SupabaseClient, body: CrmQuery, userId?: string
       if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalSelectFallback(table, true);
       return jsonResponse({ error: error.message }, error.code === "PGRST116" ? 404 : 500);
     }
-    return jsonResponse({ data, count: 1 });
+    return jsonResponse({ data: scoped.stripParent ? stripJoin([data], scoped.stripParent)[0] : data, count: 1 });
   }
 
   if (filters) query = applyFilters(query, filters, table);
@@ -681,7 +721,7 @@ async function handleSelect(crm: SupabaseClient, body: CrmQuery, userId?: string
     }
     return jsonResponse({ error: error.message }, 500);
   }
-  return jsonResponse({ data: data || [], count });
+  return jsonResponse({ data: stripJoin(data || [], scoped.stripParent), count });
 }
 
 async function handleSearch(crm: SupabaseClient, body: CrmQuery, userId?: string, userRole?: string): Promise<Response> {
@@ -694,9 +734,8 @@ async function handleSearch(crm: SupabaseClient, body: CrmQuery, userId?: string
   }
 
   // E081: busca respeita o mesmo escopo de dono do select (antes devolvia a base inteira)
-  const scoped = await applyOwnerScope(crm, crm.from(table).select(select || "*"), table, userRole, userId);
-  if (scoped.kind === "deny") return jsonResponse({ error: OWNER_DENY_MESSAGE }, 403);
-  if (scoped.kind === "empty") return jsonResponse({ data: [], count: 0 });
+  const scoped = applyOwnerScope(crm, table, select || "*", userRole, userId);
+  if (scoped.kind === "deny") return jsonResponse({ error: userRole === "vendedor" && !userId ? OWNER_UNLINKED_MESSAGE : OWNER_DENY_MESSAGE }, 403);
   // E084: escapar metacaracteres do ilike em handleSearch
   let query = scoped.query.ilike(search.column, `%${escapeLikePattern(search.term)}%`);
   if (orderBy) query = applyOrdering(query, orderBy);
@@ -707,7 +746,8 @@ async function handleSearch(crm: SupabaseClient, body: CrmQuery, userId?: string
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalSelectFallback(table, false);
     return jsonResponse({ error: error.message }, 500);
   }
-  return jsonResponse({ data: data || [], count: data?.length || 0 });
+  const rows = stripJoin(data || [], scoped.stripParent);
+  return jsonResponse({ data: rows, count: rows.length });
 }
 
 Deno.serve((req) => {
@@ -858,8 +898,11 @@ Deno.serve((req) => {
       return jsonResponse({ error: `Table '${table}' is not allowed. Allowed: ${ALLOWED_TABLES.join(", ")}` }, 400);
     }
 
+    // E081: o dono no CRM é o usuário do CRM com o mesmo e-mail (não o auth.uid deste app).
+    const crmOwnerId = auth.userRole === "vendedor" ? (await resolveCrmUserId(crm, auth.email)) ?? undefined : undefined;
+
     if (operation === "batch") {
-      return handleBatch(crm, body.queries || [], auth.userId ?? undefined, auth.userRole);
+      return handleBatch(crm, body.queries || [], crmOwnerId, auth.userRole);
     }
 
     let response: Response;
@@ -868,8 +911,8 @@ Deno.serve((req) => {
       case "update": response = await handleUpdate(crm, body); break;
       case "delete": response = await handleDelete(crm, body); break;
       // E081: passar userId e userRole para owner scoping no handleSelect
-      case "select": response = await handleSelect(crm, body, auth.userId ?? undefined, auth.userRole); break;
-      case "search": response = await handleSearch(crm, body, auth.userId ?? undefined, auth.userRole); break;
+      case "select": response = await handleSelect(crm, body, crmOwnerId, auth.userRole); break;
+      case "search": response = await handleSearch(crm, body, crmOwnerId, auth.userRole); break;
       default: return jsonResponse({ error: `Operation '${operation}' not supported.` }, 400);
     }
     if (response.status >= 500) breaker.recordFailure(); else breaker.recordSuccess();
