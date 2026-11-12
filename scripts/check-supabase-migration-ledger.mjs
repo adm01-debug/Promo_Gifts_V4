@@ -69,15 +69,22 @@ export function auditSupabaseMigrationLedger(document, { remoteOnlyAllowlist = [
   // de casar versões iguais e lista a MESMA versão como local-only e remote-only em linhas
   // separadas (visto em 2026-11-12: 20261104100000 nas duas colunas). Versão presente nos
   // dois lados está aplicada E versionada — conta como alinhada, não como drift.
-  const localSet = new Set(localOnly);
-  const remoteSet = new Set(remoteOnly);
-  const pairedLate = [...remoteSet].filter((v) => localSet.has(v));
+  // Subtração por CONTAGEM: cada versão remota casa no máximo com uma ocorrência local
+  // (colisões legadas — 2 arquivos com a mesma versão e 1 aplicado — continuam com 1 local-only).
+  const countOf = (list) => list.reduce((m, v) => m.set(v, (m.get(v) ?? 0) + 1), new Map());
+  const lc = countOf(localOnly);
+  const rc = countOf(remoteOnly);
+  const pairedLate = [];
+  for (const [v, nr] of rc) {
+    const k = Math.min(nr, lc.get(v) ?? 0);
+    for (let n = 0; n < k; n += 1) pairedLate.push(v);
+  }
   if (pairedLate.length) {
-    const late = new Set(pairedLate);
     matched += pairedLate.length;
-    for (const list of [localOnly, remoteOnly]) {
-      for (let i = list.length - 1; i >= 0; i -= 1) if (late.has(list[i])) list.splice(i, 1);
-    }
+    const take = (list, v, k) => {
+      for (let i = list.length - 1, left = k; i >= 0 && left > 0; i -= 1) if (list[i] === v) { list.splice(i, 1); left -= 1; }
+    };
+    for (const [v, k] of countOf(pairedLate)) { take(localOnly, v, k); take(remoteOnly, v, k); }
   }
 
   const allowlistedRemoteOnly = remoteOnly.filter((v) => remoteOnlyAllowlist.includes(v));

@@ -66,7 +66,11 @@ export const ALLOW_COSTLY = (readEnv("EDGE_LIVE_COSTLY") ?? "") === "1";
 
 const TIMEOUT_MS = Number(readEnv("EDGE_LIVE_TIMEOUT_MS")) || 15_000;
 const RETRY_STATUSES = new Set([502, 503, 504]);
-const RETRY_COUNT = Number(readEnv("EDGE_LIVE_RETRIES")) || 3;
+const RETRY_COUNT = (() => {
+  // "0" desliga os retries (antes `|| 3` transformava 0 em 3).
+  const n = Number(readEnv("EDGE_LIVE_RETRIES"));
+  return Number.isFinite(n) && readEnv("EDGE_LIVE_RETRIES") !== undefined && readEnv("EDGE_LIVE_RETRIES") !== "" ? n : 3;
+})();
 const RETRY_DELAY_MS = Number(readEnv("EDGE_LIVE_RETRY_DELAY_MS")) || 800;
 /**
  * Deadline do signInWithPassword em getJwt() — ver nota no MAX_RETRY_BUDGET_MS.
@@ -107,6 +111,8 @@ export interface CallEdgeOptions {
   /** Query string (sem o "?"). */
   query?: string;
   signalTimeoutMs?: number;
+  /** false: não repete após timeout do cliente (chamadas caras ou não idempotentes). */
+  retryOnTimeout?: boolean;
 }
 
 export interface EdgeResult {
@@ -175,7 +181,8 @@ export async function callEdge(name: string, opts: CallEdgeOptions = {}): Promis
       // (magic-up-score / intelligence-substitute-applied: 9 falsos vermelhos em 12/11.)
       if ((err as { name?: string }).name === "AbortError") {
         lastResult = { status: 408, headers: new Headers(), text: "", json: null, timedOut: true };
-        if (attempt === RETRY_COUNT) return lastResult;
+        // Chamadas caras/não idempotentes (opts.retryOnTimeout === false) não repetem.
+        if (attempt === RETRY_COUNT || opts.retryOnTimeout === false) return lastResult;
       } else {
         throw err;
       }

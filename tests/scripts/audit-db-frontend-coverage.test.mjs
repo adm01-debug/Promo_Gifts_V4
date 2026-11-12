@@ -147,3 +147,37 @@ describe('audit-db-frontend-coverage — robustez contra saída malformada do ps
     expect(nome.status).toBe('READ'); // src/x.ts faz .select('id, nome')
   });
 });
+
+describe('audit-db-frontend-coverage — varredura em Node sem ripgrep (revisão 12/11)', () => {
+  function withFakeRg(fixture, exitCode) {
+    const binDir = resolve(fixture.dir, 'fakebin');
+    mkdirSync(binDir, { recursive: true });
+    writeFileSync(resolve(binDir, 'rg'), `#!/bin/sh\nexit ${exitCode}\n`);
+    chmodSync(resolve(binDir, 'rg'), 0o755);
+    return { ...fixture, path: `${binDir}:${fixture.path}` };
+  }
+  const psql = 'produtos\tid\tuuid\t5\nprodutos\tnome\ttext\t5\nprodutos\tfantasma\ttext\t5\n';
+
+  it('rg ausente (127): lista os fontes em Node e pula node_modules/dist/.next', () => {
+    const fx = withFakeRg(makeFixture({ psqlOutput: psql }), 127);
+    for (const d of ['node_modules/pkg', 'dist', '.next']) {
+      mkdirSync(resolve(fx.dir, 'src', d), { recursive: true });
+      writeFileSync(resolve(fx.dir, 'src', d, 'y.ts'), "supabase.from('produtos').select('fantasma');\n");
+    }
+    const result = runScript(fx);
+    expect(result.status).toBe(0);
+    const json = JSON.parse(readFileSync(resolve(fx.dir, 'audit/db-frontend-coverage.json'), 'utf8'));
+    const cols = json.reports.find((r) => r.label === 'BD Interno (app)').tables.find((t) => t.table === 'produtos').columns;
+    expect(cols.find((c) => c.name === 'nome').status).toBe('READ'); // src/x.ts foi lido pela varredura
+    expect(cols.find((c) => c.name === 'fantasma').status).toBe('ORPHAN'); // diretórios pulados
+  });
+
+  it('rg com status 1 (nada casou) = lista vazia, sem cair na varredura', () => {
+    const fx = withFakeRg(makeFixture({ psqlOutput: psql }), 1);
+    const result = runScript(fx);
+    expect(result.status).toBe(0);
+    const json = JSON.parse(readFileSync(resolve(fx.dir, 'audit/db-frontend-coverage.json'), 'utf8'));
+    const cols = json.reports.find((r) => r.label === 'BD Interno (app)').tables.find((t) => t.table === 'produtos').columns;
+    expect(cols.find((c) => c.name === 'nome').status).toBe('ORPHAN');
+  });
+});

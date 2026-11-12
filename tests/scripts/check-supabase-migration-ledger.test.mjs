@@ -142,3 +142,16 @@ describe('pareamento sequencial da CLI (2026-11-12)', () => {
     expect(r.summary.blocking_remote_only_sample).toEqual(['20261104100000']);
   });
 });
+
+describe('pareamento sequencial — multiconjunto (revisão 12/11)', () => {
+  it('colisão legada: 2 arquivos locais com a mesma versão e 1 aplicada → sobra 1 local-only (igual ao caso sem desync)', () => {
+    const v = '20260101000000';
+    const semDesync = auditSupabaseMigrationLedger({ migrations: [{ local: v, remote: v }, { local: v, remote: '' }] });
+    const comDesync = auditSupabaseMigrationLedger({
+      migrations: [{ local: '', remote: v }, { local: v, remote: '' }, { local: v, remote: '' }],
+    });
+    expect(semDesync.summary.local_only_count).toBe(1);
+    expect(comDesync.summary.local_only_count).toBe(semDesync.summary.local_only_count);
+    expect(comDesync.summary.local_only_sample).toEqual([v]);
+  });
+});
