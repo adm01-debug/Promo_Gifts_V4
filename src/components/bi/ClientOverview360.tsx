@@ -9,7 +9,8 @@ import {
   TrendingUp,
   DollarSign,
   Calendar,
-  Sparkles,
+  Inbox,
+  AlertTriangle,
   ArrowUpRight,
   ArrowDownRight,
 } from 'lucide-react';
@@ -49,6 +50,15 @@ export function ClientOverview360({ clientId }: Props) {
   const [comparePeriod, setComparePeriod] = useState(false);
 
   if (bi.isLoading) return <KPIsSkeleton />;
+  if (bi.isError) {
+    return (
+      <Card className="border-[1.5px] border-destructive/40">
+        <CardContent className="flex items-center gap-2 p-5 text-sm text-destructive" role="alert">
+          <AlertTriangle className="h-4 w-4" /> Erro ao carregar pedidos
+        </CardContent>
+      </Card>
+    );
+  }
 
   const recencyTone =
     bi.daysSinceLastOrder === null
@@ -77,7 +87,7 @@ export function ClientOverview360({ clientId }: Props) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         {bi.isMock ? (
           <Badge variant="secondary" className="gap-1 text-[10px]">
-            <Sparkles className="h-3 w-3" /> Dados simulados · em breve dados reais
+            <Inbox className="h-3 w-3" /> Sem pedidos registrados
           </Badge>
         ) : (
           <span />
