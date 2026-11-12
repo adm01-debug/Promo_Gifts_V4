@@ -3,8 +3,8 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4731)",
-   "SQL (3331)",
+   "TypeScript (4736)",
+   "SQL (3333)",
    "Markdown (1010)",
    "JavaScript (312)",
    "JSON (118)",
@@ -5480,7 +5480,7 @@
    },
    {
     "papel": "dev",
-    "ocorrencias": 44
+    "ocorrencias": 45
    },
    {
     "papel": "button",
@@ -5491,12 +5491,12 @@
     "ocorrencias": 33
    },
    {
-    "papel": "admin",
+    "papel": "group",
     "ocorrencias": 31
    },
    {
-    "papel": "group",
-    "ocorrencias": 31
+    "papel": "admin",
+    "ocorrencias": 30
    },
    {
     "papel": "listitem",
@@ -5511,11 +5511,11 @@
     "ocorrencias": 24
    },
    {
-    "papel": "dialog",
-    "ocorrencias": 22
+    "papel": "supervisor",
+    "ocorrencias": 23
    },
    {
-    "papel": "supervisor",
+    "papel": "dialog",
     "ocorrencias": 22
    },
    {

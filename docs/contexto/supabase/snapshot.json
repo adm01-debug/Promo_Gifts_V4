@@ -177881,8 +177881,13 @@
       {
         "args": "p_limit integer, p_offset integer",
         "callers": {
-          "code": [],
-          "code_total_files": 0,
+          "code": [
+            {
+              "file": "supabase/migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql",
+              "hits": 2
+            }
+          ],
+          "code_total_files": 1,
           "cron": [],
           "db": [],
           "triggers": [],

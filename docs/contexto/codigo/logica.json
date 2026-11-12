@@ -2347,7 +2347,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 12,
+   "usado_por": 14,
    "usado_por_modulos": [
     "components/admin",
     "components/intelligence",
@@ -2355,6 +2355,7 @@
     "hooks/crm",
     "hooks/intelligence",
     "hooks/products",
+    "lib/external-db",
     "pages/bi"
    ],
    "coberto_por_testes": 1,
@@ -2382,10 +2383,11 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 77,
+   "usado_por": 78,
    "usado_por_modulos": [
     "components/admin",
     "components/expert",
+    "components/inventory",
     "components/kit-builder",
     "components/personalization",
     "components/pricing",
@@ -2953,7 +2955,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 52,
+   "usado_por": 50,
    "usado_por_modulos": [
     "components/admin",
     "components/products",
@@ -3203,7 +3205,7 @@
     "fetchPromobrindProducts"
    ],
    "export_default": null,
-   "linhas": 643,
+   "linhas": 654,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4489,6 +4491,7 @@
     "components/errors",
     "components/expert",
     "components/filters",
+    "components/inventory",
     "components/layout",
     "components/loading",
     "components/magic-up",
@@ -5856,9 +5859,10 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_modulos": [
-    "components/quotes"
+    "components/quotes",
+    "pages/quotes"
    ],
    "coberto_por_testes": 1,
    "orfao": false
@@ -6213,11 +6217,12 @@
    "arquivo": "src/lib/security/sanitize-error.ts",
    "camada": "lib",
    "exports": [
+    "RlsDeniedError",
     "SAFE_MESSAGES",
     "sanitizeError"
    ],
    "export_default": null,
-   "linhas": 125,
+   "linhas": 137,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -7852,7 +7857,7 @@
     "quoteService"
    ],
    "export_default": null,
-   "linhas": 552,
+   "linhas": 553,
    "tabelas": [
     "product_variants",
     "products",

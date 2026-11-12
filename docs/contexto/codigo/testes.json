@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2296,
+ "total": 2301,
  "por_tipo": {
   "contrato": 57,
   "e2e": 677,
   "pytest": 2,
   "qa": 17,
-  "unit": 1543
+  "unit": 1548
  },
  "onde_ficam": [
   {
@@ -24,7 +24,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 618
+   "arquivos": 623
   },
   {
    "padrao": "co-localizado (*.test)",
@@ -5430,18 +5430,18 @@
   {
    "arquivo": "src/components/inventory/__tests__/useStockSelection.test.ts",
    "tipo": "unit",
-   "linhas": 478,
+   "linhas": 502,
    "testa": [
     "src/components/inventory/useStockSelection.ts",
     "src/stores/useComparisonStore.ts",
     "src/stores/useFavoritesStore.ts"
    ],
-   "casos": 31
+   "casos": 32
   },
   {
    "arquivo": "src/components/inventory/__tests__/VariantStockRowActions.test.tsx",
    "tipo": "unit",
-   "linhas": 306,
+   "linhas": 309,
    "testa": [
     "src/components/inventory/VariantStockRowActions.tsx",
     "src/components/ui/tooltip.tsx",
@@ -6197,6 +6197,15 @@
     "src/components/pdf/ProposalStyles.ts"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "src/components/pricing/__tests__/QuantityPriceCalculator.createQuote.test.tsx",
+   "tipo": "unit",
+   "linhas": 173,
+   "testa": [
+    "src/components/pricing/QuantityPriceCalculator.tsx"
+   ],
+   "casos": 5
   },
   {
    "arquivo": "src/components/products/__tests__/BadgeVisualRegression.test.tsx",
@@ -7810,6 +7819,16 @@
    "casos": 6
   },
   {
+   "arquivo": "src/hooks/intelligence/__tests__/fetchCategoryRanking.marketDepleted.test.ts",
+   "tipo": "unit",
+   "linhas": 79,
+   "testa": [
+    "src/hooks/intelligence/intelligenceHelpers.ts",
+    "src/hooks/intelligence/useCommercialIntelligence.helpers.ts"
+   ],
+   "casos": 1
+  },
+  {
    "arquivo": "src/hooks/intelligence/__tests__/useStockHistory.test.ts",
    "tipo": "unit",
    "linhas": 213,
@@ -8183,12 +8202,12 @@
   {
    "arquivo": "src/hooks/products/__tests__/useSupplierSalesRanking.test.ts",
    "tipo": "unit",
-   "linhas": 181,
+   "linhas": 199,
    "testa": [
     "src/hooks/products/useSupplierSalesRanking.ts",
     "src/lib/logger.ts"
    ],
-   "casos": 8
+   "casos": 9
   },
   {
    "arquivo": "src/hooks/products/__tests__/useVariantSupplierSources.test.ts",
@@ -8309,11 +8328,11 @@
   {
    "arquivo": "src/hooks/quotes/__tests__/useAutoSaveQuote.test.ts",
    "tipo": "unit",
-   "linhas": 233,
+   "linhas": 262,
    "testa": [
     "src/hooks/quotes/useAutoSaveQuote.ts"
    ],
-   "casos": 18
+   "casos": 20
   },
   {
    "arquivo": "src/hooks/quotes/__tests__/useDiscountApproval.test.ts",
@@ -8336,6 +8355,17 @@
     "src/integrations/supabase/client.ts"
    ],
    "casos": 3
+  },
+  {
+   "arquivo": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+   "tipo": "unit",
+   "linhas": 299,
+   "testa": [
+    "src/components/quotes/QuoteAutoSave.tsx",
+    "src/hooks/quotes/index.ts",
+    "src/hooks/quotes/useQuoteBuilderState.ts"
+   ],
+   "casos": 14
   },
   {
    "arquivo": "src/hooks/quotes/__tests__/useQuoteConcurrencyGuard.test.ts",
@@ -8976,12 +9006,12 @@
   {
    "arquivo": "src/lib/external-db/__tests__/productsCompleteness.test.ts",
    "tipo": "unit",
-   "linhas": 93,
+   "linhas": 119,
    "testa": [
     "src/lib/db/postgrest.ts",
     "src/lib/external-db/products.ts"
    ],
-   "casos": 5
+   "casos": 6
   },
   {
    "arquivo": "src/lib/external-db/__tests__/ProductSelectFields.test.ts",
@@ -9585,6 +9615,15 @@
     "src/pages/auth/SSOCallbackPage.tsx"
    ],
    "casos": 7
+  },
+  {
+   "arquivo": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
+   "tipo": "unit",
+   "linhas": 226,
+   "testa": [
+    "src/pages/admin/RolePermissionsPage.tsx"
+   ],
+   "casos": 5
   },
   {
    "arquivo": "src/pages/auth/__tests__/auth-copy.smoke.test.ts",
@@ -10415,6 +10454,15 @@
    "casos": 8
   },
   {
+   "arquivo": "src/pages/quotes/__tests__/QuoteViewPage.delete-denied.test.tsx",
+   "tipo": "unit",
+   "linhas": 135,
+   "testa": [
+    "src/pages/quotes/QuoteViewPage.tsx"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "src/pages/quotes/__tests__/QuoteViewPage.preview-breath.test.tsx",
    "tipo": "unit",
    "linhas": 132,
@@ -10449,7 +10497,7 @@
   {
    "arquivo": "src/pages/quotes/__tests__/useQuotesListPage.expiring.test.ts",
    "tipo": "unit",
-   "linhas": 317,
+   "linhas": 318,
    "testa": [
     "src/pages/quotes/useQuotesListPage.ts",
     "src/types/quote.ts"
@@ -10844,7 +10892,7 @@
   {
    "arquivo": "src/tests/AdminStandardRules.test.tsx",
    "tipo": "unit",
-   "linhas": 201,
+   "linhas": 202,
    "testa": [
     "src/components/ui/tooltip.tsx",
     "src/contexts/AuthContext.tsx",
@@ -16839,12 +16887,12 @@
   {
    "arquivo": "tests/hooks/wizardReducer.test.ts",
    "tipo": "unit",
-   "linhas": 75,
+   "linhas": 106,
    "testa": [
     "src/hooks/simulator/wizardReducer.ts",
     "src/types/domain/simulator-wizard.ts"
    ],
-   "casos": 3
+   "casos": 5
   },
   {
    "arquivo": "tests/integration/discountApprovalFlow.test.ts",
@@ -19686,7 +19734,7 @@
   "src/components/pdf/proposal/ProposalProductTable.tsx": 2,
   "src/components/pdf/proposal/ProposalTotals.tsx": 3,
   "src/components/pdf/watermarkTokens.ts": 3,
-  "src/components/pricing/QuantityPriceCalculator.tsx": 1,
+  "src/components/pricing/QuantityPriceCalculator.tsx": 2,
   "src/components/pricing/simulator/types.ts": 1,
   "src/components/pricing/simulator/upsell/upsell-engine.ts": 1,
   "src/components/pricing/simulator/utils.ts": 1,
@@ -19725,6 +19773,7 @@
   "src/components/quotes/EngravingBadge.tsx": 1,
   "src/components/quotes/NegotiationMarkupCard.tsx": 3,
   "src/components/quotes/PdfGenerationDialog.tsx": 5,
+  "src/components/quotes/QuoteAutoSave.tsx": 1,
   "src/components/quotes/QuoteBuilderStepper.tsx": 2,
   "src/components/quotes/QuoteBuilderSummaryColumn.tsx": 5,
   "src/components/quotes/QuoteItemsList.tsx": 1,
@@ -19830,8 +19879,10 @@
   "src/hooks/favorites/useFavoriteLists.ts": 1,
   "src/hooks/favorites/useFavorites.ts": 1,
   "src/hooks/intelligence/index.ts": 8,
+  "src/hooks/intelligence/intelligenceHelpers.ts": 1,
   "src/hooks/intelligence/magicUpShare.ts": 1,
   "src/hooks/intelligence/useAIRecommendations.ts": 2,
+  "src/hooks/intelligence/useCommercialIntelligence.helpers.ts": 1,
   "src/hooks/intelligence/useConnectionTester.ts": 2,
   "src/hooks/intelligence/useConnectionsOverview.ts": 1,
   "src/hooks/intelligence/useConnectionsOverviewFilters.ts": 1,
@@ -19901,13 +19952,13 @@
   "src/hooks/products/useSupplierSalesRanking.ts": 2,
   "src/hooks/products/useVariantSupplierSources.ts": 6,
   "src/hooks/products/useVideoVariantLinks.ts": 1,
-  "src/hooks/quotes/index.ts": 18,
+  "src/hooks/quotes/index.ts": 19,
   "src/hooks/quotes/quoteHelpers.ts": 7,
   "src/hooks/quotes/quoteMarkup.ts": 1,
   "src/hooks/quotes/quoteTypes.ts": 12,
   "src/hooks/quotes/useAutoSaveQuote.ts": 7,
   "src/hooks/quotes/useDiscountApproval.ts": 3,
-  "src/hooks/quotes/useQuoteBuilderState.ts": 7,
+  "src/hooks/quotes/useQuoteBuilderState.ts": 8,
   "src/hooks/quotes/useQuoteConcurrencyGuard.ts": 1,
   "src/hooks/quotes/useQuoteFunnel.ts": 1,
   "src/hooks/quotes/useQuoteHistory.ts": 1,
@@ -20109,6 +20160,7 @@
   "src/pages/admin/AdminUsuariosPage.tsx": 1,
   "src/pages/admin/AdminVideoVariantsPage.tsx": 1,
   "src/pages/admin/DiscountRequestDetailPage.tsx": 1,
+  "src/pages/admin/RolePermissionsPage.tsx": 1,
   "src/pages/auth/Auth.tsx": 3,
   "src/pages/auth/AuthBranding.tsx": 2,
   "src/pages/auth/ResetPassword.tsx": 2,
@@ -20176,6 +20228,7 @@
   "src/pages/products/seller-carts/undoCopy.ts": 2,
   "src/pages/products/seller-carts/useMidnightReset.ts": 1,
   "src/pages/quotes/QuoteBuilderPage.tsx": 6,
+  "src/pages/quotes/QuoteViewPage.tsx": 1,
   "src/pages/quotes/QuotesListPage.tsx": 5,
   "src/pages/quotes/components/DeliveryModeToggle.tsx": 2,
   "src/pages/quotes/quote-view/QuoteActionHandlers.ts": 2,
@@ -20326,7 +20379,6 @@
    "src/pages/admin/PermissionsPage.tsx",
    "src/pages/admin/PriceFreshnessSettings.tsx",
    "src/pages/admin/RlsDenialsAdminPage.tsx",
-   "src/pages/admin/RolePermissionsPage.tsx",
    "src/pages/admin/RolesPage.tsx",
    "src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
    "src/pages/admin/StockDashboardPage.tsx",
@@ -20356,7 +20408,6 @@
    "src/pages/products/ProductDetail.tsx",
    "src/pages/products/ProductMatchPage.tsx",
    "src/pages/products/ReplenishmentsPage.tsx",
-   "src/pages/quotes/QuoteViewPage.tsx",
    "src/pages/quotes/QuotesDashboardPage.tsx",
    "src/pages/quotes/QuotesKanbanPage.tsx",
    "src/pages/system/ExternalDatabaseTest.tsx",
@@ -20612,7 +20663,6 @@
    "src/components/products/gallery/usePromoFlixPlayer.ts",
    "src/components/products/share/usePhotoDownload.ts",
    "src/components/products/zoomable-gallery/useGalleryZoom.ts",
-   "src/components/quotes/QuoteAutoSave.tsx",
    "src/components/quotes/useQuoteSummaryState.ts",
    "src/components/replenishments/grid-layout.ts",
    "src/components/search/voice/usePhaseColors.ts",
@@ -20679,7 +20729,6 @@
    "src/hooks/intelligence/useAiRouter.ts",
    "src/hooks/intelligence/useAiUsage.ts",
    "src/hooks/intelligence/useCommemorativeDates.ts",
-   "src/hooks/intelligence/useCommercialIntelligence.helpers.ts",
    "src/hooks/intelligence/useCommercialIntelligence.ts",
    "src/hooks/intelligence/useConnectionTestDetails.ts",
    "src/hooks/intelligence/useConnectionTestHistory.ts",

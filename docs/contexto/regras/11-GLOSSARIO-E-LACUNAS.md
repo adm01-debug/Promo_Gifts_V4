@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e9a4a1aa14` · branch `main` · 2026-11-12 14:57 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `fee3d0937c` · branch `main` · 2026-11-12 23:01 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -404,6 +404,7 @@
 | status | valor `in-window` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/intelligence/GoldSyncBadge.tsx` |
 | status | valor `alert` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/kit-builder/kit-summary/KitValidationChecklist.tsx` |
 | status | valor `collapsed` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/ui/sidebar.tsx`<br>`escreve:src/components/ui/sidebar.tsx` |
+| status | valor `object` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/hooks/quotes/useQuoteBuilderState.ts` |
 | status | valor `closed` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/hooks/voice/feedbackSounds.ts` |
 | status | valor `suspended` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/hooks/voice/feedbackSounds.ts` |
 | status | valor `installed` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/sw-register.ts` |
@@ -645,8 +646,7 @@
 | rpc | RPC `calculate_quote_totals` chamada mas não definida nas migrations/types | `tests/integration/freight-quest/quote-freight-integration.test.ts` |
 | rpc | RPC `check_rls_enabled` chamada mas não definida nas migrations/types | `tests/security/rls-validation.test.ts` |
 | rpc | RPC `dashboard_rpc` chamada mas não definida nas migrations/types | `scripts/ai-context/gerar.unit.mjs` |
-| rpc | RPC `demo` chamada mas não definida nas migrations/types | `scripts/supabase_snapshot/test_snapshot.py` |
-| … +204 linhas — lista completa em `context.json` | | |
+| … +205 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

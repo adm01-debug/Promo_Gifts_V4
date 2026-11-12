@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e9a4a1aa14` · branch `main` · 2026-11-12 14:57 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `fee3d0937c` · branch `main` · 2026-11-12 23:01 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1680,7 +1680,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `new-arrival` | escreve | `recovery/src-legacy/src/hooks/useProductIntelligenceBadges.ts`<br>`src/hooks/products/useProductIntelligenceBadges.ts` |
 | `type` | `normal` | escreve | `recovery/src-legacy/src/hooks/useProductIntelligenceBadges.ts` |
 | `type` | `notebook` | escreve | `supabase/functions/generate-ad-image/index.ts` |
-| `type` | `novelty` | compara | `src/components/novelties/NoveltyProductGrid.tsx`<br>`src/components/products/ProductCard.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductStatusBadge.tsx` |
+| `type` | `novelty` | compara | `src/components/novelties/NoveltyProductGrid.tsx`<br>`src/components/products/ProductCard.tsx`<br>`src/components/products/ProductListItem.tsx`<br>`src/components/products/ProductStatusBadge.tsx`<br>`src/pages/products/FiltersPage.tsx` |
 | `type` | `number` | compara, escreve | `src/components/admin/products/ProductFormFullscreen.tsx`<br>`src/components/admin/products/SupplierFiscalInfo.tsx`<br>`src/lib/telemetry/bridgeCallMetrics.ts`<br>`supabase/functions/kit-ai-builder/index.ts`<br>`supabase/functions/mcp-server/index.ts`<br>… +1 |
 | `type` | `object` | compara, escreve | `src/lib/telemetry/bridgeCallMetrics.ts`<br>`supabase/functions/comparison-ai-advisor/index.ts`<br>`supabase/functions/generate-product-seo/index.ts`<br>`supabase/functions/kit-ai-builder/index.ts`<br>`supabase/functions/kit-identity-suggest/index.ts`<br>… +5 |
 | `type` | `on-sale` | escreve | `recovery/src-legacy/src/hooks/useProductIntelligenceBadges.ts` |
@@ -1778,7 +1778,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `completed` | compara | `src/lib/inventory/future-stock-stats.ts` |
 | `status` | `confirmed` | compara, escreve | `src/hooks/stock/stockFetcher.ts`<br>`src/lib/inventory/future-stock-stats.ts`<br>`src/pages/auth/SSOCallbackPage.tsx` |
 | `status` | `confirming` | compara | `src/pages/auth/SSOCallbackPage.tsx` |
-| `status` | `converted` | compara, filtra | `recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx`<br>`recovery/src-legacy/src/hooks/useQuoteFunnel.ts`<br>`src/components/quotes/MarginInsightBadge.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/hooks/quotes/useQuoteFunnel.ts`<br>… +2 |
+| `status` | `converted` | compara, filtra | `recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx`<br>`recovery/src-legacy/src/hooks/useQuoteFunnel.ts`<br>`src/components/quotes/MarginInsightBadge.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/hooks/quotes/useQuoteFunnel.ts`<br>… +3 |
 | `status` | `crit` | compara | `recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx` |
 | `status` | `critical` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>`src/lib/inventory/stock-filter.ts`<br>… +1 |
 | `status` | `degraded` | compara, escreve | `api/ready.ts`<br>`src/components/system/CloudStatusBanner.tsx`<br>`src/lib/external-db/invoke.ts` |
@@ -1863,7 +1863,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `unchanged` | escreve | `src/hooks/kit-builder/useKitPriceValidation.ts` |
 | `status` | `unconfigured` | compara | `src/components/admin/connections/DataSourceDebugTab.tsx` |
 | `status` | `underindex` | compara | `src/components/bi/ClientCategoryRadar.tsx` |
-| … +116 linhas — lista completa em `context.json` | | | |
+| … +117 linhas — lista completa em `context.json` | | | |
 
 ### E.4 Enums e listas de valores
 
@@ -2739,6 +2739,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```ts
   { action: z.literal('update_password'), user_id: uuidSchema, new_password: z.string().min(8).max(128), }
   ```
+- **UpdateProfileSchema** (`supabase/functions/manage-users/index.ts`, z.object):
+  ```ts
+  { action: z.literal('update_profile'), user_id: uuidSchema, full_name: z.string().trim().max(200).nullable().optional(), email: emailSchema.nullable().optional(), is_active: z.boolean().optional(), avatar_url: z.string().url().max(2048).nullable().optional(), }
+  ```
 - **DeleteSchema** (`supabase/functions/manage-users/index.ts`, z.object):
   ```ts
   { action: z.literal('delete'), user_id: uuidSchema, }
@@ -2753,7 +2757,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **PayloadSchema** (`supabase/functions/manage-users/index.ts`, z.discriminatedUnion):
   ```ts
-  'action', [ CreateSchema, UpdateEmailSchema, UpdatePasswordSchema, DeleteSchema, RevokeSessionsSchema, PromoteRoleSchema, ]
+  'action', [ CreateSchema, UpdateEmailSchema, UpdatePasswordSchema, UpdateProfileSchema, DeleteSchema, RevokeSessionsSchema, PromoteRoleSchema, ]
   ```
 - **MaterialsRequestSchema** (`supabase/functions/materials-api/index.ts`, z.object):
   ```ts
@@ -5443,6 +5447,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MAGIC_UP_SHARE_NO_IMAGE_REASON` | `'Gere uma imagem antes de compartilhar no WhatsApp'` | `src/hooks/intelligence/magicUpShare.ts` |
 | `MAX_RETRIES` | `2` | `src/hooks/intelligence/useAIRecommendations.ts` |
 | `INITIAL_BACKOFF_MS` | `500` | `src/hooks/intelligence/useAIRecommendations.ts` |
+| `ID_CHUNK_SIZE` | `150` | `src/hooks/intelligence/useCommercialIntelligence.helpers.ts` |
 | `SPARKLINE_WINDOW_DAYS` | `90` | `src/hooks/intelligence/useSparklineSales.tsx` |
 | `PAGE_SIZE` | `1000` | `src/hooks/intelligence/useSparklineSales.tsx` |
 | `BATCH_SIZE` | `50` | `src/hooks/intelligence/useSparklineSales.tsx` |
@@ -5454,6 +5459,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MAX_HISTORY` | `100` | `src/hooks/intelligence/useVoiceCommandHistory.ts` |
 | `RECENT_LIMIT` | `5` | `src/hooks/intelligence/useVoiceCommandHistory.ts` |
 | `FREQUENT_LIMIT` | `6` | `src/hooks/intelligence/useVoiceCommandHistory.ts` |
+| `ID_CHUNK_SIZE` | `150` | `src/hooks/intelligence/useZeroResultDiagnosis.ts` |
 | `SAMPLE_SIZE` | `800` | `src/hooks/intelligence/useZeroResultSubstitutes.ts` |
 | `ENRICH_LIMIT` | `250` | `src/hooks/intelligence/useZeroResultSubstitutes.ts` |
 | `SOURCE_COLS` | `'id,variant_id,supplier_id,updated_at,'` | `src/hooks/inventory/useSupplierReliability.ts` |
@@ -5542,9 +5548,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `CACHE_TTL_MS` | `12` | `src/hooks/voice/scribeTokenCache.ts` |
 | `MAX_ENTRIES` | `5` | `src/hooks/voice/useVoiceHistory.ts` |
 | `CATALOG_LOW_STOCK_THRESHOLD` | `10` | `src/lib/catalog-stock-status.ts` |
-| `WINDOW_MS` | `30` | `src/lib/chunk-recovery.ts` |
-| `MAX_HARD_RELOADS` | `2` | `src/lib/chunk-recovery.ts` |
-| … +330 linhas — lista completa em `context.json` | | |
+| … +333 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -5753,7 +5757,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/components/admin/products/ProductTagsSection.tsx` |
 | `staleTime: 2 * 60 * 1000,` | `src/components/admin/products/ProductVariationAxesConfig.tsx` |
 | `staleTime: 2 * 60 * 1000,` | `src/components/admin/products/useProductVariants.ts` |
-| `if (Date.now() - draft.savedAt > 24 * 60 * 60 * 1000) {` | `src/components/admin/products/hooks/useProductFormDraft.ts` |
+| `Date.now() - draft.savedAt > 24 * 60 * 60 * 1000 \|\|` | `src/components/admin/products/hooks/useProductFormDraft.ts` |
 | `staleTime: 2 * 60 * 1000,` | `src/components/admin/products/image-gallery/useProductImageGallery.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/components/admin/products/image-gallery/useProductImageGallery.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/components/admin/products/kit-components/ComponentMediaManager.tsx` |
@@ -5797,8 +5801,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 30 * 60 * 1000,` | `src/components/favorites/FavoritesEmptyStateSmart.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/components/favorites/FavoritesHeatmap.tsx` |
 | `const WINDOW_MS = 5 * 60 * 1000;` | `src/components/intelligence/RealtimeBadge.tsx` |
-| `const diffDays = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));` | `src/components/inventory/FutureStockDialog.tsx` |
-| `return Math.ceil(diff / (1000 * 60 * 60 * 24));` | `src/components/inventory/FutureStockDialog.tsx` |
 | `const horizon = now + FUTURE_STOCK_WINDOW_DAYS * 24 * 60 * 60 * 1000;` | `src/components/inventory/StockDashboard.tsx` |
 | `setTimeout(() => setLastError(null), 3000);` | `src/components/kit-builder/ItemSelector.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/components/kit-builder/KitHealthCard.tsx` |
@@ -5850,7 +5852,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientAffinity.ts` |
 | `const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;` | `src/hooks/bi/useClientCategoryAffinity.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientCategoryAffinity.ts` |
-| … +380 linhas — lista completa em `context.json` | |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientOrdersHistory.ts` |
+| `staleTime: 10 * 60 * 1000,` | `src/hooks/bi/useClientSeasonality.ts` |
+| … +378 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -5982,6 +5986,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | 1000 | `src/pages/admin/KitTemplatesMetricsPage.tsx` |
 | 50 | `src/pages/admin/OwnershipAuditAdminPage.tsx` |
 | 500 | `src/pages/admin/RlsDenialsAdminPage.tsx` |
+| 1 | `src/pages/admin/RolePermissionsPage.tsx` |
 | 20 | `src/pages/admin/SellerDiscountLimitsAdminPage.tsx` |
 | 2000 | `src/pages/admin/ai-usage/MarketIntelInsightsUsagePanel.tsx` |
 | 10 | `src/pages/admin/telemetry/useHighLimitTelemetry.ts` |
@@ -6332,7 +6337,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | mais de um baseline em ${BASELINE_DIR}: ${found.join( | `scripts/drift-baseline.mjs` |
 | nenhum baseline em ${BASELINE_DIR} | `scripts/drift-baseline.mjs` |
 | project ref inválido: ${JSON.stringify(projectRef)} | `scripts/drift-baseline.mjs` |
-| … +1171 linhas — lista completa em `context.json` | |
+| … +1184 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6411,11 +6416,12 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `agente` | `supabase/functions/dropbox-list/index.ts` |
 | `user` | `supabase/functions/expert-chat/index.ts` |
 | `dev` | `supabase/functions/force-global-logout/index.ts` |
-| `admin` | `supabase/functions/github-credentials-test/index.ts` |
+| `dev` | `supabase/functions/github-credentials-test/index.ts` |
 | `agente` | `supabase/functions/kit-ai-builder/index.ts` |
 | `dev` | `supabase/functions/manage-users/index.ts` |
 | `supervisor` | `supabase/functions/manage-users/index.ts` |
 | `vendedor` | `supabase/functions/manage-users/index.ts` |
+| `supervisor` | `supabase/functions/ownership-audit/index.ts` |
 | `agente` | `supabase/functions/quote-sync/index.ts` |
 | `admin` | `supabase/functions/rls-integration-tests/index.ts` |
 | `dev` | `supabase/functions/rls-integration-tests/index.ts` |
@@ -6451,7 +6457,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (19885 testes em 1984 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (19926 testes em 1989 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6513,7 +6519,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/utils/image-utils.test.ts` | 44 | image-utils · getCdnUrl · retorna placeholder para URL vazia · troca variante em URLs do Cloudflare … |
 | `tests/color-navigation.test.ts` | 43 | buildColorNavParams · builds params with name only · builds params with all fields · skips null/undefined fields … |
 | `tests/utils/tailwindRings.interaction.test.tsx` | 43 | hoverRingsOf / ringsByVariant — interação · (I1) hoverRingsOf é estável antes/durante/depois de pointerenter+leave · (I2) focusRingsOf é estável sob Tab e blur programático · (I3) hover e focus-visible NÃO se contaminam no elemento  … |
-| `src/components/inventory/__tests__/useStockSelection.test.ts` | 41 | rowKey · gera chave  · chaves diferentes para IDs diferentes · é determinístico … |
+| `src/components/inventory/__tests__/useStockSelection.test.ts` | 42 | rowKey · gera chave  · chaves diferentes para IDs diferentes · é determinístico … |
 | `src/components/cart/__tests__/PopoverQtyInput.test.tsx` | 40 | normalizeQty (regra pura) · aceita inteiros dentro do intervalo · faz clamp acima do máximo · rejeita valores abaixo do mínimo … |
 | `src/lib/carts/__tests__/shipping-deadline.test.ts` | 39 | shipping-deadline · daysUntilDeadline · retorna 0 para hoje · retorna 3 para +3 dias … |
 | `src/pages/magazine/__tests__/pagination.test.ts` | 39 | paginateMagazine — null/undefined safety · handles null magazine → returns [cover, back-cover] · handles undefined magazine → returns [cover, back-cover] · handles magazine.content = undefined → no crash, no grouping … |
@@ -6613,6 +6619,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/hooks/voice/retry.test.ts` | 25 | withRetry · returns result on first success · retries on retryable error and succeeds · does not retry on non-retryable error … |
 | `tests/integration/magazine-service-fuzz.test.ts` | 25 | magazineService — lifecycle happy path · snapshot legado ao editar título não apaga itens quando INSERT está indisponível · snapshot legado de metadados preserva IDs e ordem dos itens · falha de inclusão rejeita, nunca confirma o snapshot antigo como sucesso … |
 | `scripts/__tests__/promote-draft-migration.test.ts` | 24 | parseHandleList · retorna [] para vazio/undefined/null · aceita separador vírgula · aceita separador espaço … |
+| `src/hooks/quotes/__tests__/useAutoSaveQuote.test.ts` | 24 | migratePayload · migra payload v1 (sem campo version) para v2 · retorna payload v2 sem modificação (passthrough) · retorna null para versão futura (previne corrupção) … |
 | `src/lib/auth/__tests__/resolve-redirect-target.test.ts` | 24 | resolveRedirectTarget — precedência pós-login · 1️⃣ location.state.from vence todas as outras fontes · Google: state.from sobrescreve ?redirect e sessionStorage · E-mail/senha: state.from idem … |
 | `src/lib/customization/__tests__/format-engraving-title.test.ts` | 24 | formatEngravingTitle · prioriza nome_tabela quando disponível · usa techniqueName como fallback quando nome_tabela vazio · usa groupName como último fallback antes do default … |
 | `src/lib/edge/__tests__/invokeEdge-contracts.integration.test.ts` | 24 | invokeEdge contract — secrets-manager · cache_metrics: sucesso devolve envelope { ok, metrics } · reset_cache_metrics: 403 → error credential, data=null · erro embutido em envelope (200) é preservado para o caller … |
@@ -6636,7 +6643,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/cart/__tests__/SortableCartItemExcellence.test.tsx` | 22 | SortableCartItem Excellence UI · renders product name correctly · renders SKU with correct formatting · renders unit price correctly using PriceLabel … |
 | `src/components/inventory/__tests__/stock-category-tree-select.test.tsx` | 22 | StockCategoryTreeSelect — loading state · renders skeleton when isLoading=true · StockCategoryTreeSelect — basic render · renders  … |
 | `src/hooks/quotes/__tests__/quoteHelpers.validation.test.ts` | 22 | quoteHelpers validation logic · throws error when percent is > 100 · throws error when amount is > subtotal · throws error when discount is negative … |
-| `src/hooks/quotes/__tests__/useAutoSaveQuote.test.ts` | 22 | migratePayload · migra payload v1 (sem campo version) para v2 · retorna payload v2 sem modificação (passthrough) · retorna null para versão futura (previne corrupção) … |
 | `src/lib/edge/__tests__/invokeExport.test.ts` | 22 | invokeEventsToCSV · gera header + linhas com ISO · escapa vírgula, aspas e quebra de linha · lida com campos ausentes (latencyMs/errorKind/attempts) … |
 | `tests/components/PriceFreshnessBadge.colorMatrix.test.tsx` | 22 | PriceFreshnessBadge — matriz cromática + conteúdo pt-BR (status × variant) · variant=inline (PDP / Quick View) · fresh: emerald-700 +  · aging: amber-700 + ainda usa label  … |
 | `tests/components/PriceFreshnessBadge.copyAssertions.test.tsx` | 22 | PriceFreshnessBadge — cópia pt-BR exata por variant · variant=inline (PDP / Quick View) · fresh:  · aging:  … |
@@ -6755,7 +6761,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/cart/__tests__/CartHeaderButton.delete.test.tsx` | 17 | CartHeaderButton — trash button onPointerDown · faz stopPropagation e NÃO faz preventDefault · CartHeaderButton — trash button onClick · chama preventDefault, stopPropagation, setOpen(false) e agenda no rAF … |
 | `src/components/inventory/__tests__/StockBadge.test.tsx` | 17 | StockBadge — getStockStatus helper · returns out-of-stock for zero quantity · returns low-stock at or below threshold · returns in-stock above threshold … |
 | `src/components/inventory/__tests__/bulk-add-to-collection-modal.test.tsx` | 17 | BulkAddToCollectionModal — initial state · renders dialog title with correct count (2 variações) · renders  · shows empty state when no collections … |
-| … +1684 linhas — lista completa em `context.json` | | |
+| … +1689 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -6772,6 +6778,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `revoke_sessions` | `supabase/functions/manage-users/index.ts` |
 | `update_email` | `supabase/functions/manage-users/index.ts` |
 | `update_password` | `supabase/functions/manage-users/index.ts` |
+| `update_profile` | `supabase/functions/manage-users/index.ts` |
 | `string` | `supabase/functions/webhook-inbound/index.ts` |
 
 ## M. Efeitos colaterais (e-mail, SMS, cobrança, fila — não são idempotentes por padrão)
@@ -7110,6 +7117,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Expirações dos flags (null = sem limite) | `src/components/admin/products/ProductFormSchema.ts` |
 | * useProductsManager — Business logic hook for ProductsManager. | `src/components/admin/products/useProductsManager.ts` |
 | BUG-08: galeria completa preservada; imageUrl apenas como fallback | `src/components/admin/products/useProductsManager.ts` |
+| Edição desfeita: o rascunho gravado nesta sessão não pode reviver o valor desfeito. | `src/components/admin/products/hooks/useProductFormDraft.ts` |
 | Marca + País + Prazo + Modo */} | `src/components/admin/products/sections/ProductInfoSection.tsx` |
 | * useEngravingWizard — Business logic for the engraving wizard | `src/components/admin/products/sections/engraving/useEngravingWizard.ts` |
 | - Somente FULL (chaves com escopo *) | `src/components/admin/security/keys/McpKeysFilters.tsx` |
@@ -7220,5 +7228,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Laser detection — must come before UV check since "Laser UV" exists | `src/components/mockup/techniqueColorUtils.ts` |
 | a caixa cheia é um limite superior: a bbox nunca subestima a marca girada e um | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
 | * Filtro de técnica EFETIVO — o mesmo que a prévia aplica. Decide se há regra. */ | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
-| * true quando a técnica casa uma regra de simulação conhecida (não o `default`). */ | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
-| … +1246 linhas — lista completa em `context.json` | |
+| … +1249 linhas — lista completa em `context.json` | |

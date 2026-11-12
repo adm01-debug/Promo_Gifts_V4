@@ -25,7 +25,7 @@
   "testes": [
    "tests/ (866)",
    "e2e/ (625)",
-   "co-localizado (__tests__) (618)"
+   "co-localizado (__tests__) (623)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(sitemap): devolve EXECUTE de anon em get_sitemap_public e remove sitemap estático (#3430)",
+   "fix: corrige 42 bugs da rodada 2 em orçamentos, admin, preços, limites e datas (#3428)",
    "fix: E2E busca global — modifier+K webkit, Ctrl+Shift+V webkit, snapshots",
    "fix: corrige 62 bugs confirmados em telas, hooks e edge functions (#3424)",
-   "fix(tests): corrige erros de TypeScript em testes, mede baseline real (855) e corrige caminho em PENDENCIAS (#3419)",
-   "fix(ci): corrige testes, tipos de edge e cobertura que deixam a main vermelha (#3407)",
-   "docs(ci): RELATORIO §33 + PENDENCIAS #45-#52 — baseline + inventário final de workflows"
+   "fix(tests): corrige erros de TypeScript em testes, mede baseline real (855) e corrige caminho em PENDENCIAS (#3419)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

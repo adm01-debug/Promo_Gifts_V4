@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "e9a4a1aa14b61c3a6f54f7023115beaec1879440",
+  "sha": "fee3d0937cdaa5ff1cf93af07c38cfc8dedb902a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-12 14:57 UTC",
-  "files_total": 9815,
-  "code_files": 8377,
-  "code_lines": 1179202
+  "generated_at": "2026-11-12 23:01 UTC",
+  "files_total": 9821,
+  "code_files": 8384,
+  "code_lines": 1180964
  },
  "version": "1.3.2",
- "facts_hash": "9398acbc4873d044",
+ "facts_hash": "1c5afc012f127478",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1182,9 +1182,9 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3331,
-   ".ts": 2887,
-   ".tsx": 1845,
+   ".sql": 3333,
+   ".ts": 2888,
+   ".tsx": 1849,
    ".mjs": 305,
    ".py": 9,
    ".js": 7
@@ -96021,6 +96021,7 @@
    "supabase/migrations/20261108020000_p09_reconcile_ledger_schema_migrations.sql",
    "supabase/migrations/20261108030100_ft079_view_products_min_quantity.sql",
    "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql",
+   "supabase/migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260916202000_rollback.sql",
@@ -96071,6 +96072,7 @@
    "supabase/rollbacks/20261108020000_rollback.sql",
    "supabase/rollbacks/20261108030100_rollback.sql",
    "supabase/rollbacks/20261112011000_rollback.sql",
+   "supabase/rollbacks/20261112130000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -131280,6 +131282,14 @@
     "src": "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql"
    },
    {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "get_sitemap_public",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql"
+   },
+   {
     "kind": "revoke",
     "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
@@ -131542,6 +131552,14 @@
     "objkind": "table",
     "roles": "authenticated",
     "src": "supabase/rollbacks/20261107180000_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "get_sitemap_public",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261112130000_rollback.sql"
    },
    {
     "kind": "grant",
@@ -135904,7 +135922,7 @@
     "rpc_transitive": [
      "fn_should_apply_kill_switch"
     ],
-    "deps_count": 36
+    "deps_count": 37
    },
    {
     "path": "*",
@@ -136333,7 +136351,7 @@
      "get_top_collected_products",
      "log_user_logout"
     ],
-    "deps_count": 170
+    "deps_count": 171
    },
    {
     "path": "/colecoes/:id",
@@ -136887,6 +136905,7 @@
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "some_table",
      "system_kill_switches",
      "system_settings",
      "user_onboarding",
@@ -136914,7 +136933,7 @@
      "log_user_logout",
      "restore_seller_cart"
     ],
-    "deps_count": 283
+    "deps_count": 284
    },
    {
     "path": "/magic-up",
@@ -137031,7 +137050,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 178
+    "deps_count": 179
    },
    {
     "path": "/mockups/historico",
@@ -137452,7 +137471,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 193
+    "deps_count": 194
    },
    {
     "path": "/tendencias",
@@ -138345,7 +138364,10 @@
      "user_roles",
      "user_token_revocations"
     ],
-    "env": [],
+    "env": [
+     "SUPABASE_ANON_KEY",
+     "SUPABASE_URL"
+    ],
     "external": [],
     "invokes": [],
     "doc": "",
@@ -139004,7 +139026,8 @@
      "promote_role",
      "revoke_sessions",
      "update_email",
-     "update_password"
+     "update_password",
+     "update_profile"
     ],
     "idempotency": false
    },
@@ -139237,7 +139260,8 @@
     "auth": "PÚBLICA (verify_jwt=false em config.toml)",
     "tables": [
      "ownership_audit_reports",
-     "user_roles"
+     "user_roles",
+     "user_token_revocations"
     ],
     "env": [
      "SUPABASE_SERVICE_ROLE_KEY",
@@ -142208,7 +142232,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1598,
+  "components_count": 1599,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -146754,8 +146778,8 @@
   },
   {
    "module": "src/components",
-   "files": 1345,
-   "lines": 271349,
+   "files": 1346,
+   "lines": 271778,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -147112,8 +147136,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 453,
-   "lines": 84679,
+   "files": 455,
+   "lines": 85342,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -147402,7 +147426,7 @@
   {
    "module": "src/lib",
    "files": 328,
-   "lines": 50670,
+   "lines": 50719,
    "tables": [
     "...",
     "companies",
@@ -147606,8 +147630,8 @@
   },
   {
    "module": "src/pages",
-   "files": 348,
-   "lines": 81880,
+   "files": 350,
+   "lines": 82316,
    "tables": [
     "ai_insights_cache",
     "ai_usage_events",
@@ -147791,6 +147815,7 @@
     "src/pages/admin/StockDashboardPage.tsx",
     "src/pages/admin/StorageTestPage.tsx",
     "src/pages/admin/engraving-schema-diff.ts",
+    "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
     "src/pages/admin/ai-usage/AiCharts.tsx",
     "src/pages/admin/ai-usage/AiQuotaManager.tsx",
     "src/pages/admin/ai-usage/AiSummaryCard.tsx",
@@ -147807,8 +147832,7 @@
     "src/pages/admin/telemetry/usePlatformFailureMetrics.ts",
     "src/pages/admin/telemetry/useProductsListingLatencyAlert.ts",
     "src/pages/admin/telemetry/useRegressionGuardrail.ts",
-    "src/pages/admin/telemetry/useResolveProductsSelectComparison.ts",
-    "src/pages/admin/telemetry/useTelemetryData.ts"
+    "src/pages/admin/telemetry/useResolveProductsSelectComparison.ts"
    ]
   },
   {
@@ -147867,7 +147891,7 @@
   {
    "module": "src/services",
    "files": 27,
-   "lines": 5365,
+   "lines": 5366,
    "tables": [
     "frontend_telemetry",
     "magazine_items",
@@ -148013,7 +148037,7 @@
   {
    "module": "src/tests",
    "files": 33,
-   "lines": 5021,
+   "lines": 5022,
    "tables": [
     "products",
     "v_products_public",
@@ -148090,7 +148114,7 @@
   {
    "module": "src/types",
    "files": 30,
-   "lines": 4591,
+   "lines": 4595,
    "tables": [],
    "exports": [
     "advancedFilters.ts: ColorOption, CategoryOption, TechniqueOption, SupplierOption, MaterialOption, StockFilterOption",
@@ -148311,7 +148335,7 @@
   {
    "module": "supabase/functions",
    "files": 268,
-   "lines": 48779,
+   "lines": 48895,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -148552,8 +148576,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3049,
-   "lines": 220022,
+   "files": 3050,
+   "lines": 220050,
    "tables": [
     "...",
     "admin_audit_log",
@@ -148651,8 +148675,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 51,
-   "lines": 1809,
+   "files": 52,
+   "lines": 1813,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -148709,6 +148733,7 @@
     "supabase/rollbacks/20261108020000_rollback.sql",
     "supabase/rollbacks/20261108030100_rollback.sql",
     "supabase/rollbacks/20261112011000_rollback.sql",
+    "supabase/rollbacks/20261112130000_rollback.sql",
     "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql"
    ]
   },
@@ -148799,7 +148824,7 @@
   {
    "module": "tests",
    "files": 880,
-   "lines": 135389,
+   "lines": 135420,
    "tables": [
     "bot_detection_log",
     "companies",
@@ -150512,13 +150537,13 @@
      "src/stores/useBadgeVisibilityStore.ts",
      "supabase/functions/expert-chat/index.ts",
      "supabase/functions/health-check/index.ts",
+     "supabase/functions/manage-users/index.ts",
      "supabase/functions/quote-sync/index.ts",
      "supabase/functions/sync-quote-bitrix/index.ts",
      "tests/security/rls-validation.test.ts"
     ],
     "update": [
      "recovery/src-legacy/src/hooks/useSimulatorPreferences.ts",
-     "src/components/admin/users/useUserManagement.ts",
      "src/components/expert/chat/useExpertChat.ts",
      "src/hooks/products/useCatalogPreferences.ts",
      "src/hooks/simulation/useSimulatorPreferences.ts",
@@ -152322,6 +152347,7 @@
     "user_id"
    ],
    "role_permissions": [
+    "id",
     "permission_code",
     "permission_id",
     "role"
@@ -153365,6 +153391,7 @@
     "supabase/functions/connection-tester/index.ts",
     "supabase/functions/crm-callback-reprocess/index.ts",
     "supabase/functions/crm-db-bridge/index.ts",
+    "supabase/functions/expert-chat/index.ts",
     "supabase/functions/external-db-inspect/index.ts",
     "supabase/functions/force-global-logout/index.ts",
     "supabase/functions/full-op-diagnostics/index.ts",
@@ -153603,6 +153630,7 @@
     "supabase/functions/crm-callback-reprocess/index.ts",
     "supabase/functions/crm-db-bridge/index.ts",
     "supabase/functions/e2e-cleanup/index.ts",
+    "supabase/functions/expert-chat/index.ts",
     "supabase/functions/external-db-inspect/index.ts",
     "supabase/functions/favorites-watcher/index.ts",
     "supabase/functions/force-global-logout/index.ts",
@@ -157346,6 +157374,14 @@
    },
    {
     "file": "supabase/functions/manage-users/index.ts",
+    "name": "UpdateProfileSchema",
+    "kind": "object",
+    "body": "{ action: z.literal('update_profile'), user_id: uuidSchema, full_name: z.string().trim().max(200).nullable().optional(), email: emailSchema.nullable().optional(), is_active: z.boolean().optional(), avatar_url: z.string().url().max(2048).nullable().optional(), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "supabase/functions/manage-users/index.ts",
     "name": "DeleteSchema",
     "kind": "object",
     "body": "{ action: z.literal('delete'), user_id: uuidSchema, }",
@@ -157372,7 +157408,7 @@
     "file": "supabase/functions/manage-users/index.ts",
     "name": "PayloadSchema",
     "kind": "discriminatedUnion",
-    "body": "'action', [ CreateSchema, UpdateEmailSchema, UpdatePasswordSchema, DeleteSchema, RevokeSessionsSchema, PromoteRoleSchema, ]",
+    "body": "'action', [ CreateSchema, UpdateEmailSchema, UpdatePasswordSchema, UpdateProfileSchema, DeleteSchema, RevokeSessionsSchema, PromoteRoleSchema, ]",
     "refines": [],
     "chain": []
    },
@@ -161909,6 +161945,10 @@
    },
    {
     "file": "src/components/admin/products/video-gallery/useProductVideoGallery.ts",
+    "msg": "${failedCount} vídeo(s) não puderam ser registrados"
+   },
+   {
+    "file": "src/components/admin/products/video-gallery/useProductVideoGallery.ts",
     "msg": "Erro ao adicionar vídeo do YouTube"
    },
    {
@@ -162564,6 +162604,10 @@
     "msg": "\n                >\n                  Cobertura (EMA)\n                </TableHead>\n              )}\n              <TableHead className="
    },
    {
+    "file": "src/components/inventory/VariantStockTable.tsx",
+    "msg": "Não foi possível abrir o orçamento. Tente novamente."
+   },
+   {
     "file": "src/components/inventory/stockKpiCards.ts",
     "msg": "). Quando omitido (flag EMA off), o card "
    },
@@ -162740,6 +162784,22 @@
     "msg": "Erro ao atualizar preferências"
    },
    {
+    "file": "src/components/pricing/ProductPriceSimulator.tsx",
+    "msg": "Não foi possível calcular o preço da gravação. Tente novamente."
+   },
+   {
+    "file": "src/components/pricing/ProductPriceSimulator.tsx",
+    "msg": "Preço de ${missing} gravação(ões) não calculado — informe largura e altura no orçamento."
+   },
+   {
+    "file": "src/components/pricing/QuantityPriceCalculator.tsx",
+    "msg": "Não foi possível calcular o preço da gravação. Tente novamente."
+   },
+   {
+    "file": "src/components/pricing/QuantityPriceCalculator.tsx",
+    "msg": "Preço de ${missing} gravação(ões) não calculado — informe largura e altura no orçamento."
+   },
+   {
     "file": "src/components/privacy/AnonymizeAccountDialog.tsx",
     "msg": "Não foi possível anonimizar a conta"
    },
@@ -162902,6 +162962,10 @@
    {
     "file": "src/components/simulator/wizard/QuantityRangeComparison.tsx",
     "msg": "Máximo 6 quantidades"
+   },
+   {
+    "file": "src/components/simulator/wizard/StepComparison.tsx",
+    "msg": "Recalculando o preço da gravação para a nova tiragem. Tente gerar em seguida."
    },
    {
     "file": "src/components/ui/LabeledField.tsx",
@@ -163969,6 +164033,10 @@
    },
    {
     "file": "src/hooks/simulator/useWizardPricing.ts",
+    "msg": "Não foi possível recalcular o preço da gravação para a nova tiragem."
+   },
+   {
+    "file": "src/hooks/simulator/useWizardPricing.ts",
     "msg": "Selecione um local primeiro"
    },
    {
@@ -164320,6 +164388,14 @@
     "msg": "Sessão expirada — faça login novamente."
    },
    {
+    "file": "src/pages/admin/PermissionsPage.tsx",
+    "msg": "Sem permissão para alterar permissões (somente dev)."
+   },
+   {
+    "file": "src/pages/admin/PermissionsPage.tsx",
+    "msg": "Sem permissão para excluir permissões (somente dev)."
+   },
+   {
     "file": "src/pages/admin/RlsDenialsAdminPage.tsx",
     "msg": ";\nimport {\n  Select,\n  SelectContent,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from "
    },
@@ -164330,6 +164406,10 @@
    {
     "file": "src/pages/admin/RolePermissionsPage.tsx",
     "msg": "Erro ao salvar"
+   },
+   {
+    "file": "src/pages/admin/RolePermissionsPage.tsx",
+    "msg": "Sem permissão para alterar permissões por papel (somente dev)."
    },
    {
     "file": "src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
@@ -164844,6 +164924,10 @@
     "msg": "Sincronização parcial"
    },
    {
+    "file": "src/pages/tools/SimuladorWizard.tsx",
+    "msg": "Recalculando o preço da gravação para a nova tiragem. Tente gerar em seguida."
+   },
+   {
     "file": "src/pages/tools/VisualSearchPage.tsx",
     "msg": "Erro ao analisar imagem"
    },
@@ -164946,6 +165030,10 @@
    {
     "file": "src/services/quoteService.ts",
     "msg": "Orçamento não encontrado"
+   },
+   {
+    "file": "src/services/quoteService.ts",
+    "msg": "Sem permissão para excluir este orçamento"
    },
    {
     "file": "src/services/quoteService.ts",
@@ -165807,7 +165895,7 @@
    },
    {
     "file": "supabase/functions/github-credentials-test/index.ts",
-    "value": "admin"
+    "value": "dev"
    },
    {
     "file": "supabase/functions/kit-ai-builder/index.ts",
@@ -165824,6 +165912,10 @@
    {
     "file": "supabase/functions/manage-users/index.ts",
     "value": "vendedor"
+   },
+   {
+    "file": "supabase/functions/ownership-audit/index.ts",
+    "value": "supervisor"
    },
    {
     "file": "supabase/functions/quote-sync/index.ts",
@@ -166718,6 +166810,10 @@
    {
     "file": "src/components/admin/products/useProductsManager.ts",
     "text": "BUG-08: galeria completa preservada; imageUrl apenas como fallback"
+   },
+   {
+    "file": "src/components/admin/products/hooks/useProductFormDraft.ts",
+    "text": "Edição desfeita: o rascunho gravado nesta sessão não pode reviver o valor desfeito."
    },
    {
     "file": "src/components/admin/products/sections/ProductInfoSection.tsx",
@@ -168724,10 +168820,6 @@
     "text": "* FIX BUG-A (2026-06-18): dbInvoke com limit:20000 usava PostgREST range()"
    },
    {
-    "file": "src/hooks/products/useSupplierSalesRanking.ts",
-    "text": "FIX BUG-A: usar RPC que retorna todas as 7 243+ linhas sem limite."
-   },
-   {
     "file": "src/hooks/quotes/discountApprovalResponder.ts",
     "text": "* discountApprovalResponder — decisão do admin sobre solicitação de desconto."
    },
@@ -170084,6 +170176,10 @@
     "text": "rls-allow: admin (admin-routes); decisão de desconto; RLS admin policy"
    },
    {
+    "file": "src/pages/admin/RolePermissionsPage.tsx",
+    "text": "(0 linhas seria lido como \"sem permissão\")."
+   },
+   {
     "file": "src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
     "text": "• Header explicativo + regras gerais (como o limite afeta o fluxo)"
    },
@@ -170658,6 +170754,10 @@
    {
     "file": "src/services/quoteService.ts",
     "text": "Fire-and-forget — never throw; a broken email must never roll back the status change."
+   },
+   {
+    "file": "src/services/quoteService.ts",
+    "text": "rls-allow: DELETE por id; RLS (org_admins_delete_quotes) valida permissão"
    },
    {
     "file": "src/services/telemetryService.ts",
@@ -171726,6 +171826,10 @@
    {
     "file": "supabase/functions/sync-quote-bitrix/index.ts",
     "text": "BUG-CRED-2 FIX (2026-06-28): erro de validação de input → 422, não 500."
+   },
+   {
+    "file": "supabase/functions/sync-quote-bitrix/index.ts",
+    "text": "regra de calcPersTotal no PDF) para a soma das linhas no CRM bater com `total`."
    },
    {
     "file": "supabase/functions/sync-quote-bitrix/index.ts",
@@ -193632,6 +193736,11 @@
     "value": "500"
    },
    {
+    "file": "src/hooks/intelligence/useCommercialIntelligence.helpers.ts",
+    "name": "ID_CHUNK_SIZE",
+    "value": "150"
+   },
+   {
     "file": "src/hooks/intelligence/useSparklineSales.tsx",
     "name": "SPARKLINE_WINDOW_DAYS",
     "value": "90"
@@ -193685,6 +193794,11 @@
     "file": "src/hooks/intelligence/useVoiceCommandHistory.ts",
     "name": "FREQUENT_LIMIT",
     "value": "6"
+   },
+   {
+    "file": "src/hooks/intelligence/useZeroResultDiagnosis.ts",
+    "name": "ID_CHUNK_SIZE",
+    "value": "150"
    },
    {
     "file": "src/hooks/intelligence/useZeroResultSubstitutes.ts",
@@ -195615,6 +195729,11 @@
     "file": "supabase/functions/materials-api/index.ts",
     "name": "EXTERNAL_TIMEOUT_MS",
     "value": "20"
+   },
+   {
+    "file": "supabase/functions/materials-api/index.ts",
+    "name": "PAGE_SIZE",
+    "value": "1000"
    },
    {
     "file": "supabase/functions/mcp-keys-issue/index.ts",
@@ -202290,6 +202409,12 @@
    },
    {
     "file": "src/hooks/quotes/useQuoteBuilderState.ts",
+    "field": "state",
+    "value": "object",
+    "kind": "compara"
+   },
+   {
+    "file": "src/hooks/quotes/useQuoteBuilderState.ts",
     "field": "status",
     "value": "draft",
     "kind": "compara"
@@ -204781,6 +204906,12 @@
    {
     "file": "src/pages/products/FiltersPage.tsx",
     "field": "type",
+    "value": "novelty",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/products/FiltersPage.tsx",
+    "field": "type",
     "value": "product",
     "kind": "compara"
    },
@@ -205045,13 +205176,7 @@
    {
     "file": "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
     "field": "status",
-    "value": "rejected",
-    "kind": "compara"
-   },
-   {
-    "file": "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
-    "field": "status",
-    "value": "approved",
+    "value": "converted",
     "kind": "compara"
    },
    {
@@ -205063,7 +205188,7 @@
    {
     "file": "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
     "field": "status",
-    "value": "approved",
+    "value": "rejected",
     "kind": "compara"
    },
    {
@@ -206521,7 +206646,7 @@
    {
     "file": "supabase/functions/external-db-inspect/index.ts",
     "field": "role",
-    "value": "admin",
+    "value": "dev",
     "kind": "filtra"
    },
    {
@@ -206857,7 +206982,7 @@
    {
     "file": "supabase/functions/github-credentials-test/index.ts",
     "field": "role",
-    "value": "admin",
+    "value": "dev",
     "kind": "compara"
    },
    {
@@ -211806,7 +211931,7 @@
    },
    {
     "file": "src/components/admin/products/hooks/useProductFormDraft.ts",
-    "line": "if (Date.now() - draft.savedAt > 24 * 60 * 60 * 1000) {"
+    "line": "Date.now() - draft.savedAt > 24 * 60 * 60 * 1000 ||"
    },
    {
     "file": "src/components/admin/products/image-gallery/useProductImageGallery.ts",
@@ -211979,14 +212104,6 @@
    {
     "file": "src/components/intelligence/RealtimeBadge.tsx",
     "line": "const WINDOW_MS = 5 * 60 * 1000;"
-   },
-   {
-    "file": "src/components/inventory/FutureStockDialog.tsx",
-    "line": "const diffDays = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));"
-   },
-   {
-    "file": "src/components/inventory/FutureStockDialog.tsx",
-    "line": "return Math.ceil(diff / (1000 * 60 * 60 * 24));"
    },
    {
     "file": "src/components/inventory/StockDashboard.tsx",
@@ -228110,6 +228227,10 @@
    },
    {
     "file": "src/components/inventory/__tests__/useStockSelection.test.ts",
+    "name": "inclui o preço de venda do produto (products.sale_price) no item"
+   },
+   {
+    "file": "src/components/inventory/__tests__/useStockSelection.test.ts",
     "name": "nada se seleção vazia"
    },
    {
@@ -230491,6 +230612,30 @@
    {
     "file": "src/components/pdf/proposal/__tests__/totalsWidthSsotUsage.test.ts",
     "name": "exports HTML em qa/exports/ usam a largura do SSOT"
+   },
+   {
+    "file": "src/components/pricing/__tests__/QuantityPriceCalculator.createQuote.test.tsx",
+    "name": "QuantityPriceCalculator CTA Criar Orçamento"
+   },
+   {
+    "file": "src/components/pricing/__tests__/QuantityPriceCalculator.createQuote.test.tsx",
+    "name": "técnica dimensional sem preço: não bloqueia o handoff, avisa e segue sem pricing"
+   },
+   {
+    "file": "src/components/pricing/__tests__/QuantityPriceCalculator.createQuote.test.tsx",
+    "name": "falha de rede/RPC que não é de dimensão: bloqueia com erro e não navega"
+   },
+   {
+    "file": "src/components/pricing/__tests__/QuantityPriceCalculator.createQuote.test.tsx",
+    "name": "RPC success:false por outro motivo: bloqueia com erro"
+   },
+   {
+    "file": "src/components/pricing/__tests__/QuantityPriceCalculator.createQuote.test.tsx",
+    "name": "técnica não-dimensional: navega com pricing preenchido e quantidade mínima"
+   },
+   {
+    "file": "src/components/pricing/__tests__/QuantityPriceCalculator.createQuote.test.tsx",
+    "name": "duplo clique rápido: 1 cálculo e 1 navegação (guarda de loading)"
    },
    {
     "file": "src/components/products/ColumnSelector.test.tsx",
@@ -237357,6 +237502,14 @@
     "name": "emite analytics imediatamente em cada toggle (independente do debounce)"
    },
    {
+    "file": "src/hooks/intelligence/__tests__/fetchCategoryRanking.marketDepleted.test.ts",
+    "name": "fetchCategoryRanking — marketDepleted"
+   },
+   {
+    "file": "src/hooks/intelligence/__tests__/fetchCategoryRanking.marketDepleted.test.ts",
+    "name": "7 dias, 100 produtos com 2 un/30d: soma proporcional (~47), não zera por arredondar cada produto"
+   },
+   {
     "file": "src/hooks/intelligence/__tests__/useStockHistory.test.ts",
     "name": "useStockHistory helpers"
    },
@@ -239914,7 +240067,11 @@
    },
    {
     "file": "src/hooks/products/__tests__/useSupplierSalesRanking.test.ts",
-    "name": "chama fn_get_product_intelligence_all (RPC bypassa max_rows=1000 do PostgREST)"
+    "name": "chama fn_get_product_intelligence_all paginando em blocos de 1000 (max_rows do PostgREST)"
+   },
+   {
+    "file": "src/hooks/products/__tests__/useSupplierSalesRanking.test.ts",
+    "name": "busca a página seguinte quando a primeira vem cheia (1000 linhas)"
    },
    {
     "file": "src/hooks/products/__tests__/useSupplierSalesRanking.test.ts",
@@ -240250,6 +240407,14 @@
    },
    {
     "file": "src/hooks/quotes/__tests__/useAutoSaveQuote.test.ts",
+    "name": "restoreEnabled: restaura no mount com builder vazio e não reaplica quando enabled liga"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useAutoSaveQuote.test.ts",
+    "name": "restoreEnabled=false: primeira ação do usuário (enabled=true) não restaura rascunho"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useAutoSaveQuote.test.ts",
     "name": "save com debounce"
    },
    {
@@ -240383,6 +240548,70 @@
    {
     "file": "src/hooks/quotes/__tests__/useDiscountApproval.transactional.test.tsx",
     "name": "traduz conflito de snapshot em orientação acionável e segura"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+    "name": "rascunho restaurado → indicador"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+    "name": "rascunho SEM shippingType: restaura no mount e indicador termina "
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+    "name": "rascunho COM shippingType (restore diferido por setTimeout): indicador termina false"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+    "name": "após restore, alteração real do usuário volta a acusar "
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+    "name": "sem rascunho: draftRestoredAt fica undefined e nada muda"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+    "name": "rascunho corrompido: não restaura, remove chave e não quebra"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+    "name": "handoff via location.state"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+    "name": "%s → restore=%s"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+    "name": "fromSimulator com simulationData → NÃO restaura, aplica item do simulador e limpa rascunho"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+    "name": "fromCart com itens → NÃO restaura; cliente do carrinho prevalece"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+    "name": "fromCollection com produtos → NÃO restaura"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+    "name": "%s: restaura o rascunho (não o perde)"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+    "name": "?clientId= inválido (não-UUID): restaura o rascunho"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+    "name": "?items[]= inválido (JSON quebrado): restaura o rascunho"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+    "name": "?clientId=<uuid>: não restaura e aplica cliente do BI"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+    "name": "?productId= (BIProductCard/QuickQuoteFAB): não restaura e aplica produto"
    },
    {
     "file": "src/hooks/quotes/__tests__/useQuoteConcurrencyGuard.test.ts",
@@ -243905,6 +244134,10 @@
     "name": "entrega catálogo-base completo acima de 5.000 itens sem enriquecimento pesado"
    },
    {
+    "file": "src/lib/external-db/__tests__/productsCompleteness.test.ts",
+    "name": "divide limit acima de 1000 em requests de até 1000 (max_rows do PostgREST)"
+   },
+   {
     "file": "src/lib/external-db/__tests__/rest-native-write.test.ts",
     "name": "rest-native WRITE (Plano A)"
    },
@@ -246995,6 +247228,30 @@
    {
     "file": "src/pages/__tests__/SimulationPage.blocked.test.tsx",
     "name": "rejeita payload 424 incompleto antes de renderizar o relatório"
+   },
+   {
+    "file": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
+    "name": "RolePermissionsPage — salvar com falha parcial e concorrência"
+   },
+   {
+    "file": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
+    "name": "falha no 2º de 3 deletes: mantém só p2,p3,p4 pendentes; retry não refaz p1"
+   },
+   {
+    "file": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
+    "name": "erro no insert após deletes OK: só a adição fica pendente"
+   },
+   {
+    "file": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
+    "name": "erro de rede (delErr) no 1º delete: nada aplicado, tudo continua pendente"
+   },
+   {
+    "file": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
+    "name": "linha já removida por outro admin: estado desejado já no banco → salva sem erro"
+   },
+   {
+    "file": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
+    "name": "RLS nega (0 linhas e a linha continua no banco): mostra o motivo real, não a mensagem genérica"
    },
    {
     "file": "src/pages/auth/AuthBranding.test.tsx",
@@ -250449,6 +250706,18 @@
     "name": "mantém 1 trigger e 1 SelectValue únicos por testid em todas as renderizações"
    },
    {
+    "file": "src/pages/quotes/__tests__/QuoteViewPage.delete-denied.test.tsx",
+    "name": "QuoteViewPage — exclusão negada (RLS)"
+   },
+   {
+    "file": "src/pages/quotes/__tests__/QuoteViewPage.delete-denied.test.tsx",
+    "name": "deleteQuote → false: não navega para /orcamentos nem mostra toast de desfazer"
+   },
+   {
+    "file": "src/pages/quotes/__tests__/QuoteViewPage.delete-denied.test.tsx",
+    "name": "deleteQuote → true: navega para /orcamentos e mostra toast de desfazer uma vez"
+   },
+   {
     "file": "src/pages/quotes/__tests__/QuoteViewPage.preview-breath.test.tsx",
     "name": "Preview button — breath glow"
    },
@@ -250990,7 +251259,7 @@
    },
    {
     "file": "src/pages/quotes/__tests__/useQuotesListPage.expiring.test.ts",
-    "name": "formato date-only (YYYY-MM-DD) é interpretado como meia-noite UTC"
+    "name": "formato date-only (YYYY-MM-DD) é data civil: vence no fim do dia local"
    },
    {
     "file": "src/pages/quotes/__tests__/useQuotesListPage.expiring.test.ts",
@@ -277801,6 +278070,18 @@
     "name": "re-indexes appended personalizations to 1..N (no duplicate indices)"
    },
    {
+    "file": "tests/hooks/wizardReducer.test.ts",
+    "name": "wizardReducer — RECALC_PERSONALIZATION_PRICING"
+   },
+   {
+    "file": "tests/hooks/wizardReducer.test.ts",
+    "name": "ignora resposta calculada para uma tiragem que não é mais a atual"
+   },
+   {
+    "file": "tests/hooks/wizardReducer.test.ts",
+    "name": "aplica o preço quando a tiragem da resposta é a atual"
+   },
+   {
     "file": "tests/hooks/kit-builder/useKitFitsValidation.test.ts",
     "name": "validateKitFitsForQuote"
    },
@@ -294337,6 +294618,10 @@
    {
     "file": "supabase/functions/manage-users/index.ts",
     "event": "update_password"
+   },
+   {
+    "file": "supabase/functions/manage-users/index.ts",
+    "event": "update_profile"
    },
    {
     "file": "supabase/functions/webhook-inbound/index.ts",
@@ -332443,6 +332728,10 @@
     "limit": "500"
    },
    {
+    "file": "src/pages/admin/RolePermissionsPage.tsx",
+    "limit": "1"
+   },
+   {
     "file": "src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
     "limit": "20"
    },
@@ -334053,7 +334342,8 @@
       "compara:src/components/novelties/NoveltyProductGrid.tsx",
       "compara:src/components/products/ProductCard.tsx",
       "compara:src/components/products/ProductListItem.tsx",
-      "compara:src/components/products/ProductStatusBadge.tsx"
+      "compara:src/components/products/ProductStatusBadge.tsx",
+      "compara:src/pages/products/FiltersPage.tsx"
      ],
      "kit": [
       "compara:src/components/novelties/NoveltyProductGrid.tsx",
@@ -334726,6 +335016,7 @@
       "compara:src/components/quotes/QuotesStatusChips.tsx",
       "compara:src/hooks/quotes/useQuoteFunnel.ts",
       "compara:src/pages/quotes/quote-view/QuoteBitrixSync.ts",
+      "compara:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
       "compara:supabase/functions/expert-chat/index.ts",
       "filtra:src/components/quotes/MarginInsightBadge.tsx"
      ],
@@ -335497,13 +335788,11 @@
       "compara:src/lib/rbac/route-matrix.ts",
       "compara:src/pages/admin/AdminUsuariosPage.tsx",
       "compara:supabase/functions/connection-tester/index.ts",
-      "compara:supabase/functions/github-credentials-test/index.ts",
       "compara:supabase/functions/rls-integration-tests/index.ts",
       "escreve:src/contexts/OrganizationContext.tsx",
       "escreve:src/lib/rbac/route-matrix.ts",
       "filtra:recovery/src-legacy/src/hooks/useDiscountApproval.ts",
-      "filtra:supabase/functions/connections-health-check/index.ts",
-      "filtra:supabase/functions/external-db-inspect/index.ts"
+      "filtra:supabase/functions/connections-health-check/index.ts"
      ],
      "user": [
       "compara:src/components/ai/AIChat.tsx",
@@ -335544,12 +335833,14 @@
       "compara:src/pages/admin/AdminRbacRoutesPage.tsx",
       "compara:src/pages/admin/AdminUsuariosPage.tsx",
       "compara:supabase/functions/connection-tester/index.ts",
+      "compara:supabase/functions/github-credentials-test/index.ts",
       "compara:supabase/functions/manage-users/index.ts",
       "compara:supabase/functions/rls-integration-tests/index.ts",
       "compara:supabase/functions/secrets-manager/index.ts",
       "compara:supabase/functions/verify-2fa-token/index.ts",
       "escreve:src/lib/rbac/route-matrix.ts",
-      "escreve:supabase/functions/simulation-orchestrator/handler_characterization_test.ts"
+      "escreve:supabase/functions/simulation-orchestrator/handler_characterization_test.ts",
+      "filtra:supabase/functions/external-db-inspect/index.ts"
      ],
      "supervisor": [
       "compara:recovery/src-legacy/src/hooks/useRBAC.tsx",
@@ -335769,6 +336060,9 @@
      "collapsed": [
       "compara:src/components/ui/sidebar.tsx",
       "escreve:src/components/ui/sidebar.tsx"
+     ],
+     "object": [
+      "compara:src/hooks/quotes/useQuoteBuilderState.ts"
      ],
      "closed": [
       "compara:src/hooks/voice/feedbackSounds.ts"
@@ -377745,6 +378039,14 @@
     "src": "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql"
    },
    {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "get_sitemap_public",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql"
+   },
+   {
     "kind": "revoke",
     "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
@@ -378007,6 +378309,14 @@
     "objkind": "table",
     "roles": "authenticated",
     "src": "supabase/rollbacks/20261107180000_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "get_sitemap_public",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261112130000_rollback.sql"
    },
    {
     "kind": "grant",
@@ -381757,6 +382067,13 @@
     "where": [
      "compara:src/components/ui/sidebar.tsx",
      "escreve:src/components/ui/sidebar.tsx"
+    ]
+   },
+   {
+    "kind": "status",
+    "msg": "valor `object` para `state` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/hooks/quotes/useQuoteBuilderState.ts"
     ]
    },
    {
@@ -416616,7 +416933,7 @@
   },
   "src/components/admin/products/ProductFormFullscreen.tsx": {
    "path": "src/components/admin/products/ProductFormFullscreen.tsx",
-   "lines": 632,
+   "lines": 656,
    "exports": [
     "function ProductFormFullscreen"
    ],
@@ -416818,7 +417135,7 @@
   },
   "src/components/admin/products/useProductVariants.ts": {
    "path": "src/components/admin/products/useProductVariants.ts",
-   "lines": 237,
+   "lines": 239,
    "exports": [
     "interface ProductVariant",
     "interface VariantFormData",
@@ -416858,7 +417175,7 @@
   },
   "src/components/admin/products/useProductsManager.ts": {
    "path": "src/components/admin/products/useProductsManager.ts",
-   "lines": 504,
+   "lines": 509,
    "exports": [
     "interface AdminProduct",
     "function useProductsManager"
@@ -416970,21 +417287,24 @@
   },
   "src/components/admin/products/hooks/useProductFormDraft.ts": {
    "path": "src/components/admin/products/hooks/useProductFormDraft.ts",
-   "lines": 99,
+   "lines": 122,
    "exports": [
     "function useProductFormDraft"
+   ],
+   "rule_comments": [
+    "Edição desfeita: o rascunho gravado nesta sessão não pode reviver o valor desfeito."
    ],
    "doc": "useProductFormDraft — Auto-save / restore form drafts from localStorage",
    "hooks": [
     "useProductFormDraft"
    ],
    "temporal": [
-    "if (Date.now() - draft.savedAt > 24 * 60 * 60 * 1000) {"
+    "Date.now() - draft.savedAt > 24 * 60 * 60 * 1000 ||"
    ]
   },
   "src/components/admin/products/hooks/useSkuValidation.ts": {
    "path": "src/components/admin/products/hooks/useSkuValidation.ts",
-   "lines": 48,
+   "lines": 54,
    "exports": [
     "function useSkuValidation"
    ],
@@ -417107,7 +417427,7 @@
   },
   "src/components/admin/products/image-gallery/useProductImageGallery.ts": {
    "path": "src/components/admin/products/image-gallery/useProductImageGallery.ts",
-   "lines": 841,
+   "lines": 843,
    "exports": [
     "function useProductImageGallery"
    ],
@@ -417395,7 +417715,7 @@
   },
   "src/components/admin/products/sections/ProductFlagsSection.tsx": {
    "path": "src/components/admin/products/sections/ProductFlagsSection.tsx",
-   "lines": 212,
+   "lines": 215,
    "exports": [
     "function ProductFlagsSection"
    ],
@@ -417663,7 +417983,7 @@
   },
   "src/components/admin/products/video-gallery/useProductVideoGallery.ts": {
    "path": "src/components/admin/products/video-gallery/useProductVideoGallery.ts",
-   "lines": 638,
+   "lines": 654,
    "exports": [
     "function useProductVideoGallery"
    ],
@@ -417704,6 +418024,7 @@
     "product-videos"
    ],
    "errors": [
+    "${failedCount} vídeo(s) não puderam ser registrados",
     "Erro ao adicionar vídeo do YouTube",
     "Erro ao atualizar metadados",
     "Erro ao desvincular",
@@ -419138,7 +419459,7 @@
   },
   "src/components/admin/users/useUserManagement.ts": {
    "path": "src/components/admin/users/useUserManagement.ts",
-   "lines": 281,
+   "lines": 285,
    "exports": [
     "function useUserManagement"
    ],
@@ -419152,27 +419473,12 @@
      "op": "update"
     },
     {
-     "table": "profiles",
-     "op": "update"
-    },
-    {
      "table": "avatars",
      "op": "ref"
-    },
-    {
-     "table": "profiles",
-     "op": "update"
-    },
-    {
-     "table": "profiles",
-     "op": "update"
     }
    ],
    "table_cols": {
     "user_roles": [
-     "user_id"
-    ],
-    "profiles": [
      "user_id"
     ]
    },
@@ -421948,7 +422254,7 @@
   },
   "src/components/dashboard/RecentKitsWidget.tsx": {
    "path": "src/components/dashboard/RecentKitsWidget.tsx",
-   "lines": 112,
+   "lines": 113,
    "exports": [
     "function RecentKitsWidget"
    ],
@@ -421966,7 +422272,8 @@
      "name",
      "status",
      "total_price",
-     "updated_at"
+     "updated_at",
+     "user_id"
     ]
    },
    "navigates": [
@@ -421993,7 +422300,7 @@
    ],
    "navigates": [
     "/filtros",
-    "/filtros?data="
+    "/filtros?datasComemorativas="
    ]
   },
   "src/components/dashboard/index.ts": {
@@ -422737,7 +423044,7 @@
   },
   "src/components/favorites/FavoritesViewHeader.tsx": {
    "path": "src/components/favorites/FavoritesViewHeader.tsx",
-   "lines": 131,
+   "lines": 138,
    "exports": [
     "function FavoritesViewHeader"
    ],
@@ -423597,13 +423904,9 @@
   },
   "src/components/inventory/FutureStockDialog.tsx": {
    "path": "src/components/inventory/FutureStockDialog.tsx",
-   "lines": 729,
+   "lines": 727,
    "exports": [
     "function FutureStockDialog"
-   ],
-   "temporal": [
-    "const diffDays = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));",
-    "return Math.ceil(diff / (1000 * 60 * 60 * 24));"
    ]
   },
   "src/components/inventory/HealthScoreInfoDialog.tsx": {
@@ -423675,7 +423978,7 @@
   },
   "src/components/inventory/StockAlertsIndicator.tsx": {
    "path": "src/components/inventory/StockAlertsIndicator.tsx",
-   "lines": 531,
+   "lines": 532,
    "exports": [
     "function StockAlertsIndicator"
    ],
@@ -423893,7 +424196,7 @@
   },
   "src/components/inventory/VariantStockRowActions.tsx": {
    "path": "src/components/inventory/VariantStockRowActions.tsx",
-   "lines": 337,
+   "lines": 340,
    "exports": [
     "function safeCopyText",
     "function VariantStockRowActions"
@@ -423920,11 +424223,11 @@
    ],
    "navigates": [
     "/orcamentos/novo?",
-    "/orcamentos/novo?productId=",
     "/produto/"
    ],
    "errors": [
-    "\n                >\n                  Cobertura (EMA)\n                </TableHead>\n              )}\n              <TableHead className="
+    "\n                >\n                  Cobertura (EMA)\n                </TableHead>\n              )}\n              <TableHead className=",
+    "Não foi possível abrir o orçamento. Tente novamente."
    ],
    "status_values": [
     {
@@ -423995,11 +424298,12 @@
   },
   "src/components/inventory/useStockSelection.ts": {
    "path": "src/components/inventory/useStockSelection.ts",
-   "lines": 181,
+   "lines": 211,
    "exports": [
     "interface StockSelectionRow",
     "function buildQuoteItemPayload",
     "function buildQuoteParam",
+    "function fetchQuoteSalePrices",
     "const rowKey",
     "function useStockSelection"
    ],
@@ -424351,7 +424655,7 @@
   },
   "src/components/inventory/__tests__/VariantStockRowActions.test.tsx": {
    "path": "src/components/inventory/__tests__/VariantStockRowActions.test.tsx",
-   "lines": 306,
+   "lines": 309,
    "is_test": true,
    "routes": [
     {
@@ -424782,7 +425086,7 @@
   },
   "src/components/inventory/__tests__/useStockSelection.test.ts": {
    "path": "src/components/inventory/__tests__/useStockSelection.test.ts",
-   "lines": 478,
+   "lines": 502,
    "is_test": true,
    "doc": "Testes unitários — useStockSelection Cobertura: rowKey, estado inicial, toggle, setMode, selectAllVisible, clear, selectedRows derivação, bulkFavorite, bulkCompare, bulkQuote. Resultado esperado: 31/31 ✅",
    "tests": [
@@ -424822,6 +425126,7 @@
     "respeita limite de 4 — só adiciona slots disponíveis",
     "cheio (4/4): não adiciona",
     "bulkQuote",
+    "inclui o preço de venda do produto (products.sale_price) no item",
     "nada se seleção vazia",
     "navega para /orcamentos/novo?items[]=...",
     "inclui todos os itens no param de URL",
@@ -425495,7 +425800,7 @@
   },
   "src/components/kit-builder/KitStockForecastCard.tsx": {
    "path": "src/components/kit-builder/KitStockForecastCard.tsx",
-   "lines": 86,
+   "lines": 87,
    "exports": [
     "function KitStockForecastCard"
    ],
@@ -429089,12 +429394,16 @@
   },
   "src/components/pricing/ProductPriceSimulator.tsx": {
    "path": "src/components/pricing/ProductPriceSimulator.tsx",
-   "lines": 443,
+   "lines": 489,
    "exports": [
     "function ProductPriceSimulator"
    ],
    "navigates": [
     "/orcamentos/novo"
+   ],
+   "errors": [
+    "Não foi possível calcular o preço da gravação. Tente novamente.",
+    "Preço de ${missing} gravação(ões) não calculado — informe largura e altura no orçamento."
    ],
    "params": [
     {
@@ -429108,18 +429417,36 @@
   },
   "src/components/pricing/QuantityPriceCalculator.tsx": {
    "path": "src/components/pricing/QuantityPriceCalculator.tsx",
-   "lines": 277,
+   "lines": 324,
    "exports": [
     "function QuantityPriceCalculator"
    ],
    "navigates": [
     "/orcamentos/novo"
    ],
+   "errors": [
+    "Não foi possível calcular o preço da gravação. Tente novamente.",
+    "Preço de ${missing} gravação(ões) não calculado — informe largura e altura no orçamento."
+   ],
    "doc": "QuantityPriceCalculator — Main orchestrator. Sub-components extracted to calculator/ folder."
   },
   "src/components/pricing/index.ts": {
    "path": "src/components/pricing/index.ts",
    "lines": 3
+  },
+  "src/components/pricing/__tests__/QuantityPriceCalculator.createQuote.test.tsx": {
+   "path": "src/components/pricing/__tests__/QuantityPriceCalculator.createQuote.test.tsx",
+   "lines": 173,
+   "is_test": true,
+   "doc": "QuantityPriceCalculator — CTA \"Criar Orçamento\" (componente real). RPC mockada com o retorno real de fn_get_customization_price para técnica com usa_faixa_dimensional=true chamada sem largura/altura (≈48% das áreas ativas em prod).",
+   "tests": [
+    "QuantityPriceCalculator CTA Criar Orçamento",
+    "técnica dimensional sem preço: não bloqueia o handoff, avisa e segue sem pricing",
+    "falha de rede/RPC que não é de dimensão: bloqueia com erro e não navega",
+    "RPC success:false por outro motivo: bloqueia com erro",
+    "técnica não-dimensional: navega com pricing preenchido e quantidade mínima",
+    "duplo clique rápido: 1 cálculo e 1 navegação (guarda de loading)"
+   ]
   },
   "src/components/pricing/calculator/QuantityComparisonTable.tsx": {
    "path": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
@@ -429978,7 +430305,7 @@
   },
   "src/components/products/ProductList.tsx": {
    "path": "src/components/products/ProductList.tsx",
-   "lines": 332,
+   "lines": 335,
    "exports": [
     "interface ProductListProps",
     "const ProductList"
@@ -435905,12 +436232,15 @@
   },
   "src/components/simulator/wizard/StepComparison.tsx": {
    "path": "src/components/simulator/wizard/StepComparison.tsx",
-   "lines": 266,
+   "lines": 273,
    "exports": [
     "function StepComparison"
    ],
    "navigates": [
     "/orcamentos/novo"
+   ],
+   "errors": [
+    "Recalculando o preço da gravação para a nova tiragem. Tente gerar em seguida."
    ],
    "doc": "StepComparison - Passo 4: Comparativo de Técnicas Refatorado: ComparisonCard e ConfirmedSummary extraídos",
    "percents": [
@@ -441243,7 +441573,7 @@
   },
   "src/hooks/intelligence/useCommercialIntelligence.helpers.ts": {
    "path": "src/hooks/intelligence/useCommercialIntelligence.helpers.ts",
-   "lines": 667,
+   "lines": 769,
    "exports": [
     "interface IntelligenceKPI",
     "interface TrendingProduct",
@@ -441377,6 +441707,12 @@
      "total"
     ]
    },
+   "params": [
+    {
+     "name": "ID_CHUNK_SIZE",
+     "value": "150"
+    }
+   ],
    "doc": "useCommercialIntelligence.helpers — fetchers paginados extraídos de useCommercialIntelligence.ts (refatoração pura, sem mudança de comportamento)."
   },
   "src/hooks/intelligence/useCommercialIntelligence.ts": {
@@ -442062,7 +442398,7 @@
   },
   "src/hooks/intelligence/useSalesHistory.ts": {
    "path": "src/hooks/intelligence/useSalesHistory.ts",
-   "lines": 290,
+   "lines": 291,
    "exports": [
     "interface DailySalesPoint",
     "interface SellerRanking",
@@ -442450,7 +442786,7 @@
   },
   "src/hooks/intelligence/useZeroResultDiagnosis.ts": {
    "path": "src/hooks/intelligence/useZeroResultDiagnosis.ts",
-   "lines": 232,
+   "lines": 243,
    "exports": [
     "type FilterKey",
     "interface LeaveOneOutPreview",
@@ -442491,6 +442827,12 @@
     {
      "name": "FilterKey",
      "values": "category | product | supplier"
+    }
+   ],
+   "params": [
+    {
+     "name": "ID_CHUNK_SIZE",
+     "value": "150"
     }
    ],
    "hooks": [
@@ -442545,6 +442887,16 @@
      "params": "m: Map<string, { quotes: number; orders: number }>, nameFor: (id: string",
      "body": "string | undefined,"
     }
+   ]
+  },
+  "src/hooks/intelligence/__tests__/fetchCategoryRanking.marketDepleted.test.ts": {
+   "path": "src/hooks/intelligence/__tests__/fetchCategoryRanking.marketDepleted.test.ts",
+   "lines": 79,
+   "is_test": true,
+   "doc": "fetchCategoryRanking — saída de mercado proporcional ao período, sem arredondar por produto.",
+   "tests": [
+    "fetchCategoryRanking — marketDepleted",
+    "7 dias, 100 produtos com 2 un/30d: soma proporcional (~47), não zera por arredondar cada produto"
    ]
   },
   "src/hooks/intelligence/__tests__/useStockHistory.test.ts": {
@@ -445473,7 +445825,7 @@
   },
   "src/hooks/products/useProductsLightweight.ts": {
    "path": "src/hooks/products/useProductsLightweight.ts",
-   "lines": 428,
+   "lines": 436,
    "exports": [
     "function mapLightweightToProduct",
     "const CATALOG_PAGE_SIZE",
@@ -446133,14 +446485,15 @@
   },
   "src/hooks/products/useSupplierSalesRanking.ts": {
    "path": "src/hooks/products/useSupplierSalesRanking.ts",
-   "lines": 111,
+   "lines": 133,
    "exports": [
+    "interface ProductIntelligenceRanking",
     "interface SupplierSalesEntry",
+    "function fetchProductIntelligenceAll",
     "function useSupplierSalesRanking"
    ],
    "rule_comments": [
-    "* FIX BUG-A (2026-06-18): dbInvoke com limit:20000 usava PostgREST range()",
-    "FIX BUG-A: usar RPC que retorna todas as 7 243+ linhas sem limite."
+    "* FIX BUG-A (2026-06-18): dbInvoke com limit:20000 usava PostgREST range()"
    ],
    "hooks": [
     "useSupplierSalesRanking"
@@ -447013,7 +447366,7 @@
   },
   "src/hooks/products/__tests__/useSupplierSalesRanking.test.ts": {
    "path": "src/hooks/products/__tests__/useSupplierSalesRanking.test.ts",
-   "lines": 181,
+   "lines": 199,
    "is_test": true,
    "doc": "Testes — useSupplierSalesRanking Invariantes: avg_depletion_7d→velocity7d, graceful fallback, RPC fn_get_product_intelligence_all NOTA: o hook foi migrado de dbInvoke para supabase.rpc() (BUG-A fix). O mock correto é @/integrations/supabase/client, não @/lib/db/postgrest.",
    "temporal": [
@@ -447030,7 +447383,8 @@
     "retorna Map vazia quando erro RPC: %s",
     "re-lanca erros nao relacionados MV",
     "invariantes de chamada ao supabase.rpc",
-    "chama fn_get_product_intelligence_all (RPC bypassa max_rows=1000 do PostgREST)",
+    "chama fn_get_product_intelligence_all paginando em blocos de 1000 (max_rows do PostgREST)",
+    "busca a página seguinte quando a primeira vem cheia (1000 linhas)",
     "retorna Map vazia quando data vazio"
    ]
   },
@@ -447223,7 +447577,7 @@
   },
   "src/hooks/quotes/useAutoSaveQuote.ts": {
    "path": "src/hooks/quotes/useAutoSaveQuote.ts",
-   "lines": 197,
+   "lines": 199,
    "exports": [
     "function migratePayload",
     "function cleanOldQuoteDrafts",
@@ -447536,7 +447890,7 @@
   },
   "src/hooks/quotes/useQuoteBuilderState.ts": {
    "path": "src/hooks/quotes/useQuoteBuilderState.ts",
-   "lines": 1042,
+   "lines": 1082,
    "exports": [
     "function useQuoteBuilderState"
    ],
@@ -447571,6 +447925,11 @@
      "field": "status",
      "value": "draft",
      "kind": "escreve"
+    },
+    {
+     "field": "state",
+     "value": "object",
+     "kind": "compara"
     },
     {
      "field": "status",
@@ -448160,7 +448519,7 @@
   },
   "src/hooks/quotes/__tests__/useAutoSaveQuote.test.ts": {
    "path": "src/hooks/quotes/__tests__/useAutoSaveQuote.test.ts",
-   "lines": 233,
+   "lines": 262,
    "is_test": true,
    "rule_comments": [
     "Nao deve ter chamado de novo",
@@ -448178,6 +448537,8 @@
     "nao chama onRestore quando enabled=false",
     "nao chama onRestore quando localStorage vazio",
     "guard: restaura apenas uma vez mesmo após re-renders",
+    "restoreEnabled: restaura no mount com builder vazio e não reaplica quando enabled liga",
+    "restoreEnabled=false: primeira ação do usuário (enabled=true) não restaura rascunho",
     "save com debounce",
     "nao salva imediatamente (debounce)",
     "salva apos debounceMs",
@@ -448235,6 +448596,33 @@
     "solicita usando somente quote e notas; percentuais do cliente não são confiados",
     "decide por uma única RPC sem compensação multi-tabela no cliente",
     "traduz conflito de snapshot em orientação acionável e segura"
+   ]
+  },
+  "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx": {
+   "path": "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+   "lines": 299,
+   "is_test": true,
+   "rule_comments": [
+    "Handoff \"vazio\"/inválido não pode suprimir o restore (senão a 1ª edição"
+   ],
+   "doc": "Rascunho restaurado / handoff via location.state / indicador \"não salvo\". Monta o useQuoteBuilderState REAL (useAutoSaveQuote + useQuoteItems reais) e o QuoteAutoSave REAL, replicando a fiação do QuoteBuilderPage (draftRestoredAt → serverSavedAt).",
+   "tests": [
+    "rascunho restaurado → indicador",
+    "rascunho SEM shippingType: restaura no mount e indicador termina ",
+    "rascunho COM shippingType (restore diferido por setTimeout): indicador termina false",
+    "após restore, alteração real do usuário volta a acusar ",
+    "sem rascunho: draftRestoredAt fica undefined e nada muda",
+    "rascunho corrompido: não restaura, remove chave e não quebra",
+    "handoff via location.state",
+    "%s → restore=%s",
+    "fromSimulator com simulationData → NÃO restaura, aplica item do simulador e limpa rascunho",
+    "fromCart com itens → NÃO restaura; cliente do carrinho prevalece",
+    "fromCollection com produtos → NÃO restaura",
+    "%s: restaura o rascunho (não o perde)",
+    "?clientId= inválido (não-UUID): restaura o rascunho",
+    "?items[]= inválido (JSON quebrado): restaura o rascunho",
+    "?clientId=<uuid>: não restaura e aplica cliente do BI",
+    "?productId= (BIProductCard/QuickQuoteFAB): não restaura e aplica produto"
    ]
   },
   "src/hooks/quotes/__tests__/useQuoteConcurrencyGuard.test.ts": {
@@ -448505,9 +448893,11 @@
   },
   "src/hooks/simulation/useCustomizationPrice.ts": {
    "path": "src/hooks/simulation/useCustomizationPrice.ts",
-   "lines": 172,
+   "lines": 189,
    "exports": [
     "interface CalculatePriceParamsV6",
+    "function isDimensionRequiredError",
+    "interface CalculatePriceDetailedResult",
     "function useCustomizationPriceCalculator",
     "function useCustomizationPriceReactive"
    ],
@@ -448944,7 +449334,7 @@
   },
   "src/hooks/simulator/useSimulatorWizard.ts": {
    "path": "src/hooks/simulator/useSimulatorWizard.ts",
-   "lines": 341,
+   "lines": 345,
    "exports": [
     "function useSimulatorWizard",
     "type UseSimulatorWizardReturn"
@@ -449173,12 +449563,13 @@
   },
   "src/hooks/simulator/useWizardPricing.ts": {
    "path": "src/hooks/simulator/useWizardPricing.ts",
-   "lines": 315,
+   "lines": 342,
    "exports": [
     "function useWizardPricing"
    ],
    "errors": [
     "Nenhuma técnica disponível para este local",
+    "Não foi possível recalcular o preço da gravação para a nova tiragem.",
     "Selecione um local primeiro"
    ],
    "status_values": [
@@ -449240,7 +449631,7 @@
   },
   "src/hooks/simulator/wizardReducer.ts": {
    "path": "src/hooks/simulator/wizardReducer.ts",
-   "lines": 230,
+   "lines": 231,
    "exports": [
     "const initialState",
     "function wizardReducer"
@@ -450260,7 +450651,7 @@
   },
   "src/hooks/ui/useWorkspaceNotifications.tsx": {
    "path": "src/hooks/ui/useWorkspaceNotifications.tsx",
-   "lines": 554,
+   "lines": 557,
    "exports": [
     "interface WorkspaceNotification",
     "function useWorkspaceNotifications"
@@ -455034,7 +455425,7 @@
   },
   "src/lib/external-db/products.ts": {
    "path": "src/lib/external-db/products.ts",
-   "lines": 643,
+   "lines": 654,
    "exports": [
     "function fetchPromobrindProducts",
     "function fetchPromobrindProducts",
@@ -455371,7 +455762,7 @@
   },
   "src/lib/external-db/__tests__/productsCompleteness.test.ts": {
    "path": "src/lib/external-db/__tests__/productsCompleteness.test.ts",
-   "lines": 93,
+   "lines": 119,
    "is_test": true,
    "tests": [
     "fetchPromobrindProducts — contrato de completude",
@@ -455379,7 +455770,8 @@
     "mantém compatibilidade best-effort para consumidores legados",
     "nunca entrega parcial quando o request foi abortado",
     "usa base_price no fallback legado de uma ordenação por preço",
-    "entrega catálogo-base completo acima de 5.000 itens sem enriquecimento pesado"
+    "entrega catálogo-base completo acima de 5.000 itens sem enriquecimento pesado",
+    "divide limit acima de 1000 em requests de até 1000 (max_rows do PostgREST)"
    ]
   },
   "src/lib/external-db/__tests__/rest-native-write.test.ts": {
@@ -458160,9 +458552,10 @@
   },
   "src/lib/security/sanitize-error.ts": {
    "path": "src/lib/security/sanitize-error.ts",
-   "lines": 125,
+   "lines": 137,
    "exports": [
     "const SAFE_MESSAGES",
+    "class RlsDeniedError",
     "function sanitizeError"
    ],
    "invokes": [
@@ -460149,7 +460542,7 @@
   },
   "src/pages/admin/AdminProductFormPage.tsx": {
    "path": "src/pages/admin/AdminProductFormPage.tsx",
-   "lines": 701,
+   "lines": 706,
    "exports": [
     "function AdminProductFormPage"
    ],
@@ -460366,7 +460759,7 @@
   },
   "src/pages/admin/AdminUsuariosPage.tsx": {
    "path": "src/pages/admin/AdminUsuariosPage.tsx",
-   "lines": 321,
+   "lines": 319,
    "exports": [
     "function AdminUsuariosPage"
    ],
@@ -460690,7 +461083,7 @@
   },
   "src/pages/admin/PermissionsPage.tsx": {
    "path": "src/pages/admin/PermissionsPage.tsx",
-   "lines": 322,
+   "lines": 333,
    "exports": [
     "function PermissionsPage"
    ],
@@ -460701,7 +461094,7 @@
     },
     {
      "table": "permissions",
-     "op": "update"
+     "op": "select,update"
     },
     {
      "table": "permissions",
@@ -460709,14 +461102,18 @@
     },
     {
      "table": "permissions",
-     "op": "delete"
+     "op": "delete,select"
     }
    ],
    "table_cols": {
     "permissions": [
      "code"
     ]
-   }
+   },
+   "errors": [
+    "Sem permissão para alterar permissões (somente dev).",
+    "Sem permissão para excluir permissões (somente dev)."
+   ]
   },
   "src/pages/admin/PriceFreshnessSettings.tsx": {
    "path": "src/pages/admin/PriceFreshnessSettings.tsx",
@@ -460766,7 +461163,7 @@
   },
   "src/pages/admin/RolePermissionsPage.tsx": {
    "path": "src/pages/admin/RolePermissionsPage.tsx",
-   "lines": 475,
+   "lines": 500,
    "exports": [
     "function RolePermissionsPage"
    ],
@@ -460781,7 +461178,11 @@
     },
     {
      "table": "role_permissions",
-     "op": "delete"
+     "op": "delete,select"
+    },
+    {
+     "table": "role_permissions",
+     "op": "select"
     },
     {
      "table": "role_permissions",
@@ -460790,18 +461191,26 @@
    ],
    "table_cols": {
     "role_permissions": [
+     "id",
      "permission_code",
      "role"
     ]
    },
    "errors": [
     "Erro ao carregar dados",
-    "Erro ao salvar"
+    "Erro ao salvar",
+    "Sem permissão para alterar permissões por papel (somente dev)."
    ],
    "role_checks": [
     "perm",
     "permissionId",
     "role"
+   ],
+   "rule_comments": [
+    "(0 linhas seria lido como \"sem permissão\")."
+   ],
+   "pagination": [
+    "1"
    ]
   },
   "src/pages/admin/RolesPage.tsx": {
@@ -460985,6 +461394,23 @@
     "function buildMarkdownReport"
    ],
    "doc": "Schema esperado pelo front para as 4 tabelas de Gravação. Usado pela página AdminExternalDbPage para comparar com o schema real retornado pela edge function external-db-inspect (mode: 'columns'). Quando o usuário clica em \"Comparar tipos do front com schema atual\", cada tabela é inspecionada e geram …"
+  },
+  "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx": {
+   "path": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
+   "lines": 226,
+   "is_test": true,
+   "role_checks": [
+    "filters",
+    "p"
+   ],
+   "tests": [
+    "RolePermissionsPage — salvar com falha parcial e concorrência",
+    "falha no 2º de 3 deletes: mantém só p2,p3,p4 pendentes; retry não refaz p1",
+    "erro no insert após deletes OK: só a adição fica pendente",
+    "erro de rede (delErr) no 1º delete: nada aplicado, tudo continua pendente",
+    "linha já removida por outro admin: estado desejado já no banco → salva sem erro",
+    "RLS nega (0 linhas e a linha continua no banco): mostra o motivo real, não a mensagem genérica"
+   ]
   },
   "src/pages/admin/ai-usage/AiCharts.tsx": {
    "path": "src/pages/admin/ai-usage/AiCharts.tsx",
@@ -462039,7 +462465,7 @@
   },
   "src/pages/bi/BusinessIntelligencePage.tsx": {
    "path": "src/pages/bi/BusinessIntelligencePage.tsx",
-   "lines": 392,
+   "lines": 390,
    "exports": [
     "function BusinessIntelligencePage"
    ],
@@ -464919,11 +465345,12 @@
   },
   "src/pages/products/FiltersPage.tsx": {
    "path": "src/pages/products/FiltersPage.tsx",
-   "lines": 820,
+   "lines": 836,
    "exports": [
     "function FiltersPage"
    ],
    "navigates": [
+    "/novidades",
     "/produto/"
    ],
    "status_values": [
@@ -464931,6 +465358,11 @@
      "field": "type",
      "value": "spring",
      "kind": "escreve"
+    },
+    {
+     "field": "type",
+     "value": "novelty",
+     "kind": "compara"
     },
     {
      "field": "type",
@@ -466139,7 +466571,7 @@
   },
   "src/pages/quotes/QuoteBuilderPage.tsx": {
    "path": "src/pages/quotes/QuoteBuilderPage.tsx",
-   "lines": 826,
+   "lines": 831,
    "exports": [
     "function QuoteBuilderPage"
    ],
@@ -466292,7 +466724,7 @@
   },
   "src/pages/quotes/useQuotesListPage.ts": {
    "path": "src/pages/quotes/useQuotesListPage.ts",
-   "lines": 417,
+   "lines": 423,
    "exports": [
     "type SortOption",
     "const sortOptions",
@@ -466418,6 +466850,20 @@
     "[${vp.name} · ${vp.width}px] Prazo|Entrega e Frete têm SelectValue à esquerda do chevron",
     "QuoteBuilder — Condições · estabilidade em 25 renders × 5 campos",
     "mantém 1 trigger e 1 SelectValue únicos por testid em todas as renderizações"
+   ]
+  },
+  "src/pages/quotes/__tests__/QuoteViewPage.delete-denied.test.tsx": {
+   "path": "src/pages/quotes/__tests__/QuoteViewPage.delete-denied.test.tsx",
+   "lines": 135,
+   "is_test": true,
+   "rule_comments": [
+    "onError da mutation. A página NÃO pode navegar para /orcamentos nem exibir o toast"
+   ],
+   "doc": "QuoteViewPage — exclusão negada pela RLS. `deleteQuote` devolve `false` quando a RLS nega (0 linhas); o toast de erro sai do onError da mutation. A página NÃO pode navegar para /orcamentos nem exibir o toast \"Orçamento excluído\" com Desfazer nesse caso. Renderiza a página real e abre o diálogo pela …",
+   "tests": [
+    "QuoteViewPage — exclusão negada (RLS)",
+    "deleteQuote → false: não navega para /orcamentos nem mostra toast de desfazer",
+    "deleteQuote → true: navega para /orcamentos e mostra toast de desfazer uma vez"
    ]
   },
   "src/pages/quotes/__tests__/QuoteViewPage.preview-breath.test.tsx": {
@@ -466755,7 +467201,7 @@
   },
   "src/pages/quotes/__tests__/useQuotesListPage.expiring.test.ts": {
    "path": "src/pages/quotes/__tests__/useQuotesListPage.expiring.test.ts",
-   "lines": 317,
+   "lines": 318,
    "is_test": true,
    "params": [
     {
@@ -466786,7 +467232,7 @@
     "expira HOJE às 23:59:59Z → mantém (ainda futuro vs now=12:00Z)",
     "timezone -03:00 cujo instante UTC é futuro → mantém",
     "timezone +09:00 cujo instante UTC é passado → exclui",
-    "formato date-only (YYYY-MM-DD) é interpretado como meia-noite UTC",
+    "formato date-only (YYYY-MM-DD) é data civil: vence no fim do dia local",
     "valid_until com espaços / null-string / objeto → exclui defensivamente",
     "useQuotesListPage — performance do filtro expiring",
     "filtra 10.000 orçamentos em < 500ms"
@@ -467166,7 +467612,7 @@
   },
   "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts": {
    "path": "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
-   "lines": 313,
+   "lines": 316,
    "exports": [
     "function formatCurrency",
     "function formatResponseTime",
@@ -467200,12 +467646,7 @@
     },
     {
      "field": "status",
-     "value": "rejected",
-     "kind": "compara"
-    },
-    {
-     "field": "status",
-     "value": "approved",
+     "value": "converted",
      "kind": "compara"
     },
     {
@@ -467215,7 +467656,7 @@
     },
     {
      "field": "status",
-     "value": "approved",
+     "value": "rejected",
      "kind": "compara"
     },
     {
@@ -467530,12 +467971,15 @@
   },
   "src/pages/tools/SimuladorWizard.tsx": {
    "path": "src/pages/tools/SimuladorWizard.tsx",
-   "lines": 358,
+   "lines": 365,
    "exports": [
     "function SimuladorWizard"
    ],
    "navigates": [
     "/orcamentos/novo"
+   ],
+   "errors": [
+    "Recalculando o preço da gravação para a nova tiragem. Tente gerar em seguida."
    ],
    "doc": "SimuladorWizard v2 - Produto → Local → Specs → Comparativo"
   },
@@ -468934,7 +469378,7 @@
   },
   "src/services/quoteService.ts": {
    "path": "src/services/quoteService.ts",
-   "lines": 552,
+   "lines": 553,
    "exports": [
     "const quoteService"
    ],
@@ -468989,7 +469433,7 @@
     },
     {
      "table": "quotes",
-     "op": "delete"
+     "op": "delete,select"
     },
     {
      "table": "quote_history",
@@ -469112,6 +469556,7 @@
     "Não foi possível atualizar o orçamento de forma transacional: nenhum dado retornado.",
     "Não foi possível criar o orçamento: nenhum dado retornado.",
     "Orçamento não encontrado",
+    "Sem permissão para excluir este orçamento",
     "Status ",
     "Transição de status inválida: ",
     "Versão do orçamento ausente ou inválida. Recarregue antes de salvar para evitar sobrescrever alterações de outro usuário."
@@ -469130,7 +469575,8 @@
    ],
    "rule_comments": [
     "pg_constraint), então este ramo NÃO dispara hoje — existe apenas para",
-    "Fire-and-forget — never throw; a broken email must never roll back the status change."
+    "Fire-and-forget — never throw; a broken email must never roll back the status change.",
+    "rls-allow: DELETE por id; RLS (org_admins_delete_quotes) valida permissão"
    ],
    "pagination": [
     "500"
@@ -469850,7 +470296,7 @@
   },
   "src/tests/AdminStandardRules.test.tsx": {
    "path": "src/tests/AdminStandardRules.test.tsx",
-   "lines": 201,
+   "lines": 202,
    "is_test": true,
    "rule_comments": [
     "em todo o output renderizado, não apenas dentro de <main>."
@@ -470964,7 +471410,7 @@
   },
   "src/types/domain/simulator-wizard.ts": {
    "path": "src/types/domain/simulator-wizard.ts",
-   "lines": 343,
+   "lines": 347,
    "exports": [
     "type WizardStep",
     "const WIZARD_STEPS",
@@ -477386,7 +477832,7 @@
   },
   "supabase/functions/expert-chat/index.ts": {
    "path": "supabase/functions/expert-chat/index.ts",
-   "lines": 1469,
+   "lines": 1480,
    "tables": [
     {
      "table": "products",
@@ -477554,6 +478000,10 @@
      "product_id"
     ]
    },
+   "env": [
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_URL"
+   ],
    "errors": [
     "AI Gateway error: ${response.status}"
    ],
@@ -477991,7 +478441,7 @@
    "status_values": [
     {
      "field": "role",
-     "value": "admin",
+     "value": "dev",
      "kind": "filtra"
     }
    ],
@@ -478946,12 +479396,12 @@
    "status_values": [
     {
      "field": "role",
-     "value": "admin",
+     "value": "dev",
      "kind": "compara"
     }
    ],
    "role_checks": [
-    "admin"
+    "dev"
    ],
    "uses_service_role": true
   },
@@ -479934,7 +480384,7 @@
   },
   "supabase/functions/manage-users/index.ts": {
    "path": "supabase/functions/manage-users/index.ts",
-   "lines": 388,
+   "lines": 459,
    "tables": [
     {
      "table": "user_roles",
@@ -479947,6 +480397,14 @@
     {
      "table": "profiles",
      "op": "update"
+    },
+    {
+     "table": "profiles",
+     "op": "select"
+    },
+    {
+     "table": "profiles",
+     "op": "select,update"
     },
     {
      "table": "admin_audit_log",
@@ -479975,6 +480433,7 @@
      "user_id"
     ],
     "profiles": [
+     "email",
      "user_id"
     ]
    },
@@ -480039,6 +480498,13 @@
      "chain": []
     },
     {
+     "name": "UpdateProfileSchema",
+     "kind": "object",
+     "body": "{ action: z.literal('update_profile'), user_id: uuidSchema, full_name: z.string().trim().max(200).nullable().optional(), email: emailSchema.nullable().optional(), is_active: z.boolean().optional(), avatar_url: z.string().url().max(2048).nullable().optional(), }",
+     "refines": [],
+     "chain": []
+    },
+    {
      "name": "DeleteSchema",
      "kind": "object",
      "body": "{ action: z.literal('delete'), user_id: uuidSchema, }",
@@ -480062,7 +480528,7 @@
     {
      "name": "PayloadSchema",
      "kind": "discriminatedUnion",
-     "body": "'action', [ CreateSchema, UpdateEmailSchema, UpdatePasswordSchema, DeleteSchema, RevokeSessionsSchema, PromoteRoleSchema, ]",
+     "body": "'action', [ CreateSchema, UpdateEmailSchema, UpdatePasswordSchema, UpdateProfileSchema, DeleteSchema, RevokeSessionsSchema, PromoteRoleSchema, ]",
      "refines": [],
      "chain": []
     }
@@ -480108,7 +480574,8 @@
     "promote_role",
     "revoke_sessions",
     "update_email",
-    "update_password"
+    "update_password",
+    "update_profile"
    ],
    "uses_service_role": true
   },
@@ -480257,7 +480724,7 @@
   },
   "supabase/functions/materials-api/index.ts": {
    "path": "supabase/functions/materials-api/index.ts",
-   "lines": 272,
+   "lines": 286,
    "tables": [
     {
      "table": "material_groups",
@@ -480351,6 +480818,10 @@
     {
      "name": "EXTERNAL_TIMEOUT_MS",
      "value": "20"
+    },
+    {
+     "name": "PAGE_SIZE",
+     "value": "1000"
     }
    ],
    "rule_comments": [
@@ -480994,7 +481465,7 @@
   },
   "supabase/functions/ownership-audit/index.ts": {
    "path": "supabase/functions/ownership-audit/index.ts",
-   "lines": 110,
+   "lines": 121,
    "tables": [
     {
      "table": "ownership_audit_reports",
@@ -481012,6 +481483,9 @@
    "env": [
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
+   ],
+   "role_checks": [
+    "supervisor"
    ],
    "rule_comments": [
     "(`audit_ownership_orphans`) verifica permissão internamente quando"
@@ -482808,7 +483282,7 @@
   },
   "supabase/functions/sync-quote-bitrix/index.ts": {
    "path": "supabase/functions/sync-quote-bitrix/index.ts",
-   "lines": 214,
+   "lines": 223,
    "tables": [
     {
      "table": "profiles",
@@ -482837,6 +483311,7 @@
    "rule_comments": [
     "apenas \"qualquer autenticado\". Defesa-em-profundidade prevista na Onda 10.",
     "BUG-CRED-2 FIX (2026-06-28): erro de validação de input → 422, não 500.",
+    "regra de calcPersTotal no PDF) para a soma das linhas no CRM bater com `total`.",
     "500 passa a ser sinal honesto, não mais \"lixeira\" de credencial/validação/upstream."
    ],
    "uses_service_role": true
@@ -497819,6 +498294,10 @@
    "path": "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql",
    "lines": 19
   },
+  "supabase/migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql": {
+   "path": "supabase/migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql",
+   "lines": 28
+  },
   "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql": {
    "path": "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "lines": 65,
@@ -498028,6 +498507,10 @@
   "supabase/rollbacks/20261112011000_rollback.sql": {
    "path": "supabase/rollbacks/20261112011000_rollback.sql",
    "lines": 6
+  },
+  "supabase/rollbacks/20261112130000_rollback.sql": {
+   "path": "supabase/rollbacks/20261112130000_rollback.sql",
+   "lines": 4
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -510774,7 +511257,7 @@
   },
   "tests/hooks/wizardReducer.test.ts": {
    "path": "tests/hooks/wizardReducer.test.ts",
-   "lines": 75,
+   "lines": 106,
    "is_test": true,
    "rule_comments": [
     "deliberately wrong — reducer must re-index"
@@ -510785,7 +511268,10 @@
     "restores product, quantity AND personalizations atomically",
     "lands on the location step when the draft has no personalizations",
     "wizardReducer — ADD_PERSONALIZATION",
-    "re-indexes appended personalizations to 1..N (no duplicate indices)"
+    "re-indexes appended personalizations to 1..N (no duplicate indices)",
+    "wizardReducer — RECALC_PERSONALIZATION_PRICING",
+    "ignora resposta calculada para uma tiragem que não é mais a atual",
+    "aplica o preço quando a tiragem da resposta é a atual"
    ]
   },
   "tests/hooks/_helpers/mock-supabase-builder.ts": {
@@ -518654,10 +519140,105 @@
   }
  },
  "git": {
-  "sha": "e9a4a1aa14b61c3a6f54f7023115beaec1879440",
+  "sha": "fee3d0937cdaa5ff1cf93af07c38cfc8dedb902a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "fee3d09",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(sitemap): devolve EXECUTE de anon em get_sitemap_public e remove sitemap estático (#3430)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql",
+     "supabase/rollbacks/20261112130000_rollback.sql"
+    ]
+   },
+   {
+    "sha": "c8ae97c",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix: corrige 42 bugs da rodada 2 em orçamentos, admin, preços, limites e datas (#3428)",
+    "files": [
+     ".file-size-baseline.json",
+     "public/sitemap.xml",
+     "src/components/admin/products/ProductFormFullscreen.tsx",
+     "src/components/admin/products/hooks/useProductFormDraft.ts",
+     "src/components/admin/products/hooks/useSkuValidation.ts",
+     "src/components/admin/products/image-gallery/useProductImageGallery.ts",
+     "src/components/admin/products/sections/ProductFlagsSection.tsx",
+     "src/components/admin/products/useProductVariants.ts",
+     "src/components/admin/products/useProductsManager.ts",
+     "src/components/admin/products/video-gallery/useProductVideoGallery.ts",
+     "src/components/admin/users/useUserManagement.ts",
+     "src/components/dashboard/RecentKitsWidget.tsx",
+     "src/components/dashboard/UpcomingDatesWidget.tsx",
+     "src/components/favorites/FavoritesViewHeader.tsx",
+     "src/components/inventory/FutureStockDialog.tsx",
+     "src/components/inventory/StockAlertsIndicator.tsx",
+     "src/components/inventory/VariantStockRowActions.tsx",
+     "src/components/inventory/VariantStockTable.tsx",
+     "src/components/inventory/__tests__/VariantStockRowActions.test.tsx",
+     "src/components/inventory/__tests__/useStockSelection.test.ts",
+     "src/components/inventory/useStockSelection.ts",
+     "src/components/kit-builder/KitStockForecastCard.tsx",
+     "src/components/pricing/ProductPriceSimulator.tsx",
+     "src/components/pricing/QuantityPriceCalculator.tsx",
+     "src/components/pricing/__tests__/QuantityPriceCalculator.createQuote.test.tsx",
+     "src/components/products/ProductList.tsx",
+     "src/components/quotes/QuoteKanbanBoard.tsx",
+     "src/components/simulator/wizard/StepComparison.tsx",
+     "src/hooks/auth/useAccessSecurity.ts",
+     "src/hooks/intelligence/__tests__/fetchCategoryRanking.marketDepleted.test.ts",
+     "src/hooks/intelligence/useCommercialIntelligence.helpers.ts",
+     "src/hooks/intelligence/useSalesHistory.ts",
+     "src/hooks/intelligence/useZeroResultDiagnosis.ts",
+     "src/hooks/products/__tests__/useSupplierSalesRanking.test.ts",
+     "src/hooks/products/useProductsLightweight.ts",
+     "src/hooks/products/useSupplierSalesRanking.ts",
+     "src/hooks/quotes/__tests__/useAutoSaveQuote.test.ts",
+     "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
+     "src/hooks/quotes/useAutoSaveQuote.ts",
+     "src/hooks/quotes/useQuoteBuilderState.ts",
+     "src/hooks/simulation/useCustomizationPrice.ts",
+     "src/hooks/simulator/useSimulatorWizard.ts",
+     "src/hooks/simulator/useWizardPricing.ts",
+     "src/hooks/simulator/wizardReducer.ts",
+     "src/hooks/ui/useWorkspaceNotifications.tsx",
+     "src/lib/external-db/__tests__/productsCompleteness.test.ts",
+     "src/lib/external-db/products.ts",
+     "src/lib/security/sanitize-error.ts",
+     "src/lib/stock-chart-utils.ts",
+     "src/pages/admin/AdminProductFormPage.tsx",
+     "src/pages/admin/AdminUsuariosPage.tsx",
+     "src/pages/admin/PermissionsPage.tsx",
+     "src/pages/admin/RolePermissionsPage.tsx",
+     "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
+     "src/pages/bi/BusinessIntelligencePage.tsx",
+     "src/pages/products/FiltersPage.tsx",
+     "src/pages/quotes/QuoteBuilderPage.tsx",
+     "src/pages/quotes/QuoteViewPage.tsx",
+     "src/pages/quotes/__tests__/QuoteViewPage.delete-denied.test.tsx",
+     "src/pages/quotes/__tests__/useQuotesListPage.expiring.test.ts",
+     "src/pages/quotes/quote-view/QuoteActionHandlers.ts",
+     "src/pages/quotes/quote-view/useQuoteViewData.ts",
+     "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
+     "src/pages/quotes/useQuotesListPage.ts",
+     "src/pages/tools/SimuladorWizard.tsx",
+     "src/services/quoteService.ts",
+     "src/tests/AdminStandardRules.test.tsx",
+     "src/types/domain/simulator-wizard.ts",
+     "supabase/functions/expert-chat/index.ts",
+     "supabase/functions/external-db-inspect/index.ts",
+     "supabase/functions/github-credentials-test/index.ts",
+     "supabase/functions/manage-users/index.ts",
+     "supabase/functions/materials-api/index.ts",
+     "supabase/functions/ownership-audit/index.ts",
+     "supabase/functions/sync-quote-bitrix/index.ts",
+     "tests/hooks/wizardReducer.test.ts"
+    ]
+   },
    {
     "sha": "e9a4a1a",
     "date": "2026-11-12",
@@ -520029,31 +520610,20 @@
      "src/hooks/kit-builder/useKitBuilderPageState.ts",
      "src/pages/kit-builder/KitBuilderPage.tsx"
     ]
-   },
-   {
-    "sha": "6ba67b4",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "fix(ci): adiciona detector E12 pg_indexes out-of-band no Gate 2 (#3290)",
-    "files": [
-     ".github/workflows/db-schema-drift-check.yml"
-    ]
-   },
-   {
-    "sha": "defe294",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "fix(ci): corrige Gate E42 e2e-personalization com auth-setup step condicional (#3274)",
-    "files": [
-     ".github/workflows/e2e-personalization.yml",
-     ".migration-refs-baseline.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "src/hooks/useDevGate.ts",
     4
+   ],
+   [
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    3
+   ],
+   [
+    ".file-size-baseline.json",
+    3
    ],
    [
     "src/hooks/useReplenishments.ts",
@@ -520064,11 +520634,31 @@
     3
    ],
    [
-    "e2e/flows/global-search-comprehensive.spec.ts",
+    "public/sitemap.xml",
     2
    ],
    [
-    ".file-size-baseline.json",
+    "src/components/pricing/ProductPriceSimulator.tsx",
+    2
+   ],
+   [
+    "src/components/pricing/QuantityPriceCalculator.tsx",
+    2
+   ],
+   [
+    "src/hooks/quotes/useQuoteBuilderState.ts",
+    2
+   ],
+   [
+    "src/services/quoteService.ts",
+    2
+   ],
+   [
+    "supabase/functions/manage-users/index.ts",
+    2
+   ],
+   [
+    "e2e/flows/global-search-comprehensive.spec.ts",
     2
    ],
    [
@@ -520101,34 +520691,6 @@
    ],
    [
     "tests/e2e/new-quote-cycle.test.tsx",
-    2
-   ],
-   [
-    "tests/e2e/new-quote-exhaustive.test.tsx",
-    2
-   ],
-   [
-    "tests/e2e/new-quote-full-audit.test.tsx",
-    2
-   ],
-   [
-    "tests/e2e/new-quote-resilience.test.tsx",
-    2
-   ],
-   [
-    "tests/lib/external-db-bridge-telemetry.test.ts",
-    2
-   ],
-   [
-    "supabase/functions/external-db-bridge/applyFiltersAndSwap.integration.test.ts",
-    2
-   ],
-   [
-    "supabase/functions/external-db-bridge/callerSelectIsHeavy.test.ts",
-    2
-   ],
-   [
-    "supabase/functions/external-db-bridge/resolveProductsSelect.test.ts",
     2
    ]
   ]

@@ -4938,7 +4938,7 @@
    "hooks_exportados": [
     "useProductFormDraft"
    ],
-   "linhas": 99,
+   "linhas": 122,
    "dominio": "components/admin",
    "tabelas": [],
    "rpcs": [],
@@ -4961,7 +4961,7 @@
    "hooks_exportados": [
     "useSkuValidation"
    ],
-   "linhas": 48,
+   "linhas": 54,
    "dominio": "components/admin",
    "tabelas": [],
    "rpcs": [],
@@ -4982,7 +4982,7 @@
    "hooks_exportados": [
     "useProductImageGallery"
    ],
-   "linhas": 841,
+   "linhas": 843,
    "dominio": "components/admin",
    "tabelas": [],
    "rpcs": [],
@@ -5055,7 +5055,7 @@
    "hooks_exportados": [
     "useProductsManager"
    ],
-   "linhas": 504,
+   "linhas": 509,
    "dominio": "components/admin",
    "tabelas": [],
    "rpcs": [],
@@ -5066,6 +5066,7 @@
     "useEffect",
     "useMemo",
     "useNavigate",
+    "useRef",
     "useState"
    ],
    "canais_realtime": [],
@@ -5080,7 +5081,7 @@
    "hooks_exportados": [
     "useProductVariants"
    ],
-   "linhas": 237,
+   "linhas": 239,
    "dominio": "components/admin",
    "tabelas": [],
    "rpcs": [],
@@ -5104,7 +5105,7 @@
    "hooks_exportados": [
     "useProductVideoGallery"
    ],
-   "linhas": 638,
+   "linhas": 654,
    "dominio": "components/admin",
    "tabelas": [
     "video_variant_links"
@@ -5285,7 +5286,7 @@
    "hooks_exportados": [
     "useUserManagement"
    ],
-   "linhas": 281,
+   "linhas": 285,
    "dominio": "components/admin",
    "tabelas": [
     "avatars",
@@ -5635,7 +5636,7 @@
    "hooks_exportados": [
     "useStockSelection"
    ],
-   "linhas": 181,
+   "linhas": 211,
    "dominio": "components/inventory",
    "tabelas": [],
    "rpcs": [],
@@ -5649,8 +5650,9 @@
     "useState"
    ],
    "canais_realtime": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_arquivos": [
+    "src/components/inventory/VariantStockRowActions.tsx",
     "src/components/inventory/VariantStockTable.tsx"
    ],
    "coberto_por_testes": 1
@@ -5924,7 +5926,7 @@
     "recovery/src-legacy/src/pages/QuoteBuilderPage.tsx",
     "src/pages/quotes/QuoteBuilderPage.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/components/quotes/useQuoteSummaryState.ts",
@@ -8781,7 +8783,7 @@
   {
    "arquivo": "src/hooks/intelligence/useCommercialIntelligence.helpers.ts",
    "hooks_exportados": [],
-   "linhas": 667,
+   "linhas": 769,
    "dominio": "hooks/intelligence",
    "tabelas": [
     "order_items",
@@ -8793,11 +8795,12 @@
    "edges": [],
    "hooks_internos": [],
    "canais_realtime": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_arquivos": [
-    "src/hooks/intelligence/useCommercialIntelligence.ts"
+    "src/hooks/intelligence/useCommercialIntelligence.ts",
+    "src/hooks/intelligence/useZeroResultDiagnosis.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/intelligence/useCommercialIntelligence.ts",
@@ -9267,7 +9270,7 @@
    "hooks_exportados": [
     "useSalesHistory"
    ],
-   "linhas": 290,
+   "linhas": 291,
    "dominio": "hooks/intelligence",
    "tabelas": [
     "order_items",
@@ -9490,7 +9493,7 @@
    "hooks_exportados": [
     "useZeroResultDiagnosis"
    ],
-   "linhas": 232,
+   "linhas": 243,
    "dominio": "hooks/intelligence",
    "tabelas": [
     "order_items",
@@ -11270,7 +11273,7 @@
     "useProductsCatalog",
     "useProductsLightweight"
    ],
-   "linhas": 428,
+   "linhas": 436,
    "dominio": "hooks/products",
    "tabelas": [],
    "rpcs": [
@@ -11644,7 +11647,7 @@
    "hooks_exportados": [
     "useSupplierSalesRanking"
    ],
-   "linhas": 111,
+   "linhas": 133,
    "dominio": "hooks/products",
    "tabelas": [],
    "rpcs": [],
@@ -11653,8 +11656,9 @@
     "useQuery"
    ],
    "canais_realtime": [],
-   "usado_por": 3,
+   "usado_por": 4,
    "usado_por_arquivos": [
+    "src/hooks/intelligence/useCommercialIntelligence.helpers.ts",
     "src/hooks/products/index.ts",
     "src/hooks/products/useCatalogState.ts",
     "src/pages/filters/useFiltersPageState.ts"
@@ -11757,7 +11761,7 @@
    "hooks_exportados": [
     "useAutoSaveQuote"
    ],
-   "linhas": 197,
+   "linhas": 199,
    "dominio": "hooks/quotes",
    "tabelas": [],
    "rpcs": [],
@@ -11877,7 +11881,7 @@
    "hooks_exportados": [
     "useQuoteBuilderState"
    ],
-   "linhas": 1042,
+   "linhas": 1082,
    "dominio": "hooks/quotes",
    "tabelas": [
     "quotes"
@@ -11908,7 +11912,7 @@
    "usado_por_arquivos": [
     "src/hooks/quotes/index.ts"
    ],
-   "coberto_por_testes": 7
+   "coberto_por_testes": 8
   },
   {
    "arquivo": "src/hooks/quotes/useQuoteClientLogos.ts",
@@ -12192,7 +12196,7 @@
     "useCustomizationPriceCalculator",
     "useCustomizationPriceReactive"
    ],
-   "linhas": 172,
+   "linhas": 189,
    "dominio": "hooks/simulation",
    "tabelas": [],
    "rpcs": [],
@@ -12203,8 +12207,10 @@
     "useState"
    ],
    "canais_realtime": [],
-   "usado_por": 2,
+   "usado_por": 4,
    "usado_por_arquivos": [
+    "src/components/pricing/ProductPriceSimulator.tsx",
+    "src/components/pricing/QuantityPriceCalculator.tsx",
     "src/components/products/ProductCustomizationOptions.tsx",
     "src/hooks/simulation/index.ts"
    ],
@@ -12538,7 +12544,7 @@
    "hooks_exportados": [
     "useSimulatorWizard"
    ],
-   "linhas": 341,
+   "linhas": 345,
    "dominio": "hooks/simulator",
    "tabelas": [],
    "rpcs": [],
@@ -12648,14 +12654,15 @@
    "hooks_exportados": [
     "useWizardPricing"
    ],
-   "linhas": 315,
+   "linhas": 342,
    "dominio": "hooks/simulator",
    "tabelas": [],
    "rpcs": [],
    "edges": [],
    "hooks_internos": [
     "useCallback",
-    "useEffect"
+    "useEffect",
+    "useState"
    ],
    "canais_realtime": [],
    "usado_por": 2,
@@ -13360,7 +13367,7 @@
    "hooks_exportados": [
     "useWorkspaceNotifications"
    ],
-   "linhas": 554,
+   "linhas": 557,
    "dominio": "hooks/ui",
    "tabelas": [
     "workspace_notifications"
@@ -14378,7 +14385,7 @@
    "hooks_exportados": [
     "useQuotesDashboard"
    ],
-   "linhas": 313,
+   "linhas": 316,
    "dominio": "pages/quotes",
    "tabelas": [],
    "rpcs": [],
@@ -14402,7 +14409,7 @@
    "hooks_exportados": [
     "useQuotesListPage"
    ],
-   "linhas": 417,
+   "linhas": 423,
    "dominio": "pages/quotes",
    "tabelas": [],
    "rpcs": [],

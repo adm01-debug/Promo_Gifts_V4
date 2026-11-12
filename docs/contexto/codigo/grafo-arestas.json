@@ -5927,6 +5927,7 @@
   ],
   "src/components/inventory/VariantStockRowActions.tsx": [
    "src/components/collections/AddToCollectionModal.tsx",
+   "src/components/inventory/useStockSelection.ts",
    "src/components/products/QuickAddToQuote.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/tooltip.tsx",
@@ -6050,6 +6051,8 @@
    "src/lib/inventory/supplier-reliability/index.ts"
   ],
   "src/components/inventory/useStockSelection.ts": [
+   "src/lib/db/postgrest.ts",
+   "src/lib/logger.ts",
    "src/stores/useComparisonStore.ts",
    "src/stores/useFavoritesStore.ts",
    "src/types/stock.ts"
@@ -7279,6 +7282,7 @@
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
+   "src/hooks/simulation/useCustomizationPrice.ts",
    "src/lib/db/postgrest.ts",
    "src/lib/utils.ts"
   ],
@@ -7295,6 +7299,7 @@
    "src/components/ui/input.tsx",
    "src/components/ui/skeleton.tsx",
    "src/hooks/simulation/index.ts",
+   "src/hooks/simulation/useCustomizationPrice.ts",
    "src/lib/utils.ts"
   ],
   "src/components/pricing/calculator/QuantityComparisonTable.tsx": [
@@ -10070,10 +10075,10 @@
   ],
   "src/hooks/intelligence/useCommercialIntelligence.helpers.ts": [
    "src/hooks/intelligence/intelligenceHelpers.ts",
+   "src/hooks/products/useSupplierSalesRanking.ts",
    "src/integrations/supabase/client.ts",
    "src/lib/db/fetch-all-pages.ts",
    "src/lib/db/postgrest.ts",
-   "src/lib/external-db/index.ts",
    "src/lib/intelligence/degradation.ts",
    "src/lib/logger.ts"
   ],
@@ -10240,8 +10245,8 @@
    "src/lib/logger.ts"
   ],
   "src/hooks/intelligence/useZeroResultDiagnosis.ts": [
-   "src/integrations/supabase/client.ts",
-   "src/lib/external-db/index.ts"
+   "src/hooks/intelligence/useCommercialIntelligence.helpers.ts",
+   "src/integrations/supabase/client.ts"
   ],
   "src/hooks/intelligence/useZeroResultSubstitutes.ts": [
    "src/hooks/intelligence/useZeroResultDiagnosis.ts",
@@ -10851,6 +10856,7 @@
   ],
   "src/hooks/products/useSupplierSalesRanking.ts": [
    "src/integrations/supabase/client.ts",
+   "src/lib/db/fetch-all-pages.ts",
    "src/lib/logger.ts"
   ],
   "src/hooks/products/useSupplierTrust.ts": [
@@ -11584,6 +11590,7 @@
    "src/lib/logger.ts"
   ],
   "src/lib/external-db/products.ts": [
+   "src/lib/db/fetch-all-pages.ts",
    "src/lib/db/postgrest.ts",
    "src/lib/external-db/immutableCache.ts",
    "src/lib/external-db/product-types.ts",
@@ -12540,7 +12547,6 @@
    "src/hooks/ui/index.ts",
    "src/integrations/supabase/client.ts",
    "src/integrations/supabase/types.ts",
-   "src/lib/logger.ts",
    "src/lib/security/sanitize-error.ts",
    "src/lib/utils.ts"
   ],
@@ -13962,6 +13968,7 @@
    "src/components/quotes/QuotesStatusChips.tsx",
    "src/hooks/common/useListUrlState.ts",
    "src/hooks/quotes/index.ts",
+   "src/lib/quotes/expiration.ts",
    "src/utils/undoToast.tsx"
   ],
   "src/pages/system/ExternalDatabaseTest.tsx": [
@@ -14989,6 +14996,7 @@
    "supabase/functions/_shared/structured-logger.ts"
   ],
   "supabase/functions/ownership-audit/index.ts": [
+   "supabase/functions/_shared/auth.ts",
    "supabase/functions/_shared/contracts/index.ts",
    "supabase/functions/_shared/contracts/schemas/ownership-audit.ts",
    "supabase/functions/_shared/cors.ts",

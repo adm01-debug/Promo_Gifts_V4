@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e9a4a1aa14` · branch `main` · 2026-11-12 14:57 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `fee3d0937c` · branch `main` · 2026-11-12 23:01 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -1215,7 +1215,7 @@ Middleware matcher (Next.js): nenhum
 | Ação | Para/De | Privilégios | Objetos |
 |---|---|---|---|
 | grant | PUBLIC | execute | `claim_webhook_delivery`, `release_webhook_delivery_lock`, `cleanup_stale_webhook_locks`, `fn_cron_guard`, `cleanup_expired_auth_sessions` |
-| grant | anon | execute | `get_quote_token_by_value`, `submit_quote_response`, `fn_should_apply_kill_switch`, `fn_log_search_analytics`, `is_org_owner_or_admin`, `is_org_owner_or_admin`, `mcp_kv_get`, `mcp_kv_set`, `mcp_kv_try_lock`, `fn_get_reposicao_listing`, `fn_get_reposicao_metrics`, `fn_get_replenishment_stats`, `fn_xbz_enqueue_videos`, `get_favorite_list_counts`, `get_favorite_list_counts` … +52 |
+| grant | anon | execute | `get_quote_token_by_value`, `submit_quote_response`, `fn_should_apply_kill_switch`, `fn_log_search_analytics`, `is_org_owner_or_admin`, `is_org_owner_or_admin`, `mcp_kv_get`, `mcp_kv_set`, `mcp_kv_try_lock`, `fn_get_reposicao_listing`, `fn_get_reposicao_metrics`, `fn_get_replenishment_stats`, `fn_xbz_enqueue_videos`, `get_favorite_list_counts`, `get_favorite_list_counts` … +53 |
 | grant | anon | insert | `kill_switch_hits` |
 | grant | anon | insert, update, delete, references, trigger | `external_connections` |
 | grant | anon | select | `system_kill_switches`, `products`, `products`, `products`, `public`, `somarcas_catalogo_publico`, `somarcas_catalogo_publico`, `analytics.mv_product_compositions`, `discount_approval_requests`, `discount_approval_requests`, `category_icons`, `discount_approval_requests`, `workspace_notifications`, `discount_approval_requests`, `workspace_notifications` … +70 |
@@ -1278,7 +1278,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | anon | delete, insert, update, trigger, references | `anon_catalog_grant_audit_log` |
 | revoke | anon | delete, trigger, truncate | `supplier_products_raw` |
 | revoke | anon | delete, update, trigger, references | `frontend_telemetry`, `frontend_telemetry` |
-| revoke | anon | execute | `fn_magazine_public_token`, `public`, `can_access_quote`, `org_has_any_members`, `org_has_any_members`, `create_organization_with_owner`, `get_quote_token_by_value`, `public`, `fn_purge_spr_history`, `fn_process_raw_v2`, `fn_dryrun_raw_v2`, `fn_purge_spr_history`, `reconcile_cf_image_status`, `fn_get_reposicao_listing`, `fn_get_replenishment_stats` … +22 |
+| revoke | anon | execute | `fn_magazine_public_token`, `public`, `can_access_quote`, `org_has_any_members`, `org_has_any_members`, `create_organization_with_owner`, `get_quote_token_by_value`, `public`, `fn_purge_spr_history`, `fn_process_raw_v2`, `fn_dryrun_raw_v2`, `fn_purge_spr_history`, `reconcile_cf_image_status`, `fn_get_reposicao_listing`, `fn_get_replenishment_stats` … +23 |
 | revoke | anon | insert, update, delete | `workspace_notifications`, `workspace_notifications`, `product_badge_definitions` |
 | revoke | anon | insert, update, delete, references, trigger | `external_connections` |
 | revoke | anon | insert, update, delete, truncate | `products` |

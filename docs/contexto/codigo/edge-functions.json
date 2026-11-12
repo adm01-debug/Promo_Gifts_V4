@@ -1257,7 +1257,7 @@
    "nome": "expert-chat",
    "entrada": "supabase/functions/expert-chat/index.ts",
    "arquivos": 1,
-   "linhas": 1469,
+   "linhas": 1480,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1275,7 +1275,10 @@
     "suppliers"
    ],
    "rpcs": [],
-   "env": [],
+   "env": [
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_URL"
+   ],
    "buckets": [],
    "chama_edges": [],
    "hosts_externos": [
@@ -2154,7 +2157,7 @@
    "nome": "manage-users",
    "entrada": "supabase/functions/manage-users/index.ts",
    "arquivos": 1,
-   "linhas": 388,
+   "linhas": 459,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -2237,7 +2240,7 @@
    "nome": "materials-api",
    "entrada": "supabase/functions/materials-api/index.ts",
    "arquivos": 1,
-   "linhas": 272,
+   "linhas": 286,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -2531,7 +2534,7 @@
    "nome": "ownership-audit",
    "entrada": "supabase/functions/ownership-audit/index.ts",
    "arquivos": 1,
-   "linhas": 110,
+   "linhas": 121,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS"
@@ -2550,6 +2553,7 @@
    "chama_edges": [],
    "hosts_externos": [],
    "usa_shared": [
+    "auth.ts",
     "cors.ts",
     "dispatcher-auth.ts",
     "index.ts",
@@ -3363,7 +3367,7 @@
    "nome": "sync-quote-bitrix",
    "entrada": "supabase/functions/sync-quote-bitrix/index.ts",
    "arquivos": 1,
-   "linhas": 214,
+   "linhas": 223,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"

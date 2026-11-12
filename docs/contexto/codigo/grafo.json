@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 2751,
- "arestas": 10889,
+ "arestas": 10897,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -78,7 +78,7 @@
   },
   {
    "arquivo": "src/lib/db/postgrest.ts",
-   "importado_por": 91
+   "importado_por": 92
   },
   {
    "arquivo": "src/types/product-catalog.ts",
@@ -109,10 +109,6 @@
    "importado_por": 60
   },
   {
-   "arquivo": "src/lib/external-db/index.ts",
-   "importado_por": 55
-  },
-  {
    "arquivo": "src/utils/image-utils.ts",
    "importado_por": 55
   },
@@ -126,6 +122,10 @@
   },
   {
    "arquivo": "src/integrations/supabase/types.ts",
+   "importado_por": 53
+  },
+  {
+   "arquivo": "src/lib/external-db/index.ts",
    "importado_por": 53
   },
   {
@@ -145,12 +145,12 @@
    "importado_por": 50
   },
   {
-   "arquivo": "supabase/functions/_shared/request-id.ts",
+   "arquivo": "src/hooks/quotes/index.ts",
    "importado_por": 46
   },
   {
-   "arquivo": "src/hooks/quotes/index.ts",
-   "importado_por": 45
+   "arquivo": "supabase/functions/_shared/request-id.ts",
+   "importado_por": 46
   },
   {
    "arquivo": "src/stores/useComparisonStore.ts",

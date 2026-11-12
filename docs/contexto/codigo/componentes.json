@@ -4458,7 +4458,7 @@
     "ProductFormFullscreen"
    ],
    "export_default": null,
-   "linhas": 632,
+   "linhas": 656,
    "dominio": "components/admin",
    "hooks_locais": [
     "useProductFormDraft",
@@ -4700,7 +4700,7 @@
     "ProductFlagsSection"
    ],
    "export_default": null,
-   "linhas": 212,
+   "linhas": 215,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -7862,7 +7862,7 @@
     "RecentKitsWidget"
    ],
    "export_default": null,
-   "linhas": 112,
+   "linhas": 113,
    "dominio": "components/dashboard",
    "hooks_locais": [
     "useAuth"
@@ -8366,7 +8366,7 @@
     "FavoritesViewHeader"
    ],
    "export_default": null,
-   "linhas": 131,
+   "linhas": 138,
    "dominio": "components/favorites",
    "hooks_locais": [],
    "tabelas": [],
@@ -9185,7 +9185,7 @@
     "FutureStockDialog"
    ],
    "export_default": null,
-   "linhas": 729,
+   "linhas": 727,
    "dominio": "components/inventory",
    "hooks_locais": [],
    "tabelas": [],
@@ -9366,7 +9366,7 @@
     "StockAlertsIndicator"
    ],
    "export_default": null,
-   "linhas": 531,
+   "linhas": 532,
    "dominio": "components/inventory",
    "hooks_locais": [
     "useLowStockAlerts",
@@ -9672,7 +9672,7 @@
     "VariantStockRowActions"
    ],
    "export_default": null,
-   "linhas": 337,
+   "linhas": 340,
    "dominio": "components/inventory",
    "hooks_locais": [
     "useComparisonStore",
@@ -10228,7 +10228,7 @@
     "KitStockForecastCard"
    ],
    "export_default": null,
-   "linhas": 86,
+   "linhas": 87,
    "dominio": "components/kit-builder",
    "hooks_locais": [
     "useKitStockForecast"
@@ -12154,9 +12154,11 @@
     "ProductPriceSimulator"
    ],
    "export_default": "ProductPriceSimulator",
-   "linhas": 443,
+   "linhas": 489,
    "dominio": "components/pricing",
-   "hooks_locais": [],
+   "hooks_locais": [
+    "useCustomizationPriceCalculator"
+   ],
    "tabelas": [],
    "edges": [],
    "usado_por": 3,
@@ -12168,9 +12170,10 @@
     "QuantityPriceCalculator"
    ],
    "export_default": "QuantityPriceCalculator",
-   "linhas": 277,
+   "linhas": 324,
    "dominio": "components/pricing",
    "hooks_locais": [
+    "useCustomizationPriceCalculator",
     "useCustomizationPricing"
    ],
    "tabelas": [],
@@ -13044,7 +13047,7 @@
     "ProductListProps"
    ],
    "export_default": null,
-   "linhas": 332,
+   "linhas": 335,
    "dominio": "components/products",
    "hooks_locais": [
     "useProductsColorsBatch"
@@ -15499,7 +15502,7 @@
     "StepComparison"
    ],
    "export_default": null,
-   "linhas": 266,
+   "linhas": 273,
    "dominio": "components/simulator",
    "hooks_locais": [],
    "tabelas": [],
@@ -17245,7 +17248,7 @@
     "AdminProductFormPage"
    ],
    "export_default": "AdminProductFormPage",
-   "linhas": 701,
+   "linhas": 706,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useAuditLog"
@@ -17407,7 +17410,7 @@
     "AdminUsuariosPage"
    ],
    "export_default": "AdminUsuariosPage",
-   "linhas": 321,
+   "linhas": 319,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useAuth",
@@ -17689,7 +17692,7 @@
     "PermissionsPage"
    ],
    "export_default": "PermissionsPage",
-   "linhas": 322,
+   "linhas": 333,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useToast"
@@ -17741,7 +17744,7 @@
     "RolePermissionsPage"
    ],
    "export_default": "RolePermissionsPage",
-   "linhas": 475,
+   "linhas": 500,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useToast"
@@ -18004,7 +18007,7 @@
     "BusinessIntelligencePage"
    ],
    "export_default": "BusinessIntelligencePage",
-   "linhas": 392,
+   "linhas": 390,
    "dominio": "pages/bi",
    "hooks_locais": [
     "useBICategoryFocus",
@@ -19143,7 +19146,7 @@
     "FiltersPage"
    ],
    "export_default": "FiltersPage",
-   "linhas": 820,
+   "linhas": 836,
    "dominio": "pages/products",
    "hooks_locais": [
     "useComparisonStore",
@@ -19408,7 +19411,7 @@
     "QuoteBuilderPage"
    ],
    "export_default": "QuoteBuilderPage",
-   "linhas": 826,
+   "linhas": 831,
    "dominio": "pages/quotes",
    "hooks_locais": [
     "useNextQuoteNumberPreview",
@@ -19681,7 +19684,7 @@
     "SimuladorWizard"
    ],
    "export_default": "SimuladorWizard",
-   "linhas": 358,
+   "linhas": 365,
    "dominio": "pages/tools",
    "hooks_locais": [
     "useSimulatorWizard",

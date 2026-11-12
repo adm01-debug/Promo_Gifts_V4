@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-12 23:03 UTC
+
+- **functions** alterado (1): `public.get_sitemap_public(p_limit integer, p_offset integer)`
+
 ## 2026-11-12 11:44 UTC
 
 - **functions** alterado (2): `public.admin_revoke_user_sessions(_user_id uuid)`, `public.has_role(_user_id uuid, _role app_role)`
