@@ -25,7 +25,13 @@ import {
   type CallEdgeOptions,
   type EdgeRole,
 } from "./_live-client";
-import { expectedAnonStatuses, happyPathRole, isDestructive, SUPPORTS_DRY_RUN } from "./_authz";
+import {
+  expectedAnonStatuses,
+  happyPathRole,
+  isDestructive,
+  LENIENT_BODY,
+  SUPPORTS_DRY_RUN,
+} from "./_authz";
 import { errorEnvelopeSchema, type Schema } from "./_schemas";
 
 type Body = CallEdgeOptions["body"];
@@ -132,7 +138,8 @@ export function runLiveSuite(desc: LiveSuiteDescriptor): void {
     const invalids = [...DEFAULT_INVALID, ...(desc.invalidInputs ?? [])];
     for (const inv of invalids) {
       it(`input inválido (${inv.label}) → sem crash 5xx`, async () => {
-        const useRole = inv.role ?? (anon.mode === "reject" ? role : "anon");
+        // LENIENT_BODY: autenticado, a função executaria de verdade com valores padrão.
+        const useRole = inv.role ?? (anon.mode === "reject" && !LENIENT_BODY.has(fn) ? role : "anon");
         // Se o tier exige role e não há credencial, a chamada vira 401 (ainda <500).
         const res = await callEdge(fn, {
           method,
@@ -141,6 +148,8 @@ export function runLiveSuite(desc: LiveSuiteDescriptor): void {
           headers: { ...baseHeaders, ...inv.headers },
           body: inv.body,
         });
+        // 408 sintético = timeout do CLIENTE: a função seguiu executando; não é "4xx de validação".
+        expect(res.timedOut, `${inv.label}: timeout do cliente — a função executou além do limite`).not.toBe(true);
         expectNoCrash(res.status, inv.label);
         // Quando alcançamos o handler autenticado, esperamos 4xx (validação).
         if (useRole !== "anon" && (await getJwt(useRole)) && res.status !== 401 && res.status !== 403) {
