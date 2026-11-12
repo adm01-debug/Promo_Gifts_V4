@@ -436,8 +436,7 @@ async function upsertProducts(
   chunkSize: number,
 ): Promise<UpsertOutcome> {
   const startedAt = Date.now();
-  const normalized = products.map(normalizeProduct);
-  const chunks = chunkArray(normalized, chunkSize);
+  const rawChunks = chunkArray(products, chunkSize);
 
   let created = 0;
   let updated = 0;
@@ -447,22 +446,29 @@ async function upsertProducts(
   const errors: string[] = [];
   const chunk_metrics: UpsertOutcome['chunk_metrics'] = [];
 
-  for (const [index, chunk] of chunks.entries()) {
+  for (const [index, rawChunk] of rawChunks.entries()) {
+    const chunk = rawChunk.map(normalizeProduct);
     const chunkStart = Date.now();
     let chunkRoundtrips = 0;
+    let chunkRejected = 0;
     try {
       const skus = Array.from(new Set(chunk.map((item) => item.sku).filter(Boolean)));
 
-      let existingRows: Array<{ id: string; sku: string | null }> = [];
+      let existingRows: Array<{
+        id: string;
+        sku: string | null;
+        category_id: string | null;
+        supplier_id: string | null;
+      }> = [];
       if (skus.length > 0) {
         // SECURITY (CWE-943): never interpolate caller-controlled sku into the
         // PostgREST `.or()` filter DSL — a value containing ',', ')' or '.' breaks out of
         // the in.(...) list and injects arbitrary filter expressions. Use parameterized
         // `.in()` probes (supabase-js URL-encodes the values) and merge results by id.
-        const byId = new Map<string, { id: string; sku: string | null }>();
+        const byId = new Map<string, (typeof existingRows)[number]>();
         const { data, error } = await supabase
           .from('products')
-          .select('id,sku')
+          .select('id,sku,category_id,supplier_id')
           .in('sku', skus);
         chunkRoundtrips += 1;
         if (error) throw error;
@@ -474,15 +480,62 @@ async function upsertProducts(
         existingRows.filter((row) => row.sku).map((row) => [row.sku as string, row]),
       );
 
+      const bitrixIds = Array.from(
+        new Set(
+          rawChunk
+            .map((raw) => raw.category_id)
+            .filter((id): id is number => typeof id === 'number'),
+        ),
+      );
+      const categoryByBitrixId = new Map<number, string>();
+      if (bitrixIds.length > 0) {
+        const { data: categoryRows, error: categoryError } = await supabase
+          .from('categories')
+          .select('id,bitrix_id')
+          .in('bitrix_id', bitrixIds)
+          .is('deleted_at', null);
+        chunkRoundtrips += 1;
+        if (categoryError) throw categoryError;
+        for (const row of categoryRows ?? []) {
+          if (row.bitrix_id !== null && !categoryByBitrixId.has(row.bitrix_id)) {
+            categoryByBitrixId.set(row.bitrix_id, row.id);
+          }
+        }
+      }
+
       let chunkCreated = 0;
       let chunkUpdated = 0;
+      const rows: NormalizedProduct[] = [];
+      // Kits novos sem categoria resolvida: o trigger fn_auto_classify_kit_product preenche
+      // category_id pelo nome. Vão em lote separado para um NOT NULL não derrubar o chunk.
+      const kitRows: NormalizedProduct[] = [];
 
-      for (const item of chunk) {
+      for (const [itemIndex, item] of chunk.entries()) {
         // 'variations' is NOT a products column (variant data lives in product_variants).
         // Leaving it in the upsert payload 400s the entire chunk (PGRST204), so strip it.
         delete (item as Record<string, unknown>).variations;
         const existing = existingBySku.get(item.sku);
+        const rawCategoryId = rawChunk[itemIndex].category_id;
+        const resolvedCategoryId =
+          item.category_id ??
+          (typeof rawCategoryId === 'number' ? categoryByBitrixId.get(rawCategoryId) ?? null : null);
+        item.category_id = resolvedCategoryId ?? existing?.category_id ?? null;
+        item.supplier_id = item.supplier_id ?? existing?.supplier_id ?? null;
 
+        if (!item.category_id && item.supplier_id && item.is_kit === true && !existing) {
+          kitRows.push(item);
+          continue;
+        }
+
+        if (!item.category_id || !item.supplier_id) {
+          chunkRejected += 1;
+          errors.push(
+            `sku ${item.sku}: ${!item.category_id ? 'category_id' : 'supplier_id'} não resolvido para produto novo`,
+          );
+          continue;
+        }
+
+        rows.push(item);
         if (existing) {
           chunkUpdated += 1;
         } else {
@@ -490,33 +543,50 @@ async function upsertProducts(
         }
       }
 
-      if (chunk.length > 0) {
+      if (rows.length > 0) {
         const { error: upsertBySkuError } = await supabase
           .from('products')
-          .upsert(chunk as never, { onConflict: 'sku', ignoreDuplicates: false });
+          .upsert(rows as never, { onConflict: 'sku', ignoreDuplicates: false });
         chunkRoundtrips += 1;
         if (upsertBySkuError) throw upsertBySkuError;
       }
 
+      if (kitRows.length > 0) {
+        const { error: kitUpsertError } = await supabase
+          .from('products')
+          .upsert(kitRows as never, { onConflict: 'sku', ignoreDuplicates: false });
+        chunkRoundtrips += 1;
+        if (kitUpsertError) {
+          chunkRejected += kitRows.length;
+          errors.push(
+            `kits sem categoria (${kitRows.map((k) => k.sku).join(', ')}): ${kitUpsertError.message}`,
+          );
+        } else {
+          chunkCreated += kitRows.length;
+          rows.push(...kitRows);
+        }
+      }
+
       created += chunkCreated;
       updated += chunkUpdated;
-      processed += chunk.length;
+      failed += chunkRejected;
+      processed += rows.length;
       db_roundtrips += chunkRoundtrips;
 
       const chunkDuration = Date.now() - chunkStart;
       chunk_metrics.push({
         chunk: index + 1,
         received: chunk.length,
-        processed: chunk.length,
+        processed: rows.length,
         duration_ms: chunkDuration,
         db_roundtrips: chunkRoundtrips,
         created: chunkCreated,
         updated: chunkUpdated,
-        failed: 0,
+        failed: chunkRejected,
       });
 
       console.log(
-        `[product-webhook][chunk ${index + 1}] received=${chunk.length} processed=${chunk.length} duration_ms=${chunkDuration} db_roundtrips=${chunkRoundtrips}`,
+        `[product-webhook][chunk ${index + 1}] received=${chunk.length} processed=${rows.length} rejected=${chunkRejected} duration_ms=${chunkDuration} db_roundtrips=${chunkRoundtrips}`,
       );
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : 'Unknown error';

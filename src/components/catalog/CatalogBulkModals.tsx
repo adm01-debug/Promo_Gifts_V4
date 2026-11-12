@@ -3,7 +3,7 @@
  * Single source instead of 3x duplication.
  */
 import { BulkActionBar } from '@/components/products/BulkActionBar';
-import { AddToCollectionModal } from '@/components/collections/AddToCollectionModal';
+import { BulkAddToCollectionModal } from '@/components/inventory/BulkAddToCollectionModal';
 import { BulkAddToCartModal } from '@/components/catalog/BulkAddToCartModal';
 import { BulkVariantWizard } from '@/components/catalog/BulkVariantWizard';
 import type { useCatalogSelection } from './useCatalogSelection';
@@ -38,17 +38,26 @@ export function CatalogBulkModals({ sel, selectionMode, totalCount }: CatalogBul
         />
       )}
 
-      {sel.firstSelectedProduct && (
-        <AddToCollectionModal
-          open={sel.collectionModalOpen}
-          onOpenChange={(open) => {
-            sel.setCollectionModalOpen(open);
-            if (!open) sel.clearSelection();
-          }}
-          productId={sel.firstSelectedId}
-          productName={`${sel.selectedIds?.size || 0} produtos selecionados`}
-        />
-      )}
+      <BulkAddToCollectionModal
+        open={sel.collectionModalOpen}
+        onOpenChange={(open) => {
+          sel.setCollectionModalOpen(open);
+          if (!open) sel.clearSelection();
+        }}
+        rows={(sel.wizardSelections || []).map((s) => ({
+          productId: s.product.id,
+          productName: s.product.name,
+          variant: s.variant
+            ? {
+                color_name: s.variant.color_name,
+                color_hex: s.variant.color_hex,
+                size_code: s.variant.size_code,
+                variant_id: s.variant.id,
+                thumbnail: s.variant.selected_thumbnail,
+              }
+            : undefined,
+        }))}
+      />
 
       <BulkAddToCartModal
         open={sel.cartModalOpen}

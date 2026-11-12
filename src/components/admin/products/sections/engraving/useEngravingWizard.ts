@@ -254,16 +254,21 @@ export function useEngravingWizard(productId: string | undefined, isEdit: boolea
     async (newProductId: string) => {
       const areas = localAreasRef.current;
       if (!areas.length) return;
+      let failed = 0;
       for (const area of areas) {
+        const { _techData: _t, id: _localId, ...row } = area;
         const { error } = await untypedFrom('print_area_techniques').insert({
-          ...area,
-          id: undefined,
+          ...row,
           product_id: newProductId,
         });
-        if (error) logger.error('[useEngravingWizard] flushLocalAreas insert failed:', error);
+        if (error) {
+          logger.error('[useEngravingWizard] flushLocalAreas insert failed:', error);
+          failed += 1;
+        }
       }
       setLocalAreas([]);
       queryClient.invalidateQueries({ queryKey: ['print-area-techniques', newProductId] });
+      if (failed) throw new Error(`${failed} área(s) de gravação não foram salvas`);
     },
     [queryClient],
   );

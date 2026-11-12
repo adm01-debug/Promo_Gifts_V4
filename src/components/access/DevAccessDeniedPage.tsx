@@ -386,7 +386,7 @@ export function DevAccessDeniedPage({
                   // Agente/vendedor → catálogo (área principal de trabalho).
                   // Outros papéis → histórico (mantém UX existente).
                   if (isAgente) {
-                    navigate('/catalogo');
+                    navigate('/produtos');
                   } else {
                     navigate(-1);
                   }

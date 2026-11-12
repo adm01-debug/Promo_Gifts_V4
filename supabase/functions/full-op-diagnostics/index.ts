@@ -233,7 +233,7 @@ Deno.serve(async (req: Request) => {
 
         return admin
           .from("step_up_tokens")
-          .select("id, user_id, action, target_ref, expires_at, used_at, created_at")
+          .select("id, user_id, action, target_ref, expires_at, consumed, consumed_at, created_at")
           .eq("token_hash", hash)
           .maybeSingle();
       });
@@ -254,7 +254,7 @@ Deno.serve(async (req: Request) => {
       } else {
         const row = value.data as {
           user_id: string; action: string; target_ref: string | null;
-          expires_at: string; used_at: string | null;
+          expires_at: string; consumed: boolean; consumed_at: string | null;
         };
         const reasons: string[] = [];
         if (row.user_id !== userId) reasons.push("token pertence a outro usuário");
@@ -263,7 +263,7 @@ Deno.serve(async (req: Request) => {
         if ((row.target_ref ?? null) !== expectedTarget) {
           reasons.push(`target_ref diverge (esperado "${expectedTarget ?? "null"}", token "${row.target_ref ?? "null"}")`);
         }
-        if (row.used_at) reasons.push(`já consumido em ${row.used_at}`);
+        if (row.consumed) reasons.push(`já consumido em ${row.consumed_at ?? "data desconhecida"}`);
         if (new Date(row.expires_at).getTime() <= Date.now()) reasons.push(`expirado em ${row.expires_at}`);
 
         if (reasons.length === 0) {
@@ -289,7 +289,7 @@ Deno.serve(async (req: Request) => {
               action: row.action,
               target_ref: row.target_ref,
               expires_at: row.expires_at,
-              used_at: row.used_at,
+              used_at: row.consumed_at,
             },
             duration_ms: ms,
           });

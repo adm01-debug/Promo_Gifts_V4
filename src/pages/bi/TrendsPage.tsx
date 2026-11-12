@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { TrendingUp, Search, Package, Calendar, RefreshCw, Download } from 'lucide-react';
-import { format, subDays } from 'date-fns';
+import { format, parseISO, subDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { SectionErrorBoundary } from '@/components/errors/SectionErrorBoundary';
@@ -289,7 +289,7 @@ export default function TrendsPage() {
       });
       const current = Array.from(cur.values()).map((d) => ({
         ...d,
-        dateLabel: format(new Date(d.date), 'dd/MM', { locale: ptBR }),
+        dateLabel: format(parseISO(d.date), 'dd/MM', { locale: ptBR }),
       }));
       const previous = Array.from(prev.values()).map((p) => ({
         date: '',
