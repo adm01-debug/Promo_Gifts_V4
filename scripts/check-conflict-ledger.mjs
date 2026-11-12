@@ -63,7 +63,7 @@ function resolveRef(name, baseRef) {
   if (/^[0-9a-f]{40}$/i.test(headSha) && verifyCommit(headSha)) return headSha;
   const p1 = verifyCommit('HEAD^1');
   const p2 = verifyCommit('HEAD^2');
-  if (p2) return p2;
+  if (p2 && p1 && baseRef && p1 === verifyCommit(`origin/${baseRef}`)) return p2;
   for (const cand of [name, `origin/${name}`]) if (verifyCommit(cand)) return cand;
   return name;
 }

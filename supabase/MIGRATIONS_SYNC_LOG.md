@@ -1403,3 +1403,13 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261112011000` | `fix_sb0003_fn_get_rupture_alerts` | `8e081152c457ed572cb3aa349f62027bc7cd461996bb8036f499efb12af6a449` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono) |
+
+## 2026-11-12 — sitemap: EXECUTE de `anon` em `get_sitemap_public` pendente em produção
+
+`/api/sitemap` responde 503 porque `anon` perdeu EXECUTE em `public.get_sitemap_public(integer, integer)` (verificado via
+`has_function_privilege` em 2026-11-12): a SEC-003 (`20261101160001`) alterou a função e o event trigger
+`evt_auto_revoke_secdef_public_execute` revogou o grant de `20260909201000`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261112130000` | `fix_get_sitemap_public_anon_grant` | `81e3c7900b74f7de043556d412dae21248e538f70aca73ad1b85f190b6627f52` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
