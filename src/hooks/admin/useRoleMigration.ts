@@ -10,6 +10,7 @@
  */
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { untypedRpc } from '@/lib/supabase-untyped';
 import type { Database } from '@/integrations/supabase/types';
 
 export type AppRole = Database['public']['Enums']['app_role'];
@@ -86,11 +87,11 @@ export function useRoleMigration() {
     }) => {
       setSubmitting(true);
       try {
-        const { data, error } = await supabase.rpc('admin_execute_role_migration_batch', {
+        // untypedRpc: a RPC nasce em 20261112120600 e ainda não está em types.ts gerado.
+        const { data, error } = await untypedRpc('admin_execute_role_migration_batch', {
           _label: params.label,
           _reason: params.reason,
-          _items:
-            params.items as unknown as Database['public']['Tables']['role_migration_items']['Row'][],
+          _items: params.items,
           _dry_run: params.dryRun,
         });
         if (error) throw error;

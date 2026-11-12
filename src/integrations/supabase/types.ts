@@ -58259,15 +58259,6 @@ export type Database = {
           user_id: string
         }[]
       }
-      admin_execute_role_migration_batch: {
-        Args: {
-          _dry_run?: boolean
-          _items: Json
-          _label: string
-          _reason: string
-        }
-        Returns: string
-      }
       admin_revoke_user_sessions: {
         Args: { _user_id: string }
         Returns: undefined
