@@ -195,17 +195,24 @@ Deno.test("search em contacts e contact_emails (vendedor) aplica o escopo", asyn
   assert(u.includes("contacts!inner(user_id)") && u.includes(`contacts.user_id=eq.${CRM_UID}`), u);
 });
 
-Deno.test("customers: vendedor sempre negado (select, search e batch) sem consultar a tabela; supervisor lê", async () => {
+Deno.test("customers: vendedor só vê os dele (vendedor_id) em select/search/batch; filtro por company_id aceito; supervisor lê tudo", async () => {
   reset();
   const s = await call({ operation: "select", table: "customers", filters: { company_id: "c1" } });
-  assertEquals(s.status, 403);
-  assert(String(s.body.error).includes("supervisor"), JSON.stringify(s.body));
+  assertEquals(s.status, 200, JSON.stringify(s.body));
+  const su = lastData(s.calls, "customers");
+  assert(su.includes(`vendedor_id=eq.${CRM_UID}`) && su.includes("company_id=eq.c1"), su);
   const q = await call({ operation: "search", table: "customers", search: { column: "name", term: "x" } });
-  assertEquals(q.status, 403);
+  assertEquals(q.status, 200);
+  assert(lastData(q.calls, "customers").includes(`vendedor_id=eq.${CRM_UID}`), lastData(q.calls, "customers"));
   const b = await call({ operation: "batch", queries: [{ table: "customers" }] });
-  assertEquals(b.body.results[0].status, 403);
-  for (const r of [s, q, b]) assertEquals(lastData(r.calls, "customers"), "");
+  assertEquals(b.body.results[0].success, true, JSON.stringify(b.body));
+  assert(lastData(b.calls, "customers").includes(`vendedor_id=eq.${CRM_UID}`), lastData(b.calls, "customers"));
+  // filtro do cliente em vendedor_id de OUTRO não amplia: os dois filtros somam (AND)
+  const o = await call({ operation: "select", table: "customers", filters: { vendedor_id: "outro" } });
+  const ou = lastData(o.calls, "customers");
+  assert(ou.includes(`vendedor_id=eq.${CRM_UID}`), ou);
   reset(); ROLE = "supervisor";
-  const ok = await call({ operation: "select", table: "customers" });
+  const ok = await call({ operation: "select", table: "customers", filters: { company_id: "c1" } });
   assertEquals(ok.status, 200);
+  assert(!lastData(ok.calls, "customers").includes("vendedor_id"), lastData(ok.calls, "customers"));
 });
