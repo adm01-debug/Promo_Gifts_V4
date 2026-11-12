@@ -51,7 +51,7 @@ export async function validateKitFitsForQuote(
       // fits=null means no dimension data — fail-open: skip, do not violate
       if (
         row.fits === false ||
-        (row.fits !== null && usedLiters + lineVolume > row.packaging_volume)
+        (qty > 1 && row.fits !== null && usedLiters + lineVolume > row.packaging_volume)
       ) {
         violations.push({
           itemId: item.id,

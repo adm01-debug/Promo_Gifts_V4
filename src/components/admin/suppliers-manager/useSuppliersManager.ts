@@ -1,4 +1,4 @@
-import { dbInvokeSingle, dbInvokeDelete } from '@/lib/db/postgrest';
+import { dbInvokeDelete } from '@/lib/db/postgrest';
 import { untypedFrom } from '@/lib/supabase-untyped';
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { applyPixMask, validatePixKey } from '@/utils/pixMask';
@@ -501,15 +501,20 @@ export function useSuppliersManager() {
       if (isNew) {
         payload.organization_id = ORGANIZATION_ID;
         payload.created_at = now;
-        await dbInvokeSingle({ table: 'suppliers', operation: 'insert', data: payload });
+        // RETURNING só de `id`: authenticated não tem SELECT table-level em suppliers (api_credentials).
+        const { error: insertErr } = await untypedFrom('suppliers')
+          .insert(payload)
+          .select('id')
+          .single();
+        if (insertErr) throw insertErr;
         toast.success(`Fornecedor "${editingSupplier.name}" criado`);
       } else {
-        await dbInvokeSingle({
-          table: 'suppliers',
-          operation: 'update',
-          id: editingSupplier.id,
-          data: payload,
-        });
+        const { error: updateErr } = await untypedFrom('suppliers')
+          .update(payload)
+          .eq('id', editingSupplier.id)
+          .select('id')
+          .single();
+        if (updateErr) throw updateErr;
         toast.success(`Fornecedor "${editingSupplier.name}" atualizado`);
       }
       setEditingSupplier(null);

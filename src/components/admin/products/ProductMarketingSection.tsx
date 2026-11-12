@@ -76,12 +76,11 @@ async function saveProductTags(productId: string, tags: ProductTags): Promise<vo
   };
 
   // FIX-BRIDGE-01: migrated from bridge to dbInvoke (REST native write)
-  const { data, error } = await untypedFrom('products')
+  // v_products_public view doesn't have 'tags' in its generated types, so use untypedFrom.
+  const { error } = await untypedFrom('v_products_public')
     .update({ tags: payload })
-    .eq('id', productId)
-    .select('id');
+    .eq('id', productId);
   if (error) throw new Error(error.message);
-  if (!data?.length) throw new Error('Sem permissão para atualizar este produto');
 }
 
 type CategoryKey = keyof ProductTags;

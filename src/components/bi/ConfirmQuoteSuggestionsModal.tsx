@@ -89,6 +89,7 @@ export function ConfirmQuoteSuggestionsModal({
     navigate('/orcamentos/novo', {
       state: {
         fromCart: true,
+        handoffSource: 'fromBiSuggestions',
         companyId: clientId,
         companyName: clientName,
         items: selectedItems.map((s) => ({

@@ -155,6 +155,7 @@ export default function ComparePage() {
     navigate('/orcamentos/novo', {
       state: {
         fromCart: true,
+        handoffSource: 'fromCompare',
         companyId: client?.id,
         companyName: client?.name,
         items: compareEntries.map(({ product: p, variant: v }) => ({

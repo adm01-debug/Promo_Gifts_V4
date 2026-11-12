@@ -506,6 +506,9 @@ async function upsertProducts(
       let chunkCreated = 0;
       let chunkUpdated = 0;
       const rows: NormalizedProduct[] = [];
+      // Kits novos sem categoria resolvida: o trigger fn_auto_classify_kit_product preenche
+      // category_id pelo nome. Vão em lote separado para um NOT NULL não derrubar o chunk.
+      const kitRows: NormalizedProduct[] = [];
 
       for (const [itemIndex, item] of chunk.entries()) {
         // 'variations' is NOT a products column (variant data lives in product_variants).
@@ -518,6 +521,11 @@ async function upsertProducts(
           (typeof rawCategoryId === 'number' ? categoryByBitrixId.get(rawCategoryId) ?? null : null);
         item.category_id = resolvedCategoryId ?? existing?.category_id ?? null;
         item.supplier_id = item.supplier_id ?? existing?.supplier_id ?? null;
+
+        if (!item.category_id && item.supplier_id && item.is_kit === true && !existing) {
+          kitRows.push(item);
+          continue;
+        }
 
         if (!item.category_id || !item.supplier_id) {
           chunkRejected += 1;
@@ -541,6 +549,22 @@ async function upsertProducts(
           .upsert(rows as never, { onConflict: 'sku', ignoreDuplicates: false });
         chunkRoundtrips += 1;
         if (upsertBySkuError) throw upsertBySkuError;
+      }
+
+      if (kitRows.length > 0) {
+        const { error: kitUpsertError } = await supabase
+          .from('products')
+          .upsert(kitRows as never, { onConflict: 'sku', ignoreDuplicates: false });
+        chunkRoundtrips += 1;
+        if (kitUpsertError) {
+          chunkRejected += kitRows.length;
+          errors.push(
+            `kits sem categoria (${kitRows.map((k) => k.sku).join(', ')}): ${kitUpsertError.message}`,
+          );
+        } else {
+          chunkCreated += kitRows.length;
+          rows.push(...kitRows);
+        }
       }
 
       created += chunkCreated;

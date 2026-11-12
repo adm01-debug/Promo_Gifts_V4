@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -46,8 +47,10 @@ interface PromptEditorProps {
   edited: { prompt_text: string; ai_model: string };
   hasChanges: boolean;
   saving: boolean;
+  changeNote: string;
   onChangePrompt: (v: string) => void;
   onChangeModel: (v: string) => void;
+  onChangeNote: (v: string) => void;
   onSave: () => void;
   onHistory: () => void;
   onTest: () => void;
@@ -59,8 +62,10 @@ export function PromptEditor({
   edited,
   hasChanges,
   saving,
+  changeNote,
   onChangePrompt,
   onChangeModel,
+  onChangeNote,
   onSave,
   onHistory,
   onTest,
@@ -118,6 +123,19 @@ export function PromptEditor({
           />
         </div>
         <div className="flex items-end gap-3">
+          {hasChanges && (
+            <div className="max-w-sm flex-1">
+              <Label className="mb-1 block text-xs text-muted-foreground">
+                Nota da alteração (opcional)
+              </Label>
+              <Input
+                value={changeNote}
+                onChange={(e) => onChangeNote(e.target.value)}
+                placeholder="Ex: Ajustei regra de posicionamento..."
+                className="h-9 text-sm"
+              />
+            </div>
+          )}
           <div className="ml-auto flex gap-2">
             <Button variant="outline" size="sm" onClick={onTest}>
               <Eye className="mr-1 h-4 w-4" />

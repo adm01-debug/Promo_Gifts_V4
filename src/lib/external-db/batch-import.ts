@@ -87,7 +87,8 @@ export function sanitizeImportRow(row: ImportRow): Record<string, unknown> {
   };
   const out: Record<string, unknown> = { ...rest, organization_id: ORGANIZATION_ID };
   if (image_url && !out.primary_image_url) out.primary_image_url = String(image_url);
-  if (dimensions && !out.dimensions_display) out.dimensions_display = String(dimensions);
+  if (dimensions && !out.dimensions_display)
+    out.dimensions_display = String(dimensions).slice(0, 255);
   return out;
 }
 

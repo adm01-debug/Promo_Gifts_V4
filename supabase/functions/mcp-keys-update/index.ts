@@ -15,7 +15,7 @@ import {
   isFullAccess,
 } from "../_shared/mcp-scopes.ts";
 import { getOrCreateRequestId, REQUEST_ID_HEADER } from "../_shared/request-id.ts";
-import { writeAuditEntry, summarizePayload, extractRequestMeta } from "../_shared/audit-log.ts";
+import { writeAuditEntry, summarizePayload, extractRequestMeta, insertFullScopeGrant } from "../_shared/audit-log.ts";
 import { recordMcpViolation, mapViolationReason } from "../_shared/mcp-violations.ts";
 import { castRpcResult } from "../_shared/supabase-client-adapter.ts";
 
@@ -293,7 +293,7 @@ Deno.serve(async (req) => {
     // Auditoria explícita de concessão FULL (escalada)
     if (escalating) {
       try {
-        const { error: auditErr } = await userClient.rpc("log_full_scope_grant", {
+        const grantArgs = {
           _operation: "escalate",
           _key_id: updated.id,
           _key_prefix: updated.key_prefix,
@@ -307,7 +307,9 @@ Deno.serve(async (req) => {
             previous_scopes: current.scopes,
             new_scopes: updated.scopes,
           },
-        });
+        };
+        const { error: rpcErr } = await userClient.rpc("log_full_scope_grant", grantArgs);
+        const auditErr = rpcErr ? (await insertFullScopeGrant(admin, userId as string, grantArgs)).error : null;
         if (auditErr) throw auditErr;
       } catch (e) {
         await writeAuditEntry(admin, {

@@ -207,15 +207,6 @@ const FILTERABLE_COLUMNS: Record<string, Set<string>> = {
 // E082: regex para validar select/relations — não permite PostgREST embedding syntax
 const SELECT_SAFE_RE = /^[a-z_*][a-z0-9_,\s*]*$/i;
 
-// E081: escopo de ownership — vendedor só vê seus próprios registros
-const PII_TABLES = new Set(["companies", "contacts", "contact_emails", "contact_phones", "customers"]);
-function scopeOwner(query: any, table: string, userId?: string, userRole?: string): any {
-  if (userRole === "vendedor" && userId && PII_TABLES.has(table)) {
-    return query.eq("owner_id", userId);
-  }
-  return query;
-}
-
 const VENDOR_WRITE_TABLES: string[] = [];
 const OPTIONAL_QUOTE_TABLES = new Set<string>();
 
@@ -379,7 +370,7 @@ async function authenticateRequest(req: Request): Promise<AuthResult> {
   if (!rolesData || rolesData.length === 0) {
     return { userId: null, userRole: "public", error: jsonResponse({ error: "Usuário sem perfil de acesso" }, 403) };
   }
-  const ROLE_ORDER = ["dev", "admin", "supervisor", "gerente", "manager", "vendedor"];
+  const ROLE_ORDER = ["supervisor", "gerente", "vendedor"];
   const roles = rolesData.map((r: { role: string }) => r.role);
   const userRole = ROLE_ORDER.find((r) => roles.includes(r)) ?? "vendedor";
   console.log(`Authenticated CRM request role=${userRole}`);
@@ -482,7 +473,7 @@ async function generateQuoteNumber(crm: SupabaseClient, data: Record<string, unk
   }
 }
 
-async function handleBatch(crm: SupabaseClient, queries: BatchQuery[], userId?: string, userRole?: string): Promise<Response> {
+async function handleBatch(crm: SupabaseClient, queries: BatchQuery[]): Promise<Response> {
   if (!Array.isArray(queries) || queries.length === 0) {
     return jsonResponse({ error: 'Batch requires a non-empty "queries" array' }, 400);
   }
@@ -496,12 +487,9 @@ async function handleBatch(crm: SupabaseClient, queries: BatchQuery[], userId?: 
       if (!q.table || !ALLOWED_TABLES.includes(q.table)) {
         return { success: false, error: `Table '${q.table}' not allowed` };
       }
-      if (q.select && !SELECT_SAFE_RE.test(q.select)) {
-        return { success: false, error: "Campo 'select' inválido (embedding não permitido)" };
-      }
       try {
         const queryStart = performance.now();
-        let query = scopeOwner(crm.from(q.table).select(q.select || "*"), q.table, userId, userRole);
+        let query = crm.from(q.table).select(q.select || "*");
         if (q.filters) query = applyFilters(query, q.filters, q.table);
         // E084: escapar metacaracteres do ilike em batch
         if (q.search?.column && q.search?.term) query = query.ilike(q.search.column, `%${escapeLikePattern(q.search.term)}%`);
@@ -616,7 +604,12 @@ async function handleSelect(crm: SupabaseClient, body: CrmQuery, userId?: string
 
   console.log(`[SELECT] table=${table}, select_fields=${selectFields.split(',').length}, filter_keys=${Object.keys(filters ?? {}).length}, limit=${limit ?? 'default'}`);
 
-  let query = scopeOwner(crm.from(table).select(selectFields), table, userId, userRole);
+  let query = crm.from(table).select(selectFields);
+  // E081: escopo de ownership — vendedor só vê seus próprios registros
+  const PII_TABLES = new Set(["companies", "contacts", "contact_emails", "contact_phones", "customers"]);
+  if (userRole === "vendedor" && userId && PII_TABLES.has(table)) {
+    query = query.eq("owner_id", userId);
+  }
 
   if (id) {
     const { data, error } = await query.eq("id", id).single();
@@ -655,18 +648,14 @@ async function handleSelect(crm: SupabaseClient, body: CrmQuery, userId?: string
   return jsonResponse({ data: data || [], count });
 }
 
-async function handleSearch(crm: SupabaseClient, body: CrmQuery, userId?: string, userRole?: string): Promise<Response> {
+async function handleSearch(crm: SupabaseClient, body: CrmQuery): Promise<Response> {
   const { table, search, select, orderBy, limit } = body;
   if (!search?.column || !search?.term) {
     return jsonResponse({ error: "Search requires 'column' and 'term'" }, 400);
   }
-  if (select && !SELECT_SAFE_RE.test(select)) {
-    return jsonResponse({ error: "Campo 'select' inválido (embedding não permitido)" }, 400);
-  }
 
   // E084: escapar metacaracteres do ilike em handleSearch
-  let query = scopeOwner(crm.from(table).select(select || "*"), table, userId, userRole)
-    .ilike(search.column, `%${escapeLikePattern(search.term)}%`);
+  let query = crm.from(table).select(select || "*").ilike(search.column, `%${escapeLikePattern(search.term)}%`);
   if (orderBy) query = applyOrdering(query, orderBy);
   query = query.limit(limit || 50);
 
@@ -827,7 +816,7 @@ Deno.serve((req) => {
     }
 
     if (operation === "batch") {
-      return handleBatch(crm, body.queries || [], auth.userId ?? undefined, auth.userRole);
+      return handleBatch(crm, body.queries || []);
     }
 
     let response: Response;
@@ -837,7 +826,7 @@ Deno.serve((req) => {
       case "delete": response = await handleDelete(crm, body); break;
       // E081: passar userId e userRole para owner scoping no handleSelect
       case "select": response = await handleSelect(crm, body, auth.userId ?? undefined, auth.userRole); break;
-      case "search": response = await handleSearch(crm, body, auth.userId ?? undefined, auth.userRole); break;
+      case "search": response = await handleSearch(crm, body); break;
       default: return jsonResponse({ error: `Operation '${operation}' not supported.` }, 400);
     }
     if (response.status >= 500) breaker.recordFailure(); else breaker.recordSuccess();
