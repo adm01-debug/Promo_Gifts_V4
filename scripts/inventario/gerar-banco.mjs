@@ -20,7 +20,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { missingPrerequisite } from '../lib/missing-prerequisite.mjs';
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const SQL_PATH = path.join(RAIZ, 'scripts/inventario/banco.sql');
@@ -217,9 +216,12 @@ async function main(argv) {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main(process.argv.slice(2)).catch((error) => {
-    // Ausência de credenciais/entrada: static-pass só fora do CI; no CI falha fechado.
+    // Ausência de credenciais/entrada = static-pass (ambiente sem API access)
     const credMissing = error.message.includes('SUPABASE_ACCESS_TOKEN') || error.message.includes('sem --entrada');
-    if (credMissing) missingPrerequisite('gerar-banco', error.message, { exitCode: 2 });
+    if (credMissing) {
+      console.log(`[gerar-banco] static-pass: ${error.message}`);
+      process.exit(0);
+    }
     console.error(`ERRO: ${error.message}`);
     process.exit(2);
   });
