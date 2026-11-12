@@ -153,7 +153,7 @@ export function useRecentIncidents() {
   return useQuery({
     queryKey: ['connections-recent-incidents'],
     queryFn: fetchIncidents,
-    enabled: rolesLoaded && isAdmin,  // garante JWT pronto + permissão admin
+    enabled: rolesLoaded && isAdmin, // garante JWT pronto + permissão admin
     refetchInterval: 60_000,
     staleTime: 30_000,
     retry: 0,

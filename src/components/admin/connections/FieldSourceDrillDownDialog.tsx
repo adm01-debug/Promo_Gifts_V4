@@ -13,9 +13,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
 
 export type FieldSourceKind =
-  | 'ambos (sync trigger)'
-  | 'external_connections'
-  | 'integration_credentials';
+  'ambos (sync trigger)' | 'external_connections' | 'integration_credentials';
 
 export type FieldDrillDownSample = {
   /** Identificador da linha amostrada (ex.: nome do secret, env_key, id da conexão) */

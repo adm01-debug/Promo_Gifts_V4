@@ -62,8 +62,10 @@ export function useBadgesManager() {
 
   const createBadge = useMutation({
     mutationFn: async (payload: BadgeDefinitionInsert) => {
-      const { error } = await untypedFrom<BadgeDefinition>('product_badge_definitions')
-        .insert({ ...payload, is_system: false } as Record<string, unknown>);
+      const { error } = await untypedFrom<BadgeDefinition>('product_badge_definitions').insert({
+        ...payload,
+        is_system: false,
+      } as Record<string, unknown>);
       if (error) throw error;
     },
     onSuccess: () => {

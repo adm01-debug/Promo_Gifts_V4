@@ -179,9 +179,7 @@ export function ExternalConnectionsSyncLogPanel() {
                         Processadas:{' '}
                         <strong className="tabular-nums">{r.records_processed ?? 0}</strong>
                       </span>
-                      <span className="text-destructive">
-                        {r.records_failed ?? 0} falharam
-                      </span>
+                      <span className="text-destructive">{r.records_failed ?? 0} falharam</span>
                     </div>
 
                     {r.connection_name && (

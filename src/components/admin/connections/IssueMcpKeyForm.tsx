@@ -364,15 +364,27 @@ export function IssueMcpKeyForm({ onIssued }: Props) {
       </div>
 
       <AlertDialog open={confirmRootOpen} onOpenChange={setConfirmRootOpen}>
-        <AlertDialogContent className="!max-w-lg w-[92vw] gap-0 overflow-hidden rounded-xl border border-border/60 bg-card/95 p-0 shadow-xl backdrop-blur-xl" data-testid="mcp-key-issue-form-dialog">
-          <div aria-hidden="true" className="h-[3px] w-full bg-gradient-to-r from-transparent via-destructive to-transparent" />
+        <AlertDialogContent
+          className="w-[92vw] !max-w-lg gap-0 overflow-hidden rounded-xl border border-border/60 bg-card/95 p-0 shadow-xl backdrop-blur-xl"
+          data-testid="mcp-key-issue-form-dialog"
+        >
+          <div
+            aria-hidden="true"
+            className="h-[3px] w-full bg-gradient-to-r from-transparent via-destructive to-transparent"
+          />
           <div className="px-4 pb-1.5 pt-4">
             <AlertDialogHeader>
               <div className="flex items-start gap-3">
                 <div className="relative flex-shrink-0">
-                  <span aria-hidden="true" className="absolute inset-0 -z-10 rounded-xl blur-lg opacity-60 bg-destructive/30" />
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 -z-10 rounded-xl bg-destructive/30 opacity-60 blur-lg"
+                  />
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-destructive/10 ring-1 ring-inset ring-destructive/20">
-                    <AlertTriangle className="h-[18px] w-[18px] text-destructive" strokeWidth={2.2} />
+                    <AlertTriangle
+                      className="h-[18px] w-[18px] text-destructive"
+                      strokeWidth={2.2}
+                    />
                   </div>
                 </div>
                 <div className="min-w-0 flex-1 space-y-1 pt-0.5">
@@ -382,16 +394,22 @@ export function IssueMcpKeyForm({ onIssued }: Props) {
                   <AlertDialogDescription asChild>
                     <div className="space-y-2 text-xs leading-relaxed text-muted-foreground">
                       <p>
-                        O escopo <code className="rounded bg-muted px-1 font-mono">*</code> concede acesso <strong className="text-foreground">total</strong> a este sistema, equivalente ao papel de <strong className="text-foreground">superusuário</strong>:
+                        O escopo <code className="rounded bg-muted px-1 font-mono">*</code> concede
+                        acesso <strong className="text-foreground">total</strong> a este sistema,
+                        equivalente ao papel de{' '}
+                        <strong className="text-foreground">superusuário</strong>:
                       </p>
                       <ul className="list-disc space-y-1 pl-4">
-                        <li>Ler e escrever em qualquer tabela (CRM, orçamentos, catálogo, usuários)</li>
+                        <li>
+                          Ler e escrever em qualquer tabela (CRM, orçamentos, catálogo, usuários)
+                        </li>
                         <li>Disparar funções administrativas e jobs internos</li>
                         <li>Modificar configurações de segurança e integrações</li>
                         <li>Agir em nome de qualquer usuário autenticado</li>
                       </ul>
                       <p className="text-foreground">
-                        Esta chave aparecerá em <strong>todos os logs de auditoria</strong> com seu nome como emissor.
+                        Esta chave aparecerá em <strong>todos os logs de auditoria</strong> com seu
+                        nome como emissor.
                       </p>
                     </div>
                   </AlertDialogDescription>
@@ -420,7 +438,10 @@ export function IssueMcpKeyForm({ onIssued }: Props) {
           </div>
           <div className="mt-3 border-t border-border/50 bg-muted/20 px-4 py-2.5">
             <AlertDialogFooter className="gap-1.5 sm:gap-1.5">
-              <AlertDialogCancel disabled={submitting} className="mt-0 h-[26px] min-h-[26px] rounded-md border-border/70 bg-transparent px-3 py-0 text-xs">
+              <AlertDialogCancel
+                disabled={submitting}
+                className="mt-0 h-[26px] min-h-[26px] rounded-md border-border/70 bg-transparent px-3 py-0 text-xs"
+              >
                 Cancelar
               </AlertDialogCancel>
               <AlertDialogAction

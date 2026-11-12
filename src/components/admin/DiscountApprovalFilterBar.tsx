@@ -231,7 +231,11 @@ export function applyDiscountApprovalFilters<
     status?: string;
     created_at: string;
     seller_notes?: string | null;
-    quotes?: { quote_number?: string | null; client_name?: string | null; client_company?: string | null } | null;
+    quotes?: {
+      quote_number?: string | null;
+      client_name?: string | null;
+      client_company?: string | null;
+    } | null;
   },
 >(rows: T[], filters: DiscountApprovalFilters): T[] {
   return rows.filter((r) => {

@@ -138,7 +138,7 @@ export function useIncidentTimeline72h() {
   return useQuery({
     queryKey: ['connections-incident-timeline-72h'],
     queryFn: fetchTimeline72h,
-    enabled: rolesLoaded && isAdmin,  // garante JWT pronto + permissão admin
+    enabled: rolesLoaded && isAdmin, // garante JWT pronto + permissão admin
     refetchInterval: 60_000,
     staleTime: 30_000,
     retry: 0,

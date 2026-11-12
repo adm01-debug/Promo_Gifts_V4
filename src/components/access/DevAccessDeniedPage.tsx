@@ -57,13 +57,7 @@ function localButtonClass(
 }
 
 export type DevAccessUserRole =
-  | string
-  | 'agent'
-  | 'agente'
-  | 'supervisor'
-  | 'vendedor'
-  | null
-  | undefined;
+  string | 'agent' | 'agente' | 'supervisor' | 'vendedor' | null | undefined;
 
 interface DevAccessDeniedPageProps {
   user: { id: string; email?: string | null };
