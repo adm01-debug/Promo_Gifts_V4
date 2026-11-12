@@ -2,9 +2,14 @@
  * QuantityPriceCalculator — Main orchestrator.
  * Sub-components extracted to calculator/ folder.
  */
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { useCustomizationPricing, type PriceCalculation } from '@/hooks/simulation';
+import {
+  isDimensionRequiredError,
+  useCustomizationPriceCalculator,
+} from '@/hooks/simulation/useCustomizationPrice';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -34,6 +39,10 @@ interface QuantityPriceCalculatorProps {
 export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorProps) {
   const navigate = useNavigate();
   const { isLoading: pricingLoading } = useCustomizationPricing();
+  const { calculatePriceDetailed: calculateEngravingPrice } = useCustomizationPriceCalculator();
+  // Guarda contra duplo clique enquanto os preços das gravações são calculados.
+  const creatingRef = useRef(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   const [selectedProduct, setSelectedProduct] = useState<CalcProduct | null>(null);
   const [selectedConfigs, setSelectedConfigs] = useState<SelectedTechniqueConfig[]>([]);
@@ -93,32 +102,69 @@ export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorPr
     [customQuantities.length],
   );
 
-  const handleCreateQuote = useCallback(() => {
-    if (!selectedProduct) return;
-    navigate('/orcamentos/novo', {
-      state: {
-        fromSimulator: true,
-        simulationData: {
-          product: {
-            id: selectedProduct.id,
-            name: selectedProduct.name,
-            sku: selectedProduct.sku,
-            imageUrl: selectedProduct.images?.[0],
-            price: selectedProduct.price,
-          },
-          quantity: Math.min(...customQuantities),
-          personalizations: selectedConfigs.map((c) => ({
-            technique: { id: c.technique.techniqueId, name: c.technique.techniqueName },
-            location: {
-              locationCode: c.technique.locationCode,
-              locationName: c.technique.locationName,
+  const handleCreateQuote = useCallback(async () => {
+    if (!selectedProduct || creatingRef.current) return;
+    creatingRef.current = true;
+    setIsCreating(true);
+    try {
+      const quantity = Math.min(...customQuantities);
+      const results = await Promise.all(
+        selectedConfigs.map((c) =>
+          calculateEngravingPrice({
+            areaId: c.technique.techniqueId,
+            quantidade: quantity,
+            numCores: c.colors,
+          }),
+        ),
+      );
+      const prices = results.map((r) => r.result);
+      // Falha de rede/RPC bloqueia como antes; só a técnica com faixa por dimensão
+      // (sem largura/altura aqui) segue sem preço e é informada no orçamento.
+      if (results.some((r) => !r.result && !isDimensionRequiredError(r.error))) {
+        toast.error('Não foi possível calcular o preço da gravação. Tente novamente.');
+        return;
+      }
+      const missing = prices.filter((p) => !p).length;
+      if (missing > 0) {
+        toast.warning(
+          `Preço de ${missing} gravação(ões) não calculado — informe largura e altura no orçamento.`,
+        );
+      }
+      navigate('/orcamentos/novo', {
+        state: {
+          fromSimulator: true,
+          simulationData: {
+            product: {
+              id: selectedProduct.id,
+              name: selectedProduct.name,
+              sku: selectedProduct.sku,
+              imageUrl: selectedProduct.images?.[0],
+              price: selectedProduct.price,
             },
-            specs: { colors: c.colors },
-          })),
+            quantity,
+            personalizations: selectedConfigs.map((c, i) => ({
+              technique: { id: c.technique.techniqueId, name: c.technique.techniqueName },
+              location: {
+                locationCode: c.technique.locationCode,
+                locationName: c.technique.locationName,
+              },
+              specs: { colors: c.colors },
+              pricing: prices[i]
+                ? {
+                    setupPrice: prices[i]?.setup_total,
+                    unitPrice: prices[i]?.preco_unitario,
+                    totalPrice: prices[i]?.total_cobrado,
+                  }
+                : undefined,
+            })),
+          },
         },
-      },
-    });
-  }, [navigate, selectedProduct, selectedConfigs, customQuantities]);
+      });
+    } finally {
+      creatingRef.current = false;
+      setIsCreating(false);
+    }
+  }, [navigate, selectedProduct, selectedConfigs, customQuantities, calculateEngravingPrice]);
 
   if (pricingLoading)
     return (
@@ -262,6 +308,7 @@ export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorPr
               size="lg"
               className="w-full gap-2 font-display font-semibold"
               onClick={handleCreateQuote}
+              disabled={isCreating}
             >
               <FileText className="h-5 w-5" />
               Criar Orçamento a partir desta Simulação

@@ -8,6 +8,8 @@ import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
+import { dbInvoke } from '@/lib/db/postgrest';
+import { logger } from '@/lib/logger';
 import { useFavoritesStore } from '@/stores/useFavoritesStore';
 import { useComparisonStore } from '@/stores/useComparisonStore';
 import type { ProductStockSummary, VariantStock } from '@/types/stock';
@@ -22,7 +24,7 @@ export interface StockSelectionRow {
  * de uma linha de estoque. SSOT — qualquer mudança de schema do payload
  * deve passar por aqui para não dar drift entre bulk e single-row.
  */
-export function buildQuoteItemPayload(r: StockSelectionRow) {
+export function buildQuoteItemPayload(r: StockSelectionRow, productPrice?: number) {
   return {
     product_id: r.product.productId,
     product_name: r.product.productName,
@@ -33,12 +35,37 @@ export function buildQuoteItemPayload(r: StockSelectionRow) {
     color_hex: r.variant.colorHex ?? null,
     size_code: r.variant.sizeCode ?? null,
     product_image: r.variant.imageUrl ?? r.product.productImageUrl ?? '',
+    product_price: productPrice,
   };
 }
 
 /** `items[]=<encoded-json>` para uma linha. */
-export function buildQuoteParam(r: StockSelectionRow): string {
-  return `items[]=${encodeURIComponent(JSON.stringify(buildQuoteItemPayload(r)))}`;
+export function buildQuoteParam(r: StockSelectionRow, productPrice?: number): string {
+  return `items[]=${encodeURIComponent(JSON.stringify(buildQuoteItemPayload(r, productPrice)))}`;
+}
+
+/**
+ * Preço de venda por produto (`sale_price` de v_products_public — `base_price` não existe na view).
+ * Nunca lança: se a consulta falhar, o atalho "Orçar" segue sem preço (comportamento anterior).
+ */
+export async function fetchQuoteSalePrices(productIds: string[]): Promise<Map<string, number>> {
+  const ids = Array.from(new Set(productIds));
+  try {
+    const { records } = await dbInvoke<{
+      id: string;
+      sale_price: number | string | null;
+    }>({
+      table: 'products',
+      operation: 'select',
+      select: 'id, sale_price',
+      filters: { id: ids },
+      limit: ids.length,
+    });
+    return new Map(records.map((p) => [p.id, Number(p.sale_price) || 0]));
+  } catch (err) {
+    logger.warn('[useStockSelection] falha ao buscar preços para orçamento', err);
+    return new Map();
+  }
 }
 
 /** Chave estável por SKU (product+variant) usada no Set de seleção. */
@@ -149,10 +176,13 @@ export function useStockSelection(rows: StockSelectionRow[]) {
     }
   }, [selectedRows, compCompareItems, compAddToCompare, clear]);
 
-  const bulkQuote = useCallback(() => {
+  const bulkQuote = useCallback(async () => {
     if (selectedRows.length === 0) return;
     try {
-      const params = selectedRows.map((r) => buildQuoteParam(r)).join('&');
+      const prices = await fetchQuoteSalePrices(selectedRows.map((r) => r.product.productId));
+      const params = selectedRows
+        .map((r) => buildQuoteParam(r, prices.get(r.product.productId)))
+        .join('&');
       navigate(`/orcamentos/novo?${params}`);
       toast.success(
         `${selectedRows.length} ${selectedRows.length === 1 ? 'item enviado' : 'itens enviados'} para orçamento`,
