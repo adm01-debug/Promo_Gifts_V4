@@ -77,7 +77,7 @@ export function ClientOverview360({ clientId }: Props) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         {bi.isMock ? (
           <Badge variant="secondary" className="gap-1 text-[10px]">
-            <Sparkles className="h-3 w-3" /> Dados simulados · em breve dados reais
+            <Sparkles className="h-3 w-3" /> Sem pedidos registrados
           </Badge>
         ) : (
           <span />

@@ -1,11 +1,10 @@
 /**
  * useClientBI — orquestra estatísticas 360° do cliente.
- * Tenta dados reais (orders); se vazio, retorna mock com flag `isMock: true`.
+ * Tenta dados reais (orders); se vazio, retorna zeros com flag `isMock: true` (sem histórico).
  * Sprint 3: também calcula deltas vs período anterior (90d atual vs 90d anteriores).
  */
 import { useMemo } from 'react';
 import { useClientOrdersHistory } from '@/hooks/bi/useClientOrdersHistory';
-import { MOCK_CLIENT_STATS } from '@/lib/bi/mockData';
 
 export interface PeriodDelta {
   ltvDeltaPct: number;
@@ -52,32 +51,22 @@ export function useClientBI(clientId?: string): ClientBI {
 
   return useMemo(() => {
     if (!data || data.ordersCount === 0) {
-      const mockOrders = MOCK_CLIENT_STATS.recentOrders.map((o) => ({
-        ...o,
-        isAnomaly: false,
-        deviation: 0,
-      }));
+      // Sem histórico real: zeros e listas vazias, nunca números simulados
+      const empty = { ltv: 0, avgTicket: 0, ordersCount: 0 };
       return {
         isMock: true,
-        ...MOCK_CLIENT_STATS,
-        recentOrders: mockOrders,
-        lastOrderDate: MOCK_CLIENT_STATS.lastOrderDate,
-        daysSinceLastOrder: MOCK_CLIENT_STATS.daysSinceLastOrder,
-        current90d: {
-          ltv: MOCK_CLIENT_STATS.ltv * 0.35,
-          avgTicket: MOCK_CLIENT_STATS.avgTicket,
-          ordersCount: Math.max(1, Math.floor(MOCK_CLIENT_STATS.ordersCount * 0.3)),
-        },
-        previous90d: {
-          ltv: MOCK_CLIENT_STATS.ltv * 0.28,
-          avgTicket: MOCK_CLIENT_STATS.avgTicket * 0.92,
-          ordersCount: Math.max(1, Math.floor(MOCK_CLIENT_STATS.ordersCount * 0.25)),
-        },
+        ...empty,
+        lastOrderDate: null,
+        daysSinceLastOrder: null,
+        topCategories: [],
+        recentOrders: [],
+        current90d: empty,
+        previous90d: empty,
         delta: {
-          ltvDeltaPct: 25,
-          avgTicketDeltaPct: 8,
-          ordersCountDeltaPct: 20,
-          hasPreviousData: true,
+          ltvDeltaPct: 0,
+          avgTicketDeltaPct: 0,
+          ordersCountDeltaPct: 0,
+          hasPreviousData: false,
         },
         isLoading,
       };
