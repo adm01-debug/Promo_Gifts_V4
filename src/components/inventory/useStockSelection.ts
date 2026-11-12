@@ -45,7 +45,7 @@ export function buildQuoteParam(r: StockSelectionRow, productPrice?: number): st
 }
 
 /**
- * Preço de venda por produto — mesma regra da busca do Quote Builder (`sale_price ?? base_price`).
+ * Preço de venda por produto (`sale_price` de v_products_public — `base_price` não existe na view).
  * Nunca lança: se a consulta falhar, o atalho "Orçar" segue sem preço (comportamento anterior).
  */
 export async function fetchQuoteSalePrices(productIds: string[]): Promise<Map<string, number>> {
@@ -54,15 +54,14 @@ export async function fetchQuoteSalePrices(productIds: string[]): Promise<Map<st
     const { records } = await dbInvoke<{
       id: string;
       sale_price: number | string | null;
-      base_price: number | string | null;
     }>({
       table: 'products',
       operation: 'select',
-      select: 'id, sale_price, base_price',
+      select: 'id, sale_price',
       filters: { id: ids },
       limit: ids.length,
     });
-    return new Map(records.map((p) => [p.id, Number(p.sale_price ?? p.base_price) || 0]));
+    return new Map(records.map((p) => [p.id, Number(p.sale_price) || 0]));
   } catch (err) {
     logger.warn('[useStockSelection] falha ao buscar preços para orçamento', err);
     return new Map();

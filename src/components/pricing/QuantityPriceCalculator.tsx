@@ -2,7 +2,7 @@
  * QuantityPriceCalculator — Main orchestrator.
  * Sub-components extracted to calculator/ folder.
  */
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useCustomizationPricing, type PriceCalculation } from '@/hooks/simulation';
@@ -37,6 +37,9 @@ export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorPr
   const navigate = useNavigate();
   const { isLoading: pricingLoading } = useCustomizationPricing();
   const { calculatePrice: calculateEngravingPrice } = useCustomizationPriceCalculator();
+  // Guarda contra duplo clique enquanto os preços das gravações são calculados.
+  const creatingRef = useRef(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   const [selectedProduct, setSelectedProduct] = useState<CalcProduct | null>(null);
   const [selectedConfigs, setSelectedConfigs] = useState<SelectedTechniqueConfig[]>([]);
@@ -97,49 +100,62 @@ export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorPr
   );
 
   const handleCreateQuote = useCallback(async () => {
-    if (!selectedProduct) return;
-    const quantity = Math.min(...customQuantities);
-    const prices = await Promise.all(
-      selectedConfigs.map((c) =>
-        calculateEngravingPrice({
-          areaId: c.technique.techniqueId,
-          quantidade: quantity,
-          numCores: c.colors,
-        }),
-      ),
-    );
-    if (prices.some((p) => !p)) {
-      toast.error('Não foi possível calcular o preço da gravação. Tente novamente.');
-      return;
-    }
-    navigate('/orcamentos/novo', {
-      state: {
-        fromSimulator: true,
-        simulationData: {
-          product: {
-            id: selectedProduct.id,
-            name: selectedProduct.name,
-            sku: selectedProduct.sku,
-            imageUrl: selectedProduct.images?.[0],
-            price: selectedProduct.price,
+    if (!selectedProduct || creatingRef.current) return;
+    creatingRef.current = true;
+    setIsCreating(true);
+    try {
+      const quantity = Math.min(...customQuantities);
+      const prices = await Promise.all(
+        selectedConfigs.map((c) =>
+          calculateEngravingPrice({
+            areaId: c.technique.techniqueId,
+            quantidade: quantity,
+            numCores: c.colors,
+          }),
+        ),
+      );
+      // Técnica com faixa por dimensão (sem largura/altura aqui) não tem preço: segue sem
+      // bloquear o handoff e o preço dessa gravação é informado no orçamento.
+      const missing = prices.filter((p) => !p).length;
+      if (missing > 0) {
+        toast.warning(
+          `Preço de ${missing} gravação(ões) não calculado — informe largura e altura no orçamento.`,
+        );
+      }
+      navigate('/orcamentos/novo', {
+        state: {
+          fromSimulator: true,
+          simulationData: {
+            product: {
+              id: selectedProduct.id,
+              name: selectedProduct.name,
+              sku: selectedProduct.sku,
+              imageUrl: selectedProduct.images?.[0],
+              price: selectedProduct.price,
+            },
+            quantity,
+            personalizations: selectedConfigs.map((c, i) => ({
+              technique: { id: c.technique.techniqueId, name: c.technique.techniqueName },
+              location: {
+                locationCode: c.technique.locationCode,
+                locationName: c.technique.locationName,
+              },
+              specs: { colors: c.colors },
+              pricing: prices[i]
+                ? {
+                    setupPrice: prices[i]?.setup_total,
+                    unitPrice: prices[i]?.preco_unitario,
+                    totalPrice: prices[i]?.total_cobrado,
+                  }
+                : undefined,
+            })),
           },
-          quantity,
-          personalizations: selectedConfigs.map((c, i) => ({
-            technique: { id: c.technique.techniqueId, name: c.technique.techniqueName },
-            location: {
-              locationCode: c.technique.locationCode,
-              locationName: c.technique.locationName,
-            },
-            specs: { colors: c.colors },
-            pricing: {
-              setupPrice: prices[i]?.setup_total,
-              unitPrice: prices[i]?.preco_unitario,
-              totalPrice: prices[i]?.total_cobrado,
-            },
-          })),
         },
-      },
-    });
+      });
+    } finally {
+      creatingRef.current = false;
+      setIsCreating(false);
+    }
   }, [navigate, selectedProduct, selectedConfigs, customQuantities, calculateEngravingPrice]);
 
   if (pricingLoading)
@@ -284,6 +300,7 @@ export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorPr
               size="lg"
               className="w-full gap-2 font-display font-semibold"
               onClick={handleCreateQuote}
+              disabled={isCreating}
             >
               <FileText className="h-5 w-5" />
               Criar Orçamento a partir desta Simulação

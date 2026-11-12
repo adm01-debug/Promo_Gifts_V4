@@ -11,7 +11,7 @@ import { useToast } from '@/hooks/ui';
 import { Shield, Key, Save, Users, CheckCircle2, XCircle } from 'lucide-react';
 import type { Database } from '@/integrations/supabase/types';
 import { PageSEO } from '@/components/seo/PageSEO';
-import { sanitizeError } from '@/lib/security/sanitize-error';
+import { RlsDeniedError, sanitizeError } from '@/lib/security/sanitize-error';
 import { cn } from '@/lib/utils';
 
 type AppRole = Database['public']['Enums']['app_role'];
@@ -149,7 +149,19 @@ export default function RolePermissionsPage() {
           .select('id');
         if (delErr) throw delErr;
         if (!deleted || deleted.length === 0) {
-          throw new Error('Sem permissão para alterar permissões por papel (somente dev).');
+          // 0 linhas: ou a RLS negou, ou outro admin já removeu (estado desejado já no banco).
+          const { data: stillThere, error: chkErr } = await supabase
+            .from('role_permissions')
+            .select('id')
+            .eq('role', item.role)
+            .eq('permission_code', item.permission_code)
+            .limit(1);
+          if (chkErr) throw chkErr;
+          if (stillThere && stillThere.length > 0) {
+            throw new RlsDeniedError(
+              'Sem permissão para alterar permissões por papel (somente dev).',
+            );
+          }
         }
         remaining.delete(`${item.role}-${item.permission_code}`);
       }
@@ -165,7 +177,11 @@ export default function RolePermissionsPage() {
       setPendingChanges(new Map());
       fetchData();
     } catch (error: unknown) {
-      toast({ title: 'Erro ao salvar', description: sanitizeError(error), variant: 'destructive' });
+      toast({
+        title: 'Erro ao salvar',
+        description: sanitizeError(error),
+        variant: 'destructive',
+      });
       setPendingChanges(remaining);
       fetchData();
     } finally {

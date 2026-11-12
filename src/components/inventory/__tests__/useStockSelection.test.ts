@@ -431,6 +431,8 @@ describe('bulkQuote', () => {
     expect(mockDbInvoke).toHaveBeenCalledWith(
       expect.objectContaining({ table: 'products', filters: { id: ['p1'] } }),
     );
+    // v_products_public (alias de products) não tem base_price — select com ela dá 400.
+    expect(mockDbInvoke.mock.calls[0][0].select).toBe('id, sale_price');
     expect(decodeURIComponent(mockNavigate.mock.calls[0][0])).toContain('"product_price":12.5');
   });
   it('nada se seleção vazia', async () => {

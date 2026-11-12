@@ -32,7 +32,7 @@ import { useToast } from '@/hooks/ui';
 import { Key, Plus, Edit, Trash2 } from 'lucide-react';
 import { BackButton } from '@/components/common/BackButton';
 import { PageSEO } from '@/components/seo/PageSEO';
-import { sanitizeError } from '@/lib/security/sanitize-error';
+import { RlsDeniedError, sanitizeError } from '@/lib/security/sanitize-error';
 
 interface Permission {
   code: string;
@@ -109,7 +109,7 @@ export default function PermissionsPage() {
           .select('code');
         if (error) throw error;
         if (!updated || updated.length === 0) {
-          throw new Error('Sem permissão para alterar permissões (somente dev).');
+          throw new RlsDeniedError('Sem permissão para alterar permissões (somente dev).');
         }
         toast({ title: 'Permissão atualizada com sucesso' });
       } else {
@@ -150,7 +150,7 @@ export default function PermissionsPage() {
         .select('code');
       if (error) throw error;
       if (!deleted || deleted.length === 0) {
-        throw new Error('Sem permissão para excluir permissões (somente dev).');
+        throw new RlsDeniedError('Sem permissão para excluir permissões (somente dev).');
       }
       toast({ title: 'Permissão excluída com sucesso' });
       fetchPermissions();

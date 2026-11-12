@@ -219,14 +219,24 @@ export function useQuoteBuilderState() {
   );
 
   const [hasIncomingHandoff] = useState(() => {
+    // Mesmos critérios dos efeitos de handoff abaixo: handoff vazio/inválido não
+    // suprime o restore (senão a 1ª edição sobrescreve o rascunho em silêncio).
     const state: unknown = location.state;
+    const field = (k: string): unknown =>
+      typeof state === 'object' && state !== null ? Reflect.get(state, k) : undefined;
+    const nonEmpty = (v: unknown) => Array.isArray(v) && v.length > 0;
+    const simulationData = field('simulationData');
     const hasStateHandoff =
-      typeof state === 'object' &&
-      state !== null &&
-      ['fromSimulator', 'fromCart', 'fromCollection'].some((k) => Boolean(Reflect.get(state, k)));
+      (Boolean(field('fromSimulator')) &&
+        typeof simulationData === 'object' &&
+        simulationData !== null &&
+        Boolean(Reflect.get(simulationData, 'product'))) ||
+      (Boolean(field('fromCart')) && nonEmpty(field('items'))) ||
+      (Boolean(field('fromCollection')) && nonEmpty(field('preloadProducts')));
+    const urlClientId = searchParams.get('clientId');
     return Boolean(
       hasStateHandoff ||
-      searchParams.get('clientId') ||
+      (urlClientId && /^[0-9a-f-]{36}$/i.test(urlClientId)) ||
       searchParams.getAll('items[]').length > 0 ||
       searchParams.get('product_id') ||
       searchParams.get('productId'),

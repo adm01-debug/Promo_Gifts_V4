@@ -195,8 +195,10 @@ export function useWorkspaceNotifications() {
       const targetSearch = opts.search ?? search;
       const targetCategory = opts.category ?? category;
       const targetUnreadOnly = opts.unreadOnly ?? unreadOnly;
-      const targetStartDate = opts.startDate ?? (dateRange.from ? startOfDay(dateRange.from).toISOString() : undefined);
-      const targetEndDate = opts.endDate ?? (dateRange.to ? endOfDay(dateRange.to).toISOString() : undefined);
+      const targetStartDate =
+        opts.startDate ?? (dateRange.from ? startOfDay(dateRange.from).toISOString() : undefined);
+      const targetEndDate =
+        opts.endDate ?? (dateRange.to ? endOfDay(dateRange.to).toISOString() : undefined);
       const offset = (targetPage - 1) * limit;
 
       const hasData = notificationsLengthRef.current > 0;

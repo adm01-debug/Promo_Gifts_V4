@@ -674,10 +674,10 @@ export async function fetchCategoryRanking(args: {
         marketDepleted: 0,
         totalScore: 0,
       };
-      e.marketDepleted += Math.round(
+      // Acumula sem arredondar: arredondar por produto zerava saídas pequenas em períodos curtos.
+      e.marketDepleted +=
         (Number(useWindow30 ? snap.total_depleted_30d : snap.total_depleted_90d) || 0) *
-          windowFactor,
-      );
+        windowFactor;
       categoryMap.set(cat.catId, e);
     });
   } catch (e) {
@@ -685,6 +685,9 @@ export async function fetchCategoryRanking(args: {
   }
 
   const items = Array.from(categoryMap.values());
+  items.forEach((i) => {
+    i.marketDepleted = Math.round(i.marketDepleted);
+  });
   const maxR = Math.max(1, ...items.map((i) => i.internalRevenue));
   const maxD = Math.max(1, ...items.map((i) => i.marketDepleted));
   items.forEach((i) => {
