@@ -31,11 +31,8 @@ test.describe('Global Search Comprehensive', () => {
 
   test('Voice search shortcut Ctrl+Shift+V', async ({ page }) => {
     // Open palette first (shortcut works both open and closed, but tooltip is in palette trigger)
-    await page.keyboard.down('Control');
-    await page.keyboard.down('Shift');
-    await page.keyboard.press('v');
-    await page.keyboard.up('Shift');
-    await page.keyboard.up('Control');
+    // useGlobalSearch.ts:301 compara e.key === 'V'; press('v') com Shift segurado emite key 'v' no Playwright
+    await page.keyboard.press('Control+Shift+V');
 
     // Overlay de voz: role=dialog com nome estável (VoiceSearchOverlay.tsx:219-221); o h2 varia com a fase do microfone
     await expect(page.getByRole('dialog', { name: 'Fale com o Flow' })).toBeVisible();
