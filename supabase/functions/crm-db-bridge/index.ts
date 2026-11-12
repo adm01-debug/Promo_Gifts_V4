@@ -194,8 +194,8 @@ const ALLOWED_TABLES = [
 
 // E084: colunas filtráveis por tabela — evita varredura cega de colunas não indexadas
 const FILTERABLE_COLUMNS: Record<string, Set<string>> = {
-  companies: new Set(["id", "name", "owner_id", "created_at", "updated_at", "type"]),
-  contacts: new Set(["id", "name", "owner_id", "company_id", "created_at", "updated_at"]),
+  companies: new Set(["id", "name", "user_id", "created_at", "updated_at", "type"]),
+  contacts: new Set(["id", "name", "user_id", "company_id", "created_at", "updated_at"]),
   company_addresses: new Set(["id", "company_id", "owner_id"]),
   company_social_media: new Set(["id", "company_id", "owner_id"]),
   contact_emails: new Set(["id", "contact_id", "owner_id", "email"]),
@@ -475,7 +475,36 @@ async function generateQuoteNumber(crm: SupabaseClient, data: Record<string, unk
   }
 }
 
-async function handleBatch(crm: SupabaseClient, queries: BatchQuery[]): Promise<Response> {
+
+/** Limite de ids do pai (contatos do vendedor) usados no filtro `in` das tabelas filhas. */
+const OWNER_VIA_MAX_IDS = 1000;
+
+/**
+ * Aplica o escopo E081 (vendedor só vê os dele) a uma query de leitura. Devolve a query
+ * filtrada, ou `deny` (403), ou `empty` (vendedor sem registros-pai: resultado vazio sem
+ * consultar a tabela filha). Mesma regra para select, search e batch.
+ */
+async function applyOwnerScope(
+  crm: SupabaseClient,
+  query: any,
+  table: string,
+  userRole?: string,
+  userId?: string,
+): Promise<{ kind: "ok"; query: any } | { kind: "deny" } | { kind: "empty" }> {
+  const scope = crmOwnerScope(table, userRole, userId);
+  if (scope.kind === "none") return { kind: "ok", query };
+  if (scope.kind === "deny") return { kind: "deny" };
+  if (scope.kind === "filter") return { kind: "ok", query: query.eq(scope.column, scope.value) };
+  const { data, error } = await crm.from(scope.parent).select("id").eq(scope.parentColumn, scope.value).limit(OWNER_VIA_MAX_IDS);
+  if (error) throw new Error(`escopo de dono via ${scope.parent}: ${error.message}`);
+  const ids = (data ?? []).map((r: { id: string }) => r.id);
+  if (!ids.length) return { kind: "empty" };
+  return { kind: "ok", query: query.in(scope.fk, ids) };
+}
+
+const OWNER_DENY_MESSAGE = "Leitura desta tabela do CRM requer perfil supervisor";
+
+async function handleBatch(crm: SupabaseClient, queries: BatchQuery[], userId?: string, userRole?: string): Promise<Response> {
   if (!Array.isArray(queries) || queries.length === 0) {
     return jsonResponse({ error: 'Batch requires a non-empty "queries" array' }, 400);
   }
@@ -491,7 +520,11 @@ async function handleBatch(crm: SupabaseClient, queries: BatchQuery[]): Promise<
       }
       try {
         const queryStart = performance.now();
-        let query = crm.from(q.table).select(q.select || "*");
+        // E081: mesmo escopo de dono do select (vendedor só vê os dele)
+        const scoped = await applyOwnerScope(crm, crm.from(q.table).select(q.select || "*"), q.table, userRole, userId);
+        if (scoped.kind === "deny") return { success: false, error: OWNER_DENY_MESSAGE, status: 403 };
+        if (scoped.kind === "empty") return { success: true, data: { records: [], count: 0 } };
+        let query = scoped.query;
         if (q.filters) query = applyFilters(query, q.filters, q.table);
         // E084: escapar metacaracteres do ilike em batch
         if (q.search?.column && q.search?.term) query = query.ilike(q.search.column, `%${escapeLikePattern(q.search.term)}%`);
@@ -606,17 +639,13 @@ async function handleSelect(crm: SupabaseClient, body: CrmQuery, userId?: string
 
   console.log(`[SELECT] table=${table}, select_fields=${selectFields.split(',').length}, filter_keys=${Object.keys(filters ?? {}).length}, limit=${limit ?? 'default'}`);
 
-  let query = crm.from(table).select(selectFields);
   // E081: escopo de ownership — vendedor só vê seus próprios registros.
   // BUGFIX: usava `owner_id`, coluna inexistente no CRM (500 em produção);
-  // a coluna real é `user_id`. Tabelas PII sem coluna de dono → 403.
-  const scope = crmOwnerScope(table, userRole, userId);
-  if (scope.kind === "deny") {
-    return jsonResponse({ error: "Leitura desta tabela do CRM requer perfil supervisor" }, 403);
-  }
-  if (scope.kind === "filter") {
-    query = query.eq(scope.column, scope.value);
-  }
+  // a coluna real é `user_id`; e-mails/telefones seguem o dono do contato.
+  const scoped = await applyOwnerScope(crm, crm.from(table).select(selectFields), table, userRole, userId);
+  if (scoped.kind === "deny") return jsonResponse({ error: OWNER_DENY_MESSAGE }, 403);
+  if (scoped.kind === "empty") return id ? jsonResponse({ error: "not found" }, 404) : jsonResponse({ data: [], count: 0 });
+  let query = scoped.query;
 
   if (id) {
     const { data, error } = await query.eq("id", id).single();
@@ -655,14 +684,21 @@ async function handleSelect(crm: SupabaseClient, body: CrmQuery, userId?: string
   return jsonResponse({ data: data || [], count });
 }
 
-async function handleSearch(crm: SupabaseClient, body: CrmQuery): Promise<Response> {
+async function handleSearch(crm: SupabaseClient, body: CrmQuery, userId?: string, userRole?: string): Promise<Response> {
   const { table, search, select, orderBy, limit } = body;
   if (!search?.column || !search?.term) {
     return jsonResponse({ error: "Search requires 'column' and 'term'" }, 400);
   }
+  if (select && !SELECT_SAFE_RE.test(select)) {
+    return jsonResponse({ error: "Campo 'select' inválido (embedding não permitido)" }, 400);
+  }
 
+  // E081: busca respeita o mesmo escopo de dono do select (antes devolvia a base inteira)
+  const scoped = await applyOwnerScope(crm, crm.from(table).select(select || "*"), table, userRole, userId);
+  if (scoped.kind === "deny") return jsonResponse({ error: OWNER_DENY_MESSAGE }, 403);
+  if (scoped.kind === "empty") return jsonResponse({ data: [], count: 0 });
   // E084: escapar metacaracteres do ilike em handleSearch
-  let query = crm.from(table).select(select || "*").ilike(search.column, `%${escapeLikePattern(search.term)}%`);
+  let query = scoped.query.ilike(search.column, `%${escapeLikePattern(search.term)}%`);
   if (orderBy) query = applyOrdering(query, orderBy);
   query = query.limit(limit || 50);
 
@@ -823,7 +859,7 @@ Deno.serve((req) => {
     }
 
     if (operation === "batch") {
-      return handleBatch(crm, body.queries || []);
+      return handleBatch(crm, body.queries || [], auth.userId ?? undefined, auth.userRole);
     }
 
     let response: Response;
@@ -833,7 +869,7 @@ Deno.serve((req) => {
       case "delete": response = await handleDelete(crm, body); break;
       // E081: passar userId e userRole para owner scoping no handleSelect
       case "select": response = await handleSelect(crm, body, auth.userId ?? undefined, auth.userRole); break;
-      case "search": response = await handleSearch(crm, body); break;
+      case "search": response = await handleSearch(crm, body, auth.userId ?? undefined, auth.userRole); break;
       default: return jsonResponse({ error: `Operation '${operation}' not supported.` }, 400);
     }
     if (response.status >= 500) breaker.recordFailure(); else breaker.recordSuccess();

@@ -57,10 +57,17 @@ describe('crm-db-bridge — escopo de ownership usa a coluna real do CRM', () =>
     });
   });
 
-  it('vendedor em tabela PII sem coluna de dono é negado (403), não 500', () => {
-    for (const table of ['contact_emails', 'contact_phones', 'customers']) {
-      expect(crmOwnerScope(table, 'vendedor', 'u1')).toEqual({ kind: 'deny' });
+  it('e-mails/telefones do contato seguem o dono do contato (regra do dono, 12/11)', () => {
+    for (const table of ['contact_emails', 'contact_phones']) {
+      expect(crmOwnerScope(table, 'vendedor', 'u1')).toEqual({
+        kind: 'via', parent: 'contacts', parentColumn: 'user_id', fk: 'contact_id', value: 'u1',
+      });
     }
+  });
+
+  it('vendedor em tabela PII sem dono nem pai com dono (customers) é negado (403), não 500', () => {
+    expect(crmOwnerScope('customers', 'vendedor', 'u1')).toEqual({ kind: 'deny' });
+    expect(crmOwnerScope('contacts', 'vendedor', undefined)).toEqual({ kind: 'deny' });
   });
 
   it('roles amplas e tabelas sem PII não recebem filtro', () => {
@@ -72,6 +79,10 @@ describe('crm-db-bridge — escopo de ownership usa a coluna real do CRM', () =>
   it('o handler não filtra mais por owner_id', () => {
     expect(bridgeSource).not.toMatch(/\.eq\(\s*["']owner_id["']/);
     expect(bridgeSource).toContain('crmOwnerScope(table, userRole, userId)');
+    // o MESMO escopo vale para select, search e batch (antes search/batch devolviam a base inteira)
+    expect(bridgeSource.match(/await applyOwnerScope\(/g)?.length).toBe(3);
+    expect(bridgeSource).toContain('handleSearch(crm, body, auth.userId ?? undefined, auth.userRole)');
+    expect(bridgeSource).toContain('handleBatch(crm, body.queries || [], auth.userId ?? undefined, auth.userRole)');
     expect(bridgeSource).toContain('resolveCrmRole(roles)');
   });
 });

@@ -38,21 +38,36 @@ export const CRM_OWNER_COLUMN: Readonly<Record<string, string>> = {
   contacts: "user_id",
 };
 
+/**
+ * Tabelas sem coluna de dono própria, cujo dono é o do registro pai (regra do dono, 12/11:
+ * "vendedor só vê os dele" — e-mails/telefones do contato seguem o dono do contato).
+ */
+export const CRM_OWNER_VIA: Readonly<Record<string, { parent: string; fk: string }>> = {
+  contact_emails: { parent: "contacts", fk: "contact_id" },
+  contact_phones: { parent: "contacts", fk: "contact_id" },
+};
+
 export type CrmOwnerScope =
   | { kind: "none" }
   | { kind: "filter"; column: string; value: string }
+  | { kind: "via"; parent: string; parentColumn: string; fk: string; value: string }
   | { kind: "deny" };
 
 /**
  * Decide o escopo de leitura:
  *  - role ampla ou tabela sem PII → sem filtro;
  *  - vendedor em tabela PII com coluna de dono → filtra pela coluna real;
+ *  - vendedor em tabela filha (e-mails/telefones) → filtra pelos ids do pai que são dele;
  *  - vendedor em tabela PII sem coluna de dono → nega (403), em vez de
  *    devolver PII sem escopo ou estourar 500 por coluna inexistente.
  */
 export function crmOwnerScope(table: string, userRole?: string, userId?: string): CrmOwnerScope {
   if (userRole !== "vendedor" || !CRM_PII_TABLES.has(table)) return { kind: "none" };
+  if (!userId) return { kind: "deny" };
   const column = CRM_OWNER_COLUMN[table];
-  if (!column || !userId) return { kind: "deny" };
-  return { kind: "filter", column, value: userId };
+  if (column) return { kind: "filter", column, value: userId };
+  const via = CRM_OWNER_VIA[table];
+  const parentColumn = via ? CRM_OWNER_COLUMN[via.parent] : undefined;
+  if (via && parentColumn) return { kind: "via", parent: via.parent, parentColumn, fk: via.fk, value: userId };
+  return { kind: "deny" };
 }
