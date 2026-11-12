@@ -37,7 +37,7 @@ const CLONE_DIR = join(process.env.XDG_CACHE_HOME || join(homedir(), '.cache'), 
 
 function parseArgs(argv) {
   const [cmd = 'run', ...rest] = argv;
-  const o = { cmd, unsafe: false, listOnly: false, event: 'pull_request', base: 'origin/main', sha: 'HEAD', all: false, workflows: [], exclude: [], jobs: 2, timeout: 90, secrets: null, withE2E: false, strict: false, run: 'latest', json: false };
+  const o = { cmd, unsafe: false, listOnly: false, event: 'pull_request', base: 'origin/main', sha: 'HEAD', all: false, workflows: [], exclude: [], jobs: 2, timeout: 90, secrets: null, withE2E: false, strict: false, run: 'latest', json: false, trusted: false };
   for (let i = 0; i < rest.length; i++) {
     const a = rest[i];
     const next = () => rest[++i];
@@ -55,6 +55,7 @@ function parseArgs(argv) {
     else if (a === '--run') o.run = next();
     else if (a === '--json') o.json = true;
     else if (a === '--unsafe') o.unsafe = true;
+    else if (a === '--codigo-confiavel') o.trusted = true;
     else if (a === '--list') o.listOnly = true;
     else if (a === '-h' || a === '--help') o.cmd = 'help';
     else throw new Error(`argumento desconhecido: ${a}`);
@@ -223,6 +224,14 @@ function finish(report, dir, o) {
 const HEAVY = /playwright\s+test|run test:e2e|lhci|lighthouse|stryker|mutation/i;
 
 async function cmdFast(o) {
+  // O modo nativo roda os passos com os SEUS privilégios (o bwrap reduz, mas 5 rodadas de revisão
+  // adversarial acharam fugas). Por isso só roda código que você confia (seu próprio commit).
+  // Código de outro branch/agente/PR: use o modo act (contêiner) — `npm run ci:local`.
+  if (!o.trusted) {
+    console.error('✋ ci:local:fast executa os passos do workflow no seu computador. Só use em código seu e confiável:');
+    console.error('   npm run ci:local:fast -- --codigo-confiavel   (código de outros: npm run ci:local, em contêiner)');
+    return 2;
+  }
   const inv = buildInventory(ROOT);
   const files = changedFiles(o.base, o.sha);
   let sel = selectWorkflows(inv, { event: 'pull_request', branch: headRef(), baseBranch: o.base.replace(/^origin\//, ''), changedFiles: files, all: o.all }).filter((s) => s.run);
