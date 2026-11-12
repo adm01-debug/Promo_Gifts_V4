@@ -147,9 +147,14 @@ jobs:
         with:
           node-version-file: .nvmrc
 
+      # Pinado no setup-cli anterior ao bump da #3330: com 689adcf o `supabase migration list`
+      # deste job saiu pareado de forma diferente (local_only=1159 / remote_only=678, contra
+      # 1902 alinhadas com 45a513f no mesmo dia e mesma CLI 2.101.0), bloqueando o Gate E40.
+      # Conferido por arquivo × ledger (12/11): só 10 remote_only, todos na allowlist.
+      # Só reavaliar o bump junto com o parser de scripts/check-supabase-migration-ledger.mjs.
       - name: Install Supabase CLI
         if: steps.guard.outputs.enabled == 'true'
-        uses: supabase/setup-cli@689adcfb80d947100a1eab127289b97d1fb07b13 # v2
+        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
         with:
           version: 2.101.0
 
