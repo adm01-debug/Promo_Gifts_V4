@@ -24,6 +24,18 @@ describe('Sel.quote.addProductButton', () => {
       'data-testid="product-search-input"',
     );
   });
+
+  it('e2e/quotes/color-required.spec.ts abre o diálogo pelo seletor real', () => {
+    const spec = read('e2e/quotes/color-required.spec.ts');
+    expect(spec).toContain('page.locator(Sel.quote.addProductButton)');
+    expect(spec).not.toContain("getByTestId('quote-add-product-button')");
+
+    const dialog = /waitForTestIdVisible\(page, '([^']+)'\)/.exec(spec);
+    expect(dialog).not.toBeNull();
+    expect(read('src/components/quotes/QuoteBuilderProductSearch.tsx')).toContain(
+      `data-testid="${dialog![1]}"`,
+    );
+  });
 });
 
 describe('Sel.quote — seletores do fluxo de aprovação de desconto', () => {
