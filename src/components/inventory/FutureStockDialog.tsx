@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { differenceInCalendarDays, parseISO } from 'date-fns';
 import {
   Truck,
   Search,
@@ -98,7 +99,7 @@ const DATE_RANGE_LABELS: Record<DateRange, string> = {
 
 function formatDate(dateStr: string): string {
   try {
-    return new Date(dateStr).toLocaleDateString('pt-BR', {
+    return parseISO(dateStr).toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: 'short',
       year: 'numeric',
@@ -110,15 +111,14 @@ function formatDate(dateStr: string): string {
 
 function formatShortDate(dateStr: string): string {
   try {
-    return new Date(dateStr).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+    return parseISO(dateStr).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
   } catch {
     return dateStr;
   }
 }
 
 function daysUntil(dateStr: string): number {
-  const diff = new Date(dateStr).getTime() - Date.now();
-  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+  return differenceInCalendarDays(parseISO(dateStr), new Date());
 }
 
 function getDaysLabel(days: number): {
@@ -133,9 +133,7 @@ function getDaysLabel(days: number): {
 }
 
 function getWeekLabel(dateStr: string): string {
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffDays = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  const diffDays = differenceInCalendarDays(parseISO(dateStr), new Date());
 
   if (diffDays < 0) return '⚠️ Atrasado';
   if (diffDays <= 7) return '📦 Esta Semana';

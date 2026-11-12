@@ -35,6 +35,7 @@ import { AddToCollectionModal } from '@/components/collections/AddToCollectionMo
 import { useFavoritesStore } from '@/stores/useFavoritesStore';
 import { useComparisonStore } from '@/stores/useComparisonStore';
 import type { ProductStockSummary, VariantStock } from '@/types/stock';
+import { fetchQuoteSalePrices } from './useStockSelection';
 
 interface VariantStockRowActionsProps {
   product: ProductStockSummary;
@@ -106,14 +107,16 @@ export function VariantStockRowActions({ product, variant }: VariantStockRowActi
     else toast.error('Não foi possível copiar o SKU. Tente novamente.');
   };
 
-  const handleQuote = () => {
+  const handleQuote = async () => {
     try {
+      const prices = await fetchQuoteSalePrices([product.productId]);
       const params = new URLSearchParams({
         product_id: product.productId,
         product_name: product.productName,
         product_sku: variant.variantSku,
         variant_id: variant.variantId,
         min_quantity: String(variant.minStock || 1),
+        product_price: String(prices.get(product.productId) ?? 0),
       });
       if (variant.colorName) params.set('color_name', variant.colorName);
       if (variant.colorHex) params.set('color_hex', variant.colorHex);
