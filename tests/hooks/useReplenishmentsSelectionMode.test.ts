@@ -3,7 +3,7 @@
  */
 import { describe, it, expect, vi } from 'vitest';
 import { replenishmentToProduct } from '@/hooks/products/useReplenishmentsSelectionMode';
-import type { ReplenishmentWithDetails } from '@/hooks/useReplenishments';
+import type { ReplenishmentWithDetails } from '@/hooks/products/useReplenishments';
 
 vi.mock('react-router-dom', () => ({
   useNavigate: () => vi.fn(),
@@ -21,6 +21,7 @@ const mockReplenishment: ReplenishmentWithDetails = {
   product_description: 'A test product',
   base_price: 29.99,
   product_image: 'https://example.com/img.jpg',
+  product_set_image: null,
   category_id: 'cat-1',
   category_name: 'Electronics',
   supplier_code: 'SUP-01',
