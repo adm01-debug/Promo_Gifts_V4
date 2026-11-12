@@ -43,6 +43,7 @@ interface InlinePriceCalculatorProps {
   productName: string;
   className?: string;
   defaultOpen?: boolean;
+  onAddToQuote?: (qty: number, unitPrice: number) => void;
 }
 
 const extractPriceTiersFromSource = (
@@ -95,6 +96,7 @@ export function InlinePriceCalculator({
   productName: _productName,
   className,
   defaultOpen = false,
+  onAddToQuote,
 }: InlinePriceCalculatorProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [customQuantity, setCustomQuantity] = useState<number>(minQuantity);
@@ -194,6 +196,7 @@ export function InlinePriceCalculator({
           discount={customPriceInfo.discount}
           formatPrice={formatPrice}
           isLoading={isLoading}
+          onAddToQuote={onAddToQuote}
         />
       </div>
     );
@@ -237,6 +240,7 @@ export function InlinePriceCalculator({
               discount={customPriceInfo.discount}
               formatPrice={formatPrice}
               isLoading={isLoading}
+              onAddToQuote={onAddToQuote}
             />
           </CardContent>
         </CollapsibleContent>
