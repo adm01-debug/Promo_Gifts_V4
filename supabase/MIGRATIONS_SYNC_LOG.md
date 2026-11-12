@@ -1191,6 +1191,17 @@ sem DDL de schema, sem risco de dado). **Nenhuma DDL nova é executada por esta 
 | `20261101223908` | `cron001_stagger_additional_jobs` | `819350cc0006cbc218b74bd2cd6dee7049586ed6479109b7dcd828f3807ee811` | arquivo retroativo — `cron.alter_job` jobs 292/303/241 confirmado em produção via ledger; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
 | `20261101232022` | `cron001_stagger_schedules_reapply` | `8fe64496a5dba8e27be274a41522bf9a1988be3f5e912b712c1ce1ddd2d93dad` | arquivo retroativo — `cron.alter_job` jobs 276/224/114/243 (idêntico a `20261101220000`) confirmado em produção via ledger; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
 
+## 2026-11-12 — SB-0003: `fn_get_rupture_alerts` pendente em produção
+
+A função não existe em produção (verificado via `pg_proc` em 2026-11-12) e o painel de alertas de ruptura
+(`src/hooks/stock/useRuptureAlerts.ts`) depende dela. O preflight de `db-apply-migration.yml` recusava a
+migration por `search_path` sem `pg_temp` e por falta de rollback — corrigido aqui (traz a correção da PR #3179).
+A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão, como manda o gate E15 para migration pendente alterada.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261112011000` | `fix_sb0003_fn_get_rupture_alerts` | `8e081152c457ed572cb3aa349f62027bc7cd461996bb8036f499efb12af6a449` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono) |
+
 ## 2026-11-12 — Índices de FK em estoque e índices de desempenho ausentes
 
 13 índices que faltam em produção (verificado em `pg_catalog`): 7 FKs de `stock_snapshots`/`stock_notes`
