@@ -1158,7 +1158,7 @@ Referência: `auditoria-supabase/P09_INVESTIGACAO_2026-11-08.md`
 
 | version | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261108020000` | `p09_reconcile_ledger_schema_migrations` | `ce2dfa278f39643d261cc5c238a6eb0d2c4827a52327826e7a30b5c554a84686` | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (REGRA #8: DDL em produção) |
+| `20261108020000` | `p09_reconcile_ledger_schema_migrations` | `ce2dfa278f39643d261cc5c238a6eb0d2c4827a52327826e7a30b5c554a84686` | substituída por `20261112013000` (nunca aplicada) |
 
 ## 2026-11-08 — Arquivo retroativo `20260611014515` (ledger-sem-arquivo)
 
@@ -1190,3 +1190,13 @@ sem DDL de schema, sem risco de dado). **Nenhuma DDL nova é executada por esta 
 |---|---|---|---|
 | `20261101223908` | `cron001_stagger_additional_jobs` | `819350cc0006cbc218b74bd2cd6dee7049586ed6479109b7dcd828f3807ee811` | arquivo retroativo — `cron.alter_job` jobs 292/303/241 confirmado em produção via ledger; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
 | `20261101232022` | `cron001_stagger_schedules_reapply` | `8fe64496a5dba8e27be274a41522bf9a1988be3f5e912b712c1ce1ddd2d93dad` | arquivo retroativo — `cron.alter_job` jobs 276/224/114/243 (idêntico a `20261101220000`) confirmado em produção via ledger; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
+
+## 2026-11-12 — P09 revisada: ledger sem versões com objeto ausente
+
+A P09 (`20261108020000`, nunca aplicada) registraria como aplicadas 48 versões cujos objetos não existem em produção
+(tabelas, funções, índices e políticas verificados em `pg_catalog` em 2026-11-12, sem `DROP`/`RENAME` em migration posterior).
+A versão revisada registra 384 versões e deixa essas 48 de fora, para decisão caso a caso.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261112013000` | `p09_reconcile_ledger_schema_migrations` | `346ec219798a5f0d932fb0b00e446d80d6a9a475b209cfd8d41b71e18c7d36dd` | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (REGRA #8) |
