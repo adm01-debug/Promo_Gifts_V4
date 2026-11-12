@@ -4,8 +4,10 @@
 -- 20260716131209 (SEC P1-2, lista "revoke_from_auth") revogou esse EXECUTE junto com funcoes sem
 -- checagem de chamador; o wrapper entrou na lista por ser SECDEF, mas ja barra quem nao e admin.
 -- Producao hoje: exec_api=service_role -> o botao recebe 42501 e o sync manual nunca roda.
--- Menor privilegio: so o wrapper volta a authenticated; o corpo exige
--- public.has_role(auth.uid(), 'admin') e levanta 42501 para vendedor/dev/coord.
+-- Guarda alinhada a rota: /admin/conexoes fica em DevRoute (papel 'dev', src/routes/admin-routes.tsx),
+-- mas o corpo exigia so has_role 'admin' (sem hierarquia) -> nenhum usuario real alcancava a tela E
+-- passava na guarda. O wrapper passa a aceitar dev OU admin (mesmo padrao de 120500/120600) e levanta
+-- 42501 para os demais. Menor privilegio: so o wrapper volta a authenticated.
 -- A funcao interna sync_external_connections_from_credentials (as 2 sobrecargas) continua
 -- sem EXECUTE para anon/authenticated (nao e tocada aqui).
 -- NAO re-incluir fn_admin_sync_external_connections em hardening de "revoke from authenticated":
@@ -13,35 +15,52 @@
 -- Lint 0029 (SECDEF executavel por authenticated): a funcao volta a aparecer no gate
 -- scripts/check-lint-0029-drift.mjs (--require-live via supabase-linter-gate.yml); a mesma PR
 -- adiciona "public.fn_admin_sync_external_connections()" em .security/lint-0029-allowlist.json.
--- Rollback: REVOKE EXECUTE ON FUNCTION public.fn_admin_sync_external_connections() FROM authenticated;
+-- Rollback: restaura o corpo admin-only e REVOKE EXECUTE ... FROM authenticated
 --           (arquivo: supabase/rollbacks/20261112120700_rollback.sql)
 
--- Guarda: so concede se o wrapper existe, e SECDEF e ainda contem a checagem de admin.
+-- Guarda: o wrapper precisa existir com a assinatura () antes de ser substituido.
+DO $$
+BEGIN
+  IF to_regprocedure('public.fn_admin_sync_external_connections()') IS NULL THEN
+    RAISE EXCEPTION 'connections-sync: public.fn_admin_sync_external_connections() nao existe';
+  END IF;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.fn_admin_sync_external_connections()
+ RETURNS jsonb
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO ''
+AS $function$
+BEGIN
+  IF NOT (public.is_dev((SELECT auth.uid()))
+          OR public.has_role((SELECT auth.uid()), 'admin'::public.app_role)) THEN
+    RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501';
+  END IF;
+  RETURN public.sync_external_connections_from_credentials();
+END;
+$function$;
+
+REVOKE EXECUTE ON FUNCTION public.fn_admin_sync_external_connections() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.fn_admin_sync_external_connections() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.fn_admin_sync_external_connections() TO service_role;
+
+-- Assercao: SECDEF, guarda dev/admin no corpo e EXECUTE so onde deve.
 DO $$
 DECLARE
   v_src text;
   v_secdef boolean;
 BEGIN
-  SELECT p.prosrc, p.prosecdef
-    INTO v_src, v_secdef
+  SELECT p.prosrc, p.prosecdef INTO v_src, v_secdef
     FROM pg_catalog.pg_proc p
-    JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
-   WHERE n.nspname = 'public'
-     AND p.proname = 'fn_admin_sync_external_connections'
-     AND pg_catalog.pg_get_function_identity_arguments(p.oid) = '';
-
-  IF v_src IS NULL THEN
-    RAISE EXCEPTION 'connections-sync: public.fn_admin_sync_external_connections() nao existe';
+   WHERE p.oid = 'public.fn_admin_sync_external_connections()'::regprocedure;
+  IF NOT v_secdef OR v_src !~* 'is_dev\s*\(' OR v_src !~* '''admin''' OR v_src !~* '42501' THEN
+    RAISE EXCEPTION 'connections-sync: wrapper sem a guarda dev/admin esperada';
   END IF;
-  IF NOT v_secdef
-     OR v_src !~* 'has_role\s*\('
-     OR v_src !~* '''admin'''
-     OR v_src !~* '42501' THEN
-    RAISE EXCEPTION 'connections-sync: wrapper sem a guarda de admin esperada; GRANT abortado';
+  IF NOT has_function_privilege('authenticated', 'public.fn_admin_sync_external_connections()', 'EXECUTE')
+     OR has_function_privilege('anon', 'public.fn_admin_sync_external_connections()', 'EXECUTE') THEN
+    RAISE EXCEPTION 'connections-sync: EXECUTE inesperado (authenticated deve ter; anon nao)';
   END IF;
 END;
 $$;
-
-REVOKE EXECUTE ON FUNCTION public.fn_admin_sync_external_connections() FROM PUBLIC, anon;
-GRANT EXECUTE ON FUNCTION public.fn_admin_sync_external_connections() TO authenticated;
-GRANT EXECUTE ON FUNCTION public.fn_admin_sync_external_connections() TO service_role;
