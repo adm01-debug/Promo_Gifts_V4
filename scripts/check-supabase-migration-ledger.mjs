@@ -65,6 +65,21 @@ export function auditSupabaseMigrationLedger(document, { remoteOnlyAllowlist = [
     }
   });
 
+  // A CLI pareia as listas de forma sequencial: depois do primeiro desalinhamento ela deixa
+  // de casar versões iguais e lista a MESMA versão como local-only e remote-only em linhas
+  // separadas (visto em 2026-11-12: 20261104100000 nas duas colunas). Versão presente nos
+  // dois lados está aplicada E versionada — conta como alinhada, não como drift.
+  const localSet = new Set(localOnly);
+  const remoteSet = new Set(remoteOnly);
+  const pairedLate = [...remoteSet].filter((v) => localSet.has(v));
+  if (pairedLate.length) {
+    const late = new Set(pairedLate);
+    matched += pairedLate.length;
+    for (const list of [localOnly, remoteOnly]) {
+      for (let i = list.length - 1; i >= 0; i -= 1) if (late.has(list[i])) list.splice(i, 1);
+    }
+  }
+
   const allowlistedRemoteOnly = remoteOnly.filter((v) => remoteOnlyAllowlist.includes(v));
   const blockingRemoteOnly = remoteOnly.filter((v) => !remoteOnlyAllowlist.includes(v));
 
@@ -73,6 +88,7 @@ export function auditSupabaseMigrationLedger(document, { remoteOnlyAllowlist = [
     source: 'supabase migration list --linked --output-format json',
     rows: document.migrations.length,
     matched,
+    paired_late_count: pairedLate.length,
     local_only_count: localOnly.length,
     remote_only_count: remoteOnly.length,
     blocking_remote_only_count: blockingRemoteOnly.length,
