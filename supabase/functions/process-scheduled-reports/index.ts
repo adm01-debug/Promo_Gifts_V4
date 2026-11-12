@@ -94,10 +94,12 @@ Deno.serve(async (req) => {
         // Send email via Resend
         // resolveCredential devolve { value, source… }; usar o objeto como string mandava "Bearer [object Object]".
         const { value: resendKey } = await resolveCredential("RESEND_API_KEY");
-        if (resendKey) {
+        // Sem chave ou com recusa do Resend o relatório NÃO é marcado como enviado (cai no catch abaixo).
+        if (!resendKey) throw new Error("RESEND_API_KEY não configurado");
+        {
           const htmlContent = generateEmailHtml(report.report_name, reportData);
 
-          await fetch("https://api.resend.com/emails", {
+          const sendRes = await fetch("https://api.resend.com/emails", {
             method: "POST",
             signal: AbortSignal.timeout(25_000),
             headers: {
@@ -111,6 +113,9 @@ Deno.serve(async (req) => {
               html: htmlContent,
             }),
           });
+          if (!sendRes.ok) {
+            throw new Error(`Resend ${sendRes.status}: ${(await sendRes.text()).slice(0, 300)}`);
+          }
         }
 
         // Update next_run_at
