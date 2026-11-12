@@ -9,7 +9,8 @@ import {
   TrendingUp,
   DollarSign,
   Calendar,
-  Sparkles,
+  Inbox,
+  AlertTriangle,
   ArrowUpRight,
   ArrowDownRight,
 } from 'lucide-react';
@@ -49,6 +50,16 @@ export function ClientOverview360({ clientId }: Props) {
   const [comparePeriod, setComparePeriod] = useState(false);
 
   if (bi.isLoading) return <KPIsSkeleton />;
+  // Refetch falho mantém os dados antigos (TanStack v5): card de erro só sem dados
+  if (bi.isError && !bi.hasData) {
+    return (
+      <Card className="border-[1.5px] border-destructive/40">
+        <CardContent className="flex items-center gap-2 p-5 text-sm text-destructive" role="alert">
+          <AlertTriangle className="h-4 w-4" /> Erro ao carregar pedidos
+        </CardContent>
+      </Card>
+    );
+  }
 
   const recencyTone =
     bi.daysSinceLastOrder === null
@@ -75,9 +86,13 @@ export function ClientOverview360({ clientId }: Props) {
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        {bi.isMock ? (
+        {bi.isError ? (
+          <Badge variant="outline" className="gap-1 text-[10px] text-warning">
+            <AlertTriangle className="h-3 w-3" /> Dados podem estar desatualizados
+          </Badge>
+        ) : bi.isMock ? (
           <Badge variant="secondary" className="gap-1 text-[10px]">
-            <Sparkles className="h-3 w-3" /> Dados simulados · em breve dados reais
+            <Inbox className="h-3 w-3" /> Sem pedidos registrados
           </Badge>
         ) : (
           <span />
