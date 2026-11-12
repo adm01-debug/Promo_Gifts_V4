@@ -142,3 +142,58 @@ Fonte: GraphQL das PRs abertas em 2026-11-11T23:58Z (`main` = `15c2a4c`). Comand
 
 - `/api/sitemap` em produção responde 503 `degraded` (RPC `get_sitemap_public` falha no upstream).
 - `Header` duplica `aria-label="Abrir busca global"` (botão mobile oculto) — acessível, mas ambíguo para testes.
+
+## Re-auditoria das 46 PRs integradas na #3400
+
+Método: para cada PR, cada arquivo que ela altera (desde o merge-base com a `main`) foi comparado por blob com `origin/claude/lote-pilha-prs-261111` (head `418b920`). `idênticos/total`. Divergência = ajuste feito na integração (descrito no corpo da #3400), rebase posterior do Dependabot, ou PR antiga baseada antes da quarentena #3398 (centenas de arquivos no diff).
+
+| PR | Arquivos idênticos na #3400 |
+|---|---|
+| #3369 | 44/45 |
+| #3370 | 3/3 |
+| #3371 | 3/5 |
+| #3373 | 7/7 |
+| #3374 | 6/9 |
+| #3376 | 12/15 |
+| #3377 | 1/2 |
+| #3378 | 4/7 |
+| #3379 | 8/9 |
+| #3380 | 5/8 |
+| #3381 | 1/2 |
+| #3383 | 4/4 |
+| #3387 | 2/2 |
+| #3388 | 3/8 |
+| #3385 | 0/1 |
+| #3394 | 1/4 |
+| #3395 | 2/4 |
+| #3396 | 2/2 |
+| #3179 | 1/2 |
+| #3228 | 11/818 |
+| #3393 | 0/1 |
+| #3397 | 0/3 |
+| #3375 | 1/2 |
+| #3367 | 1/3 |
+| #3391 | 18/22 |
+| #3243 | 10/799 |
+| #3250 | 11/805 |
+| #3251 | 10/805 |
+| #3255 | 12/802 |
+| #3256 | 11/805 |
+| #3263 | 11/805 |
+| #3265 | 11/805 |
+| #3273 | 11/796 |
+| #3279 | 10/801 |
+| #3392 | 189/223 |
+| #3327 | 1/1 |
+| #3328 | 0/1 |
+| #3329 | 8/9 |
+| #3330 | 0/1 |
+| #3331 | 0/2 |
+| #3333 | 0/2 |
+| #3334 | 0/2 |
+| #3332 | 0/2 |
+| #3389 | 38/44 |
+| #3403 | 1/1 |
+| #3404 | 5/5 |
+
+Amostra verificada à mão: #3393 — o `useMemo` de `CompareTableView.tsx` está na #3400 (difere só pelo BOM inicial). #3385 — patch reverso aplica limpo na #3400 (conteúdo presente).
