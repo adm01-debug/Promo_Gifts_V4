@@ -385,7 +385,7 @@ export function useSuppliersManager() {
         const { data: existingByName, error: nameCheckErr } = await untypedFrom<{
           id: string;
           name: string;
-        }>('v_suppliers_public')
+        }>('suppliers')
           .select('id,name')
           .ilike('name', escapeLike(editingSupplier.name.trim()))
           .limit(5);
@@ -407,7 +407,7 @@ export function useSuppliersManager() {
           id: string;
           name: string;
           trading_name: string;
-        }>('v_suppliers_public')
+        }>('suppliers')
           .select('id,name,trading_name')
           .ilike('trading_name', escapeLike(editingSupplier.trading_name.trim()))
           .limit(5);

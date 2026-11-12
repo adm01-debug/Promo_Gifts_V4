@@ -8,7 +8,6 @@ import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 import { supabase } from '@/integrations/supabase/client';
-import type { Json } from '@/integrations/supabase/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFavoriteLists } from '@/hooks/favorites/useFavoriteLists';
 import { useFavoritesStore } from '@/stores/useFavoritesStore';
@@ -137,15 +136,15 @@ export function useCatalogSelection(
               user_id: user.id,
               product_id: s.product.id,
               variant_id: s.variant?.id ?? null,
-              variant_info: (s.variant
+              variant_info: s.variant
                 ? {
-                    color_name: s.variant.color_name,
-                    color_hex: s.variant.color_hex,
-                    size_code: s.variant.size_code,
-                    variant_id: s.variant.id,
-                    thumbnail: s.variant.selected_thumbnail,
+                    color_name: s.variant.color_name ?? null,
+                    color_hex: s.variant.color_hex ?? null,
+                    size_code: s.variant.size_code ?? null,
+                    variant_id: s.variant.id ?? null,
+                    thumbnail: s.variant.selected_thumbnail ?? null,
                   }
-                : null) as Json,
+                : null,
               price_at_save:
                 typeof s.product.sale_price === 'number'
                   ? s.product.sale_price

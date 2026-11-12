@@ -44,8 +44,8 @@ export async function validateKitFitsForQuote(
         p_product_id: item.id,
         p_current_used_liters: usedLiters,
       });
-      if (error || !data || (data as FitRow[]).length === 0) continue;
-      const row = (data as FitRow[])[0];
+      const row = error ? undefined : (data as FitRow[] | null)?.[0];
+      if (!row) continue;
       const qty = Math.max(1, item.quantity ?? 1);
       const lineVolume = (row.product_volume ?? 0) * qty;
       // fits=null means no dimension data — fail-open: skip, do not violate

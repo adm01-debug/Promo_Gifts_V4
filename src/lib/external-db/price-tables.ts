@@ -83,7 +83,7 @@ export async function fetchPromobrindPriceTables(options?: {
   for (let i = 0; i < ids.length; i += 50) {
     for (let offset = 0; ; offset += 1000) {
       const tiers = await dbInvoke<Record<string, unknown>>({
-        table: 'customization_price_tiers',
+        table: 'tabela_preco_gravacao_oficial_faixa',
         operation: 'select',
         filters: { tabela_preco_gravacao_id: ids.slice(i, i + 50) },
         select:

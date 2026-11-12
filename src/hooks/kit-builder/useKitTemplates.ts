@@ -34,6 +34,14 @@ export interface KitTemplateRow {
 
 const QUERY_KEY = ['kit-templates'] as const;
 
+// Narrowing de colunas jsonb do template (sem asserção de tipo).
+function isJsonObject<T>(value: unknown): value is T {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+function isJsonArray<T>(value: unknown): value is T[] {
+  return Array.isArray(value);
+}
+
 export function useKitTemplates() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -61,11 +69,14 @@ export function useKitTemplates() {
     mutationFn: async (template: KitTemplateRow) => {
       if (!user?.id) throw new Error('Usuário não autenticado');
 
-      const templatePersonalization =
-        template.personalization_data as unknown as Partial<KitPersonalization>;
+      const templatePersonalization = isJsonObject<Partial<KitPersonalization>>(
+        template.personalization_data,
+      )
+        ? template.personalization_data
+        : null;
       const price = calculateTotalKitPrice(
-        (template.box_data as unknown as KitBox | null) ?? null,
-        Array.isArray(template.items_data) ? (template.items_data as unknown as KitItem[]) : [],
+        isJsonObject<KitBox>(template.box_data) ? template.box_data : null,
+        isJsonArray<KitItem>(template.items_data) ? template.items_data : [],
         {
           box: templatePersonalization?.box ?? { enabled: false },
           items: templatePersonalization?.items ?? {},

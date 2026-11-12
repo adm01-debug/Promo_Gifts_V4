@@ -344,9 +344,8 @@ export default function CollectionDetailPage() {
     const visible = filteredProducts.map((p) => p.id);
     const newVisible = arrayMove(visible, oldIndex, newIndex);
     const full = collectionItems.length > 0 ? collectionItems.map((i) => i.productId) : visible;
-    const visibleSet = new Set(visible);
     let k = 0;
-    const ordered = full.map((pid) => (visibleSet.has(pid) ? newVisible[k++] : pid));
+    const ordered = full.map((p) => (visible.includes(p) ? (newVisible[k++] ?? p) : p));
     reorderProducts(collection.id, ordered);
   };
 

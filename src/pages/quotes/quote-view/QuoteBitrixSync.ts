@@ -11,7 +11,7 @@ import type { TablesUpdate } from '@/integrations/supabase/types';
 import type { Quote } from '@/hooks/quotes';
 import { invokeEdge } from '@/lib/edge/safeInvokeCall';
 import { isValidQuoteTransition } from '@/lib/quote-status-config';
-import type { QuoteStatus } from '@/types/quote';
+import { isQuoteStatus } from '@/types/quote';
 
 interface SyncBitrixParams {
   quote: Quote;
@@ -145,7 +145,8 @@ export async function syncQuoteToBitrix({
   const bitrixQuoteIdFromResponse =
     parsedBitrixId && !isNaN(parsedBitrixId) ? String(parsedBitrixId) : null;
 
-  const canTransitionToSent = isValidQuoteTransition(quote.status as QuoteStatus, 'sent');
+  const canTransitionToSent =
+    isQuoteStatus(quote.status) && isValidQuoteTransition(quote.status, 'sent');
   const crmUpdates: TablesUpdate<'quotes'> = {};
   if (canTransitionToSent) crmUpdates.status = 'sent';
   if (bitrixQuoteIdFromResponse) crmUpdates.bitrix_quote_id = bitrixQuoteIdFromResponse;
