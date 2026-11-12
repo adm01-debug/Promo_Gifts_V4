@@ -193,7 +193,8 @@ export function wizardReducer(
       return { ...state, error: action.payload };
 
     case 'RECALC_PERSONALIZATION_PRICING': {
-      const { personalizationId, pricing } = action.payload;
+      const { personalizationId, pricing, quantity } = action.payload;
+      if (quantity !== state.quantity) return state;
       return {
         ...state,
         personalizations: state.personalizations.map((p) =>

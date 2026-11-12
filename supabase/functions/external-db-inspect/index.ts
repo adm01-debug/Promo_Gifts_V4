@@ -56,11 +56,11 @@ Deno.serve(async (req) => {
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
-      .eq('role', 'admin')
+      .eq('role', 'dev')
       .maybeSingle();
 
     if (!roleData) {
-      return jsonResponse({ error: 'Forbidden: admin role required' }, 403);
+      return jsonResponse({ error: 'Forbidden: dev role required' }, 403);
     }
 
     // Validate body

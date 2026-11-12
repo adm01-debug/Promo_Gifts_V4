@@ -120,7 +120,8 @@ export function useQuotesDashboard() {
 
     const totalQuotes = filtered.length;
     const totalValue = filtered.reduce((s, q) => s + (q.total || 0), 0);
-    const approved = filtered.filter((q) => q.status === 'approved');
+    const isApproved = (status: string) => status === 'approved' || status === 'converted';
+    const approved = filtered.filter((q) => isApproved(q.status));
     const rejected = filtered.filter((q) => q.status === 'rejected');
     const pending = filtered.filter((q) => ['pending', 'sent'].includes(q.status));
     const approvedValue = approved.reduce((s, q) => s + (q.total || 0), 0);
@@ -129,7 +130,7 @@ export function useQuotesDashboard() {
     const rejectionRate = responded.length > 0 ? (rejected.length / responded.length) * 100 : 0;
 
     const withResponse = filtered.filter(
-      (q) => q.client_response_at && (q.status === 'approved' || q.status === 'rejected'),
+      (q) => q.client_response_at && (isApproved(q.status) || q.status === 'rejected'),
     );
     let averageResponseTime = 0;
     if (withResponse.length > 0) {
@@ -159,7 +160,7 @@ export function useQuotesDashboard() {
       const m = format(new Date(q.created_at ?? 0), 'MMM', { locale: ptBR });
       if (!a[m]) a[m] = { month: m, total: 0, approved: 0, rejected: 0, value: 0 };
       a[m].total++;
-      if (q.status === 'approved') {
+      if (isApproved(q.status)) {
         a[m].approved++;
         a[m].value += q.total || 0;
       }
@@ -171,7 +172,9 @@ export function useQuotesDashboard() {
       { stage: 'Criados', count: totalQuotes, fill: 'hsl(var(--primary))' },
       {
         stage: 'Enviados',
-        count: filtered.filter((q) => ['sent', 'approved', 'rejected'].includes(q.status)).length,
+        count: filtered.filter((q) =>
+          ['sent', 'viewed', 'approved', 'rejected', 'converted'].includes(q.status),
+        ).length,
         fill: 'hsl(var(--info))',
       },
       { stage: 'Respondidos', count: responded.length, fill: 'hsl(var(--warning))' },

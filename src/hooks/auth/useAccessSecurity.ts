@@ -69,7 +69,7 @@ export function useAccessSecurity() {
           .maybeSingle(),
         untypedFrom('ip_access_control')
           .select('id, ip_address, list_type, reason, expires_at, created_at')
-          .eq('list_type', 'allowlist')
+          .eq('list_type', 'allow')
           .order('created_at', { ascending: false }),
         untypedFrom('geo_allowed_countries')
           .select('id, country_code, country_name, is_active, created_at')
@@ -135,7 +135,7 @@ export function useAccessSecurity() {
 
   const addIp = async (ipAddress: string, reason?: string) => {
     const { data, error } = await untypedFrom('ip_access_control')
-      .insert({ ip_address: ipAddress, list_type: 'allowlist', reason: reason || null })
+      .insert({ ip_address: ipAddress, list_type: 'allow', reason: reason || null })
       .select('id, ip_address, list_type, reason, expires_at, created_at')
       .single();
     if (error || !data) {

@@ -285,6 +285,7 @@ export function useProductImageGallery({
             : 0;
         const { error } = await untypedFrom('product_images').insert({
           product_id: productId,
+          cloudflare_image_id: `manual-${productId}-${crypto.randomUUID()}`,
           url_cdn: url,
           url_original: url,
           image_type: imageType,
@@ -548,6 +549,7 @@ export function useProductImageGallery({
           const d = resolveData(url);
           return untypedFrom('product_images').insert({
             product_id: productId,
+            cloudflare_image_id: `manual-${productId}-${crypto.randomUUID()}`,
             url_cdn: url,
             url_original: url,
             image_type: d.image_type,

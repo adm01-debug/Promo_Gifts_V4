@@ -45,14 +45,21 @@ export function FavoritesViewHeader({
 
   const handleGenerateQuote = () => {
     if (products.length === 0) return;
-    const items = products
-      .slice(0, 50)
-      .map((p) => `${p.id}:1`)
-      .join(',');
-    const params = new URLSearchParams({ items });
-    if (list?.id) params.set('list_id', list.id);
-    if (list?.client_id) params.set('client_id', list.client_id);
-    if (list?.client_name) params.set('client_name', list.client_name);
+    const params = new URLSearchParams();
+    products.slice(0, 50).forEach((p) => {
+      params.append(
+        'items[]',
+        JSON.stringify({
+          product_id: p.id,
+          product_name: p.name,
+          product_sku: p.sku || '',
+          product_price: p.price,
+          product_image: p.images?.[0] || '',
+          quantity: 1,
+        }),
+      );
+    });
+    if (list?.client_id) params.set('clientId', list.client_id);
     navigate(`/orcamentos/novo?${params.toString()}`);
   };
 

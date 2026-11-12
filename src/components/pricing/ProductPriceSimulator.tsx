@@ -2,6 +2,8 @@ import { dbInvoke } from '@/lib/db/postgrest';
 import { useState, useCallback, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { useCustomizationPriceCalculator } from '@/hooks/simulation/useCustomizationPrice';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -109,6 +111,7 @@ export function ProductPriceSimulator({ className }: ProductPriceSimulatorProps)
 
   // Quantidade
   const [quantity, setQuantity] = useState(100);
+  const { calculatePrice: calculateEngravingPrice } = useCustomizationPriceCalculator();
 
   const MAX_ENGRAVINGS = 5;
 
@@ -241,8 +244,21 @@ export function ProductPriceSimulator({ className }: ProductPriceSimulatorProps)
   ];
 
   // #9 — CTA para criar orçamento
-  const handleCreateQuote = useCallback(() => {
+  const handleCreateQuote = useCallback(async () => {
     if (!selectedProduct) return;
+    const prices = await Promise.all(
+      engravings.map((e) =>
+        calculateEngravingPrice({
+          areaId: e.technique.id,
+          quantidade: quantity,
+          numCores: e.colors,
+        }),
+      ),
+    );
+    if (prices.some((p) => !p)) {
+      toast.error('Não foi possível calcular o preço da gravação. Tente novamente.');
+      return;
+    }
     navigate('/orcamentos/novo', {
       state: {
         fromSimulator: true,
@@ -255,18 +271,23 @@ export function ProductPriceSimulator({ className }: ProductPriceSimulatorProps)
             price: selectedProduct.price,
           },
           quantity,
-          personalizations: engravings.map((e) => ({
+          personalizations: engravings.map((e, i) => ({
             technique: { id: e.technique.id, name: e.technique.techniqueName },
             location: {
               locationCode: e.technique.locationCode,
               locationName: e.technique.locationName,
             },
             specs: { colors: e.colors },
+            pricing: {
+              setupPrice: prices[i]?.setup_total,
+              unitPrice: prices[i]?.preco_unitario,
+              totalPrice: prices[i]?.total_cobrado,
+            },
           })),
         },
       },
     });
-  }, [navigate, selectedProduct, engravings, quantity]);
+  }, [navigate, selectedProduct, engravings, quantity, calculateEngravingPrice]);
 
   return (
     <Card className={className}>

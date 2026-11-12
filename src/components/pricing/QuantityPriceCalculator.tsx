@@ -4,7 +4,9 @@
  */
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { useCustomizationPricing, type PriceCalculation } from '@/hooks/simulation';
+import { useCustomizationPriceCalculator } from '@/hooks/simulation/useCustomizationPrice';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -34,6 +36,7 @@ interface QuantityPriceCalculatorProps {
 export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorProps) {
   const navigate = useNavigate();
   const { isLoading: pricingLoading } = useCustomizationPricing();
+  const { calculatePrice: calculateEngravingPrice } = useCustomizationPriceCalculator();
 
   const [selectedProduct, setSelectedProduct] = useState<CalcProduct | null>(null);
   const [selectedConfigs, setSelectedConfigs] = useState<SelectedTechniqueConfig[]>([]);
@@ -93,8 +96,22 @@ export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorPr
     [customQuantities.length],
   );
 
-  const handleCreateQuote = useCallback(() => {
+  const handleCreateQuote = useCallback(async () => {
     if (!selectedProduct) return;
+    const quantity = Math.min(...customQuantities);
+    const prices = await Promise.all(
+      selectedConfigs.map((c) =>
+        calculateEngravingPrice({
+          areaId: c.technique.techniqueId,
+          quantidade: quantity,
+          numCores: c.colors,
+        }),
+      ),
+    );
+    if (prices.some((p) => !p)) {
+      toast.error('Não foi possível calcular o preço da gravação. Tente novamente.');
+      return;
+    }
     navigate('/orcamentos/novo', {
       state: {
         fromSimulator: true,
@@ -106,19 +123,24 @@ export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorPr
             imageUrl: selectedProduct.images?.[0],
             price: selectedProduct.price,
           },
-          quantity: Math.min(...customQuantities),
-          personalizations: selectedConfigs.map((c) => ({
+          quantity,
+          personalizations: selectedConfigs.map((c, i) => ({
             technique: { id: c.technique.techniqueId, name: c.technique.techniqueName },
             location: {
               locationCode: c.technique.locationCode,
               locationName: c.technique.locationName,
             },
             specs: { colors: c.colors },
+            pricing: {
+              setupPrice: prices[i]?.setup_total,
+              unitPrice: prices[i]?.preco_unitario,
+              totalPrice: prices[i]?.total_cobrado,
+            },
           })),
         },
       },
     });
-  }, [navigate, selectedProduct, selectedConfigs, customQuantities]);
+  }, [navigate, selectedProduct, selectedConfigs, customQuantities, calculateEngravingPrice]);
 
   if (pricingLoading)
     return (

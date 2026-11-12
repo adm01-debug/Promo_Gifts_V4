@@ -18,6 +18,7 @@ export function useSkuValidation(currentSku: string, isEdit: boolean, originalSk
     }
 
     setStatus('checking');
+    let cancelled = false;
     const timer = setTimeout(async () => {
       try {
         const { fetchPromobrindProducts } = await import('@/lib/external-db');
@@ -29,6 +30,7 @@ export function useSkuValidation(currentSku: string, isEdit: boolean, originalSk
           (p: Record<string, unknown>) =>
             (p.sku as string | undefined)?.toLowerCase() === currentSku.toLowerCase(),
         );
+        if (cancelled) return;
         if (dup) {
           setStatus('duplicate');
           setDuplicateName(String(dup.name || ''));
@@ -37,10 +39,14 @@ export function useSkuValidation(currentSku: string, isEdit: boolean, originalSk
           setDuplicateName('');
         }
       } catch {
+        if (cancelled) return;
         setStatus('idle');
       }
     }, 600);
-    return () => clearTimeout(timer);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
   }, [currentSku, isEdit, originalSku]);
 
   return { status, duplicateName };

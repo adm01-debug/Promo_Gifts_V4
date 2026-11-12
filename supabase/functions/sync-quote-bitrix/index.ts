@@ -124,13 +124,22 @@ Deno.serve(async (req) => {
       );
     }
 
-    const products = itemsValidos.map((item: any) => ({
-      offer_id: item.bitrix_product_id,
-      product_name: item.product_name || item.name,
-      quantity: item.quantity || 1,
-      unit_price: item.unit_price || item.price || 0,
-      color: item.color || null,
-    }));
+    const products = itemsValidos.map((item: any) => {
+      const quantity = item.quantity || 1;
+      // Gravação entra no preço unitário da linha (total_cost é o custo total do item, mesma
+      // regra de calcPersTotal no PDF) para a soma das linhas no CRM bater com `total`.
+      const persTotal = (Array.isArray(item.personalizations) ? item.personalizations : []).reduce(
+        (sum: number, p: any) => sum + (Number(p?.total_cost) || 0),
+        0,
+      );
+      return {
+        offer_id: item.bitrix_product_id,
+        product_name: item.product_name || item.name,
+        quantity,
+        unit_price: Number(item.unitPrice ?? item.unit_price ?? item.price ?? 0) + persTotal / quantity,
+        color: item.color || null,
+      };
+    });
 
     const n8nPayload = {
       quote_id: quote?.id || null,

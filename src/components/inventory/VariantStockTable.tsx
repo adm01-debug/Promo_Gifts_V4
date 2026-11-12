@@ -3,7 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Package, Truck, ShoppingCart, Search, X, Copy, Building2, Tag } from 'lucide-react';
 import { getSupplierColors, getSupplierBadgeClasses } from '@/lib/supplier-colors';
-import { useStockSelection, buildQuoteParam } from './useStockSelection';
+import { toast } from 'sonner';
+import { useStockSelection, buildQuoteParam, fetchQuoteSalePrices } from './useStockSelection';
 import { StockBulkActionBar } from './StockBulkActionBar';
 import { BulkAddToCollectionModal, type BulkCollectionRow } from './BulkAddToCollectionModal';
 import { useSelectionShortcut } from './useSelectionShortcut';
@@ -150,11 +151,14 @@ function FlatVariantRow({
       variant.imageUrl,
     ],
   );
-  const handleAddToQuote = () => {
+  const handleAddToQuote = async () => {
     try {
-      navigate(`/orcamentos/novo?${buildQuoteParam({ product, variant })}`);
+      const prices = await fetchQuoteSalePrices([product.productId]);
+      navigate(
+        `/orcamentos/novo?${buildQuoteParam({ product, variant }, prices.get(product.productId))}`,
+      );
     } catch {
-      /* noop — toast já é tratado no fluxo de cotação */
+      toast.error('Não foi possível abrir o orçamento. Tente novamente.');
     }
   };
   return (
@@ -313,11 +317,7 @@ function FlatVariantRow({
               variant="ghost"
               size="icon"
               className="h-7 w-7"
-              onClick={() =>
-                navigate(
-                  `/orcamentos/novo?productId=${product.productId}&variantId=${variant.variantId}&productName=${encodeURIComponent(product.productName)}`,
-                )
-              }
+              onClick={handleAddToQuote}
               aria-label={`Criar orçamento para ${product.productName} ${variant.colorName ?? ''}`}
             >
               <ShoppingCart className="h-3 w-3" />

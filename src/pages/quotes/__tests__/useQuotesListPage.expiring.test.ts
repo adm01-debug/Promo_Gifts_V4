@@ -271,14 +271,15 @@ describe('useQuotesListPage — bordas de data/timezone do filtro expiring', () 
     expect(h.result.current.filteredQuotes).toEqual([]);
   });
 
-  it('formato date-only (YYYY-MM-DD) é interpretado como meia-noite UTC', () => {
+  it('formato date-only (YYYY-MM-DD) é data civil: vence no fim do dia local', () => {
     mockQuotes = [
-      q({ id: 'today', valid_until: '2026-06-27' }), // 00:00Z → passado
-      q({ id: 'tomorrow', valid_until: '2026-06-28' }), // 00:00Z → futuro
+      q({ id: 'yesterday', valid_until: '2026-06-26' }),
+      q({ id: 'today', valid_until: '2026-06-27' }),
+      q({ id: 'tomorrow', valid_until: '2026-06-28' }),
     ];
     const h = renderHook(() => useQuotesListPage(), { wrapper });
     setExpiring(h);
-    expect(h.result.current.filteredQuotes.map((x) => x.id)).toEqual(['tomorrow']);
+    expect(h.result.current.filteredQuotes.map((x) => x.id)).toEqual(['today', 'tomorrow']);
   });
 
   it('valid_until com espaços / null-string / objeto → exclui defensivamente', () => {

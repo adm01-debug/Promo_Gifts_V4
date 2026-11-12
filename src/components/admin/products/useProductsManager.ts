@@ -16,7 +16,7 @@
  *   BUG-29: comentário no useEffect inicial com [] documenta a intencionalidade
  */
 import { dbInvokeSingle, dbInvokeDelete } from '@/lib/db/postgrest';
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { type PromobrindProduct } from '@/lib/external-db';
 import { toast } from 'sonner';
@@ -150,6 +150,7 @@ export function useProductsManager() {
 
   const { logAction } = useAuditLog();
   const totalPages = totalCount ? Math.ceil(totalCount / pageSize) : 1;
+  const fetchSeqRef = useRef(0);
 
   const fetchProducts = useCallback(
     async (
@@ -158,6 +159,7 @@ export function useProductsManager() {
       search?: string,
       filtersOverride?: ProductFilters,
     ) => {
+      const reqId = ++fetchSeqRef.current;
       setIsLoading(true);
       try {
         const { fetchPromobrindProducts, getProductImageUrl, getProductPrice, getProductStock } =
@@ -185,6 +187,7 @@ export function useProductsManager() {
           products: ExternalProduct[];
           count: number | null;
         };
+        if (reqId !== fetchSeqRef.current) return;
         setTotalCount(count);
 
         const formatted = productsData.map((p) => {
@@ -296,9 +299,9 @@ export function useProductsManager() {
         });
         setProducts(formatted as unknown as AdminProduct[]);
       } catch {
-        toast.error('Erro ao carregar produtos');
+        if (reqId === fetchSeqRef.current) toast.error('Erro ao carregar produtos');
       } finally {
-        setIsLoading(false);
+        if (reqId === fetchSeqRef.current) setIsLoading(false);
       }
     },
     [currentPage, pageSize, advancedFilters],
@@ -320,6 +323,7 @@ export function useProductsManager() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setCurrentPage(1);
+      setSelectedIds(new Set());
       fetchProducts(1, pageSize, searchTerm, advancedFilters);
     }, 400);
     return () => clearTimeout(timer);
@@ -331,6 +335,7 @@ export function useProductsManager() {
     (newFilters: ProductFilters) => {
       setAdvancedFilters(newFilters);
       setCurrentPage(1);
+      setSelectedIds(new Set());
       fetchProducts(1, pageSize, searchTerm, newFilters);
     },
     [pageSize, searchTerm, fetchProducts],

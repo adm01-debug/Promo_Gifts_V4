@@ -13,6 +13,7 @@ interface AutoSavePayload<T> {
 
 interface AutoSaveOptions<T> {
   enabled: boolean;
+  restoreEnabled?: boolean;
   data: T;
   onRestore?: (data: T) => void;
   debounceMs?: number;
@@ -84,6 +85,7 @@ export function cleanOldQuoteDrafts(olderThanDays = STALE_DRAFT_DAYS): number {
  */
 export function useAutoSaveQuote<T>({
   enabled,
+  restoreEnabled = enabled,
   data,
   onRestore,
   debounceMs = 2000,
@@ -100,7 +102,7 @@ export function useAutoSaveQuote<T>({
 
   // Efeito de carregamento inicial (Restaurar)
   useEffect(() => {
-    if (!enabled || hasRestoredRef.current) return;
+    if (!restoreEnabled || hasRestoredRef.current) return;
     hasRestoredRef.current = true;
 
     const saved = localStorage.getItem(key);
@@ -124,7 +126,7 @@ export function useAutoSaveQuote<T>({
         });
       }
     }
-  }, [enabled, key]);
+  }, [restoreEnabled, key]);
 
   // FIX-E11: Clean up stale drafts once per hook instance to prevent accumulation.
   useEffect(() => {

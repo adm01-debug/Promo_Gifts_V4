@@ -113,6 +113,8 @@ export function useQuoteBuilderState() {
   // QBP-07 FIX: defer shippingType restore via state+useEffect com cleanup
   // Evita chamar setShippingType em componente desmontado (setTimeout sem cleanup)
   const [pendingShippingTypeRestore, setPendingShippingTypeRestore] = useState<string | null>(null);
+  // Sinaliza ao QuoteAutoSave que o rascunho terminou de ser restaurado (rebaseline do "não salvo").
+  const [draftRestoredAt, setDraftRestoredAt] = useState<number | undefined>(undefined);
   useEffect(() => {
     if (!pendingShippingTypeRestore) return;
     let mounted = true;
@@ -120,6 +122,7 @@ export function useQuoteBuilderState() {
       if (mounted) {
         setShippingType(pendingShippingTypeRestore);
         setPendingShippingTypeRestore(null);
+        setDraftRestoredAt(Date.now());
       }
     }, 0);
     return () => {
@@ -215,8 +218,24 @@ export function useQuoteBuilderState() {
     [items, skipAutosaveSortOrder],
   );
 
+  const [hasIncomingHandoff] = useState(() => {
+    const state: unknown = location.state;
+    const hasStateHandoff =
+      typeof state === 'object' &&
+      state !== null &&
+      ['fromSimulator', 'fromCart', 'fromCollection'].some((k) => Boolean(Reflect.get(state, k)));
+    return Boolean(
+      hasStateHandoff ||
+      searchParams.get('clientId') ||
+      searchParams.getAll('items[]').length > 0 ||
+      searchParams.get('product_id') ||
+      searchParams.get('productId'),
+    );
+  });
+
   const { clearAutoSave } = useAutoSaveQuote({
     enabled: (!!clientId || items.length > 0) && !isEditMode,
+    restoreEnabled: !isEditMode && !hasIncomingHandoff,
     data: {
       clientId,
       contactId,
@@ -273,6 +292,7 @@ export function useQuoteBuilderState() {
           setValidityDays(syncValidityDaysFromDate(saved.validUntil));
         }
         if (saved.notes) setNotes(saved.notes);
+        if (!saved.shippingType) setDraftRestoredAt(Date.now());
       }
     },
   });
@@ -910,6 +930,7 @@ export function useQuoteBuilderState() {
   ]);
 
   return {
+    draftRestoredAt,
     resetQuote,
     navigate,
     quoteId,

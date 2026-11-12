@@ -258,7 +258,11 @@ export type WizardAction =
     }
   | {
       type: 'RECALC_PERSONALIZATION_PRICING';
-      payload: { personalizationId: string; pricing: Personalization['pricing'] };
+      payload: {
+        personalizationId: string;
+        pricing: Personalization['pricing'];
+        quantity: number;
+      };
     }
   | { type: 'ADD_PERSONALIZATION'; payload: Personalization }
   | { type: 'CANCEL_PERSONALIZATION' }

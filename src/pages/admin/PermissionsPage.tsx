@@ -102,11 +102,15 @@ export default function PermissionsPage() {
   const handleSubmit = async () => {
     try {
       if (editingPermission) {
-        const { error } = await supabase
+        const { data: updated, error } = await supabase
           .from('permissions')
           .update(formData)
-          .eq('code', editingPermission.code);
+          .eq('code', editingPermission.code)
+          .select('code');
         if (error) throw error;
+        if (!updated || updated.length === 0) {
+          throw new Error('Sem permissão para alterar permissões (somente dev).');
+        }
         toast({ title: 'Permissão atualizada com sucesso' });
       } else {
         const { error } = await supabase.from('permissions').insert(formData);
@@ -139,8 +143,15 @@ export default function PermissionsPage() {
 
   const handleDelete = async (code: string) => {
     try {
-      const { error } = await supabase.from('permissions').delete().eq('code', code);
+      const { data: deleted, error } = await supabase
+        .from('permissions')
+        .delete()
+        .eq('code', code)
+        .select('code');
       if (error) throw error;
+      if (!deleted || deleted.length === 0) {
+        throw new Error('Sem permissão para excluir permissões (somente dev).');
+      }
       toast({ title: 'Permissão excluída com sucesso' });
       fetchPermissions();
     } catch (error: unknown) {

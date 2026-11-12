@@ -127,6 +127,35 @@ describe('restore ao montar', () => {
 
     expect(onRestore).toHaveBeenCalledTimes(1);
   });
+
+  it('restoreEnabled: restaura no mount com builder vazio e não reaplica quando enabled liga', () => {
+    store.quote_builder_autosave = JSON.stringify({ version: 2, data: { x: 1 }, savedAt: '' });
+    const onRestore = vi.fn();
+
+    const { rerender } = renderHook(
+      ({ enabled }: { enabled: boolean }) =>
+        useAutoSaveQuote({ enabled, restoreEnabled: true, data: {}, onRestore }),
+      { initialProps: { enabled: false } },
+    );
+    expect(onRestore).toHaveBeenCalledTimes(1);
+
+    rerender({ enabled: true });
+    expect(onRestore).toHaveBeenCalledTimes(1);
+  });
+
+  it('restoreEnabled=false: primeira ação do usuário (enabled=true) não restaura rascunho', () => {
+    store.quote_builder_autosave = JSON.stringify({ version: 2, data: { x: 1 }, savedAt: '' });
+    const onRestore = vi.fn();
+
+    const { rerender } = renderHook(
+      ({ enabled }: { enabled: boolean }) =>
+        useAutoSaveQuote({ enabled, restoreEnabled: false, data: {}, onRestore }),
+      { initialProps: { enabled: false } },
+    );
+    rerender({ enabled: true });
+
+    expect(onRestore).not.toHaveBeenCalled();
+  });
 });
 
 // ── save debounced ────────────────────────────────────────────────────────────

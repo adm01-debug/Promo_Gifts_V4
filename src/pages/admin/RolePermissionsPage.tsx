@@ -13,7 +13,6 @@ import type { Database } from '@/integrations/supabase/types';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 import { cn } from '@/lib/utils';
-import { logger } from '@/lib/logger';
 
 type AppRole = Database['public']['Enums']['app_role'];
 
@@ -123,6 +122,9 @@ export default function RolePermissionsPage() {
     if (pendingChanges.size === 0) return;
 
     setIsSaving(true);
+    // Mudanças ainda não gravadas: em falha parcial, o retry não refaz deletes já aplicados
+    // (0 linhas seria lido como "sem permissão").
+    const remaining = new Map(pendingChanges);
     try {
       const toAdd: { role: AppRole; permission_code: string }[] = [];
       const toRemove: { role: AppRole; permission_code: string }[] = [];
@@ -139,19 +141,24 @@ export default function RolePermissionsPage() {
       // Remove permissions
       for (const item of toRemove) {
         // BUG-ROLEPERM-DELETE-SILENT-FAIL FIX: bare await swallowed RLS errors.
-        const { error: delErr } = await supabase
+        const { data: deleted, error: delErr } = await supabase
           .from('role_permissions')
           .delete()
           .eq('role', item.role)
-          .eq('permission_code', item.permission_code);
-        if (delErr) logger.warn('[role-permissions] delete failed:', delErr);
+          .eq('permission_code', item.permission_code)
+          .select('id');
+        if (delErr) throw delErr;
+        if (!deleted || deleted.length === 0) {
+          throw new Error('Sem permissão para alterar permissões por papel (somente dev).');
+        }
+        remaining.delete(`${item.role}-${item.permission_code}`);
       }
 
       // Add permissions
       if (toAdd.length > 0) {
         // BUG-ROLEPERM-INSERT-SILENT-FAIL FIX: bare await swallowed RLS errors.
         const { error: insErr } = await supabase.from('role_permissions').insert(toAdd);
-        if (insErr) logger.warn('[role-permissions] insert failed:', insErr);
+        if (insErr) throw insErr;
       }
 
       toast({ title: 'Permissões atualizadas com sucesso!' });
@@ -159,6 +166,8 @@ export default function RolePermissionsPage() {
       fetchData();
     } catch (error: unknown) {
       toast({ title: 'Erro ao salvar', description: sanitizeError(error), variant: 'destructive' });
+      setPendingChanges(remaining);
+      fetchData();
     } finally {
       setIsSaving(false);
     }

@@ -105,6 +105,13 @@ export default function SimuladorWizard() {
   };
 
   const handleGenerateQuote = () => {
+    if (wizard.personalizations.some((p) => p.pricing._needsRecalc)) {
+      wizard.retryRecalc();
+      toast.warning(
+        'Recalculando o preço da gravação para a nova tiragem. Tente gerar em seguida.',
+      );
+      return;
+    }
     const quoteData = {
       product: wizard.selectedProduct,
       quantity: wizard.quantity,

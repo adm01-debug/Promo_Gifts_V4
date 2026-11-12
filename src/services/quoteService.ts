@@ -507,9 +507,10 @@ export const quoteService = {
   },
 
   async deleteQuote(quoteId: string) {
-    // rls-allow: DELETE por id; RLS (can_access_quote) valida ownership
-    const { error } = await supabase.from('quotes').delete().eq('id', quoteId);
+    // rls-allow: DELETE por id; RLS (org_admins_delete_quotes) valida permissão
+    const { data, error } = await supabase.from('quotes').delete().eq('id', quoteId).select('id');
     if (error) throw error;
+    if (!data?.length) throw new Error('Sem permissão para excluir este orçamento');
   },
 
   async fetchTechniques(): Promise<PersonalizationTechnique[]> {
