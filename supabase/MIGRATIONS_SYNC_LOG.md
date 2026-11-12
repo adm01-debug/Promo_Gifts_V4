@@ -1190,3 +1190,11 @@ sem DDL de schema, sem risco de dado). **Nenhuma DDL nova é executada por esta 
 |---|---|---|---|
 | `20261101223908` | `cron001_stagger_additional_jobs` | `819350cc0006cbc218b74bd2cd6dee7049586ed6479109b7dcd828f3807ee811` | arquivo retroativo — `cron.alter_job` jobs 292/303/241 confirmado em produção via ledger; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
 | `20261101232022` | `cron001_stagger_schedules_reapply` | `8fe64496a5dba8e27be274a41522bf9a1988be3f5e912b712c1ce1ddd2d93dad` | arquivo retroativo — `cron.alter_job` jobs 276/224/114/243 (idêntico a `20261101220000`) confirmado em produção via ledger; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
+
+## 2026-11-12 — regrant de `get_sitemap_public` para anon (pendente de aplicação)
+
+Diagnóstico com a chave pública contra `doufsxqlfjyuvxuezpln`: `permission denied for function get_sitemap_public` (42501) → `/api/sitemap` 503. Aplicar via `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261112023000` | `regrant_get_sitemap_public_anon` | `95a5136bd2e3831fedda4cd35fd1edc5825cb239882b2e23724a2fd858d67b7f` | pendente — aguardando `db-apply-migration.yml` |
