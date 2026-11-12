@@ -430,7 +430,12 @@ export function usePersonalizationManager() {
           .update({ sort_order: i })
           .eq('id', reordered[i]!.id);
         if (sortErr) {
-          logger.warn('[personalization-manager] sort_order update failed at index', i, ':', sortErr);
+          logger.warn(
+            '[personalization-manager] sort_order update failed at index',
+            i,
+            ':',
+            sortErr,
+          );
           toast.error('Erro ao reordenar componentes');
           queryClient.invalidateQueries({ queryKey: ['product-components'] });
           return;
@@ -503,7 +508,9 @@ export function usePersonalizationManager() {
             if (locError) throw locError;
             // BUG-PERSMAN-GROUPTECHS-SELECT-SILENT-FAIL FIX: error not checked —
             // a failed SELECT silently skipped techniques, creating locations without printing methods.
-            const { data: groupTechniques, error: gtErr } = await untypedFrom('product_group_location_techniques')
+            const { data: groupTechniques, error: gtErr } = await untypedFrom(
+              'product_group_location_techniques',
+            )
               .select('*')
               .eq('group_location_id', gl.id);
             if (gtErr) throw gtErr;
