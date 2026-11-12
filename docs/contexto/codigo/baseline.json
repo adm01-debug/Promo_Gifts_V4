@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5f956d2cf110e10da489774bbca3b12413c24039",
+  "commit": "e9a4a1aa14b61c3a6f54f7023115beaec1879440",
   "branch": "main",
-  "data_commit": "2026-11-12T08:22:12-03:00",
+  "data_commit": "2026-11-12T10:38:21-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e9a4a1a",
+    "data": "2026-11-12",
+    "assunto": "fix: E2E busca global — modifier+K webkit, Ctrl+Shift+V webkit, snapshots"
+   },
    {
     "sha": "5f956d2",
     "data": "2026-11-12",
@@ -126,14 +131,9 @@
     "sha": "c1d47d1",
     "data": "2026-11-09",
     "assunto": "chore(tracking): progresso.json v7 — #3257 e #3275 MERGED, #3338 fechada (#3356)"
-   },
-   {
-    "sha": "6b859b0",
-    "data": "2026-11-09",
-    "assunto": "fix(migrations): idempotência em RLS deny-all e partições 2027 (#3257)"
    }
   ],
-  "arquivos_mudados_7d": 1482,
+  "arquivos_mudados_7d": 1479,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "arquivo": "analise-prs/progresso.json",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 9887,
   "arquivos_codigo": 5047,
-  "linhas_codigo": 963446,
+  "linhas_codigo": 963456,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -548,7 +548,7 @@
   },
   "e2e/flows": {
    "arquivos": 183,
-   "linhas": 25300
+   "linhas": 25310
   },
   "e2e/future-stock.spec.ts": {
    "arquivos": 1,

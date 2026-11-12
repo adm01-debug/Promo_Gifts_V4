@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "5f956d2cf110e10da489774bbca3b12413c24039",
+  "sha": "e9a4a1aa14b61c3a6f54f7023115beaec1879440",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-12 11:46 UTC",
+  "generated_at": "2026-11-12 14:57 UTC",
   "files_total": 9815,
   "code_files": 8377,
-  "code_lines": 1179192
+  "code_lines": 1179202
  },
  "version": "1.3.2",
- "facts_hash": "f324b78652530673",
+ "facts_hash": "9398acbc4873d044",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -146046,7 +146046,7 @@
   {
    "module": "e2e",
    "files": 626,
-   "lines": 75527,
+   "lines": 75537,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -392908,7 +392908,7 @@
   },
   "e2e/flows/global-search-comprehensive.spec.ts": {
    "path": "e2e/flows/global-search-comprehensive.spec.ts",
-   "lines": 89,
+   "lines": 99,
    "is_test": true,
    "temporal": [
     "await expect(page).toHaveURL(/\\/orcamentos\\/novo$/, { timeout: 1000 });",
@@ -518654,10 +518654,19 @@
   }
  },
  "git": {
-  "sha": "5f956d2cf110e10da489774bbca3b12413c24039",
+  "sha": "e9a4a1aa14b61c3a6f54f7023115beaec1879440",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e9a4a1a",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix: E2E busca global — modifier+K webkit, Ctrl+Shift+V webkit, snapshots",
+    "files": [
+     "e2e/flows/global-search-comprehensive.spec.ts"
+    ]
+   },
    {
     "sha": "5f956d2",
     "date": "2026-11-12",
@@ -520039,15 +520048,6 @@
      ".github/workflows/e2e-personalization.yml",
      ".migration-refs-baseline.json"
     ]
-   },
-   {
-    "sha": "973864d",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "fix(ci): atualiza baseline Gate 1.3 — remove referência já resolvida de 20260511235970 (#3352)",
-    "files": [
-     ".migration-refs-baseline.json"
-    ]
    }
   ],
   "hot_files": [
@@ -520060,12 +520060,12 @@
     3
    ],
    [
-    ".migration-refs-baseline.json",
+    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     3
    ],
    [
-    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    3
+    "e2e/flows/global-search-comprehensive.spec.ts",
+    2
    ],
    [
     ".file-size-baseline.json",

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5f956d2cf110e10da489774bbca3b12413c24039` (2026-11-12T08:22:12-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e9a4a1aa14b61c3a6f54f7023115beaec1879440` (2026-11-12T10:38:21-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 9887 |
 | arquivos_codigo | 5047 |
-| linhas_codigo | 963446 |
+| linhas_codigo | 963456 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -586,7 +586,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 41839 nós · 71507 arestas · 2445 comunidades · grafo do commit `5f956d2c`
+- 41839 nós · 71507 arestas · 2445 comunidades · grafo do commit `e9a4a1aa`
 - comunidades maiores: react (447), lucide-react (444), ref_components (393), ref_integrations (375), test-base.ts (340), vitest (338), @testing-library/react (330), ref_hooks (328), sonner (293), gotoAndSettle (292), scripts (289), @tanstack/react-query (277)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -594,7 +594,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Hotspots (arquivos mais alterados, 90 dias)
 - RELATORIO_CI.md (54)
 - PENDENCIAS.md (46)
-- supabase/MIGRATIONS_SYNC_LOG.md (21)
+- supabase/MIGRATIONS_SYNC_LOG.md (20)
 - analise-prs/progresso.json (14)
 - package.json (14)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (11)
@@ -1162,6 +1162,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-12 `e9a4a1a` fix: E2E busca global — modifier+K webkit, Ctrl+Shift+V webkit, snapshots
 - 2026-11-12 `5f956d2` fix: corrige 62 bugs confirmados em telas, hooks e edge functions (#3424)
 - 2026-11-12 `4bda903` fix(tests): corrige erros de TypeScript em testes, mede baseline real (855) e corrige caminho em PENDENCIAS (#3419)
 - 2026-11-12 `f240819` fix(ci): corrige testes, tipos de edge e cobertura que deixam a main vermelha (#3407)
@@ -1176,7 +1177,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-11 `89990fd` chore(repo): move 2 testes obsoletos da #3361 que importavam modulos movidos
 - 2026-11-11 `5dd9b94` chore(repo): move 316 arquivos obsoletos da #3361 de src/ para recovery/src-legacy
 - 2026-11-10 `1dcb3b6` fix(autoheal): ESLint --fix automático [autoheal] (#3386)
-- 2026-11-09 `82bafd9` fix(scripts): gates de erro TypeScript falham fechado quando o tsc não chega a checar (#3372)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

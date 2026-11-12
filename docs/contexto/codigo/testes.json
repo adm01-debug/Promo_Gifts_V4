@@ -2060,9 +2060,9 @@
   {
    "arquivo": "e2e/flows/global-search-comprehensive.spec.ts",
    "tipo": "e2e",
-   "linhas": 89,
+   "linhas": 99,
    "testa": [],
-   "casos": 4
+   "casos": 5
   },
   {
    "arquivo": "e2e/flows/intelligence-substitute-applied-analytics.spec.ts",
