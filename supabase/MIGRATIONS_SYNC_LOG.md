@@ -1403,3 +1403,9 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261112011000` | `fix_sb0003_fn_get_rupture_alerts` | `8e081152c457ed572cb3aa349f62027bc7cd461996bb8036f499efb12af6a449` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono) |
+
+## 2026-11-12 — Recibo: fechamento da brecha perf002 (PR mínima, antes da pilha #3425)
+
+| versão | nome | sha256 | status |
+|---|---|---|---|
+| `20261108223100` | `drop_perf002_incident_ddl_survivor` | `a912697ce92a3b6da285fad499575dc89fb8c2138f1f3b573dbdc9206c717dfa` | pendente — aplicar via `db-apply-migration.yml` com aprovação do dono (REGRA #8). Prioridade de segurança: em 12/11 a função ainda existia em produção, SECURITY DEFINER e executável por `authenticated` (conferido via `has_function_privilege`). Antecipada da pilha #3425, que traz o mesmo arquivo e a mesma linha. |
