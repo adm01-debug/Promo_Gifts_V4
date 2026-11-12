@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 import fs from 'fs';
 import path from 'path';
 
@@ -14,10 +14,10 @@ test.describe("Módulo de Comparação - Performance & A11y & Robustez", () => {
     if (!fs.existsSync(artifactDir)) fs.mkdirSync(artifactDir, { recursive: true });
   });
 
-  const saveArtifacts = async (page, name) => {
+  const saveArtifacts = async (page: Page, name: string) => {
     const html = await page.content();
     const computedStyles = await page.evaluate(() => {
-      const styles = {};
+      const styles: Record<string, string> = {};
       document.querySelectorAll('*').forEach((el, i) => {
         if (i < 100) { // Limita para evitar payload gigante, foca no topo
           const selector = el.id ? `#${el.id}` : `${el.tagName.toLowerCase()}.${Array.from(el.classList).join('.')}`;
