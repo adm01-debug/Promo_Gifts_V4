@@ -98,3 +98,7 @@ docs/contexto/*
 docs/contexto/regras/*
 !docs/contexto/regras/manual/
 __pycache__/
+
+# Gerado/servido por api/sitemap.ts via rewrite do vercel.json; um arquivo estático
+# aqui tem prioridade na Vercel e esconde o sitemap dinâmico.
+/public/sitemap.xml
