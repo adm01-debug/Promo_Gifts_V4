@@ -17,7 +17,7 @@
  */
 
 import { execSync } from "node:child_process";
-import { writeFileSync, mkdirSync, readFileSync, existsSync } from "node:fs";
+import { writeFileSync, mkdirSync, readFileSync, existsSync, readdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -208,14 +208,45 @@ function fetchSchemaFromTypes(map) {
 // Indexação de uso no código
 // ──────────────────────────────────────────────────────────────────────────────
 
+// Lista os fontes. Usa o ripgrep quando existe; no runner do GitHub (ubuntu sem `rg`)
+// cai para uma varredura em Node com os MESMOS filtros — antes o script abortava (exit 1).
+const CODE_EXT = /\.(ts|tsx|js|mjs)$/;
+const SKIP_DIRS = new Set(["node_modules", "dist", ".next"]);
+function walkFiles(rel, out) {
+  let entries;
+  try {
+    entries = readdirSync(resolve(ROOT, rel), { withFileTypes: true });
+  } catch {
+    return;
+  }
+  for (const e of entries) {
+    const p = `${rel}/${e.name}`;
+    if (e.isDirectory()) {
+      if (!SKIP_DIRS.has(e.name)) walkFiles(p, out);
+    } else if (e.isFile() && CODE_EXT.test(e.name)) out.push(p);
+  }
+}
+function listSourceFiles() {
+  try {
+    return execSync(
+      `rg --files ${SEARCH_DIRS.join(" ")} -g '*.{ts,tsx,js,mjs}' -g '!node_modules' -g '!dist' -g '!.next'`,
+      { encoding: "utf8", cwd: ROOT, maxBuffer: 64 * 1024 * 1024, stdio: ["ignore", "pipe", "pipe"] }
+    )
+      .trim()
+      .split("\n")
+      .filter(Boolean);
+  } catch (err) {
+    // status 1 do rg = nenhum arquivo casou (lista vazia legítima); qualquer outro erro
+    // (rg ausente: ENOENT/127) usa a varredura em Node.
+    if (err && err.status === 1) return [];
+    const out = [];
+    for (const d of SEARCH_DIRS) walkFiles(d, out);
+    return out;
+  }
+}
+
 function indexCodeUsage() {
-  const files = execSync(
-    `rg --files ${SEARCH_DIRS.join(" ")} -g '*.{ts,tsx,js,mjs}' -g '!node_modules' -g '!dist' -g '!.next'`,
-    { encoding: "utf8", cwd: ROOT, maxBuffer: 64 * 1024 * 1024 }
-  )
-    .trim()
-    .split("\n")
-    .filter(Boolean);
+  const files = listSourceFiles();
 
   // Indexa por arquivo: conteúdo + conjunto de "select strings" + lista de tabelas mencionadas
   const perFile = [];
