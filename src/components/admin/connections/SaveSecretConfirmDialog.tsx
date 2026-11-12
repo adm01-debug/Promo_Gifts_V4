@@ -60,7 +60,7 @@ export function SaveSecretConfirmDialog({
   return (
     <AlertDialog open={open} onOpenChange={handleOpenChange}>
       <AlertDialogContent
-        className="!max-w-lg w-[92vw] gap-0 overflow-hidden rounded-xl border border-border/60 bg-card/95 p-0 shadow-xl backdrop-blur-xl supports-[backdrop-filter]:bg-card/80"
+        className="w-[92vw] !max-w-lg gap-0 overflow-hidden rounded-xl border border-border/60 bg-card/95 p-0 shadow-xl backdrop-blur-xl supports-[backdrop-filter]:bg-card/80"
         data-testid="save-secret-confirm-dialog"
         onEscapeKeyDown={(e) => isLoading && e.preventDefault()}
       >
@@ -74,7 +74,7 @@ export function SaveSecretConfirmDialog({
               <div className="relative flex-shrink-0">
                 <span
                   aria-hidden="true"
-                  className="absolute inset-0 -z-10 rounded-xl blur-lg opacity-60 bg-primary/30"
+                  className="absolute inset-0 -z-10 rounded-xl bg-primary/30 opacity-60 blur-lg"
                 />
                 <motion.div
                   initial={{ scale: 0 }}

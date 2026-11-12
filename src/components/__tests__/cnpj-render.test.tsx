@@ -44,9 +44,7 @@ describe('B3 — ProposalSections.ClientBar (PDF)', () => {
   });
 
   it('omite bloco de CNPJ quando ausente', () => {
-    const { container } = render(
-      <SectionsClientBar company="X" contact="Y" cnpj={undefined} />,
-    );
+    const { container } = render(<SectionsClientBar company="X" contact="Y" cnpj={undefined} />);
     expect(container.innerHTML).not.toContain('CNPJ:');
   });
 });
