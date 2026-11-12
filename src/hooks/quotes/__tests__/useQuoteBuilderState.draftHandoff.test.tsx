@@ -269,6 +269,14 @@ describe('handoff via location.state', () => {
     expect(latest!.clientId).toBe('draft-client');
   });
 
+  it('?items[]= inválido (JSON quebrado): restaura o rascunho', async () => {
+    seedDraft();
+    mockSearch = new URLSearchParams('items[]=%7Bquebrado');
+    mount();
+    await flush();
+    expect(latest!.clientId).toBe('draft-client');
+  });
+
   it('?clientId=<uuid>: não restaura e aplica cliente do BI', async () => {
     seedDraft();
     const uuid = '11111111-2222-3333-4444-555555555555';

@@ -110,6 +110,26 @@ describe('QuantityPriceCalculator CTA Criar Orçamento', () => {
     ).toBeUndefined();
   });
 
+  it('falha de rede/RPC que não é de dimensão: bloqueia com erro e não navega', async () => {
+    rpc.mockRejectedValue(new Error('network down'));
+    await clickCta();
+    expect(toast.error).toHaveBeenCalledWith(
+      'Não foi possível calcular o preço da gravação. Tente novamente.',
+    );
+    expect(toast.warning).not.toHaveBeenCalled();
+    expect(navigate).not.toHaveBeenCalled();
+    expect(
+      screen.getByText(/Criar Orçamento a partir desta Simulação/).closest('button'),
+    ).not.toBeDisabled();
+  });
+
+  it('RPC success:false por outro motivo: bloqueia com erro', async () => {
+    rpc.mockResolvedValue({ success: false, error: 'Tabela de preço não encontrada' });
+    await clickCta();
+    expect(toast.error).toHaveBeenCalledTimes(1);
+    expect(navigate).not.toHaveBeenCalled();
+  });
+
   it('técnica não-dimensional: navega com pricing preenchido e quantidade mínima', async () => {
     rpc.mockResolvedValue({
       success: true,

@@ -3,7 +3,10 @@ import { useState, useCallback, useMemo, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { useCustomizationPriceCalculator } from '@/hooks/simulation/useCustomizationPrice';
+import {
+  isDimensionRequiredError,
+  useCustomizationPriceCalculator,
+} from '@/hooks/simulation/useCustomizationPrice';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -111,7 +114,7 @@ export function ProductPriceSimulator({ className }: ProductPriceSimulatorProps)
 
   // Quantidade
   const [quantity, setQuantity] = useState(100);
-  const { calculatePrice: calculateEngravingPrice } = useCustomizationPriceCalculator();
+  const { calculatePriceDetailed: calculateEngravingPrice } = useCustomizationPriceCalculator();
   // Guarda contra duplo clique enquanto os preços das gravações são calculados.
   const creatingRef = useRef(false);
   const [isCreating, setIsCreating] = useState(false);
@@ -252,7 +255,7 @@ export function ProductPriceSimulator({ className }: ProductPriceSimulatorProps)
     creatingRef.current = true;
     setIsCreating(true);
     try {
-      const prices = await Promise.all(
+      const results = await Promise.all(
         engravings.map((e) =>
           calculateEngravingPrice({
             areaId: e.technique.id,
@@ -261,8 +264,13 @@ export function ProductPriceSimulator({ className }: ProductPriceSimulatorProps)
           }),
         ),
       );
-      // Técnica com faixa por dimensão (sem largura/altura aqui) não tem preço: segue sem
-      // bloquear o handoff e o preço dessa gravação é informado no orçamento.
+      const prices = results.map((r) => r.result);
+      // Falha de rede/RPC bloqueia como antes; só a técnica com faixa por dimensão
+      // (sem largura/altura aqui) segue sem preço e é informada no orçamento.
+      if (results.some((r) => !r.result && !isDimensionRequiredError(r.error))) {
+        toast.error('Não foi possível calcular o preço da gravação. Tente novamente.');
+        return;
+      }
       const missing = prices.filter((p) => !p).length;
       if (missing > 0) {
         toast.warning(

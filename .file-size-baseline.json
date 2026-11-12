@@ -102,7 +102,7 @@
     "src/hooks/products/useSellerCarts.helpers.ts": 763,
     "src/hooks/products/useSellerCarts.ts": 651,
     "src/hooks/quotes/useQuoteBuilderState.helpers.ts": 572,
-    "src/hooks/quotes/useQuoteBuilderState.ts": 1073,
+    "src/hooks/quotes/useQuoteBuilderState.ts": 1082,
     "src/hooks/simulation/useSimulation.ts": 606,
     "src/hooks/stock/stockFetcher.ts": 707,
     "src/hooks/ui/useWorkspaceNotifications.tsx": 557,

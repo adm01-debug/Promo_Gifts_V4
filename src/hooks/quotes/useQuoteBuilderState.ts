@@ -234,10 +234,19 @@ export function useQuoteBuilderState() {
       (Boolean(field('fromCart')) && nonEmpty(field('items'))) ||
       (Boolean(field('fromCollection')) && nonEmpty(field('preloadProducts')));
     const urlClientId = searchParams.get('clientId');
+    const rawUrlItems = searchParams.getAll('items[]');
+    let hasUrlItems = false;
+    if (rawUrlItems.length > 0) {
+      try {
+        hasUrlItems = parseUrlItemsParam(rawUrlItems).length > 0;
+      } catch {
+        hasUrlItems = false;
+      }
+    }
     return Boolean(
       hasStateHandoff ||
       (urlClientId && /^[0-9a-f-]{36}$/i.test(urlClientId)) ||
-      searchParams.getAll('items[]').length > 0 ||
+      hasUrlItems ||
       searchParams.get('product_id') ||
       searchParams.get('productId'),
     );

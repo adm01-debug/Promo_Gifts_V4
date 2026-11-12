@@ -6,7 +6,10 @@ import { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useCustomizationPricing, type PriceCalculation } from '@/hooks/simulation';
-import { useCustomizationPriceCalculator } from '@/hooks/simulation/useCustomizationPrice';
+import {
+  isDimensionRequiredError,
+  useCustomizationPriceCalculator,
+} from '@/hooks/simulation/useCustomizationPrice';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -36,7 +39,7 @@ interface QuantityPriceCalculatorProps {
 export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorProps) {
   const navigate = useNavigate();
   const { isLoading: pricingLoading } = useCustomizationPricing();
-  const { calculatePrice: calculateEngravingPrice } = useCustomizationPriceCalculator();
+  const { calculatePriceDetailed: calculateEngravingPrice } = useCustomizationPriceCalculator();
   // Guarda contra duplo clique enquanto os preços das gravações são calculados.
   const creatingRef = useRef(false);
   const [isCreating, setIsCreating] = useState(false);
@@ -105,7 +108,7 @@ export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorPr
     setIsCreating(true);
     try {
       const quantity = Math.min(...customQuantities);
-      const prices = await Promise.all(
+      const results = await Promise.all(
         selectedConfigs.map((c) =>
           calculateEngravingPrice({
             areaId: c.technique.techniqueId,
@@ -114,8 +117,13 @@ export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorPr
           }),
         ),
       );
-      // Técnica com faixa por dimensão (sem largura/altura aqui) não tem preço: segue sem
-      // bloquear o handoff e o preço dessa gravação é informado no orçamento.
+      const prices = results.map((r) => r.result);
+      // Falha de rede/RPC bloqueia como antes; só a técnica com faixa por dimensão
+      // (sem largura/altura aqui) segue sem preço e é informada no orçamento.
+      if (results.some((r) => !r.result && !isDimensionRequiredError(r.error))) {
+        toast.error('Não foi possível calcular o preço da gravação. Tente novamente.');
+        return;
+      }
       const missing = prices.filter((p) => !p).length;
       if (missing > 0) {
         toast.warning(
