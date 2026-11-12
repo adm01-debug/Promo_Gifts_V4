@@ -250,7 +250,7 @@ export const Sel = {
     /** Step 1 — Cliente: opção "Sem empresa" no CompanySearchDropdown. */
     noCompanyOption: TID("no-company-option"),
     /** Step 3 — Itens: botão "Produto" que abre o ProductSearch dialog. */
-    addProductButton: TID("quote-add-product-button"),
+    addProductButton: TID("quote-add-product-button-summary"),
     /** ProductSearch dialog: input de busca. */
     productSearchInput: TID("product-search-input"),
     /** ProductSearch dialog: opção de produto (indexado pelo id). */
