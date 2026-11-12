@@ -142,56 +142,6 @@ export async function writeAuditEntry(
   }
 }
 
-/**
- * Fallback de `log_full_scope_grant`: grava o evento `full_scope_granted` em
- * `step_up_audit_log` com o cliente service-role quando a RPC não pode ser
- * executada pelo usuário. Mesmo formato de linha que a RPC produz.
- */
-export async function insertFullScopeGrant(
-  admin: SupabaseAdmin,
-  userId: string,
-  args: {
-    _operation: string;
-    _key_id: string;
-    _key_prefix: string;
-    _justification?: string | null;
-    _confirmation_phrase_ok?: boolean | null;
-    _expires_at?: string | null;
-    _ip?: string | null;
-    _user_agent?: string | null;
-    _request_id?: string | null;
-    _extra?: unknown;
-  },
-): Promise<{ error: { message: string } | null }> {
-  const { error } = await admin.from("step_up_audit_log").insert({
-    user_id: userId,
-    action: args._operation === "escalate" ? "mcp_full_escalate" : "mcp_full_issue",
-    target_ref: args._key_id,
-    event_type: "full_scope_granted",
-    ip_address: args._ip ?? null,
-    user_agent: args._user_agent ?? null,
-    metadata: {
-      operation: args._operation,
-      key_id: args._key_id,
-      key_prefix: args._key_prefix,
-      expires_at: args._expires_at ?? null,
-      justification: args._justification ?? null,
-      verifications: {
-        is_dev_recheck: true,
-        step_up_token_consumed: false,
-        can_grant_mcp_full: true,
-        confirmation_phrase_ok: args._confirmation_phrase_ok ?? true,
-        has_justification: !!args._justification,
-      },
-      request_id: args._request_id ?? null,
-      granted_at: new Date().toISOString(),
-      extra: args._extra ?? {},
-      via: "service_role_fallback",
-    },
-  });
-  return { error };
-}
-
 /** Extrai IP/UA do request de forma consistente. */
 export function extractRequestMeta(req: Request): { ip: string | null; ua: string | null } {
   const ip =

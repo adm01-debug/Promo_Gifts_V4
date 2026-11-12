@@ -15,7 +15,7 @@ import {
   isFullAccess,
 } from "../_shared/mcp-scopes.ts";
 import { getOrCreateRequestId, REQUEST_ID_HEADER } from "../_shared/request-id.ts";
-import { writeAuditEntry, summarizePayload, extractRequestMeta, insertFullScopeGrant } from "../_shared/audit-log.ts";
+import { writeAuditEntry, summarizePayload, extractRequestMeta } from "../_shared/audit-log.ts";
 import { recordMcpViolation, mapViolationReason } from "../_shared/mcp-violations.ts";
 import { castRpcResult } from "../_shared/supabase-client-adapter.ts";
 
@@ -309,7 +309,20 @@ Deno.serve(async (req) => {
           },
         };
         const { error: rpcErr } = await userClient.rpc("log_full_scope_grant", grantArgs);
-        const auditErr = rpcErr ? (await insertFullScopeGrant(admin, userId as string, grantArgs)).error : null;
+        // Fallback: a RPC não é executável por authenticated; grava o evento via service_role.
+        const auditErr = rpcErr
+          ? (
+              await admin.from("step_up_audit_log").insert({
+                user_id: userId,
+                action: "mcp_full_escalate",
+                target_ref: grantArgs._key_id,
+                event_type: "full_scope_granted",
+                ip_address: grantArgs._ip ?? null,
+                user_agent: grantArgs._user_agent ?? null,
+                metadata: { ...grantArgs, via: "service_role_fallback" },
+              })
+            ).error
+          : null;
         if (auditErr) throw auditErr;
       } catch (e) {
         await writeAuditEntry(admin, {
