@@ -9,7 +9,6 @@
 // Guarda: este script é para o DevTools do browser — não funciona em Node.js.
 if (typeof window === 'undefined') {
   console.log('[audit-debug] static-pass: script é para DevTools do browser; ignorado em Node.');
-  // @ts-expect-error process exists in Node
   process.exit(0);
 }
 
@@ -18,7 +17,6 @@ try {
   supabase = (await import('../src/integrations/supabase/client')).supabase;
 } catch {
   console.log('[audit-debug] static-pass: módulo do browser indisponível em Node; ignorado.');
-  // @ts-expect-error process exists in Node
   process.exit(0);
 }
 
