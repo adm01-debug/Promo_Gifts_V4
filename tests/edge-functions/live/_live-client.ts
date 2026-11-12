@@ -66,7 +66,11 @@ export const ALLOW_COSTLY = (readEnv("EDGE_LIVE_COSTLY") ?? "") === "1";
 
 const TIMEOUT_MS = Number(readEnv("EDGE_LIVE_TIMEOUT_MS")) || 15_000;
 const RETRY_STATUSES = new Set([502, 503, 504]);
-const RETRY_COUNT = Number(readEnv("EDGE_LIVE_RETRIES")) || 3;
+const RETRY_COUNT = (() => {
+  // "0" desliga os retries (antes `|| 3` transformava 0 em 3).
+  const n = Number(readEnv("EDGE_LIVE_RETRIES"));
+  return Number.isFinite(n) && readEnv("EDGE_LIVE_RETRIES") !== undefined && readEnv("EDGE_LIVE_RETRIES") !== "" ? n : 3;
+})();
 const RETRY_DELAY_MS = Number(readEnv("EDGE_LIVE_RETRY_DELAY_MS")) || 800;
 /**
  * Deadline do signInWithPassword em getJwt() — ver nota no MAX_RETRY_BUDGET_MS.
@@ -107,6 +111,8 @@ export interface CallEdgeOptions {
   /** Query string (sem o "?"). */
   query?: string;
   signalTimeoutMs?: number;
+  /** false: não repete após timeout do cliente (chamadas caras ou não idempotentes). */
+  retryOnTimeout?: boolean;
 }
 
 export interface EdgeResult {
@@ -169,11 +175,17 @@ export async function callEdge(name: string, opts: CallEdgeOptions = {}): Promis
       if (!RETRY_STATUSES.has(res.status) || attempt === RETRY_COUNT) return lastResult;
     } catch (err: unknown) {
       // AbortError means our client-side timeout fired — not a server crash.
-      // Return synthetic 408 so tests can assert status < 500 without throwing.
+      // Cold start (1ª chamada carrega as dependências da função) estoura o timeout e a
+      // tentativa seguinte já pega a função quente: repete antes de concluir. Só no fim
+      // devolve o 408 sintético com timedOut (lentidão persistente = falha real).
+      // (magic-up-score / intelligence-substitute-applied: 9 falsos vermelhos em 12/11.)
       if ((err as { name?: string }).name === "AbortError") {
-        return { status: 408, headers: new Headers(), text: "", json: null, timedOut: true };
+        lastResult = { status: 408, headers: new Headers(), text: "", json: null, timedOut: true };
+        // Chamadas caras/não idempotentes (opts.retryOnTimeout === false) não repetem.
+        if (attempt === RETRY_COUNT || opts.retryOnTimeout === false) return lastResult;
+      } else {
+        throw err;
       }
-      throw err;
     } finally {
       clearTimeout(t);
     }

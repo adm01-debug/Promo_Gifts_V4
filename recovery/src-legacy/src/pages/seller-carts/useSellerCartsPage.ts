@@ -9,7 +9,6 @@ import { type SellerCart } from '@/hooks/useSellerCarts';
 import { useCartTemplates, type CartTemplateItem } from '@/hooks/useCartTemplates';
 import { ProductsContext } from '@/contexts/ProductsContext';
 import {
-  recordAction,
   exportCartToCSV,
   exportCartToPDF,
   shareCartLink,
@@ -56,8 +55,8 @@ export function useSellerCartsPage() {
   const { templates, saveTemplate, deleteTemplate } = useCartTemplates();
 
   const productsCtx = useContext(ProductsContext);
-  const allProducts = productsCtx?.products || [];
-  const isLoadingProducts = productsCtx?.isLoading || false;
+  const allProducts = useMemo(() => productsCtx?.products ?? [], [productsCtx]);
+  const isLoadingProducts = productsCtx?.isLoading ?? false;
 
   const [showNewCart, setShowNewCart] = useState(false);
 
@@ -67,7 +66,7 @@ export function useSellerCartsPage() {
 
   const [cartNotesOpen, setCartNotesOpen] = useState(false);
   const [localCartNotes, setLocalCartNotes] = useState('');
-  const debounceNotesRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceNotesRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const stockMap = useMemo(() => {
     const map = new Map<string, number>();
@@ -84,8 +83,7 @@ export function useSellerCartsPage() {
     let hasData = false;
     activeCart.items.forEach((item) => {
       const product = allProducts.find((p: { id: string }) => p.id === item.product_id) as
-        | { dimensions?: { weight_g?: number }; boxVolumeCm3?: number }
-        | undefined;
+        { dimensions?: { weight_g?: number }; boxVolumeCm3?: number } | undefined;
       if (!product) return;
       const weight = product.dimensions?.weight_g || 0;
       const volume = product.boxVolumeCm3 || 0;
@@ -150,7 +148,6 @@ export function useSellerCartsPage() {
       const item = activeCart?.items.find((i) => i.id === itemId);
       removeItem(itemId);
       if (item && activeCart) {
-        recordAction(activeCart.id, { type: 'remove', itemName, time: new Date() });
         showUndoToast({
           title: `${itemName} removido`,
           description: activeCart.company_name,
@@ -175,59 +172,28 @@ export function useSellerCartsPage() {
   const handleUpdateQuantity = useCallback(
     (itemId: string, qty: number) => {
       updateItemQuantity(itemId, qty);
-      const item = activeCart?.items.find((i) => i.id === itemId);
-      if (item && activeCart) {
-        recordAction(activeCart.id, {
-          type: 'qty',
-          itemName: item.product_name,
-          detail: `${qty}`,
-          time: new Date(),
-        });
-      }
     },
-    [updateItemQuantity, activeCart],
+    [updateItemQuantity],
   );
 
   const handleMoveItem = useCallback(
     (itemId: string, targetCartId: string) => {
-      const item = activeCart?.items.find((i) => i.id === itemId);
-      const targetCart = carts.find((c) => c.id === targetCartId);
       moveItemToCart(itemId, targetCartId);
-      if (item && activeCart) {
-        recordAction(activeCart.id, {
-          type: 'move',
-          itemName: item.product_name,
-          detail: targetCart?.company_name,
-          time: new Date(),
-        });
-      }
     },
-    [moveItemToCart, activeCart, carts],
+    [moveItemToCart],
   );
 
   const handleDuplicateItem = useCallback(
     (itemId: string, targetCartId: string) => {
-      const item = activeCart?.items.find((i) => i.id === itemId);
-      const targetCart = carts.find((c) => c.id === targetCartId);
       duplicateItemToCart(itemId, targetCartId);
-      if (item && activeCart) {
-        recordAction(activeCart.id, {
-          type: 'duplicate',
-          itemName: item.product_name,
-          detail: targetCart?.company_name,
-          time: new Date(),
-        });
-      }
     },
-    [duplicateItemToCart, activeCart, carts],
+    [duplicateItemToCart],
   );
 
   const handleClearCart = useCallback(() => {
     if (!activeCart) return;
     const itemsToRestore = [...activeCart.items];
     clearCart(activeCart.id);
-    recordAction(activeCart.id, { type: 'clear', itemName: 'todos os itens', time: new Date() });
-
     showUndoToast({
       title: `Carrinho limpo`,
       description: activeCart.company_name,
@@ -245,7 +211,7 @@ export function useSellerCartsPage() {
         restoreItems(activeCart.id, addItems);
       },
     });
-  }, [clearCart, activeCart, addToActiveCart]);
+  }, [clearCart, activeCart, restoreItems]);
 
   const handleSaveTemplate = useCallback(
     (name: string, description: string) => {

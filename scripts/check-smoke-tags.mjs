@@ -50,7 +50,13 @@ if (!existsSync(SPEC)) {
   process.exit(2);
 }
 
-const src = readFileSync(SPEC, "utf8");
+let src;
+try {
+  src = readFileSync(SPEC, "utf8");
+} catch (err) {
+  console.error(`${C.red}❌ Spec do smoke não pôde ser lido: ${SPEC} (${err.code})${C.reset}`);
+  process.exit(2);
+}
 const lines = src.split("\n");
 
 /* ── Parser de profundidade ─────────────────────────────────

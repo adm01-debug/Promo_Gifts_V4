@@ -21,7 +21,9 @@ describe('Gate summary-color-tokens — fuzz exaustivo', () => {
   it('source real passa no gate (baseline)', () => {
     expect(audit(baseSource)).toEqual([]);
     expect(
-      (auditFile as (rel: string) => string[])('src/components/products/ProductCustomizationOptions.tsx'),
+      (auditFile as (rel: string) => string[])(
+        'src/components/products/ProductCustomizationOptions.tsx',
+      ),
     ).toEqual([]);
   });
 
@@ -78,6 +80,15 @@ describe('Gate summary-color-tokens — fuzz exaustivo', () => {
     expect(reversedMarkers.some((e) => e.includes('marcadores'))).toBe(true);
   });
 
+  it('detecta marcadores duplicados (bloco ambíguo) em vez de auditar só o primeiro par', () => {
+    // Regressão: se o arquivo acabar com dois pares start/end (ex.: card
+    // duplicado por copy/paste), `indexOf` sempre acha o 1º par e o gate
+    // auditava só ele — uma violação no 2º bloco passava batido.
+    const duplicated = `${baseSource}\n${baseSource.replace(/\bbg-success\b/g, 'bg-primary')}`;
+    const errs = audit(duplicated);
+    expect(errs.some((e) => e.includes('múltiplos marcadores'))).toBe(true);
+  });
+
   it('detecta arquivo inexistente', () => {
     const errs = (auditFile as (rel: string) => string[])('src/_nao_existe_.tsx');
     expect(errs.some((e) => e.includes('ausente'))).toBe(true);
@@ -85,13 +96,32 @@ describe('Gate summary-color-tokens — fuzz exaustivo', () => {
 
   // Mutações neutras — ZERO falsos-positivos
   const NEUTRAL: Array<[label: string, fn: (s: string) => string]> = [
-    ['comentário inline', (s) => s.replace('Resumo das Configurações', '/* x */ Resumo das Configurações')],
+    [
+      'comentário inline',
+      (s) => s.replace('Resumo das Configurações', '/* x */ Resumo das Configurações'),
+    ],
     ['aspas JS', (s) => s.replace(/'pt-BR'/, '"pt-BR"')],
-    ['whitespace extra', (s) => s.replace(/border border-success\/20/, 'border  border-success/20')],
+    [
+      'whitespace extra',
+      (s) => s.replace(/border border-success\/20/, 'border  border-success/20'),
+    ],
     ['classe inócua extra', (s) => s.replace('bg-success/5', 'bg-success/5 transition-colors')],
-    ['aspas JSX', (s) => s.replace('className="mt-5 border-t border-border/40', "className='mt-5 border-t border-border/40")],
-    ['quebra de linha extra', (s) => s.replace('Resumo das Configurações', 'Resumo das Configurações\n')],
-    ['emoji no título do JSX', (s) => s.replace('Resumo das Configurações', 'Resumo das Configurações ✨')],
+    [
+      'aspas JSX',
+      (s) =>
+        s.replace(
+          'className="mt-5 border-t border-border/40',
+          "className='mt-5 border-t border-border/40",
+        ),
+    ],
+    [
+      'quebra de linha extra',
+      (s) => s.replace('Resumo das Configurações', 'Resumo das Configurações\n'),
+    ],
+    [
+      'emoji no título do JSX',
+      (s) => s.replace('Resumo das Configurações', 'Resumo das Configurações ✨'),
+    ],
   ];
 
   it.each(NEUTRAL)('neutra "%s" não dispara falso-positivo', (label, fn) => {

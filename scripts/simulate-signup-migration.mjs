@@ -9,11 +9,11 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { randomUUID, createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { querySupabaseReadOnly } from './supabase-read-only-query.mjs';
+import { missingPrerequisite } from './lib/missing-prerequisite.mjs';
 
 const dockerCheck = spawnSync('docker', ['info'], { stdio: 'ignore', timeout: 5000 });
 if (dockerCheck.status !== 0 || dockerCheck.error) {
-  console.log('[simulate-signup-migration] static-pass: Docker indisponível; simulação ignorada.');
-  process.exit(0);
+  missingPrerequisite('simulate-signup-migration', 'Docker indisponível', { exitCode: 1 });
 }
 
 const root = fileURLToPath(new URL('../', import.meta.url));

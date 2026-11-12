@@ -9,6 +9,7 @@
 import { writeFileSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { missingPrerequisite } from './lib/missing-prerequisite.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -33,9 +34,9 @@ const HEADERS = {
 async function ghGet(url) {
   const r = await fetch(url, { headers: HEADERS });
   if (r.status === 401 || r.status === 403) {
-    console.warn(`[ci-metrics] sem permissão para ${url} (${r.status}). Token com escopo insuficiente.`);
-    console.log('[ci-metrics] static-pass: token sem permissão actions:read; relatório não gerado.');
-    process.exit(0);
+    missingPrerequisite('ci-metrics', `token sem permissão actions:read (HTTP ${r.status}); relatório não gerado`, {
+      exitCode: 1,
+    });
   }
   if (!r.ok) throw new Error(`GET ${url} → ${r.status} ${r.statusText}`);
   return r.json();

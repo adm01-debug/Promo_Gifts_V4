@@ -29,6 +29,7 @@ on:
       - 'e2e/catalog/color-swatch-selected-no-clip.spec.ts'
       - 'e2e/catalog/color-swatch-wrap-visual.spec.ts'
       - '.github/workflows/e2e-color-swatch-grid.yml'
+  workflow_dispatch:
 
 concurrency:
   group: e2e-color-swatch-grid-${{ github.ref }}

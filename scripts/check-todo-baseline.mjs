@@ -19,7 +19,8 @@ runBaselineGate({
   // includeCommentLines: `// TODO:` em linha-comentário também é débito —
   // antes passava de graça pelo SKIP_CONTENT do lib (achado 2026-10).
   scan: () =>
-    countMatchesInSrc(process.cwd(), /\b(TODO|FIXME|HACK)\b/gi, {
+    countMatchesInSrc(process.cwd(), /\b(TODO|FIXME|HACK)\b/g, // sem `i`: a palavra "todo" (PT-BR, "todo o catálogo") não é marcador de débito
+       {
       includeCommentLines: true,
     }),
 });

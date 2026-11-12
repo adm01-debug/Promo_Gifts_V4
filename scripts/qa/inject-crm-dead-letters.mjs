@@ -36,8 +36,11 @@ const QUOTE_ID = args["quote-id"] ?? "00000000-0000-0000-0000-000000000001";
 const NON_EXISTENT = "ffffffff-ffff-ffff-ffff-ffffffffffff";
 
 if (!DRY && !API_KEY) {
-  console.log("[inject-crm-dead-letters] static-pass: CRM_CALLBACK_API_KEY ausente; injeção ignorada. Use --dry-run para inspecionar payloads.");
-  process.exit(0);
+  const { missingPrerequisite } = await import("../lib/missing-prerequisite.mjs");
+  missingPrerequisite("inject-crm-dead-letters", "CRM_CALLBACK_API_KEY ausente", {
+    exitCode: 2,
+    hint: "Use --dry-run para inspecionar payloads.",
+  });
 }
 
 const now = new Date().toISOString();

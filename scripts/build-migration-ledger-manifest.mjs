@@ -55,7 +55,7 @@ const entries = ledgerRows
 
     return {
       version: row.version,
-      name: row.name.trim() || null,
+      name: (row.name ?? '').trim() || null,
       statement_count: row.statement_count,
       statements_is_null: row.statements_is_null,
       statement_sha256: row.statement_sha256,

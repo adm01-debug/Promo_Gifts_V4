@@ -5,6 +5,14 @@
  * projetos hospedados. Em CI usamos a Management API com um PAT e project ref;
  * o caminho pg-meta permanece apenas para ambientes locais que o exponham.
  */
+/** Há credencial para consultar o banco de verdade? (mesma condição de querySupabaseReadOnly) */
+export function hasLiveSupabaseConfig(env = process.env) {
+  return Boolean(
+    (env.SUPABASE_ACCESS_TOKEN && env.SUPABASE_PROJECT_REF) ||
+      (env.VITE_SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY),
+  );
+}
+
 export async function querySupabaseReadOnly(sql) {
   const accessToken = process.env.SUPABASE_ACCESS_TOKEN;
   const projectRef = process.env.SUPABASE_PROJECT_REF;

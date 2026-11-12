@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib/missing-prerequisite.sh"
 if ! docker ps &>/dev/null; then
-  echo "[test-wave1-forward-only-migrations] static-pass: docker daemon não disponível; teste ignorado."
-  exit 0
+  missing_prerequisite "test-wave1-forward-only-migrations" "docker daemon não disponível" 1
 fi
 
 readonly container_name="promo_wave1_forward_only_pg17"

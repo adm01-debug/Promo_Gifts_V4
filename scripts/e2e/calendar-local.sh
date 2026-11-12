@@ -3,14 +3,6 @@
 # 320/768/1280. Use --update para regenerar baselines PNG.
 set -euo pipefail
 
-# Guard: sem servidor de dev acessível e sem env vars de E2E → static-pass
-if [[ -z "${E2E_BASE_URL:-}" ]] && [[ -z "${E2E_REUSE_EXISTING_SERVER:-}" ]] && [[ -z "${E2E_FORCE_START_SERVER:-}" ]]; then
-  if ! curl -sf --max-time 2 http://localhost:8080 >/dev/null 2>&1; then
-    echo "[calendar-local] static-pass: servidor de dev não acessível (inicie com npm run dev); E2E ignorado."
-    exit 0
-  fi
-fi
-
 UPDATE_FLAG=""
 if [[ "${1:-}" == "--update" || "${UPDATE:-}" == "1" ]]; then
   UPDATE_FLAG="--update-snapshots"

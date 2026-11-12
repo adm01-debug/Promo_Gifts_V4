@@ -396,4 +396,27 @@ describe('dependency audit policy', () => {
       violations: ['npm audit returned an invalid report'],
     });
   });
+
+  it('fails closed (not a crash) when a vulnerability entry is null or non-object', () => {
+    // Regression: isAllowedBracesChainPackage unconditionally reads `vulnerability.via`
+    // before checking the package name, so a malformed/null entry threw a raw
+    // TypeError instead of being reported as a violation.
+    expect(() =>
+      evaluateAuditReport(
+        { vulnerabilities: { foo: null } },
+        new Date('2026-09-09T12:00:00Z'),
+      ),
+    ).not.toThrow();
+    const result = evaluateAuditReport(
+      { vulnerabilities: { foo: null, bar: 'not-an-object' } },
+      new Date('2026-09-09T12:00:00Z'),
+    );
+    expect(result.passed).toBe(false);
+    expect(result.violations).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('foo: malformed vulnerability entry'),
+        expect.stringContaining('bar: malformed vulnerability entry'),
+      ]),
+    );
+  });
 });

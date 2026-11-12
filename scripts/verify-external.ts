@@ -1,12 +1,12 @@
 
 import { createClient } from '@supabase/supabase-js';
+import { missingPrerequisite } from './lib/missing-prerequisite.mjs';
 
 const url = process.env.EXTERNAL_SUPABASE_URL;
 const key = process.env.EXTERNAL_SUPABASE_SERVICE_ROLE_KEY;
 
 if (!url || !key) {
-  console.log('[verify-external] static-pass: EXTERNAL_SUPABASE_URL ou EXTERNAL_SUPABASE_SERVICE_ROLE_KEY ausentes; ignorado.');
-  process.exit(0);
+  missingPrerequisite('verify-external', 'EXTERNAL_SUPABASE_URL ou EXTERNAL_SUPABASE_SERVICE_ROLE_KEY ausentes', { exitCode: 1 });
 }
 
 const supabase = createClient(url, key);

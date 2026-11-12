@@ -1938,6 +1938,18 @@
       "ref": "qa/migrations-draft/2026-07-12_magazines.sql"
     },
     {
+      "file": "tests/scripts/build-migration-ledger-manifest.test.mjs",
+      "ref": "supabase/migrations/20260101000001_a.sql"
+    },
+    {
+      "file": "tests/scripts/canonical-project-guards.test.mjs",
+      "ref": "supabase/migrations-snapshot/SNAPSHOT.sql"
+    },
+    {
+      "file": "tests/scripts/canonical-project-guards.test.mjs",
+      "ref": "supabase/migrations/000_quebrado.sql"
+    },
+    {
       "file": "tests/scripts/check-migration-filename-contract.test.mjs",
       "ref": "supabase/migrations/001_notification_system.sql"
     },
@@ -1958,8 +1970,48 @@
       "ref": "supabase/migrations/20260826010203_second_change.sql"
     },
     {
+      "file": "tests/scripts/check-migration-path-references.test.mjs",
+      "ref": "supabase/migrations/20260101_inexistente.sql"
+    },
+    {
+      "file": "tests/scripts/check-migration-path-references.test.mjs",
+      "ref": "supabase/migrations/20260101_x.sql"
+    },
+    {
       "file": "tests/scripts/check-no-db-push.test.mjs",
       "ref": "supabase/migrations/README.md"
+    },
+    {
+      "file": "tests/scripts/check-security-definer-hardening.test.mjs",
+      "ref": "supabase/migrations/20260101000000_base.sql"
+    },
+    {
+      "file": "tests/scripts/check-security-definer-hardening.test.mjs",
+      "ref": "supabase/migrations/20260102000000_nova.sql"
+    },
+    {
+      "file": "tests/scripts/classify-unledgered-migrations.test.mjs",
+      "ref": "supabase/migrations/a.sql"
+    },
+    {
+      "file": "tests/scripts/classify-unledgered-migrations.test.mjs",
+      "ref": "supabase/migrations/noop.sql"
+    },
+    {
+      "file": "tests/scripts/classify-unledgered-migrations.test.mjs",
+      "ref": "supabase/migrations/ok.sql"
+    },
+    {
+      "file": "tests/scripts/gates-failopen-batch2.test.mjs",
+      "ref": "supabase/migrations/a.sql"
+    },
+    {
+      "file": "tests/scripts/qa-price-readonly-regression.test.mjs",
+      "ref": "supabase/migrations/20250101_trigger.sql"
+    },
+    {
+      "file": "tests/scripts/tools-batch3.test.mjs",
+      "ref": "qa/migrations-draft/PR_COMMENT.md"
     },
     {
       "file": "tests/security/restore-seller-cart-rpc.test.ts",

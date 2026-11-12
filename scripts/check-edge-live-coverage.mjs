@@ -33,7 +33,12 @@ const missing = fns.filter((fn) => {
   const file = path.join(LIVE_DIR, `${fn}.test.ts`);
   if (!fs.existsSync(file)) return true;
   const src = fs.readFileSync(file, 'utf8');
-  return !/\brunLiveSuite\s*\(/.test(src);
+  // Remove comentários de bloco e de linha antes de testar — senão um stub
+  // com só um comentário mencionando runLiveSuite(...) (ex.: "// TODO: ...")
+  // passa o gate sem cobertura real, o exato problema que este gate existe
+  // para evitar (ver comentário acima).
+  const withoutComments = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+  return !/\brunLiveSuite\s*\(/.test(withoutComments);
 });
 
 if (missing.length > 0) {

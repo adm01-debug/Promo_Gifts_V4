@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib/missing-prerequisite.sh"
 if ! docker ps &>/dev/null; then
-  echo "[test-magazine-hardening-v2] static-pass: docker daemon não disponível; teste ignorado."
-  exit 0
+  missing_prerequisite "test-magazine-hardening-v2" "docker daemon não disponível" 1
 fi
 
 readonly container_name="promo_magazine_hardening_pg17_$$"
