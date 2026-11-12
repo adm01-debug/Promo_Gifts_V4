@@ -8,6 +8,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 import type { Json } from '@/integrations/supabase/types';
+import { calculateTotalKitPrice } from '@/lib/kit-builder/price-calculator';
+import type { KitBox, KitItem, KitPersonalization } from '@/lib/kit-builder/types';
 import type { CustomKitRow } from './useCustomKitPersistence';
 
 export interface KitTemplateRow {
@@ -59,6 +61,18 @@ export function useKitTemplates() {
     mutationFn: async (template: KitTemplateRow) => {
       if (!user?.id) throw new Error('Usuário não autenticado');
 
+      const templatePersonalization =
+        template.personalization_data as unknown as Partial<KitPersonalization>;
+      const price = calculateTotalKitPrice(
+        (template.box_data as unknown as KitBox | null) ?? null,
+        Array.isArray(template.items_data) ? (template.items_data as unknown as KitItem[]) : [],
+        {
+          box: templatePersonalization?.box ?? { enabled: false },
+          items: templatePersonalization?.items ?? {},
+        },
+        1,
+      );
+
       const { data, error } = await supabase
         .from('custom_kits')
         .insert({
@@ -72,10 +86,10 @@ export function useKitTemplates() {
           items_data: structuredClone(template.items_data) as unknown as Json,
           personalization_data: structuredClone(template.personalization_data) as unknown as Json,
           kit_quantity: 1,
-          box_price: 0,
-          items_price: 0,
-          personalization_price: 0,
-          total_price: template.total_price,
+          box_price: price.boxPrice,
+          items_price: price.itemsPrice,
+          personalization_price: price.personalizationPrice,
+          total_price: price.total,
           volume_usage_percent: template.volume_usage_percent,
           color: template.color,
           icon: template.icon,

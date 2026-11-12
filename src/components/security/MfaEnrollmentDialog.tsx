@@ -60,9 +60,12 @@ export function MfaEnrollmentDialog({
       // O SDK tipa totp como status:"verified", mas fatores "unverified" aparecem em
       // runtime (enroll interrompido) — cast para detectá-los e limpá-los.
       const { data: existing } = await supabase.auth.mfa.listFactors();
-      const stale = existing?.totp?.find((f) => (f.status as string) === 'unverified');
+      const staleFactors =
+        existing?.all?.filter(
+          (f) => f.factor_type === 'totp' && (f.status as string) === 'unverified',
+        ) ?? [];
       // BUG-MFA-UNENROLL-SILENT-FAIL FIX: mfa.unenroll returns { data, error } — not throws.
-      if (stale) {
+      for (const stale of staleFactors) {
         const { error: unenrollErr } = await supabase.auth.mfa.unenroll({ factorId: stale.id });
         if (unenrollErr) logger.warn('[MfaEnrollmentDialog] unenroll stale factor failed:', unenrollErr);
       }

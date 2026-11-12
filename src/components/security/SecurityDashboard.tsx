@@ -466,7 +466,9 @@ export function SecurityDashboard() {
           />
         </TabsContent>
         <TabsContent value="ips">
-          <IPRestrictionManager />
+          <IPRestrictionManager
+            targetUserId={isManagingOther && selectedUserId ? selectedUserId : undefined}
+          />
         </TabsContent>
         <TabsContent value="geo">
           <GeoBlockingManager />

@@ -5,7 +5,12 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 import { sanitizeError } from '@/lib/security/sanitize-error';
+import { supabase } from '@/integrations/supabase/client';
+import type { Json } from '@/integrations/supabase/types';
+import { useAuth } from '@/contexts/AuthContext';
+import { useFavoriteLists } from '@/hooks/favorites/useFavoriteLists';
 import { useFavoritesStore } from '@/stores/useFavoritesStore';
 import { useComparisonStore } from '@/stores/useComparisonStore';
 import type { Product } from '@/types/product-catalog';
@@ -17,6 +22,9 @@ export function useCatalogSelection(
   onSelectedCountChange?: (count: number) => void,
 ) {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const qc = useQueryClient();
+  const { defaultList } = useFavoriteLists();
   const favIsFavorite = useFavoritesStore((s) => s.isFavorite);
   const favAddFavorite = useFavoritesStore((s) => s.addFavorite);
   const compIsInCompare = useComparisonStore((s) => s.isInCompare);
@@ -115,6 +123,73 @@ export function useCatalogSelection(
         );
         clearSelection();
       } else if (wizardMode === 'favorite') {
+        if (user && defaultList) {
+          const seen = new Set<string>();
+          const rows = selections
+            .filter((s) => {
+              const key = `${s.product.id}:${s.variant?.id ?? ''}`;
+              if (seen.has(key)) return false;
+              seen.add(key);
+              return true;
+            })
+            .map((s) => ({
+              list_id: defaultList.id,
+              user_id: user.id,
+              product_id: s.product.id,
+              variant_id: s.variant?.id ?? null,
+              variant_info: (s.variant
+                ? {
+                    color_name: s.variant.color_name,
+                    color_hex: s.variant.color_hex,
+                    size_code: s.variant.size_code,
+                    variant_id: s.variant.id,
+                    thumbnail: s.variant.selected_thumbnail,
+                  }
+                : null) as Json,
+              price_at_save:
+                typeof s.product.sale_price === 'number'
+                  ? s.product.sale_price
+                  : typeof s.product.price === 'number'
+                    ? s.product.price
+                    : null,
+            }));
+          if (rows.length === 0) return;
+          void supabase
+            .from('favorite_items')
+            .upsert(rows, { onConflict: 'list_id,product_id,variant_id', ignoreDuplicates: true })
+            .then(({ error }) => {
+              if (error) {
+                toast.error('Não foi possível favoritar os produtos', {
+                  description: sanitizeError(error),
+                });
+                return;
+              }
+              selections.forEach((s) => {
+                if (!favIsFavorite(s.product.id)) {
+                  favAddFavorite(
+                    s.product.id,
+                    s.variant
+                      ? {
+                          color_name: s.variant.color_name,
+                          color_hex: s.variant.color_hex,
+                          size_code: s.variant.size_code,
+                          variant_id: s.variant.id,
+                          thumbnail: s.variant.selected_thumbnail,
+                        }
+                      : undefined,
+                  );
+                }
+              });
+              qc.invalidateQueries({ queryKey: ['favorite-membership'] });
+              qc.invalidateQueries({ queryKey: ['favorite-items'] });
+              qc.invalidateQueries({ queryKey: ['favorite-lists'] });
+              toast.success(
+                `${rows.length} produto${rows.length > 1 ? 's' : ''} favoritado${rows.length > 1 ? 's' : ''} com cor selecionada`,
+              );
+              clearSelection();
+            });
+          return;
+        }
         let added = 0;
         selections.forEach((s) => {
           if (!favIsFavorite(s.product.id)) {
@@ -201,6 +276,9 @@ export function useCatalogSelection(
       wizardMode,
       navigate,
       clearSelection,
+      user,
+      defaultList,
+      qc,
       favIsFavorite,
       favAddFavorite,
       compIsInCompare,

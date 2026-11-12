@@ -22,6 +22,7 @@ import {
 } from '../FlowFilterPanel';
 
 import { logger } from '@/lib/logger';
+import { useOrganization } from '@/contexts/OrganizationContext';
 export interface Message {
   id?: string;
   role: 'assistant' | 'user';
@@ -60,6 +61,8 @@ export function useExpertChat({
   initialMessage,
 }: UseExpertChatOptions) {
   const navigate = useNavigate();
+  const { currentOrg } = useOrganization();
+  const orgId = currentOrg?.id ?? null;
   const [savingQuoteId, setSavingQuoteId] = useState<string | null>(null);
   const [sellerFirstName, setSellerFirstName] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -351,6 +354,10 @@ export function useExpertChat({
           toast.error('Faça login para salvar orçamentos');
           return;
         }
+        if (!orgId) {
+          toast.error('Selecione uma organização para salvar orçamentos');
+          return;
+        }
         // Typed bypass: quotes.insert() uses RejectExcessProperties which rejects
         // extra fields via deep union — cast avoids TS2345 without losing safety.
         type QuoteInsertResult = PromiseLike<{
@@ -369,6 +376,7 @@ export function useExpertChat({
           .from('quotes')
           .insert({
             seller_id: user.id,
+            organization_id: orgId,
             status: 'draft',
             quote_number: '',
             client_id: clientId || null,
@@ -386,7 +394,7 @@ export function useExpertChat({
         });
         setTimeout(() => {
           onClose();
-          navigate(`/orcamentos/novo?edit=${quote.id}`);
+          navigate(`/orcamentos/${quote.id}/editar`);
         }, 800);
       } catch (err) {
         logger.error('Error saving quote draft:', err);
@@ -395,7 +403,7 @@ export function useExpertChat({
         setSavingQuoteId(null);
       }
     },
-    [clientId, clientName, navigate, onClose],
+    [clientId, clientName, navigate, onClose, orgId],
   );
 
   useEffect(() => {

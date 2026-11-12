@@ -6,8 +6,6 @@ import { useMemo, useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
-import { logger } from '@/lib/logger';
-import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -44,7 +42,6 @@ const VARIABLE_REFERENCE = [
 ];
 
 export function MockupPromptManager() {
-  const { user } = useAuth();
   const [configs, setConfigs] = useState<PromptConfig[]>([]);
   const [techniques, setTechniques] = useState<Technique[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -52,7 +49,6 @@ export function MockupPromptManager() {
   const [editedPrompts, setEditedPrompts] = useState<
     Record<string, { prompt_text: string; ai_model: string }>
   >({});
-  const [changeNotes, setChangeNotes] = useState<Record<string, string>>({});
   const [historyDialog, setHistoryDialog] = useState<{ configId: string; label: string } | null>(
     null,
   );
@@ -107,35 +103,19 @@ export function MockupPromptManager() {
     if (!hasChanges(config)) return;
     setSavingId(config.id);
     try {
-      // BUG-MOCKUP-HISTORY-SILENT-FAIL FIX: bare await swallowed RLS/constraint errors.
-      // History insert is best-effort — log failure but let config update proceed.
-      const { error: histErr } = await supabase.from('mockup_prompt_history').insert({
-        config_id: config.id,
-        config_key: config.config_key,
-        version: config.version,
-        new_prompt: edited.prompt_text,
-        old_prompt: config.prompt_text,
-        ai_model: config.ai_model,
-        changed_by: user?.id,
-        change_notes: changeNotes[config.id] || null,
-      });
-      if (histErr) logger.warn('[mockup-prompts] history insert failed:', histErr);
-      const { error } = await supabase
+      // History row + version bump are written by trigger trg_log_mockup_prompt_change.
+      const { data, error } = await supabase
         .from('mockup_prompt_configs')
         .update({
           prompt_text: edited.prompt_text,
           ai_model: edited.ai_model,
-          version: config.version + 1,
         })
-        .eq('id', config.id);
+        .eq('id', config.id)
+        .select('version')
+        .single();
       if (error) throw error;
-      toast.success(`Prompt "${config.label}" salvo (v${config.version + 1})`);
+      toast.success(`Prompt "${config.label}" salvo (v${data.version})`);
       setEditedPrompts((p) => {
-        const n = { ...p };
-        delete n[config.id];
-        return n;
-      });
-      setChangeNotes((p) => {
         const n = { ...p };
         delete n[config.id];
         return n;
@@ -174,10 +154,6 @@ export function MockupPromptManager() {
     setEditedPrompts((p) => ({
       ...p,
       [historyDialog.configId]: { prompt_text: entry.new_prompt, ai_model: entry.ai_model },
-    }));
-    setChangeNotes((p) => ({
-      ...p,
-      [historyDialog.configId]: `Restaurado da versão ${entry.version}`,
     }));
     setHistoryDialog(null);
     toast.info(`Versão ${entry.version} carregada. Clique em Salvar para confirmar.`);
@@ -292,10 +268,8 @@ export function MockupPromptManager() {
           edited={getEdited(mainPrompt)}
           hasChanges={hasChanges(mainPrompt)}
           saving={savingId === mainPrompt.id}
-          changeNote={changeNotes[mainPrompt.id] || ''}
           onChangePrompt={(v) => setPromptField(mainPrompt.id, mainPrompt, 'prompt_text', v)}
           onChangeModel={(v) => setPromptField(mainPrompt.id, mainPrompt, 'ai_model', v)}
-          onChangeNote={(v) => setChangeNotes((p) => ({ ...p, [mainPrompt.id]: v }))}
           onSave={() => handleSave(mainPrompt)}
           onHistory={() => openHistory(mainPrompt.id, mainPrompt.label)}
           onTest={() => handleTest(mainPrompt)}
@@ -337,10 +311,8 @@ export function MockupPromptManager() {
                       edited={getEdited(config)}
                       hasChanges={hasChanges(config)}
                       saving={savingId === config.id}
-                      changeNote={changeNotes[config.id] || ''}
                       onChangePrompt={(v) => setPromptField(config.id, config, 'prompt_text', v)}
                       onChangeModel={(v) => setPromptField(config.id, config, 'ai_model', v)}
-                      onChangeNote={(v) => setChangeNotes((p) => ({ ...p, [config.id]: v }))}
                       onSave={() => handleSave(config)}
                       onHistory={() => openHistory(config.id, config.label)}
                       onTest={() => handleTest(config)}

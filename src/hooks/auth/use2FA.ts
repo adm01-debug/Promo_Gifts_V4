@@ -101,13 +101,16 @@ export function use2FA(targetUserId?: string) {
             .toUpperCase();
         });
 
-        const { error } = await untypedFrom('user_2fa_settings').upsert({
-          user_id: effectiveUserId,
-          totp_secret: pendingSecret,
-          is_enabled: true,
-          backup_codes: backupCodes,
-          enabled_at: new Date().toISOString(),
-        });
+        const { error } = await untypedFrom('user_2fa_settings').upsert(
+          {
+            user_id: effectiveUserId,
+            totp_secret: pendingSecret,
+            is_enabled: true,
+            backup_codes: backupCodes,
+            enabled_at: new Date().toISOString(),
+          },
+          { onConflict: 'user_id' },
+        );
 
         if (error) throw error;
 

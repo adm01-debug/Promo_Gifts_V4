@@ -293,7 +293,7 @@ Deno.serve(async (req) => {
     // Auditoria explícita de concessão FULL (escalada)
     if (escalating) {
       try {
-        await userClient.rpc("log_full_scope_grant", {
+        const { error: auditErr } = await userClient.rpc("log_full_scope_grant", {
           _operation: "escalate",
           _key_id: updated.id,
           _key_prefix: updated.key_prefix,
@@ -308,6 +308,7 @@ Deno.serve(async (req) => {
             new_scopes: updated.scopes,
           },
         });
+        if (auditErr) throw auditErr;
       } catch (e) {
         await writeAuditEntry(admin, {
           user_id: userId,

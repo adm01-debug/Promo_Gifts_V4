@@ -118,12 +118,14 @@ export function QuickAddToQuote({
     // pareia os dois eventos pelo `toCartId` para medir taxa de sucesso da troca.
     // Nota: o toast de erro é emitido pelo onError do useSellerCarts (SSOT); aqui
     // apenas registramos telemetria — sem toast duplicado.
-    if (isSwitch && !ok && switchContext) {
-      trackCartCompanySwitchFailed({
-        ...switchContext,
-        reason: 'mutation_failed',
-        status: null,
-      });
+    if (!ok) {
+      if (isSwitch && switchContext) {
+        trackCartCompanySwitchFailed({
+          ...switchContext,
+          reason: 'mutation_failed',
+          status: null,
+        });
+      }
       // Não avança o feedback visual de sucesso: sai cedo mantendo o popover
       // aberto para o vendedor tentar novamente.
       return;

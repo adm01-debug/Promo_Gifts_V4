@@ -235,7 +235,14 @@ export function ProductsTabContent({ topProducts, isLoading }: ProductsTabProps)
                       className="h-8 w-8"
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (product.id) navigate(`/orcamentos/novo?produto=${product.id}`);
+                        if (product.id)
+                          navigate(
+                            `/orcamentos/novo?${new URLSearchParams({
+                              product_id: product.id,
+                              product_name: product.name ?? '',
+                              product_sku: product.sku ?? '',
+                            })}`,
+                          );
                       }}
                       title="Criar orçamento"
                       aria-label="Criar orçamento com este produto"

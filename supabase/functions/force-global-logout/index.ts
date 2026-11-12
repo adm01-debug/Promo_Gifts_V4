@@ -80,7 +80,10 @@ Deno.serve(async (req) => {
 
       for (const u of users) {
         if (u.id === caller.id) continue;
-        const { error: signOutErr } = await supabaseAdmin.auth.admin.signOut(u.id, "global");
+        const { error: signOutErr } = await callerClient.rpc("admin_revoke_user_sessions", { _user_id: u.id });
+        if (signOutErr?.code === "42501") {
+          return jsonRes({ error: "Logout global requer papel dev com sessão MFA (AAL2)" }, 403);
+        }
         if (signOutErr) {
           errors++;
         } else {
@@ -102,7 +105,7 @@ Deno.serve(async (req) => {
       user_agent: req.headers.get("user-agent") || null,
     });
 
-    return jsonRes({ success: true, signed_out: totalSignedOut, errors });
+    return jsonRes({ success: errors === 0, signed_out: totalSignedOut, errors });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Erro interno";
     return jsonRes({ error: msg }, 500);

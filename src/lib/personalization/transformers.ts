@@ -73,7 +73,12 @@ export function rawToTabelaPrecoTecnica(raw: CustomizationPriceTableRaw): Tabela
     const price = raw[`price_${i}` as keyof CustomizationPriceTableRaw] as number;
     const sla = raw[`sla_${i}` as keyof CustomizationPriceTableRaw] as number | null;
 
-    if (minQty !== null && price !== null) {
+    if (
+      typeof minQty === 'number' &&
+      Number.isFinite(minQty) &&
+      typeof price === 'number' &&
+      Number.isFinite(price)
+    ) {
       faixas.push({
         faixa: i,
         quantidadeMinima: minQty,
@@ -253,7 +258,12 @@ function extractTiersFromRaw(raw: CustomizationPriceTableRaw): PriceTier[] {
     const price = raw[`price_${i}` as keyof CustomizationPriceTableRaw] as number;
     const sla = raw[`sla_${i}` as keyof CustomizationPriceTableRaw] as number | null;
 
-    if (minQty !== null && price !== null) {
+    if (
+      typeof minQty === 'number' &&
+      Number.isFinite(minQty) &&
+      typeof price === 'number' &&
+      Number.isFinite(price)
+    ) {
       const nextMinQty = raw[`min_qty_${i + 1}` as keyof CustomizationPriceTableRaw] as
         | number
         | undefined;

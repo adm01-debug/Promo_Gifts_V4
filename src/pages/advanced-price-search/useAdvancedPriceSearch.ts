@@ -41,7 +41,6 @@ export function useAdvancedPriceSearch() {
     queryFn: () => {
       return fetchPromobrindPriceTables({
         techniqueName: filters.technique,
-        quantity: filters.minQuantity,
       });
     },
     enabled: filters.technique !== 'all',

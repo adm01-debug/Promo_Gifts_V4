@@ -94,12 +94,28 @@ export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorPr
   );
 
   const handleCreateQuote = useCallback(() => {
-    navigate('/orcamentos', {
+    if (!selectedProduct) return;
+    navigate('/orcamentos/novo', {
       state: {
         fromSimulator: true,
-        product: selectedProduct,
-        techniques: selectedConfigs,
-        quantities: customQuantities,
+        simulationData: {
+          product: {
+            id: selectedProduct.id,
+            name: selectedProduct.name,
+            sku: selectedProduct.sku,
+            imageUrl: selectedProduct.images?.[0],
+            price: selectedProduct.price,
+          },
+          quantity: Math.min(...customQuantities),
+          personalizations: selectedConfigs.map((c) => ({
+            technique: { id: c.technique.techniqueId, name: c.technique.techniqueName },
+            location: {
+              locationCode: c.technique.locationCode,
+              locationName: c.technique.locationName,
+            },
+            specs: { colors: c.colors },
+          })),
+        },
       },
     });
   }, [navigate, selectedProduct, selectedConfigs, customQuantities]);

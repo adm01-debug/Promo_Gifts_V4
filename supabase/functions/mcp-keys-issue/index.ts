@@ -345,7 +345,7 @@ Deno.serve(async (req) => {
     // 7b. Auditoria explícita de concessão FULL (correlaciona token/challenge/chave)
     if (full) {
       try {
-        await userClient.rpc("log_full_scope_grant", {
+        const { error: auditErr } = await userClient.rpc("log_full_scope_grant", {
           _operation: "issue",
           _key_id: inserted.id,
           _key_prefix: inserted.key_prefix,
@@ -357,6 +357,7 @@ Deno.serve(async (req) => {
           _request_id: requestId,
           _extra: { name, target_repo: target_repo ?? null, target_tool: target_tool ?? null },
         });
+        if (auditErr) throw auditErr;
       } catch (e) {
         // Não falhar a operação por erro de auditoria — mas registrar no admin log
         await writeAuditEntry(admin, {

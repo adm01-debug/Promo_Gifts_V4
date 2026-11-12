@@ -668,7 +668,16 @@ export function useQuoteBuilderState() {
         }
 
         // BUG-008 FIX: Validate status transition before hitting DB
-        if (isEditMode && quoteId && currentStatus && currentStatus !== status) {
+        const isApprovalRequestFromEditable =
+          status === 'pending_approval' &&
+          ['draft', 'pending', 'pending_approval'].includes(currentStatus ?? '');
+        if (
+          isEditMode &&
+          quoteId &&
+          currentStatus &&
+          currentStatus !== status &&
+          !isApprovalRequestFromEditable
+        ) {
           if (!isValidQuoteTransition(currentStatus as QuoteStatus, status as QuoteStatus)) {
             toast.error(
               `Não é possível alterar o status de "${getQuoteStatusLabel(currentStatus)}" para "${getQuoteStatusLabel(status)}".`,

@@ -79,18 +79,27 @@ export function ConfirmQuoteSuggestionsModal({
       return;
     }
 
-    const selectedItems = suggestions.filter((s) => selected.has(s.name));
-    const productIds = selectedItems.map((s) => s.productId).filter(Boolean) as string[];
-
-    const params = new URLSearchParams();
-    params.set('clientId', clientId);
-    if (productIds.length > 0) {
-      params.set('productIds', productIds.join(','));
+    const selectedItems = suggestions.filter((s) => selected.has(s.name) && s.productId);
+    if (selectedItems.length === 0) {
+      toast.error('Os produtos selecionados não estão vinculados ao catálogo.');
+      return;
     }
-    params.set('source', 'bi-suggestions');
 
     onOpenChange(false);
-    navigate(`/orcamentos/novo?${params.toString()}`);
+    navigate('/orcamentos/novo', {
+      state: {
+        fromCart: true,
+        companyId: clientId,
+        companyName: clientName,
+        items: selectedItems.map((s) => ({
+          product_id: s.productId ?? '',
+          product_name: s.name,
+          product_image_url: s.imageUrl || undefined,
+          quantity: 1,
+          unit_price: s.priceFrom || 0,
+        })),
+      },
+    });
   };
 
   const totalEstimateMin = suggestions
