@@ -1,6 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import type React from "react";
+
+const captured = vi.hoisted(() => ({}) as Record<string, Record<string, unknown>>);
+function capture(name: string, testId: string) {
+  return (props: Record<string, unknown>) => {
+    captured[name] = props;
+    return <div data-testid={testId} />;
+  };
+}
+function call(name: string, prop: string, ...args: unknown[]) {
+  const fn = captured[name]?.[prop] as ((...a: unknown[]) => unknown) | undefined;
+  if (!fn) throw new Error(`${name}.${prop} não foi passado`);
+  return act(() => {
+    fn(...args);
+  });
+}
 
 vi.mock("@/components/seo/PageSEO", () => ({
   PageSEO: () => null,
@@ -27,14 +42,15 @@ vi.mock("@/components/ui/button", () => ({
 
 vi.mock("@/components/kit-builder", () => ({
   WizardSteps: () => <div data-testid="wizard-steps" />,
-  BoxSelector: () => <div data-testid="box-selector" />,
-  ItemSelector: () => <div data-testid="item-selector" />,
-  KitSummary: () => <div data-testid="kit-summary" />,
-  PersonalizationConfig: () => <div data-testid="personalization-config" />,
+  BoxSelector: capture("BoxSelector", "box-selector"),
+  ItemSelector: capture("ItemSelector", "item-selector"),
+  KitSummary: capture("KitSummary", "kit-summary"),
+  PersonalizationConfig: capture("PersonalizationConfig", "personalization-config"),
+  KitMakerLanding: capture("KitMakerLanding", "kit-maker-landing"),
 }));
 
 vi.mock("@/components/kit-builder/KitBuilderHeader", () => ({
-  KitBuilderHeader: () => <div data-testid="kit-builder-header" />,
+  KitBuilderHeader: capture("KitBuilderHeader", "kit-builder-header"),
 }));
 
 vi.mock("@/components/kit-builder/KitHeroPricingCard", () => ({
@@ -121,10 +137,13 @@ function makeState(currentStep: string, overrides: Record<string, unknown> = {})
       setBoxPersonalization: vi.fn(),
       setItemPersonalization: vi.fn(),
       setNotes: vi.fn(),
+      retryAutoSave: vi.fn().mockResolvedValue(undefined),
+      startFlow: vi.fn(),
+      selectOccasion: vi.fn(),
+      applyAISuggestion: vi.fn(),
       consumeUnloadBackup: vi.fn().mockReturnValue(null),
       canUndo: false,
       canRedo: false,
-      consumeUnloadBackup: vi.fn().mockReturnValue(null),
     },
     meta: {
       isSaving: false,
@@ -225,5 +244,168 @@ describe("KitBuilderPage", () => {
     render(<KitBuilderPage />);
 
     expect(screen.getByTestId("kit-summary")).toBeInTheDocument();
+  });
+
+  describe("callbacks repassadas aos passos", () => {
+    it("box: retry recarrega caixas, editar itens e guia", async () => {
+      const s = makeState("box");
+      mockUseKitBuilderPageState.mockReturnValue(s);
+      render(<KitBuilderPage />);
+
+      await call("BoxSelector", "onRetry");
+      expect(s.state.refetchBoxes).toHaveBeenCalledTimes(1);
+      await call("BoxSelector", "onEditItems");
+      expect(s.actions.goToStep).toHaveBeenCalledWith("items");
+      await call("BoxSelector", "onOpenGuide");
+    });
+
+    it("box: falha no retry não propaga erro", async () => {
+      const s = makeState("box", { refetchBoxes: vi.fn().mockRejectedValue(new Error("x")) });
+      mockUseKitBuilderPageState.mockReturnValue(s);
+      render(<KitBuilderPage />);
+
+      await call("BoxSelector", "onRetry");
+      expect(s.state.refetchBoxes).toHaveBeenCalledTimes(1);
+    });
+
+    it("items: retry recarrega itens", async () => {
+      const s = makeState("items", { refetchItems: vi.fn().mockRejectedValue(new Error("x")) });
+      mockUseKitBuilderPageState.mockReturnValue(s);
+      render(<KitBuilderPage />);
+
+      await call("ItemSelector", "onRetry");
+      expect(s.state.refetchItems).toHaveBeenCalledTimes(1);
+    });
+
+    it("personalization: editar itens volta para o passo items", async () => {
+      const s = makeState("personalization");
+      mockUseKitBuilderPageState.mockReturnValue(s);
+      render(<KitBuilderPage />);
+
+      await call("PersonalizationConfig", "onEditItems");
+      expect(s.actions.goToStep).toHaveBeenCalledWith("items");
+      expect(screen.getByRole("button", { name: "Revisar kit" })).toBeInTheDocument();
+      await call("PersonalizationConfig", "onOpenGuide");
+    });
+
+    it("summary: adicionar ao orçamento, editar caixa, salvar rascunho e exportar PDF", async () => {
+      const s = makeState("summary", { currentKitId: "kit-1", quoteClient: { id: "c1" } });
+      mockUseKitBuilderPageState.mockReturnValue(s);
+      const print = vi.spyOn(window, "print").mockImplementation(() => undefined);
+      render(<KitBuilderPage />);
+
+      await call("KitSummary", "onAddToQuote");
+      expect(s.actions.handleAddToQuote).toHaveBeenCalledWith(
+        s.state.kitState,
+        1,
+        { id: "c1" },
+        "kit-1",
+      );
+      await call("KitSummary", "onEditBox");
+      expect(s.actions.goToStep).toHaveBeenCalledWith("box");
+      await call("KitSummary", "onSaveDraft");
+      expect(s.actions.handleSaveKit).toHaveBeenCalledTimes(1);
+      await call("KitSummary", "onExportPDF");
+      expect(print).toHaveBeenCalledTimes(1);
+      print.mockRestore();
+    });
+
+    it("header: tentar autosave de novo chama retryAutoSave", async () => {
+      const s = makeState("box");
+      mockUseKitBuilderPageState.mockReturnValue(s);
+      render(<KitBuilderPage />);
+
+      await call("KitBuilderHeader", "onRetryAutoSave");
+      expect(s.actions.retryAutoSave).toHaveBeenCalledTimes(1);
+    });
+
+    it("botões Voltar e Continuar navegam no wizard", () => {
+      const s = makeState("box");
+      mockUseKitBuilderPageState.mockReturnValue(s);
+      render(<KitBuilderPage />);
+
+      fireEvent.click(screen.getByRole("button", { name: "Voltar" }));
+      fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
+      expect(s.actions.prevStep).toHaveBeenCalledTimes(1);
+      expect(s.actions.nextStep).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("landing", () => {
+    it("aplicar sugestão de IA inicia o fluxo items-first e aplica a sugestão", async () => {
+      const s = makeState("box", { isLanding: true });
+      mockUseKitBuilderPageState.mockReturnValue(s);
+      render(<KitBuilderPage />);
+
+      expect(screen.getByTestId("kit-maker-landing")).toBeInTheDocument();
+      expect(screen.queryByTestId("kit-builder-header")).not.toBeInTheDocument();
+      await call("KitMakerLanding", "onApplyAISuggestion", "sug", "comp", 50);
+      expect(s.actions.startFlow).toHaveBeenCalledWith("items-first", "ai");
+      expect(s.actions.applyAISuggestion).toHaveBeenCalledWith("sug", "comp", 50);
+      await call("KitMakerLanding", "onOpenTutorial");
+    });
+
+    it("atalhos de edição ficam desligados na landing", () => {
+      const s = makeState("box", { isLanding: true });
+      mockUseKitBuilderPageState.mockReturnValue(s);
+      render(<KitBuilderPage />);
+
+      fireEvent.keyDown(window, { key: "s", ctrlKey: true });
+      expect(s.actions.handleSaveKit).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("atalhos de teclado do editor", () => {
+    it("Ctrl+S salva, Ctrl+Z desfaz, Ctrl+Shift+Z e Ctrl+Y refazem", () => {
+      const s = makeState("box");
+      mockUseKitBuilderPageState.mockReturnValue(s);
+      render(<KitBuilderPage />);
+
+      fireEvent.keyDown(window, { key: "s", ctrlKey: true });
+      expect(s.actions.handleSaveKit).toHaveBeenCalledTimes(1);
+      fireEvent.keyDown(window, { key: "z", metaKey: true });
+      expect(s.actions.undo).toHaveBeenCalledTimes(1);
+      fireEvent.keyDown(window, { key: "Z", ctrlKey: true, shiftKey: true });
+      fireEvent.keyDown(window, { key: "y", ctrlKey: true });
+      expect(s.actions.redo).toHaveBeenCalledTimes(2);
+    });
+
+    it("sem Ctrl/Cmd nada acontece", () => {
+      const s = makeState("box");
+      mockUseKitBuilderPageState.mockReturnValue(s);
+      render(<KitBuilderPage />);
+
+      fireEvent.keyDown(window, { key: "s" });
+      fireEvent.keyDown(window, { key: "z" });
+      expect(s.actions.handleSaveKit).not.toHaveBeenCalled();
+      expect(s.actions.undo).not.toHaveBeenCalled();
+    });
+
+    it("em campo de texto só Ctrl+S funciona", () => {
+      const s = makeState("box");
+      mockUseKitBuilderPageState.mockReturnValue(s);
+      render(
+        <>
+          <KitBuilderPage />
+          <input data-testid="campo" />
+        </>,
+      );
+      const input = screen.getByTestId("campo");
+
+      fireEvent.keyDown(input, { key: "z", ctrlKey: true });
+      expect(s.actions.undo).not.toHaveBeenCalled();
+      fireEvent.keyDown(input, { key: "s", ctrlKey: true });
+      expect(s.actions.handleSaveKit).toHaveBeenCalledTimes(1);
+    });
+
+    it("remove o listener ao desmontar", () => {
+      const s = makeState("box");
+      mockUseKitBuilderPageState.mockReturnValue(s);
+      const { unmount } = render(<KitBuilderPage />);
+      unmount();
+
+      fireEvent.keyDown(window, { key: "s", ctrlKey: true });
+      expect(s.actions.handleSaveKit).not.toHaveBeenCalled();
+    });
   });
 });

@@ -4,25 +4,43 @@
 //  - quem invoca cada uma: src, migrations, outras edges, cron (banco.json -> cron.jobs[].edges), e2e, CI
 //  (rotas: gerar-rotas.mjs; banco, uso de tabelas e orfas: gerar-banco.mjs)
 // Uso: node scripts/inventario/gerar-repo.mjs   (rode depois do gerar-banco.mjs para contar as chamadas por cron)
-import { readdirSync, readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readdirSync, readFileSync, existsSync, writeFileSync, mkdirSync, statSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { join } from 'node:path';
+import { dirname, join, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { edgesChamadasNoCodigo, segredosViaResolver, semComentarios } from './gerar-rotas.mjs';
 
-const RAIZ = new URL('../../', import.meta.url).pathname;
+// fileURLToPath: .pathname deixa %20/%C3%A7 escapados e quebra em caminho com espaço ou acento.
+// fileURLToPath(string): funciona com espaço/acento no caminho e também sob o jsdom do vitest
+// (lá o URL global não é o do Node e fileURLToPath(new URL(...)) lança "must be of scheme file").
+const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..', '..') + sep;
 const FDIR = join(RAIZ, 'supabase/functions');
 const OUT = join(RAIZ, 'inventario/estado');
 mkdirSync(OUT, { recursive: true });
 
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-// Sem ripgrep toda busca viraria "0 usos" e o inventário mentiria: aborta antes de gravar qualquer coisa.
-try { execFileSync('rg', ['--version'], { stdio: 'ignore' }); } catch {
-  console.error('gerar-repo: ripgrep (rg) não encontrado — instale (apt-get install ripgrep) e rode de novo.');
-  process.exit(1);
+// Sem ripgrep a busca roda em Node (mesmo regex, mesmos alvos), para o inventário nunca virar "0 usos"
+// em máquina sem rg (ex.: runner do CI). Com rg instalado, o caminho é o de sempre.
+let TEM_RG = true;
+try { execFileSync('rg', ['--version'], { stdio: 'ignore' }); } catch { TEM_RG = false; }
+function arquivosSob(p, acc = []) {
+  if (!statSync(p).isDirectory()) { acc.push(p); return acc; }
+  for (const e of readdirSync(p, { withFileTypes: true })) {
+    if (e.name.startsWith('.') || e.name === 'node_modules') continue; // como o rg: ignora ocultos
+    arquivosSob(join(p, e.name), acc);
+  }
+  return acc;
+}
+function buscaNode(pattern, alvos) {
+  const re = new RegExp(pattern);
+  return alvos.flatMap((a) => arquivosSob(a))
+    .filter((f) => { const t = readFileSync(f, 'utf8'); return !t.includes('\0') && re.test(t); })
+    .map((f) => f.slice(RAIZ.length)).sort();
 }
 function rgFiles(pattern, paths) {
   const alvos = paths.map((p) => join(RAIZ, p)).filter((p) => existsSync(p));
   if (!alvos.length) return [];
+  if (!TEM_RG) return buscaNode(pattern, alvos);
   try {
     return execFileSync('rg', ['-l', '--no-messages', pattern, ...alvos], { encoding: 'utf8' })
       .split('\n').filter(Boolean).map((f) => f.slice(RAIZ.length));
