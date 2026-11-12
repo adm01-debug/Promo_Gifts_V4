@@ -50,7 +50,7 @@ function git(args) {
 function resolveRef(name) {
   for (const cand of [name, `origin/${name}`]) {
     try {
-      execFileSync('git', ['rev-parse', '--verify', '--quiet', `${cand}^{commit}`], { stdio: ['pipe', 'pipe', 'pipe'] });
+      execFileSync('git', ['rev-parse', '--verify', '--quiet', cand], { stdio: ['pipe', 'pipe', 'pipe'] });
       return cand;
     } catch {
       /* tenta o próximo */
