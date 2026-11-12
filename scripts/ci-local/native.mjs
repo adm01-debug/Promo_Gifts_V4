@@ -5,7 +5,7 @@
 // referência. Ações de preparação (checkout/setup-node/...) são puladas porque o
 // ambiente local já está pronto; actions locais compostas são expandidas.
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import yaml from 'js-yaml';
@@ -66,7 +66,7 @@ export function stepShouldRun(cond, { failed, evaluate, steps = null }) {
   const c = String(cond).replace(/^\$\{\{\s*|\s*\}\}$/g, '').trim();
   // steps.<id> de passo que não rodou de fato (inconclusivo/ambiente/ausente) = desconhecido.
   if (steps) {
-    const refs = [...c.matchAll(/\bsteps\.([\w-]+)\./g)].map((m) => m[1]);
+    const refs = [...c.matchAll(/\bsteps(?:\.([\w-]+)\.|\[['"]([\w-]+)['"]\])/g)].map((m) => m[1] ?? m[2]);
     if (refs.some((id) => !steps[id] || steps[id].unknown)) return null;
   }
   if (/^failure\(\)$/.test(c)) return failed;
@@ -151,29 +151,41 @@ export function stripInstallLines(script) {
 export const SYSTEM_INSTALL_RE = /(^|[\s;&|(!])(?:sudo\s|(?:apt-get|apt|dnf|yum|apk|brew)\s+(?:-\S+\s+)*install\b|pip3?\s+install\b|pipx\s+install\b|python3?\s+-m\s+pip\s+install\b)/m;
 
 const SHIM = `#!/usr/bin/env bash
-# ci-local: shim do gerenciador de pacotes — ignora só a instalação (node_modules local é reaproveitado).
-real="__REAL__"; me="$(basename "$0")"
-skip() { echo "[ci-local] '$me $*' ignorado no modo nativo (dependências locais reaproveitadas)" >&2; exit 0; }
-case "$me" in
-  yarn) [ $# -eq 0 ] && skip ;;
-esac
-has_pw=0; has_inst=0
+# ci-local: shim do gerenciador de pacotes — ignora só a INSTALAÇÃO (node_modules local é
+# reaproveitado). Decide pelo SUBCOMANDO (1º argumento que não é opção), nunca por qualquer
+# argumento: \`npm run install\`/\`npm run ci\` são scripts e rodam normalmente.
+real="__REAL__"; me="$(basename "$0")"; all="$*"
+skip() { echo "[ci-local] '$me $all' ignorado no modo nativo (dependências locais reaproveitadas)" >&2; exit 0; }
+sub=""; skipval=0
 for a in "$@"; do
-  [ "$a" = "--" ] && break
-  case "$a" in playwright|@playwright/test) has_pw=1 ;; esac
-  case "$a" in install|ci|i|add|isntall) has_inst=1 ;; esac
+  if [ $skipval = 1 ]; then skipval=0; continue; fi
+  case "$a" in
+    --) break ;;
+    --prefix|-C|--workspace|-w|--userconfig|--cache|--registry|--dir|--cwd|--filter|-F) skipval=1 ;;
+    -*) ;;
+    *) sub="$a"; break ;;
+  esac
 done
-case "$me" in
-  npx|bunx) [ $has_pw = 1 ] && [ $has_inst = 1 ] && skip ;;
-  *) [ $has_inst = 1 ] && skip ;;
+case "$me:$sub" in
+  yarn:|yarn:install|yarn:add) skip ;;
+  npm:install|npm:i|npm:in|npm:ins|npm:inst|npm:insta|npm:instal|npm:isnt|npm:isnta|npm:isntal|npm:isntall|npm:add|npm:ci|npm:clean-install|npm:ic|npm:install-clean) skip ;;
+  npm:install-test|npm:it|npm:cit|npm:install-ci-test|npm:install-clean-test) exec "$real" test ;;
+  pnpm:install|pnpm:i|pnpm:add) skip ;;
+  pnpm:install-test|pnpm:it) exec "$real" test ;;
+  bun:install|bun:i|bun:add|bun:a) skip ;;
+  corepack:pnpm|corepack:yarn|corepack:npm) shift; tool="$1"; shift; exec "$(dirname "$0")/$tool" "$@" ;;
 esac
+# npx/bunx/npm exec/pnpm exec|dlx: "playwright[@versão] install"
+pw=0; inst=0
+for a in "$@"; do case "$a" in playwright|playwright@*|@playwright/test|@playwright/test@*) pw=1 ;; install) [ $pw = 1 ] && inst=1 ;; esac; done
+case "$me:$sub" in npx:*|bunx:*|npm:exec|pnpm:exec|pnpm:dlx) [ $inst = 1 ] && skip ;; esac
 exec "$real" "$@"
 `;
 
 /** Cria shims de npm/pnpm/yarn/bun/npx/bunx em `dir` apontando para os binários reais. */
 export function writeInstallShims(dir, pathEnv = process.env.PATH) {
   mkdirSync(dir, { recursive: true });
-  for (const tool of ['npm', 'pnpm', 'yarn', 'bun', 'npx', 'bunx']) {
+  for (const tool of ['npm', 'pnpm', 'yarn', 'bun', 'npx', 'bunx', 'corepack']) {
     const r = spawnSync('bash', ['-c', `command -v ${tool}`], { env: { PATH: pathEnv }, encoding: 'utf8' });
     const real = (r.stdout ?? '').trim();
     if (!real) continue;
@@ -187,15 +199,34 @@ export function writeInstallShims(dir, pathEnv = process.env.PATH) {
  * do branch, mantendo visíveis só o repo, o .git comum, o node (nvm) e os caches.
  * null quando o bwrap não está disponível (o relatório marca "sem isolamento").
  */
-export function sandboxPrefix(root, realHome = homedir()) {
+export function sandboxPrefix(root, realHome = homedir(), tmp = null) {
   if (spawnSync('bwrap', ['--version'], { encoding: 'utf8' }).status !== 0) return null;
-  const commonDir = spawnSync('git', ['-C', root, 'rev-parse', '--path-format=absolute', '--git-common-dir'], { encoding: 'utf8' }).stdout?.trim();
-  const args = ['--dev-bind', '/', '/', '--tmpfs', realHome];
+  const git = (...a) => spawnSync('git', ['-C', root, ...a], { encoding: 'utf8' }).stdout?.trim();
+  const commonDir = git('rev-parse', '--path-format=absolute', '--git-common-dir');
+  const gitDir = git('rev-parse', '--absolute-git-dir');
+  // Sistema inteiro SOMENTE LEITURA; /mnt (disco do Windows), /run (docker.sock, interop do WSL,
+  // /run/user), /tmp e a home real ficam vazios. Só o necessário é montado de volta.
+  const args = ['--ro-bind', '/', '/', '--dev', '/dev', '--proc', '/proc', '--unshare-pid', '--die-with-parent',
+    '--tmpfs', realHome, '--tmpfs', '/mnt', '--tmpfs', '/run', '--tmpfs', '/tmp'];
   const bind = (flag, p) => { if (p && existsSync(p)) args.push(flag, p, p); };
+  bind('--bind', tmp); // GITHUB_OUTPUT/ENV, RUNNER_TEMP, shims, HOME falso
   bind('--bind', root);
-  bind('--bind', commonDir);
-  for (const ro of ['.nvm', '.deno', '.bun', '.local/bin']) bind('--ro-bind', join(realHome, ro));
-  for (const rw of ['.npm', '.cache']) bind('--bind', join(realHome, rw));
+  // Links no topo do repo (ex.: node_modules → outra worktree) apontam para fora do bind.
+  for (const e of readdirSync(root)) {
+    const p = join(root, e);
+    try {
+      if (lstatSync(p).isSymbolicLink()) {
+        const t = realpathSync(p);
+        if (!t.startsWith(`${root}/`)) bind('--ro-bind', t);
+      }
+    } catch { /* link quebrado: ignora */ }
+  }
+  // .git comum só leitura (config/hooks não podem ser plantados); objetos e o dir da worktree graváveis.
+  bind('--ro-bind', commonDir);
+  if (commonDir) bind('--bind', join(commonDir, 'objects'));
+  if (gitDir && gitDir !== commonDir) bind('--bind', gitDir);
+  for (const ro of ['.nvm', '.deno', '.bun', '.local/bin', '.cache/ms-playwright']) bind('--ro-bind', join(realHome, ro));
+  for (const rw of ['.npm', '.cache/deno']) bind('--bind', join(realHome, rw));
   return [...args, '--'];
 }
 
@@ -225,7 +256,7 @@ export function parseGithubOutput(text) {
  * Executa um job nativamente.
  * @returns {{status:'ok'|'FALHOU'|'inconclusivo', steps:Array}}
  */
-export function runJobNative({ root, workflowDoc, jobId, context, secrets = {}, skipInstall = true, log = () => {} }) {
+export function runJobNative({ root, workflowDoc, jobId, context, secrets = {}, skipInstall = true, allowUnsandboxed = false, log = () => {} }) {
   const job = workflowDoc.jobs[jobId];
   const tmp = mkdtempSync(join(tmpdir(), 'ci-local-native-'));
   const ghEnv = join(tmp, 'env');
@@ -249,7 +280,11 @@ export function runJobNative({ root, workflowDoc, jobId, context, secrets = {}, 
     DENO_DIR: process.env.DENO_DIR || join(realHome, '.cache', 'deno'),
   };
   const shimDir = writeInstallShims(join(tmp, 'shims'));
-  const sandbox = sandboxPrefix(root, realHome);
+  const sandbox = sandboxPrefix(root, realHome, tmp);
+  if (!sandbox && !allowUnsandboxed) {
+    rmSync(tmp, { recursive: true, force: true });
+    return { status: 'inconclusivo', sandboxed: false, steps: [{ name: '(job)', status: 'inconclusivo', why: 'bwrap ausente: o modo nativo não roda código do branch sem isolamento (use o modo act ou --sem-isolamento)' }] };
+  }
   const baseEnv = { ...workflowDoc.env, ...job.env };
   const persisted = {};
   const results = [];
@@ -323,6 +358,7 @@ export function runJobNative({ root, workflowDoc, jobId, context, secrets = {}, 
     const env = {
       ...tokenlessEnv(join(tmp, 'no-gh')), ...homeEnv, ...persisted, ...stepEnv, CI: 'true', GITHUB_ACTIONS: 'true',
       PATH: `${shimDir}:${process.env.PATH}`,
+      WSL_INTEROP: '', DOCKER_HOST: 'unix:///nonexistent', DBUS_SESSION_BUS_ADDRESS: '',
       GITHUB_ENV: ghEnv, GITHUB_OUTPUT: ghOut, GITHUB_STEP_SUMMARY: ghSummary,
       GITHUB_EVENT_NAME: context.github.event_name, GITHUB_BASE_REF: context.github.base_ref ?? '',
       GITHUB_HEAD_REF: context.github.head_ref ?? '', GITHUB_SHA: context.github.sha, GITHUB_REPOSITORY: context.github.repository,

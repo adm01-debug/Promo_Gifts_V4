@@ -242,7 +242,7 @@ export function workflowNeedsDocker(text, readLocal = () => '', seen = new Set()
 }
 
 /** Token do GitHub em qualquer posição (gh*_ / github_pat_). */
-export const GITHUB_TOKEN_VALUE_RE = /\b(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})/;
+export const GITHUB_TOKEN_VALUE_RE = /(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})/; // sem \b: pega xghp_…/_ghp_…
 
 /**
  * Lê um arquivo de segredos como o act (godotenv): `NOME=v`, `export NOME=v`, `NOME: v`,
@@ -253,9 +253,12 @@ export function parseSecretsText(text) {
   for (const l of String(text).split(/\r?\n/)) {
     const m = l.match(/^\s*(?:export\s+)?([A-Za-z_]\w*)\s*[=:]\s*(.*?)\s*$/);
     if (!m || l.trim().startsWith('#')) continue;
-    values[m[1]] = m[2].replace(/^(['"])(.*)\1$/, '$2');
+    const raw = m[2];
+    // como o godotenv: sem aspas, ' #' inicia comentário
+    values[m[1]] = /^['"]/.test(raw) ? raw.replace(/^(['"])(.*)\1$/, '$2') : raw.replace(/\s+#.*$/, '');
   }
-  assertNoGithubTokenInSecrets(Object.keys(values));
+  // o act resolve secrets.* sem diferenciar maiúsculas: github_token=… também injetaria o token
+  assertNoGithubTokenInSecrets(Object.keys(values).map((k) => k.toUpperCase()));
   if (String(text).match(GITHUB_TOKEN_VALUE_RE)) throw new Error('arquivo de segredos contém um token do GitHub (gh*_ / github_pat_): o CI local nunca recebe credencial do GitHub');
   return values;
 }

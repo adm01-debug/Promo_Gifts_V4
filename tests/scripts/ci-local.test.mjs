@@ -474,3 +474,46 @@ describe('3ª revisão adversarial (sudo, segredos YAML, docker por comentário,
     if (r.sandboxed) expect(r.status).toBe('ok');
   });
 });
+
+describe('4ª revisão adversarial (sandbox, shims por subcomando, segredos)', async () => {
+  const nat = await import('../../scripts/ci-local/native.mjs');
+  const ra = await import('../../scripts/ci-local/run-act.mjs');
+  const { mkdtempSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const { spawnSync } = await import('node:child_process');
+
+  it('sandbox: docker, /mnt/c, interop do Windows, .git comum e token do gh ficam inacessíveis', () => {
+    const steps = [
+      ['docker', 'if docker version >/dev/null 2>&1; then exit 9; fi'],
+      ['windows', 'if ls /mnt/c >/dev/null 2>&1 && [ -n "$(ls /mnt/c)" ]; then exit 9; fi'],
+      ['githooks', 'cd "$(git rev-parse --git-common-dir)" && if touch hooks/zz-pwn 2>/dev/null; then rm -f hooks/zz-pwn; exit 9; fi'],
+      ['ghtoken', 'if test -e "/home/$(id -un)/.config/gh/hosts.yml"; then exit 9; fi'],
+      ['git ainda funciona', 'git status --short >/dev/null'],
+    ];
+    const doc = { jobs: { j: { steps: steps.map(([name, run]) => ({ name, run })) } } };
+    const r = nat.runJobNative({ root: process.cwd(), workflowDoc: doc, jobId: 'j', context: { github: { event_name: 'pull_request', sha: 'x', repository: 'r' } } });
+    if (!r.sandboxed) return; // sem bwrap o job sai inconclusivo (coberto abaixo)
+    expect(r.steps.map((s) => `${s.name}=${s.status}`)).toEqual(steps.map(([n]) => `${n}=ok`));
+  });
+
+  it('shim decide pelo subcomando: scripts chamados install/ci rodam; variantes de install são barradas', () => {
+    const d = mkdtempSync(join(tmpdir(), 'shims4-'));
+    nat.writeInstallShims(d);
+    const run = (script) => spawnSync('bash', ['-c', script], { env: { ...process.env, PATH: `${d}:${process.env.PATH}` }, encoding: 'utf8' });
+    for (const s of ['npm clean-install', 'npm ic', 'npm in', 'npm --prefix x ci', 'npx playwright@1.50 install', 'npm exec -- playwright install'])
+      expect(run(s).stderr, s).toMatch(/ignorado no modo nativo/);
+    for (const s of ['npm run install', 'npm run ci']) expect(run(s).stderr, s).not.toMatch(/ignorado no modo nativo/);
+  });
+
+  it('segredos: token colado a outro texto e github_token minúsculo são recusados; " #" é comentário', () => {
+    expect(() => ra.parseSecretsText(`A=xghp_${'a'.repeat(36)}`)).toThrow(/token do GitHub/);
+    expect(() => ra.parseSecretsText('github_token=abc')).toThrow(/GITHUB_TOKEN/);
+    expect(ra.parseSecretsText('B=abc #comentario\nC="x #y"')).toEqual({ B: 'abc', C: 'x #y' });
+  });
+
+  it('if: steps["id"] de passo desconhecido → inconclusivo', () => {
+    const ev = nat.makeEvaluator({ steps: {} });
+    expect(nat.stepShouldRun("steps['ghost'].outputs.y == 'true'", { failed: false, evaluate: ev, steps: {} })).toBe(null);
+  });
+});
