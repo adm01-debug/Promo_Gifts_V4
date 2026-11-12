@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "52d6c217621aeb1a180f4c20bb962ced4784dc23",
+  "sha": "1da62abb605bd1cb5aac8b367da5abed8c0ba031",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-12 03:46 UTC",
+  "generated_at": "2026-11-12 04:26 UTC",
   "files_total": 9806,
   "code_files": 8368,
   "code_lines": 1177149
@@ -518081,10 +518081,20 @@
   }
  },
  "git": {
-  "sha": "52d6c217621aeb1a180f4c20bb962ced4784dc23",
+  "sha": "1da62abb605bd1cb5aac8b367da5abed8c0ba031",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1da62ab",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "docs(ci): RELATORIO §33 + PENDENCIAS #45-#52 — baseline + inventário final de workflows",
+    "files": [
+     "PENDENCIAS.md",
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "52d6c21",
     "date": "2026-11-12",
@@ -519334,17 +519344,6 @@
     "files": [
      "src/components/products/__snapshots__/PriceFreshnessBadge.snapshots.test.tsx.snap"
     ]
-   },
-   {
-    "sha": "8b29818",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "fix: replace corrupt PNG snapshot and add smoke test timeouts (#3347)",
-    "files": [
-     "e2e/flows/03b-thumb-quickview.smoke.spec.ts",
-     "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-     "e2e/quotes/quote-view-no-presentation-mode.spec.ts-snapshots/quote-actions-menu-dark-mobile-chromium-public-linux.png"
-    ]
    }
   ],
   "hot_files": [
@@ -519363,6 +519362,10 @@
    [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     3
+   ],
+   [
+    "PENDENCIAS.md",
+    2
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -519422,10 +519425,6 @@
    ],
    [
     "supabase/migrations/004_notification_functions.sql",
-    2
-   ],
-   [
-    "supabase/migrations/005_push_subscriptions.sql",
     2
    ]
   ]

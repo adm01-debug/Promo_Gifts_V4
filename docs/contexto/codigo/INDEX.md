@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `52d6c217621aeb1a180f4c20bb962ced4784dc23` (2026-11-12T00:06:45-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1da62abb605bd1cb5aac8b367da5abed8c0ba031` (2026-11-12T01:07:30-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,18 +586,18 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 41637 nós · 71234 arestas · 2324 comunidades · grafo do commit `52d6c217`
-- comunidades maiores: ref_lib (586), ref_components (495), ref_hooks (406), react (399), react-router-dom (378), gotoAndSettle (377), @tanstack/react-query (336), scripts (289), @playwright/test (275), ref_utils (270), ref_node_fs (250), ref_node_child_process (225)
+- 41758 nós · 71356 arestas · 2379 comunidades · grafo do commit `1da62abb`
+- comunidades maiores: ref_integrations (561), ref_lib (559), lucide-react (549), ref_components (506), ref_hooks (425), react-router-dom (372), sonner (355), react (322), @tanstack/react-query (298), scripts (289), D.1 — Núcleo (adoção alta, é o que sustenta o padrão) (282), gotoAndSettle (280)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (53)
-- PENDENCIAS.md (44)
-- supabase/MIGRATIONS_SYNC_LOG.md (24)
+- RELATORIO_CI.md (54)
+- PENDENCIAS.md (45)
+- supabase/MIGRATIONS_SYNC_LOG.md (23)
 - analise-prs/progresso.json (14)
 - package.json (14)
-- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (13)
+- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (12)
 - analise-branches/RELATORIO_BRANCHES.md (10)
 - .github/workflows/deploy-gates.yml (9)
 - e2e/flows/magazine-publish-smoke.spec.ts (9)
@@ -1005,11 +1005,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
-- `PENDENCIAS.md` — PENDENCIAS.md — Workflows com falha não corrigível nesta sessão (378 linhas)
+- `PENDENCIAS.md` — PENDENCIAS.md — Workflows com falha não corrigível nesta sessão (1007 linhas)
 - `PERFORMANCE-ANALYSIS.md` — 🔍 Relatório de Análise de Performance - MainLayout (195 linhas)
 - `README.md` — 🎁 Promo Brindes — Plataforma de Vendas de Brindes Promocionais (842 linhas)
 - `RECOVERY_PLAN.md` — 🛠️ RECOVERY PLAN — Restauração de 65 tabelas faltantes (235 linhas)
-- `RELATORIO_CI.md` — RELATORIO_CI.md — Baseline × Final CI (96 linhas)
+- `RELATORIO_CI.md` — RELATORIO_CI.md — Baseline × Final CI (1194 linhas)
 - `RELATORIO_CI_P34.md` — RELATORIO_CI_P34.md — Prova Final Sessão P34 (2026-10-30) (64 linhas)
 - `SECURITY.md` — Política de Segurança — Promo Gifts (89 linhas)
 - `STATUS.md` — 📡 Status do Projeto (19 linhas)
@@ -1162,6 +1162,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)
 
 ## Últimos commits
+- 2026-11-12 `1da62ab` docs(ci): RELATORIO §33 + PENDENCIAS #45-#52 — baseline + inventário final de workflows
 - 2026-11-12 `52d6c21` fix: fn_get_rupture_alerts com SECURITY DEFINER e search_path correto
 - 2026-11-11 `caeb61b` fix(scripts): heap explícito no tsc dos gates para evitar OOM (#3406)
 - 2026-11-11 `15c2a4c` chore(repo): quarentena dos 316 arquivos obsoletos da #3361 (#3398)
@@ -1176,7 +1177,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-09 `293b928` chore(docs): adiciona 4 segredos E2E ausentes em SEGREDOS.md
 - 2026-11-09 `e70479b` chore(e2e): registrar specs @smoke no job e2e-gates
 - 2026-11-09 `167f5f8` chore: registra 611 arquivos não rastreados de sessões anteriores (#3361)
-- 2026-11-09 `1368a91` feat(edge-deploy-log): recibo run 42665634216 — edge functions deploy
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

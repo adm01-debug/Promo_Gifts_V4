@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "52d6c217621aeb1a180f4c20bb962ced4784dc23",
+  "commit": "1da62abb605bd1cb5aac8b367da5abed8c0ba031",
   "branch": "main",
-  "data_commit": "2026-11-12T00:06:45-03:00",
+  "data_commit": "2026-11-12T01:07:30-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "1da62ab",
+    "data": "2026-11-12",
+    "assunto": "docs(ci): RELATORIO §33 + PENDENCIAS #45-#52 — baseline + inventário final de workflows"
+   },
    {
     "sha": "52d6c21",
     "data": "2026-11-12",
@@ -126,11 +131,6 @@
     "sha": "6ba67b4",
     "data": "2026-11-09",
     "assunto": "fix(ci): adiciona detector E12 pg_indexes out-of-band no Gate 2 (#3290)"
-   },
-   {
-    "sha": "defe294",
-    "data": "2026-11-09",
-    "assunto": "fix(ci): corrige Gate E42 e2e-personalization com auth-setup step condicional (#3274)"
    }
   ],
   "arquivos_mudados_7d": 1395,
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 53
+    "mudancas": 54
    },
    {
     "pasta": "src/pages/quotes",
@@ -199,15 +199,15 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 53
+    "mudancas": 54
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 44
+    "mudancas": 45
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 24
+    "mudancas": 23
    },
    {
     "arquivo": "analise-prs/progresso.json",
@@ -219,7 +219,7 @@
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
