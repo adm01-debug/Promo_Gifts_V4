@@ -6,6 +6,7 @@ import {
   type ReactElement,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
 import {
   Package,
   Loader2,
@@ -61,7 +62,7 @@ function getSince(period: DatePeriod): string | null {
   if (period === '7d') d.setDate(d.getDate() - 7);
   else if (period === '30d') d.setDate(d.getDate() - 30);
   // 'today': d permanece como data atual
-  return d.toISOString().split('T')[0];
+  return format(d, 'yyyy-MM-dd');
 }
 
 /**

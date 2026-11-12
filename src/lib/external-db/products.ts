@@ -3,6 +3,7 @@
  */
 import { dbInvoke, type InvokeOptions, type InvokeResult } from '@/lib/db/postgrest';
 import { logger } from '@/lib/logger';
+import { POSTGREST_PAGE_SIZE } from '@/lib/db/fetch-all-pages';
 import {
   type PromobrindProduct,
   PRODUCT_SELECT_FIELDS_WITH_SALE,
@@ -104,60 +105,70 @@ export async function fetchPromobrindProducts(options?: {
   const orderBy = options?.orderBy ?? { column: 'name', ascending: true };
   const secondaryOrderBy =
     orderBy.column === 'id' ? undefined : { column: 'id', ascending: true as const };
-  let products: PromobrindProduct[] = [];
+  const products: PromobrindProduct[] = [];
   let totalCount: number | null = null;
   const shouldRequestCount = options?.returnCount === true;
 
   if (typeof options?.limit === 'number' && options.limit > 0) {
-    const fetchOffset = options?.offset ?? 0;
+    let fetchOffset = options?.offset ?? 0;
+    let remaining = options.limit;
     const signal = options.signal;
-    let result: InvokeResult<PromobrindProduct>;
-    try {
-      result = await dbInvoke<PromobrindProduct>({
-        table: 'products',
-        operation: 'select',
-        filters,
-        select: PRODUCT_SELECT_FIELDS_WITH_SALE,
-        orderBy,
-        secondaryOrderBy,
-        limit: options.limit,
-        offset: fetchOffset,
-        countMode: shouldRequestCount ? 'planned' : 'none',
-        signal,
-      });
-    } catch (err) {
-      if (!shouldFallbackSelect(err)) throw err;
+    while (remaining > 0) {
+      const chunkLimit = Math.min(remaining, POSTGREST_PAGE_SIZE);
+      const countMode: 'exact' | 'none' =
+        shouldRequestCount && products.length === 0 ? 'exact' : 'none';
+      let result: InvokeResult<PromobrindProduct>;
       try {
         result = await dbInvoke<PromobrindProduct>({
           table: 'products',
           operation: 'select',
           filters,
-          select: PRODUCT_SELECT_FIELDS_WITH_SALE_NO_THRESHOLD,
+          select: PRODUCT_SELECT_FIELDS_WITH_SALE,
           orderBy,
           secondaryOrderBy,
-          limit: options.limit,
+          limit: chunkLimit,
           offset: fetchOffset,
-          countMode: shouldRequestCount ? 'planned' : 'none',
+          countMode,
           signal,
         });
-      } catch (fallbackErr) {
-        if (!shouldFallbackSelect(fallbackErr)) throw fallbackErr;
-        result = await dbInvoke<PromobrindProduct>({
-          table: 'products',
-          operation: 'select',
-          filters,
-          select: PRODUCT_SELECT_FIELDS_LEGACY_NO_THRESHOLD,
-          orderBy: fallbackPriceOrder(orderBy, fallbackErr),
-          secondaryOrderBy,
-          limit: options.limit,
-          offset: fetchOffset,
-          countMode: shouldRequestCount ? 'planned' : 'none',
-          signal,
-        });
+      } catch (err) {
+        if (!shouldFallbackSelect(err)) throw err;
+        try {
+          result = await dbInvoke<PromobrindProduct>({
+            table: 'products',
+            operation: 'select',
+            filters,
+            select: PRODUCT_SELECT_FIELDS_WITH_SALE_NO_THRESHOLD,
+            orderBy,
+            secondaryOrderBy,
+            limit: chunkLimit,
+            offset: fetchOffset,
+            countMode,
+            signal,
+          });
+        } catch (fallbackErr) {
+          if (!shouldFallbackSelect(fallbackErr)) throw fallbackErr;
+          result = await dbInvoke<PromobrindProduct>({
+            table: 'products',
+            operation: 'select',
+            filters,
+            select: PRODUCT_SELECT_FIELDS_LEGACY_NO_THRESHOLD,
+            orderBy: fallbackPriceOrder(orderBy, fallbackErr),
+            secondaryOrderBy,
+            limit: chunkLimit,
+            offset: fetchOffset,
+            countMode,
+            signal,
+          });
+        }
       }
+      const records = result?.records ?? [];
+      if (products.length === 0) totalCount = result?.count ?? null;
+      products.push(...records);
+      if (records.length < chunkLimit) break;
+      remaining -= records.length;
+      fetchOffset += records.length;
     }
-    products = result?.records ?? [];
-    totalCount = result?.count ?? null;
   } else {
     const BASE_PAGE_SIZE = 200;
     let offset = 0;
