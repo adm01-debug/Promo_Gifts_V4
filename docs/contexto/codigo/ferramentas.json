@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4728)",
+   "TypeScript (4729)",
    "SQL (3331)",
    "Markdown (1010)",
    "JavaScript (312)",
@@ -5508,7 +5508,7 @@
    },
    {
     "papel": "vendedor",
-    "ocorrencias": 25
+    "ocorrencias": 24
    },
    {
     "papel": "supervisor",

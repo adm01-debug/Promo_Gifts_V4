@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f2408197d090611f9615b11d8674983d0ba5a0b6",
+  "commit": "4bda9034cfa19cf133a2d1301c965c2d564f966c",
   "branch": "main",
-  "data_commit": "2026-11-12T01:24:35-03:00",
+  "data_commit": "2026-11-12T03:29:23-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "4bda903",
+    "data": "2026-11-12",
+    "assunto": "fix(tests): corrige erros de TypeScript em testes, mede baseline real (855) e corrige caminho em PENDENCIAS (#3419)"
+   },
    {
     "sha": "f240819",
     "data": "2026-11-12",
@@ -126,14 +131,9 @@
     "sha": "634b93e",
     "data": "2026-11-09",
     "assunto": "fix(ci): atualiza baseline file-size NoveltyProductGrid 863→865 (#3354)"
-   },
-   {
-    "sha": "944ff2d",
-    "data": "2026-11-09",
-    "assunto": "fix(kit-builder): remove bloco FT-119 incompleto e corrige type imports (#3350)"
    }
   ],
-  "arquivos_mudados_7d": 1413,
+  "arquivos_mudados_7d": 1416,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "recovery/src-legacy/src",
@@ -203,11 +203,11 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 45
+    "mudancas": 46
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 22
+    "mudancas": 21
    },
    {
     "arquivo": "analise-prs/progresso.json",
@@ -242,6 +242,10 @@
     "mudancas": 9
    },
    {
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    "mudancas": 8
+   },
+   {
     "arquivo": "CHANGELOG.md",
     "mudancas": 7
    },
@@ -251,10 +255,6 @@
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 7
    },
    {
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9884,
-  "arquivos_codigo": 5044,
-  "linhas_codigo": 962527,
+  "arquivos_total": 9885,
+  "arquivos_codigo": 5045,
+  "linhas_codigo": 962662,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 545,
   "migrations": 3050,
   "cron_jobs": 120,
-  "testes": 2293,
+  "testes": 2294,
   "workflows": 95,
   "scripts": 259,
   "docs_md": 1010
@@ -911,8 +911,8 @@
    "linhas": 248
   },
   "recovery/src-legacy": {
-   "arquivos": 315,
-   "linhas": 59593
+   "arquivos": 316,
+   "linhas": 59779
   },
   "scripts/__tests__": {
    "arquivos": 7,
@@ -940,7 +940,7 @@
   },
   "scripts/audit-debug.ts": {
    "arquivos": 1,
-   "linhas": 86
+   "linhas": 84
   },
   "scripts/build-cors-snapshot.mjs": {
    "arquivos": 1,
@@ -2020,7 +2020,7 @@
   },
   "tests/e2e": {
    "arquivos": 48,
-   "linhas": 7788
+   "linhas": 7736
   },
   "tests/e2e-customization": {
    "arquivos": 1,
@@ -2048,7 +2048,7 @@
   },
   "tests/hooks": {
    "arquivos": 127,
-   "linhas": 17075
+   "linhas": 17076
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2060,7 +2060,7 @@
   },
   "tests/lib": {
    "arquivos": 62,
-   "linhas": 9188
+   "linhas": 9190
   },
   "tests/magazine": {
    "arquivos": 18,
@@ -2322,7 +2322,7 @@
   }
  ],
  "qualidade": {
-  "any": 683,
+  "any": 686,
   "console_log": 1281,
   "ts_ignore": 0,
   "eslint_disable": 6,

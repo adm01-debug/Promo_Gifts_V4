@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `f2408197d0` · branch `main` · 2026-11-12 04:56 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4bda9034cf` · branch `main` · 2026-11-12 06:48 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6446,7 +6446,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (19874 testes em 1981 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (19879 testes em 1982 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6750,7 +6750,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/cart/__tests__/CartHeaderButton.delete.test.tsx` | 17 | CartHeaderButton — trash button onPointerDown · faz stopPropagation e NÃO faz preventDefault · CartHeaderButton — trash button onClick · chama preventDefault, stopPropagation, setOpen(false) e agenda no rAF … |
 | `src/components/inventory/__tests__/StockBadge.test.tsx` | 17 | StockBadge — getStockStatus helper · returns out-of-stock for zero quantity · returns low-stock at or below threshold · returns in-stock above threshold … |
 | `src/components/inventory/__tests__/bulk-add-to-collection-modal.test.tsx` | 17 | BulkAddToCollectionModal — initial state · renders dialog title with correct count (2 variações) · renders  · shows empty state when no collections … |
-| … +1681 linhas — lista completa em `context.json` | | |
+| … +1682 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

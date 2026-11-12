@@ -669,7 +669,7 @@
     "stores",
     "utils"
    ],
-   "coberto_por_testes": 47,
+   "coberto_por_testes": 48,
    "orfao": false
   },
   {
@@ -8061,7 +8061,7 @@
     "pages/filters",
     "pages/products"
    ],
-   "coberto_por_testes": 6,
+   "coberto_por_testes": 7,
    "orfao": false
   },
   {

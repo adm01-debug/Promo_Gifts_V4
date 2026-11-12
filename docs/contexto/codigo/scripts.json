@@ -104,7 +104,7 @@
   {
    "arquivo": "scripts/audit-debug.ts",
    "descricao": "* Audit Técnico do Sistema - Junho 2026",
-   "linhas": 86,
+   "linhas": 84,
    "env": [],
    "npm_scripts": [],
    "workflows": [],

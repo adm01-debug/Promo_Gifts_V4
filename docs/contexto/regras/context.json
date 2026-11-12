@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "f2408197d090611f9615b11d8674983d0ba5a0b6",
+  "sha": "4bda9034cfa19cf133a2d1301c965c2d564f966c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-12 04:56 UTC",
-  "files_total": 9812,
-  "code_files": 8374,
-  "code_lines": 1178273
+  "generated_at": "2026-11-12 06:48 UTC",
+  "files_total": 9813,
+  "code_files": 8375,
+  "code_lines": 1178408
  },
  "version": "1.3.2",
- "facts_hash": "29e63a9bea253dec",
+ "facts_hash": "3518495851e5fb84",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1184,7 +1184,7 @@
   "languages": {
    ".sql": 3331,
    ".ts": 2885,
-   ".tsx": 1844,
+   ".tsx": 1845,
    ".mjs": 305,
    ".py": 9,
    ".js": 7
@@ -146258,8 +146258,8 @@
   },
   {
    "module": "recovery",
-   "files": 405,
-   "lines": 107152,
+   "files": 406,
+   "lines": 107338,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -146516,7 +146516,7 @@
   {
    "module": "scripts",
    "files": 272,
-   "lines": 53537,
+   "lines": 53535,
    "tables": [
     "a",
     "contacts",
@@ -148798,7 +148798,7 @@
   {
    "module": "tests",
    "files": 878,
-   "lines": 135352,
+   "lines": 135303,
    "tables": [
     "bot_detection_log",
     "companies",
@@ -224253,6 +224253,38 @@
     "name": "exports useCommandBar hook"
    },
    {
+    "file": "recovery/src-legacy/tests/e2e/favorites-ui.test.tsx",
+    "name": "E2E Favoritos — Integração UI"
+   },
+   {
+    "file": "recovery/src-legacy/tests/e2e/favorites-ui.test.tsx",
+    "name": "valida título da página e contador inicial"
+   },
+   {
+    "file": "recovery/src-legacy/tests/e2e/favorites-ui.test.tsx",
+    "name": "exibe Empty State quando não há produtos"
+   },
+   {
+    "file": "recovery/src-legacy/tests/e2e/favorites-ui.test.tsx",
+    "name": "E2E Favoritos — Fluxo de Compartilhamento UI"
+   },
+   {
+    "file": "recovery/src-legacy/tests/e2e/favorites-ui.test.tsx",
+    "name": "valida renderização da mensagem de lista não encontrada"
+   },
+   {
+    "file": "recovery/src-legacy/tests/e2e/favorites-ui.test.tsx",
+    "name": "exibe mensagem de link expirado corretamente quando o token existe mas shared_expires_at é passado"
+   },
+   {
+    "file": "recovery/src-legacy/tests/e2e/favorites-ui.test.tsx",
+    "name": "E2E Favoritos — Acessibilidade UI"
+   },
+   {
+    "file": "recovery/src-legacy/tests/e2e/favorites-ui.test.tsx",
+    "name": "garante que botões principais tenham labels acessíveis via aria-label"
+   },
+   {
     "file": "recovery/src-legacy/tests/hooks/useQuoteTemplates.test.tsx",
     "name": "useQuoteTemplates"
    },
@@ -267359,18 +267391,6 @@
    {
     "file": "tests/e2e/favorites-ui.test.tsx",
     "name": "exibe Empty State quando não há produtos"
-   },
-   {
-    "file": "tests/e2e/favorites-ui.test.tsx",
-    "name": "E2E Favoritos — Fluxo de Compartilhamento UI"
-   },
-   {
-    "file": "tests/e2e/favorites-ui.test.tsx",
-    "name": "valida renderização da mensagem de lista não encontrada"
-   },
-   {
-    "file": "tests/e2e/favorites-ui.test.tsx",
-    "name": "exibe mensagem de link expirado corretamente quando o token existe mas shared_expires_at é passado"
    },
    {
     "file": "tests/e2e/favorites-ui.test.tsx",
@@ -389491,7 +389511,7 @@
    "temporal": [
     "const resp = await page.goto(\"/\", { waitUntil: \"domcontentloaded\", timeout: 15_000 });",
     "const resp = await page.goto(route, { waitUntil: \"domcontentloaded\", timeout: 20_000 });",
-    "test.use({ timeout: 60_000 });"
+    "test.describe.configure({ timeout: 60_000 });"
    ],
    "tests": [
     "@smoke 03b • pré-checagem de ambiente",
@@ -392863,7 +392883,7 @@
    "is_test": true,
    "doc": "Magazine Editor — preview da capa alinhado ao Hero e sticky no scroll (xl+).",
    "temporal": [
-    "test.use({ timeout: 300_000 });",
+    "test.describe.configure({ timeout: 300_000 });",
     "timeout: 5_000,",
     "{ timeout: 60_000 },"
    ],
@@ -407141,6 +407161,24 @@
     "exports useCommandBar hook"
    ]
   },
+  "recovery/src-legacy/tests/e2e/favorites-ui.test.tsx": {
+   "path": "recovery/src-legacy/tests/e2e/favorites-ui.test.tsx",
+   "lines": 186,
+   "is_test": true,
+   "temporal": [
+    "}, { timeout: 3000 });"
+   ],
+   "tests": [
+    "E2E Favoritos — Integração UI",
+    "valida título da página e contador inicial",
+    "exibe Empty State quando não há produtos",
+    "E2E Favoritos — Fluxo de Compartilhamento UI",
+    "valida renderização da mensagem de lista não encontrada",
+    "exibe mensagem de link expirado corretamente quando o token existe mas shared_expires_at é passado",
+    "E2E Favoritos — Acessibilidade UI",
+    "garante que botões principais tenham labels acessíveis via aria-label"
+   ]
+  },
   "recovery/src-legacy/tests/hooks/useQuoteTemplates.test.tsx": {
    "path": "recovery/src-legacy/tests/hooks/useQuoteTemplates.test.tsx",
    "lines": 34,
@@ -407226,7 +407264,7 @@
   },
   "scripts/audit-debug.ts": {
    "path": "scripts/audit-debug.ts",
-   "lines": 86,
+   "lines": 84,
    "tables": [
     {
      "table": "profiles",
@@ -504106,7 +504144,7 @@
   },
   "tests/e2e/auth-flow.test.tsx": {
    "path": "tests/e2e/auth-flow.test.tsx",
-   "lines": 158,
+   "lines": 156,
    "is_test": true,
    "zod": [
     {
@@ -504489,18 +504527,12 @@
   },
   "tests/e2e/favorites-ui.test.tsx": {
    "path": "tests/e2e/favorites-ui.test.tsx",
-   "lines": 185,
+   "lines": 135,
    "is_test": true,
-   "temporal": [
-    "}, { timeout: 3000 });"
-   ],
    "tests": [
     "E2E Favoritos — Integração UI",
     "valida título da página e contador inicial",
     "exibe Empty State quando não há produtos",
-    "E2E Favoritos — Fluxo de Compartilhamento UI",
-    "valida renderização da mensagem de lista não encontrada",
-    "exibe mensagem de link expirado corretamente quando o token existe mas shared_expires_at é passado",
     "E2E Favoritos — Acessibilidade UI",
     "garante que botões principais tenham labels acessíveis via aria-label"
    ]
@@ -509888,7 +509920,7 @@
   },
   "tests/hooks/useReplenishmentsSelectionMode.test.ts": {
    "path": "tests/hooks/useReplenishmentsSelectionMode.test.ts",
-   "lines": 121,
+   "lines": 122,
    "is_test": true,
    "rule_comments": [
     "de itens esgotados. Deve refletir o estoque REAL da reposição."
@@ -511383,7 +511415,7 @@
   },
   "tests/lib/external-db-bridge-telemetry.test.ts": {
    "path": "tests/lib/external-db-bridge-telemetry.test.ts",
-   "lines": 740,
+   "lines": 742,
    "is_test": true,
    "params": [
     {
@@ -511402,6 +511434,11 @@
      "name": "isCustomizationPriceTablesAlias",
      "params": "table: string",
      "body": "return table === \"customization_price_tables\" || table === \"customization_price_tiers\";"
+    },
+    {
+     "name": "shouldPersist",
+     "params": "status: TelemetryMeta[\"status\"]",
+     "body": "status !== \"ok\";"
     }
    ],
    "temporal": [
@@ -518369,10 +518406,36 @@
   }
  },
  "git": {
-  "sha": "f2408197d090611f9615b11d8674983d0ba5a0b6",
+  "sha": "4bda9034cfa19cf133a2d1301c965c2d564f966c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "4bda903",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(tests): corrige erros de TypeScript em testes, mede baseline real (855) e corrige caminho em PENDENCIAS (#3419)",
+    "files": [
+     ".tsc-tests-baseline.json",
+     "PENDENCIAS.md",
+     "e2e/flows/03b-thumb-quickview.smoke.spec.ts",
+     "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+     "recovery/src-legacy/tests/e2e/favorites-ui.test.tsx",
+     "scripts/audit-debug.ts",
+     "tests/e2e/auth-flow.test.tsx",
+     "tests/e2e/carts-excellence.spec.ts",
+     "tests/e2e/compare-ultra.test.ts",
+     "tests/e2e/compare-viewer-a11y.test.tsx",
+     "tests/e2e/favorites-ui.test.tsx",
+     "tests/e2e/new-quote-advanced.test.tsx",
+     "tests/e2e/new-quote-cycle.test.tsx",
+     "tests/e2e/new-quote-exhaustive.test.tsx",
+     "tests/e2e/new-quote-full-audit.test.tsx",
+     "tests/e2e/new-quote-resilience.test.tsx",
+     "tests/hooks/useReplenishmentsSelectionMode.test.ts",
+     "tests/lib/external-db-bridge-telemetry.test.ts"
+    ]
+   },
    {
     "sha": "f240819",
     "date": "2026-11-12",
@@ -519657,16 +519720,6 @@
     "files": [
      ".github/SENTINEL_SHA_ALLOWLIST.txt"
     ]
-   },
-   {
-    "sha": "0818809",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "fix: corrige referência de SHA de sentinela em check-sentinel-sha (#3278)",
-    "files": [
-     ".github/SENTINEL_SHA_ALLOWLIST.txt",
-     "PENDENCIAS.md"
-    ]
    }
   ],
   "hot_files": [
@@ -519687,6 +519740,54 @@
     3
    ],
    [
+    "PENDENCIAS.md",
+    2
+   ],
+   [
+    "tests/e2e/auth-flow.test.tsx",
+    2
+   ],
+   [
+    "tests/e2e/carts-excellence.spec.ts",
+    2
+   ],
+   [
+    "tests/e2e/compare-ultra.test.ts",
+    2
+   ],
+   [
+    "tests/e2e/compare-viewer-a11y.test.tsx",
+    2
+   ],
+   [
+    "tests/e2e/favorites-ui.test.tsx",
+    2
+   ],
+   [
+    "tests/e2e/new-quote-advanced.test.tsx",
+    2
+   ],
+   [
+    "tests/e2e/new-quote-cycle.test.tsx",
+    2
+   ],
+   [
+    "tests/e2e/new-quote-exhaustive.test.tsx",
+    2
+   ],
+   [
+    "tests/e2e/new-quote-full-audit.test.tsx",
+    2
+   ],
+   [
+    "tests/e2e/new-quote-resilience.test.tsx",
+    2
+   ],
+   [
+    "tests/lib/external-db-bridge-telemetry.test.ts",
+    2
+   ],
+   [
     "supabase/functions/external-db-bridge/applyFiltersAndSwap.integration.test.ts",
     2
    ],
@@ -519700,54 +519801,6 @@
    ],
    [
     "supabase/functions/external-db-bridge/wideSelectThreshold.test.ts",
-    2
-   ],
-   [
-    "tests/components/BridgeMetricsOverlay-ProdGate.test.tsx",
-    2
-   ],
-   [
-    "tests/components/DevOnlyBridgeOverlay.test.tsx",
-    2
-   ],
-   [
-    "tests/lib/bridge.test.ts",
-    2
-   ],
-   [
-    "tests/observability/structured-logger.test.ts",
-    2
-   ],
-   [
-    "tests/unit/system/BridgeMetricsOverlay.test.tsx",
-    2
-   ],
-   [
-    "tests/unit/system/useBridgeMetrics.test.ts",
-    2
-   ],
-   [
-    "PENDENCIAS.md",
-    2
-   ],
-   [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    2
-   ],
-   [
-    "scripts/check-indexed-access-ratchet.mjs",
-    2
-   ],
-   [
-    "scripts/check-tsc-baseline.mjs",
-    2
-   ],
-   [
-    "scripts/check-tsc-tests-baseline.mjs",
-    2
-   ],
-   [
-    "scripts/lib/tsc-run.mjs",
     2
    ]
   ]

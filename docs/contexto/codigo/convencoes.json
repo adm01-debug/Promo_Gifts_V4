@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(tests): corrige erros de TypeScript em testes, mede baseline real (855) e corrige caminho em PENDENCIAS (#3419)",
    "fix(ci): corrige testes, tipos de edge e cobertura que deixam a main vermelha (#3407)",
    "docs(ci): RELATORIO §33 + PENDENCIAS #45-#52 — baseline + inventário final de workflows",
    "fix: fn_get_rupture_alerts com SECURITY DEFINER e search_path correto",
-   "fix(scripts): heap explícito no tsc dos gates para evitar OOM (#3406)",
-   "chore(repo): quarentena dos 316 arquivos obsoletos da #3361 (#3398)"
+   "fix(scripts): heap explícito no tsc dos gates para evitar OOM (#3406)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

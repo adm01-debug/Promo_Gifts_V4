@@ -4427,7 +4427,7 @@
     "src/components/a11y/index.ts",
     "src/components/notifications/NotificationDrawer.tsx"
    ],
-   "coberto_por_testes": 6
+   "coberto_por_testes": 7
   },
   {
    "arquivo": "src/components/a11y/index.ts",
@@ -6244,7 +6244,7 @@
     "recovery/src-legacy/src/hooks/useOnboarding.ts",
     "recovery/src-legacy/src/hooks/useProductAnalytics.ts"
    ],
-   "coberto_por_testes": 36
+   "coberto_por_testes": 37
   },
   {
    "arquivo": "src/contexts/BICategoryFocusContext.tsx",
@@ -6466,7 +6466,7 @@
     "src/pages/products/FavoritesPage.tsx",
     "src/pages/products/seller-carts/useSellerCartsPage.ts"
    ],
-   "coberto_por_testes": 3
+   "coberto_por_testes": 4
   },
   {
    "arquivo": "src/contexts/SellerCartContext.tsx",
@@ -11388,7 +11388,7 @@
    "usado_por_arquivos": [
     "src/hooks/products/index.ts"
    ],
-   "coberto_por_testes": 3
+   "coberto_por_testes": 4
   },
   {
    "arquivo": "src/hooks/products/useReplenishmentsSelectionMode.ts",
@@ -13565,7 +13565,7 @@
    "usado_por_arquivos": [
     "recovery/src-legacy/src/hooks/useReplenishmentsSelectionMode.ts"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 0
   },
   {
    "arquivo": "src/hooks/voice/useVoiceHistory.ts",
@@ -14555,7 +14555,7 @@
     "src/pages/products/FiltersPage.tsx",
     "src/pages/products/ProductDetail.tsx"
    ],
-   "coberto_por_testes": 6
+   "coberto_por_testes": 7
   },
   {
    "arquivo": "src/stores/useProductSelectionStore.ts",
