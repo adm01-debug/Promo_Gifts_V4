@@ -113,6 +113,8 @@ export function useQuoteBuilderState() {
   // QBP-07 FIX: defer shippingType restore via state+useEffect com cleanup
   // Evita chamar setShippingType em componente desmontado (setTimeout sem cleanup)
   const [pendingShippingTypeRestore, setPendingShippingTypeRestore] = useState<string | null>(null);
+  // Sinaliza ao QuoteAutoSave que o rascunho terminou de ser restaurado (rebaseline do "não salvo").
+  const [draftRestoredAt, setDraftRestoredAt] = useState<number | undefined>(undefined);
   useEffect(() => {
     if (!pendingShippingTypeRestore) return;
     let mounted = true;
@@ -120,6 +122,7 @@ export function useQuoteBuilderState() {
       if (mounted) {
         setShippingType(pendingShippingTypeRestore);
         setPendingShippingTypeRestore(null);
+        setDraftRestoredAt(Date.now());
       }
     }, 0);
     return () => {
@@ -215,8 +218,43 @@ export function useQuoteBuilderState() {
     [items, skipAutosaveSortOrder],
   );
 
+  const [hasIncomingHandoff] = useState(() => {
+    // Mesmos critérios dos efeitos de handoff abaixo: handoff vazio/inválido não
+    // suprime o restore (senão a 1ª edição sobrescreve o rascunho em silêncio).
+    const state: unknown = location.state;
+    const field = (k: string): unknown =>
+      typeof state === 'object' && state !== null ? Reflect.get(state, k) : undefined;
+    const nonEmpty = (v: unknown) => Array.isArray(v) && v.length > 0;
+    const simulationData = field('simulationData');
+    const hasStateHandoff =
+      (Boolean(field('fromSimulator')) &&
+        typeof simulationData === 'object' &&
+        simulationData !== null &&
+        Boolean(Reflect.get(simulationData, 'product'))) ||
+      (Boolean(field('fromCart')) && nonEmpty(field('items'))) ||
+      (Boolean(field('fromCollection')) && nonEmpty(field('preloadProducts')));
+    const urlClientId = searchParams.get('clientId');
+    const rawUrlItems = searchParams.getAll('items[]');
+    let hasUrlItems = false;
+    if (rawUrlItems.length > 0) {
+      try {
+        hasUrlItems = parseUrlItemsParam(rawUrlItems).length > 0;
+      } catch {
+        hasUrlItems = false;
+      }
+    }
+    return Boolean(
+      hasStateHandoff ||
+      (urlClientId && /^[0-9a-f-]{36}$/i.test(urlClientId)) ||
+      hasUrlItems ||
+      searchParams.get('product_id') ||
+      searchParams.get('productId'),
+    );
+  });
+
   const { clearAutoSave } = useAutoSaveQuote({
     enabled: (!!clientId || items.length > 0) && !isEditMode,
+    restoreEnabled: !isEditMode && !hasIncomingHandoff,
     data: {
       clientId,
       contactId,
@@ -273,6 +311,7 @@ export function useQuoteBuilderState() {
           setValidityDays(syncValidityDaysFromDate(saved.validUntil));
         }
         if (saved.notes) setNotes(saved.notes);
+        if (!saved.shippingType) setDraftRestoredAt(Date.now());
       }
     },
   });
@@ -910,6 +949,7 @@ export function useQuoteBuilderState() {
   ]);
 
   return {
+    draftRestoredAt,
     resetQuote,
     navigate,
     quoteId,

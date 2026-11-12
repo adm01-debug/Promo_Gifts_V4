@@ -1,7 +1,12 @@
 import { dbInvoke } from '@/lib/db/postgrest';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import {
+  isDimensionRequiredError,
+  useCustomizationPriceCalculator,
+} from '@/hooks/simulation/useCustomizationPrice';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -109,6 +114,10 @@ export function ProductPriceSimulator({ className }: ProductPriceSimulatorProps)
 
   // Quantidade
   const [quantity, setQuantity] = useState(100);
+  const { calculatePriceDetailed: calculateEngravingPrice } = useCustomizationPriceCalculator();
+  // Guarda contra duplo clique enquanto os preços das gravações são calculados.
+  const creatingRef = useRef(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   const MAX_ENGRAVINGS = 5;
 
@@ -241,32 +250,68 @@ export function ProductPriceSimulator({ className }: ProductPriceSimulatorProps)
   ];
 
   // #9 — CTA para criar orçamento
-  const handleCreateQuote = useCallback(() => {
-    if (!selectedProduct) return;
-    navigate('/orcamentos/novo', {
-      state: {
-        fromSimulator: true,
-        simulationData: {
-          product: {
-            id: selectedProduct.id,
-            name: selectedProduct.name,
-            sku: selectedProduct.sku,
-            imageUrl: selectedProduct.images?.[0],
-            price: selectedProduct.price,
-          },
-          quantity,
-          personalizations: engravings.map((e) => ({
-            technique: { id: e.technique.id, name: e.technique.techniqueName },
-            location: {
-              locationCode: e.technique.locationCode,
-              locationName: e.technique.locationName,
+  const handleCreateQuote = useCallback(async () => {
+    if (!selectedProduct || creatingRef.current) return;
+    creatingRef.current = true;
+    setIsCreating(true);
+    try {
+      const results = await Promise.all(
+        engravings.map((e) =>
+          calculateEngravingPrice({
+            areaId: e.technique.id,
+            quantidade: quantity,
+            numCores: e.colors,
+          }),
+        ),
+      );
+      const prices = results.map((r) => r.result);
+      // Falha de rede/RPC bloqueia como antes; só a técnica com faixa por dimensão
+      // (sem largura/altura aqui) segue sem preço e é informada no orçamento.
+      if (results.some((r) => !r.result && !isDimensionRequiredError(r.error))) {
+        toast.error('Não foi possível calcular o preço da gravação. Tente novamente.');
+        return;
+      }
+      const missing = prices.filter((p) => !p).length;
+      if (missing > 0) {
+        toast.warning(
+          `Preço de ${missing} gravação(ões) não calculado — informe largura e altura no orçamento.`,
+        );
+      }
+      navigate('/orcamentos/novo', {
+        state: {
+          fromSimulator: true,
+          simulationData: {
+            product: {
+              id: selectedProduct.id,
+              name: selectedProduct.name,
+              sku: selectedProduct.sku,
+              imageUrl: selectedProduct.images?.[0],
+              price: selectedProduct.price,
             },
-            specs: { colors: e.colors },
-          })),
+            quantity,
+            personalizations: engravings.map((e, i) => ({
+              technique: { id: e.technique.id, name: e.technique.techniqueName },
+              location: {
+                locationCode: e.technique.locationCode,
+                locationName: e.technique.locationName,
+              },
+              specs: { colors: e.colors },
+              pricing: prices[i]
+                ? {
+                    setupPrice: prices[i]?.setup_total,
+                    unitPrice: prices[i]?.preco_unitario,
+                    totalPrice: prices[i]?.total_cobrado,
+                  }
+                : undefined,
+            })),
+          },
         },
-      },
-    });
-  }, [navigate, selectedProduct, engravings, quantity]);
+      });
+    } finally {
+      creatingRef.current = false;
+      setIsCreating(false);
+    }
+  }, [navigate, selectedProduct, engravings, quantity, calculateEngravingPrice]);
 
   return (
     <Card className={className}>
@@ -428,6 +473,7 @@ export function ProductPriceSimulator({ className }: ProductPriceSimulatorProps)
               size="lg"
               className="w-full gap-2 font-display font-semibold"
               onClick={handleCreateQuote}
+              disabled={isCreating}
             >
               <FileText className="h-5 w-5" />
               Criar Orçamento a partir desta Simulação
