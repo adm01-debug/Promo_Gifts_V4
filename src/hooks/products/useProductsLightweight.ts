@@ -203,16 +203,24 @@ async function loadCategoriesMap(): Promise<ReadonlyMap<string, string>> {
 async function fetchBestSellerCatalogPage(offset: number, sortBy: string): Promise<CatalogPage> {
   const isFirstLoad = offset === 0;
   const pagesToFetch = isFirstLoad ? CATALOG_BATCH_PAGES : 1;
-  const span = CATALOG_PAGE_SIZE * pagesToFetch;
-
-  const { data, error } = await supabase.rpc('get_catalog_bestseller_page', {
-    p_sort: sortBy,
-    p_limit: span,
-    p_offset: offset,
-  });
-  if (error) throw error;
-
-  const rows = (data as unknown as LightweightProduct[] | null) ?? [];
+  const pages = await Promise.all(
+    Array.from({ length: pagesToFetch }, (_, i) =>
+      supabase.rpc('get_catalog_bestseller_page', {
+        p_sort: sortBy,
+        p_limit: CATALOG_PAGE_SIZE,
+        p_offset: offset + i * CATALOG_PAGE_SIZE,
+      }),
+    ),
+  );
+  const rows: LightweightProduct[] = [];
+  let lastPageSize = 0;
+  for (const { data, error } of pages) {
+    if (error) throw error;
+    const pageRows = (data as unknown as LightweightProduct[] | null) ?? [];
+    rows.push(...pageRows);
+    lastPageSize = pageRows.length;
+    if (lastPageSize < CATALOG_PAGE_SIZE) break;
+  }
   const categoriesById = await loadCategoriesMap();
   const products = rows.map((r) => mapLightweightToProduct(r, categoriesById));
 
@@ -231,7 +239,7 @@ async function fetchBestSellerCatalogPage(offset: number, sortBy: string): Promi
     totalEstimate = count;
   }
 
-  const nextOffset = rows.length === span ? offset + rows.length : null;
+  const nextOffset = lastPageSize === CATALOG_PAGE_SIZE ? offset + rows.length : null;
   return { products, nextOffset, totalEstimate };
 }
 

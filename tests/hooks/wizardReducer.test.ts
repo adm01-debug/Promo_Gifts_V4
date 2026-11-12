@@ -72,3 +72,34 @@ describe('wizardReducer — ADD_PERSONALIZATION', () => {
     expect(state.currentStep).toBe('comparison');
   });
 });
+
+describe('wizardReducer — RECALC_PERSONALIZATION_PRICING', () => {
+  const loaded = () =>
+    wizardReducer(
+      wizardReducer(initialState, {
+        type: 'LOAD_DRAFT',
+        payload: { product, quantity: 500, personalizations: [makePers('a', 't1')] },
+      }),
+      { type: 'SET_QUANTITY', payload: 1000 },
+    );
+  const newPricing = { ...makePers('a', 't1').pricing, totalPrice: 99 };
+
+  it('ignora resposta calculada para uma tiragem que não é mais a atual', () => {
+    const state = loaded();
+    const next = wizardReducer(state, {
+      type: 'RECALC_PERSONALIZATION_PRICING',
+      payload: { personalizationId: 'a', pricing: newPricing, quantity: 500 },
+    });
+    expect(next).toBe(state);
+    expect(next.personalizations[0].pricing._needsRecalc).toBe(true);
+  });
+
+  it('aplica o preço quando a tiragem da resposta é a atual', () => {
+    const next = wizardReducer(loaded(), {
+      type: 'RECALC_PERSONALIZATION_PRICING',
+      payload: { personalizationId: 'a', pricing: newPricing, quantity: 1000 },
+    });
+    expect(next.personalizations[0].pricing.totalPrice).toBe(99);
+    expect(next.personalizations[0].pricing._needsRecalc).toBeUndefined();
+  });
+});

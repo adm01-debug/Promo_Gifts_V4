@@ -733,16 +733,19 @@ Deno.serve(async (req) => {
       const CRM_URL = urlRes.value;
       const CRM_KEY = svcRes.value ?? anonRes.value;
 
+      const crmOwnerScoped = !auth.userRoles.some((r) => ['dev', 'supervisor', 'admin'].includes(r));
+
       if (CRM_URL && CRM_KEY) {
         const crmClient = createClient(CRM_URL, CRM_KEY);
 
-        const { data: company, error: companyError } = await crmClient
+        let companyQuery = crmClient
           .from('companies')
           .select(
             'id, razao_social, nome_fantasia, title, ramo_atividade, cnpj, logo_url, cidade, estado, website, instagram, is_customer, is_supplier',
           )
-          .eq('id', clientId)
-          .single();
+          .eq('id', clientId);
+        if (crmOwnerScoped) companyQuery = companyQuery.eq('owner_id', userId);
+        const { data: company, error: companyError } = await companyQuery.single();
 
         if (companyError) {
           console.error('Error fetching CRM company:', safeErrorFields(companyError));
@@ -763,35 +766,43 @@ Deno.serve(async (req) => {
           console.log('CRM company data loaded');
         }
 
-        const { data: customer, error: customerError } = await crmClient
-          .from('customers')
-          .select(
-            'cliente_ativado, data_primeira_compra, data_ultima_compra, total_pedidos, valor_total_compras, ticket_medio, poder_compra, perfil_preco, vendedor_nome, sobre, observacoes',
-          )
-          .eq('company_id', clientId)
-          .single();
+        if (!crmOwnerScoped || company) {
+          const { data: customer, error: customerError } = await crmClient
+            .from('customers')
+            .select(
+              'cliente_ativado, data_primeira_compra, data_ultima_compra, total_pedidos, valor_total_compras, ticket_medio, poder_compra, perfil_preco, vendedor_nome, sobre, observacoes',
+            )
+            .eq('company_id', clientId)
+            .single();
 
-        if (!customerError && customer) {
-          customerData = customer;
-          console.log('CRM customer data loaded', {
-            hasOrdersTotal: customerData?.total_pedidos !== undefined,
-          });
+          if (!customerError && customer) {
+            customerData = customer;
+            console.log('CRM customer data loaded', {
+              hasOrdersTotal: customerData?.total_pedidos !== undefined,
+            });
+          }
+
+          const { data: contacts } = await crmClient
+            .from('contacts')
+            .select('first_name, last_name, cargo, departamento')
+            .eq('company_id', clientId)
+            .is('deleted_at', null)
+            .limit(5);
+
+          if (contacts?.length) console.log('CRM contacts loaded', { count: contacts.length });
         }
-
-        const { data: contacts } = await crmClient
-          .from('contacts')
-          .select('first_name, last_name, cargo, departamento')
-          .eq('company_id', clientId)
-          .is('deleted_at', null)
-          .limit(5);
-
-        if (contacts?.length) console.log('CRM contacts loaded', { count: contacts.length });
       } else {
         console.warn('CRM env vars not set, skipping CRM data');
       }
 
+      const userScopedClient = createClient(
+        Deno.env.get('SUPABASE_URL')!,
+        Deno.env.get('SUPABASE_ANON_KEY')!,
+        { global: { headers: { Authorization: req.headers.get('Authorization')! } } },
+      );
+
       let quoteProductHistory: any[] = [];
-      const { data: clientQuotes, error: quotesError } = await supabase
+      const { data: clientQuotes, error: quotesError } = await userScopedClient
         .from('quotes')
         .select(
           `id, quote_number, status, total, created_at, valid_until, sent_at, client_response,
@@ -807,7 +818,7 @@ Deno.serve(async (req) => {
       }
 
       let clientOrders: OrderData[] = [];
-      const { data: orders, error: ordersError } = await supabase
+      const { data: orders, error: ordersError } = await userScopedClient
         .from('orders')
         .select('id, order_number, status, total, created_at, client_name, fulfillment_status')
         .eq('client_id', clientId)
