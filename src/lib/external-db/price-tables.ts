@@ -32,6 +32,7 @@ const TECHNIQUE_GROUP_RULES: Array<[RegExp, string]> = [
   [/SILK|SERIGRAF/, 'SERIGRAFIA'],
   [/SUBLIM/, 'SUBLIMACAO'],
   [/TAMPO/, 'TAMPOGRAFIA'],
+  [/LASER\s*CO2/, 'LASER_CO2'],
   [/LASER/, 'LASER'],
   [/TRANSFER|DTF/, 'TRANSFER_DIGITAL'],
   [/(^|[^A-Z])UV([^A-Z]|$)/, 'UV_DIGITAL'],
