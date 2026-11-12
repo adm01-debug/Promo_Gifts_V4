@@ -96,7 +96,7 @@ end $$;`);
   w(root, '.github/workflows/ci.yml', `name: CI\non:\n  push:\n    branches: [main]\n  pull_request:\npermissions:\n  contents: read\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - run: npm run test\n      - run: node scripts/audit.mjs\n        env:\n          T: \${{ secrets.DB_TOKEN }}\n`);
   execFileSync('git', ['init', '-q'], { cwd: root });
   execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', 'add', '-A'], { cwd: root });
-  execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'feat: fixture'], { cwd: root });
+  execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'feat: fixture'], { cwd: root });
   return root;
 }
 
@@ -269,7 +269,7 @@ function isolatedFixture(t, prepare) {
 
 test('git: histórico preserva data, assunto e barras verticais sem executar shell', (t) => {
   const read = isolatedFixture(t, (dir) => {
-    execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '--allow-empty', '-q', '-m', 'fix: assunto | literal'], { cwd: dir });
+    execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-q', '-m', 'fix: assunto | literal'], { cwd: dir });
   });
   const commits = read('baseline.json').git.ultimos_commits;
   assert.equal(commits.length, 2);

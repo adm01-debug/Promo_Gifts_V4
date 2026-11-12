@@ -23,7 +23,7 @@ const SKIP_FILES = new Set([
   'src/components/quotes/__tests__/QuotesStatusChips.no-followup.test.tsx',
 ]);
 
-const PATTERN = /follow[-_]?up|needsFollowUp/i;
+const PATTERN = /follow[-_ ]?up|needsFollowUp/i;
 
 function* walk(dir) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {

@@ -116,3 +116,42 @@ describe('check-supabase-migration-ledger', () => {
     });
   });
 });
+
+describe('pareamento sequencial da CLI (2026-11-12)', () => {
+  it('versão listada como local-only E remote-only em linhas separadas conta como alinhada', () => {
+    // Formato real visto no Gate E40: após o primeiro desalinhamento a CLI deixa de casar
+    // versões iguais e emite a mesma versão nas duas colunas, em linhas diferentes.
+    const doc = {
+      migrations: [
+        { local: '20260101000000', remote: '20260101000000' },
+        { local: '20260511235950', remote: '' },
+        { local: '20261104100000', remote: '' },
+        { local: '', remote: '20261104100000' },
+        { local: '', remote: '001' },
+      ],
+    };
+    const r = auditSupabaseMigrationLedger(doc, { remoteOnlyAllowlist: ['001'] });
+    expect(r.ok).toBe(true);
+    expect(r.summary).toMatchObject({ matched: 2, paired_late_count: 1, local_only_count: 1, remote_only_count: 1, blocking_remote_only_count: 0 });
+  });
+
+  it('remote-only real (sem arquivo local e fora da allowlist) continua bloqueando', () => {
+    const doc = { migrations: [{ local: '', remote: '20261104100000' }, { local: '20260511235950', remote: '' }] };
+    const r = auditSupabaseMigrationLedger(doc, { remoteOnlyAllowlist: [] });
+    expect(r.ok).toBe(false);
+    expect(r.summary.blocking_remote_only_sample).toEqual(['20261104100000']);
+  });
+});
+
+describe('pareamento sequencial — multiconjunto (revisão 12/11)', () => {
+  it('colisão legada: 2 arquivos locais com a mesma versão e 1 aplicada → sobra 1 local-only (igual ao caso sem desync)', () => {
+    const v = '20260101000000';
+    const semDesync = auditSupabaseMigrationLedger({ migrations: [{ local: v, remote: v }, { local: v, remote: '' }] });
+    const comDesync = auditSupabaseMigrationLedger({
+      migrations: [{ local: '', remote: v }, { local: v, remote: '' }, { local: v, remote: '' }],
+    });
+    expect(semDesync.summary.local_only_count).toBe(1);
+    expect(comDesync.summary.local_only_count).toBe(semDesync.summary.local_only_count);
+    expect(comDesync.summary.local_only_sample).toEqual([v]);
+  });
+});

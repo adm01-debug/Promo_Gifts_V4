@@ -31,7 +31,13 @@ const FN_DIR = "supabase/functions";
 const MANIFEST_PATH = `${FN_DIR}/_shared/edge-authz-manifest.ts`;
 
 // 1) Carrega o manifest (parse via regex para evitar import dinâmico de TS)
-const manifestSrc = readFileSync(MANIFEST_PATH, "utf8");
+let manifestSrc;
+try {
+  manifestSrc = readFileSync(MANIFEST_PATH, "utf8");
+} catch (err) {
+  console.error(`❌ [edge-authorization] não foi possível ler ${MANIFEST_PATH}: ${err.message}`);
+  process.exit(2);
+}
 const entries = new Map();
 {
   // Captura name + bloco completo da entrada para parse robusto
@@ -91,12 +97,17 @@ const ROLE_REQUIRED = {
 const CUSTOM_AUTH_PRIMITIVES = [
   /\bauthorize\s*\(\s*req/,
   /requireRole\s*:/,
-  /has_role\s*\(/,
-  /timingSafeEqual\s*\(/,       // custom token comparison
-  /x-admin-token/,              // legado — aceito mas gera warning
-  /SIMULATION_BYPASS_KEY/,      // bypass de teste com resolveCredential
-  /resolveCredential\s*\(/,     // credencial dinâmica via vault
-  /service_role/i,              // service-to-service explícito
+  /\.rpc\s*\(\s*["'](?:is_dev|has_role)["']/, // supabase.rpc("has_role" | "is_dev")
+  /\b(?:has_role|is_dev)\s*\(/,                 // SQL inline / chamada direta
+  /\buser_roles\b/,                         // consulta direta de papéis
+  /auth\s*\.\s*(?:getUser|getClaims)\s*\(/, // identidade do chamador (JWT validado)
+  /\bgetClaims\s*\(/,
+  /timingSafeEqual\s*\(/,                   // custom token comparison
+  /x-admin-token/,                          // legado — aceito mas gera warning
+  /SIMULATION_BYPASS_KEY/,                  // bypass de teste com resolveCredential
+  // GUARD (removidos): `/service_role/i` (toda edge cria client com SUPABASE_SERVICE_ROLE_KEY,
+  // então a regex casava SEMPRE e o E030 nunca barrava nada) e `resolveCredential(` (resolve
+  // QUALQUER segredo, não autentica o chamador).
 ];
 
 const CUSTOM_AUTH_WARNING_ONLY = [

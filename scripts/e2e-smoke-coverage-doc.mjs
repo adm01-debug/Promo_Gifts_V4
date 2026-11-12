@@ -166,6 +166,10 @@ _Para validar no CI:_ \`node scripts/e2e-smoke-coverage-doc.mjs --check\`
 const catalogSrc = readFileSync(CATALOG, "utf8");
 const specSrc = readFileSync(SPEC, "utf8");
 const entries = parseCatalog(catalogSrc);
+if (entries.length === 0) {
+  console.error(`❌ Nenhuma rota encontrada em ${CATALOG} (parsing falhou ou catálogo está vazio). Abortando sem gerar doc.`);
+  process.exit(1);
+}
 const coverage = parseSmokeCoverage(specSrc);
 const publicTests = parsePublicSmokeTests(specSrc);
 const md = buildMd({ entries, coverage, publicTests });

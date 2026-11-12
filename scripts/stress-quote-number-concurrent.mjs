@@ -29,6 +29,7 @@
  */
 import { spawn } from 'node:child_process';
 import { env, argv, exit } from 'node:process';
+import { missingPrerequisite } from './lib/missing-prerequisite.mjs';
 
 const args = Object.fromEntries(
   argv.slice(2).reduce((acc, a, i, arr) => {
@@ -48,8 +49,9 @@ const TAG = `stress-${Date.now()}`;
 const TOTAL = CONNECTIONS * PER_CONN;
 
 if (!env.PGHOST || !env.PGDATABASE) {
-  console.log('[stress-quote-number-concurrent] static-pass: PGHOST/PGDATABASE ausentes; stress ignorado.');
-  exit(0);
+  missingPrerequisite('stress-quote-number-concurrent', 'PGHOST/PGDATABASE ausentes (aponte para STAGING)', {
+    exitCode: 1,
+  });
 }
 
 // Guarda dura: lista de hosts proibidos via env (ex.: o canônico de produção).
