@@ -41,21 +41,30 @@ function git(args) {
   }
 }
 
-/**
- * No checkout de pull_request do GitHub (fetch-depth: 0) o nome da branch da PR NÃO existe
- * como ref local — só `origin/<branch>`. Resolve na ordem: nome literal, `origin/<nome>`.
- * Sem nenhum dos dois, devolve o nome como veio (o git falha e o gate fecha, como antes).
- * Nunca usa HEAD: no PR ele é o merge sintético base+head, que contaria como "merge commit".
- */
-function resolveRef(name) {
-  for (const cand of [name, `origin/${name}`]) {
-    try {
-      execFileSync('git', ['rev-parse', '--verify', '--quiet', `${cand}^{commit}`], { stdio: ['pipe', 'pipe', 'pipe'] });
-      return cand;
-    } catch {
-      /* tenta o próximo */
-    }
+const verifyCommit = (ref) => {
+  try {
+    return execFileSync('git', ['rev-parse', '--verify', '--quiet', `${ref}^{commit}`], { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim();
+  } catch {
+    return '';
   }
+};
+
+/**
+ * Resolve o HEAD da PR para comparar com origin/<base>. Ordem:
+ *  1) PR_HEAD_SHA (github.event.pull_request.head.sha) — exato, vale para fork;
+ *  2) HEAD^2 quando HEAD é o merge sintético do checkout de PR (HEAD^1 == origin/<base>);
+ *  3) o nome literal da branch; 4) origin/<nome>.
+ * Pelo nome, um fork com branch homônima a uma do repo base compararia a branch ERRADA
+ * (e passaria sem conferir nada) — por isso o SHA vem antes. Sem nenhum, devolve o nome
+ * (o git falha e o gate fecha). Nunca usa o próprio HEAD (o merge sintético contaria).
+ */
+function resolveRef(name, baseRef) {
+  const headSha = process.env.PR_HEAD_SHA || '';
+  if (/^[0-9a-f]{40}$/i.test(headSha) && verifyCommit(headSha)) return headSha;
+  const p1 = verifyCommit('HEAD^1');
+  const p2 = verifyCommit('HEAD^2');
+  if (p2) return p2;
+  for (const cand of [name, `origin/${name}`]) if (verifyCommit(cand)) return cand;
   return name;
 }
 
@@ -82,7 +91,7 @@ function getMergeCommits(baseRef, headRef) {
 
 const baseRef = process.env.GITHUB_BASE_REF || '';
 const headRefRaw = process.env.GITHUB_HEAD_REF || '';
-const headRef = headRefRaw ? resolveRef(headRefRaw) : '';
+const headRef = headRefRaw ? resolveRef(headRefRaw, process.env.GITHUB_BASE_REF || '') : '';
 
 if (!baseRef || !headRef) {
   console.log('⚠️  GITHUB_BASE_REF / GITHUB_HEAD_REF não definidos — pulando verificação de ledger.');

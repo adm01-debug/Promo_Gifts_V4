@@ -45,4 +45,29 @@ describe("callEdge: timeout do cliente (AbortError)", () => {
       expect(s.count()).toBe(4);
     } finally { s.close(); }
   });
+
+  it("retryOnTimeout: false (happy-path, efeito real) não repete", async () => {
+    const s = await withServer(() => true);
+    try {
+      const r = await s.mod.callEdge("x", { body: "{", retryOnTimeout: false });
+      expect(r).toMatchObject({ status: 408, timedOut: true });
+      expect(s.count()).toBe(1);
+    } finally { s.close(); }
+  });
+
+  it("EDGE_LIVE_RETRIES=0 desliga os retries (antes virava 3)", async () => {
+    vi.stubEnv("EDGE_LIVE_RETRIES", "0");
+    let n = 0;
+    const srv = http.createServer((_q, res) => { n += 1; setTimeout(() => { res.writeHead(422); res.end("{}"); }, 1_000); });
+    await new Promise<void>((r) => srv.listen(0, "127.0.0.1", () => r()));
+    vi.resetModules();
+    vi.stubEnv("SUPABASE_URL", `http://127.0.0.1:${(srv.address() as AddressInfo).port}`);
+    vi.stubEnv("EDGE_LIVE_TIMEOUT_MS", "150");
+    try {
+      const mod = await import("./live/_live-client");
+      const r = await mod.callEdge("x", { body: "{" });
+      expect(r).toMatchObject({ status: 408, timedOut: true });
+      expect(n).toBe(1);
+    } finally { srv.closeAllConnections(); srv.close(); }
+  });
 });

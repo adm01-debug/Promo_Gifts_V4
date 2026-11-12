@@ -239,6 +239,9 @@ function listSourceFiles() {
     // status 1 do rg = nenhum arquivo casou (lista vazia legítima); qualquer outro erro
     // (rg ausente: ENOENT/127) usa a varredura em Node.
     if (err && err.status === 1) return [];
+    if (err && err.code !== 'ENOENT' && err.status !== 127) {
+      console.warn('⚠️  rg falhou (status ' + err.status + '); usando varredura em Node:', String(err.stderr || err.message).trim().split('\n')[0]);
+    }
     const out = [];
     for (const d of SEARCH_DIRS) walkFiles(d, out);
     return out;
