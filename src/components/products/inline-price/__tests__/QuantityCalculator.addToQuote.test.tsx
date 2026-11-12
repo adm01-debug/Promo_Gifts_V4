@@ -19,9 +19,9 @@ const baseProps = {
   formatPrice: (n: number) => `R$ ${n}`,
 };
 
-const addButton = () => screen.getByRole('button', { name: /Adicionar 250 un ao\s*Orçamento/ });
+const addButton = () => screen.getByRole('button', { name: /^Orçar 250 un$/ });
 
-describe('QuantityCalculator — botão "Adicionar N un ao Orçamento" (PM-05)', () => {
+describe('QuantityCalculator — botão "Orçar N un" (PM-05)', () => {
   it.each([
     ['compacto', true],
     ['expandido', false],
@@ -92,7 +92,7 @@ describe('QuantityCalculator — botão "Adicionar N un ao Orçamento" (PM-05)',
     // Faixa 500+ un: custo 4 × markup (10/5) = R$ 8,00/un.
     await waitFor(() => expect(screen.getAllByText(/8,00/).length).toBeGreaterThan(0));
     fireEvent.change(screen.getByLabelText('Quantidade'), { target: { value: '500' } });
-    fireEvent.click(screen.getByRole('button', { name: /Adicionar 500 un ao\s*Orçamento/ }));
+    fireEvent.click(screen.getByRole('button', { name: /^Orçar 500 un$/ }));
     expect(onAddToQuote).toHaveBeenCalledWith(500, 8);
   });
 });

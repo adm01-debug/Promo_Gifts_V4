@@ -90,8 +90,7 @@ export function QuantityCalculator({
             onClick={() => onAddToQuote(customQuantity, unitPrice)}
           >
             <Calculator className="h-4 w-4" />
-            Adicionar {Math.round(customQuantity + Number.EPSILON).toLocaleString('pt-BR')} un ao
-            Orçamento
+            Orçar {Math.round(customQuantity + Number.EPSILON).toLocaleString('pt-BR')} un
           </Button>
         )}
       </div>
@@ -153,8 +152,7 @@ export function QuantityCalculator({
           onClick={() => onAddToQuote(customQuantity, unitPrice)}
         >
           <Calculator className="h-4 w-4" />
-          Adicionar {Math.round(customQuantity + Number.EPSILON).toLocaleString('pt-BR')} un ao
-          Orçamento
+          Orçar {Math.round(customQuantity + Number.EPSILON).toLocaleString('pt-BR')} un
         </Button>
       )}
     </div>

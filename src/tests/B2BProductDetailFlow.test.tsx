@@ -179,7 +179,7 @@ describe('B2B Product Detail Flow Integration', () => {
 
     const qtyInput = await screen.findByLabelText('Quantidade');
     fireEvent.change(qtyInput, { target: { value: '300' } });
-    fireEvent.click(screen.getByRole('button', { name: /Adicionar 300 un ao\s*Orçamento/ }));
+    fireEvent.click(screen.getByRole('button', { name: /^Orçar 300 un$/ }));
 
     expect(mockNavigate).toHaveBeenCalledTimes(1);
     const url = new URL(mockNavigate.mock.calls[0][0] as string, 'http://x');
@@ -205,7 +205,7 @@ describe('B2B Product Detail Flow Integration', () => {
       // Faixa 500+ un: custo 4 × markup (10,50/5) = R$ 8,40/un (base R$ 10,50).
       await waitFor(() => expect(screen.getAllByText(/8,40/).length).toBeGreaterThan(0));
       fireEvent.change(await screen.findByLabelText('Quantidade'), { target: { value: '500' } });
-      fireEvent.click(screen.getByRole('button', { name: /Adicionar 500 un ao\s*Orçamento/ }));
+      fireEvent.click(screen.getByRole('button', { name: /^Orçar 500 un$/ }));
 
       const url = new URL(mockNavigate.mock.calls[0][0] as string, 'http://x');
       expect(url.searchParams.get('min_quantity')).toBe('500');
