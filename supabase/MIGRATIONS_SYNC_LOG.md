@@ -1190,3 +1190,12 @@ sem DDL de schema, sem risco de dado). **Nenhuma DDL nova é executada por esta 
 |---|---|---|---|
 | `20261101223908` | `cron001_stagger_additional_jobs` | `819350cc0006cbc218b74bd2cd6dee7049586ed6479109b7dcd828f3807ee811` | arquivo retroativo — `cron.alter_job` jobs 292/303/241 confirmado em produção via ledger; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
 | `20261101232022` | `cron001_stagger_schedules_reapply` | `8fe64496a5dba8e27be274a41522bf9a1988be3f5e912b712c1ce1ddd2d93dad` | arquivo retroativo — `cron.alter_job` jobs 276/224/114/243 (idêntico a `20261101220000`) confirmado em produção via ledger; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
+
+## 2026-11-12 — Índices de FK em estoque e índices de desempenho ausentes
+
+13 índices que faltam em produção (verificado em `pg_catalog`): 7 FKs de `stock_snapshots`/`stock_notes`
+e 6 índices de migrations antigas que nunca foram aplicadas. `CREATE INDEX CONCURRENTLY`, `transaction: none`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261112014000` | `idx_fk_stock_and_missing_perf_indexes` | `9d20302b4e81186deab7495a295a45990ab2b3403880043f12e65af7f549ef8c` | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (REGRA #8) |
