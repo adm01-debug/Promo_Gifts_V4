@@ -349,8 +349,22 @@ for (const f of walk('src/pages')) {
     : segs[1].split('.')[0];
   const raw = readFileSync(f, 'utf8');
   const { code: src, masked } = lexSource(raw);
+  // Posições de '\n' pré-computadas: achar a linha de cada violação por
+  // busca binária (O(log n)) em vez de `slice(0, idx).split('\n')` (O(n))
+  // por violação — em arquivo com muitas ocorrências isso era O(n²).
+  const newlineIdx = [];
+  for (let k = 0; k < src.length; k++) if (src.charCodeAt(k) === 10) newlineIdx.push(k);
+  const lineOf = (idx) => {
+    let lo = 0, hi = newlineIdx.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >>> 1;
+      if (newlineIdx[mid] < idx) lo = mid + 1;
+      else hi = mid;
+    }
+    return lo + 1;
+  };
   const dynamic = (idx) => {
-    const line = src.slice(0, idx).split('\n').length;
+    const line = lineOf(idx);
     violations.push({
       file: rel,
       line,
@@ -371,7 +385,7 @@ for (const f of walk('src/pages')) {
     if (!target) return;
     const targetDom = target.split('/')[1];
     if (targetDom === srcDom) return;
-    const line = src.slice(0, idx).split('\n').length;
+    const line = lineOf(idx);
     violations.push({ file: rel, line, pos: idx, from: srcDom, to: targetDom, target });
   };
   for (const m of src.matchAll(SPEC_RE)) {
@@ -403,9 +417,17 @@ deduped.sort(
   (a, b) => a.file.localeCompare(b.file) || a.line - b.line || a.to.localeCompare(b.to),
 );
 violations.length = 0;
-violations.push(...deduped);
+// `push(...deduped)` quebra com RangeError (limite de argumentos de chamada
+// de função) quando `deduped` é muito grande — loop evita o limite.
+for (const v of deduped) violations.push(v);
 
-const baseline = JSON.parse(readFileSync(BASELINE, 'utf8'));
+let baseline;
+try {
+  baseline = JSON.parse(readFileSync(BASELINE, 'utf8'));
+} catch (err) {
+  console.error(`❌ ${BASELINE} ausente ou com JSON inválido: ${err.message}`);
+  process.exit(2);
+}
 // Identidade do import = arquivo importador + specifier resolvido. N
 // ocorrências baselinadas do MESMO specifier autorizam no máximo N —
 // a N+1-ésima é violação nova.

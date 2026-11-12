@@ -30,7 +30,7 @@ if (!existsSync(IN)) {
 const src = readFileSync(IN, 'utf8');
 
 // Extrai linhas da tabela `| draft | slug | migration | status |`
-const rowRe = /^\|\s*`([^`]+\.sql)`\s*\|\s*`([^`]+)`\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*$/gm;
+const rowRe = /^\|\s*`([^`]+\.sql)`\s*\|\s*`([^`]+)`[^|]*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*$/gm;
 const rows = [];
 for (const m of src.matchAll(rowRe)) {
   rows.push({ draft: m[1], slug: m[2], migration: m[3], status: m[4] });

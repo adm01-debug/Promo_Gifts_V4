@@ -83,9 +83,11 @@ export function runProducer() {
   process.exit(1);
 }
 
+// realpath: chamado por symlink, import.meta.url já vem resolvido e a
+// comparação direta transformaria o CLI num no-op silencioso (exit 0 sem rodar nada).
 if (
   process.argv[1] &&
-  path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url))
+  path.resolve(fs.realpathSync(process.argv[1])) === path.resolve(fileURLToPath(import.meta.url))
 ) {
   runProducer();
 }
