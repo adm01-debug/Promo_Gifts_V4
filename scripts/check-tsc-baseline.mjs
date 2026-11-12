@@ -21,7 +21,7 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { classifyTscRun } from './lib/tsc-run.mjs';
+import { classifyTscRun, tscHeapArgs } from './lib/tsc-run.mjs';
 
 const ROOT = process.cwd();
 const BASELINE_PATH = join(ROOT, '.tsc-baseline.json');
@@ -39,7 +39,7 @@ const baseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
 const baselineCounts = baseline.counts ?? {};
 
 console.log('⏳ Rodando tsc -p tsconfig.app.json --noEmit ...');
-const res = spawnSync(process.execPath, [TSC_BIN, '-p', 'tsconfig.app.json', '--noEmit'], {
+const res = spawnSync(process.execPath, [...tscHeapArgs(), TSC_BIN, '-p', 'tsconfig.app.json', '--noEmit'], {
   encoding: 'utf8',
   maxBuffer: 50 * 1024 * 1024,
 });
