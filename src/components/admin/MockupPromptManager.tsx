@@ -107,12 +107,13 @@ export function MockupPromptManager() {
     if (!hasChanges(config)) return;
     setSavingId(config.id);
     try {
-      // Versão + linha de histórico são gravadas pelo trigger trg_log_mockup_prompt_change.
+      // Linha de histórico é gravada pelo trigger trg_log_mockup_prompt_change (com NEW.version).
       const { data, error } = await supabase
         .from('mockup_prompt_configs')
         .update({
           prompt_text: edited.prompt_text,
           ai_model: edited.ai_model,
+          version: config.version + 1,
         })
         .eq('id', config.id)
         .select('version')

@@ -61,7 +61,7 @@ function getScoreIcon(score: number) {
 }
 
 export function SecurityDashboard() {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, roles } = useAuth();
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [users, setUsers] = useState<UserProfile[]>([]);
 
@@ -467,7 +467,13 @@ export function SecurityDashboard() {
         </TabsContent>
         <TabsContent value="ips">
           <IPRestrictionManager
-            targetUserId={isManagingOther && selectedUserId ? selectedUserId : undefined}
+            targetUserId={
+              isManagingOther &&
+              selectedUserId &&
+              (roles.includes('admin') || roles.includes('dev'))
+                ? selectedUserId
+                : undefined
+            }
           />
         </TabsContent>
         <TabsContent value="geo">

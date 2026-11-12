@@ -46,13 +46,9 @@ Deno.serve(async (req) => {
       .eq("user_id", caller.id);
 
     const roles = (callerRoles ?? []).map((r: { role: string }) => r.role);
-    const isPrivileged =
-      roles.includes("admin") ||
-      roles.includes("supervisor") ||
-      roles.includes("dev");
-
-    if (!isPrivileged) {
-      return jsonRes({ error: "Apenas administradores ou desenvolvedores podem forçar logout global" }, 403);
+    // Mesmo gate da RPC admin_revoke_user_sessions (papel dev; a RPC também exige sessão AAL2).
+    if (!roles.includes("dev")) {
+      return jsonRes({ error: "Apenas desenvolvedores podem forçar logout global" }, 403);
     }
 
     // Parse + validate body via parseContract
