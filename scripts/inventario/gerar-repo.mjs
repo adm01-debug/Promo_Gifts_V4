@@ -4,7 +4,7 @@
 //  - quem invoca cada uma: src, migrations, outras edges, cron (banco.json -> cron.jobs[].edges), e2e, CI
 //  (rotas: gerar-rotas.mjs; banco, uso de tabelas e orfas: gerar-banco.mjs)
 // Uso: node scripts/inventario/gerar-repo.mjs   (rode depois do gerar-banco.mjs para contar as chamadas por cron)
-import { readdirSync, readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readdirSync, readFileSync, existsSync, writeFileSync, mkdirSync, statSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 import { edgesChamadasNoCodigo, segredosViaResolver, semComentarios } from './gerar-rotas.mjs';
@@ -15,14 +15,33 @@ const OUT = join(RAIZ, 'inventario/estado');
 mkdirSync(OUT, { recursive: true });
 
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-// Sem ripgrep toda busca viraria "0 usos" e o inventário mentiria: aborta antes de gravar qualquer coisa.
-try { execFileSync('rg', ['--version'], { stdio: 'ignore' }); } catch {
-  console.error('gerar-repo: ripgrep (rg) não encontrado — instale (apt-get install ripgrep) e rode de novo.');
-  process.exit(1);
+// GUARD: sem ripgrep a busca NÃO pode virar "0 usos" (o inventário mentiria). Antes abortava, o que
+// derrubava CI em runner sem rg; agora cai numa busca equivalente em Node (mesmo regex, mesmos alvos,
+// pula node_modules e entradas ocultas na recursão, como o rg). GERAR_REPO_SEM_RG=1 força o fallback.
+let TEM_RG = process.env.GERAR_REPO_SEM_RG !== '1';
+if (TEM_RG) {
+  try { execFileSync('rg', ['--version'], { stdio: 'ignore' }); } catch { TEM_RG = false; }
+}
+if (!TEM_RG) console.warn('gerar-repo: ripgrep (rg) ausente — usando busca equivalente em Node.');
+function arquivosSob(p, acc = []) {
+  if (!statSync(p).isDirectory()) { acc.push(p); return acc; }
+  for (const e of readdirSync(p, { withFileTypes: true })) {
+    if (e.name === 'node_modules' || e.name.startsWith('.')) continue;
+    const filho = join(p, e.name);
+    if (e.isDirectory()) arquivosSob(filho, acc);
+    else if (e.isFile()) acc.push(filho);
+  }
+  return acc;
 }
 function rgFiles(pattern, paths) {
   const alvos = paths.map((p) => join(RAIZ, p)).filter((p) => existsSync(p));
   if (!alvos.length) return [];
+  if (!TEM_RG) {
+    const re = new RegExp(pattern);
+    return alvos.flatMap((a) => arquivosSob(a))
+      .filter((f) => re.test(readFileSync(f, 'utf8')))
+      .map((f) => f.slice(RAIZ.length));
+  }
   try {
     return execFileSync('rg', ['-l', '--no-messages', pattern, ...alvos], { encoding: 'utf8' })
       .split('\n').filter(Boolean).map((f) => f.slice(RAIZ.length));

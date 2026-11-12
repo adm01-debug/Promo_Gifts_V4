@@ -5,7 +5,8 @@
 // o teste roda o ARQUIVO REAL como subprocesso contra um sandbox descartavel (mkdtempSync) e
 // confere o inventario/estado/edges.json gerado — nunca mexe no repo real nem no proprio script.
 //
-// Precisa de `rg` (ripgrep) no PATH, igual ao script em producao (ele aborta sem isso).
+// Com `rg` (ripgrep) no PATH usa o rg; sem ele (runner de CI) o script cai na busca equivalente em
+// Node — o bloco final forca esse caminho (GERAR_REPO_SEM_RG=1) e exige o mesmo inventario.
 import { afterEach, describe, expect, it } from 'vitest';
 import { execFileSync } from 'node:child_process';
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -48,10 +49,11 @@ function bancoComCron(dir, jobs) {
   arquivo(dir, 'inventario/estado/banco.json', JSON.stringify({ cron: { jobs } }));
 }
 
-function rodar(dir) {
+function rodar(dir, env = {}) {
   const stdout = execFileSync('node', [join(dir, 'scripts/inventario/gerar-repo.mjs')], {
     cwd: dir,
     encoding: 'utf8',
+    env: { ...process.env, ...env },
   });
   const edges = JSON.parse(readFileSync(join(dir, 'inventario/estado/edges.json'), 'utf8'));
   return { stdout, edges };
@@ -211,5 +213,32 @@ describe('sem_chamador — a metrica mais citada do inventario', () => {
     expect(edges.edge_functions['orfa'].sem_chamador).toBe(true);
     expect(edges.sem_chamador).toEqual(['orfa']);
     expect(edges.total).toBe(2);
+  });
+});
+
+describe('busca sem ripgrep (GERAR_REPO_SEM_RG=1) — mesmo inventario que com rg', () => {
+  it('migrations, e2e e ci_config contam igual; arquivo oculto fica fora da recursao', () => {
+    const dir = novoSandbox();
+    edge(dir, 'alvo', 'Deno.serve(() => new Response("ok"));');
+    edge(dir, 'outra', 'Deno.serve(() => new Response("ok"));');
+    arquivo(dir, 'supabase/migrations/001_cron.sql', "select net.http_post('https://x/functions/v1/alvo');");
+    arquivo(dir, 'e2e/fluxo.spec.ts', "test('alvo', () => {});");
+    arquivo(dir, 'e2e/.cache/x.txt', 'alvo');
+    arquivo(dir, '.github/workflows/deploy.yml', 'run: supabase functions deploy alvo');
+    const semRg = rodar(dir, { GERAR_REPO_SEM_RG: '1' }).edges;
+    const alvo = semRg.edge_functions['alvo'].chamada_em;
+    expect(alvo.migrations).toBe(1);
+    expect(alvo.e2e).toBe(1);
+    expect(alvo.ci_config).toBe(1);
+    expect(semRg.edge_functions['alvo'].sem_chamador).toBe(false);
+    expect(semRg.edge_functions['outra'].sem_chamador).toBe(true);
+    let temRg = true;
+    try { execFileSync('rg', ['--version'], { stdio: 'ignore' }); } catch { temRg = false; }
+    if (temRg) {
+      const comRg = rodar(dir).edges;
+      delete comRg.gerado_em;
+      delete semRg.gerado_em;
+      expect(semRg).toEqual(comRg);
+    }
   });
 });
