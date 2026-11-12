@@ -29,6 +29,9 @@ vi.mock('@/contexts/AuthContext', async (importOriginal) => {
       isSupervisorOrAbove: true,
       isAdmin: true,
       isLoading: false,
+      // `roles` é obrigatório no AuthContext real (AppRole[]); sem ele o
+      // SecurityDashboard quebrava em roles.includes.
+      roles: ['admin'],
       rolesLoaded: true,
     }),
   };
