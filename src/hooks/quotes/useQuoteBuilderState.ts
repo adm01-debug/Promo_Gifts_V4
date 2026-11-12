@@ -448,6 +448,9 @@ export function useQuoteBuilderState() {
   // ── Pre-fill from URL params ──
   useEffect(() => {
     if (isEditMode) return;
+    // Drill-down do BI (ClientCategoryRadar) abre o builder com ?clientId=.
+    const urlClientId = searchParams.get('clientId');
+    if (urlClientId) setClientId(urlClientId);
     if (items.length > 0) return;
 
     const rawItems = searchParams.getAll('items[]');

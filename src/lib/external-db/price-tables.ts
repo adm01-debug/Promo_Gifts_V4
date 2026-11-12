@@ -25,6 +25,28 @@ export interface PromobrindPriceTable {
   technique_name?: string;
 }
 
+// `grupo_tecnica` (alias customization_type_name) usa códigos próprios; a UI envia o
+// nome da técnica de personalization_techniques ("Silk Screen", "Sublimação"...).
+const TECHNIQUE_GROUP_RULES: Array<[RegExp, string]> = [
+  [/BORD/, 'BORDADO'],
+  [/SILK|SERIGRAF/, 'SERIGRAFIA'],
+  [/SUBLIM/, 'SUBLIMACAO'],
+  [/TAMPO/, 'TAMPOGRAFIA'],
+  [/LASER/, 'LASER'],
+  [/TRANSFER|DTF/, 'TRANSFER_DIGITAL'],
+  [/(^|[^A-Z])UV([^A-Z]|$)/, 'UV_DIGITAL'],
+];
+
+export function toTechniqueGroup(techniqueName: string): string {
+  const normalized = techniqueName
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toUpperCase()
+    .trim();
+  const rule = TECHNIQUE_GROUP_RULES.find(([re]) => re.test(normalized));
+  return rule ? rule[1] : normalized.replace(/\s+/g, '_');
+}
+
 export async function fetchPromobrindPriceTables(options?: {
   techniqueName?: string;
   techniqueCode?: string;
@@ -34,7 +56,8 @@ export async function fetchPromobrindPriceTables(options?: {
   height?: number;
 }): Promise<PromobrindPriceTable[]> {
   const filters: Record<string, unknown> = { is_active: true };
-  if (options?.techniqueName) filters.customization_type_name = options.techniqueName;
+  if (options?.techniqueName)
+    filters.customization_type_name = toTechniqueGroup(options.techniqueName);
   if (options?.techniqueCode) filters.table_code = options.techniqueCode;
 
   let result: { records: Record<string, unknown>[] };

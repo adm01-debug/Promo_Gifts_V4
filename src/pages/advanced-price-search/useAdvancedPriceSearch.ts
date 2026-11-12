@@ -108,12 +108,13 @@ export function useAdvancedPriceSearch() {
       let matchingTable = undefined as ProductWithCalculatedPrice['matchingTechnique'];
 
       if (filters.technique !== 'all' && priceTables.length > 0) {
-        matchingTable = priceTables.find(
+        // priceTables já vem filtrado pela técnica (grupo_tecnica); prioriza faixa com preço.
+        const inQuantity = priceTables.filter(
           (t) =>
             t.min_quantity <= filters.minQuantity &&
-            (!t.max_quantity || t.max_quantity >= filters.minQuantity) &&
-            (t.technique_name ?? '').toLowerCase().includes(filters.technique.toLowerCase()),
+            (!t.max_quantity || t.max_quantity >= filters.minQuantity),
         );
+        matchingTable = inQuantity.find((t) => t.unit_price > 0) ?? inQuantity[0];
 
         if (matchingTable) {
           customizationPrice = matchingTable.unit_price || 0;
