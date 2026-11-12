@@ -13,7 +13,7 @@ GitHub). Não há cópia manual dos passos: quando um workflow muda, o CI local 
 | `npm run ci:local -- --workflow deploy-gates.yml` | Só os workflows indicados (ex.: o Gate Final obrigatório) | médio |
 | `npm run ci:local:all` | Todos os workflows de `pull_request`, ignorando filtros de paths | longo |
 | `npm run ci:local:nightly` | Os workflows agendados (nightly, fuzz/semanais) | longo |
-| `npm run ci:local:fast` | **Modo rápido sem Docker**: passos `run:` dos jobs lidos do YAML, sem E2E/Lighthouse (`--with-e2e` inclui) | minutos |
+| `npm run ci:local:fast -- --codigo-confiavel` | **Modo rápido sem Docker — só para código SEU** (roda no seu computador; código de outro branch/agente: use `ci:local`, em contêiner): passos `run:` dos jobs lidos do YAML, sem E2E/Lighthouse (`--with-e2e` inclui) | minutos |
 | `npm run ci:local:extras` | Roda os scripts `test:*`/`check:*` do package.json que **nenhum workflow roda** (`-- --list` só lista; `--with-e2e`; `--unsafe` inclui carga/stress/serviços vivos) | variável |
 | `npm run ci:local:compare` | Cruza o último resultado local com os check-runs do GitHub do mesmo commit | segundos |
 
