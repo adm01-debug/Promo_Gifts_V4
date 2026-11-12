@@ -8,6 +8,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { getOrCreateRequestId, REQUEST_ID_HEADER } from "../_shared/request-id.ts";
 import { resolveCredentials, warmupCredentials, buildCredentialsHealth } from "../_shared/credentials.ts";
 import { assertSwitchEnabled } from "../_shared/kill_switch.ts";
+import { crmOwnerScope, resolveCrmRole } from "./ownership.ts";
 
 const breaker = getBreaker("crm-db");
 // redeploy marker: fix 429 - auth-first + rate-limit por userId + admin singleton (2026-05-26)
@@ -370,9 +371,10 @@ async function authenticateRequest(req: Request): Promise<AuthResult> {
   if (!rolesData || rolesData.length === 0) {
     return { userId: null, userRole: "public", error: jsonResponse({ error: "Usuário sem perfil de acesso" }, 403) };
   }
-  const ROLE_ORDER = ["supervisor", "gerente", "vendedor"];
+  // BUGFIX: a lista antiga (supervisor/gerente/vendedor) ignorava admin/dev/manager,
+  // que caíam em "vendedor" e recebiam o filtro de ownership. Ver ownership.ts.
   const roles = rolesData.map((r: { role: string }) => r.role);
-  const userRole = ROLE_ORDER.find((r) => roles.includes(r)) ?? "vendedor";
+  const userRole = resolveCrmRole(roles);
   console.log(`Authenticated CRM request role=${userRole}`);
   return { userId: user.id, userRole };
 }
@@ -605,10 +607,15 @@ async function handleSelect(crm: SupabaseClient, body: CrmQuery, userId?: string
   console.log(`[SELECT] table=${table}, select_fields=${selectFields.split(',').length}, filter_keys=${Object.keys(filters ?? {}).length}, limit=${limit ?? 'default'}`);
 
   let query = crm.from(table).select(selectFields);
-  // E081: escopo de ownership — vendedor só vê seus próprios registros
-  const PII_TABLES = new Set(["companies", "contacts", "contact_emails", "contact_phones", "customers"]);
-  if (userRole === "vendedor" && userId && PII_TABLES.has(table)) {
-    query = query.eq("owner_id", userId);
+  // E081: escopo de ownership — vendedor só vê seus próprios registros.
+  // BUGFIX: usava `owner_id`, coluna inexistente no CRM (500 em produção);
+  // a coluna real é `user_id`. Tabelas PII sem coluna de dono → 403.
+  const scope = crmOwnerScope(table, userRole, userId);
+  if (scope.kind === "deny") {
+    return jsonResponse({ error: "Leitura desta tabela do CRM requer perfil supervisor" }, 403);
+  }
+  if (scope.kind === "filter") {
+    query = query.eq(scope.column, scope.value);
   }
 
   if (id) {
