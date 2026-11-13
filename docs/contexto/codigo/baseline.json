@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8ce96939e23bb05c48e366383657ac1d1a053b57",
+  "commit": "fe64be355269b192eb7d17aa0a2dc10fc9d242a5",
   "branch": "main",
-  "data_commit": "2026-11-13T14:19:30-03:00",
+  "data_commit": "2026-11-13T17:40:32-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "fe64be3",
+    "data": "2026-11-13",
+    "assunto": "docs(migrations): recibos da 20261111191000 (corrigido) e da 20261112140000 (#3529)"
+   },
    {
     "sha": "8ce9693",
     "data": "2026-11-13",
@@ -126,11 +131,6 @@
     "sha": "f26c25e",
     "data": "2026-11-13",
     "assunto": "fix(security): baseline de policies inclui admins_select_e2e_cleanup_audit"
-   },
-   {
-    "sha": "0f5934a",
-    "data": "2026-11-13",
-    "assunto": "docs: prod-readiness — inventário, prova OK/BLOQUEADO e PRs pendentes (main fee3d093) (#3453)"
    }
   ],
   "arquivos_mudados_7d": 1980,
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 40
+    "mudancas": 41
    },
    {
     "arquivo": "package.json",
