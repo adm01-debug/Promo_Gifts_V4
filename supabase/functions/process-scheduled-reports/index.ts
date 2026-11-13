@@ -105,7 +105,7 @@ Deno.serve(async (req) => {
               Authorization: `Bearer ${resendKey}`,
             },
             body: JSON.stringify({
-              from: "Promo Gifts <noreply@promogifts.com.br>",
+              from: "Promo Gifts <noreply@promobrindes.com.br>",
               to: [report.email_to],
               subject: `📊 ${report.report_name} — ${reportData.period}`,
               html: htmlContent,
