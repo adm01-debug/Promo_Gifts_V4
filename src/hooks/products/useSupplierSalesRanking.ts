@@ -7,13 +7,14 @@
  * FIX BUG-A (2026-06-18): dbInvoke com limit:20000 usava PostgREST range()
  * e era silenciosamente truncado pelo max_rows=1000 do servidor, deixando
  * 6 243/7 243 produtos (86%) com turnover_score=0 → sort 'best-seller-supplier'
- * completamente quebrado. A RPC bypassa max_rows e retorna TODAS as 7 243 linhas.
+ * completamente quebrado. A RPC também respeita max_rows: é paginada em blocos de 1000.
  */
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { logger } from '@/lib/logger';
+import { POSTGREST_PAGE_SIZE } from '@/lib/db/fetch-all-pages';
 
-interface ProductIntelligenceRanking {
+export interface ProductIntelligenceRanking {
   product_id: string;
   turnover_score: number;
   avg_depletion_7d: number;
@@ -33,6 +34,36 @@ export interface SupplierSalesEntry {
 }
 
 /**
+ * Lê todas as linhas de fn_get_product_intelligence_all (mv_product_intelligence).
+ * FIX BUG-A: a RPC também é truncada pelo db-max-rows (1000) do PostgREST,
+ * então paginamos com .order('product_id').range() até a última página.
+ */
+export async function fetchProductIntelligenceAll(): Promise<{
+  rows: ProductIntelligenceRanking[];
+  error: { message?: string } | null;
+}> {
+  // Explicit return type avoids TS2589 from ReturnType<typeof supabase.rpc> deep instantiation.
+  type RpcPage = { data: unknown; error: { message?: string } | null };
+  type AnyRpc = (fn: string) => {
+    order: (
+      column: string,
+      options: { ascending: boolean },
+    ) => { range: (from: number, to: number) => PromiseLike<RpcPage> };
+  };
+  const rows: ProductIntelligenceRanking[] = [];
+  for (let from = 0; ; from += POSTGREST_PAGE_SIZE) {
+    const page = await (supabase.rpc as unknown as AnyRpc)('fn_get_product_intelligence_all')
+      .order('product_id', { ascending: true })
+      .range(from, from + POSTGREST_PAGE_SIZE - 1);
+    if (page.error) return { rows, error: page.error };
+    const pageRows = (page.data ?? []) as ProductIntelligenceRanking[];
+    rows.push(...pageRows);
+    if (pageRows.length < POSTGREST_PAGE_SIZE) break;
+  }
+  return { rows, error: null };
+}
+
+/**
  * Fetches supplier sales ranking via RPC fn_get_product_intelligence_all().
  * Returns a Map<productId, SupplierSalesEntry> for use in sorting.
  *
@@ -44,16 +75,7 @@ export function useSupplierSalesRanking() {
     queryKey: ['supplier-sales-ranking'],
     queryFn: async (): Promise<Map<string, SupplierSalesEntry>> => {
       try {
-        // FIX BUG-A: usar RPC que retorna todas as 7 243+ linhas sem limite.
-        // supabase.rpc() não é afetado por db-max-rows do PostgREST.
-        // fn_get_product_intelligence_all é SECURITY DEFINER e não está nos tipos gerados pelo Lovable.
-        // Explicit return type avoids TS2589 from ReturnType<typeof supabase.rpc> deep instantiation.
-        type AnyRpc = (
-          fn: string,
-        ) => PromiseLike<{ data: unknown; error: { message?: string } | null }>;
-        const { data, error } = await (supabase.rpc as unknown as AnyRpc)(
-          'fn_get_product_intelligence_all',
-        );
+        const { rows: data, error } = await fetchProductIntelligenceAll();
 
         if (error) {
           const msg = (error as { message?: string }).message ?? '';
@@ -68,7 +90,7 @@ export function useSupplierSalesRanking() {
           throw new Error((error as { message?: string }).message ?? 'RPC error');
         }
 
-        const rows = (data ?? []) as unknown as ProductIntelligenceRanking[];
+        const rows = data;
         const map = new Map<string, SupplierSalesEntry>();
 
         for (const row of rows) {
