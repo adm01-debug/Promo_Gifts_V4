@@ -185,7 +185,8 @@ export const Header = React.memo(({ onMenuToggle, sidebarOpen }: HeaderProps) =>
         } as CSSProperties
       }
       className={cn(
-        'theme-transitioning fixed right-0 top-0 z-40 border-b transition-all duration-300 print:hidden',
+        // right-scroll-bar-position: a trava de rolagem do Radix compensa a barra sumida (sem pulo do header).
+        'theme-transitioning right-scroll-bar-position fixed right-0 top-0 z-40 border-b transition-all duration-300 print:hidden',
         'border-border/10 bg-sidebar/60 backdrop-blur-xl',
         'h-[var(--header-h)]',
         isScrolled &&
