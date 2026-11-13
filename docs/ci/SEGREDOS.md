@@ -146,7 +146,7 @@ Não precisam de entrada na tabela acima; estão no allowlist de `check-secrets-
 > São acessados em runtime via `Deno.env.get("NOME")` nas edge functions em `supabase/functions/`.
 > O script `check-secrets-inventory.mjs` verifica edge functions automaticamente (E194 — `--scan-edge`).
 >
-> Última atualização: 2026-11-07 (E194 — 39 segredos de edge functions documentados)
+> Última atualização: 2026-11-13 (E194 — BRIDGE_PATH adicionado; crm-db-bridge/scope_integration_test.ts)
 
 ### Auto-injetados pelo Supabase (sempre disponíveis)
 
@@ -170,7 +170,7 @@ Configurados via `supabase secrets set`; obrigatórios para as funções listada
 | `ANON_KEY` | Supabase Key | Semestral | `_shared/kill_switch.ts` |
 | `ASIA_BASE_URL` | URL serviço | Sob demanda | `asia-ingestion/index.ts` |
 | `BITRIX24_WEBHOOK_URL` | URL webhook | Semestral | `bitrix-sync/index.ts` |
-| `BRIDGE_PATH` | Caminho de teste (não é segredo) | — | `crm-db-bridge/scope_integration_test.ts` — opcional; aponta o teste para outro `index.ts` (padrão: o do próprio diretório) |
+| `BRIDGE_PATH` | Config/teste | — | `crm-db-bridge/scope_integration_test.ts` |
 | `CF_ORIGIN_SECRET` | Secret Cloudflare | Trimestral | `check-login/index.ts` |
 | `CRM_CALLBACK_API_KEY` | API Key CRM | Trimestral | `receive-crm-callback/index.test.ts` |
 | `CRM_SUPABASE_ANON_KEY` | Supabase Key (CRM) | Semestral | `crm-db-bridge/singleton-client.test.ts` |

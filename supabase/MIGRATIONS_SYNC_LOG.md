@@ -1124,6 +1124,10 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check | status |
 |---|---|---|---|---|---|---|---|
 | `20261107180000` | `ad43364e7897bf5cc075d3cefa6328f919f36806c35d6b765572c4d1b5625914` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-08 04:17:21 UTC | job post-check da run 42444391386 confirmou a version no ledger | aplicada |
+| `20261104100000` | `089f634d125b5fde9e500987182b15e4a67a67726c59bc7d9c0b1bd6ee757281` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug (Joaquim, aprovado no chat em 11/11)) | E15 | 2026-11-12 03:21:00 UTC | job post-check da run 43131645845 confirmou a version no ledger | aplicada |
+| `20261112011000` | `8e081152c457ed572cb3aa349f62027bc7cd461996bb8036f499efb12af6a449` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 00:31:48 UTC | job post-check da run 43233358789 confirmou a version no ledger | aplicada |
+| `20261108001500` | `b359d0d8445d6ec5c11bbad06b5ce9b82fc2d5bb15aef4c186830f520b953e50` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 02:30:43 UTC | job post-check da run 43322428599 confirmou a version no ledger | aplicada |
+| `20261112130000` | `81e3c7900b74f7de043556d412dae21248e538f70aca73ad1b85f190b6627f52` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 04:55:11 UTC | job post-check da run 43345670118 confirmou a version no ledger | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
@@ -1202,6 +1206,7 @@ Cadeia completa de drift em `public.categories`:
 - `20260511235959` — `full_path_readable` (este PR, pendente)
 - `20260512000000` — bootstrap usa as três em VIEW/MVIEW DDL
 | `20260511235950` | `add_categories_level_drift` | `dfacb733f8b6036b3c00db74dffbf61597f3fc88cc72a50fcbe3a0480b2824a6` | espelho — a coluna já existe em produção (conferido 2026-11-11); registrar via `db-apply-migration.yml` modo repair-only, sem executar DDL |
+| `20260511235960` | `add_categories_full_path_readable_drift` | `bdd3104b7f0f368d59e698b283fc8f35c605e137311f337b48720a8fad04cedd` | pendente — coluna já existe em produção; arquivo criado em 2026-11-13 para satisfazer preflight de db-apply-migration.yml; registrar via db-apply-migration.yml modo repair-only |
 | `20260511235959` | `add_categories_full_path_readable_drift` | `ef9c350896f1729196d2a9d22e9269dd3629ae29f5d52842fb8372b9ac7ab7ae` | espelho — a coluna já existe em produção (conferido 2026-11-11); registrar via `db-apply-migration.yml` modo repair-only, sem executar DDL |
 ## 2026-11-09 — DROP `perf002_drop_unused_snapshot_indexes` (PEND-I01)
 Função `public.perf002_drop_unused_snapshot_indexes()` criada como SECURITY DEFINER
@@ -1402,7 +1407,7 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 
 | version | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261112011000` | `fix_sb0003_fn_get_rupture_alerts` | `8e081152c457ed572cb3aa349f62027bc7cd461996bb8036f499efb12af6a449` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono) |
+| `20261112011000` | `fix_sb0003_fn_get_rupture_alerts` | `8e081152c457ed572cb3aa349f62027bc7cd461996bb8036f499efb12af6a449` | **aplicada em 12/11/2026** pelo `db-apply-migration.yml` (run 43233358789, aprovado pelo dono; recibo E15 acima) |
 
 ## 2026-11-12 — sitemap: EXECUTE de `anon` em `get_sitemap_public` pendente em produção
 
@@ -1412,4 +1417,4 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 
 | version | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261112130000` | `fix_get_sitemap_public_anon_grant` | `81e3c7900b74f7de043556d412dae21248e538f70aca73ad1b85f190b6627f52` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112130000` | `fix_get_sitemap_public_anon_grant` | `81e3c7900b74f7de043556d412dae21248e538f70aca73ad1b85f190b6627f52` | **aplicada em 13/11/2026** pelo `db-apply-migration.yml` (run 43345670118; recibo E15 acima) |
