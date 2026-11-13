@@ -101,6 +101,11 @@ jobs:
               - 'playwright.config.*'
               - '.nvmrc'
               - 'eslint.config*'
+              # baselines na raiz (eslint, as-assertions, file-size...) e o inventário de secrets:
+              # sem isto um PR que só mexe neles é docs_only e o Gate 1 (lint:baseline, 1.14) é pulado.
+              - '.*-baseline*.json'
+              - '.eslint-baseline*.json'
+              - 'docs/ci/SEGREDOS.md'
       - name: Determinar docs_only
         id: result
         run: |

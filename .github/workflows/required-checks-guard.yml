@@ -18,6 +18,14 @@ name: Required Checks Guard
 #   - Nenhum job daqui é required check no ruleset (só "Gate Final - Deploy Ready").
 
 on:
+  # PR só quando mexe no que o guard valida: um PR que renomeie required_checks[0].name
+  # no JSON precisa falhar ANTES do merge, não no cron seguinte (revisão 13/11).
+  pull_request:
+    paths:
+      - '.github/required-checks.json'
+      - '.github/workflows/required-checks-guard.yml'
+      - 'docs/ci/SEGREDOS.md'
+      - 'scripts/check-secrets-inventory.mjs'
   push:
     branches: [main]
     paths:
@@ -34,7 +42,7 @@ permissions:
 
 concurrency:
   group: required-checks-guard-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 
 defaults:
