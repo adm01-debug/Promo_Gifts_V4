@@ -1,3 +1,5 @@
 # Erros da última coleta
 
-_nenhum_
+| seção | erro |
+|---|---|
+| cron_runs | canceling statement due to statement timeout |
