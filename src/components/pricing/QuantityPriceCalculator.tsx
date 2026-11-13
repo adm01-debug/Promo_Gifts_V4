@@ -5,7 +5,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { useCustomizationPricing, type PriceCalculation } from '@/hooks/simulation';
+import type { PriceCalculation } from '@/hooks/simulation';
 import {
   isDimensionRequiredError,
   useCustomizationPriceCalculator,
@@ -14,7 +14,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Calculator, Package, Paintbrush, Palette, Plus, X, FileText, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ProductSearch as UnifiedProductSearch } from './simulator/ProductSearch';
@@ -38,7 +37,6 @@ interface QuantityPriceCalculatorProps {
 
 export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorProps) {
   const navigate = useNavigate();
-  const { isLoading: pricingLoading } = useCustomizationPricing();
   const { calculatePriceDetailed: calculateEngravingPrice } = useCustomizationPriceCalculator();
   // Guarda contra duplo clique enquanto os preços das gravações são calculados.
   const creatingRef = useRef(false);
@@ -48,6 +46,8 @@ export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorPr
   const [selectedConfigs, setSelectedConfigs] = useState<SelectedTechniqueConfig[]>([]);
   const [customQuantities, setCustomQuantities] = useState<number[]>([250, 500, 1000, 2500, 5000]);
   const [newQuantity, setNewQuantity] = useState('');
+  // Tiragem enviada ao orçamento (a tabela destaca esta coluna).
+  const quoteQuantity = Math.min(...customQuantities);
 
   const handleProductSelect = useCallback((product: SimulatorProduct | null) => {
     if (!product) {
@@ -67,11 +67,7 @@ export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorPr
   }, []);
 
   const handleToggleTechnique = useCallback((technique: ProductTechnique, add: boolean) => {
-    if (add)
-      setSelectedConfigs((prev) => [
-        ...prev,
-        { technique, colors: 1, sizeOption: 'standard', sizeModifier: 1 },
-      ]);
+    if (add) setSelectedConfigs((prev) => [...prev, { technique, colors: 1 }]);
     else setSelectedConfigs((prev) => prev.filter((c) => c.technique.id !== technique.id));
   }, []);
 
@@ -107,7 +103,7 @@ export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorPr
     creatingRef.current = true;
     setIsCreating(true);
     try {
-      const quantity = Math.min(...customQuantities);
+      const quantity = quoteQuantity;
       const results = await Promise.all(
         selectedConfigs.map((c) =>
           calculateEngravingPrice({
@@ -120,8 +116,14 @@ export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorPr
       const prices = results.map((r) => r.result);
       // Falha de rede/RPC bloqueia como antes; só a técnica com faixa por dimensão
       // (sem largura/altura aqui) segue sem preço e é informada no orçamento.
-      if (results.some((r) => !r.result && !isDimensionRequiredError(r.error))) {
-        toast.error('Não foi possível calcular o preço da gravação. Tente novamente.');
+      const failed = results.find((r) => !r.result && !isDimensionRequiredError(r.error));
+      if (failed) {
+        // Recusa da RPC (regra de negócio) mostra o motivo; falha técnica fica genérica.
+        toast.error(
+          failed.rejected
+            ? `Sem preço da gravação para ${formatNumber(quantity)} un: ${failed.error}`
+            : 'Não foi possível calcular o preço da gravação. Tente novamente.',
+        );
         return;
       }
       const missing = prices.filter((p) => !p).length;
@@ -164,21 +166,7 @@ export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorPr
       creatingRef.current = false;
       setIsCreating(false);
     }
-  }, [navigate, selectedProduct, selectedConfigs, customQuantities, calculateEngravingPrice]);
-
-  if (pricingLoading)
-    return (
-      <Card className={className}>
-        <CardHeader>
-          <Skeleton className="h-6 w-48" />
-          <Skeleton className="mt-2 h-4 w-64" />
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-64 w-full" />
-        </CardContent>
-      </Card>
-    );
+  }, [navigate, selectedProduct, selectedConfigs, quoteQuantity, calculateEngravingPrice]);
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -231,7 +219,7 @@ export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorPr
               <Palette className="h-5 w-5 text-primary" />
               <CardTitle className="font-display text-lg">3. Configure as Opções</CardTitle>
             </div>
-            <CardDescription>Defina cores e tamanho para cada técnica selecionada</CardDescription>
+            <CardDescription>Escolha o número de cores de cada técnica selecionada</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -303,6 +291,7 @@ export function QuantityPriceCalculator({ className }: QuantityPriceCalculatorPr
               product={selectedProduct}
               selectedConfigs={selectedConfigs}
               quantities={customQuantities}
+              quoteQuantity={quoteQuantity}
             />
             <Button
               size="lg"
