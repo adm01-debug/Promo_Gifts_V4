@@ -204,7 +204,13 @@ export function useKitBuilderPageState() {
 
   useEffect(() => {
     if (!kitIdParam) {
+      // Saiu de /montar-kit?kit=X para /montar-kit sem remontar: limpa o estado da
+      // hidratação anterior, senão salvar/autosave seguem bloqueados até recarregar.
       setIsHydrating(false);
+      setHydrationError(null);
+      setQuantityNeedsConfirmation(false);
+      setHydratedScope(null);
+      hydratedKitIdRef.current = null;
       return;
     }
     const scope = `${user?.id ?? 'anonymous'}:${kitIdParam}`;

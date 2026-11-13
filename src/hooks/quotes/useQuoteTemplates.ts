@@ -114,6 +114,8 @@ function templateCopyPayload(
     seller_id: sellerId,
     name,
     is_default: false,
+    // A cópia é um template novo: não herda o contador de uso da origem.
+    ...('usage_count' in data ? { usage_count: 0 } : {}),
   };
 }
 
