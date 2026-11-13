@@ -385,6 +385,21 @@ function escapeLikePattern(term: string): string {
   return term.replace(/[%_\\]/g, (c) => `\\${c}`);
 }
 
+/**
+ * Erro do PostgREST/Postgres causado pela ENTRADA do cliente (coluna/filtro/valor inválido,
+ * PGRST1xx/2xx, classes SQLSTATE 22 e 42) vira 400 — não 500. Só 5xx contam no disjuntor:
+ * antes, 5 requisições com filtro inválido de um vendedor abriam o disjuntor e derrubavam o
+ * bridge para todos por 60 s (simulação com PostgREST real, 13/11).
+ */
+export function isClientDbError(error: { code?: string | null } | null | undefined): boolean {
+  const code = String(error?.code ?? "");
+  return /^PGRST[12]\d\d$/.test(code) || /^(22|42)[0-9A-Z]{3}$/.test(code);
+}
+
+function dbErrorResponse(error: { code?: string | null; message: string }): Response {
+  return jsonResponse({ error: error.message }, isClientDbError(error) ? 400 : 500);
+}
+
 function validateFilters(filters: Record<string, unknown>, table?: string): string | null {
   if (!table) return null;
   const allowed = FILTERABLE_COLUMNS[table];
@@ -632,7 +647,7 @@ async function handleInsert(crm: SupabaseClient, body: CrmQuery): Promise<Respon
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalWriteError(table);
     console.error("CRM insert error:", { code: error.code ?? "unknown", message: error.message });
-    return jsonResponse({ error: error.message }, 500);
+    return dbErrorResponse(error);
   }
   return jsonResponse({ data: result, count: result?.length || 0 });
 }
@@ -653,7 +668,7 @@ async function handleUpdate(crm: SupabaseClient, body: CrmQuery): Promise<Respon
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalWriteError(table);
     console.error("CRM update error:", { code: error.code ?? "unknown", message: error.message });
-    return jsonResponse({ error: error.message }, 500);
+    return dbErrorResponse(error);
   }
   return jsonResponse({ data: result, count: result?.length || 0 });
 }
@@ -670,7 +685,7 @@ async function handleDelete(crm: SupabaseClient, body: CrmQuery): Promise<Respon
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalWriteError(table);
     console.error("CRM delete error:", { code: error.code ?? "unknown", message: error.message });
-    return jsonResponse({ error: error.message }, 500);
+    return dbErrorResponse(error);
   }
   return jsonResponse({ data: null, success: true });
 }
@@ -727,7 +742,7 @@ async function handleSelect(crm: SupabaseClient, body: CrmQuery, userId?: string
         code: "statement_timeout",
       }, 504);
     }
-    return jsonResponse({ error: error.message }, 500);
+    return dbErrorResponse(error);
   }
   return jsonResponse({ data: stripJoin(data || [], scoped.stripParent), count });
 }
@@ -752,7 +767,7 @@ async function handleSearch(crm: SupabaseClient, body: CrmQuery, userId?: string
   const { data, error } = await query;
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalSelectFallback(table, false);
-    return jsonResponse({ error: error.message }, 500);
+    return dbErrorResponse(error);
   }
   const rows = stripJoin(data || [], scoped.stripParent);
   return jsonResponse({ data: rows, count: rows.length });
@@ -863,7 +878,7 @@ Deno.serve((req) => {
       return jsonResponse({ error: "Invalid JSON in request body" }, 400);
     }
 
-    const COLUMN_RE = /^[a-z_][a-z0-9_.]*$/i;
+    const COLUMN_RE = /^[a-z_][a-z0-9_]*$/i; // sem ponto: nada de coluna de tabela embutida (contacts.user_id)
     const CrmOrderBySchema = z.union([
       z.string().regex(/^[a-z_][a-z0-9_.]*(\s+(asc|desc))?$/i),
       z.object({ column: z.string().regex(COLUMN_RE), ascending: z.boolean().optional() }),
@@ -873,7 +888,7 @@ Deno.serve((req) => {
       table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i).optional(),
       id: z.string().uuid().optional(),
       filters: z.record(z.unknown()).refine(
-        (f) => Object.keys(f).every((k) => COLUMN_RE.test(k)),
+        (f) => Object.keys(f).every((k) => COLUMN_RE.test(k) && !/^(or|and|not)$/i.test(k)),
         { message: "Filter keys must be valid column identifiers" },
       ).optional(),
       select: z.string().max(2000).optional(),
