@@ -13,6 +13,7 @@
  */
 
 import { readFileSync, writeFileSync } from 'fs';
+import { missingPrerequisite } from './lib/missing-prerequisite.mjs';
 
 const argv = process.argv.slice(2);
 const inArg = argv.find((a) => a.startsWith('--in='));
@@ -33,8 +34,7 @@ function readInput() {
   // stdin fechado sem dados (ex.: chamada direta sem pipe ou --in) → static-pass
   const raw = readFileSync(0, 'utf8');
   if (!raw.trim()) {
-    console.log('[ssot-report-markdown] static-pass: sem --in e stdin vazio; relatório ignorado.');
-    process.exit(0);
+    missingPrerequisite('ssot-report-markdown', 'sem --in e stdin vazio', { exitCode: 2 });
   }
   return raw;
 }

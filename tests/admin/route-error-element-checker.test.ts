@@ -13,7 +13,13 @@
  */
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { execSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import {
+  mkdtempSync,
+  mkdirSync,
+  writeFileSync,
+  rmSync,
+  symlinkSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
@@ -242,5 +248,44 @@ export default function X() { return <>{useRouteError() as unknown as string}</>
       rule: "useRouteError-outside-data-router",
       file: expect.stringContaining("Bad.tsx"),
     });
+  });
+});
+
+describe("check-route-error-element — falhas de filesystem (fail-closed)", () => {
+  // Achado real (teste adversarial manual, ver tarefa de hardening):
+  // sem este fix, `walk()` deixava ENOENT/ELOOP subirem como exceção não
+  // tratada do Node (stack trace cru em vez de mensagem de gate), embora
+  // por acidente o exit code ainda fosse 1. Os dois testes abaixo provam
+  // a mensagem limpa e o exit code correto; sem o try/catch no script,
+  // `r.stderr` não bateria com `/gate route-error-element não pôde ser verificado/`.
+  it("sem diretório src/: falha limpa (não crash cru), não stack trace do Node", () => {
+    const tmp = mkdtempSync(path.join(tmpdir(), "route-err-nosrc-"));
+    try {
+      const r = run(tmp);
+      expect(r.exitCode).toBe(1);
+      expect(r.stderr).toMatch(
+        /gate route-error-element não pôde ser verificado/,
+      );
+      expect(r.stderr).not.toMatch(/node:internal|at readdirSync/);
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
+  });
+
+  it("symlink de diretório em loop (ELOOP) dentro de src/: falha limpa, sem travar", () => {
+    const tmp = mkdtempSync(path.join(tmpdir(), "route-err-eloop-"));
+    try {
+      const srcDir = path.join(tmp, "src");
+      mkdirSync(path.join(srcDir, "a"), { recursive: true });
+      symlinkSync(srcDir, path.join(srcDir, "a", "loop"));
+      const r = run(tmp);
+      expect(r.exitCode).toBe(1);
+      expect(r.stderr).toMatch(
+        /gate route-error-element não pôde ser verificado/,
+      );
+      expect(r.stderr).not.toMatch(/node:internal|at statSync/);
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
   });
 });

@@ -149,7 +149,8 @@ async function main() {
   }
 
   const missingReasons = doc.functions
-    .filter((e) => !e.reason || !String(e.reason).trim())
+    // GUARD: o placeholder gravado por --update-allowlist não é justificativa (exige revisão humana).
+    .filter((e) => !e.reason || !String(e.reason).trim() || /^\s*TODO\b/.test(String(e.reason)))
     .map((e) => e.fn);
 
   const problems = [];

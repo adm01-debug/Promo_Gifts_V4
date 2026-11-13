@@ -19,9 +19,15 @@ import { join, resolve } from "node:path";
 const ROOT = resolve(process.cwd());
 const SEC_DIR = join(ROOT, ".security");
 
-const ALLOWLISTS = readdirSync(SEC_DIR)
-  .filter((f) => f.endsWith("-allowlist.json"))
-  .map((f) => join(SEC_DIR, f));
+let ALLOWLISTS;
+try {
+  ALLOWLISTS = readdirSync(SEC_DIR)
+    .filter((f) => f.endsWith("-allowlist.json"))
+    .map((f) => join(SEC_DIR, f));
+} catch (e) {
+  console.error(`❌ Não foi possível ler .security/ (${e.message})`);
+  process.exit(2);
+}
 
 let errors = 0;
 const err = (msg) => {

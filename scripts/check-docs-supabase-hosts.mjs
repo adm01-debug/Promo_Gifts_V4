@@ -67,13 +67,18 @@ const DASHBOARD_RE = /https?:\/\/supabase\.com\/dashboard\/project\/([a-z0-9-]+)
 const argv = new Set(process.argv.slice(2));
 const JSON_OUT = argv.has('--json');
 
-function walk(dir, out) {
+function walk(dir, out, errors) {
   let entries;
-  try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+  try {
+    entries = fs.readdirSync(dir, { withFileTypes: true });
+  } catch (err) {
+    errors.push(`${dir}: erro ao listar diretório (${err.message})`);
+    return;
+  }
   for (const e of entries) {
     if (EXCLUDE_DIRS.has(e.name)) continue;
     const p = path.join(dir, e.name);
-    if (e.isDirectory()) walk(p, out);
+    if (e.isDirectory()) walk(p, out, errors);
     else if (e.isFile() && /\.mdx?$/i.test(e.name)) out.push(p);
   }
 }
@@ -108,13 +113,20 @@ function scanLine(line, prev, prev2) {
 }
 
 const files = [];
-walk('.', files);
+const readErrors = [];
+walk('.', files, readErrors);
 const all = [];
 
 for (const file of files) {
   const relFile = file.replace(/^\.\//, '');
   const isHistorical = HISTORICAL_PATH_PATTERNS.some((r) => r.test(relFile));
-  const content = fs.readFileSync(file, 'utf8');
+  let content;
+  try {
+    content = fs.readFileSync(file, 'utf8');
+  } catch (err) {
+    readErrors.push(`${relFile}: erro ao ler (${err.message})`);
+    continue;
+  }
   if (!content.includes('supabase.co') && !content.includes('supabase.com/dashboard')) continue;
   const lines = content.split('\n');
   for (let i = 0; i < lines.length; i++) {
@@ -130,16 +142,25 @@ for (const file of files) {
 
 
 if (JSON_OUT) {
-  console.log(JSON.stringify({ canonicalRef: CANONICAL_REF, violations: all }, null, 2));
-  process.exit(all.length ? 1 : 0);
+  console.log(JSON.stringify({ canonicalRef: CANONICAL_REF, violations: all, readErrors }, null, 2));
+  process.exit(all.length || readErrors.length ? 1 : 0);
 }
 
 console.log(`🔗 Supabase hosts em .md — canônico esperado: ${CANONICAL_REF}.supabase.co`);
 console.log(`   arquivos varridos: ${files.length}`);
 
-if (all.length === 0) {
+if (readErrors.length) {
+  console.error(`\n\x1b[31m[ERRO]\x1b[0m ${readErrors.length} arquivo(s) não puderam ser lidos (gate não pôde verificá-los):`);
+  for (const e of readErrors) console.error(`  ${e}`);
+}
+
+if (all.length === 0 && readErrors.length === 0) {
   console.log('\x1b[32m[OK]\x1b[0m Todos os hosts operacionais apontam para o canônico.');
   process.exit(0);
+}
+
+if (all.length === 0) {
+  process.exit(1);
 }
 
 // Agrupa por ref para relatório.

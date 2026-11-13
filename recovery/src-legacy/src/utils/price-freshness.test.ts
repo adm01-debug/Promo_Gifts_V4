@@ -104,10 +104,13 @@ describe("Price Freshness Utility", () => {
         expect(result.status).toBe("fresh");
       });
 
-      it("exactly at full threshold (60 days) should be aging (not stale yet)", () => {
+      it("exactly at full threshold (60 days) is stale under BUG-008's inclusive limit", () => {
         const sixtyDaysAgo = new Date("2026-03-04T12:00:00Z").toISOString();
         const result = getPriceFreshness(sixtyDaysAgo, 60);
-        expect(result.status).toBe("aging");
+        expect(result.daysSinceUpdate).toBe(60);
+        expect(result.status).toBe("stale");
+        expect(result.shouldWarn).toBe(true);
+        expect(result.isStale).toBe(true);
       });
 
       it("handles ISO strings without Z (local time) consistently", () => {

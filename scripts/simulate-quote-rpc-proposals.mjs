@@ -8,14 +8,14 @@ import { execFileSync, spawn, spawnSync } from 'node:child_process';
 import { randomUUID, createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
+import { missingPrerequisite } from './lib/missing-prerequisite.mjs';
 
 if (process.argv.length > 2)
   throw new Error('Offline only: no CLI target or deployment options accepted');
 
 const dockerCheck = spawnSync('docker', ['info'], { stdio: 'ignore', timeout: 5000 });
 if (dockerCheck.status !== 0 || dockerCheck.error) {
-  console.log('[simulate-quote-rpc-proposals] static-pass: Docker indisponível; simulação ignorada.');
-  process.exit(0);
+  missingPrerequisite('simulate-quote-rpc-proposals', 'Docker indisponível', { exitCode: 1 });
 }
 
 const root = fileURLToPath(new URL('../', import.meta.url));

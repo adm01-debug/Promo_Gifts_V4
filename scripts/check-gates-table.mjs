@@ -12,8 +12,15 @@ const gate = args.includes('--gate');
 const yamlPath = '.github/workflows/deploy-gates.yml';
 const claudePath = 'docs/agentes/ci-gates.md';
 
-const yaml = readFileSync(yamlPath, 'utf8');
-const claude = readFileSync(claudePath, 'utf8');
+let yaml;
+let claude;
+try {
+  yaml = readFileSync(yamlPath, 'utf8');
+  claude = readFileSync(claudePath, 'utf8');
+} catch (err) {
+  console.error(`✗ check-gates-table: não foi possível ler ${err.path ?? 'arquivo de entrada'}: ${err.message}`);
+  process.exit(1);
+}
 
 // Extrai "Gate X.Y" de step names: `- name: Gate 1.9.2 — ...`
 const stepPattern = /^\s+-\s+name:\s+(Gate\s+[\d.]+)/gm;

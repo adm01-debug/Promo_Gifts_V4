@@ -1,5 +1,5 @@
 import { SlidersHorizontal, RefreshCw, ChevronsUpDown, Search, X } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
