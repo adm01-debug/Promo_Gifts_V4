@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "total": 1225,
- "orfaos": 162,
+ "orfaos": 161,
  "nomes_duplicados": {
   "AdvancedPriceSearchPage": [
    "recovery/src-legacy/src/pages/AdvancedPriceSearchPage.tsx",
@@ -2309,6 +2309,22 @@
    "linhas": 142,
    "dominio": "components/admin",
    "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/categories-manager/CategoriesManager.tsx",
+   "exports": [
+    "CategoriesManager"
+   ],
+   "export_default": null,
+   "linhas": 281,
+   "dominio": "components/admin",
+   "hooks_locais": [
+    "useExternalCategoriesQuery"
+   ],
    "tabelas": [],
    "edges": [],
    "usado_por": 1,
@@ -6249,7 +6265,7 @@
     "ClientOverview360"
    ],
    "export_default": null,
-   "linhas": 175,
+   "linhas": 190,
    "dominio": "components/bi",
    "hooks_locais": [
     "useClientBI"
@@ -7733,7 +7749,7 @@
     "SupplierComparisonModal"
    ],
    "export_default": null,
-   "linhas": 867,
+   "linhas": 915,
    "dominio": "components/compare",
    "hooks_locais": [
     "useSupplierComparison"
@@ -10016,22 +10032,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/components/kit-builder/KitHealthCard.tsx",
-   "exports": [
-    "KitHealthCard"
-   ],
-   "export_default": null,
-   "linhas": 171,
-   "dominio": "components/kit-builder",
-   "hooks_locais": [],
-   "tabelas": [
-    "custom_kits"
-   ],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
-  },
-  {
    "arquivo": "src/components/kit-builder/KitHeroPricingCard.tsx",
    "exports": [
     "KitHeroPricingCard"
@@ -10685,7 +10685,7 @@
     "RestrictedRouteNotice"
    ],
    "export_default": null,
-   "linhas": 140,
+   "linhas": 198,
    "dominio": "components/layout",
    "hooks_locais": [
     "useAuth"
@@ -12620,7 +12620,7 @@
     "QuantityCalculator"
    ],
    "export_default": null,
-   "linhas": 152,
+   "linhas": 161,
    "dominio": "components/products",
    "hooks_locais": [],
    "tabelas": [],
@@ -12634,7 +12634,7 @@
     "InlinePriceCalculator"
    ],
    "export_default": null,
-   "linhas": 247,
+   "linhas": 251,
    "dominio": "components/products",
    "hooks_locais": [],
    "tabelas": [],
@@ -13101,7 +13101,7 @@
     "ProductQuickActions"
    ],
    "export_default": null,
-   "linhas": 389,
+   "linhas": 392,
    "dominio": "components/products",
    "hooks_locais": [],
    "tabelas": [],
@@ -15748,7 +15748,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 479,
+   "usado_por": 478,
    "orfao": false
   },
   {
@@ -15783,7 +15783,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 613,
+   "usado_por": 614,
    "orfao": false
   },
   {
@@ -15817,7 +15817,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 346,
+   "usado_por": 345,
    "orfao": false
   },
   {
@@ -15935,7 +15935,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 39,
+   "usado_por": 40,
    "orfao": false
   },
   {
@@ -16007,7 +16007,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 134,
+   "usado_por": 135,
    "orfao": false
   },
   {
@@ -16166,7 +16166,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 256,
+   "usado_por": 257,
    "orfao": false
   },
   {
@@ -16194,7 +16194,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 140,
+   "usado_por": 141,
    "orfao": false
   },
   {
@@ -16366,7 +16366,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 139,
+   "usado_por": 140,
    "orfao": false
   },
   {
@@ -16474,7 +16474,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 180,
+   "usado_por": 181,
    "orfao": false
   },
   {
@@ -17106,7 +17106,7 @@
     "AdminCadastrosPage"
    ],
    "export_default": "AdminCadastrosPage",
-   "linhas": 121,
+   "linhas": 135,
    "dominio": "pages/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -19179,7 +19179,7 @@
     "ProductDetailHero"
    ],
    "export_default": null,
-   "linhas": 674,
+   "linhas": 694,
    "dominio": "pages/products",
    "hooks_locais": [
     "useProductFreshnessOverride",
@@ -19246,7 +19246,7 @@
     "ProductDetail"
    ],
    "export_default": "ProductDetail",
-   "linhas": 491,
+   "linhas": 495,
    "dominio": "pages/products",
    "hooks_locais": [
     "useFavoritesStore",

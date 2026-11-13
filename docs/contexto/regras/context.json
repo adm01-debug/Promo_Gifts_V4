@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "0a9291a1dcbf54ff5785739993455acb2486cea1",
+  "sha": "bcba4c29a04378d4acc96cb938cbffffbe3d1d14",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-13 07:39 UTC",
-  "files_total": 10007,
-  "code_files": 8548,
-  "code_lines": 1209746
+  "generated_at": "2026-11-13 08:23 UTC",
+  "files_total": 10033,
+  "code_files": 8569,
+  "code_lines": 1211934
  },
  "version": "1.3.2",
- "facts_hash": "12d7ae9a746ef1e0",
+ "facts_hash": "76a232b89f2acfef",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1221,9 +1221,9 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3356,
-   ".ts": 2892,
-   ".tsx": 1851,
+   ".sql": 3358,
+   ".ts": 2904,
+   ".tsx": 1858,
    ".mjs": 436,
    ".py": 13,
    ".js": 7
@@ -73930,7 +73930,7 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260617130000_cart_integrity_sort_order_and_parent_touch.sql",
+    "src": "supabase/rollbacks/20261111222500_rollback.sql",
     "security_definer": false,
     "search_path": true,
     "body": "BEGIN IF TG_OP = 'DELETE' THEN UPDATE public.seller_carts SET updated_at = now() WHERE id = OLD.cart_id; RETURN OLD; END IF; UPDATE public.seller_carts SET updated_at = now() WHERE id = NEW.cart_id; IF TG_OP = 'UPDATE' AND NEW.cart_id <> OLD.cart_id THEN UPDATE public.seller_carts SET updated_at = now() WHERE id = OLD.cart_id; END IF; RETURN NEW; END;",
@@ -96116,6 +96116,7 @@
    "supabase/migrations/20261108230100_cron002_fix_residual_collisions.sql",
    "supabase/migrations/20261108235500_restrict_art_files_public_read_to_quotes.sql",
    "supabase/migrations/20261111191000_restore_get_sitemap_public_anon_execute.sql",
+   "supabase/migrations/20261111222500_fix_touch_seller_cart_secdef.sql",
    "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql",
    "supabase/migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
@@ -96179,6 +96180,7 @@
    "supabase/rollbacks/20261108230100_rollback.sql",
    "supabase/rollbacks/20261108235500_rollback.sql",
    "supabase/rollbacks/20261111191000_rollback.sql",
+   "supabase/rollbacks/20261111222500_rollback.sql",
    "supabase/rollbacks/20261112011000_rollback.sql",
    "supabase/rollbacks/20261112130000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -131383,6 +131385,14 @@
    },
    {
     "kind": "revoke",
+    "privs": "execute",
+    "object": "touch_seller_cart_on_item_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261111222500_fix_touch_seller_cart_secdef.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "fn_get_rupture_alerts",
     "objkind": "function",
@@ -135389,7 +135399,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 243
+    "deps_count": 242
    },
    {
     "path": "",
@@ -135418,7 +135428,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 87
+    "deps_count": 86
    },
    {
     "path": "",
@@ -136128,7 +136138,7 @@
      "restore_seller_cart",
      "search_records_rerank"
     ],
-    "deps_count": 372
+    "deps_count": 371
    },
    {
     "path": "/admin/permissoes",
@@ -136663,7 +136673,7 @@
      "respond_discount_approval_transactional",
      "save_custom_kit_atomic"
     ],
-    "deps_count": 248
+    "deps_count": 246
    },
    {
     "path": "/dropbox",
@@ -136874,7 +136884,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 228
+    "deps_count": 227
    },
    {
     "path": "/ferramentas/bi/comparar",
@@ -136917,7 +136927,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 184
+    "deps_count": 183
    },
    {
     "path": "/filtros, /produtos",
@@ -137295,7 +137305,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 207
+    "deps_count": 206
    },
    {
     "path": "/orcamentos/dashboard",
@@ -137649,6 +137659,7 @@
     ],
     "auth": "PÚBLICA (verify_jwt=false em config.toml)",
     "tables": [
+     "ai_usage_logs",
      "integration_credentials",
      "user_roles",
      "user_token_revocations"
@@ -137795,8 +137806,9 @@
     "methods": [
      "OPTIONS"
     ],
-    "auth": "service_role (ignora RLS) + valida JWT do usuário",
+    "auth": "service_role (ignora RLS) — NÃO valida usuário no código",
     "tables": [
+     "ai_usage_logs",
      "integration_credentials",
      "user_roles",
      "user_token_revocations"
@@ -138310,7 +138322,8 @@
      "companies",
      "integration_credentials",
      "quotes",
-     "user_roles"
+     "user_roles",
+     "users"
     ],
     "env": [
      "LOG_CRM_BRIDGE_VERBOSE",
@@ -138321,7 +138334,9 @@
     "external": [],
     "invokes": [],
     "doc": "",
-    "errors": [],
+    "errors": [
+     "vínculo com usuário do CRM: ${error.message}"
+    ],
     "side_effects": [],
     "webhook_events": [],
     "idempotency": false
@@ -142384,7 +142399,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1601,
+  "components_count": 1610,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -146218,7 +146233,7 @@
   {
    "module": "e2e",
    "files": 626,
-   "lines": 75537,
+   "lines": 75553,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -146927,8 +146942,8 @@
   },
   {
    "module": "src/components",
-   "files": 1348,
-   "lines": 272332,
+   "files": 1357,
+   "lines": 273210,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -147120,6 +147135,10 @@
     "src/components/admin/badges-manager/index.ts",
     "src/components/admin/badges-manager/types.ts",
     "src/components/admin/badges-manager/useBadgesManager.ts",
+    "src/components/admin/categories-manager/CategoriesManager.tsx",
+    "src/components/admin/categories-manager/categoryMutations.ts",
+    "src/components/admin/categories-manager/index.ts",
+    "src/components/admin/categories-manager/__tests__/CategoriesManager.test.tsx",
     "src/components/admin/connections/AiModelsTab.tsx",
     "src/components/admin/connections/AiProvidersTab.tsx",
     "src/components/admin/connections/AiRoutingTab.tsx",
@@ -147150,11 +147169,7 @@
     "src/components/admin/connections/ErrorDetailsDialog.tsx",
     "src/components/admin/connections/EventsMultiSelect.tsx",
     "src/components/admin/connections/ExpectedKeysMatchPanel.tsx",
-    "src/components/admin/connections/ExplainModeContext.tsx",
-    "src/components/admin/connections/ExplainModeToggle.tsx",
-    "src/components/admin/connections/ExportButton.tsx",
-    "src/components/admin/connections/ExternalConnectionsSyncLogPanel.tsx",
-    "src/components/admin/connections/FailedDeliveriesPanel.tsx"
+    "src/components/admin/connections/ExplainModeContext.tsx"
    ]
   },
   {
@@ -147285,8 +147300,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 455,
-   "lines": 85419,
+   "files": 457,
+   "lines": 85860,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -147431,7 +147446,6 @@
     "src/components",
     "src/constants",
     "src/contexts",
-    "src/data",
     "src/integrations",
     "src/lib",
     "src/logic",
@@ -147521,7 +147535,7 @@
     "src/hooks/bi/useIndustryCategoryTrends.ts",
     "src/hooks/bi/useIndustryTrends.ts",
     "src/hooks/bi/useSeasonalPeakNotifications.ts",
-    "src/hooks/collections/index.ts"
+    "src/hooks/bi/__tests__/useClientBI.test.ts"
    ]
   },
   {
@@ -147575,7 +147589,7 @@
   {
    "module": "src/lib",
    "files": 328,
-   "lines": 50719,
+   "lines": 50563,
    "tables": [
     "...",
     "companies",
@@ -147780,7 +147794,7 @@
   {
    "module": "src/pages",
    "files": 350,
-   "lines": 82465,
+   "lines": 82503,
    "tables": [
     "ai_insights_cache",
     "ai_usage_events",
@@ -148186,7 +148200,7 @@
   {
    "module": "src/tests",
    "files": 33,
-   "lines": 5022,
+   "lines": 5072,
    "tables": [
     "products",
     "v_products_public",
@@ -148483,8 +148497,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 268,
-   "lines": 48895,
+   "files": 270,
+   "lines": 49278,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -148564,6 +148578,7 @@
     "user_known_devices",
     "user_roles",
     "user_token_revocations",
+    "users",
     "v_ai_function_routing_effective",
     "v_commemorative_dates_with_colors",
     "webhook_deliveries",
@@ -148624,6 +148639,7 @@
     "@supabase/supabase-js",
     "hono",
     "https:",
+    "jsr:@std",
     "jsr:@supabase",
     "mcp-lite",
     "node:async_hooks",
@@ -148725,8 +148741,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3061,
-   "lines": 220346,
+   "files": 3062,
+   "lines": 220382,
    "tables": [
     "...",
     "admin_audit_log",
@@ -148824,8 +148840,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 64,
-   "lines": 1910,
+   "files": 65,
+   "lines": 1930,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -148893,6 +148909,7 @@
     "supabase/rollbacks/20261108230100_rollback.sql",
     "supabase/rollbacks/20261108235500_rollback.sql",
     "supabase/rollbacks/20261111191000_rollback.sql",
+    "supabase/rollbacks/20261111222500_rollback.sql",
     "supabase/rollbacks/20261112011000_rollback.sql",
     "supabase/rollbacks/20261112130000_rollback.sql",
     "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql"
@@ -148984,8 +149001,8 @@
   },
   {
    "module": "tests",
-   "files": 1004,
-   "lines": 154443,
+   "files": 1010,
+   "lines": 154925,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -149616,7 +149633,6 @@
      "recovery/src-legacy/src/hooks/useKitTemplates.ts",
      "recovery/src-legacy/src/pages/KitLibraryPage.tsx",
      "src/components/dashboard/RecentKitsWidget.tsx",
-     "src/components/kit-builder/KitHealthCard.tsx",
      "src/components/kit-builder/KitSmartSuggestions.tsx",
      "src/components/search/useGlobalSearch.ts",
      "src/hooks/kit-builder/useCustomKitPersistence.ts",
@@ -151449,6 +151465,11 @@
      "supabase/functions/_shared/token-revocation.ts"
     ]
    },
+   "users": {
+    "select": [
+     "supabase/functions/crm-db-bridge/index.ts"
+    ]
+   },
    "v_ai_function_routing_effective": {
     "select": [
      "supabase/functions/_shared/ai-router/index.ts"
@@ -152687,6 +152708,10 @@
     "revoked_at",
     "user_id"
    ],
+   "users": [
+    "email",
+    "id"
+   ],
    "v_ai_function_routing_effective": [
     "function_name",
     "is_active"
@@ -152809,6 +152834,9 @@
    ],
    "BITRIX24_WEBHOOK_URL": [
     "supabase/functions/bitrix-sync/index.ts"
+   ],
+   "BRIDGE_PATH": [
+    "supabase/functions/crm-db-bridge/scope_integration_test.ts"
    ],
    "BURST_CONCURRENCY": [
     "scripts/stress-burst.mjs"
@@ -155896,7 +155924,6 @@
    "user_rewards",
    "user_search_history",
    "user_sessions",
-   "users",
    "variant_commemorative_dates",
    "variant_supplier_sources",
    "variation_types",
@@ -159947,6 +159974,11 @@
     "values": "rows | empty-array | null | generic-string-error | single-object | primitive | unknown"
    },
    {
+    "file": "supabase/functions/crm-db-bridge/ownership.ts",
+    "name": "CRM_BROAD_READ_ROLES",
+    "values": "\"dev\", \"admin\", \"supervisor\", \"manager\", \"gerente\""
+   },
+   {
     "file": "supabase/functions/ema-pipeline-health/handler.ts",
     "name": "EmaHealthStatus",
     "values": "OK | WARN | ERROR | UNKNOWN"
@@ -161846,6 +161878,18 @@
     "msg": "Falha ao remover badge"
    },
    {
+    "file": "src/components/admin/categories-manager/CategoriesManager.tsx",
+    "msg": "Esta categoria tem subcategorias ativas. Mova ou desative cada uma antes."
+   },
+   {
+    "file": "src/components/admin/categories-manager/categoryMutations.ts",
+    "msg": "Nome da categoria é obrigatório."
+   },
+   {
+    "file": "src/components/admin/categories-manager/categoryMutations.ts",
+    "msg": "Uma categoria não pode ser pai de si mesma."
+   },
+   {
     "file": "src/components/admin/connections/AutoTestIntervalCard.tsx",
     "msg": "Falha ao alterar o intervalo"
    },
@@ -162882,6 +162926,10 @@
     "msg": "Não foi possível copiar."
    },
    {
+    "file": "src/components/bi/ClientOverview360.tsx",
+    "msg": ">\n          <AlertTriangle className="
+   },
+   {
     "file": "src/components/bi/ConfirmQuoteSuggestionsModal.tsx",
     "msg": "Os produtos selecionados não estão vinculados ao catálogo."
    },
@@ -163200,6 +163248,18 @@
    {
     "file": "src/components/layout/DevRoute.tsx",
     "msg": "Acesso restrito"
+   },
+   {
+    "file": "src/components/layout/sidebar/RestrictedRouteNotice.tsx",
+    "msg": "Aguarde um instante"
+   },
+   {
+    "file": "src/components/layout/sidebar/RestrictedRouteNotice.tsx",
+    "msg": "Falha ao enviar solicitação"
+   },
+   {
+    "file": "src/components/layout/sidebar/RestrictedRouteNotice.tsx",
+    "msg": "Sessão expirada"
    },
    {
     "file": "src/components/magic-up/PromptGenerator.tsx",
@@ -165766,6 +165826,10 @@
     "msg": "invalid_sentry_dsn"
    },
    {
+    "file": "supabase/functions/crm-db-bridge/index.ts",
+    "msg": "vínculo com usuário do CRM: ${error.message}"
+   },
+   {
     "file": "supabase/functions/e2e-cleanup/index.ts",
     "msg": "User lookup exceeded the safe limit of ${maxUserPages} pages"
    },
@@ -166421,10 +166485,14 @@
    },
    {
     "file": "supabase/functions/crm-db-bridge/index.ts",
+    "value": "vendedor"
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/ownership.ts",
     "value": "r"
    },
    {
-    "file": "supabase/functions/crm-db-bridge/index.ts",
+    "file": "supabase/functions/crm-db-bridge/ownership.ts",
     "value": "vendedor"
    },
    {
@@ -169550,7 +169618,7 @@
     "text": "Must NOT go through SELECT_PRODUCT, which wipes personalizations — that was"
    },
    {
-    "file": "src/hooks/stock/stockFetcher.ts",
+    "file": "src/hooks/stock/stockPagination.ts",
     "text": "Inclui apenas tabelas chamadas com filtros em produção. Tabelas ausentes"
    },
    {
@@ -171958,6 +172026,10 @@
     "text": "Rate limit por userId (imune a IPs compartilhados/NAT corporativo)."
    },
    {
+    "file": "supabase/functions/crm-db-bridge/ownership.ts",
+    "text": "* Tabelas sem coluna de dono própria, cujo dono é o do registro pai (regra do dono, 12/11:"
+   },
+   {
     "file": "supabase/functions/e2e-cleanup/handler_characterization_test.ts",
     "text": "legado em que um erro do RPC de rate-limit nao interrompe o fluxo."
    },
@@ -171988,18 +172060,6 @@
    {
     "file": "supabase/functions/elevenlabs-tts/index.ts",
     "text": "fonte diferente), causando inconsistência de validação entre edge functions."
-   },
-   {
-    "file": "supabase/functions/external-db-bridge/legacy-filters.ts",
-    "text": "If we reach here (e.g. internal call site bypassed validation), refuse loudly instead of silently dropping."
-   },
-   {
-    "file": "supabase/functions/external-db-bridge/legacy-select.ts",
-    "text": "em situações onde a decisão é informativa: tabela `products` com qualquer limit,"
-   },
-   {
-    "file": "supabase/functions/external-db-bridge/legacy-select.ts",
-    "text": "ou outras tabelas quando o limit ultrapassa o threshold (poderia ter sido afetado)."
    },
    {
     "file": "supabase/functions/external-db-inspect/index.ts",
@@ -193564,6 +193624,11 @@
     "value": "50"
    },
    {
+    "file": "src/components/admin/categories-manager/CategoriesManager.tsx",
+    "name": "ROOT",
+    "value": "'__none__'"
+   },
+   {
     "file": "src/components/admin/connections/ConnectionTestDetailsDialog.tsx",
     "name": "PREVIEW_LIMIT",
     "value": "8"
@@ -196099,6 +196164,26 @@
     "value": "400"
    },
    {
+    "file": "supabase/functions/crm-db-bridge/index.ts",
+    "name": "CRM_USER_TTL_MS",
+    "value": "10"
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/index.ts",
+    "name": "OWNER_DENY_MESSAGE",
+    "value": "\"Leitura desta tabela do CRM requer perfil supervisor\""
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/scope_integration_test.ts",
+    "name": "APP",
+    "value": "\"http://app.local\""
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/scope_integration_test.ts",
+    "name": "CRM",
+    "value": "\"http://crm.local\""
+   },
+   {
     "file": "supabase/functions/e2e-cleanup/index.ts",
     "name": "MOCKUP_BUCKET",
     "value": "'mockup-assets'"
@@ -196107,11 +196192,6 @@
     "file": "supabase/functions/e2e-cleanup/index.ts",
     "name": "CLEANUP_PROTOCOL",
     "value": "'quotes-prefix-v2'"
-   },
-   {
-    "file": "supabase/functions/external-db-bridge/legacy-select.ts",
-    "name": "LIGHTWEIGHT_LIMIT_THRESHOLD",
-    "value": "50"
    },
    {
     "file": "supabase/functions/favorites-watcher/index.ts",
@@ -196476,7 +196556,7 @@
     "body": "draft: 'bg-muted text-muted-foreground', active: 'bg-primary/10 text-primary', paused: 'bg-warning/10 text-warning',"
    },
    {
-    "file": "src/hooks/stock/stockFetcher.ts",
+    "file": "src/hooks/stock/stockPagination.ts",
     "name": "ALLOWED_FILTER_KEYS",
     "body": "products: new Set(['active', 'is_active', 'supplier_id', 'category_id', 'brand']), product_variants: new Set(['is_active', 'product_id', 'color_id', 'supplier_id']), variant_supplier_sources: new Set(['is_active', 'variant_id', 'supplier_id']),"
    },
@@ -207147,6 +207227,12 @@
     "kind": "escreve"
    },
    {
+    "file": "supabase/functions/crm-db-bridge/scope_integration_test.ts",
+    "field": "role",
+    "value": "authenticated",
+    "kind": "escreve"
+   },
+   {
     "file": "supabase/functions/detect-new-device/index.ts",
     "field": "type",
     "value": "security",
@@ -211649,6 +211735,12 @@
     "body": "const now = new Date(); const yearShort = String(now.getFullYear()).slice(-2); const { data: lastQuotes } = await crm .from(\"quotes\").select(\"quote_number\") .ilike(\"quote_number\", `%/${yearShort}`) .order(\"quote_number\", { ascending: false }).limit(50); let maxNum = 10000; if (lastQuotes?.length) { for (const row of lastQuotes) { const parsed = parseInt((row.quote_number || \"\").replace(/\\s+/g, \"\").split(\"/\")[0] || \"0\", 10); if (!isNaN(parsed) && parsed > maxNum) maxNum = parsed; } } const genera …"
    },
    {
+    "file": "supabase/functions/crm-db-bridge/index.ts",
+    "name": "applyOwnerScope",
+    "params": "crm: SupabaseClient, table: string, select: string, userRole?: string, userId?: string,",
+    "body": "kind: \"ok\"; query: any; stripParent?: string"
+   },
+   {
     "file": "supabase/functions/expert-chat/index.ts",
     "name": "applyProductFilters",
     "params": "products: any[], filters: { categoryFilters: string[]; materialFilters: string[]; colorFilters: string[]; genderFilters:",
@@ -211659,12 +211751,6 @@
     "name": "scoreProductRelevance",
     "params": "product: any, expansion: SemanticExpansion, categoryMap: Record<string, string>,",
     "body": "let score = 0; const name = (product.name || '').toLowerCase(); const description = (product.description || '').toLowerCase(); const catName = (categoryMap[product.category_id] || '').toLowerCase(); const materials = normalizeValueList(product.materials) .map((m) => m.toLowerCase()) .join(' '); const tagsText = JSON.stringify(product.tags || {}).toLowerCase(); const allText = `${name} ${description} ${materials} ${tagsText} ${catName}`; for (const term of expansion.searchTerms) { const t = term. …"
-   },
-   {
-    "file": "supabase/functions/external-db-bridge/legacy-filters.ts",
-    "name": "applyFilters",
-    "params": "query: FilterQuery, filters: Record<string, unknown>, categoryDescendants: string[] | null,",
-    "body": "Object.entries(filters).forEach(([key, value]) => { if (value === undefined || value === null || value === '') return; if (key === '_search' && typeof value === 'string') { const pattern = quotePostgrestValue(`%${escapeLikePattern(value)}%`); query = query.or(['name', 'sku', 'supplier_reference', 'brand', 'description'].map((col) => `${col}.ilike.${pattern}`).join(',')); return; } // Name prefix search: matc"
    },
    {
     "file": "supabase/functions/generate-blurhashes/index.ts",
@@ -212765,10 +212851,6 @@
    {
     "file": "src/components/kit-builder/ItemSelector.tsx",
     "line": "setTimeout(() => setLastError(null), 3000);"
-   },
-   {
-    "file": "src/components/kit-builder/KitHealthCard.tsx",
-    "line": "staleTime: 5 * 60 * 1000,"
    },
    {
     "file": "src/components/kit-builder/KitMakerLanding.tsx",
@@ -214753,10 +214835,6 @@
     "line": "backgroundColor: `hsl(var(--primary) / ${0.15 + intensity * 0.85})`,"
    },
    {
-    "file": "src/components/kit-builder/KitHealthCard.tsx",
-    "line": "// Estratégia: margem ~ 1 - (custo_estimado / preço). Usamos 65% baseline."
-   },
-   {
     "file": "src/components/kit-builder/SimilarKitsWidget.tsx",
     "line": "* semelhantes ao kit atual (overlap >=30% por SKU)."
    },
@@ -214979,26 +215057,6 @@
    {
     "file": "src/hooks/bi/useClientAffinity.ts",
     "line": "priceFrom: Math.round(Number(p.avg_unit_price) * 0.85) || 0,"
-   },
-   {
-    "file": "src/hooks/bi/useClientBI.ts",
-    "line": "avgTicket: MOCK_CLIENT_STATS.avgTicket * 0.92,"
-   },
-   {
-    "file": "src/hooks/bi/useClientBI.ts",
-    "line": "ltv: MOCK_CLIENT_STATS.ltv * 0.28,"
-   },
-   {
-    "file": "src/hooks/bi/useClientBI.ts",
-    "line": "ltv: MOCK_CLIENT_STATS.ltv * 0.35,"
-   },
-   {
-    "file": "src/hooks/bi/useClientBI.ts",
-    "line": "ordersCount: Math.max(1, Math.floor(MOCK_CLIENT_STATS.ordersCount * 0.25)),"
-   },
-   {
-    "file": "src/hooks/bi/useClientBI.ts",
-    "line": "ordersCount: Math.max(1, Math.floor(MOCK_CLIENT_STATS.ordersCount * 0.3)),"
    },
    {
     "file": "src/hooks/bi/useClientCategoryAffinity.ts",
@@ -225555,6 +225613,34 @@
     "name": "exibe tooltip ao focar o badge"
    },
    {
+    "file": "src/components/admin/categories-manager/__tests__/CategoriesManager.test.tsx",
+    "name": "CategoriesManager"
+   },
+   {
+    "file": "src/components/admin/categories-manager/__tests__/CategoriesManager.test.tsx",
+    "name": "getDescendantIds retorna todos os descendentes (bloqueia ciclo ao trocar o pai)"
+   },
+   {
+    "file": "src/components/admin/categories-manager/__tests__/CategoriesManager.test.tsx",
+    "name": "edita nome da categoria via UPDATE e mostra sucesso"
+   },
+   {
+    "file": "src/components/admin/categories-manager/__tests__/CategoriesManager.test.tsx",
+    "name": "desativa categoria folha com is_active=false após confirmação"
+   },
+   {
+    "file": "src/components/admin/categories-manager/__tests__/CategoriesManager.test.tsx",
+    "name": "não desativa categoria com subcategorias ativas"
+   },
+   {
+    "file": "src/components/admin/categories-manager/__tests__/CategoriesManager.test.tsx",
+    "name": "UPDATE negado pela RLS (0 linhas) vira erro de permissão"
+   },
+   {
+    "file": "src/components/admin/categories-manager/__tests__/CategoriesManager.test.tsx",
+    "name": "aba Categorias está disponível em /admin/cadastros"
+   },
+   {
     "file": "src/components/admin/connections/__tests__/ConnectionLogic.unit.test.ts",
     "name": "Módulo Conexão - Testes de Lógica e Sanidade"
    },
@@ -225793,6 +225879,26 @@
    {
     "file": "src/components/auth/__tests__/TurnstileWidget.test.tsx",
     "name": "unmount remove o widget"
+   },
+   {
+    "file": "src/components/bi/__tests__/ClientOverview360.refetch.test.tsx",
+    "name": "ClientOverview360 — refetch em segundo plano falha (QueryClient real)"
+   },
+   {
+    "file": "src/components/bi/__tests__/ClientOverview360.refetch.test.tsx",
+    "name": "mantém os KPIs reais visíveis e avisa que podem estar desatualizados"
+   },
+   {
+    "file": "src/components/bi/__tests__/ClientOverview360.test.tsx",
+    "name": "ClientOverview360"
+   },
+   {
+    "file": "src/components/bi/__tests__/ClientOverview360.test.tsx",
+    "name": "erro ao carregar pedidos não mostra zeros nem "
+   },
+   {
+    "file": "src/components/bi/__tests__/ClientOverview360.test.tsx",
+    "name": "cliente sem pedidos mostra "
    },
    {
     "file": "src/components/cart/__tests__/CartHeaderButton.delete.test.tsx",
@@ -226809,6 +226915,14 @@
    {
     "file": "src/components/common/__tests__/IntelligenceBadges.adversarial.test.tsx",
     "name": "[REGRESSÃO] best-seller ainda visível quando toggle ON"
+   },
+   {
+    "file": "src/components/compare/__tests__/SupplierComparisonModal.test.tsx",
+    "name": "SupplierComparisonModal — botões de escolha"
+   },
+   {
+    "file": "src/components/compare/__tests__/SupplierComparisonModal.test.tsx",
+    "name": "confirmar sem trocar mantém o produto atual e fecha o modal"
    },
    {
     "file": "src/components/dev/__tests__/BridgeMetricsOverlay.test.tsx",
@@ -229265,6 +229379,22 @@
    {
     "file": "src/components/layout/__tests__/SidebarReorganized.tooltips.test.ts",
     "name": "NavItem expõe o campo tooltip no SidebarNavGroup"
+   },
+   {
+    "file": "src/components/layout/sidebar/__tests__/RestrictedRouteNotice.request-access.test.tsx",
+    "name": "RestrictedRouteNotice — Solicitar Acesso"
+   },
+   {
+    "file": "src/components/layout/sidebar/__tests__/RestrictedRouteNotice.request-access.test.tsx",
+    "name": "envia a solicitação com a rota bloqueada e mostra sucesso"
+   },
+   {
+    "file": "src/components/layout/sidebar/__tests__/RestrictedRouteNotice.request-access.test.tsx",
+    "name": "mostra erro quando a solicitação falha"
+   },
+   {
+    "file": "src/components/layout/sidebar/__tests__/RestrictedRouteNotice.request-access.test.tsx",
+    "name": "respeita o throttle sem chamar requestDevAccess"
    },
    {
     "file": "src/components/layout/sidebar/__tests__/SidebarBrandHeader.tour.test.tsx",
@@ -232175,6 +232305,18 @@
     "name": "ZoomableGallery should be free of tooltips on main images"
    },
    {
+    "file": "src/components/products/__tests__/ProductCardActions.pointer.test.tsx",
+    "name": "ProductCardActions — pointer-events"
+   },
+   {
+    "file": "src/components/products/__tests__/ProductCardActions.pointer.test.tsx",
+    "name": "wrapper não captura cliques e o FAB continua clicável (fechado)"
+   },
+   {
+    "file": "src/components/products/__tests__/ProductCardActions.pointer.test.tsx",
+    "name": "lista aberta volta a receber cliques"
+   },
+   {
     "file": "src/components/products/__tests__/ProductCardImage.aspect.test.ts",
     "name": "ProductCardImage — aspect ratio"
    },
@@ -233005,6 +233147,26 @@
    {
     "file": "src/components/products/gallery/PromoFlixPlayer.test.tsx",
     "name": "should persist an explicit user mute/unmute after the autoplay-forced mute"
+   },
+   {
+    "file": "src/components/products/inline-price/__tests__/QuantityCalculator.addToQuote.test.tsx",
+    "name": "QuantityCalculator — botão "
+   },
+   {
+    "file": "src/components/products/inline-price/__tests__/QuantityCalculator.addToQuote.test.tsx",
+    "name": "modo %s: clicar chama onAddToQuote com a quantidade e o preço unitário exibido"
+   },
+   {
+    "file": "src/components/products/inline-price/__tests__/QuantityCalculator.addToQuote.test.tsx",
+    "name": "sem onAddToQuote não renderiza botão inerte"
+   },
+   {
+    "file": "src/components/products/inline-price/__tests__/QuantityCalculator.addToQuote.test.tsx",
+    "name": "InlinePriceCalculator repassa onAddToQuote com a quantidade atual"
+   },
+   {
+    "file": "src/components/products/inline-price/__tests__/QuantityCalculator.addToQuote.test.tsx",
+    "name": "InlinePriceCalculator repassa o preço da faixa da quantidade, não o preço base"
    },
    {
     "file": "src/components/products/share/__tests__/MessageTemplates.test.ts",
@@ -237579,6 +237741,26 @@
     "name": "errorKind=${kind} → nunca lança, retorna err classificado"
    },
    {
+    "file": "src/hooks/bi/__tests__/useClientBI.test.ts",
+    "name": "useClientBI — cliente sem pedidos"
+   },
+   {
+    "file": "src/hooks/bi/__tests__/useClientBI.test.ts",
+    "name": "retorna zeros e listas vazias (nunca números simulados)"
+   },
+   {
+    "file": "src/hooks/bi/__tests__/useClientBI.test.ts",
+    "name": "carregando não inventa pedidos"
+   },
+   {
+    "file": "src/hooks/bi/__tests__/useClientBI.test.ts",
+    "name": "erro na query expõe isError (zeros não viram "
+   },
+   {
+    "file": "src/hooks/bi/__tests__/useClientBI.test.ts",
+    "name": "com pedidos reais usa os valores reais (isMock false)"
+   },
+   {
     "file": "src/hooks/common/__tests__/useBulkSelection.test.ts",
     "name": "useBulkSelection"
    },
@@ -242060,6 +242242,42 @@
    },
    {
     "file": "src/hooks/stock/__tests__/stockFetcher.test.ts",
+    "name": "fetchPaginatedFromBridge — partições paralelas (keyset UUID)"
+   },
+   {
+    "file": "src/hooks/stock/__tests__/stockFetcher.test.ts",
+    "name": "uuidKeysetRanges cobre todo o espaço em faixas contíguas [lo, hi)"
+   },
+   {
+    "file": "src/hooks/stock/__tests__/stockFetcher.test.ts",
+    "name": "mesma saída e mesma ordem do sequencial (count ${withCount ? "
+   },
+   {
+    "file": "src/hooks/stock/__tests__/stockFetcher.test.ts",
+    "name": "dispara as requisições das faixas em paralelo (8 em voo) e filtra cada faixa com gte/lt"
+   },
+   {
+    "file": "src/hooks/stock/__tests__/stockFetcher.test.ts",
+    "name": "respeita a coluna de keyset (mv_stock_velocity → variant_supplier_source_id) em order/gt/gte/lt"
+   },
+   {
+    "file": "src/hooks/stock/__tests__/stockFetcher.test.ts",
+    "name": "erro genérico numa faixa propaga como hoje (rejeita com a mesma mensagem)"
+   },
+   {
+    "file": "src/hooks/stock/__tests__/stockFetcher.test.ts",
+    "name": "410 numa faixa: devolve o prefixo ordenado até ali e reporta uma única vez"
+   },
+   {
+    "file": "src/hooks/stock/__tests__/stockFetcher.test.ts",
+    "name": "simulação aleatória (seed fixa): paralelo ≡ sequencial para tamanhos, páginas, faixas e maxRecords variados"
+   },
+   {
+    "file": "src/hooks/stock/__tests__/stockFetcher.test.ts",
+    "name": "maxRecords: mesmo corte do sequencial (páginas inteiras) no total"
+   },
+   {
+    "file": "src/hooks/stock/__tests__/stockFetcher.test.ts",
     "name": "fetchAndProcessStockData"
    },
    {
@@ -242117,6 +242335,10 @@
    {
     "file": "src/hooks/stock/__tests__/stockFetcher.test.ts",
     "name": "tolerates the product_images fetch rejecting (catch -> [])"
+   },
+   {
+    "file": "src/hooks/stock/__tests__/stockFetcher.test.ts",
+    "name": "busca as 5 tabelas grandes (UUID) em faixas paralelas; categories/suppliers seguem sequenciais"
    },
    {
     "file": "src/hooks/stock/__tests__/stockFetcher.test.ts",
@@ -245621,6 +245843,18 @@
    {
     "file": "src/lib/inventory/__tests__/stock-filter.unified.test.ts",
     "name": "idempotência + ids únicos sob qualquer combinação"
+   },
+   {
+    "file": "src/lib/kit-builder/__tests__/dead-code.test.ts",
+    "name": "kit-builder sem mock nem métrica falsa no bundle"
+   },
+   {
+    "file": "src/lib/kit-builder/__tests__/dead-code.test.ts",
+    "name": "não reexporta fixtures de mock no barrel"
+   },
+   {
+    "file": "src/lib/kit-builder/__tests__/dead-code.test.ts",
+    "name": "não mantém os arquivos abandonados no src"
    },
    {
     "file": "src/lib/navigation/__tests__/active-match.test.ts",
@@ -253329,6 +253563,14 @@
    {
     "file": "src/tests/B2BProductDetailFlow.test.tsx",
     "name": "Fluxo 3: Abrir Modais de Ação Rápida (Preços)"
+   },
+   {
+    "file": "src/tests/B2BProductDetailFlow.test.tsx",
+    "name": "Fluxo 3b: Calculadora de Preços adiciona a quantidade ao orçamento (PM-05)"
+   },
+   {
+    "file": "src/tests/B2BProductDetailFlow.test.tsx",
+    "name": "Fluxo 3c: item entra no orçamento com o preço da faixa exibida, não o preço base"
    },
    {
     "file": "src/tests/B2BProductDetailFlow.test.tsx",
@@ -265188,6 +265430,10 @@
    },
    {
     "file": "tests/components/products/ProductCard.test.tsx",
+    "name": "navega para a PDP ao clicar no nome do card (alvo dos e2e 90/91)"
+   },
+   {
+    "file": "tests/components/products/ProductCard.test.tsx",
     "name": "renders product without colors gracefully"
    },
    {
@@ -271099,6 +271345,18 @@
     "name": "magic-up-score limita o tamanho da imagem e dos textos recebidos (F-05/F-07)"
    },
    {
+    "file": "tests/edge-functions/mcp-server.audit-user-id.test.ts",
+    "name": "mcp-server — user_id nunca nulo em admin_audit_log"
+   },
+   {
+    "file": "tests/edge-functions/mcp-server.audit-user-id.test.ts",
+    "name": "encontra os inserts de auditoria"
+   },
+   {
+    "file": "tests/edge-functions/mcp-server.audit-user-id.test.ts",
+    "name": "cada insert usa SENTINEL_USER_ID como fallback"
+   },
+   {
     "file": "tests/edge-functions/parseAiResponse.test.ts",
     "name": "parseAiResponse"
    },
@@ -271133,6 +271391,10 @@
    {
     "file": "tests/edge-functions/parseAiResponse.test.ts",
     "name": "handles complex filter action"
+   },
+   {
+    "file": "tests/edge-functions/repo-only-files.test.ts",
+    "name": "toda edge function só tem arquivos não-teste alcançáveis a partir de index.ts"
    },
    {
     "file": "tests/edge-functions/voice-agent.test.ts",
@@ -278044,6 +278306,14 @@
    },
    {
     "file": "tests/hooks/useSearch.test.ts",
+    "name": "Categorias/fornecedores sem dado fictício"
+   },
+   {
+    "file": "tests/hooks/useSearch.test.ts",
+    "name": "não sugere categorias nem fornecedores mock quando o banco não retorna dados"
+   },
+   {
+    "file": "tests/hooks/useSearch.test.ts",
     "name": "Quick suggestions"
    },
    {
@@ -278457,6 +278727,54 @@
    {
     "file": "tests/hooks/useSupplierComparison.test.ts",
     "name": "normalizeColorNames should handle non-array"
+   },
+   {
+    "file": "tests/hooks/useSupplierComparison.test.ts",
+    "name": "normalizeColorNames descarta cores sem nome e normaliza acentos"
+   },
+   {
+    "file": "tests/hooks/useSupplierComparison.test.ts",
+    "name": "jaccard retorna 0 quando um dos conjuntos está vazio"
+   },
+   {
+    "file": "tests/hooks/useSupplierComparison.test.ts",
+    "name": "filtros e cálculos de borda"
+   },
+   {
+    "file": "tests/hooks/useSupplierComparison.test.ts",
+    "name": "enquanto os produtos da categoria não chegam, não há comparação e o loading é repassado"
+   },
+   {
+    "file": "tests/hooks/useSupplierComparison.test.ts",
+    "name": "exclui alternativas do mesmo fornecedor, de outra categoria ou com preço inválido"
+   },
+   {
+    "file": "tests/hooks/useSupplierComparison.test.ts",
+    "name": "retorna null quando nenhum produto da categoria é alternativa válida"
+   },
+   {
+    "file": "tests/hooks/useSupplierComparison.test.ts",
+    "name": "subcategoria igual dá bônus que torna similar um nome pouco parecido"
+   },
+   {
+    "file": "tests/hooks/useSupplierComparison.test.ts",
+    "name": "material em comum dá bônus; sem material em comum o produto fica abaixo do limite"
+   },
+   {
+    "file": "tests/hooks/useSupplierComparison.test.ts",
+    "name": "sem MOQ cadastrado usa 1 unidade para economia e pontuação de MOQ"
+   },
+   {
+    "file": "tests/hooks/useSupplierComparison.test.ts",
+    "name": "produto base sem preço não gera variação percentual nem economia"
+   },
+   {
+    "file": "tests/hooks/useSupplierComparison.test.ts",
+    "name": "sem estoque em nenhum produto o critério estoque pontua 0 (sem NaN)"
+   },
+   {
+    "file": "tests/hooks/useSupplierComparison.test.ts",
+    "name": "ordenar por prazo coloca prazos desconhecidos por último"
    },
    {
     "file": "tests/hooks/useTechniquePricing.test.ts",
@@ -293391,6 +293709,58 @@
     "name": "autentica antes de rejeitar por indisponibilidade do CRM"
    },
    {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "crm-db-bridge — resolução de role (E083/E081)"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "%j é tratado como vendedor"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "a role mais ampla vence quando o usuário tem várias"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "crm-db-bridge — escopo de ownership usa a coluna real do CRM"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "companies.owner_id não existe no CRM; a coluna de dono é user_id"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "vendedor em companies/contacts filtra por user_id"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "e-mails/telefones do contato seguem o dono do contato (regra do dono, 12/11)"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "customers: vendedor filtra pela coluna real vendedor_id (FK → users.id do CRM)"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "vendedor sem vínculo com o CRM é negado (403), não 500"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "roles amplas e tabelas sem PII não recebem filtro"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "o handler não filtra mais por owner_id"
+   },
+   {
+    "file": "tests/security/csp-radix-scroll-area-hash.test.ts",
+    "name": "CSP style-src cobre o <style> fixo do Radix ScrollArea"
+   },
+   {
+    "file": "tests/security/csp-radix-scroll-area-hash.test.ts",
+    "name": "${file} contém o hash atual"
+   },
+   {
     "file": "tests/security/dashboard-widgets-seller-scope.spec.ts",
     "name": "seller scope — defesa em profundidade nos widgets do dashboard"
    },
@@ -293825,6 +294195,10 @@
    {
     "file": "tests/security/security-headers.test.ts",
     "name": "allows only the deterministic Sonner style element hashes"
+   },
+   {
+    "file": "tests/security/security-headers.test.ts",
+    "name": "allows the self-hosted GlitchTip/Sentry ingest host (VITE_SENTRY_DSN) in connect-src"
    },
    {
     "file": "tests/security/security-headers.test.ts",
@@ -295157,6 +295531,38 @@
    {
     "file": "tests/unit/db-retry.test.ts",
     "name": "chamadas alternadas com erros diferentes não interferem"
+   },
+   {
+    "file": "tests/unit/e2e-personalization-card-click.test.ts",
+    "name": "e2e de personalização abrem a PDP pelo nome do card"
+   },
+   {
+    "file": "tests/unit/e2e-personalization-card-click.test.ts",
+    "name": "%s clica em Sel.product.cardName, não no centro do card"
+   },
+   {
+    "file": "tests/unit/e2e-selectors-quote-add-product.test.ts",
+    "name": "Sel.quote.addProductButton"
+   },
+   {
+    "file": "tests/unit/e2e-selectors-quote-add-product.test.ts",
+    "name": "aponta para um data-testid que existe no botão "
+   },
+   {
+    "file": "tests/unit/e2e-selectors-quote-add-product.test.ts",
+    "name": "o botão abre o diálogo de busca de produto que o spec espera"
+   },
+   {
+    "file": "tests/unit/e2e-selectors-quote-add-product.test.ts",
+    "name": "e2e/quotes/color-required.spec.ts abre o diálogo pelo seletor real"
+   },
+   {
+    "file": "tests/unit/e2e-selectors-quote-add-product.test.ts",
+    "name": "Sel.quote — seletores do fluxo de aprovação de desconto"
+   },
+   {
+    "file": "tests/unit/e2e-selectors-quote-add-product.test.ts",
+    "name": "Sel.quote.%s aponta para data-testid real em %s"
    },
    {
     "file": "tests/unit/edge-live-suite-catalogs.test.ts",
@@ -330817,7 +331223,7 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260617130000_cart_integrity_sort_order_and_parent_touch.sql",
+    "src": "supabase/rollbacks/20261111222500_rollback.sql",
     "security_definer": false,
     "search_path": true,
     "body": "BEGIN IF TG_OP = 'DELETE' THEN UPDATE public.seller_carts SET updated_at = now() WHERE id = OLD.cart_id; RETURN OLD; END IF; UPDATE public.seller_carts SET updated_at = now() WHERE id = NEW.cart_id; IF TG_OP = 'UPDATE' AND NEW.cart_id <> OLD.cart_id THEN UPDATE public.seller_carts SET updated_at = now() WHERE id = OLD.cart_id; END IF; RETURN NEW; END;",
@@ -337401,10 +337807,6 @@
     "limit": "50"
    },
    {
-    "file": "src/components/kit-builder/KitHealthCard.tsx",
-    "limit": "200"
-   },
-   {
     "file": "src/components/kit-builder/KitSmartSuggestions.tsx",
     "limit": "100"
    },
@@ -337747,6 +338149,10 @@
    {
     "file": "supabase/functions/crm-db-bridge/index.ts",
     "limit": "1"
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/index.ts",
+    "limit": "2"
    },
    {
     "file": "supabase/functions/crm-db-bridge/index.ts",
@@ -340824,6 +341230,7 @@
      "authenticated": [
       "escreve:src/lib/rbac/route-matrix.ts",
       "escreve:supabase/functions/bitrix-sync/handler_characterization_test.ts",
+      "escreve:supabase/functions/crm-db-bridge/scope_integration_test.ts",
       "escreve:tests/edge-functions/live/descriptors.ts"
      ],
      "Títulos": [
@@ -346933,6 +347340,7 @@
    "supabase/functions/crm-callback-reprocess/index.ts",
    "supabase/functions/crm-db-bridge/creds_health.test.ts",
    "supabase/functions/crm-db-bridge/index.ts",
+   "supabase/functions/crm-db-bridge/scope_integration_test.ts",
    "supabase/functions/e2e-cleanup/handler_characterization_test.ts",
    "supabase/functions/e2e-cleanup/index.mockups.test.ts",
    "supabase/functions/e2e-cleanup/index.ts",
@@ -382970,6 +383378,14 @@
    },
    {
     "kind": "revoke",
+    "privs": "execute",
+    "object": "touch_seller_cart_on_item_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261111222500_fix_touch_seller_cart_secdef.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "fn_get_rupture_alerts",
     "objkind": "function",
@@ -391609,7 +392025,7 @@
   },
   "e2e/mockup-generate.spec.ts": {
    "path": "e2e/mockup-generate.spec.ts",
-   "lines": 21,
+   "lines": 24,
    "is_test": true,
    "doc": "E2E: Mockup Generation — Smoke",
    "temporal": [
@@ -394729,7 +395145,7 @@
   },
   "e2e/fixtures/selectors.ts": {
    "path": "e2e/fixtures/selectors.ts",
-   "lines": 393,
+   "lines": 403,
    "exports": [
     "const TID",
     "const TID_PREFIX",
@@ -394745,7 +395161,10 @@
    "rule_comments": [
     "- **Apenas `data-testid`** para elementos do nosso app. Não use texto, role,",
     "* Mensagem de erro de validação (email inválido, etc.) */",
-    "* Apenas o botão do detalhe do produto. */"
+    "* Apenas o botão do detalhe do produto. */",
+    "* Resumo: CurrencyInput do desconto (QuoteBuilderSummaryPricing). */",
+    "* Resumo: \"Solicitar Aprovação\" — substitui o saveFinal quando o desconto excede o limite. */",
+    "* Diálogo de solicitação de aprovação de desconto (QuoteBuilderSummaryDialogs). */"
    ]
   },
   "e2e/fixtures/stock-rupture-fixture.ts": {
@@ -397917,7 +398336,7 @@
   },
   "e2e/flows/90-personalization-pdp-flow.spec.ts": {
    "path": "e2e/flows/90-personalization-pdp-flow.spec.ts",
-   "lines": 50,
+   "lines": 51,
    "is_test": true,
    "rule_comments": [
     "O simulador deve mostrar o nome do produto na barra de contexto"
@@ -397932,7 +398351,7 @@
   },
   "e2e/flows/91-personalization-variant-flow.spec.ts": {
    "path": "e2e/flows/91-personalization-variant-flow.spec.ts",
-   "lines": 41,
+   "lines": 42,
    "is_test": true,
    "temporal": [
     "await expect(productCard).toBeVisible({ timeout: 30000 });"
@@ -399943,7 +400362,7 @@
   },
   "e2e/quotes/color-required.spec.ts": {
    "path": "e2e/quotes/color-required.spec.ts",
-   "lines": 107,
+   "lines": 108,
    "is_test": true,
    "tables": [
     {
@@ -419421,6 +419840,56 @@
     }
    ]
   },
+  "src/components/admin/categories-manager/CategoriesManager.tsx": {
+   "path": "src/components/admin/categories-manager/CategoriesManager.tsx",
+   "lines": 281,
+   "exports": [
+    "function CategoriesManager"
+   ],
+   "errors": [
+    "Esta categoria tem subcategorias ativas. Mova ou desative cada uma antes."
+   ],
+   "params": [
+    {
+     "name": "ROOT",
+     "value": "'__none__'"
+    }
+   ],
+   "doc": "CategoriesManager — aba admin para editar (nome/pai) e desativar categorias."
+  },
+  "src/components/admin/categories-manager/categoryMutations.ts": {
+   "path": "src/components/admin/categories-manager/categoryMutations.ts",
+   "lines": 62,
+   "exports": [
+    "class CategoryWriteDeniedError",
+    "function getDescendantIds",
+    "function updateCategory",
+    "function deactivateCategory"
+   ],
+   "errors": [
+    "Nome da categoria é obrigatório.",
+    "Uma categoria não pode ser pai de si mesma."
+   ],
+   "doc": "Escrita de categorias (editar nome/pai e desativar) via PostgREST. A RLS `categories_update` só permite owner/admin da organização; quando ela nega, o UPDATE afeta 0 linhas sem erro — tratamos isso como falha explícita."
+  },
+  "src/components/admin/categories-manager/index.ts": {
+   "path": "src/components/admin/categories-manager/index.ts",
+   "lines": 2
+  },
+  "src/components/admin/categories-manager/__tests__/CategoriesManager.test.tsx": {
+   "path": "src/components/admin/categories-manager/__tests__/CategoriesManager.test.tsx",
+   "lines": 126,
+   "is_test": true,
+   "tests": [
+    "CategoriesManager",
+    "getDescendantIds retorna todos os descendentes (bloqueia ciclo ao trocar o pai)",
+    "edita nome da categoria via UPDATE e mostra sucesso",
+    "desativa categoria folha com is_active=false após confirmação",
+    "não desativa categoria com subcategorias ativas",
+    "UPDATE negado pela RLS (0 linhas) vira erro de permissão",
+    "aba Categorias está disponível em /admin/cadastros"
+   ]
+  },
   "src/components/admin/connections/AiModelsTab.tsx": {
    "path": "src/components/admin/connections/AiModelsTab.tsx",
    "lines": 457,
@@ -425584,9 +426053,12 @@
   },
   "src/components/bi/ClientOverview360.tsx": {
    "path": "src/components/bi/ClientOverview360.tsx",
-   "lines": 175,
+   "lines": 190,
    "exports": [
     "function ClientOverview360"
+   ],
+   "errors": [
+    ">\n          <AlertTriangle className="
    ],
    "doc": "ClientOverview360 — KPIs (LTV, ticket médio, última compra) com toggle \"Trimestre atual vs anterior\"."
   },
@@ -425689,6 +426161,31 @@
     "function IndustryTrendingProducts"
    ],
    "doc": "IndustryTrendingProducts — Zona 3: tendências do setor (cross-vendedor). Sprint 2: gap analysis (\"cliente já compra?\") + filtro \"só oportunidades\" + top 3 oportunidades como hero cards com projeção de receita."
+  },
+  "src/components/bi/__tests__/ClientOverview360.refetch.test.tsx": {
+   "path": "src/components/bi/__tests__/ClientOverview360.refetch.test.tsx",
+   "lines": 54,
+   "is_test": true,
+   "tests": [
+    "ClientOverview360 — refetch em segundo plano falha (QueryClient real)",
+    "mantém os KPIs reais visíveis e avisa que podem estar desatualizados"
+   ],
+   "side_effects": [
+    "notifyManager"
+   ]
+  },
+  "src/components/bi/__tests__/ClientOverview360.test.tsx": {
+   "path": "src/components/bi/__tests__/ClientOverview360.test.tsx",
+   "lines": 46,
+   "is_test": true,
+   "errors": [
+    ")).toHaveTextContent("
+   ],
+   "tests": [
+    "ClientOverview360",
+    "erro ao carregar pedidos não mostra zeros nem ",
+    "cliente sem pedidos mostra "
+   ]
   },
   "src/components/cart/BundleSuggestionCard.tsx": {
    "path": "src/components/cart/BundleSuggestionCard.tsx",
@@ -427403,7 +427900,7 @@
   },
   "src/components/compare/SupplierComparisonModal.tsx": {
    "path": "src/components/compare/SupplierComparisonModal.tsx",
-   "lines": 867,
+   "lines": 915,
    "exports": [
     "function SupplierComparisonModal"
    ],
@@ -427425,6 +427922,15 @@
    "lines": 306,
    "exports": [
     "function SyncedZoomGallery"
+   ]
+  },
+  "src/components/compare/__tests__/SupplierComparisonModal.test.tsx": {
+   "path": "src/components/compare/__tests__/SupplierComparisonModal.test.tsx",
+   "lines": 102,
+   "is_test": true,
+   "tests": [
+    "SupplierComparisonModal — botões de escolha",
+    "confirmar sem trocar mantém o produto atual e fecha o modal"
    ]
   },
   "src/components/dashboard/DraggableDashboard.tsx": {
@@ -431071,35 +431577,6 @@
    ],
    "doc": "Kit Conflict Alerts Real-time intelligent validations beyond stock/volume: - Thermal items (chocolate, food) without thermal/insulated box - Weight near/over freight economy threshold - Fragile items without protective packaging"
   },
-  "src/components/kit-builder/KitHealthCard.tsx": {
-   "path": "src/components/kit-builder/KitHealthCard.tsx",
-   "lines": 171,
-   "exports": [
-    "function KitHealthCard"
-   ],
-   "tables": [
-    {
-     "table": "custom_kits",
-     "op": "select"
-    }
-   ],
-   "table_cols": {
-    "custom_kits": [
-     "kit_type",
-     "total_price"
-    ]
-   },
-   "doc": "KitHealthCard — Saúde comercial do kit: - Margem real (vs. histórico de kits salvos) - Comparativo com média de tickets do mesmo kit_type - Alerta de range competitivo (preço fora do P25-P75 histórico)",
-   "temporal": [
-    "staleTime: 5 * 60 * 1000,"
-   ],
-   "percents": [
-    "// Estratégia: margem ~ 1 - (custo_estimado / preço). Usamos 65% baseline."
-   ],
-   "pagination": [
-    "200"
-   ]
-  },
   "src/components/kit-builder/KitHeroPricingCard.tsx": {
    "path": "src/components/kit-builder/KitHeroPricingCard.tsx",
    "lines": 86,
@@ -431897,9 +432374,14 @@
   },
   "src/components/layout/sidebar/RestrictedRouteNotice.tsx": {
    "path": "src/components/layout/sidebar/RestrictedRouteNotice.tsx",
-   "lines": 140,
+   "lines": 198,
    "exports": [
     "function RestrictedRouteNotice"
+   ],
+   "errors": [
+    "Aguarde um instante",
+    "Falha ao enviar solicitação",
+    "Sessão expirada"
    ],
    "rule_comments": [
     "para a qual não tem permissão."
@@ -431922,6 +432404,18 @@
     "interface NavItem",
     "interface NavGroup",
     "const SidebarNavGroup"
+   ]
+  },
+  "src/components/layout/sidebar/__tests__/RestrictedRouteNotice.request-access.test.tsx": {
+   "path": "src/components/layout/sidebar/__tests__/RestrictedRouteNotice.request-access.test.tsx",
+   "lines": 86,
+   "is_test": true,
+   "doc": "PM-06 — botão \"Solicitar Acesso\" do aviso de rota restrita na sidebar precisa disparar requestDevAccess com a rota bloqueada e dar feedback.",
+   "tests": [
+    "RestrictedRouteNotice — Solicitar Acesso",
+    "envia a solicitação com a rota bloqueada e mostra sucesso",
+    "mostra erro quando a solicitação falha",
+    "respeita o throttle sem chamar requestDevAccess"
    ]
   },
   "src/components/layout/sidebar/__tests__/SidebarBrandHeader.tour.test.tsx": {
@@ -435434,7 +435928,7 @@
   },
   "src/components/products/InlinePriceCalculator.tsx": {
    "path": "src/components/products/InlinePriceCalculator.tsx",
-   "lines": 247,
+   "lines": 251,
    "exports": [
     "function InlinePriceCalculator"
    ],
@@ -436018,7 +436512,7 @@
   },
   "src/components/products/ProductQuickActions.tsx": {
    "path": "src/components/products/ProductQuickActions.tsx",
-   "lines": 389,
+   "lines": 392,
    "exports": [
     "function ProductQuickActions"
    ],
@@ -436783,6 +437277,19 @@
     "ZoomableGallery should be free of tooltips on main images"
    ]
   },
+  "src/components/products/__tests__/ProductCardActions.pointer.test.tsx": {
+   "path": "src/components/products/__tests__/ProductCardActions.pointer.test.tsx",
+   "lines": 54,
+   "is_test": true,
+   "rule_comments": [
+    "bolinhas de cor do card (\"intercepts pointer events\" no e2e). O wrapper não pode"
+   ],
+   "tests": [
+    "ProductCardActions — pointer-events",
+    "wrapper não captura cliques e o FAB continua clicável (fechado)",
+    "lista aberta volta a receber cliques"
+   ]
+  },
   "src/components/products/__tests__/ProductCardImage.aspect.test.ts": {
    "path": "src/components/products/__tests__/ProductCardImage.aspect.test.ts",
    "lines": 19,
@@ -437460,7 +437967,7 @@
   },
   "src/components/products/inline-price/QuantityCalculator.tsx": {
    "path": "src/components/products/inline-price/QuantityCalculator.tsx",
-   "lines": 152,
+   "lines": 161,
    "exports": [
     "function QuantityCalculator"
    ],
@@ -437473,6 +437980,18 @@
      "field": "custom-qty-col",
      "rules": "type=number, min=minQuantity"
     }
+   ]
+  },
+  "src/components/products/inline-price/__tests__/QuantityCalculator.addToQuote.test.tsx": {
+   "path": "src/components/products/inline-price/__tests__/QuantityCalculator.addToQuote.test.tsx",
+   "lines": 99,
+   "is_test": true,
+   "tests": [
+    "QuantityCalculator — botão ",
+    "modo %s: clicar chama onAddToQuote com a quantidade e o preço unitário exibido",
+    "sem onAddToQuote não renderiza botão inerte",
+    "InlinePriceCalculator repassa onAddToQuote com a quantidade atual",
+    "InlinePriceCalculator repassa o preço da faixa da quantidade, não o preço base"
    ]
   },
   "src/components/products/kit-composition/KitComponentCard.tsx": {
@@ -445044,7 +445563,7 @@
   },
   "src/hooks/bi/useClientBI.ts": {
    "path": "src/hooks/bi/useClientBI.ts",
-   "lines": 158,
+   "lines": 155,
    "exports": [
     "interface PeriodDelta",
     "interface ClientBI",
@@ -445063,16 +445582,9 @@
      "kind": "compara"
     }
    ],
-   "doc": "useClientBI — orquestra estatísticas 360° do cliente. Tenta dados reais (orders); se vazio, retorna mock com flag `isMock: true`. Sprint 3: também calcula deltas vs período anterior (90d atual vs 90d anteriores).",
+   "doc": "useClientBI — orquestra estatísticas 360° do cliente. Tenta dados reais (orders); se vazio, retorna zeros com flag `isMock: true` (sem histórico). Sprint 3: também calcula deltas vs período anterior (90d atual vs 90d anteriores).",
    "hooks": [
     "useClientBI"
-   ],
-   "percents": [
-    "avgTicket: MOCK_CLIENT_STATS.avgTicket * 0.92,",
-    "ltv: MOCK_CLIENT_STATS.ltv * 0.28,",
-    "ltv: MOCK_CLIENT_STATS.ltv * 0.35,",
-    "ordersCount: Math.max(1, Math.floor(MOCK_CLIENT_STATS.ordersCount * 0.25)),",
-    "ordersCount: Math.max(1, Math.floor(MOCK_CLIENT_STATS.ordersCount * 0.3)),"
    ]
   },
   "src/hooks/bi/useClientCategoryAffinity.ts": {
@@ -445320,6 +445832,18 @@
    "doc": "useSeasonalPeakNotifications — dispara notificação proativa quando o cliente selecionado entra a ≤7 dias de pico sazonal histórico. Estratégia: client-side guard. Quando o usuário acessa o BI de um cliente e `useClientSeasonality` indica daysToNextPeak ≤ 7 e ainda não notificamos hoje, insere uma `w …",
    "hooks": [
     "useSeasonalPeakNotifications"
+   ]
+  },
+  "src/hooks/bi/__tests__/useClientBI.test.ts": {
+   "path": "src/hooks/bi/__tests__/useClientBI.test.ts",
+   "lines": 85,
+   "is_test": true,
+   "tests": [
+    "useClientBI — cliente sem pedidos",
+    "retorna zeros e listas vazias (nunca números simulados)",
+    "carregando não inventa pedidos",
+    "erro na query expõe isError (zeros não viram ",
+    "com pedidos reais usa os valores reais (isMock false)"
    ]
   },
   "src/hooks/collections/index.ts": {
@@ -445722,7 +446246,7 @@
   },
   "src/hooks/common/useSearch.ts": {
    "path": "src/hooks/common/useSearch.ts",
-   "lines": 338,
+   "lines": 327,
    "exports": [
     "interface SearchResult",
     "function useSearch"
@@ -455415,23 +455939,15 @@
   },
   "src/hooks/stock/stockFetcher.ts": {
    "path": "src/hooks/stock/stockFetcher.ts",
-   "lines": 707,
+   "lines": 588,
    "exports": [
     "interface ExternalSupplierSource",
     "interface ExternalStockVelocity",
     "function toNumber",
     "function buildVelocityIndex",
-    "const ALLOWED_FILTER_KEYS",
-    "function fetchPaginatedFromBridge",
     "function nextStockPairs",
     "function buildFutureEntries",
     "function fetchAndProcessStockData"
-   ],
-   "transition_maps": [
-    {
-     "name": "ALLOWED_FILTER_KEYS",
-     "body": "products: new Set(['active', 'is_active', 'supplier_id', 'category_id', 'brand']), product_variants: new Set(['is_active', 'product_id', 'color_id', 'supplier_id']), variant_supplier_sources: new Set(['is_active', 'variant_id', 'supplier_id']),"
-    }
    ],
    "status_values": [
     {
@@ -455470,10 +455986,27 @@
      "kind": "escreve"
     }
    ],
+   "doc": "stockFetcher — Busca paginada e processamento de dados de estoque"
+  },
+  "src/hooks/stock/stockPagination.ts": {
+   "path": "src/hooks/stock/stockPagination.ts",
+   "lines": 214,
+   "exports": [
+    "const ALLOWED_FILTER_KEYS",
+    "const UUID_KEYSET_PARTITIONS",
+    "function uuidKeysetRanges",
+    "function fetchPaginatedFromBridge"
+   ],
+   "transition_maps": [
+    {
+     "name": "ALLOWED_FILTER_KEYS",
+     "body": "products: new Set(['active', 'is_active', 'supplier_id', 'category_id', 'brand']), product_variants: new Set(['is_active', 'product_id', 'color_id', 'supplier_id']), variant_supplier_sources: new Set(['is_active', 'variant_id', 'supplier_id']),"
+    }
+   ],
    "rule_comments": [
     "Inclui apenas tabelas chamadas com filtros em produção. Tabelas ausentes"
    ],
-   "doc": "stockFetcher — Busca paginada e processamento de dados de estoque"
+   "doc": "stockPagination — busca paginada por keyset (sequencial ou em faixas UUID paralelas). Extraído de stockFetcher.ts (reexportado lá) para manter o arquivo dentro da baseline de tamanho."
   },
   "src/hooks/stock/useEmaPipelineHealth.ts": {
    "path": "src/hooks/stock/useEmaPipelineHealth.ts",
@@ -455714,15 +456247,26 @@
   },
   "src/hooks/stock/__tests__/stockFetcher.test.ts": {
    "path": "src/hooks/stock/__tests__/stockFetcher.test.ts",
-   "lines": 725,
+   "lines": 1000,
    "is_test": true,
    "env": [
     "DEV"
    ],
+   "errors": [
+    "order ${col}"
+   ],
+   "params": [
+    {
+     "name": "PAGE",
+     "value": "4"
+    }
+   ],
    "rule_comments": [
+    "Modo \"dataset\": o mock aplica de verdade order/limit/gt/gte/lt sobre linhas",
     "Keyset pagination replaced offset-based .range() — verify .order() and .limit() are called.",
     "range() must NOT be called (keyset replaced it — BUG-STOCK-04 FIX)",
     "The function must stop cleanly and return the partial data already accumulated.",
+    "a regra \"primeira imagem vista\" depende da ordem: objetos idênticos, mesma posição",
     "reversed order — sum must still be 9 + 5 = 14",
     "degradedTables must list 'categories' so the UI can surface a partial-data banner.",
     "degradedTables must report the failed table.",
@@ -455751,6 +456295,15 @@
     "uses keyset pagination: order by id + limit (not range)",
     "410 mid-pagination: returns page-1 data and does not throw",
     "halts when the last record id is null (cursor cannot advance to next page)",
+    "fetchPaginatedFromBridge — partições paralelas (keyset UUID)",
+    "uuidKeysetRanges cobre todo o espaço em faixas contíguas [lo, hi)",
+    "mesma saída e mesma ordem do sequencial (count ${withCount ? ",
+    "dispara as requisições das faixas em paralelo (8 em voo) e filtra cada faixa com gte/lt",
+    "respeita a coluna de keyset (mv_stock_velocity → variant_supplier_source_id) em order/gt/gte/lt",
+    "erro genérico numa faixa propaga como hoje (rejeita com a mesma mensagem)",
+    "410 numa faixa: devolve o prefixo ordenado até ali e reporta uma única vez",
+    "simulação aleatória (seed fixa): paralelo ≡ sequencial para tamanhos, páginas, faixas e maxRecords variados",
+    "maxRecords: mesmo corte do sequencial (páginas inteiras) no total",
     "fetchAndProcessStockData",
     "returns empty results when there are no products",
     "builds a product summary from its variants + supplier source",
@@ -455766,6 +456319,7 @@
     "resolves variant/product/supplier-code images (og > primary), skipping image_type box",
     "falls back supplierName to product.brand when no supplier_id",
     "tolerates the product_images fetch rejecting (catch -> [])",
+    "busca as 5 tabelas grandes (UUID) em faixas paralelas; categories/suppliers seguem sequenciais",
     "generates alerts from the aggregated summaries",
     "gracefully degrades when categories table fails — products returned, degradedTables populated",
     "aggregates currentStock and inTransitStock from 6 sources across different suppliers",
@@ -462220,7 +462774,7 @@
   },
   "src/lib/kit-builder/index.ts": {
    "path": "src/lib/kit-builder/index.ts",
-   "lines": 59,
+   "lines": 56,
    "doc": "Kit Builder Module Exportações centralizadas"
   },
   "src/lib/kit-builder/item-sort.ts": {
@@ -462231,15 +462785,6 @@
     "function sortItemsByRelevance"
    ],
    "doc": "Item Sort Comparador puro para a opção \"Mais relevantes\" do ItemSelector."
-  },
-  "src/lib/kit-builder/mock-data.ts": {
-   "path": "src/lib/kit-builder/mock-data.ts",
-   "lines": 173,
-   "exports": [
-    "const MOCK_BOXES",
-    "const MOCK_ITEMS"
-   ],
-   "doc": "Mock/fallback data for Kit Builder Used when external DB is unavailable"
   },
   "src/lib/kit-builder/persistence.ts": {
    "path": "src/lib/kit-builder/persistence.ts",
@@ -462474,6 +463019,16 @@
     "O catálogo usa zero como ausência de informação, então o kit deve manter essa"
    ],
    "doc": "Peso zero, negativo ou não numérico não é uma medição útil para estimar frete. O catálogo usa zero como ausência de informação, então o kit deve manter essa incerteza visível em vez de tratar o item como se não tivesse peso."
+  },
+  "src/lib/kit-builder/__tests__/dead-code.test.ts": {
+   "path": "src/lib/kit-builder/__tests__/dead-code.test.ts",
+   "lines": 20,
+   "is_test": true,
+   "tests": [
+    "kit-builder sem mock nem métrica falsa no bundle",
+    "não reexporta fixtures de mock no barrel",
+    "não mantém os arquivos abandonados no src"
+   ]
   },
   "src/lib/kit-library/buildCustomKitInsert.ts": {
    "path": "src/lib/kit-library/buildCustomKitInsert.ts",
@@ -465942,7 +466497,7 @@
   },
   "src/pages/admin/AdminCadastrosPage.tsx": {
    "path": "src/pages/admin/AdminCadastrosPage.tsx",
-   "lines": 121,
+   "lines": 135,
    "exports": [
     "function AdminCadastrosPage"
    ]
@@ -471016,7 +471571,7 @@
   },
   "src/pages/products/ProductDetail.tsx": {
    "path": "src/pages/products/ProductDetail.tsx",
-   "lines": 491,
+   "lines": 495,
    "exports": [
     "function ProductDetail"
    ],
@@ -471336,7 +471891,7 @@
   },
   "src/pages/products/product-detail/ProductDetailHero.tsx": {
    "path": "src/pages/products/product-detail/ProductDetailHero.tsx",
-   "lines": 674,
+   "lines": 694,
    "exports": [
     "function ProductDetailHero"
    ],
@@ -475943,7 +476498,7 @@
   },
   "src/tests/B2BProductDetailFlow.test.tsx": {
    "path": "src/tests/B2BProductDetailFlow.test.tsx",
-   "lines": 178,
+   "lines": 228,
    "is_test": true,
    "rule_comments": [
     "ANTES: apenas {activeCart, addToActiveCart} — QuickAddToQuote acessa"
@@ -475953,6 +476508,8 @@
     "Fluxo 1: Adicionar ao Carrinho (Quick Add)",
     "Fluxo 2: Navegação por Categorias",
     "Fluxo 3: Abrir Modais de Ação Rápida (Preços)",
+    "Fluxo 3b: Calculadora de Preços adiciona a quantidade ao orçamento (PM-05)",
+    "Fluxo 3c: item entra no orçamento com o preço da faixa exibida, não o preço base",
     "Fluxo 4: Verificação de Tags e Nichos (Indicação)"
    ]
   },
@@ -481266,7 +481823,7 @@
   },
   "supabase/functions/ai-recommendations/index.ts": {
    "path": "supabase/functions/ai-recommendations/index.ts",
-   "lines": 136,
+   "lines": 129,
    "zod": [
     {
      "name": "RecommendationRequestSchema",
@@ -481614,7 +482171,7 @@
   },
   "supabase/functions/bi-copilot/index.ts": {
    "path": "supabase/functions/bi-copilot/index.ts",
-   "lines": 133,
+   "lines": 137,
    "env": [
     "LOVABLE_API_KEY"
    ],
@@ -482940,7 +483497,7 @@
   },
   "supabase/functions/crm-db-bridge/index.ts": {
    "path": "supabase/functions/crm-db-bridge/index.ts",
-   "lines": 851,
+   "lines": 942,
    "exports": [
     "function getCrmClient",
     "function __getClientBootStateForTests",
@@ -482965,6 +483522,10 @@
      "op": "select"
     },
     {
+     "table": "users",
+     "op": "select"
+    },
+    {
      "table": "quotes",
      "op": "update"
     }
@@ -482980,6 +483541,10 @@
     "quotes": [
      "id",
      "quote_number"
+    ],
+    "users": [
+     "email",
+     "id"
     ]
    },
    "dyn_from": 6,
@@ -482988,6 +483553,9 @@
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
+   ],
+   "errors": [
+    "vínculo com usuário do CRM: ${error.message}"
    ],
    "zod": [
     {
@@ -483017,10 +483585,17 @@
     {
      "name": "PREVIEW_MAX",
      "value": "400"
+    },
+    {
+     "name": "CRM_USER_TTL_MS",
+     "value": "10"
+    },
+    {
+     "name": "OWNER_DENY_MESSAGE",
+     "value": "\"Leitura desta tabela do CRM requer perfil supervisor\""
     }
    ],
    "role_checks": [
-    "r",
     "vendedor"
    ],
    "rule_comments": [
@@ -483052,10 +483627,16 @@
      "name": "generateQuoteNumber",
      "params": "crm: SupabaseClient, data: Record<string, unknown> | Record<string, unknown>[]",
      "body": "const now = new Date(); const yearShort = String(now.getFullYear()).slice(-2); const { data: lastQuotes } = await crm .from(\"quotes\").select(\"quote_number\") .ilike(\"quote_number\", `%/${yearShort}`) .order(\"quote_number\", { ascending: false }).limit(50); let maxNum = 10000; if (lastQuotes?.length) { for (const row of lastQuotes) { const parsed = parseInt((row.quote_number || \"\").replace(/\\s+/g, \"\").split(\"/\")[0] || \"0\", 10); if (!isNaN(parsed) && parsed > maxNum) maxNum = parsed; } } const genera …"
+    },
+    {
+     "name": "applyOwnerScope",
+     "params": "crm: SupabaseClient, table: string, select: string, userRole?: string, userId?: string,",
+     "body": "kind: \"ok\"; query: any; stripParent?: string"
     }
    ],
    "pagination": [
     "1",
+    "2",
     "50"
    ],
    "uses_service_role": true
@@ -483078,6 +483659,32 @@
     "logInsertResultIfAnomalous: emits log for empty-array as well"
    ]
   },
+  "supabase/functions/crm-db-bridge/ownership.ts": {
+   "path": "supabase/functions/crm-db-bridge/ownership.ts",
+   "lines": 76,
+   "exports": [
+    "const CRM_BROAD_READ_ROLES",
+    "function resolveCrmRole",
+    "const CRM_PII_TABLES",
+    "const CRM_OWNER_COLUMN",
+    "const CRM_OWNER_VIA",
+    "type CrmOwnerScope",
+    "function crmOwnerScope"
+   ],
+   "enums": [
+    {
+     "name": "CRM_BROAD_READ_ROLES",
+     "values": "\"dev\", \"admin\", \"supervisor\", \"manager\", \"gerente\""
+    }
+   ],
+   "role_checks": [
+    "r",
+    "vendedor"
+   ],
+   "rule_comments": [
+    "* Tabelas sem coluna de dono própria, cujo dono é o do registro pai (regra do dono, 12/11:"
+   ]
+  },
   "supabase/functions/crm-db-bridge/ping.test.ts": {
    "path": "supabase/functions/crm-db-bridge/ping.test.ts",
    "lines": 44,
@@ -483091,6 +483698,32 @@
     "ping (POST { operation: ",
     "non-ping POST without auth is rejected (proves ping bypass is scoped)"
    ]
+  },
+  "supabase/functions/crm-db-bridge/scope_integration_test.ts": {
+   "path": "supabase/functions/crm-db-bridge/scope_integration_test.ts",
+   "lines": 219,
+   "env": [
+    "BRIDGE_PATH"
+   ],
+   "params": [
+    {
+     "name": "APP",
+     "value": "\"http://app.local\""
+    },
+    {
+     "name": "CRM",
+     "value": "\"http://crm.local\""
+    }
+   ],
+   "status_values": [
+    {
+     "field": "role",
+     "value": "authenticated",
+     "kind": "escreve"
+    }
+   ],
+   "doc": "Teste de integração do crm-db-bridge com supabase-js REAL e rede falsa (fetch stub). Rodar: deno test --config <deno.json com nodeModulesDir:auto> -A --no-check supabase/functions/crm-db-bridge/scope_integration_test.ts (BRIDGE_PATH=file://…/index.ts). Regra do dono (12/11): vendedor só vê os dele; …",
+   "uses_service_role": true
   },
   "supabase/functions/crm-db-bridge/singleton-client.test.ts": {
    "path": "supabase/functions/crm-db-bridge/singleton-client.test.ts",
@@ -483821,58 +484454,6 @@
    "path": "supabase/functions/external-db-bridge/index.ts",
    "lines": 40,
    "doc": "supabase/functions/external-db-bridge/index.ts DECOMMISSIONED — returns 410 Gone for all requests. Phase 4B (2026-06-01): bridge permanently killed via kill-switch `edge_external_db_bridge`. All traffic routes to REST native (/rest/v1/). Previous index.ts had ~400 lines importing 6 missing _shared m …"
-  },
-  "supabase/functions/external-db-bridge/legacy-contracts.ts": {
-   "path": "supabase/functions/external-db-bridge/legacy-contracts.ts",
-   "lines": 6,
-   "doc": "Historical pure contracts recovered from 10d607a47^ (before decommission #557). Used by preserved unit tests only; index.ts still returns 410 and imports none of this code."
-  },
-  "supabase/functions/external-db-bridge/legacy-filters.ts": {
-   "path": "supabase/functions/external-db-bridge/legacy-filters.ts",
-   "lines": 131,
-   "exports": [
-    "function escapeLikePattern",
-    "function quotePostgrestValue",
-    "function applyFilters"
-   ],
-   "rule_comments": [
-    "If we reach here (e.g. internal call site bypassed validation), refuse loudly instead of silently dropping."
-   ],
-   "doc": "Historical pure contracts recovered from 10d607a47^ (before decommission #557). Used by preserved unit tests only; index.ts still returns 410 and imports none of this code.",
-   "calc_fns": [
-    {
-     "name": "applyFilters",
-     "params": "query: FilterQuery, filters: Record<string, unknown>, categoryDescendants: string[] | null,",
-     "body": "Object.entries(filters).forEach(([key, value]) => { if (value === undefined || value === null || value === '') return; if (key === '_search' && typeof value === 'string') { const pattern = quotePostgrestValue(`%${escapeLikePattern(value)}%`); query = query.or(['name', 'sku', 'supplier_reference', 'brand', 'description'].map((col) => `${col}.ilike.${pattern}`).join(',')); return; } // Name prefix search: matc"
-    }
-   ]
-  },
-  "supabase/functions/external-db-bridge/legacy-select.ts": {
-   "path": "supabase/functions/external-db-bridge/legacy-select.ts",
-   "lines": 192,
-   "exports": [
-    "const LIGHTWEIGHT_LIMIT_THRESHOLD",
-    "const WIDE_SELECT_COLUMN_THRESHOLD",
-    "const HEAVY_PRODUCT_COLUMNS",
-    "function extractBaseColumn",
-    "function callerSelectIsHeavy",
-    "interface ResolveProductsSelectInput",
-    "interface ResolveProductsSelectResult",
-    "function resolveProductsSelect",
-    "interface SelectDecisionLogContext",
-    "function logSelectDecision"
-   ],
-   "params": [
-    {
-     "name": "LIGHTWEIGHT_LIMIT_THRESHOLD",
-     "value": "50"
-    }
-   ],
-   "rule_comments": [
-    "em situações onde a decisão é informativa: tabela `products` com qualquer limit,",
-    "ou outras tabelas quando o limit ultrapassa o threshold (poderia ter sido afetado)."
-   ],
-   "doc": "Historical pure contracts recovered from 10d607a47^ (before decommission #557). Used by preserved unit tests only; index.ts still returns 410 and imports none of this code."
   },
   "supabase/functions/external-db-bridge/lightweightSelect.e2e.test.ts": {
    "path": "supabase/functions/external-db-bridge/lightweightSelect.e2e.test.ts",
@@ -489341,6 +489922,61 @@
     "${fn}: consome step-up via RPC (gate is_dev é re-aplicado)"
    ],
    "uses_service_role": true
+  },
+  "supabase/functions/tests/external-db-bridge/legacy-contracts.ts": {
+   "path": "supabase/functions/tests/external-db-bridge/legacy-contracts.ts",
+   "lines": 6,
+   "is_test": true,
+   "doc": "Historical pure contracts recovered from 10d607a47^ (before decommission #557). Used by preserved unit tests only; index.ts still returns 410 and imports none of this code."
+  },
+  "supabase/functions/tests/external-db-bridge/legacy-filters.ts": {
+   "path": "supabase/functions/tests/external-db-bridge/legacy-filters.ts",
+   "lines": 131,
+   "is_test": true,
+   "exports": [
+    "function escapeLikePattern",
+    "function quotePostgrestValue",
+    "function applyFilters"
+   ],
+   "rule_comments": [
+    "If we reach here (e.g. internal call site bypassed validation), refuse loudly instead of silently dropping."
+   ],
+   "doc": "Historical pure contracts recovered from 10d607a47^ (before decommission #557). Used by preserved unit tests only; index.ts still returns 410 and imports none of this code.",
+   "calc_fns": [
+    {
+     "name": "applyFilters",
+     "params": "query: FilterQuery, filters: Record<string, unknown>, categoryDescendants: string[] | null,",
+     "body": "Object.entries(filters).forEach(([key, value]) => { if (value === undefined || value === null || value === '') return; if (key === '_search' && typeof value === 'string') { const pattern = quotePostgrestValue(`%${escapeLikePattern(value)}%`); query = query.or(['name', 'sku', 'supplier_reference', 'brand', 'description'].map((col) => `${col}.ilike.${pattern}`).join(',')); return; } // Name prefix search: matc"
+    }
+   ]
+  },
+  "supabase/functions/tests/external-db-bridge/legacy-select.ts": {
+   "path": "supabase/functions/tests/external-db-bridge/legacy-select.ts",
+   "lines": 192,
+   "is_test": true,
+   "exports": [
+    "const LIGHTWEIGHT_LIMIT_THRESHOLD",
+    "const WIDE_SELECT_COLUMN_THRESHOLD",
+    "const HEAVY_PRODUCT_COLUMNS",
+    "function extractBaseColumn",
+    "function callerSelectIsHeavy",
+    "interface ResolveProductsSelectInput",
+    "interface ResolveProductsSelectResult",
+    "function resolveProductsSelect",
+    "interface SelectDecisionLogContext",
+    "function logSelectDecision"
+   ],
+   "params": [
+    {
+     "name": "LIGHTWEIGHT_LIMIT_THRESHOLD",
+     "value": "50"
+    }
+   ],
+   "rule_comments": [
+    "em situações onde a decisão é informativa: tabela `products` com qualquer limit,",
+    "ou outras tabelas quando o limit ultrapassa o threshold (poderia ter sido afetado)."
+   ],
+   "doc": "Historical pure contracts recovered from 10d607a47^ (before decommission #557). Used by preserved unit tests only; index.ts still returns 410 and imports none of this code."
   },
   "supabase/functions/tests/integration/edge/_shared.ts": {
    "path": "supabase/functions/tests/integration/edge/_shared.ts",
@@ -503958,6 +504594,10 @@
    "lines": 11,
    "uses_service_role": true
   },
+  "supabase/migrations/20261111222500_fix_touch_seller_cart_secdef.sql": {
+   "path": "supabase/migrations/20261111222500_fix_touch_seller_cart_secdef.sql",
+   "lines": 36
+  },
   "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql": {
    "path": "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql",
    "lines": 19
@@ -504219,6 +504859,10 @@
   "supabase/rollbacks/20261111191000_rollback.sql": {
    "path": "supabase/rollbacks/20261111191000_rollback.sql",
    "lines": 4
+  },
+  "supabase/rollbacks/20261111222500_rollback.sql": {
+   "path": "supabase/rollbacks/20261111222500_rollback.sql",
+   "lines": 20
   },
   "supabase/rollbacks/20261112011000_rollback.sql": {
    "path": "supabase/rollbacks/20261112011000_rollback.sql",
@@ -509199,7 +509843,7 @@
   },
   "tests/components/products/ProductCard.test.tsx": {
    "path": "tests/components/products/ProductCard.test.tsx",
-   "lines": 343,
+   "lines": 359,
    "is_test": true,
    "rule_comments": [
     "Regression: category name must not appear when category object exists but name is undefined"
@@ -509218,6 +509862,7 @@
     "first color swatch is selected by default (aria-checked)",
     "marca o swatch como selecionado após clique quando o produto tem uma única cor",
     "não navega ao clicar na área de swatches do card",
+    "navega para a PDP ao clicar no nome do card (alvo dos e2e 90/91)",
     "renders product without colors gracefully",
     "ProductCard — category line (PR)",
     "renders category name when product.category.name is present",
@@ -512095,6 +512740,16 @@
     "magic-up-score limita o tamanho da imagem e dos textos recebidos (F-05/F-07)"
    ]
   },
+  "tests/edge-functions/mcp-server.audit-user-id.test.ts": {
+   "path": "tests/edge-functions/mcp-server.audit-user-id.test.ts",
+   "lines": 28,
+   "is_test": true,
+   "tests": [
+    "mcp-server — user_id nunca nulo em admin_audit_log",
+    "encontra os inserts de auditoria",
+    "cada insert usa SENTINEL_USER_ID como fallback"
+   ]
+  },
   "tests/edge-functions/parseAiResponse.test.ts": {
    "path": "tests/edge-functions/parseAiResponse.test.ts",
    "lines": 176,
@@ -512110,6 +512765,15 @@
     "uses plain content when content is not JSON",
     "validates missing action field",
     "handles complex filter action"
+   ]
+  },
+  "tests/edge-functions/repo-only-files.test.ts": {
+   "path": "tests/edge-functions/repo-only-files.test.ts",
+   "lines": 51,
+   "is_test": true,
+   "doc": "O drift-check (.github/workflows/edge-functions-drift-check.yml) marca DRIFT quando supabase/functions/<slug>/ tem arquivo não-teste que não está no pacote publicado. O pacote só leva o grafo de import de index.ts (+ deno.json), então módulo usado só por teste fica em supabase/functions/tests/.",
+   "tests": [
+    "toda edge function só tem arquivos não-teste alcançáveis a partir de index.ts"
    ]
   },
   "tests/edge-functions/voice-agent.test.ts": {
@@ -516489,7 +517153,7 @@
   },
   "tests/hooks/useSearch.test.ts": {
    "path": "tests/hooks/useSearch.test.ts",
-   "lines": 199,
+   "lines": 211,
    "is_test": true,
    "rule_comments": [
     "Limite atualizado para 30 (PR #771 expandiu display limit de 6 para 30).",
@@ -516511,6 +517175,8 @@
     "não retorna resultados para query < 2 caracteres",
     "retorna histórico quando query está vazia",
     "limita produtos a no máximo 30 resultados",
+    "Categorias/fornecedores sem dado fictício",
+    "não sugere categorias nem fornecedores mock quando o banco não retorna dados",
     "Quick suggestions",
     "retorna sugestões rápidas vazias quando não há produtos",
     "cada sugestão tem label e icon"
@@ -516731,7 +517397,7 @@
   },
   "tests/hooks/useSupplierComparison.test.ts": {
    "path": "tests/hooks/useSupplierComparison.test.ts",
-   "lines": 231,
+   "lines": 388,
    "is_test": true,
    "rule_comments": [
     "2º argumento (options.enabled) deve ser true pois há categoryName."
@@ -516748,7 +517414,19 @@
     "should group products by supplier correctly",
     "helpers",
     "normalizeMaterials should handle non-array",
-    "normalizeColorNames should handle non-array"
+    "normalizeColorNames should handle non-array",
+    "normalizeColorNames descarta cores sem nome e normaliza acentos",
+    "jaccard retorna 0 quando um dos conjuntos está vazio",
+    "filtros e cálculos de borda",
+    "enquanto os produtos da categoria não chegam, não há comparação e o loading é repassado",
+    "exclui alternativas do mesmo fornecedor, de outra categoria ou com preço inválido",
+    "retorna null quando nenhum produto da categoria é alternativa válida",
+    "subcategoria igual dá bônus que torna similar um nome pouco parecido",
+    "material em comum dá bônus; sem material em comum o produto fica abaixo do limite",
+    "sem MOQ cadastrado usa 1 unidade para economia e pontuação de MOQ",
+    "produto base sem preço não gera variação percentual nem economia",
+    "sem estoque em nenhum produto o critério estoque pontua 0 (sem NaN)",
+    "ordenar por prazo coloca prazos desconhecidos por último"
    ]
   },
   "tests/hooks/useTechniquePricing.test.ts": {
@@ -524870,6 +525548,36 @@
     "autentica antes de rejeitar por indisponibilidade do CRM"
    ]
   },
+  "tests/security/crm-db-bridge-ownership.test.ts": {
+   "path": "tests/security/crm-db-bridge-ownership.test.ts",
+   "lines": 95,
+   "is_test": true,
+   "tests": [
+    "crm-db-bridge — resolução de role (E083/E081)",
+    "%j é tratado como vendedor",
+    "a role mais ampla vence quando o usuário tem várias",
+    "crm-db-bridge — escopo de ownership usa a coluna real do CRM",
+    "companies.owner_id não existe no CRM; a coluna de dono é user_id",
+    "vendedor em companies/contacts filtra por user_id",
+    "e-mails/telefones do contato seguem o dono do contato (regra do dono, 12/11)",
+    "customers: vendedor filtra pela coluna real vendedor_id (FK → users.id do CRM)",
+    "vendedor sem vínculo com o CRM é negado (403), não 500",
+    "roles amplas e tabelas sem PII não recebem filtro",
+    "o handler não filtra mais por owner_id"
+   ]
+  },
+  "tests/security/csp-radix-scroll-area-hash.test.ts": {
+   "path": "tests/security/csp-radix-scroll-area-hash.test.ts",
+   "lines": 29,
+   "is_test": true,
+   "errors": [
+    "CSS fixo do ScrollArea não encontrado no pacote"
+   ],
+   "tests": [
+    "CSP style-src cobre o <style> fixo do Radix ScrollArea",
+    "${file} contém o hash atual"
+   ]
+  },
   "tests/security/dashboard-widgets-seller-scope.spec.ts": {
    "path": "tests/security/dashboard-widgets-seller-scope.spec.ts",
    "lines": 58,
@@ -525198,7 +525906,7 @@
   },
   "tests/security/security-headers.test.ts": {
    "path": "tests/security/security-headers.test.ts",
-   "lines": 237,
+   "lines": 249,
    "is_test": true,
    "rule_comments": [
     "* Security Headers Validation",
@@ -525230,6 +525938,7 @@
     "does not allow unsafe-inline in style-src",
     "allows React inline style attributes without allowing inline style blocks",
     "allows only the deterministic Sonner style element hashes",
+    "allows the self-hosted GlitchTip/Sentry ingest host (VITE_SENTRY_DSN) in connect-src",
     "does not allow unsafe-inline in script-src",
     "does not allow data: or blob: in script-src (XSS vectors)",
     "does not allow data: in worker-src",
@@ -525939,6 +526648,28 @@
     "503 sozinho é transitório",
     "J: makeDbQueryRetry é pura (sem estado compartilhado)",
     "chamadas alternadas com erros diferentes não interferem"
+   ]
+  },
+  "tests/unit/e2e-personalization-card-click.test.ts": {
+   "path": "tests/unit/e2e-personalization-card-click.test.ts",
+   "lines": 22,
+   "is_test": true,
+   "tests": [
+    "e2e de personalização abrem a PDP pelo nome do card",
+    "%s clica em Sel.product.cardName, não no centro do card"
+   ]
+  },
+  "tests/unit/e2e-selectors-quote-add-product.test.ts": {
+   "path": "tests/unit/e2e-selectors-quote-add-product.test.ts",
+   "lines": 60,
+   "is_test": true,
+   "tests": [
+    "Sel.quote.addProductButton",
+    "aponta para um data-testid que existe no botão ",
+    "o botão abre o diálogo de busca de produto que o spec espera",
+    "e2e/quotes/color-required.spec.ts abre o diálogo pelo seletor real",
+    "Sel.quote — seletores do fluxo de aprovação de desconto",
+    "Sel.quote.%s aponta para data-testid real em %s"
    ]
   },
   "tests/unit/edge-live-suite-catalogs.test.ts": {
@@ -527629,10 +528360,182 @@
   }
  },
  "git": {
-  "sha": "0a9291a1dcbf54ff5785739993455acb2486cea1",
+  "sha": "bcba4c29a04378d4acc96cb938cbffffbe3d1d14",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "bcba4c2",
+    "date": "2026-11-13",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release 1.1.0",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "2ad46cd",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "docs: registra 22 deploys E66 e 4 migrations E15 no ledger (#3496)",
+    "files": [
+     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
+   {
+    "sha": "3508d2a",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(db): exclusão de usuário com itens no carrinho deixa de falhar (#3402)",
+    "files": [
+     "supabase/migrations/20261111222500_fix_touch_seller_cart_secdef.sql",
+     "supabase/rollbacks/20261111222500_rollback.sql"
+    ]
+   },
+   {
+    "sha": "640d96e",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(edge): recomendações e copiloto de BI voltam a usar IA via router multi-provider (#3401)",
+    "files": [
+     "supabase/functions/ai-recommendations/index.ts",
+     "supabase/functions/bi-copilot/index.ts"
+    ]
+   },
+   {
+    "sha": "8404c43",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix: lote de correções da auditoria de prontidão (catálogo, produto, busca, BI, categorias, e2e, edge) (#3463)",
+    "files": [
+     ".as-assertions-baseline.json",
+     ".file-size-baseline.json",
+     "e2e/fixtures/selectors.ts",
+     "e2e/flows/90-personalization-pdp-flow.spec.ts",
+     "e2e/flows/91-personalization-variant-flow.spec.ts",
+     "e2e/mockup-generate.spec.ts",
+     "e2e/quotes/color-required.spec.ts",
+     "e2e/routes/app/replenishment-grid-visual.spec.ts",
+     "src/components/admin/categories-manager/CategoriesManager.tsx",
+     "src/components/admin/categories-manager/__tests__/CategoriesManager.test.tsx",
+     "src/components/admin/categories-manager/categoryMutations.ts",
+     "src/components/admin/categories-manager/index.ts",
+     "src/components/bi/ClientOverview360.tsx",
+     "src/components/bi/__tests__/ClientOverview360.refetch.test.tsx",
+     "src/components/bi/__tests__/ClientOverview360.test.tsx",
+     "src/components/compare/SupplierComparisonModal.tsx",
+     "src/components/compare/__tests__/SupplierComparisonModal.test.tsx",
+     "src/components/kit-builder/KitHealthCard.tsx",
+     "src/components/layout/sidebar/RestrictedRouteNotice.tsx",
+     "src/components/layout/sidebar/__tests__/RestrictedRouteNotice.request-access.test.tsx",
+     "src/components/products/InlinePriceCalculator.tsx",
+     "src/components/products/ProductCardActions.tsx",
+     "src/components/products/ProductQuickActions.tsx",
+     "src/components/products/__tests__/ProductCardActions.pointer.test.tsx",
+     "src/components/products/inline-price/QuantityCalculator.tsx",
+     "src/components/products/inline-price/__tests__/QuantityCalculator.addToQuote.test.tsx",
+     "src/hooks/bi/__tests__/useClientBI.test.ts",
+     "src/hooks/bi/useClientBI.ts",
+     "src/hooks/common/useSearch.ts",
+     "src/lib/kit-builder/__tests__/dead-code.test.ts",
+     "src/lib/kit-builder/index.ts",
+     "src/lib/kit-builder/mock-data.ts",
+     "src/pages/admin/AdminCadastrosPage.tsx",
+     "src/pages/products/ProductDetail.tsx",
+     "src/pages/products/product-detail/ProductDetailHero.tsx",
+     "src/tests/B2BProductDetailFlow.test.tsx",
+     "supabase/functions/external-db-bridge/applyFiltersAndSwap.integration.test.ts",
+     "supabase/functions/external-db-bridge/callerSelectIsHeavy.test.ts",
+     "supabase/functions/external-db-bridge/resolveProductsSelect.test.ts",
+     "supabase/functions/external-db-bridge/wideSelectThreshold.test.ts",
+     "supabase/functions/mcp-server/index.ts",
+     "supabase/functions/tests/external-db-bridge/legacy-contracts.ts",
+     "supabase/functions/tests/external-db-bridge/legacy-filters.ts",
+     "supabase/functions/tests/external-db-bridge/legacy-select.ts",
+     "tests/components/products/ProductCard.test.tsx",
+     "tests/edge-functions/mcp-server.audit-user-id.test.ts",
+     "tests/edge-functions/repo-only-files.test.ts",
+     "tests/hooks/useSearch.test.ts",
+     "tests/hooks/useSupplierComparison.test.ts",
+     "tests/unit/e2e-personalization-card-click.test.ts",
+     "tests/unit/e2e-selectors-quote-add-product.test.ts"
+    ]
+   },
+   {
+    "sha": "9c518b2",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "chore(claude): adiciona comando /merge-prs (#3420)",
+    "files": [
+     ".claude/commands/merge-prs.md"
+    ]
+   },
+   {
+    "sha": "afa3739",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix: erros de console em produção (Sentry bloqueado pela CSP, CRM 500, estilos inline) (#3429)",
+    "files": [
+     "public/_headers",
+     "src/components/filters/filter-panel/FilterPanelHeader.tsx",
+     "supabase/functions/crm-db-bridge/index.ts",
+     "supabase/functions/crm-db-bridge/ownership.ts",
+     "supabase/functions/crm-db-bridge/scope_integration_test.ts",
+     "tests/security/crm-db-bridge-ownership.test.ts",
+     "tests/security/csp-radix-scroll-area-hash.test.ts",
+     "tests/security/security-headers.test.ts",
+     "vercel.json"
+    ]
+   },
+   {
+    "sha": "b5e04b3",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(estoque): carrega /estoque com paginação em faixas paralelas de keyset (#3460)",
+    "files": [
+     "audit/supabase-reference-catalog.temporary.json",
+     "src/hooks/stock/__tests__/stockFetcher.test.ts",
+     "src/hooks/stock/stockFetcher.ts",
+     "src/hooks/stock/stockPagination.ts"
+    ]
+   },
+   {
+    "sha": "f55aecb",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "chore(analise-prs): relatório das 61 PRs abertas em 2026-11-12 (#3408)",
+    "files": [
+     "analise-prs/2026-11-12/RELATORIO_PRS.md",
+     "analise-prs/2026-11-12/baseline/main.json",
+     "analise-prs/2026-11-12/progresso.json",
+     "analise-prs/2026-11-12/prs.json"
+    ]
+   },
+   {
+    "sha": "5a4ad72",
+    "date": "2026-11-13",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release 1.9.0 (#3210)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "3d1e34f",
+    "date": "2026-11-13",
+    "author": "github-actions[bot]",
+    "subject": "docs: recibo de deploy de edge function(s) — run 43367027942 (E66) (#3480)",
+    "files": [
+     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
+    ]
+   },
    {
     "sha": "0a9291a",
     "date": "2026-11-13",
@@ -527882,264 +528785,43 @@
     "files": [
      "tests/edge-functions/live/_live-client.ts"
     ]
-   },
-   {
-    "sha": "03b9fb2",
-    "date": "2026-11-12",
-    "author": "Joaquim Ataides",
-    "subject": "fix(ci): ledger parity tolera o pareamento sequencial da CLI; auditoria sem depender de rg",
-    "files": [
-     ".github/workflows/db-schema-drift-check.yml",
-     "scripts/audit-db-frontend-coverage.mjs",
-     "scripts/check-supabase-migration-ledger.mjs",
-     "tests/scripts/check-supabase-migration-ledger.test.mjs"
-    ]
-   },
-   {
-    "sha": "e9a4a1a",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix: E2E busca global — modifier+K webkit, Ctrl+Shift+V webkit, snapshots",
-    "files": [
-     "e2e/flows/global-search-comprehensive.spec.ts"
-    ]
-   },
-   {
-    "sha": "e8a0b32",
-    "date": "2026-11-12",
-    "author": "Joaquim Ataides",
-    "subject": "fix(ci): Gate E40 volta ao setup-cli anterior (bump da #3330 quebrou o ledger parity)",
-    "files": [
-     ".github/workflows/db-schema-drift-check.yml"
-    ]
-   },
-   {
-    "sha": "7e4fad0",
-    "date": "2026-11-12",
-    "author": "Joaquim Ataides",
-    "subject": "Merge branch 'main' into claude/lote-pilha-prs-261111",
-    "files": []
-   },
-   {
-    "sha": "b9cabc6",
-    "date": "2026-11-12",
-    "author": "Joaquim Ataides",
-    "subject": "fix(ci): E188 resolve origin/<branch> no checkout de PR (falhava fechado em toda PR)",
-    "files": [
-     "scripts/check-conflict-ledger.mjs",
-     "tests/scripts/check-conflict-ledger.test.mjs"
-    ]
-   },
-   {
-    "sha": "5f956d2",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix: corrige 62 bugs confirmados em telas, hooks e edge functions (#3424)",
-    "files": [
-     ".file-size-baseline.json",
-     "src/components/access/DevAccessDeniedPage.tsx",
-     "src/components/admin/DiscountManagementPanel.tsx",
-     "src/components/admin/DiscountNotificationFilterPanel.tsx",
-     "src/components/admin/InlineEditField.tsx",
-     "src/components/admin/MockupPromptManager.tsx",
-     "src/components/admin/SellerDiscountLimitsPanel.tsx",
-     "src/components/admin/products/sections/engraving/useEngravingWizard.ts",
-     "src/components/admin/security/SecureUploadManager.tsx",
-     "src/components/admin/suppliers-manager/useSuppliersManager.ts",
-     "src/components/admin/telemetry/QuoteBuilderHandoffCard.tsx",
-     "src/components/bi/ClientCategoryRadar.tsx",
-     "src/components/bi/ConfirmQuoteSuggestionsModal.tsx",
-     "src/components/cart/CartHeaderButton.tsx",
-     "src/components/catalog/CatalogBulkModals.tsx",
-     "src/components/catalog/useCatalogSelection.ts",
-     "src/components/dashboard/MyClientsWidget.tsx",
-     "src/components/dashboard/MyDiscountRequestsWidget.tsx",
-     "src/components/engraving/PricingPanel.tsx",
-     "src/components/expert/chat/useExpertChat.ts",
-     "src/components/intelligence/HotSearchesCard.tsx",
-     "src/components/intelligence/UnmetDemandCard.tsx",
-     "src/components/kit-builder/PersonalizationConfig.tsx",
-     "src/components/pricing/ProductPriceSimulator.tsx",
-     "src/components/pricing/QuantityPriceCalculator.tsx",
-     "src/components/products/ProductCustomizationOptions.tsx",
-     "src/components/products/QuickAddToQuote.tsx",
-     "src/components/providers/AppBootstrap.tsx",
-     "src/components/quotes/QuoteProductCustomization.tsx",
-     "src/components/security/MfaEnrollmentDialog.tsx",
-     "src/components/security/SecurityDashboard.tsx",
-     "src/components/security/useSecurityData.ts",
-     "src/contexts/CollectionsContext.tsx",
-     "src/hooks/admin/useAdminKitTemplates.ts",
-     "src/hooks/auth/use2FA.ts",
-     "src/hooks/collections/useCollections.ts",
-     "src/hooks/intelligence/useStockHistory.ts",
-     "src/hooks/kit-builder/useKitFitsValidation.ts",
-     "src/hooks/kit-builder/useKitTemplates.ts",
-     "src/hooks/products/useProductsByColor.ts",
-     "src/hooks/quotes/useQuoteBuilderState.helpers.ts",
-     "src/hooks/quotes/useQuoteBuilderState.ts",
-     "src/hooks/quotes/useQuotes.ts",
-     "src/lib/external-db/batch-import.ts",
-     "src/lib/external-db/price-tables.ts",
-     "src/lib/personalization/transformers.ts",
-     "src/lib/telemetry/quoteHandoffTelemetry.ts",
-     "src/pages/admin/AdminCloudflareImagesPage.tsx",
-     "src/pages/admin/DiscountRequestDetailPage.tsx",
-     "src/pages/admin/KitTemplatesAdminPage.tsx",
-     "src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
-     "src/pages/admin/telemetry/useTelemetryData.ts",
-     "src/pages/advanced-price-search/ResultViews.tsx",
-     "src/pages/advanced-price-search/useAdvancedPriceSearch.ts",
-     "src/pages/bi/TrendsPage.tsx",
-     "src/pages/collections/CollectionDetailPage.tsx",
-     "src/pages/products/ComparePage.tsx",
-     "src/pages/quotes/quote-view/QuoteBitrixSync.ts",
-     "src/pages/trends/TrendsCharts.tsx",
-     "src/services/notificationPreferenceService.ts",
-     "src/services/quoteService.ts",
-     "supabase/functions/anonymize-user/index.ts",
-     "supabase/functions/block-ip-temporarily/index.ts",
-     "supabase/functions/collections-watcher/index.ts",
-     "supabase/functions/crm-callback-alerts/index.ts",
-     "supabase/functions/crm-callback-reprocess/index.ts",
-     "supabase/functions/detect-new-device/index.ts",
-     "supabase/functions/favorites-watcher/index.ts",
-     "supabase/functions/force-global-logout/index.ts",
-     "supabase/functions/full-op-diagnostics/index.ts",
-     "supabase/functions/manage-users/index.ts",
-     "supabase/functions/mcp-keys-issue/index.ts",
-     "supabase/functions/mcp-keys-rotate/index.ts",
-     "supabase/functions/mcp-keys-update/index.ts",
-     "supabase/functions/product-webhook/index.ts",
-     "supabase/functions/secure-upload/index.ts",
-     "supabase/functions/validate-access/index.ts",
-     "supabase/functions/verify-2fa-token/index.ts",
-     "tests/components/DevRoute.test.tsx",
-     "tests/hooks/kit-builder/useKitFitsValidation.test.ts",
-     "tests/lib/price-tables-technique-group.test.ts"
-    ]
-   },
-   {
-    "sha": "4bda903",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(tests): corrige erros de TypeScript em testes, mede baseline real (855) e corrige caminho em PENDENCIAS (#3419)",
-    "files": [
-     ".tsc-tests-baseline.json",
-     "PENDENCIAS.md",
-     "e2e/flows/03b-thumb-quickview.smoke.spec.ts",
-     "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-     "recovery/src-legacy/tests/e2e/favorites-ui.test.tsx",
-     "scripts/audit-debug.ts",
-     "tests/e2e/auth-flow.test.tsx",
-     "tests/e2e/carts-excellence.spec.ts",
-     "tests/e2e/compare-ultra.test.ts",
-     "tests/e2e/compare-viewer-a11y.test.tsx",
-     "tests/e2e/favorites-ui.test.tsx",
-     "tests/e2e/new-quote-advanced.test.tsx",
-     "tests/e2e/new-quote-cycle.test.tsx",
-     "tests/e2e/new-quote-exhaustive.test.tsx",
-     "tests/e2e/new-quote-full-audit.test.tsx",
-     "tests/e2e/new-quote-resilience.test.tsx",
-     "tests/hooks/useReplenishmentsSelectionMode.test.ts",
-     "tests/lib/external-db-bridge-telemetry.test.ts"
-    ]
-   },
-   {
-    "sha": "f240819",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(ci): corrige testes, tipos de edge e cobertura que deixam a main vermelha (#3407)",
-    "files": [
-     "e2e/flows/global-search-comprehensive.spec.ts",
-     "e2e/flows/global-search-comprehensive.spec.ts-snapshots/global-search-idle-chromium-authed-linux.png",
-     "e2e/flows/global-search-comprehensive.spec.ts-snapshots/global-search-searching-chromium-authed-linux.png",
-     "e2e/quotes/quote-view-no-presentation-mode.spec.ts-snapshots/quote-actions-menu-dark-mobile-chromium-public-linux.png",
-     "scripts/inventario/gerar-repo.mjs",
-     "scripts/inventario/gerar-rotas.mjs",
-     "supabase/functions/asia-ingestion/credential-client.test.ts",
-     "supabase/functions/asia-ingestion/index.ts",
-     "supabase/functions/audit-suite/index.ts",
-     "supabase/functions/cleanup-novelties/index.ts",
-     "supabase/functions/deno.json",
-     "supabase/functions/e2e-cleanup/index.ts",
-     "supabase/functions/external-db-bridge/applyFiltersAndSwap.integration.test.ts",
-     "supabase/functions/external-db-bridge/callerSelectIsHeavy.test.ts",
-     "supabase/functions/external-db-bridge/legacy-contracts.ts",
-     "supabase/functions/external-db-bridge/legacy-filters.ts",
-     "supabase/functions/external-db-bridge/legacy-select.ts",
-     "supabase/functions/external-db-bridge/resolveProductsSelect.test.ts",
-     "supabase/functions/external-db-bridge/wideSelectThreshold.test.ts",
-     "supabase/functions/health-check/index.ts",
-     "supabase/functions/process-scheduled-reports/index.ts",
-     "supabase/functions/quote-sync-promo-champions/index.ts",
-     "tests/components/BridgeMetricsOverlay-ProdGate.test.tsx",
-     "tests/components/DevOnlyBridgeOverlay.test.tsx",
-     "tests/components/PriceFreshnessBadge.behavior.test.tsx",
-     "tests/components/pages/KitBuilderPage.test.tsx",
-     "tests/edge-functions/live/_authz.ts",
-     "tests/edge-functions/live/_live-client.ts",
-     "tests/edge-functions/live/_live-suite.ts",
-     "tests/edge-functions/live/_schemas.ts",
-     "tests/lib/bridge.test.ts",
-     "tests/observability/structured-logger.test.ts",
-     "tests/unit/edge-live-suite-catalogs.test.ts",
-     "tests/unit/system/BridgeMetricsOverlay.test.tsx",
-     "tests/unit/system/useBridgeMetrics.test.ts",
-     "vercel.json"
-    ]
-   },
-   {
-    "sha": "1da62ab",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "docs(ci): RELATORIO §33 + PENDENCIAS #45-#52 — baseline + inventário final de workflows",
-    "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md"
-    ]
-   },
-   {
-    "sha": "52d6c21",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix: fn_get_rupture_alerts com SECURITY DEFINER e search_path correto",
-    "files": [
-     "analise-prs/dossies/PR-3160.md",
-     "analise-prs/dossies/PR-3179.md",
-     "audit/supabase-reference-catalog.temporary.json",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql",
-     "supabase/rollbacks/20261112011000_rollback.sql"
-    ]
-   },
-   {
-    "sha": "caeb61b",
-    "date": "2026-11-11",
-    "author": "adm01-debug",
-    "subject": "fix(scripts): heap explícito no tsc dos gates para evitar OOM (#3406)",
-    "files": [
-     "scripts/check-indexed-access-ratchet.mjs",
-     "scripts/check-tsc-baseline.mjs",
-     "scripts/check-tsc-tests-baseline.mjs",
-     "scripts/lib/tsc-run.mjs",
-     "scripts/round-quality-report.mjs",
-     "scripts/tsc-baseline-generate.mjs",
-     "tests/scripts/tsc-run-guard.test.mjs"
-    ]
    }
   ],
   "hot_files": [
    [
-    "src/components/pricing/QuantityPriceCalculator.tsx",
+    "package.json",
     3
    ],
    [
-    "tests/edge-functions/live/_live-client.ts",
-    3
+    ".release-please-manifest.json",
+    2
+   ],
+   [
+    "CHANGELOG.md",
+    2
+   ],
+   [
+    "package-lock.json",
+    2
+   ],
+   [
+    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    2
+   ],
+   [
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    2
+   ],
+   [
+    ".file-size-baseline.json",
+    2
    ],
    [
     ".security/policies-baseline.json",
+    2
+   ],
+   [
+    "src/components/pricing/QuantityPriceCalculator.tsx",
     2
    ],
    [
@@ -528155,60 +528837,36 @@
     2
    ],
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
+    "tests/edge-functions/live/_live-client.ts",
     2
    ],
    [
-    ".file-size-baseline.json",
-    2
+    "supabase/migrations/20261111222500_fix_touch_seller_cart_secdef.sql",
+    1
    ],
    [
-    "src/components/pricing/ProductPriceSimulator.tsx",
-    2
+    "supabase/rollbacks/20261111222500_rollback.sql",
+    1
    ],
    [
-    "src/hooks/quotes/useQuoteBuilderState.ts",
-    2
+    "supabase/functions/ai-recommendations/index.ts",
+    1
    ],
    [
-    "src/services/quoteService.ts",
-    2
+    "supabase/functions/bi-copilot/index.ts",
+    1
    ],
    [
-    "supabase/functions/manage-users/index.ts",
-    2
+    ".as-assertions-baseline.json",
+    1
    ],
    [
-    "scripts/audit-db-frontend-coverage.mjs",
-    2
+    "e2e/fixtures/selectors.ts",
+    1
    ],
    [
-    "scripts/check-conflict-ledger.mjs",
-    2
-   ],
-   [
-    "scripts/check-supabase-migration-ledger.mjs",
-    2
-   ],
-   [
-    "tests/edge-functions/live/_live-suite.ts",
-    2
-   ],
-   [
-    "tests/scripts/check-conflict-ledger.test.mjs",
-    2
-   ],
-   [
-    "tests/scripts/check-supabase-migration-ledger.test.mjs",
-    2
-   ],
-   [
-    ".github/workflows/db-schema-drift-check.yml",
-    2
-   ],
-   [
-    "e2e/flows/global-search-comprehensive.spec.ts",
-    2
+    "e2e/flows/90-personalization-pdp-flow.spec.ts",
+    1
    ]
   ]
  }

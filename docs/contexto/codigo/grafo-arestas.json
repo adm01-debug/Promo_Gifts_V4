@@ -593,7 +593,6 @@
    "recovery/src-legacy/src/hooks/useKitBuilderTransformers.ts",
    "src/lib/external-db/index.ts",
    "src/lib/kit-builder/index.ts",
-   "src/lib/kit-builder/mock-data.ts",
    "src/lib/logger.ts"
   ],
   "recovery/src-legacy/src/hooks/useKitBuilderTransformers.ts": [
@@ -2305,6 +2304,23 @@
    "src/components/admin/badges-manager/types.ts",
    "src/lib/security/sanitize-error.ts",
    "src/lib/supabase-untyped.ts"
+  ],
+  "src/components/admin/categories-manager/CategoriesManager.tsx": [
+   "src/components/admin/categories-manager/categoryMutations.ts",
+   "src/components/ui/ConfirmDialog.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/components/ui/select.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/hooks/products/index.ts"
+  ],
+  "src/components/admin/categories-manager/categoryMutations.ts": [
+   "src/lib/db/postgrest.ts"
+  ],
+  "src/components/admin/categories-manager/index.ts": [
+   "src/components/admin/categories-manager/CategoriesManager.tsx"
   ],
   "src/components/admin/connections/AiModelsTab.tsx": [
    "src/components/ui/ConfirmDialog.tsx",
@@ -6289,14 +6305,6 @@
    "src/lib/kit-builder/index.ts",
    "src/lib/utils.ts"
   ],
-  "src/components/kit-builder/KitHealthCard.tsx": [
-   "src/components/ui/badge.tsx",
-   "src/components/ui/card.tsx",
-   "src/integrations/supabase/client.ts",
-   "src/lib/kit-builder/index.ts",
-   "src/lib/kit-builder/types.ts",
-   "src/lib/utils.ts"
-  ],
   "src/components/kit-builder/KitHeroPricingCard.tsx": [
    "src/components/ui/badge.tsx",
    "src/components/ui/card.tsx",
@@ -6705,6 +6713,7 @@
    "src/components/ui/button.tsx",
    "src/components/ui/tooltip.tsx",
    "src/contexts/AuthContext.tsx",
+   "src/lib/access/request-dev-access.ts",
    "src/lib/navigation/restricted-routes.ts",
    "src/lib/utils.ts"
   ],
@@ -9855,8 +9864,7 @@
    "src/lib/bi/mockData.ts"
   ],
   "src/hooks/bi/useClientBI.ts": [
-   "src/hooks/bi/useClientOrdersHistory.ts",
-   "src/lib/bi/mockData.ts"
+   "src/hooks/bi/useClientOrdersHistory.ts"
   ],
   "src/hooks/bi/useClientCategoryAffinity.ts": [
    "src/integrations/supabase/client.ts",
@@ -9980,7 +9988,6 @@
   ],
   "src/hooks/common/useSearch.ts": [
    "src/contexts/ProductsContext.tsx",
-   "src/data/mockData.ts",
    "src/hooks/common/useSearchHistory.ts",
    "src/hooks/products/index.ts",
    "src/lib/db/postgrest.ts",
@@ -11265,11 +11272,15 @@
   ],
   "src/hooks/stock/stockFetcher.ts": [
    "src/hooks/stock/stockAlerts.ts",
+   "src/hooks/stock/stockPagination.ts",
+   "src/lib/logger.ts",
+   "src/types/stock.ts"
+  ],
+  "src/hooks/stock/stockPagination.ts": [
    "src/integrations/supabase/gold-relations.ts",
    "src/lib/external-db/silent-empty-report.ts",
    "src/lib/logger.ts",
-   "src/lib/supabase-untyped.ts",
-   "src/types/stock.ts"
+   "src/lib/supabase-untyped.ts"
   ],
   "src/hooks/stock/useEmaPipelineHealth.ts": [
    "src/integrations/supabase/client.ts",
@@ -11788,7 +11799,6 @@
    "src/lib/kit-builder/box-recommendations.ts",
    "src/lib/kit-builder/guide-content.ts",
    "src/lib/kit-builder/item-sort.ts",
-   "src/lib/kit-builder/mock-data.ts",
    "src/lib/kit-builder/persistence.ts",
    "src/lib/kit-builder/price-calculator.ts",
    "src/lib/kit-builder/types.ts",
@@ -11796,9 +11806,6 @@
    "src/lib/kit-builder/weight.ts"
   ],
   "src/lib/kit-builder/item-sort.ts": [
-   "src/lib/kit-builder/types.ts"
-  ],
-  "src/lib/kit-builder/mock-data.ts": [
    "src/lib/kit-builder/types.ts"
   ],
   "src/lib/kit-builder/persistence.ts": [
@@ -12206,6 +12213,7 @@
   "src/pages/admin/AdminCadastrosPage.tsx": [
    "src/components/admin/ProductsManager.tsx",
    "src/components/admin/badges-manager/index.ts",
+   "src/components/admin/categories-manager/index.ts",
    "src/components/admin/suppliers-manager/index.ts",
    "src/components/seo/PageSEO.tsx",
    "src/components/ui/skeleton.tsx",
@@ -14618,6 +14626,7 @@
    "supabase/functions/_shared/contracts/_zod.ts"
   ],
   "supabase/functions/ai-recommendations/index.ts": [
+   "supabase/functions/_shared/ai-usage.ts",
    "supabase/functions/_shared/auth.ts",
    "supabase/functions/_shared/cors.ts",
    "supabase/functions/_shared/credentials.ts",
@@ -14665,7 +14674,7 @@
    "supabase/functions/_shared/structured-logger.ts"
   ],
   "supabase/functions/bi-copilot/index.ts": [
-   "supabase/functions/_shared/ai-credentials.ts",
+   "supabase/functions/_shared/ai-usage.ts",
    "supabase/functions/_shared/auth.ts",
    "supabase/functions/_shared/contracts/index.ts",
    "supabase/functions/_shared/contracts/schemas/bi-copilot.ts",
@@ -14803,7 +14812,8 @@
    "supabase/functions/_shared/credentials.ts",
    "supabase/functions/_shared/external-fetch.ts",
    "supabase/functions/_shared/kill_switch.ts",
-   "supabase/functions/_shared/request-id.ts"
+   "supabase/functions/_shared/request-id.ts",
+   "supabase/functions/crm-db-bridge/ownership.ts"
   ],
   "supabase/functions/detect-new-device/index.ts": [
    "supabase/functions/_shared/authorize.ts",
@@ -14864,10 +14874,6 @@
    "supabase/functions/_shared/cors.ts",
    "supabase/functions/_shared/request-id.ts",
    "supabase/functions/_shared/structured-logger.ts"
-  ],
-  "supabase/functions/external-db-bridge/legacy-contracts.ts": [
-   "supabase/functions/external-db-bridge/legacy-filters.ts",
-   "supabase/functions/external-db-bridge/legacy-select.ts"
   ],
   "supabase/functions/external-db-inspect/index.ts": [
    "supabase/functions/_shared/bot-protection.ts",

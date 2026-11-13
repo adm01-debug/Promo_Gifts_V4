@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 295,
+ "total": 294,
  "por_camada": {
   "api": 3,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 224,
+  "lib": 223,
   "python": 9,
   "services": 9,
   "stores": 8,
@@ -617,10 +617,9 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 3,
+   "usado_por": 2,
    "usado_por_modulos": [
-    "components/admin",
-    "hooks/common"
+    "components/admin"
    ],
    "coberto_por_testes": 0,
    "orfao": false
@@ -699,7 +698,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 403,
+   "usado_por": 402,
    "usado_por_modulos": [
     "components/admin",
     "components/ai",
@@ -1103,9 +1102,10 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_modulos": [
-    "components/access"
+    "components/access",
+    "components/layout"
    ],
    "coberto_por_testes": 0,
    "orfao": false
@@ -1957,7 +1957,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 6,
+   "usado_por": 5,
    "usado_por_modulos": [
     "hooks/bi"
    ],
@@ -2485,7 +2485,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 78,
+   "usado_por": 79,
    "usado_por_modulos": [
     "components/admin",
     "components/expert",
@@ -2508,7 +2508,7 @@
     "pages/admin",
     "services"
    ],
-   "coberto_por_testes": 14,
+   "coberto_por_testes": 16,
    "orfao": false
   },
   {
@@ -4207,8 +4207,6 @@
    "camada": "lib",
    "exports": [
     "KIT_MAKER_GUIDE_CHAPTERS",
-    "MOCK_BOXES",
-    "MOCK_ITEMS",
     "buildKitPersistencePayload",
     "calculateBoxPrice",
     "calculateItemsPrice",
@@ -4243,7 +4241,7 @@
     "summarizeKitWeight"
    ],
    "export_default": null,
-   "linhas": 59,
+   "linhas": 56,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4252,7 +4250,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 70,
+   "usado_por": 69,
    "usado_por_modulos": [
     "components/dashboard",
     "components/kit-builder",
@@ -4261,7 +4259,7 @@
     "pages/admin",
     "pages/kit-builder"
    ],
-   "coberto_por_testes": 26,
+   "coberto_por_testes": 27,
    "orfao": false
   },
   {
@@ -4286,30 +4284,6 @@
     "lib/kit-builder"
    ],
    "coberto_por_testes": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/lib/kit-builder/mock-data.ts",
-   "camada": "lib",
-   "exports": [
-    "MOCK_BOXES",
-    "MOCK_ITEMS"
-   ],
-   "export_default": null,
-   "linhas": 173,
-   "tabelas": [],
-   "rpcs": [],
-   "edges": [],
-   "env": [],
-   "externos": [],
-   "zod_schemas": 0,
-   "flags": [],
-   "papeis": [],
-   "usado_por": 2,
-   "usado_por_modulos": [
-    "lib/kit-builder"
-   ],
-   "coberto_por_testes": 0,
    "orfao": false
   },
   {
@@ -4412,7 +4386,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 17,
+   "usado_por": 15,
    "usado_por_modulos": [
     "components/kit-builder",
     "hooks/kit-builder",
@@ -4578,7 +4552,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 299,
+   "usado_por": 300,
    "usado_por_modulos": [
     "components",
     "components/admin",
@@ -7469,7 +7443,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 651,
+   "usado_por": 650,
    "usado_por_modulos": [
     "components",
     "components/admin",

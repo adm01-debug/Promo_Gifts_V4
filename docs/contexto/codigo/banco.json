@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3062,
+ "migrations": 3063,
  "seeds": [],
  "avisos": [
   "317 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -15094,7 +15094,7 @@
    ],
    "fks": [],
    "criada_em": "20260322133758_7dc8f3c8-e0a0-4b62-b9e6-75995b2199c5.sql",
-   "usada_no_front": 14,
+   "usada_no_front": 13,
    "usada_em_edges": [],
    "triggers": [
     "trg_validate_kit_status"
@@ -50561,10 +50561,12 @@
    "fks": [],
    "criada_em": "scripts/ai-context/cenarios.mjs",
    "usada_no_front": 0,
-   "usada_em_edges": [],
+   "usada_em_edges": [
+    "crm-db-bridge"
+   ],
    "triggers": [],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "variant_commemorative_dates": {
    "colunas": {},

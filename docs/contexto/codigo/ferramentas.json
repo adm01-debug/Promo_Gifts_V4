@@ -3,11 +3,11 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4742)",
-   "SQL (3356)",
-   "Markdown (1016)",
+   "TypeScript (4761)",
+   "SQL (3358)",
+   "Markdown (1018)",
    "JavaScript (443)",
-   "JSON (123)",
+   "JSON (126)",
    "YAML (111)",
    "Shell (27)",
    "HTML (20)"
@@ -44,7 +44,7 @@
  "workspaces": [],
  "package": {
   "nome": "@adm01-debug/gifts-store",
-  "versao": "1.8.1",
+  "versao": "1.1.0",
   "scripts": {
    "audit:credentials": "node scripts/audit-credentials.mjs --baseline .audit-credentials-baseline.json",
    "audit:credentials:all": "node scripts/audit-credentials.mjs",
@@ -3697,7 +3697,7 @@
   {
    "arquivo": "CHANGELOG.md",
    "titulo": "Changelog",
-   "linhas": 1530
+   "linhas": 2041
   },
   {
    "arquivo": "CI_PROVA_P33.md",
@@ -4672,7 +4672,7 @@
    "arquivos_md": 1
   }
  ],
- "changelog_topo": "[1.8.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.8.0...v1.8.1) (2026-11-08)",
+ "changelog_topo": "[1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)",
  "env": {
   "declaradas_no_env_example": [
    "CONNECTIONS_AUTO_TEST_SECRET",
@@ -4736,6 +4736,7 @@
    "ALLOW_HTTP_FETCH",
    "ANON_KEY",
    "ASIA_BASE_URL",
+   "BRIDGE_PATH",
    "CF_ORIGIN_SECRET",
    "CRM_CALLBACK_API_KEY",
    "CRM_SUPABASE_ANON_KEY",
@@ -4940,12 +4941,12 @@
     "arquivos": 9
    },
    {
-    "host": "ai.gateway.lovable.dev",
-    "arquivos": 8
-   },
-   {
     "host": "edge-contract.invalid",
     "arquivos": 7
+   },
+   {
+    "host": "ai.gateway.lovable.dev",
+    "arquivos": 6
    },
    {
     "host": "api.ipify.org",
@@ -5172,6 +5173,10 @@
     "arquivos": 1
    },
    {
+    "host": "app.local",
+    "arquivos": 1
+   },
+   {
     "host": "asia-db-contract.invalid",
     "arquivos": 1
    },
@@ -5240,6 +5245,10 @@
     "arquivos": 1
    },
    {
+    "host": "crm.local",
+    "arquivos": 1
+   },
+   {
     "host": "crm.supabase.co",
     "arquivos": 1
    },
@@ -5249,6 +5258,10 @@
    },
    {
     "host": "doufsxqlfjyuvxuezpln.functions.supabase.co",
+    "arquivos": 1
+   },
+   {
+    "host": "erros.atomicabr.com.br",
     "arquivos": 1
    },
    {
@@ -5269,6 +5282,10 @@
    },
    {
     "host": "fake.supabase.co",
+    "arquivos": 1
+   },
+   {
+    "host": "fn.local",
     "arquivos": 1
    },
    {
@@ -5617,7 +5634,7 @@
    },
    {
     "papel": "alert",
-    "ocorrencias": 53
+    "ocorrencias": 54
    },
    {
     "papel": "dev",
@@ -5649,7 +5666,7 @@
    },
    {
     "papel": "vendedor",
-    "ocorrencias": 24
+    "ocorrencias": 25
    },
    {
     "papel": "supervisor",
@@ -5684,12 +5701,12 @@
     "ocorrencias": 13
    },
    {
-    "papel": "option",
+    "papel": "authenticated",
     "ocorrencias": 12
    },
    {
-    "papel": "authenticated",
-    "ocorrencias": 11
+    "papel": "option",
+    "ocorrencias": 12
    },
    {
     "papel": "progressbar",

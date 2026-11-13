@@ -5,22 +5,22 @@
   "vitest",
   "playwright"
  ],
- "total": 2431,
+ "total": 2449,
  "por_tipo": {
-  "contrato": 64,
+  "contrato": 65,
   "e2e": 677,
   "pytest": 4,
   "qa": 17,
-  "unit": 1669
+  "unit": 1686
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 990
+   "arquivos": 996
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 625
+   "arquivos": 634
   },
   {
    "padrao": "e2e/",
@@ -32,7 +32,7 @@
   },
   {
    "padrao": "outro",
-   "arquivos": 47
+   "arquivos": 50
   }
  ],
  "arquivos": [
@@ -991,7 +991,7 @@
   {
    "arquivo": "e2e/fixtures/selectors.ts",
    "tipo": "e2e",
-   "linhas": 393,
+   "linhas": 403,
    "testa": [],
    "casos": 0
   },
@@ -1934,14 +1934,14 @@
   {
    "arquivo": "e2e/flows/90-personalization-pdp-flow.spec.ts",
    "tipo": "e2e",
-   "linhas": 50,
+   "linhas": 51,
    "testa": [],
    "casos": 1
   },
   {
    "arquivo": "e2e/flows/91-personalization-variant-flow.spec.ts",
    "tipo": "e2e",
-   "linhas": 41,
+   "linhas": 42,
    "testa": [],
    "casos": 1
   },
@@ -2666,7 +2666,7 @@
   {
    "arquivo": "e2e/mockup-generate.spec.ts",
    "tipo": "e2e",
-   "linhas": 21,
+   "linhas": 24,
    "testa": [],
    "casos": 2
   },
@@ -2962,7 +2962,7 @@
   {
    "arquivo": "e2e/quotes/color-required.spec.ts",
    "tipo": "e2e",
-   "linhas": 107,
+   "linhas": 108,
    "testa": [
     "src/integrations/supabase/client.ts"
    ],
@@ -4826,6 +4826,17 @@
    "casos": 6
   },
   {
+   "arquivo": "src/components/admin/categories-manager/__tests__/CategoriesManager.test.tsx",
+   "tipo": "unit",
+   "linhas": 126,
+   "testa": [
+    "src/components/admin/categories-manager/CategoriesManager.tsx",
+    "src/components/admin/categories-manager/categoryMutations.ts",
+    "src/pages/admin/AdminCadastrosPage.tsx"
+   ],
+   "casos": 6
+  },
+  {
    "arquivo": "src/components/admin/connections/__tests__/ConnectionLogic.unit.test.ts",
    "tipo": "unit",
    "linhas": 84,
@@ -4907,6 +4918,25 @@
     "src/components/auth/TurnstileWidget.tsx"
    ],
    "casos": 8
+  },
+  {
+   "arquivo": "src/components/bi/__tests__/ClientOverview360.refetch.test.tsx",
+   "tipo": "unit",
+   "linhas": 54,
+   "testa": [
+    "src/components/bi/ClientOverview360.tsx"
+   ],
+   "casos": 1
+  },
+  {
+   "arquivo": "src/components/bi/__tests__/ClientOverview360.test.tsx",
+   "tipo": "unit",
+   "linhas": 46,
+   "testa": [
+    "src/components/bi/ClientOverview360.tsx",
+    "src/hooks/bi/useClientBI.ts"
+   ],
+   "casos": 2
   },
   {
    "arquivo": "src/components/cart/__tests__/cartCompanyCnpj.test.ts",
@@ -5123,6 +5153,15 @@
     "src/components/common/PersistentBreadcrumbs.tsx"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "src/components/compare/__tests__/SupplierComparisonModal.test.tsx",
+   "tipo": "unit",
+   "linhas": 102,
+   "testa": [
+    "src/components/compare/SupplierComparisonModal.tsx"
+   ],
+   "casos": 3
   },
   {
    "arquivo": "src/components/dev/__tests__/BridgeMetricsOverlay.test.tsx",
@@ -5667,6 +5706,15 @@
     "src/components/layout/ProtectedRoute.tsx"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "src/components/layout/sidebar/__tests__/RestrictedRouteNotice.request-access.test.tsx",
+   "tipo": "unit",
+   "linhas": 86,
+   "testa": [
+    "src/components/layout/sidebar/RestrictedRouteNotice.tsx"
+   ],
+   "casos": 3
   },
   {
    "arquivo": "src/components/layout/sidebar/__tests__/SidebarBrandHeader.tour.test.tsx",
@@ -6357,6 +6405,16 @@
    "casos": 3
   },
   {
+   "arquivo": "src/components/products/__tests__/ProductCardActions.pointer.test.tsx",
+   "tipo": "unit",
+   "linhas": 54,
+   "testa": [
+    "src/components/products/ProductCardActions.tsx",
+    "src/components/ui/tooltip.tsx"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "src/components/products/__tests__/ProductCardImage.aspect.test.ts",
    "tipo": "unit",
    "linhas": 19,
@@ -6612,6 +6670,18 @@
     "src/components/ui/tooltip.tsx"
    ],
    "casos": 22
+  },
+  {
+   "arquivo": "src/components/products/inline-price/__tests__/QuantityCalculator.addToQuote.test.tsx",
+   "tipo": "unit",
+   "linhas": 99,
+   "testa": [
+    "src/components/products/InlinePriceCalculator.tsx",
+    "src/components/products/inline-price/QuantityCalculator.tsx",
+    "src/components/ui/tooltip.tsx",
+    "src/lib/db/postgrest.ts"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "src/components/products/LayoutPopover.alignment.test.tsx",
@@ -7756,6 +7826,15 @@
    "casos": 2
   },
   {
+   "arquivo": "src/hooks/bi/__tests__/useClientBI.test.ts",
+   "tipo": "unit",
+   "linhas": 85,
+   "testa": [
+    "src/hooks/bi/useClientBI.ts"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "src/hooks/common/__tests__/useBulkSelection.test.ts",
    "tipo": "unit",
    "linhas": 94,
@@ -8562,12 +8641,12 @@
   {
    "arquivo": "src/hooks/stock/__tests__/stockFetcher.test.ts",
    "tipo": "unit",
-   "linhas": 725,
+   "linhas": 1000,
    "testa": [
     "src/hooks/stock/stockFetcher.ts",
     "src/lib/logger.ts"
    ],
-   "casos": 40
+   "casos": 49
   },
   {
    "arquivo": "src/hooks/stock/__tests__/useRuptureAlerts.test.tsx",
@@ -9297,6 +9376,15 @@
     "src/types/stock.ts"
    ],
    "casos": 7
+  },
+  {
+   "arquivo": "src/lib/kit-builder/__tests__/dead-code.test.ts",
+   "tipo": "unit",
+   "linhas": 20,
+   "testa": [
+    "src/lib/kit-builder/index.ts"
+   ],
+   "casos": 2
   },
   {
    "arquivo": "src/lib/navigation/__tests__/active-match.test.ts",
@@ -10987,13 +11075,14 @@
   {
    "arquivo": "src/tests/B2BProductDetailFlow.test.tsx",
    "tipo": "unit",
-   "linhas": 178,
+   "linhas": 228,
    "testa": [
     "src/components/ui/tooltip.tsx",
     "src/hooks/products/index.ts",
+    "src/lib/db/postgrest.ts",
     "src/pages/products/product-detail/ProductDetailHero.tsx"
    ],
-   "casos": 4
+   "casos": 6
   },
   {
    "arquivo": "src/tests/CatalogFilteringLogic.test.tsx",
@@ -11712,18 +11801,14 @@
    "arquivo": "supabase/functions/external-db-bridge/applyFiltersAndSwap.integration.test.ts",
    "tipo": "unit",
    "linhas": 276,
-   "testa": [
-    "supabase/functions/external-db-bridge/legacy-contracts.ts"
-   ],
+   "testa": [],
    "casos": 20
   },
   {
    "arquivo": "supabase/functions/external-db-bridge/callerSelectIsHeavy.test.ts",
    "tipo": "unit",
    "linhas": 174,
-   "testa": [
-    "supabase/functions/external-db-bridge/legacy-contracts.ts"
-   ],
+   "testa": [],
    "casos": 23
   },
   {
@@ -11744,9 +11829,7 @@
    "arquivo": "supabase/functions/external-db-bridge/resolveProductsSelect.test.ts",
    "tipo": "unit",
    "linhas": 82,
-   "testa": [
-    "supabase/functions/external-db-bridge/legacy-contracts.ts"
-   ],
+   "testa": [],
    "casos": 11
   },
   {
@@ -11760,9 +11843,7 @@
    "arquivo": "supabase/functions/external-db-bridge/wideSelectThreshold.test.ts",
    "tipo": "unit",
    "linhas": 95,
-   "testa": [
-    "supabase/functions/external-db-bridge/legacy-contracts.ts"
-   ],
+   "testa": [],
    "casos": 5
   },
   {
@@ -11882,6 +11963,27 @@
     "supabase/functions/_shared/credentials.ts"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "supabase/functions/tests/external-db-bridge/legacy-contracts.ts",
+   "tipo": "contrato",
+   "linhas": 6,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "supabase/functions/tests/external-db-bridge/legacy-filters.ts",
+   "tipo": "unit",
+   "linhas": 131,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "supabase/functions/tests/external-db-bridge/legacy-select.ts",
+   "tipo": "unit",
+   "linhas": 192,
+   "testa": [],
+   "casos": 0
   },
   {
    "arquivo": "supabase/functions/tests/integration/edge/_shared.ts",
@@ -13620,12 +13722,12 @@
   {
    "arquivo": "tests/components/products/ProductCard.test.tsx",
    "tipo": "unit",
-   "linhas": 343,
+   "linhas": 359,
    "testa": [
     "src/components/products/ProductCard.tsx",
     "src/types/product-catalog.ts"
    ],
-   "casos": 17
+   "casos": 18
   },
   {
    "arquivo": "tests/components/products/ProductGallery.test.tsx",
@@ -14689,9 +14791,7 @@
    "arquivo": "tests/edge-functions/integration/legacy-filters-escape.test.ts",
    "tipo": "unit",
    "linhas": 41,
-   "testa": [
-    "supabase/functions/external-db-bridge/legacy-filters.ts"
-   ],
+   "testa": [],
    "casos": 4
   },
   {
@@ -15691,11 +15791,25 @@
    "casos": 1
   },
   {
+   "arquivo": "tests/edge-functions/mcp-server.audit-user-id.test.ts",
+   "tipo": "unit",
+   "linhas": 28,
+   "testa": [],
+   "casos": 2
+  },
+  {
    "arquivo": "tests/edge-functions/parseAiResponse.test.ts",
    "tipo": "unit",
    "linhas": 176,
    "testa": [],
    "casos": 8
+  },
+  {
+   "arquivo": "tests/edge-functions/repo-only-files.test.ts",
+   "tipo": "unit",
+   "linhas": 51,
+   "testa": [],
+   "casos": 2
   },
   {
    "arquivo": "tests/edge-functions/voice-agent.test.ts",
@@ -16680,12 +16794,12 @@
   {
    "arquivo": "tests/hooks/useSearch.test.ts",
    "tipo": "unit",
-   "linhas": 199,
+   "linhas": 211,
    "testa": [
     "src/hooks/common/useSearch.ts",
     "src/hooks/products/useProducts.ts"
    ],
-   "casos": 14
+   "casos": 15
   },
   {
    "arquivo": "tests/hooks/useSellerCarts.merge.test.tsx",
@@ -16798,12 +16912,12 @@
   {
    "arquivo": "tests/hooks/useSupplierComparison.test.ts",
    "tipo": "unit",
-   "linhas": 231,
+   "linhas": 388,
    "testa": [
     "src/hooks/products/useSupplierComparison.ts",
     "src/types/product-catalog.ts"
    ],
-   "casos": 9
+   "casos": 20
   },
   {
    "arquivo": "tests/hooks/useTechniquePricing.test.ts",
@@ -19509,6 +19623,22 @@
    "casos": 1
   },
   {
+   "arquivo": "tests/security/crm-db-bridge-ownership.test.ts",
+   "tipo": "unit",
+   "linhas": 95,
+   "testa": [
+    "supabase/functions/crm-db-bridge/ownership.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "tests/security/csp-radix-scroll-area-hash.test.ts",
+   "tipo": "unit",
+   "linhas": 29,
+   "testa": [],
+   "casos": 1
+  },
+  {
    "arquivo": "tests/security/dashboard-widgets-seller-scope.spec.ts",
    "tipo": "unit",
    "linhas": 58,
@@ -19631,9 +19761,9 @@
   {
    "arquivo": "tests/security/security-headers.test.ts",
    "tipo": "unit",
-   "linhas": 237,
+   "linhas": 249,
    "testa": [],
-   "casos": 29
+   "casos": 19
   },
   {
    "arquivo": "tests/security/supabase-read-only-query.test.ts",
@@ -19973,6 +20103,20 @@
     "src/lib/db-retry.ts"
    ],
    "casos": 20
+  },
+  {
+   "arquivo": "tests/unit/e2e-personalization-card-click.test.ts",
+   "tipo": "unit",
+   "linhas": 22,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/unit/e2e-selectors-quote-add-product.test.ts",
+   "tipo": "unit",
+   "linhas": 60,
+   "testa": [],
+   "casos": 4
   },
   {
    "arquivo": "tests/unit/edge-live-suite-catalogs.test.ts",
@@ -20543,6 +20687,8 @@
   "src/components/admin/DiscountApprovalHeaderBadge.tsx": 1,
   "src/components/admin/OwnershipRepairDialog.tsx": 1,
   "src/components/admin/RlsIntegrationTestsDialog.tsx": 1,
+  "src/components/admin/categories-manager/CategoriesManager.tsx": 1,
+  "src/components/admin/categories-manager/categoryMutations.ts": 1,
   "src/components/admin/connections/CardSourceDiagnostic.tsx": 1,
   "src/components/admin/connections/ConnectionsOverviewTable.tsx": 2,
   "src/components/admin/connections/CredentialsSourceFilterContext.tsx": 3,
@@ -20564,6 +20710,7 @@
   "src/components/audit/AuditHistory.tsx": 1,
   "src/components/auth/SocialLoginButtons.tsx": 1,
   "src/components/auth/TurnstileWidget.tsx": 1,
+  "src/components/bi/ClientOverview360.tsx": 2,
   "src/components/cart/CartItemErrorAlert.tsx": 1,
   "src/components/cart/CartTabsRich.tsx": 2,
   "src/components/cart/CartUtilComponents.tsx": 5,
@@ -20578,6 +20725,7 @@
   "src/components/common/IntelligenceBadges.tsx": 1,
   "src/components/common/PersistentBreadcrumbs.tsx": 2,
   "src/components/compare/CompareTableView.tsx": 1,
+  "src/components/compare/SupplierComparisonModal.tsx": 1,
   "src/components/dashboard/RecentKitsWidget.tsx": 1,
   "src/components/dev/BridgeMetricsOverlay.tsx": 6,
   "src/components/dev/DevOnly.tsx": 1,
@@ -20651,6 +20799,7 @@
   "src/components/layout/ProtectedRoute.tsx": 7,
   "src/components/layout/SidebarReorganized.tsx": 5,
   "src/components/layout/SkeletonLoaders.tsx": 4,
+  "src/components/layout/sidebar/RestrictedRouteNotice.tsx": 1,
   "src/components/layout/sidebar/SidebarBrandHeader.tsx": 1,
   "src/components/layout/sidebar/SidebarNavGroup.tsx": 8,
   "src/components/magic-up/AdImageResult.tsx": 1,
@@ -20717,10 +20866,12 @@
   "src/components/products/ColorTooltipContent.tsx": 1,
   "src/components/products/ColumnSelector.tsx": 5,
   "src/components/products/FutureStockModal.tsx": 1,
+  "src/components/products/InlinePriceCalculator.tsx": 1,
   "src/components/products/KitComposition.tsx": 1,
   "src/components/products/LayoutPopover.tsx": 1,
   "src/components/products/PriceFreshnessBadge.tsx": 19,
   "src/components/products/ProductCard.tsx": 2,
+  "src/components/products/ProductCardActions.tsx": 1,
   "src/components/products/ProductCardImage.tsx": 1,
   "src/components/products/ProductCategoryBadges.tsx": 1,
   "src/components/products/ProductColorSelector.tsx": 2,
@@ -20737,6 +20888,7 @@
   "src/components/products/customization/ConfigurationPanelV6.tsx": 4,
   "src/components/products/customization/LocationPanel.tsx": 3,
   "src/components/products/gallery/PromoFlixPlayer.tsx": 1,
+  "src/components/products/inline-price/QuantityCalculator.tsx": 1,
   "src/components/products/quick-view/QuickViewGallery.tsx": 1,
   "src/components/products/share/MessageTemplates.ts": 1,
   "src/components/products/share/ShareKitDialog.tsx": 2,
@@ -20804,7 +20956,7 @@
   "src/components/ui/label.tsx": 3,
   "src/components/ui/popover.tsx": 2,
   "src/components/ui/select.tsx": 6,
-  "src/components/ui/tooltip.tsx": 112,
+  "src/components/ui/tooltip.tsx": 114,
   "src/components/ui/truncated-tooltip.tsx": 1,
   "src/components/workflows/WorkflowEditDialog.tsx": 1,
   "src/constants/filters.ts": 7,
@@ -20827,6 +20979,7 @@
   "src/hooks/auth/usePasswordBreachCheck.tsx": 1,
   "src/hooks/auth/useRBAC.tsx": 1,
   "src/hooks/auth/useStepUpAuth.ts": 1,
+  "src/hooks/bi/useClientBI.ts": 2,
   "src/hooks/collections/index.ts": 1,
   "src/hooks/collections/useCollections.ts": 2,
   "src/hooks/common/index.ts": 2,
@@ -21005,7 +21158,7 @@
   "src/lib/date-utils.ts": 3,
   "src/lib/db-retry.ts": 1,
   "src/lib/db/fetch-all-pages.ts": 1,
-  "src/lib/db/postgrest.ts": 14,
+  "src/lib/db/postgrest.ts": 16,
   "src/lib/discount-approval-status-config.ts": 1,
   "src/lib/dom/scroll-lock.ts": 2,
   "src/lib/edge/invokeBottlenecks.ts": 1,
@@ -21051,7 +21204,7 @@
   "src/lib/inventory/supplier-reliability/score.ts": 1,
   "src/lib/inventory/supplier-reliability/types.ts": 4,
   "src/lib/kit-builder/ai-composition.ts": 1,
-  "src/lib/kit-builder/index.ts": 26,
+  "src/lib/kit-builder/index.ts": 27,
   "src/lib/kit-builder/item-sort.ts": 1,
   "src/lib/kit-builder/persistence.ts": 1,
   "src/lib/kit-builder/price-calculator.ts": 2,
@@ -21129,6 +21282,7 @@
   "src/pages/Index.tsx": 2,
   "src/pages/NotFound.tsx": 2,
   "src/pages/Simulation.tsx": 1,
+  "src/pages/admin/AdminCadastrosPage.tsx": 1,
   "src/pages/admin/AdminConexoesPage.tsx": 2,
   "src/pages/admin/AdminConexoesStatusPage.tsx": 1,
   "src/pages/admin/AdminLoginAttemptsPage.tsx": 1,
@@ -21295,10 +21449,9 @@
   "supabase/functions/asia-ingestion/index.ts": 1,
   "supabase/functions/connections-auto-test/index.ts": 1,
   "supabase/functions/crm-db-bridge/index.ts": 3,
+  "supabase/functions/crm-db-bridge/ownership.ts": 1,
   "supabase/functions/e2e-cleanup/index.ts": 1,
   "supabase/functions/ema-pipeline-health/handler.ts": 1,
-  "supabase/functions/external-db-bridge/legacy-contracts.ts": 4,
-  "supabase/functions/external-db-bridge/legacy-filters.ts": 1,
   "supabase/functions/generate-ad-image/index.ts": 1,
   "supabase/functions/generate-ad-image/sanitize.ts": 1,
   "supabase/functions/generate-ad-prompt/timeout.ts": 1,
@@ -21329,7 +21482,6 @@
    "src/pages/__visual/QuoteItemsListMobileHarness.tsx",
    "src/pages/__visual/QuoteViewOrderHarness.tsx",
    "src/pages/admin/AdminAiUsagePage.tsx",
-   "src/pages/admin/AdminCadastrosPage.tsx",
    "src/pages/admin/AdminClientPerformancePage.tsx",
    "src/pages/admin/AdminCloudflareImagesPage.tsx",
    "src/pages/admin/AdminDesignTokensPage.tsx",
@@ -21672,7 +21824,6 @@
    "src/hooks/bi/useBIDossierExport.ts",
    "src/hooks/bi/useChurnRisk.ts",
    "src/hooks/bi/useClientAffinity.ts",
-   "src/hooks/bi/useClientBI.ts",
    "src/hooks/bi/useClientCategoryAffinity.ts",
    "src/hooks/bi/useClientHealthScore.ts",
    "src/hooks/bi/useClientOrdersHistory.ts",

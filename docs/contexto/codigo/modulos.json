@@ -256,13 +256,13 @@
   },
   {
    "modulo": "components/admin",
-   "arquivos": 292,
-   "testes": 6,
-   "linhas": 68782,
+   "arquivos": 295,
+   "testes": 7,
+   "linhas": 69127,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 236,
+   "componentes": 237,
    "hooks_locais": [
     "useA11y",
     "useAIRecommendations",
@@ -1571,8 +1571,8 @@
   {
    "modulo": "components/bi",
    "arquivos": 22,
-   "testes": 0,
-   "linhas": 5008,
+   "testes": 2,
+   "linhas": 5023,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -4286,8 +4286,8 @@
   {
    "modulo": "components/compare",
    "arquivos": 23,
-   "testes": 0,
-   "linhas": 4143,
+   "testes": 1,
+   "linhas": 4191,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -6837,7 +6837,6 @@
    ],
    "pacotes_externos": [
     "lucide-react",
-    "react-hot-toast",
     "sonner"
    ]
   },
@@ -8200,13 +8199,13 @@
   },
   {
    "modulo": "components/kit-builder",
-   "arquivos": 47,
+   "arquivos": 46,
    "testes": 0,
-   "linhas": 10607,
+   "linhas": 10436,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 46,
+   "componentes": 45,
    "hooks_locais": [
     "useA11y",
     "useAIRecommendations",
@@ -8784,8 +8783,8 @@
   {
    "modulo": "components/layout",
    "arquivos": 18,
-   "testes": 17,
-   "linhas": 3538,
+   "testes": 18,
+   "linhas": 3596,
    "itens_menu": [],
    "telas": [
     "/admin/comissoes",
@@ -12494,8 +12493,8 @@
   {
    "modulo": "components/products",
    "arquivos": 103,
-   "testes": 45,
-   "linhas": 26711,
+   "testes": 47,
+   "linhas": 26727,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -16840,7 +16839,6 @@
    "importado_por_outros_modulos": [
     "components/admin",
     "components/mockup",
-    "hooks/common",
     "pages/products",
     "utils"
    ],
@@ -17249,8 +17247,8 @@
   {
    "modulo": "hooks/bi",
    "arquivos": 14,
-   "testes": 0,
-   "linhas": 2097,
+   "testes": 1,
+   "linhas": 2094,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -17812,7 +17810,7 @@
    "modulo": "hooks/common",
    "arquivos": 23,
    "testes": 12,
-   "linhas": 2302,
+   "linhas": 2291,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -18258,7 +18256,6 @@
    "depende_de_modulos": [
     "components/catalog",
     "contexts",
-    "data",
     "hooks/intelligence",
     "hooks/products",
     "hooks/ui",
@@ -21964,9 +21961,9 @@
   },
   {
    "modulo": "hooks/stock",
-   "arquivos": 12,
+   "arquivos": 13,
    "testes": 4,
-   "linhas": 1436,
+   "linhas": 1531,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -24598,9 +24595,9 @@
   },
   {
    "modulo": "lib/kit-builder",
-   "arquivos": 11,
-   "testes": 0,
-   "linhas": 1808,
+   "arquivos": 10,
+   "testes": 1,
+   "linhas": 1632,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -26458,7 +26455,7 @@
    "modulo": "pages/admin",
    "arquivos": 59,
    "testes": 1,
-   "linhas": 15387,
+   "linhas": 15401,
    "itens_menu": [
     "Acesso & Bots",
     "Auditoria RBAC",
@@ -31206,7 +31203,7 @@
    "modulo": "pages/products",
    "arquivos": 24,
    "testes": 24,
-   "linhas": 8042,
+   "linhas": 8066,
    "itens_menu": [
     "Carrinhos",
     "Comparador de Produtos",

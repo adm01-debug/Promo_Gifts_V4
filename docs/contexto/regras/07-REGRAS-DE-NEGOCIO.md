@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0a9291a1dc` · branch `main` · 2026-11-13 07:39 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `bcba4c29a0` · branch `main` · 2026-11-13 08:23 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1538,7 +1538,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```ts
   draft: 'bg-muted text-muted-foreground', active: 'bg-primary/10 text-primary', paused: 'bg-warning/10 text-warning',
   ```
-- **ALLOWED_FILTER_KEYS** (`src/hooks/stock/stockFetcher.ts`):
+- **ALLOWED_FILTER_KEYS** (`src/hooks/stock/stockPagination.ts`):
   ```ts
   products: new Set(['active', 'is_active', 'supplier_id', 'category_id', 'brand']), product_variants: new Set(['is_active', 'product_id', 'color_id', 'supplier_id']), variant_supplier_sources: new Set(['is_active', 'variant_id', 'supplier_id']),
   ```
@@ -2154,6 +2154,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ErrorKind | timeout \| network \| auth \| rate_limit \| server \| client \| parse \| missing_credential \| unknown | `supabase/functions/_shared/ai-router/types.ts` |
 | ContractErrorCode | missing_body \| invalid_json \| validation_failed \| unsupported_version \| version_negotiation_failed | `supabase/functions/_shared/contracts/errors.ts` |
 | InsertResultShape | rows \| empty-array \| null \| generic-string-error \| single-object \| primitive \| unknown | `supabase/functions/crm-db-bridge/index.ts` |
+| CRM_BROAD_READ_ROLES | "dev", "admin", "supervisor", "manager", "gerente" | `supabase/functions/crm-db-bridge/ownership.ts` |
 | EmaHealthStatus | OK \| WARN \| ERROR \| UNKNOWN | `supabase/functions/ema-pipeline-health/handler.ts` |
 | ALLOWED_EVENT_TYPES | "approved", "rejected", "order_created", "sent_to_client", "expired", | `supabase/functions/receive-crm-callback/index.ts` |
 | SimulationOutcome | passed \| rejected \| infra_failed \| skipped | `supabase/functions/simulation-orchestrator/outcomes.ts` |
@@ -4905,6 +4906,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const now = new Date(); const yearShort = String(now.getFullYear()).slice(-2); const { data: lastQuotes } = await crm .from("quotes").select("quote_number") .ilike("quote_number", `%/${yearShort}`) .order("quote_number", { ascending: false }).limit(50); let maxNum = 10000; if (lastQuotes?.length) { for (const row of lastQuotes) { const parsed = parseInt((row.quote_number || "").replace(/\s+/g, "").split("/")[0] || "0", 10); if (!isNaN(parsed) && parsed > maxNum) maxNum = parsed; } } const genera …
   ```
+- **applyOwnerScope(crm: SupabaseClient, table: string, select: string, userRole?: string, userId?: string,)** — `supabase/functions/crm-db-bridge/index.ts`
+  ```
+  kind: "ok"; query: any; stripParent?: string
+  ```
 - **applyProductFilters(products: any[], filters: { categoryFilters: string[]; materialFilters: string[]; colorFilters: string[]; genderFilters:)** — `supabase/functions/expert-chat/index.ts`
   ```
   return products.filter((product: any) => { if (!matchesListFilter(product.materials, filters.materialFilters)) return false; if (!matchesListFilter(product.colors, filters.colorFilters)) return false; if (!matchesTextFilter(product.gender, filters.genderFilters)) return false; if (!matchesTagFilter(product.tags, ['publicoAlvo', 'publico_alvo'], filters.publicoFilters)) return false; if ( !matchesTagFilter( product.tags, ['datasComemorativas', 'datas_comemorativas'], filters.dataComemorativaFilte …
@@ -4912,10 +4917,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **scoreProductRelevance(product: any, expansion: SemanticExpansion, categoryMap: Record<string, string>,)** — `supabase/functions/expert-chat/index.ts`
   ```
   let score = 0; const name = (product.name || '').toLowerCase(); const description = (product.description || '').toLowerCase(); const catName = (categoryMap[product.category_id] || '').toLowerCase(); const materials = normalizeValueList(product.materials) .map((m) => m.toLowerCase()) .join(' '); const tagsText = JSON.stringify(product.tags || {}).toLowerCase(); const allText = `${name} ${description} ${materials} ${tagsText} ${catName}`; for (const term of expansion.searchTerms) { const t = term. …
-  ```
-- **applyFilters(query: FilterQuery, filters: Record<string, unknown>, categoryDescendants: string[] | null,)** — `supabase/functions/external-db-bridge/legacy-filters.ts`
-  ```
-  Object.entries(filters).forEach(([key, value]) => { if (value === undefined || value === null || value === '') return; if (key === '_search' && typeof value === 'string') { const pattern = quotePostgrestValue(`%${escapeLikePattern(value)}%`); query = query.or(['name', 'sku', 'supplier_reference', 'brand', 'description'].map((col) => `${col}.ilike.${pattern}`).join(',')); return; } // Name prefix search: matc
   ```
 - **computeBlurhash(img: ImgRow)** — `supabase/functions/generate-blurhashes/index.ts`
   ```
@@ -5056,7 +5057,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `recentViews: Math.round(c.views * 0.42),` | `src/components/intelligence/TopCategoriesCard.tsx` |
 | `trendingScore: 2 + (MOCK_TOP_CATEGORIES.length - idx) * 0.3,` | `src/components/intelligence/TopCategoriesCard.tsx` |
 | `backgroundColor: `hsl(var(--primary) / ${0.15 + intensity * 0.85})`,` | `src/components/intelligence/TrendsHeatmap.tsx` |
-| `// Estratégia: margem ~ 1 - (custo_estimado / preço). Usamos 65% baseline.` | `src/components/kit-builder/KitHealthCard.tsx` |
 | `* semelhantes ao kit atual (overlap >=30% por SKU).` | `src/components/kit-builder/SimilarKitsWidget.tsx` |
 | `transition={{ delay: index * 0.05 }}` | `src/components/mobile/SmartMobileNav.tsx` |
 | `// A divisória fica entre 2% e 98% para o puxador não sair do quadro.` | `src/components/mockup/MockupBeforeAfter.tsx` |
@@ -5113,11 +5113,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `// (match por identidade de objeto, 100% robusto, independe de displayName).` | `src/components/ui/alert-dialog.tsx` |
 | `const p95Index = Math.max(0, Math.ceil(sorted.length * 0.95) - 1);` | `src/hooks/auth/useAuthHydrationMetrics.ts` |
 | `priceFrom: Math.round(Number(p.avg_unit_price) * 0.85) \|\| 0,` | `src/hooks/bi/useClientAffinity.ts` |
-| `avgTicket: MOCK_CLIENT_STATS.avgTicket * 0.92,` | `src/hooks/bi/useClientBI.ts` |
-| `ltv: MOCK_CLIENT_STATS.ltv * 0.28,` | `src/hooks/bi/useClientBI.ts` |
-| `ltv: MOCK_CLIENT_STATS.ltv * 0.35,` | `src/hooks/bi/useClientBI.ts` |
-| `ordersCount: Math.max(1, Math.floor(MOCK_CLIENT_STATS.ordersCount * 0.25)),` | `src/hooks/bi/useClientBI.ts` |
-| `ordersCount: Math.max(1, Math.floor(MOCK_CLIENT_STATS.ordersCount * 0.3)),` | `src/hooks/bi/useClientBI.ts` |
 | `const recentBias = 0.55 + ((i % 3) - 1) * 0.12; // 0.43, 0.55, 0.67` | `src/hooks/bi/useClientCategoryAffinity.ts` |
 | `* - Crescimento trim. 15% (compara últimos 3m vs 3m anteriores via sazonalidade)` | `src/hooks/bi/useClientHealthScore.ts` |
 | `* - Frequência 25% (vs média do setor)` | `src/hooks/bi/useClientHealthScore.ts` |
@@ -5307,6 +5302,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `PDF_LAYOUT_MILESTONE` | `'pdf-layout-v1-2026-07-06'` | `src/deploy-version.ts` |
 | `MESSAGE_ROTATION_MS` | `2500` | `src/components/LoadingScreen.tsx` |
 | `PAGE_SIZE` | `50` | `src/components/admin/DiscountApprovalQueue.tsx` |
+| `ROOT` | `'__none__'` | `src/components/admin/categories-manager/CategoriesManager.tsx` |
 | `PREVIEW_LIMIT` | `8` | `src/components/admin/connections/ConnectionTestDetailsDialog.tsx` |
 | `DEFAULT_PREVIEW_SIZE` | `5` | `src/components/admin/connections/ConnectionTestHistoryPanel.tsx` |
 | `TOOLTIP_LIMIT` | `12` | `src/components/admin/connections/CredentialsSourceIndicator.tsx` |
@@ -5554,8 +5550,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `PREFETCH_MIN_INTERVAL_MS` | `5` | `src/hooks/ui/useWorkspaceNotifications.tsx` |
 | `CACHE_TTL_MS` | `12` | `src/hooks/voice/scribeTokenCache.ts` |
 | `MAX_ENTRIES` | `5` | `src/hooks/voice/useVoiceHistory.ts` |
-| `CATALOG_LOW_STOCK_THRESHOLD` | `10` | `src/lib/catalog-stock-status.ts` |
-| … +333 linhas — lista completa em `context.json` | | |
+| … +337 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -5810,7 +5805,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `const WINDOW_MS = 5 * 60 * 1000;` | `src/components/intelligence/RealtimeBadge.tsx` |
 | `const horizon = now + FUTURE_STOCK_WINDOW_DAYS * 24 * 60 * 60 * 1000;` | `src/components/inventory/StockDashboard.tsx` |
 | `setTimeout(() => setLastError(null), 3000);` | `src/components/kit-builder/ItemSelector.tsx` |
-| `staleTime: 5 * 60 * 1000,` | `src/components/kit-builder/KitHealthCard.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/components/kit-builder/KitMakerLanding.tsx` |
 | `staleTime: 10 * 60 * 1000,` | `src/components/kit-builder/VariantSelector.tsx` |
 | `staleTime: 2 * 60 * 1000,` | `src/components/mockup/MockupClientSelector.tsx` |
@@ -5861,7 +5855,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientCategoryAffinity.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientOrdersHistory.ts` |
 | `staleTime: 10 * 60 * 1000,` | `src/hooks/bi/useClientSeasonality.ts` |
-| … +379 linhas — lista completa em `context.json` | |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientVsIndustry.ts` |
+| … +378 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -5929,7 +5924,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | 2000 | `src/components/intelligence/HotSearchesCard.tsx` |
 | 500 | `src/components/intelligence/UnmetDemandCard.tsx` |
 | 50 | `src/components/kit-builder/DiscontinuedItemsAlert.tsx` |
-| 200 | `src/components/kit-builder/KitHealthCard.tsx` |
 | 100 | `src/components/kit-builder/KitSmartSuggestions.tsx` |
 | 1 | `src/components/layout/SidebarReorganized.tsx` |
 | 1 | `src/components/products/ProductPersonalizationRules.tsx` |
@@ -6016,6 +6010,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | 1 | `supabase/functions/connections-health-check/index.ts` |
 | 1 | `supabase/functions/connections-hub-audit/index.ts` |
 | 1 | `supabase/functions/crm-db-bridge/index.ts` |
+| 2 | `supabase/functions/crm-db-bridge/index.ts` |
 | 50 | `supabase/functions/crm-db-bridge/index.ts` |
 | 1 | `supabase/functions/detect-new-device/index.ts` |
 | 1000 | `supabase/functions/e2e-cleanup/index.ts` |
@@ -6344,7 +6339,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | DOWNLOAD_SIZE_LIMIT | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_ACTION_AFTER | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_JSON_KEY | `scripts/diagnose-personalization-artifact.py` |
-| … +1243 linhas — lista completa em `context.json` | |
+| … +1251 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6418,8 +6413,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `agente` | `supabase/functions/comparison-ai-advisor/index.ts` |
 | `admin` | `supabase/functions/connection-tester/index.ts` |
 | `dev` | `supabase/functions/connection-tester/index.ts` |
-| `r` | `supabase/functions/crm-db-bridge/index.ts` |
 | `vendedor` | `supabase/functions/crm-db-bridge/index.ts` |
+| `r` | `supabase/functions/crm-db-bridge/ownership.ts` |
+| `vendedor` | `supabase/functions/crm-db-bridge/ownership.ts` |
 | `agente` | `supabase/functions/dropbox-list/index.ts` |
 | `user` | `supabase/functions/expert-chat/index.ts` |
 | `dev` | `supabase/functions/force-global-logout/index.ts` |
@@ -6464,7 +6460,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (20995 testes em 2114 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21082 testes em 2129 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6504,6 +6500,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/e2e/products-catalog.test.ts` | 56 | E2E Catalog — Product Filtering · active only by default · includes inactive when specified · search by name … |
 | `tests/pages/AdminTelemetriaPage.test.tsx` | 56 | AdminTelemetriaPage - Rendering · renders page title and description · renders the page shell · renders all 4 stat cards … |
 | `tests/e2e/cross-cutting-regression.test.ts` | 55 | Cross-Cutting — Currency Formatting · formats BRL correctly · formats zero · formats large number … |
+| `src/hooks/stock/__tests__/stockFetcher.test.ts` | 54 | toNumber · returns numbers as-is · coerces numeric strings · returns the fallback for non-finite / non-numeric values … |
 | `tests/utils/product-sorting.test.ts` | 54 | sortProducts · name sort · sorts alphabetically A-Z · handles accented characters correctly … |
 | `src/components/inventory/__tests__/stock-pure-components.test.tsx` | 53 | StockBadge · renders %s status label · shows formatted quantity when showQuantity=true · formats large quantity with k suffix … |
 | `tests/edge-functions/integration/receive-crm-callback.fuzz.test.ts` | 53 | SOURCE PARITY — código de produção contém as funções esperadas · timingSafeEqual continua constant-time (XOR loop, sem early-return) · verify_jwt=false via config.toml (auth é 100% inline) · usa service_role — nunca ANON — para writes … |
@@ -6518,7 +6515,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/unit/stock-chart-utils.test.ts` | 46 | seededRandom · returns a value in [0, 1) · is deterministic: same seed produces same result · different seeds produce different results (most of the time) … |
 | `tests/edge-functions/integration/freight-quest-webhook-simulation.test.ts` | 45 | webhook-inbound — happy path (v2 envelope) · aceita evento  · webhook-inbound — múltiplas fontes · aceita source= … |
 | `e2e/products-module.spec.ts` | 44 | Products Module - Public Access (No Auth) · should redirect to auth when accessing ${route.path} unauthenticated · should display auth page for all product routes · should not expose product catalog data to unauthenticated users … |
-| `src/hooks/stock/__tests__/stockFetcher.test.ts` | 44 | toNumber · returns numbers as-is · coerces numeric strings · returns the fallback for non-finite / non-numeric values … |
 | `tests/e2e/admin-module.test.ts` | 44 | E2E Admin — User Management · lists all users · filters active users · filters inactive users … |
 | `tests/scripts/check-ledger-statements-gate.test.mjs` | 44 | isCanonicalVersion · aceita exatamente 14 dígitos · rejeita versões não-canônicas (curtas, com sufixo, ou não numéricas) · asStatementsArray … |
 | `tests/sw/sw.test.ts` | 44 | sw.js — install/activate · precacheia os critical assets e ativa skipWaiting sem lançar mesmo se um optional falhar · activate remove caches de versões antigas e preserva os atuais · sw.js — predicados de roteamento (extensão base64url, BUG-SW-9) … |
@@ -6543,11 +6539,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/e2e/navigation-layout.test.tsx` | 37 | E2E Navigation — Route Registry · has public routes · has protected routes · has admin routes … |
 | `tests/e2e/phase1-foundation-types.test.ts` | 37 | Phase 1.1 — ProductColor Type Contract · accepts valid color with all fields · accepts color without optional fields · handles zero stock … |
 | `tests/hooks/super-filtro-bugfix-15-22.test.ts` | 37 | BUG-15a — filtro featured · deve incluir apenas produtos com featured=true quando filtro ativo · não deve filtrar quando featured=false no filtro · BUG-15b — filtro isNew via newArrival … |
+| `tests/security/security-headers.test.ts` | 37 | Security Headers: HSTS · Strict-Transport-Security is configured · HSTS max-age is at least 1 year (31536000) · HSTS includes includeSubDomains … |
 | `tests/unit/masked-suffix.test.ts` | 37 | normalizeMaskedSuffix · returns ???? for null · returns ???? for undefined · returns ???? for empty string … |
 | `src/hooks/__tests__/hooks-audit-regression.unit.test.ts` | 36 | STOCK-01 — toNumber utility (base para buildFutureEntries) · converte number para number sem alteracao · converte string numerica corretamente · retorna fallback para NaN e valores invalidos … |
 | `tests/e2e/phase4-admin-grid.test.ts` | 36 | Phase 4.1 — Variation Axes Config · detects color-only axes · detects color + size axes · detects all three axes … |
 | `tests/lib/kit-builder-volume.test.ts` | 36 | kit-builder volume-calculator · calculateVolume · returns w*h*d · calculateUsableVolume … |
-| `tests/security/security-headers.test.ts` | 36 | Security Headers: HSTS · Strict-Transport-Security is configured · HSTS max-age is at least 1 year (31536000) · HSTS includes includeSubDomains … |
 | `tests/e2e/phase5-propagation.test.ts` | 35 | Phase 5.1 — Quote Items with size_code · quote item with color and size · quote item without size (non-apparel) · quote item subtotal calculation … |
 | `tests/lib/date-utils.test.ts` | 35 | date-utils · formatDate · formats ISO string with default pattern · formats Date object … |
 | `tests/scripts/check-types-inventory-drift.test.mjs` | 35 | extractTypesInventory (TypeScript Compiler API) · rejeita entrada vazia, truncada ou desconhecida: %s · extrai Tables/Views/Functions/Enums por schema e ignora __InternalSupabase · countsOf reduz o inventário a contagens por schema/categoria … |
@@ -6632,6 +6628,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/customization/__tests__/format-engraving-title.test.ts` | 24 | formatEngravingTitle · prioriza nome_tabela quando disponível · usa techniqueName como fallback quando nome_tabela vazio · usa groupName como último fallback antes do default … |
 | `src/lib/edge/__tests__/invokeEdge-contracts.integration.test.ts` | 24 | invokeEdge contract — secrets-manager · cache_metrics: sucesso devolve envelope { ok, metrics } · reset_cache_metrics: 403 → error credential, data=null · erro embutido em envelope (200) é preservado para o caller … |
 | `tests/fuzz/freight-quest-fuzzer.test.ts` | 24 | fuzz: injeções no campo event · SQL injection em event= · XSS em event= · fuzz: path traversal em campos de texto … |
+| `tests/hooks/useSupplierComparison.test.ts` | 24 | useSupplierComparison · should return null when no product is provided · should query by category name when the product has no category id · should pass undefined filters when the product has no category at all … |
 | `tests/lib/query-config-extended.test.ts` | 24 | CACHE_TIMES constants · VERY_STABLE is 24 hours · STABLE is 1 hour · TECNICAS is 30 min … |
 | `tests/magazine/helpers.test.ts` | 24 | helpers/ringsOf — detecção de rings base · detecta ring-primary e ring-amber-500 na forma canônica · detecta família amber em qualquer shade (400, 500, 600, 700) · detecta ring-primary com opacity (ring-primary/50, ring-primary/70) … |
 | `tests/scripts/check-no-db-push.test.mjs` | 24 | ALLOWLIST – new entry from PR · contains the new audit file entry · isAllowed() returns true for the new audit file (exact match) · isAllowed() rejects a path that is a prefix of the new entry … |
@@ -6714,8 +6711,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/tests/ProductSortingRelevance.test.ts` | 20 | SORT_OPTIONS — contrato do seletor · expõe exatamente as 7 opções esperadas, na ordem da UI · todas as opções têm label não vazia · sortProducts — Nome (A-Z) … |
 | `src/utils/__tests__/quote-number.exhaustive.test.ts` | 20 | quote-number · normalização e validação exaustivas · idempotência · normalizar(%s) é idempotente · saneamento de espaços … |
 | `supabase/functions/external-db-bridge/applyFiltersAndSwap.integration.test.ts` | 20 | applyFilters: nunca chama .select() (filtro vazio) · applyFilters: nunca chama .select() (filtros simples eq) · applyFilters: nunca chama .select() (operadores PostgREST string) · applyFilters: nunca chama .select() (sufixos _gte/_lte/_isnull/_notnull) … |
+| `tests/components/products/ProductCard.test.tsx` | 20 | ProductCard · renders product name and price · renders with favorite state · calls onClick when clicked … |
 | `tests/edge-functions/integration/cnpj-lookup.test.ts` | 20 | cnpj-lookup · happy path · retorna 200 com dados da empresa para CNPJ válido formatado · aceita CNPJ sem formatação (somente dígitos) … |
 | `tests/edge-functions/integration/step-up-verify.test.ts` | 20 | step-up-verify · verificação bem-sucedida · retorna 200 com step_up_token quando OTP correto · step_up_token expira em tempo razoável (15min) … |
+| `tests/hooks/useSearch.test.ts` | 20 | useSearch · Histórico · adiciona termo ao histórico · remove duplicatas do histórico (case-insensitive) … |
 | `tests/integration/freight-quest/quote-freight-integration.test.ts` | 20 | quote-sync — integração com frete · sync_quote com shipping_type=fob_pre → total inclui frete · sync_quote com shipping_type=cif → total NÃO inclui frete · quoteId inválido (não-UUID) → 400 validation error … |
 | `tests/lib/rbac-permissions.test.ts` | 20 | RBAC Permission Matrix · admin · has access to everything · manager … |
 | `tests/pages/QuoteBuilder.test.ts` | 20 | QuoteBuilder — Item Calculations · calculates single item total · calculates quote subtotal · handles empty items list … |
@@ -6735,7 +6734,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `supabase/functions/magic-up-score/index.limits.test.ts` | 19 | F-07 — corpo acima do teto é recusado com 413 antes do download completo · content-length acima do teto → 413 sem abrir o corpo · sem content-length, a leitura para ao passar do teto (não baixa tudo) · F-07 — imagem acima do limite é recusada com 413 antes do provedor … |
 | `tests/admin/route-guards-ref-warning.test.tsx` | 19 | Route guards — React ref warning guard · AdminRoute (loading) — sem warning de ref · AdminRoute (sem user → Navigate /login) — sem warning de ref · AdminRoute (admin com MFA OK → Outlet) — sem warning de ref … |
 | `tests/components/ReplenishmentToolbar.test.tsx` | 19 | ReplenishmentToolbar · renders title and count badge · shows loading state when isLoading with zero total · shows filtered/total when hasActiveFilters … |
-| `tests/components/products/ProductCard.test.tsx` | 19 | ProductCard · renders product name and price · renders with favorite state · calls onClick when clicked … |
 | `tests/edge-functions/voice-agent.test.ts` | 19 | Voice Agent Response Contract · action types · should have valid action enum values · response structure … |
 | `tests/edge-functions/integration/secure-upload.test.ts` | 19 | secure-upload · happy path — upload válido · retorna 200 com path, bucket e hash · hash retornado é string hexadecimal de 64 chars (SHA-256) … |
 | `tests/lib/query-config.test.ts` | 19 | CACHE_TIMES · should have increasing cache durations · getStaleTimeForKey · should return TECNICAS time for tecnicas keys … |
@@ -6765,10 +6763,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/components/kit-builder/KitAIPromptDialog.test.tsx` | 18 | KitAIPromptDialog · collects an explicit briefing and applies only the returned filters after confirmation · etapa 17: usa título, descrição e estilo devolvidos pela IA em vez do fallback derivado do briefing · etapa 17: mantém o fallback derivado do briefing quando a IA não devolve título/descrição/estilo … |
 | `tests/edge-functions/integration/product-webhook.test.ts` | 18 | product-webhook · evento product.created · retorna 200 para evento product.created válido · evento product.updated … |
 | `tests/hooks/useGlobalSearch-voice.test.ts` | 18 | Voice Action Handler Logic · navigate action · should extract route from navigate action · should handle navigate without route gracefully … |
-| `tests/hooks/useSearch.test.ts` | 18 | useSearch · Histórico · adiciona termo ao histórico · remove duplicatas do histórico (case-insensitive) … |
 | `tests/lib/product-types.test.ts` | 18 | getProductImageUrl · should prefer primary_image_url · should fallback to image_url · should fallback to first image in images array … |
-| `tests/lib/personalization/adapters/price-response.adapter.test.ts` | 18 | detectPriceSchema · detecta v5.9 nested · detecta v6.x flat · detecta v7-new … |
-| … +1814 linhas — lista completa em `context.json` | | |
+| … +1829 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7235,4 +7231,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Laser detection — must come before UV check since "Laser UV" exists | `src/components/mockup/techniqueColorUtils.ts` |
 | a caixa cheia é um limite superior: a bbox nunca subestima a marca girada e um | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
 | * Filtro de técnica EFETIVO — o mesmo que a prévia aplica. Decide se há regra. */ | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
-| … +1252 linhas — lista completa em `context.json` | |
+| … +1250 linhas — lista completa em `context.json` | |

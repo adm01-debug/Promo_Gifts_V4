@@ -2,11 +2,66 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0a9291a1dcbf54ff5785739993455acb2486cea1",
+  "commit": "bcba4c29a04378d4acc96cb938cbffffbe3d1d14",
   "branch": "main",
-  "data_commit": "2026-11-13T04:12:19-03:00",
+  "data_commit": "2026-11-13T04:46:50-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "bcba4c2",
+    "data": "2026-11-13",
+    "assunto": "chore(main): release 1.1.0"
+   },
+   {
+    "sha": "2ad46cd",
+    "data": "2026-11-13",
+    "assunto": "docs: registra 22 deploys E66 e 4 migrations E15 no ledger (#3496)"
+   },
+   {
+    "sha": "3508d2a",
+    "data": "2026-11-13",
+    "assunto": "fix(db): exclusão de usuário com itens no carrinho deixa de falhar (#3402)"
+   },
+   {
+    "sha": "640d96e",
+    "data": "2026-11-13",
+    "assunto": "fix(edge): recomendações e copiloto de BI voltam a usar IA via router multi-provider (#3401)"
+   },
+   {
+    "sha": "8404c43",
+    "data": "2026-11-13",
+    "assunto": "fix: lote de correções da auditoria de prontidão (catálogo, produto, busca, BI, categorias, e2e, edge) (#3463)"
+   },
+   {
+    "sha": "9c518b2",
+    "data": "2026-11-13",
+    "assunto": "chore(claude): adiciona comando /merge-prs (#3420)"
+   },
+   {
+    "sha": "afa3739",
+    "data": "2026-11-13",
+    "assunto": "fix: erros de console em produção (Sentry bloqueado pela CSP, CRM 500, estilos inline) (#3429)"
+   },
+   {
+    "sha": "b5e04b3",
+    "data": "2026-11-13",
+    "assunto": "fix(estoque): carrega /estoque com paginação em faixas paralelas de keyset (#3460)"
+   },
+   {
+    "sha": "f55aecb",
+    "data": "2026-11-13",
+    "assunto": "chore(analise-prs): relatório das 61 PRs abertas em 2026-11-12 (#3408)"
+   },
+   {
+    "sha": "5a4ad72",
+    "data": "2026-11-13",
+    "assunto": "chore(main): release 1.9.0 (#3210)"
+   },
+   {
+    "sha": "3d1e34f",
+    "data": "2026-11-13",
+    "assunto": "docs: recibo de deploy de edge function(s) — run 43367027942 (E66) (#3480)"
+   },
    {
     "sha": "0a9291a",
     "data": "2026-11-13",
@@ -76,68 +131,13 @@
     "sha": "9ae4c11",
     "data": "2026-11-12",
     "assunto": "Merge branch 'main' into claude/lote-pilha-v2-261112"
-   },
-   {
-    "sha": "fee3d09",
-    "data": "2026-11-12",
-    "assunto": "fix(sitemap): devolve EXECUTE de anon em get_sitemap_public e remove sitemap estático (#3430)"
-   },
-   {
-    "sha": "c8ae97c",
-    "data": "2026-11-12",
-    "assunto": "fix: corrige 42 bugs da rodada 2 em orçamentos, admin, preços, limites e datas (#3428)"
-   },
-   {
-    "sha": "c7680be",
-    "data": "2026-11-12",
-    "assunto": "fix(ci): 4ª validação — E188 pelo SHA do head (fork), ledger por contagem, retries sob controle"
-   },
-   {
-    "sha": "5878ff7",
-    "data": "2026-11-12",
-    "assunto": "Merge branch 'main' into claude/lote-pilha-v2-261112"
-   },
-   {
-    "sha": "260356c",
-    "data": "2026-11-12",
-    "assunto": "test(edge-live): timeout do cliente é repetido antes de virar falha (cold start)"
-   },
-   {
-    "sha": "03b9fb2",
-    "data": "2026-11-12",
-    "assunto": "fix(ci): ledger parity tolera o pareamento sequencial da CLI; auditoria sem depender de rg"
-   },
-   {
-    "sha": "e9a4a1a",
-    "data": "2026-11-12",
-    "assunto": "fix: E2E busca global — modifier+K webkit, Ctrl+Shift+V webkit, snapshots"
-   },
-   {
-    "sha": "e8a0b32",
-    "data": "2026-11-12",
-    "assunto": "fix(ci): Gate E40 volta ao setup-cli anterior (bump da #3330 quebrou o ledger parity)"
-   },
-   {
-    "sha": "7e4fad0",
-    "data": "2026-11-12",
-    "assunto": "Merge branch 'main' into claude/lote-pilha-prs-261111"
-   },
-   {
-    "sha": "b9cabc6",
-    "data": "2026-11-12",
-    "assunto": "fix(ci): E188 resolve origin/<branch> no checkout de PR (falhava fechado em toda PR)"
-   },
-   {
-    "sha": "5f956d2",
-    "data": "2026-11-12",
-    "assunto": "fix: corrige 62 bugs confirmados em telas, hooks e edge functions (#3424)"
    }
   ],
-  "arquivos_mudados_7d": 1910,
+  "arquivos_mudados_7d": 1975,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 339
+    "mudancas": 343
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -145,7 +145,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 175
+    "mudancas": 181
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -180,42 +180,42 @@
     "mudancas": 78
    },
    {
-    "pasta": "RELATORIO_CI.md",
-    "mudancas": 72
+    "pasta": "src/pages/admin",
+    "mudancas": 73
    },
    {
-    "pasta": "src/pages/admin",
-    "mudancas": 72
+    "pasta": "RELATORIO_CI.md",
+    "mudancas": 68
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 65
+    "mudancas": 66
    },
    {
-    "pasta": "src/pages/quotes",
-    "mudancas": 62
+    "pasta": "src/pages/products",
+    "mudancas": 63
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 72
+    "mudancas": 68
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 61
+    "mudancas": 56
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 36
+    "mudancas": 37
    },
    {
     "arquivo": "package.json",
-    "mudancas": 31
+    "mudancas": 32
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 21
+    "mudancas": 22
    },
    {
     "arquivo": "analise-prs/progresso.json",
@@ -223,7 +223,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 13
+    "mudancas": 14
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
@@ -231,10 +231,14 @@
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "mudancas": 11
+   },
+   {
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 11
    },
    {
@@ -254,15 +258,7 @@
     "mudancas": 9
    },
    {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 9
-   },
-   {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
     "mudancas": 8
    },
    {
@@ -275,6 +271,10 @@
    },
    {
     "arquivo": "CLAUDE.md",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
     "mudancas": 7
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 447
+    "commits": 445
    },
    {
     "autor": "Joaquim Ataides",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 28
+    "commits": 30
    },
    {
     "autor": "dependabot[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10079,
-  "arquivos_codigo": 5193,
-  "linhas_codigo": 993575,
+  "arquivos_total": 10105,
+  "arquivos_codigo": 5212,
+  "linhas_codigo": 995707,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -334,12 +334,12 @@
   "hooks": 615,
   "edge_functions": 111,
   "tabelas": 545,
-  "migrations": 3062,
+  "migrations": 3063,
   "cron_jobs": 122,
-  "testes": 2431,
+  "testes": 2449,
   "workflows": 98,
   "scripts": 272,
-  "docs_md": 1016
+  "docs_md": 1018
  },
  "por_pasta": {
   ".github/scripts": {
@@ -544,11 +544,11 @@
   },
   "e2e/fixtures": {
    "arquivos": 10,
-   "linhas": 1547
+   "linhas": 1557
   },
   "e2e/flows": {
    "arquivos": 183,
-   "linhas": 25310
+   "linhas": 25312
   },
   "e2e/future-stock.spec.ts": {
    "arquivos": 1,
@@ -604,7 +604,7 @@
   },
   "e2e/mockup-generate.spec.ts": {
    "arquivos": 1,
-   "linhas": 21
+   "linhas": 24
   },
   "e2e/navigation.spec.ts": {
    "arquivos": 1,
@@ -760,7 +760,7 @@
   },
   "e2e/quotes": {
    "arquivos": 60,
-   "linhas": 6937
+   "linhas": 6938
   },
   "e2e/raio-x.spec.ts": {
    "arquivos": 1,
@@ -1883,8 +1883,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1348,
-   "linhas": 272333
+   "arquivos": 1357,
+   "linhas": 273211
   },
   "src/config": {
    "arquivos": 1,
@@ -1907,8 +1907,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 455,
-   "linhas": 85419
+   "arquivos": 457,
+   "linhas": 85860
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1916,7 +1916,7 @@
   },
   "src/lib": {
    "arquivos": 327,
-   "linhas": 50709
+   "linhas": 50553
   },
   "src/logic": {
    "arquivos": 4,
@@ -1928,7 +1928,7 @@
   },
   "src/pages": {
    "arquivos": 350,
-   "linhas": 82465
+   "linhas": 82503
   },
   "src/routes": {
    "arquivos": 14,
@@ -1948,7 +1948,7 @@
   },
   "src/tests": {
    "arquivos": 33,
-   "linhas": 5022
+   "linhas": 5072
   },
   "src/types": {
    "arquivos": 26,
@@ -1959,8 +1959,8 @@
    "linhas": 8171
   },
   "supabase/functions": {
-   "arquivos": 268,
-   "linhas": 48895
+   "arquivos": 270,
+   "linhas": 49278
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -2036,7 +2036,7 @@
   },
   "tests/components": {
    "arquivos": 149,
-   "linhas": 33050
+   "linhas": 33066
   },
   "tests/config": {
    "arquivos": 6,
@@ -2059,8 +2059,8 @@
    "linhas": 165
   },
   "tests/edge-functions": {
-   "arquivos": 171,
-   "linhas": 12960
+   "arquivos": 173,
+   "linhas": 13039
   },
   "tests/fixtures": {
    "arquivos": 3,
@@ -2080,7 +2080,7 @@
   },
   "tests/hooks": {
    "arquivos": 128,
-   "linhas": 17166
+   "linhas": 17335
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2147,8 +2147,8 @@
    "linhas": 54
   },
   "tests/security": {
-   "arquivos": 21,
-   "linhas": 2122
+   "arquivos": 23,
+   "linhas": 2258
   },
   "tests/setup-ref-warning-capture.ts": {
    "arquivos": 1,
@@ -2227,8 +2227,8 @@
    "linhas": 160
   },
   "tests/unit": {
-   "arquivos": 38,
-   "linhas": 6166
+   "arquivos": 40,
+   "linhas": 6248
   },
   "tests/utils": {
    "arquivos": 21,
@@ -2329,6 +2329,10 @@
    "linhas": 952
   },
   {
+   "arquivo": "supabase/functions/crm-db-bridge/index.ts",
+   "linhas": 942
+  },
+  {
    "arquivo": "src/data/mock-match-products.ts",
    "linhas": 940
   },
@@ -2347,14 +2351,10 @@
   {
    "arquivo": "scripts/ai-context/gerar.mjs",
    "linhas": 924
-  },
-  {
-   "arquivo": "src/pages/products/FavoritesPage.tsx",
-   "linhas": 895
   }
  ],
  "qualidade": {
-  "any": 696,
+  "any": 699,
   "console_log": 1270,
   "ts_ignore": 0,
   "eslint_disable": 24,
@@ -3255,7 +3255,6 @@
    "src/components/kit-builder/IdentitySuggestionButton.tsx",
    "src/components/kit-builder/KitCollaborationPanel.tsx",
    "src/components/kit-builder/KitComparisonDialog.tsx",
-   "src/components/kit-builder/KitHealthCard.tsx",
    "src/components/kit-builder/KitTemplates.tsx",
    "src/components/kit-builder/KitVariantsManager.tsx",
    "src/components/kit-builder/SimilarKitsWidget.tsx",

@@ -18,13 +18,13 @@
    "src/components (75)"
   ],
   "servicos_logica": [
-   "src/lib (224)",
+   "src/lib (223)",
    "src/utils (30)",
    "src/services (9)"
   ],
   "testes": [
-   "tests/ (990)",
-   "co-localizado (__tests__) (625)",
+   "tests/ (996)",
+   "co-localizado (__tests__) (634)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
-   "Merge pull request #3425 from adm01-debug/claude/lote-pilha-v2-261112",
-   "Merge branch 'main' into claude/lote-pilha-v2-261112",
-   "fix(test): validação de tema roda só nos navegadores Chromium instalados no CI (#3458)",
-   "Merge branch 'main' into claude/lote-pilha-v2-261112",
-   "fix(security): baseline de policies inclui e2e_cleanup_audit (destrava Gate 1.13) (#3468)"
+   "chore(main): release 1.1.0",
+   "docs: registra 22 deploys E66 e 4 migrations E15 no ledger (#3496)",
+   "fix(db): exclusão de usuário com itens no carrinho deixa de falhar (#3402)",
+   "fix(edge): recomendações e copiloto de BI voltam a usar IA via router multi-provider (#3401)",
+   "fix: lote de correções da auditoria de prontidão (catálogo, produto, busca, BI, categorias, e2e, edge) (#3463)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

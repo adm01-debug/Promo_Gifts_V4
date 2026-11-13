@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0a9291a1dc` · branch `main` · 2026-11-13 07:39 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `bcba4c29a0` · branch `main` · 2026-11-13 08:23 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -327,7 +327,7 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
-## Onde o RLS é IGNORADO (service_role) — 806 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 807 arquivo(s)
 
 - `auditoria-supabase/propostas/P01_rls_restrictive_correcao.sql`
 - `auditoria-supabase/propostas/P10_func_new_001_fn_cron_guard_revoke.sql`
@@ -463,6 +463,7 @@
 - `supabase/functions/crm-callback-reprocess/index.ts`
 - `supabase/functions/crm-db-bridge/creds_health.test.ts`
 - `supabase/functions/crm-db-bridge/index.ts`
+- `supabase/functions/crm-db-bridge/scope_integration_test.ts`
 - `supabase/functions/e2e-cleanup/handler_characterization_test.ts`
 - `supabase/functions/e2e-cleanup/index.mockups.test.ts`
 - `supabase/functions/e2e-cleanup/index.ts`
@@ -478,8 +479,7 @@
 - `supabase/functions/health-check/index.ts`
 - `supabase/functions/load-test/index.ts`
 - `supabase/functions/log-login-attempt/index.ts`
-- `supabase/functions/log-login-attempt/index_test.ts`
-- … +656 (lista completa em `context.json`)
+- … +657 (lista completa em `context.json`)
 
 ## Funções SQL `SECURITY DEFINER` (rodam com privilégio do dono, ignoram RLS)
 
@@ -1270,7 +1270,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | PUBLIC, anon | all | `fn_get_reposicao_variants_summary`, `check_hardening_status`, `record_mcp_access_violation`, `fn_reconcile_stock_gold`, `fn_pipeline_health`, `fn_generate_market_insights_cache`, `request_discount_approval_transactional`, `respond_discount_approval_transactional`, `request_discount_approval_transactional`, `request_discount_approval_transactional`, `create_quote_with_discount_approval_transactional`, `update_quote_with_discount_approval_transactional`, `request_discount_approval_transactional`, `request_discount_approval_transactional`, `magazine_add_items_atomic` … +15 |
 | revoke | PUBLIC, anon | execute | `cleanup_rate_limits`, `acquire_ai_quota`, `complete_optimization`, `reset_optimization_queue`, `is_org_member`, `start_step_up_challenge`, `verify_step_up_password`, `fn_handle_canonical_root_soft_delete`, `fn_reset_is_shared_on_canonical_null`, `fn_auto_revoke_secdef_public_execute`, `fn_revoke_view_write_grants_on_create`, `get_supplier_reliability_history`, `get_supplier_reliability_history`, `fn_run_smoke_tests`, `fn_run_smoke_tests` … +8 |
 | revoke | PUBLIC, anon, authenticated | all | `increment_webhook_dedupe_hit`, `purge_expired_step_up_artifacts`, `cleanup_security_logs`, `check_mcp_abuse_threshold`, `vault.decrypted_secrets`, `vault.secrets`, `increment_webhook_stats`, `fn_spot_direct_stock_gold`, `fn_spot_direct_prices_gold`, `fn_ingest_asia_api_batch`, `fn_ingest_asia_hg_batch`, `fn_sync_asia_colors`, `fn_parity_standardize_variant`, `fn_purge_spr_history`, `fn_expire_novelties` … +33 |
-| revoke | PUBLIC, anon, authenticated | execute | `check_seller_cart_limit`, `handle_password_reset_request`, `check_auth_config_status`, `refresh_product_popularity`, `audit_rls_coverage`, `audit_security_definer_acl`, `fn_pipeline_health`, `fn_product_images_health_check`, `fn_run_schema_drift_check`, `fn_trigger_schema_drift_fetch`, `fn_compute_and_record_drift`, `fn_snapshot_medallion_coverage`, `fn_deploy_readiness_check`, `fn_check_coverage_regression`, `refresh_product_popularity` … +186 |
+| revoke | PUBLIC, anon, authenticated | execute | `check_seller_cart_limit`, `handle_password_reset_request`, `check_auth_config_status`, `refresh_product_popularity`, `audit_rls_coverage`, `audit_security_definer_acl`, `fn_pipeline_health`, `fn_product_images_health_check`, `fn_run_schema_drift_check`, `fn_trigger_schema_drift_fetch`, `fn_compute_and_record_drift`, `fn_snapshot_medallion_coverage`, `fn_deploy_readiness_check`, `fn_check_coverage_regression`, `refresh_product_popularity` … +187 |
 | revoke | PUBLIC, anon, authenticated, service_role | all | `magazine_add_items_atomic`, `magazine_remove_items_atomic`, `magazine_reorder_items_atomic`, `magazine_duplicate_atomic`, `magazine_update_metadata_atomic`, `magazine_publish_atomic`, `magazine_validate_page_order_v2`, `magazine_page_order_remove_items_v2`, `magazine_guard_and_version_v2`, `magazine_items_guard_v2`, `magazine_lock_v2` |
 | revoke | PUBLIC,anon | all | `magazine_create_v2`, `magazine_update_metadata_v2`, `magazine_add_items_v2`, `magazine_remove_items_v2`, `magazine_reorder_items_v2`, `magazine_update_item_v2`, `magazine_publish_v2`, `magazine_unpublish_v2`, `magazine_archive_v2`, `magazine_reactivate_v2`, `magazine_soft_delete_v2`, `magazine_restore_v2`, `magazine_duplicate_v2`, `magazine_import_local_v2` |
 | revoke | anon | all | `get_edge_invoke_summary`, `get_webhook_delivery_summary`, `get_app_health_summary`, `lookup_request_id`, `collection_products`, `user_2fa_settings`, `bitrix_clients`, `personalization_simulations`, `roles`, `ip_whitelist`, `city_whitelist`, `access_blocked_log`, `user_allowed_ips`, `companies`, `sales_goals` … +67 |

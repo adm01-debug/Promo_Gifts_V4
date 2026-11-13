@@ -123,7 +123,7 @@
    "nome": "ai-recommendations",
    "entrada": "supabase/functions/ai-recommendations/index.ts",
    "arquivos": 2,
-   "linhas": 235,
+   "linhas": 228,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS"
@@ -135,10 +135,10 @@
    "chama_edges": [],
    "hosts_externos": [
     "ai-kill-switch-contract.invalid",
-    "ai.gateway.lovable.dev",
     "edge-contract.invalid"
    ],
    "usa_shared": [
+    "ai-usage.ts",
     "auth.ts",
     "cors.ts",
     "credentials.ts",
@@ -328,7 +328,7 @@
    "nome": "bi-copilot",
    "entrada": "supabase/functions/bi-copilot/index.ts",
    "arquivos": 1,
-   "linhas": 133,
+   "linhas": 137,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -338,11 +338,9 @@
    "env": [],
    "buckets": [],
    "chama_edges": [],
-   "hosts_externos": [
-    "ai.gateway.lovable.dev"
-   ],
+   "hosts_externos": [],
    "usa_shared": [
-    "ai-credentials.ts",
+    "ai-usage.ts",
     "auth.ts",
     "bi-copilot.ts",
     "cors.ts",
@@ -1011,8 +1009,8 @@
   {
    "nome": "crm-db-bridge",
    "entrada": "supabase/functions/crm-db-bridge/index.ts",
-   "arquivos": 1,
-   "linhas": 851,
+   "arquivos": 3,
+   "linhas": 1237,
    "verify_jwt": false,
    "metodos": [
     "GET",
@@ -1022,10 +1020,12 @@
    "tabelas": [
     "companies",
     "quotes",
-    "user_roles"
+    "user_roles",
+    "users"
    ],
    "rpcs": [],
    "env": [
+    "BRIDGE_PATH",
     "LOG_CRM_BRIDGE_VERBOSE",
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -1033,7 +1033,11 @@
    ],
    "buckets": [],
    "chama_edges": [],
-   "hosts_externos": [],
+   "hosts_externos": [
+    "app.local",
+    "crm.local",
+    "fn.local"
+   ],
    "usa_shared": [
     "bot-protection.ts",
     "circuit-breaker.ts",
@@ -1309,8 +1313,8 @@
   {
    "nome": "external-db-bridge",
    "entrada": "supabase/functions/external-db-bridge/index.ts",
-   "arquivos": 4,
-   "linhas": 369,
+   "arquivos": 1,
+   "linhas": 40,
    "verify_jwt": true,
    "metodos": [],
    "tabelas": [],
@@ -1340,7 +1344,7 @@
    ],
    "chamada_por_sql_ou_cron": true,
    "orfa": false,
-   "testes": 10
+   "testes": 13
   },
   {
    "nome": "external-db-inspect",
@@ -3572,7 +3576,7 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": true,
-   "testes": 62
+   "testes": 65
   },
   {
    "nome": "trends-insights",
