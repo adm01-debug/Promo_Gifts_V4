@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "fe64be355269b192eb7d17aa0a2dc10fc9d242a5",
+  "sha": "835fee0c1e1487218397a754e952764c6e045eb7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-13 22:17 UTC",
+  "generated_at": "2026-11-13 23:07 UTC",
   "files_total": 10036,
   "code_files": 8572,
   "code_lines": 1212071
@@ -528388,10 +528388,21 @@
   }
  },
  "git": {
-  "sha": "fe64be355269b192eb7d17aa0a2dc10fc9d242a5",
+  "sha": "835fee0c1e1487218397a754e952764c6e045eb7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "835fee0",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(edge): corrige domínio de e-mail Resend promogifts → promobrindes (#3521)",
+    "files": [
+     "supabase/functions/process-scheduled-reports/index.ts",
+     "supabase/functions/send-scheduled-reports/index.ts",
+     "supabase/functions/send-transactional-email/index.ts"
+    ]
+   },
    {
     "sha": "fe64be3",
     "date": "2026-11-13",
@@ -528731,16 +528742,6 @@
     "files": [
      "src/components/pricing/__tests__/ProductPriceSimulator.createQuote.test.tsx"
     ]
-   },
-   {
-    "sha": "9d84acb",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(admin): salvar papéis não trava quando a permissão já foi adicionada por outro admin (#3461)",
-    "files": [
-     "src/pages/admin/RolePermissionsPage.tsx",
-     "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -528781,6 +528782,18 @@
     2
    ],
    [
+    "supabase/functions/process-scheduled-reports/index.ts",
+    1
+   ],
+   [
+    "supabase/functions/send-scheduled-reports/index.ts",
+    1
+   ],
+   [
+    "supabase/functions/send-transactional-email/index.ts",
+    1
+   ],
+   [
     "supabase/migrations/20261112140000_fix_rls_supplier_products_raw_history_p2027.sql",
     1
    ],
@@ -528810,18 +528823,6 @@
    ],
    [
     "supabase/migrations/20260511235960_add_categories_full_path_readable_drift.sql",
-    1
-   ],
-   [
-    "docs/ci/SEGREDOS.md",
-    1
-   ],
-   [
-    "supabase/migrations/20261111222500_fix_touch_seller_cart_secdef.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261111222500_rollback.sql",
     1
    ]
   ]

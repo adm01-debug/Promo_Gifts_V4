@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "fe64be355269b192eb7d17aa0a2dc10fc9d242a5",
+  "commit": "835fee0c1e1487218397a754e952764c6e045eb7",
   "branch": "main",
-  "data_commit": "2026-11-13T17:40:32-03:00",
+  "data_commit": "2026-11-13T19:02:24-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "835fee0",
+    "data": "2026-11-13",
+    "assunto": "fix(edge): corrige domínio de e-mail Resend promogifts → promobrindes (#3521)"
+   },
    {
     "sha": "fe64be3",
     "data": "2026-11-13",
@@ -126,14 +131,9 @@
     "sha": "09b598e",
     "data": "2026-11-13",
     "assunto": "Merge branch 'main' into claude/lote-pilha-v2-261112"
-   },
-   {
-    "sha": "f26c25e",
-    "data": "2026-11-13",
-    "assunto": "fix(security): baseline de policies inclui admins_select_e2e_cleanup_audit"
    }
   ],
-  "arquivos_mudados_7d": 1980,
+  "arquivos_mudados_7d": 1981,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 66
+    "mudancas": 65
    },
    {
     "pasta": "src/pages/products",
