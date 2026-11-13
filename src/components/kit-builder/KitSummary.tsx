@@ -1,3 +1,4 @@
+import { hasKnownKitPrices } from '@/lib/kit-builder/pricing-availability';
 /**
  * Kit Summary — Refactored orchestrator
  * Sub-components extracted to ./kit-summary/
@@ -78,6 +79,7 @@ export function KitSummary({
   isSavingDraft,
 }: KitSummaryProps) {
   const { box, items, personalization } = kitState;
+  const pricesKnown = hasKnownKitPrices(kitState);
   const pricing = calculateTotalKitPrice(box, items, personalization, kitQuantity);
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   // `totalWeight` soma apenas os pesos conhecidos (nunca assume 0 para um
@@ -236,11 +238,13 @@ export function KitSummary({
             kitQuantity={kitQuantity}
             onKitQuantityChange={onKitQuantityChange}
           />
-          <KitMarginSimulator
-            unitPrice={pricing.unitPrice}
-            totalPrice={pricing.total}
-            kitQuantity={kitQuantity}
-          />
+          {pricesKnown && (
+            <KitMarginSimulator
+              unitPrice={pricing.unitPrice}
+              totalPrice={pricing.total}
+              kitQuantity={kitQuantity}
+            />
+          )}
           <FreightEstimator
             totalWeightGrams={kitState.totalWeight}
             kitQuantity={kitQuantity}
@@ -296,7 +300,8 @@ export function KitSummary({
 
       <div className="print:hidden">
         <KitActionsBar
-          isValid={kitState.isValid}
+          isValid={kitState.isValid && pricesKnown}
+          pricesKnown={pricesKnown}
           isAddingToQuote={isAddingToQuote}
           hasStockIssues={hasStockIssues}
           stockStatus={stockStatus}

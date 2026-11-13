@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { type ReactNode } from "react";
+import { type CSSProperties, type ReactNode } from "react";
 
 /**
  * Enhanced Skeleton with shimmer effect
@@ -9,9 +9,10 @@ import { type ReactNode } from "react";
 interface SkeletonShimmerProps {
   className?: string;
   children?: ReactNode;
+  style?: CSSProperties;
 }
 
-export function SkeletonShimmer({ className, children }: SkeletonShimmerProps) {
+export function SkeletonShimmer({ className, children, style }: SkeletonShimmerProps) {
   return (
     <div
       className={cn(
@@ -23,6 +24,7 @@ export function SkeletonShimmer({ className, children }: SkeletonShimmerProps) {
       )}
       aria-hidden="true"
       role="presentation"
+      style={style}
     >
       {children}
     </div>
@@ -166,7 +168,7 @@ export function TableSkeleton({
 
 // Avatar skeleton
 interface AvatarSkeletonProps {
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: "lg" | "md" | "sm" | "xl";
   className?: string;
 }
 

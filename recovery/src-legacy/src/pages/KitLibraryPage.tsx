@@ -1,9 +1,10 @@
+import { getItemsCount, applySort } from '@/lib/kit-library/library-list-utils';
 /**
  * Kit Library — Biblioteca unificada de kits do vendedor + sugeridos pelo sistema.
  * 3 abas (Meus / Sugeridos / Favoritos) com busca, filtros visuais, categorias e ordenação.
  * Inclui pin/destaque, ordenação por uso recente e badge de adoção (admin-only).
  */
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Search, Library, Sparkles, Star, Pin } from 'lucide-react';
@@ -26,7 +27,7 @@ import {
 import { toast } from 'sonner';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { KitCard, type KitCardData } from '@/components/kit-library/KitCard';
-import { KitCardSkeletonGrid } from '@/components/kit-library/KitCardSkeleton';
+import { KitCardSkeletonGrid } from '@/components/loading/ModernSkeletons';
 import { KitLibraryFilters, type SortOption } from '@/components/kit-library/KitLibraryFilters';
 import { KitTemplatePreviewDialog } from '@/components/kit-library/KitTemplatePreviewDialog';
 import { KitCategoryChips } from '@/components/kit-library/KitCategoryChips';
@@ -34,51 +35,13 @@ import { useKitTemplates, type KitTemplateRow } from '@/hooks/useKitTemplates';
 import { useCustomKitPersistence, type CustomKitRow } from '@/hooks/useCustomKitPersistence';
 import { buildCustomKitInsert } from '@/lib/kit-library/buildCustomKitInsert';
 
-function getItemsCount(items: unknown): number {
-  if (!Array.isArray(items)) return 0;
-  return items.reduce((sum: number, it: unknown) => {
-    const obj = it as { quantity?: number };
-    return sum + (obj?.quantity ?? 1);
-  }, 0);
-}
-
-function applySort<
-  T extends {
-    name: string;
-    total_price: number;
-    updated_at?: string;
-    usage_count?: number;
-    last_used_at?: string | null;
-  },
->(list: T[], sort: SortOption): T[] {
-  const arr = [...list];
-  switch (sort) {
-    case 'price-desc':
-      arr.sort((a, b) => Number(b.total_price) - Number(a.total_price));
-      break;
-    case 'name-asc':
-      arr.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
-      break;
-    case 'usage-desc':
-      arr.sort((a, b) => (b.usage_count ?? 0) - (a.usage_count ?? 0));
-      break;
-    case 'last-used':
-      arr.sort((a, b) => (b.last_used_at || '').localeCompare(a.last_used_at || ''));
-      break;
-    case 'recent':
-    default:
-      arr.sort((a, b) => (b.updated_at || '').localeCompare(a.updated_at || ''));
-  }
-  return arr;
-}
-
 export default function KitLibraryPage() {
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { togglePinned } = useCustomKitPersistence();
   const [search, setSearch] = useState('');
-  const [tab, setTab] = useState<'mine' | 'suggested' | 'favorites'>('mine');
+  const [tab, setTab] = useState<'favorites' | 'mine' | 'suggested'>('mine');
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
@@ -96,7 +59,7 @@ export default function KitLibraryPage() {
         .select('*')
         .order('updated_at', { ascending: false });
       if (error) throw error;
-      return (data || []) as unknown as CustomKitRow[];
+      return data || [];
     },
     enabled: !!user?.id,
   });
@@ -134,12 +97,12 @@ export default function KitLibraryPage() {
       if (!user?.id) throw new Error('Não autenticado');
       const payload = buildCustomKitInsert(kit, {
         user_id: user.id,
-        name: `${kit.name} (cópia)`,
+        name: kit.name === null ? null : `${kit.name} (cópia)`,
         status: 'draft',
         is_pinned: false,
         last_used_at: null,
       });
-      const { error } = await supabase.from('custom_kits').insert(payload as never);
+      const { error } = await supabase.from('custom_kits').insert(payload);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -179,31 +142,40 @@ export default function KitLibraryPage() {
 
   // Filters
   const q = search.trim().toLowerCase();
-  const matchKit = (k: CustomKitRow) => {
-    if (q && !(k.name.toLowerCase().includes(q) || (k.tag || '').toLowerCase().includes(q)))
-      return false;
-    if (selectedTag && k.tag !== selectedTag) return false;
-    if (selectedColor && k.color !== selectedColor) return false;
-    return true;
-  };
-  const matchTpl = (t: KitTemplateRow) => {
-    if (
-      q &&
-      !(
-        t.name.toLowerCase().includes(q) ||
-        (t.tag || '').toLowerCase().includes(q) ||
-        t.category.toLowerCase().includes(q)
+  const matchKit = useCallback(
+    (k: CustomKitRow) => {
+      if (
+        q &&
+        !((k.name || '').toLowerCase().includes(q) || (k.tag || '').toLowerCase().includes(q))
       )
-    )
-      return false;
-    if (selectedTag && t.tag !== selectedTag) return false;
-    if (selectedCategory && t.category !== selectedCategory) return false;
-    return true;
-  };
+        return false;
+      if (selectedTag && k.tag !== selectedTag) return false;
+      if (selectedColor && k.color !== selectedColor) return false;
+      return true;
+    },
+    [q, selectedTag, selectedColor],
+  );
+  const matchTpl = useCallback(
+    (t: KitTemplateRow) => {
+      if (
+        q &&
+        !(
+          t.name.toLowerCase().includes(q) ||
+          (t.tag || '').toLowerCase().includes(q) ||
+          t.category.toLowerCase().includes(q)
+        )
+      )
+        return false;
+      if (selectedTag && t.tag !== selectedTag) return false;
+      if (selectedCategory && t.category !== selectedCategory) return false;
+      return true;
+    },
+    [q, selectedTag, selectedCategory],
+  );
 
   const pinnedKit = useMemo(
     () => myKits.find((k) => k.is_pinned && matchKit(k)) || null,
-    [myKits, q, selectedTag, selectedColor],
+    [myKits, matchKit],
   );
 
   const filteredMine = useMemo(
@@ -212,7 +184,7 @@ export default function KitLibraryPage() {
         myKits.filter((k) => !k.is_pinned && matchKit(k)),
         sort,
       ),
-    [myKits, q, selectedTag, selectedColor, sort],
+    [myKits, matchKit, sort],
   );
   const filteredFavs = useMemo(
     () =>
@@ -220,11 +192,11 @@ export default function KitLibraryPage() {
         myKits.filter((k) => k.is_favorite && matchKit(k)),
         sort,
       ),
-    [myKits, q, selectedTag, selectedColor, sort],
+    [myKits, matchKit, sort],
   );
   const filteredTpls = useMemo(
     () => applySort(templates.filter(matchTpl), sort),
-    [templates, q, selectedTag, selectedCategory, sort],
+    [templates, matchTpl, sort],
   );
 
   const toCard = (k: CustomKitRow): KitCardData => {
@@ -235,8 +207,12 @@ export default function KitLibraryPage() {
       tag: k.tag,
       color: k.color || '#3B82F6',
       icon: k.icon || 'Package',
-      totalPrice: Number(k.total_price),
+      totalPrice: k.total_price,
       itemsCount: getItemsCount(k.items_data),
+      kitQuantity: k.kit_quantity,
+      status: k.status,
+      updatedAt: k.updated_at,
+      isDraft: k.status !== 'complete',
       isFavorite: k.is_favorite,
       isPinned: k.is_pinned,
     };
@@ -249,7 +225,7 @@ export default function KitLibraryPage() {
     tag: t.tag,
     color: t.color,
     icon: t.icon,
-    totalPrice: Number(t.total_price),
+    totalPrice: t.total_price,
     itemsCount: getItemsCount(t.items_data),
     badge: t.usage_count >= 5 ? 'Popular' : t.category,
     usageBadge: isAdmin ? `${t.usage_count} uso${t.usage_count === 1 ? '' : 's'}` : undefined,

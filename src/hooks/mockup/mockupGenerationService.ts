@@ -461,11 +461,14 @@ export async function generateMockupApi(
 
 export function downloadMockupAsPdf(
   mockupUrl: string,
-  product: { sku?: string | null },
-  technique: Technique,
+  product?: { sku?: string | null } | null,
+  technique?: Pick<Technique, 'code' | 'name'> | null,
 ): Promise<void> {
-  const safeSku = product.sku?.replace(/[^a-zA-Z0-9]/g, '-') || 'mockup';
-  const safeTechnique = (technique.code || technique.name).replace(/[^a-zA-Z0-9]/g, '-');
+  const safeSku = product?.sku?.replace(/[^a-zA-Z0-9]/g, '-') || 'mockup';
+  const safeTechnique = (technique?.code || technique?.name || 'personalizacao').replace(
+    /[^a-zA-Z0-9]/g,
+    '-',
+  );
   const fileName = `mockup-${safeSku}-${safeTechnique}.pdf`;
   return downloadImageAsPdfFromUrl(mockupUrl, fileName);
 }

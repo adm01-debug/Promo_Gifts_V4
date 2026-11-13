@@ -23,7 +23,7 @@ export interface IntelligenceKPI {
 export interface TrendingProduct {
   productId: string; productSku: string | null; productName: string; productImage: string | null;
   orderCount: number; totalQuantity: number; totalRevenue: number;
-  quoteCount: number; conversionRate: number; trend: 'up' | 'down' | 'stable';
+  quoteCount: number; conversionRate: number; trend: 'down' | 'stable' | 'up';
 }
 
 export interface SegmentData { segment: string; orderCount: number; revenue: number; averageTicket: number; }
@@ -171,7 +171,7 @@ export function useTrendingProducts(days = 30, categoryId?: string | null, suppl
       quoteItems?.forEach(item => { const key = item.product_sku || item.product_id || item.product_name; if (key && productMap.has(key)) productMap.get(key)!.quoteCount += 1; });
 
       return Array.from(productMap.values())
-        .map(p => ({ ...p, conversionRate: p.quoteCount > 0 ? Math.round((p.orderCount / p.quoteCount) * 100) : 100, trend: (p.totalRevenue > 1000 ? 'up' : p.totalRevenue > 200 ? 'stable' : 'down') as 'up' | 'down' | 'stable' }))
+        .map(p => ({ ...p, conversionRate: p.quoteCount > 0 ? Math.round((p.orderCount / p.quoteCount) * 100) : 100, trend: (p.totalRevenue > 1000 ? 'up' : p.totalRevenue > 200 ? 'stable' : 'down') as 'down' | 'stable' | 'up' }))
         .sort((a, b) => b.totalRevenue - a.totalRevenue).slice(0, limit);
     },
     staleTime: 1000 * 60 * 5,
@@ -313,11 +313,11 @@ export function useCategoryRanking(days = 30, categoryId?: string | null, suppli
       try {
         const { invokeExternalDb } = await import('@/lib/external-db');
         const sinceDate = since.split('T')[0];
-        const result = await invokeExternalDb({ table: 'stock_daily_summary', operation: 'select', select: 'product_id,units_depleted', filters: { 'summary_date': `gte.${sinceDate}` }, limit: 5000 });
-        (result?.records || []).forEach((snap: Record<string, unknown>) => {
-          const cat = productCategoryMap.get(snap.product_id as string); if (!cat) return;
+        const result = await invokeExternalDb<{ product_id: string; units_depleted: number | null }>({ table: 'stock_daily_summary', operation: 'select', select: 'product_id,units_depleted', filters: { 'summary_date': `gte.${sinceDate}` }, limit: 5000 });
+        (result?.records || []).forEach((snap) => {
+          const cat = productCategoryMap.get(snap.product_id); if (!cat) return;
           const e = categoryMap.get(cat.catId) || { categoryId: cat.catId, categoryName: cat.catName, internalRevenue: 0, internalQty: 0, internalOrders: 0, marketDepleted: 0, totalScore: 0 };
-          e.marketDepleted += ((snap.units_depleted as number) ?? 0); categoryMap.set(cat.catId, e);
+          e.marketDepleted += (snap.units_depleted ?? 0); categoryMap.set(cat.catId, e);
         });
       } catch (e) { logger.warn('Market data unavailable for category ranking:', e); }
 

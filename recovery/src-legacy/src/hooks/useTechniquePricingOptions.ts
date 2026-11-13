@@ -1,7 +1,7 @@
 // src/hooks/useTechniquePricingOptions.ts
 // Hook para buscar opções de cores e tamanhos da tabela customization_price_tables
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface PriceTableEntry {
@@ -83,11 +83,11 @@ export function useTechniquePricingOptions(techniqueCode: string | null): Techni
 
   // Determinar se usa preço por cor ou por área
   const hasPriceByColor = useMemo(() => {
-    return tables.some(t => t.price_by_color === true);
+    return tables.some(t => Object.is(t.price_by_color, true));
   }, [tables]);
 
   const hasPriceByArea = useMemo(() => {
-    return tables.some(t => t.price_by_area === true);
+    return tables.some(t => Object.is(t.price_by_area, true));
   }, [tables]);
 
   // Gerar opções de cores únicas disponíveis
@@ -176,11 +176,17 @@ export function useTechniquePricingOptions(techniqueCode: string | null): Techni
 
 // Hook para múltiplas técnicas de uma vez
 export function useMultipleTechniquePricing(techniqueCodes: string[]) {
+  const techniqueCodesKey = techniqueCodes.join(',');
+  const techniqueCodesRef = useRef(techniqueCodes);
+  useEffect(() => {
+    techniqueCodesRef.current = techniqueCodes;
+  }, [techniqueCodes]);
   const [allTables, setAllTables] = useState<Record<string, PriceTableEntry[]>>({});
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (techniqueCodes.length === 0) {
+    const codes = techniqueCodesRef.current;
+    if (codes.length === 0) {
       setAllTables({});
       return;
     }
@@ -190,7 +196,7 @@ export function useMultipleTechniquePricing(techniqueCodes: string[]) {
       const results: Record<string, PriceTableEntry[]> = {};
 
       await Promise.all(
-        techniqueCodes.map(async (code) => {
+        codes.map(async (code) => {
           try {
             const { data, error } = await supabase.functions.invoke('external-db-bridge', {
               body: {
@@ -217,13 +223,13 @@ export function useMultipleTechniquePricing(techniqueCodes: string[]) {
     };
 
     fetchAll();
-  }, [techniqueCodes.join(',')]);
+  }, [techniqueCodesKey]);
 
   const getPricingInfo = (code: string): Omit<TechniquePricingInfo, 'isLoading'> => {
     const tables = allTables[code] || [];
     
-    const hasPriceByColor = tables.some(t => t.price_by_color === true);
-    const hasPriceByArea = tables.some(t => t.price_by_area === true);
+    const hasPriceByColor = tables.some(t => Object.is(t.price_by_color, true));
+    const hasPriceByArea = tables.some(t => Object.is(t.price_by_area, true));
 
     const colorOptions: ColorOption[] = hasPriceByColor
       ? Array.from(new Set(

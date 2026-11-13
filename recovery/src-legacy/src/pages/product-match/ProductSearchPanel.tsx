@@ -74,7 +74,8 @@ export function ProductSearchPanel({ products, onSelect, selectedId }: ProductSe
               <img
                 src={getCdnUrl(p.images?.[0] || p.image_url || '/placeholder.svg', 'thumbnail')}
                 alt={p.name}
-                className="w-10 h-10 rounded-md object-cover bg-muted shrink-0" loading="lazy" />
+                className="w-10 h-10 rounded-md object-cover bg-muted shrink-0" loading="lazy"
+              />
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-semibold text-foreground truncate">{p.name}</p>
                 <p className="text-[10px] text-muted-foreground">{p.sku} • {formatPrice(p.price)}</p>

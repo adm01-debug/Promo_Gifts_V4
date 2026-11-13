@@ -69,7 +69,7 @@ export function QuoteTemplatesList({
   onCreateTemplate,
   selectionMode = false,
 }: QuoteTemplatesListProps) {
-  const { templates, allTemplates, sellers, loading, deleteTemplate, setDefaultTemplate, duplicateTemplate, cloneTemplateToSeller, isAdmin } = useQuoteTemplates();
+  const { templates, allTemplates: _allTemplates, sellers, loading, deleteTemplate, setDefaultTemplate, duplicateTemplate, cloneTemplateToSeller, isAdmin } = useQuoteTemplates();
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [cloneDialogOpen, setCloneDialogOpen] = useState(false);
@@ -81,7 +81,8 @@ export function QuoteTemplatesList({
     template.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const formatCurrency = (value: number) => {
+  const formatCurrency = (value: number | null) => {
+    if (value === null) return "Valor indisponível";
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
       currency: "BRL",
@@ -89,6 +90,7 @@ export function QuoteTemplatesList({
   };
 
   const calculateTemplateTotal = (template: QuoteTemplate) => {
+    if (template.items_data === null) return null;
     const itemsTotal = template.items_data.reduce((sum, item) => {
       const itemBase = item.quantity * item.unitPrice;
       const personalizationCost = item.personalizations?.reduce((pSum, p) => {
@@ -106,14 +108,16 @@ export function QuoteTemplatesList({
 
   const handleDelete = async () => {
     if (deleteConfirmId) {
-      await deleteTemplate(deleteConfirmId);
+      const deleted = await deleteTemplate(deleteConfirmId);
+      if (!deleted) return;
       setDeleteConfirmId(null);
     }
   };
 
   const handleClone = async () => {
     if (cloneTemplateId && targetSellerId) {
-      await cloneTemplateToSeller(cloneTemplateId, targetSellerId);
+      const cloned = await cloneTemplateToSeller(cloneTemplateId, targetSellerId);
+      if (!cloned) return;
       setCloneDialogOpen(false);
       setCloneTemplateId(null);
       setTargetSellerId("");
@@ -194,7 +198,7 @@ export function QuoteTemplatesList({
               className={`group hover:shadow-md transition-shadow ${
                 selectionMode ? "cursor-pointer hover:border-primary" : ""
               }`}
-              onClick={() => selectionMode && onApplyTemplate?.(template)}
+              onClick={() => selectionMode && template.items_data !== null && onApplyTemplate?.(template)}
             >
               <CardHeader className="pb-2">
                 <div className="flex items-start justify-between">
@@ -228,7 +232,7 @@ export function QuoteTemplatesList({
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         {onApplyTemplate && (
-                          <DropdownMenuItem onClick={() => onApplyTemplate(template)}>
+                          <DropdownMenuItem disabled={template.items_data === null} onClick={() => template.items_data !== null && onApplyTemplate(template)}>
                             <FileText className="h-4 w-4 mr-2" />
                             Usar Template
                           </DropdownMenuItem>
@@ -286,11 +290,12 @@ export function QuoteTemplatesList({
                 </div>
               </CardHeader>
               <CardContent>
+                {template.items_error && <p role="alert" className="mb-2 text-sm text-destructive">{template.items_error}</p>}
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center justify-between text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <Package className="h-3.5 w-3.5" />
-                      {template.items_data.length} {template.items_data.length === 1 ? "item" : "itens"}
+                      {template.items_data?.length ?? (Array.isArray(template.items) ? template.items.length : "—")} {template.items_data?.length === 1 ? "item" : "itens"}
                     </span>
                     <span className="font-medium text-foreground">
                       {formatCurrency(calculateTemplateTotal(template))}
@@ -306,7 +311,7 @@ export function QuoteTemplatesList({
                   )}
 
                   <div className="pt-2 border-t text-xs text-muted-foreground">
-                    Atualizado em {format(new Date(template.updated_at), "dd/MM/yyyy", { locale: ptBR })}
+                    Atualizado em {template.updated_at && Number.isFinite(Date.parse(template.updated_at)) ? format(new Date(template.updated_at), "dd/MM/yyyy", { locale: ptBR }) : "Data não informada"}
                   </div>
                 </div>
               </CardContent>
@@ -325,7 +330,7 @@ export function QuoteTemplatesList({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
+            <AlertDialogAction onClick={(event) => { event.preventDefault(); handleDelete(); }} className="bg-destructive text-destructive-foreground">
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>

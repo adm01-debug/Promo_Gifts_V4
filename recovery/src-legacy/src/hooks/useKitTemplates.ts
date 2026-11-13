@@ -6,6 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { serializeJsonValue } from '@/lib/json-value';
 
 export interface KitTemplateRow {
   id: string;
@@ -58,9 +59,9 @@ export function useKitTemplates() {
           name: `${template.name} (cópia)`,
           status: 'draft',
           kit_type: 'montado',
-          box_data: template.box_data,
-          items_data: template.items_data,
-          personalization_data: template.personalization_data,
+          box_data: serializeJsonValue(template.box_data) ?? null,
+          items_data: serializeJsonValue(template.items_data) ?? [],
+          personalization_data: serializeJsonValue(template.personalization_data) ?? {},
           kit_quantity: 1,
           box_price: 0,
           items_price: 0,
@@ -78,8 +79,7 @@ export function useKitTemplates() {
 
       // Increment usage_count (best-effort)
       try {
-        await (supabase as unknown as { rpc: (name: string, args: Record<string, unknown>) => Promise<unknown> })
-          .rpc('increment_kit_template_usage', { _template_id: template.id });
+        await supabase.rpc('increment_kit_template_usage', { _template_id: template.id });
       } catch {
         /* best-effort */
       }

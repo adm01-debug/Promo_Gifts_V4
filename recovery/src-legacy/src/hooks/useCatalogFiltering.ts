@@ -6,6 +6,7 @@ import type { Product } from "@/hooks/useProducts";
 import type { FilterState } from "@/components/filters/FilterPanel";
 import type { SortOption } from "./useCatalogState";
 import { sortProducts } from "@/utils/product-sorting";
+import type { SupplierSalesEntry } from '@/hooks/products';
 
 interface CatalogFilteringOptions {
   realProducts: Product[];
@@ -20,7 +21,7 @@ interface CatalogFilteringOptions {
   categoryFilteredProductIds: Set<string>;
   isLoadingCategoryFilter: boolean;
   promoSalesMap?: Map<string, number>;
-  supplierSalesMap?: Map<string, number>;
+  supplierSalesMap?: ReadonlyMap<string, Pick<SupplierSalesEntry, 'turnoverScore' | 'velocity7d'>>;
 }
 
 export function useCatalogFiltering({
@@ -64,7 +65,7 @@ export function useCatalogFiltering({
       result = result.filter((p) => {
         if (!p.colors?.length) return false;
         
-        return p.colors.some((c: Record<string, string>) => {
+        return p.colors.some((c) => {
           if (colorFilterSet.size > 0 && colorFilterSet.has(c.name)) return true;
           
           if (colorVariationSet.size > 0) {
@@ -117,16 +118,14 @@ export function useCatalogFiltering({
     } else if (filters.materiais.length) {
       const lowerMateriais = filters.materiais.map(m => m.toLowerCase());
       result = result.filter((p) => {
-        const mats = Array.isArray(p.materials) ? p.materials.join(' ').toLowerCase() : (p.materials || '').toLowerCase();
+        const mats = Array.isArray(p.materials) ? p.materials.join(' ').toLowerCase() : String(p.materials || '').toLowerCase();
         return lowerMateriais.some((m) => mats.includes(m));
       });
     }
 
     // Business Logic - Do not change sorting behavior
     const skipSort = (hasFuzzySearch && sortBy === 'relevance') || (hasFuzzySearch && sortBy === 'name');
-    sortProducts(result, sortBy, { promoSalesMap, supplierSalesMap, skipSort });
-
-    return result;
+    return sortProducts(result, sortBy, { promoSalesMap, supplierSalesMap, skipSort });
   }, [
     filters.priceRange, filters.inStock, filters.materiais, // De-structure simple filter primitives
     sortBy, hasFuzzySearch, fuzzySearchResults, realProducts, 

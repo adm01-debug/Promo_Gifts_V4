@@ -27,13 +27,11 @@ interface KitPdfOptions {
 const PRIMARY = [30, 64, 175] as const; // blue-700
 const GRAY_800 = [31, 41, 55] as const;
 const GRAY_500 = [107, 114, 128] as const;
-const _GRAY_200 = [229, 231, 235] as const;
 const WHITE = [255, 255, 255] as const;
-const _GREEN = [16, 185, 129] as const;
 
 function hexToRgb(hex?: string): readonly [number, number, number] | null {
   if (!hex) return null;
-  const m = hex.replace('#', '').match(/^([0-9a-f]{6})$/i);
+  const m = /^([0-9a-f]{6})$/i.exec(hex.replace('#', ''));
   if (!m) return null;
   const n = parseInt(m[1], 16);
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255] as const;
@@ -161,12 +159,12 @@ function drawKpiCards(doc: jsPDF, kitState: KitState, kitQuantity: number, y: nu
 function drawCompositionTable(doc: jsPDF, kitState: KitState, y: number): number {
   const { box, items, personalization } = kitState;
 
-  const rows: (string | number)[][] = [];
+  const rows: (number | string)[][] = [];
 
   // Box row
   if (box) {
     rows.push([
-      '📦 ' + box.name,
+      `📦 ${box.name}`,
       box.sku || '-',
       box.material || '-',
       '1',
@@ -179,7 +177,7 @@ function drawCompositionTable(doc: jsPDF, kitState: KitState, y: number): number
   items.forEach((item) => {
     const itemP = personalization.items[item.id];
     rows.push([
-      '🎁 ' + item.name + (item.isOptional ? ' (Opcional)' : ''),
+      `🎁 ${item.name}${item.isOptional ? ' (Opcional)' : ''}`,
       item.sku || '-',
       item.material || '-',
       String(item.quantity),
@@ -194,14 +192,14 @@ function drawCompositionTable(doc: jsPDF, kitState: KitState, y: number): number
     body: rows,
     theme: 'striped',
     headStyles: {
-      fillColor: PRIMARY as unknown as number[],
-      textColor: WHITE as unknown as number[],
+      fillColor: [...PRIMARY],
+      textColor: [...WHITE],
       fontSize: 8,
       fontStyle: 'bold',
     },
     bodyStyles: {
       fontSize: 7.5,
-      textColor: GRAY_800 as unknown as number[],
+      textColor: [...GRAY_800],
     },
     alternateRowStyles: {
       fillColor: [248, 250, 252],
@@ -252,7 +250,7 @@ function drawPersonalizationDetails(doc: jsPDF, kitState: KitState, y: number): 
         technique: p.techniqueName || '-',
         colors: p.colors ? `${p.colors} cor(es)` : '-',
         dimensions: p.width && p.height ? `${p.width}x${p.height}cm` : '-',
-        price: p.estimatedPrice ? formatCurrency(p.estimatedPrice) + '/un' : '-',
+        price: p.estimatedPrice ? `${formatCurrency(p.estimatedPrice)}/un` : '-',
       });
     }
   });
@@ -267,14 +265,14 @@ function drawPersonalizationDetails(doc: jsPDF, kitState: KitState, y: number): 
     body: entries.map((e) => [e.name, e.technique, e.colors, e.dimensions, e.price]),
     theme: 'grid',
     headStyles: {
-      fillColor: [99, 102, 241] as number[],
-      textColor: WHITE as unknown as number[],
+      fillColor: [99, 102, 241],
+      textColor: [...WHITE],
       fontSize: 8,
       fontStyle: 'bold',
     },
     bodyStyles: {
       fontSize: 7.5,
-      textColor: GRAY_800 as unknown as number[],
+      textColor: [...GRAY_800],
     },
     margin: { left: 14, right: 14 },
   });
@@ -307,14 +305,14 @@ function drawPriceBreakdown(
     body: rows,
     theme: 'striped',
     headStyles: {
-      fillColor: GRAY_800 as unknown as number[],
-      textColor: WHITE as unknown as number[],
+      fillColor: [...GRAY_800],
+      textColor: [...WHITE],
       fontSize: 8,
       fontStyle: 'bold',
     },
     bodyStyles: {
       fontSize: 7.5,
-      textColor: GRAY_800 as unknown as number[],
+      textColor: [...GRAY_800],
     },
     columnStyles: {
       1: { halign: 'center', cellWidth: 18 },
@@ -322,12 +320,7 @@ function drawPriceBreakdown(
       3: { halign: 'right', cellWidth: 26 },
     },
     margin: { left: 14, right: 14 },
-    didParseCell: (data: {
-      cell: { raw: unknown; styles: Record<string, unknown> };
-      column: { index: number };
-      row: { index: number };
-      section: string;
-    }) => {
+    didParseCell: (data) => {
       // Indent personalization rows
       if (data.section === 'body') {
         const text = String(data.cell.raw);

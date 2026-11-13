@@ -8,7 +8,7 @@ export interface WorkspaceNotification {
   user_id: string;
   title: string;
   message: string;
-  type: "info" | "warning" | "success" | "error";
+  type: "error" | "info" | "success" | "warning";
   category: string;
   is_read: boolean;
   action_url: string | null;
@@ -78,7 +78,7 @@ export function useWorkspaceNotifications() {
   const lastFetchAtRef = useRef<number>(0);
   const hydratedRef = useRef<string | null>(null);
   const mountAtRef = useRef<number>(typeof performance !== "undefined" ? performance.now() : Date.now());
-  const badgeSourceRef = useRef<"pending" | "cache" | "network">("pending");
+  const badgeSourceRef = useRef<"cache" | "network" | "pending">("pending");
   // In-flight guards: prevent duplicate fetchNotifications when the user
   // double-clicks markAllAsRead/clearAll before the first call resolves.
   const markAllInFlightRef = useRef(false);

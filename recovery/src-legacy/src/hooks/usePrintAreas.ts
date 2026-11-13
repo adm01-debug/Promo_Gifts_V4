@@ -47,6 +47,8 @@ async function fetchProductPrintAreas(productId: string): Promise<PrintAreaTechn
   }
 }
 
+type LegacyPrintAreaWithTechniques = Omit<PrintAreaWithTechniques, 'shape'> & { shape: string };
+
 // ============================================
 // HOOKS
 // ============================================
@@ -57,7 +59,7 @@ async function fetchProductPrintAreas(productId: string): Promise<PrintAreaTechn
 export function usePrintAreas(productId: string | null) {
   return useQuery({
     queryKey: ['print-areas', productId],
-    queryFn: async (): Promise<PrintAreaWithTechniques[]> => {
+    queryFn: async (): Promise<LegacyPrintAreaWithTechniques[]> => {
       if (!productId) return [];
 
       const areas = await fetchProductPrintAreas(productId);

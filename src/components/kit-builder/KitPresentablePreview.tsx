@@ -1,3 +1,4 @@
+import { hasKnownKitPrices } from '@/lib/kit-builder/pricing-availability';
 /**
  * Kit Presentable Preview — client-facing proposal view
  * Renders the kit as a visual presentation card with narrative, items grid,
@@ -51,6 +52,7 @@ export function KitPresentablePreview({
   const narrative = useMemo(() => buildNarrative(kitState, kitName), [kitState, kitName]);
   // `totalPrice` already represents the complete lot. Multiplying by
   // `kitQuantity` again made client-facing previews overstate the total.
+  const pricesKnown = hasKnownKitPrices(kitState);
   const grandTotal = kitState.totalPrice;
   const perKitPrice = kitQuantity > 0 ? grandTotal / kitQuantity : grandTotal;
   const validityDate = useMemo(() => {
@@ -195,12 +197,14 @@ export function KitPresentablePreview({
           </div>
           <div className="rounded-lg bg-muted/30 p-3">
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Por kit</p>
-            <p className="font-display text-lg font-bold">{formatCurrency(perKitPrice)}</p>
+            <p className="font-display text-lg font-bold">
+              {pricesKnown ? formatCurrency(perKitPrice) : 'Não informado'}
+            </p>
           </div>
           <div className="rounded-lg border border-primary/20 bg-primary/10 p-3">
             <p className="text-[10px] uppercase tracking-wider text-primary">Investimento</p>
             <p className="font-display text-lg font-bold text-primary">
-              {formatCurrency(grandTotal)}
+              {pricesKnown ? formatCurrency(grandTotal) : 'Não informado'}
             </p>
           </div>
         </div>

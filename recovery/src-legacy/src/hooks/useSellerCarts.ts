@@ -61,7 +61,7 @@ export interface CreateCartInput {
   company_logo_url?: string;
 }
 
-export type CartStatus = "novo" | "em_negociacao" | "pronto_orcamento";
+export type CartStatus = "em_negociacao" | "novo" | "pronto_orcamento";
 
 const QUERY_KEY = "seller-carts";
 
@@ -244,8 +244,8 @@ export function useSellerCarts() {
   // Update item sort order
   const updateItemSortOrder = useMutation({
     mutationFn: async (items: { id: string; sort_order: number }[]) => {
-      const promises = items.map(({ id, sort_order }) =>
-        supabase.from("seller_cart_items").update({ sort_order }).eq("id", id)
+      const promises = items.map(({ id, sort_order: sortOrder }) =>
+        supabase.from("seller_cart_items").update({ sort_order: sortOrder }).eq("id", id)
       );
       await Promise.all(promises);
     },
