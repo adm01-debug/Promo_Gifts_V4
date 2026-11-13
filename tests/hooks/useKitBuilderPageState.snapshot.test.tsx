@@ -177,8 +177,9 @@ describe('Saved raw nullable draft parsing is non-destructive', () => {
       expect(source).toEqual(before);
     },
   );
+  // `{}` saiu desta lista: é o formato de 15 de 21 kits em produção (13/11) e significa
+  // "sem personalização" — ver tests/lib/kit-read-draft-production-shapes.test.ts.
   it.each([
-    {},
     { box: { enabled: 'true' }, items: {} },
     { box: { enabled: false }, items: [] },
     { box: { enabled: false }, items: { line: { enabled: 'true' } } },

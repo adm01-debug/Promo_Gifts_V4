@@ -94,10 +94,12 @@ const itemPersonalizationSnapshotSchema = z
     pricedQuantity: snapshotNumber.optional(),
   })
   .passthrough();
+// `{}` é o valor gravado em 15 de 21 kits de produção (13/11) e significa "sem personalização":
+// caixa/itens ausentes assumem desligado em vez de derrubar a hidratação do kit inteiro.
 const personalizationSnapshotSchema = z
   .object({
-    box: itemPersonalizationSnapshotSchema,
-    items: z.record(z.string(), itemPersonalizationSnapshotSchema),
+    box: itemPersonalizationSnapshotSchema.default({ enabled: false }),
+    items: z.record(z.string(), itemPersonalizationSnapshotSchema).default({}),
   })
   .passthrough();
 const boxSnapshotSchema = z
