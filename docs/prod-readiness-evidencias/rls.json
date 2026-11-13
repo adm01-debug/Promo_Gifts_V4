@@ -1,0 +1,1 @@
+[{"exposed_schemas":null,"public_tables":410,"public_no_rls":0,"public_rls_no_policy":0,"offenders":null,"other_tables":85,"other_schemas":"auth,cf_recon,classification_audit,cron,extensions,net,prod_audit,realtime,storage,supabase_functions,supabase_migrations,supplier_stricker,vault"}]

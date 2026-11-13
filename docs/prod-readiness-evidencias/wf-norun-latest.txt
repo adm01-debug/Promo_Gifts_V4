@@ -1,0 +1,42 @@
+_e2e-relevance.yml                           NUNCA EXECUTOU
+_secrets-check.yml                           NUNCA EXECUTOU
+auth-fuzz-weekly.yml                         schedule main completed success 2026-11-09T05:17:33Z 42566448848
+bundle-size-report.yml                       pull_request claude/fix-pdp-timeout-prefetch-261113-1602 queued  2026-11-13T22:04:38Z 43516223985
+cache-prune.yml                              schedule main completed success 2026-11-09T07:18:25Z 42578491437
+capacity-growth-report.yml                   schedule main completed success 2026-11-09T11:15:34Z 42607577941
+ci-metrics-weekly.yml                        schedule main completed success 2026-11-09T07:20:05Z 42578669620
+contract-tests.yml                           pull_request e66-edge-deploy-receipt-43494646104 completed action_required 2026-11-13T22:06:45Z 43516533124
+cross-reference-issues.yml                   pull_request claude/fix-email-domain-resend-261113-0800 queued  2026-11-13T22:02:42Z 43515946451
+ddl-out-of-band-detector.yml                 schedule main completed success 2026-11-09T08:21:09Z 42585314180
+delete-orphan-edges.yml                      NUNCA EXECUTOU
+deploy-vercel.yml                            push main completed success 2026-08-31T14:18:04Z 33401820666
+dr-drill-reminder.yml                        schedule main completed success 2026-10-26T09:07:03Z 40297095822
+e2e-cart.yml                                 pull_request claude/resgate-3390-261113 completed success 2026-11-13T20:51:02Z 43505316700
+e2e-check-calendar-snapshots.yml             pull_request claude_pink/compassionate-keller-om34uo completed cancelled 2026-10-28T00:56:03Z 40611914122
+e2e-customization-collapse.yml               push main completed success 2026-10-29T17:20:30Z 40920388936
+e2e-dialogs-pr-check.yml                     pull_request release-please--branches--main--components--gifts-store completed action_required 2026-11-13T20:57:45Z 43506327199
+e2e-discount-approval.yml                    push main completed failure 2026-11-12T11:22:16Z 43208562370
+e2e-focused.yml                              pull_request claude/fix-aba-marketing-261113 in_progress  2026-11-13T20:55:00Z 43505916423
+e2e-freight.yml                              push main completed success 2026-11-08T03:37:06Z 42443474578
+e2e-pdf-dialog.yml                           push main completed success 2026-11-02T00:44:53Z 41368799704
+e2e-quotes.yml                               pull_request claude/fix-pdp-timeout-prefetch-261113-1602 queued  2026-11-13T22:04:38Z 43516224538
+e2e-stock.yml                                pull_request claude/fix-e2e-stock-busca-261112-1436 completed failure 2026-11-13T14:23:39Z 43442285540
+global-search-gate.yml                       pull_request claude/wf-limpeza-261113 completed failure 2026-11-13T20:51:05Z 43505323682
+labels-sync.yml                              push main completed success 2026-10-19T13:52:45Z 39263929395
+log-login-fuzz-weekly.yml                    schedule main completed success 2026-11-09T06:37:26Z 42574176394
+magazine-flakiness.yml                       schedule main completed success 2026-11-09T06:38:16Z 42574263423
+magazine-mutation.yml                        pull_request claude/lote-pilha-v2-261112 completed success 2026-11-13T06:32:16Z 43379386898
+migration-dry-run.yml                        pull_request codex/docs-magazine-audit-20260928 completed success 2026-09-29T14:11:40Z 36580811563
+migrations-sync-log-gate.yml                 pull_request claude/fix-aba-marketing-261113 completed success 2026-11-13T20:55:00Z 43505916402
+optimized-image-e2e.yml                      push main completed success 2026-11-08T03:38:40Z 42443580746
+pdf-quality.yml                              push main completed success 2026-11-02T00:44:53Z 41368799841
+pdf-visual-regression.yml                    pull_request claude/inspiring-knuth-swo71j completed cancelled 2026-11-08T04:43:45Z 42447969123
+personalization-trace-diagnostics.yml        pull_request claude/lote-pilha-v2-261112 completed success 2026-11-13T06:32:16Z 43379386534
+pgss-slo-report.yml                          schedule main completed success 2026-11-09T10:54:02Z 42604630264
+pr-size-guard.yml                            pull_request e66-edge-deploy-receipt-43494646104 completed action_required 2026-11-13T22:06:45Z 43516533503
+ratchet-weekly.yml                           schedule main completed success 2026-11-09T08:57:39Z 42589725595
+regenerate-supabase-types.yml                workflow_dispatch main completed failure 2026-05-25T01:33:08Z 26378664155
+sentinel-self-test.yml                       pull_request claude/wf-limpeza-261113 completed success 2026-11-13T20:51:05Z 43505323981
+sitemap-production-preconditions.yml         pull_request claude/fix-csp-trava-rolagem-261113-1428 completed failure 2026-11-13T18:23:37Z 43482199360
+supplier-comparison.yml                      pull_request claude/wf-limpeza-261113 completed success 2026-11-13T20:51:05Z 43505323576
+update-snapshots.yml                         workflow_dispatch claude/fix-ci-main-red-261112-0010 completed success 2026-11-12T04:01:56Z 43152083909

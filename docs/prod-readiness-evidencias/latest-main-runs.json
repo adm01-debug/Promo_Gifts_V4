@@ -1,0 +1,572 @@
+{
+ "contexto.yml": {
+  "id": 43512115830,
+  "name": "Contexto para agentes de IA (10 min)",
+  "event": "schedule",
+  "status": "pending",
+  "conclusion": null,
+  "sha": "fe64be35",
+  "created": "2026-11-13T21:35:57Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43512115830"
+ },
+ "uptime-monitor.yml": {
+  "id": 43511746889,
+  "name": "Uptime Monitor",
+  "event": "schedule",
+  "status": "queued",
+  "conclusion": null,
+  "sha": "fe64be35",
+  "created": "2026-11-13T21:33:30Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43511746889"
+ },
+ "deployment-failure-alert.yml": {
+  "id": 43511444198,
+  "name": "Deployment Failure Alert",
+  "event": "deployment_status",
+  "status": "completed",
+  "conclusion": "skipped",
+  "sha": "fe64be35",
+  "created": "2026-11-13T21:31:28Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43511444198"
+ },
+ "edge-functions-drift-check.yml": {
+  "id": 43507656857,
+  "name": "edge-functions-drift-check",
+  "event": "workflow_run",
+  "status": "completed",
+  "conclusion": "failure",
+  "sha": "fe64be35",
+  "created": "2026-11-13T21:06:23Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43507656857"
+ },
+ "deploy-gates.yml": {
+  "id": 43503740634,
+  "name": "Deploy Gates",
+  "event": "push",
+  "status": "queued",
+  "conclusion": null,
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:37Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503740634"
+ },
+ "ci-security-drift.yml": {
+  "id": 43503739879,
+  "name": "CI Security & Drift Checks",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "failure",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503739879"
+ },
+ "codeql.yml": {
+  "id": 43503739770,
+  "name": "CodeQL",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503739770"
+ },
+ "branch-protection-sentinel.yml": {
+  "id": 43503739777,
+  "name": "Branch Protection Sentinel",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503739777"
+ },
+ "supabase-linter-gate.yml": {
+  "id": 43503739924,
+  "name": "Supabase Linter Gate",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503739924"
+ },
+ "release-please.yml": {
+  "id": 43503739962,
+  "name": "Release Please",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503739962"
+ },
+ "security.yml": {
+  "id": 43503739684,
+  "name": "Security Scan",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503739684"
+ },
+ "lovable-edit-tracker.yml": {
+  "id": 43503739798,
+  "name": "Lovable Edit Tracker",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503739798"
+ },
+ "ui-visual-a11y.yml": {
+  "id": 43503740046,
+  "name": "UI · Visual & A11y",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503740046"
+ },
+ "check-select-columns.yml": {
+  "id": 43503739848,
+  "name": "Select Columns vs Types",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503739848"
+ },
+ "lovable-autoheal.yml": {
+  "id": 43503739896,
+  "name": "Lovable Autoheal",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503739896"
+ },
+ "ssot-supabase.yml": {
+  "id": 43503739828,
+  "name": "SSOT Supabase Guard",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503739828"
+ },
+ "automation-local.yml": {
+  "id": 43503739985,
+  "name": "Automação local",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503739985"
+ },
+ "replenishment-quality.yml": {
+  "id": 43503740101,
+  "name": "CI - Replenishment Module Quality Gate",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503740101"
+ },
+ "required-checks-guard.yml": {
+  "id": 43503739790,
+  "name": "Required Checks Guard",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503739790"
+ },
+ "prod-health.yml": {
+  "id": 43503739951,
+  "name": "Static Health Checks",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503739951"
+ },
+ "check-no-prod-leak.yml": {
+  "id": 43503739681,
+  "name": "No Prod Leak in Dev/Test Config",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503739681"
+ },
+ "policies-baseline.yml": {
+  "id": 43503739908,
+  "name": "Policies Baseline",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503739908"
+ },
+ "gitleaks-history-audit.yml": {
+  "id": 43503740124,
+  "name": "Gitleaks — Full History Audit",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503740124"
+ },
+ "lovable-protected-audit.yml": {
+  "id": 43503740135,
+  "name": "Lovable Protected-File Audit (E196)",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "skipped",
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503740135"
+ },
+ "ci.yml": {
+  "id": 43503739938,
+  "name": "CI",
+  "event": "push",
+  "status": "in_progress",
+  "conclusion": null,
+  "sha": "fe64be35",
+  "created": "2026-11-13T20:40:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43503739938"
+ },
+ "deploy-edge-functions.yml": {
+  "id": 43494646104,
+  "name": "Deploy Edge Functions",
+  "event": "workflow_dispatch",
+  "status": "queued",
+  "conclusion": null,
+  "sha": "8ce96939",
+  "created": "2026-11-13T19:41:59Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43494646104"
+ },
+ "quote-number-hardening-verify.yml": {
+  "id": 43481372358,
+  "name": "Quote Number Hardening — Verify (canonical DB)",
+  "event": "schedule",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "8ce96939",
+  "created": "2026-11-13T18:18:35Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43481372358"
+ },
+ "db-apply-migration.yml": {
+  "id": 43471685129,
+  "name": "DB — Aplicação controlada de migration única (E15)",
+  "event": "workflow_dispatch",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "8ce96939",
+  "created": "2026-11-13T17:19:39Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43471685129"
+ },
+ "supabase-security-gate.yml": {
+  "id": 43471670548,
+  "name": "Gate 5 — Supabase Security Audit",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "8ce96939",
+  "created": "2026-11-13T17:19:34Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43471670548"
+ },
+ "schema-snapshot-export.yml": {
+  "id": 43471670893,
+  "name": "schema-snapshot-export",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "8ce96939",
+  "created": "2026-11-13T17:19:34Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43471670893"
+ },
+ "security-definer-acl-multi-env.yml": {
+  "id": 43471670782,
+  "name": "SECURITY DEFINER ACL — Multi-Env",
+  "event": "push",
+  "status": "pending",
+  "conclusion": null,
+  "sha": "8ce96939",
+  "created": "2026-11-13T17:19:34Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43471670782"
+ },
+ "delivery-quality.yml": {
+  "id": 43441944673,
+  "name": "Quote Builder Delivery Quality",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "36faf00e",
+  "created": "2026-11-13T14:21:28Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43441944673"
+ },
+ "edge-integration-all.yml": {
+  "id": 43441943815,
+  "name": "Edge Integration Tests — All Functions",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "36faf00e",
+  "created": "2026-11-13T14:21:28Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43441943815"
+ },
+ "stale.yml": {
+  "id": 43415913022,
+  "name": "Mark stale issues and pull requests",
+  "event": "schedule",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "10e57c95",
+  "created": "2026-11-13T11:17:49Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43415913022"
+ },
+ "restore-seller-cart-rpc.yml": {
+  "id": 43404610306,
+  "name": "E2E · restore_seller_cart RPC (multi-env)",
+  "event": "schedule",
+  "status": "pending",
+  "conclusion": null,
+  "sha": "10e57c95",
+  "created": "2026-11-13T09:50:47Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43404610306"
+ },
+ "db-schema-drift-check.yml": {
+  "id": 43402325601,
+  "name": "db-schema-drift-check",
+  "event": "schedule",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "36eac065",
+  "created": "2026-11-13T09:33:36Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43402325601"
+ },
+ "dynamic/dependabot/dependabot-updates": {
+  "id": 43388334350,
+  "name": "npm_and_yarn in / for framer-motion - Update #1700790491",
+  "event": "dynamic",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "3265eec6",
+  "created": "2026-11-13T07:47:59Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43388334350"
+ },
+ "magazine-unit-tests.yml": {
+  "id": 43388203799,
+  "name": "Magazine Unit Tests",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "bcba4c29",
+  "created": "2026-11-13T07:46:54Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43388203799"
+ },
+ "visual-tests.yml": {
+  "id": 43388204021,
+  "name": "Visual Baseline Tests — Nightly",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "bcba4c29",
+  "created": "2026-11-13T07:46:54Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43388204021"
+ },
+ "e2e-swatch-quickview.yml": {
+  "id": 43388203968,
+  "name": "E2E • Swatch QuickView (Lista + Tabela)",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "bcba4c29",
+  "created": "2026-11-13T07:46:54Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43388203968"
+ },
+ "e2e-magazine-header.yml": {
+  "id": 43388204024,
+  "name": "E2E — Magazine Header Layout",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "bcba4c29",
+  "created": "2026-11-13T07:46:54Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43388204024"
+ },
+ "e2e.yml": {
+  "id": 43388204194,
+  "name": "E2E (Playwright)",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "failure",
+  "sha": "bcba4c29",
+  "created": "2026-11-13T07:46:54Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43388204194"
+ },
+ "e2e-personalization.yml": {
+  "id": 43388203974,
+  "name": "E2E — Personalization Flow",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "failure",
+  "sha": "bcba4c29",
+  "created": "2026-11-13T07:46:54Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43388203974"
+ },
+ "e2e-flows.yml": {
+  "id": 43388203940,
+  "name": "E2E — Critical Flows & Error Boundaries",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "bcba4c29",
+  "created": "2026-11-13T07:46:54Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43388203940"
+ },
+ "workflow-lint.yml": {
+  "id": 43388204184,
+  "name": "Workflow Lint",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "bcba4c29",
+  "created": "2026-11-13T07:46:54Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43388204184"
+ },
+ "ts-unused-ratchet.yml": {
+  "id": 43385367945,
+  "name": "TS Unused Locals Ratchet",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "8404c43d",
+  "created": "2026-11-13T07:23:04Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43385367945"
+ },
+ "lint-untyped-from.yml": {
+  "id": 43385367966,
+  "name": "Lint untypedFrom",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "8404c43d",
+  "created": "2026-11-13T07:23:04Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43385367966"
+ },
+ "url-state-unit.yml": {
+  "id": 43385367690,
+  "name": "URL State — Unit & Fuzz",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "8404c43d",
+  "created": "2026-11-13T07:23:04Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43385367690"
+ },
+ "drafts-index-check.yml": {
+  "id": 43384079304,
+  "name": "drafts-index-check",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "0a9291a1",
+  "created": "2026-11-13T07:12:32Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43384079304"
+ },
+ "e2e-visual-preview-button.yml": {
+  "id": 43384079272,
+  "name": "E2E — Visual Regression (Preview button)",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "0a9291a1",
+  "created": "2026-11-13T07:12:32Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43384079272"
+ },
+ "e2e-color-swatch-grid.yml": {
+  "id": 43384079437,
+  "name": "E2E • ColorSwatch 2 linhas (Grid)",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "failure",
+  "sha": "0a9291a1",
+  "created": "2026-11-13T07:12:32Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43384079437"
+ },
+ "e2e-crm-callback-approved.yml": {
+  "id": 43379397630,
+  "name": "E2E — CRM Callback (approved → V4 → CRM)",
+  "event": "schedule",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "0b1766de",
+  "created": "2026-11-13T06:32:21Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43379397630"
+ },
+ "daily-flows-simulation.yml": {
+  "id": 43378462089,
+  "name": "Daily flows simulation",
+  "event": "schedule",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "0b1766de",
+  "created": "2026-11-13T06:24:17Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43378462089"
+ },
+ "wraparound-monitor-report.yml": {
+  "id": 43372855230,
+  "name": "wraparound-monitor-report",
+  "event": "schedule",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fd9c4eec",
+  "created": "2026-11-13T05:34:02Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43372855230"
+ },
+ "stock-rupture-fuzz.yml": {
+  "id": 43364567834,
+  "name": "stock-rupture-fuzz",
+  "event": "schedule",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "fd9c4eec",
+  "created": "2026-11-13T04:17:40Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43364567834"
+ },
+ "kit-coverage-integration.yml": {
+  "id": 43360993999,
+  "name": "Kit Coverage — Integration",
+  "event": "schedule",
+  "status": "completed",
+  "conclusion": "success",
+  "sha": "0f5934a2",
+  "created": "2026-11-13T03:44:56Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43360993999"
+ },
+ "nightly-full.yml": {
+  "id": 43354357368,
+  "name": "Nightly Full CI",
+  "event": "schedule",
+  "status": "completed",
+  "conclusion": "failure",
+  "sha": "0f00ba16",
+  "created": "2026-11-13T02:45:26Z",
+  "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/43354357368"
+ }
+}
