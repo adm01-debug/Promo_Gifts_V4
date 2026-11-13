@@ -27,8 +27,13 @@ name: db-schema-drift-check
 #
 # Roda:
 #   - cron diario (06:29 BRT = 09:29 UTC) — offset do edge-functions-drift-check
-#   - PRs que tocam supabase/migrations/** ou supabase/config.toml
+#   - PRs/push que tocam migrations/baseline/config.toml/scripts do drift: via
+#     workflow_call do deploy-gates.yml (job schema-drift-gate, Gate E40,
+#     bloqueante no Gate Final). O gatilho pull_request próprio saiu em
+#     2026-11-13 (wf-consolida): tinha exatamente os mesmos paths do detector
+#     check-schema-paths do E40 e abria uma 2ª sessão no banco canônico por PR.
 #   - manual (workflow_dispatch)
+#   - schema-snapshot-export.yml (drift-gate antes de girar o baseline)
 #
 # Secrets (Settings -> Secrets and variables -> Actions):
 #   - SUPABASE_ACCESS_TOKEN : PAT da Management API
@@ -58,15 +63,11 @@ name: db-schema-drift-check
 on:
   schedule:
     - cron: '29 9 * * *' # 06:29 BRT — E89: ≥20min after edge-functions-drift-check (09:06), ≥20min before restore-seller-cart-rpc (09:49)
-  pull_request:
-    paths:
-      - 'supabase/migrations/**'
-      - 'supabase/config.toml'
-      - 'supabase/baseline/**'
-      - 'scripts/drift-baseline.mjs'
-      - 'scripts/check-event-triggers-drift.mjs'
-      - 'scripts/check-cron-drift.mjs'
-      - '.github/workflows/db-schema-drift-check.yml'
+  # pull_request: removido — o mesmo conjunto de paths dispara este workflow via
+  # workflow_call no deploy-gates.yml (check-schema-paths → schema-drift-gate, E40):
+  #   supabase/migrations/**, supabase/baseline/**, supabase/config.toml,
+  #   scripts/drift-baseline.mjs, scripts/check-event-triggers-drift.mjs,
+  #   scripts/check-cron-drift.mjs, .github/workflows/db-schema-drift-check.yml
   workflow_dispatch:
   # Chamado por schema-snapshot-export.yml antes de girar o baseline: baseline
   # novo só entra se o atual + replay não acusarem drift (senão o dump novo
