@@ -18,6 +18,14 @@
       "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
     },
     {
+      "file": "analise-prs/2026-11-12/prs.json",
+      "ref": "supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql"
+    },
+    {
+      "file": "analise-prs/2026-11-12/prs.json",
+      "ref": "supabase/migrations/20261108230000_cron002_fix_residual_collisions.sql"
+    },
+    {
       "file": "analise-prs/dossies/PR-2426.md",
       "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
     },
@@ -28,6 +36,10 @@
     {
       "file": "analise-prs/dossies/PR-2714.md",
       "ref": "supabase/migrations/20261027200000_supplier_stricker_rls_deny_all.sql"
+    },
+    {
+      "file": "CHANGELOG.md",
+      "ref": "supabase/migrations/x6"
     },
     {
       "file": "CONTRIBUTING.md",
