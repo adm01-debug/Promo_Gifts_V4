@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3265eec652d8da18440e0d62d03543cefa2eb219",
+  "commit": "36eac065fa75b96dedf26dea71feeeb467cf4d34",
   "branch": "main",
-  "data_commit": "2026-11-13T04:47:56-03:00",
+  "data_commit": "2026-11-13T05:55:38-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "36eac06",
+    "data": "2026-11-13",
+    "assunto": "fix(ci): documenta BRIDGE_PATH em SEGREDOS.md para passar Gate E40"
+   },
    {
     "sha": "3265eec",
     "data": "2026-11-13",
@@ -126,11 +131,6 @@
     "sha": "9d84acb",
     "data": "2026-11-13",
     "assunto": "fix(admin): salvar papéis não trava quando a permissão já foi adicionada por outro admin (#3461)"
-   },
-   {
-    "sha": "10b7a8a",
-    "data": "2026-11-12",
-    "assunto": "fix(sitemap): preserva o XML legado em recovery/site-artifacts para o probe"
    }
   ],
   "arquivos_mudados_7d": 1975,
@@ -278,6 +278,10 @@
     "mudancas": 7
    },
    {
+    "arquivo": "docs/ci/SEGREDOS.md",
+    "mudancas": 7
+   },
+   {
     "arquivo": "scripts/lib/baseline-gate.mjs",
     "mudancas": 7
    },
@@ -291,10 +295,6 @@
    },
    {
     "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
-    "mudancas": 6
-   },
-   {
-    "arquivo": ".github/workflows/db-schema-drift-check.yml",
     "mudancas": 6
    }
   ],

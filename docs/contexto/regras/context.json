@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "3265eec652d8da18440e0d62d03543cefa2eb219",
+  "sha": "36eac065fa75b96dedf26dea71feeeb467cf4d34",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-13 08:50 UTC",
+  "generated_at": "2026-11-13 09:53 UTC",
   "files_total": 10033,
   "code_files": 8569,
   "code_lines": 1211934
@@ -528360,10 +528360,19 @@
   }
  },
  "git": {
-  "sha": "3265eec652d8da18440e0d62d03543cefa2eb219",
+  "sha": "36eac065fa75b96dedf26dea71feeeb467cf4d34",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "36eac06",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(ci): documenta BRIDGE_PATH em SEGREDOS.md para passar Gate E40",
+    "files": [
+     "docs/ci/SEGREDOS.md"
+    ]
+   },
    {
     "sha": "3265eec",
     "date": "2026-11-13",
@@ -528778,13 +528787,6 @@
      "tests/scripts/check-conflict-ledger.test.mjs",
      "tests/scripts/check-supabase-migration-ledger.test.mjs"
     ]
-   },
-   {
-    "sha": "5878ff7",
-    "date": "2026-11-12",
-    "author": "Joaquim Ataides",
-    "subject": "Merge branch 'main' into claude/lote-pilha-v2-261112",
-    "files": []
    }
   ],
   "hot_files": [
@@ -528841,6 +528843,10 @@
     2
    ],
    [
+    "docs/ci/SEGREDOS.md",
+    1
+   ],
+   [
     "supabase/migrations/20261111222500_fix_touch_seller_cart_secdef.sql",
     1
    ],
@@ -528862,10 +528868,6 @@
    ],
    [
     "e2e/fixtures/selectors.ts",
-    1
-   ],
-   [
-    "e2e/flows/90-personalization-pdp-flow.spec.ts",
     1
    ]
   ]
