@@ -104,14 +104,17 @@ export function useKitBuilderPageState() {
     startNewFlow,
   } = useKitBuilder({ initialFlow });
 
-  const setKitQuantity = useCallback((quantity: Parameters<typeof updateKitQuantity>[0]) => {
-    if (!Number.isSafeInteger(quantity) || quantity < 1) {
-      toast.error('Informe uma quantidade inteira maior que zero.');
-      return;
-    }
-    updateKitQuantity(quantity);
-    setQuantityNeedsConfirmation(false);
-  }, [updateKitQuantity]);
+  const setKitQuantity = useCallback(
+    (quantity: Parameters<typeof updateKitQuantity>[0]) => {
+      if (!Number.isSafeInteger(quantity) || quantity < 1) {
+        toast.error('Informe uma quantidade inteira maior que zero.');
+        return;
+      }
+      updateKitQuantity(quantity);
+      setQuantityNeedsConfirmation(false);
+    },
+    [updateKitQuantity],
+  );
 
   const { isSaving, saveKit, savedKits, isLoadingKits } = useCustomKitPersistence();
   useCustomKitsRealtime();
@@ -137,8 +140,10 @@ export function useKitBuilderPageState() {
       setCurrentKitId(id);
       setCurrentRevision(revision);
     },
-    !isHydrating && !hydrationError && !quantityNeedsConfirmation
-      && (!kitIdParam || hydratedScope === `${user?.id ?? 'anonymous'}:${kitIdParam}`),
+    !isHydrating &&
+      !hydrationError &&
+      !quantityNeedsConfirmation &&
+      (!kitIdParam || hydratedScope === `${user?.id ?? 'anonymous'}:${kitIdParam}`),
     { quoteClient, flow: wizardState.flow, aiBriefing },
   );
   const {
@@ -220,7 +225,9 @@ export function useKitBuilderPageState() {
     const snapshot = toSavedKitSnapshot(row);
     if (!snapshot) {
       logger.warn('[kit-builder] Invalid saved kit snapshot:', kitIdParam);
-      setHydrationError('O rascunho contém campos incompletos ou inválidos. Revise o kit na biblioteca antes de salvar.');
+      setHydrationError(
+        'O rascunho contém campos incompletos ou inválidos. Revise o kit na biblioteca antes de salvar.',
+      );
       toast.error('O rascunho do kit está em um formato inválido.');
       setIsHydrating(false);
       return;
@@ -231,7 +238,11 @@ export function useKitBuilderPageState() {
     setAIBriefing(snapshot.aiBriefing);
     setCurrentKitId(row.id);
     setCurrentRevision(row.revision);
-    setQuantityNeedsConfirmation(typeof row.kit_quantity !== 'number' || !Number.isSafeInteger(row.kit_quantity) || row.kit_quantity < 1);
+    setQuantityNeedsConfirmation(
+      typeof row.kit_quantity !== 'number' ||
+        !Number.isSafeInteger(row.kit_quantity) ||
+        row.kit_quantity < 1,
+    );
     setHydratedScope(scope);
     setHydrationError(null);
     if (originParam === 'manual' || originParam === 'template' || originParam === 'ai') {
@@ -294,7 +305,11 @@ export function useKitBuilderPageState() {
       toast.error('Defina a quantidade do rascunho antes de salvar ou criar um orçamento.');
       return;
     }
-    if (isHydrating || hydrationError || kitIdParam && hydratedScope !== `${user?.id ?? 'anonymous'}:${kitIdParam}`) {
+    if (
+      isHydrating ||
+      hydrationError ||
+      (kitIdParam && hydratedScope !== `${user?.id ?? 'anonymous'}:${kitIdParam}`)
+    ) {
       toast.error(hydrationError ?? 'Aguarde o carregamento do kit salvo.');
       return;
     }
@@ -324,7 +339,12 @@ export function useKitBuilderPageState() {
     }
   }, [
     autoSavedKitId,
-    quantityNeedsConfirmation, isHydrating, hydrationError, kitIdParam, hydratedScope, user?.id,
+    quantityNeedsConfirmation,
+    isHydrating,
+    hydrationError,
+    kitIdParam,
+    hydratedScope,
+    user?.id,
     acknowledgeManualSave,
     cancelPendingSave,
     currentKitId,
@@ -338,17 +358,32 @@ export function useKitBuilderPageState() {
     saveKit,
   ]);
 
-  const handleAddToQuote = useCallback(async (...args: Parameters<typeof createQuote>) => {
-    if (quantityNeedsConfirmation) {
-      toast.error('Defina a quantidade do rascunho antes de salvar ou criar um orçamento.');
-      return;
-    }
-    if (isHydrating || hydrationError || kitIdParam && hydratedScope !== `${user?.id ?? 'anonymous'}:${kitIdParam}`) {
-      toast.error(hydrationError ?? 'Aguarde o carregamento do kit salvo.');
-      return;
-    }
-    return createQuote(...args);
-  }, [createQuote, quantityNeedsConfirmation, isHydrating, hydrationError, kitIdParam, hydratedScope, user?.id]);
+  const handleAddToQuote = useCallback(
+    async (...args: Parameters<typeof createQuote>) => {
+      if (quantityNeedsConfirmation) {
+        toast.error('Defina a quantidade do rascunho antes de salvar ou criar um orçamento.');
+        return;
+      }
+      if (
+        isHydrating ||
+        hydrationError ||
+        (kitIdParam && hydratedScope !== `${user?.id ?? 'anonymous'}:${kitIdParam}`)
+      ) {
+        toast.error(hydrationError ?? 'Aguarde o carregamento do kit salvo.');
+        return;
+      }
+      return createQuote(...args);
+    },
+    [
+      createQuote,
+      quantityNeedsConfirmation,
+      isHydrating,
+      hydrationError,
+      kitIdParam,
+      hydratedScope,
+      user?.id,
+    ],
+  );
 
   const applyAISuggestion = useCallback(
     (
@@ -357,7 +392,11 @@ export function useKitBuilderPageState() {
       requestedQuantity?: number,
     ) => {
       applyAIComposition(composition, requestedQuantity);
-      if (typeof requestedQuantity === 'number' && Number.isSafeInteger(requestedQuantity) && requestedQuantity > 0) {
+      if (
+        typeof requestedQuantity === 'number' &&
+        Number.isSafeInteger(requestedQuantity) &&
+        requestedQuantity > 0
+      ) {
         setQuantityNeedsConfirmation(false);
       }
       setAIBriefing(suggestion);

@@ -96,12 +96,25 @@ function templateCopyPayload(
   name: string,
 ): TablesInsert<'quote_templates'> {
   const source = templateSourceRows.get(template);
-  if (!source) throw new Error('Dados originais do template indisponíveis. Recarregue antes de copiar.');
+  if (!source)
+    throw new Error('Dados originais do template indisponíveis. Recarregue antes de copiar.');
   const {
-    id: _id, created_by: _createdBy, created_at: _createdAt, updated_at: _updatedAt,
-    seller_id: _sellerId, name: _name, is_default: _isDefault, ...data
+    id: _id,
+    created_by: _createdBy,
+    created_at: _createdAt,
+    updated_at: _updatedAt,
+    seller_id: _sellerId,
+    name: _name,
+    is_default: _isDefault,
+    ...data
   } = source;
-  return { ...structuredClone(data), created_by: creatorId, seller_id: sellerId, name, is_default: false };
+  return {
+    ...structuredClone(data),
+    created_by: creatorId,
+    seller_id: sellerId,
+    name,
+    is_default: false,
+  };
 }
 
 // ============================================
@@ -290,7 +303,8 @@ export function useQuoteTemplates() {
           .select('*');
 
         if (updErr) throw new Error(updErr.message);
-        if (!result?.[0]) throw new Error('Nenhum template foi atualizado. Verifique sua permissão de edição.');
+        if (!result?.[0])
+          throw new Error('Nenhum template foi atualizado. Verifique sua permissão de edição.');
 
         toast({ title: 'Template atualizado', description: 'Alterações salvas com sucesso' });
         await fetchTemplates();
@@ -313,9 +327,14 @@ export function useQuoteTemplates() {
       if (!user) return false;
 
       try {
-        const { data: deleted, error: delErr } = await supabase.from('quote_templates').delete().eq('id', id).select('id');
+        const { data: deleted, error: delErr } = await supabase
+          .from('quote_templates')
+          .delete()
+          .eq('id', id)
+          .select('id');
         if (delErr) throw new Error(delErr.message);
-        if (!deleted?.length) throw new Error('Nenhum template foi excluído. Verifique sua permissão de exclusão.');
+        if (!deleted?.length)
+          throw new Error('Nenhum template foi excluído. Verifique sua permissão de exclusão.');
 
         toast({ title: 'Template excluído', description: 'Template removido com sucesso' });
         await fetchTemplates();
@@ -345,14 +364,20 @@ export function useQuoteTemplates() {
       const template = templates.find((t) => t.id === id);
       if (!template) return null;
       if (!user) {
-        toast({ title: 'Erro', description: 'Você precisa estar logado para criar templates', variant: 'destructive' });
+        toast({
+          title: 'Erro',
+          description: 'Você precisa estar logado para criar templates',
+          variant: 'destructive',
+        });
         return null;
       }
       const name = `${template.name} (Cópia)`;
       try {
         const insertPayload = templateCopyPayload(template, user.id, user.id, name);
         const { data: inserted, error: insErr } = await supabase
-          .from('quote_templates').insert(insertPayload).select('*');
+          .from('quote_templates')
+          .insert(insertPayload)
+          .select('*');
         if (insErr) throw new Error(insErr.message);
         if (!inserted?.[0]) throw new Error('O banco não confirmou a gravação do template.');
         toast({ title: 'Template criado', description: `Template "${name}" salvo com sucesso` });
@@ -360,7 +385,11 @@ export function useQuoteTemplates() {
         return inserted?.[0] || null;
       } catch (err) {
         logger.error('Error creating quote template:', err);
-        toast({ title: 'Erro', description: 'Não foi possível criar o template', variant: 'destructive' });
+        toast({
+          title: 'Erro',
+          description: 'Não foi possível criar o template',
+          variant: 'destructive',
+        });
         return null;
       }
     },
@@ -385,9 +414,19 @@ export function useQuoteTemplates() {
       }
 
       try {
-        const insertPayload = templateCopyPayload(template, user.id, targetSellerId, `${template.name} (Clonado)`);
+        const insertPayload = templateCopyPayload(
+          template,
+          user.id,
+          targetSellerId,
+          `${template.name} (Clonado)`,
+        );
         if (targetSellerId !== user.id && insertPayload.is_active !== true) {
-          toast({ title: 'O vendedor não terá acesso à cópia', description: 'O template não está ativo. A política atual permite que somente o autor veja essa cópia. Nenhuma cópia foi criada.', variant: 'destructive' });
+          toast({
+            title: 'O vendedor não terá acesso à cópia',
+            description:
+              'O template não está ativo. A política atual permite que somente o autor veja essa cópia. Nenhuma cópia foi criada.',
+            variant: 'destructive',
+          });
           return null;
         }
 

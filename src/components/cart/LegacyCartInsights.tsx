@@ -2,7 +2,22 @@
 import { useMemo } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Package, Trash2, Plus, Copy, Eraser, FileText, Sparkles, TrendingUp, Lightbulb, History, MessageSquare, MoveRight, ChevronDown, Timer } from 'lucide-react';
+import {
+  Package,
+  Trash2,
+  Plus,
+  Copy,
+  Eraser,
+  FileText,
+  Sparkles,
+  TrendingUp,
+  Lightbulb,
+  History,
+  MessageSquare,
+  MoveRight,
+  ChevronDown,
+  Timer,
+} from 'lucide-react';
 import type { SellerCart } from '@/hooks/products';
 import { differenceInDays, differenceInHours, formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -60,16 +75,24 @@ export interface ProductLike {
 }
 
 export function isSuggestionProduct(value: unknown): value is ProductLike {
-  return typeof value === 'object' && value !== null &&
-    'id' in value && typeof value.id === 'string' &&
-    'name' in value && typeof value.name === 'string';
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'id' in value &&
+    typeof value.id === 'string' &&
+    'name' in value &&
+    typeof value.name === 'string'
+  );
 }
 
 function categoryName(product: ProductLike): string | undefined {
-  if (typeof product.category_name === 'string' && product.category_name) return product.category_name;
+  if (typeof product.category_name === 'string' && product.category_name)
+    return product.category_name;
   const category = product.category;
-  return typeof category === 'object' && category !== null &&
-    'name' in category && typeof category.name === 'string'
+  return typeof category === 'object' &&
+    category !== null &&
+    'name' in category &&
+    typeof category.name === 'string'
     ? category.name
     : undefined;
 }

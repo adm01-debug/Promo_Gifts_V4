@@ -51,7 +51,10 @@ export function sortProducts(
   sortBy: string,
   options?: {
     promoSalesMap?: Map<string, number>;
-    supplierSalesMap?: ReadonlyMap<string, Pick<SupplierSalesEntry, 'turnoverScore' | 'velocity7d'>>;
+    supplierSalesMap?: ReadonlyMap<
+      string,
+      Pick<SupplierSalesEntry, 'turnoverScore' | 'velocity7d'>
+    >;
     skipSort?: boolean;
   },
 ): Product[] {

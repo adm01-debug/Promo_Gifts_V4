@@ -149,7 +149,14 @@ export default function KitBuilderPage() {
       },
       duration: 10_000,
     });
-  }, [state.isHydrating, state.currentKitId, state.autoSavedKitId, state.currentRevision, state.isLanding, actions]);
+  }, [
+    state.isHydrating,
+    state.currentKitId,
+    state.autoSavedKitId,
+    state.currentRevision,
+    state.isLanding,
+    actions,
+  ]);
 
   useKitWizardShortcuts({
     enabled: !state.isLanding && !state.isHydrating && !state.hydrationError,
@@ -451,7 +458,7 @@ export default function KitBuilderPage() {
           </div>
           <KitMobileSummaryBar kitState={state.kitState} kitQuantity={state.kitQuantity}>
             <KitHeroPricingCard
-                    pricesKnown={hasKnownKitPrices(state.kitState)}
+              pricesKnown={hasKnownKitPrices(state.kitState)}
               unitPrice={meta.pricing.unitPrice}
               total={meta.pricing.total}
               kitQuantity={state.kitQuantity}

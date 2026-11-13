@@ -465,7 +465,10 @@ export function downloadMockupAsPdf(
   technique?: Pick<Technique, 'code' | 'name'> | null,
 ): Promise<void> {
   const safeSku = product?.sku?.replace(/[^a-zA-Z0-9]/g, '-') || 'mockup';
-  const safeTechnique = (technique?.code || technique?.name || 'personalizacao').replace(/[^a-zA-Z0-9]/g, '-');
+  const safeTechnique = (technique?.code || technique?.name || 'personalizacao').replace(
+    /[^a-zA-Z0-9]/g,
+    '-',
+  );
   const fileName = `mockup-${safeSku}-${safeTechnique}.pdf`;
   return downloadImageAsPdfFromUrl(mockupUrl, fileName);
 }
