@@ -966,6 +966,7 @@ manualmente, no mesmo dia, com o método `emergência-MCP`.
 | 2026-11-13T04:59:43.954Z | `verify-2fa-token` | 197 | `fd9c4eec24b2a45d956acf62e090a02925287a1e` | 43368850157 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-11-13T07:52:18.717Z | `external-db-bridge` | 299 | `3508d2ab09bcfa99d61928ce98f5fea9de0ab919` | 43385403614 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-11-13T08:32:09.475Z | `mcp-server` | 311 | `3265eec652d8da18440e0d62d03543cefa2eb219` | 43388889562 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T19:41:27.525Z | `e2e-cleanup` | 308 | `5f18026701ed8bbf76332071e1b808cc5e6081de` | 43467481887 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 
 ## Retro-registro (casos anteriores a este ledger, E67)
 
