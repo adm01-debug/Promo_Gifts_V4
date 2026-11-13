@@ -166,11 +166,11 @@ export default function RolePermissionsPage() {
         remaining.delete(`${item.role}-${item.permission_code}`);
       }
 
-      // Add permissions
-      if (toAdd.length > 0) {
+      // Add permissions: 1 insert por item (lote é atômico; um duplicado derrubaria os demais).
+      for (const item of toAdd) {
         // BUG-ROLEPERM-INSERT-SILENT-FAIL FIX: bare await swallowed RLS errors.
-        const { error: insErr } = await supabase.from('role_permissions').insert(toAdd);
-        if (insErr) throw insErr;
+        const { error: insErr } = await supabase.from('role_permissions').insert([item]);
+        if (insErr && insErr.code !== '23505') throw insErr; // 23505: outro admin já adicionou
       }
 
       toast({ title: 'Permissões atualizadas com sucesso!' });
