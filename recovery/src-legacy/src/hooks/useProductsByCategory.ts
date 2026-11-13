@@ -39,6 +39,11 @@ export function useProductsByCategory({
   );
   
   // Ref para evitar chamadas duplicadas
+  const selectedCategoriesRef = useRef(categoryIds);
+  useEffect(() => {
+    selectedCategoriesRef.current = categoryIds;
+  }, [categoryIds]);
+
   const lastFetchedKey = useRef<string>('');
   const isFetchingRef = useRef(false);
 
@@ -48,6 +53,7 @@ export function useProductsByCategory({
   }, [categoryIds.length]);
 
   const fetchProductIds = useCallback(async () => {
+    const selectedCategoryIds = selectedCategoriesRef.current;
     // Evitar chamadas duplicadas
     if (isFetchingRef.current) return;
     if (lastFetchedKey.current === categoryIdsKey && productIds.size > 0) return;
@@ -68,7 +74,7 @@ export function useProductsByCategory({
       const { data, error: invokeError } = await supabase.functions.invoke('categories-api', {
         body: {
           action: 'products_by_categories',
-          categoryIds,
+          categoryIds: selectedCategoryIds,
           includeDescendants,
         },
       });
@@ -82,7 +88,7 @@ export function useProductsByCategory({
       }
 
       setProductIds(new Set(data.productIds || []));
-      setCategoriesCount(data.categoriesUsed || categoryIds.length);
+      setCategoriesCount(data.categoriesUsed || selectedCategoryIds.length);
       setSource(data.source || null);
       lastFetchedKey.current = categoryIdsKey;
 
@@ -95,7 +101,7 @@ export function useProductsByCategory({
       setIsLoading(false);
       isFetchingRef.current = false;
     }
-  }, [categoryIdsKey, includeDescendants, hasFilter, enabled, categoryIds]);
+  }, [categoryIdsKey, includeDescendants, hasFilter, enabled, productIds.size]);
 
   // Buscar quando a chave de categorias muda
   useEffect(() => {

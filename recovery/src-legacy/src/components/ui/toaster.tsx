@@ -16,7 +16,7 @@ export function Toaster() {
 
   return (
     <ToastProvider>
-      {toasts.map(function ({ id, title, description, action, variant, ...props }) {
+      {toasts.map(({ id, title, description, action, variant, ...props }) => {
         const Icon = variant ? variantIcons[variant as keyof typeof variantIcons] : null;
         
         return (

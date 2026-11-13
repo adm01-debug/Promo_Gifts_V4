@@ -5,7 +5,6 @@
 import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
@@ -31,7 +30,7 @@ export function AdminTemplatesManager({ onEditTemplate }: AdminTemplatesManagerP
   const [cloneTemplateId, setCloneTemplateId] = useState<string | null>(null);
   const [targetSellerId, setTargetSellerId] = useState<string>("");
 
-  const getSellerName = (sellerId: string) => {
+  const getSellerName = (sellerId: string | null) => {
     const seller = sellers.find(s => s.id === sellerId);
     return seller?.full_name || seller?.email || 'Vendedor desconhecido';
   };
@@ -44,13 +43,14 @@ export function AdminTemplatesManager({ onEditTemplate }: AdminTemplatesManagerP
 
   const templatesBySeller = useMemo(() => {
     const grouped: Record<string, QuoteTemplate[]> = {};
-    filteredTemplates.forEach(t => { if (!grouped[t.seller_id]) grouped[t.seller_id] = []; grouped[t.seller_id].push(t); });
+    filteredTemplates.forEach(t => { const sellerKey = String(t.seller_id); if (!grouped[sellerKey]) grouped[sellerKey] = []; grouped[sellerKey].push(t); });
     return grouped;
   }, [filteredTemplates]);
 
-  const formatCurrency = (value: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
+  const formatCurrency = (value: number | null) => value === null ? "Valor indisponível" : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 
   const calculateTotal = (template: QuoteTemplate) => {
+    if (template.items_data === null) return null;
     const itemsTotal = template.items_data.reduce((sum, item) => {
       const personalizationCost = item.personalizations?.reduce((pSum, p) => pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0), 0) || 0;
       return sum + item.quantity * item.unitPrice + personalizationCost;
@@ -59,8 +59,8 @@ export function AdminTemplatesManager({ onEditTemplate }: AdminTemplatesManagerP
     return itemsTotal - discountValue;
   };
 
-  const handleDelete = async () => { if (deleteConfirmId) { await deleteTemplate(deleteConfirmId); setDeleteConfirmId(null); } };
-  const handleClone = async () => { if (cloneTemplateId && targetSellerId) { await cloneTemplateToSeller(cloneTemplateId, targetSellerId); setCloneDialogOpen(false); setCloneTemplateId(null); setTargetSellerId(""); } };
+  const handleDelete = async () => { if (deleteConfirmId) { const deleted = await deleteTemplate(deleteConfirmId); if (!deleted) return; setDeleteConfirmId(null); } };
+  const handleClone = async () => { if (cloneTemplateId && targetSellerId) { const cloned = await cloneTemplateToSeller(cloneTemplateId, targetSellerId); if (!cloned) return; setCloneDialogOpen(false); setCloneTemplateId(null); setTargetSellerId(""); } };
 
   if (loading) return <div className="space-y-4"><div className="flex items-center gap-3"><Skeleton className="h-10 flex-1" /><Skeleton className="h-10 w-48" /></div>{[1,2,3,4].map(i => <Skeleton key={i} className="h-16" />)}</div>;
 
@@ -86,7 +86,7 @@ export function AdminTemplatesManager({ onEditTemplate }: AdminTemplatesManagerP
       </div>
 
       <div className="flex items-center gap-4 text-sm text-muted-foreground">
-        <span>{filteredTemplates.length} templates encontrados</span><span>•</span><span>{Object.keys(templatesBySeller).length} vendedores</span>
+        <span>{filteredTemplates.length} templates encontrados</span>{" "}<span>•</span>{" "}<span>{Object.keys(templatesBySeller).length} vendedores</span>
       </div>
 
       {filteredTemplates.length === 0 ? (

@@ -17,9 +17,9 @@ import type { ScenePrompt } from "@/components/magic-up/PromptBank";
 import type { GenerationHistoryItem } from "@/components/magic-up/AdImageResult";
 import { buildQualityDiagnosis, type MagicUpBatchVariant, type MagicUpBrandKit, type MagicUpBrief, type MagicUpCampaign, type MagicUpCopyPack, type MagicUpCreativeControls, type MagicUpCurationStatus, type MagicUpQualityDiagnosis, type MagicUpQualityScore, type MagicUpRefinement } from "@/pages/magic-up/magicUpStrategy";
 import { createClientLogger } from "@/lib/telemetry/structuredLogger";
+import { serializeJsonValue as toJson } from "@/lib/json-value";
 
-const toJson = (value: unknown): Json => value as Json;
-const toJsonRecord = (value: Json | null | undefined): Record<string, Json> => (value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, Json> : {});
+const toJsonRecord = (value: Json | null | undefined): Record<string, Json | undefined> => (value && typeof value === "object" && !Array.isArray(value) ? value : {});
 
 interface GenerationDeps {
   selectedProduct: MagicUpProduct | null;
@@ -47,7 +47,7 @@ interface GenerationDeps {
    * - 'fast': Gemini 2.5 Flash Image Preview ("nano-banana"), mais rápido/barato
    *   para iterações e refinamentos
    */
-  imageModel?: 'pro' | 'fast';
+  imageModel?: 'fast' | 'pro';
 }
 
 export function useMagicUpGeneration(deps: GenerationDeps) {
@@ -139,10 +139,10 @@ export function useMagicUpGeneration(deps: GenerationDeps) {
             aspect_ratio: data.aspectRatio || variantControls.aspectRatio,
             quality_score: diagnosis.total,
             status: "draft",
-            tags: [variantBrief.channel, variantBrief.objective, variantBrief.tone, batchVariant?.id].filter(Boolean),
-            copy_pack: deps.copyPack,
+            tags: [variantBrief.channel, variantBrief.objective, variantBrief.tone, batchVariant?.id].filter((tag): tag is string => typeof tag === "string" && tag.length > 0),
+            copy_pack: toJson(deps.copyPack),
             export_presets: ["png", "jpg-whatsapp", variantControls.aspectRatio],
-            metadata: { brief: variantBrief, creativeControls: variantControls, qualityScore: diagnosis.total, qualityDiagnosis: diagnosis, qualitySource: diagnosis.source, curation: { status: "draft", selectedAt: new Date().toISOString() }, campaign: deps.activeCampaign, brandKit: deps.brandKit, brandNotes: deps.brandNotes, refinement: deps.activeRefinement, batch: batchVariant || null, functionResult: { qualityMode: data.qualityMode, aspectRatio: data.aspectRatio, creativeMode: data.creativeMode, compositionMode: data.compositionMode } },
+            metadata: toJson({ brief: variantBrief, creativeControls: variantControls, qualityScore: diagnosis.total, qualityDiagnosis: diagnosis, qualitySource: diagnosis.source, curation: { status: "draft", selectedAt: new Date().toISOString() }, campaign: deps.activeCampaign, brandKit: deps.brandKit, brandNotes: deps.brandNotes, refinement: deps.activeRefinement, batch: batchVariant || null, functionResult: { qualityMode: data.qualityMode, aspectRatio: data.aspectRatio, creativeMode: data.creativeMode, compositionMode: data.compositionMode } }),
           };
           const { data: inserted, error: insertError } = await supabase
             .from("magic_up_generations")
@@ -224,7 +224,7 @@ export function useMagicUpGeneration(deps: GenerationDeps) {
     toast.success(`Variação ${index + 1} marcada como vencedora`);
   }, [variations]);
 
-  const handleDownload = useCallback(async (format: "png" | "jpg" = "png") => {
+  const handleDownload = useCallback(async (format: "jpg" | "png" = "png") => {
     if (!currentVariation?.imageUrl) return;
     try {
       const resp = await fetch(currentVariation.imageUrl);
@@ -262,7 +262,7 @@ export function useMagicUpGeneration(deps: GenerationDeps) {
     if (!currentVariation?.imageUrl) return;
     const clientGreeting = deps.selectedClient ? `Olá ${deps.selectedClient.name}! ` : "";
     const text = deps.copyPack.whatsapp || `${clientGreeting}✨ Confira a imagem publicitária: ${deps.selectedProduct?.name}${deps.selectedColor ? ` (${deps.selectedColor.name})` : ""} com ${deps.selectedTechnique?.name || "personalização"}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(text + "\n" + currentVariation.imageUrl)}`, "_blank");
+    window.open(`https://wa.me/?text=${encodeURIComponent(`${text}\n${currentVariation.imageUrl}`)}`, "_blank");
   }, [currentVariation, deps]);
 
   const handleToggleFavorite = useCallback(async () => {

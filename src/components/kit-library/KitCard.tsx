@@ -24,13 +24,15 @@ import { getKitTemplateIcon } from '@/components/kit-library/kit-template-icons'
 
 export interface KitCardData {
   id: string;
-  name: string;
+  name: string | null;
   description?: string | null;
   tag?: string | null;
   color: string;
   icon: string;
-  totalPrice: number;
-  itemsCount: number;
+  totalPrice: number | null;
+  itemsCount: number | null;
+  kitQuantity?: number | null;
+  status?: string | null;
   isFavorite?: boolean;
   isPinned?: boolean;
   badge?: string;
@@ -69,6 +71,10 @@ export function KitCard({
   isBusy,
 }: Props) {
   const Icon = getKitTemplateIcon(data.icon);
+  const displayName = data.name || 'Nome não informado';
+  const hasPrice = typeof data.totalPrice === 'number' && Number.isFinite(data.totalPrice);
+  const hasItemsCount = typeof data.itemsCount === 'number' && Number.isFinite(data.itemsCount);
+  const hasEditDate = data.updatedAt && Number.isFinite(Date.parse(data.updatedAt));
 
   return (
     <Card
@@ -88,7 +94,7 @@ export function KitCard({
           </div>
           <img
             src={data.coverImageUrl}
-            alt={`Capa do kit ${data.name}`}
+            alt={`Capa do kit ${displayName}`}
             className="relative z-10 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
             onError={(event) => {
@@ -120,7 +126,7 @@ export function KitCard({
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <TruncatedTooltip className="font-display font-semibold">
-                {data.name}
+                {displayName}
               </TruncatedTooltip>
               {data.badge && (
                 <Badge
@@ -200,23 +206,40 @@ export function KitCard({
           )}
           <span className="flex items-center gap-1">
             <Layers className="h-3 w-3" />
-            {data.itemsCount} ite{data.itemsCount === 1 ? 'm' : 'ns'}
+            {hasItemsCount
+              ? `${data.itemsCount} ite${data.itemsCount === 1 ? 'm' : 'ns'}`
+              : 'Quantidade de itens não informada'}
           </span>
+          {data.kitQuantity !== undefined && (
+            <span>
+              {typeof data.kitQuantity === 'number' && Number.isFinite(data.kitQuantity)
+                ? `${data.kitQuantity} kit${data.kitQuantity === 1 ? '' : 's'}`
+                : 'Quantidade não informada'}
+            </span>
+          )}
+          {data.status === null && <span>Status não informado</span>}
           {variant === 'mine' && data.clientName && (
             <span className="flex items-center gap-1">
               <Building2 className="h-3 w-3" />
               {data.clientName}
             </span>
           )}
-          {variant === 'mine' && data.updatedAt && (
+          {variant === 'mine' && data.updatedAt && hasEditDate && (
             <span>Editado {formatDateRelative(data.updatedAt)}</span>
+          )}
+          {variant === 'mine' && data.updatedAt !== undefined && !hasEditDate && (
+            <span>Edição não informada</span>
           )}
         </div>
 
         <div className="flex items-end justify-between border-t border-border/40 pt-2">
           <div>
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Total</p>
-            <p className="text-lg font-bold text-primary">{formatCurrency(data.totalPrice)}</p>
+            <p className="text-lg font-bold text-primary">
+              {hasPrice && data.totalPrice !== null
+                ? formatCurrency(data.totalPrice)
+                : 'Não informado'}
+            </p>
           </div>
 
           <div className="flex items-center gap-1">

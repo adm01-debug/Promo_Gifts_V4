@@ -43,7 +43,7 @@ export function CartHealthChecklist({ cart, cartSubtotal, onFocusNotes, onAddPro
       { id: "company", label: "Empresa vinculada", ok: !!cart.company_id },
       { id: "items", label: "Mix de produtos (≥ 3 SKUs)", ok: hasMinItems, onFix: onAddProducts },
       { id: "value", label: "Valor mínimo (R$ 500,00)", ok: hasMinValue, onFix: onAddProducts },
-      { id: "notes", label: "Observações do pedido", ok: hasNotes, onFocusNotes },
+      { id: "notes", label: "Observações do pedido", ok: hasNotes, onFix: onFocusNotes },
       { id: "item_notes", label: "Instruções detalhadas por item", ok: hasItemNotes },
       { id: "variants", label: "Variantes e Cores", ok: hasVariants },
       { id: "ready", label: "Status: Pronto p/ Orçamento", ok: isReady },
@@ -140,7 +140,8 @@ export function CartHealthChecklist({ cart, cartSubtotal, onFocusNotes, onAddPro
               <span className={cn(
                 "flex-1 transition-colors",
                 c.ok ? "text-muted-foreground line-through decoration-muted-foreground/30" : "text-foreground font-medium group-hover/item:text-primary"
-              )}>
+              )}
+              >
                 {c.label}
               </span>
               {!c.ok && c.onFix && (

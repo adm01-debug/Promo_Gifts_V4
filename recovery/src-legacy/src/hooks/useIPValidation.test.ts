@@ -29,7 +29,7 @@ describe.skip('useIPValidation', () => {
   describe('fetchCurrentIP', () => {
     it('returns IP when fetch is successful', async () => {
       mockFetch.mockResolvedValueOnce({
-        json: async () => ({ ip: '1.2.3.4' }),
+        json: () => Promise.resolve({ ip: '1.2.3.4' }),
       });
 
       const { result } = renderHook(() => useIPValidation());
@@ -52,7 +52,7 @@ describe.skip('useIPValidation', () => {
   describe('validateIPForAuthenticatedUser', () => {
     it('returns isAllowed true when IP is whitelisted', async () => {
       mockFetch.mockResolvedValueOnce({
-        json: async () => ({ ip: '1.2.3.4' }),
+        json: () => Promise.resolve({ ip: '1.2.3.4' }),
       });
 
       vi.mocked(supabase.functions.invoke).mockResolvedValueOnce({
@@ -76,7 +76,7 @@ describe.skip('useIPValidation', () => {
 
     it('returns isAllowed false when IP is blocked', async () => {
       mockFetch.mockResolvedValueOnce({
-        json: async () => ({ ip: '1.2.3.4' }),
+        json: () => Promise.resolve({ ip: '1.2.3.4' }),
       });
 
       vi.mocked(supabase.functions.invoke).mockResolvedValueOnce({
@@ -101,7 +101,7 @@ describe.skip('useIPValidation', () => {
 
     it('fails open when edge function errors', async () => {
       mockFetch.mockResolvedValueOnce({
-        json: async () => ({ ip: '1.2.3.4' }),
+        json: () => Promise.resolve({ ip: '1.2.3.4' }),
       });
 
       vi.mocked(supabase.functions.invoke).mockResolvedValueOnce({
@@ -122,7 +122,7 @@ describe.skip('useIPValidation', () => {
 
     it('returns error when current IP cannot be identified', async () => {
       mockFetch.mockResolvedValueOnce({
-        json: async () => ({}), // Missing ip field
+        json: () => Promise.resolve({}), // Missing ip field
       });
 
       const { result } = renderHook(() => useIPValidation());
@@ -141,7 +141,7 @@ describe.skip('useIPValidation', () => {
 
     it('handles city_not_whitelisted reason correctly', async () => {
       mockFetch.mockResolvedValueOnce({
-        json: async () => ({ ip: '1.2.3.4' }),
+        json: () => Promise.resolve({ ip: '1.2.3.4' }),
       });
 
       vi.mocked(supabase.functions.invoke).mockResolvedValueOnce({
@@ -166,7 +166,7 @@ describe.skip('useIPValidation', () => {
 
     it('handles too_many_attempts reason correctly', async () => {
       mockFetch.mockResolvedValueOnce({
-        json: async () => ({ ip: '1.2.3.4' }),
+        json: () => Promise.resolve({ ip: '1.2.3.4' }),
       });
 
       vi.mocked(supabase.functions.invoke).mockResolvedValueOnce({
@@ -191,7 +191,7 @@ describe.skip('useIPValidation', () => {
 
     it('manages isValidating state correctly', async () => {
       mockFetch.mockResolvedValueOnce({
-        json: async () => ({ ip: '1.2.3.4' }),
+        json: () => Promise.resolve({ ip: '1.2.3.4' }),
       });
 
       let resolveInvoke: (value: Awaited<ReturnType<typeof supabase.functions.invoke>>) => void;
@@ -208,7 +208,7 @@ describe.skip('useIPValidation', () => {
       expect(result.current.isValidating).toBe(false);
 
       let validationPromise;
-      await act(async () => {
+      act(() => {
         validationPromise = result.current.validateIPForAuthenticatedUser('user-123');
       });
 
@@ -252,7 +252,7 @@ describe.skip('useIPValidation', () => {
 
     it('calls log-login-attempt edge function', async () => {
       mockFetch.mockResolvedValueOnce({
-        json: async () => ({ ip: '1.2.3.4' }),
+        json: () => Promise.resolve({ ip: '1.2.3.4' }),
       });
 
       const { result } = renderHook(() => useIPValidation());

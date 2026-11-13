@@ -4,6 +4,7 @@
  * 2) Ação primária (Gerar Orçamento)
  * 3) Mais ações (DropdownMenu) + Health Checklist + Outros carrinhos
  */
+<<<<<<< recovery/src-legacy/src/pages/seller-carts/CartSidebar.tsx
 import { useState } from 'react';
 import { type SellerCart } from '@/hooks/useSellerCarts';
 import { type CartTemplateItem } from '@/hooks/useCartTemplates';
@@ -27,6 +28,32 @@ import { cn } from '@/lib/utils';
 import { ArrowRight, Weight, Box, Building2, Sparkles, Trash2, Package } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { UseMutationResult } from '@tanstack/react-query';
+=======
+import { useState } from "react";
+import { type SellerCart } from "@/hooks/products";
+import { isSuggestionProduct, SmartSuggestions, ActionHistoryPanel } from "@/components/cart/LegacyCartInsights";
+import { type CartTemplateItem } from "@/hooks/useCartTemplates";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  formatCurrency, getStatusCfg,
+} from "@/components/cart/CartUtilComponents";
+import { CartHealthChecklist } from "@/components/cart/CartHealthChecklist";
+import { CartActionsMenu } from "@/components/cart/CartActionsMenu";
+import { cn } from "@/lib/utils";
+import {
+  ArrowRight, Weight, Box, Building2, Sparkles, Trash2, Package,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import type { UseMutationResult } from "@tanstack/react-query";
+>>>>>>> /tmp/claude-1000/-mnt-c-Users-Joaquim-Ataides/43a60f78-6717-48ba-b1e3-97cc2c8bce1e/scratchpad/theirs.tmp
 
 interface CartSidebarProps {
   cart: SellerCart;
@@ -186,6 +213,11 @@ export function CartSidebar({
         <h4 className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
           <Sparkles className="h-3.5 w-3.5 fill-warning/20 text-warning" /> Inteligência de Vendas
         </h4>
+<<<<<<< recovery/src-legacy/src/pages/seller-carts/CartSidebar.tsx
+=======
+        <SmartSuggestions cart={cart} allProducts={allProducts.filter(isSuggestionProduct)} isLoading={isLoadingProducts} />
+        <ActionHistoryPanel cartId={cart.id} />
+>>>>>>> /tmp/claude-1000/-mnt-c-Users-Joaquim-Ataides/43a60f78-6717-48ba-b1e3-97cc2c8bce1e/scratchpad/theirs.tmp
         {cartAge >= 3 && (
           <p className="rounded-lg border border-warning/10 bg-warning/5 px-2.5 py-1.5 text-[10px] text-warning">
             ⏰ Carrinho há {cartAge} dias — considere fazer follow-up!

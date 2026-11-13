@@ -7,7 +7,7 @@ import { useCallback, useEffect, useRef } from "react";
 export interface UndoEntry {
   id: string;
   label: string;
-  undo: () => void | Promise<void>;
+  undo: () => Promise<void> | void;
   /** ms desde push */
   pushedAt: number;
 }

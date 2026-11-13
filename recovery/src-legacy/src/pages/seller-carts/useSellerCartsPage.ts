@@ -8,6 +8,7 @@ import { useSellerCartContext } from '@/contexts/SellerCartContext';
 import { type SellerCart } from '@/hooks/useSellerCarts';
 import { useCartTemplates, type CartTemplateItem } from '@/hooks/useCartTemplates';
 import { ProductsContext } from '@/contexts/ProductsContext';
+import { recordAction } from '@/components/cart/LegacyCartInsights';
 import {
   exportCartToCSV,
   exportCartToPDF,
@@ -55,8 +56,13 @@ export function useSellerCartsPage() {
   const { templates, saveTemplate, deleteTemplate } = useCartTemplates();
 
   const productsCtx = useContext(ProductsContext);
+<<<<<<< recovery/src-legacy/src/pages/seller-carts/useSellerCartsPage.ts
   const allProducts = useMemo(() => productsCtx?.products ?? [], [productsCtx]);
   const isLoadingProducts = productsCtx?.isLoading ?? false;
+=======
+  const allProducts = useMemo(() => productsCtx?.products || [], [productsCtx?.products]);
+  const isLoadingProducts = productsCtx?.isLoading || false;
+>>>>>>> /tmp/claude-1000/-mnt-c-Users-Joaquim-Ataides/43a60f78-6717-48ba-b1e3-97cc2c8bce1e/scratchpad/theirs.tmp
 
   const [showNewCart, setShowNewCart] = useState(false);
 
