@@ -1428,3 +1428,17 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261112140000` | `fix_rls_supplier_products_raw_history_p2027` | `6aa856168cc1ef0e6308757fe01b04f4917f043170ff3ce996e0933a52575b9f` | **aplicada em 13/11/2026** pelo `db-apply-migration.yml` (run 43471685129; recibo E15 acima) |
+
+## 2026-11-13 — Data API: fecha anon/authenticated em `supabase_functions.*` (e registra o limite em `net.*`)
+
+Consulta read-only em produção (2026-11-13, `has_table_privilege`/`has_schema_privilege`): anon e authenticated com
+SELECT/INSERT/UPDATE/DELETE em `net._http_response`, `net.http_request_queue`, `supabase_functions.hooks`,
+`supabase_functions.migrations` e USAGE em `net`/`supabase_functions`; o PostgREST expõe esses schemas
+(`db_schema`), e um GET anônimo com `Accept-Profile` devolveu 200/206 com linhas. Os grants em
+`supabase_functions.*` são de `supabase_functions_admin` (postgres é membro → REVOKE efetivo); os de `net.*` são a
+PUBLIC por `supabase_admin` e os USAGE de schema também — fora do alcance de `postgres`; fecham só pelo `db_schema`
+(config, dono). Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261113225000` | `sec_revoke_anon_authenticated_net_supabase_functions` | `ea0d0428bf5a26e15d74ae99a3f45e57914a67e632785a537ea778c297b7bfc4` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-revoke-net-schemas-anon-261113-2230`) |
