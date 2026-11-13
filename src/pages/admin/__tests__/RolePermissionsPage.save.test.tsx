@@ -12,7 +12,7 @@ const db: {
 };
 const calls: { op: string; arg: unknown }[] = [];
 let deleteBehavior: (code: string, nth: number) => 'error' | 'ok' | 'zero' = () => 'ok';
-let insertBehavior: () => 'error' | 'ok' = () => 'ok';
+let insertBehavior: () => 'error' | 'ok' | 'rls' = () => 'ok';
 let deleteCount = 0;
 
 function makeBuilder(table: string) {
@@ -32,7 +32,18 @@ function makeBuilder(table: string) {
   };
   b.insert = (rows: { role: string; permission_code: string }[]) => {
     calls.push({ op: 'insert', arg: rows });
-    if (insertBehavior() === 'error') return Promise.resolve({ error: { message: 'insert RLS' } });
+    const beh = insertBehavior();
+    if (beh === 'error') return Promise.resolve({ error: { message: 'insert RLS' } });
+    if (beh === 'rls')
+      return Promise.resolve({ error: { code: '42501', message: 'new row violates RLS' } });
+    // UNIQUE(role, permission_code): lote atômico — um duplicado aborta o insert inteiro.
+    const dup = rows.some((r) =>
+      db.rp.some((x) => x.role === r.role && x.permission_code === r.permission_code),
+    );
+    if (dup)
+      return Promise.resolve({
+        error: { code: '23505', message: 'duplicate key value violates unique constraint' },
+      });
     rows.forEach((r, i) => db.rp.push({ id: `new-${i}-${r.permission_code}`, ...r }));
     return Promise.resolve({ error: null });
   };
@@ -75,7 +86,7 @@ vi.mock('@/components/common/BackButton', () => ({ BackButton: () => null }));
 import RolePermissionsPage from '@/pages/admin/RolePermissionsPage';
 
 function seed() {
-  db.perms = ['p1', 'p2', 'p3', 'p4'].map((c) => ({
+  db.perms = ['p1', 'p2', 'p3', 'p4', 'p5'].map((c) => ({
     code: c,
     label: `L-${c}`,
     description: null,
@@ -203,6 +214,41 @@ describe('RolePermissionsPage — salvar com falha parcial e concorrência', () 
       ),
     );
     expect(toastSpy).not.toHaveBeenCalledWith(expect.objectContaining({ title: 'Erro ao salvar' }));
+  });
+
+  it('linha já adicionada por outro admin (23505): estado desejado já no banco → salva sem erro e insere as demais', async () => {
+    await renderPage();
+    clickPerm('p4');
+    clickPerm('p5');
+    db.rp.push({ id: 'outro-admin-p4', role: 'supervisor', permission_code: 'p4' });
+    act(() => {
+      fireEvent.click(saveBtn());
+    });
+    await waitFor(() =>
+      expect(toastSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ title: 'Permissões atualizadas com sucesso!' }),
+      ),
+    );
+    expect(toastSpy).not.toHaveBeenCalledWith(expect.objectContaining({ title: 'Erro ao salvar' }));
+    expect(
+      db.rp
+        .filter((r) => r.role === 'supervisor')
+        .map((r) => r.permission_code)
+        .sort(),
+    ).toEqual(['p1', 'p2', 'p3', 'p4', 'p5']);
+  });
+
+  it('erro de insert que não é 23505 (ex.: 42501 RLS) continua lançando e fica pendente', async () => {
+    await renderPage();
+    clickPerm('p4');
+    insertBehavior = () => 'rls';
+    act(() => {
+      fireEvent.click(saveBtn());
+    });
+    await waitFor(() =>
+      expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({ title: 'Erro ao salvar' })),
+    );
+    await waitFor(() => expect(saveBtn().textContent).toContain('Salvar 1'));
   });
 
   it('RLS nega (0 linhas e a linha continua no banco): mostra o motivo real, não a mensagem genérica', async () => {
