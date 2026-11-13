@@ -126,6 +126,29 @@ describe("check-critical-coverage", () => {
     expect(result.lines[0]).toContain("módulo-alvo não foi medido");
   });
 
+  it("não bypassa o gate quando COVERAGE_TOLERANCE_PP é inválido (NaN/Infinity)", async () => {
+    const { evaluateCoverageSummary } = await loadModule();
+    const trackedModules = {
+      "src/pages/products/FiltersPage.tsx": {
+        thresholds: { statements: 40, branches: 40, functions: 40, lines: 40 },
+      },
+    };
+    const summary = {
+      total: {},
+      "src/pages/products/FiltersPage.tsx": {
+        statements: { pct: 0 },
+        branches: { pct: 0 },
+        functions: { pct: 0 },
+        lines: { pct: 0 },
+      },
+    };
+
+    for (const invalidTolerance of [NaN, Infinity, -Infinity]) {
+      const result = evaluateCoverageSummary(summary, trackedModules, invalidTolerance);
+      expect(result.hasFailure).toBe(true);
+    }
+  });
+
   it("passa quando o summary é atual e cobre o módulo dentro do piso", async () => {
     const { runCoverageCheck } = await loadModule();
     const tempRoot = mkdtemp();

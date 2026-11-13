@@ -1,10 +1,17 @@
-import { ShieldAlert, KeyRound, Lock } from 'lucide-react';
+import { useState } from 'react';
+import { ShieldAlert, KeyRound, Lock, Loader2 } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
+import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { isDevOnlyPath, isAdminOnlyPath } from '@/lib/navigation/restricted-routes';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import {
+  requestDevAccess,
+  getThrottleStatus,
+  DEV_ACCESS_CONTACT_EMAIL,
+} from '@/lib/access/request-dev-access';
 
 interface RestrictedRouteNoticeProps {
   isCollapsed: boolean;
@@ -21,7 +28,8 @@ interface RestrictedRouteNoticeProps {
  */
 export function RestrictedRouteNotice({ isCollapsed }: RestrictedRouteNoticeProps) {
   const location = useLocation();
-  const { isAdmin, isDev, rolesLoaded } = useAuth();
+  const { user, isAdmin, isDev, rolesLoaded } = useAuth();
+  const [submitting, setSubmitting] = useState(false);
   const path = location.pathname;
 
   // Se for uma das rotas liberadas (Tendências ou Inteligência), não mostramos aviso de restrição
@@ -48,6 +56,52 @@ export function RestrictedRouteNotice({ isCollapsed }: RestrictedRouteNoticeProp
 
   const icon = isDevRoute ? KeyRound : Lock;
   const Icon = icon;
+
+  const handleRequestAccess = async () => {
+    if (!user) {
+      toast.error('Sessão expirada', {
+        id: 'sidebar-access-request',
+        description: 'Entre novamente para solicitar acesso.',
+      });
+      return;
+    }
+    const throttle = getThrottleStatus(user.id);
+    if (throttle.throttled) {
+      toast.warning('Aguarde um instante', {
+        id: 'sidebar-access-request',
+        description: `Tente novamente em ${throttle.retryInSeconds}s.`,
+      });
+      return;
+    }
+    setSubmitting(true);
+    const result = await requestDevAccess({
+      userId: user.id,
+      userEmail: user.email,
+      blockedPath: path,
+    });
+    setSubmitting(false);
+    if (result.throttled) {
+      toast.warning('Aguarde um instante', {
+        id: 'sidebar-access-request',
+        description: `Tente novamente em ${result.retryInSeconds ?? 60}s.`,
+      });
+      return;
+    }
+    if (!result.ok) {
+      toast.error('Falha ao enviar solicitação', {
+        id: 'sidebar-access-request',
+        description: 'Tente novamente em instantes.',
+      });
+      return;
+    }
+    toast.success('Solicitação enviada', {
+      id: 'sidebar-access-request',
+      description: `Time responsável avisado (${DEV_ACCESS_CONTACT_EMAIL}).`,
+    });
+    if (result.mailtoUrl) {
+      window.location.href = result.mailtoUrl;
+    }
+  };
 
   if (isCollapsed) {
     return (
@@ -127,8 +181,12 @@ export function RestrictedRouteNotice({ isCollapsed }: RestrictedRouteNoticeProp
             <Button
               variant="ghost"
               size="sm"
+              onClick={handleRequestAccess}
+              disabled={submitting}
+              aria-busy={submitting}
               className="h-7 px-2 text-[10px] text-muted-foreground hover:text-foreground"
             >
+              {submitting && <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" />}
               Solicitar Acesso
             </Button>
           </div>

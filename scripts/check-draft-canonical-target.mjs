@@ -70,10 +70,29 @@ function findCanonicalMatch(slug, migFiles) {
 }
 
 // ----- Executable-code sniffing (ignora linhas de comentário puras) -----
+// Corta a linha a partir de um `--` fora de string literal (aspas simples do
+// SQL) — um `--` dentro de 'foo--bar' não é comentário, e um comentário após
+// código real (`SELECT 1; -- não rodar em pqp...`) precisa ser removido, não
+// só comentários que ocupam a linha inteira.
+function stripLineComment(line) {
+  let inString = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === "'") {
+      inString = !inString;
+      continue;
+    }
+    if (!inString && ch === '-' && line[i + 1] === '-') {
+      return line.slice(0, i);
+    }
+  }
+  return line;
+}
+
 function stripComments(sql) {
   return sql
     .split('\n')
-    .filter((l) => !/^\s*--/.test(l))
+    .map(stripLineComment)
     .join('\n')
     .replace(/\/\*[\s\S]*?\*\//g, '');
 }
@@ -187,7 +206,8 @@ function main() {
     );
     process.exit(1);
   }
-  console.log('\n✅ Todos os rascunhos declaram alvo canônico consistente.');
+  // Com --json o stdout tem de ser SÓ o JSON (consumido por JSON.parse); o resumo vai para stderr.
+  (emitJson ? console.error : console.log)('\n✅ Todos os rascunhos declaram alvo canônico consistente.');
 }
 
 main();

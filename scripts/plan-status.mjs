@@ -105,8 +105,15 @@ export function summarizeStages(stages) {
   }
   const waves = [...byWave.values()].sort((a, b) => a.wave - b.wave);
   const waveZeroClosed = waves.find((wave) => wave.wave === 0)?.done === 10;
+  // Busca a onda anterior pelo número da onda (Map), não pelo índice do
+  // array: se alguma onda não tiver etapas (ex.: resultado filtrado), o
+  // array fica "comprimido" e o índice deixa de corresponder ao número da
+  // onda — `waves[wave.wave - 1]` podia apontar pra onda errada, ou até pra
+  // ela mesma antes de `eligible` ser atribuído (undefined, não false).
+  const byWaveNumber = new Map(waves.map((wave) => [wave.wave, wave]));
   for (const wave of waves) {
-    wave.eligible = wave.wave === 0 || (waveZeroClosed && waves[wave.wave - 1]?.eligible && waves[wave.wave - 1]?.done >= 8);
+    const previousWave = byWaveNumber.get(wave.wave - 1);
+    wave.eligible = wave.wave === 0 || Boolean(waveZeroClosed && previousWave?.eligible && previousWave?.done >= 8);
   }
   return { ...counts, waveZeroClosed, waves };
 }
@@ -146,7 +153,8 @@ export function run(argv = process.argv.slice(2)) {
     console.log(`  🔒 Dependem de decisão externa/PO: ${summary.blocked}`);
     console.log(`  ⏳ Sem conclusão registrada: ${summary.todo}\n`);
     if (!summary.waveZeroClosed) {
-      const waveZero = summary.waves.find(({ wave }) => wave === 0);
+      // fullSummary: com --wave N o resumo filtrado não tem a Onda 0 (mostrava 0/10 mesmo com 5 recibos).
+      const waveZero = fullSummary.waves.find(({ wave }) => wave === 0);
       console.log(`  PORTÃO: Ondas seguintes bloqueadas — Onda 0 verificada ${waveZero?.done ?? 0}/10 (precisa de 10/10).\n`);
     }
     if (filterWave === null && !filterPriority && !filterTrail) {

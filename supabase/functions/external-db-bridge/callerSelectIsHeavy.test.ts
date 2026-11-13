@@ -14,7 +14,7 @@ import {
   callerSelectIsHeavy,
   resolveProductsSelect,
   HEAVY_PRODUCT_COLUMNS,
-} from "./legacy-contracts.ts";
+} from "../tests/external-db-bridge/legacy-contracts.ts";
 
 // ────────────────────────────────────────────────────────────────────────────
 // extractBaseColumn — tokenização

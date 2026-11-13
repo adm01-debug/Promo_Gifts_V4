@@ -212,7 +212,13 @@ function main() {
   const update = process.env.UPDATE_BASELINE === '1';
   const strict = process.env.STRICT_BASELINE === '1';
 
-  if (update || !existsSync(BASELINE_PATH)) {
+  // GUARD: baseline ausente não é recriada em silêncio (apagar o arquivo zerava o gate).
+  if (!update && !existsSync(BASELINE_PATH)) {
+    console.error(`❌ baseline ausente: ${BASELINE_PATH}. Recrie com UPDATE_BASELINE=1 node scripts/check-invoke-direct-calls.mjs`);
+    process.exit(2);
+  }
+
+  if (update) {
     writeBaseline(hits);
     console.log(
       `✅ invoke-direct baseline ${update ? 'atualizada' : 'criada'}: ${hits.length} call sites em ${BASELINE_PATH}`,

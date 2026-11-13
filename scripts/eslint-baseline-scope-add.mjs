@@ -11,11 +11,41 @@
  *
  * Ao adicionar o primeiro glob, o `mode` é promovido para 'incremental'.
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, openSync, closeSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = process.cwd();
 const SCOPE_PATH = join(ROOT, '.eslint-baseline-scope.json');
+const LOCK_PATH = `${SCOPE_PATH}.lock`;
+
+// Lock em arquivo: sem isso, duas execuções simultâneas (ex.: dois agentes
+// rodando `lint:baseline:scope` ao mesmo tempo) fazem leitura+escrita
+// concorrente e uma das mudanças desaparece silenciosamente (lost update).
+function acquireLock() {
+  const deadline = Date.now() + 3000;
+  for (;;) {
+    try {
+      closeSync(openSync(LOCK_PATH, 'wx'));
+      process.on('exit', () => {
+        try {
+          unlinkSync(LOCK_PATH);
+        } catch {
+          // já removido — ok.
+        }
+      });
+      return;
+    } catch (err) {
+      if (err.code !== 'EEXIST') throw err;
+      if (Date.now() > deadline) {
+        console.error(
+          `❌ ${LOCK_PATH} ocupado (outra execução em andamento?). Tente de novo; se o processo anterior morreu sem limpar o lock, apague o arquivo manualmente.`,
+        );
+        process.exit(2);
+      }
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 25);
+    }
+  }
+}
 
 const DEFAULT = {
   $schema: './docs/schemas/eslint-baseline-scope.schema.json',
@@ -60,6 +90,7 @@ if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
   process.exit(0);
 }
 
+acquireLock();
 const cfg = load();
 
 if (args.includes('--list')) {

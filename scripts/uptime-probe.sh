@@ -2,8 +2,8 @@
 set -u
 
 if [[ -z "${GITHUB_OUTPUT:-}" ]]; then
-  echo "[uptime-probe] static-pass: GITHUB_OUTPUT não definido; probe ignorado (ambiente CI ausente)."
-  exit 0
+  source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib/missing-prerequisite.sh"
+  missing_prerequisite "uptime-probe" "GITHUB_OUTPUT não definido" 1
 fi
 
 ANON_KEY="${SUPABASE_ANON_KEY:-$(grep -o 'eyJ[A-Za-z0-9_-]*\.[A-Za-z0-9_-]*\.[A-Za-z0-9_-]*' src/integrations/supabase/client.ts | head -1)}"

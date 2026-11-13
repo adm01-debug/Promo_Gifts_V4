@@ -41,7 +41,8 @@ function loadWorkflows(rootDir) {
   return readdirSync(dir)
     .filter((f) => f.endsWith('.yml') || f.endsWith('.yaml'))
     .flatMap((f) => {
-      const text = readFileSync(join(dir, f), 'utf-8');
+      let text;
+      try { text = readFileSync(join(dir, f), 'utf-8'); } catch { return []; }
       let doc = null;
       try { doc = yaml.load(text); } catch { /* skip */ }
       if (!doc || typeof doc !== 'object') return [];
@@ -99,7 +100,18 @@ if (!existsSync(requiredChecksPath)) {
   process.exit(1);
 }
 
-const requiredChecksJson = JSON.parse(readFileSync(requiredChecksPath, 'utf-8'));
+let requiredChecksJson;
+try {
+  requiredChecksJson = JSON.parse(readFileSync(requiredChecksPath, 'utf-8'));
+} catch (err) {
+  console.error(`ERROR: failed to read/parse .github/required-checks.json: ${err.message}`);
+  process.exit(1);
+}
+if (!requiredChecksJson || typeof requiredChecksJson !== 'object') {
+  console.error('ERROR: .github/required-checks.json must contain a JSON object.');
+  process.exit(1);
+}
+
 const requiredChecks = collectRequiredChecks(requiredChecksJson);
 
 if (requiredChecks.length === 0) {

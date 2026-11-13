@@ -27,6 +27,11 @@ jobs:
     name: Lint, Typecheck & Coverage
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    # Resultado real de cada etapa para o relatório final (audit-report). `outcome` existe
+    # mesmo quando o job falha; etapa não executada vira 'skipped' (= NÃO VERIFICADO).
+    outputs:
+      typecheck: ${{ steps.typecheck.outcome }}
+      lint: ${{ steps.lint.outcome }}
     env:
       NODE_OPTIONS: --max-old-space-size=4096
     steps:
@@ -57,9 +62,11 @@ jobs:
         run: npm ci
 
       - name: Typecheck
+        id: typecheck
         run: npm run typecheck
 
       - name: Lint
+        id: lint
         run: npm run lint:baseline
 
       - name: Unit & Integration Tests (Coverage)
@@ -259,6 +266,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     needs: [quality-gate, e2e-tests]
+    # Roda também quando um gate falhou: o relatório precisa mostrar a falha, não sumir.
+    if: ${{ !cancelled() }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       
@@ -270,6 +279,7 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Download Coverage Summary
+        continue-on-error: true  # quality-gate pode ter falhado antes de publicar a cobertura
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: coverage-report
@@ -277,6 +287,12 @@ jobs:
 
       - name: Generate Audit Report
         run: node scripts/generate-audit-report.mjs
+        env:
+          # Veredictos reais (passed | failed | skipped). Segurança não é executada neste
+          # workflow: fica sem veredito e o relatório a marca como NÃO VERIFICADO.
+          AUDIT_TYPECHECK: ${{ needs.quality-gate.outputs.typecheck == 'success' && 'passed' || needs.quality-gate.outputs.typecheck == 'failure' && 'failed' || 'skipped' }}
+          AUDIT_LINT: ${{ needs.quality-gate.outputs.lint == 'success' && 'passed' || needs.quality-gate.outputs.lint == 'failure' && 'failed' || 'skipped' }}
+          AUDIT_E2E: ${{ needs.e2e-tests.result == 'success' && 'passed' || needs.e2e-tests.result == 'failure' && 'failed' || 'skipped' }}
 
       - name: Upload Audit Artifact
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

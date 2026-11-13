@@ -422,7 +422,7 @@ app.all("/*", async (c: Context) => {
     const nowIso = new Date().toISOString();
     try {
       await supabase.from("admin_audit_log").insert({
-        user_id: auth.createdBy,
+        user_id: auth.createdBy ?? SENTINEL_USER_ID,
         action: "mcp_tool.denied_dev_revoked",
         resource_type: "mcp_api_key",
         resource_id: auth.keyId,
@@ -462,7 +462,7 @@ app.all("/*", async (c: Context) => {
     const code = auth.reason === "expired" ? ERR.KEY_EXPIRED : ERR.KEY_REVOKED;
     try {
       await supabase.from("admin_audit_log").insert({
-        user_id: auth.createdBy,
+        user_id: auth.createdBy ?? SENTINEL_USER_ID,
         action: "mcp_tool.denied",
         resource_type: "mcp_api_key",
         resource_id: auth.keyId,
@@ -495,7 +495,7 @@ app.all("/*", async (c: Context) => {
     try {
       const keyHeader = c.req.raw.headers.get("x-mcp-key") || "";
       await supabase.from("admin_audit_log").insert({
-        user_id: null,
+        user_id: SENTINEL_USER_ID,
         action: "mcp_tool.denied",
         resource_type: "mcp_api_key",
         resource_id: null,
