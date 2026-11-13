@@ -106,6 +106,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.device_login_notifications](tables/public/device_login_notifications.md) | table | sim | 1 | 8 | sim | Notificações de login em novo dispositivo/IP. Escrita: edge detect-new-device (service_role). Leitura: dono via RLS. Consumida em realtime por usePushNotifications. |
 | [public.discount_approval_audit](tables/public/discount_approval_audit.md) | table | sim | 4 | 13 | não | Trilha de auditoria de aprovações de desconto. Reconciliada em 2026-06-25 (migration Lovable 20260625161934 nunca aplicou em produção). Escrita apenas via trigger definer. |
 | [public.discount_approval_requests](tables/public/discount_approval_requests.md) | table | sim | 4 | 15 | sim | Workflow de aprovação de desconto acima do limite. Vendedor solicita, supervisor+ aprova/rejeita. Schema oficial extraído de useDiscountApproval.ts. |
+| [public.e2e_cleanup_audit](tables/public/e2e_cleanup_audit.md) | table | sim | 1 | 18 | não | created_by=20261108001500_reconcile_e2e_cleanup_audit; append-only Edge cleanup audit |
 | [public.e2e_cleanup_rate_limit](tables/public/e2e_cleanup_rate_limit.md) | table | sim | 1 | 4 | não |  |
 | [public.eco_backfill_log_20260625](tables/public/eco_backfill_log_20260625.md) | table | sim | 1 | 6 | não |  |
 | [public.eco_date_reconcile_log_20260626](tables/public/eco_date_reconcile_log_20260626.md) | table | sim | 1 | 5 | não |  |

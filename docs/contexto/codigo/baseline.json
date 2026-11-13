@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0f00ba1670810c8cd6cdd05ce28e6cbe198af094",
+  "commit": "0f5934a29cea709b434a918aa2caf9a6d1fdad97",
   "branch": "main",
-  "data_commit": "2026-11-13T02:29:19Z",
+  "data_commit": "2026-11-13T03:02:30Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "0f5934a",
+    "data": "2026-11-13",
+    "assunto": "docs: prod-readiness — inventário, prova OK/BLOQUEADO e PRs pendentes (main fee3d093) (#3453)"
+   },
    {
     "sha": "0f00ba1",
     "data": "2026-11-13",
@@ -126,14 +131,9 @@
     "sha": "167f5f8",
     "data": "2026-11-09",
     "assunto": "chore: registra 611 arquivos não rastreados de sessões anteriores (#3361)"
-   },
-   {
-    "sha": "1368a91",
-    "data": "2026-11-09",
-    "assunto": "feat(edge-deploy-log): recibo run 42665634216 — edge functions deploy"
    }
   ],
-  "arquivos_mudados_7d": 1546,
+  "arquivos_mudados_7d": 1547,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 14
+    "mudancas": 13
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
@@ -234,10 +234,6 @@
     "mudancas": 9
    },
    {
-    "arquivo": "package-lock.json",
-    "mudancas": 9
-   },
-   {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 9
    },
@@ -246,8 +242,8 @@
     "mudancas": 8
    },
    {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 7
+    "arquivo": "package-lock.json",
+    "mudancas": 8
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
@@ -267,6 +263,10 @@
    },
    {
     "arquivo": "AGENTS.md",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "CHANGELOG.md",
     "mudancas": 6
    },
    {
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9895,
+  "arquivos_total": 9896,
   "arquivos_codigo": 5054,
   "linhas_codigo": 965726,
   "rotas": 138,
@@ -339,7 +339,7 @@
   "testes": 2303,
   "workflows": 95,
   "scripts": 259,
-  "docs_md": 1010
+  "docs_md": 1011
  },
  "por_pasta": {
   ".github/scripts": {

@@ -282,6 +282,12 @@ Uso e tamanho em `stats.md`.
 | public.discount_approval_requests | idx_discount_approval_requests_admin_id | btree | admin_id | não | sim |  |
 | public.discount_approval_requests | idx_discount_approval_requests_seller_id | btree | seller_id | não | sim |  |
 | public.discount_approval_requests | uniq_dar_quote_pending | btree | quote_id | sim | sim | `(status = 'pending'::text)` |
+| public.e2e_cleanup_audit | e2e_cleanup_audit_pkey | btree | id | sim | sim |  |
+| public.e2e_cleanup_audit | idx_e2e_cleanup_audit_created_at | btree | created_at | não | sim |  |
+| public.e2e_cleanup_audit | idx_e2e_cleanup_audit_email | btree | email, created_at | não | sim |  |
+| public.e2e_cleanup_audit | idx_e2e_cleanup_audit_seller_id | btree | seller_id, created_at | não | sim | `(seller_id IS NOT NULL)` |
+| public.e2e_cleanup_audit | idx_e2e_cleanup_audit_status | btree | status, created_at | não | sim |  |
+| public.e2e_cleanup_audit | idx_e2e_cleanup_audit_user_id | btree | user_id, created_at | não | sim | `(user_id IS NOT NULL)` |
 | public.e2e_cleanup_rate_limit | e2e_cleanup_rate_limit_pkey | btree | key | sim | sim |  |
 | public.eco_backfill_log_20260625 | eco_backfill_log_20260625_pkey | btree | id | sim | sim |  |
 | public.eco_date_reconcile_log_20260626 | eco_date_reconcile_log_20260626_pkey | btree | product_id | sim | sim |  |

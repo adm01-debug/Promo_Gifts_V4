@@ -19,18 +19,18 @@ Gerado automaticamente a cada 10 min pelo workflow `contexto.yml` (job `banco`) 
 
 | categoria | quantidade |
 |---|---|
-| tabelas | 438 |
-| colunas | 8568 |
+| tabelas | 439 |
+| colunas | 8586 |
 | views | 219 |
 | functions | 1344 |
 | triggers | 420 |
-| policies (RLS) | 1023 |
-| índices | 1316 |
+| policies (RLS) | 1024 |
+| índices | 1322 |
 | tipos/enums | 17 |
 | extensões | 18 |
 | cron jobs | 144 |
 | filas pgmq | 0 |
-| migrations | 2584 |
+| migrations | 2585 |
 | buckets | 11 |
 | edge functions | n/d |
 | webhooks | 0 |
@@ -88,3 +88,9 @@ Cada fonte é atualizada independentemente; referências anteriores não comprov
 | `manifest.json` | data UTC da coleta concluída, erros e seções reaproveitadas; usado pelo índice de contexto |
 | `CHANGELOG.md` | diff semântico a cada mudança |
 | `errors.md` | seções que falharam na última coleta |
+
+## ⚠️ Problemas na última coleta
+
+| seção | erro |
+|---|---|
+| cron_runs | canceling statement due to statement timeout |

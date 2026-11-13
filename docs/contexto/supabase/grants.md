@@ -249,6 +249,8 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.discount_approval_audit | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.discount_approval_requests | authenticated | DELETE, INSERT, SELECT, UPDATE |
 | public.discount_approval_requests | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.e2e_cleanup_audit | authenticated | SELECT |
+| public.e2e_cleanup_audit | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.e2e_cleanup_rate_limit | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.e2e_cleanup_rate_limit | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.eco_backfill_log_20260625 | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |

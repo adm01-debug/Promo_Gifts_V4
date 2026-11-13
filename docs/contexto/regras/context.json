@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "0f00ba1670810c8cd6cdd05ce28e6cbe198af094",
+  "sha": "0f5934a29cea709b434a918aa2caf9a6d1fdad97",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-13 03:28 UTC",
-  "files_total": 9823,
+  "generated_at": "2026-11-13 04:09 UTC",
+  "files_total": 9824,
   "code_files": 8386,
   "code_lines": 1181504
  },
@@ -519514,10 +519514,19 @@
   }
  },
  "git": {
-  "sha": "0f00ba1670810c8cd6cdd05ce28e6cbe198af094",
+  "sha": "0f5934a29cea709b434a918aa2caf9a6d1fdad97",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "0f5934a",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "docs: prod-readiness — inventário, prova OK/BLOQUEADO e PRs pendentes (main fee3d093) (#3453)",
+    "files": [
+     "docs/prod-readiness.md"
+    ]
+   },
    {
     "sha": "0f00ba1",
     "date": "2026-11-12",
@@ -520971,16 +520980,6 @@
      "supabase/MIGRATIONS_SYNC_LOG.md",
      "supabase/migrations/20261101223908_cron001_stagger_additional_jobs.sql",
      "supabase/migrations/20261101232022_cron001_stagger_schedules_reapply.sql"
-    ]
-   },
-   {
-    "sha": "c1d47d1",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "chore(tracking): progresso.json v7 — #3257 e #3275 MERGED, #3338 fechada (#3356)",
-    "files": [
-     "analise-prs/progresso.json",
-     "analise-prs/prs.json"
     ]
    }
   ],

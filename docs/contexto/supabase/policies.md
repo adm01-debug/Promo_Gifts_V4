@@ -233,6 +233,7 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.discount_approval_requests | dar_insert_scope | INSERT | PERMISSIVE | authenticated |  | `(seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
 | public.discount_approval_requests | dar_select_scope | SELECT | PERMISSIVE | authenticated | `((seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid)))` |  |
 | public.discount_approval_requests | dar_update_scope | UPDATE | PERMISSIVE | authenticated | `is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` | `is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
+| public.e2e_cleanup_audit | admins_select_e2e_cleanup_audit | SELECT | PERMISSIVE | authenticated | `has_role(( SELECT auth.uid() AS uid), 'admin'::app_role)` |  |
 | public.e2e_cleanup_rate_limit | Service role only | ALL | PERMISSIVE | authenticated | `false` | `false` |
 | public.eco_backfill_log_20260625 | admin_only | ALL | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
 | public.eco_date_reconcile_log_20260626 | admin_only | ALL | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |

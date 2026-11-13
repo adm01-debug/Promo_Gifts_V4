@@ -5,7 +5,7 @@
   "linguagens": [
    "TypeScript (4738)",
    "SQL (3333)",
-   "Markdown (1010)",
+   "Markdown (1011)",
    "JavaScript (312)",
    "JSON (118)",
    "YAML (108)",
@@ -4379,6 +4379,11 @@
    "arquivo": "docs/notifications-module-audit.md",
    "titulo": "Auditoria — Módulo \"Notificações de Estoque\" (sino do header)",
    "linhas": 110
+  },
+  {
+   "arquivo": "docs/prod-readiness.md",
+   "titulo": "Prontidão para produção — inventário e prova",
+   "linhas": 942
   }
  ],
  "docs_em_subpastas": [

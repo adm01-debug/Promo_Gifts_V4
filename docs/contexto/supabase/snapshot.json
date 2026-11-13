@@ -17206,6 +17206,240 @@
       },
       {
         "comment": null,
+        "default": "gen_random_uuid()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "id",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "email",
+        "nullable": true,
+        "position": 2,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "user_id",
+        "nullable": true,
+        "position": 3,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "seller_id",
+        "nullable": true,
+        "position": 4,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "seller_scope",
+        "nullable": true,
+        "position": 5,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "name_filter_prefix",
+        "nullable": true,
+        "position": 6,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": "true",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "dry_run",
+        "nullable": false,
+        "position": 7,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "boolean"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "status",
+        "nullable": false,
+        "position": 8,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "reason",
+        "nullable": true,
+        "position": 9,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "ip",
+        "nullable": true,
+        "position": 10,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "user_agent",
+        "nullable": true,
+        "position": 11,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": "0",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "total_deleted",
+        "nullable": false,
+        "position": 12,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "integer"
+      },
+      {
+        "comment": null,
+        "default": "'{}'::jsonb",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "totals",
+        "nullable": false,
+        "position": 13,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "jsonb"
+      },
+      {
+        "comment": null,
+        "default": "0",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "total_ms",
+        "nullable": false,
+        "position": 14,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "integer"
+      },
+      {
+        "comment": null,
+        "default": "'{}'::jsonb",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "deleted_by_table",
+        "nullable": false,
+        "position": 15,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "jsonb"
+      },
+      {
+        "comment": null,
+        "default": "'{}'::jsonb",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "errors",
+        "nullable": false,
+        "position": 16,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "jsonb"
+      },
+      {
+        "comment": null,
+        "default": "0",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "duration_ms",
+        "nullable": false,
+        "position": 17,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "integer"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "created_at",
+        "nullable": false,
+        "position": 18,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
         "default": null,
         "generated": null,
         "identity": null,
@@ -116518,6 +116752,40 @@
       },
       {
         "columns": [
+          "id"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id)",
+        "name": "e2e_cleanup_audit_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "status"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (status = ANY (ARRAY['started'::text, 'success'::text, 'partial_error'::text, 'auth_failed'::text, 'ok'::text, 'error'::text, 'rate_limited'::text, 'unauthorized'::text, 'forbidden'::text, 'not_found'::text, 'invalid'::text]))",
+        "name": "e2e_cleanup_audit_status_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
           "key"
         ],
         "deferrable": false,
@@ -194581,6 +194849,18 @@
         },
         {
           "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "e2e_cleanup_audit"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "e2e_cleanup_audit"
+        },
+        {
+          "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
           "table": "e2e_cleanup_rate_limit"
@@ -205547,6 +205827,94 @@
         "predicate": "(status = 'pending'::text)",
         "schema": "public",
         "table": "discount_approval_requests"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "definition": "CREATE UNIQUE INDEX e2e_cleanup_audit_pkey ON public.e2e_cleanup_audit USING btree (id)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "e2e_cleanup_audit_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "e2e_cleanup_audit"
+      },
+      {
+        "columns": [
+          "created_at"
+        ],
+        "definition": "CREATE INDEX idx_e2e_cleanup_audit_created_at ON public.e2e_cleanup_audit USING btree (created_at DESC)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_e2e_cleanup_audit_created_at",
+        "predicate": null,
+        "schema": "public",
+        "table": "e2e_cleanup_audit"
+      },
+      {
+        "columns": [
+          "email",
+          "created_at"
+        ],
+        "definition": "CREATE INDEX idx_e2e_cleanup_audit_email ON public.e2e_cleanup_audit USING btree (email, created_at DESC)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_e2e_cleanup_audit_email",
+        "predicate": null,
+        "schema": "public",
+        "table": "e2e_cleanup_audit"
+      },
+      {
+        "columns": [
+          "seller_id",
+          "created_at"
+        ],
+        "definition": "CREATE INDEX idx_e2e_cleanup_audit_seller_id ON public.e2e_cleanup_audit USING btree (seller_id, created_at DESC) WHERE (seller_id IS NOT NULL)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_e2e_cleanup_audit_seller_id",
+        "predicate": "(seller_id IS NOT NULL)",
+        "schema": "public",
+        "table": "e2e_cleanup_audit"
+      },
+      {
+        "columns": [
+          "status",
+          "created_at"
+        ],
+        "definition": "CREATE INDEX idx_e2e_cleanup_audit_status ON public.e2e_cleanup_audit USING btree (status, created_at DESC)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_e2e_cleanup_audit_status",
+        "predicate": null,
+        "schema": "public",
+        "table": "e2e_cleanup_audit"
+      },
+      {
+        "columns": [
+          "user_id",
+          "created_at"
+        ],
+        "definition": "CREATE INDEX idx_e2e_cleanup_audit_user_id ON public.e2e_cleanup_audit USING btree (user_id, created_at DESC) WHERE (user_id IS NOT NULL)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_e2e_cleanup_audit_user_id",
+        "predicate": "(user_id IS NOT NULL)",
+        "schema": "public",
+        "table": "e2e_cleanup_audit"
       },
       {
         "columns": [
@@ -235594,6 +235962,12 @@
         "version": "20261107180000"
       },
       {
+        "name": "reconcile_e2e_cleanup_audit",
+        "statements": 20,
+        "statements_sha": "ffbfcf168065b3d2",
+        "version": "20261108001500"
+      },
+      {
         "name": "fix_sb0003_fn_get_rupture_alerts",
         "statements": 3,
         "statements_sha": "9fd94641e04fa66d",
@@ -238344,6 +238718,18 @@
         "table": "discount_approval_requests",
         "using": "is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))",
         "with_check": "is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "admins_select_e2e_cleanup_audit",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "e2e_cleanup_audit",
+        "using": "has_role(( SELECT auth.uid() AS uid), 'admin'::app_role)",
+        "with_check": null
       },
       {
         "cmd": "ALL",
@@ -250360,6 +250746,21 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "full",
+        "rls_enabled": true,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
+        "comment": "created_by=20261108001500_reconcile_e2e_cleanup_audit; append-only Edge cleanup audit",
+        "from_extension": false,
+        "is_partition": false,
+        "kind": "table",
+        "name": "e2e_cleanup_audit",
+        "owner": "postgres",
+        "parent": null,
+        "partition_bound": null,
+        "partition_key": null,
+        "replica_identity": "default",
         "rls_enabled": true,
         "rls_forced": false,
         "schema": "public"
@@ -264157,6 +264558,11 @@
     ],
     "webhooks": []
   },
-  "errors": [],
+  "errors": [
+    {
+      "error": "canceling statement due to statement timeout",
+      "section": "cron_runs"
+    }
+  ],
   "format_version": 2
 }
