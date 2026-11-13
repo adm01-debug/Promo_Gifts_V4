@@ -21,3 +21,5 @@ As defesas passivas contra o Lovable foram mantidas porque não custam nenhuma e
 | `workflow-lint.yml` | consolidado | `.github/workflows/static-checks.yml`, step "actionlint + shellcheck" (o `check-workflow-contracts --gate` já era o Gate 1.11 do `deploy-gates.yml`) |
 | `migrations-sync-log-gate.yml` | consolidado | `.github/workflows/static-checks.yml`, step "Recibo de migration em MIGRATIONS_SYNC_LOG.md" (só quando o PR toca `supabase/migrations/**`, como antes) |
 | `automation-local.yml` | consolidado | `.github/workflows/static-checks.yml`, steps "Automação local — …" (`scripts/automation.config.json` → `ci.file` atualizado) |
+| `ui-visual-a11y.yml` | consolidado | `.github/workflows/static-checks.yml`, step "Unit — OptimizedImage + URL state" (também coberto pelo `test:quality` do `ci.yml`) |
+| `url-state-unit.yml` | consolidado | `.github/workflows/static-checks.yml`, step "Unit — OptimizedImage + URL state" (também coberto pelo `test:quality` do `ci.yml`; a varredura semanal virou execução em todo PR/push) |
