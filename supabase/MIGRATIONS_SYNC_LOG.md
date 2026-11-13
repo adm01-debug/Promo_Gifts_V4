@@ -1421,3 +1421,9 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261112130000` | `fix_get_sitemap_public_anon_grant` | `81e3c7900b74f7de043556d412dae21248e538f70aca73ad1b85f190b6627f52` | **aplicada em 13/11/2026** pelo `db-apply-migration.yml` (run 43345670118; recibo E15 acima) |
+
+### 2026-11-12 — RLS nas partições p2027_03..p2027_12 (Supabase Linter Gate)
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261112140000` | `fix_rls_supplier_products_raw_history_p2027` | `6aa856168cc1ef0e6308757fe01b04f4917f043170ff3ce996e0933a52575b9f` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
