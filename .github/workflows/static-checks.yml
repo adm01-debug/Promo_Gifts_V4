@@ -24,7 +24,8 @@ name: Static Checks
 #   ui-visual-a11y.yml, url-state-unit.yml
 # e pedaços estáticos de workflows que continuam existindo:
 #   required-checks-guard.yml (ghost-check-guard),
-#   sitemap-production-preconditions.yml (testes do coletor sem rede)
+#   sitemap-production-preconditions.yml (testes do coletor sem rede),
+#   supabase-linter-gate.yml (validação da allowlist estática, que era o modo PR)
 # =============================================================================
 
 on:
@@ -103,6 +104,28 @@ jobs:
       - name: Sitemap — testes do coletor sem rede
         if: ${{ !cancelled() }}
         run: python3 -m unittest discover -s tests/scripts -p test_production_sitemap_probe.py
+
+      # ── supabase-linter-gate.yml (modo PR: allowlist estática) ──────────────
+      # O gate live (advisors) ficou lá, em push/cron; em PR ele só fazia isto.
+      - name: Supabase linter — allowlist estática lint-0029
+        if: ${{ !cancelled() }}
+        run: |
+          set -euo pipefail
+          ALLOWLIST=".security/lint-0029-allowlist.json"
+          if [ ! -f "$ALLOWLIST" ]; then
+            echo "::error::${ALLOWLIST} não encontrado — allowlist ausente."
+            exit 1
+          fi
+          node --input-type=module <<'EOF'
+            import { readFileSync } from 'fs';
+            const b = JSON.parse(readFileSync('.security/lint-0029-allowlist.json', 'utf8'));
+            if (!Array.isArray(b.functions)) {
+              console.error('❌ Allowlist inválida: campo functions ausente');
+              process.exit(1);
+            }
+            const at = b.description ?? 'N/A';
+            console.log(`✅ Allowlist estática válida: ${b.functions.length} funções documentadas (${at})`);
+          EOF
 
       # ── ex-automation-local.yml ─────────────────────────────────────────────
       # scripts/automation.config.json (`ci`) aponta para este arquivo: o doctor
