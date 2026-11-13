@@ -156,30 +156,32 @@ export async function fetchProductMarketing(productId: string): Promise<ProductM
 
 // ── Escrita ──────────────────────────────────────────────────────────────────
 
-type LinkTable = 'product_commemorative_dates' | 'product_endomarketing' | 'product_target_audiences';
+// Nomes de tabela literais em cada ramo (sem despacho dinâmico): o gate
+// check-supabase-reference-catalog só valida referências literais.
+function linkUpdate(key: MarketingCategoryKey, isActive: boolean) {
+  if (key === 'publicoAlvo') {
+    return supabase.from('product_target_audiences').update({ is_active: isActive });
+  }
+  if (key === 'datasComemorativas') {
+    return supabase.from('product_commemorative_dates').update({ is_active: isActive });
+  }
+  return supabase.from('product_endomarketing').update({ is_active: isActive });
+}
 
-const LINK_TABLE: Record<MarketingCategoryKey, LinkTable> = {
-  publicoAlvo: 'product_target_audiences',
-  datasComemorativas: 'product_commemorative_dates',
-  endomarketing: 'product_endomarketing',
-};
+function linkDelete(key: MarketingCategoryKey) {
+  if (key === 'publicoAlvo') return supabase.from('product_target_audiences').delete();
+  if (key === 'datasComemorativas') return supabase.from('product_commemorative_dates').delete();
+  return supabase.from('product_endomarketing').delete();
+}
 
 async function setLinkActive(key: MarketingCategoryKey, linkId: string, isActive: boolean) {
-  const { data, error } = await supabase
-    .from(LINK_TABLE[key])
-    .update({ is_active: isActive })
-    .eq('id', linkId)
-    .select('id');
+  const { data, error } = await linkUpdate(key, isActive).eq('id', linkId).select('id');
   if (error) throw toUserError(error, 'salvar');
   ensureAffected(data);
 }
 
 async function deleteLink(key: MarketingCategoryKey, linkId: string) {
-  const { data, error } = await supabase
-    .from(LINK_TABLE[key])
-    .delete()
-    .eq('id', linkId)
-    .select('id');
+  const { data, error } = await linkDelete(key).eq('id', linkId).select('id');
   if (error) throw toUserError(error, 'remover');
   ensureAffected(data);
 }
