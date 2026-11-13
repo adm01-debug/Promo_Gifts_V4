@@ -1,4 +1,4 @@
-﻿import { createClient } from 'npm:@supabase/supabase-js@2.49.4';
+import { createClient } from 'npm:@supabase/supabase-js@2.49.4';
 import { authorizeCron } from '../_shared/dispatcher-auth.ts';
 import { createStructuredLogger } from '../_shared/structured-logger.ts';
 import { getOrCreateRequestId } from '../_shared/request-id.ts';
@@ -112,5 +112,3 @@ Deno.serve(async (req: Request) => {
     return new Response(JSON.stringify({ ok: false, error: 'upstream_sync_failed' }), { status: 502, headers: { ...cors, 'X-Request-Id': __reqId } });
   }
 });
-
-
