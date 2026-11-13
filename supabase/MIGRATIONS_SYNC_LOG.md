@@ -1509,3 +1509,17 @@ e sem a tabela `xbz_image_import_staging`; logs 24h: 317 POST → 401, 0 → 200
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261114003000` | `fix_unschedule_cron_xbz_image_uploader` | `c742a627a964faf49ae9be913336b8aafaa76e8b6f7a3e95bc266d9cc2a54efa` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-cron-xbz-image-uploader-261114-0030`) |
+
+## 2026-11-13 — Data API: fecha anon/authenticated em `supabase_functions.*` (e registra o limite em `net.*`)
+
+Consulta read-only em produção (2026-11-13, `has_table_privilege`/`has_schema_privilege`): anon e authenticated com
+SELECT/INSERT/UPDATE/DELETE em `net._http_response`, `net.http_request_queue`, `supabase_functions.hooks`,
+`supabase_functions.migrations` e USAGE em `net`/`supabase_functions`; o PostgREST expõe esses schemas
+(`db_schema`), e um GET anônimo com `Accept-Profile` devolveu 200/206 com linhas. Os grants em
+`supabase_functions.*` são de `supabase_functions_admin` (postgres é membro → REVOKE efetivo); os de `net.*` são a
+PUBLIC por `supabase_admin` e os USAGE de schema também — fora do alcance de `postgres`; fecham só pelo `db_schema`
+(config, dono). Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261113225000` | `sec_revoke_anon_authenticated_net_supabase_functions` | `4bc14de41e30ea25aabe13a6bb59799b360fbdf2f18a5f9fd93be9aafa9689d2` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-revoke-net-schemas-anon-261113-2230`) |
