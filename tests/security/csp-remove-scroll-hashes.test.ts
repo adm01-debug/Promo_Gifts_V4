@@ -52,4 +52,7 @@ describe("src/index.css não anula a trava de rolagem do Radix", () => {
   it("não força overflow/position/margin no body travado", () => {
     expect(block).not.toMatch(/overflow|position|margin-right|padding-right/);
   });
+  it("header fixo compensa a barra só enquanto travado (sem classe incondicional)", () => {
+    expect(css).toMatch(/body\[data-scroll-locked\] \[data-testid='app-header'\]\s*\{\s*right: var\(--removed-body-scroll-bar-size, 0px\) !important;/);
+  });
 });
