@@ -2,6 +2,14 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-13 00:50 UTC
+
+- **functions** adicionado (1): `public.fn_get_rupture_alerts()`
+- **functions** alterado (1): `public.is_supervisor_or_above(_user_id uuid)`
+- **migrations** adicionado (1): `20261112011000_fix_sb0003_fn_get_rupture_alerts`
+- **realtime** adicionado (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_16`
+- **realtime** removido (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_09`
+
 ## 2026-11-12 23:03 UTC
 
 - **functions** alterado (1): `public.get_sitemap_public(p_limit integer, p_offset integer)`

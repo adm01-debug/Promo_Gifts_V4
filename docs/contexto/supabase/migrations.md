@@ -2587,3 +2587,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261104100000 | [partitions_supplier_products_raw_history_2027](migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql) | 10 |
 | 20261106232045 | [fix_handle_updated_at_search_path](migrations/20261106232045_fix_handle_updated_at_search_path.sql) | 1 |
 | 20261107180000 | [security_fix_suppliers_authenticated_credential_leak_v2](migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql) | 4 |
+| 20261112011000 | [fix_sb0003_fn_get_rupture_alerts](migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql) | 3 |

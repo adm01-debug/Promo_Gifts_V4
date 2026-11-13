@@ -155519,6 +155519,41 @@
         "volatility": "volatile"
       },
       {
+        "args": "",
+        "callers": {
+          "code": [
+            {
+              "file": "src/hooks/stock/useRuptureAlerts.ts",
+              "hits": 2
+            }
+          ],
+          "code_total_files": 1,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": null,
+        "config": [
+          "search_path=public, pg_catalog, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "4f4f6ecdf8930e8b",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "sql",
+        "leakproof": false,
+        "name": "fn_get_rupture_alerts",
+        "owner": "postgres",
+        "returns": "SETOF mv_stock_rupture_alert",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "stable"
+      },
+      {
         "args": "p_product_id uuid, p_limit integer, p_offset integer",
         "callers": {
           "code": [
@@ -181242,6 +181277,7 @@
             "public.can_view_telemetry",
             "public.clear_user_token_revocations",
             "public.enable_step_up_for_user",
+            "public.fn_get_rupture_alerts",
             "public.fn_quotes_validate_discount",
             "public.force_user_logout",
             "public.get_step_up_audit",
@@ -235556,6 +235592,12 @@
         "statements": 4,
         "statements_sha": "6c4fab3b573a85fa",
         "version": "20261107180000"
+      },
+      {
+        "name": "fix_sb0003_fn_get_rupture_alerts",
+        "statements": 3,
+        "statements_sha": "9fd94641e04fa66d",
+        "version": "20261112011000"
       }
     ],
     "policies": [
@@ -247954,11 +247996,6 @@
         {
           "publication": "supabase_realtime_messages_publication",
           "schema": "realtime",
-          "table": "messages_2026_11_09"
-        },
-        {
-          "publication": "supabase_realtime_messages_publication",
-          "schema": "realtime",
           "table": "messages_2026_11_10"
         },
         {
@@ -247985,6 +248022,11 @@
           "publication": "supabase_realtime_messages_publication",
           "schema": "realtime",
           "table": "messages_2026_11_15"
+        },
+        {
+          "publication": "supabase_realtime_messages_publication",
+          "schema": "realtime",
+          "table": "messages_2026_11_16"
         }
       ]
     },
