@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3064,
+ "migrations": 3065,
  "seeds": [],
  "avisos": [
   "317 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -45201,132 +45201,262 @@
   },
   "supplier_products_raw_history_p2027_03": {
    "colunas": {},
-   "rls": false,
-   "policies": [],
+   "rls": true,
+   "policies": [
+    {
+     "nome": "hist_all_service",
+     "comando": "all",
+     "para": "service_role",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "hist_select_admin",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
    "indices": [],
    "fks": [],
    "criada_em": "20261104100000_partitions_supplier_products_raw_history_2027.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
-   "sem_rls": true,
+   "sem_rls": false,
    "nao_usada": true
   },
   "supplier_products_raw_history_p2027_04": {
    "colunas": {},
-   "rls": false,
-   "policies": [],
+   "rls": true,
+   "policies": [
+    {
+     "nome": "hist_all_service",
+     "comando": "all",
+     "para": "service_role",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "hist_select_admin",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
    "indices": [],
    "fks": [],
    "criada_em": "20261104100000_partitions_supplier_products_raw_history_2027.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
-   "sem_rls": true,
+   "sem_rls": false,
    "nao_usada": true
   },
   "supplier_products_raw_history_p2027_05": {
    "colunas": {},
-   "rls": false,
-   "policies": [],
+   "rls": true,
+   "policies": [
+    {
+     "nome": "hist_all_service",
+     "comando": "all",
+     "para": "service_role",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "hist_select_admin",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
    "indices": [],
    "fks": [],
    "criada_em": "20261104100000_partitions_supplier_products_raw_history_2027.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
-   "sem_rls": true,
+   "sem_rls": false,
    "nao_usada": true
   },
   "supplier_products_raw_history_p2027_06": {
    "colunas": {},
-   "rls": false,
-   "policies": [],
+   "rls": true,
+   "policies": [
+    {
+     "nome": "hist_all_service",
+     "comando": "all",
+     "para": "service_role",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "hist_select_admin",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
    "indices": [],
    "fks": [],
    "criada_em": "20261104100000_partitions_supplier_products_raw_history_2027.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
-   "sem_rls": true,
+   "sem_rls": false,
    "nao_usada": true
   },
   "supplier_products_raw_history_p2027_07": {
    "colunas": {},
-   "rls": false,
-   "policies": [],
+   "rls": true,
+   "policies": [
+    {
+     "nome": "hist_all_service",
+     "comando": "all",
+     "para": "service_role",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "hist_select_admin",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
    "indices": [],
    "fks": [],
    "criada_em": "20261104100000_partitions_supplier_products_raw_history_2027.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
-   "sem_rls": true,
+   "sem_rls": false,
    "nao_usada": true
   },
   "supplier_products_raw_history_p2027_08": {
    "colunas": {},
-   "rls": false,
-   "policies": [],
+   "rls": true,
+   "policies": [
+    {
+     "nome": "hist_all_service",
+     "comando": "all",
+     "para": "service_role",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "hist_select_admin",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
    "indices": [],
    "fks": [],
    "criada_em": "20261104100000_partitions_supplier_products_raw_history_2027.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
-   "sem_rls": true,
+   "sem_rls": false,
    "nao_usada": true
   },
   "supplier_products_raw_history_p2027_09": {
    "colunas": {},
-   "rls": false,
-   "policies": [],
+   "rls": true,
+   "policies": [
+    {
+     "nome": "hist_all_service",
+     "comando": "all",
+     "para": "service_role",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "hist_select_admin",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
    "indices": [],
    "fks": [],
    "criada_em": "20261104100000_partitions_supplier_products_raw_history_2027.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
-   "sem_rls": true,
+   "sem_rls": false,
    "nao_usada": true
   },
   "supplier_products_raw_history_p2027_10": {
    "colunas": {},
-   "rls": false,
-   "policies": [],
+   "rls": true,
+   "policies": [
+    {
+     "nome": "hist_all_service",
+     "comando": "all",
+     "para": "service_role",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "hist_select_admin",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
    "indices": [],
    "fks": [],
    "criada_em": "20261104100000_partitions_supplier_products_raw_history_2027.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
-   "sem_rls": true,
+   "sem_rls": false,
    "nao_usada": true
   },
   "supplier_products_raw_history_p2027_11": {
    "colunas": {},
-   "rls": false,
-   "policies": [],
+   "rls": true,
+   "policies": [
+    {
+     "nome": "hist_all_service",
+     "comando": "all",
+     "para": "service_role",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "hist_select_admin",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
    "indices": [],
    "fks": [],
    "criada_em": "20261104100000_partitions_supplier_products_raw_history_2027.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
-   "sem_rls": true,
+   "sem_rls": false,
    "nao_usada": true
   },
   "supplier_products_raw_history_p2027_12": {
    "colunas": {},
-   "rls": false,
-   "policies": [],
+   "rls": true,
+   "policies": [
+    {
+     "nome": "hist_all_service",
+     "comando": "all",
+     "para": "service_role",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "hist_select_admin",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
    "indices": [],
    "fks": [],
    "criada_em": "20261104100000_partitions_supplier_products_raw_history_2027.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
-   "sem_rls": true,
+   "sem_rls": false,
    "nao_usada": true
   },
   "supplier_property_mappings": {

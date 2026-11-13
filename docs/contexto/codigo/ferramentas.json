@@ -4,7 +4,7 @@
  "stack": {
   "linguagens": [
    "TypeScript (4761)",
-   "SQL (3359)",
+   "SQL (3361)",
    "Markdown (1018)",
    "JavaScript (443)",
    "JSON (126)",
@@ -6084,16 +6084,6 @@
    "scraper_images_staging",
    "sm_images_staging",
    "supplier_products_raw_history_default",
-   "supplier_products_raw_history_p2027_03",
-   "supplier_products_raw_history_p2027_04",
-   "supplier_products_raw_history_p2027_05",
-   "supplier_products_raw_history_p2027_06",
-   "supplier_products_raw_history_p2027_07",
-   "supplier_products_raw_history_p2027_08",
-   "supplier_products_raw_history_p2027_09",
-   "supplier_products_raw_history_p2027_10",
-   "supplier_products_raw_history_p2027_11",
-   "supplier_products_raw_history_p2027_12",
    "user_organizations",
    "webhook_delivery_locks",
    "xbz_gallery_staging"

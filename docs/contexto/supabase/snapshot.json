@@ -180400,7 +180400,7 @@
               "hits": 1
             }
           ],
-          "code_total_files": 98,
+          "code_total_files": 99,
           "cron": [],
           "db": [
             "public.enforce_user_id_owner",
@@ -235971,6 +235971,12 @@
         "statements": 2,
         "statements_sha": "2f530f417cf8a450",
         "version": "20261112130000"
+      },
+      {
+        "name": "fix_rls_supplier_products_raw_history_p2027",
+        "statements": 51,
+        "statements_sha": "2be326441355a9e9",
+        "version": "20261112140000"
       }
     ],
     "policies": [
@@ -246081,6 +246087,246 @@
         "with_check": null
       },
       {
+        "cmd": "ALL",
+        "name": "hist_all_service",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "service_role"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_03",
+        "using": "true",
+        "with_check": "true"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "hist_select_admin",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_03",
+        "using": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "hist_all_service",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "service_role"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_04",
+        "using": "true",
+        "with_check": "true"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "hist_select_admin",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_04",
+        "using": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "hist_all_service",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "service_role"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_05",
+        "using": "true",
+        "with_check": "true"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "hist_select_admin",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_05",
+        "using": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "hist_all_service",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "service_role"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_06",
+        "using": "true",
+        "with_check": "true"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "hist_select_admin",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_06",
+        "using": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "hist_all_service",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "service_role"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_07",
+        "using": "true",
+        "with_check": "true"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "hist_select_admin",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_07",
+        "using": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "hist_all_service",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "service_role"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_08",
+        "using": "true",
+        "with_check": "true"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "hist_select_admin",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_08",
+        "using": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "hist_all_service",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "service_role"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_09",
+        "using": "true",
+        "with_check": "true"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "hist_select_admin",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_09",
+        "using": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "hist_all_service",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "service_role"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_10",
+        "using": "true",
+        "with_check": "true"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "hist_select_admin",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_10",
+        "using": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "hist_all_service",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "service_role"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_11",
+        "using": "true",
+        "with_check": "true"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "hist_select_admin",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_11",
+        "using": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "hist_all_service",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "service_role"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_12",
+        "using": "true",
+        "with_check": "true"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "hist_select_admin",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "supplier_products_raw_history_p2027_12",
+        "using": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+        "with_check": null
+      },
+      {
         "cmd": "SELECT",
         "name": "auth_read_supplier_property_mappings",
         "permissive": "PERMISSIVE",
@@ -254630,7 +254876,7 @@
         "partition_bound": "FOR VALUES FROM ('2027-03-01 00:00:00+00') TO ('2027-04-01 00:00:00+00')",
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "public"
       },
@@ -254645,7 +254891,7 @@
         "partition_bound": "FOR VALUES FROM ('2027-04-01 00:00:00+00') TO ('2027-05-01 00:00:00+00')",
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "public"
       },
@@ -254660,7 +254906,7 @@
         "partition_bound": "FOR VALUES FROM ('2027-05-01 00:00:00+00') TO ('2027-06-01 00:00:00+00')",
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "public"
       },
@@ -254675,7 +254921,7 @@
         "partition_bound": "FOR VALUES FROM ('2027-06-01 00:00:00+00') TO ('2027-07-01 00:00:00+00')",
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "public"
       },
@@ -254690,7 +254936,7 @@
         "partition_bound": "FOR VALUES FROM ('2027-07-01 00:00:00+00') TO ('2027-08-01 00:00:00+00')",
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "public"
       },
@@ -254705,7 +254951,7 @@
         "partition_bound": "FOR VALUES FROM ('2027-08-01 00:00:00+00') TO ('2027-09-01 00:00:00+00')",
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "public"
       },
@@ -254720,7 +254966,7 @@
         "partition_bound": "FOR VALUES FROM ('2027-09-01 00:00:00+00') TO ('2027-10-01 00:00:00+00')",
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "public"
       },
@@ -254735,7 +254981,7 @@
         "partition_bound": "FOR VALUES FROM ('2027-10-01 00:00:00+00') TO ('2027-11-01 00:00:00+00')",
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "public"
       },
@@ -254750,7 +254996,7 @@
         "partition_bound": "FOR VALUES FROM ('2027-11-01 00:00:00+00') TO ('2027-12-01 00:00:00+00')",
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "public"
       },
@@ -254765,7 +255011,7 @@
         "partition_bound": "FOR VALUES FROM ('2027-12-01 00:00:00+00') TO ('2028-01-01 00:00:00+00')",
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "public"
       },

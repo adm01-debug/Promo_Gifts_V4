@@ -2593,3 +2593,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261111191000 | [restore_get_sitemap_public_anon_execute](migrations/20261111191000_restore_get_sitemap_public_anon_execute.sql) | 2 |
 | 20261112011000 | [fix_sb0003_fn_get_rupture_alerts](migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql) | 3 |
 | 20261112130000 | [fix_get_sitemap_public_anon_grant](migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql) | 2 |
+| 20261112140000 | [fix_rls_supplier_products_raw_history_p2027](migrations/20261112140000_fix_rls_supplier_products_raw_history_p2027.sql) | 51 |

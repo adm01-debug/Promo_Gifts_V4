@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5f18026701ed8bbf76332071e1b808cc5e6081de",
+  "commit": "8ce96939e23bb05c48e366383657ac1d1a053b57",
   "branch": "main",
-  "data_commit": "2026-11-13T12:30:21-03:00",
+  "data_commit": "2026-11-13T14:19:30-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "8ce9693",
+    "data": "2026-11-13",
+    "assunto": "fix(db): ativa RLS nas partições p2027_03..12 do histórico de fornecedores (#3434)"
+   },
    {
     "sha": "5f18026",
     "data": "2026-11-13",
@@ -126,14 +131,9 @@
     "sha": "0f5934a",
     "data": "2026-11-13",
     "assunto": "docs: prod-readiness — inventário, prova OK/BLOQUEADO e PRs pendentes (main fee3d093) (#3453)"
-   },
-   {
-    "sha": "d4450a4",
-    "data": "2026-11-12",
-    "assunto": "Merge branch 'main' into claude/lote-pilha-v2-261112"
    }
   ],
-  "arquivos_mudados_7d": 1978,
+  "arquivos_mudados_7d": 1980,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 39
+    "mudancas": 40
    },
    {
     "arquivo": "package.json",
@@ -274,10 +274,6 @@
     "mudancas": 7
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 7
-   },
-   {
     "arquivo": "docs/ci/SEGREDOS.md",
     "mudancas": 7
    },
@@ -296,12 +292,16 @@
    {
     "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
     "mudancas": 6
+   },
+   {
+    "arquivo": ".github/workflows/db-schema-drift-check.yml",
+    "mudancas": 6
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 446
+    "commits": 447
    },
    {
     "autor": "Joaquim Ataides",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 29
+    "commits": 28
    },
    {
     "autor": "dependabot[bot]",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10106,
+  "arquivos_total": 10108,
   "arquivos_codigo": 5212,
   "linhas_codigo": 995707,
   "rotas": 138,
@@ -334,7 +334,7 @@
   "hooks": 615,
   "edge_functions": 111,
   "tabelas": 545,
-  "migrations": 3064,
+  "migrations": 3065,
   "cron_jobs": 122,
   "testes": 2449,
   "workflows": 98,
@@ -3097,16 +3097,6 @@
    "scraper_images_staging",
    "sm_images_staging",
    "supplier_products_raw_history_default",
-   "supplier_products_raw_history_p2027_03",
-   "supplier_products_raw_history_p2027_04",
-   "supplier_products_raw_history_p2027_05",
-   "supplier_products_raw_history_p2027_06",
-   "supplier_products_raw_history_p2027_07",
-   "supplier_products_raw_history_p2027_08",
-   "supplier_products_raw_history_p2027_09",
-   "supplier_products_raw_history_p2027_10",
-   "supplier_products_raw_history_p2027_11",
-   "supplier_products_raw_history_p2027_12",
    "user_organizations",
    "webhook_delivery_locks",
    "xbz_gallery_staging"

@@ -844,6 +844,26 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.supplier_products_raw_history_p2027_01 | hist_select_admin | SELECT | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT auth.uid() AS uid))` |  |
 | public.supplier_products_raw_history_p2027_02 | hist_all_service | ALL | PERMISSIVE | service_role | `true` | `true` |
 | public.supplier_products_raw_history_p2027_02 | hist_select_admin | SELECT | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT auth.uid() AS uid))` |  |
+| public.supplier_products_raw_history_p2027_03 | hist_all_service | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.supplier_products_raw_history_p2027_03 | hist_select_admin | SELECT | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT auth.uid() AS uid))` |  |
+| public.supplier_products_raw_history_p2027_04 | hist_all_service | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.supplier_products_raw_history_p2027_04 | hist_select_admin | SELECT | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT auth.uid() AS uid))` |  |
+| public.supplier_products_raw_history_p2027_05 | hist_all_service | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.supplier_products_raw_history_p2027_05 | hist_select_admin | SELECT | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT auth.uid() AS uid))` |  |
+| public.supplier_products_raw_history_p2027_06 | hist_all_service | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.supplier_products_raw_history_p2027_06 | hist_select_admin | SELECT | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT auth.uid() AS uid))` |  |
+| public.supplier_products_raw_history_p2027_07 | hist_all_service | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.supplier_products_raw_history_p2027_07 | hist_select_admin | SELECT | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT auth.uid() AS uid))` |  |
+| public.supplier_products_raw_history_p2027_08 | hist_all_service | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.supplier_products_raw_history_p2027_08 | hist_select_admin | SELECT | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT auth.uid() AS uid))` |  |
+| public.supplier_products_raw_history_p2027_09 | hist_all_service | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.supplier_products_raw_history_p2027_09 | hist_select_admin | SELECT | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT auth.uid() AS uid))` |  |
+| public.supplier_products_raw_history_p2027_10 | hist_all_service | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.supplier_products_raw_history_p2027_10 | hist_select_admin | SELECT | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT auth.uid() AS uid))` |  |
+| public.supplier_products_raw_history_p2027_11 | hist_all_service | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.supplier_products_raw_history_p2027_11 | hist_select_admin | SELECT | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT auth.uid() AS uid))` |  |
+| public.supplier_products_raw_history_p2027_12 | hist_all_service | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.supplier_products_raw_history_p2027_12 | hist_select_admin | SELECT | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT auth.uid() AS uid))` |  |
 | public.supplier_property_mappings | auth_read_supplier_property_mappings | SELECT | PERMISSIVE | authenticated | `true` |  |
 | public.supplier_replenishment_events | auth read events | SELECT | PERMISSIVE | authenticated | `true` |  |
 | public.supplier_settings | auth_read_supplier_settings | SELECT | PERMISSIVE | authenticated | `true` |  |

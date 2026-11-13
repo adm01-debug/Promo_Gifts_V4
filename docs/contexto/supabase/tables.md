@@ -364,16 +364,16 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.supplier_products_raw_history_p2026_12](tables/public/supplier_products_raw_history_p2026_12.md) | table (partição) | sim | 2 | 7 | não |  |
 | [public.supplier_products_raw_history_p2027_01](tables/public/supplier_products_raw_history_p2027_01.md) | table (partição) | sim | 2 | 7 | não |  |
 | [public.supplier_products_raw_history_p2027_02](tables/public/supplier_products_raw_history_p2027_02.md) | table (partição) | sim | 2 | 7 | não |  |
-| [public.supplier_products_raw_history_p2027_03](tables/public/supplier_products_raw_history_p2027_03.md) | table (partição) | não | 0 | 7 | não |  |
-| [public.supplier_products_raw_history_p2027_04](tables/public/supplier_products_raw_history_p2027_04.md) | table (partição) | não | 0 | 7 | não |  |
-| [public.supplier_products_raw_history_p2027_05](tables/public/supplier_products_raw_history_p2027_05.md) | table (partição) | não | 0 | 7 | não |  |
-| [public.supplier_products_raw_history_p2027_06](tables/public/supplier_products_raw_history_p2027_06.md) | table (partição) | não | 0 | 7 | não |  |
-| [public.supplier_products_raw_history_p2027_07](tables/public/supplier_products_raw_history_p2027_07.md) | table (partição) | não | 0 | 7 | não |  |
-| [public.supplier_products_raw_history_p2027_08](tables/public/supplier_products_raw_history_p2027_08.md) | table (partição) | não | 0 | 7 | não |  |
-| [public.supplier_products_raw_history_p2027_09](tables/public/supplier_products_raw_history_p2027_09.md) | table (partição) | não | 0 | 7 | não |  |
-| [public.supplier_products_raw_history_p2027_10](tables/public/supplier_products_raw_history_p2027_10.md) | table (partição) | não | 0 | 7 | não |  |
-| [public.supplier_products_raw_history_p2027_11](tables/public/supplier_products_raw_history_p2027_11.md) | table (partição) | não | 0 | 7 | não |  |
-| [public.supplier_products_raw_history_p2027_12](tables/public/supplier_products_raw_history_p2027_12.md) | table (partição) | não | 0 | 7 | não |  |
+| [public.supplier_products_raw_history_p2027_03](tables/public/supplier_products_raw_history_p2027_03.md) | table (partição) | sim | 2 | 7 | não |  |
+| [public.supplier_products_raw_history_p2027_04](tables/public/supplier_products_raw_history_p2027_04.md) | table (partição) | sim | 2 | 7 | não |  |
+| [public.supplier_products_raw_history_p2027_05](tables/public/supplier_products_raw_history_p2027_05.md) | table (partição) | sim | 2 | 7 | não |  |
+| [public.supplier_products_raw_history_p2027_06](tables/public/supplier_products_raw_history_p2027_06.md) | table (partição) | sim | 2 | 7 | não |  |
+| [public.supplier_products_raw_history_p2027_07](tables/public/supplier_products_raw_history_p2027_07.md) | table (partição) | sim | 2 | 7 | não |  |
+| [public.supplier_products_raw_history_p2027_08](tables/public/supplier_products_raw_history_p2027_08.md) | table (partição) | sim | 2 | 7 | não |  |
+| [public.supplier_products_raw_history_p2027_09](tables/public/supplier_products_raw_history_p2027_09.md) | table (partição) | sim | 2 | 7 | não |  |
+| [public.supplier_products_raw_history_p2027_10](tables/public/supplier_products_raw_history_p2027_10.md) | table (partição) | sim | 2 | 7 | não |  |
+| [public.supplier_products_raw_history_p2027_11](tables/public/supplier_products_raw_history_p2027_11.md) | table (partição) | sim | 2 | 7 | não |  |
+| [public.supplier_products_raw_history_p2027_12](tables/public/supplier_products_raw_history_p2027_12.md) | table (partição) | sim | 2 | 7 | não |  |
 | [public.supplier_property_mappings](tables/public/supplier_property_mappings.md) | table | sim | 1 | 10 | não | Mapeamento de properties brutas do fornecedor para códigos normalizados |
 | [public.supplier_replenishment_events](tables/public/supplier_replenishment_events.md) | table | sim | 1 | 17 | não | Append-only ledger de eventos de reposição de estoque. Cada linha representa uma promessa de chegada (promised_date + promised_quantity) capturada de variant_supplier_sources (slots 1-6), e opcionalmente casada com um delta positivo real em stock_snapshots. resolution: pending → fulfilled/expired/superseded. Criado: 2026-06-22. Arquitetura: Gold layer (read-only para app). |
 | [public.supplier_settings](tables/public/supplier_settings.md) | table | sim | 1 | 14 | não | Configurações padrão por fornecedor para auto-preenchimento de campos em products |
