@@ -345,7 +345,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           HEAD_MAIN: ${{ github.sha }}
-          VOLATILE_MIN_INTERVAL_MIN: '60'
+          # 50 e não 60: com cron horário o intervalo entre rodadas oscila em torno de 60 min (fila do
+          # GitHub) e 60 faria as métricas pularem uma hora sim, outra não. O cron já limita a 1×/hora.
+          VOLATILE_MIN_INTERVAL_MIN: '50'
           HUSKY: '0'
         run: |
           set -euo pipefail

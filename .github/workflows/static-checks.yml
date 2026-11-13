@@ -22,6 +22,9 @@ name: Static Checks
 #   check-no-prod-leak.yml, check-select-columns.yml, lint-untyped-from.yml,
 #   workflow-lint.yml, migrations-sync-log-gate.yml, automation-local.yml,
 #   ui-visual-a11y.yml, url-state-unit.yml
+# e pedaços estáticos de workflows que continuam existindo:
+#   required-checks-guard.yml (ghost-check-guard),
+#   sitemap-production-preconditions.yml (testes do coletor sem rede)
 # =============================================================================
 
 on:
@@ -87,6 +90,19 @@ jobs:
       - name: untypedFrom × types.ts
         if: ${{ !cancelled() }}
         run: bash scripts/lint-untyped-from.sh
+
+      # ── ex-required-checks-guard.yml / ghost-check-guard (E71) ───────────────
+      # Todo nome em .github/required-checks.json precisa existir como `name:` de
+      # job em algum workflow (senão o check nunca reporta e trava o merge).
+      - name: Ghost required checks (required-checks.json × jobs)
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: node scripts/check-required-checks.mjs
+
+      # ── sitemap-production-preconditions.yml (pedaço sem rede) ─────────────
+      # A sonda de produção ficou agendada lá; os testes do coletor são do PR.
+      - name: Sitemap — testes do coletor sem rede
+        if: ${{ !cancelled() }}
+        run: python3 -m unittest discover -s tests/scripts -p test_production_sitemap_probe.py
 
       # ── ex-automation-local.yml ─────────────────────────────────────────────
       # scripts/automation.config.json (`ci`) aponta para este arquivo: o doctor

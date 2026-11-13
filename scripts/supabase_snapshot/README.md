@@ -7,7 +7,7 @@ functions. Mesmo coletor do Zapp_Web_V2 (código idêntico; só a configuração
 ## Onde está o resultado (neste repo)
 
 A main tem ruleset (push direto recusado), então o snapshot **não** é comitado na main: o job `banco` de
-`.github/workflows/contexto.yml` roda a cada 10 min e publica em `docs/contexto/supabase/` da branch
+`.github/workflows/contexto.yml` roda de hora em hora e publica em `docs/contexto/supabase/` da branch
 **`contexto`** (junto com `codigo/` e `regras/`; índice em `docs/contexto/00-INDEX.md`). Só há commit quando algo mudou.
 
 Como ler, sem trocar de branch:
@@ -45,7 +45,7 @@ connection string com senha é montada. A sessão abre em `default_transaction_r
 - `cron.job` e `cron.job_run_details` têm RLS `username = current_user`: só um usuário com `BYPASSRLS`
   (ex.: `postgres`) enxerga todos os jobs. Com outro papel a seção de cron sai incompleta.
 - `SUPABASE_ACCESS_TOKEN` **não** é passado de propósito: ele torna o workflow "privilegiado" no Gate E89
-  (`scripts/ci-cron-table.mjs`) e um cron de 10 min colidiria com os demais crons privilegiados. Sem ele a
+  (`scripts/ci-cron-table.mjs`) e um cron horário colidiria com os demais crons privilegiados. Sem ele a
   parte da Management API (edge functions publicadas, configs de auth/PostgREST) é pulada; as edges
   publicadas × repo continuam em `inventario/estado/banco.json` e no `edge-functions-drift-check.yml`.
 

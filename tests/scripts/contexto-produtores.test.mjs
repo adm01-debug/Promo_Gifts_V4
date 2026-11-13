@@ -75,7 +75,7 @@ describe('invariantes do contexto.yml', () => {
   const texto = readFileSync(WORKFLOW, 'utf8');
   const doc = yaml.load(texto);
 
-  it('não usa SUPABASE_ACCESS_TOKEN (Gate E89: cron de 10 min colidiria com os crons privilegiados)', () => {
+  it('não usa SUPABASE_ACCESS_TOKEN (Gate E89: cron horário colidiria com os crons privilegiados)', () => {
     expect(texto).not.toMatch(/secrets\.SUPABASE_ACCESS_TOKEN\b/);
     expect(texto).not.toMatch(/secrets\.SUPABASE_SERVICE_ROLE_KEY\b/);
   });

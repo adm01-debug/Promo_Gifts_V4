@@ -1,16 +1,30 @@
 name: Required Checks Guard
 
-# Falha quando o ruleset aplicável à main não exige o gate agregador canônico.
-# Consulta a API de repository rulesets; a API legacy de branch protection
-# responde 404/403 quando a proteção moderna é feita por ruleset.
+# Falha quando as regras EFETIVAS da main (rulesets ativos) não exigem o gate
+# agregador canônico (nome lido de .github/required-checks.json), aprovação por
+# PR (pull_request) e bloqueio de push forçado (non_fast_forward).
+#
+# 2026-11-13 (wf-consolida):
+#   - Unificado com o job check-protection-config do branch-protection-sentinel.yml
+#     (mesma pergunta, duas implementações). Ficou a mais completa: endpoint de
+#     regras efetivas (rules/branches/main, funciona com github.token), as três
+#     regras do sentinel (lógica coberta pelas fixtures do sentinel-self-test.yml)
+#     + o nome exato do required-checks.json que este guard já conferia.
+#   - Saiu de pull_request/push incondicional: o estado dos rulesets é configuração
+#     do GitHub, não muda com o diff do PR. Agora: diário + dispatch + push em main
+#     que mexa em .github/** (onde mora o required-checks.json).
+#   - O ghost-check (E71, scripts/check-required-checks.mjs) é estático e foi para
+#     o static-checks.yml, que roda em todo PR.
+#   - Nenhum job daqui é required check no ruleset (só "Gate Final - Deploy Ready").
 
 on:
   push:
     branches: [main]
-  pull_request:
-    # E176: sem paths filter — assert-required-checks precisa rodar em todo PR
-    # para ser um required check efetivo (check com paths filter que não dispara = PR bloqueado)
-    branches: [main]
+    paths:
+      - '.github/**'
+      - 'docs/ci/SEGREDOS.md'
+      - 'scripts/check-secrets-inventory.mjs'
+      - '.github/workflows/required-checks-guard.yml'
   schedule:
     - cron: '45 8 * * *'  # diário 08:45 UTC — E89: ≥20min de edge-functions-drift-check (09:06)
   workflow_dispatch:
@@ -20,7 +34,7 @@ permissions:
 
 concurrency:
   group: required-checks-guard-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: false
 
 
 defaults:
@@ -38,86 +52,43 @@ jobs:
           persist-credentials: false  # E32
           sparse-checkout: .github/required-checks.json
           sparse-checkout-cone-mode: false
-      - name: Check required_status_checks in active main rulesets
+      # A flag `protected` da API branches/ é false com rulesets (método antigo). O endpoint
+      # rules/branches/main devolve as regras EFETIVAS da main (todos os rulesets ativos que a
+      # alcançam) e responde com github.token — sem iterar /rulesets nem precisar de PAT.
+      - name: Regras efetivas da main (Gate Final + pull_request + non_fast_forward)
         env:
           GH_TOKEN: ${{ secrets.BRANCH_PROTECTION_READ_TOKEN || github.token }}
-          HAS_PAT: ${{ secrets.BRANCH_PROTECTION_READ_TOKEN != '' }}
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
 
-          # Lê o check obrigatório do JSON (E56) — evita hardcode que desincroniza
-          # quando o nome do gate muda.
+          # Nome do check obrigatório vem do JSON (E56) — evita hardcode que desincroniza.
           REQUIRED=$(jq -r '.rulesets[] | select(.id == "main" and (._disabled // false | not)) | .required_checks[0].name' .github/required-checks.json)
           if [[ -z "$REQUIRED" || "$REQUIRED" == "null" ]]; then
             echo "::error::required-checks.json não contém entry 'main' com required_checks."
             exit 1
           fi
-          RULESETS_URL="https://api.github.com/repos/$REPO/rulesets?includes_parents=true&per_page=100"
 
-          HTTP=$(curl -sS -o /tmp/rulesets.json -w "%{http_code}" \
+          HTTP=$(curl -sS -o "$RUNNER_TEMP/rules.json" -w "%{http_code}" \
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            "$RULESETS_URL")
-
-          {
-            echo "### Required status checks — rulesets ativos de main"
-            echo ""
-          } >> "$GITHUB_STEP_SUMMARY"
-
+            "https://api.github.com/repos/$REPO/rules/branches/main")
           if [[ "$HTTP" != "200" ]]; then
-            if [[ "$HAS_PAT" != "true" ]]; then
-              echo "::warning::BRANCH_PROTECTION_READ_TOKEN não configurado (usando github.token sem permissão admin — HTTP $HTTP). Verificação de rulesets pulada. Configure o PAT em Settings → Secrets and variables → Actions."
-              exit 0
-            fi
-            echo "::error::Não foi possível ler repository rulesets (HTTP $HTTP); estado remoto inconclusivo."
+            echo "::error::Não foi possível ler as regras efetivas da main (HTTP $HTTP); estado remoto inconclusivo."
             exit 1
           fi
 
-          IDS=$(jq -r '.[] | select(.enforcement == "active") | .id' /tmp/rulesets.json)
-          if [[ -z "$IDS" ]]; then
-            echo "::error::Nenhum repository ruleset ativo encontrado."
-            exit 1
-          fi
-
-          : > /tmp/main-required-contexts.txt
-          MATCHED=0
-          for ID in $IDS; do
-            DETAIL_HTTP=$(curl -sS -o "/tmp/ruleset-$ID.json" -w "%{http_code}" \
-              -H "Authorization: Bearer $GH_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
-              "https://api.github.com/repos/$REPO/rulesets/$ID")
-            if [[ "$DETAIL_HTTP" != "200" ]]; then
-              echo "::error::Não foi possível ler o ruleset $ID (HTTP $DETAIL_HTTP)."
-              exit 1
-            fi
-
-            APPLIES=$(jq -r '
-              ((.conditions.ref_name.include // []) | any(. == "~DEFAULT_BRANCH" or . == "refs/heads/main" or . == "~ALL")) and
-              (((.conditions.ref_name.exclude // []) | any(. == "~DEFAULT_BRANCH" or . == "refs/heads/main" or . == "~ALL")) | not)
-            ' "/tmp/ruleset-$ID.json")
-            if [[ "$APPLIES" != "true" ]]; then
-              continue
-            fi
-
-            MATCHED=$((MATCHED + 1))
-            jq -r '
-              .rules[]?
-              | select(.type == "required_status_checks")
-              | .parameters.required_status_checks[]?.context
-            ' "/tmp/ruleset-$ID.json" >> /tmp/main-required-contexts.txt
-          done
-
-          if [[ "$MATCHED" -eq 0 ]]; then
-            echo "::error::Nenhum ruleset ativo aplicável à main foi encontrado."
-            exit 1
-          fi
-
-          CONTEXTS=$(sort -u /tmp/main-required-contexts.txt)
+          # E11 (ex-branch-protection-sentinel.yml/check-protection-config): mesma expressão
+          # exercitada pelas fixtures do sentinel-self-test.yml — mudar lá e aqui juntos.
+          RESULT=$(python3 -c "import sys,json; rules=json.load(sys.stdin); types={r.get('type') for r in rules} if isinstance(rules,list) else set(); gate_ok=any('Gate Final' in c.get('context','') or 'deploy-ready' in c.get('context','').lower() for r in rules if r.get('type')=='required_status_checks' for c in r.get('parameters',{}).get('required_status_checks',[])); missing=[x for x,ok in [('required_status_checks:Gate-Final-Deploy-Ready','required_status_checks' in types and gate_ok),('pull_request','pull_request' in types),('non_fast_forward','non_fast_forward' in types)] if not ok]; print('NONE' if not isinstance(rules,list) or not rules else ('OK' if not missing else 'MISSING:'+','.join(missing)))" < "$RUNNER_TEMP/rules.json")
+          CONTEXTS=$(jq -r '.[] | select(.type == "required_status_checks") | .parameters.required_status_checks[]?.context' "$RUNNER_TEMP/rules.json" | sort -u)
 
           {
+            echo "### Regras efetivas de \`main\` (rulesets ativos)"
+            echo ""
+            echo "**Regras críticas:** \`$RESULT\`"
+            echo ""
             echo "**Required contexts encontrados:**"
             if [[ -n "$CONTEXTS" ]]; then
               printf '%s\n' "$CONTEXTS" | sed 's/^/- /'
@@ -126,32 +97,20 @@ jobs:
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
-          if ! printf '%s\n' "$CONTEXTS" | grep -qxF "$REQUIRED"; then
-            echo "::error::Required status check '$REQUIRED' ausente nos rulesets ativos de main."
-            echo "" >> "$GITHUB_STEP_SUMMARY"
-            echo "Missing required check: \`$REQUIRED\`." >> "$GITHUB_STEP_SUMMARY"
-            exit 1
+          FAIL=0
+          if [[ "$RESULT" != "OK" ]]; then
+            echo "::error::Branch protection insuficiente para main: $RESULT. Configure em https://github.com/$REPO/settings/rules (passo a passo: .github/BRANCH_PROTECTION_SETUP.md)."
+            FAIL=1
           fi
-
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "\`$REQUIRED\` está obrigatório e o estado remoto foi comprovado." >> "$GITHUB_STEP_SUMMARY"
-
-  # E71 — Verifica checks fantasmas: required-checks.json vs jobs reais nos workflows
-  ghost-check-guard:
-    name: Ghost Check Guard — required-checks.json vs workflows
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: .nvmrc
-      - name: Install js-yaml
-        run: npm i --no-save js-yaml@4.3.2
-      - name: Check for phantom required checks (E71)
-        run: node scripts/check-required-checks.mjs
+          if ! printf '%s\n' "$CONTEXTS" | grep -qxF "$REQUIRED"; then
+            echo "::error::Required status check '$REQUIRED' (nome exato do required-checks.json) ausente nas regras efetivas da main."
+            FAIL=1
+          fi
+          if [[ "$FAIL" -eq 0 ]]; then
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "\`$REQUIRED\` + pull_request + non_fast_forward obrigatórios; estado remoto comprovado." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit "$FAIL"
 
   # E40 — Inventário de segredos: abre issue quando há referências não documentadas
   secrets-inventory-check:
