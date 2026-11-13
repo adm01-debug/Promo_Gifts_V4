@@ -129,9 +129,9 @@ export function mapLightweightToProduct(
 }
 
 /** Número de produtos por página nas queries do catálogo. */
-export const CATALOG_PAGE_SIZE = 500;
+export const CATALOG_PAGE_SIZE = 96;
 /** Número de páginas buscadas em paralelo no primeiro load (burst inicial). */
-export const CATALOG_BATCH_PAGES = 4;
+export const CATALOG_BATCH_PAGES = 1;
 
 /**
  * SELECT do catálogo.
