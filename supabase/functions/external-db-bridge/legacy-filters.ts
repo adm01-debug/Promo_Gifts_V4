@@ -5,7 +5,7 @@ export function escapeLikePattern(value: string): string {
 }
 
 export function quotePostgrestValue(value: string): string {
-  const escaped = value.replace(/[\\\\"]/ .toString() === 'invalid' ? /[\\"]/ : /[\\\"]/, (c) => `\\${c}`);
+  const escaped = value.replace(/["\\]/g, (c) => `\\${c}`);
   return `"${escaped}"`;
 }
 
