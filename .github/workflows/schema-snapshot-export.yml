@@ -1,8 +1,8 @@
 name: schema-snapshot-export
 
 # =============================================================================
-# Roda o script `scripts/export-schema-snapshot.mjs` em toda PR e no push para
-# `main`, publicando os artefatos gerados em `supabase/migrations-snapshot/`
+# Roda o script `scripts/export-schema-snapshot.mjs` no agendamento semanal e
+# no dispatch, publicando os artefatos gerados em `supabase/migrations-snapshot/`
 # (ALL_IN_ONE.sql, SCHEMA_LIVE.sql, SNAPSHOT_META.json) e o baseline do
 # db-schema-drift-check em `supabase/baseline/`.
 #
@@ -24,22 +24,11 @@ name: schema-snapshot-export
 # Schedule semanal mantém varredura incondicional (segunda 06:36 UTC).
 # =============================================================================
 
+# 2026-11-13 (wf-consolida): saíram pull_request e push. Sem credenciais (que PR/push nunca
+# recebem desde 2026-10-15) o script só concatena supabase/migrations em ALL_IN_ONE.sql e sobe
+# um artifact que ninguém consome — nada é validado, nenhum gate depende dele. A validação de
+# migrations em PR é do deploy-gates.yml (Gate 1.3 contratos + E40 drift via workflow_call).
 on:
-  pull_request:
-    branches: [main]
-    # 2026-09-27: paths filter — 12min de snapshot só quando schema/migrations muda
-    # E68: removido supabase/functions/** — snapshot de schema não depende de edge functions
-    paths:
-      - 'supabase/migrations/**'
-      - 'package.json'
-      - '.github/workflows/schema-snapshot-export.yml'
-  push:
-    branches: [main]
-    # E68: removido supabase/functions/** — paths só supabase/migrations/**
-    paths:
-      - 'supabase/migrations/**'
-      - 'package.json'
-      - '.github/workflows/schema-snapshot-export.yml'
   schedule:
     - cron: '36 6 * * 1' # semanal, segunda 06:36 UTC (03:36 BRT) — E89: ≥20min after wraparound-monitor (06:15)
   workflow_dispatch:
