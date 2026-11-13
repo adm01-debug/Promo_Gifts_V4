@@ -3,7 +3,7 @@
 // Regression tests for the lightweight-select rule.
 // HARD GUARD: lightweight is ONLY applied when table === 'products' AND limit > 50 AND no id.
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { resolveProductsSelect, LIGHTWEIGHT_LIMIT_THRESHOLD } from "./legacy-contracts.ts";
+import { resolveProductsSelect, LIGHTWEIGHT_LIMIT_THRESHOLD } from "../tests/external-db-bridge/legacy-contracts.ts";
 
 const LIGHTWEIGHT_PREFIX = "id,name,sku,sale_price"; // start of PRODUCTS_LIGHTWEIGHT_SELECT
 

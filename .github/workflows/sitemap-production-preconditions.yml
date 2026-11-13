@@ -1,0 +1,69 @@
+name: Sitemap — precondições públicas de ativação
+
+# Read-only requests to the fixed canonical origin. No deployment or credentials.
+# A recognized exact legacy XML is NOT public-health success; only the dynamic
+# API/served-SHA preconditions can pass while that known shadow is documented.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/sitemap-production-preconditions.yml'
+      - 'scripts/probe-production-sitemap.py'
+      - 'tests/scripts/test_production_sitemap_probe.py'
+      - '.vercel/project.json'
+      - 'api/sitemap.ts'
+      - 'api/health.ts'
+      - 'public/sitemap.xml'
+      - 'public/robots.txt'
+      - 'recovery/site-artifacts/**'
+      - 'vercel.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: sitemap-production-preconditions-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  sitemap-production-preconditions:
+    name: Sitemap público — precondições somente leitura
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Testar o coletor sem rede
+        run: python3 -m unittest discover -s tests/scripts -p test_production_sitemap_probe.py -v
+
+      - name: Verificar cinco GET/HEAD públicos e o SHA servido
+        run: >-
+          python3 scripts/probe-production-sitemap.py
+          --expected-sha "${{ github.event.pull_request.base.sha || github.sha }}"
+          --output work/sitemap-production/report.json
+          --summary work/sitemap-production/summary.md
+
+      - name: Exibir distinção entre precondições e saúde pública
+        if: always()
+        run: |
+          if [ -f work/sitemap-production/summary.md ]; then
+            cat work/sitemap-production/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Publicar somente relatório sanitizado
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: sitemap-production-evidence-${{ github.run_id }}
+          path: |
+            work/sitemap-production/report.json
+            work/sitemap-production/summary.md
+          if-no-files-found: error
+          retention-days: 14

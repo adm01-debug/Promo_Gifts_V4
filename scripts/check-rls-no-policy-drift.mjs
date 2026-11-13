@@ -34,7 +34,7 @@ import {
   maskUrl,
   shouldRequireLive,
 } from './check-result-contract.mjs';
-import { querySupabaseReadOnly } from './supabase-read-only-query.mjs';
+import { hasLiveSupabaseConfig, querySupabaseReadOnly } from './supabase-read-only-query.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -99,7 +99,7 @@ function loadAllowlist() {
     }
     throw e;
   }
-  const doc = JSON.parse(raw);
+  const doc = JSON.parse(raw.replace(/^\uFEFF/, ''));
   if (!Array.isArray(doc.tables)) {
     process.stderr.write(`[rls-no-policy] allowlist.tables inválida\n`);
     process.exit(2);
@@ -130,7 +130,8 @@ function validateAllowlistIntegrity(doc) {
 async function main() {
   const { doc, set: allowed } = loadAllowlist();
 
-  // ── Gate mode (sem live DB): valida só a integridade da allowlist ──────────
+  // ── Gate mode: integridade da allowlist; só fica nisso se NÃO há credencial live ──
+  // Antes, `--gate` nunca consultava o banco, mesmo com SUPABASE_ACCESS_TOKEN no workflow.
   if (GATE_MODE && !fromFileArg) {
     const integrityProblems = validateAllowlistIntegrity(doc);
     if (integrityProblems.length) {
@@ -142,7 +143,7 @@ async function main() {
       process.exit(1);
     }
 
-    return concludeCheck({
+    if (!hasLiveSupabaseConfig()) return concludeCheck({
       check: 'rls-no-policy',
       status: CHECK_RESULT_STATUS.STATIC_PASS,
       summary: `allowlist válida (${doc.tables.length} tabela(s) documentada(s)); sem live DB em --gate`,
@@ -154,7 +155,7 @@ async function main() {
   let actual;
   if (fromFileArg) {
     const p = fromFileArg.slice('--from-file='.length);
-    const raw = JSON.parse(readFileSync(p, 'utf8'));
+    const raw = JSON.parse(readFileSync(p, 'utf8').replace(/^\uFEFF/, ''));
     actual = (Array.isArray(raw) ? raw : raw.tables || []).map((r) =>
       typeof r === 'string' ? r : r.table,
     );

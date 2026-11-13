@@ -108,7 +108,7 @@ jobs:
           : "${SUPABASE_ACCESS_TOKEN:?SUPABASE_ACCESS_TOKEN não configurado}"
       - name: Install Supabase CLI
         if: steps.check_paths.outputs.needs_drift != 'false'
-        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
+        uses: supabase/setup-cli@689adcfb80d947100a1eab127289b97d1fb07b13 # v2
         with:
           version: 2.101.0
 
@@ -247,6 +247,35 @@ jobs:
               echo "$slug,no_index_after_download,,," >> /tmp/drift_report.csv
               continue
             fi
+
+          # Fix drift residual: a Management API devolve o conteúdo como cp1252
+          # (mojibake) com CRLF — o sha256 do download nunca batia com o do repo.
+          # Normaliza cp1252→UTF-8 e CRLF→LF antes de montar o canonical manifest.
+          python3 - "$target_dir" <<'PY'
+          import os
+          import sys
+
+          root = sys.argv[1]
+          for dirpath, _dirnames, filenames in os.walk(root):
+              for name in filenames:
+                  path = os.path.join(dirpath, name)
+                  try:
+                      raw = open(path, "rb").read()
+                  except OSError:
+                      continue
+                  try:
+                      text = raw.decode("utf-8")
+                  except UnicodeDecodeError:
+                      continue  # binário — ignora
+                  try:
+                      fixed = text.encode("cp1252").decode("utf-8")
+                  except (UnicodeEncodeError, UnicodeDecodeError):
+                      continue  # já UTF-8 limpo
+                  fixed = fixed.replace("\r\n", "\n")
+                  if fixed != text:
+                      with open(path, "wb") as fh:
+                          fh.write(fixed.encode("utf-8"))
+          PY
 
             canon_manifest=$(cd "$target_dir" && find supabase/functions -type f -print0 | sort -z | xargs -0 sha256sum)
             files_compared=$(echo "$canon_manifest" | wc -l)

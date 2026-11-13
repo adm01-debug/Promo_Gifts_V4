@@ -27,12 +27,48 @@ function nextResult(table: string): QueryResult {
   return defaultResult;
 }
 
+// Modo "dataset": o mock aplica de verdade order/limit/gt/gte/lt sobre linhas
+// em memória (simula o PostgREST) e mede requisições simultâneas em voo.
+type Op = [string, unknown[]];
+const datasets: Record<
+  string,
+  {
+    rows: Array<{ id: string }>;
+    withCount: boolean;
+    failWhen?: (ops: Op[]) => QueryResult | null;
+  }
+> = {};
+const flight = { now: 0, max: 0 };
+
+function datasetResult(ds: (typeof datasets)[string], ops: Op[]): QueryResult {
+  const injected = ds.failWhen?.(ops);
+  if (injected) return injected;
+  let rows = [...ds.rows];
+  let limit = Infinity;
+  let col = 'id';
+  for (const [m, a] of ops) {
+    const v = a[1] as string;
+    if (m === 'order') col = a[0] as string;
+    if (m === 'gt') rows = rows.filter((r) => r.id > v);
+    if (m === 'gte') rows = rows.filter((r) => r.id >= v);
+    if (m === 'lt') rows = rows.filter((r) => r.id < v);
+    if (m === 'limit') limit = a[0] as number;
+  }
+  if (col !== 'id' && col !== 'variant_supplier_source_id') throw new Error(`order ${col}`);
+  rows.sort((x, y) => (x.id < y.id ? -1 : x.id > y.id ? 1 : 0));
+  const sel = ops.find(([m]) => m === 'select');
+  const wantCount = ds.withCount && (sel?.[1][1] as { count?: string } | undefined)?.count;
+  return { data: rows.slice(0, limit), error: null, count: wantCount ? rows.length : null };
+}
+
 vi.mock('@/lib/supabase-untyped', () => {
   const makeBuilder = (table: string) => {
     const q: Record<string, unknown> = {};
+    const ops: Op[] = [];
     const chain = (method: string) =>
       vi.fn((...args: unknown[]) => {
         calls.push({ table, method, args });
+        ops.push([method, args]);
         return q;
       });
     for (const m of [
@@ -55,7 +91,18 @@ vi.mock('@/lib/supabase-untyped', () => {
     (q as { then?: unknown }).then = (
       resolve: (v: unknown) => unknown,
       reject: (e: unknown) => unknown,
-    ) => Promise.resolve(nextResult(table)).then(resolve, reject);
+    ) => {
+      const ds = datasets[table];
+      if (!ds) return Promise.resolve(nextResult(table)).then(resolve, reject);
+      flight.now += 1;
+      flight.max = Math.max(flight.max, flight.now);
+      return new Promise<QueryResult>((res) => {
+        setTimeout(() => {
+          flight.now -= 1;
+          res(datasetResult(ds, ops));
+        }, 1);
+      }).then(resolve, reject);
+    };
     return q;
   };
   return {
@@ -77,6 +124,7 @@ vi.mock('@/lib/external-db/silent-empty-report', () => ({
 import {
   toNumber,
   fetchPaginatedFromBridge,
+  uuidKeysetRanges,
   fetchAndProcessStockData,
   nextStockPairs,
   buildFutureEntries,
@@ -91,6 +139,9 @@ const queue = (table: string, ...results: QueryResult[]) => {
 beforeEach(() => {
   calls.length = 0;
   for (const k of Object.keys(resultQueues)) delete resultQueues[k];
+  for (const k of Object.keys(datasets)) delete datasets[k];
+  flight.now = 0;
+  flight.max = 0;
   reportSilentEmpty.mockClear();
   (logger.log as ReturnType<typeof vi.fn>).mockClear();
   (logger.warn as ReturnType<typeof vi.fn>).mockClear();
@@ -273,6 +324,211 @@ describe('fetchPaginatedFromBridge', () => {
     // x1 is valid and retained; null-id record is discarded by the seen-set guard.
     expect(rows.map((r) => r.id)).toEqual(['x1']);
     expect(logger.warn).toHaveBeenCalled();
+  });
+});
+
+// ─── fetchPaginatedFromBridge — partições paralelas de keyset UUID ───────────
+/** UUID determinístico cujo 1º byte é `hi` (00–ff) e o resto deriva de `n`. */
+const uuidAt = (hi: number, n: number) => {
+  const h = (hi.toString(16).padStart(2, '0') + n.toString(16).padStart(30, '0')).slice(0, 32);
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
+};
+
+/**
+ * Linhas espalhadas: faixas 0x20–0x3f e 0xe0–0xff VAZIAS; faixa 0x40–0x5f com
+ * exatamente 2×pageSize linhas (página cheia exata); bordas exatas (0x20…, 0x60…
+ * pertencem à faixa de cima); demais faixas com quantidades variadas.
+ */
+function spreadRows(pageSize: number): Array<{ id: string; n: number }> {
+  const ids: string[] = [];
+  for (let i = 0; i < 5; i++) ids.push(uuidAt(0x00, i + 1)); // faixa 0 (0x00–0x1f)
+  ids.push(uuidAt(0x1f, 0xffff)); // topo da faixa 0
+  for (let i = 0; i < 2 * pageSize; i++) ids.push(uuidAt(0x40 + (i % 32), i)); // faixa 2 cheia exata
+  ids.push('60000000-0000-0000-0000-000000000000'); // borda exata → faixa 3
+  for (let i = 0; i < 7; i++) ids.push(uuidAt(0x60 + i, i + 1));
+  for (let i = 0; i < pageSize; i++) ids.push(uuidAt(0x80 + i, i)); // faixa 4 = 1 página exata
+  for (let i = 0; i < 3; i++) ids.push(uuidAt(0xa0 + i * 5, i));
+  for (let i = 0; i < 11; i++) ids.push(uuidAt(0xc0 + i, i * 7));
+  // embaralha (o banco não devolve em ordem de inserção)
+  const shuffled = ids
+    .map((id, i) => ({ id, k: (i * 7919) % 104729 }))
+    .sort((a, b) => a.k - b.k)
+    .map((x) => x.id);
+  expect(new Set(ids).size).toBe(ids.length); // PK: sem ids repetidos
+  return shuffled.map((id, n) => ({ id, n }));
+}
+
+describe('fetchPaginatedFromBridge — partições paralelas (keyset UUID)', () => {
+  const PAGE = 4;
+
+  it('uuidKeysetRanges cobre todo o espaço em faixas contíguas [lo, hi)', () => {
+    const r = uuidKeysetRanges(8);
+    expect(r).toHaveLength(8);
+    expect(r[0][0]).toBeNull();
+    expect(r[7][1]).toBeNull();
+    expect(r[1][0]).toBe('20000000-0000-0000-0000-000000000000');
+    expect(r[7][0]).toBe('e0000000-0000-0000-0000-000000000000');
+    for (let i = 1; i < r.length; i++) expect(r[i][0]).toBe(r[i - 1][1]);
+    expect(uuidKeysetRanges(1)).toEqual([[null, null]]);
+  });
+
+  for (const withCount of [true, false]) {
+    it(`mesma saída e mesma ordem do sequencial (count ${withCount ? 'conhecido' : 'ausente'}, faixas vazias, páginas cheias exatas)`, async () => {
+      const rows = spreadRows(PAGE);
+      datasets.product_images = { rows, withCount };
+      const seq = await fetchPaginatedFromBridge<{ id: string }>('product_images', 'id', PAGE);
+      const par = await fetchPaginatedFromBridge<{ id: string }>(
+        'product_images',
+        'id',
+        PAGE,
+        100000,
+        undefined,
+        'id',
+        8,
+      );
+      const sorted = [...rows].sort((a, b) => (a.id < b.id ? -1 : 1));
+      expect(seq).toEqual(sorted);
+      expect(par).toEqual(seq);
+      // a regra "primeira imagem vista" depende da ordem: objetos idênticos, mesma posição
+      expect(par.map((r) => r.id)).toEqual(sorted.map((r) => r.id));
+    });
+  }
+
+  it('dispara as requisições das faixas em paralelo (8 em voo) e filtra cada faixa com gte/lt', async () => {
+    datasets.product_variants = { rows: spreadRows(PAGE), withCount: true };
+    await fetchPaginatedFromBridge('product_variants', 'id', PAGE, 100000, undefined, 'id', 8);
+    expect(flight.max).toBe(8);
+    const gte = calls.filter((c) => c.method === 'gte').map((c) => c.args[1]);
+    const lt = calls.filter((c) => c.method === 'lt').map((c) => c.args[1]);
+    expect(new Set(gte)).toEqual(
+      new Set(
+        uuidKeysetRanges(8)
+          .slice(1)
+          .map((x) => x[0]),
+      ),
+    );
+    expect(new Set(lt)).toEqual(
+      new Set(
+        uuidKeysetRanges(8)
+          .slice(0, 7)
+          .map((x) => x[1]),
+      ),
+    );
+    // modo sequencial (padrão) continua 1 em voo e sem gte/lt
+    calls.length = 0;
+    flight.max = 0;
+    await fetchPaginatedFromBridge('product_variants', 'id', PAGE);
+    expect(flight.max).toBe(1);
+    expect(calls.some((c) => c.method === 'gte' || c.method === 'lt')).toBe(false);
+  });
+
+  it('respeita a coluna de keyset (mv_stock_velocity → variant_supplier_source_id) em order/gt/gte/lt', async () => {
+    datasets.mv_stock_velocity = { rows: spreadRows(PAGE), withCount: true };
+    await fetchPaginatedFromBridge(
+      'mv_stock_velocity',
+      'id:variant_supplier_source_id',
+      PAGE,
+      100000,
+      undefined,
+      'variant_supplier_source_id',
+      8,
+    );
+    for (const m of ['order', 'gt', 'gte', 'lt']) {
+      const cs = calls.filter((c) => c.method === m);
+      expect(cs.length).toBeGreaterThan(0);
+      expect(cs.every((c) => c.args[0] === 'variant_supplier_source_id')).toBe(true);
+    }
+  });
+
+  it('erro genérico numa faixa propaga como hoje (rejeita com a mesma mensagem)', async () => {
+    datasets.product_variants = {
+      rows: spreadRows(PAGE),
+      withCount: true,
+      failWhen: (ops) =>
+        ops.some(([m, a]) => m === 'gte' && a[1] === '60000000-0000-0000-0000-000000000000')
+          ? { data: null, error: { message: 'boom' } }
+          : null,
+    };
+    await expect(
+      fetchPaginatedFromBridge('product_variants', 'id', PAGE, 100000, undefined, 'id', 8),
+    ).rejects.toThrow(/Erro ao buscar product_variants: boom/);
+    expect(logger.error).toHaveBeenCalled();
+  });
+
+  it('410 numa faixa: devolve o prefixo ordenado até ali e reporta uma única vez', async () => {
+    const rows = spreadRows(PAGE);
+    const lo = '60000000-0000-0000-0000-000000000000';
+    datasets.product_images = {
+      rows,
+      withCount: true,
+      failWhen: (ops) =>
+        ops.some(([m, a]) => m === 'gte' && a[1] === lo)
+          ? { data: null, error: { message: 'HTTP 410 Gone' } }
+          : null,
+    };
+    const par = await fetchPaginatedFromBridge<{ id: string }>(
+      'product_images',
+      'id',
+      PAGE,
+      100000,
+      undefined,
+      'id',
+      8,
+    );
+    const prefix = [...rows].filter((r) => r.id < lo).sort((a, b) => (a.id < b.id ? -1 : 1));
+    expect(par).toEqual(prefix);
+    expect(reportSilentEmpty).toHaveBeenCalledTimes(1);
+    expect(reportSilentEmpty).toHaveBeenCalledWith(
+      expect.objectContaining({ reason: 'gone_410', table: 'product_images' }),
+    );
+  });
+
+  it('simulação aleatória (seed fixa): paralelo ≡ sequencial para tamanhos, páginas, faixas e maxRecords variados', async () => {
+    let seed = 12345;
+    const rnd = (n: number) => {
+      seed = (seed * 1103515245 + 12345) % 2147483648;
+      return seed % n;
+    };
+    for (let iter = 0; iter < 60; iter++) {
+      const size = rnd(80);
+      const page = 1 + rnd(9);
+      const parts = [2, 3, 5, 8, 16][rnd(5)];
+      const max = rnd(4) === 0 ? rnd(40) : 100000;
+      const ids = new Set<string>();
+      while (ids.size < size) ids.add(uuidAt(rnd(4) === 0 ? 0x40 : rnd(256), rnd(1 << 30)));
+      const rows = [...ids].map((id, n) => ({ id, n }));
+      datasets.product_images = { rows, withCount: rnd(2) === 0 };
+      const seq = await fetchPaginatedFromBridge('product_images', 'id', page, max);
+      const par = await fetchPaginatedFromBridge(
+        'product_images',
+        'id',
+        page,
+        max,
+        undefined,
+        'id',
+        parts,
+      );
+      expect(par).toEqual(seq);
+    }
+  });
+
+  it('maxRecords: mesmo corte do sequencial (páginas inteiras) no total', async () => {
+    const rows = spreadRows(PAGE);
+    for (const max of [0, 1, 4, 7, 9, 13, 1000]) {
+      datasets.product_images = { rows, withCount: true };
+      const seq = await fetchPaginatedFromBridge<{ id: string }>('product_images', 'id', PAGE, max);
+      const par = await fetchPaginatedFromBridge<{ id: string }>(
+        'product_images',
+        'id',
+        PAGE,
+        max,
+        undefined,
+        'id',
+        8,
+      );
+      expect(par).toEqual(seq);
+      expect(par.length).toBeLessThanOrEqual(Math.ceil(max / PAGE) * PAGE);
+    }
   });
 });
 
@@ -587,6 +843,25 @@ describe('fetchAndProcessStockData', () => {
     const res = await fetchAndProcessStockData();
     expect(res.productStocks).toHaveLength(1);
     expect(res.productStocks[0].productImageUrl).toBeUndefined();
+  });
+
+  it('busca as 5 tabelas grandes (UUID) em faixas paralelas; categories/suppliers seguem sequenciais', async () => {
+    seedAll({});
+    await fetchAndProcessStockData();
+    const partitioned = new Set(calls.filter((c) => c.method === 'lt').map((c) => c.table));
+    expect(partitioned).toEqual(
+      new Set([
+        'v_products_public',
+        'product_variants',
+        'variant_supplier_sources',
+        'product_images',
+        'mv_stock_velocity',
+      ]),
+    );
+    const selects = (t: string) => calls.filter((c) => c.table === t && c.method === 'select');
+    expect(selects('product_images')).toHaveLength(8);
+    expect(selects('categories')).toHaveLength(1);
+    expect(selects('v_suppliers_public')).toHaveLength(1);
   });
 
   it('generates alerts from the aggregated summaries', async () => {

@@ -15,6 +15,9 @@ import { useComparisonStore } from '@/stores/useComparisonStore';
 import type { ProductStockSummary, VariantStock } from '@/types/stock';
 
 // ── Mocks de dependências pesadas ───────────────────────────────────────────
+vi.mock('@/lib/db/postgrest', () => ({
+  dbInvoke: vi.fn().mockResolvedValue({ records: [{ id: 'p-1', sale_price: 9.9 }], count: null }),
+}));
 vi.mock('@/components/products/QuickAddToQuote', () => ({
   QuickAddToQuote: (props: { productSku?: string }) => (
     <button data-testid="mock-quick-add-to-quote" data-sku={props.productSku}>

@@ -1,57 +1,85 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-async function generateReport() {
-  const reportPath = path.resolve(process.cwd(), 'audit-report.txt');
-  let content = '';
+/**
+ * Relatório de auditoria — SÓ afirma o que foi medido.
+ *
+ * Antes: texto fixo ("Typecheck: Passou", "Credentials Audit: Limpo", "Sistema estável e pronto
+ * para produção") que nunca consultava resultado algum e era publicado como artefato do nightly.
+ * Agora cada seção recebe o veredito do job correspondente (flag ou variável de ambiente); sem
+ * veredito, a linha diz "NÃO VERIFICADO". A cobertura é lida de coverage/coverage-summary.json.
+ *
+ * Uso:
+ *   node scripts/generate-audit-report.mjs --typecheck=passed --lint=passed --security=failed --e2e=passed
+ *   (ou AUDIT_TYPECHECK / AUDIT_LINT / AUDIT_SECURITY / AUDIT_E2E)   valores: passed | failed | skipped
+ */
 
-  content += '=== Relatório Final de Auditoria de Segurança e Qualidade ===\n';
-  content += 'Data: ' + new Date().toLocaleString('pt-BR') + '\n';
-  content += '\n';
+const VERDICTS = new Set(['passed', 'failed', 'skipped']);
 
-  content += '1. Verificação de Qualidade (Lint & Typecheck)\n';
-  content += '   - Typecheck (tsc): Passou (Zero erros)\n';
-  content += '   - Lint (ESLint): Passou (Respeitando baseline e corrigindo erros críticos)\n';
-  content += '\n';
+export function resolveVerdict(name, argv = process.argv.slice(2), env = process.env) {
+  const flag = argv.find((a) => a.startsWith(`--${name}=`));
+  const raw = (flag ? flag.slice(name.length + 3) : env[`AUDIT_${name.toUpperCase()}`] ?? '').trim().toLowerCase();
+  return VERDICTS.has(raw) ? raw : null;
+}
 
-  content += '2. Segurança\n';
-  content += '   - SECURITY DEFINER ACL: Validado (Funções protegidas contra acesso anon)\n';
-  content += '   - Database URL Guard: Protegido (Impedindo conexões com projetos não autorizados)\n';
-  content += '   - Credentials Audit: Limpo (Nenhuma credencial exposta detectada)\n';
-  content += '\n';
+const LABEL = {
+  passed: 'PASSOU',
+  failed: 'FALHOU',
+  skipped: 'PULADO',
+};
 
-  content += '3. Testes E2E (Playwright)\n';
-  content += '   - Critical Flows (Catalog, Login, Kit Builder, Mockup): Passou\n';
-  content += '   - CI Workflow: Configurado e testado via .github/workflows/full-ci.yml\n';
-  content += '\n';
+function line(title, verdict) {
+  return `   - ${title}: ${verdict ? LABEL[verdict] : 'NÃO VERIFICADO (nenhum veredito recebido deste job)'}\n`;
+}
 
-  content += '4. Cobertura de Testes (Coverage)\n';
-  if (fs.existsSync('coverage/coverage-summary.json')) {
-    const summary = JSON.parse(fs.readFileSync('coverage/coverage-summary.json', 'utf8'));
-    content += `   - Statements: ${summary.total.statements.pct}%\n`;
-    content += `   - Branches: ${summary.total.branches.pct}%\n`;
-    content += `   - Functions: ${summary.total.functions.pct}%\n`;
-    content += `   - Lines: ${summary.total.lines.pct}%\n`;
+export function buildReport({ argv = process.argv.slice(2), env = process.env, coverageSummary = null, now = new Date() } = {}) {
+  const v = (name) => resolveVerdict(name, argv, env);
+  let content = '=== Relatório de Auditoria de Segurança e Qualidade ===\n';
+  content += `Data: ${now.toISOString()}\n\n`;
+
+  content += '1. Qualidade\n';
+  content += line('Typecheck (tsc)', v('typecheck'));
+  content += line('Lint (ESLint)', v('lint'));
+  content += '\n2. Segurança\n';
+  content += line('Gates de segurança (SECURITY DEFINER, guarda de projeto, credenciais)', v('security'));
+  content += '\n3. Testes E2E (Playwright)\n';
+  content += line('Fluxos críticos', v('e2e'));
+  content += '\n4. Cobertura de Testes\n';
+  if (coverageSummary?.total) {
+    const t = coverageSummary.total;
+    content += `   - Statements: ${t.statements.pct}%\n   - Branches: ${t.branches.pct}%\n   - Functions: ${t.functions.pct}%\n   - Lines: ${t.lines.pct}%\n`;
   } else {
-    content += '   - Relatório de coverage não encontrado.\n';
+    content += '   - NÃO VERIFICADO (coverage/coverage-summary.json não encontrado).\n';
   }
-  content += '\n';
 
-  content += '5. Resumo das Correções Aplicadas\n';
-  content += '   - Correção de erro de build em PromptBank.tsx (Unused variable)\n';
-  content += '   - Implementação de workflow de CI unificado (Lint, Typecheck, E2E)\n';
-  content += '   - Cache de dependências e node_modules no GitHub Actions\n';
-  content += '   - Coleta e validação de coverage com threshold mínimo\n';
-  content += '   - Hardening do Supabase Client contra referências proibidas\n';
-  content += '   - Otimização de consultas no CRM DB Bridge para evitar timeouts\n';
-  content += '\n';
-  
-  content += 'Conclusão: Sistema estável e pronto para produção.\n';
-  content += '===========================================================\n';
+  const verdicts = ['typecheck', 'lint', 'security', 'e2e'].map(v);
+  const failed = verdicts.some((x) => x === 'failed');
+  const unknown = verdicts.some((x) => x === null);
+  content += '\nConclusão: ';
+  content += failed
+    ? 'HÁ FALHAS — não liberar sem corrigir.'
+    : unknown
+      ? 'INCOMPLETA — há seções NÃO VERIFICADAS; este relatório não atesta que o sistema está pronto para produção.'
+      : 'todas as seções informadas passaram (o relatório só reflete os vereditos recebidos).';
+  content += '\n===========================================================\n';
+  return { content, failed };
+}
 
+function main() {
+  const summaryPath = path.resolve(process.cwd(), 'coverage/coverage-summary.json');
+  let coverageSummary = null;
+  if (fs.existsSync(summaryPath)) {
+    try {
+      coverageSummary = JSON.parse(fs.readFileSync(summaryPath, 'utf8'));
+    } catch {
+      coverageSummary = null;
+    }
+  }
+  const { content } = buildReport({ coverageSummary });
+  const reportPath = path.resolve(process.cwd(), 'audit-report.txt');
   console.log(content);
   fs.writeFileSync(reportPath, content);
   console.log(`Relatório salvo em: ${reportPath}`);
 }
 
-generateReport();
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname)) main();

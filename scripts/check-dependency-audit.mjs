@@ -478,6 +478,10 @@ export function evaluateAuditReport(report, now = new Date()) {
   }
 
   for (const [packageName, vulnerability] of Object.entries(report.vulnerabilities ?? {})) {
+    if (!vulnerability || typeof vulnerability !== 'object') {
+      violations.push(`${packageName}: malformed vulnerability entry (expected object)`);
+      continue;
+    }
     if (packageName === 'zod' && isAllowedZod(vulnerability)) {
       accepted.push(packageName);
       continue;

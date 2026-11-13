@@ -28,7 +28,14 @@ const FUNCTIONS_DIR = "supabase/functions";
 const SNAPSHOT_PATH = join(FUNCTIONS_DIR, "_shared", "cors-snapshot.json");
 
 function listFunctions() {
-  return readdirSync(FUNCTIONS_DIR)
+  let entries;
+  try {
+    entries = readdirSync(FUNCTIONS_DIR);
+  } catch (err) {
+    console.error(`❌ Failed to read ${FUNCTIONS_DIR}: ${err.message}`);
+    process.exit(1);
+  }
+  return entries
     .filter((n) => !n.startsWith("_") && n !== "tests")
     .map((name) => ({ name, dir: join(FUNCTIONS_DIR, name) }))
     .filter(({ dir }) => {
@@ -113,7 +120,13 @@ function main() {
       console.error(`❌ ${SNAPSHOT_PATH} missing. Run: npm run build:cors-snapshot`);
       process.exit(1);
     }
-    const current = JSON.parse(readFileSync(SNAPSHOT_PATH, "utf8"));
+    let current;
+    try {
+      current = JSON.parse(readFileSync(SNAPSHOT_PATH, "utf8"));
+    } catch (err) {
+      console.error(`❌ Failed to read ${SNAPSHOT_PATH}: ${err.message}`);
+      process.exit(1);
+    }
     const stableCurrent = { total: current.total, counts: current.counts, functions: current.functions };
     if (JSON.stringify(stableCurrent) !== JSON.stringify(stable)) {
       console.error(`❌ ${SNAPSHOT_PATH} is stale. Run: npm run build:cors-snapshot`);
@@ -124,7 +137,12 @@ function main() {
   }
 
   const snapshot = { generated_at: new Date().toISOString(), ...stable };
-  writeFileSync(SNAPSHOT_PATH, JSON.stringify(snapshot, null, 2) + "\n");
+  try {
+    writeFileSync(SNAPSHOT_PATH, JSON.stringify(snapshot, null, 2) + "\n");
+  } catch (err) {
+    console.error(`❌ Failed to write ${SNAPSHOT_PATH}: ${err.message}`);
+    process.exit(1);
+  }
   console.log(`✅ wrote ${SNAPSHOT_PATH}`);
   console.log(`   total=${snapshot.total} shared=${snapshot.counts.shared} inline=${snapshot.counts.inline} none=${snapshot.counts.none}`);
 }

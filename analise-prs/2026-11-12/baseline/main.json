@@ -1,0 +1,22 @@
+{
+  "main_sha": "15c2a4cb34e64d859c169800888c29fad53d21eb",
+  "capturado_em": "2026-11-11T23:58Z",
+  "rollup": "FAILURE",
+  "checks_total": 103,
+  "vermelhos": [
+    {"check": "Lint, Typecheck & Test", "job": 130734017899, "causa": "8 arquivos de teste contra API antiga (bridge, BridgeMetricsOverlay, useBridgeMetrics, DevOnlyBridgeOverlay, ProdGate, structured-logger, inventario-repo, vercel-sitemap)", "correcao": "#3407 (exceto vercel-sitemap: decisão do dono)"},
+    {"check": "quality-gate", "job": 130723962334, "causa": "mesma suíte: tests/unit/system/BridgeMetricsOverlay.test.tsx:136", "correcao": "#3407"},
+    {"check": "Edge Functions — Deno typecheck", "job": 130723964399, "causa": "11/110 funções com erros TS", "correcao": "#3407 (local: 110/110 ok)"},
+    {"check": "Price Freshness — testes + gate de cobertura", "job": 130723964500, "causa": "PriceFreshnessBadge.tsx branches 63.6% < 74%", "correcao": "#3407 (local: 96%)"},
+    {"check": "Test Coverage", "job": 130734017895, "causa": "KitBuilderPage.tsx stmts 32.8% / funcs 21.7% < 39%", "correcao": "#3407 (local: 98%)"},
+    {"check": "Playwright - Cross-browser E2E", "job": 130723964908, "causa": "strict mode: 2 botões 'Abrir busca global' (Header mobile md:hidden)", "correcao": "#3407 (getByRole) — NÃO VERIFICADO até o CI"},
+    {"check": "E2E Cart · cart-handoff", "job": 130731925975, "causa": "E2E_SELLER_EMAIL/PASSWORD ausentes em CI", "correcao": "dono cadastrar secret"},
+    {"check": "e2e-gates", "job": 130730760557, "causa": "E2E_SELLER_EMAIL/PASSWORD ausentes em CI", "correcao": "dono cadastrar secret"},
+    {"check": "E2E Cart · cart-delete-popover", "job": 130731925848, "causa": "cancelado (cancel-in-progress após falha irmã)", "correcao": "some com o secret"}
+  ],
+  "externos_em_todas_as_prs": [
+    {"check": "Vercel (status)", "causa": "preview de branches de agente bloqueado ('Deployment was blocked'); ajuste em vercel.json na #3403"},
+    {"check": "Vercel Agent Review", "causa": "sempre NEUTRAL (app externo); pela regra do dono neutral ≠ verde"},
+    {"check": "Supabase Preview", "causa": "'Maximum number of concurrent branches reached' (limite da integração)"}
+  ]
+}

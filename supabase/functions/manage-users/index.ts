@@ -34,6 +34,15 @@ const UpdatePasswordSchema = z.object({
   new_password: z.string().min(8).max(128),
 });
 
+const UpdateProfileSchema = z.object({
+  action: z.literal('update_profile'),
+  user_id: uuidSchema,
+  full_name: z.string().trim().max(200).nullable().optional(),
+  email: emailSchema.nullable().optional(),
+  is_active: z.boolean().optional(),
+  avatar_url: z.string().url().max(2048).nullable().optional(),
+});
+
 const DeleteSchema = z.object({
   action: z.literal('delete'),
   user_id: uuidSchema,
@@ -63,6 +72,7 @@ const PayloadSchema = z.discriminatedUnion('action', [
   CreateSchema,
   UpdateEmailSchema,
   UpdatePasswordSchema,
+  UpdateProfileSchema,
   DeleteSchema,
   RevokeSessionsSchema,
   PromoteRoleSchema,
@@ -131,6 +141,7 @@ Deno.serve(async (req) => {
     } else if (
       payload.action === 'update_email' ||
       payload.action === 'update_password' ||
+      payload.action === 'update_profile' ||
       payload.action === 'delete'
     ) {
       const { data: targetRoleRows, error: targetRoleErr } = await supabaseAdmin
@@ -200,6 +211,66 @@ Deno.serve(async (req) => {
 
       if (updateError) {
         return jsonRes(corsHeaders, { error: updateError.message }, 400);
+      }
+
+      return jsonRes(corsHeaders, { success: true });
+    }
+
+    if (payload.action === 'update_profile') {
+      const avatarPrefix = `${supabaseUrl}/storage/v1/object/public/avatars/`;
+      if (payload.avatar_url && !payload.avatar_url.startsWith(avatarPrefix)) {
+        return jsonRes(corsHeaders, { error: 'URL de foto inválida' }, 400);
+      }
+
+      const { data: currentProfile, error: currentErr } = await supabaseAdmin
+        .from('profiles')
+        .select('email')
+        .eq('user_id', payload.user_id)
+        .maybeSingle();
+      if (currentErr) {
+        log.error('falha ao ler perfil do usuário alvo', {
+          target_user_id: payload.user_id,
+          error: currentErr.message,
+        });
+        return jsonRes(corsHeaders, { error: 'Falha ao ler perfil do usuário' }, 500);
+      }
+      if (!currentProfile) {
+        return jsonRes(corsHeaders, { error: 'Usuário não encontrado' }, 404);
+      }
+
+      if (payload.email && payload.email !== currentProfile.email) {
+        const { error: emailErr } = await supabaseAdmin.auth.admin.updateUserById(
+          payload.user_id,
+          { email: payload.email }
+        );
+        if (emailErr) {
+          return jsonRes(corsHeaders, { error: emailErr.message }, 400);
+        }
+      }
+
+      const updates: Record<string, unknown> = {};
+      if (payload.full_name !== undefined) updates.full_name = payload.full_name || null;
+      if (payload.email !== undefined) updates.email = payload.email;
+      if (payload.is_active !== undefined) updates.is_active = payload.is_active;
+      if (payload.avatar_url !== undefined) updates.avatar_url = payload.avatar_url;
+      if (Object.keys(updates).length === 0) {
+        return jsonRes(corsHeaders, { error: 'Nenhum campo para atualizar' }, 400);
+      }
+
+      const { data: updatedRows, error: profileErr } = await supabaseAdmin
+        .from('profiles')
+        .update(updates)
+        .eq('user_id', payload.user_id)
+        .select('user_id');
+      if (profileErr) {
+        log.error('falha ao atualizar perfil', {
+          target_user_id: payload.user_id,
+          error: profileErr.message,
+        });
+        return jsonRes(corsHeaders, { error: 'Falha ao atualizar perfil' }, 500);
+      }
+      if (!updatedRows || updatedRows.length === 0) {
+        return jsonRes(corsHeaders, { error: 'Usuário não encontrado' }, 404);
       }
 
       return jsonRes(corsHeaders, { success: true });

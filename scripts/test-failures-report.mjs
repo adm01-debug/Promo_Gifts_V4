@@ -12,7 +12,7 @@ const path = process.argv[2];
 const raw = path ? fs.readFileSync(path, 'utf8') : fs.readFileSync(0, 'utf8');
 const plain = raw.replace(/\x1B\[[0-9;]*[mK]/g, '');
 
-const lineRe = /^\s*❯\s+(\S+)\s+\((\d+)\s+tests?[^|]*\|\s+(\d+)\s+failed/gm;
+const lineRe = /^\s*❯\s+(\S+)\s+\((\d+)\s+tests?[^|\n]*\|\s+(\d+)\s+failed/gm;
 const rows = new Map();
 for (const m of plain.matchAll(lineRe)) {
   const [, file, total, failed] = m;

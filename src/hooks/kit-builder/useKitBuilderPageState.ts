@@ -12,6 +12,7 @@ import {
   useKitBuilder,
   useKitUndoRedo,
   useTemplateSnapshot,
+  type BackupFullState,
 } from '@/hooks/kit-builder';
 import { useKitBuilderQuote, type KitQuoteClient } from '@/pages/kit-builder/useKitBuilderQuote';
 import {
@@ -218,9 +219,12 @@ export function useKitBuilderPageState() {
     isSaving: isAutoSaving,
     autoSavedKitId,
     autoSaveError,
+    isConflictError,
     retryLastSave,
     cancelPendingSave,
     acknowledgeManualSave,
+    consumeUnloadBackup,
+    persistUnloadBackup,
   } = useKitAutoSave(
     kitState,
     kitQuantity,
@@ -460,12 +464,34 @@ export function useKitBuilderPageState() {
     setOccasion(null);
   }, [resetKit]);
 
+  const restoreFromBackup = useCallback(
+    // `flowOverride`: quem acabou de chamar startFlow() no mesmo tick passa o fluxo novo,
+    // porque wizardState.flow desta closure ainda é o anterior (evita flow 'box-first' + passo 'items').
+    (fullState: BackupFullState, flowOverride?: 'box-first' | 'items-first') => {
+      restoreKitSnapshot({
+        name: fullState.name,
+        kitType: fullState.kitType,
+        box: fullState.box,
+        items: fullState.items,
+        personalization: fullState.personalization,
+        kitQuantity: fullState.qty,
+        identity: fullState.identity ?? undefined,
+        notes: fullState.notes,
+        flow: flowOverride ?? wizardState.flow,
+        aiBriefing,
+      });
+      setKitQuantity(fullState.qty);
+    },
+    [restoreKitSnapshot, setKitQuantity, wizardState.flow, aiBriefing],
+  );
+
   return {
     state: {
       kitState,
       wizardState,
       kitQuantity,
       currentKitId,
+      currentRevision,
       autoSavedKitId,
       availableBoxes,
       allAvailableBoxes,
@@ -519,6 +545,9 @@ export function useKitBuilderPageState() {
       applyAISuggestion,
       startFlow,
       setKitOrigin,
+      consumeUnloadBackup,
+      persistUnloadBackup,
+      restoreFromBackup,
     },
     meta: {
       isSaving,
@@ -526,6 +555,7 @@ export function useKitBuilderPageState() {
       isCreatingQuote,
       lastSavedAt,
       autoSaveError,
+      isConflictError,
       pricing,
     },
   };

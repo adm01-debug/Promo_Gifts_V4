@@ -24,7 +24,7 @@ import {
   maskUrl,
   shouldRequireLive,
 } from './check-result-contract.mjs';
-import { querySupabaseReadOnly } from './supabase-read-only-query.mjs';
+import { hasLiveSupabaseConfig, querySupabaseReadOnly } from './supabase-read-only-query.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -82,10 +82,17 @@ function validateSyncLogIntegrity(content) {
   return [];
 }
 
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function hasReceiptForVersion(logContent, version) {
   // Usa word-boundary numérico para evitar falso positivo por substring.
   // Ex: versão "2026091615572" (13 dígitos) não faz match em "20260916155725".
-  const re = new RegExp(`(?<!\\d)${version}(?!\\d)`);
+  // version é escapado porque pode vir de --from-file ou de dados do ledger
+  // fora do formato canônico de 14 dígitos; sem escape, um metacaractere de
+  // regex (ex.: "(", "*") quebra o RegExp com SyntaxError não tratada.
+  const re = new RegExp(`(?<!\\d)${escapeRegExp(version)}(?!\\d)`);
   // Linha "pendente-only" (contém a versão mas apenas status pendente, sem "aplicada")
   // NÃO conta como recibo — a migration ainda não foi efetivada em produção.
   const lines = logContent.split('\n').filter((l) => re.test(l));
@@ -116,7 +123,9 @@ async function fetchLiveVersions() {
 async function main() {
   const logContent = loadSyncLog();
 
-  // ── Gate mode (sem live DB): valida só integridade estrutural do log ──────
+  // ── Gate mode: integridade estrutural do log; só fica nisso se NÃO há credencial live ──
+  // Antes, `--gate` nunca consultava o banco, mesmo com SUPABASE_ACCESS_TOKEN no workflow:
+  // migration aplicada sem recibo passava. Com credencial, segue para o modo live abaixo.
   if (GATE_MODE && !fromFileArg) {
     if (!logContent) {
       process.stderr.write(
@@ -137,7 +146,7 @@ async function main() {
     }
 
     const receiptCount = logContent.split('\n').filter((l) => l.startsWith('## ') && /\d{14}/.test(l)).length;
-    return concludeCheck({
+    if (!hasLiveSupabaseConfig()) return concludeCheck({
       check: 'migration-receipts',
       status: CHECK_RESULT_STATUS.STATIC_PASS,
       summary: `MIGRATIONS_SYNC_LOG.md válido (${receiptCount} recibo(s)); sem live DB em --gate`,

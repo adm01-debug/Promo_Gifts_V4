@@ -18,7 +18,9 @@ if (!fs.existsSync(JSON_FILE)) {
   process.exit(1);
 }
 
-const failures: Failure[] = JSON.parse(fs.readFileSync(JSON_FILE, 'utf-8'));
+let rawJson = fs.readFileSync(JSON_FILE, 'utf-8');
+if (rawJson.charCodeAt(0) === 0xfeff) rawJson = rawJson.slice(1);
+const failures: Failure[] = JSON.parse(rawJson);
 
 // Gerar CSV
 const csvHeader = 'Preset,Mode,Route,Type,Details\n';

@@ -273,6 +273,22 @@ describe("ProductCard", () => {
     expect(screen.getByTestId("current-route")).toHaveTextContent("/produtos");
   });
 
+  it("navega para a PDP ao clicar no nome do card (alvo dos e2e 90/91)", async () => {
+    const { ProductCard } = await import("@/components/products/ProductCard");
+    const CurrentRoute = () => <span data-testid="current-route">{useLocation().pathname}</span>;
+    renderWithProviders(
+      <>
+        <ProductCard product={mockProductWithSingleColor as unknown as Product} />
+        <CurrentRoute />
+      </>,
+      { route: "/produtos" },
+    );
+
+    fireEvent.click(screen.getByTestId("product-card-name"));
+
+    expect(screen.getByTestId("current-route")).toHaveTextContent("/produto/p-single-color");
+  });
+
   it("renders product without colors gracefully", async () => {
     const { ProductCard } = await import("@/components/products/ProductCard");
     renderWithProviders(

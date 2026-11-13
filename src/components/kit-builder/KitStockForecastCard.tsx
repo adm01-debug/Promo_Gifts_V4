@@ -2,6 +2,7 @@
  * KitStockForecastCard — sugere data ideal de fechamento do kit
  * com base nas previsões de reposição dos itens em deficit.
  */
+import { parseISO } from 'date-fns';
 import { CalendarClock, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -36,7 +37,7 @@ export function KitStockForecastCard({ items, kitQuantity }: Props) {
 
   const formatDate = (iso: string | null) => {
     if (!iso) return '—';
-    return new Date(iso).toLocaleDateString('pt-BR', {
+    return parseISO(iso).toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',

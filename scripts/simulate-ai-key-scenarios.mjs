@@ -134,7 +134,10 @@ let audited = 0;
 for (const fn of dirs) {
   const file = join(FUNCTIONS_DIR, fn, 'index.ts');
   if (!existsSync(file)) continue;
-  const src = readFileSync(file, 'utf8');
+  const raw = readFileSync(file, 'utf8');
+  // Ignora comentários de linha: menção histórica/explicativa à secret (ex.: "removido
+  // Deno.env.get('LOVABLE_API_KEY')") não é uso real e não deve reprovar o gate.
+  const src = raw.replace(/\/\/.*$/gm, '');
   if (!src.includes(SECRET)) continue;
   audited++;
   if (ALLOWLIST.has(fn)) { ok(); continue; }

@@ -543,7 +543,7 @@ export default function QuoteViewPage() {
             // Espelha o padrão de `useQuotesListPage.handleDelete` — snapshot ANTES
             // do DELETE + showUndoToast com contador de 8s. Sem toast.success extra.
             const snapshot = quote;
-            await deleteQuote(quote.id);
+            if (!(await deleteQuote(quote.id))) return; // RLS negou: toast de erro já saiu no onError
             setDeleteOpen(false);
             navigate('/orcamentos');
             if (!snapshot) {

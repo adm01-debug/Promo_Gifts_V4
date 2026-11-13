@@ -584,7 +584,7 @@
     },
     {
       "kind": "relation",
-      "file": "src/hooks/stock/stockFetcher.ts",
+      "file": "src/hooks/stock/stockPagination.ts",
       "receiver": "untypedFrom",
       "occurrences": 1,
       "stage": 53,

@@ -33,6 +33,7 @@ export function RecentKitsWidget() {
       const { data, error } = await supabase
         .from('custom_kits')
         .select('id, name, status, kit_type, total_price, updated_at, items_data')
+        .eq('user_id', user.id)
         .order('updated_at', { ascending: false })
         .limit(5);
       if (error) throw error;
