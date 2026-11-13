@@ -20,7 +20,8 @@ name: Static Checks
 #
 # Origem de cada step — o arquivo antigo está em recovery/workflows-aposentados/:
 #   check-no-prod-leak.yml, check-select-columns.yml, lint-untyped-from.yml,
-#   workflow-lint.yml, migrations-sync-log-gate.yml, automation-local.yml
+#   workflow-lint.yml, migrations-sync-log-gate.yml, automation-local.yml,
+#   ui-visual-a11y.yml, url-state-unit.yml
 # =============================================================================
 
 on:
@@ -96,6 +97,20 @@ jobs:
       - name: Automação local — suites registradas
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: node scripts/automation.mjs test
+
+      # ── ex-ui-visual-a11y.yml + ex-url-state-unit.yml ───────────────────────
+      # Também estão no `npm run test:quality` do ci.yml, mas lá dividem o sinal
+      # com a suíte inteira; aqui continuam com sinal próprio (≈8 s).
+      - name: Unit — OptimizedImage + URL state (useListUrlState unit/fuzz, useQuotesListPage)
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        env:
+          TZ: America/Sao_Paulo
+        run: >-
+          npx vitest run
+          src/components/ui/__tests__/OptimizedImage.test.tsx
+          src/hooks/common/__tests__/useListUrlState.test.tsx
+          src/hooks/common/__tests__/useListUrlState.fuzz.test.tsx
+          src/pages/quotes/__tests__/useQuotesListPage.urlState.test.tsx
 
       # ── ex-workflow-lint.yml ────────────────────────────────────────────────
       # check-workflow-contracts.mjs --gate continua no deploy-gates.yml (Gate 1.11).
