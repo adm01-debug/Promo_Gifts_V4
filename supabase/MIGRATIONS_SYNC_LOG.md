@@ -1130,7 +1130,8 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261112130000` | `81e3c7900b74f7de043556d412dae21248e538f70aca73ad1b85f190b6627f52` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 04:55:11 UTC | job post-check da run 43345670118 confirmou a version no ledger | aplicada |
 | `20261108223100` | `a912697ce92a3b6da285fad499575dc89fb8c2138f1f3b573dbdc9206c717dfa` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 07:45:38 UTC | job post-check da run 43384113364 confirmou a version no ledger | aplicada |
 | `20260511235950` | `dfacb733f8b6036b3c00db74dffbf61597f3fc88cc72a50fcbe3a0480b2824a6` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 08:32:53 UTC | job post-check da run 43390126038 confirmou a version no ledger | aplicada |
-| `20261111191000` | `04966954d978ccf4ca7f7a7beb5bd20129243018b303f92575c5b12b4f581524` | — | não identificado — aplicada fora do fluxo E15 (nenhuma run de `db-apply-migration.yml` em 11–12/11 aplicou esta versão) | reconciliação retroativa | — | Gate 1.13.3 live (Deploy Gates run 43416005680, 2026-11-13 12:07 UTC) leu a versão no ledger de produção | aplicada (fora do fluxo E15; confirmada no ledger 2026-11-13) |
+| `20261111191000` | `04966954d978ccf4ca7f7a7beb5bd20129243018b303f92575c5b12b4f581524` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 12:07:10 UTC | job post-check da run 43417662659 confirmou a version no ledger | aplicada |
+| `20261112140000` | `6aa856168cc1ef0e6308757fe01b04f4917f043170ff3ce996e0933a52575b9f` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 18:03:52 UTC | job Apply da run 43471685129 concluiu com sucesso (preflight ok); pós-check na fila no momento do registro | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
@@ -1426,16 +1427,5 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 
 | version | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261112140000` | `fix_rls_supplier_products_raw_history_p2027` | `6aa856168cc1ef0e6308757fe01b04f4917f043170ff3ce996e0933a52575b9f` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
-
-## 2026-11-13 — aba Marketing do produto: escrita nos vínculos + endomarketing pendente em produção
-
-A aba Admin > Produtos > editar > Marketing dava "Erro ao salvar" em todo clique (UPDATE na view
-`v_products_public`, que também sobrescreveria `products.tags` — palavras-chave de busca). A migration libera
-escrita em `product_commemorative_dates`/`product_target_audiences` para owner/admin da organização do produto
-(mesma regra de `products_update`) e cria `endomarketing_themes` + `product_endomarketing`. Simulada em Postgres
-17 descartável (aplicar, reaplicar, rollback, reaplicar após rollback). Nenhum SQL executado em produção.
-
-| version | arquivo | sha256 | status |
-|---|---|---|---|
+| `20261112140000` | `fix_rls_supplier_products_raw_history_p2027` | `6aa856168cc1ef0e6308757fe01b04f4917f043170ff3ce996e0933a52575b9f` | **aplicada em 13/11/2026** pelo `db-apply-migration.yml` (run 43471685129; recibo E15 acima) |
 | `20261113140000` | `marketing_tab_links_rls_and_endomarketing` | `3b742308dbd743a71c72a8ad70f1c63a45cafa5824f255105fe9ab4006f72593` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
