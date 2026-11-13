@@ -54,12 +54,13 @@ describe('fetchProductDetail (queryFn da PDP)', () => {
     const realSetTimeout = globalThis.setTimeout;
     const delays: number[] = [];
     // Captura o limite agendado e dispara o timer na hora (sem esperar 15 s reais).
-    const spy = vi
-      .spyOn(globalThis, 'setTimeout')
-      .mockImplementation(((fn: () => void, ms?: number) => {
-        delays.push(ms ?? 0);
-        return realSetTimeout(fn, 0);
-      }) as typeof setTimeout);
+    const spy = vi.spyOn(globalThis, 'setTimeout').mockImplementation(((
+      fn: () => void,
+      ms?: number,
+    ) => {
+      delays.push(ms ?? 0);
+      return realSetTimeout(fn, 0);
+    }) as typeof setTimeout);
     try {
       fetchProductById.mockImplementation(() => new Promise(() => {}));
       await expect(fetchProductDetail('p-1')).rejects.toThrow(
@@ -100,7 +101,7 @@ describe('usePrefetchProduct', () => {
   });
   it('PDP aberta com o prefetch ainda pendente também sai do skeleton pelo timeout', async () => {
     const realSetTimeout = globalThis.setTimeout;
-    // Timeout (15 s) e backoff do React Query (2 s, 4 s) disparam na hora;
+    // Timeout (15 s) e backoff do React Query (1 s, 2 s) disparam na hora;
     // timers curtos (waitFor) seguem normais.
     const spy = vi
       .spyOn(globalThis, 'setTimeout')

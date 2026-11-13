@@ -100,7 +100,11 @@ export function withTimeout<T>(promise: Promise<T>, ms: number, label: string): 
 }
 
 export function fetchProductDetail(id: string): Promise<Product | null> {
-  return withTimeout(productService.fetchProductById(id), PRODUCT_DETAIL_TIMEOUT_MS, 'fetchProductById');
+  return withTimeout(
+    productService.fetchProductById(id),
+    PRODUCT_DETAIL_TIMEOUT_MS,
+    'fetchProductById',
+  );
 }
 
 export function useProduct(id: string) {
