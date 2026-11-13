@@ -13,8 +13,8 @@ vi.mock('@tanstack/react-query', () => ({
 }));
 
 vi.mock('./useProductsLightweight', () => ({
-  CATALOG_BATCH_PAGES: 4,
-  CATALOG_PAGE_SIZE: 500,
+  CATALOG_BATCH_PAGES: 1,
+  CATALOG_PAGE_SIZE: 96,
   PRODUCT_SELECT_LIGHTWEIGHT: '',
   mapLightweightToProduct: vi.fn(),
 }));
