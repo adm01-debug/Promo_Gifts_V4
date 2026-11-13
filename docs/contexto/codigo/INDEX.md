@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `bcba4c29a04378d4acc96cb938cbffffbe3d1d14` (2026-11-13T04:46:50-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3265eec652d8da18440e0d62d03543cefa2eb219` (2026-11-13T04:47:56-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -588,13 +588,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43149 nós · 74500 arestas · 2433 comunidades · grafo do commit `bcba4c29`
+- 43149 nós · 74500 arestas · 2433 comunidades · grafo do commit `3265eec6`
 - comunidades maiores: vitest (878), ref_components (781), ref_integrations (592), ref_node_child_process (460), @tanstack/react-query (395), ref_hooks (353), ref_types (331), react-router-dom (322), sonner (306), scripts (302), framer-motion (285), gotoAndSettle (280)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (68)
+- RELATORIO_CI.md (67)
 - PENDENCIAS.md (56)
 - supabase/MIGRATIONS_SYNC_LOG.md (37)
 - package.json (32)
@@ -1177,11 +1177,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/magazine-ring-testing-audit.md` — Auditoria dos testes de ring do Magazine PreviewSidebar (225 linhas)
 - `docs/motor-v2-test-report.md` — 🧪 Relatório Exaustivo de Testes — Motor V2 (Bronze Layer) (401 linhas)
 - `docs/notifications-module-audit.md` — Auditoria — Módulo "Notificações de Estoque" (sino do header) (110 linhas)
-- `docs/prod-readiness.md` — Prontidão para produção — inventário e prova (942 linhas)
+- `docs/prod-readiness.md` — Prontidão para produção — inventário e prova (952 linhas)
 - subpastas de docs/: docs/arquivo (90), docs/redeploy (27), docs/estado (26), docs/plans (24), docs/db (14), docs/audits (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/ci (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/bugs (6), docs/security (5), docs/sessoes (5), docs/suppliers (5), docs/agentes (4), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/design (3), docs/fabrica-vps (3), docs/observability (3), docs/qa (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/coordenacao (2), docs/edge-functions (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-13 `3265eec` docs: prod-readiness fechado no main 0b1766de (746 OK, 85 BLOQUEADO)
 - 2026-11-13 `bcba4c2` chore(main): release 1.1.0
 - 2026-11-13 `2ad46cd` docs: registra 22 deploys E66 e 4 migrations E15 no ledger (#3496)
 - 2026-11-13 `3508d2a` fix(db): exclusão de usuário com itens no carrinho deixa de falhar (#3402)
@@ -1196,7 +1197,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-13 `0a9291a` Merge pull request #3425 from adm01-debug/claude/lote-pilha-v2-261112
 - 2026-11-13 `81d3370` Merge branch 'main' into claude/lote-pilha-v2-261112
 - 2026-11-13 `0b1766d` fix(test): validação de tema roda só nos navegadores Chromium instalados no CI (#3458)
-- 2026-11-13 `1083b36` Merge branch 'main' into claude/lote-pilha-v2-261112
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

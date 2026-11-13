@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs: prod-readiness fechado no main 0b1766de (746 OK, 85 BLOQUEADO)",
    "chore(main): release 1.1.0",
    "docs: registra 22 deploys E66 e 4 migrations E15 no ledger (#3496)",
    "fix(db): exclusão de usuário com itens no carrinho deixa de falhar (#3402)",
-   "fix(edge): recomendações e copiloto de BI voltam a usar IA via router multi-provider (#3401)",
-   "fix: lote de correções da auditoria de prontidão (catálogo, produto, busca, BI, categorias, e2e, edge) (#3463)"
+   "fix(edge): recomendações e copiloto de BI voltam a usar IA via router multi-provider (#3401)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

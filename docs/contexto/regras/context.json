@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "bcba4c29a04378d4acc96cb938cbffffbe3d1d14",
+  "sha": "3265eec652d8da18440e0d62d03543cefa2eb219",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-13 08:23 UTC",
+  "generated_at": "2026-11-13 08:50 UTC",
   "files_total": 10033,
   "code_files": 8569,
   "code_lines": 1211934
@@ -528360,10 +528360,19 @@
   }
  },
  "git": {
-  "sha": "bcba4c29a04378d4acc96cb938cbffffbe3d1d14",
+  "sha": "3265eec652d8da18440e0d62d03543cefa2eb219",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "3265eec",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "docs: prod-readiness fechado no main 0b1766de (746 OK, 85 BLOQUEADO)",
+    "files": [
+     "docs/prod-readiness.md"
+    ]
+   },
    {
     "sha": "bcba4c2",
     "date": "2026-11-13",
@@ -528776,21 +528785,16 @@
     "author": "Joaquim Ataides",
     "subject": "Merge branch 'main' into claude/lote-pilha-v2-261112",
     "files": []
-   },
-   {
-    "sha": "260356c",
-    "date": "2026-11-12",
-    "author": "Joaquim Ataides",
-    "subject": "test(edge-live): timeout do cliente é repetido antes de virar falha (cold start)",
-    "files": [
-     "tests/edge-functions/live/_live-client.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "package.json",
     3
+   ],
+   [
+    "docs/prod-readiness.md",
+    2
    ],
    [
     ".release-please-manifest.json",
@@ -528834,10 +528838,6 @@
    ],
    [
     "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
-    2
-   ],
-   [
-    "tests/edge-functions/live/_live-client.ts",
     2
    ],
    [

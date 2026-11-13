@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-13 08:50 UTC
+
+- **functions** removido (1): `public.perf002_drop_unused_snapshot_indexes()`
+- **functions** alterado (3): `public.get_edge_function_secret(_name text)`, `public.get_sitemap_public(p_limit integer, p_offset integer)`, `public.has_role(_user_id uuid, _role app_role)`
+- **migrations** adicionado (2): `20260511235950_add_categories_level_drift`, `20261108223100_drop_perf002_incident_ddl_survivor`
+
 ## 2026-11-13 05:01 UTC
 
 - **functions** alterado (1): `public.get_sitemap_public(p_limit integer, p_offset integer)`

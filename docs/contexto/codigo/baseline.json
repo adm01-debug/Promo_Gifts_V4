@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "bcba4c29a04378d4acc96cb938cbffffbe3d1d14",
+  "commit": "3265eec652d8da18440e0d62d03543cefa2eb219",
   "branch": "main",
-  "data_commit": "2026-11-13T04:46:50-03:00",
+  "data_commit": "2026-11-13T04:47:56-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3265eec",
+    "data": "2026-11-13",
+    "assunto": "docs: prod-readiness fechado no main 0b1766de (746 OK, 85 BLOQUEADO)"
+   },
    {
     "sha": "bcba4c2",
     "data": "2026-11-13",
@@ -126,11 +131,6 @@
     "sha": "10b7a8a",
     "data": "2026-11-12",
     "assunto": "fix(sitemap): preserva o XML legado em recovery/site-artifacts para o probe"
-   },
-   {
-    "sha": "9ae4c11",
-    "data": "2026-11-12",
-    "assunto": "Merge branch 'main' into claude/lote-pilha-v2-261112"
    }
   ],
   "arquivos_mudados_7d": 1975,
@@ -185,7 +185,7 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 68
+    "mudancas": 67
    },
    {
     "pasta": "src/components/kit-builder",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 68
+    "mudancas": 67
    },
    {
     "arquivo": "PENDENCIAS.md",

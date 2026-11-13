@@ -176501,9 +176501,13 @@
             {
               "file": "supabase/migrations/20261027220000_deactivate_xbz_image_uploader_cron.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261108030000_ft005_cron_scheduled_reports.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 24,
+          "code_total_files": 25,
           "cron": [
             "9:cleanup-notifications",
             "10:cleanup-novelties",
@@ -178186,11 +178190,15 @@
         "callers": {
           "code": [
             {
+              "file": "supabase/migrations/20261111191000_restore_get_sitemap_public_anon_execute.sql",
+              "hits": 1
+            },
+            {
               "file": "supabase/migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql",
               "hits": 2
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -179310,6 +179318,10 @@
         "callers": {
           "code": [
             {
+              "file": "scripts/check-edge-authorization.mjs",
+              "hits": 1
+            },
+            {
               "file": "supabase/functions/_shared/authorize.ts",
               "hits": 2
             },
@@ -179424,13 +179436,9 @@
             {
               "file": "supabase/migrations/20260109202835_4a232f3b-350c-4aa9-ab9e-91f038c72716.sql",
               "hits": 1
-            },
-            {
-              "file": "supabase/migrations/20260109210025_03cd391c-5ccc-4995-a775-3a820e35dddb.sql",
-              "hits": 2
             }
           ],
-          "code_total_files": 181,
+          "code_total_files": 182,
           "cron": [],
           "db": [
             "public._can_act_on_behalf_of_others",
@@ -184972,45 +184980,6 @@
         "security_definer": false,
         "strict": false,
         "volatility": "immutable"
-      },
-      {
-        "args": "",
-        "callers": {
-          "code": [
-            {
-              "file": "supabase/migrations/20261101194851_perf002_schedule_drop_indexes.sql",
-              "hits": 2
-            },
-            {
-              "file": "supabase/migrations/20261101202000_drop_revoke_agent_created_functions.sql",
-              "hits": 1
-            }
-          ],
-          "code_total_files": 2,
-          "cron": [],
-          "db": [],
-          "triggers": [],
-          "views": []
-        },
-        "comment": null,
-        "config": [
-          "search_path=public"
-        ],
-        "definition": null,
-        "definition_sha": "20175afbf753bd52",
-        "execute_api_roles": "authenticated, service_role",
-        "execute_public": false,
-        "is_trigger_fn": false,
-        "kind": "function",
-        "language": "plpgsql",
-        "leakproof": false,
-        "name": "perf002_drop_unused_snapshot_indexes",
-        "owner": "postgres",
-        "returns": "void",
-        "schema": "public",
-        "security_definer": true,
-        "strict": false,
-        "volatility": "volatile"
       },
       {
         "args": "p_filenames text[], p_source_zip character varying, p_batch_id character varying",
@@ -224055,6 +224024,12 @@
         "version": "20260511200056"
       },
       {
+        "name": "add_categories_level_drift",
+        "statements": 2,
+        "statements_sha": "57a49a08ceb9fa11",
+        "version": "20260511235950"
+      },
+      {
         "name": null,
         "statements": null,
         "version": "20260512000001"
@@ -235972,6 +235947,12 @@
         "statements": 20,
         "statements_sha": "ffbfcf168065b3d2",
         "version": "20261108001500"
+      },
+      {
+        "name": "drop_perf002_incident_ddl_survivor",
+        "statements": 1,
+        "statements_sha": "1ad01b55e10c6cd9",
+        "version": "20261108223100"
       },
       {
         "name": "fix_sb0003_fn_get_rupture_alerts",
