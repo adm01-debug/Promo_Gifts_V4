@@ -150,7 +150,7 @@ export function ProductMarketingSection({ productId }: ProductMarketingSectionPr
         try {
           await unselectMarketingOption(key, link);
         } catch (err) {
-          failure = failure ?? err;
+          failure ??= err;
         }
       }
     }

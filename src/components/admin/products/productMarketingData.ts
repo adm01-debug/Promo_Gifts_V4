@@ -22,7 +22,7 @@ import type { PostgrestError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { isRlsDenialError } from '@/lib/security/rls-denial-logger';
 
-export type MarketingCategoryKey = 'publicoAlvo' | 'datasComemorativas' | 'endomarketing';
+export type MarketingCategoryKey = 'datasComemorativas' | 'endomarketing' | 'publicoAlvo';
 
 export const MARKETING_CATEGORY_KEYS: readonly MarketingCategoryKey[] = [
   'publicoAlvo',

@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type * as MarketingData from '../productMarketingData';
 import type { ProductMarketingData } from '../productMarketingData';
 
 const m = vi.hoisted(() => ({
@@ -13,7 +14,7 @@ const m = vi.hoisted(() => ({
 }));
 
 vi.mock('../productMarketingData', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../productMarketingData')>();
+  const actual = await importOriginal<typeof MarketingData>();
   return {
     ...actual,
     fetchProductMarketing: m.fetchProductMarketing,

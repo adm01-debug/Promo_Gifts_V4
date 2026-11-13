@@ -73,11 +73,11 @@ describe('productMarketingData — leitura', () => {
       'product_target_audiences',
       'target_audiences',
     ]);
-    for (const c of h.calls.filter((c) => !c.table.startsWith('product_'))) {
+    for (const c of h.calls.filter((x) => !x.table.startsWith('product_'))) {
       expect(arg(c, 'eq')).toEqual(['is_active', true]);
       expect(c.ops.filter(([m]) => m === 'order').map(([, a]) => a[0])).toEqual(['display_order', 'name']);
     }
-    for (const c of h.calls.filter((c) => c.table.startsWith('product_'))) {
+    for (const c of h.calls.filter((x) => x.table.startsWith('product_'))) {
       expect(arg(c, 'eq')).toEqual(['product_id', 'p1']);
     }
     expect(d.publicoAlvo.options).toEqual([{ id: 'ta1', name: 'MÉDICO' }]);
