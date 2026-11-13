@@ -27,6 +27,8 @@ export function isDimensionRequiredError(message: string | null | undefined): bo
 export interface CalculatePriceDetailedResult {
   result: CustomizationPriceResponseV6 | null;
   error: string | null;
+  /** true = a RPC respondeu success:false (regra de negócio); ausente = falha técnica/rede. */
+  rejected?: boolean;
 }
 
 export function useCustomizationPriceCalculator() {
@@ -61,7 +63,7 @@ export function useCustomizationPriceCalculator() {
         if (!result?.success) {
           const message = result?.error || 'Erro no cálculo de preço';
           setError(message);
-          return { result: null, error: message };
+          return { result: null, error: message, rejected: true };
         }
         validateRpcPayload(PRICE_CONTRACT, result as unknown as Record<string, unknown>);
         return { result, error: null };
