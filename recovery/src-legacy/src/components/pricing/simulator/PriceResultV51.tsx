@@ -8,7 +8,7 @@
  * - Código de orçamento: {TECNICA_CURTO}01-{FAIXA}-{AREA}-{CORES}
  */
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -16,7 +16,6 @@ import {
   Calculator, 
   Clock, 
   TrendingDown, 
-  AlertCircle, 
   Package, 
   Paintbrush,
   Copy,
@@ -185,7 +184,8 @@ export function PriceResultV51({
             <span>Total gravação</span>
             <span className={cn(
               priceData.minimum_applied && "text-warning dark:text-warning"
-            )}>
+            )}
+            >
               {formatCurrency(priceData.total_price)}
             </span>
           </div>
@@ -239,7 +239,7 @@ export function QuoteCodeBadge({
   variant = 'default' 
 }: { 
   code: string; 
-  variant?: 'default' | 'secondary' | 'outline';
+  variant?: 'default' | 'outline' | 'secondary';
 }) {
   const [copied, setCopied] = useState(false);
 

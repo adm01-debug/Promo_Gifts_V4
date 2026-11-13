@@ -15,7 +15,7 @@ export interface MatchResult {
   product: Product;
   score: number;
   reasons: string[];
-  matchType: 'identical' | 'similar' | 'complementary';
+  matchType: 'complementary' | 'identical' | 'similar';
 }
 
 // Complementary product keyword pairs (Portuguese)
@@ -141,7 +141,21 @@ export function useProductMatch(
   filters: Partial<MatchFilters> = {}
 ): { matches: MatchResult[]; isProcessing: boolean } {
   const mergedFilters: MatchFilters = { ...DEFAULT_FILTERS, ...filters };
-  const matchTypesKey = (mergedFilters.matchTypes || []).join(',');
+  const requestedMatchTypes =
+    mergedFilters.matchTypes === undefined ? DEFAULT_FILTERS.matchTypes : mergedFilters.matchTypes;
+  const matchTypesKey = JSON.stringify(
+    Array.isArray(requestedMatchTypes)
+      ? requestedMatchTypes.filter((value: unknown): value is string => typeof value === 'string')
+      : [],
+  );
+  const selectedMatchTypes = useMemo(() => {
+    const parsed: unknown = JSON.parse(matchTypesKey);
+    return new Set(
+      Array.isArray(parsed)
+        ? parsed.filter((value: unknown): value is string => typeof value === 'string')
+        : [],
+    );
+  }, [matchTypesKey]);
 
   const matches = useMemo(() => {
     if (!sourceProduct || allProducts.length === 0) return [];
@@ -163,13 +177,13 @@ export function useProductMatch(
       const hasComplementary = reasons.some(r => r.startsWith('Complementar'));
       const matchType = getMatchType(score, isSameCategory, hasComplementary);
 
-      if (!mergedFilters.matchTypes.includes(matchType)) continue;
+      if (!selectedMatchTypes.has(matchType)) continue;
 
       results.push({ product: candidate, score, reasons, matchType });
     }
 
     return results.sort((a, b) => b.score - a.score);
-  }, [sourceProduct, allProducts, mergedFilters.minScore, matchTypesKey, mergedFilters.categoryFilter, mergedFilters.supplierFilter, mergedFilters.onlyInStock]);
+  }, [sourceProduct, allProducts, mergedFilters.minScore, selectedMatchTypes, mergedFilters.categoryFilter, mergedFilters.supplierFilter, mergedFilters.onlyInStock]);
 
   return { matches, isProcessing: false };
 }

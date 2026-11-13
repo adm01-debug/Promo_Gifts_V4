@@ -95,7 +95,7 @@ export function ProductDetailHero({
         <div className="space-y-3 pb-4 lg:sticky lg:top-20">
           <ProductGallery
             images={product.images}
-            video={product.video}
+            video={product.video ?? undefined}
             productVideos={product.productVideos}
             productName={product.name}
             colors={product.variations?.map((variation: ProductVariation) => ({
@@ -103,9 +103,11 @@ export function ProductDetailHero({
               hex: variation.color.hex,
               sku: variation.sku,
               stock: variation.stock,
-              image: variation.image,
+              image: variation.image ?? undefined,
               images: variation.images,
-              videos: variation.videos,
+              videos: variation.videos?.map((video) => video.url_hls || video.url_stream || video.url_original ||
+                (video.source_youtube_id ? `https://www.youtube.com/watch?v=${video.source_youtube_id}` : null))
+                .filter((url): url is string => Boolean(url)),
             }))}
             onColorSelect={(index: number) => {
               if (index === -1) setSelectedVariation(null);
@@ -163,10 +165,10 @@ export function ProductDetailHero({
             )}
             {product.gender && <GenderBadge gender={product.gender} size="md" />}
             <PackagingBadge
-              hasCommercialPackaging={product.hasCommercialPackaging}
-              packingType={product.packingType}
-              repackingType={product.repackingType}
-              packagingContext={product.packagingContext}
+              hasCommercialPackaging={product.hasCommercialPackaging ?? null}
+              packingType={product.packingType ?? null}
+              repackingType={product.repackingType ?? null}
+              packagingContext={product.packagingContext ?? null}
               onClick={onOpenPackagingModal}
             />
           </div>

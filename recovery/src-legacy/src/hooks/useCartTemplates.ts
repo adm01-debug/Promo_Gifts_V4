@@ -1,3 +1,4 @@
+import { serializeJsonValue } from '@/lib/json-value';
 /**
  * useCartTemplates - Salvar e carregar templates de carrinho reutilizáveis
  */
@@ -60,7 +61,7 @@ export function useCartTemplates() {
         user_id: userId,
         name,
         description: description || null,
-        items: items as unknown as Record<string, unknown>[],
+        items: serializeJsonValue(items) ?? [],
       });
       if (error) throw error;
     },

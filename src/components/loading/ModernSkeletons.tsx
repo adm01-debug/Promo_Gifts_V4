@@ -1,13 +1,6 @@
+import type { ProductCardSkeletonProps, MockupSkeletonProps } from './ModernSkeletons.types';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
-
-export interface ProductCardSkeletonProps {
-  variant?: 'compact' | 'default' | 'detailed';
-  className?: string;
-  animate?: boolean;
-  hideCategoryBadges?: boolean;
-  selectionMode?: boolean;
-}
 
 export function ProductCardSkeleton({
   variant = 'default',
@@ -551,12 +544,6 @@ export function ProductDetailSkeleton() {
 
 // ─── Mockup Skeletons ─────────────────────────────────────────────
 
-export interface MockupSkeletonProps {
-  variant?: 'card' | 'config' | 'editor' | 'preview' | 'result' | 'wizard';
-  className?: string;
-  delay?: number;
-}
-
 export function MockupSkeleton({ variant = 'config', className, delay = 0 }: MockupSkeletonProps) {
   const staggerStyle = delay > 0 ? { animationDelay: `${delay}ms` } : {};
 
@@ -753,3 +740,7 @@ export function MockupPageSkeleton() {
     </div>
   );
 }
+
+export { DetailedProductDetailSkeleton } from './DetailedProductDetailSkeleton';
+export type { ProductCardSkeletonProps, MockupSkeletonProps } from './ModernSkeletons.types';
+

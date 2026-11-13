@@ -71,8 +71,8 @@ export function useSalesHistory(productId: string | undefined, days = 30) {
       const quoteIds = [...new Set((quoteItems || []).map(q => q.quote_id))];
       const orderIds = [...new Set((orderItems || []).map(o => o.order_id))];
 
-      const quotesMap: Record<string, { seller_id: string; status: string }> = {};
-      const ordersMap: Record<string, { seller_id: string; status: string }> = {};
+      const quotesMap: Record<string, { seller_id: string | null; status: string | null }> = {};
+      const ordersMap: Record<string, { seller_id: string | null; status: string | null }> = {};
 
       if (quoteIds.length > 0) {
         // G15 fix: only count quotes with relevant statuses (not drafts)
@@ -102,7 +102,7 @@ export function useSalesHistory(productId: string | undefined, days = 30) {
       const allSellerIds = [...new Set([
         ...Object.values(quotesMap).map(q => q.seller_id),
         ...Object.values(ordersMap).map(o => o.seller_id),
-      ])];
+      ].filter((id): id is string => typeof id === 'string' && id.length > 0))];
       const sellerNames: Record<string, string> = {};
       if (allSellerIds.length > 0) {
         const { data: profiles } = await supabase
@@ -110,6 +110,7 @@ export function useSalesHistory(productId: string | undefined, days = 30) {
           .select('user_id, full_name')
           .in('user_id', allSellerIds);
         for (const p of profiles || []) {
+          if (!p.user_id) continue;
           sellerNames[p.user_id] = p.full_name || 'Vendedor';
         }
       }

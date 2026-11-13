@@ -7,7 +7,7 @@
  */
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { invokeExternalDb } from '@/lib/external-db';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { logger } from '@/lib/logger';
 
 export interface SupplierFiscalData {
@@ -114,7 +114,7 @@ function buildFromBranch(branch: BranchRecord): SupplierFiscalData {
  */
 export function useSupplierFiscalData(productId: string | undefined, supplierId: string | undefined) {
   const queryClient = useQueryClient();
-  const queryKey = ['supplier-fiscal-data', productId, supplierId];
+  const queryKey = useMemo(() => ['supplier-fiscal-data', productId, supplierId], [productId, supplierId]);
 
   const query = useQuery({
     queryKey,
@@ -253,8 +253,8 @@ export function useSupplierFiscalData(productId: string | undefined, supplierId:
           });
           if (createResult.records?.length) {
             variantId = createResult.records[0].id;
-          } else if ((createResult as Record<string, unknown>).id) {
-            variantId = (createResult as Record<string, unknown>).id as string;
+          } else if ('id' in createResult && typeof createResult.id === 'string') {
+            variantId = createResult.id;
           }
         } catch (err) {
           console.error('[saveFiscalOverride] Failed to create default variant:', err);

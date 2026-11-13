@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { detectProductBounds, type ProductBounds } from "@/lib/product-bounds-detector";
 
 const DEFAULT: ProductBounds = {
@@ -26,6 +26,11 @@ export function useProductBounds(
   options?: ProductBoundsDetectOptions
 ): ProductBounds {
   const [bounds, setBounds] = useState<ProductBounds>(DEFAULT);
+  const optionsRef = useRef(options);
+
+  useEffect(() => {
+    optionsRef.current = options;
+  }, [options]);
 
   const optionsKey = `${options?.whiteThreshold ?? ""}|${options?.alphaThreshold ?? ""}|${options?.margin ?? ""}|${options?.maxSize ?? ""}`;
 
@@ -37,7 +42,7 @@ export function useProductBounds(
 
     let cancelled = false;
 
-    detectProductBounds(imageUrl, options).then((result) => {
+    detectProductBounds(imageUrl, optionsRef.current).then((result) => {
       if (!cancelled) setBounds(result);
     });
 

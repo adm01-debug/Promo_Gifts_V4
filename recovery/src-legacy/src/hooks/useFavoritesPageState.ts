@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { useFavoritesStore } from '@/stores/useFavoritesStore';
+import { useFavoritesStore, type FavoriteVariantInfo } from '@/stores/useFavoritesStore';
 import {
   useFavoriteLists,
   useFavoriteTrash,
@@ -77,7 +77,6 @@ export function useFavoritesPageState() {
     deleteList,
     generateShareToken,
     revokeShareToken,
-    moveItem,
   } = useFavoriteLists();
   const { items: trashItems } = useFavoriteTrash();
   const { getProductsByIds, products: _cacheSignal } = useProductsContext();
@@ -113,6 +112,7 @@ export function useFavoritesPageState() {
     enriched,
     rawItems,
     removeItem,
+    moveItem,
     updateItem: _updateItem,
   } = useEnrichedFavoriteItems(selectedListId);
 
@@ -157,7 +157,7 @@ export function useFavoritesPageState() {
 
   // Maps and Products
   const variantMap = useMemo(() => {
-    const map = new Map<string, unknown>();
+    const map = new Map<string, FavoriteVariantInfo>();
     if (isRemoteListView) {
       enriched.forEach((e) => {
         if (e.item.variant_info) map.set(e.item.product_id, e.item.variant_info);

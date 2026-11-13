@@ -3,7 +3,7 @@ import { type QuoteTemplate } from "@/hooks/useQuoteTemplates";
 export interface ExportedTemplate {
   version: string;
   exportedAt: string;
-  templates: Omit<QuoteTemplate, 'id' | 'seller_id' | 'created_at' | 'updated_at'>[];
+  templates: Omit<QuoteTemplate, 'created_at' | 'id' | 'seller_id' | 'updated_at'>[];
 }
 
 /**
@@ -16,20 +16,7 @@ export function exportTemplatesToJson(
   const exportData: ExportedTemplate = {
     version: "1.0",
     exportedAt: new Date().toISOString(),
-    templates: templates.map(template => ({
-      name: template.name,
-      description: template.description,
-      is_default: template.is_default,
-      template_data: template.template_data,
-      items_data: template.items_data,
-      discount_percent: template.discount_percent,
-      discount_amount: template.discount_amount,
-      notes: template.notes,
-      internal_notes: template.internal_notes,
-      payment_terms: template.payment_terms,
-      delivery_time: template.delivery_time,
-      validity_days: template.validity_days,
-    })),
+    templates: templates.map(({ created_at: _createdAt, id: _id, seller_id: _sellerId, updated_at: _updatedAt, ...template }) => template),
   };
 
   const jsonString = JSON.stringify(exportData, null, 2);

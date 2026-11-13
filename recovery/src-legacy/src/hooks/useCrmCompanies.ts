@@ -80,7 +80,8 @@ export function useCrmCompany(id: string | null | undefined) {
 export function useCrmInfiniteCompanySelector() {
   return useInfiniteQuery({
     queryKey: ['crm-companies-infinite'],
-    queryFn: async ({ pageParam = 0 }) => {
+    queryFn: async ({ pageParam: requestedPage }) => {
+      const pageParam = requestedPage === undefined ? 0 : requestedPage;
       const startedAt = performance.now();
       logger.debug(`[CRM-DB] useCrmInfiniteCompanySelector: Carregando offset=${pageParam}...`);
 
@@ -140,7 +141,7 @@ export function useCrmInfiniteCompanySelector() {
 
       return isRetryable && failureCount < 3;
     },
-    retryDelay: (attemptIndex) => Math.min(1000 * Math.pow(2, attemptIndex), 10000),
+    retryDelay: (attemptIndex) => Math.min(1000 * (2 ** attemptIndex), 10000),
   });
 }
 

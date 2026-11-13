@@ -10,13 +10,13 @@ import { generateMockIntelligence, generateMockVelocities } from '@/lib/stock-ch
 
 export type IntelligenceBadgeType =
   | 'best-seller' // ABC A
-  | 'popular' // ABC B
-  | 'normal' // ABC C
   | 'emergente' // trend > 1.3
-  | 'last-units' // low stock + high velocity (stockout risk)
   | 'featured' // catalog: product.featured
+  | 'last-units' // low stock + high velocity (stockout risk)
   | 'new-arrival' // catalog: product.newArrival
-  | 'on-sale'; // catalog: product.onSale
+  | 'normal' // ABC C
+  | 'on-sale' // catalog: product.onSale
+  | 'popular'; // ABC B
 
 export interface IntelligenceBadge {
   type: IntelligenceBadgeType;
@@ -37,7 +37,7 @@ export interface CatalogFlags {
 export interface ProductIntelligenceBadgesResult {
   badges: IntelligenceBadge[];
   turnoverScore: number | null;
-  demandLevel: 'muito-alta' | 'alta' | 'moderada' | 'baixa' | null;
+  demandLevel: 'alta' | 'baixa' | 'moderada' | 'muito-alta' | null;
   isLoading: boolean;
   isDemo: boolean;
 }
@@ -128,7 +128,7 @@ export function useProductIntelligenceBadges(
         )
       : null;
     const trend = bestVel?.velocity_trend;
-    if (trend !== null && trend > 1.3) {
+    if (trend !== null && trend !== undefined && trend > 1.3) {
       badges.push({
         type: 'emergente',
         label: 'Emergente',

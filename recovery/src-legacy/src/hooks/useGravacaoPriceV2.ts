@@ -337,7 +337,7 @@ export function useCustomizationPriceV2() {
 export function useCustomizationPriceReactive(
   areaId: string | null,
   quantidade: number,
-  numCores: number = 1
+  numCores = 1
 ) {
   const [price, setPrice] = useState<CustomizationPriceFlat | null>(null);
   const [loading, setLoading] = useState(false);
@@ -361,7 +361,7 @@ export function useCustomizationPriceReactive(
       }
     )
       .then((data) => {
-        if (data && data.success) {
+        if (data?.success) {
           setPrice(adaptPriceResponse(data));
         } else {
           setError('Erro no cálculo');

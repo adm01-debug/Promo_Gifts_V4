@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { BackButton } from '@/components/common/BackButton';
 import { supabase } from '@/integrations/supabase/client';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
@@ -53,11 +53,7 @@ export default function RolePermissionsPage() {
   const [pendingChanges, setPendingChanges] = useState<Map<string, boolean>>(new Map());
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [permRes, rolePermRes] = await Promise.all([
         supabase.from('permissions').select('*').order('category'),
@@ -67,14 +63,18 @@ export default function RolePermissionsPage() {
       if (permRes.error) throw permRes.error;
       if (rolePermRes.error) throw rolePermRes.error;
 
-      setPermissions(permRes.data || []);
-      setRolePermissions(rolePermRes.data || []);
+      setPermissions((permRes.data || []).map((permission) => ({ ...permission, id: permission.code, name: permission.label })));
+      setRolePermissions((rolePermRes.data || []).map((permission) => ({ ...permission, permission_id: permission.permission_code })));
     } catch (error: unknown) {
-      toast({ title: 'Erro ao carregar dados', description: error.message, variant: 'destructive' });
+      toast({ title: 'Erro ao carregar dados', description: error instanceof Error ? error.message : String(error), variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    void fetchData();
+  }, [fetchData]);
 
   const hasPermission = (permissionId: string, role: AppRole): boolean => {
     const key = `${role}-${permissionId}`;
@@ -109,7 +109,9 @@ export default function RolePermissionsPage() {
       const toRemove: { role: AppRole; permission_id: string }[] = [];
 
       pendingChanges.forEach((shouldHave, key) => {
-        const [role, permissionId] = key.split('-') as [AppRole, string];
+        const role = ROLES.find((candidate) => key.startsWith(`${candidate.value}-`))?.value;
+        if (!role) throw new Error('Perfil de permissão inválido.');
+        const permissionId = key.slice(role.length + 1);
         if (shouldHave) {
           toAdd.push({ role, permission_id: permissionId });
         } else {
@@ -123,19 +125,20 @@ export default function RolePermissionsPage() {
           .from('role_permissions')
           .delete()
           .eq('role', item.role)
-          .eq('permission_id', item.permission_id);
+          .eq('permission_code', item.permission_id);
       }
 
       // Add permissions
       if (toAdd.length > 0) {
-        await supabase.from('role_permissions').insert(toAdd);
+        const { error } = await supabase.from('role_permissions').insert(toAdd.map((item) => ({ role: item.role, permission_code: item.permission_id })));
+        if (error) throw error;
       }
 
       toast({ title: 'Permissões atualizadas com sucesso!' });
       setPendingChanges(new Map());
       fetchData();
     } catch (error: unknown) {
-      toast({ title: 'Erro ao salvar', description: error.message, variant: 'destructive' });
+      toast({ title: 'Erro ao salvar', description: error instanceof Error ? error.message : String(error), variant: 'destructive' });
     } finally {
       setIsSaving(false);
     }
@@ -177,11 +180,11 @@ export default function RolePermissionsPage() {
     setPendingChanges(newChanges);
   };
 
-  const groupedPermissions = permissions.reduce((acc, perm) => {
+  const groupedPermissions = permissions.reduce<Record<string, Permission[]>>((acc, perm) => {
     if (!acc[perm.category]) acc[perm.category] = [];
     acc[perm.category].push(perm);
     return acc;
-  }, {} as Record<string, Permission[]>);
+  }, {});
 
   const getCategoryStats = (category: string, role: AppRole) => {
     const categoryPerms = groupedPermissions[category] || [];

@@ -11,7 +11,7 @@ export interface KitCollaboratorRow {
   id: string;
   kit_id: string;
   user_id: string;
-  permission: 'view' | 'edit';
+  permission: 'edit' | 'view';
   invited_email: string | null;
   created_at: string;
 }
@@ -46,7 +46,7 @@ export function useKitCollaborators(kitId: string | undefined) {
   });
 
   const invite = useMutation({
-    mutationFn: async ({ email, permission }: { email: string; permission: 'view' | 'edit' }) => {
+    mutationFn: async ({ email, permission }: { email: string; permission: 'edit' | 'view' }) => {
       if (!kitId) throw new Error('Kit não definido');
       // Resolve email -> user_id via profiles
       const { data: profile, error: pErr } = await supabase
@@ -55,7 +55,7 @@ export function useKitCollaborators(kitId: string | undefined) {
         .eq('email', email)
         .maybeSingle();
       if (pErr) throw pErr;
-      if (!profile) throw new Error('Usuário não encontrado para esse email');
+      if (!profile?.user_id) throw new Error('Usuário não encontrado para esse email');
       const { error } = await supabase.from('kit_collaborators').insert({
         kit_id: kitId,
         user_id: profile.user_id,
@@ -105,7 +105,7 @@ export function useKitComments(kitId: string | undefined) {
     const channel = supabase
       .channel(`kit-comments-${kitId}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'kit_comments', filter: `kit_id=eq.${kitId}` },
-        () => qc.invalidateQueries({ queryKey: key }))
+        () => qc.invalidateQueries({ queryKey: ['kit-comments', kitId] }))
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [kitId, qc]);

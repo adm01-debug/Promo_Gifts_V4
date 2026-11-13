@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ArrowLeft, Copy, CreditCard, Edit2, Eye, FileText, History, Loader2, Monitor, MoreHorizontal, Package, RefreshCw, Shield, Truck, Undo2 } from "lucide-react";
+import { ArrowLeft, Copy, CreditCard, Edit2, Eye, FileText, History, Loader2, Monitor, MoreHorizontal, Package, RefreshCw, Shield, Truck, Undo2, MessageCircle, Share2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { PageSEO } from "@/components/seo/PageSEO";
-import { formatPaymentTerms, formatDeliveryTime, ProposalHtmlTemplate } from "@/components/pdf/ProposalHtmlTemplate";
+import { formatPaymentTerms, formatDeliveryTime, ProposalHtmlTemplate, type ProposalTemplateData } from "@/components/pdf/ProposalHtmlTemplate";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -32,7 +32,7 @@ import { useDiscountApproval, type DiscountApprovalRequest } from "@/hooks/useDi
 
 const statusConfig = Object.fromEntries(
   Object.entries(QUOTE_STATUS_CONFIG).map(([k, v]) => [k, { label: v.label, variant: v.badgeVariant }])
-) as Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }>;
+) as Record<string, { label: string; variant: "default" | "destructive" | "outline" | "secondary" }>;
 
 export default function QuoteViewPage() {
   const { id } = useParams<{ id: string }>();
@@ -42,9 +42,9 @@ export default function QuoteViewPage() {
 
   const {
     quote, setQuote, isLoadingQuote, clientCnpj,
-    isGeneratingPDF, isSyncing, approvalLink,
+    isGeneratingPDF, isSyncing,
     showPresentation, setShowPresentation, proposalData,
-    handleDownloadPDF, handleWhatsAppShare, handleShareLink,
+    handleDownloadPDF, handleWhatsAppShare,
     handleSyncBitrix, logQuoteHistory, duplicateQuote,
   } = useQuoteViewData(id);
 
@@ -82,6 +82,16 @@ export default function QuoteViewPage() {
     );
   }
 
+  const approvalLink = `${window.location.origin}/orcamentos/${quote.id || id}`;
+  const handleShareLink = () => {
+    if (!navigator.clipboard?.writeText) {
+      toast.error("Cópia automática indisponível", { description: approvalLink });
+      return;
+    }
+    void navigator.clipboard.writeText(approvalLink)
+      .then(() => toast.success("Link copiado!"))
+      .catch(() => toast.error("Não foi possível copiar o link"));
+  };
   const status = statusConfig[quote.status] || statusConfig.draft;
 
   return (
@@ -117,7 +127,7 @@ export default function QuoteViewPage() {
             )}
 
             {quote.status !== "pending_approval" && (
-            <PdfGenerationDialog
+            <QuoteViewPreview
               proposalData={proposalData}
               quoteNumber={quote.quote_number}
               quoteStatus={quote.status}
@@ -138,8 +148,10 @@ export default function QuoteViewPage() {
                   <DropdownMenuItem
                     onClick={async () => {
                       try {
+                        if (!quote.id) throw new Error("Orçamento sem identificação");
                         // rls-allow: lookup por id; RLS valida ownership
-                        await supabase.from("quotes").update({ status: "pending" } as Record<string, unknown>).eq("id", quote.id);
+                        const { error } = await supabase.from("quotes").update({ status: "pending" }).eq("id", quote.id);
+                        if (error) throw error;
                         await logQuoteHistory(quote.id, "status_change", "Status revertido para Pendente", { oldValue: "sent", newValue: "pending" });
                         setQuote((prev) => prev ? { ...prev, status: "pending" } : prev);
                         toast.success("Sincronização cancelada");
@@ -159,7 +171,8 @@ export default function QuoteViewPage() {
                 <DropdownMenuItem onClick={async () => {
                   const newQuote = await duplicateQuote(id!);
                   if (newQuote?.id) navigate(`/orcamentos/${newQuote.id}`);
-                }}>
+                }}
+                >
                   <Copy className="h-4 w-4 mr-2" /> Duplicar
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setShowPresentation(true)}>
@@ -321,5 +334,57 @@ export default function QuoteViewPage() {
       />
     )}
     </>
+  );
+}
+
+
+function QuoteViewPreview({
+  proposalData,
+  quoteNumber,
+  quoteStatus,
+  trigger,
+  clientPhone,
+  approvalLink,
+  onWhatsApp,
+  onShareLink,
+}: {
+  proposalData: ProposalTemplateData | null;
+  quoteNumber?: string;
+  quoteStatus?: string;
+  trigger?: React.ReactNode;
+  clientPhone?: string;
+  approvalLink: string;
+  onWhatsApp: () => void;
+  onShareLink: () => void;
+}) {
+  return (
+    <div className="flex items-center gap-2">
+      <PdfGenerationDialog
+        proposalData={proposalData}
+        quoteNumber={quoteNumber}
+        quoteStatus={quoteStatus}
+        trigger={trigger}
+      />
+      <Button
+        type="button"
+        variant="outline"
+        size="icon"
+        onClick={onWhatsApp}
+        aria-label="Compartilhar proposta no WhatsApp"
+        title={clientPhone ? `WhatsApp: ${clientPhone}` : 'Compartilhar no WhatsApp'}
+      >
+        <MessageCircle className="h-4 w-4" />
+      </Button>
+      <Button
+        type="button"
+        variant="outline"
+        size="icon"
+        onClick={onShareLink}
+        aria-label="Copiar link da proposta"
+        title={approvalLink}
+      >
+        <Share2 className="h-4 w-4" />
+      </Button>
+    </div>
   );
 }

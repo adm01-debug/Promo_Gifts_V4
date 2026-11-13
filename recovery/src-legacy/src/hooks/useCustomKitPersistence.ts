@@ -3,43 +3,24 @@
  * CRUD para a tabela custom_kits (banco local)
  */
 
-import { useCallback } from 'react';
+import { useCallback, useMemo, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import type { Tables, TablesInsert } from '@/integrations/supabase/types';
+import { serializeJsonValue } from '@/lib/json-value';
+import { getPersistedKitStatus } from '@/lib/kit-builder/persistence';
+import { hasKnownKitPrices, KIT_UNKNOWN_PRICE_MESSAGE } from '@/lib/kit-builder/pricing-availability';
 import type { KitState } from '@/lib/kit-builder';
 
 // ============================================
 // TYPES
 // ============================================
 
-export interface CustomKitRow {
-  id: string;
-  user_id: string;
-  name: string;
-  status: string;
-  box_data: Record<string, unknown> | null;
-  items_data: Record<string, unknown>[];
-  personalization_data: Record<string, unknown>;
-  kit_quantity: number;
-  box_price: number;
-  items_price: number;
-  personalization_price: number;
-  total_price: number;
-  volume_usage_percent: number;
-  color: string;
-  icon: string;
-  tag: string | null;
-  description: string | null;
-  is_favorite: boolean;
-  is_pinned: boolean;
-  last_used_at: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-const QUERY_KEY = ['custom-kits'] as const;
+// Keep nullable scalars and raw JSON exactly as the database returned them.
+// Historical drafts must remain readable without inventing prices or timestamps.
+export type CustomKitRow = Tables<'custom_kits'>;
 
 // ============================================
 // HOOK
@@ -48,10 +29,14 @@ const QUERY_KEY = ['custom-kits'] as const;
 export function useCustomKitPersistence() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const queryKey = useMemo(() => ['custom-kits', user?.id] as const, [user?.id]);
+  const activeUserIdRef = useRef(user?.id);
+  const pinRequestRef = useRef(0);
+  useEffect(() => { activeUserIdRef.current = user?.id; }, [user?.id]);
 
   // Lista os kits do usuário
   const { data: savedKits = [], isLoading: isLoadingKits } = useQuery({
-    queryKey: QUERY_KEY,
+    queryKey,
     queryFn: async () => {
       if (!user?.id) return [];
       const { data, error } = await supabase
@@ -61,7 +46,7 @@ export function useCustomKitPersistence() {
         .order('updated_at', { ascending: false });
 
       if (error) throw error;
-      return (data || []) as unknown as CustomKitRow[];
+      return data || [];
     },
     enabled: !!user?.id,
     staleTime: 30_000,
@@ -79,16 +64,17 @@ export function useCustomKitPersistence() {
       kitQuantity: number;
     }) => {
       if (!user?.id) throw new Error('Usuário não autenticado');
+      if (!hasKnownKitPrices(kitState)) throw new Error(KIT_UNKNOWN_PRICE_MESSAGE);
 
       const identity = kitState.identity;
-      const payload = {
+      const payload: TablesInsert<'custom_kits'> = {
         user_id: user.id,
         name: kitState.name || 'Kit sem nome',
-        status: kitState.isValid ? 'complete' : 'draft',
+        status: getPersistedKitStatus(kitState),
         kit_type: kitState.kitType || 'montado',
-        box_data: kitState.box ? JSON.parse(JSON.stringify(kitState.box)) : null,
-        items_data: JSON.parse(JSON.stringify(kitState.items)),
-        personalization_data: JSON.parse(JSON.stringify(kitState.personalization)),
+        box_data: kitState.box ? serializeJsonValue(kitState.box) ?? null : null,
+        items_data: serializeJsonValue(kitState.items) ?? [],
+        personalization_data: serializeJsonValue(kitState.personalization) ?? {},
         kit_quantity: kitQuantity,
         box_price: kitState.boxPrice,
         items_price: kitState.itemsPrice,
@@ -119,7 +105,7 @@ export function useCustomKitPersistence() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey });
       toast.success('Kit salvo com sucesso!');
     },
     onError: (err: Error) => {
@@ -139,7 +125,7 @@ export function useCustomKitPersistence() {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey });
       toast.success('Kit removido');
     },
     onError: (err: Error) => {
@@ -165,42 +151,43 @@ export function useCustomKitPersistence() {
       try {
         await supabase
           .from('custom_kits')
-          .update({ last_used_at: new Date().toISOString() } as never)
+          .update({ last_used_at: new Date().toISOString() })
           .eq('id', kitId)
           .eq('user_id', user.id);
-        queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+        queryClient.invalidateQueries({ queryKey });
       } catch {
         /* best-effort */
       }
     },
-    [user?.id, queryClient],
+    [user?.id, queryClient, queryKey],
   );
 
   /** Fixa/desfixa kit em destaque (apenas 1 por usuário). */
   const togglePinned = useCallback(
     async (kitId: string, value: boolean) => {
       if (!user?.id) return;
+      const ownerId = user.id;
+      const request = ++pinRequestRef.current;
       try {
-        if (value) {
-          // Desfixa qualquer outro kit fixado primeiro
-          await supabase
-            .from('custom_kits')
-            .update({ is_pinned: false } as never)
-            .eq('user_id', user.id)
-            .eq('is_pinned', true);
+        const { data, error } = await supabase.rpc('set_custom_kit_pinned', {
+          _kit_id: kitId,
+          _is_pinned: value,
+        });
+        if (error) throw error;
+        if (data?.id !== kitId || data.user_id !== ownerId || data.is_pinned !== value) {
+          throw new Error('Não foi possível confirmar a alteração de destaque.');
         }
-        await supabase
-          .from('custom_kits')
-          .update({ is_pinned: value } as never)
-          .eq('id', kitId)
-          .eq('user_id', user.id);
-        queryClient.invalidateQueries({ queryKey: QUERY_KEY });
-        toast.success(value ? 'Kit fixado em destaque' : 'Kit desafixado');
+        await queryClient.invalidateQueries({ queryKey });
+        if (request === pinRequestRef.current && activeUserIdRef.current === ownerId) {
+          toast.success(value ? 'Kit fixado em destaque' : 'Kit desafixado');
+        }
       } catch {
-        toast.error('Erro ao alterar destaque');
+        if (request === pinRequestRef.current && activeUserIdRef.current === ownerId) {
+          toast.error('Erro ao alterar destaque');
+        }
       }
     },
-    [user?.id, queryClient],
+    [user?.id, queryClient, queryKey],
   );
 
   return {

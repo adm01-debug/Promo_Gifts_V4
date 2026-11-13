@@ -3,14 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { sanitizeError, SAFE_MESSAGES } from '@/lib/security/sanitize-error';
 
 export type StepUpAction =
-  | 'promote_dev'
-  | 'demote_dev'
-  | 'mcp_full_issue'
-  | 'mcp_full_escalate'
-  | 'mcp_key_revoke'
-  | 'mcp_key_rotate'
-  | 'secret_rotation'
-  | 'secret_revoke';
+  'demote_dev' | 'mcp_full_escalate' | 'mcp_full_issue' | 'mcp_key_revoke' | 'mcp_key_rotate' | 'promote_dev' | 'secret_revoke' | 'secret_rotation';
 
 interface StartParams {
   action: StepUpAction;
@@ -138,7 +131,7 @@ export function useStepUpAuth() {
    * concluir). Best-effort: nunca propaga erro.
    */
   const cancel = useCallback(
-    async (reason: string = 'user_dismissed') => {
+    async (reason = 'user_dismissed') => {
       const { action, targetRef, actionLabel } = ctxRef.current;
       // Só registra se houve um challenge ativo OU pelo menos um contexto definido,
       // para evitar logs vazios em re-renders.

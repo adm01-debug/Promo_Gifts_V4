@@ -60,13 +60,18 @@ const makeItem = (i: number): SellerCartItem => ({
   notes: null,
 });
 
-const renderOne = (variant: 'card' | 'row' | undefined, item = makeItem(0)) =>
+const renderOne = (
+  variant: 'card' | 'row' | undefined,
+  item = makeItem(0),
+  companyAccentColor?: string | null,
+) =>
   render(
     <BrowserRouter>
       <SortableCartItem
         item={item}
         index={0}
         variant={variant}
+        companyAccentColor={companyAccentColor}
         otherCarts={[]}
         stockMap={new Map()}
         onRemove={vi.fn()}
@@ -218,4 +223,25 @@ describe('SortableCartItem · stress (múltiplas linhas)', () => {
       unmount();
     }
   });
+});
+
+describe('SortableCartItem · optional company accent', () => {
+  it.each(['#abc', '#123456', '#12345678'])(
+    'applies the actual valid color %s without losing the drag wrapper',
+    (color) => {
+      const { container } = renderOne('card', makeItem(0), color);
+      expect(findCard(container).style.borderColor).not.toBe('');
+      const wrapper = container.querySelector<HTMLElement>('[data-cart-item-id]');
+      expect(wrapper).toHaveStyle({ opacity: '1' });
+      expect(wrapper).toHaveAttribute('data-cart-item-id', 'it-0');
+    },
+  );
+  it.each([undefined, null, '', 'not-a-color', 'url(https://example.com)'])(
+    'keeps original styling for %s',
+    (color) => {
+      const { container } = renderOne('row', makeItem(0), color);
+      expect(findCard(container).style.borderColor).toBe('');
+      expect(findCard(container)).toHaveAttribute('data-variant', 'row');
+    },
+  );
 });

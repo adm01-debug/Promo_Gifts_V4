@@ -21,7 +21,8 @@ import {
   Building2,
 } from "lucide-react";
 import { useQuotes } from "@/hooks/useQuotes";
-import { supabase } from "@/integrations/supabase/client";
+import { selectCrm } from "@/lib/crm-db";
+import type { CrmCompany } from "@/types/crm";
 import { Badge } from "@/components/ui/badge";
 
 interface Client {
@@ -37,14 +38,30 @@ export default function QuotesKanbanPage() {
 
   // Fetch clients for filter
   useEffect(() => {
+    let cancelled = false;
     const fetchClients = async () => {
-      const { data } = await supabase
-        .from("bitrix_clients")
-        .select("id, name")
-        .order("name");
-      setClients(data || []);
+      try {
+        const companies: Client[] = [];
+        const pageSize = 200;
+        for (let offset = 0; ; offset += pageSize) {
+          if (cancelled) return;
+          const page = await selectCrm<Pick<CrmCompany, 'id' | 'nome_fantasia' | 'razao_social'>>('companies', {
+            select: 'id, nome_fantasia, razao_social',
+            orderBy: [{ column: 'nome_fantasia', ascending: true }, { column: 'id', ascending: true }],
+            limit: pageSize,
+            offset,
+          });
+          companies.push(...page.map((company) => ({ id: company.id,
+            name: company.nome_fantasia || company.razao_social || '' })));
+          if (page.length < pageSize) break;
+        }
+        if (!cancelled) setClients(companies);
+      } catch {
+        // Existing quote clients remain available if the CRM is unavailable.
+      }
     };
-    fetchClients();
+    void fetchClients();
+    return () => { cancelled = true; };
   }, []);
 
   // Get unique clients from quotes
@@ -57,6 +74,12 @@ export default function QuotesKanbanPage() {
     });
     return Array.from(clientMap, ([id, name]) => ({ id, name }));
   }, [quotes]);
+
+  const filterClients = useMemo(() => {
+    const available = new Map(quotesClients.map((client) => [client.id, client]));
+    clients.forEach((client) => available.set(client.id, client));
+    return [...available.values()].sort((a, b) => a.name.localeCompare(b.name));
+  }, [clients, quotesClients]);
 
   const filteredQuotes = useMemo(() => {
     if (selectedClientId === "all") return quotes;
@@ -118,7 +141,7 @@ export default function QuotesKanbanPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos os clientes</SelectItem>
-                {(clients.length > 0 ? clients : quotesClients).map((client) => (
+                {filterClients.map((client) => (
                   <SelectItem key={client.id} value={client.id}>
                     {client.name}
                   </SelectItem>

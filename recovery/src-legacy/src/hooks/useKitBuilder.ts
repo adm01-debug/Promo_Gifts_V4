@@ -15,6 +15,7 @@ import {
   type KitPersonalization,
   type KitItemPersonalization,
   type KitBuilderStep,
+  type KitBuilderFlow,
   type KitBuilderWizardState,
   type CompatibilityResult,
   calculateTotalItemsVolume,
@@ -23,6 +24,7 @@ import {
   checkItemFits,
   calculateTotalKitPrice,
 } from '@/lib/kit-builder';
+import { hasKnownKitPrices } from '@/lib/kit-builder/pricing-availability';
 import { useKitBuilderQueries } from './useKitBuilderQueries';
 
 // ============================================
@@ -46,11 +48,18 @@ export function useKitBuilder() {
 
   // Estado do wizard
   const [currentStep, setCurrentStep] = useState<KitBuilderStep>('box');
+  const [flow, setFlow] = useState<KitBuilderFlow>('box-first');
 
   // Queries isoladas em hook separado
   const {
     availableBoxes,
     availableItems,
+    completeBoxCatalog,
+    completeItemCatalog,
+    boxQueryError,
+    itemQueryError,
+    refetchBoxes,
+    refetchItems,
     isLoadingBoxes,
     isLoadingItems,
     boxFilters,
@@ -86,6 +95,9 @@ export function useKitBuilder() {
     const validationErrors: string[] = [];
     if (!selectedBox) validationErrors.push('Selecione uma caixa');
     if (selectedItems.length === 0) validationErrors.push('Adicione pelo menos um item ao kit');
+    if (!hasKnownKitPrices({ box: selectedBox, items: selectedItems })) {
+      validationErrors.push('Há preço não informado ou inválido no kit');
+    }
     if (volumeUsagePercent > 100) validationErrors.push('Volume dos itens excede a capacidade da caixa');
     
     // Weight validation
@@ -146,8 +158,9 @@ export function useKitBuilder() {
       currentStep,
       completedSteps,
       canProceed,
+      flow,
     };
-  }, [currentStep, selectedBox, selectedItems, personalization, kitState]);
+  }, [currentStep, selectedBox, selectedItems, personalization, kitState, flow]);
 
   // ============================================
   // AÇÕES
@@ -251,7 +264,12 @@ export function useKitBuilder() {
           selectedSize: variantData.size || undefined,
           ...(variantData.sku && { sku: variantData.sku }),
           ...(variantData.imageUrl !== undefined && { imageUrl: variantData.imageUrl }),
-          ...(variantData.price !== undefined && { price: variantData.price }),
+          ...(variantData.price !== undefined && {
+            price: variantData.price,
+            // A variant callback cannot manufacture knowledge about an
+            // unknown catalog price. Only confirmed catalog refresh can.
+            priceKnown: item.priceKnown !== false && Number.isFinite(variantData.price) && variantData.price >= 0,
+          }),
         };
       })
     );
@@ -327,6 +345,7 @@ export function useKitBuilder() {
   const resetKit = useCallback(() => {
     setKitName('');
     setKitType('montado');
+    setFlow('box-first');
     setSelectedBox(null);
     setSelectedItems([]);
     setPersonalization({ box: { enabled: false }, items: {} });
@@ -344,8 +363,10 @@ export function useKitBuilder() {
     personalization: KitPersonalization;
     kitQuantity: number;
     identity?: KitIdentity;
+    flow?: KitBuilderFlow;
   }) => {
     setKitName(data.name);
+    setFlow(data.flow ?? 'box-first');
     setKitType(data.kitType);
     setSelectedBox(data.box);
     setSelectedItems(data.items);
@@ -404,6 +425,12 @@ export function useKitBuilder() {
     kitQuantity,
     availableBoxes,
     availableItems: filteredItems,
+    completeBoxCatalog,
+    completeItemCatalog,
+    boxQueryError,
+    itemQueryError,
+    refetchBoxes,
+    refetchItems,
     isLoadingBoxes,
     isLoadingItems,
     boxFilters,

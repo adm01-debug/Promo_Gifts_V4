@@ -4,17 +4,19 @@
  * caused by too many hooks in a single component/hook.
  */
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { invokeExternalDb } from '@/lib/external-db';
 import {
   type KitBox,
   type KitItem,
   type BoxFilters,
   type ItemFilters,
-  type ExternalProductForKit,
 } from '@/lib/kit-builder';
-import { MOCK_BOXES, MOCK_ITEMS } from '@/lib/kit-builder/mock-data';
+import {
+  KIT_PACKAGING_SELECT, KIT_ITEM_SELECT, fetchAllActiveProducts,
+  isCanonicalPackagingProduct, isKitSelectableProduct, buildKitCatalogStockKey,
+} from '@/hooks/kit-builder/useKitBuilderQueries';
+import { fetchKitStockVariants, evaluateKitStock } from '@/hooks/kit-builder/useKitStockValidation';
 
 // Import transformers from the main hook file
 import { transformToKitBox, transformToKitItem } from './useKitBuilderTransformers';
@@ -38,7 +40,9 @@ function filterBoxes(
     filtered = filtered.filter((b) => b.internalHeight >= dimFilters.minHeight!);
   if (dimFilters?.minDepth)
     filtered = filtered.filter((b) => b.internalDepth >= dimFilters.minDepth!);
-  if (dimFilters?.material) filtered = filtered.filter((b) => b.material === dimFilters.material);
+  if (dimFilters?.material?.length)
+    filtered = filtered.filter((b) => dimFilters.material?.some((material) =>
+      b.material === material || b.materials?.includes(material)));
   return filtered;
 }
 
@@ -46,7 +50,7 @@ function filterItems(items: KitItem[], search: string): KitItem[] {
   if (!search) return items;
   const q = search.toLowerCase();
   return items.filter(
-    (i) => i.name.toLowerCase().includes(q) || (i.sku && i.sku.toLowerCase().includes(q)),
+    (i) => i.name.toLowerCase().includes(q) || i.sku?.toLowerCase().includes(q),
   );
 }
 
@@ -60,8 +64,8 @@ export function useKitBuilderQueries() {
   const [itemExtraFilters, setItemExtraFilters] = useState<Omit<ItemFilters, 'search'>>({});
 
   // Debounce with cleanup
-  const boxTimerRef = useRef<ReturnType<typeof setTimeout>>();
-  const itemTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const boxTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const itemTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     if (boxTimerRef.current) clearTimeout(boxTimerRef.current);
@@ -91,101 +95,84 @@ export function useKitBuilderQueries() {
     setItemExtraFilters(rest);
   }, []);
 
-  // Query: boxes — products that have packing_type containing "Caixa" or similar packaging terms
-  const { data: availableBoxes = [], isLoading: isLoadingBoxes } = useQuery({
-    queryKey: [
-      'kit-builder',
-      'boxes',
-      debouncedBoxSearch,
-      boxDimFilters.minWidth ?? '',
-      boxDimFilters.minHeight ?? '',
-      boxDimFilters.minDepth ?? '',
-      boxDimFilters.material ?? '',
-    ],
+  // Both selectors and AI use the complete Gold catalog. Filters remain local
+  // projections so typing a search never removes products from AI proposals.
+  const {
+    data: completeBoxCatalog = [], isLoading: isLoadingBoxes, error: boxQueryError,
+    refetch: refetchBoxes,
+  } = useQuery({
+    queryKey: ['kit-builder', 'original', 'boxes', 'complete-catalog'],
     queryFn: async () => {
       try {
-        const filters: Record<string, unknown> = { active: true };
-        if (debouncedBoxSearch) filters._search = debouncedBoxSearch;
-
-        const result = await invokeExternalDb<ExternalProductForKit>({
-          table: 'products',
-          operation: 'select',
-          filters,
-          select:
-            'id, name, sku, sale_price, primary_image_url, images, dimensions, category_id, weight_g, materials, width_cm, height_cm, length_cm, internal_width_cm, internal_height_cm, internal_length_cm, packing_type, packing_classification',
-          limit: 200,
-          orderBy: { column: 'name', ascending: true },
-          countMode: 'none',
+        const products = await fetchAllActiveProducts(KIT_PACKAGING_SELECT, '', {
+          product_type: 'packaging',
         });
-
-        const boxes = result.records
-          .filter((p) => {
-            const pt = (p.packing_type || '').toLowerCase();
-            return pt.includes('caixa') || pt.includes('embalagem') || pt.includes('box');
-          })
-          .map((p) => transformToKitBox(p))
-          .filter((box): box is KitBox => box !== null);
-
-        if (boxes.length === 0) {
-          console.info('[KitBuilder] No boxes from external DB, using mock data');
-          return filterBoxes(MOCK_BOXES, debouncedBoxSearch, boxDimFilters);
-        }
-
-        return filterBoxes(boxes, null, boxDimFilters);
-      } catch (err) {
-        logger.warn('[KitBuilder] External DB unavailable for boxes, using mock data', err);
-        return filterBoxes(MOCK_BOXES, debouncedBoxSearch, boxDimFilters);
+        return products.filter(isCanonicalPackagingProduct)
+          .map(transformToKitBox).filter((box): box is KitBox => box !== null);
+      } catch (error) {
+        logger.warn('[KitBuilder] Failed to load the Gold packaging catalog', error);
+        throw error;
       }
     },
     staleTime: 5 * 60 * 1000,
     retry: 1,
   });
-
-  // Query: items
-  const { data: availableItems = [], isLoading: isLoadingItems } = useQuery({
-    queryKey: ['kit-builder', 'items', debouncedItemSearch],
+  const {
+    data: rawItemCatalog = [], isLoading: isLoadingItems, error: itemQueryError,
+    refetch: refetchItems,
+  } = useQuery({
+    queryKey: ['kit-builder', 'original', 'items', 'complete-catalog'],
     queryFn: async () => {
       try {
-        const filters: Record<string, unknown> = { active: true };
-        if (debouncedItemSearch) filters._search = debouncedItemSearch;
-
-        const result = await invokeExternalDb<ExternalProductForKit>({
-          table: 'products',
-          operation: 'select',
-          filters,
-          select:
-            'id, name, sku, sale_price, primary_image_url, images, dimensions, category_id, weight_g, materials, width_cm, height_cm, length_cm, colors, packing_classification',
-          limit: 200,
-          orderBy: { column: 'name', ascending: true },
-          countMode: 'none',
-        });
-
-        const items = result.records
-          .filter((p) => p.packing_classification !== 'embalagem')
-          .map((p) => transformToKitItem(p));
-
-        if (items.length === 0) {
-          console.info('[KitBuilder] No items from external DB, using mock data');
-          return filterItems(MOCK_ITEMS, debouncedItemSearch);
-        }
-
-        return items;
-      } catch (err) {
-        logger.warn('[KitBuilder] External DB unavailable for items, using mock data', err);
-        return filterItems(MOCK_ITEMS, debouncedItemSearch);
+        const products = await fetchAllActiveProducts(KIT_ITEM_SELECT, '');
+        return products.filter(isKitSelectableProduct).map((product) => transformToKitItem(product));
+      } catch (error) {
+        logger.warn('[KitBuilder] Failed to load the Gold item catalog', error);
+        throw error;
       }
     },
     staleTime: 5 * 60 * 1000,
     retry: 1,
   });
+  const itemProductIds = useMemo(() => rawItemCatalog.map((item) => item.id), [rawItemCatalog]);
+  const itemCatalogStockKey = useMemo(() => buildKitCatalogStockKey(itemProductIds), [itemProductIds]);
+  const { data: itemStockData, isError: itemStockErrored } = useQuery({
+    queryKey: ['kit-builder', 'original', 'items', 'stock', itemCatalogStockKey],
+    queryFn: () => fetchKitStockVariants(itemProductIds),
+    enabled: itemProductIds.length > 0,
+    staleTime: 60 * 1000,
+    retry: 1,
+  });
+  const completeItemCatalog = useMemo(() => {
+    if (itemStockErrored) return rawItemCatalog.map((item) => ({ ...item, stock: null }));
+    if (!itemStockData) return rawItemCatalog;
+    const { stockByProduct, unknownProductIds } = evaluateKitStock(itemStockData, rawItemCatalog, null, 1);
+    return rawItemCatalog.map((item) => ({
+      ...item, stock: unknownProductIds.has(item.id) ? null : (stockByProduct.get(item.id) ?? 0),
+    }));
+  }, [rawItemCatalog, itemStockData, itemStockErrored]);
+  const availableBoxes = useMemo(
+    () => filterBoxes(completeBoxCatalog, debouncedBoxSearch, boxDimFilters),
+    [completeBoxCatalog, debouncedBoxSearch, boxDimFilters],
+  );
+  const availableItems = useMemo(
+    () => filterItems(completeItemCatalog, debouncedItemSearch),
+    [completeItemCatalog, debouncedItemSearch],
+  );
 
   return {
     availableBoxes,
     availableItems,
+    completeBoxCatalog,
+    completeItemCatalog,
+    boxQueryError,
+    itemQueryError,
+    refetchBoxes,
+    refetchItems,
     isLoadingBoxes,
     isLoadingItems,
-    boxFilters: { search: boxSearchInput, ...boxDimFilters } as BoxFilters,
-    itemFilters: { search: itemSearchInput, ...itemExtraFilters } as ItemFilters,
+    boxFilters: { search: boxSearchInput, ...boxDimFilters },
+    itemFilters: { search: itemSearchInput, ...itemExtraFilters },
     setBoxFilters,
     setItemFilters,
   };

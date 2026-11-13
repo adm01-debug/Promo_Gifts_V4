@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton";
 /**
  * MagicUp — Gerador de Imagens Publicitárias com IA
  * 
@@ -22,15 +23,15 @@ function MagicUpSkeleton() {
         {[1, 2, 3].map(i => (
           <div key={i} className="rounded-xl border border-border bg-card p-4 space-y-3">
             <div className="flex items-center gap-2">
-              <div className="h-4 w-4 rounded bg-muted animate-pulse" />
-              <div className="h-4 w-20 rounded bg-muted animate-pulse" />
+              <Skeleton animate={false} className="h-4 w-4 rounded bg-muted animate-pulse" />
+              <Skeleton animate={false} className="h-4 w-20 rounded bg-muted animate-pulse" />
             </div>
-            <div className="h-10 w-full rounded-md bg-muted animate-pulse" />
+            <Skeleton animate={false} className="h-10 w-full rounded-md bg-muted animate-pulse" />
           </div>
         ))}
       </div>
       <div className="rounded-xl border border-border bg-card p-4 space-y-4">
-        <div className="aspect-square w-full rounded-lg bg-muted animate-pulse" />
+        <Skeleton animate={false} className="aspect-square w-full rounded-lg bg-muted animate-pulse" />
       </div>
     </div>
   );
@@ -74,13 +75,15 @@ function MagicUpProgress({ step }: { step: number }) {
               done ? "border-primary/30 bg-primary/5 text-primary" :
               active ? "border-primary bg-primary/10 text-primary ring-1 ring-primary/30" :
               "border-border bg-muted/30 text-muted-foreground"
-            )}>
+            )}
+            >
               <span className={cn(
                 "flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold",
                 done ? "bg-primary text-primary-foreground" :
                 active ? "bg-primary/20 text-primary" :
                 "bg-muted text-muted-foreground"
-              )}>
+              )}
+              >
                 {done ? "✓" : s}
               </span>
               <span className="hidden sm:inline">{label}</span>
@@ -105,9 +108,9 @@ export default function MagicUp() {
         <MagicUpHeader variationsCount={m.variations.length} historyCount={m.history.length} summary={`${m.selectedClient?.name || "Cliente não definido"} · ${m.selectedProduct?.name || "Produto não selecionado"} · ${m.brief.channel} · ${m.brief.objective} · ${m.brief.tone}`} />
         <MagicUpProgress step={m.step} />
 
-        {m.loadingProducts && <MagicUpSkeleton />}
+        {!m.initialProductsLoaded && <MagicUpSkeleton />}
 
-        {!m.loadingProducts && (
+        {m.initialProductsLoaded && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <MagicUpConfigPanel m={m} />
             <MagicUpResultPanel m={m} />
