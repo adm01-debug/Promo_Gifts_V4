@@ -741,5 +741,4 @@ export function MockupPageSkeleton() {
   );
 }
 
-export { DetailedProductDetailSkeleton } from './DetailedProductDetailSkeleton';
 export type { ProductCardSkeletonProps, MockupSkeletonProps } from './ModernSkeletons.types';

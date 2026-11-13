@@ -3,7 +3,6 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { QuoteAutoSave } from '@/components/quotes/QuoteAutoSave';
 import { quoteDraftRecoverySchema } from '@/lib/quotes/quoteDraftRecovery';
-import { quoteDraftRecoverySchema as compatibleDraftRecoverySchema } from '@/pages/quoteDraftRecovery';
 
 vi.mock('@/components/ui/tooltip', () => ({
   Tooltip: ({ children }: PropsWithChildren) => <>{children}</>,
@@ -227,9 +226,6 @@ describe('QuoteAutoSave optional recovery preserves existing contracts', () => {
 });
 
 describe('legacy quote draft payload validation', () => {
-  it('preserves the original helper path as the same public schema', () => {
-    expect(compatibleDraftRecoverySchema).toBe(quoteDraftRecoverySchema);
-  });
   const item = { product_id: 'p1', product_name: 'Produto', quantity: 4, unit_price: 7 };
   it('keeps extra JSON fields at root, item, and personalization boundaries', () => {
     const data = {

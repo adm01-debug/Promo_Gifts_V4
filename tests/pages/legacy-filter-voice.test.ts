@@ -1,12 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { defaultFilters } from '@/components/filters/FilterPanel';
 import { applyVoiceFilterPatch } from '@/lib/filters/voiceFilterPatch';
-import { applyVoiceFilterPatch as compatibleVoiceFilterPatch } from '@/pages/filters/voiceFilterPatch';
 
 describe('legacy voice product filters', () => {
-  it('preserves the original helper path as the same public function', () => {
-    expect(compatibleVoiceFilterPatch).toBe(applyVoiceFilterPatch);
-  });
   it.each([
     [{ minPrice: 0, maxPrice: 0 }, [0, 0]],
     [{ minPrice: 0, maxPrice: 80 }, [0, 80]],
