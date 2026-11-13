@@ -1206,6 +1206,7 @@ Cadeia completa de drift em `public.categories`:
 - `20260511235959` — `full_path_readable` (este PR, pendente)
 - `20260512000000` — bootstrap usa as três em VIEW/MVIEW DDL
 | `20260511235950` | `add_categories_level_drift` | `dfacb733f8b6036b3c00db74dffbf61597f3fc88cc72a50fcbe3a0480b2824a6` | espelho — a coluna já existe em produção (conferido 2026-11-11); registrar via `db-apply-migration.yml` modo repair-only, sem executar DDL |
+| `20260511235960` | `add_categories_full_path_readable_drift` | `bdd3104b7f0f368d59e698b283fc8f35c605e137311f337b48720a8fad04cedd` | pendente — coluna já existe em produção; arquivo criado em 2026-11-13 para satisfazer preflight de db-apply-migration.yml; registrar via db-apply-migration.yml modo repair-only |
 | `20260511235959` | `add_categories_full_path_readable_drift` | `ef9c350896f1729196d2a9d22e9269dd3629ae29f5d52842fb8372b9ac7ab7ae` | espelho — a coluna já existe em produção (conferido 2026-11-11); registrar via `db-apply-migration.yml` modo repair-only, sem executar DDL |
 ## 2026-11-09 — DROP `perf002_drop_unused_snapshot_indexes` (PEND-I01)
 Função `public.perf002_drop_unused_snapshot_indexes()` criada como SECURITY DEFINER
