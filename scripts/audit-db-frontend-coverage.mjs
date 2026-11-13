@@ -17,7 +17,7 @@
  */
 
 import { execSync } from "node:child_process";
-import { writeFileSync, mkdirSync, readFileSync, existsSync } from "node:fs";
+import { writeFileSync, mkdirSync, readFileSync, existsSync, readdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -90,6 +90,14 @@ function camelize(snake) {
   return snake.replace(/_([a-z0-9])/g, (_, c) => c.toUpperCase());
 }
 
+// Escapa metacaracteres de regex antes de interpolar um nome (tabela/coluna)
+// numa `new RegExp(...)`. Necessário porque nomes vêm do BD (identificadores
+// citados no Postgres podem conter "(", ")", ".", etc.) e um nome assim quebra
+// a construção da regex com SyntaxError, abortando toda a auditoria.
+function escapeRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 // ──────────────────────────────────────────────────────────────────────────────
 // Coleta de schemas
 // ──────────────────────────────────────────────────────────────────────────────
@@ -110,7 +118,9 @@ function fetchInternalSchema() {
     );
     const tables = new Map();
     for (const line of out.trim().split("\n")) {
+      if (!line) continue; // saída vazia (ex.: psql sem linhas) gera "" após trim/split
       const [table, col, type, rows] = line.split("\t");
+      if (!table || !col) continue; // linha malformada/truncada (faltam colunas)
       if (!tables.has(table)) {
         tables.set(table, { rows: Number(rows) || 0, columns: [] });
       }
@@ -198,14 +208,48 @@ function fetchSchemaFromTypes(map) {
 // Indexação de uso no código
 // ──────────────────────────────────────────────────────────────────────────────
 
+// Lista os fontes. Usa o ripgrep quando existe; no runner do GitHub (ubuntu sem `rg`)
+// cai para uma varredura em Node com os MESMOS filtros — antes o script abortava (exit 1).
+const CODE_EXT = /\.(ts|tsx|js|mjs)$/;
+const SKIP_DIRS = new Set(["node_modules", "dist", ".next"]);
+function walkFiles(rel, out) {
+  let entries;
+  try {
+    entries = readdirSync(resolve(ROOT, rel), { withFileTypes: true });
+  } catch {
+    return;
+  }
+  for (const e of entries) {
+    const p = `${rel}/${e.name}`;
+    if (e.isDirectory()) {
+      if (!SKIP_DIRS.has(e.name)) walkFiles(p, out);
+    } else if (e.isFile() && CODE_EXT.test(e.name)) out.push(p);
+  }
+}
+function listSourceFiles() {
+  try {
+    return execSync(
+      `rg --files ${SEARCH_DIRS.join(" ")} -g '*.{ts,tsx,js,mjs}' -g '!node_modules' -g '!dist' -g '!.next'`,
+      { encoding: "utf8", cwd: ROOT, maxBuffer: 64 * 1024 * 1024, stdio: ["ignore", "pipe", "pipe"] }
+    )
+      .trim()
+      .split("\n")
+      .filter(Boolean);
+  } catch (err) {
+    // status 1 do rg = nenhum arquivo casou (lista vazia legítima); qualquer outro erro
+    // (rg ausente: ENOENT/127) usa a varredura em Node.
+    if (err && err.status === 1) return [];
+    if (err && err.code !== 'ENOENT' && err.status !== 127) {
+      console.warn('⚠️  rg falhou (status ' + err.status + '); usando varredura em Node:', String(err.stderr || err.message).trim().split('\n')[0]);
+    }
+    const out = [];
+    for (const d of SEARCH_DIRS) walkFiles(d, out);
+    return out;
+  }
+}
+
 function indexCodeUsage() {
-  const files = execSync(
-    `rg --files ${SEARCH_DIRS.join(" ")} -g '*.{ts,tsx,js,mjs}' -g '!node_modules' -g '!dist' -g '!.next'`,
-    { encoding: "utf8", cwd: ROOT, maxBuffer: 64 * 1024 * 1024 }
-  )
-    .trim()
-    .split("\n")
-    .filter(Boolean);
+  const files = listSourceFiles();
 
   // Indexa por arquivo: conteúdo + conjunto de "select strings" + lista de tabelas mencionadas
   const perFile = [];
@@ -242,7 +286,8 @@ function detectUsage(index, table, column) {
   const filesForTable = index.perFile.filter((f) => f.tablesMentioned.has(table));
 
   for (const name of variants) {
-    const wordRe = new RegExp(`\\b${name}\\b`);
+    const safeName = escapeRegExp(name);
+    const wordRe = new RegExp(`\\b${safeName}\\b`);
 
     // READ #1: aparece dentro de uma string .select('...')
     for (const f of index.perFile) {
@@ -252,7 +297,7 @@ function detectUsage(index, table, column) {
     // READ #2: arquivo menciona a tabela E referencia .col / col: / "col"
     if (!read) {
       for (const f of filesForTable) {
-        const acc = new RegExp(`\\.${name}\\b(?![A-Za-z0-9_])|["']${name}["']\\s*:|\\b${name}\\s*:`).test(f.src);
+        const acc = new RegExp(`\\.${safeName}\\b(?![A-Za-z0-9_])|["']${safeName}["']\\s*:|\\b${safeName}\\s*:`).test(f.src);
         if (acc) { read = true; break; }
       }
     }

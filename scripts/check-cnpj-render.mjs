@@ -51,7 +51,8 @@ const CONTEXT_IGNORES = [
   /\.length\b/,
   /disabled\s*=/,
   /^\s*\/\//, // comentário de linha
-  /^\s*\*/,   // comentário de bloco
+  /^\s*\*/,   // comentário de bloco (linha de continuação)
+  /^\s*\/\*.*\*\/\s*$/, // comentário de bloco de uma linha só (/* ... */)
 ];
 
 const MUTATION_METHODS = /\.(insert|update|upsert)\s*\(/;
@@ -93,7 +94,13 @@ for (const abs of walk(SRC)) {
   scannedFiles++;
   if (isAllowed(rel)) continue;
 
-  const src = readFileSync(abs, 'utf8');
+  let src;
+  try {
+    src = readFileSync(abs, 'utf8');
+  } catch (err) {
+    console.warn(`⚠️  [cnpj-render-gate] Não foi possível ler ${rel}: ${err.code ?? err.message}`);
+    continue;
+  }
   const lines = src.split('\n');
 
   // ── B1a: render cru ──

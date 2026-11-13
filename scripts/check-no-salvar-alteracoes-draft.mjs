@@ -12,8 +12,8 @@
  * Uso: `node scripts/check-no-salvar-alteracoes-draft.mjs`
  *   Exit 0 = clean. Exit 1 = achou regressão de label.
  */
-import { execSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
+import { searchFixedString } from './lib/fixed-string-search.mjs';
 
 const BANNED = 'Salvar Alterações';
 
@@ -36,19 +36,8 @@ if (existing.length === 0) {
   process.exit(0);
 }
 
-let hits = '';
-try {
-  hits = execSync(
-    `rg -n --no-heading -F ${JSON.stringify(BANNED)} ${existing.map((p) => JSON.stringify(p)).join(' ')} 2>/dev/null || true`,
-    { encoding: 'utf8' },
-  );
-} catch {
-  /* rg sem matches */
-}
-
-const lines = hits
-  .split('\n')
-  .filter(Boolean)
+// GUARD: sem ripgrep a busca antiga (`rg … || true`) devolvia vazio e o gate dava ✅ sem varrer.
+const lines = searchFixedString(BANNED, existing)
   .filter((line) => {
     const file = line.split(':')[0];
     return !ALLOWLIST.has(file);

@@ -134,7 +134,18 @@ for (const fn of TARGETS) {
   // Substitui todas as referências livres ao identificador corsHeaders
   // por getCorsHeaders(req). Cuidado: não tocar em propriedades (.corsHeaders)
   // nem strings.
-  src = src.replace(/(?<![\w.\$"'`])corsHeaders(?![\w$])/g, "getCorsHeaders(req)");
+  //
+  // BUG FIX (achado via teste adversarial, padrão real presente em
+  // supabase/functions/bi-copilot/index.ts): duas formas de referência
+  // precisam de tratamento antes da troca geral, ou o arquivo sai corrompido:
+  //   - spread `...corsHeaders` — o `.` do `...` caía na exclusão de
+  //     propriedade (`.corsHeaders`) da regex geral e a referência ficava
+  //     intocada, apontando para um identificador que deixou de existir;
+  //   - propriedade shorthand `{ corsHeaders }` — virava `{ getCorsHeaders(req) }`,
+  //     que é sintaxe inválida (call expression não é shorthand property).
+  src = src.replace(/\.\.\.corsHeaders(?![\w$])/g, "...getCorsHeaders(req)");
+  src = src.replace(/([{,]\s*)corsHeaders(\s*[,}])/g, "$1corsHeaders: getCorsHeaders(req)$2");
+  src = src.replace(/(?<![\w.$"'`])corsHeaders(?![\w$:])/g, "getCorsHeaders(req)");
 
   if (src === original) {
     skipped++;

@@ -4,20 +4,32 @@
  *
  * Roda em ordem:
  *   1. Invariantes estáticas de layout (ordem, alinhamento, testids, aria-label)
- *   2. Type-check TypeScript (tsgo)
+ *   2. Type-check TypeScript (tsc -p tsconfig.app.json; falha se o tsc não conseguir checar)
  *   3. Vitest — suite de expiração e suites correlatas
  *
- * Saída: relatório JSON em <tmpdir>/quotes-list-validation-report.json + resumo no stdout.
+ * Saída: relatório JSON em diretório temporário exclusivo (mkdtemp) + resumo no stdout.
  * Exit code: 0 quando tudo passa, 1 em qualquer falha.
  *
  * Uso: node scripts/validate-quotes-list.mjs
  */
 import fs from 'node:fs';
-import { execSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
+import { classifyTscRun } from './lib/tsc-run.mjs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-const REPORT_PATH = join(tmpdir(), 'quotes-list-validation-report.json');
+// mkdtempSync cria um diretório exclusivo (nome com sufixo aleatório, 0700) em
+// vez de um path fixo e previsível em /tmp compartilhado entre todos os
+// usuários/processos — evita symlink attack / TOCTOU em diretório temp
+// multiusuário (CodeQL: insecure temporary file, CWE-377). Se o próprio
+// TMPDIR for inválido/sem permissão, mkdtempSync falha aqui — REPORT_PATH
+// fica null e o bloco de salvamento abaixo trata isso sem crash.
+let REPORT_PATH = null;
+try {
+  REPORT_PATH = join(fs.mkdtempSync(join(tmpdir(), 'quotes-list-')), 'validation-report.json');
+} catch {
+  // tratado no bloco de salvamento do relatório
+}
 const report = { startedAt: new Date().toISOString(), steps: [] };
 
 function step(name, fn) {
@@ -89,23 +101,77 @@ const staticOk = step('Invariantes estáticas de layout', () => {
 });
 
 // ─── 2. Type-check ──────────────────────────────────────────────────────────
-const tsOk = step('Type-check (tsgo)', () => {
-  const out = execSync(
-    'npx tsgo --noEmit 2>&1 | grep -E "QuotesConfigurableList|QuoteListCellRenderer|lib/quotes/expiration" || true',
-    { encoding: 'utf8', stdio: 'pipe' },
+// Antes: `npx tsgo … | grep … || true` — tsgo nem está nas dependências, então o comando
+// falhava, o grep não achava nada e o passo passava SEMPRE. Agora roda o tsc do projeto e só
+// aceita o resultado se o tsc realmente checou (classifyTscRun).
+const TYPECHECK_FILES = [
+  'src/components/quotes/QuotesConfigurableList.tsx',
+  'src/components/quotes/QuoteListCellRenderer.tsx',
+  'src/lib/quotes/expiration',
+];
+
+/** Diagnósticos cujo ARQUIVO (início da linha) é um dos alvos — não a mensagem que o cita. */
+function filterTargetDiagnostics(output, targets = TYPECHECK_FILES) {
+  return String(output)
+    .split('\n')
+    .filter((line) => targets.some((t) => line.startsWith(`${t}.`) || line.startsWith(`${t}(`)))
+    .filter((line) => /error TS\d+:/.test(line));
+}
+
+const tsOk = step('Type-check (tsc, apenas o grafo de imports da lista)', () => {
+  // tsconfig temporário que herda o do app mas só inclui os alvos (+ .d.ts globais): o tsc segue
+  // os imports, então erros de tipo reais nesses arquivos aparecem; leva segundos (projeto
+  // inteiro passa de 9 min e estoura 4 GB de heap).
+  const root = process.cwd();
+  // tsconfig temporário dentro de node_modules/.cache (existe sempre que o tsc local existe):
+  // não depende de TMPDIR — TMPDIR inválido não pode virar falso "falha de type-check".
+  const cacheDir = join(root, 'node_modules', '.cache');
+  fs.mkdirSync(cacheDir, { recursive: true });
+  const dir = fs.mkdtempSync(join(cacheDir, 'quotes-list-tsc-'));
+  const cfg = join(dir, 'tsconfig.json');
+  fs.writeFileSync(
+    cfg,
+    JSON.stringify({
+      extends: join(root, 'tsconfig.app.json'),
+      compilerOptions: { noEmit: true, incremental: false },
+      include: [
+        join(root, 'src/**/*.d.ts'),
+        ...TYPECHECK_FILES.map((f) => join(root, f.endsWith('.tsx') ? f : `${f}.ts`)),
+      ],
+    }),
   );
-  if (out.trim()) throw new Error(out);
-  return { errors: 0 };
+  try {
+    const run = spawnSync(join(root, 'node_modules/.bin/tsc'), ['-p', cfg], {
+      cwd: root,
+      encoding: 'utf8',
+      maxBuffer: 256 * 1024 * 1024,
+      env: { ...process.env, NODE_OPTIONS: process.env.NODE_OPTIONS ?? '--max-old-space-size=4096' },
+    });
+    const output = `${run.stdout ?? ''}${run.stderr ?? ''}`;
+    const verdict = classifyTscRun({ status: run.status, signal: run.signal, error: run.error, output });
+    if (!verdict.ok) throw new Error(verdict.reason);
+    const own = filterTargetDiagnostics(output);
+    if (own.length) throw new Error(own.join('\n'));
+    return { errors: 0, errorsInImportedFiles: verdict.count };
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 // ─── 3. Vitest — expiração ──────────────────────────────────────────────────
 const vitestOk = step('Vitest · src/lib/quotes/__tests__/expiration.test.ts', () => {
-  const raw = execSync(
-    'npx vitest run src/lib/quotes/__tests__/expiration.test.ts --reporter=dot 2>&1',
-    { encoding: 'utf8', stdio: 'pipe' },
+  // Binário local (nunca `npx`): sem ele instalado, npx buscaria o pacote no registro — foi
+  // assim que o antigo `npx tsgo` "passava" sem rodar nada.
+  const run = spawnSync(
+    join(process.cwd(), 'node_modules/.bin/vitest'),
+    ['run', 'src/lib/quotes/__tests__/expiration.test.ts', '--reporter=dot'],
+    { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 },
   );
+  if (run.error) throw new Error(`vitest não executou: ${run.error.message}`);
   // Remove códigos ANSI de cor antes de fazer match.
-  const out = raw.replace(/\x1B\[[0-9;]*[A-Za-z]/g, '');
+  const ansi = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*[A-Za-z]`, 'g');
+  const out = `${run.stdout ?? ''}${run.stderr ?? ''}`.replace(ansi, '');
+  if (run.status !== 0) throw new Error(out.split('\n').slice(-15).join('\n') || `vitest saiu com código ${run.status}`);
   const m = out.match(/Tests\s+(\d+)\s+passed/);
   const failed = /\bfailed\b/i.test(out) && !/0\s+failed/i.test(out);
   if (!m || failed) throw new Error(out.split('\n').slice(-15).join('\n'));
@@ -115,9 +181,18 @@ const vitestOk = step('Vitest · src/lib/quotes/__tests__/expiration.test.ts', (
 // ─── Relatório ───────────────────────────────────────────────────────────────
 report.finishedAt = new Date().toISOString();
 report.ok = staticOk && tsOk && vitestOk;
-fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2));
-
 console.log('\n────────────────────────────────────────');
-console.log(`Relatório salvo em ${REPORT_PATH}`);
+try {
+  if (!REPORT_PATH) throw new Error('diretório temporário não pôde ser criado (TMPDIR inválido?)');
+  fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2));
+  console.log(`Relatório salvo em ${REPORT_PATH}`);
+} catch (err) {
+  // Falha ao criar o diretório temp ou gravar o relatório (ex.: TMPDIR
+  // inválido/sem permissão) não deve derrubar o processo com stack trace cru
+  // — os 3 passos já rodaram e seus resultados já são conhecidos; apenas
+  // avisamos que o JSON não foi salvo.
+  const where = REPORT_PATH ? ` em ${REPORT_PATH}` : '';
+  console.log(`⚠️  Não foi possível salvar o relatório${where}: ${err.message ?? err}`);
+}
 console.log(`Resultado: ${report.ok ? '✅ TUDO OK' : '❌ FALHAS'}`);
 process.exit(report.ok ? 0 : 1);

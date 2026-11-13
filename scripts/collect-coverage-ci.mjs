@@ -19,6 +19,11 @@ const pct = (covered, total) => (total === 0 ? 100 : Math.round((covered / total
 function summarizeVitest(summaryPath) {
   const summary = readJson(summaryPath);
   const total = summary.total;
+  // GUARD: relatório com 0 linhas medidas (vitest não instrumentou nada) virava "100%" em tudo.
+  if (!total || !total.lines || total.lines.total === 0) {
+    console.error(`❌ ${summaryPath} não mediu nenhuma linha (total.lines.total = 0): cobertura não confiável.`);
+    process.exit(1);
+  }
   return {
     lines: pct(total.lines.covered, total.lines.total),
     functions: pct(total.functions.covered, total.functions.total),

@@ -29,14 +29,24 @@ async function main() {
       try {
         const raw = await fs.readFile(path.join(COVERAGE, f), "utf8");
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed.entries)) entries.push(...parsed.entries);
+        // Evita spread (`push(...arr)`): com um worker gerando >~100k
+        // entradas o spread vira argumentos de chamada e estoura a pilha
+        // (RangeError), descartando o arquivo inteiro (inclusive ref
+        // warnings reais nele) como se fosse JSON corrompido.
+        if (Array.isArray(parsed.entries)) entries = entries.concat(parsed.entries);
       } catch (err) {
         console.warn(`[consolidate] ignorando ${f}:`, err.message);
       }
     }
-  } catch {
-    console.log("[consolidate] sem snapshots para consolidar.");
-    return;
+  } catch (err) {
+    if (err.code === "ENOENT") {
+      console.log("[consolidate] sem snapshots para consolidar.");
+      return;
+    }
+    // Erro real (ex.: EACCES, ENOTDIR) não deve ser mascarado como "nada a
+    // consolidar" — isso escondia ref warnings reais e dava exit 0 (gate
+    // mudo). Propaga para o catch de main(), que falha com exit 2.
+    throw err;
   }
 
   // Ordena por timestamp para legibilidade.

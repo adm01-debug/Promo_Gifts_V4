@@ -208,7 +208,7 @@ async function executeRequest(endpoint, serviceKey) {
 
 function computeStats(results) {
   const latencies = results.map((r) => r.latency).sort((a, b) => a - b);
-  const errors = results.filter((r) => r.error || r.status >= 500 || r.timedOut);
+  const errors = results.filter((r) => r.error || r.status >= 400 || r.timedOut);
   const total = results.length;
   const errorRate = errors.length / total;
 
