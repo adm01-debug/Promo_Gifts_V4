@@ -21,7 +21,7 @@ import type { Product, ProductVariation } from '@/types/product-catalog';
 import type { ExternalVariantStock } from '@/hooks/useExternalVariantStock';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { ProductDetailSkeleton } from '@/components/products/ProductDetailSkeleton';
+import { DetailedProductDetailSkeleton } from '@/components/loading/ModernSkeletons';
 import { EmptyState } from '@/components/common/EmptyState';
 import { IntelligenceBadges } from '@/components/common/IntelligenceBadges';
 import { useProductIntelligenceBadges } from '@/hooks/useProductIntelligenceBadges';
@@ -131,12 +131,12 @@ export default function ProductDetail() {
         (v: ProductVariation) => v.color?.hex?.toLowerCase() === hexParam.toLowerCase(),
       );
     if (!match && grupoParam && product.colors?.length) {
-      const c = product.colors.find(
+      const groupColor = product.colors.find(
         (c: { groupSlug?: string; name?: string }) => c.groupSlug === grupoParam,
       );
-      if (c)
+      if (groupColor)
         match = product.variations.find(
-          (v: ProductVariation) => v.color?.name?.toLowerCase() === c.name?.toLowerCase(),
+          (v: ProductVariation) => v.color?.name?.toLowerCase() === groupColor.name?.toLowerCase(),
         );
     }
     if (match) setSelectedVariation(match);
@@ -169,7 +169,7 @@ export default function ProductDetail() {
   if (isLoading)
     return (
       <MainLayout>
-        <ProductDetailSkeleton />
+        <DetailedProductDetailSkeleton />
       </MainLayout>
     );
 
@@ -210,8 +210,8 @@ export default function ProductDetail() {
             color_name: variant.color_name,
             color_hex: variant.color_hex,
             size_code: variant.size_code,
-            variant_id: variant.variant_id,
-            thumbnail: variant.thumbnail,
+            variant_id: variant.id,
+            thumbnail: variant.selected_thumbnail,
           }
         : undefined,
     );
@@ -306,7 +306,7 @@ export default function ProductDetail() {
           isFavorite={isFavorite}
           onToggleFavorite={handleFavorite}
           viewCount={viewCount}
-          supplierTrust={supplierTrust}
+          supplierTrust={supplierTrust ?? null}
           onOpenPackagingModal={() => setPackagingModalOpen(true)}
           onOpenFutureStock={() => setFutureStockOpen(true)}
           onOpenSupplierComparison={() => setSupplierCompareOpen(true)}
@@ -354,17 +354,17 @@ export default function ProductDetail() {
           onClose={() => setPackagingModalOpen(false)}
           packingType={
             product.packagingContext === 'with_customization'
-              ? product.repackingType || product.packingType
-              : product.packingType
+              ? product.repackingType || product.packingType || null
+              : product.packingType ?? null
           }
           packagingContext={product.packagingContext}
-          boxImage={product.boxImage}
-          boxWidthMm={product.boxWidthMm}
-          boxHeightMm={product.boxHeightMm}
-          boxLengthMm={product.boxLengthMm}
-          boxWeightKg={product.boxWeightKg}
-          boxQuantity={product.boxQuantity}
-          boxVolumeCm3={product.boxVolumeCm3}
+          boxImage={product.boxImage ?? null}
+          boxWidthMm={product.boxWidthMm ?? null}
+          boxHeightMm={product.boxHeightMm ?? null}
+          boxLengthMm={product.boxLengthMm ?? null}
+          boxWeightKg={product.boxWeightKg ?? null}
+          boxQuantity={product.boxQuantity ?? null}
+          boxVolumeCm3={product.boxVolumeCm3 ?? null}
         />
       </div>
 

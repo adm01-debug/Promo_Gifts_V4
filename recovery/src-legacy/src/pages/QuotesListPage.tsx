@@ -41,18 +41,20 @@ import {
   Loader2,
 } from 'lucide-react';
 import { useQuotes } from '@/hooks/useQuotes';
+import { isQuoteStatus } from '@/types/quote';
+import { isValidQuoteTransition } from '@/lib/quote-status-config';
 import Fuse from 'fuse.js';
 import { format } from 'date-fns';
 // DynamicBreadcrumbs removido: o MainLayout já renderiza PersistentBreadcrumbs sticky.
 import { EmptyState } from '@/components/common/EmptyState';
-import { QuoteCardSkeleton } from '@/components/common/ContextualSkeleton';
+import { ContextualQuoteCardSkeleton } from '@/components/loading/ModernSkeletons';
 import { FadeInView, AnimatedCounter } from '@/components/common/MicroInteractions';
 import { QuotesConfigurableList } from '@/components/quotes/QuotesConfigurableList';
 import { QuotesStatusChips } from '@/components/quotes/QuotesStatusChips';
 import { QuotesFunnelChart } from '@/components/quotes/QuotesFunnelChart';
 import { useQuoteFunnel } from '@/hooks/useQuoteFunnel';
 
-type SortOption = 'newest' | 'oldest' | 'highest' | 'lowest' | 'expiring';
+type SortOption = 'expiring' | 'highest' | 'lowest' | 'newest' | 'oldest';
 
 const sortOptions: { value: SortOption; label: string }[] = [
   { value: 'newest', label: 'Mais recentes' },
@@ -87,7 +89,6 @@ export default function QuotesListPage() {
   }, [quotes]);
 
   // ── Funil + ciclo médio ──
-  const _allQuoteIds = useMemo(() => quotes.map((q) => q.id!).filter(Boolean), [quotes]);
   const funnelData = useQuoteFunnel(quotes, {});
 
   // ── Fuse.js fuzzy search ──
@@ -183,7 +184,7 @@ export default function QuotesListPage() {
           </div>
           <div className="grid gap-3">
             {[1, 2, 3, 4, 5].map((i) => (
-              <QuoteCardSkeleton key={i} />
+              <ContextualQuoteCardSkeleton key={i} />
             ))}
           </div>
         </div>
@@ -380,9 +381,12 @@ export default function QuotesListPage() {
                 onDelete={(id) => setDeleteConfirmId(id)}
                 onBulkDelete={(ids) => setBulkDeleteIds(ids)}
                 onBulkStatusChange={async (ids, status) => {
+                  if (!isQuoteStatus(status)) return;
                   let successCount = 0;
                   for (const id of ids) {
-                    const ok = await updateQuoteStatus(id, status as string);
+                    const quote = quotes.find((candidate) => candidate.id === id);
+                    if (!quote || !isValidQuoteTransition(quote.status, status)) continue;
+                    const ok = await updateQuoteStatus(id, status);
                     if (ok) successCount++;
                   }
                   toast.success(`${successCount} orçamento(s) atualizado(s)`);
@@ -398,8 +402,10 @@ export default function QuotesListPage() {
                 onBulkExport={(ids) => {
                   const selected = filteredQuotes.filter((q) => ids.includes(q.id!));
                   import('@/utils/excelExport').then(({ exportToExcel }) => {
-                    exportToExcel(
-                      selected.map((q) => ({
+                    void exportToExcel({
+                      filename: 'orcamentos_selecionados',
+                      columns: ['Número', 'Empresa', 'Contato', 'Status', 'Valor', 'Data'].map((key) => ({ key, header: key })),
+                      data: selected.map((q) => ({
                         Número: q.quote_number,
                         Empresa: q.client_company || '',
                         Contato: q.client_name || '',
@@ -407,8 +413,7 @@ export default function QuotesListPage() {
                         Valor: q.total || 0,
                         Data: q.created_at ? format(new Date(q.created_at), 'dd/MM/yyyy') : '',
                       })),
-                      'orcamentos_selecionados',
-                    );
+                    });
                     toast.success(`${ids.length} orçamento(s) exportado(s)`);
                   });
                 }}

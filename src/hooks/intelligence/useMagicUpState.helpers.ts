@@ -192,14 +192,14 @@ export async function fetchMagicUpProducts(
     search,
     limit: search ? 150 : 50,
   });
-  const mapped = data.map((p) => ({
+  const mapped: MagicUpProduct[] = data.map((p) => ({
     id: p.id,
     name: p.name,
     sku: p.sku,
-    images: p.images || [],
+    images: (p.images || []).map((url) => ({ url_cdn: url })),
     primary_image_url: p.primary_image_url || p.image_url || null,
     og_image_url: p.og_image_url || null,
-  })) as unknown as MagicUpProduct[];
+  }));
   const ranked = search
     ? (() => {
         const term = normalizeProductSearch(search);

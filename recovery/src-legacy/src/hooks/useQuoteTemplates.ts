@@ -1,369 +1,232 @@
-import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
-import type { Tables, TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
+import { useCallback, useMemo, useState } from 'react';
+import {
+  useQuoteTemplates as useCanonicalQuoteTemplates,
+  type QuoteTemplate as CanonicalQuoteTemplate,
+  type QuoteTemplateItem,
+  type CreateTemplateInput as CanonicalCreateTemplateInput,
+} from './quotes/useQuoteTemplates';
+import type { Tables } from '@/integrations/supabase/types';
 
-// ============================================
-// Types
-// ============================================
+export type { QuoteTemplateItem } from './quotes/useQuoteTemplates';
 
-type QuoteTemplateRow = Tables<"quote_templates">;
+type QuoteTemplateRow = Tables<'quote_templates'>;
 
-export interface QuoteTemplateItem {
-  productId?: string;
-  productSku?: string;
-  productName: string;
-  productImageUrl?: string;
-  quantity: number;
-  unitPrice: number;
-  colorName?: string;
-  colorHex?: string;
-  personalizations?: {
-    techniqueId: string;
-    techniqueName: string;
-    colorsCount?: number;
-    positionsCount?: number;
-    unitCost?: number;
-    setupCost?: number;
-  }[];
-}
+type NullableTemplateField =
+  | 'created_at'
+  | 'delivery_time'
+  | 'description'
+  | 'internal_notes'
+  | 'notes'
+  | 'payment_terms'
+  | 'seller_id'
+  | 'updated_at';
 
-export interface QuoteTemplate {
-  id: string;
-  seller_id: string;
-  name: string;
-  description?: string;
-  is_default: boolean;
-  template_data: Record<string, unknown>;
-  items_data: QuoteTemplateItem[];
-  discount_percent: number;
-  discount_amount: number;
-  notes?: string;
-  internal_notes?: string;
-  payment_terms?: string;
-  delivery_time?: string;
-  validity_days: number;
-  created_at: string;
-  updated_at: string;
-}
+type QuoteTemplateFields = Omit<
+  CanonicalQuoteTemplate,
+  NullableTemplateField | 'items' | 'template_data'
+> &
+  Partial<
+    Pick<
+      QuoteTemplateRow,
+      | 'category'
+      | 'created_by'
+      | 'is_active'
+      | 'payment_method'
+      | 'shipping_cost'
+      | 'shipping_type'
+      | 'usage_count'
+    >
+  > &
+  Partial<Pick<QuoteTemplateRow, NullableTemplateField>> &
+  Pick<QuoteTemplateRow, 'created_at' | 'seller_id' | 'updated_at'> & {
+    items: unknown;
+    template_data: unknown;
+  };
 
-export interface CreateTemplateInput {
-  name: string;
-  description?: string;
-  is_default?: boolean;
+type ValidatedTemplateItems =
+  | { items_data: null; items_error: string }
+  | { items_data: QuoteTemplateItem[]; items_error: null };
+
+export type QuoteTemplate = QuoteTemplateFields & ValidatedTemplateItems;
+
+export interface CreateTemplateInput extends Omit<CanonicalCreateTemplateInput, 'items'> {
   items_data?: QuoteTemplateItem[];
-  discount_percent?: number;
-  discount_amount?: number;
-  notes?: string;
-  internal_notes?: string;
-  payment_terms?: string;
-  delivery_time?: string;
-  validity_days?: number;
 }
 
-function transformTemplates(data: QuoteTemplateRow[]): QuoteTemplate[] {
-  return (data || []).map((item) => ({
-    ...item,
-    is_default: item.is_default ?? false,
-    items_data: Array.isArray(item.items_data)
-      ? item.items_data as unknown as QuoteTemplateItem[]
-      : [],
-    template_data: typeof item.template_data === 'object' && item.template_data !== null
-      ? item.template_data as Record<string, unknown>
-      : {},
-    discount_percent: item.discount_percent ?? 0,
-    discount_amount: item.discount_amount ?? 0,
-    validity_days: item.validity_days ?? 30,
-  }));
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-// ============================================
-// Hook
-// ============================================
+function optionalFieldMatches(
+  value: Record<string, unknown>,
+  fields: string[],
+  predicate: (entry: unknown) => boolean,
+): boolean {
+  return fields.every((field) => value[field] === undefined || predicate(value[field]));
+}
+
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value);
+}
+
+function isString(value: unknown): value is string {
+  return typeof value === 'string';
+}
+
+function isQuoteTemplateItem(value: unknown): value is QuoteTemplateItem {
+  if (
+    !isRecord(value) ||
+    typeof value.productName !== 'string' ||
+    !isFiniteNumber(value.quantity) ||
+    !isFiniteNumber(value.unitPrice)
+  )
+    return false;
+  if (
+    !optionalFieldMatches(
+      value,
+      ['productId', 'productSku', 'productImageUrl', 'colorName', 'colorHex'],
+      isString,
+    )
+  )
+    return false;
+  if (value.personalizations === undefined) return true;
+  return (
+    Array.isArray(value.personalizations) &&
+    value.personalizations.every(
+      (entry: unknown) =>
+        isRecord(entry) &&
+        typeof entry.techniqueId === 'string' &&
+        typeof entry.techniqueName === 'string' &&
+        optionalFieldMatches(
+          entry,
+          ['colorsCount', 'positionsCount', 'unitCost', 'setupCost'],
+          isFiniteNumber,
+        ),
+    )
+  );
+}
+
+function validateTemplateItems(value: unknown): ValidatedTemplateItems {
+  if (!Array.isArray(value)) {
+    return {
+      items_data: null,
+      items_error:
+        'Os itens deste template precisam de revisão. Os dados originais foram preservados.',
+    };
+  }
+  const items: QuoteTemplateItem[] = [];
+  for (const [index, entry] of value.entries()) {
+    if (!isQuoteTemplateItem(entry)) {
+      return {
+        items_data: null,
+        items_error: `O item ${index + 1} contém dados incompletos ou inválidos. Os dados originais foram preservados.`,
+      };
+    }
+    items.push(entry);
+  }
+  return { items_data: items, items_error: null };
+}
+
+function toLegacyTemplate(row: CanonicalQuoteTemplate | QuoteTemplateRow): QuoteTemplate {
+  const rawItems = 'raw_items' in row ? row.raw_items : row.items;
+  const rawTemplateData = 'raw_template_data' in row ? row.raw_template_data : row.template_data;
+  return {
+    ...row,
+    items: rawItems,
+    template_data: rawTemplateData,
+    is_default: row.is_default ?? false,
+    discount_percent: row.discount_percent ?? 0,
+    discount_amount: row.discount_amount ?? 0,
+    validity_days: row.validity_days ?? 30,
+    ...validateTemplateItems(rawItems),
+  };
+}
+
+function toCanonicalInput(
+  input: Partial<CreateTemplateInput>,
+): Partial<CanonicalCreateTemplateInput> {
+  const { items_data, ...fields } = input;
+  return { ...fields, ...(items_data === undefined ? {} : { items: items_data }) };
+}
 
 export function useQuoteTemplates() {
-  const [templates, setTemplates] = useState<QuoteTemplate[]>([]);
-  const [allTemplates, setAllTemplates] = useState<QuoteTemplate[]>([]);
-  const [sellers, setSellers] = useState<{ id: string; full_name: string | null; email: string }[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { user, isAdmin } = useAuth();
-  const { toast } = useToast();
+  const canonical = useCanonicalQuoteTemplates();
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const {
+    createTemplate: createCanonicalTemplate,
+    updateTemplate: updateCanonicalTemplate,
+    setDefaultTemplate: setCanonicalDefaultTemplate,
+    duplicateTemplate: duplicateCanonicalTemplate,
+    cloneTemplateToSeller: cloneCanonicalTemplateToSeller,
+  } = canonical;
+  const templates = useMemo(() => canonical.templates.map(toLegacyTemplate), [canonical.templates]);
+  const allTemplates = useMemo(
+    () => canonical.allTemplates.map(toLegacyTemplate),
+    [canonical.allTemplates],
+  );
 
-  const fetchTemplates = useCallback(async () => {
-    if (!user) {
-      setTemplates([]);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      const { data, error: qErr } = await supabase
-        .from("quote_templates")
-        .select("*")
-        .order("updated_at", { ascending: false })
-        .limit(200);
-
-      if (qErr) throw new Error(qErr.message);
-      setTemplates(transformTemplates(data || []));
-    } catch (err) {
-      console.error("Error fetching quote templates:", err);
-      setError("Erro ao carregar templates");
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
-
-  const fetchAllTemplates = useCallback(async () => {
-    if (!user || !isAdmin) {
-      setAllTemplates([]);
-      return;
-    }
-
-    try {
-      const { data, error: qErr } = await supabase
-        .from("quote_templates")
-        .select("*")
-        .order("updated_at", { ascending: false })
-        .limit(500);
-
-      if (qErr) throw new Error(qErr.message);
-      setAllTemplates(transformTemplates(data || []));
-    } catch (err) {
-      console.error("Error fetching all templates:", err);
-    }
-  }, [user, isAdmin]);
-
-  const fetchSellers = useCallback(async () => {
-    if (!user || !isAdmin) {
-      setSellers([]);
-      return;
-    }
-
-    try {
-      const { data, error: fetchError } = await supabase
-        .from("profiles")
-        .select("user_id, full_name")
-        .order("full_name");
-
-      if (fetchError) throw fetchError;
-
-      const sellersWithInfo = (data || []).map((profile) => ({
-        id: profile.user_id,
-        full_name: profile.full_name,
-        email: profile.full_name || 'Vendedor'
-      }));
-
-      setSellers(sellersWithInfo);
-    } catch (err) {
-      console.error("Error fetching sellers:", err);
-    }
-  }, [user, isAdmin]);
-
-  const createTemplate = useCallback(async (input: CreateTemplateInput) => {
-    if (!user) {
-      toast({ title: "Erro", description: "Você precisa estar logado para criar templates", variant: "destructive" });
-      return null;
-    }
-
-    try {
-      if (input.is_default) {
-        const resetPayload: TablesUpdate<"quote_templates"> = { is_default: false };
-        await supabase
-          .from("quote_templates")
-          .update(resetPayload)
-          .eq("seller_id", user.id)
-          .eq("is_default", true);
+  const createTemplate = useCallback(
+    async (input: CreateTemplateInput): Promise<QuoteTemplate | null> => {
+      const { items_data, ...fields } = input;
+      const validation = validateTemplateItems(items_data === undefined ? [] : items_data);
+      if (validation.items_error) {
+        setValidationError(validation.items_error);
+        return null;
       }
+      setValidationError(null);
+      const row = await createCanonicalTemplate({ ...fields, items: items_data });
+      return row ? toLegacyTemplate(row) : null;
+    },
+    [createCanonicalTemplate],
+  );
 
-      const insertPayload: TablesInsert<"quote_templates"> = {
-        seller_id: user.id,
-        name: input.name,
-        description: input.description || null,
-        is_default: input.is_default || false,
-        items_data: JSON.parse(JSON.stringify(input.items_data || [])),
-        template_data: {},
-        discount_percent: input.discount_percent || 0,
-        discount_amount: input.discount_amount || 0,
-        notes: input.notes || null,
-        internal_notes: input.internal_notes || null,
-        payment_terms: input.payment_terms || null,
-        delivery_time: input.delivery_time || null,
-        validity_days: input.validity_days || 30,
-      };
-
-      const { data: inserted, error: insErr } = await supabase
-        .from("quote_templates")
-        .insert(insertPayload)
-        .select("*");
-
-      if (insErr) throw new Error(insErr.message);
-
-      toast({ title: "Template criado", description: `Template "${input.name}" salvo com sucesso` });
-      await fetchTemplates();
-      return inserted?.[0] || null;
-    } catch (err) {
-      console.error("Error creating template:", err);
-      toast({ title: "Erro", description: "Não foi possível criar o template", variant: "destructive" });
-      return null;
-    }
-  }, [user, toast, fetchTemplates]);
-
-  const updateTemplate = useCallback(async (id: string, updates: Partial<CreateTemplateInput>) => {
-    if (!user) return null;
-
-    try {
-      if (updates.is_default) {
-        const resetPayload: TablesUpdate<"quote_templates"> = { is_default: false };
-        await supabase
-          .from("quote_templates")
-          .update(resetPayload)
-          .eq("seller_id", user.id)
-          .eq("is_default", true);
+  const updateTemplate = useCallback(
+    async (id: string, updates: Partial<CreateTemplateInput>): Promise<QuoteTemplate | null> => {
+      if (updates.items_data !== undefined) {
+        const validation = validateTemplateItems(updates.items_data);
+        if (validation.items_error) {
+          setValidationError(validation.items_error);
+          return null;
+        }
       }
+      setValidationError(null);
+      const row = await updateCanonicalTemplate(id, toCanonicalInput(updates));
+      return row ? toLegacyTemplate(row) : null;
+    },
+    [updateCanonicalTemplate],
+  );
 
-      const updatePayload: TablesUpdate<"quote_templates"> = {
-        ...updates,
-        updated_at: new Date().toISOString(),
-      };
-      if (updates.items_data) {
-        updatePayload.items_data = JSON.parse(JSON.stringify(updates.items_data));
-      }
+  const setDefaultTemplate = useCallback(
+    async (id: string): Promise<QuoteTemplate | null> => {
+      const row = await setCanonicalDefaultTemplate(id);
+      return row ? toLegacyTemplate(row) : null;
+    },
+    [setCanonicalDefaultTemplate],
+  );
 
-      const { data: result, error: updErr } = await supabase
-        .from("quote_templates")
-        .update(updatePayload)
-        .eq("id", id)
-        .select("*");
+  const duplicateTemplate = useCallback(
+    async (id: string): Promise<QuoteTemplate | null> => {
+      const row = await duplicateCanonicalTemplate(id);
+      return row ? toLegacyTemplate(row) : null;
+    },
+    [duplicateCanonicalTemplate],
+  );
 
-      if (updErr) throw new Error(updErr.message);
-
-      toast({ title: "Template atualizado", description: "Alterações salvas com sucesso" });
-      await fetchTemplates();
-      return result?.[0] || null;
-    } catch (err) {
-      console.error("Error updating template:", err);
-      toast({ title: "Erro", description: "Não foi possível atualizar o template", variant: "destructive" });
-      return null;
-    }
-  }, [user, toast, fetchTemplates]);
-
-  const deleteTemplate = useCallback(async (id: string) => {
-    if (!user) return false;
-
-    try {
-      const { error: delErr } = await supabase.from("quote_templates").delete().eq("id", id);
-      if (delErr) throw new Error(delErr.message);
-
-      toast({ title: "Template excluído", description: "Template removido com sucesso" });
-      await fetchTemplates();
-      return true;
-    } catch (err) {
-      console.error("Error deleting template:", err);
-      toast({ title: "Erro", description: "Não foi possível excluir o template", variant: "destructive" });
-      return false;
-    }
-  }, [user, toast, fetchTemplates]);
-
-  const setDefaultTemplate = useCallback(async (id: string) => {
-    return updateTemplate(id, { is_default: true });
-  }, [updateTemplate]);
-
-  const duplicateTemplate = useCallback(async (id: string) => {
-    const template = templates.find((t) => t.id === id);
-    if (!template) return null;
-
-    return createTemplate({
-      name: `${template.name} (Cópia)`,
-      description: template.description,
-      is_default: false,
-      items_data: template.items_data,
-      discount_percent: template.discount_percent,
-      discount_amount: template.discount_amount,
-      notes: template.notes,
-      internal_notes: template.internal_notes,
-      payment_terms: template.payment_terms,
-      delivery_time: template.delivery_time,
-      validity_days: template.validity_days,
-    });
-  }, [templates, createTemplate]);
-
-  const cloneTemplateToSeller = useCallback(async (templateId: string, targetSellerId: string) => {
-    if (!user || !isAdmin) {
-      toast({ title: "Erro", description: "Apenas administradores podem clonar templates entre vendedores", variant: "destructive" });
-      return null;
-    }
-
-    const template = allTemplates.find((t) => t.id === templateId);
-    if (!template) {
-      toast({ title: "Erro", description: "Template não encontrado", variant: "destructive" });
-      return null;
-    }
-
-    try {
-      const insertPayload: TablesInsert<"quote_templates"> = {
-        seller_id: targetSellerId,
-        name: `${template.name} (Clonado)`,
-        description: template.description || null,
-        is_default: false,
-        items_data: JSON.parse(JSON.stringify(template.items_data || [])),
-        template_data: JSON.parse(JSON.stringify(template.template_data || {})),
-        discount_percent: template.discount_percent || 0,
-        discount_amount: template.discount_amount || 0,
-        notes: template.notes || null,
-        internal_notes: template.internal_notes || null,
-        payment_terms: template.payment_terms || null,
-        delivery_time: template.delivery_time || null,
-        validity_days: template.validity_days || 30,
-      };
-
-      const { data: inserted, error: insErr } = await supabase
-        .from("quote_templates")
-        .insert(insertPayload)
-        .select("*");
-
-      if (insErr) throw new Error(insErr.message);
-
-      const targetSeller = sellers.find((s) => s.id === targetSellerId);
-      toast({ title: "Template clonado", description: `Template "${template.name}" clonado para ${targetSeller?.full_name || 'vendedor'} com sucesso` });
-
-      await fetchAllTemplates();
-      return inserted?.[0] || null;
-    } catch (err) {
-      console.error("Error cloning template:", err);
-      toast({ title: "Erro", description: "Não foi possível clonar o template", variant: "destructive" });
-      return null;
-    }
-  }, [user, isAdmin, allTemplates, sellers, toast, fetchAllTemplates]);
-
-  useEffect(() => {
-    fetchTemplates();
-  }, [fetchTemplates]);
-
-  useEffect(() => {
-    if (isAdmin) {
-      fetchAllTemplates();
-      fetchSellers();
-    }
-  }, [isAdmin, fetchAllTemplates, fetchSellers]);
+  const cloneTemplateToSeller = useCallback(
+    async (id: string, sellerId: string): Promise<QuoteTemplate | null> => {
+      const row = await cloneCanonicalTemplateToSeller(id, sellerId);
+      return row ? toLegacyTemplate(row) : null;
+    },
+    [cloneCanonicalTemplateToSeller],
+  );
 
   return {
+    ...canonical,
+    error: validationError ?? canonical.error,
     templates,
     allTemplates,
-    sellers,
-    loading,
-    error,
-    isAdmin,
-    fetchTemplates,
-    fetchAllTemplates,
-    fetchSellers,
     createTemplate,
     updateTemplate,
-    deleteTemplate,
     setDefaultTemplate,
     duplicateTemplate,
     cloneTemplateToSeller,

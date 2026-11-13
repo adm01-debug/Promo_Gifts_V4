@@ -10,9 +10,9 @@ import { exportSingleTemplate } from "@/utils/templateExport";
 
 interface TemplateGridViewProps {
   templatesBySeller: Record<string, QuoteTemplate[]>;
-  getSellerName: (sellerId: string) => string;
-  formatCurrency: (value: number) => string;
-  calculateTotal: (template: QuoteTemplate) => number;
+  getSellerName: (sellerId: string | null) => string;
+  formatCurrency: (value: number | null) => string;
+  calculateTotal: (template: QuoteTemplate) => number | null;
   onEdit?: (template: QuoteTemplate) => void;
   onClone: (templateId: string) => void;
   onDelete: (templateId: string) => void;
@@ -53,12 +53,13 @@ export function TemplateGridView({ templatesBySeller, getSellerName, formatCurre
                   </div>
                 </CardHeader>
                 <CardContent>
+                  {template.items_error && <p role="alert" className="mb-2 text-sm text-destructive">{template.items_error}</p>}
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center justify-between text-muted-foreground">
-                      <span className="flex items-center gap-1"><Package className="h-3.5 w-3.5" />{template.items_data.length} {template.items_data.length === 1 ? "item" : "itens"}</span>
+                      <span className="flex items-center gap-1"><Package className="h-3.5 w-3.5" />{template.items_data?.length ?? (Array.isArray(template.items) ? template.items.length : "—")} {template.items_data?.length === 1 ? "item" : "itens"}</span>
                       <span className="font-medium text-foreground">{formatCurrency(calculateTotal(template))}</span>
                     </div>
-                    <div className="pt-2 border-t text-xs text-muted-foreground">Atualizado em {format(new Date(template.updated_at), "dd/MM/yyyy", { locale: ptBR })}</div>
+                    <div className="pt-2 border-t text-xs text-muted-foreground">Atualizado em {template.updated_at && Number.isFinite(Date.parse(template.updated_at)) ? format(new Date(template.updated_at), "dd/MM/yyyy", { locale: ptBR }) : "Data não informada"}</div>
                   </div>
                 </CardContent>
               </Card>

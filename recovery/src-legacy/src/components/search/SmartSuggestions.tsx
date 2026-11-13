@@ -5,10 +5,6 @@ import {
   Sparkles,
   TrendingUp,
   Clock,
-  Star,
-  Package,
-  FileText,
-  Users,
   Lightbulb,
   ArrowRight,
   Tag,
@@ -19,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 
 interface Suggestion {
   id: string;
-  type: "trending" | "recent" | "recommended" | "related" | "promotion";
+  type: "promotion" | "recent" | "recommended" | "related" | "trending";
   title: string;
   description?: string;
   category?: string;
@@ -32,7 +28,7 @@ interface Suggestion {
 }
 
 interface SmartSuggestionsProps {
-  context?: "products" | "quotes" | "clients" | "general";
+  context?: "clients" | "general" | "products" | "quotes";
   currentItem?: string;
   maxItems?: number;
   showHeader?: boolean;
@@ -65,7 +61,7 @@ export function SmartSuggestions({
       setIsLoading(true);
       
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => { setTimeout(resolve, 300); });
       
       const mockSuggestions: Suggestion[] = [
         {
@@ -177,7 +173,8 @@ export function SmartSuggestions({
                 <div className={cn(
                   "p-2 rounded-lg flex-shrink-0",
                   config.bg
-                )}>
+                )}
+                >
                   <Icon className={cn("h-4 w-4", config.color)} />
                 </div>
 

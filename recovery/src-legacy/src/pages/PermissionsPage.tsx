@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -34,11 +34,7 @@ export default function PermissionsPage() {
   const [formData, setFormData] = useState({ code: '', name: '', description: '', category: 'geral' });
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchPermissions();
-  }, []);
-
-  const fetchPermissions = async () => {
+  const fetchPermissions = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('permissions')
@@ -46,25 +42,31 @@ export default function PermissionsPage() {
         .order('category', { ascending: true });
 
       if (error) throw error;
-      setPermissions(data || []);
+      setPermissions((data || []).map((permission) => ({ ...permission, id: permission.code, name: permission.label })));
     } catch (error: unknown) {
       toast({ title: 'Erro', description: error instanceof Error ? error.message : String(error), variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    void fetchPermissions();
+  }, [fetchPermissions]);
 
   const handleSubmit = async () => {
+    const payload = { code: formData.code, label: formData.name,
+      description: formData.description, category: formData.category };
     try {
       if (editingPermission) {
         const { error } = await supabase
           .from('permissions')
-          .update(formData)
-          .eq('id', editingPermission.id);
+          .update(payload)
+          .eq('code', editingPermission.code);
         if (error) throw error;
         toast({ title: 'Permissão atualizada com sucesso' });
       } else {
-        const { error } = await supabase.from('permissions').insert(formData);
+        const { error } = await supabase.from('permissions').insert(payload);
         if (error) throw error;
         toast({ title: 'Permissão criada com sucesso' });
       }
@@ -90,7 +92,7 @@ export default function PermissionsPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      const { error } = await supabase.from('permissions').delete().eq('id', id);
+      const { error } = await supabase.from('permissions').delete().eq('code', id);
       if (error) throw error;
       toast({ title: 'Permissão excluída com sucesso' });
       fetchPermissions();
@@ -99,11 +101,11 @@ export default function PermissionsPage() {
     }
   };
 
-  const groupedPermissions = permissions.reduce((acc, perm) => {
+  const groupedPermissions = permissions.reduce<Record<string, Permission[]>>((acc, perm) => {
     if (!acc[perm.category]) acc[perm.category] = [];
     acc[perm.category].push(perm);
     return acc;
-  }, {} as Record<string, Permission[]>);
+  }, {});
 
   return (
     <SidebarProvider>

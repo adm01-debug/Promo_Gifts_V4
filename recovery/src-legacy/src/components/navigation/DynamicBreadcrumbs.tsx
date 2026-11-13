@@ -1,6 +1,6 @@
 import { useMemo, Fragment } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
-import { Home } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { ChevronRight, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
@@ -65,7 +65,6 @@ const routeLabels: Record<string, string> = {
 
 export function DynamicBreadcrumbs({ customItems, className }: DynamicBreadcrumbsProps) {
   const location = useLocation();
-  const params = useParams();
   const { isDev, isAdmin } = useAuth();
 
   const breadcrumbs = useMemo(() => {
@@ -178,7 +177,7 @@ export function CompactBreadcrumbs({ className }: { className?: string }) {
   
   if (pathSegments.length <= 1) return null;
   
-  const parentPath = "/" + pathSegments.slice(0, -1).join("/");
+  const parentPath = `/${pathSegments.slice(0, -1).join("/")}`;
   const parentLabel = routeLabels[pathSegments[pathSegments.length - 2]] || 
     pathSegments[pathSegments.length - 2];
   

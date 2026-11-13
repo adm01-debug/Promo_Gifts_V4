@@ -1,3 +1,4 @@
+import { formatKitLinePrice } from '@/lib/kit-builder/pricing-availability';
 /**
  * Item Card
  * Card individual para exibir um item disponível no kit
@@ -12,7 +13,6 @@ import { cn } from '@/lib/utils';
 import { FavoriteToggleButton } from './FavoriteToggleButton';
 import {
   formatVolume,
-  formatCurrency,
   formatDimensions,
   type KitItem,
   type CompatibilityResult,
@@ -224,7 +224,7 @@ export function ItemCard({
             <StockBadge stock={item.stock} />
           </div>
           <span className="shrink-0 text-sm font-semibold text-primary">
-            {formatCurrency(item.price)}
+            {formatKitLinePrice(item)}
           </span>
           {boxSelected && <CompatibilityBadge item={item} />}
           <FavoriteToggleButton productId={item.id} productName={item.name} />
@@ -282,7 +282,7 @@ export function ItemCard({
         )}
         <div className="mt-1 flex items-center justify-between">
           <span className="text-xs text-muted-foreground">{formatVolume(item.volume)}</span>
-          <span className="text-sm font-semibold text-primary">{formatCurrency(item.price)}</span>
+          <span className="text-sm font-semibold text-primary">{formatKitLinePrice(item)}</span>
         </div>
         <div className="mt-1">
           <StockBadge stock={item.stock} />

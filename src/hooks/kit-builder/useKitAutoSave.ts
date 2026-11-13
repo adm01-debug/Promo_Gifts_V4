@@ -87,6 +87,7 @@ export function useKitAutoSave(
   const [isConflictError, setIsConflictError] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const snapshotRef = useRef<string>('');
+  const hasUnsavedChangesRef = useRef(false);
   const isFirstRender = useRef(true);
   const wasEnabledRef = useRef(enabled);
   const saveInFlightRef = useRef(false);
@@ -157,26 +158,26 @@ export function useKitAutoSave(
     if (!currentKitState.box && currentKitState.items.length === 0) return;
 
     const kitId = autoSavedKitIdRef.current || currentKitId;
-    const operation = pendingOperationRef.current ?? {
-      requestId: globalThis.crypto.randomUUID(),
-      kitId: kitId ?? undefined,
-      expectedRevision: kitId ? revisionRef.current : null,
-      payload: buildKitPersistencePayload(
-        user.id,
-        currentKitState,
-        currentKitQuantity,
-        contextRef.current,
-      ),
-      editVersion: editVersionRef.current,
-    };
-    // A transport failure may happen after the transaction commits. Keep both
-    // the idempotency key and the exact payload frozen until the response is
-    // recovered; changing updated_at would also change the server payload hash.
-    pendingOperationRef.current = operation;
-
     saveInFlightRef.current = true;
     setIsSaving(true);
     try {
+      const operation = pendingOperationRef.current ?? {
+        requestId: globalThis.crypto.randomUUID(),
+        kitId: kitId ?? undefined,
+        expectedRevision: kitId ? revisionRef.current : null,
+        payload: buildKitPersistencePayload(
+          user.id,
+          currentKitState,
+          currentKitQuantity,
+          contextRef.current,
+        ),
+        editVersion: editVersionRef.current,
+      };
+      // A transport failure may happen after the transaction commits. Keep both
+      // the idempotency key and the exact payload frozen until the response is
+      // recovered; changing updated_at would also change the server payload hash.
+      pendingOperationRef.current = operation;
+
       const data = await persistCustomKitAtomically({
         kitId: operation.kitId,
         expectedRevision: operation.expectedRevision,
@@ -200,6 +201,7 @@ export function useKitAutoSave(
         }
         saveQueuedRef.current = true;
       } else {
+        hasUnsavedChangesRef.current = false;
         setLastSavedAt(new Date());
         setAutoSaveError(null);
         setIsConflictError(false);
@@ -249,6 +251,7 @@ export function useKitAutoSave(
     }
     pendingOperationRef.current = null;
     saveQueuedRef.current = false;
+    hasUnsavedChangesRef.current = false;
     autoSavedKitIdRef.current = kitId;
     revisionRef.current = revision;
     setAutoSavedKitId(kitId);
@@ -295,6 +298,7 @@ export function useKitAutoSave(
     if (nextSnapshot === snapshotRef.current) return;
     snapshotRef.current = nextSnapshot;
     editVersionRef.current += 1;
+    hasUnsavedChangesRef.current = true;
 
     // Cancela timer anterior (debounce) e reagenda
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -331,9 +335,15 @@ export function useKitAutoSave(
     if (!enabled) return;
     const handleBeforeUnload = () => {
       if (!snapshotRef.current || !user?.id) return;
-      // Only write backup when there is a pending unsaved edit (timer still
-      // scheduled or save in-flight) to avoid overwriting a clean saved state.
-      if (!timerRef.current && !saveInFlightRef.current && !saveQueuedRef.current) return;
+      // Pending and failed edits remain recoverable even after their timer has
+      // elapsed. A confirmed clean snapshot must not overwrite an old backup.
+      if (
+        !hasUnsavedChangesRef.current &&
+        !timerRef.current &&
+        !saveInFlightRef.current &&
+        !saveQueuedRef.current
+      )
+        return;
       if (suppressNextUnloadBackupRef.current) {
         suppressNextUnloadBackupRef.current = false;
         return;

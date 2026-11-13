@@ -1,3 +1,5 @@
+import { serializeJsonValue } from '@/lib/json-value';
+import { hasKnownKitPrices, KIT_UNKNOWN_PRICE_MESSAGE } from './pricing-availability';
 import { supabase } from '@/integrations/supabase/client';
 import type { Database, Json } from '@/integrations/supabase/types';
 import type { KitAISuggestionBrief, KitBuilderFlow, KitState } from './types';
@@ -38,6 +40,60 @@ export function getKitStatusBadge(status: string): string {
   return 'Publicado';
 }
 
+const CLIENT_FIELDS = new Set([
+  'client_cnpj',
+  'client_company',
+  'client_email',
+  'client_id',
+  'client_name',
+  'client_phone',
+]);
+const BRIEF_FIELDS = new Set([
+  'kit_type',
+  'box_keywords',
+  'item_keywords',
+  'target_price_brl',
+  'narrative',
+  'title',
+  'description',
+  'style_tag',
+]);
+const BUDGET_FIELDS = new Set(['min', 'max']);
+
+function isDraftRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function draftExtras(value: unknown, knownFields: ReadonlySet<string>): Record<string, unknown> {
+  if (!isDraftRecord(value)) return {};
+  return Object.fromEntries(Object.entries(value).filter(([key]) => !knownFields.has(key)));
+}
+
+function mergeDraftClient(previous: unknown, next: KitDraftClient) {
+  // Empty is an explicit clear. A different client must not inherit another
+  // client's unknown metadata; same-client edits retain extensible fields.
+  if (Object.keys(next).length === 0) return {};
+  const oldClient = isDraftRecord(previous) ? previous : {};
+  const oldIdentity = oldClient.client_id ?? oldClient.client_cnpj;
+  const nextIdentity = next.client_id ?? next.client_cnpj;
+  return {
+    ...(oldIdentity === nextIdentity ? draftExtras(oldClient, CLIENT_FIELDS) : {}),
+    ...structuredClone(next),
+  };
+}
+
+function mergeDraftBrief(previous: unknown, next: KitAISuggestionBrief) {
+  const oldBrief = isDraftRecord(previous) ? previous : {};
+  return {
+    ...draftExtras(oldBrief, BRIEF_FIELDS),
+    ...structuredClone(next),
+    target_price_brl: {
+      ...draftExtras(oldBrief.target_price_brl, BUDGET_FIELDS),
+      ...structuredClone(next.target_price_brl),
+    },
+  };
+}
+
 /**
  * Builds the shared snapshot persisted by both explicit save and autosave.
  * `totalPrice` is already the total for `kitQuantity`.
@@ -48,15 +104,52 @@ export function buildKitPersistencePayload(
   kitQuantity: number,
   context: KitDraftContext = {},
 ) {
+  if (!hasKnownKitPrices(kitState)) throw new Error(KIT_UNKNOWN_PRICE_MESSAGE);
   const identity = kitState.identity;
+  const personalization: unknown = kitState.personalization;
+  const rawDraft =
+    typeof personalization === 'object' && personalization !== null && '__draft' in personalization
+      ? personalization.__draft
+      : undefined;
+  if (
+    rawDraft !== undefined &&
+    rawDraft !== null &&
+    (typeof rawDraft !== 'object' || Array.isArray(rawDraft))
+  ) {
+    throw new Error(
+      'O formato dos dados deste rascunho não é suportado. Os dados originais foram preservados.',
+    );
+  }
+  const existingDraft =
+    typeof rawDraft === 'object' && rawDraft !== null && !Array.isArray(rawDraft) ? rawDraft : {};
+  if ('version' in existingDraft && existingDraft.version !== 1) {
+    throw new Error(
+      'A versão dos dados deste rascunho não é suportada. Os dados originais foram preservados.',
+    );
+  }
   const personalizationData = {
     ...structuredClone(kitState.personalization),
     __draft: {
+      ...structuredClone(existingDraft),
       version: 1,
-      quoteClient: structuredClone(context.quoteClient ?? {}),
-      notes: kitState.notes || '',
-      ...(context.flow ? { flow: context.flow } : {}),
-      ...(context.aiBriefing ? { aiBriefing: structuredClone(context.aiBriefing) } : {}),
+      ...(context.quoteClient !== undefined
+        ? {
+            quoteClient: mergeDraftClient(
+              'quoteClient' in existingDraft ? existingDraft.quoteClient : undefined,
+              context.quoteClient,
+            ),
+          }
+        : {}),
+      ...(kitState.notes !== undefined ? { notes: kitState.notes } : {}),
+      ...(context.flow !== undefined ? { flow: context.flow } : {}),
+      ...(context.aiBriefing !== undefined
+        ? {
+            aiBriefing: mergeDraftBrief(
+              'aiBriefing' in existingDraft ? existingDraft.aiBriefing : undefined,
+              context.aiBriefing,
+            ),
+          }
+        : {}),
     },
   };
 
@@ -65,9 +158,9 @@ export function buildKitPersistencePayload(
     name: kitState.name || 'Kit sem nome',
     status: getPersistedKitStatus(kitState),
     kit_type: kitState.kitType || 'montado',
-    box_data: kitState.box ? (structuredClone(kitState.box) as unknown as Json) : null,
-    items_data: structuredClone(kitState.items) as unknown as Json,
-    personalization_data: personalizationData as unknown as Json,
+    box_data: kitState.box ? (serializeJsonValue(kitState.box) ?? null) : null,
+    items_data: serializeJsonValue(kitState.items) ?? [],
+    personalization_data: serializeJsonValue(personalizationData) ?? {},
     kit_quantity: kitQuantity,
     box_price: kitState.boxPrice,
     items_price: kitState.itemsPrice,
