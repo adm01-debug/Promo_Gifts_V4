@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(migrations): adiciona arquivo migration 20260511235960 ausente do main",
    "fix(ci): documenta BRIDGE_PATH em SEGREDOS.md para passar Gate E40",
    "docs: prod-readiness fechado no main 0b1766de (746 OK, 85 BLOQUEADO)",
    "chore(main): release 1.1.0",
-   "docs: registra 22 deploys E66 e 4 migrations E15 no ledger (#3496)",
-   "fix(db): exclusão de usuário com itens no carrinho deixa de falhar (#3402)"
+   "docs: registra 22 deploys E66 e 4 migrations E15 no ledger (#3496)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

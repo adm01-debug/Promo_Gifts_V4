@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "36eac065fa75b96dedf26dea71feeeb467cf4d34",
+  "sha": "10e57c95428b4452138e7b5a1228dd52b944b4a1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-13 09:53 UTC",
-  "files_total": 10033,
-  "code_files": 8569,
-  "code_lines": 1211934
+  "generated_at": "2026-11-13 10:22 UTC",
+  "files_total": 10034,
+  "code_files": 8570,
+  "code_lines": 1211938
  },
  "version": "1.3.2",
- "facts_hash": "76a232b89f2acfef",
+ "facts_hash": "8e3478668248f8bc",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1221,7 +1221,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3358,
+   ".sql": 3359,
    ".ts": 2904,
    ".tsx": 1858,
    ".mjs": 436,
@@ -93633,6 +93633,7 @@
    "supabase/migrations/20260511235900_mirror_categories_bitrix_id_out_of_band.sql",
    "supabase/migrations/20260511235950_add_categories_level_drift.sql",
    "supabase/migrations/20260511235959_add_categories_full_path_readable_drift.sql",
+   "supabase/migrations/20260511235960_add_categories_full_path_readable_drift.sql",
    "supabase/migrations/20260512000000_bootstrap_missing_application_schemas.sql",
    "supabase/migrations/20260512000001_t25_fix_auth_rls_initplan.sql",
    "supabase/migrations/20260512000002_t26_consolidate_permissive_policies.sql",
@@ -148741,8 +148742,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3062,
-   "lines": 220382,
+   "files": 3063,
+   "lines": 220386,
    "tables": [
     "...",
     "admin_audit_log",
@@ -493515,6 +493516,10 @@
    "path": "supabase/migrations/20260511235959_add_categories_full_path_readable_drift.sql",
    "lines": 34
   },
+  "supabase/migrations/20260511235960_add_categories_full_path_readable_drift.sql": {
+   "path": "supabase/migrations/20260511235960_add_categories_full_path_readable_drift.sql",
+   "lines": 4
+  },
   "supabase/migrations/20260512000000_bootstrap_missing_application_schemas.sql": {
    "path": "supabase/migrations/20260512000000_bootstrap_missing_application_schemas.sql",
    "lines": 3085,
@@ -528360,10 +528365,20 @@
   }
  },
  "git": {
-  "sha": "36eac065fa75b96dedf26dea71feeeb467cf4d34",
+  "sha": "10e57c95428b4452138e7b5a1228dd52b944b4a1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "10e57c9",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(migrations): adiciona arquivo migration 20260511235960 ausente do main",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20260511235960_add_categories_full_path_readable_drift.sql"
+    ]
+   },
    {
     "sha": "36eac06",
     "date": "2026-11-13",
@@ -528769,27 +528784,13 @@
      "supabase/functions/sync-quote-bitrix/index.ts",
      "tests/hooks/wizardReducer.test.ts"
     ]
-   },
-   {
-    "sha": "c7680be",
-    "date": "2026-11-12",
-    "author": "Joaquim Ataides",
-    "subject": "fix(ci): 4ª validação — E188 pelo SHA do head (fork), ledger por contagem, retries sob controle",
-    "files": [
-     ".github/workflows/deploy-gates.yml",
-     "scripts/audit-db-frontend-coverage.mjs",
-     "scripts/check-conflict-ledger.mjs",
-     "scripts/check-supabase-migration-ledger.mjs",
-     "tests/edge-functions/live-client-retry.test.ts",
-     "tests/edge-functions/live/_live-client.ts",
-     "tests/edge-functions/live/_live-suite.ts",
-     "tests/scripts/audit-db-frontend-coverage.test.mjs",
-     "tests/scripts/check-conflict-ledger.test.mjs",
-     "tests/scripts/check-supabase-migration-ledger.test.mjs"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    3
+   ],
    [
     "package.json",
     3
@@ -528812,10 +528813,6 @@
    ],
    [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    2
-   ],
-   [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
     2
    ],
    [
@@ -528843,6 +528840,10 @@
     2
    ],
    [
+    "supabase/migrations/20260511235960_add_categories_full_path_readable_drift.sql",
+    1
+   ],
+   [
     "docs/ci/SEGREDOS.md",
     1
    ],
@@ -528864,10 +528865,6 @@
    ],
    [
     ".as-assertions-baseline.json",
-    1
-   ],
-   [
-    "e2e/fixtures/selectors.ts",
     1
    ]
   ]
