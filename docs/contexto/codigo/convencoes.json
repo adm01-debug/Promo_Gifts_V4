@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(security): baseline de policies inclui e2e_cleanup_audit (destrava Gate 1.13) (#3468)",
    "docs: prod-readiness — inventário, prova OK/BLOQUEADO e PRs pendentes (main fee3d093) (#3453)",
    "fix(calculadora): tela mostra o preço oficial da RPC, o mesmo que vai para o orçamento (#3465)",
    "test(simulador): cobre o CTA Criar Orçamento do ProductPriceSimulator (#3462)",
-   "fix(admin): salvar papéis não trava quando a permissão já foi adicionada por outro admin (#3461)",
-   "fix(sitemap): devolve EXECUTE de anon em get_sitemap_public e remove sitemap estático (#3430)"
+   "fix(admin): salvar papéis não trava quando a permissão já foi adicionada por outro admin (#3461)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

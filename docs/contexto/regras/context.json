@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "0f5934a29cea709b434a918aa2caf9a6d1fdad97",
+  "sha": "fd9c4eec24b2a45d956acf62e090a02925287a1e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-13 04:09 UTC",
+  "generated_at": "2026-11-13 04:38 UTC",
   "files_total": 9824,
   "code_files": 8386,
   "code_lines": 1181504
@@ -519514,10 +519514,19 @@
   }
  },
  "git": {
-  "sha": "0f5934a29cea709b434a918aa2caf9a6d1fdad97",
+  "sha": "fd9c4eec24b2a45d956acf62e090a02925287a1e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "fd9c4ee",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(security): baseline de policies inclui e2e_cleanup_audit (destrava Gate 1.13) (#3468)",
+    "files": [
+     ".security/policies-baseline.json"
+    ]
+   },
    {
     "sha": "0f5934a",
     "date": "2026-11-13",
@@ -520970,17 +520979,6 @@
     "files": [
      "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
     ]
-   },
-   {
-    "sha": "9346b04",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "chore(migrations): adiciona arquivos espelho CRON-001 (20261101223908, 20261101232022)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261101223908_cron001_stagger_additional_jobs.sql",
-     "supabase/migrations/20261101232022_cron001_stagger_schedules_reapply.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -520990,10 +520988,6 @@
    ],
    [
     "src/components/pricing/QuantityPriceCalculator.tsx",
-    3
-   ],
-   [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
     3
    ],
    [
@@ -521014,6 +521008,10 @@
    ],
    [
     "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
+    2
+   ],
+   [
+    "supabase/MIGRATIONS_SYNC_LOG.md",
     2
    ],
    [

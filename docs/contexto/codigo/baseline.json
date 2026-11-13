@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0f5934a29cea709b434a918aa2caf9a6d1fdad97",
+  "commit": "fd9c4eec24b2a45d956acf62e090a02925287a1e",
   "branch": "main",
-  "data_commit": "2026-11-13T03:02:30Z",
+  "data_commit": "2026-11-13T04:13:46Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "fd9c4ee",
+    "data": "2026-11-13",
+    "assunto": "fix(security): baseline de policies inclui e2e_cleanup_audit (destrava Gate 1.13) (#3468)"
+   },
    {
     "sha": "0f5934a",
     "data": "2026-11-13",
@@ -126,11 +131,6 @@
     "sha": "e70479b",
     "data": "2026-11-09",
     "assunto": "chore(e2e): registrar specs @smoke no job e2e-gates"
-   },
-   {
-    "sha": "167f5f8",
-    "data": "2026-11-09",
-    "assunto": "chore: registra 611 arquivos não rastreados de sessões anteriores (#3361)"
    }
   ],
   "arquivos_mudados_7d": 1547,
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 284
+    "commits": 285
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 20
+    "commits": 19
    },
    {
     "autor": "Joaquim Ataides",
