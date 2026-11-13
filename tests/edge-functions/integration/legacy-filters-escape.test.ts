@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { applyFilters, escapeLikePattern, quotePostgrestValue } from '../../../supabase/functions/external-db-bridge/legacy-filters';
+import { applyFilters, escapeLikePattern, quotePostgrestValue } from '../../../supabase/functions/tests/external-db-bridge/legacy-filters';
 
 /** Query falsa que só grava as chamadas (o builder do supabase-js é encadeável). */
 function recorder() {
