@@ -1,5 +1,5 @@
 {
- "gerado_em": "2026-11-02T18:40:13.157Z",
+ "gerado_em": "2026-11-13T21:42:01.046Z",
  "total": 110,
  "sem_chamador": [
   "asia-ingestion",
@@ -28,10 +28,16 @@
  ],
  "edge_functions": {
   "ai-recommendations": {
-   "linhas": 136,
+   "linhas": 129,
    "segredos_lidos": [
+    "AI_ROUTER_DISABLE",
     "ALLOW_HTTP_FETCH",
     "ANON_KEY",
+    "EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY",
+    "EXTERNAL_PROMOBRIND_URL",
+    "EXTERNAL_SUPABASE_SERVICE_KEY",
+    "EXTERNAL_SUPABASE_SERVICE_ROLE_KEY",
+    "EXTERNAL_SUPABASE_URL",
     "LOG_CREDENTIAL_RESOLUTION",
     "LOVABLE_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -92,7 +98,7 @@
    "sem_chamador": false
   },
   "asia-ingestion": {
-   "linhas": 115,
+   "linhas": 117,
    "segredos_lidos": [
     "ASIA_BASE_URL",
     "ASIA_SUPPLIER_ID",
@@ -113,7 +119,7 @@
    "sem_chamador": true
   },
   "audit-suite": {
-   "linhas": 153,
+   "linhas": 157,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -150,10 +156,16 @@
    "sem_chamador": false
   },
   "bi-copilot": {
-   "linhas": 133,
+   "linhas": 137,
    "segredos_lidos": [
+    "AI_ROUTER_DISABLE",
     "ALLOW_HTTP_FETCH",
     "ANON_KEY",
+    "EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY",
+    "EXTERNAL_PROMOBRIND_URL",
+    "EXTERNAL_SUPABASE_SERVICE_KEY",
+    "EXTERNAL_SUPABASE_SERVICE_ROLE_KEY",
+    "EXTERNAL_SUPABASE_URL",
     "LOG_CREDENTIAL_RESOLUTION",
     "LOVABLE_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -191,7 +203,7 @@
    "sem_chamador": true
   },
   "block-ip-temporarily": {
-   "linhas": 100,
+   "linhas": 81,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -329,7 +341,7 @@
    "sem_chamador": false
   },
   "collections-watcher": {
-   "linhas": 150,
+   "linhas": 152,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -503,7 +515,7 @@
     "outras_edges": 0,
     "cron": [],
     "e2e": 0,
-    "ci_config": 0
+    "ci_config": 1
    },
    "sem_chamador": true
   },
@@ -546,7 +558,7 @@
    "sem_chamador": false
   },
   "crm-db-bridge": {
-   "linhas": 851,
+   "linhas": 942,
    "segredos_lidos": [
     "ALLOW_HTTP_FETCH",
     "ANON_KEY",
@@ -571,8 +583,9 @@
    "sem_chamador": false
   },
   "detect-new-device": {
-   "linhas": 144,
+   "linhas": 152,
    "segredos_lidos": [
+    "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
    ],
@@ -607,7 +620,7 @@
    "sem_chamador": false
   },
   "e2e-cleanup": {
-   "linhas": 231,
+   "linhas": 551,
    "segredos_lidos": [
     "E2E_CLEANUP_ALLOWED_EMAILS",
     "E2E_CLEANUP_RATE_LIMIT_MAX",
@@ -623,7 +636,7 @@
     "outras_edges": 0,
     "cron": [],
     "e2e": 5,
-    "ci_config": 2
+    "ci_config": 3
    },
    "sem_chamador": true
   },
@@ -670,7 +683,7 @@
    "sem_chamador": false
   },
   "ema-pipeline-health": {
-   "linhas": 71,
+   "linhas": 76,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -687,7 +700,7 @@
    "sem_chamador": false
   },
   "expert-chat": {
-   "linhas": 1469,
+   "linhas": 1480,
    "segredos_lidos": [
     "AI_ROUTER_DISABLE",
     "ALLOW_HTTP_FETCH",
@@ -725,7 +738,7 @@
     "migrations": 4,
     "outras_edges": 1,
     "cron": [],
-    "e2e": 32,
+    "e2e": 30,
     "ci_config": 0
    },
    "sem_chamador": false
@@ -752,7 +765,7 @@
    "sem_chamador": false
   },
   "favorites-watcher": {
-   "linhas": 152,
+   "linhas": 149,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -772,7 +785,7 @@
    "sem_chamador": false
   },
   "force-global-logout": {
-   "linhas": 111,
+   "linhas": 110,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -934,7 +947,7 @@
     "migrations": 0,
     "outras_edges": 0,
     "cron": [],
-    "e2e": 2,
+    "e2e": 4,
     "ci_config": 1
    },
    "sem_chamador": false
@@ -991,7 +1004,7 @@
     "outras_edges": 0,
     "cron": [],
     "e2e": 1,
-    "ci_config": 4
+    "ci_config": 5
    },
    "sem_chamador": true
   },
@@ -1221,7 +1234,7 @@
    "sem_chamador": false
   },
   "manage-users": {
-   "linhas": 357,
+   "linhas": 459,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -1258,7 +1271,7 @@
    "sem_chamador": false
   },
   "materials-api": {
-   "linhas": 272,
+   "linhas": 286,
    "segredos_lidos": [
     "EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY",
     "EXTERNAL_PROMOBRIND_URL",
@@ -1278,7 +1291,7 @@
    "sem_chamador": false
   },
   "mcp-keys-issue": {
-   "linhas": 396,
+   "linhas": 412,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -1312,7 +1325,7 @@
    "sem_chamador": false
   },
   "mcp-keys-rotate": {
-   "linhas": 331,
+   "linhas": 347,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -1329,7 +1342,7 @@
    "sem_chamador": false
   },
   "mcp-keys-update": {
-   "linhas": 333,
+   "linhas": 349,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -1346,7 +1359,7 @@
    "sem_chamador": false
   },
   "mcp-query": {
-   "linhas": 16,
+   "linhas": 22,
    "segredos_lidos": [],
    "chamada_em": {
     "src": 0,
@@ -1375,7 +1388,7 @@
    "sem_chamador": false
   },
   "migrate-helper": {
-   "linhas": 25,
+   "linhas": 31,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -1392,7 +1405,7 @@
    "sem_chamador": true
   },
   "ownership-audit": {
-   "linhas": 110,
+   "linhas": 121,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -1446,7 +1459,7 @@
    "sem_chamador": false
   },
   "process-scheduled-reports": {
-   "linhas": 194,
+   "linhas": 195,
    "segredos_lidos": [
     "LOG_CREDENTIAL_RESOLUTION",
     "RESEND_API_KEY",
@@ -1457,7 +1470,7 @@
    ],
    "chamada_em": {
     "src": 0,
-    "migrations": 0,
+    "migrations": 1,
     "outras_edges": 0,
     "cron": [
      "process-scheduled-reports"
@@ -1468,7 +1481,7 @@
    "sem_chamador": false
   },
   "product-visual-search": {
-   "linhas": 553,
+   "linhas": 556,
    "segredos_lidos": [
     "CSRF_SECRET",
     "LOG_CREDENTIAL_RESOLUTION",
@@ -1489,7 +1502,7 @@
    "sem_chamador": true
   },
   "product-webhook": {
-   "linhas": 607,
+   "linhas": 677,
    "segredos_lidos": [
     "LOG_CREDENTIAL_RESOLUTION",
     "N8N_PRODUCT_WEBHOOK_SECRET",
@@ -1678,7 +1691,7 @@
    "sem_chamador": false
   },
   "secure-upload": {
-   "linhas": 378,
+   "linhas": 405,
    "segredos_lidos": [
     "LOG_CREDENTIAL_RESOLUTION",
     "SUPABASE_ANON_KEY",
@@ -1717,7 +1730,7 @@
     "migrations": 0,
     "outras_edges": 0,
     "cron": [],
-    "e2e": 0,
+    "e2e": 1,
     "ci_config": 0
    },
    "sem_chamador": false
@@ -1772,7 +1785,7 @@
    ],
    "chamada_em": {
     "src": 0,
-    "migrations": 0,
+    "migrations": 1,
     "outras_edges": 0,
     "cron": [
      "send-scheduled-reports"
@@ -1858,7 +1871,7 @@
    "sem_chamador": false
   },
   "sync-quote-bitrix": {
-   "linhas": 214,
+   "linhas": 223,
    "segredos_lidos": [
     "ALLOW_HTTP_FETCH",
     "LOG_CREDENTIAL_RESOLUTION",
@@ -1990,7 +2003,7 @@
    "sem_chamador": false
   },
   "validate-access": {
-   "linhas": 290,
+   "linhas": 289,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -2001,13 +2014,13 @@
     "migrations": 0,
     "outras_edges": 0,
     "cron": [],
-    "e2e": 1,
+    "e2e": 4,
     "ci_config": 0
    },
    "sem_chamador": false
   },
   "verify-2fa-token": {
-   "linhas": 241,
+   "linhas": 255,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -2156,7 +2169,7 @@
    "sem_chamador": true
   },
   "xbz-image-uploader": {
-   "linhas": 59,
+   "linhas": 65,
    "segredos_lidos": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
