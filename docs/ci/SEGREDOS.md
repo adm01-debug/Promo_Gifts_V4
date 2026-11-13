@@ -167,6 +167,7 @@ Configurados via `supabase secrets set`; obrigatórios para as funções listada
 | `ALLOW_HTTP_FETCH` | Flag de config | — | `_shared/external-fetch.ts` |
 | `ANON_KEY` | Supabase Key | Semestral | `_shared/kill_switch.ts` |
 | `ASIA_BASE_URL` | URL serviço | Sob demanda | `asia-ingestion/index.ts` |
+| `BRIDGE_PATH` | Flag de teste (caminho do módulo) | — | `crm-db-bridge/scope_integration_test.ts` (só teste; default `./index.ts`) |
 | `BITRIX24_WEBHOOK_URL` | URL webhook | Semestral | `bitrix-sync/index.ts` |
 | `CF_ORIGIN_SECRET` | Secret Cloudflare | Trimestral | `check-login/index.ts` |
 | `CRM_CALLBACK_API_KEY` | API Key CRM | Trimestral | `receive-crm-callback/index.test.ts` |
