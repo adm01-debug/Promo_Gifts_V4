@@ -1,17 +1,10 @@
 /**
- * TechniqueConfigCard — Configure colors and size for a selected technique.
+ * TechniqueConfigCard — Configure colors for a selected technique.
  */
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Paintbrush, Palette, Ruler, Trash2 } from 'lucide-react';
-import { type SelectedTechniqueConfig, availableSizes } from './types';
+import { Paintbrush, Palette, Trash2 } from 'lucide-react';
+import { type SelectedTechniqueConfig } from './types';
 
 interface Props {
   config: SelectedTechniqueConfig;
@@ -20,7 +13,7 @@ interface Props {
 }
 
 export function TechniqueConfigCard({ config, onUpdate, onRemove }: Props) {
-  const { technique, colors, sizeOption } = config;
+  const { technique, colors } = config;
   const maxColors = technique.maxColors || 4;
 
   return (
@@ -60,30 +53,6 @@ export function TechniqueConfigCard({ config, onUpdate, onRemove }: Props) {
               </Button>
             ))}
           </div>
-        </div>
-        <div className="space-y-2">
-          <label className="flex items-center gap-1 text-xs font-medium">
-            <Ruler className="h-3 w-3" />
-            Tamanho
-          </label>
-          <Select
-            value={sizeOption}
-            onValueChange={(val) => {
-              const modifier = availableSizes.find((s) => s.value === val)?.modifier || 1;
-              onUpdate({ ...config, sizeOption: val, sizeModifier: modifier });
-            }}
-          >
-            <SelectTrigger className="h-8 text-xs">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {availableSizes.map((size) => (
-                <SelectItem key={size.value} value={size.value} className="text-xs">
-                  {size.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
         </div>
       </CardContent>
     </Card>
