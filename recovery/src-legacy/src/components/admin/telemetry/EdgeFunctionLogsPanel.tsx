@@ -73,7 +73,7 @@ import { shortRequestId } from "@/lib/telemetry/requestId";
 type UnifiedSample = {
   uid: string;
   ts: number;
-  source: "external-db-bridge" | "crm-db-bridge" | "secrets-manager";
+  source: "crm-db-bridge" | "external-db-bridge" | "secrets-manager";
   op: string;
   target?: string;
   durationMs: number;

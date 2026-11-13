@@ -36,10 +36,10 @@ export function useCustomizationPriceCalculator() {
         p_num_cores: params.numCores ?? 1,
       };
 
-      if (params.larguraCm !== null && params.larguraCm > 0) {
+      if (params.larguraCm !== null && params.larguraCm !== undefined && params.larguraCm > 0) {
         rpcParams.p_largura_cm = params.larguraCm;
       }
-      if (params.alturaCm !== null && params.alturaCm > 0) {
+      if (params.alturaCm !== null && params.alturaCm !== undefined && params.alturaCm > 0) {
         rpcParams.p_altura_cm = params.alturaCm;
       }
 
@@ -72,15 +72,15 @@ export function useCustomizationPriceCalculator() {
 export function useCustomizationPriceReactive(
   techniqueId: string | null,
   quantidade: number,
-  numCores: number = 1,
+  numCores = 1,
   larguraCm?: number | null,
   alturaCm?: number | null,
-  usaDimensao: boolean = false,
+  usaDimensao = false,
 ) {
   const [price, setPrice] = useState<CustomizationPriceResponseV6 | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     if (!techniqueId || quantidade <= 0) {

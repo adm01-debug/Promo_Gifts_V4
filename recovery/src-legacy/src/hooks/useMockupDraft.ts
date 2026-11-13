@@ -2,9 +2,49 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { type PersonalizationArea } from '@/components/mockup/MultiAreaManager';
+import type { TablesInsert } from '@/integrations/supabase/types';
+import { serializeJsonValue } from '@/lib/json-value';
 
 const LOCAL_STORAGE_KEY = 'mockup_draft_v1';
 const AUTO_SAVE_DELAY = 2000; // 2 segundos de debounce
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function optionalText(value: unknown): string | null {
+  return typeof value === 'string' ? value : null;
+}
+
+function finiteNumber(value: unknown, fallback: number): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
+}
+
+function optionalFiniteNumber(value: unknown): number | null {
+  return typeof value === 'number' && Number.isFinite(value) ? value : null;
+}
+
+function normalizeAreas(value: unknown): PersonalizationArea[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter(isRecord).map((area) => ({
+    ...area,
+    id: typeof area.id === 'string' && area.id ? area.id : crypto.randomUUID(),
+    name: typeof area.name === 'string' && area.name ? area.name : 'Frente',
+    positionX: finiteNumber(area.positionX, 50),
+    positionY: finiteNumber(area.positionY, 50),
+    logoWidth: finiteNumber(area.logoWidth, 5),
+    logoHeight: finiteNumber(area.logoHeight, 3),
+    logoRotation: finiteNumber(area.logoRotation, 0),
+    logoScale: finiteNumber(area.logoScale, 100),
+    logoPreview: optionalText(area.logoPreview),
+    logoFile: null,
+    maxWidthCm: optionalFiniteNumber(area.maxWidthCm),
+    maxHeightCm: optionalFiniteNumber(area.maxHeightCm),
+    maxColors: optionalFiniteNumber(area.maxColors),
+    isCurved: typeof area.isCurved === 'boolean' ? area.isCurved : undefined,
+    techniquesAvailable: optionalFiniteNumber(area.techniquesAvailable) ?? undefined,
+  }));
+}
 
 export interface MockupDraftData {
   productId: string | null;
@@ -49,7 +89,18 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
       const key = `${LOCAL_STORAGE_KEY}_${user?.id || 'anonymous'}_${draftKey}`;
       const stored = localStorage.getItem(key);
       if (stored) {
-        return JSON.parse(stored);
+        const parsed: unknown = JSON.parse(stored);
+        if (!isRecord(parsed)) return null;
+        return {
+          productId: optionalText(parsed.productId),
+          productName: optionalText(parsed.productName),
+          techniqueId: optionalText(parsed.techniqueId),
+          techniqueName: optionalText(parsed.techniqueName),
+          clientId: optionalText(parsed.clientId),
+          clientName: optionalText(parsed.clientName),
+          personalizationAreas: normalizeAreas(parsed.personalizationAreas),
+          updatedAt: typeof parsed.updatedAt === 'string' ? parsed.updatedAt : new Date(0).toISOString(),
+        };
       }
     } catch (err) {
       console.error('Erro ao carregar do localStorage:', err);
@@ -75,58 +126,19 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
 
         // Only persist URL references in logo_data (never base64)
         const firstLogo = data.personalizationAreas.find((a) => a.logoPreview)?.logoPreview || null;
-        const safeLogoData = firstLogo && firstLogo.startsWith('http') ? firstLogo : null;
+        const safeLogoData = firstLogo?.startsWith('http') ? firstLogo : null;
 
-        // Verify product_id exists in local products table before saving
-        // Products from external DB won't have a matching row, so we skip the FK
-        let safeProductId: string | null = null;
-        if (data.productId) {
-          const { data: productRow } = await supabase
-            .from('products')
-            .select('id')
-            .eq('id', data.productId)
-            .maybeSingle();
-          if (productRow) {
-            safeProductId = data.productId;
-          }
-        }
-
-        // Same check for technique_id
-        let safeTechniqueId: string | null = null;
-        if (data.techniqueId) {
-          const { data: techRow } = await supabase
-            .from('personalization_techniques')
-            .select('id')
-            .eq('id', data.techniqueId)
-            .maybeSingle();
-          if (techRow) {
-            safeTechniqueId = data.techniqueId;
-          }
-        }
-
-        // Same check for client_id
-        let safeClientId: string | null = null;
-        if (data.clientId) {
-          const { data: clientRow } = await supabase
-            .from('bitrix_clients')
-            .select('id')
-            .eq('id', data.clientId)
-            .maybeSingle();
-          if (clientRow) {
-            safeClientId = data.clientId;
-          }
-        }
-
-        const payload = {
+        // These are external TEXT references without foreign keys in mockup_drafts.
+        const payload: TablesInsert<'mockup_drafts'> = {
           user_id: user.id,
           draft_key: draftKey,
-          product_id: safeProductId,
+          product_id: optionalText(data.productId),
           product_name: data.productName,
-          technique_id: safeTechniqueId,
+          technique_id: optionalText(data.techniqueId),
           technique_name: data.techniqueName,
-          client_id: safeClientId,
+          client_id: optionalText(data.clientId),
           client_name: data.clientName,
-          personalization_areas: areasWithoutLogos as unknown as Record<string, unknown>[],
+          personalization_areas: serializeJsonValue(areasWithoutLogos) ?? [],
           logo_data: safeLogoData,
           updated_at: new Date().toISOString(),
         };
@@ -144,7 +156,7 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
               technique_id: _tid,
               client_id: _cid,
               ...safePayload
-            } = payload as Record<string, unknown>;
+            } = payload;
             const { error: updateError } = await supabase
               .from('mockup_drafts')
               .update({
@@ -193,19 +205,7 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
       }
 
       if (data) {
-        const areas = Array.isArray(data.personalization_areas)
-          ? (data.personalization_areas as unknown[]).map((a) => ({
-              id: a.id || crypto.randomUUID(),
-              name: a.name || 'Frente',
-              positionX: a.positionX ?? 50,
-              positionY: a.positionY ?? 50,
-              logoWidth: a.logoWidth ?? 5,
-              logoHeight: a.logoHeight ?? 3,
-              logoRotation: a.logoRotation ?? 0,
-              logoScale: a.logoScale ?? 100,
-              logoPreview: a.logoPreview || null,
-            }))
-          : [];
+        const areas = normalizeAreas(data.personalization_areas);
 
         // Restaurar logo do campo logo_data se não estiver nas áreas
         if (data.logo_data && areas.length > 0 && !areas[0].logoPreview) {

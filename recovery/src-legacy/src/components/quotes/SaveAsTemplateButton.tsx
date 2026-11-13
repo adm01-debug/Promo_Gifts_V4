@@ -24,10 +24,11 @@ interface SaveAsTemplateButtonProps {
 
 export function SaveAsTemplateButton({
   items,
-  discountPercent = 0,
-  discountAmount = 0,
-  notes = "",
-  internalNotes = "",
+  // Recebidos pela API pública, ainda não persistidos por este stub (ver handleSave).
+  discountPercent: _discountPercent = 0,
+  discountAmount: _discountAmount = 0,
+  notes: _notes = "",
+  internalNotes: _internalNotes = "",
   trigger,
   onSaved,
 }: SaveAsTemplateButtonProps) {
@@ -36,18 +37,6 @@ export function SaveAsTemplateButton({
   const handleSave = () => {
     setOpen(false);
     onSaved?.();
-  };
-
-  const initialTemplate = {
-    name: "",
-    description: "",
-    is_default: false,
-    items_data: items,
-    discount_percent: discountPercent,
-    discount_amount: discountAmount,
-    notes,
-    internal_notes: internalNotes,
-    validity_days: 30,
   };
 
   return (

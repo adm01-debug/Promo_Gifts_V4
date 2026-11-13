@@ -1,11 +1,11 @@
 /**
  * Hook to fetch real supplier trust data for badges.
  * Sources: variant_supplier_sources (lead_time_days) + suppliers (active flag).
- * Falls back to deterministic mock when no real data is available.
+ * Keeps trust unknown when no real data is available; demo data stays in test fixtures.
  */
 import { useQuery } from '@tanstack/react-query';
 import { invokeExternalDb } from '@/lib/external-db/bridge';
-import { type SupplierTrustData, getMockSupplierTrust } from '@/components/common/SocialProof';
+import { type SupplierTrustData } from '@/components/common/SocialProof';
 import { logger } from '@/lib/logger';
 
 interface VSSRecord {
@@ -19,18 +19,18 @@ interface VSSRecord {
 interface SupplierRecord {
   id: string;
   name: string;
-  active: boolean;
+  active: boolean | null;
 }
 
 /**
  * Fetches real supplier trust data for a product.
- * Returns mock data as fallback if no real data is found.
+ * Returns unknown trust as fallback if no real data is found.
  */
 export function useSupplierTrust(productId?: string) {
   return useQuery({
     queryKey: ['supplier-trust', productId],
     queryFn: async (): Promise<SupplierTrustData> => {
-      if (!productId) return getMockSupplierTrust('unknown');
+      if (!productId) return { isVerified: false, deliveryDays: null, avgRating: null };
 
       try {
         // 1. Get variant IDs for this product first
@@ -45,7 +45,7 @@ export function useSupplierTrust(productId?: string) {
 
         const variantIds = variantResult.records.map((v) => v.id);
         if (!variantIds.length) {
-          return getMockSupplierTrust(productId);
+          return { isVerified: false, deliveryDays: null, avgRating: null };
         }
 
         // 2. Get preferred supplier source using variant_id
@@ -61,8 +61,8 @@ export function useSupplierTrust(productId?: string) {
 
         const sources = vssResult.records;
         if (!sources.length) {
-          // No real data — fallback to mock
-          return getMockSupplierTrust(productId);
+          // No real data — trust remains unknown
+          return { isVerified: false, deliveryDays: null, avgRating: null };
         }
 
         // Use preferred source, or first active one
@@ -82,7 +82,7 @@ export function useSupplierTrust(productId?: string) {
               countMode: 'none',
             });
             if (supplierResult.records.length) {
-              isVerified = supplierResult.records[0].active !== false;
+              isVerified = supplierResult.records[0].active === true;
             }
           } catch {
             // Supplier lookup failed — mark as not verified
@@ -90,10 +90,8 @@ export function useSupplierTrust(productId?: string) {
           }
         }
 
-        // 3. Mock rating (no ratings table exists yet)
-        // Use deterministic value from productId but mark as "real-ish"
-        const mock = getMockSupplierTrust(productId);
-        const avgRating = mock.avgRating; // Will be replaced when ratings table exists
+        // 3. No ratings source exists yet; never present demo ratings as real.
+        const avgRating = null; // Will be replaced when ratings table exists
 
         return {
           isVerified,
@@ -101,8 +99,8 @@ export function useSupplierTrust(productId?: string) {
           avgRating,
         };
       } catch (err) {
-        logger.warn('[useSupplierTrust] Failed to fetch real data, using mock:', err);
-        return getMockSupplierTrust(productId);
+        logger.warn('[useSupplierTrust] Failed to fetch real data; trust is unknown:', err);
+        return { isVerified: false, deliveryDays: null, avgRating: null };
       }
     },
     enabled: !!productId,

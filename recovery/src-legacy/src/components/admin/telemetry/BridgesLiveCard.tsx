@@ -258,7 +258,7 @@ export function BridgesLiveCard() {
                     <th className="text-right p-2 font-medium text-muted-foreground text-xs">Resp.</th>
                     <th className="text-left p-2 font-medium text-muted-foreground text-xs">Quando</th>
                     <th className="text-right p-2 font-medium text-muted-foreground text-xs">Status</th>
-                    <th className="p-2"></th>
+                    <th className="p-2" />
                   </tr>
                 </thead>
                 <tbody>

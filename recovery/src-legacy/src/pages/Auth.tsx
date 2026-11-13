@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -398,7 +398,7 @@ export default function Auth() {
                       <Button
                         type="button"
                         data-testid="login-forgot-link"
-                        variant="link-primary"
+                        variant="link"
                         className="h-auto p-0 text-sm"
                         onClick={() => setShowForgotPassword(true)}
                       >

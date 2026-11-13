@@ -15,7 +15,7 @@ import { ProductListItem } from "@/components/products/ProductListItem";
 import { ProductTableView } from "@/components/products/ProductTableView";
 import { LayoutPopover } from "@/components/products/LayoutPopover";
 import { getDefaultColumns, type ColumnCount } from "@/components/products/ColumnSelector";
-import { getGridColsClass, getGridGapClass } from "@/components/replenishments/VirtualizedReplenishmentGrid";
+import { getGridColsClass, getGridGapClass } from "@/components/replenishments/grid-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -27,13 +27,12 @@ import {
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { DeleteConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 import { useCatalogSelection } from "@/components/catalog/useCatalogSelection";
 import { CatalogBulkModals } from "@/components/catalog/CatalogBulkModals";
 import { FavoriteListsSidebar } from "@/components/favorites/FavoriteListsSidebar";
 import { FavoritesTrashView } from "@/components/favorites/FavoritesTrashView";
-import { FavoritesViewHeader } from "@/components/favorites/FavoritesViewHeader";
+import { FavoriteDeleteConfirmDialog, FavoritesHeaderWithPresentation } from "@/components/favorites/LegacyFavoritesAdapters";
 import { ItemNoteEditor } from "@/components/favorites/ItemNoteEditor";
 import { PriceDropBadge } from "@/components/favorites/PriceDropBadge";
 import { FavoritesEmptyStateSmart } from "@/components/favorites/FavoritesEmptyStateSmart";
@@ -148,10 +147,7 @@ export default function FavoritesPage() {
     return enriched.filter((e) => e.priceDiffPct !== null && e.priceDiffPct < -2).length;
   }, [enriched, isRemoteListView]);
 
-  const legacyFavoriteProducts = useMemo(
-    () => getProductsByIds(favorites.map((f) => f.productId)),
-    [getProductsByIds, favorites, _cacheSignal]
-  );
+  const legacyFavoriteProducts = getProductsByIds(favorites.map((favorite) => favorite.productId));
 
   const variantMap = useMemo(() => {
     const map = new Map<string, FavoriteVariantInfo>();
@@ -366,7 +362,7 @@ export default function FavoritesPage() {
             {(headerTotalCount > 0 && !showTrash) && (
               <>
                 {!isRemoteListView && (
-                  <DeleteConfirmDialog
+                  <FavoriteDeleteConfirmDialog
                     trigger={
                       <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
                         <Trash2 className="h-4 w-4 mr-2" />
@@ -433,7 +429,7 @@ export default function FavoritesPage() {
               </>
             ) : (
               <>
-                <FavoritesViewHeader
+                <FavoritesHeaderWithPresentation
                   list={activeList}
                   itemCount={isRemoteListView ? rawItems.length : favoriteCount}
                   sort={sort}
@@ -518,7 +514,7 @@ export default function FavoritesPage() {
                         <X className="h-3.5 w-3.5 mr-1" />
                         Limpar
                       </Button>
-                      <DeleteConfirmDialog
+                      <FavoriteDeleteConfirmDialog
                         trigger={
                           <Button variant="destructive" size="sm" disabled={selectedIds.size === 0}>
                             <Trash2 className="h-3.5 w-3.5 mr-1.5" />
@@ -572,7 +568,8 @@ export default function FavoritesPage() {
                                 <div className={cn(
                                   "h-6 w-6 rounded-md border-2 flex items-center justify-center transition-all backdrop-blur-sm",
                                   isSelected ? "bg-primary border-primary" : "bg-card/90 border-border"
-                                )}>
+                                )}
+                                >
                                   {isSelected && <CheckSquare className="h-3.5 w-3.5 text-primary-foreground" />}
                                 </div>
                               </div>
@@ -624,7 +621,8 @@ export default function FavoritesPage() {
                                 <div className={cn(
                                   "h-6 w-6 rounded-md border-2 flex items-center justify-center transition-all backdrop-blur-sm",
                                   isSelected ? "bg-primary border-primary" : "bg-card/90 border-border"
-                                )}>
+                                )}
+                                >
                                   {isSelected && <CheckSquare className="h-3.5 w-3.5 text-primary-foreground" />}
                                 </div>
                               </div>

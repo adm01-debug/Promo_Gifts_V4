@@ -56,7 +56,7 @@ export function useFavoriteQuickAdd() {
 
   /** Adiciona produto remotamente em uma lista específica + registra no store legado (sync local). */
   const addToList = useCallback(
-    async (listId: string, product: Product, variant?: FavoriteVariantInfo) => {
+    async (listId: string, product: Pick<Product, 'id' | 'price'>, variant?: FavoriteVariantInfo) => {
       if (!user) return;
       try {
         const { error } = await supabase.from('favorite_items').upsert(
@@ -115,7 +115,7 @@ export function useFavoriteQuickAdd() {
 
   /** Cria lista nova e adiciona o produto nela. */
   const createAndAdd = useCallback(
-    async (name: string, product: Product, variant?: FavoriteVariantInfo) => {
+    async (name: string, product: Pick<Product, 'id' | 'price'>, variant?: FavoriteVariantInfo) => {
       const list = await createList.mutateAsync({ name });
       await addToList(list.id, product, variant);
       return list.id;
@@ -129,9 +129,9 @@ export function useFavoriteQuickAdd() {
    */
   const handleFavoriteClick = useCallback(
     (
-      product: Product,
+      product: Pick<Product, 'id' | 'price'>,
       opts?: { shiftKey?: boolean; variant?: FavoriteVariantInfo; forceListId?: string },
-    ): { resolved: true } | { resolved: false; reason: 'picker-needed' } => {
+    ): { resolved: false; reason: 'picker-needed' } | { resolved: true } => {
       if (!user) {
         toggleFavorite(product.id, opts?.variant);
         return { resolved: true };

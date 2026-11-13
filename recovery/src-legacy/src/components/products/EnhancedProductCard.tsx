@@ -37,7 +37,7 @@ interface EnhancedProductCardProps {
   isInCompare?: boolean;
   canAddToCompare?: boolean;
   showUrgencyBadge?: boolean;
-  urgencyType?: "limited-stock" | "trending" | "ending-soon";
+  urgencyType?: "ending-soon" | "limited-stock" | "trending";
   urgencyText?: string;
 }
 
@@ -61,6 +61,9 @@ export function EnhancedProductCard({
   const [imageLoaded, setImageLoaded] = useState(false);
   const [quickAddQuantity, setQuickAddQuantity] = useState(1);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const rating = "rating" in product && typeof product.rating === "number" && Number.isFinite(product.rating)
+    ? product.rating
+    : undefined;
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -354,10 +357,10 @@ export function EnhancedProductCard({
           <Badge variant="secondary" className="text-[10px]">
             {product.supplier?.name || "Fornecedor"}
           </Badge>
-          {product.rating && (
+          {rating && (
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Star className="h-3 w-3 fill-warning text-warning" />
-              {product.rating.toFixed(1)}
+              {rating.toFixed(1)}
             </div>
           )}
         </div>

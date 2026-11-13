@@ -11,21 +11,20 @@
 import { useCallback, useMemo, useRef } from 'react';
 
 import { MainLayout } from '@/components/layout/MainLayout';
-import { type CartStatus } from '@/hooks/useSellerCarts';
-import type { CartTemplateItem } from '@/hooks/useCartTemplates';
+import { type CartStatus } from '@/hooks/products';
 import { CartCompanyPickerDialog } from '@/components/cart/CartCompanyPickerDialog';
 import { CartTabsRich } from '@/components/cart/CartTabsRich';
-import { CartEmptyStateSmart } from '@/components/cart/CartEmptyStateSmart';
+import { CartEmptyStateWithTemplates } from '@/components/cart/CartEmptyStateWithTemplates';
 import { SortableCartItem } from '@/components/cart/SortableCartItem';
 import {
   getStatusCfg,
   STATUS_CONFIG,
   CartItemSkeleton,
-  FollowUpTimer,
   CompareCartsDialog,
   MobileSummarySheet,
   formatCurrency,
 } from '@/components/cart/CartUtilComponents';
+import { FollowUpTimer } from '@/components/cart/LegacyCartInsights';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -346,16 +345,9 @@ function SellerCartsContent() {
 
             {/* Produtos */}
             {s.activeCart.items.length === 0 ? (
-              <CartEmptyStateSmart
+              <CartEmptyStateWithTemplates
                 activeCart={s.activeCart}
-                templates={
-                  s.templates as {
-                    id: string;
-                    name: string;
-                    description?: string;
-                    items: CartTemplateItem[];
-                  }[]
-                }
+                templates={s.templates}
                 otherCarts={s.otherCarts}
                 onApplyTemplate={s.handleLoadTemplate}
                 onDuplicateLast={handleDuplicateLast}

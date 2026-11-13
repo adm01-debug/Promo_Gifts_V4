@@ -4,7 +4,7 @@
  */
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { selectCrm } from '@/lib/crm-db';
-import { useQuotes } from '@/hooks/useQuotes';
+import { useQuotes, type Quote } from '@/hooks/useQuotes';
 import { format, differenceInHours, startOfMonth, subMonths } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import jsPDF from 'jspdf';
@@ -44,12 +44,12 @@ export function useQuotesDashboard() {
     (async () => {
       setLoadingClients(true);
       try {
-        const data = await selectCrm<Client>('companies', {
+        const data = await selectCrm<{ id: string; nome_fantasia: string | null }>('companies', {
           select: 'id,nome_fantasia',
           orderBy: 'nome_fantasia',
           limit: 500,
         });
-        setClients(data.map((c: Client) => ({ id: c.id, name: c.nome_fantasia || c.id })));
+        setClients(data.map((c) => ({ id: c.id, name: c.nome_fantasia || c.id })));
       } catch (err) {
         console.error('Error fetching clients:', err);
       }
@@ -110,7 +110,8 @@ export function useQuotesDashboard() {
         break;
     }
 
-    let filtered = quotes.filter((q) => new Date(q.created_at) >= startDate);
+    let filtered = quotes.filter((q): q is Quote & { created_at: string } =>
+      Boolean(q.created_at) && new Date(q.created_at || '') >= startDate);
     if (selectedClientId !== 'all')
       filtered = filtered.filter((q) => q.client_id === selectedClientId);
 
@@ -136,12 +137,12 @@ export function useQuotesDashboard() {
         ) / withResponse.length;
     }
 
-    const statusCounts = filtered.reduce(
+    const statusCounts = filtered.reduce<Record<string, number>>(
       (a, q) => {
         a[q.status] = (a[q.status] || 0) + 1;
         return a;
       },
-      {} as Record<string, number>,
+      {},
     );
     const statusDistribution = Object.entries(statusCounts).map(([status, count]) => ({
       name: statusConfig[status]?.label || status,
@@ -149,7 +150,10 @@ export function useQuotesDashboard() {
       color: statusConfig[status]?.color || 'hsl(var(--muted))',
     }));
 
-    const monthlyGroups = filtered.reduce(
+    const monthlyGroups = filtered.reduce<Record<
+        string,
+        { month: string; total: number; approved: number; rejected: number; value: number }
+      >>(
       (a, q) => {
         const m = format(new Date(q.created_at), 'MMM', { locale: ptBR });
         if (!a[m]) a[m] = { month: m, total: 0, approved: 0, rejected: 0, value: 0 };
@@ -161,10 +165,7 @@ export function useQuotesDashboard() {
         if (q.status === 'rejected') a[m].rejected++;
         return a;
       },
-      {} as Record<
-        string,
-        { month: string; total: number; approved: number; rejected: number; value: number }
-      >,
+      {},
     );
 
     const conversionFunnel = [
@@ -275,7 +276,7 @@ export function useQuotesDashboard() {
         startY: startY + 4,
         head: [['Orçamento', 'Status', 'Data', 'Valor']],
         body: recentResponses.map((q) => [
-          q.quote_number || q.id,
+          q.quote_number || q.id || '',
           statusConfig[q.status]?.label || q.status,
           q.client_response_at ? format(new Date(q.client_response_at), 'dd/MM/yyyy HH:mm') : '-',
           formatCurrency(q.total || 0),

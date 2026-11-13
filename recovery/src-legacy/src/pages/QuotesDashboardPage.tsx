@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Clickable } from '@/components/shared/Clickable';
 import { StatCard } from '@/components/ui/stat-card';
 import {
   Select,
@@ -349,18 +350,10 @@ export default function QuotesDashboardPage() {
                 )
                 .slice(0, 5)
                 .map((quote) => (
-                  <div
+                  <Clickable
                     key={quote.id}
                     className="flex cursor-pointer items-center justify-between rounded-lg bg-muted/30 p-3 transition-colors hover:bg-muted/50"
-                    role="button"
-                    tabIndex={0}
                     onClick={() => navigate(`/orcamentos/${quote.id}`)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        navigate(`/orcamentos/${quote.id}`);
-                      }
-                    }}
                     aria-label={`Ver orçamento ${quote.quote_number}`}
                   >
                     <div className="flex items-center gap-3">
@@ -387,7 +380,7 @@ export default function QuotesDashboardPage() {
                         {formatCurrency(quote.total || 0)}
                       </p>
                     </div>
-                  </div>
+                  </Clickable>
                 ))}
               {s.quotes.filter((q) => q.client_response_at).length === 0 && (
                 <div className="py-8 text-center text-muted-foreground">

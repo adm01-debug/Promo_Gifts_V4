@@ -4,7 +4,14 @@ import { useLoginAttempts } from './useLoginAttempts';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Mock implementation that actually returns itself
-const mockQuery: any = {
+interface MockQuery {
+  select: ReturnType<typeof vi.fn>;
+  order: ReturnType<typeof vi.fn>;
+  range: ReturnType<typeof vi.fn>;
+  ilike: ReturnType<typeof vi.fn>;
+  eq: ReturnType<typeof vi.fn>;
+}
+const mockQuery: MockQuery = {
   select: vi.fn().mockImplementation(() => mockQuery),
   order: vi.fn().mockImplementation(() => mockQuery),
   range: vi.fn().mockImplementation(() => mockQuery),

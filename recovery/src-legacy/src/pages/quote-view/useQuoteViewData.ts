@@ -1,7 +1,7 @@
 /**
  * Hook to manage QuoteViewPage state and data fetching.
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useQuotes, type Quote } from '@/hooks/useQuotes';
@@ -28,10 +28,6 @@ export function useQuoteViewData(id: string | undefined) {
   const [isSyncing, setIsSyncing] = useState(false);
   const [showPresentation, setShowPresentation] = useState(false);
 
-  useEffect(() => {
-    if (id) loadQuote();
-  }, [id]);
-
   const loadQuote = async () => {
     if (!id) return;
     setIsLoadingQuote(true);
@@ -50,6 +46,12 @@ export function useQuoteViewData(id: string | undefined) {
       }
     }
   };
+
+  const loadQuoteRef = useRef(loadQuote);
+  useEffect(() => { loadQuoteRef.current = loadQuote; });
+  useEffect(() => {
+    if (id) void loadQuoteRef.current();
+  }, [id]);
 
   const proposalData: ProposalTemplateData | null = useMemo(() => {
     if (!quote) return null;
@@ -92,7 +94,9 @@ export function useQuoteViewData(id: string | undefined) {
       seller: {
         name: profile?.full_name || user?.email || 'Vendedor',
         email: user?.email || undefined,
-        signatureUrl: profile?.signature_url || undefined,
+        signatureUrl: profile && 'signature_url' in profile && typeof profile.signature_url === 'string'
+          ? profile.signature_url || undefined
+          : undefined,
       },
       items:
         quote.items?.map((item) => ({
@@ -114,7 +118,7 @@ export function useQuoteViewData(id: string | undefined) {
           kit_name: item.kit_name || null,
 
           personalizations:
-            item.personalizations?.map((p: Record<string, unknown>) => ({
+            item.personalizations?.map((p) => ({
               technique_name: p.technique_name || 'Personalizacao',
               colors_count: p.colors_count || 1,
               width_cm: p.width_cm || undefined,

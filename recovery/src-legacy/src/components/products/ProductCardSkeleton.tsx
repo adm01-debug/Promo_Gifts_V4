@@ -3,12 +3,12 @@ import { cn } from "@/lib/utils";
 import {
   getGridColsClass,
   getGridGapClass,
-} from "@/components/replenishments/VirtualizedReplenishmentGrid";
+} from "@/components/replenishments/grid-layout";
 import type { ColumnCount } from "@/components/products/ColumnSelector";
 
 interface ProductCardSkeletonProps {
   /** Variant of skeleton - matches card content structure */
-  variant?: "default" | "compact" | "detailed";
+  variant?: "compact" | "default" | "detailed";
   /** Whether to show the shimmer animation */
   animate?: boolean;
 }
@@ -24,7 +24,7 @@ export function ProductCardSkeleton({
       {/* Image skeleton - matches aspect-[4/5] */}
       <div className="relative aspect-[4/5] bg-muted/40">
         {/* Shimmer overlay */}
-        <div className="absolute inset-0 bg-shimmer animate-shimmer pointer-events-none" />
+        <div className={cn("absolute inset-0 bg-shimmer pointer-events-none", animate && "animate-shimmer")} />
         
         {/* Badges placeholder - top left */}
         <div className="absolute top-2 sm:top-3 left-2 sm:left-3 flex flex-col gap-1 sm:gap-1.5">
@@ -91,7 +91,7 @@ export function ProductCardSkeleton({
 interface ProductGridSkeletonProps {
   /** Quantidade de cards (default = ITEMS_PER_PAGE = 12 para casar com a primeira página) */
   count?: number;
-  variant?: "default" | "compact" | "detailed";
+  variant?: "compact" | "default" | "detailed";
   /**
    * Animação escalonada — desativada por padrão para evitar percepção
    * de delay em listas grandes (memory `[Loading Standard]`).

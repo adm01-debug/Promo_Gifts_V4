@@ -40,7 +40,7 @@ export default function SSOCallbackPage() {
         errorDescription,
       });
       logger.error('[sso-callback] provider returned error', { error, errorDescription });
-      navigate('/login?error=' + encodeURIComponent(errorDescription || error), { replace: true });
+      navigate(`/login?error=${encodeURIComponent(errorDescription || error)}`, { replace: true });
       return;
     }
 
@@ -52,7 +52,7 @@ export default function SSOCallbackPage() {
       const desc = hashParams.get('error_description') || hashError;
       authDebugError('sso-callback', 'provider returned error in hash', { error: hashError, desc });
       logger.error('[sso-callback] hash error', { error: hashError, desc });
-      navigate('/login?error=' + encodeURIComponent(desc), { replace: true });
+      navigate(`/login?error=${encodeURIComponent(desc)}`, { replace: true });
       return;
     }
 
@@ -79,7 +79,7 @@ export default function SSOCallbackPage() {
     const goLogin = (reason: string) => {
       if (cancelled) return;
       authDebug('sso-callback', 'goLogin', { reason });
-      navigate('/login?error=' + encodeURIComponent(reason), { replace: true });
+      navigate(`/login?error=${encodeURIComponent(reason)}`, { replace: true });
     };
 
     const run = async () => {

@@ -32,15 +32,7 @@ import { useCatalogFiltering } from './useCatalogFiltering';
 
 export type ViewMode = 'grid' | 'list' | 'table';
 export type SortOption =
-  | 'relevance'
-  | 'name'
-  | 'price-asc'
-  | 'price-desc'
-  | 'stock'
-  | 'newest'
-  | 'color-match'
-  | 'best-seller-supplier'
-  | 'best-seller-promo';
+  'best-seller-promo' | 'best-seller-supplier' | 'color-match' | 'name' | 'newest' | 'price-asc' | 'price-desc' | 'relevance' | 'stock';
 
 const VIEW_MODE_KEY = 'catalog-view-mode';
 
@@ -79,7 +71,7 @@ export function useCatalogState() {
       /* empty */
     }
   }, []);
-  const [gridColumns, setGridColumnsState] = useState<ColumnCount>(getDefaultColumns);
+  const [gridColumns, setGridColumnsState] = useState<ColumnCount | 1 | 2>(getDefaultColumns);
   const setGridColumns = useCallback((cols: ColumnCount) => {
     setGridColumnsState(cols);
     try {
@@ -295,10 +287,10 @@ export function useCatalogState() {
     filters.colorVariations,
   ]);
 
+  const hasActiveCatalogConstraints = activeFiltersCount > 0 || searchQuery.trim().length > 0;
   const shouldShowCatalogSkeleton =
     isInitialCatalogLoad ||
     (isLoading && paginatedProducts.length === 0 && !hasActiveCatalogConstraints);
-  const hasActiveCatalogConstraints = activeFiltersCount > 0 || searchQuery.trim().length > 0;
   const shouldShowEmptyState =
     !shouldShowCatalogSkeleton && paginatedProducts.length === 0 && !isFetchingNextPage;
 
@@ -381,7 +373,7 @@ export function useCatalogState() {
     const productCount = hasActiveFilters ? deduped.length : totalEstimate || deduped.length;
     const localVariants = deduped.reduce((sum, p) => {
       const colorCount =
-        p.colors?.filter((c: Record<string, string>) => c.name?.trim()).length || 0;
+        p.colors?.filter((c) => c.name?.trim()).length || 0;
       const variationCount = !colorCount && p.variations?.length ? p.variations.length : 0;
       return sum + colorCount + variationCount;
     }, 0);
@@ -450,7 +442,6 @@ export function useCatalogState() {
     activeFiltersCount,
     searchQuery,
     totalEstimate,
-    hasNextPage,
     realStats,
   ]);
 

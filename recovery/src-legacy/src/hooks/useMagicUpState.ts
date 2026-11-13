@@ -1,22 +1,41 @@
+import type {
+  MagicUpProduct,
+  Technique,
+  ProductColor,
+  ProductImage,
+  SelectedClient,
+} from './intelligence/magic-up-state-types';
+export type {
+  MagicUpProduct,
+  Technique,
+  ProductColor,
+  ProductImage,
+  SelectedClient,
+  VariationItem,
+} from './intelligence/magic-up-state-types';
 /**
  * useMagicUpState — Extracted logic from MagicUp page.
  * Manages product loading, client search, generation, and history.
  * Generation logic delegated to useMagicUpGeneration.
  */
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { dbInvoke } from '@/lib/db/postgrest';
 import { supabase } from '@/integrations/supabase/client';
-import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
+import type { TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAriaLive } from '@/components/a11y';
 import { useProductCustomizationOptionsForMockup } from '@/hooks/useMockupTechniques';
 import { searchCrm } from '@/lib/crm-db';
 import { getCompanyDisplayName, type CrmCompany } from '@/types/crm';
-import type { PrintAreaWithTechniques } from '@/types/gravacao';
+import type { AreaShape, PrintAreaWithTechniques } from '@/types/gravacao';
+import type { ExternalProductImage, ExternalProductVariant } from '@/lib/external-db/types';
 import type { ScenePrompt } from '@/components/magic-up/PromptBank';
 import type { GenerationHistoryItem } from '@/components/magic-up/AdImageResult';
 import { useMagicUpGeneration } from './useMagicUpGeneration';
+import { fetchMagicUpProducts } from '@/hooks/intelligence/useMagicUpState.helpers';
+import { brandKitSyncKey } from '@/hooks/intelligence/magicUpBrandKitSync';
 import {
   DEFAULT_BRAND_KIT,
   DEFAULT_BRIEF,
@@ -34,77 +53,29 @@ import {
   type MagicUpCampaignStatus,
   type MagicUpCreativeControls,
   type MagicUpCurationStatus,
-  type MagicUpQualityDiagnosis,
   type MagicUpRefinement,
 } from '@/pages/magic-up/magicUpStrategy';
 
 // ─── Types ───────────────────────────────────────────────────────────
 
-export interface MagicUpProduct {
-  id: string;
-  name: string;
-  sku: string;
-  images: Array<{
-    url_cdn?: string;
-    url_original?: string;
-    is_primary?: boolean;
-    is_og_image?: boolean;
-    image_type?: string;
-    supplier_code?: string;
-  }> | null;
-  primary_image_url?: string | null;
-  og_image_url?: string | null;
-}
-
-export interface Technique {
-  id: string;
-  name: string;
-  code: string;
-}
-
-export interface ProductColor {
-  hex: string;
-  name: string;
-  code: string;
-  stock?: number;
-}
-
-export interface ProductImage {
-  url: string;
-  supplierCode: string | null;
-  isPrimary: boolean;
-  isOgImage: boolean;
-}
-
-export interface SelectedClient {
-  id: string;
-  name: string;
-  logo_url?: string | null;
-  ramo_atividade?: string | null;
-  cor_primaria_hex?: string | null;
-  cor_primaria_nome?: string | null;
-}
-
-export interface VariationItem {
-  id: string | null;
-  imageUrl: string;
-  isFavorite: boolean;
-  qualityScore?: number;
-  qualityDiagnosis?: MagicUpQualityDiagnosis;
-  curationStatus?: MagicUpCurationStatus;
-  isWinner?: boolean;
+function isAreaShape(shape: unknown): shape is AreaShape {
+  return shape === 'circle' || shape === 'custom' || shape === 'oval' || shape === 'rectangle' || shape === 'triangle';
 }
 
 // ─── Hook ────────────────────────────────────────────────────────────
 
 export function useMagicUpState() {
   const { user } = useAuth();
+  const brandKitSyncRef = useRef<string | null>(null);
   const { announceStatus, announceAlert } = useAriaLive();
   const queryClient = useQueryClient();
 
   // Product
   const [products, setProducts] = useState<MagicUpProduct[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
+  const [initialProductsLoaded, setInitialProductsLoaded] = useState(false);
+  const [productSearch, setProductSearch] = useState('');
+  const [debouncedProductSearch, setDebouncedProductSearch] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<MagicUpProduct | null>(null);
   const [colors, setColors] = useState<ProductColor[]>([]);
   const [productImages, setProductImages] = useState<ProductImage[]>([]);
@@ -204,7 +175,7 @@ export function useMagicUpState() {
         .order('updated_at', { ascending: false })
         .limit(30);
       if (error) throw error;
-      return (data || []).map((row: Tables<'magic_up_campaigns'>) => ({
+      return (data || []).map((row) => ({
         id: row.id,
         title: row.title,
         status: row.status as MagicUpCampaignStatus,
@@ -265,32 +236,37 @@ export function useMagicUpState() {
 
   // ─── Load Products ──────────────────────────────────────────────
   useEffect(() => {
+    const timer = setTimeout(() => setDebouncedProductSearch(productSearch), 300);
+    return () => clearTimeout(timer);
+  }, [productSearch]);
+
+  useEffect(() => {
+    let cancelled = false;
     (async () => {
       setLoadingProducts(true);
       try {
-        const { fetchPromobrindProducts } = await import('@/lib/external-db');
-        const data = await fetchPromobrindProducts();
-        setProducts(
-          data.map((p) => ({
-            id: p.id,
-            name: p.name,
-            sku: p.sku,
-            images: p.images || [],
-            primary_image_url: p.primary_image_url || p.image_url || null,
-            og_image_url: p.og_image_url || null,
-          })),
-        );
+        const data = await fetchMagicUpProducts(debouncedProductSearch);
+        if (!cancelled) setProducts(data);
       } catch {
-        toast.error('Erro ao carregar produtos');
+        if (!cancelled) {
+          setProducts([]);
+          toast.error('Erro ao carregar produtos');
+        }
       } finally {
-        setLoadingProducts(false);
+        if (!cancelled) {
+          setLoadingProducts(false);
+          setInitialProductsLoaded(true);
+        }
       }
     })();
-  }, []);
+    return () => { cancelled = true; };
+  }, [debouncedProductSearch]);
 
   // ─── Load Colors & Images on Product Change ──────────────────────
+  const selectedProductId = selectedProduct?.id;
   useEffect(() => {
-    if (!selectedProduct) {
+    if (!selectedProductId) {
+      setLoadingColors(false);
       setColors([]);
       setProductImages([]);
       setSelectedColor(null);
@@ -298,38 +274,43 @@ export function useMagicUpState() {
       setSelectedTechnique(null);
       return;
     }
+    let cancelled = false;
+    const controller = new AbortController();
+    const deadline = setTimeout(() => controller.abort(), 30_000);
     (async () => {
       setLoadingColors(true);
       try {
-        const { invokeExternalDb } = await import('@/lib/external-db');
         const [variantsResult, imagesResult] = await Promise.all([
-          invokeExternalDb<Record<string, unknown>>({
+          dbInvoke<ExternalProductVariant>({
             table: 'product_variants',
             operation: 'select',
-            filters: { product_id: selectedProduct.id },
+            filters: { product_id: selectedProductId },
             orderBy: { column: 'color_name', ascending: true },
             limit: 100,
+            signal: controller.signal,
           }),
-          invokeExternalDb<Record<string, unknown>>({
+          dbInvoke<ExternalProductImage>({
             table: 'product_images',
             operation: 'select',
-            filters: { product_id: selectedProduct.id },
+            filters: { product_id: selectedProductId },
             orderBy: { column: 'display_order', ascending: true },
             limit: 100,
+            signal: controller.signal,
           }),
         ]);
+        if (controller.signal.aborted) return;
         const images: ProductImage[] = (imagesResult.records || [])
-          .filter((img: Record<string, unknown>) => img.image_type !== 'box')
-          .map((img: Record<string, unknown>) => ({
+          .filter((img) => img.image_type !== 'box')
+          .map((img) => ({
             url: img.url_cdn || img.url_original || '',
             supplierCode: img.supplier_code || null,
-            isPrimary: img.is_primary,
+            isPrimary: img.is_primary === true,
             isOgImage: img.is_og_image || false,
           }))
           .filter((img: ProductImage) => img.url);
         setProductImages(images);
         const uniqueColors = new Map<string, ProductColor>();
-        (variantsResult.records || []).forEach((v: Record<string, unknown>) => {
+        (variantsResult.records || []).forEach((v) => {
           if (!v.color_name || uniqueColors.has(v.color_name)) return;
           uniqueColors.set(v.color_name, {
             hex: v.color_hex || '#CCCCCC',
@@ -340,13 +321,16 @@ export function useMagicUpState() {
         });
         setColors(Array.from(uniqueColors.values()));
       } catch {
+        if (controller.signal.aborted) return;
         setColors([]);
         setProductImages([]);
       } finally {
-        setLoadingColors(false);
+        clearTimeout(deadline);
+        if (!cancelled) setLoadingColors(false);
       }
     })();
-  }, [selectedProduct?.id]);
+    return () => { cancelled = true; clearTimeout(deadline); controller.abort(); };
+  }, [selectedProductId]);
 
   // ─── Print Areas from customization data ───────────────────────
   const printAreas = useMemo((): PrintAreaWithTechniques[] => {
@@ -360,7 +344,7 @@ export function useMagicUpState() {
       max_width: Math.max(...loc.options.map((o) => o.efetiva_largura_max || 0), 0),
       max_height: Math.max(...loc.options.map((o) => o.efetiva_altura_max || 0), 0),
       unit: 'cm',
-      shape: loc.options[0]?.shape || 'rectangle',
+      shape: isAreaShape(loc.options[0]?.shape) ? loc.options[0].shape : 'rectangle',
       is_curved: loc.options.some((o) => o.is_curved),
       is_primary: idx === 0,
       display_order: loc.location_order,
@@ -376,10 +360,14 @@ export function useMagicUpState() {
 
   useEffect(() => {
     if (!selectedClient) {
+      brandKitSyncRef.current = null;
       setBrandKit(DEFAULT_BRAND_KIT);
       setBrandNotes('');
       return;
     }
+    const syncKey = `${user?.id ?? 'anonymous'}:${brandKitSyncKey(selectedClient, loadedBrandKit)}`;
+    if (brandKitSyncRef.current === syncKey) return;
+    brandKitSyncRef.current = syncKey;
     if (loadedBrandKit) {
       setBrandKit(loadedBrandKit);
       setBrandNotes(buildBrandKitNotes(loadedBrandKit));
@@ -405,7 +393,7 @@ export function useMagicUpState() {
         : [],
       primaryColor: selectedClient.cor_primaria_hex || null,
     });
-  }, [loadedBrandKit, logoPreview, selectedClient]);
+  }, [loadedBrandKit, logoPreview, selectedClient, user?.id]);
 
   // ─── Derived: Techniques from print areas ───────────────────────
   const availableTechniques = useMemo((): Technique[] => {
@@ -827,15 +815,20 @@ CENÁRIO: ${effectivePrompt}`;
     }
     setLogoUploading(true);
     try {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        setLogoPreview(ev.target?.result as string);
-        setLogoUploading(false);
-      };
-      reader.readAsDataURL(file);
+      const preview = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (typeof reader.result === 'string') resolve(reader.result);
+          else reject(new Error('Imagem inválida'));
+        };
+        reader.onerror = () => reject(new Error('Não foi possível ler a imagem'));
+        reader.readAsDataURL(file);
+      });
+      setLogoPreview(preview);
     } catch {
-      setLogoUploading(false);
       toast.error('Erro ao carregar logo');
+    } finally {
+      setLogoUploading(false);
     }
   }, []);
 
@@ -857,14 +850,15 @@ CENÁRIO: ${effectivePrompt}`;
     [logoPreview],
   );
 
+  const { setVariations, setActiveVariation } = generation;
   const handleSelectProduct = useCallback(
     (p: MagicUpProduct | null) => {
       setSelectedProduct(p);
       setSelectedColor(null);
-      generation.setVariations([]);
-      generation.setActiveVariation(0);
+      setVariations([]);
+      setActiveVariation(0);
     },
-    [generation.setActiveVariation, generation.setVariations],
+    [setActiveVariation, setVariations],
   );
 
   const handleClearClient = useCallback(() => {
@@ -877,6 +871,9 @@ CENÁRIO: ${effectivePrompt}`;
   return {
     products,
     loadingProducts,
+    initialProductsLoaded,
+    productSearch,
+    setProductSearch,
     selectedProduct,
     colors,
     productImages,
@@ -928,8 +925,6 @@ CENÁRIO: ${effectivePrompt}`;
     handleRunBatchQueue,
     handleClearBatchQueue,
     qualityScore,
-    qualityDiagnosis: generation.qualityDiagnosis,
-    curationStatus: generation.curationStatus,
     copyPack,
     effectivePrompt,
     fullPromptPreview,

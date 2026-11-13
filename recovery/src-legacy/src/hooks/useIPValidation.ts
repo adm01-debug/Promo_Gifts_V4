@@ -22,8 +22,8 @@ export function useIPValidation() {
         console.warn('Fallback to secondary IP identification');
         const response = await fetch('https://api.ipify.org?format=json').catch(() => null);
         if (response) {
-          const data = await response.json();
-          return data.ip;
+          const responseData = await response.json();
+          return responseData.ip;
         }
         return null;
       }

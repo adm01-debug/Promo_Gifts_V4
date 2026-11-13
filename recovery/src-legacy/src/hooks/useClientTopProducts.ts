@@ -33,7 +33,7 @@ export function useClientTopProducts(clientId?: string) {
 
       if (!items?.length) return [];
 
-      const productStats = items.reduce((acc, item) => {
+      const productStats = items.reduce<Record<string, ProductStat>>((acc, item) => {
         const key = item.product_sku || item.product_name;
         if (!key) return acc;
         if (!acc[key]) {
@@ -50,7 +50,7 @@ export function useClientTopProducts(clientId?: string) {
         acc[key].totalValue += ((item.quantity ?? 0) * (item.unit_price ?? 0));
         acc[key].orderCount++;
         return acc;
-      }, {} as Record<string, ProductStat>);
+      }, {});
 
       return Object.values(productStats)
         .sort((a, b) => b.totalValue - a.totalValue)

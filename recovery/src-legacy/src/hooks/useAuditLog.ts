@@ -1,23 +1,11 @@
+import { serializeJsonValue } from '@/lib/json-value';
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 
-export type AuditAction = 'INSERT' | 'UPDATE' | 'DELETE';
+export type AuditAction = 'DELETE' | 'INSERT' | 'UPDATE';
 
 export type AuditEntityType = 
-  | 'products' 
-  | 'product_variants' 
-  | 'product_images'
-  | 'product_videos'
-  | 'quotes' 
-  | 'quote_items'
-  | 'orders' 
-  | 'order_items'
-  | 'suppliers' 
-  | 'categories'
-  | 'material_types'
-  | 'color_variations'
-  | 'companies'
-  | 'company_contacts';
+  'categories' | 'color_variations' | 'companies' | 'company_contacts' | 'material_types' | 'order_items' | 'orders' | 'product_images' | 'product_variants' | 'product_videos' | 'products' | 'quote_items' | 'quotes' | 'suppliers';
 
 interface AuditLogParams {
   action: AuditAction;
@@ -67,8 +55,8 @@ export function useAuditLog() {
         action,
         entity_type: entityType,
         entity_id: entityId,
-        old_values: oldValues,
-        new_values: newValues,
+        old_values: serializeJsonValue(oldValues) ?? null,
+        new_values: serializeJsonValue(newValues) ?? null,
         ip_address: null, // Pode ser capturado via API externa se necessário
         user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : null
       });

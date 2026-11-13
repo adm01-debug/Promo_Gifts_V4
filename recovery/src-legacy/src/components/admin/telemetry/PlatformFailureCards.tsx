@@ -16,13 +16,13 @@ import { usePlatformFailureMetrics } from '@/pages/admin/telemetry/usePlatformFa
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-function statusForRate(ratePct: number): 'ok' | 'warn' | 'crit' {
+function statusForRate(ratePct: number): 'crit' | 'ok' | 'warn' {
   if (ratePct === 0) return 'ok';
   if (ratePct < 2) return 'warn';
   return 'crit';
 }
 
-function statusClass(status: 'ok' | 'warn' | 'crit'): string {
+function statusClass(status: 'crit' | 'ok' | 'warn'): string {
   if (status === 'crit') return 'border-destructive/50 bg-destructive/5';
   if (status === 'warn') return 'border-yellow-500/40 bg-yellow-500/5';
   return 'border-emerald-500/30 bg-emerald-500/5';

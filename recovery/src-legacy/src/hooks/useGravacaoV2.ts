@@ -149,7 +149,7 @@ export function useCustomizationPriceLegacy() {
   const [error, setError] = useState<string | null>(null);
 
   const calculatePriceByArea = useCallback(async (
-    areaId: string, quantidade: number, numCores: number = 1,
+    areaId: string, quantidade: number, numCores = 1,
     larguraCm?: number | null, alturaCm?: number | null
   ): Promise<CustomizationPriceV2 | null> => {
     setLoading(true);
