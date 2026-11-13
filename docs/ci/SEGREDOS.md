@@ -170,6 +170,7 @@ Configurados via `supabase secrets set`; obrigatórios para as funções listada
 | `ANON_KEY` | Supabase Key | Semestral | `_shared/kill_switch.ts` |
 | `ASIA_BASE_URL` | URL serviço | Sob demanda | `asia-ingestion/index.ts` |
 | `BITRIX24_WEBHOOK_URL` | URL webhook | Semestral | `bitrix-sync/index.ts` |
+| `BRIDGE_PATH` | Caminho de teste (não é segredo) | — | `crm-db-bridge/scope_integration_test.ts` — opcional; aponta o teste para outro `index.ts` (padrão: o do próprio diretório) |
 | `CF_ORIGIN_SECRET` | Secret Cloudflare | Trimestral | `check-login/index.ts` |
 | `CRM_CALLBACK_API_KEY` | API Key CRM | Trimestral | `receive-crm-callback/index.test.ts` |
 | `CRM_SUPABASE_ANON_KEY` | Supabase Key (CRM) | Semestral | `crm-db-bridge/singleton-client.test.ts` |
