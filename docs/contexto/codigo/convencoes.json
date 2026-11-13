@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(security): documenta fn_get_rupture_alerts na allowlist do lint 0029 (#3522)",
    "fix(ci): destrava Gate 1 e testes do main — baseline de refs, import legacy-filters, recibos e reconciliação de migrations (#3507)",
    "fix(migrations): adiciona arquivo migration 20260511235960 ausente do main",
    "fix(ci): documenta BRIDGE_PATH em SEGREDOS.md para passar Gate E40",
-   "docs: prod-readiness fechado no main 0b1766de (746 OK, 85 BLOQUEADO)",
-   "chore(main): release 1.1.0"
+   "docs: prod-readiness fechado no main 0b1766de (746 OK, 85 BLOQUEADO)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

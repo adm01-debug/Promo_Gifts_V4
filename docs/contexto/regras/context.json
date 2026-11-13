@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "36faf00ec0bb8393641d57fb4c52bae39cd32b3f",
+  "sha": "5f18026701ed8bbf76332071e1b808cc5e6081de",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-13 15:26 UTC",
+  "generated_at": "2026-11-13 16:33 UTC",
   "files_total": 10034,
   "code_files": 8570,
   "code_lines": 1211938
@@ -528365,10 +528365,20 @@
   }
  },
  "git": {
-  "sha": "36faf00ec0bb8393641d57fb4c52bae39cd32b3f",
+  "sha": "5f18026701ed8bbf76332071e1b808cc5e6081de",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "5f18026",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(security): documenta fn_get_rupture_alerts na allowlist do lint 0029 (#3522)",
+    "files": [
+     ".security/lint-0029-allowlist.json",
+     "docs/security/ALLOWLISTS_MEMORY.md"
+    ]
+   },
    {
     "sha": "36faf00",
     "date": "2026-11-13",
@@ -528703,26 +528713,15 @@
     "author": "Joaquim Ataides",
     "subject": "Merge branch 'main' into claude/lote-pilha-v2-261112",
     "files": []
-   },
-   {
-    "sha": "fee3d09",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(sitemap): devolve EXECUTE de anon em get_sitemap_public e remove sitemap estático (#3430)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql",
-     "supabase/rollbacks/20261112130000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    4
+    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    3
    ],
    [
-    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "supabase/MIGRATIONS_SYNC_LOG.md",
     3
    ],
    [
@@ -528748,6 +528747,14 @@
    [
     ".security/policies-baseline.json",
     2
+   ],
+   [
+    ".security/lint-0029-allowlist.json",
+    1
+   ],
+   [
+    "docs/security/ALLOWLISTS_MEMORY.md",
+    1
    ],
    [
     ".migration-refs-baseline.json",
@@ -528787,14 +528794,6 @@
    ],
    [
     "supabase/functions/bi-copilot/index.ts",
-    1
-   ],
-   [
-    ".as-assertions-baseline.json",
-    1
-   ],
-   [
-    ".file-size-baseline.json",
     1
    ]
   ]

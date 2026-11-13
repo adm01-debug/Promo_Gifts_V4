@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `36faf00ec0bb8393641d57fb4c52bae39cd32b3f` (2026-11-13T11:21:24-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5f18026701ed8bbf76332071e1b808cc5e6081de` (2026-11-13T12:30:21-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -588,7 +588,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43148 nós · 74503 arestas · 2469 comunidades · grafo do commit `36faf00e`
+- 43148 nós · 74503 arestas · 2469 comunidades · grafo do commit `5f180267`
 - comunidades maiores: ref_components (703), vitest (629), ref_integrations (573), ref_hooks (478), ref_node_child_process (424), @tanstack/react-query (406), @testing-library/react (391), ref_types (322), ref_utils (322), react (317), test-base.ts (310), scripts (302)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -597,10 +597,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - RELATORIO_CI.md (66)
 - PENDENCIAS.md (56)
 - supabase/MIGRATIONS_SYNC_LOG.md (39)
-- package.json (32)
-- package-lock.json (22)
+- package.json (31)
+- package-lock.json (21)
 - analise-prs/progresso.json (15)
-- CHANGELOG.md (14)
+- CHANGELOG.md (13)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (13)
 - supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (12)
 - .github/workflows/deploy-gates.yml (11)
@@ -1182,6 +1182,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-13 `5f18026` fix(security): documenta fn_get_rupture_alerts na allowlist do lint 0029 (#3522)
 - 2026-11-13 `36faf00` fix(ci): destrava Gate 1 e testes do main — baseline de refs, import legacy-filters, recibos e reconciliação de migratio
 - 2026-11-13 `10e57c9` fix(migrations): adiciona arquivo migration 20260511235960 ausente do main
 - 2026-11-13 `36eac06` fix(ci): documenta BRIDGE_PATH em SEGREDOS.md para passar Gate E40
@@ -1196,7 +1197,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-13 `b5e04b3` fix(estoque): carrega /estoque com paginação em faixas paralelas de keyset (#3460)
 - 2026-11-13 `f55aecb` chore(analise-prs): relatório das 61 PRs abertas em 2026-11-12 (#3408)
 - 2026-11-13 `5a4ad72` chore(main): release 1.9.0 (#3210)
-- 2026-11-13 `3d1e34f` docs: recibo de deploy de edge function(s) — run 43367027942 (E66) (#3480)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
