@@ -128,6 +128,10 @@
       "reason": "E18 (2026-09-17): consulta a outro p_user_id é bloqueada por is_manager_or_admin() quando p_user_id != auth.uid(); a query de fato é agregado global de análise de busca, p_user_id só participa do gate de autorização."
     },
     {
+      "fn": "public.fn_get_rupture_alerts()",
+      "reason": "SB-0003 (2026-11-12, migration 20261112011000): expõe mv_stock_rupture_alert só para supervisor+ via is_supervisor_or_above(auth.uid()) no WHERE; SECURITY DEFINER necessário porque o REVOKE de 20261013171045 retirou SELECT direto da view; search_path fixo; EXECUTE revogado de PUBLIC e anon, concedido só a authenticated."
+    },
+    {
       "fn": "public.fn_get_stock_notification_counts(p_since date)",
       "reason": "E18 (2026-09-17): agregado de dashboard operacional (contagem de alertas de estoque), sem PII."
     },
