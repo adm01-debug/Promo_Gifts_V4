@@ -143,6 +143,7 @@ export function ProductMarketingSection({ productId }: ProductMarketingSectionPr
   };
 
   const clearAll = useCallback(async () => {
+    if (saving || togglingKeys.size > 0) return; // evita 2º DELETE do mesmo vínculo (toast falso)
     setSaving(true);
     let failure: unknown = null;
     for (const { key } of CATEGORIES) {
@@ -162,7 +163,7 @@ export function ProductMarketingSection({ productId }: ProductMarketingSectionPr
     setSaving(false);
     if (failure) toast.error(errorMessage(failure, 'Erro ao limpar'));
     else toast.success('Todas as classificações removidas');
-  }, [data, reloadLinks]);
+  }, [data, reloadLinks, saving, togglingKeys]);
 
   if (loading) {
     return (
@@ -196,7 +197,8 @@ export function ProductMarketingSection({ productId }: ProductMarketingSectionPr
             <button
               type="button"
               onClick={clearAll}
-              className="text-[10px] text-muted-foreground transition-colors hover:text-destructive"
+              disabled={saving}
+              className="text-[10px] disabled:cursor-not-allowed disabled:opacity-50 text-muted-foreground transition-colors hover:text-destructive"
             >
               Limpar todos
             </button>
@@ -245,6 +247,7 @@ export function ProductMarketingSection({ productId }: ProductMarketingSectionPr
           <button
             type="button"
             onClick={() => setSearch('')}
+            aria-label="Limpar busca"
             className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
           >
             <X className="h-3.5 w-3.5" />
@@ -292,6 +295,8 @@ export function ProductMarketingSection({ productId }: ProductMarketingSectionPr
                   <button
                     type="button"
                     onClick={() => toggleGroup(key)}
+                    aria-label={`${isOpen ? 'Recolher' : 'Expandir'} ${label}`}
+                    aria-expanded={isOpen}
                     className={cn(
                       'rounded-md p-1 transition-all duration-200',
                       isOpen ? 'bg-primary/10' : 'bg-muted hover:bg-muted/80',
