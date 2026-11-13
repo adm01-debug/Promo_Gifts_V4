@@ -12,11 +12,6 @@
           "rationale": "E58: único required check em main — agrega todos os gates de qualidade do deploy-gates.yml (Gates 0–6+). Alguns gates são condicionais (E2E smoke exige has_e2e; Lighthouse é opcional); o Gate Final em si roda sempre. Evita deadlock de checks focais condicionados por paths."
         },
         {
-          "name": "Compare GitHub × Canonical",
-          "workflow": ".github/workflows/edge-functions-drift-check.yml",
-          "rationale": "E74: verifica que o código das edge functions no GitHub bate com o deployado no projeto canônico doufsxqlfjyuvxuezpln. Previne divergência silenciosa entre git e produção (casos reais: kit-ai-builder 2026-09-23, magazine-reader-state-read 2026-09-24). Paths filter removido em PR #2233 para não bloquear PRs que não tocam supabase/functions/**."
-        },
-        {
           "name": "Analyze (javascript-typescript)",
           "workflow": ".github/workflows/codeql.yml",
           "rationale": "E171: SAST bloqueante em PR — CodeQL reintroduzido em pull_request com paths filter (src/**,supabase/functions/**). Previne merge de vulnerabilidades HIGH/CRITICAL sem análise estática."
@@ -36,6 +31,13 @@
       "rationale": "E176: o guarda que verifica a proteção de branch é ele mesmo um required check — se a proteção for desligada, aparece como X bloqueante em vez de aviso silencioso. paths filter removido do pull_request trigger para garantir execução em todo PR.",
       "removido_em": "2026-11-13",
       "motivo_remocao": "Nunca esteve no ruleset ativo (rules/branches/main exige só \"Gate Final - Deploy Ready\", conferido em 2026-11-13) e deixou de rodar em pull_request: o estado dos rulesets não depende do diff do PR. O job segue em required-checks-guard.yml (diário + dispatch + push em .github/**). Listá-lo aqui convidaria a marcá-lo como required e travar todo PR."
+    },
+    {
+      "name": "Compare GitHub × Canonical",
+      "workflow": ".github/workflows/edge-functions-drift-check.yml",
+      "rationale": "E74: verifica que o código das edge functions no GitHub bate com o deployado no projeto canônico doufsxqlfjyuvxuezpln. Previne divergência silenciosa entre git e produção (casos reais: kit-ai-builder 2026-09-23, magazine-reader-state-read 2026-09-24). Paths filter removido em PR #2233 para não bloquear PRs que não tocam supabase/functions/**.",
+      "removido_em": "2026-11-13",
+      "motivo_remocao": "Nunca esteve no ruleset ativo (rules/branches/main exige só \"Gate Final - Deploy Ready\", conferido em 2026-11-13). O drift é produção × repo: em PR já era advisory (E203). O workflow passou a rodar em PR só quando o PR mexe nas allowlists/config.toml; o drift em si roda no cron diário e após \"Deploy Edge Functions\". Required com filtro de paths travaria todo PR que não dispara o job."
     }
   ]
 }
