@@ -26,6 +26,11 @@
       "path": "supabase/migrations/20260902220800_repair_only_marker.sql",
       "sha256": "8bfffb531877230ee873c58e8286b2b55b11a38141854d302bea613590a7400f",
       "reason": "repair-only: migration espelho para ledger — não reaplicada (mesma versão de 20260902220800_rls_enable_spr_history_partitions_and_fix_creator.sql)"
+    },
+    {
+      "path": "supabase/migrations/20260511235960_add_categories_full_path_readable_drift.sql",
+      "sha256": "bdd3104b7f0f368d59e698b283fc8f35c605e137311f337b48720a8fad04cedd",
+      "reason": "legado com timestamp UTC inválido (segundo 60), adicionado ao main em 10e57c9542 como espelho da versão 20260511235960 exigida pelo preflight de db-apply-migration.yml; conteúdo idêntico e idempotente (ADD COLUMN IF NOT EXISTS) ao de 20260511235959_add_categories_full_path_readable_drift.sql; registrar via db-apply-migration.yml modo repair-only"
     }
   ]
 }
