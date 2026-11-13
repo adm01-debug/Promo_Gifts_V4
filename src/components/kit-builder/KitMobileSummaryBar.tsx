@@ -1,3 +1,4 @@
+import { hasKnownKitPrices } from '@/lib/kit-builder/pricing-availability';
 /**
  * Mobile Sticky Bottom Summary
  * Shows price/volume/weight at-a-glance and opens a drawer with full sidebar content.
@@ -26,6 +27,7 @@ export function KitMobileSummaryBar({ kitState, kitQuantity, children }: KitMobi
   // `KitState.totalPrice` already includes `kitQuantity` (see
   // calculateTotalKitPrice). Multiplying it here made the mobile summary show
   // a total inflated by the lot quantity.
+  const pricesKnown = hasKnownKitPrices(kitState);
   const grandTotal = kitState.totalPrice;
   const volume = Math.round(kitState.volumeUsagePercent);
 
@@ -43,11 +45,12 @@ export function KitMobileSummaryBar({ kitState, kitQuantity, children }: KitMobi
               </div>
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold leading-tight">
-                  {formatCurrency(kitState.totalPrice)}
+                  {pricesKnown ? formatCurrency(kitState.totalPrice) : 'Não informado'}
                   <span className="font-normal text-muted-foreground"> /kit</span>
                 </p>
                 <p className="truncate text-[11px] text-muted-foreground">
-                  Total {formatCurrency(grandTotal)} · {kitQuantity}x
+                  Total {pricesKnown ? formatCurrency(grandTotal) : 'Não informado'} · {kitQuantity}
+                  x
                 </p>
               </div>
             </div>

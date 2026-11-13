@@ -14,6 +14,24 @@ import {
 export type { ProductLightweight } from '@/types/product-catalog';
 import type { ProductLightweight, Product } from '@/types/product-catalog';
 
+type LightweightCatalogInput = Partial<Pick<LightweightProduct,
+  'active' | 'brand' | 'category_id' | 'cost_price' | 'gender' | 'image_url' | 'is_active' | 'is_kit' | 'main_category_id' | 'min_quantity' | 'price_updated_at' | 'primary_image_url' | 'sale_price' | 'short_description' | 'stock_quantity' | 'supplier_id' | 'supplier_reference'>> & Pick<LightweightProduct, 'id' | 'name'> & { sku?: string | null };
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+export function isLightweightCatalogRecord(value: unknown): value is LightweightCatalogInput {
+  if (!isRecord(value) || typeof value.id !== 'string' || typeof value.name !== 'string') return false;
+  const strings = ['sku', 'image_url', 'primary_image_url', 'category_id', 'main_category_id',
+    'supplier_reference', 'brand', 'gender', 'supplier_id', 'price_updated_at', 'short_description'];
+  const numbers = ['sale_price', 'cost_price', 'stock_quantity', 'min_quantity'];
+  const booleans = ['is_active', 'active', 'is_kit'];
+  return strings.every((key) => value[key] === null || value[key] === undefined || typeof value[key] === 'string') &&
+    numbers.every((key) => value[key] === null || value[key] === undefined || typeof value[key] === 'number') &&
+    booleans.every((key) => value[key] === null || value[key] === undefined || typeof value[key] === 'boolean');
+}
+
 function mapLightweight(p: LightweightProduct): ProductLightweight {
   const price = p.sale_price ?? p.cost_price ?? 0;
   const imageUrl = p.primary_image_url || p.image_url || '/placeholder.svg';
@@ -38,7 +56,7 @@ function getStockStatus(stock: number): 'in-stock' | 'low-stock' | 'out-of-stock
   return 'in-stock';
 }
 
-export function mapLightweightToProduct(p: LightweightProduct): Product {
+export function mapLightweightToProduct(p: LightweightCatalogInput): Product {
   const imageUrl = p.primary_image_url || p.image_url || '/placeholder.svg';
   const price = p.sale_price ?? p.cost_price ?? 0;
   const stock = p.stock_quantity || 0;
@@ -47,12 +65,13 @@ export function mapLightweightToProduct(p: LightweightProduct): Product {
     id: p.id,
     name: p.name,
     description: '',
+    shortDescription: p.short_description ?? '',
     category_id: p.category_id || p.main_category_id,
     category_name: null,
     price: typeof price === 'number' ? price : 0,
     image_url: imageUrl,
     images: [imageUrl],
-    sku: p.sku,
+    sku: p.sku ?? '',
     stock,
     colors: [],
     materials: [],
@@ -202,7 +221,7 @@ export function useProductsLightweight() {
 export function useProductsCatalog(filters?: { search?: string }) {
   const search = filters?.search || '';
 
-  return useInfiniteQuery<CatalogPage, Error>({
+  return useInfiniteQuery<CatalogPage>({
     queryKey: ['promobrind-products-catalog', search],
     queryFn: ({ pageParam }) => fetchCatalogPage(pageParam as number, search || undefined),
     initialPageParam: 0,

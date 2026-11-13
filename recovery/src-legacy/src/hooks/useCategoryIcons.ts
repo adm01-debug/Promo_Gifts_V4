@@ -2,10 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface CategoryIcon {
-  id: string;
-  category_name: string;
-  icon: string;
-  description?: string;
+  id: string | null;
+  category_name: string | null;
+  icon: string | null;
+  description?: string | null;
 }
 
 /**
@@ -21,7 +21,7 @@ export function useCategoryIcons() {
         .eq('is_active', true);
 
       if (error) throw new Error(`Failed to fetch category icons: ${error.message}`);
-      
+
       return data || [];
     },
     staleTime: 30 * 60 * 1000, // 30 min (dados estáveis)
@@ -40,26 +40,26 @@ const KEYWORD_ICONS: Record<string, string> = {
   // Sulista / Chimarrão
   cuia: '🧉', chimarrão: '🧉', tereré: '🧉', bomba: '🧉', mateira: '🧉',
   // Bolsas / Acessórios
-  bolsa: '👜', mochila: '🎒', necessaire: '👝', carteira: '👛', 
+  bolsa: '👜', mochila: '🎒', necessaire: '👝', carteira: '👛',
   pochete: '👜', sacola: '🛍️', pasta: '💼', maleta: '💼',
   // Roupas
-  camisa: '👔', camiseta: '👕', boné: '🧢', chapéu: '🎩', 
+  camisa: '👔', camiseta: '👕', boné: '🧢', chapéu: '🎩',
   calça: '👖', jaqueta: '🧥', avental: '👨‍🍳', toalha: '🏖️', lenço: '🧣',
   // Escritório / Papelaria
-  caneta: '🖊️', lápis: '✏️', caderno: '📓', agenda: '📅', 
+  caneta: '🖊️', lápis: '✏️', caderno: '📓', agenda: '📅',
   bloco: '📝', calculadora: '🧮', porta: '✏️', clips: '📎',
   // Tecnologia
-  cabo: '🔌', carregador: '🔋', fone: '🎧', mouse: '🖱️', 
+  cabo: '🔌', carregador: '🔋', fone: '🎧', mouse: '🖱️',
   teclado: '⌨️', pendrive: '💾', 'caixa de som': '🔊', 'power bank': '🔋',
   celular: '📱', suporte: '📱', ring: '📱',
   // Ferramentas
-  ferramenta: '🔧', chave: '🔩', lanterna: '🔦', trena: '📏', 
+  ferramenta: '🔧', chave: '🔩', lanterna: '🔦', trena: '📏',
   alicate: '🔧', martelo: '🔨', fita: '📐',
   // Esportes / Lazer
-  bola: '⚽', raquete: '🏸', yoga: '🧘', fitness: '💪', 
+  bola: '⚽', raquete: '🏸', yoga: '🧘', fitness: '💪',
   esporte: '🏃', praia: '🏖️', piscina: '🏊',
   // Jogos
-  jogo: '🎮', dominó: '🎲', baralho: '🃏', xadrez: '♟️', 
+  jogo: '🎮', dominó: '🎲', baralho: '🃏', xadrez: '♟️',
   brinquedo: '🧸', quebra: '🧩',
   // Casa / Decoração
   vela: '🕯️', 'porta-retrato': '🖼️', relógio: '⏰', almofada: '🛋️',
@@ -68,7 +68,7 @@ const KEYWORD_ICONS: Record<string, string> = {
   espelho: '🪞', escova: '🪥', massageador: '💆', 'kit higiene': '🧴',
   álcool: '🧴', máscara: '😷', sabonete: '🧼', perfume: '🌸',
   // Pet
-  pet: '🐾', cachorro: '🐕', gato: '🐈', coleira: '🐾', 
+  pet: '🐾', cachorro: '🐕', gato: '🐈', coleira: '🐾',
   comedouro: '🐾', 'brinquedo pet': '🐾',
   // Embalagens
   embalagem: '📦', caixa: '📦', papel: '📄',
@@ -79,7 +79,7 @@ const KEYWORD_ICONS: Record<string, string> = {
   // Premium / Corporativo
   troféu: '🏆', medalha: '🥇', placa: '🏅', pin: '📌', botton: '📌',
   // Alimentos
-  doce: '🍫', chocolate: '🍫', bombom: '🍬', biscoito: '🍪', 
+  doce: '🍫', chocolate: '🍫', bombom: '🍬', biscoito: '🍪',
   comida: '🍔', alimento: '🍎', castanha: '🥜',
   // Eco / Sustentável
   eco: '🌿', reciclado: '♻️', bambu: '🎋', sustentável: '🌱', madeira: '🪵',
@@ -90,41 +90,42 @@ const KEYWORD_ICONS: Record<string, string> = {
  * Usa busca fuzzy com correspondência de palavras-chave
  */
 export function getCategoryIcon(
-  categoryName: string | undefined | null, 
+  categoryName: string | null | undefined,
   icons: CategoryIcon[]
 ): string {
   if (!categoryName) return '📦';
-  
+
   const nameLower = categoryName.toLowerCase();
-  
+
   // 1. Busca exata no banco
   const exact = icons.find(
-    i => i.category_name.toLowerCase() === nameLower
+    i => i.category_name?.toLowerCase() === nameLower
   );
-  if (exact) return exact.icon;
-  
+  if (exact && typeof exact.icon === 'string') return exact.icon;
+
   // 2. Busca parcial (contém) no banco
   const partial = icons.find(
-    i => nameLower.includes(i.category_name.toLowerCase()) ||
-         i.category_name.toLowerCase().includes(nameLower)
+    i => typeof i.category_name === 'string' &&
+         (nameLower.includes(i.category_name.toLowerCase()) ||
+          i.category_name.toLowerCase().includes(nameLower))
   );
-  if (partial) return partial.icon;
-  
+  if (partial && typeof partial.icon === 'string') return partial.icon;
+
   // 3. Busca por palavras-chave no mapa estático
   for (const [keyword, icon] of Object.entries(KEYWORD_ICONS)) {
     if (nameLower.includes(keyword)) {
       return icon;
     }
   }
-  
+
   // 4. Busca por primeira palavra significativa no banco
   const firstWord = nameLower.split(/[\s|]/)[0];
   if (firstWord.length > 2) {
     const firstWordMatch = icons.find(
-      i => i.category_name.toLowerCase().includes(firstWord)
+      i => i.category_name?.toLowerCase().includes(firstWord)
     );
-    if (firstWordMatch) return firstWordMatch.icon;
+    if (firstWordMatch && typeof firstWordMatch.icon === 'string') return firstWordMatch.icon;
   }
-  
+
   return '📦'; // Padrão
 }

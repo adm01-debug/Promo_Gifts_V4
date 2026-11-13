@@ -92,10 +92,10 @@ function wrapText(
         // last line — truncate remaining words with ellipsis
         const remaining = words.slice(n).join(" ");
         let truncated = remaining;
-        while (ctx.measureText(truncated + "…").width > maxWidth && truncated.length > 0) {
+        while (ctx.measureText(`${truncated}…`).width > maxWidth && truncated.length > 0) {
           truncated = truncated.slice(0, -1);
         }
-        ctx.fillText(truncated + "…", x, y + lines * lineHeight);
+        ctx.fillText(`${truncated}…`, x, y + lines * lineHeight);
         return;
       }
     } else {

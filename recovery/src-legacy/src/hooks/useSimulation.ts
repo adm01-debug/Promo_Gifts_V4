@@ -1,4 +1,5 @@
-import { type ExternalTechnique } from '@/types/external-db';
+import type * as SimulationState from './simulation/state-types';
+
 // src/hooks/useSimulation.ts
 // Hook centralizado para lógica do simulador — refactored
 
@@ -18,16 +19,6 @@ import { useMultipleTechniquePricing } from './useTechniquePricingOptions';
 import { useSimulatorPreferences } from './useSimulatorPreferences';
 import { fetchAllOptions } from './simulation/simulationPriceFetcher';
 import { copyOptionToClipboard, copyAllOptionsToClipboard } from './simulation/simulationClipboard';
-import type {
-  Product,
-  Client,
-  Technique,
-  TechniqueSettings,
-  SimulationOption,
-  SavedSimulation,
-  SimulatorStep,
-} from '@/types/simulation';
-import type { SimulationScenario } from '@/components/simulator/ScenarioComparison';
 
 export function useSimulation() {
   const { user } = useAuth();
@@ -45,7 +36,7 @@ export function useSimulation() {
   } = useSimulatorPreferences();
 
   // Wizard state
-  const [currentStep, setCurrentStep] = useState<SimulatorStep>('product');
+  const [currentStep, setCurrentStep] = useState<SimulationState.SimulatorStep>('product');
 
   // Core state
   const [selectedProductId, setSelectedProductIdState] = useState<string | null>(null);
@@ -53,12 +44,15 @@ export function useSimulation() {
   const [customProductPrice, setCustomProductPrice] = useState<string>('');
   const [selectedTechniques, setSelectedTechniquesState] = useState<string[]>([]);
   const [techniqueSettings, setTechniqueSettingsState] = useState<
-    Record<string, TechniqueSettings>
+    Record<string, SimulationState.TechniqueSettings>
   >({});
-  const [simulationOptions, setSimulationOptions] = useState<SimulationOption[]>([]);
+  const [simulationOptions, setSimulationOptions] = useState<SimulationState.SimulationOption[]>([]);
 
   // Load preferences on mount
+  const previousPreferencesLoaded = useRef<boolean | undefined>(undefined);
   useEffect(() => {
+    if (previousPreferencesLoaded.current === preferencesLoaded) return;
+    previousPreferencesLoaded.current = preferencesLoaded;
     if (preferencesLoaded) {
       if (preferences.lastQuantity) setQuantityState(preferences.lastQuantity);
       if (preferences.lastProductId) setSelectedProductIdState(preferences.lastProductId);
@@ -71,7 +65,7 @@ export function useSimulation() {
         setTechniqueSettingsState(preferences.lastTechniqueSettings);
       }
     }
-  }, [preferencesLoaded]);
+  }, [preferencesLoaded, preferences.lastProductId, preferences.lastQuantity, preferences.lastTechniqueSettings, preferences.lastTechniques]);
 
   // Wrapped setters with persistence
   const setSelectedProductId = useCallback(
@@ -90,29 +84,21 @@ export function useSimulation() {
   );
 
   // Scenarios
-  const [scenarioA, setScenarioA] = useState<SimulationScenario | null>(null);
-  const [scenarioB, setScenarioB] = useState<SimulationScenario | null>(null);
+  const [scenarioA, setScenarioA] = useState<SimulationState.SimulationScenario | null>(null);
+  const [scenarioB, setScenarioB] = useState<SimulationState.SimulationScenario | null>(null);
 
   // UI state
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [simulationNotes, setSimulationNotes] = useState('');
-  const [viewSimulation, setViewSimulation] = useState<SavedSimulation | null>(null);
+  const [viewSimulation, setViewSimulation] = useState<SimulationState.SavedSimulation | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
   const [sellingPrice, setSellingPrice] = useState<string>('');
   const [targetMargin, setTargetMargin] = useState<string>('30');
-  const [selectedLocation, setSelectedLocation] = useState<{
-    locationId: string;
-    componentName: string;
-    locationName: string;
-    maxWidth: number;
-    maxHeight: number;
-    maxArea: number;
-    techniqueId: string | null;
-    techniqueName: string | null;
-    maxColors: number | null;
-  } | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<SimulationState.Location | null>(
+    null,
+  );
   const [filterClientId, setFilterClientId] = useState<string | null>(null);
   const [filterProductSearch, setFilterProductSearch] = useState('');
 
@@ -122,14 +108,14 @@ export function useSimulation() {
     queryFn: async () => {
       const raw = await fetchPromobrindProducts({ limit: 500 });
       return raw
-        .filter((p) => p.active !== false && p.is_active !== false)
+        .filter((p) => ![p.active, p.is_active].includes(false))
         .map((p) => ({
           id: p.id,
           name: p.name,
           sku: p.sku,
           price: getProductPrice(p),
           image_url: getProductImageUrl(p),
-        })) as Product[];
+        })) as SimulationState.Product[];
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -138,33 +124,28 @@ export function useSimulation() {
     queryKey: ['simulator-clients'],
     queryFn: async () => {
       const { selectCrm } = await import('@/lib/crm-db');
-      const companies = await selectCrm<{
-        id: string;
-        razao_social?: string;
-        nome_fantasia?: string;
-        ramo?: string;
-        nicho?: string;
-        logo_url?: string;
-      }>('companies', {
+      const companies = await selectCrm<SimulationState.ClientRow>('companies', {
         select: 'id, razao_social, nome_fantasia, ramo, nicho, logo_url',
         filters: { deleted_at: null },
         orderBy: { column: 'razao_social', ascending: true },
         limit: 500,
       });
-      return companies.map((c) => ({
+      return companies.map((c): SimulationState.Client & { ramo?: string; nicho?: string; logo_url?: string } => ({
         id: c.id,
         name: c.nome_fantasia || c.razao_social || '',
         ramo: c.ramo,
         nicho: c.nicho,
         logo_url: c.logo_url,
-      })) as Client[];
+      }));
     },
   });
 
   const { data: techniques, isLoading: techniquesLoading } = useQuery({
     queryKey: ['simulator-techniques-external'],
     queryFn: async () => {
-      const result = await invokeExternalDb<Technique>({
+      const result = await invokeExternalDb<
+        Pick<SimulationState.ExternalTechnique, 'handling_price' | 'setup_price'> & SimulationState.Technique
+      >({
         table: 'personalization_techniques',
         operation: 'select',
         filters: { is_active: true },
@@ -173,8 +154,8 @@ export function useSimulation() {
       });
       return result.records.map((t) => ({
         ...t,
-        setup_cost: (t as ExternalTechnique).setup_price ?? t.setup_cost,
-        unit_cost: (t as ExternalTechnique).handling_price ?? t.unit_cost,
+        setup_cost: t.setup_price ?? t.setup_cost,
+        unit_cost: t.handling_price ?? t.unit_cost,
       }));
     },
   });
@@ -185,21 +166,36 @@ export function useSimulation() {
   );
   const { isLoading: pricingLoading, getPricingInfo } = useMultipleTechniquePricing(techniqueCodes);
 
-  const { data: savedSimulations, isLoading: savedSimulationsLoading } = useQuery({
+  const { data: savedSimulationRows, isLoading: savedSimulationsLoading } = useQuery({
     queryKey: ['saved-simulations'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('personalization_simulations')
-        .select(`*, bitrix_clients (id, name, ramo)`)
+        .select('*')
         .order('created_at', { ascending: false })
         .limit(50);
       if (error) throw error;
       return (data || []).map((item) => ({
         ...item,
-        simulation_data: item.simulation_data as unknown as SimulationOption[],
-      })) as SavedSimulation[];
+        simulation_data: item.simulation_data as unknown as SimulationState.SimulationOption[],
+      })) as SimulationState.SavedSimulation[];
     },
   });
+
+  const savedSimulations = useMemo(
+    () =>
+      savedSimulationRows?.map((simulation) => {
+        const client = clients?.find((entry) => entry.id === simulation.client_id);
+        return {
+          ...simulation,
+          client_name: client?.name ?? simulation.client_name ?? null,
+          bitrix_clients: client
+            ? { id: client.id, name: client.name, ramo: client.ramo ?? null }
+            : null,
+        };
+      }),
+    [savedSimulationRows, clients],
+  );
 
   // ─── Derived ──────────────────────────────────────────────
   const selectedProduct = useMemo(
@@ -285,7 +281,7 @@ export function useSimulation() {
   );
 
   const updateTechniqueSetting = useCallback(
-    (techniqueId: string, field: keyof TechniqueSettings, value: number) => {
+    (techniqueId: string, field: keyof SimulationState.TechniqueSettings, value: number) => {
       setTechniqueSettingsState((prev) => {
         const u = { ...prev, [techniqueId]: { ...prev[techniqueId], [field]: value } };
         setLastTechniqueSettings(u);
@@ -387,7 +383,7 @@ export function useSimulation() {
   }, [setLastTechniques, setLastTechniqueSettings]);
 
   const copyToClipboard = useCallback(
-    async (option: SimulationOption) => {
+    async (option: SimulationState.SimulationOption) => {
       await copyOptionToClipboard(option, quantity, setCopiedId);
     },
     [quantity],
@@ -403,7 +399,7 @@ export function useSimulation() {
   }, [simulationOptions, selectedProduct, effectiveProductPrice, quantity]);
 
   const loadSavedSimulation = useCallback(
-    (simulation: SavedSimulation) => {
+    (simulation: SimulationState.SavedSimulation) => {
       setSelectedProductIdState(simulation.product_id);
       setLastProductId(simulation.product_id);
       setQuantityState(simulation.quantity);
@@ -413,7 +409,7 @@ export function useSimulation() {
       const techIds = simulation.simulation_data.map((s) => s.techniqueId);
       setSelectedTechniquesState(techIds);
       setLastTechniques(techIds);
-      const settings: Record<string, TechniqueSettings> = {};
+      const settings: Record<string, SimulationState.TechniqueSettings> = {};
       simulation.simulation_data.forEach((opt) => {
         settings[opt.techniqueId] = {
           colors: opt.colors,
@@ -432,7 +428,7 @@ export function useSimulation() {
   );
 
   const calculateForProduct = useCallback(
-    async (product: Product): Promise<SimulationOption[]> => {
+    async (product: SimulationState.Product): Promise<SimulationState.SimulationOption[]> => {
       if (!product || selectedTechniques.length === 0) return [];
       return fetchAllOptions({
         selectedTechniqueIds: selectedTechniques,
@@ -447,7 +443,7 @@ export function useSimulation() {
     [techniques, techniqueSettings, selectedTechniques, quantity],
   );
 
-  const handleAddToQuote = useCallback((selectedOptions: SimulationOption[]) => {
+  const handleAddToQuote = useCallback((selectedOptions: SimulationState.SimulationOption[]) => {
     toast.success(`${selectedOptions.length} técnica(s) adicionadas ao orçamento!`);
     logger.log('Opções selecionadas para orçamento:', selectedOptions);
   }, []);
@@ -505,7 +501,7 @@ export function useSimulation() {
         toast.error('Nenhuma simulação para salvar');
         return;
       }
-      const scenario: SimulationScenario = {
+      const scenario: SimulationState.SimulationScenario = {
         id: `${name}-${Date.now()}`,
         name: `Cenário ${name}`,
         productName: selectedProduct.name,
@@ -595,4 +591,4 @@ export function useSimulation() {
 }
 
 // Re-export for backward compat
-export { formatCurrency } from './simulation/simulationClipboard';
+export { formatCurrency } from '@/lib/format';

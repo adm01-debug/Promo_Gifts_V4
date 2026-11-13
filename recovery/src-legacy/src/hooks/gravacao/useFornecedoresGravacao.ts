@@ -10,7 +10,7 @@ interface FornecedorFormData {
   codigo: string;
   nome: string;
   nome_curto: string;
-  tipo_integracao: 'api_spot' | 'api_rest' | 'manual';
+  tipo_integracao: 'api_rest' | 'api_spot' | 'manual';
   api_endpoint?: string;
   api_access_key?: string;
   api_ativo: boolean;
@@ -41,7 +41,7 @@ export function useFornecedoresGravacao() {
       return invokeExternalDbSingle<FornecedorGravacao>({
         table: 'fornecedor_gravacao',
         operation: 'insert',
-        data: formData,
+        data: { ...formData },
       });
     },
     onSuccess: () => {

@@ -57,12 +57,13 @@ export function usePushNotifications() {
       }
 
       try {
-        const notification = new Notification(title, {
+        const notificationOptions = {
           icon: '/favicon.ico',
           badge: '/favicon.ico',
           vibrate: [200, 100, 200],
           ...options,
-        });
+        };
+        const notification = new Notification(title, notificationOptions);
 
         notification.onclick = () => {
           window.focus();
@@ -79,7 +80,7 @@ export function usePushNotifications() {
   );
 
   const showSecurityAlert = useCallback(
-    (title: string, message: string, type: 'info' | 'warning' | 'critical' = 'warning') => {
+    (title: string, message: string, type: 'critical' | 'info' | 'warning' = 'warning') => {
       const icons: Record<string, string> = {
         info: '🔵',
         warning: '🟡',

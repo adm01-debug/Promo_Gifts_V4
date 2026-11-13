@@ -7,7 +7,7 @@ import { createProductFuseOptions, rankProductSearchResults } from "@/utils/prod
 import { useSearchHistory } from "./useSearchHistory";
 
 export interface SearchResult {
-  type: "product" | "category" | "supplier" | "history";
+  type: "category" | "history" | "product" | "supplier";
   id: string;
   label: string;
   sublabel?: string;
@@ -27,7 +27,10 @@ export function useSearch(products: Product[] = []) {
 
   const history = useMemo(() => searchHistory.map(h => h.label), [searchHistory]);
 
-  const availableProducts = products.length > 0 ? products : (productsContext?.products || []);
+  const availableProducts = useMemo(
+    () => products.length > 0 ? products : (productsContext?.products || []),
+    [products, productsContext?.products],
+  );
 
   const addToHistory = useCallback((term: string) => {
     if (!term.trim()) return;

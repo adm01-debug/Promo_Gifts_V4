@@ -12,8 +12,8 @@ interface ProductInsight {
     count: number;
   }>;
   recentActivity: Array<{
-    type: 'view' | 'quote' | 'order';
-    date: string;
+    type: 'order' | 'quote' | 'view';
+    date: string | null;
     details: string;
   }>;
 }
@@ -61,7 +61,7 @@ export function useProductInsights(productId?: string, productSku?: string) {
         ? ((ordersCount || 0) / quotesCount) * 100
         : 0;
 
-      const orderIds = (orderItems || []).map(o => o.order_id);
+      const orderIds = (orderItems || []).map(o => o.order_id).filter((id): id is string => typeof id === 'string');
       let topSegments: ProductInsight['topSegments'] = [];
       
       if (orderIds.length > 0) {
@@ -82,7 +82,7 @@ export function useProductInsights(productId?: string, productSku?: string) {
 
           const clientSegmentMap: Record<string, string> = {};
           (clients || []).forEach((c: { id?: string; ramo_atividade?: string }) => {
-            if (c.ramo_atividade) clientSegmentMap[c.id as string] = c.ramo_atividade;
+            if (c.ramo_atividade) clientSegmentMap[c.id!] = c.ramo_atividade;
           });
 
           const segmentCounts: Record<string, number> = {};
@@ -133,7 +133,7 @@ export function useProductInsights(productId?: string, productSku?: string) {
       });
 
       recentActivity.sort((a, b) => 
-        new Date(b.date).getTime() - new Date(a.date).getTime()
+        (b.date === null ? 0 : new Date(b.date).getTime()) - (a.date === null ? 0 : new Date(a.date).getTime())
       );
 
       return {

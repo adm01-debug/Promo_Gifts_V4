@@ -15,7 +15,7 @@ export interface ExpertConversation {
 export interface ExpertMessage {
   id: string;
   conversation_id: string;
-  role: "user" | "assistant";
+  role: "assistant" | "user";
   content: string;
   created_at: string;
 }
@@ -55,7 +55,7 @@ export function useExpertConversations(clientId?: string) {
     fetchConversations();
   }, [fetchConversations]);
 
-  const createConversation = async (title: string = "Nova conversa"): Promise<string | null> => {
+  const createConversation = async (title = "Nova conversa"): Promise<string | null> => {
     if (!user) return null;
 
     try {
@@ -130,7 +130,7 @@ export function useExpertConversations(clientId?: string) {
     }
   };
 
-  const saveMessage = async (conversationId: string, role: "user" | "assistant", content: string) => {
+  const saveMessage = async (conversationId: string, role: "assistant" | "user", content: string) => {
     try {
       const { error } = await supabase
         .from("expert_messages")

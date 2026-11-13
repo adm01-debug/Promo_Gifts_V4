@@ -13,7 +13,7 @@ export interface DiscountApprovalRequest {
   seller_id: string;
   requested_discount_percent: number;
   max_allowed_percent: number;
-  status: "pending" | "approved" | "rejected";
+  status: "approved" | "pending" | "rejected";
   admin_id: string | null;
   admin_notes: string | null;
   seller_notes: string | null;
@@ -27,8 +27,8 @@ export interface DiscountApprovalWithQuote extends DiscountApprovalRequest {
     quote_number: string;
     client_name: string | null;
     client_company: string | null;
-    total: number;
-    subtotal: number;
+    total: number | null;
+    subtotal: number | null;
   };
   seller?: {
     full_name: string | null;

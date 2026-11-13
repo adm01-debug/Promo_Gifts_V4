@@ -7,6 +7,8 @@
 import { useMemo } from 'react';
 import type { Product, Technique } from '@/types/simulation';
 
+type RecommendationProduct = Product & { categoryName?: unknown; brand?: unknown };
+
 // Mapeamento de materiais/categorias para técnicas recomendadas
 const MATERIAL_TECHNIQUE_MAP: Record<string, string[]> = {
   // Têxteis
@@ -115,7 +117,7 @@ export interface UseTechniqueRecommendationsResult {
 /**
  * Extrai palavras-chave do produto para matching
  */
-function extractKeywords(product: Product | null): string[] {
+function extractKeywords(product: RecommendationProduct | null): string[] {
   if (!product) return [];
 
   const text = [product.name, product.categoryName, product.brand, product.sku]
@@ -238,12 +240,7 @@ export function useTechniqueRecommendations(
 }
 
 export type SortOption =
-  | 'recommended'
-  | 'price_asc'
-  | 'price_desc'
-  | 'time_asc'
-  | 'time_desc'
-  | 'popularity';
+  'popularity' | 'price_asc' | 'price_desc' | 'recommended' | 'time_asc' | 'time_desc';
 
 /**
  * Ordena técnicas por critério

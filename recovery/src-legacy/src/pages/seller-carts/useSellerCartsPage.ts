@@ -8,6 +8,7 @@ import { useSellerCartContext } from '@/contexts/SellerCartContext';
 import { type SellerCart } from '@/hooks/useSellerCarts';
 import { useCartTemplates, type CartTemplateItem } from '@/hooks/useCartTemplates';
 import { ProductsContext } from '@/contexts/ProductsContext';
+import { recordAction } from '@/components/cart/LegacyCartInsights';
 import {
   exportCartToCSV,
   exportCartToPDF,

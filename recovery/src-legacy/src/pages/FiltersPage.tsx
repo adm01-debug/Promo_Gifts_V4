@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Filter, ArrowUpDown, X, CheckSquare, SearchX, Sparkles } from "lucide-react";
+import { Filter, ArrowUpDown, X, CheckSquare, SearchX, Sparkles, Mic } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { LayoutPopover } from "@/components/products/LayoutPopover";
 import { SmartSearchInput } from "@/components/search";
@@ -32,6 +32,7 @@ import { useOracleVoiceBridge } from "@/stores/oracleVoiceBridge";
 import { toast } from "sonner";
 import { useFiltersPageState } from "./filters/useFiltersPageState";
 import { useFiltersSelectionMode } from "./filters/useFiltersSelectionMode";
+import { applyVoiceFilterPatch } from '@/lib/filters/voiceFilterPatch';
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -43,6 +44,7 @@ export default function FiltersPage() {
   const { isInCompare, toggleCompare, canAddMore } = useComparisonStore();
 
   const state = useFiltersPageState();
+  const [voiceOverlayOpen, setVoiceOverlayOpen] = useState(false);
   const sel = useFiltersSelectionMode({ selectionMode: state.selectionMode, filteredProducts: state.filteredProducts });
   const openOracle = useOracleVoiceBridge((s) => s.openOracle);
 
@@ -65,21 +67,16 @@ export default function FiltersPage() {
       return;
     }
 
+    if (action.action === "clear") {
+      state.setFilters(defaultFilters);
+      toast.success(action.response);
+      return;
+    }
     if (!action.data) return;
 
     if (action.action === "filter" && action.data.filters) {
       const f = action.data.filters;
-      state.setFilters((prev: FilterState) => {
-        const next = { ...prev };
-        if (f.color) next.colors = [...prev.colors, f.color];
-        if (f.category) next.categories = [...prev.categories, f.category];
-        if (f.material) next.materiais = [...prev.materiais, f.material];
-        if (f.maxPrice) next.priceRange = [prev.priceRange[0], f.maxPrice];
-        if (f.minPrice) next.priceRange = [f.minPrice, prev.priceRange[1]];
-        if (f.inStock) next.inStock = true;
-        if (f.isKit) next.isKit = true;
-        return next;
-      });
+      state.setFilters((previous: FilterState) => applyVoiceFilterPatch(previous, f));
       toast.success(action.response);
     } else if (action.action === "search" && action.data.query) {
       state.setFilters((prev: FilterState) => ({ ...prev, search: action.data!.query! }));
@@ -88,9 +85,6 @@ export default function FiltersPage() {
       const sortMap: Record<string, string> = { "price-asc": "price-asc", "price-desc": "price-desc", name: "name", stock: "stock", newest: "newest", popularity: "popularity" };
       const sortValue = sortMap[action.data.sortBy] || "name";
       state.setSortBy(sortValue);
-      toast.success(action.response);
-    } else if (action.action === "clear") {
-      state.setFilters(defaultFilters);
       toast.success(action.response);
     } else if (action.action === "navigate" && action.data.route) {
       navigate(action.data.route);
@@ -172,6 +166,12 @@ export default function FiltersPage() {
               </div>
               <div className="flex items-center gap-2 flex-1 min-w-0">
                 <SmartSearchInput placeholder="Buscar produtos..." onSelect={(result) => result.type === "product" ? navigate(`/produto/${result.id}`) : state.handleFilterChange({ ...state.filters, search: result.label })} onSearch={(q) => state.handleFilterChange({ ...state.filters, search: q })} className="flex-1" />
+                <Button
+type="button" variant="outline" size="icon" aria-label="Filtrar por voz"
+                  onClick={() => setVoiceOverlayOpen(true)}
+                >
+                  <Mic className="h-4 w-4" />
+                </Button>
                 {(state.filters.search || state.searchParams.get('search')) && (
                   <Badge variant="secondary" className="shrink-0 whitespace-nowrap">{state.isLoadingProducts && state.realProducts.length === 0 ? 'Carregando...' : `${state.filteredProducts.length.toLocaleString("pt-BR")} encontrado${state.filteredProducts.length !== 1 ? "s" : ""}`}</Badge>
                 )}
@@ -310,7 +310,7 @@ export default function FiltersPage() {
                       <div className="h-3 w-32 rounded-md bg-gradient-to-r from-muted/60 via-muted/30 to-muted/60 animate-[shimmer_2s_infinite_0.3s] bg-[length:200%_100%]" />
                     </div>
                   </div>
-                  <div className={`${state.viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6" : state.viewMode === "table" ? "space-y-0" : "space-y-3"}`}>
+                  <div className={state.viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6" : state.viewMode === "table" ? "space-y-0" : "space-y-3"}>
                     {state.viewMode === "table" ? (
                       <div className="rounded-xl border border-border/50 overflow-hidden">
                         <div className="h-10 bg-muted/40 border-b border-border/30 flex items-center gap-4 px-4">
@@ -352,7 +352,7 @@ export default function FiltersPage() {
               ) : state.filteredProducts.length > 0 ? (
                 <>
                   {state.viewMode === "grid" ? (
-                    <VirtualizedProductGrid products={state.filteredProducts} onProductClick={(product) => state.selectionMode ? sel.toggleSelect(product.id) : navigate(`/produto/${product.id}`)} isFavorited={isFavorite} onToggleFavorite={toggleFavorite} isInCompare={isInCompare} onToggleCompare={toggleCompare} canAddToCompare={canAddMore} onShare={(product) => setShareProduct(product)} columns={state.gridColumns} columnSelector={<ColumnSelector value={state.gridColumns} onChange={state.setGridColumns} />} activeFiltersCount={state.activeFiltersCount} sortBy={state.sortBy} onSortChange={state.setSortBy} onOpenFilters={() => state.setMobileFiltersOpen(true)} onClearFilters={state.handleReset} viewMode={state.viewMode} onViewModeChange={state.setViewMode} showFilterBar={false} activeColorFilter={(state.filters.colorGroups.length > 0 || state.filters.colorVariations.length > 0) ? { groups: state.filters.colorGroups, variations: state.filters.colorVariations } : null} selectionMode={state.selectionMode} selectedIds={sel.selectedIds} onToggleSelect={sel.toggleSelect} />
+                    <VirtualizedProductGrid products={state.filteredProducts} onProductClick={(productId) => state.selectionMode ? sel.toggleSelect(productId) : navigate(`/produto/${productId}`)} isFavorited={isFavorite} onToggleFavorite={toggleFavorite} isInCompare={isInCompare} onToggleCompare={toggleCompare} canAddToCompare={canAddMore} onShare={(product) => setShareProduct(product)} columns={state.gridColumns} columnSelector={<ColumnSelector value={state.gridColumns} onChange={state.setGridColumns} />} activeFiltersCount={state.activeFiltersCount} sortBy={state.sortBy} onSortChange={state.setSortBy} onOpenFilters={() => state.setMobileFiltersOpen(true)} onClearFilters={state.handleReset} viewMode={state.viewMode} onViewModeChange={state.setViewMode} showFilterBar={false} activeColorFilter={(state.filters.colorGroups.length > 0 || state.filters.colorVariations.length > 0) ? { groups: state.filters.colorGroups, variations: state.filters.colorVariations } : null} selectionMode={state.selectionMode} selectedIds={sel.selectedIds} onToggleSelect={sel.toggleSelect} />
                   ) : state.viewMode === "list" ? (
                     <div className="h-[calc(100vh-280px)] min-h-[500px] overflow-y-auto rounded-xl border border-border/40 bg-gradient-to-b from-background/80 to-background/40 backdrop-blur-sm scrollbar-products shadow-inner p-4">
                       <ProductList products={state.filteredProducts} onProductClick={(productId) => state.selectionMode ? sel.toggleSelect(productId) : navigate(`/produto/${productId}`)} onShareProduct={(product) => setShareProduct(product)} isFavorite={isFavorite} onToggleFavorite={toggleFavorite} isInCompare={isInCompare} onToggleCompare={toggleCompare} canAddToCompare={canAddMore} activeColorFilter={(state.filters.colorGroups.length > 0 || state.filters.colorVariations.length > 0) ? { groups: state.filters.colorGroups, variations: state.filters.colorVariations } : null} selectionMode={state.selectionMode} externalSelectedIds={sel.selectedIds} onToggleSelect={sel.toggleSelect} />
@@ -437,11 +437,11 @@ export default function FiltersPage() {
           </div>
         </div>
       </div>
-      {state.voiceOverlayOpen && (
+      {voiceOverlayOpen && (
         <Suspense fallback={null}>
           <LazyVoiceOverlay
-            isOpen={state.voiceOverlayOpen}
-            onClose={() => state.setVoiceOverlayOpen(false)}
+            isOpen={voiceOverlayOpen}
+            onClose={() => setVoiceOverlayOpen(false)}
             onAction={handleVoiceAction}
           />
         </Suspense>

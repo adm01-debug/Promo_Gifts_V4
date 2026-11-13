@@ -60,7 +60,7 @@ export function useProductRecommendations(productId?: string, productSku?: strin
 
       if (relatedError || !relatedItems?.length) return [];
 
-      const productCounts = relatedItems.reduce(
+      const productCounts = relatedItems.reduce<Record<string, FrequentlyBoughtTogether>>(
         (acc, item) => {
           const key = item.product_sku || item.product_id;
           if (!key) return acc;
@@ -78,7 +78,7 @@ export function useProductRecommendations(productId?: string, productSku?: strin
           acc[key].timesOrderedTogether++;
           return acc;
         },
-        {} as Record<string, FrequentlyBoughtTogether>,
+        {},
       );
 
       return Object.values(productCounts)
@@ -172,7 +172,7 @@ export function useProductRecommendations(productId?: string, productSku?: strin
 
       if (error || !recentQuoteItems?.length) return [];
 
-      const productCounts = recentQuoteItems.reduce(
+      const productCounts = recentQuoteItems.reduce<Record<string, ProductCount>>(
         (acc, item) => {
           const key = item.product_sku || item.product_name;
           if (!acc[key]) {
@@ -187,7 +187,7 @@ export function useProductRecommendations(productId?: string, productSku?: strin
           acc[key].count++;
           return acc;
         },
-        {} as Record<string, ProductCount>,
+        {},
       );
 
       const sorted = Object.values(productCounts)
@@ -216,8 +216,8 @@ export function useProductRecommendations(productId?: string, productSku?: strin
             reason: 'Em alta nas cotações',
           };
         });
-      } catch (error) {
-        console.error('Error fetching trending products:', error);
+      } catch (fetchError) {
+        console.error('Error fetching trending products:', fetchError);
         return [];
       }
     },

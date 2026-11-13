@@ -25,7 +25,7 @@ export function TemplateDeleteDialog({ open, onClose, onConfirm }: DeleteDialogP
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm} className="bg-destructive text-destructive-foreground">Excluir</AlertDialogAction>
+          <AlertDialogAction onClick={(event) => { event.preventDefault(); onConfirm(); }} className="bg-destructive text-destructive-foreground">Excluir</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
