@@ -1,0 +1,32 @@
+[1 2026-11-13T23:15:56Z] health: [{"name":"db","healthy":false,"status":"UNHEALTHY","error":"Service health check failed"},{"name":"rest","healthy":false,"status":"UNHEALTHY","info":{"db_schema":"public, graphql_public, graphql, cron, pgmq, net, supabase_functions, api"},"error":"Service health check failed"},{"name":"auth","healthy":false,"status":"UNHEALTHY","error":"Service health check failed"},{"name":"realtime","healthy":true,"status":"ACTIVE_HEALTHY","info":{"healthy":true,"db_connected":true,"replication_connected":true,"connected_cluster":8,"node":"realtime@2600:1f10:4c1b:cc00:4777:da35:d122:cc6b","region":"us-east-1"}},{"name":"storage","healthy":false,"status":"UNHEALTHY","error":"Service health check failed"}] http=200 t=10.802972
+[1 2026-11-13T23:15:56Z] rest/v1/v_products_public?select=id&limit=1 -> http=000 t=60.002118
+[1 2026-11-13T23:15:56Z] rest/v1/categories?select=id&limit=1 -> http=503 t=31.375850
+[1 2026-11-13T23:15:56Z] auth/v1/health -> http=200 t=7.851177
+[1 2026-11-13T23:15:56Z] promogifts /api/health -> http=200 t=0.614537
+[2 2026-11-13T23:18:16Z] health: [{"name":"db","healthy":false,"status":"UNHEALTHY","error":"Service health check failed"},{"name":"rest","healthy":false,"status":"UNHEALTHY","info":{"db_schema":"public, graphql_public, graphql, cron, pgmq, net, supabase_functions, api"},"error":"Service health check failed"},{"name":"auth","healthy":false,"status":"UNHEALTHY","error":"Service health check failed"},{"name":"realtime","healthy":true,"status":"ACTIVE_HEALTHY","info":{"healthy":true,"db_connected":true,"replication_connected":true,"connected_cluster":5,"node":"realtime@2600:1f10:4c1b:cc00:e391:21bc:9039:dba8","region":"us-east-1"}},{"name":"storage","healthy":false,"status":"UNHEALTHY","error":"Service health check failed"}] http=200 t=10.968617
+[2 2026-11-13T23:18:16Z] rest/v1/v_products_public?select=id&limit=1 -> http=000 t=60.001070
+[2 2026-11-13T23:18:16Z] rest/v1/categories?select=id&limit=1 -> http=200 t=49.506466
+[2 2026-11-13T23:18:16Z] auth/v1/health -> http=200 t=0.792633
+[2 2026-11-13T23:18:16Z] promogifts /api/health -> http=200 t=0.349589
+[3 2026-11-13T23:20:48Z] health: [{"name":"db","healthy":true,"status":"ACTIVE_HEALTHY"},{"name":"rest","healthy":false,"status":"UNHEALTHY","info":{"db_schema":"public, graphql_public, graphql, cron, pgmq, net, supabase_functions, api"},"error":"Service health check failed"},{"name":"auth","healthy":false,"status":"UNHEALTHY","error":"Service health check failed"},{"name":"realtime","healthy":true,"status":"ACTIVE_HEALTHY","info":{"healthy":true,"db_connected":true,"replication_connected":true,"connected_cluster":8,"node":"realtime@2600:1f10:4c1b:cc01:d1c9:8d9c:2577:7e4d","region":"us-east-1"}},{"name":"storage","healthy":false,"status":"UNHEALTHY","error":"Service health check failed"}] http=200 t=8.726225
+[3 2026-11-13T23:20:48Z] rest/v1/v_products_public?select=id&limit=1 -> http=000 t=60.002444
+[3 2026-11-13T23:20:48Z] rest/v1/categories?select=id&limit=1 -> http=200 t=35.420450
+[3 2026-11-13T23:20:48Z] auth/v1/health -> http=200 t=0.881254
+[3 2026-11-13T23:20:48Z] promogifts /api/health -> http=200 t=0.690592
+[4 2026-11-13T23:23:04Z] health: [{"name":"db","healthy":true,"status":"ACTIVE_HEALTHY"},{"name":"rest","healthy":false,"status":"UNHEALTHY","info":{"db_schema":"public, graphql_public, graphql, cron, pgmq, net, supabase_functions, api"},"error":"Service health check failed"},{"name":"auth","healthy":false,"status":"UNHEALTHY","error":"Service health check failed"},{"name":"realtime","healthy":true,"status":"ACTIVE_HEALTHY","info":{"healthy":true,"db_connected":true,"replication_connected":true,"connected_cluster":7,"node":"realtime@2600:1f10:4c1b:cc02:5a9c:5bf6:b0c5:99a0","region":"us-east-1"}},{"name":"storage","healthy":false,"status":"UNHEALTHY","error":"Service health check failed"}] http=200 t=10.237690
+[4 2026-11-13T23:23:04Z] rest/v1/v_products_public?select=id&limit=1 -> http=200 t=16.992657
+[4 2026-11-13T23:23:04Z] rest/v1/categories?select=id&limit=1 -> http=200 t=18.883815
+[4 2026-11-13T23:23:04Z] auth/v1/health -> http=200 t=8.150996
+[4 2026-11-13T23:23:04Z] promogifts /api/health -> http=200 t=0.456249
+[5 2026-11-13T23:24:28Z] health: [{"name":"db","healthy":false,"status":"UNHEALTHY","error":"Service health check failed"},{"name":"rest","healthy":false,"status":"UNHEALTHY","info":{"db_schema":"public, graphql_public, graphql, cron, pgmq, net, supabase_functions, api"},"error":"Service health check failed"},{"name":"auth","healthy":false,"status":"UNHEALTHY","error":"Service health check failed"},{"name":"realtime","healthy":true,"status":"ACTIVE_HEALTHY","info":{"healthy":true,"db_connected":true,"replication_connected":true,"connected_cluster":5,"node":"realtime@2600:1f10:4c1b:cc00:ad4b:54bc:4a85:494d","region":"us-east-1"}},{"name":"storage","healthy":false,"status":"UNHEALTHY","error":"Service health check failed"}] http=200 t=10.976402
+[5 2026-11-13T23:24:28Z] rest/v1/v_products_public?select=id&limit=1 -> http=200 t=28.249416
+[5 2026-11-13T23:24:28Z] rest/v1/categories?select=id&limit=1 -> http=000 t=60.002146
+[5 2026-11-13T23:24:28Z] auth/v1/health -> http=200 t=0.273589
+[5 2026-11-13T23:24:28Z] promogifts /api/health -> http=200 t=0.744852
+DONE
+23:39:12Z db=OK rest=UNHEALTHY auth=OK | v_products_public 500 25.664842
+23:41:18Z db=OK rest=OK auth=OK | v_products_public 200 0.263726
+23:42:49Z db=OK rest=OK auth=OK | v_products_public 200 0.240527
+23:44:20Z db=OK rest=OK auth=OK | v_products_public 200 0.268023
+23:45:52Z db=OK rest=OK auth=OK | v_products_public 200 0.358259
+23:47:24Z db=OK rest=OK auth=OK | v_products_public 200 0.704850

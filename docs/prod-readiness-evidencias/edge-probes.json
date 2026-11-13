@@ -1,0 +1,992 @@
+[
+ {
+  "slug": "analyze-logo-colors",
+  "status": "ACTIVE",
+  "version": 268,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:03:20.032Z",
+  "options_code": "200",
+  "t": "0.78"
+ },
+ {
+  "slug": "bi-copilot",
+  "status": "ACTIVE",
+  "version": 269,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:35:13.832Z",
+  "options_code": "200",
+  "t": "0.70"
+ },
+ {
+  "slug": "bitrix-sync",
+  "status": "ACTIVE",
+  "version": 274,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:04:34.621Z",
+  "options_code": "200",
+  "t": "0.36"
+ },
+ {
+  "slug": "ai-recommendations",
+  "status": "ACTIVE",
+  "version": 307,
+  "verify_jwt": false,
+  "updated_at": "2026-11-13T17:32:43.098Z",
+  "options_code": "200",
+  "t": "0.43"
+ },
+ {
+  "slug": "block-ip-temporarily",
+  "status": "ACTIVE",
+  "version": 298,
+  "verify_jwt": true,
+  "updated_at": "2026-11-12T13:22:56.317Z",
+  "options_code": "200",
+  "t": "0.35"
+ },
+ {
+  "slug": "cleanup-novelties",
+  "status": "ACTIVE",
+  "version": 313,
+  "verify_jwt": false,
+  "updated_at": "2026-11-13T20:54:53.970Z",
+  "options_code": "204",
+  "t": "0.34"
+ },
+ {
+  "slug": "categories-api",
+  "status": "ACTIVE",
+  "version": 290,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:35:50.251Z",
+  "options_code": "200",
+  "t": "0.40"
+ },
+ {
+  "slug": "cnpj-lookup",
+  "status": "ACTIVE",
+  "version": 280,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:37:42.567Z",
+  "options_code": "200",
+  "t": "0.33"
+ },
+ {
+  "slug": "cleanup-notifications",
+  "status": "ACTIVE",
+  "version": 321,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:05:40.083Z",
+  "options_code": "204",
+  "t": "0.33"
+ },
+ {
+  "slug": "collections-watcher",
+  "status": "ACTIVE",
+  "version": 309,
+  "verify_jwt": false,
+  "updated_at": "2026-11-12T14:29:09.954Z",
+  "options_code": "200",
+  "t": "0.39"
+ },
+ {
+  "slug": "commemorative-dates",
+  "status": "ACTIVE",
+  "version": 294,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:38:18.183Z",
+  "options_code": "200",
+  "t": "0.31"
+ },
+ {
+  "slug": "comparison-ai-advisor",
+  "status": "ACTIVE",
+  "version": 286,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:38:22.670Z",
+  "options_code": "200",
+  "t": "0.33"
+ },
+ {
+  "slug": "comparison-price-watcher",
+  "status": "ACTIVE",
+  "version": 298,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:38:20.923Z",
+  "options_code": "200",
+  "t": "0.38"
+ },
+ {
+  "slug": "connections-auto-test",
+  "status": "ACTIVE",
+  "version": 306,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:38:45.919Z",
+  "options_code": "200",
+  "t": "0.35"
+ },
+ {
+  "slug": "connections-health-check",
+  "status": "ACTIVE",
+  "version": 320,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:38:47.508Z",
+  "options_code": "200",
+  "t": "0.33"
+ },
+ {
+  "slug": "connection-tester",
+  "status": "ACTIVE",
+  "version": 289,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:06:16.942Z",
+  "options_code": "200",
+  "t": "0.34"
+ },
+ {
+  "slug": "connections-hub-audit",
+  "status": "ACTIVE",
+  "version": 281,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:38:49.192Z",
+  "options_code": "200",
+  "t": "0.31"
+ },
+ {
+  "slug": "cors-audit",
+  "status": "ACTIVE",
+  "version": 279,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:07:39.734Z",
+  "options_code": "200",
+  "t": "0.30"
+ },
+ {
+  "slug": "detect-new-device",
+  "status": "ACTIVE",
+  "version": 286,
+  "verify_jwt": true,
+  "updated_at": "2026-11-12T21:17:26.030Z",
+  "options_code": "200",
+  "t": "0.31"
+ },
+ {
+  "slug": "crm-db-bridge",
+  "status": "ACTIVE",
+  "version": 310,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:08:07.293Z",
+  "options_code": "200",
+  "t": "0.28"
+ },
+ {
+  "slug": "dropbox-list",
+  "status": "ACTIVE",
+  "version": 297,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:08:34.425Z",
+  "options_code": "200",
+  "t": "0.32"
+ },
+ {
+  "slug": "e2e-cleanup",
+  "status": "ACTIVE",
+  "version": 308,
+  "verify_jwt": false,
+  "updated_at": "2026-11-13T19:11:43.834Z",
+  "options_code": "200",
+  "t": "0.38"
+ },
+ {
+  "slug": "elevenlabs-scribe-token",
+  "status": "ACTIVE",
+  "version": 287,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:41:10.393Z",
+  "options_code": "200",
+  "t": "0.37"
+ },
+ {
+  "slug": "external-db-bridge",
+  "status": "ACTIVE",
+  "version": 299,
+  "verify_jwt": true,
+  "updated_at": "2026-11-13T07:39:19.033Z",
+  "options_code": "200",
+  "t": "0.23"
+ },
+ {
+  "slug": "external-db-inspect",
+  "status": "ACTIVE",
+  "version": 297,
+  "verify_jwt": false,
+  "updated_at": "2026-11-13T03:37:14.141Z",
+  "options_code": "200",
+  "t": "0.39"
+ },
+ {
+  "slug": "favorites-watcher",
+  "status": "ACTIVE",
+  "version": 318,
+  "verify_jwt": false,
+  "updated_at": "2026-11-12T23:52:02.553Z",
+  "options_code": "200",
+  "t": "0.40"
+ },
+ {
+  "slug": "force-global-logout",
+  "status": "ACTIVE",
+  "version": 287,
+  "verify_jwt": true,
+  "updated_at": "2026-11-12T12:38:51.912Z",
+  "options_code": "200",
+  "t": "0.32"
+ },
+ {
+  "slug": "full-op-diagnostics",
+  "status": "ACTIVE",
+  "version": 273,
+  "verify_jwt": true,
+  "updated_at": "2026-11-13T04:39:21.934Z",
+  "options_code": "200",
+  "t": "0.38"
+ },
+ {
+  "slug": "generate-ad-prompt",
+  "status": "ACTIVE",
+  "version": 288,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:43:30.724Z",
+  "options_code": "200",
+  "t": "0.34"
+ },
+ {
+  "slug": "generate-ad-image",
+  "status": "ACTIVE",
+  "version": 298,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:42:43.523Z",
+  "options_code": "200",
+  "t": "0.34"
+ },
+ {
+  "slug": "get-visitor-info",
+  "status": "ACTIVE",
+  "version": 285,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:45:15.568Z",
+  "options_code": "200",
+  "t": "0.18"
+ },
+ {
+  "slug": "github-credentials-test",
+  "status": "ACTIVE",
+  "version": 288,
+  "verify_jwt": true,
+  "updated_at": "2026-11-13T04:02:25.344Z",
+  "options_code": "200",
+  "t": "0.32"
+ },
+ {
+  "slug": "generate-product-seo",
+  "status": "ACTIVE",
+  "version": 284,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:43:27.237Z",
+  "options_code": "200",
+  "t": "0.34"
+ },
+ {
+  "slug": "health-check",
+  "status": "ACTIVE",
+  "version": 287,
+  "verify_jwt": true,
+  "updated_at": "2026-11-13T15:27:48.257Z",
+  "options_code": "200",
+  "t": "0.32"
+ },
+ {
+  "slug": "kit-ai-builder",
+  "status": "ACTIVE",
+  "version": 297,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:45:54.096Z",
+  "options_code": "200",
+  "t": "0.34"
+ },
+ {
+  "slug": "kit-identity-suggest",
+  "status": "ACTIVE",
+  "version": 274,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:45:58.285Z",
+  "options_code": "200",
+  "t": "0.38"
+ },
+ {
+  "slug": "log-login-attempt",
+  "status": "ACTIVE",
+  "version": 287,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:46:45.374Z",
+  "options_code": "200",
+  "t": "0.31"
+ },
+ {
+  "slug": "manage-users",
+  "status": "ACTIVE",
+  "version": 279,
+  "verify_jwt": true,
+  "updated_at": "2026-11-13T01:23:34.697Z",
+  "options_code": "200",
+  "t": "0.32"
+ },
+ {
+  "slug": "market-intelligence-insights",
+  "status": "ACTIVE",
+  "version": 289,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:49:23.512Z",
+  "options_code": "200",
+  "t": "0.32"
+ },
+ {
+  "slug": "materials-api",
+  "status": "ACTIVE",
+  "version": 287,
+  "verify_jwt": true,
+  "updated_at": "2026-11-13T04:17:34.789Z",
+  "options_code": "200",
+  "t": "0.28"
+ },
+ {
+  "slug": "mcp-keys-issue",
+  "status": "ACTIVE",
+  "version": 286,
+  "verify_jwt": true,
+  "updated_at": "2026-11-13T04:41:02.042Z",
+  "options_code": "200",
+  "t": "0.67"
+ },
+ {
+  "slug": "mcp-keys-rotate",
+  "status": "ACTIVE",
+  "version": 282,
+  "verify_jwt": true,
+  "updated_at": "2026-11-13T04:42:25.075Z",
+  "options_code": "200",
+  "t": "0.31"
+ },
+ {
+  "slug": "mcp-keys-update",
+  "status": "ACTIVE",
+  "version": 290,
+  "verify_jwt": true,
+  "updated_at": "2026-11-13T04:45:22.777Z",
+  "options_code": "200",
+  "t": "0.34"
+ },
+ {
+  "slug": "elevenlabs-tts",
+  "status": "ACTIVE",
+  "version": 281,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:08:35.248Z",
+  "options_code": "200",
+  "t": "0.38"
+ },
+ {
+  "slug": "mcp-server",
+  "status": "ACTIVE",
+  "version": 311,
+  "verify_jwt": false,
+  "updated_at": "2026-11-13T08:17:45.805Z",
+  "options_code": "200",
+  "t": "0.35"
+ },
+ {
+  "slug": "ownership-audit",
+  "status": "ACTIVE",
+  "version": 305,
+  "verify_jwt": false,
+  "updated_at": "2026-11-13T04:28:12.490Z",
+  "options_code": "200",
+  "t": "0.33"
+ },
+ {
+  "slug": "ownership-repair",
+  "status": "ACTIVE",
+  "version": 287,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:50:26.924Z",
+  "options_code": "200",
+  "t": "0.32"
+ },
+ {
+  "slug": "process-scheduled-reports",
+  "status": "ACTIVE",
+  "version": 312,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:50:59.479Z",
+  "options_code": "204",
+  "t": "0.30"
+ },
+ {
+  "slug": "process-queue",
+  "status": "ACTIVE",
+  "version": 308,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:50:57.779Z",
+  "options_code": "204",
+  "t": "0.32"
+ },
+ {
+  "slug": "product-webhook",
+  "status": "ACTIVE",
+  "version": 277,
+  "verify_jwt": true,
+  "updated_at": "2026-11-13T04:48:40.733Z",
+  "options_code": "200",
+  "t": "0.31"
+ },
+ {
+  "slug": "quote-followup-reminders",
+  "status": "ACTIVE",
+  "version": 306,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:53:27.599Z",
+  "options_code": "200",
+  "t": "0.32"
+ },
+ {
+  "slug": "rate-limit-check",
+  "status": "ACTIVE",
+  "version": 283,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:53:27.247Z",
+  "options_code": "200",
+  "t": "0.34"
+ },
+ {
+  "slug": "quote-sync",
+  "status": "ACTIVE",
+  "version": 277,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:53:28.349Z",
+  "options_code": "200",
+  "t": "0.33"
+ },
+ {
+  "slug": "rls-audit",
+  "status": "ACTIVE",
+  "version": 283,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:18:52.294Z",
+  "options_code": "200",
+  "t": "0.35"
+ },
+ {
+  "slug": "rls-integration-tests",
+  "status": "ACTIVE",
+  "version": 279,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:20:23.529Z",
+  "options_code": "200",
+  "t": "0.30"
+ },
+ {
+  "slug": "secrets-manager",
+  "status": "ACTIVE",
+  "version": 294,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:55:52.007Z",
+  "options_code": "200",
+  "t": "0.31"
+ },
+ {
+  "slug": "secure-upload",
+  "status": "ACTIVE",
+  "version": 290,
+  "verify_jwt": true,
+  "updated_at": "2026-11-13T04:51:28.605Z",
+  "options_code": "200",
+  "t": "0.32"
+ },
+ {
+  "slug": "send-digest",
+  "status": "ACTIVE",
+  "version": 303,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:55:55.959Z",
+  "options_code": "204",
+  "t": "0.36"
+ },
+ {
+  "slug": "image-proxy",
+  "status": "ACTIVE",
+  "version": 299,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:45:50.496Z",
+  "options_code": "200",
+  "t": "0.30"
+ },
+ {
+  "slug": "semantic-search",
+  "status": "ACTIVE",
+  "version": 280,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:55:58.261Z",
+  "options_code": "200",
+  "t": "0.34"
+ },
+ {
+  "slug": "send-scheduled-reports",
+  "status": "ACTIVE",
+  "version": 307,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:56:19.584Z",
+  "options_code": "200",
+  "t": "0.34"
+ },
+ {
+  "slug": "send-notification",
+  "status": "ACTIVE",
+  "version": 314,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:56:15.456Z",
+  "options_code": "204",
+  "t": "0.34"
+ },
+ {
+  "slug": "send-transactional-email",
+  "status": "ACTIVE",
+  "version": 282,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:56:17.469Z",
+  "options_code": "200",
+  "t": "0.35"
+ },
+ {
+  "slug": "magic-up-score",
+  "status": "ACTIVE",
+  "version": 281,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:15:26.982Z",
+  "options_code": "200",
+  "t": "0.33"
+ },
+ {
+  "slug": "step-up-verify",
+  "status": "ACTIVE",
+  "version": 284,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:56:54.279Z",
+  "options_code": "200",
+  "t": "0.36"
+ },
+ {
+  "slug": "trends-insights",
+  "status": "ACTIVE",
+  "version": 287,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:59:01.378Z",
+  "options_code": "200",
+  "t": "0.33"
+ },
+ {
+  "slug": "validate-access",
+  "status": "ACTIVE",
+  "version": 291,
+  "verify_jwt": true,
+  "updated_at": "2026-11-13T04:55:30.163Z",
+  "options_code": "200",
+  "t": "0.26"
+ },
+ {
+  "slug": "sync-quote-bitrix",
+  "status": "ACTIVE",
+  "version": 288,
+  "verify_jwt": true,
+  "updated_at": "2026-11-13T04:37:11.786Z",
+  "options_code": "200",
+  "t": "0.30"
+ },
+ {
+  "slug": "mcp-keys-revoke",
+  "status": "ACTIVE",
+  "version": 288,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:49:51.831Z",
+  "options_code": "200",
+  "t": "0.34"
+ },
+ {
+  "slug": "visual-search",
+  "status": "ACTIVE",
+  "version": 282,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T18:00:57.523Z",
+  "options_code": "200",
+  "t": "0.33"
+ },
+ {
+  "slug": "webhook-dispatcher",
+  "status": "ACTIVE",
+  "version": 312,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T18:00:58.128Z",
+  "options_code": "200",
+  "t": "0.32"
+ },
+ {
+  "slug": "voice-agent",
+  "status": "ACTIVE",
+  "version": 286,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:26:18.491Z",
+  "options_code": "200",
+  "t": "0.33"
+ },
+ {
+  "slug": "webhook-inbound",
+  "status": "ACTIVE",
+  "version": 308,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T18:01:48.387Z",
+  "options_code": "200",
+  "t": "0.33"
+ },
+ {
+  "slug": "rls-matrix-export",
+  "status": "ACTIVE",
+  "version": 272,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:54:12.894Z",
+  "options_code": "200",
+  "t": "0.31"
+ },
+ {
+  "slug": "verify-email",
+  "status": "ACTIVE",
+  "version": 281,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T18:00:55.932Z",
+  "options_code": "200",
+  "t": "0.31"
+ },
+ {
+  "slug": "expert-chat",
+  "status": "ACTIVE",
+  "version": 270,
+  "verify_jwt": true,
+  "updated_at": "2026-11-13T02:44:39.789Z",
+  "options_code": "200",
+  "t": "0.34"
+ },
+ {
+  "slug": "generate-mockup",
+  "status": "ACTIVE",
+  "version": 278,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:43:33.051Z",
+  "options_code": "200",
+  "t": "0.36"
+ },
+ {
+  "slug": "bulk-random-passwords",
+  "status": "ACTIVE",
+  "version": 239,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:35:54.818Z",
+  "options_code": "200",
+  "t": "0.31"
+ },
+ {
+  "slug": "simulation-orchestrator",
+  "status": "ACTIVE",
+  "version": 218,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:56:55.579Z",
+  "options_code": "200",
+  "t": "0.34"
+ },
+ {
+  "slug": "test-contract-orchestrator",
+  "status": "ACTIVE",
+  "version": 236,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:58:39.052Z",
+  "options_code": "200",
+  "t": "0.32"
+ },
+ {
+  "slug": "test-inventory-orchestrator",
+  "status": "ACTIVE",
+  "version": 231,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:59:02.013Z",
+  "options_code": "200",
+  "t": "0.33"
+ },
+ {
+  "slug": "sync-external-db",
+  "status": "ACTIVE",
+  "version": 259,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:56:51.001Z",
+  "options_code": "200",
+  "t": "0.33"
+ },
+ {
+  "slug": "load-test",
+  "status": "ACTIVE",
+  "version": 192,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:46:46.976Z",
+  "options_code": "200",
+  "t": "0.30"
+ },
+ {
+  "slug": "verify-2fa-token",
+  "status": "ACTIVE",
+  "version": 197,
+  "verify_jwt": true,
+  "updated_at": "2026-11-13T04:59:20.455Z",
+  "options_code": "200",
+  "t": "0.33"
+ },
+ {
+  "slug": "asia-ingestion",
+  "status": "ACTIVE",
+  "version": 135,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:33:37.294Z",
+  "options_code": "200",
+  "t": "0.41"
+ },
+ {
+  "slug": "test-cart-concurrency",
+  "status": "ACTIVE",
+  "version": 125,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:58:36.699Z",
+  "options_code": "200",
+  "t": "0.29"
+ },
+ {
+  "slug": "test-cart-limit",
+  "status": "ACTIVE",
+  "version": 127,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:58:34.723Z",
+  "options_code": "200",
+  "t": "0.31"
+ },
+ {
+  "slug": "test-cart-rls",
+  "status": "ACTIVE",
+  "version": 123,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:23:53.956Z",
+  "options_code": "200",
+  "t": "0.30"
+ },
+ {
+  "slug": "audit-suite",
+  "status": "ACTIVE",
+  "version": 143,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:35:14.678Z",
+  "options_code": "200",
+  "t": "1.96"
+ },
+ {
+  "slug": "word-magic",
+  "status": "ACTIVE",
+  "version": 132,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T18:01:53.959Z",
+  "options_code": "200",
+  "t": "1.42"
+ },
+ {
+  "slug": "check-login",
+  "status": "ACTIVE",
+  "version": 140,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:35:52.197Z",
+  "options_code": "200",
+  "t": "0.33"
+ },
+ {
+  "slug": "backfill-image-dimensions",
+  "status": "ACTIVE",
+  "version": 135,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:35:18.764Z",
+  "options_code": "405",
+  "t": "0.40"
+ },
+ {
+  "slug": "hash-product-images",
+  "status": "ACTIVE",
+  "version": 126,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:45:20.738Z",
+  "options_code": "405",
+  "t": "0.43"
+ },
+ {
+  "slug": "generate-blurhashes",
+  "status": "ACTIVE",
+  "version": 126,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:11:10.490Z",
+  "options_code": "405",
+  "t": "0.44"
+ },
+ {
+  "slug": "receive-crm-callback",
+  "status": "ACTIVE",
+  "version": 84,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:54:12.240Z",
+  "options_code": "200",
+  "t": "0.33"
+ },
+ {
+  "slug": "crm-callback-alerts",
+  "status": "ACTIVE",
+  "version": 83,
+  "verify_jwt": false,
+  "updated_at": "2026-11-12T16:10:34.394Z",
+  "options_code": "200",
+  "t": "0.32"
+ },
+ {
+  "slug": "crm-callback-reprocess",
+  "status": "ACTIVE",
+  "version": 82,
+  "verify_jwt": false,
+  "updated_at": "2026-11-12T18:19:56.047Z",
+  "options_code": "200",
+  "t": "0.42"
+ },
+ {
+  "slug": "quote-sync-promo-champions",
+  "status": "ACTIVE",
+  "version": 73,
+  "verify_jwt": true,
+  "updated_at": "2026-11-13T16:43:47.454Z",
+  "options_code": "200",
+  "t": "0.38"
+ },
+ {
+  "slug": "magazine-import-local",
+  "status": "ACTIVE",
+  "version": 52,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:46:46.330Z",
+  "options_code": "200",
+  "t": "0.31"
+ },
+ {
+  "slug": "magazine-public-react",
+  "status": "ACTIVE",
+  "version": 49,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:14:03.560Z",
+  "options_code": "200",
+  "t": "0.42"
+ },
+ {
+  "slug": "magazine-public-view",
+  "status": "ACTIVE",
+  "version": 51,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:47:34.885Z",
+  "options_code": "200",
+  "t": "0.34"
+ },
+ {
+  "slug": "magazine-reader-state-read",
+  "status": "ACTIVE",
+  "version": 55,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:47:33.963Z",
+  "options_code": "200",
+  "t": "0.32"
+ },
+ {
+  "slug": "magazine-reader-state-write",
+  "status": "ACTIVE",
+  "version": 50,
+  "verify_jwt": false,
+  "updated_at": "2026-11-09T17:47:31.518Z",
+  "options_code": "200",
+  "t": "0.34"
+ },
+ {
+  "slug": "intelligence-substitute-applied",
+  "status": "ACTIVE",
+  "version": 38,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:45:43.952Z",
+  "options_code": "200",
+  "t": "0.31"
+ },
+ {
+  "slug": "product-visual-search",
+  "status": "ACTIVE",
+  "version": 29,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:51:07.831Z",
+  "options_code": "200",
+  "t": "0.37"
+ },
+ {
+  "slug": "mcp-query",
+  "status": "ACTIVE",
+  "version": 20,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:49:53.338Z",
+  "options_code": "410",
+  "t": "0.18"
+ },
+ {
+  "slug": "ema-pipeline-health",
+  "status": "ACTIVE",
+  "version": 28,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:42:12.029Z",
+  "options_code": "200",
+  "t": "0.31"
+ },
+ {
+  "slug": "migrate-helper",
+  "status": "ACTIVE",
+  "version": 27,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T17:50:30.225Z",
+  "options_code": "200",
+  "t": "0.42"
+ },
+ {
+  "slug": "anonymize-user",
+  "status": "ACTIVE",
+  "version": 24,
+  "verify_jwt": true,
+  "updated_at": "2026-11-12T13:00:42.431Z",
+  "options_code": "204",
+  "t": "0.32"
+ },
+ {
+  "slug": "xbz-image-uploader",
+  "status": "ACTIVE",
+  "version": 9,
+  "verify_jwt": true,
+  "updated_at": "2026-11-09T18:01:55.131Z",
+  "options_code": "405",
+  "t": "0.37"
+ }
+]
