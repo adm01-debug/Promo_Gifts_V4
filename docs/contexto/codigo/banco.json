@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3051,
+ "migrations": 3062,
  "seeds": [],
  "avisos": [
   "317 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -3567,6 +3567,12 @@
    "chama_edge": "process-queue"
   },
   {
+   "nome": "process-scheduled-reports",
+   "agenda": "5 * * * *",
+   "migration": "20261108030000_ft005_cron_scheduled_reports.sql",
+   "chama_edge": "process-scheduled-reports"
+  },
+  {
    "nome": "purge-audit-logs-daily",
    "agenda": "0 3 * * *",
    "migration": "20260503134916_03743408-92b5-4ba0-aa2b-5ec84beb7894.sql"
@@ -3690,6 +3696,12 @@
    "nome": "schema-drift-check",
    "agenda": "11 2 * * *",
    "migration": "20260623172143_fix10_stagger_daily_jobs_3am_storm_v2.sql"
+  },
+  {
+   "nome": "send-scheduled-reports",
+   "agenda": "10 * * * *",
+   "migration": "20261108030000_ft005_cron_scheduled_reports.sql",
+   "chama_edge": "send-scheduled-reports"
   },
   {
    "nome": "seo-populate-new-products",
@@ -9744,6 +9756,13 @@
      "default": "0",
      "ref": null
     },
+    "full_path_readable": {
+     "tipo": "text",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "icon": {
      "tipo": "text",
      "nn": false,
@@ -9770,6 +9789,13 @@
      "nn": false,
      "pk": false,
      "default": "true",
+     "ref": null
+    },
+    "level": {
+     "tipo": "integer",
+     "nn": true,
+     "pk": false,
+     "default": "1",
      "ref": null
     },
     "name": {
@@ -9856,6 +9882,11 @@
    ],
    "indices": [
     {
+     "nome": "idx_cat_parent_nav",
+     "colunas": "parent_id, display_order",
+     "unico": false
+    },
+    {
      "nome": "idx_categories_created_by",
      "colunas": "created_by",
      "unico": false
@@ -9863,6 +9894,16 @@
     {
      "nome": "idx_categories_deleted_at",
      "colunas": "deleted_at",
+     "unico": false
+    },
+    {
+     "nome": "idx_categories_level",
+     "colunas": "level",
+     "unico": false
+    },
+    {
+     "nome": "idx_categories_level_display_order",
+     "colunas": "level, display_order",
      "unico": false
     },
     {
@@ -43431,6 +43472,11 @@
    ],
    "indices": [
     {
+     "nome": "idx_sds_summary_date",
+     "colunas": "summary_date",
+     "unico": false
+    },
+    {
      "nome": "idx_stock_daily_summary_variant_id",
      "colunas": "variant_id",
      "unico": false
@@ -43823,13 +43869,19 @@
      "tipo": "permissive"
     },
     {
+     "nome": "art_files_auth_read",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "art_files_auth_update",
      "comando": "update",
      "para": "authenticated",
      "tipo": "permissive"
     },
     {
-     "nome": "art_files_public_read",
+     "nome": "art_files_quotes_public_read",
      "comando": "select",
      "para": "public",
      "tipo": "permissive"

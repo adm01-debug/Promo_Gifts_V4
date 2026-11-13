@@ -3,13 +3,13 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4738)",
-   "SQL (3333)",
-   "Markdown (1011)",
-   "JavaScript (312)",
-   "JSON (118)",
-   "YAML (108)",
-   "Shell (25)",
+   "TypeScript (4742)",
+   "SQL (3356)",
+   "Markdown (1016)",
+   "JavaScript (443)",
+   "JSON (123)",
+   "YAML (111)",
+   "Shell (27)",
    "HTML (20)"
   ],
   "linguagem_principal": "TypeScript",
@@ -50,6 +50,15 @@
    "audit:credentials:all": "node scripts/audit-credentials.mjs",
    "audit:credentials:update-baseline": "node scripts/audit-credentials.mjs --update-baseline .audit-credentials-baseline.json",
    "audit:db-frontend": "node scripts/audit-db-frontend-coverage.mjs",
+   "automation:check": "node scripts/automation.mjs check --ref HEAD",
+   "automation:doctor": "node scripts/automation.mjs doctor",
+   "automation:graph": "node scripts/automation.mjs graph",
+   "automation:heal": "node scripts/automation.mjs heal --ref origin/main",
+   "automation:install-hooks": "node scripts/automation.mjs install-hooks",
+   "automation:nightly": "node scripts/automation.mjs nightly --ref origin/main",
+   "automation:status": "node scripts/automation.mjs graph status",
+   "automation:test": "node scripts/automation.mjs test",
+   "automation:uninstall-hooks": "node scripts/automation.mjs uninstall-hooks",
    "build": "node scripts/guard-canonical-project.mjs && node scripts/validate-supabase-config.mjs && node scripts/check-pptx-image-parser-exposure.mjs && vite build && node scripts/check-chunk-cycles.mjs && node scripts/check-production-harnesses.mjs",
    "build:cors-snapshot": "node scripts/build-cors-snapshot.mjs",
    "build:dev": "vite build --mode development",
@@ -218,6 +227,9 @@
    "lint:check": "npm run lint:config && eslint src --max-warnings=0",
    "lint:config": "node scripts/check-eslint-config-parses.mjs",
    "lint:lockfile": "node scripts/check-lockfile-sync.mjs",
+   "maintenance:check": "sh scripts/maintenance/run.sh check --root . --ref origin/main",
+   "maintenance:doctor": "sh scripts/maintenance/run.sh doctor --root .",
+   "maintenance:heal": "sh scripts/maintenance/run.sh heal --root . --ref origin/main",
    "plan:status": "node scripts/plan-status.mjs",
    "prepare": "husky",
    "preview": "vite preview",
@@ -310,6 +322,7 @@
    "test:magazine:flakiness:strict": "node scripts/magazine-flakiness-report.mjs --runs=10 --strict --pattern=tests/magazine/,tests/utils/tailwindRings.interaction.test.tsx,src/pages/magazine/,src/services/__tests__/magazine,tests/integration/magazine-service-fuzz.test.ts",
    "test:magazine:mutation": "node scripts/mutation-test-magazine.mjs",
    "test:magazine:sql": "bash scripts/test-magazine-hardening-v2.sh",
+   "test:maintenance": "node --test scripts/maintenance/maintenance.unit.mjs",
    "test:price-freshness": "TZ=America/Sao_Paulo bash -c 'set -euo pipefail; files=( tests/utils/price-freshness*.test.ts tests/components/PriceFreshnessBadge*.test.tsx ); vitest run \"${files[@]}\" --coverage --coverage.reporter=text --coverage.reporter=json-summary --coverage.reporter=html --coverage.include=src/utils/price-freshness.ts --coverage.include=src/components/products/PriceFreshnessBadge.tsx --coverage.thresholds.statements=0 --coverage.thresholds.branches=0 --coverage.thresholds.functions=0 --coverage.thresholds.lines=0 && node scripts/check-price-freshness-coverage.mjs'",
    "test:quality": "TZ=America/Sao_Paulo vitest run --exclude 'tests/hooks/**'",
    "test:quote-rpc:postgres": "node scripts/simulate-quote-rpc-proposals.mjs",
@@ -341,8 +354,8 @@
    "@supabase/supabase-js": "^2.119.0",
    "@tanstack/react-query": "^5.106.1",
    "@tanstack/react-virtual": "^3.14.26",
-   "date-fns": "3.6.0",
-   "framer-motion": "^11.0.0",
+   "date-fns": "4.4.0",
+   "framer-motion": "^14.10.0",
    "react": "^19.3.1",
    "react-day-picker": "^10.0.2",
    "react-dom": "^19.3.1",
@@ -460,6 +473,34 @@
    ],
    "scripts_usados": [
     "scripts/check-auth-direct-calls.mjs"
+   ],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/automation-local.yml",
+   "nome": "Automação local",
+   "gatilhos": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "contracts"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [
+    "scripts/automation.mjs"
    ],
    "npm_scripts": [],
    "secrets": [],
@@ -1475,7 +1516,8 @@
    "nome": "E2E • ColorSwatch 2 linhas (Grid)",
    "gatilhos": [
     "pull_request",
-    "push"
+    "push",
+    "workflow_dispatch"
    ],
    "crons": [],
    "branches": [
@@ -2295,7 +2337,9 @@
     "issues: write",
     "pull-requests: write"
    ],
-   "scripts_usados": [],
+   "scripts_usados": [
+    "scripts/autoheal-eslint/run.mjs"
+   ],
    "npm_scripts": [
     "typecheck"
    ],
@@ -2639,6 +2683,34 @@
    "actions": [
     "actions/checkout",
     "actions/setup-node",
+    "actions/upload-artifact"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/personalization-trace-diagnostics.yml",
+   "nome": "Personalização — diagnóstico readonly do artifact fixo",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "sanitized-trace-evidence"
+   ],
+   "permissoes": [
+    "contents: read",
+    "actions: read"
+   ],
+   "scripts_usados": [
+    "scripts/diagnose-personalization-artifact.py"
+   ],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
     "actions/upload-artifact"
    ]
   },
@@ -3121,6 +3193,33 @@
    "secrets": [],
    "actions": [
     "actions/checkout"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/sitemap-production-preconditions.yml",
+   "nome": "Sitemap — precondições públicas de ativação",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "sitemap-production-preconditions"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [
+    "scripts/probe-production-sitemap.py"
+   ],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/upload-artifact"
    ]
   },
   {
@@ -3811,6 +3910,11 @@
    "linhas": 237
   },
   {
+   "arquivo": "docs/AUTOMACAO_LOCAL.md",
+   "titulo": "Automação local — Promo_Gifts_V4",
+   "linhas": 443
+  },
+  {
    "arquivo": "docs/BRANCH_PROTECTION.md",
    "titulo": "🔒 Branch Protection — `main`",
    "linhas": 94
@@ -4468,6 +4572,10 @@
    "arquivos_md": 4
   },
   {
+   "pasta": "docs/operations",
+   "arquivos_md": 4
+  },
+  {
    "pasta": "docs/testing",
    "arquivos_md": 4
   },
@@ -4521,10 +4629,6 @@
   },
   {
    "pasta": "docs/incidente-2026-10-13",
-   "arquivos_md": 2
-  },
-  {
-   "pasta": "docs/operations",
    "arquivos_md": 2
   },
   {
@@ -4675,14 +4779,18 @@
    "AI_CONTEXT_PROFILE",
    "AI_CONTEXT_SCHEMA_SNAPSHOT",
    "ANTHROPIC_API_KEY",
+   "CI",
    "CODE_SCAN_DIRS",
    "CODE_SCAN_MAX_FILES",
    "CRON_RUNS_PER_JOB",
    "GEN_TYPES",
+   "GITHUB_ACTIONS",
+   "GITHUB_TOKEN",
    "GRAPHIFY_VERSION",
    "PGDUMP",
    "PGDUMP_SCHEMAS",
    "REPO_ROOT",
+   "REQUIRE_LIVE",
    "SNAPSHOT_DIR",
    "SNAPSHOT_EXCLUDE_SCHEMAS",
    "SNAPSHOT_INCLUDE_SCHEMAS",
@@ -4789,7 +4897,7 @@
    {
     "pacote": "@sentry/react",
     "servico": "Sentry",
-    "versao": "^8.45.0"
+    "versao": "^11.11.0"
    },
    {
     "pacote": "@supabase/supabase-js",
@@ -4805,7 +4913,7 @@
   "hosts_externos": [
    {
     "host": "doufsxqlfjyuvxuezpln.supabase.co",
-    "arquivos": 59
+    "arquivos": 60
    },
    {
     "host": "wa.me",
@@ -4813,7 +4921,7 @@
    },
    {
     "host": "www.promogifts.com.br",
-    "arquivos": 14
+    "arquivos": 16
    },
    {
     "host": "fixture.invalid",
@@ -4836,15 +4944,15 @@
     "arquivos": 8
    },
    {
+    "host": "edge-contract.invalid",
+    "arquivos": 7
+   },
+   {
     "host": "api.ipify.org",
     "arquivos": 6
    },
    {
     "host": "cdn.test",
-    "arquivos": 6
-   },
-   {
-    "host": "edge-contract.invalid",
     "arquivos": 6
    },
    {
@@ -4857,6 +4965,10 @@
    },
    {
     "host": "www.spotgifts.com.br",
+    "arquivos": 5
+   },
+   {
+    "host": "x.supabase.co",
     "arquivos": 5
    },
    {
@@ -4880,7 +4992,7 @@
     "arquivos": 4
    },
    {
-    "host": "x.supabase.co",
+    "host": "promogifts.com.br",
     "arquivos": 4
    },
    {
@@ -4913,10 +5025,6 @@
    },
    {
     "host": "fonts.gstatic.com",
-    "arquivos": 3
-   },
-   {
-    "host": "promogifts.com.br",
     "arquivos": 3
    },
    {
@@ -4985,6 +5093,10 @@
    },
    {
     "host": "n8n.suaempresa.com",
+    "arquivos": 2
+   },
+   {
+    "host": "pqpdolkaeqlyzpdpbizo.supabase.co",
     "arquivos": 2
    },
    {
@@ -5124,6 +5236,10 @@
     "arquivos": 1
    },
    {
+    "host": "contract.invalid",
+    "arquivos": 1
+   },
+   {
     "host": "crm.supabase.co",
     "arquivos": 1
    },
@@ -5133,6 +5249,10 @@
    },
    {
     "host": "doufsxqlfjyuvxuezpln.functions.supabase.co",
+    "arquivos": 1
+   },
+   {
+    "host": "evilpromogifts.com.br",
     "arquivos": 1
    },
    {
@@ -5228,6 +5348,10 @@
     "arquivos": 1
    },
    {
+    "host": "maintenance.invalid",
+    "arquivos": 1
+   },
+   {
     "host": "maps.google.com",
     "arquivos": 1
    },
@@ -5272,11 +5396,19 @@
     "arquivos": 1
    },
    {
-    "host": "pqpdolkaeqlyzpdpbizo.supabase.co",
+    "host": "preview.example.test",
     "arquivos": 1
    },
    {
-    "host": "preview.example.test",
+    "host": "preview.exemplo.dev",
+    "arquivos": 1
+   },
+   {
+    "host": "production.invalid",
+    "arquivos": 1
+   },
+   {
+    "host": "production.supabase.co",
     "arquivos": 1
    },
    {
@@ -5357,6 +5489,10 @@
    },
    {
     "host": "test.com",
+    "arquivos": 1
+   },
+   {
+    "host": "trimtest.com",
     "arquivos": 1
    },
    {
@@ -5485,11 +5621,11 @@
    },
    {
     "papel": "dev",
-    "ocorrencias": 45
+    "ocorrencias": 46
    },
    {
     "papel": "button",
-    "ocorrencias": 40
+    "ocorrencias": 41
    },
    {
     "papel": "user",
@@ -5616,6 +5752,10 @@
     "ocorrencias": 6
    },
    {
+    "papel": "columnheader",
+    "ocorrencias": 5
+   },
+   {
     "papel": "document",
     "ocorrencias": 5
    },
@@ -5628,11 +5768,11 @@
     "ocorrencias": 5
    },
    {
-    "papel": "columnheader",
-    "ocorrencias": 4
+    "papel": "alertdialog",
+    "ocorrencias": 3
    },
    {
-    "papel": "alertdialog",
+    "papel": "cell",
     "ocorrencias": 3
    },
    {
@@ -5657,10 +5797,6 @@
    },
    {
     "papel": "agent",
-    "ocorrencias": 2
-   },
-   {
-    "papel": "cell",
     "ocorrencias": 2
    },
    {

@@ -4319,7 +4319,7 @@
    "hooks_exportados": [
     "useSellerCartsPage"
    ],
-   "linhas": 389,
+   "linhas": 355,
    "dominio": null,
    "tabelas": [],
    "rpcs": [],
@@ -9668,7 +9668,7 @@
    "hooks_exportados": [
     "useKitAutoSave"
    ],
-   "linhas": 359,
+   "linhas": 436,
    "dominio": "hooks/kit-builder",
    "tabelas": [],
    "rpcs": [],
@@ -9715,7 +9715,7 @@
    "hooks_exportados": [
     "useKitBuilderPageState"
    ],
-   "linhas": 533,
+   "linhas": 563,
    "dominio": "hooks/kit-builder",
    "tabelas": [],
    "rpcs": [],

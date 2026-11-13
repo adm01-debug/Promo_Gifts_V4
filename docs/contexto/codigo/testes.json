@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2303,
+ "total": 2431,
  "por_tipo": {
-  "contrato": 57,
+  "contrato": 64,
   "e2e": 677,
-  "pytest": 2,
+  "pytest": 4,
   "qa": 17,
-  "unit": 1550
+  "unit": 1669
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 866
+   "arquivos": 990
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -28,11 +28,11 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 143
+   "arquivos": 144
   },
   {
    "padrao": "outro",
-   "arquivos": 44
+   "arquivos": 47
   }
  ],
  "arquivos": [
@@ -4500,9 +4500,9 @@
   {
    "arquivo": "recovery/src-legacy/src/tests/ThemeInitializer.test.tsx",
    "tipo": "unit",
-   "linhas": 84,
+   "linhas": 89,
    "testa": [],
-   "casos": 3
+   "casos": 7
   },
   {
    "arquivo": "recovery/src-legacy/src/utils/__tests__/color-matching.test.ts",
@@ -4521,7 +4521,7 @@
   {
    "arquivo": "recovery/src-legacy/src/utils/price-freshness.test.ts",
    "tipo": "unit",
-   "linhas": 137,
+   "linhas": 140,
    "testa": [],
    "casos": 15
   },
@@ -4623,6 +4623,43 @@
    "casos": 18
   },
   {
+   "arquivo": "scripts/autoheal-eslint/run.test.mjs",
+   "tipo": "unit",
+   "linhas": 150,
+   "testa": [
+    "scripts/autoheal-eslint/run.mjs"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "scripts/automation.unit.mjs",
+   "tipo": "unit",
+   "linhas": 600,
+   "testa": [
+    "scripts/automation.mjs"
+   ],
+   "casos": 6
+  },
+  {
+   "arquivo": "scripts/graphify-local.unit.mjs",
+   "tipo": "unit",
+   "linhas": 463,
+   "testa": [
+    "scripts/graphify-local.mjs"
+   ],
+   "casos": 24
+  },
+  {
+   "arquivo": "scripts/maintenance/maintenance.unit.mjs",
+   "tipo": "unit",
+   "linhas": 887,
+   "testa": [
+    "scripts/maintenance/lib.mjs",
+    "scripts/maintenance/run.mjs"
+   ],
+   "casos": 44
+  },
+  {
    "arquivo": "scripts/qa/audit-freight-block.mjs",
    "tipo": "qa",
    "linhas": 150,
@@ -4646,7 +4683,7 @@
   {
    "arquivo": "scripts/qa/check-collapse-baselines.mjs",
    "tipo": "qa",
-   "linhas": 76,
+   "linhas": 81,
    "testa": [],
    "casos": 0
   },
@@ -4716,8 +4753,10 @@
   {
    "arquivo": "scripts/qa/inject-crm-dead-letters.mjs",
    "tipo": "qa",
-   "linhas": 115,
-   "testa": [],
+   "linhas": 118,
+   "testa": [
+    "scripts/lib/missing-prerequisite.mjs"
+   ],
    "casos": 0
   },
   {
@@ -6374,11 +6413,11 @@
   {
    "arquivo": "src/components/products/__tests__/ProductCustomizationOptions.summary-color.fuzz.test.ts",
    "tipo": "unit",
-   "linhas": 140,
+   "linhas": 170,
    "testa": [
     "scripts/check-summary-color-tokens.mjs"
    ],
-   "casos": 8
+   "casos": 9
   },
   {
    "arquivo": "src/components/products/__tests__/ProductCustomizationOptions.summary-color.test.ts",
@@ -12206,9 +12245,9 @@
   {
    "arquivo": "tests/admin/aschild-nesting-checker.test.ts",
    "tipo": "unit",
-   "linhas": 30,
+   "linhas": 133,
    "testa": [],
-   "casos": 1
+   "casos": 4
   },
   {
    "arquivo": "tests/admin/react-warning-guard-sanity.test.ts",
@@ -12231,9 +12270,9 @@
   {
    "arquivo": "tests/admin/route-error-element-checker.test.ts",
    "tipo": "unit",
-   "linhas": 247,
+   "linhas": 292,
    "testa": [],
-   "casos": 9
+   "casos": 11
   },
   {
    "arquivo": "tests/admin/route-guards-redirects.test.tsx",
@@ -12272,9 +12311,9 @@
   {
    "arquivo": "tests/admin/route-ref-checker.test.ts",
    "tipo": "unit",
-   "linhas": 170,
+   "linhas": 190,
    "testa": [],
-   "casos": 8
+   "casos": 9
   },
   {
    "arquivo": "tests/admin/skeleton-fallbacks-ref-warning.test.tsx",
@@ -14577,6 +14616,13 @@
    "casos": 25
   },
   {
+   "arquivo": "tests/edge-functions/integration/decommissioned-and-cron.test.ts",
+   "tipo": "unit",
+   "linhas": 205,
+   "testa": [],
+   "casos": 9
+  },
+  {
    "arquivo": "tests/edge-functions/integration/edge-function-harness.test.ts",
    "tipo": "unit",
    "linhas": 69,
@@ -14631,6 +14677,22 @@
    "linhas": 196,
    "testa": [],
    "casos": 13
+  },
+  {
+   "arquivo": "tests/edge-functions/integration/legacy-bridge-contracts.test.ts",
+   "tipo": "contrato",
+   "linhas": 100,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/edge-functions/integration/legacy-filters-escape.test.ts",
+   "tipo": "unit",
+   "linhas": 41,
+   "testa": [
+    "supabase/functions/external-db-bridge/legacy-filters.ts"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "tests/edge-functions/integration/log-login-attempt-fuzz.test.ts",
@@ -14808,6 +14870,13 @@
    "casos": 13
   },
   {
+   "arquivo": "tests/edge-functions/live-client-retry.test.ts",
+   "tipo": "unit",
+   "linhas": 74,
+   "testa": [],
+   "casos": 4
+  },
+  {
    "arquivo": "tests/edge-functions/live/_authz.ts",
    "tipo": "unit",
    "linhas": 170,
@@ -14819,14 +14888,14 @@
   {
    "arquivo": "tests/edge-functions/live/_live-client.ts",
    "tipo": "unit",
-   "linhas": 261,
+   "linhas": 273,
    "testa": [],
    "casos": 0
   },
   {
    "arquivo": "tests/edge-functions/live/_live-suite.ts",
    "tipo": "unit",
-   "linhas": 203,
+   "linhas": 205,
    "testa": [],
    "casos": 4
   },
@@ -18086,6 +18155,55 @@
    "casos": 10
   },
   {
+   "arquivo": "tests/scripts/audit-credentials.test.mjs",
+   "tipo": "unit",
+   "linhas": 171,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "tests/scripts/audit-db-frontend-coverage.test.mjs",
+   "tipo": "unit",
+   "linhas": 184,
+   "testa": [],
+   "casos": 6
+  },
+  {
+   "arquivo": "tests/scripts/build-cors-snapshot.test.mjs",
+   "tipo": "unit",
+   "linhas": 188,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "tests/scripts/build-migration-ledger-manifest.test.mjs",
+   "tipo": "unit",
+   "linhas": 179,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/scripts/build-visual-diff-report.test.mjs",
+   "tipo": "unit",
+   "linhas": 127,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/scripts/bundle-size-report.test.mjs",
+   "tipo": "unit",
+   "linhas": 177,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "tests/scripts/canonical-project-guards.test.mjs",
+   "tipo": "unit",
+   "linhas": 95,
+   "testa": [],
+   "casos": 7
+  },
+  {
    "arquivo": "tests/scripts/capacity-growth-projection.test.mjs",
    "tipo": "unit",
    "linhas": 101,
@@ -18093,6 +18211,13 @@
     "scripts/capacity-growth-projection.mjs"
    ],
    "casos": 9
+  },
+  {
+   "arquivo": "tests/scripts/check-allowlist-memory-crosscheck.test.mjs",
+   "tipo": "unit",
+   "linhas": 246,
+   "testa": [],
+   "casos": 16
   },
   {
    "arquivo": "tests/scripts/check-anon-insert-rate-guard.test.mjs",
@@ -18113,6 +18238,48 @@
    "casos": 13
   },
   {
+   "arquivo": "tests/scripts/check-any-type-baseline.test.mjs",
+   "tipo": "unit",
+   "linhas": 89,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests/scripts/check-as-assertions-baseline.test.mjs",
+   "tipo": "unit",
+   "linhas": 123,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/scripts/check-as-unknown-baseline.test.mjs",
+   "tipo": "unit",
+   "linhas": 146,
+   "testa": [],
+   "casos": 6
+  },
+  {
+   "arquivo": "tests/scripts/check-auth-direct-calls.test.mjs",
+   "tipo": "unit",
+   "linhas": 125,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/scripts/check-boundary-baseline.test.mjs",
+   "tipo": "unit",
+   "linhas": 121,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/scripts/check-build-warnings.test.mjs",
+   "tipo": "unit",
+   "linhas": 47,
+   "testa": [],
+   "casos": 1
+  },
+  {
    "arquivo": "tests/scripts/check-chunk-cycles.test.mjs",
    "tipo": "unit",
    "linhas": 57,
@@ -18122,20 +18289,144 @@
    "casos": 3
   },
   {
-   "arquivo": "tests/scripts/check-critical-coverage.test.mjs",
+   "arquivo": "tests/scripts/check-clickable-drift.test.mjs",
    "tipo": "unit",
-   "linhas": 163,
+   "linhas": 60,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/scripts/check-client-structured-logging.test.mjs",
+   "tipo": "unit",
+   "linhas": 139,
+   "testa": [
+    "src/lib/telemetry/structuredLogger.ts"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/scripts/check-cnpj-render.test.mjs",
+   "tipo": "unit",
+   "linhas": 212,
+   "testa": [
+    "src/utils/cnpj-schema.ts",
+    "src/utils/masks.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "tests/scripts/check-codeowners-coverage.test.mjs",
+   "tipo": "unit",
+   "linhas": 125,
    "testa": [],
    "casos": 4
   },
   {
+   "arquivo": "tests/scripts/check-conflict-ledger.test.mjs",
+   "tipo": "unit",
+   "linhas": 278,
+   "testa": [],
+   "casos": 17
+  },
+  {
+   "arquivo": "tests/scripts/check-console-baseline.test.mjs",
+   "tipo": "unit",
+   "linhas": 99,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/scripts/check-contract-coverage.test.mjs",
+   "tipo": "contrato",
+   "linhas": 123,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/scripts/check-critical-coverage.test.mjs",
+   "tipo": "unit",
+   "linhas": 186,
+   "testa": [],
+   "casos": 5
+  },
+  {
    "arquivo": "tests/scripts/check-dependency-audit.test.mjs",
    "tipo": "unit",
-   "linhas": 400,
+   "linhas": 423,
    "testa": [
     "scripts/check-dependency-audit.mjs"
    ],
-   "casos": 19
+   "casos": 20
+  },
+  {
+   "arquivo": "tests/scripts/check-doc-refs.test.mjs",
+   "tipo": "unit",
+   "linhas": 229,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "tests/scripts/check-docs-supabase-hosts.test.mjs",
+   "tipo": "unit",
+   "linhas": 192,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/scripts/check-draft-canonical-target.test.mjs",
+   "tipo": "unit",
+   "linhas": 117,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/scripts/check-edge-authorization.auth-real.test.mjs",
+   "tipo": "unit",
+   "linhas": 59,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/scripts/check-edge-authorization.test.mjs",
+   "tipo": "unit",
+   "linhas": 69,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/scripts/check-edge-cors-headers.test.mjs",
+   "tipo": "unit",
+   "linhas": 223,
+   "testa": [],
+   "casos": 14
+  },
+  {
+   "arquivo": "tests/scripts/check-edge-integration-coverage.test.mjs",
+   "tipo": "unit",
+   "linhas": 142,
+   "testa": [],
+   "casos": 6
+  },
+  {
+   "arquivo": "tests/scripts/check-edge-live-coverage.test.mjs",
+   "tipo": "unit",
+   "linhas": 162,
+   "testa": [],
+   "casos": 11
+  },
+  {
+   "arquivo": "tests/scripts/check-edge-request-id-propagation.test.mjs",
+   "tipo": "unit",
+   "linhas": 206,
+   "testa": [],
+   "casos": 9
+  },
+  {
+   "arquivo": "tests/scripts/check-edge-structured-logging.test.mjs",
+   "tipo": "unit",
+   "linhas": 123,
+   "testa": [],
+   "casos": 4
   },
   {
    "arquivo": "tests/scripts/check-edge-verify-jwt-allowlist.test.mjs",
@@ -18163,11 +18454,46 @@
    "casos": 1
   },
   {
+   "arquivo": "tests/scripts/check-eslint-config-parses.test.mjs",
+   "tipo": "unit",
+   "linhas": 140,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/scripts/check-eslint-disable-baseline.test.mjs",
+   "tipo": "unit",
+   "linhas": 129,
+   "testa": [],
+   "casos": 5
+  },
+  {
    "arquivo": "tests/scripts/check-file-size-baseline.test.mjs",
    "tipo": "unit",
    "linhas": 117,
    "testa": [],
    "casos": 3
+  },
+  {
+   "arquivo": "tests/scripts/check-gates-table.test.mjs",
+   "tipo": "unit",
+   "linhas": 218,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "tests/scripts/check-generated-files-protected.test.mjs",
+   "tipo": "unit",
+   "linhas": 78,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/scripts/check-headers-mirror.test.mjs",
+   "tipo": "unit",
+   "linhas": 136,
+   "testa": [],
+   "casos": 6
   },
   {
    "arquivo": "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
@@ -18198,6 +18524,13 @@
    "casos": 32
   },
   {
+   "arquivo": "tests/scripts/check-log-login-attempt-contract.test.mjs",
+   "tipo": "contrato",
+   "linhas": 131,
+   "testa": [],
+   "casos": 4
+  },
+  {
    "arquivo": "tests/scripts/check-migration-filename-contract.test.mjs",
    "tipo": "contrato",
    "linhas": 248,
@@ -18205,6 +18538,20 @@
     "scripts/check-migration-filename-contract.mjs"
    ],
    "casos": 11
+  },
+  {
+   "arquivo": "tests/scripts/check-migration-path-references.test.mjs",
+   "tipo": "unit",
+   "linhas": 111,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/scripts/check-migration-receipts.test.mjs",
+   "tipo": "unit",
+   "linhas": 128,
+   "testa": [],
+   "casos": 5
   },
   {
    "arquivo": "tests/scripts/check-migrations-sync-log-gate.test.mjs",
@@ -18224,11 +18571,67 @@
    "casos": 3
   },
   {
+   "arquivo": "tests/scripts/check-mojibake.test.mjs",
+   "tipo": "unit",
+   "linhas": 209,
+   "testa": [],
+   "casos": 10
+  },
+  {
    "arquivo": "tests/scripts/check-no-db-push.test.mjs",
    "tipo": "unit",
    "linhas": 185,
    "testa": [],
    "casos": 20
+  },
+  {
+   "arquivo": "tests/scripts/check-no-followup-frontend.test.mjs",
+   "tipo": "unit",
+   "linhas": 183,
+   "testa": [],
+   "casos": 13
+  },
+  {
+   "arquivo": "tests/scripts/check-no-inline-cors.test.mjs",
+   "tipo": "unit",
+   "linhas": 212,
+   "testa": [],
+   "casos": 17
+  },
+  {
+   "arquivo": "tests/scripts/check-no-prod-leak.test.mjs",
+   "tipo": "unit",
+   "linhas": 156,
+   "testa": [],
+   "casos": 7
+  },
+  {
+   "arquivo": "tests/scripts/check-no-template-thumbnail.test.mjs",
+   "tipo": "unit",
+   "linhas": 170,
+   "testa": [],
+   "casos": 10
+  },
+  {
+   "arquivo": "tests/scripts/check-orphan-labels.test.mjs",
+   "tipo": "unit",
+   "linhas": 203,
+   "testa": [],
+   "casos": 7
+  },
+  {
+   "arquivo": "tests/scripts/check-outline-none.test.mjs",
+   "tipo": "unit",
+   "linhas": 167,
+   "testa": [],
+   "casos": 12
+  },
+  {
+   "arquivo": "tests/scripts/check-overflow-x-clip.test.mjs",
+   "tipo": "unit",
+   "linhas": 114,
+   "testa": [],
+   "casos": 6
   },
   {
    "arquivo": "tests/scripts/check-pptx-image-parser-exposure.test.mjs",
@@ -18238,6 +18641,20 @@
     "scripts/check-pptx-image-parser-exposure.mjs"
    ],
    "casos": 6
+  },
+  {
+   "arquivo": "tests/scripts/check-product-type-duplicates.test.mjs",
+   "tipo": "unit",
+   "linhas": 76,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/scripts/check-product-type-fields.test.mjs",
+   "tipo": "unit",
+   "linhas": 249,
+   "testa": [],
+   "casos": 9
   },
   {
    "arquivo": "tests/scripts/check-production-harnesses.test.mjs",
@@ -18260,9 +18677,23 @@
   {
    "arquivo": "tests/scripts/check-quote-rpc-canonical-readiness.test.mjs",
    "tipo": "unit",
-   "linhas": 77,
+   "linhas": 150,
    "testa": [],
-   "casos": 4
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/scripts/check-required-checks.test.mjs",
+   "tipo": "unit",
+   "linhas": 237,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "tests/scripts/check-restore-seller-cart-rpc.test.mjs",
+   "tipo": "unit",
+   "linhas": 137,
+   "testa": [],
+   "casos": 2
   },
   {
    "arquivo": "tests/scripts/check-result-contract.test.mjs",
@@ -18274,13 +18705,20 @@
    "casos": 2
   },
   {
+   "arquivo": "tests/scripts/check-rls-no-policy-drift.test.mjs",
+   "tipo": "unit",
+   "linhas": 208,
+   "testa": [],
+   "casos": 15
+  },
+  {
    "arquivo": "tests/scripts/check-runtime-contract.test.mjs",
    "tipo": "contrato",
-   "linhas": 33,
+   "linhas": 184,
    "testa": [
     "scripts/check-runtime-contract.mjs"
    ],
-   "casos": 3
+   "casos": 15
   },
   {
    "arquivo": "tests/scripts/check-schema-reference-drift.test.mjs",
@@ -18288,6 +18726,57 @@
    "linhas": 27,
    "testa": [],
    "casos": 0
+  },
+  {
+   "arquivo": "tests/scripts/check-secrets-inventory.test.mjs",
+   "tipo": "unit",
+   "linhas": 231,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/scripts/check-security-definer-acl.test.mjs",
+   "tipo": "unit",
+   "linhas": 221,
+   "testa": [],
+   "casos": 12
+  },
+  {
+   "arquivo": "tests/scripts/check-security-definer-audit.test.mjs",
+   "tipo": "unit",
+   "linhas": 305,
+   "testa": [
+    "scripts/check-security-definer-audit.mjs"
+   ],
+   "casos": 25
+  },
+  {
+   "arquivo": "tests/scripts/check-security-definer-hardening.base-ref-injection.test.mjs",
+   "tipo": "unit",
+   "linhas": 48,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/scripts/check-security-definer-hardening.test.mjs",
+   "tipo": "unit",
+   "linhas": 96,
+   "testa": [],
+   "casos": 6
+  },
+  {
+   "arquivo": "tests/scripts/check-seller-scope.test.mjs",
+   "tipo": "unit",
+   "linhas": 178,
+   "testa": [],
+   "casos": 9
+  },
+  {
+   "arquivo": "tests/scripts/check-smoke-tags.test.mjs",
+   "tipo": "unit",
+   "linhas": 189,
+   "testa": [],
+   "casos": 13
   },
   {
    "arquivo": "tests/scripts/check-supabase-linter-fallback.test.mjs",
@@ -18301,11 +18790,11 @@
   {
    "arquivo": "tests/scripts/check-supabase-migration-ledger.test.mjs",
    "tipo": "unit",
-   "linhas": 119,
+   "linhas": 158,
    "testa": [
     "scripts/check-supabase-migration-ledger.mjs"
    ],
-   "casos": 7
+   "casos": 10
   },
   {
    "arquivo": "tests/scripts/check-supabase-reference-catalog.test.mjs",
@@ -18315,6 +18804,20 @@
     "scripts/check-supabase-reference-catalog.mjs"
    ],
    "casos": 3
+  },
+  {
+   "arquivo": "tests/scripts/check-timer-cleanup.test.mjs",
+   "tipo": "unit",
+   "linhas": 289,
+   "testa": [],
+   "casos": 7
+  },
+  {
+   "arquivo": "tests/scripts/check-toast-leaks.test.mjs",
+   "tipo": "unit",
+   "linhas": 116,
+   "testa": [],
+   "casos": 4
   },
   {
    "arquivo": "tests/scripts/check-types-inventory-drift.test.mjs",
@@ -18334,13 +18837,59 @@
    "casos": 3
   },
   {
-   "arquivo": "tests/scripts/check-workflow-contracts.test.mjs",
+   "arquivo": "tests/scripts/check-visual-preview-suite.test.mjs",
+   "tipo": "unit",
+   "linhas": 197,
+   "testa": [],
+   "casos": 9
+  },
+  {
+   "arquivo": "tests/scripts/check-visual-tests-specs.test.mjs",
+   "tipo": "unit",
+   "linhas": 230,
+   "testa": [],
+   "casos": 7
+  },
+  {
+   "arquivo": "tests/scripts/check-workflow-contracts-parser.regressions.test.mjs",
    "tipo": "contrato",
-   "linhas": 211,
+   "linhas": 94,
    "testa": [
     "scripts/check-workflow-contracts.mjs"
    ],
-   "casos": 23
+   "casos": 9
+  },
+  {
+   "arquivo": "tests/scripts/check-workflow-contracts-parser.test.mjs",
+   "tipo": "contrato",
+   "linhas": 190,
+   "testa": [
+    "scripts/check-workflow-contracts.mjs"
+   ],
+   "casos": 20
+  },
+  {
+   "arquivo": "tests/scripts/check-workflow-contracts.test.mjs",
+   "tipo": "contrato",
+   "linhas": 250,
+   "testa": [
+    "scripts/check-workflow-contracts.mjs"
+   ],
+   "casos": 24
+  },
+  {
+   "arquivo": "tests/scripts/classify-unledgered-migrations.test.mjs",
+   "tipo": "unit",
+   "linhas": 186,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "tests/scripts/consolidate-console-snapshot.test.mjs",
+   "tipo": "unit",
+   "linhas": 231,
+   "testa": [],
+   "casos": 6
   },
   {
    "arquivo": "tests/scripts/contexto-produtores.test.mjs",
@@ -18382,6 +18931,34 @@
    "casos": 91
   },
   {
+   "arquivo": "tests/scripts/e2e-mock-auth-setup.test.mjs",
+   "tipo": "unit",
+   "linhas": 133,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/scripts/e2e-smoke-coverage-doc.test.mjs",
+   "tipo": "unit",
+   "linhas": 182,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "tests/scripts/eslint-baseline-scope-add.test.mjs",
+   "tipo": "unit",
+   "linhas": 159,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/scripts/fix-edge-cors-allowlist.test.mjs",
+   "tipo": "unit",
+   "linhas": 172,
+   "testa": [],
+   "casos": 3
+  },
+  {
    "arquivo": "tests/scripts/fuzz-edge-uploads.test.mjs",
    "tipo": "unit",
    "linhas": 112,
@@ -18400,11 +18977,62 @@
    "casos": 3
   },
   {
+   "arquivo": "tests/scripts/gate-baseline-absence.test.mjs",
+   "tipo": "unit",
+   "linhas": 99,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/scripts/gates-failopen-batch2.test.mjs",
+   "tipo": "unit",
+   "linhas": 101,
+   "testa": [],
+   "casos": 12
+  },
+  {
+   "arquivo": "tests/scripts/gates-hardening-regressions.test.mjs",
+   "tipo": "unit",
+   "linhas": 226,
+   "testa": [
+    "scripts/lib/fixed-string-search.mjs"
+   ],
+   "casos": 17
+  },
+  {
+   "arquivo": "tests/scripts/gen-edge-live-tests.test.mjs",
+   "tipo": "unit",
+   "linhas": 144,
+   "testa": [],
+   "casos": 6
+  },
+  {
+   "arquivo": "tests/scripts/gen-edges-readme.test.mjs",
+   "tipo": "unit",
+   "linhas": 106,
+   "testa": [],
+   "casos": 2
+  },
+  {
    "arquivo": "tests/scripts/generate-quality-report.ts",
    "tipo": "unit",
    "linhas": 29,
    "testa": [],
    "casos": 0
+  },
+  {
+   "arquivo": "tests/scripts/generate-theme-report-ts.test.mjs",
+   "tipo": "unit",
+   "linhas": 114,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/scripts/generate-theme-report.test.mjs",
+   "tipo": "unit",
+   "linhas": 111,
+   "testa": [],
+   "casos": 5
   },
   {
    "arquivo": "tests/scripts/graphify-metrics.test.mjs",
@@ -18423,6 +19051,30 @@
     "scripts/graphify/enrich-typescript-references.mjs"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "tests/scripts/guard-canonical-project.test.mjs",
+   "tipo": "unit",
+   "linhas": 88,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/scripts/honest-reports.test.mjs",
+   "tipo": "unit",
+   "linhas": 101,
+   "testa": [
+    "scripts/generate-audit-report.mjs",
+    "scripts/replenishment-ci/metrics-dashboard.mjs"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "tests/scripts/inspect-quote-number-strategy.test.mjs",
+   "tipo": "unit",
+   "linhas": 135,
+   "testa": [],
+   "casos": 10
   },
   {
    "arquivo": "tests/scripts/inventario-banco.test.mjs",
@@ -18448,6 +19100,85 @@
    "casos": 2
   },
   {
+   "arquivo": "tests/scripts/lint-untyped-from.test.mjs",
+   "tipo": "unit",
+   "linhas": 171,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "tests/scripts/list-migration-drafts.test.mjs",
+   "tipo": "unit",
+   "linhas": 56,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/scripts/list-users.test.mjs",
+   "tipo": "unit",
+   "linhas": 53,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/scripts/live-gates-credentials.test.mjs",
+   "tipo": "unit",
+   "linhas": 99,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "tests/scripts/load-tests-status-codes.test.mjs",
+   "tipo": "unit",
+   "linhas": 68,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests/scripts/magazine-flakiness-report.test.mjs",
+   "tipo": "unit",
+   "linhas": 166,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/scripts/map-drafts-to-migrations.test.mjs",
+   "tipo": "unit",
+   "linhas": 195,
+   "testa": [],
+   "casos": 6
+  },
+  {
+   "arquivo": "tests/scripts/migrate-edge-cors-allowlist.test.mjs",
+   "tipo": "unit",
+   "linhas": 217,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/scripts/missing-prerequisite-contract.test.mjs",
+   "tipo": "contrato",
+   "linhas": 172,
+   "testa": [
+    "scripts/lib/missing-prerequisite.mjs"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "tests/scripts/mutation-test-magazine.test.mjs",
+   "tipo": "unit",
+   "linhas": 252,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests/scripts/nightly-audit-wiring.test.mjs",
+   "tipo": "unit",
+   "linhas": 25,
+   "testa": [],
+   "casos": 3
+  },
+  {
    "arquivo": "tests/scripts/pgss-slo-check.test.mjs",
    "tipo": "unit",
    "linhas": 101,
@@ -18459,20 +19190,45 @@
   {
    "arquivo": "tests/scripts/plan-status.test.mjs",
    "tipo": "unit",
-   "linhas": 71,
+   "linhas": 96,
    "testa": [
     "scripts/plan-status.mjs"
    ],
-   "casos": 4
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/scripts/preflight-migration-apply-hardening.test.mjs",
+   "tipo": "unit",
+   "linhas": 83,
+   "testa": [
+    "scripts/preflight-migration-apply.mjs"
+   ],
+   "casos": 10
   },
   {
    "arquivo": "tests/scripts/preflight-migration-apply.test.mjs",
    "tipo": "unit",
-   "linhas": 351,
+   "linhas": 406,
    "testa": [
     "scripts/preflight-migration-apply.mjs"
    ],
-   "casos": 41
+   "casos": 52
+  },
+  {
+   "arquivo": "tests/scripts/promote-draft-migration.test.mjs",
+   "tipo": "unit",
+   "linhas": 58,
+   "testa": [
+    "scripts/promote-draft-migration.mjs"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/scripts/qa-price-readonly-regression.test.mjs",
+   "tipo": "unit",
+   "linhas": 150,
+   "testa": [],
+   "casos": 3
   },
   {
    "arquivo": "tests/scripts/quote-rpc-proposals.test.mjs",
@@ -18480,6 +19236,27 @@
    "linhas": 99,
    "testa": [],
    "casos": 7
+  },
+  {
+   "arquivo": "tests/scripts/quotes-contract-gates.test.mjs",
+   "tipo": "contrato",
+   "linhas": 135,
+   "testa": [],
+   "casos": 10
+  },
+  {
+   "arquivo": "tests/scripts/resolve-credential-usage.test.mjs",
+   "tipo": "unit",
+   "linhas": 50,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/scripts/round-quality-report.test.mjs",
+   "tipo": "unit",
+   "linhas": 222,
+   "testa": [],
+   "casos": 4
   },
   {
    "arquivo": "tests/scripts/rpc-live-evidence-contract.test.mjs",
@@ -18496,11 +19273,125 @@
    "casos": 7
   },
   {
+   "arquivo": "tests/scripts/sentinel-validate-history.test.mjs",
+   "tipo": "unit",
+   "linhas": 58,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/scripts/simulate-ai-key-scenarios.test.mjs",
+   "tipo": "unit",
+   "linhas": 102,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/scripts/simulate-degradation-telemetry.test.mjs",
+   "tipo": "unit",
+   "linhas": 96,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/scripts/smoke-tests.test.mjs",
+   "tipo": "unit",
+   "linhas": 146,
+   "testa": [],
+   "casos": 6
+  },
+  {
+   "arquivo": "tests/scripts/sql-transaction-guard.test.mjs",
+   "tipo": "unit",
+   "linhas": 63,
+   "testa": [
+    "scripts/lib/sql-transaction-guard.mjs"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/scripts/ssot-report-annotations.test.mjs",
+   "tipo": "unit",
+   "linhas": 51,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/scripts/ssot-report.test.mjs",
+   "tipo": "unit",
+   "linhas": 179,
+   "testa": [],
+   "casos": 6
+  },
+  {
    "arquivo": "tests/scripts/strict-test-side-effects-contract.test.mjs",
    "tipo": "contrato",
    "linhas": 35,
    "testa": [],
    "casos": 1
+  },
+  {
+   "arquivo": "tests/scripts/test_personalization_artifact_diagnostics.py",
+   "tipo": "pytest",
+   "linhas": 523,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "tests/scripts/test_production_sitemap_probe.py",
+   "tipo": "pytest",
+   "linhas": 313,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "tests/scripts/test-critical-coverage.test.mjs",
+   "tipo": "unit",
+   "linhas": 127,
+   "testa": [
+    "scripts/test-critical-coverage.mjs"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/scripts/test-failures-report.test.mjs",
+   "tipo": "unit",
+   "linhas": 118,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/scripts/tools-batch3.test.mjs",
+   "tipo": "unit",
+   "linhas": 102,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "tests/scripts/tools-batch4.test.mjs",
+   "tipo": "unit",
+   "linhas": 121,
+   "testa": [
+    "scripts/capacity-growth-projection.mjs",
+    "scripts/pgss-slo-check.mjs"
+   ],
+   "casos": 7
+  },
+  {
+   "arquivo": "tests/scripts/tools-batch5.test.mjs",
+   "tipo": "unit",
+   "linhas": 111,
+   "testa": [],
+   "casos": 7
+  },
+  {
+   "arquivo": "tests/scripts/tools-batch6.test.mjs",
+   "tipo": "unit",
+   "linhas": 163,
+   "testa": [
+    "scripts/lib/fixed-string-search.mjs"
+   ],
+   "casos": 11
   },
   {
    "arquivo": "tests/scripts/tsc-run-guard.test.mjs",
@@ -18512,6 +19403,20 @@
    "casos": 13
   },
   {
+   "arquivo": "tests/scripts/update-any-type-baseline.test.mjs",
+   "tipo": "unit",
+   "linhas": 76,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/scripts/update-baseline.test.mjs",
+   "tipo": "unit",
+   "linhas": 55,
+   "testa": [],
+   "casos": 2
+  },
+  {
    "arquivo": "tests/scripts/uptime-probe.test.ts",
    "tipo": "unit",
    "linhas": 102,
@@ -18519,13 +19424,48 @@
    "casos": 2
   },
   {
+   "arquivo": "tests/scripts/validate-cnpj-error-mapper.test.mjs",
+   "tipo": "unit",
+   "linhas": 59,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/scripts/validate-cnpj-property-based.test.mjs",
+   "tipo": "unit",
+   "linhas": 95,
+   "testa": [],
+   "casos": 8
+  },
+  {
    "arquivo": "tests/scripts/validate-migration-target.test.mjs",
    "tipo": "unit",
-   "linhas": 243,
+   "linhas": 289,
    "testa": [
     "scripts/validate-migration-target.mjs"
    ],
-   "casos": 15
+   "casos": 17
+  },
+  {
+   "arquivo": "tests/scripts/validate-quotes-list.test.mjs",
+   "tipo": "unit",
+   "linhas": 271,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "tests/scripts/verify-build-integrity.test.mjs",
+   "tipo": "unit",
+   "linhas": 154,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests/scripts/visual-preview-local.test.mjs",
+   "tipo": "unit",
+   "linhas": 95,
+   "testa": [],
+   "casos": 1
   },
   {
    "arquivo": "tests/scripts/wraparound-monitor-check.test.mjs",
@@ -18612,9 +19552,9 @@
   {
    "arquivo": "tests/security/iframe-sandbox-gate.test.ts",
    "tipo": "unit",
-   "linhas": 108,
+   "linhas": 141,
    "testa": [],
-   "casos": 4
+   "casos": 6
   },
   {
    "arquivo": "tests/security/lint-0011-drift.test.ts",
@@ -18742,9 +19682,9 @@
   {
    "arquivo": "tests/ssot/publish-ssot-schema.test.ts",
    "tipo": "unit",
-   "linhas": 83,
+   "linhas": 107,
    "testa": [],
-   "casos": 6
+   "casos": 7
   },
   {
    "arquivo": "tests/ssot/ssot-gates.fuzz.test.ts",
@@ -19543,7 +20483,9 @@
   "recovery/src-legacy/src/pages/Auth.tsx": 1,
   "scripts/append-edge-deploy-receipt.mjs": 1,
   "scripts/append-migration-receipt.mjs": 1,
-  "scripts/capacity-growth-projection.mjs": 1,
+  "scripts/autoheal-eslint/run.mjs": 1,
+  "scripts/automation.mjs": 1,
+  "scripts/capacity-growth-projection.mjs": 2,
   "scripts/check-anon-insert-rate-guard.mjs": 1,
   "scripts/check-anon-write-grants.mjs": 1,
   "scripts/check-chunk-cycles.mjs": 1,
@@ -19559,26 +20501,36 @@
   "scripts/check-public-views-drift.mjs": 1,
   "scripts/check-result-contract.mjs": 2,
   "scripts/check-runtime-contract.mjs": 1,
+  "scripts/check-security-definer-audit.mjs": 1,
   "scripts/check-summary-color-tokens.mjs": 1,
   "scripts/check-supabase-linter.mjs": 1,
   "scripts/check-supabase-migration-ledger.mjs": 1,
   "scripts/check-supabase-reference-catalog.mjs": 1,
   "scripts/check-types-inventory-drift.mjs": 1,
-  "scripts/check-workflow-contracts.mjs": 1,
+  "scripts/check-workflow-contracts.mjs": 3,
   "scripts/drift-baseline.mjs": 2,
   "scripts/extract-types-inventory.mjs": 1,
   "scripts/fuzz-edge-uploads.mjs": 1,
   "scripts/fuzz-testing.mjs": 1,
+  "scripts/generate-audit-report.mjs": 1,
+  "scripts/graphify-local.mjs": 1,
   "scripts/graphify/enrich-typescript-references.mjs": 1,
   "scripts/graphify/graph-metrics.mjs": 1,
   "scripts/inventario/gerar-banco.mjs": 1,
   "scripts/lib/canonical-pg-connection.mjs": 1,
+  "scripts/lib/fixed-string-search.mjs": 2,
+  "scripts/lib/missing-prerequisite.mjs": 2,
+  "scripts/lib/sql-transaction-guard.mjs": 1,
   "scripts/lib/tsc-run.mjs": 1,
-  "scripts/pgss-slo-check.mjs": 1,
+  "scripts/maintenance/lib.mjs": 1,
+  "scripts/maintenance/run.mjs": 1,
+  "scripts/pgss-slo-check.mjs": 2,
   "scripts/plan-status.mjs": 1,
-  "scripts/preflight-migration-apply.mjs": 1,
-  "scripts/promote-draft-migration.mjs": 1,
+  "scripts/preflight-migration-apply.mjs": 2,
+  "scripts/promote-draft-migration.mjs": 2,
+  "scripts/replenishment-ci/metrics-dashboard.mjs": 1,
   "scripts/supabase-read-only-query.mjs": 1,
+  "scripts/test-critical-coverage.mjs": 1,
   "scripts/validate-migration-target.mjs": 2,
   "scripts/wraparound-monitor-check.mjs": 1,
   "src/App.tsx": 2,
@@ -20163,7 +21115,7 @@
   "src/lib/telemetry/restoreEventSchema.ts": 3,
   "src/lib/telemetry/restoreLogger.ts": 1,
   "src/lib/telemetry/secretsManagerCallMetrics.ts": 1,
-  "src/lib/telemetry/structuredLogger.ts": 3,
+  "src/lib/telemetry/structuredLogger.ts": 4,
   "src/lib/textUtils.ts": 3,
   "src/lib/theme-presets.ts": 5,
   "src/lib/to-error-message.ts": 1,
@@ -20289,7 +21241,7 @@
   "src/types/stock.ts": 42,
   "src/utils/br-schemas.ts": 1,
   "src/utils/cnpj-errors.ts": 2,
-  "src/utils/cnpj-schema.ts": 4,
+  "src/utils/cnpj-schema.ts": 5,
   "src/utils/color-group-hex.ts": 1,
   "src/utils/color-image-resolver.ts": 2,
   "src/utils/color-variant-carousel.ts": 1,
@@ -20298,7 +21250,7 @@
   "src/utils/image-utils.ts": 4,
   "src/utils/imageProxy.ts": 1,
   "src/utils/laser-logo-processor.ts": 1,
-  "src/utils/masks.ts": 9,
+  "src/utils/masks.ts": 10,
   "src/utils/price-freshness.ts": 7,
   "src/utils/product-colors.ts": 1,
   "src/utils/product-mapper.ts": 3,
@@ -20346,6 +21298,7 @@
   "supabase/functions/e2e-cleanup/index.ts": 1,
   "supabase/functions/ema-pipeline-health/handler.ts": 1,
   "supabase/functions/external-db-bridge/legacy-contracts.ts": 4,
+  "supabase/functions/external-db-bridge/legacy-filters.ts": 1,
   "supabase/functions/generate-ad-image/index.ts": 1,
   "supabase/functions/generate-ad-image/sanitize.ts": 1,
   "supabase/functions/generate-ad-prompt/timeout.ts": 1,

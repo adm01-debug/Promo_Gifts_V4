@@ -2,15 +2,30 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0b1766de405f3a2543986bca0d0e17fd0dedf481",
+  "commit": "0a9291a1dcbf54ff5785739993455acb2486cea1",
   "branch": "main",
-  "data_commit": "2026-11-13T03:18:12-03:00",
+  "data_commit": "2026-11-13T04:12:19-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "0a9291a",
+    "data": "2026-11-13",
+    "assunto": "Merge pull request #3425 from adm01-debug/claude/lote-pilha-v2-261112"
+   },
+   {
+    "sha": "81d3370",
+    "data": "2026-11-13",
+    "assunto": "Merge branch 'main' into claude/lote-pilha-v2-261112"
+   },
    {
     "sha": "0b1766d",
     "data": "2026-11-13",
     "assunto": "fix(test): validação de tema roda só nos navegadores Chromium instalados no CI (#3458)"
+   },
+   {
+    "sha": "1083b36",
+    "data": "2026-11-13",
+    "assunto": "Merge branch 'main' into claude/lote-pilha-v2-261112"
    },
    {
     "sha": "fd9c4ee",
@@ -18,9 +33,24 @@
     "assunto": "fix(security): baseline de policies inclui e2e_cleanup_audit (destrava Gate 1.13) (#3468)"
    },
    {
+    "sha": "09b598e",
+    "data": "2026-11-13",
+    "assunto": "Merge branch 'main' into claude/lote-pilha-v2-261112"
+   },
+   {
+    "sha": "f26c25e",
+    "data": "2026-11-13",
+    "assunto": "fix(security): baseline de policies inclui admins_select_e2e_cleanup_audit"
+   },
+   {
     "sha": "0f5934a",
     "data": "2026-11-13",
     "assunto": "docs: prod-readiness — inventário, prova OK/BLOQUEADO e PRs pendentes (main fee3d093) (#3453)"
+   },
+   {
+    "sha": "d4450a4",
+    "data": "2026-11-12",
+    "assunto": "Merge branch 'main' into claude/lote-pilha-v2-261112"
    },
    {
     "sha": "0f00ba1",
@@ -38,6 +68,16 @@
     "assunto": "fix(admin): salvar papéis não trava quando a permissão já foi adicionada por outro admin (#3461)"
    },
    {
+    "sha": "10b7a8a",
+    "data": "2026-11-12",
+    "assunto": "fix(sitemap): preserva o XML legado em recovery/site-artifacts para o probe"
+   },
+   {
+    "sha": "9ae4c11",
+    "data": "2026-11-12",
+    "assunto": "Merge branch 'main' into claude/lote-pilha-v2-261112"
+   },
+   {
     "sha": "fee3d09",
     "data": "2026-11-12",
     "assunto": "fix(sitemap): devolve EXECUTE de anon em get_sitemap_public e remove sitemap estático (#3430)"
@@ -48,96 +88,56 @@
     "assunto": "fix: corrige 42 bugs da rodada 2 em orçamentos, admin, preços, limites e datas (#3428)"
    },
    {
+    "sha": "c7680be",
+    "data": "2026-11-12",
+    "assunto": "fix(ci): 4ª validação — E188 pelo SHA do head (fork), ledger por contagem, retries sob controle"
+   },
+   {
+    "sha": "5878ff7",
+    "data": "2026-11-12",
+    "assunto": "Merge branch 'main' into claude/lote-pilha-v2-261112"
+   },
+   {
+    "sha": "260356c",
+    "data": "2026-11-12",
+    "assunto": "test(edge-live): timeout do cliente é repetido antes de virar falha (cold start)"
+   },
+   {
+    "sha": "03b9fb2",
+    "data": "2026-11-12",
+    "assunto": "fix(ci): ledger parity tolera o pareamento sequencial da CLI; auditoria sem depender de rg"
+   },
+   {
     "sha": "e9a4a1a",
     "data": "2026-11-12",
     "assunto": "fix: E2E busca global — modifier+K webkit, Ctrl+Shift+V webkit, snapshots"
    },
    {
+    "sha": "e8a0b32",
+    "data": "2026-11-12",
+    "assunto": "fix(ci): Gate E40 volta ao setup-cli anterior (bump da #3330 quebrou o ledger parity)"
+   },
+   {
+    "sha": "7e4fad0",
+    "data": "2026-11-12",
+    "assunto": "Merge branch 'main' into claude/lote-pilha-prs-261111"
+   },
+   {
+    "sha": "b9cabc6",
+    "data": "2026-11-12",
+    "assunto": "fix(ci): E188 resolve origin/<branch> no checkout de PR (falhava fechado em toda PR)"
+   },
+   {
     "sha": "5f956d2",
     "data": "2026-11-12",
     "assunto": "fix: corrige 62 bugs confirmados em telas, hooks e edge functions (#3424)"
-   },
-   {
-    "sha": "4bda903",
-    "data": "2026-11-12",
-    "assunto": "fix(tests): corrige erros de TypeScript em testes, mede baseline real (855) e corrige caminho em PENDENCIAS (#3419)"
-   },
-   {
-    "sha": "f240819",
-    "data": "2026-11-12",
-    "assunto": "fix(ci): corrige testes, tipos de edge e cobertura que deixam a main vermelha (#3407)"
-   },
-   {
-    "sha": "1da62ab",
-    "data": "2026-11-12",
-    "assunto": "docs(ci): RELATORIO §33 + PENDENCIAS #45-#52 — baseline + inventário final de workflows"
-   },
-   {
-    "sha": "52d6c21",
-    "data": "2026-11-12",
-    "assunto": "fix: fn_get_rupture_alerts com SECURITY DEFINER e search_path correto"
-   },
-   {
-    "sha": "caeb61b",
-    "data": "2026-11-11",
-    "assunto": "fix(scripts): heap explícito no tsc dos gates para evitar OOM (#3406)"
-   },
-   {
-    "sha": "15c2a4c",
-    "data": "2026-11-11",
-    "assunto": "chore(repo): quarentena dos 316 arquivos obsoletos da #3361 (#3398)"
-   },
-   {
-    "sha": "ceea4cc",
-    "data": "2026-11-11",
-    "assunto": "fix: restaura useDevGate original (stableRoles tipado como AppRole[])"
-   },
-   {
-    "sha": "fdc79d9",
-    "data": "2026-11-11",
-    "assunto": "test: cobertura da busca global e testes de hooks Bridge/DevGate alinhados à API atual"
-   },
-   {
-    "sha": "c3a5633",
-    "data": "2026-11-11",
-    "assunto": "fix(ci): ci.yml dentro dos contratos e catracas sem regressão nos 8 arquivos da #3361 que ficam em src/"
-   },
-   {
-    "sha": "3cc75fd",
-    "data": "2026-11-11",
-    "assunto": "fix(ci): tira migrations legadas da #3361 da pasta canônica (Gate 1.3)"
-   },
-   {
-    "sha": "89990fd",
-    "data": "2026-11-11",
-    "assunto": "chore(repo): move 2 testes obsoletos da #3361 que importavam modulos movidos"
-   },
-   {
-    "sha": "5dd9b94",
-    "data": "2026-11-11",
-    "assunto": "chore(repo): move 316 arquivos obsoletos da #3361 de src/ para recovery/src-legacy"
-   },
-   {
-    "sha": "1dcb3b6",
-    "data": "2026-11-10",
-    "assunto": "fix(autoheal): ESLint --fix automático [autoheal] (#3386)"
-   },
-   {
-    "sha": "82bafd9",
-    "data": "2026-11-09",
-    "assunto": "fix(scripts): gates de erro TypeScript falham fechado quando o tsc não chega a checar (#3372)"
-   },
-   {
-    "sha": "293b928",
-    "data": "2026-11-09",
-    "assunto": "chore(docs): adiciona 4 segredos E2E ausentes em SEGREDOS.md"
    }
   ],
-  "arquivos_mudados_7d": 1547,
+  "arquivos_mudados_7d": 1910,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 327
+    "mudancas": 339
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -145,19 +145,19 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 165
+    "mudancas": 175
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 121
+    "mudancas": 130
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 111
+    "mudancas": 113
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 106
+    "mudancas": 111
    },
    {
     "pasta": "src/pages/magazine",
@@ -180,53 +180,73 @@
     "mudancas": 78
    },
    {
+    "pasta": "RELATORIO_CI.md",
+    "mudancas": 72
+   },
+   {
     "pasta": "src/pages/admin",
-    "mudancas": 71
+    "mudancas": 72
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 64
+    "mudancas": 65
    },
    {
     "pasta": "src/pages/quotes",
     "mudancas": 62
-   },
-   {
-    "pasta": "RELATORIO_CI.md",
-    "mudancas": 54
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 54
+    "mudancas": 72
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 46
+    "mudancas": 61
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 20
-   },
-   {
-    "arquivo": "analise-prs/progresso.json",
-    "mudancas": 14
+    "mudancas": 36
    },
    {
     "arquivo": "package.json",
-    "mudancas": 14
+    "mudancas": 31
+   },
+   {
+    "arquivo": "package-lock.json",
+    "mudancas": 21
+   },
+   {
+    "arquivo": "analise-prs/progresso.json",
+    "mudancas": 15
+   },
+   {
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 13
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 11
+    "mudancas": 13
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 9
+    "mudancas": 12
+   },
+   {
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "mudancas": 11
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
+    "mudancas": 10
+   },
+   {
+    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "mudancas": 10
+   },
+   {
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
     "mudancas": 9
    },
    {
@@ -238,19 +258,35 @@
     "mudancas": 9
    },
    {
+    "arquivo": "analise-prs/prs.json",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
+    "mudancas": 8
+   },
+   {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 8
    },
    {
-    "arquivo": "package-lock.json",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "arquivo": "AGENTS.md",
     "mudancas": 7
    },
    {
-    "arquivo": "analise-prs/prs.json",
+    "arquivo": "CLAUDE.md",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "scripts/lib/baseline-gate.mjs",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "scripts/validate-quotes-list.mjs",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
     "mudancas": 7
    },
    {
@@ -258,73 +294,37 @@
     "mudancas": 6
    },
    {
-    "arquivo": ".github/workflows/replenishment-quality.yml",
+    "arquivo": ".github/workflows/db-schema-drift-check.yml",
     "mudancas": 6
-   },
-   {
-    "arquivo": "AGENTS.md",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "CLAUDE.md",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "src/components/kit-builder/KitAIPromptDialog.tsx",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "src/components/kit-builder/KitBuilderHeader.tsx",
-    "mudancas": 5
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 285
-   },
-   {
-    "autor": "github-actions[bot]",
-    "commits": 19
+    "commits": 447
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 4
+    "commits": 94
    },
    {
     "autor": "Claude",
-    "commits": 2
+    "commits": 73
+   },
+   {
+    "autor": "github-actions[bot]",
+    "commits": 28
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 1
+    "commits": 8
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 9896,
-  "arquivos_codigo": 5054,
-  "linhas_codigo": 965726,
+  "arquivos_total": 10079,
+  "arquivos_codigo": 5193,
+  "linhas_codigo": 993575,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -334,12 +334,12 @@
   "hooks": 615,
   "edge_functions": 111,
   "tabelas": 545,
-  "migrations": 3051,
-  "cron_jobs": 120,
-  "testes": 2303,
-  "workflows": 95,
-  "scripts": 259,
-  "docs_md": 1011
+  "migrations": 3062,
+  "cron_jobs": 122,
+  "testes": 2431,
+  "workflows": 98,
+  "scripts": 272,
+  "docs_md": 1016
  },
  "por_pasta": {
   ".github/scripts": {
@@ -912,7 +912,7 @@
   },
   "recovery/src-legacy": {
    "arquivos": 316,
-   "linhas": 59779
+   "linhas": 59826
   },
   "scripts/__tests__": {
    "arquivos": 7,
@@ -932,19 +932,31 @@
   },
   "scripts/audit-credentials.mjs": {
    "arquivos": 1,
-   "linhas": 277
+   "linhas": 287
   },
   "scripts/audit-db-frontend-coverage.mjs": {
    "arquivos": 1,
-   "linhas": 486
+   "linhas": 531
   },
   "scripts/audit-debug.ts": {
    "arquivos": 1,
    "linhas": 84
   },
+  "scripts/autoheal-eslint": {
+   "arquivos": 2,
+   "linhas": 226
+  },
+  "scripts/automation.mjs": {
+   "arquivos": 1,
+   "linhas": 992
+  },
+  "scripts/automation.unit.mjs": {
+   "arquivos": 1,
+   "linhas": 600
+  },
   "scripts/build-cors-snapshot.mjs": {
    "arquivos": 1,
-   "linhas": 133
+   "linhas": 151
   },
   "scripts/build-drafts-pr-comment.mjs": {
    "arquivos": 1,
@@ -960,11 +972,11 @@
   },
   "scripts/build-visual-diff-report.mjs": {
    "arquivos": 1,
-   "linhas": 152
+   "linhas": 163
   },
   "scripts/bundle-size-report.mjs": {
    "arquivos": 1,
-   "linhas": 172
+   "linhas": 190
   },
   "scripts/capacity-growth-projection.mjs": {
    "arquivos": 1,
@@ -972,7 +984,7 @@
   },
   "scripts/check-allowlist-memory-crosscheck.mjs": {
    "arquivos": 1,
-   "linhas": 112
+   "linhas": 118
   },
   "scripts/check-anon-insert-rate-guard.mjs": {
    "arquivos": 1,
@@ -984,11 +996,11 @@
   },
   "scripts/check-any-type-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 133
+   "linhas": 144
   },
   "scripts/check-as-assertions-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 51
+   "linhas": 63
   },
   "scripts/check-as-unknown-baseline.mjs": {
    "arquivos": 1,
@@ -996,23 +1008,23 @@
   },
   "scripts/check-aschild-nesting.mjs": {
    "arquivos": 1,
-   "linhas": 109
+   "linhas": 116
   },
   "scripts/check-auth-direct-calls.mjs": {
    "arquivos": 1,
-   "linhas": 70
+   "linhas": 76
   },
   "scripts/check-boundary-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 458
+   "linhas": 480
   },
   "scripts/check-build-log.mjs": {
    "arquivos": 1,
-   "linhas": 70
+   "linhas": 73
   },
   "scripts/check-build-warnings.mjs": {
    "arquivos": 1,
-   "linhas": 98
+   "linhas": 103
   },
   "scripts/check-bundle-size.mjs": {
    "arquivos": 1,
@@ -1020,43 +1032,43 @@
   },
   "scripts/check-chunk-cycles.mjs": {
    "arquivos": 1,
-   "linhas": 99
+   "linhas": 101
   },
   "scripts/check-clickable-drift.mjs": {
    "arquivos": 1,
-   "linhas": 98
+   "linhas": 105
   },
   "scripts/check-client-structured-logging.mjs": {
    "arquivos": 1,
-   "linhas": 118
+   "linhas": 130
   },
   "scripts/check-cloud-status-coverage.mjs": {
    "arquivos": 1,
-   "linhas": 100
+   "linhas": 103
   },
   "scripts/check-cnpj-render.mjs": {
    "arquivos": 1,
-   "linhas": 166
+   "linhas": 173
   },
   "scripts/check-codeowners-coverage.mjs": {
    "arquivos": 1,
-   "linhas": 124
+   "linhas": 132
   },
   "scripts/check-conflict-ledger.mjs": {
    "arquivos": 1,
-   "linhas": 98
+   "linhas": 151
   },
   "scripts/check-console-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 64
+   "linhas": 69
   },
   "scripts/check-contract-coverage.mjs": {
    "arquivos": 1,
-   "linhas": 100
+   "linhas": 153
   },
   "scripts/check-critical-coverage.mjs": {
    "arquivos": 1,
-   "linhas": 202
+   "linhas": 208
   },
   "scripts/check-critical-modules-coverage.mjs": {
    "arquivos": 1,
@@ -1064,7 +1076,7 @@
   },
   "scripts/check-critical-path-coverage.mjs": {
    "arquivos": 1,
-   "linhas": 99
+   "linhas": 103
   },
   "scripts/check-cron-drift.mjs": {
    "arquivos": 1,
@@ -1076,51 +1088,51 @@
   },
   "scripts/check-dependency-audit.mjs": {
    "arquivos": 1,
-   "linhas": 591
+   "linhas": 595
   },
   "scripts/check-doc-refs.mjs": {
    "arquivos": 1,
-   "linhas": 177
+   "linhas": 192
   },
   "scripts/check-docs-supabase-hosts.mjs": {
    "arquivos": 1,
-   "linhas": 166
+   "linhas": 187
   },
   "scripts/check-draft-canonical-target.mjs": {
    "arquivos": 1,
-   "linhas": 194
+   "linhas": 214
   },
   "scripts/check-edge-authorization.mjs": {
    "arquivos": 1,
-   "linhas": 207
+   "linhas": 218
   },
   "scripts/check-edge-cors-headers.mjs": {
    "arquivos": 1,
-   "linhas": 186
+   "linhas": 191
   },
   "scripts/check-edge-integration-coverage.mjs": {
    "arquivos": 1,
-   "linhas": 96
+   "linhas": 101
   },
   "scripts/check-edge-live-coverage.mjs": {
    "arquivos": 1,
-   "linhas": 54
+   "linhas": 59
   },
   "scripts/check-edge-request-id-propagation.mjs": {
    "arquivos": 1,
-   "linhas": 192
+   "linhas": 208
   },
   "scripts/check-edge-structured-logging.mjs": {
    "arquivos": 1,
-   "linhas": 133
+   "linhas": 140
   },
   "scripts/check-edge-verify-jwt-allowlist.mjs": {
    "arquivos": 1,
-   "linhas": 312
+   "linhas": 313
   },
   "scripts/check-edge-zod-ratchet.mjs": {
    "arquivos": 1,
-   "linhas": 155
+   "linhas": 162
   },
   "scripts/check-env.mjs": {
    "arquivos": 1,
@@ -1128,7 +1140,7 @@
   },
   "scripts/check-eslint-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 352
+   "linhas": 358
   },
   "scripts/check-eslint-config-current.mjs": {
    "arquivos": 1,
@@ -1136,7 +1148,7 @@
   },
   "scripts/check-eslint-config-parses.mjs": {
    "arquivos": 1,
-   "linhas": 125
+   "linhas": 133
   },
   "scripts/check-eslint-disable-baseline.mjs": {
    "arquivos": 1,
@@ -1152,23 +1164,23 @@
   },
   "scripts/check-file-size-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 103
+   "linhas": 105
   },
   "scripts/check-gates-table.mjs": {
    "arquivos": 1,
-   "linhas": 50
+   "linhas": 57
   },
   "scripts/check-generated-files-protected.mjs": {
    "arquivos": 1,
-   "linhas": 89
+   "linhas": 112
   },
   "scripts/check-headers-mirror.mjs": {
    "arquivos": 1,
-   "linhas": 77
+   "linhas": 80
   },
   "scripts/check-iframe-sandbox.mjs": {
    "arquivos": 1,
-   "linhas": 122
+   "linhas": 127
   },
   "scripts/check-indexed-access-ratchet.mjs": {
    "arquivos": 1,
@@ -1176,7 +1188,7 @@
   },
   "scripts/check-invoke-direct-calls.mjs": {
    "arquivos": 1,
-   "linhas": 266
+   "linhas": 272
   },
   "scripts/check-ledger-manifest-drift.mjs": {
    "arquivos": 1,
@@ -1188,11 +1200,11 @@
   },
   "scripts/check-lint-0011-drift.mjs": {
    "arquivos": 1,
-   "linhas": 209
+   "linhas": 210
   },
   "scripts/check-lint-0029-drift.mjs": {
    "arquivos": 1,
-   "linhas": 196
+   "linhas": 197
   },
   "scripts/check-lockfile-sync.mjs": {
    "arquivos": 1,
@@ -1200,7 +1212,7 @@
   },
   "scripts/check-log-login-attempt-contract.mjs": {
    "arquivos": 1,
-   "linhas": 40
+   "linhas": 46
   },
   "scripts/check-migration-filename-contract.mjs": {
    "arquivos": 1,
@@ -1208,11 +1220,11 @@
   },
   "scripts/check-migration-path-references.mjs": {
    "arquivos": 1,
-   "linhas": 196
+   "linhas": 205
   },
   "scripts/check-migration-receipts.mjs": {
    "arquivos": 1,
-   "linhas": 211
+   "linhas": 220
   },
   "scripts/check-migrations-sync-log-gate.mjs": {
    "arquivos": 1,
@@ -1220,11 +1232,11 @@
   },
   "scripts/check-min-tests-executed.mjs": {
    "arquivos": 1,
-   "linhas": 55
+   "linhas": 58
   },
   "scripts/check-mojibake.mjs": {
    "arquivos": 1,
-   "linhas": 79
+   "linhas": 87
   },
   "scripts/check-no-bypass-literals.mjs": {
    "arquivos": 1,
@@ -1232,7 +1244,7 @@
   },
   "scripts/check-no-db-push.mjs": {
    "arquivos": 1,
-   "linhas": 199
+   "linhas": 203
   },
   "scripts/check-no-followup-frontend.mjs": {
    "arquivos": 1,
@@ -1240,11 +1252,11 @@
   },
   "scripts/check-no-inline-cors.mjs": {
    "arquivos": 1,
-   "linhas": 49
+   "linhas": 58
   },
   "scripts/check-no-prod-leak.mjs": {
    "arquivos": 1,
-   "linhas": 100
+   "linhas": 119
   },
   "scripts/check-no-quote-comments.mjs": {
    "arquivos": 1,
@@ -1252,19 +1264,19 @@
   },
   "scripts/check-no-salvar-alteracoes-draft.mjs": {
    "arquivos": 1,
-   "linhas": 68
+   "linhas": 57
   },
   "scripts/check-no-template-thumbnail.mjs": {
    "arquivos": 1,
-   "linhas": 72
+   "linhas": 81
   },
   "scripts/check-orphan-labels.mjs": {
    "arquivos": 1,
-   "linhas": 192
+   "linhas": 204
   },
   "scripts/check-outline-none.mjs": {
    "arquivos": 1,
-   "linhas": 149
+   "linhas": 158
   },
   "scripts/check-overflow-x-clip.mjs": {
    "arquivos": 1,
@@ -1280,7 +1292,7 @@
   },
   "scripts/check-policies-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 600
+   "linhas": 604
   },
   "scripts/check-pptx-image-parser-exposure.mjs": {
    "arquivos": 1,
@@ -1288,15 +1300,15 @@
   },
   "scripts/check-price-freshness-coverage.mjs": {
    "arquivos": 1,
-   "linhas": 134
+   "linhas": 137
   },
   "scripts/check-product-type-duplicates.mjs": {
    "arquivos": 1,
-   "linhas": 65
+   "linhas": 69
   },
   "scripts/check-product-type-fields.mjs": {
    "arquivos": 1,
-   "linhas": 181
+   "linhas": 194
   },
   "scripts/check-production-harnesses.mjs": {
    "arquivos": 1,
@@ -1308,19 +1320,19 @@
   },
   "scripts/check-quote-rpc-canonical-readiness.mjs": {
    "arquivos": 1,
-   "linhas": 199
+   "linhas": 206
   },
   "scripts/check-removed-phrases.mjs": {
    "arquivos": 1,
-   "linhas": 45
+   "linhas": 35
   },
   "scripts/check-required-checks.mjs": {
    "arquivos": 1,
-   "linhas": 155
+   "linhas": 167
   },
   "scripts/check-restore-seller-cart-rpc.mjs": {
    "arquivos": 1,
-   "linhas": 208
+   "linhas": 216
   },
   "scripts/check-result-contract.mjs": {
    "arquivos": 1,
@@ -1328,15 +1340,15 @@
   },
   "scripts/check-rls-no-policy-drift.mjs": {
    "arquivos": 1,
-   "linhas": 260
+   "linhas": 261
   },
   "scripts/check-route-error-element.mjs": {
    "arquivos": 1,
-   "linhas": 168
+   "linhas": 179
   },
   "scripts/check-route-ref-usage.mjs": {
    "arquivos": 1,
-   "linhas": 272
+   "linhas": 279
   },
   "scripts/check-rpc-get-profile-and-roles.mjs": {
    "arquivos": 1,
@@ -1348,7 +1360,7 @@
   },
   "scripts/check-runtime-contract.mjs": {
    "arquivos": 1,
-   "linhas": 115
+   "linhas": 171
   },
   "scripts/check-schema-reference-drift.mjs": {
    "arquivos": 1,
@@ -1356,51 +1368,51 @@
   },
   "scripts/check-secdef-anon-drift.mjs": {
    "arquivos": 1,
-   "linhas": 205
+   "linhas": 206
   },
   "scripts/check-secrets-inventory.mjs": {
    "arquivos": 1,
-   "linhas": 341
+   "linhas": 366
   },
   "scripts/check-security-definer-acl.mjs": {
    "arquivos": 1,
-   "linhas": 259
+   "linhas": 274
   },
   "scripts/check-security-definer-audit.mjs": {
    "arquivos": 1,
-   "linhas": 146
+   "linhas": 149
   },
   "scripts/check-security-definer-hardening.mjs": {
    "arquivos": 1,
-   "linhas": 108
+   "linhas": 156
   },
   "scripts/check-select-columns.mjs": {
    "arquivos": 1,
-   "linhas": 161
+   "linhas": 168
   },
   "scripts/check-seller-scope.mjs": {
    "arquivos": 1,
-   "linhas": 146
+   "linhas": 165
   },
   "scripts/check-smoke-tags.mjs": {
    "arquivos": 1,
-   "linhas": 176
+   "linhas": 182
   },
   "scripts/check-soft-delete-policy.mjs": {
    "arquivos": 1,
-   "linhas": 81
+   "linhas": 85
   },
   "scripts/check-summary-color-tokens.mjs": {
    "arquivos": 1,
-   "linhas": 107
+   "linhas": 111
   },
   "scripts/check-supabase-linter.mjs": {
    "arquivos": 1,
-   "linhas": 198
+   "linhas": 207
   },
   "scripts/check-supabase-migration-ledger.mjs": {
    "arquivos": 1,
-   "linhas": 214
+   "linhas": 237
   },
   "scripts/check-supabase-reference-catalog.mjs": {
    "arquivos": 1,
@@ -1408,15 +1420,15 @@
   },
   "scripts/check-timer-cleanup.mjs": {
    "arquivos": 1,
-   "linhas": 239
+   "linhas": 296
   },
   "scripts/check-toast-leaks.mjs": {
    "arquivos": 1,
-   "linhas": 136
+   "linhas": 142
   },
   "scripts/check-todo-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 26
+   "linhas": 27
   },
   "scripts/check-tsc-baseline.mjs": {
    "arquivos": 1,
@@ -1436,43 +1448,47 @@
   },
   "scripts/check-visual-preview-suite.mjs": {
    "arquivos": 1,
-   "linhas": 53
+   "linhas": 67
   },
   "scripts/check-visual-tests-specs.mjs": {
    "arquivos": 1,
-   "linhas": 57
+   "linhas": 70
   },
   "scripts/check-workflow-contracts.mjs": {
    "arquivos": 1,
-   "linhas": 838
+   "linhas": 867
   },
   "scripts/ci-cron-table.mjs": {
    "arquivos": 1,
-   "linhas": 234
+   "linhas": 239
   },
   "scripts/ci-metrics.mjs": {
    "arquivos": 1,
-   "linhas": 275
+   "linhas": 276
   },
   "scripts/ci-performance-gate.ts": {
    "arquivos": 1,
-   "linhas": 66
+   "linhas": 85
   },
   "scripts/classify-unledgered-migrations.mjs": {
    "arquivos": 1,
-   "linhas": 125
+   "linhas": 141
   },
   "scripts/collect-coverage-ci.mjs": {
    "arquivos": 1,
-   "linhas": 132
+   "linhas": 137
   },
   "scripts/consolidate-console-snapshot.mjs": {
    "arquivos": 1,
-   "linhas": 82
+   "linhas": 92
   },
   "scripts/contract-testing.mjs": {
    "arquivos": 1,
    "linhas": 393
+  },
+  "scripts/diagnose-personalization-artifact.py": {
+   "arquivos": 1,
+   "linhas": 537
   },
   "scripts/drift-baseline.mjs": {
    "arquivos": 1,
@@ -1480,7 +1496,7 @@
   },
   "scripts/dry-run-migration-draft.mjs": {
    "arquivos": 1,
-   "linhas": 337
+   "linhas": 350
   },
   "scripts/e2e-check-stock-seed.mjs": {
    "arquivos": 1,
@@ -1488,19 +1504,19 @@
   },
   "scripts/e2e-feature-summary.mjs": {
    "arquivos": 1,
-   "linhas": 371
+   "linhas": 374
   },
   "scripts/e2e-mock-auth-setup.mjs": {
    "arquivos": 1,
-   "linhas": 115
+   "linhas": 119
   },
   "scripts/e2e-smoke-coverage-doc.mjs": {
    "arquivos": 1,
-   "linhas": 194
+   "linhas": 198
   },
   "scripts/e2e-smoke-summary.mjs": {
    "arquivos": 1,
-   "linhas": 401
+   "linhas": 404
   },
   "scripts/eslint-baseline-generate.mjs": {
    "arquivos": 1,
@@ -1508,7 +1524,7 @@
   },
   "scripts/eslint-baseline-scope-add.mjs": {
    "arquivos": 1,
-   "linhas": 114
+   "linhas": 145
   },
   "scripts/export-schema-snapshot.mjs": {
    "arquivos": 1,
@@ -1520,11 +1536,11 @@
   },
   "scripts/fix-edge-cors-allowlist.mjs": {
    "arquivos": 1,
-   "linhas": 60
+   "linhas": 72
   },
   "scripts/fix_migrations_idempotent.py": {
    "arquivos": 1,
-   "linhas": 569
+   "linhas": 572
   },
   "scripts/freight-quest-load-test.mjs": {
    "arquivos": 1,
@@ -1536,7 +1552,7 @@
   },
   "scripts/fuzz-testing.mjs": {
    "arquivos": 1,
-   "linhas": 586
+   "linhas": 591
   },
   "scripts/gen-edge-live-tests.mjs": {
    "arquivos": 1,
@@ -1544,11 +1560,11 @@
   },
   "scripts/gen-edges-readme.mjs": {
    "arquivos": 1,
-   "linhas": 180
+   "linhas": 187
   },
   "scripts/gen-internal-schema.mjs": {
    "arquivos": 1,
-   "linhas": 84
+   "linhas": 86
   },
   "scripts/gen-migrations-readme.mjs": {
    "arquivos": 1,
@@ -1556,11 +1572,11 @@
   },
   "scripts/generate-audit-report.mjs": {
    "arquivos": 1,
-   "linhas": 58
+   "linhas": 86
   },
   "scripts/generate-coverage-report.mjs": {
    "arquivos": 1,
-   "linhas": 356
+   "linhas": 357
   },
   "scripts/generate-theme-report.mjs": {
    "arquivos": 1,
@@ -1568,15 +1584,23 @@
   },
   "scripts/generate-theme-report.ts": {
    "arquivos": 1,
-   "linhas": 82
+   "linhas": 84
   },
   "scripts/graphify": {
    "arquivos": 4,
-   "linhas": 485
+   "linhas": 492
+  },
+  "scripts/graphify-local.mjs": {
+   "arquivos": 1,
+   "linhas": 1076
+  },
+  "scripts/graphify-local.unit.mjs": {
+   "arquivos": 1,
+   "linhas": 463
   },
   "scripts/guard-canonical-project.mjs": {
    "arquivos": 1,
-   "linhas": 366
+   "linhas": 389
   },
   "scripts/inspect-quote-number-strategy.mjs": {
    "arquivos": 1,
@@ -1584,35 +1608,39 @@
   },
   "scripts/inventario": {
    "arquivos": 3,
-   "linhas": 630
+   "linhas": 628
   },
   "scripts/kit-ai-enrichment.js": {
    "arquivos": 1,
-   "linhas": 60
+   "linhas": 59
   },
   "scripts/kit-enrichment": {
    "arquivos": 2,
-   "linhas": 381
+   "linhas": 389
   },
   "scripts/lib": {
-   "arquivos": 3,
-   "linhas": 260
+   "arquivos": 6,
+   "linhas": 483
   },
   "scripts/list-migration-drafts.mjs": {
    "arquivos": 1,
-   "linhas": 118
+   "linhas": 124
   },
   "scripts/list-users.ts": {
    "arquivos": 1,
-   "linhas": 24
+   "linhas": 25
   },
   "scripts/magazine-flakiness-report.mjs": {
    "arquivos": 1,
-   "linhas": 282
+   "linhas": 299
+  },
+  "scripts/maintenance": {
+   "arquivos": 4,
+   "linhas": 2465
   },
   "scripts/map-drafts-to-migrations.mjs": {
    "arquivos": 1,
-   "linhas": 274
+   "linhas": 283
   },
   "scripts/massive-load-test.mjs": {
    "arquivos": 1,
@@ -1620,11 +1648,11 @@
   },
   "scripts/migrate-edge-cors-allowlist.mjs": {
    "arquivos": 1,
-   "linhas": 156
+   "linhas": 167
   },
   "scripts/mutation-test-magazine.mjs": {
    "arquivos": 1,
-   "linhas": 362
+   "linhas": 401
   },
   "scripts/observability-check.mjs": {
    "arquivos": 1,
@@ -1632,15 +1660,19 @@
   },
   "scripts/pgss-slo-check.mjs": {
    "arquivos": 1,
-   "linhas": 187
+   "linhas": 194
   },
   "scripts/plan-status.mjs": {
    "arquivos": 1,
-   "linhas": 173
+   "linhas": 181
   },
   "scripts/preflight-migration-apply.mjs": {
    "arquivos": 1,
-   "linhas": 434
+   "linhas": 474
+  },
+  "scripts/probe-production-sitemap.py": {
+   "arquivos": 1,
+   "linhas": 337
   },
   "scripts/promote-draft-migration.mjs": {
    "arquivos": 1,
@@ -1648,15 +1680,15 @@
   },
   "scripts/publish-ssot-schema.mjs": {
    "arquivos": 1,
-   "linhas": 209
+   "linhas": 218
   },
   "scripts/qa": {
    "arquivos": 17,
-   "linhas": 2059
+   "linhas": 2067
   },
   "scripts/qa-price-readonly-regression.mjs": {
    "arquivos": 1,
-   "linhas": 154
+   "linhas": 165
   },
   "scripts/recalibrate-watermark-thresholds.mjs": {
    "arquivos": 1,
@@ -1668,31 +1700,31 @@
   },
   "scripts/replenishment-ci": {
    "arquivos": 1,
-   "linhas": 54
+   "linhas": 76
   },
   "scripts/round-quality-report.mjs": {
    "arquivos": 1,
-   "linhas": 259
+   "linhas": 285
   },
   "scripts/route-test-matrix.mjs": {
    "arquivos": 1,
-   "linhas": 23
+   "linhas": 26
   },
   "scripts/run-e2e-quotes-undo.mjs": {
    "arquivos": 1,
-   "linhas": 149
+   "linhas": 148
   },
   "scripts/run-smoke-filtered.mjs": {
    "arquivos": 1,
-   "linhas": 70
+   "linhas": 72
   },
   "scripts/seo-sanity-check.mjs": {
    "arquivos": 1,
-   "linhas": 84
+   "linhas": 87
   },
   "scripts/simulate-ai-key-scenarios.mjs": {
    "arquivos": 1,
-   "linhas": 166
+   "linhas": 169
   },
   "scripts/simulate-bi-partial-degradation.mjs": {
    "arquivos": 1,
@@ -1700,7 +1732,7 @@
   },
   "scripts/simulate-daily-flows.mjs": {
    "arquivos": 1,
-   "linhas": 382
+   "linhas": 388
   },
   "scripts/simulate-degradation-sink.mjs": {
    "arquivos": 1,
@@ -1708,7 +1740,7 @@
   },
   "scripts/simulate-degradation-telemetry.mjs": {
    "arquivos": 1,
-   "linhas": 288
+   "linhas": 292
   },
   "scripts/simulate-quote-rpc-proposals.mjs": {
    "arquivos": 1,
@@ -1720,11 +1752,11 @@
   },
   "scripts/smoke-tests.mjs": {
    "arquivos": 1,
-   "linhas": 208
+   "linhas": 214
   },
   "scripts/ssot-report-annotations.mjs": {
    "arquivos": 1,
-   "linhas": 127
+   "linhas": 139
   },
   "scripts/ssot-report-bump.mjs": {
    "arquivos": 1,
@@ -1736,11 +1768,11 @@
   },
   "scripts/ssot-report-summary.mjs": {
    "arquivos": 1,
-   "linhas": 121
+   "linhas": 123
   },
   "scripts/ssot-report.mjs": {
    "arquivos": 1,
-   "linhas": 87
+   "linhas": 92
   },
   "scripts/stress-burst.mjs": {
    "arquivos": 1,
@@ -1748,19 +1780,19 @@
   },
   "scripts/stress-quote-number-concurrent.mjs": {
    "arquivos": 1,
-   "linhas": 158
+   "linhas": 160
   },
   "scripts/supabase-read-only-query.mjs": {
    "arquivos": 1,
-   "linhas": 108
+   "linhas": 116
   },
   "scripts/supabase_snapshot": {
    "arquivos": 2,
-   "linhas": 2555
+   "linhas": 2551
   },
   "scripts/test-critical-coverage.mjs": {
    "arquivos": 1,
-   "linhas": 92
+   "linhas": 94
   },
   "scripts/test-failures-report.mjs": {
    "arquivos": 1,
@@ -1768,7 +1800,7 @@
   },
   "scripts/test-magazine-coverage.mjs": {
    "arquivos": 1,
-   "linhas": 40
+   "linhas": 43
   },
   "scripts/triage-edge-typecheck.mjs": {
    "arquivos": 1,
@@ -1784,7 +1816,7 @@
   },
   "scripts/update-any-type-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 91
+   "linhas": 97
   },
   "scripts/validate-cart-undo.mjs": {
    "arquivos": 1,
@@ -1792,19 +1824,19 @@
   },
   "scripts/validate-cnpj-error-mapper.mjs": {
    "arquivos": 1,
-   "linhas": 164
+   "linhas": 175
   },
   "scripts/validate-cnpj-property-based.mjs": {
    "arquivos": 1,
-   "linhas": 101
+   "linhas": 108
   },
   "scripts/validate-lovable-sync-target.mjs": {
    "arquivos": 1,
-   "linhas": 159
+   "linhas": 162
   },
   "scripts/validate-migration-target.mjs": {
    "arquivos": 1,
-   "linhas": 95
+   "linhas": 89
   },
   "scripts/validate-quote-summary-undo.mjs": {
    "arquivos": 1,
@@ -1812,7 +1844,7 @@
   },
   "scripts/validate-quotes-list.mjs": {
    "arquivos": 1,
-   "linhas": 124
+   "linhas": 199
   },
   "scripts/validate-ssot-report.mjs": {
    "arquivos": 1,
@@ -1820,11 +1852,11 @@
   },
   "scripts/validate-supabase-config.mjs": {
    "arquivos": 1,
-   "linhas": 176
+   "linhas": 198
   },
   "scripts/verify-build-integrity.mjs": {
    "arquivos": 1,
-   "linhas": 32
+   "linhas": 53
   },
   "scripts/verify-external.ts": {
    "arquivos": 1,
@@ -1832,11 +1864,11 @@
   },
   "scripts/verify-quote-number-hardening.mjs": {
    "arquivos": 1,
-   "linhas": 245
+   "linhas": 247
   },
   "scripts/verify-roboflow-setup.js": {
    "arquivos": 1,
-   "linhas": 251
+   "linhas": 250
   },
   "scripts/wraparound-monitor-check.mjs": {
    "arquivos": 1,
@@ -1852,7 +1884,7 @@
   },
   "src/components": {
    "arquivos": 1348,
-   "linhas": 272303
+   "linhas": 272333
   },
   "src/config": {
    "arquivos": 1,
@@ -1876,7 +1908,7 @@
   },
   "src/hooks": {
    "arquivos": 455,
-   "linhas": 85312
+   "linhas": 85419
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1896,7 +1928,7 @@
   },
   "src/pages": {
    "arquivos": 350,
-   "linhas": 82362
+   "linhas": 82465
   },
   "src/routes": {
    "arquivos": 14,
@@ -1980,7 +2012,7 @@
   },
   "tests/admin": {
    "arquivos": 14,
-   "linhas": 2648
+   "linhas": 2816
   },
   "tests/ai-usage.test.ts": {
    "arquivos": 1,
@@ -2027,8 +2059,8 @@
    "linhas": 165
   },
   "tests/edge-functions": {
-   "arquivos": 167,
-   "linhas": 12526
+   "arquivos": 171,
+   "linhas": 12960
   },
   "tests/fixtures": {
    "arquivos": 3,
@@ -2107,8 +2139,8 @@
    "linhas": 89
   },
   "tests/scripts": {
-   "arquivos": 56,
-   "linhas": 9230
+   "arquivos": 176,
+   "linhas": 27594
   },
   "tests/search": {
    "arquivos": 1,
@@ -2116,7 +2148,7 @@
   },
   "tests/security": {
    "arquivos": 21,
-   "linhas": 2089
+   "linhas": 2122
   },
   "tests/setup-ref-warning-capture.ts": {
    "arquivos": 1,
@@ -2140,7 +2172,7 @@
   },
   "tests/ssot": {
    "arquivos": 8,
-   "linhas": 1016
+   "linhas": 1040
   },
   "tests/ssr": {
    "arquivos": 1,
@@ -2216,7 +2248,7 @@
   },
   "vitest.config.ts": {
    "arquivos": 1,
-   "linhas": 166
+   "linhas": 168
   }
  },
  "maiores_arquivos": [
@@ -2230,7 +2262,7 @@
   },
   {
    "arquivo": "scripts/supabase_snapshot/snapshot.py",
-   "linhas": 1733
+   "linhas": 1729
   },
   {
    "arquivo": "eslint.config.js",
@@ -2273,12 +2305,20 @@
    "linhas": 1082
   },
   {
+   "arquivo": "scripts/graphify-local.mjs",
+   "linhas": 1076
+  },
+  {
    "arquivo": "src/pages/products/CartsListPage.tsx",
    "linhas": 1037
   },
   {
    "arquivo": "src/components/cart/CartHeaderButton.tsx",
    "linhas": 1012
+  },
+  {
+   "arquivo": "scripts/automation.mjs",
+   "linhas": 992
   },
   {
    "arquivo": "recovery/src-legacy/src/hooks/useMagicUpState.ts",
@@ -2311,23 +2351,15 @@
   {
    "arquivo": "src/pages/products/FavoritesPage.tsx",
    "linhas": 895
-  },
-  {
-   "arquivo": "src/hooks/mockup/useMockupGenerator.ts",
-   "linhas": 894
-  },
-  {
-   "arquivo": "src/pages/auth/Auth.tsx",
-   "linhas": 893
   }
  ],
  "qualidade": {
-  "any": 687,
-  "console_log": 1281,
+  "any": 696,
+  "console_log": 1270,
   "ts_ignore": 0,
-  "eslint_disable": 6,
-  "todos": 75,
-  "arquivos_acima_500_linhas": 178
+  "eslint_disable": 24,
+  "todos": 105,
+  "arquivos_acima_500_linhas": 184
  },
  "todos": [
   {
@@ -2421,6 +2453,18 @@
    "texto": "|FIXME|HACK|XXX)\\b[:\\s-]*([^\\n]{0,100})/.exec(l); return m ? { linha: i + 1, tipo: m[1], texto: m[2]"
   },
   {
+   "arquivo": "scripts/autoheal-eslint/run.test.mjs",
+   "linha": 132,
+   "tipo": "FIXME",
+   "texto": "'], location: 'anywhere' }] } }"
+  },
+  {
+   "arquivo": "scripts/autoheal-eslint/run.test.mjs",
+   "linha": 147,
+   "tipo": "FIXME",
+   "texto": "warning real da fixture\\nexport const value = 1;\\n');"
+  },
+  {
    "arquivo": "scripts/check-allowlist-memory-crosscheck.mjs",
    "linha": 8,
    "tipo": "TODO",
@@ -2428,15 +2472,33 @@
   },
   {
    "arquivo": "scripts/check-allowlist-memory-crosscheck.mjs",
-   "linha": 87,
+   "linha": 93,
    "tipo": "TODO",
    "texto": "\\b/i.test(reason)) {"
   },
   {
    "arquivo": "scripts/check-allowlist-memory-crosscheck.mjs",
-   "linha": 88,
+   "linha": 94,
    "tipo": "TODO",
    "texto": "— documentar antes de merge`);"
+  },
+  {
+   "arquivo": "scripts/check-contract-coverage.mjs",
+   "linha": 84,
+   "tipo": "TODO",
+   "texto": "\\b/.test(reason)) {"
+  },
+  {
+   "arquivo": "scripts/check-contract-coverage.mjs",
+   "linha": 85,
+   "tipo": "TODO",
+   "texto": ").`);"
+  },
+  {
+   "arquivo": "scripts/check-edge-live-coverage.mjs",
+   "linha": 37,
+   "tipo": "TODO",
+   "texto": "...\")"
   },
   {
    "arquivo": "scripts/check-edge-zod-ratchet.mjs",
@@ -2451,10 +2513,22 @@
    "texto": "documentar motivo antes de aprovar PR' });"
   },
   {
+   "arquivo": "scripts/check-lint-0011-drift.mjs",
+   "linha": 158,
+   "tipo": "TODO",
+   "texto": "\\b/.test(String(e.reason)))"
+  },
+  {
    "arquivo": "scripts/check-lint-0029-drift.mjs",
    "linha": 137,
    "tipo": "TODO",
    "texto": "documentar motivo antes de aprovar PR' });"
+  },
+  {
+   "arquivo": "scripts/check-lint-0029-drift.mjs",
+   "linha": 153,
+   "tipo": "TODO",
+   "texto": "\\b/.test(String(e.reason)))"
   },
   {
    "arquivo": "scripts/check-rls-no-policy-drift.mjs",
@@ -2476,13 +2550,13 @@
   },
   {
    "arquivo": "scripts/check-rls-no-policy-drift.mjs",
-   "linha": 195,
+   "linha": 196,
    "tipo": "TODO",
    "texto": "documentar se é deny-all intencional ou RLS esquecida (verificar secdef_fn/cron_job)',"
   },
   {
    "arquivo": "scripts/check-rls-no-policy-drift.mjs",
-   "linha": 243,
+   "linha": 244,
    "tipo": "TODO",
    "texto": "\"), secdef_fn e/ou cron_job que escrevem na tabela.\\n' +"
   },
@@ -2493,8 +2567,14 @@
    "texto": "documentar motivo antes de aprovar PR (endpoint público?)' });"
   },
   {
+   "arquivo": "scripts/check-secdef-anon-drift.mjs",
+   "linha": 159,
+   "tipo": "TODO",
+   "texto": "\\b/.test(String(e.reason)))"
+  },
+  {
    "arquivo": "scripts/check-soft-delete-policy.mjs",
-   "linha": 48,
+   "linha": 52,
    "tipo": "TODO",
    "texto": "statement CREATE TABLE (até o próximo ';'), independente de"
   },
@@ -2526,7 +2606,7 @@
    "arquivo": "scripts/check-todo-baseline.mjs",
    "linha": 22,
    "tipo": "TODO",
-   "texto": "|FIXME|HACK)\\b/gi, {"
+   "texto": "|FIXME|HACK)\\b/g, // sem `i`: a palavra \"todo\" (PT-BR, \"todo o catálogo\") não é marcador de débito"
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",
@@ -2557,6 +2637,12 @@
    "linha": 67,
    "tipo": "TODO",
    "texto": "/FIXME/HACK baseline gate')"
+  },
+  {
+   "arquivo": "scripts/map-drafts-to-migrations.mjs",
+   "linha": 67,
+   "tipo": "TODO",
+   "texto": "arquivo de"
   },
   {
    "arquivo": "scripts/simulate-degradation-sink.mjs",
@@ -2761,6 +2847,132 @@
    "linha": 200,
    "tipo": "TODO",
    "texto": "dois botões 'Atualizar' renderizando agora — UI mudou, refinar selector com role+name */, async () ="
+  },
+  {
+   "arquivo": "tests/scripts/check-allowlist-memory-crosscheck.test.mjs",
+   "linha": 5,
+   "tipo": "TODO",
+   "texto": "referenciado nesse documento."
+  },
+  {
+   "arquivo": "tests/scripts/check-allowlist-memory-crosscheck.test.mjs",
+   "linha": 153,
+   "tipo": "TODO",
+   "texto": "────────────────────────────────────────"
+  },
+  {
+   "arquivo": "tests/scripts/check-allowlist-memory-crosscheck.test.mjs",
+   "linha": 194,
+   "tipo": "TODO",
+   "texto": "', () => {"
+  },
+  {
+   "arquivo": "tests/scripts/check-allowlist-memory-crosscheck.test.mjs",
+   "linha": 198,
+   "tipo": "TODO",
+   "texto": "explicar depois' }],"
+  },
+  {
+   "arquivo": "tests/scripts/check-allowlist-memory-crosscheck.test.mjs",
+   "linha": 202,
+   "tipo": "TODO",
+   "texto": "');"
+  },
+  {
+   "arquivo": "tests/scripts/check-edge-live-coverage.test.mjs",
+   "linha": 104,
+   "tipo": "TODO",
+   "texto": ")"
+  },
+  {
+   "arquivo": "tests/scripts/check-edge-live-coverage.test.mjs",
+   "linha": 116,
+   "tipo": "TODO",
+   "texto": "chamar runLiveSuite(descriptorFor(\"my-func\")) quando tiver credenciais\\n',"
+  },
+  {
+   "arquivo": "tests/scripts/check-rls-no-policy-drift.test.mjs",
+   "linha": 113,
+   "tipo": "TODO",
+   "texto": "', () => {"
+  },
+  {
+   "arquivo": "tests/scripts/check-rls-no-policy-drift.test.mjs",
+   "linha": 116,
+   "tipo": "TODO",
+   "texto": "revisar', secdef_fn: null, cron_job: null }],"
+  },
+  {
+   "arquivo": "tests/scripts/check-security-definer-audit.test.mjs",
+   "linha": 14,
+   "tipo": "TODO",
+   "texto": "o event loop do processo que"
+  },
+  {
+   "arquivo": "tests/scripts/check-toast-leaks.test.mjs",
+   "linha": 51,
+   "tipo": "TODO",
+   "texto": "o legado"
+  },
+  {
+   "arquivo": "tests/scripts/gate-baseline-absence.test.mjs",
+   "linha": 2,
+   "tipo": "TODO",
+   "texto": "\" satisfazia o gate e baseline apagada era"
+  },
+  {
+   "arquivo": "tests/scripts/gate-baseline-absence.test.mjs",
+   "linha": 57,
+   "tipo": "TODO",
+   "texto": "documentar motivo…\" → exit 1', () => {"
+  },
+  {
+   "arquivo": "tests/scripts/gate-baseline-absence.test.mjs",
+   "linha": 58,
+   "tipo": "TODO",
+   "texto": "documentar motivo antes de aprovar PR');"
+  },
+  {
+   "arquivo": "tests/scripts/gates-failopen-batch2.test.mjs",
+   "linha": 72,
+   "tipo": "TODO",
+   "texto": "\" é', () => {"
+  },
+  {
+   "arquivo": "tests/scripts/gates-failopen-batch2.test.mjs",
+   "linha": 75,
+   "tipo": "TODO",
+   "texto": "remover\\n\");"
+  },
+  {
+   "arquivo": "tests/scripts/map-drafts-to-migrations.test.mjs",
+   "linha": 20,
+   "tipo": "TODO",
+   "texto": "arquivo em"
+  },
+  {
+   "arquivo": "tests/scripts/preflight-migration-apply.test.mjs",
+   "linha": 398,
+   "tipo": "TODO",
+   "texto": ", xxx, nome) não valem; a primeira linha com nome real vale', () => {"
+  },
+  {
+   "arquivo": "tests/scripts/preflight-migration-apply.test.mjs",
+   "linha": 399,
+   "tipo": "TODO",
+   "texto": "', 'xxx', 'nome', '...', '-']) expect(parseOptOut(`-- transaction: none\\n-- approved-by: ${v}\\n`).ap"
+  },
+  {
+   "arquivo": "tests/scripts/quotes-contract-gates.test.mjs",
+   "linha": 73,
+   "tipo": "TODO",
+   "texto": "e JSON inválido na allowlist falham (exit 2)', () => {"
+  },
+  {
+   "arquivo": "tests/scripts/quotes-contract-gates.test.mjs",
+   "linha": 74,
+   "tipo": "TODO",
+   "texto": "depois' });"
   },
   {
    "arquivo": "tests/ssr/useDevGate.ssr.test.tsx",
@@ -3191,11 +3403,7 @@
    "TrendsPage",
    "UnsavedChangesDialog"
   ],
-  "scripts_orfaos": [
-   "scripts/generate-theme-report.ts",
-   "scripts/test-magazine-sql-contracts.sh",
-   "scripts/test-wave1-forward-only-migrations.sh"
-  ],
+  "scripts_orfaos": [],
   "env_usadas_nao_declaradas": [
    "CI",
    "DEV",

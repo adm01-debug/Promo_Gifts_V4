@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 259,
+ "total": 272,
  "scripts": [
   {
    "arquivo": ".github/scripts/e2e-relevance.mjs",
@@ -78,7 +78,7 @@
   {
    "arquivo": "scripts/audit-credentials.mjs",
    "descricao": "* audit-credentials.mjs",
-   "linhas": 277,
+   "linhas": 287,
    "env": [
     "USER_CREDENTIAL"
    ],
@@ -93,7 +93,7 @@
   {
    "arquivo": "scripts/audit-db-frontend-coverage.mjs",
    "descricao": "* Auditoria DB ↔ Frontend (coluna a coluna)",
-   "linhas": 486,
+   "linhas": 531,
    "env": [],
    "npm_scripts": [
     "audit:db-frontend"
@@ -120,9 +120,47 @@
    "orfao": false
   },
   {
+   "arquivo": "scripts/autoheal-eslint/run.mjs",
+   "descricao": null,
+   "linhas": 76,
+   "env": [
+    "AUTOHEAL_FILES_PATH",
+    "GITHUB_OUTPUT",
+    "TARGET_SHA"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "lovable-autoheal.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/automation.mjs",
+   "descricao": null,
+   "linhas": 992,
+   "env": [
+    "REPO_AUTOMATION_CHAINING"
+   ],
+   "npm_scripts": [
+    "automation:doctor",
+    "automation:test",
+    "automation:check",
+    "automation:heal",
+    "automation:nightly",
+    "automation:graph",
+    "automation:status",
+    "automation:install-hooks",
+    "automation:uninstall-hooks"
+   ],
+   "workflows": [
+    "automation-local.yml"
+   ],
+   "orfao": false
+  },
+  {
    "arquivo": "scripts/build-cors-snapshot.mjs",
    "descricao": "* Generate a static CORS snapshot for every edge function.",
-   "linhas": 133,
+   "linhas": 151,
    "env": [],
    "npm_scripts": [
     "build:cors-snapshot"
@@ -166,7 +204,7 @@
   {
    "arquivo": "scripts/build-visual-diff-report.mjs",
    "descricao": "* Gera um relatório HTML estático com Expected × Actual × Diff lado a lado",
-   "linhas": 152,
+   "linhas": 163,
    "env": [],
    "npm_scripts": [
     "e2e:visual-diff-report"
@@ -179,7 +217,7 @@
   {
    "arquivo": "scripts/bundle-size-report.mjs",
    "descricao": "* bundle-size-report — Gera resumo em markdown do impacto de bundle do PR",
-   "linhas": 172,
+   "linhas": 190,
    "env": [
     "GITHUB_STEP_SUMMARY"
    ],
@@ -212,7 +250,7 @@
   {
    "arquivo": "scripts/check-allowlist-memory-crosscheck.mjs",
    "descricao": "* Gate: cross-check das allowlists de segurança contra a documentação canônica.",
-   "linhas": 112,
+   "linhas": 118,
    "env": [],
    "npm_scripts": [
     "check:allowlist-memory"
@@ -247,7 +285,7 @@
   {
    "arquivo": "scripts/check-any-type-baseline.mjs",
    "descricao": "* Gate de CI: conta ocorrências de `as any` / `: any` em código de produção",
-   "linhas": 133,
+   "linhas": 144,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -256,7 +294,7 @@
   {
    "arquivo": "scripts/check-as-assertions-baseline.mjs",
    "descricao": "* Gate de CI: ratchet de asserções `as <Tipo>` em src/ (produção).",
-   "linhas": 51,
+   "linhas": 63,
    "env": [],
    "npm_scripts": [
     "check:as-assertions-baseline",
@@ -284,7 +322,7 @@
   {
    "arquivo": "scripts/check-aschild-nesting.mjs",
    "descricao": "* Detector estático: aninhamento `<XTrigger asChild>` diretamente dentro de",
-   "linhas": 109,
+   "linhas": 116,
    "env": [],
    "npm_scripts": [
     "check:aschild-nesting"
@@ -298,7 +336,7 @@
   {
    "arquivo": "scripts/check-auth-direct-calls.mjs",
    "descricao": "* check-auth-direct-calls.mjs — Onda 10",
-   "linhas": 70,
+   "linhas": 76,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -309,7 +347,7 @@
   {
    "arquivo": "scripts/check-boundary-baseline.mjs",
    "descricao": "Gate: nenhuma importação NOVA cruzando domínios de src/pages/<domínio>. Um arquivo em pages/<A>/ não pode importar de pages/<B>/ (B≠A) — código",
-   "linhas": 458,
+   "linhas": 480,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -320,7 +358,7 @@
   {
    "arquivo": "scripts/check-build-log.mjs",
    "descricao": "* check-build-log.mjs",
-   "linhas": 70,
+   "linhas": 73,
    "env": [],
    "npm_scripts": [
     "ci:build:warnings"
@@ -331,7 +369,7 @@
   {
    "arquivo": "scripts/check-build-warnings.mjs",
    "descricao": null,
-   "linhas": 98,
+   "linhas": 103,
    "env": [],
    "npm_scripts": [
     "ci:build"
@@ -361,8 +399,8 @@
   },
   {
    "arquivo": "scripts/check-chunk-cycles.mjs",
-   "descricao": null,
-   "linhas": 99,
+   "descricao": "`\\bfrom` (e não `\\sfrom`): o bundle minificado emite `import{a}from\"./x.js\"` sem espaço, que a regex antiga não via (19 de ~2267 imports estáticos no dist real) → ciclos passavam.",
+   "linhas": 101,
    "env": [],
    "npm_scripts": [
     "build",
@@ -374,7 +412,7 @@
   {
    "arquivo": "scripts/check-clickable-drift.mjs",
    "descricao": "* Gate: proíbe NOVOS elementos não-nativos com `role=\"button\"` inline em src/.",
-   "linhas": 98,
+   "linhas": 105,
    "env": [],
    "npm_scripts": [
     "check:clickable"
@@ -385,7 +423,7 @@
   {
    "arquivo": "scripts/check-client-structured-logging.mjs",
    "descricao": "* check-client-structured-logging.mjs",
-   "linhas": 118,
+   "linhas": 130,
    "env": [],
    "npm_scripts": [
     "check:client-structured-logging"
@@ -398,7 +436,7 @@
   {
    "arquivo": "scripts/check-cloud-status-coverage.mjs",
    "descricao": "* Coverage gate dedicado ao CloudStatusBanner e hooks relacionados.",
-   "linhas": 100,
+   "linhas": 103,
    "env": [
     "COVERAGE_TOLERANCE_PP"
    ],
@@ -411,7 +449,7 @@
   {
    "arquivo": "scripts/check-cnpj-render.mjs",
    "descricao": "* B1 — Gate estático de render de CNPJ.",
-   "linhas": 166,
+   "linhas": 173,
    "env": [],
    "npm_scripts": [
     "check:cnpj-render"
@@ -422,7 +460,7 @@
   {
    "arquivo": "scripts/check-codeowners-coverage.mjs",
    "descricao": "* check-codeowners-coverage.mjs",
-   "linhas": 124,
+   "linhas": 132,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -433,10 +471,11 @@
   {
    "arquivo": "scripts/check-conflict-ledger.mjs",
    "descricao": "* check-conflict-ledger.mjs — E188 (P200)",
-   "linhas": 98,
+   "linhas": 151,
    "env": [
     "GITHUB_BASE_REF",
-    "GITHUB_HEAD_REF"
+    "GITHUB_HEAD_REF",
+    "PR_HEAD_SHA"
    ],
    "npm_scripts": [],
    "workflows": [
@@ -447,7 +486,7 @@
   {
    "arquivo": "scripts/check-console-baseline.mjs",
    "descricao": "Gate: zero console.* fora do logger central em arquivos NOVOS de src/. Arquivos no .console-baseline.json não podem aumentar a contagem (ratchet).",
-   "linhas": 64,
+   "linhas": 69,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -458,7 +497,7 @@
   {
    "arquivo": "scripts/check-contract-coverage.mjs",
    "descricao": "* CI gate: ensure every body-accepting Edge Function under",
-   "linhas": 100,
+   "linhas": 153,
    "env": [],
    "npm_scripts": [
     "check:contract-coverage"
@@ -471,7 +510,7 @@
   {
    "arquivo": "scripts/check-critical-coverage.mjs",
    "descricao": "* Coverage gate canônico para os 3 módulos críticos de jornada:",
-   "linhas": 202,
+   "linhas": 208,
    "env": [
     "COVERAGE_TOLERANCE_PP",
     "CRITICAL_COVERAGE_SUMMARY_PATH"
@@ -492,7 +531,7 @@
   {
    "arquivo": "scripts/check-critical-path-coverage.mjs",
    "descricao": "* scripts/check-critical-path-coverage.mjs",
-   "linhas": 99,
+   "linhas": 103,
    "env": [
     "COVERAGE_JSON_PATH"
    ],
@@ -530,7 +569,7 @@
   {
    "arquivo": "scripts/check-dependency-audit.mjs",
    "descricao": "npm updated source IDs and advisory ranges for these CVEs (2026-09-26): GHSA-5p2g: source 1138809 → 1239765, range >=1.2.0 <=2.0.2",
-   "linhas": 591,
+   "linhas": 595,
    "env": [],
    "npm_scripts": [
     "check:dependency-audit"
@@ -543,7 +582,7 @@
   {
    "arquivo": "scripts/check-doc-refs.mjs",
    "descricao": "* check-doc-refs — Valida referências `path/arquivo.ext:linha` em documentos",
-   "linhas": 177,
+   "linhas": 192,
    "env": [],
    "npm_scripts": [
     "check:doc-refs"
@@ -554,7 +593,7 @@
   {
    "arquivo": "scripts/check-docs-supabase-hosts.mjs",
    "descricao": "* Verificação automática de hosts/links Supabase em arquivos .md.",
-   "linhas": 166,
+   "linhas": 187,
    "env": [],
    "npm_scripts": [
     "ssot:hosts"
@@ -565,7 +604,7 @@
   {
    "arquivo": "scripts/check-draft-canonical-target.mjs",
    "descricao": "* check-draft-canonical-target.mjs",
-   "linhas": 194,
+   "linhas": 214,
    "env": [
     "PGHOST"
    ],
@@ -578,7 +617,7 @@
   {
    "arquivo": "scripts/check-edge-authorization.mjs",
    "descricao": "* check-edge-authorization",
-   "linhas": 207,
+   "linhas": 218,
    "env": [
     "GITHUB_ACTIONS"
    ],
@@ -592,7 +631,7 @@
   {
    "arquivo": "scripts/check-edge-cors-headers.mjs",
    "descricao": "* CORS Headers Gate — Edge Functions",
-   "linhas": 186,
+   "linhas": 191,
    "env": [],
    "npm_scripts": [
     "check:edge-cors"
@@ -606,7 +645,7 @@
   {
    "arquivo": "scripts/check-edge-integration-coverage.mjs",
    "descricao": "* scripts/check-edge-integration-coverage.mjs",
-   "linhas": 96,
+   "linhas": 101,
    "env": [
     "EDGE_COVERAGE_THRESHOLD"
    ],
@@ -617,7 +656,7 @@
   {
    "arquivo": "scripts/check-edge-live-coverage.mjs",
    "descricao": "* scripts/check-edge-live-coverage.mjs",
-   "linhas": 54,
+   "linhas": 59,
    "env": [],
    "npm_scripts": [
     "check:edge-live-coverage"
@@ -628,7 +667,7 @@
   {
    "arquivo": "scripts/check-edge-request-id-propagation.mjs",
    "descricao": "* check-edge-request-id-propagation.mjs",
-   "linhas": 192,
+   "linhas": 208,
    "env": [
     "LIST_ONLY"
    ],
@@ -641,7 +680,7 @@
   {
    "arquivo": "scripts/check-edge-structured-logging.mjs",
    "descricao": "* check-edge-structured-logging.mjs",
-   "linhas": 133,
+   "linhas": 140,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -652,7 +691,7 @@
   {
    "arquivo": "scripts/check-edge-verify-jwt-allowlist.mjs",
    "descricao": "* check-edge-verify-jwt-allowlist.mjs",
-   "linhas": 312,
+   "linhas": 313,
    "env": [
     "SUPABASE_ACCESS_TOKEN",
     "SUPABASE_PROJECT_REF"
@@ -666,7 +705,7 @@
   {
    "arquivo": "scripts/check-edge-zod-ratchet.mjs",
    "descricao": "* check-edge-zod-ratchet.mjs",
-   "linhas": 155,
+   "linhas": 162,
    "env": [],
    "npm_scripts": [
     "check:edge-zod-ratchet",
@@ -689,7 +728,7 @@
   {
    "arquivo": "scripts/check-eslint-baseline.mjs",
    "descricao": "* Política:",
-   "linhas": 352,
+   "linhas": 358,
    "env": [],
    "npm_scripts": [
     "lint:baseline",
@@ -716,7 +755,7 @@
   {
    "arquivo": "scripts/check-eslint-config-parses.mjs",
    "descricao": "* POR QUE ISSO EXISTE",
-   "linhas": 125,
+   "linhas": 133,
    "env": [],
    "npm_scripts": [
     "lint:config"
@@ -763,7 +802,7 @@
   {
    "arquivo": "scripts/check-file-size-baseline.mjs",
    "descricao": "* Gate de CI: ratchet de tamanho de arquivo em src/ (produção).",
-   "linhas": 103,
+   "linhas": 105,
    "env": [],
    "npm_scripts": [
     "check:file-size-baseline",
@@ -777,7 +816,7 @@
   {
    "arquivo": "scripts/check-gates-table.mjs",
    "descricao": "E191: valida que todo step \"Gate X.Y\" em deploy-gates.yml está documentado em docs/agentes/ci-gates.md (tabela que vivia em CLAUDE.md até 2026-11-07; CLAUDE.md agora só importa AGENTS.md).",
-   "linhas": 50,
+   "linhas": 57,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -786,7 +825,7 @@
   {
    "arquivo": "scripts/check-generated-files-protected.mjs",
    "descricao": "* E196 — Gate: arquivos gerados não podem ter >20% de linhas removidas sem label.",
-   "linhas": 89,
+   "linhas": 112,
    "env": [
     "GITHUB_BASE_SHA"
    ],
@@ -797,7 +836,7 @@
   {
    "arquivo": "scripts/check-headers-mirror.mjs",
    "descricao": "* check-headers-mirror.mjs",
-   "linhas": 77,
+   "linhas": 80,
    "env": [],
    "npm_scripts": [
     "check:headers-mirror"
@@ -810,7 +849,7 @@
   {
    "arquivo": "scripts/check-iframe-sandbox.mjs",
    "descricao": "* check-iframe-sandbox",
-   "linhas": 122,
+   "linhas": 127,
    "env": [],
    "npm_scripts": [
     "check:iframe-sandbox"
@@ -835,7 +874,7 @@
   {
    "arquivo": "scripts/check-invoke-direct-calls.mjs",
    "descricao": "* check-invoke-direct-calls — Onda 18 gate.",
-   "linhas": 266,
+   "linhas": 272,
    "env": [
     "STRICT_BASELINE",
     "UPDATE_BASELINE"
@@ -873,7 +912,7 @@
   {
    "arquivo": "scripts/check-lint-0011-drift.mjs",
    "descricao": "* check-lint-0011-drift.mjs",
-   "linhas": 209,
+   "linhas": 210,
    "env": [],
    "npm_scripts": [
     "check:lint-0011"
@@ -884,7 +923,7 @@
   {
    "arquivo": "scripts/check-lint-0029-drift.mjs",
    "descricao": "* check-lint-0029-drift.mjs",
-   "linhas": 196,
+   "linhas": 197,
    "env": [],
    "npm_scripts": [
     "check:lint-0029"
@@ -908,7 +947,7 @@
   {
    "arquivo": "scripts/check-log-login-attempt-contract.mjs",
    "descricao": "* Gate: log-login-attempt DEVE manter o contrato \"nunca-5xx\".",
-   "linhas": 40,
+   "linhas": 46,
    "env": [],
    "npm_scripts": [
     "check:log-login-contract"
@@ -932,7 +971,7 @@
   {
    "arquivo": "scripts/check-migration-path-references.mjs",
    "descricao": "* check-migration-path-references.mjs",
-   "linhas": 196,
+   "linhas": 205,
    "env": [],
    "npm_scripts": [
     "check:migration-refs"
@@ -945,7 +984,7 @@
   {
    "arquivo": "scripts/check-migration-receipts.mjs",
    "descricao": "* check-migration-receipts.mjs (P200-E055)",
-   "linhas": 211,
+   "linhas": 220,
    "env": [],
    "npm_scripts": [
     "check:migration-receipts"
@@ -971,7 +1010,7 @@
   {
    "arquivo": "scripts/check-min-tests-executed.mjs",
    "descricao": "* E23/E109 — Gate: minimo de testes executados.",
-   "linhas": 55,
+   "linhas": 58,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -980,7 +1019,7 @@
   {
    "arquivo": "scripts/check-mojibake.mjs",
    "descricao": "* check-mojibake.mjs",
-   "linhas": 79,
+   "linhas": 87,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -998,7 +1037,7 @@
   {
    "arquivo": "scripts/check-no-db-push.mjs",
    "descricao": "* Bloqueia commits que reintroduzem `supabase db push` como instrução operacional.",
-   "linhas": 199,
+   "linhas": 203,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -1020,7 +1059,7 @@
   {
    "arquivo": "scripts/check-no-inline-cors.mjs",
    "descricao": "* Inline CORS gate — bans hand-rolled `Access-Control-Allow-Headers` string",
-   "linhas": 49,
+   "linhas": 58,
    "env": [],
    "npm_scripts": [
     "check:no-inline-cors"
@@ -1034,7 +1073,7 @@
   {
    "arquivo": "scripts/check-no-prod-leak.mjs",
    "descricao": "* check-no-prod-leak.mjs",
-   "linhas": 100,
+   "linhas": 119,
    "env": [],
    "npm_scripts": [
     "check:no-prod-leak"
@@ -1058,7 +1097,7 @@
   {
    "arquivo": "scripts/check-no-salvar-alteracoes-draft.mjs",
    "descricao": "* Gate: previne regressão de label \"Salvar Alterações\" em componentes/fluxos",
-   "linhas": 68,
+   "linhas": 57,
    "env": [],
    "npm_scripts": [
     "check:no-salvar-alteracoes-draft"
@@ -1071,7 +1110,7 @@
   {
    "arquivo": "scripts/check-no-template-thumbnail.mjs",
    "descricao": "* CI gate: proíbe reintrodução do componente `TemplateThumbnail`.",
-   "linhas": 72,
+   "linhas": 81,
    "env": [],
    "npm_scripts": [
     "check:no-template-thumbnail"
@@ -1084,7 +1123,7 @@
   {
    "arquivo": "scripts/check-orphan-labels.mjs",
    "descricao": "* A11y gate — Labels sem htmlFor (orphan labels).",
-   "linhas": 192,
+   "linhas": 204,
    "env": [
     "UPDATE_BASELINE"
    ],
@@ -1095,7 +1134,7 @@
   {
    "arquivo": "scripts/check-outline-none.mjs",
    "descricao": "* A11y gate — WCAG 2.4.7 (Focus Visible).",
-   "linhas": 149,
+   "linhas": 158,
    "env": [
     "UPDATE_BASELINE"
    ],
@@ -1140,7 +1179,7 @@
   {
    "arquivo": "scripts/check-policies-baseline.mjs",
    "descricao": "* check-policies-baseline.mjs",
-   "linhas": 600,
+   "linhas": 604,
    "env": [
     "SUPABASE_PROJECT_REF"
    ],
@@ -1169,7 +1208,7 @@
   {
    "arquivo": "scripts/check-price-freshness-coverage.mjs",
    "descricao": "* Coverage gate dedicado aos arquivos de \"price freshness\".",
-   "linhas": 134,
+   "linhas": 137,
    "env": [
     "COVERAGE_TOLERANCE_PP"
    ],
@@ -1184,7 +1223,7 @@
   {
    "arquivo": "scripts/check-product-type-duplicates.mjs",
    "descricao": "* Gate E119: ratchet de definições locais de `interface Product`.",
-   "linhas": 65,
+   "linhas": 69,
    "env": [],
    "npm_scripts": [
     "check:product-type-duplicates",
@@ -1198,7 +1237,7 @@
   {
    "arquivo": "scripts/check-product-type-fields.mjs",
    "descricao": "* check-product-type-fields.mjs",
-   "linhas": 181,
+   "linhas": 194,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -1235,7 +1274,7 @@
   {
    "arquivo": "scripts/check-quote-rpc-canonical-readiness.mjs",
    "descricao": "* Bloqueia a promocao do consumidor transacional de orcamentos enquanto o",
-   "linhas": 199,
+   "linhas": 206,
    "env": [
     "SUPABASE_ACCESS_TOKEN",
     "SUPABASE_PROJECT_REF",
@@ -1250,7 +1289,7 @@
   {
    "arquivo": "scripts/check-removed-phrases.mjs",
    "descricao": "* Gate: garante que frases banidas NÃO reapareçam no código.",
-   "linhas": 45,
+   "linhas": 35,
    "env": [],
    "npm_scripts": [
     "check:removed-phrases"
@@ -1261,7 +1300,7 @@
   {
    "arquivo": "scripts/check-required-checks.mjs",
    "descricao": "* check-required-checks — E71 (2026-10-15)",
-   "linhas": 155,
+   "linhas": 167,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -1272,7 +1311,7 @@
   {
    "arquivo": "scripts/check-restore-seller-cart-rpc.mjs",
    "descricao": "* Deploy gate: confirma que a RPC `restore_seller_cart` está presente",
-   "linhas": 208,
+   "linhas": 216,
    "env": [
     "CANONICAL_SUPABASE_ANON_KEY",
     "CANONICAL_SUPABASE_URL",
@@ -1302,7 +1341,7 @@
   {
    "arquivo": "scripts/check-rls-no-policy-drift.mjs",
    "descricao": "* check-rls-no-policy-drift.mjs  (P200-E045)",
-   "linhas": 260,
+   "linhas": 261,
    "env": [],
    "npm_scripts": [
     "check:rls-no-policy",
@@ -1316,7 +1355,7 @@
   {
    "arquivo": "scripts/check-route-error-element.mjs",
    "descricao": "* check-route-error-element.mjs",
-   "linhas": 168,
+   "linhas": 179,
    "env": [],
    "npm_scripts": [
     "check:route-error-element"
@@ -1330,7 +1369,7 @@
   {
    "arquivo": "scripts/check-route-ref-usage.mjs",
    "descricao": "* Detector estático: uso indevido de `ref` / `forwardRef` em componentes",
-   "linhas": 272,
+   "linhas": 279,
    "env": [
     "ROUTE_REF_ROOT"
    ],
@@ -1375,7 +1414,7 @@
   {
    "arquivo": "scripts/check-runtime-contract.mjs",
    "descricao": "* Verifica o contrato local de runtime sem exigir uma versão exata do Node",
-   "linhas": 115,
+   "linhas": 171,
    "env": [
     "npm_config_user_agent"
    ],
@@ -1401,7 +1440,7 @@
   {
    "arquivo": "scripts/check-secdef-anon-drift.mjs",
    "descricao": "* check-secdef-anon-drift.mjs",
-   "linhas": 205,
+   "linhas": 206,
    "env": [],
    "npm_scripts": [
     "check:secdef-anon"
@@ -1412,7 +1451,7 @@
   {
    "arquivo": "scripts/check-secrets-inventory.mjs",
    "descricao": "* check-secrets-inventory.mjs — E40/E98",
-   "linhas": 341,
+   "linhas": 366,
    "env": [],
    "npm_scripts": [
     "check:secrets-inventory"
@@ -1426,7 +1465,7 @@
   {
    "arquivo": "scripts/check-security-definer-acl.mjs",
    "descricao": "* check-security-definer-acl",
-   "linhas": 259,
+   "linhas": 274,
    "env": [
     "GITHUB_ACTIONS",
     "SUPABASE_ANON_KEY",
@@ -1448,7 +1487,7 @@
   {
    "arquivo": "scripts/check-security-definer-audit.mjs",
    "descricao": "* check-security-definer-audit.mjs",
-   "linhas": 146,
+   "linhas": 149,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -1459,8 +1498,9 @@
   {
    "arquivo": "scripts/check-security-definer-hardening.mjs",
    "descricao": "* Bloqueia migrations que adicionam funções SECURITY DEFINER novas",
-   "linhas": 108,
+   "linhas": 156,
    "env": [
+    "GITHUB_ACTIONS",
     "GITHUB_BASE_REF"
    ],
    "npm_scripts": [],
@@ -1472,7 +1512,7 @@
   {
    "arquivo": "scripts/check-select-columns.mjs",
    "descricao": "* check-select-columns.mjs",
-   "linhas": 161,
+   "linhas": 168,
    "env": [],
    "npm_scripts": [
     "check:select-columns"
@@ -1485,7 +1525,7 @@
   {
    "arquivo": "scripts/check-seller-scope.mjs",
    "descricao": "* check-seller-scope.mjs",
-   "linhas": 146,
+   "linhas": 165,
    "env": [],
    "npm_scripts": [
     "check:seller-scope"
@@ -1499,7 +1539,7 @@
   {
    "arquivo": "scripts/check-smoke-tags.mjs",
    "descricao": "* check-smoke-tags — Garante que todo `test(...)` em",
-   "linhas": 176,
+   "linhas": 182,
    "env": [
     "CI"
    ],
@@ -1514,7 +1554,7 @@
   {
    "arquivo": "scripts/check-soft-delete-policy.mjs",
    "descricao": "* Gate: política soft-delete (auditoria 20-dim 2026-10-02, item processo).",
-   "linhas": 81,
+   "linhas": 85,
    "env": [],
    "npm_scripts": [
     "check:soft-delete-policy",
@@ -1528,7 +1568,7 @@
   {
    "arquivo": "scripts/check-summary-color-tokens.mjs",
    "descricao": "* Gate: bloqueia substituição acidental dos tokens `success` por",
-   "linhas": 107,
+   "linhas": 111,
    "env": [
     "SUMMARY_GATE_FILES"
    ],
@@ -1543,7 +1583,7 @@
   {
    "arquivo": "scripts/check-supabase-linter.mjs",
    "descricao": "* Gate de CI: usa os Security Advisors da Management API e os gates de",
-   "linhas": 198,
+   "linhas": 207,
    "env": [
     "SUPABASE_ACCESS_TOKEN",
     "SUPABASE_PROJECT_REF",
@@ -1558,7 +1598,7 @@
   {
    "arquivo": "scripts/check-supabase-migration-ledger.mjs",
    "descricao": "* Compara o ledger de migrations devolvido pelo Supabase CLI com a árvore",
-   "linhas": 214,
+   "linhas": 237,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -1582,7 +1622,7 @@
   {
    "arquivo": "scripts/check-timer-cleanup.mjs",
    "descricao": "* check-timer-cleanup.mjs — E134",
-   "linhas": 239,
+   "linhas": 296,
    "env": [],
    "npm_scripts": [
     "check:timer-cleanup"
@@ -1593,7 +1633,7 @@
   {
    "arquivo": "scripts/check-toast-leaks.mjs",
    "descricao": "* check-toast-leaks — gate estático contra vazamento de texto técnico em toasts.",
-   "linhas": 136,
+   "linhas": 142,
    "env": [
     "UPDATE_BASELINE"
    ],
@@ -1608,7 +1648,7 @@
   {
    "arquivo": "scripts/check-todo-baseline.mjs",
    "descricao": "* Gate de CI: ratchet de marcadores TODO/FIXME/HACK em src/ (produção).",
-   "linhas": 26,
+   "linhas": 27,
    "env": [],
    "npm_scripts": [
     "check:todo-baseline",
@@ -1673,7 +1713,7 @@
   {
    "arquivo": "scripts/check-visual-preview-suite.mjs",
    "descricao": "* Guarda de presença: garante que a suíte de regressão visual do",
-   "linhas": 53,
+   "linhas": 67,
    "env": [],
    "npm_scripts": [
     "check:visual-preview-suite"
@@ -1686,7 +1726,7 @@
   {
    "arquivo": "scripts/check-visual-tests-specs.mjs",
    "descricao": "* Gate de pré-execução do workflow `visual-tests.yml`.",
-   "linhas": 57,
+   "linhas": 70,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -1697,7 +1737,7 @@
   {
    "arquivo": "scripts/check-workflow-contracts.mjs",
    "descricao": "* check-workflow-contracts — E11 + E76 (PLANO_WORKFLOWS_CI_V2_100_ETAPAS_2026-10-14)",
-   "linhas": 838,
+   "linhas": 867,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -1708,7 +1748,7 @@
   {
    "arquivo": "scripts/ci-cron-table.mjs",
    "descricao": "* E89: ci-cron-table.mjs",
-   "linhas": 234,
+   "linhas": 239,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -1719,7 +1759,7 @@
   {
    "arquivo": "scripts/ci-metrics.mjs",
    "descricao": "* E93 — Coleta métricas de CI da última semana via GitHub REST API",
-   "linhas": 275,
+   "linhas": 276,
    "env": [
     "GH_TOKEN",
     "GITHUB_REPOSITORY",
@@ -1733,8 +1773,8 @@
   },
   {
    "arquivo": "scripts/ci-performance-gate.ts",
-   "descricao": null,
-   "linhas": 66,
+   "descricao": "* Gate de performance do módulo Reposição.",
+   "linhas": 85,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -1743,7 +1783,7 @@
   {
    "arquivo": "scripts/classify-unledgered-migrations.mjs",
    "descricao": "* classify-unledgered-migrations.mjs",
-   "linhas": 125,
+   "linhas": 141,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -1752,7 +1792,7 @@
   {
    "arquivo": "scripts/collect-coverage-ci.mjs",
    "descricao": null,
-   "linhas": 132,
+   "linhas": 137,
    "env": [
     "npm_package_name"
    ],
@@ -1766,7 +1806,7 @@
   {
    "arquivo": "scripts/consolidate-console-snapshot.mjs",
    "descricao": "* Consolida snapshots por-worker (`coverage/console-snapshot.<id>.json`)",
-   "linhas": 82,
+   "linhas": 92,
    "env": [],
    "npm_scripts": [
     "test:strict-ref"
@@ -1797,6 +1837,17 @@
    "orfao": false
   },
   {
+   "arquivo": "scripts/diagnose-personalization-artifact.py",
+   "descricao": "Collect bounded, sanitized evidence from one immutable GitHub trace artifact.\"\"\"",
+   "linhas": 537,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "personalization-trace-diagnostics.yml"
+   ],
+   "orfao": false
+  },
+  {
    "arquivo": "scripts/drift-baseline.mjs",
    "descricao": "* drift-baseline.mjs — baseline do schema de produção para o drift-check.",
    "linhas": 1249,
@@ -1812,7 +1863,7 @@
   {
    "arquivo": "scripts/dry-run-migration-draft.mjs",
    "descricao": "* dry-run-migration-draft.mjs",
-   "linhas": 337,
+   "linhas": 350,
    "env": [
     "PGHOST"
    ],
@@ -1840,7 +1891,7 @@
   {
    "arquivo": "scripts/e2e-feature-summary.mjs",
    "descricao": "* e2e-feature-summary — Agrupa resultados Playwright por FEATURE.",
-   "linhas": 371,
+   "linhas": 374,
    "env": [
     "E2E_RESULTS_JSON",
     "E2E_SUMMARY_TOP"
@@ -1858,7 +1909,7 @@
   {
    "arquivo": "scripts/e2e-mock-auth-setup.mjs",
    "descricao": "* Gera um `e2e/.auth/storageState.json` SINTÉTICO para rodar specs E2E",
-   "linhas": 115,
+   "linhas": 119,
    "env": [
     "E2E_BASE_URL"
    ],
@@ -1871,7 +1922,7 @@
   {
    "arquivo": "scripts/e2e-smoke-coverage-doc.mjs",
    "descricao": "* Gera docs/E2E_SMOKE_COVERAGE.md a partir de:",
-   "linhas": 194,
+   "linhas": 198,
    "env": [
     "GITHUB_STEP_SUMMARY"
    ],
@@ -1887,7 +1938,7 @@
   {
    "arquivo": "scripts/e2e-smoke-summary.mjs",
    "descricao": "* e2e-smoke-summary — Resumo dedicado da suíte SMOKE por funcionalidade.",
-   "linhas": 401,
+   "linhas": 404,
    "env": [
     "CI",
     "E2E_RESULTS_JSON",
@@ -1915,7 +1966,7 @@
   {
    "arquivo": "scripts/eslint-baseline-scope-add.mjs",
    "descricao": "* Uso:",
-   "linhas": 114,
+   "linhas": 145,
    "env": [],
    "npm_scripts": [
     "lint:baseline:scope"
@@ -1973,7 +2024,7 @@
   {
    "arquivo": "scripts/fix-edge-cors-allowlist.mjs",
    "descricao": "* fix-edge-cors-allowlist",
-   "linhas": 60,
+   "linhas": 72,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -1982,7 +2033,7 @@
   {
    "arquivo": "scripts/fix_migrations_idempotent.py",
    "descricao": null,
-   "linhas": 569,
+   "linhas": 572,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2034,7 +2085,7 @@
   {
    "arquivo": "scripts/fuzz-testing.mjs",
    "descricao": "* scripts/fuzz-testing.mjs",
-   "linhas": 586,
+   "linhas": 591,
    "env": [
     "ALLOW_PROD_LOAD",
     "DRY_RUN",
@@ -2067,7 +2118,7 @@
   {
    "arquivo": "scripts/gen-edges-readme.mjs",
    "descricao": "* Gera supabase/functions/README.md com catálogo das edge functions.",
-   "linhas": 180,
+   "linhas": 187,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2076,7 +2127,7 @@
   {
    "arquivo": "scripts/gen-internal-schema.mjs",
    "descricao": "* gen-internal-schema.mjs",
-   "linhas": 84,
+   "linhas": 86,
    "env": [
     "DATABASE_URL"
    ],
@@ -2095,8 +2146,8 @@
   },
   {
    "arquivo": "scripts/generate-audit-report.mjs",
-   "descricao": null,
-   "linhas": 58,
+   "descricao": "* Relatório de auditoria — SÓ afirma o que foi medido.",
+   "linhas": 86,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -2107,7 +2158,7 @@
   {
    "arquivo": "scripts/generate-coverage-report.mjs",
    "descricao": "* scripts/generate-coverage-report.mjs",
-   "linhas": 356,
+   "linhas": 357,
    "env": [],
    "npm_scripts": [
     "coverage:report",
@@ -2130,11 +2181,20 @@
   {
    "arquivo": "scripts/generate-theme-report.ts",
    "descricao": null,
-   "linhas": 82,
+   "linhas": 84,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/graphify-local.mjs",
+   "descricao": null,
+   "linhas": 1076,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
   },
   {
    "arquivo": "scripts/graphify/build-sql-graph.py",
@@ -2169,8 +2229,8 @@
   },
   {
    "arquivo": "scripts/graphify/postprocess-report.mjs",
-   "descricao": null,
-   "linhas": 14,
+   "descricao": "graphify-out/ é gitignored: sem o grafo o script soltava um stack trace cru de ENOENT.",
+   "linhas": 21,
    "env": [],
    "npm_scripts": [
     "graphify:postprocess-report"
@@ -2181,7 +2241,7 @@
   {
    "arquivo": "scripts/guard-canonical-project.mjs",
    "descricao": "fix_version: guard-scope-runtime+docs+configs-2026-07-15 Fases:",
-   "linhas": 366,
+   "linhas": 389,
    "env": [],
    "npm_scripts": [
     "build",
@@ -2211,7 +2271,7 @@
   {
    "arquivo": "scripts/inventario/gerar-banco.mjs",
    "descricao": "* Inventario do banco oficial -> inventario/estado/banco.json (fonte de consulta dos agentes).",
-   "linhas": 229,
+   "linhas": 227,
    "env": [
     "SUPABASE_ACCESS_TOKEN",
     "SUPABASE_PROJECT_REF"
@@ -2243,7 +2303,7 @@
   {
    "arquivo": "scripts/kit-ai-enrichment.js",
    "descricao": "Kit AI Enrichment Pipeline SUPABASE_URL=... SUPABASE_SERVICE_KEY=... BATCH_SIZE=50 DRY_RUN=true node kit-ai-enrichment.js",
-   "linhas": 60,
+   "linhas": 59,
    "env": [
     "BATCH_SIZE",
     "DRY_RUN",
@@ -2256,8 +2316,8 @@
   },
   {
    "arquivo": "scripts/kit-enrichment/asia-dims-batch.py",
-   "descricao": "Asia Import - Batch extraction de dimensões dos kits via API MCP Worker\"\"\" TYPE_MAP: mapeamento de slug de propriedade para component_type_code",
-   "linhas": 210,
+   "descricao": "Asia Import - Batch extraction de dimensões dos kits via API MCP Worker\"\"\" GUARD: sem credencial, falha fechado no CI/REQUIRE_LIVE=1; static-pass só fora do CI.",
+   "linhas": 214,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2265,8 +2325,8 @@
   },
   {
    "arquivo": "scripts/kit-enrichment/xbz-dims-batch.py",
-   "descricao": null,
-   "linhas": 171,
+   "descricao": "GUARD: sem credencial, falha fechado no CI/REQUIRE_LIVE=1; static-pass só fora do CI.",
+   "linhas": 175,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2275,7 +2335,7 @@
   {
    "arquivo": "scripts/lib/baseline-gate.mjs",
    "descricao": "* Lib compartilhada dos gates de baseline/ratchet (auditoria 20-dim 2026-10-02).",
-   "linhas": 146,
+   "linhas": 158,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2285,6 +2345,42 @@
    "arquivo": "scripts/lib/canonical-pg-connection.mjs",
    "descricao": null,
    "linhas": 61,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/lib/fixed-string-search.mjs",
+   "descricao": "* Busca de string literal em árvores de arquivos para os gates de \"frase banida\".",
+   "linhas": 71,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/lib/missing-prerequisite.mjs",
+   "descricao": "* Contrato único para \"pré-requisito ausente\" (credencial, relatório, Docker, Deno…).",
+   "linhas": 54,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/lib/missing-prerequisite.sh",
+   "descricao": "Contrato único para \"pré-requisito ausente\" em scripts shell (espelho de scripts/lib/missing-prerequisite.mjs). Uso, depois de `source`:",
+   "linhas": 22,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/lib/sql-transaction-guard.mjs",
+   "descricao": "* Guarda do dry-run de migration: o draft roda dentro de `BEGIN; ... ROLLBACK;`.",
+   "linhas": 86,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2314,7 +2410,7 @@
   {
    "arquivo": "scripts/list-migration-drafts.mjs",
    "descricao": "* list-migration-drafts.mjs",
-   "linhas": 118,
+   "linhas": 124,
    "env": [],
    "npm_scripts": [
     "drafts:list",
@@ -2326,7 +2422,7 @@
   {
    "arquivo": "scripts/list-users.ts",
    "descricao": null,
-   "linhas": 24,
+   "linhas": 25,
    "env": [
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
@@ -2338,7 +2434,7 @@
   {
    "arquivo": "scripts/magazine-flakiness-report.mjs",
    "descricao": "* Magazine Flakiness Report",
-   "linhas": 282,
+   "linhas": 299,
    "env": [
     "GITHUB_STEP_SUMMARY"
    ],
@@ -2352,9 +2448,51 @@
    "orfao": false
   },
   {
+   "arquivo": "scripts/maintenance/lib.mjs",
+   "descricao": null,
+   "linhas": 785,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/maintenance/run.mjs",
+   "descricao": null,
+   "linhas": 711,
+   "env": [
+    "XDG_STATE_HOME"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/maintenance/run.sh",
+   "descricao": null,
+   "linhas": 16,
+   "env": [],
+   "npm_scripts": [
+    "maintenance:doctor",
+    "maintenance:check",
+    "maintenance:heal"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/maintenance/typecheck.mjs",
+   "descricao": null,
+   "linhas": 82,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
    "arquivo": "scripts/map-drafts-to-migrations.mjs",
    "descricao": "* map-drafts-to-migrations.mjs",
-   "linhas": 274,
+   "linhas": 283,
    "env": [
     "PGHOST"
    ],
@@ -2387,7 +2525,7 @@
   {
    "arquivo": "scripts/migrate-edge-cors-allowlist.mjs",
    "descricao": "* migrate-edge-cors-allowlist",
-   "linhas": 156,
+   "linhas": 167,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2396,7 +2534,7 @@
   {
    "arquivo": "scripts/mutation-test-magazine.mjs",
    "descricao": "* Mutation Testing — Magazine rings",
-   "linhas": 362,
+   "linhas": 401,
    "env": [
     "GITHUB_STEP_SUMMARY"
    ],
@@ -2427,7 +2565,7 @@
   {
    "arquivo": "scripts/pgss-slo-check.mjs",
    "descricao": "* pgss-slo-check.mjs",
-   "linhas": 187,
+   "linhas": 194,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -2438,7 +2576,7 @@
   {
    "arquivo": "scripts/plan-status.mjs",
    "descricao": "* plan-status.mjs — E010",
-   "linhas": 173,
+   "linhas": 181,
    "env": [],
    "npm_scripts": [
     "plan:status"
@@ -2449,11 +2587,22 @@
   {
    "arquivo": "scripts/preflight-migration-apply.mjs",
    "descricao": "* preflight-migration-apply.mjs",
-   "linhas": 434,
+   "linhas": 474,
    "env": [],
    "npm_scripts": [],
    "workflows": [
     "db-apply-migration.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/probe-production-sitemap.py",
+   "descricao": "Read-only activation preconditions for the fixed public production sitemap.",
+   "linhas": 337,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "sitemap-production-preconditions.yml"
    ],
    "orfao": false
   },
@@ -2471,7 +2620,7 @@
   {
    "arquivo": "scripts/publish-ssot-schema.mjs",
    "descricao": "* publish-ssot-schema.mjs — Espelha schemas/ssot-report.schema.json para public/",
-   "linhas": 209,
+   "linhas": 218,
    "env": [],
    "npm_scripts": [
     "ssot:schema:publish",
@@ -2483,7 +2632,7 @@
   {
    "arquivo": "scripts/qa-price-readonly-regression.mjs",
    "descricao": "* QA — Regressão automatizada do \"preço read-only\" em itens de orçamento.",
-   "linhas": 154,
+   "linhas": 165,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2526,8 +2675,8 @@
   },
   {
    "arquivo": "scripts/replenishment-ci/metrics-dashboard.mjs",
-   "descricao": "* Script para gerar dashboard de métricas do CI para o módulo de Reposição.",
-   "linhas": 54,
+   "descricao": "* Dashboard de métricas do CI para o módulo de Reposição.",
+   "linhas": 76,
    "env": [],
    "npm_scripts": [
     "test:replenishment:dashboard"
@@ -2538,7 +2687,7 @@
   {
    "arquivo": "scripts/round-quality-report.mjs",
    "descricao": "* Round Quality Report",
-   "linhas": 259,
+   "linhas": 285,
    "env": [],
    "npm_scripts": [
     "qa:round",
@@ -2550,7 +2699,7 @@
   {
    "arquivo": "scripts/route-test-matrix.mjs",
    "descricao": null,
-   "linhas": 23,
+   "linhas": 26,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2568,7 +2717,7 @@
   {
    "arquivo": "scripts/run-e2e-quotes-undo.mjs",
    "descricao": "* Roda a suíte E2E de \"Desfazer\" nos orçamentos (04o + 04p + 04q).",
-   "linhas": 149,
+   "linhas": 148,
    "env": [
     "E2E_MOCK_AUTH",
     "E2E_PASS",
@@ -2591,7 +2740,7 @@
   {
    "arquivo": "scripts/run-smoke-filtered.mjs",
    "descricao": "* run-smoke-filtered — wrapper opcional do `test:e2e:smoke` com filtro por tag/título.",
-   "linhas": 70,
+   "linhas": 72,
    "env": [],
    "npm_scripts": [
     "test:e2e:smoke"
@@ -2624,7 +2773,7 @@
   {
    "arquivo": "scripts/sentinel-validate-history.sh",
    "descricao": "============================================================================ sentinel-validate-history.sh — auditoria retroativa",
-   "linhas": 65,
+   "linhas": 71,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2633,7 +2782,7 @@
   {
    "arquivo": "scripts/seo-sanity-check.mjs",
    "descricao": "* SEO Sanity Check",
-   "linhas": 84,
+   "linhas": 87,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -2644,8 +2793,10 @@
   {
    "arquivo": "scripts/simulate-ai-key-scenarios.mjs",
    "descricao": "* simulate-ai-key-scenarios.mjs",
-   "linhas": 166,
-   "env": [],
+   "linhas": 169,
+   "env": [
+    "LOVABLE_API_KEY"
+   ],
    "npm_scripts": [
     "check:ai-key-contract"
    ],
@@ -2668,7 +2819,7 @@
   {
    "arquivo": "scripts/simulate-daily-flows.mjs",
    "descricao": "* scripts/simulate-daily-flows.mjs",
-   "linhas": 382,
+   "linhas": 388,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -2688,7 +2839,7 @@
   {
    "arquivo": "scripts/simulate-degradation-telemetry.mjs",
    "descricao": "* Simulação exaustiva do pipeline de degradação → telemetria.",
-   "linhas": 288,
+   "linhas": 292,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2719,7 +2870,7 @@
   {
    "arquivo": "scripts/smoke-tests.mjs",
    "descricao": "* Smoke tests rápidos para o pipeline de CI.",
-   "linhas": 208,
+   "linhas": 214,
    "env": [
     "SMOKE_BASE_URL",
     "SMOKE_FAIL_ON_DEGRADED",
@@ -2737,7 +2888,7 @@
   {
    "arquivo": "scripts/ssot-report-annotations.mjs",
    "descricao": "* ssot-report-annotations.mjs",
-   "linhas": 127,
+   "linhas": 139,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -2772,7 +2923,7 @@
   {
    "arquivo": "scripts/ssot-report-summary.mjs",
    "descricao": "* ssot-report-summary.mjs",
-   "linhas": 121,
+   "linhas": 123,
    "env": [
     "GITHUB_STEP_SUMMARY"
    ],
@@ -2785,7 +2936,7 @@
   {
    "arquivo": "scripts/ssot-report.mjs",
    "descricao": "* ssot-report.mjs — Relatório unificado dos gates SSOT.",
-   "linhas": 87,
+   "linhas": 92,
    "env": [],
    "npm_scripts": [
     "ssot:report",
@@ -2818,7 +2969,7 @@
   {
    "arquivo": "scripts/stress-quote-number-concurrent.mjs",
    "descricao": "* stress-quote-number-concurrent",
-   "linhas": 158,
+   "linhas": 160,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2827,7 +2978,7 @@
   {
    "arquivo": "scripts/supabase-read-only-query.mjs",
    "descricao": "* Executa uma consulta SQL somente leitura no projeto Supabase.",
-   "linhas": 108,
+   "linhas": 116,
    "env": [
     "SUPABASE_ACCESS_TOKEN",
     "SUPABASE_PROJECT_REF",
@@ -2841,7 +2992,7 @@
   {
    "arquivo": "scripts/supabase_snapshot/snapshot.py",
    "descricao": "Somente leitura no banco (sessão read-only, statement_timeout, lock_timeout). Nunca grava linhas de tabelas, valores de segredos, chaves, senhas ou DSN.",
-   "linhas": 1733,
+   "linhas": 1729,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -2861,7 +3012,7 @@
   {
    "arquivo": "scripts/test-critical-coverage.mjs",
    "descricao": "* Produtor standalone da cobertura crítica.",
-   "linhas": 92,
+   "linhas": 94,
    "env": [
     "TZ"
    ],
@@ -2883,7 +3034,7 @@
   {
    "arquivo": "scripts/test-magazine-coverage.mjs",
    "descricao": null,
-   "linhas": 40,
+   "linhas": 43,
    "env": [],
    "npm_scripts": [
     "test:magazine:coverage"
@@ -2909,7 +3060,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/test-wave1-forward-only-migrations.sh",
@@ -2918,7 +3069,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [],
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "scripts/triage-edge-typecheck.mjs",
@@ -2967,7 +3118,7 @@
   {
    "arquivo": "scripts/update-any-type-baseline.mjs",
    "descricao": "* Regenera .any-type-baseline.json com a contagem atual de `as any` / `: any`",
-   "linhas": 91,
+   "linhas": 97,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -2976,7 +3127,7 @@
   {
    "arquivo": "scripts/update-baseline.sh",
    "descricao": "Script para atualizar os baselines visuais após aprovação manual Executa o Playwright com a flag --update-snapshots",
-   "linhas": 11,
+   "linhas": 12,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -3005,7 +3156,7 @@
   {
    "arquivo": "scripts/validate-cnpj-error-mapper.mjs",
    "descricao": "* Fuzzer standalone (Node) do SSOT `mapCnpjError`.",
-   "linhas": 164,
+   "linhas": 175,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -3014,7 +3165,7 @@
   {
    "arquivo": "scripts/validate-cnpj-property-based.mjs",
    "descricao": "* Fuzzer standalone (Node, sem Vitest) para SSOT do CNPJ.",
-   "linhas": 101,
+   "linhas": 108,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -3023,7 +3174,7 @@
   {
    "arquivo": "scripts/validate-lovable-sync-target.mjs",
    "descricao": "* Valida que o bot de sync da Lovable está direcionando PRs para `main`",
-   "linhas": 159,
+   "linhas": 162,
    "env": [
     "GH_TOKEN",
     "GITHUB_TOKEN",
@@ -3038,11 +3189,8 @@
   {
    "arquivo": "scripts/validate-migration-target.mjs",
    "descricao": "Shared pooler hosts do not identify a project; the user suffix must do so.",
-   "linhas": 95,
-   "env": [
-    "MIGRATION_VERSION",
-    "PGHOST"
-   ],
+   "linhas": 89,
+   "env": [],
    "npm_scripts": [],
    "workflows": [
     "db-apply-migration.yml",
@@ -3062,8 +3210,10 @@
   {
    "arquivo": "scripts/validate-quotes-list.mjs",
    "descricao": "* Validação automatizada da lista de Orçamentos (QuotesConfigurableList).",
-   "linhas": 124,
-   "env": [],
+   "linhas": 199,
+   "env": [
+    "NODE_OPTIONS"
+   ],
    "npm_scripts": [],
    "workflows": [
     "deploy-gates.yml"
@@ -3086,7 +3236,7 @@
   {
    "arquivo": "scripts/validate-supabase-config.mjs",
    "descricao": "SSOT: projeto Gold/Medallion de produ\\u00E7\\u00E3o (doufsxqlfjyuvxuezpln). pqpdolkaeqlyzpdpbizo \\u00E9 o projeto Lovable Cloud sem cat\\u00E1logo \\u2014 proibido em produ\\u00E7\\u00E3o.",
-   "linhas": 176,
+   "linhas": 198,
    "env": [],
    "npm_scripts": [
     "build",
@@ -3101,7 +3251,7 @@
   {
    "arquivo": "scripts/verify-build-integrity.mjs",
    "descricao": "* verify-build-integrity.mjs",
-   "linhas": 32,
+   "linhas": 53,
    "env": [],
    "npm_scripts": [
     "ci:verify"
@@ -3124,7 +3274,7 @@
   {
    "arquivo": "scripts/verify-quote-number-hardening.mjs",
    "descricao": "* verify-quote-number-hardening",
-   "linhas": 245,
+   "linhas": 247,
    "env": [
     "DATABASE_URL",
     "PGHOST",
@@ -3140,7 +3290,7 @@
   {
    "arquivo": "scripts/verify-roboflow-setup.js",
    "descricao": "* scripts/verify-roboflow-setup.js",
-   "linhas": 251,
+   "linhas": 250,
    "env": [
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"

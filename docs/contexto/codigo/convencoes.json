@@ -23,19 +23,19 @@
    "src/services (9)"
   ],
   "testes": [
-   "tests/ (866)",
+   "tests/ (990)",
    "co-localizado (__tests__) (625)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
   "scripts": [
+   "scripts/lib (7)",
    "scripts/graphify (4)",
-   "scripts/inventario (4)",
-   "scripts/lib (3)"
+   "scripts/inventario (4)"
   ],
   "docs": [
-   "docs (145)",
+   "docs (146)",
    "(raiz) (14)",
    ".github (4)"
   ]
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "Merge pull request #3425 from adm01-debug/claude/lote-pilha-v2-261112",
+   "Merge branch 'main' into claude/lote-pilha-v2-261112",
    "fix(test): validação de tema roda só nos navegadores Chromium instalados no CI (#3458)",
-   "fix(security): baseline de policies inclui e2e_cleanup_audit (destrava Gate 1.13) (#3468)",
-   "docs: prod-readiness — inventário, prova OK/BLOQUEADO e PRs pendentes (main fee3d093) (#3453)",
-   "fix(calculadora): tela mostra o preço oficial da RPC, o mesmo que vai para o orçamento (#3465)",
-   "test(simulador): cobre o CTA Criar Orçamento do ProductPriceSimulator (#3462)"
+   "Merge branch 'main' into claude/lote-pilha-v2-261112",
+   "fix(security): baseline de policies inclui e2e_cleanup_audit (destrava Gate 1.13) (#3468)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

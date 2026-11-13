@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0b1766de40` · branch `main` · 2026-11-13 06:19 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0a9291a1dc` · branch `main` · 2026-11-13 07:39 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -64,7 +64,7 @@
 | `cache_entries` | _(sem COMMENT ON TABLE — significado não documentado)_ | 3 colunas | migration |
 | `cart_templates` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
 | `catalog_analytics` | Analytics de eventos do catálogo. event_type válidos: sort, search, click, filter, view, add_to_quote. Expandido 2026-06-12. | 5 colunas | migration |
-| `categories` | Árvore hierárquica de categorias (max 6 níveis, auto-referenciada via parent_id). CAMPOS CANÔNICOS: is_active (status), path (materialized path /uuid1/uuid2/), products_count (cache PCA). LEGADOS: active (= is_active), slug (UNIQUE). Dois tipos de raiz: taxonomia canônica (Bar\|Cozinha etc.) e coleções endomarketing (Brindes\|Unimed etc.). | 14 colunas | migration |
+| `categories` | Árvore hierárquica de categorias (max 6 níveis, auto-referenciada via parent_id). CAMPOS CANÔNICOS: is_active (status), path (materialized path /uuid1/uuid2/), products_count (cache PCA). LEGADOS: active (= is_active), slug (UNIQUE). Dois tipos de raiz: taxonomia canônica (Bar\|Cozinha etc.) e coleções endomarketing (Brindes\|Unimed etc.). | 16 colunas | migration |
 | `category_accessory_categories` | Vincula categorias de produtos a categorias de acessórios/embalagens disponíveis. | 11 colunas | migration |
 | `category_ancestors` | Closure table (pre-computed ancestor-descendant pairs) derivada do parent_id. FKs: ON DELETE CASCADE (rows auto-removidas ao deletar categoria). Rebuild manual: SELECT * FROM fn_rebuild_category_ancestors(). Corrigido em: 2026-06-23 — FKs NO ACTION → CASCADE. | 3 colunas | migration |
 | `category_attributes` | Atributos customizados por categoria (ex: material_permitido, tamanho_minimo) | 9 colunas | migration |
@@ -472,6 +472,7 @@
 | coluna | coluna `images` usada no código não existe no schema de `products` |  |
 | coluna | coluna `is_deleted` usada no código não existe no schema de `products` |  |
 | coluna | coluna `locked_fields` usada no código não existe no schema de `products` |  |
+| coluna | coluna `nome` usada no código não existe no schema de `products` |  |
 | coluna | coluna `primary_image_url` usada no código não existe no schema de `products` |  |
 | coluna | coluna `sale_price` usada no código não existe no schema de `products` |  |
 | coluna | coluna `sku` usada no código não existe no schema de `products` |  |
@@ -551,10 +552,11 @@
 | coluna | coluna `product_id` usada no código não existe no schema de `product_images` |  |
 | coluna | coluna `url_cdn` usada no código não existe no schema de `product_images` |  |
 | coluna | coluna `width_px` usada no código não existe no schema de `product_images` |  |
-| coluna | coluna `level` usada no código não existe no schema de `categories` |  |
 | tabela | tabela `...` usada no código não existe nas migrations/types do repo | `src/lib/supabase-untyped.ts`<br>`supabase/migrations/20260621235500_faxina_restore_18_frontend_referenced_tables_APLICADO.sql` |
-| tabela | tabela `a` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
+| tabela | tabela `a` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs`<br>`scripts/check-select-columns.mjs` |
 | tabela | tabela `avatars` usada no código não existe nas migrations/types do repo | `src/components/admin/users/useUserManagement.ts` |
+| tabela | tabela `b` usada no código não existe nas migrations/types do repo | `scripts/check-select-columns.mjs` |
+| tabela | tabela `clients` usada no código não existe nas migrations/types do repo | `tests/scripts/check-cnpj-render.test.mjs` |
 | tabela | tabela `contacts` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs`<br>`supabase/functions/expert-chat/index.ts` |
 | tabela | tabela `customers` usada no código não existe nas migrations/types do repo | `supabase/functions/expert-chat/index.ts` |
 | tabela | tabela `customization_price_tables` usada no código não existe nas migrations/types do repo | `tests/scripts/check-supabase-reference-catalog.test.mjs` |
@@ -568,7 +570,7 @@
 | tabela | tabela `messages` usada no código não existe nas migrations/types do repo | `recovery/RealtimeMessagesExample.tsx` |
 | tabela | tabela `payments` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `pg_class` usada no código não existe nas migrations/types do repo | `tests/security/rls-validation.test.ts` |
-| tabela | tabela `produtos` usada no código não existe nas migrations/types do repo | `tests/scripts/inventario-banco.test.mjs` |
+| tabela | tabela `produtos` usada no código não existe nas migrations/types do repo | `tests/scripts/audit-db-frontend-coverage.test.mjs`<br>`tests/scripts/inventario-banco.test.mjs` |
 | tabela | tabela `quote_comments` usada no código não existe nas migrations/types do repo | `recovery/src-legacy/src/hooks/useQuoteComments.ts` |
 | tabela | tabela `runtime_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `so_teste` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
@@ -628,8 +630,10 @@
 | edge | edge function `e1` invocada mas não existe em supabase/functions/ | `src/integrations/supabase/__tests__/edge-request-id.test.ts` |
 | edge | edge function `e2` invocada mas não existe em supabase/functions/ | `src/integrations/supabase/__tests__/edge-request-id.test.ts` |
 | edge | edge function `fixture-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
+| edge | edge function `fn` invocada mas não existe em supabase/functions/ | `tests/scripts/gate-baseline-absence.test.mjs` |
 | edge | edge function `ghost-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
 | edge | edge function `inexistente` invocada mas não existe em supabase/functions/ | `scripts/ai-context/cenarios.mjs` |
+| edge | edge function `minha-func` invocada mas não existe em supabase/functions/ | `tests/scripts/gen-edges-readme.test.mjs` |
 | edge | edge function `no` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
 | edge | edge function `nome` invocada mas não existe em supabase/functions/ | `scripts/gen-edges-readme.mjs` |
 | edge | edge function `orphan-fn` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
@@ -642,11 +646,7 @@
 | edge | edge function `ssot-ignored` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
 | edge | edge function `t` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
 | edge | edge function `tem-chamador` invocada mas não existe em supabase/functions/ | `tests/scripts/inventario-repo.test.mjs` |
-| edge | edge function `tools-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| rpc | RPC `admin_active_sessions` chamada mas não definida nas migrations/types | `src/hooks/admin/useAdminSessions.ts` |
-| rpc | RPC `calculate_quote_totals` chamada mas não definida nas migrations/types | `tests/integration/freight-quest/quote-freight-integration.test.ts` |
-| rpc | RPC `check_rls_enabled` chamada mas não definida nas migrations/types | `tests/security/rls-validation.test.ts` |
-| … +206 linhas — lista completa em `context.json` | | |
+| … +210 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

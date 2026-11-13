@@ -1,14 +1,14 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 293,
+ "total": 295,
  "por_camada": {
   "api": 3,
   "config": 1,
   "data": 3,
   "integrations": 8,
   "lib": 224,
-  "python": 7,
+  "python": 9,
   "services": 9,
   "stores": 8,
   "utils": 30
@@ -98,6 +98,61 @@
    "orfao": true
   },
   {
+   "arquivo": "scripts/diagnose-personalization-artifact.py",
+   "camada": "python",
+   "exports": [
+    "_pairs",
+    "action_before",
+    "action_error",
+    "analyze_archive",
+    "analyze_inner",
+    "download_fixed",
+    "entries",
+    "fetch_url",
+    "finite",
+    "main",
+    "markdown",
+    "network_row",
+    "preflight_directory",
+    "safe_url",
+    "strict_json",
+    "text_events",
+    "trusted_asset",
+    "Budget",
+    "DiagnosticError",
+    "NoRedirect"
+   ],
+   "linhas": 537,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [
+    "GITHUB_TOKEN"
+   ],
+   "externos": [
+    "__future__",
+    "argparse",
+    "hashlib",
+    "io",
+    "json",
+    "math",
+    "os",
+    "pathlib",
+    "re",
+    "signal",
+    "stat",
+    "struct",
+    "time",
+    "urllib",
+    "zipfile"
+   ],
+   "rotas_http": 0,
+   "usado_por": 0,
+   "usado_por_modulos": [],
+   "coberto_por_testes": 0,
+   "orfao": true
+  },
+  {
    "arquivo": "scripts/fix_migrations_idempotent.py",
    "camada": "python",
    "exports": [
@@ -112,7 +167,7 @@
     "main",
     "should_process"
    ],
-   "linhas": 569,
+   "linhas": 572,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -173,11 +228,14 @@
     "supa_patch",
     "supa_rpc"
    ],
-   "linhas": 210,
+   "linhas": 214,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
    "env": [
+    "CI",
+    "GITHUB_ACTIONS",
+    "REQUIRE_LIVE",
     "SUPABASE_SERVICE_ROLE_KEY"
    ],
    "externos": [
@@ -202,16 +260,60 @@
     "supa_patch",
     "supa_rpc"
    ],
-   "linhas": 171,
+   "linhas": 175,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
    "env": [
+    "CI",
+    "GITHUB_ACTIONS",
+    "REQUIRE_LIVE",
     "SUPABASE_SERVICE_ROLE_KEY"
    ],
    "externos": [
     "unicodedata",
     "urllib"
+   ],
+   "rotas_http": 0,
+   "usado_por": 0,
+   "usado_por_modulos": [],
+   "coberto_por_testes": 0,
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/probe-production-sitemap.py",
+   "camada": "python",
+   "exports": [
+    "_int",
+    "cache_is_declared",
+    "check_identity",
+    "check_xml_response",
+    "evaluate",
+    "main",
+    "parse_headers",
+    "probe",
+    "safe_response",
+    "summary",
+    "xml_metadata"
+   ],
+   "linhas": 337,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [
+    "__future__",
+    "argparse",
+    "hashlib",
+    "json",
+    "math",
+    "os",
+    "pathlib",
+    "re",
+    "subprocess",
+    "tempfile",
+    "urllib",
+    "xml"
    ],
    "rotas_http": 0,
    "usado_por": 0,
@@ -403,7 +505,7 @@
     "uslug",
     "write"
    ],
-   "linhas": 1733,
+   "linhas": 1729,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -7174,7 +7276,7 @@
     "pages/mockups",
     "services"
    ],
-   "coberto_por_testes": 3,
+   "coberto_por_testes": 4,
    "orfao": false
   },
   {
@@ -8310,7 +8412,7 @@
     "components/admin",
     "pages/dev"
    ],
-   "coberto_por_testes": 4,
+   "coberto_por_testes": 5,
    "orfao": false
   },
   {
@@ -8670,7 +8772,7 @@
     "pages/products",
     "utils"
    ],
-   "coberto_por_testes": 9,
+   "coberto_por_testes": 10,
    "orfao": false
   },
   {

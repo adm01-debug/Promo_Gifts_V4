@@ -1719,11 +1719,20 @@
   "scripts/check-as-unknown-baseline.mjs": [
    "scripts/lib/baseline-gate.mjs"
   ],
+  "scripts/check-build-log.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
   "scripts/check-client-structured-logging.mjs": [
    "src/lib/telemetry/structuredLogger.ts"
   ],
+  "scripts/check-cloud-status-coverage.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
   "scripts/check-critical-modules-coverage.mjs": [
    "scripts/check-critical-coverage.mjs"
+  ],
+  "scripts/check-critical-path-coverage.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
   ],
   "scripts/check-cron-drift.mjs": [
    "scripts/lib/canonical-pg-connection.mjs"
@@ -1770,9 +1779,18 @@
   "scripts/check-migrations-sync-log-gate.mjs": [
    "scripts/check-result-contract.mjs"
   ],
+  "scripts/check-min-tests-executed.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
+  "scripts/check-no-salvar-alteracoes-draft.mjs": [
+   "scripts/lib/fixed-string-search.mjs"
+  ],
   "scripts/check-policies-baseline.mjs": [
    "scripts/check-result-contract.mjs",
    "scripts/supabase-read-only-query.mjs"
+  ],
+  "scripts/check-price-freshness-coverage.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
   ],
   "scripts/check-public-views-drift.mjs": [
    "scripts/check-result-contract.mjs",
@@ -1781,6 +1799,9 @@
   "scripts/check-quote-rpc-canonical-readiness.mjs": [
    "scripts/check-result-contract.mjs",
    "scripts/supabase-read-only-query.mjs"
+  ],
+  "scripts/check-removed-phrases.mjs": [
+   "scripts/lib/fixed-string-search.mjs"
   ],
   "scripts/check-rls-no-policy-drift.mjs": [
    "scripts/check-result-contract.mjs",
@@ -1809,6 +1830,9 @@
   "scripts/check-soft-delete-policy.mjs": [
    "scripts/lib/baseline-gate.mjs"
   ],
+  "scripts/check-supabase-linter.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
   "scripts/check-todo-baseline.mjs": [
    "scripts/lib/baseline-gate.mjs"
   ],
@@ -1821,21 +1845,60 @@
   "scripts/check-types-inventory-drift.mjs": [
    "scripts/extract-types-inventory.mjs"
   ],
+  "scripts/ci-metrics.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
+  "scripts/contract-testing.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
   "scripts/drift-baseline.mjs": [
    "scripts/check-supabase-migration-ledger.mjs"
+  ],
+  "scripts/dry-run-migration-draft.mjs": [
+   "scripts/lib/sql-transaction-guard.mjs"
+  ],
+  "scripts/e2e-check-stock-seed.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
+  "scripts/e2e-feature-summary.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
+  "scripts/e2e-smoke-summary.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
   ],
   "scripts/export-schema-snapshot.mjs": [
    "scripts/check-supabase-migration-ledger.mjs",
    "scripts/drift-baseline.mjs"
   ],
+  "scripts/gen-internal-schema.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
   "scripts/graphify/postprocess-report.mjs": [
    "scripts/graphify/graph-metrics.mjs"
+  ],
+  "scripts/inventario/gerar-banco.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
   ],
   "scripts/inventario/gerar-repo.mjs": [
    "scripts/inventario/gerar-rotas.mjs"
   ],
+  "scripts/kit-ai-enrichment.js": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
   "scripts/lib/canonical-pg-connection.mjs": [
    "scripts/validate-migration-target.mjs"
+  ],
+  "scripts/lib/missing-prerequisite.mjs": [
+   "scripts/check-result-contract.mjs"
+  ],
+  "scripts/list-users.ts": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
+  "scripts/maintenance/run.mjs": [
+   "scripts/maintenance/lib.mjs"
+  ],
+  "scripts/maintenance/typecheck.mjs": [
+   "scripts/maintenance/lib.mjs"
   ],
   "scripts/pgss-slo-check.mjs": [
    "scripts/check-result-contract.mjs",
@@ -1848,14 +1911,57 @@
   "scripts/round-quality-report.mjs": [
    "scripts/lib/tsc-run.mjs"
   ],
+  "scripts/run-e2e-quotes-undo.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
+  "scripts/run-smoke-filtered.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
+  "scripts/simulate-quote-rpc-proposals.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
   "scripts/simulate-signup-migration.mjs": [
+   "scripts/lib/missing-prerequisite.mjs",
    "scripts/supabase-read-only-query.mjs"
+  ],
+  "scripts/ssot-report-markdown.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
+  "scripts/stress-quote-number-concurrent.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
   ],
   "scripts/test-critical-coverage.mjs": [
    "scripts/check-critical-coverage.mjs"
   ],
+  "scripts/test-magazine-coverage.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
+  "scripts/triage-edge-typecheck.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
   "scripts/tsc-baseline-generate.mjs": [
    "scripts/lib/tsc-run.mjs"
+  ],
+  "scripts/typecheck-edge-functions.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
+  "scripts/validate-lovable-sync-target.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
+  "scripts/validate-quotes-list.mjs": [
+   "scripts/lib/tsc-run.mjs"
+  ],
+  "scripts/validate-ssot-report.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
+  "scripts/verify-external.ts": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
+  "scripts/verify-quote-number-hardening.mjs": [
+   "scripts/lib/missing-prerequisite.mjs"
+  ],
+  "scripts/verify-roboflow-setup.js": [
+   "scripts/lib/missing-prerequisite.mjs"
   ],
   "scripts/wraparound-monitor-check.mjs": [
    "scripts/check-result-contract.mjs",

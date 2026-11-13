@@ -19999,7 +19999,7 @@
    "modulo": "hooks/kit-builder",
    "arquivos": 22,
    "testes": 1,
-   "linhas": 4073,
+   "linhas": 4180,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -29658,7 +29658,7 @@
    "modulo": "pages/kit-builder",
    "arquivos": 3,
    "testes": 0,
-   "linhas": 1533,
+   "linhas": 1636,
    "itens_menu": [],
    "telas": [
     "/meus-kits"

@@ -1977,7 +1977,7 @@
     "CartSidebar"
    ],
    "export_default": null,
-   "linhas": 261,
+   "linhas": 334,
    "dominio": null,
    "hooks_locais": [],
    "tabelas": [],
@@ -18295,7 +18295,7 @@
     "KitBuilderPage"
    ],
    "export_default": "KitBuilderPage",
-   "linhas": 316,
+   "linhas": 419,
    "dominio": "pages/kit-builder",
    "hooks_locais": [
     "useKitBuilderPageState",
