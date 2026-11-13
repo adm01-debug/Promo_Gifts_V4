@@ -1,11 +1,10 @@
 /**
  * useClientBI — orquestra estatísticas 360° do cliente.
- * Tenta dados reais (orders); se vazio, retorna mock com flag `isMock: true`.
+ * Tenta dados reais (orders); se vazio, retorna zeros com flag `isMock: true` (sem histórico).
  * Sprint 3: também calcula deltas vs período anterior (90d atual vs 90d anteriores).
  */
 import { useMemo } from 'react';
 import { useClientOrdersHistory } from '@/hooks/bi/useClientOrdersHistory';
-import { MOCK_CLIENT_STATS } from '@/lib/bi/mockData';
 
 export interface PeriodDelta {
   ltvDeltaPct: number;
@@ -38,6 +37,10 @@ export interface ClientBI {
   /** Variação percentual current vs previous */
   delta: PeriodDelta;
   isLoading: boolean;
+  /** Falha ao buscar pedidos (rede/RLS): zeros NÃO significam "sem pedidos" */
+  isError: boolean;
+  /** Já há resultado da query (mesmo com refetch posterior falho, que mantém os dados antigos) */
+  hasData: boolean;
 }
 
 const DAY_MS = 86400000;
@@ -48,38 +51,30 @@ function pctDelta(current: number, previous: number): number {
 }
 
 export function useClientBI(clientId?: string): ClientBI {
-  const { data, isLoading } = useClientOrdersHistory(clientId);
+  const { data, isLoading, isError } = useClientOrdersHistory(clientId);
 
   return useMemo(() => {
     if (!data || data.ordersCount === 0) {
-      const mockOrders = MOCK_CLIENT_STATS.recentOrders.map((o) => ({
-        ...o,
-        isAnomaly: false,
-        deviation: 0,
-      }));
+      // Sem histórico real: zeros e listas vazias, nunca números simulados
+      const empty = { ltv: 0, avgTicket: 0, ordersCount: 0 };
       return {
         isMock: true,
-        ...MOCK_CLIENT_STATS,
-        recentOrders: mockOrders,
-        lastOrderDate: MOCK_CLIENT_STATS.lastOrderDate,
-        daysSinceLastOrder: MOCK_CLIENT_STATS.daysSinceLastOrder,
-        current90d: {
-          ltv: MOCK_CLIENT_STATS.ltv * 0.35,
-          avgTicket: MOCK_CLIENT_STATS.avgTicket,
-          ordersCount: Math.max(1, Math.floor(MOCK_CLIENT_STATS.ordersCount * 0.3)),
-        },
-        previous90d: {
-          ltv: MOCK_CLIENT_STATS.ltv * 0.28,
-          avgTicket: MOCK_CLIENT_STATS.avgTicket * 0.92,
-          ordersCount: Math.max(1, Math.floor(MOCK_CLIENT_STATS.ordersCount * 0.25)),
-        },
+        ...empty,
+        lastOrderDate: null,
+        daysSinceLastOrder: null,
+        topCategories: [],
+        recentOrders: [],
+        current90d: empty,
+        previous90d: empty,
         delta: {
-          ltvDeltaPct: 25,
-          avgTicketDeltaPct: 8,
-          ordersCountDeltaPct: 20,
-          hasPreviousData: true,
+          ltvDeltaPct: 0,
+          avgTicketDeltaPct: 0,
+          ordersCountDeltaPct: 0,
+          hasPreviousData: false,
         },
         isLoading,
+        isError,
+        hasData: data !== undefined,
       };
     }
 
@@ -152,6 +147,8 @@ export function useClientBI(clientId?: string): ClientBI {
         hasPreviousData: inPrevious.length > 0,
       },
       isLoading,
+      isError,
+      hasData: true,
     };
-  }, [data, isLoading]);
+  }, [data, isLoading, isError]);
 }
