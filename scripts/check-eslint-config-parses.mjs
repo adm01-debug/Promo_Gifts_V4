@@ -82,8 +82,16 @@ try {
 }
 
 // 1) Parse sintatico (rapido, e da linha:coluna exata).
+let parse;
 try {
-  const { parse } = await import('acorn');
+  ({ parse } = await import('acorn'));
+} catch (err) {
+  // Falha ao CARREGAR o parser (dependencia ausente/nao instalada) nao e o
+  // mesmo problema que um config invalido — nao misture os dois diagnosticos.
+  fail(`Nao foi possivel carregar o parser 'acorn' (rode "npm install"): ${err.message}`);
+}
+
+try {
   parse(source, { ecmaVersion: 'latest', sourceType: 'module' });
 } catch (err) {
   const line = err?.loc?.line;

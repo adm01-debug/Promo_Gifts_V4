@@ -188,7 +188,22 @@ if (!res.ok) {
   });
 }
 
-const rows = await res.json();
+let rows;
+try {
+  rows = await res.json();
+} catch (err) {
+  concludeCheck({
+    check: "security-definer-acl",
+    status: CHECK_RESULT_STATUS.INCONCLUSIVE,
+    summary: "RPC retornou corpo que não é JSON válido",
+    details: {
+      reason: "invalid-json",
+      maskedUrl: maskUrl(url),
+      parseError: String(err?.message ?? err),
+    },
+    stream: "stdout",
+  });
+}
 
 if (!Array.isArray(rows)) {
   concludeCheck({

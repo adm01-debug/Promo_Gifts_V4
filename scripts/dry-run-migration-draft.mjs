@@ -26,6 +26,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { resolve, basename } from "node:path";
+import { findTransactionControl } from "./lib/sql-transaction-guard.mjs";
 
 const NON_TX_DDL = [
   /CREATE\s+INDEX\s+CONCURRENTLY/i,
@@ -143,6 +144,18 @@ async function main() {
     log(`⚠️  PGHOST ausente — dry-run de ${draftName} PULADO (safe-by-default).`);
     log("   Configure PGHOST/PGUSER/PGPASSWORD/PGDATABASE para habilitar.");
     process.exit(0);
+  }
+
+  // GUARD: o draft roda dentro de BEGIN…ROLLBACK. Qualquer COMMIT TRANSACTION/END/
+  // ROLLBACK/ABORT/START TRANSACTION ou meta-comando do psql tiraria o resto do script
+  // do invólucro e gravaria no banco (autocommit) enquanto o log diz "Rollback: OK".
+  const txViolations = findTransactionControl(sql);
+  if (txViolations.length) {
+    err(
+      `❌ Draft contém controle de transação/meta-comando que escapa do ROLLBACK: ` +
+        `${txViolations.join(" | ")}. Dry-run recusa — só BEGIN; e COMMIT; exatos são aceitos.`,
+    );
+    process.exit(1);
   }
 
   // Recusa DDL não-transacional.

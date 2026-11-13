@@ -3,8 +3,10 @@ import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+// `\bfrom` (e não `\sfrom`): o bundle minificado emite `import{a}from"./x.js"` sem espaço, que a
+// regex antiga não via (19 de ~2267 imports estáticos no dist real) → ciclos passavam.
 const STATIC_IMPORT_RE =
-  /(?:\bimport\s*(?:[^"'()]*?\sfrom\s*)?|\bexport\s+[^"']*?\sfrom\s*)["']\.\/([^"']+\.js)["']/g;
+  /(?:\bimport\s*(?:[^"'()]*?\bfrom\s*)?|\bexport\b[^"']*?\bfrom\s*)["']\.\/([^"']+\.js)["']/g;
 
 async function readChunkGraph(directory) {
   const root = path.resolve(directory);

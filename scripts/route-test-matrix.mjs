@@ -14,7 +14,10 @@ function extractArray(name){
 }
 const critical=[...extractArray('APP_ROUTES').filter(r=>r.smoke),...extractArray('QUOTES_ROUTES').filter(r=>r.smoke),...extractArray('ADMIN_ROUTES'),...extractArray('PUBLIC_ROUTES').filter(r=>['/login','/reset-password'].includes(r.path))];
 const testFiles=[]; const walk=d=>{for(const ent of fs.readdirSync(d,{withFileTypes:true})){const fp=path.join(d,ent.name); if(ent.isDirectory())walk(fp); else if(/\.(spec|test)\.(ts|tsx)$/.test(ent.name))testFiles.push(fp)}}; walk('e2e'); walk('tests');
-const rows=critical.map(route=>{const hits=[]; for(const tf of testFiles){const rel=tf.replace(/\\/g,'/'); const t=fs.readFileSync(tf,'utf8'); if(t.includes(route.path)) hits.push(rel);} return {...route,hits,status:hits.length?'hit':'miss'};});
+// '/' (e prefixos curtos) com includes() casava QUALQUER arquivo de teste; exige a rota como literal
+// de URL/caminho (entre aspas/crases ou seguida de ? # / fim de literal).
+const mentionsRoute=(text,p)=>{const esc=p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); return new RegExp('[\'"`]'+esc+'(?:[?#/][^\'"`]*)?[\'"`]|(?:goto|visit|toHaveURL)\\([^)]*'+esc+'(?![\\w-])').test(text)};
+const rows=critical.map(route=>{const hits=[]; for(const tf of testFiles){const rel=tf.replace(/\\/g,'/'); const t=fs.readFileSync(tf,'utf8'); if(mentionsRoute(t,route.path)) hits.push(rel);} return {...route,hits,status:hits.length?'hit':'miss'};});
 const total=rows.length,hit=rows.filter(r=>r.status==='hit').length,miss=total-hit,pct=((hit/total)*100).toFixed(1);
 let md=`# Matriz rota↔teste (rotas críticas)\n\n- Cobertura por rota (hit/miss): **${hit}/${total} = ${pct}%**\n- Gaps (miss): **${miss}**\n\n| Rota | Área | Feature | Status | Testes que exercitam |\n|---|---|---|---|---|\n`;
 for(const r of rows){md+=`| \`${r.path}\` | ${r.area} | ${r.feature||'-'} | ${r.status==='hit'?'✅ hit':'❌ miss'} | ${r.hits.slice(0,6).map(h=>`\`${h}\``).join('<br>')||'-'} |\n`;}

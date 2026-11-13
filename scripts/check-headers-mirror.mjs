@@ -30,6 +30,9 @@ function getVercelCSP() {
   );
   if (!block) throw new Error('vercel.json: nenhum bloco com Content-Security-Policy');
   const entry = block.headers.find((x) => x.key === 'Content-Security-Policy');
+  if (typeof entry.value !== 'string') {
+    throw new Error('vercel.json: bloco Content-Security-Policy sem "value" (string)');
+  }
   return entry.value;
 }
 

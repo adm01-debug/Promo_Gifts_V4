@@ -13,6 +13,7 @@
 
 import { readFileSync, existsSync } from "node:fs";
 import process from "node:process";
+import { missingPrerequisite } from "./lib/missing-prerequisite.mjs";
 
 const COVERAGE_JSON =
   process.env.COVERAGE_JSON_PATH || "coverage/coverage-summary.json";
@@ -51,8 +52,11 @@ function getPct(entry, metric) {
 
 function main() {
   if (!existsSync(COVERAGE_JSON)) {
-    console.log(`[check-critical-path-coverage] static-pass: coverage JSON ausente; gate ignorado.`);
-    process.exit(0);
+    // E49: coverage JSON ausente = gate não rodou = falha no CI, nunca skip silencioso.
+    missingPrerequisite('check-critical-path-coverage', `coverage JSON ausente em ${COVERAGE_JSON}`, {
+      exitCode: 1,
+      hint: 'Rode vitest com --coverage primeiro.',
+    });
   }
 
   const summary = JSON.parse(readFileSync(COVERAGE_JSON, "utf8"));
