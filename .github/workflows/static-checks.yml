@@ -1,0 +1,129 @@
+name: Static Checks
+
+# =============================================================================
+# Checagens estáticas rápidas consolidadas em UM job (wf-consolida, 2026-11-13).
+#
+# Antes: um workflow por checagem, cada um com checkout + setup-node + npm ci
+# próprios (~2.300 runs/semana disputando a fila de runners). Agora: 1 checkout,
+# 1 setup-node com cache npm, 1 npm ci e os steps em sequência com
+# `if: !cancelled()` — todos rodam e reportam mesmo que um anterior falhe, e o
+# job termina vermelho se QUALQUER um falhar (nenhum step usa continue-on-error).
+#
+# Critério de entrada: script rápido, sem secrets, sem build, sem permissão de
+# escrita, sem comentário em PR e sem leitura de labels. O que precisa de algo
+# disso continua no próprio workflow (ver recovery/workflows-aposentados/README.md).
+#
+# Filtros de paths: todos os steps rodam em todo PR e push (custam segundos) —
+# superset dos gatilhos antigos. Exceção: o recibo de migration precisa do
+# histórico git completo, então só roda quando supabase/migrations/** muda
+# (mesmo filtro do workflow antigo), via dorny/paths-filter.
+#
+# Origem de cada step — o arquivo antigo está em recovery/workflows-aposentados/:
+#   check-no-prod-leak.yml, check-select-columns.yml, lint-untyped-from.yml,
+#   workflow-lint.yml, migrations-sync-log-gate.yml, automation-local.yml
+# =============================================================================
+
+on:
+  # Sem filtro de branch: lint-untyped-from.yml rodava em PR para qualquer base
+  # (PRs empilhados); manter o superset evita perder a checagem nesses PRs.
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read  # dorny/paths-filter lista os arquivos do PR pela API
+
+concurrency:
+  group: static-checks-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  static-checks:
+    name: Static checks (consolidado)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false  # E32
+
+      - name: Detectar mudança em migrations (recibo E48)
+        id: paths
+        if: github.event_name == 'pull_request'
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        with:
+          filters: |
+            migrations:
+              - 'supabase/migrations/**'
+              - 'supabase/MIGRATIONS_SYNC_LOG.md'
+              - 'scripts/check-migrations-sync-log-gate.mjs'
+              - '.github/workflows/static-checks.yml'
+
+      - name: Setup Node CI (setup-node + cache npm + npm ci)
+        id: setup
+        uses: ./.github/actions/setup-node-ci
+        with:
+          ignore-scripts: 'true'
+
+      # ── ex-check-no-prod-leak.yml ───────────────────────────────────────────
+      - name: No prod leak em config de dev/teste
+        if: ${{ !cancelled() }}
+        run: node scripts/check-no-prod-leak.mjs
+
+      # ── ex-check-select-columns.yml ─────────────────────────────────────────
+      - name: select() columns vs types.ts
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: node scripts/check-select-columns.mjs
+
+      # ── ex-lint-untyped-from.yml ────────────────────────────────────────────
+      - name: untypedFrom × types.ts
+        if: ${{ !cancelled() }}
+        run: bash scripts/lint-untyped-from.sh
+
+      # ── ex-automation-local.yml ─────────────────────────────────────────────
+      # scripts/automation.config.json (`ci`) aponta para este arquivo: o doctor
+      # exige gatilho PR + push em main e o comando abaixo numa linha `run:`.
+      - name: Automação local — perfis, aliases e encadeamentos
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: node scripts/automation.mjs doctor --static
+      - name: Automação local — suites registradas
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: node scripts/automation.mjs test
+
+      # ── ex-workflow-lint.yml ────────────────────────────────────────────────
+      # check-workflow-contracts.mjs --gate continua no deploy-gates.yml (Gate 1.11).
+      # O shellcheck roda dentro do actionlint em cada bloco run:.
+      # SC2129: '>>' múltiplos redirecionamentos — falso positivo de estilo; aceito.
+      # run_started_at: propriedade válida do contexto github, ausente do schema
+      #   do actionlint v1.7.7 — ignorada até o schema ser atualizado.
+      # TODOS os outros códigos SC são erros reais (E91 — sem -ignore amplos).
+      # SHA256 do tarball verificado contra os checksums oficiais (E91 2026-10-14).
+      - name: actionlint + shellcheck
+        if: ${{ !cancelled() }}
+        run: |
+          set -euo pipefail
+          curl -sSL https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_linux_amd64.tar.gz -o "$RUNNER_TEMP/actionlint.tar.gz"
+          echo "023070a287cd8cccd71515fedc843f1985bf96c436b7effaecce67290e7e0757  $RUNNER_TEMP/actionlint.tar.gz" | sha256sum -c -
+          tar xzf "$RUNNER_TEMP/actionlint.tar.gz" -C "$RUNNER_TEMP" actionlint
+          "$RUNNER_TEMP/actionlint" \
+            -ignore 'SC2129' \
+            -ignore 'property "run_started_at" is not defined'
+
+      # ── ex-migrations-sync-log-gate.yml ─────────────────────────────────────
+      # O script compara origin/<base>...HEAD: precisa do histórico, que só é
+      # buscado quando o PR mexe em migrations (o checkout acima é raso).
+      - name: Recibo de migration em MIGRATIONS_SYNC_LOG.md
+        if: ${{ !cancelled() && github.event_name == 'pull_request' && steps.paths.outputs.migrations == 'true' }}
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --unshallow origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
+          node scripts/check-migrations-sync-log-gate.mjs
