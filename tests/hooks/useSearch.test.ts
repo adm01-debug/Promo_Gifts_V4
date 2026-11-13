@@ -176,6 +176,18 @@ describe('useSearch', () => {
     });
   });
 
+  describe('Categorias/fornecedores sem dado fictício', () => {
+    it('não sugere categorias nem fornecedores mock quando o banco não retorna dados', () => {
+      // useQuery mockado retorna data undefined (erro/vazio/carregando) e não há produtos:
+      // "AGRO" (categoria mock id 192) e "XBZ Brindes" (fornecedor mock id 'xbz') não podem aparecer.
+      const { result } = renderHook(() => useSearch([]), { wrapper: createWrapper() });
+      act(() => result.current.setQuery('agro'));
+      expect(result.current.suggestions.filter(s => s.type === 'category')).toEqual([]);
+      act(() => result.current.setQuery('xbz'));
+      expect(result.current.suggestions.filter(s => s.type === 'supplier')).toEqual([]);
+    });
+  });
+
   describe('Quick suggestions', () => {
     it('retorna sugestões rápidas vazias quando não há produtos', () => {
       // quickSuggestions é derivado das categorias dos produtos carregados.
