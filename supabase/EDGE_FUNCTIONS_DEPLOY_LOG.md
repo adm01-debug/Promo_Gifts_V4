@@ -972,6 +972,7 @@ manualmente, no mesmo dia, com o método `emergência-MCP`.
 | 2026-11-13T19:41:27.525Z | `e2e-cleanup` | 308 | `5f18026701ed8bbf76332071e1b808cc5e6081de` | 43467481887 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-11-13T21:06:12.236Z | `cleanup-novelties` | 313 | `8ce96939e23bb05c48e366383657ac1d1a053b57` | 43487464383 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-11-13T22:06:35.833Z | `crm-db-bridge` | 311 | `8ce96939e23bb05c48e366383657ac1d1a053b57` | 43494646104 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T23:36:14.098Z | `send-transactional-email` | 283 | `835fee0c1e1487218397a754e952764c6e045eb7` | 43515934319 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 
 ## Retro-registro (casos anteriores a este ledger, E67)
 
