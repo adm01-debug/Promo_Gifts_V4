@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2301,
+ "total": 2303,
  "por_tipo": {
   "contrato": 57,
   "e2e": 677,
   "pytest": 2,
   "qa": 17,
-  "unit": 1548
+  "unit": 1550
  },
  "onde_ficam": [
   {
@@ -19,12 +19,12 @@
    "arquivos": 866
   },
   {
-   "padrao": "e2e/",
+   "padrao": "co-localizado (__tests__)",
    "arquivos": 625
   },
   {
-   "padrao": "co-localizado (__tests__)",
-   "arquivos": 623
+   "padrao": "e2e/",
+   "arquivos": 625
   },
   {
    "padrao": "co-localizado (*.test)",
@@ -6199,6 +6199,15 @@
    "casos": 2
   },
   {
+   "arquivo": "src/components/pricing/__tests__/ProductPriceSimulator.createQuote.test.tsx",
+   "tipo": "unit",
+   "linhas": 206,
+   "testa": [
+    "src/components/pricing/ProductPriceSimulator.tsx"
+   ],
+   "casos": 6
+  },
+  {
    "arquivo": "src/components/pricing/__tests__/QuantityPriceCalculator.createQuote.test.tsx",
    "tipo": "unit",
    "linhas": 173,
@@ -6206,6 +6215,18 @@
     "src/components/pricing/QuantityPriceCalculator.tsx"
    ],
    "casos": 5
+  },
+  {
+   "arquivo": "src/components/pricing/__tests__/QuantityPriceCalculator.officialPrice.test.tsx",
+   "tipo": "unit",
+   "linhas": 248,
+   "testa": [
+    "src/components/pricing/QuantityPriceCalculator.tsx",
+    "src/components/pricing/calculator/types.ts",
+    "src/hooks/quotes/quoteHelpers.ts",
+    "src/hooks/quotes/useQuoteBuilderState.helpers.ts"
+   ],
+   "casos": 10
   },
   {
    "arquivo": "src/components/products/__tests__/BadgeVisualRegression.test.tsx",
@@ -9619,11 +9640,11 @@
   {
    "arquivo": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
    "tipo": "unit",
-   "linhas": 226,
+   "linhas": 272,
    "testa": [
     "src/pages/admin/RolePermissionsPage.tsx"
    ],
-   "casos": 5
+   "casos": 7
   },
   {
    "arquivo": "src/pages/auth/__tests__/auth-copy.smoke.test.ts",
@@ -19734,7 +19755,9 @@
   "src/components/pdf/proposal/ProposalProductTable.tsx": 2,
   "src/components/pdf/proposal/ProposalTotals.tsx": 3,
   "src/components/pdf/watermarkTokens.ts": 3,
-  "src/components/pricing/QuantityPriceCalculator.tsx": 2,
+  "src/components/pricing/ProductPriceSimulator.tsx": 1,
+  "src/components/pricing/QuantityPriceCalculator.tsx": 3,
+  "src/components/pricing/calculator/types.ts": 1,
   "src/components/pricing/simulator/types.ts": 1,
   "src/components/pricing/simulator/upsell/upsell-engine.ts": 1,
   "src/components/pricing/simulator/utils.ts": 1,
@@ -19953,11 +19976,12 @@
   "src/hooks/products/useVariantSupplierSources.ts": 6,
   "src/hooks/products/useVideoVariantLinks.ts": 1,
   "src/hooks/quotes/index.ts": 19,
-  "src/hooks/quotes/quoteHelpers.ts": 7,
+  "src/hooks/quotes/quoteHelpers.ts": 8,
   "src/hooks/quotes/quoteMarkup.ts": 1,
   "src/hooks/quotes/quoteTypes.ts": 12,
   "src/hooks/quotes/useAutoSaveQuote.ts": 7,
   "src/hooks/quotes/useDiscountApproval.ts": 3,
+  "src/hooks/quotes/useQuoteBuilderState.helpers.ts": 1,
   "src/hooks/quotes/useQuoteBuilderState.ts": 8,
   "src/hooks/quotes/useQuoteConcurrencyGuard.ts": 1,
   "src/hooks/quotes/useQuoteFunnel.ts": 1,
@@ -20792,7 +20816,6 @@
    "src/hooks/products/useVariantStock.ts",
    "src/hooks/quotes/useNextQuoteNumberPreview.ts",
    "src/hooks/quotes/useProdutoPersonalizacao.ts",
-   "src/hooks/quotes/useQuoteBuilderState.helpers.ts",
    "src/hooks/quotes/useQuoteClientLogos.ts",
    "src/hooks/quotes/useQuoteItemCounts.ts",
    "src/hooks/simulation/useExternalSimulator.ts",

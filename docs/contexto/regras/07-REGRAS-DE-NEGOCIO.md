@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `fee3d0937c` · branch `main` · 2026-11-12 23:01 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0f00ba1670` · branch `main` · 2026-11-13 03:28 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1785,13 +1785,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `delivered` | compara, escreve | `src/components/common/StatusTimeline.tsx`<br>`supabase/functions/semantic-search/index.ts` |
 | `status` | `denied` | compara, escreve, filtra | `src/components/admin/security/keys/audit/McpAuditRow.tsx`<br>`src/components/admin/security/keys/audit/useStepUpAttempts.ts`<br>`supabase/functions/connections-hub-audit/index.ts`<br>`supabase/functions/mcp-keys-issue/index.ts`<br>`supabase/functions/mcp-keys-revoke/index.ts`<br>… +4 |
 | `status` | `destructive` | compara | `src/components/kit-builder/VolumeIndicator.tsx`<br>`src/pages/admin/AdminClientPerformancePage.tsx` |
+| `status` | `dimension` | compara, escreve | `src/components/pricing/calculator/QuantityComparisonTable.tsx` |
 | `status` | `done` | compara | `src/pages/admin/telemetry/useOptimizationQueue.ts` |
 | `status` | `down` | compara | `recovery/src-legacy/src/hooks/useCloudStatus.ts`<br>`src/components/system/CloudStatusBanner.tsx`<br>`src/hooks/ui/useCloudStatus.ts`<br>`src/lib/external-db/invoke.ts` |
 | `status` | `draft` | compara, escreve, filtra | `recovery/src-legacy/src/hooks/useKitAutoSave.ts`<br>`recovery/src-legacy/src/hooks/useKitTemplates.ts`<br>`recovery/src-legacy/src/hooks/useMagicUpGeneration.ts`<br>`recovery/src-legacy/src/hooks/useMagicUpState.ts`<br>`recovery/src-legacy/src/hooks/useQuoteBuilderState.ts`<br>… +40 |
 | `status` | `duplicate_ignored` | escreve | `supabase/functions/receive-crm-callback/index.ts` |
 | `status` | `em_separacao` | escreve | `src/hooks/products/useSellerCarts.ts` |
 | `status` | `empty` | escreve | `src/components/admin/connections/KeysValidationTab.tsx` |
-| `status` | `error` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>`src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>… +22 |
+| `status` | `error` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>`src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>… +23 |
 | `status` | `expired` | compara | `src/components/admin/security/keys/McpKeyDetailsDrawer.tsx`<br>`src/components/admin/security/keys/McpKeyRow.tsx`<br>`src/components/admin/security/keys/useMcpKeys.ts`<br>`src/components/quotes/QuoteStatusTimeline.tsx`<br>`src/components/quotes/QuoteValidityBanner.tsx`<br>… +4 |
 | `status` | `expiring_soon` | compara | `src/components/novelties/NoveltyCards.tsx` |
 | `status` | `fail` | compara, escreve | `recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`src/components/admin/connections/ConnectionTestHistoryPanel.tsx`<br>`src/hooks/intelligence/useConnectionsOverviewFilters.ts`<br>`supabase/functions/full-op-diagnostics/index.ts` |
@@ -1820,7 +1821,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `novo` | escreve | `recovery/src-legacy/src/hooks/useSellerCarts.ts` |
 | `status` | `number` | compara | `recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`src/contexts/SellerCartContext.tsx`<br>`src/lib/crm-db.ts`<br>… +7 |
 | `status` | `offline` | compara | `src/components/quotes/QuoteAutoSave.tsx` |
-| `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx`<br>`recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>… +14 |
+| `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx`<br>`recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>… +15 |
 | `status` | `order` | compara | `src/components/dashboard/MyClientsWidget.tsx` |
 | `status` | `out-of-stock` | compara, escreve | `recovery/src-legacy/src/pages/ComparePage.tsx`<br>`recovery/src-legacy/src/pages/product-detail/ProductDetailHero.tsx`<br>`src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/products/ProductListItem.tsx`<br>… +4 |
 | `status` | `out_of_stock` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/components/inventory/VariantStockTable.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>… +2 |
@@ -1839,7 +1840,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `rate_limited` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `ready` | compara, escreve | `api/ready.ts`<br>`src/lib/kit-builder/persistence.ts` |
 | `status` | `regression` | compara | `src/components/admin/telemetry/RegressionGuardrailBanner.tsx` |
-| `status` | `rejected` | compara, escreve | `recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx`<br>`recovery/src-legacy/src/hooks/usePasswordResetRequests.ts`<br>`recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`src/components/admin/DiscountManagementPanel.tsx`<br>`src/components/admin/PasswordResetApproval.tsx`<br>… +13 |
+| `status` | `rejected` | compara, escreve | `recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx`<br>`recovery/src-legacy/src/hooks/usePasswordResetRequests.ts`<br>`recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`src/components/admin/DiscountManagementPanel.tsx`<br>`src/components/admin/PasswordResetApproval.tsx`<br>… +14 |
 | `status` | `reprocessed` | escreve | `supabase/functions/crm-callback-reprocess/index.ts` |
 | `status` | `revoked` | compara | `src/components/admin/security/keys/McpKeyRow.tsx`<br>`src/components/admin/security/keys/useMcpKeys.ts` |
 | `status` | `running` | compara, escreve | `src/components/admin/connections/SmokeTestChecklist.tsx`<br>`src/components/admin/telemetry/OptimizationQueuePanel.tsx`<br>`tests/p0/_mocks.ts` |
@@ -1862,8 +1863,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `unavailable` | compara, escreve | `src/components/kit-builder/KitSummary.tsx`<br>`src/hooks/kit-builder/useKitMinQuantityValidation.ts`<br>`src/hooks/kit-builder/useKitPriceValidation.ts`<br>`src/pages/kit-builder/useKitBuilderQuote.ts` |
 | `status` | `unchanged` | escreve | `src/hooks/kit-builder/useKitPriceValidation.ts` |
 | `status` | `unconfigured` | compara | `src/components/admin/connections/DataSourceDebugTab.tsx` |
-| `status` | `underindex` | compara | `src/components/bi/ClientCategoryRadar.tsx` |
-| … +117 linhas — lista completa em `context.json` | | | |
+| … +118 linhas — lista completa em `context.json` | | | |
 
 ### E.4 Enums e listas de valores
 
@@ -3761,6 +3761,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   if (!value) return '—'; return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
   ```
+- **calculateForConfig(config: SelectedTechniqueConfig, quantity: number)** — `src/components/pricing/calculator/QuantityComparisonTable.tsx`
+  ```
+  const cell = cells.get(cellKey(config, quantity)); if (cell?.status !== 'ok') return cell ?? null; // Conta do orçamento para esta técnica: quantidade × preço do produto + total_cost (= total_cobrado). const productTotal = product.price * quantity; const grandTotal = productTotal + cell.customizationTotal; return { ...cell, productTotal, grandTotal, unitTotal: grandTotal / quantity };
+  ```
+- **quoteTotalFor(quantity: number)** — `src/components/pricing/calculator/QuantityComparisonTable.tsx`
+  ```
+  const results = selectedConfigs.map((config) => calculateForConfig(config, quantity)); if (results.some((r) => r === null)) return null; const failed = results.filter((r) => r?.status === 'error' || r?.status === 'rejected').length; const withoutPrice = results.filter((r) => r?.status === 'dimension').length; const engraving = results.reduce( (sum, r) => sum + (r?.status === 'ok' ? r.customizationTotal : 0), 0, ); const grandTotal = product.price * quantity + engraving; return { failed, withoutP …
+  ```
 - **formatCurrency(value: number)** — `src/components/pricing/calculator/types.ts`
   ```
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
@@ -5055,7 +5063,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `* caber, sem nunca ampliar acima de 100%.` | `src/components/mockup/approval/MockupApprovalPreview.tsx` |
 | `Resetar 100%` | `src/components/mockup/logo-editor/LogoSizeControls.tsx` |
 | `* visual entre as duas variações. Valor atual reflete redução de 20%` | `src/components/pdf/ProposalStyles.ts` |
-| `if (colors > 1 && matchingTable.price_by_color) modifiedUnitPrice *= 1 + (colors - 1) * 0.1;` | `src/components/pricing/calculator/QuantityComparisonTable.tsx` |
 | `/** Limiar alto: se faltar ≤15%, prioridade alta */` | `src/components/pricing/simulator/upsell/upsell-engine.ts` |
 | `/** Limiar: só sugere próxima faixa se faltar ≤30% da quantidade atual */` | `src/components/pricing/simulator/upsell/upsell-engine.ts` |
 | `transition: { delay: i * 0.04, type: 'spring', stiffness: 500, damping: 30 },` | `src/components/products/BulkActionBar.tsx` |
@@ -6337,7 +6344,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | mais de um baseline em ${BASELINE_DIR}: ${found.join( | `scripts/drift-baseline.mjs` |
 | nenhum baseline em ${BASELINE_DIR} | `scripts/drift-baseline.mjs` |
 | project ref inválido: ${JSON.stringify(projectRef)} | `scripts/drift-baseline.mjs` |
-| … +1184 linhas — lista completa em `context.json` | |
+| … +1183 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6457,7 +6464,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (19926 testes em 1989 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (19946 testes em 1991 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6761,7 +6768,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/cart/__tests__/CartHeaderButton.delete.test.tsx` | 17 | CartHeaderButton — trash button onPointerDown · faz stopPropagation e NÃO faz preventDefault · CartHeaderButton — trash button onClick · chama preventDefault, stopPropagation, setOpen(false) e agenda no rAF … |
 | `src/components/inventory/__tests__/StockBadge.test.tsx` | 17 | StockBadge — getStockStatus helper · returns out-of-stock for zero quantity · returns low-stock at or below threshold · returns in-stock above threshold … |
 | `src/components/inventory/__tests__/bulk-add-to-collection-modal.test.tsx` | 17 | BulkAddToCollectionModal — initial state · renders dialog title with correct count (2 variações) · renders  · shows empty state when no collections … |
-| … +1689 linhas — lista completa em `context.json` | | |
+| … +1691 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7228,4 +7235,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Laser detection — must come before UV check since "Laser UV" exists | `src/components/mockup/techniqueColorUtils.ts` |
 | a caixa cheia é um limite superior: a bbox nunca subestima a marca girada e um | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
 | * Filtro de técnica EFETIVO — o mesmo que a prévia aplica. Decide se há regra. */ | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
-| … +1249 linhas — lista completa em `context.json` | |
+| … +1251 linhas — lista completa em `context.json` | |

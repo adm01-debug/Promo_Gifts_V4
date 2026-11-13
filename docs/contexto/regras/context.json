@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "fee3d0937cdaa5ff1cf93af07c38cfc8dedb902a",
+  "sha": "0f00ba1670810c8cd6cdd05ce28e6cbe198af094",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-12 23:01 UTC",
-  "files_total": 9821,
-  "code_files": 8384,
-  "code_lines": 1180964
+  "generated_at": "2026-11-13 03:28 UTC",
+  "files_total": 9823,
+  "code_files": 8386,
+  "code_lines": 1181504
  },
  "version": "1.3.2",
- "facts_hash": "1c5afc012f127478",
+ "facts_hash": "bd0842309b4b8fdf",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1184,7 +1184,7 @@
   "languages": {
    ".sql": 3333,
    ".ts": 2888,
-   ".tsx": 1849,
+   ".tsx": 1851,
    ".mjs": 305,
    ".py": 9,
    ".js": 7
@@ -142232,7 +142232,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1599,
+  "components_count": 1601,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -145263,10 +145263,6 @@
     "file": "src/hooks/simulation/useTecnicasUnificadas.ts"
    },
    {
-    "name": "useCustomizationPricing",
-    "file": "src/hooks/simulation/useTecnicasUnificadas.ts"
-   },
-   {
     "name": "useLivePricePreview",
     "file": "src/hooks/simulator/useLivePricePreview.ts"
    },
@@ -146778,8 +146774,8 @@
   },
   {
    "module": "src/components",
-   "files": 1346,
-   "lines": 271778,
+   "files": 1348,
+   "lines": 272302,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -147137,7 +147133,7 @@
   {
    "module": "src/hooks",
    "files": 455,
-   "lines": 85342,
+   "lines": 85312,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -147631,7 +147627,7 @@
   {
    "module": "src/pages",
    "files": 350,
-   "lines": 82316,
+   "lines": 82362,
    "tables": [
     "ai_insights_cache",
     "ai_usage_events",
@@ -162793,10 +162789,6 @@
    },
    {
     "file": "src/components/pricing/QuantityPriceCalculator.tsx",
-    "msg": "Não foi possível calcular o preço da gravação. Tente novamente."
-   },
-   {
-    "file": "src/components/pricing/QuantityPriceCalculator.tsx",
     "msg": "Preço de ${missing} gravação(ões) não calculado — informe largura e altura no orçamento."
    },
    {
@@ -167400,6 +167392,10 @@
     "text": "Frete row — após desconto, entra no total */}"
    },
    {
+    "file": "src/components/pricing/QuantityPriceCalculator.tsx",
+    "text": "Recusa da RPC (regra de negócio) mostra o motivo; falha técnica fica genérica."
+   },
+   {
     "file": "src/components/pricing/simulator/MultiEngravingResult.tsx",
     "text": "- Faturamento mínimo (setup como piso)"
    },
@@ -168974,6 +168970,10 @@
    {
     "file": "src/hooks/simulation/simulationPriceFetcher.ts",
     "text": "Multiplicador por nº de posições (a regra de negócio do simulador"
+   },
+   {
+    "file": "src/hooks/simulation/useCustomizationPrice.ts",
+    "text": "* true = a RPC respondeu success:false (regra de negócio); ausente = falha técnica/rede. */"
    },
    {
     "file": "src/hooks/simulation/useCustomizationPrice.ts",
@@ -199960,6 +199960,114 @@
     "kind": "compara"
    },
    {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "dimension",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "error",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "rejected",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "dimension",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "error",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "ok",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "ok",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "error",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "rejected",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "dimension",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "ok",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "ok",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "error",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "error",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "dimension",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "field": "status",
+    "value": "rejected",
+    "kind": "compara"
+   },
+   {
     "file": "src/components/pricing/simulator/upsell/UpsellPlusPlus.tsx",
     "field": "type",
     "value": "spring",
@@ -209292,6 +209400,18 @@
     "body": "if (!value) return '—'; return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);"
    },
    {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "name": "calculateForConfig",
+    "params": "config: SelectedTechniqueConfig, quantity: number",
+    "body": "const cell = cells.get(cellKey(config, quantity)); if (cell?.status !== 'ok') return cell ?? null; // Conta do orçamento para esta técnica: quantidade × preço do produto + total_cost (= total_cobrado). const productTotal = product.price * quantity; const grandTotal = productTotal + cell.customizationTotal; return { ...cell, productTotal, grandTotal, unitTotal: grandTotal / quantity };"
+   },
+   {
+    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+    "name": "quoteTotalFor",
+    "params": "quantity: number",
+    "body": "const results = selectedConfigs.map((config) => calculateForConfig(config, quantity)); if (results.some((r) => r === null)) return null; const failed = results.filter((r) => r?.status === 'error' || r?.status === 'rejected').length; const withoutPrice = results.filter((r) => r?.status === 'dimension').length; const engraving = results.reduce( (sum, r) => sum + (r?.status === 'ok' ? r.customizationTotal : 0), 0, ); const grandTotal = product.price * quantity + engraving; return { failed, withoutP …"
+   },
+   {
     "file": "src/components/pricing/calculator/types.ts",
     "name": "formatCurrency",
     "params": "value: number",
@@ -214122,10 +214242,6 @@
    {
     "file": "src/components/pdf/ProposalStyles.ts",
     "line": "* visual entre as duas variações. Valor atual reflete redução de 20%"
-   },
-   {
-    "file": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
-    "line": "if (colors > 1 && matchingTable.price_by_color) modifiedUnitPrice *= 1 + (colors - 1) * 0.1;"
    },
    {
     "file": "src/components/pricing/simulator/upsell/upsell-engine.ts",
@@ -230614,6 +230730,34 @@
     "name": "exports HTML em qa/exports/ usam a largura do SSOT"
    },
    {
+    "file": "src/components/pricing/__tests__/ProductPriceSimulator.createQuote.test.tsx",
+    "name": "ProductPriceSimulator CTA Criar Orçamento"
+   },
+   {
+    "file": "src/components/pricing/__tests__/ProductPriceSimulator.createQuote.test.tsx",
+    "name": "técnica dimensional sem preço: não bloqueia o handoff, avisa e segue sem pricing"
+   },
+   {
+    "file": "src/components/pricing/__tests__/ProductPriceSimulator.createQuote.test.tsx",
+    "name": "falha de rede/RPC que não é de dimensão: bloqueia com erro e não navega"
+   },
+   {
+    "file": "src/components/pricing/__tests__/ProductPriceSimulator.createQuote.test.tsx",
+    "name": "RPC success:false por outro motivo: bloqueia com erro"
+   },
+   {
+    "file": "src/components/pricing/__tests__/ProductPriceSimulator.createQuote.test.tsx",
+    "name": "técnica não-dimensional: navega com pricing preenchido e quantidade da tela"
+   },
+   {
+    "file": "src/components/pricing/__tests__/ProductPriceSimulator.createQuote.test.tsx",
+    "name": "duplo clique rápido: 1 cálculo e 1 navegação (guarda de loading)"
+   },
+   {
+    "file": "src/components/pricing/__tests__/ProductPriceSimulator.createQuote.test.tsx",
+    "name": "tamanho escolhido: orçamento recebe o mesmo preço da RPC exibida (tamanho não altera)"
+   },
+   {
     "file": "src/components/pricing/__tests__/QuantityPriceCalculator.createQuote.test.tsx",
     "name": "QuantityPriceCalculator CTA Criar Orçamento"
    },
@@ -230636,6 +230780,50 @@
    {
     "file": "src/components/pricing/__tests__/QuantityPriceCalculator.createQuote.test.tsx",
     "name": "duplo clique rápido: 1 cálculo e 1 navegação (guarda de loading)"
+   },
+   {
+    "file": "src/components/pricing/__tests__/QuantityPriceCalculator.officialPrice.test.tsx",
+    "name": "QuantityPriceCalculator — preço oficial na tabela de comparação"
+   },
+   {
+    "file": "src/components/pricing/__tests__/QuantityPriceCalculator.officialPrice.test.tsx",
+    "name": "exibe por tiragem o total vindo da RPC e é idêntico ao total que chega ao orçamento"
+   },
+   {
+    "file": "src/components/pricing/__tests__/QuantityPriceCalculator.officialPrice.test.tsx",
+    "name": "marca a coluna da tiragem que vai para o orçamento"
+   },
+   {
+    "file": "src/components/pricing/__tests__/QuantityPriceCalculator.officialPrice.test.tsx",
+    "name": "2 técnicas: linha "
+   },
+   {
+    "file": "src/components/pricing/__tests__/QuantityPriceCalculator.officialPrice.test.tsx",
+    "name": "mudar cores de uma técnica só refaz as chamadas dela; a outra linha não volta ao loading"
+   },
+   {
+    "file": "src/components/pricing/__tests__/QuantityPriceCalculator.officialPrice.test.tsx",
+    "name": "total_cobrado ausente: tabela e orçamento tratam igual (gravação 0)"
+   },
+   {
+    "file": "src/components/pricing/__tests__/QuantityPriceCalculator.officialPrice.test.tsx",
+    "name": "mudar cores recalcula pela RPC (num_cores) e não há seletor de tamanho"
+   },
+   {
+    "file": "src/components/pricing/__tests__/QuantityPriceCalculator.officialPrice.test.tsx",
+    "name": "técnica dimensional: mostra estado sem preço, sem inventar valor"
+   },
+   {
+    "file": "src/components/pricing/__tests__/QuantityPriceCalculator.officialPrice.test.tsx",
+    "name": "recusa da RPC (success:false): mostra o motivo na célula, sem valor"
+   },
+   {
+    "file": "src/components/pricing/__tests__/QuantityPriceCalculator.officialPrice.test.tsx",
+    "name": "falha técnica só em algumas colunas: erro nelas, preço nas demais"
+   },
+   {
+    "file": "src/components/pricing/__tests__/QuantityPriceCalculator.officialPrice.test.tsx",
+    "name": "enquanto a RPC não responde: células em carregamento"
    },
    {
     "file": "src/components/products/ColumnSelector.test.tsx",
@@ -247248,6 +247436,14 @@
    {
     "file": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
     "name": "linha já removida por outro admin: estado desejado já no banco → salva sem erro"
+   },
+   {
+    "file": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
+    "name": "linha já adicionada por outro admin (23505): estado desejado já no banco → salva sem erro e insere as demais"
+   },
+   {
+    "file": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
+    "name": "erro de insert que não é 23505 (ex.: 42501 RLS) continua lançando e fica pendente"
    },
    {
     "file": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
@@ -334873,6 +335069,7 @@
       "compara:src/components/admin/connections/IssueMcpKeyForm.tsx",
       "compara:src/components/admin/security/keys/RotateMcpKeyDialog.tsx",
       "compara:src/components/admin/security/keys/UpdateMcpKeyDialog.tsx",
+      "compara:src/components/pricing/calculator/QuantityComparisonTable.tsx",
       "compara:src/components/quotes/QuoteAutoSave.tsx",
       "compara:src/pages/system/SystemStatusPage.tsx",
       "compara:supabase/functions/_shared/ai-router/index.ts",
@@ -334885,6 +335082,7 @@
       "escreve:api/health.ts",
       "escreve:api/ready.ts",
       "escreve:recovery/src-legacy/src/pages/SystemStatusPage.tsx",
+      "escreve:src/components/pricing/calculator/QuantityComparisonTable.tsx",
       "escreve:src/lib/auth/invoke-full-scope.ts",
       "escreve:src/pages/admin/DevChallengeExamplesPage.tsx",
       "escreve:src/pages/admin/telemetry/useRegressionGuardrail.ts",
@@ -334911,6 +335109,7 @@
       "compara:src/components/admin/connections/ExternalConnectionsSyncLogPanel.tsx",
       "compara:src/components/admin/connections/KeysValidationTab.tsx",
       "compara:src/components/admin/connections/LastSyncRunPanel.tsx",
+      "compara:src/components/pricing/calculator/QuantityComparisonTable.tsx",
       "compara:src/hooks/intelligence/useConnectionsOverviewFilters.ts",
       "compara:src/lib/auth/invoke-full-scope.ts",
       "compara:src/pages/admin/DevChallengeExamplesPage.tsx",
@@ -334922,6 +335121,7 @@
       "escreve:api/ready.ts",
       "escreve:recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx",
       "escreve:recovery/src-legacy/src/pages/SystemStatusPage.tsx",
+      "escreve:src/components/pricing/calculator/QuantityComparisonTable.tsx",
       "escreve:src/hooks/kit-builder/useKitFitsValidation.ts",
       "escreve:src/hooks/kit-builder/useKitMinQuantityValidation.ts",
       "escreve:src/lib/auth/invoke-full-scope.ts",
@@ -335028,6 +335228,7 @@
       "compara:src/components/admin/products/useProductsManager.ts",
       "compara:src/components/dashboard/MyDiscountRequestsWidget.tsx",
       "compara:src/components/dashboard/QuickActionsPanel.tsx",
+      "compara:src/components/pricing/calculator/QuantityComparisonTable.tsx",
       "compara:src/components/quotes/QuoteStatusTimeline.tsx",
       "compara:src/components/quotes/QuotesStatusChips.tsx",
       "compara:src/hooks/simulation/useExternalSimulator.ts",
@@ -335037,6 +335238,7 @@
       "compara:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
       "compara:supabase/functions/generate-mockup/index.ts",
       "escreve:recovery/src-legacy/src/hooks/usePasswordResetRequests.ts",
+      "escreve:src/components/pricing/calculator/QuantityComparisonTable.tsx",
       "escreve:src/hooks/auth/usePasswordResetRequests.ts",
       "escreve:src/lib/external-db/rest-native.ts"
      ],
@@ -335494,6 +335696,10 @@
      ],
      "expiring_soon": [
       "compara:src/components/novelties/NoveltyCards.tsx"
+     ],
+     "dimension": [
+      "compara:src/components/pricing/calculator/QuantityComparisonTable.tsx",
+      "escreve:src/components/pricing/calculator/QuantityComparisonTable.tsx"
      ],
      "aging": [
       "compara:src/components/products/PriceFreshnessBadge.tsx",
@@ -381784,6 +381990,14 @@
     "where": [
      "compara:src/components/kit-builder/VolumeIndicator.tsx",
      "compara:src/pages/admin/AdminClientPerformancePage.tsx"
+    ]
+   },
+   {
+    "kind": "status",
+    "msg": "valor `dimension` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/components/pricing/calculator/QuantityComparisonTable.tsx",
+     "escreve:src/components/pricing/calculator/QuantityComparisonTable.tsx"
     ]
    },
    {
@@ -429417,7 +429631,7 @@
   },
   "src/components/pricing/QuantityPriceCalculator.tsx": {
    "path": "src/components/pricing/QuantityPriceCalculator.tsx",
-   "lines": 324,
+   "lines": 313,
    "exports": [
     "function QuantityPriceCalculator"
    ],
@@ -429425,14 +429639,31 @@
     "/orcamentos/novo"
    ],
    "errors": [
-    "Não foi possível calcular o preço da gravação. Tente novamente.",
     "Preço de ${missing} gravação(ões) não calculado — informe largura e altura no orçamento."
+   ],
+   "rule_comments": [
+    "Recusa da RPC (regra de negócio) mostra o motivo; falha técnica fica genérica."
    ],
    "doc": "QuantityPriceCalculator — Main orchestrator. Sub-components extracted to calculator/ folder."
   },
   "src/components/pricing/index.ts": {
    "path": "src/components/pricing/index.ts",
    "lines": 3
+  },
+  "src/components/pricing/__tests__/ProductPriceSimulator.createQuote.test.tsx": {
+   "path": "src/components/pricing/__tests__/ProductPriceSimulator.createQuote.test.tsx",
+   "lines": 206,
+   "is_test": true,
+   "doc": "ProductPriceSimulator — CTA \"Criar Orçamento\" (componente real). Mesmos casos do QuantityPriceCalculator.createQuote.test.tsx + o de tamanho: aqui a tela (MultiEngravingResult) e o orçamento usam a mesma RPC fn_get_customization_price com área/quantidade/cores — o tamanho não entra no preço.",
+   "tests": [
+    "ProductPriceSimulator CTA Criar Orçamento",
+    "técnica dimensional sem preço: não bloqueia o handoff, avisa e segue sem pricing",
+    "falha de rede/RPC que não é de dimensão: bloqueia com erro e não navega",
+    "RPC success:false por outro motivo: bloqueia com erro",
+    "técnica não-dimensional: navega com pricing preenchido e quantidade da tela",
+    "duplo clique rápido: 1 cálculo e 1 navegação (guarda de loading)",
+    "tamanho escolhido: orçamento recebe o mesmo preço da RPC exibida (tamanho não altera)"
+   ]
   },
   "src/components/pricing/__tests__/QuantityPriceCalculator.createQuote.test.tsx": {
    "path": "src/components/pricing/__tests__/QuantityPriceCalculator.createQuote.test.tsx",
@@ -429448,24 +429679,165 @@
     "duplo clique rápido: 1 cálculo e 1 navegação (guarda de loading)"
    ]
   },
+  "src/components/pricing/__tests__/QuantityPriceCalculator.officialPrice.test.tsx": {
+   "path": "src/components/pricing/__tests__/QuantityPriceCalculator.officialPrice.test.tsx",
+   "lines": 248,
+   "is_test": true,
+   "errors": [
+    "card da técnica não renderizado",
+    "item do orçamento não montado",
+    "linha da técnica não renderizada"
+   ],
+   "rule_comments": [
+    "* Resposta oficial simulada: depende de área, quantidade e cores, com faturamento mínimo de R$ 200. */",
+    "Faturamento mínimo: 250 × 0,60 = 150 → cobra 200 (vem da RPC, não de unit × qtd)."
+   ],
+   "doc": "QuantityPriceCalculator — tabela de comparação usa o preço OFICIAL (RPC fn_get_customization_price), o mesmo enviado ao orçamento no handoff. Tabela, card de configuração e CTA reais; só a RPC e a busca/seleção são mockadas.",
+   "calc_fns": [
+    {
+     "name": "officialPrice",
+     "params": "args: Record<string, number | string>",
+     "body": "const unit = (args.p_area_id === 'area-2' ? 0.4 : 0.6) * Number(args.p_num_cores); return { success: true, preco_unitario: unit, setup_total: 86, total_cobrado: Math.max(Math.round(unit * Number(args.p_quantidade) * 100) / 100, 200), quantidade: args.p_quantidade, };"
+    },
+    {
+     "name": "totalLabel",
+     "params": "value: number",
+     "body": "`Total: ${formatCurrency(value)}`.replace(/\\s+/g, ' ');"
+    }
+   ],
+   "tests": [
+    "QuantityPriceCalculator — preço oficial na tabela de comparação",
+    "exibe por tiragem o total vindo da RPC e é idêntico ao total que chega ao orçamento",
+    "marca a coluna da tiragem que vai para o orçamento",
+    "2 técnicas: linha ",
+    "mudar cores de uma técnica só refaz as chamadas dela; a outra linha não volta ao loading",
+    "total_cobrado ausente: tabela e orçamento tratam igual (gravação 0)",
+    "mudar cores recalcula pela RPC (num_cores) e não há seletor de tamanho",
+    "técnica dimensional: mostra estado sem preço, sem inventar valor",
+    "recusa da RPC (success:false): mostra o motivo na célula, sem valor",
+    "falha técnica só em algumas colunas: erro nelas, preço nas demais",
+    "enquanto a RPC não responde: células em carregamento"
+   ]
+  },
   "src/components/pricing/calculator/QuantityComparisonTable.tsx": {
    "path": "src/components/pricing/calculator/QuantityComparisonTable.tsx",
-   "lines": 189,
+   "lines": 310,
    "exports": [
     "function QuantityComparisonTable"
    ],
-   "doc": "QuantityComparisonTable — Compare prices across quantities and techniques.",
-   "percents": [
-    "if (colors > 1 && matchingTable.price_by_color) modifiedUnitPrice *= 1 + (colors - 1) * 0.1;"
+   "status_values": [
+    {
+     "field": "status",
+     "value": "dimension",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "rejected",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "dimension",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "rejected",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "dimension",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "dimension",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "rejected",
+     "kind": "compara"
+    }
+   ],
+   "doc": "QuantityComparisonTable — Compare prices across quantities and techniques. Preço da gravação = RPC oficial fn_get_customization_price (mesma fonte do handoff ao orçamento).",
+   "calc_fns": [
+    {
+     "name": "calculateForConfig",
+     "params": "config: SelectedTechniqueConfig, quantity: number",
+     "body": "const cell = cells.get(cellKey(config, quantity)); if (cell?.status !== 'ok') return cell ?? null; // Conta do orçamento para esta técnica: quantidade × preço do produto + total_cost (= total_cobrado). const productTotal = product.price * quantity; const grandTotal = productTotal + cell.customizationTotal; return { ...cell, productTotal, grandTotal, unitTotal: grandTotal / quantity };"
+    },
+    {
+     "name": "quoteTotalFor",
+     "params": "quantity: number",
+     "body": "const results = selectedConfigs.map((config) => calculateForConfig(config, quantity)); if (results.some((r) => r === null)) return null; const failed = results.filter((r) => r?.status === 'error' || r?.status === 'rejected').length; const withoutPrice = results.filter((r) => r?.status === 'dimension').length; const engraving = results.reduce( (sum, r) => sum + (r?.status === 'ok' ? r.customizationTotal : 0), 0, ); const grandTotal = product.price * quantity + engraving; return { failed, withoutP …"
+    }
    ]
   },
   "src/components/pricing/calculator/TechniqueConfigCard.tsx": {
    "path": "src/components/pricing/calculator/TechniqueConfigCard.tsx",
-   "lines": 92,
+   "lines": 61,
    "exports": [
     "function TechniqueConfigCard"
    ],
-   "doc": "TechniqueConfigCard — Configure colors and size for a selected technique."
+   "doc": "TechniqueConfigCard — Configure colors for a selected technique."
   },
   "src/components/pricing/calculator/TechniqueMultiSelector.tsx": {
    "path": "src/components/pricing/calculator/TechniqueMultiSelector.tsx",
@@ -429477,12 +429849,11 @@
   },
   "src/components/pricing/calculator/types.ts": {
    "path": "src/components/pricing/calculator/types.ts",
-   "lines": 51,
+   "lines": 42,
    "exports": [
     "interface CalcProduct",
     "interface ProductTechnique",
     "interface SelectedTechniqueConfig",
-    "const availableSizes",
     "function formatCurrency",
     "function formatNumber"
    ],
@@ -448893,7 +449264,7 @@
   },
   "src/hooks/simulation/useCustomizationPrice.ts": {
    "path": "src/hooks/simulation/useCustomizationPrice.ts",
-   "lines": 189,
+   "lines": 191,
    "exports": [
     "interface CalculatePriceParamsV6",
     "function isDimensionRequiredError",
@@ -448902,6 +449273,7 @@
     "function useCustomizationPriceReactive"
    ],
    "rule_comments": [
+    "* true = a RPC respondeu success:false (regra de negócio); ausente = falha técnica/rede. */",
     "If dimensions are required but not provided, don't calculate"
    ],
    "doc": "useCustomizationPrice — Hook para calcular preço de gravação Chama fn_get_customization_price via external-db-bridge. Formato de resposta v6 (flat, conforme briefing 12/02/2026).",
@@ -449273,12 +449645,11 @@
   },
   "src/hooks/simulation/useTecnicasUnificadas.ts": {
    "path": "src/hooks/simulation/useTecnicasUnificadas.ts",
-   "lines": 232,
+   "lines": 200,
    "exports": [
     "function useTecnicasUnificadas",
     "const useTecnicaUnificada",
     "const useTecnicaPorCodigo",
-    "function useCustomizationPricing",
     "interface CustomizationPriceTable",
     "function extractPriceTiers",
     "function calculatePriceForQuantityLegacy"
@@ -449287,8 +449658,7 @@
    "hooks": [
     "useTecnicasUnificadas",
     "useTecnicaUnificada",
-    "useTecnicaPorCodigo",
-    "useCustomizationPricing"
+    "useTecnicaPorCodigo"
    ],
    "calc_fns": [
     {
@@ -461397,11 +461767,13 @@
   },
   "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx": {
    "path": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
-   "lines": 226,
+   "lines": 272,
    "is_test": true,
    "role_checks": [
     "filters",
-    "p"
+    "p",
+    "r",
+    "supervisor"
    ],
    "tests": [
     "RolePermissionsPage — salvar com falha parcial e concorrência",
@@ -461409,6 +461781,8 @@
     "erro no insert após deletes OK: só a adição fica pendente",
     "erro de rede (delErr) no 1º delete: nada aplicado, tudo continua pendente",
     "linha já removida por outro admin: estado desejado já no banco → salva sem erro",
+    "linha já adicionada por outro admin (23505): estado desejado já no banco → salva sem erro e insere as demais",
+    "erro de insert que não é 23505 (ex.: 42501 RLS) continua lançando e fica pendente",
     "RLS nega (0 linhas e a linha continua no banco): mostra o motivo real, não a mensagem genérica"
    ]
   },
@@ -519140,10 +519514,44 @@
   }
  },
  "git": {
-  "sha": "fee3d0937cdaa5ff1cf93af07c38cfc8dedb902a",
+  "sha": "0f00ba1670810c8cd6cdd05ce28e6cbe198af094",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "0f00ba1",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(calculadora): tela mostra o preço oficial da RPC, o mesmo que vai para o orçamento (#3465)",
+    "files": [
+     "src/components/pricing/QuantityPriceCalculator.tsx",
+     "src/components/pricing/__tests__/QuantityPriceCalculator.officialPrice.test.tsx",
+     "src/components/pricing/calculator/QuantityComparisonTable.tsx",
+     "src/components/pricing/calculator/TechniqueConfigCard.tsx",
+     "src/components/pricing/calculator/types.ts",
+     "src/hooks/simulation/useCustomizationPrice.ts",
+     "src/hooks/simulation/useTecnicasUnificadas.ts"
+    ]
+   },
+   {
+    "sha": "18e4576",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "test(simulador): cobre o CTA Criar Orçamento do ProductPriceSimulator (#3462)",
+    "files": [
+     "src/components/pricing/__tests__/ProductPriceSimulator.createQuote.test.tsx"
+    ]
+   },
+   {
+    "sha": "9d84acb",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(admin): salvar papéis não trava quando a permissão já foi adicionada por outro admin (#3461)",
+    "files": [
+     "src/pages/admin/RolePermissionsPage.tsx",
+     "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx"
+    ]
+   },
    {
     "sha": "fee3d09",
     "date": "2026-11-12",
@@ -520574,42 +520982,6 @@
      "analise-prs/progresso.json",
      "analise-prs/prs.json"
     ]
-   },
-   {
-    "sha": "6b859b0",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "fix(migrations): idempotência em RLS deny-all e partições 2027 (#3257)",
-    "files": [
-     "supabase/migrations/20261027195959_supplier_stricker_rls_deny_all.sql",
-     "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql"
-    ]
-   },
-   {
-    "sha": "634b93e",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "fix(ci): atualiza baseline file-size NoveltyProductGrid 863→865 (#3354)",
-    "files": [
-     ".file-size-baseline.json"
-    ]
-   },
-   {
-    "sha": "944ff2d",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "fix(kit-builder): remove bloco FT-119 incompleto e corrige type imports (#3350)",
-    "files": [
-     "src/components/kit-builder/KitAIPromptDialog.tsx",
-     "src/components/kit-builder/KitBuilderHeader.tsx",
-     "src/components/kit-builder/KitMakerLanding.tsx",
-     "src/components/mockup/MockupResultCard.tsx",
-     "src/components/novelties/NoveltyProductGrid.tsx",
-     "src/components/quotes/ClientPicker.tsx",
-     "src/components/replenishments/ReplenishmentProductGrid.tsx",
-     "src/hooks/kit-builder/useKitBuilderPageState.ts",
-     "src/pages/kit-builder/KitBuilderPage.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -520618,11 +520990,11 @@
     4
    ],
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
+    "src/components/pricing/QuantityPriceCalculator.tsx",
     3
    ],
    [
-    ".file-size-baseline.json",
+    "supabase/MIGRATIONS_SYNC_LOG.md",
     3
    ],
    [
@@ -520634,15 +521006,27 @@
     3
    ],
    [
+    "src/hooks/simulation/useCustomizationPrice.ts",
+    2
+   ],
+   [
+    "src/pages/admin/RolePermissionsPage.tsx",
+    2
+   ],
+   [
+    "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
+    2
+   ],
+   [
+    ".file-size-baseline.json",
+    2
+   ],
+   [
     "public/sitemap.xml",
     2
    ],
    [
     "src/components/pricing/ProductPriceSimulator.tsx",
-    2
-   ],
-   [
-    "src/components/pricing/QuantityPriceCalculator.tsx",
     2
    ],
    [
@@ -520679,18 +521063,6 @@
    ],
    [
     "tests/e2e/compare-viewer-a11y.test.tsx",
-    2
-   ],
-   [
-    "tests/e2e/favorites-ui.test.tsx",
-    2
-   ],
-   [
-    "tests/e2e/new-quote-advanced.test.tsx",
-    2
-   ],
-   [
-    "tests/e2e/new-quote-cycle.test.tsx",
     2
    ]
   ]

@@ -12110,10 +12110,10 @@
     "QuantityComparisonTable"
    ],
    "export_default": null,
-   "linhas": 189,
+   "linhas": 310,
    "dominio": "components/pricing",
    "hooks_locais": [
-    "useCustomizationPricing"
+    "useCustomizationPriceCalculator"
    ],
    "tabelas": [],
    "edges": [],
@@ -12126,7 +12126,7 @@
     "TechniqueConfigCard"
    ],
    "export_default": null,
-   "linhas": 92,
+   "linhas": 61,
    "dominio": "components/pricing",
    "hooks_locais": [],
    "tabelas": [],
@@ -12170,11 +12170,10 @@
     "QuantityPriceCalculator"
    ],
    "export_default": "QuantityPriceCalculator",
-   "linhas": 324,
+   "linhas": 313,
    "dominio": "components/pricing",
    "hooks_locais": [
-    "useCustomizationPriceCalculator",
-    "useCustomizationPricing"
+    "useCustomizationPriceCalculator"
    ],
    "tabelas": [],
    "edges": [],
@@ -16367,7 +16366,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 140,
+   "usado_por": 139,
    "orfao": false
   },
   {

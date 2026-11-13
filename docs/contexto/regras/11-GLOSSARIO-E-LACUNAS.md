@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `fee3d0937c` · branch `main` · 2026-11-12 23:01 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0f00ba1670` · branch `main` · 2026-11-13 03:28 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -367,6 +367,7 @@
 | status | valor `Concluído` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/kit-builder/PersonalizationConfig.tsx` |
 | status | valor `Inválido` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/kit-builder/PersonalizationConfig.tsx` |
 | status | valor `destructive` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/kit-builder/VolumeIndicator.tsx`<br>`compara:src/pages/admin/AdminClientPerformancePage.tsx` |
+| status | valor `dimension` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/pricing/calculator/QuantityComparisonTable.tsx`<br>`escreve:src/components/pricing/calculator/QuantityComparisonTable.tsx` |
 | status | valor `violations` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/kit-builder/useKitBuilderQuote.ts`<br>`escreve:src/hooks/kit-builder/useKitFitsValidation.ts`<br>`escreve:src/hooks/kit-builder/useKitMinQuantityValidation.ts` |
 | status | valor `changed` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/kit-builder/useKitBuilderQuote.ts`<br>`escreve:src/hooks/kit-builder/useKitPriceValidation.ts` |
 | status | valor `unchanged` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/hooks/kit-builder/useKitPriceValidation.ts` |
@@ -645,8 +646,7 @@
 | rpc | RPC `admin_active_sessions` chamada mas não definida nas migrations/types | `src/hooks/admin/useAdminSessions.ts` |
 | rpc | RPC `calculate_quote_totals` chamada mas não definida nas migrations/types | `tests/integration/freight-quest/quote-freight-integration.test.ts` |
 | rpc | RPC `check_rls_enabled` chamada mas não definida nas migrations/types | `tests/security/rls-validation.test.ts` |
-| rpc | RPC `dashboard_rpc` chamada mas não definida nas migrations/types | `scripts/ai-context/gerar.unit.mjs` |
-| … +205 linhas — lista completa em `context.json` | | |
+| … +206 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

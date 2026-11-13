@@ -24,8 +24,8 @@
   ],
   "testes": [
    "tests/ (866)",
-   "e2e/ (625)",
-   "co-localizado (__tests__) (623)"
+   "co-localizado (__tests__) (625)",
+   "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(calculadora): tela mostra o preço oficial da RPC, o mesmo que vai para o orçamento (#3465)",
+   "test(simulador): cobre o CTA Criar Orçamento do ProductPriceSimulator (#3462)",
+   "fix(admin): salvar papéis não trava quando a permissão já foi adicionada por outro admin (#3461)",
    "fix(sitemap): devolve EXECUTE de anon em get_sitemap_public e remove sitemap estático (#3430)",
-   "fix: corrige 42 bugs da rodada 2 em orçamentos, admin, preços, limites e datas (#3428)",
-   "fix: E2E busca global — modifier+K webkit, Ctrl+Shift+V webkit, snapshots",
-   "fix: corrige 62 bugs confirmados em telas, hooks e edge functions (#3424)",
-   "fix(tests): corrige erros de TypeScript em testes, mede baseline real (855) e corrige caminho em PENDENCIAS (#3419)"
+   "fix: corrige 42 bugs da rodada 2 em orçamentos, admin, preços, limites e datas (#3428)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -11874,7 +11874,7 @@
    "usado_por_arquivos": [
     "src/hooks/quotes/useQuoteBuilderState.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
@@ -12157,7 +12157,7 @@
    "edges": [],
    "hooks_internos": [],
    "canais_realtime": [],
-   "usado_por": 28,
+   "usado_por": 27,
    "usado_por_arquivos": [
     "src/components/admin/TechniquesManager.tsx",
     "src/components/engraving/PricingPanel.tsx",
@@ -12168,7 +12168,6 @@
     "src/components/mockup/TechniqueColorConfigDialog.tsx",
     "src/components/mockup/approval/MockupLayoutButtons.tsx",
     "src/components/pricing/QuantityPriceCalculator.tsx",
-    "src/components/pricing/calculator/QuantityComparisonTable.tsx",
     "src/components/pricing/simulator/CustomizationOptions.tsx",
     "src/components/pricing/simulator/MultiEngravingResult.tsx",
     "src/components/pricing/simulator/ProductSearch.tsx",
@@ -12196,7 +12195,7 @@
     "useCustomizationPriceCalculator",
     "useCustomizationPriceReactive"
    ],
-   "linhas": 189,
+   "linhas": 191,
    "dominio": "hooks/simulation",
    "tabelas": [],
    "rpcs": [],
@@ -12207,10 +12206,11 @@
     "useState"
    ],
    "canais_realtime": [],
-   "usado_por": 4,
+   "usado_por": 5,
    "usado_por_arquivos": [
     "src/components/pricing/ProductPriceSimulator.tsx",
     "src/components/pricing/QuantityPriceCalculator.tsx",
+    "src/components/pricing/calculator/QuantityComparisonTable.tsx",
     "src/components/products/ProductCustomizationOptions.tsx",
     "src/hooks/simulation/index.ts"
    ],
@@ -12486,7 +12486,6 @@
    "arquivo": "src/hooks/simulation/useTecnicasUnificadas.ts",
    "hooks_exportados": [
     "useCategoriasTecnicas",
-    "useCustomizationPricing",
     "useInvalidateTecnicas",
     "useNomesTecnicasPreco",
     "usePrecoCalculation",
@@ -12503,7 +12502,7 @@
     "useTecnicasResumo",
     "useTecnicasUnificadas"
    ],
-   "linhas": 232,
+   "linhas": 200,
    "dominio": "hooks/simulation",
    "tabelas": [],
    "rpcs": [],

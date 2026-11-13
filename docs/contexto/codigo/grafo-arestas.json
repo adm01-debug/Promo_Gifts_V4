@@ -7297,22 +7297,21 @@
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
    "src/components/ui/input.tsx",
-   "src/components/ui/skeleton.tsx",
    "src/hooks/simulation/index.ts",
    "src/hooks/simulation/useCustomizationPrice.ts",
    "src/lib/utils.ts"
   ],
   "src/components/pricing/calculator/QuantityComparisonTable.tsx": [
    "src/components/pricing/calculator/types.ts",
+   "src/components/ui/skeleton.tsx",
    "src/components/ui/table.tsx",
-   "src/hooks/simulation/index.ts",
+   "src/hooks/simulation/useCustomizationPrice.ts",
    "src/lib/utils.ts"
   ],
   "src/components/pricing/calculator/TechniqueConfigCard.tsx": [
    "src/components/pricing/calculator/types.ts",
    "src/components/ui/button.tsx",
-   "src/components/ui/card.tsx",
-   "src/components/ui/select.tsx"
+   "src/components/ui/card.tsx"
   ],
   "src/components/pricing/calculator/TechniqueMultiSelector.tsx": [
    "src/components/pricing/calculator/types.ts",

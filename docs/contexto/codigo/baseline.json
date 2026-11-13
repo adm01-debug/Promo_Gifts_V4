@@ -2,11 +2,26 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "fee3d0937cdaa5ff1cf93af07c38cfc8dedb902a",
+  "commit": "0f00ba1670810c8cd6cdd05ce28e6cbe198af094",
   "branch": "main",
-  "data_commit": "2026-11-12T21:59:46Z",
+  "data_commit": "2026-11-13T02:29:19Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "0f00ba1",
+    "data": "2026-11-13",
+    "assunto": "fix(calculadora): tela mostra o preço oficial da RPC, o mesmo que vai para o orçamento (#3465)"
+   },
+   {
+    "sha": "18e4576",
+    "data": "2026-11-13",
+    "assunto": "test(simulador): cobre o CTA Criar Orçamento do ProductPriceSimulator (#3462)"
+   },
+   {
+    "sha": "9d84acb",
+    "data": "2026-11-13",
+    "assunto": "fix(admin): salvar papéis não trava quando a permissão já foi adicionada por outro admin (#3461)"
+   },
    {
     "sha": "fee3d09",
     "data": "2026-11-12",
@@ -116,24 +131,9 @@
     "sha": "1368a91",
     "data": "2026-11-09",
     "assunto": "feat(edge-deploy-log): recibo run 42665634216 — edge functions deploy"
-   },
-   {
-    "sha": "9a9c363",
-    "data": "2026-11-09",
-    "assunto": "feat(edge-deploy-log): recibo run 42660725884 — edge functions deploy"
-   },
-   {
-    "sha": "908f30a",
-    "data": "2026-11-09",
-    "assunto": "feat: versionar view vw_products_min_quantity (FT-079) (#3264)"
-   },
-   {
-    "sha": "3b03ad1",
-    "data": "2026-11-09",
-    "assunto": "docs: recibo de deploy de edge function(s) — run 42649363787 (E66)"
    }
   ],
-  "arquivos_mudados_7d": 1541,
+  "arquivos_mudados_7d": 1546,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -181,7 +181,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 69
+    "mudancas": 71
    },
    {
     "pasta": "src/components/kit-builder",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "arquivo": "analise-prs/progresso.json",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9893,
-  "arquivos_codigo": 5052,
-  "linhas_codigo": 965186,
+  "arquivos_total": 9895,
+  "arquivos_codigo": 5054,
+  "linhas_codigo": 965726,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 545,
   "migrations": 3051,
   "cron_jobs": 120,
-  "testes": 2301,
+  "testes": 2303,
   "workflows": 95,
   "scripts": 259,
   "docs_md": 1010
@@ -1851,8 +1851,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1346,
-   "linhas": 271779
+   "arquivos": 1348,
+   "linhas": 272303
   },
   "src/config": {
    "arquivos": 1,
@@ -1876,7 +1876,7 @@
   },
   "src/hooks": {
    "arquivos": 455,
-   "linhas": 85342
+   "linhas": 85312
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1896,7 +1896,7 @@
   },
   "src/pages": {
    "arquivos": 350,
-   "linhas": 82316
+   "linhas": 82362
   },
   "src/routes": {
    "arquivos": 14,
