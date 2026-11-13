@@ -1,6 +1,21 @@
 import { test, expect, requireAuth } from '../fixtures/test-base';
 
-test.describe('Supplier Comparison Modal Visual Regression', () => {
+// FIXME (2026-11-13): o spec nunca passou no CI (64 de 68 runs com falha; as
+// falhas de 7 dias são 12/12). Ele valida um contrato que não existe mais:
+//  - mocka `**/functions/v1/external-db-bridge`, mas o produto e as
+//    alternativas vêm do PostgREST (fetchProductById → dbInvoke em
+//    src/lib/db/postgrest.ts; useSupplierComparison → useProducts). O mock
+//    nunca é chamado e "Caneca de Cerâmica 350ml" não aparece (run 43403721613,
+//    supplier-comparison-visual.spec.ts:55);
+//  - não há baselines `*-snapshots/` versionados e o CI usa
+//    `updateSnapshots: 'none'` (playwright.config.ts:49), então
+//    toHaveScreenshot falharia de qualquer forma;
+//  - o texto "Ocorreu um erro ao carregar os dados" não existe no
+//    SupplierComparisonModal, que não tem estado de erro.
+// O comportamento do hook continua coberto por tests/hooks/useSupplierComparison*.test.ts
+// (25 testes, cobertura ≥90%) no mesmo workflow. Para reativar: mockar
+// `**/rest/v1/products*`, gerar os baselines e remover o `.fixme`.
+test.describe.fixme('Supplier Comparison Modal Visual Regression', () => {
   // Use storageState to ensure we are logged in (handled by playwright.config project)
   test.beforeEach(() => {
     requireAuth();

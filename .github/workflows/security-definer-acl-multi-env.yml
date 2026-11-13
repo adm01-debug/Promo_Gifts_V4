@@ -2,21 +2,15 @@ name: SECURITY DEFINER ACL — Multi-Env
 
 # ────────────────────────────────────────────────────────────────────────────
 # Roda o gate `check-security-definer-acl` + a suíte vitest de regressão contra
-# o banco canônico `doufsxqlfjyuvxuezpln` (secrets do repositório) e o contrato
-# da migration de ACL em PostgreSQL 17 efêmero.
-#
-# 2026-11-13: removidos o `environment:` e a matriz staging/production.
-#   - O environment `Production` exige revisor: o job ficava em "waiting"
-#     (run 41191803235, desde 31/10) e, com `cancel-in-progress: false`, segurava
-#     o grupo de concurrency. Todas as runs seguintes ficaram pendentes sem jobs
-#     e foram canceladas em cadeia.
-#   - O environment `staging` não tem secrets próprios: a perna "staging" lia os
-#     secrets do repositório, ou seja, o mesmo banco canônico. Não há staging real.
-#   - O gate ao vivo também roda em todo PR/push via ci.yml ("🔐 SECURITY
-#     DEFINER ACL gate"); aqui fica a regressão diária + a suíte vitest ao vivo.
+# múltiplos bancos reais (staging e produção canônica `doufsxqlfjyuvxuezpln`)
+# para garantir que a política de ACL não dependa apenas do banco usado no
+# CI padrão (freight-quality-gates.yml).
 #
 # Segurança:
-#   - Sem secrets (fork), o job é *skipped* (não falha o workflow).
+#   - Cada ambiente usa GitHub Environments (staging / production) com secrets
+#     próprios. Não há fallback cruzado.
+#   - Se os secrets de um ambiente estiverem ausentes, o job é *skipped*
+#     (não falha o workflow) — safe-by-default para forks/PRs sem acesso.
 #   - O RPC `audit_security_definer_acl` é read-only; nunca escreve no banco.
 #
 # Gatilhos:
@@ -31,12 +25,13 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: "Ambiente a validar (só existe o canônico: production)"
+        description: "Ambiente a validar (all = staging + production)"
         required: true
         default: "all"
         type: choice
         options:
           - all
+          - staging
           - production
   push:
     branches: [main]
@@ -96,12 +91,12 @@ jobs:
     name: "ACL check — ${{ matrix.env_name }}"
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    # Sem `environment:` — o Production exige aprovação manual e travava o grupo
-    # de concurrency (ver cabeçalho). Só existe o banco canônico.
+    # `environment:` escopa os secrets ao ambiente correspondente.
+    environment: ${{ matrix.env_name }}
     strategy:
       fail-fast: false
       matrix:
-        env_name: [production]
+        env_name: [staging, production]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
