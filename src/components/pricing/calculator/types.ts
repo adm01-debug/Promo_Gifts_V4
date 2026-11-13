@@ -30,16 +30,7 @@ export interface ProductTechnique {
 export interface SelectedTechniqueConfig {
   technique: ProductTechnique;
   colors: number;
-  sizeOption: string;
-  sizeModifier: number;
 }
-
-export const availableSizes = [
-  { label: 'Pequeno (até 5cm²)', value: 'small', modifier: 0.8 },
-  { label: 'Padrão (até 20cm²)', value: 'standard', modifier: 1 },
-  { label: 'Grande (até 50cm²)', value: 'large', modifier: 1.3 },
-  { label: 'Extra Grande (50cm²+)', value: 'xlarge', modifier: 1.6 },
-];
 
 export function formatCurrency(value: number): string {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);

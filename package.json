@@ -150,7 +150,7 @@
     "test:e2e:debug": "npx playwright test --grep-invert @smoke --debug",
     "test:e2e:report": "npx playwright show-report",
     "test:e2e:install": "npx playwright install --with-deps chromium",
-    "test:theme-validation": "npx playwright test e2e/theme-validation.spec.ts && node scripts/generate-theme-report.mjs",
+    "test:theme-validation": "npx playwright test e2e/theme-validation.spec.ts --project=chromium-public --project=chromium-authed --project=mobile-chrome && node scripts/generate-theme-report.mjs",
     "test:e2e:tooltips": "npx playwright test e2e/tooltips-a11y.spec.ts",
     "check:removed-phrases": "node scripts/check-removed-phrases.mjs",
     "check:no-salvar-alteracoes-draft": "node scripts/check-no-salvar-alteracoes-draft.mjs",
