@@ -14,6 +14,8 @@ let EMAIL: string | null = "vendedor@promobrindes.com.br";
 // Sem `email`, a linha devolvida pelo CRM usa o e-mail do chamador (vínculo exato).
 let CRM_USERS: { id: string; email?: string }[] = [{ id: CRM_UID }];
 const crmCalls: string[] = [];
+// Quando definido, a próxima consulta de dados ao CRM devolve este erro do PostgREST.
+let CRM_DATA_ERROR: { status: number; body: unknown } | null = null;
 
 Deno.env.set("SUPABASE_URL", APP);
 Deno.env.set("SUPABASE_ANON_KEY", "anon");
@@ -31,6 +33,7 @@ globalThis.fetch = (async (input: Request | URL | string) => {
     const u = decodeURIComponent(url);
     crmCalls.push(u);
     if (u.includes("/rest/v1/users?select=id")) return json(CRM_USERS.map((r) => ({ email: EMAIL, ...r })));
+    if (CRM_DATA_ERROR) return json(CRM_DATA_ERROR.body, CRM_DATA_ERROR.status);
     return json([]);
   }
   if (url.includes("/auth/v1/user")) return json({ id: UID, email: EMAIL, aud: "authenticated", role: "authenticated" });
@@ -221,4 +224,38 @@ Deno.test("customers: vendedor vê os dele + sem dono (vendedor_id) em select/se
   const ok = await call({ operation: "select", table: "customers", filters: { company_id: "c1" } });
   assertEquals(ok.status, 200);
   assert(!lastData(ok.calls, "customers").includes("vendedor_id"), lastData(ok.calls, "customers"));
+});
+
+Deno.test("erro de entrada do cliente vira 400 e NÃO abre o disjuntor (vendedor não derruba o bridge para todos)", async () => {
+  reset();
+  // 6 requisições com filtro 'or' (recusado na validação) e 6 com coluna inexistente (42703 do PostgREST)
+  for (let i = 0; i < 6; i++) {
+    const r = await call({ operation: "select", table: "companies", filters: { or: "x" } });
+    assertEquals(r.status, 400, JSON.stringify(r.body));
+  }
+  CRM_DATA_ERROR = { status: 400, body: { code: "42703", message: "column companies.nao_existe does not exist" } };
+  for (let i = 0; i < 6; i++) {
+    const r = await call({ operation: "select", table: "companies", filters: { name: "x" } });
+    assertEquals(r.status, 400, JSON.stringify(r.body));
+  }
+  CRM_DATA_ERROR = null;
+  ROLE = "supervisor";
+  const ok = await call({ operation: "select", table: "companies" });
+  assertEquals(ok.status, 200, `disjuntor abriu por erro de cliente: ${JSON.stringify(ok.body)}`);
+});
+
+Deno.test("search/orderBy recusam coluna com ponto (tabela embutida) com 400", async () => {
+  reset();
+  const s = await call({ operation: "search", table: "contact_emails", search: { column: "contacts.user_id", term: "x" } });
+  assertEquals(s.status, 400, JSON.stringify(s.body));
+  const o = await call({ operation: "select", table: "companies", orderBy: { column: "contacts.user_id" } });
+  assertEquals(o.status, 400, JSON.stringify(o.body));
+});
+
+Deno.test("erro 5xx real do CRM continua 500", async () => {
+  reset();
+  CRM_DATA_ERROR = { status: 503, body: { code: "PGRST002", message: "schema cache" } };
+  const r = await call({ operation: "select", table: "suppliers" });
+  CRM_DATA_ERROR = null;
+  assertEquals(r.status, 500, JSON.stringify(r.body));
 });
