@@ -2,10 +2,12 @@
  * ProductMarketingSection — Seletores de classificação de marketing (padrão Super Filtro)
  * Público-Alvo, Datas Comemorativas e Endomarketing
  * Gradientes, badges, color dots, contadores hierárquicos
+ *
+ * Opções = cadastros reais (target_audiences, commemorative_dates, endomarketing_themes);
+ * marcações = vínculos do produto. Ver productMarketingData.ts. Não toca products.tags.
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { untypedFrom } from '@/lib/supabase-untyped';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -13,77 +15,22 @@ import { Input } from '@/components/ui/input';
 import { X, Users, Calendar, Megaphone, ChevronDown, Search, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
-import { PUBLICO_ALVO, DATAS_COMEMORATIVAS, ENDOMARKETING } from '@/data/mockData';
-import { dbInvoke } from '@/lib/db/postgrest';
+import {
+  fetchProductMarketing,
+  fetchProductMarketingLinks,
+  isManualLink,
+  selectMarketingOption,
+  unselectMarketingOption,
+  type MarketingCategoryKey,
+  type MarketingLink,
+  type ProductMarketingData,
+} from './productMarketingData';
 
 interface ProductMarketingSectionProps {
   productId: string;
 }
 
-interface ProductTags {
-  publicoAlvo: string[];
-  datasComemorativas: string[];
-  endomarketing: string[];
-}
-
-function toArray(value: unknown): string[] {
-  if (!value) return [];
-  if (Array.isArray(value))
-    return value.filter((v): v is string => typeof v === 'string' && !!v.trim());
-  if (typeof value === 'string')
-    return value
-      .split(/[,;|]/)
-      .map((v) => v.trim())
-      .filter(Boolean);
-  return [];
-}
-
-async function fetchProductTags(productId: string): Promise<ProductTags> {
-  // FIX-BRIDGE-01: migrated from bridge to dbInvoke
-  const result = await dbInvoke({
-    table: 'products',
-    operation: 'select',
-    filters: { id: productId },
-    limit: 1,
-  });
-  const product = result.records?.[0] as Record<string, unknown> | undefined;
-  const raw = product?.tags;
-  const tags =
-    typeof raw === 'string'
-      ? (() => {
-          try {
-            return JSON.parse(raw);
-          } catch {
-            return {};
-          }
-        })()
-      : raw || {};
-
-  return {
-    publicoAlvo: toArray(tags.publicoAlvo ?? tags.publico_alvo),
-    datasComemorativas: toArray(tags.datasComemorativas ?? tags.datas_comemorativas),
-    endomarketing: toArray(tags.endomarketing),
-  };
-}
-
-async function saveProductTags(productId: string, tags: ProductTags): Promise<void> {
-  const payload = {
-    publicoAlvo: tags.publicoAlvo,
-    datasComemorativas: tags.datasComemorativas,
-    endomarketing: tags.endomarketing,
-    publico_alvo: tags.publicoAlvo,
-    datas_comemorativas: tags.datasComemorativas,
-  };
-
-  // FIX-BRIDGE-01: migrated from bridge to dbInvoke (REST native write)
-  // v_products_public view doesn't have 'tags' in its generated types, so use untypedFrom.
-  const { error } = await untypedFrom('v_products_public')
-    .update({ tags: payload })
-    .eq('id', productId);
-  if (error) throw new Error(error.message);
-}
-
-type CategoryKey = keyof ProductTags;
+type CategoryKey = MarketingCategoryKey;
 
 const CATEGORY_COLORS: Record<CategoryKey, string> = {
   publicoAlvo: '#3B82F6',
@@ -95,34 +42,28 @@ const CATEGORIES: {
   key: CategoryKey;
   label: string;
   icon: React.ElementType;
-  options: string[];
 }[] = [
-  {
-    key: 'publicoAlvo',
-    label: 'Público-Alvo',
-    icon: Users,
-    options: [...PUBLICO_ALVO].sort((a, b) => a.localeCompare(b, 'pt-BR')),
-  },
-  {
-    key: 'datasComemorativas',
-    label: 'Datas Comemorativas',
-    icon: Calendar,
-    options: [...DATAS_COMEMORATIVAS].sort((a, b) => a.localeCompare(b, 'pt-BR')),
-  },
-  {
-    key: 'endomarketing',
-    label: 'Endomarketing',
-    icon: Megaphone,
-    options: [...ENDOMARKETING].sort((a, b) => a.localeCompare(b, 'pt-BR')),
-  },
+  { key: 'publicoAlvo', label: 'Público-Alvo', icon: Users },
+  { key: 'datasComemorativas', label: 'Datas Comemorativas', icon: Calendar },
+  { key: 'endomarketing', label: 'Endomarketing', icon: Megaphone },
 ];
 
+const EMPTY_DATA: ProductMarketingData = {
+  publicoAlvo: { options: [], links: [], loadError: null },
+  datasComemorativas: { options: [], links: [], loadError: null },
+  endomarketing: { options: [], links: [], loadError: null },
+};
+
+function errorMessage(err: unknown, fallback: string): string {
+  return err instanceof Error && err.message ? err.message : fallback;
+}
+
+function activeLinkFor(links: MarketingLink[], optionId: string): MarketingLink | undefined {
+  return links.find((l) => l.optionId === optionId && l.isActive);
+}
+
 export function ProductMarketingSection({ productId }: ProductMarketingSectionProps) {
-  const [tags, setTags] = useState<ProductTags>({
-    publicoAlvo: [],
-    datasComemorativas: [],
-    endomarketing: [],
-  });
+  const [data, setData] = useState<ProductMarketingData>(EMPTY_DATA);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [togglingKeys, setTogglingKeys] = useState<Set<string>>(new Set());
@@ -130,35 +71,57 @@ export function ProductMarketingSection({ productId }: ProductMarketingSectionPr
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    fetchProductTags(productId)
-      .then((t) => {
-        setTags(t);
-        setLoading(false);
+    let cancelled = false;
+    setLoading(true);
+    fetchProductMarketing(productId)
+      .then((d) => {
+        if (!cancelled) setData(d);
       })
-      .catch(() => setLoading(false));
+      .catch((err: unknown) => {
+        if (!cancelled) toast.error(errorMessage(err, 'Erro ao carregar marketing do produto'));
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [productId]);
 
+  const reloadLinks = useCallback(
+    async (category: CategoryKey) => {
+      const links = await fetchProductMarketingLinks(productId, category);
+      setData((prev) => ({ ...prev, [category]: { ...prev[category], links } }));
+    },
+    [productId],
+  );
+
   const toggleItem = useCallback(
-    async (category: CategoryKey, item: string) => {
-      const toggleKey = `${category}::${item}`;
+    async (category: CategoryKey, optionId: string) => {
+      const toggleKey = `${category}::${optionId}`;
       if (togglingKeys.has(toggleKey)) return;
       setTogglingKeys((prev) => new Set(prev).add(toggleKey));
 
-      const current = tags[category] || [];
-      const isSelected = current.includes(item);
-      const updated = isSelected ? current.filter((i) => i !== item) : [...current, item];
-
-      const newTags = { ...tags, [category]: updated };
-      setTags(newTags);
+      const links = data[category].links;
+      const active = activeLinkFor(links, optionId);
 
       setSaving(true);
       try {
-        await saveProductTags(productId, newTags);
-        toast.success(isSelected ? 'Removido' : 'Adicionado');
-      } catch {
-        setTags(tags);
-        toast.error('Erro ao salvar');
+        if (active) {
+          await unselectMarketingOption(category, active);
+        } else {
+          const existing = links.find((l) => l.optionId === optionId);
+          await selectMarketingOption(productId, category, optionId, existing);
+        }
+        toast.success(active ? 'Removido' : 'Adicionado');
+      } catch (err) {
+        toast.error(errorMessage(err, 'Erro ao salvar'));
       } finally {
+        try {
+          await reloadLinks(category);
+        } catch {
+          // a leitura falhou: mantém o estado anterior, o toast do erro já foi mostrado
+        }
         setSaving(false);
         setTogglingKeys((prev) => {
           const next = new Set(prev);
@@ -167,7 +130,7 @@ export function ProductMarketingSection({ productId }: ProductMarketingSectionPr
         });
       }
     },
-    [productId, tags, togglingKeys],
+    [data, productId, reloadLinks, togglingKeys],
   );
 
   const toggleGroup = (key: string) => {
@@ -180,18 +143,26 @@ export function ProductMarketingSection({ productId }: ProductMarketingSectionPr
   };
 
   const clearAll = useCallback(async () => {
-    const newTags: ProductTags = { publicoAlvo: [], datasComemorativas: [], endomarketing: [] };
-    setTags(newTags);
     setSaving(true);
-    try {
-      await saveProductTags(productId, newTags);
-      toast.success('Todas as classificações removidas');
-    } catch {
-      toast.error('Erro ao limpar');
-    } finally {
-      setSaving(false);
+    let failure: unknown = null;
+    for (const { key } of CATEGORIES) {
+      for (const link of data[key].links.filter((l) => l.isActive)) {
+        try {
+          await unselectMarketingOption(key, link);
+        } catch (err) {
+          failure = failure ?? err;
+        }
+      }
     }
-  }, [productId]);
+    try {
+      await Promise.all(CATEGORIES.map(({ key }) => reloadLinks(key)));
+    } catch {
+      // mantém o estado anterior
+    }
+    setSaving(false);
+    if (failure) toast.error(errorMessage(failure, 'Erro ao limpar'));
+    else toast.success('Todas as classificações removidas');
+  }, [data, reloadLinks]);
 
   if (loading) {
     return (
@@ -203,8 +174,13 @@ export function ProductMarketingSection({ productId }: ProductMarketingSectionPr
     );
   }
 
-  const totalSelected = CATEGORIES.reduce((sum, cat) => sum + (tags[cat.key]?.length || 0), 0);
-  const totalOptions = CATEGORIES.reduce((sum, cat) => sum + cat.options.length, 0);
+  const selectedOf = (key: CategoryKey) => {
+    const { options, links } = data[key];
+    const activeIds = new Set(links.filter((l) => l.isActive).map((l) => l.optionId));
+    return options.filter((o) => activeIds.has(o.id));
+  };
+  const totalSelected = CATEGORIES.reduce((sum, cat) => sum + selectedOf(cat.key).length, 0);
+  const totalOptions = CATEGORIES.reduce((sum, cat) => sum + data[cat.key].options.length, 0);
   const searchLower = search.toLowerCase();
 
   return (
@@ -227,25 +203,26 @@ export function ProductMarketingSection({ productId }: ProductMarketingSectionPr
           </div>
           <div className="flex flex-wrap gap-1.5">
             {CATEGORIES.flatMap((cat) =>
-              (tags[cat.key] || [])
-                .sort((a, b) => a.localeCompare(b, 'pt-BR'))
+              selectedOf(cat.key)
+                .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'))
                 .map((item) => (
                   <span
-                    key={`${cat.key}-${item}`}
+                    key={`${cat.key}-${item.id}`}
                     className="inline-flex cursor-pointer items-center gap-1 rounded-full border border-border bg-background px-2 py-0.5 text-[11px] font-medium text-foreground transition-all duration-200 hover:bg-muted/50"
-                    onClick={() => toggleItem(cat.key, item)}
+                    onClick={() => toggleItem(cat.key, item.id)}
                   >
                     <span
                       className="h-2 w-2 flex-shrink-0 rounded-full"
                       style={{ backgroundColor: CATEGORY_COLORS[cat.key] }}
                     />
-                    <span className="max-w-[100px] truncate">{item}</span>
+                    <span className="max-w-[100px] truncate">{item.name}</span>
                     <button
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
-                        toggleItem(cat.key, item);
+                        toggleItem(cat.key, item.id);
                       }}
+                      aria-label={`Remover ${item.name}`}
                       className="ml-0.5 rounded-full p-0.5 transition-all duration-150 hover:bg-destructive/20 hover:text-destructive"
                     >
                       <X className="h-2.5 w-2.5" />
@@ -285,11 +262,12 @@ export function ProductMarketingSection({ productId }: ProductMarketingSectionPr
       </div>
       <ScrollArea className="h-56">
         <div className="space-y-1.5 pr-3">
-          {CATEGORIES.map(({ key, label, icon: Icon, options }) => {
-            const selected = tags[key] || [];
+          {CATEGORIES.map(({ key, label, icon: Icon }) => {
+            const { options, links, loadError } = data[key];
+            const selected = selectedOf(key);
             const color = CATEGORY_COLORS[key];
             const filteredOptions = search
-              ? options.filter((o) => o.toLowerCase().includes(searchLower))
+              ? options.filter((o) => o.name.toLowerCase().includes(searchLower))
               : options;
             if (
               search &&
@@ -369,10 +347,12 @@ export function ProductMarketingSection({ productId }: ProductMarketingSectionPr
                   <div className="space-y-0.5 px-2.5 pb-2.5">
                     <div className="ml-8 border-t border-border/30 pt-2">
                       {filteredOptions.map((opt) => {
-                        const isSelected = selected.includes(opt);
+                        const activeLink = activeLinkFor(links, opt.id);
+                        const isSelected = !!activeLink;
+                        const inherited = !!activeLink && !isManualLink(activeLink);
                         return (
                           <label
-                            key={opt}
+                            key={opt.id}
                             className={cn(
                               'flex cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm transition-all duration-150',
                               isSelected
@@ -380,12 +360,13 @@ export function ProductMarketingSection({ productId }: ProductMarketingSectionPr
                                 : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground',
                             )}
                           >
-                            {togglingKeys.has(`${key}::${opt}`) ? (
+                            {togglingKeys.has(`${key}::${opt.id}`) ? (
                               <Loader2 className="h-4 w-4 flex-shrink-0 animate-spin text-primary" />
                             ) : (
                               <Checkbox
                                 checked={isSelected}
-                                onCheckedChange={() => toggleItem(key, opt)}
+                                onCheckedChange={() => toggleItem(key, opt.id)}
+                                aria-label={opt.name}
                                 className="data-[state=checked]:border-primary data-[state=checked]:bg-primary"
                               />
                             )}
@@ -393,7 +374,15 @@ export function ProductMarketingSection({ productId }: ProductMarketingSectionPr
                               className="h-2 w-2 flex-shrink-0 rounded-full"
                               style={{ backgroundColor: color }}
                             />
-                            <span className="flex-1 truncate">{opt}</span>
+                            <span className="flex-1 truncate">{opt.name}</span>
+                            {inherited && (
+                              <span
+                                className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-normal text-muted-foreground"
+                                title="Vínculo herdado da categoria. Desmarcar só desliga neste produto."
+                              >
+                                da categoria
+                              </span>
+                            )}
                             {isSelected && (
                               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
                             )}
@@ -407,7 +396,7 @@ export function ProductMarketingSection({ productId }: ProductMarketingSectionPr
                   <div className="px-2.5 pb-2.5">
                     <div className="ml-8 border-t border-border/30 pt-2">
                       <p className="py-2 text-xs italic text-muted-foreground">
-                        Nenhuma opção encontrada
+                        {loadError ?? 'Nenhuma opção encontrada'}
                       </p>
                     </div>
                   </div>

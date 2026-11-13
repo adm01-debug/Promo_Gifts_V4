@@ -6940,6 +6940,36 @@ export type Database = {
         }
         Relationships: []
       }
+      endomarketing_themes: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          is_active: boolean
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       enriched_contacts: {
         Row: {
           bitrix24_contact_id: number | null
@@ -20608,6 +20638,345 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "vw_xbz_produtos_sem_imagem"
             referencedColumns: ["product_id"]
+          },
+        ]
+      }
+      product_endomarketing: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          product_id: string
+          source: string
+          theme_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          product_id: string
+          source?: string
+          theme_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          product_id?: string
+          source?: string
+          theme_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products_with_materials"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_cf_image_remediation"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_dimensions_source_divergence"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_kit_max_quantity"
+            referencedColumns: ["kit_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_kit_with_components"
+            referencedColumns: ["kit_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_product_active_badge"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_product_tokens"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_product_videos_cdn"
+            referencedColumns: ["prod_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_products_complete"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_products_dimensions_audit"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_products_images_summary"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_products_kit_builder"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_products_missing_primary_image"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_products_name_audit"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_products_pending_images"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_products_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_products_public_test"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_products_with_tags"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_products_without_images"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_products_without_video"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_site_products_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_variants_with_commemorative_dates"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_xbz_ficha_parse_queue"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_active_products_missing_gold_images"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_packagings_catalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_product_color_category_links"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_product_commemorative_dates"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_product_notebook_complete"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_product_packaging_options"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_products_ai_status"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_products_by_date"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_products_commercial_packing"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_products_min_quantity"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_products_packaging_info"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_products_pending_variants"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_products_seo_status"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_products_thermal_status"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_products_with_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_produtos_sem_ncm"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_qa_products_missing_images"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_thermal_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "vw_xbz_produtos_sem_imagem"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_endomarketing_theme_id_fkey"
+            columns: ["theme_id"]
+            isOneToOne: false
+            referencedRelation: "endomarketing_themes"
+            referencedColumns: ["id"]
           },
         ]
       }
