@@ -1418,3 +1418,15 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261112130000` | `fix_get_sitemap_public_anon_grant` | `81e3c7900b74f7de043556d412dae21248e538f70aca73ad1b85f190b6627f52` | **aplicada em 13/11/2026** pelo `db-apply-migration.yml` (run 43345670118; recibo E15 acima) |
+
+## 2026-11-13 — aba Marketing do produto: escrita nos vínculos + endomarketing pendente em produção
+
+A aba Admin > Produtos > editar > Marketing dava "Erro ao salvar" em todo clique (UPDATE na view
+`v_products_public`, que também sobrescreveria `products.tags` — palavras-chave de busca). A migration libera
+escrita em `product_commemorative_dates`/`product_target_audiences` para owner/admin da organização do produto
+(mesma regra de `products_update`) e cria `endomarketing_themes` + `product_endomarketing`. Simulada em Postgres
+17 descartável (aplicar, reaplicar, rollback, reaplicar após rollback). Nenhum SQL executado em produção.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261113140000` | `marketing_tab_links_rls_and_endomarketing` | `c14335db1eddf71d5fbbfdf8e7719625bd859908ed010db8c65ee9668a479958` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |

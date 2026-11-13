@@ -12,6 +12,11 @@
  *   - Category (interface)
  *   - Supplier (interface)
  *   - CATEGORIES, SUPPLIERS, PUBLICO_ALVO, DATAS_COMEMORATIVAS, ENDOMARKETING
+ *
+ * 13/11/2026: a aba Marketing do produto passou a ler os cadastros reais (target_audiences,
+ * commemorative_dates, endomarketing_themes). PUBLICO_ALVO, DATAS_COMEMORATIVAS e ENDOMARKETING
+ * ficam como referência histórica (ENDOMARKETING é a origem do seed de endomarketing_themes,
+ * migration 20261113140000). Não apagar (regra do dono).
  */
 
 export interface Category {
