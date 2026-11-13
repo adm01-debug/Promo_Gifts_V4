@@ -178202,7 +178202,7 @@
         ],
         "definition": null,
         "definition_sha": "2838b6fd1f49c722",
-        "execute_api_roles": "authenticated, service_role",
+        "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -220941,6 +220941,12 @@
       {
         "code": "rpc_anon_executable",
         "detail": "SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública).",
+        "object": "public.get_sitemap_public(p_limit integer, p_offset integer)",
+        "severity": "INFO"
+      },
+      {
+        "code": "rpc_anon_executable",
+        "detail": "SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública).",
         "object": "public.submit_quote_response(_token text, _response text, _response_notes text)",
         "severity": "INFO"
       }
@@ -235972,6 +235978,12 @@
         "statements": 3,
         "statements_sha": "9fd94641e04fa66d",
         "version": "20261112011000"
+      },
+      {
+        "name": "fix_get_sitemap_public_anon_grant",
+        "statements": 2,
+        "statements_sha": "2f530f417cf8a450",
+        "version": "20261112130000"
       }
     ],
     "policies": [

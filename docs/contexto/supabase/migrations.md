@@ -2589,3 +2589,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261107180000 | [security_fix_suppliers_authenticated_credential_leak_v2](migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql) | 4 |
 | 20261108001500 | [reconcile_e2e_cleanup_audit](migrations/20261108001500_reconcile_e2e_cleanup_audit.sql) | 20 |
 | 20261112011000 | [fix_sb0003_fn_get_rupture_alerts](migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql) | 3 |
+| 20261112130000 | [fix_get_sitemap_public_anon_grant](migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql) | 2 |
