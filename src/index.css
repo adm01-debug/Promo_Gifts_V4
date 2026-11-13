@@ -167,18 +167,13 @@ html.theme-transitioning * {
   }
 }
 
-/* ═══ NUCLEAR SCROLL LOCK PREVENTION ═══
-   Radix UI / react-remove-scroll sets data-scroll-locked on html/body
-   and applies overflow:hidden, position:fixed, etc. 
-   This MUST be overridden at the highest specificity level. */
+/* Trava de rolagem do Radix (react-remove-scroll-bar): o <style> dela é liberado por
+   hash na CSP e o fundo NÃO rola com modal/menu aberto (decisão do dono, 13/11).
+   Aqui só garantimos que a página continua clicável; travas presas são soltas por
+   src/lib/dom/scroll-lock.ts (remove data-scroll-locked). */
 html[data-scroll-locked],
 body[data-scroll-locked],
 html[data-scroll-locked] body {
-  overflow: visible !important;
-  overflow-y: auto !important;
-  position: static !important;
-  margin-right: 0 !important;
-  padding-right: 0 !important;
   touch-action: auto !important;
   pointer-events: auto !important;
 }
