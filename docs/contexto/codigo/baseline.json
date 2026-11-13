@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "10e57c95428b4452138e7b5a1228dd52b944b4a1",
+  "commit": "36faf00ec0bb8393641d57fb4c52bae39cd32b3f",
   "branch": "main",
-  "data_commit": "2026-11-13T06:41:59-03:00",
+  "data_commit": "2026-11-13T11:21:24-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "36faf00",
+    "data": "2026-11-13",
+    "assunto": "fix(ci): destrava Gate 1 e testes do main — baseline de refs, import legacy-filters, recibos e reconciliação de migratio"
+   },
    {
     "sha": "10e57c9",
     "data": "2026-11-13",
@@ -126,14 +131,9 @@
     "sha": "0f00ba1",
     "data": "2026-11-13",
     "assunto": "fix(calculadora): tela mostra o preço oficial da RPC, o mesmo que vai para o orçamento (#3465)"
-   },
-   {
-    "sha": "18e4576",
-    "data": "2026-11-13",
-    "assunto": "test(simulador): cobre o CTA Criar Orçamento do ProductPriceSimulator (#3462)"
    }
   ],
-  "arquivos_mudados_7d": 1975,
+  "arquivos_mudados_7d": 1976,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 38
+    "mudancas": 39
    },
    {
     "arquivo": "package.json",
@@ -230,15 +230,15 @@
     "mudancas": 13
    },
    {
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "mudancas": 12
+   },
+   {
     "arquivo": ".github/workflows/deploy-gates.yml",
     "mudancas": 11
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 11
    },
    {

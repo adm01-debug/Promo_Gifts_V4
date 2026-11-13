@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "10e57c95428b4452138e7b5a1228dd52b944b4a1",
+  "sha": "36faf00ec0bb8393641d57fb4c52bae39cd32b3f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-13 10:22 UTC",
+  "generated_at": "2026-11-13 15:26 UTC",
   "files_total": 10034,
   "code_files": 8570,
   "code_lines": 1211938
@@ -528365,10 +528365,24 @@
   }
  },
  "git": {
-  "sha": "10e57c95428b4452138e7b5a1228dd52b944b4a1",
+  "sha": "36faf00ec0bb8393641d57fb4c52bae39cd32b3f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "36faf00",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(ci): destrava Gate 1 e testes do main — baseline de refs, import legacy-filters, recibos e reconciliação de migrations (#3507)",
+    "files": [
+     ".migration-refs-baseline.json",
+     "docs/MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json",
+     "docs/coordenacao/conflitos-semanticos.md",
+     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "tests/edge-functions/integration/legacy-filters-escape.test.ts"
+    ]
+   },
    {
     "sha": "10e57c9",
     "date": "2026-11-13",
@@ -528700,95 +528714,15 @@
      "supabase/migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql",
      "supabase/rollbacks/20261112130000_rollback.sql"
     ]
-   },
-   {
-    "sha": "c8ae97c",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix: corrige 42 bugs da rodada 2 em orçamentos, admin, preços, limites e datas (#3428)",
-    "files": [
-     ".file-size-baseline.json",
-     "public/sitemap.xml",
-     "src/components/admin/products/ProductFormFullscreen.tsx",
-     "src/components/admin/products/hooks/useProductFormDraft.ts",
-     "src/components/admin/products/hooks/useSkuValidation.ts",
-     "src/components/admin/products/image-gallery/useProductImageGallery.ts",
-     "src/components/admin/products/sections/ProductFlagsSection.tsx",
-     "src/components/admin/products/useProductVariants.ts",
-     "src/components/admin/products/useProductsManager.ts",
-     "src/components/admin/products/video-gallery/useProductVideoGallery.ts",
-     "src/components/admin/users/useUserManagement.ts",
-     "src/components/dashboard/RecentKitsWidget.tsx",
-     "src/components/dashboard/UpcomingDatesWidget.tsx",
-     "src/components/favorites/FavoritesViewHeader.tsx",
-     "src/components/inventory/FutureStockDialog.tsx",
-     "src/components/inventory/StockAlertsIndicator.tsx",
-     "src/components/inventory/VariantStockRowActions.tsx",
-     "src/components/inventory/VariantStockTable.tsx",
-     "src/components/inventory/__tests__/VariantStockRowActions.test.tsx",
-     "src/components/inventory/__tests__/useStockSelection.test.ts",
-     "src/components/inventory/useStockSelection.ts",
-     "src/components/kit-builder/KitStockForecastCard.tsx",
-     "src/components/pricing/ProductPriceSimulator.tsx",
-     "src/components/pricing/QuantityPriceCalculator.tsx",
-     "src/components/pricing/__tests__/QuantityPriceCalculator.createQuote.test.tsx",
-     "src/components/products/ProductList.tsx",
-     "src/components/quotes/QuoteKanbanBoard.tsx",
-     "src/components/simulator/wizard/StepComparison.tsx",
-     "src/hooks/auth/useAccessSecurity.ts",
-     "src/hooks/intelligence/__tests__/fetchCategoryRanking.marketDepleted.test.ts",
-     "src/hooks/intelligence/useCommercialIntelligence.helpers.ts",
-     "src/hooks/intelligence/useSalesHistory.ts",
-     "src/hooks/intelligence/useZeroResultDiagnosis.ts",
-     "src/hooks/products/__tests__/useSupplierSalesRanking.test.ts",
-     "src/hooks/products/useProductsLightweight.ts",
-     "src/hooks/products/useSupplierSalesRanking.ts",
-     "src/hooks/quotes/__tests__/useAutoSaveQuote.test.ts",
-     "src/hooks/quotes/__tests__/useQuoteBuilderState.draftHandoff.test.tsx",
-     "src/hooks/quotes/useAutoSaveQuote.ts",
-     "src/hooks/quotes/useQuoteBuilderState.ts",
-     "src/hooks/simulation/useCustomizationPrice.ts",
-     "src/hooks/simulator/useSimulatorWizard.ts",
-     "src/hooks/simulator/useWizardPricing.ts",
-     "src/hooks/simulator/wizardReducer.ts",
-     "src/hooks/ui/useWorkspaceNotifications.tsx",
-     "src/lib/external-db/__tests__/productsCompleteness.test.ts",
-     "src/lib/external-db/products.ts",
-     "src/lib/security/sanitize-error.ts",
-     "src/lib/stock-chart-utils.ts",
-     "src/pages/admin/AdminProductFormPage.tsx",
-     "src/pages/admin/AdminUsuariosPage.tsx",
-     "src/pages/admin/PermissionsPage.tsx",
-     "src/pages/admin/RolePermissionsPage.tsx",
-     "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
-     "src/pages/bi/BusinessIntelligencePage.tsx",
-     "src/pages/products/FiltersPage.tsx",
-     "src/pages/quotes/QuoteBuilderPage.tsx",
-     "src/pages/quotes/QuoteViewPage.tsx",
-     "src/pages/quotes/__tests__/QuoteViewPage.delete-denied.test.tsx",
-     "src/pages/quotes/__tests__/useQuotesListPage.expiring.test.ts",
-     "src/pages/quotes/quote-view/QuoteActionHandlers.ts",
-     "src/pages/quotes/quote-view/useQuoteViewData.ts",
-     "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
-     "src/pages/quotes/useQuotesListPage.ts",
-     "src/pages/tools/SimuladorWizard.tsx",
-     "src/services/quoteService.ts",
-     "src/tests/AdminStandardRules.test.tsx",
-     "src/types/domain/simulator-wizard.ts",
-     "supabase/functions/expert-chat/index.ts",
-     "supabase/functions/external-db-inspect/index.ts",
-     "supabase/functions/github-credentials-test/index.ts",
-     "supabase/functions/manage-users/index.ts",
-     "supabase/functions/materials-api/index.ts",
-     "supabase/functions/ownership-audit/index.ts",
-     "supabase/functions/sync-quote-bitrix/index.ts",
-     "tests/hooks/wizardReducer.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
+    4
+   ],
+   [
+    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     3
    ],
    [
@@ -528812,32 +528746,24 @@
     2
    ],
    [
-    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    2
-   ],
-   [
-    ".file-size-baseline.json",
-    2
-   ],
-   [
     ".security/policies-baseline.json",
     2
    ],
    [
-    "src/components/pricing/QuantityPriceCalculator.tsx",
-    2
+    ".migration-refs-baseline.json",
+    1
    ],
    [
-    "src/hooks/simulation/useCustomizationPrice.ts",
-    2
+    "docs/MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json",
+    1
    ],
    [
-    "src/pages/admin/RolePermissionsPage.tsx",
-    2
+    "docs/coordenacao/conflitos-semanticos.md",
+    1
    ],
    [
-    "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
-    2
+    "tests/edge-functions/integration/legacy-filters-escape.test.ts",
+    1
    ],
    [
     "supabase/migrations/20260511235960_add_categories_full_path_readable_drift.sql",
@@ -528865,6 +528791,10 @@
    ],
    [
     ".as-assertions-baseline.json",
+    1
+   ],
+   [
+    ".file-size-baseline.json",
     1
    ]
   ]
