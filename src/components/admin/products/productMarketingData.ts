@@ -136,22 +136,27 @@ export interface MarketingCategoryData {
 
 export type ProductMarketingData = Record<MarketingCategoryKey, MarketingCategoryData>;
 
+async function loadCategory(productId: string, key: MarketingCategoryKey): Promise<MarketingCategoryData> {
+  try {
+    const [options, links] = await Promise.all([
+      fetchMasterOptions(key),
+      fetchProductMarketingLinks(productId, key),
+    ]);
+    return { options, links, loadError: null };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Erro ao carregar';
+    return { options: [], links: [], loadError: message };
+  }
+}
+
 export async function fetchProductMarketing(productId: string): Promise<ProductMarketingData> {
-  const entries = await Promise.all(
-    MARKETING_CATEGORY_KEYS.map(async (key): Promise<[MarketingCategoryKey, MarketingCategoryData]> => {
-      try {
-        const [options, links] = await Promise.all([
-          fetchMasterOptions(key),
-          fetchProductMarketingLinks(productId, key),
-        ]);
-        return [key, { options, links, loadError: null }];
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'Erro ao carregar';
-        return [key, { options: [], links: [], loadError: message }];
-      }
-    }),
-  );
-  return Object.fromEntries(entries) as ProductMarketingData;
+  // Objeto montado com as 3 chaves explícitas (sem `as`): o tipo garante que nenhuma falta.
+  const [publicoAlvo, datasComemorativas, endomarketing] = await Promise.all([
+    loadCategory(productId, 'publicoAlvo'),
+    loadCategory(productId, 'datasComemorativas'),
+    loadCategory(productId, 'endomarketing'),
+  ]);
+  return { publicoAlvo, datasComemorativas, endomarketing };
 }
 
 // ── Escrita ──────────────────────────────────────────────────────────────────

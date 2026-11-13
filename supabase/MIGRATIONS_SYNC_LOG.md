@@ -1438,4 +1438,4 @@ escrita em `product_commemorative_dates`/`product_target_audiences` para owner/a
 
 | version | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261113140000` | `marketing_tab_links_rls_and_endomarketing` | `c14335db1eddf71d5fbbfdf8e7719625bd859908ed010db8c65ee9668a479958` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261113140000` | `marketing_tab_links_rls_and_endomarketing` | `3b742308dbd743a71c72a8ad70f1c63a45cafa5824f255105fe9ab4006f72593` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
