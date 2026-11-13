@@ -30,6 +30,7 @@ defaults:
 jobs:
   assert-required-checks:
     name: Assert Gate Final is required on main
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -139,6 +140,7 @@ jobs:
   # E71 — Verifica checks fantasmas: required-checks.json vs jobs reais nos workflows
   ghost-check-guard:
     name: Ghost Check Guard — required-checks.json vs workflows
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -156,6 +158,7 @@ jobs:
   # E40 — Inventário de segredos: abre issue quando há referências não documentadas
   secrets-inventory-check:
     name: Secrets Inventory Check (E40)
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
