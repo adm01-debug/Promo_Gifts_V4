@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "fd9c4eec24b2a45d956acf62e090a02925287a1e",
+  "sha": "0b1766de405f3a2543986bca0d0e17fd0dedf481",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-13 04:38 UTC",
+  "generated_at": "2026-11-13 06:19 UTC",
   "files_total": 9824,
   "code_files": 8386,
   "code_lines": 1181504
  },
  "version": "1.3.2",
- "facts_hash": "bd0842309b4b8fdf",
+ "facts_hash": "4a579e9f24e7316b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -240,7 +240,7 @@
    "test:e2e:debug": "npx playwright test --grep-invert @smoke --debug",
    "test:e2e:report": "npx playwright show-report",
    "test:e2e:install": "npx playwright install --with-deps chromium",
-   "test:theme-validation": "npx playwright test e2e/theme-validation.spec.ts && node scripts/generate-theme-report.mjs",
+   "test:theme-validation": "npx playwright test e2e/theme-validation.spec.ts --project=chromium-public --project=chromium-authed --project=mobile-chrome && node scripts/generate-theme-report.mjs",
    "test:e2e:tooltips": "npx playwright test e2e/tooltips-a11y.spec.ts",
    "check:removed-phrases": "node scripts/check-removed-phrases.mjs",
    "check:no-salvar-alteracoes-draft": "node scripts/check-no-salvar-alteracoes-draft.mjs",
@@ -519514,10 +519514,19 @@
   }
  },
  "git": {
-  "sha": "fd9c4eec24b2a45d956acf62e090a02925287a1e",
+  "sha": "0b1766de405f3a2543986bca0d0e17fd0dedf481",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "0b1766d",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(test): validação de tema roda só nos navegadores Chromium instalados no CI (#3458)",
+    "files": [
+     "package.json"
+    ]
+   },
    {
     "sha": "fd9c4ee",
     "date": "2026-11-13",
@@ -520970,15 +520979,6 @@
      "supabase/migrations/20261108030100_ft079_view_products_min_quantity.sql",
      "supabase/rollbacks/20261108030100_rollback.sql"
     ]
-   },
-   {
-    "sha": "3b03ad1",
-    "date": "2026-11-09",
-    "author": "github-actions[bot]",
-    "subject": "docs: recibo de deploy de edge function(s) — run 42649363787 (E66)",
-    "files": [
-     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
-    ]
    }
   ],
   "hot_files": [
@@ -520995,8 +520995,8 @@
     3
    ],
    [
-    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    3
+    "package.json",
+    2
    ],
    [
     "src/hooks/simulation/useCustomizationPrice.ts",

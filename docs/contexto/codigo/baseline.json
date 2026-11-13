@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "fd9c4eec24b2a45d956acf62e090a02925287a1e",
+  "commit": "0b1766de405f3a2543986bca0d0e17fd0dedf481",
   "branch": "main",
-  "data_commit": "2026-11-13T04:13:46Z",
+  "data_commit": "2026-11-13T03:18:12-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "0b1766d",
+    "data": "2026-11-13",
+    "assunto": "fix(test): validação de tema roda só nos navegadores Chromium instalados no CI (#3458)"
+   },
    {
     "sha": "fd9c4ee",
     "data": "2026-11-13",
@@ -126,11 +131,6 @@
     "sha": "293b928",
     "data": "2026-11-09",
     "assunto": "chore(docs): adiciona 4 segredos E2E ausentes em SEGREDOS.md"
-   },
-   {
-    "sha": "e70479b",
-    "data": "2026-11-09",
-    "assunto": "chore(e2e): registrar specs @smoke no job e2e-gates"
    }
   ],
   "arquivos_mudados_7d": 1547,
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 13
+    "mudancas": 14
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
