@@ -178,6 +178,12 @@ html[data-scroll-locked] body {
   pointer-events: auto !important;
 }
 
+/* Header fixo compensa a barra sumida só enquanto a trava existe: a variável vem do <style>
+   da própria trava (body[data-scroll-locked]); sem atributo/estilo, cai em 0px. */
+body[data-scroll-locked] [data-testid='app-header'] {
+  right: var(--removed-body-scroll-bar-size, 0px) !important;
+}
+
 /* ============================================
    PROMO BRINDES - TASK GIFTS DESIGN SYSTEM
    ============================================ */
