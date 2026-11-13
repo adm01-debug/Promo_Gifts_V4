@@ -242,6 +242,30 @@ INSERT INTO public.endomarketing_themes (name, slug, display_order) VALUES
   ('CONVENÇÃO DE VENDAS', 'convencao-de-vendas', 110)
 ON CONFLICT (name) DO NOTHING;
 
+-- ── Opções que a tela antiga oferecia e o cadastro não tem (auditoria 13/11) ──
+-- A aba passa a listar os cadastros reais (41 datas / 38 públicos ativos). Estas 5 existiam só
+-- na constante do código e sumiriam da tela. Inserção idempotente; nada é alterado se já existir.
+-- ("DIA DA MULHER" do código = "Dia Internacional da Mulher", que já existe.)
+INSERT INTO public.commemorative_dates (name, slug, date_day, date_month, is_fixed_date, description, is_active)
+SELECT v.name, v.slug, v.dd, v.mm, true, v.descr, true
+FROM (VALUES
+  ('Dia do Homem', 'dia-do-homem', 15, 7, 'Dia do Homem (15/07)'),
+  ('Setembro Amarelo', 'setembro-amarelo', 1, 9, 'Campanha de prevenção ao suicídio (mês de setembro)'),
+  ('Outubro Rosa', 'outubro-rosa', 1, 10, 'Campanha de prevenção ao câncer de mama (mês de outubro)'),
+  ('Novembro Azul', 'novembro-azul', 1, 11, 'Campanha de saúde do homem (mês de novembro)')
+) AS v(name, slug, dd, mm, descr)
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.commemorative_dates c
+  WHERE c.slug = v.slug OR lower(c.name) = lower(v.name)
+);
+
+INSERT INTO public.target_audiences (name, slug, is_active)
+SELECT 'Produtor Rural', 'produtor-rural', true
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.target_audiences t
+  WHERE t.slug = 'produtor-rural' OR lower(t.name) = 'produtor rural'
+);
+
 DO $$
 BEGIN
   IF (SELECT count(*) FROM public.endomarketing_themes) < 11 THEN
