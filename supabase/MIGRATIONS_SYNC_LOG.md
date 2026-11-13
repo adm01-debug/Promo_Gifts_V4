@@ -1131,6 +1131,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261108223100` | `a912697ce92a3b6da285fad499575dc89fb8c2138f1f3b573dbdc9206c717dfa` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 07:45:38 UTC | job post-check da run 43384113364 confirmou a version no ledger | aplicada |
 | `20260511235950` | `dfacb733f8b6036b3c00db74dffbf61597f3fc88cc72a50fcbe3a0480b2824a6` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 08:32:53 UTC | job post-check da run 43390126038 confirmou a version no ledger | aplicada |
 | `20261111191000` | `04966954d978ccf4ca7f7a7beb5bd20129243018b303f92575c5b12b4f581524` | — | não identificado — aplicada fora do fluxo E15 (nenhuma run de `db-apply-migration.yml` em 11–12/11 aplicou esta versão) | reconciliação retroativa | — | Gate 1.13.3 live (Deploy Gates run 43416005680, 2026-11-13 12:07 UTC) leu a versão no ledger de produção | aplicada (fora do fluxo E15; confirmada no ledger 2026-11-13) |
+| `20261112140000` | `6aa856168cc1ef0e6308757fe01b04f4917f043170ff3ce996e0933a52575b9f` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 18:03:31 UTC | job post-check da run 43471685129 confirmou a version no ledger | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
