@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-11-06T23:08:19.322Z",
+  "generated_at": "2026-11-13T02:40:55.980Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "2614efab6c71a152644150b25a0895b47b37812a9474cb29faa1ab58eac88b11",
+  "sha256": "56a4d2a0fc87eb5e6df9259513a1f30334e15083c5ddea5033510161ef77b5ba",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -2294,6 +2294,16 @@
       "cmd": "UPDATE",
       "qual": "is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))",
       "with_check": "is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "e2e_cleanup_audit",
+      "policyname": "admins_select_e2e_cleanup_audit",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "has_role(( SELECT auth.uid() AS uid), 'admin'::app_role)",
+      "with_check": ""
     },
     {
       "schemaname": "public",

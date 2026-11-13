@@ -29,20 +29,29 @@ function listFunctions() {
     });
 }
 
-const violations = [];
-for (const { name, path } of listFunctions()) {
-  const src = readFileSync(path, "utf8");
-  // String literal containing the header name → inline declaration.
-  if (/["'`]Access-Control-Allow-Headers["'`]/i.test(src)) {
-    violations.push(`${name}: declares "Access-Control-Allow-Headers" inline. Use buildPublicCorsHeaders() or getCorsHeaders(req) from "../_shared/cors.ts".`);
+function main() {
+  const violations = [];
+  for (const { name, path } of listFunctions()) {
+    const src = readFileSync(path, "utf8");
+    // String literal containing the header name → inline declaration.
+    if (/["'`]Access-Control-Allow-Headers["'`]/i.test(src)) {
+      violations.push(`${name}: declares "Access-Control-Allow-Headers" inline. Use buildPublicCorsHeaders() or getCorsHeaders(req) from "../_shared/cors.ts".`);
+    }
   }
+
+  if (violations.length > 0) {
+    console.error(`❌ Inline CORS gate failed (${violations.length} violation${violations.length === 1 ? "" : "s"}):`);
+    for (const v of violations) console.error(`  • ${v}`);
+    console.error(`\nFix:\n  1. Replace the inline corsHeaders object with:\n       const corsHeaders = buildPublicCorsHeaders({ extraAllowHeaders?: [...], allowMethods?: "..." });\n  2. Add the import:\n       import { buildPublicCorsHeaders } from "../_shared/cors.ts";\n`);
+    process.exit(1);
+  }
+
+  console.log(`✅ No inline CORS literals — every edge function uses the SSOT helpers.`);
 }
 
-if (violations.length > 0) {
-  console.error(`❌ Inline CORS gate failed (${violations.length} violation${violations.length === 1 ? "" : "s"}):`);
-  for (const v of violations) console.error(`  • ${v}`);
-  console.error(`\nFix:\n  1. Replace the inline corsHeaders object with:\n       const corsHeaders = buildPublicCorsHeaders({ extraAllowHeaders?: [...], allowMethods?: "..." });\n  2. Add the import:\n       import { buildPublicCorsHeaders } from "../_shared/cors.ts";\n`);
+try {
+  main();
+} catch (error) {
+  console.error(`❌ Falha ao executar o gate de CORS inline: ${error.message}`);
   process.exit(1);
 }
-
-console.log(`✅ No inline CORS literals — every edge function uses the SSOT helpers.`);

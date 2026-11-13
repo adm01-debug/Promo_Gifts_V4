@@ -29,7 +29,19 @@ if (!listArg || !outDirArg) {
 }
 
 const ROOT = process.cwd();
-const list = JSON.parse(readFileSync(resolve(listArg), 'utf8'));
+let list;
+try {
+  const rawListFile = readFileSync(resolve(listArg), 'utf8');
+  const rawList = rawListFile.charCodeAt(0) === 0xfeff ? rawListFile.slice(1) : rawListFile;
+  list = JSON.parse(rawList);
+} catch (err) {
+  console.error(`Falha ao ler/parsear ${listArg}: ${err.message}`);
+  process.exit(2);
+}
+if (!Array.isArray(list)) {
+  console.error(`${listArg} deve conter um array JSON; recebido: ${typeof list}`);
+  process.exit(2);
+}
 const outDir = resolve(outDirArg);
 if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
 
@@ -68,6 +80,10 @@ const PATTERNS = [
 
 const results = [];
 for (const entry of list) {
+  if (typeof entry?.path !== 'string' || entry.path.length === 0) {
+    results.push({ ...entry, kind: 'file_missing' });
+    continue;
+  }
   const fullPath = join(ROOT, entry.path);
   let raw;
   try {

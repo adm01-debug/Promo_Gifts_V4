@@ -38,10 +38,21 @@ const EXTENSIONS = new Set(['.ts', '.tsx']);
 
 /** Recursivamente lista arquivos .ts/.tsx excluindo node_modules e __tests__ */
 function* walkFiles(dir) {
-  for (const entry of readdirSync(dir)) {
+  let entries;
+  try {
+    entries = readdirSync(dir);
+  } catch {
+    return; // diretório sem permissão de leitura — ignora, mesma política do readFileSync abaixo
+  }
+  for (const entry of entries) {
     if (entry === 'node_modules' || entry === '.git') continue;
     const full = join(dir, entry);
-    const stat = statSync(full);
+    let stat;
+    try {
+      stat = statSync(full);
+    } catch {
+      continue; // symlink quebrado/loop (ELOOP), permissão negada etc.
+    }
     if (stat.isDirectory()) {
       yield* walkFiles(full);
     } else if (EXTENSIONS.has(extname(entry))) {
@@ -69,12 +80,58 @@ function extractUseEffectBodies(src) {
     // O callback começa com '(' ou diretamente com 'async'
     if (i >= src.length) break;
 
-    // Extrai o corpo bruto do useEffect (do '(' de abertura ao ')' de fechamento)
+    // Extrai o corpo bruto do useEffect (do '(' de abertura ao ')' de fechamento).
+    // Ignora parênteses dentro de strings/comentários: sem isso, um ')' solto em
+    // uma string (ex: "valor)") ou comentário fecha o bloco antes da hora e o
+    // setTimeout real fica fora do body extraído (falso-negativo do gate).
     let depth = 1; // já estamos dentro do useEffect(
     let body = '';
+    let inString = null; // aspas abertas: ', " ou `
+    let inLineComment = false;
+    let inBlockComment = false;
     while (i < src.length && depth > 0) {
       const ch = src[i];
-      if (ch === '(') depth++;
+      const next = src[i + 1];
+
+      if (inLineComment) {
+        body += ch;
+        i++;
+        if (ch === '\n') inLineComment = false;
+        continue;
+      }
+      if (inBlockComment) {
+        body += ch;
+        i++;
+        if (ch === '*' && next === '/') {
+          body += next;
+          i++;
+          inBlockComment = false;
+        }
+        continue;
+      }
+      if (inString) {
+        if (ch === '\\') {
+          body += ch;
+          i++;
+          if (i < src.length) {
+            body += src[i];
+            i++;
+          }
+          continue;
+        }
+        if (ch === inString) inString = null;
+        body += ch;
+        i++;
+        continue;
+      }
+
+      if (ch === '/' && next === '/') {
+        inLineComment = true;
+      } else if (ch === '/' && next === '*') {
+        inBlockComment = true;
+      } else if (ch === '"' || ch === "'" || ch === '`') {
+        inString = ch;
+      } else if (ch === '(') depth++;
       else if (ch === ')') {
         depth--;
         if (depth === 0) break;

@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { missingPrerequisite } from './lib/missing-prerequisite.mjs';
 
 const summaryPath = path.resolve('coverage/magazine/coverage-summary.json');
 if (!fs.existsSync(summaryPath)) {
-  console.log(`[test-magazine-coverage] static-pass: arquivo de cobertura ausente (${summaryPath}); verificação ignorada.`);
-  process.exit(0);
+  missingPrerequisite('test-magazine-coverage', `arquivo de cobertura ausente (${summaryPath})`, {
+    exitCode: 1,
+    hint: 'Rode antes: npm run test:magazine:coverage',
+  });
 }
 
 const summary = JSON.parse(fs.readFileSync(summaryPath, 'utf8'));

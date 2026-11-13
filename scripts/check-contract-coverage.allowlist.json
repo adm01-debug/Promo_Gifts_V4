@@ -1,0 +1,4 @@
+{
+  "_comment": "Edge functions que leem o body mas ainda não têm contrato Zod em tests/contracts/webhook-schemas.ts. Só encolhe: entrada obsoleta falha o gate.",
+  "manage-users": "lê o body via safeJson(req) e valida com um PayloadSchema Zod local (index.ts:119-121), mas esse schema não está registrado em CONTRACTS (tests/contracts/webhook-schemas.ts) — falta espelhar/exportar o contrato."
+}

@@ -31,6 +31,7 @@
 import { spawnSync } from "node:child_process";
 import { readdirSync, statSync, existsSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
+import { missingPrerequisite } from "./lib/missing-prerequisite.mjs";
 
 const FUNCTIONS_DIR = "supabase/functions";
 const SKIP = new Set(["_shared", "tests"]);
@@ -54,8 +55,7 @@ const failFast = !flags.all;
 function ensureDeno() {
   const probe = spawnSync("deno", ["--version"], { encoding: "utf8" });
   if (probe.status !== 0 || probe.error) {
-    console.log("[triage-edge-typecheck] static-pass: deno não está no PATH; typecheck ignorado.");
-    process.exit(0);
+    missingPrerequisite("triage-edge-typecheck", "`deno` não está no PATH", { exitCode: 2 });
   }
   return probe.stdout.trim().split("\n")[0];
 }

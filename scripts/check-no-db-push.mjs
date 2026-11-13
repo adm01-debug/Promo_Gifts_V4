@@ -32,6 +32,10 @@ const ALLOWLIST = [
   'CONTRIBUTING.md',
   'docs/adr/0006-migration-baseline.md',
 
+  // ─── Fixture de teste: workflow QUEBRADO de propósito que contém o comando, para provar
+  //     que o check-workflow-contracts o conta como violação (não executa nada) ──
+  'tests/scripts/check-workflow-contracts-parser.regressions.test.mjs',
+
   // ─── CHANGELOG cita o comando ao descrever a proibição da Fase 2 ──
   'CHANGELOG.md',
 
