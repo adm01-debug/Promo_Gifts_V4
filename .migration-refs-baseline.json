@@ -19,10 +19,6 @@
     },
     {
       "file": "analise-prs/2026-11-12/prs.json",
-      "ref": "supabase/migrations/20260511235960_add_categories_full_path_readable_drift.sql"
-    },
-    {
-      "file": "analise-prs/2026-11-12/prs.json",
       "ref": "supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql"
     },
     {
