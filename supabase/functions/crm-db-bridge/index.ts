@@ -8,7 +8,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { getOrCreateRequestId, REQUEST_ID_HEADER } from "../_shared/request-id.ts";
 import { resolveCredentials, warmupCredentials, buildCredentialsHealth } from "../_shared/credentials.ts";
 import { assertSwitchEnabled } from "../_shared/kill_switch.ts";
-import { crmOwnerScope, resolveCrmRole } from "./ownership.ts";
+import { crmOwnerScope, ownerOrExpression, resolveCrmRole } from "./ownership.ts";
 
 const breaker = getBreaker("crm-db");
 // redeploy marker: fix 429 - auth-first + rate-limit por userId + admin singleton (2026-05-26)
@@ -503,7 +503,7 @@ async function resolveCrmUserId(crm: SupabaseClient, email?: string | null): Pro
 }
 
 /**
- * Aplica o escopo E081 (vendedor só vê os dele) e devolve a query pronta, ou `deny` (403).
+ * Aplica o escopo E081 (vendedor vê os dele + os sem dono) e devolve a query pronta, ou `deny` (403).
  * Tabelas filhas (e-mails/telefones) usam junção `!inner` com o pai montada no SERVIDOR
  * (o cliente continua proibido de fazer embedding) — sem lista de ids na URL.
  * `stripParent`: nome da coluna de junção a remover das linhas antes de responder.
@@ -518,9 +518,12 @@ function applyOwnerScope(
   const scope = crmOwnerScope(table, userRole, userId);
   if (scope.kind === "deny") return { kind: "deny" };
   if (scope.kind === "none") return { kind: "ok", query: crm.from(table).select(select) };
-  if (scope.kind === "filter") return { kind: "ok", query: crm.from(table).select(select).eq(scope.column, scope.value) };
+  if (scope.kind === "filter") {
+    return { kind: "ok", query: crm.from(table).select(select).or(ownerOrExpression(scope.column, scope.value)) };
+  }
   const join = `${scope.parent}!inner(${scope.parentColumn})`;
-  const query = crm.from(table).select(`${select},${join}`).eq(`${scope.parent}.${scope.parentColumn}`, scope.value);
+  const query = crm.from(table).select(`${select},${join}`)
+    .or(ownerOrExpression(scope.parentColumn, scope.value), { referencedTable: scope.parent });
   return { kind: "ok", query, stripParent: scope.parent };
 }
 

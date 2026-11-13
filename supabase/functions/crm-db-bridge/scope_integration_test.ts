@@ -65,7 +65,7 @@ Deno.test("search companies (vendedor) filtra pelo usuário do CRM vinculado por
   reset();
   const r = await call({ operation: "search", table: "companies", search: { column: "name", term: "abc" } });
   assertEquals(r.status, 200);
-  assert(lastData(r.calls, "companies").includes(`user_id=eq.${CRM_UID}`), lastData(r.calls, "companies"));
+  assert(lastData(r.calls, "companies").includes(`or=(user_id.eq.${CRM_UID},user_id.is.null)`), lastData(r.calls, "companies"));
   assert(!lastData(r.calls, "companies").includes(UID), "não pode filtrar pelo auth.uid do app");
 });
 
@@ -76,27 +76,32 @@ Deno.test("batch contacts + contact_emails (vendedor): eq no dono e junção !in
     { table: "contact_emails", select: "contact_id,email" },
   ] });
   assertEquals(r.status, 200);
-  assert(lastData(r.calls, "contacts").includes(`user_id=eq.${CRM_UID}`));
+  assert(lastData(r.calls, "contacts").includes(`or=(user_id.eq.${CRM_UID},user_id.is.null)`));
   const emails = lastData(r.calls, "contact_emails");
-  assert(emails.includes("contacts!inner(user_id)") && emails.includes(`contacts.user_id=eq.${CRM_UID}`), emails);
+  assert(emails.includes("contacts!inner(user_id)") && emails.includes(`contacts.or=(user_id.eq.${CRM_UID},user_id.is.null)`), emails);
   assert(!emails.includes("contact_id=in."), "sem lista de ids na URL");
 });
 
-Deno.test("vendedor sem usuário no CRM (e-mail sem vínculo) → 403 com mensagem clara, sem consultar a tabela", async () => {
+Deno.test("vendedor sem usuário no CRM (e-mail sem vínculo) → vê só os registros SEM dono (regra 13/11)", async () => {
   reset(); CRM_USERS = [];
   // e-mail diferente para não reaproveitar o cache do teste anterior
   EMAIL = "sem-vinculo@promobrindes.com.br";
   const r = await call({ operation: "select", table: "companies" });
-  assertEquals(r.status, 403);
-  assert(String(r.body.error).includes("não está vinculado"), JSON.stringify(r.body));
-  assertEquals(lastData(r.calls, "companies"), "");
+  assertEquals(r.status, 200, JSON.stringify(r.body));
+  const u = lastData(r.calls, "companies");
+  assert(u.includes("or=(user_id.is.null)") && !u.includes("user_id.eq."), u);
+  const e = await call({ operation: "search", table: "contact_emails", search: { column: "email", term: "a" } });
+  const eu = lastData(e.calls, "contact_emails");
+  assert(eu.includes("contacts!inner(user_id)") && eu.includes("contacts.or=(user_id.is.null)") && !eu.includes(".eq."), eu);
+  const c = await call({ operation: "select", table: "customers" });
+  assert(lastData(c.calls, "customers").includes("or=(vendedor_id.is.null)"), lastData(c.calls, "customers"));
 });
 
 Deno.test("supervisor NÃO recebe filtro de dono", async () => {
   reset(); ROLE = "supervisor";
   const r = await call({ operation: "search", table: "companies", search: { column: "name", term: "abc" } });
   assertEquals(r.status, 200);
-  assert(!lastData(r.calls, "companies").includes("user_id=eq."));
+  assert(!lastData(r.calls, "companies").includes("user_id."), lastData(r.calls, "companies"));
 });
 
 Deno.test("escrita por vendedor continua 403", async () => {
@@ -131,7 +136,7 @@ Deno.test("papel nulo / desconhecido cai em vendedor (com filtro de dono), nunca
     reset(); ROLE = role;
     const r = await call({ operation: "select", table: "companies" });
     assertEquals(r.status, 200, String(role));
-    assert(lastData(r.calls, "companies").includes(`user_id=eq.${CRM_UID}`), `${role}: ${lastData(r.calls, "companies")}`);
+    assert(lastData(r.calls, "companies").includes(`or=(user_id.eq.${CRM_UID},user_id.is.null)`), `${role}: ${lastData(r.calls, "companies")}`);
   }
 });
 
@@ -148,17 +153,18 @@ Deno.test("e-mail com curinga do PostgREST (*) não vincula ao usuário do CRM d
   // o ilike do PostgREST trata * como %: o CRM devolve o usuário de OUTRO e-mail
   CRM_USERS = [{ id: CRM_UID, email: "diretor@promobrindes.com.br" }];
   const r = await call({ operation: "select", table: "companies" });
-  assertEquals(r.status, 403);
-  assert(String(r.body.error).includes("não está vinculado"), JSON.stringify(r.body));
-  assertEquals(lastData(r.calls, "companies"), "");
+  assertEquals(r.status, 200);
+  const u = lastData(r.calls, "companies");
+  assert(u.includes("or=(user_id.is.null)") && !u.includes(CRM_UID), u); // nunca os do diretor
 });
 
-Deno.test("dois usuários do CRM com o mesmo e-mail → ambíguo → 403, sem consultar a tabela", async () => {
+Deno.test("dois usuários do CRM com o mesmo e-mail → ambíguo → sem vínculo: só os sem dono", async () => {
   reset(); EMAIL = "duplicado@promobrindes.com.br";
   CRM_USERS = [{ id: CRM_UID }, { id: "44444444-4444-4444-8444-444444444444" }];
   const r = await call({ operation: "search", table: "contacts", search: { column: "name", term: "x" } });
-  assertEquals(r.status, 403);
-  assertEquals(lastData(r.calls, "contacts"), "");
+  assertEquals(r.status, 200);
+  const u = lastData(r.calls, "contacts");
+  assert(u.includes("or=(user_id.is.null)") && !u.includes(CRM_UID) && !u.includes("44444444"), u);
 });
 
 Deno.test("cache do vínculo: mesmo e-mail não reconsulta; e-mail trocado reconsulta e usa o novo id", async () => {
@@ -172,7 +178,7 @@ Deno.test("cache do vínculo: mesmo e-mail não reconsulta; e-mail trocado recon
   EMAIL = "cache-b@promobrindes.com.br"; CRM_USERS = [{ id: NEW_UID }];
   const r3 = await call({ operation: "select", table: "companies" });
   assertEquals(usersLookups(r3.calls).length, 1);
-  assert(lastData(r3.calls, "companies").includes(`user_id=eq.${NEW_UID}`), lastData(r3.calls, "companies"));
+  assert(lastData(r3.calls, "companies").includes(`or=(user_id.eq.${NEW_UID},user_id.is.null)`), lastData(r3.calls, "companies"));
 });
 
 Deno.test("batch: filtro do cliente em user_id não sobrepõe o escopo (AND com o dono)", async () => {
@@ -181,36 +187,36 @@ Deno.test("batch: filtro do cliente em user_id não sobrepõe o escopo (AND com 
     { table: "contacts", filters: { user_id: "99999999-9999-4999-8999-999999999999" } },
   ] });
   const u = lastData(r.calls, "contacts");
-  assert(u.includes(`user_id=eq.${CRM_UID}`), u);
+  assert(u.includes(`or=(user_id.eq.${CRM_UID},user_id.is.null)`), u);
 });
 
 Deno.test("search em contacts e contact_emails (vendedor) aplica o escopo", async () => {
   reset();
   const c = await call({ operation: "search", table: "contacts", search: { column: "name", term: "ana" } });
   assertEquals(c.status, 200);
-  assert(lastData(c.calls, "contacts").includes(`user_id=eq.${CRM_UID}`), lastData(c.calls, "contacts"));
+  assert(lastData(c.calls, "contacts").includes(`or=(user_id.eq.${CRM_UID},user_id.is.null)`), lastData(c.calls, "contacts"));
   const e = await call({ operation: "search", table: "contact_emails", search: { column: "email", term: "ana" } });
   assertEquals(e.status, 200);
   const u = lastData(e.calls, "contact_emails");
-  assert(u.includes("contacts!inner(user_id)") && u.includes(`contacts.user_id=eq.${CRM_UID}`), u);
+  assert(u.includes("contacts!inner(user_id)") && u.includes(`contacts.or=(user_id.eq.${CRM_UID},user_id.is.null)`), u);
 });
 
-Deno.test("customers: vendedor só vê os dele (vendedor_id) em select/search/batch; filtro por company_id aceito; supervisor lê tudo", async () => {
+Deno.test("customers: vendedor vê os dele + sem dono (vendedor_id) em select/search/batch; filtro por company_id aceito; supervisor lê tudo", async () => {
   reset();
   const s = await call({ operation: "select", table: "customers", filters: { company_id: "c1" } });
   assertEquals(s.status, 200, JSON.stringify(s.body));
   const su = lastData(s.calls, "customers");
-  assert(su.includes(`vendedor_id=eq.${CRM_UID}`) && su.includes("company_id=eq.c1"), su);
+  assert(su.includes(`or=(vendedor_id.eq.${CRM_UID},vendedor_id.is.null)`) && su.includes("company_id=eq.c1"), su);
   const q = await call({ operation: "search", table: "customers", search: { column: "name", term: "x" } });
   assertEquals(q.status, 200);
-  assert(lastData(q.calls, "customers").includes(`vendedor_id=eq.${CRM_UID}`), lastData(q.calls, "customers"));
+  assert(lastData(q.calls, "customers").includes(`or=(vendedor_id.eq.${CRM_UID},vendedor_id.is.null)`), lastData(q.calls, "customers"));
   const b = await call({ operation: "batch", queries: [{ table: "customers" }] });
   assertEquals(b.body.results[0].success, true, JSON.stringify(b.body));
-  assert(lastData(b.calls, "customers").includes(`vendedor_id=eq.${CRM_UID}`), lastData(b.calls, "customers"));
+  assert(lastData(b.calls, "customers").includes(`or=(vendedor_id.eq.${CRM_UID},vendedor_id.is.null)`), lastData(b.calls, "customers"));
   // filtro do cliente em vendedor_id de OUTRO não amplia: os dois filtros somam (AND)
   const o = await call({ operation: "select", table: "customers", filters: { vendedor_id: "outro" } });
   const ou = lastData(o.calls, "customers");
-  assert(ou.includes(`vendedor_id=eq.${CRM_UID}`), ou);
+  assert(ou.includes(`or=(vendedor_id.eq.${CRM_UID},vendedor_id.is.null)`), ou);
   reset(); ROLE = "supervisor";
   const ok = await call({ operation: "select", table: "customers", filters: { company_id: "c1" } });
   assertEquals(ok.status, 200);
