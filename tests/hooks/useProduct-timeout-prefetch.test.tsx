@@ -98,4 +98,31 @@ describe('usePrefetchProduct', () => {
     await waitFor(() => expect(result.current.data).toEqual(product));
     expect(fetchProductById).toHaveBeenCalledTimes(1);
   });
+  it('PDP aberta com o prefetch ainda pendente também sai do skeleton pelo timeout', async () => {
+    const realSetTimeout = globalThis.setTimeout;
+    // Timeout (15 s) e backoff do React Query (2 s, 4 s) disparam na hora;
+    // timers curtos (waitFor) seguem normais.
+    const spy = vi
+      .spyOn(globalThis, 'setTimeout')
+      .mockImplementation(((fn: () => void, ms?: number) =>
+        realSetTimeout(fn, (ms ?? 0) >= 2_000 ? 0 : ms)) as typeof setTimeout);
+    try {
+      fetchProductById.mockImplementation(() => new Promise(() => {}));
+      const client = new QueryClient();
+      const wrapper = wrapperFor(client);
+      const { result: prefetch } = renderHook(() => usePrefetchProduct(), { wrapper });
+      void prefetch.current.prefetchProduct('p-9');
+      const { result } = renderHook(() => useProduct('p-9'), { wrapper });
+      // waitFor detectaria o setTimeout espionado como fake timer; polling manual.
+      for (let i = 0; i < 100 && !result.current.isError; i++) {
+        await act(async () => {
+          await new Promise((r) => realSetTimeout(r, 20));
+        });
+      }
+      expect(result.current.isError).toBe(true);
+      expect(result.current.isLoading).toBe(false);
+    } finally {
+      spy.mockRestore();
+    }
+  });
 });
