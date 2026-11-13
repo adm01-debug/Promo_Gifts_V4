@@ -1124,6 +1124,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check | status |
 |---|---|---|---|---|---|---|---|
 | `20261107180000` | `ad43364e7897bf5cc075d3cefa6328f919f36806c35d6b765572c4d1b5625914` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-08 04:17:21 UTC | job post-check da run 42444391386 confirmou a version no ledger | aplicada |
+| `20261112011000` | `8e081152c457ed572cb3aa349f62027bc7cd461996bb8036f499efb12af6a449` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 00:31:48 UTC | job post-check da run 43233358789 confirmou a version no ledger | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
