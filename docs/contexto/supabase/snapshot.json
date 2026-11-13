@@ -178206,10 +178206,10 @@
         },
         "comment": "Bounded, field-minimized public sitemap API. Underlying views remain private.",
         "config": [
-          "search_path=public"
+          "search_path=public, pg_catalog, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "2838b6fd1f49c722",
+        "definition_sha": "d129baa7c18054d0",
         "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -235953,6 +235953,12 @@
         "statements": 1,
         "statements_sha": "1ad01b55e10c6cd9",
         "version": "20261108223100"
+      },
+      {
+        "name": "restore_get_sitemap_public_anon_execute",
+        "statements": 2,
+        "statements_sha": "4bec1c238482ac76",
+        "version": "20261111191000"
       },
       {
         "name": "fix_sb0003_fn_get_rupture_alerts",

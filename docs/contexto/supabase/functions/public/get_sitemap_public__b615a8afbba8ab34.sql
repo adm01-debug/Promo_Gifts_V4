@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.get_sitemap_public(p_limit integer DEFAULT 100
  RETURNS TABLE(url_type text, url_path text, identifier text, title text, lastmod timestamp with time zone, priority numeric, changefreq text, image_url text)
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
- SET search_path TO 'public'
+ SET search_path TO 'public', 'pg_catalog', 'pg_temp'
 AS $function$
 BEGIN
   IF p_limit IS NULL OR p_limit NOT BETWEEN 1 AND 1000 THEN

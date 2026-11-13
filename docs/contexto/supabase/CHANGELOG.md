@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-13 12:46 UTC
+
+- **functions** alterado (1): `public.get_sitemap_public(p_limit integer, p_offset integer)`
+- **migrations** adicionado (1): `20261111191000_restore_get_sitemap_public_anon_execute`
+
 ## 2026-11-13 08:50 UTC
 
 - **functions** removido (1): `public.perf002_drop_unused_snapshot_indexes()`
