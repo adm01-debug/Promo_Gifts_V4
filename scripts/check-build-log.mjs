@@ -9,6 +9,7 @@
  * Usado por: npm run ci:build:warnings (step "Build warnings gate" no CI)
  */
 import { readFileSync, existsSync } from "node:fs";
+import { missingPrerequisite } from "./lib/missing-prerequisite.mjs";
 
 const LOG_PATH = "build.log";
 
@@ -35,8 +36,10 @@ const allowedExceptions = [
 ];
 
 if (!existsSync(LOG_PATH)) {
-  console.log(`[check-build-log] static-pass: ${LOG_PATH} ausente; verificação de warnings ignorada.`);
-  process.exit(0);
+  missingPrerequisite('check-build-log', `${LOG_PATH} ausente`, {
+    exitCode: 1,
+    hint: 'Execute o build antes deste step.',
+  });
 }
 
 const content = readFileSync(LOG_PATH, "utf8");

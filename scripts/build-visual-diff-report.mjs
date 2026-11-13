@@ -45,7 +45,13 @@ function walk(dir) {
   return out;
 }
 
-const all = walk(resultsDir);
+let all;
+try {
+  all = walk(resultsDir);
+} catch (err) {
+  console.error(`[visual-diff] erro ao ler ${resultsDir}: ${err.message}`);
+  process.exit(1);
+}
 const groups = new Map();
 for (const file of all) {
   const b = basename(file);
@@ -58,7 +64,12 @@ for (const file of all) {
   groups.set(key, g);
 }
 
-mkdirSync(assetsDir, { recursive: true });
+try {
+  mkdirSync(assetsDir, { recursive: true });
+} catch (err) {
+  console.error(`[visual-diff] erro ao criar ${assetsDir}: ${err.message}`);
+  process.exit(1);
+}
 
 const rows = [];
 let idx = 0;

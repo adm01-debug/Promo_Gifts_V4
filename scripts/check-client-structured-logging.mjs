@@ -58,18 +58,25 @@ const LOGGER_IMPORT_RE =
 function checkFile(rel) {
   const abs = resolve(ROOT, rel);
   if (!existsSync(abs)) return { rel, ok: false, missing: true };
-  const src = readFileSync(abs, 'utf8');
+  let src;
+  try {
+    src = readFileSync(abs, 'utf8');
+  } catch (err) {
+    return { rel, ok: false, missing: false, unreadable: true, error: err.message };
+  }
   return { rel, ok: LOGGER_IMPORT_RE.test(src), missing: false };
 }
 
 function main() {
   const violations = [];
   const missingFiles = [];
+  const unreadableFiles = [];
 
   for (const rel of CRITICAL_MODULES) {
     if (LEGACY_ALLOWLIST.has(rel)) continue;
     const res = checkFile(rel);
     if (res.missing) missingFiles.push(rel);
+    else if (res.unreadable) unreadableFiles.push(res);
     else if (!res.ok) violations.push(rel);
   }
 
@@ -82,6 +89,11 @@ function main() {
     console.error(
       '\n   → Atualize CRITICAL_MODULES em scripts/check-client-structured-logging.mjs.',
     );
+    exit = 1;
+  }
+  if (unreadableFiles.length) {
+    console.error('\n⚠️  Arquivos CRITICAL_MODULES não puderam ser lidos:');
+    for (const f of unreadableFiles) console.error(`   • ${f.rel} (${f.error})`);
     exit = 1;
   }
   if (violations.length) {

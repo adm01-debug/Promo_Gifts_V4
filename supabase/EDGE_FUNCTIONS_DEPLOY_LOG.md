@@ -941,6 +941,29 @@ manualmente, no mesmo dia, com o método `emergência-MCP`.
 | 2026-11-09T18:02:24.431Z | `webhook-inbound` | 305 | `c1d47d13bee8089eb62e3c47db1b7b500dcf1042` | 42665634216 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-11-09T18:02:24.456Z | `word-magic` | 129 | `c1d47d13bee8089eb62e3c47db1b7b500dcf1042` | 42665634216 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-11-09T18:02:24.482Z | `xbz-image-uploader` | 6 | `c1d47d13bee8089eb62e3c47db1b7b500dcf1042` | 42665634216 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-12T12:40:55.857Z | `force-global-logout` | 287 | `5f956d2cf110e10da489774bbca3b12413c24039` | 43208862484 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-12T13:08:21.592Z | `anonymize-user` | 24 | `5f956d2cf110e10da489774bbca3b12413c24039` | 43220840669 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-12T13:39:44.510Z | `block-ip-temporarily` | 298 | `5f956d2cf110e10da489774bbca3b12413c24039` | 43222359412 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-12T14:51:54.098Z | `collections-watcher` | 309 | `5f956d2cf110e10da489774bbca3b12413c24039` | 43225790050 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-12T16:42:45.940Z | `crm-callback-alerts` | 83 | `e9a4a1aa14b61c3a6f54f7023115beaec1879440` | 43234420110 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-12T19:34:30.070Z | `crm-callback-reprocess` | 82 | `e9a4a1aa14b61c3a6f54f7023115beaec1879440` | 43249636867 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-12T21:49:02.983Z | `detect-new-device` | 286 | `e9a4a1aa14b61c3a6f54f7023115beaec1879440` | 43269026701 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T00:23:59.573Z | `favorites-watcher` | 318 | `e9a4a1aa14b61c3a6f54f7023115beaec1879440` | 43300457386 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T02:08:38.505Z | `manage-users` | 279 | `fee3d0937cdaa5ff1cf93af07c38cfc8dedb902a` | 43328063480 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T03:06:04.537Z | `expert-chat` | 270 | `fee3d0937cdaa5ff1cf93af07c38cfc8dedb902a` | 43341490728 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T03:44:44.418Z | `external-db-inspect` | 297 | `0f00ba1670810c8cd6cdd05ce28e6cbe198af094` | 43353591555 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T04:07:43.326Z | `github-credentials-test` | 288 | `0f5934a29cea709b434a918aa2caf9a6d1fdad97` | 43359241306 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T04:25:38.638Z | `materials-api` | 287 | `0f5934a29cea709b434a918aa2caf9a6d1fdad97` | 43361514625 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T04:29:22.759Z | `ownership-audit` | 305 | `0f5934a29cea709b434a918aa2caf9a6d1fdad97` | 43363888963 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T04:38:16.620Z | `sync-quote-bitrix` | 288 | `fd9c4eec24b2a45d956acf62e090a02925287a1e` | 43365629888 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T04:39:52.280Z | `full-op-diagnostics` | 273 | `fd9c4eec24b2a45d956acf62e090a02925287a1e` | 43366856238 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T04:41:23.348Z | `mcp-keys-issue` | 286 | `fd9c4eec24b2a45d956acf62e090a02925287a1e` | 43367027942 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T04:43:04.935Z | `mcp-keys-rotate` | 282 | `fd9c4eec24b2a45d956acf62e090a02925287a1e` | 43367167195 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T04:46:41.178Z | `mcp-keys-update` | 290 | `fd9c4eec24b2a45d956acf62e090a02925287a1e` | 43367365205 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T04:49:58.168Z | `product-webhook` | 277 | `fd9c4eec24b2a45d956acf62e090a02925287a1e` | 43367720509 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T04:51:51.422Z | `secure-upload` | 290 | `fd9c4eec24b2a45d956acf62e090a02925287a1e` | 43368069854 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T04:56:56.897Z | `validate-access` | 291 | `fd9c4eec24b2a45d956acf62e090a02925287a1e` | 43368287488 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T04:59:43.954Z | `verify-2fa-token` | 197 | `fd9c4eec24b2a45d956acf62e090a02925287a1e` | 43368850157 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 
 ## Retro-registro (casos anteriores a este ledger, E67)
 

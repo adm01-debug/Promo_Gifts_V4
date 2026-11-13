@@ -10,7 +10,14 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import type { KitState } from '@/lib/kit-builder';
+import type {
+  KitState,
+  KitBox,
+  KitItem,
+  KitPersonalization,
+  KitIdentity,
+  KitType,
+} from '@/lib/kit-builder';
 import { logger } from '@/lib/logger';
 import {
   buildKitPersistencePayload,
@@ -20,6 +27,17 @@ import {
 
 const AUTO_SAVE_DELAY_MS = 5000;
 const LS_BACKUP_KEY_PREFIX = 'kit-builder-unload-backup';
+
+export interface BackupFullState {
+  name: string;
+  kitType: KitType;
+  box: KitBox | null;
+  items: KitItem[];
+  personalization: KitPersonalization;
+  identity?: KitIdentity;
+  notes?: string;
+  qty: number;
+}
 
 interface AutoSaveResult {
   lastSavedAt: Date | null;
@@ -36,7 +54,20 @@ interface AutoSaveResult {
   /** Supersedes any failed automatic operation after a successful explicit save. */
   acknowledgeManualSave: (kitId: string, revision: number) => void;
   /** Reads and clears the localStorage backup written on beforeunload, if any. */
-  consumeUnloadBackup: () => { kitId: string | null; snapshot: string; savedAt: number } | null;
+  consumeUnloadBackup: () => {
+    kitId: string | null;
+    snapshot: string;
+    savedAt: number;
+    revision?: number | null;
+    fullState?: BackupFullState;
+  } | null;
+  /** Re-persists a backup to localStorage (use before cross-kit navigation to preserve fullState). */
+  persistUnloadBackup: (backup: {
+    kitId: string | null;
+    snapshot: string;
+    savedAt: number;
+    fullState?: BackupFullState;
+  }) => void;
 }
 
 export function useKitAutoSave(
@@ -92,6 +123,9 @@ export function useKitAutoSave(
   const revisionRef = useRef<number | null>(currentRevision);
   const enabledRef = useRef(enabled);
   const contextRef = useRef(context);
+  // Set to true by persistUnloadBackup immediately before cross-kit navigation
+  // so the beforeunload handler won't overwrite the just-persisted backup.
+  const suppressNextUnloadBackupRef = useRef(false);
 
   // Update mutable callback inputs only after React commits the render. Writing
   // refs during render can leak an abandoned concurrent render into a timer.
@@ -300,14 +334,31 @@ export function useKitAutoSave(
       // Only write backup when there is a pending unsaved edit (timer still
       // scheduled or save in-flight) to avoid overwriting a clean saved state.
       if (!timerRef.current && !saveInFlightRef.current && !saveQueuedRef.current) return;
+      if (suppressNextUnloadBackupRef.current) {
+        suppressNextUnloadBackupRef.current = false;
+        return;
+      }
       try {
         const key = `${LS_BACKUP_KEY_PREFIX}-${user.id}`;
+        const ks = kitStateRef.current;
+        const fullState: BackupFullState = {
+          name: ks.name,
+          kitType: ks.kitType,
+          box: ks.box,
+          items: ks.items,
+          personalization: ks.personalization,
+          identity: ks.identity,
+          notes: ks.notes,
+          qty: kitQuantityRef.current,
+        };
         localStorage.setItem(
           key,
           JSON.stringify({
             kitId: autoSavedKitIdRef.current,
             snapshot: snapshotRef.current,
             savedAt: Date.now(),
+            revision: revisionRef.current,
+            fullState,
           }),
         );
       } catch {
@@ -338,11 +389,36 @@ export function useKitAutoSave(
       const raw = localStorage.getItem(key);
       if (!raw) return null;
       localStorage.removeItem(key);
-      return JSON.parse(raw) as { kitId: string | null; snapshot: string; savedAt: number };
+      return JSON.parse(raw) as {
+        kitId: string | null;
+        snapshot: string;
+        savedAt: number;
+        revision?: number | null;
+        fullState?: BackupFullState;
+      };
     } catch {
       return null;
     }
   }, [user?.id]);
+
+  const persistUnloadBackup = useCallback(
+    (backup: {
+      kitId: string | null;
+      snapshot: string;
+      savedAt: number;
+      fullState?: BackupFullState;
+    }) => {
+      if (!user?.id) return;
+      try {
+        const key = `${LS_BACKUP_KEY_PREFIX}-${user.id}`;
+        suppressNextUnloadBackupRef.current = true;
+        localStorage.setItem(key, JSON.stringify(backup));
+      } catch {
+        // localStorage indisponível — falha silenciosa
+      }
+    },
+    [user?.id],
+  );
 
   return {
     lastSavedAt,
@@ -354,5 +430,6 @@ export function useKitAutoSave(
     cancelPendingSave,
     acknowledgeManualSave,
     consumeUnloadBackup,
+    persistUnloadBackup,
   };
 }

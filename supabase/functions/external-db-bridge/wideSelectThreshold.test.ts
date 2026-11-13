@@ -11,7 +11,7 @@ import {
   resolveProductsSelect,
   WIDE_SELECT_COLUMN_THRESHOLD,
   logSelectDecision,
-} from "./legacy-contracts.ts";
+} from "../tests/external-db-bridge/legacy-contracts.ts";
 
 function buildSelect(n: number): string {
   // Usa nomes neutros (col_N) que NÃO estão em HEAVY_PRODUCT_COLUMNS,

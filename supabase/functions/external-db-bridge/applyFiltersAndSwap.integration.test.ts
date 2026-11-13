@@ -22,7 +22,7 @@ import { assertEquals, assert } from "https://deno.land/std@0.224.0/assert/mod.t
 import {
   applyFilters,
   resolveProductsSelect,
-} from "./legacy-contracts.ts";
+} from "../tests/external-db-bridge/legacy-contracts.ts";
 
 // ────────────────────────────────────────────────────────────────────────────
 // 1) Query-builder spy — registra TODA chamada de método encadeado.

@@ -152,6 +152,17 @@ for (const [expected, input] of cases) {
   check(out.code === expected, { msg: `alcançabilidade falhou: esperado ${expected}, veio ${out.code}`, input });
 }
 
+// Guarda contra falso-positivo vacuoso: se uma regressão futura esvaziar o
+// loop de fuzz ou a lista de casos canônicos, `fails` continua vazio e o
+// gate reportaria sucesso sem ter verificado nada de fato. Não usa `check()`
+// para não contaminar a contagem de asserções do fuzzer.
+const EXPECTED_ASSERTS = 2000 * (3 + LEAK_PATTERNS.length) + cases.length;
+if (asserts !== EXPECTED_ASSERTS) {
+  fails.push({
+    msg: `contagem de asserções inesperada (gate pode estar rodando vazio): esperado ${EXPECTED_ASSERTS}, veio ${asserts}`,
+  });
+}
+
 console.log(`\n=== Fuzz mapCnpjError ===`);
 console.log(`Iterações: 2000 + ${cases.length} canônicos`);
 console.log(`Asserções: ${asserts.toLocaleString()}`);

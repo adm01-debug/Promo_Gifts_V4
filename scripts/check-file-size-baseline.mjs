@@ -32,7 +32,9 @@ function collectOversized() {
   for (const file of walkSrc(ROOT)) {
     const rel = relative(ROOT, file);
     if (GENERATED_FILES.has(rel)) continue;
-    const lines = readFileSync(file, 'utf8').split('\n').length;
+    // Linhas reais: o '\n' final não abre uma linha nova (arquivo de 500 linhas contava 501).
+    const text = readFileSync(file, 'utf8');
+    const lines = text.length === 0 ? 0 : text.split('\n').length - (text.endsWith('\n') ? 1 : 0);
     if (lines > MAX_LINES) sizes[rel] = lines;
   }
   return sizes;
