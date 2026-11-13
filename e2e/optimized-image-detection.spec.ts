@@ -1,15 +1,18 @@
 import { test, expect } from '@playwright/test';
 import { gotoAndSettle } from './helpers/nav';
+import { devOnlyRouteReason, isProductionBuild } from './helpers/dev-only-route';
 
 /**
  * E2E tests for OptimizedImage detection logic and placeholder generation.
  * Validates Cloudflare imagedelivery.net handling and other CDN providers.
  *
- * A rota /debug/images é pública (sem ProtectedRoute) em todos os ambientes.
+ * A rota /debug/images é pública (sem ProtectedRoute), mas só montada em dev
+ * (import.meta.env.DEV): contra build de produção o grupo é pulado.
  * Executa no project chromium-public (chromium, sem auth).
  */
 test.describe('OptimizedImage Detection & Placeholders', () => {
   const DEMO_URL = '/debug/images';
+  test.skip(isProductionBuild, devOnlyRouteReason(DEMO_URL));
 
   test.beforeEach(async ({ page }) => {
     await gotoAndSettle(page, DEMO_URL);
