@@ -379,7 +379,12 @@ function LogoCard({ m }: { m: MagicUpStateReturn }) {
                     loading="lazy"
                   />
                 </div>
-                <Button variant="outline" size="sm" type="button">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  type="button"
+                  onClick={() => document.getElementById('magic-logo-upload')?.click()}
+                >
                   Trocar logo
                 </Button>
               </>
@@ -584,7 +589,9 @@ function GenerateButton({ m }: { m: MagicUpStateReturn }) {
       <label
         className={cn(
           'flex cursor-pointer items-center justify-between gap-3 rounded-lg border px-3 py-2 transition-colors',
-          m.fastMode ? 'border-warning/60 bg-warning/10' : 'border-border bg-muted/30 hover:bg-muted/50',
+          m.fastMode
+            ? 'border-warning/60 bg-warning/10'
+            : 'border-border bg-muted/30 hover:bg-muted/50',
         )}
       >
         <div className="flex items-center gap-2 text-sm">
@@ -592,7 +599,9 @@ function GenerateButton({ m }: { m: MagicUpStateReturn }) {
           <div className="flex flex-col">
             <span className="font-medium">
               Modo Rápido{' '}
-              {m.fastMode && <span className="text-xs font-normal text-warning">(Nano Banana)</span>}
+              {m.fastMode && (
+                <span className="text-xs font-normal text-warning">(Nano Banana)</span>
+              )}
             </span>
             <span className="text-[11px] leading-tight text-muted-foreground">
               {m.fastMode
