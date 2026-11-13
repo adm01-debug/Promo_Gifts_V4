@@ -13,7 +13,7 @@
  * (provavelmente por re-geração do Lovable). Sem esta guarda, o CI
  * "passaria" rodando 0 specs e mascararia a perda de cobertura.
  */
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const ROOT = resolve(process.cwd());
@@ -27,7 +27,18 @@ const REQUIRED_FILES = [
 const ROUTE_FILE = 'src/routes/AppRoutes.tsx';
 const ROUTE_MARKERS = ['PreviewButtonHarness', '/__visual/preview-button'];
 
-const missing = REQUIRED_FILES.filter((p) => !existsSync(resolve(ROOT, p)));
+// Checa arquivo regular (não diretório): um revert silencioso pode deixar um
+// diretório vazio no lugar do arquivo esperado, e existsSync() sozinho
+// considera isso "presente", mascarando a perda real do arquivo.
+function isFile(path) {
+  try {
+    return statSync(path).isFile();
+  } catch {
+    return false;
+  }
+}
+
+const missing = REQUIRED_FILES.filter((p) => !isFile(resolve(ROOT, p)));
 
 if (missing.length > 0) {
   console.error('\n❌ Suíte visual do botão Preview INCOMPLETA. Arquivos ausentes:');
@@ -38,9 +49,12 @@ if (missing.length > 0) {
   process.exit(1);
 }
 
-const routeSrc = existsSync(resolve(ROOT, ROUTE_FILE))
-  ? readFileSync(resolve(ROOT, ROUTE_FILE), 'utf8')
-  : '';
+let routeSrc = '';
+try {
+  routeSrc = isFile(resolve(ROOT, ROUTE_FILE)) ? readFileSync(resolve(ROOT, ROUTE_FILE), 'utf8') : '';
+} catch {
+  routeSrc = '';
+}
 const routeMissing = ROUTE_MARKERS.filter((m) => !routeSrc.includes(m));
 if (routeMissing.length > 0) {
   console.error(`\n❌ ${ROUTE_FILE} não registra a rota visual. Marcadores ausentes:`);

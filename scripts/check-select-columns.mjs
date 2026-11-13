@@ -108,7 +108,14 @@ function extractSelectCalls(content) {
   let match;
   while ((match = fromRe.exec(content))) {
     const table = match[1];
-    const windowEnd = Math.min(content.length, match.index + 600);
+    // A janela termina no próximo `.from(` — senão um `.from('a').delete()`
+    // seguido de `.from('b').select('x')` atribuiria as colunas de `b` a `a`.
+    const nextFrom = content.indexOf('.from(', match.index + match[0].length);
+    const windowEnd = Math.min(
+      content.length,
+      match.index + 600,
+      nextFrom === -1 ? Infinity : nextFrom,
+    );
     const window = content.slice(match.index, windowEnd);
     const selectMatch = /\.select\(\s*['"]([^'"]*)['"]/s.exec(window);
     if (!selectMatch) continue;

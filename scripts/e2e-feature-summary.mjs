@@ -26,6 +26,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { missingPrerequisite } from "./lib/missing-prerequisite.mjs";
 
 const C = {
   reset: "\x1b[0m",
@@ -41,8 +42,10 @@ const REPORT = process.env.E2E_RESULTS_JSON || "playwright-report/results.json";
 const TOP_N = Math.max(1, Number(process.env.E2E_SUMMARY_TOP) || 5);
 
 if (!fs.existsSync(REPORT)) {
-  console.log(`[e2e-summary] static-pass: ${REPORT} ausente; resumo ignorado.`);
-  process.exit(0);
+  missingPrerequisite('e2e-summary', `${REPORT} ausente`, {
+    exitCode: 2,
+    hint: 'Rode antes: npm run test:e2e:smoke (ou regression).',
+  });
 }
 
 let raw;

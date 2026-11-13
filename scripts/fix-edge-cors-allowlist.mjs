@@ -39,14 +39,26 @@ for (const fn of FILES) {
 
   // Só age se o arquivo referencia `corsHeaders` mas não declara.
   const hasReference = /(?<![\w.\$"'`])corsHeaders(?![\w$])/.test(src);
-  const hasDeclaration = /(?:const|let|var)\s+corsHeaders\b/.test(src);
+  const hasDeclaration =
+    /(?:const|let|var)\s+corsHeaders\b/.test(src) ||
+    // BUG FIX: `import { corsHeaders } from "..."` também é uma declaração
+    // (sem isso, o script duplicava o binding e quebrava o arquivo com
+    // "Identifier 'corsHeaders' has already been declared").
+    /import\s*\{[^}]*\bcorsHeaders\b[^}]*\}\s*from/.test(src);
   if (!hasReference || hasDeclaration) continue;
 
   // Insere declaração logo após o último import.
   const lines = src.split("\n");
   let lastImport = -1;
   for (let i = 0; i < lines.length; i++) {
-    if (/^\s*import\s/.test(lines[i])) lastImport = i;
+    if (/^\s*import\s/.test(lines[i])) {
+      // BUG FIX: um `import { ... }` multilinha só termina na linha com
+      // `;` — inserir logo na linha `import {` quebrava a sintaxe (o
+      // `const corsHeaders = ...` ficava dentro das chaves do import).
+      let end = i;
+      while (!/;\s*$/.test(lines[end]) && end < lines.length - 1) end++;
+      lastImport = end;
+    }
   }
   const decl =
     `\n// CORS allowlist — reflete Origin via _shared/cors.ts (fallback ao domínio canônico)\n` +

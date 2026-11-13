@@ -63,6 +63,11 @@ function tokensOf(slug) {
 }
 
 function findCandidates(slug, migFiles) {
+  // Slug vazio (ex.: draft "20260627_.sql") não carrega nenhum sinal de
+  // comparação: `nameLc.includes('')` é sempre true e faria TODO arquivo de
+  // supabase/migrations/ aparecer como "🎯 slug exato", mascarando um draft
+  // órfão e furando o gate de revisão em --check.
+  if (!slug) return [];
   const wanted = tokensOf(slug);
   const wantedLc = wanted.map((t) => t.toLowerCase());
   const scored = [];
@@ -129,6 +134,10 @@ function versionOf(migFile) {
 function main() {
   if (!existsSync(DRAFT_DIR)) {
     console.error(`[drafts-map] diretório inexistente: ${DRAFT_DIR}`);
+    process.exit(1);
+  }
+  if (!existsSync(MIG_DIR)) {
+    console.error(`[drafts-map] diretório inexistente: ${MIG_DIR}`);
     process.exit(1);
   }
   const drafts = readdirSync(DRAFT_DIR).filter((f) => f.endsWith('.sql')).sort();

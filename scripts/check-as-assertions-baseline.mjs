@@ -23,15 +23,27 @@ import { runBaselineGate, walkSrc } from './lib/baseline-gate.mjs';
 // Cast multi-linha exige tipo PascalCase: a alternativa `[ \t]+` cobre o
 // caso na mesma linha (qualquer case, como antes); `\s+` seguido de
 // maiúscula cobre `as\nTipo` sem contar prosa quebrada ("todas as\ncred.").
+// Remover também o CONTEÚDO de strings '...'/"..." (confirmado em auditoria
+// adversarial: prosa pt-BR em string de produção, ex. "Verifique as
+// credenciais" em ConnectionErrorDetailsDialog.tsx, era contada como
+// assertion — falso positivo do gate, 0 casts reais) e a cláusula de
+// import/export com alias (`import * as React from '...'`, `import {
+// History as HistoryIcon } from '...'`, `export { Foo as Bar } from
+// '...'`) — `as` aqui é rename de módulo, não type assertion; confirmado
+// em 79+125 arquivos reais do repo.
 const AS_RE =
   /\bas[ \t]+(?!const\b|unknown\b|any\b)[A-Za-z_$]|\bas\s+(?=[A-Z])(?!const\b|unknown\b|any\b)[A-Za-z_$]/g;
+const IMPORT_EXPORT_FROM_RE = /\b(?:import|export)\b[^;]*?\bfrom\s*['"][^'"]*['"]/g;
 
 function scanAsAssertions(root) {
   const counts = new Map();
   for (const file of walkSrc(root)) {
     const text = readFileSync(file, 'utf8')
       .replace(/\/\*[\s\S]*?\*\//g, ' ')
-      .replace(/(^|[^:'"`])\/\/[^\n]*/g, '$1');
+      .replace(/(^|[^:'"`])\/\/[^\n]*/g, '$1')
+      .replace(IMPORT_EXPORT_FROM_RE, '')
+      .replace(/"(?:[^"\\\n]|\\.)*"/g, '""')
+      .replace(/'(?:[^'\\\n]|\\.)*'/g, "''");
     const matches = text.match(AS_RE);
     if (matches?.length) counts.set(relative(root, file), matches.length);
   }

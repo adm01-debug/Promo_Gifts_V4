@@ -66,7 +66,17 @@ const findings = [];
 for (const file of DEV_TEST_ENV_FILES) {
   const path = join(ROOT, file);
   if (!existsSync(path)) continue; // ok — não existe ainda (ver docs do incidente 2026-10-13)
-  const content = readFileSync(path, 'utf-8');
+  let content;
+  try {
+    content = readFileSync(path, 'utf-8');
+  } catch (err) {
+    // Fail-closed: arquivo existe mas não pôde ser lido (permissão negada,
+    // é um diretório, etc.) — não dá pra confirmar ausência de leak, então
+    // falha o gate com mensagem clara em vez de estourar stack trace crua.
+    hasLeak = true;
+    findings.push(`❌ ${file} não pôde ser lido (${err.code || err.message}) — não foi possível verificar vazamento de ref de produção.`);
+    continue;
+  }
   if (content.includes(PROD_REF)) {
     hasLeak = true;
     findings.push(
@@ -78,7 +88,16 @@ for (const file of DEV_TEST_ENV_FILES) {
 for (const file of CONFIG_FILES_TO_SCAN) {
   const path = join(ROOT, file);
   if (!existsSync(path)) continue;
-  const content = stripComments(readFileSync(path, 'utf-8'));
+  let rawContent;
+  try {
+    rawContent = readFileSync(path, 'utf-8');
+  } catch (err) {
+    // Fail-closed: mesmo motivo do loop acima.
+    hasLeak = true;
+    findings.push(`❌ ${file} não pôde ser lido (${err.code || err.message}) — não foi possível verificar vazamento de ref de produção.`);
+    continue;
+  }
+  const content = stripComments(rawContent);
   if (content.includes(PROD_REF)) {
     hasLeak = true;
     findings.push(

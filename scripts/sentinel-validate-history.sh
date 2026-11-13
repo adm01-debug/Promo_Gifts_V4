@@ -33,6 +33,16 @@ if [[ ! -f "$CHECK" ]]; then
   exit 1
 fi
 
+# Ref alvo: buscar (se remota) e VALIDAR antes do laço — o `git log` dentro do `< <(...)` não
+# propaga erro, então ref inexistente dava "Total auditado: 0", exit 0.
+if [[ "$TARGET_REF" == origin/* ]]; then
+  git fetch --quiet origin "${TARGET_REF#origin/}" 2>/dev/null || true
+fi
+if ! git rev-parse --verify --quiet "${TARGET_REF}^{commit}" >/dev/null; then
+  echo "ERRO: ref '$TARGET_REF' não existe." >&2
+  exit 1
+fi
+
 PASS=0
 FAIL=0
 
@@ -44,7 +54,7 @@ while read -r SHA; do
   FULL_MSG=$(git log -1 --pretty=%B "$SHA")
   AUTHOR=$(git log -1 --pretty=%an "$SHA")
 
-  if RESULT=$(bash "$CHECK" "$SUBJECT" "$FULL_MSG" "$AUTHOR" 2>&1); then
+  if RESULT=$(bash "$CHECK" "$SUBJECT" "$FULL_MSG" "$AUTHOR" "$SHA" 2>&1); then
     printf "%-9s  %-32s  %-10s  %s\n" "${SHA:0:7}" "${AUTHOR:0:32}" "✅ PASS" "$RESULT"
     PASS=$((PASS + 1))
   else
@@ -53,10 +63,6 @@ while read -r SHA; do
   fi
 done < <(
   # Fix [1/17]: auditar ref alvo (default origin/main) em vez de HEAD da branch atual.
-  # Se a ref existir como remote, fazer fetch silencioso pra ter o histórico atualizado.
-  if [[ "$TARGET_REF" == origin/* ]]; then
-    git fetch --quiet origin "${TARGET_REF#origin/}" 2>/dev/null || true
-  fi
   git log -n "$N" --pretty=%H "$TARGET_REF"
 )
 

@@ -215,7 +215,12 @@ if (updateBaselinePath) {
     issue_count: issues.length,
     issues: issues.map((i) => signature(i)).sort(),
   };
-  writeFileSync(updateBaselinePath, JSON.stringify(payload, null, 2) + '\n');
+  try {
+    writeFileSync(updateBaselinePath, JSON.stringify(payload, null, 2) + '\n');
+  } catch (err) {
+    console.error(`❌ Failed to write baseline file: ${updateBaselinePath} (${err.message})`);
+    process.exit(2);
+  }
   console.log(`📝 Baseline updated: ${updateBaselinePath} (${issues.length} known issues)`);
   process.exit(0);
 }
@@ -227,8 +232,13 @@ if (baselinePath) {
     console.error(`❌ Baseline file not found: ${baselinePath}`);
     process.exit(2);
   }
-  const baselineData = JSON.parse(readFileSync(baselinePath, 'utf8'));
-  baselineSet = new Set(baselineData.issues || []);
+  try {
+    const baselineData = JSON.parse(readFileSync(baselinePath, 'utf8'));
+    baselineSet = new Set(baselineData.issues || []);
+  } catch (err) {
+    console.error(`❌ Failed to read baseline file: ${baselinePath} (${err.message})`);
+    process.exit(2);
+  }
 }
 
 // Partition issues

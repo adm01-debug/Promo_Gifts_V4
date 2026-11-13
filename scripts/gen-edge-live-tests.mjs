@@ -42,7 +42,7 @@ function shim(fn) {
 import { runLiveSuite } from "./_live-suite";
 import { descriptorFor } from "./descriptors";
 
-runLiveSuite(descriptorFor("${fn}"));
+runLiveSuite(descriptorFor(${JSON.stringify(fn)}));
 `;
 }
 

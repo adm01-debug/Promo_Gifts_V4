@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { spawnSync } from 'child_process';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, mkdirSync, rmdirSync, unlinkSync, writeFileSync } from 'fs';
 
 const SRC = 'schemas/ssot-report.schema.json';
 const OUT = 'public/schemas';
@@ -77,6 +77,30 @@ describe('publish-ssot-schema — endpoint público', () => {
       expect(chk.stderr).toMatch(/publish-ssot-schema/);
     } finally {
       require('fs').writeFileSync(LATEST, backup);
+    }
+  });
+
+  it('falha com exit 2 e mensagem clara (sem stack trace cru) quando o snapshot versionado não pode ser lido', () => {
+    // Baseline publicado para garantir que o snapshot da versão atual existe.
+    expect(run().status).toBe(0);
+    const src = JSON.parse(readFileSync(SRC, 'utf8'));
+    const version = src.properties.schemaVersion.const;
+    const versioned = `${OUT}/ssot-report.v${version}.schema.json`;
+    const backup = readFileSync(versioned, 'utf8');
+    // Ocupa o caminho de saída com um diretório — reproduz EISDIR na leitura
+    // do snapshot imutável sem depender de permissões de SO (funciona mesmo como root).
+    unlinkSync(versioned);
+    mkdirSync(versioned);
+    try {
+      const res = run();
+      expect(res.status).toBe(2);
+      expect(res.stderr).toMatch(/\[publish-ssot-schema\] falha ao ler/);
+      // Sem a correção, o processo morre com uncaught exception: exit 1 e
+      // stack trace cru do Node (ex.: "at readFileSync (node:fs").
+      expect(res.stderr).not.toMatch(/at readFileSync \(node:fs/);
+    } finally {
+      rmdirSync(versioned);
+      writeFileSync(versioned, backup);
     }
   });
 });
