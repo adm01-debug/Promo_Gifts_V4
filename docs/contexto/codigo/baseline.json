@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7b327f93664e003c993d8f4cf94223603eb70b65",
+  "commit": "5eae42bbb893393f33bb87559fa6a74414946428",
   "branch": "main",
-  "data_commit": "2026-11-14T16:53:47-03:00",
+  "data_commit": "2026-11-14T17:32:58-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "5eae42bb",
+    "data": "2026-11-14",
+    "assunto": "fix(migrations): destrava o CI — recibo das versões reconciliadas e correções no plano de workflows (#3629)"
+   },
    {
     "sha": "7b327f93",
     "data": "2026-11-14",
@@ -126,18 +131,13 @@
     "sha": "ae9d8147",
     "data": "2026-11-14",
     "assunto": "fix(security): crm-db-bridge — erro de esquema não abre o disjuntor"
-   },
-   {
-    "sha": "892494ca",
-    "data": "2026-11-14",
-    "assunto": "fix(security): CRM — vendedor vê os dele + os sem dono (supersede #3518) (#3583)"
    }
   ],
-  "arquivos_mudados_7d": 2073,
+  "arquivos_mudados_7d": 2070,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 628
+    "mudancas": 630
    },
    {
     "pasta": "src/components/products",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 65
+    "mudancas": 64
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 50
+    "mudancas": 51
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 464
+    "commits": 463
    },
    {
     "autor": "Claude",

@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "7b327f93664e003c993d8f4cf94223603eb70b65",
+  "sha": "5eae42bbb893393f33bb87559fa6a74414946428",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 19:55 UTC",
+  "generated_at": "2026-11-14 20:34 UTC",
   "files_total": 10089,
   "code_files": 8617,
   "code_lines": 1214728
@@ -529914,10 +529914,20 @@
   }
  },
  "git": {
-  "sha": "7b327f93664e003c993d8f4cf94223603eb70b65",
+  "sha": "5eae42bbb893393f33bb87559fa6a74414946428",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "5eae42b",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(migrations): destrava o CI — recibo das versões reconciliadas e correções no plano de workflows (#3629)",
+    "files": [
+     "docs/faxina-261114/05-plano-workflows.md",
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "7b327f9",
     "date": "2026-11-14",
@@ -530201,51 +530211,6 @@
     "files": [
      "docs/prod-readiness.md"
     ]
-   },
-   {
-    "sha": "e73a88d",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(db): devolve 10 telas que falham por permissão ou RPC ausente (supersede #3432) (#3584)",
-    "files": [
-     ".security/lint-0029-allowlist.json",
-     ".security/secdef-anon-allowlist.json",
-     "audit/supabase-reference-catalog.temporary.json",
-     "docs/security/ALLOWLISTS_MEMORY.md",
-     "e2e/flows/forgot-password-flow.spec.ts",
-     "src/components/inventory/supplier-reliability/SupplierReliabilityTab.tsx",
-     "src/hooks/admin/useKillSwitchObservability.ts",
-     "src/hooks/admin/useMedallionHealth.ts",
-     "src/hooks/admin/useRoleMigration.ts",
-     "src/hooks/admin/useSmokeTests.ts",
-     "src/hooks/auth/usePasswordResetRequests.ts",
-     "src/hooks/inventory/useSupplierReliabilityServer.ts",
-     "src/integrations/supabase/gold.ts",
-     "src/pages/admin/ai-usage/MarketIntelInsightsUsagePanel.tsx",
-     "src/pages/admin/telemetry/useOptimizationQueue.ts",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261112120000_fix_fn_get_supplier_reliability.sql",
-     "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql",
-     "supabase/migrations/20261112120200_fix_kill_switch_obs_grant_summary_view.sql",
-     "supabase/migrations/20261112120300_fix_medallion_health_dev_rpc.sql",
-     "supabase/migrations/20261112120400_fn_insights_cache_count.sql",
-     "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql",
-     "supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql",
-     "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql",
-     "supabase/migrations/20261112120800_query_telemetry_delete_dev_policy.sql",
-     "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql",
-     "supabase/rollbacks/20261112120000_rollback.sql",
-     "supabase/rollbacks/20261112120100_rollback.sql",
-     "supabase/rollbacks/20261112120200_rollback.sql",
-     "supabase/rollbacks/20261112120300_rollback.sql",
-     "supabase/rollbacks/20261112120400_rollback.sql",
-     "supabase/rollbacks/20261112120500_rollback.sql",
-     "supabase/rollbacks/20261112120600_rollback.sql",
-     "supabase/rollbacks/20261112120700_rollback.sql",
-     "supabase/rollbacks/20261112120800_rollback.sql",
-     "supabase/rollbacks/20261112120900_rollback.sql",
-     "tests/integrations/supabase/gold-admin-sync.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -530258,7 +530223,7 @@
     3
    ],
    [
-    "e2e/flows/forgot-password-flow.spec.ts",
+    "docs/faxina-261114/05-plano-workflows.md",
     2
    ],
    [
@@ -530294,10 +530259,6 @@
     1
    ],
    [
-    "docs/faxina-261114/05-plano-workflows.md",
-    1
-   ],
-   [
     "docs/faxina-261114/06-prova-prs-supersedidas-trem2.tsv",
     1
    ],
@@ -530327,6 +530288,10 @@
    ],
    [
     "supabase/migrations/20261114014500_p09_reconcile_ledger_schema_migrations.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261114031000_fix_user_known_devices_is_trusted.sql",
     1
    ]
   ]
