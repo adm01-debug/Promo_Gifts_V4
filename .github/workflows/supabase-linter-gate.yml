@@ -1,16 +1,19 @@
 name: Supabase Linter Gate
 
+# wf-consolida 2026-11-13: o gate live (advisors do projeto canônico) mede PRODUÇÃO, não o
+# diff do PR — saiu de pull_request. Em PR ele só validava a allowlist estática, que agora é
+# step do static-checks.yml (todo PR). Push em main ficou com o filtro de paths que o PR tinha
+# (antes rodava em todo push); o cron diário cobre o drift fora de PR.
 on:
-  pull_request:
+  push:
     branches: [main]
-    paths:  # E14: só relevante quando supabase ou integrações mudam
+    paths:
       - 'supabase/**'
       - 'src/integrations/supabase/**'
       - 'scripts/*supabase*'
       - 'package*.json'
+      - '.security/lint-0029-allowlist.json'
       - '.github/workflows/supabase-linter-gate.yml'
-  push:
-    branches: [main]
   schedule:
     # Roda diariamente às 06:57 UTC para detectar drift fora de PR
     - cron: "57 6 * * *"  # E89: ≥20min after schema-snapshot-export Mon 06:36 (daily stays clear)

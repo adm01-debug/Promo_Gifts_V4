@@ -765,7 +765,7 @@
       "files": ["scripts/check-migrations-sync-log-gate.mjs"],
       "manual": ["node", "scripts/check-migrations-sync-log-gate.mjs"],
       "triggers": ["manual"],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/migrations-sync-log-gate.yml, .github/workflows/supabase-linter-gate.yml. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/static-checks.yml, .github/workflows/supabase-linter-gate.yml. O dispatcher não executa esta operação."
     },
     {
       "id": "legacy-9b8f59cc36aae13d",
@@ -821,7 +821,7 @@
       "files": ["scripts/check-no-prod-leak.mjs"],
       "manual": ["node", "scripts/check-no-prod-leak.mjs"],
       "triggers": ["manual"],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts, .github/workflows/check-no-prod-leak.yml, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/static-checks.yml, .github/workflows/supabase-linter-gate.yml. O dispatcher não executa esta operação."
     },
     {
       "id": "legacy-fa07c7714a5c1bfe",
@@ -1085,7 +1085,7 @@
       "files": ["scripts/check-select-columns.mjs"],
       "manual": ["node", "scripts/check-select-columns.mjs"],
       "triggers": ["manual"],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts, .github/workflows/check-select-columns.yml, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/static-checks.yml, .github/workflows/supabase-linter-gate.yml. O dispatcher não executa esta operação."
     },
     {
       "id": "legacy-72b4ad2912bee9f4",
@@ -1221,7 +1221,7 @@
       "files": ["scripts/check-workflow-contracts.mjs"],
       "manual": ["node", "scripts/check-workflow-contracts.mjs"],
       "triggers": ["manual"],
-      "reason": "Legado mantido no fluxo existente; referências literais: .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml, .github/workflows/workflow-lint.yml. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/static-checks.yml, .github/workflows/supabase-linter-gate.yml. O dispatcher não executa esta operação."
     },
     {
       "id": "legacy-f784f41e1d9e1e79",
@@ -1389,7 +1389,7 @@
       "files": ["scripts/extract-types-inventory.mjs"],
       "manual": ["node", "scripts/extract-types-inventory.mjs"],
       "triggers": ["manual"],
-      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts, .github/workflows/check-select-columns.yml, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/static-checks.yml, .github/workflows/supabase-linter-gate.yml. O dispatcher não executa esta operação."
     },
     {
       "id": "legacy-82cf344689a3896b",
@@ -1621,7 +1621,7 @@
       "files": ["scripts/lint-untyped-from.sh"],
       "manual": ["sh", "scripts/lint-untyped-from.sh"],
       "triggers": ["manual"],
-      "reason": "Legado mantido no fluxo existente; referências literais: .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/lint-untyped-from.yml, .github/workflows/regenerate-supabase-types.yml, .github/workflows/supabase-linter-gate.yml. O dispatcher não executa esta operação."
+      "reason": "Legado mantido no fluxo existente; referências literais: .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/regenerate-supabase-types.yml, .github/workflows/static-checks.yml, .github/workflows/supabase-linter-gate.yml. O dispatcher não executa esta operação."
     },
     {
       "id": "legacy-73426417b45842e0",
@@ -2410,7 +2410,7 @@
   ],
   "ci": [
     {
-      "file": ".github/workflows/automation-local.yml",
+      "file": ".github/workflows/static-checks.yml",
       "events": ["PR", "pushmain"],
       "command": "node scripts/automation.mjs test"
     }
