@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `29569b163c4bc632816f1c2f86ede783f42973b2` (2026-11-14T22:55:13Z).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `36b6c1d7dc3209b9fef439c287f8bf4817c63e80` (2026-11-14T23:13:44Z).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -589,7 +589,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43337 nós · 74814 arestas · 2399 comunidades · grafo do commit `29569b16`
+- 43337 nós · 74814 arestas · 2399 comunidades · grafo do commit `36b6c1d7`
 - comunidades maiores: vitest (658), ref_integrations (655), lucide-react (525), ref_components (509), ref_node_child_process (460), ref_hooks (438), @tanstack/react-query (372), ref_node_fs (323), nav.ts (322), react (305), scripts (302), ref_types (298)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -1184,6 +1184,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-14 `36b6c1d7` fix(security): corrige o sha256 do retrato de policies (destrava o CI) (#3635)
 - 2026-11-14 `29569b16` fix(security): sincroniza o retrato de policies com producao apos as 6 migracoes (#3634)
 - 2026-11-14 `1a9cc9a4` fix(migrations): declara o rollback da 20261114170845 e documenta o schema net exposto na API pública (#3628)
 - 2026-11-14 `7b84ebe5` Merge pull request #3630 from adm01-debug/claude/trem4-front-perf-261114-2020
@@ -1198,7 +1199,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-14 `2c040e80` merge: codex/fix-sidebar-tooltips-auth-261107-0205
 - 2026-11-14 `34a8b603` merge: claude/fix-suggestions-sem-useadvancedfilters-261114-1004
 - 2026-11-14 `34301051` merge: claude/fix-stock-pagination-sem-count-exact-261114-1007
-- 2026-11-14 `0407e41b` merge: claude/fix-cache-publico-alvo-options-261114-1005
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

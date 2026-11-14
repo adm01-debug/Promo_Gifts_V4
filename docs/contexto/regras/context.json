@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "29569b163c4bc632816f1c2f86ede783f42973b2",
+  "sha": "36b6c1d7dc3209b9fef439c287f8bf4817c63e80",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 23:10 UTC",
+  "generated_at": "2026-11-14 23:17 UTC",
   "files_total": 10092,
   "code_files": 8619,
   "code_lines": 1214856
@@ -529965,10 +529965,19 @@
   }
  },
  "git": {
-  "sha": "29569b163c4bc632816f1c2f86ede783f42973b2",
+  "sha": "36b6c1d7dc3209b9fef439c287f8bf4817c63e80",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "36b6c1d",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(security): corrige o sha256 do retrato de policies (destrava o CI) (#3635)",
+    "files": [
+     ".security/policies-baseline.json"
+    ]
+   },
    {
     "sha": "29569b1",
     "date": "2026-11-14",
@@ -530218,35 +530227,16 @@
     "author": "Claude",
     "subject": "Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850",
     "files": []
-   },
-   {
-    "sha": "c9bc677",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "test(e2e): specs de catálogo, estoque, kit, comparador e senha seguem a UI atual (#3617)",
-    "files": [
-     "docs/coordenacao/conflitos-semanticos.md",
-     "e2e/admin/stock-search-button.spec.ts",
-     "e2e/admin/stock-search-race-and-keyboard.spec.ts",
-     "e2e/catalog-regression.spec.ts",
-     "e2e/catalog.spec.ts",
-     "e2e/fixtures/stock-rupture-fixture.ts",
-     "e2e/flows/forgot-password-flow.spec.ts",
-     "e2e/flows/supplier-comparison-visual.spec.ts",
-     "e2e/helpers/rupture-horizon.ts",
-     "e2e/kit-builder.spec.ts",
-     "e2e/routes/app/stock-rupture-horizon-matrix.spec.ts",
-     "e2e/routes/app/stock-rupture-horizon-missing-data.spec.ts",
-     "e2e/routes/app/stock-rupture-horizon-missing-fields.spec.ts",
-     "e2e/routes/app/stock-rupture-horizon.spec.ts",
-     "src/pages/kit-builder/KitBuilderPage.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/coordenacao/conflitos-semanticos.md",
-    7
+    6
+   ],
+   [
+    ".security/policies-baseline.json",
+    2
    ],
    [
     "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
@@ -530259,10 +530249,6 @@
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     2
-   ],
-   [
-    ".security/policies-baseline.json",
-    1
    ],
    [
     "docs/security/2026-11-14-schema-net-exposto.md",

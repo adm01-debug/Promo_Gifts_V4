@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(security): corrige o sha256 do retrato de policies (destrava o CI) (#3635)",
    "fix(security): sincroniza o retrato de policies com producao apos as 6 migracoes (#3634)",
    "fix(migrations): declara o rollback da 20261114170845 e documenta o schema net exposto na API pública (#3628)",
    "Merge pull request #3630 from adm01-debug/claude/trem4-front-perf-261114-2020",
-   "Merge branch 'main' into claude/trem4-front-perf-261114-2020",
-   "fix(pdp): aborta de verdade a consulta do produto ao estourar o limite de 15 s (#3622)"
+   "Merge branch 'main' into claude/trem4-front-perf-261114-2020"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

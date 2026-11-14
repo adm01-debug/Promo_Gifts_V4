@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "29569b163c4bc632816f1c2f86ede783f42973b2",
+  "commit": "36b6c1d7dc3209b9fef439c287f8bf4817c63e80",
   "branch": "main",
-  "data_commit": "2026-11-14T22:55:13Z",
+  "data_commit": "2026-11-14T23:13:44Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "36b6c1d7",
+    "data": "2026-11-14",
+    "assunto": "fix(security): corrige o sha256 do retrato de policies (destrava o CI) (#3635)"
+   },
    {
     "sha": "29569b16",
     "data": "2026-11-14",
@@ -126,11 +131,6 @@
     "sha": "ec6088c4",
     "data": "2026-11-14",
     "assunto": "Merge remote-tracking branch 'origin/claude/fix-route-scroll-reset-query-replace-261114-0005' into claude/trem2-front-li"
-   },
-   {
-    "sha": "930e3c0f",
-    "data": "2026-11-14",
-    "assunto": "Merge remote-tracking branch 'origin/claude/fix-ux-auditoria-link-botao-morto-261113-2338' into claude/trem2-front-limpe"
    }
   ],
   "arquivos_mudados_7d": 2078,
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 335
+    "mudancas": 334
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 591
+    "commits": 590
    },
    {
     "autor": "Joaquim Ataides",
