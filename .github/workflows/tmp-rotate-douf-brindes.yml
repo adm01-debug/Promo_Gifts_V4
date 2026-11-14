@@ -1,0 +1,56 @@
+name: tmp-rotate-douf-brindes
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rotate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Gate - chave do Gifts autentica no douf
+        env:
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          set -eu
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://doufsxqlfjyuvxuezpln.supabase.co/rest/v1/v_site_products_public?select=id&limit=1" \
+            -H "apikey: $VITE_SUPABASE_PUBLISHABLE_KEY" \
+            -H "Authorization: Bearer $VITE_SUPABASE_PUBLISHABLE_KEY" || true)
+          echo "douf_http=$code"
+          test "$code" = "200" || { echo "::error::chave do Gifts nao autentica no douf (http=$code)"; exit 1; }
+
+      - name: PATCH env Vercel Brindes VITE_SUPABASE_PUBLISHABLE_KEY
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          NEW_VALUE: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          set -eu
+          code=$(curl -s -o /tmp/patch.json -w "%{http_code}" \
+            -X PATCH \
+            "https://api.vercel.com/v9/projects/prj_LVKX7uhs1VhTjDDznD7KinvjgHXU/env/SCQKCm2xiZIjEFKy" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data "$(node -e 'const v=process.env.NEW_VALUE; console.log(JSON.stringify({value:v, type:"encrypted", target:["production","preview"]}))')" || true)
+          echo "patch_http=$code"
+          test "$code" = "200" || { echo "::error::PATCH falhou (http=$code)"; cat /tmp/patch.json; exit 1; }
+
+      - name: Confirmacao - le a env de volta e testa REST
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          set -eu
+          curl -s "https://api.vercel.com/v9/projects/prj_LVKX7uhs1VhTjDDznD7KinvjgHXU/env/SCQKCm2xiZIjEFKy?decrypt=true" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" -o /tmp/env.json
+          node -e 'const j=require("/tmp/env.json"); console.log("key="+j.key, "target="+j.target.join(","), "type="+j.type, "value_len="+j.value.length, "prefix="+j.value.slice(0,8))'
+          k=$(node -e 'console.log(require("/tmp/env.json").value)')
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://doufsxqlfjyuvxuezpln.supabase.co/rest/v1/v_site_products_public?select=id&limit=1" \
+            -H "apikey: $k" -H "Authorization: Bearer $k" || true)
+          echo "rest_apos_patch_http=$code"
+          test "$code" = "200" || { echo "::error::a chave aplicada nao autentica (http=$code)"; exit 1; }
