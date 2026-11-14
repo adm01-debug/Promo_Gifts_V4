@@ -1428,3 +1428,4 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261112140000` | `fix_rls_supplier_products_raw_history_p2027` | `6aa856168cc1ef0e6308757fe01b04f4917f043170ff3ce996e0933a52575b9f` | **aplicada em 13/11/2026** pelo `db-apply-migration.yml` (run 43471685129; recibo E15 acima) |
+| `20261113140000` | `marketing_tab_links_rls_and_endomarketing` | `9b8c6f1f28df01eebaec6c9ee2e456409a9df7ad45cd49b2730a824349c91135` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
