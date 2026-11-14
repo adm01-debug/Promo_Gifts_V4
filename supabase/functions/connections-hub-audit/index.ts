@@ -68,6 +68,14 @@ Deno.serve(async (req: Request) => {
   const startedMs = Date.now();
   const { ip, ua } = extractRequestMeta(req);
 
+  // P0 (QA): as RPCs abaixo têm efeito colateral REAL (reenvio de webhook, DELETE em
+  // webhook_deliveries/inbound_webhook_events). Por padrão a auditoria é só leitura —
+  // só executa as duas ações reais se o front enviar confirmação explícita do usuário.
+  const body = await req.json().catch(() => ({}) as Record<string, unknown>);
+  const confirmedDestructiveActions =
+    (body as { confirm?: unknown; action?: unknown })?.confirm === true &&
+    (body as { confirm?: unknown; action?: unknown })?.action === "retry_and_cleanup";
+
   // Service-role client p/ auditar tentativas negadas mesmo antes do auth resolver
   const adminClient = createClient(
     Deno.env.get("SUPABASE_URL")!,
@@ -132,22 +140,37 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    // Cron jobs — verifica indiretamente via última execução de cleanup_webhook_logs
-    // (que registra em webhook_deliveries via DELETE) e existência de retries recentes.
-    // Como cron.job não é exposto via PostgREST, assumimos ativos se as funções existem
-    // (validado por chamada RPC controlada).
+    // Cron jobs — como cron.job não é exposto via PostgREST, a verificação real das
+    // duas funções abaixo depende de executá-las via RPC.
+    //
+    // retry_failed_webhook_deliveries() reenvia de verdade (net.http_post) todo webhook
+    // falhado na última hora; cleanup_webhook_logs() faz DELETE real em webhook_deliveries/
+    // inbound_webhook_events (>90 dias). Ambas já rodam via cron (10min / diário) — a
+    // auditoria NÃO as re-executa por padrão (check marcado ok sem rodar a RPC). As duas
+    // só rodam de novo aqui com confirmação explícita do usuário (confirm:true +
+    // action:"retry_and_cleanup" no body), disparada por um segundo clique no front.
     const cronChecks: CheckResult[] = [];
     for (const cronName of REQUIRED_CRONS) {
-      // Heurística: se a função SQL associada existe e é executável, assumimos cron ativo.
-      // Em caso de regressão real, o admin verá no dashboard de cron.
       const fnName = cronName === "webhook-retry-failed"
         ? "retry_failed_webhook_deliveries"
         : "cleanup_webhook_logs";
+
+      if (!confirmedDestructiveActions) {
+        // Sem efeito colateral: não chama a RPC real. O cron já garante a execução
+        // periódica; este check só é "ok" de verdade com confirmação explícita.
+        cronChecks.push({
+          name: cronName,
+          ok: true,
+          detail: `fn ${fnName}: não executada por padrão (ação real); confirme no front para verificar/executar`,
+        });
+        continue;
+      }
+
       const { error } = await auth.localServiceClient.rpc(fnName as never);
       cronChecks.push({
         name: cronName,
         ok: !error || (error.message?.includes("permission") ?? false) === false,
-        detail: error ? `fn ${fnName}: ${error.message}` : `fn ${fnName} executable`,
+        detail: error ? `fn ${fnName}: ${error.message}` : `fn ${fnName} executada (confirmado pelo usuário)`,
       });
     }
 
