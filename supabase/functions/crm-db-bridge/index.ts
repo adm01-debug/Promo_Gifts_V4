@@ -8,7 +8,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { getOrCreateRequestId, REQUEST_ID_HEADER } from "../_shared/request-id.ts";
 import { resolveCredentials, warmupCredentials, buildCredentialsHealth } from "../_shared/credentials.ts";
 import { assertSwitchEnabled } from "../_shared/kill_switch.ts";
-import { crmOwnerScope, resolveCrmRole } from "./ownership.ts";
+import { crmOwnerScope, ownerOrExpression, resolveCrmRole } from "./ownership.ts";
 
 const breaker = getBreaker("crm-db");
 // redeploy marker: fix 429 - auth-first + rate-limit por userId + admin singleton (2026-05-26)
@@ -385,6 +385,27 @@ function escapeLikePattern(term: string): string {
   return term.replace(/[%_\\]/g, (c) => `\\${c}`);
 }
 
+/**
+ * Erro do PostgREST/Postgres causado pela ENTRADA do cliente (coluna/filtro/valor inválido,
+ * PGRST1xx/2xx, classes SQLSTATE 22 e 42) vira 400 — não 500. Só 5xx contam no disjuntor:
+ * antes, 5 requisições com filtro inválido de um vendedor abriam o disjuntor e derrubavam o
+ * bridge para todos por 60 s (simulação com PostgREST real, 13/11).
+ */
+// Tabela/função ausente no esquema do CRM: as tabelas vêm da allowlist do servidor e o cliente
+// não as escolhe livremente, então é falha de integração (5xx, conta no disjuntor), não 400.
+// 42883 fica fora: também é "operador inexistente" (ex.: ilike em coluna uuid escolhida pelo cliente).
+const SERVER_SCHEMA_ERROR_CODES = new Set(["42P01", "PGRST202", "PGRST205"]);
+
+export function isClientDbError(error: { code?: string | null } | null | undefined): boolean {
+  const code = String(error?.code ?? "");
+  if (SERVER_SCHEMA_ERROR_CODES.has(code)) return false;
+  return /^PGRST[12]\d\d$/.test(code) || /^(22|42)[0-9A-Z]{3}$/.test(code);
+}
+
+function dbErrorResponse(error: { code?: string | null; message: string }): Response {
+  return jsonResponse({ error: error.message }, isClientDbError(error) ? 400 : 500);
+}
+
 function validateFilters(filters: Record<string, unknown>, table?: string): string | null {
   if (!table) return null;
   const allowed = FILTERABLE_COLUMNS[table];
@@ -503,7 +524,7 @@ async function resolveCrmUserId(crm: SupabaseClient, email?: string | null): Pro
 }
 
 /**
- * Aplica o escopo E081 (vendedor só vê os dele) e devolve a query pronta, ou `deny` (403).
+ * Aplica o escopo E081 (vendedor vê os dele + os sem dono) e devolve a query pronta, ou `deny` (403).
  * Tabelas filhas (e-mails/telefones) usam junção `!inner` com o pai montada no SERVIDOR
  * (o cliente continua proibido de fazer embedding) — sem lista de ids na URL.
  * `stripParent`: nome da coluna de junção a remover das linhas antes de responder.
@@ -518,9 +539,12 @@ function applyOwnerScope(
   const scope = crmOwnerScope(table, userRole, userId);
   if (scope.kind === "deny") return { kind: "deny" };
   if (scope.kind === "none") return { kind: "ok", query: crm.from(table).select(select) };
-  if (scope.kind === "filter") return { kind: "ok", query: crm.from(table).select(select).eq(scope.column, scope.value) };
+  if (scope.kind === "filter") {
+    return { kind: "ok", query: crm.from(table).select(select).or(ownerOrExpression(scope.column, scope.value)) };
+  }
   const join = `${scope.parent}!inner(${scope.parentColumn})`;
-  const query = crm.from(table).select(`${select},${join}`).eq(`${scope.parent}.${scope.parentColumn}`, scope.value);
+  const query = crm.from(table).select(`${select},${join}`)
+    .or(ownerOrExpression(scope.parentColumn, scope.value), { referencedTable: scope.parent });
   return { kind: "ok", query, stripParent: scope.parent };
 }
 
@@ -629,7 +653,7 @@ async function handleInsert(crm: SupabaseClient, body: CrmQuery): Promise<Respon
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalWriteError(table);
     console.error("CRM insert error:", { code: error.code ?? "unknown", message: error.message });
-    return jsonResponse({ error: error.message }, 500);
+    return dbErrorResponse(error);
   }
   return jsonResponse({ data: result, count: result?.length || 0 });
 }
@@ -650,7 +674,7 @@ async function handleUpdate(crm: SupabaseClient, body: CrmQuery): Promise<Respon
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalWriteError(table);
     console.error("CRM update error:", { code: error.code ?? "unknown", message: error.message });
-    return jsonResponse({ error: error.message }, 500);
+    return dbErrorResponse(error);
   }
   return jsonResponse({ data: result, count: result?.length || 0 });
 }
@@ -667,7 +691,7 @@ async function handleDelete(crm: SupabaseClient, body: CrmQuery): Promise<Respon
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalWriteError(table);
     console.error("CRM delete error:", { code: error.code ?? "unknown", message: error.message });
-    return jsonResponse({ error: error.message }, 500);
+    return dbErrorResponse(error);
   }
   return jsonResponse({ data: null, success: true });
 }
@@ -724,7 +748,7 @@ async function handleSelect(crm: SupabaseClient, body: CrmQuery, userId?: string
         code: "statement_timeout",
       }, 504);
     }
-    return jsonResponse({ error: error.message }, 500);
+    return dbErrorResponse(error);
   }
   return jsonResponse({ data: stripJoin(data || [], scoped.stripParent), count });
 }
@@ -749,7 +773,7 @@ async function handleSearch(crm: SupabaseClient, body: CrmQuery, userId?: string
   const { data, error } = await query;
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalSelectFallback(table, false);
-    return jsonResponse({ error: error.message }, 500);
+    return dbErrorResponse(error);
   }
   const rows = stripJoin(data || [], scoped.stripParent);
   return jsonResponse({ data: rows, count: rows.length });
@@ -860,7 +884,7 @@ Deno.serve((req) => {
       return jsonResponse({ error: "Invalid JSON in request body" }, 400);
     }
 
-    const COLUMN_RE = /^[a-z_][a-z0-9_.]*$/i;
+    const COLUMN_RE = /^[a-z_][a-z0-9_]*$/i; // sem ponto: nada de coluna de tabela embutida (contacts.user_id)
     const CrmOrderBySchema = z.union([
       z.string().regex(/^[a-z_][a-z0-9_.]*(\s+(asc|desc))?$/i),
       z.object({ column: z.string().regex(COLUMN_RE), ascending: z.boolean().optional() }),
@@ -870,7 +894,7 @@ Deno.serve((req) => {
       table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i).optional(),
       id: z.string().uuid().optional(),
       filters: z.record(z.unknown()).refine(
-        (f) => Object.keys(f).every((k) => COLUMN_RE.test(k)),
+        (f) => Object.keys(f).every((k) => COLUMN_RE.test(k) && !/^(or|and|not)$/i.test(k)),
         { message: "Filter keys must be valid column identifiers" },
       ).optional(),
       select: z.string().max(2000).optional(),

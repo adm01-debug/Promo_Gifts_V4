@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import {
-  crmOwnerScope,
+  crmOwnerScope, ownerOrExpression,
   resolveCrmRole,
 } from '../../supabase/functions/crm-db-bridge/ownership';
 
@@ -45,32 +45,42 @@ describe('crm-db-bridge — escopo de ownership usa a coluna real do CRM', () =>
   });
 
   it('vendedor em companies/contacts filtra por user_id', () => {
-    expect(crmOwnerScope('companies', 'vendedor', 'u1')).toEqual({
+    expect(crmOwnerScope('companies', 'vendedor', '11111111-1111-4111-8111-111111111111')).toEqual({
       kind: 'filter',
       column: 'user_id',
-      value: 'u1',
+      value: '11111111-1111-4111-8111-111111111111',
     });
-    expect(crmOwnerScope('contacts', 'vendedor', 'u1')).toEqual({
+    expect(crmOwnerScope('contacts', 'vendedor', '11111111-1111-4111-8111-111111111111')).toEqual({
       kind: 'filter',
       column: 'user_id',
-      value: 'u1',
+      value: '11111111-1111-4111-8111-111111111111',
     });
   });
 
   it('e-mails/telefones do contato seguem o dono do contato (regra do dono, 12/11)', () => {
     for (const table of ['contact_emails', 'contact_phones']) {
-      expect(crmOwnerScope(table, 'vendedor', 'u1')).toEqual({
-        kind: 'via', parent: 'contacts', parentColumn: 'user_id', fk: 'contact_id', value: 'u1',
+      expect(crmOwnerScope(table, 'vendedor', '11111111-1111-4111-8111-111111111111')).toEqual({
+        kind: 'via', parent: 'contacts', parentColumn: 'user_id', fk: 'contact_id', value: '11111111-1111-4111-8111-111111111111',
       });
     }
   });
 
   it('customers: vendedor filtra pela coluna real vendedor_id (FK → users.id do CRM)', () => {
-    expect(crmOwnerScope('customers', 'vendedor', 'u1')).toEqual({ kind: 'filter', column: 'vendedor_id', value: 'u1' });
+    expect(crmOwnerScope('customers', 'vendedor', '11111111-1111-4111-8111-111111111111')).toEqual({ kind: 'filter', column: 'vendedor_id', value: '11111111-1111-4111-8111-111111111111' });
   });
 
-  it('vendedor sem vínculo com o CRM é negado (403), não 500', () => {
-    expect(crmOwnerScope('contacts', 'vendedor', undefined)).toEqual({ kind: 'deny' });
+  it('vendedor sem vínculo com o CRM vê só os SEM dono (regra do dono, 13/11)', () => {
+    expect(crmOwnerScope('contacts', 'vendedor', undefined)).toEqual({ kind: 'filter', column: 'user_id', value: null });
+    expect(crmOwnerScope('contact_emails', 'vendedor', undefined)).toEqual({
+      kind: 'via', parent: 'contacts', parentColumn: 'user_id', fk: 'contact_id', value: null,
+    });
+  });
+
+  it('id do CRM que não é uuid nunca é interpolado no filtro (vira "sem vínculo")', () => {
+    expect(crmOwnerScope('companies', 'vendedor', 'x,user_id.not.is.null')).toEqual({ kind: 'filter', column: 'user_id', value: null });
+    expect(ownerOrExpression('user_id', 'x),or(id.not.is.null')).toBe('user_id.is.null');
+    expect(ownerOrExpression('user_id', '11111111-1111-4111-8111-111111111111')).toBe(`user_id.eq.${'11111111-1111-4111-8111-111111111111'},user_id.is.null`);
+    expect(ownerOrExpression('vendedor_id', null)).toBe('vendedor_id.is.null');
   });
 
   it('roles amplas e tabelas sem PII não recebem filtro', () => {
