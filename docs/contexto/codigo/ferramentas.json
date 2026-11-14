@@ -5,7 +5,7 @@
   "linguagens": [
    "TypeScript (4768)",
    "SQL (3399)",
-   "Markdown (1019)",
+   "Markdown (1022)",
    "JavaScript (443)",
    "JSON (126)",
    "YAML (111)",
@@ -4609,6 +4609,10 @@
   },
   {
    "pasta": "docs/fabrica-vps",
+   "arquivos_md": 3
+  },
+  {
+   "pasta": "docs/faxina-261114",
    "arquivos_md": 3
   },
   {

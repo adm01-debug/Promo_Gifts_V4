@@ -224385,10 +224385,20 @@
         "version": "20260511200056"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260511235900"
+      },
+      {
         "name": "add_categories_level_drift",
         "statements": 2,
         "statements_sha": "57a49a08ceb9fa11",
         "version": "20260511235950"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260512000000"
       },
       {
         "name": null,
@@ -225935,6 +225945,11 @@
         "version": "20260525200105"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260525232003"
+      },
+      {
         "name": "fix_339_personalization_missing_columns",
         "statements": 1,
         "statements_sha": "10b9dee6dc86e487",
@@ -226037,6 +226052,16 @@
         "version": "20260526023550"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260526103000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260526141234"
+      },
+      {
         "name": "52d285ed-e141-4437-9a13-0fec9285c93c",
         "statements": 2,
         "statements_sha": "9976b578c3d86868",
@@ -226059,6 +226084,36 @@
         "statements": 6,
         "statements_sha": "de6f0be84429c407",
         "version": "20260526195752"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260526200904"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260526201213"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260526201551"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260526210100"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260526210206"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260526220000"
       },
       {
         "name": "fix_001_markup_configurations_write_policies",
@@ -226085,10 +226140,60 @@
         "version": "20260526220005"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260527120000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260527164916"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260527200232"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260527200532"
+      },
+      {
         "name": "33fef308-fb92-4ab4-a52c-19f9b7eeeeaa",
         "statements": 6,
         "statements_sha": "86b699a5d1b4493e",
         "version": "20260527212244"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260527214038"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260527214425"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260527214510"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260527214617"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260528102501"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260528102502"
       },
       {
         "name": "636458e6-a7d6-40ec-82a5-f6fdbc4f3f38",
@@ -226109,10 +226214,25 @@
         "version": "20260529144551"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260529145000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260529150000"
+      },
+      {
         "name": "perf_add_missing_fk_indexes",
         "statements": 2,
         "statements_sha": "1dff284d4fd61715",
         "version": "20260529150100"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260529150200"
       },
       {
         "name": "drop_fn_products_enriched_revert_pr512",
@@ -226137,6 +226257,11 @@
         "statements": 1,
         "statements_sha": "d26ae618c3493830",
         "version": "20260529181101"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260530001500"
       },
       {
         "name": "rest_native_phase2_view_and_rls",
@@ -226181,6 +226306,11 @@
         "version": "20260530012848"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260530030000"
+      },
+      {
         "name": "fix_kill_switch_hits_postgrest_visibility",
         "statements": 1,
         "statements_sha": "cdbdc5308f8ab5b4",
@@ -226191,6 +226321,21 @@
         "statements": 1,
         "statements_sha": "6e0475467d545e78",
         "version": "20260530130242"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260530150000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260530160000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260530170000"
       },
       {
         "name": "etapa3_c2_products_cost_leak_anon",
@@ -226233,10 +226378,40 @@
         "version": "20260531110200"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260531120000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260531135255"
+      },
+      {
         "name": "phase5_security_views",
         "statements": 1,
         "statements_sha": "f664b066fd9e7f76",
         "version": "20260531144122"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260531211352"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260531220000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260601000001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260601104248"
       },
       {
         "name": "fix_smoke_persist_cron_auth_and_dedup_kill_switch_policies",
@@ -226257,6 +226432,21 @@
         "version": "20260601120000"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260601140000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260601140100"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260601140841"
+      },
+      {
         "name": "0a6aab63-005e-4b91-b155-fe4e797ab581",
         "statements": 11,
         "statements_sha": "cd53ced97170f19a",
@@ -226275,10 +226465,25 @@
         "version": "20260602010000"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260602020000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260602030000"
+      },
+      {
         "name": "fix_v_products_public_add_set_image_url_v2",
         "statements": 1,
         "statements_sha": "adf795866fa25adc",
         "version": "20260602112505"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260602120000"
       },
       {
         "name": "raw_landing_phase1_status_provenance",
@@ -226467,6 +226672,11 @@
         "version": "20260604000004"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260604000007"
+      },
+      {
         "name": "silver_13_extrator_cor_titulo_somarcas",
         "statements": 1,
         "statements_sha": "0e65b45666729e56",
@@ -226527,6 +226737,11 @@
         "version": "20260604115720"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260604120000"
+      },
+      {
         "name": "spr_p2p3_backup_normalize_docs",
         "statements": 1,
         "statements_sha": "39acb5a97222b192",
@@ -226555,6 +226770,11 @@
         "statements": 1,
         "statements_sha": "3306fa2dd7b591bc",
         "version": "20260604124533"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260604141700"
       },
       {
         "name": "create_supplier_price_tiers",
@@ -226591,6 +226811,11 @@
         "statements": 1,
         "statements_sha": "dfe4aa7af5758101",
         "version": "20260604165156"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260604170220"
       },
       {
         "name": "motor_v2_config_foundation",
@@ -226771,10 +226996,35 @@
         "version": "20260604232944"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260604233001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260604233002"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260604233003"
+      },
+      {
         "name": "spr_maintenance_and_history_retention",
         "statements": 5,
         "statements_sha": "d9a04a5b3983c4a0",
         "version": "20260604233004"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260604233005"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260604233006"
       },
       {
         "name": "spr_before_write_search_path",
@@ -227111,6 +227361,11 @@
         "version": "20260605110418"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260605110500"
+      },
+      {
         "name": "register_repo_versions_in_db",
         "statements": 1,
         "statements_sha": "139fb860101f6744",
@@ -227270,6 +227525,11 @@
         "version": "20260605145905"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260605150000"
+      },
+      {
         "name": "fix_spot_weight_g_mapping_reactivate",
         "statements": 1,
         "statements_sha": "88f85d501464253a",
@@ -227306,10 +227566,55 @@
         "version": "20260605154154"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260605155900"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260605160000"
+      },
+      {
         "name": "silver_unify_02_rewire_process_pending_batches",
         "statements": 2,
         "statements_sha": "b688f00232acc82d",
         "version": "20260605160100"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260605160200"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260605160300"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260605160400"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260605160500"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260605161000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260605162000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260605163000"
       },
       {
         "name": "fix_normalize_silver_all_idempotency",
@@ -227322,6 +227627,11 @@
         "statements": 1,
         "statements_sha": "179681173453910c",
         "version": "20260605163924"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260605164000"
       },
       {
         "name": "silver_unify_02_rewire_process_pending_batches",
@@ -227352,6 +227662,21 @@
         "statements": 1,
         "statements_sha": "0dafaefb174ac458",
         "version": "20260605165000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260605170000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260605170050"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260605170100"
       },
       {
         "name": "fix_rls_silver_and_bkp_tables",
@@ -227388,6 +227713,11 @@
         "statements": 1,
         "statements_sha": "ff9e23d70fc5d947",
         "version": "20260605205624"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260605210000"
       },
       {
         "name": "silver_widen_padronizacao_optionb",
@@ -227442,6 +227772,21 @@
         "statements": 1,
         "statements_sha": "b09603d305fb2563",
         "version": "20260606104535"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260606110000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260606110100"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260606110200"
       },
       {
         "name": "fase8_01_dimensions_into_promotion_retire_bronze_trigger",
@@ -228344,6 +228689,31 @@
         "version": "20260610112253"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260610120000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260610120001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260610120200"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260610120300"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260610120400"
+      },
+      {
         "name": "p0_carrossel_01_hash_canonico_e_enrich_tipado",
         "statements": 1,
         "statements_sha": "6aa1fd67d8339de3",
@@ -228440,6 +228810,11 @@
         "version": "20260610130000"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260610130100"
+      },
+      {
         "name": "tighten_vsf_insert_policy_no_orphans",
         "statements": 1,
         "statements_sha": "c6743c0b9bb23fc9",
@@ -228462,6 +228837,11 @@
         "statements": 11,
         "statements_sha": "d8464c6722283a22",
         "version": "20260610173859"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260610180302"
       },
       {
         "name": "security_fix_suppliers_anon_leak_and_rls",
@@ -228614,10 +228994,85 @@
         "version": "20260611110436"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260611115719"
+      },
+      {
         "name": "5893a1fe-6ebc-41be-9d5d-88043b17a383",
         "statements": 5,
         "statements_sha": "994b6643187da9a4",
         "version": "20260611115932"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260611120000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260611120001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260611120002"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260611120100"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260611120101"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260611120200"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260611120201"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260611120300"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260611120301"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260611120400"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260611120401"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260611120500"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260611121000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260611123000"
       },
       {
         "name": "fix_classify_pen_v2_slugs_novos_materiais",
@@ -228925,6 +229380,11 @@
         "version": "20260611163721"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260611163809"
+      },
+      {
         "name": "fix_asia_promote_circumference_cm",
         "statements": 1,
         "statements_sha": "d0677b3d6d12f715",
@@ -229014,6 +229474,11 @@
         "version": "20260611181932"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260611183000"
+      },
+      {
         "name": "p2_acl_01_restore_admin_rpcs_frontend",
         "statements": 18,
         "statements_sha": "d9e38a201286f542",
@@ -229024,6 +229489,16 @@
         "statements": 6,
         "statements_sha": "a8ccbbcaede39737",
         "version": "20260611183200"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260611183300"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260611184000"
       },
       {
         "name": "fix_spot_3_miscategorized_products",
@@ -229548,6 +230023,11 @@
         "version": "20260613181545"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260613190000"
+      },
+      {
         "name": "fix_fn_sync_derived_product_flags_v2_auto_reset",
         "statements": 1,
         "statements_sha": "169a0063eba08adf",
@@ -229632,10 +230112,30 @@
         "version": "20260614183000"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260614210000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260614213000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260614220000"
+      },
+      {
         "name": "fix_asia_stock_fast_sync_nq1_date_guard",
         "statements": 1,
         "statements_sha": "50d77062998f8782",
         "version": "20260615110226"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260615120000"
       },
       {
         "name": "fix_asia_product_names_cleanup",
@@ -229648,6 +230148,11 @@
         "statements": 1,
         "statements_sha": "2178ae254ba92d03",
         "version": "20260615142040"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260615142100"
       },
       {
         "name": "archive_unif_pending_log_comment_and_move",
@@ -229878,10 +230383,30 @@
         "version": "20260615191907"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260615200001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260615200002"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260615200003"
+      },
+      {
         "name": "fix_admin_settings_trigger_canonical_set_updated_at",
         "statements": 2,
         "statements_sha": "a656b08dec4f8bc1",
         "version": "20260615200004"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260615200005"
       },
       {
         "name": "align_xbz_staging_schema_part1_ddl_data",
@@ -229932,6 +230457,21 @@
         "version": "20260615205043"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260615210001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260615210002"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260615210003"
+      },
+      {
         "name": "consolidate_product_images_anon_select_policy",
         "statements": 1,
         "statements_sha": "e6967eb29eaab709",
@@ -229972,6 +230512,21 @@
         "statements": 3,
         "statements_sha": "9f9e40bebd2e9c9a",
         "version": "20260615230503"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260615230504"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260615230505"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260615230506"
       },
       {
         "name": "product_images_format_canonical_guard",
@@ -230058,10 +230613,25 @@
         "version": "20260615232601"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260615232602"
+      },
+      {
         "name": "product_images_sync_image_type_code_close_drift",
         "statements": 2,
         "statements_sha": "3745dc7cc645636e",
         "version": "20260615232603"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260615232604"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260615232605"
       },
       {
         "name": "create_fn_resync_product_image_urls",
@@ -230136,6 +230706,11 @@
         "version": "20260615234114"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260615235001"
+      },
+      {
         "name": "product_images_fix_sync_image_type_comment",
         "statements": 1,
         "statements_sha": "2df2c47dbc6974c1",
@@ -230146,6 +230721,11 @@
         "statements": 1,
         "statements_sha": "51742ffbeb9ed260",
         "version": "20260615235501"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260615235502"
       },
       {
         "name": "product_images_sync_image_type_bidirectional",
@@ -230304,10 +230884,40 @@
         "version": "20260616171502"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260616171503"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260616171504"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260616171505"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260616171506"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260616172001"
+      },
+      {
         "name": "product_images_cf_recon_capture_uploaded_signed",
         "statements": 2,
         "statements_sha": "31b418702ccd01de",
         "version": "20260616173001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260616174001"
       },
       {
         "name": "pi_cf_reconciliation_pgnet_harness",
@@ -230328,10 +230938,50 @@
         "version": "20260616175338"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260616180001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260616180002"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260616180003"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260616180004"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260616180005"
+      },
+      {
         "name": "product_images_m6_cf_remediation_worklist_view",
         "statements": 3,
         "statements_sha": "0b8224f56472d1ee",
         "version": "20260616180006"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260616180007"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260616181001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260616181002"
       },
       {
         "name": "cf_recon_remediate_broken_active",
@@ -230442,6 +231092,16 @@
         "version": "20260616234220"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260617000001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260617000002"
+      },
+      {
         "name": "generate_blurhashes_cron",
         "statements": 3,
         "statements_sha": "3d87aa4a4f577db6",
@@ -230452,6 +231112,11 @@
         "statements": 7,
         "statements_sha": "f1b0d3884e7a0205",
         "version": "20260617000004"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260617000005"
       },
       {
         "name": "add_cf_last_checked_at_to_product_images",
@@ -230711,6 +231376,11 @@
         "version": "20260617230057"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260617230500"
+      },
+      {
         "name": "estoque_orphan_active_variants_view",
         "statements": 1,
         "statements_sha": "d282359d4412ad47",
@@ -230729,10 +231399,65 @@
         "version": "20260617234500"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260617235500"
+      },
+      {
         "name": "create_rpc_get_catalog_bestseller_page",
         "statements": 4,
         "statements_sha": "4ba65c61f0713af9",
         "version": "20260618000001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260618000002"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260618000003"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260618000004"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260618000005"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260618000006"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260618000007"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260618000008"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260618000009"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260618000010"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260618000011"
       },
       {
         "name": "estoque_outlier_view_severity_fix",
@@ -230909,6 +231634,11 @@
         "version": "20260618115637"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260618120000"
+      },
+      {
         "name": "fn_color_link_all_suppliers_v2_asia_prefix",
         "statements": 1,
         "statements_sha": "5f5430c694b41ac9",
@@ -230944,10 +231674,25 @@
         "version": "20260618130000"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260618130223"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260618140000"
+      },
+      {
         "name": "harden_calc_real_values_derive_discount",
         "statements": 1,
         "statements_sha": "5aade71b9a3b3958",
         "version": "20260618140100"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260618140200"
       },
       {
         "name": "fix_missing_db_objects",
@@ -230992,10 +231737,30 @@
         "version": "20260618160000"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260618160001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260618160100"
+      },
+      {
         "name": "add_discount_amount_nonnegative_check",
         "statements": 1,
         "statements_sha": "36420c89e6eb9edb",
         "version": "20260618160115"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260618160200"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260618160300"
       },
       {
         "name": "add_product_images_performance_indexes",
@@ -231014,6 +231779,11 @@
         "statements": 1,
         "statements_sha": "f77488d77fe5e7ee",
         "version": "20260618164013"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260618170000"
       },
       {
         "name": "fix_v_catalog_stats_revoke_write_grants",
@@ -231196,6 +231966,11 @@
         "version": "20260618175842"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260618200000"
+      },
+      {
         "name": "fix_promo_sales_ranking_revoke_anon",
         "statements": 1,
         "statements_sha": "b182a94091b61d5e",
@@ -231226,10 +232001,85 @@
         "version": "20260618222318"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260619000000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619000001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619000002"
+      },
+      {
         "name": "prevent_canonical_chain_on_insert",
         "statements": 4,
         "statements_sha": "dcdd79a07b2aae69",
         "version": "20260619000004"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619000005"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619000006"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619000007"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619000008"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619000009"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619000010"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619000011"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619000012"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619000013"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619000014"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619000015"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619000016"
       },
       {
         "name": "fix_is_shared_on_canonical_null_20260619",
@@ -231260,6 +232110,11 @@
         "statements": 3,
         "statements_sha": "50dddcfd83e60f18",
         "version": "20260619100002"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619100003"
       },
       {
         "name": "expand_security_definer_acl_whitelist_20260619",
@@ -231320,6 +232175,11 @@
         "statements": 1,
         "statements_sha": "726ffc7ce9f4455f",
         "version": "20260619105541"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619110000"
       },
       {
         "name": "prevent_canonical_chain_on_insert_20260619",
@@ -231532,16 +232392,116 @@
         "version": "20260619130747"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260619140000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619140100"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619140200"
+      },
+      {
         "name": "cf_recon_fix_v_cf_orphans_circular",
         "statements": 2,
         "statements_sha": "d788f52c5bff6073",
         "version": "20260619140300"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260619140400"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619140500"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619140600"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619140700"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619150603"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619150748"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619153713"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619153837"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619153921"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619154035"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619154124"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619154218"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619154253"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619154331"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619154354"
+      },
+      {
         "name": "b7183350-bd9b-4007-8fdd-98012751becf",
         "statements": 4,
         "statements_sha": "c57135cd1ff5d7f9",
         "version": "20260619154728"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619154747"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260619155129"
       },
       {
         "name": "fix_event_trigger_whitelist_and_restore_anon_grants_20260619",
@@ -231580,9 +232540,24 @@
         "version": "20260619202130"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260619210000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260620000000"
+      },
+      {
         "name": "mockup_client_logo_rotation_cols",
         "statements": null,
         "version": "20260620000001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260620000002"
       },
       {
         "name": "20260619140600_cf_recon_enrich_health_dashboard",
@@ -231621,16 +232596,101 @@
         "version": "20260620012602"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260620120000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260620140000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260620150500"
+      },
+      {
         "name": "comparador_hardening",
         "statements": 3,
         "statements_sha": "be18c53f05c7a3bc",
         "version": "20260620160000"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260620160001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260620160003"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260620160500"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260620170000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260620170002"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260620170500"
+      },
+      {
         "name": "fix_security_definer_search_path",
         "statements": 6,
         "statements_sha": "d0d59873a4017616",
         "version": "20260620180000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260620190000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260620190002"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260620190003"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260620190004"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260620190500"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260620191000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260620191500"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260620200001"
       },
       {
         "name": null,
@@ -231644,10 +232704,25 @@
         "version": "20260621100000"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260621100001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260621100100"
+      },
+      {
         "name": "fix_collection_items_schema_in_functions",
         "statements": 2,
         "statements_sha": "45cfc5069ce7ef59",
         "version": "20260621100200"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260621100300"
       },
       {
         "name": "fix_fn_xbz_site_collect_search_path",
@@ -231656,16 +232731,61 @@
         "version": "20260621100400"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260621110000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260621120000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260621120001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260621130000"
+      },
+      {
         "name": "fix_fn_xbz_site_collect_search_path",
         "statements": 1,
         "statements_sha": "24f171ca3c37cf39",
         "version": "20260621160000"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260621203000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260621210000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260621211000"
+      },
+      {
         "name": "get_promo_sales_90d_by_product",
         "statements": 3,
         "statements_sha": "d1a708f3a1efa2ee",
         "version": "20260621213000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260621220000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260621221500"
       },
       {
         "name": "fix_product_variants_add_next_entry_alias_columns",
@@ -231692,6 +232812,11 @@
         "version": "20260621224855"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260621230000"
+      },
+      {
         "name": "create_mv_stock_rupture_alert_and_fn_ema_kpi",
         "statements": 1,
         "statements_sha": "731dee17c43d8371",
@@ -231702,6 +232827,21 @@
         "statements": 1,
         "statements_sha": "41e16f7a13a76c19",
         "version": "20260621231046"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260621233000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260621235500"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260621235900"
       },
       {
         "name": "add_fn_system_health_summary_and_extended_smoke_tests",
@@ -231762,6 +232902,11 @@
         "statements": 1,
         "statements_sha": "e6cb07c0e5c03bf0",
         "version": "20260622105107"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260622120000"
       },
       {
         "name": "smoke_tests_v30_two_new_checks",
@@ -231828,6 +232973,21 @@
         "statements": 1,
         "statements_sha": "15b917875b3e51b3",
         "version": "20260622125249"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260622130000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260622130001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260622131000"
       },
       {
         "name": "revoke_anon_write_grants_workspace_notifications",
@@ -231914,6 +233074,11 @@
         "version": "20260622162417"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260622180000"
+      },
+      {
         "name": "cleanup_stuck_import_batches",
         "statements": 1,
         "statements_sha": "51b860c5197363fe",
@@ -231936,6 +233101,11 @@
         "statements": 1,
         "statements_sha": "45527328472bd4b6",
         "version": "20260622193209"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260622195000"
       },
       {
         "name": "fix_vacuum_batch_cron_tx_block_and_add_novelties_vacuum",
@@ -231973,6 +233143,16 @@
         "version": "20260622200600"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260622200700"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260622220000"
+      },
+      {
         "name": "fix_v_system_alerts_cron_threshold_bugalert1",
         "statements": 1,
         "statements_sha": "83ac99d0c076aef5",
@@ -231989,6 +233169,21 @@
         "statements": 1,
         "statements_sha": "26a3ad4f40d43af0",
         "version": "20260623_fix_google_provider_secret_name"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260623000000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260623000001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260623000002"
       },
       {
         "name": "products_name_m3_seo_guard",
@@ -232013,6 +233208,21 @@
         "statements": 2,
         "statements_sha": "c698867b7e5b5708",
         "version": "20260623000006"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260623000007"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260623000008"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260623000009"
       },
       {
         "name": "add_analyze_cron_supplemental_tables",
@@ -232320,6 +233530,11 @@
         "version": "20260623120000"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260623120001"
+      },
+      {
         "name": "fix_restore_trigger_notify_quote_status_change_20260623",
         "statements": 1,
         "statements_sha": "9550710f7d9e6a17",
@@ -232368,10 +233583,30 @@
         "version": "20260623120948"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260623121000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260623122000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260623124424"
+      },
+      {
         "name": "fix_restore_trigger_notify_discount_approval_20260623",
         "statements": 1,
         "statements_sha": "e75618bbdb930d8f",
         "version": "20260623130000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260623130001"
       },
       {
         "name": "tighten_icon_constraint_require_lowercase_second_char",
@@ -232524,6 +233759,11 @@
         "version": "20260623135936"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260623140000"
+      },
+      {
         "name": "add_comment_categories_image_url",
         "statements": 1,
         "statements_sha": "d87a1201aa3e2cb2",
@@ -232578,10 +233818,20 @@
         "version": "20260623155246"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260623160000"
+      },
+      {
         "name": "fix_stock_velocity_safe_view",
         "statements": 3,
         "statements_sha": "82c421007874771b",
         "version": "20260623161949"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260623162001"
       },
       {
         "name": "fix_supplier_settings_packing_classification_backfill",
@@ -232632,6 +233882,16 @@
         "version": "20260623171843"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260623171900"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260623171901"
+      },
+      {
         "name": "fix06_redistribuir_cron_horarios_saindo_00",
         "statements": 1,
         "statements_sha": "670f6aac65fe41a3",
@@ -232680,10 +233940,20 @@
         "version": "20260623172541"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260623172606"
+      },
+      {
         "name": "fix_trg_sync_category_ancestors_v2",
         "statements": 1,
         "statements_sha": "fc733d8e3bf4d4ae",
         "version": "20260623172737"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260623172900"
       },
       {
         "name": "fix_fn_capture_connection_snapshot_search_path",
@@ -232750,6 +234020,11 @@
         "statements": 1,
         "statements_sha": "fb269a6eaedf47a6",
         "version": "20260623183033"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260623183100"
       },
       {
         "name": "categories_products_count_not_null",
@@ -232960,6 +234235,11 @@
         "statements": 1,
         "statements_sha": "2c912e93afd2ff0e",
         "version": "20260623185900"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260623190000"
       },
       {
         "name": "smoke_tests_expand_anon_head_rls_coverage",
@@ -233400,6 +234680,11 @@
         "version": "20260626000001"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260626120000"
+      },
+      {
         "name": "enforce_dar_valid_until_future_on_approval",
         "statements": 1,
         "statements_sha": "5f3bca57b477b355",
@@ -233494,6 +234779,11 @@
         "statements": 1,
         "statements_sha": "07f956ded4885373",
         "version": "20260626125803"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260626130000"
       },
       {
         "name": "deprecate_legacy_staging_functions",
@@ -234498,6 +235788,16 @@
         "version": "20260627193546"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260627200000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260627200100"
+      },
+      {
         "name": "add_art_file_attachments_lookup_indexes_step6",
         "statements": 1,
         "statements_sha": "d04586188a2e4d34",
@@ -234508,6 +235808,11 @@
         "statements": 1,
         "statements_sha": "8e003514f9fbe6b2",
         "version": "20260629102207"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260629142245"
       },
       {
         "name": "cnpj_normalize_backfill_and_check_constraints",
@@ -234598,6 +235903,21 @@
         "statements": 1,
         "statements_sha": "601b72e3dfe2fc27",
         "version": "20260706181356"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260707101522"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260708123135"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260709101218"
       },
       {
         "name": "fix_color_swatches_xbz_to_cf_urls_2026_07",
@@ -234774,10 +236094,20 @@
         "version": "20260712231546"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260713101342"
+      },
+      {
         "name": "secdef_revoke_webhook_locks",
         "statements": 1,
         "statements_sha": "bd53ca5eeeec44a1",
         "version": "20260713154845"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260713163543"
       },
       {
         "name": "fix_auth_hydration_rpc_and_rls",
@@ -234816,6 +236146,11 @@
         "version": "20260714123908"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260714130000"
+      },
+      {
         "name": "add_shipping_deadline_to_seller_carts",
         "statements": 1,
         "statements_sha": "3cd9ce256c769ed5",
@@ -234828,16 +236163,361 @@
         "version": "20260714130503"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260714140000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260714140001"
+      },
+      {
         "name": "fix_rename_unique_cart_item_variant_constraint",
         "statements": 1,
         "statements_sha": "feb6287aa07a65af",
         "version": "20260714151156"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260716000001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000002"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000003"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000004"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000005"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000006"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000007"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000008"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000009"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000010"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000011"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000012"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000013"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000014"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000015"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000016"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000017"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000018"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000019"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000020"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000021"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000022"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000023"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000024"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000025"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000026"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000027"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000028"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000029"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000030"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000031"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000032"
+      },
+      {
         "name": "fix_auth_rls_initplan_smoke_test_runs",
         "statements": 2,
         "statements_sha": "933cadd82a46f6ac",
         "version": "20260716000033"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000034"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000035"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000036"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000037"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000038"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000039"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000040"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000041"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000042"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000043"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000044"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000045"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000046"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000047"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000048"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000049"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000050"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000051"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000052"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000053"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000054"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000055"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000056"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000057"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000058"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000059"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000060"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000061"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000062"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000063"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000064"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000065"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000066"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000067"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260716000068"
       },
       {
         "name": "p0_magazine_partition_rls_hardening",
@@ -235092,10 +236772,55 @@
         "version": "20260716214659"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260717000063"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260717000064"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260717000065"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260717000066"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260717000067"
+      },
+      {
         "name": "create_collection_products_product_id_idx",
         "statements": 2,
         "statements_sha": "383ff9fb6c862d74",
         "version": "20260717000068"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260717000069"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260717000070"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260717000071"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260717000072"
       },
       {
         "name": "fix_security_invoker_regression_suppliers_and_stock_velocity",
@@ -235440,16 +237165,36 @@
         "version": "20260717185945"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260717190000"
+      },
+      {
         "name": "fix_stock_rupture_kpi_matview_grants_for_authenticated",
         "statements": 1,
         "statements_sha": "d7be0d74b1fbdffc",
         "version": "20260717235313"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260717235500"
+      },
+      {
         "name": "close_anon_write_default_privilege_postgres_role",
         "statements": 1,
         "statements_sha": "daa253f3830a682b",
         "version": "20260718135800"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260718140000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260826000000"
       },
       {
         "name": "forward_only_v_kit_component_print_areas_security_invoker",
@@ -235530,10 +237275,20 @@
         "version": "20260829123000"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260902220800"
+      },
+      {
         "name": "fix_smoke_persist_signature_drift",
         "statements": 1,
         "statements_sha": "342df7ea42a340f2",
         "version": "20260902220900"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260902221000"
       },
       {
         "name": "rls_enable_spr_history_partitions_and_fix_creator",
@@ -235554,6 +237309,11 @@
         "version": "20260902221455"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20260902221900"
+      },
+      {
         "name": "harden_smoke_persist_guard_and_revive_auth_test",
         "statements": 1,
         "statements_sha": "3aa65103179f179f",
@@ -235570,6 +237330,11 @@
         "statements": 1,
         "statements_sha": "38d773e4be3523dd",
         "version": "20260903093431"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260903093500"
       },
       {
         "name": "smoke_persist_secdef_chain_and_auth_test_relcheck",
@@ -235678,6 +237443,16 @@
         "statements": 7,
         "statements_sha": "f3260b49e491b1d7",
         "version": "20260905033000"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260905033100"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260905033200"
       },
       {
         "name": "audit_r3_seller_carts_optimistic_version",
@@ -235828,6 +237603,11 @@
         "statements": 1,
         "statements_sha": "9b639ed5c87161a3",
         "version": "20260912205759"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20260915113458"
       },
       {
         "name": "catalog_stats_price_range_top_colors_materials",
@@ -236038,6 +237818,21 @@
         "statements": 3,
         "statements_sha": "c3268c4a69fcf004",
         "version": "20261022100001"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20261022100020"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20261022100021"
+      },
+      {
+        "name": null,
+        "statements": null,
+        "version": "20261022100022"
       },
       {
         "name": "incidente_2026_10_22_alivio_carga_cron",
@@ -236274,6 +238069,11 @@
         "version": "20261101202500"
       },
       {
+        "name": null,
+        "statements": null,
+        "version": "20261101220000"
+      },
+      {
         "name": "20261101202500_cron001_stagger_schedules_reduce_concurrent",
         "statements": 1,
         "statements_sha": "58b47d6ae46157ff",
@@ -236400,6 +238200,12 @@
         "version": "20261112140000"
       },
       {
+        "name": "sec_revoke_anon_authenticated_net_supabase_functions",
+        "statements": 2,
+        "statements_sha": "a2f20bae6da8ad85",
+        "version": "20261113225000"
+      },
+      {
         "name": "perf_idx_products_active_created_at_desc",
         "statements": 3,
         "statements_sha": "e04f4c60c09e7f98",
@@ -236416,6 +238222,12 @@
         "statements": 1,
         "statements_sha": "30f8d39a2e00819d",
         "version": "20261114003000"
+      },
+      {
+        "name": "p09_reconcile_ledger_schema_migrations",
+        "statements": 1,
+        "statements_sha": "4a7a5d8de9b2a5aa",
+        "version": "20261114014500"
       },
       {
         "name": "fix_authenticator_idle_session_timeout_pgrst_listener",

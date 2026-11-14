@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4bb9964171dfd3ec19261f630c46f72ff25e3231",
+  "commit": "7b327f93664e003c993d8f4cf94223603eb70b65",
   "branch": "main",
-  "data_commit": "2026-11-14T16:50:37-03:00",
+  "data_commit": "2026-11-14T16:53:47-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "7b327f93",
+    "data": "2026-11-14",
+    "assunto": "docs(faxina): registra no repositório as provas da limpeza de 14/11 (#3623)"
+   },
    {
     "sha": "4bb99641",
     "data": "2026-11-14",
@@ -126,18 +131,13 @@
     "sha": "892494ca",
     "data": "2026-11-14",
     "assunto": "fix(security): CRM — vendedor vê os dele + os sem dono (supersede #3518) (#3583)"
-   },
-   {
-    "sha": "be2fb404",
-    "data": "2026-11-14",
-    "assunto": "fix(catalog): remover prefetch pós-login de v_products_public que nunca é lido (#3603)"
    }
   ],
-  "arquivos_mudados_7d": 2066,
+  "arquivos_mudados_7d": 2073,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 629
+    "mudancas": 628
    },
    {
     "pasta": "src/components/products",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 465
+    "commits": 464
    },
    {
     "autor": "Claude",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10154,
+  "arquivos_total": 10161,
   "arquivos_codigo": 5219,
   "linhas_codigo": 996631,
   "rotas": 138,
@@ -339,7 +339,7 @@
   "testes": 2458,
   "workflows": 98,
   "scripts": 272,
-  "docs_md": 1019
+  "docs_md": 1022
  },
  "por_pasta": {
   ".github/scripts": {

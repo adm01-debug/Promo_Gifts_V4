@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(faxina): registra no repositório as provas da limpeza de 14/11 (#3623)",
    "infra(ci): db-apply-migration aplica migration sem gate de aprovação (#3620)",
    "Merge pull request #3619 from adm01-debug/claude/trem2-front-limpeza-261114-1850",
    "Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850",
-   "fix(db): RLS de pedidos e notificações, is_trusted, revoke em net/supabase_functions, ledger P09 e índices de FK (#3618)",
-   "docs(coordenacao): ledger E188 dos 11 merges do trem de front e limpeza"
+   "fix(db): RLS de pedidos e notificações, is_trusted, revoke em net/supabase_functions, ledger P09 e índices de FK (#3618)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

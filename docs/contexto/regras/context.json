@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "4bb9964171dfd3ec19261f630c46f72ff25e3231",
+  "sha": "7b327f93664e003c993d8f4cf94223603eb70b65",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 19:51 UTC",
-  "files_total": 10082,
+  "generated_at": "2026-11-14 19:55 UTC",
+  "files_total": 10089,
   "code_files": 8617,
   "code_lines": 1214728
  },
@@ -529914,10 +529914,25 @@
   }
  },
  "git": {
-  "sha": "4bb9964171dfd3ec19261f630c46f72ff25e3231",
+  "sha": "7b327f93664e003c993d8f4cf94223603eb70b65",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7b327f9",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "docs(faxina): registra no repositório as provas da limpeza de 14/11 (#3623)",
+    "files": [
+     "docs/faxina-261114/01-auditoria-branches-excluidas.md",
+     "docs/faxina-261114/02-prova-211-branches.tsv",
+     "docs/faxina-261114/03-branches-excluidas-com-sha.tsv",
+     "docs/faxina-261114/04-prova-profunda-19-casos.txt",
+     "docs/faxina-261114/05-plano-workflows.md",
+     "docs/faxina-261114/06-prova-prs-supersedidas-trem2.tsv",
+     "docs/faxina-261114/README.md"
+    ]
+   },
    {
     "sha": "4bb9964",
     "date": "2026-11-14",
@@ -530231,15 +530246,6 @@
      "supabase/rollbacks/20261112120900_rollback.sql",
      "tests/integrations/supabase/gold-admin-sync.test.ts"
     ]
-   },
-   {
-    "sha": "74e2650",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "docs: prod-readiness com a qualidade do main final e as 5 PRs bloqueadas pelo banco (#3585)",
-    "files": [
-     "docs/prod-readiness.md"
-    ]
    }
   ],
   "hot_files": [
@@ -530249,10 +530255,6 @@
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    3
-   ],
-   [
-    "docs/prod-readiness.md",
     3
    ],
    [
@@ -530270,6 +530272,38 @@
    [
     "supabase/functions/crm-db-bridge/scope_integration_test.ts",
     2
+   ],
+   [
+    "docs/prod-readiness.md",
+    2
+   ],
+   [
+    "docs/faxina-261114/01-auditoria-branches-excluidas.md",
+    1
+   ],
+   [
+    "docs/faxina-261114/02-prova-211-branches.tsv",
+    1
+   ],
+   [
+    "docs/faxina-261114/03-branches-excluidas-com-sha.tsv",
+    1
+   ],
+   [
+    "docs/faxina-261114/04-prova-profunda-19-casos.txt",
+    1
+   ],
+   [
+    "docs/faxina-261114/05-plano-workflows.md",
+    1
+   ],
+   [
+    "docs/faxina-261114/06-prova-prs-supersedidas-trem2.tsv",
+    1
+   ],
+   [
+    "docs/faxina-261114/README.md",
+    1
    ],
    [
     ".github/workflows/db-apply-migration.yml",
@@ -530293,34 +530327,6 @@
    ],
    [
     "supabase/migrations/20261114014500_p09_reconcile_ledger_schema_migrations.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261114031000_fix_user_known_devices_is_trusted.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261113225000_rollback.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261114014100_rollback.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261114014500_rollback.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261114031000_rollback.sql",
     1
    ]
   ]
