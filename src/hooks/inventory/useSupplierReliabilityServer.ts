@@ -3,7 +3,10 @@
  *
  * Substitui a versão client-side (useSupplierReliability) que baixava 200k+ rows.
  * Lê diretamente de:
- *   - mv_supplier_reliability   → KPI bar + tabela de fornecedores (3 rows instant)
+ *   - fn_get_supplier_reliability (RPC SECURITY DEFINER sobre mv_supplier_reliability)
+ *       → KPI bar + tabela de fornecedores (3 rows instant). A MV não tem SELECT para
+ *       authenticated desde 20260716191641; a RPC só devolve linhas para supervisor+
+ *       (is_supervisor_or_above, mesmo molde da SB-0003), então a query só roda para esse papel.
  *   - get_supplier_reliability_history (RPC) → drawer de histórico (≤200 rows)
  *
  * A MV é atualizada a cada 15 min via pg_cron (refresh-mv-supplier-reliability).
@@ -16,6 +19,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 import type {
   SupplierReliability,
@@ -125,13 +129,12 @@ async function fetchMvReliability(): Promise<SupplierReliability[]> {
     select: (cols: string) => MvQueryBuilder;
     order: (col: string, opts?: { ascending: boolean }) => MvQueryBuilder;
   };
-  const { data, error } = await (supabase as unknown as { from: (t: string) => MvQueryBuilder })
-    .from('mv_supplier_reliability')
-    .select('*')
+  const { data, error } = await (supabase as unknown as { rpc: (fn: string) => MvQueryBuilder })
+    .rpc('fn_get_supplier_reliability')
     .order('overall_score', { ascending: false });
 
   if (error) {
-    logger.warn('[ReliabilityServer] mv_supplier_reliability fetch failed', error);
+    logger.warn('[ReliabilityServer] fn_get_supplier_reliability fetch failed', error);
     throw new Error(error.message);
   }
 
@@ -143,9 +146,11 @@ async function fetchMvReliability(): Promise<SupplierReliability[]> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function useSupplierReliabilityServer() {
+  const { rolesLoaded, isSupervisorOrAbove } = useAuth();
   const query = useQuery({
     queryKey: ['supplier-reliability-server', 'v2'],
     queryFn: fetchMvReliability,
+    enabled: rolesLoaded && isSupervisorOrAbove,
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
     refetchOnWindowFocus: false,

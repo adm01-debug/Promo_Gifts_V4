@@ -11,13 +11,9 @@ test.describe('Forgot Password Flow', () => {
     // Preenche o email
     await page.locator('#forgot-email').fill('test-recovery@example.com');
     
-    // Mock da resposta do Supabase para evitar erro de rede/banco
-    await page.route('**/rest/v1/password_reset_requests*', async route => {
-      await route.fulfill({
-        status: 201,
-        contentType: 'application/json',
-        body: JSON.stringify({ id: '123' }),
-      });
+    // Mock da RPC request_password_reset (RETURNS void → PostgREST responde 204 sem corpo)
+    await page.route('**/rest/v1/rpc/request_password_reset*', async route => {
+      await route.fulfill({ status: 204, body: '' });
     });
 
     // Envia solicitação
