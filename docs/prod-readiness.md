@@ -1121,3 +1121,20 @@ Sessão de 13–14/11. As linhas das sessões anteriores (#3424, #3428, #3430, #
   - manifesto do release-please para `1.8.1`: para a #3566, que reaparece com "release 1.2.0".
   - substitutas das #3411, #3412, #3432, #3526, #3417, #3525, #3518 e #3516, preparadas e revisadas adversarialmente com os dossiês em `analise-prs/`.
 - Ficam com a outra sessão, sem duplicação: #3528, #3534, #3535, #3531, #3532, #3523 e #3454.
+
+## 12. Estado do `main` final (e73a88d, 14/11 11:50Z)
+
+O último merge no `main` é a #3584 (`e73a88d`, de outro agente), com migrations aplicadas pelo E15. Em produção, `GET /api/health` responde `{"status":"ok","version":"e73a88d"}`, e `/api/ready` responde `ready`, com auth e postgrest ok, às 11:30Z. Workflows do `main` em `e73a88d` que não ficaram verdes:
+
+| Workflow | Estado | Causa (log) e o que falta |
+|---|---|---|
+| Deploy Gates (Gate 1 → Gate Final) | BLOQUEADO | Run 43588890465, step `Gate 1.13.3 — Migration receipts (E055)`: `2 versão(ões) aplicada(s) há >24h sem recibo em MIGRATIONS_SYNC_LOG.md: 20261112120100, 20261112120000`. Os recibos estão nas PRs automáticas do E15, #3590 a #3598, abertas e geradas por bot: o merge cabe ao dono ou ao agente da #3584. Depois da aplicação da `20261112120800`, o Gate 1 passou a acusar também `policies-baseline: 1 policy NOVA fora do baseline: public.query_telemetry.query_telemetry_delete_dev` (job 132435629530, na #3600). A #3584 não atualizou `.security/policies-baseline.json`, e esse arquivo também é alterado pela #3525, aberta por outro agente: falta decisão do dono. |
+| Lovable Autoheal | aguardando o dono | Run 43588890253: `ESLint found too many warnings (maximum: 0)`, com 2 avisos `no-restricted-syntax` em `e2e/flows/forgot-password-flow.spec.ts:5,12`, que já existiam e voltaram a aparecer porque a #3584 tocou no arquivo. A correção está na #3600: ESLint do arquivo com exit 0; revisões do Devin e do Codex sem apontamentos. O Gate 1 da #3600 está vermelho só pelas duas causas da linha acima. |
+| E2E Stock — Matrix (E80) | BLOQUEADO | Run 43588891001, job `filter`: `expect(locator).toBeVisible() failed … element(s) not found` e `toBeFocused() failed` em `admin-stock-search-button`. É o mesmo spec corrigido na #3454 (de outro agente, aberta). |
+| CI, E2E (Playwright), SECURITY DEFINER ACL | em andamento às 11:50Z | Em `74e2650`: CI `Critical Flows E2E` failure (run 43580555996, 10:41Z) e `Theme & Accessibility Gate` cancelado. O banco ficou instável das 08:09 às 09:05Z (causa 3, §7.1). |
+
+Os outros workflows do `main` em `e73a88d` deram success: CodeQL, Supabase Linter Gate, Gate 5, Security Scan, Gitleaks, SSOT, os E2E de Critical Flows, de Personalização e de Swatch, Static Health, schema-snapshot e os 8 E15 de aplicação de migration.
+
+### PR desta etapa
+
+- adm01-debug/Promo_Gifts_V4#3600 — `fix(e2e)`, spec de recuperação de senha sem `page.goto` direto nem `fill` literal. Aberta; espera o merge dos recibos e o baseline de policies.
