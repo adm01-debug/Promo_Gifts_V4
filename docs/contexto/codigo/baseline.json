@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "75030fabf1d6a152b32818006b3b458bd7a41c9f",
+  "commit": "7536e94e531290762ff1db85316662e4fc8b1212",
   "branch": "main",
-  "data_commit": "2026-11-14T01:16:25-03:00",
+  "data_commit": "2026-11-14T01:40:52-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "7536e94",
+    "data": "2026-11-14",
+    "assunto": "perf(db): proposta de reagendamento noturno dos crons pesados de fornecedores (#3554)"
+   },
    {
     "sha": "75030fa",
     "data": "2026-11-14",
@@ -126,14 +131,9 @@
     "sha": "3d1e34f",
     "data": "2026-11-13",
     "assunto": "docs: recibo de deploy de edge function(s) — run 43367027942 (E66) (#3480)"
-   },
-   {
-    "sha": "0a9291a",
-    "data": "2026-11-13",
-    "assunto": "Merge pull request #3425 from adm01-debug/claude/lote-pilha-v2-261112"
    }
   ],
-  "arquivos_mudados_7d": 1977,
+  "arquivos_mudados_7d": 1979,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,15 +199,15 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 66
+    "mudancas": 65
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 56
+    "mudancas": 55
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 44
+    "mudancas": 45
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 445
+    "commits": 444
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10112,
+  "arquivos_total": 10114,
   "arquivos_codigo": 5212,
   "linhas_codigo": 995718,
   "rotas": 138,
@@ -334,7 +334,7 @@
   "hooks": 615,
   "edge_functions": 111,
   "tabelas": 545,
-  "migrations": 3067,
+  "migrations": 3068,
   "cron_jobs": 122,
   "testes": 2449,
   "workflows": 98,

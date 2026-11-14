@@ -136986,7 +136986,7 @@
           "database": "postgres",
           "jobid": 58,
           "jobname": "asia-stock-sync",
-          "schedule": "7,22,37,52 * * * *",
+          "schedule": "52 * * * *",
           "username": "postgres"
         },
         {
@@ -137256,7 +137256,7 @@
           "database": "postgres",
           "jobid": 206,
           "jobname": "sm-variant-coherence-guard",
-          "schedule": "12,27,42,57 * * * *",
+          "schedule": "57 * * * *",
           "username": "postgres"
         },
         {
@@ -137265,7 +137265,7 @@
           "database": "postgres",
           "jobid": 207,
           "jobname": "sm-stock-guard",
-          "schedule": "6,21,36,51 * * * *",
+          "schedule": "51 * * * *",
           "username": "postgres"
         },
         {
@@ -137319,7 +137319,7 @@
           "database": "postgres",
           "jobid": 213,
           "jobname": "sm-category-enqueue",
-          "schedule": "11,26,41,56 * * * *",
+          "schedule": "11,26,41,56 1-8 * * *",
           "username": "postgres"
         },
         {
@@ -137328,7 +137328,7 @@
           "database": "postgres",
           "jobid": 214,
           "jobname": "sm-category-collect",
-          "schedule": "12,27,42,57 * * * *",
+          "schedule": "12,27,42,57 1-8 * * *",
           "username": "postgres"
         },
         {
@@ -137364,7 +137364,7 @@
           "database": "postgres",
           "jobid": 219,
           "jobname": "sm-url-discover-search",
-          "schedule": "5,15,25,35,45,55 * * * *",
+          "schedule": "5,15,25,35,45,55 1-8 * * *",
           "username": "postgres"
         },
         {
@@ -137391,7 +137391,7 @@
           "database": "postgres",
           "jobid": 224,
           "jobname": "asia-enqueue-new-products",
-          "schedule": "21,51 * * * *",
+          "schedule": "21,51 1-8 * * *",
           "username": "postgres"
         },
         {
@@ -137400,7 +137400,7 @@
           "database": "postgres",
           "jobid": 225,
           "jobname": "spot-relink-family-images",
-          "schedule": "22,52 * * * *",
+          "schedule": "22,52 1-8 * * *",
           "username": "postgres"
         },
         {
@@ -137481,7 +137481,7 @@
           "database": "postgres",
           "jobid": 234,
           "jobname": "refresh-all-materialized-views",
-          "schedule": "38 * * * *",
+          "schedule": "38 */2 * * *",
           "username": "postgres"
         },
         {
@@ -137724,7 +137724,7 @@
           "database": "postgres",
           "jobid": 263,
           "jobname": "sm-url-discover-collect",
-          "schedule": "8,18,28,38,48,58 * * * *",
+          "schedule": "8,18,28,38,48,58 1-8 * * *",
           "username": "postgres"
         },
         {
@@ -137733,7 +137733,7 @@
           "database": "postgres",
           "jobid": 264,
           "jobname": "sm-site-scrape-auth",
-          "schedule": "19,39,59 * * * *",
+          "schedule": "19,39,59 1-8 * * *",
           "username": "postgres"
         },
         {
@@ -137742,7 +137742,7 @@
           "database": "postgres",
           "jobid": 265,
           "jobname": "spot-stock-fast-sync",
-          "schedule": "10,40 * * * *",
+          "schedule": "40 * * * *",
           "username": "postgres"
         },
         {
@@ -137751,7 +137751,7 @@
           "database": "postgres",
           "jobid": 266,
           "jobname": "xbz-enrich-gold-extractors",
-          "schedule": "26,56 * * * *",
+          "schedule": "26,56 1-8 * * *",
           "username": "postgres"
         },
         {
@@ -137769,7 +137769,7 @@
           "database": "postgres",
           "jobid": 268,
           "jobname": "xbz-image-uploader",
-          "schedule": "3,13,23,33,43,53 * * * *",
+          "schedule": "3,13,23,33,43,53 1-8 * * *",
           "username": "postgres"
         },
         {
@@ -137778,7 +137778,7 @@
           "database": "postgres",
           "jobid": 269,
           "jobname": "xbz-site-scrape",
-          "schedule": "1,31 * * * *",
+          "schedule": "1,31 1-8 * * *",
           "username": "postgres"
         },
         {
@@ -137805,7 +137805,7 @@
           "database": "postgres",
           "jobid": 273,
           "jobname": "process-pending-products",
-          "schedule": "2,17,32,47 * * * *",
+          "schedule": "47 * * * *",
           "username": "postgres"
         },
         {
@@ -137832,7 +137832,7 @@
           "database": "postgres",
           "jobid": 276,
           "jobname": "sm-site-scrape",
-          "schedule": "16,46 * * * *",
+          "schedule": "16,46 1-8 * * *",
           "username": "postgres"
         },
         {
@@ -137841,7 +137841,7 @@
           "database": "postgres",
           "jobid": 277,
           "jobname": "xbz-stock-sync",
-          "schedule": "23,53 * * * *",
+          "schedule": "53 * * * *",
           "username": "postgres"
         },
         {
@@ -137850,7 +137850,7 @@
           "database": "postgres",
           "jobid": 278,
           "jobname": "asia-image-uploader",
-          "schedule": "9 * * * *",
+          "schedule": "9 1-8 * * *",
           "username": "postgres"
         },
         {
@@ -137904,7 +137904,7 @@
           "database": "postgres",
           "jobid": 284,
           "jobname": "kit-ficha-parse-site",
-          "schedule": "33 * * * *",
+          "schedule": "33 1-8 * * *",
           "username": "postgres"
         },
         {
@@ -137913,7 +137913,7 @@
           "database": "postgres",
           "jobid": 285,
           "jobname": "kit-ficha-fetch",
-          "schedule": "12 */3 * * *",
+          "schedule": "12 1,4,7 * * *",
           "username": "postgres"
         },
         {
@@ -236000,6 +236000,12 @@
         "statements": 3,
         "statements_sha": "e04f4c60c09e7f98",
         "version": "20261113235000"
+      },
+      {
+        "name": "cron003_reagendamento_noturno_fornecedores",
+        "statements": 1,
+        "statements_sha": "2eb2030e2678c18a",
+        "version": "20261113235800"
       },
       {
         "name": "fix_authenticator_idle_session_timeout_pgrst_listener",

@@ -2595,4 +2595,5 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261112130000 | [fix_get_sitemap_public_anon_grant](migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql) | 2 |
 | 20261112140000 | [fix_rls_supplier_products_raw_history_p2027](migrations/20261112140000_fix_rls_supplier_products_raw_history_p2027.sql) | 51 |
 | 20261113235000 | [perf_idx_products_active_created_at_desc](migrations/20261113235000_perf_idx_products_active_created_at_desc.sql) | 3 |
+| 20261113235800 | [cron003_reagendamento_noturno_fornecedores](migrations/20261113235800_cron003_reagendamento_noturno_fornecedores.sql) | 1 |
 | 20261114040000 | [fix_authenticator_idle_session_timeout_pgrst_listener](migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql) | 1 |
