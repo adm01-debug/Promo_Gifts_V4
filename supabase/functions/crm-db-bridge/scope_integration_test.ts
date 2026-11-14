@@ -259,3 +259,40 @@ Deno.test("erro 5xx real do CRM continua 500", async () => {
   CRM_DATA_ERROR = null;
   assertEquals(r.status, 500, JSON.stringify(r.body));
 });
+
+Deno.test("select por id com select inválido (.single) vira 400 e não abre o disjuntor", async () => {
+  reset();
+  CRM_DATA_ERROR = { status: 400, body: { code: "42703", message: "column companies.nao_existe does not exist" } };
+  for (let i = 0; i < 6; i++) {
+    const r = await call({ operation: "select", table: "companies", id: "33333333-3333-4333-8333-333333333333", select: "id,nao_existe" });
+    assertEquals(r.status, 400, JSON.stringify(r.body));
+  }
+  CRM_DATA_ERROR = null;
+  ROLE = "supervisor";
+  const ok = await call({ operation: "select", table: "companies" });
+  assertEquals(ok.status, 200, `disjuntor abriu pelo caminho .single(): ${JSON.stringify(ok.body)}`);
+});
+
+Deno.test("42501 (GRANT/config) é 500 visível mas não abre o disjuntor; 23505 vira 409", async () => {
+  reset(); ROLE = "supervisor";
+  CRM_DATA_ERROR = { status: 403, body: { code: "42501", message: "permission denied for table suppliers" } };
+  for (let i = 0; i < 6; i++) {
+    const r = await call({ operation: "select", table: "suppliers" });
+    assertEquals(r.status, 500, JSON.stringify(r.body));
+  }
+  CRM_DATA_ERROR = null;
+  const ok = await call({ operation: "select", table: "companies" });
+  assertEquals(ok.status, 200, `disjuntor abriu por erro de configuração: ${JSON.stringify(ok.body)}`);
+  CRM_DATA_ERROR = { status: 409, body: { code: "23505", message: "duplicate key" } };
+  const dup = await call({ operation: "select", table: "companies", filters: { name: "x" } });
+  CRM_DATA_ERROR = null;
+  assertEquals(dup.status, 409, JSON.stringify(dup.body));
+});
+
+Deno.test("search com statement_timeout vira 504", async () => {
+  reset(); ROLE = "supervisor";
+  CRM_DATA_ERROR = { status: 500, body: { code: "57014", message: "canceling statement due to statement timeout" } };
+  const r = await call({ operation: "search", table: "companies", search: { column: "name", term: "x" } });
+  CRM_DATA_ERROR = null;
+  assertEquals(r.status, 504, JSON.stringify(r.body));
+});

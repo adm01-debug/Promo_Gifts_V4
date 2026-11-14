@@ -386,18 +386,36 @@ function escapeLikePattern(term: string): string {
 }
 
 /**
- * Erro do PostgREST/Postgres causado pela ENTRADA do cliente (coluna/filtro/valor inválido,
- * PGRST1xx/2xx, classes SQLSTATE 22 e 42) vira 400 — não 500. Só 5xx contam no disjuntor:
- * antes, 5 requisições com filtro inválido de um vendedor abriam o disjuntor e derrubavam o
- * bridge para todos por 60 s (simulação com PostgREST real, 13/11).
+ * Classifica erro do PostgREST/Postgres em (status HTTP, conta no disjuntor?). Simulação com
+ * PostgREST real v12/v14 (13–14/11): só falha de DISPONIBILIDADE conta no disjuntor — erro
+ * determinístico (entrada do cliente, conflito, configuração) nunca deve deixar um usuário
+ * derrubar o bridge para todos.
+ *  - 22xxx/42xxx (exceto 42501/42P01), PGRST1xx/2xx (exceto PGRST205) → 400 (entrada).
+ *  - 23xxx → 409 (conflito/integridade).
+ *  - 42501, 42P01, PGRST205 → 500 visível (GRANT/esquema/deploy do CRM), sem contar no disjuntor.
+ *  - código vazio (fetch falhou), PGRST000-003, 08xxx, 53xxx, 57xxx → 500 e conta.
  */
-export function isClientDbError(error: { code?: string | null } | null | undefined): boolean {
+export function classifyDbError(error: { code?: string | null } | null | undefined): { status: number; outage: boolean } {
   const code = String(error?.code ?? "");
-  return /^PGRST[12]\d\d$/.test(code) || /^(22|42)[0-9A-Z]{3}$/.test(code);
+  if (code === "42501" || code === "42P01" || code === "PGRST205") return { status: 500, outage: false };
+  if (/^23[0-9A-Z]{3}$/.test(code)) return { status: 409, outage: false };
+  if (/^PGRST[12]\d\d$/.test(code) || /^(22|42)[0-9A-Z]{3}$/.test(code)) return { status: 400, outage: false };
+  return { status: 500, outage: true };
 }
 
+/** Compat: erro causado pela entrada do cliente (400/409). */
+export function isClientDbError(error: { code?: string | null } | null | undefined): boolean {
+  return classifyDbError(error).status < 500;
+}
+
+/** Cabeçalho interno: resposta 5xx que NÃO é indisponibilidade (não conta no disjuntor). */
+const BREAKER_SKIP_HEADER = "x-bridge-breaker-skip";
+
 function dbErrorResponse(error: { code?: string | null; message: string }): Response {
-  return jsonResponse({ error: error.message }, isClientDbError(error) ? 400 : 500);
+  const { status, outage } = classifyDbError(error);
+  const res = jsonResponse({ error: error.message }, status);
+  if (status >= 500 && !outage) res.headers.set(BREAKER_SKIP_HEADER, "1");
+  return res;
 }
 
 function validateFilters(filters: Record<string, unknown>, table?: string): string | null {
@@ -446,7 +464,7 @@ function isOptionalQuoteTable(table: string): boolean {
 function isMissingTableError(error: PostgrestLikeError | null | undefined, table: string): boolean {
   if (!error) return false;
   const message = error.message || "";
-  return error.code === "PGRST205" || message.includes(`Could not find the table 'public.${table}' in the schema cache`);
+  return error.code === "PGRST205" || error.code === "42P01" || message.includes(`Could not find the table 'public.${table}' in the schema cache`);
 }
 
 function getOptionalTableMessage(table: string): string {
@@ -715,7 +733,8 @@ async function handleSelect(crm: SupabaseClient, body: CrmQuery, userId?: string
     if (error) {
       console.error(`[SELECT] single error: code=${error.code}, message=${error.message}`);
       if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalSelectFallback(table, true);
-      return jsonResponse({ error: error.message }, error.code === "PGRST116" ? 404 : 500);
+      if (error.code === "PGRST116") return jsonResponse({ error: error.message }, 404);
+      return dbErrorResponse(error); // antes: 500 fixo — 5× select inválido por id abria o disjuntor
     }
     return jsonResponse({ data: scoped.stripParent ? stripJoin([data], scoped.stripParent)[0] : data, count: 1 });
   }
@@ -767,6 +786,12 @@ async function handleSearch(crm: SupabaseClient, body: CrmQuery, userId?: string
   const { data, error } = await query;
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalSelectFallback(table, false);
+    if (error.code === "57014" || /statement timeout/i.test(error.message ?? "")) {
+      return jsonResponse({
+        error: "A busca demorou demais. Refine o termo ou reduza o limite.",
+        code: "statement_timeout",
+      }, 504);
+    }
     return dbErrorResponse(error);
   }
   const rows = stripJoin(data || [], scoped.stripParent);
@@ -880,7 +905,7 @@ Deno.serve((req) => {
 
     const COLUMN_RE = /^[a-z_][a-z0-9_]*$/i; // sem ponto: nada de coluna de tabela embutida (contacts.user_id)
     const CrmOrderBySchema = z.union([
-      z.string().regex(/^[a-z_][a-z0-9_.]*(\s+(asc|desc))?$/i),
+      z.string().regex(/^[a-z_][a-z0-9_]*(\s+(asc|desc))?$/i),
       z.object({ column: z.string().regex(COLUMN_RE), ascending: z.boolean().optional() }),
     ]);
     const CrmRequestSchema = z.object({
@@ -938,7 +963,8 @@ Deno.serve((req) => {
       case "search": response = await handleSearch(crm, body, crmOwnerId, auth.userRole); break;
       default: return jsonResponse({ error: `Operation '${operation}' not supported.` }, 400);
     }
-    if (response.status >= 500) breaker.recordFailure(); else breaker.recordSuccess();
+    if (response.status >= 500 && response.headers.get(BREAKER_SKIP_HEADER) !== "1") breaker.recordFailure();
+    else breaker.recordSuccess();
 
     const elapsed = Math.round(performance.now() - reqStartedAt);
     if (wasCold) {
