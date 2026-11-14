@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `23cfcc137974386c4cf35db9596faa489a208fcf` (2026-11-14T18:04:38-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7b84ebe5130cbe36aa8f817fed4ba873648dbfe3` (2026-11-14T18:13:26-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 10163 |
 | arquivos_codigo | 5221 |
-| linhas_codigo | 996721 |
+| linhas_codigo | 996758 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -589,27 +589,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43328 nós · 74802 arestas · 2411 comunidades · grafo do commit `23cfcc13`
-- comunidades maiores: vitest (841), react (735), lucide-react (530), ref_node_child_process (494), ref_integrations (454), @tanstack/react-query (399), react-router-dom (352), nav.ts (345), ref_components (335), ref_hooks (329), ref_types (324), scripts (302)
+- 43329 nós · 74807 arestas · 2454 comunidades · grafo do commit `7b84ebe5`
+- comunidades maiores: vitest (854), ref_components (714), ref_integrations (618), ref_node_child_process (378), ref_hooks (373), @tanstack/react-query (371), gotoAndSettle (332), ref_types (324), react (319), ref_utils (303), scripts (302), react-router-dom (300)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (64)
-- PENDENCIAS.md (53)
-- supabase/MIGRATIONS_SYNC_LOG.md (51)
-- package.json (30)
-- package-lock.json (21)
-- analise-prs/progresso.json (16)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (15)
-- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (14)
+- RELATORIO_CI.md (100)
+- PENDENCIAS.md (94)
+- supabase/MIGRATIONS_SYNC_LOG.md (56)
+- package.json (44)
+- package-lock.json (35)
+- analise-prs/progresso.json (21)
+- analise-prs/RELATORIO_PRS.md (19)
+- CHANGELOG.md (18)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (18)
+- analise-prs/prs.json (15)
+- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (15)
+- .github/workflows/deploy-gates.yml (14)
 - src/pages/kit-builder/KitBuilderPage.tsx (13)
-- .github/workflows/deploy-gates.yml (12)
-- CHANGELOG.md (12)
-- analise-branches/RELATORIO_BRANCHES.md (11)
-- docs/coordenacao/conflitos-semanticos.md (11)
-- src/hooks/kit-builder/useKitBuilderPageState.ts (11)
-- analise-prs/RELATORIO_PRS.md (10)
+- docs/coordenacao/conflitos-semanticos.md (12)
+- docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (12)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1184,21 +1184,21 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-14 `7b84ebe5` Merge pull request #3630 from adm01-debug/claude/trem4-front-perf-261114-2020
+- 2026-11-14 `6f156767` Merge branch 'main' into claude/trem4-front-perf-261114-2020
 - 2026-11-14 `23cfcc13` fix(pdp): aborta de verdade a consulta do produto ao estourar o limite de 15 s (#3622)
 - 2026-11-14 `a47e0824` Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945
 - 2026-11-14 `cf64ee7e` perf(catalog): primeiro carregamento com 1 consulta em vez de 4, mantendo 500 produtos na tela (#3621)
+- 2026-11-14 `16bc011d` Merge remote-tracking branch 'origin/main' into claude/trem4-front-perf-261114-2020
 - 2026-11-14 `87653797` Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945
 - 2026-11-14 `5eae42bb` fix(migrations): destrava o CI — recibo das versões reconciliadas e correções no plano de workflows (#3629)
+- 2026-11-14 `8288d686` chore(coordenacao): registra o trem 4 no ledger (E188)
+- 2026-11-14 `2c040e80` merge: codex/fix-sidebar-tooltips-auth-261107-0205
+- 2026-11-14 `34a8b603` merge: claude/fix-suggestions-sem-useadvancedfilters-261114-1004
+- 2026-11-14 `34301051` merge: claude/fix-stock-pagination-sem-count-exact-261114-1007
+- 2026-11-14 `0407e41b` merge: claude/fix-cache-publico-alvo-options-261114-1005
 - 2026-11-14 `7b327f93` docs(faxina): registra no repositório as provas da limpeza de 14/11 (#3623)
 - 2026-11-14 `a63a77b0` Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945
-- 2026-11-14 `4bb99641` infra(ci): db-apply-migration aplica migration sem gate de aprovação (#3620)
-- 2026-11-14 `38b77c67` fix(pdp): aborta de verdade a consulta do produto ao estourar o limite de 15s
-- 2026-11-14 `778dbf5a` Merge pull request #3619 from adm01-debug/claude/trem2-front-limpeza-261114-1850
-- 2026-11-14 `74ba1998` Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850
-- 2026-11-14 `ee13f748` fix(db): RLS de pedidos e notificações, is_trusted, revoke em net/supabase_functions, ledger P09 e índices de FK (#3618)
-- 2026-11-14 `a43a3127` docs(coordenacao): ledger E188 dos 11 merges do trem de front e limpeza
-- 2026-11-14 `ec6088c4` Merge remote-tracking branch 'origin/claude/fix-route-scroll-reset-query-replace-261114-0005' into claude/trem2-front-li
-- 2026-11-14 `930e3c0f` Merge remote-tracking branch 'origin/claude/fix-ux-auditoria-link-botao-morto-261113-2338' into claude/trem2-front-limpe
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

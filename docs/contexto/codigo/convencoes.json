@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "Merge pull request #3630 from adm01-debug/claude/trem4-front-perf-261114-2020",
+   "Merge branch 'main' into claude/trem4-front-perf-261114-2020",
    "fix(pdp): aborta de verdade a consulta do produto ao estourar o limite de 15 s (#3622)",
    "Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945",
-   "perf(catalog): primeiro carregamento com 1 consulta em vez de 4, mantendo 500 produtos na tela (#3621)",
-   "Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945",
-   "fix(migrations): destrava o CI — recibo das versões reconciliadas e correções no plano de workflows (#3629)"
+   "perf(catalog): primeiro carregamento com 1 consulta em vez de 4, mantendo 500 produtos na tela (#3621)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

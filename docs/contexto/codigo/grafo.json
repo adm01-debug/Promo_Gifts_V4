@@ -58,7 +58,7 @@
   },
   {
    "arquivo": "src/hooks/products/index.ts",
-   "importado_por": 137
+   "importado_por": 136
   },
   {
    "arquivo": "src/components/seo/PageSEO.tsx",
@@ -110,7 +110,7 @@
   },
   {
    "arquivo": "src/lib/supabase-untyped.ts",
-   "importado_por": 56
+   "importado_por": 57
   },
   {
    "arquivo": "src/utils/image-utils.ts",
@@ -169,7 +169,7 @@
   "total": 20,
   "maiores": [
    {
-    "tamanho": 54,
+    "tamanho": 53,
     "arquivos": [
      "src/components/catalog/useCatalogSelection.ts",
      "src/components/filters/ColorGroupFilter.tsx",

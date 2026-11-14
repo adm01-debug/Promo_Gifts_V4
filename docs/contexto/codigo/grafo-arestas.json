@@ -10220,7 +10220,7 @@
    "src/lib/connections-config.ts"
   ],
   "src/hooks/intelligence/useContextualSuggestions.ts": [
-   "src/hooks/products/index.ts",
+   "src/lib/supabase-untyped.ts",
    "src/types/advancedFilters.ts"
   ],
   "src/hooks/intelligence/useDropboxFiles.ts": [

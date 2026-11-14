@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `23cfcc1379` · branch `main` · 2026-11-14 21:06 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `7b84ebe513` · branch `main` · 2026-11-14 21:14 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -5939,6 +5939,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | 500 | `src/hooks/collections/useExternalCollections.ts` |
 | 5000 | `src/hooks/collections/useExternalCollections.ts` |
 | 1 | `src/hooks/comparison/useComparisonSync.ts` |
+| 1 | `src/hooks/intelligence/useContextualSuggestions.ts` |
 | 1 | `src/hooks/intelligence/useGoldSyncStatus.ts` |
 | 30 | `src/hooks/intelligence/useMagicUpState.helpers.ts` |
 | 50 | `src/hooks/intelligence/useMagicUpState.helpers.ts` |
@@ -6459,7 +6460,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21152 testes em 2137 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21154 testes em 2137 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|

@@ -2286,7 +2286,7 @@
   {
    "arquivo": "e2e/flows/sidebar-tooltips.spec.ts",
    "tipo": "e2e",
-   "linhas": 121,
+   "linhas": 123,
    "testa": [],
    "casos": 3
   },
@@ -8300,12 +8300,12 @@
   {
    "arquivo": "src/hooks/products/__tests__/usePublicoAlvoOptions.test.ts",
    "tipo": "unit",
-   "linhas": 130,
+   "linhas": 153,
    "testa": [
     "src/hooks/products/usePublicoAlvoOptions.ts",
     "src/lib/logger.ts"
    ],
-   "casos": 8
+   "casos": 9
   },
   {
    "arquivo": "src/hooks/products/__tests__/useReplenishments.integration.test.ts",
@@ -8673,7 +8673,7 @@
   {
    "arquivo": "src/hooks/stock/__tests__/stockFetcher.test.ts",
    "tipo": "unit",
-   "linhas": 1000,
+   "linhas": 1001,
    "testa": [
     "src/hooks/stock/stockFetcher.ts",
     "src/lib/logger.ts"

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "23cfcc137974386c4cf35db9596faa489a208fcf",
+  "sha": "7b84ebe5130cbe36aa8f817fed4ba873648dbfe3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 21:06 UTC",
+  "generated_at": "2026-11-14 21:14 UTC",
   "files_total": 10091,
   "code_files": 8619,
-  "code_lines": 1214818
+  "code_lines": 1214855
  },
  "version": "1.3.2",
- "facts_hash": "636a2e89c63dc141",
+ "facts_hash": "4fa2c61fe5604966",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -146740,7 +146740,7 @@
   {
    "module": "e2e",
    "files": 628,
-   "lines": 75789,
+   "lines": 75791,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -147808,7 +147808,7 @@
   {
    "module": "src/hooks",
    "files": 455,
-   "lines": 85750,
+   "lines": 85785,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -241383,6 +241383,14 @@
     "name": "nao atualiza state apos desmontagem (cancelled flag)"
    },
    {
+    "file": "src/hooks/products/__tests__/usePublicoAlvoOptions.test.ts",
+    "name": "cache React Query"
+   },
+   {
+    "file": "src/hooks/products/__tests__/usePublicoAlvoOptions.test.ts",
+    "name": "varios mounts reutilizam o cache (1 chamada ao banco)"
+   },
+   {
     "file": "src/hooks/products/__tests__/useReplenishments.integration.test.ts",
     "name": "useReplenishmentsWithDetails deve retornar array de reposições"
    },
@@ -242780,15 +242788,15 @@
    },
    {
     "file": "src/hooks/stock/__tests__/stockFetcher.test.ts",
-    "name": "passes count: exact on the first page only"
+    "name": "never requests count: exact (avoids pgrst_source_count per range)"
    },
    {
     "file": "src/hooks/stock/__tests__/stockFetcher.test.ts",
-    "name": "stops after a single page when count is satisfied"
+    "name": "stops after a single short page (< pageSize)"
    },
    {
     "file": "src/hooks/stock/__tests__/stockFetcher.test.ts",
-    "name": "loops across multiple pages until count is reached"
+    "name": "loops across multiple pages until an empty page is returned"
    },
    {
     "file": "src/hooks/stock/__tests__/stockFetcher.test.ts",
@@ -338739,6 +338747,10 @@
     "limit": "1"
    },
    {
+    "file": "src/hooks/intelligence/useContextualSuggestions.ts",
+    "limit": "1"
+   },
+   {
     "file": "src/hooks/intelligence/useGoldSyncStatus.ts",
     "limit": "1"
    },
@@ -400352,7 +400364,7 @@
   },
   "e2e/flows/sidebar-tooltips.spec.ts": {
    "path": "e2e/flows/sidebar-tooltips.spec.ts",
-   "lines": 121,
+   "lines": 123,
    "is_test": true,
    "rule_comments": [
     "2) Rola a sidebar (e a janela) — tooltip aberto NÃO pode ficar preso.",
@@ -449298,7 +449310,7 @@
   },
   "src/hooks/intelligence/useContextualSuggestions.ts": {
    "path": "src/hooks/intelligence/useContextualSuggestions.ts",
-   "lines": 164,
+   "lines": 180,
    "exports": [
     "interface ContextualSuggestion",
     "interface RouteContext",
@@ -449338,6 +449350,9 @@
    ],
    "hooks": [
     "useContextualSuggestions"
+   ],
+   "pagination": [
+    "1"
    ]
   },
   "src/hooks/intelligence/useDropboxFiles.ts": {
@@ -453284,7 +453299,7 @@
   },
   "src/hooks/products/usePublicoAlvoOptions.ts": {
    "path": "src/hooks/products/usePublicoAlvoOptions.ts",
-   "lines": 55,
+   "lines": 53,
    "exports": [
     "function usePublicoAlvoOptions"
    ],
@@ -454600,7 +454615,7 @@
   },
   "src/hooks/products/__tests__/usePublicoAlvoOptions.test.ts": {
    "path": "src/hooks/products/__tests__/usePublicoAlvoOptions.test.ts",
-   "lines": 130,
+   "lines": 153,
    "is_test": true,
    "tests": [
     "estado inicial",
@@ -454615,7 +454630,9 @@
     "tratamento de erros",
     "retorna [] quando dbInvoke lanca (nao propaga erro)",
     "cleanup — sem state update apos unmount",
-    "nao atualiza state apos desmontagem (cancelled flag)"
+    "nao atualiza state apos desmontagem (cancelled flag)",
+    "cache React Query",
+    "varios mounts reutilizam o cache (1 chamada ao banco)"
    ]
   },
   "src/hooks/products/__tests__/useReplenishments.integration.test.ts": {
@@ -457265,7 +457282,7 @@
   },
   "src/hooks/stock/stockPagination.ts": {
    "path": "src/hooks/stock/stockPagination.ts",
-   "lines": 214,
+   "lines": 211,
    "exports": [
     "const ALLOWED_FILTER_KEYS",
     "const UUID_KEYSET_PARTITIONS",
@@ -457522,7 +457539,7 @@
   },
   "src/hooks/stock/__tests__/stockFetcher.test.ts": {
    "path": "src/hooks/stock/__tests__/stockFetcher.test.ts",
-   "lines": 1000,
+   "lines": 1001,
    "is_test": true,
    "env": [
     "DEV"
@@ -457557,9 +457574,9 @@
     "coerces null/empty-string to 0 (Number() yields a finite 0, not the fallback)",
     "fetchPaginatedFromBridge",
     "resolves table aliases for Gold views (products -> v_products_public)",
-    "passes count: exact on the first page only",
-    "stops after a single page when count is satisfied",
-    "loops across multiple pages until count is reached",
+    "never requests count: exact (avoids pgrst_source_count per range)",
+    "stops after a single short page (< pageSize)",
+    "loops across multiple pages until an empty page is returned",
     "breaks early on an empty page",
     "breaks when count is unknown and a short page (< pageSize) is returned",
     "guards against a non-advancing cursor (same last id) and stops",
@@ -529948,10 +529965,24 @@
   }
  },
  "git": {
-  "sha": "23cfcc137974386c4cf35db9596faa489a208fcf",
+  "sha": "7b84ebe5130cbe36aa8f817fed4ba873648dbfe3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7b84ebe",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "Merge pull request #3630 from adm01-debug/claude/trem4-front-perf-261114-2020",
+    "files": []
+   },
+   {
+    "sha": "6f15676",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "Merge branch 'main' into claude/trem4-front-perf-261114-2020",
+    "files": []
+   },
    {
     "sha": "23cfcc1",
     "date": "2026-11-14",
@@ -529978,6 +530009,13 @@
     ]
    },
    {
+    "sha": "16bc011",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "Merge remote-tracking branch 'origin/main' into claude/trem4-front-perf-261114-2020",
+    "files": []
+   },
+   {
     "sha": "8765379",
     "date": "2026-11-14",
     "author": "Claude",
@@ -529993,6 +530031,43 @@
      "docs/faxina-261114/05-plano-workflows.md",
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
+   },
+   {
+    "sha": "8288d68",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "chore(coordenacao): registra o trem 4 no ledger (E188)",
+    "files": [
+     "docs/coordenacao/conflitos-semanticos.md"
+    ]
+   },
+   {
+    "sha": "2c040e8",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "merge: codex/fix-sidebar-tooltips-auth-261107-0205",
+    "files": []
+   },
+   {
+    "sha": "34a8b60",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "merge: claude/fix-suggestions-sem-useadvancedfilters-261114-1004",
+    "files": []
+   },
+   {
+    "sha": "3430105",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "merge: claude/fix-stock-pagination-sem-count-exact-261114-1007",
+    "files": []
+   },
+   {
+    "sha": "0407e41",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "merge: claude/fix-cache-publico-alvo-options-261114-1005",
+    "files": []
    },
    {
     "sha": "7b327f9",
@@ -530160,80 +530235,12 @@
     "author": "Claude",
     "subject": "Merge remote-tracking branch 'origin/claude/chore-qa-pages-dev-only-261113-2352' into claude/trem2-front-limpeza-261114-1850",
     "files": []
-   },
-   {
-    "sha": "cba8235",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "Merge remote-tracking branch 'origin/claude/fix-dados-simulados-prod-261113-2355' into claude/trem2-front-limpeza-261114-1850",
-    "files": []
-   },
-   {
-    "sha": "84ee594",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "Merge remote-tracking branch 'origin/claude/fix-pdp-timeout-prefetch-supersede-3528-261114-0214' into claude/trem2-front-limpeza-261114-1850",
-    "files": []
-   },
-   {
-    "sha": "e0d9826",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "Merge remote-tracking branch 'origin/claude/chore-framer-motion-14-11-1-supersede-3523-261114-0215' into claude/trem2-front-limpeza-261114-1850",
-    "files": []
-   },
-   {
-    "sha": "bc33f33",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "Merge remote-tracking branch 'origin/claude/chore-reforco-testes-mutantes-supersede-3516-261114-0219' into claude/trem2-front-limpeza-261114-1850",
-    "files": []
-   },
-   {
-    "sha": "ab0817a",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(security): baseline de policies acompanha stock_notes com initplan (destrava Gate 1.13) (#3616)",
-    "files": [
-     ".security/policies-baseline.json"
-    ]
-   },
-   {
-    "sha": "6ef19fd",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "docs: auditoria exaustiva de 13 domínios (91 agentes, verificação dupla) (#3611)",
-    "files": [
-     "docs/AUDITORIA-EXAUSTIVA-2026-11-14.md"
-    ]
-   },
-   {
-    "sha": "584e1a3",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "Merge pull request #3608 from adm01-debug/claude/crm-disjuntor-indisponibilidade-261114",
-    "files": []
-   },
-   {
-    "sha": "0f0cf4c",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "fix(security): CSP libera o <style> do vaul e a trava de rolagem do Radix (supersede #3531 #3532)",
-    "files": [
-     "public/_headers",
-     "src/components/layout/Header.tsx",
-     "src/index.css",
-     "tests/security/csp-radix-select-hash.test.ts",
-     "tests/security/csp-remove-scroll-hashes.test.ts",
-     "tests/security/csp-vaul-hash.test.ts",
-     "vercel.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/coordenacao/conflitos-semanticos.md",
-    5
+    6
    ],
    [
     "docs/faxina-261114/05-plano-workflows.md",

@@ -8950,15 +8950,15 @@
    "hooks_exportados": [
     "useContextualSuggestions"
    ],
-   "linhas": 164,
+   "linhas": 180,
    "dominio": "hooks/intelligence",
    "tabelas": [],
    "rpcs": [],
    "edges": [],
    "hooks_internos": [
-    "useAdvancedFilters",
     "useLocation",
-    "useMemo"
+    "useMemo",
+    "useQuery"
    ],
    "canais_realtime": [],
    "usado_por": 1,
@@ -11293,13 +11293,13 @@
    "hooks_exportados": [
     "usePublicoAlvoOptions"
    ],
-   "linhas": 55,
+   "linhas": 53,
    "dominio": "hooks/products",
    "tabelas": [],
    "rpcs": [],
    "edges": [],
    "hooks_internos": [
-    "useEffect"
+    "useQuery"
    ],
    "canais_realtime": [],
    "usado_por": 1,
