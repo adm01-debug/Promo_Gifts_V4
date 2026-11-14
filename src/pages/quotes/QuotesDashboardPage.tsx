@@ -114,7 +114,15 @@ export default function QuotesDashboardPage() {
             {p === 'month' ? 'Mês' : p === 'quarter' ? 'Trimestre' : 'Ano'}
           </Button>
         ))}
-        <Button variant="outline" size="sm" onClick={s.exportToPdf} className="gap-1.5">
+        {/* GUARD: o header é renderizado também em loading/erro; sem este disabled
+            o export gera um PDF com métricas zeradas, que o usuário lê como real. */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={s.exportToPdf}
+          disabled={s.isLoading || Boolean(s.error)}
+          className="gap-1.5"
+        >
           <Download className="h-4 w-4" />
           PDF
         </Button>
@@ -395,7 +403,6 @@ export default function QuotesDashboardPage() {
                   onClick={() => navigate(`/orcamentos/${quote.id}`)}
                   aria-label={`Ver orçamento ${quote.quote_number}`}
                 >
-
                   <div className="flex items-center gap-3">
                     {quote.status === 'approved' ? (
                       <CheckCircle className="h-5 w-5 text-success" />
