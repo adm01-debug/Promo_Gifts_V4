@@ -540,7 +540,8 @@ Steps já existentes na supersede: `:85-88` (`node scripts/check-select-columns.
 - Otimização aproveitável: se o `publish-status` ficar, mudar para `push: main` + `workflow_dispatch`
   (o comentário em PR é o único trecho que exige `pull-requests: write`, `:44`).
 - **Correção de evidência:** `check-draft-canonical-target.mjs` **não** é o único arquivo que barra
-  `pqpdolkaeqlyzpdpbizo` — o mesmo ID aparece em `scripts/guard-canonical-project.mjs`,
+  o ID do **projeto legado** `pqpdolkaeqlyzpdpbizo` ([LEGACY_INFORMATIVO] — menção histórica, não use;
+  o canônico é `doufsxqlfjyuvxuezpln`) — o mesmo ID aparece em `scripts/guard-canonical-project.mjs`,
   `promote-draft-migration.mjs`, `list-migration-drafts.mjs`, `validate-supabase-config.mjs` (Gate 0)
   e `check-workflow-contracts.mjs` (C20). Ainda assim é o único que valida **rascunhos**.
 - `docs/ci/SEGREDOS.md:23-27`; `docs/estado/14_LACUNAS_COBERTURA.md`;
