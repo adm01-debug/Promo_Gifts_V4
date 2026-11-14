@@ -370,7 +370,11 @@ export default function KitBuilderPage() {
                         <Button variant="outline" onClick={actions.prevStep}>
                           Voltar
                         </Button>
-                        <Button onClick={actions.nextStep} disabled={!state.wizardState.canProceed}>
+                        <Button
+                          data-testid="wizard-next"
+                          onClick={actions.nextStep}
+                          disabled={!state.wizardState.canProceed}
+                        >
                           {state.wizardState.currentStep === 'personalization'
                             ? 'Revisar kit'
                             : 'Continuar'}
