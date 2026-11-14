@@ -1519,6 +1519,9 @@ versões que criam índice, função, trigger, política, constraint ou cron que
 `DROP`/`RENAME` por migration posterior já aplicada e sem gêmea de conteúdo equivalente no ledger. Elas ficam de
 fora (lista no cabeçalho da migration). Registra 361 versões; nenhuma estava no ledger. Só escreve no ledger,
 sem DDL de schema. Rollback: `supabase/rollbacks/20261114014500_rollback.sql`.
+O snapshot do ledger do baseline (`supabase/baseline/20261015140000_ledger_versions.json`) foi estendido com as
+mesmas 361 versões (2524 → 2885), porque o efeito delas já está no dump do baseline ou fica fora dos schemas
+comparados; sem isso o `db-schema-drift-check` replayaria as 361 sobre o baseline (72 falham no replay local).
 
 | version | arquivo | sha256 | status |
 |---|---|---|---|
