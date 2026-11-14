@@ -386,24 +386,38 @@ function escapeLikePattern(term: string): string {
 }
 
 /**
- * Erro do PostgREST/Postgres causado pela ENTRADA do cliente (coluna/filtro/valor inválido,
- * PGRST1xx/2xx, classes SQLSTATE 22, 23 e 42) vira 400 — não 500. Só 5xx contam no disjuntor:
- * antes, 5 requisições com filtro inválido de um vendedor abriam o disjuntor e derrubavam o
- * bridge para todos por 60 s (simulação com PostgREST real, 13/11).
+ * Classifica erro do PostgREST/Postgres em (status HTTP, conta no disjuntor?). Simulação com
+ * PostgREST real v12/v14 (13–14/11): só falha de DISPONIBILIDADE conta no disjuntor — erro
+ * determinístico (entrada do cliente, conflito, configuração/esquema) nunca pode deixar um
+ * usuário derrubar o bridge para todos (ex.: 5 pedidos de uma tabela da allowlist que não
+ * existe no CRM davam 42P01 → 500 → disjuntor aberto por 60 s).
+ *  - 22xxx/23xxx/42xxx (exceto os de servidor abaixo), PGRST1xx/2xx → 400 (entrada/integridade).
+ *  - 42501, 42P01, PGRST202, PGRST205 → 500 visível (GRANT/esquema/deploy), SEM contar no disjuntor.
+ *  - código vazio (fetch falhou), PGRST000-003, 08xxx, 53xxx, 57xxx → 500 e conta.
+ * 42883 fica como entrada: também é "operador inexistente" (ex.: ilike em coluna uuid).
  */
-// Tabela/função ausente no esquema do CRM: as tabelas vêm da allowlist do servidor e o cliente
-// não as escolhe livremente, então é falha de integração (5xx, conta no disjuntor), não 400.
-// 42883 fica fora: também é "operador inexistente" (ex.: ilike em coluna uuid escolhida pelo cliente).
-const SERVER_SCHEMA_ERROR_CODES = new Set(["42P01", "PGRST202", "PGRST205"]);
+const SERVER_SCHEMA_ERROR_CODES = new Set(["42501", "42P01", "PGRST202", "PGRST205"]);
 
-export function isClientDbError(error: { code?: string | null } | null | undefined): boolean {
+export function classifyDbError(error: { code?: string | null } | null | undefined): { status: number; outage: boolean } {
   const code = String(error?.code ?? "");
-  if (SERVER_SCHEMA_ERROR_CODES.has(code)) return false;
-  return /^PGRST[12]\d\d$/.test(code) || /^(22|23|42)[0-9A-Z]{3}$/.test(code);
+  if (SERVER_SCHEMA_ERROR_CODES.has(code)) return { status: 500, outage: false };
+  if (/^PGRST[12]\d\d$/.test(code) || /^(22|23|42)[0-9A-Z]{3}$/.test(code)) return { status: 400, outage: false };
+  return { status: 500, outage: true };
 }
 
+/** Compat: erro causado pela entrada do cliente (400). */
+export function isClientDbError(error: { code?: string | null } | null | undefined): boolean {
+  return classifyDbError(error).status < 500;
+}
+
+/** Cabeçalho interno: resposta 5xx que NÃO é indisponibilidade (não conta no disjuntor). */
+const BREAKER_SKIP_HEADER = "x-bridge-breaker-skip";
+
 function dbErrorResponse(error: { code?: string | null; message: string }): Response {
-  return jsonResponse({ error: error.message }, isClientDbError(error) ? 400 : 500);
+  const { status, outage } = classifyDbError(error);
+  const res = jsonResponse({ error: error.message }, status);
+  if (status >= 500 && !outage) res.headers.set(BREAKER_SKIP_HEADER, "1");
+  return res;
 }
 
 function validateFilters(filters: Record<string, unknown>, table?: string): string | null {
@@ -774,6 +788,12 @@ async function handleSearch(crm: SupabaseClient, body: CrmQuery, userId?: string
   const { data, error } = await query;
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalSelectFallback(table, false);
+    if (error.code === "57014" || /statement timeout/i.test(error.message ?? "")) {
+      return jsonResponse({
+        error: "A busca demorou demais. Refine o termo ou reduza o limite.",
+        code: "statement_timeout",
+      }, 504);
+    }
     return dbErrorResponse(error);
   }
   const rows = stripJoin(data || [], scoped.stripParent);
@@ -887,7 +907,7 @@ Deno.serve((req) => {
 
     const COLUMN_RE = /^[a-z_][a-z0-9_]*$/i; // sem ponto: nada de coluna de tabela embutida (contacts.user_id)
     const CrmOrderBySchema = z.union([
-      z.string().regex(/^[a-z_][a-z0-9_.]*(\s+(asc|desc))?$/i),
+      z.string().regex(/^[a-z_][a-z0-9_]*(\s+(asc|desc))?$/i),
       z.object({ column: z.string().regex(COLUMN_RE), ascending: z.boolean().optional() }),
     ]);
     const CrmRequestSchema = z.object({
@@ -945,7 +965,8 @@ Deno.serve((req) => {
       case "search": response = await handleSearch(crm, body, crmOwnerId, auth.userRole); break;
       default: return jsonResponse({ error: `Operation '${operation}' not supported.` }, 400);
     }
-    if (response.status >= 500) breaker.recordFailure(); else breaker.recordSuccess();
+    if (response.status >= 500 && response.headers.get(BREAKER_SKIP_HEADER) !== "1") breaker.recordFailure();
+    else breaker.recordSuccess();
 
     const elapsed = Math.round(performance.now() - reqStartedAt);
     if (wasCold) {
