@@ -1622,3 +1622,21 @@ por `idx_scan=0` (FKs `NO ACTION` para tabelas de 5 e 7 linhas).
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261114014100` | `idx_fk_stock_and_missing_perf_indexes` | `651823afa2f7fd9901fcc185a3147aa53d1cf5ad11fea1374196a3021d200578` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono no chat em 2026-11-14) |
+
+## 2026-11-14 — CRON-004: reduz a frequência de 7 jobs ociosos ou redundantes (648 → 97 execuções/dia)
+
+Consulta read-only em produção (2026-11-14, `cron.job_run_details` janela de 6 h, runid > 1399672): 881 execuções e
+244 "job startup timeout". Os 7 jobs abaixo estão ociosos ou redundantes: filas de `product_images` zeradas (as 79 sem
+blurhash nunca são processadas), `external_connections` vazia, `mv_supplier_reliability` com 3 linhas e reload horário
+do PostgREST redundante com `pgrst_ddl_watch`/`pgrst_drop_watch`.
+A migration reagenda `generate-blurhashes`, `hash-product-images` e `backfill-image-dimensions` para a cada 2 h das 09 às 23 UTC (8×/dia, fora da janela dos scrapers; lote fixo no código: 15/80/40 imagens por rodada),
+`connections-auto-test`, `connections-health-check` e `refresh-mv-supplier-reliability` para 1×/h e
+`pgrst-schema-reload` para 1×/dia (09:07 UTC, segue ativo por causa do smoke test #37). Minutos são subconjunto dos
+atuais. `medallion-promote-tick` fica em `6,36 * * * *`: em 30 dias de `pipeline_run_log` há rajadas no teto do lote
+(300 variantes) e 1×/h cortaria pela metade a vazão de promoção. O snapshot
+`supabase/baseline/20261108000000_cron_jobs.json` só muda depois do apply (Gate E40).
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114120000` | `cron004_reduz_frequencia_jobs_ociosos` | `e1371c31840255c9a9bc071cea76efc543ec02637dba7961f622c10a314c6a18` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/perf-cron004-reduz-jobs-ociosos-261114-1001`) |
