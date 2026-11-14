@@ -87,7 +87,7 @@ export function getTechniquePrompt(technique: Technique): string {
   return `as ${TECHNIQUE_PROMPTS.default}`;
 }
 
-// T8 FIX: limit to 200 records to prevent unbounded payload growth.
+// T8 FIX: limit to 200 records (invalid `limit` falls back to it) to prevent unbounded payload.
 // Explicit column list (incl. layout_url + area_config). Geometry now lives in
 // dedicated top-level columns (position_x/y, logo_width_cm/height_cm — added by
 // migration 20251215011449) AND mirrored in area_config for backward-compat with
@@ -134,11 +134,11 @@ interface MockupHistoryRow {
   created_at: string;
 }
 
-export async function fetchMockupHistory(userId?: string): Promise<GeneratedMockup[]> {
+export async function fetchMockupHistory(userId?: string, limit = 200): Promise<GeneratedMockup[]> {
   let query = untypedFrom('generated_mockups')
     .select(MOCKUP_HISTORY_COLUMNS)
     .order('created_at', { ascending: false })
-    .limit(200);
+    .limit(Math.trunc(limit) > 0 ? Math.trunc(limit) : 200);
   if (userId) query = query.eq('user_id', userId);
   const { data, error } = await query;
   if (error) throw error;
