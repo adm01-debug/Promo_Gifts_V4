@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "c6bc04ab75d15e5b4bbec59d084cd43eab00ab44",
+  "sha": "c49e8e770b922e52f8c177ac3f3e41b4dba87700",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 06:37 UTC",
+  "generated_at": "2026-11-14 06:51 UTC",
   "files_total": 10044,
   "code_files": 8580,
   "code_lines": 1212272
@@ -528459,10 +528459,20 @@
   }
  },
  "git": {
-  "sha": "c6bc04ab75d15e5b4bbec59d084cd43eab00ab44",
+  "sha": "c49e8e770b922e52f8c177ac3f3e41b4dba87700",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "c49e8e7",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "docs(migrations): recibos E66 e E15 de 14/11 (supersede #3560 #3561 #3562 #3567 #3568 #3571 #3563 #3570 #3573 #3575) (#3577)",
+    "files": [
+     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "c6bc04a",
     "date": "2026-11-14",
@@ -528817,23 +528827,16 @@
     "files": [
      "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
     ]
-   },
-   {
-    "sha": "0a9291a",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "Merge pull request #3425 from adm01-debug/claude/lote-pilha-v2-261112",
-    "files": []
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    9
+    10
    ],
    [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    4
+    5
    ],
    [
     "supabase/baseline/20261108000000_cron_jobs.json",

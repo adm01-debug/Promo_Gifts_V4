@@ -91,6 +91,9 @@ Cada fonte é atualizada independentemente; referências anteriores não comprov
 
 ## ⚠️ Problemas na última coleta
 
+Seções reaproveitadas da coleta anterior: `grants`.
+
 | seção | erro |
 |---|---|
+| grants | canceling statement due to statement timeout |
 | cron_runs | canceling statement due to statement timeout |

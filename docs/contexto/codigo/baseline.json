@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c6bc04ab75d15e5b4bbec59d084cd43eab00ab44",
+  "commit": "c49e8e770b922e52f8c177ac3f3e41b4dba87700",
   "branch": "main",
-  "data_commit": "2026-11-14T03:31:27-03:00",
+  "data_commit": "2026-11-14T03:45:25-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "c49e8e7",
+    "data": "2026-11-14",
+    "assunto": "docs(migrations): recibos E66 e E15 de 14/11 (supersede #3560 #3561 #3562 #3567 #3568 #3571 #3563 #3570 #3573 #3575) (#3"
+   },
    {
     "sha": "c6bc04a",
     "data": "2026-11-14",
@@ -126,11 +131,6 @@
     "sha": "9c518b2",
     "data": "2026-11-13",
     "assunto": "chore(claude): adiciona comando /merge-prs (#3420)"
-   },
-   {
-    "sha": "afa3739",
-    "data": "2026-11-13",
-    "assunto": "fix: erros de console em produção (Sentry bloqueado pela CSP, CRM 500, estilos inline) (#3429)"
    }
   ],
   "arquivos_mudados_7d": 1981,
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 64
+    "mudancas": 63
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 46
+    "mudancas": 47
    },
    {
     "arquivo": "package.json",
@@ -222,11 +222,11 @@
     "mudancas": 16
    },
    {
-    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 14
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "mudancas": 15
    },
    {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
     "mudancas": 14
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 440
+    "commits": 439
    },
    {
     "autor": "Joaquim Ataides",

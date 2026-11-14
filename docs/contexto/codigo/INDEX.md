@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c6bc04ab75d15e5b4bbec59d084cd43eab00ab44` (2026-11-14T03:31:27-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c49e8e770b922e52f8c177ac3f3e41b4dba87700` (2026-11-14T03:45:25-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -588,20 +588,20 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43158 nós · 74528 arestas · 2441 comunidades · grafo do commit `c6bc04ab`
+- 43158 nós · 74528 arestas · 2441 comunidades · grafo do commit `c49e8e77`
 - comunidades maiores: lucide-react (659), ref_integrations (621), vitest (597), ref_components (535), ref_hooks (413), ref_node_child_process (406), @tanstack/react-query (406), sonner (339), ref_types (334), nav.ts (327), react (318), ref_node_fs (304)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (64)
+- RELATORIO_CI.md (63)
 - PENDENCIAS.md (53)
-- supabase/MIGRATIONS_SYNC_LOG.md (46)
+- supabase/MIGRATIONS_SYNC_LOG.md (47)
 - package.json (29)
 - package-lock.json (20)
 - analise-prs/progresso.json (16)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (15)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (14)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (14)
 - .github/workflows/deploy-gates.yml (12)
 - CHANGELOG.md (12)
 - src/pages/kit-builder/KitBuilderPage.tsx (12)
@@ -1182,6 +1182,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-14 `c49e8e7` docs(migrations): recibos E66 e E15 de 14/11 (supersede #3560 #3561 #3562 #3567 #3568 #3571 #3563 #3570 #3573 #3575) (#3
 - 2026-11-14 `c6bc04a` fix(db): snapshot de cron jobs sem o xbz-image-uploader desagendado (#3576)
 - 2026-11-14 `e1dcade` docs: prod-readiness regerado no main com provas de 14/11 (#3508)
 - 2026-11-14 `1882e6c` fix(db): desagenda o cron xbz-image-uploader (edge esboço, 401 a cada 10 min) (#3556)
@@ -1196,7 +1197,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-13 `fe64be3` docs(migrations): recibos da 20261111191000 (corrigido) e da 20261112140000 (#3529)
 - 2026-11-13 `8ce9693` fix(db): ativa RLS nas partições p2027_03..12 do histórico de fornecedores (#3434)
 - 2026-11-13 `5f18026` fix(security): documenta fn_get_rupture_alerts na allowlist do lint 0029 (#3522)
-- 2026-11-13 `36faf00` fix(ci): destrava Gate 1 e testes do main — baseline de refs, import legacy-filters, recibos e reconciliação de migratio
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
