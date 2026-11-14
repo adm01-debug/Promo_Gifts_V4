@@ -1,14 +1,19 @@
 /**
- * Reconciliação do MockupHistoryPanel quando a lista encolhe (item excluído).
+ * Reconciliação do MockupHistoryPanel quando a lista encolhe (item excluído) e
+ * paginação com a contagem que o fluxo real entrega.
  *
  * Sem a correção: a página atual ficava acima do novo total e a grade
  * renderizava vazia; e um mockup já apagado continuava contando na seleção de
- * comparação.
+ * comparação. O último teste amarra a paginação ao teto que
+ * `fetchRecentMockupHistory` pede ao servidor, em vez de uma contagem fixada à
+ * mão: se esse teto cair abaixo de ITEMS_PER_PAGE, a paginação (e com ela a
+ * busca e os filtros sobre a lista inteira) deixa de existir e o teste falha.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProviders } from '../render-helpers';
 import type { GeneratedMockup } from '@/hooks/mockup/mockupGenerationService';
+import { MOCKUP_HISTORY_PANEL_LIMIT } from '@/hooks/mockup/mockupHistoryAdapter';
 
 vi.mock('@/components/products/LayoutPopover', () => ({
   LayoutPopover: () => null,
@@ -132,6 +137,25 @@ describe('MockupHistoryPanel — reconciliação após excluir', () => {
 
     expect(screen.queryByText(/selecionados$/)).toBeNull();
     expect(screen.queryByRole('button', { name: /Comparar/ })).toBeNull();
+  });
+
+  it('o teto que o fluxo real pede ao servidor rende paginação de verdade', () => {
+    const historico = Array.from({ length: MOCKUP_HISTORY_PANEL_LIMIT }, (_, i) =>
+      makeMockup(i + 1),
+    );
+
+    renderWithProviders(<MockupHistoryPanel {...baseProps} mockupHistory={historico} />);
+
+    // ITEMS_PER_PAGE = 12 no painel: o teto do servidor tem de dar mais de 1 página.
+    expect(MOCKUP_HISTORY_PANEL_LIMIT).toBeGreaterThan(12);
+    expect(screen.getByText(`1-12 de ${MOCKUP_HISTORY_PANEL_LIMIT}`)).toBeInTheDocument();
+    expect(
+      screen.getByText(`Página 1 de ${Math.ceil(MOCKUP_HISTORY_PANEL_LIMIT / 12)}`),
+    ).toBeInTheDocument();
+
+    // A paginação renderiza e leva ao último item que o servidor devolveu.
+    fireEvent.click(screen.getByRole('button', { name: 'Última' }));
+    expect(screen.getByText(`Produto ${MOCKUP_HISTORY_PANEL_LIMIT}`)).toBeInTheDocument();
   });
 
   it('a comparação continua aceitando até 4 itens (regra de negócio do main)', () => {

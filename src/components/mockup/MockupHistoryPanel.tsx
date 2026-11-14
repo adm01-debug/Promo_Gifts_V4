@@ -699,7 +699,9 @@ const MockupListRow = memo(
           aria-label={`Selecionar ${mockup.product_name} para comparação`}
           tabIndex={0}
           className={cn(
-            'flex h-5 w-5 flex-shrink-0 cursor-pointer items-center justify-center rounded border-2 transition-all',
+            // A-5 (lista): mesma expansão por ::after da grade — 20px visuais +
+            // 12px por lado = alvo de 44px, sem ampliar o quadrado visual.
+            'relative flex h-5 w-5 flex-shrink-0 cursor-pointer items-center justify-center rounded border-2 transition-all after:absolute after:-inset-3',
             isCompareSelected
               ? 'border-primary bg-primary text-primary-foreground'
               : 'border-muted-foreground/30',
