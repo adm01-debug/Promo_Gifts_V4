@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { Loader2, Paintbrush, RefreshCw, Info, ChevronDown, Wand2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
+import { fetchClientLogoFile } from './clientLogoFile';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -136,10 +137,7 @@ export function MockupConfigPanel({
       return;
     }
     try {
-      const response = await fetch(client.logo_url);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const blob = await response.blob();
-      onLogoUpload(areaId, new File([blob], 'logo-cliente', { type: blob.type || 'image/png' }));
+      onLogoUpload(areaId, await fetchClientLogoFile(client.logo_url));
     } catch (err) {
       // Não mexe em cliente nem produto: avisa e mantém o upload manual.
       toast.error('Não foi possível carregar a logo do cliente. Faça o upload manual.');

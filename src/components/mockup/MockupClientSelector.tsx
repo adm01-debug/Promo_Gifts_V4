@@ -156,9 +156,10 @@ export function MockupClientSelector({
   }, []);
 
   const showDropdown = isFocused && !selectedClient;
-
+  // Só o ramo com resultados monta o role=listbox e os ids de option (alvo de aria-*).
+  const hasListbox = showDropdown && !showError && filteredCompanies.length > 0;
   const optionId = (companyId: string) => `${listboxId}-option-${companyId}`;
-  const activeOption = showDropdown ? filteredCompanies[activeIndex] : undefined;
+  const activeOption = hasListbox ? filteredCompanies[activeIndex] : undefined;
   const selectCompany = (company: (typeof filteredCompanies)[number]) => {
     onClientSelect({
       id: company.id,
@@ -289,8 +290,8 @@ export function MockupClientSelector({
           data-testid="mockup-client-search-input"
           role="combobox"
           aria-label="Buscar empresa"
-          aria-expanded={showDropdown}
-          aria-controls={showDropdown ? listboxId : undefined}
+          aria-expanded={hasListbox}
+          aria-controls={hasListbox ? listboxId : undefined}
           aria-autocomplete="list"
           aria-activedescendant={activeOption ? optionId(activeOption.id) : undefined}
           placeholder="Buscar empresa..."
