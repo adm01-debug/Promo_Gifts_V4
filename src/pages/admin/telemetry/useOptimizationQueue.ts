@@ -162,6 +162,9 @@ export function useOptimizationQueue() {
       return 'empty';
     }
     const item = (Array.isArray(claimed) ? claimed[0] : claimed) as OptimizationItem;
+    // claim_next_optimization retorna composite NULL (fila vazia ou item já em 'running');
+    // o PostgREST pode entregá-lo como objeto com campos nulos.
+    if (!item?.id) return 'empty';
     invalidate();
 
     // Aguarda janela curta para guardrail medir possíveis regressões pós-execução.
