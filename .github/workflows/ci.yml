@@ -296,6 +296,9 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Run Critical E2E
         run: npm run test:e2e:critical
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
       - name: Upload E2E Report
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -561,6 +564,9 @@ jobs:
 
       - name: Run Theme Validation Tests
         run: npm run test:theme-validation
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
       - name: Upload Theme Validation Report
         if: always()
