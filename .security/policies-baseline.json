@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-11-14T12:10:17.954Z",
+  "generated_at": "2026-11-14T17:55:07.671Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "687e54f46cf9dd9c2e52cddf4d8778f712b2fec9a1cecd820385a3fdd02f6030",
+  "sha256": "86921aa32dbcb5255a88115ec86d2e9d7615fc784c576b38579e6802a36f55b1",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -7952,7 +7952,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "DELETE",
-      "qual": "(created_by = auth.uid())",
+      "qual": "(created_by = ( SELECT auth.uid() AS uid))",
       "with_check": ""
     },
     {
@@ -7963,7 +7963,7 @@
       "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
-      "with_check": "(created_by = auth.uid())"
+      "with_check": "(created_by = ( SELECT auth.uid() AS uid))"
     },
     {
       "schemaname": "public",
@@ -7982,8 +7982,8 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "UPDATE",
-      "qual": "(created_by = auth.uid())",
-      "with_check": "(created_by = auth.uid())"
+      "qual": "(created_by = ( SELECT auth.uid() AS uid))",
+      "with_check": "(created_by = ( SELECT auth.uid() AS uid))"
     },
     {
       "schemaname": "public",

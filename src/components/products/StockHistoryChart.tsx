@@ -126,7 +126,7 @@ export function StockHistoryChart({ productId }: StockHistoryChartProps) {
               Como o mercado está comprando este produto · {days} dias
               {isDemo && (
                 <Badge variant="outline" className="ml-2 px-1.5 py-0 text-[10px]">
-                  dados ilustrativos
+                  dados simulados (sem histórico)
                 </Badge>
               )}
               {hasError && hasData && (

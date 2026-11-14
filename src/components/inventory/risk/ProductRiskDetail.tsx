@@ -204,7 +204,7 @@ export function ProductRiskDetail({ productId, productName }: ProductRiskDetailP
           <h4 className="truncate text-sm font-semibold">{productName || productId}</h4>
           {isDemo && (
             <Badge variant="outline" className="shrink-0 px-1.5 py-0 text-[10px]">
-              demo
+              dados simulados (sem histórico)
             </Badge>
           )}
           {hasError && hasData && (

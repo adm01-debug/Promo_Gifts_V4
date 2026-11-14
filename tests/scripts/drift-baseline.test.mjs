@@ -1051,3 +1051,21 @@ describe('dropDumpLossyFunctions — tipo entre aspas com nome de palavra-chave 
     expect(dropDumpLossyFunctions(remote('text'), shadow('"text"')).dropped).toEqual(['public.f(x text)']);
   });
 });
+
+describe('versões só de ledger (P09)', () => {
+  it('as versões que a 20261114014500 registra no ledger já estão no snapshot do baseline e não são replayadas', () => {
+    const repoRoot = join(import.meta.dirname, '..', '..');
+    const migrationsDir = join(repoRoot, 'supabase', 'migrations');
+    const p09 = readFileSync(join(migrationsDir, '20261114014500_p09_reconcile_ledger_schema_migrations.sql'), 'utf8');
+    const ledgerOnly = [...p09.matchAll(/^\s*\('(\d{14})'\)/gm)].map((m) => m[1]);
+    expect(ledgerOnly).toHaveLength(360);
+    const baseline = findBaseline(repoRoot);
+    expect(ledgerOnly.filter((v) => !baseline.versions.has(v))).toEqual([]);
+    const replay = selectReplayMigrations({
+      files: readdirSync(migrationsDir),
+      baselineVersions: baseline.versions,
+      appliedVersions: [...ledgerOnly, '20261114014500'],
+    });
+    expect(replay).toEqual(['20261114014500_p09_reconcile_ledger_schema_migrations.sql']);
+  });
+});
