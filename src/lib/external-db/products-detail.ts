@@ -21,6 +21,7 @@ import { TECHNICAL_IMAGE_TYPES } from '@/utils/image-utils';
 async function fetchProductWithRetry(
   productId: string,
   maxRetries = 2,
+  signal?: AbortSignal,
 ): Promise<InvokeResult<PromobrindProduct>> {
   const selectFields = [
     // Full row first: the admin edit form round-trips ~90 columns and writes them all
@@ -45,9 +46,11 @@ async function fetchProductWithRetry(
           filters: { id: productId },
           select: selectField,
           limit: 1,
+          signal,
         });
       } catch (err) {
         lastError = err;
+        if (signal?.aborted) throw err; // cancelado pelo chamador (timeout da PDP): não tenta de novo
         if (shouldFallbackSelect(err)) break; // try next select fields
         if (isTransientError(err) && attempt < maxRetries) {
           await new Promise((r) => {
@@ -71,8 +74,9 @@ function isTransientError(err: unknown): boolean {
 
 export async function fetchPromobrindProductById(
   productId: string,
+  signal?: AbortSignal,
 ): Promise<PromobrindProduct | null> {
-  const result = await fetchProductWithRetry(productId);
+  const result = await fetchProductWithRetry(productId, undefined, signal);
 
   const product = result?.records?.[0] || null;
   if (!product) return null;

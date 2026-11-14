@@ -98,8 +98,8 @@ export const productService = {
     return result;
   },
 
-  async fetchProductById(id: string) {
-    const product = await fetchPromobrindProductById(id);
+  async fetchProductById(id: string, signal?: AbortSignal) {
+    const product = await fetchPromobrindProductById(id, signal);
     if (!product) return null;
 
     const mapped = mapPromobrindToProduct(product);
