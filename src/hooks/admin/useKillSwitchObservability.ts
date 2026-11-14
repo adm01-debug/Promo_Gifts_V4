@@ -66,13 +66,29 @@ export function useKillSwitchObservability(): KillSwitchObservabilityData {
           .limit(100),
       ]);
 
-      if (switchesRes.error) throw new Error(`switches: ${switchesRes.error.message}`);
-      if (summaryRes.error) throw new Error(`summary: ${summaryRes.error.message}`);
+      // Cada fonte é tratada à parte: falha no resumo não pode esconder o estado dos switches.
+      const errors: string[] = [];
+      if (switchesRes.error) {
+        errors.push(`switches: ${switchesRes.error.message}`);
+      } else {
+        setSwitches((switchesRes.data ?? []) as SwitchState[]);
+      }
+      if (summaryRes.error) {
+        errors.push(`summary: ${summaryRes.error.message}`);
+        setSummary([]);
+      } else {
+        setSummary((summaryRes.data ?? []) as SwitchHitSummary[]);
+      }
 
-      setSwitches((switchesRes.data ?? []) as SwitchState[]);
-      setSummary((summaryRes.data ?? []) as SwitchHitSummary[]);
-      setError(null);
-      setLastRefresh(new Date());
+      if (errors.length > 0) {
+        const msg = errors.join(' | ');
+        logger.warn(`[useKillSwitchObservability] load failed: ${msg}`);
+        setError(msg);
+      } else {
+        setError(null);
+      }
+      // "atualizado" fica ao lado dos switches: só avança quando eles foram de fato recarregados.
+      if (!switchesRes.error) setLastRefresh(new Date());
     } catch (e) {
       const msg = toErrorMessage(e);
       logger.warn(`[useKillSwitchObservability] load failed: ${msg}`);
