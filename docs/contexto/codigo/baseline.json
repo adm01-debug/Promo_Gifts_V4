@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e73a88d1a7f6abe309335ed96dbac42bcc0b61de",
+  "commit": "371f52b18db6beaf5aa0879e24e190f2de37b2aa",
   "branch": "main",
-  "data_commit": "2026-11-14T08:12:00-03:00",
+  "data_commit": "2026-11-14T08:56:42-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "371f52b",
+    "data": "2026-11-14",
+    "assunto": "docs: prod-readiness com o estado do main final e73a88d e a #3600 (#3601)"
+   },
    {
     "sha": "e73a88d",
     "data": "2026-11-14",
@@ -126,18 +131,13 @@
     "sha": "bcba4c2",
     "data": "2026-11-13",
     "assunto": "chore(main): release 1.1.0"
-   },
-   {
-    "sha": "2ad46cd",
-    "data": "2026-11-13",
-    "assunto": "docs: registra 22 deploys E66 e 4 migrations E15 no ledger (#3496)"
    }
   ],
-  "arquivos_mudados_7d": 2013,
+  "arquivos_mudados_7d": 2011,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 630
+    "mudancas": 629
    },
    {
     "pasta": "src/components/products",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 435
+    "commits": 434
    },
    {
     "autor": "Joaquim Ataides",

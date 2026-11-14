@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "e73a88d1a7f6abe309335ed96dbac42bcc0b61de",
+  "sha": "371f52b18db6beaf5aa0879e24e190f2de37b2aa",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 11:13 UTC",
+  "generated_at": "2026-11-14 12:29 UTC",
   "files_total": 10065,
   "code_files": 8601,
   "code_lines": 1213537
@@ -529292,10 +529292,19 @@
   }
  },
  "git": {
-  "sha": "e73a88d1a7f6abe309335ed96dbac42bcc0b61de",
+  "sha": "371f52b18db6beaf5aa0879e24e190f2de37b2aa",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "371f52b",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "docs: prod-readiness com o estado do main final e73a88d e a #3600 (#3601)",
+    "files": [
+     "docs/prod-readiness.md"
+    ]
+   },
    {
     "sha": "e73a88d",
     "date": "2026-11-14",
@@ -529675,23 +529684,6 @@
     "files": [
      ".claude/commands/merge-prs.md"
     ]
-   },
-   {
-    "sha": "afa3739",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "fix: erros de console em produção (Sentry bloqueado pela CSP, CRM 500, estilos inline) (#3429)",
-    "files": [
-     "public/_headers",
-     "src/components/filters/filter-panel/FilterPanelHeader.tsx",
-     "supabase/functions/crm-db-bridge/index.ts",
-     "supabase/functions/crm-db-bridge/ownership.ts",
-     "supabase/functions/crm-db-bridge/scope_integration_test.ts",
-     "tests/security/crm-db-bridge-ownership.test.ts",
-     "tests/security/csp-radix-scroll-area-hash.test.ts",
-     "tests/security/security-headers.test.ts",
-     "vercel.json"
-    ]
    }
   ],
   "hot_files": [
@@ -529701,7 +529693,7 @@
    ],
    [
     "docs/prod-readiness.md",
-    4
+    5
    ],
    [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
