@@ -371,11 +371,22 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
       if (local && backendData) {
         const localDate = new Date(local.updatedAt || 0);
         const backendDate = new Date(backendData.updatedAt || 0);
-        if (backendDate <= localDate) return local;
+        // Desempate IDÊNTICO ao anterior (`backendDate > localDate ? backend : local`):
+        // com data inválida em qualquer ponta a comparação é falsa e a cópia LOCAL
+        // vence — quem está na frente do vendedor não é descartado por um updatedAt
+        // que não parseia.
+        if (!(backendDate > localDate)) return local;
         // Mesma razão das logos acima: `selection` não existe em mockup_drafts
         // (schema congelado), então a seleção (variante + foto) continua vindo
-        // da cópia local quando o backend vence a recência.
-        return local.selection ? { ...backendData, selection: local.selection } : backendData;
+        // da cópia local quando o backend vence a recência — SÓ quando as duas
+        // pontas falam do MESMO produto. Backend mais novo com outro produto
+        // (vendedor trocou de produto em outro dispositivo) descarta a seleção
+        // local: colar variante/foto do produto antigo no produto novo faria o
+        // mockup ser GERADO sobre a foto errada (getProductImage → edge).
+        const sameProduct = !!local.productId && local.productId === backendData.productId;
+        return local.selection && sameProduct
+          ? { ...backendData, selection: local.selection }
+          : backendData;
       }
 
       return backendData || local;

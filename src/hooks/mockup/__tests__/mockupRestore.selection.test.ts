@@ -17,6 +17,7 @@ import type { GeneratedMockup } from '@/hooks/mockup/mockupGenerationService';
 import type { PersonalizationArea } from '@/components/mockup/MultiAreaManager';
 
 const FOTO_1 = 'https://cdn.test/caneca-foto-1.jpg';
+const FOTO_P2 = 'https://cdn.test/copo-foto-1.jpg';
 const FOTO_3 = 'https://cdn.test/caneca-foto-3.jpg';
 const T_OLD = '2026-06-01T10:00:00.000Z';
 const T_NEW = '2026-06-01T11:00:00.000Z';
@@ -26,6 +27,15 @@ const PRODUCT = {
   id: 'prod-1',
   name: 'Caneca Porcelana',
   images: [FOTO_1, 'https://cdn.test/caneca-foto-2.jpg', FOTO_3],
+  largura_cm: 8,
+  altura_cm: 10,
+} as unknown as Product;
+
+/** Outro produto, escolhido em outro dispositivo (rascunho do backend mais novo). */
+const PRODUCT_2 = {
+  id: 'prod-2',
+  name: 'Copo Térmico',
+  images: [FOTO_P2],
   largura_cm: 8,
   altura_cm: 10,
 } as unknown as Product;
@@ -61,6 +71,7 @@ const MOCKUP_ROW = {
 } as unknown as GeneratedMockup;
 
 const SELECAO_B = {
+  productId: 'prod-1',
   variant: VARIANTE_B,
   colorName: 'Azul',
   colorHex: '#0000ff',
@@ -133,7 +144,8 @@ vi.mock('@/lib/db/postgrest', () => ({
 
 vi.mock('@/contexts/ProductsContext', () => ({
   useProductsContext: () => ({
-    getProductById: (id: string) => (id === PRODUCT.id ? PRODUCT : undefined),
+    getProductById: (id: string) =>
+      id === PRODUCT.id ? PRODUCT : id === PRODUCT_2.id ? PRODUCT_2 : undefined,
     products: [],
   }),
 }));
@@ -227,6 +239,81 @@ describe('reabrir rascunho ou histórico restaura variante e foto exatas', () =>
     expect(out.draft?.productName).toBe('Caneca Copo');
     expect(out.draft?.selection?.variant?.id).toBe('var-B');
     expect(out.draft?.selection?.imageUrl).toBe(FOTO_3);
+  });
+
+  // ── Contaminação entre produtos (auditoria 2026-11-14) ───────────────────
+  // O snapshot local é de prod-1; o backend, mais novo, já está em prod-2 (o
+  // vendedor trocou de produto em outro dispositivo). Colar a seleção antiga
+  // no produto novo não é só exibição: `getProductImage()` manda essa imageUrl
+  // para `generateMockupApi`, então o mockup sairia GERADO sobre a foto do
+  // produto errado.
+  it('backend mais novo com OUTRO produto descarta a seleção local', async () => {
+    seedDraft(SELECAO_B);
+    supabaseMock.maybeSingle.mockResolvedValue({
+      data: {
+        product_id: 'prod-2',
+        product_name: 'Copo Térmico',
+        personalization_areas: [],
+        logo_data: null,
+        updated_at: T_NEW,
+      },
+      error: null,
+    });
+
+    const { result } = renderHook(() => useMockupDraft());
+    const out: { draft: MockupDraftData | null } = { draft: null };
+    await act(async () => {
+      out.draft = await result.current.loadDraft();
+    });
+
+    expect(out.draft?.productId).toBe('prod-2');
+    expect(out.draft?.selection ?? null).toBeNull();
+  });
+
+  it('gerador: produto do backend (prod-2) não herda a foto nem a variante do prod-1', async () => {
+    seedDraft(SELECAO_B);
+    supabaseMock.maybeSingle.mockResolvedValue({
+      data: {
+        product_id: 'prod-2',
+        product_name: 'Copo Térmico',
+        personalization_areas: [],
+        logo_data: null,
+        updated_at: T_NEW,
+      },
+      error: null,
+    });
+
+    const { result } = renderHook(() => useMockupGenerator(), { wrapper: MemoryRouter });
+
+    await waitFor(() => expect(result.current.productSelection).not.toBeNull());
+    expect(result.current.productSelection?.product.id).toBe('prod-2');
+    expect(result.current.productSelection?.variant).toBeNull();
+    expect(result.current.productSelection?.colorName).toBeUndefined();
+    expect(result.current.productSelection?.imageUrl).toBe(FOTO_P2);
+  });
+
+  it('updatedAt do backend inválido mantém a cópia local (desempate do main)', async () => {
+    seedDraft(SELECAO_B);
+    supabaseMock.maybeSingle.mockResolvedValue({
+      data: {
+        product_id: 'prod-2',
+        product_name: 'Copo Térmico',
+        personalization_areas: [],
+        logo_data: null,
+        updated_at: 'nao-e-data',
+      },
+      error: null,
+    });
+
+    const { result } = renderHook(() => useMockupDraft());
+    const out: { draft: MockupDraftData | null } = { draft: null };
+    await act(async () => {
+      out.draft = await result.current.loadDraft();
+    });
+
+    expect(out.draft?.productId).toBe('prod-1');
+    expect(out.draft?.productName).toBe('Caneca Porcelana');
+    expect(out.draft?.selection?.variant?.id).toBe('var-B');
   });
 
   it('histórico restaura a mesma variante B e a mesma foto 3', async () => {
