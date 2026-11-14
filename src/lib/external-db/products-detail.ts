@@ -1,78 +1,26 @@
 /**
  * Product detail fetching — fetchById, bySku, categories, colors.
  */
-import { dbInvoke, type InvokeOptions, type InvokeResult } from '@/lib/db/postgrest';
+import { dbInvoke, type InvokeOptions } from '@/lib/db/postgrest';
 import { logger } from '@/lib/logger';
-import { toErrorMessage } from '@/lib/to-error-message';
 import { getCachedByIds, getFreshFromCacheSafe, putInCacheSafe } from './immutableCache';
 import { computeKitCoverage } from './kit-coverage';
+import { fetchProductWithRetry } from './products-detail-retry';
 import {
   type PromobrindProduct,
   PRODUCT_SELECT_FIELDS_WITH_SALE,
   PRODUCT_SELECT_FIELDS_WITH_SALE_NO_THRESHOLD,
   PRODUCT_SELECT_FIELDS_LEGACY,
   PRODUCT_SELECT_FIELDS_LEGACY_NO_THRESHOLD,
-  PRODUCT_SELECT_FIELDS_DETAIL,
-  PRODUCT_SELECT_FIELDS_DETAIL_NO_THRESHOLD,
   shouldFallbackSelect,
 } from './product-types';
 import { TECHNICAL_IMAGE_TYPES } from '@/utils/image-utils';
 
-async function fetchProductWithRetry(
-  productId: string,
-  maxRetries = 2,
-): Promise<InvokeResult<PromobrindProduct>> {
-  const selectFields = [
-    // Full row first: the admin edit form round-trips ~90 columns and writes them all
-    // back, so it MUST load the complete record — otherwise unselected columns (ncm,
-    // fiscal, SEO, internal dims, packaging, marketing, flags…) would be overwritten
-    // with nulls on save. v_products_public is a 1:1 projection, so '*' is the full row.
-    '*',
-    PRODUCT_SELECT_FIELDS_DETAIL,
-    PRODUCT_SELECT_FIELDS_DETAIL_NO_THRESHOLD,
-    PRODUCT_SELECT_FIELDS_WITH_SALE,
-    PRODUCT_SELECT_FIELDS_WITH_SALE_NO_THRESHOLD,
-    PRODUCT_SELECT_FIELDS_LEGACY,
-    PRODUCT_SELECT_FIELDS_LEGACY_NO_THRESHOLD,
-  ];
-  let lastError: unknown;
-  for (const selectField of selectFields) {
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
-      try {
-        return await dbInvoke<PromobrindProduct>({
-          table: 'products',
-          operation: 'select',
-          filters: { id: productId },
-          select: selectField,
-          limit: 1,
-        });
-      } catch (err) {
-        lastError = err;
-        if (shouldFallbackSelect(err)) break; // try next select fields
-        if (isTransientError(err) && attempt < maxRetries) {
-          await new Promise((r) => {
-            setTimeout(r, 1000 * (attempt + 1));
-          });
-          continue;
-        }
-        if (!isTransientError(err)) throw err;
-      }
-    }
-  }
-  throw lastError;
-}
-
-function isTransientError(err: unknown): boolean {
-  const msg = toErrorMessage(err);
-  return /(timeout|statement timeout|canceling statement|schema cache|retrying|ECONNRESET|fetch failed)/i.test(
-    msg,
-  );
-}
-
 export async function fetchPromobrindProductById(
   productId: string,
+  signal?: AbortSignal,
 ): Promise<PromobrindProduct | null> {
-  const result = await fetchProductWithRetry(productId);
+  const result = await fetchProductWithRetry(productId, undefined, signal);
 
   const product = result?.records?.[0] || null;
   if (!product) return null;
@@ -97,6 +45,7 @@ export async function fetchPromobrindProductById(
 
   const IMAGES_PAGE = 80;
   const imagesPromise = dbInvoke<ProductImage>({
+    signal,
     table: 'product_images',
     operation: 'select',
     select:
@@ -166,7 +115,7 @@ export async function fetchPromobrindProductById(
   const enrichmentPromise: Promise<{ materialIds: string[] }> =
     enrichmentQueries.length === 0
       ? Promise.resolve({ materialIds: [] })
-      : Promise.all(enrichmentQueries.map((q) => dbInvoke<unknown>(q)))
+      : Promise.all(enrichmentQueries.map((q) => dbInvoke<unknown>({ ...q, signal })))
           .then((batchResults) => {
             const materialIds: string[] = [];
             enrichmentSlots.forEach((slot, idx) => {
@@ -221,6 +170,7 @@ export async function fetchPromobrindProductById(
   // invisíveis na PDP. Max real observado no catálogo = 100. Margem 20% = 120.
   // Anti-regressão: NÃO reduzir abaixo de 120 sem auditoria prévia do catálogo.
   const variantsPromise = dbInvoke<Variant>({
+    signal,
     table: 'product_variants',
     operation: 'select',
     select: 'id, color_name, color_hex, color_code, color_id, sku, stock_quantity',
@@ -247,6 +197,7 @@ export async function fetchPromobrindProductById(
     cloudflare_status: string | null;
   };
   const videosPromise = dbInvoke<Video>({
+    signal,
     table: 'product_videos',
     operation: 'select',
     select:
@@ -298,6 +249,7 @@ export async function fetchPromobrindProductById(
   // cai para a tabela base `product_kit_components` (26 campos crus).
   const fetchKitFromView = (): Promise<KitComponent[]> =>
     dbInvoke<KitComponent>({
+      signal,
       table: 'v_kit_component_complete',
       operation: 'select',
       select: '*',
@@ -308,6 +260,7 @@ export async function fetchPromobrindProductById(
 
   const fetchKitFromBase = (): Promise<KitComponent[]> =>
     dbInvoke<KitComponent>({
+      signal,
       table: 'product_kit_components',
       operation: 'select',
       select:
@@ -388,6 +341,7 @@ export async function fetchPromobrindProductById(
   if (allProductImages.length === IMAGES_PAGE) {
     try {
       const more = await dbInvoke<ProductImage>({
+        signal,
         table: 'product_images',
         operation: 'select',
         select:
@@ -460,6 +414,7 @@ export async function fetchPromobrindProductById(
     if (uniqueColorIds.length > 0) {
       try {
         const cvResult = await dbInvoke<{ id: string; internal_code: string | null }>({
+          signal,
           table: 'color_variations',
           operation: 'select',
           select: 'id, internal_code',
@@ -539,6 +494,7 @@ export async function fetchPromobrindProductById(
           images: string[] | null;
           selected_thumbnail: string | null;
         }>({
+          signal,
           table: 'product_variants',
           operation: 'select',
           select: 'id, images, selected_thumbnail',

@@ -9,7 +9,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const fetchProductById = vi.fn();
 vi.mock('@/services/productService', () => ({
-  productService: { fetchProductById: (id: string) => fetchProductById(id) },
+  productService: {
+    fetchProductById: (id: string, signal?: AbortSignal) => fetchProductById(id, signal),
+  },
 }));
 
 import {
@@ -72,6 +74,32 @@ describe('fetchProductDetail (queryFn da PDP)', () => {
     }
   });
 
+  it('aborta a consulta pendurada quando estoura o limite (retry não acumula requisições)', async () => {
+    vi.useFakeTimers();
+    let received: AbortSignal | undefined;
+    fetchProductById.mockImplementation((_id: string, signal?: AbortSignal) => {
+      received = signal;
+      return new Promise(() => {});
+    });
+    const p = fetchProductDetail('p-1');
+    const assertion = expect(p).rejects.toThrow('timeout');
+    expect(received).toBeInstanceOf(AbortSignal);
+    expect(received?.aborted).toBe(false);
+    await vi.advanceTimersByTimeAsync(PRODUCT_DETAIL_TIMEOUT_MS);
+    await assertion;
+    expect(received?.aborted).toBe(true);
+  });
+
+  it('não aborta a consulta quando o backend responde dentro do limite', async () => {
+    let received: AbortSignal | undefined;
+    fetchProductById.mockImplementation(async (_id: string, signal?: AbortSignal) => {
+      received = signal;
+      return { id: 'p-2' };
+    });
+    await expect(fetchProductDetail('p-2')).resolves.toEqual({ id: 'p-2' });
+    expect(received?.aborted).toBe(false);
+  });
+
   it('devolve o produto quando o backend responde', async () => {
     fetchProductById.mockResolvedValue({ id: 'p-3' });
     await expect(fetchProductDetail('p-3')).resolves.toEqual({ id: 'p-3' });
@@ -101,8 +129,9 @@ describe('usePrefetchProduct', () => {
   });
   it('PDP aberta com o prefetch ainda pendente também sai do skeleton pelo timeout', async () => {
     const realSetTimeout = globalThis.setTimeout;
-    // Timeout (15 s) e backoff do React Query (1 s, 2 s) disparam na hora;
-    // timers curtos (waitFor) seguem normais.
+    // O timeout de 15 s dispara na hora; timers curtos (polling) seguem normais. Neste caminho
+    // não há backoff: a PDP reaproveita a promise do prefetchQuery, que roda com retry=false
+    // (fetchQuery do React Query), então a PDP sai do skeleton após uma única tentativa.
     const spy = vi
       .spyOn(globalThis, 'setTimeout')
       .mockImplementation(((fn: () => void, ms?: number) =>
