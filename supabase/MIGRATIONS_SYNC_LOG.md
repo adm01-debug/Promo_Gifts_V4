@@ -1509,3 +1509,5 @@ e sem a tabela `xbz_image_import_staging`; logs 24h: 317 POST → 401, 0 → 200
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261114003000` | `fix_unschedule_cron_xbz_image_uploader` | `c742a627a964faf49ae9be913336b8aafaa76e8b6f7a3e95bc266d9cc2a54efa` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-cron-xbz-image-uploader-261114-0030`) |
+
+| `20261113140000` | `marketing_tab_links_rls_and_endomarketing` | `9b8c6f1f28df01eebaec6c9ee2e456409a9df7ad45cd49b2730a824349c91135` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |

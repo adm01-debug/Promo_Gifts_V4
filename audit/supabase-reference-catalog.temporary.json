@@ -45,6 +45,7 @@
     "color_groups",
     "color_nuances",
     "color_variations",
+    "commemorative_dates",
     "companies",
     "component_media",
     "connection_test_history",
@@ -111,6 +112,7 @@
     "price_history",
     "print_area_techniques",
     "product_badge_definitions",
+    "product_commemorative_dates",
     "product_component_location_techniques",
     "product_component_locations",
     "product_components",
@@ -127,6 +129,7 @@
     "product_relationships",
     "product_sync_logs",
     "product_tags",
+    "product_target_audiences",
     "product_variants",
     "product_videos",
     "product_views",
@@ -168,6 +171,7 @@
     "tabela_preco_gravacao_oficial",
     "tabela_preco_gravacao_oficial_faixa",
     "tags",
+    "target_audiences",
     "tecnicas_gravacao",
     "user_2fa_settings",
     "user_comparisons",
@@ -491,6 +495,22 @@
       "occurrences": 1,
       "stage": 103,
       "reason": "RPC criada pela migration supabase/migrations/20261112120000_fix_fn_get_supplier_reliability.sql (SECURITY DEFINER sobre mv_supplier_reliability, restrita a is_supervisor_or_above), ainda nao aplicada no canonico. Remover esta excecao e registrar o RPC em rpcs depois de aplicar via db-apply-migration.yml e confirmar via pg_catalog."
+    },
+    {
+      "kind": "relation",
+      "name": "endomarketing_themes",
+      "file": "src/components/admin/products/productMarketingData.ts",
+      "occurrences": 1,
+      "stage": 67,
+      "reason": "Tabela criada pela migration supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql (aba Marketing do produto, endomarketing separado por decisao do dono), ainda NAO aplicada em producao em 2026-11-13. Ate a aplicacao via db-apply-migration.yml a aba mostra so a categoria Endomarketing como 'nao carregou' (as outras funcionam). Remover esta excecao e mover o nome para relations depois de confirmar a tabela via pg_catalog apos aplicar."
+    },
+    {
+      "kind": "relation",
+      "name": "product_endomarketing",
+      "file": "src/components/admin/products/productMarketingData.ts",
+      "occurrences": 4,
+      "stage": 67,
+      "reason": "Tabela criada pela migration supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql (aba Marketing do produto, endomarketing separado por decisao do dono), ainda NAO aplicada em producao em 2026-11-13. Ate a aplicacao via db-apply-migration.yml a aba mostra so a categoria Endomarketing como 'nao carregou' (as outras funcionam). Remover esta excecao e mover o nome para relations depois de confirmar a tabela via pg_catalog apos aplicar."
     }
   ],
   "dynamic_baseline": [
