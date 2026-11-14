@@ -1482,3 +1482,19 @@ e sem a tabela `xbz_image_import_staging`; logs 24h: 317 POST → 401, 0 → 200
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261114003000` | `fix_unschedule_cron_xbz_image_uploader` | `c742a627a964faf49ae9be913336b8aafaa76e8b6f7a3e95bc266d9cc2a54efa` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-cron-xbz-image-uploader-261114-0030`) |
+
+## 2026-11-14 — CRON-004: reduz a frequência de 8 jobs ociosos ou redundantes (696 → 100 execuções/dia)
+
+Consulta read-only em produção (2026-11-14, `cron.job_run_details` janela de 6 h, runid > 1399672): 881 execuções e
+244 "job startup timeout". Os 8 jobs abaixo estão ociosos ou redundantes: filas de `product_images` zeradas (as 79 sem
+blurhash nunca são processadas), `external_connections` vazia, 1 de 34 `promote_tick` com trabalho em 24 h,
+`mv_supplier_reliability` com 3 linhas e reload horário do PostgREST redundante com `pgrst_ddl_watch`/`pgrst_drop_watch`.
+A migration reagenda `generate-blurhashes`, `hash-product-images` e `backfill-image-dimensions` para 1×/dia (04:xx UTC),
+`connections-auto-test`, `connections-health-check`, `medallion-promote-tick` e `refresh-mv-supplier-reliability` para
+1×/h e `pgrst-schema-reload` para 1×/dia (09:07 UTC, segue ativo por causa do smoke test #37). Minutos são subconjunto
+dos atuais. O snapshot `supabase/baseline/20261108000000_cron_jobs.json` só muda depois do apply (Gate E40).
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114120000` | `cron004_reduz_frequencia_jobs_ociosos` | `11241a6abb3c7f5dbf1c35d9589189e27d19c0bc292f61035dfc4cdb16c906eb` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/perf-cron004-reduz-jobs-ociosos-261114-1001`) |
