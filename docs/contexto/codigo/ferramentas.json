@@ -5,7 +5,7 @@
   "linguagens": [
    "TypeScript (4770)",
    "SQL (3399)",
-   "Markdown (1022)",
+   "Markdown (1023)",
    "JavaScript (443)",
    "JSON (126)",
    "YAML (111)",
@@ -4565,7 +4565,7 @@
   },
   {
    "pasta": "docs/security",
-   "arquivos_md": 5
+   "arquivos_md": 6
   },
   {
    "pasta": "docs/sessoes",

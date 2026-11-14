@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7b84ebe5130cbe36aa8f817fed4ba873648dbfe3",
+  "commit": "1a9cc9a4f9c7c2e266a74ab82270230e23919ad8",
   "branch": "main",
-  "data_commit": "2026-11-14T18:13:26-03:00",
+  "data_commit": "2026-11-14T21:25:05Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "1a9cc9a4",
+    "data": "2026-11-14",
+    "assunto": "fix(migrations): declara o rollback da 20261114170845 e documenta o schema net exposto na API pública (#3628)"
+   },
    {
     "sha": "7b84ebe5",
     "data": "2026-11-14",
@@ -126,14 +131,9 @@
     "sha": "ce4099ec",
     "data": "2026-11-14",
     "assunto": "Merge remote-tracking branch 'origin/claude/fix-busca-teclado-supersede-3535-261114-0045' into claude/trem2-front-limpez"
-   },
-   {
-    "sha": "e34f424a",
-    "data": "2026-11-14",
-    "assunto": "Merge remote-tracking branch 'origin/claude/fix-simulador-colunas-crm-supersede-3534-261114-0212' into claude/trem2-fron"
    }
   ],
-  "arquivos_mudados_7d": 2078,
+  "arquivos_mudados_7d": 2079,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 94
+    "mudancas": 93
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -246,12 +246,12 @@
     "mudancas": 14
    },
    {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
     "mudancas": 13
    },
    {
-    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 12
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "mudancas": 13
    },
    {
     "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 593
+    "commits": 592
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10163,
+  "arquivos_total": 10164,
   "arquivos_codigo": 5221,
   "linhas_codigo": 996758,
   "rotas": 138,
@@ -339,7 +339,7 @@
   "testes": 2459,
   "workflows": 98,
   "scripts": 272,
-  "docs_md": 1022
+  "docs_md": 1023
  },
  "por_pasta": {
   ".github/scripts": {
