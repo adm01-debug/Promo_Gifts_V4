@@ -8,10 +8,10 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3079,
+ "migrations": 3084,
  "seeds": [],
  "avisos": [
-  "318 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
+  "319 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
  ],
  "extensoes": [
   "http",
@@ -14758,7 +14758,7 @@
     },
     {
      "nome": "idx_crm_callback_events_type",
-     "colunas": "event_type, created_at DESC",
+     "colunas": "event_type",
      "unico": false
     },
     {
@@ -26184,6 +26184,12 @@
      "tipo": "permissive"
     },
     {
+     "nome": "order_items_insert",
+     "comando": "insert",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "order_items_insert_scope",
      "comando": "insert",
      "para": "authenticated",
@@ -26196,6 +26202,12 @@
      "tipo": "permissive"
     },
     {
+     "nome": "order_items_select",
+     "comando": "select",
+     "para": "public",
+     "tipo": "permissive"
+    },
+    {
      "nome": "order_items_select_scope",
      "comando": "select",
      "para": "authenticated",
@@ -26205,6 +26217,12 @@
      "nome": "order_items_select_v7",
      "comando": "select",
      "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "order_items_update",
+     "comando": "update",
+     "para": "public",
      "tipo": "permissive"
     },
     {
@@ -26590,15 +26608,33 @@
      "tipo": "permissive"
     },
     {
+     "nome": "orders_insert",
+     "comando": "insert",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "orders_insert_scope",
      "comando": "insert",
      "para": "authenticated",
      "tipo": "permissive"
     },
     {
+     "nome": "orders_select",
+     "comando": "select",
+     "para": "public",
+     "tipo": "permissive"
+    },
+    {
      "nome": "orders_select_scope",
      "comando": "select",
      "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "orders_update",
+     "comando": "update",
+     "para": "public",
      "tipo": "permissive"
     },
     {
@@ -43737,6 +43773,16 @@
    ],
    "indices": [
     {
+     "nome": "idx_stock_notes_created_by",
+     "colunas": "created_by",
+     "unico": false
+    },
+    {
+     "nome": "idx_stock_notes_supplier_id",
+     "colunas": "supplier_id",
+     "unico": false
+    },
+    {
      "nome": "stock_notes_active_idx",
      "colunas": "variant_id",
      "unico": false
@@ -43772,6 +43818,11 @@
      "unico": false
     },
     {
+     "nome": "idx_stock_snapshots_product_id",
+     "colunas": "product_id",
+     "unico": false
+    },
+    {
      "nome": "idx_stock_snapshots_variant_id",
      "colunas": "variant_id",
      "unico": false
@@ -43779,6 +43830,11 @@
     {
      "nome": "idx_stock_snapshots_variant_supplier",
      "colunas": "variant_id, supplier_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_stock_snapshots_variant_supplier_source_id",
+     "colunas": "variant_supplier_source_id",
      "unico": false
     }
    ],
@@ -49713,7 +49769,7 @@
     },
     "is_trusted": {
      "tipo": "boolean",
-     "nn": false,
+     "nn": true,
      "pk": false,
      "default": "false",
      "ref": null
@@ -52006,12 +52062,6 @@
    },
    "rls": true,
    "policies": [
-    {
-     "nome": "Authenticated can insert notifications for valid users",
-     "comando": "insert",
-     "para": "authenticated",
-     "tipo": "permissive"
-    },
     {
      "nome": "Authenticated can insert own notifications",
      "comando": "insert",

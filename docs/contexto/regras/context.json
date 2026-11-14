@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "c9bc67746644c24d04905c64152d6094f283bd9c",
+  "sha": "ee13f748c0cd5c94079094ae0ac6ea811f62c8cd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 18:50 UTC",
-  "files_total": 10065,
-  "code_files": 8600,
-  "code_lines": 1213805
+  "generated_at": "2026-11-14 19:21 UTC",
+  "files_total": 10075,
+  "code_files": 8610,
+  "code_lines": 1214163
  },
  "version": "1.3.2",
- "facts_hash": "c2b7fd0af45890c9",
+ "facts_hash": "cadf07cfa79c2dbb",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1221,7 +1221,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3389,
+   ".sql": 3399,
    ".ts": 2904,
    ".tsx": 1858,
    ".mjs": 436,
@@ -45716,26 +45716,6 @@
     "src": "supabase/migrations-snapshot/SCHEMA_LIVE.sql"
    },
    {
-    "name": "order_items_select",
-    "table": "order_items",
-    "cmd": "SELECT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "(EXISTS ( SELECT 1 FROM \"public\".\"orders\" \"o\" WHERE ((\"o\".\"id\" = \"order_items\".\"order_id\") AND \"public\".\"user_is_org_member\"(\"o\".\"organization_id\"))))",
-    "check": "",
-    "src": "supabase/migrations-snapshot/SCHEMA_LIVE.sql"
-   },
-   {
-    "name": "order_items_update",
-    "table": "order_items",
-    "cmd": "UPDATE",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "(EXISTS ( SELECT 1 FROM \"public\".\"orders\" \"o\" WHERE ((\"o\".\"id\" = \"order_items\".\"order_id\") AND \"public\".\"user_is_org_member\"(\"o\".\"organization_id\"))))",
-    "check": "(EXISTS ( SELECT 1 FROM \"public\".\"orders\" \"o\" WHERE ((\"o\".\"id\" = \"order_items\".\"order_id\") AND \"public\".\"user_is_org_member\"(\"o\".\"organization_id\"))))",
-    "src": "supabase/migrations-snapshot/SCHEMA_LIVE.sql"
-   },
-   {
     "name": "orders_delete",
     "table": "orders",
     "cmd": "DELETE",
@@ -45743,26 +45723,6 @@
     "mode": "permissive",
     "using": "\"public\".\"is_org_owner_or_admin\"(\"organization_id\")",
     "check": "",
-    "src": "supabase/migrations-snapshot/SCHEMA_LIVE.sql"
-   },
-   {
-    "name": "orders_select",
-    "table": "orders",
-    "cmd": "SELECT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "\"public\".\"user_is_org_member\"(\"organization_id\")",
-    "check": "",
-    "src": "supabase/migrations-snapshot/SCHEMA_LIVE.sql"
-   },
-   {
-    "name": "orders_update",
-    "table": "orders",
-    "cmd": "UPDATE",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "\"public\".\"user_is_org_member\"(\"organization_id\")",
-    "check": "\"public\".\"user_is_org_member\"(\"organization_id\")",
     "src": "supabase/migrations-snapshot/SCHEMA_LIVE.sql"
    },
    {
@@ -49426,16 +49386,6 @@
     "src": "supabase/migrations/20260622111500_supplier_reliability_pipeline_v1.sql"
    },
    {
-    "name": "Authenticated can insert own notifications",
-    "table": "workspace_notifications",
-    "cmd": "INSERT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "",
-    "check": "user_id = (SELECT auth.uid())",
-    "src": "supabase/migrations/20260622185000_fix_workspace_notifications_insert_policy.sql"
-   },
-   {
     "name": "qip_update_own_quote",
     "table": "quote_item_personalizations",
     "cmd": "UPDATE",
@@ -50033,16 +49983,6 @@
     "mode": "permissive",
     "using": "EXISTS ( SELECT 1 FROM public.profiles WHERE profiles.id = (SELECT auth.uid()) AND profiles.role = 'admin' )",
     "check": "",
-    "src": "supabase/migrations/20260716140313_perf_auth_rls_initplan_remaining.sql"
-   },
-   {
-    "name": "Authenticated can insert notifications for valid users",
-    "table": "workspace_notifications",
-    "cmd": "INSERT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "",
-    "check": "(SELECT auth.uid()) IS NOT NULL AND user_id IS NOT NULL",
     "src": "supabase/migrations/20260716140313_perf_auth_rls_initplan_remaining.sql"
    },
    {
@@ -50964,6 +50904,76 @@
     "using": "bucket_id = 'art-files' AND name IS NOT NULL AND length(name) > 0",
     "check": "",
     "src": "supabase/rollbacks/20261108235500_rollback.sql"
+   },
+   {
+    "name": "Authenticated can insert notifications for valid users",
+    "table": "workspace_notifications",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "auth.uid() IS NOT NULL AND user_id IS NOT NULL",
+    "src": "supabase/rollbacks/20261114170845_rollback.sql"
+   },
+   {
+    "name": "orders_select",
+    "table": "orders",
+    "cmd": "SELECT",
+    "roles": "public",
+    "mode": "permissive",
+    "using": "public.user_is_org_member(organization_id)",
+    "check": "",
+    "src": "supabase/rollbacks/20261114170921_rollback.sql"
+   },
+   {
+    "name": "orders_insert",
+    "table": "orders",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "public.user_is_org_member(organization_id)",
+    "src": "supabase/rollbacks/20261114170921_rollback.sql"
+   },
+   {
+    "name": "orders_update",
+    "table": "orders",
+    "cmd": "UPDATE",
+    "roles": "public",
+    "mode": "permissive",
+    "using": "public.user_is_org_member(organization_id)",
+    "check": "public.user_is_org_member(organization_id)",
+    "src": "supabase/rollbacks/20261114170921_rollback.sql"
+   },
+   {
+    "name": "order_items_select",
+    "table": "order_items",
+    "cmd": "SELECT",
+    "roles": "public",
+    "mode": "permissive",
+    "using": "EXISTS ( SELECT 1 FROM public.orders o WHERE o.id = order_items.order_id AND public.user_is_org_member(o.organization_id) )",
+    "check": "",
+    "src": "supabase/rollbacks/20261114170921_rollback.sql"
+   },
+   {
+    "name": "order_items_update",
+    "table": "order_items",
+    "cmd": "UPDATE",
+    "roles": "public",
+    "mode": "permissive",
+    "using": "EXISTS ( SELECT 1 FROM public.orders o WHERE o.id = order_items.order_id AND public.user_is_org_member(o.organization_id) )",
+    "check": "EXISTS ( SELECT 1 FROM public.orders o WHERE o.id = order_items.order_id AND public.user_is_org_member(o.organization_id) )",
+    "src": "supabase/rollbacks/20261114170921_rollback.sql"
+   },
+   {
+    "name": "order_items_insert",
+    "table": "order_items",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "EXISTS ( SELECT 1 FROM public.orders o WHERE o.id = order_items.order_id AND public.user_is_org_member(o.organization_id) )",
+    "src": "supabase/rollbacks/20261114170921_rollback.sql"
    },
    {
     "name": "Users can view own notifications",
@@ -90615,6 +90625,94 @@
     "src": "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql"
    },
    {
+    "name": "idx_stock_snapshots_variant_supplier",
+    "table": "stock_snapshots",
+    "columns": "variant_id, supplier_id",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql"
+   },
+   {
+    "name": "idx_stock_snapshots_product_id",
+    "table": "stock_snapshots",
+    "columns": "product_id",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql"
+   },
+   {
+    "name": "idx_stock_snapshots_variant_supplier_source_id",
+    "table": "stock_snapshots",
+    "columns": "variant_supplier_source_id",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql"
+   },
+   {
+    "name": "idx_stock_notes_created_by",
+    "table": "stock_notes",
+    "columns": "created_by",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql"
+   },
+   {
+    "name": "idx_stock_notes_supplier_id",
+    "table": "stock_notes",
+    "columns": "supplier_id",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql"
+   },
+   {
+    "name": "idx_token_revocations_jti",
+    "table": "user_token_revocations",
+    "columns": "token_jti",
+    "unique": false,
+    "where": "WHERE token_jti IS NOT NULL",
+    "src": "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql"
+   },
+   {
+    "name": "idx_token_revocations_expires",
+    "table": "user_token_revocations",
+    "columns": "expires_at",
+    "unique": false,
+    "where": "WHERE expires_at IS NOT NULL",
+    "src": "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql"
+   },
+   {
+    "name": "idx_workspace_notifications_category",
+    "table": "workspace_notifications",
+    "columns": "category",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql"
+   },
+   {
+    "name": "idx_webhook_delivery_locks_claimed_at",
+    "table": "webhook_delivery_locks",
+    "columns": "claimed_at",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql"
+   },
+   {
+    "name": "idx_fit_expires_at",
+    "table": "favorite_items_trash",
+    "columns": "expires_at",
+    "unique": false,
+    "where": "WHERE expires_at IS NOT NULL",
+    "src": "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql"
+   },
+   {
+    "name": "idx_crm_callback_events_type",
+    "table": "crm_callback_events",
+    "columns": "event_type",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql"
+   },
+   {
     "name": "idx_user_organizations_user",
     "table": "user_organizations",
     "columns": "user_id",
@@ -96115,7 +96213,6 @@
    "supabase/migrations/20261106232045_fix_handle_updated_at_search_path.sql",
    "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql",
    "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql",
-   "supabase/migrations/20261108020000_p09_reconcile_ledger_schema_migrations.sql",
    "supabase/migrations/20261108030000_ft005_cron_scheduled_reports.sql",
    "supabase/migrations/20261108030100_ft079_view_products_min_quantity.sql",
    "supabase/migrations/20261108030200_ft088_fn_check_item_fits.sql",
@@ -96140,10 +96237,16 @@
    "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql",
    "supabase/migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql",
    "supabase/migrations/20261112140000_fix_rls_supplier_products_raw_history_p2027.sql",
+   "supabase/migrations/20261113225000_sec_revoke_anon_authenticated_net_supabase_functions.sql",
    "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql",
    "supabase/migrations/20261113235800_cron003_reagendamento_noturno_fornecedores.sql",
    "supabase/migrations/20261114003000_fix_unschedule_cron_xbz_image_uploader.sql",
+   "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql",
+   "supabase/migrations/20261114014500_p09_reconcile_ledger_schema_migrations.sql",
+   "supabase/migrations/20261114031000_fix_user_known_devices_is_trusted.sql",
    "supabase/migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql",
+   "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
+   "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96194,7 +96297,6 @@
    "supabase/rollbacks/20261106232045_rollback.sql",
    "supabase/rollbacks/20261107180000_rollback.sql",
    "supabase/rollbacks/20261108001500_rollback.sql",
-   "supabase/rollbacks/20261108020000_rollback.sql",
    "supabase/rollbacks/20261108030000_rollback.sql",
    "supabase/rollbacks/20261108030100_rollback.sql",
    "supabase/rollbacks/20261108030200_rollback.sql",
@@ -96219,10 +96321,16 @@
    "supabase/rollbacks/20261112120900_rollback.sql",
    "supabase/rollbacks/20261112130000_rollback.sql",
    "supabase/rollbacks/20261112140000_rollback.sql",
+   "supabase/rollbacks/20261113225000_rollback.sql",
    "supabase/rollbacks/20261113235000_rollback.sql",
    "supabase/rollbacks/20261113235800_rollback.sql",
    "supabase/rollbacks/20261114003000_rollback.sql",
+   "supabase/rollbacks/20261114014100_rollback.sql",
+   "supabase/rollbacks/20261114014500_rollback.sql",
+   "supabase/rollbacks/20261114031000_rollback.sql",
    "supabase/rollbacks/20261114040000_rollback.sql",
+   "supabase/rollbacks/20261114170845_rollback.sql",
+   "supabase/rollbacks/20261114170921_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -147095,7 +147203,7 @@
   {
    "module": "scripts",
    "files": 287,
-   "lines": 62073,
+   "lines": 62074,
    "tables": [
     "a",
     "b",
@@ -149131,8 +149239,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3078,
-   "lines": 221484,
+   "files": 3083,
+   "lines": 221755,
    "tables": [
     "...",
     "admin_audit_log",
@@ -149230,8 +149338,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 80,
-   "lines": 2359,
+   "files": 85,
+   "lines": 2427,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -149288,7 +149396,6 @@
     "supabase/rollbacks/20261106232045_rollback.sql",
     "supabase/rollbacks/20261107180000_rollback.sql",
     "supabase/rollbacks/20261108001500_rollback.sql",
-    "supabase/rollbacks/20261108020000_rollback.sql",
     "supabase/rollbacks/20261108030000_rollback.sql",
     "supabase/rollbacks/20261108030100_rollback.sql",
     "supabase/rollbacks/20261108030200_rollback.sql",
@@ -149313,11 +149420,12 @@
     "supabase/rollbacks/20261112120900_rollback.sql",
     "supabase/rollbacks/20261112130000_rollback.sql",
     "supabase/rollbacks/20261112140000_rollback.sql",
+    "supabase/rollbacks/20261113225000_rollback.sql",
     "supabase/rollbacks/20261113235000_rollback.sql",
     "supabase/rollbacks/20261113235800_rollback.sql",
     "supabase/rollbacks/20261114003000_rollback.sql",
-    "supabase/rollbacks/20261114040000_rollback.sql",
-    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql"
+    "supabase/rollbacks/20261114014100_rollback.sql",
+    "supabase/rollbacks/20261114014500_rollback.sql"
    ]
   },
   {
@@ -149407,7 +149515,7 @@
   {
    "module": "tests",
    "files": 1011,
-   "lines": 154972,
+   "lines": 154990,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -214976,6 +215084,10 @@
    {
     "file": "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql",
     "line": "-- O db-apply-migration usa lock_timeout=1s: o CONCURRENTLY espera transações antigas, então esta"
+   },
+   {
+    "file": "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql",
+    "line": "-- O db-apply-migration usa lock_timeout=1s e o CONCURRENTLY espera transações antigas: esta sessão"
    },
    {
     "file": "supabase/migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql",
@@ -300942,6 +301054,10 @@
     "call": "notify"
    },
    {
+    "file": "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
+    "call": "notify_discount_approval_request"
+   },
+   {
     "file": "tests/hooks/_helpers/mock-supabase-builder.ts",
     "call": "invoke("
    }
@@ -303438,26 +303554,6 @@
     "src": "supabase/migrations-snapshot/SCHEMA_LIVE.sql"
    },
    {
-    "name": "order_items_select",
-    "table": "order_items",
-    "cmd": "SELECT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "(EXISTS ( SELECT 1 FROM \"public\".\"orders\" \"o\" WHERE ((\"o\".\"id\" = \"order_items\".\"order_id\") AND \"public\".\"user_is_org_member\"(\"o\".\"organization_id\"))))",
-    "check": "",
-    "src": "supabase/migrations-snapshot/SCHEMA_LIVE.sql"
-   },
-   {
-    "name": "order_items_update",
-    "table": "order_items",
-    "cmd": "UPDATE",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "(EXISTS ( SELECT 1 FROM \"public\".\"orders\" \"o\" WHERE ((\"o\".\"id\" = \"order_items\".\"order_id\") AND \"public\".\"user_is_org_member\"(\"o\".\"organization_id\"))))",
-    "check": "(EXISTS ( SELECT 1 FROM \"public\".\"orders\" \"o\" WHERE ((\"o\".\"id\" = \"order_items\".\"order_id\") AND \"public\".\"user_is_org_member\"(\"o\".\"organization_id\"))))",
-    "src": "supabase/migrations-snapshot/SCHEMA_LIVE.sql"
-   },
-   {
     "name": "orders_delete",
     "table": "orders",
     "cmd": "DELETE",
@@ -303465,26 +303561,6 @@
     "mode": "permissive",
     "using": "\"public\".\"is_org_owner_or_admin\"(\"organization_id\")",
     "check": "",
-    "src": "supabase/migrations-snapshot/SCHEMA_LIVE.sql"
-   },
-   {
-    "name": "orders_select",
-    "table": "orders",
-    "cmd": "SELECT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "\"public\".\"user_is_org_member\"(\"organization_id\")",
-    "check": "",
-    "src": "supabase/migrations-snapshot/SCHEMA_LIVE.sql"
-   },
-   {
-    "name": "orders_update",
-    "table": "orders",
-    "cmd": "UPDATE",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "\"public\".\"user_is_org_member\"(\"organization_id\")",
-    "check": "\"public\".\"user_is_org_member\"(\"organization_id\")",
     "src": "supabase/migrations-snapshot/SCHEMA_LIVE.sql"
    },
    {
@@ -307148,16 +307224,6 @@
     "src": "supabase/migrations/20260622111500_supplier_reliability_pipeline_v1.sql"
    },
    {
-    "name": "Authenticated can insert own notifications",
-    "table": "workspace_notifications",
-    "cmd": "INSERT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "",
-    "check": "user_id = (SELECT auth.uid())",
-    "src": "supabase/migrations/20260622185000_fix_workspace_notifications_insert_policy.sql"
-   },
-   {
     "name": "qip_update_own_quote",
     "table": "quote_item_personalizations",
     "cmd": "UPDATE",
@@ -307755,16 +307821,6 @@
     "mode": "permissive",
     "using": "EXISTS ( SELECT 1 FROM public.profiles WHERE profiles.id = (SELECT auth.uid()) AND profiles.role = 'admin' )",
     "check": "",
-    "src": "supabase/migrations/20260716140313_perf_auth_rls_initplan_remaining.sql"
-   },
-   {
-    "name": "Authenticated can insert notifications for valid users",
-    "table": "workspace_notifications",
-    "cmd": "INSERT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "",
-    "check": "(SELECT auth.uid()) IS NOT NULL AND user_id IS NOT NULL",
     "src": "supabase/migrations/20260716140313_perf_auth_rls_initplan_remaining.sql"
    },
    {
@@ -308686,6 +308742,76 @@
     "using": "bucket_id = 'art-files' AND name IS NOT NULL AND length(name) > 0",
     "check": "",
     "src": "supabase/rollbacks/20261108235500_rollback.sql"
+   },
+   {
+    "name": "Authenticated can insert notifications for valid users",
+    "table": "workspace_notifications",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "auth.uid() IS NOT NULL AND user_id IS NOT NULL",
+    "src": "supabase/rollbacks/20261114170845_rollback.sql"
+   },
+   {
+    "name": "orders_select",
+    "table": "orders",
+    "cmd": "SELECT",
+    "roles": "public",
+    "mode": "permissive",
+    "using": "public.user_is_org_member(organization_id)",
+    "check": "",
+    "src": "supabase/rollbacks/20261114170921_rollback.sql"
+   },
+   {
+    "name": "orders_insert",
+    "table": "orders",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "public.user_is_org_member(organization_id)",
+    "src": "supabase/rollbacks/20261114170921_rollback.sql"
+   },
+   {
+    "name": "orders_update",
+    "table": "orders",
+    "cmd": "UPDATE",
+    "roles": "public",
+    "mode": "permissive",
+    "using": "public.user_is_org_member(organization_id)",
+    "check": "public.user_is_org_member(organization_id)",
+    "src": "supabase/rollbacks/20261114170921_rollback.sql"
+   },
+   {
+    "name": "order_items_select",
+    "table": "order_items",
+    "cmd": "SELECT",
+    "roles": "public",
+    "mode": "permissive",
+    "using": "EXISTS ( SELECT 1 FROM public.orders o WHERE o.id = order_items.order_id AND public.user_is_org_member(o.organization_id) )",
+    "check": "",
+    "src": "supabase/rollbacks/20261114170921_rollback.sql"
+   },
+   {
+    "name": "order_items_update",
+    "table": "order_items",
+    "cmd": "UPDATE",
+    "roles": "public",
+    "mode": "permissive",
+    "using": "EXISTS ( SELECT 1 FROM public.orders o WHERE o.id = order_items.order_id AND public.user_is_org_member(o.organization_id) )",
+    "check": "EXISTS ( SELECT 1 FROM public.orders o WHERE o.id = order_items.order_id AND public.user_is_org_member(o.organization_id) )",
+    "src": "supabase/rollbacks/20261114170921_rollback.sql"
+   },
+   {
+    "name": "order_items_insert",
+    "table": "order_items",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "EXISTS ( SELECT 1 FROM public.orders o WHERE o.id = order_items.order_id AND public.user_is_org_member(o.organization_id) )",
+    "src": "supabase/rollbacks/20261114170921_rollback.sql"
    },
    {
     "name": "Users can view own notifications",
@@ -344603,15 +344729,16 @@
    "order_items": {
     "rls": "enabled",
     "SELECT": [
-     "public: (EXISTS ( SELECT 1 FROM \"public\".\"orders\" \"o\" WHERE ((\"o\".\"id\" = \"order_items\".\"order_id\") AND \"public\".\"user_is_org_member\"(\"o\".\"or",
-     "authenticated: EXISTS ( SELECT 1 FROM orders o WHERE o.id = order_items.order_id AND ( o.seller_id = auth.uid() OR o.client_id = auth.uid() "
+     "authenticated: EXISTS ( SELECT 1 FROM orders o WHERE o.id = order_items.order_id AND ( o.seller_id = auth.uid() OR o.client_id = auth.uid() ",
+     "public: EXISTS ( SELECT 1 FROM public.orders o WHERE o.id = order_items.order_id AND public.user_is_org_member(o.organization_id) )"
     ],
     "INSERT": [
-     "authenticated: EXISTS ( SELECT 1 FROM orders o WHERE o.id = order_items.order_id AND ( o.seller_id = auth.uid() OR o.created_by = auth.uid()"
+     "authenticated: EXISTS ( SELECT 1 FROM orders o WHERE o.id = order_items.order_id AND ( o.seller_id = auth.uid() OR o.created_by = auth.uid()",
+     "authenticated: EXISTS ( SELECT 1 FROM public.orders o WHERE o.id = order_items.order_id AND public.user_is_org_member(o.organization_id) )"
     ],
     "UPDATE": [
-     "public: (EXISTS ( SELECT 1 FROM \"public\".\"orders\" \"o\" WHERE ((\"o\".\"id\" = \"order_items\".\"order_id\") AND \"public\".\"user_is_org_member\"(\"o\".\"or",
-     "authenticated: EXISTS ( SELECT 1 FROM orders o WHERE o.id = order_items.order_id AND ( o.seller_id = auth.uid() OR o.organization_id IN (SEL"
+     "authenticated: EXISTS ( SELECT 1 FROM orders o WHERE o.id = order_items.order_id AND ( o.seller_id = auth.uid() OR o.organization_id IN (SEL",
+     "public: EXISTS ( SELECT 1 FROM public.orders o WHERE o.id = order_items.order_id AND public.user_is_org_member(o.organization_id) )"
     ],
     "DELETE": [
      "public: (EXISTS ( SELECT 1 FROM \"public\".\"orders\" \"o\" WHERE ((\"o\".\"id\" = \"order_items\".\"order_id\") AND \"public\".\"is_org_owner_or_admin\"(\"o\".",
@@ -344623,16 +344750,17 @@
     "SELECT": [
      "authenticated: (seller_id = auth.uid())",
      "authenticated: (public.can_view_all_sales() OR (public.has_role(auth.uid(), 'supervisor'::public.app_role) AND ((organization_id IS NULL) OR",
-     "public: \"public\".\"user_is_org_member\"(\"organization_id\")"
+     "public: public.user_is_org_member(organization_id)"
     ],
     "INSERT": [
      "authenticated: (public.can_view_all_sales() OR (seller_id = auth.uid()))",
-     "authenticated: (seller_id = auth.uid())"
+     "authenticated: (seller_id = auth.uid())",
+     "authenticated: public.user_is_org_member(organization_id)"
     ],
     "UPDATE": [
      "authenticated: (seller_id = auth.uid())",
      "authenticated: (public.can_view_all_sales() OR (public.has_role(auth.uid(), 'supervisor'::public.app_role) AND ((organization_id IS NULL) OR",
-     "public: \"public\".\"user_is_org_member\"(\"organization_id\")"
+     "public: public.user_is_org_member(organization_id)"
     ],
     "DELETE": [
      "authenticated: (public.can_view_all_sales() OR (seller_id = auth.uid()))",
@@ -347383,8 +347511,7 @@
     ],
     "INSERT": [
      "public: auth.uid() = user_id",
-     "authenticated: user_id = (SELECT auth.uid())",
-     "authenticated: (SELECT auth.uid()) IS NOT NULL AND user_id IS NOT NULL",
+     "authenticated: auth.uid() IS NOT NULL AND user_id IS NOT NULL",
      "authenticated: user_id = auth.uid()"
     ],
     "UPDATE": [
@@ -348421,7 +348548,9 @@
    "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql",
    "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql",
    "supabase/migrations/20261112140000_fix_rls_supplier_products_raw_history_p2027.sql",
+   "supabase/migrations/20261113225000_sec_revoke_anon_authenticated_net_supabase_functions.sql",
    "supabase/migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql",
+   "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20261022000000_rollback.sql",
@@ -416192,7 +416321,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "path": "scripts/drift-baseline.mjs",
-   "lines": 1250,
+   "lines": 1251,
    "exports": [
     "const BASELINE_DIR",
     "const BASELINE_NAME_RE",
@@ -505355,10 +505484,6 @@
    "lines": 160,
    "uses_service_role": true
   },
-  "supabase/migrations/20261108020000_p09_reconcile_ledger_schema_migrations.sql": {
-   "path": "supabase/migrations/20261108020000_p09_reconcile_ledger_schema_migrations.sql",
-   "lines": 455
-  },
   "supabase/migrations/20261108030000_ft005_cron_scheduled_reports.sql": {
    "path": "supabase/migrations/20261108030000_ft005_cron_scheduled_reports.sql",
    "lines": 39
@@ -505476,6 +505601,11 @@
    "lines": 90,
    "uses_service_role": true
   },
+  "supabase/migrations/20261113225000_sec_revoke_anon_authenticated_net_supabase_functions.sql": {
+   "path": "supabase/migrations/20261113225000_sec_revoke_anon_authenticated_net_supabase_functions.sql",
+   "lines": 82,
+   "uses_service_role": true
+  },
   "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql": {
    "path": "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql",
    "lines": 28,
@@ -505491,6 +505621,21 @@
    "path": "supabase/migrations/20261114003000_fix_unschedule_cron_xbz_image_uploader.sql",
    "lines": 15
   },
+  "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql": {
+   "path": "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql",
+   "lines": 66,
+   "temporal": [
+    "-- O db-apply-migration usa lock_timeout=1s e o CONCURRENTLY espera transações antigas: esta sessão"
+   ]
+  },
+  "supabase/migrations/20261114014500_p09_reconcile_ledger_schema_migrations.sql": {
+   "path": "supabase/migrations/20261114014500_p09_reconcile_ledger_schema_migrations.sql",
+   "lines": 398
+  },
+  "supabase/migrations/20261114031000_fix_user_known_devices_is_trusted.sql": {
+   "path": "supabase/migrations/20261114031000_fix_user_known_devices_is_trusted.sql",
+   "lines": 12
+  },
   "supabase/migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql": {
    "path": "supabase/migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql",
    "lines": 22,
@@ -505498,6 +505643,18 @@
     "ALTER ROLE authenticator SET idle_session_timeout = 0;"
    ],
    "uses_service_role": true
+  },
+  "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql": {
+   "path": "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
+   "lines": 36,
+   "side_effects": [
+    "notify_discount_approval_request"
+   ],
+   "uses_service_role": true
+  },
+  "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql": {
+   "path": "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql",
+   "lines": 132
   },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
@@ -505709,10 +505866,6 @@
    "path": "supabase/rollbacks/20261108001500_rollback.sql",
    "lines": 20
   },
-  "supabase/rollbacks/20261108020000_rollback.sql": {
-   "path": "supabase/rollbacks/20261108020000_rollback.sql",
-   "lines": 441
-  },
   "supabase/rollbacks/20261108030000_rollback.sql": {
    "path": "supabase/rollbacks/20261108030000_rollback.sql",
    "lines": 9
@@ -505813,6 +505966,10 @@
    "path": "supabase/rollbacks/20261112140000_rollback.sql",
    "lines": 43
   },
+  "supabase/rollbacks/20261113225000_rollback.sql": {
+   "path": "supabase/rollbacks/20261113225000_rollback.sql",
+   "lines": 27
+  },
   "supabase/rollbacks/20261113235000_rollback.sql": {
    "path": "supabase/rollbacks/20261113235000_rollback.sql",
    "lines": 2
@@ -505825,9 +505982,29 @@
    "path": "supabase/rollbacks/20261114003000_rollback.sql",
    "lines": 12
   },
+  "supabase/rollbacks/20261114014100_rollback.sql": {
+   "path": "supabase/rollbacks/20261114014100_rollback.sql",
+   "lines": 16
+  },
+  "supabase/rollbacks/20261114014500_rollback.sql": {
+   "path": "supabase/rollbacks/20261114014500_rollback.sql",
+   "lines": 369
+  },
+  "supabase/rollbacks/20261114031000_rollback.sql": {
+   "path": "supabase/rollbacks/20261114031000_rollback.sql",
+   "lines": 24
+  },
   "supabase/rollbacks/20261114040000_rollback.sql": {
    "path": "supabase/rollbacks/20261114040000_rollback.sql",
    "lines": 3
+  },
+  "supabase/rollbacks/20261114170845_rollback.sql": {
+   "path": "supabase/rollbacks/20261114170845_rollback.sql",
+   "lines": 16
+  },
+  "supabase/rollbacks/20261114170921_rollback.sql": {
+   "path": "supabase/rollbacks/20261114170921_rollback.sql",
+   "lines": 57
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -524789,7 +524966,7 @@
   },
   "tests/scripts/drift-baseline.test.mjs": {
    "path": "tests/scripts/drift-baseline.test.mjs",
-   "lines": 1054,
+   "lines": 1072,
    "is_test": true,
    "doc": "Testa scripts/drift-baseline.mjs: montagem da pasta de replay do db-schema-drift-check (baseline + migrations aplicadas depois do dump), filtro de ruído do diff e varredura de segredos do dump.",
    "tests": [
@@ -529332,10 +529509,36 @@
   }
  },
  "git": {
-  "sha": "c9bc67746644c24d04905c64152d6094f283bd9c",
+  "sha": "ee13f748c0cd5c94079094ae0ac6ea811f62c8cd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "ee13f74",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(db): RLS de pedidos e notificações, is_trusted, revoke em net/supabase_functions, ledger P09 e índices de FK (#3618)",
+    "files": [
+     "docs/coordenacao/conflitos-semanticos.md",
+     "scripts/drift-baseline.mjs",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/baseline/20261015140000_ledger_versions.json",
+     "supabase/migrations/20261113225000_sec_revoke_anon_authenticated_net_supabase_functions.sql",
+     "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql",
+     "supabase/migrations/20261114014500_p09_reconcile_ledger_schema_migrations.sql",
+     "supabase/migrations/20261114031000_fix_user_known_devices_is_trusted.sql",
+     "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
+     "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql",
+     "supabase/rollbacks/20261113225000_rollback.sql",
+     "supabase/rollbacks/20261114014100_rollback.sql",
+     "supabase/rollbacks/20261114014500_rollback.sql",
+     "supabase/rollbacks/20261114031000_rollback.sql",
+     "supabase/rollbacks/20261114170845_rollback.sql",
+     "supabase/rollbacks/20261114170921_rollback.sql",
+     "tests/scripts/build-migration-ledger-manifest.test.mjs",
+     "tests/scripts/drift-baseline.test.mjs"
+    ]
+   },
    {
     "sha": "c9bc677",
     "date": "2026-11-14",
@@ -529674,20 +529877,6 @@
      ".security/lint-0029-allowlist.json",
      "docs/security/ALLOWLISTS_MEMORY.md"
     ]
-   },
-   {
-    "sha": "36faf00",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "fix(ci): destrava Gate 1 e testes do main — baseline de refs, import legacy-filters, recibos e reconciliação de migrations (#3507)",
-    "files": [
-     ".migration-refs-baseline.json",
-     "docs/MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json",
-     "docs/coordenacao/conflitos-semanticos.md",
-     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "tests/edge-functions/integration/legacy-filters-escape.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -529704,8 +529893,12 @@
     3
    ],
    [
-    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    3
+    "scripts/drift-baseline.mjs",
+    2
+   ],
+   [
+    "tests/scripts/drift-baseline.test.mjs",
+    2
    ],
    [
     "e2e/flows/forgot-password-flow.spec.ts",
@@ -529732,43 +529925,39 @@
     2
    ],
    [
+    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    2
+   ],
+   [
     "supabase/baseline/20261108000000_cron_jobs.json",
     2
    ],
    [
-    "e2e/admin/stock-search-button.spec.ts",
+    "supabase/baseline/20261015140000_ledger_versions.json",
     1
    ],
    [
-    "e2e/admin/stock-search-race-and-keyboard.spec.ts",
+    "supabase/migrations/20261113225000_sec_revoke_anon_authenticated_net_supabase_functions.sql",
     1
    ],
    [
-    "e2e/catalog-regression.spec.ts",
+    "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql",
     1
    ],
    [
-    "e2e/catalog.spec.ts",
+    "supabase/migrations/20261114014500_p09_reconcile_ledger_schema_migrations.sql",
     1
    ],
    [
-    "e2e/fixtures/stock-rupture-fixture.ts",
+    "supabase/migrations/20261114031000_fix_user_known_devices_is_trusted.sql",
     1
    ],
    [
-    "e2e/flows/supplier-comparison-visual.spec.ts",
+    "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
     1
    ],
    [
-    "e2e/helpers/rupture-horizon.ts",
-    1
-   ],
-   [
-    "e2e/kit-builder.spec.ts",
-    1
-   ],
-   [
-    "e2e/routes/app/stock-rupture-horizon-matrix.spec.ts",
+    "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql",
     1
    ]
   ]

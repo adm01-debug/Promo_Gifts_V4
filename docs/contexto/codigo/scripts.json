@@ -1850,7 +1850,7 @@
   {
    "arquivo": "scripts/drift-baseline.mjs",
    "descricao": "* drift-baseline.mjs — baseline do schema de produção para o drift-check.",
-   "linhas": 1250,
+   "linhas": 1251,
    "env": [
     "SUPABASE_PROJECT_REF"
    ],

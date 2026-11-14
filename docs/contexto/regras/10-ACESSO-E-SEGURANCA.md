@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `c9bc677466` · branch `main` · 2026-11-14 18:50 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `ee13f748c0` · branch `main` · 2026-11-14 19:21 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -255,8 +255,8 @@
 | `optimization_queue_runs` | enabled | — | — | — | — |
 | `order_history` | enabled | — | — | — | — |
 | `order_item_personalizations` | enabled | public: (EXISTS ( SELECT 1 FROM ("public"."order_items" "oi" JOIN "public"."orders" "o" ON (("o"."id" = "oi"."order_id"))) WHERE (("oi"."id" | — | — | — |
-| `order_items` | enabled | public: (EXISTS ( SELECT 1 FROM "public"."orders" "o" WHERE (("o"."id" = "order_items"."order_id") AND "public"."user_is_org_member"("o"."or<br>authenticated: EXISTS ( SELECT 1 FROM orders o WHERE o.id = order_items.order_id AND ( o.seller_id = auth.uid() OR o.client_id = auth.uid()  | authenticated: EXISTS ( SELECT 1 FROM orders o WHERE o.id = order_items.order_id AND ( o.seller_id = auth.uid() OR o.created_by = auth.uid() | public: (EXISTS ( SELECT 1 FROM "public"."orders" "o" WHERE (("o"."id" = "order_items"."order_id") AND "public"."user_is_org_member"("o"."or<br>authenticated: EXISTS ( SELECT 1 FROM orders o WHERE o.id = order_items.order_id AND ( o.seller_id = auth.uid() OR o.organization_id IN (SEL | public: (EXISTS ( SELECT 1 FROM "public"."orders" "o" WHERE (("o"."id" = "order_items"."order_id") AND "public"."is_org_owner_or_admin"("o".<br>authenticated: EXISTS ( SELECT 1 FROM orders o WHERE o.id = order_items.order_id AND ( o.seller_id = auth.uid() OR o.organization_id IN (SEL |
-| `orders` | enabled | authenticated: (seller_id = auth.uid())<br>authenticated: (public.can_view_all_sales() OR (public.has_role(auth.uid(), 'supervisor'::public.app_role) AND ((organization_id IS NULL) OR<br>public: "public"."user_is_org_member"("organization_id") | authenticated: (public.can_view_all_sales() OR (seller_id = auth.uid()))<br>authenticated: (seller_id = auth.uid()) | authenticated: (seller_id = auth.uid())<br>authenticated: (public.can_view_all_sales() OR (public.has_role(auth.uid(), 'supervisor'::public.app_role) AND ((organization_id IS NULL) OR<br>public: "public"."user_is_org_member"("organization_id") | authenticated: (public.can_view_all_sales() OR (seller_id = auth.uid()))<br>authenticated: (seller_id = auth.uid())<br>public: "public"."is_org_owner_or_admin"("organization_id") |
+| `order_items` | enabled | authenticated: EXISTS ( SELECT 1 FROM orders o WHERE o.id = order_items.order_id AND ( o.seller_id = auth.uid() OR o.client_id = auth.uid() <br>public: EXISTS ( SELECT 1 FROM public.orders o WHERE o.id = order_items.order_id AND public.user_is_org_member(o.organization_id) ) | authenticated: EXISTS ( SELECT 1 FROM orders o WHERE o.id = order_items.order_id AND ( o.seller_id = auth.uid() OR o.created_by = auth.uid()<br>authenticated: EXISTS ( SELECT 1 FROM public.orders o WHERE o.id = order_items.order_id AND public.user_is_org_member(o.organization_id) ) | authenticated: EXISTS ( SELECT 1 FROM orders o WHERE o.id = order_items.order_id AND ( o.seller_id = auth.uid() OR o.organization_id IN (SEL<br>public: EXISTS ( SELECT 1 FROM public.orders o WHERE o.id = order_items.order_id AND public.user_is_org_member(o.organization_id) ) | public: (EXISTS ( SELECT 1 FROM "public"."orders" "o" WHERE (("o"."id" = "order_items"."order_id") AND "public"."is_org_owner_or_admin"("o".<br>authenticated: EXISTS ( SELECT 1 FROM orders o WHERE o.id = order_items.order_id AND ( o.seller_id = auth.uid() OR o.organization_id IN (SEL |
+| `orders` | enabled | authenticated: (seller_id = auth.uid())<br>authenticated: (public.can_view_all_sales() OR (public.has_role(auth.uid(), 'supervisor'::public.app_role) AND ((organization_id IS NULL) OR<br>public: public.user_is_org_member(organization_id) | authenticated: (public.can_view_all_sales() OR (seller_id = auth.uid()))<br>authenticated: (seller_id = auth.uid())<br>authenticated: public.user_is_org_member(organization_id) | authenticated: (seller_id = auth.uid())<br>authenticated: (public.can_view_all_sales() OR (public.has_role(auth.uid(), 'supervisor'::public.app_role) AND ((organization_id IS NULL) OR<br>public: public.user_is_org_member(organization_id) | authenticated: (public.can_view_all_sales() OR (seller_id = auth.uid()))<br>authenticated: (seller_id = auth.uid())<br>public: "public"."is_org_owner_or_admin"("organization_id") |
 | `organization_members` | enabled | authenticated: (organization_id IN ( SELECT public.get_user_org_ids(auth.uid()) AS get_user_org_ids)) | authenticated: public.has_org_role(auth.uid(), organization_id, 'owner'::public.org_role)<br>public: has_org_role((select auth.uid()), organization_id, 'owner'::org_role) OR has_org_role((select auth.uid()), organization_id, 'admin': | authenticated: public.has_org_role(auth.uid(), organization_id, 'owner'::public.org_role)<br>public: "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) | authenticated: (public.has_org_role(auth.uid(), organization_id, 'owner'::public.org_role) OR (user_id = auth.uid()))<br>public: "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) |
 | `organizations` | enabled | public: (EXISTS ( SELECT 1 FROM "public"."user_organizations" "uo" WHERE (("uo"."organization_id" = "organizations"."id") AND ("uo"."user_id | — | authenticated: public.has_org_role(auth.uid(), id, 'owner'::public.org_role) | — |
 | `outbound_webhooks` | enabled | public: "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) | public: "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) | public: "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) | public: "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) |
@@ -327,7 +327,7 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
-## Onde o RLS é IGNORADO (service_role) — 821 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 823 arquivo(s)
 
 - `auditoria-supabase/propostas/P01_rls_restrictive_correcao.sql`
 - `auditoria-supabase/propostas/P10_func_new_001_fn_cron_guard_revoke.sql`
@@ -479,7 +479,7 @@
 - `supabase/functions/hash-product-images/index.ts`
 - `supabase/functions/health-check/index.ts`
 - `supabase/functions/load-test/index.ts`
-- … +671 (lista completa em `context.json`)
+- … +673 (lista completa em `context.json`)
 
 ## Funções SQL `SECURITY DEFINER` (rodam com privilégio do dono, ignoram RLS)
 

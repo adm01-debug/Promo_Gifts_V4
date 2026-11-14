@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(db): RLS de pedidos e notificações, is_trusted, revoke em net/supabase_functions, ledger P09 e índices de FK (#3618)",
    "test(e2e): specs de catálogo, estoque, kit, comparador e senha seguem a UI atual (#3617)",
    "fix(security): baseline de policies acompanha stock_notes com initplan (destrava Gate 1.13) (#3616)",
    "docs: auditoria exaustiva de 13 domínios (91 agentes, verificação dupla) (#3611)",
-   "Merge pull request #3608 from adm01-debug/claude/crm-disjuntor-indisponibilidade-261114",
-   "fix(security): crm-db-bridge — erro de esquema não abre o disjuntor"
+   "Merge pull request #3608 from adm01-debug/claude/crm-disjuntor-indisponibilidade-261114"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

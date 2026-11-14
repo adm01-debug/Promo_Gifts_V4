@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c9bc67746644c24d04905c64152d6094f283bd9c",
+  "commit": "ee13f748c0cd5c94079094ae0ac6ea811f62c8cd",
   "branch": "main",
-  "data_commit": "2026-11-14T15:49:35-03:00",
+  "data_commit": "2026-11-14T16:20:04-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ee13f74",
+    "data": "2026-11-14",
+    "assunto": "fix(db): RLS de pedidos e notificações, is_trusted, revoke em net/supabase_functions, ledger P09 e índices de FK (#3618)"
+   },
    {
     "sha": "c9bc677",
     "data": "2026-11-14",
@@ -126,14 +131,9 @@
     "sha": "333fe6e",
     "data": "2026-11-13",
     "assunto": "perf(db): índice para ordenação por created_at no catálogo e VACUUM de tags (#3550)"
-   },
-   {
-    "sha": "73f463f",
-    "data": "2026-11-13",
-    "assunto": "fix(ci): teste de frase banida monta o literal em partes (ci-security-drift do main) (#3541)"
    }
   ],
-  "arquivos_mudados_7d": 2013,
+  "arquivos_mudados_7d": 2025,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 48
+    "mudancas": 49
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -211,11 +211,11 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 27
+    "mudancas": 26
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 19
+    "mudancas": 18
    },
    {
     "arquivo": "analise-prs/progresso.json",
@@ -282,6 +282,10 @@
     "mudancas": 7
    },
    {
+    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
+    "mudancas": 7
+   },
+   {
     "arquivo": "docs/prod-readiness.md",
     "mudancas": 7
    },
@@ -291,10 +295,6 @@
    },
    {
     "arquivo": "scripts/validate-quotes-list.mjs",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
     "mudancas": 7
    }
   ],
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10137,
+  "arquivos_total": 10147,
   "arquivos_codigo": 5212,
-  "linhas_codigo": 996047,
+  "linhas_codigo": 996066,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -334,7 +334,7 @@
   "hooks": 614,
   "edge_functions": 111,
   "tabelas": 545,
-  "migrations": 3079,
+  "migrations": 3084,
   "cron_jobs": 122,
   "testes": 2450,
   "workflows": 98,
@@ -1492,7 +1492,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 1250
+   "linhas": 1251
   },
   "scripts/dry-run-migration-draft.mjs": {
    "arquivos": 1,
@@ -2140,7 +2140,7 @@
   },
   "tests/scripts": {
    "arquivos": 176,
-   "linhas": 27604
+   "linhas": 27622
   },
   "tests/search": {
    "arquivos": 1,
@@ -2286,7 +2286,7 @@
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",
-   "linhas": 1250
+   "linhas": 1251
   },
   {
    "arquivo": "src/pages/products/SellerCartsPage.tsx",
@@ -2610,7 +2610,7 @@
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",
-   "linha": 600,
+   "linha": 601,
    "tipo": "TODO",
    "texto": "objeto (ex.: `.*`, `^create table`, `public`)."
   },

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `c9bc677466` · branch `main` · 2026-11-14 18:50 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `ee13f748c0` · branch `main` · 2026-11-14 19:21 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -452,11 +452,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `notification_templates` | notification_templates_update | UPDATE | public | permissive | `false` |  |
 | `order_item_personalizations` | order_item_p_select_scope | SELECT | public | permissive | `(EXISTS ( SELECT 1 FROM ("public"."order_items" "oi" JOIN "public"."orders" "o" ON (("o"."id" = "oi"."order_id"))) WHERE (("oi"."id" = "order_item_personalizations"."order_item_id") AND (("o"."seller_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."can_view_all_sales"()))))` |  |
 | `order_items` | order_items_delete | DELETE | public | permissive | `(EXISTS ( SELECT 1 FROM "public"."orders" "o" WHERE (("o"."id" = "order_items"."order_id") AND "public"."is_org_owner_or_admin"("o"."organization_id"))))` |  |
-| `order_items` | order_items_select | SELECT | public | permissive | `(EXISTS ( SELECT 1 FROM "public"."orders" "o" WHERE (("o"."id" = "order_items"."order_id") AND "public"."user_is_org_member"("o"."organization_id"))))` |  |
-| `order_items` | order_items_update | UPDATE | public | permissive | `(EXISTS ( SELECT 1 FROM "public"."orders" "o" WHERE (("o"."id" = "order_items"."order_id") AND "public"."user_is_org_member"("o"."organization_id"))))` | `(EXISTS ( SELECT 1 FROM "public"."orders" "o" WHERE (("o"."id" = "order_items"."order_id") AND "public"."user_is_org_member"("o"."organization_id"))))` |
 | `orders` | orders_delete | DELETE | public | permissive | `"public"."is_org_owner_or_admin"("organization_id")` |  |
-| `orders` | orders_select | SELECT | public | permissive | `"public"."user_is_org_member"("organization_id")` |  |
-| `orders` | orders_update | UPDATE | public | permissive | `"public"."user_is_org_member"("organization_id")` | `"public"."user_is_org_member"("organization_id")` |
 | `organization_members` | org_members_admin_delete | DELETE | public | permissive | `"public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |  |
 | `organization_members` | org_members_admin_update | UPDATE | public | permissive | `"public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` | `"public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |
 | `organizations` | org_select_members | SELECT | public | permissive | `(EXISTS ( SELECT 1 FROM "public"."user_organizations" "uo" WHERE (("uo"."organization_id" = "organizations"."id") AND ("uo"."user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")))))` |  |
@@ -503,7 +499,11 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `paper_rulings` | ref_select_public | SELECT | public | permissive | `true` |  |
 | `paper_weights` | ref_select_public | SELECT | public | permissive | `true` |  |
 | `product_notebook_features` | ref_select_public | SELECT | public | permissive | `true` |  |
-| … +496 linhas — lista completa em `context.json` | | | | | | |
+| `product_notebook_specs` | ref_select_public | SELECT | public | permissive | `true` |  |
+| `user_token_revocations` | revocations_supervisor_delete | DELETE | public | permissive | `"public"."is_supervisor_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |  |
+| `user_token_revocations` | revocations_supervisor_insert | INSERT | public | permissive |  | `"public"."is_supervisor_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |
+| `saved_filters` | saved_filters_delete | DELETE | public | permissive | `(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")` |  |
+| … +497 linhas — lista completa em `context.json` | | | | | | |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 
@@ -5857,7 +5857,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientOrdersHistory.ts` |
 | `staleTime: 10 * 60 * 1000,` | `src/hooks/bi/useClientSeasonality.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientVsIndustry.ts` |
-| … +380 linhas — lista completa em `context.json` | |
+| … +381 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -6928,6 +6928,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `notify` | `supabase/migrations/20260626152810_harden_discount_approval_requests_grants.sql` |
 | `notify` | `supabase/migrations/20260627130450_reconcile_unarchive_7_live_tables_faxina20260620.sql` |
 | `notify` | `supabase/migrations/20260710113150_fn_notify_champions_on_quote_status.sql` |
+| `notify_discount_approval_request` | `supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql` |
 | `invoke(` | `tests/hooks/_helpers/mock-supabase-builder.ts` |
 
 ## N. Regras citadas em comentários do código
