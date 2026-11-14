@@ -221323,6 +221323,42 @@
       {
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.order_items.order_items_insert",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.order_items.order_items_select",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.order_items.order_items_update",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.orders.orders_insert",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.orders.orders_select",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.orders.orders_update",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
         "object": "storage.objects.Users can upload their own mockup assets",
         "severity": "BAIXA"
       },
@@ -238358,6 +238394,18 @@
         "statements": 1,
         "statements_sha": "fdc507d1eb24e555",
         "version": "20261114040000"
+      },
+      {
+        "name": "fix_workspace_notifications_insert_policy_reapply",
+        "statements": 3,
+        "statements_sha": "294891f8358edf64",
+        "version": "20261114170845"
+      },
+      {
+        "name": "fix_rls_orders_order_items_seller_scope",
+        "statements": 12,
+        "statements_sha": "d56a64997fb72d9b",
+        "version": "20261114170921"
       }
     ],
     "policies": [
@@ -250251,7 +250299,7 @@
       },
       {
         "cmd": "INSERT",
-        "name": "Authenticated can insert notifications for valid users",
+        "name": "Authenticated can insert own notifications",
         "permissive": "PERMISSIVE",
         "roles": [
           "authenticated"
@@ -250259,7 +250307,7 @@
         "schema": "public",
         "table": "workspace_notifications",
         "using": null,
-        "with_check": "((( SELECT ( SELECT auth.uid() AS uid) AS uid) IS NOT NULL) AND (user_id IS NOT NULL))"
+        "with_check": "(user_id = ( SELECT auth.uid() AS uid))"
       },
       {
         "cmd": "DELETE",

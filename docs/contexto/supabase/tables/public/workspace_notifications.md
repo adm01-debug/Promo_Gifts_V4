@@ -51,7 +51,7 @@
 
 ## Policies (RLS)
 
-### `Authenticated can insert notifications for valid users`
+### `Authenticated can insert own notifications`
 
 | campo | valor |
 |---|---|
@@ -59,7 +59,7 @@
 | tipo | PERMISSIVE |
 | roles | authenticated |
 | USING |  |
-| WITH CHECK | `((( SELECT ( SELECT auth.uid() AS uid) AS uid) IS NOT NULL) AND (user_id IS NOT NULL))` |
+| WITH CHECK | `(user_id = ( SELECT auth.uid() AS uid))` |
 
 ### `Users can delete own notifications`
 

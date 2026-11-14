@@ -2,6 +2,13 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-14 22:18 UTC
+
+- **lints** adicionado (6): `policy_auth_fn_not_wrapped:public.order_items.order_items_insert`, `policy_auth_fn_not_wrapped:public.order_items.order_items_select`, `policy_auth_fn_not_wrapped:public.order_items.order_items_update`, `policy_auth_fn_not_wrapped:public.orders.orders_insert`, `policy_auth_fn_not_wrapped:public.orders.orders_select`, `policy_auth_fn_not_wrapped:public.orders.orders_update`
+- **migrations** adicionado (2): `20261114170845_fix_workspace_notifications_insert_policy_reapply`, `20261114170921_fix_rls_orders_order_items_seller_scope`
+- **policies (RLS)** adicionado (1): `public.workspace_notifications.Authenticated can insert own notifications`
+- **policies (RLS)** removido (1): `public.workspace_notifications.Authenticated can insert notifications for valid users`
+
 ## 2026-11-14 20:13 UTC
 
 - **colunas** adicionado (1): `public.user_known_devices.is_trusted`

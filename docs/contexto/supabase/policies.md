@@ -992,7 +992,7 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.webhook_dispatcher_log | Admins podem ler dispatcher_log | SELECT | PERMISSIVE | authenticated | `(EXISTS ( SELECT 1    FROM profiles   WHERE ((profiles.id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) AND (profiles.role = 'admin'::text))))` |  |
 | public.webhook_outbox | webhook_outbox_service_only | ALL | PERMISSIVE | authenticated | `false` |  |
 | public.webhook_request_nonces | service_role_manage_webhook_request_nonces | ALL | PERMISSIVE | service_role | `true` | `true` |
-| public.workspace_notifications | Authenticated can insert notifications for valid users | INSERT | PERMISSIVE | authenticated |  | `((( SELECT ( SELECT auth.uid() AS uid) AS uid) IS NOT NULL) AND (user_id IS NOT NULL))` |
+| public.workspace_notifications | Authenticated can insert own notifications | INSERT | PERMISSIVE | authenticated |  | `(user_id = ( SELECT auth.uid() AS uid))` |
 | public.workspace_notifications | Users can delete own notifications | DELETE | PERMISSIVE | authenticated | `(user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))` |  |
 | public.workspace_notifications | Users can read own notifications | SELECT | PERMISSIVE | authenticated | `(user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))` |  |
 | public.workspace_notifications | Users can update own notifications | UPDATE | PERMISSIVE | authenticated | `(user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))` | `(user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))` |

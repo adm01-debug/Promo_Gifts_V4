@@ -16,6 +16,12 @@ Verificações objetivas feitas no catálogo. Um agente deve ler isto antes de p
 | ALTA | view_security_definer | public.vw_system_health_quick | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | BAIXA | extension_in_public | pg_repack | Extensão instalada no schema public (recomendado: schema extensions). |
 | BAIXA | extension_in_public | pgstattuple | Extensão instalada no schema public (recomendado: schema extensions). |
+| BAIXA | policy_auth_fn_not_wrapped | public.order_items.order_items_insert | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
+| BAIXA | policy_auth_fn_not_wrapped | public.order_items.order_items_select | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
+| BAIXA | policy_auth_fn_not_wrapped | public.order_items.order_items_update | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
+| BAIXA | policy_auth_fn_not_wrapped | public.orders.orders_insert | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
+| BAIXA | policy_auth_fn_not_wrapped | public.orders.orders_select | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
+| BAIXA | policy_auth_fn_not_wrapped | public.orders.orders_update | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
 | BAIXA | policy_auth_fn_not_wrapped | storage.objects.Users can upload their own mockup assets | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
 | INFO | rpc_anon_executable | public.check_login_rate_limit(_email text, _ip text) | SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública). |
 | INFO | rpc_anon_executable | public.fn_global_search(p_term text, p_limit integer, p_types text[]) | SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública). |
