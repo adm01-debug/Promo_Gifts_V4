@@ -1485,6 +1485,24 @@ A migration zera só o do `authenticator`. Ainda não está no ledger; aplicaç�
 |---|---|---|---|
 | `20261114040000` | `fix_authenticator_idle_session_timeout_pgrst_listener` | `f34df73857031d37795afbd5519604c3e1604657fb5141eefddb7bcdb677e5bb` | pendente — aplicação só por `db-apply-migration.yml` após o merge |
 
+## 2026-11-14 — P0 (auditoria QA): RLS de `orders`/`order_items` sem escopo por vendedor
+
+Confirmado ao vivo via MCP Supabase (`pg_policies`, schema `public`, projeto `doufsxqlfjyuvxuezpln`): as
+policies `orders_select`, `orders_insert`, `orders_update`, `order_items_select`, `order_items_update`
+checam só `user_is_org_member(organization_id)` — qualquer vendedor autenticado da org lê/edita pedidos,
+faturamento e histórico de clientes de outros vendedores. `docs/security/RLS_MATRIX.md:92-116` exige DENY
+para vendedor terceiro. Nenhuma migration no repo cria essas 5 policies com esse nome (regressão sem
+rastro, mesma classe de `docs/agentes/banco-migrations.md` REGRA #8); a migration
+`20260426125603_b96b3daf-...sql` (linhas 124-257) tinha o padrão correto em policies `*_scope` que foram
+substituídas depois (cadeia `order_items_select_v2..v7`, 2026-05-26) sem nunca recriar o escopo por
+`seller_id` nas 5 vivas hoje. A migration reaplica esse padrão (`can_view_all_sales()` OR
+supervisor-na-org OR `seller_id = auth.uid()`) nas mesmas 5 policies, sem renomear.
+[AUTORIZAÇÃO BD]: aprovado pelo dono no chat desta sessão em 2026-11-14.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114170921` | `fix_rls_orders_order_items_seller_scope` | `024b841c5c98e71c2e0a8d958de49e8af7015b7db086fe658ead482d72a73922` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (já citada acima) e `db-apply-migration.yml`; PR fica aberta (Git #7 — DDL em produção) |
+
 ## 2026-11-13 — CRON-003: proposta de reagendamento noturno dos crons pesados de fornecedores
 
 Consulta read-only em produção (2026-11-13 23:5xZ, `cron.job` + `cron.job_run_details` 24 h): 137 jobs ativos,
