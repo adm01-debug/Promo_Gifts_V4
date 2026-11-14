@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cf64ee7ec533bbce64e947734730534cf709216a` (2026-11-14T17:50:05-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `23cfcc137974386c4cf35db9596faa489a208fcf` (2026-11-14T18:04:38-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4768), SQL (3399), Markdown (1022), JavaScript (443), JSON (126), YAML (111), Shell (27), HTML (20)
+- linguagens: TypeScript (4770), SQL (3399), Markdown (1022), JavaScript (443), JSON (126), YAML (111), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10161 |
-| arquivos_codigo | 5219 |
-| linhas_codigo | 996606 |
+| arquivos_total | 10163 |
+| arquivos_codigo | 5221 |
+| linhas_codigo | 996721 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 545 |
 | migrations | 3084 |
 | cron_jobs | 122 |
-| testes | 2458 |
+| testes | 2459 |
 | workflows | 98 |
 | scripts | 272 |
 | docs_md | 1022 |
@@ -57,8 +57,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - telas: src/pages (111), src/components (3), api/health.ts (1)
 - componentes: src/components (931), src/pages (176), recovery/src-legacy (100)
 - hooks: src/hooks (291), recovery/src-legacy (196), src/components (75)
-- servicos_logica: src/lib (222), src/utils (30), src/services (9)
-- testes: tests/ (1001), co-localizado (__tests__) (636), e2e/ (627)
+- servicos_logica: src/lib (223), src/utils (30), src/services (9)
+- testes: tests/ (1002), co-localizado (__tests__) (636), e2e/ (627)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/lib (7), scripts/graphify (4), scripts/inventario (4)
@@ -130,7 +130,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | lib/access | 0 | 0 | 6 | 3 | 0 | 3 |
 | lib/auth | 0 | 0 | 19 | 12 | 0 | 5 |
 | lib/bi | 0 | 0 | 7 | 9 | 0 | 2 |
-| lib/external-db | 0 | 0 | 21 | 44 | 0 | 6 |
+| lib/external-db | 0 | 0 | 22 | 44 | 0 | 6 |
 | lib/inventory | 0 | 0 | 10 | 0 | 0 | 0 |
 | lib/kit-builder | 0 | 0 | 10 | 0 | 0 | 0 |
 | lib/personalization | 0 | 0 | 19 | 44 | 0 | 5 |
@@ -589,14 +589,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43324 nós · 74786 arestas · 2448 comunidades · grafo do commit `cf64ee7e`
-- comunidades maiores: ref_components (826), ref_integrations (652), vitest (587), ref_node_child_process (486), react-router-dom (401), @tanstack/react-query (394), ref_hooks (392), @testing-library/react (361), ref_types (327), scripts (302), sonner (288), gotoAndSettle (285)
+- 43328 nós · 74802 arestas · 2411 comunidades · grafo do commit `23cfcc13`
+- comunidades maiores: vitest (841), react (735), lucide-react (530), ref_node_child_process (494), ref_integrations (454), @tanstack/react-query (399), react-router-dom (352), nav.ts (345), ref_components (335), ref_hooks (329), ref_types (324), scripts (302)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - RELATORIO_CI.md (64)
-- PENDENCIAS.md (54)
+- PENDENCIAS.md (53)
 - supabase/MIGRATIONS_SYNC_LOG.md (51)
 - package.json (30)
 - package-lock.json (21)
@@ -1184,21 +1184,21 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-14 `23cfcc13` fix(pdp): aborta de verdade a consulta do produto ao estourar o limite de 15 s (#3622)
+- 2026-11-14 `a47e0824` Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945
 - 2026-11-14 `cf64ee7e` perf(catalog): primeiro carregamento com 1 consulta em vez de 4, mantendo 500 produtos na tela (#3621)
+- 2026-11-14 `87653797` Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945
 - 2026-11-14 `5eae42bb` fix(migrations): destrava o CI — recibo das versões reconciliadas e correções no plano de workflows (#3629)
 - 2026-11-14 `7b327f93` docs(faxina): registra no repositório as provas da limpeza de 14/11 (#3623)
+- 2026-11-14 `a63a77b0` Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945
 - 2026-11-14 `4bb99641` infra(ci): db-apply-migration aplica migration sem gate de aprovação (#3620)
+- 2026-11-14 `38b77c67` fix(pdp): aborta de verdade a consulta do produto ao estourar o limite de 15s
 - 2026-11-14 `778dbf5a` Merge pull request #3619 from adm01-debug/claude/trem2-front-limpeza-261114-1850
 - 2026-11-14 `74ba1998` Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850
 - 2026-11-14 `ee13f748` fix(db): RLS de pedidos e notificações, is_trusted, revoke em net/supabase_functions, ledger P09 e índices de FK (#3618)
 - 2026-11-14 `a43a3127` docs(coordenacao): ledger E188 dos 11 merges do trem de front e limpeza
 - 2026-11-14 `ec6088c4` Merge remote-tracking branch 'origin/claude/fix-route-scroll-reset-query-replace-261114-0005' into claude/trem2-front-li
 - 2026-11-14 `930e3c0f` Merge remote-tracking branch 'origin/claude/fix-ux-auditoria-link-botao-morto-261113-2338' into claude/trem2-front-limpe
-- 2026-11-14 `ce4099ec` Merge remote-tracking branch 'origin/claude/fix-busca-teclado-supersede-3535-261114-0045' into claude/trem2-front-limpez
-- 2026-11-14 `e34f424a` Merge remote-tracking branch 'origin/claude/fix-simulador-colunas-crm-supersede-3534-261114-0212' into claude/trem2-fron
-- 2026-11-14 `a3964b2b` Merge remote-tracking branch 'origin/claude/fix-csp-vaul-trava-rolagem-supersede-3531-261114-0208' into claude/trem2-fro
-- 2026-11-14 `d83a3137` Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850
-- 2026-11-14 `c9bc6774` test(e2e): specs de catálogo, estoque, kit, comparador e senha seguem a UI atual (#3617)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

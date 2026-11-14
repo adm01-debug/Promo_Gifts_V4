@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 293,
+ "total": 294,
  "por_camada": {
   "api": 3,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 222,
+  "lib": 223,
   "python": 9,
   "services": 9,
   "stores": 8,
@@ -2484,7 +2484,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 78,
+   "usado_por": 79,
    "usado_por_modulos": [
     "components/admin",
     "components/expert",
@@ -3239,12 +3239,35 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 4,
+   "usado_por": 5,
    "usado_por_modulos": [
     "hooks/products",
     "lib/external-db"
    ],
    "coberto_por_testes": 2,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/external-db/products-detail-retry.ts",
+   "camada": "lib",
+   "exports": [
+    "fetchProductWithRetry"
+   ],
+   "export_default": null,
+   "linhas": 70,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "lib/external-db"
+   ],
+   "coberto_por_testes": 0,
    "orfao": false
   },
   {
@@ -3257,7 +3280,7 @@
     "fetchPromobrindProductBySku"
    ],
    "export_default": null,
-   "linhas": 687,
+   "linhas": 643,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -3271,7 +3294,7 @@
     "hooks/products",
     "lib/external-db"
    ],
-   "coberto_por_testes": 0,
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {

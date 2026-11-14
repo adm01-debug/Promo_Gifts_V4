@@ -11047,7 +11047,7 @@
     "useProducts",
     "useRelatedProducts"
    ],
-   "linhas": 133,
+   "linhas": 138,
    "dominio": "hooks/products",
    "tabelas": [],
    "rpcs": [],

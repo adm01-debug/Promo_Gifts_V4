@@ -2,15 +2,30 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "cf64ee7ec533bbce64e947734730534cf709216a",
+  "commit": "23cfcc137974386c4cf35db9596faa489a208fcf",
   "branch": "main",
-  "data_commit": "2026-11-14T17:50:05-03:00",
+  "data_commit": "2026-11-14T18:04:38-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "23cfcc13",
+    "data": "2026-11-14",
+    "assunto": "fix(pdp): aborta de verdade a consulta do produto ao estourar o limite de 15 s (#3622)"
+   },
+   {
+    "sha": "a47e0824",
+    "data": "2026-11-14",
+    "assunto": "Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945"
+   },
    {
     "sha": "cf64ee7e",
     "data": "2026-11-14",
     "assunto": "perf(catalog): primeiro carregamento com 1 consulta em vez de 4, mantendo 500 produtos na tela (#3621)"
+   },
+   {
+    "sha": "87653797",
+    "data": "2026-11-14",
+    "assunto": "Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945"
    },
    {
     "sha": "5eae42bb",
@@ -23,9 +38,19 @@
     "assunto": "docs(faxina): registra no repositório as provas da limpeza de 14/11 (#3623)"
    },
    {
+    "sha": "a63a77b0",
+    "data": "2026-11-14",
+    "assunto": "Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945"
+   },
+   {
     "sha": "4bb99641",
     "data": "2026-11-14",
     "assunto": "infra(ci): db-apply-migration aplica migration sem gate de aprovação (#3620)"
+   },
+   {
+    "sha": "38b77c67",
+    "data": "2026-11-14",
+    "assunto": "fix(pdp): aborta de verdade a consulta do produto ao estourar o limite de 15s"
    },
    {
     "sha": "778dbf5a",
@@ -106,34 +131,9 @@
     "sha": "e0d98265",
     "data": "2026-11-14",
     "assunto": "Merge remote-tracking branch 'origin/claude/chore-framer-motion-14-11-1-supersede-3523-261114-0215' into claude/trem2-fr"
-   },
-   {
-    "sha": "bc33f333",
-    "data": "2026-11-14",
-    "assunto": "Merge remote-tracking branch 'origin/claude/chore-reforco-testes-mutantes-supersede-3516-261114-0219' into claude/trem2-"
-   },
-   {
-    "sha": "ab0817a6",
-    "data": "2026-11-14",
-    "assunto": "fix(security): baseline de policies acompanha stock_notes com initplan (destrava Gate 1.13) (#3616)"
-   },
-   {
-    "sha": "6ef19fd5",
-    "data": "2026-11-14",
-    "assunto": "docs: auditoria exaustiva de 13 domínios (91 agentes, verificação dupla) (#3611)"
-   },
-   {
-    "sha": "584e1a3a",
-    "data": "2026-11-14",
-    "assunto": "Merge pull request #3608 from adm01-debug/claude/crm-disjuntor-indisponibilidade-261114"
-   },
-   {
-    "sha": "0f0cf4c7",
-    "data": "2026-11-14",
-    "assunto": "fix(security): CSP libera o <style> do vaul e a trava de rolagem do Radix (supersede #3531 #3532)"
    }
   ],
-  "arquivos_mudados_7d": 2071,
+  "arquivos_mudados_7d": 2075,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 223
+    "mudancas": 228
    },
    {
     "pasta": "src/components/quotes",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 54
+    "mudancas": 53
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 462
+    "commits": 461
    },
    {
     "autor": "Claude",
-    "commits": 99
+    "commits": 109
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10161,
-  "arquivos_codigo": 5219,
-  "linhas_codigo": 996606,
+  "arquivos_total": 10163,
+  "arquivos_codigo": 5221,
+  "linhas_codigo": 996721,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 545,
   "migrations": 3084,
   "cron_jobs": 122,
-  "testes": 2458,
+  "testes": 2459,
   "workflows": 98,
   "scripts": 272,
   "docs_md": 1022
@@ -1908,15 +1908,15 @@
   },
   "src/hooks": {
    "arquivos": 455,
-   "linhas": 85745
+   "linhas": 85750
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66208
   },
   "src/lib": {
-   "arquivos": 326,
-   "linhas": 50280
+   "arquivos": 327,
+   "linhas": 50306
   },
   "src/logic": {
    "arquivos": 4,
@@ -2080,7 +2080,7 @@
   },
   "tests/hooks": {
    "arquivos": 129,
-   "linhas": 17465
+   "linhas": 17494
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2091,8 +2091,8 @@
    "linhas": 42
   },
   "tests/lib": {
-   "arquivos": 63,
-   "linhas": 9217
+   "arquivos": 64,
+   "linhas": 9272
   },
   "tests/magazine": {
    "arquivos": 18,

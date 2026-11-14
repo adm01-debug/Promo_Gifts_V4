@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2458,
+ "total": 2459,
  "por_tipo": {
   "contrato": 65,
   "e2e": 679,
   "pytest": 4,
   "qa": 17,
-  "unit": 1693
+  "unit": 1694
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1001
+   "arquivos": 1002
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -16667,12 +16667,12 @@
   {
    "arquivo": "tests/hooks/useProduct-timeout-prefetch.test.tsx",
    "tipo": "unit",
-   "linhas": 130,
+   "linhas": 159,
    "testa": [
     "src/hooks/products/usePrefetchProduct.ts",
     "src/hooks/products/useProducts.ts"
    ],
-   "casos": 6
+   "casos": 8
   },
   {
    "arquivo": "tests/hooks/useProductAnalytics.test.tsx",
@@ -17687,6 +17687,15 @@
     "src/lib/external-db/product-types.ts"
    ],
    "casos": 14
+  },
+  {
+   "arquivo": "tests/lib/products-detail-abort.test.ts",
+   "tipo": "unit",
+   "linhas": 55,
+   "testa": [
+    "src/lib/external-db/products-detail.ts"
+   ],
+   "casos": 1
   },
   {
    "arquivo": "tests/lib/query-config-extended.test.ts",
@@ -21256,6 +21265,7 @@
   "src/lib/external-db/kit-coverage.ts": 2,
   "src/lib/external-db/price-tables.ts": 1,
   "src/lib/external-db/product-types.ts": 2,
+  "src/lib/external-db/products-detail.ts": 1,
   "src/lib/external-db/products-lightweight.ts": 1,
   "src/lib/external-db/products.ts": 1,
   "src/lib/external-db/rest-native.ts": 3,

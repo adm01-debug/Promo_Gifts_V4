@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `cf64ee7ec5` · branch `main` · 2026-11-14 20:51 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `23cfcc1379` · branch `main` · 2026-11-14 21:06 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6459,7 +6459,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21148 testes em 2136 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21152 testes em 2137 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6763,7 +6763,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/product-webhook.test.ts` | 18 | product-webhook · evento product.created · retorna 200 para evento product.created válido · evento product.updated … |
 | `tests/hooks/useGlobalSearch-voice.test.ts` | 18 | Voice Action Handler Logic · navigate action · should extract route from navigate action · should handle navigate without route gracefully … |
 | `tests/lib/product-types.test.ts` | 18 | getProductImageUrl · should prefer primary_image_url · should fallback to image_url · should fallback to first image in images array … |
-| … +1836 linhas — lista completa em `context.json` | | |
+| … +1837 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7231,4 +7231,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Laser detection — must come before UV check since "Laser UV" exists | `src/components/mockup/techniqueColorUtils.ts` |
 | a caixa cheia é um limite superior: a bbox nunca subestima a marca girada e um | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
 | * Filtro de técnica EFETIVO — o mesmo que a prévia aplica. Decide se há regra. */ | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
-| … +1256 linhas — lista completa em `context.json` | |
+| … +1257 linhas — lista completa em `context.json` | |

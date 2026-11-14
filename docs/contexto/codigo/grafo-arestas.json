@@ -11681,13 +11681,18 @@
   "src/lib/external-db/product-types.ts": [
    "src/lib/to-error-message.ts"
   ],
+  "src/lib/external-db/products-detail-retry.ts": [
+   "src/lib/db/postgrest.ts",
+   "src/lib/external-db/product-types.ts",
+   "src/lib/to-error-message.ts"
+  ],
   "src/lib/external-db/products-detail.ts": [
    "src/lib/db/postgrest.ts",
    "src/lib/external-db/immutableCache.ts",
    "src/lib/external-db/kit-coverage.ts",
    "src/lib/external-db/product-types.ts",
+   "src/lib/external-db/products-detail-retry.ts",
    "src/lib/logger.ts",
-   "src/lib/to-error-message.ts",
    "src/utils/image-utils.ts"
   ],
   "src/lib/external-db/products-lightweight.ts": [
