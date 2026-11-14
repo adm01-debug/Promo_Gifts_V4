@@ -1428,3 +1428,15 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261112140000` | `fix_rls_supplier_products_raw_history_p2027` | `6aa856168cc1ef0e6308757fe01b04f4917f043170ff3ce996e0933a52575b9f` | **aplicada em 13/11/2026** pelo `db-apply-migration.yml` (run 43471685129; recibo E15 acima) |
+
+## 2026-11-14 — Índices de FK em estoque e índices de desempenho ausentes (supersede #3412)
+
+11 índices que faltam em produção (verificado em `pg_indexes` em 2026-11-14): 3 FKs `ON DELETE CASCADE` de
+`stock_snapshots`, 2 FKs de `stock_notes` e 6 índices de migrations antigas que nunca foram aplicadas.
+`CREATE INDEX CONCURRENTLY`, `transaction: none`. Substitui a `20261112014000` da PR #3412 (nunca aplicada): saíram
+`idx_stock_snapshots_supplier_id` e `idx_stock_snapshots_supplier_branch_id`, que a PERF-002 (`20261101194200`) apagou
+por `idx_scan=0` (FKs `NO ACTION` para tabelas de 5 e 7 linhas).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114014100` | `idx_fk_stock_and_missing_perf_indexes` | `0f830788f47f837018607f20ad859c49b41c6ab2757469b11a1366f5d2ff7177` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono no chat em 2026-11-14) |
