@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "06c262e143ef546a3b31e3bd924b0e55c3296c3c",
+  "sha": "7aa82a59199f568b681bbbabcad4bc02e3be69e6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 13:22 UTC",
+  "generated_at": "2026-11-14 14:00 UTC",
   "files_total": 10065,
   "code_files": 8601,
   "code_lines": 1213537
@@ -529292,10 +529292,20 @@
   }
  },
  "git": {
-  "sha": "06c262e143ef546a3b31e3bd924b0e55c3296c3c",
+  "sha": "7aa82a59199f568b681bbbabcad4bc02e3be69e6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7aa82a5",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "docs(migrations): recibos E15 das 10 migrations da #3584 (supersede #3590–#3599) (#3602)",
+    "files": [
+     ".security/policies-baseline.json",
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "06c262e",
     "date": "2026-11-14",
@@ -529625,71 +529635,12 @@
      "supabase/functions/ai-recommendations/index.ts",
      "supabase/functions/bi-copilot/index.ts"
     ]
-   },
-   {
-    "sha": "8404c43",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "fix: lote de correções da auditoria de prontidão (catálogo, produto, busca, BI, categorias, e2e, edge) (#3463)",
-    "files": [
-     ".as-assertions-baseline.json",
-     ".file-size-baseline.json",
-     "e2e/fixtures/selectors.ts",
-     "e2e/flows/90-personalization-pdp-flow.spec.ts",
-     "e2e/flows/91-personalization-variant-flow.spec.ts",
-     "e2e/mockup-generate.spec.ts",
-     "e2e/quotes/color-required.spec.ts",
-     "e2e/routes/app/replenishment-grid-visual.spec.ts",
-     "src/components/admin/categories-manager/CategoriesManager.tsx",
-     "src/components/admin/categories-manager/__tests__/CategoriesManager.test.tsx",
-     "src/components/admin/categories-manager/categoryMutations.ts",
-     "src/components/admin/categories-manager/index.ts",
-     "src/components/bi/ClientOverview360.tsx",
-     "src/components/bi/__tests__/ClientOverview360.refetch.test.tsx",
-     "src/components/bi/__tests__/ClientOverview360.test.tsx",
-     "src/components/compare/SupplierComparisonModal.tsx",
-     "src/components/compare/__tests__/SupplierComparisonModal.test.tsx",
-     "src/components/kit-builder/KitHealthCard.tsx",
-     "src/components/layout/sidebar/RestrictedRouteNotice.tsx",
-     "src/components/layout/sidebar/__tests__/RestrictedRouteNotice.request-access.test.tsx",
-     "src/components/products/InlinePriceCalculator.tsx",
-     "src/components/products/ProductCardActions.tsx",
-     "src/components/products/ProductQuickActions.tsx",
-     "src/components/products/__tests__/ProductCardActions.pointer.test.tsx",
-     "src/components/products/inline-price/QuantityCalculator.tsx",
-     "src/components/products/inline-price/__tests__/QuantityCalculator.addToQuote.test.tsx",
-     "src/hooks/bi/__tests__/useClientBI.test.ts",
-     "src/hooks/bi/useClientBI.ts",
-     "src/hooks/common/useSearch.ts",
-     "src/lib/kit-builder/__tests__/dead-code.test.ts",
-     "src/lib/kit-builder/index.ts",
-     "src/lib/kit-builder/mock-data.ts",
-     "src/pages/admin/AdminCadastrosPage.tsx",
-     "src/pages/products/ProductDetail.tsx",
-     "src/pages/products/product-detail/ProductDetailHero.tsx",
-     "src/tests/B2BProductDetailFlow.test.tsx",
-     "supabase/functions/external-db-bridge/applyFiltersAndSwap.integration.test.ts",
-     "supabase/functions/external-db-bridge/callerSelectIsHeavy.test.ts",
-     "supabase/functions/external-db-bridge/resolveProductsSelect.test.ts",
-     "supabase/functions/external-db-bridge/wideSelectThreshold.test.ts",
-     "supabase/functions/mcp-server/index.ts",
-     "supabase/functions/tests/external-db-bridge/legacy-contracts.ts",
-     "supabase/functions/tests/external-db-bridge/legacy-filters.ts",
-     "supabase/functions/tests/external-db-bridge/legacy-select.ts",
-     "tests/components/products/ProductCard.test.tsx",
-     "tests/edge-functions/mcp-server.audit-user-id.test.ts",
-     "tests/edge-functions/repo-only-files.test.ts",
-     "tests/hooks/useSearch.test.ts",
-     "tests/hooks/useSupplierComparison.test.ts",
-     "tests/unit/e2e-personalization-card-click.test.ts",
-     "tests/unit/e2e-selectors-quote-add-product.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    11
+    12
    ],
    [
     "docs/prod-readiness.md",
@@ -529718,6 +529669,10 @@
    [
     "docs/coordenacao/conflitos-semanticos.md",
     2
+   ],
+   [
+    ".security/policies-baseline.json",
+    1
    ],
    [
     ".security/secdef-anon-allowlist.json",
@@ -529761,10 +529716,6 @@
    ],
    [
     "src/integrations/supabase/gold.ts",
-    1
-   ],
-   [
-    "src/pages/admin/ai-usage/MarketIntelInsightsUsagePanel.tsx",
     1
    ]
   ]
