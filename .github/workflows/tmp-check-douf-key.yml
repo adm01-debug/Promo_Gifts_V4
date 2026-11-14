@@ -13,18 +13,18 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - name: Probe REST douf com as chaves do Gifts
+      - name: Probe env Vercel Brindes com VERCEL_TOKEN do Gifts
         env:
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           set -eu
-          code=000
-          for k in "$VITE_SUPABASE_PUBLISHABLE_KEY" "$SUPABASE_ANON_KEY"; do
-            code=$(curl -s -o /tmp/out.json -w "%{http_code}" \
-              "https://doufsxqlfjyuvxuezpln.supabase.co/rest/v1/v_site_products_public?select=id&limit=1" \
-              -H "apikey: $k" -H "Authorization: Bearer $k" || true)
-            echo "prefixo=$(printf %.12s "$k") http=$code"
-            if [ "$code" = "200" ]; then echo "AUTH_OK=1" >> "$GITHUB_ENV"; break; fi
-          done
-          test "$code" = "200" || { echo "::error::nenhuma chave do Gifts autentica no douf (ultimo http=$code)"; exit 1; }
+          code=$(curl -s -o /tmp/vercel.json -w "%{http_code}" \
+            "https://api.vercel.com/v9/projects/prj_LVKX7uhs1VhTjDDznD7KinvjgHXU/env/SCQKCm2xiZIjEFKy?decrypt=true" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" || true)
+          echo "vercel_env_http=$code"
+          if [ "$code" = "200" ]; then
+            node -e 'const j=require("/tmp/vercel.json"); console.log("key="+j.key, "target="+j.target.join(","), "type="+j.type)'
+          else
+            echo "::error::VERCEL_TOKEN do Gifts nao cobre o projeto Brindes (http=$code)"
+            exit 1
+          fi
