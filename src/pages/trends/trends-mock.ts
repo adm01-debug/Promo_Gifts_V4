@@ -220,10 +220,11 @@ export function buildMockDaily(days: number) {
  * Comportamento anterior (bug): retornava true por padrão → módulo sempre em MODO DEMO.
  * Comportamento novo (correto): retorna false por padrão → módulo usa dados reais.
  *
- * Para ativar o modo demo (dados fictícios para avaliação): /tendencias?demo=1
+ * Para ativar o modo demo (dados fictícios para avaliação, só em build DEV): /tendencias?demo=1
  * Para confirmar dados reais (default): /tendencias ou /tendencias?demo=0
  */
 export function isDemoMode(): boolean {
+  if (!import.meta.env.DEV) return false;
   if (typeof window === 'undefined') return false;
   return new URLSearchParams(window.location.search).get('demo') === '1';
 }

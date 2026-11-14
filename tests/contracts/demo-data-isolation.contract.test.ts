@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { isDemoMode } from '@/pages/trends/trends-mock';
 
 const originalUrl = window.location.href;
@@ -11,6 +11,7 @@ const productMatchPage = readFileSync(
 
 afterEach(() => {
   window.history.replaceState({}, '', originalUrl);
+  vi.unstubAllEnvs();
 });
 
 describe('contract: isolamento de dados demonstrativos', () => {
@@ -25,8 +26,16 @@ describe('contract: isolamento de dados demonstrativos', () => {
     expect(isDemoMode()).toBe(true);
   });
 
+  it('ignora ?demo=1 fora do build de desenvolvimento', () => {
+    vi.stubEnv('DEV', false);
+    window.history.replaceState({}, '', '/tendencias?demo=1');
+    expect(isDemoMode()).toBe(false);
+  });
+
   it('mantém o fallback de ProductMatch limitado ao build de desenvolvimento', () => {
     expect(productMatchPage).toContain('import.meta.env.DEV ? MOCK_MATCH_PRODUCTS : []');
-    expect(productMatchPage).not.toContain('dbProducts.length > 0 ? dbProducts : MOCK_MATCH_PRODUCTS');
+    expect(productMatchPage).not.toContain(
+      'dbProducts.length > 0 ? dbProducts : MOCK_MATCH_PRODUCTS',
+    );
   });
 });
