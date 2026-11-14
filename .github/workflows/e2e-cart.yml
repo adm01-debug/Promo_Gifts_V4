@@ -6,20 +6,11 @@ name: E2E Cart — Matrix (E79)
 # Os workflows individuais permanecem ativos; este é o dono canônico.
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'src/components/cart/**'
-      - 'src/contexts/SellerCartContext.tsx'
-      - 'src/hooks/products/useSellerCarts.ts'
-      - 'e2e/ui/cart-*.spec.ts'
-      - 'e2e/flows/13*.spec.ts'
-      - 'e2e/carrinhos/**'
-      - 'e2e/helpers/cart-*.ts'
-      - '.github/workflows/e2e-cart.yml'
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   push:
     branches: [main]
     paths:
+      - '.github/workflows/e2e-cart.yml'
       - 'src/components/cart/**'
       - 'src/contexts/SellerCartContext.tsx'
       - 'src/hooks/products/useSellerCarts.ts'
