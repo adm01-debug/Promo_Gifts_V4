@@ -1517,12 +1517,13 @@ A P09 (`20261108020000`, nunca aplicada) registraria 432 versões como aplicadas
 (`pg_class`, `pg_proc`, `pg_policies`, `pg_trigger`, `pg_constraint`, `cron.job` e o ledger) achou mais 23
 versões que criam índice, função, trigger, política, constraint ou cron que não existe em produção, sem
 `DROP`/`RENAME` por migration posterior já aplicada e sem gêmea de conteúdo equivalente no ledger. Elas ficam de
-fora (lista no cabeçalho da migration). Registra 361 versões; nenhuma estava no ledger. Só escreve no ledger,
+fora (lista no cabeçalho da migration), e também `20261101210000`: as 10 policies `rls_restrictive_*` que ela
+apaga seguem em produção, então o DROP nunca rodou e ela continua pendente. Registra 360 versões; nenhuma estava no ledger. Só escreve no ledger,
 sem DDL de schema. Rollback: `supabase/rollbacks/20261114014500_rollback.sql`.
 O snapshot do ledger do baseline (`supabase/baseline/20261015140000_ledger_versions.json`) foi estendido com as
-mesmas 361 versões (2524 → 2885), porque o efeito delas já está no dump do baseline ou fica fora dos schemas
-comparados; sem isso o `db-schema-drift-check` replayaria as 361 sobre o baseline (72 falham no replay local).
+mesmas 360 versões (2524 → 2884), porque o efeito delas já está no dump do baseline ou fica fora dos schemas
+comparados; sem isso o `db-schema-drift-check` replayaria as 360 sobre o baseline (72 falham no replay local).
 
 | version | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261114014500` | `p09_reconcile_ledger_schema_migrations` | `90ed5483eb09a7b985a0b56eba24c4145e40cd9064ae88dbb8d91c06b6c25e33` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono no chat de 2026-11-14) |
+| `20261114014500` | `p09_reconcile_ledger_schema_migrations` | `a06fe201d75afdb1be8b99ab19164ca374bb57ec5dae44808049ea33e5e6f8c0` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono no chat de 2026-11-14) |

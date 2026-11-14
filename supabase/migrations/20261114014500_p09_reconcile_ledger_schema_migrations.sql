@@ -27,7 +27,10 @@
 --     em produção (pg_catalog/cron.job lidos ao vivo em 2026-11-14), sem DROP/RENAME por migration
 --     posterior já aplicada e sem gêmea de conteúdo equivalente no ledger. Registrá-las seria afirmar
 --     no ledger algo sem evidência. Lista: 20260525200106, 20260526133316, 20260526140530, 20260526220004, 20260527193640, 20260527193804, 20260527195603, 20260531110300, 20260531211237, 20260604000001, 20260611165827, 20260613180000, 20260616172002, 20260618000000, 20260619151002, 20260620110923, 20260620190001, 20260622111500, 20260624102939, 20260629142224, 20260707102816, 20260707112607, 20260710203410
---   • Total registrado: 361 versões (nenhuma já presente no ledger em 2026-11-14).
+--   • Removida também 20261101210000 (sb0007_drop_noop_restrictive_policies): as 10 policies
+--     rls_restrictive_* que ela apaga ainda existem em produção (pg_policy em 2026-11-14), logo o DROP
+--     nunca rodou. Fica pendente para aplicar de verdade via db-apply-migration.yml.
+--   • Total registrado: 360 versões (nenhuma já presente no ledger em 2026-11-14).
 --
 INSERT INTO supabase_migrations.schema_migrations (version)
 VALUES
@@ -390,6 +393,5 @@ VALUES
   ('20261022100020'),
   ('20261022100021'),
   ('20261022100022'),
-  ('20261101210000'),
   ('20261101220000')
 ON CONFLICT (version) DO NOTHING;

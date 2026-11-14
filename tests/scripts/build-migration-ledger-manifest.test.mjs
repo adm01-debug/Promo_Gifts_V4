@@ -8,7 +8,7 @@
 // `null` no ledger. Isso não é hipotético — a migration já mergeada em main
 // supabase/migrations/20261114014500_p09_reconcile_ledger_schema_migrations.sql
 // faz `INSERT INTO supabase_migrations.schema_migrations (version) VALUES (...)`
-// para ~361 versões, deixando `name` NULL nessas linhas do ledger real. Uma
+// para ~360 versões, deixando `name` NULL nessas linhas do ledger real. Uma
 // nova captura do ledger sanitizado (E06) após essa migration quebraria o
 // script no primeiro desses registros. Corrigido com `(row.name ?? '').trim()`.
 import { afterEach, describe, expect, it } from 'vitest';

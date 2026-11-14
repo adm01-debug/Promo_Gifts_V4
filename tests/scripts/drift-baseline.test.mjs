@@ -1058,7 +1058,7 @@ describe('versões só de ledger (P09)', () => {
     const migrationsDir = join(repoRoot, 'supabase', 'migrations');
     const p09 = readFileSync(join(migrationsDir, '20261114014500_p09_reconcile_ledger_schema_migrations.sql'), 'utf8');
     const ledgerOnly = [...p09.matchAll(/^\s*\('(\d{14})'\)/gm)].map((m) => m[1]);
-    expect(ledgerOnly).toHaveLength(361);
+    expect(ledgerOnly).toHaveLength(360);
     const baseline = findBaseline(repoRoot);
     expect(ledgerOnly.filter((v) => !baseline.versions.has(v))).toEqual([]);
     const replay = selectReplayMigrations({
