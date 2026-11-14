@@ -40,6 +40,14 @@ aceito. As famílias já classificadas são:
 - **Agregados públicos anônimos** (`get_collections_weekly_count`, `get_favorites_weekly_count`, `get_top_collected_products`, `get_top_compared_products`, `get_top_favorited_products`, `get_industry_benchmark_stats`, `get_industry_top_products`, `get_bundle_suggestions`, `get_client_seasonality`, `get_client_top_products`, `get_user_recent_comparisons`) — não expõem PII; agregados apenas.
 - **Settings admin** (`get_connection_failure_window_minutes`, `get_connections_auto_test_interval`, `set_connection_failure_window_minutes`, `set_connections_auto_test_interval`) — checam `is_admin()` internamente.
 - **Batch admin** (`execute_role_migration_batch`, `repair_ownership_orphans`) — checam `is_admin_strict()` internamente, com auditoria.
+  - `admin_execute_role_migration_batch` (2026-11-12, migration `20261112120600`): wrapper SECURITY DEFINER da tela `/admin/seguranca/migracao-papeis`. Guarda `has_role(auth.uid(), 'dev')` + claim JWT `aal=aal2` (espelha `DevRoute` + `mfaAal2`) e repassa para `execute_role_migration_batch`, que continua só `service_role` (hardening SEC P1-2, `20260716000005`/`20260716131209`) e audita em `admin_audit_log` com o `auth.uid()` do chamador. Owner `postgres`; `anon`/`PUBLIC` revogados.
+- **Admin de conexões** (`fn_admin_sync_external_connections`) — `public.fn_admin_sync_external_connections()` (2026-11-12, migration `20261112120700`): SECURITY DEFINER com `search_path=pg_catalog, pg_temp`; o corpo exige `is_dev(auth.uid())` ou `has_role(auth.uid(),'admin')` (a tela fica em `DevRoute`) e levanta 42501 para os demais. Único caminho do sync manual em `/admin/conexoes`; `sync_external_connections_from_credentials` segue só `service_role`.
+- **Consumo de IA** (`fn_insights_cache_count`) — `public.fn_insights_cache_count(p_function_name text, p_since timestamp with time zone)` (2026-11-12, migration `20261112120400`): contagem agregada de `dashboard_insights_cache` para `/admin/consumo-ia`; levanta 42501 sem `can_view_telemetry()`; devolve só bigint. `anon`/`PUBLIC` revogados.
+- **Fila de otimização** (`enqueue_optimization`, `claim_next_optimization`, `complete_optimization`) — 2026-11-12, migration `20261112120500`: SECURITY DEFINER; o corpo exige `is_dev(auth.uid())` e levanta 42501 para os demais (UI dev `/admin/telemetria`). `reset_optimization_queue` segue SECURITY INVOKER + RLS.
+- **Smoke tests admin** (`fn_admin_smoke_tests_dashboard`, `fn_admin_run_smoke_tests`) — 2026-11-12, migration `20261112120100`: SECURITY DEFINER; exigem `is_admin_or_above(auth.uid())`; as views e `fn_run_and_persist_smoke_tests` seguem sem EXECUTE/SELECT para `authenticated`.
+- **Saúde medallion** (`fn_dev_medallion_health`) — 2026-11-12, migration `20261112120300`: SECURITY DEFINER de leitura; exige `is_dev(auth.uid())`.
+- **Confiabilidade de fornecedores** (`fn_get_supplier_reliability`) — 2026-11-12, migration `20261112120000`: SECURITY DEFINER sobre `mv_supplier_reliability` (fora da API); filtra por `is_supervisor_or_above(auth.uid())`, demais papéis recebem vazio.
+- **Reset de senha** (`request_password_reset`) — 2026-11-12, migration `20261112120900`: também na allowlist `secdef-anon` (ver abaixo); só grava pedido pendente, com rate limit por IP/e-mail.
 - **Telemetria/logs self** (`log_rls_denial`, `record_dev_route_telemetry`) — insert em tabelas de log com self-scope.
 - **Rerank de busca** (`search_records_rerank`) — read-only.
 - **`zapp_catalog_stats`** — EXECUTE concedido a `authenticated` sem necessidade (achado E07, migration de correção `20260915113458` nunca aplicada — divergência ledger/schema documentada em E12/`docs/db/POLITICA_DDL.md`). REVOKE preparado no Pacote de Aprovação #1 (`docs/PACOTE_APROVACAO_1_2026-09-16.md`), aguardando aprovação do PO — não é risco aceito permanente, é remediação pendente.
@@ -59,7 +67,7 @@ Entradas documentadas (E099 — 2026-10-21):
 
 ### Allowlist secdef-anon — SECURITY DEFINER exec por `anon`
 
-Snapshot canônico reconciliado em 2026-09-09: **11 entradas**, todas listadas literalmente
+Snapshot canônico reconciliado em 2026-09-09: **11 entradas** (+1 em 2026-11-12: `request_password_reset`, migration `20261112120900`), todas listadas literalmente
 abaixo com o motivo de exposição. O conjunto cobre pré-autenticação, catálogo
 público e respostas por token opaco; qualquer 11ª assinatura reprova o gate.
 
@@ -189,6 +197,7 @@ exige atualizar este inventário no mesmo PR.
 - `public.get_catalog_bestseller_page(p_sort text, p_limit integer, p_offset integer)` — Ranking paginado do catálogo público. Grant canônico confirmado em pg_catalog em 2026-08-29.
 - `public.get_sitemap_public(p_limit integer, p_offset integer)` — Sitemap público read-only: projeção SEO fixa de revistas publicadas, não apagadas e com token; paginação limitada a 1.000, `search_path` fixo e views subjacentes sem `SELECT` para `anon`.
 - `public.get_quote_token_public(_token text)` — Portal de aprovação de orçamento (SEC-009, 2026-09-04): substituto seguro de get_quote_token_by_value (revogado em 20260904111000). Campos retornados: id, quote_id, token, status, expires_at, client_name, viewed_at, responded_at, response, response_notes, created_at, signer_name, signed_at. Campos redactados (PII): client_email, signer_document, signer_ip, signer_user_agent, signature_hash, ip_address, user_agent, attempts, used_at, is_used, approved, seller_id. Grant anon intencional — portal acessado via link de token sem autenticação.
+- `public.request_password_reset(p_email text)` — Pedido de reset de senha na tela de login (pré-autenticação, migration `20261112120900`): só grava pedido pendente, sem leitura nem retorno de PII; rate limit por IP e por e-mail (`trg_password_reset_rate_limit`, `trg_anon_rate_guard`).
 - `public.submit_quote_response(_token text, _response text, _response_notes text)` — Resposta pública de orçamento protegida por token opaco e validação interna. Grant canônico confirmado em pg_catalog em 2026-08-29.
 
 ---
