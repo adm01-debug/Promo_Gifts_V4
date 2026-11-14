@@ -47,7 +47,7 @@ Cada fonte é atualizada independentemente; referências anteriores não comprov
 | cron | coleta atual |
 | triggers | coleta atual |
 | views | coleta atual |
-| outras funções | coleta atual |
+| outras funções | coleta anterior; corpos SQL não atualizados |
 
 
 
@@ -91,6 +91,9 @@ Cada fonte é atualizada independentemente; referências anteriores não comprov
 
 ## ⚠️ Problemas na última coleta
 
+Seções reaproveitadas da coleta anterior: `functions`.
+
 | seção | erro |
 |---|---|
+| functions | canceling statement due to statement timeout |
 | cron_runs | canceling statement due to statement timeout |
