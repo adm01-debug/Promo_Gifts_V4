@@ -387,7 +387,7 @@ function escapeLikePattern(term: string): string {
 
 /**
  * Erro do PostgREST/Postgres causado pela ENTRADA do cliente (coluna/filtro/valor inválido,
- * PGRST1xx/2xx, classes SQLSTATE 22 e 42) vira 400 — não 500. Só 5xx contam no disjuntor:
+ * PGRST1xx/2xx, classes SQLSTATE 22, 23 e 42) vira 400 — não 500. Só 5xx contam no disjuntor:
  * antes, 5 requisições com filtro inválido de um vendedor abriam o disjuntor e derrubavam o
  * bridge para todos por 60 s (simulação com PostgREST real, 13/11).
  */
@@ -399,7 +399,7 @@ const SERVER_SCHEMA_ERROR_CODES = new Set(["42P01", "PGRST202", "PGRST205"]);
 export function isClientDbError(error: { code?: string | null } | null | undefined): boolean {
   const code = String(error?.code ?? "");
   if (SERVER_SCHEMA_ERROR_CODES.has(code)) return false;
-  return /^PGRST[12]\d\d$/.test(code) || /^(22|42)[0-9A-Z]{3}$/.test(code);
+  return /^PGRST[12]\d\d$/.test(code) || /^(22|23|42)[0-9A-Z]{3}$/.test(code);
 }
 
 function dbErrorResponse(error: { code?: string | null; message: string }): Response {
@@ -721,7 +721,8 @@ async function handleSelect(crm: SupabaseClient, body: CrmQuery, userId?: string
     if (error) {
       console.error(`[SELECT] single error: code=${error.code}, message=${error.message}`);
       if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalSelectFallback(table, true);
-      return jsonResponse({ error: error.message }, error.code === "PGRST116" ? 404 : 500);
+      if (error.code === "PGRST116") return jsonResponse({ error: error.message }, 404);
+      return dbErrorResponse(error);
     }
     return jsonResponse({ data: scoped.stripParent ? stripJoin([data], scoped.stripParent)[0] : data, count: 1 });
   }

@@ -282,3 +282,43 @@ Deno.test("operador incompatível escolhido pelo cliente (42883, ex.: ilike em u
   const ok = await call({ operation: "select", table: "companies" });
   assertEquals(ok.status, 200, `disjuntor abriu por erro de cliente: ${JSON.stringify(ok.body)}`);
 });
+
+Deno.test("select por id com coluna inexistente (42703) vira 400 e NÃO abre o disjuntor", async () => {
+  reset();
+  CRM_DATA_ERROR = { status: 400, body: { code: "42703", message: "column companies.zz does not exist" } };
+  for (let i = 0; i < 6; i++) {
+    const r = await call({ operation: "select", table: "companies", id: "33333333-3333-4333-8333-333333333333", select: "zz" });
+    assertEquals(r.status, 400, JSON.stringify(r.body));
+  }
+  CRM_DATA_ERROR = null;
+  ROLE = "supervisor";
+  const ok = await call({ operation: "select", table: "companies" });
+  assertEquals(ok.status, 200, `disjuntor abriu por erro de cliente: ${JSON.stringify(ok.body)}`);
+});
+
+Deno.test("select por id inexistente (PGRST116) continua 404; 5xx real por id continua 500", async () => {
+  reset(); ROLE = "supervisor";
+  CRM_DATA_ERROR = { status: 406, body: { code: "PGRST116", message: "JSON object requested, multiple (or no) rows returned" } };
+  const nf = await call({ operation: "select", table: "companies", id: "33333333-3333-4333-8333-333333333333" });
+  CRM_DATA_ERROR = { status: 503, body: { code: "PGRST002", message: "schema cache" } };
+  const se = await call({ operation: "select", table: "suppliers", id: "33333333-3333-4333-8333-333333333333" });
+  CRM_DATA_ERROR = null;
+  assertEquals(nf.status, 404, JSON.stringify(nf.body));
+  assertEquals(se.status, 500, JSON.stringify(se.body));
+});
+
+Deno.test("violação de integridade (23505, 23503, 23502, 23514) em insert/update vira 400 e NÃO abre o disjuntor", async () => {
+  for (const code of ["23505", "23503", "23502", "23514"]) {
+    reset(); ROLE = "supervisor";
+    CRM_DATA_ERROR = { status: 409, body: { code, message: `integrity violation ${code}` } };
+    for (let i = 0; i < 3; i++) {
+      const ins = await call({ operation: "insert", table: "suppliers", data: { name: "x" } });
+      assertEquals(ins.status, 400, `${code}/insert: ${JSON.stringify(ins.body)}`);
+      const upd = await call({ operation: "update", table: "suppliers", id: "33333333-3333-4333-8333-333333333333", data: { name: "x" } });
+      assertEquals(upd.status, 400, `${code}/update: ${JSON.stringify(upd.body)}`);
+    }
+    CRM_DATA_ERROR = null;
+  }
+  const ok = await call({ operation: "select", table: "companies" });
+  assertEquals(ok.status, 200, `disjuntor abriu por erro de cliente: ${JSON.stringify(ok.body)}`);
+});
