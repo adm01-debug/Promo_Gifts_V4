@@ -966,6 +966,13 @@ manualmente, no mesmo dia, com o método `emergência-MCP`.
 | 2026-11-13T04:59:43.954Z | `verify-2fa-token` | 197 | `fd9c4eec24b2a45d956acf62e090a02925287a1e` | 43368850157 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-11-13T07:52:18.717Z | `external-db-bridge` | 299 | `3508d2ab09bcfa99d61928ce98f5fea9de0ab919` | 43385403614 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-11-13T08:32:09.475Z | `mcp-server` | 311 | `3265eec652d8da18440e0d62d03543cefa2eb219` | 43388889562 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T15:47:23.155Z | `health-check` | 287 | `10e57c95428b4452138e7b5a1228dd52b944b4a1` | 43434568067 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T16:54:13.744Z | `quote-sync-promo-champions` | 73 | `5f18026701ed8bbf76332071e1b808cc5e6081de` | 43453995769 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T17:52:24.768Z | `ai-recommendations` | 307 | `5f18026701ed8bbf76332071e1b808cc5e6081de` | 43456171090 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T19:41:27.525Z | `e2e-cleanup` | 308 | `5f18026701ed8bbf76332071e1b808cc5e6081de` | 43467481887 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T21:06:12.236Z | `cleanup-novelties` | 313 | `8ce96939e23bb05c48e366383657ac1d1a053b57` | 43487464383 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T22:06:35.833Z | `crm-db-bridge` | 311 | `8ce96939e23bb05c48e366383657ac1d1a053b57` | 43494646104 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-13T23:36:14.098Z | `send-transactional-email` | 283 | `835fee0c1e1487218397a754e952764c6e045eb7` | 43515934319 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 
 ## Retro-registro (casos anteriores a este ledger, E67)
 
