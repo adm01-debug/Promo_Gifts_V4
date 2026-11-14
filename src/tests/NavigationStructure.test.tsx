@@ -30,10 +30,6 @@ vi.mock('../lib/query-config', () => ({
   }),
 }));
 
-vi.mock('../hooks/useCatalogPrefetch', () => ({
-  useCatalogPrefetch: vi.fn(),
-}));
-
 // Mock components that use Router hooks outside a Router in the test tree
 vi.mock('../components/common/RouteScrollReset', () => ({
   RouteScrollReset: () => null,
