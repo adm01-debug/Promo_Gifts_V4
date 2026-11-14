@@ -10,7 +10,6 @@ export type {
 } from '@/types/advancedFilters';
 export * from '@/hooks/products/useCartTemplates';
 export * from '@/hooks/products/useCatalogFiltering';
-export * from '@/hooks/products/useCatalogPrefetch';
 export * from '@/hooks/products/useCatalogRealStats';
 export * from '@/hooks/products/useCatalogState';
 export * from '@/hooks/products/useCategories';
