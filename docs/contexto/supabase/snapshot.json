@@ -2,9 +2,7 @@
   "api": {
     "enabled": false
   },
-  "carried": [
-    "grants"
-  ],
+  "carried": [],
   "db": {
     "columns": [
       {
@@ -138716,6 +138714,36 @@
         "volatility": "stable"
       },
       {
+        "args": "_label text, _reason text, _items jsonb, _dry_run boolean",
+        "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Executa lote de migração de papéis (dev + aal2) via execute_role_migration_batch. Tela: /admin/seguranca/migracao-papeis.",
+        "config": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "d2b5fb9942444466",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "admin_execute_role_migration_batch",
+        "owner": "postgres",
+        "returns": "uuid",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
         "args": "_user_id uuid",
         "callers": {
           "code": [
@@ -140038,7 +140066,9 @@
           ],
           "code_total_files": 1,
           "cron": [],
-          "db": [],
+          "db": [
+            "public.fn_insights_cache_count"
+          ],
           "triggers": [],
           "views": []
         },
@@ -140616,13 +140646,13 @@
           "triggers": [],
           "views": []
         },
-        "comment": null,
+        "comment": "Fila de otimização (UI dev /admin/telemetria). Guarda interna is_dev(); EXECUTE: authenticated, service_role. Ver 20261112120500.",
         "config": [
-          "search_path=public"
+          "search_path=pg_catalog, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "35a5ff19e7b09ed3",
-        "execute_api_roles": "service_role",
+        "definition_sha": "6b9dcc222b0d0884",
+        "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -143678,13 +143708,13 @@
           "triggers": [],
           "views": []
         },
-        "comment": null,
+        "comment": "Fila de otimização (UI dev /admin/telemetria). Guarda interna is_dev(); EXECUTE: authenticated, service_role. Ver 20261112120500.",
         "config": [
-          "search_path=public"
+          "search_path=pg_catalog, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "97db6b91ed1d928e",
-        "execute_api_roles": "service_role",
+        "definition_sha": "1bfcd5cb5e5c1d30",
+        "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -144907,13 +144937,13 @@
           "triggers": [],
           "views": []
         },
-        "comment": null,
+        "comment": "Fila de otimização (UI dev /admin/telemetria). Guarda interna is_dev(); EXECUTE: authenticated, service_role. Ver 20261112120500.",
         "config": [
-          "search_path=public"
+          "search_path=pg_catalog, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "0455ec94762974f8",
-        "execute_api_roles": "service_role",
+        "definition_sha": "e1a5f23410dd4821",
+        "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -145062,7 +145092,9 @@
           ],
           "code_total_files": 4,
           "cron": [],
-          "db": [],
+          "db": [
+            "public.admin_execute_role_migration_batch"
+          ],
           "triggers": [],
           "views": []
         },
@@ -152305,6 +152337,36 @@
         "volatility": "volatile"
       },
       {
+        "args": "",
+        "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Saúde do pipeline Medallion para o MedallionPipelineCard (/admin/status, DevRoute): {coverage: vw_medallion_coverage[], progress: v_pipeline_progress[]}. Só papel dev (42501 para os demais). As views seguem sem SELECT para authenticated (20260716192234).",
+        "config": [
+          "search_path=public, pg_catalog, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "3e99cce562f5b345",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "fn_dev_medallion_health",
+        "owner": "postgres",
+        "returns": "jsonb",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "stable"
+      },
+      {
         "args": "p_name text",
         "callers": {
           "code": [
@@ -157284,6 +157346,36 @@
         "security_definer": false,
         "strict": false,
         "volatility": "volatile"
+      },
+      {
+        "args": "p_function_name text, p_since timestamp with time zone",
+        "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Contagem agregada de dashboard_insights_cache por function_name e periodo (created_at >= p_since). Restrita a can_view_telemetry() (dev/supervisor+); devolve so o numero, nunca payload. Consumidor: src/pages/admin/ai-usage/MarketIntelInsightsUsagePanel.tsx (/admin/consumo-ia).",
+        "config": [
+          "search_path=pg_catalog, public, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "90224cc1743d2a07",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "fn_insights_cache_count",
+        "owner": "postgres",
+        "returns": "bigint",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "stable"
       },
       {
         "args": "p_user_id uuid",
@@ -179574,14 +179666,12 @@
           "db": [
             "public._can_act_on_behalf_of_others",
             "public.admin_active_sessions",
+            "public.admin_execute_role_migration_batch",
             "public.admin_revoke_user_sessions",
             "public.audit_ownership_orphans",
             "public.audit_rls_matrix",
             "public.can_view_all_sales",
             "public.check_telemetry_regression",
-            "public.claim_next_optimization",
-            "public.complete_optimization",
-            "public.enqueue_optimization",
             "public.fn_admin_sync_external_connections",
             "public.fn_audit_discount_approval",
             "public.fn_pbd_before_write",
@@ -179607,7 +179697,6 @@
             "public.prevent_profile_role_change",
             "public.prevent_role_self_update",
             "public.repair_ownership_orphans",
-            "public.reset_optimization_queue",
             "public.set_connection_failure_window_minutes",
             "public.set_connections_auto_test_interval"
           ],
@@ -180954,9 +181043,14 @@
             "public.auto_revoke_orphan_full_keys",
             "public.can_grant_mcp_full",
             "public.can_view_audit_logs",
+            "public.claim_next_optimization",
+            "public.complete_optimization",
             "public.consume_step_up_token",
+            "public.enqueue_optimization",
+            "public.fn_dev_medallion_health",
             "public.is_admin_strict",
             "public.request_step_up_challenge",
+            "public.reset_optimization_queue",
             "public.validate_mcp_key"
           ],
           "triggers": [],
@@ -186973,13 +187067,13 @@
           "triggers": [],
           "views": []
         },
-        "comment": null,
+        "comment": "Fila de otimização (UI dev /admin/telemetria). SECURITY INVOKER + RLS is_dev; guarda interna is_dev(). Ver 20261112120500.",
         "config": [
-          "search_path=public"
+          "search_path=pg_catalog, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "97f5e0d1069a3489",
-        "execute_api_roles": "service_role",
+        "definition_sha": "9109c5cf77fbab8a",
+        "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -200001,6 +200095,12 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "v_image_quality_stats"
+        },
+        {
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "v_kill_switch_hits_summary"
         },
         {
           "grantee": "service_role",
@@ -236146,6 +236246,30 @@
         "version": "20261112120200"
       },
       {
+        "name": "fix_medallion_health_dev_rpc",
+        "statements": 4,
+        "statements_sha": "83eba15a0acc45d6",
+        "version": "20261112120300"
+      },
+      {
+        "name": "fn_insights_cache_count",
+        "statements": 4,
+        "statements_sha": "07c362cba7030921",
+        "version": "20261112120400"
+      },
+      {
+        "name": "fix_optimization_queue_rpcs_dev_access",
+        "statements": 16,
+        "statements_sha": "ab0ee905da9925a7",
+        "version": "20261112120500"
+      },
+      {
+        "name": "admin_execute_role_migration_batch_rpc",
+        "statements": 6,
+        "statements_sha": "1cf2311c08d06a7b",
+        "version": "20261112120600"
+      },
+      {
         "name": "fix_get_sitemap_public_anon_grant",
         "statements": 2,
         "statements_sha": "2f530f417cf8a450",
@@ -262122,7 +262246,7 @@
         "security_invoker": true
       },
       {
-        "comment": "Resumo de kill_switch_hits. SECURITY INVOKER: respeita RLS do caller.",
+        "comment": "Resumo de kill_switch_hits. SECURITY INVOKER: respeita RLS do caller (leitura só is_admin_or_above). SELECT para authenticated é intencional (20261112120200): não incluir em revogações de views admin.",
         "definition": " SELECT switch_name,\n    source,\n    operation,\n    target,\n    count(*) AS hits,\n    count(*) FILTER (WHERE occurred_at > (now() - '01:00:00'::interval)) AS hits_1h,\n    count(*) FILTER (WHERE occurred_at > (now() - '24:00:00'::interval)) AS hits_24h,\n    count(*) FILTER (WHERE occurred_at > (now() - '7 days'::interval)) AS hits_7d,\n    max(occurred_at) AS last_hit\n   FROM kill_switch_hits\n  WHERE occurred_at > (now() - '30 days'::interval)\n  GROUP BY switch_name, source, operation, target;",
         "depends_on": [
           "public.kill_switch_hits"
@@ -265006,11 +265130,6 @@
     ],
     "webhooks": []
   },
-  "errors": [
-    {
-      "error": "canceling statement due to statement timeout",
-      "section": "grants"
-    }
-  ],
+  "errors": [],
   "format_version": 2
 }

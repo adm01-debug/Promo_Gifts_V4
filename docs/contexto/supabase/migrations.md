@@ -2595,6 +2595,10 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261112120000 | [fix_fn_get_supplier_reliability](migrations/20261112120000_fix_fn_get_supplier_reliability.sql) | 6 |
 | 20261112120100 | [fix_smoke_tests_dashboard_admin_rpc](migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql) | 9 |
 | 20261112120200 | [fix_kill_switch_obs_grant_summary_view](migrations/20261112120200_fix_kill_switch_obs_grant_summary_view.sql) | 4 |
+| 20261112120300 | [fix_medallion_health_dev_rpc](migrations/20261112120300_fix_medallion_health_dev_rpc.sql) | 4 |
+| 20261112120400 | [fn_insights_cache_count](migrations/20261112120400_fn_insights_cache_count.sql) | 4 |
+| 20261112120500 | [fix_optimization_queue_rpcs_dev_access](migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql) | 16 |
+| 20261112120600 | [admin_execute_role_migration_batch_rpc](migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql) | 6 |
 | 20261112130000 | [fix_get_sitemap_public_anon_grant](migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql) | 2 |
 | 20261112140000 | [fix_rls_supplier_products_raw_history_p2027](migrations/20261112140000_fix_rls_supplier_products_raw_history_p2027.sql) | 51 |
 | 20261113235000 | [perf_idx_products_active_created_at_desc](migrations/20261113235000_perf_idx_products_active_created_at_desc.sql) | 3 |

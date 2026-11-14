@@ -2,18 +2,20 @@ CREATE OR REPLACE FUNCTION public.complete_optimization(_id uuid, _status text, 
  RETURNS optimization_queue
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'public'
+ SET search_path TO 'pg_catalog', 'pg_temp'
 AS $function$
 DECLARE
   updated public.optimization_queue;
-  duration int;
+  duration integer;
 BEGIN
-  IF NOT public.has_role(auth.uid(), 'admin') THEN
-    RAISE EXCEPTION 'forbidden';
+  IF NOT public.is_dev((SELECT auth.uid())) THEN
+    RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501';
   END IF;
-  IF _status NOT IN ('done','failed','skipped','blocked') THEN
+
+  IF _status NOT IN ('done', 'failed', 'skipped', 'blocked') THEN
     RAISE EXCEPTION 'invalid status: %', _status;
   END IF;
+
   UPDATE public.optimization_queue
      SET status = _status,
          finished_at = now(),
@@ -22,12 +24,16 @@ BEGIN
          guardrail_status = COALESCE(_guardrail_status, guardrail_status)
    WHERE id = _id
    RETURNING * INTO updated;
+
   IF updated.id IS NULL THEN
     RAISE EXCEPTION 'optimization not found';
   END IF;
+
   duration := EXTRACT(EPOCH FROM (updated.finished_at - COALESCE(updated.started_at, updated.finished_at))) * 1000;
+
   INSERT INTO public.optimization_queue_runs (queue_id, status, notes, guardrail_status, duration_ms, executed_by)
-  VALUES (_id, _status, _notes, _guardrail_status, duration, auth.uid());
+  VALUES (_id, _status, _notes, _guardrail_status, duration, (SELECT auth.uid()));
+
   RETURN updated;
 END;
 $function$

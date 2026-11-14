@@ -1,7 +1,5 @@
 # Grants
 
-> ⚠️ Seção `grants` não pôde ser atualizada nesta coleta (ver errors.md); mostrando a versão anterior.
-
 
 Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypass RLS). Grants de sistema (postgres, supabase_*) omitidos.
 
@@ -1091,6 +1089,7 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.v_enrichment_stats | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.v_gravacao_cobertura | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.v_image_quality_stats | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.v_kill_switch_hits_summary | authenticated | SELECT |
 | public.v_kill_switch_hits_summary | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.v_kit_completeness_by_supplier | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.v_kit_component_complete | authenticated | SELECT |

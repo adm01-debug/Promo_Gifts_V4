@@ -2,6 +2,14 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-14 11:28 UTC
+
+- **functions** adicionado (3): `public.admin_execute_role_migration_batch(_label text, _reason text, _items jsonb, _dry_run boolean)`, `public.fn_dev_medallion_health()`, `public.fn_insights_cache_count(p_function_name text, p_since timestamp with time zone)`
+- **functions** alterado (8): `public.can_view_telemetry(_user_id uuid)`, `public.claim_next_optimization()`, `public.complete_optimization(_id uuid, _status text, _notes text, _guardrail_status text, _result jsonb, _error text)`, `public.enqueue_optimization(_title text, _description text, _category text, _priority integer)`, `public.execute_role_migration_batch(_label text, _reason text, _items jsonb, _dry_run boolean)`, `public.has_role(_user_id uuid, _role app_role)`, `public.is_dev(_user_id uuid)`, `public.reset_optimization_queue(_only_running boolean)`
+- **grants** adicionado (1): `public.v_kill_switch_hits_summary:authenticated`
+- **migrations** adicionado (4): `20261112120300_fix_medallion_health_dev_rpc`, `20261112120400_fn_insights_cache_count`, `20261112120500_fix_optimization_queue_rpcs_dev_access`, `20261112120600_admin_execute_role_migration_batch_rpc`
+- **views** alterado (1): `public.v_kill_switch_hits_summary`
+
 ## 2026-11-14 11:20 UTC
 
 - **functions** adicionado (3): `public.fn_admin_run_smoke_tests()`, `public.fn_admin_smoke_tests_dashboard()`, `public.fn_get_supplier_reliability()`

@@ -2453,7 +2453,7 @@ WITH stats AS (
 | opções | security_invoker=true |
 | depende de | public.kill_switch_hits |
 | populada | n/a |
-| comentário | Resumo de kill_switch_hits. SECURITY INVOKER: respeita RLS do caller. |
+| comentário | Resumo de kill_switch_hits. SECURITY INVOKER: respeita RLS do caller (leitura só is_admin_or_above). SELECT para authenticated é intencional (20261112120200): não incluir em revogações de views admin. |
 
 
 ```sql
