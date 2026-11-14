@@ -4,6 +4,7 @@ name: CI - Replenishment Module Quality Gate
 # 2026-10-01: E26 — env scope, remove continue-on-error/--pass-with-no-tests, timeout fix
 # 2026-10-01: E26 v2 — credencial-gate no step de stress test (evita falha sem E22)
 on:
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   push:
     branches: [main]
     paths:
@@ -17,20 +18,6 @@ on:
       - '.tsc-baseline.json'
       - '.eslint-baseline.json'
       - '.github/workflows/replenishment-quality.yml'
-  pull_request:
-    branches: [main]
-    paths:
-      - 'src/**'
-      - 'supabase/**'
-      - 'tests/**'
-      - 'e2e/**'
-      - 'package.json'
-      - 'playwright.config.ts'
-      - 'vite.config.*'
-      - '.tsc-baseline.json'
-      - '.eslint-baseline.json'
-      - '.github/workflows/replenishment-quality.yml'
-
 concurrency:
   group: replenishment-quality-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
