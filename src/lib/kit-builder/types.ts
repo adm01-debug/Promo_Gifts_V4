@@ -16,6 +16,8 @@ export interface KitBox {
   sku: string;
   imageUrl: string | null;
   price: number;
+  /** False marks an unavailable/invalid catalog price; never a financial zero. */
+  priceKnown?: boolean;
   // Dimensões internas em cm
   internalWidth: number;
   internalHeight: number;
@@ -55,6 +57,8 @@ export interface KitItem {
   sku: string;
   imageUrl: string | null;
   price: number;
+  /** False marks an unavailable/invalid catalog price; never a financial zero. */
+  priceKnown?: boolean;
   // Dimensões do item em cm (convertidas de mm se necessário)
   width: number;
   height: number;
