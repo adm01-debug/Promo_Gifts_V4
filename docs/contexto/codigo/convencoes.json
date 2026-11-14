@@ -13,7 +13,7 @@
    "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (292)",
+   "src/hooks (291)",
    "recovery/src-legacy (196)",
    "src/components (75)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(catalog): remover prefetch pós-login de v_products_public que nunca é lido (#3603)",
    "docs(migrations): recibos E15 das 10 migrations da #3584 (supersede #3590–#3599) (#3602)",
    "docs: prod-readiness com lint, typecheck, build e testes no main final 371f52b (#3604)",
    "docs: prod-readiness com o estado do main final e73a88d e a #3600 (#3601)",
-   "fix(db): devolve 10 telas que falham por permissão ou RPC ausente (supersede #3432) (#3584)",
-   "docs: prod-readiness com a qualidade do main final e as 5 PRs bloqueadas pelo banco (#3585)"
+   "fix(db): devolve 10 telas que falham por permissão ou RPC ausente (supersede #3432) (#3584)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2450,
+ "total": 2449,
  "por_tipo": {
   "contrato": 65,
   "e2e": 677,
   "pytest": 4,
   "qa": 17,
-  "unit": 1687
+  "unit": 1686
  },
  "onde_ficam": [
   {
@@ -28,7 +28,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 144
+   "arquivos": 143
   },
   {
    "padrao": "outro",
@@ -8367,16 +8367,6 @@
    "casos": 2
   },
   {
-   "arquivo": "src/hooks/products/useCatalogPrefetch.test.ts",
-   "tipo": "unit",
-   "linhas": 53,
-   "testa": [
-    "src/contexts/AuthContext.tsx",
-    "src/hooks/products/useCatalogPrefetch.ts"
-   ],
-   "casos": 2
-  },
-  {
    "arquivo": "src/hooks/products/useSimilarProducts.test.tsx",
    "tipo": "unit",
    "linhas": 191,
@@ -11211,7 +11201,7 @@
   {
    "arquivo": "src/tests/NavigationStructure.test.tsx",
    "tipo": "unit",
-   "linhas": 89,
+   "linhas": 85,
    "testa": [
     "src/App.tsx",
     "src/components/ThemeInitializer.tsx",
@@ -20969,7 +20959,7 @@
   "src/components/ui/truncated-tooltip.tsx": 1,
   "src/components/workflows/WorkflowEditDialog.tsx": 1,
   "src/constants/filters.ts": 7,
-  "src/contexts/AuthContext.tsx": 37,
+  "src/contexts/AuthContext.tsx": 36,
   "src/contexts/CloudStatusContext.tsx": 1,
   "src/contexts/OnboardingContext.tsx": 1,
   "src/contexts/OrganizationContext.tsx": 2,
@@ -21058,7 +21048,6 @@
   "src/hooks/products/sellerCartToasts.ts": 4,
   "src/hooks/products/useAdvancedFilters.ts": 2,
   "src/hooks/products/useCatalogFiltering.ts": 3,
-  "src/hooks/products/useCatalogPrefetch.ts": 1,
   "src/hooks/products/useCatalogState.ts": 2,
   "src/hooks/products/useCategories.ts": 1,
   "src/hooks/products/useCategoryIcons.ts": 1,

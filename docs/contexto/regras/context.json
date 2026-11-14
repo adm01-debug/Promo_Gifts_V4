@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "7aa82a59199f568b681bbbabcad4bc02e3be69e6",
+  "sha": "be2fb404348a77b81cbe028cc0afb09ead75dd88",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 14:00 UTC",
-  "files_total": 10065,
-  "code_files": 8601,
-  "code_lines": 1213537
+  "generated_at": "2026-11-14 14:31 UTC",
+  "files_total": 10063,
+  "code_files": 8599,
+  "code_lines": 1213375
  },
  "version": "1.3.2",
- "facts_hash": "7e324eb17da50b42",
+ "facts_hash": "a04ada7d0e83006f",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1222,7 +1222,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3389,
-   ".ts": 2905,
+   ".ts": 2903,
    ".tsx": 1858,
    ".mjs": 436,
    ".py": 13,
@@ -135796,7 +135796,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 242
+    "deps_count": 241
    },
    {
     "path": "",
@@ -135886,7 +135886,7 @@
      "log_user_logout",
      "restore_seller_cart"
     ],
-    "deps_count": 296
+    "deps_count": 295
    },
    {
     "path": "",
@@ -135924,7 +135924,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 121
+    "deps_count": 120
    },
    {
     "path": "",
@@ -135977,7 +135977,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 210
+    "deps_count": 209
    },
    {
     "path": "",
@@ -136015,7 +136015,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 126
+    "deps_count": 125
    },
    {
     "path": "",
@@ -136062,7 +136062,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 84
+    "deps_count": 83
    },
    {
     "path": "",
@@ -136097,7 +136097,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 84
+    "deps_count": 83
    },
    {
     "path": "",
@@ -136163,7 +136163,7 @@
      "restore_seller_cart",
      "search_records_rerank"
     ],
-    "deps_count": 316
+    "deps_count": 315
    },
    {
     "path": "",
@@ -136198,7 +136198,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 84
+    "deps_count": 83
    },
    {
     "path": "",
@@ -136263,7 +136263,7 @@
      "get_promo_sales_ranking",
      "log_user_logout"
     ],
-    "deps_count": 188
+    "deps_count": 187
    },
    {
     "path": "",
@@ -136307,7 +136307,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 81
+    "deps_count": 80
    },
    {
     "path": "",
@@ -136342,7 +136342,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 84
+    "deps_count": 83
    },
    {
     "path": "",
@@ -136395,7 +136395,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 87
+    "deps_count": 86
    },
    {
     "path": "",
@@ -136436,7 +136436,7 @@
      "get_promo_sales_ranking",
      "restore_seller_cart"
     ],
-    "deps_count": 192
+    "deps_count": 191
    },
    {
     "path": "",
@@ -136535,7 +136535,7 @@
      "restore_seller_cart",
      "search_records_rerank"
     ],
-    "deps_count": 371
+    "deps_count": 370
    },
    {
     "path": "/admin/permissoes",
@@ -136715,7 +136715,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 127
+    "deps_count": 126
    },
    {
     "path": "/carrinhos/:cartId",
@@ -136760,7 +136760,7 @@
      "log_user_logout",
      "restore_seller_cart"
     ],
-    "deps_count": 212
+    "deps_count": 211
    },
    {
     "path": "/clientes",
@@ -136798,7 +136798,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 126
+    "deps_count": 125
    },
    {
     "path": "/clientes/:id",
@@ -136836,7 +136836,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 127
+    "deps_count": 126
    },
    {
     "path": "/colecoes",
@@ -136881,7 +136881,7 @@
      "get_top_collected_products",
      "log_user_logout"
     ],
-    "deps_count": 171
+    "deps_count": 170
    },
    {
     "path": "/colecoes/:id",
@@ -136948,7 +136948,7 @@
      "log_user_logout",
      "restore_seller_cart"
     ],
-    "deps_count": 331
+    "deps_count": 330
    },
    {
     "path": "/comparar",
@@ -136998,7 +136998,7 @@
      "log_user_logout",
      "restore_seller_cart"
     ],
-    "deps_count": 233
+    "deps_count": 232
    },
    {
     "path": "/dashboard",
@@ -137069,7 +137069,7 @@
      "respond_discount_approval_transactional",
      "save_custom_kit_atomic"
     ],
-    "deps_count": 246
+    "deps_count": 245
    },
    {
     "path": "/dropbox",
@@ -137125,7 +137125,7 @@
      "log_user_logout",
      "restore_seller_cart"
     ],
-    "deps_count": 229
+    "deps_count": 228
    },
    {
     "path": "/external-db-test",
@@ -137163,7 +137163,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 123
+    "deps_count": 122
    },
    {
     "path": "/favoritos",
@@ -137234,7 +137234,7 @@
      "restore_favorite_from_trash",
      "restore_seller_cart"
     ],
-    "deps_count": 335
+    "deps_count": 334
    },
    {
     "path": "/ferramentas/bi",
@@ -137280,7 +137280,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 227
+    "deps_count": 226
    },
    {
     "path": "/ferramentas/bi/comparar",
@@ -137323,7 +137323,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 183
+    "deps_count": 182
    },
    {
     "path": "/filtros, /produtos",
@@ -137398,7 +137398,7 @@
      "restore_seller_cart",
      "search_records_rerank"
     ],
-    "deps_count": 402
+    "deps_count": 401
    },
    {
     "path": "/inteligencia-comercial",
@@ -137463,7 +137463,7 @@
      "log_user_logout",
      "restore_seller_cart"
     ],
-    "deps_count": 284
+    "deps_count": 283
    },
    {
     "path": "/magic-up",
@@ -137501,7 +137501,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 120
+    "deps_count": 119
    },
    {
     "path": "/match",
@@ -137539,7 +137539,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 132
+    "deps_count": 131
    },
    {
     "path": "/mockup-generator",
@@ -137580,7 +137580,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 179
+    "deps_count": 178
    },
    {
     "path": "/mockups/historico",
@@ -137650,7 +137650,7 @@
      "log_user_logout",
      "restore_seller_cart"
     ],
-    "deps_count": 269
+    "deps_count": 268
    },
    {
     "path": "/orcamentos, /orcamentos/lista",
@@ -137701,7 +137701,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 206
+    "deps_count": 205
    },
    {
     "path": "/orcamentos/dashboard",
@@ -137739,7 +137739,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 135
+    "deps_count": 134
    },
    {
     "path": "/orcamentos/kanban",
@@ -137790,7 +137790,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 156
+    "deps_count": 155
    },
    {
     "path": "/orcamentos/novo",
@@ -137848,7 +137848,7 @@
      "respond_discount_approval_transactional",
      "restore_seller_cart"
     ],
-    "deps_count": 280
+    "deps_count": 279
    },
    {
     "path": "/promoflix-playground",
@@ -137911,7 +137911,7 @@
      "log_user_logout",
      "restore_seller_cart"
     ],
-    "deps_count": 252
+    "deps_count": 251
    },
    {
     "path": "/reset-password",
@@ -137961,7 +137961,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 183
+    "deps_count": 182
    },
    {
     "path": "/simulador-precos",
@@ -138001,7 +138001,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 194
+    "deps_count": 193
    },
    {
     "path": "/tendencias",
@@ -138043,7 +138043,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 155
+    "deps_count": 154
    }
   ],
   "edge_functions": [
@@ -145290,10 +145290,6 @@
     "file": "src/hooks/products/useCatalogPreferences.ts"
    },
    {
-    "name": "useCatalogPrefetch",
-    "file": "src/hooks/products/useCatalogPrefetch.ts"
-   },
-   {
     "name": "useCatalogRealStats",
     "file": "src/hooks/products/useCatalogRealStats.ts"
    },
@@ -147696,8 +147692,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 457,
-   "lines": 85863,
+   "files": 455,
+   "lines": 85705,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -148594,7 +148590,7 @@
   {
    "module": "src/tests",
    "files": 33,
-   "lines": 5072,
+   "lines": 5068,
    "tables": [
     "products",
     "v_products_public",
@@ -213649,10 +213645,6 @@
     "line": "staleTime: 5 * 60 * 1000,"
    },
    {
-    "file": "src/hooks/products/useCatalogPrefetch.ts",
-    "line": "staleTime: 30 * 60 * 1000,"
-   },
-   {
     "file": "src/hooks/products/useCatalogRealStats.ts",
     "line": "gcTime: 60 * 60 * 1000,"
    },
@@ -239811,18 +239803,6 @@
    {
     "file": "src/hooks/mockup/__tests__/useMockupDraft.test.ts",
     "name": "rascunho sem logo continua funcionando e não chama o storage"
-   },
-   {
-    "file": "src/hooks/products/useCatalogPrefetch.test.ts",
-    "name": "useCatalogPrefetch"
-   },
-   {
-    "file": "src/hooks/products/useCatalogPrefetch.test.ts",
-    "name": "does not prefetch if not authenticated"
-   },
-   {
-    "file": "src/hooks/products/useCatalogPrefetch.test.ts",
-    "name": "prefetches catalog after delay when authenticated"
    },
    {
     "file": "src/hooks/products/useSimilarProducts.test.tsx",
@@ -446769,7 +446749,7 @@
   },
   "src/hooks/common/useAppBootstrap.ts": {
    "path": "src/hooks/common/useAppBootstrap.ts",
-   "lines": 78,
+   "lines": 57,
    "exports": [
     "function useAppBootstrap"
    ],
@@ -451308,7 +451288,7 @@
   },
   "src/hooks/products/index.ts": {
    "path": "src/hooks/products/index.ts",
-   "lines": 65,
+   "lines": 64,
    "doc": "Exporting all hooks from products"
   },
   "src/hooks/products/novelty-core.ts": {
@@ -451521,33 +451501,6 @@
    ],
    "temporal": [
     "staleTime: 5 * 60 * 1000,"
-   ]
-  },
-  "src/hooks/products/useCatalogPrefetch.test.ts": {
-   "path": "src/hooks/products/useCatalogPrefetch.test.ts",
-   "lines": 53,
-   "is_test": true,
-   "temporal": [
-    "{ timeout: 1000 },"
-   ],
-   "tests": [
-    "useCatalogPrefetch",
-    "does not prefetch if not authenticated",
-    "prefetches catalog after delay when authenticated"
-   ]
-  },
-  "src/hooks/products/useCatalogPrefetch.ts": {
-   "path": "src/hooks/products/useCatalogPrefetch.ts",
-   "lines": 83,
-   "exports": [
-    "function prefetchCatalog",
-    "function useCatalogPrefetch"
-   ],
-   "hooks": [
-    "useCatalogPrefetch"
-   ],
-   "temporal": [
-    "staleTime: 30 * 60 * 1000,"
    ]
   },
   "src/hooks/products/useCatalogRealStats.ts": {
@@ -477409,7 +477362,7 @@
   },
   "src/tests/NavigationStructure.test.tsx": {
    "path": "src/tests/NavigationStructure.test.tsx",
-   "lines": 89,
+   "lines": 85,
    "is_test": true,
    "tests": [
     "App Structure and Navigation",
@@ -529292,10 +529245,23 @@
   }
  },
  "git": {
-  "sha": "7aa82a59199f568b681bbbabcad4bc02e3be69e6",
+  "sha": "be2fb404348a77b81cbe028cc0afb09ead75dd88",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "be2fb40",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(catalog): remover prefetch pós-login de v_products_public que nunca é lido (#3603)",
+    "files": [
+     "src/hooks/common/useAppBootstrap.ts",
+     "src/hooks/products/index.ts",
+     "src/hooks/products/useCatalogPrefetch.test.ts",
+     "src/hooks/products/useCatalogPrefetch.ts",
+     "src/tests/NavigationStructure.test.tsx"
+    ]
+   },
    {
     "sha": "7aa82a5",
     "date": "2026-11-14",
@@ -529625,16 +529591,6 @@
      "supabase/migrations/20261111222500_fix_touch_seller_cart_secdef.sql",
      "supabase/rollbacks/20261111222500_rollback.sql"
     ]
-   },
-   {
-    "sha": "640d96e",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "fix(edge): recomendações e copiloto de BI voltam a usar IA via router multi-provider (#3401)",
-    "files": [
-     "supabase/functions/ai-recommendations/index.ts",
-     "supabase/functions/bi-copilot/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -529671,6 +529627,26 @@
     2
    ],
    [
+    "src/hooks/common/useAppBootstrap.ts",
+    1
+   ],
+   [
+    "src/hooks/products/index.ts",
+    1
+   ],
+   [
+    "src/hooks/products/useCatalogPrefetch.test.ts",
+    1
+   ],
+   [
+    "src/hooks/products/useCatalogPrefetch.ts",
+    1
+   ],
+   [
+    "src/tests/NavigationStructure.test.tsx",
+    1
+   ],
+   [
     ".security/policies-baseline.json",
     1
    ],
@@ -529696,26 +529672,6 @@
    ],
    [
     "src/hooks/admin/useMedallionHealth.ts",
-    1
-   ],
-   [
-    "src/hooks/admin/useRoleMigration.ts",
-    1
-   ],
-   [
-    "src/hooks/admin/useSmokeTests.ts",
-    1
-   ],
-   [
-    "src/hooks/auth/usePasswordResetRequests.ts",
-    1
-   ],
-   [
-    "src/hooks/inventory/useSupplierReliabilityServer.ts",
-    1
-   ],
-   [
-    "src/integrations/supabase/gold.ts",
     1
    ]
   ]

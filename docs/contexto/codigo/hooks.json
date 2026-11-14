@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 615,
+ "total": 614,
  "hooks": [
   {
    "arquivo": "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
@@ -6219,7 +6219,7 @@
     "useRef"
    ],
    "canais_realtime": [],
-   "usado_por": 203,
+   "usado_por": 202,
    "usado_por_arquivos": [
     "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
     "recovery/src-legacy/src/components/navigation/DynamicBreadcrumbs.tsx",
@@ -6252,7 +6252,7 @@
     "recovery/src-legacy/src/hooks/useOnboarding.ts",
     "recovery/src-legacy/src/hooks/useProductAnalytics.ts"
    ],
-   "coberto_por_testes": 37
+   "coberto_por_testes": 36
   },
   {
    "arquivo": "src/contexts/BICategoryFocusContext.tsx",
@@ -7651,7 +7651,7 @@
    "hooks_exportados": [
     "useAppBootstrap"
    ],
-   "linhas": 78,
+   "linhas": 57,
    "dominio": "hooks/common",
    "tabelas": [],
    "rpcs": [],
@@ -7661,7 +7661,6 @@
     "useEffect",
     "useGlobalErrorCatcher",
     "useLocation",
-    "useQueryClient",
     "useRef",
     "useTheme"
    ],
@@ -10302,30 +10301,6 @@
    "coberto_por_testes": 0
   },
   {
-   "arquivo": "src/hooks/products/useCatalogPrefetch.ts",
-   "hooks_exportados": [
-    "useCatalogPrefetch"
-   ],
-   "linhas": 83,
-   "dominio": "hooks/products",
-   "tabelas": [],
-   "rpcs": [],
-   "edges": [],
-   "hooks_internos": [
-    "useAuth",
-    "useEffect",
-    "useQueryClient",
-    "useRef"
-   ],
-   "canais_realtime": [],
-   "usado_por": 2,
-   "usado_por_arquivos": [
-    "src/hooks/common/useAppBootstrap.ts",
-    "src/hooks/products/index.ts"
-   ],
-   "coberto_por_testes": 1
-  },
-  {
    "arquivo": "src/hooks/products/useCatalogRealStats.ts",
    "hooks_exportados": [
     "useCatalogRealStats"
@@ -11281,10 +11256,9 @@
    "edges": [],
    "hooks_internos": [],
    "canais_realtime": [],
-   "usado_por": 4,
+   "usado_por": 3,
    "usado_por_arquivos": [
     "src/hooks/products/index.ts",
-    "src/hooks/products/useCatalogPrefetch.ts",
     "src/hooks/products/useCatalogState.ts",
     "src/pages/filters/useFiltersPageState.ts"
    ],

@@ -9961,10 +9961,8 @@
   "src/hooks/common/useAppBootstrap.ts": [
    "src/contexts/AuthContext.tsx",
    "src/contexts/ThemeContext.tsx",
-   "src/hooks/products/useCatalogPrefetch.ts",
    "src/hooks/ui/useErrorHandler.ts",
    "src/lib/chunk-recovery.ts",
-   "src/lib/logger.ts",
    "src/lib/theme-presets.ts"
   ],
   "src/hooks/common/useConsecutiveFailures.ts": [
@@ -10590,7 +10588,6 @@
    "src/hooks/products/useAdvancedFilters.ts",
    "src/hooks/products/useCartTemplates.ts",
    "src/hooks/products/useCatalogFiltering.ts",
-   "src/hooks/products/useCatalogPrefetch.ts",
    "src/hooks/products/useCatalogRealStats.ts",
    "src/hooks/products/useCatalogState.ts",
    "src/hooks/products/useCategories.ts",
@@ -10679,12 +10676,6 @@
    "src/integrations/supabase/client.ts",
    "src/integrations/supabase/types.ts",
    "src/lib/logger.ts"
-  ],
-  "src/hooks/products/useCatalogPrefetch.ts": [
-   "src/contexts/AuthContext.tsx",
-   "src/hooks/products/useProductsLightweight.ts",
-   "src/lib/db/postgrest.ts",
-   "src/lib/external-db/products-detail.ts"
   ],
   "src/hooks/products/useCatalogRealStats.ts": [
    "src/lib/db/postgrest.ts"

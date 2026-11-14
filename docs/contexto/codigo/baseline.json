@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7aa82a59199f568b681bbbabcad4bc02e3be69e6",
+  "commit": "be2fb404348a77b81cbe028cc0afb09ead75dd88",
   "branch": "main",
-  "data_commit": "2026-11-14T10:40:14-03:00",
+  "data_commit": "2026-11-14T11:18:04-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "be2fb40",
+    "data": "2026-11-14",
+    "assunto": "fix(catalog): remover prefetch pós-login de v_products_public que nunca é lido (#3603)"
+   },
    {
     "sha": "7aa82a5",
     "data": "2026-11-14",
@@ -126,14 +131,9 @@
     "sha": "10e57c9",
     "data": "2026-11-13",
     "assunto": "fix(migrations): adiciona arquivo migration 20260511235960 ausente do main"
-   },
-   {
-    "sha": "36eac06",
-    "data": "2026-11-13",
-    "assunto": "fix(ci): documenta BRIDGE_PATH em SEGREDOS.md para passar Gate E40"
    }
   ],
-  "arquivos_mudados_7d": 2009,
+  "arquivos_mudados_7d": 2013,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 425
+    "mudancas": 428
    },
    {
     "pasta": "src/pages/magazine",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 362
+    "mudancas": 358
    },
    {
     "pasta": "src/components/inventory",
@@ -199,15 +199,15 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 60
-   },
-   {
-    "arquivo": "PENDENCIAS.md",
-    "mudancas": 51
+    "mudancas": 58
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
     "mudancas": 51
+   },
+   {
+    "arquivo": "PENDENCIAS.md",
+    "mudancas": 50
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 431
+    "commits": 428
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10137,
-  "arquivos_codigo": 5213,
-  "linhas_codigo": 995779,
+  "arquivos_total": 10135,
+  "arquivos_codigo": 5211,
+  "linhas_codigo": 995617,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
   "modulos": 158,
   "componentes": 1225,
-  "hooks": 615,
+  "hooks": 614,
   "edge_functions": 111,
   "tabelas": 545,
   "migrations": 3079,
   "cron_jobs": 122,
-  "testes": 2450,
+  "testes": 2449,
   "workflows": 98,
   "scripts": 272,
   "docs_md": 1018
@@ -1907,8 +1907,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 457,
-   "linhas": 85863
+   "arquivos": 455,
+   "linhas": 85705
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1948,7 +1948,7 @@
   },
   "src/tests": {
    "arquivos": 33,
-   "linhas": 5072
+   "linhas": 5068
   },
   "src/types": {
    "arquivos": 26,
@@ -2354,7 +2354,7 @@
   }
  ],
  "qualidade": {
-  "any": 699,
+  "any": 696,
   "console_log": 1270,
   "ts_ignore": 0,
   "eslint_disable": 24,

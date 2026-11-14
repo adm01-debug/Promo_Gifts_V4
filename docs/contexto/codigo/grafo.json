@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2763,
- "arestas": 10941,
+ "nos": 2762,
+ "arestas": 10934,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -26,7 +26,7 @@
   },
   {
    "arquivo": "src/lib/logger.ts",
-   "importado_por": 313
+   "importado_por": 312
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
@@ -38,7 +38,7 @@
   },
   {
    "arquivo": "src/contexts/AuthContext.tsx",
-   "importado_por": 240
+   "importado_por": 238
   },
   {
    "arquivo": "src/components/ui/skeleton.tsx",
@@ -74,7 +74,7 @@
   },
   {
    "arquivo": "src/lib/db/postgrest.ts",
-   "importado_por": 95
+   "importado_por": 94
   },
   {
    "arquivo": "src/components/ui/scroll-area.tsx",

@@ -48,7 +48,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -381,7 +380,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -777,7 +775,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 534
+   "arquivos_puxados": 533
   },
   {
    "protegida": false,
@@ -1172,7 +1170,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -1461,7 +1458,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -1792,7 +1788,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 402
+   "arquivos_puxados": 401
   },
   {
    "protegida": false,
@@ -1870,7 +1866,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -2174,7 +2169,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -2531,7 +2525,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 450
+   "arquivos_puxados": 449
   },
   {
    "protegida": false,
@@ -2883,7 +2877,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -3195,7 +3188,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -3551,7 +3543,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 497
+   "arquivos_puxados": 496
   },
   {
    "protegida": true,
@@ -3595,7 +3587,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -3906,7 +3897,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -4267,7 +4257,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 520
+   "arquivos_puxados": 519
   },
   {
    "protegida": true,
@@ -4407,7 +4397,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -4733,7 +4722,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -5131,7 +5119,7 @@
     "switch",
     "toolbar"
    ],
-   "arquivos_puxados": 551
+   "arquivos_puxados": 550
   },
   {
    "protegida": true,
@@ -5204,7 +5192,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -5493,7 +5480,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -5825,7 +5811,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 408
+   "arquivos_puxados": 407
   },
   {
    "protegida": true,
@@ -5919,7 +5905,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -6208,7 +6193,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -6539,7 +6523,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 404
+   "arquivos_puxados": 403
   },
   {
    "protegida": true,
@@ -8648,7 +8632,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -8972,7 +8955,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -9357,7 +9339,7 @@
     "supervisor",
     "vendedor"
    ],
-   "arquivos_puxados": 496
+   "arquivos_puxados": 495
   },
   {
    "protegida": true,
@@ -9509,7 +9491,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -9799,7 +9780,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -10131,7 +10111,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 405
+   "arquivos_puxados": 404
   },
   {
    "protegida": true,
@@ -10172,7 +10152,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -10461,7 +10440,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -10792,7 +10770,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 403
+   "arquivos_puxados": 402
   },
   {
    "protegida": true,
@@ -11057,7 +11035,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -11347,7 +11324,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -11678,7 +11654,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 406
+   "arquivos_puxados": 405
   },
   {
    "protegida": false,
@@ -11767,7 +11743,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -12060,7 +12035,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -12397,7 +12371,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 422
+   "arquivos_puxados": 421
   },
   {
    "protegida": false,
@@ -12438,7 +12412,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -12735,7 +12708,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -13072,7 +13044,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 430
+   "arquivos_puxados": 429
   },
   {
    "protegida": false,
@@ -13113,7 +13085,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -13404,7 +13375,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -13737,7 +13707,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 411
+   "arquivos_puxados": 410
   },
   {
    "protegida": false,
@@ -13866,7 +13836,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -14162,7 +14131,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -14506,7 +14474,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 421
+   "arquivos_puxados": 420
   },
   {
    "protegida": false,
@@ -14547,7 +14515,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -14874,7 +14841,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -15253,7 +15219,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 494
   },
   {
    "protegida": false,
@@ -15318,7 +15284,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -15614,7 +15579,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -15958,7 +15922,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 433
+   "arquivos_puxados": 432
   },
   {
    "protegida": false,
@@ -16024,7 +15988,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -16329,7 +16292,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -16687,7 +16649,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 462
+   "arquivos_puxados": 461
   },
   {
    "protegida": false,
@@ -16760,7 +16722,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -17063,7 +17024,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -17411,7 +17371,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 428
+   "arquivos_puxados": 427
   },
   {
    "protegida": false,
@@ -17452,7 +17412,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -17786,7 +17745,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -18177,7 +18135,7 @@
     "supervisor",
     "table"
    ],
-   "arquivos_puxados": 496
+   "arquivos_puxados": 495
   },
   {
    "protegida": false,
@@ -18218,7 +18176,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -18507,7 +18464,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -18838,7 +18794,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 402
+   "arquivos_puxados": 401
   },
   {
    "protegida": false,
@@ -18879,7 +18835,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -19204,7 +19159,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -19586,7 +19540,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 500
+   "arquivos_puxados": 499
   },
   {
    "protegida": false,
@@ -19628,7 +19582,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -19931,7 +19884,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -20283,7 +20235,7 @@
     "supervisor",
     "user"
    ],
-   "arquivos_puxados": 447
+   "arquivos_puxados": 446
   },
   {
    "protegida": false,
@@ -20324,7 +20276,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -20622,7 +20573,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -20967,7 +20917,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 414
+   "arquivos_puxados": 413
   },
   {
    "protegida": false,
@@ -21033,7 +20983,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -21368,7 +21317,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -21766,7 +21714,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 528
+   "arquivos_puxados": 527
   },
   {
    "protegida": false,
@@ -21862,7 +21810,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -22176,7 +22123,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -22536,7 +22482,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 452
+   "arquivos_puxados": 451
   },
   {
    "protegida": false,
@@ -23181,7 +23127,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -23470,7 +23415,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -23807,7 +23751,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 424
+   "arquivos_puxados": 423
   },
   {
    "protegida": false,
@@ -23848,7 +23792,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -24137,7 +24080,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -24468,7 +24410,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 408
+   "arquivos_puxados": 407
   },
   {
    "protegida": false,
@@ -24650,7 +24592,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -24945,7 +24886,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -25286,7 +25226,7 @@
     "supervisor",
     "user"
    ],
-   "arquivos_puxados": 449
+   "arquivos_puxados": 448
   },
   {
    "protegida": false,
@@ -25327,7 +25267,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -25616,7 +25555,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -25947,7 +25885,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 405
+   "arquivos_puxados": 404
   },
   {
    "protegida": false,
@@ -26010,7 +25948,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -26333,7 +26270,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -26713,7 +26649,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 493
+   "arquivos_puxados": 492
   },
   {
    "protegida": false,
@@ -26756,7 +26692,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -27075,7 +27010,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -27448,7 +27382,7 @@
     "tablist",
     "toolbar"
    ],
-   "arquivos_puxados": 536
+   "arquivos_puxados": 535
   },
   {
    "protegida": false,
@@ -27492,7 +27426,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -27795,7 +27728,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -28150,7 +28082,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 479
+   "arquivos_puxados": 478
   },
   {
    "protegida": false,
@@ -28194,7 +28126,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -28505,7 +28436,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -28868,7 +28798,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 478
+   "arquivos_puxados": 477
   },
   {
    "protegida": false,
@@ -28910,7 +28840,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -29214,7 +29143,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -29568,7 +29496,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 442
+   "arquivos_puxados": 441
   },
   {
    "protegida": false,
@@ -29610,7 +29538,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -29915,7 +29842,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -30268,7 +30194,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 439
+   "arquivos_puxados": 438
   },
   {
    "protegida": false,
@@ -30311,7 +30237,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -30630,7 +30555,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -31003,7 +30927,7 @@
     "tablist",
     "toolbar"
    ],
-   "arquivos_puxados": 536
+   "arquivos_puxados": 535
   },
   {
    "protegida": false,
@@ -31045,7 +30969,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -31356,7 +31279,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -31719,7 +31641,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 478
+   "arquivos_puxados": 477
   },
   {
    "protegida": false,
@@ -31864,7 +31786,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -32188,7 +32109,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -32568,7 +32488,7 @@
     "supervisor",
     "switch"
    ],
-   "arquivos_puxados": 514
+   "arquivos_puxados": 513
   },
   {
    "protegida": false,
@@ -32609,7 +32529,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -32944,7 +32863,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -33342,7 +33260,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 528
+   "arquivos_puxados": 527
   },
   {
    "protegida": false,
@@ -33498,7 +33416,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -33787,7 +33704,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -34120,7 +34036,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 403
+   "arquivos_puxados": 402
   },
   {
    "protegida": false,
@@ -34161,7 +34077,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -34487,7 +34402,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -34872,7 +34786,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 502
+   "arquivos_puxados": 501
   },
   {
    "protegida": false,
@@ -35212,7 +35126,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -35501,7 +35414,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -35832,7 +35744,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 426
+   "arquivos_puxados": 425
   },
   {
    "protegida": false,
@@ -35873,7 +35785,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -36183,7 +36094,6 @@
     "useCartTemplates",
     "useCatalogFiltering",
     "useCatalogPreferences",
-    "useCatalogPrefetch",
     "useCatalogRealStats",
     "useCatalogSelection",
     "useCatalogState",
@@ -36541,7 +36451,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 441
+   "arquivos_puxados": 440
   },
   {
    "protegida": false,
