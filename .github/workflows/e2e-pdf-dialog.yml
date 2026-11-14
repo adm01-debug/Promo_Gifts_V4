@@ -52,12 +52,14 @@ defaults:
 jobs:
   pdf-dialog:
     name: PDF dialog + watermark pixel-diff
+    if: vars.SUPABASE_E2E_PROJECT_REF != '' && vars.SUPABASE_E2E_PROJECT_REF != 'doufsxqlfjyuvxuezpln'  # GUARD: E2E só contra staging (docs/ci/SEGREDOS.md), nunca produção
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
       CI: 'true'
-      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
-      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+      VITE_SUPABASE_URL: ${{ vars.SUPABASE_E2E_PROJECT_REF && format('https://{0}.supabase.co', vars.SUPABASE_E2E_PROJECT_REF) || '' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY_E2E }}
+      VITE_SUPABASE_E2E_PROJECT_ID: ${{ vars.SUPABASE_E2E_PROJECT_REF }}
       E2E_BASE_URL: http://localhost:8080
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

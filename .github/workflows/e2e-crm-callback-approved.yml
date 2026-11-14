@@ -36,13 +36,15 @@ defaults:
 jobs:
   e2e-crm-callback:
     name: approved → V4 → CRM (no-mock)
+    if: vars.SUPABASE_E2E_PROJECT_REF != '' && vars.SUPABASE_E2E_PROJECT_REF != 'doufsxqlfjyuvxuezpln'  # GUARD: E2E só contra staging (docs/ci/SEGREDOS.md), nunca produção
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       CI: "true"
       # Preview/staging Supabase — SSOT canônico (doufsxqlfjyuvxuezpln)
-      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
-      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+      VITE_SUPABASE_URL: ${{ vars.SUPABASE_E2E_PROJECT_REF && format('https://{0}.supabase.co', vars.SUPABASE_E2E_PROJECT_REF) || '' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY_E2E }}
+      VITE_SUPABASE_E2E_PROJECT_ID: ${{ vars.SUPABASE_E2E_PROJECT_REF }}
       # Segredos reais — o job falha antes do Playwright rodar se ausentes.
       CRM_CALLBACK_API_KEY: ${{ secrets.CRM_CALLBACK_API_KEY }}
       V4_CALLBACK_URL: ${{ secrets.V4_CALLBACK_URL }}

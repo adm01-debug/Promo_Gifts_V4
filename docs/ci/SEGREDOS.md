@@ -62,6 +62,7 @@ São usados em workflows de E2E/integração que **não fazem parte do Gate Fina
 | `VITE_SUPABASE_URL` | DevOps | Repo | — | `https://doufsxqlfjyuvxuezpln.supabase.co` — não rotar sem mudança de projeto |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | DevOps | Repo | — | Chave anon/publishable pública de `doufsxqlfjyuvxuezpln` — 53 refs |
 | `VITE_SUPABASE_PROJECT_ID` | DevOps | Repo | — | `doufsxqlfjyuvxuezpln` — `kit-coverage-integration.yml` |
+| `VITE_SUPABASE_PUBLISHABLE_KEY_E2E` | DevOps | Repo | Ao recriar o staging | Chave publishable do projeto de **staging** do E2E (`vars.SUPABASE_E2E_PROJECT_REF`), nunca a de produção. Usada por todos os workflows de E2E com backend (`e2e*.yml`, `nightly-full.yml`, `delivery-quality.yml`, `replenishment-quality.yml`) |
 | `KIT_FIXTURE_ID` | DevOps | Repo | A cada fixture | UUID do fixture de kit usado em `kit-coverage-integration.yml` |
 
 ---
@@ -124,6 +125,7 @@ Gerado automaticamente em cada run — não armazenado como secret no repositór
 | `vars.CI_SKIP_FREIGHT_E2E` | DevOps | Repo | Flag para pular E2E de frete em `freight-quality-gates.yml` |
 | `vars.SMOKE_BASE_URL` | DevOps | Repo | URL base para smoke tests de rota/health — `ci.yml` (2 refs) |
 | `vars.KIT_FIXTURE_ID` | DevOps | Repo | UUID do fixture de kit (alternativa ao secret) — `kit-coverage-integration.yml` |
+| `vars.SUPABASE_E2E_PROJECT_REF` | Dono | Repo | Ref do projeto Supabase de **staging** do E2E (≠ `doufsxqlfjyuvxuezpln`). Ausente ou igual à produção → todo E2E com backend é pulado (`_e2e-relevance.yml` e `if:` dos jobs) e nada bate no banco de produção (incidente 2026-11-14: ~97% das requisições `/rest/v1` vinham de E2E no CI). Os workflows montam `VITE_SUPABASE_URL=https://<ref>.supabase.co` e `VITE_SUPABASE_E2E_PROJECT_ID=<ref>` (opt-in aceito por `client.ts`). Ao configurar, os usuários `E2E_*` precisam existir nesse projeto e o schema precisa estar aplicado nele |
 
 ---
 

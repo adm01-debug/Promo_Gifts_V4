@@ -45,7 +45,16 @@ const validateEnv = (): boolean => {
   }
   const isLocal = envUrl.includes('localhost') || envUrl.includes('127.0.0.1');
   const isPlaceholder = envUrl.includes('placeholder');
-  if (!isLocal && !isPlaceholder && !envUrl.includes(CURRENT_PROJECT_ID)) {
+  // GUARD: projeto de staging do E2E, aceito só com opt-in explícito de build
+  // (VITE_SUPABASE_E2E_PROJECT_ID, setado apenas nos workflows de E2E — nunca no Vercel)
+  // e só quando a URL é exatamente a desse projeto. Ver docs/ci/SEGREDOS.md.
+  const e2eProjectId = (import.meta.env.VITE_SUPABASE_E2E_PROJECT_ID as string | undefined)?.trim();
+  const isE2EProject =
+    !!e2eProjectId &&
+    /^[a-z0-9]{20}$/.test(e2eProjectId) &&
+    e2eProjectId !== CURRENT_PROJECT_ID &&
+    envUrl === `https://${e2eProjectId}.supabase.co`;
+  if (!isLocal && !isPlaceholder && !isE2EProject && !envUrl.includes(CURRENT_PROJECT_ID)) {
     // Severidade: WARN (não ERROR) — o guard SSOT já neutralizou o impacto aplicando
     // o fallback canônico. ERROR ficava ruidoso a cada reload sempre que o Lovable
     // reescrevia o .env, poluindo dashboards de telemetria. Mantemos o nome do evento

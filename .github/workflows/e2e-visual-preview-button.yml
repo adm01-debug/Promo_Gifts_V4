@@ -45,8 +45,9 @@ env:
   TZ: America/Sao_Paulo
   CI: 'true'
   FORCE_COLOR: '0'
-  VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
-  VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+  VITE_SUPABASE_URL: ${{ vars.SUPABASE_E2E_PROJECT_REF && format('https://{0}.supabase.co', vars.SUPABASE_E2E_PROJECT_REF) || '' }}
+  VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY_E2E }}
+  VITE_SUPABASE_E2E_PROJECT_ID: ${{ vars.SUPABASE_E2E_PROJECT_REF }}
 
 
 permissions:
@@ -63,7 +64,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     # G-H3: fork guard — pull_request de forks não deve escrever no repo
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    if: (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && vars.SUPABASE_E2E_PROJECT_REF != '' && vars.SUPABASE_E2E_PROJECT_REF != 'doufsxqlfjyuvxuezpln'  # GUARD: E2E só contra staging (docs/ci/SEGREDOS.md), nunca produção
 
     # E61: visual workflows must not push to the repo — baselines update via workflow_dispatch + artifact download
     permissions:

@@ -44,6 +44,8 @@ defaults:
 jobs:
   e2e-relevance:
     uses: ./.github/workflows/_e2e-relevance.yml
+    with:
+      requires_backend: false  # só harnesses locais, sem banco
 
   visual-baseline:
     # G-H3: fork guard — pull_request de forks não deve escrever no repo

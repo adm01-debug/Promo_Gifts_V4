@@ -42,8 +42,9 @@ concurrency:
 
 env:
   CI: "true"
-  VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
-  VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+  VITE_SUPABASE_URL: ${{ vars.SUPABASE_E2E_PROJECT_REF && format('https://{0}.supabase.co', vars.SUPABASE_E2E_PROJECT_REF) || '' }}
+  VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY_E2E }}
+  VITE_SUPABASE_E2E_PROJECT_ID: ${{ vars.SUPABASE_E2E_PROJECT_REF }}
   E2E_BASE_URL: http://localhost:8080
   # Esta suíte valida UI/teclado/QuickView com fixture determinística; Auth e
   # catálogo reais são cobertos pelos gates de integração dedicados.

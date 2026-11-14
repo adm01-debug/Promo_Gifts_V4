@@ -2,6 +2,11 @@ name: Reusable — E2E Runtime Relevance
 
 on:
   workflow_call:
+    inputs:
+      requires_backend:
+        description: false para suítes que só usam harness local (sem Supabase)
+        type: boolean
+        default: true
     outputs:
       relevant:
         description: Se o diff exige executar testes E2E contra o backend
@@ -38,8 +43,16 @@ jobs:
         id: result
         env:
           CHANGED_FILES: ${{ steps.filter.outputs.all_files }}
+          SUPABASE_E2E_PROJECT_REF: ${{ vars.SUPABASE_E2E_PROJECT_REF }}
+          REQUIRES_BACKEND: ${{ inputs.requires_backend }}
         run: |
-          if [[ "${{ github.event_name }}" == "pull_request" || "${{ github.event_name }}" == "push" ]]; then
+          # GUARD: E2E nunca roda contra o banco de produção (incidente 2026-11-14: ~97% das
+          # requisições /rest/v1 vinham de localhost em runners do CI). Sem projeto de
+          # staging configurado (vars.SUPABASE_E2E_PROJECT_REF), o E2E com backend é pulado.
+          if [[ "${REQUIRES_BACKEND}" == "true" && ( -z "${SUPABASE_E2E_PROJECT_REF}" || "${SUPABASE_E2E_PROJECT_REF}" == "doufsxqlfjyuvxuezpln" ) ]]; then
+            echo "::notice::E2E com backend pulado: vars.SUPABASE_E2E_PROJECT_REF ausente ou igual à produção (ver docs/ci/SEGREDOS.md)."
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.event_name }}" == "pull_request" || "${{ github.event_name }}" == "push" ]]; then
             node .github/scripts/e2e-relevance.mjs >> "$GITHUB_OUTPUT"
           else
             echo "relevant=true" >> "$GITHUB_OUTPUT"

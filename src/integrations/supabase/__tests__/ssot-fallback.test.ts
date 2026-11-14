@@ -114,6 +114,22 @@ describe('SSOT Supabase — fallback em runtime', () => {
     expect(url).not.toContain(FORBIDDEN);
   });
 
+  it('aceita o projeto de staging do E2E só com opt-in explícito e URL exata', async () => {
+    const STAGING = 'abcdefghijklmnopqrst';
+    vi.stubEnv('VITE_SUPABASE_E2E_PROJECT_ID', STAGING);
+    expect(await loadClientUrl(`https://${STAGING}.supabase.co`)).toBe(
+      `https://${STAGING}.supabase.co`,
+    );
+    // URL de outro projeto com o opt-in ligado continua caindo no canônico.
+    vi.stubEnv('VITE_SUPABASE_E2E_PROJECT_ID', STAGING);
+    expect(await loadClientUrl('https://zyxwvutsrqponmlkjihg.supabase.co')).toContain(CANONICAL);
+  });
+
+  it('sem opt-in, URL de staging cai no canônico', async () => {
+    const url = await loadClientUrl('https://abcdefghijklmnopqrst.supabase.co');
+    expect(url).toContain(CANONICAL);
+  });
+
   it('aceita localhost como dev legítimo sem vazar o projeto proibido', async () => {
     const url = await loadClientUrl('http://localhost:54321');
     // localhost é dev válido (não força fallback), mas jamais o projeto proibido.

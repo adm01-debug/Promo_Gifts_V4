@@ -42,12 +42,14 @@ defaults:
 jobs:
   discount-approval-e2e:
     name: Playwright — 04c* (discount approval)
+    if: vars.SUPABASE_E2E_PROJECT_REF != '' && vars.SUPABASE_E2E_PROJECT_REF != 'doufsxqlfjyuvxuezpln'  # GUARD: E2E só contra staging (docs/ci/SEGREDOS.md), nunca produção
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
       E2E_BASE_URL: http://localhost:8080
-      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+      VITE_SUPABASE_URL: ${{ vars.SUPABASE_E2E_PROJECT_REF && format('https://{0}.supabase.co', vars.SUPABASE_E2E_PROJECT_REF) || '' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY_E2E }}
+      VITE_SUPABASE_E2E_PROJECT_ID: ${{ vars.SUPABASE_E2E_PROJECT_REF }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -102,12 +104,14 @@ jobs:
 
   discount-widget-badge-live:
     name: Playwright — 04ck (badge pendentes ao vivo) ×3
+    if: vars.SUPABASE_E2E_PROJECT_REF != '' && vars.SUPABASE_E2E_PROJECT_REF != 'doufsxqlfjyuvxuezpln'  # GUARD: E2E só contra staging (docs/ci/SEGREDOS.md), nunca produção
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
       E2E_BASE_URL: http://localhost:8080
-      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+      VITE_SUPABASE_URL: ${{ vars.SUPABASE_E2E_PROJECT_REF && format('https://{0}.supabase.co', vars.SUPABASE_E2E_PROJECT_REF) || '' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY_E2E }}
+      VITE_SUPABASE_E2E_PROJECT_ID: ${{ vars.SUPABASE_E2E_PROJECT_REF }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
