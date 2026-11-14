@@ -20,7 +20,6 @@
 | supabase_realtime | public.quote_items | full |
 | supabase_realtime | public.quotes | full |
 | supabase_realtime | public.workspace_notifications | full |
-| supabase_realtime_messages_publication | realtime.messages_2026_11_10 |  |
 | supabase_realtime_messages_publication | realtime.messages_2026_11_11 |  |
 | supabase_realtime_messages_publication | realtime.messages_2026_11_12 |  |
 | supabase_realtime_messages_publication | realtime.messages_2026_11_13 |  |

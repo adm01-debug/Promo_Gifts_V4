@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): teste de frase banida monta o literal em partes (ci-security-drift do main) (#3541)",
    "fix(edge): corrige domínio de e-mail Resend promogifts → promobrindes (#3521)",
    "docs(migrations): recibos da 20261111191000 (corrigido) e da 20261112140000 (#3529)",
    "fix(db): ativa RLS nas partições p2027_03..12 do histórico de fornecedores (#3434)",
-   "fix(security): documenta fn_get_rupture_alerts na allowlist do lint 0029 (#3522)",
-   "fix(ci): destrava Gate 1 e testes do main — baseline de refs, import legacy-filters, recibos e reconciliação de migrations (#3507)"
+   "fix(security): documenta fn_get_rupture_alerts na allowlist do lint 0029 (#3522)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

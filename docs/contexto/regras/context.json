@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "835fee0c1e1487218397a754e952764c6e045eb7",
+  "sha": "73f463f21935f4c62d7df4f4e33510f06a08cbcd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-13 23:07 UTC",
+  "generated_at": "2026-11-14 02:28 UTC",
   "files_total": 10036,
   "code_files": 8572,
-  "code_lines": 1212071
+  "code_lines": 1212073
  },
  "version": "1.3.2",
- "facts_hash": "1306c1bd6b5a9817",
+ "facts_hash": "eb3c6f7bbf276f98",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -149016,7 +149016,7 @@
   {
    "module": "tests",
    "files": 1010,
-   "lines": 154925,
+   "lines": 154927,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -525264,11 +525264,14 @@
   },
   "tests/scripts/tools-batch6.test.mjs": {
    "path": "tests/scripts/tools-batch6.test.mjs",
-   "lines": 163,
+   "lines": 165,
    "is_test": true,
    "env": [
     "HOME",
     "PATH"
+   ],
+   "rule_comments": [
+    "Frase banida montada em partes: o gate check-removed-phrases varre tests/ e não pode achar o literal aqui."
    ],
    "doc": "Regressão (lote 6): gates que passavam sem varrer/verificar (ripgrep ausente, 5xx, baseline pendente, JSON misturado).",
    "tests": [
@@ -528388,10 +528391,19 @@
   }
  },
  "git": {
-  "sha": "835fee0c1e1487218397a754e952764c6e045eb7",
+  "sha": "73f463f21935f4c62d7df4f4e33510f06a08cbcd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "73f463f",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(ci): teste de frase banida monta o literal em partes (ci-security-drift do main) (#3541)",
+    "files": [
+     "tests/scripts/tools-batch6.test.mjs"
+    ]
+   },
    {
     "sha": "835fee0",
     "date": "2026-11-13",
@@ -528733,15 +528745,6 @@
      "src/hooks/simulation/useCustomizationPrice.ts",
      "src/hooks/simulation/useTecnicasUnificadas.ts"
     ]
-   },
-   {
-    "sha": "18e4576",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "test(simulador): cobre o CTA Criar Orçamento do ProductPriceSimulator (#3462)",
-    "files": [
-     "src/components/pricing/__tests__/ProductPriceSimulator.createQuote.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -528782,6 +528785,10 @@
     2
    ],
    [
+    "tests/scripts/tools-batch6.test.mjs",
+    1
+   ],
+   [
     "supabase/functions/process-scheduled-reports/index.ts",
     1
    ],
@@ -528819,10 +528826,6 @@
    ],
    [
     "tests/edge-functions/integration/legacy-filters-escape.test.ts",
-    1
-   ],
-   [
-    "supabase/migrations/20260511235960_add_categories_full_path_readable_drift.sql",
     1
    ]
   ]

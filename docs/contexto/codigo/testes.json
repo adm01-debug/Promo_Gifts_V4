@@ -19501,7 +19501,7 @@
   {
    "arquivo": "tests/scripts/tools-batch6.test.mjs",
    "tipo": "unit",
-   "linhas": 163,
+   "linhas": 165,
    "testa": [
     "scripts/lib/fixed-string-search.mjs"
    ],

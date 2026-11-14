@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `835fee0c1e1487218397a754e952764c6e045eb7` (2026-11-13T19:02:24-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `73f463f21935f4c62d7df4f4e33510f06a08cbcd` (2026-11-13T22:34:59-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 10108 |
 | arquivos_codigo | 5212 |
-| linhas_codigo | 995707 |
+| linhas_codigo | 995709 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -588,27 +588,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43149 nós · 74504 arestas · 2362 comunidades · grafo do commit `835fee0c`
-- comunidades maiores: vitest (584), ref_node_child_process (507), ref_hooks (430), test-base.ts (416), @tanstack/react-query (398), react (386), @testing-library/react (381), ref_node_fs (334), ref_components (314), scripts (302), gotoAndSettle (297), concludeCheck (268)
+- 43150 nós · 74505 arestas · 2385 comunidades · grafo do commit `73f463f2`
+- comunidades maiores: ref_integrations (574), ref_components (562), vitest (552), ref_node_child_process (519), lucide-react (433), ref_hooks (408), @tanstack/react-query (365), sonner (363), ref_node_fs (331), ref_utils (317), scripts (302), react-router-dom (292)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (66)
-- PENDENCIAS.md (56)
-- supabase/MIGRATIONS_SYNC_LOG.md (41)
+- RELATORIO_CI.md (67)
+- PENDENCIAS.md (57)
+- supabase/MIGRATIONS_SYNC_LOG.md (42)
 - package.json (31)
 - package-lock.json (21)
-- analise-prs/progresso.json (15)
+- analise-prs/progresso.json (16)
+- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (14)
 - CHANGELOG.md (13)
-- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (13)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (12)
-- .github/workflows/deploy-gates.yml (11)
-- src/pages/kit-builder/KitBuilderPage.tsx (11)
-- analise-branches/RELATORIO_BRANCHES.md (10)
-- src/hooks/kit-builder/useKitBuilderPageState.ts (10)
-- analise-prs/RELATORIO_PRS.md (9)
-- e2e/flows/magazine-publish-smoke.spec.ts (9)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (13)
+- .github/workflows/deploy-gates.yml (12)
+- src/pages/kit-builder/KitBuilderPage.tsx (12)
+- analise-branches/RELATORIO_BRANCHES.md (11)
+- src/hooks/kit-builder/useKitBuilderPageState.ts (11)
+- analise-prs/RELATORIO_PRS.md (10)
+- e2e/flows/magazine-publish-smoke.spec.ts (10)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1182,6 +1182,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-13 `73f463f` fix(ci): teste de frase banida monta o literal em partes (ci-security-drift do main) (#3541)
 - 2026-11-13 `835fee0` fix(edge): corrige domínio de e-mail Resend promogifts → promobrindes (#3521)
 - 2026-11-13 `fe64be3` docs(migrations): recibos da 20261111191000 (corrigido) e da 20261112140000 (#3529)
 - 2026-11-13 `8ce9693` fix(db): ativa RLS nas partições p2027_03..12 do histórico de fornecedores (#3434)
@@ -1196,7 +1197,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-13 `640d96e` fix(edge): recomendações e copiloto de BI voltam a usar IA via router multi-provider (#3401)
 - 2026-11-13 `8404c43` fix: lote de correções da auditoria de prontidão (catálogo, produto, busca, BI, categorias, e2e, edge) (#3463)
 - 2026-11-13 `9c518b2` chore(claude): adiciona comando /merge-prs (#3420)
-- 2026-11-13 `afa3739` fix: erros de console em produção (Sentry bloqueado pela CSP, CRM 500, estilos inline) (#3429)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
