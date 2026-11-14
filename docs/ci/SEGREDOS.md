@@ -43,6 +43,8 @@ São usados em workflows de E2E/integração que **não fazem parte do Gate Fina
 | `E2E_USER_PASSWORD` | DevOps | Repo | Anual | Senha do usuário comprador padrão — 45 refs em workflows de E2E/integração |
 | `E2E_ADMIN_EMAIL` | DevOps | Repo | Anual | Usuário administrador de testes — deploy-gates.yml, e2e-cart-*.yml (13 refs) |
 | `E2E_ADMIN_PASSWORD` | DevOps | Repo | Anual | Senha do admin de testes — 13 refs |
+| `E2E_SELLER_EMAIL` | DevOps | Repo | Anual | Opcional: usuário vendedor de testes para `loginAs('seller')` — e2e.yml, e2e-cart.yml (7 refs). Ausente → fallback para `E2E_USER_EMAIL` (papel vendedor) |
+| `E2E_SELLER_PASSWORD` | DevOps | Repo | Anual | Opcional: senha do vendedor de testes — e2e.yml, e2e-cart.yml (7 refs). Ausente → fallback para `E2E_USER_PASSWORD` |
 | `E2E_CLEANUP_TOKEN` | DevOps | Repo + Supabase Edge | Semestral | Token dedicado do cleanup escopado — `e2e-quotes.yml` e função `e2e-cleanup`; o valor do repo deve corresponder ao secret runtime da Edge |
 | `E2E_DEV_EMAIL` | DevOps | Repo | Anual | Usuário developer (edge-integration-all.yml) — 1 ref |
 | `E2E_DEV_PASSWORD` | DevOps | Repo | Anual | Senha do developer de testes — 1 ref |
