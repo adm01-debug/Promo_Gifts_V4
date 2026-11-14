@@ -351,6 +351,7 @@ const REPLAY_PIPELINE_REWRITES = new Map([
   ['20261101140003_sb0006_index_kit_fk_user_id.sql', { concurrentlyIndexes: 2 }],
   ['20261113235000_perf_idx_products_active_created_at_desc.sql', { concurrentlyIndexes: 1 }],
   ['20261114014100_idx_fk_stock_and_missing_perf_indexes.sql', { concurrentlyIndexes: 11 }],
+  ['20261114160000_perf_idx_sds_restock_counts.sql', { concurrentlyIndexes: 1 }],
 ]);
 
 export function sanitizeReplayMigration(fileName, sql) {
