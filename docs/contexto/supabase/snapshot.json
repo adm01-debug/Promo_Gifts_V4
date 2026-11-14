@@ -244066,7 +244066,7 @@
         "schema": "public",
         "table": "order_items",
         "using": null,
-        "with_check": "(EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND user_is_org_member(o.organization_id))))"
+        "with_check": "(can_view_all_sales() OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = auth.uid()) OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))))))))"
       },
       {
         "cmd": "SELECT",
@@ -244077,7 +244077,7 @@
         ],
         "schema": "public",
         "table": "order_items",
-        "using": "(EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND user_is_org_member(o.organization_id))))",
+        "using": "(can_view_all_sales() OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = auth.uid()) OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))))))))",
         "with_check": null
       },
       {
@@ -244089,8 +244089,8 @@
         ],
         "schema": "public",
         "table": "order_items",
-        "using": "(EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND user_is_org_member(o.organization_id))))",
-        "with_check": "(EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND user_is_org_member(o.organization_id))))"
+        "using": "(can_view_all_sales() OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = auth.uid()) OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))))))))",
+        "with_check": "(can_view_all_sales() OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = auth.uid()) OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))))))))"
       },
       {
         "cmd": "DELETE",
@@ -244114,7 +244114,7 @@
         "schema": "public",
         "table": "orders",
         "using": null,
-        "with_check": "user_is_org_member(organization_id)"
+        "with_check": "(can_view_all_sales() OR (seller_id = auth.uid()))"
       },
       {
         "cmd": "SELECT",
@@ -244125,7 +244125,7 @@
         ],
         "schema": "public",
         "table": "orders",
-        "using": "user_is_org_member(organization_id)",
+        "using": "(can_view_all_sales() OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))",
         "with_check": null
       },
       {
@@ -244137,8 +244137,8 @@
         ],
         "schema": "public",
         "table": "orders",
-        "using": "user_is_org_member(organization_id)",
-        "with_check": "user_is_org_member(organization_id)"
+        "using": "(can_view_all_sales() OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))",
+        "with_check": "(can_view_all_sales() OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))"
       },
       {
         "cmd": "INSERT",

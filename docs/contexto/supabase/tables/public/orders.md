@@ -110,7 +110,7 @@
 | tipo | PERMISSIVE |
 | roles | authenticated |
 | USING |  |
-| WITH CHECK | `user_is_org_member(organization_id)` |
+| WITH CHECK | `(can_view_all_sales() OR (seller_id = auth.uid()))` |
 
 ### `orders_select`
 
@@ -119,7 +119,7 @@
 | comando | SELECT |
 | tipo | PERMISSIVE |
 | roles | public |
-| USING | `user_is_org_member(organization_id)` |
+| USING | `(can_view_all_sales() OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))` |
 | WITH CHECK |  |
 
 ### `orders_update`
@@ -129,8 +129,8 @@
 | comando | UPDATE |
 | tipo | PERMISSIVE |
 | roles | public |
-| USING | `user_is_org_member(organization_id)` |
-| WITH CHECK | `user_is_org_member(organization_id)` |
+| USING | `(can_view_all_sales() OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))` |
+| WITH CHECK | `(can_view_all_sales() OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))` |
 
 
 ## Triggers
