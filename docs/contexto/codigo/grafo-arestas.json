@@ -14845,6 +14845,7 @@
    "supabase/functions/_shared/structured-logger.ts"
   ],
   "supabase/functions/crm-db-bridge/index.ts": [
+   "supabase/functions/_shared/authorize.ts",
    "supabase/functions/_shared/bot-protection.ts",
    "supabase/functions/_shared/circuit-breaker.ts",
    "supabase/functions/_shared/cors.ts",
@@ -14852,7 +14853,7 @@
    "supabase/functions/_shared/external-fetch.ts",
    "supabase/functions/_shared/kill_switch.ts",
    "supabase/functions/_shared/request-id.ts",
-   "supabase/functions/crm-db-bridge/ownership.ts"
+   "supabase/functions/crm-db-bridge/query-policy.ts"
   ],
   "supabase/functions/detect-new-device/index.ts": [
    "supabase/functions/_shared/authorize.ts",

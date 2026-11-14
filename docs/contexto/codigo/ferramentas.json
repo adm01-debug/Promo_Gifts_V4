@@ -3,8 +3,8 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4784)",
-   "SQL (3399)",
+   "TypeScript (4788)",
+   "SQL (3401)",
    "Markdown (1023)",
    "JavaScript (443)",
    "JSON (126)",
@@ -5672,12 +5672,12 @@
     "ocorrencias": 30
    },
    {
-    "papel": "listitem",
+    "papel": "agente",
     "ocorrencias": 26
    },
    {
-    "papel": "agente",
-    "ocorrencias": 25
+    "papel": "listitem",
+    "ocorrencias": 26
    },
    {
     "papel": "vendedor",
@@ -5877,6 +5877,10 @@
    },
    {
     "papel": "contentinfo",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "coordenador",
     "ocorrencias": 1
    },
    {

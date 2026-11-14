@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3084,
+ "migrations": 3085,
  "seeds": [],
  "avisos": [
   "319 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -14778,6 +14778,52 @@
    "triggers": [
     "trg_crm_callback_events_updated_at"
    ],
+   "sem_rls": false,
+   "nao_usada": false
+  },
+  "crm_seller_identity_links": {
+   "colunas": {
+    "auth_user_id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": true,
+     "default": null,
+     "ref": "auth"
+    },
+    "created_at": {
+     "tipo": "timestamptz",
+     "nn": true,
+     "pk": false,
+     "default": "now()",
+     "ref": null
+    },
+    "crm_seller_id": {
+     "tipo": "bigint",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "link_source": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": "'email_bootstrap'",
+     "ref": null
+    }
+   },
+   "rls": true,
+   "policies": [],
+   "indices": [],
+   "fks": [
+    "auth_user_id->auth"
+   ],
+   "criada_em": "20261107134429_create_crm_seller_identity_links.sql",
+   "usada_no_front": 0,
+   "usada_em_edges": [
+    "crm-db-bridge"
+   ],
+   "triggers": [],
    "sem_rls": false,
    "nao_usada": false
   },

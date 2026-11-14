@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2467,
+ "total": 2470,
  "por_tipo": {
   "contrato": 65,
   "e2e": 679,
   "pytest": 4,
   "qa": 17,
-  "unit": 1702
+  "unit": 1705
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1009
+   "arquivos": 1012
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -19768,13 +19768,40 @@
    "casos": 1
   },
   {
+   "arquivo": "tests/security/crm-db-bridge-error-mapping.test.ts",
+   "tipo": "unit",
+   "linhas": 34,
+   "testa": [
+    "supabase/functions/crm-db-bridge/query-policy.ts"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/security/crm-db-bridge-filter-validation.test.ts",
+   "tipo": "unit",
+   "linhas": 101,
+   "testa": [
+    "supabase/functions/crm-db-bridge/query-policy.ts"
+   ],
+   "casos": 7
+  },
+  {
    "arquivo": "tests/security/crm-db-bridge-ownership.test.ts",
    "tipo": "unit",
-   "linhas": 105,
+   "linhas": 155,
    "testa": [
-    "supabase/functions/crm-db-bridge/ownership.ts"
+    "supabase/functions/crm-db-bridge/query-policy.ts"
    ],
-   "casos": 11
+   "casos": 13
+  },
+  {
+   "arquivo": "tests/security/crm-db-bridge-seller-scope.test.ts",
+   "tipo": "unit",
+   "linhas": 196,
+   "testa": [
+    "supabase/functions/crm-db-bridge/query-policy.ts"
+   ],
+   "casos": 10
   },
   {
    "arquivo": "tests/security/csp-radix-scroll-area-hash.test.ts",
@@ -21629,7 +21656,7 @@
   "supabase/functions/asia-ingestion/index.ts": 1,
   "supabase/functions/connections-auto-test/index.ts": 1,
   "supabase/functions/crm-db-bridge/index.ts": 3,
-  "supabase/functions/crm-db-bridge/ownership.ts": 1,
+  "supabase/functions/crm-db-bridge/query-policy.ts": 4,
   "supabase/functions/e2e-cleanup/index.ts": 1,
   "supabase/functions/ema-pipeline-health/handler.ts": 1,
   "supabase/functions/generate-ad-image/index.ts": 1,

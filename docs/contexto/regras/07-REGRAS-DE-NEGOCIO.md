@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e998b09560` · branch `main` · 2026-11-14 23:29 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `847aa874d2` · branch `main` · 2026-11-14 23:41 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1863,7 +1863,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `unhealthy` | compara, escreve | `supabase/functions/health-check/index.ts` |
 | `status` | `unknown` | compara, escreve | `src/components/products/PriceFreshnessBadge.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/components/system/CloudStatusDot.tsx`<br>`src/pages/kit-builder/useKitBuilderQuote.ts`<br>`src/utils/price-freshness.ts` |
 | `status` | `valid` | compara, escreve | `src/components/admin/connections/MaskedSuffixBadge.tsx`<br>`src/lib/masked-suffix.ts` |
-| … +114 linhas — lista completa em `context.json` | | | |
+| … +115 linhas — lista completa em `context.json` | | | |
 
 ### E.4 Enums e listas de valores
 
@@ -2157,6 +2157,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ContractErrorCode | missing_body \| invalid_json \| validation_failed \| unsupported_version \| version_negotiation_failed | `supabase/functions/_shared/contracts/errors.ts` |
 | InsertResultShape | rows \| empty-array \| null \| generic-string-error \| single-object \| primitive \| unknown | `supabase/functions/crm-db-bridge/index.ts` |
 | CRM_BROAD_READ_ROLES | "dev", "admin", "supervisor", "manager", "gerente" | `supabase/functions/crm-db-bridge/ownership.ts` |
+| CRM_TABLES | 'companies', 'contacts', 'company_addresses', 'company_social_media', 'contact_emails', 'contact_phones', 'customers', 'suppliers', 'carriers', | `supabase/functions/crm-db-bridge/query-policy.ts` |
 | EmaHealthStatus | OK \| WARN \| ERROR \| UNKNOWN | `supabase/functions/ema-pipeline-health/handler.ts` |
 | ALLOWED_EVENT_TYPES | "approved", "rejected", "order_created", "sent_to_client", "expired", | `supabase/functions/receive-crm-callback/index.ts` |
 | SimulationOutcome | passed \| rejected \| infra_failed \| skipped | `supabase/functions/simulation-orchestrator/outcomes.ts` |
@@ -2614,11 +2615,18 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```ts
   [ z.string().regex(/^[a-z_][a-z0-9_]*(\s+(asc|desc))?$/i), z.object({ column: z.string().regex(COLUMN_RE), ascending: z.boolean().optional() }), ]
   ```
+- **CrmSearchSchema** (`supabase/functions/crm-db-bridge/index.ts`, z.object):
+  ```ts
+  { column: z.string().regex(COLUMN_RE), term: z.string().min(1).max(500), }
+  ```
+- **BatchQuerySchema** (`supabase/functions/crm-db-bridge/index.ts`, z.object):
+  ```ts
+  { table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i), filters: CrmFiltersSchema.optional(), select: z.string().max(2000).optional(), orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(), limit: z.number().int().min(1).max(1000).optional(), offset: z.number().int().min(0).optional(), search: CrmSearchSchema.optional(), }
+  ```
 - **CrmRequestSchema** (`supabase/functions/crm-db-bridge/index.ts`, z.object):
   ```ts
-  { operation: z.enum(["select", "search", "insert", "update", "delete", "batch"]), table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i).optional(), id: z.string().uuid().optional(), filters: z.record(z.unknown()).refine( (f) => Object.keys(f).every((k) => COLUMN_RE.test(k) && !/^(or|and|not)$/i.test(k)), { message: "Filter keys must be valid column identifiers" }, ).optional(), select: z.string().max(2000).optional(), orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(), limit: z.number().int().min(1).max(1000).optional(), offset: z.number().int().min(0).optional(), search: z.object({ column: z.string().regex(COLUMN_RE), term: z.string().max(500) }).optional(), relations: z.string().max(2000).optional(), data: z.union([z.record(z.unknown( …
+  { operation: z.enum(["select", "search", "insert", "update", "delete", "batch"]), table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i).optional(), id: z.string().uuid().optional(), filters: CrmFiltersSchema.optional(), select: z.string().max(2000).optional(), orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(), limit: z.number().int().min(1).max(1000).optional(), offset: z.number().int().min(0).optional(), search: CrmSearchSchema.optional(), relations: z.string().max(2000).optional(), data: z.union([z.record(z.unknown()), z.array(z.record(z.unknown()))]).optional(), returning: z.string().max(2000).optional(), queries: z.array(BatchQuerySchema).max(10).optional(), }
   ```
-  - Regras cruzadas (refine): “Filter keys must be valid column identifiers”
 - **DeviceInfoSchema** (`supabase/functions/detect-new-device/index.ts`, z.object):
   ```ts
   { fingerprint: z.string().min(1).max(256), userAgent: z.string().max(1024), browserName: z.string().max(100), osName: z.string().max(100), deviceType: z.string().max(50), }
@@ -4916,25 +4924,29 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   return Object.values(audit.missing_in_inline).reduce((acc, list) => acc + list.length, 0) + Object.values(audit.extra_in_inline).reduce((acc, list) => acc + list.length, 0);
   ```
-- **validateFilters(filters: Record<string, unknown>, table?: string)** — `supabase/functions/crm-db-bridge/index.ts`
+- **applyFilters(query: any, filters: Record<string, unknown>, prefix?: string)** — `supabase/functions/crm-db-bridge/index.ts`
   ```
-  if (!table) return null; const allowed = FILTERABLE_COLUMNS[table]; if (!allowed) return null; const bad = Object.keys(filters).find((k) => !allowed.has(k)); return bad ? `Coluna '${bad}' não é filtrável em '${table}'` : null;
-  ```
-- **applyFilters(query: any, filters: Record<string, unknown>, table?: string)** — `supabase/functions/crm-db-bridge/index.ts`
-  ```
-  for (const [key, value] of Object.entries(filters)) { if (value === null) { query = query.is(key, null); } else if (typeof value === "object" && value !== null) { const f = value as Record<string, unknown>; if ("in" in f) query = query.in(key, f.in as unknown[]); // E084: escapar metacaracteres do ilike if ("ilike" in f) query = query.ilike(key, `%${escapeLikePattern(String(f.ilike))}%`); if ("eq" in f) query = query.eq(key, f.eq); if ("neq" in f) query = query.neq(key, f.neq as string); if ("gt …
+  for (const [key, value] of Object.entries(filters)) { const column = prefix ? `${prefix}.${key}` : key; if (value === null) { query = query.is(column, null); } else if (typeof value === "object" && value !== null) { const f = value as Record<string, unknown>; if ("in" in f) query = query.in(column, f.in as unknown[]); // E084: escapar metacaracteres do ilike if ("ilike" in f) query = query.ilike(column, `%${escapeLikePattern(String(f.ilike))}%`); if ("eq" in f) query = query.eq(column, f.eq); if …
   ```
 - **applyOrdering(query: any, orderBy: CrmOrderBy | CrmOrderBy[])** — `supabase/functions/crm-db-bridge/index.ts`
   ```
-  const clauses = Array.isArray(orderBy) ? orderBy : [orderBy]; return clauses.reduce((current, clause) => { if (typeof clause === "string") return current.order(clause); return current.order(clause.column, { ascending: clause.ascending ?? true }); }, query);
+  const clauses = Array.isArray(orderBy) ? orderBy : [orderBy]; return clauses.reduce((current, clause) => { if (typeof clause === "string") { const [column, direction] = clause.trim().split(/\s+/); return current.order(column, { ascending: direction?.toLowerCase() !== "desc" }); } return current.order(clause.column, { ascending: clause.ascending ?? true }); }, query);
   ```
 - **generateQuoteNumber(crm: SupabaseClient, data: Record<string, unknown> | Record<string, unknown>[])** — `supabase/functions/crm-db-bridge/index.ts`
   ```
   const now = new Date(); const yearShort = String(now.getFullYear()).slice(-2); const { data: lastQuotes } = await crm .from("quotes").select("quote_number") .ilike("quote_number", `%/${yearShort}`) .order("quote_number", { ascending: false }).limit(50); let maxNum = 10000; if (lastQuotes?.length) { for (const row of lastQuotes) { const parsed = parseInt((row.quote_number || "").replace(/\s+/g, "").split("/")[0] || "0", 10); if (!isNaN(parsed) && parsed > maxNum) maxNum = parsed; } } const genera …
   ```
-- **applyOwnerScope(crm: SupabaseClient, table: string, select: string, userRole?: string, userId?: string,)** — `supabase/functions/crm-db-bridge/index.ts`
+- **validateSelect(select: string | undefined, table: CrmTable)** — `supabase/functions/crm-db-bridge/query-policy.ts`
   ```
-  kind: "ok"; query: any; stripParent?: string
+  if (!select || select.trim() === '*') return null; const fields = select.split(',').map((field) => field.trim()); if (fields.some((field) => !field || field === '*')) { return "Campo 'select' inválido"; } const invalid = fields.find((field) => !COLUMN_SETS[table].has(field)); return invalid ? `Coluna '${invalid}' não existe em '${table}'` : null;
+  ```
+- **validateFilters(filters: Record<string, unknown> | undefined, table: CrmTable,)** — `supabase/functions/crm-db-bridge/query-policy.ts`
+  ```
+  if (!filters) return null; for (const [column, value] of Object.entries(filters)) { const isRelatedCompanyFilter = table === 'companies' && RELATED_COMPANY_FILTERS.has(column); if (!COLUMN_SETS[table].has(column) && !isRelatedCompanyFilter) { return `Coluna '${column}' não é filtrável em '${table}'`; } if (Array.isArray(value)) return `Valor de filtro inválido para '${column}'`; if (typeof value === 'number' && !Number.isFinite(value)) { return `Valor de filtro inválido para '${column}'`; } if ( …
+  ```
+- **validateQueryColumns(input: QueryColumnsInput, table: CrmTable)** — `supabase/functions/crm-db-bridge/query-policy.ts`
+  ```
+  const selectError = validateSelect(input.select, table); if (selectError) return selectError; const returningError = validateSelect(input.returning, table); if (returningError) return returningError; const filterError = validateFilters(input.filters, table); if (filterError) return filterError; if (input.search && !COLUMN_SETS[table].has(input.search.column)) { return `Coluna '${input.search.column}' não existe em '${table}'`; } const clauses = input.orderBy ? Array.isArray(input.orderBy) ? inpu …
   ```
 - **applyProductFilters(products: any[], filters: { categoryFilters: string[]; materialFilters: string[]; colorFilters: string[]; genderFilters:)** — `supabase/functions/expert-chat/index.ts`
   ```
@@ -5577,7 +5589,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `CACHE_TTL_MS` | `60` | `src/hooks/ui/useWorkspaceNotifications.tsx` |
 | `PREFETCH_MIN_INTERVAL_MS` | `5` | `src/hooks/ui/useWorkspaceNotifications.tsx` |
 | `CACHE_TTL_MS` | `12` | `src/hooks/voice/scribeTokenCache.ts` |
-| … +337 linhas — lista completa em `context.json` | | |
+| … +336 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6367,7 +6379,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | DOWNLOAD_SIZE_LIMIT | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_ACTION_AFTER | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_JSON_KEY | `scripts/diagnose-personalization-artifact.py` |
-| … +1250 linhas — lista completa em `context.json` | |
+| … +1249 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6441,9 +6453,12 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `agente` | `supabase/functions/comparison-ai-advisor/index.ts` |
 | `admin` | `supabase/functions/connection-tester/index.ts` |
 | `dev` | `supabase/functions/connection-tester/index.ts` |
-| `vendedor` | `supabase/functions/crm-db-bridge/index.ts` |
+| `r` | `supabase/functions/crm-db-bridge/index.ts` |
 | `r` | `supabase/functions/crm-db-bridge/ownership.ts` |
 | `vendedor` | `supabase/functions/crm-db-bridge/ownership.ts` |
+| `agente` | `supabase/functions/crm-db-bridge/query-policy.ts` |
+| `coordenador` | `supabase/functions/crm-db-bridge/query-policy.ts` |
+| `vendedor` | `supabase/functions/crm-db-bridge/query-policy.ts` |
 | `agente` | `supabase/functions/dropbox-list/index.ts` |
 | `user` | `supabase/functions/expert-chat/index.ts` |
 | `dev` | `supabase/functions/force-global-logout/index.ts` |
@@ -6490,7 +6505,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21218 testes em 2145 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21245 testes em 2148 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6794,7 +6809,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/product-webhook.test.ts` | 18 | product-webhook · evento product.created · retorna 200 para evento product.created válido · evento product.updated … |
 | `tests/hooks/useGlobalSearch-voice.test.ts` | 18 | Voice Action Handler Logic · navigate action · should extract route from navigate action · should handle navigate without route gracefully … |
 | `tests/lib/product-types.test.ts` | 18 | getProductImageUrl · should prefer primary_image_url · should fallback to image_url · should fallback to first image in images array … |
-| … +1845 linhas — lista completa em `context.json` | | |
+| … +1848 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7262,4 +7277,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Laser detection — must come before UV check since "Laser UV" exists | `src/components/mockup/techniqueColorUtils.ts` |
 | a caixa cheia é um limite superior: a bbox nunca subestima a marca girada e um | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
 | * Filtro de técnica EFETIVO — o mesmo que a prévia aplica. Decide se há regra. */ | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
-| … +1260 linhas — lista completa em `context.json` | |
+| … +1262 linhas — lista completa em `context.json` | |

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "e998b09560497e91422f9f63a014bdfd87a25a80",
+  "sha": "847aa874d2a12ca09f4238a6e2ea39224c317e2c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 23:29 UTC",
-  "files_total": 10106,
-  "code_files": 8633,
-  "code_lines": 1216765
+  "generated_at": "2026-11-14 23:41 UTC",
+  "files_total": 10112,
+  "code_files": 8639,
+  "code_lines": 1217892
  },
  "version": "1.3.2",
- "facts_hash": "6bc51be843d12a6e",
+ "facts_hash": "98ea9fbf270e16bb",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1221,8 +1221,8 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3399,
-   ".ts": 2919,
+   ".sql": 3401,
+   ".ts": 2923,
    ".tsx": 1866,
    ".mjs": 436,
    ".py": 13,
@@ -96211,6 +96211,7 @@
    "supabase/migrations/20261101232022_cron001_stagger_schedules_reapply.sql",
    "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql",
    "supabase/migrations/20261106232045_fix_handle_updated_at_search_path.sql",
+   "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql",
    "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql",
    "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql",
    "supabase/migrations/20261108030000_ft005_cron_scheduled_reports.sql",
@@ -96295,6 +96296,7 @@
    "supabase/rollbacks/20261101202000_rollback.sql",
    "supabase/rollbacks/20261104100000_rollback.sql",
    "supabase/rollbacks/20261106232045_rollback.sql",
+   "supabase/rollbacks/20261107134429_rollback.sql",
    "supabase/rollbacks/20261107180000_rollback.sql",
    "supabase/rollbacks/20261108001500_rollback.sql",
    "supabase/rollbacks/20261108030000_rollback.sql",
@@ -96889,6 +96891,7 @@
    "ops.pgss_history": "enabled",
    "ops.wraparound_monitor_log": "enabled",
    "stock_notes": "enabled",
+   "crm_seller_identity_links": "enabled",
    "supplier_products_raw_history_p2027_03": "disabled",
    "supplier_products_raw_history_p2027_04": "disabled",
    "supplier_products_raw_history_p2027_05": "disabled",
@@ -131495,6 +131498,38 @@
    },
    {
     "kind": "revoke",
+    "privs": "all",
+    "object": "crm_seller_identity_links",
+    "objkind": "table",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "crm_seller_identity_links",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "crm_seller_identity_links",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert",
+    "object": "crm_seller_identity_links",
+    "objkind": "table",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "select",
     "object": "suppliers",
     "objkind": "table",
@@ -135803,6 +135838,8 @@
    "table:ops.pgss_history": "PLANO_DBA E40 — snapshot semanal de extensions.pg_stat_statements (filtrado a ",
    "table:ops.wraparound_monitor_log": "PLANO_DBA E33 — snapshot diário de risco de wraparound de XID/multixact, ",
    "function:fn_backfill_queue_reap_stuck": "Rede de segurança de idempotência: reclama linhas de image_backfill_queue travadas em processing, incrementa attempts e desiste (failed) após N tentativas em vez de tentar para sempre. Agendada via pg_cron (incidente 2026-10-13).",
+   "table:crm_seller_identity_links": "Mapeamento 1:1 canônico auth.users -> public.users.id do CRM externo usado pelo crm-db-bridge.",
+   "column:crm_seller_identity_links.crm_seller_id": "Identificador inteiro de public.users.id no projeto CRM externo pgxfvjmuubtbowutlide.",
    "table:e2e_cleanup_audit": "created_by=20261108001500_reconcile_e2e_cleanup_audit; append-only Edge cleanup audit",
    "table:frontend_telemetry": "ATENCAO: Auditoria 20260602 - user_id = NULL em 100% dos registros. Bug de instrumentacao no frontend."
   },
@@ -138824,9 +138861,11 @@
     "auth": "PÚBLICA (verify_jwt=false em config.toml)",
     "tables": [
      "companies",
+     "crm_seller_identity_links",
      "integration_credentials",
      "quotes",
      "user_roles",
+     "user_token_revocations",
      "users"
     ],
     "env": [
@@ -138838,12 +138877,10 @@
     "external": [],
     "invokes": [],
     "doc": "",
-    "errors": [
-     "vínculo com usuário do CRM: ${error.message}"
-    ],
+    "errors": [],
     "side_effects": [],
     "webhook_events": [],
-    "idempotency": false
+    "idempotency": true
    },
    {
     "name": "detect-new-device",
@@ -149003,8 +149040,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 270,
-   "lines": 49484,
+   "files": 271,
+   "lines": 50195,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -149026,6 +149063,7 @@
     "connection_test_history",
     "contacts",
     "crm_callback_events",
+    "crm_seller_identity_links",
     "customers",
     "device_login_notifications",
     "discount_approval_requests",
@@ -149247,8 +149285,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3083,
-   "lines": 221756,
+   "files": 3084,
+   "lines": 221786,
    "tables": [
     "...",
     "admin_audit_log",
@@ -149346,8 +149384,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 85,
-   "lines": 2427,
+   "files": 86,
+   "lines": 2432,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -149402,6 +149440,7 @@
     "supabase/rollbacks/20261101202000_rollback.sql",
     "supabase/rollbacks/20261104100000_rollback.sql",
     "supabase/rollbacks/20261106232045_rollback.sql",
+    "supabase/rollbacks/20261107134429_rollback.sql",
     "supabase/rollbacks/20261107180000_rollback.sql",
     "supabase/rollbacks/20261108001500_rollback.sql",
     "supabase/rollbacks/20261108030000_rollback.sql",
@@ -149432,8 +149471,7 @@
     "supabase/rollbacks/20261113235000_rollback.sql",
     "supabase/rollbacks/20261113235800_rollback.sql",
     "supabase/rollbacks/20261114003000_rollback.sql",
-    "supabase/rollbacks/20261114014100_rollback.sql",
-    "supabase/rollbacks/20261114014500_rollback.sql"
+    "supabase/rollbacks/20261114014100_rollback.sql"
    ]
   },
   {
@@ -149522,13 +149560,14 @@
   },
   {
    "module": "tests",
-   "files": 1023,
-   "lines": 156835,
+   "files": 1026,
+   "lines": 157216,
    "tables": [
     "bot_detection_log",
     "clients",
     "companies",
     "crm_callback_events",
+    "crm_seller_identity_links",
     "customization_price_tables",
     "e2e_cleanup_rate_limit",
     "foreign_quotes",
@@ -149543,6 +149582,7 @@
     "stock_notes",
     "tabela_antiga",
     "user_roles",
+    "users",
     "v_products_public",
     "workspace_notifications"
    ],
@@ -150143,6 +150183,17 @@
      "supabase/functions/receive-crm-callback/index.test.ts",
      "supabase/functions/receive-crm-callback/index.ts",
      "tests/edge-functions/integration/receive-crm-callback.fuzz.test.ts"
+    ]
+   },
+   "crm_seller_identity_links": {
+    "select": [
+     "supabase/functions/crm-db-bridge/index.ts"
+    ],
+    "insert": [
+     "supabase/functions/crm-db-bridge/index.ts"
+    ],
+    "ref": [
+     "tests/security/crm-db-bridge-seller-scope.test.ts"
     ]
    },
    "custom_kits": {
@@ -151982,6 +152033,9 @@
    "users": {
     "select": [
      "supabase/functions/crm-db-bridge/index.ts"
+    ],
+    "ref": [
+     "tests/security/crm-db-bridge-seller-scope.test.ts"
     ]
    },
    "v_ai_function_routing_effective": {
@@ -152337,6 +152391,10 @@
     "payload",
     "received_at",
     "result"
+   ],
+   "crm_seller_identity_links": [
+    "auth_user_id",
+    "crm_seller_id"
    ],
    "custom_kits": [
     "id",
@@ -153223,7 +153281,9 @@
    ],
    "users": [
     "email",
-    "id"
+    "id",
+    "is_active",
+    "is_vendedor"
    ],
    "v_ai_function_routing_effective": [
     "function_name",
@@ -155688,7 +155748,7 @@
    },
    {
     "file": "supabase/functions/crm-db-bridge/index.ts",
-    "count": 6
+    "count": 4
    },
    {
     "file": "supabase/functions/e2e-cleanup/index.ts",
@@ -156099,6 +156159,7 @@
    "b",
    "clients",
    "contacts",
+   "crm_seller_identity_links",
    "customers",
    "customization_price_tables",
    "dashboard_table",
@@ -157023,6 +157084,14 @@
    {
     "table": "product_images",
     "column": "width_px"
+   },
+   {
+    "table": "users",
+    "column": "is_active"
+   },
+   {
+    "table": "users",
+    "column": "is_vendedor"
    }
   ]
  },
@@ -157973,12 +158042,26 @@
    },
    {
     "file": "supabase/functions/crm-db-bridge/index.ts",
+    "name": "CrmSearchSchema",
+    "kind": "object",
+    "body": "{ column: z.string().regex(COLUMN_RE), term: z.string().min(1).max(500), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/index.ts",
+    "name": "BatchQuerySchema",
+    "kind": "object",
+    "body": "{ table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i), filters: CrmFiltersSchema.optional(), select: z.string().max(2000).optional(), orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(), limit: z.number().int().min(1).max(1000).optional(), offset: z.number().int().min(0).optional(), search: CrmSearchSchema.optional(), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/index.ts",
     "name": "CrmRequestSchema",
     "kind": "object",
-    "body": "{ operation: z.enum([\"select\", \"search\", \"insert\", \"update\", \"delete\", \"batch\"]), table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i).optional(), id: z.string().uuid().optional(), filters: z.record(z.unknown()).refine( (f) => Object.keys(f).every((k) => COLUMN_RE.test(k) && !/^(or|and|not)$/i.test(k)), { message: \"Filter keys must be valid column identifiers\" }, ).optional(), select: z.string().max(2000).optional(), orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(), limit: z.number().int().min(1).max(1000).optional(), offset: z.number().int().min(0).optional(), search: z.object({ column: z.string().regex(COLUMN_RE), term: z.string().max(500) }).optional(), relations: z.string().max(2000).optional(), data: z.union([z.record(z.unknown( …",
-    "refines": [
-     "Filter keys must be valid column identifiers"
-    ],
+    "body": "{ operation: z.enum([\"select\", \"search\", \"insert\", \"update\", \"delete\", \"batch\"]), table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i).optional(), id: z.string().uuid().optional(), filters: CrmFiltersSchema.optional(), select: z.string().max(2000).optional(), orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(), limit: z.number().int().min(1).max(1000).optional(), offset: z.number().int().min(0).optional(), search: CrmSearchSchema.optional(), relations: z.string().max(2000).optional(), data: z.union([z.record(z.unknown()), z.array(z.record(z.unknown()))]).optional(), returning: z.string().max(2000).optional(), queries: z.array(BatchQuerySchema).max(10).optional(), }",
+    "refines": [],
     "chain": []
    },
    {
@@ -160568,6 +160651,11 @@
     "file": "supabase/functions/crm-db-bridge/ownership.ts",
     "name": "CRM_BROAD_READ_ROLES",
     "values": "\"dev\", \"admin\", \"supervisor\", \"manager\", \"gerente\""
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/query-policy.ts",
+    "name": "CRM_TABLES",
+    "values": "'companies', 'contacts', 'company_addresses', 'company_social_media', 'contact_emails', 'contact_phones', 'customers', 'suppliers', 'carriers',"
    },
    {
     "file": "supabase/functions/ema-pipeline-health/handler.ts",
@@ -166413,10 +166501,6 @@
     "msg": "invalid_sentry_dsn"
    },
    {
-    "file": "supabase/functions/crm-db-bridge/index.ts",
-    "msg": "vínculo com usuário do CRM: ${error.message}"
-   },
-   {
     "file": "supabase/functions/e2e-cleanup/index.ts",
     "msg": "User lookup exceeded the safe limit of ${maxUserPages} pages"
    },
@@ -167072,7 +167156,7 @@
    },
    {
     "file": "supabase/functions/crm-db-bridge/index.ts",
-    "value": "vendedor"
+    "value": "r"
    },
    {
     "file": "supabase/functions/crm-db-bridge/ownership.ts",
@@ -167080,6 +167164,18 @@
    },
    {
     "file": "supabase/functions/crm-db-bridge/ownership.ts",
+    "value": "vendedor"
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/query-policy.ts",
+    "value": "agente"
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/query-policy.ts",
+    "value": "coordenador"
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/query-policy.ts",
     "value": "vendedor"
    },
    {
@@ -172646,11 +172742,15 @@
    },
    {
     "file": "supabase/functions/crm-db-bridge/index.ts",
-    "text": "Uma indisponibilidade do CRM não deve mascarar a resposta de auth nem"
+    "text": "Rate limit por userId (imune a IPs compartilhados/NAT corporativo)."
    },
    {
     "file": "supabase/functions/crm-db-bridge/index.ts",
-    "text": "Rate limit por userId (imune a IPs compartilhados/NAT corporativo)."
+    "text": "Somente uma operacao que efetivamente consultara o CRM pode consumir o"
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/index.ts",
+    "text": "probe HALF_OPEN. Auth, diagnosticos, rate-limit e validacao ficam antes."
    },
    {
     "file": "supabase/functions/crm-db-bridge/ownership.ts",
@@ -172659,6 +172759,10 @@
    {
     "file": "supabase/functions/crm-db-bridge/ownership.ts",
     "text": "(vê só os registros SEM dono). Regra do dono em 13/11: \"vendedor vê os dele + os sem dono\""
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/query-policy.ts",
+    "text": "de cliente e não eram escopados antes (ownership.ts do main listava como PII apenas"
    },
    {
     "file": "supabase/functions/crm-db-bridge/scope_integration_test.ts",
@@ -196794,19 +196898,14 @@
     "value": "400"
    },
    {
-    "file": "supabase/functions/crm-db-bridge/index.ts",
-    "name": "BREAKER_SKIP_HEADER",
-    "value": "\"x-bridge-breaker-skip\""
+    "file": "supabase/functions/crm-db-bridge/query-policy.ts",
+    "name": "INTERNAL_SCOPE_ALIAS",
+    "value": "'__seller_scope'"
    },
    {
-    "file": "supabase/functions/crm-db-bridge/index.ts",
-    "name": "CRM_USER_TTL_MS",
-    "value": "10"
-   },
-   {
-    "file": "supabase/functions/crm-db-bridge/index.ts",
-    "name": "OWNER_DENY_MESSAGE",
-    "value": "\"Leitura desta tabela do CRM requer perfil supervisor\""
+    "file": "supabase/functions/crm-db-bridge/query-policy.ts",
+    "name": "INTERNAL_ADDRESS_ALIAS",
+    "value": "'__address_filter'"
    },
    {
     "file": "supabase/functions/crm-db-bridge/scope_integration_test.ts",
@@ -207850,6 +207949,36 @@
     "kind": "escreve"
    },
    {
+    "file": "supabase/functions/crm-db-bridge/query-policy.ts",
+    "field": "role",
+    "value": "vendedor",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/query-policy.ts",
+    "field": "role",
+    "value": "agente",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/query-policy.ts",
+    "field": "role",
+    "value": "vendedor",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/query-policy.ts",
+    "field": "role",
+    "value": "agente",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/query-policy.ts",
+    "field": "role",
+    "value": "coordenador",
+    "kind": "compara"
+   },
+   {
     "file": "supabase/functions/crm-db-bridge/scope_integration_test.ts",
     "field": "role",
     "value": "authenticated",
@@ -212329,21 +212458,15 @@
    },
    {
     "file": "supabase/functions/crm-db-bridge/index.ts",
-    "name": "validateFilters",
-    "params": "filters: Record<string, unknown>, table?: string",
-    "body": "if (!table) return null; const allowed = FILTERABLE_COLUMNS[table]; if (!allowed) return null; const bad = Object.keys(filters).find((k) => !allowed.has(k)); return bad ? `Coluna '${bad}' não é filtrável em '${table}'` : null;"
-   },
-   {
-    "file": "supabase/functions/crm-db-bridge/index.ts",
     "name": "applyFilters",
-    "params": "query: any, filters: Record<string, unknown>, table?: string",
-    "body": "for (const [key, value] of Object.entries(filters)) { if (value === null) { query = query.is(key, null); } else if (typeof value === \"object\" && value !== null) { const f = value as Record<string, unknown>; if (\"in\" in f) query = query.in(key, f.in as unknown[]); // E084: escapar metacaracteres do ilike if (\"ilike\" in f) query = query.ilike(key, `%${escapeLikePattern(String(f.ilike))}%`); if (\"eq\" in f) query = query.eq(key, f.eq); if (\"neq\" in f) query = query.neq(key, f.neq as string); if (\"gt …"
+    "params": "query: any, filters: Record<string, unknown>, prefix?: string",
+    "body": "for (const [key, value] of Object.entries(filters)) { const column = prefix ? `${prefix}.${key}` : key; if (value === null) { query = query.is(column, null); } else if (typeof value === \"object\" && value !== null) { const f = value as Record<string, unknown>; if (\"in\" in f) query = query.in(column, f.in as unknown[]); // E084: escapar metacaracteres do ilike if (\"ilike\" in f) query = query.ilike(column, `%${escapeLikePattern(String(f.ilike))}%`); if (\"eq\" in f) query = query.eq(column, f.eq); if …"
    },
    {
     "file": "supabase/functions/crm-db-bridge/index.ts",
     "name": "applyOrdering",
     "params": "query: any, orderBy: CrmOrderBy | CrmOrderBy[]",
-    "body": "const clauses = Array.isArray(orderBy) ? orderBy : [orderBy]; return clauses.reduce((current, clause) => { if (typeof clause === \"string\") return current.order(clause); return current.order(clause.column, { ascending: clause.ascending ?? true }); }, query);"
+    "body": "const clauses = Array.isArray(orderBy) ? orderBy : [orderBy]; return clauses.reduce((current, clause) => { if (typeof clause === \"string\") { const [column, direction] = clause.trim().split(/\\s+/); return current.order(column, { ascending: direction?.toLowerCase() !== \"desc\" }); } return current.order(clause.column, { ascending: clause.ascending ?? true }); }, query);"
    },
    {
     "file": "supabase/functions/crm-db-bridge/index.ts",
@@ -212352,10 +212475,22 @@
     "body": "const now = new Date(); const yearShort = String(now.getFullYear()).slice(-2); const { data: lastQuotes } = await crm .from(\"quotes\").select(\"quote_number\") .ilike(\"quote_number\", `%/${yearShort}`) .order(\"quote_number\", { ascending: false }).limit(50); let maxNum = 10000; if (lastQuotes?.length) { for (const row of lastQuotes) { const parsed = parseInt((row.quote_number || \"\").replace(/\\s+/g, \"\").split(\"/\")[0] || \"0\", 10); if (!isNaN(parsed) && parsed > maxNum) maxNum = parsed; } } const genera …"
    },
    {
-    "file": "supabase/functions/crm-db-bridge/index.ts",
-    "name": "applyOwnerScope",
-    "params": "crm: SupabaseClient, table: string, select: string, userRole?: string, userId?: string,",
-    "body": "kind: \"ok\"; query: any; stripParent?: string"
+    "file": "supabase/functions/crm-db-bridge/query-policy.ts",
+    "name": "validateSelect",
+    "params": "select: string | undefined, table: CrmTable",
+    "body": "if (!select || select.trim() === '*') return null; const fields = select.split(',').map((field) => field.trim()); if (fields.some((field) => !field || field === '*')) { return \"Campo 'select' inválido\"; } const invalid = fields.find((field) => !COLUMN_SETS[table].has(field)); return invalid ? `Coluna '${invalid}' não existe em '${table}'` : null;"
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/query-policy.ts",
+    "name": "validateFilters",
+    "params": "filters: Record<string, unknown> | undefined, table: CrmTable,",
+    "body": "if (!filters) return null; for (const [column, value] of Object.entries(filters)) { const isRelatedCompanyFilter = table === 'companies' && RELATED_COMPANY_FILTERS.has(column); if (!COLUMN_SETS[table].has(column) && !isRelatedCompanyFilter) { return `Coluna '${column}' não é filtrável em '${table}'`; } if (Array.isArray(value)) return `Valor de filtro inválido para '${column}'`; if (typeof value === 'number' && !Number.isFinite(value)) { return `Valor de filtro inválido para '${column}'`; } if ( …"
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/query-policy.ts",
+    "name": "validateQueryColumns",
+    "params": "input: QueryColumnsInput, table: CrmTable",
+    "body": "const selectError = validateSelect(input.select, table); if (selectError) return selectError; const returningError = validateSelect(input.returning, table); if (returningError) return returningError; const filterError = validateFilters(input.filters, table); if (filterError) return filterError; if (input.search && !COLUMN_SETS[table].has(input.search.column)) { return `Coluna '${input.search.column}' não existe em '${table}'`; } const clauses = input.orderBy ? Array.isArray(input.orderBy) ? inpu …"
    },
    {
     "file": "supabase/functions/expert-chat/index.ts",
@@ -294834,52 +294969,160 @@
     "name": "autentica antes de rejeitar por indisponibilidade do CRM"
    },
    {
-    "file": "tests/security/crm-db-bridge-ownership.test.ts",
-    "name": "crm-db-bridge — resolução de role (E083/E081)"
+    "file": "tests/security/crm-db-bridge-error-mapping.test.ts",
+    "name": "crm-db-bridge — mapeamento de erros"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-error-mapping.test.ts",
+    "name": "mapeia %o/%i para HTTP %i"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-error-mapping.test.ts",
+    "name": "alimenta o breaker somente com falhas transitórias 5xx"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-filter-validation.test.ts",
+    "name": "crm-db-bridge — validação de campos"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-filter-validation.test.ts",
+    "name": "aceita os campos reais usados por empresas e rejeita aliases inexistentes"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-filter-validation.test.ts",
+    "name": "traduz cidade e estado para a relação de endereços sem expor embedding do caller"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-filter-validation.test.ts",
+    "name": "rejeita filtros e colunas de busca/ordenação desconhecidos antes do PostgREST"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-filter-validation.test.ts",
+    "name": "rejeita arrays fora de in, operandos estruturados e payloads excessivos"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-filter-validation.test.ts",
+    "name": "valida returning com a mesma allowlist de select"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-filter-validation.test.ts",
+    "name": "impede UPDATE e DELETE sem predicado efetivo"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-filter-validation.test.ts",
+    "name": "valida campos reais nas tabelas filhas"
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
-    "name": "%j é tratado como vendedor"
+    "name": "crm-db-bridge — resolução de role"
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
-    "name": "a role mais ampla vence quando o usuário tem várias"
+    "name": "papéis amplos não são tratados como vendedor"
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
-    "name": "crm-db-bridge — escopo de ownership usa a coluna real do CRM"
+    "name": "vendedor e agente têm escopo por carteira"
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
-    "name": "companies.owner_id não existe no CRM; a coluna de dono é user_id"
+    "name": "vendedor, agente e coordenador têm escrita restrita"
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
-    "name": "vendedor em companies/contacts filtra por user_id"
+    "name": "a role mais ampla vence quando o usuário tem várias (ROLE_ORDER no handler)"
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
-    "name": "e-mails/telefones do contato seguem o dono do contato (regra do dono, 12/11)"
+    "name": "crm-db-bridge — escopo estrito por vendedor dono (decisão do dono, 2026-11-14)"
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
-    "name": "customers: vendedor filtra pela coluna real vendedor_id (FK → users.id do CRM)"
+    "name": "as 5 tabelas de dado de cliente são escopadas"
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
-    "name": "vendedor sem vínculo com o CRM vê só os SEM dono (regra do dono, 13/11)"
+    "name": "customers filtra pela coluna real vendedor_id"
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
-    "name": "id do CRM que não é uuid nunca é interpolado no filtro (vira "
+    "name": "as filhas seguem o dono pela relação, não por coluna própria"
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
-    "name": "roles amplas e tabelas sem PII não recebem filtro"
+    "name": "o handler aplica o escopo com .eq, não com .or"
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
-    "name": "o handler não filtra mais por owner_id"
+    "name": "crm-db-bridge — a regra revogada não pode voltar"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "nenhum escopo "
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "o vendedor não é mais descoberto pelo e-mail a cada requisição"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "o bootstrap por e-mail grava o vínculo e detecta ambiguidade"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "sem vendedor resolvido, o escopo não abre: cai em -1, que não casa com nenhum id"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "crm-db-bridge — fornecedor e transportadora não são dado de cliente"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "suppliers e carriers ficam sem escopo por vendedor"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-seller-scope.test.ts",
+    "name": "crm-db-bridge — escopo de vendedor"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-seller-scope.test.ts",
+    "name": "define ownership explícito para as nove tabelas permitidas"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-seller-scope.test.ts",
+    "name": "usa customers.vendedor_id diretamente e relações inner nos demais níveis"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-seller-scope.test.ts",
+    "name": "remove relações internas antes de responder ao cliente"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-seller-scope.test.ts",
+    "name": "mapeia e-mail autenticado para users.id do CRM sem confiar em UUIDs entre projetos"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-seller-scope.test.ts",
+    "name": "versiona um vínculo 1:1, privado e imutável no banco canônico"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-seller-scope.test.ts",
+    "name": "mantém validação e diagnósticos antes de consumir o probe do circuit breaker"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-seller-scope.test.ts",
+    "name": "propaga o vendedor CRM e o papel para SELECT, SEARCH e BATCH"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-seller-scope.test.ts",
+    "name": "nega roles desconhecidas e aplica o escopo a vendedor e agente"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-seller-scope.test.ts",
+    "name": "exige AAL2 para mutações e diagnósticos de credenciais"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-seller-scope.test.ts",
+    "name": "recria o client CRM quando a credencial rotaciona"
    },
    {
     "file": "tests/security/csp-radix-scroll-area-hash.test.ts",
@@ -342421,6 +342664,7 @@
       "compara:src/components/admin/users/UserTable.tsx",
       "compara:src/pages/admin/AdminPromoverUsuarioPage.tsx",
       "compara:src/pages/admin/AdminUsuariosPage.tsx",
+      "compara:supabase/functions/crm-db-bridge/query-policy.ts",
       "compara:supabase/functions/manage-users/index.ts",
       "escreve:src/components/admin/users/CreateUserDialog.tsx",
       "escreve:supabase/functions/_shared/createEdge.ts",
@@ -342428,7 +342672,8 @@
       "filtra:src/pages/admin/SellerDiscountLimitsAdminPage.tsx"
      ],
      "agente": [
-      "compara:src/components/access/DevAccessDeniedPage.tsx"
+      "compara:src/components/access/DevAccessDeniedPage.tsx",
+      "compara:supabase/functions/crm-db-bridge/query-policy.ts"
      ],
      "string": [
       "compara:src/components/access/DevAccessDeniedPage.tsx"
@@ -342486,6 +342731,9 @@
       "escreve:supabase/functions/visual-search/index.ts",
       "escreve:supabase/functions/voice-agent/index.ts",
       "escreve:supabase/functions/word-magic/index.ts"
+     ],
+     "coordenador": [
+      "compara:supabase/functions/crm-db-bridge/query-policy.ts"
      ],
      "anon": [
       "compara:tests/edge-functions/live/_live-client.ts",
@@ -349178,6 +349426,7 @@
    "supabase/migrations/20261101150001_sec004b_revoke_fn_cron_guard_authenticated.sql",
    "supabase/migrations/20261101150003_st002_st003_avatars_recibos_policies.sql",
    "supabase/migrations/20261101202000_drop_revoke_agent_created_functions.sql",
+   "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql",
    "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql",
    "supabase/migrations/20261111191000_restore_get_sitemap_public_anon_execute.sql",
    "supabase/migrations/20261112120000_fix_fn_get_supplier_reliability.sql",
@@ -349246,6 +349495,7 @@
    "tests/scripts/live-gates-credentials.test.mjs",
    "tests/scripts/load-tests-status-codes.test.mjs",
    "tests/scripts/tools-batch6.test.mjs",
+   "tests/security/crm-db-bridge-seller-scope.test.ts",
    "tests/security/edge-authz-bypass.test.ts",
    "tests/security/notification-rls.spec.ts",
    "tests/security/restore-seller-cart-rpc.test.ts",
@@ -384573,6 +384823,38 @@
    },
    {
     "kind": "revoke",
+    "privs": "all",
+    "object": "crm_seller_identity_links",
+    "objkind": "table",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "crm_seller_identity_links",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "crm_seller_identity_links",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert",
+    "object": "crm_seller_identity_links",
+    "objkind": "table",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "select",
     "object": "suppliers",
     "objkind": "table",
@@ -389756,6 +390038,16 @@
     "where": []
    },
    {
+    "kind": "coluna",
+    "msg": "coluna `is_active` usada no código não existe no schema de `users`",
+    "where": []
+   },
+   {
+    "kind": "coluna",
+    "msg": "coluna `is_vendedor` usada no código não existe no schema de `users`",
+    "where": []
+   },
+   {
     "kind": "tabela",
     "msg": "tabela `...` usada no código não existe nas migrations/types do repo",
     "where": [
@@ -389798,6 +390090,14 @@
     "where": [
      "scripts/ai-context/gerar.unit.mjs",
      "supabase/functions/expert-chat/index.ts"
+    ]
+   },
+   {
+    "kind": "tabela",
+    "msg": "tabela `crm_seller_identity_links` usada no código não existe nas migrations/types do repo",
+    "where": [
+     "supabase/functions/crm-db-bridge/index.ts",
+     "tests/security/crm-db-bridge-seller-scope.test.ts"
     ]
    },
    {
@@ -390690,7 +390990,7 @@
    },
    {
     "kind": "dinâmico",
-    "msg": "6 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
+    "msg": "4 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
     "where": [
      "supabase/functions/crm-db-bridge/index.ts"
     ]
@@ -485260,7 +485560,7 @@
   },
   "supabase/functions/crm-db-bridge/index.ts": {
    "path": "supabase/functions/crm-db-bridge/index.ts",
-   "lines": 988,
+   "lines": 1076,
    "exports": [
     "function getCrmClient",
     "function __getClientBootStateForTests",
@@ -485269,9 +485569,7 @@
     "type InsertResultShape",
     "interface InsertResultDiagnostic",
     "function inspectInsertResult",
-    "function logInsertResultIfAnomalous",
-    "function classifyDbError",
-    "function isClientDbError"
+    "function logInsertResultIfAnomalous"
    ],
    "tables": [
     {
@@ -485283,11 +485581,27 @@
      "op": "select"
     },
     {
-     "table": "quotes",
+     "table": "crm_seller_identity_links",
      "op": "select"
     },
     {
      "table": "users",
+     "op": "select"
+    },
+    {
+     "table": "users",
+     "op": "select"
+    },
+    {
+     "table": "crm_seller_identity_links",
+     "op": "insert"
+    },
+    {
+     "table": "crm_seller_identity_links",
+     "op": "select"
+    },
+    {
+     "table": "quotes",
      "op": "select"
     },
     {
@@ -485303,24 +485617,27 @@
      "role",
      "user_id"
     ],
-    "quotes": [
-     "id",
-     "quote_number"
+    "crm_seller_identity_links": [
+     "auth_user_id",
+     "crm_seller_id"
     ],
     "users": [
      "email",
-     "id"
+     "id",
+     "is_active",
+     "is_vendedor"
+    ],
+    "quotes": [
+     "id",
+     "quote_number"
     ]
    },
-   "dyn_from": 6,
+   "dyn_from": 4,
    "env": [
     "LOG_CRM_BRIDGE_VERBOSE",
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
-   ],
-   "errors": [
-    "vínculo com usuário do CRM: ${error.message}"
    ],
    "zod": [
     {
@@ -485331,12 +485648,24 @@
      "chain": []
     },
     {
+     "name": "CrmSearchSchema",
+     "kind": "object",
+     "body": "{ column: z.string().regex(COLUMN_RE), term: z.string().min(1).max(500), }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "BatchQuerySchema",
+     "kind": "object",
+     "body": "{ table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i), filters: CrmFiltersSchema.optional(), select: z.string().max(2000).optional(), orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(), limit: z.number().int().min(1).max(1000).optional(), offset: z.number().int().min(0).optional(), search: CrmSearchSchema.optional(), }",
+     "refines": [],
+     "chain": []
+    },
+    {
      "name": "CrmRequestSchema",
      "kind": "object",
-     "body": "{ operation: z.enum([\"select\", \"search\", \"insert\", \"update\", \"delete\", \"batch\"]), table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i).optional(), id: z.string().uuid().optional(), filters: z.record(z.unknown()).refine( (f) => Object.keys(f).every((k) => COLUMN_RE.test(k) && !/^(or|and|not)$/i.test(k)), { message: \"Filter keys must be valid column identifiers\" }, ).optional(), select: z.string().max(2000).optional(), orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(), limit: z.number().int().min(1).max(1000).optional(), offset: z.number().int().min(0).optional(), search: z.object({ column: z.string().regex(COLUMN_RE), term: z.string().max(500) }).optional(), relations: z.string().max(2000).optional(), data: z.union([z.record(z.unknown( …",
-     "refines": [
-      "Filter keys must be valid column identifiers"
-     ],
+     "body": "{ operation: z.enum([\"select\", \"search\", \"insert\", \"update\", \"delete\", \"batch\"]), table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i).optional(), id: z.string().uuid().optional(), filters: CrmFiltersSchema.optional(), select: z.string().max(2000).optional(), orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(), limit: z.number().int().min(1).max(1000).optional(), offset: z.number().int().min(0).optional(), search: CrmSearchSchema.optional(), relations: z.string().max(2000).optional(), data: z.union([z.record(z.unknown()), z.array(z.record(z.unknown()))]).optional(), returning: z.string().max(2000).optional(), queries: z.array(BatchQuerySchema).max(10).optional(), }",
+     "refines": [],
      "chain": []
     }
    ],
@@ -485350,22 +485679,10 @@
     {
      "name": "PREVIEW_MAX",
      "value": "400"
-    },
-    {
-     "name": "BREAKER_SKIP_HEADER",
-     "value": "\"x-bridge-breaker-skip\""
-    },
-    {
-     "name": "CRM_USER_TTL_MS",
-     "value": "10"
-    },
-    {
-     "name": "OWNER_DENY_MESSAGE",
-     "value": "\"Leitura desta tabela do CRM requer perfil supervisor\""
     }
    ],
    "role_checks": [
-    "vendedor"
+    "r"
    ],
    "rule_comments": [
     "redeploy marker: fix 429 - auth-first + rate-limit por userId + admin singleton (2026-05-26)",
@@ -485373,34 +485690,25 @@
     "Bot-protection roda DEPOIS do auth para usar userId como chave de rate limit,",
     "// BUG ANTERIOR: rate-limit por IP -> 1 usuario abrindo varias abas podia banir",
     "CORRECAO: rate-limit por userId -> cada usuario tem sua propria janela (300/min).",
-    "Uma indisponibilidade do CRM não deve mascarar a resposta de auth nem",
-    "Rate limit por userId (imune a IPs compartilhados/NAT corporativo)."
+    "Rate limit por userId (imune a IPs compartilhados/NAT corporativo).",
+    "Somente uma operacao que efetivamente consultara o CRM pode consumir o",
+    "probe HALF_OPEN. Auth, diagnosticos, rate-limit e validacao ficam antes."
    ],
    "calc_fns": [
     {
-     "name": "validateFilters",
-     "params": "filters: Record<string, unknown>, table?: string",
-     "body": "if (!table) return null; const allowed = FILTERABLE_COLUMNS[table]; if (!allowed) return null; const bad = Object.keys(filters).find((k) => !allowed.has(k)); return bad ? `Coluna '${bad}' não é filtrável em '${table}'` : null;"
-    },
-    {
      "name": "applyFilters",
-     "params": "query: any, filters: Record<string, unknown>, table?: string",
-     "body": "for (const [key, value] of Object.entries(filters)) { if (value === null) { query = query.is(key, null); } else if (typeof value === \"object\" && value !== null) { const f = value as Record<string, unknown>; if (\"in\" in f) query = query.in(key, f.in as unknown[]); // E084: escapar metacaracteres do ilike if (\"ilike\" in f) query = query.ilike(key, `%${escapeLikePattern(String(f.ilike))}%`); if (\"eq\" in f) query = query.eq(key, f.eq); if (\"neq\" in f) query = query.neq(key, f.neq as string); if (\"gt …"
+     "params": "query: any, filters: Record<string, unknown>, prefix?: string",
+     "body": "for (const [key, value] of Object.entries(filters)) { const column = prefix ? `${prefix}.${key}` : key; if (value === null) { query = query.is(column, null); } else if (typeof value === \"object\" && value !== null) { const f = value as Record<string, unknown>; if (\"in\" in f) query = query.in(column, f.in as unknown[]); // E084: escapar metacaracteres do ilike if (\"ilike\" in f) query = query.ilike(column, `%${escapeLikePattern(String(f.ilike))}%`); if (\"eq\" in f) query = query.eq(column, f.eq); if …"
     },
     {
      "name": "applyOrdering",
      "params": "query: any, orderBy: CrmOrderBy | CrmOrderBy[]",
-     "body": "const clauses = Array.isArray(orderBy) ? orderBy : [orderBy]; return clauses.reduce((current, clause) => { if (typeof clause === \"string\") return current.order(clause); return current.order(clause.column, { ascending: clause.ascending ?? true }); }, query);"
+     "body": "const clauses = Array.isArray(orderBy) ? orderBy : [orderBy]; return clauses.reduce((current, clause) => { if (typeof clause === \"string\") { const [column, direction] = clause.trim().split(/\\s+/); return current.order(column, { ascending: direction?.toLowerCase() !== \"desc\" }); } return current.order(clause.column, { ascending: clause.ascending ?? true }); }, query);"
     },
     {
      "name": "generateQuoteNumber",
      "params": "crm: SupabaseClient, data: Record<string, unknown> | Record<string, unknown>[]",
      "body": "const now = new Date(); const yearShort = String(now.getFullYear()).slice(-2); const { data: lastQuotes } = await crm .from(\"quotes\").select(\"quote_number\") .ilike(\"quote_number\", `%/${yearShort}`) .order(\"quote_number\", { ascending: false }).limit(50); let maxNum = 10000; if (lastQuotes?.length) { for (const row of lastQuotes) { const parsed = parseInt((row.quote_number || \"\").replace(/\\s+/g, \"\").split(\"/\")[0] || \"0\", 10); if (!isNaN(parsed) && parsed > maxNum) maxNum = parsed; } } const genera …"
-    },
-    {
-     "name": "applyOwnerScope",
-     "params": "crm: SupabaseClient, table: string, select: string, userRole?: string, userId?: string,",
-     "body": "kind: \"ok\"; query: any; stripParent?: string"
     }
    ],
    "pagination": [
@@ -485471,6 +485779,103 @@
     "ping (GET ?op=ping) bypasses auth and returns ok/ts/warm",
     "ping (POST { operation: ",
     "non-ping POST without auth is rejected (proves ping bypass is scoped)"
+   ]
+  },
+  "supabase/functions/crm-db-bridge/query-policy.ts": {
+   "path": "supabase/functions/crm-db-bridge/query-policy.ts",
+   "lines": 623,
+   "exports": [
+    "const CRM_TABLES",
+    "type CrmTable",
+    "const INTERNAL_SCOPE_ALIAS",
+    "const INTERNAL_ADDRESS_ALIAS",
+    "type OwnershipRule",
+    "const OWNERSHIP_RULES",
+    "interface QueryColumnsInput",
+    "interface PostgrestErrorLike",
+    "function isCrmTable",
+    "function validateSelect",
+    "function validateFilters",
+    "function validateQueryColumns",
+    "function isSellerScopedRole",
+    "function isRestrictedWriteRole",
+    "function hasMutationTarget",
+    "function buildSellerScopedSelect",
+    "function isTableSellerScoped",
+    "function sellerScopeFilter",
+    "function splitCompanyAddressFilters",
+    "function addCompanyAddressFilterSelect",
+    "function stripInternalRelations",
+    "function mapPostgrestErrorStatus",
+    "function isTransientCrmFailure"
+   ],
+   "enums": [
+    {
+     "name": "CRM_TABLES",
+     "values": "'companies', 'contacts', 'company_addresses', 'company_social_media', 'contact_emails', 'contact_phones', 'customers', 'suppliers', 'carriers',"
+    }
+   ],
+   "params": [
+    {
+     "name": "INTERNAL_SCOPE_ALIAS",
+     "value": "'__seller_scope'"
+    },
+    {
+     "name": "INTERNAL_ADDRESS_ALIAS",
+     "value": "'__address_filter'"
+    }
+   ],
+   "status_values": [
+    {
+     "field": "role",
+     "value": "vendedor",
+     "kind": "compara"
+    },
+    {
+     "field": "role",
+     "value": "agente",
+     "kind": "compara"
+    },
+    {
+     "field": "role",
+     "value": "vendedor",
+     "kind": "compara"
+    },
+    {
+     "field": "role",
+     "value": "agente",
+     "kind": "compara"
+    },
+    {
+     "field": "role",
+     "value": "coordenador",
+     "kind": "compara"
+    }
+   ],
+   "role_checks": [
+    "agente",
+    "coordenador",
+    "vendedor"
+   ],
+   "rule_comments": [
+    "de cliente e não eram escopados antes (ownership.ts do main listava como PII apenas"
+   ],
+   "calc_fns": [
+    {
+     "name": "validateSelect",
+     "params": "select: string | undefined, table: CrmTable",
+     "body": "if (!select || select.trim() === '*') return null; const fields = select.split(',').map((field) => field.trim()); if (fields.some((field) => !field || field === '*')) { return \"Campo 'select' inválido\"; } const invalid = fields.find((field) => !COLUMN_SETS[table].has(field)); return invalid ? `Coluna '${invalid}' não existe em '${table}'` : null;"
+    },
+    {
+     "name": "validateFilters",
+     "params": "filters: Record<string, unknown> | undefined, table: CrmTable,",
+     "body": "if (!filters) return null; for (const [column, value] of Object.entries(filters)) { const isRelatedCompanyFilter = table === 'companies' && RELATED_COMPANY_FILTERS.has(column); if (!COLUMN_SETS[table].has(column) && !isRelatedCompanyFilter) { return `Coluna '${column}' não é filtrável em '${table}'`; } if (Array.isArray(value)) return `Valor de filtro inválido para '${column}'`; if (typeof value === 'number' && !Number.isFinite(value)) { return `Valor de filtro inválido para '${column}'`; } if ( …"
+    },
+    {
+     "name": "validateQueryColumns",
+     "params": "input: QueryColumnsInput, table: CrmTable",
+     "body": "const selectError = validateSelect(input.select, table); if (selectError) return selectError; const returningError = validateSelect(input.returning, table); if (returningError) return returningError; const filterError = validateFilters(input.filters, table); if (filterError) return filterError; if (input.search && !COLUMN_SETS[table].has(input.search.column)) { return `Coluna '${input.search.column}' não existe em '${table}'`; } const clauses = input.orderBy ? Array.isArray(input.orderBy) ? inpu …"
+    }
    ]
   },
   "supabase/functions/crm-db-bridge/scope_integration_test.ts": {
@@ -506312,6 +506717,11 @@
    "path": "supabase/migrations/20261106232045_fix_handle_updated_at_search_path.sql",
    "lines": 6
   },
+  "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql": {
+   "path": "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql",
+   "lines": 30,
+   "uses_service_role": true
+  },
   "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql": {
    "path": "supabase/migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql",
    "lines": 66,
@@ -506699,6 +507109,10 @@
   },
   "supabase/rollbacks/20261106232045_rollback.sql": {
    "path": "supabase/rollbacks/20261106232045_rollback.sql",
+   "lines": 5
+  },
+  "supabase/rollbacks/20261107134429_rollback.sql": {
+   "path": "supabase/rollbacks/20261107134429_rollback.sql",
    "lines": 5
   },
   "supabase/rollbacks/20261107180000_rollback.sql": {
@@ -527705,24 +528119,96 @@
     "autentica antes de rejeitar por indisponibilidade do CRM"
    ]
   },
-  "tests/security/crm-db-bridge-ownership.test.ts": {
-   "path": "tests/security/crm-db-bridge-ownership.test.ts",
-   "lines": 105,
+  "tests/security/crm-db-bridge-error-mapping.test.ts": {
+   "path": "tests/security/crm-db-bridge-error-mapping.test.ts",
+   "lines": 34,
    "is_test": true,
    "tests": [
-    "crm-db-bridge — resolução de role (E083/E081)",
-    "%j é tratado como vendedor",
-    "a role mais ampla vence quando o usuário tem várias",
-    "crm-db-bridge — escopo de ownership usa a coluna real do CRM",
-    "companies.owner_id não existe no CRM; a coluna de dono é user_id",
-    "vendedor em companies/contacts filtra por user_id",
-    "e-mails/telefones do contato seguem o dono do contato (regra do dono, 12/11)",
-    "customers: vendedor filtra pela coluna real vendedor_id (FK → users.id do CRM)",
-    "vendedor sem vínculo com o CRM vê só os SEM dono (regra do dono, 13/11)",
-    "id do CRM que não é uuid nunca é interpolado no filtro (vira ",
-    "roles amplas e tabelas sem PII não recebem filtro",
-    "o handler não filtra mais por owner_id"
+    "crm-db-bridge — mapeamento de erros",
+    "mapeia %o/%i para HTTP %i",
+    "alimenta o breaker somente com falhas transitórias 5xx"
    ]
+  },
+  "tests/security/crm-db-bridge-filter-validation.test.ts": {
+   "path": "tests/security/crm-db-bridge-filter-validation.test.ts",
+   "lines": 101,
+   "is_test": true,
+   "tests": [
+    "crm-db-bridge — validação de campos",
+    "aceita os campos reais usados por empresas e rejeita aliases inexistentes",
+    "traduz cidade e estado para a relação de endereços sem expor embedding do caller",
+    "rejeita filtros e colunas de busca/ordenação desconhecidos antes do PostgREST",
+    "rejeita arrays fora de in, operandos estruturados e payloads excessivos",
+    "valida returning com a mesma allowlist de select",
+    "impede UPDATE e DELETE sem predicado efetivo",
+    "valida campos reais nas tabelas filhas"
+   ]
+  },
+  "tests/security/crm-db-bridge-ownership.test.ts": {
+   "path": "tests/security/crm-db-bridge-ownership.test.ts",
+   "lines": 155,
+   "is_test": true,
+   "rule_comments": [
+    "* Por isso as asserções sobre `crmOwnerScope` saíram: elas afirmavam a regra revogada, e o módulo",
+    "A regra antiga mostrava ao vendedor os registros sem dono. Reintroduzir qualquer uma",
+    "O e-mail serve APENAS para criar o vínculo na primeira vez (bootstrap). Depois disso,",
+    "Sem o limit(2), dois usuários do CRM com o mesmo e-mail passariam silenciosamente."
+   ],
+   "tests": [
+    "crm-db-bridge — resolução de role",
+    "papéis amplos não são tratados como vendedor",
+    "vendedor e agente têm escopo por carteira",
+    "vendedor, agente e coordenador têm escrita restrita",
+    "a role mais ampla vence quando o usuário tem várias (ROLE_ORDER no handler)",
+    "crm-db-bridge — escopo estrito por vendedor dono (decisão do dono, 2026-11-14)",
+    "as 5 tabelas de dado de cliente são escopadas",
+    "customers filtra pela coluna real vendedor_id",
+    "as filhas seguem o dono pela relação, não por coluna própria",
+    "o handler aplica o escopo com .eq, não com .or",
+    "crm-db-bridge — a regra revogada não pode voltar",
+    "nenhum escopo ",
+    "o vendedor não é mais descoberto pelo e-mail a cada requisição",
+    "o bootstrap por e-mail grava o vínculo e detecta ambiguidade",
+    "sem vendedor resolvido, o escopo não abre: cai em -1, que não casa com nenhum id",
+    "crm-db-bridge — fornecedor e transportadora não são dado de cliente",
+    "suppliers e carriers ficam sem escopo por vendedor"
+   ]
+  },
+  "tests/security/crm-db-bridge-seller-scope.test.ts": {
+   "path": "tests/security/crm-db-bridge-seller-scope.test.ts",
+   "lines": 196,
+   "is_test": true,
+   "tables": [
+    {
+     "table": "users",
+     "op": "ref"
+    },
+    {
+     "table": "crm_seller_identity_links",
+     "op": "ref"
+    },
+    {
+     "table": "crm_seller_identity_links",
+     "op": "ref"
+    }
+   ],
+   "rule_comments": [
+    "(ownership.ts do main tratava como PII apenas companies, contacts, contact_emails,"
+   ],
+   "tests": [
+    "crm-db-bridge — escopo de vendedor",
+    "define ownership explícito para as nove tabelas permitidas",
+    "usa customers.vendedor_id diretamente e relações inner nos demais níveis",
+    "remove relações internas antes de responder ao cliente",
+    "mapeia e-mail autenticado para users.id do CRM sem confiar em UUIDs entre projetos",
+    "versiona um vínculo 1:1, privado e imutável no banco canônico",
+    "mantém validação e diagnósticos antes de consumir o probe do circuit breaker",
+    "propaga o vendedor CRM e o papel para SELECT, SEARCH e BATCH",
+    "nega roles desconhecidas e aplica o escopo a vendedor e agente",
+    "exige AAL2 para mutações e diagnósticos de credenciais",
+    "recria o client CRM quando a credencial rotaciona"
+   ],
+   "uses_service_role": true
   },
   "tests/security/csp-radix-scroll-area-hash.test.ts": {
    "path": "tests/security/csp-radix-scroll-area-hash.test.ts",
@@ -530563,10 +531049,33 @@
   }
  },
  "git": {
-  "sha": "e998b09560497e91422f9f63a014bdfd87a25a80",
+  "sha": "847aa874d2a12ca09f4238a6e2ea39224c317e2c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "847aa87",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(crm): vendedor com vínculo fixo em vez de identificação por e-mail (#3636)",
+    "files": []
+   },
+   {
+    "sha": "1fb3a1c",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230",
+    "files": []
+   },
+   {
+    "sha": "3792045",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "fix(crm): declara isencao de soft-delete na tabela de vinculo de vendedor",
+    "files": [
+     "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql"
+    ]
+   },
    {
     "sha": "e998b09",
     "date": "2026-11-14",
@@ -530624,6 +531133,34 @@
     ]
    },
    {
+    "sha": "c5d670c",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230",
+    "files": []
+   },
+   {
+    "sha": "98589a4",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "chore(coordenacao): registra o resgate da correcao de ownership do CRM (E188)",
+    "files": [
+     "docs/coordenacao/conflitos-semanticos.md"
+    ]
+   },
+   {
+    "sha": "9af05ef",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "fix(crm): fornecedor e transportadora fora do escopo por vendedor, e teste travando a regra nova",
+    "files": [
+     "supabase/functions/crm-db-bridge/index.ts",
+     "supabase/functions/crm-db-bridge/query-policy.ts",
+     "tests/security/crm-db-bridge-ownership.test.ts",
+     "tests/security/crm-db-bridge-seller-scope.test.ts"
+    ]
+   },
+   {
     "sha": "29569b1",
     "date": "2026-11-14",
     "author": "adm01-debug",
@@ -530631,6 +531168,13 @@
     "files": [
      ".security/policies-baseline.json"
     ]
+   },
+   {
+    "sha": "f84444c",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "fix(crm): vincular vendedor do bridge por auth_user_id, nao por e-mail",
+    "files": []
    },
    {
     "sha": "1a9cc9a",
@@ -530795,89 +531339,15 @@
     "author": "Claude",
     "subject": "Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850",
     "files": []
-   },
-   {
-    "sha": "ee13f74",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(db): RLS de pedidos e notificações, is_trusted, revoke em net/supabase_functions, ledger P09 e índices de FK (#3618)",
-    "files": [
-     "docs/coordenacao/conflitos-semanticos.md",
-     "scripts/drift-baseline.mjs",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/baseline/20261015140000_ledger_versions.json",
-     "supabase/migrations/20261113225000_sec_revoke_anon_authenticated_net_supabase_functions.sql",
-     "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql",
-     "supabase/migrations/20261114014500_p09_reconcile_ledger_schema_migrations.sql",
-     "supabase/migrations/20261114031000_fix_user_known_devices_is_trusted.sql",
-     "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
-     "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql",
-     "supabase/rollbacks/20261113225000_rollback.sql",
-     "supabase/rollbacks/20261114014100_rollback.sql",
-     "supabase/rollbacks/20261114014500_rollback.sql",
-     "supabase/rollbacks/20261114031000_rollback.sql",
-     "supabase/rollbacks/20261114170845_rollback.sql",
-     "supabase/rollbacks/20261114170921_rollback.sql",
-     "tests/scripts/build-migration-ledger-manifest.test.mjs",
-     "tests/scripts/drift-baseline.test.mjs"
-    ]
-   },
-   {
-    "sha": "a43a312",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "docs(coordenacao): ledger E188 dos 11 merges do trem de front e limpeza",
-    "files": [
-     "docs/coordenacao/conflitos-semanticos.md"
-    ]
-   },
-   {
-    "sha": "ec6088c",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "Merge remote-tracking branch 'origin/claude/fix-route-scroll-reset-query-replace-261114-0005' into claude/trem2-front-limpeza-261114-1850",
-    "files": []
-   },
-   {
-    "sha": "930e3c0",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "Merge remote-tracking branch 'origin/claude/fix-ux-auditoria-link-botao-morto-261113-2338' into claude/trem2-front-limpeza-261114-1850",
-    "files": []
-   },
-   {
-    "sha": "ce4099e",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "Merge remote-tracking branch 'origin/claude/fix-busca-teclado-supersede-3535-261114-0045' into claude/trem2-front-limpeza-261114-1850",
-    "files": []
-   },
-   {
-    "sha": "e34f424",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "Merge remote-tracking branch 'origin/claude/fix-simulador-colunas-crm-supersede-3534-261114-0212' into claude/trem2-front-limpeza-261114-1850",
-    "files": []
-   },
-   {
-    "sha": "a3964b2",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "Merge remote-tracking branch 'origin/claude/fix-csp-vaul-trava-rolagem-supersede-3531-261114-0208' into claude/trem2-front-limpeza-261114-1850",
-    "files": []
    }
   ],
   "hot_files": [
    [
     "docs/coordenacao/conflitos-semanticos.md",
-    7
+    6
    ],
    [
     ".security/policies-baseline.json",
-    2
-   ],
-   [
-    "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
     2
    ],
    [
@@ -530885,8 +531355,8 @@
     2
    ],
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    2
+    "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql",
+    1
    ],
    [
     "src/components/intelligence/SalesOverviewChart.tsx",
@@ -530946,6 +531416,10 @@
    ],
    [
     "src/hooks/intelligence/useSalesHistoryMacro.ts",
+    1
+   ],
+   [
+    "src/hooks/kit-builder/useKitAutoSave.ts",
     1
    ]
   ]
