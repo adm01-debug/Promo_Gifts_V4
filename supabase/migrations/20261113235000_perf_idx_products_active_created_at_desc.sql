@@ -1,4 +1,5 @@
 -- transaction: none
+-- approved-by: adm01-debug (dono; aprovação explícita no chat da sessão Claude 2026-11-14)
 -- (CREATE INDEX CONCURRENTLY não pode rodar dentro de transação — psql -1. O opt-out exige também
 --  uma linha própria "-- approved-by: <dono>": é a aprovação humana e entra só no momento da
 --  aplicação, nunca antes. Sem ela o preflight bloqueia, como deve.)
