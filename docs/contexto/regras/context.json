@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "371f52b18db6beaf5aa0879e24e190f2de37b2aa",
+  "sha": "06c262e143ef546a3b31e3bd924b0e55c3296c3c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 12:29 UTC",
+  "generated_at": "2026-11-14 13:22 UTC",
   "files_total": 10065,
   "code_files": 8601,
   "code_lines": 1213537
@@ -529292,10 +529292,19 @@
   }
  },
  "git": {
-  "sha": "371f52b18db6beaf5aa0879e24e190f2de37b2aa",
+  "sha": "06c262e143ef546a3b31e3bd924b0e55c3296c3c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "06c262e",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "docs: prod-readiness com lint, typecheck, build e testes no main final 371f52b (#3604)",
+    "files": [
+     "docs/prod-readiness.md"
+    ]
+   },
    {
     "sha": "371f52b",
     "date": "2026-11-14",
@@ -529675,15 +529684,6 @@
      "tests/unit/e2e-personalization-card-click.test.ts",
      "tests/unit/e2e-selectors-quote-add-product.test.ts"
     ]
-   },
-   {
-    "sha": "9c518b2",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "chore(claude): adiciona comando /merge-prs (#3420)",
-    "files": [
-     ".claude/commands/merge-prs.md"
-    ]
    }
   ],
   "hot_files": [
@@ -529693,7 +529693,7 @@
    ],
    [
     "docs/prod-readiness.md",
-    5
+    6
    ],
    [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
