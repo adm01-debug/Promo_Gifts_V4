@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-11-13T02:40:55.980Z",
+  "generated_at": "2026-11-14T12:10:17.954Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "56a4d2a0fc87eb5e6df9259513a1f30334e15083c5ddea5033510161ef77b5ba",
+  "sha256": "687e54f46cf9dd9c2e52cddf4d8778f712b2fec9a1cecd820385a3fdd02f6030",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -6808,6 +6808,16 @@
     {
       "schemaname": "public",
       "tablename": "query_telemetry",
+      "policyname": "query_telemetry_delete_dev",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "qual": "(is_dev(( SELECT auth.uid() AS uid)) AND (created_at < (now() - '7 days'::interval)))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "query_telemetry",
       "policyname": "query_telemetry_insert_any",
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
@@ -8398,6 +8408,206 @@
     {
       "schemaname": "public",
       "tablename": "supplier_products_raw_history_p2027_02",
+      "policyname": "hist_select_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_03",
+      "policyname": "hist_all_service",
+      "permissive": "PERMISSIVE",
+      "roles": "{service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_03",
+      "policyname": "hist_select_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_04",
+      "policyname": "hist_all_service",
+      "permissive": "PERMISSIVE",
+      "roles": "{service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_04",
+      "policyname": "hist_select_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_05",
+      "policyname": "hist_all_service",
+      "permissive": "PERMISSIVE",
+      "roles": "{service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_05",
+      "policyname": "hist_select_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_06",
+      "policyname": "hist_all_service",
+      "permissive": "PERMISSIVE",
+      "roles": "{service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_06",
+      "policyname": "hist_select_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_07",
+      "policyname": "hist_all_service",
+      "permissive": "PERMISSIVE",
+      "roles": "{service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_07",
+      "policyname": "hist_select_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_08",
+      "policyname": "hist_all_service",
+      "permissive": "PERMISSIVE",
+      "roles": "{service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_08",
+      "policyname": "hist_select_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_09",
+      "policyname": "hist_all_service",
+      "permissive": "PERMISSIVE",
+      "roles": "{service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_09",
+      "policyname": "hist_select_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_10",
+      "policyname": "hist_all_service",
+      "permissive": "PERMISSIVE",
+      "roles": "{service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_10",
+      "policyname": "hist_select_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_11",
+      "policyname": "hist_all_service",
+      "permissive": "PERMISSIVE",
+      "roles": "{service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_11",
+      "policyname": "hist_select_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_12",
+      "policyname": "hist_all_service",
+      "permissive": "PERMISSIVE",
+      "roles": "{service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_12",
       "policyname": "hist_select_admin",
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",

@@ -55,8 +55,13 @@ export function goldFrom<K extends GoldRelationName>(relation: K) {
  * papel admin e mantém a original trancada.
  */
 export async function rpcAdminSyncExternalConnections(): Promise<{ error: Error | null }> {
-  const { error } = await (supabase as unknown as AnyClient).rpc(
+  const { data, error } = await (supabase as unknown as AnyClient).rpc(
     'fn_admin_sync_external_connections',
   );
-  return { error: error ? new Error(error.message) : null };
+  if (error) return { error: new Error(error.message) };
+  // A função devolve {ok:false, reason} sem erro HTTP quando não sincroniza
+  // (ex.: 'no_admin_for_system_actor'); isso não pode virar "Sync executado".
+  const result = data as { ok?: boolean; reason?: string } | null;
+  if (result?.ok === false) return { error: new Error(result.reason ?? 'sync_not_executed') };
+  return { error: null };
 }
