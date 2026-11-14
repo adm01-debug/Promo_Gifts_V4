@@ -100,10 +100,7 @@ export async function fetchPaginatedFromBridge<T extends { id: number | string }
     let goneMessage: string | null = null;
 
     while (all.length < maxRecords) {
-      let query = untypedFrom(resolvedTable).select<string, T>(
-        select,
-        lastId === null ? { count: 'exact' } : undefined,
-      );
+      let query = untypedFrom(resolvedTable).select<string, T>(select);
 
       if (filters) {
         const allowed = ALLOWED_FILTER_KEYS[table];
