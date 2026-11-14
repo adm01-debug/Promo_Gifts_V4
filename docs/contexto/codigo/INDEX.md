@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6ef19fd5122ac8d18e94c80ec6cbc59648fd9360` (2026-11-14T14:04:17-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ab0817a68b0ef9098dfcb4e8c42940a22af48147` (2026-11-14T15:02:00-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -588,27 +588,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43179 nós · 74555 arestas · 2415 comunidades · grafo do commit `6ef19fd5`
+- 43179 nós · 74555 arestas · 2415 comunidades · grafo do commit `ab0817a6`
 - comunidades maiores: vitest (846), ref_components (741), ref_integrations (608), @tanstack/react-query (552), ref_node_child_process (467), ref_hooks (375), ref_types (308), scripts (302), sonner (302), react (295), ref_node_fs (278), gotoAndSettle (271)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (56)
-- supabase/MIGRATIONS_SYNC_LOG.md (50)
-- PENDENCIAS.md (49)
-- package.json (29)
-- package-lock.json (21)
-- analise-prs/progresso.json (17)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (16)
-- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (15)
-- .github/workflows/deploy-gates.yml (13)
-- CHANGELOG.md (13)
-- src/pages/kit-builder/KitBuilderPage.tsx (13)
-- analise-branches/RELATORIO_BRANCHES.md (12)
-- src/hooks/kit-builder/useKitBuilderPageState.ts (12)
-- e2e/flows/magazine-publish-smoke.spec.ts (11)
-- analise-prs/RELATORIO_PRS.md (10)
+- RELATORIO_CI.md (55)
+- supabase/MIGRATIONS_SYNC_LOG.md (49)
+- PENDENCIAS.md (48)
+- package.json (28)
+- package-lock.json (20)
+- analise-prs/progresso.json (16)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (15)
+- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (14)
+- .github/workflows/deploy-gates.yml (12)
+- CHANGELOG.md (12)
+- src/pages/kit-builder/KitBuilderPage.tsx (12)
+- analise-branches/RELATORIO_BRANCHES.md (11)
+- src/hooks/kit-builder/useKitBuilderPageState.ts (11)
+- e2e/flows/magazine-publish-smoke.spec.ts (10)
+- analise-prs/RELATORIO_PRS.md (9)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1183,6 +1183,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-14 `ab0817a` fix(security): baseline de policies acompanha stock_notes com initplan (destrava Gate 1.13) (#3616)
 - 2026-11-14 `6ef19fd` docs: auditoria exaustiva de 13 domínios (91 agentes, verificação dupla) (#3611)
 - 2026-11-14 `584e1a3` Merge pull request #3608 from adm01-debug/claude/crm-disjuntor-indisponibilidade-261114
 - 2026-11-14 `ae9d814` fix(security): crm-db-bridge — erro de esquema não abre o disjuntor
@@ -1197,7 +1198,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-14 `ee0ccd5` docs(prontidao): diagnóstico das quedas do banco com leitura de logs e entregas de 14/11 (#3579)
 - 2026-11-14 `c49e8e7` docs(migrations): recibos E66 e E15 de 14/11 (supersede #3560 #3561 #3562 #3567 #3568 #3571 #3563 #3570 #3573 #3575) (#3
 - 2026-11-14 `c6bc04a` fix(db): snapshot de cron jobs sem o xbz-image-uploader desagendado (#3576)
-- 2026-11-14 `e1dcade` docs: prod-readiness regerado no main com provas de 14/11 (#3508)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

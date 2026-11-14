@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "6ef19fd5122ac8d18e94c80ec6cbc59648fd9360",
+  "commit": "ab0817a68b0ef9098dfcb4e8c42940a22af48147",
   "branch": "main",
-  "data_commit": "2026-11-14T14:04:17-03:00",
+  "data_commit": "2026-11-14T15:02:00-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ab0817a",
+    "data": "2026-11-14",
+    "assunto": "fix(security): baseline de policies acompanha stock_notes com initplan (destrava Gate 1.13) (#3616)"
+   },
    {
     "sha": "6ef19fd",
     "data": "2026-11-14",
@@ -126,176 +131,171 @@
     "sha": "835fee0",
     "data": "2026-11-13",
     "assunto": "fix(edge): corrige domínio de e-mail Resend promogifts → promobrindes (#3521)"
-   },
-   {
-    "sha": "fe64be3",
-    "data": "2026-11-13",
-    "assunto": "docs(migrations): recibos da 20261111191000 (corrigido) e da 20261112140000 (#3529)"
    }
   ],
-  "arquivos_mudados_7d": 2005,
+  "arquivos_mudados_7d": 2003,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 927
+    "mudancas": 629
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 477
-   },
-   {
-    "pasta": "tests/edge-functions/live",
-    "mudancas": 360
-   },
-   {
-    "pasta": "src/hooks/products",
-    "mudancas": 324
+    "mudancas": 327
    },
    {
     "pasta": "recovery/src-legacy/src",
     "mudancas": 316
    },
    {
-    "pasta": "src/pages/magazine",
-    "mudancas": 280
+    "pasta": "tests/edge-functions/live",
+    "mudancas": 245
+   },
+   {
+    "pasta": "src/hooks/products",
+    "mudancas": 220
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 276
+    "mudancas": 194
+   },
+   {
+    "pasta": "src/pages/magazine",
+    "mudancas": 188
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 248
+    "mudancas": 168
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 234
+    "mudancas": 165
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 224
+    "mudancas": 151
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 197
+    "mudancas": 138
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 193
+    "mudancas": 134
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 163
+    "mudancas": 113
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 159
+    "mudancas": 112
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 156
+    "mudancas": 109
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 56
+    "mudancas": 55
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 50
-   },
-   {
-    "arquivo": "PENDENCIAS.md",
     "mudancas": 49
    },
    {
+    "arquivo": "PENDENCIAS.md",
+    "mudancas": 48
+   },
+   {
     "arquivo": "package.json",
-    "mudancas": 29
+    "mudancas": 28
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "arquivo": "analise-prs/progresso.json",
-    "mudancas": 17
-   },
-   {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 16
    },
    {
-    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 15
    },
    {
+    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
+    "mudancas": 14
+   },
+   {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 12
-   },
-   {
-    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 12
-   },
-   {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 11
    },
    {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "mudancas": 11
+   },
+   {
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 10
+   },
+   {
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "mudancas": 9
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 9
+    "mudancas": 8
    },
    {
     "arquivo": "CLAUDE.md",
-    "mudancas": 9
+    "mudancas": 8
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 9
+    "mudancas": 8
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 9
+    "mudancas": 8
    },
    {
     "arquivo": "scripts/lib/baseline-gate.mjs",
-    "mudancas": 9
+    "mudancas": 8
    },
    {
     "arquivo": "scripts/validate-quotes-list.mjs",
-    "mudancas": 9
+    "mudancas": 8
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
-    "mudancas": 9
+    "mudancas": 8
    },
    {
-    "arquivo": ".github/workflows/db-schema-drift-check.yml",
-    "mudancas": 8
+    "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
+    "mudancas": 7
    }
   ],
   "autores_30d": [
@@ -305,11 +305,11 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 93
+    "commits": 92
    },
    {
     "autor": "Claude",
-    "commits": 73
+    "commits": 72
    },
    {
     "autor": "github-actions[bot]",

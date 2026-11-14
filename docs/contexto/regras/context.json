@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "6ef19fd5122ac8d18e94c80ec6cbc59648fd9360",
+  "sha": "ab0817a68b0ef9098dfcb4e8c42940a22af48147",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 17:39 UTC",
+  "generated_at": "2026-11-14 18:21 UTC",
   "files_total": 10064,
   "code_files": 8599,
   "code_lines": 1213591
@@ -529281,10 +529281,19 @@
   }
  },
  "git": {
-  "sha": "6ef19fd5122ac8d18e94c80ec6cbc59648fd9360",
+  "sha": "ab0817a68b0ef9098dfcb4e8c42940a22af48147",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "ab0817a",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(security): baseline de policies acompanha stock_notes com initplan (destrava Gate 1.13) (#3616)",
+    "files": [
+     ".security/policies-baseline.json"
+    ]
+   },
    {
     "sha": "6ef19fd",
     "date": "2026-11-14",
@@ -529615,15 +529624,6 @@
      "supabase/MIGRATIONS_SYNC_LOG.md",
      "supabase/migrations/20260511235960_add_categories_full_path_readable_drift.sql"
     ]
-   },
-   {
-    "sha": "36eac06",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "fix(ci): documenta BRIDGE_PATH em SEGREDOS.md para passar Gate E40",
-    "files": [
-     "docs/ci/SEGREDOS.md"
-    ]
    }
   ],
   "hot_files": [
@@ -529640,6 +529640,10 @@
     3
    ],
    [
+    ".security/policies-baseline.json",
+    2
+   ],
+   [
     "supabase/functions/crm-db-bridge/index.ts",
     2
    ],
@@ -529653,10 +529657,6 @@
    ],
    [
     "docs/security/ALLOWLISTS_MEMORY.md",
-    2
-   ],
-   [
-    "docs/ci/SEGREDOS.md",
     2
    ],
    [
@@ -529700,11 +529700,11 @@
     1
    ],
    [
-    ".security/policies-baseline.json",
+    ".security/secdef-anon-allowlist.json",
     1
    ],
    [
-    ".security/secdef-anon-allowlist.json",
+    "audit/supabase-reference-catalog.temporary.json",
     1
    ]
   ]
