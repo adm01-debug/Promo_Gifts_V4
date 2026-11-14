@@ -1,14 +1,16 @@
 /**
  * useRoleMigration
  * ----------------------------------------------------------------------------
- * Hook que encapsula a RPC `execute_role_migration_batch` + leitura do
+ * Hook que encapsula a RPC `admin_execute_role_migration_batch` + leitura do
  * histórico (`role_migration_batches` + `role_migration_items`).
  *
- * Toda escrita é feita pela RPC (SECURITY DEFINER + admin estrito); o cliente
- * nunca toca diretamente nas tabelas — RLS bloqueia INSERT/UPDATE/DELETE.
+ * Toda escrita é feita pela RPC (SECURITY DEFINER, guarda dev + AAL2; a interna
+ * `execute_role_migration_batch` é só service_role); o cliente nunca toca
+ * diretamente nas tabelas — RLS bloqueia INSERT/UPDATE/DELETE.
  */
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { untypedRpc } from '@/lib/supabase-untyped';
 import type { Database } from '@/integrations/supabase/types';
 
 export type AppRole = Database['public']['Enums']['app_role'];
@@ -85,11 +87,11 @@ export function useRoleMigration() {
     }) => {
       setSubmitting(true);
       try {
-        const { data, error } = await supabase.rpc('execute_role_migration_batch', {
+        // untypedRpc: a RPC nasce em 20261112120600 e ainda não está em types.ts gerado.
+        const { data, error } = await untypedRpc('admin_execute_role_migration_batch', {
           _label: params.label,
           _reason: params.reason,
-          _items:
-            params.items as unknown as Database['public']['Tables']['role_migration_items']['Row'][],
+          _items: params.items,
           _dry_run: params.dryRun,
         });
         if (error) throw error;

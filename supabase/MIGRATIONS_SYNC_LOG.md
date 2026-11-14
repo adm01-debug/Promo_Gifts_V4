@@ -1417,6 +1417,23 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 |---|---|---|---|
 | `20261112011000` | `fix_sb0003_fn_get_rupture_alerts` | `8e081152c457ed572cb3aa349f62027bc7cd461996bb8036f499efb12af6a449` | **aplicada em 12/11/2026** pelo `db-apply-migration.yml` (run 43233358789, aprovado pelo dono; recibo E15 acima) |
 
+## 2026-11-12 — 10 telas com 42501 ou RPC ausente: migrations pendentes em produção
+
+Correções de acesso e RPCs novas (PR substituta da #3432; a RPC de inteligência de mercado (`fn_market_intelligence_macro`) ficou de fora — ver PR). Nenhuma aplicada ainda; aplicar uma a uma, na ordem da tabela, via `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261112120000` | `fix_fn_get_supplier_reliability` | `2843dc46113510dea1810788b9f83c63cd25b02d02befd1f45d27dfec485c393` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120100` | `fix_smoke_tests_dashboard_admin_rpc` | `6c79e6999200d391e4a0bf79fe72f2a681c3ec01435921e41ae73fbe23d19334` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120200` | `fix_kill_switch_obs_grant_summary_view` | `c8647e9ddd4ea64b072721dcb0336d7738ffe5078ea9652b27100350083a5b54` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120300` | `fix_medallion_health_dev_rpc` | `c4a2b8606f9bbcd8b56823a41bdda148499f063b4f319fa30952244a59457602` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120400` | `fn_insights_cache_count` | `79c76a16c0036283028028a213eea687bac5caf62685c4373dba543e70a6f612` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120500` | `fix_optimization_queue_rpcs_dev_access` | `dd6849a1c3ff925423ac7bc91eb5605882ea03477b93b199ecf17eb574f3734e` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120600` | `admin_execute_role_migration_batch_rpc` | `2aafacec03bb10d108aeda1192f5754600dc071ea420fb9a431a6b3ad26ea07a` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120700` | `fix_grant_fn_admin_sync_external_connections` | `13dcabc4850b19a6f360203693dfc259474adaa42227dcc8ef2ad43587cabaaa` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120800` | `query_telemetry_delete_dev_policy` | `27438bfdec7aba456af33f6b77e2ceef6d593e20f7a5da5cbb7045661b72371e` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120900` | `fix_password_reset_request_rpc_anon` | `d73e208b1830ab5692904320c746c89e63b46ba4b54a253b147fe65d3f65dda4` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+
 ## 2026-11-12 — sitemap: EXECUTE de `anon` em `get_sitemap_public` pendente em produção
 
 `/api/sitemap` responde 503 porque `anon` perdeu EXECUTE em `public.get_sitemap_public(integer, integer)` (verificado via
