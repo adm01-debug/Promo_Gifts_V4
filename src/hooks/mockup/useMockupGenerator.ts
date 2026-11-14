@@ -32,12 +32,12 @@ import {
   type Technique,
   type GeneratedMockup,
   createDefaultArea,
-  fetchMockupHistory,
   saveMockupToDb,
   generateMockupApi,
   downloadMockupAsPdf,
   deleteMockupFromDb,
 } from '@/hooks/mockup/mockupGenerationService';
+import { fetchRecentMockupHistory } from '@/hooks/mockup/mockupHistoryAdapter';
 import { buildHistoryClients } from '@/hooks/mockup/mockupHistoryClients';
 import { useMockupAreaRetry } from '@/hooks/mockup/useMockupAreaRetry';
 import { useMockupEntryParams } from '@/hooks/mockup/useMockupEntryParams';
@@ -366,7 +366,8 @@ export function useMockupGenerator() {
   const fetchHistory = useCallback(async () => {
     setIsLoadingHistory(true);
     try {
-      const data = await fetchMockupHistory(user?.id);
+      // Atalho: o servidor devolve só os últimos (MOCKUP_HISTORY_PANEL_LIMIT).
+      const data = await fetchRecentMockupHistory(user?.id);
       setMockupHistory(data);
     } catch (error) {
       logger.error('Error fetching history:', error);

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -98,6 +98,42 @@ describe('MockupHistoryPage', () => {
     );
     await waitFor(() => expect(screen.queryByText('Excluir mockup?')).not.toBeInTheDocument());
     expect(deleteMock).not.toHaveBeenCalled();
+  });
+
+  it('excluir o último item da última página volta para uma página válida', async () => {
+    // 21 linhas / pageSize 20 = 2 páginas; a página 2 tem 1 item.
+    const rows = Array.from({ length: 21 }, (_, i) => ({ ...row, id: `m-${i + 1}` }));
+    let total = rows.length;
+    builder.range = vi.fn((from: number, to: number) => {
+      builder.then = (resolve: (v: unknown) => unknown) =>
+        resolve({ data: rows.slice(from, to + 1), error: null, count: total });
+      return builder;
+    });
+    deleteMock.mockImplementation(() => {
+      rows.pop();
+      total = rows.length;
+      return Promise.resolve();
+    });
+
+    const user = userEvent.setup();
+    renderPage();
+    await screen.findByText('Página 1 de 2');
+
+    // A paginação é o último par de botões do DOM (próxima página é o último).
+    const botoes = screen.getAllByRole('button');
+    await user.click(botoes[botoes.length - 1]);
+    await screen.findByText('Página 2 de 2');
+    expect(screen.getAllByTestId('mockup-history-item')).toHaveLength(1);
+
+    // Exclui o único item da página 2: o total cai para 20 (1 página).
+    await user.click(screen.getByTestId('mockup-history-delete-btn'));
+    await user.click(
+      within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Excluir' }),
+    );
+
+    // Sem a reconciliação a página 2 continuaria selecionada e a tabela ficaria vazia.
+    await waitFor(() => expect(screen.getAllByTestId('mockup-history-item')).toHaveLength(20));
+    expect(screen.queryByText('Página 2 de 2')).toBeNull();
   });
 
   it('busca com vírgula, parênteses e % não vaza para o filtro .or()', async () => {
