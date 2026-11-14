@@ -10,17 +10,7 @@ name: E2E Quotes — Matrix (E77)
 # Os workflows individuais permanecem ativos mas este é o dono canônico.
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'e2e/**'
-      - 'src/components/**'
-      - 'src/hooks/**'
-      - 'src/lib/**'
-      - 'src/routes/**'
-      - 'src/services/**'
-      - 'supabase/functions/e2e-cleanup/**'
-      - '.github/workflows/e2e-quotes.yml'
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   workflow_dispatch:
     inputs:
       suite:

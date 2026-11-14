@@ -1,24 +1,10 @@
 name: E2E — Personalization Flow
 
 on:
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   push:
     branches: [main]
     paths:
-      - 'src/**'
-      - '!src/**/__tests__/**'
-      - '!src/**/*.test.*'
-      - '!src/**/*.spec.*'
-      - 'e2e/**'
-      - 'public/**'
-      - 'package*.json'
-      - '.nvmrc'
-      - 'playwright.config.*'
-      - 'vite.config.*'
-      - '.github/workflows/e2e-personalization.yml'
-      - '.github/scripts/e2e-relevance.mjs'
-  pull_request:
-    branches: [main]
-    paths:  # E14: evitar CI em PRs doc-only
       - 'src/**'
       - '!src/**/__tests__/**'
       - '!src/**/*.test.*'
