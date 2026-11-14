@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useCallback, useMemo, useRef } from 'react';
 import {
   Search,
   X,
@@ -218,7 +218,9 @@ export function GlobalSearch({
     [query, results.length, searchHistory, navigate, onClose],
   );
 
-  useEffect(() => {
+  // useLayoutEffect: o listener troca no commit, junto com a lista na tela. Com useEffect,
+  // uma tecla logo após os resultados aparecerem usava results=[] (Enter não fazia nada).
+  useLayoutEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
       switch (e.key) {
