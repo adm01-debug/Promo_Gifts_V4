@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c49e8e770b922e52f8c177ac3f3e41b4dba87700",
+  "commit": "ee0ccd57936c598ecc0af925fcc478b53c26f7a5",
   "branch": "main",
-  "data_commit": "2026-11-14T03:45:25-03:00",
+  "data_commit": "2026-11-14T04:19:09-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ee0ccd5",
+    "data": "2026-11-14",
+    "assunto": "docs(prontidao): diagnóstico das quedas do banco com leitura de logs e entregas de 14/11 (#3579)"
+   },
    {
     "sha": "c49e8e7",
     "data": "2026-11-14",
@@ -126,11 +131,6 @@
     "sha": "8404c43",
     "data": "2026-11-13",
     "assunto": "fix: lote de correções da auditoria de prontidão (catálogo, produto, busca, BI, categorias, e2e, edge) (#3463)"
-   },
-   {
-    "sha": "9c518b2",
-    "data": "2026-11-13",
-    "assunto": "chore(claude): adiciona comando /merge-prs (#3420)"
    }
   ],
   "arquivos_mudados_7d": 1981,
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 63
+    "mudancas": 62
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 439
+    "commits": 438
    },
    {
     "autor": "Joaquim Ataides",

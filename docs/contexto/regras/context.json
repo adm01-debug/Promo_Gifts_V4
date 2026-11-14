@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "c49e8e770b922e52f8c177ac3f3e41b4dba87700",
+  "sha": "ee0ccd57936c598ecc0af925fcc478b53c26f7a5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 06:51 UTC",
+  "generated_at": "2026-11-14 07:49 UTC",
   "files_total": 10044,
   "code_files": 8580,
   "code_lines": 1212272
@@ -528459,10 +528459,19 @@
   }
  },
  "git": {
-  "sha": "c49e8e770b922e52f8c177ac3f3e41b4dba87700",
+  "sha": "ee0ccd57936c598ecc0af925fcc478b53c26f7a5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "ee0ccd5",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "docs(prontidao): diagnóstico das quedas do banco com leitura de logs e entregas de 14/11 (#3579)",
+    "files": [
+     "docs/prod-readiness.md"
+    ]
+   },
    {
     "sha": "c49e8e7",
     "date": "2026-11-14",
@@ -528818,15 +528827,6 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "3d1e34f",
-    "date": "2026-11-13",
-    "author": "github-actions[bot]",
-    "subject": "docs: recibo de deploy de edge function(s) — run 43367027942 (E66) (#3480)",
-    "files": [
-     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
-    ]
    }
   ],
   "hot_files": [
@@ -528836,14 +528836,14 @@
    ],
    [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    5
-   ],
-   [
-    "supabase/baseline/20261108000000_cron_jobs.json",
-    2
+    4
    ],
    [
     "docs/prod-readiness.md",
+    3
+   ],
+   [
+    "supabase/baseline/20261108000000_cron_jobs.json",
     2
    ],
    [
