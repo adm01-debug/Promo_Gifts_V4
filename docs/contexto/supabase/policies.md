@@ -684,6 +684,7 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.qa_image_coverage_log | qa_coverage_admin_insert | INSERT | PERMISSIVE | authenticated |  | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
 | public.qa_image_coverage_log | qa_coverage_admin_update | UPDATE | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
 | public.qa_image_coverage_log | qa_coverage_read_authenticated | SELECT | PERMISSIVE | authenticated | `true` |  |
+| public.query_telemetry | query_telemetry_delete_dev | DELETE | PERMISSIVE | authenticated | `(is_dev(( SELECT auth.uid() AS uid)) AND (created_at < (now() - '7 days'::interval)))` |  |
 | public.query_telemetry | query_telemetry_insert_any | INSERT | PERMISSIVE | authenticated |  | `(user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
 | public.query_telemetry | query_telemetry_select_admin | SELECT | PERMISSIVE | authenticated | `is_admin(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |  |
 | public.quote_approval_tokens | qatokens_delete_scope | DELETE | PERMISSIVE | authenticated | `(can_view_all_sales() OR (seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)))` |  |

@@ -2,6 +2,14 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-14 11:38 UTC
+
+- **functions** adicionado (1): `public.request_password_reset(p_email text)`
+- **functions** alterado (3): `public.audit_security_definer_acl()`, `public.fn_admin_sync_external_connections()`, `public.is_dev(_user_id uuid)`
+- **lints** adicionado (1): `rpc_anon_executable:public.request_password_reset(p_email text)`
+- **migrations** adicionado (3): `20261112120700_fix_grant_fn_admin_sync_external_connections`, `20261112120800_query_telemetry_delete_dev_policy`, `20261112120900_fix_password_reset_request_rpc_anon`
+- **policies (RLS)** adicionado (1): `public.query_telemetry.query_telemetry_delete_dev`
+
 ## 2026-11-14 11:28 UTC
 
 - **functions** adicionado (3): `public.admin_execute_role_migration_batch(_label text, _reason text, _items jsonb, _dry_run boolean)`, `public.fn_dev_medallion_health()`, `public.fn_insights_cache_count(p_function_name text, p_since timestamp with time zone)`

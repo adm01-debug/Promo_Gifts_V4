@@ -2599,6 +2599,9 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261112120400 | [fn_insights_cache_count](migrations/20261112120400_fn_insights_cache_count.sql) | 4 |
 | 20261112120500 | [fix_optimization_queue_rpcs_dev_access](migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql) | 16 |
 | 20261112120600 | [admin_execute_role_migration_batch_rpc](migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql) | 6 |
+| 20261112120700 | [fix_grant_fn_admin_sync_external_connections](migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql) | 6 |
+| 20261112120800 | [query_telemetry_delete_dev_policy](migrations/20261112120800_query_telemetry_delete_dev_policy.sql) | 2 |
+| 20261112120900 | [fix_password_reset_request_rpc_anon](migrations/20261112120900_fix_password_reset_request_rpc_anon.sql) | 8 |
 | 20261112130000 | [fix_get_sitemap_public_anon_grant](migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql) | 2 |
 | 20261112140000 | [fix_rls_supplier_products_raw_history_p2027](migrations/20261112140000_fix_rls_supplier_products_raw_history_p2027.sql) | 51 |
 | 20261113235000 | [perf_idx_products_active_created_at_desc](migrations/20261113235000_perf_idx_products_active_created_at_desc.sql) | 3 |

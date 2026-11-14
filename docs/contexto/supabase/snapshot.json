@@ -139210,7 +139210,7 @@
           "search_path=public, pg_catalog"
         ],
         "definition": null,
-        "definition_sha": "ace83c9852595bef",
+        "definition_sha": "53642209f9bbe1bc",
         "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -146118,11 +146118,11 @@
         },
         "comment": "Wrapper admin-gated do sync manual de external_connections. Chamado pela UI admin (LastSyncRunPanel). A função interna permanece sem EXECUTE para clientes.",
         "config": [
-          "search_path=\"\""
+          "search_path=pg_catalog, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "971e93de3912f0e5",
-        "execute_api_roles": "service_role",
+        "definition_sha": "e7d173bf7d1b350d",
+        "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -181047,6 +181047,7 @@
             "public.complete_optimization",
             "public.consume_step_up_token",
             "public.enqueue_optimization",
+            "public.fn_admin_sync_external_connections",
             "public.fn_dev_medallion_health",
             "public.is_admin_strict",
             "public.request_step_up_challenge",
@@ -186977,6 +186978,41 @@
         "name": "request_discount_approval_transactional",
         "owner": "postgres",
         "returns": "discount_approval_requests",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "p_email text",
+        "callers": {
+          "code": [
+            {
+              "file": "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql",
+              "hits": 5
+            }
+          ],
+          "code_total_files": 1,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Registra pedido pendente de reset de senha (tela de login, anon). Valida e-mail como a policy de INSERT, duplicata pendente = no-op silencioso (sem enumeração). Rate limit via triggers trg_password_reset_rate_limit e trg_anon_rate_guard. Bug #50, 2026-11-12. ATENCAO: fora da whitelist do event trigger evt_auto_revoke_secdef_public_execute — todo CREATE OR REPLACE/ALTER FUNCTION futuro revoga EXECUTE de anon em silencio; repetir GRANT EXECUTE ON FUNCTION public.request_password_reset(text) TO anon, authenticated logo apos a redefinicao.",
+        "config": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "c2f240b5753ca761",
+        "execute_api_roles": "anon, authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "request_password_reset",
+        "owner": "postgres",
+        "returns": "void",
         "schema": "public",
         "security_definer": true,
         "strict": false,
@@ -221177,6 +221213,12 @@
       {
         "code": "rpc_anon_executable",
         "detail": "SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública).",
+        "object": "public.request_password_reset(p_email text)",
+        "severity": "INFO"
+      },
+      {
+        "code": "rpc_anon_executable",
+        "detail": "SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública).",
         "object": "public.submit_quote_response(_token text, _response text, _response_notes text)",
         "severity": "INFO"
       }
@@ -236270,6 +236312,24 @@
         "version": "20261112120600"
       },
       {
+        "name": "fix_grant_fn_admin_sync_external_connections",
+        "statements": 6,
+        "statements_sha": "4dc3b6143b370f11",
+        "version": "20261112120700"
+      },
+      {
+        "name": "query_telemetry_delete_dev_policy",
+        "statements": 2,
+        "statements_sha": "639d587b89fc2dfe",
+        "version": "20261112120800"
+      },
+      {
+        "name": "fix_password_reset_request_rpc_anon",
+        "statements": 8,
+        "statements_sha": "ed850fd3e7ffa92a",
+        "version": "20261112120900"
+      },
+      {
         "name": "fix_get_sitemap_public_anon_grant",
         "statements": 2,
         "statements_sha": "2f530f417cf8a450",
@@ -244486,6 +244546,18 @@
         "schema": "public",
         "table": "qa_image_coverage_log",
         "using": "true",
+        "with_check": null
+      },
+      {
+        "cmd": "DELETE",
+        "name": "query_telemetry_delete_dev",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "query_telemetry",
+        "using": "(is_dev(( SELECT auth.uid() AS uid)) AND (created_at < (now() - '7 days'::interval)))",
         "with_check": null
       },
       {

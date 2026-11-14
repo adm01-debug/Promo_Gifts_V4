@@ -16,6 +16,9 @@ AS $function$
            ) OR (
              p.proname = 'get_sitemap_public'
              AND pg_get_function_identity_arguments(p.oid) = 'p_limit integer, p_offset integer'
+           ) OR (
+             p.proname = 'request_password_reset'
+             AND pg_get_function_identity_arguments(p.oid) = 'p_email text'
            )) AS public_intent,
            (p.proname IN (
              'fn_video_queue_next','fn_xbz_enqueue_videos','fn_xbz_link_video',

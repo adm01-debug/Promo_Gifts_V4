@@ -6,7 +6,7 @@
 | owner | postgres |
 | RLS habilitado | sim |
 | RLS forçado (owner) | não |
-| policies | 2 |
+| policies | 3 |
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
@@ -51,6 +51,16 @@
 
 
 ## Policies (RLS)
+
+### `query_telemetry_delete_dev`
+
+| campo | valor |
+|---|---|
+| comando | DELETE |
+| tipo | PERMISSIVE |
+| roles | authenticated |
+| USING | `(is_dev(( SELECT auth.uid() AS uid)) AND (created_at < (now() - '7 days'::interval)))` |
+| WITH CHECK |  |
 
 ### `query_telemetry_insert_any`
 

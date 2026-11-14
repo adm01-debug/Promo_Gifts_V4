@@ -294,7 +294,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.public_token_failures](tables/public/public_token_failures.md) | table | sim | 2 | 8 | não | Migrado do Lovable em 2026-05-22 (Lote A). Anti-bruteforce de tokens públicos. |
 | [public.push_subscriptions](tables/public/push_subscriptions.md) | table | sim | 5 | 7 | não |  |
 | [public.qa_image_coverage_log](tables/public/qa_image_coverage_log.md) | table | sim | 4 | 5 | não |  |
-| [public.query_telemetry](tables/public/query_telemetry.md) | table | sim | 2 | 18 | não |  |
+| [public.query_telemetry](tables/public/query_telemetry.md) | table | sim | 3 | 18 | não |  |
 | [public.quote_approval_tokens](tables/public/quote_approval_tokens.md) | table | sim | 4 | 20 | não | Migrado do Lovable em 2026-05-22 (Lote A). Tokens públicos com assinatura eletrônica MP 2.200-2/2001. |
 | [public.quote_drafts](tables/public/quote_drafts.md) | table | sim | 1 | 4 | não |  |
 | [public.quote_history](tables/public/quote_history.md) | table | sim | 2 | 10 | não | Audit trail de mudanças em orçamentos. Schema migrations/20251220131225 (com policies adaptadas: quotes.created_by/assigned_to em vez de seller_id que não existe). |
