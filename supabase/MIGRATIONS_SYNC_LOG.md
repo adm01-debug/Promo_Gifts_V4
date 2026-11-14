@@ -1640,3 +1640,18 @@ Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261114120000` | `cron004_reduz_frequencia_jobs_ociosos` | `e1371c31840255c9a9bc071cea76efc543ec02637dba7961f622c10a314c6a18` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/perf-cron004-reduz-jobs-ociosos-261114-1001`) |
+
+## 2026-11-14 — CRON-005: `refresh-all-materialized-views` 1×/dia às 09:38 UTC com `statement_timeout` real de 600 s
+
+Consulta read-only em produção (2026-11-14): `cron.job` jobid=234 `38 */2 * * *`, command
+`fn_cron_safe_run(47, 'SELECT public.refresh_all_materialized_views();', 55000, 'refresh-all-mvs')`; `pg_settings`
+`statement_timeout=120000` (configuration file), `cron.use_background_workers=off`, PG 17. `postgres_logs` 2026-11-13 10:40 →
+2026-11-14 04:40: 18 linhas `fn_cron_safe_run [refresh-all-mvs] TIMEOUT após 120000–132000ms (limite=55000ms)` e 0 linhas
+`[refresh_all_materialized_views] Concluído (7 MVs)` — o `SET LOCAL` de `fn_cron_safe_run` não rearma o timeout do statement
+em curso e o rollback desfaz as 7 MVs. A migration põe `SET statement_timeout = '600s';` antes do `SELECT` e roda 1×/dia.
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`. Depois de aplicada, atualizar
+`supabase/baseline/20261108000000_cron_jobs.json` (`refresh-all-materialized-views` → `38 9 * * *`).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114120100` | `cron005_refresh_all_mvs_diario_timeout_real` | `46c10be42fa859abe362cbac3f4b3a0066d0e59115b96ecf3cddf19a2184bfb2` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/perf-cron005-refresh-all-mvs-diario-261114-1002`) |
