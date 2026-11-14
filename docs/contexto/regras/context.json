@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "c9130556a973ba2c5cd94edc3415dd07e8161dd5",
+  "sha": "74e26506410beb97490d760ab1c1f618c30368f7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 08:33 UTC",
+  "generated_at": "2026-11-14 09:46 UTC",
   "files_total": 10044,
   "code_files": 8580,
   "code_lines": 1212272
@@ -528459,10 +528459,19 @@
   }
  },
  "git": {
-  "sha": "c9130556a973ba2c5cd94edc3415dd07e8161dd5",
+  "sha": "74e26506410beb97490d760ab1c1f618c30368f7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "74e2650",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "docs: prod-readiness com a qualidade do main final e as 5 PRs bloqueadas pelo banco (#3585)",
+    "files": [
+     "docs/prod-readiness.md"
+    ]
+   },
    {
     "sha": "c913055",
     "date": "2026-11-14",
@@ -528817,18 +528826,6 @@
      "src/hooks/stock/stockFetcher.ts",
      "src/hooks/stock/stockPagination.ts"
     ]
-   },
-   {
-    "sha": "f55aecb",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "chore(analise-prs): relatório das 61 PRs abertas em 2026-11-12 (#3408)",
-    "files": [
-     "analise-prs/2026-11-12/RELATORIO_PRS.md",
-     "analise-prs/2026-11-12/baseline/main.json",
-     "analise-prs/2026-11-12/progresso.json",
-     "analise-prs/2026-11-12/prs.json"
-    ]
    }
   ],
   "hot_files": [
@@ -528837,12 +528834,12 @@
     10
    ],
    [
-    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "docs/prod-readiness.md",
     4
    ],
    [
-    "docs/prod-readiness.md",
-    3
+    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    4
    ],
    [
     "docs/ci/SEGREDOS.md",

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c9130556a973ba2c5cd94edc3415dd07e8161dd5` (2026-11-14T05:24:53-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `74e26506410beb97490d760ab1c1f618c30368f7` (2026-11-14T06:26:20-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -588,14 +588,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43159 nós · 74530 arestas · 2439 comunidades · grafo do commit `c9130556`
+- 43159 nós · 74530 arestas · 2439 comunidades · grafo do commit `74e26506`
 - comunidades maiores: ref_components (513), react (480), vitest (463), ref_hooks (428), ref_node_child_process (416), ref_integrations (400), ref_lib (383), lucide-react (367), sonner (359), gotoAndSettle (354), ref_utils (343), @tanstack/react-query (333)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (61)
-- PENDENCIAS.md (53)
+- RELATORIO_CI.md (60)
+- PENDENCIAS.md (52)
 - supabase/MIGRATIONS_SYNC_LOG.md (47)
 - package.json (29)
 - package-lock.json (20)
@@ -1177,11 +1177,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/magazine-ring-testing-audit.md` — Auditoria dos testes de ring do Magazine PreviewSidebar (225 linhas)
 - `docs/motor-v2-test-report.md` — 🧪 Relatório Exaustivo de Testes — Motor V2 (Bronze Layer) (401 linhas)
 - `docs/notifications-module-audit.md` — Auditoria — Módulo "Notificações de Estoque" (sino do header) (110 linhas)
-- `docs/prod-readiness.md` — Prontidão para produção — inventário e prova (1123 linhas)
+- `docs/prod-readiness.md` — Prontidão para produção — inventário e prova (1124 linhas)
 - subpastas de docs/: docs/arquivo (90), docs/redeploy (27), docs/estado (26), docs/plans (24), docs/db (14), docs/audits (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/ci (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/bugs (6), docs/security (5), docs/sessoes (5), docs/suppliers (5), docs/agentes (4), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/design (3), docs/fabrica-vps (3), docs/observability (3), docs/qa (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/coordenacao (2), docs/edge-functions (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-14 `74e2650` docs: prod-readiness com a qualidade do main final e as 5 PRs bloqueadas pelo banco (#3585)
 - 2026-11-14 `c913055` fix(ci): credenciais E2E com fallback de vendedor para E2E_USER (supersede #3457) (#3578)
 - 2026-11-14 `ee0ccd5` docs(prontidao): diagnóstico das quedas do banco com leitura de logs e entregas de 14/11 (#3579)
 - 2026-11-14 `c49e8e7` docs(migrations): recibos E66 e E15 de 14/11 (supersede #3560 #3561 #3562 #3567 #3568 #3571 #3563 #3570 #3573 #3575) (#3
@@ -1196,7 +1197,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-13 `333fe6e` perf(db): índice para ordenação por created_at no catálogo e VACUUM de tags (#3550)
 - 2026-11-13 `73f463f` fix(ci): teste de frase banida monta o literal em partes (ci-security-drift do main) (#3541)
 - 2026-11-13 `835fee0` fix(edge): corrige domínio de e-mail Resend promogifts → promobrindes (#3521)
-- 2026-11-13 `fe64be3` docs(migrations): recibos da 20261111191000 (corrigido) e da 20261112140000 (#3529)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

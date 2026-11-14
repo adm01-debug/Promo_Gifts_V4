@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c9130556a973ba2c5cd94edc3415dd07e8161dd5",
+  "commit": "74e26506410beb97490d760ab1c1f618c30368f7",
   "branch": "main",
-  "data_commit": "2026-11-14T05:24:53-03:00",
+  "data_commit": "2026-11-14T06:26:20-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "74e2650",
+    "data": "2026-11-14",
+    "assunto": "docs: prod-readiness com a qualidade do main final e as 5 PRs bloqueadas pelo banco (#3585)"
+   },
    {
     "sha": "c913055",
     "data": "2026-11-14",
@@ -126,11 +131,6 @@
     "sha": "3508d2a",
     "data": "2026-11-13",
     "assunto": "fix(db): exclusão de usuário com itens no carrinho deixa de falhar (#3402)"
-   },
-   {
-    "sha": "640d96e",
-    "data": "2026-11-13",
-    "assunto": "fix(edge): recomendações e copiloto de BI voltam a usar IA via router multi-provider (#3401)"
    }
   ],
   "arquivos_mudados_7d": 1984,
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 61
+    "mudancas": 60
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 53
+    "mudancas": 52
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 437
+    "commits": 436
    },
    {
     "autor": "Joaquim Ataides",
