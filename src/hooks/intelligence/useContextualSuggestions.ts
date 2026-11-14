@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useAdvancedFilters } from '@/hooks/products';
+import { useQuery } from '@tanstack/react-query';
+import { untypedFrom } from '@/lib/supabase-untyped';
 import type { AdvancedFilterState } from '@/types/advancedFilters';
 
 export interface ContextualSuggestion {
@@ -65,7 +66,22 @@ export function useContextualSuggestions({
     [location.pathname],
   );
 
-  const { techniqueOptions } = useAdvancedFilters();
+  // Só consulta técnicas quando a sugestão pode aparecer (cor ativa, sem técnica).
+  const needsTechniques =
+    enabled && isActiveValue(activeFilters.colors) && !isActiveValue(activeFilters.techniques);
+  const { data: hasTechniqueOptions = false } = useQuery({
+    queryKey: ['contextual-suggestions', 'has-techniques'],
+    enabled: needsTechniques,
+    staleTime: 30 * 60_000,
+    queryFn: async () => {
+      const { data, error } = await untypedFrom('personalization_techniques')
+        .select('id')
+        .eq('is_active', true)
+        .limit(1);
+      if (error) throw error;
+      return (data?.length ?? 0) > 0;
+    },
+  });
 
   const allSuggestions = useMemo<ContextualSuggestion[]>(() => {
     if (!enabled) return [];
@@ -98,7 +114,7 @@ export function useContextualSuggestions({
       });
     }
 
-    if (hasColors && !hasTechniques && techniqueOptions.length > 0) {
+    if (hasColors && !hasTechniques && hasTechniqueOptions) {
       out.push({
         id: 'suggest-technique',
         text: 'Selecionar técnica de personalização',
@@ -136,7 +152,7 @@ export function useContextualSuggestions({
     }
 
     return out.sort((a, b) => b.priority - a.priority);
-  }, [enabled, activeFilters, techniqueOptions]);
+  }, [enabled, activeFilters, hasTechniqueOptions]);
 
   const suggestions = useMemo<ContextualSuggestion[]>(() => {
     if (!searchQuery.trim()) return allSuggestions;
