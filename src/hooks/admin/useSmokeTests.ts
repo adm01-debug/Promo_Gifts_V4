@@ -1,18 +1,18 @@
 /**
  * Hook do dashboard de smoke tests.
  *
- * Consulta:
- *   - v_smoke_tests_latest_run (última execução, ordenado FAIL → WARN → PASS)
- *   - v_smoke_tests_trend (12 últimas execuções com agregados)
+ * Consulta: RPC public.fn_admin_smoke_tests_dashboard() → { latest, trend }
+ *   - latest: v_smoke_tests_latest_run (última execução, ordenado FAIL → WARN → PASS)
+ *   - trend: v_smoke_tests_trend (12 últimas execuções com agregados)
+ *   As views não têm SELECT para authenticated (20260716192234); a RPC exige is_admin_or_above.
  *
- * Execução manual: chama RPC public.fn_run_and_persist_smoke_tests().
+ * Execução manual: chama RPC public.fn_admin_run_smoke_tests().
  *
  * Acesso: apenas admin.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import { untypedFrom } from '@/lib/supabase-untyped';
 import { toErrorMessage } from '@/lib/to-error-message';
 
 export interface SmokeTestRow {
@@ -69,9 +69,19 @@ export interface SmokeTestsData {
   runNow: () => Promise<void>;
 }
 
+type SmokeTestRpcError = { message?: string } | null;
+
 type SmokeTestRpcClient = {
-  rpc: (fn: 'fn_run_and_persist_smoke_tests') => Promise<{ error: { message?: string } | null }>;
+  rpc: {
+    (fn: 'fn_admin_smoke_tests_dashboard'): Promise<{
+      data: { latest: SmokeTestRow[] | null; trend: SmokeTestTrend[] | null } | null;
+      error: SmokeTestRpcError;
+    }>;
+    (fn: 'fn_admin_run_smoke_tests'): Promise<{ error: SmokeTestRpcError }>;
+  };
 };
+
+const smokeClient = supabase as unknown as SmokeTestRpcClient;
 
 export function useSmokeTests(): SmokeTestsData {
   const [latest, setLatest] = useState<SmokeTestRow[]>([]);
@@ -83,19 +93,15 @@ export function useSmokeTests(): SmokeTestsData {
 
   const load = useCallback(async () => {
     try {
-      const [latestRes, trendRes] = await Promise.all([
-        untypedFrom<SmokeTestRow>('v_smoke_tests_latest_run').select('*'),
-        untypedFrom<SmokeTestTrend>('v_smoke_tests_trend').select('*'),
-      ]);
+      const { data, error: rpcError } = await smokeClient.rpc('fn_admin_smoke_tests_dashboard');
+      if (rpcError) throw new Error(`dashboard: ${rpcError.message}`);
 
-      if (latestRes.error) throw new Error(`latest: ${latestRes.error.message}`);
-      if (trendRes.error) throw new Error(`trend: ${trendRes.error.message}`);
-
-      setLatest((latestRes.data ?? []) as SmokeTestRow[]);
-      setTrend((trendRes.data ?? []) as SmokeTestTrend[]);
+      const latestRows = data?.latest ?? [];
+      setLatest(latestRows);
+      setTrend(data?.trend ?? []);
       setError(null);
-      if (latestRes.data?.[0]?.ran_at) {
-        setLastRun(new Date(latestRes.data[0].ran_at));
+      if (latestRows[0]?.ran_at) {
+        setLastRun(new Date(latestRows[0].ran_at));
       }
     } catch (e) {
       const msg = toErrorMessage(e);
@@ -110,8 +116,7 @@ export function useSmokeTests(): SmokeTestsData {
     if (running) return;
     setRunning(true);
     try {
-      const client = supabase as unknown as SmokeTestRpcClient;
-      const { error: rpcError } = await client.rpc('fn_run_and_persist_smoke_tests');
+      const { error: rpcError } = await smokeClient.rpc('fn_admin_run_smoke_tests');
       if (rpcError) throw new Error(rpcError.message);
       await load();
     } catch (e) {

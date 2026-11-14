@@ -111,6 +111,14 @@ describe('sanitizeReplayMigration', () => {
     }
   });
 
+  it('aceita a migration real da #3550 (1 índice CONCURRENTLY) no replay do shadow', () => {
+    const fileName = '20261113235000_perf_idx_products_active_created_at_desc.sql';
+    const sql = readFileSync(join('supabase', 'migrations', fileName), 'utf8');
+    const out = sanitizeReplayMigration(fileName, sql);
+    expect(out).not.toMatch(/^\s*CREATE\s+(?:UNIQUE\s+)?INDEX\s+CONCURRENTLY\b/im);
+    expect(out).toMatch(/^CREATE INDEX IF NOT EXISTS idx_products_active_created_at_desc$/m);
+  });
+
   it('não reescreve migrations fora do allowlist de compatibilidade do pipeline', () => {
     const sql = 'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_a ON public.a(id);';
     expect(sanitizeReplayMigration('20261109999999_future.sql', sql)).toBe(sql);

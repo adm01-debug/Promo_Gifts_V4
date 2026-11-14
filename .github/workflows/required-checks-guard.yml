@@ -10,7 +10,7 @@ name: Required Checks Guard
 #     regras efetivas (rules/branches/main, funciona com github.token), as três
 #     regras do sentinel (lógica coberta pelas fixtures do sentinel-self-test.yml)
 #     + o nome exato do required-checks.json que este guard já conferia.
-#   - Saiu de pull_request/push incondicional: o estado dos rulesets é configuração
+#   - Saiu de pull_request/push incondicional: o estado dos rulesets é configuração Em PR roda só quando o PR mexe no que o guard valida (paths abaixo).
 #     do GitHub, não muda com o diff do PR. Agora: diário + dispatch + push em main
 #     que mexa em .github/** (onde mora o required-checks.json).
 #   - O ghost-check (E71, scripts/check-required-checks.mjs) é estático e foi para
