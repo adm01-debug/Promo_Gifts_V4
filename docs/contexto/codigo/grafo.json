@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 2763,
- "arestas": 10936,
+ "arestas": 10941,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -38,7 +38,7 @@
   },
   {
    "arquivo": "src/contexts/AuthContext.tsx",
-   "importado_por": 238
+   "importado_por": 240
   },
   {
    "arquivo": "src/components/ui/skeleton.tsx",
@@ -109,6 +109,10 @@
    "importado_por": 60
   },
   {
+   "arquivo": "src/lib/supabase-untyped.ts",
+   "importado_por": 56
+  },
+  {
    "arquivo": "src/utils/image-utils.ts",
    "importado_por": 55
   },
@@ -126,10 +130,6 @@
   },
   {
    "arquivo": "src/lib/external-db/index.ts",
-   "importado_por": 53
-  },
-  {
-   "arquivo": "src/lib/supabase-untyped.ts",
    "importado_por": 53
   },
   {
@@ -628,7 +628,7 @@
   {
    "modulo": "contexts",
    "depende_de": 17,
-   "importado_por": 59
+   "importado_por": 60
   },
   {
    "modulo": "components/ui",

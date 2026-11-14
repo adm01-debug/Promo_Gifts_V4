@@ -3,8 +3,8 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4761)",
-   "SQL (3369)",
+   "TypeScript (4762)",
+   "SQL (3389)",
    "Markdown (1018)",
    "JavaScript (443)",
    "JSON (126)",
@@ -5964,6 +5964,8 @@
    "admin_revoke_user_sessions",
    "can_grant_mcp_full",
    "execute_role_migration_batch",
+   "fn_admin_run_smoke_tests",
+   "fn_admin_smoke_tests_dashboard",
    "fn_admin_sync_external_connections",
    "get_profile_and_roles",
    "has_role",

@@ -822,7 +822,7 @@
     "rpcAdminSyncExternalConnections"
    ],
    "export_default": null,
-   "linhas": 63,
+   "linhas": 68,
    "tabelas": [],
    "rpcs": [
     "fn_admin_sync_external_connections"
@@ -840,7 +840,7 @@
     "components/admin",
     "hooks/admin"
    ],
-   "coberto_por_testes": 0,
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {
@@ -6582,7 +6582,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 52,
+   "usado_por": 55,
    "usado_por_modulos": [
     "components/admin",
     "components/mockup",

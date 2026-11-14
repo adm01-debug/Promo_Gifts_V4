@@ -9630,9 +9630,10 @@
     "SupplierReliabilityTab"
    ],
    "export_default": null,
-   "linhas": 104,
+   "linhas": 123,
    "dominio": "components/inventory",
    "hooks_locais": [
+    "useAuth",
     "useSupplierReliability"
    ],
    "tabelas": [],
@@ -16758,7 +16759,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 201,
+   "usado_por": 203,
    "orfao": false
   },
   {
@@ -17537,11 +17538,10 @@
     "MarketIntelInsightsUsagePanel"
    ],
    "export_default": null,
-   "linhas": 216,
+   "linhas": 224,
    "dominio": "pages/admin",
    "hooks_locais": [],
    "tabelas": [
-    "ai_insights_cache",
     "ai_usage_events"
    ],
    "edges": [],

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `74e2650641` · branch `main` · 2026-11-14 09:46 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e73a88d1a7` · branch `main` · 2026-11-14 11:13 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1172,12 +1172,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `set_connection_failure_window_minutes` | forbidden: admin role required | `supabase/migrations/20260423185624_0cc97b9f-b1ba-469a-914d-6ac6422b584d.sql` |
 | `set_connection_failure_window_minutes` | invalid window: must be one of 0, 15, 30, 60, 120, 240 minutes | `supabase/migrations/20260423185624_0cc97b9f-b1ba-469a-914d-6ac6422b584d.sql` |
 | `get_auto_test_job_status` | forbidden: admin role required | `supabase/migrations/20260423190831_794cb398-e9f7-4572-b089-46170a6da8c4.sql` |
-| `enqueue_optimization` | forbidden | `supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql` |
-| `claim_next_optimization` | forbidden | `supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql` |
-| `complete_optimization` | forbidden | `supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql` |
-| `complete_optimization` | invalid status: % | `supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql` |
-| `complete_optimization` | optimization not found | `supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql` |
-| `reset_optimization_queue` | forbidden | `supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql` |
 | `request_step_up_challenge` | unauthorized: no session | `supabase/migrations/20260425203103_eec2662c-3ad4-48ca-8fcb-f3cbf6be16bc.sql` |
 | `request_step_up_challenge` | forbidden: dev role required | `supabase/migrations/20260425203103_eec2662c-3ad4-48ca-8fcb-f3cbf6be16bc.sql` |
 | `request_step_up_challenge` | rate_limited: too many step-up requests | `supabase/migrations/20260425203103_eec2662c-3ad4-48ca-8fcb-f3cbf6be16bc.sql` |
@@ -1297,7 +1291,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `fn_promote_supplier` | pai_falhou:% | `supabase/migrations/20260611121000_fn_promote_supplier_sweep_orphan_variants.sql` |
 | `fn_promote_supplier` | variantes_falharam:% | `supabase/migrations/20260611121000_fn_promote_supplier_sweep_orphan_variants.sql` |
 | `fn_promote_supplier` | sweep_falhou:% | `supabase/migrations/20260611121000_fn_promote_supplier_sweep_orphan_variants.sql` |
-| `fn_admin_sync_external_connections` | forbidden | `supabase/migrations/20260611183200_p2_acl_02_fn_admin_sync_external_connections.sql` |
 | `fn_convert_cart_to_quote` | Nao autenticado. | `supabase/migrations/20260614210000_fix_convert_cart_to_quote_organization_id.sql` |
 | `fn_convert_cart_to_quote` | Carrinho nao encontrado. | `supabase/migrations/20260614210000_fix_convert_cart_to_quote_organization_id.sql` |
 | `fn_convert_cart_to_quote` | Este carrinho nao pertence ao usuario atual. | `supabase/migrations/20260614210000_fix_convert_cart_to_quote_organization_id.sql` |
@@ -1421,7 +1414,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `magazine_update_metadata_atomic` | magazine_subtitle_invalid | `supabase/migrations/20260909190400_magazine_page_order_numeric_version.sql` |
 | `magazine_update_metadata_atomic` | magazine_branding_invalid | `supabase/migrations/20260909190400_magazine_page_order_numeric_version.sql` |
 | `magazine_update_metadata_atomic` | magazine_content_invalid | `supabase/migrations/20260909190400_magazine_page_order_numeric_version.sql` |
-| … +117 linhas — lista completa em `context.json` | | |
+| `magazine_update_metadata_atomic` | magazine_page_order_invalid | `supabase/migrations/20260909190400_magazine_page_order_numeric_version.sql` |
+| `magazine_update_metadata_atomic` | magazine_page_order_invalid | `supabase/migrations/20260909190400_magazine_page_order_numeric_version.sql` |
+| `magazine_update_metadata_atomic` | magazine_not_found | `supabase/migrations/20260909190400_magazine_page_order_numeric_version.sql` |
+| `magazine_update_metadata_atomic` | magazine_forbidden | `supabase/migrations/20260909190400_magazine_page_order_numeric_version.sql` |
+| `magazine_update_metadata_atomic` | magazine_not_editable | `supabase/migrations/20260909190400_magazine_page_order_numeric_version.sql` |
+| `magazine_guard_and_version_v2` | magazine_publish_requires_rpc | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_guard_and_version_v2` | magazine_import_marker_forbidden | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| … +124 linhas — lista completa em `context.json` | | |
 
 ## E. Estados, máquinas de estado e transições
 
@@ -5856,7 +5856,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientOrdersHistory.ts` |
 | `staleTime: 10 * 60 * 1000,` | `src/hooks/bi/useClientSeasonality.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientVsIndustry.ts` |
-| … +380 linhas — lista completa em `context.json` | |
+| … +381 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -6339,7 +6339,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | DOWNLOAD_SIZE_LIMIT | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_ACTION_AFTER | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_JSON_KEY | `scripts/diagnose-personalization-artifact.py` |
-| … +1251 linhas — lista completa em `context.json` | |
+| … +1248 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6458,9 +6458,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20260909190300_magazine_publish_atomic.sql` |
 | `admin` | `supabase/migrations/20260909190400_magazine_page_order_numeric_version.sql` |
 | `admin` | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `admin` | `supabase/migrations/20261112120400_fn_insights_cache_count.sql` |
+| `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21082 testes em 2129 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21086 testes em 2130 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6764,7 +6766,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/product-webhook.test.ts` | 18 | product-webhook · evento product.created · retorna 200 para evento product.created válido · evento product.updated … |
 | `tests/hooks/useGlobalSearch-voice.test.ts` | 18 | Voice Action Handler Logic · navigate action · should extract route from navigate action · should handle navigate without route gracefully … |
 | `tests/lib/product-types.test.ts` | 18 | getProductImageUrl · should prefer primary_image_url · should fallback to image_url · should fallback to first image in images array … |
-| … +1829 linhas — lista completa em `context.json` | | |
+| … +1830 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7231,4 +7233,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Laser detection — must come before UV check since "Laser UV" exists | `src/components/mockup/techniqueColorUtils.ts` |
 | a caixa cheia é um limite superior: a bbox nunca subestima a marca girada e um | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
 | * Filtro de técnica EFETIVO — o mesmo que a prévia aplica. Decide se há regra. */ | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
-| … +1250 linhas — lista completa em `context.json` | |
+| … +1252 linhas — lista completa em `context.json` | |

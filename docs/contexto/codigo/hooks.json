@@ -6219,7 +6219,7 @@
     "useRef"
    ],
    "canais_realtime": [],
-   "usado_por": 201,
+   "usado_por": 203,
    "usado_por_arquivos": [
     "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
     "recovery/src-legacy/src/components/navigation/DynamicBreadcrumbs.tsx",
@@ -6799,7 +6799,7 @@
    "hooks_exportados": [
     "useKillSwitchObservability"
    ],
-   "linhas": 93,
+   "linhas": 109,
    "dominio": "hooks/admin",
    "tabelas": [],
    "rpcs": [],
@@ -6821,7 +6821,7 @@
    "hooks_exportados": [
     "useMedallionHealth"
    ],
-   "linhas": 48,
+   "linhas": 43,
    "dominio": "hooks/admin",
    "tabelas": [],
    "rpcs": [],
@@ -6865,15 +6865,13 @@
    "hooks_exportados": [
     "useRoleMigration"
    ],
-   "linhas": 117,
+   "linhas": 119,
    "dominio": "hooks/admin",
    "tabelas": [
     "role_migration_batches",
     "role_migration_items"
    ],
-   "rpcs": [
-    "execute_role_migration_batch"
-   ],
+   "rpcs": [],
    "edges": [],
    "hooks_internos": [
     "useCallback",
@@ -6913,11 +6911,12 @@
    "hooks_exportados": [
     "useSmokeTests"
    ],
-   "linhas": 207,
+   "linhas": 212,
    "dominio": "hooks/admin",
    "tabelas": [],
    "rpcs": [
-    "fn_run_and_persist_smoke_tests"
+    "fn_admin_run_smoke_tests",
+    "fn_admin_smoke_tests_dashboard"
    ],
    "edges": [],
    "hooks_internos": [
@@ -7134,7 +7133,7 @@
    "hooks_exportados": [
     "usePasswordResetRequests"
    ],
-   "linhas": 209,
+   "linhas": 189,
    "dominio": "hooks/auth",
    "tabelas": [
     "password_reset_requests"
@@ -9567,16 +9566,16 @@
     "useSupplierReliabilityHistory",
     "useSupplierReliabilityServer"
    ],
-   "linhas": 256,
+   "linhas": 261,
    "dominio": "hooks/inventory",
-   "tabelas": [
-    "mv_supplier_reliability"
-   ],
+   "tabelas": [],
    "rpcs": [
+    "fn_get_supplier_reliability",
     "get_supplier_reliability_history"
    ],
    "edges": [],
    "hooks_internos": [
+    "useAuth",
     "useQuery"
    ],
    "canais_realtime": [],
@@ -13752,7 +13751,7 @@
    "hooks_exportados": [
     "useOptimizationQueue"
    ],
-   "linhas": 349,
+   "linhas": 352,
    "dominio": "pages/admin",
    "tabelas": [
     "optimization_queue"

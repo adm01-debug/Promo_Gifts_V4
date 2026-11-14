@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "74e26506410beb97490d760ab1c1f618c30368f7",
+  "sha": "e73a88d1a7f6abe309335ed96dbac42bcc0b61de",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 09:46 UTC",
-  "files_total": 10044,
-  "code_files": 8580,
-  "code_lines": 1212272
+  "generated_at": "2026-11-14 11:13 UTC",
+  "files_total": 10065,
+  "code_files": 8601,
+  "code_lines": 1213537
  },
  "version": "1.3.2",
- "facts_hash": "4ff91c9727e93009",
+ "facts_hash": "7e324eb17da50b42",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1221,8 +1221,8 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3369,
-   ".ts": 2904,
+   ".sql": 3389,
+   ".ts": 2905,
    ".tsx": 1858,
    ".mjs": 436,
    ".py": 13,
@@ -55993,7 +55993,7 @@
     "args": "",
     "returns": "TABLE(function_name text, arguments text, problem text, granted_to text)",
     "lang": "sql",
-    "src": "supabase/rollbacks/20261024163500_rollback.sql",
+    "src": "supabase/rollbacks/20261112120900_rollback.sql",
     "security_definer": false,
     "search_path": true,
     "body": "WITH defs AS ( SELECT p.oid, p.proname, pg_get_function_identity_arguments(p.oid) AS args, p.proacl, (pg_get_function_result(p.oid) = 'trigger') AS is_trigger, (p.proname IN ( 'submit_quote_response','get_quote_token_by_value','check_login_rate_limit' ) OR ( p.proname = 'get_quote_token_public' AND pg_get_function_identity_arguments(p.oid) = '_token text' ) OR ( p.proname = 'get_sitemap_public' AND pg_get_function_identity_arguments(p.oid) = 'p_limit integer, p_offset integer' )) AS public_intent, (p.proname IN ( 'fn_video_queue_next','fn_xbz_enqueue_videos','fn_xbz_link_video', 'fn_asia_link_video','fn_video_link_to_products','fn_sm_link_video', 'fn_spot_enqueue_new_videos','fn_spot_enqueue …",
@@ -56002,6 +56002,7 @@
      "LATERAL",
      "acl_expanded",
      "defs",
+     "pg_catalog",
      "pg_namespace",
      "pg_proc"
     ]
@@ -56501,7 +56502,7 @@
     "args": "",
     "returns": "public.optimization_queue",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE claimed public.optimization_queue; BEGIN IF NOT public.has_role(auth.uid(), 'admin') THEN RAISE EXCEPTION 'forbidden'; END IF; IF EXISTS (SELECT 1 FROM public.optimization_queue WHERE status = 'running') THEN RETURN NULL; END IF; UPDATE public.optimization_queue SET status = 'running', started_at = now() WHERE id = ( SELECT id FROM public.optimization_queue WHERE status = 'pending' ORDER BY priority ASC, created_at ASC LIMIT 1 FOR UPDATE SKIP LOCKED ) RETURNING * INTO claimed; RETURN claimed; END;",
@@ -57542,7 +57543,7 @@
     "args": "_id uuid, _status text, _notes text DEFAULT NULL, _guardrail_status text DEFAULT NULL, _result jsonb DEFAULT NULL, _error text DEFAULT NULL",
     "returns": "public.optimization_queue",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE updated public.optimization_queue; duration int; BEGIN IF NOT public.has_role(auth.uid(), 'admin') THEN RAISE EXCEPTION 'forbidden'; END IF; IF _status NOT IN ('done','failed','skipped','blocked') THEN RAISE EXCEPTION 'invalid status: %', _status; END IF; UPDATE public.optimization_queue SET status = _status, finished_at = now(), result = COALESCE(_result, result), error = _error, guardrail_status = COALESCE(_guardrail_status, guardrail_status) WHERE id = _id RETURNING * INTO updated; IF updated.id IS NULL THEN RAISE EXCEPTION 'optimization not found'; END IF; duration := EXTRACT(EPOCH FROM (updated.finished_at - COALESCE(updated.started_at, updated.finished_at))) * 1000; INSERT INTO …",
@@ -57988,10 +57989,10 @@
     "tables": []
    },
    "enqueue_optimization": {
-    "args": "_title text, _description text DEFAULT NULL, _category text DEFAULT 'performance', _priority int DEFAULT 100",
+    "args": "_title text, _description text DEFAULT NULL, _category text DEFAULT 'performance', _priority integer DEFAULT 100",
     "returns": "uuid",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE new_id uuid; BEGIN IF NOT public.has_role(auth.uid(), 'admin') THEN RAISE EXCEPTION 'forbidden'; END IF; INSERT INTO public.optimization_queue (title, description, category, priority, created_by) VALUES (_title, _description, COALESCE(_category,'performance'), COALESCE(_priority,100), auth.uid()) RETURNING id INTO new_id; RETURN new_id; END;",
@@ -58380,7 +58381,7 @@
     "args": "",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260611183200_p2_acl_02_fn_admin_sync_external_connections.sql",
+    "src": "supabase/rollbacks/20261112120700_rollback.sql",
     "security_definer": true,
     "search_path": true,
     "body": "BEGIN IF NOT public.has_role((SELECT auth.uid()), 'admin'::public.app_role) THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501'; END IF; RETURN public.sync_external_connections_from_credentials(); END;",
@@ -73056,10 +73057,10 @@
    },
    "reset_optimization_queue": {
     "args": "_only_running boolean DEFAULT true",
-    "returns": "int",
+    "returns": "integer",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql",
-    "security_definer": true,
+    "src": "supabase/rollbacks/20261112120500_rollback.sql",
+    "security_definer": false,
     "search_path": true,
     "body": "DECLARE affected int; BEGIN IF NOT public.has_role(auth.uid(), 'admin') THEN RAISE EXCEPTION 'forbidden'; END IF; IF _only_running THEN UPDATE public.optimization_queue SET status = 'pending', started_at = NULL WHERE status = 'running'; ELSE UPDATE public.optimization_queue SET status = 'pending', started_at = NULL, finished_at = NULL, error = NULL WHERE status IN ('running','failed','blocked'); END IF; GET DIAGNOSTICS affected = ROW_COUNT; RETURN affected; END;",
     "raises": [
@@ -96127,6 +96128,16 @@
    "supabase/migrations/20261111191000_restore_get_sitemap_public_anon_execute.sql",
    "supabase/migrations/20261111222500_fix_touch_seller_cart_secdef.sql",
    "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql",
+   "supabase/migrations/20261112120000_fix_fn_get_supplier_reliability.sql",
+   "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql",
+   "supabase/migrations/20261112120200_fix_kill_switch_obs_grant_summary_view.sql",
+   "supabase/migrations/20261112120300_fix_medallion_health_dev_rpc.sql",
+   "supabase/migrations/20261112120400_fn_insights_cache_count.sql",
+   "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql",
+   "supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql",
+   "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql",
+   "supabase/migrations/20261112120800_query_telemetry_delete_dev_policy.sql",
+   "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql",
    "supabase/migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql",
    "supabase/migrations/20261112140000_fix_rls_supplier_products_raw_history_p2027.sql",
    "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql",
@@ -96196,6 +96207,16 @@
    "supabase/rollbacks/20261111191000_rollback.sql",
    "supabase/rollbacks/20261111222500_rollback.sql",
    "supabase/rollbacks/20261112011000_rollback.sql",
+   "supabase/rollbacks/20261112120000_rollback.sql",
+   "supabase/rollbacks/20261112120100_rollback.sql",
+   "supabase/rollbacks/20261112120200_rollback.sql",
+   "supabase/rollbacks/20261112120300_rollback.sql",
+   "supabase/rollbacks/20261112120400_rollback.sql",
+   "supabase/rollbacks/20261112120500_rollback.sql",
+   "supabase/rollbacks/20261112120600_rollback.sql",
+   "supabase/rollbacks/20261112120700_rollback.sql",
+   "supabase/rollbacks/20261112120800_rollback.sql",
+   "supabase/rollbacks/20261112120900_rollback.sql",
    "supabase/rollbacks/20261112130000_rollback.sql",
    "supabase/rollbacks/20261112140000_rollback.sql",
    "supabase/rollbacks/20261113235000_rollback.sql",
@@ -131437,6 +131458,238 @@
     "src": "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql"
    },
    {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_get_supplier_reliability",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261112120000_fix_fn_get_supplier_reliability.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_get_supplier_reliability",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120000_fix_fn_get_supplier_reliability.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_get_supplier_reliability",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112120000_fix_fn_get_supplier_reliability.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_admin_smoke_tests_dashboard",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_smoke_tests_dashboard",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_admin_run_smoke_tests",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_run_smoke_tests",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "v_kill_switch_hits_summary",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261112120200_fix_kill_switch_obs_grant_summary_view.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_dev_medallion_health",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120300_fix_medallion_health_dev_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_dev_medallion_health",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261112120300_fix_medallion_health_dev_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_insights_cache_count",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120400_fn_insights_cache_count.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_insights_cache_count",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261112120400_fn_insights_cache_count.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "enqueue_optimization",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "enqueue_optimization",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "claim_next_optimization",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "claim_next_optimization",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "complete_optimization",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "complete_optimization",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "reset_optimization_queue",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "reset_optimization_queue",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "admin_execute_role_migration_batch",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "admin_execute_role_migration_batch",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "execute_role_migration_batch",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_admin_sync_external_connections",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_sync_external_connections",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_sync_external_connections",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "request_password_reset",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "request_password_reset",
+    "objkind": "function",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "request_password_reset",
+    "objkind": "function",
+    "roles": "anon, authenticated, service_role",
+    "src": "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql"
+   },
+   {
     "kind": "grant",
     "privs": "execute",
     "object": "get_sitemap_public",
@@ -131715,6 +131968,86 @@
     "objkind": "function",
     "roles": "anon",
     "src": "supabase/rollbacks/20261111191000_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "v_kill_switch_hits_summary",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261112120200_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "enqueue_optimization",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "claim_next_optimization",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "complete_optimization",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "reset_optimization_queue",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "enqueue_optimization",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "claim_next_optimization",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "complete_optimization",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "reset_optimization_queue",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_admin_sync_external_connections",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261112120700_rollback.sql"
    },
    {
     "kind": "revoke",
@@ -132244,36 +132577,6 @@
     "function": "get_auto_test_job_status",
     "msg": "forbidden: admin role required",
     "src": "supabase/migrations/20260423190831_794cb398-e9f7-4572-b089-46170a6da8c4.sql"
-   },
-   {
-    "function": "enqueue_optimization",
-    "msg": "forbidden",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql"
-   },
-   {
-    "function": "claim_next_optimization",
-    "msg": "forbidden",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql"
-   },
-   {
-    "function": "complete_optimization",
-    "msg": "forbidden",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql"
-   },
-   {
-    "function": "complete_optimization",
-    "msg": "invalid status: %",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql"
-   },
-   {
-    "function": "complete_optimization",
-    "msg": "optimization not found",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql"
-   },
-   {
-    "function": "reset_optimization_queue",
-    "msg": "forbidden",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql"
    },
    {
     "function": "request_step_up_challenge",
@@ -132869,11 +133172,6 @@
     "function": "fn_promote_supplier",
     "msg": "sweep_falhou:%",
     "src": "supabase/migrations/20260611121000_fn_promote_supplier_sweep_orphan_variants.sql"
-   },
-   {
-    "function": "fn_admin_sync_external_connections",
-    "msg": "forbidden",
-    "src": "supabase/migrations/20260611183200_p2_acl_02_fn_admin_sync_external_connections.sql"
    },
    {
     "function": "fn_convert_cart_to_quote",
@@ -134031,6 +134329,41 @@
     "src": "supabase/migrations/20261015150000_admin_active_sessions_rpc.sql"
    },
    {
+    "function": "fn_admin_smoke_tests_dashboard",
+    "msg": "not authorized",
+    "src": "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql"
+   },
+   {
+    "function": "fn_admin_run_smoke_tests",
+    "msg": "not authorized",
+    "src": "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql"
+   },
+   {
+    "function": "fn_dev_medallion_health",
+    "msg": "forbidden: requer papel dev",
+    "src": "supabase/migrations/20261112120300_fix_medallion_health_dev_rpc.sql"
+   },
+   {
+    "function": "fn_insights_cache_count",
+    "msg": "fn_insights_cache_count: acesso negado",
+    "src": "supabase/migrations/20261112120400_fn_insights_cache_count.sql"
+   },
+   {
+    "function": "admin_execute_role_migration_batch",
+    "msg": "insufficient_privilege: requer role dev",
+    "src": "supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql"
+   },
+   {
+    "function": "admin_execute_role_migration_batch",
+    "msg": "insufficient_privilege: requer sessão AAL2",
+    "src": "supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql"
+   },
+   {
+    "function": "request_password_reset",
+    "msg": "E-mail inválido.",
+    "src": "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql"
+   },
+   {
     "function": "fn_dryrun_standardize_supplier",
     "msg": "Acesso negado: requer perfil admin ou superior",
     "src": "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql"
@@ -134059,6 +134392,41 @@
     "function": "get_edge_function_secret",
     "msg": "Secret % nao encontrado no vault",
     "src": "supabase/rollbacks/20261027233000_rollback.sql"
+   },
+   {
+    "function": "enqueue_optimization",
+    "msg": "forbidden",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "function": "claim_next_optimization",
+    "msg": "forbidden",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "function": "complete_optimization",
+    "msg": "forbidden",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "function": "complete_optimization",
+    "msg": "invalid status: %",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "function": "complete_optimization",
+    "msg": "optimization not found",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "function": "reset_optimization_queue",
+    "msg": "forbidden",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "function": "fn_admin_sync_external_connections",
+    "msg": "forbidden",
+    "src": "supabase/rollbacks/20261112120700_rollback.sql"
    },
    {
     "function": "audit_ownership_orphans",
@@ -136206,7 +136574,6 @@
      "mcp-keys-issue"
     ],
     "rpc_transitive": [
-     "execute_role_migration_batch",
      "fn_my_rpc",
      "get_profile_and_roles",
      "increment_kit_template_usage",
@@ -146262,7 +146629,7 @@
   {
    "module": "e2e",
    "files": 626,
-   "lines": 75553,
+   "lines": 75549,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -146972,7 +147339,7 @@
   {
    "module": "src/components",
    "files": 1357,
-   "lines": 273210,
+   "lines": 273229,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -147330,7 +147697,7 @@
   {
    "module": "src/hooks",
    "files": 457,
-   "lines": 85860,
+   "lines": 85863,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -147365,7 +147732,6 @@
     "magic_up_generations",
     "mockup_drafts",
     "mv_stock_velocity",
-    "mv_supplier_reliability",
     "order_items",
     "orders",
     "password_reset_requests",
@@ -147570,7 +147936,7 @@
   {
    "module": "src/integrations",
    "files": 10,
-   "lines": 1340,
+   "lines": 1345,
    "tables": [
     "products"
    ],
@@ -147823,9 +148189,8 @@
   {
    "module": "src/pages",
    "files": 350,
-   "lines": 82503,
+   "lines": 82514,
    "tables": [
-    "ai_insights_cache",
     "ai_usage_events",
     "bot_detection_log",
     "custom_kits",
@@ -148770,8 +149135,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3068,
-   "lines": 220609,
+   "files": 3078,
+   "lines": 221484,
    "tables": [
     "...",
     "admin_audit_log",
@@ -148869,8 +149234,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 70,
-   "lines": 2030,
+   "files": 80,
+   "lines": 2359,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -148940,6 +149305,16 @@
     "supabase/rollbacks/20261111191000_rollback.sql",
     "supabase/rollbacks/20261111222500_rollback.sql",
     "supabase/rollbacks/20261112011000_rollback.sql",
+    "supabase/rollbacks/20261112120000_rollback.sql",
+    "supabase/rollbacks/20261112120100_rollback.sql",
+    "supabase/rollbacks/20261112120200_rollback.sql",
+    "supabase/rollbacks/20261112120300_rollback.sql",
+    "supabase/rollbacks/20261112120400_rollback.sql",
+    "supabase/rollbacks/20261112120500_rollback.sql",
+    "supabase/rollbacks/20261112120600_rollback.sql",
+    "supabase/rollbacks/20261112120700_rollback.sql",
+    "supabase/rollbacks/20261112120800_rollback.sql",
+    "supabase/rollbacks/20261112120900_rollback.sql",
     "supabase/rollbacks/20261112130000_rollback.sql",
     "supabase/rollbacks/20261112140000_rollback.sql",
     "supabase/rollbacks/20261113235000_rollback.sql",
@@ -149035,8 +149410,8 @@
   },
   {
    "module": "tests",
-   "files": 1010,
-   "lines": 154935,
+   "files": 1011,
+   "lines": 154962,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -149344,7 +149719,6 @@
    },
    "ai_insights_cache": {
     "select": [
-     "src/pages/admin/ai-usage/MarketIntelInsightsUsagePanel.tsx",
      "supabase/functions/market-intelligence-insights/index.ts"
     ],
     "upsert": [
@@ -150371,11 +150745,6 @@
      "src/hooks/intelligence/useStockVelocityPrefetch.ts"
     ]
    },
-   "mv_supplier_reliability": {
-    "select": [
-     "src/hooks/inventory/useSupplierReliabilityServer.ts"
-    ]
-   },
    "notifications": {
     "select": [
      "src/components/security/useSecurityData.ts"
@@ -150473,8 +150842,7 @@
      "src/hooks/auth/usePasswordResetRequests.ts"
     ],
     "insert": [
-     "recovery/src-legacy/src/hooks/usePasswordResetRequests.ts",
-     "src/hooks/auth/usePasswordResetRequests.ts"
+     "recovery/src-legacy/src/hooks/usePasswordResetRequests.ts"
     ]
    },
    "payments": {
@@ -151677,7 +152045,6 @@
     "created_at",
     "expires_at",
     "function_name",
-    "id",
     "payload",
     "user_id"
    ],
@@ -154422,8 +154789,7 @@
    ],
    "execute_role_migration_batch": [
     "qa/migrations-draft/2026-06-20_revoke_secdef_from_authenticated.sql",
-    "recovery/src-legacy/src/hooks/useRoleMigration.ts",
-    "src/hooks/admin/useRoleMigration.ts"
+    "recovery/src-legacy/src/hooks/useRoleMigration.ts"
    ],
    "fixture_rpc": [
     "scripts/ai-context/gerar.unit.mjs"
@@ -154432,6 +154798,12 @@
     "scripts/inventario/gerar-rotas.mjs",
     "scripts/supabase_snapshot/snapshot.py",
     "supabase/functions/_shared/supabase-client-adapter.ts"
+   ],
+   "fn_admin_run_smoke_tests": [
+    "src/hooks/admin/useSmokeTests.ts"
+   ],
+   "fn_admin_smoke_tests_dashboard": [
+    "src/hooks/admin/useSmokeTests.ts"
    ],
    "fn_admin_sync_external_connections": [
     "src/integrations/supabase/gold.ts"
@@ -154466,6 +154838,9 @@
    "fn_get_similar_products": [
     "src/hooks/products/useSimilarProducts.ts"
    ],
+   "fn_get_supplier_reliability": [
+    "src/hooks/inventory/useSupplierReliabilityServer.ts"
+   ],
    "fn_global_search": [
     "src/components/search/GlobalSearch.tsx"
    ],
@@ -154477,8 +154852,7 @@
     "scripts/kit-ai-enrichment.js"
    ],
    "fn_run_and_persist_smoke_tests": [
-    "qa/migrations-draft/2026-06-20_revoke_secdef_from_authenticated.sql",
-    "src/hooks/admin/useSmokeTests.ts"
+    "qa/migrations-draft/2026-06-20_revoke_secdef_from_authenticated.sql"
    ],
    "fn_rupture_health_check": [
     "supabase/functions/ema-pipeline-health/index.ts"
@@ -163688,14 +164062,6 @@
     "msg": "Não foi possível salvar as badges"
    },
    {
-    "file": "src/hooks/admin/useKillSwitchObservability.ts",
-    "msg": "summary: ${summaryRes.error.message}"
-   },
-   {
-    "file": "src/hooks/admin/useKillSwitchObservability.ts",
-    "msg": "switches: ${switchesRes.error.message}"
-   },
-   {
     "file": "src/hooks/admin/useRetestCooldownSetting.ts",
     "msg": "Não foi possível salvar o cooldown"
    },
@@ -163709,11 +164075,7 @@
    },
    {
     "file": "src/hooks/admin/useSmokeTests.ts",
-    "msg": "latest: ${latestRes.error.message}"
-   },
-   {
-    "file": "src/hooks/admin/useSmokeTests.ts",
-    "msg": "trend: ${trendRes.error.message}"
+    "msg": "dashboard: ${rpcError.message}"
    },
    {
     "file": "src/hooks/admin/useSystemSettings.ts",
@@ -166698,6 +167060,14 @@
     "value": "admin"
    },
    {
+    "file": "supabase/migrations/20261112120400_fn_insights_cache_count.sql",
+    "value": "admin"
+   },
+   {
+    "file": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql",
+    "value": "admin"
+   },
+   {
     "file": "tests/edge-functions/live/_live-client.ts",
     "value": "anon"
    }
@@ -168708,6 +169078,10 @@
     "text": "* Acesso: apenas admin (RLS no banco rejeita não-admin)."
    },
    {
+    "file": "src/hooks/admin/useKillSwitchObservability.ts",
+    "text": "Cada fonte é tratada à parte: falha no resumo não pode esconder o estado dos switches."
+   },
+   {
     "file": "src/hooks/admin/useSecretsManager.ts",
     "text": "Apenas erros de auth/permissão limpam (estado real desconhecido)."
    },
@@ -169738,6 +170112,10 @@
    {
     "file": "src/integrations/supabase/gold.ts",
     "text": "* Regra de arquitetura (ADR 0007): o frontend NUNCA lê Bronze"
+   },
+   {
+    "file": "src/integrations/supabase/gold.ts",
+    "text": "(ex.: 'no_admin_for_system_actor'); isso não pode virar \"Sync executado\"."
    },
    {
     "file": "src/integrations/supabase/magazine-schema.ts",
@@ -202482,19 +202860,7 @@
     "file": "src/hooks/auth/usePasswordResetRequests.ts",
     "field": "status",
     "value": "pending",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/hooks/auth/usePasswordResetRequests.ts",
-    "field": "status",
-    "value": "pending",
     "kind": "compara"
-   },
-   {
-    "file": "src/hooks/auth/usePasswordResetRequests.ts",
-    "field": "status",
-    "value": "pending",
-    "kind": "filtra"
    },
    {
     "file": "src/hooks/auth/useRBAC.tsx",
@@ -214597,6 +214963,10 @@
    {
     "file": "supabase/migrations/20261108223000_add_stock_daily_summary_date_index.sql",
     "line": "-- O db-apply-migration usa lock_timeout=1s: o CONCURRENTLY espera transações antigas, então"
+   },
+   {
+    "file": "supabase/migrations/20261112120800_query_telemetry_delete_dev_policy.sql",
+    "line": "AND created_at < now() - interval '7 days'"
    },
    {
     "file": "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql",
@@ -280267,6 +280637,22 @@
     "name": "imports safely when window is undefined"
    },
    {
+    "file": "tests/integrations/supabase/gold-admin-sync.test.ts",
+    "name": "rpcAdminSyncExternalConnections"
+   },
+   {
+    "file": "tests/integrations/supabase/gold-admin-sync.test.ts",
+    "name": "sucesso quando a função devolve ok:true"
+   },
+   {
+    "file": "tests/integrations/supabase/gold-admin-sync.test.ts",
+    "name": "ok:false sem erro HTTP vira erro com o motivo (não anuncia sucesso)"
+   },
+   {
+    "file": "tests/integrations/supabase/gold-admin-sync.test.ts",
+    "name": "erro da RPC continua erro"
+   },
+   {
     "file": "tests/lib/bridge.test.ts",
     "name": "invokeBridge permanently OFF: the six historical transport cases now fail closed"
    },
@@ -313328,7 +313714,7 @@
     "args": "",
     "returns": "TABLE(function_name text, arguments text, problem text, granted_to text)",
     "lang": "sql",
-    "src": "supabase/rollbacks/20261024163500_rollback.sql",
+    "src": "supabase/rollbacks/20261112120900_rollback.sql",
     "security_definer": false,
     "search_path": true,
     "body": "WITH defs AS ( SELECT p.oid, p.proname, pg_get_function_identity_arguments(p.oid) AS args, p.proacl, (pg_get_function_result(p.oid) = 'trigger') AS is_trigger, (p.proname IN ( 'submit_quote_response','get_quote_token_by_value','check_login_rate_limit' ) OR ( p.proname = 'get_quote_token_public' AND pg_get_function_identity_arguments(p.oid) = '_token text' ) OR ( p.proname = 'get_sitemap_public' AND pg_get_function_identity_arguments(p.oid) = 'p_limit integer, p_offset integer' )) AS public_intent, (p.proname IN ( 'fn_video_queue_next','fn_xbz_enqueue_videos','fn_xbz_link_video', 'fn_asia_link_video','fn_video_link_to_products','fn_sm_link_video', 'fn_spot_enqueue_new_videos','fn_spot_enqueue …",
@@ -313337,6 +313723,7 @@
      "LATERAL",
      "acl_expanded",
      "defs",
+     "pg_catalog",
      "pg_namespace",
      "pg_proc"
     ]
@@ -313836,7 +314223,7 @@
     "args": "",
     "returns": "public.optimization_queue",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE claimed public.optimization_queue; BEGIN IF NOT public.has_role(auth.uid(), 'admin') THEN RAISE EXCEPTION 'forbidden'; END IF; IF EXISTS (SELECT 1 FROM public.optimization_queue WHERE status = 'running') THEN RETURN NULL; END IF; UPDATE public.optimization_queue SET status = 'running', started_at = now() WHERE id = ( SELECT id FROM public.optimization_queue WHERE status = 'pending' ORDER BY priority ASC, created_at ASC LIMIT 1 FOR UPDATE SKIP LOCKED ) RETURNING * INTO claimed; RETURN claimed; END;",
@@ -314877,7 +315264,7 @@
     "args": "_id uuid, _status text, _notes text DEFAULT NULL, _guardrail_status text DEFAULT NULL, _result jsonb DEFAULT NULL, _error text DEFAULT NULL",
     "returns": "public.optimization_queue",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE updated public.optimization_queue; duration int; BEGIN IF NOT public.has_role(auth.uid(), 'admin') THEN RAISE EXCEPTION 'forbidden'; END IF; IF _status NOT IN ('done','failed','skipped','blocked') THEN RAISE EXCEPTION 'invalid status: %', _status; END IF; UPDATE public.optimization_queue SET status = _status, finished_at = now(), result = COALESCE(_result, result), error = _error, guardrail_status = COALESCE(_guardrail_status, guardrail_status) WHERE id = _id RETURNING * INTO updated; IF updated.id IS NULL THEN RAISE EXCEPTION 'optimization not found'; END IF; duration := EXTRACT(EPOCH FROM (updated.finished_at - COALESCE(updated.started_at, updated.finished_at))) * 1000; INSERT INTO …",
@@ -315323,10 +315710,10 @@
     "tables": []
    },
    "enqueue_optimization": {
-    "args": "_title text, _description text DEFAULT NULL, _category text DEFAULT 'performance', _priority int DEFAULT 100",
+    "args": "_title text, _description text DEFAULT NULL, _category text DEFAULT 'performance', _priority integer DEFAULT 100",
     "returns": "uuid",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE new_id uuid; BEGIN IF NOT public.has_role(auth.uid(), 'admin') THEN RAISE EXCEPTION 'forbidden'; END IF; INSERT INTO public.optimization_queue (title, description, category, priority, created_by) VALUES (_title, _description, COALESCE(_category,'performance'), COALESCE(_priority,100), auth.uid()) RETURNING id INTO new_id; RETURN new_id; END;",
@@ -315715,7 +316102,7 @@
     "args": "",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260611183200_p2_acl_02_fn_admin_sync_external_connections.sql",
+    "src": "supabase/rollbacks/20261112120700_rollback.sql",
     "security_definer": true,
     "search_path": true,
     "body": "BEGIN IF NOT public.has_role((SELECT auth.uid()), 'admin'::public.app_role) THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501'; END IF; RETURN public.sync_external_connections_from_credentials(); END;",
@@ -330391,10 +330778,10 @@
    },
    "reset_optimization_queue": {
     "args": "_only_running boolean DEFAULT true",
-    "returns": "int",
+    "returns": "integer",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql",
-    "security_definer": true,
+    "src": "supabase/rollbacks/20261112120500_rollback.sql",
+    "security_definer": false,
     "search_path": true,
     "body": "DECLARE affected int; BEGIN IF NOT public.has_role(auth.uid(), 'admin') THEN RAISE EXCEPTION 'forbidden'; END IF; IF _only_running THEN UPDATE public.optimization_queue SET status = 'pending', started_at = NULL WHERE status = 'running'; ELSE UPDATE public.optimization_queue SET status = 'pending', started_at = NULL, finished_at = NULL, error = NULL WHERE status IN ('running','failed','blocked'); END IF; GET DIAGNOSTICS affected = ROW_COUNT; RETURN affected; END;",
     "raises": [
@@ -334788,36 +335175,6 @@
     "src": "supabase/migrations/20260423190831_794cb398-e9f7-4572-b089-46170a6da8c4.sql"
    },
    {
-    "function": "enqueue_optimization",
-    "msg": "forbidden",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql"
-   },
-   {
-    "function": "claim_next_optimization",
-    "msg": "forbidden",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql"
-   },
-   {
-    "function": "complete_optimization",
-    "msg": "forbidden",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql"
-   },
-   {
-    "function": "complete_optimization",
-    "msg": "invalid status: %",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql"
-   },
-   {
-    "function": "complete_optimization",
-    "msg": "optimization not found",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql"
-   },
-   {
-    "function": "reset_optimization_queue",
-    "msg": "forbidden",
-    "src": "supabase/migrations/20260424213841_362def7e-d8f7-4853-8e49-b6195611d178.sql"
-   },
-   {
     "function": "request_step_up_challenge",
     "msg": "unauthorized: no session",
     "src": "supabase/migrations/20260425203103_eec2662c-3ad4-48ca-8fcb-f3cbf6be16bc.sql"
@@ -335411,11 +335768,6 @@
     "function": "fn_promote_supplier",
     "msg": "sweep_falhou:%",
     "src": "supabase/migrations/20260611121000_fn_promote_supplier_sweep_orphan_variants.sql"
-   },
-   {
-    "function": "fn_admin_sync_external_connections",
-    "msg": "forbidden",
-    "src": "supabase/migrations/20260611183200_p2_acl_02_fn_admin_sync_external_connections.sql"
    },
    {
     "function": "fn_convert_cart_to_quote",
@@ -336573,6 +336925,41 @@
     "src": "supabase/migrations/20261015150000_admin_active_sessions_rpc.sql"
    },
    {
+    "function": "fn_admin_smoke_tests_dashboard",
+    "msg": "not authorized",
+    "src": "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql"
+   },
+   {
+    "function": "fn_admin_run_smoke_tests",
+    "msg": "not authorized",
+    "src": "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql"
+   },
+   {
+    "function": "fn_dev_medallion_health",
+    "msg": "forbidden: requer papel dev",
+    "src": "supabase/migrations/20261112120300_fix_medallion_health_dev_rpc.sql"
+   },
+   {
+    "function": "fn_insights_cache_count",
+    "msg": "fn_insights_cache_count: acesso negado",
+    "src": "supabase/migrations/20261112120400_fn_insights_cache_count.sql"
+   },
+   {
+    "function": "admin_execute_role_migration_batch",
+    "msg": "insufficient_privilege: requer role dev",
+    "src": "supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql"
+   },
+   {
+    "function": "admin_execute_role_migration_batch",
+    "msg": "insufficient_privilege: requer sessão AAL2",
+    "src": "supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql"
+   },
+   {
+    "function": "request_password_reset",
+    "msg": "E-mail inválido.",
+    "src": "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql"
+   },
+   {
     "function": "fn_dryrun_standardize_supplier",
     "msg": "Acesso negado: requer perfil admin ou superior",
     "src": "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql"
@@ -336601,6 +336988,41 @@
     "function": "get_edge_function_secret",
     "msg": "Secret % nao encontrado no vault",
     "src": "supabase/rollbacks/20261027233000_rollback.sql"
+   },
+   {
+    "function": "enqueue_optimization",
+    "msg": "forbidden",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "function": "claim_next_optimization",
+    "msg": "forbidden",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "function": "complete_optimization",
+    "msg": "forbidden",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "function": "complete_optimization",
+    "msg": "invalid status: %",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "function": "complete_optimization",
+    "msg": "optimization not found",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "function": "reset_optimization_queue",
+    "msg": "forbidden",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "function": "fn_admin_sync_external_connections",
+    "msg": "forbidden",
+    "src": "supabase/rollbacks/20261112120700_rollback.sql"
    },
    {
     "function": "audit_ownership_orphans",
@@ -340497,7 +340919,6 @@
       "escreve:recovery/src-legacy/src/hooks/usePasswordResetRequests.ts",
       "escreve:recovery/src-legacy/src/pages/QuoteViewPage.tsx",
       "escreve:src/components/admin/DiscountApprovalFilterBar.tsx",
-      "escreve:src/hooks/auth/usePasswordResetRequests.ts",
       "escreve:src/hooks/stock/stockFetcher.ts",
       "escreve:src/pages/quotes/QuoteViewPage.tsx",
       "escreve:supabase/functions/asia-ingestion/index.ts",
@@ -340506,7 +340927,6 @@
       "filtra:recovery/src-legacy/src/hooks/usePasswordResetRequests.ts",
       "filtra:src/components/admin/DiscountApprovalHeaderBadge.tsx",
       "filtra:src/components/layout/SidebarReorganized.tsx",
-      "filtra:src/hooks/auth/usePasswordResetRequests.ts",
       "filtra:src/hooks/quotes/discountApprovalResponder.ts",
       "filtra:src/hooks/quotes/useDiscountApproval.ts",
       "filtra:src/pages/admin/AdminUsuariosPage.tsx"
@@ -347164,16 +347584,14 @@
     "table": "role_migration_batches",
     "issue": "RLS ligado sem nenhuma política → só service_role acessa",
     "files": [
-     "recovery/src-legacy/src/hooks/useRoleMigration.ts",
-     "src/hooks/admin/useRoleMigration.ts"
+     "recovery/src-legacy/src/hooks/useRoleMigration.ts"
     ]
    },
    {
     "table": "role_migration_items",
     "issue": "RLS ligado sem nenhuma política → só service_role acessa",
     "files": [
-     "recovery/src-legacy/src/hooks/useRoleMigration.ts",
-     "src/hooks/admin/useRoleMigration.ts"
+     "recovery/src-legacy/src/hooks/useRoleMigration.ts"
     ]
    },
    {
@@ -347331,6 +347749,7 @@
    "src/components/admin/connections/secretNormalizers.ts",
    "src/components/admin/connections/secretValidators.ts",
    "src/components/admin/connections/secretWhitelist.ts",
+   "src/hooks/admin/useRoleMigration.ts",
    "src/hooks/products/useProductEngravingOptions.ts",
    "src/lib/sensitive-masking.ts",
    "src/pages/admin/AdminConexoesStatusPage.tsx",
@@ -347993,6 +348412,13 @@
    "supabase/migrations/20261101202000_drop_revoke_agent_created_functions.sql",
    "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql",
    "supabase/migrations/20261111191000_restore_get_sitemap_public_anon_execute.sql",
+   "supabase/migrations/20261112120000_fix_fn_get_supplier_reliability.sql",
+   "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql",
+   "supabase/migrations/20261112120200_fix_kill_switch_obs_grant_summary_view.sql",
+   "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql",
+   "supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql",
+   "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql",
+   "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql",
    "supabase/migrations/20261112140000_fix_rls_supplier_products_raw_history_p2027.sql",
    "supabase/migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -348002,6 +348428,10 @@
    "supabase/rollbacks/20261022193000_rollback.sql",
    "supabase/rollbacks/20261027230000_rollback.sql",
    "supabase/rollbacks/20261027233000_rollback.sql",
+   "supabase/rollbacks/20261112120200_rollback.sql",
+   "supabase/rollbacks/20261112120500_rollback.sql",
+   "supabase/rollbacks/20261112120600_rollback.sql",
+   "supabase/rollbacks/20261112120700_rollback.sql",
    "supabase/sql-legacy/20260615_002_fix_ai_quota_and_cache_bugs.sql",
    "supabase/sql-legacy/20260621_fix_console_bugs_404_403.sql",
    "supabase/sql-legacy/20260621_fix_create_rpc_get_promo_sales_90d_by_product.sql",
@@ -348688,7 +349118,6 @@
    "request_discount_approval_transactional",
    "request_step_up_challenge",
    "reset_mockup_credit_limits",
-   "reset_optimization_queue",
    "respond_discount_approval_transactional",
    "restore_collection_item_from_trash",
    "restore_favorite_from_trash",
@@ -383445,6 +383874,238 @@
     "src": "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql"
    },
    {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_get_supplier_reliability",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261112120000_fix_fn_get_supplier_reliability.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_get_supplier_reliability",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120000_fix_fn_get_supplier_reliability.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_get_supplier_reliability",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112120000_fix_fn_get_supplier_reliability.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_admin_smoke_tests_dashboard",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_smoke_tests_dashboard",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_admin_run_smoke_tests",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_run_smoke_tests",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "v_kill_switch_hits_summary",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261112120200_fix_kill_switch_obs_grant_summary_view.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_dev_medallion_health",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120300_fix_medallion_health_dev_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_dev_medallion_health",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261112120300_fix_medallion_health_dev_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_insights_cache_count",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120400_fn_insights_cache_count.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_insights_cache_count",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261112120400_fn_insights_cache_count.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "enqueue_optimization",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "enqueue_optimization",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "claim_next_optimization",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "claim_next_optimization",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "complete_optimization",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "complete_optimization",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "reset_optimization_queue",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "reset_optimization_queue",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "admin_execute_role_migration_batch",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "admin_execute_role_migration_batch",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "execute_role_migration_batch",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_admin_sync_external_connections",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_sync_external_connections",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_sync_external_connections",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "request_password_reset",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "request_password_reset",
+    "objkind": "function",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "request_password_reset",
+    "objkind": "function",
+    "roles": "anon, authenticated, service_role",
+    "src": "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql"
+   },
+   {
     "kind": "grant",
     "privs": "execute",
     "object": "get_sitemap_public",
@@ -383723,6 +384384,86 @@
     "objkind": "function",
     "roles": "anon",
     "src": "supabase/rollbacks/20261111191000_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "v_kill_switch_hits_summary",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261112120200_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "enqueue_optimization",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "claim_next_optimization",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "complete_optimization",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "reset_optimization_queue",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "enqueue_optimization",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "claim_next_optimization",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "complete_optimization",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "reset_optimization_queue",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/rollbacks/20261112120500_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_admin_sync_external_connections",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261112120700_rollback.sql"
    },
    {
     "kind": "revoke",
@@ -388654,16 +389395,14 @@
     "kind": "rls",
     "msg": "`role_migration_batches`: RLS ligado sem nenhuma política → só service_role acessa",
     "where": [
-     "recovery/src-legacy/src/hooks/useRoleMigration.ts",
-     "src/hooks/admin/useRoleMigration.ts"
+     "recovery/src-legacy/src/hooks/useRoleMigration.ts"
     ]
    },
    {
     "kind": "rls",
     "msg": "`role_migration_items`: RLS ligado sem nenhuma política → só service_role acessa",
     "where": [
-     "recovery/src-legacy/src/hooks/useRoleMigration.ts",
-     "src/hooks/admin/useRoleMigration.ts"
+     "recovery/src-legacy/src/hooks/useRoleMigration.ts"
     ]
    },
    {
@@ -388984,9 +389723,30 @@
    },
    {
     "kind": "rpc",
+    "msg": "RPC `fn_admin_run_smoke_tests` chamada mas não definida nas migrations/types",
+    "where": [
+     "src/hooks/admin/useSmokeTests.ts"
+    ]
+   },
+   {
+    "kind": "rpc",
+    "msg": "RPC `fn_admin_smoke_tests_dashboard` chamada mas não definida nas migrations/types",
+    "where": [
+     "src/hooks/admin/useSmokeTests.ts"
+    ]
+   },
+   {
+    "kind": "rpc",
     "msg": "RPC `fn_get_rupture_alerts` chamada mas não definida nas migrations/types",
     "where": [
      "src/hooks/stock/useRuptureAlerts.ts"
+    ]
+   },
+   {
+    "kind": "rpc",
+    "msg": "RPC `fn_get_supplier_reliability` chamada mas não definida nas migrations/types",
+    "where": [
+     "src/hooks/inventory/useSupplierReliabilityServer.ts"
     ]
    },
    {
@@ -398609,7 +399369,7 @@
   },
   "e2e/flows/forgot-password-flow.spec.ts": {
    "path": "e2e/flows/forgot-password-flow.spec.ts",
-   "lines": 35,
+   "lines": 31,
    "is_test": true,
    "rule_comments": [
     "Deve redirecionar para a página de confirmação"
@@ -431326,7 +432086,7 @@
   },
   "src/components/inventory/supplier-reliability/SupplierReliabilityTab.tsx": {
    "path": "src/components/inventory/supplier-reliability/SupplierReliabilityTab.tsx",
-   "lines": 104,
+   "lines": 123,
    "exports": [
     "function SupplierReliabilityTab"
    ]
@@ -444849,16 +445609,12 @@
   },
   "src/hooks/admin/useKillSwitchObservability.ts": {
    "path": "src/hooks/admin/useKillSwitchObservability.ts",
-   "lines": 93,
+   "lines": 109,
    "exports": [
     "interface SwitchState",
     "interface SwitchHitSummary",
     "interface KillSwitchObservabilityData",
     "function useKillSwitchObservability"
-   ],
-   "errors": [
-    "summary: ${summaryRes.error.message}",
-    "switches: ${switchesRes.error.message}"
    ],
    "params": [
     {
@@ -444867,7 +445623,8 @@
     }
    ],
    "rule_comments": [
-    "* Acesso: apenas admin (RLS no banco rejeita não-admin)."
+    "* Acesso: apenas admin (RLS no banco rejeita não-admin).",
+    "Cada fonte é tratada à parte: falha no resumo não pode esconder o estado dos switches."
    ],
    "doc": "Hook do dashboard de observabilidade do kill-switch. Consulta: - v_kill_switch_hits_summary (agregados 1h/24h/7d por origem) - system_kill_switches (estado atual dos switches) Auto-refresh: 30s (não-crítico, polling leve via setInterval). Fail-silent: erros não derrubam o dashboard. Acesso: apenas a …",
    "hooks": [
@@ -444879,12 +445636,11 @@
   },
   "src/hooks/admin/useMedallionHealth.ts": {
    "path": "src/hooks/admin/useMedallionHealth.ts",
-   "lines": 48,
+   "lines": 43,
    "exports": [
     "interface MedallionHealth",
     "function useMedallionHealth"
    ],
-   "doc": "useMedallionHealth — observabilidade do pipeline Medallion (Bronze→Prata→Ouro) lida diretamente das views Ouro de monitoramento do SSOT: - vw_medallion_coverage: cobertura de enriquecimento por fornecedor/camada (NCM, materiais, tags, meta, IPI, descrição, categoria, display_name) - v_pipeline_progr …",
    "hooks": [
     "useMedallionHealth"
    ]
@@ -444934,7 +445690,7 @@
   },
   "src/hooks/admin/useRoleMigration.ts": {
    "path": "src/hooks/admin/useRoleMigration.ts",
-   "lines": 117,
+   "lines": 119,
    "exports": [
     "type AppRole",
     "type BatchStatus",
@@ -444985,16 +445741,14 @@
      "user_id"
     ]
    },
-   "rpc": [
-    "execute_role_migration_batch"
-   ],
-   "doc": "useRoleMigration ---------------------------------------------------------------------------- Hook que encapsula a RPC `execute_role_migration_batch` + leitura do histórico (`role_migration_batches` + `role_migration_items`). Toda escrita é feita pela RPC (SECURITY DEFINER + admin estrito); o client …",
+   "doc": "useRoleMigration ---------------------------------------------------------------------------- Hook que encapsula a RPC `admin_execute_role_migration_batch` + leitura do histórico (`role_migration_batches` + `role_migration_items`). Toda escrita é feita pela RPC (SECURITY DEFINER, guarda dev + AAL2; …",
    "hooks": [
     "useRoleMigration"
    ],
    "pagination": [
     "50"
-   ]
+   ],
+   "uses_service_role": true
   },
   "src/hooks/admin/useSecretsManager.ts": {
    "path": "src/hooks/admin/useSecretsManager.ts",
@@ -445019,7 +445773,7 @@
   },
   "src/hooks/admin/useSmokeTests.ts": {
    "path": "src/hooks/admin/useSmokeTests.ts",
-   "lines": 207,
+   "lines": 212,
    "exports": [
     "interface SmokeTestRow",
     "interface SmokeTestTrend",
@@ -445030,16 +445784,16 @@
     "function useSmokeTests"
    ],
    "rpc": [
-    "fn_run_and_persist_smoke_tests"
+    "fn_admin_run_smoke_tests",
+    "fn_admin_smoke_tests_dashboard"
    ],
    "errors": [
-    "latest: ${latestRes.error.message}",
-    "trend: ${trendRes.error.message}"
+    "dashboard: ${rpcError.message}"
    ],
    "rule_comments": [
     "* Acesso: apenas admin."
    ],
-   "doc": "Hook do dashboard de smoke tests. Consulta: - v_smoke_tests_latest_run (última execução, ordenado FAIL → WARN → PASS) - v_smoke_tests_trend (12 últimas execuções com agregados) Execução manual: chama RPC public.fn_run_and_persist_smoke_tests(). Acesso: apenas admin.",
+   "doc": "Hook do dashboard de smoke tests. Consulta: RPC public.fn_admin_smoke_tests_dashboard() → { latest, trend } - latest: v_smoke_tests_latest_run (última execução, ordenado FAIL → WARN → PASS) - trend: v_smoke_tests_trend (12 últimas execuções com agregados) As views não têm SELECT para authenticated ( …",
    "hooks": [
     "useSmokeTests"
    ]
@@ -445306,7 +446060,7 @@
   },
   "src/hooks/auth/usePasswordResetRequests.ts": {
    "path": "src/hooks/auth/usePasswordResetRequests.ts",
-   "lines": 209,
+   "lines": 189,
    "exports": [
     "interface PasswordResetRequest",
     "function usePasswordResetRequests"
@@ -445323,14 +446077,6 @@
     {
      "table": "password_reset_requests",
      "op": "update"
-    },
-    {
-     "table": "password_reset_requests",
-     "op": "select"
-    },
-    {
-     "table": "password_reset_requests",
-     "op": "insert"
     }
    ],
    "table_cols": {
@@ -445367,17 +446113,7 @@
     {
      "field": "status",
      "value": "pending",
-     "kind": "escreve"
-    },
-    {
-     "field": "status",
-     "value": "pending",
      "kind": "compara"
-    },
-    {
-     "field": "status",
-     "value": "pending",
-     "kind": "filtra"
     }
    ],
    "hooks": [
@@ -449159,20 +449895,15 @@
   },
   "src/hooks/inventory/useSupplierReliabilityServer.ts": {
    "path": "src/hooks/inventory/useSupplierReliabilityServer.ts",
-   "lines": 256,
+   "lines": 261,
    "exports": [
     "function useSupplierReliabilityServer",
     "interface SupplierReliabilityEvent",
     "function useSupplierReliabilityHistory",
     "type UseSupplierReliabilityServerResult"
    ],
-   "tables": [
-    {
-     "table": "mv_supplier_reliability",
-     "op": "select"
-    }
-   ],
    "rpc": [
+    "fn_get_supplier_reliability",
     "get_supplier_reliability_history"
    ],
    "rule_comments": [
@@ -457205,7 +457936,7 @@
   },
   "src/integrations/supabase/gold.ts": {
    "path": "src/integrations/supabase/gold.ts",
-   "lines": 63,
+   "lines": 68,
    "exports": [
     "function goldFrom",
     "function rpcAdminSyncExternalConnections"
@@ -457215,7 +457946,8 @@
     "fn_admin_sync_external_connections"
    ],
    "rule_comments": [
-    "* Regra de arquitetura (ADR 0007): o frontend NUNCA lê Bronze"
+    "* Regra de arquitetura (ADR 0007): o frontend NUNCA lê Bronze",
+    "(ex.: 'no_admin_for_system_actor'); isso não pode virar \"Sync executado\"."
    ],
    "doc": "Acesso tipado à camada OURO (Gold) da arquitetura Medallion. Complementa `gold-relations.ts` (contratos puros) com helpers ligados ao client Supabase do projeto SSOT (doufsxqlfjyuvxuezpln). Use `goldFrom()` em vez de `untypedFrom()` para relações do catálogo: o nome da relação é restrito ao conjunto …"
   },
@@ -467670,17 +468402,13 @@
   },
   "src/pages/admin/ai-usage/MarketIntelInsightsUsagePanel.tsx": {
    "path": "src/pages/admin/ai-usage/MarketIntelInsightsUsagePanel.tsx",
-   "lines": 216,
+   "lines": 224,
    "exports": [
     "function MarketIntelInsightsUsagePanel"
    ],
    "tables": [
     {
      "table": "ai_usage_events",
-     "op": "select"
-    },
-    {
-     "table": "ai_insights_cache",
      "op": "select"
     }
    ],
@@ -467691,12 +468419,6 @@
      "function_name",
      "metadata",
      "user_id"
-    ],
-    "ai_insights_cache": [
-     "created_at",
-     "expires_at",
-     "function_name",
-     "id"
     ]
    },
    "doc": "MarketIntelInsightsUsagePanel — telemetria do módulo Inteligência de Mercado. Mostra: total de regenerações por dia, top usuários, % cache hit estimado.",
@@ -467881,7 +468603,7 @@
   },
   "src/pages/admin/telemetry/useOptimizationQueue.ts": {
    "path": "src/pages/admin/telemetry/useOptimizationQueue.ts",
-   "lines": 349,
+   "lines": 352,
    "exports": [
     "function isBridgeColdStartError",
     "interface OptimizationItem",
@@ -504650,6 +505372,62 @@
    "path": "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql",
    "lines": 19
   },
+  "supabase/migrations/20261112120000_fix_fn_get_supplier_reliability.sql": {
+   "path": "supabase/migrations/20261112120000_fix_fn_get_supplier_reliability.sql",
+   "lines": 39,
+   "uses_service_role": true
+  },
+  "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql": {
+   "path": "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql",
+   "lines": 99,
+   "uses_service_role": true
+  },
+  "supabase/migrations/20261112120200_fix_kill_switch_obs_grant_summary_view.sql": {
+   "path": "supabase/migrations/20261112120200_fix_kill_switch_obs_grant_summary_view.sql",
+   "lines": 75,
+   "uses_service_role": true
+  },
+  "supabase/migrations/20261112120300_fix_medallion_health_dev_rpc.sql": {
+   "path": "supabase/migrations/20261112120300_fix_medallion_health_dev_rpc.sql",
+   "lines": 49
+  },
+  "supabase/migrations/20261112120400_fn_insights_cache_count.sql": {
+   "path": "supabase/migrations/20261112120400_fn_insights_cache_count.sql",
+   "lines": 43,
+   "role_checks": [
+    "admin"
+   ]
+  },
+  "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql": {
+   "path": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql",
+   "lines": 179,
+   "role_checks": [
+    "admin"
+   ],
+   "uses_service_role": true
+  },
+  "supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql": {
+   "path": "supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql",
+   "lines": 71,
+   "uses_service_role": true
+  },
+  "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql": {
+   "path": "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql",
+   "lines": 80,
+   "uses_service_role": true
+  },
+  "supabase/migrations/20261112120800_query_telemetry_delete_dev_policy.sql": {
+   "path": "supabase/migrations/20261112120800_query_telemetry_delete_dev_policy.sql",
+   "lines": 32,
+   "temporal": [
+    "AND created_at < now() - interval '7 days'"
+   ]
+  },
+  "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql": {
+   "path": "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql",
+   "lines": 208,
+   "uses_service_role": true
+  },
   "supabase/migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql": {
    "path": "supabase/migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql",
    "lines": 28
@@ -504943,6 +505721,50 @@
   "supabase/rollbacks/20261112011000_rollback.sql": {
    "path": "supabase/rollbacks/20261112011000_rollback.sql",
    "lines": 6
+  },
+  "supabase/rollbacks/20261112120000_rollback.sql": {
+   "path": "supabase/rollbacks/20261112120000_rollback.sql",
+   "lines": 11
+  },
+  "supabase/rollbacks/20261112120100_rollback.sql": {
+   "path": "supabase/rollbacks/20261112120100_rollback.sql",
+   "lines": 9
+  },
+  "supabase/rollbacks/20261112120200_rollback.sql": {
+   "path": "supabase/rollbacks/20261112120200_rollback.sql",
+   "lines": 9,
+   "uses_service_role": true
+  },
+  "supabase/rollbacks/20261112120300_rollback.sql": {
+   "path": "supabase/rollbacks/20261112120300_rollback.sql",
+   "lines": 8
+  },
+  "supabase/rollbacks/20261112120400_rollback.sql": {
+   "path": "supabase/rollbacks/20261112120400_rollback.sql",
+   "lines": 7
+  },
+  "supabase/rollbacks/20261112120500_rollback.sql": {
+   "path": "supabase/rollbacks/20261112120500_rollback.sql",
+   "lines": 156,
+   "uses_service_role": true
+  },
+  "supabase/rollbacks/20261112120600_rollback.sql": {
+   "path": "supabase/rollbacks/20261112120600_rollback.sql",
+   "lines": 11,
+   "uses_service_role": true
+  },
+  "supabase/rollbacks/20261112120700_rollback.sql": {
+   "path": "supabase/rollbacks/20261112120700_rollback.sql",
+   "lines": 20,
+   "uses_service_role": true
+  },
+  "supabase/rollbacks/20261112120800_rollback.sql": {
+   "path": "supabase/rollbacks/20261112120800_rollback.sql",
+   "lines": 6
+  },
+  "supabase/rollbacks/20261112120900_rollback.sql": {
+   "path": "supabase/rollbacks/20261112120900_rollback.sql",
+   "lines": 92
   },
   "supabase/rollbacks/20261112130000_rollback.sql": {
    "path": "supabase/rollbacks/20261112130000_rollback.sql",
@@ -518391,6 +519213,17 @@
     "imports safely when window is undefined"
    ]
   },
+  "tests/integrations/supabase/gold-admin-sync.test.ts": {
+   "path": "tests/integrations/supabase/gold-admin-sync.test.ts",
+   "lines": 27,
+   "is_test": true,
+   "tests": [
+    "rpcAdminSyncExternalConnections",
+    "sucesso quando a função devolve ok:true",
+    "ok:false sem erro HTTP vira erro com o motivo (não anuncia sucesso)",
+    "erro da RPC continua erro"
+   ]
+  },
   "tests/lib/bridge.test.ts": {
    "path": "tests/lib/bridge.test.ts",
    "lines": 224,
@@ -528459,10 +529292,55 @@
   }
  },
  "git": {
-  "sha": "74e26506410beb97490d760ab1c1f618c30368f7",
+  "sha": "e73a88d1a7f6abe309335ed96dbac42bcc0b61de",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e73a88d",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(db): devolve 10 telas que falham por permissão ou RPC ausente (supersede #3432) (#3584)",
+    "files": [
+     ".security/lint-0029-allowlist.json",
+     ".security/secdef-anon-allowlist.json",
+     "audit/supabase-reference-catalog.temporary.json",
+     "docs/security/ALLOWLISTS_MEMORY.md",
+     "e2e/flows/forgot-password-flow.spec.ts",
+     "src/components/inventory/supplier-reliability/SupplierReliabilityTab.tsx",
+     "src/hooks/admin/useKillSwitchObservability.ts",
+     "src/hooks/admin/useMedallionHealth.ts",
+     "src/hooks/admin/useRoleMigration.ts",
+     "src/hooks/admin/useSmokeTests.ts",
+     "src/hooks/auth/usePasswordResetRequests.ts",
+     "src/hooks/inventory/useSupplierReliabilityServer.ts",
+     "src/integrations/supabase/gold.ts",
+     "src/pages/admin/ai-usage/MarketIntelInsightsUsagePanel.tsx",
+     "src/pages/admin/telemetry/useOptimizationQueue.ts",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261112120000_fix_fn_get_supplier_reliability.sql",
+     "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql",
+     "supabase/migrations/20261112120200_fix_kill_switch_obs_grant_summary_view.sql",
+     "supabase/migrations/20261112120300_fix_medallion_health_dev_rpc.sql",
+     "supabase/migrations/20261112120400_fn_insights_cache_count.sql",
+     "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql",
+     "supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql",
+     "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql",
+     "supabase/migrations/20261112120800_query_telemetry_delete_dev_policy.sql",
+     "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql",
+     "supabase/rollbacks/20261112120000_rollback.sql",
+     "supabase/rollbacks/20261112120100_rollback.sql",
+     "supabase/rollbacks/20261112120200_rollback.sql",
+     "supabase/rollbacks/20261112120300_rollback.sql",
+     "supabase/rollbacks/20261112120400_rollback.sql",
+     "supabase/rollbacks/20261112120500_rollback.sql",
+     "supabase/rollbacks/20261112120600_rollback.sql",
+     "supabase/rollbacks/20261112120700_rollback.sql",
+     "supabase/rollbacks/20261112120800_rollback.sql",
+     "supabase/rollbacks/20261112120900_rollback.sql",
+     "tests/integrations/supabase/gold-admin-sync.test.ts"
+    ]
+   },
    {
     "sha": "74e2650",
     "date": "2026-11-14",
@@ -528814,24 +529692,12 @@
      "tests/security/security-headers.test.ts",
      "vercel.json"
     ]
-   },
-   {
-    "sha": "b5e04b3",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "fix(estoque): carrega /estoque com paginação em faixas paralelas de keyset (#3460)",
-    "files": [
-     "audit/supabase-reference-catalog.temporary.json",
-     "src/hooks/stock/__tests__/stockFetcher.test.ts",
-     "src/hooks/stock/stockFetcher.ts",
-     "src/hooks/stock/stockPagination.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    10
+    11
    ],
    [
     "docs/prod-readiness.md",
@@ -528840,6 +529706,14 @@
    [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     4
+   ],
+   [
+    ".security/lint-0029-allowlist.json",
+    2
+   ],
+   [
+    "docs/security/ALLOWLISTS_MEMORY.md",
+    2
    ],
    [
     "docs/ci/SEGREDOS.md",
@@ -528854,59 +529728,51 @@
     2
    ],
    [
-    ".github/workflows/ci.yml",
+    ".security/secdef-anon-allowlist.json",
     1
    ],
    [
-    ".github/workflows/e2e-cart.yml",
+    "audit/supabase-reference-catalog.temporary.json",
     1
    ],
    [
-    ".github/workflows/e2e-stock.yml",
+    "e2e/flows/forgot-password-flow.spec.ts",
     1
    ],
    [
-    ".github/workflows/e2e.yml",
+    "src/components/inventory/supplier-reliability/SupplierReliabilityTab.tsx",
     1
    ],
    [
-    ".github/workflows/supplier-comparison.yml",
+    "src/hooks/admin/useKillSwitchObservability.ts",
     1
    ],
    [
-    "supabase/migrations/20261114003000_fix_unschedule_cron_xbz_image_uploader.sql",
+    "src/hooks/admin/useMedallionHealth.ts",
     1
    ],
    [
-    "supabase/rollbacks/20261114003000_rollback.sql",
+    "src/hooks/admin/useRoleMigration.ts",
     1
    ],
    [
-    "supabase/migrations/20261113235800_cron003_reagendamento_noturno_fornecedores.sql",
+    "src/hooks/admin/useSmokeTests.ts",
     1
    ],
    [
-    "supabase/rollbacks/20261113235800_rollback.sql",
+    "src/hooks/auth/usePasswordResetRequests.ts",
     1
    ],
    [
-    "supabase/migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql",
+    "src/hooks/inventory/useSupplierReliabilityServer.ts",
     1
    ],
    [
-    "supabase/rollbacks/20261114040000_rollback.sql",
+    "src/integrations/supabase/gold.ts",
     1
    ],
    [
-    "scripts/drift-baseline.mjs",
-    1
-   ],
-   [
-    "tests/scripts/drift-baseline.test.mjs",
-    1
-   ],
-   [
-    "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql",
+    "src/pages/admin/ai-usage/MarketIntelInsightsUsagePanel.tsx",
     1
    ]
   ]

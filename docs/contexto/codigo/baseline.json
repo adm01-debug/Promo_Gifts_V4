@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "74e26506410beb97490d760ab1c1f618c30368f7",
+  "commit": "e73a88d1a7f6abe309335ed96dbac42bcc0b61de",
   "branch": "main",
-  "data_commit": "2026-11-14T06:26:20-03:00",
+  "data_commit": "2026-11-14T08:12:00-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e73a88d",
+    "data": "2026-11-14",
+    "assunto": "fix(db): devolve 10 telas que falham por permissão ou RPC ausente (supersede #3432) (#3584)"
+   },
    {
     "sha": "74e2650",
     "data": "2026-11-14",
@@ -126,14 +131,9 @@
     "sha": "2ad46cd",
     "data": "2026-11-13",
     "assunto": "docs: registra 22 deploys E66 e 4 migrations E15 no ledger (#3496)"
-   },
-   {
-    "sha": "3508d2a",
-    "data": "2026-11-13",
-    "assunto": "fix(db): exclusão de usuário com itens no carrinho deixa de falhar (#3402)"
    }
   ],
-  "arquivos_mudados_7d": 1984,
+  "arquivos_mudados_7d": 2013,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 167
+    "mudancas": 168
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -181,7 +181,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 132
+    "mudancas": 134
    },
    {
     "pasta": "src/pages/products",
@@ -207,11 +207,11 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 47
+    "mudancas": 48
    },
    {
     "arquivo": "package.json",
-    "mudancas": 29
+    "mudancas": 28
    },
    {
     "arquivo": "package-lock.json",
@@ -278,6 +278,10 @@
     "mudancas": 8
    },
    {
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "mudancas": 8
+   },
+   {
     "arquivo": "scripts/lib/baseline-gate.mjs",
     "mudancas": 8
    },
@@ -292,16 +296,12 @@
    {
     "arquivo": ".github/workflows/db-schema-drift-check.yml",
     "mudancas": 7
-   },
-   {
-    "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 7
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 436
+    "commits": 435
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10116,
-  "arquivos_codigo": 5212,
-  "linhas_codigo": 995718,
+  "arquivos_total": 10137,
+  "arquivos_codigo": 5213,
+  "linhas_codigo": 995779,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -334,9 +334,9 @@
   "hooks": 615,
   "edge_functions": 111,
   "tabelas": 545,
-  "migrations": 3069,
+  "migrations": 3079,
   "cron_jobs": 122,
-  "testes": 2449,
+  "testes": 2450,
   "workflows": 98,
   "scripts": 272,
   "docs_md": 1018
@@ -548,7 +548,7 @@
   },
   "e2e/flows": {
    "arquivos": 183,
-   "linhas": 25312
+   "linhas": 25308
   },
   "e2e/future-stock.spec.ts": {
    "arquivos": 1,
@@ -1884,7 +1884,7 @@
   },
   "src/components": {
    "arquivos": 1357,
-   "linhas": 273211
+   "linhas": 273230
   },
   "src/config": {
    "arquivos": 1,
@@ -1908,11 +1908,11 @@
   },
   "src/hooks": {
    "arquivos": 457,
-   "linhas": 85860
+   "linhas": 85863
   },
   "src/integrations": {
    "arquivos": 11,
-   "linhas": 66203
+   "linhas": 66208
   },
   "src/lib": {
    "arquivos": 327,
@@ -1928,7 +1928,7 @@
   },
   "src/pages": {
    "arquivos": 350,
-   "linhas": 82503
+   "linhas": 82514
   },
   "src/routes": {
    "arquivos": 14,
@@ -2087,8 +2087,8 @@
    "linhas": 2949
   },
   "tests/integrations": {
-   "arquivos": 1,
-   "linhas": 15
+   "arquivos": 2,
+   "linhas": 42
   },
   "tests/lib": {
    "arquivos": 63,

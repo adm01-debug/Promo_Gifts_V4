@@ -765,7 +765,6 @@
     "complete_optimization",
     "enqueue_optimization",
     "ensure_default_favorite_list",
-    "execute_role_migration_batch",
     "fn_admin_sync_external_connections",
     "fn_batch_update_cart_item_sort_order",
     "fn_get_similar_products",
@@ -1422,7 +1421,6 @@
     "user_roles"
    ],
    "rpcs": [
-    "execute_role_migration_batch",
     "get_profile_and_roles",
     "increment_kit_template_usage",
     "log_user_logout",
@@ -5222,7 +5220,6 @@
     "user_roles"
    ],
    "rpcs": [
-    "execute_role_migration_batch",
     "get_profile_and_roles",
     "increment_kit_template_usage",
     "log_user_logout",
@@ -5518,7 +5515,6 @@
     "user_roles"
    ],
    "rpcs": [
-    "execute_role_migration_batch",
     "get_profile_and_roles",
     "increment_kit_template_usage",
     "log_user_logout",
@@ -7694,7 +7690,7 @@
    "modulo": "components/inventory",
    "arquivos": 40,
    "testes": 40,
-   "linhas": 9408,
+   "linhas": 9427,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -8057,7 +8053,6 @@
     "magic_up_generations",
     "mockup_drafts",
     "mv_stock_velocity",
-    "mv_supplier_reliability",
     "order_items",
     "orders",
     "product_price_freshness_overrides",
@@ -8084,6 +8079,7 @@
     "fn_batch_update_cart_item_sort_order",
     "fn_get_rupture_alerts",
     "fn_get_similar_products",
+    "fn_get_supplier_reliability",
     "fn_rupture_quick_stats",
     "fn_should_apply_kill_switch",
     "fn_super_filtro_product_ids",
@@ -9285,7 +9281,6 @@
     "magic_up_generations",
     "mockup_drafts",
     "mv_stock_velocity",
-    "mv_supplier_reliability",
     "optimization_queue",
     "order_items",
     "orders",
@@ -9336,12 +9331,12 @@
     "create_kit_quote_transactional",
     "enqueue_optimization",
     "ensure_default_favorite_list",
-    "execute_role_migration_batch",
     "fn_batch_update_cart_item_sort_order",
     "fn_check_item_fits",
     "fn_get_color_swatches_batch",
     "fn_get_rupture_alerts",
     "fn_get_similar_products",
+    "fn_get_supplier_reliability",
     "fn_should_apply_kill_switch",
     "fn_super_filtro_product_ids",
     "get_app_health_summary",
@@ -10523,7 +10518,6 @@
     "magic_up_generations",
     "mockup_drafts",
     "mv_stock_velocity",
-    "mv_supplier_reliability",
     "optimization_queue",
     "order_items",
     "orders",
@@ -10573,12 +10567,12 @@
     "create_kit_quote_transactional",
     "enqueue_optimization",
     "ensure_default_favorite_list",
-    "execute_role_migration_batch",
     "fn_batch_update_cart_item_sort_order",
     "fn_check_item_fits",
     "fn_get_color_swatches_batch",
     "fn_get_rupture_alerts",
     "fn_get_similar_products",
+    "fn_get_supplier_reliability",
     "fn_should_apply_kill_switch",
     "fn_super_filtro_product_ids",
     "get_app_health_summary",
@@ -15401,7 +15395,6 @@
     "workspace_notifications"
    ],
    "rpcs": [
-    "execute_role_migration_batch",
     "fn_should_apply_kill_switch",
     "get_profile_and_roles",
     "increment_kit_template_usage",
@@ -15607,7 +15600,6 @@
     "user_roles"
    ],
    "rpcs": [
-    "execute_role_migration_batch",
     "get_profile_and_roles",
     "increment_kit_template_usage",
     "log_user_logout",
@@ -16735,6 +16727,7 @@
     "hooks/common",
     "hooks/favorites",
     "hooks/intelligence",
+    "hooks/inventory",
     "hooks/kit-builder",
     "hooks/mockup",
     "hooks/products",
@@ -16984,7 +16977,7 @@
    "modulo": "hooks/admin",
    "arquivos": 19,
    "testes": 1,
-   "linhas": 2705,
+   "linhas": 2723,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -17061,9 +17054,9 @@
    ],
    "rpcs": [
     "admin_active_sessions",
-    "execute_role_migration_batch",
+    "fn_admin_run_smoke_tests",
+    "fn_admin_smoke_tests_dashboard",
     "fn_admin_sync_external_connections",
-    "fn_run_and_persist_smoke_tests",
     "get_profile_and_roles",
     "increment_kit_template_usage",
     "log_user_logout",
@@ -17101,8 +17094,8 @@
     ],
     "rpcs": [
      "admin_active_sessions",
-     "execute_role_migration_batch",
-     "fn_run_and_persist_smoke_tests"
+     "fn_admin_run_smoke_tests",
+     "fn_admin_smoke_tests_dashboard"
     ]
    },
    "importado_por_outros_modulos": [
@@ -17137,7 +17130,7 @@
    "modulo": "hooks/auth",
    "arquivos": 11,
    "testes": 2,
-   "linhas": 1667,
+   "linhas": 1647,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -19933,12 +19926,16 @@
    "modulo": "hooks/inventory",
    "arquivos": 2,
    "testes": 0,
-   "linhas": 439,
+   "linhas": 444,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
    "componentes": 0,
    "hooks_locais": [
+    "useAuth",
+    "useAuthMFA",
+    "useProductsColorsBatch",
+    "useProfileRoles",
     "useSupplierReliability",
     "useSupplierReliabilityHistory",
     "useSupplierReliabilityServer"
@@ -19950,10 +19947,14 @@
    ],
    "edges": [],
    "tabelas": [
-    "mv_supplier_reliability"
+    "profiles",
+    "user_roles"
    ],
    "rpcs": [
-    "get_supplier_reliability_history"
+    "fn_get_supplier_reliability",
+    "get_profile_and_roles",
+    "get_supplier_reliability_history",
+    "log_user_logout"
    ],
    "buckets": [],
    "canais_realtime": [],
@@ -19961,8 +19962,10 @@
     "DEV",
     "MODE",
     "PROD",
+    "VITE_GOTRUE_CAPTCHA",
     "VITE_SENTRY_DSN",
     "VITE_SENTRY_ENVIRONMENT",
+    "VITE_SHOW_DEV_INFRA_MESSAGES",
     "VITE_SUPABASE_ANON_KEY",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL",
@@ -19972,10 +19975,9 @@
    "papeis": [],
    "diretos": {
     "edges": [],
-    "tabelas": [
-     "mv_supplier_reliability"
-    ],
+    "tabelas": [],
     "rpcs": [
+     "fn_get_supplier_reliability",
      "get_supplier_reliability_history"
     ]
    },
@@ -19983,6 +19985,7 @@
     "components/inventory"
    ],
    "depende_de_modulos": [
+    "contexts",
     "hooks/stock",
     "integrations/supabase",
     "lib",
@@ -22521,7 +22524,7 @@
    "modulo": "integrations/supabase",
    "arquivos": 7,
    "testes": 3,
-   "linhas": 65838,
+   "linhas": 65843,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -23136,7 +23139,6 @@
     "magic_up_generations",
     "mockup_drafts",
     "mv_stock_velocity",
-    "mv_supplier_reliability",
     "optimization_queue",
     "order_items",
     "orders",
@@ -23186,12 +23188,12 @@
     "create_kit_quote_transactional",
     "enqueue_optimization",
     "ensure_default_favorite_list",
-    "execute_role_migration_batch",
     "fn_batch_update_cart_item_sort_order",
     "fn_check_item_fits",
     "fn_get_color_swatches_batch",
     "fn_get_rupture_alerts",
     "fn_get_similar_products",
+    "fn_get_supplier_reliability",
     "fn_should_apply_kill_switch",
     "fn_super_filtro_product_ids",
     "get_app_health_summary",
@@ -25865,7 +25867,6 @@
    "rpcs": [
     "check_ai_quota",
     "ensure_default_favorite_list",
-    "execute_role_migration_batch",
     "fn_batch_update_cart_item_sort_order",
     "fn_get_color_swatches_batch",
     "fn_get_similar_products",
@@ -26455,7 +26456,7 @@
    "modulo": "pages/admin",
    "arquivos": 59,
    "testes": 1,
-   "linhas": 15401,
+   "linhas": 15412,
    "itens_menu": [
     "Acesso & Bots",
     "Auditoria RBAC",
@@ -26965,7 +26966,6 @@
     "admin_audit_log",
     "admin_settings",
     "ai_function_routing",
-    "ai_insights_cache",
     "ai_models",
     "ai_providers",
     "ai_usage_events",
@@ -27016,7 +27016,6 @@
     "mockup_prompt_configs",
     "mockup_prompt_history",
     "mv_stock_velocity",
-    "mv_supplier_reliability",
     "notifications",
     "optimization_queue",
     "order_items",
@@ -27075,13 +27074,14 @@
     "create_kit_quote_transactional",
     "enqueue_optimization",
     "ensure_default_favorite_list",
-    "execute_role_migration_batch",
+    "fn_admin_run_smoke_tests",
+    "fn_admin_smoke_tests_dashboard",
     "fn_admin_sync_external_connections",
     "fn_batch_update_cart_item_sort_order",
     "fn_check_item_fits",
     "fn_get_rupture_alerts",
     "fn_get_similar_products",
-    "fn_run_and_persist_smoke_tests",
+    "fn_get_supplier_reliability",
     "fn_should_apply_kill_switch",
     "fn_super_filtro_product_ids",
     "get_app_health_summary",
@@ -27188,7 +27188,6 @@
      "rls-matrix-export"
     ],
     "tabelas": [
-     "ai_insights_cache",
      "ai_usage_events",
      "bot_detection_log",
      "custom_kits",
@@ -33093,7 +33092,6 @@
    "rpcs": [
     "check_ai_quota",
     "ensure_default_favorite_list",
-    "execute_role_migration_batch",
     "fn_batch_update_cart_item_sort_order",
     "fn_get_similar_products",
     "fn_should_apply_kill_switch",
@@ -33776,7 +33774,6 @@
     "admin_audit_log",
     "admin_settings",
     "ai_function_routing",
-    "ai_insights_cache",
     "ai_models",
     "ai_providers",
     "ai_usage_events",
@@ -33830,7 +33827,6 @@
     "mockup_prompt_configs",
     "mockup_prompt_history",
     "mv_stock_velocity",
-    "mv_supplier_reliability",
     "notifications",
     "optimization_queue",
     "order_items",
@@ -33897,7 +33893,8 @@
     "create_kit_quote_transactional",
     "enqueue_optimization",
     "ensure_default_favorite_list",
-    "execute_role_migration_batch",
+    "fn_admin_run_smoke_tests",
+    "fn_admin_smoke_tests_dashboard",
     "fn_admin_sync_external_connections",
     "fn_batch_update_cart_item_sort_order",
     "fn_check_item_fits",
@@ -33905,7 +33902,7 @@
     "fn_get_reposicao_variants_summary",
     "fn_get_rupture_alerts",
     "fn_get_similar_products",
-    "fn_run_and_persist_smoke_tests",
+    "fn_get_supplier_reliability",
     "fn_should_apply_kill_switch",
     "fn_super_filtro_product_ids",
     "get_app_health_summary",

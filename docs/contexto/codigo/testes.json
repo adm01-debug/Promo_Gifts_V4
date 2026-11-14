@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2449,
+ "total": 2450,
  "por_tipo": {
   "contrato": 65,
   "e2e": 677,
   "pytest": 4,
   "qa": 17,
-  "unit": 1686
+  "unit": 1687
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 996
+   "arquivos": 997
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -2046,7 +2046,7 @@
   {
    "arquivo": "e2e/flows/forgot-password-flow.spec.ts",
    "tipo": "e2e",
-   "linhas": 35,
+   "linhas": 31,
    "testa": [],
    "casos": 1
   },
@@ -17212,6 +17212,15 @@
    "casos": 1
   },
   {
+   "arquivo": "tests/integrations/supabase/gold-admin-sync.test.ts",
+   "tipo": "unit",
+   "linhas": 27,
+   "testa": [
+    "src/integrations/supabase/gold.ts"
+   ],
+   "casos": 3
+  },
+  {
    "arquivo": "tests/lib/auth/apply-seller-scope.test.ts",
    "tipo": "unit",
    "linhas": 67,
@@ -21128,6 +21137,7 @@
   "src/hooks/voice/types.ts": 1,
   "src/integrations/supabase/client.ts": 48,
   "src/integrations/supabase/gold-relations.ts": 1,
+  "src/integrations/supabase/gold.ts": 1,
   "src/integrations/supabase/types.ts": 3,
   "src/lib/access/access-policy.ts": 1,
   "src/lib/access/dev-route-telemetry.ts": 1,

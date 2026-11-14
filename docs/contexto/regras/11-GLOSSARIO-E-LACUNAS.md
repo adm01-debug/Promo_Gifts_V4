@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `74e2650641` · branch `main` · 2026-11-14 09:46 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e73a88d1a7` · branch `main` · 2026-11-14 11:13 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -608,8 +608,8 @@
 | rls | `mockup_drafts`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useMockupDraft.ts`<br>`src/hooks/mockup/useMockupDraft.ts` |
 | rls | `product_materials`: RLS ligado sem nenhuma política → só service_role acessa |  |
 | rls | `product_price_freshness_overrides`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useProductFreshnessOverride.ts`<br>`src/hooks/products/useProductFreshnessOverride.ts` |
-| rls | `role_migration_batches`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useRoleMigration.ts`<br>`src/hooks/admin/useRoleMigration.ts` |
-| rls | `role_migration_items`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useRoleMigration.ts`<br>`src/hooks/admin/useRoleMigration.ts` |
+| rls | `role_migration_batches`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useRoleMigration.ts` |
+| rls | `role_migration_items`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useRoleMigration.ts` |
 | rls | `security_settings`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useGeoBlocking.ts` |
 | rls | `seller_cart_items`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useSellerCarts.ts`<br>`src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
 | rls | `seller_carts`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useSellerCarts.ts`<br>`src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
@@ -646,7 +646,7 @@
 | edge | edge function `ssot-ignored` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
 | edge | edge function `t` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
 | edge | edge function `tem-chamador` invocada mas não existe em supabase/functions/ | `tests/scripts/inventario-repo.test.mjs` |
-| … +210 linhas — lista completa em `context.json` | | |
+| … +213 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

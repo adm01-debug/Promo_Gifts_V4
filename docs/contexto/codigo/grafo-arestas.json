@@ -6161,6 +6161,7 @@
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
    "src/components/ui/skeleton.tsx",
+   "src/contexts/AuthContext.tsx",
    "src/hooks/inventory/useSupplierReliability.ts"
   ],
   "src/components/inventory/supplier-reliability/SupplierReliabilityTable.tsx": [
@@ -9746,7 +9747,8 @@
    "src/lib/to-error-message.ts"
   ],
   "src/hooks/admin/useMedallionHealth.ts": [
-   "src/integrations/supabase/gold.ts"
+   "src/integrations/supabase/gold.ts",
+   "src/lib/supabase-untyped.ts"
   ],
   "src/hooks/admin/useRetestCooldownSetting.ts": [
    "src/integrations/supabase/client.ts",
@@ -9754,7 +9756,8 @@
   ],
   "src/hooks/admin/useRoleMigration.ts": [
    "src/integrations/supabase/client.ts",
-   "src/integrations/supabase/types.ts"
+   "src/integrations/supabase/types.ts",
+   "src/lib/supabase-untyped.ts"
   ],
   "src/hooks/admin/useSecretsManager.ts": [
    "src/lib/edge/safeInvokeCall.ts",
@@ -9765,7 +9768,6 @@
   "src/hooks/admin/useSmokeTests.ts": [
    "src/integrations/supabase/client.ts",
    "src/lib/logger.ts",
-   "src/lib/supabase-untyped.ts",
    "src/lib/to-error-message.ts"
   ],
   "src/hooks/admin/useSystemSettings.ts": [
@@ -9811,6 +9813,7 @@
    "src/lib/logger.ts",
    "src/lib/password-reset-status-config.ts",
    "src/lib/security/sanitize-error.ts",
+   "src/lib/supabase-untyped.ts",
    "src/services/authService.ts"
   ],
   "src/hooks/auth/useProfileRoles.ts": [
@@ -10372,6 +10375,7 @@
    "src/lib/logger.ts"
   ],
   "src/hooks/inventory/useSupplierReliabilityServer.ts": [
+   "src/contexts/AuthContext.tsx",
    "src/integrations/supabase/client.ts",
    "src/lib/inventory/supplier-reliability/index.ts",
    "src/lib/logger.ts"
@@ -12733,7 +12737,8 @@
    "src/components/ui/badge.tsx",
    "src/components/ui/card.tsx",
    "src/components/ui/skeleton.tsx",
-   "src/integrations/supabase/client.ts"
+   "src/integrations/supabase/client.ts",
+   "src/lib/supabase-untyped.ts"
   ],
   "src/pages/admin/telemetry/TelemetrySkeletons.tsx": [
    "src/components/ui/card.tsx",

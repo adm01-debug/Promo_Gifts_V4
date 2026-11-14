@@ -3507,7 +3507,6 @@
    "rpcs": [
     "check_ai_quota",
     "ensure_default_favorite_list",
-    "execute_role_migration_batch",
     "fn_batch_update_cart_item_sort_order",
     "fn_get_similar_products",
     "fn_should_apply_kill_switch",
@@ -4219,7 +4218,6 @@
    "rpcs": [
     "check_ai_quota",
     "ensure_default_favorite_list",
-    "execute_role_migration_batch",
     "fn_batch_update_cart_item_sort_order",
     "fn_get_similar_products",
     "fn_should_apply_kill_switch",
@@ -5072,7 +5070,6 @@
     "can_grant_mcp_full",
     "check_ai_quota",
     "ensure_default_favorite_list",
-    "execute_role_migration_batch",
     "fn_admin_sync_external_connections",
     "fn_batch_update_cart_item_sort_order",
     "fn_get_similar_products",
@@ -5743,7 +5740,6 @@
    "tabelas": [
     "admin_settings",
     "ai_function_routing",
-    "ai_insights_cache",
     "ai_models",
     "ai_providers",
     "ai_usage_events",
@@ -6666,7 +6662,6 @@
    ],
    "rpcs": [
     "create_kit_quote_transactional",
-    "execute_role_migration_batch",
     "fn_check_item_fits",
     "get_profile_and_roles",
     "increment_kit_template_usage",
@@ -6879,7 +6874,8 @@
    ],
    "tabelas": [],
    "rpcs": [
-    "fn_run_and_persist_smoke_tests"
+    "fn_admin_run_smoke_tests",
+    "fn_admin_smoke_tests_dashboard"
    ],
    "edges": [],
    "canais_realtime": [],
@@ -7207,7 +7203,6 @@
     "user_roles"
    ],
    "rpcs": [
-    "execute_role_migration_batch",
     "get_profile_and_roles",
     "increment_kit_template_usage",
     "log_user_logout",
@@ -7844,7 +7839,6 @@
     "workspace_notifications"
    ],
    "rpcs": [
-    "execute_role_migration_batch",
     "fn_should_apply_kill_switch",
     "get_profile_and_roles",
     "increment_kit_template_usage",
@@ -8238,7 +8232,6 @@
     "user_roles"
    ],
    "rpcs": [
-    "execute_role_migration_batch",
     "get_profile_and_roles",
     "increment_kit_template_usage",
     "log_user_logout",
@@ -9314,7 +9307,6 @@
    "rpcs": [
     "check_ai_quota",
     "ensure_default_favorite_list",
-    "execute_role_migration_batch",
     "fn_batch_update_cart_item_sort_order",
     "fn_get_similar_products",
     "fn_should_apply_kill_switch",
@@ -17375,7 +17367,6 @@
    "rpcs": [
     "check_ai_quota",
     "ensure_default_favorite_list",
-    "execute_role_migration_batch",
     "fn_batch_update_cart_item_sort_order",
     "fn_get_similar_products",
     "fn_should_apply_kill_switch",
@@ -18107,7 +18098,6 @@
     "magic_up_generations",
     "mockup_drafts",
     "mv_stock_velocity",
-    "mv_supplier_reliability",
     "order_items",
     "orders",
     "product_price_freshness_overrides",
@@ -18134,6 +18124,7 @@
     "fn_batch_update_cart_item_sort_order",
     "fn_get_rupture_alerts",
     "fn_get_similar_products",
+    "fn_get_supplier_reliability",
     "fn_should_apply_kill_switch",
     "fn_super_filtro_product_ids",
     "get_catalog_bestseller_page",

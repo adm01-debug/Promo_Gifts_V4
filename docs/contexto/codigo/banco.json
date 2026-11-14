@@ -8,10 +8,10 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3069,
+ "migrations": 3079,
  "seeds": [],
  "avisos": [
-  "317 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
+  "318 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
  ],
  "extensoes": [
   "http",
@@ -273,6 +273,7 @@
   "acquire_ai_quota",
   "add_product_novelty",
   "admin_active_sessions",
+  "admin_execute_role_migration_batch",
   "admin_revoke_user_sessions",
   "apply_transform",
   "assert_quote_discount_integrity",
@@ -467,6 +468,8 @@
   "fn_add_packaging_compatibility",
   "fn_add_supplier_mapping",
   "fn_adicionar_mapeamento_fornecedor",
+  "fn_admin_run_smoke_tests",
+  "fn_admin_smoke_tests_dashboard",
   "fn_admin_sync_external_connections",
   "fn_aggregate_stock_daily",
   "fn_analyze_dictionaries",
@@ -584,6 +587,7 @@
   "fn_derive_similarity_pairs_on_insert",
   "fn_detect_recurring_errors_last_hour",
   "fn_detecta_familia_cor",
+  "fn_dev_medallion_health",
   "fn_display_product_name",
   "fn_distribute_percentage",
   "fn_dryrun_raw_v2",
@@ -663,6 +667,7 @@
   "fn_get_stock_notification_counts",
   "fn_get_stockout_alerts",
   "fn_get_supplier_mappings",
+  "fn_get_supplier_reliability",
   "fn_global_search",
   "fn_grant_default_role_on_profile",
   "fn_handle_canonical_root_soft_delete",
@@ -689,6 +694,7 @@
   "fn_ingestion_run_close",
   "fn_ingestion_run_open",
   "fn_inherit_techniques_from_material",
+  "fn_insights_cache_count",
   "fn_is_admin_user",
   "fn_is_bulk_import_mode",
   "fn_is_graphic_material",
@@ -1327,6 +1333,7 @@
   "reprocess_all_products",
   "reprocess_product_materials",
   "request_discount_approval_transactional",
+  "request_password_reset",
   "request_step_up_challenge",
   "reset_credit_limits",
   "reset_mockup_credit_limits",
@@ -6334,7 +6341,7 @@
    "indices": [],
    "fks": [],
    "criada_em": null,
-   "usada_no_front": 1,
+   "usada_no_front": 0,
    "usada_em_edges": [
     "market-intelligence-insights"
    ],
@@ -24805,11 +24812,11 @@
    ],
    "fks": [],
    "criada_em": null,
-   "usada_no_front": 1,
+   "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
-   "nao_usada": false
+   "nao_usada": true
   },
   "navigation_analytics": {
    "colunas": {
@@ -37141,6 +37148,12 @@
     {
      "nome": "Devs can read telemetry",
      "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "query_telemetry_delete_dev",
+     "comando": "delete",
      "para": "authenticated",
      "tipo": "permissive"
     }
@@ -52366,7 +52379,17 @@
   {
    "nome": "execute_role_migration_batch",
    "definida": true,
-   "usada_em": 2
+   "usada_em": 1
+  },
+  {
+   "nome": "fn_admin_run_smoke_tests",
+   "definida": true,
+   "usada_em": 1
+  },
+  {
+   "nome": "fn_admin_smoke_tests_dashboard",
+   "definida": true,
+   "usada_em": 1
   },
   {
    "nome": "fn_admin_sync_external_connections",
@@ -52419,12 +52442,12 @@
    "usada_em": 1
   },
   {
-   "nome": "fn_global_search",
+   "nome": "fn_get_supplier_reliability",
    "definida": true,
    "usada_em": 1
   },
   {
-   "nome": "fn_run_and_persist_smoke_tests",
+   "nome": "fn_global_search",
    "definida": true,
    "usada_em": 1
   },
