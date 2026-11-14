@@ -37,7 +37,7 @@ let cachedColorVariations: Array<{
   name: string;
   slug: string;
   group_id: string;
-  hex_code?: string;
+  hex_code?: string | null;
 }> | null = null;
 
 /**
@@ -49,7 +49,7 @@ export function useColorEnrichment({
   colorVariations,
 }: UseColorEnrichmentOptions) {
   const hasFilter = colorGroups.length > 0 || colorVariations.length > 0;
-  const filterKey = [...colorGroups].sort().join(',') + '|' + [...colorVariations].sort().join(',');
+  const filterKey = `${[...colorGroups].sort().join(',')}|${[...colorVariations].sort().join(',')}`;
 
   // Accumulator: track which product IDs have already been enriched for this filter
   const enrichedIdsRef = useRef<Set<string>>(new Set());
@@ -68,6 +68,7 @@ export function useColorEnrichment({
   // Find product IDs that haven't been enriched yet
   const newProductIds = useMemo(() => {
     if (!hasFilter) return [];
+    if (lastFilterKeyRef.current !== filterKey) return productIds;
     return productIds.filter((id) => !enrichedIdsRef.current.has(id));
   }, [productIds, hasFilter, filterKey]);
 

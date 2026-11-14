@@ -20,7 +20,7 @@ import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { useDebounce } from '@/hooks/useDebounce';
-import { MockupHistorySkeleton } from '@/components/mockup/MockupSkeleton';
+import { AnimatedMockupHistorySkeleton } from '@/components/loading/ModernSkeletons';
 import { DiagnosticProfiler } from '@/components/dev/DiagnosticProfiler';
 
 interface GeneratedMockup {
@@ -46,12 +46,12 @@ export default function MockupHistoryPage() {
   const pageSize = 20;
 
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['mockup-history', page, debouncedSearch],
+    queryKey: ['mockup-history', user?.id, page, debouncedSearch],
     queryFn: async () => {
       let query = supabase
         .from('generated_mockups')
         .select('*', { count: 'exact' })
-        .eq('seller_id', user!.id)
+        .eq('user_id', user!.id)
         .order('created_at', { ascending: false })
         .range((page - 1) * pageSize, page * pageSize - 1);
 
@@ -61,9 +61,16 @@ export default function MockupHistoryPage() {
         );
       }
 
-      const { data, error, count } = await query;
+      const { data: rows, error, count } = await query;
       if (error) throw error;
-      return { mockups: data as GeneratedMockup[], totalCount: count || 0 };
+      const mockups: GeneratedMockup[] = (rows ?? []).map((row) => ({
+        ...row,
+        location_name: row.area_name,
+        colors_count: row.area_config && typeof row.area_config === 'object' &&
+          !Array.isArray(row.area_config) && typeof row.area_config.colors_count === 'number'
+          ? row.area_config.colors_count : null,
+      }));
+      return { mockups, totalCount: count || 0 };
     },
     enabled: !!user,
     staleTime: 1000 * 60 * 5, // 5 minutos
@@ -155,7 +162,7 @@ export default function MockupHistoryPage() {
                 {isLoading ? (
                   <TableRow>
                     <TableCell colSpan={8} className="py-8">
-                      <MockupHistorySkeleton count={5} />
+                      <AnimatedMockupHistorySkeleton count={5} />
                     </TableCell>
                   </TableRow>
                 ) : !data?.mockups.length ? (

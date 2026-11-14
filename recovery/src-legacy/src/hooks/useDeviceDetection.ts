@@ -30,7 +30,7 @@ function generateDeviceFingerprint(): string {
   for (let i = 0; i < fingerprint.length; i++) {
     const char = fingerprint.charCodeAt(i);
     hash = ((hash << 5) - hash) + char;
-    hash = hash & hash;
+    hash &= hash;
   }
   
   return Math.abs(hash).toString(36);
@@ -151,18 +151,20 @@ export function useDeviceDetection(targetUserId?: string) {
   const trustDevice = useCallback(async (deviceId: string): Promise<boolean> => {
     if (!effectiveUserId) return false;
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('user_known_devices')
       .update({ is_trusted: true })
       .eq('id', deviceId)
-      .eq('user_id', effectiveUserId);
+      .eq('user_id', effectiveUserId)
+      .select('id')
+      .maybeSingle();
 
     if (error) {
       console.error('Error trusting device:', error);
       return false;
     }
 
-    return true;
+    return Boolean(data);
   }, [effectiveUserId]);
 
   return {

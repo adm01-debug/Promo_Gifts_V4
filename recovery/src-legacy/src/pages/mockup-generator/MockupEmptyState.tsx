@@ -73,7 +73,8 @@ export function MockupEmptyState({
                 <div className={cn(
                   "flex items-center justify-center w-7 h-7 rounded-lg shrink-0",
                   step.isCompleted ? "bg-success text-success-foreground" : "bg-muted text-muted-foreground"
-                )}>
+                )}
+                >
                   {step.isCompleted ? <CheckCircle2 className="h-4 w-4" /> : step.icon}
                 </div>
                 <span className="font-medium">{step.label}</span>

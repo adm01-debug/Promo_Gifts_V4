@@ -22,14 +22,14 @@ export function QuoteTemplateForm({
   onSave,
   onCancel,
 }: QuoteTemplateFormProps) {
-  const { createTemplate, updateTemplate } = useQuoteTemplates();
+  const { createTemplate, updateTemplate, error } = useQuoteTemplates();
   const [saving, setSaving] = useState(false);
 
   const [formData, setFormData] = useState<CreateTemplateInput>({
     name: template?.name || "",
     description: template?.description || "",
     is_default: template?.is_default || false,
-    items_data: template?.items_data || initialItems,
+    items_data: template?.items_data ?? initialItems,
     discount_percent: template?.discount_percent || 0,
     discount_amount: template?.discount_amount || 0,
     notes: template?.notes || "",
@@ -40,11 +40,12 @@ export function QuoteTemplateForm({
   });
 
   const isEditing = !!template;
+  const itemsError = template?.items_data === null ? template.items_error : null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name.trim()) {
+    if (!formData.name.trim() || template?.items_data === null) {
       return;
     }
 
@@ -56,7 +57,7 @@ export function QuoteTemplateForm({
       } else {
         result = await createTemplate(formData);
       }
-      onSave?.(result);
+      if (result) onSave?.(result);
     } finally {
       setSaving(false);
     }
@@ -94,6 +95,7 @@ export function QuoteTemplateForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {(itemsError || error) && <p role="alert" className="text-sm text-destructive">{itemsError || error}</p>}
       <Card>
         <CardHeader>
           <CardTitle>{isEditing ? "Editar Template" : "Novo Template"}</CardTitle>
@@ -283,7 +285,7 @@ export function QuoteTemplateForm({
             Cancelar
           </Button>
         )}
-        <Button type="submit" disabled={saving || !formData.name.trim()}>
+        <Button type="submit" disabled={saving || !formData.name.trim() || itemsError !== null}>
           <Save className="h-4 w-4 mr-2" />
           {saving ? "Salvando..." : isEditing ? "Salvar Alterações" : "Criar Template"}
         </Button>

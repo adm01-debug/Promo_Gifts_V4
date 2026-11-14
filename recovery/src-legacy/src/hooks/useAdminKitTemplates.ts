@@ -9,7 +9,7 @@ import type { KitTemplateRow } from './useKitTemplates';
 
 const QUERY_KEY = ['admin-kit-templates'] as const;
 
-export type KitTemplateInput = Partial<Omit<KitTemplateRow, 'id' | 'created_at' | 'updated_at'>> & {
+export type KitTemplateInput = Partial<Omit<KitTemplateRow, 'created_at' | 'id' | 'updated_at'>> & {
   name: string;
 };
 
@@ -66,10 +66,10 @@ export function useAdminKitTemplates() {
   });
 
   const toggleActiveMutation = useMutation({
-    mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
+    mutationFn: async ({ id, is_active: isActive }: { id: string; is_active: boolean }) => {
       const { error } = await supabase
         .from('kit_templates')
-        .update({ is_active } as never)
+        .update({ is_active: isActive } as never)
         .eq('id', id);
       if (error) throw error;
     },

@@ -46,6 +46,8 @@ import { MockupCompareDialog } from './MockupCompareDialog';
 import { MockupLightbox } from './MockupLightbox';
 import type { GeneratedMockup } from '@/hooks/mockup/mockupGenerationService';
 import { ShareMenu } from './ShareMenu';
+import type { MockupHistoryPanelProps } from './MockupHistoryPanel.types';
+export type { Client, MockupHistoryPanelProps } from './MockupHistoryPanel.types';
 
 // GeneratedMockup importado de @/hooks/mockup/mockupGenerationService (SSOT)
 
@@ -55,26 +57,13 @@ function safeFormatDistance(dateStr: string): string {
   return formatDistanceToNow(d, { addSuffix: true, locale: ptBR });
 }
 
-interface Client {
-  id: string;
-  name: string;
-}
-
-interface MockupHistoryPanelProps {
-  mockupHistory: GeneratedMockup[];
-  isLoading: boolean;
-  clients: Client[];
-  onLoadFromHistory: (mockup: GeneratedMockup) => void;
-  onDownload: (url: string) => void;
-  onDelete: (id: string) => void;
-}
-
 const ITEMS_PER_PAGE = 12;
 
 export function MockupHistoryPanel({
   mockupHistory,
   isLoading,
   clients,
+  techniques,
   onLoadFromHistory,
   onDownload,
   onDelete,
@@ -121,8 +110,14 @@ export function MockupHistoryPanel({
         result.push({ id: m.technique_name, name: m.technique_name });
       }
     }
+    for (const technique of techniques ?? []) {
+      if (technique.name && !seen.has(technique.name)) {
+        seen.add(technique.name);
+        result.push({ id: technique.name, name: technique.name });
+      }
+    }
     return result.sort((a, b) => a.name.localeCompare(b.name));
-  }, [mockupHistory]);
+  }, [mockupHistory, techniques]);
 
   const filteredMockups = useMemo(() => {
     return mockupHistory.filter((mockup) => {

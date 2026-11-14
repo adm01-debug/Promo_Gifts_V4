@@ -2,21 +2,25 @@ import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import type { Tables } from "@/integrations/supabase/types";
 import { useQuotes, type Quote } from "./useQuotes";
 
-export interface QuoteVersion {
-  id: string;
-  quote_number: string;
-  version: number;
-  status: string;
-  total: number;
-  subtotal: number;
-  discount_amount: number;
-  discount_percent: number;
-  created_at: string;
-  updated_at: string;
-  is_latest_version: boolean;
-  parent_quote_id: string | null;
+type QuoteVersionRow = Pick<Tables<"quotes">,
+  | "created_at"
+  | "discount_amount"
+  | "discount_percent"
+  | "id"
+  | "is_latest_version"
+  | "parent_quote_id"
+  | "quote_number"
+  | "status"
+  | "subtotal"
+  | "total"
+  | "updated_at"
+  | "version"
+>;
+
+export interface QuoteVersion extends QuoteVersionRow {
   items_count?: number;
 }
 

@@ -1,3 +1,6 @@
+import { toSavedKitSnapshot } from '@/lib/kit-builder/snapshot/read-draft';
+export { toSavedKitSnapshot } from '@/lib/kit-builder/snapshot/read-draft';
+import { useAuth } from '@/contexts/AuthContext';
 import { dbInvoke } from '@/lib/db/postgrest';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import confetti from 'canvas-confetti';
@@ -18,125 +21,12 @@ import { useKitBuilderQuote, type KitQuoteClient } from '@/pages/kit-builder/use
 import {
   calculateTotalKitPrice,
   type ExternalProductForKit,
-  type KitBox,
-  type KitItem,
-  type KitIdentity,
-  type KitPersonalization,
   type KitAISuggestionBrief,
   type KitAIComposition,
-  type KitBuilderFlow,
-  type KitType,
 } from '@/lib/kit-builder';
 import type { KitOrigin } from '@/lib/kit-builder/types';
 import { logger } from '@/lib/logger';
 import { OCCASIONS, type Occasion } from '@/components/kit-builder/KitOccasionSelector';
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
-function readDraftNotes(personalizationData: Record<string, unknown>): string {
-  const draft = isRecord(personalizationData.__draft) ? personalizationData.__draft : null;
-  const notes = draft?.notes;
-  return typeof notes === 'string' ? notes : '';
-}
-
-function readDraftClient(personalizationData: Record<string, unknown>): KitQuoteClient {
-  const draft = isRecord(personalizationData.__draft) ? personalizationData.__draft : null;
-  const client = draft && isRecord(draft.quoteClient) ? draft.quoteClient : null;
-  if (!client) return {};
-
-  const text = (key: string): string | undefined => {
-    const value = client[key];
-    return typeof value === 'string' ? value : undefined;
-  };
-  return {
-    client_cnpj: text('client_cnpj'),
-    client_company: text('client_company'),
-    client_email: text('client_email'),
-    client_id: text('client_id'),
-    client_name: text('client_name'),
-    client_phone: text('client_phone'),
-  };
-}
-
-function readDraftFlow(personalizationData: Record<string, unknown>): KitBuilderFlow | undefined {
-  const draft = isRecord(personalizationData.__draft) ? personalizationData.__draft : null;
-  const flow = draft?.flow;
-  return flow === 'box-first' || flow === 'items-first' ? flow : undefined;
-}
-
-function readDraftAIBriefing(
-  personalizationData: Record<string, unknown>,
-): KitAISuggestionBrief | undefined {
-  const draft = isRecord(personalizationData.__draft) ? personalizationData.__draft : null;
-  const briefing = draft?.aiBriefing;
-  if (!isRecord(briefing)) return undefined;
-
-  const kitType = briefing.kit_type;
-  const targetPrice = briefing.target_price_brl;
-  if (
-    (kitType !== 'montado' && kitType !== 'original' && kitType !== 'simples') ||
-    !isRecord(targetPrice) ||
-    !Number.isFinite(targetPrice.min) ||
-    !Number.isFinite(targetPrice.max)
-  ) {
-    return undefined;
-  }
-
-  const strings = (value: unknown) =>
-    Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
-
-  return {
-    kit_type: kitType,
-    box_keywords: strings(briefing.box_keywords),
-    item_keywords: strings(briefing.item_keywords),
-    target_price_brl: { min: Number(targetPrice.min), max: Number(targetPrice.max) },
-    narrative: typeof briefing.narrative === 'string' ? briefing.narrative : '',
-    ...(typeof briefing.title === 'string' ? { title: briefing.title } : {}),
-    ...(typeof briefing.description === 'string' ? { description: briefing.description } : {}),
-    ...(typeof briefing.style_tag === 'string' ? { style_tag: briefing.style_tag } : {}),
-  };
-}
-
-function toSavedKitSnapshot(row: {
-  name: string;
-  kit_type?: string | null;
-  box_data: Record<string, unknown> | null;
-  items_data: Record<string, unknown>[];
-  personalization_data: Record<string, unknown>;
-  kit_quantity: number;
-  color: string;
-  icon: string;
-  tag: string | null;
-  description: string | null;
-  is_favorite: boolean;
-}) {
-  if (!Array.isArray(row.items_data)) return null;
-  const kitType: KitType =
-    row.kit_type === 'original' || row.kit_type === 'simples' ? row.kit_type : 'montado';
-  return {
-    name: row.name || '',
-    kitType,
-    box: isRecord(row.box_data) ? (row.box_data as unknown as KitBox) : null,
-    items: row.items_data as unknown as KitItem[],
-    personalization: isRecord(row.personalization_data)
-      ? (row.personalization_data as unknown as KitPersonalization)
-      : { box: { enabled: false }, items: {} },
-    quoteClient: readDraftClient(row.personalization_data),
-    notes: readDraftNotes(row.personalization_data),
-    flow: readDraftFlow(row.personalization_data),
-    aiBriefing: readDraftAIBriefing(row.personalization_data),
-    kitQuantity: Number.isFinite(row.kit_quantity) && row.kit_quantity > 0 ? row.kit_quantity : 1,
-    identity: {
-      color: row.color || '#3B82F6',
-      icon: row.icon || 'Package',
-      tag: row.tag || '',
-      description: row.description || '',
-      isFavorite: row.is_favorite ?? false,
-    } satisfies KitIdentity,
-  };
-}
 
 export function isKitMakerLandingRoute(
   kitIdParam: string | null,
@@ -147,6 +37,7 @@ export function isKitMakerLandingRoute(
 
 export function useKitBuilderPageState() {
   const [searchParams] = useSearchParams();
+  const { user } = useAuth();
   const kitIdParam = searchParams.get('kit');
   const productIdParam = searchParams.get('product');
   const originParam = searchParams.get('origin');
@@ -159,6 +50,9 @@ export function useKitBuilderPageState() {
   const [quoteClient, setQuoteClient] = useState<KitQuoteClient>({});
   const [aiBriefing, setAIBriefing] = useState<KitAISuggestionBrief | undefined>();
   const [isLanding, setIsLanding] = useState(isKitMakerLandingRoute(kitIdParam, productIdParam));
+  const [quantityNeedsConfirmation, setQuantityNeedsConfirmation] = useState(false);
+  const [hydrationError, setHydrationError] = useState<string | null>(null);
+  const [hydratedScope, setHydratedScope] = useState<string | null>(null);
   const [isHydrating, setIsHydrating] = useState(Boolean(kitIdParam));
   const hydratedKitIdRef = useRef<string | null>(null);
 
@@ -195,7 +89,7 @@ export function useKitBuilderPageState() {
     reorderItems,
     setItemPersonalization,
     setBoxPersonalization,
-    setKitQuantity,
+    setKitQuantity: updateKitQuantity,
     setIdentity,
     setNotes,
     goToStep,
@@ -210,10 +104,22 @@ export function useKitBuilderPageState() {
     startNewFlow,
   } = useKitBuilder({ initialFlow });
 
+  const setKitQuantity = useCallback(
+    (quantity: Parameters<typeof updateKitQuantity>[0]) => {
+      if (!Number.isSafeInteger(quantity) || quantity < 1) {
+        toast.error('Informe uma quantidade inteira maior que zero.');
+        return;
+      }
+      updateKitQuantity(quantity);
+      setQuantityNeedsConfirmation(false);
+    },
+    [updateKitQuantity],
+  );
+
   const { isSaving, saveKit, savedKits, isLoadingKits } = useCustomKitPersistence();
   useCustomKitsRealtime();
   useTemplateSnapshot();
-  const { handleAddToQuote, isCreatingQuote } = useKitBuilderQuote();
+  const { handleAddToQuote: createQuote, isCreatingQuote } = useKitBuilderQuote();
   const {
     lastSavedAt,
     isSaving: isAutoSaving,
@@ -234,7 +140,10 @@ export function useKitBuilderPageState() {
       setCurrentKitId(id);
       setCurrentRevision(revision);
     },
-    !isHydrating,
+    !isHydrating &&
+      !hydrationError &&
+      !quantityNeedsConfirmation &&
+      (!kitIdParam || hydratedScope === `${user?.id ?? 'anonymous'}:${kitIdParam}`),
     { quoteClient, flow: wizardState.flow, aiBriefing },
   );
   const {
@@ -295,15 +204,25 @@ export function useKitBuilderPageState() {
 
   useEffect(() => {
     if (!kitIdParam) {
+      // Saiu de /montar-kit?kit=X para /montar-kit sem remontar: limpa o estado da
+      // hidratação anterior, senão salvar/autosave seguem bloqueados até recarregar.
       setIsHydrating(false);
+      setHydrationError(null);
+      setQuantityNeedsConfirmation(false);
+      setHydratedScope(null);
+      hydratedKitIdRef.current = null;
       return;
     }
-    if (isLoadingKits || hydratedKitIdRef.current === kitIdParam) return;
+    const scope = `${user?.id ?? 'anonymous'}:${kitIdParam}`;
+    if (hydratedKitIdRef.current === scope) return;
+    setIsHydrating(true);
+    if (isLoadingKits || !user?.id) return;
 
     const row = savedKits.find((kit) => kit.id === kitIdParam);
-    hydratedKitIdRef.current = kitIdParam;
+    hydratedKitIdRef.current = scope;
     if (!row) {
       logger.warn('[kit-builder] Saved kit was not found or is no longer accessible:', kitIdParam);
+      setHydrationError('Não foi possível abrir este kit salvo.');
       toast.error('Não foi possível abrir este kit salvo.');
       setIsHydrating(false);
       return;
@@ -312,6 +231,9 @@ export function useKitBuilderPageState() {
     const snapshot = toSavedKitSnapshot(row);
     if (!snapshot) {
       logger.warn('[kit-builder] Invalid saved kit snapshot:', kitIdParam);
+      setHydrationError(
+        'O rascunho contém campos incompletos ou inválidos. Revise o kit na biblioteca antes de salvar.',
+      );
       toast.error('O rascunho do kit está em um formato inválido.');
       setIsHydrating(false);
       return;
@@ -322,11 +244,18 @@ export function useKitBuilderPageState() {
     setAIBriefing(snapshot.aiBriefing);
     setCurrentKitId(row.id);
     setCurrentRevision(row.revision);
+    setQuantityNeedsConfirmation(
+      typeof row.kit_quantity !== 'number' ||
+        !Number.isSafeInteger(row.kit_quantity) ||
+        row.kit_quantity < 1,
+    );
+    setHydratedScope(scope);
+    setHydrationError(null);
     if (originParam === 'manual' || originParam === 'template' || originParam === 'ai') {
       setKitOrigin(originParam);
     }
     setIsHydrating(false);
-  }, [isLoadingKits, kitIdParam, loadKit, originParam, savedKits, setKitOrigin]);
+  }, [isLoadingKits, kitIdParam, user?.id, loadKit, originParam, savedKits, setKitOrigin]);
 
   useEffect(() => {
     if (productIdParam && !kitIdParam) {
@@ -378,6 +307,18 @@ export function useKitBuilderPageState() {
   );
 
   const handleSaveKit = useCallback(async () => {
+    if (quantityNeedsConfirmation) {
+      toast.error('Defina a quantidade do rascunho antes de salvar ou criar um orçamento.');
+      return;
+    }
+    if (
+      isHydrating ||
+      hydrationError ||
+      (kitIdParam && hydratedScope !== `${user?.id ?? 'anonymous'}:${kitIdParam}`)
+    ) {
+      toast.error(hydrationError ?? 'Aguarde o carregamento do kit salvo.');
+      return;
+    }
     if (!kitState.box && kitState.items.length === 0) {
       toast.error('Adicione uma caixa ou item antes de salvar o kit.');
       return;
@@ -404,6 +345,12 @@ export function useKitBuilderPageState() {
     }
   }, [
     autoSavedKitId,
+    quantityNeedsConfirmation,
+    isHydrating,
+    hydrationError,
+    kitIdParam,
+    hydratedScope,
+    user?.id,
     acknowledgeManualSave,
     cancelPendingSave,
     currentKitId,
@@ -417,6 +364,33 @@ export function useKitBuilderPageState() {
     saveKit,
   ]);
 
+  const handleAddToQuote = useCallback(
+    async (...args: Parameters<typeof createQuote>) => {
+      if (quantityNeedsConfirmation) {
+        toast.error('Defina a quantidade do rascunho antes de salvar ou criar um orçamento.');
+        return;
+      }
+      if (
+        isHydrating ||
+        hydrationError ||
+        (kitIdParam && hydratedScope !== `${user?.id ?? 'anonymous'}:${kitIdParam}`)
+      ) {
+        toast.error(hydrationError ?? 'Aguarde o carregamento do kit salvo.');
+        return;
+      }
+      return createQuote(...args);
+    },
+    [
+      createQuote,
+      quantityNeedsConfirmation,
+      isHydrating,
+      hydrationError,
+      kitIdParam,
+      hydratedScope,
+      user?.id,
+    ],
+  );
+
   const applyAISuggestion = useCallback(
     (
       suggestion: KitAISuggestionBrief,
@@ -424,6 +398,13 @@ export function useKitBuilderPageState() {
       requestedQuantity?: number,
     ) => {
       applyAIComposition(composition, requestedQuantity);
+      if (
+        typeof requestedQuantity === 'number' &&
+        Number.isSafeInteger(requestedQuantity) &&
+        requestedQuantity > 0
+      ) {
+        setQuantityNeedsConfirmation(false);
+      }
       setAIBriefing(suggestion);
       toast.success('Composição da IA aplicada', {
         description: 'Confira variantes, estoque, personalização e valores antes de continuar.',
@@ -504,6 +485,8 @@ export function useKitBuilderPageState() {
       refetchBoxes,
       refetchItems,
       isHydrating,
+      hydrationError,
+      quantityNeedsConfirmation,
       isLanding,
       boxFilters,
       itemFilters,
