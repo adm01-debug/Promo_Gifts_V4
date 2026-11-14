@@ -195,4 +195,32 @@ describe('MockupClientSelector — usar logo do cliente', () => {
     expect(screen.getAllByTestId('mockup-client-chip')[0]).toHaveTextContent('Empresa Com Logo');
     expect(screen.getAllByTestId('mocked-product')[0]).toHaveTextContent('Caneca 325ml');
   });
+
+  it('200 sem Content-Type de imagem é recusado em vez de virar image/png', async () => {
+    // CRM responde 200 com corpo que não é imagem: blob.type vem vazio. Inventar
+    // 'image/png' faria o conteúdo passar pela validação de file.type do upload.
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        blob: () => Promise.resolve(new Blob(['<html>login</html>'], { type: '' })),
+      }),
+    );
+    const onLogoUpload = vi.fn();
+    renderPanel(onLogoUpload, PRODUCT);
+
+    await chooseCompany('company-1');
+    fireEvent.click((await useLogoButtons())[0]);
+
+    await waitFor(() =>
+      expect(toast.error).toHaveBeenCalledWith(
+        'Não foi possível carregar a logo do cliente. Faça o upload manual.',
+      ),
+    );
+    expect(onLogoUpload).not.toHaveBeenCalled();
+    // Recuo para upload manual: cliente e produto intactos.
+    expect(screen.getAllByTestId('mockup-client-chip')[0]).toHaveTextContent('Empresa Com Logo');
+    expect(screen.getAllByTestId('mocked-product')[0]).toHaveTextContent('Caneca 325ml');
+  });
 });
