@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-14 19:26 UTC
+
+- **functions** alterado (6): `public.can_view_all_sales()`, `public.convert_quote_to_order(p_quote_id uuid, p_seller_id uuid, p_organization_id uuid)`, `public.fn_notify_user(_target_user_id uuid, _title text, _message text, _type text, _category text, _action_url text, _metadata jsonb)`, `public.get_user_org_ids(_user_id uuid)`, `public.has_role(_user_id uuid, _role app_role)`, `public.user_is_org_member(org_id uuid)`
+
 ## 2026-11-14 17:39 UTC
 
 - **indexes** adicionado (7): `public.idx_stock_notes_created_by`, `public.idx_stock_notes_supplier_id`, `public.idx_stock_snapshots_product_id`, `public.idx_stock_snapshots_supplier_branch_id`, `public.idx_stock_snapshots_supplier_id`, `public.idx_stock_snapshots_variant_id`, `public.idx_stock_snapshots_variant_supplier_source_id`

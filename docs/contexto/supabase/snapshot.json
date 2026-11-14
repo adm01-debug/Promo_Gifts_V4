@@ -139946,9 +139946,13 @@
             {
               "file": "supabase/migrations/20260716130057_perf_auth_rls_initplan_fix.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql",
+              "hits": 12
             }
           ],
-          "code_total_files": 17,
+          "code_total_files": 18,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -144012,9 +144016,13 @@
             {
               "file": "supabase/migrations/20260620190500_faxina_tier3b_archive_dead_functions_bulk.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -159258,9 +159266,13 @@
             {
               "file": "supabase/migrations/20260917061500_e18_revoke_authenticated_authz_gaps.sql",
               "hits": 6
+            },
+            {
+              "file": "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -178886,9 +178898,13 @@
             {
               "file": "supabase/migrations/20260526140856_740ac9ec-3238-4350-90d5-a1967cd027b4.sql",
               "hits": 4
+            },
+            {
+              "file": "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql",
+              "hits": 7
             }
           ],
-          "code_total_files": 14,
+          "code_total_files": 15,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -179661,7 +179677,7 @@
               "hits": 1
             }
           ],
-          "code_total_files": 186,
+          "code_total_files": 187,
           "cron": [],
           "db": [
             "public._can_act_on_behalf_of_others",
@@ -191602,9 +191618,13 @@
             {
               "file": "supabase/migrations/20261018000042_e042_fix_policies_public_lote1.sql",
               "hits": 2
+            },
+            {
+              "file": "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 26,
+          "code_total_files": 27,
           "cron": [],
           "db": [
             "public.can_access_quote",
