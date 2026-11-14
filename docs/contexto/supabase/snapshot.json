@@ -137763,15 +137763,6 @@
         },
         {
           "active": true,
-          "command": "SELECT public.fn_cron_safe_run(76::bigint,\n    $sql$SELECT net.http_post(\n      url := 'https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/xbz-image-uploader',\n      headers := jsonb_build_object('Content-Type','application/json',\n        'x-cron-secret', public.get_edge_function_secret('XBZ_IMAGE_UPLOADER_CRON_SECRET')),\n      body := '{\"trigger\":\"cron\"}'::jsonb,\n      timeout_milliseconds := 570000)$sql$,\n    580000, 'xbz-image-uploader');",
-          "database": "postgres",
-          "jobid": 268,
-          "jobname": "xbz-image-uploader",
-          "schedule": "3,13,23,33,43,53 1-8 * * *",
-          "username": "postgres"
-        },
-        {
-          "active": true,
           "command": "SELECT public.fn_cron_safe_run(56::bigint, 'SELECT public.fn_xbz_site_tick(5, 20, 7);', 580000, 'xbz-site-scrape');",
           "database": "postgres",
           "jobid": 269,
@@ -151531,7 +151522,6 @@
             "265:spot-stock-fast-sync",
             "266:xbz-enrich-gold-extractors",
             "267:reconcile-category-products-count",
-            "268:xbz-image-uploader",
             "269:xbz-site-scrape",
             "271:cleanup-log-tables-weekly",
             "272:stock_snapshots_weekly_purge",
@@ -176524,8 +176514,7 @@
             "242:generate-blurhashes",
             "243:hash-product-images",
             "254:collections-watcher",
-            "258:quote-followup-reminders",
-            "268:xbz-image-uploader"
+            "258:quote-followup-reminders"
           ],
           "db": [
             "public.fn_process_webhook_outbox_batch",
@@ -236004,6 +235993,12 @@
         "statements": 1,
         "statements_sha": "2eb2030e2678c18a",
         "version": "20261113235800"
+      },
+      {
+        "name": "fix_unschedule_cron_xbz_image_uploader",
+        "statements": 1,
+        "statements_sha": "30f8d39a2e00819d",
+        "version": "20261114003000"
       },
       {
         "name": "fix_authenticator_idle_session_timeout_pgrst_listener",

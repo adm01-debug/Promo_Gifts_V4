@@ -28,9 +28,9 @@ Gerado automaticamente a cada 10 min pelo workflow `contexto.yml` (job `banco`) 
 | índices | 1323 |
 | tipos/enums | 17 |
 | extensões | 18 |
-| cron jobs | 144 |
+| cron jobs | 143 |
 | filas pgmq | 0 |
-| migrations | 2593 |
+| migrations | 2594 |
 | buckets | 11 |
 | edge functions | n/d |
 | webhooks | 0 |

@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-14 06:26 UTC
+
+- **cron jobs** removido (1): `268:xbz-image-uploader`
+- **functions** alterado (2): `public.fn_cron_safe_run(p_key bigint, p_sql text, p_timeout_ms integer, p_job_label text)`, `public.get_edge_function_secret(_name text)`
+- **migrations** adicionado (1): `20261114003000_fix_unschedule_cron_xbz_image_uploader`
+
 ## 2026-11-14 05:20 UTC
 
 - **cron jobs** alterado (21): `206:sm-variant-coherence-guard`, `207:sm-stock-guard`, `213:sm-category-enqueue`, `214:sm-category-collect`, `219:sm-url-discover-search`, `224:asia-enqueue-new-products`, `225:spot-relink-family-images`, `234:refresh-all-materialized-views`, `263:sm-url-discover-collect`, `264:sm-site-scrape-auth`, `265:spot-stock-fast-sync`, `266:xbz-enrich-gold-extractors`, `268:xbz-image-uploader`, `269:xbz-site-scrape`, `273:process-pending-products`, `276:sm-site-scrape`, `277:xbz-stock-sync`, `278:asia-image-uploader`, `284:kit-ficha-parse-site`, `285:kit-ficha-fetch`, `58:asia-stock-sync`
