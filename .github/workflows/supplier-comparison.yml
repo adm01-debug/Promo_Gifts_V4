@@ -35,7 +35,10 @@ jobs:
         run: npm run test:supplier-comparison
       
       - name: Run Visual Regression Tests
-        run: npx playwright test e2e/flows/supplier-comparison-visual.spec.ts --project=chromium-public
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+        run: npx playwright test e2e/flows/supplier-comparison-visual.spec.ts --project=chromium-authed
       
       - name: Upload Coverage
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
