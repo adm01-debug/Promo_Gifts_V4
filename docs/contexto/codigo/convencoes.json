@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): replay do E40 aceita o CREATE INDEX CONCURRENTLY da 20261113235000 (#3564)",
    "docs(edge-fn): recibos E66 dos deploys de 13/11 (supersede #3527 #3530 #3533 #3537 #3539 #3542 #3545) (#3546)",
    "perf(db): índice para ordenação por created_at no catálogo e VACUUM de tags (#3550)",
    "fix(ci): teste de frase banida monta o literal em partes (ci-security-drift do main) (#3541)",
-   "fix(edge): corrige domínio de e-mail Resend promogifts → promobrindes (#3521)",
-   "docs(migrations): recibos da 20261111191000 (corrigido) e da 20261112140000 (#3529)"
+   "fix(edge): corrige domínio de e-mail Resend promogifts → promobrindes (#3521)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

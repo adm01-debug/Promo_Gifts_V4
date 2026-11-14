@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1256b4a57e12d3371fb677f5758ac1cc299344cb",
+  "commit": "8fa5c439368217dfea494c0facb04735441e4452",
   "branch": "main",
-  "data_commit": "2026-11-14T00:08:05-03:00",
+  "data_commit": "2026-11-14T01:05:14-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "8fa5c43",
+    "data": "2026-11-14",
+    "assunto": "fix(ci): replay do E40 aceita o CREATE INDEX CONCURRENTLY da 20261113235000 (#3564)"
+   },
    {
     "sha": "1256b4a",
     "data": "2026-11-14",
@@ -126,14 +131,9 @@
     "sha": "81d3370",
     "data": "2026-11-13",
     "assunto": "Merge branch 'main' into claude/lote-pilha-v2-261112"
-   },
-   {
-    "sha": "0b1766d",
-    "data": "2026-11-13",
-    "assunto": "fix(test): validação de tema roda só nos navegadores Chromium instalados no CI (#3458)"
    }
   ],
-  "arquivos_mudados_7d": 1980,
+  "arquivos_mudados_7d": 1975,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 67
+    "mudancas": 66
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 57
+    "mudancas": 56
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 27
+    "commits": 26
    },
    {
     "autor": "dependabot[bot]",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10110,
   "arquivos_codigo": 5212,
-  "linhas_codigo": 995709,
+  "linhas_codigo": 995718,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1492,7 +1492,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 1249
+   "linhas": 1250
   },
   "scripts/dry-run-migration-draft.mjs": {
    "arquivos": 1,
@@ -2140,7 +2140,7 @@
   },
   "tests/scripts": {
    "arquivos": 176,
-   "linhas": 27596
+   "linhas": 27604
   },
   "tests/search": {
    "arquivos": 1,
@@ -2286,7 +2286,7 @@
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",
-   "linhas": 1249
+   "linhas": 1250
   },
   {
    "arquivo": "src/pages/products/SellerCartsPage.tsx",
@@ -2610,7 +2610,7 @@
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",
-   "linha": 599,
+   "linha": 600,
    "tipo": "TODO",
    "texto": "objeto (ex.: `.*`, `^create table`, `public`)."
   },

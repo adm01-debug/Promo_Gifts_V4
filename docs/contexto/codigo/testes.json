@@ -19038,11 +19038,11 @@
   {
    "arquivo": "tests/scripts/drift-baseline.test.mjs",
    "tipo": "unit",
-   "linhas": 1046,
+   "linhas": 1054,
    "testa": [
     "scripts/drift-baseline.mjs"
    ],
-   "casos": 91
+   "casos": 92
   },
   {
    "arquivo": "tests/scripts/e2e-mock-auth-setup.test.mjs",

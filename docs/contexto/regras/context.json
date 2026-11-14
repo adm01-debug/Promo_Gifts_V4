@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "1256b4a57e12d3371fb677f5758ac1cc299344cb",
+  "sha": "8fa5c439368217dfea494c0facb04735441e4452",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 03:32 UTC",
+  "generated_at": "2026-11-14 04:13 UTC",
   "files_total": 10038,
   "code_files": 8574,
-  "code_lines": 1212103
+  "code_lines": 1212112
  },
  "version": "1.3.2",
- "facts_hash": "4595d7b32d90955c",
+ "facts_hash": "acd3dc2058e759b2",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -146726,7 +146726,7 @@
   {
    "module": "scripts",
    "files": 287,
-   "lines": 62072,
+   "lines": 62073,
    "tables": [
     "a",
     "b",
@@ -149027,7 +149027,7 @@
   {
    "module": "tests",
    "files": 1010,
-   "lines": 154927,
+   "lines": 154935,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -291023,6 +291023,10 @@
    },
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "aceita a migration real da #3550 (1 índice CONCURRENTLY) no replay do shadow"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
     "name": "não reescreve migrations fora do allowlist de compatibilidade do pipeline"
    },
    {
@@ -291308,10 +291312,6 @@
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
     "name": "identificador entre aspas com maiúscula não equivale ao minúsculo"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "aspas redundantes e caixa de palavra-chave seguem equivalentes"
    },
    {
     "file": "tests/scripts/e2e-mock-auth-setup.test.mjs",
@@ -415366,7 +415366,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "path": "scripts/drift-baseline.mjs",
-   "lines": 1249,
+   "lines": 1250,
    "exports": [
     "const BASELINE_DIR",
     "const BASELINE_NAME_RE",
@@ -523875,7 +523875,7 @@
   },
   "tests/scripts/drift-baseline.test.mjs": {
    "path": "tests/scripts/drift-baseline.test.mjs",
-   "lines": 1046,
+   "lines": 1054,
    "is_test": true,
    "doc": "Testa scripts/drift-baseline.mjs: montagem da pasta de replay do db-schema-drift-check (baseline + migrations aplicadas depois do dump), filtro de ruído do diff e varredura de segredos do dump.",
    "tests": [
@@ -523886,6 +523886,7 @@
     "sanitizeReplayMigration",
     "remove CONCURRENTLY só de CREATE INDEX executável no shadow",
     "falha fechado se a migration histórica mudar e não tiver exatamente dois índices",
+    "aceita a migration real da #3550 (1 índice CONCURRENTLY) no replay do shadow",
     "não reescreve migrations fora do allowlist de compatibilidade do pipeline",
     "prepareWorkdir",
     "reescreve CONCURRENTLY somente na cópia temporária do replay",
@@ -523957,8 +523958,7 @@
     "literal com espaço diferente mantém a função no resíduo (Codex P1)",
     "dropDumpLossyFunctions — cabeçalho preserva literais e identificadores (Codex P1)",
     "DEFAULT com caixa diferente é diferença real e fica no resíduo",
-    "identificador entre aspas com maiúscula não equivale ao minúsculo",
-    "aspas redundantes e caixa de palavra-chave seguem equivalentes"
+    "identificador entre aspas com maiúscula não equivale ao minúsculo"
    ],
    "uses_service_role": true
   },
@@ -528417,10 +528417,20 @@
   }
  },
  "git": {
-  "sha": "1256b4a57e12d3371fb677f5758ac1cc299344cb",
+  "sha": "8fa5c439368217dfea494c0facb04735441e4452",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "8fa5c43",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(ci): replay do E40 aceita o CREATE INDEX CONCURRENTLY da 20261113235000 (#3564)",
+    "files": [
+     "scripts/drift-baseline.mjs",
+     "tests/scripts/drift-baseline.test.mjs"
+    ]
+   },
    {
     "sha": "1256b4a",
     "date": "2026-11-14",
@@ -528760,15 +528770,6 @@
     "files": [
      ".security/policies-baseline.json"
     ]
-   },
-   {
-    "sha": "0f5934a",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "docs: prod-readiness — inventário, prova OK/BLOQUEADO e PRs pendentes (main fee3d093) (#3453)",
-    "files": [
-     "docs/prod-readiness.md"
-    ]
    }
   ],
   "hot_files": [
@@ -528789,10 +528790,6 @@
     2
    ],
    [
-    "docs/prod-readiness.md",
-    2
-   ],
-   [
     ".release-please-manifest.json",
     2
    ],
@@ -528807,6 +528804,14 @@
    [
     ".security/policies-baseline.json",
     2
+   ],
+   [
+    "scripts/drift-baseline.mjs",
+    1
+   ],
+   [
+    "tests/scripts/drift-baseline.test.mjs",
+    1
    ],
    [
     "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql",
@@ -528846,10 +528851,6 @@
    ],
    [
     "docs/security/ALLOWLISTS_MEMORY.md",
-    1
-   ],
-   [
-    ".migration-refs-baseline.json",
     1
    ]
   ]
