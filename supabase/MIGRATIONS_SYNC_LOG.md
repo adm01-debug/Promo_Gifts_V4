@@ -1441,3 +1441,14 @@ aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]` (porta 5
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261113235000` | `perf_idx_products_active_created_at_desc` | `45dff9f0d993448eae3c68c09aa143304601efb96029ccedda607e976ba28e46` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (linha `approved-by`) e `db-apply-migration.yml` (branch `claude/feat-idx-products-created-at-vacuum-tags-261113-2350`) |
+
+## 2026-11-14 — `user_known_devices.is_trusted` (coluna que o front usa e não existe em produção)
+
+Consulta read-only em produção (2026-11-14, `information_schema.columns`): `user_known_devices` não tem `is_trusted`,
+mas `useDeviceDetection.ts:177` faz `.update({ is_trusted: true })` e `KnownDevicesManager.tsx` lê a coluna. Achado na
+análise da #3390 (a migration `20261110024530` dela nunca foi aplicada e não foi levada pela #3548).
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114031000` | `fix_user_known_devices_is_trusted` | `76b1497b85e289d3de69f01308f325d454436e5a03a59f2f77b5e50a6f1287b6` | pendente — aplicação só por `db-apply-migration.yml` após o merge |
