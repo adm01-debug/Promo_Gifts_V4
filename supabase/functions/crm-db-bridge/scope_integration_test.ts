@@ -322,3 +322,40 @@ Deno.test("violação de integridade (23505, 23503, 23502, 23514) em insert/upda
   const ok = await call({ operation: "select", table: "companies" });
   assertEquals(ok.status, 200, `disjuntor abriu por erro de cliente: ${JSON.stringify(ok.body)}`);
 });
+
+Deno.test("tabela da allowlist ausente no CRM (42P01/PGRST205) é 500 visível mas NÃO abre o disjuntor", async () => {
+  for (const code of ["42P01", "PGRST205"]) {
+    reset();
+    CRM_DATA_ERROR = { status: 404, body: { code, message: `relation "public.suppliers" does not exist (${code})` } };
+    for (let i = 0; i < 6; i++) {
+      const r = await call({ operation: "select", table: "suppliers" });
+      assertEquals(r.status, 500, JSON.stringify(r.body));
+    }
+    CRM_DATA_ERROR = null;
+    ROLE = "supervisor";
+    const ok = await call({ operation: "select", table: "companies" });
+    assertEquals(ok.status, 200, `${code}: disjuntor abriu por erro de esquema: ${JSON.stringify(ok.body)}`);
+  }
+});
+
+Deno.test("42501 (GRANT do service_role) é 500 visível — não vira 'erro do usuário' — e não abre o disjuntor", async () => {
+  reset(); ROLE = "supervisor";
+  CRM_DATA_ERROR = { status: 403, body: { code: "42501", message: "permission denied for table companies" } };
+  for (let i = 0; i < 6; i++) {
+    const r = await call({ operation: "select", table: "companies" });
+    assertEquals(r.status, 500, JSON.stringify(r.body));
+  }
+  CRM_DATA_ERROR = null;
+  const ok = await call({ operation: "select", table: "companies" });
+  assertEquals(ok.status, 200, JSON.stringify(ok.body));
+});
+
+Deno.test("search com statement_timeout vira 504; orderBy em texto com ponto é recusado", async () => {
+  reset(); ROLE = "supervisor";
+  CRM_DATA_ERROR = { status: 500, body: { code: "57014", message: "canceling statement due to statement timeout" } };
+  const r = await call({ operation: "search", table: "companies", search: { column: "name", term: "x" } });
+  CRM_DATA_ERROR = null;
+  assertEquals(r.status, 504, JSON.stringify(r.body));
+  const o = await call({ operation: "select", table: "companies", orderBy: "contacts.user_id desc" });
+  assertEquals(o.status, 400, JSON.stringify(o.body));
+});
