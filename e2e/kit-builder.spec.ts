@@ -8,19 +8,41 @@ import { loginAs } from "./helpers/auth";
 
 /**
  * Kit builder shows a landing page on first load (KitMakerLanding).
- * Clicking "Começar pelos itens" exits the landing and enters the wizard.
+ * Clicking "Começar pelos itens" (or "Começar pela caixa") exits the landing
+ * and enters the wizard.
  */
-async function exitLandingState(page: Parameters<typeof loginAs>[0]) {
+async function exitLandingState(
+  page: Parameters<typeof loginAs>[0],
+  start: RegExp = /Começar pelos itens/i,
+) {
   const skipTour = page.getByRole('button', { name: /Pular tour/i });
-  // isVisible() sem timeout retorna false imediatamente se o tour ainda não
-  // montou — o overlay então bloqueia o clique no botão de start.
-  if (await skipTour.isVisible({ timeout: 3000 }).catch(() => false)) await skipTour.click();
+  // isVisible() retorna false imediatamente (o Playwright ignora o timeout) se
+  // o tour ainda não montou — o overlay então bloqueia o clique no botão de
+  // start. waitFor espera o tour aparecer de fato.
+  if (
+    await skipTour
+      .waitFor({ state: 'visible', timeout: 3000 })
+      .then(() => true)
+      .catch(() => false)
+  )
+    await skipTour.click();
 
-  const startBtn = page.getByRole('button', { name: /Começar pelos itens/i });
+  const startBtn = page.getByRole('button', { name: start });
   await expect(startBtn).toBeVisible({ timeout: 10000 });
   await startBtn.click();
   // Wait for wizard to be ready
   await expect(page.locator('[data-testid="kit-builder-container"]')).toBeVisible();
+}
+
+/**
+ * Abas de etapas futuras ficam desabilitadas até a etapa ser concluída
+ * (WizardSteps: isClickable = isCompleted || isActive). Avança-se pelo botão
+ * de próxima etapa do rodapé, habilitado só quando wizardState.canProceed.
+ */
+async function goToNextStep(page: Parameters<typeof loginAs>[0]) {
+  const next = page.locator('[data-testid="wizard-next"]');
+  await expect(next).toBeEnabled({ timeout: 10000 });
+  await next.click();
 }
 
 test.describe("Kit Builder", () => {
@@ -50,14 +72,11 @@ test.describe("Kit Builder", () => {
     await gotoAndSettle(page, "/kit-builder");
     await exitLandingState(page);
 
-    // Step 1: Select Box
-    await page.locator('[data-testid="wizard-step-box"]').click();
-    const firstBox = page.locator('[data-testid="box-option"]').first();
-    await expect(firstBox).toBeVisible({ timeout: 10000 });
-    await firstBox.click();
-
-    // Step 2: Select Items
-    await page.locator('[data-testid="wizard-step-items"]').click();
+    // Step 1: Select Items (fluxo "Começar pelos itens": itens é a etapa ativa)
+    await expect(page.locator('[data-testid="wizard-step-items"]')).toHaveAttribute(
+      'aria-current',
+      'step',
+    );
     const firstItem = page.locator('[data-testid="item-option"]').first();
     await expect(firstItem).toBeVisible({ timeout: 10000 });
     await firstItem.click(); // Add first item
@@ -70,26 +89,39 @@ test.describe("Kit Builder", () => {
     await qtyInput.fill("5");
     await qtyInput.blur();
 
-    // Step 3: Summary
-    await page.locator('[data-testid="wizard-step-summary"]').click();
+    // Step 2: Select Box (caixas compatíveis com os itens escolhidos)
+    await goToNextStep(page);
+    const firstBox = page.locator('[data-testid="box-option"]').first();
+    await expect(firstBox).toBeVisible({ timeout: 10000 });
+    await firstBox.click();
+
+    // Step 3: Summary (box → personalização → revisão)
+    await goToNextStep(page);
+    await goToNextStep(page);
     await expect(page.locator('[data-testid="kit-summary-total"]')).toBeVisible();
 
-    // Validate removal
+    // Validate removal (etapa itens já concluída: aba habilitada)
     await page.locator('[data-testid="wizard-step-items"]').click();
     await page.locator('[data-testid="remove-kit-item"]').first().click();
 
-    // Summary again
-    await page.locator('[data-testid="wizard-step-summary"]').click();
+    // Summary again (itens → caixa → personalização → revisão)
+    await goToNextStep(page);
+    await goToNextStep(page);
+    await goToNextStep(page);
+    await expect(page.locator('[data-testid="kit-summary-total"]')).toBeVisible();
     const itemsCount = await page.locator('[data-testid="kit-summary-item"]').count();
     expect(itemsCount).toBe(1);
   });
 
   test("should reset kit and return to clean state", async ({ page }) => {
     await gotoAndSettle(page, "/kit-builder");
-    await exitLandingState(page);
+    await exitLandingState(page, /Começar pela caixa/i);
 
-    // Add something first
-    await page.locator('[data-testid="wizard-step-box"]').click();
+    // Add something first (fluxo "Começar pela caixa": caixa é a etapa ativa)
+    await expect(page.locator('[data-testid="wizard-step-box"]')).toHaveAttribute(
+      'aria-current',
+      'step',
+    );
     const firstBox = page.locator('[data-testid="box-option"]').first();
     await expect(firstBox).toBeVisible({ timeout: 10000 });
     await firstBox.click();
