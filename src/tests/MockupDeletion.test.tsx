@@ -730,6 +730,28 @@ describe('Mockup Deletion Flow', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Remover logo' }));
     expect(mockMg.logoColorAnalysis.clearAnalysis).toHaveBeenCalled();
     expect(mockMg.setPersonalizationAreas).toHaveBeenCalledWith(expect.any(Function));
+    // Porte da asserção da PR #3339: o updater limpa o logo SÓ da área ativa (area-1)
+    // e preserva as demais intactas.
+    type AreaWithLogo = {
+      id: string;
+      logoPreview: string | null;
+      logoFile: File | null;
+    };
+    const updateAreas = mockMg.setPersonalizationAreas.mock.calls.at(-1)?.[0] as (
+      areas: AreaWithLogo[],
+    ) => AreaWithLogo[];
+    const areasBeforeRemoval: AreaWithLogo[] = [
+      {
+        id: 'area-1',
+        logoPreview: 'data:image/svg+xml;base64,logo',
+        logoFile: new File(['logo'], 'logo.svg', { type: 'image/svg+xml' }),
+      },
+      { id: 'area-2', logoPreview: 'data:image/png;base64,verso', logoFile: null },
+    ];
+    expect(updateAreas(areasBeforeRemoval)).toEqual([
+      expect.objectContaining({ id: 'area-1', logoPreview: null, logoFile: null }),
+      expect.objectContaining({ id: 'area-2', logoPreview: 'data:image/png;base64,verso' }),
+    ]);
 
     fireEvent.click(screen.getByRole('button', { name: 'Aplicar sugestão completa' }));
     fireEvent.click(screen.getByRole('button', { name: 'Aplicar técnica inexistente' }));
