@@ -9,7 +9,7 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { useDebounce } from '@/hooks/common';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { Search, Package, X, SearchX, Filter } from 'lucide-react';
+import { Search, Package, X, SearchX, Filter, RefreshCw } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -186,7 +186,8 @@ export function MockupProductSelector({
   };
 
   // ─── State: Product + Color confirmed ──────────────────────────────
-  if (selection) {
+  // Passo pendente vence a ficha: sem isso "Trocar variante" não abriria nada.
+  if (selection && !pendingProductId && !pendingVariant) {
     return (
       <div className="flex items-center gap-3 rounded-lg border border-border/30 bg-card p-3">
         <div className="h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-muted">
@@ -198,13 +199,10 @@ export function MockupProductSelector({
             loading="lazy"
             onError={(e) => {
               const t = e.currentTarget;
-              if (t.src.includes('/thumbnail')) {
-                t.src = getCdnUrl(t.src, 'public');
-              } else if (selection.product.images?.[0]) {
-                t.src = selection.product.images[0];
-              } else {
-                t.src = '/placeholder.svg';
-              }
+              // Miniatura falhou → original; sem original → 1ª foto do produto → placeholder.
+              t.src = t.src.includes('/thumbnail')
+                ? getCdnUrl(t.src, 'public')
+                : selection.product.images?.[0] || '/placeholder.svg';
             }}
           />
         </div>
@@ -227,6 +225,16 @@ export function MockupProductSelector({
             )}
           </div>
         </div>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-7 w-7 shrink-0"
+          onClick={() => setPendingProductId(selection.product.id)}
+          disabled={disabled}
+          aria-label={`Trocar variante de ${selection.product.name}`}
+        >
+          <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
+        </Button>
         <Button
           size="icon"
           variant="ghost"
@@ -490,6 +498,3 @@ export function MockupProductSelector({
     </div>
   );
 }
-
-// Re-export from extracted module
-export { ProductLoaderAndColorSelector } from './MockupColorSelector';
