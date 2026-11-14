@@ -1441,3 +1441,15 @@ aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]` (porta 5
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261113235000` | `perf_idx_products_active_created_at_desc` | `45dff9f0d993448eae3c68c09aa143304601efb96029ccedda607e976ba28e46` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (linha `approved-by`) e `db-apply-migration.yml` (branch `claude/feat-idx-products-created-at-vacuum-tags-261113-2350`) |
+
+## 2026-11-14 — Data API cai a cada 10 min: `idle_session_timeout` do `authenticator` mata o LISTEN do PostgREST
+
+Logs do PostgREST (`analytics/endpoints/logs`, `source = 'postgrest_logs'`, 2026-11-14 03:00–04:00Z): a cada ~10 min
+`FATAL: terminating connection due to idle-session timeout` → `Failed listening for database notifications on the "pgrst" channel`
+→ `Schema cache queried in` 12.821–72.852 ms, com rajadas de PGRST002/PGRST003. `pg_db_role_setting` (read-only):
+`authenticator` com `idle_session_timeout=600000` (de `20260524211024`) e `postgres` (DATABASE) com `600000` (de `20260525132458`).
+A migration zera só o do `authenticator`. Ainda não está no ledger; aplicação só por `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114040000` | `fix_authenticator_idle_session_timeout_pgrst_listener` | `f34df73857031d37795afbd5519604c3e1604657fb5141eefddb7bcdb677e5bb` | pendente — aplicação só por `db-apply-migration.yml` após o merge |
