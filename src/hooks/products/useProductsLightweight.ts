@@ -129,7 +129,9 @@ export function mapLightweightToProduct(
 }
 
 /** Número de produtos por página nas queries do catálogo. */
-export const CATALOG_PAGE_SIZE = 96;
+export const CATALOG_PAGE_SIZE = 500;
+/** Tamanho só da 1ª página (offset 0): primeiro paint leve; as seguintes usam CATALOG_PAGE_SIZE. */
+export const CATALOG_FIRST_PAGE_SIZE = 96;
 /** Número de páginas buscadas em paralelo no primeiro load (burst inicial). */
 export const CATALOG_BATCH_PAGES = 1;
 
@@ -202,13 +204,14 @@ async function loadCategoriesMap(): Promise<ReadonlyMap<string, string>> {
  */
 async function fetchBestSellerCatalogPage(offset: number, sortBy: string): Promise<CatalogPage> {
   const isFirstLoad = offset === 0;
+  const pageSize = isFirstLoad ? CATALOG_FIRST_PAGE_SIZE : CATALOG_PAGE_SIZE;
   const pagesToFetch = isFirstLoad ? CATALOG_BATCH_PAGES : 1;
   const pages = await Promise.all(
     Array.from({ length: pagesToFetch }, (_, i) =>
       supabase.rpc('get_catalog_bestseller_page', {
         p_sort: sortBy,
-        p_limit: CATALOG_PAGE_SIZE,
-        p_offset: offset + i * CATALOG_PAGE_SIZE,
+        p_limit: pageSize,
+        p_offset: offset + i * pageSize,
       }),
     ),
   );
@@ -219,7 +222,7 @@ async function fetchBestSellerCatalogPage(offset: number, sortBy: string): Promi
     const pageRows = (data as unknown as LightweightProduct[] | null) ?? [];
     rows.push(...pageRows);
     lastPageSize = pageRows.length;
-    if (lastPageSize < CATALOG_PAGE_SIZE) break;
+    if (lastPageSize < pageSize) break;
   }
   const categoriesById = await loadCategoriesMap();
   const products = rows.map((r) => mapLightweightToProduct(r, categoriesById));
@@ -239,7 +242,7 @@ async function fetchBestSellerCatalogPage(offset: number, sortBy: string): Promi
     totalEstimate = count;
   }
 
-  const nextOffset = lastPageSize === CATALOG_PAGE_SIZE ? offset + rows.length : null;
+  const nextOffset = lastPageSize === pageSize ? offset + rows.length : null;
   return { products, nextOffset, totalEstimate };
 }
 
@@ -304,6 +307,7 @@ async function fetchCatalogPage(
   const secondaryOrderBy = { column: 'id', ascending: true } as const;
 
   const isFirstLoad = offset === 0;
+  const pageSize = isFirstLoad ? CATALOG_FIRST_PAGE_SIZE : CATALOG_PAGE_SIZE;
   const pagesToFetch = isFirstLoad ? CATALOG_BATCH_PAGES : 1;
 
   const batchQueries = Array.from({ length: pagesToFetch }, (_, i) => ({
@@ -313,8 +317,8 @@ async function fetchCatalogPage(
     filters,
     orderBy,
     secondaryOrderBy,
-    limit: CATALOG_PAGE_SIZE,
-    offset: offset + i * CATALOG_PAGE_SIZE,
+    limit: pageSize,
+    offset: offset + i * pageSize,
     ...(i === 0 && isFirstLoad ? { countMode: 'exact' as const } : {}),
   }));
 
@@ -332,8 +336,8 @@ async function fetchCatalogPage(
         filters,
         orderBy,
         secondaryOrderBy,
-        limit: CATALOG_PAGE_SIZE,
-        offset: offset + i * CATALOG_PAGE_SIZE,
+        limit: pageSize,
+        offset: offset + i * pageSize,
         ...(i === 0 && isFirstLoad ? { countMode: 'exact' as const } : {}),
       }).catch(() => ({ records: [] as LightweightProduct[], count: null as number | null })),
     );
@@ -352,10 +356,10 @@ async function fetchCatalogPage(
       if (result.count !== null && fallbackTotalEstimate === null)
         fallbackTotalEstimate = result.count;
     }
-    const fallbackFetchedUpTo = offset + pagesToFetch * CATALOG_PAGE_SIZE;
+    const fallbackFetchedUpTo = offset + pagesToFetch * pageSize;
     return {
       products: fallbackProducts,
-      nextOffset: fallbackLastPageSize === CATALOG_PAGE_SIZE ? fallbackFetchedUpTo : null,
+      nextOffset: fallbackLastPageSize === pageSize ? fallbackFetchedUpTo : null,
       totalEstimate: fallbackTotalEstimate,
     };
   }
@@ -383,7 +387,7 @@ async function fetchCatalogPage(
   const fetchedUpTo = offset + products.length;
   return {
     products,
-    nextOffset: lastPageSize === CATALOG_PAGE_SIZE ? fetchedUpTo : null,
+    nextOffset: lastPageSize === pageSize ? fetchedUpTo : null,
     totalEstimate,
   };
 }
