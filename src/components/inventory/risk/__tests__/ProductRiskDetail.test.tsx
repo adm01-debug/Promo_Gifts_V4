@@ -170,10 +170,10 @@ describe('ProductRiskDetail — loading & error', () => {
 });
 
 describe('ProductRiskDetail — demo mode', () => {
-  it('renderiza badge demo e KPIs quando não há dados nem erro', () => {
+  it('renderiza badge "dados simulados (sem histórico)" e KPIs quando não há dados nem erro', () => {
     renderDetail('prod-demo', 'Produto Demo');
     expect(screen.getByText('Produto Demo')).toBeInTheDocument();
-    expect(screen.getByText('demo')).toBeInTheDocument();
+    expect(screen.getByText('dados simulados (sem histórico)')).toBeInTheDocument();
     expect(screen.getByText('Saída/dia (7d)')).toBeInTheDocument();
     expect(screen.getByText('Dias até acabar')).toBeInTheDocument();
     expect(screen.getByText('Estoque atual')).toBeInTheDocument();

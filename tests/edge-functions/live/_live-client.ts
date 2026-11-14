@@ -68,8 +68,11 @@ const TIMEOUT_MS = Number(readEnv("EDGE_LIVE_TIMEOUT_MS")) || 15_000;
 const RETRY_STATUSES = new Set([502, 503, 504]);
 const RETRY_COUNT = (() => {
   // "0" desliga os retries (antes `|| 3` transformava 0 em 3).
+  // Só inteiro >= 0 é aceito; negativo ("-1": o loop nunca rodava e callEdge devolvia
+  // undefined), fracionário ("1.5": `attempt === RETRY_COUNT` nunca batia) ou não
+  // numérico caem no padrão 3. Ver tests/edge-functions/live-client-retry.test.ts.
   const n = Number(readEnv("EDGE_LIVE_RETRIES"));
-  return Number.isFinite(n) && readEnv("EDGE_LIVE_RETRIES") !== undefined && readEnv("EDGE_LIVE_RETRIES") !== "" ? n : 3;
+  return Number.isInteger(n) && n >= 0 && readEnv("EDGE_LIVE_RETRIES") !== undefined && readEnv("EDGE_LIVE_RETRIES") !== "" ? n : 3;
 })();
 const RETRY_DELAY_MS = Number(readEnv("EDGE_LIVE_RETRY_DELAY_MS")) || 800;
 /**
