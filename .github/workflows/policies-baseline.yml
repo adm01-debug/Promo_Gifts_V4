@@ -23,20 +23,13 @@ name: Policies Baseline
 # Sem credenciais (ex.: PR de fork): o script degrada para static-pass.
 # =============================================================================
 
-# RESTAURADO 2026-11-02 (achado Qodo na review de gestão de workflows): o filtro
-# docs_only do deploy-gates.yml (job `changes`) não inclui `.security/**` — uma PR
-# que só toca `.security/policies-baseline.json` seria classificada docs-only e o
-# Gate 1.13 (deploy-gates.yml) nunca rodaria. Mantém o trigger próprio para esse caso.
+# RESTAURADO 2026-11-02 (achado Qodo): o filtro docs_only do deploy-gates.yml não incluía
+# `.security/**` e um PR que só tocasse `.security/policies-baseline.json` pulava o Gate 1.13.
+# 2026-11-13 (wf-consolida): `.security/**` entrou no filtro `code` do deploy-gates.yml (job
+# `changes`), então a checagem de PR e de push em main é o Gate 1.13 — "Policies baseline vs
+# pg_policies live (obrigatório)" — com --require-live (mais estrito que o tri-state daqui).
+# Este workflow fica com o que só ele faz: varredura semanal agendada e o seed via dispatch.
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'supabase/migrations/**'
-      - '.security/policies-baseline.json'
-      - 'scripts/check-policies-baseline.mjs'
-      - '.github/workflows/policies-baseline.yml'
-  push:
-    branches: [main]
   schedule:
     - cron: '30 10 * * 1' # semanal, segunda 10:30 UTC — E89: ≥20min after security-definer-acl-multi-env (10:09)
   workflow_dispatch:

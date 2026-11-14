@@ -1,4 +1,4 @@
-name: Contexto para agentes de IA (10 min)
+name: Contexto para agentes de IA (1 h)
 
 # =============================================================================
 # Inventário vivo do sistema para agentes de IA — mesmo pacote do Zapp_Web_V2
@@ -11,20 +11,20 @@ name: Contexto para agentes de IA (10 min)
 #   00-INDEX.md ← scripts/regras_negocio/indice.py (lê o manifest.json de cada pasta; diz quem é dono de cada fato)
 #
 # Onde fica: branch `contexto` (gerada, histórico próprio; nunca abra PR dela). A main tem ruleset
-# (push direto recusado) e um PR a cada 10 min dispararia o Deploy Gates inteiro. Push com GITHUB_TOKEN não
+# (push direto recusado) e um PR a cada rodada dispararia o Deploy Gates inteiro. Push com GITHUB_TOKEN não
 # dispara outros workflows (anti-loop). A Vercel não builda a branch (vercel.json próprio com ignoreCommand).
 # Como ler: git fetch origin contexto && git show origin/contexto:docs/contexto/00-INDEX.md, ou MCP
 # get_file(ref=contexto), ou raw.githubusercontent.com/adm01-debug/Promo_Gifts_V4/contexto/docs/contexto/00-INDEX.md.
 #
 # Credenciais: só PGHOST/PGUSER/PGPASSWORD/PGDATABASE (as mesmas do db-apply-migration.yml), em sessão
 # read-only. SUPABASE_ACCESS_TOKEN fica DE FORA de propósito: ele torna o workflow "privilegiado" no Gate
-# E89 (scripts/ci-cron-table.mjs) e um cron de 10 min colidiria com todos os outros crons privilegiados.
+# E89 (scripts/ci-cron-table.mjs) e um cron horário colidiria com todos os outros crons privilegiados.
 # Sem ele o snapshot pula a Management API (edges publicadas); isso já sai em inventario/estado/banco.json
 # e no edge-functions-drift-check.yml.
 #
 # Falhas: produtor com falha deixa o workflow vermelho; `publicar` roda com !cancelled() e troca só as
 # pastas que chegaram — as demais mantêm a última versão boa na branch. Sem os secrets PG* o job do banco
-# sai verde com aviso no agendamento (para não pintar 144 runs/dia de vermelho) e falha no dispatch.
+# sai verde com aviso no agendamento (para não pintar 24 runs/dia de vermelho) e falha no dispatch.
 # "Nada mudou" no publicar = nenhuma fonte mudou. Métricas voláteis do banco publicam no máximo 1×/hora.
 # =============================================================================
 
@@ -46,8 +46,10 @@ on:
       - '.github/workflows/**'
       - '.github/workflows/contexto.yml'
   schedule:
-    # Lista explícita (e não 3-59/10): o parser do ci-cron-table.mjs entende vírgula, não faixa com passo.
-    - cron: '3,13,23,33,43,53 * * * *' # minuto 3: fora do minuto 0 (fila do GitHub)
+    # 1×/hora (era a cada 10 min — wf-consolida 2026-11-13). Código e regras já saem a cada push em main
+    # (o gate pula o que não mudou); o agendamento só serve ao banco, que muda sem push, e as métricas
+    # voláteis do banco já publicavam no máximo 1×/hora (VOLATILE_MIN_INTERVAL_MIN). Minuto 7: fora do 0.
+    - cron: '7 * * * *'
   workflow_dispatch:
     inputs:
       graphify:
@@ -190,7 +192,7 @@ jobs:
       # schema-snapshot-export.yml; types.ts vem do regenerate-supabase-types.yml (REGRA #4).
       PGDUMP: 'false'
       GEN_TYPES: 'false'
-      SUPABASE_SNAPSHOT_PUBLICACAO: 'Gerado automaticamente a cada 10 min pelo workflow `contexto.yml` (job `banco`) na branch `contexto`. **Não edite manualmente.**'
+      SUPABASE_SNAPSHOT_PUBLICACAO: 'Gerado automaticamente a cada hora pelo workflow `contexto.yml` (job `banco`) na branch `contexto`. **Não edite manualmente.**'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -343,7 +345,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           HEAD_MAIN: ${{ github.sha }}
-          VOLATILE_MIN_INTERVAL_MIN: '60'
+          # 50 e não 60: com cron horário o intervalo entre rodadas oscila em torno de 60 min (fila do
+          # GitHub) e 60 faria as métricas pularem uma hora sim, outra não. O cron já limita a 1×/hora.
+          VOLATILE_MIN_INTERVAL_MIN: '50'
           HUSKY: '0'
         run: |
           set -euo pipefail
@@ -384,7 +388,7 @@ jobs:
           # Branch gerada: contexto para agentes de IA
 
           Comece por `docs/contexto/00-INDEX.md`. Pastas `codigo/`, `supabase/` e `regras/` são regeradas a cada
-          10 min pelo workflow `contexto.yml` da main — não edite nem abra PR desta branch. Regras humanas vivem
+          push na main e de hora em hora pelo workflow `contexto.yml` — não edite nem abra PR desta branch. Regras humanas vivem
           em `docs/contexto/regras/manual/` na **main**. O inventário semanal versionado (`inventario/estado/`)
           continua na main.
           EOF

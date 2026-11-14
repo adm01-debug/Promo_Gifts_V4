@@ -23,7 +23,7 @@
  *   schema yet.
  *
  * CI guard:
- *   `.github/workflows/lint-untyped-from.yml` fails the build if any
+ *   `.github/workflows/static-checks.yml` (step "untypedFrom × types.ts") fails the build if any
  *   `untypedFrom("X")` call references a table not present in generated
  *   Supabase types. That is the exact condition that caused silent failures
  *   on 2026-05-24.

@@ -56,8 +56,12 @@ jobs:
           SMOKE_FAIL_ON_DEGRADED: '0'
         run: node scripts/smoke-tests.mjs
 
+  # wf-consolida 2026-11-13: lint, typecheck e os checkers estáticos que o Deploy Gates
+  # (deploy-gates.yml, Gate 1 — job lint-typecheck, agregado no Gate Final obrigatório)
+  # já roda em todo PR/push saíram daqui. Cada remoção cita o step equivalente abaixo.
+  # Ficam só os steps que não existem no Deploy Gates.
   quality:
-    name: Lint, Typecheck & Test
+    name: Test suite & edge guards
     runs-on: ubuntu-24.04
     needs: smoke
     if: ${{ !cancelled() }}
@@ -88,26 +92,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Seller-scope checker (RLS defesa em profundidade)
-        run: node scripts/check-seller-scope.mjs
-
-      - name: Route data-router APIs checker (errorElement + useRouteError fora de data router)
-        run: node scripts/check-route-error-element.mjs
-
-      - name: Radix asChild nesting checker (forwardRef safety)
-        run: node scripts/check-aschild-nesting.mjs
-
-      - name: Route ref usage checker (guards + pages)
-        run: node scripts/check-route-ref-usage.mjs
-
-      # ESLint baseline gate — único step de lint: roda ESLint internamente
-      # e falha SOMENTE para erros NOVOS vs .eslint-baseline.json.
-      # Step informacional separado removido (era redundante e dobrava o tempo de CI).
-      - name: ESLint baseline gate (bloqueia apenas regressões novas)
-        run: node scripts/check-eslint-baseline.mjs
-
-      - name: TypeScript type check
-        run: npm run typecheck
+      # Removidos (duplicados do deploy-gates.yml, job lint-typecheck):
+      #   check-seller-scope.mjs         → "Gate E118f — seller-scope"
+      #   check-route-error-element.mjs  → "Gate E118c — route-error-element"
+      #   check-aschild-nesting.mjs      → "Gate E118a — asChild nesting"
+      #   check-route-ref-usage.mjs      → "Gate E118b — route-ref-usage"
+      #   check-eslint-baseline.mjs      → `npm run lint:baseline` (lint:config + check-eslint-baseline)
+      #   npm run typecheck              → `npm run typecheck` (Gate 1)
 
       # hooks já cobertos pelo job dedicado hooks-tests (timeout-minutes: 10).
       # test:strict-ref e test:coverage omitidos aqui — rodam em ref-warning-suite
@@ -115,12 +106,12 @@ jobs:
       - name: Run tests
         run: npm run test:quality
 
-      - name: 🎨 Theme Presets & Contrast gate
-        run: npx vitest run src/lib/theme-presets.test.ts --reporter=verbose
-
-      - name: Security audit
-        run: npm audit --audit-level=high || true
-        continue-on-error: true
+      # Removidos (duplicados do deploy-gates.yml):
+      #   src/lib/theme-presets.test.ts  → já está no `npm run test:ci-core` (Gate 2) e no
+      #                                    test:quality acima; o 🎨 Theme & Accessibility Gate
+      #                                    (Playwright) continua no job theme-validation.
+      #   npm audit --audit-level=high || true (não bloqueava) → "Gate 0.5 - Dependency
+      #                                    Audit" (check-dependency-audit.mjs, bloqueante).
 
       # Gate crítico: funções SECURITY DEFINER em public NÃO podem ser
       # executáveis por PUBLIC/anon (fora da whitelist público-intencional)
@@ -132,12 +123,8 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: node scripts/check-security-definer-acl.mjs
 
-      # Gate estático: toda edge function deve estar declarada no
-      # manifest _shared/edge-authz-manifest.ts; edges supervisor/dev
-      # devem usar authorize() do _shared/authorize.ts ou marcar
-      # enforcedBy: "custom" com rationale explícito.
-      - name: 🛡️ Edge authorization manifest gate
-        run: node scripts/check-edge-authorization.mjs
+      # Removido: check-edge-authorization.mjs (manifest edge-authz) → deploy-gates.yml
+      # "Gate 1.12 — Contract coverage + soft-delete policy" (mesmo script, bloqueante).
 
       # Garante que toda NOVA edge function adote o logger estruturado SSOT
       # (createStructuredLogger). Allowlist congelada em snapshot 2026-04-27;
@@ -160,10 +147,7 @@ jobs:
       - name: 🌐 Edge CORS x-request-id gate
         run: node scripts/check-edge-cors-headers.mjs
 
-      # Toda edge function precisa obter CORS via _shared/cors.ts (helpers SSOT)
-      # — nada de objeto literal `Access-Control-Allow-Headers` à mão.
-      - name: 🚫 Inline CORS literals gate
-        run: node scripts/check-no-inline-cors.mjs
+      # Removido: check-no-inline-cors.mjs → deploy-gates.yml "Gate E118d — no-inline-cors".
 
       # Garante que supabase/functions/_shared/cors-snapshot.json está em sync
       # com os index.ts (consumido pela edge function `cors-audit`).
@@ -357,11 +341,8 @@ jobs:
           printf '  - %s\n' "${files[@]}"
           npx vitest run "${files[@]}" --reporter=verbose
 
-      - name: Static checkers (route ref usage + asChild nesting + route data-router APIs)
-        run: |
-          node scripts/check-route-ref-usage.mjs
-          node scripts/check-aschild-nesting.mjs
-          node scripts/check-route-error-element.mjs
+      # Static checkers (route-ref-usage, asChild nesting, route-error-element) removidos:
+      # rodam no deploy-gates.yml (Gates E118a/b/c) — wf-consolida 2026-11-13.
 
       - name: Upload ref-warning console snapshot
         if: always()

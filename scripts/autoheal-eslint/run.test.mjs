@@ -107,7 +107,7 @@ test('erro de configuracao aborta sem apresentar resultado limpo', (t) => {
 
 test('workflow valida lint antes de detectar clean e TypeScript antes de PR', () => {
   const workflow = readFileSync(
-    new URL('../../.github/workflows/lovable-autoheal.yml', import.meta.url),
+    new URL('../../recovery/workflows-aposentados/lovable-autoheal.yml', import.meta.url),
     'utf8',
   );
   assert.ok(

@@ -31,6 +31,8 @@ const DEFAULT_PROJECT = 'chromium-public';
 // Workflows auditados:
 //   e2e-dialogs-pr-check.yml          → 4 dialog specs + undo-toast, chromium-public
 //   ui-visual-a11y.yml                → confirm + alert,              chromium-public
+//     (aposentado em 2026-11-13 → recovery/workflows-aposentados/; já não rodava
+//      essas specs — os baselines continuam protegidos por este gate)
 //   e2e-visual-preview-button.yml     → preview-button,               chromium-public
 //   e2e-quote-item-editor-sheet.yml   → quote-item-editor,            chromium-public
 //
