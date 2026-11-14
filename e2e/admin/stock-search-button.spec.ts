@@ -25,6 +25,16 @@ async function setup(page: Page) {
   }
 }
 
+// Estado vazio real de /estoque quando a busca do toolbar zera o resultado:
+// StockDashboard.tsx renderiza StockEmptyFiltersHint (chip "Busca: <termo>")
+// e a VariantStockTable mostra "Nenhuma variação encontrada".
+async function expectSearchApplied(page: Page, term: string) {
+  await expect(page.getByTestId('stock-empty-filters-chip-search')).toContainText(term, {
+    timeout: 15_000,
+  });
+  await expect(page.getByText('Nenhuma variação encontrada')).toBeVisible();
+}
+
 for (const vp of VIEWPORTS) {
   test.describe(`Stock search button — ${vp.name}`, () => {
     test.use({ viewport: { width: vp.width, height: vp.height } });
@@ -62,13 +72,13 @@ for (const vp of VIEWPORTS) {
       // 1) Enter no input
       await input.fill('zzz_inexistente_promo');
       await input.press('Enter');
-      await expect(page.getByText(/Nenhum produto encontrado/i)).toBeVisible({ timeout: 15_000 });
+      await expectSearchApplied(page, 'zzz_inexistente_promo');
 
       // 2) Clique no botão
       await page.getByRole('button', { name: /Limpar busca/i }).click();
       await input.fill('aaa_inexistente_promo');
       await btn.click();
-      await expect(page.getByText(/Nenhum produto encontrado/i)).toBeVisible({ timeout: 15_000 });
+      await expectSearchApplied(page, 'aaa_inexistente_promo');
     });
 
     test('acessível via teclado: Tab foca, Enter ativa', async ({ page }) => {
@@ -78,7 +88,10 @@ for (const vp of VIEWPORTS) {
 
       await input.focus();
       await input.fill('teste');
-      // Tab move o foco para o próximo elemento focável (botão Busca).
+      // Com texto no input, o "X" (Limpar busca) aparece entre o input e o
+      // botão Busca: 1º Tab foca o X, 2º Tab foca o botão.
+      await page.keyboard.press('Tab');
+      await expect(page.getByRole('button', { name: 'Limpar busca' })).toBeFocused();
       await page.keyboard.press('Tab');
       await expect(btn).toBeFocused();
       // Enter no botão dispara a busca.
