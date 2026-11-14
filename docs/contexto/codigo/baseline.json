@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "be2fb404348a77b81cbe028cc0afb09ead75dd88",
+  "commit": "892494ca4d0937de238a6ece3e058a84530c090a",
   "branch": "main",
-  "data_commit": "2026-11-14T11:18:04-03:00",
+  "data_commit": "2026-11-14T11:58:07-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "892494c",
+    "data": "2026-11-14",
+    "assunto": "fix(security): CRM — vendedor vê os dele + os sem dono (supersede #3518) (#3583)"
+   },
    {
     "sha": "be2fb40",
     "data": "2026-11-14",
@@ -126,74 +131,69 @@
     "sha": "36faf00",
     "data": "2026-11-13",
     "assunto": "fix(ci): destrava Gate 1 e testes do main — baseline de refs, import legacy-filters, recibos e reconciliação de migratio"
-   },
-   {
-    "sha": "10e57c9",
-    "data": "2026-11-13",
-    "assunto": "fix(migrations): adiciona arquivo migration 20260511235960 ausente do main"
    }
   ],
   "arquivos_mudados_7d": 2013,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 1225
+    "mudancas": 1523
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 628
+    "mudancas": 777
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 475
+    "mudancas": 590
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 428
+    "mudancas": 532
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 372
+    "mudancas": 464
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 358
+    "mudancas": 445
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 328
+    "mudancas": 408
+   },
+   {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 372
+   },
+   {
+    "pasta": "src/components/ui",
+    "mudancas": 370
    },
    {
     "pasta": "recovery/src-legacy/src",
     "mudancas": 316
    },
    {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 303
-   },
-   {
-    "pasta": "src/components/ui",
-    "mudancas": 297
-   },
-   {
     "pasta": "src/components/mockup",
-    "mudancas": 256
+    "mudancas": 315
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 252
+    "mudancas": 311
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 213
+    "mudancas": 263
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 206
+    "mudancas": 253
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 203
+    "mudancas": 250
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -203,50 +203,54 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 51
+    "mudancas": 52
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 50
+    "mudancas": 51
    },
    {
     "arquivo": "package.json",
-    "mudancas": 30
+    "mudancas": 31
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 22
+    "mudancas": 23
    },
    {
     "arquivo": "analise-prs/progresso.json",
-    "mudancas": 18
+    "mudancas": 19
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 17
+    "mudancas": 18
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 13
+    "mudancas": 14
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "mudancas": 14
+   },
+   {
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 13
    },
    {
@@ -254,54 +258,50 @@
     "mudancas": 12
    },
    {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "arquivo": "docs/ci/SEGREDOS.md",
     "mudancas": 12
+   },
+   {
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    "mudancas": 12
+   },
+   {
+    "arquivo": "AGENTS.md",
+    "mudancas": 11
+   },
+   {
+    "arquivo": "CLAUDE.md",
+    "mudancas": 11
    },
    {
     "arquivo": "analise-prs/prs.json",
     "mudancas": 11
    },
    {
-    "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "AGENTS.md",
-    "mudancas": 10
-   },
-   {
-    "arquivo": "CLAUDE.md",
-    "mudancas": 10
-   },
-   {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": "scripts/lib/baseline-gate.mjs",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": "scripts/validate-quotes-list.mjs",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": ".github/workflows/db-schema-drift-check.yml",
-    "mudancas": 9
+    "mudancas": 10
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 428
+    "commits": 425
    },
    {
     "autor": "Joaquim Ataides",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10135,
   "arquivos_codigo": 5211,
-  "linhas_codigo": 995617,
+  "linhas_codigo": 995775,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1960,7 +1960,7 @@
   },
   "supabase/functions": {
    "arquivos": 270,
-   "linhas": 49278
+   "linhas": 49426
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -2148,7 +2148,7 @@
   },
   "tests/security": {
    "arquivos": 23,
-   "linhas": 2258
+   "linhas": 2268
   },
   "tests/setup-ref-warning-capture.ts": {
    "arquivos": 1,
@@ -2321,16 +2321,16 @@
    "linhas": 992
   },
   {
+   "arquivo": "supabase/functions/crm-db-bridge/index.ts",
+   "linhas": 967
+  },
+  {
    "arquivo": "recovery/src-legacy/src/hooks/useMagicUpState.ts",
    "linhas": 955
   },
   {
    "arquivo": "src/lib/bi/pptxGenerator.ts",
    "linhas": 952
-  },
-  {
-   "arquivo": "supabase/functions/crm-db-bridge/index.ts",
-   "linhas": 942
   },
   {
    "arquivo": "src/data/mock-match-products.ts",

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "be2fb404348a77b81cbe028cc0afb09ead75dd88",
+  "sha": "892494ca4d0937de238a6ece3e058a84530c090a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 14:31 UTC",
+  "generated_at": "2026-11-14 15:53 UTC",
   "files_total": 10063,
   "code_files": 8599,
-  "code_lines": 1213375
+  "code_lines": 1213533
  },
  "version": "1.3.2",
- "facts_hash": "a04ada7d0e83006f",
+ "facts_hash": "d6c9f82ff1efc113",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -148888,7 +148888,7 @@
   {
    "module": "supabase/functions",
    "files": 270,
-   "lines": 49278,
+   "lines": 49426,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -149407,7 +149407,7 @@
   {
    "module": "tests",
    "files": 1011,
-   "lines": 154962,
+   "lines": 154972,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -157798,7 +157798,7 @@
     "file": "supabase/functions/crm-db-bridge/index.ts",
     "name": "CrmRequestSchema",
     "kind": "object",
-    "body": "{ operation: z.enum([\"select\", \"search\", \"insert\", \"update\", \"delete\", \"batch\"]), table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i).optional(), id: z.string().uuid().optional(), filters: z.record(z.unknown()).refine( (f) => Object.keys(f).every((k) => COLUMN_RE.test(k)), { message: \"Filter keys must be valid column identifiers\" }, ).optional(), select: z.string().max(2000).optional(), orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(), limit: z.number().int().min(1).max(1000).optional(), offset: z.number().int().min(0).optional(), search: z.object({ column: z.string().regex(COLUMN_RE), term: z.string().max(500) }).optional(), relations: z.string().max(2000).optional(), data: z.union([z.record(z.unknown()), z.array(z.record(z.unknown …",
+    "body": "{ operation: z.enum([\"select\", \"search\", \"insert\", \"update\", \"delete\", \"batch\"]), table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i).optional(), id: z.string().uuid().optional(), filters: z.record(z.unknown()).refine( (f) => Object.keys(f).every((k) => COLUMN_RE.test(k) && !/^(or|and|not)$/i.test(k)), { message: \"Filter keys must be valid column identifiers\" }, ).optional(), select: z.string().max(2000).optional(), orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(), limit: z.number().int().min(1).max(1000).optional(), offset: z.number().int().min(0).optional(), search: z.object({ column: z.string().regex(COLUMN_RE), term: z.string().max(500) }).optional(), relations: z.string().max(2000).optional(), data: z.union([z.record(z.unknown( …",
     "refines": [
      "Filter keys must be valid column identifiers"
     ],
@@ -172436,6 +172436,14 @@
    {
     "file": "supabase/functions/crm-db-bridge/ownership.ts",
     "text": "* Tabelas sem coluna de dono própria, cujo dono é o do registro pai (regra do dono, 12/11:"
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/ownership.ts",
+    "text": "(vê só os registros SEM dono). Regra do dono em 13/11: \"vendedor vê os dele + os sem dono\""
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/scope_integration_test.ts",
+    "text": "6 requisições com filtro 'or' (recusado na validação) e 6 com coluna inexistente (42703 do PostgREST)"
    },
    {
     "file": "supabase/functions/e2e-cleanup/handler_characterization_test.ts",
@@ -215925,6 +215933,10 @@
    {
     "file": "supabase/functions/comparison-price-watcher/index.ts",
     "line": "* Cruza user_comparisons ativas com price_history; se houve queda > 5% nos"
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/ownership.ts",
+    "line": "* (94% das empresas do CRM não têm dono; só 6 de 77 vendedores têm vínculo por e-mail)."
    },
    {
     "file": "supabase/functions/generate-blurhashes/index.ts",
@@ -294150,7 +294162,11 @@
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
-    "name": "vendedor sem vínculo com o CRM é negado (403), não 500"
+    "name": "vendedor sem vínculo com o CRM vê só os SEM dono (regra do dono, 13/11)"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "id do CRM que não é uuid nunca é interpolado no filtro (vira "
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
@@ -484216,7 +484232,7 @@
   },
   "supabase/functions/crm-db-bridge/index.ts": {
    "path": "supabase/functions/crm-db-bridge/index.ts",
-   "lines": 942,
+   "lines": 967,
    "exports": [
     "function getCrmClient",
     "function __getClientBootStateForTests",
@@ -484225,7 +484241,8 @@
     "type InsertResultShape",
     "interface InsertResultDiagnostic",
     "function inspectInsertResult",
-    "function logInsertResultIfAnomalous"
+    "function logInsertResultIfAnomalous",
+    "function isClientDbError"
    ],
    "tables": [
     {
@@ -484287,7 +484304,7 @@
     {
      "name": "CrmRequestSchema",
      "kind": "object",
-     "body": "{ operation: z.enum([\"select\", \"search\", \"insert\", \"update\", \"delete\", \"batch\"]), table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i).optional(), id: z.string().uuid().optional(), filters: z.record(z.unknown()).refine( (f) => Object.keys(f).every((k) => COLUMN_RE.test(k)), { message: \"Filter keys must be valid column identifiers\" }, ).optional(), select: z.string().max(2000).optional(), orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(), limit: z.number().int().min(1).max(1000).optional(), offset: z.number().int().min(0).optional(), search: z.object({ column: z.string().regex(COLUMN_RE), term: z.string().max(500) }).optional(), relations: z.string().max(2000).optional(), data: z.union([z.record(z.unknown()), z.array(z.record(z.unknown …",
+     "body": "{ operation: z.enum([\"select\", \"search\", \"insert\", \"update\", \"delete\", \"batch\"]), table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i).optional(), id: z.string().uuid().optional(), filters: z.record(z.unknown()).refine( (f) => Object.keys(f).every((k) => COLUMN_RE.test(k) && !/^(or|and|not)$/i.test(k)), { message: \"Filter keys must be valid column identifiers\" }, ).optional(), select: z.string().max(2000).optional(), orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(), limit: z.number().int().min(1).max(1000).optional(), offset: z.number().int().min(0).optional(), search: z.object({ column: z.string().regex(COLUMN_RE), term: z.string().max(500) }).optional(), relations: z.string().max(2000).optional(), data: z.union([z.record(z.unknown( …",
      "refines": [
       "Filter keys must be valid column identifiers"
      ],
@@ -484380,7 +484397,7 @@
   },
   "supabase/functions/crm-db-bridge/ownership.ts": {
    "path": "supabase/functions/crm-db-bridge/ownership.ts",
-   "lines": 76,
+   "lines": 93,
    "exports": [
     "const CRM_BROAD_READ_ROLES",
     "function resolveCrmRole",
@@ -484388,6 +484405,7 @@
     "const CRM_OWNER_COLUMN",
     "const CRM_OWNER_VIA",
     "type CrmOwnerScope",
+    "function ownerOrExpression",
     "function crmOwnerScope"
    ],
    "enums": [
@@ -484401,7 +484419,11 @@
     "vendedor"
    ],
    "rule_comments": [
-    "* Tabelas sem coluna de dono própria, cujo dono é o do registro pai (regra do dono, 12/11:"
+    "* Tabelas sem coluna de dono própria, cujo dono é o do registro pai (regra do dono, 12/11:",
+    "(vê só os registros SEM dono). Regra do dono em 13/11: \"vendedor vê os dele + os sem dono\""
+   ],
+   "percents": [
+    "* (94% das empresas do CRM não têm dono; só 6 de 77 vendedores têm vínculo por e-mail)."
    ]
   },
   "supabase/functions/crm-db-bridge/ping.test.ts": {
@@ -484420,7 +484442,7 @@
   },
   "supabase/functions/crm-db-bridge/scope_integration_test.ts": {
    "path": "supabase/functions/crm-db-bridge/scope_integration_test.ts",
-   "lines": 219,
+   "lines": 325,
    "env": [
     "BRIDGE_PATH"
    ],
@@ -484440,6 +484462,9 @@
      "value": "authenticated",
      "kind": "escreve"
     }
+   ],
+   "rule_comments": [
+    "6 requisições com filtro 'or' (recusado na validação) e 6 com coluna inexistente (42703 do PostgREST)"
    ],
    "doc": "Teste de integração do crm-db-bridge com supabase-js REAL e rede falsa (fetch stub). Rodar: deno test --config <deno.json com nodeModulesDir:auto> -A --no-check supabase/functions/crm-db-bridge/scope_integration_test.ts (BRIDGE_PATH=file://…/index.ts). Regra do dono (12/11): vendedor só vê os dele; …",
    "uses_service_role": true
@@ -526435,7 +526460,7 @@
   },
   "tests/security/crm-db-bridge-ownership.test.ts": {
    "path": "tests/security/crm-db-bridge-ownership.test.ts",
-   "lines": 95,
+   "lines": 105,
    "is_test": true,
    "tests": [
     "crm-db-bridge — resolução de role (E083/E081)",
@@ -526446,7 +526471,8 @@
     "vendedor em companies/contacts filtra por user_id",
     "e-mails/telefones do contato seguem o dono do contato (regra do dono, 12/11)",
     "customers: vendedor filtra pela coluna real vendedor_id (FK → users.id do CRM)",
-    "vendedor sem vínculo com o CRM é negado (403), não 500",
+    "vendedor sem vínculo com o CRM vê só os SEM dono (regra do dono, 13/11)",
+    "id do CRM que não é uuid nunca é interpolado no filtro (vira ",
     "roles amplas e tabelas sem PII não recebem filtro",
     "o handler não filtra mais por owner_id"
    ]
@@ -529245,10 +529271,22 @@
   }
  },
  "git": {
-  "sha": "be2fb404348a77b81cbe028cc0afb09ead75dd88",
+  "sha": "892494ca4d0937de238a6ece3e058a84530c090a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "892494c",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(security): CRM — vendedor vê os dele + os sem dono (supersede #3518) (#3583)",
+    "files": [
+     "supabase/functions/crm-db-bridge/index.ts",
+     "supabase/functions/crm-db-bridge/ownership.ts",
+     "supabase/functions/crm-db-bridge/scope_integration_test.ts",
+     "tests/security/crm-db-bridge-ownership.test.ts"
+    ]
+   },
    {
     "sha": "be2fb40",
     "date": "2026-11-14",
@@ -529581,16 +529619,6 @@
      "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "3508d2a",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "fix(db): exclusão de usuário com itens no carrinho deixa de falhar (#3402)",
-    "files": [
-     "supabase/migrations/20261111222500_fix_touch_seller_cart_secdef.sql",
-     "supabase/rollbacks/20261111222500_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -529627,6 +529655,22 @@
     2
    ],
    [
+    "supabase/functions/crm-db-bridge/index.ts",
+    1
+   ],
+   [
+    "supabase/functions/crm-db-bridge/ownership.ts",
+    1
+   ],
+   [
+    "supabase/functions/crm-db-bridge/scope_integration_test.ts",
+    1
+   ],
+   [
+    "tests/security/crm-db-bridge-ownership.test.ts",
+    1
+   ],
+   [
     "src/hooks/common/useAppBootstrap.ts",
     1
    ],
@@ -529656,22 +529700,6 @@
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
-    1
-   ],
-   [
-    "e2e/flows/forgot-password-flow.spec.ts",
-    1
-   ],
-   [
-    "src/components/inventory/supplier-reliability/SupplierReliabilityTab.tsx",
-    1
-   ],
-   [
-    "src/hooks/admin/useKillSwitchObservability.ts",
-    1
-   ],
-   [
-    "src/hooks/admin/useMedallionHealth.ts",
     1
    ]
   ]

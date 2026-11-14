@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `be2fb40434` · branch `main` · 2026-11-14 14:31 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `892494ca4d` · branch `main` · 2026-11-14 15:53 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2586,7 +2586,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **CrmRequestSchema** (`supabase/functions/crm-db-bridge/index.ts`, z.object):
   ```ts
-  { operation: z.enum(["select", "search", "insert", "update", "delete", "batch"]), table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i).optional(), id: z.string().uuid().optional(), filters: z.record(z.unknown()).refine( (f) => Object.keys(f).every((k) => COLUMN_RE.test(k)), { message: "Filter keys must be valid column identifiers" }, ).optional(), select: z.string().max(2000).optional(), orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(), limit: z.number().int().min(1).max(1000).optional(), offset: z.number().int().min(0).optional(), search: z.object({ column: z.string().regex(COLUMN_RE), term: z.string().max(500) }).optional(), relations: z.string().max(2000).optional(), data: z.union([z.record(z.unknown()), z.array(z.record(z.unknown …
+  { operation: z.enum(["select", "search", "insert", "update", "delete", "batch"]), table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i).optional(), id: z.string().uuid().optional(), filters: z.record(z.unknown()).refine( (f) => Object.keys(f).every((k) => COLUMN_RE.test(k) && !/^(or|and|not)$/i.test(k)), { message: "Filter keys must be valid column identifiers" }, ).optional(), select: z.string().max(2000).optional(), orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(), limit: z.number().int().min(1).max(1000).optional(), offset: z.number().int().min(0).optional(), search: z.object({ column: z.string().regex(COLUMN_RE), term: z.string().max(500) }).optional(), relations: z.string().max(2000).optional(), data: z.union([z.record(z.unknown( …
   ```
   - Regras cruzadas (refine): “Filter keys must be valid column identifiers”
 - **DeviceInfoSchema** (`supabase/functions/detect-new-device/index.ts`, z.object):
@@ -5229,6 +5229,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `* v1: preserva 100% do schema atual em produção. Aceito por padrão.` | `supabase/functions/_shared/contracts/schemas/product-webhook.ts` |
 | `// vazavam nos resultados (696 casos = 2.49% dos assignments).` | `supabase/functions/categories-api/index.ts` |
 | `* Cruza user_comparisons ativas com price_history; se houve queda > 5% nos` | `supabase/functions/comparison-price-watcher/index.ts` |
+| `* (94% das empresas do CRM não têm dono; só 6 de 77 vendedores têm vínculo por e-mail).` | `supabase/functions/crm-db-bridge/ownership.ts` |
 | `// Coverage: JPEG+PNG+WebP+GIF ≈ 99.9% of all verified product images.` | `supabase/functions/generate-blurhashes/index.ts` |
 | `'cdn.xbzbrindes.com.br', // XBZ CDN de imagens — 67.96% product_images` | `supabase/functions/image-proxy/index.ts` |
 | `'cdndeprodutos.azureedge.net', // XBZ Azure CDN — 4.5% product_images` | `supabase/functions/image-proxy/index.ts` |
@@ -6462,7 +6463,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21083 testes em 2129 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21084 testes em 2129 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7233,4 +7234,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Laser detection — must come before UV check since "Laser UV" exists | `src/components/mockup/techniqueColorUtils.ts` |
 | a caixa cheia é um limite superior: a bbox nunca subestima a marca girada e um | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
 | * Filtro de técnica EFETIVO — o mesmo que a prévia aplica. Decide se há regra. */ | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
-| … +1252 linhas — lista completa em `context.json` | |
+| … +1254 linhas — lista completa em `context.json` | |

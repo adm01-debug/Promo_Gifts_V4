@@ -19624,11 +19624,11 @@
   {
    "arquivo": "tests/security/crm-db-bridge-ownership.test.ts",
    "tipo": "unit",
-   "linhas": 95,
+   "linhas": 105,
    "testa": [
     "supabase/functions/crm-db-bridge/ownership.ts"
    ],
-   "casos": 10
+   "casos": 11
   },
   {
    "arquivo": "tests/security/csp-radix-scroll-area-hash.test.ts",
