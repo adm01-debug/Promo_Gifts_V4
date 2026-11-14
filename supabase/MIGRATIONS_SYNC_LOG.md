@@ -1473,6 +1473,21 @@ aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]` (porta 5
 |---|---|---|---|
 | `20261113235000` | `perf_idx_products_active_created_at_desc` | `45dff9f0d993448eae3c68c09aa143304601efb96029ccedda607e976ba28e46` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (linha `approved-by`) e `db-apply-migration.yml` (branch `claude/feat-idx-products-created-at-vacuum-tags-261113-2350`) |
 
+## 2026-11-14 — P0 da auditoria exaustiva: INSERT em `workspace_notifications` sem escopo (reaplica 20260622185000)
+
+A policy de INSERT viva em produção ainda é a versão fraca de `20260622143055`
+(`WITH CHECK (auth.uid() IS NOT NULL AND user_id IS NOT NULL)`), que permite qualquer
+autenticado notificar qualquer outro usuário (spam/phishing cross-tenant) — confirmado
+via `pg_policies` em 2026-11-14. A migration `20260622185000` já reapertava isso para
+`WITH CHECK (user_id = auth.uid())`, mas nunca foi de fato aplicada. Reaplica o mesmo
+fix; callers revalidados (2 inserts diretos do frontend são auto-notificação, edge
+functions usam `service_role`, aprovação de desconto roda via trigger `SECURITY DEFINER`)
+— nenhum quebra com o check estrito.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114170845` | `fix_workspace_notifications_insert_policy_reapply` | `7ab43f818e883b3de852ac10134d1c76614f90e861a11c8c4b08d2edc54b562b` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-workspace-notifications-rls-insert-261114-1708`) |
+
 ## 2026-11-14 — Data API cai a cada 10 min: `idle_session_timeout` do `authenticator` mata o LISTEN do PostgREST
 
 Logs do PostgREST (`analytics/endpoints/logs`, `source = 'postgrest_logs'`, 2026-11-14 03:00–04:00Z): a cada ~10 min
@@ -1484,6 +1499,24 @@ A migration zera só o do `authenticator`. Ainda não está no ledger; aplicaç�
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261114040000` | `fix_authenticator_idle_session_timeout_pgrst_listener` | `f34df73857031d37795afbd5519604c3e1604657fb5141eefddb7bcdb677e5bb` | pendente — aplicação só por `db-apply-migration.yml` após o merge |
+
+## 2026-11-14 — P0 (auditoria QA): RLS de `orders`/`order_items` sem escopo por vendedor
+
+Confirmado ao vivo via MCP Supabase (`pg_policies`, schema `public`, projeto `doufsxqlfjyuvxuezpln`): as
+policies `orders_select`, `orders_insert`, `orders_update`, `order_items_select`, `order_items_update`
+checam só `user_is_org_member(organization_id)` — qualquer vendedor autenticado da org lê/edita pedidos,
+faturamento e histórico de clientes de outros vendedores. `docs/security/RLS_MATRIX.md:92-116` exige DENY
+para vendedor terceiro. Nenhuma migration no repo cria essas 5 policies com esse nome (regressão sem
+rastro, mesma classe de `docs/agentes/banco-migrations.md` REGRA #8); a migration
+`20260426125603_b96b3daf-...sql` (linhas 124-257) tinha o padrão correto em policies `*_scope` que foram
+substituídas depois (cadeia `order_items_select_v2..v7`, 2026-05-26) sem nunca recriar o escopo por
+`seller_id` nas 5 vivas hoje. A migration reaplica esse padrão (`can_view_all_sales()` OR
+supervisor-na-org OR `seller_id = auth.uid()`) nas mesmas 5 policies, sem renomear.
+[AUTORIZAÇÃO BD]: aprovado pelo dono no chat desta sessão em 2026-11-14.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114170921` | `fix_rls_orders_order_items_seller_scope` | `024b841c5c98e71c2e0a8d958de49e8af7015b7db086fe658ead482d72a73922` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (já citada acima) e `db-apply-migration.yml`; PR fica aberta (Git #7 — DDL em produção) |
 
 ## 2026-11-13 — CRON-003: proposta de reagendamento noturno dos crons pesados de fornecedores
 
@@ -1509,3 +1542,55 @@ e sem a tabela `xbz_image_import_staging`; logs 24h: 317 POST → 401, 0 → 200
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261114003000` | `fix_unschedule_cron_xbz_image_uploader` | `c742a627a964faf49ae9be913336b8aafaa76e8b6f7a3e95bc266d9cc2a54efa` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-cron-xbz-image-uploader-261114-0030`) |
+
+## 2026-11-13 — Data API: fecha anon/authenticated em `supabase_functions.*` (e registra o limite em `net.*`)
+
+Consulta read-only em produção (2026-11-13, `has_table_privilege`/`has_schema_privilege`): anon e authenticated com
+SELECT/INSERT/UPDATE/DELETE em `net._http_response`, `net.http_request_queue`, `supabase_functions.hooks`,
+`supabase_functions.migrations` e USAGE em `net`/`supabase_functions`; o PostgREST expõe esses schemas
+(`db_schema`), e um GET anônimo com `Accept-Profile` devolveu 200/206 com linhas. Os grants em
+`supabase_functions.*` são de `supabase_functions_admin` (postgres é membro → REVOKE efetivo); os de `net.*` são a
+PUBLIC por `supabase_admin` e os USAGE de schema também — fora do alcance de `postgres`; fecham só pelo `db_schema`
+(config, dono). Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261113225000` | `sec_revoke_anon_authenticated_net_supabase_functions` | `4bc14de41e30ea25aabe13a6bb59799b360fbdf2f18a5f9fd93be9aafa9689d2` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-revoke-net-schemas-anon-261113-2230`) |
+## 2026-11-14 — `user_known_devices.is_trusted` (coluna que o front usa e não existe em produção)
+
+Consulta read-only em produção (2026-11-14, `information_schema.columns`): `user_known_devices` não tem `is_trusted`,
+mas `useDeviceDetection.ts:177` faz `.update({ is_trusted: true })` e `KnownDevicesManager.tsx` lê a coluna. Achado na
+análise da #3390 (a migration `20261110024530` dela nunca foi aplicada e não foi levada pela #3548).
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114031000` | `fix_user_known_devices_is_trusted` | `76b1497b85e289d3de69f01308f325d454436e5a03a59f2f77b5e50a6f1287b6` | pendente — aplicação só por `db-apply-migration.yml` após o merge |
+## 2026-11-14 — P09 revisada (supersede #3411): ledger só com versões verificadas
+
+A P09 (`20261108020000`, nunca aplicada) registraria 432 versões como aplicadas; a revisão da PR #3411
+(`20261112013000`, nunca aplicada) tirou 48 com objeto ausente. A verificação ao vivo de 2026-11-14
+(`pg_class`, `pg_proc`, `pg_policies`, `pg_trigger`, `pg_constraint`, `cron.job` e o ledger) achou mais 23
+versões que criam índice, função, trigger, política, constraint ou cron que não existe em produção, sem
+`DROP`/`RENAME` por migration posterior já aplicada e sem gêmea de conteúdo equivalente no ledger. Elas ficam de
+fora (lista no cabeçalho da migration), e também `20261101210000`: as 10 policies `rls_restrictive_*` que ela
+apaga seguem em produção, então o DROP nunca rodou e ela continua pendente. Registra 360 versões; nenhuma estava no ledger. Só escreve no ledger,
+sem DDL de schema. Rollback: `supabase/rollbacks/20261114014500_rollback.sql`.
+O snapshot do ledger do baseline (`supabase/baseline/20261015140000_ledger_versions.json`) foi estendido com as
+mesmas 360 versões (2524 → 2884), porque o efeito delas já está no dump do baseline ou fica fora dos schemas
+comparados; sem isso o `db-schema-drift-check` replayaria as 360 sobre o baseline (72 falham no replay local).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114014500` | `p09_reconcile_ledger_schema_migrations` | `a06fe201d75afdb1be8b99ab19164ca374bb57ec5dae44808049ea33e5e6f8c0` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono no chat de 2026-11-14) |
+## 2026-11-14 — Índices de FK em estoque e índices de desempenho ausentes (supersede #3412)
+
+11 índices que faltam em produção (verificado em `pg_indexes` em 2026-11-14): 3 FKs `ON DELETE CASCADE` de
+`stock_snapshots`, 2 FKs de `stock_notes` e 6 índices de migrations antigas que nunca foram aplicadas.
+`CREATE INDEX CONCURRENTLY`, `transaction: none`. Substitui a `20261112014000` da PR #3412 (nunca aplicada): saíram
+`idx_ss_supplier_id` e `idx_stock_snapshots_supplier_branch_id`, que a PERF-002 (`20261101194200`) apagou
+por `idx_scan=0` (FKs `NO ACTION` para tabelas de 5 e 7 linhas).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114014100` | `idx_fk_stock_and_missing_perf_indexes` | `651823afa2f7fd9901fcc185a3147aa53d1cf5ad11fea1374196a3021d200578` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono no chat em 2026-11-14) |
