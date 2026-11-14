@@ -1,24 +1,24 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2762,
- "arestas": 10934,
+ "nos": 2761,
+ "arestas": 10933,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
-   "importado_por": 656
+   "importado_por": 657
   },
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 619
+   "importado_por": 620
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
-   "importado_por": 478
+   "importado_por": 477
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 450
+   "importado_por": 449
   },
   {
    "arquivo": "src/components/ui/card.tsx",
@@ -26,7 +26,7 @@
   },
   {
    "arquivo": "src/lib/logger.ts",
-   "importado_por": 312
+   "importado_por": 311
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
@@ -86,7 +86,7 @@
   },
   {
    "arquivo": "src/hooks/intelligence/index.ts",
-   "importado_por": 74
+   "importado_por": 75
   },
   {
    "arquivo": "src/lib/edge/safeInvokeCall.ts",
@@ -589,7 +589,6 @@
   "src/components/admin/products/CategorySelect.tsx",
   "src/components/admin/products/kit-components/index.ts",
   "src/components/audit/index.ts",
-  "src/components/auth/SupabaseConnectionDebug.tsx",
   "src/components/bi/ExportDossierButton.tsx",
   "src/components/cart/BundleSuggestionCard.tsx",
   "src/components/categories/index.ts",
@@ -617,7 +616,8 @@
   "src/components/inventory/HealthScoreInfoDialog.tsx",
   "src/components/inventory/StockCategoryTreeSelect.tsx",
   "src/components/inventory/StockHeroRiskBanner.tsx",
-  "src/components/inventory/VariantStockRowActions.tsx"
+  "src/components/inventory/VariantStockRowActions.tsx",
+  "src/components/inventory/risk/RupturePanelEma.tsx"
  ],
  "modulos_mais_acoplados": [
   {
@@ -638,7 +638,7 @@
   {
    "modulo": "integrations/supabase",
    "depende_de": 3,
-   "importado_por": 70
+   "importado_por": 69
   },
   {
    "modulo": "hooks/products",
@@ -708,7 +708,7 @@
   {
    "modulo": "components/common",
    "depende_de": 12,
-   "importado_por": 17
+   "importado_por": 18
   },
   {
    "modulo": "lib/telemetry",

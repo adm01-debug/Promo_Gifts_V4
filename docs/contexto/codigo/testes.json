@@ -5,30 +5,30 @@
   "vitest",
   "playwright"
  ],
- "total": 2450,
+ "total": 2458,
  "por_tipo": {
   "contrato": 65,
-  "e2e": 678,
+  "e2e": 679,
   "pytest": 4,
   "qa": 17,
-  "unit": 1686
+  "unit": 1693
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 997
+   "arquivos": 1001
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 634
+   "arquivos": 636
   },
   {
    "padrao": "e2e/",
-   "arquivos": 626
+   "arquivos": 627
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 143
+   "arquivos": 144
   },
   {
    "padrao": "outro",
@@ -1850,9 +1850,9 @@
   {
    "arquivo": "e2e/flows/31-promoflix-player.spec.ts",
    "tipo": "e2e",
-   "linhas": 57,
+   "linhas": 60,
    "testa": [],
-   "casos": 3
+   "casos": 4
   },
   {
    "arquivo": "e2e/flows/31-stock-notifications-bell.spec.ts",
@@ -2426,6 +2426,13 @@
    "casos": 1
   },
   {
+   "arquivo": "e2e/helpers/dev-only-route.ts",
+   "tipo": "e2e",
+   "linhas": 17,
+   "testa": [],
+   "casos": 1
+  },
+  {
    "arquivo": "e2e/helpers/diagnostics.ts",
    "tipo": "e2e",
    "linhas": 188,
@@ -2708,16 +2715,16 @@
   {
    "arquivo": "e2e/optimized-image-detection.spec.ts",
    "tipo": "e2e",
-   "linhas": 105,
+   "linhas": 108,
    "testa": [],
-   "casos": 4
+   "casos": 5
   },
   {
    "arquivo": "e2e/optimized-image-visual.spec.ts",
    "tipo": "e2e",
-   "linhas": 102,
+   "linhas": 105,
    "testa": [],
-   "casos": 2
+   "casos": 3
   },
   {
    "arquivo": "e2e/orcamentos/list-url-state-restore.spec.ts",
@@ -2848,9 +2855,9 @@
   {
    "arquivo": "e2e/promoflix-player.spec.ts",
    "tipo": "e2e",
-   "linhas": 128,
+   "linhas": 130,
    "testa": [],
-   "casos": 4
+   "casos": 5
   },
   {
    "arquivo": "e2e/protected-routes.spec.ts",
@@ -4179,7 +4186,7 @@
   {
    "arquivo": "e2e/tools-module.spec.ts",
    "tipo": "e2e",
-   "linhas": 565,
+   "linhas": 567,
    "testa": [],
    "casos": 34
   },
@@ -4900,6 +4907,15 @@
    "casos": 2
   },
   {
+   "arquivo": "src/components/ai/__tests__/AIMockupAssistant.test.tsx",
+   "tipo": "unit",
+   "linhas": 60,
+   "testa": [
+    "src/components/ai/AIMockupAssistant.tsx"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "src/components/audit/__tests__/AuditHistory.a11y.test.tsx",
    "tipo": "unit",
    "linhas": 102,
@@ -5162,6 +5178,15 @@
    "casos": 2
   },
   {
+   "arquivo": "src/components/common/RouteScrollReset.test.tsx",
+   "tipo": "unit",
+   "linhas": 87,
+   "testa": [
+    "src/components/common/RouteScrollReset.tsx"
+   ],
+   "casos": 5
+  },
+  {
    "arquivo": "src/components/compare/__tests__/SupplierComparisonModal.test.tsx",
    "tipo": "unit",
    "linhas": 102,
@@ -5254,6 +5279,16 @@
     "src/components/ui/tooltip.tsx"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "src/components/intelligence/__tests__/MarketIntelligenceChart.test.tsx",
+   "tipo": "unit",
+   "linhas": 104,
+   "testa": [
+    "src/components/intelligence/MarketIntelligenceChart.tsx",
+    "src/hooks/intelligence/useMarketIntelligenceMacro.ts"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "src/components/inventory/__tests__/bulk-add-to-collection-modal.test.tsx",
@@ -6562,12 +6597,12 @@
   {
    "arquivo": "src/components/products/__tests__/StockHistoryChart.test.tsx",
    "tipo": "unit",
-   "linhas": 92,
+   "linhas": 111,
    "testa": [
     "src/components/products/StockHistoryChart.tsx",
     "src/components/products/useStockChartData.ts"
    ],
-   "casos": 4
+   "casos": 6
   },
   {
    "arquivo": "src/components/products/__tests__/swatchSizing.adversarial.test.ts",
@@ -7265,7 +7300,7 @@
   {
    "arquivo": "src/components/search/__tests__/useGlobalSearch.test.ts",
    "tipo": "unit",
-   "linhas": 558,
+   "linhas": 669,
    "testa": [
     "src/components/search/searchCache.ts",
     "src/components/search/useGlobalSearch.ts",
@@ -11184,7 +11219,7 @@
   {
    "arquivo": "src/tests/MockupDeletion.test.tsx",
    "tipo": "unit",
-   "linhas": 850,
+   "linhas": 872,
    "testa": [
     "src/components/a11y/AriaLive.tsx",
     "src/components/ui/tooltip.tsx",
@@ -13501,7 +13536,7 @@
   {
    "arquivo": "tests/components/pages/MagicUp.test.tsx",
    "tipo": "unit",
-   "linhas": 248,
+   "linhas": 260,
    "testa": [
     "src/components/a11y/index.ts",
     "src/lib/crm-db.ts",
@@ -13511,7 +13546,7 @@
     "src/lib/external-rpc.ts",
     "src/pages/tools/MagicUp.tsx"
    ],
-   "casos": 3
+   "casos": 4
   },
   {
    "arquivo": "tests/components/pages/PageUtilities.test.ts",
@@ -14064,11 +14099,11 @@
   {
    "arquivo": "tests/contracts/demo-data-isolation.contract.test.ts",
    "tipo": "contrato",
-   "linhas": 33,
+   "linhas": 42,
    "testa": [
     "src/pages/trends/trends-mock.ts"
    ],
-   "casos": 2
+   "casos": 3
   },
   {
    "arquivo": "tests/contracts/errors.test.ts",
@@ -14969,9 +15004,9 @@
   {
    "arquivo": "tests/edge-functions/live-client-retry.test.ts",
    "tipo": "unit",
-   "linhas": 74,
+   "linhas": 160,
    "testa": [],
-   "casos": 4
+   "casos": 10
   },
   {
    "arquivo": "tests/edge-functions/live/_authz.ts",
@@ -14985,7 +15020,7 @@
   {
    "arquivo": "tests/edge-functions/live/_live-client.ts",
    "tipo": "unit",
-   "linhas": 273,
+   "linhas": 276,
    "testa": [],
    "casos": 0
   },
@@ -16628,6 +16663,16 @@
     "src/integrations/supabase/client.ts"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "tests/hooks/useProduct-timeout-prefetch.test.tsx",
+   "tipo": "unit",
+   "linhas": 130,
+   "testa": [
+    "src/hooks/products/usePrefetchProduct.ts",
+    "src/hooks/products/useProducts.ts"
+   ],
+   "casos": 6
   },
   {
    "arquivo": "tests/hooks/useProductAnalytics.test.tsx",
@@ -18284,9 +18329,9 @@
   {
    "arquivo": "tests/scripts/audit-db-frontend-coverage.test.mjs",
    "tipo": "unit",
-   "linhas": 184,
+   "linhas": 215,
    "testa": [],
-   "casos": 6
+   "casos": 8
   },
   {
    "arquivo": "tests/scripts/build-cors-snapshot.test.mjs",
@@ -18444,9 +18489,9 @@
   {
    "arquivo": "tests/scripts/check-conflict-ledger.test.mjs",
    "tipo": "unit",
-   "linhas": 278,
+   "linhas": 344,
    "testa": [],
-   "casos": 17
+   "casos": 24
   },
   {
    "arquivo": "tests/scripts/check-console-baseline.test.mjs",
@@ -18910,11 +18955,11 @@
   {
    "arquivo": "tests/scripts/check-supabase-migration-ledger.test.mjs",
    "tipo": "unit",
-   "linhas": 158,
+   "linhas": 221,
    "testa": [
     "scripts/check-supabase-migration-ledger.mjs"
    ],
-   "casos": 10
+   "casos": 13
   },
   {
    "arquivo": "tests/scripts/check-supabase-reference-catalog.test.mjs",
@@ -19643,6 +19688,27 @@
    "linhas": 29,
    "testa": [],
    "casos": 1
+  },
+  {
+   "arquivo": "tests/security/csp-radix-select-hash.test.ts",
+   "tipo": "unit",
+   "linhas": 29,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "tests/security/csp-remove-scroll-hashes.test.ts",
+   "tipo": "unit",
+   "linhas": 59,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/security/csp-vaul-hash.test.ts",
+   "tipo": "unit",
+   "linhas": 34,
+   "testa": [],
+   "casos": 2
   },
   {
    "arquivo": "tests/security/dashboard-widgets-seller-scope.spec.ts",
@@ -20712,6 +20778,7 @@
   "src/components/admin/connections/useZoneCollapse.ts": 1,
   "src/components/admin/products/ProductFormSchema.ts": 2,
   "src/components/admin/telemetry/TelemetryCharts.tsx": 1,
+  "src/components/ai/AIMockupAssistant.tsx": 1,
   "src/components/ai/AIRecommendationsPanel.tsx": 1,
   "src/components/audit/AuditHistory.tsx": 1,
   "src/components/auth/SocialLoginButtons.tsx": 1,
@@ -20730,6 +20797,7 @@
   "src/components/common/BulkSelectionBar.tsx": 1,
   "src/components/common/IntelligenceBadges.tsx": 1,
   "src/components/common/PersistentBreadcrumbs.tsx": 2,
+  "src/components/common/RouteScrollReset.tsx": 1,
   "src/components/compare/CompareTableView.tsx": 1,
   "src/components/compare/SupplierComparisonModal.tsx": 1,
   "src/components/dashboard/RecentKitsWidget.tsx": 1,
@@ -20745,6 +20813,7 @@
   "src/components/filters/PresetsBar.tsx": 1,
   "src/components/filters/StickyFilterBar.tsx": 2,
   "src/components/filters/filter-panel/types.ts": 1,
+  "src/components/intelligence/MarketIntelligenceChart.tsx": 1,
   "src/components/inventory/BulkAddToCollectionModal.tsx": 2,
   "src/components/inventory/FutureStockDialog.tsx": 1,
   "src/components/inventory/HealthScoreInfoDialog.tsx": 2,
@@ -21025,6 +21094,7 @@
   "src/hooks/intelligence/useExternalDatabase.ts": 1,
   "src/hooks/intelligence/useMagicUpGeneration.ts": 2,
   "src/hooks/intelligence/useMagicUpState.ts": 3,
+  "src/hooks/intelligence/useMarketIntelligenceMacro.ts": 1,
   "src/hooks/intelligence/useSalesGoals.ts": 1,
   "src/hooks/intelligence/useSparklineSales.tsx": 1,
   "src/hooks/intelligence/useSpeechRecognition.ts": 2,
@@ -21062,12 +21132,13 @@
   "src/hooks/products/useDebouncedCartItemActions.ts": 1,
   "src/hooks/products/useExternalVariantStock.ts": 1,
   "src/hooks/products/useNovelties.ts": 10,
+  "src/hooks/products/usePrefetchProduct.ts": 1,
   "src/hooks/products/useProductAnalytics.ts": 1,
   "src/hooks/products/useProductCustomizationOptions.ts": 1,
   "src/hooks/products/useProductIntelligenceBadges.ts": 2,
   "src/hooks/products/useProductLeafCategories.tsx": 1,
   "src/hooks/products/useProductMatch.ts": 4,
-  "src/hooks/products/useProducts.ts": 5,
+  "src/hooks/products/useProducts.ts": 6,
   "src/hooks/products/useProductsByCategory.ts": 2,
   "src/hooks/products/useProductsByColor.ts": 1,
   "src/hooks/products/useProductsByMetadata.ts": 1,
@@ -21870,7 +21941,6 @@
    "src/hooks/intelligence/useExternalDbInspect.ts",
    "src/hooks/intelligence/useGoldSyncStatus.ts",
    "src/hooks/intelligence/useMagicUpState.helpers.ts",
-   "src/hooks/intelligence/useMarketIntelligenceMacro.ts",
    "src/hooks/intelligence/usePromoSales90dByProduct.ts",
    "src/hooks/intelligence/usePromoSalesRanking.ts",
    "src/hooks/intelligence/useSalesHistory.ts",
@@ -21904,7 +21974,6 @@
    "src/hooks/products/useMaterialTypes.ts",
    "src/hooks/products/useNovelties.helpers.ts",
    "src/hooks/products/useNoveltiesSelectionMode.ts",
-   "src/hooks/products/usePrefetchProduct.ts",
    "src/hooks/products/useProductBounds.ts",
    "src/hooks/products/useProductEngravingOptions.ts",
    "src/hooks/products/useProductFreshnessOverride.ts",

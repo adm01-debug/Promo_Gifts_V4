@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ee13f748c0cd5c94079094ae0ac6ea811f62c8cd` (2026-11-14T16:20:04-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `778dbf5ad000c18a185aba0140484f97ec7e41a7` (2026-11-14T16:37:29-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4761), SQL (3399), Markdown (1019), JavaScript (443), JSON (126), YAML (111), Shell (27), HTML (20)
+- linguagens: TypeScript (4768), SQL (3399), Markdown (1019), JavaScript (443), JSON (126), YAML (111), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10147 |
-| arquivos_codigo | 5212 |
-| linhas_codigo | 996066 |
+| arquivos_total | 10154 |
+| arquivos_codigo | 5219 |
+| linhas_codigo | 996631 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -48,17 +48,17 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 545 |
 | migrations | 3084 |
 | cron_jobs | 122 |
-| testes | 2450 |
+| testes | 2458 |
 | workflows | 98 |
 | scripts | 272 |
 | docs_md | 1019 |
 
 ## Onde ficam as coisas
 - telas: src/pages (111), src/components (3), api/health.ts (1)
-- componentes: src/components (932), src/pages (175), recovery/src-legacy (100)
+- componentes: src/components (931), src/pages (176), recovery/src-legacy (100)
 - hooks: src/hooks (291), recovery/src-legacy (196), src/components (75)
-- servicos_logica: src/lib (223), src/utils (30), src/services (9)
-- testes: tests/ (997), co-localizado (__tests__) (634), e2e/ (626)
+- servicos_logica: src/lib (222), src/utils (30), src/services (9)
+- testes: tests/ (1001), co-localizado (__tests__) (636), e2e/ (627)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/lib (7), scripts/graphify (4), scripts/inventario (4)
@@ -73,7 +73,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | components/access | 0 | 1 | 2 | 0 | 0 | 1 |
 | components/admin | 0 | 0 | 295 | 359 | 10 | 81 |
 | components/audit | 1 | 1 | 3 | 19 | 0 | 7 |
-| components/auth | 0 | 0 | 8 | 16 | 0 | 5 |
+| components/auth | 0 | 0 | 7 | 16 | 0 | 5 |
 | components/bi | 0 | 0 | 22 | 279 | 4 | 41 |
 | components/cart | 0 | 0 | 16 | 270 | 4 | 41 |
 | components/catalog | 0 | 0 | 8 | 307 | 5 | 50 |
@@ -133,7 +133,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | lib/external-db | 0 | 0 | 21 | 44 | 0 | 6 |
 | lib/inventory | 0 | 0 | 10 | 0 | 0 | 0 |
 | lib/kit-builder | 0 | 0 | 10 | 0 | 0 | 0 |
-| lib/personalization | 0 | 0 | 20 | 44 | 0 | 5 |
+| lib/personalization | 0 | 0 | 19 | 44 | 0 | 5 |
 | lib/quotes | 0 | 0 | 6 | 0 | 0 | 0 |
 | lib/security | 0 | 0 | 10 | 3 | 0 | 2 |
 | lib/telemetry | 0 | 0 | 14 | 0 | 0 | 1 |
@@ -148,6 +148,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/dev | 0 | 8 | 8 | 2 | 0 | 0 |
 | pages/kit-builder | 0 | 1 | 3 | 292 | 4 | 52 |
 | pages/magazine | 1 | 6 | 64 | 81 | 2 | 10 |
+| pages/magic-up | 0 | 0 | 5 | 266 | 4 | 41 |
 | pages/mockups | 3 | 2 | 6 | 270 | 5 | 41 |
 | pages/products | 9 | 10 | 24 | 329 | 5 | 56 |
 | pages/quotes | 3 | 7 | 13 | 293 | 4 | 50 |
@@ -562,7 +563,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - SDKs: ElevenLabs, Sentry, Supabase, react-query, zod
 - hosts mais citados: doufsxqlfjyuvxuezpln.supabase.co, wa.me, www.promogifts.com.br, fixture.invalid, api.supabase.com, imagedelivery.net, test.supabase.co, edge-contract.invalid, ai.gateway.lovable.dev, api.ipify.org, cdn.test, fonts.googleapis.com, images.unsplash.com, www.spotgifts.com.br, x.supabase.co
 - webhooks recebidos: ai-recommendations, asia-ingestion, backfill-image-dimensions, check-login, cleanup-notifications, cleanup-novelties, collections-watcher, comparison-price-watcher, connections-auto-test, connections-health-check, crm-callback-alerts, crm-callback-reprocess, crm-db-bridge, e2e-cleanup, external-db-inspect, favorites-watcher, get-visitor-info, image-proxy, log-login-attempt, magazine-import-local, magazine-public-react, magazine-public-view, magazine-reader-state-read, magazine-reader-state-write, mcp-server, ownership-audit, process-queue, process-scheduled-reports, quote-followup-reminders, receive-crm-callback, send-digest, send-notification, send-scheduled-reports, sync-external-db, webhook-dispatcher, webhook-inbound
-- env de integração (só nomes): CF_ORIGIN_SECRET, CONNECTIONS_AUTO_TEST_SECRET, CRM_CALLBACK_API_KEY, CSRF_SECRET, E2E_CLEANUP_TOKEN, LOVABLE_API_KEY, PRODUCT_WEBHOOK_ALLOWED_ORIGINS, PRODUCT_WEBHOOK_BATCH_SIZE, PROMO_CHAMPIONS_WEBHOOK_SECRET, TURNSTILE_SECRET_KEY, VITE_GRAVACAO_API_KEY, VITE_SENTRY_DSN, VITE_SENTRY_ENVIRONMENT, WEBHOOK_DISPATCHER_SECRET
+- env de integração (só nomes): CF_ORIGIN_SECRET, CONNECTIONS_AUTO_TEST_SECRET, CRM_CALLBACK_API_KEY, CSRF_SECRET, E2E_CLEANUP_TOKEN, LOVABLE_API_KEY, PRODUCT_WEBHOOK_ALLOWED_ORIGINS, PRODUCT_WEBHOOK_BATCH_SIZE, PROMO_CHAMPIONS_WEBHOOK_SECRET, TURNSTILE_SECRET_KEY, VITE_SENTRY_DSN, VITE_SENTRY_ENVIRONMENT, WEBHOOK_DISPATCHER_SECRET
 
 ## Permissões / papéis
 - papéis no código: status (78), alert (54), dev (46), button (41), user (33), group (31), admin (30), listitem (26), agente (25), vendedor (25), supervisor (23), dialog (22), radio (21), radiogroup (18), list (17), system (17), tooltip (17), authenticated (12), option (12), combobox (10), progressbar (10), region (10), anon (9), seller (9), tab (9), tablist (9), assistant (8), img (8), switch (8), main (7), checkbox (6), listbox (6), manager (6), menu (6), navigation (6), columnheader (5), document (5), public (5), slider (5), alertdialog (3), cell (3), link (3), presentation (3), separator (3), toolbar (3), OFFSET (2), agent (2), editor (2), grid (2), gridcell (2), log (2), menuitem (2), publico (2), table (2), Paperclip (1), Textos (1), banner (1), complementary (1), contentinfo (1), heading (1), none (1), note (1), searchbox (1), service_role (1), spinbutton (1), string (1), sup (1), superadmin_bypass (1)
@@ -580,35 +581,35 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - tabelas_usadas_sem_definicao: 11 — ex.: ai_models, avatars, categories_tree_visual
 - tabelas_com_drift_migration_vs_types: 0
 - rpcs_sem_definicao: 5 — ex.: fn_get_color_swatches_batch, fn_get_reposicao_variants_summary, fn_rupture_health_check
-- componentes_orfaos: 161 — ex.: recovery/RealtimeMessagesExample.tsx, recovery/src-legacy/src/components/admin/CatalogQualityDashboard.tsx, recovery/src-legacy/src/components/admin/telemetry/BridgeAlertsCard.tsx
+- componentes_orfaos: 160 — ex.: recovery/RealtimeMessagesExample.tsx, recovery/src-legacy/src/components/admin/CatalogQualityDashboard.tsx, recovery/src-legacy/src/components/admin/telemetry/BridgeAlertsCard.tsx
 - componentes_com_nome_duplicado: 105 — ex.: AdvancedPriceSearchPage, Auth, BreadcrumbItem
 - scripts_orfaos: 0
-- env_usadas_nao_declaradas: 24 — ex.: CI, DEV, E2E_USER_EMAIL
+- env_usadas_nao_declaradas: 23 — ex.: CI, DEV, E2E_USER_EMAIL
 - ciclos_de_import: 20
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43201 nós · 74604 arestas · 2432 comunidades · grafo do commit `ee13f748`
-- comunidades maiores: vitest (844), ref_components (806), ref_integrations (587), ref_node_child_process (524), ref_hooks (438), @tanstack/react-query (388), gotoAndSettle (377), ref_utils (350), ref_types (342), ref_node_fs (339), sonner (331), react (305)
+- 43216 nós · 74673 arestas · 2436 comunidades · grafo do commit `778dbf5a`
+- comunidades maiores: vitest (886), ref_components (799), ref_integrations (757), ref_node_child_process (458), @tanstack/react-query (397), ref_hooks (395), ref_types (323), nav.ts (313), react (311), ref_node_fs (308), scripts (302), ref_utils (296)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (54)
-- supabase/MIGRATIONS_SYNC_LOG.md (49)
-- PENDENCIAS.md (47)
-- package.json (26)
-- package-lock.json (18)
-- analise-prs/progresso.json (15)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (14)
-- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (13)
-- src/pages/kit-builder/KitBuilderPage.tsx (12)
-- .github/workflows/deploy-gates.yml (11)
-- CHANGELOG.md (11)
-- analise-branches/RELATORIO_BRANCHES.md (10)
-- src/hooks/kit-builder/useKitBuilderPageState.ts (10)
-- e2e/flows/magazine-publish-smoke.spec.ts (9)
-- analise-prs/RELATORIO_PRS.md (8)
+- RELATORIO_CI.md (66)
+- PENDENCIAS.md (56)
+- supabase/MIGRATIONS_SYNC_LOG.md (50)
+- package.json (30)
+- package-lock.json (21)
+- analise-prs/progresso.json (16)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (15)
+- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (14)
+- src/pages/kit-builder/KitBuilderPage.tsx (13)
+- .github/workflows/deploy-gates.yml (12)
+- CHANGELOG.md (12)
+- analise-branches/RELATORIO_BRANCHES.md (11)
+- src/hooks/kit-builder/useKitBuilderPageState.ts (11)
+- analise-prs/RELATORIO_PRS.md (10)
+- e2e/flows/magazine-publish-smoke.spec.ts (10)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1183,21 +1184,21 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
-- 2026-11-14 `ee13f74` fix(db): RLS de pedidos e notificações, is_trusted, revoke em net/supabase_functions, ledger P09 e índices de FK (#3618)
-- 2026-11-14 `c9bc677` test(e2e): specs de catálogo, estoque, kit, comparador e senha seguem a UI atual (#3617)
-- 2026-11-14 `ab0817a` fix(security): baseline de policies acompanha stock_notes com initplan (destrava Gate 1.13) (#3616)
-- 2026-11-14 `6ef19fd` docs: auditoria exaustiva de 13 domínios (91 agentes, verificação dupla) (#3611)
-- 2026-11-14 `584e1a3` Merge pull request #3608 from adm01-debug/claude/crm-disjuntor-indisponibilidade-261114
-- 2026-11-14 `ae9d814` fix(security): crm-db-bridge — erro de esquema não abre o disjuntor
-- 2026-11-14 `892494c` fix(security): CRM — vendedor vê os dele + os sem dono (supersede #3518) (#3583)
-- 2026-11-14 `be2fb40` fix(catalog): remover prefetch pós-login de v_products_public que nunca é lido (#3603)
-- 2026-11-14 `7aa82a5` docs(migrations): recibos E15 das 10 migrations da #3584 (supersede #3590–#3599) (#3602)
-- 2026-11-14 `06c262e` docs: prod-readiness com lint, typecheck, build e testes no main final 371f52b (#3604)
-- 2026-11-14 `371f52b` docs: prod-readiness com o estado do main final e73a88d e a #3600 (#3601)
-- 2026-11-14 `e73a88d` fix(db): devolve 10 telas que falham por permissão ou RPC ausente (supersede #3432) (#3584)
-- 2026-11-14 `74e2650` docs: prod-readiness com a qualidade do main final e as 5 PRs bloqueadas pelo banco (#3585)
-- 2026-11-14 `c913055` fix(ci): credenciais E2E com fallback de vendedor para E2E_USER (supersede #3457) (#3578)
-- 2026-11-14 `ee0ccd5` docs(prontidao): diagnóstico das quedas do banco com leitura de logs e entregas de 14/11 (#3579)
+- 2026-11-14 `778dbf5a` Merge pull request #3619 from adm01-debug/claude/trem2-front-limpeza-261114-1850
+- 2026-11-14 `74ba1998` Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850
+- 2026-11-14 `ee13f748` fix(db): RLS de pedidos e notificações, is_trusted, revoke em net/supabase_functions, ledger P09 e índices de FK (#3618)
+- 2026-11-14 `a43a3127` docs(coordenacao): ledger E188 dos 11 merges do trem de front e limpeza
+- 2026-11-14 `ec6088c4` Merge remote-tracking branch 'origin/claude/fix-route-scroll-reset-query-replace-261114-0005' into claude/trem2-front-li
+- 2026-11-14 `930e3c0f` Merge remote-tracking branch 'origin/claude/fix-ux-auditoria-link-botao-morto-261113-2338' into claude/trem2-front-limpe
+- 2026-11-14 `ce4099ec` Merge remote-tracking branch 'origin/claude/fix-busca-teclado-supersede-3535-261114-0045' into claude/trem2-front-limpez
+- 2026-11-14 `e34f424a` Merge remote-tracking branch 'origin/claude/fix-simulador-colunas-crm-supersede-3534-261114-0212' into claude/trem2-fron
+- 2026-11-14 `a3964b2b` Merge remote-tracking branch 'origin/claude/fix-csp-vaul-trava-rolagem-supersede-3531-261114-0208' into claude/trem2-fro
+- 2026-11-14 `d83a3137` Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850
+- 2026-11-14 `c9bc6774` test(e2e): specs de catálogo, estoque, kit, comparador e senha seguem a UI atual (#3617)
+- 2026-11-14 `1d9185ef` Merge remote-tracking branch 'origin/claude/chore-remove-external-db-dead-code-261114-0000' into claude/trem2-front-limp
+- 2026-11-14 `140c527c` Merge remote-tracking branch 'origin/claude/chore-qa-pages-dev-only-261113-2352' into claude/trem2-front-limpeza-261114-
+- 2026-11-14 `cba82358` Merge remote-tracking branch 'origin/claude/fix-dados-simulados-prod-261113-2355' into claude/trem2-front-limpeza-261114
+- 2026-11-14 `84ee594d` Merge remote-tracking branch 'origin/claude/fix-pdp-timeout-prefetch-supersede-3528-261114-0214' into claude/trem2-front
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "ee13f748c0cd5c94079094ae0ac6ea811f62c8cd",
+  "sha": "778dbf5ad000c18a185aba0140484f97ec7e41a7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 19:21 UTC",
-  "files_total": 10075,
-  "code_files": 8610,
-  "code_lines": 1214163
+  "generated_at": "2026-11-14 19:40 UTC",
+  "files_total": 10082,
+  "code_files": 8617,
+  "code_lines": 1214728
  },
  "version": "1.3.2",
- "facts_hash": "cadf07cfa79c2dbb",
+ "facts_hash": "2769e3d500b30218",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1222,8 +1222,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3399,
-   ".ts": 2904,
-   ".tsx": 1858,
+   ".ts": 2907,
+   ".tsx": 1862,
    ".mjs": 436,
    ".py": 13,
    ".js": 7
@@ -136371,7 +136371,7 @@
      "get_promo_sales_ranking",
      "log_user_logout"
     ],
-    "deps_count": 187
+    "deps_count": 188
    },
    {
     "path": "",
@@ -137571,7 +137571,7 @@
      "log_user_logout",
      "restore_seller_cart"
     ],
-    "deps_count": 283
+    "deps_count": 284
    },
    {
     "path": "/magic-up",
@@ -140997,6 +140997,13 @@
    },
    {
     "path": "*",
+    "component": "pageElement",
+    "guard": "",
+    "roles": [],
+    "file": "src/components/common/RouteScrollReset.test.tsx"
+   },
+   {
+    "path": "*",
     "component": "PageTransition",
     "guard": "",
     "roles": [],
@@ -142903,7 +142910,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1610,
+  "components_count": 1612,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -146732,8 +146739,8 @@
   },
   {
    "module": "e2e",
-   "files": 627,
-   "lines": 75759,
+   "files": 628,
+   "lines": 75789,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -146766,6 +146773,7 @@
     "ci-auth-lockout.ts: AccessGatePayload, rewriteCiSharedIpLockout",
     "cleanup-client.ts: CleanupResponse, CleanupConfig, loadCleanupConfig, RetryPolicy, loadRetryPolicy, PurgeOpts",
     "consistency.ts: ensureNoDuplicateRequests, cleanupCreatedData",
+    "dev-only-route.ts: isProductionBuild, devOnlyRouteReason",
     "diagnostics.ts: DiagnosticsRecorder, attachDiagnosticsRecorder, dumpDiagnosticsIfFailed",
     "dialog-watcher.ts: ForbiddenDialogHit, DialogWatcherOptions, DialogWatcher, startForbiddenDialogWatcher",
     "discount-approval-po.ts: DiscountStatus, DiscountApprovalPO",
@@ -146777,8 +146785,7 @@
     "favorites.ts: FavoriteItem, readFavoritesStorage, writeFavoritesStorage, installFavoritesCleanup, reloadAndAwaitFavoritesPage",
     "forms.ts: fillIfPresent, clickByText, expectVisibleAny, safeClick",
     "http-status.ts: isRetryableBackendStatus, shouldRetryBackendStatus, isRetryableBrowserError, shouldRetryBrowserError, retryAfterDelayMs",
-    "location-panel-quote.ts: openQuoteWithPersonalizableProduct",
-    "mock-auth.ts: isMockAuthEnabled, installMockAuth"
+    "location-panel-quote.ts: openQuoteWithPersonalizableProduct"
    ],
    "docs": [
     "agente-permissions.spec.ts: E2E: Agente (Vendedor) Permissions & Navigation Valida o fluxo de acesso e bloqueio específico para o perfil de Agente. Garante que a comunicação de erro (403) seja contextual ao papel de vendedor.",
@@ -147442,8 +147449,8 @@
   },
   {
    "module": "src/components",
-   "files": 1357,
-   "lines": 273229,
+   "files": 1359,
+   "lines": 273400,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -147801,7 +147808,7 @@
   {
    "module": "src/hooks",
    "files": 455,
-   "lines": 85705,
+   "lines": 85730,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -148087,8 +148094,8 @@
   },
   {
    "module": "src/lib",
-   "files": 328,
-   "lines": 50563,
+   "files": 327,
+   "lines": 50330,
    "tables": [
     "...",
     "companies",
@@ -148292,8 +148299,8 @@
   },
   {
    "module": "src/pages",
-   "files": 350,
-   "lines": 82518,
+   "files": 351,
+   "lines": 82539,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -148499,7 +148506,7 @@
   {
    "module": "src/routes",
    "files": 14,
-   "lines": 1253,
+   "lines": 1260,
    "tables": [],
    "exports": [
     "AppRoutes.tsx: AppRoutes",
@@ -148698,7 +148705,7 @@
   {
    "module": "src/tests",
    "files": 33,
-   "lines": 5068,
+   "lines": 5090,
    "tables": [
     "products",
     "v_products_public",
@@ -149514,8 +149521,8 @@
   },
   {
    "module": "tests",
-   "files": 1011,
-   "lines": 154990,
+   "files": 1015,
+   "lines": 155512,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -153479,8 +153486,13 @@
     "scripts/ai-context/gerar.unit.mjs"
    ],
    "DEV": [
+    "e2e/helpers/dev-only-route.ts",
+    "e2e/optimized-image-detection.spec.ts",
+    "e2e/optimized-image-visual.spec.ts",
+    "e2e/tools-module.spec.ts",
     "scripts/inventario/gerar-rotas.mjs",
     "src/components/ThemeInitializer.tsx",
+    "src/components/ai/AIMockupAssistant.tsx",
     "src/components/cart/CartHeaderButton.tsx",
     "src/components/dev/DiagnosticProfiler.tsx",
     "src/components/system/RootInteractivityGuard.tsx",
@@ -153506,8 +153518,10 @@
     "src/pages/magazine/components/MagazineErrorBoundary.tsx",
     "src/pages/magazine/templates-gallery/TemplatePreviewBoundary.tsx",
     "src/pages/products/ProductMatchPage.tsx",
+    "src/pages/trends/trends-mock.ts",
     "src/routes/AppRoutes.tsx",
     "src/routes/public-routes.tsx",
+    "src/routes/tools-routes.tsx",
     "src/services/telemetryService.ts",
     "src/utils/imageProxy.ts",
     "src/utils/performance-budget.ts",
@@ -153543,6 +153557,7 @@
     "e2e/smoke.spec.ts"
    ],
    "E2E_BASE_URL": [
+    "e2e/helpers/dev-only-route.ts",
     "playwright.config.ts",
     "scripts/e2e-mock-auth-setup.mjs",
     "tests/config/playwright-config-smoke.test.ts",
@@ -153630,6 +153645,7 @@
     "e2e/helpers/auth.ts"
    ],
    "E2E_SERVER_MODE": [
+    "e2e/helpers/dev-only-route.ts",
     "playwright.config.ts",
     "tests/config/playwright-config-smoke.test.ts"
    ],
@@ -154620,9 +154636,6 @@
    "VITE_GOTRUE_CAPTCHA": [
     "src/lib/auth/checkLoginGate.ts"
    ],
-   "VITE_GRAVACAO_API_KEY": [
-    "src/lib/personalization/repositories/technique.repository.ts"
-   ],
    "VITE_NAV_METRICS_SAMPLE_RATE": [
     "src/lib/telemetry/navigationMetrics.ts"
    ],
@@ -154732,7 +154745,6 @@
     "scripts/observability-check.mjs",
     "scripts/stress-burst.mjs",
     "scripts/supabase-read-only-query.mjs",
-    "src/components/auth/SupabaseConnectionDebug.tsx",
     "src/hooks/products/__tests__/useReplenishments.integration.test.ts",
     "src/integrations/supabase/client.ts",
     "src/lib/env/supabase-placeholder.ts",
@@ -159184,7 +159196,7 @@
     "rules": "max"
    },
    {
-    "file": "src/pages/magic-up/MagicUpConfigPanel.tsx",
+    "file": "src/pages/magic-up/MagicUpLogoCard.tsx",
     "field": "magic-logo-upload",
     "rules": "accept=image/*, disabled=m.logoUploading"
    },
@@ -165346,22 +165358,6 @@
     "msg": "Nenhuma faixa de preço encontrada para quantidade ${quantity}"
    },
    {
-    "file": "src/lib/personalization/repositories/technique.repository.ts",
-    "msg": "Failed to create technique: ${response.statusText}"
-   },
-   {
-    "file": "src/lib/personalization/repositories/technique.repository.ts",
-    "msg": "Failed to fetch technique: ${resp.statusText}"
-   },
-   {
-    "file": "src/lib/personalization/repositories/technique.repository.ts",
-    "msg": "Failed to fetch techniques: ${resp.statusText}"
-   },
-   {
-    "file": "src/lib/personalization/repositories/technique.repository.ts",
-    "msg": "Failed to update technique: ${response.statusText}"
-   },
-   {
     "file": "src/lib/supabase/rest-client.ts",
     "msg": "Missing table in query key"
    },
@@ -169746,6 +169742,10 @@
     "text": "* Converts NoveltyWithDetails to Product (minimum fields required by BulkVariantWizard)."
    },
    {
+    "file": "src/hooks/products/usePrefetchProduct.ts",
+    "text": "pendente, ela reaproveita esta promise e também precisa de limite."
+   },
+   {
     "file": "src/hooks/products/useProductAnalytics.ts",
     "text": "Supabase JS v2 never throws for DB errors — must destructure { error }."
    },
@@ -169804,6 +169804,10 @@
    {
     "file": "src/hooks/products/useProducts.ts",
     "text": "AbortError NUNCA deve fazer retry ou ir para ErrorBoundary,"
+   },
+   {
+    "file": "src/hooks/products/useProducts.ts",
+    "text": "* Limite por tentativa da busca do produto; sem ele a PDP fica no skeleton para sempre se o backend pendurar. */"
    },
    {
     "file": "src/hooks/products/useProductsByCategory.ts",
@@ -171698,6 +171702,10 @@
     "text": "* Regras de validação por step do editor de Magazine."
    },
    {
+    "file": "src/pages/magic-up/MagicUpLogoCard.tsx",
+    "text": "abaixo do limite do gate de tamanho ao corrigir o botão \"Trocar logo\")."
+   },
+   {
     "file": "src/pages/magic-up/MagicUpSelectedCompanyRow.tsx",
     "text": "* Chamado somente após a confirmação do usuário. */"
    },
@@ -171832,10 +171840,6 @@
    {
     "file": "src/routes/AppRoutes.tsx",
     "text": "DEVE ser o ÚLTIMO Route (precedência por ordem em react-router-dom)."
-   },
-   {
-    "file": "src/routes/AppRoutes.tsx",
-    "text": "Debug / QA routes — no auth required in any environment."
    },
    {
     "file": "src/routes/RoutePrefetcher.tsx",
@@ -195198,6 +195202,11 @@
     "value": "20"
    },
    {
+    "file": "src/hooks/products/useProducts.ts",
+    "name": "PRODUCT_DETAIL_TIMEOUT_MS",
+    "value": "15"
+   },
+   {
     "file": "src/hooks/products/useProductsByColor.ts",
     "name": "CHUNK",
     "value": "50"
@@ -195951,11 +195960,6 @@
     "file": "src/lib/personalization/adapters/schema-detection.ts",
     "name": "MAX_RECENT",
     "value": "20"
-   },
-   {
-    "file": "src/lib/personalization/repositories/technique.repository.ts",
-    "name": "GRAVACAO_API",
-    "value": "'https://api.promobrindes.com.br/gravacao'"
    },
    {
     "file": "src/lib/products/novelty-days.ts",
@@ -210348,12 +210352,6 @@
     "name": "formatCurrency",
     "params": "v: number",
     "body": ""
-   },
-   {
-    "file": "src/components/intelligence/MarketIntelligenceChart.tsx",
-    "name": "generateMockMarketData",
-    "params": "days: number",
-    "body": "const daily: MacroMarketPoint[] = []; const now = new Date(); let stock = 3200 + Math.floor(seededRandom(days) * 800); for (let i = days - 1; i >= 0; i--) { const d = new Date(now); d.setDate(d.getDate() - i); const dateStr = d.toISOString().split('T')[0]; const dayOfWeek = d.getDay(); const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; const baseDepleted = isWeekend ? 15 : 45; const depleted = Math.max(0, Math.round(baseDepleted + (seededRandom(i * 3 + 1) - 0.4) * 30)); const restocked = seed …"
    },
    {
     "file": "src/components/intelligence/ProductRankingSearch.tsx",
@@ -226314,6 +226312,18 @@
     "name": "should allow setting price_freshness_threshold_days within range 1-365"
    },
    {
+    "file": "src/components/ai/__tests__/AIMockupAssistant.test.tsx",
+    "name": "AIMockupAssistant — texto livre sem backend"
+   },
+   {
+    "file": "src/components/ai/__tests__/AIMockupAssistant.test.tsx",
+    "name": "em produção oculta o campo de texto livre e mantém as ações rápidas"
+   },
+   {
+    "file": "src/components/ai/__tests__/AIMockupAssistant.test.tsx",
+    "name": "em DEV mantém o campo de texto livre"
+   },
+   {
     "file": "src/components/audit/__tests__/AuditHistory.a11y.test.tsx",
     "name": "AuditHistory — acessibilidade"
    },
@@ -227338,6 +227348,30 @@
     "name": "keeps dynamic id segment readable and does not break render"
    },
    {
+    "file": "src/components/common/RouteScrollReset.test.tsx",
+    "name": "RouteScrollReset"
+   },
+   {
+    "file": "src/components/common/RouteScrollReset.test.tsx",
+    "name": "não rola no primeiro mount"
+   },
+   {
+    "file": "src/components/common/RouteScrollReset.test.tsx",
+    "name": "não rola quando só a query string muda na mesma rota (setSearchParams replace)"
+   },
+   {
+    "file": "src/components/common/RouteScrollReset.test.tsx",
+    "name": "não rola em setSearchParams após navegação para a mesma rota"
+   },
+   {
+    "file": "src/components/common/RouteScrollReset.test.tsx",
+    "name": "rola ao topo quando o pathname muda (PUSH)"
+   },
+   {
+    "file": "src/components/common/RouteScrollReset.test.tsx",
+    "name": "não rola em POP (voltar) nem com hash âncora"
+   },
+   {
     "file": "src/components/common/__tests__/IntelligenceBadges.adversarial.test.tsx",
     "name": "[A] Toggle OFF — TODOS os 9 tipos desaparecem (data-testid)"
    },
@@ -227620,6 +227654,30 @@
    {
     "file": "src/components/filters/__tests__/PresetsBar.test.tsx",
     "name": "limpa preset ativo por clique, Enter e Espaço, tal como o mouse"
+   },
+   {
+    "file": "src/components/intelligence/__tests__/MarketIntelligenceChart.test.tsx",
+    "name": "MarketIntelligenceChart — sem dados reais"
+   },
+   {
+    "file": "src/components/intelligence/__tests__/MarketIntelligenceChart.test.tsx",
+    "name": "mostra estado vazio em vez de fornecedores fictícios quando a RPC devolve vazio"
+   },
+   {
+    "file": "src/components/intelligence/__tests__/MarketIntelligenceChart.test.tsx",
+    "name": "mostra estado vazio também quando data é undefined sem erro"
+   },
+   {
+    "file": "src/components/intelligence/__tests__/MarketIntelligenceChart.test.tsx",
+    "name": "mantém o estado de erro quando a RPC falha"
+   },
+   {
+    "file": "src/components/intelligence/__tests__/MarketIntelligenceChart.test.tsx",
+    "name": "MarketIntelligenceChart — com dados reais"
+   },
+   {
+    "file": "src/components/intelligence/__tests__/MarketIntelligenceChart.test.tsx",
+    "name": "renderiza o insight de pico sem sufixo demo"
    },
    {
     "file": "src/components/inventory/__tests__/BulkAddToCollectionModal.test.tsx",
@@ -229611,7 +229669,7 @@
    },
    {
     "file": "src/components/inventory/risk/__tests__/ProductRiskDetail.test.tsx",
-    "name": "renderiza badge demo e KPIs quando não há dados nem erro"
+    "name": "renderiza badge "
    },
    {
     "file": "src/components/inventory/risk/__tests__/ProductRiskDetail.test.tsx",
@@ -233256,6 +233314,18 @@
    {
     "file": "src/components/products/__tests__/StockHistoryChart.test.tsx",
     "name": "shows tooltip content on hover (KpiCard)"
+   },
+   {
+    "file": "src/components/products/__tests__/StockHistoryChart.test.tsx",
+    "name": "StockHistoryChart — rótulo de dados simulados"
+   },
+   {
+    "file": "src/components/products/__tests__/StockHistoryChart.test.tsx",
+    "name": "exibe "
+   },
+   {
+    "file": "src/components/products/__tests__/StockHistoryChart.test.tsx",
+    "name": "não exibe o rótulo quando há histórico real"
    },
    {
     "file": "src/components/products/__tests__/StockHistoryChart.test.tsx",
@@ -267059,6 +267129,10 @@
    },
    {
     "file": "tests/contracts/demo-data-isolation.contract.test.ts",
+    "name": "ignora ?demo=1 fora do build de desenvolvimento"
+   },
+   {
+    "file": "tests/contracts/demo-data-isolation.contract.test.ts",
     "name": "mantém o fallback de ProductMatch limitado ao build de desenvolvimento"
    },
    {
@@ -271860,6 +271934,42 @@
    {
     "file": "tests/edge-functions/live-client-retry.test.ts",
     "name": "EDGE_LIVE_RETRIES=0 desliga os retries (antes virava 3)"
+   },
+   {
+    "file": "tests/edge-functions/live-client-retry.test.ts",
+    "name": "callEdge: status transitório 504"
+   },
+   {
+    "file": "tests/edge-functions/live-client-retry.test.ts",
+    "name": "504 é re-tentado: 1ª tentativa 504, 2ª 422 → devolve 422 após 2 chamadas"
+   },
+   {
+    "file": "tests/edge-functions/live-client-retry.test.ts",
+    "name": "504 persistente → devolve o 504 depois de RETRY_COUNT+1 tentativas"
+   },
+   {
+    "file": "tests/edge-functions/live-client-retry.test.ts",
+    "name": "EDGE_LIVE_RETRIES inválido cai no padrão (3 retries = 4 tentativas)"
+   },
+   {
+    "file": "tests/edge-functions/live-client-retry.test.ts",
+    "name": "EDGE_LIVE_RETRIES=${JSON.stringify(raw)} → 4 tentativas e resultado definido"
+   },
+   {
+    "file": "tests/edge-functions/live-client-retry.test.ts",
+    "name": "EDGE_LIVE_RETRIES=\\"
+   },
+   {
+    "file": "tests/edge-functions/live-client-retry.test.ts",
+    "name": "R4: happy-path do _live-suite não repete após timeout"
+   },
+   {
+    "file": "tests/edge-functions/live-client-retry.test.ts",
+    "name": "o callEdge do happy-path passa retryOnTimeout: false"
+   },
+   {
+    "file": "tests/edge-functions/live-client-retry.test.ts",
+    "name": "happy-path"
    },
    {
     "file": "tests/edge-functions/magic-up-score.limits.test.ts",
@@ -277892,6 +278002,42 @@
    {
     "file": "tests/hooks/usePrintAreas.smoke.test.ts",
     "name": "adapta print_area_techniques + lookup de técnicas"
+   },
+   {
+    "file": "tests/hooks/useProduct-timeout-prefetch.test.tsx",
+    "name": "withTimeout"
+   },
+   {
+    "file": "tests/hooks/useProduct-timeout-prefetch.test.tsx",
+    "name": "resolve com o valor quando a promise termina antes do limite"
+   },
+   {
+    "file": "tests/hooks/useProduct-timeout-prefetch.test.tsx",
+    "name": "rejeita quando a promise não termina dentro do limite"
+   },
+   {
+    "file": "tests/hooks/useProduct-timeout-prefetch.test.tsx",
+    "name": "fetchProductDetail (queryFn da PDP)"
+   },
+   {
+    "file": "tests/hooks/useProduct-timeout-prefetch.test.tsx",
+    "name": "rejeita após o limite quando o backend pendura, para a PDP sair do skeleton"
+   },
+   {
+    "file": "tests/hooks/useProduct-timeout-prefetch.test.tsx",
+    "name": "devolve o produto quando o backend responde"
+   },
+   {
+    "file": "tests/hooks/useProduct-timeout-prefetch.test.tsx",
+    "name": "usePrefetchProduct"
+   },
+   {
+    "file": "tests/hooks/useProduct-timeout-prefetch.test.tsx",
+    "name": "aquece a mesma chave lida pela PDP, sem segunda busca ao abrir o produto"
+   },
+   {
+    "file": "tests/hooks/useProduct-timeout-prefetch.test.tsx",
+    "name": "PDP aberta com o prefetch ainda pendente também sai do skeleton pelo timeout"
    },
    {
     "file": "tests/hooks/useProductAnalytics.test.tsx",
@@ -287430,6 +287576,18 @@
     "name": "rg com status 1 (nada casou) = lista vazia, sem cair na varredura"
    },
    {
+    "file": "tests/scripts/audit-db-frontend-coverage.test.mjs",
+    "name": "audit-db-frontend-coverage — rg falha de verdade (A1, reforço 12/11)"
+   },
+   {
+    "file": "tests/scripts/audit-db-frontend-coverage.test.mjs",
+    "name": "rg com status 2 (erro real, não ENOENT/127): emite warn com status+stderr e usa a varredura em Node"
+   },
+   {
+    "file": "tests/scripts/audit-db-frontend-coverage.test.mjs",
+    "name": "rg ausente (127) usa a varredura em Node SEM warn (ausência é esperada no runner)"
+   },
+   {
     "file": "tests/scripts/build-cors-snapshot.test.mjs",
     "name": "build-cors-snapshot.mjs — fs error handling (regression)"
    },
@@ -288140,6 +288298,38 @@
    {
     "file": "tests/scripts/check-conflict-ledger.test.mjs",
     "name": "PR de fork cujo head_ref coincide com outra branch do repo base NÃO pode passar comparando a branch errada"
+   },
+   {
+    "file": "tests/scripts/check-conflict-ledger.test.mjs",
+    "name": "check-conflict-ledger: resolveRef — PR_HEAD_SHA (reforço de mutantes M1/M4, 12/11)"
+   },
+   {
+    "file": "tests/scripts/check-conflict-ledger.test.mjs",
+    "name": "M1: PR_HEAD_SHA válido (40 hex, existente) tem prioridade sobre o nome da branch"
+   },
+   {
+    "file": "tests/scripts/check-conflict-ledger.test.mjs",
+    "name": "M1: PR_HEAD_SHA em MAIÚSCULAS também é aceito (regex /i)"
+   },
+   {
+    "file": "tests/scripts/check-conflict-ledger.test.mjs",
+    "name": "M4: PR_HEAD_SHA com 39 chars (prefixo resolvível pelo git) é ignorado → usa o nome"
+   },
+   {
+    "file": "tests/scripts/check-conflict-ledger.test.mjs",
+    "name": "M4: PR_HEAD_SHA com 41 chars hex (mesmo existindo como ref) é ignorado → usa o nome"
+   },
+   {
+    "file": "tests/scripts/check-conflict-ledger.test.mjs",
+    "name": "M4: PR_HEAD_SHA não-hex (nome de ref existente) é ignorado → usa o nome"
+   },
+   {
+    "file": "tests/scripts/check-conflict-ledger.test.mjs",
+    "name": "PR_HEAD_SHA com 40 hex mas INEXISTENTE no repo não é aceito: cai para o próximo caminho (nome)"
+   },
+   {
+    "file": "tests/scripts/check-conflict-ledger.test.mjs",
+    "name": "PR_HEAD_SHA inexistente + nome inexistente: falha fechado (--gate exit 1)"
    },
    {
     "file": "tests/scripts/check-console-baseline.test.mjs",
@@ -290692,6 +290882,22 @@
    {
     "file": "tests/scripts/check-supabase-migration-ledger.test.mjs",
     "name": "colisão legada: 2 arquivos locais com a mesma versão e 1 aplicada → sobra 1 local-only (igual ao caso sem desync)"
+   },
+   {
+    "file": "tests/scripts/check-supabase-migration-ledger.test.mjs",
+    "name": "pareamento por CONTAGEM — reforço de mutantes L2/L5 (12/11)"
+   },
+   {
+    "file": "tests/scripts/check-supabase-migration-ledger.test.mjs",
+    "name": "L2: versão 2× local-only e 1× remote-only → 1 pareada + 1 local-only, sumário exato"
+   },
+   {
+    "file": "tests/scripts/check-supabase-migration-ledger.test.mjs",
+    "name": "L2: versão 1× local-only e 2× remote-only → 1 pareada + 1 remote-only bloqueante"
+   },
+   {
+    "file": "tests/scripts/check-supabase-migration-ledger.test.mjs",
+    "name": "L5: paired_late_count conta OCORRÊNCIAS pareadas (não versões distintas) e entra em matched"
    },
    {
     "file": "tests/scripts/check-supabase-reference-catalog.test.mjs",
@@ -294299,6 +294505,54 @@
    },
    {
     "file": "tests/security/csp-radix-scroll-area-hash.test.ts",
+    "name": "${file} contém o hash atual"
+   },
+   {
+    "file": "tests/security/csp-radix-select-hash.test.ts",
+    "name": "CSP style-src cobre o <style> fixo do Radix Select"
+   },
+   {
+    "file": "tests/security/csp-radix-select-hash.test.ts",
+    "name": "${file} contém o hash atual"
+   },
+   {
+    "file": "tests/security/csp-remove-scroll-hashes.test.ts",
+    "name": "CSP style-src cobre o <style> de trava de rolagem (react-remove-scroll-bar)"
+   },
+   {
+    "file": "tests/security/csp-remove-scroll-hashes.test.ts",
+    "name": "os hashes vistos em produção (gap 10 e gap 0) estão entre os calculados"
+   },
+   {
+    "file": "tests/security/csp-remove-scroll-hashes.test.ts",
+    "name": "${file} contém os ${hashes.length} hashes (gap 0..${MAX_GAP}px, simples e empilhado)"
+   },
+   {
+    "file": "tests/security/csp-remove-scroll-hashes.test.ts",
+    "name": "src/index.css não anula a trava de rolagem do Radix"
+   },
+   {
+    "file": "tests/security/csp-remove-scroll-hashes.test.ts",
+    "name": "o bloco de data-scroll-locked existe e mantém a página clicável"
+   },
+   {
+    "file": "tests/security/csp-remove-scroll-hashes.test.ts",
+    "name": "não força overflow/position/margin no body travado"
+   },
+   {
+    "file": "tests/security/csp-remove-scroll-hashes.test.ts",
+    "name": "header fixo compensa a barra só enquanto travado (sem classe incondicional)"
+   },
+   {
+    "file": "tests/security/csp-vaul-hash.test.ts",
+    "name": "CSP style-src cobre o <style> fixo do vaul"
+   },
+   {
+    "file": "tests/security/csp-vaul-hash.test.ts",
+    "name": "hash conhecido do vaul instalado"
+   },
+   {
+    "file": "tests/security/csp-vaul-hash.test.ts",
     "name": "${file} contém o hash atual"
    },
    {
@@ -393031,8 +393285,11 @@
   },
   "e2e/optimized-image-detection.spec.ts": {
    "path": "e2e/optimized-image-detection.spec.ts",
-   "lines": 105,
+   "lines": 108,
    "is_test": true,
+   "env": [
+    "DEV"
+   ],
    "rule_comments": [
     "O card Cloudflare tem debug={true} → deve emitir os logs"
    ],
@@ -393049,8 +393306,11 @@
   },
   "e2e/optimized-image-visual.spec.ts": {
    "path": "e2e/optimized-image-visual.spec.ts",
-   "lines": 102,
+   "lines": 105,
    "is_test": true,
+   "env": [
+    "DEV"
+   ],
    "temporal": [
     ".waitFor({ state: 'visible', timeout: 5000 })",
     "await expect(errorCard).toBeVisible({ timeout: 10000 });",
@@ -393439,7 +393699,7 @@
   },
   "e2e/promoflix-player.spec.ts": {
    "path": "e2e/promoflix-player.spec.ts",
-   "lines": 128,
+   "lines": 130,
    "is_test": true,
    "temporal": [
     "await expect(manualBtn).toBeVisible({ timeout: 15000 });",
@@ -394089,8 +394349,11 @@
   },
   "e2e/tools-module.spec.ts": {
    "path": "e2e/tools-module.spec.ts",
-   "lines": 565,
+   "lines": 567,
    "is_test": true,
+   "env": [
+    "DEV"
+   ],
    "rule_comments": [
     "* E2E: Tools Module — Public Coverage (no auth required)",
     "4. Validação contra payloads maliciosos",
@@ -399011,7 +399274,7 @@
   },
   "e2e/flows/31-promoflix-player.spec.ts": {
    "path": "e2e/flows/31-promoflix-player.spec.ts",
-   "lines": 57,
+   "lines": 60,
    "is_test": true,
    "env": [
     "E2E_USER_EMAIL",
@@ -400643,6 +400906,23 @@
    "errors": [
     "Duplicate request detected for ${url} within ${window}ms"
    ]
+  },
+  "e2e/helpers/dev-only-route.ts": {
+   "path": "e2e/helpers/dev-only-route.ts",
+   "lines": 17,
+   "exports": [
+    "const isProductionBuild",
+    "function devOnlyRouteReason"
+   ],
+   "env": [
+    "DEV",
+    "E2E_BASE_URL",
+    "E2E_SERVER_MODE"
+   ],
+   "rule_comments": [
+    "404 e o grupo deve ser pulado."
+   ],
+   "doc": "Rotas montadas só sob `import.meta.env.DEV` (ex.: /debug/images, /promoflix-playground) não existem em build de produção. Contra o dev server (padrão do playwright.config.ts) os specs rodam normalmente; contra `vite preview` (E2E_SERVER_MODE=preview) ou uma URL externa a rota cai no 404 e o grupo de …"
   },
   "e2e/helpers/diagnostics.ts": {
    "path": "e2e/helpers/diagnostics.ts",
@@ -426469,9 +426749,12 @@
   },
   "src/components/ai/AIMockupAssistant.tsx": {
    "path": "src/components/ai/AIMockupAssistant.tsx",
-   "lines": 336,
+   "lines": 345,
    "exports": [
     "function AIMockupAssistant"
+   ],
+   "env": [
+    "DEV"
    ],
    "status_values": [
     {
@@ -426550,6 +426833,16 @@
   "src/components/ai/index.ts": {
    "path": "src/components/ai/index.ts",
    "lines": 6
+  },
+  "src/components/ai/__tests__/AIMockupAssistant.test.tsx": {
+   "path": "src/components/ai/__tests__/AIMockupAssistant.test.tsx",
+   "lines": 60,
+   "is_test": true,
+   "tests": [
+    "AIMockupAssistant — texto livre sem backend",
+    "em produção oculta o campo de texto livre e mantém as ações rápidas",
+    "em DEV mantém o campo de texto livre"
+   ]
   },
   "src/components/audit/AuditHistory.tsx": {
    "path": "src/components/audit/AuditHistory.tsx",
@@ -426716,16 +427009,6 @@
      "value": "otp",
      "kind": "compara"
     }
-   ]
-  },
-  "src/components/auth/SupabaseConnectionDebug.tsx": {
-   "path": "src/components/auth/SupabaseConnectionDebug.tsx",
-   "lines": 113,
-   "exports": [
-    "const SupabaseConnectionDebug"
-   ],
-   "env": [
-    "VITE_SUPABASE_URL"
    ]
   },
   "src/components/auth/TurnstileWidget.tsx": {
@@ -428413,9 +428696,33 @@
     "/"
    ]
   },
+  "src/components/common/RouteScrollReset.test.tsx": {
+   "path": "src/components/common/RouteScrollReset.test.tsx",
+   "lines": 87,
+   "is_test": true,
+   "routes": [
+    {
+     "path": "*",
+     "component": "pageElement",
+     "guard": "",
+     "roles": []
+    }
+   ],
+   "tests": [
+    "RouteScrollReset",
+    "não rola no primeiro mount",
+    "não rola quando só a query string muda na mesma rota (setSearchParams replace)",
+    "não rola em setSearchParams após navegação para a mesma rota",
+    "rola ao topo quando o pathname muda (PUSH)",
+    "não rola em POP (voltar) nem com hash âncora"
+   ],
+   "side_effects": [
+    "notifyRouteChange"
+   ]
+  },
   "src/components/common/RouteScrollReset.tsx": {
    "path": "src/components/common/RouteScrollReset.tsx",
-   "lines": 56,
+   "lines": 63,
    "exports": [
     "function RouteScrollReset"
    ],
@@ -430480,21 +430787,14 @@
   },
   "src/components/intelligence/MarketIntelligenceChart.tsx": {
    "path": "src/components/intelligence/MarketIntelligenceChart.tsx",
-   "lines": 711,
+   "lines": 595,
    "exports": [
     "function MarketIntelligenceChart"
    ],
    "rule_comments": [
     "FIX 2026-08-15: Badge (renderiza <div>) não pode ficar dentro de"
    ],
-   "doc": "MarketIntelligenceChart — Visão MACRO de mercado Replica o layout do StockHistoryChart (página de produto) mas com dados agregados de todos os produtos. Inclui mock data quando não há dados reais.",
-   "calc_fns": [
-    {
-     "name": "generateMockMarketData",
-     "params": "days: number",
-     "body": "const daily: MacroMarketPoint[] = []; const now = new Date(); let stock = 3200 + Math.floor(seededRandom(days) * 800); for (let i = days - 1; i >= 0; i--) { const d = new Date(now); d.setDate(d.getDate() - i); const dateStr = d.toISOString().split('T')[0]; const dayOfWeek = d.getDay(); const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; const baseDepleted = isWeekend ? 15 : 45; const depleted = Math.max(0, Math.round(baseDepleted + (seededRandom(i * 3 + 1) - 0.4) * 30)); const restocked = seed …"
-    }
-   ]
+   "doc": "MarketIntelligenceChart — Visão MACRO de mercado Replica o layout do StockHistoryChart (página de produto) mas com dados agregados de todos os produtos."
   },
   "src/components/intelligence/MarketIntelligenceInsightsCard.tsx": {
    "path": "src/components/intelligence/MarketIntelligenceInsightsCard.tsx",
@@ -430821,6 +431121,19 @@
    "lines": 218,
    "exports": [
     "function ZeroResultSubstitutes"
+   ]
+  },
+  "src/components/intelligence/__tests__/MarketIntelligenceChart.test.tsx": {
+   "path": "src/components/intelligence/__tests__/MarketIntelligenceChart.test.tsx",
+   "lines": 104,
+   "is_test": true,
+   "tests": [
+    "MarketIntelligenceChart — sem dados reais",
+    "mostra estado vazio em vez de fornecedores fictícios quando a RPC devolve vazio",
+    "mostra estado vazio também quando data é undefined sem erro",
+    "mantém o estado de erro quando a RPC falha",
+    "MarketIntelligenceChart — com dados reais",
+    "renderiza o insight de pico sem sufixo demo"
    ]
   },
   "src/components/inventory/BulkAddToCollectionModal.tsx": {
@@ -432157,7 +432470,7 @@
     "mostra spinner de carregamento",
     "mostra erro com botão ",
     "ProductRiskDetail — demo mode",
-    "renderiza badge demo e KPIs quando não há dados nem erro",
+    "renderiza badge ",
     "usa productId como título quando productName ausente",
     "ProductRiskDetail — real data",
     "renderiza dados reais: classe ABC, KPIs e flags",
@@ -433134,7 +433447,7 @@
   },
   "src/components/layout/Header.tsx": {
    "path": "src/components/layout/Header.tsx",
-   "lines": 561,
+   "lines": 562,
    "exports": [
     "const Header"
    ],
@@ -438513,7 +438826,7 @@
   },
   "src/components/products/__tests__/StockHistoryChart.test.tsx": {
    "path": "src/components/products/__tests__/StockHistoryChart.test.tsx",
-   "lines": 92,
+   "lines": 111,
    "is_test": true,
    "doc": "eslint-disable @typescript-eslint/require-await",
    "tests": [
@@ -438521,6 +438834,9 @@
     "renders all 4 KPI card tooltips info icons",
     "renders the Potencial badge tooltip trigger",
     "shows tooltip content on hover (KpiCard)",
+    "StockHistoryChart — rótulo de dados simulados",
+    "exibe ",
+    "não exibe o rótulo quando há histórico real",
     "Gallery Tooltip Regression",
     "ensures no title attribute exists on chart elements that shouldn"
    ]
@@ -441332,7 +441648,7 @@
   },
   "src/components/search/GlobalSearch.tsx": {
    "path": "src/components/search/GlobalSearch.tsx",
-   "lines": 479,
+   "lines": 481,
    "exports": [
     "function GlobalSearch"
    ],
@@ -442416,7 +442732,7 @@
   },
   "src/components/search/__tests__/useGlobalSearch.test.ts": {
    "path": "src/components/search/__tests__/useGlobalSearch.test.ts",
-   "lines": 558,
+   "lines": 669,
    "is_test": true,
    "doc": "Testes de comportamento do hook useGlobalSearch. Rede (Supabase, edge functions, CRM, catálogo externo) e hooks externos são mockados.",
    "tests": [
@@ -452252,9 +452568,12 @@
   },
   "src/hooks/products/usePrefetchProduct.ts": {
    "path": "src/hooks/products/usePrefetchProduct.ts",
-   "lines": 24,
+   "lines": 28,
    "exports": [
     "function usePrefetchProduct"
+   ],
+   "rule_comments": [
+    "pendente, ela reaproveita esta promise e também precisa de limite."
    ],
    "hooks": [
     "usePrefetchProduct"
@@ -452722,15 +453041,26 @@
   },
   "src/hooks/products/useProducts.ts": {
    "path": "src/hooks/products/useProducts.ts",
-   "lines": 113,
+   "lines": 133,
    "exports": [
     "function isAbortError",
     "function useProducts",
+    "const PRODUCT_DETAIL_QUERY_KEY",
+    "const PRODUCT_DETAIL_TIMEOUT_MS",
+    "function withTimeout",
+    "function fetchProductDetail",
     "function useProduct",
     "function useRelatedProducts"
    ],
+   "params": [
+    {
+     "name": "PRODUCT_DETAIL_TIMEOUT_MS",
+     "value": "15"
+    }
+   ],
    "rule_comments": [
-    "AbortError NUNCA deve fazer retry ou ir para ErrorBoundary,"
+    "AbortError NUNCA deve fazer retry ou ir para ErrorBoundary,",
+    "* Limite por tentativa da busca do produto; sem ele a PDP fica no skeleton para sempre se o backend pendurar. */"
    ],
    "doc": "useProducts — Product data hooks",
    "hooks": [
@@ -456201,7 +456531,7 @@
   },
   "src/hooks/simulation/useSimulation.ts": {
    "path": "src/hooks/simulation/useSimulation.ts",
-   "lines": 606,
+   "lines": 607,
    "exports": [
     "function useSimulation"
    ],
@@ -462670,7 +463000,7 @@
   },
   "src/lib/external-db/rpc-native.ts": {
    "path": "src/lib/external-db/rpc-native.ts",
-   "lines": 285,
+   "lines": 217,
    "exports": [
     "interface CustomizationPriceParams",
     "interface CustomizationPriceResult",
@@ -462678,11 +463008,6 @@
     "function getCustomizationPrice",
     "function getProductCustomizationOptions",
     "function getCategoryDescendants",
-    "function getProductPrintAreas",
-    "function getProductPrintAreasV2",
-    "function linkProductPrintAreas",
-    "function backfillProductPrintAreas",
-    "function findFornecedorPriceTable",
     "function dispatchRpc"
    ],
    "tables": [
@@ -464263,7 +464588,7 @@
   },
   "src/lib/personalization/index.ts": {
    "path": "src/lib/personalization/index.ts",
-   "lines": 29,
+   "lines": 25,
    "rule_comments": [
     "* Pure business rules for personalization calculations, validation,"
    ],
@@ -464556,7 +464881,7 @@
   },
   "src/lib/personalization/repositories/index.ts": {
    "path": "src/lib/personalization/repositories/index.ts",
-   "lines": 15,
+   "lines": 13,
    "doc": "Repositories: Personalização Ponto de entrada para todos os repositórios de dados."
   },
   "src/lib/personalization/repositories/priceTable.repository.ts": {
@@ -464577,33 +464902,6 @@
     "const PriceTableRepository"
    ],
    "doc": "Repository: Tabelas de Preço Abstrai acesso a dados de tabelas de preço. Único ponto de acesso ao BD externo para tabelas."
-  },
-  "src/lib/personalization/repositories/technique.repository.ts": {
-   "path": "src/lib/personalization/repositories/technique.repository.ts",
-   "lines": 159,
-   "exports": [
-    "interface TechniqueQueryOptions",
-    "function findAll",
-    "function findById",
-    "function findByFornecedor",
-    "function create",
-    "function update"
-   ],
-   "env": [
-    "VITE_GRAVACAO_API_KEY"
-   ],
-   "errors": [
-    "Failed to create technique: ${response.statusText}",
-    "Failed to fetch technique: ${resp.statusText}",
-    "Failed to fetch techniques: ${resp.statusText}",
-    "Failed to update technique: ${response.statusText}"
-   ],
-   "params": [
-    {
-     "name": "GRAVACAO_API",
-     "value": "'https://api.promobrindes.com.br/gravacao'"
-    }
-   ]
   },
   "src/lib/personalization/services/index.ts": {
    "path": "src/lib/personalization/services/index.ts",
@@ -469164,7 +469462,7 @@
   },
   "src/pages/auth/Auth.tsx": {
    "path": "src/pages/auth/Auth.tsx",
-   "lines": 893,
+   "lines": 892,
    "exports": [
     "function Auth"
    ],
@@ -472058,15 +472356,9 @@
   },
   "src/pages/magic-up/MagicUpConfigPanel.tsx": {
    "path": "src/pages/magic-up/MagicUpConfigPanel.tsx",
-   "lines": 643,
+   "lines": 580,
    "exports": [
     "function MagicUpConfigPanel"
-   ],
-   "html_constraints": [
-    {
-     "field": "magic-logo-upload",
-     "rules": "accept=image/*, disabled=m.logoUploading"
-    }
    ],
    "doc": "MagicUp Configuration Panel — Left side with product, logo, scene selection",
    "calc_fns": [
@@ -472076,6 +472368,23 @@
      "body": "return ( <div className=\"space-y-2\"> {/* Toggle Modo Rápido (Nano Banana / Gemini 2.5 Flash Image) Desativado: usa Gemini 3 Pro (qualidade máxima, mais lento e caro). Ativado: usa Gemini 2.5 Flash Image (\"nano-banana\"), ideal para iterações e refinamentos baratos antes de gerar a versão final. */} <label className={cn( 'flex cursor-pointer items-center justify-between gap-3 rounded-lg border px-3 py-2 transition-colors', m.fastMode ? 'border-warning/60 bg-warning/10' : 'border-border bg-muted/30 …"
     }
    ]
+  },
+  "src/pages/magic-up/MagicUpLogoCard.tsx": {
+   "path": "src/pages/magic-up/MagicUpLogoCard.tsx",
+   "lines": 84,
+   "exports": [
+    "function LogoCard"
+   ],
+   "html_constraints": [
+    {
+     "field": "magic-logo-upload",
+     "rules": "accept=image/*, disabled=m.logoUploading"
+    }
+   ],
+   "rule_comments": [
+    "abaixo do limite do gate de tamanho ao corrigir o botão \"Trocar logo\")."
+   ],
+   "doc": "MagicUp — card do logo do cliente (extraído de MagicUpConfigPanel.tsx para manter o arquivo abaixo do limite do gate de tamanho ao corrigir o botão \"Trocar logo\")."
   },
   "src/pages/magic-up/MagicUpResultPanel.tsx": {
    "path": "src/pages/magic-up/MagicUpResultPanel.tsx",
@@ -475150,7 +475459,7 @@
   },
   "src/pages/trends/trends-mock.ts": {
    "path": "src/pages/trends/trends-mock.ts",
-   "lines": 301,
+   "lines": 302,
    "exports": [
     "interface MockProduct",
     "interface MockSearch",
@@ -475166,6 +475475,9 @@
     "const MOCK_TOP_CATEGORIES",
     "const MOCK_INSIGHTS",
     "function buildMockHeatmap"
+   ],
+   "env": [
+    "DEV"
    ],
    "doc": "Mock data para o módulo Tendências. Ativado via querystring `?demo=1` em /tendencias. Permite avaliar viabilidade visual do módulo sem depender de eventos reais. FIX 2026-06-12: isDemoMode() agora retorna false por padrão (dados reais). Para ativar o demo: acessar /tendencias?demo=1",
    "percents": [
@@ -475185,7 +475497,7 @@
   },
   "src/routes/AppRoutes.tsx": {
    "path": "src/routes/AppRoutes.tsx",
-   "lines": 188,
+   "lines": 190,
    "exports": [
     "function AppRoutes"
    ],
@@ -475260,8 +475572,7 @@
    ],
    "rule_comments": [
     "- `publicRoutes` (login, reset, callback, unauthorized) — no auth required",
-    "DEVE ser o ÚLTIMO Route (precedência por ordem em react-router-dom).",
-    "Debug / QA routes — no auth required in any environment."
+    "DEVE ser o ÚLTIMO Route (precedência por ordem em react-router-dom)."
    ]
   },
   "src/routes/RoutePrefetcher.test.tsx": {
@@ -475699,7 +476010,7 @@
   },
   "src/routes/lazy-pages.ts": {
    "path": "src/routes/lazy-pages.ts",
-   "lines": 230,
+   "lines": 228,
    "exports": [
     "const Auth",
     "const Unauthorized",
@@ -476018,9 +476329,12 @@
   },
   "src/routes/tools-routes.tsx": {
    "path": "src/routes/tools-routes.tsx",
-   "lines": 133,
+   "lines": 140,
    "exports": [
     "const toolsRoutes"
+   ],
+   "env": [
+    "DEV"
    ],
    "routes": [
     {
@@ -477535,7 +477849,7 @@
   },
   "src/tests/MockupDeletion.test.tsx": {
    "path": "src/tests/MockupDeletion.test.tsx",
-   "lines": 850,
+   "lines": 872,
    "is_test": true,
    "temporal": [
     "const deleteButton = await screen.findByTestId('delete-mockup-button', {}, { timeout: 8000 });"
@@ -510847,7 +511161,7 @@
   },
   "tests/components/pages/MagicUp.test.tsx": {
    "path": "tests/components/pages/MagicUp.test.tsx",
-   "lines": 248,
+   "lines": 260,
    "is_test": true,
    "invokes": [
     "magic-up-score"
@@ -511517,7 +511831,7 @@
   },
   "tests/contracts/demo-data-isolation.contract.test.ts": {
    "path": "tests/contracts/demo-data-isolation.contract.test.ts",
-   "lines": 33,
+   "lines": 42,
    "is_test": true,
    "env": [
     "DEV"
@@ -511525,6 +511839,7 @@
    "tests": [
     "contract: isolamento de dados demonstrativos",
     "ativa Trends demo somente para ?demo=1",
+    "ignora ?demo=1 fora do build de desenvolvimento",
     "mantém o fallback de ProductMatch limitado ao build de desenvolvimento"
    ]
   },
@@ -513854,7 +514169,7 @@
   },
   "tests/edge-functions/live-client-retry.test.ts": {
    "path": "tests/edge-functions/live-client-retry.test.ts",
-   "lines": 74,
+   "lines": 160,
    "is_test": true,
    "doc": "tests/edge-functions/live-client-retry.test.ts — offline: servidor HTTP local lento",
    "tests": [
@@ -513862,7 +514177,16 @@
     "1ª tentativa estoura, 2ª responde → status real, sem timedOut",
     "todas estouram → 408 timedOut depois de RETRY_COUNT+1 tentativas",
     "retryOnTimeout: false (happy-path, efeito real) não repete",
-    "EDGE_LIVE_RETRIES=0 desliga os retries (antes virava 3)"
+    "EDGE_LIVE_RETRIES=0 desliga os retries (antes virava 3)",
+    "callEdge: status transitório 504",
+    "504 é re-tentado: 1ª tentativa 504, 2ª 422 → devolve 422 após 2 chamadas",
+    "504 persistente → devolve o 504 depois de RETRY_COUNT+1 tentativas",
+    "EDGE_LIVE_RETRIES inválido cai no padrão (3 retries = 4 tentativas)",
+    "EDGE_LIVE_RETRIES=${JSON.stringify(raw)} → 4 tentativas e resultado definido",
+    "EDGE_LIVE_RETRIES=\\",
+    "R4: happy-path do _live-suite não repete após timeout",
+    "o callEdge do happy-path passa retryOnTimeout: false",
+    "happy-path"
    ]
   },
   "tests/edge-functions/magic-up-score.limits.test.ts": {
@@ -515582,7 +515906,7 @@
   },
   "tests/edge-functions/live/_live-client.ts": {
    "path": "tests/edge-functions/live/_live-client.ts",
-   "lines": 273,
+   "lines": 276,
    "exports": [
     "const SUPABASE_URL",
     "const ANON_KEY",
@@ -517862,6 +518186,27 @@
     "usePrintAreas (smoke)",
     "retorna [] quando productId é null",
     "adapta print_area_techniques + lookup de técnicas"
+   ]
+  },
+  "tests/hooks/useProduct-timeout-prefetch.test.tsx": {
+   "path": "tests/hooks/useProduct-timeout-prefetch.test.tsx",
+   "lines": 130,
+   "is_test": true,
+   "rule_comments": [
+    "* PDP: a busca do produto não pode pendurar o skeleton para sempre, e o",
+    "Captura o limite agendado e dispara o timer na hora (sem esperar 15 s reais)."
+   ],
+   "doc": "PDP: a busca do produto não pode pendurar o skeleton para sempre, e o prefetch do hover precisa aquecer exatamente o cache que a PDP lê.",
+   "tests": [
+    "withTimeout",
+    "resolve com o valor quando a promise termina antes do limite",
+    "rejeita quando a promise não termina dentro do limite",
+    "fetchProductDetail (queryFn da PDP)",
+    "rejeita após o limite quando o backend pendura, para a PDP sair do skeleton",
+    "devolve o produto quando o backend responde",
+    "usePrefetchProduct",
+    "aquece a mesma chave lida pela PDP, sem segunda busca ao abrir o produto",
+    "PDP aberta com o prefetch ainda pendente também sai do skeleton pelo timeout"
    ]
   },
   "tests/hooks/useProductAnalytics.test.tsx": {
@@ -522580,7 +522925,7 @@
   },
   "tests/scripts/audit-db-frontend-coverage.test.mjs": {
    "path": "tests/scripts/audit-db-frontend-coverage.test.mjs",
-   "lines": 184,
+   "lines": 215,
    "is_test": true,
    "tables": [
     {
@@ -522621,7 +522966,10 @@
     "caminho feliz: continua funcionando com saída válida do psql",
     "audit-db-frontend-coverage — varredura em Node sem ripgrep (revisão 12/11)",
     "rg ausente (127): lista os fontes em Node e pula node_modules/dist/.next",
-    "rg com status 1 (nada casou) = lista vazia, sem cair na varredura"
+    "rg com status 1 (nada casou) = lista vazia, sem cair na varredura",
+    "audit-db-frontend-coverage — rg falha de verdade (A1, reforço 12/11)",
+    "rg com status 2 (erro real, não ENOENT/127): emite warn com status+stderr e usa a varredura em Node",
+    "rg ausente (127) usa a varredura em Node SEM warn (ausência é esperada no runner)"
    ]
   },
   "tests/scripts/build-cors-snapshot.test.mjs": {
@@ -523024,7 +523372,7 @@
   },
   "tests/scripts/check-conflict-ledger.test.mjs": {
    "path": "tests/scripts/check-conflict-ledger.test.mjs",
-   "lines": 278,
+   "lines": 344,
    "is_test": true,
    "doc": "Gate 1.18 (E188) — scripts/check-conflict-ledger.mjs Regressão de um bug REAL encontrado em auditoria adversarial manual (2026-11-11): 1) INJEÇÃO DE COMANDO: o script montava o comando git com `execSync(\\`git ${cmd}\\`)`, interpolando GITHUB_BASE_REF/GITHUB_HEAD_REF (nome de branch — em PR de fork, c …",
    "tests": [
@@ -523050,7 +523398,15 @@
     "branch inexistente local e remota continua falhando fechado",
     "check-conflict-ledger: resolveRef — casos adversariais (revisão 12/11)",
     "branch local e origin/<branch> divergentes: o nome literal (local) vence",
-    "PR de fork cujo head_ref coincide com outra branch do repo base NÃO pode passar comparando a branch errada"
+    "PR de fork cujo head_ref coincide com outra branch do repo base NÃO pode passar comparando a branch errada",
+    "check-conflict-ledger: resolveRef — PR_HEAD_SHA (reforço de mutantes M1/M4, 12/11)",
+    "M1: PR_HEAD_SHA válido (40 hex, existente) tem prioridade sobre o nome da branch",
+    "M1: PR_HEAD_SHA em MAIÚSCULAS também é aceito (regex /i)",
+    "M4: PR_HEAD_SHA com 39 chars (prefixo resolvível pelo git) é ignorado → usa o nome",
+    "M4: PR_HEAD_SHA com 41 chars hex (mesmo existindo como ref) é ignorado → usa o nome",
+    "M4: PR_HEAD_SHA não-hex (nome de ref existente) é ignorado → usa o nome",
+    "PR_HEAD_SHA com 40 hex mas INEXISTENTE no repo não é aceito: cai para o próximo caminho (nome)",
+    "PR_HEAD_SHA inexistente + nome inexistente: falha fechado (--gate exit 1)"
    ]
   },
   "tests/scripts/check-console-baseline.test.mjs": {
@@ -524475,7 +524831,7 @@
   },
   "tests/scripts/check-supabase-migration-ledger.test.mjs": {
    "path": "tests/scripts/check-supabase-migration-ledger.test.mjs",
-   "lines": 158,
+   "lines": 221,
    "is_test": true,
    "tests": [
     "check-supabase-migration-ledger",
@@ -524490,7 +524846,11 @@
     "versão listada como local-only E remote-only em linhas separadas conta como alinhada",
     "remote-only real (sem arquivo local e fora da allowlist) continua bloqueando",
     "pareamento sequencial — multiconjunto (revisão 12/11)",
-    "colisão legada: 2 arquivos locais com a mesma versão e 1 aplicada → sobra 1 local-only (igual ao caso sem desync)"
+    "colisão legada: 2 arquivos locais com a mesma versão e 1 aplicada → sobra 1 local-only (igual ao caso sem desync)",
+    "pareamento por CONTAGEM — reforço de mutantes L2/L5 (12/11)",
+    "L2: versão 2× local-only e 1× remote-only → 1 pareada + 1 local-only, sumário exato",
+    "L2: versão 1× local-only e 2× remote-only → 1 pareada + 1 remote-only bloqueante",
+    "L5: paired_late_count conta OCORRÊNCIAS pareadas (não versões distintas) e entra em matched"
    ]
   },
   "tests/scripts/check-supabase-reference-catalog.test.mjs": {
@@ -526724,6 +527084,51 @@
    ],
    "tests": [
     "CSP style-src cobre o <style> fixo do Radix ScrollArea",
+    "${file} contém o hash atual"
+   ]
+  },
+  "tests/security/csp-radix-select-hash.test.ts": {
+   "path": "tests/security/csp-radix-select-hash.test.ts",
+   "lines": 29,
+   "is_test": true,
+   "errors": [
+    "CSS fixo do Select não encontrado no pacote"
+   ],
+   "tests": [
+    "CSP style-src cobre o <style> fixo do Radix Select",
+    "${file} contém o hash atual"
+   ]
+  },
+  "tests/security/csp-remove-scroll-hashes.test.ts": {
+   "path": "tests/security/csp-remove-scroll-hashes.test.ts",
+   "lines": 59,
+   "is_test": true,
+   "params": [
+    {
+     "name": "MAX_GAP",
+     "value": "24"
+    }
+   ],
+   "tests": [
+    "CSP style-src cobre o <style> de trava de rolagem (react-remove-scroll-bar)",
+    "os hashes vistos em produção (gap 10 e gap 0) estão entre os calculados",
+    "${file} contém os ${hashes.length} hashes (gap 0..${MAX_GAP}px, simples e empilhado)",
+    "src/index.css não anula a trava de rolagem do Radix",
+    "o bloco de data-scroll-locked existe e mantém a página clicável",
+    "não força overflow/position/margin no body travado",
+    "header fixo compensa a barra só enquanto travado (sem classe incondicional)"
+   ]
+  },
+  "tests/security/csp-vaul-hash.test.ts": {
+   "path": "tests/security/csp-vaul-hash.test.ts",
+   "lines": 34,
+   "is_test": true,
+   "errors": [
+    "CSS fixo do vaul não encontrado no pacote"
+   ],
+   "tests": [
+    "CSP style-src cobre o <style> fixo do vaul",
+    "hash conhecido do vaul instalado",
     "${file} contém o hash atual"
    ]
   },
@@ -529509,10 +529914,24 @@
   }
  },
  "git": {
-  "sha": "ee13f748c0cd5c94079094ae0ac6ea811f62c8cd",
+  "sha": "778dbf5ad000c18a185aba0140484f97ec7e41a7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "778dbf5",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "Merge pull request #3619 from adm01-debug/claude/trem2-front-limpeza-261114-1850",
+    "files": []
+   },
+   {
+    "sha": "74ba199",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850",
+    "files": []
+   },
    {
     "sha": "ee13f74",
     "date": "2026-11-14",
@@ -529540,6 +529959,57 @@
     ]
    },
    {
+    "sha": "a43a312",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "docs(coordenacao): ledger E188 dos 11 merges do trem de front e limpeza",
+    "files": [
+     "docs/coordenacao/conflitos-semanticos.md"
+    ]
+   },
+   {
+    "sha": "ec6088c",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "Merge remote-tracking branch 'origin/claude/fix-route-scroll-reset-query-replace-261114-0005' into claude/trem2-front-limpeza-261114-1850",
+    "files": []
+   },
+   {
+    "sha": "930e3c0",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "Merge remote-tracking branch 'origin/claude/fix-ux-auditoria-link-botao-morto-261113-2338' into claude/trem2-front-limpeza-261114-1850",
+    "files": []
+   },
+   {
+    "sha": "ce4099e",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "Merge remote-tracking branch 'origin/claude/fix-busca-teclado-supersede-3535-261114-0045' into claude/trem2-front-limpeza-261114-1850",
+    "files": []
+   },
+   {
+    "sha": "e34f424",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "Merge remote-tracking branch 'origin/claude/fix-simulador-colunas-crm-supersede-3534-261114-0212' into claude/trem2-front-limpeza-261114-1850",
+    "files": []
+   },
+   {
+    "sha": "a3964b2",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "Merge remote-tracking branch 'origin/claude/fix-csp-vaul-trava-rolagem-supersede-3531-261114-0208' into claude/trem2-front-limpeza-261114-1850",
+    "files": []
+   },
+   {
+    "sha": "d83a313",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850",
+    "files": []
+   },
+   {
     "sha": "c9bc677",
     "date": "2026-11-14",
     "author": "adm01-debug",
@@ -529561,6 +530031,48 @@
      "e2e/routes/app/stock-rupture-horizon.spec.ts",
      "src/pages/kit-builder/KitBuilderPage.tsx"
     ]
+   },
+   {
+    "sha": "1d9185e",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "Merge remote-tracking branch 'origin/claude/chore-remove-external-db-dead-code-261114-0000' into claude/trem2-front-limpeza-261114-1850",
+    "files": []
+   },
+   {
+    "sha": "140c527",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "Merge remote-tracking branch 'origin/claude/chore-qa-pages-dev-only-261113-2352' into claude/trem2-front-limpeza-261114-1850",
+    "files": []
+   },
+   {
+    "sha": "cba8235",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "Merge remote-tracking branch 'origin/claude/fix-dados-simulados-prod-261113-2355' into claude/trem2-front-limpeza-261114-1850",
+    "files": []
+   },
+   {
+    "sha": "84ee594",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "Merge remote-tracking branch 'origin/claude/fix-pdp-timeout-prefetch-supersede-3528-261114-0214' into claude/trem2-front-limpeza-261114-1850",
+    "files": []
+   },
+   {
+    "sha": "e0d9826",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "Merge remote-tracking branch 'origin/claude/chore-framer-motion-14-11-1-supersede-3523-261114-0215' into claude/trem2-front-limpeza-261114-1850",
+    "files": []
+   },
+   {
+    "sha": "bc33f33",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "Merge remote-tracking branch 'origin/claude/chore-reforco-testes-mutantes-supersede-3516-261114-0219' into claude/trem2-front-limpeza-261114-1850",
+    "files": []
    },
    {
     "sha": "ab0817a",
@@ -529586,6 +530098,21 @@
     "author": "adm01-debug",
     "subject": "Merge pull request #3608 from adm01-debug/claude/crm-disjuntor-indisponibilidade-261114",
     "files": []
+   },
+   {
+    "sha": "0f0cf4c",
+    "date": "2026-11-14",
+    "author": "Claude",
+    "subject": "fix(security): CSP libera o <style> do vaul e a trava de rolagem do Radix (supersede #3531 #3532)",
+    "files": [
+     "public/_headers",
+     "src/components/layout/Header.tsx",
+     "src/index.css",
+     "tests/security/csp-radix-select-hash.test.ts",
+     "tests/security/csp-remove-scroll-hashes.test.ts",
+     "tests/security/csp-vaul-hash.test.ts",
+     "vercel.json"
+    ]
    },
    {
     "sha": "ae9d814",
@@ -529717,188 +530244,20 @@
      ".github/workflows/supplier-comparison.yml",
      "docs/ci/SEGREDOS.md"
     ]
-   },
-   {
-    "sha": "ee0ccd5",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "docs(prontidao): diagnóstico das quedas do banco com leitura de logs e entregas de 14/11 (#3579)",
-    "files": [
-     "docs/prod-readiness.md"
-    ]
-   },
-   {
-    "sha": "c49e8e7",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "docs(migrations): recibos E66 e E15 de 14/11 (supersede #3560 #3561 #3562 #3567 #3568 #3571 #3563 #3570 #3573 #3575) (#3577)",
-    "files": [
-     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "c6bc04a",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(db): snapshot de cron jobs sem o xbz-image-uploader desagendado (#3576)",
-    "files": [
-     "supabase/baseline/20261108000000_cron_jobs.json"
-    ]
-   },
-   {
-    "sha": "e1dcade",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "docs: prod-readiness regerado no main com provas de 14/11 (#3508)",
-    "files": [
-     "docs/prod-readiness.md"
-    ]
-   },
-   {
-    "sha": "1882e6c",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(db): desagenda o cron xbz-image-uploader (edge esboço, 401 a cada 10 min) (#3556)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261114003000_fix_unschedule_cron_xbz_image_uploader.sql",
-     "supabase/rollbacks/20261114003000_rollback.sql"
-    ]
-   },
-   {
-    "sha": "4063ab4",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(db): snapshot de cron jobs reflete a CRON-003 aplicada (21 schedules) (#3572)",
-    "files": [
-     "supabase/baseline/20261108000000_cron_jobs.json"
-    ]
-   },
-   {
-    "sha": "7536e94",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "perf(db): proposta de reagendamento noturno dos crons pesados de fornecedores (#3554)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261113235800_cron003_reagendamento_noturno_fornecedores.sql",
-     "supabase/rollbacks/20261113235800_rollback.sql"
-    ]
-   },
-   {
-    "sha": "75030fa",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(db): PostgREST para de perder o LISTEN a cada 10 min (idle_session_timeout do authenticator) (#3569)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql",
-     "supabase/rollbacks/20261114040000_rollback.sql"
-    ]
-   },
-   {
-    "sha": "8fa5c43",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(ci): replay do E40 aceita o CREATE INDEX CONCURRENTLY da 20261113235000 (#3564)",
-    "files": [
-     "scripts/drift-baseline.mjs",
-     "tests/scripts/drift-baseline.test.mjs"
-    ]
-   },
-   {
-    "sha": "1256b4a",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "docs(edge-fn): recibos E66 dos deploys de 13/11 (supersede #3527 #3530 #3533 #3537 #3539 #3542 #3545) (#3546)",
-    "files": [
-     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
-    ]
-   },
-   {
-    "sha": "333fe6e",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "perf(db): índice para ordenação por created_at no catálogo e VACUUM de tags (#3550)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql",
-     "supabase/rollbacks/20261113235000_rollback.sql"
-    ]
-   },
-   {
-    "sha": "73f463f",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "fix(ci): teste de frase banida monta o literal em partes (ci-security-drift do main) (#3541)",
-    "files": [
-     "tests/scripts/tools-batch6.test.mjs"
-    ]
-   },
-   {
-    "sha": "835fee0",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "fix(edge): corrige domínio de e-mail Resend promogifts → promobrindes (#3521)",
-    "files": [
-     "supabase/functions/process-scheduled-reports/index.ts",
-     "supabase/functions/send-scheduled-reports/index.ts",
-     "supabase/functions/send-transactional-email/index.ts"
-    ]
-   },
-   {
-    "sha": "fe64be3",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "docs(migrations): recibos da 20261111191000 (corrigido) e da 20261112140000 (#3529)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "8ce9693",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "fix(db): ativa RLS nas partições p2027_03..12 do histórico de fornecedores (#3434)",
-    "files": [
-     "docs/coordenacao/conflitos-semanticos.md",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261112140000_fix_rls_supplier_products_raw_history_p2027.sql",
-     "supabase/rollbacks/20261112140000_rollback.sql"
-    ]
-   },
-   {
-    "sha": "5f18026",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "fix(security): documenta fn_get_rupture_alerts na allowlist do lint 0029 (#3522)",
-    "files": [
-     ".security/lint-0029-allowlist.json",
-     "docs/security/ALLOWLISTS_MEMORY.md"
-    ]
    }
   ],
   "hot_files": [
-   [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    10
-   ],
-   [
-    "docs/prod-readiness.md",
-    5
-   ],
    [
     "docs/coordenacao/conflitos-semanticos.md",
     3
    ],
    [
-    "scripts/drift-baseline.mjs",
-    2
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    3
    ],
    [
-    "tests/scripts/drift-baseline.test.mjs",
-    2
+    "docs/prod-readiness.md",
+    3
    ],
    [
     "e2e/flows/forgot-password-flow.spec.ts",
@@ -529917,20 +530276,8 @@
     2
    ],
    [
-    ".security/lint-0029-allowlist.json",
-    2
-   ],
-   [
-    "docs/security/ALLOWLISTS_MEMORY.md",
-    2
-   ],
-   [
-    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    2
-   ],
-   [
-    "supabase/baseline/20261108000000_cron_jobs.json",
-    2
+    "scripts/drift-baseline.mjs",
+    1
    ],
    [
     "supabase/baseline/20261015140000_ledger_versions.json",
@@ -529958,6 +530305,26 @@
    ],
    [
     "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261113225000_rollback.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261114014100_rollback.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261114014500_rollback.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261114031000_rollback.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261114170845_rollback.sql",
     1
    ]
   ]

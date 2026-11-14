@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4761)",
+   "TypeScript (4768)",
    "SQL (3399)",
    "Markdown (1019)",
    "JavaScript (443)",
@@ -355,7 +355,7 @@
    "@tanstack/react-query": "^5.106.1",
    "@tanstack/react-virtual": "^3.14.26",
    "date-fns": "4.4.0",
-   "framer-motion": "^14.10.0",
+   "framer-motion": "^14.11.1",
    "react": "^19.3.1",
    "react-day-picker": "^10.0.2",
    "react-dom": "^19.3.1",
@@ -4733,7 +4733,6 @@
    "VITE_AUTH_DEBUG",
    "VITE_ENABLE_NAV_METRICS",
    "VITE_GOTRUE_CAPTCHA",
-   "VITE_GRAVACAO_API_KEY",
    "VITE_NAV_METRICS_SAMPLE_RATE",
    "VITE_PUBLIC_URL",
    "VITE_SENTRY_DSN",
@@ -4835,7 +4834,6 @@
    "VITE_AUTH_DEBUG",
    "VITE_ENABLE_NAV_METRICS",
    "VITE_GOTRUE_CAPTCHA",
-   "VITE_GRAVACAO_API_KEY",
    "VITE_NAV_METRICS_SAMPLE_RATE",
    "VITE_PUBLIC_URL",
    "VITE_SHOW_DEV_INFRA_MESSAGES",
@@ -5180,10 +5178,6 @@
    },
    {
     "host": "api.openai.com",
-    "arquivos": 1
-   },
-   {
-    "host": "api.promobrindes.com.br",
     "arquivos": 1
    },
    {
@@ -5586,7 +5580,6 @@
    "PRODUCT_WEBHOOK_BATCH_SIZE",
    "PROMO_CHAMPIONS_WEBHOOK_SECRET",
    "TURNSTILE_SECRET_KEY",
-   "VITE_GRAVACAO_API_KEY",
    "VITE_SENTRY_DSN",
    "VITE_SENTRY_ENVIRONMENT",
    "WEBHOOK_DISPATCHER_SECRET"

@@ -8,8 +8,8 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (932)",
-   "src/pages (175)",
+   "src/components (931)",
+   "src/pages (176)",
    "recovery/src-legacy (100)"
   ],
   "hooks": [
@@ -18,14 +18,14 @@
    "src/components (75)"
   ],
   "servicos_logica": [
-   "src/lib (223)",
+   "src/lib (222)",
    "src/utils (30)",
    "src/services (9)"
   ],
   "testes": [
-   "tests/ (997)",
-   "co-localizado (__tests__) (634)",
-   "e2e/ (626)"
+   "tests/ (1001)",
+   "co-localizado (__tests__) (636)",
+   "e2e/ (627)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -47,7 +47,7 @@
   "edge_functions": "kebab-case (99%)",
   "tabelas": "snake_case (86%)"
  },
- "barrels_index": 45,
+ "barrels_index": 44,
  "extensao_componentes": [
   ".tsx (1225)"
  ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "Merge pull request #3619 from adm01-debug/claude/trem2-front-limpeza-261114-1850",
+   "Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850",
    "fix(db): RLS de pedidos e notificações, is_trusted, revoke em net/supabase_functions, ledger P09 e índices de FK (#3618)",
-   "test(e2e): specs de catálogo, estoque, kit, comparador e senha seguem a UI atual (#3617)",
-   "fix(security): baseline de policies acompanha stock_notes com initplan (destrava Gate 1.13) (#3616)",
-   "docs: auditoria exaustiva de 13 domínios (91 agentes, verificação dupla) (#3611)",
-   "Merge pull request #3608 from adm01-debug/claude/crm-disjuntor-indisponibilidade-261114"
+   "docs(coordenacao): ledger E188 dos 11 merges do trem de front e limpeza",
+   "Merge remote-tracking branch 'origin/claude/fix-route-scroll-reset-query-replace-261114-0005' into claude/trem2-front-limpeza-261114-1850"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

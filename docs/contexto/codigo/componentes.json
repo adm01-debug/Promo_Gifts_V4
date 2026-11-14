@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "total": 1225,
- "orfaos": 161,
+ "orfaos": 160,
  "nomes_duplicados": {
   "AdvancedPriceSearchPage": [
    "recovery/src-legacy/src/pages/AdvancedPriceSearchPage.tsx",
@@ -5866,7 +5866,7 @@
     "AIMockupAssistant"
    ],
    "export_default": null,
-   "linhas": 336,
+   "linhas": 345,
    "dominio": "components/ai",
    "hooks_locais": [],
    "tabelas": [],
@@ -6015,20 +6015,6 @@
    "edges": [],
    "usado_por": 1,
    "orfao": false
-  },
-  {
-   "arquivo": "src/components/auth/SupabaseConnectionDebug.tsx",
-   "exports": [
-    "SupabaseConnectionDebug"
-   ],
-   "export_default": null,
-   "linhas": 113,
-   "dominio": "components/auth",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 0,
-   "orfao": true
   },
   {
    "arquivo": "src/components/auth/TurnstileWidget.tsx",
@@ -7109,7 +7095,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 12,
+   "usado_por": 13,
    "orfao": false
   },
   {
@@ -8859,7 +8845,7 @@
     "MarketIntelligenceChart"
    ],
    "export_default": null,
-   "linhas": 711,
+   "linhas": 595,
    "dominio": "components/intelligence",
    "hooks_locais": [
     "useMarketIntelligenceMacro",
@@ -10575,7 +10561,7 @@
     "Header"
    ],
    "export_default": null,
-   "linhas": 561,
+   "linhas": 562,
    "dominio": "components/layout",
    "hooks_locais": [
     "useAuth",
@@ -14742,7 +14728,7 @@
     "GlobalSearch"
    ],
    "export_default": null,
-   "linhas": 479,
+   "linhas": 481,
    "dominio": "components/search",
    "hooks_locais": [],
    "tabelas": [],
@@ -15749,7 +15735,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 478,
+   "usado_por": 477,
    "orfao": false
   },
   {
@@ -15784,7 +15770,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 614,
+   "usado_por": 615,
    "orfao": false
   },
   {
@@ -17864,7 +17850,7 @@
     "Auth"
    ],
    "export_default": "Auth",
-   "linhas": 893,
+   "linhas": 892,
    "dominio": "pages/auth",
    "hooks_locais": [
     "useAuth",
@@ -18946,7 +18932,21 @@
     "MagicUpConfigPanel"
    ],
    "export_default": null,
-   "linhas": 643,
+   "linhas": 580,
+   "dominio": "pages/magic-up",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/pages/magic-up/MagicUpLogoCard.tsx",
+   "exports": [
+    "LogoCard"
+   ],
+   "export_default": null,
+   "linhas": 84,
    "dominio": "pages/magic-up",
    "hooks_locais": [],
    "tabelas": [],
@@ -19749,7 +19749,7 @@
     "AppRoutes"
    ],
    "export_default": null,
-   "linhas": 188,
+   "linhas": 190,
    "dominio": "routes",
    "hooks_locais": [],
    "tabelas": [],

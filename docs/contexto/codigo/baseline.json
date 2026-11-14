@@ -2,314 +2,314 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ee13f748c0cd5c94079094ae0ac6ea811f62c8cd",
+  "commit": "778dbf5ad000c18a185aba0140484f97ec7e41a7",
   "branch": "main",
-  "data_commit": "2026-11-14T16:20:04-03:00",
+  "data_commit": "2026-11-14T16:37:29-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
    {
-    "sha": "ee13f74",
+    "sha": "778dbf5a",
+    "data": "2026-11-14",
+    "assunto": "Merge pull request #3619 from adm01-debug/claude/trem2-front-limpeza-261114-1850"
+   },
+   {
+    "sha": "74ba1998",
+    "data": "2026-11-14",
+    "assunto": "Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850"
+   },
+   {
+    "sha": "ee13f748",
     "data": "2026-11-14",
     "assunto": "fix(db): RLS de pedidos e notificações, is_trusted, revoke em net/supabase_functions, ledger P09 e índices de FK (#3618)"
    },
    {
-    "sha": "c9bc677",
+    "sha": "a43a3127",
+    "data": "2026-11-14",
+    "assunto": "docs(coordenacao): ledger E188 dos 11 merges do trem de front e limpeza"
+   },
+   {
+    "sha": "ec6088c4",
+    "data": "2026-11-14",
+    "assunto": "Merge remote-tracking branch 'origin/claude/fix-route-scroll-reset-query-replace-261114-0005' into claude/trem2-front-li"
+   },
+   {
+    "sha": "930e3c0f",
+    "data": "2026-11-14",
+    "assunto": "Merge remote-tracking branch 'origin/claude/fix-ux-auditoria-link-botao-morto-261113-2338' into claude/trem2-front-limpe"
+   },
+   {
+    "sha": "ce4099ec",
+    "data": "2026-11-14",
+    "assunto": "Merge remote-tracking branch 'origin/claude/fix-busca-teclado-supersede-3535-261114-0045' into claude/trem2-front-limpez"
+   },
+   {
+    "sha": "e34f424a",
+    "data": "2026-11-14",
+    "assunto": "Merge remote-tracking branch 'origin/claude/fix-simulador-colunas-crm-supersede-3534-261114-0212' into claude/trem2-fron"
+   },
+   {
+    "sha": "a3964b2b",
+    "data": "2026-11-14",
+    "assunto": "Merge remote-tracking branch 'origin/claude/fix-csp-vaul-trava-rolagem-supersede-3531-261114-0208' into claude/trem2-fro"
+   },
+   {
+    "sha": "d83a3137",
+    "data": "2026-11-14",
+    "assunto": "Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850"
+   },
+   {
+    "sha": "c9bc6774",
     "data": "2026-11-14",
     "assunto": "test(e2e): specs de catálogo, estoque, kit, comparador e senha seguem a UI atual (#3617)"
    },
    {
-    "sha": "ab0817a",
+    "sha": "1d9185ef",
+    "data": "2026-11-14",
+    "assunto": "Merge remote-tracking branch 'origin/claude/chore-remove-external-db-dead-code-261114-0000' into claude/trem2-front-limp"
+   },
+   {
+    "sha": "140c527c",
+    "data": "2026-11-14",
+    "assunto": "Merge remote-tracking branch 'origin/claude/chore-qa-pages-dev-only-261113-2352' into claude/trem2-front-limpeza-261114-"
+   },
+   {
+    "sha": "cba82358",
+    "data": "2026-11-14",
+    "assunto": "Merge remote-tracking branch 'origin/claude/fix-dados-simulados-prod-261113-2355' into claude/trem2-front-limpeza-261114"
+   },
+   {
+    "sha": "84ee594d",
+    "data": "2026-11-14",
+    "assunto": "Merge remote-tracking branch 'origin/claude/fix-pdp-timeout-prefetch-supersede-3528-261114-0214' into claude/trem2-front"
+   },
+   {
+    "sha": "e0d98265",
+    "data": "2026-11-14",
+    "assunto": "Merge remote-tracking branch 'origin/claude/chore-framer-motion-14-11-1-supersede-3523-261114-0215' into claude/trem2-fr"
+   },
+   {
+    "sha": "bc33f333",
+    "data": "2026-11-14",
+    "assunto": "Merge remote-tracking branch 'origin/claude/chore-reforco-testes-mutantes-supersede-3516-261114-0219' into claude/trem2-"
+   },
+   {
+    "sha": "ab0817a6",
     "data": "2026-11-14",
     "assunto": "fix(security): baseline de policies acompanha stock_notes com initplan (destrava Gate 1.13) (#3616)"
    },
    {
-    "sha": "6ef19fd",
+    "sha": "6ef19fd5",
     "data": "2026-11-14",
     "assunto": "docs: auditoria exaustiva de 13 domínios (91 agentes, verificação dupla) (#3611)"
    },
    {
-    "sha": "584e1a3",
+    "sha": "584e1a3a",
     "data": "2026-11-14",
     "assunto": "Merge pull request #3608 from adm01-debug/claude/crm-disjuntor-indisponibilidade-261114"
    },
    {
-    "sha": "ae9d814",
+    "sha": "0f0cf4c7",
+    "data": "2026-11-14",
+    "assunto": "fix(security): CSP libera o <style> do vaul e a trava de rolagem do Radix (supersede #3531 #3532)"
+   },
+   {
+    "sha": "ae9d8147",
     "data": "2026-11-14",
     "assunto": "fix(security): crm-db-bridge — erro de esquema não abre o disjuntor"
    },
    {
-    "sha": "892494c",
+    "sha": "892494ca",
     "data": "2026-11-14",
     "assunto": "fix(security): CRM — vendedor vê os dele + os sem dono (supersede #3518) (#3583)"
    },
    {
-    "sha": "be2fb40",
+    "sha": "be2fb404",
     "data": "2026-11-14",
     "assunto": "fix(catalog): remover prefetch pós-login de v_products_public que nunca é lido (#3603)"
    },
    {
-    "sha": "7aa82a5",
+    "sha": "7aa82a59",
     "data": "2026-11-14",
     "assunto": "docs(migrations): recibos E15 das 10 migrations da #3584 (supersede #3590–#3599) (#3602)"
-   },
-   {
-    "sha": "06c262e",
-    "data": "2026-11-14",
-    "assunto": "docs: prod-readiness com lint, typecheck, build e testes no main final 371f52b (#3604)"
-   },
-   {
-    "sha": "371f52b",
-    "data": "2026-11-14",
-    "assunto": "docs: prod-readiness com o estado do main final e73a88d e a #3600 (#3601)"
-   },
-   {
-    "sha": "e73a88d",
-    "data": "2026-11-14",
-    "assunto": "fix(db): devolve 10 telas que falham por permissão ou RPC ausente (supersede #3432) (#3584)"
-   },
-   {
-    "sha": "74e2650",
-    "data": "2026-11-14",
-    "assunto": "docs: prod-readiness com a qualidade do main final e as 5 PRs bloqueadas pelo banco (#3585)"
-   },
-   {
-    "sha": "c913055",
-    "data": "2026-11-14",
-    "assunto": "fix(ci): credenciais E2E com fallback de vendedor para E2E_USER (supersede #3457) (#3578)"
-   },
-   {
-    "sha": "ee0ccd5",
-    "data": "2026-11-14",
-    "assunto": "docs(prontidao): diagnóstico das quedas do banco com leitura de logs e entregas de 14/11 (#3579)"
-   },
-   {
-    "sha": "c49e8e7",
-    "data": "2026-11-14",
-    "assunto": "docs(migrations): recibos E66 e E15 de 14/11 (supersede #3560 #3561 #3562 #3567 #3568 #3571 #3563 #3570 #3573 #3575) (#3"
-   },
-   {
-    "sha": "c6bc04a",
-    "data": "2026-11-14",
-    "assunto": "fix(db): snapshot de cron jobs sem o xbz-image-uploader desagendado (#3576)"
-   },
-   {
-    "sha": "e1dcade",
-    "data": "2026-11-14",
-    "assunto": "docs: prod-readiness regerado no main com provas de 14/11 (#3508)"
-   },
-   {
-    "sha": "1882e6c",
-    "data": "2026-11-14",
-    "assunto": "fix(db): desagenda o cron xbz-image-uploader (edge esboço, 401 a cada 10 min) (#3556)"
-   },
-   {
-    "sha": "4063ab4",
-    "data": "2026-11-14",
-    "assunto": "fix(db): snapshot de cron jobs reflete a CRON-003 aplicada (21 schedules) (#3572)"
-   },
-   {
-    "sha": "7536e94",
-    "data": "2026-11-14",
-    "assunto": "perf(db): proposta de reagendamento noturno dos crons pesados de fornecedores (#3554)"
-   },
-   {
-    "sha": "75030fa",
-    "data": "2026-11-14",
-    "assunto": "fix(db): PostgREST para de perder o LISTEN a cada 10 min (idle_session_timeout do authenticator) (#3569)"
-   },
-   {
-    "sha": "8fa5c43",
-    "data": "2026-11-14",
-    "assunto": "fix(ci): replay do E40 aceita o CREATE INDEX CONCURRENTLY da 20261113235000 (#3564)"
-   },
-   {
-    "sha": "1256b4a",
-    "data": "2026-11-14",
-    "assunto": "docs(edge-fn): recibos E66 dos deploys de 13/11 (supersede #3527 #3530 #3533 #3537 #3539 #3542 #3545) (#3546)"
-   },
-   {
-    "sha": "333fe6e",
-    "data": "2026-11-13",
-    "assunto": "perf(db): índice para ordenação por created_at no catálogo e VACUUM de tags (#3550)"
    }
   ],
-  "arquivos_mudados_7d": 2025,
+  "arquivos_mudados_7d": 2067,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 331
+    "mudancas": 629
+   },
+   {
+    "pasta": "src/components/products",
+    "mudancas": 330
    },
    {
     "pasta": "recovery/src-legacy/src",
     "mudancas": 316
    },
    {
-    "pasta": "src/components/products",
-    "mudancas": 177
-   },
-   {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 130
+    "mudancas": 246
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 116
+    "mudancas": 222
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 107
+    "mudancas": 193
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 96
-   },
-   {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 96
+    "mudancas": 188
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 88
+    "mudancas": 171
    },
    {
-    "pasta": "src/components/mockup",
-    "mudancas": 79
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 165
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 78
+    "mudancas": 151
+   },
+   {
+    "pasta": "src/components/mockup",
+    "mudancas": 138
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 75
-   },
-   {
-    "pasta": "src/components/kit-builder",
-    "mudancas": 65
+    "mudancas": 134
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 63
+    "mudancas": 113
+   },
+   {
+    "pasta": "src/components/kit-builder",
+    "mudancas": 112
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 62
+    "mudancas": 109
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 54
-   },
-   {
-    "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 49
+    "mudancas": 66
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 47
+    "mudancas": 56
+   },
+   {
+    "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "mudancas": 50
    },
    {
     "arquivo": "package.json",
-    "mudancas": 26
+    "mudancas": 30
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 18
+    "mudancas": 21
    },
    {
     "arquivo": "analise-prs/progresso.json",
-    "mudancas": 15
+    "mudancas": 16
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 13
+    "mudancas": 14
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "mudancas": 11
+   },
+   {
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
     "mudancas": 10
    },
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "AGENTS.md",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "CLAUDE.md",
-    "mudancas": 7
+    "mudancas": 10
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 7
+    "mudancas": 9
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 7
+    "arquivo": "docs/ci/SEGREDOS.md",
+    "mudancas": 9
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 7
+    "mudancas": 9
    },
    {
-    "arquivo": "docs/prod-readiness.md",
-    "mudancas": 7
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "AGENTS.md",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "CLAUDE.md",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "mudancas": 8
    },
    {
     "arquivo": "scripts/lib/baseline-gate.mjs",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "scripts/validate-quotes-list.mjs",
-    "mudancas": 7
+    "mudancas": 8
+   },
+   {
+    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
+    "mudancas": 8
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 418
-   },
-   {
-    "autor": "Joaquim Ataides",
-    "commits": 92
+    "commits": 466
    },
    {
     "autor": "Claude",
-    "commits": 72
+    "commits": 99
+   },
+   {
+    "autor": "Joaquim Ataides",
+    "commits": 95
    },
    {
     "autor": "github-actions[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10147,
-  "arquivos_codigo": 5212,
-  "linhas_codigo": 996066,
+  "arquivos_total": 10154,
+  "arquivos_codigo": 5219,
+  "linhas_codigo": 996631,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 545,
   "migrations": 3084,
   "cron_jobs": 122,
-  "testes": 2450,
+  "testes": 2458,
   "workflows": 98,
   "scripts": 272,
   "docs_md": 1019
@@ -548,7 +548,7 @@
   },
   "e2e/flows": {
    "arquivos": 183,
-   "linhas": 25326
+   "linhas": 25329
   },
   "e2e/future-stock.spec.ts": {
    "arquivos": 1,
@@ -563,8 +563,8 @@
    "linhas": 20
   },
   "e2e/helpers": {
-   "arquivos": 36,
-   "linhas": 5025
+   "arquivos": 37,
+   "linhas": 5042
   },
   "e2e/initial-load.spec.ts": {
    "arquivos": 1,
@@ -624,11 +624,11 @@
   },
   "e2e/optimized-image-detection.spec.ts": {
    "arquivos": 1,
-   "linhas": 105
+   "linhas": 108
   },
   "e2e/optimized-image-visual.spec.ts": {
    "arquivos": 1,
-   "linhas": 102
+   "linhas": 105
   },
   "e2e/orcamentos": {
    "arquivos": 1,
@@ -704,7 +704,7 @@
   },
   "e2e/promoflix-player.spec.ts": {
    "arquivos": 1,
-   "linhas": 128
+   "linhas": 130
   },
   "e2e/protected-routes.spec.ts": {
    "arquivos": 1,
@@ -852,7 +852,7 @@
   },
   "e2e/tools-module.spec.ts": {
    "arquivos": 1,
-   "linhas": 565
+   "linhas": 567
   },
   "e2e/tooltips-a11y.spec.ts": {
    "arquivos": 1,
@@ -1883,8 +1883,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1357,
-   "linhas": 273230
+   "arquivos": 1359,
+   "linhas": 273401
   },
   "src/config": {
    "arquivos": 1,
@@ -1908,15 +1908,15 @@
   },
   "src/hooks": {
    "arquivos": 455,
-   "linhas": 85705
+   "linhas": 85730
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66208
   },
   "src/lib": {
-   "arquivos": 327,
-   "linhas": 50553
+   "arquivos": 326,
+   "linhas": 50320
   },
   "src/logic": {
    "arquivos": 4,
@@ -1927,12 +1927,12 @@
    "linhas": 63
   },
   "src/pages": {
-   "arquivos": 350,
-   "linhas": 82518
+   "arquivos": 351,
+   "linhas": 82539
   },
   "src/routes": {
    "arquivos": 14,
-   "linhas": 1253
+   "linhas": 1260
   },
   "src/services": {
    "arquivos": 27,
@@ -1948,7 +1948,7 @@
   },
   "src/tests": {
    "arquivos": 33,
-   "linhas": 5068
+   "linhas": 5090
   },
   "src/types": {
    "arquivos": 26,
@@ -2036,7 +2036,7 @@
   },
   "tests/components": {
    "arquivos": 149,
-   "linhas": 33066
+   "linhas": 33078
   },
   "tests/config": {
    "arquivos": 6,
@@ -2048,7 +2048,7 @@
   },
   "tests/contracts": {
    "arquivos": 17,
-   "linhas": 4768
+   "linhas": 4777
   },
   "tests/e2e": {
    "arquivos": 48,
@@ -2060,7 +2060,7 @@
   },
   "tests/edge-functions": {
    "arquivos": 173,
-   "linhas": 13039
+   "linhas": 13128
   },
   "tests/fixtures": {
    "arquivos": 3,
@@ -2079,8 +2079,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 128,
-   "linhas": 17335
+   "arquivos": 129,
+   "linhas": 17465
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2140,15 +2140,15 @@
   },
   "tests/scripts": {
    "arquivos": 176,
-   "linhas": 27622
+   "linhas": 27782
   },
   "tests/search": {
    "arquivos": 1,
    "linhas": 54
   },
   "tests/security": {
-   "arquivos": 23,
-   "linhas": 2268
+   "arquivos": 26,
+   "linhas": 2390
   },
   "tests/setup-ref-warning-capture.ts": {
    "arquivos": 1,
@@ -3214,7 +3214,6 @@
    "src/components/admin/ProductPersonalizationManager.tsx",
    "src/components/admin/products/CategorySelect.tsx",
    "src/components/admin/SellerDiscountLimitsPanel.tsx",
-   "src/components/auth/SupabaseConnectionDebug.tsx",
    "src/components/bi/ExportDossierButton.tsx",
    "src/components/BridgeStatusBanner.tsx",
    "src/components/cart/BundleSuggestionCard.tsx",
@@ -3410,7 +3409,6 @@
    "VITE_AUTH_DEBUG",
    "VITE_ENABLE_NAV_METRICS",
    "VITE_GOTRUE_CAPTCHA",
-   "VITE_GRAVACAO_API_KEY",
    "VITE_NAV_METRICS_SAMPLE_RATE",
    "VITE_PUBLIC_URL",
    "VITE_SHOW_DEV_INFRA_MESSAGES",

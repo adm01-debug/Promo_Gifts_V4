@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `ee13f748c0` · branch `main` · 2026-11-14 19:21 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `778dbf5ad0` · branch `main` · 2026-11-14 19:40 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3103,7 +3103,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `login-email` | type=email | `src/pages/auth/Auth.tsx` |
 | `magazine-intro-text` | max | `src/pages/magazine/components/steps/ContentStep.tsx` |
 | `magazine-closing-text` | max | `src/pages/magazine/components/steps/ContentStep.tsx` |
-| `magic-logo-upload` | accept=image/*, disabled=m.logoUploading | `src/pages/magic-up/MagicUpConfigPanel.tsx` |
+| `magic-logo-upload` | accept=image/*, disabled=m.logoUploading | `src/pages/magic-up/MagicUpLogoCard.tsx` |
 | `visual-search-input` | accept=image/* | `src/pages/tools/VisualSearchPage.tsx` |
 
 ## G. Fórmulas e derivações (como valores são calculados)
@@ -3637,10 +3637,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **formatCurrency(v: number)** — `src/components/intelligence/IntelligenceKPICards.tsx`
   ```
   
-  ```
-- **generateMockMarketData(days: number)** — `src/components/intelligence/MarketIntelligenceChart.tsx`
-  ```
-  const daily: MacroMarketPoint[] = []; const now = new Date(); let stock = 3200 + Math.floor(seededRandom(days) * 800); for (let i = days - 1; i >= 0; i--) { const d = new Date(now); d.setDate(d.getDate() - i); const dateStr = d.toISOString().split('T')[0]; const dayOfWeek = d.getDay(); const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; const baseDepleted = isWeekend ? 15 : 45; const depleted = Math.max(0, Math.round(baseDepleted + (seededRandom(i * 3 + 1) - 0.4) * 30)); const restocked = seed …
   ```
 - **formatCurrency(v: number | null | undefined)** — `src/components/intelligence/ProductRankingSearch.tsx`
   ```
@@ -5513,6 +5509,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `DESCRIPTIVE_TAG_CAP` | `24` | `src/hooks/products/useProductMatch.ts` |
 | `MATERIAL_POINTS` | `6` | `src/hooks/products/useProductMatch.ts` |
 | `COMPLEMENTARY_POINTS` | `20` | `src/hooks/products/useProductMatch.ts` |
+| `PRODUCT_DETAIL_TIMEOUT_MS` | `15` | `src/hooks/products/useProducts.ts` |
 | `CHUNK` | `50` | `src/hooks/products/useProductsByColor.ts` |
 | `PAGE` | `1000` | `src/hooks/products/useProductsByColor.ts` |
 | `MAX_PAGES` | `50` | `src/hooks/products/useProductsByColor.ts` |
@@ -5550,7 +5547,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `CACHE_TTL_MS` | `60` | `src/hooks/ui/useWorkspaceNotifications.tsx` |
 | `PREFETCH_MIN_INTERVAL_MS` | `5` | `src/hooks/ui/useWorkspaceNotifications.tsx` |
 | `CACHE_TTL_MS` | `12` | `src/hooks/voice/scribeTokenCache.ts` |
-| `MAX_ENTRIES` | `5` | `src/hooks/voice/useVoiceHistory.ts` |
 | … +338 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
@@ -6340,7 +6336,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | DOWNLOAD_SIZE_LIMIT | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_ACTION_AFTER | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_JSON_KEY | `scripts/diagnose-personalization-artifact.py` |
-| … +1248 linhas — lista completa em `context.json` | |
+| … +1244 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6463,7 +6459,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21084 testes em 2129 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21148 testes em 2136 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6567,6 +6563,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/ai-features.test.ts` | 31 | ai-recommendations · product_id válido → 200 + recomendações · contexto de orçamento → 200 + recomendações contextuais · produto inexistente → 404 … |
 | `tests/edge-functions/integration/notifications.test.ts` | 31 | send-notification · notificação válida → 200 + notification_id · notificação broadcast para múltiplos usuários → 200 + count · user_id inexistente → 404 … |
 | `tests/lib/date-utils-extended.test.ts` | 31 | formatDate — extended · formats Date object dd/MM/yyyy · formats ISO string · formats timestamp … |
+| `tests/scripts/check-conflict-ledger.test.mjs` | 31 | check-conflict-ledger: comportamento básico (sem bug) · sem GITHUB_BASE_REF/GITHUB_HEAD_REF, pula a verificação com exit 0 · sem commits de merge semântico, passa com exit 0 · commit merge(pr-N): sem atualizar o ledger + --gate => exit 1 … |
 | `tests/unit/quote-status-config.test.ts` | 31 | QUOTE_STATUS_CONFIG shape · defines all 10 expected statuses · every entry has a non-empty label · every entry has a color string … |
 | `src/pages/products/seller-carts/__tests__/cartViewModePrefs.test.ts` | 30 | getLocalDateStamp — timezone local · usa componentes de data LOCAL (não UTC) · formata com padding de mês/dia · não depende de toISOString (UTC) … |
 | `src/utils/masks.test.ts` | 30 | Utility Masks & Validation · CNPJ Masking & Validation · masks a raw 14-digit string to CNPJ format · masks the reference format 02.931.668/0001-88 … |
@@ -6645,7 +6642,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/manage-users.test.ts` | 23 | manage-users · listar usuários (GET) · admin recebe 200 com array de usuários · lista não expõe password_hash ou tokens … |
 | `tests/edge-functions/integration/webhooks.test.ts` | 23 | webhook-inbound · payload válido · POST com envelope v2 → 200 · idempotência: segundo request com mesma idempotency_key → 200 sem duplicar … |
 | `tests/lib/catalog-stock-status.test.ts` | 23 | getCatalogStockStatus — fronteiras do limiar padrão (10) · stock=%s => %s · getCatalogStockStatus — entradas anômalas normalizam para out-of-stock · %s => out-of-stock … |
-| `tests/scripts/check-conflict-ledger.test.mjs` | 23 | check-conflict-ledger: comportamento básico (sem bug) · sem GITHUB_BASE_REF/GITHUB_HEAD_REF, pula a verificação com exit 0 · sem commits de merge semântico, passa com exit 0 · commit merge(pr-N): sem atualizar o ledger + --gate => exit 1 … |
 | `tests/scripts/check-workflow-contracts-parser.test.mjs` | 23 | hasPullRequestTrigger · %j → %s · C2/C12/C22 agora valem para pull_request_target (gatilho mais perigoso) · comentários não aplicam restrições de PR a um workflow apenas push … |
 | `tests/unit/db-retry.test.ts` | 23 | A: erro exato do incidente 403 · B: status no texto (coderabbit Major) · C: UUID contendo dígitos de status · 4403 dentro de UUID não vira permanente … |
 | `tests/unit/forecast.test.ts` | 23 | linearRegression · returns zero slope/intercept/std for empty array · returns zero slope for single element (uses element as intercept) · computes slope=0 for a flat series … |
@@ -6767,7 +6763,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/product-webhook.test.ts` | 18 | product-webhook · evento product.created · retorna 200 para evento product.created válido · evento product.updated … |
 | `tests/hooks/useGlobalSearch-voice.test.ts` | 18 | Voice Action Handler Logic · navigate action · should extract route from navigate action · should handle navigate without route gracefully … |
 | `tests/lib/product-types.test.ts` | 18 | getProductImageUrl · should prefer primary_image_url · should fallback to image_url · should fallback to first image in images array … |
-| … +1829 linhas — lista completa em `context.json` | | |
+| … +1836 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7235,4 +7231,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Laser detection — must come before UV check since "Laser UV" exists | `src/components/mockup/techniqueColorUtils.ts` |
 | a caixa cheia é um limite superior: a bbox nunca subestima a marca girada e um | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
 | * Filtro de técnica EFETIVO — o mesmo que a prévia aplica. Decide se há regra. */ | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
-| … +1254 linhas — lista completa em `context.json` | |
+| … +1256 linhas — lista completa em `context.json` | |

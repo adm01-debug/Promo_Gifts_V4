@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 294,
+ "total": 293,
  "por_camada": {
   "api": 3,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 223,
+  "lib": 222,
   "python": 9,
   "services": 9,
   "stores": 8,
@@ -698,11 +698,10 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 402,
+   "usado_por": 401,
    "usado_por_modulos": [
     "components/admin",
     "components/ai",
-    "components/auth",
     "components/bi",
     "components/cart",
     "components/catalog",
@@ -3364,18 +3363,13 @@
     "CustomizationOptionResult",
     "CustomizationPriceParams",
     "CustomizationPriceResult",
-    "backfillProductPrintAreas",
     "dispatchRpc",
-    "findFornecedorPriceTable",
     "getCategoryDescendants",
     "getCustomizationPrice",
-    "getProductCustomizationOptions",
-    "getProductPrintAreas",
-    "getProductPrintAreasV2",
-    "linkProductPrintAreas"
+    "getProductCustomizationOptions"
    ],
    "export_default": null,
-   "linhas": 285,
+   "linhas": 217,
    "tabelas": [
     "tabela_preco_gravacao_oficial"
    ],
@@ -4521,7 +4515,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 16,
+   "usado_por": 17,
    "usado_por_modulos": [
     "components/admin",
     "components/catalog",
@@ -4552,11 +4546,10 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 299,
+   "usado_por": 298,
    "usado_por_modulos": [
     "components",
     "components/admin",
-    "components/auth",
     "components/bi",
     "components/cart",
     "components/catalog",
@@ -5296,13 +5289,11 @@
     "PricingService",
     "fetchPriceTables",
     "fetchPriceTablesByTechnique",
-    "fetchTechniqueById",
-    "fetchTechniquesList",
     "transformRawToTabelas",
     "transformRawToTecnicas"
    ],
    "export_default": null,
-   "linhas": 29,
+   "linhas": 25,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -5322,11 +5313,10 @@
    "arquivo": "src/lib/personalization/repositories/index.ts",
    "camada": "lib",
    "exports": [
-    "PriceTableRepository",
-    "TechniqueRepository"
+    "PriceTableRepository"
    ],
    "export_default": null,
-   "linhas": 15,
+   "linhas": 13,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -5370,36 +5360,6 @@
    "flags": [],
    "papeis": [],
    "usado_por": 3,
-   "usado_por_modulos": [
-    "lib/personalization"
-   ],
-   "coberto_por_testes": 0,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/lib/personalization/repositories/technique.repository.ts",
-   "camada": "lib",
-   "exports": [
-    "TechniqueQueryOptions",
-    "create",
-    "findAll",
-    "findByFornecedor",
-    "findById",
-    "update"
-   ],
-   "export_default": null,
-   "linhas": 159,
-   "tabelas": [],
-   "rpcs": [],
-   "edges": [],
-   "env": [
-    "VITE_GRAVACAO_API_KEY"
-   ],
-   "externos": [],
-   "zod_schemas": 0,
-   "flags": [],
-   "papeis": [],
-   "usado_por": 2,
    "usado_por_modulos": [
     "lib/personalization"
    ],
@@ -7443,7 +7403,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 650,
+   "usado_por": 651,
    "usado_por_modulos": [
     "components",
     "components/admin",
@@ -7894,7 +7854,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 3,
+   "usado_por": 2,
    "usado_por_modulos": [
     "components/products",
     "hooks/products"

@@ -4380,12 +4380,6 @@
    "src/components/ui/label.tsx",
    "src/hooks/auth/index.ts"
   ],
-  "src/components/auth/SupabaseConnectionDebug.tsx": [
-   "src/components/ui/badge.tsx",
-   "src/components/ui/card.tsx",
-   "src/integrations/supabase/client.ts",
-   "src/lib/logger.ts"
-  ],
   "src/components/bi/BIAiCopilot.tsx": [
    "src/components/ui/button.tsx",
    "src/components/ui/input.tsx",
@@ -5729,6 +5723,7 @@
    "src/hooks/intelligence/index.ts"
   ],
   "src/components/intelligence/MarketIntelligenceChart.tsx": [
+   "src/components/common/EmptyState.tsx",
    "src/components/products/SupplierChartFilter.tsx",
    "src/components/ui/badge.tsx",
    "src/components/ui/card.tsx",
@@ -10780,8 +10775,8 @@
    "src/hooks/products/index.ts"
   ],
   "src/hooks/products/usePrefetchProduct.ts": [
-   "src/lib/query-config.ts",
-   "src/services/productService.ts"
+   "src/hooks/products/useProducts.ts",
+   "src/lib/query-config.ts"
   ],
   "src/hooks/products/useProductAnalytics.ts": [
    "src/contexts/AuthContext.tsx",
@@ -11875,7 +11870,6 @@
    "src/lib/personalization/calculators.ts",
    "src/lib/personalization/repositories/index.ts",
    "src/lib/personalization/repositories/priceTable.repository.ts",
-   "src/lib/personalization/repositories/technique.repository.ts",
    "src/lib/personalization/selectors.ts",
    "src/lib/personalization/services/index.ts",
    "src/lib/personalization/services/pricing.service.ts",
@@ -11884,16 +11878,12 @@
    "src/lib/personalization/validators.ts"
   ],
   "src/lib/personalization/repositories/index.ts": [
-   "src/lib/personalization/repositories/priceTable.repository.ts",
-   "src/lib/personalization/repositories/technique.repository.ts"
+   "src/lib/personalization/repositories/priceTable.repository.ts"
   ],
   "src/lib/personalization/repositories/priceTable.repository.ts": [
    "src/lib/db/postgrest.ts",
    "src/lib/logger.ts",
    "src/lib/personalization/transformers.ts",
-   "src/types/tecnica-unificada.ts"
-  ],
-  "src/lib/personalization/repositories/technique.repository.ts": [
    "src/types/tecnica-unificada.ts"
   ],
   "src/lib/personalization/rpc-validator.ts": [
@@ -13554,9 +13544,16 @@
    "src/components/ui/textarea.tsx",
    "src/hooks/intelligence/index.ts",
    "src/lib/utils.ts",
+   "src/pages/magic-up/MagicUpLogoCard.tsx",
    "src/pages/magic-up/MagicUpSelectedCompanyRow.tsx",
    "src/pages/magic-up/magicUpStrategy.ts",
    "src/types/crm.ts"
+  ],
+  "src/pages/magic-up/MagicUpLogoCard.tsx": [
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/hooks/intelligence/index.ts",
+   "src/lib/utils.ts"
   ],
   "src/pages/magic-up/MagicUpResultPanel.tsx": [
    "src/components/magic-up/AdImageResult.tsx",
@@ -14230,9 +14227,9 @@
    "src/pages/__visual/QuoteItemEditorSheetHarness.tsx",
    "src/pages/__visual/QuoteItemsListMobileHarness.tsx",
    "src/pages/__visual/QuoteViewOrderHarness.tsx",
+   "src/pages/tools/OptimizedImageDemo.tsx",
    "src/routes/admin-routes.tsx",
    "src/routes/client-routes.tsx",
-   "src/routes/lazy-pages.ts",
    "src/routes/product-routes.tsx",
    "src/routes/public-routes.tsx",
    "src/routes/quote-routes.tsx",
@@ -14269,7 +14266,6 @@
    "src/pages/CustomizableDashboard.tsx",
    "src/pages/Index.tsx",
    "src/pages/NotFound.tsx",
-   "src/pages/PromoFlixPlayground.tsx",
    "src/pages/QAPage.tsx",
    "src/pages/SidebarQAPage.tsx",
    "src/pages/Simulation.tsx",
@@ -14357,7 +14353,6 @@
    "src/pages/tools/CoverageInsightsDashboardPage.tsx",
    "src/pages/tools/DropboxBrowserPage.tsx",
    "src/pages/tools/MagicUp.tsx",
-   "src/pages/tools/OptimizedImageDemo.tsx",
    "src/pages/tools/PriceSimulatorPage.tsx",
    "src/pages/tools/SimuladorWizard.tsx",
    "src/pages/tools/VisualSearchPage.tsx"
@@ -14384,6 +14379,8 @@
   "src/routes/tools-routes.tsx": [
    "src/components/layout/DevRoute.tsx",
    "src/contexts/AuthContext.tsx",
+   "src/lib/lazyWithRetry.ts",
+   "src/pages/PromoFlixPlayground.tsx",
    "src/pages/magazine/components/MagazineErrorBoundary.tsx",
    "src/routes/lazy-pages.ts"
   ],

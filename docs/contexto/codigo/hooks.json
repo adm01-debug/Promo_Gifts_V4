@@ -9191,7 +9191,7 @@
     "src/components/intelligence/MarketIntelligenceChart.tsx",
     "src/hooks/intelligence/index.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/intelligence/usePromoSales90dByProduct.ts",
@@ -10739,7 +10739,7 @@
    "hooks_exportados": [
     "usePrefetchProduct"
    ],
-   "linhas": 24,
+   "linhas": 28,
    "dominio": "hooks/products",
    "tabelas": [],
    "rpcs": [],
@@ -10754,7 +10754,7 @@
     "src/components/products/ProductCard.tsx",
     "src/hooks/products/index.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/products/useProductAnalytics.ts",
@@ -11047,22 +11047,23 @@
     "useProducts",
     "useRelatedProducts"
    ],
-   "linhas": 113,
+   "linhas": 133,
    "dominio": "hooks/products",
    "tabelas": [],
    "rpcs": [],
    "edges": [],
    "hooks_internos": [],
    "canais_realtime": [],
-   "usado_por": 5,
+   "usado_por": 6,
    "usado_por_arquivos": [
     "src/components/products/ProductQuickActionsFAB.tsx",
     "src/components/products/QuickViewThumb.tsx",
     "src/hooks/products/index.ts",
+    "src/hooks/products/usePrefetchProduct.ts",
     "src/hooks/products/useProductFuzzySearch.ts",
     "src/pages/magazine/components/steps/ProductsStep.tsx"
    ],
-   "coberto_por_testes": 5
+   "coberto_por_testes": 6
   },
   {
    "arquivo": "src/hooks/products/useProductsByCategory.ts",
@@ -12336,7 +12337,7 @@
    "hooks_exportados": [
     "useSimulation"
    ],
-   "linhas": 606,
+   "linhas": 607,
    "dominio": "hooks/simulation",
    "tabelas": [],
    "rpcs": [],
