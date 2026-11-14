@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "4063ab4e5db0746e0266e8d79d88c62fea7ddbb0",
+  "sha": "1882e6c133189baf8371c1697b1eb77944b59996",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 05:57 UTC",
-  "files_total": 10042,
-  "code_files": 8578,
-  "code_lines": 1212245
+  "generated_at": "2026-11-14 06:08 UTC",
+  "files_total": 10044,
+  "code_files": 8580,
+  "code_lines": 1212272
  },
  "version": "1.3.2",
- "facts_hash": "7d7ecbc6893d7675",
+ "facts_hash": "4ff91c9727e93009",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1221,7 +1221,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3367,
+   ".sql": 3369,
    ".ts": 2904,
    ".tsx": 1858,
    ".mjs": 436,
@@ -96131,6 +96131,7 @@
    "supabase/migrations/20261112140000_fix_rls_supplier_products_raw_history_p2027.sql",
    "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql",
    "supabase/migrations/20261113235800_cron003_reagendamento_noturno_fornecedores.sql",
+   "supabase/migrations/20261114003000_fix_unschedule_cron_xbz_image_uploader.sql",
    "supabase/migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
@@ -96199,6 +96200,7 @@
    "supabase/rollbacks/20261112140000_rollback.sql",
    "supabase/rollbacks/20261113235000_rollback.sql",
    "supabase/rollbacks/20261113235800_rollback.sql",
+   "supabase/rollbacks/20261114003000_rollback.sql",
    "supabase/rollbacks/20261114040000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
@@ -148768,8 +148770,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3067,
-   "lines": 220594,
+   "files": 3068,
+   "lines": 220609,
    "tables": [
     "...",
     "admin_audit_log",
@@ -148867,8 +148869,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 69,
-   "lines": 2018,
+   "files": 70,
+   "lines": 2030,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -148942,6 +148944,7 @@
     "supabase/rollbacks/20261112140000_rollback.sql",
     "supabase/rollbacks/20261113235000_rollback.sql",
     "supabase/rollbacks/20261113235800_rollback.sql",
+    "supabase/rollbacks/20261114003000_rollback.sql",
     "supabase/rollbacks/20261114040000_rollback.sql",
     "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql"
    ]
@@ -504667,6 +504670,10 @@
    "path": "supabase/migrations/20261113235800_cron003_reagendamento_noturno_fornecedores.sql",
    "lines": 68
   },
+  "supabase/migrations/20261114003000_fix_unschedule_cron_xbz_image_uploader.sql": {
+   "path": "supabase/migrations/20261114003000_fix_unschedule_cron_xbz_image_uploader.sql",
+   "lines": 15
+  },
   "supabase/migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql": {
    "path": "supabase/migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql",
    "lines": 22,
@@ -504952,6 +504959,10 @@
   "supabase/rollbacks/20261113235800_rollback.sql": {
    "path": "supabase/rollbacks/20261113235800_rollback.sql",
    "lines": 40
+  },
+  "supabase/rollbacks/20261114003000_rollback.sql": {
+   "path": "supabase/rollbacks/20261114003000_rollback.sql",
+   "lines": 12
   },
   "supabase/rollbacks/20261114040000_rollback.sql": {
    "path": "supabase/rollbacks/20261114040000_rollback.sql",
@@ -528448,10 +528459,21 @@
   }
  },
  "git": {
-  "sha": "4063ab4e5db0746e0266e8d79d88c62fea7ddbb0",
+  "sha": "1882e6c133189baf8371c1697b1eb77944b59996",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1882e6c",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(db): desagenda o cron xbz-image-uploader (edge esboço, 401 a cada 10 min) (#3556)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261114003000_fix_unschedule_cron_xbz_image_uploader.sql",
+     "supabase/rollbacks/20261114003000_rollback.sql"
+    ]
+   },
    {
     "sha": "4063ab4",
     "date": "2026-11-14",
@@ -528800,19 +528822,12 @@
     "files": [
      "package.json"
     ]
-   },
-   {
-    "sha": "1083b36",
-    "date": "2026-11-13",
-    "author": "Joaquim Ataides",
-    "subject": "Merge branch 'main' into claude/lote-pilha-v2-261112",
-    "files": []
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    8
+    9
    ],
    [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
@@ -528837,6 +528852,14 @@
    [
     "package-lock.json",
     2
+   ],
+   [
+    "supabase/migrations/20261114003000_fix_unschedule_cron_xbz_image_uploader.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261114003000_rollback.sql",
+    1
    ],
    [
     "supabase/baseline/20261108000000_cron_jobs.json",
@@ -528880,14 +528903,6 @@
    ],
    [
     "supabase/functions/process-scheduled-reports/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/send-scheduled-reports/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/send-transactional-email/index.ts",
     1
    ]
   ]
