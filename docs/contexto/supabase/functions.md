@@ -1,7 +1,5 @@
 # Functions / Procedures
 
-> ⚠️ Seção `functions` não pôde ser atualizada nesta coleta (ver errors.md); mostrando a versão anterior.
-
 Corpo completo em `functions/<schema>/<nome>__<hash>.sql`. Entradas `aggregate` e `window` são inventariadas sem corpo SQL. Função em schema exposto com EXECUTE para anon/authenticated = endpoint RPC (`/rest/v1/rpc/<nome>`). `security definer` executa com privilégios do owner — exige `SET search_path`.
 
 Colunas de uso: **código** = referências estáticas em arquivos do repo (`.rpc('fn')` ou `fn(`), **cron** = jobs do pg_cron que a executam, **triggers** = triggers que a disparam, **banco** = outras funções e views que a usam. Busca é por nome (overloads compartilham). Assinaturas DDL, histórico e arquivos de teste não demonstram uso atual no código. Ausência de referência não prova que uma função pode ser removida.
@@ -16,7 +14,7 @@ Cada fonte é atualizada independentemente; referências anteriores não comprov
 | cron | coleta atual |
 | triggers | coleta atual |
 | views | coleta atual |
-| outras funções | coleta anterior; corpos SQL não atualizados |
+| outras funções | coleta atual |
 
 | função | args | retorno | linguagem | tipo | trigger fn | security definer | volatilidade | config | EXECUTE (roles API) | código | cron | triggers | banco | comentário |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
