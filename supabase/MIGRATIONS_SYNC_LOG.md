@@ -1467,3 +1467,14 @@ Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261113235800` | `cron003_reagendamento_noturno_fornecedores` | `f0cddef3bb3e9b322c5e9767a1be6e0bb916d65b7bd8d60278e8962ea4db680e` | pendente — aprovada pelo dono no chat da sessão Claude (2026-11-14, "Eu aprovo todas!"); aplicação só por `db-apply-migration.yml` após o merge |
+
+## 2026-11-14 — Desagenda o cron `xbz-image-uploader` (edge esboço, 401 a cada 10 min)
+
+Consulta read-only em produção (2026-11-14): `cron.job` jobid=268 `xbz-image-uploader` ativo (`3,13,23,33,43,53 * * * *`)
+chamando a edge `xbz-image-uploader`, que é um esboço (`not_implemented`) sem o segredo `XBZ_IMAGE_UPLOADER_CRON_SECRET`
+e sem a tabela `xbz_image_import_staging`; logs 24h: 317 POST → 401, 0 → 200. Ainda não está no ledger; aplicação só por
+`db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114003000` | `fix_unschedule_cron_xbz_image_uploader` | `c742a627a964faf49ae9be913336b8aafaa76e8b6f7a3e95bc266d9cc2a54efa` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-cron-xbz-image-uploader-261114-0030`) |
