@@ -1428,3 +1428,17 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261112140000` | `fix_rls_supplier_products_raw_history_p2027` | `6aa856168cc1ef0e6308757fe01b04f4917f043170ff3ce996e0933a52575b9f` | **aplicada em 13/11/2026** pelo `db-apply-migration.yml` (run 43471685129; recibo E15 acima) |
+
+## 2026-11-14 — P09 revisada (supersede #3411): ledger só com versões verificadas
+
+A P09 (`20261108020000`, nunca aplicada) registraria 432 versões como aplicadas; a revisão da PR #3411
+(`20261112013000`, nunca aplicada) tirou 48 com objeto ausente. A verificação ao vivo de 2026-11-14
+(`pg_class`, `pg_proc`, `pg_policies`, `pg_trigger`, `pg_constraint`, `cron.job` e o ledger) achou mais 23
+versões que criam índice, função, trigger, política, constraint ou cron que não existe em produção, sem
+`DROP`/`RENAME` por migration posterior já aplicada e sem gêmea de conteúdo equivalente no ledger. Elas ficam de
+fora (lista no cabeçalho da migration). Registra 361 versões; nenhuma estava no ledger. Só escreve no ledger,
+sem DDL de schema. Rollback: `supabase/rollbacks/20261114014500_rollback.sql`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114014500` | `p09_reconcile_ledger_schema_migrations` | `90ed5483eb09a7b985a0b56eba24c4145e40cd9064ae88dbb8d91c06b6c25e33` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono no chat de 2026-11-14) |
