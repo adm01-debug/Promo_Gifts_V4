@@ -1,92 +1,18 @@
 {
-  "snapshot_at": "2026-11-09T17:00:00Z",
-  "versao": 7,
-  "main_sha_inicio": "ba1c3fb13815467c33de069caee564f76ebfd9f5",
-  "main_sha_final": "6b859b0fbfa95e34493900cf0137402e95e46823",
-  "gate_final_status": "QUEUED",
-  "gate_final_run_id": 42562038007,
-  "zombie_run_id": 39698009932,
-  "zombie_status": "in_progress desde 2026-10-22T00:09:55Z — API retorna 409 para cancel/force_cancel, 403 para delete — requer acao manual em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39698009932",
-  "checks_main_sha_final": [
-    {"name": "Vercel", "status": "completed", "conclusion": "success", "required": false, "nota": "Deploy confirmado"},
-    {"name": "Gate Final - Deploy Ready", "status": "queued", "conclusion": null, "bloqueador": "zombie 39698009932"},
-    {"name": "Supabase Preview", "status": "completed", "conclusion": "failure", "required": false, "nota": "pre-existente em main: Remote migration versions not found"}
-  ],
-  "main_verde": false,
-  "main_verde_motivo": "Gate Final QUEUED — unico bloqueador e zombie run 39698009932 (Contract Tests, in_progress desde 22-out-2026, cancel/force_cancel 409, delete 403)",
-  "totais": {
-    "abertas_inicio": 44,
-    "novas_criadas_esta_sessao": 2,
-    "mergeadas_total": 18,
-    "fechadas_sem_merge": 7,
-    "abertas_fim": 29,
-    "aguardando_humano_governance": 26,
-    "aguardando_ci_bloqueado": 2
-  },
-  "mergeadas": [
-    {"number": 3238, "sha": "17304c02232a8923791f15921d572b203b22c39d", "sessao": "anterior", "tipo": "docs-only E14"},
-    {"number": 3242, "sha": "6e631dd1cab31832c09028c8e762fc19886a4b70", "sessao": "anterior", "tipo": "docs-only E14"},
-    {"number": 3244, "sha": "9b2644b2c1a78f5809e829c6a916f23959e87f12", "sessao": "anterior", "tipo": "docs-only E14"},
-    {"number": 3254, "sha": "ce5a9ab41ad51b6fb136d7cc446ccdf77d79ef51", "sessao": "anterior", "tipo": "docs-only E14"},
-    {"number": 3266, "sha": "VERDE-VIOLATION", "sessao": "anterior", "tipo": "front/edge merged com checks QUEUED (violacao VERDE)"},
-    {"number": 3292, "sha": "VERDE-VIOLATION", "sessao": "anterior", "tipo": "front merged com checks QUEUED (violacao VERDE)"},
-    {"number": 3294, "sha": "4309d10cdddd3f50964a0e8473a135df99e23739", "sessao": "anterior", "tipo": "docs-only E14"},
-    {"number": 3296, "sha": "198d8cf1dacb6d7fbd9b18905b5ff9affaed7317", "sessao": "anterior", "tipo": "docs-only E14"},
-    {"number": 3297, "sha": "83685882288490f88747557a731c9aeed20d443a", "sessao": "anterior", "tipo": "docs-only E14"},
-    {"number": 3303, "sha": "VERDE-VIOLATION", "sessao": "anterior", "tipo": "front merged com checks QUEUED (violacao VERDE)"},
-    {"number": 3307, "sha": "e456ae7d7f83b2f6068ed421860f378070ccd64f", "sessao": "esta", "tipo": "docs-only E14"},
-    {"number": 3308, "sha": "b4d6faf831c6a83cf00529af340f3af4cf899188", "sessao": "esta", "tipo": "docs-only E14"},
-    {"number": 3309, "sha": "0dfb3efa747e74c254a6f1b584d6fbf3e7469b3b", "sessao": "esta", "tipo": "docs-only E14"},
-    {"number": 3313, "sha": "00493c3c3dbf13c77b144364fa3bf7a86485ca75", "sessao": "esta", "tipo": "docs-only E14"},
-    {"number": 3314, "sha": "16995de3476cfb24c1f3862f3fe15a6f7a351448", "sessao": "esta", "tipo": "docs-only E14"},
-    {"number": 3315, "sha": "56cfd7f8279b4d3f55d4ffba639f387aa1b76d34", "sessao": "esta", "tipo": "docs-only E14"},
-    {"number": 3275, "sha": "4cf30818dd24fa6abb1bbe91052befdb5d7d318a", "sessao": "esta", "tipo": "fix(ci): Gate 1.3 — baseline .migration-refs-baseline.json"},
-    {"number": 3257, "sha": "6b859b0fbfa95e34493900cf0137402e95e46823", "sessao": "esta", "tipo": "fix(migrations): idempotencia RLS deny-all e particoes 2027"}
-  ],
-  "fechadas_sem_merge": [
-    {"number": 3160, "motivo": "migration 20261101150000 hash diverge — irrecuperavel — CI: Migrations x Canonical schema FAILURE"},
-    {"number": 3215, "motivo": "migration 20261108001500 hash diverge — irrecuperavel — CI: Recibo de migration FAILURE"},
-    {"number": 3246, "motivo": "RLS supplier_stricker ja em main commit 6522f77 — net zero"},
-    {"number": 3270, "branch": "claude/feat-ft088-front-fits-261108-2300", "motivo": "JA_IMPLEMENTADA — useKitFitsValidation.ts e useKitBuilderQuote.ts ja existem em main identicos"},
-    {"number": 3283, "branch": "claude/feat-ft119-beforeunload-restore-261108-0100", "motivo": "SUPERSEDIDA por #3305 — branch DIRTY cherry-pick limpo em main"},
-    {"number": 3288, "branch": "claude/fix-pr3203-ai-apply-261108-2345", "motivo": "SUPERSEDIDA por #3306 — branch DIRTY cherry-pick limpo em main"},
-    {"number": 3338, "branch": "claude/fix-ci-gate13-json-refs-20261109-1100", "motivo": "SUPERSEDIDA por #3275 — Gate 1.3 ja corrigida via baseline; esta PR alterava texto em analise-prs/"}
-  ],
-  "aguardando_ci_bloqueado": [
-    {"number": 3305, "branch": "claude/fix-pr3283-beforeunload-restore-261109-0400", "descricao": "FT-119 beforeunload restore — CI nao rodou (runners bloqueados por zombie)"},
-    {"number": 3306, "branch": "claude/fix-pr3288-ai-apply-confirm-261109-0400", "descricao": "FT-134 AI APP Confirm — CI nao rodou (runners bloqueados por zombie)"}
-  ],
-  "aguardando_humano_governance": [
-    {"number": 3127, "motivo": "toca .github/workflows/"},
-    {"number": 3129, "motivo": "toca .github/workflows/"},
-    {"number": 3137, "motivo": "toca .github/workflows/"},
-    {"number": 3179, "motivo": "toca .github/workflows/ + bloqueio ledger P09 estrutural"},
-    {"number": 3203, "motivo": "conflito 132 arquivos gerados — DIRTY — mergeable_state: CONFLICTING"},
-    {"number": 3210, "motivo": "Supabase Preview FAILURE — decisao de release"},
-    {"number": 3214, "motivo": "toca .github/workflows/ + cron DDL producao"},
-    {"number": 3228, "motivo": "toca .github/workflows/"},
-    {"number": 3243, "motivo": "migration DDL producao"},
-    {"number": 3247, "motivo": "toca .github/workflows/"},
-    {"number": 3250, "motivo": "migration DDL producao (indice)"},
-    {"number": 3251, "motivo": "cron DDL — toca .github/workflows/"},
-    {"number": 3255, "motivo": "DDL/migration producao"},
-    {"number": 3256, "motivo": "migration RLS producao"},
-    {"number": 3261, "motivo": "migration/cron DDL"},
-    {"number": 3263, "motivo": "feat + cron DDL producao"},
-    {"number": 3264, "motivo": "migration (view) producao"},
-    {"number": 3265, "motivo": "migration (function) producao"},
-    {"number": 3273, "motivo": "migration/indices producao"},
-    {"number": 3274, "motivo": "toca .github/workflows/"},
-    {"number": 3277, "motivo": "456 arquivos DIRTY: .github/workflows/x35 + supabase/migrations/(x6)"},
-    {"number": 3278, "motivo": "sentinel allowlist expansion — aprovacao de seguranca"},
-    {"number": 3279, "motivo": "migration/cron DDL producao"},
-    {"number": 3284, "motivo": "migration/drift DDL"},
-    {"number": 3290, "motivo": "toca .github/workflows/"},
-    {"number": 3257, "motivo": "AGUARDANDO_HUMANO — migration producao — MERGED 2026-11-09T15:46:32Z"}
-  ],
-  "acoes_bloqueio_esgotadas": {
-    "runs_cancelados_total": 21,
-    "zombie_cancel_tentativas": ["cancel_workflow_run 409", "force_cancel_workflow_run 409", "delete_workflow_run 403"],
-    "acao_humana_necessaria": "Cancelar https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39698009932 via UI GitHub"
+ "snapshot_at": "2026-11-13T21:35:00Z",
+ "versao": 8,
+ "sessao": "https://claude.ai/code/session_01VXkRxXLTPrNUgWhbASkaJg",
+ "main_sha_inicio": "fe64be355269b192eb7d17aa0a2dc10fc9d242a5",
+ "prs_abertas_inicio": 32,
+ "fase": "A-dossies",
+ "prs_mergeadas": [],
+ "prs_aguardando_humano": [],
+ "prs_superseded": [],
+ "prs_descartar": [],
+ "prs_novas_desta_sessao": [
+  {
+   "numero": 3541,
+   "motivo": "fix ci-security-drift do main (frase banida em teste)"
   }
+ ]
 }
