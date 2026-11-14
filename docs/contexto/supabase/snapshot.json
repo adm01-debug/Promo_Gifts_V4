@@ -213944,6 +213944,21 @@
       },
       {
         "columns": [
+          "created_at",
+          "id"
+        ],
+        "definition": "CREATE INDEX idx_products_active_created_at_desc ON public.products USING btree (created_at DESC, id) WHERE ((is_active = true) AND (is_deleted IS NOT TRUE))",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_products_active_created_at_desc",
+        "predicate": "((is_active = true) AND (is_deleted IS NOT TRUE))",
+        "schema": "public",
+        "table": "products"
+      },
+      {
+        "columns": [
           "id"
         ],
         "definition": "CREATE INDEX idx_products_active_not_deleted ON public.products USING btree (id) WHERE ((is_active = true) AND (is_deleted IS NOT TRUE))",
@@ -235977,6 +235992,12 @@
         "statements": 51,
         "statements_sha": "2be326441355a9e9",
         "version": "20261112140000"
+      },
+      {
+        "name": "perf_idx_products_active_created_at_desc",
+        "statements": 3,
+        "statements_sha": "e04f4c60c09e7f98",
+        "version": "20261113235000"
       }
     ],
     "policies": [

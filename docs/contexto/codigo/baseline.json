@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "73f463f21935f4c62d7df4f4e33510f06a08cbcd",
+  "commit": "333fe6e82509aa32d8d25facd803ef57f82ffe14",
   "branch": "main",
-  "data_commit": "2026-11-13T22:34:59-03:00",
+  "data_commit": "2026-11-13T23:23:27-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "333fe6e",
+    "data": "2026-11-13",
+    "assunto": "perf(db): índice para ordenação por created_at no catálogo e VACUUM de tags (#3550)"
+   },
    {
     "sha": "73f463f",
     "data": "2026-11-13",
@@ -126,14 +131,9 @@
     "sha": "1083b36",
     "data": "2026-11-13",
     "assunto": "Merge branch 'main' into claude/lote-pilha-v2-261112"
-   },
-   {
-    "sha": "fd9c4ee",
-    "data": "2026-11-13",
-    "assunto": "fix(security): baseline de policies inclui e2e_cleanup_audit (destrava Gate 1.13) (#3468)"
    }
   ],
-  "arquivos_mudados_7d": 1978,
+  "arquivos_mudados_7d": 1980,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -207,11 +207,11 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 42
+    "mudancas": 43
    },
    {
     "arquivo": "package.json",
-    "mudancas": 31
+    "mudancas": 30
    },
    {
     "arquivo": "package-lock.json",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 28
+    "commits": 27
    },
    {
     "autor": "dependabot[bot]",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10108,
+  "arquivos_total": 10110,
   "arquivos_codigo": 5212,
   "linhas_codigo": 995709,
   "rotas": 138,
@@ -334,7 +334,7 @@
   "hooks": 615,
   "edge_functions": 111,
   "tabelas": 545,
-  "migrations": 3065,
+  "migrations": 3066,
   "cron_jobs": 122,
   "testes": 2449,
   "workflows": 98,

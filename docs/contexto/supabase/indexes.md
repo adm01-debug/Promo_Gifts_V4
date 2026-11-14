@@ -854,6 +854,7 @@ Uso e tamanho em `stats.md`.
 | public.product_views | idx_product_views_product_id | btree | product_id | não | sim |  |
 | public.product_views | product_views_pkey | btree | id | sim | sim |  |
 | public.products | idx_products_active | btree | is_active | não | sim | `(is_active = true)` |
+| public.products | idx_products_active_created_at_desc | btree | created_at, id | não | sim | `((is_active = true) AND (is_deleted IS NOT TRUE))` |
 | public.products | idx_products_active_not_deleted | btree | id | não | sim | `((is_active = true) AND (is_deleted IS NOT TRUE))` |
 | public.products | idx_products_bestseller_expires | btree | is_bestseller_expires_at | não | sim | `((is_bestseller = true) AND (is_bestseller_expires_at IS NOT NULL))` |
 | public.products | idx_products_category | btree | category_id | não | sim |  |

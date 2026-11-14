@@ -342,6 +342,7 @@ BACKLOG:
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
 | idx_products_active | btree | is_active | não | sim | `(is_active = true)` | `CREATE INDEX idx_products_active ON public.products USING btree (is_active) WHERE (is_active = true)` |
+| idx_products_active_created_at_desc | btree | created_at, id | não | sim | `((is_active = true) AND (is_deleted IS NOT TRUE))` | `CREATE INDEX idx_products_active_created_at_desc ON public.products USING btree (created_at DESC, id) WHERE ((is_active = true) AND (is_deleted IS NOT TRUE))` |
 | idx_products_active_not_deleted | btree | id | não | sim | `((is_active = true) AND (is_deleted IS NOT TRUE))` | `CREATE INDEX idx_products_active_not_deleted ON public.products USING btree (id) WHERE ((is_active = true) AND (is_deleted IS NOT TRUE))` |
 | idx_products_bestseller_expires | btree | is_bestseller_expires_at | não | sim | `((is_bestseller = true) AND (is_bestseller_expires_at IS NOT NULL))` | `CREATE INDEX idx_products_bestseller_expires ON public.products USING btree (is_bestseller_expires_at) WHERE ((is_bestseller = true) AND (is_bestseller_expires_at IS NOT NULL))` |
 | idx_products_category | btree | category_id | não | sim |  | `CREATE INDEX idx_products_category ON public.products USING btree (category_id)` |

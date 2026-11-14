@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "73f463f21935f4c62d7df4f4e33510f06a08cbcd",
+  "sha": "333fe6e82509aa32d8d25facd803ef57f82ffe14",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 02:28 UTC",
-  "files_total": 10036,
-  "code_files": 8572,
-  "code_lines": 1212073
+  "generated_at": "2026-11-14 02:46 UTC",
+  "files_total": 10038,
+  "code_files": 8574,
+  "code_lines": 1212103
  },
  "version": "1.3.2",
- "facts_hash": "eb3c6f7bbf276f98",
+ "facts_hash": "4595d7b32d90955c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1221,7 +1221,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3361,
+   ".sql": 3363,
    ".ts": 2904,
    ".tsx": 1858,
    ".mjs": 436,
@@ -90606,6 +90606,14 @@
     "src": "supabase/migrations/20261108223000_add_stock_daily_summary_date_index.sql"
    },
    {
+    "name": "idx_products_active_created_at_desc",
+    "table": "products",
+    "columns": "created_at DESC, id",
+    "unique": false,
+    "where": "WHERE is_active = true AND is_deleted IS NOT TRUE",
+    "src": "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql"
+   },
+   {
     "name": "idx_user_organizations_user",
     "table": "user_organizations",
     "columns": "user_id",
@@ -96121,6 +96129,7 @@
    "supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql",
    "supabase/migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql",
    "supabase/migrations/20261112140000_fix_rls_supplier_products_raw_history_p2027.sql",
+   "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96186,6 +96195,7 @@
    "supabase/rollbacks/20261112011000_rollback.sql",
    "supabase/rollbacks/20261112130000_rollback.sql",
    "supabase/rollbacks/20261112140000_rollback.sql",
+   "supabase/rollbacks/20261113235000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -148754,8 +148764,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3064,
-   "lines": 220476,
+   "files": 3065,
+   "lines": 220504,
    "tables": [
     "...",
     "admin_audit_log",
@@ -148853,8 +148863,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 66,
-   "lines": 1973,
+   "files": 67,
+   "lines": 1975,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -148926,6 +148936,7 @@
     "supabase/rollbacks/20261112011000_rollback.sql",
     "supabase/rollbacks/20261112130000_rollback.sql",
     "supabase/rollbacks/20261112140000_rollback.sql",
+    "supabase/rollbacks/20261113235000_rollback.sql",
     "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql"
    ]
   },
@@ -214577,6 +214588,10 @@
    {
     "file": "supabase/migrations/20261108223000_add_stock_daily_summary_date_index.sql",
     "line": "-- O db-apply-migration usa lock_timeout=1s: o CONCURRENTLY espera transações antigas, então"
+   },
+   {
+    "file": "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql",
+    "line": "-- O db-apply-migration usa lock_timeout=1s: o CONCURRENTLY espera transações antigas, então esta"
    },
    {
     "file": "tests/sql/wave1_forward_only_migrations_test.sql",
@@ -504630,6 +504645,13 @@
    "lines": 90,
    "uses_service_role": true
   },
+  "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql": {
+   "path": "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql",
+   "lines": 28,
+   "temporal": [
+    "-- O db-apply-migration usa lock_timeout=1s: o CONCURRENTLY espera transações antigas, então esta"
+   ]
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -504899,6 +504921,10 @@
   "supabase/rollbacks/20261112140000_rollback.sql": {
    "path": "supabase/rollbacks/20261112140000_rollback.sql",
    "lines": 43
+  },
+  "supabase/rollbacks/20261113235000_rollback.sql": {
+   "path": "supabase/rollbacks/20261113235000_rollback.sql",
+   "lines": 2
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -528391,10 +528417,21 @@
   }
  },
  "git": {
-  "sha": "73f463f21935f4c62d7df4f4e33510f06a08cbcd",
+  "sha": "333fe6e82509aa32d8d25facd803ef57f82ffe14",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "333fe6e",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "perf(db): índice para ordenação por created_at no catálogo e VACUUM de tags (#3550)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql",
+     "supabase/rollbacks/20261113235000_rollback.sql"
+    ]
+   },
    {
     "sha": "73f463f",
     "date": "2026-11-13",
@@ -528730,27 +528767,12 @@
     "author": "Joaquim Ataides",
     "subject": "Merge branch 'main' into claude/lote-pilha-v2-261112",
     "files": []
-   },
-   {
-    "sha": "0f00ba1",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(calculadora): tela mostra o preço oficial da RPC, o mesmo que vai para o orçamento (#3465)",
-    "files": [
-     "src/components/pricing/QuantityPriceCalculator.tsx",
-     "src/components/pricing/__tests__/QuantityPriceCalculator.officialPrice.test.tsx",
-     "src/components/pricing/calculator/QuantityComparisonTable.tsx",
-     "src/components/pricing/calculator/TechniqueConfigCard.tsx",
-     "src/components/pricing/calculator/types.ts",
-     "src/hooks/simulation/useCustomizationPrice.ts",
-     "src/hooks/simulation/useTecnicasUnificadas.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    5
+    6
    ],
    [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
@@ -528783,6 +528805,14 @@
    [
     ".security/policies-baseline.json",
     2
+   ],
+   [
+    "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261113235000_rollback.sql",
+    1
    ],
    [
     "tests/scripts/tools-batch6.test.mjs",
@@ -528818,14 +528848,6 @@
    ],
    [
     ".migration-refs-baseline.json",
-    1
-   ],
-   [
-    "docs/MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json",
-    1
-   ],
-   [
-    "tests/edge-functions/integration/legacy-filters-escape.test.ts",
     1
    ]
   ]
