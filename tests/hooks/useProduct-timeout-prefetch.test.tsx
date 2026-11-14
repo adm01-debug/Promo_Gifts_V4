@@ -129,8 +129,9 @@ describe('usePrefetchProduct', () => {
   });
   it('PDP aberta com o prefetch ainda pendente também sai do skeleton pelo timeout', async () => {
     const realSetTimeout = globalThis.setTimeout;
-    // Timeout (15 s) e backoff do React Query (1 s, 2 s) disparam na hora;
-    // timers curtos (waitFor) seguem normais.
+    // O timeout de 15 s dispara na hora; timers curtos (polling) seguem normais. Neste caminho
+    // não há backoff: a PDP reaproveita a promise do prefetchQuery, que roda com retry=false
+    // (fetchQuery do React Query), então a PDP sai do skeleton após uma única tentativa.
     const spy = vi
       .spyOn(globalThis, 'setTimeout')
       .mockImplementation(((fn: () => void, ms?: number) =>
