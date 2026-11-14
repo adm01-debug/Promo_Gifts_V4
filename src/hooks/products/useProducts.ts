@@ -87,10 +87,35 @@ export function useProducts(
   });
 }
 
+export const PRODUCT_DETAIL_QUERY_KEY = 'promobrind-product';
+/** Limite por tentativa da busca do produto; sem ele a PDP fica no skeleton para sempre se o backend pendurar. */
+export const PRODUCT_DETAIL_TIMEOUT_MS = 15_000;
+
+export function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`${label}: timeout após ${ms}ms`)), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+
+export function fetchProductDetail(id: string): Promise<Product | null> {
+  // Aborta a consulta pendurada ao estourar o limite: sem isso cada retry abre outra e a anterior segue pendente.
+  const controller = new AbortController();
+  return withTimeout(
+    productService.fetchProductById(id, controller.signal),
+    PRODUCT_DETAIL_TIMEOUT_MS,
+    'fetchProductById',
+  ).catch((err: unknown) => {
+    controller.abort();
+    throw err;
+  });
+}
+
 export function useProduct(id: string) {
   return useQuery<Product | null>({
-    queryKey: ['promobrind-product', id],
-    queryFn: () => productService.fetchProductById(id),
+    queryKey: [PRODUCT_DETAIL_QUERY_KEY, id],
+    queryFn: () => fetchProductDetail(id),
     staleTime: 10 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
     refetchOnWindowFocus: false,

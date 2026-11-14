@@ -3,13 +3,16 @@
  *
  * Garante o fallback documentado em `src/lib/inventory/rupture-risk.ts`:
  * quando `avgDailyDepletion`, `targetQty` ou `horizonDays` não são válidos,
- * a fórmula NÃO se aplica (`atRisk = false`) e o status volta ao comportamento
- * estático anterior (≤ min). UI deve permanecer consistente — sem falsos
- * positivos e sem quebra visual.
+ * a fórmula NÃO se aplica (`atRisk = false`) e o status fica no estático
+ * (`calculateStockStatus` em src/types/stock.ts não emite mais `low_stock`).
+ * UI deve permanecer consistente — sem falsos positivos e sem quebra visual.
+ *
+ * `stock-status-chip-low_stock` é o chip POR LINHA (não um contador): a
+ * contagem de SKUs em risco é o nº de chips nas linhas `stock-row`.
  *
  * Casos cobertos:
- *  1. Sem `targetQty` (filtro "Preciso de X un" vazio) → contador low_stock
- *     do horizonte 30d == 3d (a fórmula não roda; só vale a regra estática).
+ *  1. Sem `targetQty` (filtro "Preciso de X un" vazio) → nenhuma linha
+ *     low_stock no horizonte 3d (default) nem em 30d (a fórmula não roda).
  *  2. Trocar horizonte sem alvo não muda contagem (idempotente).
  *  3. Tabela continua renderizando linhas (não crasha por dados faltantes).
  *
@@ -18,6 +21,7 @@
 import { test, expect } from '../../fixtures/test-base';
 import { gotoAndSettle } from '../../helpers/nav';
 import { loginAs } from '../../helpers/auth';
+import { lowStockChips, selectRuptureHorizon, stockRows } from '../../helpers/rupture-horizon';
 
 test.describe('@regression /estoque — Risco de Ruptura com dados ausentes', () => {
   test('@rupture-horizon sem alvo: horizonte não altera contagem (fallback estático)', async ({
@@ -43,27 +47,23 @@ test.describe('@regression /estoque — Risco de Ruptura com dados ausentes', ()
     const horizonControl = page.getByTestId('rupture-horizon-control');
     await expect(horizonControl).toBeVisible();
 
-    const lowChip = page.getByTestId('stock-status-chip-low_stock');
-    await expect(lowChip).toBeVisible();
-    const readCount = async () =>
-      Number((await lowChip.innerText()).match(/\d+/)?.[0] ?? '0');
+    // Tabela renderizada antes de contar (contagem 0 só vale com linhas na tela).
+    const rows = stockRows(page);
+    await expect(rows.first()).toBeVisible();
+    const lowChips = lowStockChips(page);
 
-    const baseline = await readCount();
+    // Horizonte default (3d) sem alvo — nenhuma SKU em low_stock.
+    await expect(lowChips).toHaveCount(0);
 
     // Troca para 30d sem alvo — fórmula deve NÃO acionar (atRisk=false).
-    await horizonControl.locator('button[role="combobox"]').click();
-    await page.getByRole('option', { name: '30 dias' }).click();
-    await page.waitForTimeout(300);
-    expect(await readCount()).toBe(baseline);
+    await selectRuptureHorizon(page, 30);
+    await expect(lowChips).toHaveCount(0);
 
     // Troca para 7d sem alvo — idem.
-    await horizonControl.locator('button[role="combobox"]').click();
-    await page.getByRole('option', { name: '7 dias' }).click();
-    await page.waitForTimeout(300);
-    expect(await readCount()).toBe(baseline);
+    await selectRuptureHorizon(page, 7);
+    await expect(lowChips).toHaveCount(0);
 
     // 3. Tabela permanece funcional (≥ 1 linha renderizada).
-    const rows = page.locator('[data-testid^="stock-row-"]');
     expect(await rows.count()).toBeGreaterThan(0);
   });
 });

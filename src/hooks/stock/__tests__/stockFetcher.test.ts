@@ -190,34 +190,35 @@ describe('fetchPaginatedFromBridge', () => {
     expect(calls.every((c) => c.table === 'v_products_public')).toBe(true);
   });
 
-  it('passes count: exact on the first page only', async () => {
+  it('never requests count: exact (avoids pgrst_source_count per range)', async () => {
     queue('categories', { data: [{ id: 'c1' }], error: null, count: 1 });
     await fetchPaginatedFromBridge('categories', 'id,name');
     const select = calls.find((c) => c.method === 'select');
-    expect(select!.args[1]).toEqual({ count: 'exact' });
+    expect(select!.args[1]).toBeUndefined();
   });
 
-  it('stops after a single page when count is satisfied', async () => {
+  it('stops after a single short page (< pageSize)', async () => {
     queue('categories', { data: [{ id: 'c1' }, { id: 'c2' }], error: null, count: 2 });
     const rows = await fetchPaginatedFromBridge('categories', 'id', 1000);
     expect(rows).toHaveLength(2);
-    // only one select issued (loop broke on offset >= totalCount)
+    // only one select issued (loop broke on records.length < pageSize)
     expect(calls.filter((c) => c.method === 'select')).toHaveLength(1);
   });
 
-  it('loops across multiple pages until count is reached', async () => {
+  it('loops across multiple pages until an empty page is returned', async () => {
     const page1 = Array.from({ length: 2 }, (_, i) => ({ id: `a${i}` }));
     const page2 = Array.from({ length: 2 }, (_, i) => ({ id: `b${i}` }));
     queue(
       'categories',
-      { data: page1, error: null, count: 4 },
-      { data: page2, error: null, count: 4 },
+      // sem `{ count: 'exact' }` o PostgREST devolve count null
+      { data: page1, error: null, count: null },
+      { data: page2, error: null, count: null },
     );
     const rows = await fetchPaginatedFromBridge('categories', 'id', 2);
     expect(rows.map((r) => r.id)).toEqual(['a0', 'a1', 'b0', 'b1']);
-    // Early-break optimization: when totalCount is known and all records are fetched,
-    // no extra round-trip is issued to confirm empty page.
-    expect(calls.filter((c) => c.method === 'select')).toHaveLength(2);
+    // Sem count=exact o total não é conhecido: a 2ª página cheia exige um
+    // round-trip extra (página vazia) para encerrar.
+    expect(calls.filter((c) => c.method === 'select')).toHaveLength(3);
   });
 
   it('breaks early on an empty page', async () => {
