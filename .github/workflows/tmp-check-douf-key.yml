@@ -1,0 +1,28 @@
+name: tmp-check-douf-key
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Probe REST douf com as chaves do Gifts
+        env:
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          set -eu
+          code=000
+          for k in "$VITE_SUPABASE_PUBLISHABLE_KEY" "$SUPABASE_ANON_KEY"; do
+            code=$(curl -s -o /tmp/out.json -w "%{http_code}" \
+              "https://doufsxqlfjyuvxuezpln.supabase.co/rest/v1/v_site_products_public?select=id&limit=1" \
+              -H "apikey: $k" -H "Authorization: Bearer $k" || true)
+            echo "prefixo=$(printf %.12s "$k") http=$code"
+            if [ "$code" = "200" ]; then echo "env AUTHENTICOU=1" >> "$GITHUB_ENV"; break; fi
+          done
+          test "$code" = "200" || { echo "::error::nenhuma chave do Gifts autentica no douf (ultimo http=$code)"; exit 1; }
