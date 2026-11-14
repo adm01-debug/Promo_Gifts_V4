@@ -2,6 +2,16 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-14 23:47 UTC
+
+- **colunas** adicionado (4): `public.crm_seller_identity_links.auth_user_id`, `public.crm_seller_identity_links.created_at`, `public.crm_seller_identity_links.crm_seller_id`, `public.crm_seller_identity_links.link_source`
+- **constraints** adicionado (5): `public.crm_seller_identity_links.crm_seller_identity_links_auth_user_id_fkey`, `public.crm_seller_identity_links.crm_seller_identity_links_crm_seller_id_check`, `public.crm_seller_identity_links.crm_seller_identity_links_crm_seller_id_key`, `public.crm_seller_identity_links.crm_seller_identity_links_link_source_check`, `public.crm_seller_identity_links.crm_seller_identity_links_pkey`
+- **grants** adicionado (1): `public.crm_seller_identity_links:service_role`
+- **indexes** adicionado (2): `public.crm_seller_identity_links_crm_seller_id_key`, `public.crm_seller_identity_links_pkey`
+- **lints** adicionado (1): `rls_no_policies:public.crm_seller_identity_links`
+- **migrations** adicionado (1): `20261107134429_create_crm_seller_identity_links`
+- **tabelas** adicionado (1): `public.crm_seller_identity_links`
+
 ## 2026-11-14 22:27 UTC
 
 - **policies (RLS)** alterado (6): `public.order_items.order_items_insert`, `public.order_items.order_items_select`, `public.order_items.order_items_update`, `public.orders.orders_insert`, `public.orders.orders_select`, `public.orders.orders_update`

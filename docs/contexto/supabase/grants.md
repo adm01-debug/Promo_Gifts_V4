@@ -229,6 +229,7 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.crm_callback_events | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.crm_callback_events | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.crm_callback_events | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.crm_seller_identity_links | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.cron_job_timeout_map | anon | REFERENCES, TRIGGER |
 | public.cron_job_timeout_map | authenticated | REFERENCES, TRIGGER |
 | public.cron_job_timeout_map | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |

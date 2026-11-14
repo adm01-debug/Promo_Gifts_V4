@@ -16053,6 +16053,58 @@
         "generated": null,
         "identity": null,
         "is_enum": false,
+        "name": "auth_user_id",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
+        "table": "crm_seller_identity_links",
+        "type": "uuid"
+      },
+      {
+        "comment": "Identificador inteiro de public.users.id no projeto CRM externo pgxfvjmuubtbowutlide.",
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "crm_seller_id",
+        "nullable": false,
+        "position": 2,
+        "schema": "public",
+        "table": "crm_seller_identity_links",
+        "type": "bigint"
+      },
+      {
+        "comment": null,
+        "default": "'email_bootstrap'::text",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "link_source",
+        "nullable": false,
+        "position": 3,
+        "schema": "public",
+        "table": "crm_seller_identity_links",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "created_at",
+        "nullable": false,
+        "position": 4,
+        "schema": "public",
+        "table": "crm_seller_identity_links",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
         "name": "jobname",
         "nullable": false,
         "position": 1,
@@ -116310,6 +116362,93 @@
       },
       {
         "columns": [
+          "auth_user_id"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (auth_user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+        "name": "crm_seller_identity_links_auth_user_id_fkey",
+        "on_delete": "CASCADE",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "auth",
+        "ref_table": "users",
+        "schema": "public",
+        "table": "crm_seller_identity_links",
+        "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "crm_seller_id"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (crm_seller_id > 0)",
+        "name": "crm_seller_identity_links_crm_seller_id_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "crm_seller_identity_links",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
+          "crm_seller_id"
+        ],
+        "deferrable": false,
+        "definition": "UNIQUE (crm_seller_id)",
+        "name": "crm_seller_identity_links_crm_seller_id_key",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "crm_seller_identity_links",
+        "type": "UNIQUE",
+        "validated": true
+      },
+      {
+        "columns": [
+          "link_source"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (link_source = ANY (ARRAY['email_bootstrap'::text, 'manual'::text]))",
+        "name": "crm_seller_identity_links_link_source_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "crm_seller_identity_links",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
+          "auth_user_id"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (auth_user_id)",
+        "name": "crm_seller_identity_links_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "crm_seller_identity_links",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
           "jobname"
         ],
         "deferrable": false,
@@ -195006,6 +195145,12 @@
           "table": "crm_callback_events"
         },
         {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "crm_seller_identity_links"
+        },
+        {
           "grantee": "anon",
           "privileges": "REFERENCES, TRIGGER",
           "schema": "public",
@@ -205798,6 +205943,34 @@
         "predicate": null,
         "schema": "public",
         "table": "crm_callback_events"
+      },
+      {
+        "columns": [
+          "crm_seller_id"
+        ],
+        "definition": "CREATE UNIQUE INDEX crm_seller_identity_links_crm_seller_id_key ON public.crm_seller_identity_links USING btree (crm_seller_id)",
+        "is_primary": false,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "crm_seller_identity_links_crm_seller_id_key",
+        "predicate": null,
+        "schema": "public",
+        "table": "crm_seller_identity_links"
+      },
+      {
+        "columns": [
+          "auth_user_id"
+        ],
+        "definition": "CREATE UNIQUE INDEX crm_seller_identity_links_pkey ON public.crm_seller_identity_links USING btree (auth_user_id)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "crm_seller_identity_links_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "crm_seller_identity_links"
       },
       {
         "columns": [
@@ -221307,6 +221480,12 @@
         "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
         "object": "public.vw_system_health_quick",
         "severity": "ALTA"
+      },
+      {
+        "code": "rls_no_policies",
+        "detail": "RLS ligado sem policies: inacessível via API (só service_role).",
+        "object": "public.crm_seller_identity_links",
+        "severity": "MÉDIA"
       },
       {
         "code": "extension_in_public",
@@ -238246,6 +238425,12 @@
         "version": "20261106232045"
       },
       {
+        "name": "create_crm_seller_identity_links",
+        "statements": 8,
+        "statements_sha": "91a5dea8eaaa4be5",
+        "version": "20261107134429"
+      },
+      {
         "name": "security_fix_suppliers_authenticated_credential_leak_v2",
         "statements": 4,
         "statements_sha": "6c4fab3b573a85fa",
@@ -253307,6 +253492,21 @@
         "is_partition": false,
         "kind": "table",
         "name": "crm_callback_events",
+        "owner": "postgres",
+        "parent": null,
+        "partition_bound": null,
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": true,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
+        "comment": "Mapeamento 1:1 canônico auth.users -> public.users.id do CRM externo usado pelo crm-db-bridge.",
+        "from_extension": false,
+        "is_partition": false,
+        "kind": "table",
+        "name": "crm_seller_identity_links",
         "owner": "postgres",
         "parent": null,
         "partition_bound": null,

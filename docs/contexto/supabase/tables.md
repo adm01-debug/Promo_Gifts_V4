@@ -98,6 +98,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.cover_materials](tables/public/cover_materials.md) | table | sim | 1 | 9 | não |  |
 | [public.cover_types](tables/public/cover_types.md) | table | sim | 1 | 8 | não |  |
 | [public.crm_callback_events](tables/public/crm_callback_events.md) | table | sim | 2 | 9 | não | Auditoria + chave de idempotência dos callbacks recebidos do CRM Promo Champions V2 via edge function receive-crm-callback. |
+| [public.crm_seller_identity_links](tables/public/crm_seller_identity_links.md) | table | sim | 0 | 4 | não | Mapeamento 1:1 canônico auth.users -> public.users.id do CRM externo usado pelo crm-db-bridge. |
 | [public.cron_job_timeout_map](tables/public/cron_job_timeout_map.md) | table | sim | 1 | 3 | não |  |
 | [public.cron_watchdog_log](tables/public/cron_watchdog_log.md) | table | sim | 1 | 7 | não |  |
 | [public.custom_kits](tables/public/custom_kits.md) | table | sim | 4 | 25 | não | Wave 3.3.A 2026-05-22: removidos 19 campos legacy. Schema consolidado. |

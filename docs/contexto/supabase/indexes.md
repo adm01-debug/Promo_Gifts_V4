@@ -260,6 +260,8 @@ Uso e tamanho em `stats.md`.
 | public.crm_callback_events | idx_ccev_occurred_at | btree | occurred_at | não | sim |  |
 | public.crm_callback_events | idx_crm_callback_events_result_received | btree | result, received_at | não | sim |  |
 | public.crm_callback_events | idx_crm_callback_events_type | btree | event_type | não | sim |  |
+| public.crm_seller_identity_links | crm_seller_identity_links_crm_seller_id_key | btree | crm_seller_id | sim | sim |  |
+| public.crm_seller_identity_links | crm_seller_identity_links_pkey | btree | auth_user_id | sim | sim |  |
 | public.cron_job_timeout_map | cron_job_timeout_map_pkey | btree | jobname | sim | sim |  |
 | public.cron_watchdog_log | cron_watchdog_log_pkey | btree | id | sim | sim |  |
 | public.cron_watchdog_log | idx_cron_watchdog_killed | btree | killed_at | não | sim |  |

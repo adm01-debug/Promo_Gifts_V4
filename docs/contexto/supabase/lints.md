@@ -14,6 +14,7 @@ Verificações objetivas feitas no catálogo. Um agente deve ler isto antes de p
 | ALTA | view_security_definer | public.v_tabela_preco_gravacao_oficial_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | ALTA | view_security_definer | public.v_variant_sale_prices_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | ALTA | view_security_definer | public.vw_system_health_quick | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
+| MÉDIA | rls_no_policies | public.crm_seller_identity_links | RLS ligado sem policies: inacessível via API (só service_role). |
 | BAIXA | extension_in_public | pg_repack | Extensão instalada no schema public (recomendado: schema extensions). |
 | BAIXA | extension_in_public | pgstattuple | Extensão instalada no schema public (recomendado: schema extensions). |
 | BAIXA | policy_auth_fn_not_wrapped | public.order_items.order_items_insert | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |

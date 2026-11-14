@@ -65,6 +65,7 @@
 | public.commemorative_dates | organization_id | public.organizations | id | NO ACTION | NO ACTION |
 | public.connection_test_history | connection_id | public.external_connections | id | CASCADE | NO ACTION |
 | public.content_articles | author_id | auth.users | id | SET NULL | NO ACTION |
+| public.crm_seller_identity_links | auth_user_id | auth.users | id | CASCADE | NO ACTION |
 | public.custom_kits | user_id | auth.users | id | CASCADE | NO ACTION |
 | public.device_login_notifications | user_id | auth.users | id | CASCADE | NO ACTION |
 | public.discount_approval_audit | actor_id | public.profiles | user_id | SET NULL | NO ACTION |

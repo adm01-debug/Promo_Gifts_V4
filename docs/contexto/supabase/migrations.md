@@ -2947,6 +2947,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261101232022 | [cron001_stagger_schedules](migrations/20261101232022_cron001_stagger_schedules.sql) | 1 |
 | 20261104100000 | [partitions_supplier_products_raw_history_2027](migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql) | 10 |
 | 20261106232045 | [fix_handle_updated_at_search_path](migrations/20261106232045_fix_handle_updated_at_search_path.sql) | 1 |
+| 20261107134429 | [create_crm_seller_identity_links](migrations/20261107134429_create_crm_seller_identity_links.sql) | 8 |
 | 20261107180000 | [security_fix_suppliers_authenticated_credential_leak_v2](migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql) | 4 |
 | 20261108001500 | [reconcile_e2e_cleanup_audit](migrations/20261108001500_reconcile_e2e_cleanup_audit.sql) | 20 |
 | 20261108223100 | [drop_perf002_incident_ddl_survivor](migrations/20261108223100_drop_perf002_incident_ddl_survivor.sql) | 1 |
