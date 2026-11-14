@@ -1165,6 +1165,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261113225000` | `4bc14de41e30ea25aabe13a6bb59799b360fbdf2f18a5f9fd93be9aafa9689d2` | `--` | db-apply-migration.yml run 43634465261 | E15 | 2026-11-14 | pós-check do workflow success (run 43634465261) | aplicada em produção |
 | `20261114014100` | `651823afa2f7fd9901fcc185a3147aa53d1cf5ad11fea1374196a3021d200578` | `--` | db-apply-migration.yml run 43634622250 | E15 | 2026-11-14 | pós-check do workflow success (run 43634622250) | aplicada em produção |
 | `20261114031000` | `76b1497b85e289d3de69f01308f325d454436e5a03a59f2f77b5e50a6f1287b6` | `--` | db-apply-migration.yml run 43634805809 | E15 | 2026-11-14 | pós-check do workflow success (run 43634805809) | aplicada em produção |
+| `20261107134429` | `fd1fbfceb0a148371b9507618ccf3b67a913b6f3f4b1e4e420caf0c273093286` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 23:41:30 UTC | job post-check da run 43654437109 confirmou a version no ledger | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
