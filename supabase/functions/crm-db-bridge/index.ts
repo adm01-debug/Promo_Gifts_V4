@@ -444,7 +444,10 @@ function buildReadQuery(
   selectFields = addCompanyAddressFilterSelect(selectFields, companyFilters.address);
 
   let query = crm.from(table).select(selectFields);
-  if (sellerScoped) query = query.eq(sellerScopeFilter(table).column, sellerId ?? -1);
+  // GUARD: sellerScopeFilter devolve null para tabela sem escopo (suppliers/carriers).
+  // Sem este null-check, .eq() em cima de null quebraria a consulta.
+  const scopeFilter = sellerScoped ? sellerScopeFilter(table) : null;
+  if (scopeFilter) query = query.eq(scopeFilter.column, sellerId ?? -1);
   query = applyFilters(query, companyFilters.direct);
   query = applyFilters(query, companyFilters.address, INTERNAL_ADDRESS_ALIAS);
   return query;

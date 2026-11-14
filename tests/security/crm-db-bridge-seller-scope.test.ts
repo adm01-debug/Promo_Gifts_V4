@@ -9,6 +9,7 @@ import {
   isSellerScopedRole,
   sellerScopeFilter,
   stripInternalRelations,
+  isTableSellerScoped,
 } from '../../supabase/functions/crm-db-bridge/query-policy';
 
 describe('crm-db-bridge — escopo de vendedor', () => {
@@ -34,16 +35,29 @@ describe('crm-db-bridge — escopo de vendedor', () => {
       kind: 'relation',
       relation: 'contacts.companies.customers',
     });
-    for (const table of [
-      'company_addresses',
-      'company_social_media',
-      'suppliers',
-      'carriers',
-    ] as const) {
+    for (const table of ['company_addresses', 'company_social_media'] as const) {
       expect(OWNERSHIP_RULES[table]).toMatchObject({
         kind: 'relation',
         relation: 'companies.customers',
       });
+    }
+    // Decisão do dono (2026-11-14): o escopo estrito vale para a carteira de CLIENTES.
+    // suppliers e carriers NÃO são dado de cliente e não eram escopados antes desta PR
+    // (ownership.ts do main tratava como PII apenas companies, contacts, contact_emails,
+    // contact_phones e customers). Escopá-los deixaria o cadastro de produto com a lista
+    // de fornecedores vazia para vendedor e agente. Este caso trava isso.
+    for (const table of ['suppliers', 'carriers'] as const) {
+      expect(OWNERSHIP_RULES[table]).toEqual({ kind: 'none' });
+      expect(isTableSellerScoped(table)).toBe(false);
+      expect(sellerScopeFilter(table)).toBeNull();
+      expect(buildSellerScopedSelect('id,name', table, true)).toBe('id,name');
+    }
+    // e as 5 tabelas de dado de cliente seguem escopadas
+    for (const table of [
+      'companies', 'contacts', 'contact_emails', 'contact_phones', 'customers',
+    ] as const) {
+      expect(isTableSellerScoped(table)).toBe(true);
+      expect(sellerScopeFilter(table)).not.toBeNull();
     }
   });
 

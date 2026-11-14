@@ -334,7 +334,13 @@ export const INTERNAL_ADDRESS_ALIAS = '__address_filter';
 
 export type OwnershipRule =
   | { kind: 'direct'; filterColumn: 'vendedor_id' }
-  | { kind: 'relation'; relation: string; embed: string; filterColumn: string };
+  | { kind: 'relation'; relation: string; embed: string; filterColumn: string }
+  // GUARD (decisão do dono, 2026-11-14): tabela SEM escopo por vendedor. A decisão de
+  // privacidade foi sobre carteira de CLIENTES; fornecedor e transportadora não são dado
+  // de cliente e não eram escopados antes (ownership.ts do main listava como PII apenas
+  // companies, contacts, contact_emails, contact_phones e customers). Escopá-los deixaria
+  // o cadastro de produto com a lista de fornecedores vazia para vendedor e agente.
+  | { kind: 'none' };
 
 export const OWNERSHIP_RULES: Record<CrmTable, OwnershipRule> = {
   companies: {
@@ -374,18 +380,8 @@ export const OWNERSHIP_RULES: Record<CrmTable, OwnershipRule> = {
     filterColumn: `${INTERNAL_SCOPE_ALIAS}.companies.customers.vendedor_id`,
   },
   customers: { kind: 'direct', filterColumn: 'vendedor_id' },
-  suppliers: {
-    kind: 'relation',
-    relation: 'companies.customers',
-    embed: 'companies!inner(customers!inner(id))',
-    filterColumn: `${INTERNAL_SCOPE_ALIAS}.customers.vendedor_id`,
-  },
-  carriers: {
-    kind: 'relation',
-    relation: 'companies.customers',
-    embed: 'companies!inner(customers!inner(id))',
-    filterColumn: `${INTERNAL_SCOPE_ALIAS}.customers.vendedor_id`,
-  },
+  suppliers: { kind: 'none' },
+  carriers: { kind: 'none' },
 };
 
 const RELATED_COMPANY_FILTERS = new Set(['cidade', 'estado']);
@@ -542,12 +538,18 @@ export function buildSellerScopedSelect(
   const base = select || '*';
   if (!sellerScoped) return base;
   const rule = OWNERSHIP_RULES[table];
-  if (rule.kind === 'direct') return base;
+  if (rule.kind === 'none' || rule.kind === 'direct') return base;
   return `${base},${INTERNAL_SCOPE_ALIAS}:${rule.embed}`;
 }
 
-export function sellerScopeFilter(table: CrmTable): { column: string; relation?: string } {
+/** True quando a tabela tem escopo por vendedor. False = leitura ampla (não é dado de cliente). */
+export function isTableSellerScoped(table: CrmTable): boolean {
+  return OWNERSHIP_RULES[table].kind !== 'none';
+}
+
+export function sellerScopeFilter(table: CrmTable): { column: string; relation?: string } | null {
   const rule = OWNERSHIP_RULES[table];
+  if (rule.kind === 'none') return null;
   if (rule.kind === 'direct') return { column: rule.filterColumn };
   return { column: rule.filterColumn, relation: rule.relation };
 }
