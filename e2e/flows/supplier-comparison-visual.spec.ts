@@ -13,16 +13,6 @@ const SUPPLIER_CHEAP_ID = '550e8400-e29b-41d4-a716-4466554400f2';
 const SUPPLIER_PREMIUM_ID = '550e8400-e29b-41d4-a716-4466554400f3';
 const ALT_1_ID = '550e8400-e29b-41d4-a716-4466554400a1';
 const ALT_2_ID = '550e8400-e29b-41d4-a716-4466554400a2';
-const MOCK_IDS = [
-  MOCK_ID,
-  CATEGORY_ID,
-  SUPPLIER_MAIN_ID,
-  SUPPLIER_CHEAP_ID,
-  SUPPLIER_PREMIUM_ID,
-  ALT_1_ID,
-  ALT_2_ID,
-];
-
 const CORS_HEADERS = {
   'access-control-allow-origin': '*',
   'access-control-expose-headers': 'content-range',
@@ -100,8 +90,19 @@ async function gotoProductDetail(
 ): Promise<void> {
   await page.route('**/rest/v1/**', async (route) => {
     const request = route.request();
-    if (request.method() !== 'GET') return route.fallback();
     const url = new URL(request.url());
+    // Nada do PostgREST sai para a produção: RPC devolve null e escrita é aceita localmente.
+    if (request.method() !== 'GET' && request.method() !== 'HEAD') {
+      if (url.pathname.includes('/rest/v1/rpc/')) {
+        return route.fulfill({
+          status: 200,
+          headers: CORS_HEADERS,
+          contentType: 'application/json',
+          body: 'null',
+        });
+      }
+      return route.fulfill({ status: 204, headers: CORS_HEADERS, body: '' });
+    }
 
     if (url.pathname.endsWith('/v_products_public')) {
       if (url.searchParams.get('id') === `eq.${MOCK_ID}`) return fulfillRows(route, [mockBaseRow]);
@@ -110,10 +111,9 @@ async function gotoProductDetail(
       }
     }
 
-    // Enriquecimentos (imagens, variantes, fornecedores…) dos produtos mockados.
-    if (MOCK_IDS.some((id) => request.url().includes(id))) return fulfillRows(route, []);
-
-    return route.fallback();
+    // Enriquecimentos (imagens, variantes, cores, fornecedores…) e consultas globais
+    // do layout: sem resposta local, iriam ao banco real e o modal dependeria dele.
+    return fulfillRows(route, []);
   });
 
   await page.goto(`/produto/${MOCK_ID}`);
