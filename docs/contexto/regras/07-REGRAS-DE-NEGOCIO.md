@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `8fa5c43936` · branch `main` · 2026-11-14 04:13 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `75030fabf1` · branch `main` · 2026-11-14 04:18 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -5856,7 +5856,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientOrdersHistory.ts` |
 | `staleTime: 10 * 60 * 1000,` | `src/hooks/bi/useClientSeasonality.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientVsIndustry.ts` |
-| … +379 linhas — lista completa em `context.json` | |
+| … +380 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 

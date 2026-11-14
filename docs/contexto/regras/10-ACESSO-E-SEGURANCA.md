@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `8fa5c43936` · branch `main` · 2026-11-14 04:13 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `75030fabf1` · branch `main` · 2026-11-14 04:18 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -327,7 +327,7 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
-## Onde o RLS é IGNORADO (service_role) — 808 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 809 arquivo(s)
 
 - `auditoria-supabase/propostas/P01_rls_restrictive_correcao.sql`
 - `auditoria-supabase/propostas/P10_func_new_001_fn_cron_guard_revoke.sql`
@@ -479,7 +479,7 @@
 - `supabase/functions/health-check/index.ts`
 - `supabase/functions/load-test/index.ts`
 - `supabase/functions/log-login-attempt/index.ts`
-- … +658 (lista completa em `context.json`)
+- … +659 (lista completa em `context.json`)
 
 ## Funções SQL `SECURITY DEFINER` (rodam com privilégio do dono, ignoram RLS)
 

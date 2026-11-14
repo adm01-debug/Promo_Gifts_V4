@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8fa5c439368217dfea494c0facb04735441e4452",
+  "commit": "75030fabf1d6a152b32818006b3b458bd7a41c9f",
   "branch": "main",
-  "data_commit": "2026-11-14T01:05:14-03:00",
+  "data_commit": "2026-11-14T01:16:25-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "75030fa",
+    "data": "2026-11-14",
+    "assunto": "fix(db): PostgREST para de perder o LISTEN a cada 10 min (idle_session_timeout do authenticator) (#3569)"
+   },
    {
     "sha": "8fa5c43",
     "data": "2026-11-14",
@@ -126,22 +131,17 @@
     "sha": "0a9291a",
     "data": "2026-11-13",
     "assunto": "Merge pull request #3425 from adm01-debug/claude/lote-pilha-v2-261112"
-   },
-   {
-    "sha": "81d3370",
-    "data": "2026-11-13",
-    "assunto": "Merge branch 'main' into claude/lote-pilha-v2-261112"
    }
   ],
-  "arquivos_mudados_7d": 1975,
+  "arquivos_mudados_7d": 1977,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 639
+    "mudancas": 629
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 330
+    "mudancas": 328
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 43
+    "mudancas": 44
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 446
+    "commits": 445
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10110,
+  "arquivos_total": 10112,
   "arquivos_codigo": 5212,
   "linhas_codigo": 995718,
   "rotas": 138,
@@ -334,7 +334,7 @@
   "hooks": 615,
   "edge_functions": 111,
   "tabelas": 545,
-  "migrations": 3066,
+  "migrations": 3067,
   "cron_jobs": 122,
   "testes": 2449,
   "workflows": 98,
