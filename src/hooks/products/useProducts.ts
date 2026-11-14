@@ -100,11 +100,16 @@ export function withTimeout<T>(promise: Promise<T>, ms: number, label: string): 
 }
 
 export function fetchProductDetail(id: string): Promise<Product | null> {
+  // Aborta a consulta pendurada ao estourar o limite: sem isso cada retry abre outra e a anterior segue pendente.
+  const controller = new AbortController();
   return withTimeout(
-    productService.fetchProductById(id),
+    productService.fetchProductById(id, controller.signal),
     PRODUCT_DETAIL_TIMEOUT_MS,
     'fetchProductById',
-  );
+  ).catch((err: unknown) => {
+    controller.abort();
+    throw err;
+  });
 }
 
 export function useProduct(id: string) {
