@@ -49,27 +49,44 @@ export const CRM_OWNER_VIA: Readonly<Record<string, { parent: string; fk: string
   contact_phones: { parent: "contacts", fk: "contact_id" },
 };
 
+/**
+ * `value` = id do usuário do CRM vinculado ao vendedor; `null` = vendedor sem vínculo
+ * (vê só os registros SEM dono). Regra do dono em 13/11: "vendedor vê os dele + os sem dono"
+ * (94% das empresas do CRM não têm dono; só 6 de 77 vendedores têm vínculo por e-mail).
+ */
 export type CrmOwnerScope =
   | { kind: "none" }
-  | { kind: "filter"; column: string; value: string }
-  | { kind: "via"; parent: string; parentColumn: string; fk: string; value: string }
+  | { kind: "filter"; column: string; value: string | null }
+  | { kind: "via"; parent: string; parentColumn: string; fk: string; value: string | null }
   | { kind: "deny" };
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Expressão PostgREST `or` do escopo: "é dele OU não tem dono". Só aceita uuid como valor
+ * (o id vem do CRM, mas é interpolado no filtro — nada além de uuid entra).
+ */
+export function ownerOrExpression(column: string, value: string | null): string {
+  if (value && UUID_RE.test(value)) return `${column}.eq.${value},${column}.is.null`;
+  return `${column}.is.null`;
+}
 
 /**
  * Decide o escopo de leitura:
  *  - role ampla ou tabela sem PII → sem filtro;
- *  - vendedor em tabela PII com coluna de dono → filtra pela coluna real;
- *  - vendedor em tabela filha (e-mails/telefones) → filtra pelos ids do pai que são dele;
+ *  - vendedor em tabela PII com coluna de dono → os dele OU sem dono (coluna real);
+ *  - vendedor em tabela filha (e-mails/telefones) → pai dele OU pai sem dono;
+ *  - vendedor sem vínculo com o CRM → só os registros sem dono;
  *  - vendedor em tabela PII sem coluna de dono → nega (403), em vez de
  *    devolver PII sem escopo ou estourar 500 por coluna inexistente.
  */
 export function crmOwnerScope(table: string, userRole?: string, userId?: string): CrmOwnerScope {
   if (userRole !== "vendedor" || !CRM_PII_TABLES.has(table)) return { kind: "none" };
-  if (!userId) return { kind: "deny" };
+  const value = userId && UUID_RE.test(userId) ? userId : null; // sem vínculo → só os sem dono
   const column = CRM_OWNER_COLUMN[table];
-  if (column) return { kind: "filter", column, value: userId };
+  if (column) return { kind: "filter", column, value };
   const via = CRM_OWNER_VIA[table];
   const parentColumn = via ? CRM_OWNER_COLUMN[via.parent] : undefined;
-  if (via && parentColumn) return { kind: "via", parent: via.parent, parentColumn, fk: via.fk, value: userId };
+  if (via && parentColumn) return { kind: "via", parent: via.parent, parentColumn, fk: via.fk, value };
   return { kind: "deny" };
 }
