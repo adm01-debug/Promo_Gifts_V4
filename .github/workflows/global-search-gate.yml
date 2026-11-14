@@ -1,19 +1,13 @@
 name: Global Search Quality Gate
 
 on:
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   push:
     branches: [ main ]
     paths:
       - 'src/components/search/**'
       - 'e2e/flows/global-search-comprehensive.spec.ts'
       - '.github/workflows/global-search-gate.yml'
-  pull_request:
-    branches: [ main ]
-    paths:
-      - 'src/components/search/**'
-      - 'e2e/flows/global-search-comprehensive.spec.ts'
-      - '.github/workflows/global-search-gate.yml'
-
 permissions:
   contents: read
 
