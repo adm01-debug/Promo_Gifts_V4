@@ -1441,3 +1441,17 @@ aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]` (porta 5
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261113235000` | `perf_idx_products_active_created_at_desc` | `45dff9f0d993448eae3c68c09aa143304601efb96029ccedda607e976ba28e46` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (linha `approved-by`) e `db-apply-migration.yml` (branch `claude/feat-idx-products-created-at-vacuum-tags-261113-2350`) |
+
+## 2026-11-13 — CRON-003: proposta de reagendamento noturno dos crons pesados de fornecedores
+
+Consulta read-only em produção (2026-11-13 23:5xZ, `cron.job` + `cron.job_run_details` 24 h): 137 jobs ativos,
+`cron.max_running_jobs = 32`, 70 falhas "job startup timeout" em 15 jobs nas últimas 3 h (prod-readiness §7.4).
+A migration move 14 jobs de scraping/imagens/enriquecimento (xbz-*, sm-*, asia-*, spot-relink, kit-ficha-*) para
+01:00–08:59 UTC (22:00–05:59 BRT) nos mesmos minutos de hoje e reduz 7 jobs de estoque/ingestão/MV para 1×/h ou
+1×/2 h. Opção 2 de prod-readiness §7.8 — decisão de negócio do dono (atraso de estoque/preço); cada linha pode ser
+vetada. `cron.max_running_jobs` não tem caminho por migration (GUC; ALTER SYSTEM bloqueado) — só recomendação.
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261113235800` | `cron003_reagendamento_noturno_fornecedores` | `f0cddef3bb3e9b322c5e9767a1be6e0bb916d65b7bd8d60278e8962ea4db680e` | pendente — aprovada pelo dono no chat da sessão Claude (2026-11-14, "Eu aprovo todas!"); aplicação só por `db-apply-migration.yml` após o merge |
