@@ -15,10 +15,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import {
   useFilteredTechniques,
   useProductCustomizationOptionsForMockup,
+  resolveTechnique,
   type CustomizationOption,
   type TechniqueWithLimits,
 } from './useMockupTechniques';
 import { useMockupDraft } from './useMockupDraft';
+import { mockupSelection } from './mockupSelectionSnapshot';
 import { useLogoColorAnalysis, usePositionHistory } from '@/hooks/simulation';
 import { useProductsContext } from '@/contexts/ProductsContext';
 import { getMockupWizardStep } from '@/components/mockup/mockupWizardStep';
@@ -228,10 +230,14 @@ export function useMockupGenerator() {
     fetchData();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // F-03: reconcilia a técnica restaurada com o id canônico de filteredTechniques (os ids vêm de
+  // espaços diferentes — RPC print_area_techniques x tabela_preco_gravacao_oficial — e mudam de
+  // produto para produto); só limpa quando a técnica não existe para o produto. Grava SÓ quando o
+  // id muda: filteredTechniques recalculado devolve objetos novos, e gravar sempre faria loop.
   useEffect(() => {
-    if (selectedTechnique && filteredTechniques.length > 0)
-      if (!filteredTechniques.some((t) => t.id === selectedTechnique.id))
-        setSelectedTechnique(null);
+    if (!selectedTechnique || filteredTechniques.length === 0) return;
+    const resolved = resolveTechnique(filteredTechniques, selectedTechnique);
+    if (resolved?.id !== selectedTechnique.id) setSelectedTechnique(resolved);
   }, [filteredTechniques, selectedTechnique]);
 
   useEffect(() => {
@@ -275,17 +281,11 @@ export function useMockupGenerator() {
         ) {
           if (draft.productId) {
             const product = getProductById(draft.productId);
-            if (product)
-              setProductSelection({
-                product,
-                variant: null,
-                imageUrl: product.images?.[0] || '/placeholder.svg',
-              });
+            if (product) setProductSelection(mockupSelection.restore(product, draft.selection));
           }
-          if (draft.techniqueId) {
-            const technique = techniques.find((t) => t.id === draft.techniqueId);
-            if (technique) setSelectedTechnique(technique);
-          }
+          const ref = { id: draft.techniqueId, name: draft.techniqueName };
+          const draftTechnique = resolveTechnique(techniques, ref);
+          if (draftTechnique) setSelectedTechnique(draftTechnique);
           if (draft.clientId && draft.clientName)
             setSelectedClient({ id: draft.clientId, name: draft.clientName });
           if (draft.personalizationAreas.length > 0) {
@@ -334,6 +334,7 @@ export function useMockupGenerator() {
         clientId: selectedClient?.id || null,
         clientName: selectedClient?.name || null,
         personalizationAreas,
+        selection: mockupSelection.snapshot(productSelection),
         updatedAt: new Date().toISOString(),
       });
     }, 1000);
@@ -480,7 +481,7 @@ export function useMockupGenerator() {
       extra?: { layoutUrl?: string; locationName?: string; colorsCount?: number },
     ): Promise<string | null> => {
       if (!user || !selectedProduct || !selectedTechnique || !area.logoPreview) return null;
-      return saveMockupToDb({
+      const recordId = await saveMockupToDb({
         userId: user.id,
         product: selectedProduct,
         technique: selectedTechnique,
@@ -490,8 +491,11 @@ export function useMockupGenerator() {
         annotations: mockupAnnotations,
         extra,
       });
+      // Histórico sem coluna para variante/foto: guarda a seleção junto do registro.
+      mockupSelection.saveForHistory(user.id, recordId, mockupSelection.snapshot(productSelection));
+      return recordId;
     },
-    [user, selectedProduct, selectedTechnique, selectedClient, mockupAnnotations],
+    [user, selectedProduct, selectedTechnique, selectedClient, mockupAnnotations, productSelection],
   );
 
   const downloadMockup = useCallback(
@@ -643,6 +647,7 @@ export function useMockupGenerator() {
     if (!mockupToDelete) return;
     try {
       await deleteMockupFromDb(mockupToDelete, user?.id);
+      mockupSelection.clearForHistory(user?.id, mockupToDelete);
       setMockupHistory((prev) => prev.filter((m) => m.id !== mockupToDelete));
       toast.success('Mockup excluído');
     } catch (error) {
@@ -691,21 +696,16 @@ export function useMockupGenerator() {
   const loadFromHistory = useCallback(
     async (mockup: GeneratedMockup) => {
       const product = mockup.product_id ? getProductById(mockup.product_id) : null;
-      // BUG-11 FIX: technique_id is now always null (BUG-10 fix) because the FK points to
-      // personalization_techniques but the UI loads from tabela_preco_gravacao_oficial.
-      // Fall back to name-matching so the technique is correctly pre-selected when loading from history.
-      const technique =
-        (mockup.technique_id && techniques.find((t) => t.id === mockup.technique_id)) ||
-        (mockup.technique_name &&
-          techniques.find((t) => t.name.toLowerCase() === mockup.technique_name?.toLowerCase())) ||
-        null;
-      if (product)
-        setProductSelection({
-          product,
-          variant: null,
-          imageUrl: product.images?.[0] || '/placeholder.svg',
-        });
-      else setProductSelection(null);
+      // BUG-11 FIX: technique_id vem null (fix do BUG-10) ou com id de outro espaço (FK aponta para
+      // personalization_techniques, UI carrega de tabela_preco_gravacao_oficial) — cai para nome.
+      const technique = resolveTechnique(techniques, {
+        id: mockup.technique_id,
+        name: mockup.technique_name,
+      });
+      if (product) {
+        const snapshot = mockupSelection.readForHistory(user?.id, mockup.id);
+        setProductSelection(mockupSelection.restore(product, snapshot));
+      } else setProductSelection(null);
       setSelectedTechnique(technique || null);
       // BUG-LOADFROMHISTORY-CLIENT FIX: client_id was always null (BUG-CLIENT-ID) so
       // the client was never restored. Restore the client for display when only the
@@ -748,7 +748,7 @@ export function useMockupGenerator() {
       await clearDraft();
       toast.success('Configurações carregadas!');
     },
-    [techniques, getProductById, logoColorAnalysis, clearDraft, positionHistory],
+    [techniques, getProductById, logoColorAnalysis, clearDraft, positionHistory, user?.id],
   );
 
   const wizardStep = getMockupWizardStep({
