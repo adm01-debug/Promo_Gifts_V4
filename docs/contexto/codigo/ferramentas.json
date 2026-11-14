@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4760)",
+   "TypeScript (4761)",
    "SQL (3389)",
    "Markdown (1019)",
    "JavaScript (443)",
@@ -5715,16 +5715,16 @@
     "ocorrencias": 17
    },
    {
-    "papel": "combobox",
-    "ocorrencias": 13
-   },
-   {
     "papel": "authenticated",
     "ocorrencias": 12
    },
    {
     "papel": "option",
     "ocorrencias": 12
+   },
+   {
+    "papel": "combobox",
+    "ocorrencias": 10
    },
    {
     "papel": "progressbar",

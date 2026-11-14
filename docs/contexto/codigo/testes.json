@@ -5,10 +5,10 @@
   "vitest",
   "playwright"
  ],
- "total": 2449,
+ "total": 2450,
  "por_tipo": {
   "contrato": 65,
-  "e2e": 677,
+  "e2e": 678,
   "pytest": 4,
   "qa": 17,
   "unit": 1686
@@ -24,7 +24,7 @@
   },
   {
    "padrao": "e2e/",
-   "arquivos": 625
+   "arquivos": 626
   },
   {
    "padrao": "co-localizado (*.test)",
@@ -137,14 +137,14 @@
   {
    "arquivo": "e2e/admin/stock-search-button.spec.ts",
    "tipo": "e2e",
-   "linhas": 91,
+   "linhas": 104,
    "testa": [],
    "casos": 3
   },
   {
    "arquivo": "e2e/admin/stock-search-race-and-keyboard.spec.ts",
    "tipo": "e2e",
-   "linhas": 152,
+   "linhas": 160,
    "testa": [],
    "casos": 4
   },
@@ -543,7 +543,7 @@
   {
    "arquivo": "e2e/catalog-regression.spec.ts",
    "tipo": "e2e",
-   "linhas": 84,
+   "linhas": 88,
    "testa": [],
    "casos": 5
   },
@@ -585,7 +585,7 @@
   {
    "arquivo": "e2e/catalog.spec.ts",
    "tipo": "e2e",
-   "linhas": 151,
+   "linhas": 166,
    "testa": [],
    "casos": 7
   },
@@ -998,7 +998,7 @@
   {
    "arquivo": "e2e/fixtures/stock-rupture-fixture.ts",
    "tipo": "e2e",
-   "linhas": 124,
+   "linhas": 142,
    "testa": [],
    "casos": 0
   },
@@ -2046,7 +2046,7 @@
   {
    "arquivo": "e2e/flows/forgot-password-flow.spec.ts",
    "tipo": "e2e",
-   "linhas": 31,
+   "linhas": 35,
    "testa": [],
    "casos": 1
   },
@@ -2293,7 +2293,7 @@
   {
    "arquivo": "e2e/flows/supplier-comparison-visual.spec.ts",
    "tipo": "e2e",
-   "linhas": 180,
+   "linhas": 194,
    "testa": [],
    "casos": 4
   },
@@ -2552,6 +2552,13 @@
    "casos": 0
   },
   {
+   "arquivo": "e2e/helpers/rupture-horizon.ts",
+   "tipo": "e2e",
+   "linhas": 41,
+   "testa": [],
+   "casos": 0
+  },
+  {
    "arquivo": "e2e/helpers/setup-discount-admin.ts",
    "tipo": "e2e",
    "linhas": 62,
@@ -2589,7 +2596,7 @@
   {
    "arquivo": "e2e/kit-builder.spec.ts",
    "tipo": "e2e",
-   "linhas": 105,
+   "linhas": 137,
    "testa": [],
    "casos": 4
   },
@@ -3827,7 +3834,7 @@
   {
    "arquivo": "e2e/routes/app/stock-rupture-horizon-matrix.spec.ts",
    "tipo": "e2e",
-   "linhas": 82,
+   "linhas": 120,
    "testa": [],
    "casos": 1
   },
@@ -3841,14 +3848,14 @@
   {
    "arquivo": "e2e/routes/app/stock-rupture-horizon-missing-fields.spec.ts",
    "tipo": "e2e",
-   "linhas": 55,
+   "linhas": 75,
    "testa": [],
    "casos": 1
   },
   {
    "arquivo": "e2e/routes/app/stock-rupture-horizon.spec.ts",
    "tipo": "e2e",
-   "linhas": 73,
+   "linhas": 76,
    "testa": [],
    "casos": 1
   },
