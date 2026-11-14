@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): credenciais E2E com fallback de vendedor para E2E_USER (supersede #3457) (#3578)",
    "docs(prontidao): diagnóstico das quedas do banco com leitura de logs e entregas de 14/11 (#3579)",
    "docs(migrations): recibos E66 e E15 de 14/11 (supersede #3560 #3561 #3562 #3567 #3568 #3571 #3563 #3570 #3573 #3575) (#3577)",
    "fix(db): snapshot de cron jobs sem o xbz-image-uploader desagendado (#3576)",
-   "docs: prod-readiness regerado no main com provas de 14/11 (#3508)",
-   "fix(db): desagenda o cron xbz-image-uploader (edge esboço, 401 a cada 10 min) (#3556)"
+   "docs: prod-readiness regerado no main com provas de 14/11 (#3508)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -829,6 +829,8 @@
     "typecheck"
    ],
    "secrets": [
+    "E2E_USER_EMAIL",
+    "E2E_USER_PASSWORD",
     "SMOKE_HEALTH_FN_URL",
     "SUPABASE_SERVICE_ROLE_KEY",
     "TEST_ADMIN_PASSWORD",
@@ -1475,6 +1477,8 @@
    "secrets": [
     "E2E_ADMIN_EMAIL",
     "E2E_ADMIN_PASSWORD",
+    "E2E_SELLER_EMAIL",
+    "E2E_SELLER_PASSWORD",
     "E2E_USER_EMAIL",
     "E2E_USER_PASSWORD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
@@ -1944,6 +1948,8 @@
    "scripts_usados": [],
    "npm_scripts": [],
    "secrets": [
+    "E2E_ADMIN_EMAIL",
+    "E2E_ADMIN_PASSWORD",
     "E2E_USER_EMAIL",
     "E2E_USER_PASSWORD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
@@ -2048,6 +2054,8 @@
    "secrets": [
     "E2E_ADMIN_EMAIL",
     "E2E_ADMIN_PASSWORD",
+    "E2E_SELLER_EMAIL",
+    "E2E_SELLER_PASSWORD",
     "E2E_USER_EMAIL",
     "E2E_USER_PASSWORD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
@@ -3397,7 +3405,10 @@
    "npm_scripts": [
     "test:supplier-comparison"
    ],
-   "secrets": [],
+   "secrets": [
+    "E2E_USER_EMAIL",
+    "E2E_USER_PASSWORD"
+   ],
    "actions": [
     "actions/checkout",
     "actions/upload-artifact"
@@ -4836,6 +4847,8 @@
    "E2E_CLEANUP_TOKEN",
    "E2E_DEV_EMAIL",
    "E2E_DEV_PASSWORD",
+   "E2E_SELLER_EMAIL",
+   "E2E_SELLER_PASSWORD",
    "E2E_USER_EMAIL",
    "E2E_USER_PASSWORD",
    "GITHUB_TOKEN",

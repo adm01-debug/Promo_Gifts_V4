@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ee0ccd57936c598ecc0af925fcc478b53c26f7a5",
+  "commit": "c9130556a973ba2c5cd94edc3415dd07e8161dd5",
   "branch": "main",
-  "data_commit": "2026-11-14T04:19:09-03:00",
+  "data_commit": "2026-11-14T05:24:53-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "c913055",
+    "data": "2026-11-14",
+    "assunto": "fix(ci): credenciais E2E com fallback de vendedor para E2E_USER (supersede #3457) (#3578)"
+   },
    {
     "sha": "ee0ccd5",
     "data": "2026-11-14",
@@ -126,14 +131,9 @@
     "sha": "640d96e",
     "data": "2026-11-13",
     "assunto": "fix(edge): recomendações e copiloto de BI voltam a usar IA via router multi-provider (#3401)"
-   },
-   {
-    "sha": "8404c43",
-    "data": "2026-11-13",
-    "assunto": "fix: lote de correções da auditoria de prontidão (catálogo, produto, busca, BI, categorias, e2e, edge) (#3463)"
    }
   ],
-  "arquivos_mudados_7d": 1981,
+  "arquivos_mudados_7d": 1984,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 62
+    "mudancas": 61
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -262,6 +262,10 @@
     "mudancas": 9
    },
    {
+    "arquivo": "docs/ci/SEGREDOS.md",
+    "mudancas": 9
+   },
+   {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 9
    },
@@ -271,10 +275,6 @@
    },
    {
     "arquivo": "CLAUDE.md",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "docs/ci/SEGREDOS.md",
     "mudancas": 8
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 438
+    "commits": 437
    },
    {
     "autor": "Joaquim Ataides",

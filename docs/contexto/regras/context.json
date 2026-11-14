@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "ee0ccd57936c598ecc0af925fcc478b53c26f7a5",
+  "sha": "c9130556a973ba2c5cd94edc3415dd07e8161dd5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 07:49 UTC",
+  "generated_at": "2026-11-14 08:33 UTC",
   "files_total": 10044,
   "code_files": 8580,
   "code_lines": 1212272
@@ -528459,10 +528459,24 @@
   }
  },
  "git": {
-  "sha": "ee0ccd57936c598ecc0af925fcc478b53c26f7a5",
+  "sha": "c9130556a973ba2c5cd94edc3415dd07e8161dd5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "c913055",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(ci): credenciais E2E com fallback de vendedor para E2E_USER (supersede #3457) (#3578)",
+    "files": [
+     ".github/workflows/ci.yml",
+     ".github/workflows/e2e-cart.yml",
+     ".github/workflows/e2e-stock.yml",
+     ".github/workflows/e2e.yml",
+     ".github/workflows/supplier-comparison.yml",
+     "docs/ci/SEGREDOS.md"
+    ]
+   },
    {
     "sha": "ee0ccd5",
     "date": "2026-11-14",
@@ -528815,18 +528829,6 @@
      "analise-prs/2026-11-12/progresso.json",
      "analise-prs/2026-11-12/prs.json"
     ]
-   },
-   {
-    "sha": "5a4ad72",
-    "date": "2026-11-13",
-    "author": "github-actions[bot]",
-    "subject": "chore(main): release 1.9.0 (#3210)",
-    "files": [
-     ".release-please-manifest.json",
-     "CHANGELOG.md",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
@@ -528843,6 +528845,10 @@
     3
    ],
    [
+    "docs/ci/SEGREDOS.md",
+    2
+   ],
+   [
     "supabase/baseline/20261108000000_cron_jobs.json",
     2
    ],
@@ -528851,20 +528857,24 @@
     2
    ],
    [
-    ".release-please-manifest.json",
-    2
+    ".github/workflows/ci.yml",
+    1
    ],
    [
-    "CHANGELOG.md",
-    2
+    ".github/workflows/e2e-cart.yml",
+    1
    ],
    [
-    "package-lock.json",
-    2
+    ".github/workflows/e2e-stock.yml",
+    1
    ],
    [
-    "package.json",
-    2
+    ".github/workflows/e2e.yml",
+    1
+   ],
+   [
+    ".github/workflows/supplier-comparison.yml",
+    1
    ],
    [
     "supabase/migrations/20261114003000_fix_unschedule_cron_xbz_image_uploader.sql",
@@ -528900,14 +528910,6 @@
    ],
    [
     "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261113235000_rollback.sql",
-    1
-   ],
-   [
-    "tests/scripts/tools-batch6.test.mjs",
     1
    ]
   ]
