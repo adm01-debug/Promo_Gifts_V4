@@ -7,7 +7,6 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import {
-  Upload,
   Loader2,
   MapPin,
   Paintbrush,
@@ -42,6 +41,7 @@ import { MagicUpRefinementActions } from '@/components/magic-up/MagicUpRefinemen
 import { MagicUpBatchGenerationPanel } from '@/components/magic-up/MagicUpBatchGenerationPanel';
 import { BRIEF_OPTIONS, toHuman, type MagicUpBrief } from '@/pages/magic-up/magicUpStrategy';
 import { MagicUpSelectedCompanyRow } from '@/pages/magic-up/MagicUpSelectedCompanyRow';
+import { LogoCard } from '@/pages/magic-up/MagicUpLogoCard';
 
 type MagicUpStateReturn = ReturnType<typeof useMagicUpState>;
 
@@ -330,73 +330,6 @@ function ProductCard({ m }: { m: MagicUpStateReturn }) {
   );
 }
 
-function LogoCard({ m }: { m: MagicUpStateReturn }) {
-  return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-            2
-          </span>
-          Logo do Cliente
-        </CardTitle>
-        {m.selectedClient?.logo_url && m.logoPreview === m.selectedClient.logo_url && (
-          <CardDescription className="text-xs">
-            ✓ Logo carregado automaticamente da empresa
-          </CardDescription>
-        )}
-      </CardHeader>
-      <CardContent>
-        <div
-          className={cn(
-            'rounded-lg border-2 border-dashed p-6 text-center transition-colors',
-            m.logoPreview
-              ? 'border-primary/30 bg-primary/5'
-              : 'border-border hover:border-primary/50',
-          )}
-        >
-          <input
-            type="file"
-            accept="image/*"
-            onChange={m.handleLogoUpload}
-            disabled={m.logoUploading}
-            className="hidden"
-            id="magic-logo-upload"
-          />
-          <label
-            htmlFor="magic-logo-upload"
-            className="flex cursor-pointer flex-col items-center gap-2"
-          >
-            {m.logoUploading ? (
-              <Loader2 className="h-10 w-10 animate-spin text-primary" />
-            ) : m.logoPreview ? (
-              <>
-                <div className="h-20 w-20 overflow-hidden rounded-lg border bg-background">
-                  <img
-                    src={m.logoPreview}
-                    alt="Logo"
-                    className="h-full w-full object-contain"
-                    loading="lazy"
-                  />
-                </div>
-                <Button variant="outline" size="sm" type="button">
-                  Trocar logo
-                </Button>
-              </>
-            ) : (
-              <>
-                <Upload className="h-10 w-10 text-muted-foreground" />
-                <p className="text-sm font-medium">Clique para enviar o logo</p>
-                <p className="text-xs text-muted-foreground">PNG, JPG, SVG · Máx. 10MB</p>
-              </>
-            )}
-          </label>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
 function BrandKitCard({ m }: { m: MagicUpStateReturn }) {
   return (
     <MagicUpBrandKitPanel
@@ -584,7 +517,9 @@ function GenerateButton({ m }: { m: MagicUpStateReturn }) {
       <label
         className={cn(
           'flex cursor-pointer items-center justify-between gap-3 rounded-lg border px-3 py-2 transition-colors',
-          m.fastMode ? 'border-warning/60 bg-warning/10' : 'border-border bg-muted/30 hover:bg-muted/50',
+          m.fastMode
+            ? 'border-warning/60 bg-warning/10'
+            : 'border-border bg-muted/30 hover:bg-muted/50',
         )}
       >
         <div className="flex items-center gap-2 text-sm">
@@ -592,7 +527,9 @@ function GenerateButton({ m }: { m: MagicUpStateReturn }) {
           <div className="flex flex-col">
             <span className="font-medium">
               Modo Rápido{' '}
-              {m.fastMode && <span className="text-xs font-normal text-warning">(Nano Banana)</span>}
+              {m.fastMode && (
+                <span className="text-xs font-normal text-warning">(Nano Banana)</span>
+              )}
             </span>
             <span className="text-[11px] leading-tight text-muted-foreground">
               {m.fastMode
