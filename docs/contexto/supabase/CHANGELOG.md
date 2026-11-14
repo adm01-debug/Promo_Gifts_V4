@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-14 17:39 UTC
+
+- **indexes** adicionado (7): `public.idx_stock_notes_created_by`, `public.idx_stock_notes_supplier_id`, `public.idx_stock_snapshots_product_id`, `public.idx_stock_snapshots_supplier_branch_id`, `public.idx_stock_snapshots_supplier_id`, `public.idx_stock_snapshots_variant_id`, `public.idx_stock_snapshots_variant_supplier_source_id`
+- **lints** removido (10): `fk_without_index:public.stock_notes.stock_notes_created_by_fkey`, `fk_without_index:public.stock_notes.stock_notes_supplier_id_fkey`, `fk_without_index:public.stock_snapshots.stock_snapshots_product_id_fkey`, `fk_without_index:public.stock_snapshots.stock_snapshots_supplier_branch_id_fkey`, `fk_without_index:public.stock_snapshots.stock_snapshots_supplier_id_fkey`, `fk_without_index:public.stock_snapshots.stock_snapshots_variant_id_fkey`, `fk_without_index:public.stock_snapshots.stock_snapshots_variant_supplier_source_id_fkey`, `policy_auth_fn_not_wrapped:public.stock_notes.stock_notes_delete_own`, `policy_auth_fn_not_wrapped:public.stock_notes.stock_notes_insert_own`, `policy_auth_fn_not_wrapped:public.stock_notes.stock_notes_update_own`
+- **policies (RLS)** alterado (3): `public.stock_notes.stock_notes_delete_own`, `public.stock_notes.stock_notes_insert_own`, `public.stock_notes.stock_notes_update_own`
+
 ## 2026-11-14 11:38 UTC
 
 - **functions** adicionado (1): `public.request_password_reset(p_email text)`

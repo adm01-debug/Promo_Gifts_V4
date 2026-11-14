@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `892494ca4d0937de238a6ece3e058a84530c090a` (2026-11-14T11:58:07-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6ef19fd5122ac8d18e94c80ec6cbc59648fd9360` (2026-11-14T14:04:17-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4760), SQL (3389), Markdown (1018), JavaScript (443), JSON (126), YAML (111), Shell (27), HTML (20)
+- linguagens: TypeScript (4760), SQL (3389), Markdown (1019), JavaScript (443), JSON (126), YAML (111), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10135 |
+| arquivos_total | 10136 |
 | arquivos_codigo | 5211 |
-| linhas_codigo | 995775 |
+| linhas_codigo | 995833 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -51,7 +51,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | testes | 2449 |
 | workflows | 98 |
 | scripts | 272 |
-| docs_md | 1018 |
+| docs_md | 1019 |
 
 ## Onde ficam as coisas
 - telas: src/pages (111), src/components (3), api/health.ts (1)
@@ -62,7 +62,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/lib (7), scripts/graphify (4), scripts/inventario (4)
-- docs: docs (146), (raiz) (14), .github (4)
+- docs: docs (147), (raiz) (14), .github (4)
 - nomenclatura: {"componentes":"PascalCase (95%)","hooks":"use + PascalCase","servicos":"kebab-case (52%)","edge_functions":"kebab-case (99%)","tabelas":"snake_case (86%)"}
 - instruções para agentes no repo: .claude/CLAUDE.md, AGENTS.md, CLAUDE.md
 
@@ -588,27 +588,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43167 nós · 74542 arestas · 2432 comunidades · grafo do commit `892494ca`
-- comunidades maiores: ref_integrations (599), vitest (566), ref_components (548), ref_node_child_process (486), lucide-react (434), @tanstack/react-query (388), sonner (379), react (358), ref_hooks (353), gotoAndSettle (350), ref_types (306), scripts (302)
+- 43179 nós · 74555 arestas · 2415 comunidades · grafo do commit `6ef19fd5`
+- comunidades maiores: vitest (846), ref_components (741), ref_integrations (608), @tanstack/react-query (552), ref_node_child_process (467), ref_hooks (375), ref_types (308), scripts (302), sonner (302), react (295), ref_node_fs (278), gotoAndSettle (271)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (58)
-- supabase/MIGRATIONS_SYNC_LOG.md (52)
-- PENDENCIAS.md (51)
-- package.json (31)
-- package-lock.json (23)
-- analise-prs/progresso.json (19)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (18)
-- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (17)
-- .github/workflows/deploy-gates.yml (15)
-- CHANGELOG.md (15)
-- src/pages/kit-builder/KitBuilderPage.tsx (15)
-- analise-branches/RELATORIO_BRANCHES.md (14)
-- src/hooks/kit-builder/useKitBuilderPageState.ts (14)
-- e2e/flows/magazine-publish-smoke.spec.ts (13)
-- analise-prs/RELATORIO_PRS.md (12)
+- RELATORIO_CI.md (56)
+- supabase/MIGRATIONS_SYNC_LOG.md (50)
+- PENDENCIAS.md (49)
+- package.json (29)
+- package-lock.json (21)
+- analise-prs/progresso.json (17)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (16)
+- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (15)
+- .github/workflows/deploy-gates.yml (13)
+- CHANGELOG.md (13)
+- src/pages/kit-builder/KitBuilderPage.tsx (13)
+- analise-branches/RELATORIO_BRANCHES.md (12)
+- src/hooks/kit-builder/useKitBuilderPageState.ts (12)
+- e2e/flows/magazine-publish-smoke.spec.ts (11)
+- analise-prs/RELATORIO_PRS.md (10)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1044,6 +1044,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/ARQUITETURA_BRIDGE_REST_NATIVE.md` — 🌉➡️🗄️ A Mudança da "Bridge": de Edge Function para PostgREST Nativo (265 linhas)
 - `docs/AUDITORIA-BACKEND-2026-05-25.md` — Auditoria de Arquitetura Back-End — promo-gifts-v4 (381 linhas)
 - `docs/AUDITORIA-EXAUSTIVA-2026-05-23.md` — Auditoria exaustiva de bugs e falhas — `promo-gifts-v4` (355 linhas)
+- `docs/AUDITORIA-EXAUSTIVA-2026-11-14.md` — Auditoria exaustiva — 2026-11-14 (81 linhas)
 - `docs/AUDITORIA_2026-05-07.md` — 📋 Auditoria PromoGifts — Plano de Faxina e Migração (962 linhas)
 - `docs/AUDITORIA_BUGS_2026-05-23.md` — Auditoria de Bugs e Falhas — 2026-05-23 (490 linhas)
 - `docs/AUDITORIA_DB_FRONTEND_2026-05-31.md` — Auditoria Exaustiva: Banco de Dados ↔ Front-end — Promo Gifts v4 (223 linhas)
@@ -1182,6 +1183,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-14 `6ef19fd` docs: auditoria exaustiva de 13 domínios (91 agentes, verificação dupla) (#3611)
+- 2026-11-14 `584e1a3` Merge pull request #3608 from adm01-debug/claude/crm-disjuntor-indisponibilidade-261114
+- 2026-11-14 `ae9d814` fix(security): crm-db-bridge — erro de esquema não abre o disjuntor
 - 2026-11-14 `892494c` fix(security): CRM — vendedor vê os dele + os sem dono (supersede #3518) (#3583)
 - 2026-11-14 `be2fb40` fix(catalog): remover prefetch pós-login de v_products_public que nunca é lido (#3603)
 - 2026-11-14 `7aa82a5` docs(migrations): recibos E15 das 10 migrations da #3584 (supersede #3590–#3599) (#3602)
@@ -1194,9 +1198,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-14 `c49e8e7` docs(migrations): recibos E66 e E15 de 14/11 (supersede #3560 #3561 #3562 #3567 #3568 #3571 #3563 #3570 #3573 #3575) (#3
 - 2026-11-14 `c6bc04a` fix(db): snapshot de cron jobs sem o xbz-image-uploader desagendado (#3576)
 - 2026-11-14 `e1dcade` docs: prod-readiness regerado no main com provas de 14/11 (#3508)
-- 2026-11-14 `1882e6c` fix(db): desagenda o cron xbz-image-uploader (edge esboço, 401 a cada 10 min) (#3556)
-- 2026-11-14 `4063ab4` fix(db): snapshot de cron jobs reflete a CRON-003 aplicada (21 schedules) (#3572)
-- 2026-11-14 `7536e94` perf(db): proposta de reagendamento noturno dos crons pesados de fornecedores (#3554)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

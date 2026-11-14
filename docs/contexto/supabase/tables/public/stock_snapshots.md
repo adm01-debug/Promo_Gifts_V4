@@ -58,6 +58,11 @@
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
 | idx_snapshots_captured_at | btree | captured_at | não | sim |  | `CREATE INDEX idx_snapshots_captured_at ON public.stock_snapshots USING btree (captured_at)` |
+| idx_stock_snapshots_product_id | btree | product_id | não | sim |  | `CREATE INDEX idx_stock_snapshots_product_id ON public.stock_snapshots USING btree (product_id)` |
+| idx_stock_snapshots_supplier_branch_id | btree | supplier_branch_id | não | sim |  | `CREATE INDEX idx_stock_snapshots_supplier_branch_id ON public.stock_snapshots USING btree (supplier_branch_id)` |
+| idx_stock_snapshots_supplier_id | btree | supplier_id | não | sim |  | `CREATE INDEX idx_stock_snapshots_supplier_id ON public.stock_snapshots USING btree (supplier_id)` |
+| idx_stock_snapshots_variant_id | btree | variant_id | não | sim |  | `CREATE INDEX idx_stock_snapshots_variant_id ON public.stock_snapshots USING btree (variant_id)` |
+| idx_stock_snapshots_variant_supplier_source_id | btree | variant_supplier_source_id | não | sim |  | `CREATE INDEX idx_stock_snapshots_variant_supplier_source_id ON public.stock_snapshots USING btree (variant_supplier_source_id)` |
 | stock_snapshots_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX stock_snapshots_pkey ON public.stock_snapshots USING btree (id)` |
 
 

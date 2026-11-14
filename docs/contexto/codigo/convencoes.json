@@ -35,7 +35,7 @@
    "scripts/inventario (4)"
   ],
   "docs": [
-   "docs (146)",
+   "docs (147)",
    "(raiz) (14)",
    ".github (4)"
   ]
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs: auditoria exaustiva de 13 domínios (91 agentes, verificação dupla) (#3611)",
+   "Merge pull request #3608 from adm01-debug/claude/crm-disjuntor-indisponibilidade-261114",
+   "fix(security): crm-db-bridge — erro de esquema não abre o disjuntor",
    "fix(security): CRM — vendedor vê os dele + os sem dono (supersede #3518) (#3583)",
-   "fix(catalog): remover prefetch pós-login de v_products_public que nunca é lido (#3603)",
-   "docs(migrations): recibos E15 das 10 migrations da #3584 (supersede #3590–#3599) (#3602)",
-   "docs: prod-readiness com lint, typecheck, build e testes no main final 371f52b (#3604)",
-   "docs: prod-readiness com o estado do main final e73a88d e a #3600 (#3601)"
+   "fix(catalog): remover prefetch pós-login de v_products_public que nunca é lido (#3603)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

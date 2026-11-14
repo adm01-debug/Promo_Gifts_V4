@@ -216887,6 +216887,34 @@
       },
       {
         "columns": [
+          "created_by"
+        ],
+        "definition": "CREATE INDEX idx_stock_notes_created_by ON public.stock_notes USING btree (created_by)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_stock_notes_created_by",
+        "predicate": null,
+        "schema": "public",
+        "table": "stock_notes"
+      },
+      {
+        "columns": [
+          "supplier_id"
+        ],
+        "definition": "CREATE INDEX idx_stock_notes_supplier_id ON public.stock_notes USING btree (supplier_id)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_stock_notes_supplier_id",
+        "predicate": null,
+        "schema": "public",
+        "table": "stock_notes"
+      },
+      {
+        "columns": [
           "variant_id"
         ],
         "definition": "CREATE INDEX stock_notes_active_idx ON public.stock_notes USING btree (variant_id) WHERE (deleted_at IS NULL)",
@@ -216937,6 +216965,76 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_snapshots_captured_at",
+        "predicate": null,
+        "schema": "public",
+        "table": "stock_snapshots"
+      },
+      {
+        "columns": [
+          "product_id"
+        ],
+        "definition": "CREATE INDEX idx_stock_snapshots_product_id ON public.stock_snapshots USING btree (product_id)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_stock_snapshots_product_id",
+        "predicate": null,
+        "schema": "public",
+        "table": "stock_snapshots"
+      },
+      {
+        "columns": [
+          "supplier_branch_id"
+        ],
+        "definition": "CREATE INDEX idx_stock_snapshots_supplier_branch_id ON public.stock_snapshots USING btree (supplier_branch_id)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_stock_snapshots_supplier_branch_id",
+        "predicate": null,
+        "schema": "public",
+        "table": "stock_snapshots"
+      },
+      {
+        "columns": [
+          "supplier_id"
+        ],
+        "definition": "CREATE INDEX idx_stock_snapshots_supplier_id ON public.stock_snapshots USING btree (supplier_id)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_stock_snapshots_supplier_id",
+        "predicate": null,
+        "schema": "public",
+        "table": "stock_snapshots"
+      },
+      {
+        "columns": [
+          "variant_id"
+        ],
+        "definition": "CREATE INDEX idx_stock_snapshots_variant_id ON public.stock_snapshots USING btree (variant_id)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_stock_snapshots_variant_id",
+        "predicate": null,
+        "schema": "public",
+        "table": "stock_snapshots"
+      },
+      {
+        "columns": [
+          "variant_supplier_source_id"
+        ],
+        "definition": "CREATE INDEX idx_stock_snapshots_variant_supplier_source_id ON public.stock_snapshots USING btree (variant_supplier_source_id)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_stock_snapshots_variant_supplier_source_id",
         "predicate": null,
         "schema": "public",
         "table": "stock_snapshots"
@@ -221088,66 +221186,6 @@
         "code": "extension_in_public",
         "detail": "Extensão instalada no schema public (recomendado: schema extensions).",
         "object": "pgstattuple",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "fk_without_index",
-        "detail": "FK sem índice nas colunas ['created_by']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
-        "object": "public.stock_notes.stock_notes_created_by_fkey",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "fk_without_index",
-        "detail": "FK sem índice nas colunas ['supplier_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
-        "object": "public.stock_notes.stock_notes_supplier_id_fkey",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "fk_without_index",
-        "detail": "FK sem índice nas colunas ['product_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
-        "object": "public.stock_snapshots.stock_snapshots_product_id_fkey",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "fk_without_index",
-        "detail": "FK sem índice nas colunas ['supplier_branch_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
-        "object": "public.stock_snapshots.stock_snapshots_supplier_branch_id_fkey",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "fk_without_index",
-        "detail": "FK sem índice nas colunas ['supplier_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
-        "object": "public.stock_snapshots.stock_snapshots_supplier_id_fkey",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "fk_without_index",
-        "detail": "FK sem índice nas colunas ['variant_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
-        "object": "public.stock_snapshots.stock_snapshots_variant_id_fkey",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "fk_without_index",
-        "detail": "FK sem índice nas colunas ['variant_supplier_source_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
-        "object": "public.stock_snapshots.stock_snapshots_variant_supplier_source_id_fkey",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "policy_auth_fn_not_wrapped",
-        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
-        "object": "public.stock_notes.stock_notes_delete_own",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "policy_auth_fn_not_wrapped",
-        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
-        "object": "public.stock_notes.stock_notes_insert_own",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "policy_auth_fn_not_wrapped",
-        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
-        "object": "public.stock_notes.stock_notes_update_own",
         "severity": "BAIXA"
       },
       {
@@ -245929,7 +245967,7 @@
         ],
         "schema": "public",
         "table": "stock_notes",
-        "using": "(created_by = auth.uid())",
+        "using": "(created_by = ( SELECT auth.uid() AS uid))",
         "with_check": null
       },
       {
@@ -245942,7 +245980,7 @@
         "schema": "public",
         "table": "stock_notes",
         "using": null,
-        "with_check": "(created_by = auth.uid())"
+        "with_check": "(created_by = ( SELECT auth.uid() AS uid))"
       },
       {
         "cmd": "SELECT",
@@ -245965,8 +246003,8 @@
         ],
         "schema": "public",
         "table": "stock_notes",
-        "using": "(created_by = auth.uid())",
-        "with_check": "(created_by = auth.uid())"
+        "using": "(created_by = ( SELECT auth.uid() AS uid))",
+        "with_check": "(created_by = ( SELECT auth.uid() AS uid))"
       },
       {
         "cmd": "SELECT",

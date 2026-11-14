@@ -1010,7 +1010,7 @@
    "nome": "crm-db-bridge",
    "entrada": "supabase/functions/crm-db-bridge/index.ts",
    "arquivos": 3,
-   "linhas": 1385,
+   "linhas": 1443,
    "verify_jwt": false,
    "metodos": [
     "GET",

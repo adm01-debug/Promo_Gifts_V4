@@ -5,7 +5,7 @@
   "linguagens": [
    "TypeScript (4760)",
    "SQL (3389)",
-   "Markdown (1018)",
+   "Markdown (1019)",
    "JavaScript (443)",
    "JSON (126)",
    "YAML (111)",
@@ -3829,6 +3829,11 @@
    "arquivo": "docs/AUDITORIA-EXAUSTIVA-2026-05-23.md",
    "titulo": "Auditoria exaustiva de bugs e falhas — `promo-gifts-v4`",
    "linhas": 355
+  },
+  {
+   "arquivo": "docs/AUDITORIA-EXAUSTIVA-2026-11-14.md",
+   "titulo": "Auditoria exaustiva — 2026-11-14",
+   "linhas": 81
   },
   {
    "arquivo": "docs/AUDITORIA_2026-05-07.md",

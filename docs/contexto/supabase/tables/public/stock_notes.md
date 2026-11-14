@@ -41,6 +41,8 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_stock_notes_created_by | btree | created_by | não | sim |  | `CREATE INDEX idx_stock_notes_created_by ON public.stock_notes USING btree (created_by)` |
+| idx_stock_notes_supplier_id | btree | supplier_id | não | sim |  | `CREATE INDEX idx_stock_notes_supplier_id ON public.stock_notes USING btree (supplier_id)` |
 | stock_notes_active_idx | btree | variant_id | não | sim | `(deleted_at IS NULL)` | `CREATE INDEX stock_notes_active_idx ON public.stock_notes USING btree (variant_id) WHERE (deleted_at IS NULL)` |
 | stock_notes_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX stock_notes_pkey ON public.stock_notes USING btree (id)` |
 | stock_notes_variant_idx | btree | variant_id | não | sim |  | `CREATE INDEX stock_notes_variant_idx ON public.stock_notes USING btree (variant_id)` |
@@ -55,7 +57,7 @@
 | comando | DELETE |
 | tipo | PERMISSIVE |
 | roles | authenticated |
-| USING | `(created_by = auth.uid())` |
+| USING | `(created_by = ( SELECT auth.uid() AS uid))` |
 | WITH CHECK |  |
 
 ### `stock_notes_insert_own`
@@ -66,7 +68,7 @@
 | tipo | PERMISSIVE |
 | roles | authenticated |
 | USING |  |
-| WITH CHECK | `(created_by = auth.uid())` |
+| WITH CHECK | `(created_by = ( SELECT auth.uid() AS uid))` |
 
 ### `stock_notes_select_authenticated`
 
@@ -85,8 +87,8 @@
 | comando | UPDATE |
 | tipo | PERMISSIVE |
 | roles | authenticated |
-| USING | `(created_by = auth.uid())` |
-| WITH CHECK | `(created_by = auth.uid())` |
+| USING | `(created_by = ( SELECT auth.uid() AS uid))` |
+| WITH CHECK | `(created_by = ( SELECT auth.uid() AS uid))` |
 
 
 ## Triggers

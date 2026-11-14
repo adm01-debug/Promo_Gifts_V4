@@ -798,10 +798,10 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.step_up_tokens | step_up_tokens_insert_own | INSERT | PERMISSIVE | authenticated |  | `(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)` |
 | public.step_up_tokens | step_up_tokens_update_own | UPDATE | PERMISSIVE | authenticated | `((( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id) AND (consumed = false) AND (expires_at > now()))` | `(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)` |
 | public.stock_daily_summary | auth_read_stock_daily_summary | SELECT | PERMISSIVE | authenticated | `true` |  |
-| public.stock_notes | stock_notes_delete_own | DELETE | PERMISSIVE | authenticated | `(created_by = auth.uid())` |  |
-| public.stock_notes | stock_notes_insert_own | INSERT | PERMISSIVE | authenticated |  | `(created_by = auth.uid())` |
+| public.stock_notes | stock_notes_delete_own | DELETE | PERMISSIVE | authenticated | `(created_by = ( SELECT auth.uid() AS uid))` |  |
+| public.stock_notes | stock_notes_insert_own | INSERT | PERMISSIVE | authenticated |  | `(created_by = ( SELECT auth.uid() AS uid))` |
 | public.stock_notes | stock_notes_select_authenticated | SELECT | PERMISSIVE | authenticated | `true` |  |
-| public.stock_notes | stock_notes_update_own | UPDATE | PERMISSIVE | authenticated | `(created_by = auth.uid())` | `(created_by = auth.uid())` |
+| public.stock_notes | stock_notes_update_own | UPDATE | PERMISSIVE | authenticated | `(created_by = ( SELECT auth.uid() AS uid))` | `(created_by = ( SELECT auth.uid() AS uid))` |
 | public.stock_snapshots | auth_read_stock_snapshots | SELECT | PERMISSIVE | authenticated | `true` |  |
 | public.supplier_attribute_definitions | supplier_attribute_definitions_delete_policy | DELETE | PERMISSIVE | public | `(organization_id IN ( SELECT supplier_attribute_definitions.organization_id    FROM profiles   WHERE (profiles.id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))))` |  |
 | public.supplier_attribute_definitions | supplier_attribute_definitions_insert_policy | INSERT | PERMISSIVE | public |  | `(organization_id IN ( SELECT supplier_attribute_definitions.organization_id    FROM profiles   WHERE (profiles.id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))))` |

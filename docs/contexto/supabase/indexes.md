@@ -1041,10 +1041,17 @@ Uso e tamanho em `stats.md`.
 | public.stock_daily_summary | idx_stock_daily_summary_supplier_id | btree | supplier_id | não | sim |  |
 | public.stock_daily_summary | stock_daily_summary_pkey | btree | id | sim | sim |  |
 | public.stock_daily_summary | uq_stock_daily_vss_date | btree | variant_supplier_source_id, summary_date | sim | sim |  |
+| public.stock_notes | idx_stock_notes_created_by | btree | created_by | não | sim |  |
+| public.stock_notes | idx_stock_notes_supplier_id | btree | supplier_id | não | sim |  |
 | public.stock_notes | stock_notes_active_idx | btree | variant_id | não | sim | `(deleted_at IS NULL)` |
 | public.stock_notes | stock_notes_pkey | btree | id | sim | sim |  |
 | public.stock_notes | stock_notes_variant_idx | btree | variant_id | não | sim |  |
 | public.stock_snapshots | idx_snapshots_captured_at | btree | captured_at | não | sim |  |
+| public.stock_snapshots | idx_stock_snapshots_product_id | btree | product_id | não | sim |  |
+| public.stock_snapshots | idx_stock_snapshots_supplier_branch_id | btree | supplier_branch_id | não | sim |  |
+| public.stock_snapshots | idx_stock_snapshots_supplier_id | btree | supplier_id | não | sim |  |
+| public.stock_snapshots | idx_stock_snapshots_variant_id | btree | variant_id | não | sim |  |
+| public.stock_snapshots | idx_stock_snapshots_variant_supplier_source_id | btree | variant_supplier_source_id | não | sim |  |
 | public.stock_snapshots | stock_snapshots_pkey | btree | id | sim | sim |  |
 | public.supplier_attribute_definitions | idx_supplier_attribute_definitions_organization_id | btree | organization_id | não | sim |  |
 | public.supplier_attribute_definitions | supplier_attribute_definition_supplier_id_api_attribute_key_key | btree | supplier_id, api_attribute_key | sim | sim |  |

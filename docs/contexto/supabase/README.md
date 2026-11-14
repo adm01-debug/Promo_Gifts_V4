@@ -25,7 +25,7 @@ Gerado automaticamente a cada 10 min pelo workflow `contexto.yml` (job `banco`) 
 | functions | 1350 |
 | triggers | 420 |
 | policies (RLS) | 1045 |
-| índices | 1323 |
+| índices | 1330 |
 | tipos/enums | 17 |
 | extensões | 18 |
 | cron jobs | 143 |
@@ -35,7 +35,7 @@ Gerado automaticamente a cada 10 min pelo workflow `contexto.yml` (job `banco`) 
 | edge functions | n/d |
 | webhooks | 0 |
 | lints ALTA | 10 |
-| lints total | 34 |
+| lints total | 24 |
 
 ## Estado das fontes do mapa de referências
 

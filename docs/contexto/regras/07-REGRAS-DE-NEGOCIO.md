@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `892494ca4d` · branch `main` · 2026-11-14 15:53 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `6ef19fd512` · branch `main` · 2026-11-14 17:39 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2582,7 +2582,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **CrmOrderBySchema** (`supabase/functions/crm-db-bridge/index.ts`, z.union):
   ```ts
-  [ z.string().regex(/^[a-z_][a-z0-9_.]*(\s+(asc|desc))?$/i), z.object({ column: z.string().regex(COLUMN_RE), ascending: z.boolean().optional() }), ]
+  [ z.string().regex(/^[a-z_][a-z0-9_]*(\s+(asc|desc))?$/i), z.object({ column: z.string().regex(COLUMN_RE), ascending: z.boolean().optional() }), ]
   ```
 - **CrmRequestSchema** (`supabase/functions/crm-db-bridge/index.ts`, z.object):
   ```ts
@@ -5551,7 +5551,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `PREFETCH_MIN_INTERVAL_MS` | `5` | `src/hooks/ui/useWorkspaceNotifications.tsx` |
 | `CACHE_TTL_MS` | `12` | `src/hooks/voice/scribeTokenCache.ts` |
 | `MAX_ENTRIES` | `5` | `src/hooks/voice/useVoiceHistory.ts` |
-| … +337 linhas — lista completa em `context.json` | | |
+| … +338 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
