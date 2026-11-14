@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "333fe6e82509aa32d8d25facd803ef57f82ffe14",
+  "commit": "1256b4a57e12d3371fb677f5758ac1cc299344cb",
   "branch": "main",
-  "data_commit": "2026-11-13T23:23:27-03:00",
+  "data_commit": "2026-11-14T00:08:05-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "1256b4a",
+    "data": "2026-11-14",
+    "assunto": "docs(edge-fn): recibos E66 dos deploys de 13/11 (supersede #3527 #3530 #3533 #3537 #3539 #3542 #3545) (#3546)"
+   },
    {
     "sha": "333fe6e",
     "data": "2026-11-13",
@@ -126,11 +131,6 @@
     "sha": "0b1766d",
     "data": "2026-11-13",
     "assunto": "fix(test): validação de tema roda só nos navegadores Chromium instalados no CI (#3458)"
-   },
-   {
-    "sha": "1083b36",
-    "data": "2026-11-13",
-    "assunto": "Merge branch 'main' into claude/lote-pilha-v2-261112"
    }
   ],
   "arquivos_mudados_7d": 1980,
@@ -211,11 +211,11 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 30
+    "mudancas": 29
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "arquivo": "analise-prs/progresso.json",
@@ -226,15 +226,15 @@
     "mudancas": 14
    },
    {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 13
-   },
-   {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 13
+    "mudancas": 14
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
+    "mudancas": 12
+   },
+   {
+    "arquivo": "CHANGELOG.md",
     "mudancas": 12
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 447
+    "commits": 446
    },
    {
     "autor": "Joaquim Ataides",

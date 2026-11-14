@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "333fe6e82509aa32d8d25facd803ef57f82ffe14",
+  "sha": "1256b4a57e12d3371fb677f5758ac1cc299344cb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 02:46 UTC",
+  "generated_at": "2026-11-14 03:32 UTC",
   "files_total": 10038,
   "code_files": 8574,
   "code_lines": 1212103
@@ -528417,10 +528417,19 @@
   }
  },
  "git": {
-  "sha": "333fe6e82509aa32d8d25facd803ef57f82ffe14",
+  "sha": "1256b4a57e12d3371fb677f5758ac1cc299344cb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1256b4a",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "docs(edge-fn): recibos E66 dos deploys de 13/11 (supersede #3527 #3530 #3533 #3537 #3539 #3542 #3545) (#3546)",
+    "files": [
+     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
+    ]
+   },
    {
     "sha": "333fe6e",
     "date": "2026-11-13",
@@ -528760,13 +528769,6 @@
     "files": [
      "docs/prod-readiness.md"
     ]
-   },
-   {
-    "sha": "d4450a4",
-    "date": "2026-11-12",
-    "author": "Joaquim Ataides",
-    "subject": "Merge branch 'main' into claude/lote-pilha-v2-261112",
-    "files": []
    }
   ],
   "hot_files": [
@@ -528776,7 +528778,7 @@
    ],
    [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    3
+    4
    ],
    [
     "package.json",
