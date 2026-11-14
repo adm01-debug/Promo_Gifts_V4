@@ -1482,3 +1482,16 @@ e sem a tabela `xbz_image_import_staging`; logs 24h: 317 POST → 401, 0 → 200
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261114003000` | `fix_unschedule_cron_xbz_image_uploader` | `c742a627a964faf49ae9be913336b8aafaa76e8b6f7a3e95bc266d9cc2a54efa` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-cron-xbz-image-uploader-261114-0030`) |
+
+## 2026-11-14 — Estoque: índice parcial para a contagem de restocks de `fn_get_stock_notification_counts`
+
+Consulta read-only em produção (2026-11-14, `pg_indexes`/`pg_get_functiondef`/`pg_stat_statements`):
+`fn_get_stock_notification_counts()` tem 14.871 chamadas com média de 522 ms (sino do Header,
+`StockAlertsIndicator.tsx`). No bloco `restocks`, `idx_sds_cenario_a` lê ~9,3k linhas/buffers de `stock_daily_summary`
+(30 dias) e descarta 7,8k pelo filtro `COALESCE(stock_open,0)=0 AND COALESCE(stock_close,0)>0`. O índice parcial
+`idx_sds_restock_zero_to_pos_date` usa o mesmo predicado da função e cobre `product_id`. Ainda não está no ledger;
+aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]` (porta 5432, `transaction: none`, fora do pico).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114160000` | `perf_idx_sds_restock_counts` | `d538e03130d8151ccde29c56a72c1004a74b76e3789aed0095b64d8c19bcc03a` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (linha `approved-by`) e `db-apply-migration.yml` (branch `claude/perf-idx-sds-restock-counts-261114-1006`) |
