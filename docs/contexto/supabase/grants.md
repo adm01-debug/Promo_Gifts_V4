@@ -1,7 +1,5 @@
 # Grants
 
-> ⚠️ Seção `grants` não pôde ser atualizada nesta coleta (ver errors.md); mostrando a versão anterior.
-
 
 Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypass RLS). Grants de sistema (postgres, supabase_*) omitidos.
 
