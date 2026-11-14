@@ -1,7 +1,7 @@
 {
- "gerado_em": "2026-11-02T16:19:27.182Z",
+ "gerado_em": "2026-11-13T23:56:51.646Z",
  "total": 135,
- "total_producao": 118,
+ "total_producao": 116,
  "sem_tela_resolvida": [],
  "rotas": [
   {
@@ -9,8 +9,8 @@
    "componente": "OptimizedImageDemo",
    "grupo": null,
    "guardas": [],
-   "somente_dev": false,
-   "linha": 132,
+   "somente_dev": true,
+   "linha": 133,
    "tela": "src/pages/tools/OptimizedImageDemo.tsx",
    "hooks": [],
    "dados": {
@@ -28,7 +28,7 @@
    "grupo": null,
    "guardas": [],
    "somente_dev": true,
-   "linha": 136,
+   "linha": 138,
    "tela": "src/pages/__visual/PreviewButtonHarness.tsx",
    "hooks": [],
    "dados": {
@@ -46,7 +46,7 @@
    "grupo": null,
    "guardas": [],
    "somente_dev": true,
-   "linha": 139,
+   "linha": 141,
    "tela": "src/pages/__visual/QuoteViewOrderHarness.tsx",
    "hooks": [],
    "dados": {
@@ -64,7 +64,7 @@
    "grupo": null,
    "guardas": [],
    "somente_dev": true,
-   "linha": 142,
+   "linha": 144,
    "tela": "src/pages/__visual/QuoteItemsListMobileHarness.tsx",
    "hooks": [],
    "dados": {
@@ -82,7 +82,7 @@
    "grupo": null,
    "guardas": [],
    "somente_dev": true,
-   "linha": 148,
+   "linha": 150,
    "tela": "src/pages/__visual/QuoteItemEditorSheetHarness.tsx",
    "hooks": [],
    "dados": {
@@ -104,7 +104,7 @@
     "edges": [
      "quote-sync"
     ],
-    "arquivos_lidos": 50
+    "arquivos_lidos": 53
    },
    "arquivo": "src/routes/AppRoutes.tsx"
   },
@@ -114,7 +114,7 @@
    "grupo": null,
    "guardas": [],
    "somente_dev": true,
-   "linha": 154,
+   "linha": 156,
    "tela": "src/pages/__visual/QuoteAddProductButtonHarness.tsx",
    "hooks": [],
    "dados": {
@@ -181,7 +181,7 @@
    "grupo": null,
    "guardas": [],
    "somente_dev": true,
-   "linha": 159,
+   "linha": 161,
    "tela": "src/pages/__visual/CalendarHarness.tsx",
    "hooks": [],
    "dados": {
@@ -199,7 +199,7 @@
    "grupo": null,
    "guardas": [],
    "somente_dev": true,
-   "linha": 161,
+   "linha": 163,
    "tela": "src/pages/__visual/DatePickerFieldHarness.tsx",
    "hooks": [],
    "dados": {
@@ -217,7 +217,7 @@
    "grupo": null,
    "guardas": [],
    "somente_dev": true,
-   "linha": 164,
+   "linha": 166,
    "tela": "src/pages/__visual/NegotiationMarkupCardHarness.tsx",
    "hooks": [],
    "dados": {
@@ -235,7 +235,7 @@
    "grupo": null,
    "guardas": [],
    "somente_dev": true,
-   "linha": 170,
+   "linha": 172,
    "tela": "src/pages/__visual/QuoteFreightBlockHarness.tsx",
    "hooks": [],
    "dados": {
@@ -358,7 +358,7 @@
      "send-transactional-email",
      "trends-insights"
     ],
-    "arquivos_lidos": 256
+    "arquivos_lidos": 255
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -467,7 +467,7 @@
      "validate-access",
      "verify-2fa-token"
     ],
-    "arquivos_lidos": 181
+    "arquivos_lidos": 183
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -529,7 +529,8 @@
     "tabelas": [
      "discount_approval_requests",
      "profiles",
-     "seller_discount_limits"
+     "seller_discount_limits",
+     "user_roles"
     ],
     "buckets": [],
     "rpcs": [],
@@ -605,12 +606,19 @@
     "tabelas": [
      "admin_settings",
      "audit_log",
+     "cart_templates",
+     "catalog_analytics",
      "categories",
+     "categories_tree_visual",
+     "category_icons",
      "color_groups",
+     "color_nuances",
      "color_variations",
      "customization_price_tables",
      "geo_allowed_countries",
      "kit_templates",
+     "order_items",
+     "orders",
      "personalization_simulations",
      "personalization_techniques",
      "print_area_techniques",
@@ -626,13 +634,21 @@
      "product_images",
      "product_kit_components",
      "product_materials",
+     "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
      "product_videos",
+     "product_views",
      "products",
      "profiles",
+     "quote_items",
      "role_migration_batches",
      "role_migration_items",
+     "search_analytics",
      "security_settings",
+     "seller_cart_items",
+     "seller_carts",
+     "supplier_branches",
      "suppliers",
      "system_kill_switches",
      "tabela_preco_gravacao_oficial",
@@ -641,26 +657,36 @@
      "tecnicas_gravacao",
      "user_ip_allowlist",
      "user_known_devices",
-     "v_kit_component_complete"
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
+     "video_variant_links"
     ],
     "buckets": [
      "supplier-logos"
     ],
     "rpcs": [
-     "execute_role_migration_batch"
+     "execute_role_migration_batch",
+     "fn_batch_update_cart_item_sort_order",
+     "fn_get_replenishment_stats",
+     "fn_get_reposicao_listing",
+     "fn_get_similar_products",
+     "get_catalog_bestseller_page"
     ],
     "edges": [
      "analyze-logo-colors",
+     "categories-api",
      "cnpj-lookup",
      "crm-db-bridge",
      "detect-new-device",
      "external-db-bridge",
+     "generate-product-seo",
      "get-visitor-info",
      "log-login-attempt",
      "secrets-manager",
      "validate-access"
     ],
-    "arquivos_lidos": 154
+    "arquivos_lidos": 257
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -727,6 +753,7 @@
      "system_kill_switches",
      "system_settings",
      "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
      "tags",
      "tecnica_gravacao",
      "user_ip_allowlist",
@@ -765,7 +792,7 @@
      "secrets-manager",
      "validate-access"
     ],
-    "arquivos_lidos": 319
+    "arquivos_lidos": 323
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -953,6 +980,7 @@
      "suppliers",
      "system_kill_switches",
      "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
      "tecnica_gravacao",
      "v_catalog_stats",
      "v_kit_component_complete",
@@ -1031,12 +1059,14 @@
      "role_migration_items",
      "security_settings",
      "user_ip_allowlist",
-     "user_known_devices"
+     "user_known_devices",
+     "vw_products_min_quantity"
     ],
     "buckets": [],
     "rpcs": [
      "create_kit_quote_transactional",
      "execute_role_migration_batch",
+     "fn_check_item_fits",
      "increment_kit_template_usage",
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
@@ -1049,7 +1079,7 @@
      "secrets-manager",
      "validate-access"
     ],
-    "arquivos_lidos": 71
+    "arquivos_lidos": 72
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -1075,7 +1105,7 @@
      "save_custom_kit_atomic"
     ],
     "edges": [],
-    "arquivos_lidos": 20
+    "arquivos_lidos": 19
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -1419,7 +1449,7 @@
      "secrets-manager",
      "validate-access"
     ],
-    "arquivos_lidos": 34
+    "arquivos_lidos": 36
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -1526,6 +1556,7 @@
      "system_kill_switches",
      "system_settings",
      "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
      "tecnica_gravacao",
      "v_catalog_stats",
      "v_kit_component_complete",
@@ -2003,7 +2034,7 @@
      "send-transactional-email",
      "voice-agent"
     ],
-    "arquivos_lidos": 282
+    "arquivos_lidos": 281
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -2112,7 +2143,7 @@
      "send-transactional-email",
      "voice-agent"
     ],
-    "arquivos_lidos": 253
+    "arquivos_lidos": 252
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -2246,7 +2277,7 @@
      "webhook-dispatcher",
      "webhook-inbound"
     ],
-    "arquivos_lidos": 318
+    "arquivos_lidos": 320
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -2418,7 +2449,7 @@
      "send-transactional-email",
      "voice-agent"
     ],
-    "arquivos_lidos": 248
+    "arquivos_lidos": 247
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -2530,7 +2561,7 @@
      "secrets-manager",
      "validate-access"
     ],
-    "arquivos_lidos": 36
+    "arquivos_lidos": 39
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -2762,7 +2793,7 @@
      "send-transactional-email",
      "visual-search"
     ],
-    "arquivos_lidos": 400
+    "arquivos_lidos": 401
    },
    "arquivo": "src/routes/client-routes.tsx"
   },
@@ -2886,7 +2917,7 @@
      "send-transactional-email",
      "voice-agent"
     ],
-    "arquivos_lidos": 285
+    "arquivos_lidos": 283
    },
    "arquivo": "src/routes/client-routes.tsx"
   },
@@ -3117,7 +3148,7 @@
      "magic-up-score",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 233
+    "arquivos_lidos": 232
    },
    "arquivo": "src/routes/client-routes.tsx"
   },
@@ -3299,6 +3330,7 @@
      "system_kill_switches",
      "system_settings",
      "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
      "tecnica_gravacao",
      "user_onboarding",
      "v_catalog_stats",
@@ -3522,7 +3554,7 @@
      "send-transactional-email",
      "voice-agent"
     ],
-    "arquivos_lidos": 393
+    "arquivos_lidos": 394
    },
    "arquivo": "src/routes/product-routes.tsx"
   },
@@ -3628,6 +3660,7 @@
      "system_kill_switches",
      "system_settings",
      "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
      "tecnica_gravacao",
      "user_onboarding",
      "v_catalog_stats",
@@ -4072,6 +4105,7 @@
      "suppliers",
      "system_kill_switches",
      "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
      "tecnica_gravacao",
      "v_catalog_stats",
      "v_kit_component_complete",
@@ -4196,6 +4230,7 @@
      "suppliers",
      "system_kill_switches",
      "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
      "tecnica_gravacao",
      "v_catalog_stats",
      "v_kit_component_complete",
@@ -5233,7 +5268,7 @@
      "quote-sync",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 202
+    "arquivos_lidos": 201
    },
    "arquivo": "src/routes/quote-routes.tsx"
   },
@@ -5373,7 +5408,7 @@
      "quote-sync",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 321
+    "arquivos_lidos": 324
    },
    "arquivo": "src/routes/quote-routes.tsx"
   },
@@ -5494,7 +5529,7 @@
      "quote-sync",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 321
+    "arquivos_lidos": 324
    },
    "arquivo": "src/routes/quote-routes.tsx"
   },
@@ -5599,7 +5634,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 68,
+   "linha": 73,
    "tela": "src/pages/tools/SimuladorWizard.tsx",
    "hooks": [
     {
@@ -5641,7 +5676,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 69,
+   "linha": 74,
    "tela": "src/pages/tools/PriceSimulatorPage.tsx",
    "hooks": [],
    "dados": {
@@ -5675,7 +5710,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 70,
+   "linha": 75,
    "tela": "src/pages/admin/StockDashboardPage.tsx",
    "hooks": [],
    "dados": {
@@ -5754,7 +5789,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 71,
+   "linha": 76,
    "tela": "src/pages/tools/AdvancedPriceSearchPage.tsx",
    "hooks": [
     {
@@ -5815,6 +5850,7 @@
      "system_kill_switches",
      "system_settings",
      "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
      "tecnica_gravacao",
      "v_catalog_stats",
      "v_kit_component_complete",
@@ -5865,7 +5901,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 72,
+   "linha": 77,
    "tela": "src/pages/kit-builder/KitBuilderPage.tsx",
    "hooks": [
     {
@@ -5928,7 +5964,8 @@
      "user_roles",
      "v_catalog_stats",
      "variant_supplier_sources",
-     "video_variant_links"
+     "video_variant_links",
+     "vw_products_min_quantity"
     ],
     "buckets": [
      "mockup-assets",
@@ -5937,6 +5974,7 @@
     "rpcs": [
      "create_kit_quote_transactional",
      "fn_batch_update_cart_item_sort_order",
+     "fn_check_item_fits",
      "fn_get_replenishment_stats",
      "fn_get_reposicao_listing",
      "fn_get_similar_products",
@@ -5958,7 +5996,7 @@
      "step-up-verify",
      "verify-2fa-token"
     ],
-    "arquivos_lidos": 249
+    "arquivos_lidos": 250
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -5970,7 +6008,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 73,
+   "linha": 78,
    "tela": null,
    "hooks": [],
    "dados": {
@@ -5990,7 +6028,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 74,
+   "linha": 79,
    "tela": "src/pages/kit-builder/KitLibraryPage.tsx",
    "hooks": [
     {
@@ -6017,11 +6055,13 @@
      "print_area_techniques",
      "product_variants",
      "products",
-     "profiles"
+     "profiles",
+     "vw_products_min_quantity"
     ],
     "buckets": [],
     "rpcs": [
      "create_kit_quote_transactional",
+     "fn_check_item_fits",
      "increment_kit_template_usage",
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
@@ -6029,7 +6069,7 @@
     "edges": [
      "kit-identity-suggest"
     ],
-    "arquivos_lidos": 61
+    "arquivos_lidos": 62
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -6041,7 +6081,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 75,
+   "linha": 80,
    "tela": null,
    "hooks": [],
    "dados": {
@@ -6061,7 +6101,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 76,
+   "linha": 81,
    "tela": null,
    "hooks": [],
    "dados": {
@@ -6081,7 +6121,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 77,
+   "linha": 82,
    "tela": "src/pages/mockups/MockupGenerator.tsx",
    "hooks": [
     {
@@ -6210,7 +6250,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 78,
+   "linha": 83,
    "tela": "src/pages/mockups/MockupHistoryPage.tsx",
    "hooks": [
     {
@@ -6299,7 +6339,7 @@
      "magic-up-score",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 217
+    "arquivos_lidos": 216
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -6311,7 +6351,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 79,
+   "linha": 84,
    "tela": "src/pages/tools/MagicUp.tsx",
    "hooks": [
     {
@@ -6402,7 +6442,7 @@
      "send-transactional-email",
      "voice-agent"
     ],
-    "arquivos_lidos": 267
+    "arquivos_lidos": 266
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -6414,7 +6454,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 80,
+   "linha": 85,
    "tela": "src/pages/bi/CommercialIntelligencePage.tsx",
    "hooks": [
     {
@@ -6442,7 +6482,6 @@
      "color_groups",
      "color_nuances",
      "color_variations",
-     "customization_price_tables",
      "device_login_notifications",
      "expert_conversations",
      "expert_messages",
@@ -6459,7 +6498,6 @@
      "notifications",
      "order_items",
      "orders",
-     "print_area_techniques",
      "product_group_members",
      "product_images",
      "product_kit_components",
@@ -6485,7 +6523,6 @@
      "system_settings",
      "tabela_preco_gravacao_oficial",
      "tabela_preco_gravacao_oficial_faixa",
-     "tecnica_gravacao",
      "user_onboarding",
      "v_catalog_stats",
      "v_kit_component_complete",
@@ -6528,7 +6565,7 @@
      "send-transactional-email",
      "voice-agent"
     ],
-    "arquivos_lidos": 330
+    "arquivos_lidos": 329
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -6540,7 +6577,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 81,
+   "linha": 86,
    "tela": "src/pages/bi/BusinessIntelligencePage.tsx",
    "hooks": [
     {
@@ -6588,7 +6625,7 @@
      "crm-db-bridge",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 198
+    "arquivos_lidos": 197
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -6600,7 +6637,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 82,
+   "linha": 87,
    "tela": "src/pages/clients/ClientComparatorPage.tsx",
    "hooks": [],
    "dados": {
@@ -6627,7 +6664,7 @@
      "crm-db-bridge",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 162
+    "arquivos_lidos": 161
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -6639,7 +6676,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 83,
+   "linha": 88,
    "tela": "src/pages/products/ProductMatchPage.tsx",
    "hooks": [
     {
@@ -6707,6 +6744,7 @@
      "suppliers",
      "system_kill_switches",
      "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
      "tecnica_gravacao",
      "v_catalog_stats",
      "v_kit_component_complete",
@@ -6757,7 +6795,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 84,
+   "linha": 89,
    "tela": "src/pages/tools/DropboxBrowserPage.tsx",
    "hooks": [
     {
@@ -6862,7 +6900,7 @@
      "validate-access",
      "voice-agent"
     ],
-    "arquivos_lidos": 265
+    "arquivos_lidos": 264
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -6875,7 +6913,7 @@
     "DevRoute"
    ],
    "somente_dev": false,
-   "linha": 86,
+   "linha": 91,
    "tela": "src/pages/Simulation.tsx",
    "hooks": [],
    "dados": {
@@ -6898,7 +6936,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 88,
+   "linha": 93,
    "tela": "src/pages/tools/CoverageInsightsDashboardPage.tsx",
    "hooks": [],
    "dados": {
@@ -6918,7 +6956,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 89,
+   "linha": 94,
    "tela": "src/pages/tools/VisualSearchPage.tsx",
    "hooks": [
     {
@@ -6982,6 +7020,7 @@
      "suppliers",
      "system_kill_switches",
      "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
      "tecnica_gravacao",
      "v_catalog_stats",
      "v_kit_component_complete",
@@ -7034,7 +7073,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 90,
+   "linha": 95,
    "tela": "src/pages/magazine/MagazineListPage.tsx",
    "hooks": [
     {
@@ -7094,7 +7133,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 98,
+   "linha": 103,
    "tela": "src/pages/magazine/templates-gallery/MagazineTemplatesGalleryPage.tsx",
    "hooks": [
     {
@@ -7146,7 +7185,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 106,
+   "linha": 111,
    "tela": "src/pages/magazine/MagazineEditorPage.tsx",
    "hooks": [
     {
@@ -7200,7 +7239,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 114,
+   "linha": 119,
    "tela": "src/pages/magazine/MagazinePrintPage.tsx",
    "hooks": [],
    "dados": {
@@ -7239,7 +7278,7 @@
     "ProtectedRoute"
    ],
    "somente_dev": false,
-   "linha": 122,
+   "linha": 127,
    "tela": "src/pages/magazine/MagazinePrintPage.tsx",
    "hooks": [],
    "dados": {
@@ -7277,8 +7316,8 @@
    "guardas": [
     "ProtectedRoute"
    ],
-   "somente_dev": false,
-   "linha": 130,
+   "somente_dev": true,
+   "linha": 136,
    "tela": "src/pages/PromoFlixPlayground.tsx",
    "hooks": [],
    "dados": {
