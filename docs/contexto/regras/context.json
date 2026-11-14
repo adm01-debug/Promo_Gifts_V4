@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "e1dcade5d711670beaa732da8560bdf30dbe4e82",
+  "sha": "c6bc04ab75d15e5b4bbec59d084cd43eab00ab44",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 06:31 UTC",
+  "generated_at": "2026-11-14 06:37 UTC",
   "files_total": 10044,
   "code_files": 8580,
   "code_lines": 1212272
@@ -528459,10 +528459,19 @@
   }
  },
  "git": {
-  "sha": "e1dcade5d711670beaa732da8560bdf30dbe4e82",
+  "sha": "c6bc04ab75d15e5b4bbec59d084cd43eab00ab44",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "c6bc04a",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(db): snapshot de cron jobs sem o xbz-image-uploader desagendado (#3576)",
+    "files": [
+     "supabase/baseline/20261108000000_cron_jobs.json"
+    ]
+   },
    {
     "sha": "e1dcade",
     "date": "2026-11-14",
@@ -528815,13 +528824,6 @@
     "author": "adm01-debug",
     "subject": "Merge pull request #3425 from adm01-debug/claude/lote-pilha-v2-261112",
     "files": []
-   },
-   {
-    "sha": "81d3370",
-    "date": "2026-11-13",
-    "author": "Joaquim Ataides",
-    "subject": "Merge branch 'main' into claude/lote-pilha-v2-261112",
-    "files": []
    }
   ],
   "hot_files": [
@@ -528832,6 +528834,10 @@
    [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     4
+   ],
+   [
+    "supabase/baseline/20261108000000_cron_jobs.json",
+    2
    ],
    [
     "docs/prod-readiness.md",
@@ -528863,10 +528869,6 @@
    ],
    [
     "supabase/rollbacks/20261114003000_rollback.sql",
-    1
-   ],
-   [
-    "supabase/baseline/20261108000000_cron_jobs.json",
     1
    ],
    [

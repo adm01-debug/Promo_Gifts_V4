@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(db): snapshot de cron jobs sem o xbz-image-uploader desagendado (#3576)",
    "docs: prod-readiness regerado no main com provas de 14/11 (#3508)",
    "fix(db): desagenda o cron xbz-image-uploader (edge esboço, 401 a cada 10 min) (#3556)",
    "fix(db): snapshot de cron jobs reflete a CRON-003 aplicada (21 schedules) (#3572)",
-   "perf(db): proposta de reagendamento noturno dos crons pesados de fornecedores (#3554)",
-   "fix(db): PostgREST para de perder o LISTEN a cada 10 min (idle_session_timeout do authenticator) (#3569)"
+   "perf(db): proposta de reagendamento noturno dos crons pesados de fornecedores (#3554)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
