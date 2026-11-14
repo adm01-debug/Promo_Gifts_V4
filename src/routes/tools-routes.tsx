@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Navigate, Route, useLocation, useParams } from 'react-router-dom';
 import { DevRoute } from '@/components/layout/DevRoute';
+import { lazyWithRetry } from '@/lib/lazyWithRetry';
 import { useAuth } from '@/contexts/AuthContext';
 import { MagazineErrorBoundary } from '@/pages/magazine/components/MagazineErrorBoundary';
 import {
@@ -25,8 +26,12 @@ import {
   StockDashboardPage,
   SimulationPage,
   VisualSearchPage,
-  PromoFlixPlayground,
 } from './lazy-pages';
+
+// Playground de QA do PromoFlix (stream externo de teste) — só em dev.
+const PromoFlixPlayground = import.meta.env.DEV
+  ? lazyWithRetry(() => import('@/pages/PromoFlixPlayground'))
+  : null;
 
 // Erros de render do módulo Revista ficam locais (e viram telemetria magazine_react_error).
 function MagazineRoute({ children }: { children: ReactNode }) {
@@ -127,6 +132,8 @@ export const toolsRoutes = (
         </MagazineRoute>
       }
     />
-    <Route path="/promoflix-playground" element={<PromoFlixPlayground />} />
+    {PromoFlixPlayground && (
+      <Route path="/promoflix-playground" element={<PromoFlixPlayground />} />
+    )}
   </>
 );

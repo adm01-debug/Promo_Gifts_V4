@@ -18,7 +18,8 @@ const h = vi.hoisted(() => {
 
   const makeBuilder = (table: string) => {
     const builder: Record<string, unknown> = {};
-    const chain = (method: string) =>
+    const chain =
+      (method: string) =>
       (...args: unknown[]) => {
         state.calls.push({ table, method, args });
         return builder;
@@ -27,8 +28,12 @@ const h = vi.hoisted(() => {
       builder[m] = chain(m);
     }
     builder.then = (resolve: (v: unknown) => unknown, reject: (e: unknown) => unknown) => {
-      if (state.tableErrors.has(table)) return Promise.reject(new Error(`fail ${table}`)).then(resolve, reject);
-      return Promise.resolve({ data: state.tableData[table] ?? [], error: null }).then(resolve, reject);
+      if (state.tableErrors.has(table))
+        return Promise.reject(new Error(`fail ${table}`)).then(resolve, reject);
+      return Promise.resolve({ data: state.tableData[table] ?? [], error: null }).then(
+        resolve,
+        reject,
+      );
     };
     return builder;
   };
@@ -104,7 +109,7 @@ vi.mock('../useQuickSuggestions', () => ({
 vi.mock('../EmptySearchState', () => ({ pushRecentSearch: h.pushRecentSearch }));
 
 vi.mock('@/hooks/common', () => ({
-  useDebounce: <T,>(v: T) => v,
+  useDebounce: <T>(v: T) => v,
   useSearchHistory: () => ({
     history: h.history,
     addToHistory: h.addToHistory,
@@ -138,9 +143,13 @@ const COMMANDS = [
     action: vi.fn(),
   },
 ];
-vi.mock('@/hooks/ui/useSlashCommands', () => ({ useSlashCommands: () => ({ commands: COMMANDS }) }));
+vi.mock('@/hooks/ui/useSlashCommands', () => ({
+  useSlashCommands: () => ({ commands: COMMANDS }),
+}));
 
-vi.mock('@/lib/logger', () => ({ logger: { warn: vi.fn(), error: vi.fn(), info: vi.fn(), debug: vi.fn() } }));
+vi.mock('@/lib/logger', () => ({
+  logger: { warn: vi.fn(), error: vi.fn(), info: vi.fn(), debug: vi.fn() },
+}));
 vi.mock('@/lib/edge/safeInvokeCall', () => ({ invokeEdge: h.invokeEdge }));
 vi.mock('@/lib/external-db', () => ({ fetchPromobrindProducts: h.fetchPromobrindProducts }));
 vi.mock('@/lib/crm-db', () => ({ searchCrm: h.searchCrm, selectCrm: h.selectCrm }));
@@ -213,18 +222,30 @@ describe('useGlobalSearch', () => {
 
   it('busca mista monta resultados de produtos, clientes, orçamentos e tabelas auxiliares', async () => {
     h.fetchPromobrindProducts.mockResolvedValue([product()]);
-    h.searchCrm.mockResolvedValue([{ id: 'c1', razao_social: 'ACME LTDA', nome_fantasia: '', ramo: '' }]);
+    h.searchCrm.mockResolvedValue([
+      { id: 'c1', razao_social: 'ACME LTDA', nome_fantasia: '', ramo: '' },
+    ]);
     h.selectCrm.mockResolvedValue([
       { id: 'q1', quote_number: 'ORC-1', client_name: 'Acme', status: 'draft', total: 100 },
     ]);
     h.state.tableData = {
       collections: [{ id: 'col1', name: 'Natal', description: 'Coleção', icon: '🎄' }],
       expert_conversations: [{ id: 'conv1', title: 'Conversa caneca' }],
-      category_icons: [{ id: 'cat1', category_name: 'Canecas & Copos', description: null, icon: '☕' }],
-      custom_kits: [{ id: 'k1', name: 'Kit caneca', status: 'ativo', total_price: null, kit_quantity: 2 }],
+      category_icons: [
+        { id: 'cat1', category_name: 'Canecas & Copos', description: null, icon: '☕' },
+      ],
+      custom_kits: [
+        { id: 'k1', name: 'Kit caneca', status: 'ativo', total_price: null, kit_quantity: 2 },
+      ],
       generated_mockups: [{ id: 'm1', product_name: null, technique_name: null }],
       art_file_attachments: [
-        { id: 'a1', original_name: 'arte.pdf', notes: null, file_url: 'https://x/arte.pdf', quote_id: null },
+        {
+          id: 'a1',
+          original_name: 'arte.pdf',
+          notes: null,
+          file_url: 'https://x/arte.pdf',
+          quote_id: null,
+        },
         { id: 'a2', original_name: 'logo.ai', notes: 'n', file_url: 'https://x/l', quote_id: 'q9' },
       ],
       cart_templates: [
@@ -232,10 +253,23 @@ describe('useGlobalSearch', () => {
         { id: 't2', name: 'Tpl2', description: 'd', items: null },
       ],
       magic_up_generations: [
-        { id: 'mu1', client_name: null, product_name: null, scene_title: null, scene_category: 'praia', generated_image_url: 'img' },
+        {
+          id: 'mu1',
+          client_name: null,
+          product_name: null,
+          scene_title: null,
+          scene_category: 'praia',
+          generated_image_url: 'img',
+        },
       ],
       product_components: [
-        { id: 'pc1', component_code: 'C1', component_name: 'Tampa', product_id: 'p1', is_personalizable: true },
+        {
+          id: 'pc1',
+          component_code: 'C1',
+          component_name: 'Tampa',
+          product_id: 'p1',
+          is_personalizable: true,
+        },
       ],
       component_media: [
         { id: 'cm1', title: null, media_type: 'video', url: 'https://v', product_id: null },
@@ -249,9 +283,16 @@ describe('useGlobalSearch', () => {
     const byType = result.current.groupedResults;
     expect(byType.product[0]).toMatchObject({ title: 'Caneca Azul', href: '/produto/p1' });
     expect(byType.product[0].subtitle).toContain('SKU: CAN-1');
-    expect(byType.client[0]).toMatchObject({ title: 'ACME LTDA', subtitle: 'Empresa', href: '/cliente/c1' });
+    expect(byType.client[0]).toMatchObject({
+      title: 'ACME LTDA',
+      subtitle: 'Empresa',
+      href: '/cliente/c1',
+    });
     expect(byType.quote[0]).toMatchObject({ title: 'ORC-1', href: '/orcamentos/q1' });
-    expect(byType.collection[0]).toMatchObject({ href: '/colecoes/col1', metadata: { icon: '🎄' } });
+    expect(byType.collection[0]).toMatchObject({
+      href: '/colecoes/col1',
+      metadata: { icon: '🎄' },
+    });
     expect(byType.conversation[0].href).toBe('/expert?conversation=conv1');
     expect(byType.category[0].href).toBe('/?category=Canecas%20%26%20Copos');
     expect(byType.kit[0].subtitle).toContain('2x');
@@ -260,6 +301,7 @@ describe('useGlobalSearch', () => {
     expect(byType.art_file[0].subtitle).toBe('Arquivo de arte');
     expect(byType.cart_template[0].subtitle).toBe('1 item • Template de carrinho');
     expect(byType.cart_template[1].subtitle).toBe('0 itens • d');
+    expect(byType.cart_template.map((t) => t.href)).toEqual(['/carrinhos', '/carrinhos']);
     expect(byType.magic_up[0]).toMatchObject({ title: 'Magic Up', href: '/magic-up' });
     expect(byType.magic_up[0].subtitle).toBe('Sem cliente •  • praia');
     expect(byType.component[0].subtitle).toBe('Código: C1 • Personalizável');
@@ -271,7 +313,9 @@ describe('useGlobalSearch', () => {
     // resultado vai para o cache; analytics grava termo
     expect(searchCache.get('caneca')).toEqual(result.current.results);
     await waitFor(() =>
-      expect(h.state.calls.some((c) => c.table === 'search_analytics' && c.method === 'insert')).toBe(true),
+      expect(
+        h.state.calls.some((c) => c.table === 'search_analytics' && c.method === 'insert'),
+      ).toBe(true),
     );
   });
 
@@ -313,7 +357,11 @@ describe('useGlobalSearch', () => {
 
   it('filtro de preço alto mantém só produtos acima de 200 e cor sem match não esvazia', async () => {
     h.invokeEdge.mockResolvedValue(
-      intentResponse({ type: 'product', keywords: ['caneca'], filters: { priceRange: 'high', color: 'roxo' } }),
+      intentResponse({
+        type: 'product',
+        keywords: ['caneca'],
+        filters: { priceRange: 'high', color: 'roxo' },
+      }),
     );
     h.fetchPromobrindProducts.mockResolvedValue([
       product({ id: 'barata', base_price: 10 }),
@@ -326,7 +374,11 @@ describe('useGlobalSearch', () => {
 
   it('intenção de orçamento filtra por cliente e status e reordena via RPC', async () => {
     h.invokeEdge.mockResolvedValue(
-      intentResponse({ type: 'quote', keywords: ['orcamento'], filters: { clientName: 'acme', status: 'sent' } }),
+      intentResponse({
+        type: 'quote',
+        keywords: ['orcamento'],
+        filters: { clientName: 'acme', status: 'sent' },
+      }),
     );
     h.selectCrm.mockResolvedValue([
       { id: 'q1', quote_number: 'ORC-1', client_name: 'Acme SA', status: 'sent', total: 10 },
@@ -340,20 +392,37 @@ describe('useGlobalSearch', () => {
     const { result } = renderHook(() => useGlobalSearch());
     await runSearch(result, 'orcamento acme');
 
-    expect(h.selectCrm).toHaveBeenCalledWith('quotes', expect.objectContaining({ filters: { status: 'sent' } }));
+    expect(h.selectCrm).toHaveBeenCalledWith(
+      'quotes',
+      expect.objectContaining({ filters: { status: 'sent' } }),
+    );
     expect(result.current.results.map((r) => r.id)).toEqual(['q2', 'q1']);
     expect(supabase.rpc).toHaveBeenCalledWith('search_records_rerank', expect.anything());
   });
 
   it('intenção de cliente usa o nome do filtro e entidades extras', async () => {
     h.invokeEdge.mockResolvedValue(
-      intentResponse({ type: 'client', keywords: ['x'], filters: { clientName: 'Acme' }, entities: ['kit'] }),
+      intentResponse({
+        type: 'client',
+        keywords: ['x'],
+        filters: { clientName: 'Acme' },
+        entities: ['kit'],
+      }),
     );
-    h.searchCrm.mockResolvedValue([{ id: 'c1', razao_social: 'Acme', nome_fantasia: 'ACME', ramo: 'Tech' }]);
-    h.state.tableData = { custom_kits: [{ id: 'k1', name: 'Kit', status: 's', total_price: 5, kit_quantity: 1 }] };
+    h.searchCrm.mockResolvedValue([
+      { id: 'c1', razao_social: 'Acme', nome_fantasia: 'ACME', ramo: 'Tech' },
+    ]);
+    h.state.tableData = {
+      custom_kits: [{ id: 'k1', name: 'Kit', status: 's', total_price: 5, kit_quantity: 1 }],
+    };
     const { result } = renderHook(() => useGlobalSearch());
     await runSearch(result, 'cliente acme');
-    expect(h.searchCrm).toHaveBeenCalledWith('companies', 'razao_social', 'Acme', expect.any(Object));
+    expect(h.searchCrm).toHaveBeenCalledWith(
+      'companies',
+      'razao_social',
+      'Acme',
+      expect.any(Object),
+    );
     expect(result.current.results.map((r) => r.type)).toEqual(['client', 'kit']);
     expect(result.current.results[0]).toMatchObject({ title: 'ACME', subtitle: 'Tech' });
   });
@@ -380,7 +449,12 @@ describe('useGlobalSearch', () => {
     h.fetchPromobrindProducts.mockRejectedValue(new Error('down'));
     h.searchCrm.mockRejectedValue(new Error('down'));
     h.selectCrm.mockRejectedValue(new Error('down'));
-    h.state.tableErrors = new Set(['collections', 'custom_kits', 'generated_mockups', 'component_media']);
+    h.state.tableErrors = new Set([
+      'collections',
+      'custom_kits',
+      'generated_mockups',
+      'component_media',
+    ]);
     h.invokeEdge.mockResolvedValue({ data: null, error: new Error('edge') });
     const { result } = renderHook(() => useGlobalSearch());
     await runSearch(result, 'qualquer');
@@ -428,7 +502,11 @@ describe('useGlobalSearch', () => {
     const { result } = renderHook(() => useGlobalSearch());
     act(() => result.current.setQuery(' caneca '));
     act(() => result.current.handleSelect('/produto/1'));
-    expect(h.addToHistory).toHaveBeenCalledWith({ id: 'history-caneca', label: 'caneca', type: 'general' });
+    expect(h.addToHistory).toHaveBeenCalledWith({
+      id: 'history-caneca',
+      label: 'caneca',
+      type: 'general',
+    });
     expect(h.pushRecentSearch).toHaveBeenCalledWith('caneca');
     expect(h.setOpen).toHaveBeenCalledWith(false);
     expect(h.navigate).toHaveBeenCalledWith('/produto/1');
@@ -457,7 +535,10 @@ describe('useGlobalSearch', () => {
     result.current.removeFromHistory('x');
     expect(h.removeFromHistory).toHaveBeenCalledWith('history-x');
     const stop = vi.fn();
-    result.current.handleRemoveFromHistory({ stopPropagation: stop } as unknown as React.MouseEvent, 'y');
+    result.current.handleRemoveFromHistory(
+      { stopPropagation: stop } as unknown as React.MouseEvent,
+      'y',
+    );
     expect(stop).toHaveBeenCalled();
     expect(h.removeFromHistory).toHaveBeenCalledWith('history-y');
     result.current.handleOpenVoiceOverlay();
@@ -469,7 +550,9 @@ describe('useGlobalSearch', () => {
 
   it('Ctrl+Shift+V abre o overlay de voz e logout limpa o cache', () => {
     const { unmount } = renderHook(() => useGlobalSearch());
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'V', ctrlKey: true, shiftKey: true }));
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'V', ctrlKey: true, shiftKey: true }),
+    );
     expect(h.setVoiceOverlayOpen).toHaveBeenCalledWith(true);
 
     searchCache.set('k', []);
@@ -488,7 +571,13 @@ describe('useGlobalSearch', () => {
 
     it('navigate registra comando e navega após 500ms', () => {
       const { result } = renderHook(() => useGlobalSearch());
-      act(() => result.current.handleVoiceAction({ action: 'navigate', response: 'ok', data: { route: '/kits' } }));
+      act(() =>
+        result.current.handleVoiceAction({
+          action: 'navigate',
+          response: 'ok',
+          data: { route: '/kits' },
+        }),
+      );
       expect(h.addCommand).toHaveBeenCalledWith('ok', 'navigate', true);
       expect(h.navigate).not.toHaveBeenCalled();
       act(() => vi.advanceTimersByTime(500));
@@ -512,7 +601,13 @@ describe('useGlobalSearch', () => {
 
     it('search usa o termo falado; clear zera; sort navega; answer não faz nada', () => {
       const { result } = renderHook(() => useGlobalSearch());
-      act(() => result.current.handleVoiceAction({ action: 'search', response: 'r', data: { query: 'boné' } }));
+      act(() =>
+        result.current.handleVoiceAction({
+          action: 'search',
+          response: 'r',
+          data: { query: 'boné' },
+        }),
+      );
       act(() => vi.advanceTimersByTime(500));
       expect(result.current.query).toBe('boné');
 
@@ -520,7 +615,13 @@ describe('useGlobalSearch', () => {
       act(() => vi.advanceTimersByTime(500));
       expect(result.current.query).toBe('');
 
-      act(() => result.current.handleVoiceAction({ action: 'sort', response: 'r', data: { sortBy: 'price' } }));
+      act(() =>
+        result.current.handleVoiceAction({
+          action: 'sort',
+          response: 'r',
+          data: { sortBy: 'price' },
+        }),
+      );
       act(() => result.current.handleVoiceAction({ action: 'sort', response: 'r' }));
       act(() => vi.advanceTimersByTime(500));
       expect(h.navigate).toHaveBeenCalledTimes(1);
@@ -537,7 +638,11 @@ describe('useGlobalSearch', () => {
       window.addEventListener('open-seller-cart', listener);
       const { result } = renderHook(() => useGlobalSearch());
       act(() =>
-        result.current.handleVoiceAction({ action: 'open_oracle', response: 'r', data: { oracleMessage: 'oi' } }),
+        result.current.handleVoiceAction({
+          action: 'open_oracle',
+          response: 'r',
+          data: { oracleMessage: 'oi' },
+        }),
       );
       act(() => result.current.handleVoiceAction({ action: 'open_cart', response: 'r' }));
       act(() => vi.advanceTimersByTime(500));
@@ -548,7 +653,13 @@ describe('useGlobalSearch', () => {
 
     it('timers pendentes são cancelados no unmount', () => {
       const { result, unmount } = renderHook(() => useGlobalSearch());
-      act(() => result.current.handleVoiceAction({ action: 'navigate', response: 'r', data: { route: '/x' } }));
+      act(() =>
+        result.current.handleVoiceAction({
+          action: 'navigate',
+          response: 'r',
+          data: { route: '/x' },
+        }),
+      );
       unmount();
       vi.advanceTimersByTime(1000);
       expect(h.navigate).not.toHaveBeenCalled();

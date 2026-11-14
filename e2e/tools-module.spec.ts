@@ -40,6 +40,7 @@
  */
 
 import { test, expect } from './fixtures/test-base';
+import { isProductionBuild } from './helpers/dev-only-route';
 
 // Lista de rotas de ferramentas que devem ser testadas
 const TOOL_ROUTES = [
@@ -57,7 +58,8 @@ const TOOL_ROUTES = [
   { path: '/ferramentas/cobertura', name: 'Coverage Insights' },
   { path: '/magazine', name: 'Magazine List' },
   { path: '/magazine/templates', name: 'Magazine Templates' },
-  { path: '/promoflix-playground', name: 'PromoFlix Playground' },
+  // Só montada em dev (import.meta.env.DEV): em build de produção cai no 404, não no /auth.
+  ...(isProductionBuild ? [] : [{ path: '/promoflix-playground', name: 'PromoFlix Playground' }]),
 ];
 
 test.describe('Tools Module - Public Access (No Auth)', () => {

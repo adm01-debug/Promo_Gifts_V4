@@ -649,7 +649,7 @@ export function useGlobalSearch() {
               title: t.name,
               subtitle: `${itemCount} ${itemCount === 1 ? 'item' : 'itens'} • ${t.description || 'Template de carrinho'}`,
               type: 'cart_template',
-              href: `/carrinho?template=${t.id}`,
+              href: '/carrinhos',
             });
           });
         } catch {
