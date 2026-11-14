@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1882e6c133189baf8371c1697b1eb77944b59996",
+  "commit": "e1dcade5d711670beaa732da8560bdf30dbe4e82",
   "branch": "main",
-  "data_commit": "2026-11-14T03:05:30-03:00",
+  "data_commit": "2026-11-14T03:18:03-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e1dcade",
+    "data": "2026-11-14",
+    "assunto": "docs: prod-readiness regerado no main com provas de 14/11 (#3508)"
+   },
    {
     "sha": "1882e6c",
     "data": "2026-11-14",
@@ -126,11 +131,6 @@
     "sha": "b5e04b3",
     "data": "2026-11-13",
     "assunto": "fix(estoque): carrega /estoque com paginação em faixas paralelas de keyset (#3460)"
-   },
-   {
-    "sha": "f55aecb",
-    "data": "2026-11-13",
-    "assunto": "chore(analise-prs): relatório das 61 PRs abertas em 2026-11-12 (#3408)"
    }
   ],
   "arquivos_mudados_7d": 1981,
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 55
+    "mudancas": 54
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 442
+    "commits": 441
    },
    {
     "autor": "Joaquim Ataides",

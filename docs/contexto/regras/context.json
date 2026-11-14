@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "1882e6c133189baf8371c1697b1eb77944b59996",
+  "sha": "e1dcade5d711670beaa732da8560bdf30dbe4e82",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 06:08 UTC",
+  "generated_at": "2026-11-14 06:31 UTC",
   "files_total": 10044,
   "code_files": 8580,
   "code_lines": 1212272
@@ -528459,10 +528459,19 @@
   }
  },
  "git": {
-  "sha": "1882e6c133189baf8371c1697b1eb77944b59996",
+  "sha": "e1dcade5d711670beaa732da8560bdf30dbe4e82",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e1dcade",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "docs: prod-readiness regerado no main com provas de 14/11 (#3508)",
+    "files": [
+     "docs/prod-readiness.md"
+    ]
+   },
    {
     "sha": "1882e6c",
     "date": "2026-11-14",
@@ -528813,15 +528822,6 @@
     "author": "Joaquim Ataides",
     "subject": "Merge branch 'main' into claude/lote-pilha-v2-261112",
     "files": []
-   },
-   {
-    "sha": "0b1766d",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "fix(test): validação de tema roda só nos navegadores Chromium instalados no CI (#3458)",
-    "files": [
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
@@ -528834,8 +528834,8 @@
     4
    ],
    [
-    "package.json",
-    3
+    "docs/prod-readiness.md",
+    2
    ],
    [
     "docs/coordenacao/conflitos-semanticos.md",
@@ -528851,6 +528851,10 @@
    ],
    [
     "package-lock.json",
+    2
+   ],
+   [
+    "package.json",
     2
    ],
    [
@@ -528899,10 +528903,6 @@
    ],
    [
     "tests/scripts/tools-batch6.test.mjs",
-    1
-   ],
-   [
-    "supabase/functions/process-scheduled-reports/index.ts",
     1
    ]
   ]
