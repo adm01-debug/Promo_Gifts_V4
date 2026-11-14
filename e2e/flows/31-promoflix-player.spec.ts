@@ -1,6 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { devOnlyRouteReason, isProductionBuild } from '../helpers/dev-only-route';
 
 test.describe('PromoFlixPlayer Visual Regression', () => {
+  test.skip(isProductionBuild, devOnlyRouteReason('/promoflix-playground'));
+
   test.beforeEach(() => {
     // /promoflix-playground is under ProtectedRoute — skip when no auth credentials
     test.skip(

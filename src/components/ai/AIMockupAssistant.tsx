@@ -90,6 +90,8 @@ export function AIMockupAssistant({
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Sem backend de IA: texto livre só em DEV; em produção ficam só as ações rápidas
+  const freeTextEnabled = import.meta.env.DEV;
 
   useEffect(() => {
     return () => {
@@ -226,7 +228,12 @@ export function AIMockupAssistant({
       {!isMinimized && (
         <>
           {/* Messages */}
-          <ScrollArea className="h-[calc(100%-130px)] flex-1">
+          <ScrollArea
+            className={cn(
+              'flex-1',
+              freeTextEnabled ? 'h-[calc(100%-130px)]' : 'h-[calc(100%-60px)]',
+            )}
+          >
             <div className="space-y-4 p-3">
               <AnimatePresence>
                 {messages.map((message, idx) => (
@@ -298,36 +305,38 @@ export function AIMockupAssistant({
           </ScrollArea>
 
           {/* Input */}
-          <div className="border-t bg-muted/30 p-3">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSend();
-              }}
-              className="flex gap-2"
-            >
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Pergunte sobre o mockup..."
-                className="h-10 flex-1 !border-[hsl(145,80%,30%)] !ring-[hsl(145,80%,30%)] hover:!border-[hsl(145,80%,30%)]/50 focus-visible:!border-[hsl(145,80%,30%)] focus-visible:!ring-[hsl(145,80%,30%)]/20"
-                disabled={isLoading}
-              />
-              <Button
-                type="submit"
-                size="icon"
-                aria-label={isLoading ? 'Enviando...' : 'Enviar pergunta'}
-                className="h-10 w-10 shrink-0 bg-primary text-white hover:bg-primary/90"
-                disabled={!input.trim() || isLoading}
+          {freeTextEnabled && (
+            <div className="border-t bg-muted/30 p-3">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSend();
+                }}
+                className="flex gap-2"
               >
-                {isLoading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
-              </Button>
-            </form>
-          </div>
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Pergunte sobre o mockup..."
+                  className="h-10 flex-1 !border-[hsl(145,80%,30%)] !ring-[hsl(145,80%,30%)] hover:!border-[hsl(145,80%,30%)]/50 focus-visible:!border-[hsl(145,80%,30%)] focus-visible:!ring-[hsl(145,80%,30%)]/20"
+                  disabled={isLoading}
+                />
+                <Button
+                  type="submit"
+                  size="icon"
+                  aria-label={isLoading ? 'Enviando...' : 'Enviar pergunta'}
+                  className="h-10 w-10 shrink-0 bg-primary text-white hover:bg-primary/90"
+                  disabled={!input.trim() || isLoading}
+                >
+                  {isLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                </Button>
+              </form>
+            </div>
+          )}
         </>
       )}
     </motion.div>

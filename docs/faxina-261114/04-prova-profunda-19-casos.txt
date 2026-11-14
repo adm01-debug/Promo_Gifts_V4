@@ -1,0 +1,57 @@
+=== bot/policies-baseline-seed-20261106230819 (c5bc907ce)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 1 | conteudo_nao_encontrado_no_main: ['.security/policies-baseline.json:6/42_linhas_ausentes']
+=== claude/chore-auditoria-perf005-status-261101-2115 (2d8bb72cf)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 1 | conteudo_nao_encontrado_no_main: ['auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md:8/93_linhas_ausentes']
+=== claude/feat-e128-split-promoflix-261030-1045 (ef745375c)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 2 | conteudo_nao_encontrado_no_main: ['src/components/products/gallery/PromoFlixPlayer.tsx:1/45_linhas_ausentes', 'src/components/products/gallery/usePromoFlixPlayer.ts:1/588_linhas_ausentes']
+=== codex/fix-replenishment-relevance-permission-261107-1154 (c485c0527)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 1 | conteudo_nao_encontrado_no_main: NADA
+=== docs/auditoria-supabase-adendo-20261028 (548885d67)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 1 | conteudo_nao_encontrado_no_main: NADA
+=== importado/vps-fabrica/v2/fix-analise-de-cores-da-logo-ignora-resp-2610081919 (c0e139437)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 2 | conteudo_nao_encontrado_no_main: ['src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts:1/126_linhas_ausentes']
+=== importado/vps-fabrica/v2/m01-2610082247 (f42d53719)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 3 | conteudo_nao_encontrado_no_main: ['src/hooks/intelligence/magicUpShare.ts:1/41_linhas_ausentes']
+=== importado/vps-fabrica/v2/m14-2610082248 (9b7df4946)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 2 | conteudo_nao_encontrado_no_main: ['tests/components/magic-up-curation.a11y.test.tsx:2/122_linhas_ausentes']
+=== importado/vps-fabrica/v2/m16-2610082248 (9be793b85)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 2 | conteudo_nao_encontrado_no_main: ['src/components/magic-up/AdImageResult.tsx:3/28_linhas_ausentes', 'tests/components/magic-up-gallery.nested.test.tsx:1/160_linhas_ausentes']
+=== importado/vps-fabrica/v2/n01-2610082244 (ceb1c7a88)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 2 | conteudo_nao_encontrado_no_main: ['src/components/mockup/__tests__/MockupResultCard.confetti.test.tsx:1/100_linhas_ausentes']
+=== importado/vps-fabrica/v2/n53-2610082250 (3c08d6b65)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 2 | conteudo_nao_encontrado_no_main: ['src/components/mockup/logo-editor/__tests__/useLogoProcessing.size.test.ts:8/195_linhas_ausentes']
+=== importado/vps-fabrica/v2/refazer-11ed1020 (3a86bde41)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 2 | conteudo_nao_encontrado_no_main: ['src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts:1/126_linhas_ausentes']
+=== importado/vps-fabrica/v2/refazer-1428537e (4639b7c14)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 2 | conteudo_nao_encontrado_no_main: ['src/components/mockup/logo-editor/__tests__/useLogoProcessing.size.test.ts:8/195_linhas_ausentes']
+=== importado/vps-fabrica/v2/refazer-3da5f864 (ba0702398)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 2 | conteudo_nao_encontrado_no_main: ['src/components/magic-up/AdImageResult.tsx:3/28_linhas_ausentes', 'tests/components/magic-up-gallery.nested.test.tsx:1/160_linhas_ausentes']
+=== importado/vps-fabrica/v2/refazer-4fdd2bee (2e1c84fa1)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 2 | conteudo_nao_encontrado_no_main: ['tests/components/magic-up-curation.a11y.test.tsx:2/122_linhas_ausentes']
+=== importado/vps-fabrica/v2/refazer-82e4d63a (33060f5a2)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 2 | conteudo_nao_encontrado_no_main: ['tests/components/magic-up-curation.a11y.test.tsx:2/122_linhas_ausentes']
+=== importado/vps-fabrica/v2/refazer-cfa93103 (d53948d4b)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 2 | conteudo_nao_encontrado_no_main: ['src/components/mockup/logo-editor/__tests__/useLogoProcessing.size.test.ts:8/195_linhas_ausentes']
+=== importado/vps-fabrica/v2/refazer-f1242f15 (bcabebfe9)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 2 | conteudo_nao_encontrado_no_main: ['src/components/magic-up/AdImageResult.tsx:3/28_linhas_ausentes', 'tests/components/magic-up-gallery.nested.test.tsx:1/160_linhas_ausentes']
+=== importado/vps-fabrica/v2/s25-2610081947 (d8e06e26e)
+    commits_exclusivos(patch-id): NENHUM
+    arquivos_tocados: 2 | conteudo_nao_encontrado_no_main: ['src/components/mockup/MockupHistoryPanel.tsx:4/13_linhas_ausentes']
