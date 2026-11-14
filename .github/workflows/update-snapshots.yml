@@ -18,7 +18,7 @@ name: E2E · Atualizar snapshots visuais (E155)
 #
 # Todas as variações viraram inputs:
 #   spec        — 1..N specs separados por espaço
-#   project     — chromium-public | chromium-authed | all-public (chromium+firefox+webkit)
+#   project     — chromium-public | chromium-authed | all-public (chromium+firefox+webkit) | all-authed (idem, autenticado)
 #   safe_mode   — dry-run primeiro; só regenera se a falha for diferença visual (diff/actual PNG)
 #   mode        — pr (branch nova + PR) | push (commit direto na branch alvo; nunca em main)
 #   dev_server  — sobe o Vite antes (specs que não funcionam com o webServer do Playwright)
@@ -60,7 +60,7 @@ on:
         required: true
         type: string
       project:
-        description: "Playwright project (all-public = chromium+firefox+webkit public)"
+        description: "Playwright project (all-public / all-authed = chromium+firefox+webkit public / autenticado)"
         required: false
         default: chromium-public
         type: choice
@@ -68,6 +68,7 @@ on:
           - chromium-public
           - chromium-authed
           - all-public
+          - all-authed
       safe_mode:
         description: "Dry-run antes: só regenera se a falha for diferença visual"
         required: false
@@ -283,7 +284,7 @@ jobs:
 
       - name: Install Playwright browsers
         run: |
-          if [ "$INPUT_PROJECT" = "all-public" ]; then
+          if [ "$INPUT_PROJECT" = "all-public" ] || [ "$INPUT_PROJECT" = "all-authed" ]; then
             npm run e2e:install:all-browsers
           else
             npx playwright install --with-deps chromium
@@ -298,6 +299,8 @@ jobs:
           done
           if [ "$INPUT_PROJECT" = "all-public" ]; then
             PROJECTS="--project=chromium-public --project=firefox-public --project=webkit-public"
+          elif [ "$INPUT_PROJECT" = "all-authed" ]; then
+            PROJECTS="--project=chromium-authed --project=firefox-authed --project=webkit-authed"
           else
             PROJECTS="--project=$INPUT_PROJECT"
           fi
@@ -350,7 +353,7 @@ jobs:
           echo "✅ Spec(s) já passam contra baselines atuais — nenhuma atualização necessária."
 
       - name: Verificar auth state antes de regenerar baselines autenticados
-        if: ${{ matrix.project == 'chromium-authed' && (!matrix.safe_mode || (steps.dryrun.outcome == 'failure' && steps.classify.outputs.kind == 'visual')) }}
+        if: ${{ (matrix.project == 'chromium-authed' || matrix.project == 'all-authed') && (!matrix.safe_mode || (steps.dryrun.outcome == 'failure' && steps.classify.outputs.kind == 'visual')) }}
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
         run: |
