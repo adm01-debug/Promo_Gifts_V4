@@ -1,67 +1,1204 @@
 {
-  "snapshot_at": "2026-11-09T17:00:00Z",
-  "main_sha_final": "6b859b0fbfa95e34493900cf0137402e95e46823",
-  "total_abertas_inicio": 44,
-  "total_abertas_fim": 29,
-  "gate_final_status": "QUEUED",
-  "zombie_bloqueador": "39698009932",
-  "prs": [
-    {"number": 3127, "branch": "codex/fix-e2e-ci-pressure-261107-0238", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "toca .github/workflows/"},
-    {"number": 3129, "branch": "codex/infra-e2e-ci-pressure-261107-1040", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "toca .github/workflows/"},
-    {"number": 3137, "branch": "codex/fix-e2e-relevance-261107-1148", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "toca .github/workflows/"},
-    {"number": 3160, "branch": "DESCONHECIDO", "estado": "FECHADA_SEM_MERGE", "motivo": "migration 20261101150000 hash diverge — irrecuperavel — CI: Migrations x Canonical schema FAILURE"},
-    {"number": 3179, "branch": "claude/fix-ci-workflows-261107-2300", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "toca .github/workflows/ + bloqueio ledger P09 estrutural"},
-    {"number": 3203, "branch": "claude/inspiring-knuth-swo71j", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "conflito 132 arquivos gerados - DIRTY - mergeable_state: CONFLICTING"},
-    {"number": 3210, "branch": "release-please--branches--main--components--gifts-store", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "Supabase Preview FAILURE - decisao de release"},
-    {"number": 3214, "branch": "claude_05/youthful-ride-vcdchy", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "toca .github/workflows/ + cron DDL producao"},
-    {"number": 3215, "branch": "DESCONHECIDO", "estado": "FECHADA_SEM_MERGE", "motivo": "migration 20261108001500 hash diverge - irrecuperavel - CI: Recibo de migration FAILURE"},
-    {"number": 3228, "branch": "claude/chore-e2e-swatch-dispatch-261108-1800", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "toca .github/workflows/"},
-    {"number": 3238, "branch": "DESCONHECIDO", "estado": "MERGED", "merge_sha": "17304c02232a8923791f15921d572b203b22c39d", "tipo": "docs-only E14"},
-    {"number": 3242, "branch": "DESCONHECIDO", "estado": "MERGED", "merge_sha": "6e631dd1cab31832c09028c8e762fc19886a4b70", "tipo": "docs-only E14"},
-    {"number": 3243, "branch": "claude/fix-categories-level-drift-261108-1952", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "migration DDL producao"},
-    {"number": 3244, "branch": "DESCONHECIDO", "estado": "MERGED", "merge_sha": "9b2644b2c1a78f5809e829c6a916f23959e87f12", "tipo": "docs-only E14"},
-    {"number": 3246, "branch": "DESCONHECIDO", "estado": "FECHADA_SEM_MERGE", "motivo": "RLS supplier_stricker ja em main commit 6522f77 - net zero"},
-    {"number": 3247, "branch": "claude/chore-workflows-snapshot-261108-2230", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "toca .github/workflows/"},
-    {"number": 3250, "branch": "claude/fix-stock-daily-index-261108-2230", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "migration DDL producao (indice)"},
-    {"number": 3251, "branch": "claude/fix-remove-broken-cron-image-dimensions-backfill-20261108-2300", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "cron DDL - toca .github/workflows/"},
-    {"number": 3254, "branch": "DESCONHECIDO", "estado": "MERGED", "merge_sha": "ce5a9ab41ad51b6fb136d7cc446ccdf77d79ef51", "tipo": "docs-only E14"},
-    {"number": 3255, "branch": "claude/fix-drop-perf002-incident-ddl-20261108-2231", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "DDL/migration producao"},
-    {"number": 3256, "branch": "claude/fix-art-files-rls-quotes-only-2611082355", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "migration RLS producao"},
-    {"number": 3257, "branch": "claude/fix-idempotencia-migrations-pendentes-261108-2236", "estado": "MERGED", "merge_sha": "6b859b0fbfa95e34493900cf0137402e95e46823", "tipo": "fix(migrations): idempotencia RLS deny-all e particoes 2027"},
-    {"number": 3261, "branch": "claude/chore-reconciliacao-drift-cron001-261108-2238", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "migration/cron DDL"},
-    {"number": 3263, "branch": "claude/feat-ft005-cron-scheduled-reports-20261108-2310", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "feat + cron DDL producao"},
-    {"number": 3264, "branch": "claude/feat-ft079-view-min-quantity-20261108-2310", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "migration (view) producao"},
-    {"number": 3265, "branch": "claude/feat-ft088-fn-check-item-fits-20261108-2310", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "migration (function) producao"},
-    {"number": 3266, "branch": "claude/fix-pr3203-scripts-static-pass-261108-2250", "estado": "MERGED", "merge_sha": "VERDE-VIOLATION", "tipo": "front/edge - merged com checks QUEUED (violacao VERDE por sessao anterior)"},
-    {"number": 3270, "branch": "claude/feat-ft088-front-fits-261108-2300", "estado": "FECHADA_SEM_MERGE", "motivo": "JA_IMPLEMENTADA - useKitFitsValidation.ts e useKitBuilderQuote.ts ja existem em main identicos"},
-    {"number": 3273, "branch": "claude/chore-categories-indexes-espelho-261108-1200", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "migration/indices producao"},
-    {"number": 3274, "branch": "claude/fix-gate-e42-261108-2325", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "toca .github/workflows/"},
-    {"number": 3275, "branch": "claude/fix-gate13-migration-refs-261108-1200", "estado": "MERGED", "merge_sha": "4cf30818dd24fa6abb1bbe91052befdb5d7d318a", "tipo": "fix(ci): Gate 1.3 — congela ref PENDENCIAS.md no baseline .migration-refs-baseline.json"},
-    {"number": 3277, "branch": "claude/fix-ft-ux-batch6-261101-2230", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "456 arquivos DIRTY: .github/workflows/x35 + supabase/migrations/(x6)"},
-    {"number": 3278, "branch": "claude/fix-sentinel-sha-d50ae76-261108-2330", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "sentinel allowlist expansion - aprovacao de seguranca"},
-    {"number": 3279, "branch": "claude/fix-cron002-collision-stagger-261108-2300", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "migration/cron DDL producao"},
-    {"number": 3283, "branch": "claude/feat-ft119-beforeunload-restore-261108-0100", "estado": "FECHADA_SEM_MERGE", "motivo": "SUPERSEDIDA por #3305"},
-    {"number": 3284, "branch": "claude/chore-drift-mirror-cron001-reopen-261108-2340", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "migration/drift DDL"},
-    {"number": 3288, "branch": "claude/fix-pr3203-ai-apply-261108-2345", "estado": "FECHADA_SEM_MERGE", "motivo": "SUPERSEDIDA por #3306"},
-    {"number": 3290, "branch": "claude/fix-e12-pg-indexes-check-261108-2352", "estado": "AGUARDANDO_HUMANO", "motivo_governance": "toca .github/workflows/"},
-    {"number": 3292, "branch": "claude/feat-ft122-wizard-step-guard-261108-2354", "estado": "MERGED", "merge_sha": "VERDE-VIOLATION", "tipo": "front - merged com checks QUEUED (violacao VERDE por sessao anterior)"},
-    {"number": 3294, "branch": "DESCONHECIDO", "estado": "MERGED", "merge_sha": "4309d10cdddd3f50964a0e8473a135df99e23739", "tipo": "docs-only E14"},
-    {"number": 3296, "branch": "DESCONHECIDO", "estado": "MERGED", "merge_sha": "198d8cf1dacb6d7fbd9b18905b5ff9affaed7317", "tipo": "docs-only E14"},
-    {"number": 3297, "branch": "DESCONHECIDO", "estado": "MERGED", "merge_sha": "83685882288490f88747557a731c9aeed20d443a", "tipo": "docs-only E14"},
-    {"number": 3303, "branch": "codex/fix-dropbox-smoke-261109-0122", "estado": "MERGED", "merge_sha": "VERDE-VIOLATION", "tipo": "front - merged com checks QUEUED (violacao VERDE por sessao anterior)"},
-    {"number": 3305, "branch": "claude/fix-pr3283-beforeunload-restore-261109-0400", "estado": "AGUARDANDO_CI", "descricao": "FT-119 beforeunload restore - CI nao rodou (zombie bloqueia runners)"},
-    {"number": 3306, "branch": "claude/fix-pr3288-ai-apply-confirm-261109-0400", "estado": "AGUARDANDO_CI", "descricao": "FT-134 AI APP Confirm - CI nao rodou (zombie bloqueia runners)"},
-    {"number": 3338, "branch": "claude/fix-ci-gate13-json-refs-20261109-1100", "estado": "FECHADA_SEM_MERGE", "motivo": "SUPERSEDIDA por #3275 — Gate 1.3 ja corrigida via baseline; PR #3338 alterava texto em analise-prs/ (desnecessario)"}
-  ],
-  "resumo_por_estado": {
-    "MERGED": {"total": 18, "numeros": [3238,3242,3244,3254,3257,3266,3275,3292,3294,3296,3297,3303,3307,3308,3309,3313,3314,3315], "nota": "3 merges com VERDE-VIOLATION por sessao anterior (#3266 #3292 #3303)"},
-    "FECHADA_SEM_MERGE": {"total": 7, "numeros": [3160,3215,3246,3270,3283,3288,3338]},
-    "AGUARDANDO_HUMANO": {"total": 26, "numeros": [3127,3129,3137,3179,3203,3210,3214,3228,3243,3247,3250,3251,3255,3256,3261,3263,3264,3265,3273,3274,3277,3278,3279,3284,3290]},
-    "AGUARDANDO_CI": {"total": 2, "numeros": [3305,3306], "nota": "PRs novas criadas esta sessao; CI bloqueado por Zombie"}
+ "snapshot_at": "2026-11-13T21:35:00Z",
+ "main_sha": "fe64be355269b192eb7d17aa0a2dc10fc9d242a5",
+ "total": 32,
+ "prs": [
+  {
+   "numero": 3539,
+   "titulo": "docs: recibo de deploy de edge function(s) — run 43487464383 (E66)",
+   "autor": "github-actions[bot]",
+   "base": "main",
+   "head": "e66-edge-deploy-receipt-43487464383",
+   "sha": "55c0ab5f9c527b24ac3bd877e3a5a06b0f2e3630",
+   "draft": false,
+   "mergeable_state": "behind",
+   "adicoes": 1,
+   "remocoes": 0,
+   "arquivos": 1,
+   "labels": [],
+   "criada_em": "2026-11-13T21:06:15Z",
+   "atualizada_em": "2026-11-13T21:07:23Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Supabase Preview=cancelled"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3537,
+    3533,
+    3530,
+    3527
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
   },
-  "bloqueio_principal": {
-    "descricao": "Zombie run 39698009932 (Contract Tests) in_progress desde 2026-10-22 ocupa runner ubuntu-24.04, bloqueando Gate Final em main e CI de todas as PRs",
-    "acao_necessaria": "Cancelar manualmente em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39698009932",
-    "efeito_apos_cancelamento": "Gate Final de main passa para SUCCESS; CI de #3305 e #3306 roda; se verde, mergear ambas"
+  {
+   "numero": 3537,
+   "titulo": "docs: recibo de deploy de edge function(s) — run 43467481887 (E66)",
+   "autor": "github-actions[bot]",
+   "base": "main",
+   "head": "e66-edge-deploy-receipt-43467481887",
+   "sha": "8debad7157a6f125a07e6e9feebb937d544457ec",
+   "draft": false,
+   "mergeable_state": "unknown",
+   "adicoes": 1,
+   "remocoes": 0,
+   "arquivos": 1,
+   "labels": [],
+   "criada_em": "2026-11-13T19:41:38Z",
+   "atualizada_em": "2026-11-13T19:43:02Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Supabase Preview=cancelled"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3539,
+    3533,
+    3530,
+    3527
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3535,
+   "titulo": "fix(busca): atalhos de teclado usam a lista que está na tela",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/fix-busca-teclado-lista-atual-261113-1519",
+   "sha": "97bf142d837b04ab9ba370966ccb65fd5c14571a",
+   "draft": true,
+   "mergeable_state": "behind",
+   "adicoes": 4,
+   "remocoes": 2,
+   "arquivos": 1,
+   "labels": [],
+   "criada_em": "2026-11-13T18:23:40Z",
+   "atualizada_em": "2026-11-13T19:26:45Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Gate Final - Deploy Ready=failure",
+    "🎨 Theme & Accessibility Gate=cancelled",
+    "e2e-shard (1, chromium-public)=cancelled",
+    "e2e-shard (4, chromium-public)=queued",
+    "e2e-shard (2, chromium-authed)=cancelled",
+    "e2e-shard (3, chromium-authed)=in_progress",
+    "e2e-shard (4, chromium-authed)=queued",
+    "e2e-shard (1, chromium-authed)=cancelled",
+    "e2e-shard (2, chromium-public)=cancelled",
+    "e2e-shard (3, chromium-public)=in_progress",
+    "E2E Focused · thumb-quickview=cancelled",
+    "Gate 1 - Lint + TypeScript=failure"
+   ],
+   "prs_com_arquivos_em_comum": [],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3534,
+   "titulo": "fix(simulador): busca clientes do CRM pelas colunas reais (ramo_atividade, nicho_cliente)",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/fix-simulador-colunas-crm-261113-1503",
+   "sha": "b73f9fd2c44fa726d8cf5fab1df4ba1989e62ffb",
+   "draft": true,
+   "mergeable_state": "behind",
+   "adicoes": 6,
+   "remocoes": 5,
+   "arquivos": 1,
+   "labels": [],
+   "criada_em": "2026-11-13T18:05:45Z",
+   "atualizada_em": "2026-11-13T19:18:40Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Gate Final - Deploy Ready=failure",
+    "e2e-shard (1, chromium-public)=cancelled",
+    "e2e-shard (3, chromium-public)=in_progress",
+    "e2e-shard (2, chromium-public)=cancelled",
+    "e2e-shard (4, chromium-authed)=queued",
+    "e2e-shard (4, chromium-public)=queued",
+    "e2e-shard (2, chromium-authed)=cancelled",
+    "e2e-shard (1, chromium-authed)=cancelled",
+    "e2e-shard (3, chromium-authed)=in_progress",
+    "Gate 1 - Lint + TypeScript=failure"
+   ],
+   "prs_com_arquivos_em_comum": [],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3533,
+   "titulo": "docs: recibo de deploy de edge function(s) — run 43456171090 (E66)",
+   "autor": "github-actions[bot]",
+   "base": "main",
+   "head": "e66-edge-deploy-receipt-43456171090",
+   "sha": "7c5a701cddc0ecc80edd70722420cf8f847c03a4",
+   "draft": false,
+   "mergeable_state": "behind",
+   "adicoes": 1,
+   "remocoes": 0,
+   "arquivos": 1,
+   "labels": [],
+   "criada_em": "2026-11-13T17:52:28Z",
+   "atualizada_em": "2026-11-13T19:33:40Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Gate Final - Deploy Ready=failure",
+    "🎨 Theme & Accessibility Gate=cancelled",
+    "Gate 1 - Lint + TypeScript=failure"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3539,
+    3537,
+    3530,
+    3527
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3532,
+   "titulo": "fix(csp): trava o fundo com modal ou menu aberto (trava de rolagem do Radix)",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/fix-csp-trava-rolagem-261113-1428",
+   "sha": "f9c38ba8beee7a7b8feb5114c969b316caa3a461",
+   "draft": true,
+   "mergeable_state": "behind",
+   "adicoes": 100,
+   "remocoes": 12,
+   "arquivos": 6,
+   "labels": [],
+   "criada_em": "2026-11-13T17:29:52Z",
+   "atualizada_em": "2026-11-13T19:48:44Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Gate Final - Deploy Ready=failure",
+    "E2E — Mobile Critical Routes=failure",
+    "e2e-gates=failure",
+    "🎨 Theme & Accessibility Gate=cancelled",
+    "Gate 1 - Lint + TypeScript=failure",
+    "E2E Focused · thumb-quickview=cancelled",
+    "Sitemap público — precondições somente leitura=failure"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3531
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3531,
+   "titulo": "fix(csp): libera o <style> fixo do vaul (gaveta do kit)",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/fix-csp-vaul-hash-261113-1407",
+   "sha": "1ec4de1c4a9423a57a8a738e91775a98c12fb2d1",
+   "draft": true,
+   "mergeable_state": "behind",
+   "adicoes": 35,
+   "remocoes": 2,
+   "arquivos": 3,
+   "labels": [],
+   "criada_em": "2026-11-13T17:09:25Z",
+   "atualizada_em": "2026-11-13T18:16:32Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "merge-reports=queued",
+    "Gate Final - Deploy Ready=failure",
+    "e2e-shard (3, chromium-public)=cancelled",
+    "e2e-shard (1, chromium-public)=cancelled",
+    "e2e-shard (2, chromium-public)=cancelled",
+    "e2e-shard (2, chromium-authed)=cancelled",
+    "e2e-shard (4, chromium-authed)=cancelled",
+    "e2e-shard (1, chromium-authed)=cancelled",
+    "e2e-shard (3, chromium-authed)=cancelled",
+    "e2e-shard (4, chromium-public)=cancelled",
+    "Gate 1 - Lint + TypeScript=failure",
+    "Sitemap público — precondições somente leitura=failure"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3532
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3530,
+   "titulo": "docs: recibo de deploy de edge function(s) — run 43453995769 (E66)",
+   "autor": "github-actions[bot]",
+   "base": "main",
+   "head": "e66-edge-deploy-receipt-43453995769",
+   "sha": "2b3b64dfc4f0261d6362219872ec3b7fe7722d2b",
+   "draft": false,
+   "mergeable_state": "unknown",
+   "adicoes": 1,
+   "remocoes": 0,
+   "arquivos": 1,
+   "labels": [],
+   "criada_em": "2026-11-13T16:54:16Z",
+   "atualizada_em": "2026-11-13T17:16:55Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Gate Final - Deploy Ready=failure",
+    "Gate 2.5 - PostgreSQL Transactional Integrity=failure",
+    "Supabase Preview=cancelled"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3539,
+    3537,
+    3533,
+    3527
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3528,
+   "titulo": "fix(pdp): limite de tempo na busca do produto e prefetch na mesma chave da PDP",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/fix-pdp-timeout-prefetch-261113-1602",
+   "sha": "a01b154416fa9c09674f8fcbe937dd49b7c6239d",
+   "draft": false,
+   "mergeable_state": "behind",
+   "adicoes": 154,
+   "remocoes": 6,
+   "arquivos": 3,
+   "labels": [],
+   "criada_em": "2026-11-13T16:09:41Z",
+   "atualizada_em": "2026-11-13T21:32:20Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "merge-reports=failure",
+    "e2e-shard (3, chromium-authed)=cancelled",
+    "e2e-shard (4, chromium-authed)=cancelled",
+    "e2e-shard (3, chromium-public)=cancelled",
+    "e2e-shard (2, chromium-authed)=cancelled",
+    "e2e-shard (1, chromium-authed)=cancelled",
+    "e2e-shard (4, chromium-public)=cancelled",
+    "e2e-shard (2, chromium-public)=cancelled",
+    "e2e-shard (1, chromium-public)=cancelled"
+   ],
+   "prs_com_arquivos_em_comum": [],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3527,
+   "titulo": "docs: recibo de deploy de edge function(s) — run 43434568067 (E66)",
+   "autor": "github-actions[bot]",
+   "base": "main",
+   "head": "e66-edge-deploy-receipt-43434568067",
+   "sha": "494875ef23bbc0a7b99ac78b15bd7f058d3c3013",
+   "draft": false,
+   "mergeable_state": "unknown",
+   "adicoes": 1,
+   "remocoes": 0,
+   "arquivos": 1,
+   "labels": [],
+   "criada_em": "2026-11-13T15:47:28Z",
+   "atualizada_em": "2026-11-13T15:49:11Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Supabase Preview=cancelled"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3539,
+    3537,
+    3533,
+    3530
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3526,
+   "titulo": "fix(catalog): aba Marketing grava nos vínculos reais e separa endomarketing",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/fix-aba-marketing-261113",
+   "sha": "848e19df2b755bb72277fc0d442ca7c5ea88bf79",
+   "draft": false,
+   "mergeable_state": "blocked",
+   "adicoes": 1442,
+   "remocoes": 136,
+   "arquivos": 11,
+   "labels": [],
+   "criada_em": "2026-11-13T15:06:41Z",
+   "atualizada_em": "2026-11-13T21:06:38Z",
+   "toca": {
+    "workflow": false,
+    "migration": true,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Gate E40 - Schema Drift Check / Migrations x Canonical schema=queued",
+    "e2e-gates=queued",
+    "E2E — Full User Flows (authed)=queued",
+    "Gate 3 - E2E Smoke=queued",
+    "Test Coverage=in_progress",
+    "Lint, Typecheck & Test=in_progress",
+    "E2E Focused · thumb-quickview=queued",
+    "Gate 1 - Lint + TypeScript=failure",
+    "webkit • swatch→QV=queued",
+    "firefox • swatch→QV=queued",
+    "Supabase Preview=failure"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3432,
+    3390,
+    3412,
+    3411
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3525,
+   "titulo": "ci: enxuga workflows (checagens estáticas, agendados, quebrados e Lovable)",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/wf-limpeza-261113",
+   "sha": "87222c37aa4df9bbfa7d0fd4e59ce7e9695a528a",
+   "draft": false,
+   "mergeable_state": "blocked",
+   "adicoes": 467,
+   "remocoes": 327,
+   "arquivos": 42,
+   "labels": [],
+   "criada_em": "2026-11-13T15:06:38Z",
+   "atualizada_em": "2026-11-13T21:03:33Z",
+   "toca": {
+    "workflow": true,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Gate 3 - E2E Smoke=queued",
+    "Gate 2 - Unit Tests=queued",
+    "Gate 1 - Lint + TypeScript=queued",
+    "E2E — Full User Flows (authed)=in_progress",
+    "e2e-gates=queued",
+    "Gate 2.5 - PostgreSQL Transactional Integrity=queued",
+    "Gate E40 - Detect schema file changes=queued",
+    "Gate 5.5 - RPC restore_seller_cart presente no canônico=queued",
+    "Gate 4 - Lighthouse CI=in_progress",
+    "Test suite & edge guards=in_progress",
+    "Test Coverage=in_progress",
+    "E2E Focused · thumb-quickview=queued",
+    "E2E Focused · pdf-print=in_progress",
+    "firefox • swatch→QV=queued",
+    "webkit • swatch→QV=queued",
+    "Edge Functions · Integration All=failure",
+    "Playwright - Cross-browser E2E=failure"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3457,
+    3390,
+    3520
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3524,
+   "titulo": "chore(main): release 1.2.0",
+   "autor": "github-actions[bot]",
+   "base": "main",
+   "head": "release-please--branches--main--components--gifts-store",
+   "sha": "e6d2db6a07eda94a1d3d7f111b289ab1c7b598da",
+   "draft": false,
+   "mergeable_state": "blocked",
+   "adicoes": 262,
+   "remocoes": 4,
+   "arquivos": 4,
+   "labels": [
+    "autorelease: pending"
+   ],
+   "criada_em": "2026-11-13T14:31:45Z",
+   "atualizada_em": "2026-11-13T20:58:56Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [],
+   "prs_com_arquivos_em_comum": [
+    3523,
+    3390,
+    3333
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3523,
+   "titulo": "chore(deps): atualiza framer-motion de 14.10.0 para 14.11.1",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/chore-framer-motion-14-11-1-261113-1425",
+   "sha": "a75b55ed0240de75296639f3494c9a45d15265e3",
+   "draft": false,
+   "mergeable_state": "behind",
+   "adicoes": 9,
+   "remocoes": 9,
+   "arquivos": 2,
+   "labels": [],
+   "criada_em": "2026-11-13T14:27:43Z",
+   "atualizada_em": "2026-11-13T15:07:49Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "merge-reports=failure",
+    "e2e-shard (2, chromium-public)=cancelled",
+    "e2e-shard (3, chromium-authed)=cancelled",
+    "e2e-shard (1, chromium-public)=cancelled",
+    "e2e-shard (4, chromium-authed)=cancelled",
+    "e2e-shard (2, chromium-authed)=cancelled",
+    "e2e-shard (4, chromium-public)=cancelled",
+    "e2e-shard (1, chromium-authed)=cancelled",
+    "e2e-shard (3, chromium-public)=cancelled",
+    "E2E — Personalization Journey=failure"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3524,
+    3390,
+    3333
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3521,
+   "titulo": "fix(edge): remetente de e-mail Resend passa a usar o domínio verificado promobrindes.com.br",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/fix-email-domain-resend-v2-261113-1423",
+   "sha": "58fe4a7fa00723d34673a7f57f27e30b8576356d",
+   "draft": false,
+   "mergeable_state": "blocked",
+   "adicoes": 3,
+   "remocoes": 3,
+   "arquivos": 3,
+   "labels": [],
+   "criada_em": "2026-11-13T14:24:20Z",
+   "atualizada_em": "2026-11-13T20:58:38Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": true
+   },
+   "checks_nao_verdes": [
+    "Critical Flows E2E=queued",
+    "🎨 Theme & Accessibility Gate=queued",
+    "Edge Integration & Fuzzing=queued",
+    "Gate 6 - Build=queued",
+    "Edge Functions · Integration All=cancelled"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3501
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3520,
+   "titulo": "fix(ci): pula workflows em PRs criados por github-actions[bot]",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/fix-bot-pr-approval-261113-1030",
+   "sha": "70c1dd82dfcc965a2afcb35a527eaf0043abab7f",
+   "draft": false,
+   "mergeable_state": "unknown",
+   "adicoes": 4,
+   "remocoes": 0,
+   "arquivos": 2,
+   "labels": [],
+   "criada_em": "2026-11-13T12:38:01Z",
+   "atualizada_em": "2026-11-13T12:39:33Z",
+   "toca": {
+    "workflow": true,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Gate Final - Deploy Ready=failure",
+    "Lint, Typecheck & Test=failure",
+    "Test Coverage=failure",
+    "Gate 1 - Lint + TypeScript=failure"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3525
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3518,
+   "titulo": "fix(security): CRM — vendedor vê os dele + os sem dono",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/crm-vendedor-sem-dono-261113",
+   "sha": "8daf13c9d5cb170bd53a58b0a147fd084944b22f",
+   "draft": false,
+   "mergeable_state": "blocked",
+   "adicoes": 140,
+   "remocoes": 52,
+   "arquivos": 4,
+   "labels": [],
+   "criada_em": "2026-11-13T11:50:25Z",
+   "atualizada_em": "2026-11-13T20:52:16Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": true
+   },
+   "checks_nao_verdes": [
+    "Gate 3 - E2E Smoke=in_progress",
+    "Gate 1 - Lint + TypeScript=failure",
+    "Lint, Typecheck & Test=in_progress",
+    "Edge Functions · Integration All=failure"
+   ],
+   "prs_com_arquivos_em_comum": [],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3517,
+   "titulo": "fix: resgata da #3390 o que ainda faltava na main (kit-builder, orçamentos, carrinho) e arquiva as edições legadas",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/resgate-3390-261113",
+   "sha": "b3a8edf1170cfe574f3e9d25152365ff3c3087dd",
+   "draft": false,
+   "mergeable_state": "blocked",
+   "adicoes": 15895,
+   "remocoes": 3234,
+   "arquivos": 315,
+   "labels": [
+    "large-pr-approved"
+   ],
+   "criada_em": "2026-11-13T11:30:26Z",
+   "atualizada_em": "2026-11-13T21:02:23Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "E2E — Mobile Critical Routes=queued",
+    "e2e-gates=in_progress",
+    "Gate 3 - E2E Smoke=in_progress",
+    "Lint, Typecheck & Test=in_progress",
+    "webkit • swatch→QV=queued",
+    "firefox • swatch→QV=in_progress",
+    "E2E Focused · thumb-quickview=queued",
+    "Gate 1 - Lint + TypeScript=failure"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3390
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3516,
+   "titulo": "test: reforça testes que deixavam mutantes vivos (porta da #3494 sem a baseline)",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/chore-porta-testes-3494-sem-baseline-261113-1045",
+   "sha": "7452bac72b9a35908f2ac508d27ed8320c857ffa",
+   "draft": false,
+   "mergeable_state": "behind",
+   "adicoes": 272,
+   "remocoes": 1,
+   "arquivos": 6,
+   "labels": [],
+   "criada_em": "2026-11-13T10:34:54Z",
+   "atualizada_em": "2026-11-13T17:46:01Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Gate Final - Deploy Ready=failure",
+    "Gate 1 - Lint + TypeScript=failure",
+    "Edge Functions · Integration All=failure"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3494,
+    3339
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3508,
+   "titulo": "docs: prod-readiness atualizado após o lote do dono e a nova queda do Supabase",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/chore-prod-readiness-atualiza-261113-0840",
+   "sha": "bef082374f8288a4bc12b4a5c1165dd30116a8a4",
+   "draft": false,
+   "mergeable_state": "behind",
+   "adicoes": 275,
+   "remocoes": 269,
+   "arquivos": 1,
+   "labels": [],
+   "criada_em": "2026-11-13T08:35:15Z",
+   "atualizada_em": "2026-11-13T09:19:25Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Lint, Typecheck & Test=failure",
+    "Test Coverage=failure",
+    "Secrets Inventory Check (E40)=failure"
+   ],
+   "prs_com_arquivos_em_comum": [],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3501,
+   "titulo": "fix(edge): corrige domínio de e-mail Resend promogifts → promobrindes",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/fix-email-domain-resend-261113-0800",
+   "sha": "fb96cdbaf81d5e0751a586afaef4f0eeb3a8cabe",
+   "draft": false,
+   "mergeable_state": "unknown",
+   "adicoes": 3,
+   "remocoes": 3,
+   "arquivos": 3,
+   "labels": [],
+   "criada_em": "2026-11-13T08:03:16Z",
+   "atualizada_em": "2026-11-13T08:16:58Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": true
+   },
+   "checks_nao_verdes": [
+    "Gate Final - Deploy Ready=failure",
+    "Gate 1 - Lint + TypeScript=failure",
+    "Gate 5.5 - RPC restore_seller_cart presente no canônico=failure",
+    "Gate 2.5 - PostgreSQL Transactional Integrity=failure",
+    "Lint, Typecheck & Test=failure",
+    "Test Coverage=failure",
+    "Secrets Inventory Check (E40)=failure",
+    "Edge Functions · Integration All=failure",
+    "Supabase Preview=cancelled"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3521
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3494,
+   "titulo": "test: reforça testes que deixavam mutantes vivos (ledger, migrations, live-client, audit-db, mockup)",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/pilha-testes-reforco-261112",
+   "sha": "c3c9bc08dbaca85bb963692bcefb80d4bb4ffc77",
+   "draft": false,
+   "mergeable_state": "unknown",
+   "adicoes": 292,
+   "remocoes": 1,
+   "arquivos": 7,
+   "labels": [],
+   "criada_em": "2026-11-13T07:22:14Z",
+   "atualizada_em": "2026-11-13T10:35:33Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Gate Final - Deploy Ready=failure",
+    "Gate 3 - E2E Smoke=failure",
+    "Lint, Typecheck & Test=failure",
+    "Test Coverage=failure",
+    "Gate 1 - Lint + TypeScript=failure",
+    "Secrets Inventory Check (E40)=failure",
+    "Edge Functions · Integration All=failure"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3390,
+    3516,
+    3339
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3457,
+   "titulo": "fix(ci): fallback de E2E_SELLER_* para o usuário vendedor de E2E_USER",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/fix-e2e-seller-fallback-261112-1823",
+   "sha": "2717a66f0633b2888f2266814c57018d7143b3ba",
+   "draft": false,
+   "mergeable_state": "behind",
+   "adicoes": 28,
+   "remocoes": 1,
+   "arquivos": 6,
+   "labels": [],
+   "criada_em": "2026-11-12T21:24:32Z",
+   "atualizada_em": "2026-11-13T10:08:13Z",
+   "toca": {
+    "workflow": true,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Gate Final - Deploy Ready=failure",
+    "Gate 1 - Lint + TypeScript=failure",
+    "Gate 5.5 - RPC restore_seller_cart presente no canônico=failure",
+    "Test Coverage=failure",
+    "Lint, Typecheck & Test=failure",
+    "E2E Stock · filter=cancelled",
+    "E2E Stock · dashboard=cancelled",
+    "E2E Stock · future-stock=cancelled",
+    "E2E Stock · rupture-horizon=failure",
+    "test-supplier-comparison=failure"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3525,
+    3390,
+    3416
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3454,
+   "titulo": "fix(e2e): spec de busca do estoque usa o estado vazio e a ordem de foco reais",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/fix-e2e-stock-busca-261112-1436",
+   "sha": "5137eeafdf53e8eb4e98a5fe1f4ccc1fc302ebda",
+   "draft": false,
+   "mergeable_state": "behind",
+   "adicoes": 29,
+   "remocoes": 8,
+   "arquivos": 2,
+   "labels": [],
+   "criada_em": "2026-11-12T17:39:59Z",
+   "atualizada_em": "2026-11-13T15:44:06Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "merge-reports=failure",
+    "E2E Stock · filter=failure",
+    "E2E Stock · dashboard=cancelled",
+    "E2E Stock · future-stock=cancelled",
+    "E2E — Personalization Journey=failure",
+    "e2e-shard (4, chromium-authed)=cancelled",
+    "e2e-shard (1, chromium-public)=cancelled",
+    "e2e-shard (4, chromium-public)=cancelled",
+    "e2e-shard (1, chromium-authed)=cancelled",
+    "e2e-shard (2, chromium-authed)=cancelled",
+    "e2e-shard (3, chromium-authed)=cancelled",
+    "e2e-shard (3, chromium-public)=cancelled",
+    "e2e-shard (2, chromium-public)=cancelled",
+    "E2E Focused · thumb-quickview=cancelled"
+   ],
+   "prs_com_arquivos_em_comum": [],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3432,
+   "titulo": "fix(db): corrige 11 telas que falham por permissão ou RPC ausente no banco",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/fix-migrations-acesso-rpcs-261112-1050",
+   "sha": "afdc7c3955e9aab1583abde270884d3d7625bb6a",
+   "draft": true,
+   "mergeable_state": "behind",
+   "adicoes": 1536,
+   "remocoes": 116,
+   "arquivos": 38,
+   "labels": [],
+   "criada_em": "2026-11-12T13:53:44Z",
+   "atualizada_em": "2026-11-13T01:55:26Z",
+   "toca": {
+    "workflow": false,
+    "migration": true,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "merge-reports=failure",
+    "Gate Final - Deploy Ready=failure",
+    "🎨 Theme & Accessibility Gate=failure",
+    "e2e-shard (3, chromium-authed)=failure",
+    "e2e-shard (3, chromium-public)=cancelled",
+    "e2e-shard (1, chromium-authed)=cancelled",
+    "e2e-shard (2, chromium-authed)=failure",
+    "e2e-shard (4, chromium-authed)=cancelled",
+    "e2e-shard (1, chromium-public)=cancelled",
+    "e2e-shard (2, chromium-public)=cancelled",
+    "e2e-shard (4, chromium-public)=cancelled",
+    "Gate E40 - Schema Drift Check / Migrations x Canonical schema=failure",
+    "E2E Focused · thumb-quickview=cancelled",
+    "E2E Stock · filter=failure",
+    "E2E Stock · dashboard=cancelled",
+    "E2E Stock · future-stock=cancelled"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3526,
+    3390,
+    3412,
+    3411
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3417,
+   "titulo": "chore(ci): update-snapshots gera baselines autenticados nos 3 navegadores",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/infra-snapshots-all-authed-261112-0225",
+   "sha": "74c20a53a965e210a12e65cdee90fb8e6d22916f",
+   "draft": false,
+   "mergeable_state": "unknown",
+   "adicoes": 7,
+   "remocoes": 4,
+   "arquivos": 1,
+   "labels": [],
+   "criada_em": "2026-11-12T02:15:32Z",
+   "atualizada_em": "2026-11-13T09:18:37Z",
+   "toca": {
+    "workflow": true,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Gate Final - Deploy Ready=failure",
+    "Test Coverage=failure",
+    "Lint, Typecheck & Test=failure",
+    "Gate 1 - Lint + TypeScript=failure",
+    "Secrets Inventory Check (E40)=failure"
+   ],
+   "prs_com_arquivos_em_comum": [],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3416,
+   "titulo": "chore(ci): repassa E2E_SELLER_EMAIL/PASSWORD aos specs de vendedor",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/infra-e2e-seller-secrets-261112-0215",
+   "sha": "011a410dd3d0793dfa8cbba7eee39febb24e8943",
+   "draft": false,
+   "mergeable_state": "unknown",
+   "adicoes": 8,
+   "remocoes": 0,
+   "arquivos": 3,
+   "labels": [],
+   "criada_em": "2026-11-12T02:05:35Z",
+   "atualizada_em": "2026-11-13T07:48:46Z",
+   "toca": {
+    "workflow": true,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "🎨 Theme & Accessibility Gate=cancelled",
+    "Gate Final - Deploy Ready=failure",
+    "Gate 1 - Lint + TypeScript=failure"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3457
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3412,
+   "titulo": "feat(db): índices nas FKs de estoque e índices de desempenho que faltam em produção",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/feat-indices-fk-estoque-261112-0140",
+   "sha": "3f00528e2f0e386ee9a76c4de866d41d837766cc",
+   "draft": false,
+   "mergeable_state": "unknown",
+   "adicoes": 81,
+   "remocoes": 0,
+   "arquivos": 3,
+   "labels": [],
+   "criada_em": "2026-11-12T01:11:45Z",
+   "atualizada_em": "2026-11-12T05:05:42Z",
+   "toca": {
+    "workflow": false,
+    "migration": true,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Vercel=failure"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3526,
+    3432,
+    3411
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3411,
+   "titulo": "fix(db): P09 revisada não registra no ledger versões com objetos ausentes em produção",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "claude/fix-p09-ledger-sem-ausentes-261112-0120",
+   "sha": "d146df99d7afc93351daf56344e223f6c52e7e0c",
+   "draft": false,
+   "mergeable_state": "unknown",
+   "adicoes": 29,
+   "remocoes": 99,
+   "arquivos": 3,
+   "labels": [],
+   "criada_em": "2026-11-12T01:08:40Z",
+   "atualizada_em": "2026-11-12T03:30:31Z",
+   "toca": {
+    "workflow": false,
+    "migration": true,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Supabase Preview=failure",
+    "Vercel=failure"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3526,
+    3432,
+    3412
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3390,
+   "titulo": "fix(app): restaurar contratos e preservar implementações do Gate 1",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "codex/fix-gate1-kit-pdf-types-261109-2252",
+   "sha": "da57cd671d7e20128dbb6a927f8c0098ae6f33ec",
+   "draft": false,
+   "mergeable_state": "unknown",
+   "adicoes": 19968,
+   "remocoes": 3472,
+   "arquivos": 368,
+   "labels": [
+    "large-pr-approved"
+   ],
+   "criada_em": "2026-11-10T09:24:05Z",
+   "atualizada_em": "2026-11-13T11:30:35Z",
+   "toca": {
+    "workflow": true,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "merge-reports=failure",
+    "e2e-shard (1, chromium-public)=cancelled",
+    "e2e-shard (3, chromium-public)=failure",
+    "e2e-shard (2, chromium-public)=cancelled",
+    "e2e-shard (4, chromium-public)=failure",
+    "e2e-shard (2, chromium-authed)=cancelled",
+    "e2e-shard (4, chromium-authed)=failure",
+    "e2e-shard (3, chromium-authed)=failure",
+    "e2e-shard (1, chromium-authed)=cancelled",
+    "Test Coverage=failure",
+    "Lint, Typecheck & Test=failure",
+    "E2E · view-no-presentation-mode · mock=failure",
+    "E2E Focused · thumb-quickview=cancelled",
+    "Edge Functions — Deno typecheck=failure",
+    "Price Freshness — testes + gate de cobertura=failure",
+    "Vercel=failure"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3517,
+    3525,
+    3457,
+    3494,
+    3526,
+    3432,
+    3524,
+    3523,
+    3333
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3339,
+   "titulo": "test: alinhar regressões da suíte ao Kit Builder",
+   "autor": "adm01-debug",
+   "base": "main",
+   "head": "codex/fix-vitest-regressions-261109",
+   "sha": "6f8930b49b71b43c8a278fd87cd2093e02f64a53",
+   "draft": false,
+   "mergeable_state": "unknown",
+   "adicoes": 162,
+   "remocoes": 96,
+   "arquivos": 6,
+   "labels": [],
+   "criada_em": "2026-11-09T11:04:43Z",
+   "atualizada_em": "2026-11-09T11:56:09Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "Vercel=failure"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3516,
+    3494
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
+  },
+  {
+   "numero": 3333,
+   "titulo": "chore(deps)(deps): Bump framer-motion from 14.10.0 to 14.11.1",
+   "autor": "dependabot[bot]",
+   "base": "main",
+   "head": "dependabot/npm_and_yarn/framer-motion-14.9.1",
+   "sha": "b354ca34aa625958e70cab0693508c269f8c2490",
+   "draft": false,
+   "mergeable_state": "unknown",
+   "adicoes": 9,
+   "remocoes": 9,
+   "arquivos": 2,
+   "labels": [
+    "dependencies",
+    "automated"
+   ],
+   "criada_em": "2026-11-09T09:35:00Z",
+   "atualizada_em": "2026-11-13T08:06:53Z",
+   "toca": {
+    "workflow": false,
+    "migration": false,
+    "edge": false
+   },
+   "checks_nao_verdes": [
+    "merge-reports=failure",
+    "Gate Final - Deploy Ready=failure",
+    "Gate 1 - Lint + TypeScript=failure",
+    "Gate E23 - Verifica secrets E2E / Verifica secrets E2E=failure",
+    "e2e-shard (3, chromium-public)=cancelled",
+    "e2e-shard (2, chromium-public)=cancelled",
+    "e2e-shard (1, chromium-public)=cancelled",
+    "e2e-shard (4, chromium-public)=cancelled",
+    "E2E — Full User Flows (authed)=failure",
+    "Magazine Tests OK=failure",
+    "Lint, Typecheck & Test=failure",
+    "Test Coverage=failure",
+    "SECURITY DEFINER ACL Gate=failure",
+    "audit=failure",
+    "firefox • swatch→QV=failure",
+    "chromium • swatch→QV=failure",
+    "webkit • swatch→QV=failure",
+    "E2E — Personalization Journey=failure",
+    "Secrets Inventory Check (E40)=failure",
+    "Edge Functions · Integration All=failure"
+   ],
+   "prs_com_arquivos_em_comum": [
+    3524,
+    3523,
+    3390
+   ],
+   "veredito": null,
+   "estado_final": null,
+   "evidencia": null
   }
+ ]
 }
