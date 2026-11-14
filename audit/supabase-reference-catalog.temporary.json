@@ -441,6 +441,62 @@
       "reason": "RPC ausente no canonico (confirmado via pg_catalog em 2026-11-02, zero linhas em pg_proc; tambem ausente de supabase_migrations.schema_migrations). Existe migration pronta no repo (supabase/migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql, incidente SB-0003) que cria a funcao, mas nunca foi aplicada em producao via db-apply-migration.yml. Consumidor ativo: useRuptureAlerts.ts, feature flag useEmaRupture. Remover esta excecao e registrar o RPC como confirmado so depois do PO rodar essa migration no canonico."
     },
     {
+      "kind": "rpc",
+      "name": "fn_admin_smoke_tests_dashboard",
+      "file": "src/hooks/admin/useSmokeTests.ts",
+      "occurrences": 1,
+      "stage": 103,
+      "reason": "RPC nasce na migration supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql (SECURITY DEFINER, exige is_admin_or_above; views v_smoke_tests_* sem SELECT para authenticated desde 20260716192234). Ausente do pg_catalog do canonico ate essa migration ser aplicada via db-apply-migration.yml. Remover esta excecao e registrar o RPC em rpcs so depois de confirmar via pg_catalog."
+    },
+    {
+      "kind": "rpc",
+      "name": "fn_admin_run_smoke_tests",
+      "file": "src/hooks/admin/useSmokeTests.ts",
+      "occurrences": 1,
+      "stage": 103,
+      "reason": "RPC nasce na migration supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql (SECURITY DEFINER, exige is_admin_or_above; views v_smoke_tests_* sem SELECT para authenticated desde 20260716192234). Ausente do pg_catalog do canonico ate essa migration ser aplicada via db-apply-migration.yml. Remover esta excecao e registrar o RPC em rpcs so depois de confirmar via pg_catalog."
+    },
+    {
+      "kind": "rpc",
+      "name": "fn_dev_medallion_health",
+      "file": "src/hooks/admin/useMedallionHealth.ts",
+      "occurrences": 1,
+      "stage": 103,
+      "reason": "RPC nova criada pela migration supabase/migrations/20261112120300_fix_medallion_health_dev_rpc.sql (SECURITY DEFINER, so papel dev), que substitui a leitura direta de vw_medallion_coverage/v_pipeline_progress revogada de authenticated em 20260716192234. Ainda nao aplicada no canonico via db-apply-migration.yml. Remover esta excecao e registrar o RPC em rpcs so depois de aplicada e confirmada via pg_catalog."
+    },
+    {
+      "kind": "rpc",
+      "name": "fn_insights_cache_count",
+      "file": "src/pages/admin/ai-usage/MarketIntelInsightsUsagePanel.tsx",
+      "occurrences": 1,
+      "stage": 103,
+      "reason": "RPC criada pela migration supabase/migrations/20261112120400_fn_insights_cache_count.sql (contagem agregada de dashboard_insights_cache com guarda can_view_telemetry), ainda nao aplicada no canonico. Ate a aplicacao via db-apply-migration.yml o painel mostra 'indisponivel' em vez de 0. Remover esta excecao e registrar o RPC em rpcs depois de confirmar via pg_catalog."
+    },
+    {
+      "kind": "rpc",
+      "name": "request_password_reset",
+      "file": "src/hooks/auth/usePasswordResetRequests.ts",
+      "occurrences": 1,
+      "stage": 103,
+      "reason": "RPC criada pela migration supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql (SECURITY DEFINER, EXECUTE para anon/authenticated), ainda nao aplicada no canonico. Remover esta excecao e registrar o RPC em rpcs depois de aplicar via db-apply-migration.yml e confirmar via pg_catalog."
+    },
+    {
+      "kind": "rpc",
+      "name": "admin_execute_role_migration_batch",
+      "file": "src/hooks/admin/useRoleMigration.ts",
+      "occurrences": 1,
+      "stage": 103,
+      "reason": "RPC criada pela migration supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql (wrapper SECURITY DEFINER dev+aal2 que repassa para execute_role_migration_batch), ainda nao aplicada no canonico. Remover esta excecao e registrar o RPC em rpcs depois de aplicar via db-apply-migration.yml e confirmar via pg_catalog."
+    },
+    {
+      "kind": "rpc",
+      "name": "fn_get_supplier_reliability",
+      "file": "src/hooks/inventory/useSupplierReliabilityServer.ts",
+      "occurrences": 1,
+      "stage": 103,
+      "reason": "RPC criada pela migration supabase/migrations/20261112120000_fix_fn_get_supplier_reliability.sql (SECURITY DEFINER sobre mv_supplier_reliability, restrita a is_supervisor_or_above), ainda nao aplicada no canonico. Remover esta excecao e registrar o RPC em rpcs depois de aplicar via db-apply-migration.yml e confirmar via pg_catalog."
+    },
+    {
       "kind": "relation",
       "name": "endomarketing_themes",
       "file": "src/components/admin/products/productMarketingData.ts",

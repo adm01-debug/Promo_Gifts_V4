@@ -1132,6 +1132,20 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20260511235950` | `dfacb733f8b6036b3c00db74dffbf61597f3fc88cc72a50fcbe3a0480b2824a6` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 08:32:53 UTC | job post-check da run 43390126038 confirmou a version no ledger | aplicada |
 | `20261111191000` | `04966954d978ccf4ca7f7a7beb5bd20129243018b303f92575c5b12b4f581524` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 12:07:10 UTC | job post-check da run 43417662659 confirmou a version no ledger | aplicada |
 | `20261112140000` | `6aa856168cc1ef0e6308757fe01b04f4917f043170ff3ce996e0933a52575b9f` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 18:03:52 UTC | job Apply da run 43471685129 concluiu com sucesso (preflight ok); pós-check na fila no momento do registro | aplicada |
+| `20261113235000` | `45dff9f0d993448eae3c68c09aa143304601efb96029ccedda607e976ba28e46` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 02:37:27 UTC | job post-check da run 43546049063 confirmou a version no ledger | aplicada |
+| `20261113235800` | `f0cddef3bb3e9b322c5e9767a1be6e0bb916d65b7bd8d60278e8962ea4db680e` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 05:02:37 UTC | job post-check da run 43557850878 confirmou a version no ledger | aplicada |
+| `20261114040000` | `f34df73857031d37795afbd5519604c3e1604657fb5141eefddb7bcdb677e5bb` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 04:18:25 UTC | job post-check da run 43555824840 confirmou a version no ledger | aplicada |
+| `20261114003000` | `c742a627a964faf49ae9be913336b8aafaa76e8b6f7a3e95bc266d9cc2a54efa` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 06:11:17 UTC | job post-check da run 43564625050 confirmou a version no ledger | aplicada |
+| `20261112120000` | `2843dc46113510dea1810788b9f83c63cd25b02d02befd1f45d27dfec485c393` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:13:12 UTC | job post-check da run 43588905947 confirmou a version no ledger | aplicada |
+| `20261112120100` | `6c79e6999200d391e4a0bf79fe72f2a681c3ec01435921e41ae73fbe23d19334` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:15:48 UTC | job post-check da run 43589115373 confirmou a version no ledger | aplicada |
+| `20261112120200` | `c8647e9ddd4ea64b072721dcb0336d7738ffe5078ea9652b27100350083a5b54` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:17:30 UTC | job post-check da run 43589261116 confirmou a version no ledger | aplicada |
+| `20261112120300` | `c4a2b8606f9bbcd8b56823a41bdda148499f063b4f319fa30952244a59457602` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:19:23 UTC | job post-check da run 43589395511 confirmou a version no ledger | aplicada |
+| `20261112120400` | `79c76a16c0036283028028a213eea687bac5caf62685c4373dba543e70a6f612` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:21:17 UTC | job post-check da run 43589545510 confirmou a version no ledger | aplicada |
+| `20261112120500` | `dd6849a1c3ff925423ac7bc91eb5605882ea03477b93b199ecf17eb574f3734e` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:23:13 UTC | job post-check da run 43589714577 confirmou a version no ledger | aplicada |
+| `20261112120600` | `2aafacec03bb10d108aeda1192f5754600dc071ea420fb9a431a6b3ad26ea07a` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:24:50 UTC | job post-check da run 43589851580 confirmou a version no ledger | aplicada |
+| `20261112120700` | `13dcabc4850b19a6f360203693dfc259474adaa42227dcc8ef2ad43587cabaaa` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:26:40 UTC | job post-check da run 43589984419 confirmou a version no ledger | aplicada |
+| `20261112120800` | `27438bfdec7aba456af33f6b77e2ceef6d593e20f7a5da5cbb7045661b72371e` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:28:47 UTC | job post-check da run 43590125142 confirmou a version no ledger | aplicada |
+| `20261112120900` | `d73e208b1830ab5692904320c746c89e63b46ba4b54a253b147fe65d3f65dda4` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:31:01 UTC | job post-check da run 43590307044 confirmou a version no ledger | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
@@ -1413,6 +1427,23 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 |---|---|---|---|
 | `20261112011000` | `fix_sb0003_fn_get_rupture_alerts` | `8e081152c457ed572cb3aa349f62027bc7cd461996bb8036f499efb12af6a449` | **aplicada em 12/11/2026** pelo `db-apply-migration.yml` (run 43233358789, aprovado pelo dono; recibo E15 acima) |
 
+## 2026-11-12 — 10 telas com 42501 ou RPC ausente: migrations pendentes em produção
+
+Correções de acesso e RPCs novas (PR substituta da #3432; a RPC de inteligência de mercado (`fn_market_intelligence_macro`) ficou de fora — ver PR). Nenhuma aplicada ainda; aplicar uma a uma, na ordem da tabela, via `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261112120000` | `fix_fn_get_supplier_reliability` | `2843dc46113510dea1810788b9f83c63cd25b02d02befd1f45d27dfec485c393` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120100` | `fix_smoke_tests_dashboard_admin_rpc` | `6c79e6999200d391e4a0bf79fe72f2a681c3ec01435921e41ae73fbe23d19334` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120200` | `fix_kill_switch_obs_grant_summary_view` | `c8647e9ddd4ea64b072721dcb0336d7738ffe5078ea9652b27100350083a5b54` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120300` | `fix_medallion_health_dev_rpc` | `c4a2b8606f9bbcd8b56823a41bdda148499f063b4f319fa30952244a59457602` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120400` | `fn_insights_cache_count` | `79c76a16c0036283028028a213eea687bac5caf62685c4373dba543e70a6f612` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120500` | `fix_optimization_queue_rpcs_dev_access` | `dd6849a1c3ff925423ac7bc91eb5605882ea03477b93b199ecf17eb574f3734e` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120600` | `admin_execute_role_migration_batch_rpc` | `2aafacec03bb10d108aeda1192f5754600dc071ea420fb9a431a6b3ad26ea07a` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120700` | `fix_grant_fn_admin_sync_external_connections` | `13dcabc4850b19a6f360203693dfc259474adaa42227dcc8ef2ad43587cabaaa` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120800` | `query_telemetry_delete_dev_policy` | `27438bfdec7aba456af33f6b77e2ceef6d593e20f7a5da5cbb7045661b72371e` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120900` | `fix_password_reset_request_rpc_anon` | `d73e208b1830ab5692904320c746c89e63b46ba4b54a253b147fe65d3f65dda4` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+
 ## 2026-11-12 — sitemap: EXECUTE de `anon` em `get_sitemap_public` pendente em produção
 
 `/api/sitemap` responde 503 porque `anon` perdeu EXECUTE em `public.get_sitemap_public(integer, integer)` (verificado via
@@ -1429,3 +1460,53 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 |---|---|---|---|
 | `20261112140000` | `fix_rls_supplier_products_raw_history_p2027` | `6aa856168cc1ef0e6308757fe01b04f4917f043170ff3ce996e0933a52575b9f` | **aplicada em 13/11/2026** pelo `db-apply-migration.yml` (run 43471685129; recibo E15 acima) |
 | `20261113140000` | `marketing_tab_links_rls_and_endomarketing` | `3b742308dbd743a71c72a8ad70f1c63a45cafa5824f255105fe9ab4006f72593` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+
+## 2026-11-13 — Catálogo: índice parcial para a ordenação "mais novos" em `products`
+
+Consulta read-only em produção (2026-11-13, `pg_indexes`/`pg_get_viewdef`): nenhum dos 36 índices de
+`public.products` cobre `created_at`; `v_products_public` filtra `is_deleted IS NOT TRUE AND is_active = true` e o
+PostgREST ordena por `created_at DESC, id ASC` — 18.163 chamadas × 1.033 ms em 12,8 h com Sort de ~7.500 linhas
+(`pg_stat_statements`). O índice parcial casa com o predicado da view. `VACUUM (FULL, ANALYZE) public.tags`
+(88 linhas em 323 páginas) fica fora da migration: o preflight bloqueia VACUUM sempre. Ainda não está no ledger;
+aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]` (porta 5432, `transaction: none`).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261113235000` | `perf_idx_products_active_created_at_desc` | `45dff9f0d993448eae3c68c09aa143304601efb96029ccedda607e976ba28e46` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (linha `approved-by`) e `db-apply-migration.yml` (branch `claude/feat-idx-products-created-at-vacuum-tags-261113-2350`) |
+
+## 2026-11-14 — Data API cai a cada 10 min: `idle_session_timeout` do `authenticator` mata o LISTEN do PostgREST
+
+Logs do PostgREST (`analytics/endpoints/logs`, `source = 'postgrest_logs'`, 2026-11-14 03:00–04:00Z): a cada ~10 min
+`FATAL: terminating connection due to idle-session timeout` → `Failed listening for database notifications on the "pgrst" channel`
+→ `Schema cache queried in` 12.821–72.852 ms, com rajadas de PGRST002/PGRST003. `pg_db_role_setting` (read-only):
+`authenticator` com `idle_session_timeout=600000` (de `20260524211024`) e `postgres` (DATABASE) com `600000` (de `20260525132458`).
+A migration zera só o do `authenticator`. Ainda não está no ledger; aplicação só por `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114040000` | `fix_authenticator_idle_session_timeout_pgrst_listener` | `f34df73857031d37795afbd5519604c3e1604657fb5141eefddb7bcdb677e5bb` | pendente — aplicação só por `db-apply-migration.yml` após o merge |
+
+## 2026-11-13 — CRON-003: proposta de reagendamento noturno dos crons pesados de fornecedores
+
+Consulta read-only em produção (2026-11-13 23:5xZ, `cron.job` + `cron.job_run_details` 24 h): 137 jobs ativos,
+`cron.max_running_jobs = 32`, 70 falhas "job startup timeout" em 15 jobs nas últimas 3 h (prod-readiness §7.4).
+A migration move 14 jobs de scraping/imagens/enriquecimento (xbz-*, sm-*, asia-*, spot-relink, kit-ficha-*) para
+01:00–08:59 UTC (22:00–05:59 BRT) nos mesmos minutos de hoje e reduz 7 jobs de estoque/ingestão/MV para 1×/h ou
+1×/2 h. Opção 2 de prod-readiness §7.8 — decisão de negócio do dono (atraso de estoque/preço); cada linha pode ser
+vetada. `cron.max_running_jobs` não tem caminho por migration (GUC; ALTER SYSTEM bloqueado) — só recomendação.
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261113235800` | `cron003_reagendamento_noturno_fornecedores` | `f0cddef3bb3e9b322c5e9767a1be6e0bb916d65b7bd8d60278e8962ea4db680e` | pendente — aprovada pelo dono no chat da sessão Claude (2026-11-14, "Eu aprovo todas!"); aplicação só por `db-apply-migration.yml` após o merge |
+
+## 2026-11-14 — Desagenda o cron `xbz-image-uploader` (edge esboço, 401 a cada 10 min)
+
+Consulta read-only em produção (2026-11-14): `cron.job` jobid=268 `xbz-image-uploader` ativo (`3,13,23,33,43,53 * * * *`)
+chamando a edge `xbz-image-uploader`, que é um esboço (`not_implemented`) sem o segredo `XBZ_IMAGE_UPLOADER_CRON_SECRET`
+e sem a tabela `xbz_image_import_staging`; logs 24h: 317 POST → 401, 0 → 200. Ainda não está no ledger; aplicação só por
+`db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114003000` | `fix_unschedule_cron_xbz_image_uploader` | `c742a627a964faf49ae9be913336b8aafaa76e8b6f7a3e95bc266d9cc2a54efa` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-cron-xbz-image-uploader-261114-0030`) |
