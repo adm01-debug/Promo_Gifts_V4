@@ -42,3 +42,15 @@ WITH CHECK (
       AND public.user_is_org_member(o.organization_id)
   )
 );
+
+-- Rollback de order_items_insert (estado de produção em 2026-11-14, pg_policies).
+DROP POLICY IF EXISTS "order_items_insert" ON public.order_items;
+CREATE POLICY "order_items_insert" ON public.order_items
+FOR INSERT TO authenticated
+WITH CHECK (
+  EXISTS (
+    SELECT 1 FROM public.orders o
+    WHERE o.id = order_items.order_id
+      AND public.user_is_org_member(o.organization_id)
+  )
+);

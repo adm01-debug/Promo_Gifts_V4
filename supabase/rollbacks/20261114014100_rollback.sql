@@ -3,10 +3,10 @@
 -- Rollback: 20261114014100 — remove os índices criados.
 
 DROP INDEX CONCURRENTLY IF EXISTS public.idx_stock_snapshots_variant_supplier;
-DROP INDEX CONCURRENTLY IF EXISTS public.idx_stock_snapshots_product_id;
-DROP INDEX CONCURRENTLY IF EXISTS public.idx_stock_snapshots_variant_supplier_source_id;
-DROP INDEX CONCURRENTLY IF EXISTS public.idx_stock_notes_created_by;
-DROP INDEX CONCURRENTLY IF EXISTS public.idx_stock_notes_supplier_id;
+-- DROP INDEX CONCURRENTLY IF EXISTS public.idx_stock_snapshots_product_id;  -- já existia em produção antes desta migration (pg_indexes 2026-11-14): o rollback não pode apagá-lo
+-- DROP INDEX CONCURRENTLY IF EXISTS public.idx_stock_snapshots_variant_supplier_source_id;  -- já existia em produção antes desta migration (pg_indexes 2026-11-14): o rollback não pode apagá-lo
+-- DROP INDEX CONCURRENTLY IF EXISTS public.idx_stock_notes_created_by;  -- já existia em produção antes desta migration (pg_indexes 2026-11-14): o rollback não pode apagá-lo
+-- DROP INDEX CONCURRENTLY IF EXISTS public.idx_stock_notes_supplier_id;  -- já existia em produção antes desta migration (pg_indexes 2026-11-14): o rollback não pode apagá-lo
 DROP INDEX CONCURRENTLY IF EXISTS public.idx_token_revocations_jti;
 DROP INDEX CONCURRENTLY IF EXISTS public.idx_token_revocations_expires;
 DROP INDEX CONCURRENTLY IF EXISTS public.idx_workspace_notifications_category;

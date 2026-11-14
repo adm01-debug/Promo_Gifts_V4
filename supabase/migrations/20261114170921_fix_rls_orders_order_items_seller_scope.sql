@@ -106,3 +106,26 @@ WITH CHECK (
                     OR o.organization_id IN (SELECT public.get_user_org_ids(auth.uid())))))
   )
 );
+
+-- Correção exigida por docs/security/RLS_MATRIX.md:113 (INSERT vendedor em pedido alheio = DENY).
+-- Estado em produção em 2026-11-14 (pg_policies): order_items_insert tem
+--   WITH CHECK (EXISTS (SELECT 1 FROM orders o WHERE o.id = order_items.order_id AND user_is_org_member(o.organization_id)))
+-- ou seja, qualquer membro da organização insere item em pedido de outro vendedor.
+-- A #3614 original reescrevia order_items_update/delete/select mas deixava o INSERT intacto.
+-- Nenhum caminho do app insere order_items hoje (grep em src/ e supabase/functions/: só leitura);
+-- a única função que insere é public.convert_quote_to_order (SECURITY INVOKER) e ela não tem
+-- chamador no código (só aparece em src/integrations/supabase/types.ts, que é gerado).
+DROP POLICY IF EXISTS "order_items_insert" ON public.order_items;
+CREATE POLICY "order_items_insert" ON public.order_items
+FOR INSERT TO authenticated
+WITH CHECK (
+  public.can_view_all_sales()
+  OR EXISTS (
+    SELECT 1 FROM public.orders o
+    WHERE o.id = order_items.order_id
+      AND (o.seller_id = auth.uid()
+           OR (public.has_role(auth.uid(), 'supervisor'::public.app_role)
+               AND (o.organization_id IS NULL
+                    OR o.organization_id IN (SELECT public.get_user_org_ids(auth.uid())))))
+  )
+);
