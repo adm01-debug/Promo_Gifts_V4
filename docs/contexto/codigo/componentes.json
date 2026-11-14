@@ -8946,7 +8946,7 @@
     "SalesOverviewChart"
    ],
    "export_default": null,
-   "linhas": 271,
+   "linhas": 272,
    "dominio": "components/intelligence",
    "hooks_locais": [
     "useSalesHistoryMacro"
@@ -9742,7 +9742,7 @@
     "BoxSelector"
    ],
    "export_default": null,
-   "linhas": 1273,
+   "linhas": 1260,
    "dominio": "components/kit-builder",
    "hooks_locais": [],
    "tabelas": [],
@@ -9833,7 +9833,7 @@
     "ItemSelector"
    ],
    "export_default": null,
-   "linhas": 590,
+   "linhas": 559,
    "dominio": "components/kit-builder",
    "hooks_locais": [
     "useKitStockValidation"
@@ -9849,7 +9849,7 @@
     "KitActionsBar"
    ],
    "export_default": null,
-   "linhas": 89,
+   "linhas": 94,
    "dominio": "components/kit-builder",
    "hooks_locais": [],
    "tabelas": [],
@@ -9863,7 +9863,7 @@
     "KitCompositionCard"
    ],
    "export_default": null,
-   "linhas": 234,
+   "linhas": 235,
    "dominio": "components/kit-builder",
    "hooks_locais": [],
    "tabelas": [],
@@ -9891,7 +9891,7 @@
     "KitPricingCard"
    ],
    "export_default": null,
-   "linhas": 154,
+   "linhas": 163,
    "dominio": "components/kit-builder",
    "hooks_locais": [],
    "tabelas": [],
@@ -10024,7 +10024,7 @@
     "KitHeroPricingCard"
    ],
    "export_default": null,
-   "linhas": 86,
+   "linhas": 88,
    "dominio": "components/kit-builder",
    "hooks_locais": [],
    "tabelas": [],
@@ -10110,7 +10110,7 @@
     "KitMobileSummaryBar"
    ],
    "export_default": null,
-   "linhas": 88,
+   "linhas": 91,
    "dominio": "components/kit-builder",
    "hooks_locais": [],
    "tabelas": [],
@@ -10169,7 +10169,7 @@
     "KitPresentablePreview"
    ],
    "export_default": null,
-   "linhas": 211,
+   "linhas": 215,
    "dominio": "components/kit-builder",
    "hooks_locais": [],
    "tabelas": [],
@@ -10231,7 +10231,7 @@
     "KitSummary"
    ],
    "export_default": null,
-   "linhas": 318,
+   "linhas": 323,
    "dominio": "components/kit-builder",
    "hooks_locais": [
     "useKitStockValidation"
@@ -10400,7 +10400,7 @@
     "KitCardData"
    ],
    "export_default": null,
-   "linhas": 265,
+   "linhas": 288,
    "dominio": "components/kit-library",
    "hooks_locais": [],
    "tabelas": [],
@@ -16745,7 +16745,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 202,
+   "usado_por": 203,
    "orfao": false
   },
   {
@@ -18011,7 +18011,7 @@
     "CommercialIntelligencePage"
    ],
    "export_default": "CommercialIntelligencePage",
-   "linhas": 324,
+   "linhas": 317,
    "dominio": "pages/bi",
    "hooks_locais": [
     "useCommercialKPIs",
@@ -18281,7 +18281,7 @@
     "KitBuilderPage"
    ],
    "export_default": "KitBuilderPage",
-   "linhas": 423,
+   "linhas": 477,
    "dominio": "pages/kit-builder",
    "hooks_locais": [
     "useKitBuilderPageState",

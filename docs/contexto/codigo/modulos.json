@@ -7211,7 +7211,7 @@
    "modulo": "components/intelligence",
    "arquivos": 27,
    "testes": 1,
-   "linhas": 5852,
+   "linhas": 5853,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -8163,9 +8163,9 @@
   },
   {
    "modulo": "components/kit-builder",
-   "arquivos": 46,
+   "arquivos": 48,
    "testes": 0,
-   "linhas": 10436,
+   "linhas": 10485,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -8643,7 +8643,7 @@
    "modulo": "components/kit-library",
    "arquivos": 7,
    "testes": 1,
-   "linhas": 748,
+   "linhas": 771,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -19314,7 +19314,7 @@
    "modulo": "hooks/intelligence",
    "arquivos": 39,
    "testes": 3,
-   "linhas": 8906,
+   "linhas": 8909,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -19928,7 +19928,7 @@
    "modulo": "hooks/kit-builder",
    "arquivos": 22,
    "testes": 1,
-   "linhas": 4180,
+   "linhas": 4113,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -20042,7 +20042,6 @@
     "components/kit-builder",
     "components/kit-library",
     "hooks/admin",
-    "lib/kit-library",
     "pages/admin",
     "pages/kit-builder"
    ],
@@ -22541,6 +22540,7 @@
     "lib/edge",
     "lib/external-db",
     "lib/kit-builder",
+    "lib/kit-library",
     "lib/pdf",
     "lib/security",
     "lib/supabase",
@@ -22570,9 +22570,9 @@
   },
   {
    "modulo": "lib",
-   "arquivos": 57,
+   "arquivos": 58,
    "testes": 1,
-   "linhas": 8888,
+   "linhas": 8906,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -23307,6 +23307,7 @@
     "lib/external-db",
     "lib/intelligence",
     "lib/kit-builder",
+    "lib/kit-library",
     "lib/personalization",
     "lib/security",
     "lib/telemetry",
@@ -23369,7 +23370,7 @@
   {
    "modulo": "lib/__tests__",
    "arquivos": 0,
-   "testes": 14,
+   "testes": 15,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],
@@ -24510,18 +24511,34 @@
   },
   {
    "modulo": "lib/kit-builder",
-   "arquivos": 10,
+   "arquivos": 13,
    "testes": 1,
-   "linhas": 1632,
+   "linhas": 2078,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
    "componentes": 0,
-   "hooks_locais": [],
+   "hooks_locais": [
+    "useAuth",
+    "useAuthMFA",
+    "useKitBuilderQuote",
+    "useKitStockValidation",
+    "useProductsColorsBatch",
+    "useProfileRoles"
+   ],
    "hooks_definidos": [],
    "edges": [],
-   "tabelas": [],
+   "tabelas": [
+    "kit_quote_requests",
+    "profiles",
+    "user_roles",
+    "vw_products_min_quantity"
+   ],
    "rpcs": [
+    "create_kit_quote_transactional",
+    "fn_check_item_fits",
+    "get_profile_and_roles",
+    "log_user_logout",
     "save_custom_kit_atomic"
    ],
    "buckets": [],
@@ -24530,8 +24547,10 @@
     "DEV",
     "MODE",
     "PROD",
+    "VITE_GOTRUE_CAPTCHA",
     "VITE_SENTRY_DSN",
     "VITE_SENTRY_ENVIRONMENT",
+    "VITE_SHOW_DEV_INFRA_MESSAGES",
     "VITE_SUPABASE_ANON_KEY",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL",
@@ -24556,85 +24575,30 @@
    ],
    "depende_de_modulos": [
     "integrations/supabase",
-    "lib"
+    "lib",
+    "pages/kit-builder"
    ],
-   "pacotes_externos": []
+   "pacotes_externos": [
+    "zod"
+   ]
   },
   {
    "modulo": "lib/kit-library",
    "arquivos": 1,
    "testes": 0,
-   "linhas": 42,
+   "linhas": 87,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
    "componentes": 0,
-   "hooks_locais": [
-    "useAuth",
-    "useAuthMFA",
-    "useCustomKitPersistence",
-    "useCustomKitsRealtime",
-    "useDuplicateKitDetector",
-    "useKitAutoSave",
-    "useKitBuilder",
-    "useKitBuilderPageState",
-    "useKitBuilderQueries",
-    "useKitBuilderQuote",
-    "useKitCollaborators",
-    "useKitComments",
-    "useKitComponentPrintAreas",
-    "useKitIdentitySuggestion",
-    "useKitStockForecast",
-    "useKitStockValidation",
-    "useKitTemplates",
-    "useKitUndoRedo",
-    "useKitVariants",
-    "useKitWizardShortcuts",
-    "useProductsColorsBatch",
-    "useProfileRoles",
-    "useSimilarKits",
-    "useTemplateSnapshot"
-   ],
+   "hooks_locais": [],
    "hooks_definidos": [],
    "edges": [],
-   "tabelas": [
-    "custom_kits",
-    "kit_collaborators",
-    "kit_comments",
-    "kit_quote_requests",
-    "kit_templates",
-    "kit_variants",
-    "profiles",
-    "user_roles",
-    "vw_products_min_quantity"
-   ],
-   "rpcs": [
-    "create_kit_quote_transactional",
-    "fn_check_item_fits",
-    "get_profile_and_roles",
-    "increment_kit_template_usage",
-    "log_user_logout",
-    "save_custom_kit_atomic",
-    "set_custom_kit_pinned"
-   ],
+   "tabelas": [],
+   "rpcs": [],
    "buckets": [],
-   "canais_realtime": [
-    "kit-comments-${kitId}-${crypto.randomUUID()}",
-    "user:${user.id}:custom-kits:${crypto.randomUUID()}"
-   ],
-   "env": [
-    "DEV",
-    "MODE",
-    "PROD",
-    "VITE_GOTRUE_CAPTCHA",
-    "VITE_SENTRY_DSN",
-    "VITE_SENTRY_ENVIRONMENT",
-    "VITE_SHOW_DEV_INFRA_MESSAGES",
-    "VITE_SUPABASE_ANON_KEY",
-    "VITE_SUPABASE_PUBLISHABLE_KEY",
-    "VITE_SUPABASE_URL",
-    "VITE_VERCEL_GIT_COMMIT_SHA"
-   ],
+   "canais_realtime": [],
+   "env": [],
    "flags": [],
    "papeis": [],
    "diretos": {
@@ -24646,7 +24610,8 @@
     "pages/kit-builder"
    ],
    "depende_de_modulos": [
-    "hooks/kit-builder"
+    "integrations/supabase",
+    "lib"
    ],
    "pacotes_externos": []
   },
@@ -27694,7 +27659,7 @@
    "modulo": "pages/bi",
    "arquivos": 3,
    "testes": 0,
-   "linhas": 1305,
+   "linhas": 1298,
    "itens_menu": [
     "Análise de Tendências",
     "Inteligência de Mercado",
@@ -29550,7 +29515,7 @@
    "modulo": "pages/kit-builder",
    "arquivos": 3,
    "testes": 0,
-   "linhas": 1640,
+   "linhas": 1694,
    "itens_menu": [],
    "telas": [
     "/meus-kits"
@@ -29997,6 +29962,7 @@
    "importado_por_outros_modulos": [
     "hooks/kit-builder",
     "lib",
+    "lib/kit-builder",
     "routes"
    ],
    "depende_de_modulos": [

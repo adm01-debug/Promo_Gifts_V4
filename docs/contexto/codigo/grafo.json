@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2762,
- "arestas": 10936,
+ "nos": 2768,
+ "arestas": 10965,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -30,7 +30,7 @@
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
-   "importado_por": 291
+   "importado_por": 292
   },
   {
    "arquivo": "src/components/ui/input.tsx",
@@ -38,7 +38,7 @@
   },
   {
    "arquivo": "src/contexts/AuthContext.tsx",
-   "importado_por": 238
+   "importado_por": 239
   },
   {
    "arquivo": "src/components/ui/skeleton.tsx",
@@ -70,7 +70,7 @@
   },
   {
    "arquivo": "src/lib/kit-builder/index.ts",
-   "importado_por": 96
+   "importado_por": 101
   },
   {
    "arquivo": "src/lib/db/postgrest.ts",
@@ -109,6 +109,10 @@
    "importado_por": 60
   },
   {
+   "arquivo": "src/integrations/supabase/types.ts",
+   "importado_por": 57
+  },
+  {
    "arquivo": "src/lib/supabase-untyped.ts",
    "importado_por": 57
   },
@@ -122,10 +126,6 @@
   },
   {
    "arquivo": "src/components/ui/table.tsx",
-   "importado_por": 53
-  },
-  {
-   "arquivo": "src/integrations/supabase/types.ts",
    "importado_por": 53
   },
   {
@@ -153,15 +153,15 @@
    "importado_por": 46
   },
   {
+   "arquivo": "src/lib/format.ts",
+   "importado_por": 44
+  },
+  {
    "arquivo": "src/stores/useComparisonStore.ts",
    "importado_por": 44
   },
   {
    "arquivo": "src/components/ui/ConfirmDialog.tsx",
-   "importado_por": 43
-  },
-  {
-   "arquivo": "src/lib/format.ts",
    "importado_por": 43
   }
  ],
@@ -623,7 +623,7 @@
   {
    "modulo": "lib",
    "depende_de": 20,
-   "importado_por": 103
+   "importado_por": 104
   },
   {
    "modulo": "contexts",
@@ -638,7 +638,7 @@
   {
    "modulo": "integrations/supabase",
    "depende_de": 3,
-   "importado_por": 69
+   "importado_por": 70
   },
   {
    "modulo": "hooks/products",

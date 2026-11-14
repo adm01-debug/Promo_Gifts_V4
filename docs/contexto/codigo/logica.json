@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 294,
+ "total": 298,
  "por_camada": {
   "api": 3,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 223,
+  "lib": 227,
   "python": 9,
   "services": 9,
   "stores": 8,
@@ -939,7 +939,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 50,
+   "usado_por": 53,
    "usado_por_modulos": [
     "components/admin",
     "components/cart",
@@ -957,14 +957,16 @@
     "hooks/simulation",
     "hooks/simulator",
     "integrations/supabase",
+    "lib",
     "lib/kit-builder",
+    "lib/kit-library",
     "pages/admin",
     "pages/kit-builder",
     "pages/quotes",
     "services",
     "stores"
    ],
-   "coberto_por_testes": 3,
+   "coberto_por_testes": 4,
    "orfao": false
   },
   {
@@ -1791,7 +1793,7 @@
     "lib/auth",
     "pages"
    ],
-   "coberto_por_testes": 0,
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {
@@ -3731,7 +3733,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 39,
+   "usado_por": 40,
    "usado_por_modulos": [
     "components/bi",
     "components/cart",
@@ -4145,13 +4147,37 @@
    "orfao": false
   },
   {
+   "arquivo": "src/lib/json-value.ts",
+   "camada": "lib",
+   "exports": [
+    "serializeJsonValue"
+   ],
+   "export_default": null,
+   "linhas": 18,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "lib/kit-builder",
+    "lib/kit-library"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/lib/kit-builder/ai-composition.ts",
    "camada": "lib",
    "exports": [
     "resolveKitAICompositions"
    ],
    "export_default": null,
-   "linhas": 164,
+   "linhas": 166,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4267,7 +4293,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 69,
+   "usado_por": 71,
    "usado_por_modulos": [
     "components/dashboard",
     "components/kit-builder",
@@ -4276,7 +4302,7 @@
     "pages/admin",
     "pages/kit-builder"
    ],
-   "coberto_por_testes": 27,
+   "coberto_por_testes": 30,
    "orfao": false
   },
   {
@@ -4316,7 +4342,7 @@
     "persistCustomKitAtomically"
    ],
    "export_default": null,
-   "linhas": 124,
+   "linhas": 217,
    "tabelas": [],
    "rpcs": [
     "save_custom_kit_atomic"
@@ -4333,7 +4359,7 @@
     "lib/kit-builder",
     "pages/kit-builder"
    ],
-   "coberto_por_testes": 1,
+   "coberto_por_testes": 2,
    "orfao": false
   },
   {
@@ -4369,6 +4395,60 @@
    "orfao": false
   },
   {
+   "arquivo": "src/lib/kit-builder/pricing-availability.ts",
+   "camada": "lib",
+   "exports": [
+    "KIT_UNKNOWN_PRICE_MESSAGE",
+    "formatKitLinePrice",
+    "hasKnownKitPrice",
+    "hasKnownKitPrices",
+    "resolveKitCatalogPrice"
+   ],
+   "export_default": null,
+   "linhas": 34,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 12,
+   "usado_por_modulos": [
+    "components/kit-builder",
+    "lib/kit-builder",
+    "pages/kit-builder"
+   ],
+   "coberto_por_testes": 0,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/kit-builder/snapshot/read-draft.ts",
+   "camada": "lib",
+   "exports": [
+    "toSavedKitSnapshot"
+   ],
+   "export_default": null,
+   "linhas": 221,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [
+    "zod"
+   ],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "hooks/kit-builder"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/lib/kit-builder/types.ts",
    "camada": "lib",
    "exports": [
@@ -4394,7 +4474,7 @@
     "normalizeKitItemLine"
    ],
    "export_default": null,
-   "linhas": 391,
+   "linhas": 395,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4403,13 +4483,36 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 15,
+   "usado_por": 18,
    "usado_por_modulos": [
     "components/kit-builder",
     "hooks/kit-builder",
     "lib/kit-builder"
    ],
    "coberto_por_testes": 6,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/kit-builder/validate-composition.ts",
+   "camada": "lib",
+   "exports": [
+    "getKitValidationErrors"
+   ],
+   "export_default": null,
+   "linhas": 92,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "hooks/kit-builder"
+   ],
+   "coberto_por_testes": 0,
    "orfao": false
   },
   {
@@ -4441,7 +4544,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "usado_por_modulos": [
     "lib/kit-builder"
    ],
@@ -4480,7 +4583,7 @@
     "buildCustomKitInsert"
    ],
    "export_default": null,
-   "linhas": 42,
+   "linhas": 87,
    "tabelas": [],
    "rpcs": [],
    "edges": [],

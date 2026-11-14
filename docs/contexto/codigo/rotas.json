@@ -3543,7 +3543,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 496
+   "arquivos_puxados": 498
   },
   {
    "protegida": true,
@@ -4257,7 +4257,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 519
+   "arquivos_puxados": 521
   },
   {
    "protegida": true,
@@ -5119,7 +5119,7 @@
     "switch",
     "toolbar"
    ],
-   "arquivos_puxados": 550
+   "arquivos_puxados": 552
   },
   {
    "protegida": true,
@@ -6665,7 +6665,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 96
+   "arquivos_puxados": 100
   },
   {
    "protegida": false,
@@ -6703,7 +6703,7 @@
    "canais_realtime": [],
    "flags": [],
    "papeis": [],
-   "arquivos_puxados": 27
+   "arquivos_puxados": 29
   },
   {
    "protegida": true,
@@ -7202,7 +7202,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 67
+   "arquivos_puxados": 69
   },
   {
    "protegida": false,
@@ -7847,7 +7847,7 @@
     "separator",
     "supervisor"
    ],
-   "arquivos_puxados": 122
+   "arquivos_puxados": 124
   },
   {
    "protegida": true,
@@ -8232,7 +8232,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 72
+   "arquivos_puxados": 74
   },
   {
    "protegida": true,
@@ -9339,7 +9339,7 @@
     "supervisor",
     "vendedor"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 497
   },
   {
    "protegida": true,
@@ -16649,7 +16649,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 461
+   "arquivos_puxados": 463
   },
   {
    "protegida": false,
@@ -17371,7 +17371,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 427
+   "arquivos_puxados": 429
   },
   {
    "protegida": false,
@@ -24526,7 +24526,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 94
+   "arquivos_puxados": 98
   },
   {
    "protegida": false,

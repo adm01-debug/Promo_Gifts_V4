@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `36b6c1d7dc` · branch `main` · 2026-11-14 23:17 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e998b09560` · branch `main` · 2026-11-14 23:29 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1953,6 +1953,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | StockKpiFilter | all \| critical \| in_stock \| out_of_stock | `src/components/inventory/stockKpiCards.ts` |
 | StockKpiSlug | em-estoque \| risco-de-ruptura \| sem-estoque \| total-de-variacoes | `src/components/inventory/stockKpiCards.ts` |
 | RiskSeverity | critical \| ok \| warning | `src/components/inventory/risk/types.ts` |
+| BoxSortMode | occupancy \| price \| score | `src/components/kit-builder/BoxSelector.types.ts` |
+| BoxViewMode | grid \| list | `src/components/kit-builder/BoxSelector.types.ts` |
 | Occasion | birthday \| event \| reactivation \| vip \| welcome \| year-end | `src/components/kit-builder/KitOccasionSelector.tsx` |
 | SortOption | last-used \| name-asc \| price-desc \| recent \| usage-desc | `src/components/kit-library/KitLibraryFilters.tsx` |
 | TechniqueCategory | digital \| laser \| other \| serigrafia | `src/components/mockup/techniqueColorUtils.ts` |
@@ -2186,6 +2188,34 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   [z.string().trim(), z.null()]
   ```
   - Regras cruzadas (refine): “Data inválida. Use o formato dd/mm/aaaa.” · “Data inválida.” · “A data não pode estar no passado.”
+- **snapshotNumber** (`src/lib/kit-builder/snapshot/read-draft.ts`, z.number):
+  ```ts
+  
+  ```
+- **snapshotDimension** (`src/lib/kit-builder/snapshot/read-draft.ts`, z.number):
+  ```ts
+  
+  ```
+- **itemPersonalizationSnapshotSchema** (`src/lib/kit-builder/snapshot/read-draft.ts`, z.object):
+  ```ts
+  { enabled: z.boolean(), techniqueId: z.string().optional(), techniqueName: z.string().optional(), techniqueCode: z.string().optional(), colors: snapshotNumber.optional(), width: snapshotNumber.optional(), height: snapshotNumber.optional(), positionCode: z.string().optional(), positionName: z.string().optional(), position: z.string().optional(), artworkUrl: z.string().optional(), generatedMockupUrl: z.string().optional(), artworkColors: z.array(z.string()).optional(), estimatedPrice: snapshotNumber.optional(), setupCost: snapshotNumber.optional(), totalPrice: snapshotNumber.optional(), pricedQuantity: snapshotNumber.optional(), }
+  ```
+- **personalizationSnapshotSchema** (`src/lib/kit-builder/snapshot/read-draft.ts`, z.object):
+  ```ts
+  { box: itemPersonalizationSnapshotSchema.default({ enabled: false }), items: z.record(z.string(), itemPersonalizationSnapshotSchema).default({}), }
+  ```
+- **boxSnapshotSchema** (`src/lib/kit-builder/snapshot/read-draft.ts`, z.object):
+  ```ts
+  { id: z.string(), name: z.string(), sku: z.string(), imageUrl: z.string().nullable(), price: snapshotNumber, priceKnown: z.boolean().optional(), internalWidth: snapshotDimension, internalHeight: snapshotDimension, internalDepth: snapshotDimension, internalVolume: snapshotDimension, dimensionsKnown: z.boolean().optional(), boxType: z.string().optional(), color: z.string().optional(), material: z.string().optional(), materials: z.array(z.string()).optional(), finish: z.string().optional(), weight: snapshotNumber.optional(), maxWeight: snapshotNumber.optional(), }
+  ```
+- **itemSnapshotSchema** (`src/lib/kit-builder/snapshot/read-draft.ts`, z.object):
+  ```ts
+  { id: z.string(), name: z.string(), sku: z.string(), imageUrl: z.string().nullable(), price: snapshotNumber, priceKnown: z.boolean().optional(), width: snapshotDimension, height: snapshotDimension, depth: snapshotDimension, volume: snapshotDimension, quantity: z.number().int().positive().safe(), lineId: z.string().optional(), dimensionsKnown: z.boolean().optional(), weight: snapshotNumber.optional(), stock: snapshotNumber.nullable().optional(), category: z.string().optional(), material: z.string().optional(), selectedColor: z .object({ name: z.string(), hex: z.string().optional() }) .passthrough() .optional(), selectedVariantId: z.string().optional(), selectedSize: z.string().optional(), isOptional: z.boolean().optional(), isReplaceable: z.boolean().optional(), isPackaging: z.boolean().opt …
+  ```
+- **items** (`src/lib/kit-builder/snapshot/read-draft.ts`, z.array):
+  ```ts
+  itemSnapshotSchema
+  ```
 - **safeString** (`src/lib/security/validation.ts`, z.string, encadeia transform):
   ```ts
   
@@ -4622,7 +4652,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   try { if (!ipChecked && !(await ensureIPAllowed(userId, email))) return false; // A linha success em login_attempts é escrita pelo caller após o // gate de IP passar (com prova de sessão → verified=true). Escrever // aqui gerava linha duplicada por login. setLoginStatus('success'); toast({ title: 'Bem-vindo!', description: 'Login realizado com sucesso', }); // Aguarda o feedback visual de sucesso antes de navegar setTimeout(() => { navigate(resolveRedirectTarget(), { replace: true }); }, 600); r …
   ```
-- **applySubstitute(key: FilterKey, value: { id: string; name: string },)** — `src/pages/bi/CommercialIntelligencePage.tsx`
+- **applySubstitute(key: FilterKey, value: { id: string; name: string })** — `src/pages/bi/CommercialIntelligencePage.tsx`
   ```
   captureUndoSnapshot(); beginPendingAction('apply_substitute', key); setFilters((prev) => { if (key === 'category') return { ...prev, categoryId: value.id, categoryName: value.name }; if (key === 'supplier') return { ...prev, supplierId: value.id, supplierName: value.name }; return { ...prev, productId: value.id, productName: value.name }; });
   ```
@@ -6337,7 +6367,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | DOWNLOAD_SIZE_LIMIT | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_ACTION_AFTER | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_JSON_KEY | `scripts/diagnose-personalization-artifact.py` |
-| … +1244 linhas — lista completa em `context.json` | |
+| … +1250 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6460,7 +6490,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21154 testes em 2137 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21218 testes em 2145 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6575,6 +6605,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/catalog/catalog-search-audit.spec.ts` | 29 | Catálogo · Busca · termos comuns (grade não-vazia + relevância) · busca comum retorna resultados relevantes:  · Catálogo · Busca · SKU exato (bug #1) · busca por SKU encontra o produto:  … |
 | `src/components/inventory/__tests__/ri[REDACTED].test.tsx` | 29 | RiskKpi · renders label, value and sub · renders with alert style when alert=true · renders with warning style when warning=true … |
 | `src/components/products/__tests__/ColorSwatchTwoLineOverflow.test.tsx` | 29 | V1 ProductColorSwatches (wrap, max=14) · 7 cores → exibe TODAS, sem chip  · 14 cores → exibe TODAS, sem chip  · 20 cores → 13 bolinhas + chip  … |
+| `tests/components/pages/KitBuilderPage.test.tsx` | 29 | KitBuilderPage · renderiza o passo box (padrão) · renderiza o passo items · renderiza o passo personalization … |
 | `tests/e2e/analytics-bi.test.ts` | 29 | E2E Analytics — BI Metrics · total = approved + rejected + pending · conversion rate is correct · avg ticket = revenue / approved … |
 | `tests/lib/kit-builder-price.test.ts` | 29 | kit-builder price-calculator · calculateBoxPrice · returns 0 for null box · multiplies box price by quantity … |
 | `tests/lib/masked-suffix.test.ts` | 29 | normalizeMaskedSuffix — paridade de comprimento · 0 chars (null) →  · 1 char  · 2 chars  … |
@@ -6619,7 +6650,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/search/__tests__/useGlobalSearch.test.ts` | 25 | useGlobalSearch · expõe estado inicial e sugestões rápidas · limpa resultados para consultas com menos de 3 caracteres sem chamar a IA · busca mista monta resultados de produtos, clientes, orçamentos e tabelas auxiliares … |
 | `src/lib/auth/__tests__/post-login-redirect.test.ts` | 25 | clearPostLoginRedirect · remove a chave do sessionStorage quando ela existe · nao lanca erro quando sessionStorage esta vazio · nao lanca erro quando sessionStorage.removeItem lanca excecao … |
 | `src/utils/__tests__/cnpj-gap-hunt.test.ts` | 25 | G1 — maskCnpj com input já mascarado não duplica separadores · idempotência: mask(mask(x)) === mask(x) · input parcial mascarado não gera pontuação órfã · G2 — normalizeCnpj com surrogate pairs / emoji / unicode invisível … |
-| `tests/components/pages/KitBuilderPage.test.tsx` | 25 | KitBuilderPage · renderiza o passo box (padrão) · renderiza o passo items · renderiza o passo personalization … |
 | `tests/contracts/webhooks.contract.test.ts` | 25 | contract: webhook-inbound v1 (passthrough) · aceita qualquer objeto (compat com produção) · aceita array (compat — v1 é any) · body vazio → 400 missing_body … |
 | `tests/hooks/voice/retry.test.ts` | 25 | withRetry · returns result on first success · retries on retryable error and succeeds · does not retry on non-retryable error … |
 | `tests/integration/magazine-service-fuzz.test.ts` | 25 | magazineService — lifecycle happy path · snapshot legado ao editar título não apaga itens quando INSERT está indisponível · snapshot legado de metadados preserva IDs e ordem dos itens · falha de inclusão rejeita, nunca confirma o snapshot antigo como sucesso … |
@@ -6764,7 +6794,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/product-webhook.test.ts` | 18 | product-webhook · evento product.created · retorna 200 para evento product.created válido · evento product.updated … |
 | `tests/hooks/useGlobalSearch-voice.test.ts` | 18 | Voice Action Handler Logic · navigate action · should extract route from navigate action · should handle navigate without route gracefully … |
 | `tests/lib/product-types.test.ts` | 18 | getProductImageUrl · should prefer primary_image_url · should fallback to image_url · should fallback to first image in images array … |
-| … +1837 linhas — lista completa em `context.json` | | |
+| … +1845 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7232,4 +7262,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Laser detection — must come before UV check since "Laser UV" exists | `src/components/mockup/techniqueColorUtils.ts` |
 | a caixa cheia é um limite superior: a bbox nunca subestima a marca girada e um | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
 | * Filtro de técnica EFETIVO — o mesmo que a prévia aplica. Decide se há regra. */ | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
-| … +1257 linhas — lista completa em `context.json` | |
+| … +1260 linhas — lista completa em `context.json` | |

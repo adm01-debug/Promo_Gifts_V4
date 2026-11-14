@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "36b6c1d7dc3209b9fef439c287f8bf4817c63e80",
+  "commit": "e998b09560497e91422f9f63a014bdfd87a25a80",
   "branch": "main",
-  "data_commit": "2026-11-14T23:13:44Z",
+  "data_commit": "2026-11-14T23:25:36Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e998b095",
+    "data": "2026-11-14",
+    "assunto": "fix(kit): rascunhos de kit salvos sem personalização voltam a abrir (resgate cirúrgico da #3390) (#3631)"
+   },
    {
     "sha": "36b6c1d7",
     "data": "2026-11-14",
@@ -126,14 +131,9 @@
     "sha": "a43a3127",
     "data": "2026-11-14",
     "assunto": "docs(coordenacao): ledger E188 dos 11 merges do trem de front e limpeza"
-   },
-   {
-    "sha": "ec6088c4",
-    "data": "2026-11-14",
-    "assunto": "Merge remote-tracking branch 'origin/claude/fix-route-scroll-reset-query-replace-261114-0005' into claude/trem2-front-li"
    }
   ],
-  "arquivos_mudados_7d": 2078,
+  "arquivos_mudados_7d": 2110,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -185,7 +185,7 @@
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 114
+    "mudancas": 126
    },
    {
     "pasta": "src/pages/products",
@@ -247,22 +247,22 @@
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 13
+    "mudancas": 14
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 13
+    "mudancas": 14
    },
    {
     "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
     "mudancas": 12
    },
    {
-    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 11
+    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "mudancas": 12
    },
    {
-    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
     "mudancas": 11
    },
    {
@@ -290,18 +290,18 @@
     "mudancas": 9
    },
    {
-    "arquivo": ".github/workflows/db-schema-drift-check.yml",
-    "mudancas": 8
+    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
+    "mudancas": 9
    },
    {
-    "arquivo": "analise-prs/prs.csv",
+    "arquivo": ".github/workflows/db-schema-drift-check.yml",
     "mudancas": 8
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 590
+    "commits": 589
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10164,
-  "arquivos_codigo": 5221,
-  "linhas_codigo": 996758,
+  "arquivos_total": 10178,
+  "arquivos_codigo": 5235,
+  "linhas_codigo": 998667,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 545,
   "migrations": 3084,
   "cron_jobs": 122,
-  "testes": 2459,
+  "testes": 2467,
   "workflows": 98,
   "scripts": 272,
   "docs_md": 1023
@@ -1883,8 +1883,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1359,
-   "linhas": 273401
+   "arquivos": 1361,
+   "linhas": 273474
   },
   "src/config": {
    "arquivos": 1,
@@ -1908,15 +1908,15 @@
   },
   "src/hooks": {
    "arquivos": 455,
-   "linhas": 85785
+   "linhas": 85721
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66208
   },
   "src/lib": {
-   "arquivos": 327,
-   "linhas": 50306
+   "arquivos": 332,
+   "linhas": 50920
   },
   "src/logic": {
    "arquivos": 4,
@@ -1928,7 +1928,7 @@
   },
   "src/pages": {
    "arquivos": 351,
-   "linhas": 82539
+   "linhas": 82586
   },
   "src/routes": {
    "arquivos": 14,
@@ -2035,8 +2035,8 @@
    "linhas": 141
   },
   "tests/components": {
-   "arquivos": 149,
-   "linhas": 33078
+   "arquivos": 151,
+   "linhas": 33406
   },
   "tests/config": {
    "arquivos": 6,
@@ -2079,8 +2079,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 129,
-   "linhas": 17494
+   "arquivos": 132,
+   "linhas": 18240
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2091,8 +2091,8 @@
    "linhas": 42
   },
   "tests/lib": {
-   "arquivos": 64,
-   "linhas": 9272
+   "arquivos": 66,
+   "linhas": 9437
   },
   "tests/magazine": {
    "arquivos": 18,
@@ -2282,7 +2282,7 @@
   },
   {
    "arquivo": "src/components/kit-builder/BoxSelector.tsx",
-   "linhas": 1273
+   "linhas": 1260
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",

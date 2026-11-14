@@ -6219,7 +6219,7 @@
     "useRef"
    ],
    "canais_realtime": [],
-   "usado_por": 202,
+   "usado_por": 203,
    "usado_por_arquivos": [
     "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
     "recovery/src-legacy/src/components/navigation/DynamicBreadcrumbs.tsx",
@@ -9294,7 +9294,7 @@
    "hooks_exportados": [
     "useSalesHistoryMacro"
    ],
-   "linhas": 307,
+   "linhas": 310,
    "dominio": "hooks/intelligence",
    "tabelas": [
     "orders",
@@ -9313,7 +9313,7 @@
    "usado_por_arquivos": [
     "src/hooks/intelligence/index.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/intelligence/useScheduledReports.ts",
@@ -9666,7 +9666,7 @@
    "hooks_exportados": [
     "useKitAutoSave"
    ],
-   "linhas": 436,
+   "linhas": 446,
    "dominio": "hooks/kit-builder",
    "tabelas": [],
    "rpcs": [],
@@ -9683,14 +9683,14 @@
    "usado_por_arquivos": [
     "src/hooks/kit-builder/index.ts"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 3
   },
   {
    "arquivo": "src/hooks/kit-builder/useKitBuilder.ts",
    "hooks_exportados": [
     "useKitBuilder"
    ],
-   "linhas": 774,
+   "linhas": 714,
    "dominio": "hooks/kit-builder",
    "tabelas": [],
    "rpcs": [],
@@ -9713,12 +9713,13 @@
    "hooks_exportados": [
     "useKitBuilderPageState"
    ],
-   "linhas": 563,
+   "linhas": 546,
    "dominio": "hooks/kit-builder",
    "tabelas": [],
    "rpcs": [],
    "edges": [],
    "hooks_internos": [
+    "useAuth",
     "useCallback",
     "useCustomKitPersistence",
     "useCustomKitsRealtime",
@@ -9737,7 +9738,7 @@
    "usado_por_arquivos": [
     "src/hooks/kit-builder/index.ts"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/kit-builder/useKitBuilderQueries.ts",
@@ -13629,7 +13630,7 @@
     "src/lib/auth/apply-seller-scope.ts",
     "src/pages/CustomizableDashboard.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/pages/admin/telemetry/useAppHealth.ts",
@@ -14025,10 +14026,11 @@
     "useState"
    ],
    "canais_realtime": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "usado_por_arquivos": [
     "recovery/src-legacy/src/hooks/useKitBuilderPageState.ts",
-    "src/hooks/kit-builder/useKitBuilderPageState.ts"
+    "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "src/lib/kit-builder/snapshot/read-draft.ts"
    ],
    "coberto_por_testes": 1
   },

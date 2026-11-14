@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "36b6c1d7dc3209b9fef439c287f8bf4817c63e80",
+  "sha": "e998b09560497e91422f9f63a014bdfd87a25a80",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 23:17 UTC",
-  "files_total": 10092,
-  "code_files": 8619,
-  "code_lines": 1214856
+  "generated_at": "2026-11-14 23:29 UTC",
+  "files_total": 10106,
+  "code_files": 8633,
+  "code_lines": 1216765
  },
  "version": "1.3.2",
- "facts_hash": "dc0ad31d3ba24ed3",
+ "facts_hash": "6bc51be843d12a6e",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1222,8 +1222,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3399,
-   ".ts": 2909,
-   ".tsx": 1862,
+   ".ts": 2919,
+   ".tsx": 1866,
    ".mjs": 436,
    ".py": 13,
    ".js": 7
@@ -135904,7 +135904,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 241
+    "deps_count": 247
    },
    {
     "path": "",
@@ -135933,7 +135933,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 86
+    "deps_count": 90
    },
    {
     "path": "",
@@ -137177,7 +137177,7 @@
      "respond_discount_approval_transactional",
      "save_custom_kit_atomic"
     ],
-    "deps_count": 245
+    "deps_count": 247
    },
    {
     "path": "/dropbox",
@@ -142910,7 +142910,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1612,
+  "components_count": 1616,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -147449,8 +147449,8 @@
   },
   {
    "module": "src/components",
-   "files": 1359,
-   "lines": 273400,
+   "files": 1361,
+   "lines": 273473,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -147808,7 +147808,7 @@
   {
    "module": "src/hooks",
    "files": 455,
-   "lines": 85785,
+   "lines": 85721,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -148094,8 +148094,8 @@
   },
   {
    "module": "src/lib",
-   "files": 328,
-   "lines": 50316,
+   "files": 333,
+   "lines": 50930,
    "tables": [
     "...",
     "companies",
@@ -148133,6 +148133,7 @@
     "format-utils.ts: formatTooltipNumber, formatTooltipPercent, formatTooltipCurrency",
     "format.ts: formatCurrency, formatCurrencyCompact, formatUnitPrice, round2",
     "image-converter.ts: needsConversion, convertToPng, ensureSupportedFormat",
+    "json-value.ts: serializeJsonValue",
     "latency-percentiles.ts: latencyPercentile, formatLatencyMs",
     "lazyWithRetry.ts: lazyWithRetry",
     "logger.ts: logger",
@@ -148148,8 +148149,7 @@
     "query-config.ts: CACHE_TIMES, GC_TIMES, QUERY_KEY_PREFIXES, getStaleTimeForKey, getGcTimeForKey, PRODUTOS_QUERY_OPTIONS",
     "quote-status-config.ts: QuoteStatusConfig, QUOTE_STATUS_CONFIG, getQuoteStatusLabel, getQuoteStatusColor, QUOTE_VALID_TRANSITIONS, isValidQuoteTransition",
     "roles.ts: AppRole, RoleVisual, ROLE_VISUAL, getRoleLabel, getRoleVisual",
-    "routePrefetch.ts: prefetchRoute, getPrefetchHandlers",
-    "sensitive-masking.ts: maskSecretValue, maskSensitiveText, containsSensitive"
+    "routePrefetch.ts: prefetchRoute, getPrefetchHandlers"
    ],
    "docs": [
     "comparison-utils.ts: Helpers compartilhados do Comparador de Produtos. Lead time é derivado do stockStatus (fonte única), usado pelo score, radar, tabela e modo duelo — assim todos concordam. Menor é melhor.",
@@ -148186,6 +148186,7 @@
     "src/contexts",
     "src/hooks",
     "src/integrations",
+    "src/pages",
     "src/services",
     "src/test",
     "src/types",
@@ -148216,6 +148217,7 @@
     "src/lib/format-utils.ts",
     "src/lib/format.ts",
     "src/lib/image-converter.ts",
+    "src/lib/json-value.ts",
     "src/lib/latency-percentiles.ts",
     "src/lib/lazyWithRetry.ts",
     "src/lib/logger.ts",
@@ -148254,6 +148256,7 @@
     "src/lib/__tests__/chunk-recovery.url-cleanup.test.ts",
     "src/lib/__tests__/discount-approval-status-config.transitions.test.ts",
     "src/lib/__tests__/format-utils.test.ts",
+    "src/lib/__tests__/json-value.test.ts",
     "src/lib/__tests__/latency-percentiles.test.ts",
     "src/lib/__tests__/magazine-status-config.transitions.test.ts",
     "src/lib/__tests__/mockup-geometry.test.ts",
@@ -148269,9 +148272,7 @@
     "src/lib/access/access-policy.ts",
     "src/lib/access/dev-route-telemetry.ts",
     "src/lib/access/log-access-denied.ts",
-    "src/lib/access/request-dev-access.ts",
-    "src/lib/access/security-utils.ts",
-    "src/lib/analytics/cartAnalytics.ts"
+    "src/lib/access/request-dev-access.ts"
    ]
   },
   {
@@ -148300,7 +148301,7 @@
   {
    "module": "src/pages",
    "files": 351,
-   "lines": 82539,
+   "lines": 82586,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -149521,8 +149522,8 @@
   },
   {
    "module": "tests",
-   "files": 1016,
-   "lines": 155596,
+   "files": 1023,
+   "lines": 156835,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -157075,6 +157076,62 @@
     ]
    },
    {
+    "file": "src/lib/kit-builder/snapshot/read-draft.ts",
+    "name": "snapshotNumber",
+    "kind": "number",
+    "body": "",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/kit-builder/snapshot/read-draft.ts",
+    "name": "snapshotDimension",
+    "kind": "number",
+    "body": "",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/kit-builder/snapshot/read-draft.ts",
+    "name": "itemPersonalizationSnapshotSchema",
+    "kind": "object",
+    "body": "{ enabled: z.boolean(), techniqueId: z.string().optional(), techniqueName: z.string().optional(), techniqueCode: z.string().optional(), colors: snapshotNumber.optional(), width: snapshotNumber.optional(), height: snapshotNumber.optional(), positionCode: z.string().optional(), positionName: z.string().optional(), position: z.string().optional(), artworkUrl: z.string().optional(), generatedMockupUrl: z.string().optional(), artworkColors: z.array(z.string()).optional(), estimatedPrice: snapshotNumber.optional(), setupCost: snapshotNumber.optional(), totalPrice: snapshotNumber.optional(), pricedQuantity: snapshotNumber.optional(), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/kit-builder/snapshot/read-draft.ts",
+    "name": "personalizationSnapshotSchema",
+    "kind": "object",
+    "body": "{ box: itemPersonalizationSnapshotSchema.default({ enabled: false }), items: z.record(z.string(), itemPersonalizationSnapshotSchema).default({}), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/kit-builder/snapshot/read-draft.ts",
+    "name": "boxSnapshotSchema",
+    "kind": "object",
+    "body": "{ id: z.string(), name: z.string(), sku: z.string(), imageUrl: z.string().nullable(), price: snapshotNumber, priceKnown: z.boolean().optional(), internalWidth: snapshotDimension, internalHeight: snapshotDimension, internalDepth: snapshotDimension, internalVolume: snapshotDimension, dimensionsKnown: z.boolean().optional(), boxType: z.string().optional(), color: z.string().optional(), material: z.string().optional(), materials: z.array(z.string()).optional(), finish: z.string().optional(), weight: snapshotNumber.optional(), maxWeight: snapshotNumber.optional(), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/kit-builder/snapshot/read-draft.ts",
+    "name": "itemSnapshotSchema",
+    "kind": "object",
+    "body": "{ id: z.string(), name: z.string(), sku: z.string(), imageUrl: z.string().nullable(), price: snapshotNumber, priceKnown: z.boolean().optional(), width: snapshotDimension, height: snapshotDimension, depth: snapshotDimension, volume: snapshotDimension, quantity: z.number().int().positive().safe(), lineId: z.string().optional(), dimensionsKnown: z.boolean().optional(), weight: snapshotNumber.optional(), stock: snapshotNumber.nullable().optional(), category: z.string().optional(), material: z.string().optional(), selectedColor: z .object({ name: z.string(), hex: z.string().optional() }) .passthrough() .optional(), selectedVariantId: z.string().optional(), selectedSize: z.string().optional(), isOptional: z.boolean().optional(), isReplaceable: z.boolean().optional(), isPackaging: z.boolean().opt …",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/kit-builder/snapshot/read-draft.ts",
+    "name": "items",
+    "kind": "array",
+    "body": "itemSnapshotSchema",
+    "refines": [],
+    "chain": []
+   },
+   {
     "file": "src/lib/security/validation.ts",
     "name": "safeString",
     "kind": "string",
@@ -159491,6 +159548,16 @@
     "file": "src/components/inventory/risk/types.ts",
     "name": "RiskSeverity",
     "values": "critical | ok | warning"
+   },
+   {
+    "file": "src/components/kit-builder/BoxSelector.types.ts",
+    "name": "BoxSortMode",
+    "values": "occupancy | price | score"
+   },
+   {
+    "file": "src/components/kit-builder/BoxSelector.types.ts",
+    "name": "BoxViewMode",
+    "values": "grid | list"
    },
    {
     "file": "src/components/kit-builder/KitOccasionSelector.tsx",
@@ -164571,7 +164638,15 @@
    },
    {
     "file": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "msg": "Defina a quantidade do rascunho antes de salvar ou criar um orçamento."
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitBuilderPageState.ts",
     "msg": "Este produto não possui preço comercial disponível para o kit."
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "msg": "Informe uma quantidade inteira maior que zero."
    },
    {
     "file": "src/hooks/kit-builder/useKitBuilderPageState.ts",
@@ -165238,6 +165313,10 @@
     "msg": "Max retries exceeded"
    },
    {
+    "file": "src/lib/json-value.ts",
+    "msg": "Serialized value is not valid JSON."
+   },
+   {
     "file": "src/lib/lazyWithRetry.ts",
     "msg": "Component import returned null or missing default export"
    },
@@ -165347,7 +165426,15 @@
    },
    {
     "file": "src/lib/kit-builder/persistence.ts",
+    "msg": "A versão dos dados deste rascunho não é suportada. Os dados originais foram preservados."
+   },
+   {
+    "file": "src/lib/kit-builder/persistence.ts",
     "msg": "O banco retornou uma revisão de kit inválida."
+   },
+   {
+    "file": "src/lib/kit-builder/persistence.ts",
+    "msg": "O formato dos dados deste rascunho não é suportado. Os dados originais foram preservados."
    },
    {
     "file": "src/lib/pdf/whitelabel-comparison.ts",
@@ -165600,6 +165687,10 @@
    {
     "file": "src/pages/filters/useFiltersPageState.ts",
     "msg": "Erro ao aplicar filtro de tamanhos"
+   },
+   {
+    "file": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "msg": "\n              className="
    },
    {
     "file": "src/pages/kit-builder/KitBuilderPage.tsx",
@@ -169450,12 +169541,12 @@
     "text": "NOTA: sem cleanup aqui -- o timer deve sobreviver a re-renders intermedios."
    },
    {
-    "file": "src/hooks/kit-builder/useKitBuilder.ts",
-    "text": "Estado do wizard. The journey must be explicit: inferring it from the"
+    "file": "src/hooks/kit-builder/useKitAutoSave.ts",
+    "text": "elapsed. A confirmed clean snapshot must not overwrite an old backup."
    },
    {
     "file": "src/hooks/kit-builder/useKitBuilder.ts",
-    "text": "Weight validation"
+    "text": "Estado do wizard. The journey must be explicit: inferring it from the"
    },
    {
     "file": "src/hooks/kit-builder/useKitBuilder.ts",
@@ -170858,6 +170949,10 @@
     "text": "* Selo exibido na biblioteca: só published/shared são \"Publicado\"; `ready` é apenas válido. */"
    },
    {
+    "file": "src/lib/kit-builder/persistence.ts",
+    "text": "Empty is an explicit clear. A different client must not inherit another"
+   },
+   {
     "file": "src/lib/kit-builder/types.ts",
     "text": "Peso máximo suportado em gramas (para validação)"
    },
@@ -170878,6 +170973,10 @@
     "text": "dedicated journey column; it must never be inferred from the current step."
    },
    {
+    "file": "src/lib/kit-builder/validate-composition.ts",
+    "text": "Weight validation"
+   },
+   {
     "file": "src/lib/kit-builder/volume-calculator.ts",
     "text": "Utilitários para cálculo e validação de volume"
    },
@@ -170892,6 +170991,10 @@
    {
     "file": "src/lib/kit-builder/weight.ts",
     "text": "O catálogo usa zero como ausência de informação, então o kit deve manter essa"
+   },
+   {
+    "file": "src/lib/kit-library/buildCustomKitInsert.ts",
+    "text": "unused id/revision/timestamps are required merely to duplicate a draft."
    },
    {
     "file": "src/lib/navigation/filter-dev-only-items.ts",
@@ -211831,7 +211934,7 @@
    {
     "file": "src/pages/bi/CommercialIntelligencePage.tsx",
     "name": "applySubstitute",
-    "params": "key: FilterKey, value: { id: string; name: string },",
+    "params": "key: FilterKey, value: { id: string; name: string }",
     "body": "captureUndoSnapshot(); beginPendingAction('apply_substitute', key); setFilters((prev) => { if (key === 'category') return { ...prev, categoryId: value.id, categoryName: value.name }; if (key === 'supplier') return { ...prev, supplierId: value.id, supplierName: value.name }; return { ...prev, productId: value.id, productName: value.name }; });"
    },
    {
@@ -243359,6 +243462,30 @@
     "name": "should return "
    },
    {
+    "file": "src/lib/__tests__/json-value.test.ts",
+    "name": "serializeJsonValue preserves the native JSON contract"
+   },
+   {
+    "file": "src/lib/__tests__/json-value.test.ts",
+    "name": "$name"
+   },
+   {
+    "file": "src/lib/__tests__/json-value.test.ts",
+    "name": "rejects a circular object"
+   },
+   {
+    "file": "src/lib/__tests__/json-value.test.ts",
+    "name": "rejects a circular array"
+   },
+   {
+    "file": "src/lib/__tests__/json-value.test.ts",
+    "name": "preserves custom serialization failures"
+   },
+   {
+    "file": "src/lib/__tests__/json-value.test.ts",
+    "name": "does not reevaluate source getters while validating the serialized result"
+   },
+   {
     "file": "src/lib/__tests__/latency-percentiles.test.ts",
     "name": "latencyPercentile"
    },
@@ -262567,6 +262694,18 @@
     "name": "does not neutralize an invisible element that belongs to an open overlay"
    },
    {
+    "file": "tests/components/SalesOverviewChart.product-filter.test.tsx",
+    "name": "SalesOverviewChart forwards actual product scope to the paginated data hook"
+   },
+   {
+    "file": "tests/components/SalesOverviewChart.product-filter.test.tsx",
+    "name": "preserves global and product behavior for %s"
+   },
+   {
+    "file": "tests/components/SalesOverviewChart.product-filter.test.tsx",
+    "name": "preserves the original default days and global query without a product prop"
+   },
+   {
     "file": "tests/components/SidebarReorganized.test.tsx",
     "name": "SidebarReorganized"
    },
@@ -265223,8 +265362,56 @@
     "name": "keeps small catalogues in the complete DOM and virtualizes larger catalogues"
    },
    {
+    "file": "tests/components/kit-builder/financial-availability.test.tsx",
+    "name": "Financial availability is visible without inventing zero prices"
+   },
+   {
+    "file": "tests/components/kit-builder/financial-availability.test.tsx",
+    "name": "keeps unknown items selectable in the %s card"
+   },
+   {
+    "file": "tests/components/kit-builder/financial-availability.test.tsx",
+    "name": "shows both unknown boxes and their factual labels rather than removing them"
+   },
+   {
+    "file": "tests/components/kit-builder/financial-availability.test.tsx",
+    "name": "does not show a ready badge or partial money total in the hero"
+   },
+   {
+    "file": "tests/components/kit-builder/financial-availability.test.tsx",
+    "name": "keeps composition metadata while showing unknown per-line and total prices"
+   },
+   {
+    "file": "tests/components/kit-builder/financial-availability.test.tsx",
+    "name": "does not generate a money breakdown or quantity discount from unknown prices"
+   },
+   {
+    "file": "tests/components/kit-builder/financial-availability.test.tsx",
+    "name": "uses the same honest values in the printable presentation"
+   },
+   {
+    "file": "tests/components/kit-builder/financial-availability.test.tsx",
+    "name": "blocks PDF, quote, draft persistence and WhatsApp while prices are unknown"
+   },
+   {
+    "file": "tests/components/kit-builder/financial-availability.test.tsx",
+    "name": "keeps existing markup and actions for a genuine known zero"
+   },
+   {
     "file": "tests/components/kit-library/KitCard.test.tsx",
     "name": "KitCard"
+   },
+   {
+    "file": "tests/components/kit-library/KitCard.test.tsx",
+    "name": "shows historical unknown values honestly and keeps the draft actions available"
+   },
+   {
+    "file": "tests/components/kit-library/KitCard.test.tsx",
+    "name": "distinguishes a known numerical zero from an unknown value"
+   },
+   {
+    "file": "tests/components/kit-library/KitCard.test.tsx",
+    "name": "does not format a non-finite price %s as money"
    },
    {
     "file": "tests/components/kit-library/KitCard.test.tsx",
@@ -265805,6 +265992,22 @@
    {
     "file": "tests/components/pages/KitBuilderPage.test.tsx",
     "name": "remove o listener ao desmontar"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "preserva a tela existente para quantidade já verificada"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "pede confirmação explícita do preset para quantidade histórica ausente sem chamar salvar"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "bloqueia a edição durante a hidratação do snapshot"
+   },
+   {
+    "file": "tests/components/pages/KitBuilderPage.test.tsx",
+    "name": "mantém o erro original e a biblioteca acessível sem regravar rascunho inválido"
    },
    {
     "file": "tests/components/pages/MagicUp.test.tsx",
@@ -277515,6 +277718,34 @@
     "name": "logLoginAttempt invoca a edge function correta"
    },
    {
+    "file": "tests/hooks/useKitAutoSave.validation-recovery.test.tsx",
+    "name": "Canonical autosave preserves failed validation as a recoverable unsaved draft"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.validation-recovery.test.tsx",
+    "name": "surfaces invalid metadata %j without rejection, write, downgrade or lost unload backup"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.validation-recovery.test.tsx",
+    "name": "retains the latest unsaved edit after a failed API operation consumed its timer"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.validation-recovery.test.tsx",
+    "name": "a successful supported edit clears the error and does not create a new unload backup"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.validation-recovery.test.tsx",
+    "name": "a transport retry preserves the exact payload and idempotency key before marking clean"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.validation-recovery.test.tsx",
+    "name": "explicit cancel alone keeps recovery data until manual save is acknowledged"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.validation-recovery.test.tsx",
+    "name": "hydration without an edit produces neither a write nor an unload backup"
+   },
+   {
     "file": "tests/hooks/useKitBuilder-extended.test.ts",
     "name": "useKitUndoRedo"
    },
@@ -277629,6 +277860,50 @@
    {
     "file": "tests/hooks/useKitBuilderPageState.route.test.ts",
     "name": "leaves landing mode when a cloned kit or direct product appears in the URL"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.snapshot.test.tsx",
+    "name": "Saved raw nullable draft parsing is non-destructive"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.snapshot.test.tsx",
+    "name": "preserves complete object extras and every operational field"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.snapshot.test.tsx",
+    "name": "null %s uses a view preset without mutating raw"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.snapshot.test.tsx",
+    "name": "null %s remains null raw but restores an empty selection in view"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.snapshot.test.tsx",
+    "name": "missing item %s fails the whole snapshot without dropping the item"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.snapshot.test.tsx",
+    "name": "malformed item fields %j cause a repairable failure without mutation"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.snapshot.test.tsx",
+    "name": "malformed array entry %j is never silently filtered out"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.snapshot.test.tsx",
+    "name": "box with invalid operational/known fields %j fails without manufacturing numbers"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.snapshot.test.tsx",
+    "name": "invalid personalization %j retains raw for repair"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.snapshot.test.tsx",
+    "name": "unknown metadata and valid full personalization prices remain intact"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.snapshot.test.tsx",
+    "name": "hydrating valid data never backfills UI presets or writes before a user edit"
    },
    {
     "file": "tests/hooks/useKitBuilderQueries.contract.test.ts",
@@ -278869,6 +279144,38 @@
    {
     "file": "tests/hooks/useSalesGoals.test.tsx",
     "name": "should return sales goals state and functions"
+   },
+   {
+    "file": "tests/hooks/useSalesHistoryMacro.product-filter.test.ts",
+    "name": "useSalesHistoryMacro — filtro opcional por produto"
+   },
+   {
+    "file": "tests/hooks/useSalesHistoryMacro.product-filter.test.ts",
+    "name": "preserva a chave global literal e agrega ambas as fontes sem product_id"
+   },
+   {
+    "file": "tests/hooks/useSalesHistoryMacro.product-filter.test.ts",
+    "name": "mantém entrada vazia %j no cache global"
+   },
+   {
+    "file": "tests/hooks/useSalesHistoryMacro.product-filter.test.ts",
+    "name": "normaliza o produto e filtra as duas fontes antes de range, mantendo data e ordem"
+   },
+   {
+    "file": "tests/hooks/useSalesHistoryMacro.product-filter.test.ts",
+    "name": "separa produtos A/B no mesmo cache e reutiliza A sem misturar os totais de B"
+   },
+   {
+    "file": "tests/hooks/useSalesHistoryMacro.product-filter.test.ts",
+    "name": "pagina 1001 linhas de cada fonte depois do filtro e conserva todos os totais"
+   },
+   {
+    "file": "tests/hooks/useSalesHistoryMacro.product-filter.test.ts",
+    "name": "intersecta produto e IDs do vendedor em ambas as fontes no escopo self"
+   },
+   {
+    "file": "tests/hooks/useSalesHistoryMacro.product-filter.test.ts",
+    "name": "não transforma vendedor sem documentos em consulta global de itens"
    },
    {
     "file": "tests/hooks/useScroll.test.ts",
@@ -282695,6 +283002,38 @@
     "name": "rejects malformed success payloads and propagates database errors"
    },
    {
+    "file": "tests/lib/kit-builder-draft-preservation.test.ts",
+    "name": "Kit persistence preserves versioned partial metadata"
+   },
+   {
+    "file": "tests/lib/kit-builder-draft-preservation.test.ts",
+    "name": "editing only the name retains all existing draft fields and unknown JSON"
+   },
+   {
+    "file": "tests/lib/kit-builder-draft-preservation.test.ts",
+    "name": "absent known context fields preserve their old values"
+   },
+   {
+    "file": "tests/lib/kit-builder-draft-preservation.test.ts",
+    "name": "explicit empty notes and client clear only the intended known values"
+   },
+   {
+    "file": "tests/lib/kit-builder-draft-preservation.test.ts",
+    "name": "changing known context fields keeps unrelated future metadata"
+   },
+   {
+    "file": "tests/lib/kit-builder-draft-preservation.test.ts",
+    "name": "legacy metadata without a version becomes version1 while preserving fields"
+   },
+   {
+    "file": "tests/lib/kit-builder-draft-preservation.test.ts",
+    "name": "unsupported draft namespace %j is never replaced with an empty object"
+   },
+   {
+    "file": "tests/lib/kit-builder-draft-preservation.test.ts",
+    "name": "unsupported explicit version %j never gets silently downgraded"
+   },
+   {
     "file": "tests/lib/kit-builder-persistence.test.ts",
     "name": "Kit Maker persistence snapshot"
    },
@@ -282997,6 +283336,26 @@
    {
     "file": "tests/lib/kit-item-sort.test.ts",
     "name": "does not mutate the input array"
+   },
+   {
+    "file": "tests/lib/kit-read-draft-production-shapes.test.ts",
+    "name": "toSavedKitSnapshot — formatos de produção"
+   },
+   {
+    "file": "tests/lib/kit-read-draft-production-shapes.test.ts",
+    "name": "personalization_data = {} hidrata com personalização desligada"
+   },
+   {
+    "file": "tests/lib/kit-read-draft-production-shapes.test.ts",
+    "name": "personalization_data só com items preserva os itens e desliga a caixa"
+   },
+   {
+    "file": "tests/lib/kit-read-draft-production-shapes.test.ts",
+    "name": "personalization_data nulo continua equivalente ao vazio"
+   },
+   {
+    "file": "tests/lib/kit-read-draft-production-shapes.test.ts",
+    "name": "caixa de personalização com enabled inválido continua recusada (não descarta em silêncio)"
    },
    {
     "file": "tests/lib/logger.test.ts",
@@ -430927,7 +431286,7 @@
   },
   "src/components/intelligence/SalesOverviewChart.tsx": {
    "path": "src/components/intelligence/SalesOverviewChart.tsx",
-   "lines": 271,
+   "lines": 272,
    "exports": [
     "function SalesOverviewChart"
    ],
@@ -432657,7 +433016,7 @@
   },
   "src/components/kit-builder/BoxSelector.tsx": {
    "path": "src/components/kit-builder/BoxSelector.tsx",
-   "lines": 1273,
+   "lines": 1260,
    "exports": [
     "function BoxSelector"
    ],
@@ -432763,8 +433122,26 @@
      "value": "incompatible",
      "kind": "compara"
     }
+   ]
+  },
+  "src/components/kit-builder/BoxSelector.types.ts": {
+   "path": "src/components/kit-builder/BoxSelector.types.ts",
+   "lines": 29,
+   "exports": [
+    "type BoxSortMode",
+    "type BoxViewMode",
+    "interface BoxSelectorProps"
    ],
-   "doc": "Box Selector Seletor de caixa/embalagem para o kit com filtros avançados"
+   "enums": [
+    {
+     "name": "BoxSortMode",
+     "values": "occupancy | price | score"
+    },
+    {
+     "name": "BoxViewMode",
+     "values": "grid | list"
+    }
+   ]
   },
   "src/components/kit-builder/DiscontinuedItemsAlert.tsx": {
    "path": "src/components/kit-builder/DiscontinuedItemsAlert.tsx",
@@ -432810,18 +433187,24 @@
    "exports": [
     "function StockBadge",
     "function ItemCard"
-   ],
-   "doc": "Item Card Card individual para exibir um item disponível no kit"
+   ]
   },
   "src/components/kit-builder/ItemSelector.tsx": {
    "path": "src/components/kit-builder/ItemSelector.tsx",
-   "lines": 590,
+   "lines": 559,
    "exports": [
     "function ItemSelector"
    ],
-   "doc": "Item Selector Seletor de itens para compor o kit (refatorado)",
    "temporal": [
     "setTimeout(() => setLastError(null), 3000);"
+   ]
+  },
+  "src/components/kit-builder/ItemSelector.types.ts": {
+   "path": "src/components/kit-builder/ItemSelector.types.ts",
+   "lines": 35,
+   "exports": [
+    "interface ItemWithCompatibility",
+    "interface ItemSelectorProps"
    ]
   },
   "src/components/kit-builder/KitAIPromptDialog.tsx": {
@@ -432904,7 +433287,7 @@
   },
   "src/components/kit-builder/KitHeroPricingCard.tsx": {
    "path": "src/components/kit-builder/KitHeroPricingCard.tsx",
-   "lines": 86,
+   "lines": 88,
    "exports": [
     "function KitHeroPricingCard"
    ],
@@ -432969,11 +433352,10 @@
   },
   "src/components/kit-builder/KitMobileSummaryBar.tsx": {
    "path": "src/components/kit-builder/KitMobileSummaryBar.tsx",
-   "lines": 88,
+   "lines": 91,
    "exports": [
     "function KitMobileSummaryBar"
-   ],
-   "doc": "Mobile Sticky Bottom Summary Shows price/volume/weight at-a-glance and opens a drawer with full sidebar content."
+   ]
   },
   "src/components/kit-builder/KitOccasionSelector.tsx": {
    "path": "src/components/kit-builder/KitOccasionSelector.tsx",
@@ -433014,11 +433396,10 @@
   },
   "src/components/kit-builder/KitPresentablePreview.tsx": {
    "path": "src/components/kit-builder/KitPresentablePreview.tsx",
-   "lines": 211,
+   "lines": 215,
    "exports": [
     "function KitPresentablePreview"
-   ],
-   "doc": "Kit Presentable Preview — client-facing proposal view Renders the kit as a visual presentation card with narrative, items grid, and pricing summary."
+   ]
   },
   "src/components/kit-builder/KitShortcutsDialog.tsx": {
    "path": "src/components/kit-builder/KitShortcutsDialog.tsx",
@@ -433060,7 +433441,7 @@
   },
   "src/components/kit-builder/KitSummary.tsx": {
    "path": "src/components/kit-builder/KitSummary.tsx",
-   "lines": 318,
+   "lines": 323,
    "exports": [
     "function shouldRenderKitStockForecast",
     "function KitSummary"
@@ -433087,7 +433468,6 @@
     "`totalWeight` soma apenas os pesos conhecidos (nunca assume 0 para um",
     "`<aside>` acima é ocultado inteiro pela regra genérica de impressão"
    ],
-   "doc": "Kit Summary — Refactored orchestrator Sub-components extracted to ./kit-summary/",
    "calc_fns": [
     {
      "name": "shouldRenderKitStockForecast",
@@ -433253,14 +433633,14 @@
   },
   "src/components/kit-builder/kit-summary/KitActionsBar.tsx": {
    "path": "src/components/kit-builder/kit-summary/KitActionsBar.tsx",
-   "lines": 89,
+   "lines": 94,
    "exports": [
     "function KitActionsBar"
    ]
   },
   "src/components/kit-builder/kit-summary/KitCompositionCard.tsx": {
    "path": "src/components/kit-builder/kit-summary/KitCompositionCard.tsx",
-   "lines": 234,
+   "lines": 235,
    "exports": [
     "function KitCompositionCard"
    ],
@@ -433283,7 +433663,7 @@
   },
   "src/components/kit-builder/kit-summary/KitPricingCard.tsx": {
    "path": "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
-   "lines": 154,
+   "lines": 163,
    "exports": [
     "function KitPricingCard"
    ]
@@ -433330,7 +433710,7 @@
   },
   "src/components/kit-library/KitCard.tsx": {
    "path": "src/components/kit-library/KitCard.tsx",
-   "lines": 265,
+   "lines": 288,
    "exports": [
     "interface KitCardData",
     "function KitCard"
@@ -449897,7 +450277,7 @@
   },
   "src/hooks/intelligence/useSalesHistoryMacro.ts": {
    "path": "src/hooks/intelligence/useSalesHistoryMacro.ts",
-   "lines": 307,
+   "lines": 310,
    "exports": [
     "function useSalesHistoryMacro"
    ],
@@ -450554,7 +450934,7 @@
   },
   "src/hooks/kit-builder/useKitAutoSave.ts": {
    "path": "src/hooks/kit-builder/useKitAutoSave.ts",
-   "lines": 436,
+   "lines": 446,
    "exports": [
     "interface BackupFullState",
     "function useKitAutoSave"
@@ -450570,7 +450950,8 @@
     "saveToDb usa apenas deps estaveis -- nao recria a cada mudanca de kitState/onKitIdCreated",
     "A slow network must not allow overlapping autosaves with the same",
     "A retry must recover the frozen operation first. If the user edited",
-    "NOTA: sem cleanup aqui -- o timer deve sobreviver a re-renders intermedios."
+    "NOTA: sem cleanup aqui -- o timer deve sobreviver a re-renders intermedios.",
+    "elapsed. A confirmed clean snapshot must not overwrite an old backup."
    ],
    "doc": "Kit Auto-Save Hook Saves kit state automatically with debounce (5 seconds). Only triggers after the user has made meaningful changes. BUG-11 FIX: usar refs para dependencias instaveis (kitState, kitQuantity, onKitIdCreated) para que saveToDb nao seja recriado a cada render do pai. Timer de 5s isolad …",
    "hooks": [
@@ -450579,7 +450960,7 @@
   },
   "src/hooks/kit-builder/useKitBuilder.ts": {
    "path": "src/hooks/kit-builder/useKitBuilder.ts",
-   "lines": 774,
+   "lines": 714,
    "exports": [
     "function useKitBuilder"
    ],
@@ -450589,25 +450970,25 @@
    ],
    "rule_comments": [
     "Estado do wizard. The journey must be explicit: inferring it from the",
-    "Weight validation",
     "Items-first is a supported journey. Changing the packaging must not",
     "Selecting a variant already present in this kit must combine the"
    ],
-   "doc": "Kit Builder Hook Gerencia o estado completo do montador de kits Queries are isolated in useKitBuilderQueries to prevent React fiber corruption.",
    "hooks": [
     "useKitBuilder"
    ]
   },
   "src/hooks/kit-builder/useKitBuilderPageState.ts": {
    "path": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-   "lines": 563,
+   "lines": 546,
    "exports": [
     "function isKitMakerLandingRoute",
     "function useKitBuilderPageState"
    ],
    "errors": [
     "Adicione uma caixa ou item antes de salvar o kit.",
+    "Defina a quantidade do rascunho antes de salvar ou criar um orçamento.",
     "Este produto não possui preço comercial disponível para o kit.",
+    "Informe uma quantidade inteira maior que zero.",
     "O rascunho do kit está em um formato inválido."
    ],
    "hooks": [
@@ -459291,6 +459672,16 @@
     }
    ]
   },
+  "src/lib/json-value.ts": {
+   "path": "src/lib/json-value.ts",
+   "lines": 18,
+   "exports": [
+    "function serializeJsonValue"
+   ],
+   "errors": [
+    "Serialized value is not valid JSON."
+   ]
+  },
   "src/lib/latency-percentiles.ts": {
    "path": "src/lib/latency-percentiles.ts",
    "lines": 12,
@@ -460182,6 +460573,19 @@
     "formatTooltipCurrency",
     "should format BRL correctly",
     "should return "
+   ]
+  },
+  "src/lib/__tests__/json-value.test.ts": {
+   "path": "src/lib/__tests__/json-value.test.ts",
+   "lines": 105,
+   "is_test": true,
+   "tests": [
+    "serializeJsonValue preserves the native JSON contract",
+    "$name",
+    "rejects a circular object",
+    "rejects a circular array",
+    "preserves custom serialization failures",
+    "does not reevaluate source getters while validating the serialized result"
    ]
   },
   "src/lib/__tests__/latency-percentiles.test.ts": {
@@ -463975,7 +464379,7 @@
   },
   "src/lib/kit-builder/ai-composition.ts": {
    "path": "src/lib/kit-builder/ai-composition.ts",
-   "lines": 164,
+   "lines": 166,
    "exports": [
     "function resolveKitAICompositions"
    ],
@@ -464082,7 +464486,7 @@
   },
   "src/lib/kit-builder/persistence.ts": {
    "path": "src/lib/kit-builder/persistence.ts",
-   "lines": 124,
+   "lines": 217,
    "exports": [
     "type PersistedCustomKit",
     "interface KitDraftClient",
@@ -464097,7 +464501,9 @@
    ],
    "errors": [
     "A revisão atual do kit é obrigatória para salvar alterações.",
-    "O banco retornou uma revisão de kit inválida."
+    "A versão dos dados deste rascunho não é suportada. Os dados originais foram preservados.",
+    "O banco retornou uma revisão de kit inválida.",
+    "O formato dos dados deste rascunho não é suportado. Os dados originais foram preservados."
    ],
    "status_values": [
     {
@@ -464117,7 +464523,8 @@
     }
    ],
    "rule_comments": [
-    "* Selo exibido na biblioteca: só published/shared são \"Publicado\"; `ready` é apenas válido. */"
+    "* Selo exibido na biblioteca: só published/shared são \"Publicado\"; `ready` é apenas válido. */",
+    "Empty is an explicit clear. A different client must not inherit another"
    ]
   },
   "src/lib/kit-builder/price-calculator.ts": {
@@ -464172,9 +464579,20 @@
     }
    ]
   },
+  "src/lib/kit-builder/pricing-availability.ts": {
+   "path": "src/lib/kit-builder/pricing-availability.ts",
+   "lines": 34,
+   "exports": [
+    "function hasKnownKitPrice",
+    "function hasKnownKitPrices",
+    "function formatKitLinePrice",
+    "function resolveKitCatalogPrice",
+    "const KIT_UNKNOWN_PRICE_MESSAGE"
+   ]
+  },
   "src/lib/kit-builder/types.ts": {
    "path": "src/lib/kit-builder/types.ts",
-   "lines": 391,
+   "lines": 395,
    "exports": [
     "type KitType",
     "interface KitBox",
@@ -464223,6 +464641,16 @@
     "dedicated journey column; it must never be inferred from the current step."
    ],
    "doc": "Kit Builder Types Tipos para o sistema de montagem de kits de brindes"
+  },
+  "src/lib/kit-builder/validate-composition.ts": {
+   "path": "src/lib/kit-builder/validate-composition.ts",
+   "lines": 92,
+   "exports": [
+    "function getKitValidationErrors"
+   ],
+   "rule_comments": [
+    "Weight validation"
+   ]
   },
   "src/lib/kit-builder/volume-calculator.ts": {
    "path": "src/lib/kit-builder/volume-calculator.ts",
@@ -464324,12 +464752,73 @@
     "não mantém os arquivos abandonados no src"
    ]
   },
+  "src/lib/kit-builder/snapshot/read-draft.ts": {
+   "path": "src/lib/kit-builder/snapshot/read-draft.ts",
+   "lines": 221,
+   "exports": [
+    "function toSavedKitSnapshot"
+   ],
+   "zod": [
+    {
+     "name": "snapshotNumber",
+     "kind": "number",
+     "body": "",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "snapshotDimension",
+     "kind": "number",
+     "body": "",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "itemPersonalizationSnapshotSchema",
+     "kind": "object",
+     "body": "{ enabled: z.boolean(), techniqueId: z.string().optional(), techniqueName: z.string().optional(), techniqueCode: z.string().optional(), colors: snapshotNumber.optional(), width: snapshotNumber.optional(), height: snapshotNumber.optional(), positionCode: z.string().optional(), positionName: z.string().optional(), position: z.string().optional(), artworkUrl: z.string().optional(), generatedMockupUrl: z.string().optional(), artworkColors: z.array(z.string()).optional(), estimatedPrice: snapshotNumber.optional(), setupCost: snapshotNumber.optional(), totalPrice: snapshotNumber.optional(), pricedQuantity: snapshotNumber.optional(), }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "personalizationSnapshotSchema",
+     "kind": "object",
+     "body": "{ box: itemPersonalizationSnapshotSchema.default({ enabled: false }), items: z.record(z.string(), itemPersonalizationSnapshotSchema).default({}), }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "boxSnapshotSchema",
+     "kind": "object",
+     "body": "{ id: z.string(), name: z.string(), sku: z.string(), imageUrl: z.string().nullable(), price: snapshotNumber, priceKnown: z.boolean().optional(), internalWidth: snapshotDimension, internalHeight: snapshotDimension, internalDepth: snapshotDimension, internalVolume: snapshotDimension, dimensionsKnown: z.boolean().optional(), boxType: z.string().optional(), color: z.string().optional(), material: z.string().optional(), materials: z.array(z.string()).optional(), finish: z.string().optional(), weight: snapshotNumber.optional(), maxWeight: snapshotNumber.optional(), }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "itemSnapshotSchema",
+     "kind": "object",
+     "body": "{ id: z.string(), name: z.string(), sku: z.string(), imageUrl: z.string().nullable(), price: snapshotNumber, priceKnown: z.boolean().optional(), width: snapshotDimension, height: snapshotDimension, depth: snapshotDimension, volume: snapshotDimension, quantity: z.number().int().positive().safe(), lineId: z.string().optional(), dimensionsKnown: z.boolean().optional(), weight: snapshotNumber.optional(), stock: snapshotNumber.nullable().optional(), category: z.string().optional(), material: z.string().optional(), selectedColor: z .object({ name: z.string(), hex: z.string().optional() }) .passthrough() .optional(), selectedVariantId: z.string().optional(), selectedSize: z.string().optional(), isOptional: z.boolean().optional(), isReplaceable: z.boolean().optional(), isPackaging: z.boolean().opt …",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "items",
+     "kind": "array",
+     "body": "itemSnapshotSchema",
+     "refines": [],
+     "chain": []
+    }
+   ]
+  },
   "src/lib/kit-library/buildCustomKitInsert.ts": {
    "path": "src/lib/kit-library/buildCustomKitInsert.ts",
-   "lines": 42,
+   "lines": 87,
    "exports": [
     "type CustomKitInsertPayload",
     "function buildCustomKitInsert"
+   ],
+   "rule_comments": [
+    "unused id/revision/timestamps are required merely to duplicate a draft."
    ],
    "doc": "buildCustomKitInsert — Helper tipado para construir payloads de insert/update em custom_kits. Remove a necessidade de `as never` em chamadas Supabase."
   },
@@ -469903,7 +470392,7 @@
   },
   "src/pages/bi/CommercialIntelligencePage.tsx": {
    "path": "src/pages/bi/CommercialIntelligencePage.tsx",
-   "lines": 324,
+   "lines": 317,
    "exports": [
     "function CommercialIntelligencePage"
    ],
@@ -469913,7 +470402,7 @@
    "calc_fns": [
     {
      "name": "applySubstitute",
-     "params": "key: FilterKey, value: { id: string; name: string },",
+     "params": "key: FilterKey, value: { id: string; name: string }",
      "body": "captureUndoSnapshot(); beginPendingAction('apply_substitute', key); setFilters((prev) => { if (key === 'category') return { ...prev, categoryId: value.id, categoryName: value.name }; if (key === 'supplier') return { ...prev, supplierId: value.id, supplierName: value.name }; return { ...prev, productId: value.id, productName: value.name }; });"
     }
    ]
@@ -470359,11 +470848,12 @@
   },
   "src/pages/kit-builder/KitBuilderPage.tsx": {
    "path": "src/pages/kit-builder/KitBuilderPage.tsx",
-   "lines": 423,
+   "lines": 477,
    "exports": [
     "function KitBuilderPage"
    ],
    "errors": [
+    "\n              className=",
     "Alterações não salvas detectadas",
     "Edições não salvas de outro kit",
     "Kit atualizado em outro dispositivo"
@@ -509409,6 +509899,16 @@
     "does not neutralize an invisible element that belongs to an open overlay"
    ]
   },
+  "tests/components/SalesOverviewChart.product-filter.test.tsx": {
+   "path": "tests/components/SalesOverviewChart.product-filter.test.tsx",
+   "lines": 24,
+   "is_test": true,
+   "tests": [
+    "SalesOverviewChart forwards actual product scope to the paginated data hook",
+    "preserves global and product behavior for %s",
+    "preserves the original default days and global query without a product prop"
+   ]
+  },
   "tests/components/SidebarReorganized.test.tsx": {
    "path": "tests/components/SidebarReorganized.test.tsx",
    "lines": 123,
@@ -510665,12 +511165,31 @@
     "keeps small catalogues in the complete DOM and virtualizes larger catalogues"
    ]
   },
+  "tests/components/kit-builder/financial-availability.test.tsx": {
+   "path": "tests/components/kit-builder/financial-availability.test.tsx",
+   "lines": 181,
+   "is_test": true,
+   "tests": [
+    "Financial availability is visible without inventing zero prices",
+    "keeps unknown items selectable in the %s card",
+    "shows both unknown boxes and their factual labels rather than removing them",
+    "does not show a ready badge or partial money total in the hero",
+    "keeps composition metadata while showing unknown per-line and total prices",
+    "does not generate a money breakdown or quantity discount from unknown prices",
+    "uses the same honest values in the printable presentation",
+    "blocks PDF, quote, draft persistence and WhatsApp while prices are unknown",
+    "keeps existing markup and actions for a genuine known zero"
+   ]
+  },
   "tests/components/kit-library/KitCard.test.tsx": {
    "path": "tests/components/kit-library/KitCard.test.tsx",
-   "lines": 122,
+   "lines": 192,
    "is_test": true,
    "tests": [
     "KitCard",
+    "shows historical unknown values honestly and keeps the draft actions available",
+    "distinguishes a known numerical zero from an unknown value",
+    "does not format a non-finite price %s as money",
     "renders the canonical cover image when the saved kit has one",
     "keeps action controls available when it falls back to a color-only card",
     "shows ",
@@ -511165,10 +511684,11 @@
   },
   "tests/components/pages/KitBuilderPage.test.tsx": {
    "path": "tests/components/pages/KitBuilderPage.test.tsx",
-   "lines": 412,
+   "lines": 465,
    "is_test": true,
    "errors": [
-    "${name}.${prop} não foi passado"
+    "${name}.${prop} não foi passado",
+    ")).toHaveTextContent("
    ],
    "tests": [
     "KitBuilderPage",
@@ -511195,7 +511715,11 @@
     "Ctrl+S salva, Ctrl+Z desfaz, Ctrl+Shift+Z e Ctrl+Y refazem",
     "sem Ctrl/Cmd nada acontece",
     "em campo de texto só Ctrl+S funciona",
-    "remove o listener ao desmontar"
+    "remove o listener ao desmontar",
+    "preserva a tela existente para quantidade já verificada",
+    "pede confirmação explícita do preset para quantidade histórica ausente sem chamar salvar",
+    "bloqueia a edição durante a hidratação do snapshot",
+    "mantém o erro original e a biblioteca acessível sem regravar rascunho inválido"
    ]
   },
   "tests/components/pages/MagicUp.test.tsx": {
@@ -517932,6 +518456,20 @@
     "logLoginAttempt invoca a edge function correta"
    ]
   },
+  "tests/hooks/useKitAutoSave.validation-recovery.test.tsx": {
+   "path": "tests/hooks/useKitAutoSave.validation-recovery.test.tsx",
+   "lines": 171,
+   "is_test": true,
+   "tests": [
+    "Canonical autosave preserves failed validation as a recoverable unsaved draft",
+    "surfaces invalid metadata %j without rejection, write, downgrade or lost unload backup",
+    "retains the latest unsaved edit after a failed API operation consumed its timer",
+    "a successful supported edit clears the error and does not create a new unload backup",
+    "a transport retry preserves the exact payload and idempotency key before marking clean",
+    "explicit cancel alone keeps recovery data until manual save is acknowledged",
+    "hydration without an edit produces neither a write nor an unload backup"
+   ]
+  },
   "tests/hooks/useKitBuilder-extended.test.ts": {
    "path": "tests/hooks/useKitBuilder-extended.test.ts",
    "lines": 178,
@@ -517981,6 +518519,24 @@
    "tests": [
     "Kit Maker route mode",
     "leaves landing mode when a cloned kit or direct product appears in the URL"
+   ]
+  },
+  "tests/hooks/useKitBuilderPageState.snapshot.test.tsx": {
+   "path": "tests/hooks/useKitBuilderPageState.snapshot.test.tsx",
+   "lines": 245,
+   "is_test": true,
+   "tests": [
+    "Saved raw nullable draft parsing is non-destructive",
+    "preserves complete object extras and every operational field",
+    "null %s uses a view preset without mutating raw",
+    "null %s remains null raw but restores an empty selection in view",
+    "missing item %s fails the whole snapshot without dropping the item",
+    "malformed item fields %j cause a repairable failure without mutation",
+    "malformed array entry %j is never silently filtered out",
+    "box with invalid operational/known fields %j fails without manufacturing numbers",
+    "invalid personalization %j retains raw for repair",
+    "unknown metadata and valid full personalization prices remain intact",
+    "hydrating valid data never backfills UI presets or writes before a user edit"
    ]
   },
   "tests/hooks/useKitBuilderQueries.contract.test.ts": {
@@ -518641,6 +519197,21 @@
    "tests": [
     "useSalesGoals",
     "should return sales goals state and functions"
+   ]
+  },
+  "tests/hooks/useSalesHistoryMacro.product-filter.test.ts": {
+   "path": "tests/hooks/useSalesHistoryMacro.product-filter.test.ts",
+   "lines": 330,
+   "is_test": true,
+   "tests": [
+    "useSalesHistoryMacro — filtro opcional por produto",
+    "preserva a chave global literal e agrega ambas as fontes sem product_id",
+    "mantém entrada vazia %j no cache global",
+    "normaliza o produto e filtra as duas fontes antes de range, mantendo data e ordem",
+    "separa produtos A/B no mesmo cache e reutiliza A sem misturar os totais de B",
+    "pagina 1001 linhas de cada fonte depois do filtro e conserva todos os totais",
+    "intersecta produto e IDs do vendedor em ambas as fontes no escopo self",
+    "não transforma vendedor sem documentos em consulta global de itens"
    ]
   },
   "tests/hooks/useScroll.test.ts": {
@@ -520542,6 +521113,21 @@
     "rejects malformed success payloads and propagates database errors"
    ]
   },
+  "tests/lib/kit-builder-draft-preservation.test.ts": {
+   "path": "tests/lib/kit-builder-draft-preservation.test.ts",
+   "lines": 118,
+   "is_test": true,
+   "tests": [
+    "Kit persistence preserves versioned partial metadata",
+    "editing only the name retains all existing draft fields and unknown JSON",
+    "absent known context fields preserve their old values",
+    "explicit empty notes and client clear only the intended known values",
+    "changing known context fields keeps unrelated future metadata",
+    "legacy metadata without a version becomes version1 while preserving fields",
+    "unsupported draft namespace %j is never replaced with an empty object",
+    "unsupported explicit version %j never gets silently downgraded"
+   ]
+  },
   "tests/lib/kit-builder-persistence.test.ts": {
    "path": "tests/lib/kit-builder-persistence.test.ts",
    "lines": 100,
@@ -520646,6 +521232,18 @@
     "moves compatible items ahead of incompatible ones while keeping relative order stable",
     "treats a missing compatibility result as fitting (pending validation, not excluded)",
     "does not mutate the input array"
+   ]
+  },
+  "tests/lib/kit-read-draft-production-shapes.test.ts": {
+   "path": "tests/lib/kit-read-draft-production-shapes.test.ts",
+   "lines": 47,
+   "is_test": true,
+   "tests": [
+    "toSavedKitSnapshot — formatos de produção",
+    "personalization_data = {} hidrata com personalização desligada",
+    "personalization_data só com items preserva os itens e desliga a caixa",
+    "personalization_data nulo continua equivalente ao vazio",
+    "caixa de personalização com enabled inválido continua recusada (não descarta em silêncio)"
    ]
   },
   "tests/lib/logger.test.ts": {
@@ -529965,10 +530563,57 @@
   }
  },
  "git": {
-  "sha": "36b6c1d7dc3209b9fef439c287f8bf4817c63e80",
+  "sha": "e998b09560497e91422f9f63a014bdfd87a25a80",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e998b09",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(kit): rascunhos de kit salvos sem personalização voltam a abrir (resgate cirúrgico da #3390) (#3631)",
+    "files": [
+     "docs/coordenacao/conflitos-semanticos.md",
+     "src/components/intelligence/SalesOverviewChart.tsx",
+     "src/components/kit-builder/BoxSelector.tsx",
+     "src/components/kit-builder/BoxSelector.types.ts",
+     "src/components/kit-builder/ItemCard.tsx",
+     "src/components/kit-builder/ItemSelector.tsx",
+     "src/components/kit-builder/ItemSelector.types.ts",
+     "src/components/kit-builder/KitHeroPricingCard.tsx",
+     "src/components/kit-builder/KitMobileSummaryBar.tsx",
+     "src/components/kit-builder/KitPresentablePreview.tsx",
+     "src/components/kit-builder/KitSummary.tsx",
+     "src/components/kit-builder/kit-summary/KitActionsBar.tsx",
+     "src/components/kit-builder/kit-summary/KitCompositionCard.tsx",
+     "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
+     "src/components/kit-library/KitCard.tsx",
+     "src/hooks/intelligence/useSalesHistoryMacro.ts",
+     "src/hooks/kit-builder/useKitAutoSave.ts",
+     "src/hooks/kit-builder/useKitBuilder.ts",
+     "src/hooks/kit-builder/useKitBuilderPageState.ts",
+     "src/lib/__tests__/json-value.test.ts",
+     "src/lib/json-value.ts",
+     "src/lib/kit-builder/ai-composition.ts",
+     "src/lib/kit-builder/persistence.ts",
+     "src/lib/kit-builder/pricing-availability.ts",
+     "src/lib/kit-builder/snapshot/read-draft.ts",
+     "src/lib/kit-builder/types.ts",
+     "src/lib/kit-builder/validate-composition.ts",
+     "src/lib/kit-library/buildCustomKitInsert.ts",
+     "src/pages/bi/CommercialIntelligencePage.tsx",
+     "src/pages/kit-builder/KitBuilderPage.tsx",
+     "tests/components/SalesOverviewChart.product-filter.test.tsx",
+     "tests/components/kit-builder/financial-availability.test.tsx",
+     "tests/components/kit-library/KitCard.test.tsx",
+     "tests/components/pages/KitBuilderPage.test.tsx",
+     "tests/hooks/useKitAutoSave.validation-recovery.test.tsx",
+     "tests/hooks/useKitBuilderPageState.snapshot.test.tsx",
+     "tests/hooks/useSalesHistoryMacro.product-filter.test.ts",
+     "tests/lib/kit-builder-draft-preservation.test.ts",
+     "tests/lib/kit-read-draft-production-shapes.test.ts"
+    ]
+   },
    {
     "sha": "36b6c1d",
     "date": "2026-11-14",
@@ -530220,19 +530865,12 @@
     "author": "Claude",
     "subject": "Merge remote-tracking branch 'origin/claude/fix-csp-vaul-trava-rolagem-supersede-3531-261114-0208' into claude/trem2-front-limpeza-261114-1850",
     "files": []
-   },
-   {
-    "sha": "d83a313",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850",
-    "files": []
    }
   ],
   "hot_files": [
    [
     "docs/coordenacao/conflitos-semanticos.md",
-    6
+    7
    ],
    [
     ".security/policies-baseline.json",
@@ -530251,63 +530889,63 @@
     2
    ],
    [
-    "docs/security/2026-11-14-schema-net-exposto.md",
+    "src/components/intelligence/SalesOverviewChart.tsx",
     1
    ],
    [
-    "src/hooks/products/useProductsLightweight.ts",
+    "src/components/kit-builder/BoxSelector.tsx",
     1
    ],
    [
-    "src/lib/external-db/products-lightweight.ts",
+    "src/components/kit-builder/BoxSelector.types.ts",
     1
    ],
    [
-    "docs/faxina-261114/01-auditoria-branches-excluidas.md",
+    "src/components/kit-builder/ItemCard.tsx",
     1
    ],
    [
-    "docs/faxina-261114/02-prova-211-branches.tsv",
+    "src/components/kit-builder/ItemSelector.tsx",
     1
    ],
    [
-    "docs/faxina-261114/03-branches-excluidas-com-sha.tsv",
+    "src/components/kit-builder/ItemSelector.types.ts",
     1
    ],
    [
-    "docs/faxina-261114/04-prova-profunda-19-casos.txt",
+    "src/components/kit-builder/KitHeroPricingCard.tsx",
     1
    ],
    [
-    "docs/faxina-261114/06-prova-prs-supersedidas-trem2.tsv",
+    "src/components/kit-builder/KitMobileSummaryBar.tsx",
     1
    ],
    [
-    "docs/faxina-261114/README.md",
+    "src/components/kit-builder/KitPresentablePreview.tsx",
     1
    ],
    [
-    ".github/workflows/db-apply-migration.yml",
+    "src/components/kit-builder/KitSummary.tsx",
     1
    ],
    [
-    "scripts/drift-baseline.mjs",
+    "src/components/kit-builder/kit-summary/KitActionsBar.tsx",
     1
    ],
    [
-    "supabase/baseline/20261015140000_ledger_versions.json",
+    "src/components/kit-builder/kit-summary/KitCompositionCard.tsx",
     1
    ],
    [
-    "supabase/migrations/20261113225000_sec_revoke_anon_authenticated_net_supabase_functions.sql",
+    "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
     1
    ],
    [
-    "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql",
+    "src/components/kit-library/KitCard.tsx",
     1
    ],
    [
-    "supabase/migrations/20261114014500_p09_reconcile_ledger_schema_migrations.sql",
+    "src/hooks/intelligence/useSalesHistoryMacro.ts",
     1
    ]
   ]

@@ -6183,6 +6183,7 @@
   ],
   "src/components/kit-builder/BoxSelector.tsx": [
    "src/components/kit-builder/BoxComparisonDialog.tsx",
+   "src/components/kit-builder/BoxSelector.types.ts",
    "src/components/kit-builder/FavoriteToggleButton.tsx",
    "src/components/kit-builder/KitCardSkeleton.tsx",
    "src/components/ui/badge.tsx",
@@ -6196,7 +6197,11 @@
    "src/components/ui/select.tsx",
    "src/components/ui/slider.tsx",
    "src/lib/kit-builder/index.ts",
+   "src/lib/kit-builder/pricing-availability.ts",
    "src/lib/utils.ts"
+  ],
+  "src/components/kit-builder/BoxSelector.types.ts": [
+   "src/lib/kit-builder/index.ts"
   ],
   "src/components/kit-builder/DiscontinuedItemsAlert.tsx": [
    "src/components/ui/badge.tsx",
@@ -6231,14 +6236,15 @@
    "src/components/ui/card.tsx",
    "src/components/ui/tooltip.tsx",
    "src/lib/kit-builder/index.ts",
+   "src/lib/kit-builder/pricing-availability.ts",
    "src/lib/utils.ts"
   ],
   "src/components/kit-builder/ItemSelector.tsx": [
    "src/components/kit-builder/ItemCard.tsx",
+   "src/components/kit-builder/ItemSelector.types.ts",
    "src/components/kit-builder/KitCardSkeleton.tsx",
    "src/components/kit-builder/KitSmartSuggestions.tsx",
    "src/components/kit-builder/SelectedItemsBadges.tsx",
-   "src/components/kit-builder/VariantSelector.tsx",
    "src/components/kit-builder/VirtualizedKitItemList.tsx",
    "src/components/ui/alert-dialog.tsx",
    "src/components/ui/badge.tsx",
@@ -6248,6 +6254,11 @@
    "src/components/ui/select.tsx",
    "src/components/ui/switch.tsx",
    "src/hooks/kit-builder/index.ts",
+   "src/lib/kit-builder/index.ts",
+   "src/lib/kit-builder/pricing-availability.ts"
+  ],
+  "src/components/kit-builder/ItemSelector.types.ts": [
+   "src/components/kit-builder/VariantSelector.tsx",
    "src/lib/kit-builder/index.ts"
   ],
   "src/components/kit-builder/KitAIPromptDialog.tsx": [
@@ -6350,6 +6361,7 @@
    "src/components/ui/badge.tsx",
    "src/components/ui/drawer.tsx",
    "src/lib/kit-builder/index.ts",
+   "src/lib/kit-builder/pricing-availability.ts",
    "src/lib/utils.ts"
   ],
   "src/components/kit-builder/KitOccasionSelector.tsx": [
@@ -6376,7 +6388,8 @@
    "src/components/ui/badge.tsx",
    "src/components/ui/card.tsx",
    "src/components/ui/separator.tsx",
-   "src/lib/kit-builder/index.ts"
+   "src/lib/kit-builder/index.ts",
+   "src/lib/kit-builder/pricing-availability.ts"
   ],
   "src/components/kit-builder/KitShortcutsDialog.tsx": [
    "src/components/ui/dialog.tsx"
@@ -6414,7 +6427,8 @@
    "src/components/ui/card.tsx",
    "src/components/ui/textarea.tsx",
    "src/hooks/kit-builder/index.ts",
-   "src/lib/kit-builder/index.ts"
+   "src/lib/kit-builder/index.ts",
+   "src/lib/kit-builder/pricing-availability.ts"
   ],
   "src/components/kit-builder/KitTemplates.tsx": [
    "src/components/ui/badge.tsx",
@@ -6508,7 +6522,8 @@
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
    "src/components/ui/tooltip.tsx",
-   "src/lib/kit-builder/index.ts"
+   "src/lib/kit-builder/index.ts",
+   "src/lib/kit-builder/pricing-availability.ts"
   ],
   "src/components/kit-builder/kit-summary/KitIdentificationCard.tsx": [
    "src/components/kit-builder/KitIdentityPicker.tsx",
@@ -6522,6 +6537,7 @@
    "src/components/ui/separator.tsx",
    "src/components/ui/tabs.tsx",
    "src/lib/kit-builder/index.ts",
+   "src/lib/kit-builder/pricing-availability.ts",
    "src/lib/utils.ts"
   ],
   "src/components/kit-builder/kit-summary/KitStatsCards.tsx": [
@@ -10420,13 +10436,16 @@
    "src/hooks/kit-builder/useKitBuilderQueries.ts",
    "src/hooks/kit-builder/useKitUndoRedo.ts",
    "src/lib/kit-builder/index.ts",
-   "src/lib/kit-builder/types.ts"
+   "src/lib/kit-builder/types.ts",
+   "src/lib/kit-builder/validate-composition.ts"
   ],
   "src/hooks/kit-builder/useKitBuilderPageState.ts": [
    "src/components/kit-builder/KitOccasionSelector.tsx",
+   "src/contexts/AuthContext.tsx",
    "src/hooks/kit-builder/index.ts",
    "src/lib/db/postgrest.ts",
    "src/lib/kit-builder/index.ts",
+   "src/lib/kit-builder/snapshot/read-draft.ts",
    "src/lib/kit-builder/types.ts",
    "src/lib/logger.ts",
    "src/pages/kit-builder/useKitBuilderQuote.ts"
@@ -11781,8 +11800,12 @@
   "src/lib/inventory/supplier-reliability/score.ts": [
    "src/lib/inventory/supplier-reliability/types.ts"
   ],
+  "src/lib/json-value.ts": [
+   "src/integrations/supabase/types.ts"
+  ],
   "src/lib/kit-builder/ai-composition.ts": [
    "src/lib/kit-builder/box-recommendations.ts",
+   "src/lib/kit-builder/pricing-availability.ts",
    "src/lib/kit-builder/types.ts"
   ],
   "src/lib/kit-builder/box-recommendations.ts": [
@@ -11806,17 +11829,34 @@
   "src/lib/kit-builder/persistence.ts": [
    "src/integrations/supabase/client.ts",
    "src/integrations/supabase/types.ts",
+   "src/lib/json-value.ts",
+   "src/lib/kit-builder/pricing-availability.ts",
    "src/lib/kit-builder/types.ts"
   ],
   "src/lib/kit-builder/price-calculator.ts": [
    "src/lib/format.ts",
    "src/lib/kit-builder/types.ts"
   ],
+  "src/lib/kit-builder/pricing-availability.ts": [
+   "src/lib/format.ts",
+   "src/lib/kit-builder/types.ts"
+  ],
+  "src/lib/kit-builder/snapshot/read-draft.ts": [
+   "src/integrations/supabase/types.ts",
+   "src/lib/kit-builder/types.ts",
+   "src/pages/kit-builder/useKitBuilderQuote.ts"
+  ],
+  "src/lib/kit-builder/validate-composition.ts": [
+   "src/lib/kit-builder/pricing-availability.ts",
+   "src/lib/kit-builder/types.ts",
+   "src/lib/kit-builder/volume-calculator.ts"
+  ],
   "src/lib/kit-builder/volume-calculator.ts": [
    "src/lib/kit-builder/types.ts"
   ],
   "src/lib/kit-library/buildCustomKitInsert.ts": [
-   "src/hooks/kit-builder/index.ts"
+   "src/integrations/supabase/types.ts",
+   "src/lib/json-value.ts"
   ],
   "src/lib/lazyWithRetry.ts": [
    "src/components/layout/SkeletonLoaders.tsx",
@@ -13115,7 +13155,8 @@
    "src/components/ui/card.tsx",
    "src/hooks/kit-builder/index.ts",
    "src/hooks/kit-builder/useKitWizardShortcuts.ts",
-   "src/lib/kit-builder/index.ts"
+   "src/lib/kit-builder/index.ts",
+   "src/lib/kit-builder/pricing-availability.ts"
   ],
   "src/pages/kit-builder/KitLibraryPage.tsx": [
    "src/components/kit-library/KitCard.tsx",

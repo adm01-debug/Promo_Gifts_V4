@@ -18,13 +18,13 @@
    "src/components (75)"
   ],
   "servicos_logica": [
-   "src/lib (223)",
+   "src/lib (227)",
    "src/utils (30)",
    "src/services (9)"
   ],
   "testes": [
-   "tests/ (1002)",
-   "co-localizado (__tests__) (636)",
+   "tests/ (1009)",
+   "co-localizado (__tests__) (637)",
    "e2e/ (627)"
   ],
   "edge_functions": "supabase/functions",
@@ -43,7 +43,7 @@
  "nomenclatura": {
   "componentes": "PascalCase (95%)",
   "hooks": "use + PascalCase",
-  "servicos": "kebab-case (52%)",
+  "servicos": "kebab-case (53%)",
   "edge_functions": "kebab-case (99%)",
   "tabelas": "snake_case (86%)"
  },
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(kit): rascunhos de kit salvos sem personalização voltam a abrir (resgate cirúrgico da #3390) (#3631)",
    "fix(security): corrige o sha256 do retrato de policies (destrava o CI) (#3635)",
    "fix(security): sincroniza o retrato de policies com producao apos as 6 migracoes (#3634)",
    "fix(migrations): declara o rollback da 20261114170845 e documenta o schema net exposto na API pública (#3628)",
-   "Merge pull request #3630 from adm01-debug/claude/trem4-front-perf-261114-2020",
-   "Merge branch 'main' into claude/trem4-front-perf-261114-2020"
+   "Merge pull request #3630 from adm01-debug/claude/trem4-front-perf-261114-2020"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
