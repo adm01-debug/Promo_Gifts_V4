@@ -1,6 +1,8 @@
 /**
  * useMedallionHealth — observabilidade do pipeline Medallion (Bronze→Prata→Ouro)
- * lida diretamente das views Ouro de monitoramento do SSOT:
+ * lida das views Ouro de monitoramento do SSOT via RPC `fn_dev_medallion_health`
+ * (SECURITY DEFINER, só papel dev — as views não têm SELECT para authenticated
+ * desde 20260716192234; migration 20261112120300):
  *
  *   - vw_medallion_coverage: cobertura de enriquecimento por fornecedor/camada
  *     (NCM, materiais, tags, meta, IPI, descrição, categoria, display_name)
@@ -10,11 +12,8 @@
  * Consumido pelo MedallionPipelineCard em /system/status.
  */
 import { useQuery } from '@tanstack/react-query';
-import {
-  goldFrom,
-  type MedallionCoverageRow,
-  type PipelineProgressRow,
-} from '@/integrations/supabase/gold';
+import type { MedallionCoverageRow, PipelineProgressRow } from '@/integrations/supabase/gold';
+import { untypedRpc } from '@/lib/supabase-untyped';
 
 export interface MedallionHealth {
   coverage: MedallionCoverageRow[];
@@ -22,17 +21,13 @@ export interface MedallionHealth {
 }
 
 async function fetchMedallionHealth(): Promise<MedallionHealth> {
-  const [coverageRes, progressRes] = await Promise.all([
-    goldFrom('vw_medallion_coverage').select('*').order('fornecedor', { ascending: true }),
-    goldFrom('v_pipeline_progress').select('*').order('fase', { ascending: true }),
-  ]);
+  const { data, error } = await untypedRpc('fn_dev_medallion_health');
+  if (error) throw new Error(error.message);
 
-  if (coverageRes.error) throw new Error(coverageRes.error.message);
-  if (progressRes.error) throw new Error(progressRes.error.message);
-
+  const payload = (data ?? {}) as Partial<MedallionHealth>;
   return {
-    coverage: (coverageRes.data ?? []) as unknown as MedallionCoverageRow[],
-    progress: (progressRes.data ?? []) as unknown as PipelineProgressRow[],
+    coverage: payload.coverage ?? [],
+    progress: payload.progress ?? [],
   };
 }
 
