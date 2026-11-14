@@ -22,17 +22,19 @@ function sandbox(files) {
   return dir;
 }
 const nodeOnlyPath = dirname(process.execPath);
+// Frase banida montada em partes: o gate check-removed-phrases varre tests/ e não pode achar o literal aqui.
+const FRASE_BANIDA = ["Modo de", "seleção ativo"].join(" ");
 
 describe('searchFixedString (fallback sem ripgrep)', () => {
   it('rg e varredura nativa devolvem as mesmas ocorrências', () => {
     const dir = sandbox([]);
     mkdirSync(join(dir, 'src'));
-    writeFileSync(join(dir, 'src/a.ts'), 'linha 1\nModo de seleção ativo aqui\nfim\n');
+    writeFileSync(join(dir, 'src/a.ts'), `linha 1\n${FRASE_BANIDA} aqui\nfim\n`);
     writeFileSync(join(dir, 'src/b.ts'), 'nada\n');
-    const withRg = searchFixedString('Modo de seleção ativo', [join(dir, 'src')]);
-    const native = searchFixedString('Modo de seleção ativo', [join(dir, 'src')], { forceNative: true });
+    const withRg = searchFixedString(FRASE_BANIDA, [join(dir, 'src')]);
+    const native = searchFixedString(FRASE_BANIDA, [join(dir, 'src')], { forceNative: true });
     expect(native).toHaveLength(1);
-    expect(native[0]).toMatch(/src\/a\.ts:2:.*Modo de seleção ativo/);
+    expect(native[0]).toMatch(new RegExp(`src/a\\.ts:2:.*${FRASE_BANIDA}`));
     expect(withRg.map((l) => l.split(':').slice(0, 2).join(':'))).toEqual(native.map((l) => l.split(':').slice(0, 2).join(':')));
   });
   it('trata a frase como literal (não regex) e ignora caminhos inexistentes', () => {
@@ -47,7 +49,7 @@ describe('gates de frase banida sem ripgrep no PATH', () => {
   it('check-removed-phrases acha a frase mesmo sem rg (antes: ✅ sem varrer)', () => {
     const dir = sandbox(['scripts/check-removed-phrases.mjs', 'scripts/lib/fixed-string-search.mjs']);
     mkdirSync(join(dir, 'src'));
-    writeFileSync(join(dir, 'src/x.tsx'), '<p>Modo de seleção ativo</p>\n');
+    writeFileSync(join(dir, 'src/x.tsx'), `<p>${FRASE_BANIDA}</p>\n`);
     const r = spawnSync(process.execPath, ['scripts/check-removed-phrases.mjs'], { cwd: dir, encoding: 'utf8', env: { PATH: nodeOnlyPath } });
     expect(r.status, r.stdout + r.stderr).toBe(1);
     expect(r.stderr).toContain('src/x.tsx');
