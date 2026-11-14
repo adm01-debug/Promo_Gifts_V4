@@ -6,7 +6,7 @@
 |---|---|---|---|---|---|---|---|---|
 | anon | não | não | não | não | não | -1 | statement_timeout=3s, idle_in_transaction_session_timeout=30000 |  |
 | authenticated | não | não | não | não | não | -1 | statement_timeout=30s, idle_in_transaction_session_timeout=60000 |  |
-| authenticator | não | sim | não | não | não | -1 | session_preload_libraries=safeupdate, statement_timeout=30s, lock_timeout=8s, idle_in_transaction_session_timeout=60000, idle_session_timeout=600000 | anon, authenticated, service_role |
+| authenticator | não | sim | não | não | não | -1 | session_preload_libraries=safeupdate, statement_timeout=30s, lock_timeout=8s, idle_in_transaction_session_timeout=60000, idle_session_timeout=0 | anon, authenticated, service_role |
 | cli_login_postgres | não | sim | não | não | não | -1 |  | postgres |
 | dashboard_user | não | não | não | sim | sim | -1 |  |  |
 | pgbouncer | não | sim | não | não | não | -1 |  |  |

@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-14 04:24 UTC
+
+- **migrations** adicionado (1): `20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener`
+- **roles** alterado (1): `authenticator`
+
 ## 2026-11-14 02:56 UTC
 
 - **indexes** adicionado (1): `public.idx_products_active_created_at_desc`

@@ -235998,6 +235998,12 @@
         "statements": 3,
         "statements_sha": "e04f4c60c09e7f98",
         "version": "20261113235000"
+      },
+      {
+        "name": "fix_authenticator_idle_session_timeout_pgrst_listener",
+        "statements": 1,
+        "statements_sha": "fdc507d1eb24e555",
+        "version": "20261114040000"
       }
     ],
     "policies": [
@@ -248720,7 +248726,7 @@
           "statement_timeout=30s",
           "lock_timeout=8s",
           "idle_in_transaction_session_timeout=60000",
-          "idle_session_timeout=600000"
+          "idle_session_timeout=0"
         ],
         "conn_limit": -1,
         "create_db": false,

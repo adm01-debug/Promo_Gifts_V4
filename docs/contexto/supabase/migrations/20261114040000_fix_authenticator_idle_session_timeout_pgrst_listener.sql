@@ -1,0 +1,21 @@
+-- Rollback: supabase/rollbacks/20261114040000_rollback.sql
+-- Causa raiz das quedas periódicas da Data API (rest/auth UNHEALTHY, 503 PGRST002/PGRST003) a cada ~10 min.
+--
+-- 20260524211024 (colapso fase 2) fez `ALTER ROLE authenticator SET idle_session_timeout = '600000'` para matar
+-- conexões zumbi do PostgREST. Efeito colateral: a conexão LISTEN do PostgREST no canal "pgrst" fica ociosa por
+-- definição e é encerrada a cada 10 min. A cada queda o PostgREST reabre o pool e RECARREGA o schema cache inteiro
+-- (588 relações, 1.074 funções) — 12–72 s de consulta pesada ao catálogo numa instância Small, período em que a API
+-- responde 503 e o pool estoura (PGRST003). Logs do PostgREST (analytics, 2026-11-14):
+--   03:23:07 FATAL: terminating connection due to idle-session timeout → Failed listening ... → 03:25:54 Schema cache queried in 47791.6 ms
+--   03:33:26 FATAL ... idle-session timeout → 03:33:59 Schema cache queried in 23312.7 ms
+--   03:43:34 FATAL ... idle-session timeout → 03:46:55 Schema cache queried in 72852.4 ms (+ dezenas de PGRST002/PGRST003)
+--   03:54:44 FATAL ... idle-session timeout → 03:55:12 Schema cache queried in 12821.5 ms
+-- Sondagem de saúde no mesmo período: rest=UNHEALTHY em 03:11, 03:15, 03:19–03:27, 03:40–03:51.
+--
+-- Correção mínima: só o papel do PostgREST deixa de ter idle_session_timeout. O pool do PostgREST já fecha
+-- conexões ociosas sozinho (PostgREST 14.5, `db_pool_max_idletime=30` s e `db_pool_max_lifetime=1800` s em
+-- `GET /v1/projects/…/postgrest`), então o problema original (conexões paradas por dias) não volta;
+-- só a conexão LISTEN fica viva, que é o comportamento esperado. Precisa ser `= 0` explícito: um RESET cairia no
+-- `ALTER DATABASE postgres SET idle_session_timeout = '600000'` de 20260525132458 e o problema continuaria.
+-- service_role, anon, authenticated e o nível DATABASE ficam como estão.
+ALTER ROLE authenticator SET idle_session_timeout = 0
