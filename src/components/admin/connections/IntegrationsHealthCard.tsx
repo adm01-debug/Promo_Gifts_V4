@@ -23,6 +23,7 @@ import {
   Bot,
   Database,
   Minus,
+  Trash2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toErrorMessage } from '@/lib/to-error-message';
@@ -30,6 +31,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { useCredentialsSourceFilter, resolveSource } from './CredentialsSourceFilterContext';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import type { SecretStatus } from '@/hooks/admin';
 import { invokeEdge } from '@/lib/edge/safeInvokeCall';
 
@@ -46,6 +48,37 @@ interface HealthData {
   lastAutoTestAt: string | null;
   autoTestOkLastHour: number;
   autoTestFailLastHour: number;
+}
+
+interface PendingDestructiveCounts {
+  retryCandidates: number;
+  oldLogs: number;
+}
+
+/** Contagem só-leitura p/ compor a mensagem de confirmação do retry/limpeza reais. */
+async function fetchPendingDestructiveCounts(): Promise<PendingDestructiveCounts> {
+  const sinceLastHour = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+  const [{ count: retryCandidates }, { count: oldOutbound }, { count: oldInbound }] =
+    await Promise.all([
+      supabase
+        .from('webhook_deliveries')
+        .select('id', { count: 'exact', head: true })
+        .eq('success', false)
+        .gte('delivered_at', sinceLastHour),
+      supabase
+        .from('webhook_deliveries')
+        .select('id', { count: 'exact', head: true })
+        .lt('delivered_at', ninetyDaysAgo),
+      supabase
+        .from('inbound_webhook_events')
+        .select('id', { count: 'exact', head: true })
+        .lt('received_at', ninetyDaysAgo),
+    ]);
+  return {
+    retryCandidates: retryCandidates ?? 0,
+    oldLogs: (oldOutbound ?? 0) + (oldInbound ?? 0),
+  };
 }
 
 async function fetchHealth(): Promise<HealthData> {
@@ -236,6 +269,10 @@ export function IntegrationsHealthCard({ secrets = [] }: { secrets?: SecretStatu
   // BUG-HEAD-GUARD FIX (2026-06-23): 5 HEAD requests sem JWT validado.
   const { rolesLoaded, isAdmin } = useAuth();
   const [auditing, setAuditing] = useState(false);
+  const [runningRealActions, setRunningRealActions] = useState(false);
+  const [realActionsConfirmOpen, setRealActionsConfirmOpen] = useState(false);
+  const [pendingDestructiveCounts, setPendingDestructiveCounts] =
+    useState<PendingDestructiveCounts | null>(null);
   const { setFilter } = useCredentialsSourceFilter();
   const sourceCounts = useMemo(() => {
     let db = 0,
@@ -283,6 +320,38 @@ export function IntegrationsHealthCard({ secrets = [] }: { secrets?: SecretStatu
     }
   };
 
+  // P0 (QA): "Rodar auditoria" é só leitura por padrão (edge function não chama mais
+  // as RPCs reais sem confirmação). Reenviar webhooks falhados e apagar logs antigos
+  // só acontece via este fluxo, com confirmação explícita do usuário sobre o impacto.
+  const handleOpenRealActionsConfirm = async () => {
+    setRunningRealActions(true);
+    try {
+      const counts = await fetchPendingDestructiveCounts();
+      setPendingDestructiveCounts(counts);
+      setRealActionsConfirmOpen(true);
+    } catch (err) {
+      toast.error(`Falha ao calcular impacto: ${toErrorMessage(err)}`);
+    } finally {
+      setRunningRealActions(false);
+    }
+  };
+
+  const handleConfirmRealActions = async () => {
+    setRunningRealActions(true);
+    try {
+      const { error } = await invokeEdge('connections-hub-audit', {
+        body: { confirm: true, action: 'retry_and_cleanup' },
+      });
+      if (error) throw new Error(error.message);
+      toast.success('Retry de webhooks e limpeza de logs executados.');
+      refetch();
+    } catch (err) {
+      toast.error(`Falha ao executar: ${toErrorMessage(err)}`);
+    } finally {
+      setRunningRealActions(false);
+    }
+  };
+
   const successTone =
     data?.successRate24h === null
       ? 'default'
@@ -295,191 +364,222 @@ export function IntegrationsHealthCard({ secrets = [] }: { secrets?: SecretStatu
   const failingTone = (data?.failingConnections ?? 0) > 0 ? 'destructive' : 'success';
 
   return (
-    <Card className="border-primary/10">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Activity className="h-4 w-4 text-primary" aria-hidden="true" />
-            Saúde das Integrações
-          </CardTitle>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleAudit}
-              disabled={auditing}
-              className="h-7 text-xs"
-            >
-              {auditing ? (
-                <Loader2 className="h-3 w-3 animate-spin" />
-              ) : (
-                <ShieldCheck className="h-3 w-3" />
-              )}
-              Rodar auditoria
-            </Button>
-            <button
-              type="button"
-              onClick={() => refetch()}
-              className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
-              aria-label="Atualizar saúde das integrações"
-            >
-              <RefreshCw className={cn('h-3 w-3', isFetching && 'animate-spin')} />
-              {isFetching ? 'Atualizando…' : 'Auto 60s'}
-            </button>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        {data && (data.staleSecrets > 0 || data.autoDisabledWebhooks > 0) && (
-          <div className="flex flex-wrap gap-2">
-            {data.staleSecrets > 0 && (
-              <div className="flex items-center gap-2 rounded-md border border-warning/20 bg-warning/10 px-3 py-1.5 text-xs text-warning">
-                <AlertTriangle className="h-3 w-3" />
-                {data.staleSecrets} {data.staleSecrets === 1 ? 'credencial' : 'credenciais'} sem
-                rotação há &gt;90 dias
-              </div>
-            )}
-            {data.autoDisabledWebhooks > 0 && (
-              <div className="flex items-center gap-2 rounded-md border border-destructive/20 bg-destructive/10 px-3 py-1.5 text-xs text-destructive">
-                <AlertTriangle className="h-3 w-3" />
-                {data.autoDisabledWebhooks} webhook(s) desativados pelo circuit breaker
-              </div>
-            )}
-          </div>
-        )}
-        {isLoading || !data ? (
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-20 animate-pulse rounded-lg bg-muted/30" />
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-            <Metric
-              icon={Webhook}
-              label="Webhooks ativos"
-              value={`${data.activeWebhooks}/${data.totalWebhooks}`}
-              tone={data.activeWebhooks > 0 ? 'success' : 'default'}
-            />
-            <Metric
-              icon={CheckCircle2}
-              label={`Sucesso 24h (${data.totalDeliveries24h} envios)`}
-              value={data.successRate24h === null ? '—' : `${data.successRate24h.toFixed(1)}%`}
-              tone={successTone}
-              badge={
-                data.successRate24h !== null && (
-                  <StatusBadge
-                    tone={
-                      successTone === 'success'
-                        ? 'success'
-                        : successTone === 'warning'
-                          ? 'warning'
-                          : 'destructive'
-                    }
-                  >
-                    {successTone === 'success'
-                      ? 'OK'
-                      : successTone === 'warning'
-                        ? 'Atenção'
-                        : 'Crítico'}
-                  </StatusBadge>
-                )
-              }
-            />
-            <Metric
-              icon={Clock}
-              label="Última entrega bem-sucedida"
-              value={
-                data.lastSuccessAt
-                  ? formatDistanceToNow(new Date(data.lastSuccessAt), {
-                      locale: ptBR,
-                      addSuffix: true,
-                    })
-                  : 'Nunca'
-              }
-            />
-            <Metric
-              icon={AlertTriangle}
-              label="Conexões com falha"
-              value={String(data.failingConnections)}
-              tone={failingTone}
-              badge={
-                data.failingConnections > 0 ? (
-                  <StatusBadge tone="destructive">Verificar</StatusBadge>
+    <>
+      <ConfirmDialog
+        open={realActionsConfirmOpen}
+        onOpenChange={setRealActionsConfirmOpen}
+        variant="destructive"
+        title="Reenviar webhooks e apagar logs antigos?"
+        description={`Isso vai reenviar até ${pendingDestructiveCounts?.retryCandidates ?? 0} webhook(s) falhado(s) na última hora e apagar ${pendingDestructiveCounts?.oldLogs ?? 0} log(s) de webhook com mais de 90 dias. Ação real em sistemas externos e no banco, sem volta.`}
+        confirmLabel="Executar"
+        cancelLabel="Cancelar"
+        onConfirm={handleConfirmRealActions}
+        loading={runningRealActions}
+        testId="connections-hub-real-actions-confirm"
+      />
+      <Card className="border-primary/10">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Activity className="h-4 w-4 text-primary" aria-hidden="true" />
+              Saúde das Integrações
+            </CardTitle>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleAudit}
+                disabled={auditing}
+                className="h-7 text-xs"
+                title="Verificação somente leitura — não reenvia webhooks nem apaga logs"
+              >
+                {auditing ? (
+                  <Loader2 className="h-3 w-3 animate-spin" />
                 ) : (
-                  <StatusBadge tone="success">OK</StatusBadge>
-                )
-              }
-            />
-            <Metric
-              icon={KeyRound}
-              label="Chaves MCP usadas (24h)"
-              value={String(data.mcpKeysUsed24h)}
-              tone={data.mcpKeysUsed24h > 0 ? 'success' : 'default'}
-            />
-          </div>
-        )}
-        {sourceCounts.total > 0 && (
-          <div className="flex flex-wrap items-center gap-2 border-t border-border/40 pt-1 text-[11px]">
-            <span className="text-muted-foreground">Origem das credenciais:</span>
-            <SourceCountChip
-              icon={Database}
-              tone="success"
-              count={sourceCounts.db}
-              label="no banco"
-              onClick={() => setFilter('db')}
-            />
-            <SourceCountChip
-              icon={AlertTriangle}
-              tone="warning"
-              count={sourceCounts.env}
-              label={sourceCounts.env === 1 ? 'ainda em ENV' : 'ainda em ENV'}
-              onClick={() => setFilter('env')}
-              emphasize={sourceCounts.env > 0}
-            />
-            <SourceCountChip
-              icon={Minus}
-              tone="muted"
-              count={sourceCounts.none}
-              label={sourceCounts.none === 1 ? 'vazia' : 'vazias'}
-              onClick={() => setFilter('none')}
-            />
-            {sourceCounts.env > 0 && (
-              <span className="ml-1 text-warning">↳ recomendado migrar para o banco</span>
-            )}
-          </div>
-        )}
-        {data && (
-          <div className="flex items-center justify-between gap-2 border-t border-border/40 pt-1 text-[11px] text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5">
-              <Bot className="h-3 w-3" aria-hidden="true" />
-              Última auto-verificação:{' '}
-              <span className="tabular-nums text-foreground">
-                {data.lastAutoTestAt
-                  ? formatDistanceToNow(new Date(data.lastAutoTestAt), {
-                      locale: ptBR,
-                      addSuffix: true,
-                    })
-                  : 'aguardando 1ª execução'}
-              </span>
-            </span>
-            {data.autoTestOkLastHour + data.autoTestFailLastHour > 0 && (
-              <span className="tabular-nums">
-                Última hora:{' '}
-                <span className="font-medium text-success">{data.autoTestOkLastHour} OK</span>
-                {data.autoTestFailLastHour > 0 && (
-                  <>
-                    {' · '}
-                    <span className="font-medium text-destructive">
-                      {data.autoTestFailLastHour} falha{data.autoTestFailLastHour === 1 ? '' : 's'}
-                    </span>
-                  </>
+                  <ShieldCheck className="h-3 w-3" />
                 )}
-              </span>
-            )}
+                Rodar auditoria
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleOpenRealActionsConfirm}
+                disabled={runningRealActions}
+                className="h-7 text-xs"
+                title="Ação real: reenvia webhooks falhados e apaga logs antigos (pede confirmação)"
+              >
+                {runningRealActions ? (
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                ) : (
+                  <Trash2 className="h-3 w-3" />
+                )}
+                Retry + limpeza real
+              </Button>
+              <button
+                type="button"
+                onClick={() => refetch()}
+                className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+                aria-label="Atualizar saúde das integrações"
+              >
+                <RefreshCw className={cn('h-3 w-3', isFetching && 'animate-spin')} />
+                {isFetching ? 'Atualizando…' : 'Auto 60s'}
+              </button>
+            </div>
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {data && (data.staleSecrets > 0 || data.autoDisabledWebhooks > 0) && (
+            <div className="flex flex-wrap gap-2">
+              {data.staleSecrets > 0 && (
+                <div className="flex items-center gap-2 rounded-md border border-warning/20 bg-warning/10 px-3 py-1.5 text-xs text-warning">
+                  <AlertTriangle className="h-3 w-3" />
+                  {data.staleSecrets} {data.staleSecrets === 1 ? 'credencial' : 'credenciais'} sem
+                  rotação há &gt;90 dias
+                </div>
+              )}
+              {data.autoDisabledWebhooks > 0 && (
+                <div className="flex items-center gap-2 rounded-md border border-destructive/20 bg-destructive/10 px-3 py-1.5 text-xs text-destructive">
+                  <AlertTriangle className="h-3 w-3" />
+                  {data.autoDisabledWebhooks} webhook(s) desativados pelo circuit breaker
+                </div>
+              )}
+            </div>
+          )}
+          {isLoading || !data ? (
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="h-20 animate-pulse rounded-lg bg-muted/30" />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+              <Metric
+                icon={Webhook}
+                label="Webhooks ativos"
+                value={`${data.activeWebhooks}/${data.totalWebhooks}`}
+                tone={data.activeWebhooks > 0 ? 'success' : 'default'}
+              />
+              <Metric
+                icon={CheckCircle2}
+                label={`Sucesso 24h (${data.totalDeliveries24h} envios)`}
+                value={data.successRate24h === null ? '—' : `${data.successRate24h.toFixed(1)}%`}
+                tone={successTone}
+                badge={
+                  data.successRate24h !== null && (
+                    <StatusBadge
+                      tone={
+                        successTone === 'success'
+                          ? 'success'
+                          : successTone === 'warning'
+                            ? 'warning'
+                            : 'destructive'
+                      }
+                    >
+                      {successTone === 'success'
+                        ? 'OK'
+                        : successTone === 'warning'
+                          ? 'Atenção'
+                          : 'Crítico'}
+                    </StatusBadge>
+                  )
+                }
+              />
+              <Metric
+                icon={Clock}
+                label="Última entrega bem-sucedida"
+                value={
+                  data.lastSuccessAt
+                    ? formatDistanceToNow(new Date(data.lastSuccessAt), {
+                        locale: ptBR,
+                        addSuffix: true,
+                      })
+                    : 'Nunca'
+                }
+              />
+              <Metric
+                icon={AlertTriangle}
+                label="Conexões com falha"
+                value={String(data.failingConnections)}
+                tone={failingTone}
+                badge={
+                  data.failingConnections > 0 ? (
+                    <StatusBadge tone="destructive">Verificar</StatusBadge>
+                  ) : (
+                    <StatusBadge tone="success">OK</StatusBadge>
+                  )
+                }
+              />
+              <Metric
+                icon={KeyRound}
+                label="Chaves MCP usadas (24h)"
+                value={String(data.mcpKeysUsed24h)}
+                tone={data.mcpKeysUsed24h > 0 ? 'success' : 'default'}
+              />
+            </div>
+          )}
+          {sourceCounts.total > 0 && (
+            <div className="flex flex-wrap items-center gap-2 border-t border-border/40 pt-1 text-[11px]">
+              <span className="text-muted-foreground">Origem das credenciais:</span>
+              <SourceCountChip
+                icon={Database}
+                tone="success"
+                count={sourceCounts.db}
+                label="no banco"
+                onClick={() => setFilter('db')}
+              />
+              <SourceCountChip
+                icon={AlertTriangle}
+                tone="warning"
+                count={sourceCounts.env}
+                label={sourceCounts.env === 1 ? 'ainda em ENV' : 'ainda em ENV'}
+                onClick={() => setFilter('env')}
+                emphasize={sourceCounts.env > 0}
+              />
+              <SourceCountChip
+                icon={Minus}
+                tone="muted"
+                count={sourceCounts.none}
+                label={sourceCounts.none === 1 ? 'vazia' : 'vazias'}
+                onClick={() => setFilter('none')}
+              />
+              {sourceCounts.env > 0 && (
+                <span className="ml-1 text-warning">↳ recomendado migrar para o banco</span>
+              )}
+            </div>
+          )}
+          {data && (
+            <div className="flex items-center justify-between gap-2 border-t border-border/40 pt-1 text-[11px] text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <Bot className="h-3 w-3" aria-hidden="true" />
+                Última auto-verificação:{' '}
+                <span className="tabular-nums text-foreground">
+                  {data.lastAutoTestAt
+                    ? formatDistanceToNow(new Date(data.lastAutoTestAt), {
+                        locale: ptBR,
+                        addSuffix: true,
+                      })
+                    : 'aguardando 1ª execução'}
+                </span>
+              </span>
+              {data.autoTestOkLastHour + data.autoTestFailLastHour > 0 && (
+                <span className="tabular-nums">
+                  Última hora:{' '}
+                  <span className="font-medium text-success">{data.autoTestOkLastHour} OK</span>
+                  {data.autoTestFailLastHour > 0 && (
+                    <>
+                      {' · '}
+                      <span className="font-medium text-destructive">
+                        {data.autoTestFailLastHour} falha
+                        {data.autoTestFailLastHour === 1 ? '' : 's'}
+                      </span>
+                    </>
+                  )}
+                </span>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </>
   );
 }
