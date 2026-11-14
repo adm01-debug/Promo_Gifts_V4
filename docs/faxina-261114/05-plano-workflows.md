@@ -1,5 +1,14 @@
 # PLANO DE WORKFLOWS — GitHub Actions / Promo_Gifts_V4
 
+> **Nota para quem editar este arquivo.** O caminho completo do `PR_COMMENT.md` aparece aqui
+> **quebrado de propósito** (nome do arquivo separado do diretório). O gate
+> `scripts/check-migration-path-references.mjs` varre `.md` e reprova qualquer referência a um
+> caminho sob `qa/migrations-draft/` que não exista no repositório — e esse arquivo justamente não
+> existe, é gerado em tempo de execução, que é o próprio assunto do item 96 deste documento.
+> Escrever o caminho junto faz este documento reprovar o CI de todas as PRs. Se precisar citá-lo
+> junto, use um glob (`*`) ou um placeholder (`<...>`), que o gate ignora.
+
+
 Consolidação da auditoria completa dos **99 workflows** (10 famílias A–J + F), cruzada com as 2 lentes
 céticas (dependências e cobertura). Base de disco: `main` + branch local
 `claude/infra-workflows-supersede-3525-261114-1740` (= main + PR #3525 + PR #3612).
@@ -154,7 +163,7 @@ pré-requisito; `(ref)` = proposta refutada por lente, veredito ajustado pela `a
 | 93 | `personalization-trace-diagnostics.yml` | **APOSENTAR** | Diagnóstico forense com IDs cravados; o artifact expira 2026-11-24 e `if-no-files-found: error` tornaria o job vermelho sozinho | nenhuma (e desnecessária) |
 | 94 | `bundle-size-report.yml` | FUNDIR | 2º `npm ci`+`npm run build` por PR (2.038 runs, 3,4 min) só para um markdown | Gate 1.6 (`deploy-gates.yml:743`) + §4.29 |
 | 95 | `url-state-unit.yml` | APOSENTAR* (ref) | Já apagado na supersede; lente: os 3 arquivos não rodam em nenhum workflow ativo e o destino está desativado | `static-checks.yml:143-152` **após Etapa 0** |
-| 96 | `drafts-index-check.yml` | **FUNDIR PARCIAL** (ref) | `check-index` cabe no static-checks, mas apagar/mover o arquivo **quebra o required check**: `.migration-refs-baseline.json` tem entrada para `:139` (`qa/migrations-draft/PR_COMMENT.md`) e `check-migration-path-references.mjs:190-198` sai 1 com entrada órfã (roda em `deploy-gates.yml:236`) | 3 steps → Gate 1.3/static-checks; **job `publish-status` fica no arquivo** |
+| 96 | `drafts-index-check.yml` | **FUNDIR PARCIAL** (ref) | `check-index` cabe no static-checks, mas apagar/mover o arquivo **quebra o required check**: `.migration-refs-baseline.json` tem entrada para `:139` (o arquivo `PR_COMMENT.md` dentro de `qa/migrations-draft/`) e `check-migration-path-references.mjs:190-198` sai 1 com entrada órfã (roda em `deploy-gates.yml:236`) | 3 steps → Gate 1.3/static-checks; **job `publish-status` fica no arquivo** |
 | 97 | `magazine-flakiness.yml` | MANTER | 25/25 verdes, semanal, única cobertura de `ringsOf`/`focusRingsOf` | nenhuma |
 | 98 | `magazine-mutation.yml` | OTIMIZAR | Mutation testing com mediana 31,5 min (máx 206) não é gate de PR — aplicar o precedente E81 | nenhuma |
 | 99 | `magazine-unit-tests.yml` | FUNDIR* (ref) | 5 jobs por paths largos (`src/hooks/auth/**`, `package.json`); lente: 3 dos 4 pedaços não têm destino ativo | §4.30 (3 etapas) |
@@ -518,8 +527,8 @@ Steps já existentes na supersede: `:85-88` (`node scripts/check-select-columns.
 - **FICA no arquivo:** o job `publish-status` (`:94-171`), com `PGHOST/PGPORT/PGUSER/PGPASSWORD/PGDATABASE`
   (`:117-124`) e o comentário em PR (`:130-154`). **Motivo (quebra dura do required check):**
   `.migration-refs-baseline.json` tem a entrada `{file: '.github/workflows/drafts-index-check.yml',
-  ref: 'qa/migrations-draft/PR_COMMENT.md'}`; a referência vive em `:139`
-  (`fs.readFileSync('qa/migrations-draft/PR_COMMENT.md')`) e `PR_COMMENT.md` **não existe** no repo
+  ref aponta para `PR_COMMENT.md` em `qa/migrations-draft/`}`; a referência vive em `:139`
+  (um `fs.readFileSync` desse mesmo arquivo) e `PR_COMMENT.md` **não existe** no repo
   (é gerado em runtime). `scripts/check-migration-path-references.mjs:190-198` sai 1 com entrada
   **órfã** e `:174-188` sai 1 com **nova** referência quebrada (mover para `recovery/` é igualmente
   fatal: `recovery` não está em `IGNORE_DIRS` `:40-44`). O script roda em `deploy-gates.yml:236`
