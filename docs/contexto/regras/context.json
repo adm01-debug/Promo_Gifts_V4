@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "5eae42bbb893393f33bb87559fa6a74414946428",
+  "sha": "cf64ee7ec533bbce64e947734730534cf709216a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 20:34 UTC",
+  "generated_at": "2026-11-14 20:51 UTC",
   "files_total": 10089,
   "code_files": 8617,
-  "code_lines": 1214728
+  "code_lines": 1214703
  },
  "version": "1.3.2",
- "facts_hash": "2769e3d500b30218",
+ "facts_hash": "d8a0f92764643d6c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -147808,7 +147808,7 @@
   {
    "module": "src/hooks",
    "files": 455,
-   "lines": 85730,
+   "lines": 85745,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -148095,7 +148095,7 @@
   {
    "module": "src/lib",
    "files": 327,
-   "lines": 50330,
+   "lines": 50290,
    "tables": [
     "...",
     "companies",
@@ -195249,7 +195249,7 @@
    {
     "file": "src/hooks/products/useProductsLightweight.ts",
     "name": "CATALOG_BATCH_PAGES",
-    "value": "4"
+    "value": "1"
    },
    {
     "file": "src/hooks/products/useProductsLightweight.ts",
@@ -195815,11 +195815,6 @@
     "file": "src/lib/external-db/products-lightweight.ts",
     "name": "LIGHTWEIGHT_MAX_CONCURRENCY",
     "value": "3"
-   },
-   {
-    "file": "src/lib/external-db/products-lightweight.ts",
-    "name": "LIGHTWEIGHT_MIN_SPLIT_PAGE_SIZE",
-    "value": "125"
    },
    {
     "file": "src/lib/external-db/products-lightweight.ts",
@@ -453217,7 +453212,7 @@
   },
   "src/hooks/products/useProductsLightweight.ts": {
    "path": "src/hooks/products/useProductsLightweight.ts",
-   "lines": 436,
+   "lines": 451,
    "exports": [
     "function mapLightweightToProduct",
     "const CATALOG_PAGE_SIZE",
@@ -453240,7 +453235,7 @@
     },
     {
      "name": "CATALOG_BATCH_PAGES",
-     "value": "4"
+     "value": "1"
     },
     {
      "name": "PRODUCT_SELECT_LIGHTWEIGHT",
@@ -462813,7 +462808,7 @@
   },
   "src/lib/external-db/products-lightweight.ts": {
    "path": "src/lib/external-db/products-lightweight.ts",
-   "lines": 278,
+   "lines": 238,
    "exports": [
     "interface LightweightProduct",
     "function fetchPromobrindProductsLightweight"
@@ -462826,10 +462821,6 @@
     {
      "name": "LIGHTWEIGHT_MAX_CONCURRENCY",
      "value": "3"
-    },
-    {
-     "name": "LIGHTWEIGHT_MIN_SPLIT_PAGE_SIZE",
-     "value": "125"
     },
     {
      "name": "LIGHTWEIGHT_MAX_TOTAL",
@@ -529914,10 +529905,21 @@
   }
  },
  "git": {
-  "sha": "5eae42bbb893393f33bb87559fa6a74414946428",
+  "sha": "cf64ee7ec533bbce64e947734730534cf709216a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "cf64ee7",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "perf(catalog): primeiro carregamento com 1 consulta em vez de 4, mantendo 500 produtos na tela (#3621)",
+    "files": [
+     "docs/coordenacao/conflitos-semanticos.md",
+     "src/hooks/products/useProductsLightweight.ts",
+     "src/lib/external-db/products-lightweight.ts"
+    ]
+   },
    {
     "sha": "5eae42b",
     "date": "2026-11-14",
@@ -530202,21 +530204,12 @@
     "files": [
      "docs/prod-readiness.md"
     ]
-   },
-   {
-    "sha": "371f52b",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "docs: prod-readiness com o estado do main final e73a88d e a #3600 (#3601)",
-    "files": [
-     "docs/prod-readiness.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/coordenacao/conflitos-semanticos.md",
-    4
+    5
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -530239,8 +530232,12 @@
     2
    ],
    [
-    "docs/prod-readiness.md",
-    2
+    "src/hooks/products/useProductsLightweight.ts",
+    1
+   ],
+   [
+    "src/lib/external-db/products-lightweight.ts",
+    1
    ],
    [
     "docs/faxina-261114/01-auditoria-branches-excluidas.md",
@@ -530288,10 +530285,6 @@
    ],
    [
     "supabase/migrations/20261114014500_p09_reconcile_ledger_schema_migrations.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261114031000_fix_user_known_devices_is_trusted.sql",
     1
    ]
   ]

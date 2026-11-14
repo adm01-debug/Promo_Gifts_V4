@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5eae42bbb8` · branch `main` · 2026-11-14 20:34 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `cf64ee7ec5` · branch `main` · 2026-11-14 20:51 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -5518,7 +5518,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MAX_PAGES` | `50` | `src/hooks/products/useProductsColorsBatch.ts` |
 | `NOVELTY_WINDOW_DAYS` | `30` | `src/hooks/products/useProductsLightweight.ts` |
 | `CATALOG_PAGE_SIZE` | `500` | `src/hooks/products/useProductsLightweight.ts` |
-| `CATALOG_BATCH_PAGES` | `4` | `src/hooks/products/useProductsLightweight.ts` |
+| `CATALOG_BATCH_PAGES` | `1` | `src/hooks/products/useProductsLightweight.ts` |
 | `PRODUCT_SELECT_LIGHTWEIGHT` | `'id, name, sku, supplier_reference, short_description, '` | `src/hooks/products/useProductsLightweight.ts` |
 | `MAX_RECENT_PRODUCTS` | `5` | `src/hooks/products/useRecentProducts.ts` |
 | `MAX_ITEMS` | `10` | `src/hooks/products/useRecentlyViewed.ts` |
@@ -5547,7 +5547,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `CACHE_TTL_MS` | `60` | `src/hooks/ui/useWorkspaceNotifications.tsx` |
 | `PREFETCH_MIN_INTERVAL_MS` | `5` | `src/hooks/ui/useWorkspaceNotifications.tsx` |
 | `CACHE_TTL_MS` | `12` | `src/hooks/voice/scribeTokenCache.ts` |
-| … +338 linhas — lista completa em `context.json` | | |
+| … +337 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 

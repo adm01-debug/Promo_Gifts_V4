@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5eae42bbb893393f33bb87559fa6a74414946428` (2026-11-14T17:32:58-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cf64ee7ec533bbce64e947734730534cf709216a` (2026-11-14T17:50:05-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 10161 |
 | arquivos_codigo | 5219 |
-| linhas_codigo | 996631 |
+| linhas_codigo | 996606 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -589,14 +589,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43326 nós · 74791 arestas · 2453 comunidades · grafo do commit `5eae42bb`
-- comunidades maiores: vitest (963), ref_components (668), react (540), ref_node_child_process (489), ref_hooks (409), @tanstack/react-query (397), ref_integrations (389), ref_utils (369), sonner (341), ref_types (331), scripts (302), ref_node_fs (301)
+- 43324 nós · 74786 arestas · 2448 comunidades · grafo do commit `cf64ee7e`
+- comunidades maiores: ref_components (826), ref_integrations (652), vitest (587), ref_node_child_process (486), react-router-dom (401), @tanstack/react-query (394), ref_hooks (392), @testing-library/react (361), ref_types (327), scripts (302), sonner (288), gotoAndSettle (285)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - RELATORIO_CI.md (64)
-- PENDENCIAS.md (55)
+- PENDENCIAS.md (54)
 - supabase/MIGRATIONS_SYNC_LOG.md (51)
 - package.json (30)
 - package-lock.json (21)
@@ -607,9 +607,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - .github/workflows/deploy-gates.yml (12)
 - CHANGELOG.md (12)
 - analise-branches/RELATORIO_BRANCHES.md (11)
+- docs/coordenacao/conflitos-semanticos.md (11)
 - src/hooks/kit-builder/useKitBuilderPageState.ts (11)
 - analise-prs/RELATORIO_PRS.md (10)
-- docs/coordenacao/conflitos-semanticos.md (10)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1184,6 +1184,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-14 `cf64ee7e` perf(catalog): primeiro carregamento com 1 consulta em vez de 4, mantendo 500 produtos na tela (#3621)
 - 2026-11-14 `5eae42bb` fix(migrations): destrava o CI — recibo das versões reconciliadas e correções no plano de workflows (#3629)
 - 2026-11-14 `7b327f93` docs(faxina): registra no repositório as provas da limpeza de 14/11 (#3623)
 - 2026-11-14 `4bb99641` infra(ci): db-apply-migration aplica migration sem gate de aprovação (#3620)
@@ -1198,7 +1199,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-14 `a3964b2b` Merge remote-tracking branch 'origin/claude/fix-csp-vaul-trava-rolagem-supersede-3531-261114-0208' into claude/trem2-fro
 - 2026-11-14 `d83a3137` Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850
 - 2026-11-14 `c9bc6774` test(e2e): specs de catálogo, estoque, kit, comparador e senha seguem a UI atual (#3617)
-- 2026-11-14 `1d9185ef` Merge remote-tracking branch 'origin/claude/chore-remove-external-db-dead-code-261114-0000' into claude/trem2-front-limp
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

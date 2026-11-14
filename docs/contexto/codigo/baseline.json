@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5eae42bbb893393f33bb87559fa6a74414946428",
+  "commit": "cf64ee7ec533bbce64e947734730534cf709216a",
   "branch": "main",
-  "data_commit": "2026-11-14T17:32:58-03:00",
+  "data_commit": "2026-11-14T17:50:05-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "cf64ee7e",
+    "data": "2026-11-14",
+    "assunto": "perf(catalog): primeiro carregamento com 1 consulta em vez de 4, mantendo 500 produtos na tela (#3621)"
+   },
    {
     "sha": "5eae42bb",
     "data": "2026-11-14",
@@ -126,14 +131,9 @@
     "sha": "0f0cf4c7",
     "data": "2026-11-14",
     "assunto": "fix(security): CSP libera o <style> do vaul e a trava de rolagem do Radix (supersede #3531 #3532)"
-   },
-   {
-    "sha": "ae9d8147",
-    "data": "2026-11-14",
-    "assunto": "fix(security): crm-db-bridge — erro de esquema não abre o disjuntor"
    }
   ],
-  "arquivos_mudados_7d": 2070,
+  "arquivos_mudados_7d": 2071,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 222
+    "mudancas": 223
    },
    {
     "pasta": "src/components/quotes",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 55
+    "mudancas": 54
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -246,15 +246,15 @@
     "mudancas": 11
    },
    {
+    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
+    "mudancas": 11
+   },
+   {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
     "mudancas": 11
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 10
-   },
-   {
-    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
     "mudancas": 10
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 463
+    "commits": 462
    },
    {
     "autor": "Claude",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10161,
   "arquivos_codigo": 5219,
-  "linhas_codigo": 996631,
+  "linhas_codigo": 996606,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1908,7 +1908,7 @@
   },
   "src/hooks": {
    "arquivos": 455,
-   "linhas": 85730
+   "linhas": 85745
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1916,7 +1916,7 @@
   },
   "src/lib": {
    "arquivos": 326,
-   "linhas": 50320
+   "linhas": 50280
   },
   "src/logic": {
    "arquivos": 4,
@@ -2694,7 +2694,7 @@
   },
   {
    "arquivo": "src/hooks/products/useProductsLightweight.ts",
-   "linha": 170,
+   "linha": 185,
    "tipo": "TODO",
    "texto": "produto da grade, neutralizando o re-rank/substring client-side por"
   },

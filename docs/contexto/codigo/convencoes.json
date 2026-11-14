@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "perf(catalog): primeiro carregamento com 1 consulta em vez de 4, mantendo 500 produtos na tela (#3621)",
    "fix(migrations): destrava o CI — recibo das versões reconciliadas e correções no plano de workflows (#3629)",
    "docs(faxina): registra no repositório as provas da limpeza de 14/11 (#3623)",
    "infra(ci): db-apply-migration aplica migration sem gate de aprovação (#3620)",
-   "Merge pull request #3619 from adm01-debug/claude/trem2-front-limpeza-261114-1850",
-   "Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850"
+   "Merge pull request #3619 from adm01-debug/claude/trem2-front-limpeza-261114-1850"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -11248,7 +11248,7 @@
     "useProductsCatalog",
     "useProductsLightweight"
    ],
-   "linhas": 436,
+   "linhas": 451,
    "dominio": "hooks/products",
    "tabelas": [],
    "rpcs": [
