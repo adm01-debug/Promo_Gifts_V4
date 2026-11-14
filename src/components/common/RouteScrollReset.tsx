@@ -11,6 +11,8 @@ import { notifyRouteChange } from '@/lib/telemetry/navigationMetrics';
  *
  * Regras:
  * - POP (back/forward) preserva o scroll do navegador.
+ * - Troca só de query string na mesma rota (ex.: `setSearchParams` de filtros)
+ *   não rola — só mudança de pathname conta como nova rota.
  * - Se a URL contem hash ancora (#id), respeita o destino e nao forca topo.
  * - Honra `prefers-reduced-motion` (fallback para `behavior: "auto"`).
  * - Skip no primeiro mount (evita interferir em deep-links com ancora).
@@ -25,8 +27,12 @@ export function RouteScrollReset() {
   const { pathname, hash } = useLocation();
   const navType = useNavigationType();
   const isFirstMount = useRef(true);
+  const prevPathnameRef = useRef(pathname);
 
   useEffect(() => {
+    const pathnameChanged = prevPathnameRef.current !== pathname;
+    prevPathnameRef.current = pathname;
+
     // Instrumentação leve — mede duração de troca de rota (Sentry tag `route_change`).
     notifyRouteChange(pathname);
 
@@ -39,6 +45,7 @@ export function RouteScrollReset() {
     }
     if (navType === NavigationType.Pop) return;
     if (hash) return;
+    if (!pathnameChanged) return;
 
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
