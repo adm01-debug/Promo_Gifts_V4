@@ -1,14 +1,8 @@
 name: Supplier Comparison CI
 
 on:
-  pull_request:
-    paths:
-      - 'src/hooks/products/useSupplierComparison.ts'
-      - 'src/components/compare/SupplierComparisonModal.tsx'
-      - 'tests/hooks/useSupplierComparison*'
-      - 'e2e/flows/supplier-comparison-visual.spec.ts'
-      - '.github/workflows/supplier-comparison.yml'
-
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
+  workflow_dispatch:
 permissions:
   contents: read
 

@@ -9,6 +9,7 @@ name: E2E — Visual Regression (Preview button)
 # E61: removido trigger [update-visual-baselines] por commit — risco de push automático em PR.
 
 on:
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   push:
     branches: [main]
     paths:
@@ -20,16 +21,6 @@ on:
       - 'e2e/visual/**'
       - '.github/workflows/e2e-visual-preview-button.yml'
       - 'scripts/check-visual-preview-suite.mjs'
-  pull_request:
-    branches: [main]
-    paths:
-      - 'src/pages/__visual/**'
-      - 'src/pages/quotes/QuoteViewPage.tsx'
-      - 'src/routes/AppRoutes.tsx'
-      - 'tailwind.config.ts'
-      - 'src/index.css'
-      - 'e2e/visual/**'
-      - '.github/workflows/e2e-visual-preview-button.yml'
   workflow_dispatch:
     inputs:
       update_baselines:

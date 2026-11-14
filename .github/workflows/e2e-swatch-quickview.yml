@@ -5,6 +5,7 @@ name: E2E • Swatch QuickView (Lista + Tabela)
 # (chromium/firefox/webkit) para validar foco, teclado e a11y de forma consistente.
 
 on:
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   push:
     branches: [main]
     paths:
@@ -20,22 +21,6 @@ on:
       - 'vite.config.*'
       - '.github/workflows/e2e-swatch-quickview.yml'
       - '.github/scripts/e2e-relevance.mjs'
-  pull_request:
-    branches: [main]
-    paths:  # E14: evitar CI em PRs doc-only
-      - 'src/**'
-      - '!src/**/__tests__/**'
-      - '!src/**/*.test.*'
-      - '!src/**/*.spec.*'
-      - 'e2e/**'
-      - 'public/**'
-      - 'package*.json'
-      - '.nvmrc'
-      - 'playwright.config.*'
-      - 'vite.config.*'
-      - '.github/workflows/e2e-swatch-quickview.yml'
-      - '.github/scripts/e2e-relevance.mjs'
-
 concurrency:
   group: e2e-swatch-quickview-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}

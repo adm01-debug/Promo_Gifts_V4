@@ -7,18 +7,11 @@ name: E2E Freight — Matrix (E80)
 # Nota: e2e-quote-freight-block.yml está consolidado em e2e-quotes.yml (E77).
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'src/components/freight/**'
-      - 'src/pages/**freight**'
-      - 'src/hooks/**freight**'
-      - 'e2e/flows/freight-*.spec.ts'
-      - 'e2e/visual/quote-freight-block.spec.ts'
-      - '.github/workflows/e2e-freight.yml'
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   push:
     branches: [main]
     paths:
+      - '.github/workflows/e2e-freight.yml'
       - 'src/components/freight/**'
       - 'e2e/flows/freight-*.spec.ts'
   workflow_dispatch:

@@ -5,13 +5,8 @@ name: E2E — CRM Callback (approved → V4 → CRM)
 # para static-pass (E09) — exceto em workflow_dispatch, que falha explicitamente.
 
 on:
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   push:
-    branches: [main]
-    paths:
-      - "e2e/flows/28-crm-callback-approved.spec.ts"
-      - "supabase/functions/receive-crm-callback/**"
-      - ".github/workflows/e2e-crm-callback-approved.yml"
-  pull_request:
     branches: [main]
     paths:
       - "e2e/flows/28-crm-callback-approved.spec.ts"
