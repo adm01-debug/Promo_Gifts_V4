@@ -349,6 +349,7 @@ export function replayFileName(baselineVersion, index, original) {
 // sem alterar o arquivo histórico nem esconder outros erros SQL.
 const REPLAY_PIPELINE_REWRITES = new Map([
   ['20261101140003_sb0006_index_kit_fk_user_id.sql', { concurrentlyIndexes: 2 }],
+  ['20261114014100_idx_fk_stock_and_missing_perf_indexes.sql', { concurrentlyIndexes: 11 }],
 ]);
 
 export function sanitizeReplayMigration(fileName, sql) {

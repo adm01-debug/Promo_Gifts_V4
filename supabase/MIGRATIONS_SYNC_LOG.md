@@ -1441,3 +1441,15 @@ aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]` (porta 5
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261113235000` | `perf_idx_products_active_created_at_desc` | `45dff9f0d993448eae3c68c09aa143304601efb96029ccedda607e976ba28e46` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (linha `approved-by`) e `db-apply-migration.yml` (branch `claude/feat-idx-products-created-at-vacuum-tags-261113-2350`) |
+
+## 2026-11-14 — Índices de FK em estoque e índices de desempenho ausentes (supersede #3412)
+
+11 índices que faltam em produção (verificado em `pg_indexes` em 2026-11-14): 3 FKs `ON DELETE CASCADE` de
+`stock_snapshots`, 2 FKs de `stock_notes` e 6 índices de migrations antigas que nunca foram aplicadas.
+`CREATE INDEX CONCURRENTLY`, `transaction: none`. Substitui a `20261112014000` da PR #3412 (nunca aplicada): saíram
+`idx_ss_supplier_id` e `idx_stock_snapshots_supplier_branch_id`, que a PERF-002 (`20261101194200`) apagou
+por `idx_scan=0` (FKs `NO ACTION` para tabelas de 5 e 7 linhas).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114014100` | `idx_fk_stock_and_missing_perf_indexes` | `651823afa2f7fd9901fcc185a3147aa53d1cf5ad11fea1374196a3021d200578` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono no chat em 2026-11-14) |
