@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "7536e94e531290762ff1db85316662e4fc8b1212",
+  "sha": "4063ab4e5db0746e0266e8d79d88c62fea7ddbb0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 05:13 UTC",
+  "generated_at": "2026-11-14 05:57 UTC",
   "files_total": 10042,
   "code_files": 8578,
   "code_lines": 1212245
@@ -528448,10 +528448,19 @@
   }
  },
  "git": {
-  "sha": "7536e94e531290762ff1db85316662e4fc8b1212",
+  "sha": "4063ab4e5db0746e0266e8d79d88c62fea7ddbb0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "4063ab4",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(db): snapshot de cron jobs reflete a CRON-003 aplicada (21 schedules) (#3572)",
+    "files": [
+     "supabase/baseline/20261108000000_cron_jobs.json"
+    ]
+   },
    {
     "sha": "7536e94",
     "date": "2026-11-14",
@@ -528798,15 +528807,6 @@
     "author": "Joaquim Ataides",
     "subject": "Merge branch 'main' into claude/lote-pilha-v2-261112",
     "files": []
-   },
-   {
-    "sha": "fd9c4ee",
-    "date": "2026-11-13",
-    "author": "adm01-debug",
-    "subject": "fix(security): baseline de policies inclui e2e_cleanup_audit (destrava Gate 1.13) (#3468)",
-    "files": [
-     ".security/policies-baseline.json"
-    ]
    }
   ],
   "hot_files": [
@@ -528837,6 +528837,10 @@
    [
     "package-lock.json",
     2
+   ],
+   [
+    "supabase/baseline/20261108000000_cron_jobs.json",
+    1
    ],
    [
     "supabase/migrations/20261113235800_cron003_reagendamento_noturno_fornecedores.sql",
@@ -528884,10 +528888,6 @@
    ],
    [
     "supabase/functions/send-transactional-email/index.ts",
-    1
-   ],
-   [
-    "supabase/migrations/20261112140000_fix_rls_supplier_products_raw_history_p2027.sql",
     1
    ]
   ]
