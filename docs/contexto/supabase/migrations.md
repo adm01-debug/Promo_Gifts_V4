@@ -1,7 +1,5 @@
 # Migrations aplicadas (supabase_migrations.schema_migrations)
 
-> ⚠️ Seção `migrations` não pôde ser atualizada nesta coleta (ver errors.md); mostrando a versão anterior.
-
 SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Editor **não** aparecem aqui — compare com `schema.sql` para ver o estado real.
 
 | versão | nome | statements |
@@ -2594,6 +2592,9 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261108223100 | [drop_perf002_incident_ddl_survivor](migrations/20261108223100_drop_perf002_incident_ddl_survivor.sql) | 1 |
 | 20261111191000 | [restore_get_sitemap_public_anon_execute](migrations/20261111191000_restore_get_sitemap_public_anon_execute.sql) | 2 |
 | 20261112011000 | [fix_sb0003_fn_get_rupture_alerts](migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql) | 3 |
+| 20261112120000 | [fix_fn_get_supplier_reliability](migrations/20261112120000_fix_fn_get_supplier_reliability.sql) | 6 |
+| 20261112120100 | [fix_smoke_tests_dashboard_admin_rpc](migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql) | 9 |
+| 20261112120200 | [fix_kill_switch_obs_grant_summary_view](migrations/20261112120200_fix_kill_switch_obs_grant_summary_view.sql) | 4 |
 | 20261112130000 | [fix_get_sitemap_public_anon_grant](migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql) | 2 |
 | 20261112140000 | [fix_rls_supplier_products_raw_history_p2027](migrations/20261112140000_fix_rls_supplier_products_raw_history_p2027.sql) | 51 |
 | 20261113235000 | [perf_idx_products_active_created_at_desc](migrations/20261113235000_perf_idx_products_active_created_at_desc.sql) | 3 |

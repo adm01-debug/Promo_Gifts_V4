@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-14 11:20 UTC
+
+- **functions** adicionado (3): `public.fn_admin_run_smoke_tests()`, `public.fn_admin_smoke_tests_dashboard()`, `public.fn_get_supplier_reliability()`
+- **functions** alterado (15): `public.audit_security_definer_acl()`, `public.can_view_telemetry(_user_id uuid)`, `public.check_telemetry_regression()`, `public.execute_role_migration_batch(_label text, _reason text, _items jsonb, _dry_run boolean)`, `public.fn_admin_sync_external_connections()`, `public.fn_auto_revoke_secdef_public_execute()`, `public.fn_run_and_persist_smoke_tests()`, `public.get_quote_token_public(_token text)`, `public.has_role(_user_id uuid, _role app_role)`, `public.is_admin_or_above(_user_id uuid)`, `public.is_dev(_user_id uuid)`, `public.is_supervisor_or_above(_user_id uuid)`, `public.sync_external_connections_from_credentials()`, `public.sync_external_connections_from_credentials(_trigger_secret_name text, _trigger_op text, _trigger_user_id uuid)`, `public.trg_sync_external_connections()`
+- **migrations** adicionado (3): `20261112120000_fix_fn_get_supplier_reliability`, `20261112120100_fix_smoke_tests_dashboard_admin_rpc`, `20261112120200_fix_kill_switch_obs_grant_summary_view`
+
 ## 2026-11-14 06:26 UTC
 
 - **cron jobs** removido (1): `268:xbz-image-uploader`

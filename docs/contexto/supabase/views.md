@@ -1,7 +1,5 @@
 # Views
 
-> ⚠️ Seção `views` não pôde ser atualizada nesta coleta (ver errors.md); mostrando a versão anterior.
-
 
 ## analytics.categories_tree_visual (materialized)
 

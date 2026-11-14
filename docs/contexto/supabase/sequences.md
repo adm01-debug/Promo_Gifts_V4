@@ -1,7 +1,5 @@
 # Sequences
 
-> ⚠️ Seção `sequences` não pôde ser atualizada nesta coleta (ver errors.md); mostrando a versão anterior.
-
 | sequence | tipo | start | incremento | cycle | pertence a |
 |---|---|---|---|---|---|
 | cf_recon.action_log_id_seq | bigint | 1 | 1 | não | cf_recon.action_log.id |

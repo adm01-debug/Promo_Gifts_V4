@@ -1,7 +1,5 @@
 # Triggers
 
-> ⚠️ Seção `triggers` não pôde ser atualizada nesta coleta (ver errors.md); mostrando a versão anterior.
-
 | tabela | trigger | timing | eventos | nível | status | função | definição |
 |---|---|---|---|---|---|---|---|
 | auth.users | on_auth_user_created | AFTER | INSERT | ROW | enabled | public.handle_new_user | `CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION handle_new_user()` |

@@ -1,7 +1,5 @@
 # Realtime
 
-> ⚠️ Seção `realtime` não pôde ser atualizada nesta coleta (ver errors.md); mostrando a versão anterior.
-
 ## Publications
 
 | publication | all tables | insert | update | delete | truncate |

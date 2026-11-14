@@ -3,25 +3,7 @@
     "enabled": false
   },
   "carried": [
-    "indexes",
-    "views",
-    "functions",
-    "triggers",
-    "policies",
-    "types",
-    "extensions",
-    "sequences",
-    "grants",
-    "roles",
-    "realtime",
-    "cron",
-    "queues",
-    "migrations",
-    "storage",
-    "vault",
-    "foreign_servers",
-    "webhooks",
-    "lints"
+    "grants"
   ],
   "db": {
     "columns": [
@@ -139183,9 +139165,13 @@
             {
               "file": "supabase/migrations/20261024163500_fix_audit_security_definer_acl_regrole_cast.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql",
+              "hits": 4
             }
           ],
-          "code_total_files": 11,
+          "code_total_files": 12,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -140044,8 +140030,13 @@
       {
         "args": "_user_id uuid",
         "callers": {
-          "code": [],
-          "code_total_files": 0,
+          "code": [
+            {
+              "file": "supabase/migrations/20261112120400_fn_insights_cache_count.sql",
+              "hits": 3
+            }
+          ],
+          "code_total_files": 1,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -140543,9 +140534,13 @@
             {
               "file": "supabase/migrations/20260611183100_p2_acl_01_restore_admin_rpcs_frontend.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 4,
+          "code_total_files": 5,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -145049,10 +145044,6 @@
         "callers": {
           "code": [
             {
-              "file": "src/hooks/admin/useRoleMigration.ts",
-              "hits": 1
-            },
-            {
               "file": "supabase/migrations/20260611135102_p2_acl_01_restore_admin_rpcs_frontend.sql",
               "hits": 1
             },
@@ -145062,6 +145053,10 @@
             },
             {
               "file": "supabase/migrations/20260615204853_archive_schema_setup_and_function_fixes.sql",
+              "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261112120600_admin_execute_role_migration_batch_rpc.sql",
               "hits": 1
             }
           ],
@@ -145989,6 +145984,84 @@
         "callers": {
           "code": [
             {
+              "file": "src/hooks/admin/useSmokeTests.ts",
+              "hits": 2
+            },
+            {
+              "file": "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql",
+              "hits": 2
+            }
+          ],
+          "code_total_files": 2,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Execucao manual dos smoke tests pelo dashboard admin. Exige is_admin_or_above e delega para fn_run_and_persist_smoke_tests(), que segue sem EXECUTE para authenticated.",
+        "config": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "c0a24717078ec5ed",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "fn_admin_run_smoke_tests",
+        "owner": "postgres",
+        "returns": "void",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "",
+        "callers": {
+          "code": [
+            {
+              "file": "src/hooks/admin/useSmokeTests.ts",
+              "hits": 2
+            },
+            {
+              "file": "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 2,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Dashboard de smoke tests (/admin/observabilidade): {latest, trend} de v_smoke_tests_latest_run e v_smoke_tests_trend. Exige is_admin_or_above; as views seguem revogadas para authenticated (20260716192234).",
+        "config": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "c87dd5bb8bbb3255",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "fn_admin_smoke_tests_dashboard",
+        "owner": "postgres",
+        "returns": "jsonb",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "stable"
+      },
+      {
+        "args": "",
+        "callers": {
+          "code": [
+            {
               "file": "src/integrations/supabase/gold.ts",
               "hits": 1
             },
@@ -145999,9 +146072,13 @@
             {
               "file": "supabase/migrations/20260611183200_p2_acl_02_fn_admin_sync_external_connections.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql",
+              "hits": 7
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -148441,9 +148518,13 @@
             {
               "file": "supabase/migrations/20260619115656_evt_auto_revoke_security_definer_public_20260619.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -156095,6 +156176,41 @@
         "security_definer": false,
         "strict": false,
         "volatility": "volatile"
+      },
+      {
+        "args": "",
+        "callers": {
+          "code": [
+            {
+              "file": "src/hooks/inventory/useSupplierReliabilityServer.ts",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 1,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Aba Confiabilidade de Fornecedores (/estoque). SECURITY DEFINER sobre mv_supplier_reliability (MV admin only, sem SELECT para anon/authenticated desde 20260716191641). Retorna linhas so para is_supervisor_or_above(auth.uid()); demais papeis recebem vazio. EXECUTE: authenticated, service_role; anon/PUBLIC nao.",
+        "config": [
+          "search_path=public, pg_catalog, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "83063541caa33fca",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "sql",
+        "leakproof": false,
+        "name": "fn_get_supplier_reliability",
+        "owner": "postgres",
+        "returns": "SETOF mv_supplier_reliability",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "stable"
       },
       {
         "args": "p_term text, p_limit integer, p_types text[]",
@@ -164056,10 +164172,6 @@
         "callers": {
           "code": [
             {
-              "file": "src/hooks/admin/useSmokeTests.ts",
-              "hits": 2
-            },
-            {
               "file": "supabase/migrations/20260525005350_colapso_fase5_smoke_tests_mensal_history_v2.sql",
               "hits": 1
             },
@@ -164074,13 +164186,19 @@
             {
               "file": "supabase/migrations/20260903110000_p2_fixes_acl_secdef_schema_migrations_registration.sql",
               "hits": 2
+            },
+            {
+              "file": "supabase/migrations/20261112120100_fix_smoke_tests_dashboard_admin_rpc.sql",
+              "hits": 4
             }
           ],
           "code_total_files": 5,
           "cron": [
             "32:smoke_tests_monthly"
           ],
-          "db": [],
+          "db": [
+            "public.fn_admin_run_smoke_tests"
+          ],
           "triggers": [],
           "views": []
         },
@@ -178055,9 +178173,13 @@
             {
               "file": "supabase/migrations/20260904111000_audit_r4_sec009_revoke_quote_token_legacy.sql",
               "hits": 2
+            },
+            {
+              "file": "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -179447,7 +179569,7 @@
               "hits": 1
             }
           ],
-          "code_total_files": 182,
+          "code_total_files": 186,
           "cron": [],
           "db": [
             "public._can_act_on_behalf_of_others",
@@ -180409,10 +180531,12 @@
               "hits": 1
             }
           ],
-          "code_total_files": 99,
+          "code_total_files": 101,
           "cron": [],
           "db": [
             "public.enforce_user_id_owner",
+            "public.fn_admin_run_smoke_tests",
+            "public.fn_admin_smoke_tests_dashboard",
             "public.fn_apply_print_profiles",
             "public.fn_approve_product_deactivation",
             "public.fn_dryrun_standardize_supplier",
@@ -180824,7 +180948,7 @@
               "hits": 1
             }
           ],
-          "code_total_files": 35,
+          "code_total_files": 39,
           "cron": [],
           "db": [
             "public.auto_revoke_orphan_full_keys",
@@ -181552,7 +181676,7 @@
               "hits": 1
             }
           ],
-          "code_total_files": 43,
+          "code_total_files": 44,
           "cron": [],
           "db": [
             "public.assert_quote_discount_integrity",
@@ -181563,6 +181687,7 @@
             "public.clear_user_token_revocations",
             "public.enable_step_up_for_user",
             "public.fn_get_rupture_alerts",
+            "public.fn_get_supplier_reliability",
             "public.fn_quotes_validate_discount",
             "public.force_user_logout",
             "public.get_step_up_audit",
@@ -188766,9 +188891,13 @@
             {
               "file": "supabase/migrations/20260611183200_p2_acl_02_fn_admin_sync_external_connections.sql",
               "hits": 2
+            },
+            {
+              "file": "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql",
+              "hits": 5
             }
           ],
-          "code_total_files": 4,
+          "code_total_files": 5,
           "cron": [],
           "db": [
             "public.fn_admin_sync_external_connections",
@@ -188816,9 +188945,13 @@
             {
               "file": "supabase/migrations/20260611183200_p2_acl_02_fn_admin_sync_external_connections.sql",
               "hits": 2
+            },
+            {
+              "file": "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql",
+              "hits": 5
             }
           ],
-          "code_total_files": 4,
+          "code_total_files": 5,
           "cron": [],
           "db": [
             "public.fn_admin_sync_external_connections",
@@ -189745,9 +189878,13 @@
             {
               "file": "supabase/migrations/20260620190500_faxina_tier3b_archive_dead_functions_bulk.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -235991,6 +236128,24 @@
         "version": "20261112011000"
       },
       {
+        "name": "fix_fn_get_supplier_reliability",
+        "statements": 6,
+        "statements_sha": "65e753dc10beeecc",
+        "version": "20261112120000"
+      },
+      {
+        "name": "fix_smoke_tests_dashboard_admin_rpc",
+        "statements": 9,
+        "statements_sha": "d889fe47da80c756",
+        "version": "20261112120100"
+      },
+      {
+        "name": "fix_kill_switch_obs_grant_summary_view",
+        "statements": 4,
+        "statements_sha": "584b16ffb88a9c0a",
+        "version": "20261112120200"
+      },
+      {
         "name": "fix_get_sitemap_public_anon_grant",
         "statements": 2,
         "statements_sha": "2f530f417cf8a450",
@@ -264853,96 +265008,8 @@
   },
   "errors": [
     {
-      "error": "terminating connection due to administrator command",
-      "section": "indexes"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "views"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "functions"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "triggers"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "policies"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "types"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "extensions"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "sequences"
-    },
-    {
-      "error": "the connection is closed",
+      "error": "canceling statement due to statement timeout",
       "section": "grants"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "roles"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "realtime"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "cron"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "queues"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "migrations"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "storage"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "vault"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "foreign_servers"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "webhooks"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "lints"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "cron_runs"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "table_stats"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "index_stats"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "db_stats"
     }
   ],
   "format_version": 2

@@ -1,121 +1,15 @@
 {
   "carried": [
-    "indexes",
-    "views",
-    "functions",
-    "triggers",
-    "policies",
-    "types",
-    "extensions",
-    "sequences",
-    "grants",
-    "roles",
-    "realtime",
-    "cron",
-    "queues",
-    "migrations",
-    "storage",
-    "vault",
-    "foreign_servers",
-    "webhooks",
-    "lints"
+    "grants"
   ],
   "entrada": "README.md",
   "erros": [
     {
-      "error": "terminating connection due to administrator command",
-      "section": "indexes"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "views"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "functions"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "triggers"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "policies"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "types"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "extensions"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "sequences"
-    },
-    {
-      "error": "the connection is closed",
+      "error": "canceling statement due to statement timeout",
       "section": "grants"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "roles"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "realtime"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "cron"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "queues"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "migrations"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "storage"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "vault"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "foreign_servers"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "webhooks"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "lints"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "cron_runs"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "table_stats"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "index_stats"
-    },
-    {
-      "error": "the connection is closed",
-      "section": "db_stats"
     }
   ],
-  "gerado_em": "2026-11-14T11:10:43Z",
+  "gerado_em": "2026-11-14T11:20:22Z",
   "gerador": "scripts/supabase_snapshot/snapshot.py",
   "produtor": "supabase-snapshot"
 }

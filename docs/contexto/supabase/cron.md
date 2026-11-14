@@ -1,7 +1,5 @@
 # Cron (pg_cron)
 
-> ⚠️ Seção `cron` não pôde ser atualizada nesta coleta (ver errors.md); mostrando a versão anterior.
-
 Horários em UTC. Execuções recentes em `cron-runs.md`.
 
 | id | nome | schedule | ativo | database | usuário | comando |
