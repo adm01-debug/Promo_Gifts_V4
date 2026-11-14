@@ -1428,3 +1428,16 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261112140000` | `fix_rls_supplier_products_raw_history_p2027` | `6aa856168cc1ef0e6308757fe01b04f4917f043170ff3ce996e0933a52575b9f` | **aplicada em 13/11/2026** pelo `db-apply-migration.yml` (run 43471685129; recibo E15 acima) |
+
+## 2026-11-13 — Catálogo: índice parcial para a ordenação "mais novos" em `products`
+
+Consulta read-only em produção (2026-11-13, `pg_indexes`/`pg_get_viewdef`): nenhum dos 36 índices de
+`public.products` cobre `created_at`; `v_products_public` filtra `is_deleted IS NOT TRUE AND is_active = true` e o
+PostgREST ordena por `created_at DESC, id ASC` — 18.163 chamadas × 1.033 ms em 12,8 h com Sort de ~7.500 linhas
+(`pg_stat_statements`). O índice parcial casa com o predicado da view. `VACUUM (FULL, ANALYZE) public.tags`
+(88 linhas em 323 páginas) fica fora da migration: o preflight bloqueia VACUUM sempre. Ainda não está no ledger;
+aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]` (porta 5432, `transaction: none`).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261113235000` | `perf_idx_products_active_created_at_desc` | `45dff9f0d993448eae3c68c09aa143304601efb96029ccedda607e976ba28e46` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (linha `approved-by`) e `db-apply-migration.yml` (branch `claude/feat-idx-products-created-at-vacuum-tags-261113-2350`) |
