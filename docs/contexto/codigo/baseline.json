@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1a9cc9a4f9c7c2e266a74ab82270230e23919ad8",
+  "commit": "29569b163c4bc632816f1c2f86ede783f42973b2",
   "branch": "main",
-  "data_commit": "2026-11-14T21:25:05Z",
+  "data_commit": "2026-11-14T22:55:13Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "29569b16",
+    "data": "2026-11-14",
+    "assunto": "fix(security): sincroniza o retrato de policies com producao apos as 6 migracoes (#3634)"
+   },
    {
     "sha": "1a9cc9a4",
     "data": "2026-11-14",
@@ -126,14 +131,9 @@
     "sha": "930e3c0f",
     "data": "2026-11-14",
     "assunto": "Merge remote-tracking branch 'origin/claude/fix-ux-auditoria-link-botao-morto-261113-2338' into claude/trem2-front-limpe"
-   },
-   {
-    "sha": "ce4099ec",
-    "data": "2026-11-14",
-    "assunto": "Merge remote-tracking branch 'origin/claude/fix-busca-teclado-supersede-3535-261114-0045' into claude/trem2-front-limpez"
    }
   ],
-  "arquivos_mudados_7d": 2079,
+  "arquivos_mudados_7d": 2078,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 336
+    "mudancas": 335
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 592
+    "commits": 591
    },
    {
     "autor": "Joaquim Ataides",

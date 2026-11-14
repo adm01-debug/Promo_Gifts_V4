@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "1a9cc9a4f9c7c2e266a74ab82270230e23919ad8",
+  "sha": "29569b163c4bc632816f1c2f86ede783f42973b2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 21:29 UTC",
+  "generated_at": "2026-11-14 23:10 UTC",
   "files_total": 10092,
   "code_files": 8619,
   "code_lines": 1214856
@@ -529965,10 +529965,19 @@
   }
  },
  "git": {
-  "sha": "1a9cc9a4f9c7c2e266a74ab82270230e23919ad8",
+  "sha": "29569b163c4bc632816f1c2f86ede783f42973b2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "29569b1",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(security): sincroniza o retrato de policies com producao apos as 6 migracoes (#3634)",
+    "files": [
+     ".security/policies-baseline.json"
+    ]
+   },
    {
     "sha": "1a9cc9a",
     "date": "2026-11-14",
@@ -530232,13 +530241,6 @@
      "e2e/routes/app/stock-rupture-horizon.spec.ts",
      "src/pages/kit-builder/KitBuilderPage.tsx"
     ]
-   },
-   {
-    "sha": "1d9185e",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "Merge remote-tracking branch 'origin/claude/chore-remove-external-db-dead-code-261114-0000' into claude/trem2-front-limpeza-261114-1850",
-    "files": []
    }
   ],
   "hot_files": [
@@ -530257,6 +530259,10 @@
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     2
+   ],
+   [
+    ".security/policies-baseline.json",
+    1
    ],
    [
     "docs/security/2026-11-14-schema-net-exposto.md",
@@ -530316,10 +530322,6 @@
    ],
    [
     "supabase/migrations/20261114014500_p09_reconcile_ledger_schema_migrations.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261114031000_fix_user_known_devices_is_trusted.sql",
     1
    ]
   ]
