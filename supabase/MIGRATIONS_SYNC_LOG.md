@@ -1583,3 +1583,14 @@ comparados; sem isso o `db-schema-drift-check` replayaria as 360 sobre o baselin
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261114014500` | `p09_reconcile_ledger_schema_migrations` | `a06fe201d75afdb1be8b99ab19164ca374bb57ec5dae44808049ea33e5e6f8c0` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono no chat de 2026-11-14) |
+## 2026-11-14 — Índices de FK em estoque e índices de desempenho ausentes (supersede #3412)
+
+11 índices que faltam em produção (verificado em `pg_indexes` em 2026-11-14): 3 FKs `ON DELETE CASCADE` de
+`stock_snapshots`, 2 FKs de `stock_notes` e 6 índices de migrations antigas que nunca foram aplicadas.
+`CREATE INDEX CONCURRENTLY`, `transaction: none`. Substitui a `20261112014000` da PR #3412 (nunca aplicada): saíram
+`idx_ss_supplier_id` e `idx_stock_snapshots_supplier_branch_id`, que a PERF-002 (`20261101194200`) apagou
+por `idx_scan=0` (FKs `NO ACTION` para tabelas de 5 e 7 linhas).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114014100` | `idx_fk_stock_and_missing_perf_indexes` | `651823afa2f7fd9901fcc185a3147aa53d1cf5ad11fea1374196a3021d200578` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono no chat em 2026-11-14) |
