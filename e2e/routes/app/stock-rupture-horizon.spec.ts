@@ -13,6 +13,7 @@
 import { test, expect } from '../../fixtures/test-base';
 import { gotoAndSettle } from '../../helpers/nav';
 import { loginAs } from '../../helpers/auth';
+import { lowStockChips, selectRuptureHorizon, stockRows } from '../../helpers/rupture-horizon';
 
 test.describe('@regression /estoque — horizonte de Risco de Ruptura', () => {
   test('@rupture-horizon altera projeção e persiste seleção', async ({ page }) => {
@@ -44,19 +45,21 @@ test.describe('@regression /estoque — horizonte de Risco de Ruptura', () => {
 
     // Aplica filtro de quantidade-alvo para ativar a fórmula preditiva.
     await page.getByPlaceholder(/Preciso de X un/i).fill('100');
-    await page.waitForTimeout(400);
+    // Debounce do alvo é 500ms (StockFilterToolbar) — 400ms lia o estado sem alvo.
+    await page.waitForTimeout(700);
 
-    // Coleta contador do chip low_stock no horizonte 3d.
-    const lowChip = page.getByTestId('stock-status-chip-low_stock');
-    await expect(lowChip).toBeVisible();
-    const count3d = Number((await lowChip.innerText()).match(/\d+/)?.[0] ?? '0');
+    // Conta linhas com chip low_stock no horizonte 3d (o chip é por linha,
+    // não um contador — ver e2e/helpers/rupture-horizon.ts).
+    await expect(stockRows(page).first()).toBeVisible();
+    const lowChips = lowStockChips(page);
+    const count3d = await lowChips.count();
 
     // 2. Troca para 30d — janela maior ⇒ mais SKUs em risco (monotonia ≥).
-    await page.getByTestId('rupture-horizon-30').click();
-    await page.waitForTimeout(400);
+    // O helper reabre o popover se ele fechou ao focar o campo de alvo.
+    await selectRuptureHorizon(page, 30);
     await expect(horizonControl).toContainText('30d');
 
-    const count30d = Number((await lowChip.innerText()).match(/\d+/)?.[0] ?? '0');
+    const count30d = await lowChips.count();
     expect(count30d).toBeGreaterThanOrEqual(count3d);
 
     // 3. Persistência: localStorage guarda o horizonte escolhido.
