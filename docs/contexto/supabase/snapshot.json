@@ -264824,11 +264824,6 @@
     ],
     "webhooks": []
   },
-  "errors": [
-    {
-      "error": "canceling statement due to statement timeout",
-      "section": "cron_runs"
-    }
-  ],
+  "errors": [],
   "format_version": 2
 }
