@@ -70,10 +70,7 @@ export default function CommercialIntelligencePage() {
   // manualmente por outra via.
   const [undoSnapshot, setUndoSnapshot] = useState<IntelligenceFilters | null>(null);
 
-  const beginPendingAction = (
-    action: ZeroResultAction,
-    culpritBefore: ZeroResultCulprit,
-  ) => {
+  const beginPendingAction = (action: ZeroResultAction, culpritBefore: ZeroResultCulprit) => {
     pendingActionRef.current = {
       action,
       culpritBefore,
@@ -107,10 +104,7 @@ export default function CommercialIntelligencePage() {
     });
   };
 
-  const applySubstitute = (
-    key: FilterKey,
-    value: { id: string; name: string },
-  ) => {
+  const applySubstitute = (key: FilterKey, value: { id: string; name: string }) => {
     captureUndoSnapshot();
     beginPendingAction('apply_substitute', key);
     setFilters((prev) => {
@@ -146,7 +140,6 @@ export default function CommercialIntelligencePage() {
     });
     pendingActionRef.current = null;
   }, [isLoadingKpis, kpis, filters.days]);
-
 
   const formatRelative = (d: Date) => {
     const diff = Math.round((Date.now() - d.getTime()) / 1000);
@@ -314,7 +307,7 @@ export default function CommercialIntelligencePage() {
         {/* 5. Vendas Internas */}
         <div className="animate-fade-in" style={{ animationDelay: '350ms' }}>
           <SectionErrorBoundary section="sales-overview" label="as vendas internas">
-            <SalesOverviewChart days={filters.days} />
+            <SalesOverviewChart days={filters.days} productId={filters.productId} />
           </SectionErrorBoundary>
         </div>
       </div>
