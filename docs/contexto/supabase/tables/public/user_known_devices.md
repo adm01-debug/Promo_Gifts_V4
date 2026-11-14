@@ -24,6 +24,7 @@
 | 4 | `device_name` | `text` | sim |  |  |  |
 | 5 | `last_seen_at` | `timestamp with time zone` | não | `now()` |  |  |
 | 6 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
+| 7 | `is_trusted` | `boolean` | não | `false` |  |  |
 
 
 ## Constraints

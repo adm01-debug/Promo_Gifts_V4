@@ -34,6 +34,8 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_token_revocations_expires | btree | expires_at | não | sim | `(expires_at IS NOT NULL)` | `CREATE INDEX idx_token_revocations_expires ON public.user_token_revocations USING btree (expires_at) WHERE (expires_at IS NOT NULL)` |
+| idx_token_revocations_jti | btree | token_jti | não | sim | `(token_jti IS NOT NULL)` | `CREATE INDEX idx_token_revocations_jti ON public.user_token_revocations USING btree (token_jti) WHERE (token_jti IS NOT NULL)` |
 | idx_token_revocations_user_id | btree | user_id, revoked_at | não | sim |  | `CREATE INDEX idx_token_revocations_user_id ON public.user_token_revocations USING btree (user_id, revoked_at DESC)` |
 | user_token_revocations_pkey | btree | user_id | sim | sim |  | `CREATE UNIQUE INDEX user_token_revocations_pkey ON public.user_token_revocations USING btree (user_id)` |
 

@@ -398,7 +398,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.user_favorites](tables/public/user_favorites.md) | table | sim | 3 | 5 | não | [FANTASMA] 0 rows e código moderno (useFavorites.ts) usa localStorage. Manter por enquanto, dropar quando confirmar que NENHUMA edge function escreve aqui. |
 | [public.user_filter_presets](tables/public/user_filter_presets.md) | table | sim | 4 | 8 | não |  |
 | [public.user_ip_allowlist](tables/public/user_ip_allowlist.md) | table | sim | 4 | 7 | não |  |
-| [public.user_known_devices](tables/public/user_known_devices.md) | table | sim | 1 | 6 | não | Migrado do Lovable em 2026-05-22 (Lote A). Devices reconhecidos (detect-new-device). |
+| [public.user_known_devices](tables/public/user_known_devices.md) | table | sim | 1 | 7 | não | Migrado do Lovable em 2026-05-22 (Lote A). Devices reconhecidos (detect-new-device). |
 | [public.user_notification_preferences](tables/public/user_notification_preferences.md) | table | sim | 4 | 7 | não |  |
 | [public.user_onboarding](tables/public/user_onboarding.md) | table | sim | 3 | 9 | não |  |
 | [public.user_organizations](tables/public/user_organizations.md) | table | sim | 4 | 5 | não | Membership user→organização. Backfill na Etapa 6 com 4 users na org única (5db5aee1...). Necessário pras funções user_belongs_to_org/is_org_owner_or_admin retornarem true. |

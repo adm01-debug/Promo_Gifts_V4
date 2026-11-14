@@ -259,6 +259,7 @@ Uso e tamanho em `stats.md`.
 | public.crm_callback_events | crm_callback_events_pkey | btree | id | sim | sim |  |
 | public.crm_callback_events | idx_ccev_occurred_at | btree | occurred_at | não | sim |  |
 | public.crm_callback_events | idx_crm_callback_events_result_received | btree | result, received_at | não | sim |  |
+| public.crm_callback_events | idx_crm_callback_events_type | btree | event_type | não | sim |  |
 | public.cron_job_timeout_map | cron_job_timeout_map_pkey | btree | jobname | sim | sim |  |
 | public.cron_watchdog_log | cron_watchdog_log_pkey | btree | id | sim | sim |  |
 | public.cron_watchdog_log | idx_cron_watchdog_killed | btree | killed_at | não | sim |  |
@@ -318,6 +319,7 @@ Uso e tamanho em `stats.md`.
 | public.favorite_items | idx_fi_user | btree | user_id | não | sim |  |
 | public.favorite_items | uniq_fi_list_product_variant | btree | list_id, product_id, variant_id | sim | sim |  |
 | public.favorite_items_trash | favorite_items_trash_pkey | btree | id | sim | sim |  |
+| public.favorite_items_trash | idx_fit_expires_at | btree | expires_at | não | sim | `(expires_at IS NOT NULL)` |
 | public.favorite_items_trash | idx_fit_user_deleted | btree | user_id, deleted_at | não | sim |  |
 | public.favorite_lists | favorite_lists_pkey | btree | id | sim | sim |  |
 | public.favorite_lists | favorite_lists_shared_token_key | btree | shared_token | sim | sim |  |
@@ -1051,6 +1053,7 @@ Uso e tamanho em `stats.md`.
 | public.stock_snapshots | idx_stock_snapshots_supplier_branch_id | btree | supplier_branch_id | não | sim |  |
 | public.stock_snapshots | idx_stock_snapshots_supplier_id | btree | supplier_id | não | sim |  |
 | public.stock_snapshots | idx_stock_snapshots_variant_id | btree | variant_id | não | sim |  |
+| public.stock_snapshots | idx_stock_snapshots_variant_supplier | btree | variant_id, supplier_id | não | sim |  |
 | public.stock_snapshots | idx_stock_snapshots_variant_supplier_source_id | btree | variant_supplier_source_id | não | sim |  |
 | public.stock_snapshots | stock_snapshots_pkey | btree | id | sim | sim |  |
 | public.supplier_attribute_definitions | idx_supplier_attribute_definitions_organization_id | btree | organization_id | não | sim |  |
@@ -1217,6 +1220,8 @@ Uso e tamanho em `stats.md`.
 | public.user_roles | user_roles_role_idx | btree | role | não | sim |  |
 | public.user_search_history | uq_user_search_history_user_query | btree | user_id, query_text | sim | sim |  |
 | public.user_search_history | user_search_history_pkey | btree | id | sim | sim |  |
+| public.user_token_revocations | idx_token_revocations_expires | btree | expires_at | não | sim | `(expires_at IS NOT NULL)` |
+| public.user_token_revocations | idx_token_revocations_jti | btree | token_jti | não | sim | `(token_jti IS NOT NULL)` |
 | public.user_token_revocations | idx_token_revocations_user_id | btree | user_id, revoked_at | não | sim |  |
 | public.user_token_revocations | user_token_revocations_pkey | btree | user_id | sim | sim |  |
 | public.variant_commemorative_dates | idx_variant_commemorative_dates_commemorative_date_id | btree | commemorative_date_id | não | sim |  |
@@ -1252,6 +1257,7 @@ Uso e tamanho em `stats.md`.
 | public.webhook_deliveries | idx_webhook_deliveries_webhook_id | btree | webhook_id | não | sim |  |
 | public.webhook_deliveries | webhook_deliveries_pkey | btree | id | sim | sim |  |
 | public.webhook_delivery_locks | idx_webhook_deliveries_hash | btree | webhook_id, payload_hash | não | sim | `(payload_hash IS NOT NULL)` |
+| public.webhook_delivery_locks | idx_webhook_delivery_locks_claimed_at | btree | claimed_at | não | sim |  |
 | public.webhook_delivery_locks | pk_webhook_delivery_locks | btree | webhook_id, payload_hash | sim | sim |  |
 | public.webhook_delivery_metrics | webhook_delivery_metrics_pkey | btree | id | sim | sim |  |
 | public.webhook_dispatcher_log | idx_webhook_dispatcher_log_delivery_status | btree | delivery_status, fired_at | não | sim |  |
@@ -1264,6 +1270,7 @@ Uso e tamanho em `stats.md`.
 | public.webhook_request_nonces | idx_webhook_request_nonces_expires_at | btree | expires_at | não | sim |  |
 | public.webhook_request_nonces | webhook_request_nonces_pkey | btree | id | sim | sim |  |
 | public.webhook_request_nonces | webhook_request_nonces_source_nonce_key | btree | source, nonce | sim | sim |  |
+| public.workspace_notifications | idx_workspace_notifications_category | btree | category | não | sim |  |
 | public.workspace_notifications | idx_workspace_notifications_user_unread | btree | user_id, is_read, created_at | não | sim |  |
 | public.workspace_notifications | idx_workspace_notifications_user_unread_v2 | btree | user_id, created_at | não | sim | `(is_read = false)` |
 | public.workspace_notifications | uq_workspace_notifications_idempotency | btree | idempotency_key | sim | sim |  |

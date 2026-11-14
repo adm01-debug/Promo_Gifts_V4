@@ -70779,6 +70779,19 @@
       },
       {
         "comment": null,
+        "default": "false",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "is_trusted",
+        "nullable": false,
+        "position": 7,
+        "schema": "public",
+        "table": "user_known_devices",
+        "type": "boolean"
+      },
+      {
+        "comment": null,
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -205774,6 +205787,20 @@
       },
       {
         "columns": [
+          "event_type"
+        ],
+        "definition": "CREATE INDEX idx_crm_callback_events_type ON public.crm_callback_events USING btree (event_type)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_crm_callback_events_type",
+        "predicate": null,
+        "schema": "public",
+        "table": "crm_callback_events"
+      },
+      {
+        "columns": [
           "jobname"
         ],
         "definition": "CREATE UNIQUE INDEX cron_job_timeout_map_pkey ON public.cron_job_timeout_map USING btree (jobname)",
@@ -206614,6 +206641,20 @@
         "method": "btree",
         "name": "favorite_items_trash_pkey",
         "predicate": null,
+        "schema": "public",
+        "table": "favorite_items_trash"
+      },
+      {
+        "columns": [
+          "expires_at"
+        ],
+        "definition": "CREATE INDEX idx_fit_expires_at ON public.favorite_items_trash USING btree (expires_at) WHERE (expires_at IS NOT NULL)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_fit_expires_at",
+        "predicate": "(expires_at IS NOT NULL)",
         "schema": "public",
         "table": "favorite_items_trash"
       },
@@ -217047,6 +217088,21 @@
       },
       {
         "columns": [
+          "variant_id",
+          "supplier_id"
+        ],
+        "definition": "CREATE INDEX idx_stock_snapshots_variant_supplier ON public.stock_snapshots USING btree (variant_id, supplier_id)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_stock_snapshots_variant_supplier",
+        "predicate": null,
+        "schema": "public",
+        "table": "stock_snapshots"
+      },
+      {
+        "columns": [
           "variant_supplier_source_id"
         ],
         "definition": "CREATE INDEX idx_stock_snapshots_variant_supplier_source_id ON public.stock_snapshots USING btree (variant_supplier_source_id)",
@@ -219472,6 +219528,34 @@
       },
       {
         "columns": [
+          "expires_at"
+        ],
+        "definition": "CREATE INDEX idx_token_revocations_expires ON public.user_token_revocations USING btree (expires_at) WHERE (expires_at IS NOT NULL)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_token_revocations_expires",
+        "predicate": "(expires_at IS NOT NULL)",
+        "schema": "public",
+        "table": "user_token_revocations"
+      },
+      {
+        "columns": [
+          "token_jti"
+        ],
+        "definition": "CREATE INDEX idx_token_revocations_jti ON public.user_token_revocations USING btree (token_jti) WHERE (token_jti IS NOT NULL)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_token_revocations_jti",
+        "predicate": "(token_jti IS NOT NULL)",
+        "schema": "public",
+        "table": "user_token_revocations"
+      },
+      {
+        "columns": [
           "user_id",
           "revoked_at"
         ],
@@ -219977,6 +220061,20 @@
       },
       {
         "columns": [
+          "claimed_at"
+        ],
+        "definition": "CREATE INDEX idx_webhook_delivery_locks_claimed_at ON public.webhook_delivery_locks USING btree (claimed_at)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_webhook_delivery_locks_claimed_at",
+        "predicate": null,
+        "schema": "public",
+        "table": "webhook_delivery_locks"
+      },
+      {
+        "columns": [
           "webhook_id",
           "payload_hash"
         ],
@@ -220146,6 +220244,20 @@
         "predicate": null,
         "schema": "public",
         "table": "webhook_request_nonces"
+      },
+      {
+        "columns": [
+          "category"
+        ],
+        "definition": "CREATE INDEX idx_workspace_notifications_category ON public.workspace_notifications USING btree (category)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_workspace_notifications_category",
+        "predicate": null,
+        "schema": "public",
+        "table": "workspace_notifications"
       },
       {
         "columns": [
@@ -238224,10 +238336,22 @@
         "version": "20261114003000"
       },
       {
+        "name": "idx_fk_stock_and_missing_perf_indexes",
+        "statements": 13,
+        "statements_sha": "fbf174aee16561f7",
+        "version": "20261114014100"
+      },
+      {
         "name": "p09_reconcile_ledger_schema_migrations",
         "statements": 1,
         "statements_sha": "4a7a5d8de9b2a5aa",
         "version": "20261114014500"
+      },
+      {
+        "name": "fix_user_known_devices_is_trusted",
+        "statements": 1,
+        "statements_sha": "1456a7da5d2b98f4",
+        "version": "20261114031000"
       },
       {
         "name": "fix_authenticator_idle_session_timeout_pgrst_listener",

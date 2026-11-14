@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-14 20:13 UTC
+
+- **colunas** adicionado (1): `public.user_known_devices.is_trusted`
+- **indexes** adicionado (7): `public.idx_crm_callback_events_type`, `public.idx_fit_expires_at`, `public.idx_stock_snapshots_variant_supplier`, `public.idx_token_revocations_expires`, `public.idx_token_revocations_jti`, `public.idx_webhook_delivery_locks_claimed_at`, `public.idx_workspace_notifications_category`
+- **migrations** adicionado (2): `20261114014100_idx_fk_stock_and_missing_perf_indexes`, `20261114031000_fix_user_known_devices_is_trusted`
+
 ## 2026-11-14 19:56 UTC
 
 - **migrations** adicionado (362): `20260511235900_`, `20260512000000_`, `20260525232003_`, `20260526103000_`, `20260526141234_`, `20260526200904_`, `20260526201213_`, `20260526201551_`, `20260526210100_`, `20260526210206_`, `20260526220000_`, `20260527120000_`, `20260527164916_`, `20260527200232_`, `20260527200532_`, `20260527214038_`, `20260527214425_`, `20260527214510_`, `20260527214617_`, `20260528102501_`, `20260528102502_`, `20260529145000_`, `20260529150000_`, `20260529150200_`, `20260530001500_`, `20260530030000_`, `20260530150000_`, `20260530160000_`, `20260530170000_`, `20260531120000_`, `20260531135255_`, `20260531211352_`, `20260531220000_`, `20260601000001_`, `20260601104248_`, `20260601140000_`, `20260601140100_`, `20260601140841_`, `20260602020000_`, `20260602030000_` … (+322)

@@ -48,6 +48,7 @@
 | crm_callback_events_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX crm_callback_events_pkey ON public.crm_callback_events USING btree (id)` |
 | idx_ccev_occurred_at | btree | occurred_at | não | sim |  | `CREATE INDEX idx_ccev_occurred_at ON public.crm_callback_events USING btree (occurred_at DESC)` |
 | idx_crm_callback_events_result_received | btree | result, received_at | não | sim |  | `CREATE INDEX idx_crm_callback_events_result_received ON public.crm_callback_events USING btree (result, received_at DESC)` |
+| idx_crm_callback_events_type | btree | event_type | não | sim |  | `CREATE INDEX idx_crm_callback_events_type ON public.crm_callback_events USING btree (event_type)` |
 
 
 ## Policies (RLS)

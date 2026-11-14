@@ -42,6 +42,7 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_workspace_notifications_category | btree | category | não | sim |  | `CREATE INDEX idx_workspace_notifications_category ON public.workspace_notifications USING btree (category)` |
 | idx_workspace_notifications_user_unread | btree | user_id, is_read, created_at | não | sim |  | `CREATE INDEX idx_workspace_notifications_user_unread ON public.workspace_notifications USING btree (user_id, is_read, created_at DESC)` |
 | idx_workspace_notifications_user_unread_v2 | btree | user_id, created_at | não | sim | `(is_read = false)` | `CREATE INDEX idx_workspace_notifications_user_unread_v2 ON public.workspace_notifications USING btree (user_id, created_at DESC) WHERE (is_read = false)` |
 | uq_workspace_notifications_idempotency | btree | idempotency_key | sim | sim |  | `CREATE UNIQUE INDEX uq_workspace_notifications_idempotency ON public.workspace_notifications USING btree (idempotency_key)` |

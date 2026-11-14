@@ -2968,5 +2968,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261113235000 | [perf_idx_products_active_created_at_desc](migrations/20261113235000_perf_idx_products_active_created_at_desc.sql) | 3 |
 | 20261113235800 | [cron003_reagendamento_noturno_fornecedores](migrations/20261113235800_cron003_reagendamento_noturno_fornecedores.sql) | 1 |
 | 20261114003000 | [fix_unschedule_cron_xbz_image_uploader](migrations/20261114003000_fix_unschedule_cron_xbz_image_uploader.sql) | 1 |
+| 20261114014100 | [idx_fk_stock_and_missing_perf_indexes](migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql) | 13 |
 | 20261114014500 | [p09_reconcile_ledger_schema_migrations](migrations/20261114014500_p09_reconcile_ledger_schema_migrations.sql) | 1 |
+| 20261114031000 | [fix_user_known_devices_is_trusted](migrations/20261114031000_fix_user_known_devices_is_trusted.sql) | 1 |
 | 20261114040000 | [fix_authenticator_idle_session_timeout_pgrst_listener](migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql) | 1 |

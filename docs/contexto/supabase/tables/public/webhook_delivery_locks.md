@@ -34,6 +34,7 @@
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
 | idx_webhook_deliveries_hash | btree | webhook_id, payload_hash | não | sim | `(payload_hash IS NOT NULL)` | `CREATE INDEX idx_webhook_deliveries_hash ON public.webhook_delivery_locks USING btree (webhook_id, payload_hash) WHERE (payload_hash IS NOT NULL)` |
+| idx_webhook_delivery_locks_claimed_at | btree | claimed_at | não | sim |  | `CREATE INDEX idx_webhook_delivery_locks_claimed_at ON public.webhook_delivery_locks USING btree (claimed_at)` |
 | pk_webhook_delivery_locks | btree | webhook_id, payload_hash | sim | sim |  | `CREATE UNIQUE INDEX pk_webhook_delivery_locks ON public.webhook_delivery_locks USING btree (webhook_id, payload_hash)` |
 
 

@@ -44,6 +44,7 @@
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
 | favorite_items_trash_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX favorite_items_trash_pkey ON public.favorite_items_trash USING btree (id)` |
+| idx_fit_expires_at | btree | expires_at | não | sim | `(expires_at IS NOT NULL)` | `CREATE INDEX idx_fit_expires_at ON public.favorite_items_trash USING btree (expires_at) WHERE (expires_at IS NOT NULL)` |
 | idx_fit_user_deleted | btree | user_id, deleted_at | não | sim |  | `CREATE INDEX idx_fit_user_deleted ON public.favorite_items_trash USING btree (user_id, deleted_at DESC)` |
 
 
