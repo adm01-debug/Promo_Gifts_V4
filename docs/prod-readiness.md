@@ -1135,6 +1135,13 @@ O último merge no `main` é a #3584 (`e73a88d`, de outro agente), com migration
 
 Os outros workflows do `main` em `e73a88d` deram success: CodeQL, Supabase Linter Gate, Gate 5, Security Scan, Gitleaks, SSOT, os E2E de Critical Flows, de Personalização e de Swatch, Static Health, schema-snapshot e os 8 E15 de aplicação de migration.
 
+### Qualidade no `main` final (`371f52b`, 14/11 ~12:00–12:25Z, worktree limpo)
+
+- `npm run lint`: exit 0 ("Nenhuma regressão de lint detectada").
+- `npm run qa:typecheck`: exit 0 (`tsc -p tsconfig.app.json --noEmit`).
+- `npm run build`: exit 0 (`built in 9.32s`; `[chunk-cycles] OK`; `[production-harnesses] OK`).
+- `npx vitest run`: exit 0, com `Test Files 1470 passed | 130 skipped (1600)` e `Tests 27832 passed | 1133 skipped | 24 todo (28989)`. A linha de base da §1 tinha 26861 testes aprovados, e esta etapa não removeu nem pulou nenhum teste.
+
 ### PR desta etapa
 
 - adm01-debug/Promo_Gifts_V4#3600 — `fix(e2e)`, spec de recuperação de senha sem `page.goto` direto nem `fill` literal. Aberta; espera o merge dos recibos e o baseline de policies.
