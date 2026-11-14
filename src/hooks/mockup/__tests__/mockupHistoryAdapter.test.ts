@@ -1,10 +1,11 @@
 /**
- * Adaptador do histórico da aba do gerador: o teto de 10 itens é pedido ao
- * SERVIDOR (.limit), o filtro de dono do main continua aplicado e o mapeamento
- * cai para `area_config` em linhas anteriores às migrations de colunas.
+ * Adaptador do histórico da aba do gerador: o teto pedido ao SERVIDOR (.limit) é
+ * o teto T8 do serviço (200), o filtro de dono do main continua aplicado e o
+ * mapeamento cai para `area_config` em linhas anteriores às migrations.
  *
- * Sem a correção, a aba pedia a lista inteira (fetchMockupHistory → .limit(200))
- * e cortava no cliente.
+ * O teto NÃO pode ser menor que isso: busca por nome/SKU, filtros e paginação da
+ * aba rodam no cliente sobre esta lista, então um recorte de 10 alcançaria só os
+ * 10 últimos mockups.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
@@ -39,14 +40,14 @@ describe('mockupHistoryAdapter — fetchRecentMockupHistory', () => {
     state.response = { data: [], error: null };
   });
 
-  it('pede no máximo 10 itens ao servidor (teto no servidor, não no cliente)', async () => {
+  it('pede os 200 do teto T8 ao servidor (teto no servidor, não no cliente)', async () => {
     const { fetchRecentMockupHistory, MOCKUP_HISTORY_PANEL_LIMIT } =
       await import('@/hooks/mockup/mockupHistoryAdapter');
 
     await fetchRecentMockupHistory('user-1');
 
-    expect(MOCKUP_HISTORY_PANEL_LIMIT).toBe(10);
-    expect(callsOf('limit')[0]?.args).toEqual([10]);
+    expect(MOCKUP_HISTORY_PANEL_LIMIT).toBe(200);
+    expect(callsOf('limit')[0]?.args).toEqual([200]);
     expect(callsOf('order')[0]?.args).toEqual(['created_at', { ascending: false }]);
     // Sem paginação aqui: a aba é atalho, não a página completa.
     expect(callsOf('range')).toHaveLength(0);
@@ -74,7 +75,7 @@ describe('mockupHistoryAdapter — fetchRecentMockupHistory', () => {
     await fetchRecentMockupHistory('user-1', 0);
     await fetchRecentMockupHistory('user-1', -5);
 
-    expect(callsOf('limit').map((c) => c.args)).toEqual([[10], [10]]);
+    expect(callsOf('limit').map((c) => c.args)).toEqual([[200], [200]]);
   });
 
   it('mapeia a linha para GeneratedMockup, com fallback em area_config', async () => {

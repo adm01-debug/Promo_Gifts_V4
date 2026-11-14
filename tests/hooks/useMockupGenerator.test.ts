@@ -120,9 +120,9 @@ vi.mock("@/hooks/mockup/mockupGenerationService", () => ({
   deleteMockupFromDb: vi.fn().mockResolvedValue(undefined),
 }));
 
-// A aba do histórico pede ao servidor só os últimos mockups (teto no servidor).
+// A aba do histórico pede ao servidor o teto cheio (busca/filtros são no cliente).
 vi.mock("@/hooks/mockup/mockupHistoryAdapter", () => ({
-  MOCKUP_HISTORY_PANEL_LIMIT: 10,
+  MOCKUP_HISTORY_PANEL_LIMIT: 200,
   fetchRecentMockupHistory: vi.fn().mockResolvedValue([]),
 }));
 

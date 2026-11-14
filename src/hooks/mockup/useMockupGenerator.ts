@@ -366,7 +366,7 @@ export function useMockupGenerator() {
   const fetchHistory = useCallback(async () => {
     setIsLoadingHistory(true);
     try {
-      // Atalho: o servidor devolve só os últimos (MOCKUP_HISTORY_PANEL_LIMIT).
+      // Busca/filtros/paginação da aba são no cliente: o servidor devolve o teto cheio.
       const data = await fetchRecentMockupHistory(user?.id);
       setMockupHistory(data);
     } catch (error) {
