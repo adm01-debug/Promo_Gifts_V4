@@ -1473,6 +1473,21 @@ aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]` (porta 5
 |---|---|---|---|
 | `20261113235000` | `perf_idx_products_active_created_at_desc` | `45dff9f0d993448eae3c68c09aa143304601efb96029ccedda607e976ba28e46` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (linha `approved-by`) e `db-apply-migration.yml` (branch `claude/feat-idx-products-created-at-vacuum-tags-261113-2350`) |
 
+## 2026-11-14 — P0 da auditoria exaustiva: INSERT em `workspace_notifications` sem escopo (reaplica 20260622185000)
+
+A policy de INSERT viva em produção ainda é a versão fraca de `20260622143055`
+(`WITH CHECK (auth.uid() IS NOT NULL AND user_id IS NOT NULL)`), que permite qualquer
+autenticado notificar qualquer outro usuário (spam/phishing cross-tenant) — confirmado
+via `pg_policies` em 2026-11-14. A migration `20260622185000` já reapertava isso para
+`WITH CHECK (user_id = auth.uid())`, mas nunca foi de fato aplicada. Reaplica o mesmo
+fix; callers revalidados (2 inserts diretos do frontend são auto-notificação, edge
+functions usam `service_role`, aprovação de desconto roda via trigger `SECURITY DEFINER`)
+— nenhum quebra com o check estrito.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114170845` | `fix_workspace_notifications_insert_policy_reapply` | `7ab43f818e883b3de852ac10134d1c76614f90e861a11c8c4b08d2edc54b562b` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-workspace-notifications-rls-insert-261114-1708`) |
+
 ## 2026-11-14 — Data API cai a cada 10 min: `idle_session_timeout` do `authenticator` mata o LISTEN do PostgREST
 
 Logs do PostgREST (`analytics/endpoints/logs`, `source = 'postgrest_logs'`, 2026-11-14 03:00–04:00Z): a cada ~10 min
