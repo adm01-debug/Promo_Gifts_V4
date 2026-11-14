@@ -44,10 +44,10 @@ Cada fonte é atualizada independentemente; referências anteriores não comprov
 | fonte | estado |
 |---|---|
 | código do repo | coleta atual |
-| cron | coleta atual |
-| triggers | coleta atual |
-| views | coleta atual |
-| outras funções | coleta atual |
+| cron | coleta anterior |
+| triggers | coleta anterior |
+| views | coleta anterior |
+| outras funções | coleta anterior; corpos SQL não atualizados |
 
 
 
@@ -88,3 +88,33 @@ Cada fonte é atualizada independentemente; referências anteriores não comprov
 | `manifest.json` | data UTC da coleta concluída, erros e seções reaproveitadas; usado pelo índice de contexto |
 | `CHANGELOG.md` | diff semântico a cada mudança |
 | `errors.md` | seções que falharam na última coleta |
+
+## ⚠️ Problemas na última coleta
+
+Seções reaproveitadas da coleta anterior: `indexes`, `views`, `functions`, `triggers`, `policies`, `types`, `extensions`, `sequences`, `grants`, `roles`, `realtime`, `cron`, `queues`, `migrations`, `storage`, `vault`, `foreign_servers`, `webhooks`, `lints`.
+
+| seção | erro |
+|---|---|
+| indexes | terminating connection due to administrator command |
+| views | the connection is closed |
+| functions | the connection is closed |
+| triggers | the connection is closed |
+| policies | the connection is closed |
+| types | the connection is closed |
+| extensions | the connection is closed |
+| sequences | the connection is closed |
+| grants | the connection is closed |
+| roles | the connection is closed |
+| realtime | the connection is closed |
+| cron | the connection is closed |
+| queues | the connection is closed |
+| migrations | the connection is closed |
+| storage | the connection is closed |
+| vault | the connection is closed |
+| foreign_servers | the connection is closed |
+| webhooks | the connection is closed |
+| lints | the connection is closed |
+| cron_runs | the connection is closed |
+| table_stats | the connection is closed |
+| index_stats | the connection is closed |
+| db_stats | the connection is closed |

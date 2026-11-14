@@ -1,5 +1,7 @@
 # Migrations aplicadas (supabase_migrations.schema_migrations)
 
+> ⚠️ Seção `migrations` não pôde ser atualizada nesta coleta (ver errors.md); mostrando a versão anterior.
+
 SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Editor **não** aparecem aqui — compare com `schema.sql` para ver o estado real.
 
 | versão | nome | statements |

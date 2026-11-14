@@ -1,5 +1,7 @@
 # Roles
 
+> ⚠️ Seção `roles` não pôde ser atualizada nesta coleta (ver errors.md); mostrando a versão anterior.
+
 `config` traz limites por role (ex.: `statement_timeout` de anon/authenticated).
 
 | role | superuser | login | bypass RLS | create role | create db | conn limit | config | membro de |

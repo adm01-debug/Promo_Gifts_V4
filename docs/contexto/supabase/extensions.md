@@ -1,5 +1,7 @@
 # Extensões
 
+> ⚠️ Seção `extensions` não pôde ser atualizada nesta coleta (ver errors.md); mostrando a versão anterior.
+
 | extensão | versão instalada | versão disponível | schema |
 |---|---|---|---|
 | http | 1.6 | 1.6 | extensions |

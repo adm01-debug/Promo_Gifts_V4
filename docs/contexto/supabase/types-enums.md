@@ -1,5 +1,7 @@
 # Tipos customizados (enums, domains, composites)
 
+> ⚠️ Seção `types` não pôde ser atualizada nesta coleta (ver errors.md); mostrando a versão anterior.
+
 | tipo | kind | valores / definição | usado em |
 |---|---|---|---|
 | public.resultado_calculo_personalizacao | composite | tecnica_mae_codigo character varying(50), tecnica_mae_nome character varying(100), variante_codigo character varying(50), variante_nome character varying(100), table_code character varying(50), quantidade integer, num_cores integer, area_cm2 numeric(10,2), preco_custo_unitario numeric(10,4), custo_total numeric(12,2), markup_percent numeric(5,2), preco_venda_unitario numeric(10,4), valor_gravacao numeric(12,2), setup_base numeric(10,2), cobra_por_cor boolean, setup_total numeric(10,2), total_cobrado numeric(12,2), preco_por_peca_efetivo numeric(10,4), usou_setup_minimo boolean, economia_cliente numeric(10,2), preco_minimo_unitario numeric(10,2), aplicou_preco_minimo boolean, faixa_usada integer, fonte_preco character varying(50), mensagem text |  |
