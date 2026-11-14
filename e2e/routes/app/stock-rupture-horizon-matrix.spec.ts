@@ -3,38 +3,65 @@
  * indefinidos e diferentes combinações de alvo × horizonte.
  *
  * Usa fixture determinística → comportamento idêntico em qualquer ambiente.
+ * Dados efetivos (stockFetcher): HEALTHY 5000 un, 5/dia · RISK 800 un, 20/dia ·
+ * MISSING 0 un, sem velocidade (status `out_of_stock`, fora da fórmula).
+ * Projeção = atual − média × horizonte; `low_stock` quando projeção < alvo
+ * (src/lib/inventory/rupture-risk.ts). "Preciso de X un" é estrito: esconde o
+ * produto cujo disponível < alvo (src/lib/inventory/stock-filter.ts).
  *
- * Tabela de cenários:
- *  | alvo | horizonte | SKU MISSING | SKU HEALTHY | SKU RISK   |
- *  | 0    | 3d        | fallback    | in_stock    | in_stock   |
- *  | 100  | 3d        | fallback    | in_stock    | in_stock   |
- *  | 500  | 3d        | fallback    | in_stock    | in_stock   |  (proj 740 ≥ 500)
- *  | 500  | 30d       | fallback    | in_stock    | low_stock  |  (proj 200 < 500)
- *  | 1000 | 30d       | fallback    | in_stock    | low_stock  |  (proj 200 < 1000)
+ * Tabela de cenários (linhas visíveis → SKUs com chip low_stock):
+ *  | alvo | horiz | proj RISK | visíveis                 | low_stock |
+ *  | —    | 3d    | —         | HEALTHY, RISK, MISSING   | nenhuma   |
+ *  | —    | 30d   | —         | HEALTHY, RISK, MISSING   | nenhuma   |  (sem alvo: fórmula não roda)
+ *  | 100  | 3d    | 740       | HEALTHY, RISK            | nenhuma   |
+ *  | 500  | 3d    | 740       | HEALTHY, RISK            | nenhuma   |
+ *  | 500  | 7d    | 660       | HEALTHY, RISK            | nenhuma   |
+ *  | 500  | 15d   | 500       | HEALTHY, RISK            | nenhuma   |  (limite: 500 não é < 500)
+ *  | 500  | 30d   | 200       | HEALTHY, RISK            | RISK      |
+ *  | 700  | 7d    | 660       | HEALTHY, RISK            | RISK      |
+ *  | 700  | 3d    | 740       | HEALTHY, RISK            | nenhuma   |
+ *  | 1000 | 30d   | —         | HEALTHY                  | nenhuma   |  (RISK 800 < 1000 sai da lista)
  *
  * Invariantes:
  *  - SKU MISSING NUNCA entra em low_stock (pré-condição inválida).
+ *  - SKU HEALTHY fica `in_stock` em todas as combinações.
  *  - Nenhum pageerror em qualquer troca de horizonte/alvo.
- *  - Contador do chip é finito e ≥ 0 em todas as combinações.
  */
 import { test, expect } from '../../fixtures/test-base';
 import { gotoAndSettle } from '../../helpers/nav';
 import { loginAs } from '../../helpers/auth';
 import { installRuptureFixture } from '../../fixtures/stock-rupture-fixture';
+import {
+  lowStockChips,
+  selectRuptureHorizon,
+  stockRowBySku,
+  stockRows,
+  type RuptureHorizon,
+} from '../../helpers/rupture-horizon';
+
+const HEALTHY = 'FX-HEALTHY-001-A';
+const RISK = 'FX-RISK-001-A';
+const MISSING = 'FX-MISSING-001-A';
+const ALL_SKUS = [HEALTHY, RISK, MISSING];
 
 interface Case {
   target: string;
-  horizon: '3 dias' | '7 dias' | '15 dias' | '30 dias';
-  expectRiskCountMin: number;
-  expectRiskCountMax: number;
+  horizon: RuptureHorizon;
+  visible: string[];
+  lowStock: string[];
 }
 
 const CASES: Case[] = [
-  { target: '', horizon: '3 dias', expectRiskCountMin: 0, expectRiskCountMax: 0 },
-  { target: '100', horizon: '3 dias', expectRiskCountMin: 0, expectRiskCountMax: 0 },
-  { target: '500', horizon: '3 dias', expectRiskCountMin: 0, expectRiskCountMax: 0 },
-  { target: '500', horizon: '30 dias', expectRiskCountMin: 1, expectRiskCountMax: 1 },
-  { target: '1000', horizon: '30 dias', expectRiskCountMin: 1, expectRiskCountMax: 1 },
+  { target: '', horizon: 3, visible: [HEALTHY, RISK, MISSING], lowStock: [] },
+  { target: '', horizon: 30, visible: [HEALTHY, RISK, MISSING], lowStock: [] },
+  { target: '100', horizon: 3, visible: [HEALTHY, RISK], lowStock: [] },
+  { target: '500', horizon: 3, visible: [HEALTHY, RISK], lowStock: [] },
+  { target: '500', horizon: 7, visible: [HEALTHY, RISK], lowStock: [] },
+  { target: '500', horizon: 15, visible: [HEALTHY, RISK], lowStock: [] },
+  { target: '500', horizon: 30, visible: [HEALTHY, RISK], lowStock: [RISK] },
+  { target: '700', horizon: 7, visible: [HEALTHY, RISK], lowStock: [RISK] },
+  { target: '700', horizon: 3, visible: [HEALTHY, RISK], lowStock: [] },
+  { target: '1000', horizon: 30, visible: [HEALTHY], lowStock: [] },
 ];
 
 test.describe('@regression /estoque — matriz: campos indefinidos × alvo × horizonte', () => {
@@ -49,30 +76,41 @@ test.describe('@regression /estoque — matriz: campos indefinidos × alvo × ho
     await gotoAndSettle(page, '/estoque');
 
     const qtyInput = page.getByPlaceholder(/Preciso de X un/i);
-    const horizonControl = page.getByTestId('rupture-horizon-control');
-    const lowChip = page.getByTestId('stock-status-chip-low_stock');
-    await expect(horizonControl).toBeVisible();
-    await expect(lowChip).toBeVisible();
+    const rows = stockRows(page);
+    await expect(page.getByTestId('rupture-horizon-control')).toBeVisible();
+    await expect(rows).toHaveCount(ALL_SKUS.length, { timeout: 60_000 });
 
     for (const c of CASES) {
+      const label = `alvo=${c.target || '—'} horiz=${c.horizon}d`;
+
+      // Sincroniza o debounce (500ms) do alvo pela contagem de linhas: zera
+      // (3 linhas) e aplica o alvo do caso (linhas visíveis do caso).
+      await qtyInput.fill('');
+      await expect(rows, `${label}: reset do alvo`).toHaveCount(ALL_SKUS.length);
       await qtyInput.fill(c.target);
-      await horizonControl.locator('button[role="combobox"]').click();
-      await page.getByRole('option', { name: c.horizon }).click();
-      await page.waitForTimeout(350);
+      await expect(rows, `${label}: linhas visíveis`).toHaveCount(c.visible.length);
 
-      const count = Number((await lowChip.innerText()).match(/\d+/)?.[0] ?? '0');
-      expect(Number.isFinite(count), `caso ${JSON.stringify(c)}`).toBe(true);
-      expect(count, `alvo=${c.target} horiz=${c.horizon}`).toBeGreaterThanOrEqual(
-        c.expectRiskCountMin,
-      );
-      expect(count, `alvo=${c.target} horiz=${c.horizon}`).toBeLessThanOrEqual(
-        c.expectRiskCountMax,
-      );
+      await selectRuptureHorizon(page, c.horizon);
 
-      // SKU MISSING jamais aparece como risco — não pode existir chip/linha highlight.
-      const missingRow = page.getByText('FX-MISSING-001');
-      if (await missingRow.count().catch(() => 0)) {
-        await expect(missingRow.first()).toBeVisible();
+      await expect(lowStockChips(page), `${label}: total low_stock`).toHaveCount(
+        c.lowStock.length,
+      );
+      for (const sku of ALL_SKUS) {
+        const row = stockRowBySku(page, sku);
+        if (!c.visible.includes(sku)) {
+          await expect(row, `${label}: ${sku} fora da lista`).toHaveCount(0);
+          continue;
+        }
+        await expect(row, `${label}: ${sku} visível`).toHaveCount(1);
+        const expectedStatus = c.lowStock.includes(sku)
+          ? 'low_stock'
+          : sku === MISSING
+            ? 'out_of_stock'
+            : 'in_stock';
+        await expect(
+          row.getByTestId(`stock-status-chip-${expectedStatus}`),
+          `${label}: ${sku} com status ${expectedStatus}`,
+        ).toBeVisible();
       }
     }
 
