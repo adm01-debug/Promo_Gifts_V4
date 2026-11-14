@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "778dbf5ad000c18a185aba0140484f97ec7e41a7",
+  "commit": "4bb9964171dfd3ec19261f630c46f72ff25e3231",
   "branch": "main",
-  "data_commit": "2026-11-14T16:37:29-03:00",
+  "data_commit": "2026-11-14T16:50:37-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "4bb99641",
+    "data": "2026-11-14",
+    "assunto": "infra(ci): db-apply-migration aplica migration sem gate de aprovação (#3620)"
+   },
    {
     "sha": "778dbf5a",
     "data": "2026-11-14",
@@ -126,14 +131,9 @@
     "sha": "be2fb404",
     "data": "2026-11-14",
     "assunto": "fix(catalog): remover prefetch pós-login de v_products_public que nunca é lido (#3603)"
-   },
-   {
-    "sha": "7aa82a59",
-    "data": "2026-11-14",
-    "assunto": "docs(migrations): recibos E15 das 10 migrations da #3584 (supersede #3590–#3599) (#3602)"
    }
   ],
-  "arquivos_mudados_7d": 2067,
+  "arquivos_mudados_7d": 2066,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 66
+    "mudancas": 65
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 56
+    "mudancas": 55
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -254,6 +254,10 @@
     "mudancas": 10
    },
    {
+    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
+    "mudancas": 10
+   },
+   {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 10
    },
@@ -263,10 +267,6 @@
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
     "mudancas": 9
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 466
+    "commits": 465
    },
    {
     "autor": "Claude",

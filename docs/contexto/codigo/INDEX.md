@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `778dbf5ad000c18a185aba0140484f97ec7e41a7` (2026-11-14T16:37:29-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4bb9964171dfd3ec19261f630c46f72ff25e3231` (2026-11-14T16:50:37-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -589,14 +589,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43216 nós · 74673 arestas · 2436 comunidades · grafo do commit `778dbf5a`
+- 43216 nós · 74673 arestas · 2436 comunidades · grafo do commit `4bb99641`
 - comunidades maiores: vitest (886), ref_components (799), ref_integrations (757), ref_node_child_process (458), @tanstack/react-query (397), ref_hooks (395), ref_types (323), nav.ts (313), react (311), ref_node_fs (308), scripts (302), ref_utils (296)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (66)
-- PENDENCIAS.md (56)
+- RELATORIO_CI.md (65)
+- PENDENCIAS.md (55)
 - supabase/MIGRATIONS_SYNC_LOG.md (50)
 - package.json (30)
 - package-lock.json (21)
@@ -609,7 +609,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - analise-branches/RELATORIO_BRANCHES.md (11)
 - src/hooks/kit-builder/useKitBuilderPageState.ts (11)
 - analise-prs/RELATORIO_PRS.md (10)
-- e2e/flows/magazine-publish-smoke.spec.ts (10)
+- docs/coordenacao/conflitos-semanticos.md (10)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1184,6 +1184,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-14 `4bb99641` infra(ci): db-apply-migration aplica migration sem gate de aprovação (#3620)
 - 2026-11-14 `778dbf5a` Merge pull request #3619 from adm01-debug/claude/trem2-front-limpeza-261114-1850
 - 2026-11-14 `74ba1998` Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850
 - 2026-11-14 `ee13f748` fix(db): RLS de pedidos e notificações, is_trusted, revoke em net/supabase_functions, ledger P09 e índices de FK (#3618)
@@ -1198,7 +1199,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-14 `1d9185ef` Merge remote-tracking branch 'origin/claude/chore-remove-external-db-dead-code-261114-0000' into claude/trem2-front-limp
 - 2026-11-14 `140c527c` Merge remote-tracking branch 'origin/claude/chore-qa-pages-dev-only-261113-2352' into claude/trem2-front-limpeza-261114-
 - 2026-11-14 `cba82358` Merge remote-tracking branch 'origin/claude/fix-dados-simulados-prod-261113-2355' into claude/trem2-front-limpeza-261114
-- 2026-11-14 `84ee594d` Merge remote-tracking branch 'origin/claude/fix-pdp-timeout-prefetch-supersede-3528-261114-0214' into claude/trem2-front
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

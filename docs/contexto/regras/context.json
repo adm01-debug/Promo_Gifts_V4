@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "778dbf5ad000c18a185aba0140484f97ec7e41a7",
+  "sha": "4bb9964171dfd3ec19261f630c46f72ff25e3231",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 19:40 UTC",
+  "generated_at": "2026-11-14 19:51 UTC",
   "files_total": 10082,
   "code_files": 8617,
   "code_lines": 1214728
@@ -529914,10 +529914,20 @@
   }
  },
  "git": {
-  "sha": "778dbf5ad000c18a185aba0140484f97ec7e41a7",
+  "sha": "4bb9964171dfd3ec19261f630c46f72ff25e3231",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "4bb9964",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "infra(ci): db-apply-migration aplica migration sem gate de aprovação (#3620)",
+    "files": [
+     ".github/workflows/db-apply-migration.yml",
+     "docs/coordenacao/conflitos-semanticos.md"
+    ]
+   },
    {
     "sha": "778dbf5",
     "date": "2026-11-14",
@@ -530230,26 +530240,12 @@
     "files": [
      "docs/prod-readiness.md"
     ]
-   },
-   {
-    "sha": "c913055",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(ci): credenciais E2E com fallback de vendedor para E2E_USER (supersede #3457) (#3578)",
-    "files": [
-     ".github/workflows/ci.yml",
-     ".github/workflows/e2e-cart.yml",
-     ".github/workflows/e2e-stock.yml",
-     ".github/workflows/e2e.yml",
-     ".github/workflows/supplier-comparison.yml",
-     "docs/ci/SEGREDOS.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/coordenacao/conflitos-semanticos.md",
-    3
+    4
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -530274,6 +530270,10 @@
    [
     "supabase/functions/crm-db-bridge/scope_integration_test.ts",
     2
+   ],
+   [
+    ".github/workflows/db-apply-migration.yml",
+    1
    ],
    [
     "scripts/drift-baseline.mjs",
@@ -530321,10 +530321,6 @@
    ],
    [
     "supabase/rollbacks/20261114031000_rollback.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261114170845_rollback.sql",
     1
    ]
   ]
