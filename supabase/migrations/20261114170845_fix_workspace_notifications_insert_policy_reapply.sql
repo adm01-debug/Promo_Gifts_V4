@@ -1,3 +1,4 @@
+-- Rollback: supabase/rollbacks/20261114170845_rollback.sql
 -- Achado P0 da auditoria exaustiva de 2026-11-14 (docs/AUDITORIA-EXAUSTIVA-2026-11-14.md):
 -- a policy de INSERT viva em produção em workspace_notifications ainda é a versão fraca
 -- de 20260622143055 ("Authenticated can insert notifications for valid users",
