@@ -11,11 +11,6 @@
  * get_category_descendants — param name fix:
  *   DB param: p_category_id (not category_uuid)
  *
- * 6 non-existent RPCs: fn_get_customization_price_v2, fn_get_product_print_areas (v1+v2),
- *   fn_link_product_print_areas, fn_backfill_product_print_areas, fn_find_fornecedor_price_table
- *   → Marked as NOT_IN_DB in dispatch table with descriptive errors.
- *   Individual wrappers return safe empty values via try/catch.
- *
  * Confirmed correct: fn_get_product_customization_options(p_product_id uuid) ✓
  */
 import { supabase } from '@/integrations/supabase/client';
@@ -190,42 +185,6 @@ export async function getCategoryDescendants(categoryId: string): Promise<string
   }
 }
 
-// ── RPCs not yet in DB ────────────────────────────────────────────────────────────────────
-// Audit confirmed these functions do not exist in doufsxqlfjyuvxuezpln yet.
-// Stubs return safe empty values and log a clear NOT_IN_DB warning.
-
-export function getProductPrintAreas(productId: string): Promise<unknown[]> {
-  logger.warn(
-    `[rpc-native] fn_get_product_print_areas NOT_IN_DB for product ${productId}. Use print_area_techniques table directly.`,
-  );
-  return Promise.resolve([]);
-}
-
-export function getProductPrintAreasV2(productId: string): Promise<unknown[]> {
-  logger.warn(`[rpc-native] fn_get_product_print_areas_v2 NOT_IN_DB for product ${productId}.`);
-  return Promise.resolve([]);
-}
-
-export function linkProductPrintAreas(
-  productId: string,
-  _areas: unknown[],
-): Promise<{ success: boolean; affected: number }> {
-  logger.warn(`[rpc-native] fn_link_product_print_areas NOT_IN_DB. Product: ${productId}`);
-  return Promise.resolve({ success: false, affected: 0 });
-}
-
-export function backfillProductPrintAreas(
-  _productIds: string[],
-): Promise<{ success: boolean; processed: number; errors: number }> {
-  logger.warn('[rpc-native] fn_backfill_product_print_areas NOT_IN_DB.');
-  return Promise.resolve({ success: false, processed: 0, errors: 0 });
-}
-
-export function findFornecedorPriceTable(_params: { technique_id: string }): Promise<null> {
-  logger.warn('[rpc-native] fn_find_fornecedor_price_table NOT_IN_DB.');
-  return Promise.resolve(null);
-}
-
 // ── Dispatch table ────────────────────────────────────────────────────────────────────────
 type DispatchFn = (params: Record<string, unknown>) => Promise<unknown>;
 
@@ -236,33 +195,6 @@ const RPC_DISPATCH: Record<string, DispatchFn> = {
   fn_get_product_customization_options: (p) =>
     getProductCustomizationOptions(p.p_product_id as string),
   get_category_descendants: (p) => getCategoryDescendants(p.p_category_id as string),
-  // ➠ Not in DB yet — safe returns (FASE 2: was throw, now returns safe empty)
-  fn_get_customization_price_v2: () => {
-    logger.warn(
-      '[rpc-native] fn_get_customization_price_v2 NOT_IN_DB — returning safe empty. Use fn_get_customization_price instead.',
-    );
-    return Promise.resolve({ success: false, preco_total: 0, preco_unitario: 0 });
-  },
-  fn_get_product_print_areas: () => {
-    logger.warn('[rpc-native] fn_get_product_print_areas NOT_IN_DB — returning [].');
-    return Promise.resolve([]);
-  },
-  fn_get_product_print_areas_v2: () => {
-    logger.warn('[rpc-native] fn_get_product_print_areas_v2 NOT_IN_DB — returning [].');
-    return Promise.resolve([]);
-  },
-  fn_link_product_print_areas: () => {
-    logger.warn('[rpc-native] fn_link_product_print_areas NOT_IN_DB — returning safe empty.');
-    return Promise.resolve({ success: false, affected: 0 });
-  },
-  fn_backfill_product_print_areas: () => {
-    logger.warn('[rpc-native] fn_backfill_product_print_areas NOT_IN_DB — returning safe empty.');
-    return Promise.resolve({ success: false, processed: 0, errors: 0 });
-  },
-  fn_find_fornecedor_price_table: () => {
-    logger.warn('[rpc-native] fn_find_fornecedor_price_table NOT_IN_DB — returning null.');
-    return Promise.resolve(null);
-  },
 };
 
 /**

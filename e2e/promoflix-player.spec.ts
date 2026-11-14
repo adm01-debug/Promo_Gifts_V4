@@ -1,8 +1,10 @@
 import { test, expect } from "./fixtures/test-base";
 import { gotoAndSettle } from "./helpers/nav";
+import { devOnlyRouteReason, isProductionBuild } from "./helpers/dev-only-route";
 
 test.describe("PromoFlix Player - Desktop & Mobile", () => {
-  
+  test.skip(isProductionBuild, devOnlyRouteReason("/promoflix-playground"));
+
   test.beforeEach(async ({ page }) => {
     // Navigate to playground
     await gotoAndSettle(page, "/promoflix-playground");
