@@ -1428,3 +1428,17 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261112140000` | `fix_rls_supplier_products_raw_history_p2027` | `6aa856168cc1ef0e6308757fe01b04f4917f043170ff3ce996e0933a52575b9f` | **aplicada em 13/11/2026** pelo `db-apply-migration.yml` (run 43471685129; recibo E15 acima) |
+
+## 2026-11-13 — CRON-003: proposta de reagendamento noturno dos crons pesados de fornecedores
+
+Consulta read-only em produção (2026-11-13 23:5xZ, `cron.job` + `cron.job_run_details` 24 h): 137 jobs ativos,
+`cron.max_running_jobs = 32`, 70 falhas "job startup timeout" em 15 jobs nas últimas 3 h (prod-readiness §7.4).
+A migration move 14 jobs de scraping/imagens/enriquecimento (xbz-*, sm-*, asia-*, spot-relink, kit-ficha-*) para
+01:00–08:59 UTC (22:00–05:59 BRT) nos mesmos minutos de hoje e reduz 7 jobs de estoque/ingestão/MV para 1×/h ou
+1×/2 h. Opção 2 de prod-readiness §7.8 — decisão de negócio do dono (atraso de estoque/preço); cada linha pode ser
+vetada. `cron.max_running_jobs` não tem caminho por migration (GUC; ALTER SYSTEM bloqueado) — só recomendação.
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261113235800` | `cron003_reagendamento_noturno_fornecedores` | `f0cddef3bb3e9b322c5e9767a1be6e0bb916d65b7bd8d60278e8962ea4db680e` | pendente — PROPOSTA; aguarda `[AUTORIZAÇÃO BD]` do dono (linha a linha) e `db-apply-migration.yml` (branch `claude/perf-cron-reagendamento-noturno-261113-2356`) |
