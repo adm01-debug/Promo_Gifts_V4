@@ -62,7 +62,7 @@ export function PromptCustomizationPanel({
             <MapPin className="h-3 w-3" /> Local
           </Label>
           <Select value={selectedAreaId || 'none'} onValueChange={onAreaChange}>
-            <SelectTrigger className="h-8 text-xs">
+            <SelectTrigger className="h-8 text-xs" aria-label="Local da personalização">
               <SelectValue placeholder="Selecione..." />
             </SelectTrigger>
             <SelectContent>
@@ -98,7 +98,7 @@ export function PromptCustomizationPanel({
             onValueChange={onTechChange}
             disabled={!selectedAreaId || availableTechniques.length === 0}
           >
-            <SelectTrigger className="h-8 text-xs">
+            <SelectTrigger className="h-8 text-xs" aria-label="Técnica de personalização">
               <SelectValue
                 placeholder={selectedAreaId ? 'Selecione...' : 'Escolha local primeiro'}
               />
