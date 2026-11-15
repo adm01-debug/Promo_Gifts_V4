@@ -269,6 +269,33 @@ export const ExpertChatSchemaV1 = z.object({
   context: z.record(z.unknown()).optional(),
 });
 
+/**
+ * mockup-assistant — assistente "Matheus" (chat de orientação, sem geração de imagem).
+ * Espelha EXATAMENTE o Zod da edge (supabase/functions/mockup-assistant/index.ts):
+ * message 1..2000; history opcional de até 20 turnos role user|assistant com
+ * content 1..2000; context opcional com 4 campos de até 200 chars.
+ */
+const MockupAssistantContextSchema = z.object({
+  productName: z.string().trim().max(200).optional(),
+  techniqueName: z.string().trim().max(200).optional(),
+  dimensions: z.string().trim().max(200).optional(),
+  hasLogo: z.boolean().optional(),
+});
+
+export const MockupAssistantSchemaV1 = z.object({
+  message: nonEmptyString.max(2000),
+  history: z
+    .array(
+      z.object({
+        role: z.enum(["user", "assistant"]),
+        content: nonEmptyString.max(2000),
+      }),
+    )
+    .max(20)
+    .optional(),
+  context: MockupAssistantContextSchema.optional(),
+});
+
 export const GenerateAdImageSchemaV1 = z.object({
   productImageUrl: z.string().url(),
   scenePrompt: nonEmptyString,
@@ -900,6 +927,12 @@ export const CONTRACTS: Record<string, ContractDefinition> = {
     endpoint: "generate-mockup",
     description: "Compose a product mockup with applied logo",
     versions: { v1: GenerateMockupSchemaV1 },
+    defaultVersion: "v1",
+  },
+  "mockup-assistant": {
+    endpoint: "mockup-assistant",
+    description: "Assistente \"Matheus\" — chat de orientação de aplicação (texto, sem imagem)",
+    versions: { v1: MockupAssistantSchemaV1 },
     defaultVersion: "v1",
   },
   "kit-ai-builder": {
