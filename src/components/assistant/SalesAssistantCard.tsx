@@ -37,6 +37,7 @@ import {
 } from '@/lib/assistant/buildReason';
 import { useClientBrandSignals } from '@/hooks/assistant/useClientBrandSignals';
 import {
+  ErroDeRpcNaoAplicada,
   SCORE_MINIMO,
   nomeDoGrupoDeCorUnico,
   useSalesAssistantCandidates,
