@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
-import { Ruler, Target, Lock, Minus, Plus } from 'lucide-react';
+import { Ruler, Target, Lock, LockOpen, Minus, Plus } from 'lucide-react';
 
 interface LogoSizeControlsProps {
   logoPreview: string | null;
@@ -33,6 +34,32 @@ export function LogoSizeControls({
   const effectiveMaxW = maxWidth && maxWidth > 0 ? maxWidth : 20;
   const effectiveMaxH = maxHeight && maxHeight > 0 ? maxHeight : 20;
 
+  // Vínculo de proporções: ligado, cada lado arrasta o outro mantendo a razão
+  // largura:altura da área, para o logo inteiro ser exibido sem distorção.
+  const [aspectLinked, setAspectLinked] = useState(true);
+  const ratio = logoWidth > 0 && logoHeight > 0 ? logoWidth / logoHeight : 1;
+  const round2 = (n: number) => Math.round(n * 100) / 100;
+
+  const setWidth = (nextWidth: number) => {
+    const width = Math.min(effectiveMaxW, Math.max(1, nextWidth));
+    if (aspectLinked) {
+      const height = Math.min(effectiveMaxH, Math.max(1, round2(width / ratio)));
+      onSizeChange(round2(width), height);
+      return;
+    }
+    onSizeChange(round2(width), logoHeight);
+  };
+
+  const setHeight = (nextHeight: number) => {
+    const height = Math.min(effectiveMaxH, Math.max(1, nextHeight));
+    if (aspectLinked) {
+      const width = Math.min(effectiveMaxW, Math.max(1, round2(height * ratio)));
+      onSizeChange(width, round2(height));
+      return;
+    }
+    onSizeChange(logoWidth, round2(height));
+  };
+
   return (
     <div className="flex gap-4 border-t pt-2">
       {/* Left: Engraving Area */}
@@ -60,7 +87,7 @@ export function LogoSizeControls({
                 aria-label="Diminuir largura"
                 className="h-7 w-7"
                 disabled={logoWidth <= 1}
-                onClick={() => onSizeChange(Math.max(1, logoWidth - 0.5), logoHeight)}
+                onClick={() => setWidth(logoWidth - 0.5)}
               >
                 <Minus aria-hidden="true" className="h-3 w-3" />
               </Button>
@@ -73,7 +100,7 @@ export function LogoSizeControls({
                 aria-label="Aumentar largura"
                 className="h-7 w-7"
                 disabled={logoWidth >= effectiveMaxW}
-                onClick={() => onSizeChange(Math.min(effectiveMaxW, logoWidth + 0.5), logoHeight)}
+                onClick={() => setWidth(logoWidth + 0.5)}
               >
                 <Plus aria-hidden="true" className="h-3 w-3" />
               </Button>
@@ -81,7 +108,7 @@ export function LogoSizeControls({
           </div>
           <Slider
             value={[logoWidth]}
-            onValueChange={(v) => onSizeChange(v[0], logoHeight)}
+            onValueChange={(v) => setWidth(v[0])}
             min={1}
             max={effectiveMaxW}
             step={0.5}
@@ -100,7 +127,7 @@ export function LogoSizeControls({
                 aria-label="Diminuir altura"
                 className="h-7 w-7"
                 disabled={logoHeight <= 1}
-                onClick={() => onSizeChange(logoWidth, Math.max(1, logoHeight - 0.5))}
+                onClick={() => setHeight(logoHeight - 0.5)}
               >
                 <Minus aria-hidden="true" className="h-3 w-3" />
               </Button>
@@ -113,7 +140,7 @@ export function LogoSizeControls({
                 aria-label="Aumentar altura"
                 className="h-7 w-7"
                 disabled={logoHeight >= effectiveMaxH}
-                onClick={() => onSizeChange(logoWidth, Math.min(effectiveMaxH, logoHeight + 0.5))}
+                onClick={() => setHeight(logoHeight + 0.5)}
               >
                 <Plus aria-hidden="true" className="h-3 w-3" />
               </Button>
@@ -121,7 +148,7 @@ export function LogoSizeControls({
           </div>
           <Slider
             value={[logoHeight]}
-            onValueChange={(v) => onSizeChange(logoWidth, v[0])}
+            onValueChange={(v) => setHeight(v[0])}
             min={1}
             max={effectiveMaxH}
             step={0.5}
@@ -193,10 +220,21 @@ export function LogoSizeControls({
         </div>
 
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Lock aria-hidden="true" className="h-3 w-3 text-primary" />
-            <span>Proporção protegida</span>
-          </div>
+          <Button
+            variant={aspectLinked ? 'secondary' : 'outline'}
+            size="sm"
+            className="h-7 gap-1.5 px-2 text-[10px]"
+            aria-pressed={aspectLinked}
+            aria-label={`Vínculo de proporções (${aspectLinked ? 'ligado' : 'desligado'})`}
+            onClick={() => setAspectLinked((v) => !v)}
+          >
+            {aspectLinked ? (
+              <Lock aria-hidden="true" className="h-3 w-3 text-primary" />
+            ) : (
+              <LockOpen aria-hidden="true" className="h-3 w-3 text-muted-foreground" />
+            )}
+            {aspectLinked ? 'Proporção vinculada' : 'Proporção livre'}
+          </Button>
           <Button
             variant="ghost"
             size="sm"
@@ -208,6 +246,10 @@ export function LogoSizeControls({
             Resetar 100%
           </Button>
         </div>
+
+        <p className="text-[10px] text-muted-foreground">
+          Mantém a proporção da marca ao redimensionar.
+        </p>
 
         {/* Status */}
         <div className="border-t pt-2">
