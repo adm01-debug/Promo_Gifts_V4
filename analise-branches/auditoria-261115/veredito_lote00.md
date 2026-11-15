@@ -35,7 +35,7 @@ Auditoria de banco de 50 etapas (E08–E49): migrations, gates de CI e scripts. 
 
 Provas:
 - Dos 141 arquivos da branch, só 44 não existem na `main` por caminho, e **42 deles são
-  `docs/E*.md` / `docs/*.json` de relatório** + `supabase/migrations-snapshot/SCHEMA_DRIFT.sql` (gerado)
+  `docs/E*.md` / `docs/*.json` de relatório** + o snapshot `SCHEMA_DRIFT.sql` (gerado)
   + `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` (124.910 linhas de dump) e
   `docs/db/LEDGER_DATA_2026-09-16.sql` (165.023) — é daí que vêm os 83.314 "linhas faltando".
 - As 13 migrations E17–E47 estão na `main` com conteúdo idêntico. Verificado byte a byte:
@@ -89,7 +89,7 @@ Provas do conflito:
   Falha o CI se qualquer referência residual reaparecer".
 - `origin/main:supabase/migrations-snapshot/ALL_IN_ONE.sql:207551` e `:208000` —
   `DROP TABLE IF EXISTS public.quote_comments CASCADE;`.
-- Arquivo em questão: `supabase/migrations/20261110022404_restore_quote_comments_scoped_threads.sql`
+- Arquivo em questão: a migration `20261110022404_restore_quote_comments_scoped_threads.sql` (da branch, nao da arvore)
   (+ `supabase/rollbacks/20261110022404_rollback.sql`), cabeçalho: "Status: prepared for review;
   not applied to production" e uma exceção explícita ao soft-delete ("REVIEW REQUIRED… intentional hard DELETE").
 
@@ -272,7 +272,7 @@ Provas:
 | `bot/schema-snapshot` | DESCARTAR | Nada — snapshot semanal auto-gerado por `schema-snapshot-export.yml` (commit do `github-actions[bot]`); re-disparar o workflow produz igual. |
 | `importado/backup-20261028/claude/audit-gaps-20260915` | INCORPORADA | Nada — 13 migrations e os scripts E17–E47 idênticos na `main`; gate de sync-log virou step em `static-checks.yml:183`; `stock-module-quality.yml` foi removido de propósito em `6a6abc035`. Resto é relatório/dump. |
 | `importado/local/projetos__Promo_Gifts_V4.backup-20261028` | INCORPORADA | Nada — `types.ts` é gerado e a `main` está +450 linhas à frente; allowlist em `main:docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json:144`; recibos em `main:supabase/MIGRATIONS_SYNC_LOG.md:1316,1320`. |
-| `codex/fix-gate1-kit-pdf-types-261109-2252` | DECISAO_HUMANA | Decidir se a tabela `quote_comments` volta: `supabase/migrations/20261110022404_restore_quote_comments_scoped_threads.sql` recria o que a `main` dropou (`ALL_IN_ONE.sql:207551`) e proíbe por gate (`scripts/check-no-quote-comments.mjs`). Todo o resto é obsoleto. |
+| `codex/fix-gate1-kit-pdf-types-261109-2252` | DECISAO_HUMANA | Decidir se a tabela `quote_comments` volta: a migration `20261110022404_restore_quote_comments_scoped_threads.sql` (da branch, nao da arvore) recria o que a `main` dropou (`ALL_IN_ONE.sql:207551`) e proíbe por gate (`scripts/check-no-quote-comments.mjs`). Todo o resto é obsoleto. |
 | `claude/resgate-3390-261113` | INCORPORADA | Nada — resgate cirúrgico já feito no PR #3631 (`main:src/lib/kit-builder/snapshot/read-draft.ts:187-189`), com as 13 exclusões registradas em `main:docs/coordenacao/conflitos-semanticos.md:31`. |
 | `claude/fix-pr3517-gate1-baseline-261113-2336` | INCORPORADA | Nada — subconjunto da branch acima; os 11 arquivos exclusivos são os `*.types.ts` de baseline e os shims `voiceFilterPatch`/`quoteDraftRecovery`, excluídos por decisão registrada. |
 | `claude_pink/lucid-franklin-mjhkyc` | DESCARTAR | Nada — 56 arquivos de dossiê de PR, dumps em `docs/prod-readiness-evidencias/` e inventário gerado; zero diff em `src/`, `supabase/`, `scripts/`, `.github/`. |

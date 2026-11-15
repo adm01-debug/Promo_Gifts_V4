@@ -206,9 +206,9 @@ Reduz a frequência de 7 tarefas automáticas que rodam à toa: 648 → 97 execu
 **10 das 11 migrations desta branch já estão na main.** Falta exatamente a 11ª, e ela foi
 deixada de fora de propósito.
 
-- Já na main (com rollback cada): `origin/main:supabase/migrations/2026111212{0000,0100,0200,0300,0400,0500,0600,0700,0800,0900}_*.sql` e `origin/main:supabase/rollbacks/2026111212{0000..0900}_rollback.sql`.
+- Já na main (com rollback cada): as 10 migrations `20261112120000` a `20261112120900` ja na `main` e `origin/main:supabase/rollbacks/2026111212{0000..0900}_rollback.sql`.
 - **A main registra o que ficou fora**: `origin/main:supabase/MIGRATIONS_SYNC_LOG.md:1459` — "a RPC de inteligência de mercado (`fn_market_intelligence_macro`) **ficou de fora — ver PR**".
-- O que falta resgatar: `supabase/migrations/20261112121000_fn_market_intelligence_macro.sql` (65 linhas), `supabase/rollbacks/20261112121000_rollback.sql` (6) e `src/hooks/intelligence/useMarketIntelligenceMacro.ts` (+27/−13).
+- O que falta resgatar: a migration `20261112121000_fn_market_intelligence_macro.sql` (da branch, nao da arvore) (65 linhas), `supabase/rollbacks/20261112121000_rollback.sql` (6) e `src/hooks/intelligence/useMarketIntelligenceMacro.ts` (+27/−13).
 - **O bug está vivo na main hoje:** o gráfico de `/inteligencia-comercial` lê `stock_daily_summary` cru via bridge, sem filtro de data e em ordem crescente — `origin/main:src/hooks/intelligence/useMarketIntelligenceMacro.ts:60` (`table: 'stock_daily_summary'`, `limit: 5000`, `orderBy: summary_date ascending`). O corte de 1000 linhas do PostgREST devolve as linhas mais **antigas** de ~2,84M, todas descartadas no cliente pelo corte de data → série vazia → **a tela mostra o mock como se fosse dado real**.
 - **O que decidir:** a própria migration diz, no cabeçalho, "Performance: **NAO MEDIDA**" — sem `p_supplier_id` não há índice utilizável e a função faz seq scan em ~2,84M linhas sob o `statement_timeout` de `authenticated`. Antes de mergear o front é preciso rodar `EXPLAIN (ANALYZE, BUFFERS)` com `p_days=360`; se ficar perto do timeout, é preciso um índice `(summary_date, supplier_id)` criado concorrentemente em migration separada, **com aprovação do dono**. Decisão: aprovar a medição + eventual índice, ou deixar o gráfico mostrando mock.
 

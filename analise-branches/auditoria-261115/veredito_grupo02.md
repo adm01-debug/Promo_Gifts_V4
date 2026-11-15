@@ -59,7 +59,7 @@ que proíbe CORS inline em edge). Teste `generate-mockup.cors.test.ts` sem equiv
 cobria só o helper descartado.
 
 ## 4. claude/chore-migration-supplier-rls-261108-2230 — `3ddfd97c65` — INCORPORADA
-Branch: `supabase/migrations/20261027200000_supplier_stricker_rls_deny_all.sql` + rollback.
+Branch: a migration `20261027200000_supplier_stricker_rls_deny_all.sql` (da branch, nao da arvore) + rollback.
 A main tem a versão **que a substitui**:
 `supabase/migrations/20261027195959_supplier_stricker_rls_deny_all.sql:9` — "Esta versão
 substitui 20261027200000, ainda pendente e nunca aplicada" — e é mais forte (policy

@@ -60,7 +60,7 @@ sair por `deploy-edge-functions.yml`.
 Mexe nos três itens que o Git 7 reserva ao dono: **migration de produção, workflow novo e reconciliação do
 histórico remoto de migrations**. Nada disso está na main.
 
-- `supabase/migrations/20260511235959_bootstrap_public_dependencies_for_application_schemas.sql` (309
+- a migration `20260511235959_bootstrap_public_dependencies_for_application_schemas.sql` (da branch, nao da arvore) (309
   linhas, AUSENTE da main): recria em `public` as tabelas e colunas que nasceram fora de migration
   (`categories` com 29 colunas `ADD COLUMN IF NOT EXISTS`, `material_groups`, `material_types`,
   `product_materials`, `product_category_assignments`, `product_images`, `supplier_branches`,
@@ -185,7 +185,7 @@ concluída... `types.ts` já tem `magazines:`" — confirmado: a main tem `magaz
 
 ## 8. INCORPORADA — claude/fix-p09-ledger-sem-ausentes-261112-0120 (d146df99d7)
 
-A migration da branch (`supabase/migrations/20261112013000_p09_reconcile_ledger_schema_migrations.sql`, 410
+A migration da branch (a migration `20261112013000_p09_reconcile_ledger_schema_migrations.sql` (da branch, nao da arvore), 410
 linhas) foi **substituída por uma versão mais rigorosa já na main**:
 `supabase/migrations/20261114014500_p09_reconcile_ledger_schema_migrations.sql:25-34` diz textualmente
 "REVISÃO 2026-11-14 (versão 20261114014500, supersede #3411; **20261112013000 nunca foi aplicada**)" e
