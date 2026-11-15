@@ -38,6 +38,7 @@ import {
 import { useClientBrandSignals } from '@/hooks/assistant/useClientBrandSignals';
 import {
   SCORE_MINIMO,
+  nomeDoGrupoDeCorUnico,
   useSalesAssistantCandidates,
   type CandidatoDeEncaixe,
 } from '@/hooks/assistant/useSalesAssistantCandidates';
@@ -98,7 +99,9 @@ export function SalesAssistantCard({ clientId }: SalesAssistantCardProps) {
 
   const pedido: PedidoDeEncaixe = {
     queriaNovidade: false,
-    corDaLogoNome: sinais.encaixesDeCor[0]?.nomeDoGrupo ?? null,
+    // Mesma regra do motivo por produto: com mais de um grupo de cor casado, não
+    // dá para nomear um deles sem arriscar dizer a cor errada.
+    corDaLogoNome: nomeDoGrupoDeCorUnico(sinais),
     faixaMin: null,
     faixaMax: null,
   };
