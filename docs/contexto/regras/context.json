@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "5e59cb9c7969b118d2573608af307f8acbb63506",
+  "sha": "7e6d63dedadbd372775f3c84cd52a13e41002c7b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 13:22 UTC",
+  "generated_at": "2026-11-15 14:02 UTC",
   "files_total": 10152,
   "code_files": 8677,
   "code_lines": 1223341
@@ -532818,10 +532818,20 @@
   }
  },
  "git": {
-  "sha": "5e59cb9c7969b118d2573608af307f8acbb63506",
+  "sha": "7e6d63dedadbd372775f3c84cd52a13e41002c7b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7e6d63d",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "fix(ci): E14 volta a valer para PR que só toca docs/ci/SEGREDOS.md (#3661)",
+    "files": [
+     ".github/workflows/deploy-gates.yml",
+     "docs/agentes/ci-gates.md"
+    ]
+   },
    {
     "sha": "5e59cb9",
     "date": "2026-11-15",
@@ -533283,13 +533293,6 @@
     "author": "Claude",
     "subject": "Merge remote-tracking branch 'origin/main' into claude/trem4-front-perf-261114-2020",
     "files": []
-   },
-   {
-    "sha": "8765379",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945",
-    "files": []
    }
   ],
   "hot_files": [
@@ -533304,6 +533307,10 @@
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     3
+   ],
+   [
+    ".github/workflows/deploy-gates.yml",
+    2
    ],
    [
     "src/components/mockup/MockupClientSelector.tsx",
@@ -533358,19 +533365,15 @@
     2
    ],
    [
+    "docs/agentes/ci-gates.md",
+    1
+   ],
+   [
     "artifacts/route-test-matrix.json",
     1
    ],
    [
     "e2e/flows/04r-undo-toast-a11y-keyboard.spec.ts",
-    1
-   ],
-   [
-    "e2e/helpers/auth.ts",
-    1
-   ],
-   [
-    "e2e/routes/public/colecao-publica.spec.ts",
     1
    ]
   ]
