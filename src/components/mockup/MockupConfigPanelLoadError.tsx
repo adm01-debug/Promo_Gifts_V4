@@ -52,3 +52,22 @@ export function LoadErrorBlock({ testId, title, message, onRetry }: LoadErrorBlo
     </Alert>
   );
 }
+
+/**
+ * Aviso de falha de carga das TÉCNICAS de personalização. Irmão de CatalogLoadError
+ * (MockupCatalogStates.tsx): sem ele, o bloco da técnica só mostrava o Select vazio e o vendedor
+ * não distinguia "produto sem personalização" de "a lista não carregou".
+ */
+export function TechniquesLoadError({
+  message,
+  onRetry,
+}: Omit<LoadErrorBlockProps, 'testId' | 'title'>) {
+  return (
+    <LoadErrorBlock
+      testId="mockup-techniques-error"
+      title="Não foi possível carregar técnicas"
+      message={message}
+      onRetry={onRetry}
+    />
+  );
+}

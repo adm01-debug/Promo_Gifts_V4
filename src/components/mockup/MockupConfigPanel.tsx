@@ -24,6 +24,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useMediaQuery } from '@/hooks/ui/useMediaQuery';
 import { TechniqueTooltip } from './TechniqueTooltip';
+import { TechniquesLoadError } from './MockupConfigPanelLoadError';
+import type { Technique } from './mockupTechnique';
 import { MockupClientSelector } from './MockupClientSelector';
 import { MockupProductSelector, type MockupProductSelection } from './MockupProductSelector';
 import { MultiAreaManager, type PersonalizationArea } from './MultiAreaManager';
@@ -33,26 +35,6 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import type { DetectedColor } from '@/hooks/simulation';
 
 const log = createClientLogger('mockup-config-panel');
-interface Technique {
-  id: string;
-  name: string;
-  code: string | null;
-  /** Permite Technique ser atribuível a MockupTechnique (que aceita campos arbitrários do bridge). */
-  [key: string]: unknown;
-  maxWidth?: number | null;
-  maxHeight?: number | null;
-  areaName?: string | null;
-  locationName?: string | null;
-  // Atributos novos (vindos de TechniqueWithLimits)
-  maxColors?: number | null;
-  chargesPerColor?: boolean;
-  usesDimension?: boolean;
-  isCurved?: boolean;
-  setupCost?: number | null;
-  variationLabel?: string | null;
-  groupCode?: string | null;
-  shape?: string | null;
-}
 
 export interface MockupClient {
   id: string;
@@ -76,6 +58,10 @@ interface MockupConfigPanelProps {
   onClientSelect: (client: MockupClient | null) => void;
   onReset: () => void;
   filteredTechniques: Technique[];
+  /** Erro de carga das técnicas (null/undefined = sem erro); avisa no bloco da técnica. */
+  techniquesError?: string | null;
+  /** Retry da MESMA carga de técnicas que falhou. */
+  onRetryTechniques?: () => void;
   // Multi-area props
   activeAreaId: string | null;
   onAreasChange: (areas: PersonalizationArea[]) => void;
@@ -112,6 +98,8 @@ export function MockupConfigPanel({
   onClientSelect,
   onReset,
   filteredTechniques,
+  techniquesError,
+  onRetryTechniques,
   activeAreaId,
   onAreasChange,
   onActiveAreaChange,
@@ -214,6 +202,12 @@ export function MockupConfigPanel({
                   )
                 }
               >
+                {/* A-estados: a falha de carga avisa no próprio bloco, acima do Select (que
+                    sozinho cairia no vazio "Selecione um produto primeiro"). O resto do painel
+                    continua montado. */}
+                {techniquesError && (
+                  <TechniquesLoadError message={techniquesError} onRetry={onRetryTechniques} />
+                )}
                 <Select
                   value={selectedTechnique?.id ?? ''}
                   onValueChange={(value) => {

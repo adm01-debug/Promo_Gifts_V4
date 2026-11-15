@@ -307,6 +307,8 @@ export default function MockupGenerator() {
                   isLoadingData={mg.isLoadingData}
                   personalizationAreas={mg.personalizationAreas}
                   filteredTechniques={mg.filteredTechniques}
+                  techniquesError={mg.techniquesError}
+                  onRetryTechniques={mg.reloadTechniques}
                   onProductSelect={(sel) => {
                     mg.setProductSelection(sel);
                     mg.setGeneratedMockup(null);
