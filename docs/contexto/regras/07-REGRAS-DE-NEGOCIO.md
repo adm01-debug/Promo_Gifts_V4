@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3893d57fe0` · branch `main` · 2026-11-15 03:11 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `eecfde92d0` · branch `main` · 2026-11-15 12:12 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6502,7 +6502,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21350 testes em 2164 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21358 testes em 2165 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6648,6 +6648,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/unit/trending-score.test.ts` | 27 | calculateTrendingScore · classification boundaries · returns  · returns  … |
 | `tests/unit/variant-matching.test.ts` | 27 | normalizeColorName · returns empty string for null · returns empty string for undefined · returns empty string for empty string … |
 | `src/components/products/gallery/PromoFlixPlayer.test.tsx` | 26 | PromoFlixPlayer Automated Tests · should initialize volume from localStorage · should initialize playing state from localStorage · should show manual load button after 10s timeout if video is stuck … |
+| `src/components/search/__tests__/useGlobalSearch.test.ts` | 26 | useGlobalSearch · expõe estado inicial e sugestões rápidas · limpa resultados para consultas com menos de 3 caracteres sem chamar a IA · busca mista monta resultados de produtos, clientes, orçamentos e tabelas auxiliares … |
 | `src/hooks/quotes/__tests__/useQuoteItems.test.ts` | 26 | estado inicial · items, activeItemIndex e expandedItems iniciam vazios · aceita initialItems como seed · addProductWithColor … |
 | `src/lib/quotes/__tests__/expiration.test.ts` | 26 | computeExpiration — casos canônicos · valid_until=%s → diff=%i label=%s tone=%s · computeExpiration — fuso negativo NÃO causa off-by-one (regressão) · +1d em ISO date-only resolve para 1 dia, não 0 … |
 | `src/pages/products/__tests__/CartHeaderEdgeCases.test.ts` | 26 | shippingDeadlineSchema — inputs extremos · aceita null (limpar prazo) · trata string vazia como null · rejeita formato inválido (dd/mm/aaaa) … |
@@ -6659,7 +6660,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/unit/connection-error-copy.test.ts` | 26 | getErrorCopy · returns timeout copy for kind= · includes timeoutMs in hint when provided · returns network copy for kind= … |
 | `src/components/cart/__tests__/cartCompanyCnpj.test.ts` | 25 | resolveCartCompanyCnpj · caminho 1 — CRM entrega CNPJ (fonte preferida) · CNPJ cru (14 dígitos) é mascarado para exibição · CNPJ já mascarado é re-normalizado e mascarado consistentemente … |
 | `src/components/inventory/__tests__/product-risk-detail.test.tsx` | 25 | ProductRiskDetail — loading state · renders loading spinner when isLoading=true · ProductRiskDetail — error state · renders error message when summary has error and no data … |
-| `src/components/search/__tests__/useGlobalSearch.test.ts` | 25 | useGlobalSearch · expõe estado inicial e sugestões rápidas · limpa resultados para consultas com menos de 3 caracteres sem chamar a IA · busca mista monta resultados de produtos, clientes, orçamentos e tabelas auxiliares … |
 | `src/lib/auth/__tests__/post-login-redirect.test.ts` | 25 | clearPostLoginRedirect · remove a chave do sessionStorage quando ela existe · nao lanca erro quando sessionStorage esta vazio · nao lanca erro quando sessionStorage.removeItem lanca excecao … |
 | `src/utils/__tests__/cnpj-gap-hunt.test.ts` | 25 | G1 — maskCnpj com input já mascarado não duplica separadores · idempotência: mask(mask(x)) === mask(x) · input parcial mascarado não gera pontuação órfã · G2 — normalizeCnpj com surrogate pairs / emoji / unicode invisível … |
 | `tests/contracts/webhooks.contract.test.ts` | 25 | contract: webhook-inbound v1 (passthrough) · aceita qualquer objeto (compat com produção) · aceita array (compat — v1 é any) · body vazio → 400 missing_body … |
@@ -6806,7 +6806,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/product-webhook.test.ts` | 18 | product-webhook · evento product.created · retorna 200 para evento product.created válido · evento product.updated … |
 | `tests/hooks/useGlobalSearch-voice.test.ts` | 18 | Voice Action Handler Logic · navigate action · should extract route from navigate action · should handle navigate without route gracefully … |
 | `tests/lib/product-types.test.ts` | 18 | getProductImageUrl · should prefer primary_image_url · should fallback to image_url · should fallback to first image in images array … |
-| … +1864 linhas — lista completa em `context.json` | | |
+| … +1865 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7274,4 +7274,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | NÃO contém limites numéricos: qualquer número de limite (cores, dimensões, | `src/components/mockup/TechniqueTooltip.tsx` |
 | qualitativos abaixo são apenas estimativas e aparecem rotulados como tal. | `src/components/mockup/TechniqueTooltip.tsx` |
 | limite quando o cadastro realmente o traz — nada de valor fixo no código. | `src/components/mockup/TechniqueTooltip.tsx` |
-| … +1274 linhas — lista completa em `context.json` | |
+| … +1275 linhas — lista completa em `context.json` | |

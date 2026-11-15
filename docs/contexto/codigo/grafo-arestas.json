@@ -6466,6 +6466,7 @@
   ],
   "src/components/kit-builder/PersonalizationConfig.tsx": [
    "src/components/admin/ImageUploadButton.tsx",
+   "src/components/kit-builder/SwapItemBanner.tsx",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
@@ -6496,6 +6497,9 @@
    "src/components/ui/skeleton.tsx",
    "src/hooks/kit-builder/index.ts",
    "src/lib/kit-builder/index.ts"
+  ],
+  "src/components/kit-builder/SwapItemBanner.tsx": [
+   "src/components/ui/button.tsx"
   ],
   "src/components/kit-builder/VariantSelector.tsx": [
    "src/components/ui/badge.tsx",
@@ -10417,6 +10421,7 @@
    "src/hooks/kit-builder/useKitBuilderTransformers.ts",
    "src/hooks/kit-builder/useKitCollaboration.ts",
    "src/hooks/kit-builder/useKitIdentitySuggestion.ts",
+   "src/hooks/kit-builder/useKitItemReplaceTarget.ts",
    "src/hooks/kit-builder/useKitStockForecast.ts",
    "src/hooks/kit-builder/useKitStockValidation.ts",
    "src/hooks/kit-builder/useKitTemplates.ts",
@@ -10490,6 +10495,9 @@
   "src/hooks/kit-builder/useKitIdentitySuggestion.ts": [
    "src/lib/edge/safeInvokeCall.ts",
    "src/lib/security/sanitize-error.ts"
+  ],
+  "src/hooks/kit-builder/useKitItemReplaceTarget.ts": [
+   "src/lib/kit-builder/index.ts"
   ],
   "src/hooks/kit-builder/useKitMinQuantityValidation.ts": [
    "src/integrations/supabase/client.ts",
@@ -11167,6 +11175,7 @@
    "src/hooks/simulation/useGravacaoPriceV2.ts",
    "src/hooks/simulation/useGravacaoV2.ts",
    "src/hooks/simulation/useLogoColorAnalysis.ts",
+   "src/hooks/simulation/useLogoColorAnalysisByArea.ts",
    "src/hooks/simulation/usePositionHistory.ts",
    "src/hooks/simulation/usePrintAreas.ts",
    "src/hooks/simulation/useSimulation.ts",
@@ -11215,6 +11224,9 @@
   "src/hooks/simulation/useLogoColorAnalysis.ts": [
    "src/lib/edge/safeInvokeCall.ts",
    "src/utils/color-matching.ts"
+  ],
+  "src/hooks/simulation/useLogoColorAnalysisByArea.ts": [
+   "src/hooks/simulation/useLogoColorAnalysis.ts"
   ],
   "src/hooks/simulation/usePrintAreas.ts": [
    "src/lib/logger.ts",
@@ -13182,6 +13194,7 @@
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
    "src/hooks/kit-builder/index.ts",
+   "src/hooks/kit-builder/useKitItemReplaceTarget.ts",
    "src/hooks/kit-builder/useKitWizardShortcuts.ts",
    "src/lib/kit-builder/index.ts",
    "src/lib/kit-builder/pricing-availability.ts"

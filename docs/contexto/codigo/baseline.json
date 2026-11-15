@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3893d57fe05a6e32c30db37516ea991573961155",
+  "commit": "eecfde92d054e8df530186d285fb910b8d3f0ba1",
   "branch": "main",
-  "data_commit": "2026-11-15T03:09:21Z",
+  "data_commit": "2026-11-15T09:11:40-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "eecfde92",
+    "data": "2026-11-15",
+    "assunto": "fix: trem de 3 correções de front — busca, cores por área do mockup e trocar item no kit (#3653)"
+   },
    {
     "sha": "3893d57f",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "cf64ee7e",
     "data": "2026-11-14",
     "assunto": "perf(catalog): primeiro carregamento com 1 consulta em vez de 4, mantendo 500 produtos na tela (#3621)"
-   },
-   {
-    "sha": "16bc011d",
-    "data": "2026-11-14",
-    "assunto": "Merge remote-tracking branch 'origin/main' into claude/trem4-front-perf-261114-2020"
    }
   ],
-  "arquivos_mudados_7d": 2087,
+  "arquivos_mudados_7d": 2013,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -185,7 +185,7 @@
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 125
+    "mudancas": 129
    },
    {
     "pasta": "src/pages/products",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 60
+    "mudancas": 59
    },
    {
     "arquivo": "package.json",
@@ -226,11 +226,11 @@
     "mudancas": 19
    },
    {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 18
+    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
+    "mudancas": 19
    },
    {
-    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
+    "arquivo": "CHANGELOG.md",
     "mudancas": 18
    },
    {
@@ -246,11 +246,11 @@
     "mudancas": 15
    },
    {
-    "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 14
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "mudancas": 15
    },
    {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "arquivo": ".github/workflows/deploy-gates.yml",
     "mudancas": 14
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 581
+    "commits": 580
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10211,
-  "arquivos_codigo": 5261,
-  "linhas_codigo": 1004068,
+  "arquivos_total": 10215,
+  "arquivos_codigo": 5265,
+  "linhas_codigo": 1004404,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
   "modulos": 158,
-  "componentes": 1225,
-  "hooks": 615,
+  "componentes": 1226,
+  "hooks": 617,
   "edge_functions": 111,
   "tabelas": 548,
   "migrations": 3087,
   "cron_jobs": 122,
-  "testes": 2486,
+  "testes": 2487,
   "workflows": 98,
   "scripts": 272,
   "docs_md": 1023
@@ -1883,8 +1883,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1370,
-   "linhas": 274889
+   "arquivos": 1371,
+   "linhas": 274974
   },
   "src/config": {
    "arquivos": 1,
@@ -1907,8 +1907,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 463,
-   "linhas": 87336
+   "arquivos": 466,
+   "linhas": 87542
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1928,7 +1928,7 @@
   },
   "src/pages": {
    "arquivos": 353,
-   "linhas": 82882
+   "linhas": 82901
   },
   "src/routes": {
    "arquivos": 14,
@@ -1948,7 +1948,7 @@
   },
   "src/tests": {
    "arquivos": 33,
-   "linhas": 5107
+   "linhas": 5132
   },
   "src/types": {
    "arquivos": 26,
@@ -2080,7 +2080,7 @@
   },
   "tests/hooks": {
    "arquivos": 132,
-   "linhas": 18246
+   "linhas": 18247
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2274,7 +2274,7 @@
   },
   {
    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-   "linhas": 1414
+   "linhas": 1408
   },
   {
    "arquivo": "src/pages/tools/VisualSearchPage.tsx",

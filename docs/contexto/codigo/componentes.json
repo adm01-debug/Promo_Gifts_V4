@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1225,
+ "total": 1226,
  "orfaos": 160,
  "nomes_duplicados": {
   "AdvancedPriceSearchPage": [
@@ -9821,7 +9821,7 @@
     "ItemSelector"
    ],
    "export_default": null,
-   "linhas": 559,
+   "linhas": 580,
    "dominio": "components/kit-builder",
    "hooks_locais": [
     "useKitStockValidation"
@@ -10281,7 +10281,7 @@
     "PersonalizationConfig"
    ],
    "export_default": null,
-   "linhas": 1414,
+   "linhas": 1408,
    "dominio": "components/kit-builder",
    "hooks_locais": [
     "useCustomizationPriceReactive",
@@ -10322,6 +10322,20 @@
    "edges": [],
    "usado_por": 0,
    "orfao": true
+  },
+  {
+   "arquivo": "src/components/kit-builder/SwapItemBanner.tsx",
+   "exports": [
+    "SwapItemBanner"
+   ],
+   "export_default": null,
+   "linhas": 30,
+   "dominio": "components/kit-builder",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
   },
   {
    "arquivo": "src/components/kit-builder/VariantSelector.tsx",
@@ -15757,7 +15771,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 615,
+   "usado_por": 616,
    "orfao": false
   },
   {
@@ -18268,10 +18282,11 @@
     "KitBuilderPage"
    ],
    "export_default": "KitBuilderPage",
-   "linhas": 477,
+   "linhas": 495,
    "dominio": "pages/kit-builder",
    "hooks_locais": [
     "useKitBuilderPageState",
+    "useKitItemReplaceTarget",
     "useKitWizardShortcuts"
    ],
    "tabelas": [],
@@ -19018,7 +19033,7 @@
     "MockupGenerator"
    ],
    "export_default": "MockupGenerator",
-   "linhas": 635,
+   "linhas": 636,
    "dominio": "pages/mockups",
    "hooks_locais": [
     "useAuth",

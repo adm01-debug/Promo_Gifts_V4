@@ -167,6 +167,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -491,6 +492,7 @@
     "useLeafCategory",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -775,7 +777,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 536
+   "arquivos_puxados": 537
   },
   {
    "protegida": false,
@@ -1272,6 +1274,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -1553,6 +1556,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -1789,7 +1793,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 404
+   "arquivos_puxados": 405
   },
   {
    "protegida": false,
@@ -1971,6 +1975,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -2267,6 +2272,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -2527,7 +2533,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 452
+   "arquivos_puxados": 453
   },
   {
    "protegida": false,
@@ -2989,6 +2995,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -3293,6 +3300,7 @@
     "useKitTemplates",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -3546,7 +3554,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 501
+   "arquivos_puxados": 502
   },
   {
    "protegida": true,
@@ -3700,6 +3708,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -4003,6 +4012,7 @@
     "useKitTemplates",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -4268,7 +4278,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 525
+   "arquivos_puxados": 526
   },
   {
    "protegida": true,
@@ -4528,6 +4538,7 @@
     "useLoginAttemptStats",
     "useLoginAttempts",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -4846,6 +4857,7 @@
     "useLoginAttemptStats",
     "useLoginAttempts",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -5133,7 +5145,7 @@
     "switch",
     "toolbar"
    ],
-   "arquivos_puxados": 557
+   "arquivos_puxados": 558
   },
   {
    "protegida": true,
@@ -5308,6 +5320,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -5589,6 +5602,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -5826,7 +5840,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 410
+   "arquivos_puxados": 411
   },
   {
    "protegida": true,
@@ -6022,6 +6036,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -6303,6 +6318,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -6539,7 +6555,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 406
+   "arquivos_puxados": 407
   },
   {
    "protegida": true,
@@ -6582,6 +6598,7 @@
     "useKitComments",
     "useKitComponentPrintAreas",
     "useKitIdentitySuggestion",
+    "useKitItemReplaceTarget",
     "useKitStockForecast",
     "useKitStockValidation",
     "useKitTemplates",
@@ -6631,6 +6648,7 @@
     "useKitComments",
     "useKitComponentPrintAreas",
     "useKitIdentitySuggestion",
+    "useKitItemReplaceTarget",
     "useKitStockForecast",
     "useKitStockValidation",
     "useKitTemplates",
@@ -6681,7 +6699,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 100
+   "arquivos_puxados": 101
   },
   {
    "protegida": false,
@@ -8760,6 +8778,7 @@
     "useLoginAttemptStats",
     "useLoginAttempts",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -9076,6 +9095,7 @@
     "useLoginAttemptStats",
     "useLoginAttempts",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -9356,7 +9376,7 @@
     "supervisor",
     "vendedor"
    ],
-   "arquivos_puxados": 500
+   "arquivos_puxados": 501
   },
   {
    "protegida": true,
@@ -9610,6 +9630,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -9892,6 +9913,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -10129,7 +10151,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 407
+   "arquivos_puxados": 408
   },
   {
    "protegida": true,
@@ -10272,6 +10294,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -10553,6 +10576,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -10789,7 +10813,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 405
+   "arquivos_puxados": 406
   },
   {
    "protegida": true,
@@ -11156,6 +11180,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -11438,6 +11463,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -11674,7 +11700,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 408
+   "arquivos_puxados": 409
   },
   {
    "protegida": false,
@@ -11867,6 +11893,7 @@
     "useListUrlState",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -12152,6 +12179,7 @@
     "useLegacyFavoritesMigration",
     "useListUrlState",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -12392,7 +12420,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 424
+   "arquivos_puxados": 425
   },
   {
    "protegida": false,
@@ -12536,6 +12564,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -12825,6 +12854,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -13066,7 +13096,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 432
+   "arquivos_puxados": 433
   },
   {
    "protegida": false,
@@ -13209,6 +13239,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -13492,6 +13523,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -13730,7 +13762,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 413
+   "arquivos_puxados": 414
   },
   {
    "protegida": false,
@@ -13968,6 +14000,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -14256,6 +14289,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -14498,7 +14532,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 423
+   "arquivos_puxados": 424
   },
   {
    "protegida": false,
@@ -14656,6 +14690,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -14974,6 +15009,7 @@
     "useLeafCategory",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -15244,7 +15280,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 497
+   "arquivos_puxados": 498
   },
   {
    "protegida": false,
@@ -15418,6 +15454,7 @@
     "useListUrlState",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -15706,6 +15743,7 @@
     "useLegacyFavoritesMigration",
     "useListUrlState",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -15948,7 +15986,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 435
+   "arquivos_puxados": 436
   },
   {
    "protegida": false,
@@ -16117,6 +16155,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -16414,6 +16453,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -16676,7 +16716,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 466
+   "arquivos_puxados": 467
   },
   {
    "protegida": false,
@@ -16858,6 +16898,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -17153,6 +17194,7 @@
     "useKitTemplates",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -17399,7 +17441,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 432
+   "arquivos_puxados": 433
   },
   {
    "protegida": false,
@@ -17561,6 +17603,7 @@
     "useListUrlState",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -17885,6 +17928,7 @@
     "useLegacyFavoritesMigration",
     "useListUrlState",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -18163,7 +18207,7 @@
     "supervisor",
     "table"
    ],
-   "arquivos_puxados": 498
+   "arquivos_puxados": 499
   },
   {
    "protegida": false,
@@ -18306,6 +18350,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -18587,6 +18632,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -18823,7 +18869,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 404
+   "arquivos_puxados": 405
   },
   {
    "protegida": false,
@@ -18981,6 +19027,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -19297,6 +19344,7 @@
     "useLeafCategory",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -19570,7 +19618,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 502
+   "arquivos_puxados": 503
   },
   {
    "protegida": false,
@@ -19725,6 +19773,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -20020,6 +20069,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -20266,7 +20316,7 @@
     "supervisor",
     "user"
    ],
-   "arquivos_puxados": 449
+   "arquivos_puxados": 450
   },
   {
    "protegida": false,
@@ -20417,6 +20467,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -20707,6 +20758,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -20949,7 +21001,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 416
+   "arquivos_puxados": 417
   },
   {
    "protegida": false,
@@ -21136,6 +21188,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -21462,6 +21515,7 @@
     "useLeafCategory",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -21746,7 +21800,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 530
+   "arquivos_puxados": 531
   },
   {
    "protegida": false,
@@ -21953,6 +22007,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -22259,6 +22314,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -22515,7 +22571,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 455
+   "arquivos_puxados": 456
   },
   {
    "protegida": false,
@@ -22783,6 +22839,7 @@
     "useInfiniteQuery",
     "useInvalidateTecnicas",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagazineEditor",
     "useMagazineProductFavorites",
     "useMagazinePublish",
@@ -22849,6 +22906,7 @@
     "useHasPrintAreas",
     "useInvalidateTecnicas",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagazineEditor",
     "useMagazineProductFavorites",
     "useMagazinePublish",
@@ -22931,7 +22989,7 @@
     "spinbutton",
     "status"
    ],
-   "arquivos_puxados": 191
+   "arquivos_puxados": 192
   },
   {
    "protegida": false,
@@ -23262,6 +23320,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -23543,6 +23602,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -23785,7 +23845,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 427
+   "arquivos_puxados": 428
   },
   {
    "protegida": false,
@@ -23928,6 +23988,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -24209,6 +24270,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -24445,7 +24507,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 410
+   "arquivos_puxados": 411
   },
   {
    "protegida": false,
@@ -24478,6 +24540,7 @@
     "useKitComments",
     "useKitComponentPrintAreas",
     "useKitIdentitySuggestion",
+    "useKitItemReplaceTarget",
     "useKitStockForecast",
     "useKitStockValidation",
     "useKitTemplates",
@@ -24515,6 +24578,7 @@
     "useKitComments",
     "useKitComponentPrintAreas",
     "useKitIdentitySuggestion",
+    "useKitItemReplaceTarget",
     "useKitStockForecast",
     "useKitStockValidation",
     "useKitTemplates",
@@ -24561,7 +24625,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 98
+   "arquivos_puxados": 99
   },
   {
    "protegida": false,
@@ -24731,6 +24795,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useLogoDrag",
     "useLogoProcessing",
     "useMagicUpGeneration",
@@ -25017,6 +25082,7 @@
     "useKeyboardShortcuts",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useLogoDrag",
     "useLogoProcessing",
     "useMagicUpGeneration",
@@ -25262,7 +25328,7 @@
     "supervisor",
     "user"
    ],
-   "arquivos_puxados": 451
+   "arquivos_puxados": 452
   },
   {
    "protegida": false,
@@ -25405,6 +25471,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -25686,6 +25753,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -25922,7 +25990,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 407
+   "arquivos_puxados": 408
   },
   {
    "protegida": false,
@@ -26101,6 +26169,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -26415,6 +26484,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -26687,7 +26757,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 496
   },
   {
    "protegida": false,
@@ -26837,6 +26907,7 @@
     "useListUrlState",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -27148,6 +27219,7 @@
     "useLegacyFavoritesMigration",
     "useListUrlState",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -27421,7 +27493,7 @@
     "tablist",
     "toolbar"
    ],
-   "arquivos_puxados": 538
+   "arquivos_puxados": 539
   },
   {
    "protegida": false,
@@ -27568,6 +27640,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -27863,6 +27936,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -28122,7 +28196,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 481
+   "arquivos_puxados": 482
   },
   {
    "protegida": false,
@@ -28271,6 +28345,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -28574,6 +28649,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -28839,7 +28915,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 480
+   "arquivos_puxados": 481
   },
   {
    "protegida": false,
@@ -28985,6 +29061,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -29280,6 +29357,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -29538,7 +29616,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 444
+   "arquivos_puxados": 445
   },
   {
    "protegida": false,
@@ -29683,6 +29761,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -29980,6 +30059,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -30237,7 +30317,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 441
+   "arquivos_puxados": 442
   },
   {
    "protegida": false,
@@ -30387,6 +30467,7 @@
     "useListUrlState",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -30698,6 +30779,7 @@
     "useLegacyFavoritesMigration",
     "useListUrlState",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -30971,7 +31053,7 @@
     "tablist",
     "toolbar"
    ],
-   "arquivos_puxados": 538
+   "arquivos_puxados": 539
   },
   {
    "protegida": false,
@@ -31118,6 +31200,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -31421,6 +31504,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -31686,7 +31770,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 480
+   "arquivos_puxados": 481
   },
   {
    "protegida": false,
@@ -31944,6 +32028,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -32259,6 +32344,7 @@
     "useLeafCategory",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -32534,7 +32620,7 @@
     "supervisor",
     "switch"
    ],
-   "arquivos_puxados": 516
+   "arquivos_puxados": 517
   },
   {
    "protegida": false,
@@ -32696,6 +32782,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -33022,6 +33109,7 @@
     "useLeafCategory",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -33306,7 +33394,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 530
+   "arquivos_puxados": 531
   },
   {
    "protegida": false,
@@ -33564,6 +33652,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -33845,6 +33934,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -34083,7 +34173,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 405
+   "arquivos_puxados": 406
   },
   {
    "protegida": false,
@@ -34241,6 +34331,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -34558,6 +34649,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -34834,7 +34926,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 504
+   "arquivos_puxados": 505
   },
   {
    "protegida": false,
@@ -35010,6 +35102,7 @@
     "useLivePricePreview",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMemo",
     "useMultipleTechniquePricing",
     "useMutation",
@@ -35073,6 +35166,7 @@
     "useInvalidateTecnicas",
     "useLivePricePreview",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMultipleTechniquePricing",
     "useNomesTecnicasPreco",
     "useOverlayInteractivity",
@@ -35133,7 +35227,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 166
+   "arquivos_puxados": 167
   },
   {
    "protegida": false,
@@ -35276,6 +35370,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -35557,6 +35652,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -35793,7 +35889,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 428
+   "arquivos_puxados": 429
   },
   {
    "protegida": false,
@@ -35943,6 +36039,7 @@
     "useLegacyFavoritesMigration",
     "useLocation",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -36245,6 +36342,7 @@
     "useKeyboardShortcut",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMagicUpGeneration",
     "useMagicUpState",
     "useMarketIntelligenceMacro",
@@ -36501,7 +36599,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 443
+   "arquivos_puxados": 444
   },
   {
    "protegida": false,

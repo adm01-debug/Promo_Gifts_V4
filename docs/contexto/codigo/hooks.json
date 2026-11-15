@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 615,
+ "total": 617,
  "hooks": [
   {
    "arquivo": "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
@@ -9886,6 +9886,27 @@
    "coberto_por_testes": 0
   },
   {
+   "arquivo": "src/hooks/kit-builder/useKitItemReplaceTarget.ts",
+   "hooks_exportados": [
+    "useKitItemReplaceTarget"
+   ],
+   "linhas": 27,
+   "dominio": "hooks/kit-builder",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useEffect"
+   ],
+   "canais_realtime": [],
+   "usado_por": 2,
+   "usado_por_arquivos": [
+    "src/hooks/kit-builder/index.ts",
+    "src/pages/kit-builder/KitBuilderPage.tsx"
+   ],
+   "coberto_por_testes": 0
+  },
+  {
    "arquivo": "src/hooks/kit-builder/useKitMinQuantityValidation.ts",
    "hooks_exportados": [],
    "linhas": 59,
@@ -10190,7 +10211,7 @@
     "useCallback",
     "useEffect",
     "useFilteredTechniques",
-    "useLogoColorAnalysis",
+    "useLogoColorAnalysisByArea",
     "useMemo",
     "useMockupAreaRetry",
     "useMockupDraft",
@@ -12156,7 +12177,7 @@
    "hooks_exportados": [
     "useTechniquePricingOptions"
    ],
-   "linhas": 18,
+   "linhas": 19,
    "dominio": "hooks/simulation",
    "tabelas": [],
    "rpcs": [],
@@ -12311,11 +12332,34 @@
     "useState"
    ],
    "canais_realtime": [],
+   "usado_por": 2,
+   "usado_por_arquivos": [
+    "src/hooks/simulation/index.ts",
+    "src/hooks/simulation/useLogoColorAnalysisByArea.ts"
+   ],
+   "coberto_por_testes": 2
+  },
+  {
+   "arquivo": "src/hooks/simulation/useLogoColorAnalysisByArea.ts",
+   "hooks_exportados": [
+    "useLogoColorAnalysisByArea"
+   ],
+   "linhas": 62,
+   "dominio": "hooks/simulation",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useCallback",
+    "useLogoColorAnalysis",
+    "useMemo"
+   ],
+   "canais_realtime": [],
    "usado_por": 1,
    "usado_por_arquivos": [
     "src/hooks/simulation/index.ts"
    ],
-   "coberto_por_testes": 2
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/simulation/usePositionHistory.ts",

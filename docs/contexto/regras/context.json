@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "3893d57fe05a6e32c30db37516ea991573961155",
+  "sha": "eecfde92d054e8df530186d285fb910b8d3f0ba1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 03:11 UTC",
-  "files_total": 10139,
-  "code_files": 8666,
-  "code_lines": 1222288
+  "generated_at": "2026-11-15 12:12 UTC",
+  "files_total": 10143,
+  "code_files": 8670,
+  "code_lines": 1222624
  },
  "version": "1.3.2",
- "facts_hash": "142784bf249073a9",
+ "facts_hash": "40fb563db605054e",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1222,8 +1222,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3406,
-   ".ts": 2936,
-   ".tsx": 1875,
+   ".ts": 2939,
+   ".tsx": 1876,
    ".mjs": 436,
    ".py": 13,
    ".js": 7
@@ -136052,7 +136052,7 @@
     "rpc_transitive": [
      "fn_my_rpc"
     ],
-    "deps_count": 97
+    "deps_count": 98
    },
    {
     "path": "",
@@ -136106,7 +136106,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 247
+    "deps_count": 250
    },
    {
     "path": "",
@@ -136135,7 +136135,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 90
+    "deps_count": 91
    },
    {
     "path": "",
@@ -138271,7 +138271,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 182
+    "deps_count": 183
    },
    {
     "path": "/simulador-precos",
@@ -138311,7 +138311,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 193
+    "deps_count": 194
    },
    {
     "path": "/tendencias",
@@ -143112,7 +143112,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1629,
+  "components_count": 1630,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -145539,6 +145539,10 @@
     "file": "src/hooks/kit-builder/useKitIdentitySuggestion.ts"
    },
    {
+    "name": "useKitItemReplaceTarget",
+    "file": "src/hooks/kit-builder/useKitItemReplaceTarget.ts"
+   },
+   {
     "name": "useKitStockForecast",
     "file": "src/hooks/kit-builder/useKitStockForecast.ts"
    },
@@ -146085,6 +146089,10 @@
    {
     "name": "useLogoColorAnalysis",
     "file": "src/hooks/simulation/useLogoColorAnalysis.ts"
+   },
+   {
+    "name": "useLogoColorAnalysisByArea",
+    "file": "src/hooks/simulation/useLogoColorAnalysisByArea.ts"
    },
    {
     "name": "usePositionHistory",
@@ -147655,8 +147663,8 @@
   },
   {
    "module": "src/components",
-   "files": 1370,
-   "lines": 274888,
+   "files": 1371,
+   "lines": 274973,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -148019,8 +148027,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 463,
-   "lines": 87336,
+   "files": 466,
+   "lines": 87542,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -148513,7 +148521,7 @@
   {
    "module": "src/pages",
    "files": 353,
-   "lines": 82882,
+   "lines": 82901,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -148918,7 +148926,7 @@
   {
    "module": "src/tests",
    "files": 33,
-   "lines": 5107,
+   "lines": 5132,
    "tables": [
     "products",
     "v_products_public",
@@ -149736,7 +149744,7 @@
   {
    "module": "tests",
    "files": 1029,
-   "lines": 157780,
+   "lines": 157781,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -170657,6 +170665,10 @@
    {
     "file": "src/hooks/simulation/useGravacaoV2.ts",
     "text": "').eq('ativo', true).limit(100),"
+   },
+   {
+    "file": "src/hooks/simulation/useLogoColorAnalysisByArea.ts",
+    "text": "* Limpa a análise de cores somente quando ela pertence à área cuja logo saiu."
    },
    {
     "file": "src/hooks/simulation/useTechniquePricing.ts",
@@ -236875,6 +236887,10 @@
    },
    {
     "file": "src/components/search/__tests__/useGlobalSearch.test.ts",
+    "name": "cliente sem ramo_atividade cai no rótulo genérico, e com ramo preenchido NUNCA cai"
+   },
+   {
+    "file": "src/components/search/__tests__/useGlobalSearch.test.ts",
     "name": "termo vazio após sanitização encerra sem consultar tabelas"
    },
    {
@@ -239928,6 +239944,34 @@
    {
     "file": "src/hooks/kit-builder/useKitPriceValidation.test.ts",
     "name": "não permite orçamento sem nenhuma linha comercial"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/colorAnalysisPorArea.test.ts",
+    "name": "análise de cores por área — a decisão de limpar"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/colorAnalysisPorArea.test.ts",
+    "name": "limpa quando a logo removida é a MESMA que gerou a análise"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/colorAnalysisPorArea.test.ts",
+    "name": "NÃO limpa quando a logo removida é de outra área (o bug anterior)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/colorAnalysisPorArea.test.ts",
+    "name": "limpa a análise de B quando é a logo de B que sai, mesmo com A aberta (a regressão)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/colorAnalysisPorArea.test.ts",
+    "name": "não faz nada quando não há análise viva, nem para área nula"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/colorAnalysisPorArea.test.ts",
+    "name": "clearAnalysis esquece a área dona (resetForm)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/colorAnalysisPorArea.test.ts",
+    "name": "restoreFor: com logo, a área restaurada vira dona; sem logo, ninguém é dono"
    },
    {
     "file": "src/hooks/mockup/__tests__/mockup-audit.test.ts",
@@ -434720,7 +434764,7 @@
   },
   "src/components/kit-builder/ItemSelector.tsx": {
    "path": "src/components/kit-builder/ItemSelector.tsx",
-   "lines": 559,
+   "lines": 580,
    "exports": [
     "function ItemSelector"
    ],
@@ -434730,7 +434774,7 @@
   },
   "src/components/kit-builder/ItemSelector.types.ts": {
    "path": "src/components/kit-builder/ItemSelector.types.ts",
-   "lines": 35,
+   "lines": 39,
    "exports": [
     "interface ItemWithCompatibility",
     "interface ItemSelectorProps"
@@ -435031,7 +435075,7 @@
   },
   "src/components/kit-builder/PersonalizationConfig.tsx": {
    "path": "src/components/kit-builder/PersonalizationConfig.tsx",
-   "lines": 1414,
+   "lines": 1408,
    "exports": [
     "interface FlatTechnique",
     "function reconcilePersonalizationForTechnique",
@@ -435088,6 +435132,13 @@
    "doc": "SimilarKitsWidget — sidebar do Kit Builder mostrando até 3 templates semelhantes ao kit atual (overlap >=30% por SKU).",
    "percents": [
     "* semelhantes ao kit atual (overlap >=30% por SKU)."
+   ]
+  },
+  "src/components/kit-builder/SwapItemBanner.tsx": {
+   "path": "src/components/kit-builder/SwapItemBanner.tsx",
+   "lines": 30,
+   "exports": [
+    "function SwapItemBanner"
    ]
   },
   "src/components/kit-builder/VariantSelector.tsx": {
@@ -444725,7 +444776,7 @@
   },
   "src/components/search/__tests__/useGlobalSearch.test.ts": {
    "path": "src/components/search/__tests__/useGlobalSearch.test.ts",
-   "lines": 669,
+   "lines": 705,
    "is_test": true,
    "doc": "Testes de comportamento do hook useGlobalSearch. Rede (Supabase, edge functions, CRM, catálogo externo) e hooks externos são mockados.",
    "tests": [
@@ -444738,6 +444789,7 @@
     "filtro de preço alto mantém só produtos acima de 200 e cor sem match não esvazia",
     "intenção de orçamento filtra por cliente e status e reordena via RPC",
     "intenção de cliente usa o nome do filtro e entidades extras",
+    "cliente sem ramo_atividade cai no rótulo genérico, e com ramo preenchido NUNCA cai",
     "termo vazio após sanitização encerra sem consultar tabelas",
     "inclui comandos slash que batem com a consulta",
     "falhas de fontes individuais são silenciosas e erro de rede vira searchError",
@@ -452415,7 +452467,7 @@
   },
   "src/hooks/kit-builder/index.ts": {
    "path": "src/hooks/kit-builder/index.ts",
-   "lines": 20,
+   "lines": 21,
    "doc": "Exporting all hooks from kit-builder"
   },
   "src/hooks/kit-builder/useCustomKitPersistence.ts": {
@@ -452784,6 +452836,16 @@
    "doc": "useKitIdentitySuggestion — invoca a edge function `kit-identity-suggest` para gerar tag/cor/ícone a partir do nome + itens do kit.",
    "hooks": [
     "useKitIdentitySuggestion"
+   ]
+  },
+  "src/hooks/kit-builder/useKitItemReplaceTarget.ts": {
+   "path": "src/hooks/kit-builder/useKitItemReplaceTarget.ts",
+   "lines": 27,
+   "exports": [
+    "function useKitItemReplaceTarget"
+   ],
+   "hooks": [
+    "useKitItemReplaceTarget"
    ]
   },
   "src/hooks/kit-builder/useKitMinQuantityValidation.ts": {
@@ -453509,6 +453571,20 @@
    ],
    "temporal": [
     "staleTime: 10 * 60 * 1000,"
+   ]
+  },
+  "src/hooks/mockup/__tests__/colorAnalysisPorArea.test.ts": {
+   "path": "src/hooks/mockup/__tests__/colorAnalysisPorArea.test.ts",
+   "lines": 115,
+   "is_test": true,
+   "tests": [
+    "análise de cores por área — a decisão de limpar",
+    "limpa quando a logo removida é a MESMA que gerou a análise",
+    "NÃO limpa quando a logo removida é de outra área (o bug anterior)",
+    "limpa a análise de B quando é a logo de B que sai, mesmo com A aberta (a regressão)",
+    "não faz nada quando não há análise viva, nem para área nula",
+    "clearAnalysis esquece a área dona (resetForm)",
+    "restoreFor: com logo, a área restaurada vira dona; sem logo, ninguém é dono"
    ]
   },
   "src/hooks/mockup/__tests__/mockup-audit.test.ts": {
@@ -458427,7 +458503,7 @@
   },
   "src/hooks/simulation/index.ts": {
    "path": "src/hooks/simulation/index.ts",
-   "lines": 18,
+   "lines": 19,
    "doc": "Exporting all hooks from simulation"
   },
   "src/hooks/simulation/simulationClipboard.ts": {
@@ -458601,6 +458677,19 @@
    "doc": "useLogoColorAnalysis — Hook para análise de cores de logo Envia a imagem para a edge function, recebe cores detectadas, e mapeia para Pantone mais próximo via Delta-E.",
    "hooks": [
     "useLogoColorAnalysis"
+   ]
+  },
+  "src/hooks/simulation/useLogoColorAnalysisByArea.ts": {
+   "path": "src/hooks/simulation/useLogoColorAnalysisByArea.ts",
+   "lines": 62,
+   "exports": [
+    "function useLogoColorAnalysisByArea"
+   ],
+   "rule_comments": [
+    "* Limpa a análise de cores somente quando ela pertence à área cuja logo saiu."
+   ],
+   "hooks": [
+    "useLogoColorAnalysisByArea"
    ]
   },
   "src/hooks/simulation/usePositionHistory.ts": {
@@ -472605,7 +472694,7 @@
   },
   "src/pages/kit-builder/KitBuilderPage.tsx": {
    "path": "src/pages/kit-builder/KitBuilderPage.tsx",
-   "lines": 477,
+   "lines": 495,
    "exports": [
     "function KitBuilderPage"
    ],
@@ -474768,7 +474857,7 @@
   },
   "src/pages/mockups/MockupGenerator.tsx": {
    "path": "src/pages/mockups/MockupGenerator.tsx",
-   "lines": 635,
+   "lines": 636,
    "exports": [
     "function MockupGenerator"
    ],
@@ -480161,10 +480250,10 @@
   },
   "src/tests/MockupDeletion.test.tsx": {
    "path": "src/tests/MockupDeletion.test.tsx",
-   "lines": 889,
+   "lines": 914,
    "is_test": true,
    "rule_comments": [
-    "FT-167: remover o logo de OUTRA área (area-2) limpa só aquela área e NÃO pode apagar"
+    "área. A página nunca deve chamar `clearAnalysis` direto: fazer isso de volta traria"
    ],
    "temporal": [
     "const deleteButton = await screen.findByTestId('delete-mockup-button', {}, { timeout: 8000 });"
@@ -520643,7 +520732,7 @@
   },
   "tests/hooks/useMockupGenerator.test.ts": {
    "path": "tests/hooks/useMockupGenerator.test.ts",
-   "lines": 317,
+   "lines": 318,
    "is_test": true,
    "doc": "useMockupGenerator — testes de comportamento. Os `vi.mock` abaixo apontam para os caminhos REAIS dos módulos importados pelo hook. (Até a etapa 45 esta suíte mockava `@/hooks/useMockupDraft`, `@/hooks/usePositionHistory` e `@/hooks/useLogoColorAnalysis` — caminhos que não existem: o mock não se apli …",
    "tests": [
@@ -532577,10 +532666,34 @@
   }
  },
  "git": {
-  "sha": "3893d57fe05a6e32c30db37516ea991573961155",
+  "sha": "eecfde92d054e8df530186d285fb910b8d3f0ba1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "eecfde9",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "fix: trem de 3 correções de front — busca, cores por área do mockup e trocar item no kit (#3653)",
+    "files": [
+     "docs/coordenacao/conflitos-semanticos.md",
+     "src/components/kit-builder/ItemSelector.tsx",
+     "src/components/kit-builder/ItemSelector.types.ts",
+     "src/components/kit-builder/PersonalizationConfig.tsx",
+     "src/components/kit-builder/SwapItemBanner.tsx",
+     "src/components/search/__tests__/useGlobalSearch.test.ts",
+     "src/hooks/kit-builder/index.ts",
+     "src/hooks/kit-builder/useKitItemReplaceTarget.ts",
+     "src/hooks/mockup/__tests__/colorAnalysisPorArea.test.ts",
+     "src/hooks/mockup/useMockupGenerator.ts",
+     "src/hooks/simulation/index.ts",
+     "src/hooks/simulation/useLogoColorAnalysisByArea.ts",
+     "src/pages/kit-builder/KitBuilderPage.tsx",
+     "src/pages/mockups/MockupGenerator.tsx",
+     "src/tests/MockupDeletion.test.tsx",
+     "tests/hooks/useMockupGenerator.test.ts"
+    ]
+   },
    {
     "sha": "3893d57",
     "date": "2026-11-15",
@@ -532923,27 +533036,80 @@
     "author": "Claude",
     "subject": "merge: codex/fix-sidebar-tooltips-auth-261107-0205",
     "files": []
-   },
-   {
-    "sha": "34a8b60",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "merge: claude/fix-suggestions-sem-useadvancedfilters-261114-1004",
-    "files": []
    }
   ],
   "hot_files": [
    [
     "docs/coordenacao/conflitos-semanticos.md",
-    8
+    9
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     4
    ],
    [
+    "src/components/kit-builder/ItemSelector.tsx",
+    2
+   ],
+   [
+    "src/components/kit-builder/ItemSelector.types.ts",
+    2
+   ],
+   [
+    "src/hooks/mockup/useMockupGenerator.ts",
+    2
+   ],
+   [
+    "src/pages/kit-builder/KitBuilderPage.tsx",
+    2
+   ],
+   [
+    "src/pages/mockups/MockupGenerator.tsx",
+    2
+   ],
+   [
+    "src/tests/MockupDeletion.test.tsx",
+    2
+   ],
+   [
+    "tests/hooks/useMockupGenerator.test.ts",
+    2
+   ],
+   [
     ".security/policies-baseline.json",
     2
+   ],
+   [
+    "src/components/kit-builder/PersonalizationConfig.tsx",
+    1
+   ],
+   [
+    "src/components/kit-builder/SwapItemBanner.tsx",
+    1
+   ],
+   [
+    "src/components/search/__tests__/useGlobalSearch.test.ts",
+    1
+   ],
+   [
+    "src/hooks/kit-builder/index.ts",
+    1
+   ],
+   [
+    "src/hooks/kit-builder/useKitItemReplaceTarget.ts",
+    1
+   ],
+   [
+    "src/hooks/mockup/__tests__/colorAnalysisPorArea.test.ts",
+    1
+   ],
+   [
+    "src/hooks/simulation/index.ts",
+    1
+   ],
+   [
+    "src/hooks/simulation/useLogoColorAnalysisByArea.ts",
+    1
    ],
    [
     "scripts/check-migration-receipts.mjs",
@@ -532951,66 +533117,6 @@
    ],
    [
     "supabase/rollbacks/20260917061500_rollback.sql",
-    1
-   ],
-   [
-    "audit/supabase-reference-catalog.temporary.json",
-    1
-   ],
-   [
-    "recovery/src-legacy/src/components/admin/products/ProductMarketingSection.tags-legacy.ts",
-    1
-   ],
-   [
-    "src/components/admin/products/ProductMarketingSection.tsx",
-    1
-   ],
-   [
-    "src/components/admin/products/__tests__/ProductMarketingSection.test.tsx",
-    1
-   ],
-   [
-    "src/components/admin/products/__tests__/productMarketingData.test.ts",
-    1
-   ],
-   [
-    "src/components/admin/products/productMarketingData.ts",
-    1
-   ],
-   [
-    "src/components/mockup/MockupClientSelector.tsx",
-    1
-   ],
-   [
-    "src/components/mockup/MockupConfigPanel.tsx",
-    1
-   ],
-   [
-    "src/components/mockup/MockupHistoryPanel.tsx",
-    1
-   ],
-   [
-    "src/components/mockup/MockupProductSelector.tsx",
-    1
-   ],
-   [
-    "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
-    1
-   ],
-   [
-    "src/components/mockup/__tests__/MockupClientSelector.logo.test.tsx",
-    1
-   ],
-   [
-    "src/components/mockup/clientLogoFile.ts",
-    1
-   ],
-   [
-    "src/data/mockData.ts",
-    1
-   ],
-   [
-    "src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts",
     1
    ]
   ]
