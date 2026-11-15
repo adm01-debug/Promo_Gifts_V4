@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-15 01:28 UTC
+
+- **functions** alterado (1): `public.get_quote_token_public(_token text)`
+
 ## 2026-11-14 23:47 UTC
 
 - **colunas** adicionado (4): `public.crm_seller_identity_links.auth_user_id`, `public.crm_seller_identity_links.created_at`, `public.crm_seller_identity_links.crm_seller_id`, `public.crm_seller_identity_links.link_source`

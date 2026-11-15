@@ -178433,9 +178433,13 @@
             {
               "file": "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261115013000_fix_get_quote_token_public_respeita_expiracao.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [],
           "triggers": [],
