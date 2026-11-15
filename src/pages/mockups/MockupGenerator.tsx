@@ -6,7 +6,7 @@ import { type MockupTechnique } from '@/types/external-db';
  * Progressive Preview + Enhanced Header + Sticky Navigator.
  */
 
-import { useCallback, Suspense } from 'react';
+import { useCallback, useEffect, useState, Suspense } from 'react';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { Button } from '@/components/ui/button';
 import { Loader2, AlertCircle, CheckCircle2, History, Wand2 } from 'lucide-react';
@@ -153,6 +153,7 @@ export default function MockupGenerator() {
           prev.map((a) => ({ ...a, logoPreview: null, logoFile: null })),
         );
         mg.setGeneratedMockup(null);
+        mg.setGenerationError(null);
       }
       mg.setSelectedClient(null);
       mg.setActiveTab('generator');
@@ -164,10 +165,25 @@ export default function MockupGenerator() {
       mg.logoColorAnalysis.clearForArea,
       mg.setPersonalizationAreas,
       mg.setGeneratedMockup,
+      mg.setGenerationError,
       mg.setSelectedClient,
       mg.setActiveTab,
     ],
   );
+
+  // Gravação CONFIRMADA pelo banco. O recordId é zerado pela captura da ficha
+  // (handleLayoutCaptured), então guardamos a URL salva para "Projeto salvo"
+  // não regredir para "não salvo" depois que a ficha fica pronta.
+  const [savedMockupUrl, setSavedMockupUrl] = useState<string | null>(null);
+  useEffect(() => {
+    if (mg.lastSavedRecordId && mg.lastSavedMockupUrl) setSavedMockupUrl(mg.lastSavedMockupUrl);
+  }, [mg.lastSavedRecordId, mg.lastSavedMockupUrl]);
+
+  // Três condições independentes, cada uma do seu dado: a imagem vem de
+  // generatedMockup/generationError, o salvo da gravação confirmada e a ficha
+  // do ciclo de captura (pedido montado → capturado → recordId zerado).
+  const isSaved = !!mg.generatedMockup && savedMockupUrl === mg.generatedMockup;
+  const sheetStatus = layoutCaptureRequest ? 'running' : isSaved ? 'done' : 'idle';
 
   const handleLayoutCaptured = useCallback(() => {
     mg.setLastSavedRecordId(null);
@@ -499,6 +515,10 @@ export default function MockupGenerator() {
                     beforeImage={mg.beforeImage}
                     annotations={mg.mockupAnnotations}
                     onAnnotationsChange={mg.setMockupAnnotations}
+                    generationError={mg.generationError}
+                    onRetryGenerate={mg.generateMockup}
+                    projectSave={{ status: isSaved ? 'done' : 'idle' }}
+                    sheet={{ status: sheetStatus }}
                   />
 
                   {/* A grade "Todas as áreas" é um anexo do preview: o lote sempre
@@ -567,7 +587,10 @@ export default function MockupGenerator() {
                   mg.setDeleteDialogOpen(true);
                 }}
                 onDownload={(mockup) => mg.downloadMockup(mockup)}
-                onLoadFromHistory={mg.loadFromHistory}
+                onLoadFromHistory={(mockup) => {
+                  mg.setGenerationError(null);
+                  mg.loadFromHistory(mockup);
+                }}
               />
             </Suspense>
           </TabsContent>

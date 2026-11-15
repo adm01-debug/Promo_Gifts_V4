@@ -21,6 +21,7 @@ import { MockupBeforeAfter } from './MockupBeforeAfter';
 import { MockupAnnotations, type Annotation } from './MockupAnnotations';
 import { ShareMenu } from './ShareMenu';
 import { useReducedMotion } from '@/hooks/ui/useReducedMotion';
+import { MockupCompletionStates, type MockupCompletionState } from './MockupCompletionStates';
 
 /**
  * Tokens de cor do tema (Blue Premium) usados na celebração.
@@ -61,6 +62,14 @@ interface MockupResultCardProps {
   /** Callback to persist annotations */
   onAnnotationsChange?: (annotations: Annotation[]) => void;
   annotations?: Annotation[];
+  /** Erro da geração vindo do dono do estado (useMockupGenerator). */
+  generationError?: string | null;
+  /** Repetir a geração da imagem. */
+  onRetryGenerate?: () => void;
+  /** Persistência do projeto. `done` só com gravação CONFIRMADA — a imagem não conta como salvo. */
+  projectSave?: MockupCompletionState;
+  /** Ficha de aprovação do projeto. */
+  sheet?: MockupCompletionState;
 }
 
 export const MockupResultCard = memo(
@@ -75,6 +84,10 @@ export const MockupResultCard = memo(
     beforeImage,
     onAnnotationsChange,
     annotations = [],
+    generationError,
+    onRetryGenerate,
+    projectSave,
+    sheet,
   }: MockupResultCardProps) => {
     const [zoom, setZoom] = useState(1);
     const [showSuccess, setShowSuccess] = useState(false);
@@ -83,6 +96,8 @@ export const MockupResultCard = memo(
     const [fullscreenZoom, setFullscreenZoom] = useState(1);
     const [isClientMode, setIsClientMode] = useState(false);
     const prefersReducedMotion = useReducedMotion();
+    // Último resultado real: uma tentativa que FALHA não apaga da tela o mockup que o vendedor já tinha.
+    const [lastGeneratedMockup, setLastGeneratedMockup] = useState<string | null>(generatedMockup);
 
     // Trigger success animation when mockup is generated
     useEffect(() => {
@@ -118,6 +133,17 @@ export const MockupResultCard = memo(
         setFullscreenZoom(1);
       }
     }, [generatedMockup]);
+
+    // Sucesso novo vira o resultado atual: o anterior sai de cena na hora, sem resquício.
+    useEffect(() => {
+      if (generatedMockup) setLastGeneratedMockup(generatedMockup);
+    }, [generatedMockup]);
+
+    // Falha com resultado anterior: ele fica na tela ROTULADO, em vez de sumir.
+    const showsPreviousResult = !generatedMockup && !!generationError && !!lastGeneratedMockup;
+    const displayedMockup = generatedMockup ?? (showsPreviousResult ? lastGeneratedMockup : null);
+    // Há imagem atual ⇒ a imagem saiu. Só é erro de imagem quando não há imagem atual.
+    const imageStatus: MockupCompletionState['status'] = generatedMockup ? 'done' : 'error';
 
     const handleZoomIn = () => setZoom((z) => Math.min(z + 0.25, 3));
     const handleZoomOut = () => setZoom((z) => Math.max(z - 0.25, 0.5));
@@ -163,8 +189,8 @@ export const MockupResultCard = memo(
       );
     }
 
-    // Success State with Mockup
-    if (generatedMockup) {
+    // Success State with Mockup (ou o resultado anterior preservado numa falha)
+    if (displayedMockup) {
       return (
         <Card
           data-testid="mockup-result-card"
@@ -191,20 +217,36 @@ export const MockupResultCard = memo(
                 </div>
                 <div>
                   <span className="text-foreground">
-                    {showSuccess ? 'Mockup Criado!' : 'Mockup Gerado'}
+                    {showsPreviousResult
+                      ? 'Resultado anterior'
+                      : showSuccess
+                        ? 'Mockup Criado!'
+                        : 'Mockup Gerado'}
                   </span>
                   {productName && (
                     <p className="text-xs font-normal text-muted-foreground">{productName}</p>
                   )}
+                  {showsPreviousResult && (
+                    <p data-testid="previous-result-notice" className="text-xs text-destructive">
+                      Imagem anterior — a nova tentativa falhou. Não envie como se fosse a nova.
+                    </p>
+                  )}
                 </div>
               </CardTitle>
               <div className="flex items-center gap-2">
-                <ShareMenu
-                  mockupUrl={generatedMockup}
-                  productName={productName}
-                  techniqueName={techniqueName}
-                />
-                <Button size="sm" onClick={onDownload} className="gap-1.5">
+                {!showsPreviousResult && (
+                  <ShareMenu
+                    mockupUrl={displayedMockup}
+                    productName={productName}
+                    techniqueName={techniqueName}
+                  />
+                )}
+                <Button
+                  size="sm"
+                  onClick={onDownload}
+                  disabled={!generatedMockup}
+                  className="gap-1.5"
+                >
                   <Download className="h-4 w-4" aria-hidden="true" /> Baixar
                 </Button>
               </div>
@@ -212,8 +254,17 @@ export const MockupResultCard = memo(
           </CardHeader>
 
           <CardContent className="space-y-3 p-4">
+            {/* Imagem gerada, projeto salvo e ficha: condições independentes. */}
+            <MockupCompletionStates
+              imageStatus={imageStatus}
+              imageError={generationError}
+              onRetryImage={onRetryGenerate}
+              projectSave={projectSave}
+              sheet={sheet}
+            />
+
             {/* Before/After toggle */}
-            {beforeImage && (
+            {beforeImage && !showsPreviousResult && (
               <div className="flex items-center gap-2">
                 <Button
                   variant={showBeforeAfter ? 'default' : 'outline'}
@@ -228,8 +279,8 @@ export const MockupResultCard = memo(
             )}
 
             {/* Before/After or Result */}
-            {showBeforeAfter && beforeImage ? (
-              <MockupBeforeAfter beforeImage={beforeImage} afterImage={generatedMockup} />
+            {showBeforeAfter && beforeImage && !showsPreviousResult ? (
+              <MockupBeforeAfter beforeImage={beforeImage} afterImage={displayedMockup} />
             ) : (
               <div
                 className={cn(
@@ -242,7 +293,7 @@ export const MockupResultCard = memo(
                   style={{ cursor: zoom > 1 ? 'grab' : 'default' }}
                 >
                   <img
-                    src={generatedMockup}
+                    src={displayedMockup}
                     alt="Mockup gerado com IA"
                     className="max-h-full max-w-full object-contain transition-transform duration-200"
                     style={{ transform: `scale(${zoom})` }}
@@ -290,7 +341,7 @@ export const MockupResultCard = memo(
             {/* Annotations */}
             {onAnnotationsChange && (
               <MockupAnnotations
-                imageUrl={generatedMockup}
+                imageUrl={displayedMockup}
                 annotations={annotations}
                 onAnnotationsChange={onAnnotationsChange}
               />
@@ -349,6 +400,7 @@ export const MockupResultCard = memo(
                       size="sm"
                       variant="secondary"
                       onClick={onDownload}
+                      disabled={!generatedMockup}
                       className="gap-1.5 shadow-md"
                     >
                       <Download className="h-4 w-4" aria-hidden="true" /> Baixar
@@ -416,7 +468,7 @@ export const MockupResultCard = memo(
                   style={{ cursor: fullscreenZoom > 1 ? 'grab' : 'default' }}
                 >
                   <img
-                    src={generatedMockup}
+                    src={displayedMockup}
                     alt="Mockup em tela cheia"
                     className="max-h-[85vh] max-w-full object-contain transition-transform duration-200"
                     style={{ transform: `scale(${fullscreenZoom})` }}
