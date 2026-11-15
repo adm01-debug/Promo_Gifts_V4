@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b89a44e100c15de131ecdcffebc549dbd141097d",
+  "commit": "aa89361bea4842dc36749d19949c8df0a883ad87",
   "branch": "main",
-  "data_commit": "2026-11-15T15:14:59Z",
+  "data_commit": "2026-11-15T15:23:04Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "aa89361b",
+    "data": "2026-11-15",
+    "assunto": "fix(magic-up): resgata varredura axe da pagina e nomeia selects e campos do briefing (#3668)"
+   },
    {
     "sha": "b89a44e1",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "98589a4e",
     "data": "2026-11-14",
     "assunto": "chore(coordenacao): registra o resgate da correcao de ownership do CRM (E188)"
-   },
-   {
-    "sha": "9af05ef8",
-    "data": "2026-11-14",
-    "assunto": "fix(crm): fornecedor e transportadora fora do escopo por vendedor, e teste travando a regra nova"
    }
   ],
-  "arquivos_mudados_7d": 2109,
+  "arquivos_mudados_7d": 2113,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 248
+    "mudancas": 247
    },
    {
     "pasta": "src/hooks/products",
@@ -218,12 +218,12 @@
     "mudancas": 29
    },
    {
-    "arquivo": "analise-prs/progresso.json",
+    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
     "mudancas": 20
    },
    {
-    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 20
+    "arquivo": "analise-prs/progresso.json",
+    "mudancas": 19
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 127
+    "commits": 126
    },
    {
     "autor": "github-actions[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10260,
-  "arquivos_codigo": 5287,
-  "linhas_codigo": 1007398,
+  "arquivos_total": 10261,
+  "arquivos_codigo": 5288,
+  "linhas_codigo": 1007767,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 548,
   "migrations": 3095,
   "cron_jobs": 122,
-  "testes": 2499,
+  "testes": 2500,
   "workflows": 87,
   "scripts": 272,
   "docs_md": 1024
@@ -1884,7 +1884,7 @@
   },
   "src/components": {
    "arquivos": 1376,
-   "linhas": 275361
+   "linhas": 275367
   },
   "src/config": {
    "arquivos": 1,
@@ -2115,8 +2115,8 @@
    "linhas": 580
   },
   "tests/pages": {
-   "arquivos": 13,
-   "linhas": 2564
+   "arquivos": 14,
+   "linhas": 2927
   },
   "tests/product-form-improvements.test.ts": {
    "arquivos": 1,

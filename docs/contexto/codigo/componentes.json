@@ -10940,7 +10940,7 @@
     "MagicUpCampaignPanel"
    ],
    "export_default": null,
-   "linhas": 163,
+   "linhas": 169,
    "dominio": "components/magic-up",
    "hooks_locais": [],
    "tabelas": [],
