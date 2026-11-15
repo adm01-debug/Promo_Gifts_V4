@@ -152,7 +152,23 @@ CREATE TABLE IF NOT EXISTS "public"."product_images" (
     "cf_verified_at" timestamp with time zone,
     "cf_check_attempts" smallint DEFAULT 0 NOT NULL,
     "cf_last_error" "text",
-    "cf_id_scheme" "text",
+    -- GENERATED ALWAYS STORED na producao: migrations posteriores
+    -- (20260616170638_pi_cf_sync_observability_e1.sql:12-25 e
+    -- 20260616171501_product_images_cf_sync_observability.sql) usam
+    -- ADD COLUMN IF NOT EXISTS, logo nao recriariam a expressao se a coluna
+    -- nascesse comum aqui: o replay ficaria com classificacao nula e a view
+    -- cf_recon.v_verification_queue deixaria passar id `xbz_site_...`.
+    "cf_id_scheme" "text" GENERATED ALWAYS AS (
+CASE
+    WHEN (("cloudflare_image_id")::"text" ~ '^xbz_site_'::"text") THEN 'hash_legacy'::"text"
+    WHEN ((("cloudflare_image_id")::"text" ~ '-dup-'::"text") OR (("cloudflare_image_id")::"text" ~ '-leg-'::"text") OR (("cloudflare_image_id")::"text" ~ '--ref'::"text") OR (("cloudflare_image_id")::"text" ~ '-legacy$'::"text")) THEN 'synthetic'::"text"
+    WHEN (("cloudflare_image_id")::"text" ~ '^[0-9a-f]{8}-[0-9a-f]{4}-'::"text") THEN 'uuid'::"text"
+    WHEN (("cloudflare_image_id")::"text" ~ '-(main|gal-[0-9]+)$'::"text") THEN 'main_gal'::"text"
+    WHEN (("cloudflare_image_id")::"text" ~ '-d[0-9]+$'::"text") THEN 'detail_dn'::"text"
+    WHEN ((("cloudflare_image_id")::"text" ~ '-[0-9]{4,}-[0-9]{9,}$'::"text") OR (("cloudflare_image_id")::"text" ~ 'd[0-9]+-[0-9]{9,}$'::"text")) THEN 'slug_ts'::"text"
+    WHEN (("cloudflare_image_id")::"text" ~ '_[0-9]'::"text") THEN 'legacy_cor'::"text"
+    ELSE 'seq'::"text"
+END) STORED,
     "content_hash" "text",
     "canonical_image_id" "uuid",
     "is_shared" boolean DEFAULT false NOT NULL,
@@ -163,7 +179,12 @@ CREATE TABLE IF NOT EXISTS "public"."product_images" (
     "deleted_reason" "text",
     "blurhash" "text",
     "requires_signed_url" boolean DEFAULT false NOT NULL,
-    "aspect_ratio" numeric,
+    -- GENERATED ALWAYS STORED na producao (mesmo motivo do cf_id_scheme).
+    "aspect_ratio" numeric GENERATED ALWAYS AS (
+CASE
+    WHEN (("height_px" IS NOT NULL) AND ("height_px" > 0) AND ("width_px" IS NOT NULL)) THEN "round"((("width_px")::numeric / ("height_px")::numeric), 4)
+    ELSE NULL::numeric
+END) STORED,
     "cf_last_checked_at" timestamp with time zone
 );
 
@@ -265,6 +286,73 @@ CREATE TABLE IF NOT EXISTS "public"."stock_daily_summary" (
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "restock_zero_to_positive" boolean DEFAULT false NOT NULL
 );
+
+--
+-- REPLAY FIX (3): chaves e RLS das 6 tabelas espelhadas acima.
+--
+-- `NOT NULL` nao cria chave referenciavel: o Postgres exige PRIMARY KEY ou UNIQUE
+-- na coluna alvo de uma FK. Sem os blocos abaixo, o replay segue e quebra adiante,
+-- com `there is no unique constraint matching given keys for referenced table`:
+--   20260604141720_create_supplier_price_tiers.sql:3        -> variant_supplier_sources(id)
+--   20260605121608_001_silver_enum_and_products.sql:84      -> material_types(id)
+--   20260605121655_004_silver_images_queue.sql:18           -> product_images(id)
+-- E as 6 tabelas tem RLS LIGADO em producao; as migrations de policy posteriores
+-- criam policy mas NAO fazem ENABLE ROW LEVEL SECURITY, logo num banco do zero as
+-- tabelas nasceriam sem isolamento por organizacao.
+--
+-- Nomes, colunas e RLS conferidos em producao (doufsxqlfjyuvxuezpln, read-only,
+-- 2026-11-15) em pg_constraint e pg_class.relrowsecurity. Cada bloco e guardado por
+-- existencia, entao em producao e no-op. Achados do devin-ai-integration (bug
+-- 🔴 e security 🟨) e do chatgpt-codex-connector (P2) na PR #3686.
+--
+
+DO $$
+DECLARE
+  r record;
+BEGIN
+  FOR r IN
+    SELECT * FROM (VALUES
+      ('material_groups',          'material_groups_pkey',                                'PRIMARY KEY ("id")'),
+      ('material_groups',          'material_groups_organization_id_name_key',             'UNIQUE ("organization_id", "name")'),
+      ('material_groups',          'material_groups_organization_id_slug_key',             'UNIQUE ("organization_id", "slug")'),
+      ('material_types',           'material_types_pkey',                                 'PRIMARY KEY ("id")'),
+      ('material_types',           'material_types_organization_id_slug_key',              'UNIQUE ("organization_id", "slug")'),
+      ('product_materials',        'product_materials_pkey',                              'PRIMARY KEY ("id")'),
+      ('product_materials',        'product_materials_product_material_unique',           'UNIQUE ("product_id", "material_id")'),
+      ('product_images',           'product_images_pkey',                                 'PRIMARY KEY ("id")'),
+      ('product_images',           'product_images_cloudflare_image_id_key',              'UNIQUE ("cloudflare_image_id")'),
+      ('variant_supplier_sources', 'variant_stocks_pkey',                                 'PRIMARY KEY ("id")'),
+      ('variant_supplier_sources', 'variant_stocks_organization_id_variant_id_supplier_id_key', 'UNIQUE ("organization_id", "variant_id", "supplier_id")'),
+      ('stock_daily_summary',      'stock_daily_summary_pkey',                            'PRIMARY KEY ("id")'),
+      ('stock_daily_summary',      'uq_stock_daily_vss_date',                             'UNIQUE ("variant_supplier_source_id", "summary_date")')
+    ) AS t(tabela, constraint_name, definicao)
+  LOOP
+    IF to_regclass('public.' || quote_ident(r.tabela)) IS NOT NULL
+       AND NOT EXISTS (
+         SELECT 1 FROM pg_constraint
+          WHERE conrelid = ('public.' || quote_ident(r.tabela))::regclass
+            AND conname = r.constraint_name
+       )
+    THEN
+      EXECUTE format('ALTER TABLE public.%I ADD CONSTRAINT %I %s',
+                     r.tabela, r.constraint_name, r.definicao);
+    END IF;
+  END LOOP;
+END $$;
+
+-- ENABLE ROW LEVEL SECURITY e idempotente: no-op quando já está ligado.
+DO $$
+DECLARE
+  t text;
+BEGIN
+  FOREACH t IN ARRAY ARRAY['material_groups','material_types','product_materials',
+                           'product_images','variant_supplier_sources','stock_daily_summary']
+  LOOP
+    IF to_regclass('public.' || quote_ident(t)) IS NOT NULL THEN
+      EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', t);
+    END IF;
+  END LOOP;
+END $$;
 SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;

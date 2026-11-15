@@ -1763,6 +1763,28 @@ tipo/default exatos do próprio `CREATE TABLE`, a `UNIQUE` de `categories.slug` 
 SHA `8efffeb0e5`). Com as 6, as únicas tabelas que `20260512000000` lê sem criar passam a ser
 `categories`, `products`, `suppliers` e `product_variants`, todas criadas por migrations anteriores.
 
+**Chaves, RLS e colunas geradas (3ª rodada, achados da revisão da #3686).** Os stubs sem `PRIMARY KEY`
+só empurravam a parede do replay adiante: `NOT NULL` não cria chave referenciável, e
+`20260604141720_create_supplier_price_tiers.sql:3`, `20260605121608_001_silver_enum_and_products.sql:84` e
+`20260605121655_004_silver_images_queue.sql:18` referenciam `variant_supplier_sources(id)`,
+`material_types(id)` e `product_images(id)` — o replay pararia com `there is no unique constraint matching
+given keys for referenced table`. Acrescentadas as 13 constraints reais de produção (lidas em
+`pg_constraint`), `ENABLE ROW LEVEL SECURITY` nas 6 (produção tem RLS ligado nas 6; as migrations de policy
+posteriores criam policy mas não habilitam RLS) e as duas colunas `GENERATED ALWAYS ... STORED` de
+`product_images` (`cf_id_scheme`, `aspect_ratio`), que nasceriam comuns e nunca seriam recriadas, porque as
+migrations posteriores usam `ADD COLUMN IF NOT EXISTS`.
+
+Em `20250103080000`, as `UNIQUE` de `quotes.quote_number` e `quotes.approval_token` também se perdiam, e
+pior: `20251214194907_a5a0f44d-...sql:80-86` cria coluna **e** constraint num bloco guardado por "se a
+coluna não existir", que agora é pulado — nenhuma migration posterior recriava a chave, e o banco
+reconstruído aceitaria orçamentos com número repetido. Constraints adicionadas de forma idempotente.
+
+**Verificado em PostgreSQL 16.15 local, não por leitura:** as duas aplicações seguidas passam (idempotente),
+as 13 constraints e o RLS aparecem em `pg_constraint`/`pg_class`, as 3 FKs que falhavam passam a ser
+aceitas, `cf_id_scheme` classifica `xbz_site_abc` como `hash_legacy` e `aspect_ratio` de 800×600 dá
+`1.3333`, e o segundo orçamento com o mesmo número é recusado com
+`duplicate key value violates unique constraint "quotes_quote_number_key"`.
+
 **Nenhuma escrita em produção.** As duas `version` já estão aplicadas no ledger e os arquivos não voltam a
 rodar em produção; em um banco onde as colunas já existem cada statement novo é no-op. O `sha256` dos dois
 arquivos mudou por causa deste conserto de replay (nenhum dos dois tinha linha de recibo antes — ambos são
@@ -1777,5 +1799,5 @@ em produção nada foi alterado — decisão do dono.
 
 | versão | arquivo | sha256 anterior | sha256 novo | status |
 |---|---|---|---|---|
-| `20250103080000` | `complete_schema` | `b30c559adeef877f77c70c3f6dfd781ba03575dcddb25ab06ab4e795e5b3f324` | `4dcc93d8c5acfd562b083b0470bd3c4acbbc776a65b27d86bb6fb6d74629af51` | já aplicada em produção; conserto só vale para replay do zero, não vai a produção |
-| `20260512000000` | `bootstrap_missing_application_schemas` | `a6c946928ff8eeb6505f1d303ecde32ea8bd2751017d5d82410ebbe725191d58` | `f1920b531f0440b27af2e02aa365c16edccecf6c68afd287a334e7c3fd806d1b` | já aplicada em produção; conserto só vale para replay do zero, não vai a produção |
+| `20250103080000` | `complete_schema` | `b30c559adeef877f77c70c3f6dfd781ba03575dcddb25ab06ab4e795e5b3f324` | `096a7a6b1827f39d4c328e88e51536363c4ceb1532a5569fc90fcb3543018ac9` | já aplicada em produção; conserto só vale para replay do zero, não vai a produção |
+| `20260512000000` | `bootstrap_missing_application_schemas` | `a6c946928ff8eeb6505f1d303ecde32ea8bd2751017d5d82410ebbe725191d58` | `7e848bc78ad6026fc640e46807b00669f7fa4a61119d24701d38544d0064aa52` | já aplicada em produção; conserto só vale para replay do zero, não vai a produção |

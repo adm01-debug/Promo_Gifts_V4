@@ -425,6 +425,31 @@ ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS delivery_terms TEXT;
 ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS tags JSONB DEFAULT '[]';
 ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS approval_token TEXT;
 ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS approved_at TIMESTAMPTZ;
+-- As UNIQUE de `quote_number TEXT UNIQUE` e `approval_token TEXT UNIQUE` tambem se
+-- perdem quando o CREATE acima e no-op. Pior: 20251214194907_a5a0f44d-0504-411d-842a-cb07597b6ed5.sql:80-86
+-- cria a coluna E a constraint `quotes_quote_number_key` num bloco guardado por
+-- "se a coluna NAO existir"; como agora ela existe desde aqui, esse bloco e pulado
+-- e nenhuma migration posterior recria a chave. Sem isto, o banco reconstruido
+-- aceitaria dois orcamentos com o mesmo numero, e `generate_quote_number` depende
+-- da constraint quando o numero vem informado. Em producao as duas existem
+-- (quotes_quote_number_key, quotes_approval_token_key — conferidas em pg_constraint),
+-- entao os blocos abaixo sao no-op lá.
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conrelid = 'public.quotes'::regclass
+      AND conname = 'quotes_quote_number_key'
+  ) THEN
+    ALTER TABLE public.quotes ADD CONSTRAINT quotes_quote_number_key UNIQUE (quote_number);
+  END IF;
+END $$;
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conrelid = 'public.quotes'::regclass
+      AND conname = 'quotes_approval_token_key'
+  ) THEN
+    ALTER TABLE public.quotes ADD CONSTRAINT quotes_approval_token_key UNIQUE (approval_token);
+  END IF;
+END $$;
 ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS approved_by_client_name TEXT;
 ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS client_feedback TEXT;
 ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS viewed_at TIMESTAMPTZ;
