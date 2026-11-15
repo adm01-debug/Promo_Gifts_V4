@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "bc3fdff61fed8e92dd42f232484de2ceecdecb03",
+  "commit": "e5afe82459241cf56411d3b057354dec7f7a0dbc",
   "branch": "main",
-  "data_commit": "2026-11-15T01:23:17Z",
+  "data_commit": "2026-11-15T01:52:40Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e5afe824",
+    "data": "2026-11-15",
+    "assunto": "fix: trem das 5 correções já verdes — recibos, código morto do CRM, 3 resgates, gerador de mockup e aba Marketing (#3647"
+   },
    {
     "sha": "bc3fdff6",
     "data": "2026-11-15",
@@ -126,18 +131,13 @@
     "sha": "5eae42bb",
     "data": "2026-11-14",
     "assunto": "fix(migrations): destrava o CI — recibo das versões reconciliadas e correções no plano de workflows (#3629)"
-   },
-   {
-    "sha": "8288d686",
-    "data": "2026-11-14",
-    "assunto": "chore(coordenacao): registra o trem 4 no ledger (E188)"
    }
   ],
-  "arquivos_mudados_7d": 2119,
+  "arquivos_mudados_7d": 2162,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 644
+    "mudancas": 648
    },
    {
     "pasta": "src/components/products",
@@ -145,7 +145,7 @@
    },
    {
     "pasta": "recovery/src-legacy/src",
-    "mudancas": 316
+    "mudancas": 317
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 150
+    "mudancas": 157
    },
    {
     "pasta": "src/pages/admin",
@@ -193,13 +193,13 @@
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 110
+    "mudancas": 112
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 95
+    "mudancas": 94
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 58
+    "mudancas": 59
    },
    {
     "arquivo": "package.json",
@@ -234,15 +234,15 @@
     "mudancas": 17
    },
    {
+    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
+    "mudancas": 16
+   },
+   {
     "arquivo": "analise-prs/prs.json",
     "mudancas": 15
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 15
-   },
-   {
-    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
     "mudancas": 15
    },
    {
@@ -267,7 +267,7 @@
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 584
+    "commits": 583
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10189,
-  "arquivos_codigo": 5242,
-  "linhas_codigo": 1000082,
+  "arquivos_total": 10210,
+  "arquivos_codigo": 5261,
+  "linhas_codigo": 1004049,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -333,10 +333,10 @@
   "componentes": 1225,
   "hooks": 615,
   "edge_functions": 111,
-  "tabelas": 546,
-  "migrations": 3086,
+  "tabelas": 548,
+  "migrations": 3087,
   "cron_jobs": 122,
-  "testes": 2471,
+  "testes": 2486,
   "workflows": 98,
   "scripts": 272,
   "docs_md": 1023
@@ -911,8 +911,8 @@
    "linhas": 248
   },
   "recovery/src-legacy": {
-   "arquivos": 316,
-   "linhas": 59826
+   "arquivos": 317,
+   "linhas": 59905
   },
   "scripts/__tests__": {
    "arquivos": 7,
@@ -1883,8 +1883,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1364,
-   "linhas": 273774
+   "arquivos": 1370,
+   "linhas": 274889
   },
   "src/config": {
    "arquivos": 1,
@@ -1900,19 +1900,19 @@
   },
   "src/data": {
    "arquivos": 3,
-   "linhas": 1758
+   "linhas": 1763
   },
   "src/deploy-version.ts": {
    "arquivos": 1,
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 455,
-   "linhas": 85721
+   "arquivos": 463,
+   "linhas": 87336
   },
   "src/integrations": {
    "arquivos": 11,
-   "linhas": 66208
+   "linhas": 66577
   },
   "src/lib": {
    "arquivos": 332,
@@ -1927,8 +1927,8 @@
    "linhas": 63
   },
   "src/pages": {
-   "arquivos": 351,
-   "linhas": 82586
+   "arquivos": 353,
+   "linhas": 82882
   },
   "src/routes": {
    "arquivos": 14,
@@ -1948,7 +1948,7 @@
   },
   "src/tests": {
    "arquivos": 33,
-   "linhas": 5090
+   "linhas": 5107
   },
   "src/types": {
    "arquivos": 26,
@@ -1959,8 +1959,8 @@
    "linhas": 8171
   },
   "supabase/functions": {
-   "arquivos": 271,
-   "linhas": 50218
+   "arquivos": 270,
+   "linhas": 50125
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -2035,8 +2035,8 @@
    "linhas": 141
   },
   "tests/components": {
-   "arquivos": 151,
-   "linhas": 33406
+   "arquivos": 154,
+   "linhas": 33958
   },
   "tests/config": {
    "arquivos": 6,
@@ -2080,7 +2080,7 @@
   },
   "tests/hooks": {
    "arquivos": 132,
-   "linhas": 18240
+   "linhas": 18246
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2116,7 +2116,7 @@
   },
   "tests/pages": {
    "arquivos": 13,
-   "linhas": 2558
+   "linhas": 2564
   },
   "tests/product-form-improvements.test.ts": {
    "arquivos": 1,
@@ -2254,7 +2254,7 @@
  "maiores_arquivos": [
   {
    "arquivo": "src/integrations/supabase/types.ts",
-   "linhas": 64863
+   "linhas": 65232
   },
   {
    "arquivo": "scripts/regras_negocio/generate.py",
@@ -2359,7 +2359,7 @@
   "ts_ignore": 0,
   "eslint_disable": 24,
   "todos": 105,
-  "arquivos_acima_500_linhas": 185
+  "arquivos_acima_500_linhas": 187
  },
  "todos": [
   {
@@ -3348,7 +3348,6 @@
    "ProductGridSkeleton",
    "ProductListItemSkeleton",
    "ProductListSkeleton",
-   "ProductLoaderAndColorSelector",
    "ProductMatchPage",
    "ProductPersonalizationManager",
    "ProductSearchPanel",

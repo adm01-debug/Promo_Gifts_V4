@@ -3,8 +3,8 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4791)",
-   "SQL (3403)",
+   "TypeScript (4810)",
+   "SQL (3405)",
    "Markdown (1023)",
    "JavaScript (443)",
    "JSON (126)",
@@ -4949,16 +4949,20 @@
     "arquivos": 10
    },
    {
+    "host": "imagedelivery.net",
+    "arquivos": 10
+   },
+   {
+    "host": "test.supabase.co",
+    "arquivos": 10
+   },
+   {
     "host": "api.supabase.com",
     "arquivos": 9
    },
    {
-    "host": "imagedelivery.net",
-    "arquivos": 9
-   },
-   {
-    "host": "test.supabase.co",
-    "arquivos": 9
+    "host": "cdn.test",
+    "arquivos": 8
    },
    {
     "host": "edge-contract.invalid",
@@ -4970,10 +4974,6 @@
    },
    {
     "host": "api.ipify.org",
-    "arquivos": 6
-   },
-   {
-    "host": "cdn.test",
     "arquivos": 6
    },
    {
@@ -5130,6 +5130,10 @@
    },
    {
     "host": "spotgifts.com.br",
+    "arquivos": 2
+   },
+   {
+    "host": "storage.test",
     "arquivos": 2
    },
    {
@@ -5481,10 +5485,6 @@
     "arquivos": 1
    },
    {
-    "host": "storage.test",
-    "arquivos": 1
-   },
-   {
     "host": "stream.test",
     "arquivos": 1
    },
@@ -5681,7 +5681,7 @@
    },
    {
     "papel": "vendedor",
-    "ocorrencias": 25
+    "ocorrencias": 24
    },
    {
     "papel": "supervisor",
@@ -5712,16 +5712,16 @@
     "ocorrencias": 17
    },
    {
+    "papel": "option",
+    "ocorrencias": 13
+   },
+   {
     "papel": "authenticated",
     "ocorrencias": 12
    },
    {
-    "papel": "option",
-    "ocorrencias": 12
-   },
-   {
     "papel": "combobox",
-    "ocorrencias": 10
+    "ocorrencias": 11
    },
    {
     "papel": "progressbar",
@@ -5760,15 +5760,15 @@
     "ocorrencias": 8
    },
    {
+    "papel": "listbox",
+    "ocorrencias": 7
+   },
+   {
     "papel": "main",
     "ocorrencias": 7
    },
    {
     "papel": "checkbox",
-    "ocorrencias": 6
-   },
-   {
-    "papel": "listbox",
     "ocorrencias": 6
    },
    {

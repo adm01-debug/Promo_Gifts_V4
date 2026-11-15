@@ -5,22 +5,22 @@
   "vitest",
   "playwright"
  ],
- "total": 2471,
+ "total": 2486,
  "por_tipo": {
   "contrato": 65,
   "e2e": 679,
   "pytest": 4,
   "qa": 17,
-  "unit": 1706
+  "unit": 1721
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1012
+   "arquivos": 1015
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 638
+   "arquivos": 650
   },
   {
    "padrao": "e2e/",
@@ -4918,6 +4918,25 @@
    "casos": 2
   },
   {
+   "arquivo": "src/components/admin/products/__tests__/productMarketingData.test.ts",
+   "tipo": "unit",
+   "linhas": 179,
+   "testa": [
+    "src/components/admin/products/productMarketingData.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "src/components/admin/products/__tests__/ProductMarketingSection.test.tsx",
+   "tipo": "unit",
+   "linhas": 117,
+   "testa": [
+    "src/components/admin/products/ProductMarketingSection.tsx",
+    "src/components/admin/products/productMarketingData.ts"
+   ],
+   "casos": 5
+  },
+  {
    "arquivo": "src/components/ai/__tests__/AIMockupAssistant.test.tsx",
    "tipo": "unit",
    "linhas": 60,
@@ -5925,6 +5944,27 @@
     "src/components/mockup/MockupBeforeAfter.tsx"
    ],
    "casos": 7
+  },
+  {
+   "arquivo": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+   "tipo": "unit",
+   "linhas": 243,
+   "testa": [
+    "src/components/mockup/MockupClientSelector.tsx"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/components/mockup/__tests__/MockupClientSelector.logo.test.tsx",
+   "tipo": "unit",
+   "linhas": 227,
+   "testa": [
+    "src/components/mockup/MockupConfigPanel.tsx",
+    "src/components/mockup/MockupProductSelector.tsx",
+    "src/components/mockup/MultiAreaManager.tsx",
+    "src/components/ui/tooltip.tsx"
+   ],
+   "casos": 5
   },
   {
    "arquivo": "src/components/mockup/__tests__/MockupClientSelector.test.tsx",
@@ -8058,7 +8098,7 @@
   {
    "arquivo": "src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts",
    "tipo": "unit",
-   "linhas": 289,
+   "linhas": 292,
    "testa": [
     "src/hooks/mockup/useMockupGenerator.ts"
    ],
@@ -8067,7 +8107,7 @@
   {
    "arquivo": "src/hooks/mockup/__tests__/mockupBatch.partial.test.ts",
    "tipo": "unit",
-   "linhas": 216,
+   "linhas": 219,
    "testa": [
     "src/hooks/mockup/mockupGeneratorModel.ts",
     "src/hooks/mockup/useMockupGenerator.ts"
@@ -8077,7 +8117,7 @@
   {
    "arquivo": "src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts",
    "tipo": "unit",
-   "linhas": 256,
+   "linhas": 259,
    "testa": [
     "src/hooks/mockup/mockupGeneratorModel.ts",
     "src/hooks/mockup/useMockupGenerator.ts"
@@ -8087,7 +8127,7 @@
   {
    "arquivo": "src/hooks/mockup/__tests__/mockupEntry.params.test.ts",
    "tipo": "unit",
-   "linhas": 206,
+   "linhas": 209,
    "testa": [
     "src/hooks/mockup/mockupGeneratorModel.ts",
     "src/hooks/mockup/useMockupGenerator.ts"
@@ -8097,7 +8137,7 @@
   {
    "arquivo": "src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts",
    "tipo": "unit",
-   "linhas": 247,
+   "linhas": 268,
    "testa": [
     "src/hooks/mockup/useMockupGenerator.ts"
    ],
@@ -8117,6 +8157,56 @@
    "casos": 42
   },
   {
+   "arquivo": "src/hooks/mockup/__tests__/mockupHistoryAdapter.test.ts",
+   "tipo": "unit",
+   "linhas": 120,
+   "testa": [
+    "src/hooks/mockup/mockupHistoryAdapter.ts"
+   ],
+   "casos": 6
+  },
+  {
+   "arquivo": "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
+   "tipo": "unit",
+   "linhas": 382,
+   "testa": [
+    "src/components/mockup/MultiAreaManager.tsx",
+    "src/hooks/mockup/mockupGenerationService.ts",
+    "src/hooks/mockup/useMockupDraft.ts",
+    "src/hooks/mockup/useMockupGenerator.ts",
+    "src/hooks/products/index.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
+   "tipo": "unit",
+   "linhas": 144,
+   "testa": [
+    "src/hooks/mockup/mockupSelectionSnapshot.ts",
+    "src/hooks/products/index.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/hooks/mockup/__tests__/resolveTechnique.order.test.ts",
+   "tipo": "unit",
+   "linhas": 45,
+   "testa": [
+    "src/hooks/mockup/useMockupTechniques.ts"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "src/hooks/mockup/__tests__/useMockupDraft.race.test.ts",
+   "tipo": "unit",
+   "linhas": 253,
+   "testa": [
+    "src/hooks/mockup/useMockupDraft.ts"
+   ],
+   "casos": 3
+  },
+  {
    "arquivo": "src/hooks/mockup/__tests__/useMockupDraft.test.ts",
    "tipo": "unit",
    "linhas": 645,
@@ -8125,6 +8215,18 @@
     "src/lib/logger.ts"
    ],
    "casos": 28
+  },
+  {
+   "arquivo": "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts",
+   "tipo": "unit",
+   "linhas": 298,
+   "testa": [
+    "src/components/mockup/MockupProductSelector.tsx",
+    "src/hooks/mockup/mockupGenerationService.ts",
+    "src/hooks/mockup/useMockupDraft.ts",
+    "src/hooks/mockup/useMockupGenerator.ts"
+   ],
+   "casos": 5
   },
   {
    "arquivo": "src/hooks/products/__tests__/dailyCatalogDefaults.test.ts",
@@ -9949,6 +10051,17 @@
    "casos": 5
   },
   {
+   "arquivo": "src/pages/kit-builder/__tests__/useKitBuilderQuote.sem-cliente.test.tsx",
+   "tipo": "unit",
+   "linhas": 123,
+   "testa": [
+    "src/integrations/supabase/client.ts",
+    "src/lib/kit-builder/index.ts",
+    "src/pages/kit-builder/useKitBuilderQuote.ts"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "src/pages/magazine/__tests__/applyTemplateGuard.test.ts",
    "tipo": "unit",
    "linhas": 55,
@@ -10207,11 +10320,11 @@
   {
    "arquivo": "src/pages/mockups/__tests__/MockupHistoryPage.test.tsx",
    "tipo": "unit",
-   "linhas": 115,
+   "linhas": 151,
    "testa": [
     "src/pages/mockups/MockupHistoryPage.tsx"
    ],
-   "casos": 5
+   "casos": 6
   },
   {
    "arquivo": "src/pages/mockups/mockup-generator/__tests__/MockupDialogs.test.tsx",
@@ -10601,6 +10714,16 @@
    "linhas": 157,
    "testa": [
     "src/components/ui/select.tsx"
+   ],
+   "casos": 3
+  },
+  {
+   "arquivo": "src/pages/quotes/__tests__/QuotesDashboardPage.pdfDisabled.test.tsx",
+   "tipo": "unit",
+   "linhas": 113,
+   "testa": [
+    "src/pages/quotes/QuotesDashboardPage.tsx",
+    "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts"
    ],
    "casos": 3
   },
@@ -11240,7 +11363,7 @@
   {
    "arquivo": "src/tests/MockupDeletion.test.tsx",
    "tipo": "unit",
-   "linhas": 872,
+   "linhas": 889,
    "testa": [
     "src/components/a11y/AriaLive.tsx",
     "src/components/ui/tooltip.tsx",
@@ -13420,12 +13543,33 @@
   {
    "arquivo": "tests/components/mockup/MockupHistoryPanel.actions.test.tsx",
    "tipo": "unit",
-   "linhas": 147,
+   "linhas": 163,
    "testa": [
     "src/components/mockup/MockupHistoryPanel.tsx",
     "src/hooks/mockup/mockupGenerationService.ts"
    ],
+   "casos": 6
+  },
+  {
+   "arquivo": "tests/components/mockup/MockupHistoryPanel.pagination.test.tsx",
+   "tipo": "unit",
+   "linhas": 171,
+   "testa": [
+    "src/components/mockup/MockupHistoryPanel.tsx",
+    "src/hooks/mockup/mockupGenerationService.ts",
+    "src/hooks/mockup/mockupHistoryAdapter.ts"
+   ],
    "casos": 5
+  },
+  {
+   "arquivo": "tests/components/mockup/MockupHistoryPanel.targets.test.tsx",
+   "tipo": "unit",
+   "linhas": 174,
+   "testa": [
+    "src/components/mockup/MockupHistoryPanel.tsx",
+    "src/hooks/mockup/mockupGenerationService.ts"
+   ],
+   "casos": 7
   },
   {
    "arquivo": "tests/components/mockup/MockupHistoryPanel.test.tsx",
@@ -13445,6 +13589,16 @@
     "src/hooks/products/index.ts"
    ],
    "casos": 8
+  },
+  {
+   "arquivo": "tests/components/mockup/MockupProductSelector.states.test.tsx",
+   "tipo": "unit",
+   "linhas": 191,
+   "testa": [
+    "src/components/mockup/MockupProductSelector.tsx",
+    "src/hooks/products/index.ts"
+   ],
+   "casos": 3
   },
   {
    "arquivo": "tests/components/mockup/MockupProductSelector.test.tsx",
@@ -16672,11 +16826,12 @@
   {
    "arquivo": "tests/hooks/useMockupGenerator.test.ts",
    "tipo": "unit",
-   "linhas": 311,
+   "linhas": 317,
    "testa": [
     "src/components/mockup/MockupSuccessToast.tsx",
     "src/components/mockup/MultiAreaManager.tsx",
     "src/hooks/mockup/mockupGenerationService.ts",
+    "src/hooks/mockup/mockupHistoryAdapter.ts",
     "src/hooks/mockup/useMockupDraft.ts",
     "src/hooks/mockup/useMockupGenerator.ts",
     "src/hooks/simulation/index.ts",
@@ -18243,7 +18398,7 @@
   {
    "arquivo": "tests/pages/kit-builder/useKitBuilderQuote.test.ts",
    "tipo": "unit",
-   "linhas": 573,
+   "linhas": 579,
    "testa": [
     "src/lib/db/postgrest.ts",
     "src/lib/kit-builder/types.ts",
@@ -20910,6 +21065,8 @@
   "src/components/admin/connections/useFocusContext.ts": 1,
   "src/components/admin/connections/useZoneCollapse.ts": 1,
   "src/components/admin/products/ProductFormSchema.ts": 2,
+  "src/components/admin/products/ProductMarketingSection.tsx": 1,
+  "src/components/admin/products/productMarketingData.ts": 2,
   "src/components/admin/telemetry/TelemetryCharts.tsx": 1,
   "src/components/ai/AIMockupAssistant.tsx": 1,
   "src/components/ai/AIRecommendationsPanel.tsx": 1,
@@ -21029,17 +21186,17 @@
   "src/components/mockup/LogoColorAnalyzer.tsx": 2,
   "src/components/mockup/LogoPositionEditor.tsx": 3,
   "src/components/mockup/MockupBeforeAfter.tsx": 1,
-  "src/components/mockup/MockupClientSelector.tsx": 1,
+  "src/components/mockup/MockupClientSelector.tsx": 2,
   "src/components/mockup/MockupColorSelector.tsx": 2,
   "src/components/mockup/MockupCompareDialog.tsx": 1,
-  "src/components/mockup/MockupConfigPanel.tsx": 4,
-  "src/components/mockup/MockupHistoryPanel.tsx": 2,
+  "src/components/mockup/MockupConfigPanel.tsx": 5,
+  "src/components/mockup/MockupHistoryPanel.tsx": 4,
   "src/components/mockup/MockupLightbox.tsx": 1,
-  "src/components/mockup/MockupProductSelector.tsx": 2,
+  "src/components/mockup/MockupProductSelector.tsx": 5,
   "src/components/mockup/MockupResultCard.tsx": 1,
   "src/components/mockup/MockupSuccessToast.tsx": 2,
   "src/components/mockup/MockupWizard.tsx": 2,
-  "src/components/mockup/MultiAreaManager.tsx": 10,
+  "src/components/mockup/MultiAreaManager.tsx": 12,
   "src/components/mockup/ProductSearchCombobox.tsx": 2,
   "src/components/mockup/TechniqueTooltip.tsx": 1,
   "src/components/mockup/approval/MockupApprovalPreview.tsx": 2,
@@ -21168,7 +21325,7 @@
   "src/components/ui/label.tsx": 3,
   "src/components/ui/popover.tsx": 2,
   "src/components/ui/select.tsx": 6,
-  "src/components/ui/tooltip.tsx": 115,
+  "src/components/ui/tooltip.tsx": 116,
   "src/components/ui/truncated-tooltip.tsx": 1,
   "src/components/workflows/WorkflowEditDialog.tsx": 1,
   "src/constants/filters.ts": 7,
@@ -21253,13 +21410,15 @@
   "src/hooks/kit-builder/useKitUndoRedo.ts": 1,
   "src/hooks/kit-builder/useKitWizardShortcuts.ts": 1,
   "src/hooks/kit-builder/useTemplateSnapshot.ts": 1,
-  "src/hooks/mockup/mockupGenerationService.ts": 5,
+  "src/hooks/mockup/mockupGenerationService.ts": 9,
   "src/hooks/mockup/mockupGeneratorModel.ts": 3,
-  "src/hooks/mockup/useMockupDraft.ts": 5,
-  "src/hooks/mockup/useMockupGenerator.ts": 9,
-  "src/hooks/mockup/useMockupTechniques.ts": 2,
+  "src/hooks/mockup/mockupHistoryAdapter.ts": 3,
+  "src/hooks/mockup/mockupSelectionSnapshot.ts": 1,
+  "src/hooks/mockup/useMockupDraft.ts": 8,
+  "src/hooks/mockup/useMockupGenerator.ts": 11,
+  "src/hooks/mockup/useMockupTechniques.ts": 3,
   "src/hooks/products/dailyCatalogDefaults.ts": 1,
-  "src/hooks/products/index.ts": 25,
+  "src/hooks/products/index.ts": 28,
   "src/hooks/products/sellerCartToasts.ts": 4,
   "src/hooks/products/useAdvancedFilters.ts": 2,
   "src/hooks/products/useCatalogFiltering.ts": 3,
@@ -21340,7 +21499,7 @@
   "src/hooks/voice/processTranscript.ts": 2,
   "src/hooks/voice/retry.ts": 2,
   "src/hooks/voice/types.ts": 1,
-  "src/integrations/supabase/client.ts": 48,
+  "src/integrations/supabase/client.ts": 49,
   "src/integrations/supabase/gold-relations.ts": 1,
   "src/integrations/supabase/gold.ts": 1,
   "src/integrations/supabase/types.ts": 4,
@@ -21422,7 +21581,7 @@
   "src/lib/inventory/supplier-reliability/types.ts": 4,
   "src/lib/json-value.ts": 1,
   "src/lib/kit-builder/ai-composition.ts": 1,
-  "src/lib/kit-builder/index.ts": 30,
+  "src/lib/kit-builder/index.ts": 31,
   "src/lib/kit-builder/item-sort.ts": 1,
   "src/lib/kit-builder/persistence.ts": 2,
   "src/lib/kit-builder/price-calculator.ts": 2,
@@ -21520,7 +21679,7 @@
   "src/pages/filters/useFiltersPageState.ts": 3,
   "src/pages/kit-builder/KitBuilderPage.tsx": 1,
   "src/pages/kit-builder/KitLibraryPage.tsx": 1,
-  "src/pages/kit-builder/useKitBuilderQuote.ts": 1,
+  "src/pages/kit-builder/useKitBuilderQuote.ts": 2,
   "src/pages/magazine/MagazineEditorPage.tsx": 2,
   "src/pages/magazine/MagazineListPage.tsx": 1,
   "src/pages/magazine/MagazinePrintPage.tsx": 2,
@@ -21578,11 +21737,13 @@
   "src/pages/products/seller-carts/useMidnightReset.ts": 1,
   "src/pages/quotes/QuoteBuilderPage.tsx": 6,
   "src/pages/quotes/QuoteViewPage.tsx": 1,
+  "src/pages/quotes/QuotesDashboardPage.tsx": 1,
   "src/pages/quotes/QuotesListPage.tsx": 5,
   "src/pages/quotes/components/DeliveryModeToggle.tsx": 2,
   "src/pages/quotes/quote-view/QuoteActionHandlers.ts": 2,
   "src/pages/quotes/quote-view/QuoteUnavailableState.tsx": 1,
   "src/pages/quotes/quote-view/useQuoteViewData.ts": 1,
+  "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts": 1,
   "src/pages/quotes/useQuotesListPage.ts": 12,
   "src/pages/tools/AdvancedPriceSearchPage.tsx": 1,
   "src/pages/tools/MagicUp.tsx": 1,
@@ -21756,7 +21917,6 @@
    "src/pages/products/ProductDetail.tsx",
    "src/pages/products/ProductMatchPage.tsx",
    "src/pages/products/ReplenishmentsPage.tsx",
-   "src/pages/quotes/QuotesDashboardPage.tsx",
    "src/pages/quotes/QuotesKanbanPage.tsx",
    "src/pages/system/ExternalDatabaseTest.tsx",
    "src/pages/system/RateLimitDashboardPage.tsx",
@@ -22198,7 +22358,6 @@
    "src/pages/magazine/hooks/usePageZoom.ts",
    "src/pages/magazine/hooks/usePresentationMode.ts",
    "src/pages/products/seller-carts/useSellerCartsPage.ts",
-   "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
    "src/stores/oracleVoiceBridge.ts",
    "src/stores/useRecentlyViewedStore.ts",
    "src/stores/useSearchStore.ts",

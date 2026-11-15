@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2771,
- "arestas": 10971,
+ "nos": 2775,
+ "arestas": 10982,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -18,7 +18,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 450
+   "importado_por": 452
   },
   {
    "arquivo": "src/components/ui/card.tsx",
@@ -26,11 +26,11 @@
   },
   {
    "arquivo": "src/lib/logger.ts",
-   "importado_por": 311
+   "importado_por": 312
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
-   "importado_por": 292
+   "importado_por": 293
   },
   {
    "arquivo": "src/components/ui/input.tsx",
@@ -53,12 +53,12 @@
    "importado_por": 144
   },
   {
-   "arquivo": "src/components/ui/dialog.tsx",
-   "importado_por": 137
+   "arquivo": "src/hooks/products/index.ts",
+   "importado_por": 140
   },
   {
-   "arquivo": "src/hooks/products/index.ts",
-   "importado_por": 136
+   "arquivo": "src/components/ui/dialog.tsx",
+   "importado_por": 137
   },
   {
    "arquivo": "src/components/seo/PageSEO.tsx",
@@ -70,7 +70,7 @@
   },
   {
    "arquivo": "src/lib/kit-builder/index.ts",
-   "importado_por": 101
+   "importado_por": 102
   },
   {
    "arquivo": "src/lib/db/postgrest.ts",
@@ -169,7 +169,7 @@
   "total": 20,
   "maiores": [
    {
-    "tamanho": 53,
+    "tamanho": 55,
     "arquivos": [
      "src/components/catalog/useCatalogSelection.ts",
      "src/components/filters/ColorGroupFilter.tsx",
@@ -324,6 +324,7 @@
   "public/sw.js",
   "recovery/RealtimeMessagesExample.tsx",
   "recovery/src-legacy/src/components/admin/CatalogQualityDashboard.tsx",
+  "recovery/src-legacy/src/components/admin/products/ProductMarketingSection.tags-legacy.ts",
   "recovery/src-legacy/src/components/admin/telemetry/BridgeAlertsCard.tsx",
   "recovery/src-legacy/src/components/admin/telemetry/BridgesLiveCard.tsx",
   "recovery/src-legacy/src/components/admin/telemetry/ColdStartRetriesPanel.tsx",
@@ -616,8 +617,7 @@
   "src/components/inventory/HealthScoreInfoDialog.tsx",
   "src/components/inventory/StockCategoryTreeSelect.tsx",
   "src/components/inventory/StockHeroRiskBanner.tsx",
-  "src/components/inventory/VariantStockRowActions.tsx",
-  "src/components/inventory/risk/RupturePanelEma.tsx"
+  "src/components/inventory/VariantStockRowActions.tsx"
  ],
  "modulos_mais_acoplados": [
   {
@@ -677,7 +677,7 @@
   },
   {
    "modulo": "components/admin",
-   "depende_de": 31,
+   "depende_de": 30,
    "importado_por": 7
   },
   {
@@ -713,7 +713,7 @@
   {
    "modulo": "lib/telemetry",
    "depende_de": 2,
-   "importado_por": 27
+   "importado_por": 28
   },
   {
    "modulo": "components/catalog",

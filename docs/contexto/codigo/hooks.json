@@ -10131,7 +10131,7 @@
    "hooks_exportados": [
     "useMockupDraft"
    ],
-   "linhas": 428,
+   "linhas": 473,
    "dominio": "hooks/mockup",
    "tabelas": [
     "mockup_drafts"
@@ -10151,7 +10151,7 @@
     "src/hooks/mockup/index.ts",
     "src/hooks/mockup/useMockupGenerator.ts"
    ],
-   "coberto_por_testes": 5
+   "coberto_por_testes": 8
   },
   {
    "arquivo": "src/hooks/mockup/useMockupEntryParams.ts",
@@ -10180,7 +10180,7 @@
    "hooks_exportados": [
     "useMockupGenerator"
    ],
-   "linhas": 894,
+   "linhas": 895,
    "dominio": "hooks/mockup",
    "tabelas": [],
    "rpcs": [],
@@ -10206,7 +10206,7 @@
    "usado_por_arquivos": [
     "src/hooks/mockup/index.ts"
    ],
-   "coberto_por_testes": 9
+   "coberto_por_testes": 11
   },
   {
    "arquivo": "src/hooks/mockup/useMockupTechniques.ts",
@@ -10214,7 +10214,7 @@
     "useFilteredTechniques",
     "useProductCustomizationOptionsForMockup"
    ],
-   "linhas": 299,
+   "linhas": 340,
    "dominio": "hooks/mockup",
    "tabelas": [],
    "rpcs": [],
@@ -10230,7 +10230,7 @@
     "src/hooks/mockup/index.ts",
     "src/hooks/mockup/useMockupGenerator.ts"
    ],
-   "coberto_por_testes": 2
+   "coberto_por_testes": 3
   },
   {
    "arquivo": "src/hooks/products/useAdvancedFilters.ts",
@@ -14041,7 +14041,7 @@
    "hooks_exportados": [
     "useKitBuilderQuote"
    ],
-   "linhas": 468,
+   "linhas": 476,
    "dominio": "pages/kit-builder",
    "tabelas": [
     "kit_quote_requests"
@@ -14063,7 +14063,7 @@
     "src/hooks/kit-builder/useKitBuilderPageState.ts",
     "src/lib/kit-builder/snapshot/read-draft.ts"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/pages/magazine/hooks/useBluePremiumTheme.ts",
@@ -14408,7 +14408,7 @@
    "usado_por_arquivos": [
     "src/pages/quotes/QuotesDashboardPage.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/pages/quotes/useQuotesListPage.ts",

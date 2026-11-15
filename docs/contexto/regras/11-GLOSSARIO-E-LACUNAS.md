@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `bc3fdff61f` · branch `main` · 2026-11-15 01:24 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e5afe82459` · branch `main` · 2026-11-15 01:54 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -509,6 +509,9 @@
 | coluna | coluna `name` usada no código não existe no schema de `inbound_webhook_endpoints` |  |
 | coluna | coluna `auto_disabled_at` usada no código não existe no schema de `outbound_webhooks` |  |
 | coluna | coluna `auto_disabled_reason` usada no código não existe no schema de `outbound_webhooks` |  |
+| coluna | coluna `id` usada no código não existe no schema de `target_audiences` |  |
+| coluna | coluna `is_active` usada no código não existe no schema de `target_audiences` |  |
+| coluna | coluna `name` usada no código não existe no schema de `target_audiences` |  |
 | coluna | coluna `duration_ms` usada no código não existe no schema de `admin_audit_log` |  |
 | coluna | coluna `finished_at` usada no código não existe no schema de `admin_audit_log` |  |
 | coluna | coluna `payload_summary` usada no código não existe no schema de `admin_audit_log` |  |
@@ -564,6 +567,7 @@
 | tabela | tabela `customization_price_tables` usada no código não existe nas migrations/types do repo | `tests/scripts/check-supabase-reference-catalog.test.mjs` |
 | tabela | tabela `dashboard_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `emails` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
+| tabela | tabela `endomarketing_themes` usada no código não existe nas migrations/types do repo | `src/components/admin/products/productMarketingData.ts` |
 | tabela | tabela `fantasma` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
 | tabela | tabela `fixture_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `foreign_quotes` usada no código não existe nas migrations/types do repo | `tests/scripts/check-supabase-reference-catalog.test.mjs` |
@@ -572,6 +576,7 @@
 | tabela | tabela `messages` usada no código não existe nas migrations/types do repo | `recovery/RealtimeMessagesExample.tsx` |
 | tabela | tabela `payments` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `pg_class` usada no código não existe nas migrations/types do repo | `tests/security/rls-validation.test.ts` |
+| tabela | tabela `product_endomarketing` usada no código não existe nas migrations/types do repo | `src/components/admin/products/productMarketingData.ts` |
 | tabela | tabela `produtos` usada no código não existe nas migrations/types do repo | `tests/scripts/audit-db-frontend-coverage.test.mjs`<br>`tests/scripts/inventario-banco.test.mjs` |
 | tabela | tabela `quote_comments` usada no código não existe nas migrations/types do repo | `recovery/src-legacy/src/hooks/useQuoteComments.ts` |
 | tabela | tabela `runtime_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
@@ -608,8 +613,10 @@
 | rls | `integration_credentials`: RLS ligado sem nenhuma política → só service_role acessa |  |
 | rls | `magic_up_generations`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useMagicUpGeneration.ts`<br>`recovery/src-legacy/src/hooks/useMagicUpState.ts`<br>`src/components/search/useGlobalSearch.ts`<br>`src/hooks/intelligence/useMagicUpGeneration.ts` |
 | rls | `mockup_drafts`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useMockupDraft.ts`<br>`src/hooks/mockup/useMockupDraft.ts` |
+| rls | `product_commemorative_dates`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/products/productMarketingData.ts` |
 | rls | `product_materials`: RLS ligado sem nenhuma política → só service_role acessa |  |
 | rls | `product_price_freshness_overrides`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useProductFreshnessOverride.ts`<br>`src/hooks/products/useProductFreshnessOverride.ts` |
+| rls | `product_target_audiences`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/products/productMarketingData.ts` |
 | rls | `role_migration_batches`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useRoleMigration.ts` |
 | rls | `role_migration_items`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useRoleMigration.ts` |
 | rls | `security_settings`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useGeoBlocking.ts` |
@@ -617,6 +624,7 @@
 | rls | `seller_carts`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useSellerCarts.ts`<br>`src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
 | rls | `supplier_products_raw`: RLS ligado sem nenhuma política → só service_role acessa |  |
 | rls | `tabela_preco_gravacao_oficial`: RLS ligado sem nenhuma política → só service_role acessa | `src/lib/external-db/rpc-native.ts` |
+| rls | `target_audiences`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/products/productMarketingData.ts` |
 | rls | `user_comparisons`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/components/compare/ShareComparisonDialog.tsx`<br>`recovery/src-legacy/src/hooks/useComparisonSync.ts`<br>`src/hooks/comparison/useComparisonSync.ts` |
 | rls | `user_onboarding`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useOnboarding.ts`<br>`src/hooks/ui/useOnboarding.ts` |
 | rls | `user_onboarding`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useOnboarding.ts`<br>`src/hooks/ui/useOnboarding.ts` |
@@ -638,15 +646,7 @@
 | edge | edge function `minha-func` invocada mas não existe em supabase/functions/ | `tests/scripts/gen-edges-readme.test.mjs` |
 | edge | edge function `no` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
 | edge | edge function `nome` invocada mas não existe em supabase/functions/ | `scripts/gen-edges-readme.mjs` |
-| edge | edge function `orphan-fn` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| edge | edge function `other` invocada mas não existe em supabase/functions/ | `scripts/ai-context/cenarios.mjs` |
-| edge | edge function `qualquer-edge` invocada mas não existe em supabase/functions/ | `src/integrations/supabase/__tests__/edge-request-id.test.ts` |
-| edge | edge function `runtime-fn` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| edge | edge function `runtime-missing` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| edge | edge function `send-email` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs`<br>`tests/scripts/inventario-rotas.test.mjs` |
-| edge | edge function `so-chamada-em-teste` invocada mas não existe em supabase/functions/ | `tests/scripts/inventario-repo.test.mjs` |
-| edge | edge function `ssot-ignored` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
-| … +215 linhas — lista completa em `context.json` | | |
+| … +223 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

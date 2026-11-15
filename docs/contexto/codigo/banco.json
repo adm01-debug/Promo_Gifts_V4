@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3086,
+ "migrations": 3087,
  "seeds": [],
  "avisos": [
   "319 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -1788,6 +1788,13 @@
    "funcao": "validate_discount_approval_status"
   },
   {
+   "nome": "set_updated_at_trigger",
+   "quando": "before",
+   "evento": "update",
+   "tabela": "endomarketing_themes",
+   "funcao": "set_updated_at"
+  },
+  {
    "nome": "update_expert_conversations_updated_at",
    "quando": "before",
    "evento": "update",
@@ -2353,6 +2360,13 @@
    "evento": "update",
    "tabela": "product_components",
    "funcao": "update_updated_at_column"
+  },
+  {
+   "nome": "set_updated_at_trigger",
+   "quando": "before",
+   "evento": "update",
+   "tabela": "product_endomarketing",
+   "funcao": "set_updated_at"
   },
   {
    "nome": "trg_pgcomp_updated_at",
@@ -12429,11 +12443,11 @@
    ],
    "fks": [],
    "criada_em": null,
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "companies": {
    "colunas": {
@@ -16165,6 +16179,78 @@
    "triggers": [],
    "sem_rls": false,
    "nao_usada": true
+  },
+  "endomarketing_themes": {
+   "colunas": {
+    "created_at": {
+     "tipo": "timestamptz",
+     "nn": true,
+     "pk": false,
+     "default": "now()",
+     "ref": null
+    },
+    "display_order": {
+     "tipo": "integer",
+     "nn": true,
+     "pk": false,
+     "default": "0",
+     "ref": null
+    },
+    "id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": true,
+     "default": "gen_random_uuid()",
+     "ref": null
+    },
+    "is_active": {
+     "tipo": "boolean",
+     "nn": true,
+     "pk": false,
+     "default": "true",
+     "ref": null
+    },
+    "name": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "slug": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "updated_at": {
+     "tipo": "timestamptz",
+     "nn": true,
+     "pk": false,
+     "default": "now()",
+     "ref": null
+    }
+   },
+   "rls": true,
+   "policies": [
+    {
+     "nome": "endomarketing_themes_auth_read",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
+   "indices": [],
+   "fks": [],
+   "criada_em": "20261113140000_marketing_tab_links_rls_and_endomarketing.sql",
+   "usada_no_front": 1,
+   "usada_em_edges": [],
+   "triggers": [
+    "set_updated_at_trigger"
+   ],
+   "sem_rls": false,
+   "nao_usada": false
   },
   "enrichment_log": {
    "colunas": {},
@@ -29886,7 +29972,32 @@
   "product_commemorative_dates": {
    "colunas": {},
    "rls": false,
-   "policies": [],
+   "policies": [
+    {
+     "nome": "pcd_oa_del",
+     "comando": "delete",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "pcd_oa_ins",
+     "comando": "insert",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "pcd_oa_read_all",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "pcd_oa_upd",
+     "comando": "update",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
    "indices": [
     {
      "nome": "idx_pcd_product_id_active",
@@ -29896,11 +30007,11 @@
    ],
    "fks": [],
    "criada_em": null,
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "product_comparisons": {
    "colunas": {
@@ -30611,6 +30722,105 @@
    "triggers": [],
    "sem_rls": false,
    "nao_usada": true
+  },
+  "product_endomarketing": {
+   "colunas": {
+    "created_at": {
+     "tipo": "timestamptz",
+     "nn": true,
+     "pk": false,
+     "default": "now()",
+     "ref": null
+    },
+    "id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": true,
+     "default": "gen_random_uuid()",
+     "ref": null
+    },
+    "is_active": {
+     "tipo": "boolean",
+     "nn": true,
+     "pk": false,
+     "default": "true",
+     "ref": null
+    },
+    "product_id": {
+     "tipo": "uuid",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": "products"
+    },
+    "source": {
+     "tipo": "varchar(20)",
+     "nn": true,
+     "pk": false,
+     "default": "'manual'",
+     "ref": null
+    },
+    "theme_id": {
+     "tipo": "uuid",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": "endomarketing_themes"
+    },
+    "updated_at": {
+     "tipo": "timestamptz",
+     "nn": true,
+     "pk": false,
+     "default": "now()",
+     "ref": null
+    }
+   },
+   "rls": true,
+   "policies": [
+    {
+     "nome": "product_endomarketing_auth_read",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "product_endomarketing_oa_del",
+     "comando": "delete",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "product_endomarketing_oa_ins",
+     "comando": "insert",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "product_endomarketing_oa_upd",
+     "comando": "update",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
+   "indices": [
+    {
+     "nome": "idx_product_endomarketing_theme_id",
+     "colunas": "theme_id",
+     "unico": false
+    }
+   ],
+   "fks": [
+    "product_id->products",
+    "theme_id->endomarketing_themes"
+   ],
+   "criada_em": "20261113140000_marketing_tab_links_rls_and_endomarketing.sql",
+   "usada_no_front": 1,
+   "usada_em_edges": [],
+   "triggers": [
+    "set_updated_at_trigger"
+   ],
+   "sem_rls": false,
+   "nao_usada": false
   },
   "product_faqs": {
    "colunas": {},
@@ -33970,7 +34180,26 @@
   "product_target_audiences": {
    "colunas": {},
    "rls": false,
-   "policies": [],
+   "policies": [
+    {
+     "nome": "pta_oa_del",
+     "comando": "delete",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "pta_oa_ins",
+     "comando": "insert",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "pta_oa_upd",
+     "comando": "update",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
    "indices": [
     {
      "nome": "idx_product_target_audiences_category_id",
@@ -33985,11 +34214,11 @@
    ],
    "fks": [],
    "criada_em": null,
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "product_technique_pricing_tiers": {
    "colunas": {
@@ -48879,11 +49108,11 @@
    ],
    "fks": [],
    "criada_em": null,
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "tecnicas_gravacao": {
    "colunas": {

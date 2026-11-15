@@ -608,7 +608,7 @@
     "Supplier"
    ],
    "export_default": null,
-   "linhas": 128,
+   "linhas": 133,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -617,10 +617,8 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 2,
-   "usado_por_modulos": [
-    "components/admin"
-   ],
+   "usado_por": 1,
+   "usado_por_modulos": [],
    "coberto_por_testes": 0,
    "orfao": false
   },
@@ -698,7 +696,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 402,
+   "usado_por": 403,
    "usado_por_modulos": [
     "components/admin",
     "components/ai",
@@ -770,7 +768,7 @@
     "stores",
     "utils"
    ],
-   "coberto_por_testes": 48,
+   "coberto_por_testes": 49,
    "orfao": false
   },
   {
@@ -930,7 +928,7 @@
     "TablesUpdate"
    ],
    "export_default": null,
-   "linhas": 64863,
+   "linhas": 65232,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4302,7 +4300,7 @@
     "pages/admin",
     "pages/kit-builder"
    ],
-   "coberto_por_testes": 30,
+   "coberto_por_testes": 31,
    "orfao": false
   },
   {
@@ -4672,7 +4670,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 298,
+   "usado_por": 299,
    "usado_por_modulos": [
     "components",
     "components/admin",
@@ -6341,8 +6339,9 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 3,
+   "usado_por": 4,
    "usado_por_modulos": [
+    "components/admin",
     "hooks/quotes"
    ],
    "coberto_por_testes": 0,
@@ -7313,11 +7312,12 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 36,
+   "usado_por": 37,
    "usado_por_modulos": [
     "components/admin",
     "components/cart",
     "components/layout",
+    "components/mockup",
     "components/quotes",
     "contexts",
     "hooks/auth",

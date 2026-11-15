@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "bc3fdff61fed8e92dd42f232484de2ceecdecb03",
+  "sha": "e5afe82459241cf56411d3b057354dec7f7a0dbc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 01:24 UTC",
-  "files_total": 10117,
-  "code_files": 8644,
-  "code_lines": 1218313
+  "generated_at": "2026-11-15 01:54 UTC",
+  "files_total": 10138,
+  "code_files": 8665,
+  "code_lines": 1222230
  },
  "version": "1.3.2",
- "facts_hash": "1fd9e1b7570c8e5c",
+ "facts_hash": "630864143a8eb2f3",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1221,9 +1221,9 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3403,
-   ".ts": 2925,
-   ".tsx": 1867,
+   ".sql": 3405,
+   ".ts": 2936,
+   ".tsx": 1875,
    ".mjs": 436,
    ".py": 13,
    ".js": 7
@@ -50366,6 +50366,56 @@
     "src": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
    },
    {
+    "name": "endomarketing_themes_auth_read",
+    "table": "endomarketing_themes",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "true",
+    "check": "",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "name": "product_endomarketing_auth_read",
+    "table": "product_endomarketing",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "true",
+    "check": "",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "name": "product_endomarketing_oa_ins",
+    "table": "product_endomarketing",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "EXISTS ( SELECT 1 FROM public.products p WHERE p.id = product_endomarketing.product_id AND p.organization_id IN ( SELECT uo.organization_id FROM public.user_organizations uo WHERE uo.user_id = (SELECT auth.uid()) AND uo.role = ANY (ARRAY['owner'::public.org_role, 'admin'::public.org_role])))",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "name": "product_endomarketing_oa_upd",
+    "table": "product_endomarketing",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "EXISTS ( SELECT 1 FROM public.products p WHERE p.id = product_endomarketing.product_id AND p.organization_id IN ( SELECT uo.organization_id FROM public.user_organizations uo WHERE uo.user_id = (SELECT auth.uid()) AND uo.role = ANY (ARRAY['owner'::public.org_role, 'admin'::public.org_role])))",
+    "check": "EXISTS ( SELECT 1 FROM public.products p WHERE p.id = product_endomarketing.product_id AND p.organization_id IN ( SELECT uo.organization_id FROM public.user_organizations uo WHERE uo.user_id = (SELECT auth.uid()) AND uo.role = ANY (ARRAY['owner'::public.org_role, 'admin'::public.org_role])))",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "name": "product_endomarketing_oa_del",
+    "table": "product_endomarketing",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "EXISTS ( SELECT 1 FROM public.products p WHERE p.id = product_endomarketing.product_id AND p.organization_id IN ( SELECT uo.organization_id FROM public.user_organizations uo WHERE uo.user_id = (SELECT auth.uid()) AND uo.role = ANY (ARRAY['owner'::public.org_role, 'admin'::public.org_role])))",
+    "check": "",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
     "name": "product_ai_anon_select",
     "table": "product_ai_content",
     "cmd": "SELECT",
@@ -55417,6 +55467,24 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20261031000000_create_stock_notes.sql"
+   },
+   {
+    "name": "set_updated_at_trigger",
+    "when": "BEFORE UPDATE",
+    "table": "endomarketing_themes",
+    "function": "set_updated_at",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "name": "set_updated_at_trigger",
+    "when": "BEFORE UPDATE",
+    "table": "product_endomarketing",
+    "function": "set_updated_at",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
    },
    {
     "name": "trigger_update_notification_updated_at",
@@ -90617,6 +90685,14 @@
     "src": "supabase/migrations/20261108223000_add_stock_daily_summary_date_index.sql"
    },
    {
+    "name": "idx_product_endomarketing_theme_id",
+    "table": "product_endomarketing",
+    "columns": "theme_id",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
     "name": "idx_products_active_created_at_desc",
     "table": "products",
     "columns": "created_at DESC, id",
@@ -96238,6 +96314,7 @@
    "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql",
    "supabase/migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql",
    "supabase/migrations/20261112140000_fix_rls_supplier_products_raw_history_p2027.sql",
+   "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql",
    "supabase/migrations/20261113225000_sec_revoke_anon_authenticated_net_supabase_functions.sql",
    "supabase/migrations/20261113235000_perf_idx_products_active_created_at_desc.sql",
    "supabase/migrations/20261113235800_cron003_reagendamento_noturno_fornecedores.sql",
@@ -96324,6 +96401,7 @@
    "supabase/rollbacks/20261112120900_rollback.sql",
    "supabase/rollbacks/20261112130000_rollback.sql",
    "supabase/rollbacks/20261112140000_rollback.sql",
+   "supabase/rollbacks/20261113140000_rollback.sql",
    "supabase/rollbacks/20261113225000_rollback.sql",
    "supabase/rollbacks/20261113235000_rollback.sql",
    "supabase/rollbacks/20261113235800_rollback.sql",
@@ -96903,7 +96981,9 @@
    "supplier_products_raw_history_p2027_09": "disabled",
    "supplier_products_raw_history_p2027_10": "disabled",
    "supplier_products_raw_history_p2027_11": "disabled",
-   "supplier_products_raw_history_p2027_12": "disabled"
+   "supplier_products_raw_history_p2027_12": "disabled",
+   "endomarketing_themes": "enabled",
+   "product_endomarketing": "enabled"
   },
   "grants": [
    {
@@ -131845,6 +131925,54 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "endomarketing_themes",
+    "objkind": "table",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "product_endomarketing",
+    "objkind": "table",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "endomarketing_themes",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert, update, delete",
+    "object": "product_endomarketing",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "all",
+    "object": "endomarketing_themes",
+    "objkind": "table",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "all",
+    "object": "product_endomarketing",
+    "objkind": "table",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -135843,6 +135971,8 @@
    "table:crm_seller_identity_links": "Mapeamento 1:1 canônico auth.users -> public.users.id do CRM externo usado pelo crm-db-bridge.",
    "column:crm_seller_identity_links.crm_seller_id": "Identificador inteiro de public.users.id no projeto CRM externo pgxfvjmuubtbowutlide.",
    "table:e2e_cleanup_audit": "created_by=20261108001500_reconcile_e2e_cleanup_audit; append-only Edge cleanup audit",
+   "table:endomarketing_themes": "Temas de endomarketing (comunicação interna) para classificar produtos. Separado de datas comemorativas/público-alvo.",
+   "table:product_endomarketing": "Vincula produtos a temas de endomarketing. source: manual (aba Marketing) ou category (herdado).",
    "table:frontend_telemetry": "ATENCAO: Auditoria 20260602 - user_id = NULL em 100% dos registros. Bug de instrumentacao no frontend."
   },
   "types_file": ""
@@ -142949,7 +143079,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1619,
+  "components_count": 1629,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -146995,8 +147125,8 @@
   },
   {
    "module": "recovery",
-   "files": 406,
-   "lines": 107385,
+   "files": 407,
+   "lines": 107464,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -147492,19 +147622,21 @@
   },
   {
    "module": "src/components",
-   "files": 1364,
-   "lines": 273773,
+   "files": 1370,
+   "lines": 274888,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
     "avatars",
     "bot_detection_log",
     "cart_templates",
+    "commemorative_dates",
     "component_media",
     "connection_test_history",
     "custom_kits",
     "discount_approval_audit",
     "discount_approval_requests",
+    "endomarketing_themes",
     "external_connections",
     "external_connections_sync_log",
     "favorite_items",
@@ -147526,9 +147658,12 @@
     "outbound_webhooks",
     "personalization_techniques",
     "price_history",
+    "product_commemorative_dates",
     "product_components",
+    "product_endomarketing",
     "product_group_members",
     "product_groups",
+    "product_target_audiences",
     "product_views",
     "products",
     "profiles",
@@ -147540,6 +147675,7 @@
     "secret_rotation_log",
     "seller_discount_limits",
     "system_settings",
+    "target_audiences",
     "user_known_devices",
     "user_roles",
     "video_variant_links",
@@ -147827,7 +147963,7 @@
   {
    "module": "src/data",
    "files": 3,
-   "lines": 1758,
+   "lines": 1763,
    "tables": [],
    "exports": [
     "mock-match-products.ts: MOCK_MATCH_PRODUCTS",
@@ -147850,8 +147986,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 455,
-   "lines": 85721,
+   "files": 463,
+   "lines": 87336,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -148343,8 +148479,8 @@
   },
   {
    "module": "src/pages",
-   "files": 351,
-   "lines": 82586,
+   "files": 353,
+   "lines": 82882,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -148749,7 +148885,7 @@
   {
    "module": "src/tests",
    "files": 33,
-   "lines": 5090,
+   "lines": 5107,
    "tables": [
     "products",
     "v_products_public",
@@ -149046,8 +149182,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 271,
-   "lines": 50218,
+   "files": 270,
+   "lines": 50125,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -149291,8 +149427,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3085,
-   "lines": 221854,
+   "files": 3086,
+   "lines": 222136,
    "tables": [
     "...",
     "admin_audit_log",
@@ -149390,8 +149526,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 87,
-   "lines": 2462,
+   "files": 88,
+   "lines": 2499,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -149473,11 +149609,11 @@
     "supabase/rollbacks/20261112120900_rollback.sql",
     "supabase/rollbacks/20261112130000_rollback.sql",
     "supabase/rollbacks/20261112140000_rollback.sql",
+    "supabase/rollbacks/20261113140000_rollback.sql",
     "supabase/rollbacks/20261113225000_rollback.sql",
     "supabase/rollbacks/20261113235000_rollback.sql",
     "supabase/rollbacks/20261113235800_rollback.sql",
-    "supabase/rollbacks/20261114003000_rollback.sql",
-    "supabase/rollbacks/20261114014100_rollback.sql"
+    "supabase/rollbacks/20261114003000_rollback.sql"
    ]
   },
   {
@@ -149566,8 +149702,8 @@
   },
   {
    "module": "tests",
-   "files": 1026,
-   "lines": 157216,
+   "files": 1029,
+   "lines": 157780,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -150131,6 +150267,11 @@
      "recovery/src-legacy/src/hooks/useColorSystem.ts"
     ]
    },
+   "commemorative_dates": {
+    "select": [
+     "src/components/admin/products/productMarketingData.ts"
+    ]
+   },
    "companies": {
     "select": [
      "src/lib/pdf/whitelabel-comparison.ts",
@@ -150329,6 +150470,11 @@
    "emails": {
     "insert": [
      "scripts/ai-context/gerar.unit.mjs"
+    ]
+   },
+   "endomarketing_themes": {
+    "select": [
+     "src/components/admin/products/productMarketingData.ts"
     ]
    },
    "expert_conversations": {
@@ -151075,6 +151221,20 @@
      "supabase/functions/expert-chat/index.ts"
     ]
    },
+   "product_commemorative_dates": {
+    "select": [
+     "src/components/admin/products/productMarketingData.ts"
+    ],
+    "update": [
+     "src/components/admin/products/productMarketingData.ts"
+    ],
+    "delete": [
+     "src/components/admin/products/productMarketingData.ts"
+    ],
+    "insert": [
+     "src/components/admin/products/productMarketingData.ts"
+    ]
+   },
    "product_component_locations": {
     "select": [
      "recovery/src-legacy/src/hooks/useProdutoPersonalizacao.ts",
@@ -151105,6 +151265,20 @@
      "src/components/admin/personalization-manager/usePersonalizationManager.ts",
      "src/components/admin/personalization/GroupInheritance.tsx",
      "src/components/admin/personalization/usePersonalizationData.ts"
+    ]
+   },
+   "product_endomarketing": {
+    "select": [
+     "src/components/admin/products/productMarketingData.ts"
+    ],
+    "update": [
+     "src/components/admin/products/productMarketingData.ts"
+    ],
+    "delete": [
+     "src/components/admin/products/productMarketingData.ts"
+    ],
+    "insert": [
+     "src/components/admin/products/productMarketingData.ts"
     ]
    },
    "product_group_members": {
@@ -151201,6 +151375,20 @@
     ],
     "update": [
      "supabase/functions/product-webhook/index.ts"
+    ]
+   },
+   "product_target_audiences": {
+    "select": [
+     "src/components/admin/products/productMarketingData.ts"
+    ],
+    "update": [
+     "src/components/admin/products/productMarketingData.ts"
+    ],
+    "delete": [
+     "src/components/admin/products/productMarketingData.ts"
+    ],
+    "insert": [
+     "src/components/admin/products/productMarketingData.ts"
     ]
    },
    "product_variants": {
@@ -151873,6 +152061,11 @@
      "src/lib/external-db/rpc-native.ts"
     ]
    },
+   "target_audiences": {
+    "select": [
+     "src/components/admin/products/productMarketingData.ts"
+    ]
+   },
    "tools_runtime": {
     "select": [
      "scripts/ai-context/gerar.unit.mjs"
@@ -152334,6 +152527,11 @@
     "name",
     "slug"
    ],
+   "commemorative_dates": [
+    "id",
+    "is_active",
+    "name"
+   ],
    "companies": [
     "brand_color",
     "brand_logo_url",
@@ -152461,6 +152659,11 @@
    ],
    "e2e_cleanup_rate_limit": [
     "key"
+   ],
+   "endomarketing_themes": [
+    "id",
+    "is_active",
+    "name"
    ],
    "expert_conversations": [
     "id",
@@ -152844,6 +153047,13 @@
     "category_id",
     "product_id"
    ],
+   "product_commemorative_dates": [
+    "commemorative_date_id",
+    "id",
+    "is_active",
+    "product_id",
+    "source"
+   ],
    "product_component_locations": [
     "component_id",
     "is_active"
@@ -152856,6 +153066,13 @@
     "is_personalizable",
     "product_id",
     "sort_order"
+   ],
+   "product_endomarketing": [
+    "id",
+    "is_active",
+    "product_id",
+    "source",
+    "theme_id"
    ],
    "product_group_members": [
     "id",
@@ -152906,6 +153123,13 @@
     "records_failed",
     "records_processed",
     "status"
+   ],
+   "product_target_audiences": [
+    "id",
+    "is_active",
+    "product_id",
+    "source",
+    "target_audience_id"
    ],
    "product_variants": [
     "color_code",
@@ -153235,6 +153459,11 @@
     "codigo_tabela",
     "id",
     "max_cores"
+   ],
+   "target_audiences": [
+    "id",
+    "is_active",
+    "name"
    ],
    "tpgo": [
     "id"
@@ -156173,6 +156402,7 @@
    "customization_price_tables",
    "dashboard_table",
    "emails",
+   "endomarketing_themes",
    "fantasma",
    "fixture_table",
    "foreign_quotes",
@@ -156181,6 +156411,7 @@
    "messages",
    "payments",
    "pg_class",
+   "product_endomarketing",
    "produtos",
    "quote_comments",
    "runtime_table",
@@ -156267,7 +156498,6 @@
    "colors",
    "commemorative_date_colors",
    "commemorative_date_exclusions",
-   "commemorative_dates",
    "company_addresses",
    "company_contacts",
    "company_email_patterns",
@@ -156378,7 +156608,6 @@
    "product_ai_history",
    "product_attributes",
    "product_badge_definitions",
-   "product_commemorative_dates",
    "product_comparisons",
    "product_component_location_techniques",
    "product_customization_prices",
@@ -156409,7 +156638,6 @@
    "product_specifications",
    "product_supply",
    "product_tags",
-   "product_target_audiences",
    "product_types",
    "product_videos",
    "produto_ramo_atividade",
@@ -156505,7 +156733,6 @@
    "tabela_preco_gravacao_oficial_faixa",
    "table_size_history",
    "tags",
-   "target_audiences",
    "tecnicas_gravacao",
    "template_versions",
    "test_results",
@@ -156925,6 +157152,18 @@
    {
     "table": "outbound_webhooks",
     "column": "auto_disabled_reason"
+   },
+   {
+    "table": "target_audiences",
+    "column": "id"
+   },
+   {
+    "table": "target_audiences",
+    "column": "is_active"
+   },
+   {
+    "table": "target_audiences",
+    "column": "name"
    },
    {
     "table": "admin_audit_log",
@@ -159567,6 +159806,11 @@
     "values": "classification | commercial | dimensions | fiscal | flags | info | marketing | media | packaging | price | seo"
    },
    {
+    "file": "src/components/admin/products/productMarketingData.ts",
+    "name": "MarketingCategoryKey",
+    "values": "datasComemorativas | endomarketing | publicoAlvo"
+   },
+   {
     "file": "src/components/admin/products/bulk-import/types.ts",
     "name": "Step",
     "values": "complete | importing | mapping | preview | upload"
@@ -160660,11 +160904,6 @@
     "file": "supabase/functions/crm-db-bridge/index.ts",
     "name": "InsertResultShape",
     "values": "rows | empty-array | null | generic-string-error | single-object | primitive | unknown"
-   },
-   {
-    "file": "supabase/functions/crm-db-bridge/ownership.ts",
-    "name": "CRM_BROAD_READ_ROLES",
-    "values": "\"dev\", \"admin\", \"supervisor\", \"manager\", \"gerente\""
    },
    {
     "file": "supabase/functions/crm-db-bridge/query-policy.ts",
@@ -162975,14 +163214,6 @@
     "msg": "Erro ao criar categoria"
    },
    {
-    "file": "src/components/admin/products/ProductMarketingSection.tsx",
-    "msg": "Erro ao limpar"
-   },
-   {
-    "file": "src/components/admin/products/ProductMarketingSection.tsx",
-    "msg": "Erro ao salvar"
-   },
-   {
     "file": "src/components/admin/products/ProductMaterialsSection.tsx",
     "msg": "Erro ao alterar material"
    },
@@ -164023,6 +164254,14 @@
     "msg": " className="
    },
    {
+    "file": "src/components/mockup/MockupConfigPanel.tsx",
+    "msg": "Não foi possível carregar a logo do cliente. Faça o upload manual."
+   },
+   {
+    "file": "src/components/mockup/MockupConfigPanel.tsx",
+    "msg": "Selecione uma área de personalização antes de usar a logo do cliente."
+   },
+   {
     "file": "src/components/mockup/MockupPhotoPicker.tsx",
     "msg": " className="
    },
@@ -164053,6 +164292,10 @@
    {
     "file": "src/components/mockup/ShareMenu.tsx",
     "msg": "Erro ao gerar PDF"
+   },
+   {
+    "file": "src/components/mockup/clientLogoFile.ts",
+    "msg": "HTTP ${response.status}"
    },
    {
     "file": "src/components/mockup/approval/MockupApprovalPreview.tsx",
@@ -167181,14 +167424,6 @@
     "value": "r"
    },
    {
-    "file": "supabase/functions/crm-db-bridge/ownership.ts",
-    "value": "r"
-   },
-   {
-    "file": "supabase/functions/crm-db-bridge/ownership.ts",
-    "value": "vendedor"
-   },
-   {
     "file": "supabase/functions/crm-db-bridge/query-policy.ts",
     "value": "agente"
    },
@@ -167569,6 +167804,10 @@
    {
     "file": "recovery/patches/D4.2_quote_advanced/functions.sql",
     "text": "FROM public.quote_approval_tokens WHERE token = _token LIMIT 1;"
+   },
+   {
+    "file": "recovery/src-legacy/src/components/admin/products/ProductMarketingSection.tags-legacy.ts",
+    "text": "(branch claude/fix-aba-marketing-261113). Guardado por regra do dono: não apagar código."
    },
    {
     "file": "recovery/src-legacy/src/components/admin/telemetry/BridgesLiveCard.tsx",
@@ -168555,6 +168794,10 @@
     "text": "* Validação sem rede: extensão, tipo informado pelo navegador e tamanho. Retorna a mensagem de erro ou null. */"
    },
    {
+    "file": "src/components/mockup/MockupClientSelector.tsx",
+    "text": "Fecha APENAS a lista — a empresa selecionada permanece intacta."
+   },
+   {
     "file": "src/components/mockup/MultiAreaManager.tsx",
     "text": "* Máximo de cores suportadas na área */"
    },
@@ -168577,6 +168820,14 @@
    {
     "file": "src/components/mockup/TechniqueTooltip.tsx",
     "text": "Cores — limite do cadastro quando existir; senão, estimativa rotulada */}"
+   },
+   {
+    "file": "src/components/mockup/clientLogoFile.ts",
+    "text": "validação do Content-Type: sem um tipo de imagem reconhecido a logo é RECUSADA, em vez"
+   },
+   {
+    "file": "src/components/mockup/clientLogoFile.ts",
+    "text": "de virar 'image/png' e furar a validação de file.type do upload manual."
    },
    {
     "file": "src/components/mockup/techniqueColorUtils.ts",
@@ -169339,6 +169590,10 @@
     "text": "* Catálogo de constantes de negócio (categorias, fornecedores, públicos, datas)."
    },
    {
+    "file": "src/data/mockData.ts",
+    "text": "migration 20261113140000). Não apagar (regra do dono)."
+   },
+   {
     "file": "src/hooks/useFutureStockPreference.ts",
     "text": "* Não controla o estado — apenas observa os valores atuais dos filtros"
    },
@@ -169728,7 +169983,7 @@
    },
    {
     "file": "src/hooks/mockup/mockupGenerationService.ts",
-    "text": "T8 FIX: limit to 200 records to prevent unbounded payload growth."
+    "text": "T8 FIX: limit to 200 records (invalid `limit` falls back to it) to prevent unbounded payload."
    },
    {
     "file": "src/hooks/mockup/mockupGenerationService.ts",
@@ -169773,6 +170028,30 @@
    {
     "file": "src/hooks/mockup/mockupGeneratorModel.ts",
     "text": "* Avisos (não bloqueiam) de logo acima do limite da área ou da técnica, com 0,5 cm"
+   },
+   {
+    "file": "src/hooks/mockup/mockupHistoryAdapter.ts",
+    "text": "`fetchMockupHistory` em mockupGenerationService. Aqui só vive o limite pedido."
+   },
+   {
+    "file": "src/hooks/mockup/mockupSelectionSnapshot.ts",
+    "text": "(REGRA #8): o snapshot viaja no rascunho local (localStorage — mesmo caminho"
+   },
+   {
+    "file": "src/hooks/mockup/mockupSelectionSnapshot.ts",
+    "text": "continua no banco — perde-se apenas a variante/foto de um registro antigo)."
+   },
+   {
+    "file": "src/hooks/mockup/mockupSelectionSnapshot.ts",
+    "text": "* Só o mínimo necessário para remontar a seleção. `images` (string[] de URLs da"
+   },
+   {
+    "file": "src/hooks/mockup/mockupSelectionSnapshot.ts",
+    "text": "* Mantém no máximo `keep` snapshots do usuário, descartando os mais antigos. */"
+   },
+   {
+    "file": "src/hooks/mockup/useMockupDraft.ts",
+    "text": "está congelado (REGRA #8), então o campo viaja só na cópia local do"
    },
    {
     "file": "src/hooks/mockup/useMockupDraft.ts",
@@ -171951,6 +172230,10 @@
     "text": "(mesma regra do useGlobalSearch): % _ \\ ( ) , . *"
    },
    {
+    "file": "src/pages/mockups/MockupHistoryPage.tsx",
+    "text": "Reconciliação da página: excluir o último item da última página não pode"
+   },
+   {
     "file": "src/pages/products/CartsListPage.tsx",
     "text": "Prazos: null vai para o fim em asc, para o topo em desc (mais distante = sem prazo é neutro no fim)."
    },
@@ -172781,14 +173064,6 @@
    {
     "file": "supabase/functions/crm-db-bridge/index.ts",
     "text": "probe HALF_OPEN. Auth, diagnosticos, rate-limit e validacao ficam antes."
-   },
-   {
-    "file": "supabase/functions/crm-db-bridge/ownership.ts",
-    "text": "* Tabelas sem coluna de dono própria, cujo dono é o do registro pai (regra do dono, 12/11:"
-   },
-   {
-    "file": "supabase/functions/crm-db-bridge/ownership.ts",
-    "text": "(vê só os registros SEM dono). Regra do dono em 13/11: \"vendedor vê os dele + os sem dono\""
    },
    {
     "file": "supabase/functions/crm-db-bridge/query-policy.ts",
@@ -194443,6 +194718,11 @@
     "value": "60"
    },
    {
+    "file": "src/components/admin/products/productMarketingData.ts",
+    "name": "PERMISSION_DENIED_MESSAGE",
+    "value": "'Sem permissão para editar marketing deste produto'"
+   },
+   {
     "file": "src/components/admin/products/bulk-import/types.ts",
     "name": "MAX_ROWS",
     "value": "10"
@@ -195281,6 +195561,16 @@
     "file": "src/hooks/mockup/mockupGeneratorModel.ts",
     "name": "MISSING_DIMENSIONS_STATUS",
     "value": "422"
+   },
+   {
+    "file": "src/hooks/mockup/mockupHistoryAdapter.ts",
+    "name": "MOCKUP_HISTORY_PANEL_LIMIT",
+    "value": "200"
+   },
+   {
+    "file": "src/hooks/mockup/mockupSelectionSnapshot.ts",
+    "name": "MAX_HISTORY_SNAPSHOTS",
+    "value": "20"
    },
    {
     "file": "src/hooks/mockup/useMockupDraft.ts",
@@ -216325,10 +216615,6 @@
     "line": "* Cruza user_comparisons ativas com price_history; se houve queda > 5% nos"
    },
    {
-    "file": "supabase/functions/crm-db-bridge/ownership.ts",
-    "line": "* (94% das empresas do CRM não têm dono; só 6 de 77 vendedores têm vínculo por e-mail)."
-   },
-   {
     "file": "supabase/functions/generate-blurhashes/index.ts",
     "line": "// Coverage: JPEG+PNG+WebP+GIF ≈ 99.9% of all verified product images."
    },
@@ -226603,6 +226889,74 @@
     "name": "should allow setting price_freshness_threshold_days within range 1-365"
    },
    {
+    "file": "src/components/admin/products/__tests__/ProductMarketingSection.test.tsx",
+    "name": "ProductMarketingSection"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/ProductMarketingSection.test.tsx",
+    "name": "mostra opções dos cadastros e selo "
+   },
+   {
+    "file": "src/components/admin/products/__tests__/ProductMarketingSection.test.tsx",
+    "name": "marcar chama selectMarketingOption com o vínculo existente (ou nenhum)"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/ProductMarketingSection.test.tsx",
+    "name": "desmarcar herdado chama unselectMarketingOption com o vínculo"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/ProductMarketingSection.test.tsx",
+    "name": "erro de permissão aparece com a mensagem clara"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/ProductMarketingSection.test.tsx",
+    "name": "categoria que não carregou mostra o motivo sem quebrar as outras"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/productMarketingData.test.ts",
+    "name": "productMarketingData — leitura"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/productMarketingData.test.ts",
+    "name": "lê opções dos mestres ativos e vínculos das 3 tabelas, nunca products/v_products_public"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/productMarketingData.test.ts",
+    "name": "erro numa categoria (ex.: migration ainda não aplicada) não derruba as outras"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/productMarketingData.test.ts",
+    "name": "productMarketingData — escrita"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/productMarketingData.test.ts",
+    "name": "marcar sem vínculo prévio → INSERT source manual na tabela certa"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/productMarketingData.test.ts",
+    "name": "marcar vínculo existente desligado → UPDATE is_active=true (não duplica)"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/productMarketingData.test.ts",
+    "name": "desmarcar manual → DELETE"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/productMarketingData.test.ts",
+    "name": "desmarcar herdado da categoria (ou auto) → UPDATE is_active=false, sem DELETE"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/productMarketingData.test.ts",
+    "name": "erro de RLS vira mensagem clara de permissão"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/productMarketingData.test.ts",
+    "name": "UPDATE/DELETE filtrado pela RLS (0 linhas, sem erro) também vira erro de permissão"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/productMarketingData.test.ts",
+    "name": "nenhuma operação toca products, v_products_public ou a coluna tags"
+   },
+   {
     "file": "src/components/ai/__tests__/AIMockupAssistant.test.tsx",
     "name": "AIMockupAssistant — texto livre sem backend"
    },
@@ -230837,6 +231191,70 @@
    {
     "file": "src/components/mockup/__tests__/MockupBeforeAfter.a11y.test.tsx",
     "name": "mantém o arrasto por ponteiro movendo o divisor (sem regressão de mouse)"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    "name": "MockupClientSelector — combobox acessível"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    "name": "o campo de busca é role=combobox com aria-expanded/aria-controls"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    "name": "lista resultados como listbox com um option por empresa"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    "name": "ArrowDown/ArrowUp movem aria-activedescendant em ciclo"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    "name": "Enter escolhe o option ativo"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    "name": "Esc fecha apenas a lista e não altera a seleção"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    "name": "sem violações WCAG no combobox aberto com resultados"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    "name": "sem violações WCAG no erro do CRM (ramo aberto sem listbox)"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    "name": "sem violações WCAG com a busca pendente (ramo aberto sem listbox)"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    "name": "sem violações WCAG sem empresas encontradas (ramo aberto sem listbox)"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.logo.test.tsx",
+    "name": "MockupClientSelector — usar logo do cliente"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.logo.test.tsx",
+    "name": "ao escolher empresa com logo do CRM aparece a ação "
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.logo.test.tsx",
+    "name": "ao acionar, baixa a logo e aplica na área ativa pelo caminho do upload (File validado)"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.logo.test.tsx",
+    "name": "empresa sem logo não oferece a ação e não dispara erro de upload"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.logo.test.tsx",
+    "name": "falha ao carregar a imagem mantém o cliente e o produto e não aplica nada"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.logo.test.tsx",
+    "name": "200 sem Content-Type de imagem é recusado em vez de virar image/png"
    },
    {
     "file": "src/components/mockup/__tests__/MockupClientSelector.test.tsx",
@@ -240167,6 +240585,150 @@
     "name": "sends size + technique under the keys the edge reads, and drops legacy keys"
    },
    {
+    "file": "src/hooks/mockup/__tests__/mockupHistoryAdapter.test.ts",
+    "name": "mockupHistoryAdapter — fetchRecentMockupHistory"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupHistoryAdapter.test.ts",
+    "name": "pede os 200 do teto T8 ao servidor (teto no servidor, não no cliente)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupHistoryAdapter.test.ts",
+    "name": "mantém o filtro de dono quando há usuário (guarda do main)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupHistoryAdapter.test.ts",
+    "name": "sem usuário não inventa filtro (a RLS decide)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupHistoryAdapter.test.ts",
+    "name": "limite inválido cai no padrão em vez de ir sem teto para o servidor"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupHistoryAdapter.test.ts",
+    "name": "mapeia a linha para GeneratedMockup, com fallback em area_config"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupHistoryAdapter.test.ts",
+    "name": "propaga o erro do PostgREST em vez de devolver lista vazia"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
+    "name": "reabrir rascunho ou histórico restaura variante e foto exatas"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
+    "name": "rascunho restaura a variante B e a foto 3 (não a primeira foto)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
+    "name": "rascunho sem snapshot cai para a primeira foto do produto (compatibilidade)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
+    "name": "rascunho do backend mais recente não apaga a seleção guardada localmente"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
+    "name": "backend mais novo com OUTRO produto descarta a seleção local"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
+    "name": "gerador: produto do backend (prod-2) não herda a foto nem a variante do prod-1"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
+    "name": "updatedAt do backend inválido mantém a cópia local (desempate do main)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
+    "name": "histórico restaura a mesma variante B e a mesma foto 3"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
+    "name": "excluir o mockup descarta a seleção guardada do registro"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
+    "name": "mockupSelection.restore — o snapshot só vale para o produto dono"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
+    "name": "aplica a variante e a foto quando o snapshot é do mesmo produto"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
+    "name": "descarta o snapshot de outro produto (não cola foto nem variante do prod-1 no prod-2)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
+    "name": "descarta quando só a variante é de outro produto (productId batendo)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
+    "name": "snapshot antigo sem productId e sem variante não é aplicado (procedência não verificável)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
+    "name": "snapshot antigo sem productId vale pela variante do próprio produto"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
+    "name": "mockupSelection.saveForHistory — teto de cota do localStorage"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
+    "name": "guarda só o mínimo: "
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
+    "name": "não passa de 20 chaves: as mais antigas são descartadas"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
+    "name": "cota estourada: abre espaço e grava a seleção nova em vez de desistir"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
+    "name": "não toca nas chaves de outro usuário nem no rascunho"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/resolveTechnique.order.test.ts",
+    "name": "resolveTechnique"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/resolveTechnique.order.test.ts",
+    "name": "o id vence quando existe na lista"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/resolveTechnique.order.test.ts",
+    "name": "id de outro espaço: resolve pelo NOME, não pelo código compartilhado"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/resolveTechnique.order.test.ts",
+    "name": "nome que não existe mais na lista: cai para o código"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/resolveTechnique.order.test.ts",
+    "name": "nada bate: devolve null"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useMockupDraft.race.test.ts",
+    "name": "clearDraft vs gravação em voo (B F-10)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useMockupDraft.race.test.ts",
+    "name": "não deixa rascunho persistido nem restaurado quando o save resolve depois"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useMockupDraft.race.test.ts",
+    "name": "quando o clear acontece antes do debounce, nenhum save é enviado"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useMockupDraft.race.test.ts",
+    "name": "save que subia a logo quando o clear entrou não grava depois do delete"
+   },
+   {
     "file": "src/hooks/mockup/__tests__/useMockupDraft.test.ts",
     "name": "estado inicial"
    },
@@ -240293,6 +240855,30 @@
    {
     "file": "src/hooks/mockup/__tests__/useMockupDraft.test.ts",
     "name": "rascunho sem logo continua funcionando e não chama o storage"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts",
+    "name": "restauração de técnica (F-03)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts",
+    "name": "rascunho: mantém a técnica e usa o id canônico de filteredTechniques"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts",
+    "name": "rascunho só com o nome da técnica (sem id): resolve por nome"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts",
+    "name": "?technique= na URL: mantém a técnica e usa o id canônico"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts",
+    "name": "histórico com technique_id nulo: resolve por nome e usa o id canônico"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts",
+    "name": "trocar de produto remapeia a técnica e só limpa quando ela não existe no novo produto"
    },
    {
     "file": "src/hooks/products/useSimilarProducts.test.tsx",
@@ -249779,6 +250365,26 @@
     "name": "minSupplierSales90d filtra pelo depleted90d do fornecedor"
    },
    {
+    "file": "src/pages/kit-builder/__tests__/useKitBuilderQuote.sem-cliente.test.tsx",
+    "name": "useKitBuilderQuote — aviso de orçamento salvo sem cliente"
+   },
+   {
+    "file": "src/pages/kit-builder/__tests__/useKitBuilderQuote.sem-cliente.test.tsx",
+    "name": "avisa no salvamento quando nenhum cliente foi informado"
+   },
+   {
+    "file": "src/pages/kit-builder/__tests__/useKitBuilderQuote.sem-cliente.test.tsx",
+    "name": "avisa também quando o nome do cliente é só espaço em branco"
+   },
+   {
+    "file": "src/pages/kit-builder/__tests__/useKitBuilderQuote.sem-cliente.test.tsx",
+    "name": "não avisa quando o cliente foi informado"
+   },
+   {
+    "file": "src/pages/kit-builder/__tests__/useKitBuilderQuote.sem-cliente.test.tsx",
+    "name": "não avisa de salvamento quando a criação do orçamento falha"
+   },
+   {
     "file": "src/pages/magazine/__tests__/MagazineEditorPage.hooksOrder.test.tsx",
     "name": "MagazineEditorPage — ordem de hooks (React #310)"
    },
@@ -251021,6 +251627,10 @@
    {
     "file": "src/pages/mockups/__tests__/MockupHistoryPage.test.tsx",
     "name": "sessão expirada com o diálogo aberto: avisa, fecha e não exclui"
+   },
+   {
+    "file": "src/pages/mockups/__tests__/MockupHistoryPage.test.tsx",
+    "name": "excluir o último item da última página volta para uma página válida"
    },
    {
     "file": "src/pages/mockups/__tests__/MockupHistoryPage.test.tsx",
@@ -252705,6 +253315,22 @@
    {
     "file": "src/pages/quotes/__tests__/QuoteViewPage.preview-keyboard.test.tsx",
     "name": "tokens do breath funcionam em tema claro e escuro (referência única a --primary)"
+   },
+   {
+    "file": "src/pages/quotes/__tests__/QuotesDashboardPage.pdfDisabled.test.tsx",
+    "name": "QuotesDashboardPage — guarda do export PDF"
+   },
+   {
+    "file": "src/pages/quotes/__tests__/QuotesDashboardPage.pdfDisabled.test.tsx",
+    "name": "isLoading=true: botão PDF fica disabled e cliques não exportam"
+   },
+   {
+    "file": "src/pages/quotes/__tests__/QuotesDashboardPage.pdfDisabled.test.tsx",
+    "name": "error preenchido: botão PDF fica disabled e cliques não exportam"
+   },
+   {
+    "file": "src/pages/quotes/__tests__/QuotesDashboardPage.pdfDisabled.test.tsx",
+    "name": "dados carregados: botão PDF habilitado e clique exporta"
    },
    {
     "file": "src/pages/quotes/__tests__/QuotesListPage.deleteDisabled.test.tsx",
@@ -265703,6 +266329,58 @@
     "name": "lista: barra de ações visível sem hover e alvos >= 44px"
    },
    {
+    "file": "tests/components/mockup/MockupHistoryPanel.actions.test.tsx",
+    "name": "lista: checkbox de comparação com alvo de 44px sem ampliar o visual"
+   },
+   {
+    "file": "tests/components/mockup/MockupHistoryPanel.pagination.test.tsx",
+    "name": "MockupHistoryPanel — reconciliação após excluir"
+   },
+   {
+    "file": "tests/components/mockup/MockupHistoryPanel.pagination.test.tsx",
+    "name": "excluir o último item da última página volta para uma página válida"
+   },
+   {
+    "file": "tests/components/mockup/MockupHistoryPanel.pagination.test.tsx",
+    "name": "item removido sai da seleção de comparação"
+   },
+   {
+    "file": "tests/components/mockup/MockupHistoryPanel.pagination.test.tsx",
+    "name": "esvaziar a seleção ao excluir o único item selecionado sai do modo comparação"
+   },
+   {
+    "file": "tests/components/mockup/MockupHistoryPanel.pagination.test.tsx",
+    "name": "o teto que o fluxo real pede ao servidor rende paginação de verdade"
+   },
+   {
+    "file": "tests/components/mockup/MockupHistoryPanel.pagination.test.tsx",
+    "name": "a comparação continua aceitando até 4 itens (regra de negócio do main)"
+   },
+   {
+    "file": "tests/components/mockup/MockupHistoryPanel.targets.test.tsx",
+    "name": "MockupHistoryPanel — A-33 paginação, limpar filtros e legibilidade"
+   },
+   {
+    "file": "tests/components/mockup/MockupHistoryPanel.targets.test.tsx",
+    "name": "botões de paginação com rótulo têm alvo de 44px"
+   },
+   {
+    "file": "tests/components/mockup/MockupHistoryPanel.targets.test.tsx",
+    "name": "botões só-ícone da paginação têm 44×44"
+   },
+   {
+    "file": "tests/components/mockup/MockupHistoryPanel.targets.test.tsx",
+    "name": "a linha de paginação pode quebrar em tela estreita"
+   },
+   {
+    "file": "tests/components/mockup/MockupHistoryPanel.targets.test.tsx",
+    "name": "controles de comparação no cabeçalho têm alvo de 44px e a linha quebra"
+   },
+   {
+    "file": "tests/components/mockup/MockupHistoryPanel.targets.test.tsx",
+    "name": "nenhum texto do painel fica abaixo de 12px, na grade e na lista"
+   },
+   {
     "file": "tests/components/mockup/MockupHistoryPanel.test.tsx",
     "name": "MockupHistoryPanel"
    },
@@ -265761,6 +266439,18 @@
    {
     "file": "tests/components/mockup/MockupProductSelector.photo.test.tsx",
     "name": "a prévia pequena usa a miniatura, mas a seleção continua com o original"
+   },
+   {
+    "file": "tests/components/mockup/MockupProductSelector.states.test.tsx",
+    "name": "MockupProductSelector — trocar variante de produto confirmado"
+   },
+   {
+    "file": "tests/components/mockup/MockupProductSelector.states.test.tsx",
+    "name": "o passo pendente vence a ficha: o clique abre a escolha de cor sem apagar a seleção"
+   },
+   {
+    "file": "tests/components/mockup/MockupProductSelector.states.test.tsx",
+    "name": "emite seleção completa com a foto ORIGINAL da nova cor e preserva cliente e logo"
    },
    {
     "file": "tests/components/mockup/MockupProductSelector.test.tsx",
@@ -309137,6 +309827,56 @@
     "src": "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql"
    },
    {
+    "name": "endomarketing_themes_auth_read",
+    "table": "endomarketing_themes",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "true",
+    "check": "",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "name": "product_endomarketing_auth_read",
+    "table": "product_endomarketing",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "true",
+    "check": "",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "name": "product_endomarketing_oa_ins",
+    "table": "product_endomarketing",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "EXISTS ( SELECT 1 FROM public.products p WHERE p.id = product_endomarketing.product_id AND p.organization_id IN ( SELECT uo.organization_id FROM public.user_organizations uo WHERE uo.user_id = (SELECT auth.uid()) AND uo.role = ANY (ARRAY['owner'::public.org_role, 'admin'::public.org_role])))",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "name": "product_endomarketing_oa_upd",
+    "table": "product_endomarketing",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "EXISTS ( SELECT 1 FROM public.products p WHERE p.id = product_endomarketing.product_id AND p.organization_id IN ( SELECT uo.organization_id FROM public.user_organizations uo WHERE uo.user_id = (SELECT auth.uid()) AND uo.role = ANY (ARRAY['owner'::public.org_role, 'admin'::public.org_role])))",
+    "check": "EXISTS ( SELECT 1 FROM public.products p WHERE p.id = product_endomarketing.product_id AND p.organization_id IN ( SELECT uo.organization_id FROM public.user_organizations uo WHERE uo.user_id = (SELECT auth.uid()) AND uo.role = ANY (ARRAY['owner'::public.org_role, 'admin'::public.org_role])))",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "name": "product_endomarketing_oa_del",
+    "table": "product_endomarketing",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "EXISTS ( SELECT 1 FROM public.products p WHERE p.id = product_endomarketing.product_id AND p.organization_id IN ( SELECT uo.organization_id FROM public.user_organizations uo WHERE uo.user_id = (SELECT auth.uid()) AND uo.role = ANY (ARRAY['owner'::public.org_role, 'admin'::public.org_role])))",
+    "check": "",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
     "name": "product_ai_anon_select",
     "table": "product_ai_content",
     "cmd": "SELECT",
@@ -314188,6 +314928,24 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20261031000000_create_stock_notes.sql"
+   },
+   {
+    "name": "set_updated_at_trigger",
+    "when": "BEFORE UPDATE",
+    "table": "endomarketing_themes",
+    "function": "set_updated_at",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "name": "set_updated_at_trigger",
+    "when": "BEFORE UPDATE",
+    "table": "product_endomarketing",
+    "function": "set_updated_at",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
    },
    {
     "name": "trigger_update_notification_updated_at",
@@ -339443,10 +340201,6 @@
     "limit": "1"
    },
    {
-    "file": "src/hooks/mockup/mockupGenerationService.ts",
-    "limit": "200"
-   },
-   {
     "file": "src/hooks/products/useNovelties.helpers.ts",
     "limit": "0"
    },
@@ -348638,6 +349392,13 @@
     ]
    },
    {
+    "table": "product_commemorative_dates",
+    "issue": "RLS ligado sem nenhuma política → só service_role acessa",
+    "files": [
+     "src/components/admin/products/productMarketingData.ts"
+    ]
+   },
+   {
     "table": "product_materials",
     "issue": "RLS ligado sem nenhuma política → só service_role acessa",
     "files": []
@@ -348648,6 +349409,13 @@
     "files": [
      "recovery/src-legacy/src/hooks/useProductFreshnessOverride.ts",
      "src/hooks/products/useProductFreshnessOverride.ts"
+    ]
+   },
+   {
+    "table": "product_target_audiences",
+    "issue": "RLS ligado sem nenhuma política → só service_role acessa",
+    "files": [
+     "src/components/admin/products/productMarketingData.ts"
     ]
    },
    {
@@ -348699,6 +349467,13 @@
     "issue": "RLS ligado sem nenhuma política → só service_role acessa",
     "files": [
      "src/lib/external-db/rpc-native.ts"
+    ]
+   },
+   {
+    "table": "target_audiences",
+    "issue": "RLS ligado sem nenhuma política → só service_role acessa",
+    "files": [
+     "src/components/admin/products/productMarketingData.ts"
     ]
    },
    {
@@ -349491,6 +350266,7 @@
    "supabase/migrations/20261112120700_fix_grant_fn_admin_sync_external_connections.sql",
    "supabase/migrations/20261112120900_fix_password_reset_request_rpc_anon.sql",
    "supabase/migrations/20261112140000_fix_rls_supplier_products_raw_history_p2027.sql",
+   "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql",
    "supabase/migrations/20261113225000_sec_revoke_anon_authenticated_net_supabase_functions.sql",
    "supabase/migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql",
    "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
@@ -385222,6 +385998,54 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "endomarketing_themes",
+    "objkind": "table",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "product_endomarketing",
+    "objkind": "table",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "endomarketing_themes",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert, update, delete",
+    "object": "product_endomarketing",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "all",
+    "object": "endomarketing_themes",
+    "objkind": "table",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "all",
+    "object": "product_endomarketing",
+    "objkind": "table",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -389875,6 +390699,21 @@
    },
    {
     "kind": "coluna",
+    "msg": "coluna `id` usada no código não existe no schema de `target_audiences`",
+    "where": []
+   },
+   {
+    "kind": "coluna",
+    "msg": "coluna `is_active` usada no código não existe no schema de `target_audiences`",
+    "where": []
+   },
+   {
+    "kind": "coluna",
+    "msg": "coluna `name` usada no código não existe no schema de `target_audiences`",
+    "where": []
+   },
+   {
+    "kind": "coluna",
     "msg": "coluna `duration_ms` usada no código não existe no schema de `admin_audit_log`",
     "where": []
    },
@@ -390176,6 +391015,13 @@
    },
    {
     "kind": "tabela",
+    "msg": "tabela `endomarketing_themes` usada no código não existe nas migrations/types do repo",
+    "where": [
+     "src/components/admin/products/productMarketingData.ts"
+    ]
+   },
+   {
+    "kind": "tabela",
     "msg": "tabela `fantasma` usada no código não existe nas migrations/types do repo",
     "where": [
      "scripts/ai-context/cenarios.mjs"
@@ -390228,6 +391074,13 @@
     "msg": "tabela `pg_class` usada no código não existe nas migrations/types do repo",
     "where": [
      "tests/security/rls-validation.test.ts"
+    ]
+   },
+   {
+    "kind": "tabela",
+    "msg": "tabela `product_endomarketing` usada no código não existe nas migrations/types do repo",
+    "where": [
+     "src/components/admin/products/productMarketingData.ts"
     ]
    },
    {
@@ -390496,6 +391349,13 @@
    },
    {
     "kind": "rls",
+    "msg": "`product_commemorative_dates`: RLS ligado sem nenhuma política → só service_role acessa",
+    "where": [
+     "src/components/admin/products/productMarketingData.ts"
+    ]
+   },
+   {
+    "kind": "rls",
     "msg": "`product_materials`: RLS ligado sem nenhuma política → só service_role acessa",
     "where": []
    },
@@ -390505,6 +391365,13 @@
     "where": [
      "recovery/src-legacy/src/hooks/useProductFreshnessOverride.ts",
      "src/hooks/products/useProductFreshnessOverride.ts"
+    ]
+   },
+   {
+    "kind": "rls",
+    "msg": "`product_target_audiences`: RLS ligado sem nenhuma política → só service_role acessa",
+    "where": [
+     "src/components/admin/products/productMarketingData.ts"
     ]
    },
    {
@@ -390556,6 +391423,13 @@
     "msg": "`tabela_preco_gravacao_oficial`: RLS ligado sem nenhuma política → só service_role acessa",
     "where": [
      "src/lib/external-db/rpc-native.ts"
+    ]
+   },
+   {
+    "kind": "rls",
+    "msg": "`target_audiences`: RLS ligado sem nenhuma política → só service_role acessa",
+    "where": [
+     "src/components/admin/products/productMarketingData.ts"
     ]
    },
    {
@@ -405936,6 +406810,13 @@
    "doc": "CatalogQualityDashboard — painel administrativo que mostra métricas de qualidade do catálogo: produtos sem imagem, sem categoria, com SKU duplicado, sem preço etc.",
    "pagination": [
     "50"
+   ]
+  },
+  "recovery/src-legacy/src/components/admin/products/ProductMarketingSection.tags-legacy.ts": {
+   "path": "recovery/src-legacy/src/components/admin/products/ProductMarketingSection.tags-legacy.ts",
+   "lines": 79,
+   "rule_comments": [
+    "(branch claude/fix-aba-marketing-261113). Guardado por regra do dono: não apagar código."
    ]
   },
   "recovery/src-legacy/src/components/admin/telemetry/BridgeAlertsCard.tsx": {
@@ -424992,15 +425873,11 @@
   },
   "src/components/admin/products/ProductMarketingSection.tsx": {
    "path": "src/components/admin/products/ProductMarketingSection.tsx",
-   "lines": 423,
+   "lines": 417,
    "exports": [
     "function ProductMarketingSection"
    ],
-   "errors": [
-    "Erro ao limpar",
-    "Erro ao salvar"
-   ],
-   "doc": "ProductMarketingSection — Seletores de classificação de marketing (padrão Super Filtro) Público-Alvo, Datas Comemorativas e Endomarketing Gradientes, badges, color dots, contadores hierárquicos"
+   "doc": "ProductMarketingSection — Seletores de classificação de marketing (padrão Super Filtro) Público-Alvo, Datas Comemorativas e Endomarketing Gradientes, badges, color dots, contadores hierárquicos Opções = cadastros reais (target_audiences, commemorative_dates, endomarketing_themes); marcações = víncul …"
   },
   "src/components/admin/products/ProductMaterialsSection.tsx": {
    "path": "src/components/admin/products/ProductMaterialsSection.tsx",
@@ -425127,6 +426004,137 @@
    ],
    "doc": "VariantForm — Inline form for creating/editing a product variant. Extracted from ProductVariantsSection.tsx."
   },
+  "src/components/admin/products/productMarketingData.ts": {
+   "path": "src/components/admin/products/productMarketingData.ts",
+   "lines": 239,
+   "exports": [
+    "type MarketingCategoryKey",
+    "const MARKETING_CATEGORY_KEYS",
+    "interface MarketingOption",
+    "interface MarketingLink",
+    "const PERMISSION_DENIED_MESSAGE",
+    "class MarketingPermissionError",
+    "function isManualLink",
+    "function fetchProductMarketingLinks",
+    "interface MarketingCategoryData",
+    "type ProductMarketingData",
+    "function fetchProductMarketing",
+    "function selectMarketingOption",
+    "function unselectMarketingOption"
+   ],
+   "tables": [
+    {
+     "table": "target_audiences",
+     "op": "select"
+    },
+    {
+     "table": "commemorative_dates",
+     "op": "select"
+    },
+    {
+     "table": "endomarketing_themes",
+     "op": "select"
+    },
+    {
+     "table": "product_target_audiences",
+     "op": "select"
+    },
+    {
+     "table": "product_commemorative_dates",
+     "op": "select"
+    },
+    {
+     "table": "product_endomarketing",
+     "op": "select"
+    },
+    {
+     "table": "product_target_audiences",
+     "op": "update"
+    },
+    {
+     "table": "product_commemorative_dates",
+     "op": "update"
+    },
+    {
+     "table": "product_endomarketing",
+     "op": "update"
+    },
+    {
+     "table": "product_target_audiences",
+     "op": "delete"
+    },
+    {
+     "table": "product_commemorative_dates",
+     "op": "delete"
+    },
+    {
+     "table": "product_endomarketing",
+     "op": "delete"
+    },
+    {
+     "table": "product_target_audiences",
+     "op": "insert,select"
+    },
+    {
+     "table": "product_commemorative_dates",
+     "op": "insert,select"
+    },
+    {
+     "table": "product_endomarketing",
+     "op": "insert,select"
+    }
+   ],
+   "table_cols": {
+    "target_audiences": [
+     "id",
+     "is_active",
+     "name"
+    ],
+    "commemorative_dates": [
+     "id",
+     "is_active",
+     "name"
+    ],
+    "endomarketing_themes": [
+     "id",
+     "is_active",
+     "name"
+    ],
+    "product_target_audiences": [
+     "id",
+     "is_active",
+     "product_id",
+     "source",
+     "target_audience_id"
+    ],
+    "product_commemorative_dates": [
+     "commemorative_date_id",
+     "id",
+     "is_active",
+     "product_id",
+     "source"
+    ],
+    "product_endomarketing": [
+     "id",
+     "is_active",
+     "product_id",
+     "source",
+     "theme_id"
+    ]
+   },
+   "enums": [
+    {
+     "name": "MarketingCategoryKey",
+     "values": "datasComemorativas | endomarketing | publicoAlvo"
+    }
+   ],
+   "params": [
+    {
+     "name": "PERMISSION_DENIED_MESSAGE",
+     "value": "'Sem permissão para editar marketing deste produto'"
+    }
+   ]
+  },
   "src/components/admin/products/useProductVariants.ts": {
    "path": "src/components/admin/products/useProductVariants.ts",
    "lines": 239,
@@ -425207,6 +426215,37 @@
     "ProductFormSchema - Price Freshness",
     "should have price_freshness_threshold_days with default value 60",
     "should allow setting price_freshness_threshold_days within range 1-365"
+   ]
+  },
+  "src/components/admin/products/__tests__/ProductMarketingSection.test.tsx": {
+   "path": "src/components/admin/products/__tests__/ProductMarketingSection.test.tsx",
+   "lines": 117,
+   "is_test": true,
+   "tests": [
+    "ProductMarketingSection",
+    "mostra opções dos cadastros e selo ",
+    "marcar chama selectMarketingOption com o vínculo existente (ou nenhum)",
+    "desmarcar herdado chama unselectMarketingOption com o vínculo",
+    "erro de permissão aparece com a mensagem clara",
+    "categoria que não carregou mostra o motivo sem quebrar as outras"
+   ]
+  },
+  "src/components/admin/products/__tests__/productMarketingData.test.ts": {
+   "path": "src/components/admin/products/__tests__/productMarketingData.test.ts",
+   "lines": 179,
+   "is_test": true,
+   "tests": [
+    "productMarketingData — leitura",
+    "lê opções dos mestres ativos e vínculos das 3 tabelas, nunca products/v_products_public",
+    "erro numa categoria (ex.: migration ainda não aplicada) não derruba as outras",
+    "productMarketingData — escrita",
+    "marcar sem vínculo prévio → INSERT source manual na tabela certa",
+    "marcar vínculo existente desligado → UPDATE is_active=true (não duplica)",
+    "desmarcar manual → DELETE",
+    "desmarcar herdado da categoria (ou auto) → UPDATE is_active=false, sem DELETE",
+    "erro de RLS vira mensagem clara de permissão",
+    "UPDATE/DELETE filtrado pela RLS (0 linhas, sem erro) também vira erro de permissão",
+    "nenhuma operação toca products, v_products_public ou a coluna tags"
    ]
   },
   "src/components/admin/products/bulk-import/StepComplete.tsx": {
@@ -435254,7 +436293,7 @@
   },
   "src/components/mockup/MockupClientSelector.tsx": {
    "path": "src/components/mockup/MockupClientSelector.tsx",
-   "lines": 431,
+   "lines": 501,
    "exports": [
     "function MockupClientSelector"
    ],
@@ -435270,6 +436309,9 @@
      "name": "SEARCH_DEBOUNCE_MS",
      "value": "300"
     }
+   ],
+   "rule_comments": [
+    "Fecha APENAS a lista — a empresa selecionada permanece intacta."
    ],
    "doc": "MockupClientSelector — Campo unificado de busca + seleção de empresa Um único input que filtra e mostra resultados inline (sem botão separado)",
    "temporal": [
@@ -435297,16 +436339,20 @@
   },
   "src/components/mockup/MockupConfigPanel.tsx": {
    "path": "src/components/mockup/MockupConfigPanel.tsx",
-   "lines": 474,
+   "lines": 499,
    "exports": [
     "interface MockupClient",
     "function MockupConfigPanel"
+   ],
+   "errors": [
+    "Não foi possível carregar a logo do cliente. Faça o upload manual.",
+    "Selecione uma área de personalização antes de usar a logo do cliente."
    ],
    "doc": "MockupConfigPanel — Configuration form for mockup generation Extracted from MockupGenerator.tsx to reduce god-component size. Handles: Client, Product, Technique selection + Areas."
   },
   "src/components/mockup/MockupHistoryPanel.tsx": {
    "path": "src/components/mockup/MockupHistoryPanel.tsx",
-   "lines": 830,
+   "lines": 831,
    "exports": [
     "function MockupHistoryPanel"
    ],
@@ -435342,7 +436388,7 @@
   },
   "src/components/mockup/MockupProductSelector.tsx": {
    "path": "src/components/mockup/MockupProductSelector.tsx",
-   "lines": 496,
+   "lines": 501,
    "exports": [
     "interface MockupProductSelection",
     "const MOCKUP_GRID_BREAKPOINT_SM",
@@ -435476,6 +436522,21 @@
     "function TemplatePreview",
     "function TemplatePreviewExpanded"
    ]
+  },
+  "src/components/mockup/clientLogoFile.ts": {
+   "path": "src/components/mockup/clientLogoFile.ts",
+   "lines": 15,
+   "exports": [
+    "function fetchClientLogoFile"
+   ],
+   "errors": [
+    "HTTP ${response.status}"
+   ],
+   "rule_comments": [
+    "validação do Content-Type: sem um tipo de imagem reconhecido a logo é RECUSADA, em vez",
+    "de virar 'image/png' e furar a validação de file.type do upload manual."
+   ],
+   "doc": "clientLogoFile — baixa a logo do cliente no CRM como File para o upload do mockup. Fica fora do MockupConfigPanel (no teto do gate de tamanho de arquivo) e isola a validação do Content-Type: sem um tipo de imagem reconhecido a logo é RECUSADA, em vez de virar 'image/png' e furar a validação de file. …"
   },
   "src/components/mockup/mockupVariantPhotos.ts": {
    "path": "src/components/mockup/mockupVariantPhotos.ts",
@@ -435611,6 +436672,41 @@
     "consome as teclas que trata (preventDefault) e ignora as demais",
     "é alcançável pelo teclado e mostra foco visível",
     "mantém o arrasto por ponteiro movendo o divisor (sem regressão de mouse)"
+   ]
+  },
+  "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx": {
+   "path": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+   "lines": 243,
+   "is_test": true,
+   "doc": "A11y — combobox acessível do seletor de cliente do mockup: roles combobox/listbox/option, setas circulares + Enter escolhem e Esc fecha só a lista (sem mexer na seleção). Sem a correção estes casos falham.",
+   "tests": [
+    "MockupClientSelector — combobox acessível",
+    "o campo de busca é role=combobox com aria-expanded/aria-controls",
+    "lista resultados como listbox com um option por empresa",
+    "ArrowDown/ArrowUp movem aria-activedescendant em ciclo",
+    "Enter escolhe o option ativo",
+    "Esc fecha apenas a lista e não altera a seleção",
+    "sem violações WCAG no combobox aberto com resultados",
+    "sem violações WCAG no erro do CRM (ramo aberto sem listbox)",
+    "sem violações WCAG com a busca pendente (ramo aberto sem listbox)",
+    "sem violações WCAG sem empresas encontradas (ramo aberto sem listbox)"
+   ]
+  },
+  "src/components/mockup/__tests__/MockupClientSelector.logo.test.tsx": {
+   "path": "src/components/mockup/__tests__/MockupClientSelector.logo.test.tsx",
+   "lines": 227,
+   "is_test": true,
+   "rule_comments": [
+    "'image/png' faria o conteúdo passar pela validação de file.type do upload."
+   ],
+   "doc": "MockupClientSelector.logo — ação \"Usar logo do cliente\" Escolher uma empresa COM logo do CRM oferece a ação; ao acioná-la a imagem baixada vira um File e entra no MESMO caminho do upload manual (onLogoUpload → handleAreaLogoUpload) na área ativa. Empresa sem logo não oferece a ação e falha ao baixar …",
+   "tests": [
+    "MockupClientSelector — usar logo do cliente",
+    "ao escolher empresa com logo do CRM aparece a ação ",
+    "ao acionar, baixa a logo e aplica na área ativa pelo caminho do upload (File validado)",
+    "empresa sem logo não oferece a ação e não dispara erro de upload",
+    "falha ao carregar a imagem mantém o cliente e o produto e não aplica nada",
+    "200 sem Content-Type de imagem é recusado em vez de virar image/png"
    ]
   },
   "src/components/mockup/__tests__/MockupClientSelector.test.tsx": {
@@ -446018,7 +447114,7 @@
   },
   "src/data/mockData.ts": {
    "path": "src/data/mockData.ts",
-   "lines": 128,
+   "lines": 133,
    "exports": [
     "interface Category",
     "interface Supplier",
@@ -446029,7 +447125,8 @@
     "const ENDOMARKETING"
    ],
    "rule_comments": [
-    "* Catálogo de constantes de negócio (categorias, fornecedores, públicos, datas)."
+    "* Catálogo de constantes de negócio (categorias, fornecedores, públicos, datas).",
+    "migration 20261113140000). Não apagar (regra do dono)."
    ]
   },
   "src/data/pantone-coated.ts": {
@@ -452090,7 +453187,7 @@
     }
    ],
    "rule_comments": [
-    "T8 FIX: limit to 200 records to prevent unbounded payload growth.",
+    "T8 FIX: limit to 200 records (invalid `limit` falls back to it) to prevent unbounded payload.",
     "BUG-PRODUCT-EXTRA-SELECT FIX: use product.id directly — no pre-validation SELECT.",
     "the uploaded logo from storage. Best-effort — storage failure must not",
     "delete (best-effort — storage failures must not surface to the caller)."
@@ -452109,8 +453206,7 @@
     }
    ],
    "pagination": [
-    "1",
-    "200"
+    "1"
    ]
   },
   "src/hooks/mockup/mockupGeneratorModel.ts": {
@@ -452176,11 +453272,48 @@
    ],
    "doc": "Modelo puro do gerador de mockup (sem React): limites do lote, recusa por medidas ausentes (Q13/Q24) e resolução do produto de entrada (A-7). Vive fora de `useMockupGenerator` para manter o hook dentro do ratchet de tamanho de arquivo; o hook reexporta tudo para os consumidores existentes."
   },
+  "src/hooks/mockup/mockupHistoryAdapter.ts": {
+   "path": "src/hooks/mockup/mockupHistoryAdapter.ts",
+   "lines": 33,
+   "exports": [
+    "const MOCKUP_HISTORY_PANEL_LIMIT",
+    "function fetchRecentMockupHistory"
+   ],
+   "params": [
+    {
+     "name": "MOCKUP_HISTORY_PANEL_LIMIT",
+     "value": "200"
+    }
+   ],
+   "rule_comments": [
+    "`fetchMockupHistory` em mockupGenerationService. Aqui só vive o limite pedido."
+   ]
+  },
   "src/hooks/mockup/mockupHistoryClients.ts": {
    "path": "src/hooks/mockup/mockupHistoryClients.ts",
    "lines": 14,
    "exports": [
     "function buildHistoryClients"
+   ]
+  },
+  "src/hooks/mockup/mockupSelectionSnapshot.ts": {
+   "path": "src/hooks/mockup/mockupSelectionSnapshot.ts",
+   "lines": 220,
+   "exports": [
+    "interface MockupSelectionSnapshot",
+    "const mockupSelection"
+   ],
+   "params": [
+    {
+     "name": "MAX_HISTORY_SNAPSHOTS",
+     "value": "20"
+    }
+   ],
+   "rule_comments": [
+    "(REGRA #8): o snapshot viaja no rascunho local (localStorage — mesmo caminho",
+    "continua no banco — perde-se apenas a variante/foto de um registro antigo).",
+    "* Só o mínimo necessário para remontar a seleção. `images` (string[] de URLs da",
+    "* Mantém no máximo `keep` snapshots do usuário, descartando os mais antigos. */"
    ]
   },
   "src/hooks/mockup/useMockupAreaRetry.ts": {
@@ -452201,7 +453334,7 @@
   },
   "src/hooks/mockup/useMockupDraft.ts": {
    "path": "src/hooks/mockup/useMockupDraft.ts",
-   "lines": 428,
+   "lines": 473,
    "exports": [
     "interface MockupDraftData",
     "function useMockupDraft"
@@ -452241,6 +453374,7 @@
     }
    ],
    "rule_comments": [
+    "está congelado (REGRA #8), então o campo viaja só na cópia local do",
     "BUG-A FIX: removed 3 FK pre-validation queries (product, technique, client).",
     "BUG-A FIX: IDs used directly — no pre-validation queries.",
     "A logo que não subiu não pode sumir do rascunho em silêncio."
@@ -452263,7 +453397,7 @@
   },
   "src/hooks/mockup/useMockupGenerator.ts": {
    "path": "src/hooks/mockup/useMockupGenerator.ts",
-   "lines": 894,
+   "lines": 895,
    "exports": [
     "function useMockupGenerator"
    ],
@@ -452293,11 +453427,13 @@
   },
   "src/hooks/mockup/useMockupTechniques.ts": {
    "path": "src/hooks/mockup/useMockupTechniques.ts",
-   "lines": 299,
+   "lines": 340,
    "exports": [
     "interface TechniqueWithLimits",
     "interface CustomizationOption",
     "function useProductCustomizationOptionsForMockup",
+    "interface TechniqueRef",
+    "function resolveTechnique",
     "function useFilteredTechniques"
    ],
    "doc": "useMockupTechniques — Filter techniques by product using fn_get_product_customization_options RPC v6.1 Fixes (audit sprint-2, 26/05/2026): BUG-B: During product-data loading, return unfiltered techniques instead of [] to avoid a flash of empty dropdown. BUG-D: Skip techniques without a code before i …",
@@ -452403,7 +453539,7 @@
   },
   "src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts": {
    "path": "src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts",
-   "lines": 289,
+   "lines": 292,
    "is_test": true,
    "rule_comments": [
     "* B F-02 — Recarregar os locais do produto NAO pode recriar as areas."
@@ -452417,7 +453553,7 @@
   },
   "src/hooks/mockup/__tests__/mockupBatch.partial.test.ts": {
    "path": "src/hooks/mockup/__tests__/mockupBatch.partial.test.ts",
-   "lines": 216,
+   "lines": 219,
    "is_test": true,
    "doc": "Lote multi-área (Q14/Q29): entrega as áreas boas, mostra erro próprio da que falhou e permite regerar só ela (máx. 6 áreas). Resultados associados por id estável da área.",
    "tests": [
@@ -452430,7 +453566,7 @@
   },
   "src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts": {
    "path": "src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts",
-   "lines": 256,
+   "lines": 259,
    "is_test": true,
    "rule_comments": [
     "estimava 8×20 cm em silêncio; o mockup não pode inventar medida.",
@@ -452454,7 +453590,7 @@
   },
   "src/hooks/mockup/__tests__/mockupEntry.params.test.ts": {
    "path": "src/hooks/mockup/__tests__/mockupEntry.params.test.ts",
-   "lines": 206,
+   "lines": 209,
    "is_test": true,
    "tests": [
     "A-7 — os três formatos de entrada pré-selecionam o mesmo produto",
@@ -452475,8 +453611,11 @@
   },
   "src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts": {
    "path": "src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts",
-   "lines": 247,
+   "lines": 268,
    "is_test": true,
+   "rule_comments": [
+    "O modulo real de tecnicas (importOriginal acima) importa o client — stub minimo"
+   ],
    "doc": "Q16 (achados B F-04/F-05) — timeout único de 30 s e geração cancelável. Antes: três orçamentos empilhados (race de 60 s que não cancelava, retry local de 2 s, defaults do wrapper) e resultado tardio ainda gravado no histórico. Aqui o serviço REAL roda com a edge (`invokeEdge`) mockada.",
    "tests": [
     "Q16 — timeout único e cancelamento da geração de mockup",
@@ -452557,6 +453696,120 @@
     "sends size + technique under the keys the edge reads, and drops legacy keys"
    ]
   },
+  "src/hooks/mockup/__tests__/mockupHistoryAdapter.test.ts": {
+   "path": "src/hooks/mockup/__tests__/mockupHistoryAdapter.test.ts",
+   "lines": 120,
+   "is_test": true,
+   "rule_comments": [
+    "* Adaptador do histórico da aba do gerador: o teto pedido ao SERVIDOR (.limit) é",
+    "* O teto NÃO pode ser menor que isso: busca por nome/SKU, filtros e paginação da"
+   ],
+   "doc": "Adaptador do histórico da aba do gerador: o teto pedido ao SERVIDOR (.limit) é o teto T8 do serviço (200), o filtro de dono do main continua aplicado e o mapeamento cai para `area_config` em linhas anteriores às migrations. O teto NÃO pode ser menor que isso: busca por nome/SKU, filtros e paginação …",
+   "tests": [
+    "mockupHistoryAdapter — fetchRecentMockupHistory",
+    "pede os 200 do teto T8 ao servidor (teto no servidor, não no cliente)",
+    "mantém o filtro de dono quando há usuário (guarda do main)",
+    "sem usuário não inventa filtro (a RLS decide)",
+    "limite inválido cai no padrão em vez de ir sem teto para o servidor",
+    "mapeia a linha para GeneratedMockup, com fallback em area_config",
+    "propaga o erro do PostgREST em vez de devolver lista vazia"
+   ]
+  },
+  "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts": {
+   "path": "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
+   "lines": 382,
+   "is_test": true,
+   "params": [
+    {
+     "name": "FOTO_1",
+     "value": "'https://cdn.test/caneca-foto-1.jpg'"
+    },
+    {
+     "name": "FOTO_P2",
+     "value": "'https://cdn.test/copo-foto-1.jpg'"
+    },
+    {
+     "name": "FOTO_3",
+     "value": "'https://cdn.test/caneca-foto-3.jpg'"
+    },
+    {
+     "name": "T_OLD",
+     "value": "'2026-06-01T10:00:00.000Z'"
+    },
+    {
+     "name": "T_NEW",
+     "value": "'2026-06-01T11:00:00.000Z'"
+    }
+   ],
+   "doc": "Restauração da seleção (produto + variante + foto) do rascunho e do histórico. Defeito M07/etapa 55: reabrir remontava a seleção com `variant: null` e `product.images[0]` — devolvia a PRIMEIRA foto do produto no lugar da foto (e da variante) que o vendedor havia escolhido. `mockup_drafts` e `generat …",
+   "tests": [
+    "reabrir rascunho ou histórico restaura variante e foto exatas",
+    "rascunho restaura a variante B e a foto 3 (não a primeira foto)",
+    "rascunho sem snapshot cai para a primeira foto do produto (compatibilidade)",
+    "rascunho do backend mais recente não apaga a seleção guardada localmente",
+    "backend mais novo com OUTRO produto descarta a seleção local",
+    "gerador: produto do backend (prod-2) não herda a foto nem a variante do prod-1",
+    "updatedAt do backend inválido mantém a cópia local (desempate do main)",
+    "histórico restaura a mesma variante B e a mesma foto 3",
+    "excluir o mockup descarta a seleção guardada do registro"
+   ]
+  },
+  "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts": {
+   "path": "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
+   "lines": 144,
+   "is_test": true,
+   "params": [
+    {
+     "name": "FOTO_P1",
+     "value": "'https://cdn.test/prod-1-foto-3.jpg'"
+    },
+    {
+     "name": "FOTO_P2",
+     "value": "'https://cdn.test/prod-2-foto-1.jpg'"
+    }
+   ],
+   "tests": [
+    "mockupSelection.restore — o snapshot só vale para o produto dono",
+    "aplica a variante e a foto quando o snapshot é do mesmo produto",
+    "descarta o snapshot de outro produto (não cola foto nem variante do prod-1 no prod-2)",
+    "descarta quando só a variante é de outro produto (productId batendo)",
+    "snapshot antigo sem productId e sem variante não é aplicado (procedência não verificável)",
+    "snapshot antigo sem productId vale pela variante do próprio produto",
+    "mockupSelection.saveForHistory — teto de cota do localStorage",
+    "guarda só o mínimo: ",
+    "não passa de 20 chaves: as mais antigas são descartadas",
+    "cota estourada: abre espaço e grava a seleção nova em vez de desistir",
+    "não toca nas chaves de outro usuário nem no rascunho"
+   ]
+  },
+  "src/hooks/mockup/__tests__/resolveTechnique.order.test.ts": {
+   "path": "src/hooks/mockup/__tests__/resolveTechnique.order.test.ts",
+   "lines": 45,
+   "is_test": true,
+   "doc": "Ordem de resolução de `resolveTechnique`: id → name → code. Auditoria 2026-11-14: tentar `code` antes de `name` erra a técnica. O mapa de `useFilteredTechniques` é chaveado por `tecnica_nome` (uma entrada por nome e por produto), enquanto `codigo_tabela` é COMPARTILHADO pelas variações da mesma técn …",
+   "tests": [
+    "resolveTechnique",
+    "o id vence quando existe na lista",
+    "id de outro espaço: resolve pelo NOME, não pelo código compartilhado",
+    "nome que não existe mais na lista: cai para o código",
+    "nada bate: devolve null"
+   ]
+  },
+  "src/hooks/mockup/__tests__/useMockupDraft.race.test.ts": {
+   "path": "src/hooks/mockup/__tests__/useMockupDraft.race.test.ts",
+   "lines": 253,
+   "is_test": true,
+   "rule_comments": [
+    "upsert em voo: grava em backendRow apenas quando o teste resolver.",
+    "Enquanto a gravação está em voo, o delete do backend NÃO pode ter rodado:"
+   ],
+   "tests": [
+    "clearDraft vs gravação em voo (B F-10)",
+    "não deixa rascunho persistido nem restaurado quando o save resolve depois",
+    "quando o clear acontece antes do debounce, nenhum save é enviado",
+    "save que subia a logo quando o clear entrou não grava depois do delete"
+   ]
+  },
   "src/hooks/mockup/__tests__/useMockupDraft.test.ts": {
    "path": "src/hooks/mockup/__tests__/useMockupDraft.test.ts",
    "lines": 645,
@@ -452608,6 +453861,20 @@
     "não reenvia a mesma logo a cada autosave",
     "dois autosaves com upload pendente: um só upload e só a versão nova grava",
     "rascunho sem logo continua funcionando e não chama o storage"
+   ]
+  },
+  "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts": {
+   "path": "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts",
+   "lines": 298,
+   "is_test": true,
+   "doc": "F-03 — Restauração de técnica no gerador de mockup. A lista `techniques` (tabela_preco_gravacao_oficial) e a UI (`filteredTechniques`, ids de `print_area_techniques` via RPC fn_get_product_customization_options) usam espaços de id diferentes, e o id muda de um produto para outro. Sem a correção, a t …",
+   "tests": [
+    "restauração de técnica (F-03)",
+    "rascunho: mantém a técnica e usa o id canônico de filteredTechniques",
+    "rascunho só com o nome da técnica (sem id): resolve por nome",
+    "?technique= na URL: mantém a técnica e usa o id canônico",
+    "histórico com technique_id nulo: resolve por nome e usa o id canônico",
+    "trocar de produto remapeia a técnica e só limpa quando ela não existe no novo produto"
    ]
   },
   "src/hooks/products/dailyCatalogDefaults.ts": {
@@ -471365,7 +472632,7 @@
   },
   "src/pages/kit-builder/useKitBuilderQuote.ts": {
    "path": "src/pages/kit-builder/useKitBuilderQuote.ts",
-   "lines": 468,
+   "lines": 476,
    "exports": [
     "interface KitQuoteClient",
     "function useKitBuilderQuote"
@@ -471446,6 +472713,18 @@
    "doc": "useKitBuilderQuote — Lógica de criação de orçamento a partir do kit",
    "hooks": [
     "useKitBuilderQuote"
+   ]
+  },
+  "src/pages/kit-builder/__tests__/useKitBuilderQuote.sem-cliente.test.tsx": {
+   "path": "src/pages/kit-builder/__tests__/useKitBuilderQuote.sem-cliente.test.tsx",
+   "lines": 123,
+   "is_test": true,
+   "tests": [
+    "useKitBuilderQuote — aviso de orçamento salvo sem cliente",
+    "avisa no salvamento quando nenhum cliente foi informado",
+    "avisa também quando o nome do cliente é só espaço em branco",
+    "não avisa quando o cliente foi informado",
+    "não avisa de salvamento quando a criação do orçamento falha"
    ]
   },
   "src/pages/magazine/MagazineEditorPage.tsx": {
@@ -473440,7 +474719,7 @@
   },
   "src/pages/mockups/MockupHistoryPage.tsx": {
    "path": "src/pages/mockups/MockupHistoryPage.tsx",
-   "lines": 356,
+   "lines": 365,
    "exports": [
     "function MockupHistoryPage"
    ],
@@ -473460,12 +474739,13 @@
     "Sessão expirada. Entre novamente para excluir o mockup."
    ],
    "rule_comments": [
-    "(mesma regra do useGlobalSearch): % _ \\ ( ) , . *"
+    "(mesma regra do useGlobalSearch): % _ \\ ( ) , . *",
+    "Reconciliação da página: excluir o último item da última página não pode"
    ]
   },
   "src/pages/mockups/__tests__/MockupHistoryPage.test.tsx": {
    "path": "src/pages/mockups/__tests__/MockupHistoryPage.test.tsx",
-   "lines": 115,
+   "lines": 151,
    "is_test": true,
    "tests": [
     "MockupHistoryPage",
@@ -473473,6 +474753,7 @@
     "excluir abre confirmação e só chama deleteMockupFromDb após confirmar",
     "cancelar não exclui",
     "sessão expirada com o diálogo aberto: avisa, fecha e não exclui",
+    "excluir o último item da última página volta para uma página válida",
     "busca com vírgula, parênteses e % não vaza para o filtro .or()"
    ]
   },
@@ -475019,7 +476300,7 @@
   },
   "src/pages/quotes/QuotesDashboardPage.tsx": {
    "path": "src/pages/quotes/QuotesDashboardPage.tsx",
-   "lines": 437,
+   "lines": 444,
    "exports": [
     "function QuotesDashboardPage"
    ],
@@ -475256,6 +476537,18 @@
    ],
    "side_effects": [
     ".add(\"dark\""
+   ]
+  },
+  "src/pages/quotes/__tests__/QuotesDashboardPage.pdfDisabled.test.tsx": {
+   "path": "src/pages/quotes/__tests__/QuotesDashboardPage.pdfDisabled.test.tsx",
+   "lines": 113,
+   "is_test": true,
+   "doc": "QuotesDashboardPage — botão PDF bloqueado enquanto o painel não tem dados. O header (com o botão PDF) é renderizado também nos estados de loading e de erro. Sem guarda, clicar em \"PDF\" nesses estados gera um PDF com métricas zeradas/vazias — arquivo que o usuário acha que é o relatório real. Cobre: …",
+   "tests": [
+    "QuotesDashboardPage — guarda do export PDF",
+    "isLoading=true: botão PDF fica disabled e cliques não exportam",
+    "error preenchido: botão PDF fica disabled e cliques não exportam",
+    "dados carregados: botão PDF habilitado e clique exporta"
    ]
   },
   "src/pages/quotes/__tests__/QuotesListPage.deleteDisabled.test.tsx": {
@@ -478802,8 +480095,11 @@
   },
   "src/tests/MockupDeletion.test.tsx": {
    "path": "src/tests/MockupDeletion.test.tsx",
-   "lines": 872,
+   "lines": 889,
    "is_test": true,
+   "rule_comments": [
+    "FT-167: remover o logo de OUTRA área (area-2) limpa só aquela área e NÃO pode apagar"
+   ],
    "temporal": [
     "const deleteButton = await screen.findByTestId('delete-mockup-button', {}, { timeout: 8000 });"
    ],
@@ -485858,37 +487154,6 @@
     "logInsertResultIfAnomalous: returns false for rows",
     "logInsertResultIfAnomalous: emits structured log for GenericStringError",
     "logInsertResultIfAnomalous: emits log for empty-array as well"
-   ]
-  },
-  "supabase/functions/crm-db-bridge/ownership.ts": {
-   "path": "supabase/functions/crm-db-bridge/ownership.ts",
-   "lines": 93,
-   "exports": [
-    "const CRM_BROAD_READ_ROLES",
-    "function resolveCrmRole",
-    "const CRM_PII_TABLES",
-    "const CRM_OWNER_COLUMN",
-    "const CRM_OWNER_VIA",
-    "type CrmOwnerScope",
-    "function ownerOrExpression",
-    "function crmOwnerScope"
-   ],
-   "enums": [
-    {
-     "name": "CRM_BROAD_READ_ROLES",
-     "values": "\"dev\", \"admin\", \"supervisor\", \"manager\", \"gerente\""
-    }
-   ],
-   "role_checks": [
-    "r",
-    "vendedor"
-   ],
-   "rule_comments": [
-    "* Tabelas sem coluna de dono própria, cujo dono é o do registro pai (regra do dono, 12/11:",
-    "(vê só os registros SEM dono). Regra do dono em 13/11: \"vendedor vê os dele + os sem dono\""
-   ],
-   "percents": [
-    "* (94% das empresas do CRM não têm dono; só 6 de 77 vendedores têm vínculo por e-mail)."
    ]
   },
   "supabase/functions/crm-db-bridge/ping.test.ts": {
@@ -506978,6 +508243,11 @@
    "lines": 90,
    "uses_service_role": true
   },
+  "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql": {
+   "path": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql",
+   "lines": 282,
+   "uses_service_role": true
+  },
   "supabase/migrations/20261113225000_sec_revoke_anon_authenticated_net_supabase_functions.sql": {
    "path": "supabase/migrations/20261113225000_sec_revoke_anon_authenticated_net_supabase_functions.sql",
    "lines": 82,
@@ -507350,6 +508620,10 @@
   "supabase/rollbacks/20261112140000_rollback.sql": {
    "path": "supabase/rollbacks/20261112140000_rollback.sql",
    "lines": 43
+  },
+  "supabase/rollbacks/20261113140000_rollback.sql": {
+   "path": "supabase/rollbacks/20261113140000_rollback.sql",
+   "lines": 37
   },
   "supabase/rollbacks/20261113225000_rollback.sql": {
    "path": "supabase/rollbacks/20261113225000_rollback.sql",
@@ -511798,7 +513072,7 @@
   },
   "tests/components/mockup/MockupHistoryPanel.actions.test.tsx": {
    "path": "tests/components/mockup/MockupHistoryPanel.actions.test.tsx",
-   "lines": 147,
+   "lines": 163,
    "is_test": true,
    "tests": [
     "MockupHistoryPanel — ações visíveis sem hover (A-5)",
@@ -511806,7 +513080,38 @@
     "grid: ações no DOM, com nome acessível e focáveis por teclado",
     "grid: ações frequentes com alvo >= 44px (sem override h-8/w-8 de 32px)",
     "grid: checkbox de comparação visível e com alvo de 44px sem ampliar o visual",
-    "lista: barra de ações visível sem hover e alvos >= 44px"
+    "lista: barra de ações visível sem hover e alvos >= 44px",
+    "lista: checkbox de comparação com alvo de 44px sem ampliar o visual"
+   ]
+  },
+  "tests/components/mockup/MockupHistoryPanel.pagination.test.tsx": {
+   "path": "tests/components/mockup/MockupHistoryPanel.pagination.test.tsx",
+   "lines": 171,
+   "is_test": true,
+   "rule_comments": [
+    "Item 2 excluído: não pode continuar contando na comparação."
+   ],
+   "doc": "Reconciliação do MockupHistoryPanel quando a lista encolhe (item excluído) e paginação com a contagem que o fluxo real entrega. Sem a correção: a página atual ficava acima do novo total e a grade renderizava vazia; e um mockup já apagado continuava contando na seleção de comparação. O último teste a …",
+   "tests": [
+    "MockupHistoryPanel — reconciliação após excluir",
+    "excluir o último item da última página volta para uma página válida",
+    "item removido sai da seleção de comparação",
+    "esvaziar a seleção ao excluir o único item selecionado sai do modo comparação",
+    "o teto que o fluxo real pede ao servidor rende paginação de verdade",
+    "a comparação continua aceitando até 4 itens (regra de negócio do main)"
+   ]
+  },
+  "tests/components/mockup/MockupHistoryPanel.targets.test.tsx": {
+   "path": "tests/components/mockup/MockupHistoryPanel.targets.test.tsx",
+   "lines": 174,
+   "is_test": true,
+   "tests": [
+    "MockupHistoryPanel — A-33 paginação, limpar filtros e legibilidade",
+    "botões de paginação com rótulo têm alvo de 44px",
+    "botões só-ícone da paginação têm 44×44",
+    "a linha de paginação pode quebrar em tela estreita",
+    "controles de comparação no cabeçalho têm alvo de 44px e a linha quebra",
+    "nenhum texto do painel fica abaixo de 12px, na grade e na lista"
    ]
   },
   "tests/components/mockup/MockupHistoryPanel.test.tsx": {
@@ -511862,6 +513167,26 @@
     "produto sem foto utilizável não deixa avançar",
     "MockupProductSelector — prévia x geração",
     "a prévia pequena usa a miniatura, mas a seleção continua com o original"
+   ]
+  },
+  "tests/components/mockup/MockupProductSelector.states.test.tsx": {
+   "path": "tests/components/mockup/MockupProductSelector.states.test.tsx",
+   "lines": 191,
+   "is_test": true,
+   "params": [
+    {
+     "name": "PHOTO_AZUL",
+     "value": "'https://imagedelivery.net/abc123/img-azul/public'"
+    },
+    {
+     "name": "PHOTO_VERMELHO",
+     "value": "'https://imagedelivery.net/abc123/img-vermelho/public'"
+    }
+   ],
+   "tests": [
+    "MockupProductSelector — trocar variante de produto confirmado",
+    "o passo pendente vence a ficha: o clique abre a escolha de cor sem apagar a seleção",
+    "emite seleção completa com a foto ORIGINAL da nova cor e preserva cliente e logo"
    ]
   },
   "tests/components/mockup/MockupProductSelector.test.tsx": {
@@ -519247,7 +520572,7 @@
   },
   "tests/hooks/useMockupGenerator.test.ts": {
    "path": "tests/hooks/useMockupGenerator.test.ts",
-   "lines": 311,
+   "lines": 317,
    "is_test": true,
    "doc": "useMockupGenerator — testes de comportamento. Os `vi.mock` abaixo apontam para os caminhos REAIS dos módulos importados pelo hook. (Até a etapa 45 esta suíte mockava `@/hooks/useMockupDraft`, `@/hooks/usePositionHistory` e `@/hooks/useLogoColorAnalysis` — caminhos que não existem: o mock não se apli …",
    "tests": [
@@ -523541,7 +524866,7 @@
   },
   "tests/pages/kit-builder/useKitBuilderQuote.test.ts": {
    "path": "tests/pages/kit-builder/useKitBuilderQuote.test.ts",
-   "lines": 573,
+   "lines": 579,
    "is_test": true,
    "rule_comments": [
     "A RPC injeta quote_id dentro da transação; o cliente não pode criar"
@@ -531181,10 +532506,69 @@
   }
  },
  "git": {
-  "sha": "bc3fdff61fed8e92dd42f232484de2ceecdecb03",
+  "sha": "e5afe82459241cf56411d3b057354dec7f7a0dbc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e5afe82",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix: trem das 5 correções já verdes — recibos, código morto do CRM, 3 resgates, gerador de mockup e aba Marketing (#3647)",
+    "files": [
+     "audit/supabase-reference-catalog.temporary.json",
+     "docs/coordenacao/conflitos-semanticos.md",
+     "recovery/src-legacy/src/components/admin/products/ProductMarketingSection.tags-legacy.ts",
+     "src/components/admin/products/ProductMarketingSection.tsx",
+     "src/components/admin/products/__tests__/ProductMarketingSection.test.tsx",
+     "src/components/admin/products/__tests__/productMarketingData.test.ts",
+     "src/components/admin/products/productMarketingData.ts",
+     "src/components/mockup/MockupClientSelector.tsx",
+     "src/components/mockup/MockupConfigPanel.tsx",
+     "src/components/mockup/MockupHistoryPanel.tsx",
+     "src/components/mockup/MockupProductSelector.tsx",
+     "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+     "src/components/mockup/__tests__/MockupClientSelector.logo.test.tsx",
+     "src/components/mockup/clientLogoFile.ts",
+     "src/data/mockData.ts",
+     "src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts",
+     "src/hooks/mockup/__tests__/mockupBatch.partial.test.ts",
+     "src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts",
+     "src/hooks/mockup/__tests__/mockupEntry.params.test.ts",
+     "src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts",
+     "src/hooks/mockup/__tests__/mockupHistoryAdapter.test.ts",
+     "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
+     "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
+     "src/hooks/mockup/__tests__/resolveTechnique.order.test.ts",
+     "src/hooks/mockup/__tests__/useMockupDraft.race.test.ts",
+     "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts",
+     "src/hooks/mockup/mockupGenerationService.ts",
+     "src/hooks/mockup/mockupHistoryAdapter.ts",
+     "src/hooks/mockup/mockupSelectionSnapshot.ts",
+     "src/hooks/mockup/useMockupDraft.ts",
+     "src/hooks/mockup/useMockupGenerator.ts",
+     "src/hooks/mockup/useMockupTechniques.ts",
+     "src/integrations/supabase/types.ts",
+     "src/pages/kit-builder/__tests__/useKitBuilderQuote.sem-cliente.test.tsx",
+     "src/pages/kit-builder/useKitBuilderQuote.ts",
+     "src/pages/mockups/MockupGenerator.tsx",
+     "src/pages/mockups/MockupHistoryPage.tsx",
+     "src/pages/mockups/__tests__/MockupHistoryPage.test.tsx",
+     "src/pages/quotes/QuotesDashboardPage.tsx",
+     "src/pages/quotes/__tests__/QuotesDashboardPage.pdfDisabled.test.tsx",
+     "src/tests/MockupDeletion.test.tsx",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/functions/crm-db-bridge/ownership.ts",
+     "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql",
+     "supabase/rollbacks/20261113140000_rollback.sql",
+     "tests/components/mockup/MockupHistoryPanel.actions.test.tsx",
+     "tests/components/mockup/MockupHistoryPanel.pagination.test.tsx",
+     "tests/components/mockup/MockupHistoryPanel.targets.test.tsx",
+     "tests/components/mockup/MockupProductSelector.states.test.tsx",
+     "tests/hooks/useMockupGenerator.test.ts",
+     "tests/pages/kit-builder/useKitBuilderQuote.test.ts"
+    ]
+   },
    {
     "sha": "bc3fdff",
     "date": "2026-11-14",
@@ -531468,102 +532852,87 @@
     "author": "Claude",
     "subject": "merge: claude/fix-cache-publico-alvo-options-261114-1005",
     "files": []
-   },
-   {
-    "sha": "7b327f9",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "docs(faxina): registra no repositório as provas da limpeza de 14/11 (#3623)",
-    "files": [
-     "docs/faxina-261114/01-auditoria-branches-excluidas.md",
-     "docs/faxina-261114/02-prova-211-branches.tsv",
-     "docs/faxina-261114/03-branches-excluidas-com-sha.tsv",
-     "docs/faxina-261114/04-prova-profunda-19-casos.txt",
-     "docs/faxina-261114/05-plano-workflows.md",
-     "docs/faxina-261114/06-prova-prs-supersedidas-trem2.tsv",
-     "docs/faxina-261114/README.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/coordenacao/conflitos-semanticos.md",
-    5
+    6
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    2
+    3
    ],
    [
     ".security/policies-baseline.json",
     2
    ],
    [
-    "docs/faxina-261114/05-plano-workflows.md",
-    2
-   ],
-   [
-    "supabase/migrations/20261115013000_fix_get_quote_token_public_respeita_expiracao.sql",
+    "audit/supabase-reference-catalog.temporary.json",
     1
    ],
    [
-    "supabase/rollbacks/20261115013000_rollback.sql",
+    "recovery/src-legacy/src/components/admin/products/ProductMarketingSection.tags-legacy.ts",
     1
    ],
    [
-    "PENDENCIAS.md",
+    "src/components/admin/products/ProductMarketingSection.tsx",
     1
    ],
    [
-    "src/components/admin/connections/IntegrationsHealthCard.tsx",
+    "src/components/admin/products/__tests__/ProductMarketingSection.test.tsx",
     1
    ],
    [
-    "src/components/admin/connections/__tests__/IntegrationsHealthCard.confirm.test.tsx",
+    "src/components/admin/products/__tests__/productMarketingData.test.ts",
     1
    ],
    [
-    "src/components/admin/connections/pendingDestructiveCounts.ts",
+    "src/components/admin/products/productMarketingData.ts",
     1
    ],
    [
-    "src/components/admin/connections/useIntegrationsHealthCard.ts",
+    "src/components/mockup/MockupClientSelector.tsx",
     1
    ],
    [
-    "supabase/functions/connections-hub-audit/index.ts",
+    "src/components/mockup/MockupConfigPanel.tsx",
     1
    ],
    [
-    ".security/rls-no-policy-allowlist.json",
+    "src/components/mockup/MockupHistoryPanel.tsx",
     1
    ],
    [
-    "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql",
+    "src/components/mockup/MockupProductSelector.tsx",
     1
    ],
    [
-    "src/components/intelligence/SalesOverviewChart.tsx",
+    "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
     1
    ],
    [
-    "src/components/kit-builder/BoxSelector.tsx",
+    "src/components/mockup/__tests__/MockupClientSelector.logo.test.tsx",
     1
    ],
    [
-    "src/components/kit-builder/BoxSelector.types.ts",
+    "src/components/mockup/clientLogoFile.ts",
     1
    ],
    [
-    "src/components/kit-builder/ItemCard.tsx",
+    "src/data/mockData.ts",
     1
    ],
    [
-    "src/components/kit-builder/ItemSelector.tsx",
+    "src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts",
     1
    ],
    [
-    "src/components/kit-builder/ItemSelector.types.ts",
+    "src/hooks/mockup/__tests__/mockupBatch.partial.test.ts",
+    1
+   ],
+   [
+    "src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts",
     1
    ]
   ]

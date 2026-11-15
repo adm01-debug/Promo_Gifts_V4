@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `bc3fdff61f` · branch `main` · 2026-11-15 01:24 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e5afe82459` · branch `main` · 2026-11-15 01:54 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -503,7 +503,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `user_token_revocations` | revocations_supervisor_delete | DELETE | public | permissive | `"public"."is_supervisor_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |  |
 | `user_token_revocations` | revocations_supervisor_insert | INSERT | public | permissive |  | `"public"."is_supervisor_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |
 | `saved_filters` | saved_filters_delete | DELETE | public | permissive | `(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")` |  |
-| … +497 linhas — lista completa em `context.json` | | | | | | |
+| … +502 linhas — lista completa em `context.json` | | | | | | |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 
@@ -1115,7 +1115,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | trg_validate_commission_status | BEFORE INSERT OR UPDATE | `commission_entries` | `validate_commission_status` |  |
 | update_commission_rules_updated_at | BEFORE UPDATE | `commission_rules` | `update_updated_at_column` |  |
 | update_commission_entries_updated_at | BEFORE UPDATE | `commission_entries` | `update_updated_at_column` |  |
-| … +179 linhas — lista completa em `context.json` | | | | |
+| … +181 linhas — lista completa em `context.json` | | | | |
 
 Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banco):
 
@@ -1938,6 +1938,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ZoneId | ai-router \| connections \| health \| operation | `src/components/admin/connections/useZoneVisibility.ts` |
 | StepId | classification \| commercial \| content \| engraving \| essentials \| fiscal \| kits \| media \| packaging | `src/components/admin/products/HorizontalStepper.tsx` |
 | SectionId | classification \| commercial \| dimensions \| fiscal \| flags \| info \| marketing \| media \| packaging \| price \| seo | `src/components/admin/products/ProductFormHelpers.tsx` |
+| MarketingCategoryKey | datasComemorativas \| endomarketing \| publicoAlvo | `src/components/admin/products/productMarketingData.ts` |
 | Step | complete \| importing \| mapping \| preview \| upload | `src/components/admin/products/bulk-import/types.ts` |
 | CONTACT_ROLES | 'Proprietário', 'Diretor', 'Gerente', 'Vendedor', 'Financeiro', 'Compras', 'Logística', 'Suporte', 'Outro', | `src/components/admin/products/new-supplier/types.ts` |
 | WizardStep | component \| details \| list \| location \| technique | `src/components/admin/products/sections/engraving/types.ts` |
@@ -2157,7 +2158,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ErrorKind | timeout \| network \| auth \| rate_limit \| server \| client \| parse \| missing_credential \| unknown | `supabase/functions/_shared/ai-router/types.ts` |
 | ContractErrorCode | missing_body \| invalid_json \| validation_failed \| unsupported_version \| version_negotiation_failed | `supabase/functions/_shared/contracts/errors.ts` |
 | InsertResultShape | rows \| empty-array \| null \| generic-string-error \| single-object \| primitive \| unknown | `supabase/functions/crm-db-bridge/index.ts` |
-| CRM_BROAD_READ_ROLES | "dev", "admin", "supervisor", "manager", "gerente" | `supabase/functions/crm-db-bridge/ownership.ts` |
 | CRM_TABLES | 'companies', 'contacts', 'company_addresses', 'company_social_media', 'contact_emails', 'contact_phones', 'customers', 'suppliers', 'carriers', | `supabase/functions/crm-db-bridge/query-policy.ts` |
 | EmaHealthStatus | OK \| WARN \| ERROR \| UNKNOWN | `supabase/functions/ema-pipeline-health/handler.ts` |
 | ALLOWED_EVENT_TYPES | "approved", "rejected", "order_created", "sent_to_client", "expired", | `supabase/functions/receive-crm-callback/index.ts` |
@@ -5268,7 +5268,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `* v1: preserva 100% do schema atual em produção. Aceito por padrão.` | `supabase/functions/_shared/contracts/schemas/product-webhook.ts` |
 | `// vazavam nos resultados (696 casos = 2.49% dos assignments).` | `supabase/functions/categories-api/index.ts` |
 | `* Cruza user_comparisons ativas com price_history; se houve queda > 5% nos` | `supabase/functions/comparison-price-watcher/index.ts` |
-| `* (94% das empresas do CRM não têm dono; só 6 de 77 vendedores têm vínculo por e-mail).` | `supabase/functions/crm-db-bridge/ownership.ts` |
 | `// Coverage: JPEG+PNG+WebP+GIF ≈ 99.9% of all verified product images.` | `supabase/functions/generate-blurhashes/index.ts` |
 | `'cdn.xbzbrindes.com.br', // XBZ CDN de imagens — 67.96% product_images` | `supabase/functions/image-proxy/index.ts` |
 | `'cdndeprodutos.azureedge.net', // XBZ Azure CDN — 4.5% product_images` | `supabase/functions/image-proxy/index.ts` |
@@ -5352,6 +5351,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `TTL_MS` | `30` | `src/components/admin/connections/useFocusContext.ts` |
 | `WINDOW_MS` | `72` | `src/components/admin/connections/useIncidentTimeline72h.ts` |
 | `SNOOZE_MS` | `60` | `src/components/admin/connections/useSeverityChangeNotifier.ts` |
+| `PERMISSION_DENIED_MESSAGE` | `'Sem permissão para editar marketing deste produto'` | `src/components/admin/products/productMarketingData.ts` |
 | `MAX_ROWS` | `10` | `src/components/admin/products/bulk-import/types.ts` |
 | `MAX_FILE_SIZE` | `100` | `src/components/admin/products/video-gallery/types.ts` |
 | `ALL_CREATORS` | `'__all__'` | `src/components/admin/security/keys/McpKeysFilters.tsx` |
@@ -5520,6 +5520,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MAX_BATCH_AREAS` | `6` | `src/hooks/mockup/mockupGeneratorModel.ts` |
 | `MISSING_DIMENSIONS_ERROR_CODE` | `'missing_dimensions'` | `src/hooks/mockup/mockupGeneratorModel.ts` |
 | `MISSING_DIMENSIONS_STATUS` | `422` | `src/hooks/mockup/mockupGeneratorModel.ts` |
+| `MOCKUP_HISTORY_PANEL_LIMIT` | `200` | `src/hooks/mockup/mockupHistoryAdapter.ts` |
+| `MAX_HISTORY_SNAPSHOTS` | `20` | `src/hooks/mockup/mockupSelectionSnapshot.ts` |
 | `AUTO_SAVE_DELAY` | `2000` | `src/hooks/mockup/useMockupDraft.ts` |
 | `LOGO_UPLOAD_ERROR` | `'Não foi possível salvar a logo no rascunho'` | `src/hooks/mockup/useMockupDraft.ts` |
 | `MS_PER_DAY` | `1000` | `src/hooks/products/novelty-core.ts` |
@@ -5587,10 +5589,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `CHUNK_RELOAD_MAX` | `1` | `src/hooks/ui/useErrorHandler.ts` |
 | `CHUNK_RELOAD_DELAY_MS` | `1500` | `src/hooks/ui/useErrorHandler.ts` |
 | `CHUNK_RELOAD_CLEAR_MS` | `5000` | `src/hooks/ui/useErrorHandler.ts` |
-| `CACHE_TTL_MS` | `60` | `src/hooks/ui/useWorkspaceNotifications.tsx` |
-| `PREFETCH_MIN_INTERVAL_MS` | `5` | `src/hooks/ui/useWorkspaceNotifications.tsx` |
-| `CACHE_TTL_MS` | `12` | `src/hooks/voice/scribeTokenCache.ts` |
-| … +336 linhas — lista completa em `context.json` | | |
+| … +339 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -5992,7 +5991,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | 50 | `src/hooks/kit-builder/useDuplicateKitDetector.ts` |
 | 50 | `src/hooks/kit-builder/useSimilarKits.ts` |
 | 1 | `src/hooks/mockup/mockupGenerationService.ts` |
-| 200 | `src/hooks/mockup/mockupGenerationService.ts` |
 | 0 | `src/hooks/products/useNovelties.helpers.ts` |
 | 3 | `src/hooks/products/useProductInsights.ts` |
 | 20 | `src/hooks/products/useProductRecommendations.ts` |
@@ -6380,7 +6378,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | DOWNLOAD_SIZE_LIMIT | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_ACTION_AFTER | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_JSON_KEY | `scripts/diagnose-personalization-artifact.py` |
-| … +1251 linhas — lista completa em `context.json` | |
+| … +1252 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6455,8 +6453,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/functions/connection-tester/index.ts` |
 | `dev` | `supabase/functions/connection-tester/index.ts` |
 | `r` | `supabase/functions/crm-db-bridge/index.ts` |
-| `r` | `supabase/functions/crm-db-bridge/ownership.ts` |
-| `vendedor` | `supabase/functions/crm-db-bridge/ownership.ts` |
 | `agente` | `supabase/functions/crm-db-bridge/query-policy.ts` |
 | `coordenador` | `supabase/functions/crm-db-bridge/query-policy.ts` |
 | `vendedor` | `supabase/functions/crm-db-bridge/query-policy.ts` |
@@ -6506,7 +6502,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21249 testes em 2149 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21350 testes em 2164 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6810,7 +6806,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/product-webhook.test.ts` | 18 | product-webhook · evento product.created · retorna 200 para evento product.created válido · evento product.updated … |
 | `tests/hooks/useGlobalSearch-voice.test.ts` | 18 | Voice Action Handler Logic · navigate action · should extract route from navigate action · should handle navigate without route gracefully … |
 | `tests/lib/product-types.test.ts` | 18 | getProductImageUrl · should prefer primary_image_url · should fallback to image_url · should fallback to first image in images array … |
-| … +1849 linhas — lista completa em `context.json` | | |
+| … +1864 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7025,6 +7021,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | FROM cron.job_run_details ORDER BY start_time DESC LIMIT 50; | `recovery/block11_cron_jobs.sql` |
 | FROM public.quote_approval_tokens WHERE token = _token LIMIT 1; | `recovery/full-public-schema.sql` |
 | FROM public.quote_approval_tokens WHERE token = _token LIMIT 1; | `recovery/patches/D4.2_quote_advanced/functions.sql` |
+| (branch claude/fix-aba-marketing-261113). Guardado por regra do dono: não apagar código. | `recovery/src-legacy/src/components/admin/products/ProductMarketingSection.tags-legacy.ts` |
 | * Sem persistência (memória apenas). Atualiza em tempo real via subscribe. | `recovery/src-legacy/src/components/admin/telemetry/BridgesLiveCard.tsx` |
 | ultrapassa o limite configurado, mostra um alerta destacado com | `recovery/src-legacy/src/components/admin/telemetry/PlatformFailureAlertBanner.tsx` |
 | Improved variant detection: if SKU is composite (contains '-'), it MUST have color_name or notes | `recovery/src-legacy/src/components/cart/CartHealthChecklist.tsx` |
@@ -7271,11 +7268,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ArrowRight/Down no último e ArrowLeft/Up no primeiro param no limite (não ciclam); | `src/components/magic-up/MagicUpVariationComparator.tsx` |
 | Regra única do logo do mockup (SVG fora: a edge generate-mockup rejeita SVG). | `src/components/mockup/AreaCard.tsx` |
 | * Validação sem rede: extensão, tipo informado pelo navegador e tamanho. Retorna a mensagem de erro ou null. */ | `src/components/mockup/ArtFileUpload.tsx` |
+| Fecha APENAS a lista — a empresa selecionada permanece intacta. | `src/components/mockup/MockupClientSelector.tsx` |
 | * Máximo de cores suportadas na área */ | `src/components/mockup/MultiAreaManager.tsx` |
 | ANTI-REGRESSÃO: primary_image_url deve vir ANTES de og_image_url. | `src/components/mockup/ProductSearchCombobox.tsx` |
 | NÃO contém limites numéricos: qualquer número de limite (cores, dimensões, | `src/components/mockup/TechniqueTooltip.tsx` |
 | qualitativos abaixo são apenas estimativas e aparecem rotulados como tal. | `src/components/mockup/TechniqueTooltip.tsx` |
 | limite quando o cadastro realmente o traz — nada de valor fixo no código. | `src/components/mockup/TechniqueTooltip.tsx` |
-| Cores — limite do cadastro quando existir; senão, estimativa rotulada */} | `src/components/mockup/TechniqueTooltip.tsx` |
-| Laser detection — must come before UV check since "Laser UV" exists | `src/components/mockup/techniqueColorUtils.ts` |
-| … +1264 linhas — lista completa em `context.json` | |
+| … +1274 linhas — lista completa em `context.json` | |

@@ -11,6 +11,10 @@
    "src/components/ui/skeleton.tsx",
    "src/integrations/supabase/client.ts"
   ],
+  "recovery/src-legacy/src/components/admin/products/ProductMarketingSection.tags-legacy.ts": [
+   "src/lib/db/postgrest.ts",
+   "src/lib/supabase-untyped.ts"
+  ],
   "recovery/src-legacy/src/components/admin/telemetry/BridgeAlertsCard.tsx": [
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
@@ -3326,13 +3330,11 @@
    "src/lib/utils.ts"
   ],
   "src/components/admin/products/ProductMarketingSection.tsx": [
+   "src/components/admin/products/productMarketingData.ts",
    "src/components/ui/checkbox.tsx",
    "src/components/ui/input.tsx",
    "src/components/ui/scroll-area.tsx",
    "src/components/ui/skeleton.tsx",
-   "src/data/mockData.ts",
-   "src/lib/db/postgrest.ts",
-   "src/lib/supabase-untyped.ts",
    "src/lib/utils.ts"
   ],
   "src/components/admin/products/ProductMaterialsSection.tsx": [
@@ -3633,6 +3635,10 @@
    "src/utils/masks.ts",
    "src/utils/pixMask.ts",
    "src/utils/viacep.ts"
+  ],
+  "src/components/admin/products/productMarketingData.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/security/rls-denial-logger.ts"
   ],
   "src/components/admin/products/sections/ProductClassificationSection.tsx": [
    "src/components/admin/products/ProductMarketingSection.tsx",
@@ -6994,6 +7000,7 @@
    "src/components/mockup/MockupProductSelector.tsx",
    "src/components/mockup/MultiAreaManager.tsx",
    "src/components/mockup/TechniqueTooltip.tsx",
+   "src/components/mockup/clientLogoFile.ts",
    "src/components/ui/ConfirmDialog.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
@@ -7002,7 +7009,8 @@
    "src/components/ui/select.tsx",
    "src/components/ui/tooltip.tsx",
    "src/hooks/simulation/index.ts",
-   "src/hooks/ui/useMediaQuery.ts"
+   "src/hooks/ui/useMediaQuery.ts",
+   "src/lib/telemetry/structuredLogger.ts"
   ],
   "src/components/mockup/MockupHistoryPanel.tsx": [
    "src/components/loading/ModernSkeletons.tsx",
@@ -10548,8 +10556,16 @@
    "src/lib/db/postgrest.ts",
    "src/lib/personalization/adapters/index.ts"
   ],
+  "src/hooks/mockup/mockupHistoryAdapter.ts": [
+   "src/hooks/mockup/mockupGenerationService.ts"
+  ],
   "src/hooks/mockup/mockupHistoryClients.ts": [
    "src/hooks/mockup/mockupGenerationService.ts"
+  ],
+  "src/hooks/mockup/mockupSelectionSnapshot.ts": [
+   "src/components/mockup/MockupProductSelector.tsx",
+   "src/hooks/products/index.ts",
+   "src/lib/logger.ts"
   ],
   "src/hooks/mockup/useMockupAreaRetry.ts": [
    "src/components/mockup/MultiAreaManager.tsx",
@@ -10561,6 +10577,7 @@
   "src/hooks/mockup/useMockupDraft.ts": [
    "src/components/mockup/MultiAreaManager.tsx",
    "src/contexts/AuthContext.tsx",
+   "src/hooks/mockup/mockupSelectionSnapshot.ts",
    "src/integrations/supabase/client.ts",
    "src/integrations/supabase/types.ts",
    "src/lib/logger.ts",
@@ -10584,7 +10601,9 @@
    "src/contexts/ProductsContext.tsx",
    "src/hooks/mockup/mockupGenerationService.ts",
    "src/hooks/mockup/mockupGeneratorModel.ts",
+   "src/hooks/mockup/mockupHistoryAdapter.ts",
    "src/hooks/mockup/mockupHistoryClients.ts",
+   "src/hooks/mockup/mockupSelectionSnapshot.ts",
    "src/hooks/mockup/useMockupAreaRetry.ts",
    "src/hooks/mockup/useMockupDraft.ts",
    "src/hooks/mockup/useMockupEntryParams.ts",

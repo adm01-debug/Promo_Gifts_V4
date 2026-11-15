@@ -262,10 +262,6 @@
    "recovery/src-legacy/src/components/products/ProductListItemSkeleton.tsx",
    "src/components/loading/ModernSkeletons.tsx"
   ],
-  "ProductLoaderAndColorSelector": [
-   "src/components/mockup/MockupColorSelector.tsx",
-   "src/components/mockup/MockupProductSelector.tsx"
-  ],
   "ProductMatchPage": [
    "recovery/src-legacy/src/pages/ProductMatchPage.tsx",
    "src/pages/products/ProductMatchPage.tsx"
@@ -4520,7 +4516,7 @@
     "ProductMarketingSection"
    ],
    "export_default": null,
-   "linhas": 423,
+   "linhas": 417,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -11355,7 +11351,7 @@
     "MockupClientSelector"
    ],
    "export_default": null,
-   "linhas": 431,
+   "linhas": 501,
    "dominio": "components/mockup",
    "hooks_locais": [
     "useClientFuzzySearch",
@@ -11406,7 +11402,7 @@
     "MockupConfigPanel"
    ],
    "export_default": null,
-   "linhas": 474,
+   "linhas": 499,
    "dominio": "components/mockup",
    "hooks_locais": [
     "useMediaQuery"
@@ -11422,7 +11418,7 @@
     "MockupHistoryPanel"
    ],
    "export_default": null,
-   "linhas": 830,
+   "linhas": 831,
    "dominio": "components/mockup",
    "hooks_locais": [],
    "tabelas": [],
@@ -11464,11 +11460,10 @@
     "MOCKUP_GRID_BREAKPOINT_LG",
     "MOCKUP_GRID_BREAKPOINT_SM",
     "MockupProductSelection",
-    "MockupProductSelector",
-    "ProductLoaderAndColorSelector"
+    "MockupProductSelector"
    ],
    "export_default": null,
-   "linhas": 496,
+   "linhas": 501,
    "dominio": "components/mockup",
    "hooks_locais": [
     "useDebounce",
@@ -11476,7 +11471,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 4,
+   "usado_por": 5,
    "orfao": false
   },
   {
@@ -19042,7 +19037,7 @@
     "MockupHistoryPage"
    ],
    "export_default": "MockupHistoryPage",
-   "linhas": 356,
+   "linhas": 365,
    "dominio": "pages/mockups",
    "hooks_locais": [
     "useAuth",
@@ -19420,7 +19415,7 @@
     "QuotesDashboardPage"
    ],
    "export_default": "QuotesDashboardPage",
-   "linhas": 437,
+   "linhas": 444,
    "dominio": "pages/quotes",
    "hooks_locais": [
     "useQuotesDashboard"

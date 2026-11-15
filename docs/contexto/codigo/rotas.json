@@ -775,7 +775,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 533
+   "arquivos_puxados": 536
   },
   {
    "protegida": false,
@@ -1782,13 +1782,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 401
+   "arquivos_puxados": 404
   },
   {
    "protegida": false,
@@ -2518,6 +2519,7 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -2525,7 +2527,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 449
+   "arquivos_puxados": 452
   },
   {
    "protegida": false,
@@ -3537,13 +3539,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 498
+   "arquivos_puxados": 501
   },
   {
    "protegida": true,
@@ -4169,7 +4172,9 @@
     "cart_templates",
     "catalog_analytics",
     "category_icons",
+    "commemorative_dates",
     "custom_kits",
+    "endomarketing_themes",
     "expert_conversations",
     "expert_messages",
     "external_connections",
@@ -4187,7 +4192,10 @@
     "mv_stock_velocity",
     "order_items",
     "orders",
+    "product_commemorative_dates",
+    "product_endomarketing",
     "product_price_freshness_overrides",
+    "product_target_audiences",
     "product_variants",
     "product_views",
     "profiles",
@@ -4201,6 +4209,7 @@
     "seller_carts",
     "system_kill_switches",
     "system_settings",
+    "target_audiences",
     "user_roles",
     "video_variant_links",
     "voice_command_logs"
@@ -4218,6 +4227,7 @@
     "get_promo_sales_90d_by_product",
     "get_promo_sales_ranking",
     "increment_kit_template_usage",
+    "log_rls_denial",
     "log_user_logout",
     "restore_favorite_from_trash",
     "restore_seller_cart",
@@ -4248,6 +4258,7 @@
     "manager",
     "menu",
     "navigation",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -4257,7 +4268,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 521
+   "arquivos_puxados": 525
   },
   {
    "protegida": true,
@@ -5113,6 +5124,7 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -5121,7 +5133,7 @@
     "switch",
     "toolbar"
    ],
-   "arquivos_puxados": 554
+   "arquivos_puxados": 557
   },
   {
    "protegida": true,
@@ -5807,13 +5819,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 407
+   "arquivos_puxados": 410
   },
   {
    "protegida": true,
@@ -6519,13 +6532,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 403
+   "arquivos_puxados": 406
   },
   {
    "protegida": true,
@@ -9334,6 +9348,7 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -9341,7 +9356,7 @@
     "supervisor",
     "vendedor"
    ],
-   "arquivos_puxados": 497
+   "arquivos_puxados": 500
   },
   {
    "protegida": true,
@@ -10107,13 +10122,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 404
+   "arquivos_puxados": 407
   },
   {
    "protegida": true,
@@ -10766,13 +10782,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 402
+   "arquivos_puxados": 405
   },
   {
    "protegida": true,
@@ -11650,13 +11667,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 405
+   "arquivos_puxados": 408
   },
   {
    "protegida": false,
@@ -12365,6 +12383,7 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -12373,7 +12392,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 421
+   "arquivos_puxados": 424
   },
   {
    "protegida": false,
@@ -13040,13 +13059,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 429
+   "arquivos_puxados": 432
   },
   {
    "protegida": false,
@@ -13703,13 +13723,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 410
+   "arquivos_puxados": 413
   },
   {
    "protegida": false,
@@ -14470,13 +14491,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 420
+   "arquivos_puxados": 423
   },
   {
    "protegida": false,
@@ -15212,6 +15234,7 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -15221,7 +15244,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 494
+   "arquivos_puxados": 497
   },
   {
    "protegida": false,
@@ -15918,13 +15941,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 432
+   "arquivos_puxados": 435
   },
   {
    "protegida": false,
@@ -16645,13 +16669,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 463
+   "arquivos_puxados": 466
   },
   {
    "protegida": false,
@@ -17367,13 +17392,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 429
+   "arquivos_puxados": 432
   },
   {
    "protegida": false,
@@ -18137,7 +18163,7 @@
     "supervisor",
     "table"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 498
   },
   {
    "protegida": false,
@@ -18790,13 +18816,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 401
+   "arquivos_puxados": 404
   },
   {
    "protegida": false,
@@ -19533,6 +19560,7 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -19542,7 +19570,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 499
+   "arquivos_puxados": 502
   },
   {
    "protegida": false,
@@ -20229,6 +20257,7 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -20237,7 +20266,7 @@
     "supervisor",
     "user"
    ],
-   "arquivos_puxados": 446
+   "arquivos_puxados": 449
   },
   {
    "protegida": false,
@@ -20913,13 +20942,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 413
+   "arquivos_puxados": 416
   },
   {
    "protegida": false,
@@ -21716,7 +21746,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 527
+   "arquivos_puxados": 530
   },
   {
    "protegida": false,
@@ -22477,6 +22507,7 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -22484,7 +22515,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 452
+   "arquivos_puxados": 455
   },
   {
    "protegida": false,
@@ -23745,6 +23776,7 @@
     "listitem",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -23753,7 +23785,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 424
+   "arquivos_puxados": 427
   },
   {
    "protegida": false,
@@ -24406,13 +24438,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 407
+   "arquivos_puxados": 410
   },
   {
    "protegida": false,
@@ -25219,6 +25252,7 @@
     "log",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -25228,7 +25262,7 @@
     "supervisor",
     "user"
    ],
-   "arquivos_puxados": 448
+   "arquivos_puxados": 451
   },
   {
    "protegida": false,
@@ -25881,13 +25915,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 404
+   "arquivos_puxados": 407
   },
   {
    "protegida": false,
@@ -26642,6 +26677,7 @@
     "listitem",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -26651,7 +26687,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 492
+   "arquivos_puxados": 495
   },
   {
    "protegida": false,
@@ -27374,6 +27410,7 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -27384,7 +27421,7 @@
     "tablist",
     "toolbar"
    ],
-   "arquivos_puxados": 535
+   "arquivos_puxados": 538
   },
   {
    "protegida": false,
@@ -28077,6 +28114,7 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -28084,7 +28122,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 478
+   "arquivos_puxados": 481
   },
   {
    "protegida": false,
@@ -28791,6 +28829,7 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -28800,7 +28839,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 477
+   "arquivos_puxados": 480
   },
   {
    "protegida": false,
@@ -29492,13 +29531,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 441
+   "arquivos_puxados": 444
   },
   {
    "protegida": false,
@@ -30190,13 +30230,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 438
+   "arquivos_puxados": 441
   },
   {
    "protegida": false,
@@ -30919,6 +30960,7 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -30929,7 +30971,7 @@
     "tablist",
     "toolbar"
    ],
-   "arquivos_puxados": 535
+   "arquivos_puxados": 538
   },
   {
    "protegida": false,
@@ -31634,6 +31676,7 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -31643,7 +31686,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 477
+   "arquivos_puxados": 480
   },
   {
    "protegida": false,
@@ -32482,6 +32525,7 @@
     "manager",
     "menu",
     "note",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -32490,7 +32534,7 @@
     "supervisor",
     "switch"
    ],
-   "arquivos_puxados": 513
+   "arquivos_puxados": 516
   },
   {
    "protegida": false,
@@ -33262,7 +33306,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 527
+   "arquivos_puxados": 530
   },
   {
    "protegida": false,
@@ -34032,13 +34076,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 402
+   "arquivos_puxados": 405
   },
   {
    "protegida": false,
@@ -34777,6 +34822,7 @@
     "listitem",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -34788,7 +34834,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 501
+   "arquivos_puxados": 504
   },
   {
    "protegida": false,
@@ -35740,13 +35786,14 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 425
+   "arquivos_puxados": 428
   },
   {
    "protegida": false,
@@ -36446,6 +36493,7 @@
     "listbox",
     "manager",
     "menu",
+    "option",
     "progressbar",
     "radio",
     "radiogroup",
@@ -36453,7 +36501,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 440
+   "arquivos_puxados": 443
   },
   {
    "protegida": false,
