@@ -1166,6 +1166,8 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261114014100` | `651823afa2f7fd9901fcc185a3147aa53d1cf5ad11fea1374196a3021d200578` | `--` | db-apply-migration.yml run 43634622250 | E15 | 2026-11-14 | pós-check do workflow success (run 43634622250) | aplicada em produção |
 | `20261114031000` | `76b1497b85e289d3de69f01308f325d454436e5a03a59f2f77b5e50a6f1287b6` | `--` | db-apply-migration.yml run 43634805809 | E15 | 2026-11-14 | pós-check do workflow success (run 43634805809) | aplicada em produção |
 | `20261107134429` | `fd1fbfceb0a148371b9507618ccf3b67a913b6f3f4b1e4e420caf0c273093286` | `--` | GitHub Actions (db-apply-migration.yml, run 43654437109; job Recibo saiu success sem gravar — registrado a posteriori) | E15 | 2026-11-14 23:41:43 UTC | job 3 (Pós-check) da run 43654437109: preflight-migration-apply --expect-applied passed — "version 20261107134429 confirmada no ledger pós-aplicação"; isInLedger=true | aplicada |
+| `20261114170845` | `594d31966a784f02c6a69faf144adc3422ab75369a5643a258fc2a7779c7eac4` | `--` | GitHub Actions (db-apply-migration.yml, run 43646998992); recibo do job 4 veio na PR #3632, que ficou em conflito no log — dados copiados dela | E15 | 2026-11-14 22:14:43 UTC | job post-check da run 43646998992 confirmou a version no ledger | aplicada |
+| `20261114170921` | `5b87f587d338b1016e5dce6f36b7f18c488baaa2e0422ac3ea5c23a91d4af9f4` | `--` | GitHub Actions (db-apply-migration.yml, run 43647154042); recibo do job 4 veio na PR #3633, que ficou em conflito no log — dados copiados dela | E15 | 2026-11-14 22:16:55 UTC | job post-check da run 43647154042 confirmou a version no ledger | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
@@ -1563,6 +1565,7 @@ e sem a tabela `xbz_image_import_staging`; logs 24h: 317 POST → 401, 0 → 200
 |---|---|---|---|
 | `20261114003000` | `fix_unschedule_cron_xbz_image_uploader` | `c742a627a964faf49ae9be913336b8aafaa76e8b6f7a3e95bc266d9cc2a54efa` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-cron-xbz-image-uploader-261114-0030`) |
 
+| `20261113140000` | `marketing_tab_links_rls_and_endomarketing` | `9b8c6f1f28df01eebaec6c9ee2e456409a9df7ad45cd49b2730a824349c91135` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
 ## 2026-11-13 — Data API: fecha anon/authenticated em `supabase_functions.*` (e registra o limite em `net.*`)
 
 Consulta read-only em produção (2026-11-13, `has_table_privilege`/`has_schema_privilege`): anon e authenticated com
