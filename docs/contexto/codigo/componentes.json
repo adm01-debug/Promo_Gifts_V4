@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1228,
+ "total": 1229,
  "orfaos": 160,
  "nomes_duplicados": {
   "AdvancedPriceSearchPage": [
@@ -11216,7 +11216,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "orfao": false
   },
   {
@@ -11558,7 +11558,7 @@
     "MockupWizard"
    ],
    "export_default": null,
-   "linhas": 250,
+   "linhas": 287,
    "dominio": "components/mockup",
    "hooks_locais": [],
    "tabelas": [],
@@ -15803,7 +15803,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 616,
+   "usado_por": 618,
    "orfao": false
   },
   {
@@ -15955,7 +15955,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 42,
+   "usado_por": 43,
    "orfao": false
   },
   {
@@ -16317,7 +16317,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 50,
+   "usado_por": 51,
    "orfao": false
   },
   {
@@ -16494,7 +16494,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 181,
+   "usado_por": 182,
    "orfao": false
   },
   {
@@ -16778,7 +16778,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 203,
+   "usado_por": 205,
    "orfao": false
   },
   {
@@ -19017,6 +19017,23 @@
    "orfao": false
   },
   {
+   "arquivo": "src/pages/mockups/mockup-generator/ClientMockupsMenu.tsx",
+   "exports": [
+    "CLIENT_MOCKUPS_MENU_LIMIT",
+    "ClientMockupsMenu"
+   ],
+   "export_default": null,
+   "linhas": 180,
+   "dominio": "pages/mockups",
+   "hooks_locais": [
+    "useClientMockups"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/pages/mockups/mockup-generator/MockupDialogs.tsx",
    "exports": [
     "DeleteMockupDialog",
@@ -19048,10 +19065,11 @@
   {
    "arquivo": "src/pages/mockups/mockup-generator/MockupToolbar.tsx",
    "exports": [
+    "ClientBrandDisposition",
     "MockupToolbar"
    ],
    "export_default": null,
-   "linhas": 105,
+   "linhas": 204,
    "dominio": "pages/mockups",
    "hooks_locais": [],
    "tabelas": [],
@@ -19065,13 +19083,15 @@
     "MockupGenerator"
    ],
    "export_default": "MockupGenerator",
-   "linhas": 636,
+   "linhas": 608,
    "dominio": "pages/mockups",
    "hooks_locais": [
     "useAuth",
     "useKeyboardShortcuts",
+    "useLayoutCaptureRequest",
     "useMockupGenerator",
-    "useTechniqueHandlers"
+    "useTechniqueHandlers",
+    "useWizardNavigation"
    ],
    "tabelas": [],
    "edges": [],

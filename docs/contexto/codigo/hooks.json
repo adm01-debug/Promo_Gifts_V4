@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 617,
+ "total": 620,
  "hooks": [
   {
    "arquivo": "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
@@ -6250,7 +6250,7 @@
     "useRef"
    ],
    "canais_realtime": [],
-   "usado_por": 203,
+   "usado_por": 205,
    "usado_por_arquivos": [
     "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
     "recovery/src-legacy/src/components/navigation/DynamicBreadcrumbs.tsx",
@@ -10126,6 +10126,26 @@
     "src/hooks/kit-builder/index.ts"
    ],
    "coberto_por_testes": 1
+  },
+  {
+   "arquivo": "src/hooks/mockup/useClientMockups.ts",
+   "hooks_exportados": [
+    "useClientMockups"
+   ],
+   "linhas": 156,
+   "dominio": "hooks/mockup",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useAuth"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/pages/mockups/mockup-generator/ClientMockupsMenu.tsx"
+   ],
+   "coberto_por_testes": 3
   },
   {
    "arquivo": "src/hooks/mockup/useMockupAreaRetry.ts",
@@ -14349,6 +14369,47 @@
     "src/pages/mockups/MockupGenerator.tsx"
    ],
    "coberto_por_testes": 2
+  },
+  {
+   "arquivo": "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts",
+   "hooks_exportados": [
+    "useLayoutCaptureRequest"
+   ],
+   "linhas": 117,
+   "dominio": "pages/mockups",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useMemo"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/pages/mockups/MockupGenerator.tsx"
+   ],
+   "coberto_por_testes": 0
+  },
+  {
+   "arquivo": "src/pages/mockups/mockup-generator/useWizardNavigation.ts",
+   "hooks_exportados": [
+    "useWizardNavigation"
+   ],
+   "linhas": 29,
+   "dominio": "pages/mockups",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useCallback",
+    "useEffect"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/pages/mockups/MockupGenerator.tsx"
+   ],
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/pages/products/seller-carts/useMidnightReset.ts",

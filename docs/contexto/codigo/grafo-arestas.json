@@ -7085,6 +7085,7 @@
    "src/lib/utils.ts"
   ],
   "src/components/mockup/MockupWizard.tsx": [
+   "src/components/ui/button.tsx",
    "src/lib/utils.ts"
   ],
   "src/components/mockup/MultiAreaManager.tsx": [
@@ -10585,6 +10586,12 @@
    "src/hooks/products/index.ts",
    "src/lib/logger.ts"
   ],
+  "src/hooks/mockup/useClientMockups.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts",
+   "src/lib/logger.ts",
+   "src/lib/supabase-untyped.ts"
+  ],
   "src/hooks/mockup/useMockupAreaRetry.ts": [
    "src/components/mockup/MultiAreaManager.tsx",
    "src/hooks/mockup/mockupGenerationService.ts",
@@ -13692,8 +13699,9 @@
    "src/pages/mockups/mockup-generator/MockupEmptyState.tsx",
    "src/pages/mockups/mockup-generator/MockupTechniqueHandlers.tsx",
    "src/pages/mockups/mockup-generator/MockupToolbar.tsx",
-   "src/types/external-db.ts",
-   "src/types/mockup-approval.ts"
+   "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts",
+   "src/pages/mockups/mockup-generator/useWizardNavigation.ts",
+   "src/types/external-db.ts"
   ],
   "src/pages/mockups/MockupHistoryPage.tsx": [
    "src/components/dev/DiagnosticProfiler.tsx",
@@ -13710,6 +13718,12 @@
    "src/hooks/mockup/mockupGenerationService.ts",
    "src/integrations/supabase/client.ts"
   ],
+  "src/pages/mockups/mockup-generator/ClientMockupsMenu.tsx": [
+   "src/components/ui/button.tsx",
+   "src/components/ui/popover.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/hooks/mockup/useClientMockups.ts"
+  ],
   "src/pages/mockups/mockup-generator/MockupDialogs.tsx": [
    "src/components/ui/ConfirmDialog.tsx"
   ],
@@ -13722,9 +13736,17 @@
    "src/types/external-db.ts"
   ],
   "src/pages/mockups/mockup-generator/MockupToolbar.tsx": [
+   "src/components/ui/ConfirmDialog.tsx",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
-   "src/components/ui/tooltip.tsx"
+   "src/components/ui/tooltip.tsx",
+   "src/pages/mockups/mockup-generator/ClientMockupsMenu.tsx"
+  ],
+  "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts": [
+   "src/components/mockup/approval/OffscreenLayoutCapture.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/mockup/index.ts",
+   "src/types/mockup-approval.ts"
   ],
   "src/pages/products/CartsListPage.tsx": [
    "src/components/cart/CartCompanyPickerDialog.tsx",

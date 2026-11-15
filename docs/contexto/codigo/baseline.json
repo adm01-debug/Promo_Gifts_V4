@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "335bdb602d2d5292fa6969eb382f180cd68f508b",
+  "commit": "7307f53346455e4b7354cc68c06a681b3c7ca6bd",
   "branch": "main",
-  "data_commit": "2026-11-15T14:27:11Z",
+  "data_commit": "2026-11-15T14:47:40Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "7307f533",
+    "data": "2026-11-15",
+    "assunto": "feat(mockup): cabeçalho de trabalho do gerador, Meus mockups do cliente e captura de layout extraída (#3664)"
+   },
    {
     "sha": "335bdb60",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "f84444c1",
     "data": "2026-11-14",
     "assunto": "fix(crm): vincular vendedor do bridge por auth_user_id, nao por e-mail"
-   },
-   {
-    "sha": "1a9cc9a4",
-    "data": "2026-11-14",
-    "assunto": "fix(migrations): declara o rollback da 20261114170845 e documenta o schema net exposto na API pública (#3628)"
    }
   ],
-  "arquivos_mudados_7d": 2084,
+  "arquivos_mudados_7d": 2098,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 209
+    "mudancas": 211
    },
    {
     "pasta": "src/pages/admin",
@@ -207,15 +207,15 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 60
+    "mudancas": 59
    },
    {
     "arquivo": "package.json",
-    "mudancas": 41
+    "mudancas": 40
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 31
+    "mudancas": 30
    },
    {
     "arquivo": "analise-prs/progresso.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 582
+    "commits": 581
    },
    {
     "autor": "Joaquim Ataides",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 130
+    "commits": 129
    },
    {
     "autor": "github-actions[bot]",
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10224,
-  "arquivos_codigo": 5272,
-  "linhas_codigo": 1005121,
+  "arquivos_total": 10234,
+  "arquivos_codigo": 5282,
+  "linhas_codigo": 1006800,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
   "modulos": 158,
-  "componentes": 1228,
-  "hooks": 617,
+  "componentes": 1229,
+  "hooks": 620,
   "edge_functions": 111,
   "tabelas": 548,
   "migrations": 3087,
   "cron_jobs": 122,
-  "testes": 2490,
+  "testes": 2496,
   "workflows": 87,
   "scripts": 272,
   "docs_md": 1024
@@ -1883,8 +1883,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1375,
-   "linhas": 275266
+   "arquivos": 1376,
+   "linhas": 275361
   },
   "src/config": {
    "arquivos": 1,
@@ -1907,8 +1907,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 466,
-   "linhas": 87612
+   "arquivos": 468,
+   "linhas": 88008
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1927,8 +1927,8 @@
    "linhas": 63
   },
   "src/pages": {
-   "arquivos": 353,
-   "linhas": 82861
+   "arquivos": 359,
+   "linhas": 83637
   },
   "src/routes": {
    "arquivos": 14,
@@ -2060,7 +2060,7 @@
   },
   "tests/edge-functions": {
    "arquivos": 174,
-   "linhas": 13141
+   "linhas": 13292
   },
   "tests/fixtures": {
    "arquivos": 3,
@@ -2079,8 +2079,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 134,
-   "linhas": 18357
+   "arquivos": 135,
+   "linhas": 18618
   },
   "tests/integration": {
    "arquivos": 11,

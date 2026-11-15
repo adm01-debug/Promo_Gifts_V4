@@ -696,7 +696,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 403,
+   "usado_por": 404,
    "usado_por_modulos": [
     "components/admin",
     "components/ai",
@@ -768,7 +768,7 @@
     "stores",
     "utils"
    ],
-   "coberto_por_testes": 49,
+   "coberto_por_testes": 51,
    "orfao": false
   },
   {
@@ -4694,7 +4694,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 299,
+   "usado_por": 300,
    "usado_por_modulos": [
     "components",
     "components/admin",
@@ -4765,7 +4765,7 @@
     "stores",
     "utils"
    ],
-   "coberto_por_testes": 13,
+   "coberto_por_testes": 14,
    "orfao": false
   },
   {
@@ -6691,7 +6691,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 56,
+   "usado_por": 57,
    "usado_por_modulos": [
     "components/admin",
     "components/mockup",

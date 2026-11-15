@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "335bdb602d2d5292fa6969eb382f180cd68f508b",
+  "sha": "7307f53346455e4b7354cc68c06a681b3c7ca6bd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 14:28 UTC",
-  "files_total": 10152,
-  "code_files": 8677,
-  "code_lines": 1223341
+  "generated_at": "2026-11-15 14:48 UTC",
+  "files_total": 10162,
+  "code_files": 8687,
+  "code_lines": 1225020
  },
  "version": "1.3.2",
- "facts_hash": "2854ffc2f8cdd48c",
+ "facts_hash": "51ae123df31b2be4",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1104,8 +1104,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3406,
-   ".ts": 2943,
-   ".tsx": 1879,
+   ".ts": 2949,
+   ".tsx": 1883,
    ".mjs": 436,
    ".py": 13,
    ".js": 7
@@ -142997,7 +142997,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1634,
+  "components_count": 1635,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -145460,6 +145460,10 @@
     "file": "src/hooks/kit-builder/useTemplateSnapshot.ts"
    },
    {
+    "name": "useClientMockups",
+    "file": "src/hooks/mockup/useClientMockups.ts"
+   },
+   {
     "name": "useMockupAreaRetry",
     "file": "src/hooks/mockup/useMockupAreaRetry.ts"
    },
@@ -146394,6 +146398,14 @@
    {
     "name": "useTechniqueHandlers",
     "file": "src/pages/mockups/mockup-generator/MockupTechniqueHandlers.tsx"
+   },
+   {
+    "name": "useLayoutCaptureRequest",
+    "file": "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts"
+   },
+   {
+    "name": "useWizardNavigation",
+    "file": "src/pages/mockups/mockup-generator/useWizardNavigation.ts"
    },
    {
     "name": "useMidnightReset",
@@ -147548,8 +147560,8 @@
   },
   {
    "module": "src/components",
-   "files": 1375,
-   "lines": 275265,
+   "files": 1376,
+   "lines": 275360,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -147912,8 +147924,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 466,
-   "lines": 87612,
+   "files": 468,
+   "lines": 88008,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -148405,8 +148417,8 @@
   },
   {
    "module": "src/pages",
-   "files": 353,
-   "lines": 82861,
+   "files": 359,
+   "lines": 83637,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -149628,8 +149640,8 @@
   },
   {
    "module": "tests",
-   "files": 1032,
-   "lines": 157911,
+   "files": 1033,
+   "lines": 158323,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -155875,6 +155887,10 @@
     "count": 2
    },
    {
+    "file": "src/hooks/mockup/useClientMockups.ts",
+    "count": 1
+   },
+   {
     "file": "src/hooks/stock/useSavedStockViews.ts",
     "count": 3
    },
@@ -160580,6 +160596,11 @@
     "file": "src/pages/magic-up/magicUpStrategy.ts",
     "name": "MagicUpCampaignStatus",
     "values": "approved | draft | rejected | review | sent"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/MockupToolbar.tsx",
+    "name": "ClientBrandDisposition",
+    "values": "limpar-marca | manter-marca"
    },
    {
     "file": "src/pages/products/seller-carts/bulkRestoreSummary.ts",
@@ -166230,6 +166251,10 @@
    {
     "file": "src/pages/mockups/MockupHistoryPage.tsx",
     "msg": "Sessão expirada. Entre novamente para excluir o mockup."
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/ClientMockupsMenu.tsx",
+    "msg": " className="
    },
    {
     "file": "src/pages/products/CartsListPage.tsx",
@@ -172198,6 +172223,18 @@
    {
     "file": "src/pages/mockups/MockupHistoryPage.tsx",
     "text": "Reconciliação da página: excluir o último item da última página não pode"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/MockupToolbar.tsx",
+    "text": "* Nome do projeto/campanha; exibido apenas quando informado. */"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts",
+    "text": "suprimir a regra react-hooks/exhaustive-deps (o `mg` inteiro é um objeto"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/useWizardNavigation.ts",
+    "text": "* Regra: a etapa navegada vale enquanto o vendedor estiver olhando para trás e"
    },
    {
     "file": "src/pages/products/CartsListPage.tsx",
@@ -195543,6 +195580,21 @@
     "value": "20"
    },
    {
+    "file": "src/hooks/mockup/useClientMockups.ts",
+    "name": "MOCKUP_BUCKET",
+    "value": "'mockup-assets'"
+   },
+   {
+    "file": "src/hooks/mockup/useClientMockups.ts",
+    "name": "MOCKUP_THUMBNAIL_TTL_SECONDS",
+    "value": "60"
+   },
+   {
+    "file": "src/hooks/mockup/useClientMockups.ts",
+    "name": "DEFAULT_CLIENT_MOCKUPS_LIMIT",
+    "value": "200"
+   },
+   {
     "file": "src/hooks/mockup/useMockupDraft.ts",
     "name": "AUTO_SAVE_DELAY",
     "value": "2000"
@@ -196831,6 +196883,11 @@
     "file": "src/pages/magazine/templates-gallery/useFavoriteTemplate.ts",
     "name": "MAX_FAVORITES",
     "value": "24"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/ClientMockupsMenu.tsx",
+    "name": "CLIENT_MOCKUPS_MENU_LIMIT",
+    "value": "8"
    },
    {
     "file": "src/pages/products/applyVoiceFilters.ts",
@@ -214283,6 +214340,10 @@
     "line": "staleTime: 2 * 60 * 1000,"
    },
    {
+    "file": "src/hooks/mockup/useClientMockups.ts",
+    "line": "const { limit = DEFAULT_CLIENT_MOCKUPS_LIMIT, staleTime = 5 * 60 * 1000 } = options;"
+   },
+   {
     "file": "src/hooks/mockup/useMockupGenerator.ts",
     "line": "draftNoticeTimeoutRef.current = setTimeout(() => setShowDraftRestoredNotice(false), 5000);"
    },
@@ -231435,6 +231496,22 @@
     "name": "agenda o toast custom com duração finita (some sozinho)"
    },
    {
+    "file": "src/components/mockup/__tests__/MockupWizard.navegacao.test.tsx",
+    "name": "MockupWizard — etapa em foco x etapa alcançável"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupWizard.navegacao.test.tsx",
+    "name": "depois de voltar, a etapa pendente que estava disponível segue clicável"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupWizard.navegacao.test.tsx",
+    "name": "sem reachableStep, o limite continua sendo a etapa em foco"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupWizard.navegacao.test.tsx",
+    "name": "o Voltar aponta para a etapa anterior à que está em foco"
+   },
+   {
     "file": "src/components/mockup/__tests__/MockupWizard.shadow.test.tsx",
     "name": "MockupWizard — sombra do indicador de progresso (A-15)"
    },
@@ -240765,6 +240842,66 @@
    {
     "file": "src/hooks/mockup/__tests__/resolveTechnique.order.test.ts",
     "name": "nada bate: devolve null"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useClientMockups.test.ts",
+    "name": "helpers puros"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useClientMockups.test.ts",
+    "name": "extractMockupStoragePath: pública, assinada (ignora query) e externa/nula"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useClientMockups.test.ts",
+    "name": "isMockupTrashed: true com deleted_at; false com null/ausente (coluna não aplicada)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useClientMockups.test.ts",
+    "name": "sortMockupsByCreatedAtDesc: decrescente, sem mutar a entrada, inválidas no fim"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useClientMockups.test.ts",
+    "name": "fetchClientMockups"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useClientMockups.test.ts",
+    "name": "consulta por client_id, ordena no banco e devolve caminho + miniatura assinada"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useClientMockups.test.ts",
+    "name": "ignora itens na lixeira (deleted_at preenchido)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useClientMockups.test.ts",
+    "name": "ordena por data decrescente mesmo se o banco devolver fora de ordem"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useClientMockups.test.ts",
+    "name": "sem client_id devolve [] sem consultar o banco"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useClientMockups.test.ts",
+    "name": "mantém o path e cai para a URL pública quando a assinatura falha"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useClientMockups.test.ts",
+    "name": "URL externa: path null, miniatura = mockup_url, sem createSignedUrl"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useClientMockups.test.ts",
+    "name": "propaga o erro da consulta (não engole falha de rede)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useClientMockups.test.ts",
+    "name": "useClientMockups (hook)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useClientMockups.test.ts",
+    "name": "devolve os mockups do cliente com caminho e miniatura assinada"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/useClientMockups.test.ts",
+    "name": "sem client_id devolve [] sem erro e sem consultar o banco"
    },
    {
     "file": "src/hooks/mockup/__tests__/useMockupDraft.race.test.ts",
@@ -251691,6 +251828,34 @@
     "name": "busca com vírgula, parênteses e % não vaza para o filtro .or()"
    },
    {
+    "file": "src/pages/mockups/mockup-generator/__tests__/ClientMockupsMenu.test.tsx",
+    "name": "ClientMockupsMenu — estados do painel"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/ClientMockupsMenu.test.tsx",
+    "name": "sem cliente selecionado orienta a escolher um cliente e ainda oferece o histórico"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/ClientMockupsMenu.test.tsx",
+    "name": "consulta pelo client_id do CRM com o limite do painel"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/ClientMockupsMenu.test.tsx",
+    "name": "carregando expõe um status acessível em vez de lista vazia"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/ClientMockupsMenu.test.tsx",
+    "name": "erro mostra alerta e "
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/ClientMockupsMenu.test.tsx",
+    "name": "lista vazia nomeia o cliente"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/ClientMockupsMenu.test.tsx",
+    "name": "lista os mockups do cliente: item com miniatura abre a imagem; sem foto fica só texto"
+   },
+   {
     "file": "src/pages/mockups/mockup-generator/__tests__/MockupDialogs.test.tsx",
     "name": "MockupDialogs — diálogos da página do gerador"
    },
@@ -251823,6 +251988,46 @@
     "name": "a categoria gravada é derivada de classifyTechnique(nome, código)"
    },
    {
+    "file": "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.header.test.tsx",
+    "name": "MockupToolbar — cabeçalho de trabalho"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.header.test.tsx",
+    "name": "mostra o cliente selecionado e o estado de salvamento"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.header.test.tsx",
+    "name": "mostra o nome do projeto somente quando informado"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.header.test.tsx",
+    "name": "trocar cliente com marca aplicada PERGUNTA o que fazer — nunca troca em silêncio"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.header.test.tsx",
+    "name": "permite remover a marca aplicada ao trocar de cliente"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.header.test.tsx",
+    "name": "sem marca aplicada, trocar cliente não pergunta nada"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.header.test.tsx",
+    "name": "fechar a reconciliação (Esc) não decide nada: nem troca nem limpa a marca"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.header.test.tsx",
+    "name": "MockupWizard — voltar entre etapas preserva escolhas"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.header.test.tsx",
+    "name": "volta para a etapa anterior sem apagar as escolhas já feitas"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.header.test.tsx",
+    "name": "na primeira etapa o Voltar fica desabilitado"
+   },
+   {
     "file": "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.test.tsx",
     "name": "MockupToolbar — status do rascunho"
    },
@@ -251845,6 +252050,22 @@
    {
     "file": "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.test.tsx",
     "name": "sem nada não mostra status"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/useWizardNavigation.test.ts",
+    "name": "useWizardNavigation"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/useWizardNavigation.test.ts",
+    "name": "sem navegação, segue o progresso derivado"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/useWizardNavigation.test.ts",
+    "name": "dois cliques seguidos no Voltar descem duas etapas"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/useWizardNavigation.test.ts",
+    "name": "progresso novo descarta a etapa navegada"
    },
    {
     "file": "src/pages/products/__tests__/CartHeaderEdgeCases.test.ts",
@@ -274908,63 +275129,55 @@
    },
    {
     "file": "tests/edge-functions/integration/magic-up-score.test.ts",
-    "name": "magic-up-score"
+    "name": "magic-up-score — contrato real do handler"
    },
    {
     "file": "tests/edge-functions/integration/magic-up-score.test.ts",
-    "name": "cálculo de score — happy path"
+    "name": "401 quando a autenticação falha (usa authErrorResponse com o status do erro)"
    },
    {
     "file": "tests/edge-functions/integration/magic-up-score.test.ts",
-    "name": "retorna 200 com score entre 0 e 100 para produto válido"
+    "name": "400 "
    },
    {
     "file": "tests/edge-functions/integration/magic-up-score.test.ts",
-    "name": "fatores (demand, margin, stock, recency) são valores 0-1"
+    "name": "400 quando imageUrl tem menos de 10 caracteres (min(10) do schema real)"
    },
    {
     "file": "tests/edge-functions/integration/magic-up-score.test.ts",
-    "name": "tier é um dos valores esperados (low, medium, high)"
+    "name": "200 com o envelope REAL {total,label,summary,criteria,strengths,risks,recommendations,source:"
    },
    {
     "file": "tests/edge-functions/integration/magic-up-score.test.ts",
-    "name": "produto inativo retorna eligible_for_magic_up=false"
+    "name": "encaminha à IA o modelo google/gemini-2.5-pro e functionName magic-up-score"
    },
    {
     "file": "tests/edge-functions/integration/magic-up-score.test.ts",
-    "name": "produto não encontrado — 404"
+    "name": "500 quando a IA devolve um diagnóstico que viola o schema real (criteria < 4)"
    },
    {
     "file": "tests/edge-functions/integration/magic-up-score.test.ts",
-    "name": "retorna 404 para product_id inexistente"
+    "name": "500 quando o content da IA não contém JSON"
    },
    {
     "file": "tests/edge-functions/integration/magic-up-score.test.ts",
-    "name": "validação de entrada — 400"
+    "name": "500 quando a resposta da IA não tem content textual"
    },
    {
     "file": "tests/edge-functions/integration/magic-up-score.test.ts",
-    "name": "retorna 400 quando product_id está ausente"
+    "name": "repassa o status da IA (402 → créditos esgotados)"
    },
    {
     "file": "tests/edge-functions/integration/magic-up-score.test.ts",
-    "name": "não retorna 500 para product_id com SQL injection"
+    "name": "429 quando a quota de IA é excedida (QuotaExceededError)"
    },
    {
     "file": "tests/edge-functions/integration/magic-up-score.test.ts",
-    "name": "autenticação — 401"
+    "name": "respeita o bloqueio anti-bot (devolve o blockResponse)"
    },
    {
     "file": "tests/edge-functions/integration/magic-up-score.test.ts",
-    "name": "retorna 401 sem token"
-   },
-   {
-    "file": "tests/edge-functions/integration/magic-up-score.test.ts",
-    "name": "CORS"
-   },
-   {
-    "file": "tests/edge-functions/integration/magic-up-score.test.ts",
-    "name": "OPTIONS retorna CORS headers"
+    "name": "OPTIONS devolve preflight (200 vazio) com os headers CORS, sem exigir auth"
    },
    {
     "file": "tests/edge-functions/integration/manage-users.test.ts",
@@ -277685,6 +277898,66 @@
    {
     "file": "tests/hooks/useCategories.test.tsx",
     "name": "generates slugs from category names"
+   },
+   {
+    "file": "tests/hooks/useClientMockups.edge.test.ts",
+    "name": "sem client_id — lista vazia sem erro"
+   },
+   {
+    "file": "tests/hooks/useClientMockups.edge.test.ts",
+    "name": "cliente ausente ou em branco devolve [] sem tocar no banco"
+   },
+   {
+    "file": "tests/hooks/useClientMockups.edge.test.ts",
+    "name": "no hook, cliente em branco resolve sucesso com lista vazia (não fica pendente nem erra)"
+   },
+   {
+    "file": "tests/hooks/useClientMockups.edge.test.ts",
+    "name": "cliente só com espaços em volta é consultado já aparado"
+   },
+   {
+    "file": "tests/hooks/useClientMockups.edge.test.ts",
+    "name": "lixeira (deleted_at)"
+   },
+   {
+    "file": "tests/hooks/useClientMockups.edge.test.ts",
+    "name": "item na lixeira sai da lista e não gera miniatura assinada"
+   },
+   {
+    "file": "tests/hooks/useClientMockups.edge.test.ts",
+    "name": "cliente com TODOS os mockups na lixeira devolve [] e nenhuma assinatura"
+   },
+   {
+    "file": "tests/hooks/useClientMockups.edge.test.ts",
+    "name": "só deleted_at nulo/ausente é item vivo (marca preenchida — até string vazia — é lixeira)"
+   },
+   {
+    "file": "tests/hooks/useClientMockups.edge.test.ts",
+    "name": "ordenação por data"
+   },
+   {
+    "file": "tests/hooks/useClientMockups.edge.test.ts",
+    "name": "mais recente primeiro, empate preservado e data inválida no fim"
+   },
+   {
+    "file": "tests/hooks/useClientMockups.edge.test.ts",
+    "name": "cliente com 500 mockups — página, não varredura"
+   },
+   {
+    "file": "tests/hooks/useClientMockups.edge.test.ts",
+    "name": "devolve só a página padrão (200) e a mais recente vem primeiro, em uma consulta só"
+   },
+   {
+    "file": "tests/hooks/useClientMockups.edge.test.ts",
+    "name": "limit explícito pede a página inteira — o teto é parâmetro, não chute"
+   },
+   {
+    "file": "tests/hooks/useClientMockups.edge.test.ts",
+    "name": "falha da consulta — erro não vira lista vazia"
+   },
+   {
+    "file": "tests/hooks/useClientMockups.edge.test.ts",
+    "name": "o erro do banco é propagado pelo serviço e exposto pelo hook"
    },
    {
     "file": "tests/hooks/useCollections.test.ts",
@@ -391992,6 +392265,13 @@
    },
    {
     "kind": "dinâmico",
+    "msg": "1 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
+    "where": [
+     "src/hooks/mockup/useClientMockups.ts"
+    ]
+   },
+   {
+    "kind": "dinâmico",
     "msg": "3 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
     "where": [
      "src/hooks/stock/useSavedStockViews.ts"
@@ -436611,7 +436891,7 @@
   },
   "src/components/mockup/MockupWizard.tsx": {
    "path": "src/components/mockup/MockupWizard.tsx",
-   "lines": 250,
+   "lines": 287,
    "exports": [
     "const MockupWizard"
    ]
@@ -436998,6 +437278,18 @@
     "anuncia a mensagem por aria-live (role=status, polite e atômico)",
     "showMockupSuccessToast — dismiss automático",
     "agenda o toast custom com duração finita (some sozinho)"
+   ]
+  },
+  "src/components/mockup/__tests__/MockupWizard.navegacao.test.tsx": {
+   "path": "src/components/mockup/__tests__/MockupWizard.navegacao.test.tsx",
+   "lines": 58,
+   "is_test": true,
+   "doc": "O \"Voltar\" move a etapa EM FOCO, não o progresso. Antes de `reachableStep`, `currentStep` servia às duas coisas: voltar uma etapa derrubava o atalho da etapa pendente que estava disponível, e o vendedor perdia o caminho de volta.",
+   "tests": [
+    "MockupWizard — etapa em foco x etapa alcançável",
+    "depois de voltar, a etapa pendente que estava disponível segue clicável",
+    "sem reachableStep, o limite continua sendo a etapa em foco",
+    "o Voltar aponta para a etapa anterior à que está em foco"
    ]
   },
   "src/components/mockup/__tests__/MockupWizard.shadow.test.tsx": {
@@ -453526,6 +453818,44 @@
     "* Mantém no máximo `keep` snapshots do usuário, descartando os mais antigos. */"
    ]
   },
+  "src/hooks/mockup/useClientMockups.ts": {
+   "path": "src/hooks/mockup/useClientMockups.ts",
+   "lines": 156,
+   "exports": [
+    "const MOCKUP_BUCKET",
+    "const MOCKUP_THUMBNAIL_TTL_SECONDS",
+    "const DEFAULT_CLIENT_MOCKUPS_LIMIT",
+    "interface ClientMockup",
+    "interface FetchClientMockupsOptions",
+    "interface UseClientMockupsOptions",
+    "function isMockupTrashed",
+    "function sortMockupsByCreatedAtDesc",
+    "function extractMockupStoragePath",
+    "function fetchClientMockups",
+    "function useClientMockups"
+   ],
+   "dyn_from": 1,
+   "params": [
+    {
+     "name": "MOCKUP_BUCKET",
+     "value": "'mockup-assets'"
+    },
+    {
+     "name": "MOCKUP_THUMBNAIL_TTL_SECONDS",
+     "value": "60"
+    },
+    {
+     "name": "DEFAULT_CLIENT_MOCKUPS_LIMIT",
+     "value": "200"
+    }
+   ],
+   "hooks": [
+    "useClientMockups"
+   ],
+   "temporal": [
+    "const { limit = DEFAULT_CLIENT_MOCKUPS_LIMIT, staleTime = 5 * 60 * 1000 } = options;"
+   ]
+  },
   "src/hooks/mockup/useMockupAreaRetry.ts": {
    "path": "src/hooks/mockup/useMockupAreaRetry.ts",
    "lines": 115,
@@ -454017,6 +454347,29 @@
     "id de outro espaço: resolve pelo NOME, não pelo código compartilhado",
     "nome que não existe mais na lista: cai para o código",
     "nada bate: devolve null"
+   ]
+  },
+  "src/hooks/mockup/__tests__/useClientMockups.test.ts": {
+   "path": "src/hooks/mockup/__tests__/useClientMockups.test.ts",
+   "lines": 240,
+   "is_test": true,
+   "doc": "Testes de comportamento de useClientMockups (mockups do cliente — plano etapa 37). Cobrem: consulta por client_id, lixeira ignorada, ordenação por data, caminho + miniatura assinada, e [] sem client_id sem tocar no banco. Run: npx vitest related --run src/hooks/mockup/useClientMockups.ts",
+   "tests": [
+    "helpers puros",
+    "extractMockupStoragePath: pública, assinada (ignora query) e externa/nula",
+    "isMockupTrashed: true com deleted_at; false com null/ausente (coluna não aplicada)",
+    "sortMockupsByCreatedAtDesc: decrescente, sem mutar a entrada, inválidas no fim",
+    "fetchClientMockups",
+    "consulta por client_id, ordena no banco e devolve caminho + miniatura assinada",
+    "ignora itens na lixeira (deleted_at preenchido)",
+    "ordena por data decrescente mesmo se o banco devolver fora de ordem",
+    "sem client_id devolve [] sem consultar o banco",
+    "mantém o path e cai para a URL pública quando a assinatura falha",
+    "URL externa: path null, miniatura = mockup_url, sem createSignedUrl",
+    "propaga o erro da consulta (não engole falha de rede)",
+    "useClientMockups (hook)",
+    "devolve os mockups do cliente com caminho e miniatura assinada",
+    "sem client_id devolve [] sem erro e sem consultar o banco"
    ]
   },
   "src/hooks/mockup/__tests__/useMockupDraft.race.test.ts": {
@@ -474955,7 +475308,7 @@
   },
   "src/pages/mockups/MockupGenerator.tsx": {
    "path": "src/pages/mockups/MockupGenerator.tsx",
-   "lines": 636,
+   "lines": 608,
    "exports": [
     "function MockupGenerator"
    ],
@@ -475010,6 +475363,24 @@
     "busca com vírgula, parênteses e % não vaza para o filtro .or()"
    ]
   },
+  "src/pages/mockups/mockup-generator/ClientMockupsMenu.tsx": {
+   "path": "src/pages/mockups/mockup-generator/ClientMockupsMenu.tsx",
+   "lines": 180,
+   "exports": [
+    "const CLIENT_MOCKUPS_MENU_LIMIT",
+    "function ClientMockupsMenu"
+   ],
+   "errors": [
+    " className="
+   ],
+   "params": [
+    {
+     "name": "CLIENT_MOCKUPS_MENU_LIMIT",
+     "value": "8"
+    }
+   ],
+   "doc": "ClientMockupsMenu — \"Meus mockups\" do cabeçalho do gerador. Abre um painel com os mockups já salvos do cliente selecionado (via `useClientMockups`, consulta por `client_id` do CRM) com estados reais: sem cliente, carregando, erro com repetição e lista vazia. O rodapé leva ao histórico completo (`his …"
+  },
   "src/pages/mockups/mockup-generator/MockupDialogs.tsx": {
    "path": "src/pages/mockups/mockup-generator/MockupDialogs.tsx",
    "lines": 73,
@@ -475039,11 +475410,66 @@
   },
   "src/pages/mockups/mockup-generator/MockupToolbar.tsx": {
    "path": "src/pages/mockups/mockup-generator/MockupToolbar.tsx",
-   "lines": 105,
+   "lines": 204,
    "exports": [
+    "type ClientBrandDisposition",
     "function MockupToolbar"
    ],
-   "doc": "MockupToolbar — Extracted undo/redo/save status bar from MockupGenerator"
+   "enums": [
+    {
+     "name": "ClientBrandDisposition",
+     "values": "limpar-marca | manter-marca"
+    }
+   ],
+   "rule_comments": [
+    "* Nome do projeto/campanha; exibido apenas quando informado. */"
+   ],
+   "doc": "MockupToolbar — Cabeçalho de trabalho do gerador de mockups. Reúne, numa linha: o cliente selecionado, o nome do projeto (quando informado), a ação \"Trocar cliente\" (que reconcilia a marca já aplicada — nunca troca em silêncio), o desfazer/refazer de posição, o estado de salvamento do rascunho e o a …"
+  },
+  "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts": {
+   "path": "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts",
+   "lines": 117,
+   "exports": [
+    "function useLayoutCaptureRequest"
+   ],
+   "rule_comments": [
+    "suprimir a regra react-hooks/exhaustive-deps (o `mg` inteiro é um objeto"
+   ],
+   "doc": "useLayoutCaptureRequest — monta o pedido de captura da ficha de aprovação (OffscreenLayoutCapture) a partir do estado do gerador. Extraído de MockupGenerator.tsx sem mudança de comportamento.",
+   "hooks": [
+    "useLayoutCaptureRequest"
+   ]
+  },
+  "src/pages/mockups/mockup-generator/useWizardNavigation.ts": {
+   "path": "src/pages/mockups/mockup-generator/useWizardNavigation.ts",
+   "lines": 29,
+   "exports": [
+    "function useWizardNavigation"
+   ],
+   "rule_comments": [
+    "* Regra: a etapa navegada vale enquanto o vendedor estiver olhando para trás e"
+   ],
+   "hooks": [
+    "useWizardNavigation"
+   ]
+  },
+  "src/pages/mockups/mockup-generator/__tests__/ClientMockupsMenu.test.tsx": {
+   "path": "src/pages/mockups/mockup-generator/__tests__/ClientMockupsMenu.test.tsx",
+   "lines": 136,
+   "is_test": true,
+   "errors": [
+    ")).toHaveTextContent(/não foi possível carregar/i);\n    await user.click(screen.getByRole("
+   ],
+   "doc": "ClientMockupsMenu — \"Meus mockups\" do cabeçalho do gerador, ligado ao `useClientMockups`. Cobre os estados reais do painel: sem cliente, carregando, erro (com repetição), vazio e lista; e o rodapé para o histórico completo.",
+   "tests": [
+    "ClientMockupsMenu — estados do painel",
+    "sem cliente selecionado orienta a escolher um cliente e ainda oferece o histórico",
+    "consulta pelo client_id do CRM com o limite do painel",
+    "carregando expõe um status acessível em vez de lista vazia",
+    "erro mostra alerta e ",
+    "lista vazia nomeia o cliente",
+    "lista os mockups do cliente: item com miniatura abre a imagem; sem foto fica só texto"
+   ]
   },
   "src/pages/mockups/mockup-generator/__tests__/MockupDialogs.test.tsx": {
    "path": "src/pages/mockups/mockup-generator/__tests__/MockupDialogs.test.tsx",
@@ -475120,9 +475546,27 @@
     "a categoria gravada é derivada de classifyTechnique(nome, código)"
    ]
   },
+  "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.header.test.tsx": {
+   "path": "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.header.test.tsx",
+   "lines": 201,
+   "is_test": true,
+   "doc": "MockupToolbar.header.test.tsx Cabeçalho de trabalho do gerador de mockups (Codex p.6): - mostra o cliente selecionado e o estado de salvamento; - mostra o nome do projeto quando informado; - \"Trocar cliente\" reconcilia a marca já aplicada (PERGUNTA antes de trocar, nunca troca em silêncio); - expõe …",
+   "tests": [
+    "MockupToolbar — cabeçalho de trabalho",
+    "mostra o cliente selecionado e o estado de salvamento",
+    "mostra o nome do projeto somente quando informado",
+    "trocar cliente com marca aplicada PERGUNTA o que fazer — nunca troca em silêncio",
+    "permite remover a marca aplicada ao trocar de cliente",
+    "sem marca aplicada, trocar cliente não pergunta nada",
+    "fechar a reconciliação (Esc) não decide nada: nem troca nem limpa a marca",
+    "MockupWizard — voltar entre etapas preserva escolhas",
+    "volta para a etapa anterior sem apagar as escolhas já feitas",
+    "na primeira etapa o Voltar fica desabilitado"
+   ]
+  },
   "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.test.tsx": {
    "path": "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.test.tsx",
-   "lines": 55,
+   "lines": 58,
    "is_test": true,
    "tests": [
     "MockupToolbar — status do rascunho",
@@ -475131,6 +475575,17 @@
     "sem erro, salvando tem prioridade sobre Salvo",
     "sem erro e sem salvamento em curso mostra Salvo",
     "sem nada não mostra status"
+   ]
+  },
+  "src/pages/mockups/mockup-generator/__tests__/useWizardNavigation.test.ts": {
+   "path": "src/pages/mockups/mockup-generator/__tests__/useWizardNavigation.test.ts",
+   "lines": 39,
+   "is_test": true,
+   "tests": [
+    "useWizardNavigation",
+    "sem navegação, segue o progresso derivado",
+    "dois cliques seguidos no Voltar descem duas etapas",
+    "progresso novo descarta a etapa navegada"
    ]
   },
   "src/pages/products/CartsListPage.tsx": {
@@ -517769,31 +518224,31 @@
   },
   "tests/edge-functions/integration/magic-up-score.test.ts": {
    "path": "tests/edge-functions/integration/magic-up-score.test.ts",
-   "lines": 164,
+   "lines": 315,
    "is_test": true,
    "params": [
     {
-     "name": "BASE",
-     "value": "\"https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1\""
+     "name": "CORS_ORIGIN",
+     "value": "'https://www.promogifts.com.br'"
     }
    ],
-   "doc": "Integration tests — magic-up-score edge function Cobre: cálculo de score, produtos elegíveis, sem auth, payloads adversariais.",
+   "rule_comments": [
+    "strengths, risks, recommendations, source:'ai' }`; 400 \"Validation failed\";"
+   ],
    "tests": [
-    "magic-up-score",
-    "cálculo de score — happy path",
-    "retorna 200 com score entre 0 e 100 para produto válido",
-    "fatores (demand, margin, stock, recency) são valores 0-1",
-    "tier é um dos valores esperados (low, medium, high)",
-    "produto inativo retorna eligible_for_magic_up=false",
-    "produto não encontrado — 404",
-    "retorna 404 para product_id inexistente",
-    "validação de entrada — 400",
-    "retorna 400 quando product_id está ausente",
-    "não retorna 500 para product_id com SQL injection",
-    "autenticação — 401",
-    "retorna 401 sem token",
-    "CORS",
-    "OPTIONS retorna CORS headers"
+    "magic-up-score — contrato real do handler",
+    "401 quando a autenticação falha (usa authErrorResponse com o status do erro)",
+    "400 ",
+    "400 quando imageUrl tem menos de 10 caracteres (min(10) do schema real)",
+    "200 com o envelope REAL {total,label,summary,criteria,strengths,risks,recommendations,source:",
+    "encaminha à IA o modelo google/gemini-2.5-pro e functionName magic-up-score",
+    "500 quando a IA devolve um diagnóstico que viola o schema real (criteria < 4)",
+    "500 quando o content da IA não contém JSON",
+    "500 quando a resposta da IA não tem content textual",
+    "repassa o status da IA (402 → créditos esgotados)",
+    "429 quando a quota de IA é excedida (QuotaExceededError)",
+    "respeita o bloqueio anti-bot (devolve o blockResponse)",
+    "OPTIONS devolve preflight (200 vazio) com os headers CORS, sem exigir auth"
    ]
   },
   "tests/edge-functions/integration/manage-users.test.ts": {
@@ -520145,6 +520600,31 @@
     "useCategories",
     "fetches and transforms categories",
     "generates slugs from category names"
+   ]
+  },
+  "tests/hooks/useClientMockups.edge.test.ts": {
+   "path": "tests/hooks/useClientMockups.edge.test.ts",
+   "lines": 261,
+   "is_test": true,
+   "rule_comments": [
+    "* O \"banco\" abaixo é um mini-PostgREST em memória que honra `eq`/`order`/`limit` como o real:"
+   ],
+   "tests": [
+    "sem client_id — lista vazia sem erro",
+    "cliente ausente ou em branco devolve [] sem tocar no banco",
+    "no hook, cliente em branco resolve sucesso com lista vazia (não fica pendente nem erra)",
+    "cliente só com espaços em volta é consultado já aparado",
+    "lixeira (deleted_at)",
+    "item na lixeira sai da lista e não gera miniatura assinada",
+    "cliente com TODOS os mockups na lixeira devolve [] e nenhuma assinatura",
+    "só deleted_at nulo/ausente é item vivo (marca preenchida — até string vazia — é lixeira)",
+    "ordenação por data",
+    "mais recente primeiro, empate preservado e data inválida no fim",
+    "cliente com 500 mockups — página, não varredura",
+    "devolve só a página padrão (200) e a mais recente vem primeiro, em uma consulta só",
+    "limit explícito pede a página inteira — o teto é parâmetro, não chute",
+    "falha da consulta — erro não vira lista vazia",
+    "o erro do banco é propagado pelo serviço e exposto pelo hook"
    ]
   },
   "tests/hooks/useCollections.test.ts": {
@@ -532818,10 +533298,33 @@
   }
  },
  "git": {
-  "sha": "335bdb602d2d5292fa6969eb382f180cd68f508b",
+  "sha": "7307f53346455e4b7354cc68c06a681b3c7ca6bd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7307f53",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "feat(mockup): cabeçalho de trabalho do gerador, Meus mockups do cliente e captura de layout extraída (#3664)",
+    "files": [
+     "src/components/mockup/MockupWizard.tsx",
+     "src/components/mockup/__tests__/MockupWizard.navegacao.test.tsx",
+     "src/hooks/mockup/__tests__/useClientMockups.test.ts",
+     "src/hooks/mockup/useClientMockups.ts",
+     "src/pages/mockups/MockupGenerator.tsx",
+     "src/pages/mockups/mockup-generator/ClientMockupsMenu.tsx",
+     "src/pages/mockups/mockup-generator/MockupToolbar.tsx",
+     "src/pages/mockups/mockup-generator/__tests__/ClientMockupsMenu.test.tsx",
+     "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.header.test.tsx",
+     "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.test.tsx",
+     "src/pages/mockups/mockup-generator/__tests__/useWizardNavigation.test.ts",
+     "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts",
+     "src/pages/mockups/mockup-generator/useWizardNavigation.ts",
+     "tests/edge-functions/integration/magic-up-score.test.ts",
+     "tests/hooks/useClientMockups.edge.test.ts"
+    ]
+   },
    {
     "sha": "335bdb6",
     "date": "2026-11-15",
@@ -533284,23 +533787,16 @@
     "author": "Claude",
     "subject": "Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945",
     "files": []
-   },
-   {
-    "sha": "cf64ee7",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "perf(catalog): primeiro carregamento com 1 consulta em vez de 4, mantendo 500 produtos na tela (#3621)",
-    "files": [
-     "docs/coordenacao/conflitos-semanticos.md",
-     "src/hooks/products/useProductsLightweight.ts",
-     "src/lib/external-db/products-lightweight.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/coordenacao/conflitos-semanticos.md",
-    9
+    8
+   ],
+   [
+    "src/pages/mockups/MockupGenerator.tsx",
+    3
    ],
    [
     "src/pages/kit-builder/KitBuilderPage.tsx",
@@ -533351,10 +533847,6 @@
     2
    ],
    [
-    "src/pages/mockups/MockupGenerator.tsx",
-    2
-   ],
-   [
     "src/tests/MockupDeletion.test.tsx",
     2
    ],
@@ -533367,15 +533859,15 @@
     2
    ],
    [
-    ".github/workflows/db-apply-migration.yml",
+    "src/components/mockup/MockupWizard.tsx",
     1
    ],
    [
-    "docs/agentes/ci-gates.md",
+    "src/components/mockup/__tests__/MockupWizard.navegacao.test.tsx",
     1
    ],
    [
-    "artifacts/route-test-matrix.json",
+    "src/hooks/mockup/__tests__/useClientMockups.test.ts",
     1
    ]
   ]

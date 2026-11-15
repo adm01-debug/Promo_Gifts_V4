@@ -24704,6 +24704,7 @@
     "useCategoryRanking",
     "useCategorySelection",
     "useClientFuzzySearch",
+    "useClientMockups",
     "useClientTopProducts",
     "useCollectionsGlobalShortcuts",
     "useColorEnrichment",
@@ -24791,6 +24792,7 @@
     "useIsProductNovelty",
     "useKeyboardShortcut",
     "useKeyboardShortcuts",
+    "useLayoutCaptureRequest",
     "useLayoutEffect",
     "useLegacyFavoritesMigration",
     "useLocation",
@@ -24959,7 +24961,8 @@
     "useVariantStock",
     "useVideoVariantLinks",
     "useVirtualizer",
-    "useVoiceAgent"
+    "useVoiceAgent",
+    "useWizardNavigation"
    ],
    "hooks_locais": [
     "useA11y",
@@ -24999,6 +25002,7 @@
     "useCategoryRanking",
     "useCategorySelection",
     "useClientFuzzySearch",
+    "useClientMockups",
     "useClientTopProducts",
     "useCollectionsGlobalShortcuts",
     "useColorEnrichment",
@@ -25080,6 +25084,7 @@
     "useIsProductNovelty",
     "useKeyboardShortcut",
     "useKeyboardShortcuts",
+    "useLayoutCaptureRequest",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
     "useLogoColorAnalysisByArea",
@@ -25232,7 +25237,8 @@
     "useUrlBoolean",
     "useVariantStock",
     "useVideoVariantLinks",
-    "useVoiceAgent"
+    "useVoiceAgent",
+    "useWizardNavigation"
    ],
    "tabelas": [
     "admin_settings",
@@ -25328,7 +25334,7 @@
     "supervisor",
     "user"
    ],
-   "arquivos_puxados": 453
+   "arquivos_puxados": 457
   },
   {
    "protegida": false,

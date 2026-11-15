@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4821)",
+   "TypeScript (4831)",
    "SQL (3406)",
    "Markdown (1024)",
    "JavaScript (443)",
@@ -4595,7 +4595,7 @@
   "hosts_externos": [
    {
     "host": "doufsxqlfjyuvxuezpln.supabase.co",
-    "arquivos": 60
+    "arquivos": 59
    },
    {
     "host": "wa.me",
@@ -4603,7 +4603,11 @@
    },
    {
     "host": "www.promogifts.com.br",
-    "arquivos": 16
+    "arquivos": 17
+   },
+   {
+    "host": "cdn.test",
+    "arquivos": 10
    },
    {
     "host": "fixture.invalid",
@@ -4619,10 +4623,6 @@
    },
    {
     "host": "api.supabase.com",
-    "arquivos": 9
-   },
-   {
-    "host": "cdn.test",
     "arquivos": 9
    },
    {
@@ -4662,6 +4662,10 @@
     "arquivos": 4
    },
    {
+    "host": "edge.local",
+    "arquivos": 4
+   },
+   {
     "host": "example.supabase.co",
     "arquivos": 4
    },
@@ -4687,10 +4691,6 @@
    },
    {
     "host": "cdn.example.test",
-    "arquivos": 3
-   },
-   {
-    "host": "edge.local",
     "arquivos": 3
    },
    {
@@ -4779,6 +4779,10 @@
    },
    {
     "host": "pqpdolkaeqlyzpdpbizo.supabase.co",
+    "arquivos": 2
+   },
+   {
+    "host": "proj.supabase.co",
     "arquivos": 2
    },
    {
@@ -5310,11 +5314,11 @@
   "papeis_no_codigo": [
    {
     "papel": "status",
-    "ocorrencias": 80
+    "ocorrencias": 81
    },
    {
     "papel": "alert",
-    "ocorrencias": 55
+    "ocorrencias": 56
    },
    {
     "papel": "dev",
@@ -5346,7 +5350,7 @@
    },
    {
     "papel": "vendedor",
-    "ocorrencias": 24
+    "ocorrencias": 25
    },
    {
     "papel": "supervisor",

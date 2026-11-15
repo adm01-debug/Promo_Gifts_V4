@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `335bdb602d` · branch `main` · 2026-11-15 14:28 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `7307f53346` · branch `main` · 2026-11-15 14:48 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2108,6 +2108,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | StepId | content \| design \| identity \| layout \| products | `src/pages/magazine/utils/stepValidation.ts` |
 | MagicUpCurationStatus | client-approved \| client-rejected \| draft \| favorite \| good \| internal-approved \| needs-adjustment \| sent-to-client | `src/pages/magic-up/magicUpStrategy.ts` |
 | MagicUpCampaignStatus | approved \| draft \| rejected \| review \| sent | `src/pages/magic-up/magicUpStrategy.ts` |
+| ClientBrandDisposition | limpar-marca \| manter-marca | `src/pages/mockups/mockup-generator/MockupToolbar.tsx` |
 | BulkRestoreTone | error \| success \| warning | `src/pages/products/seller-carts/bulkRestoreSummary.ts` |
 | CartViewMode | grid \| list \| table | `src/pages/products/seller-carts/cartViewModePrefs.ts` |
 | StorageBackend | localStorage \| memory \| sessionStorage | `src/pages/products/seller-carts/cartViewModePrefs.ts` |
@@ -5522,6 +5523,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MISSING_DIMENSIONS_STATUS` | `422` | `src/hooks/mockup/mockupGeneratorModel.ts` |
 | `MOCKUP_HISTORY_PANEL_LIMIT` | `200` | `src/hooks/mockup/mockupHistoryAdapter.ts` |
 | `MAX_HISTORY_SNAPSHOTS` | `20` | `src/hooks/mockup/mockupSelectionSnapshot.ts` |
+| `MOCKUP_BUCKET` | `'mockup-assets'` | `src/hooks/mockup/useClientMockups.ts` |
+| `MOCKUP_THUMBNAIL_TTL_SECONDS` | `60` | `src/hooks/mockup/useClientMockups.ts` |
+| `DEFAULT_CLIENT_MOCKUPS_LIMIT` | `200` | `src/hooks/mockup/useClientMockups.ts` |
 | `AUTO_SAVE_DELAY` | `2000` | `src/hooks/mockup/useMockupDraft.ts` |
 | `LOGO_UPLOAD_ERROR` | `'Não foi possível salvar a logo no rascunho'` | `src/hooks/mockup/useMockupDraft.ts` |
 | `MS_PER_DAY` | `1000` | `src/hooks/products/novelty-core.ts` |
@@ -5586,10 +5590,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MOBILE_BREAKPOINT` | `768` | `src/hooks/ui/use-mobile.tsx` |
 | `HEALTHY_INTERVAL` | `60` | `src/hooks/ui/useCloudStatus.ts` |
 | `DOWN_AUTO_STOP_MS` | `30` | `src/hooks/ui/useCloudStatus.ts` |
-| `CHUNK_RELOAD_MAX` | `1` | `src/hooks/ui/useErrorHandler.ts` |
-| `CHUNK_RELOAD_DELAY_MS` | `1500` | `src/hooks/ui/useErrorHandler.ts` |
-| `CHUNK_RELOAD_CLEAR_MS` | `5000` | `src/hooks/ui/useErrorHandler.ts` |
-| … +339 linhas — lista completa em `context.json` | | |
+| … +343 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -5895,7 +5896,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;` | `src/hooks/bi/useClientCategoryAffinity.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientCategoryAffinity.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientOrdersHistory.ts` |
-| … +383 linhas — lista completa em `context.json` | |
+| … +384 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -6378,7 +6379,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | DOWNLOAD_SIZE_LIMIT | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_ACTION_AFTER | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_JSON_KEY | `scripts/diagnose-personalization-artifact.py` |
-| … +1259 linhas — lista completa em `context.json` | |
+| … +1260 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6502,7 +6503,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21385 testes em 2170 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21438 testes em 2176 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6806,7 +6807,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/product-webhook.test.ts` | 18 | product-webhook · evento product.created · retorna 200 para evento product.created válido · evento product.updated … |
 | `tests/hooks/useGlobalSearch-voice.test.ts` | 18 | Voice Action Handler Logic · navigate action · should extract route from navigate action · should handle navigate without route gracefully … |
 | `tests/lib/product-types.test.ts` | 18 | getProductImageUrl · should prefer primary_image_url · should fallback to image_url · should fallback to first image in images array … |
-| … +1870 linhas — lista completa em `context.json` | | |
+| … +1876 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7274,4 +7275,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ANTI-REGRESSÃO: primary_image_url deve vir ANTES de og_image_url. | `src/components/mockup/ProductSearchCombobox.tsx` |
 | NÃO contém limites numéricos: qualquer número de limite (cores, dimensões, | `src/components/mockup/TechniqueTooltip.tsx` |
 | qualitativos abaixo são apenas estimativas e aparecem rotulados como tal. | `src/components/mockup/TechniqueTooltip.tsx` |
-| … +1278 linhas — lista completa em `context.json` | |
+| … +1281 linhas — lista completa em `context.json` | |
