@@ -62,6 +62,13 @@ export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean
   // ~60s adicionais após o token (run 41858297363), totalizando >100s — ampliado
   // de 75s para 150s para cobrir esse pior caso observado em CI.
   const timeout = creds.timeoutMs ?? (process.env.CI ? 150_000 : 20_000);
+
+  // O orcamento de cada teste (playwright.config.ts:37, 120 s) e MENOR que a
+  // espera acima, de 150 s em CI: o runner abortava o teste antes de a espera
+  // terminar, e por isso o diagnostico descrito acima nunca era escrito. Soma o
+  // orcamento do login ao do teste, e so no teste que de fato faz login pela
+  // tela — o limite global dos demais continua 120 s.
+  test.info().setTimeout(test.info().timeout + timeout);
   const netLog = createNetworkLog(page);
 
   // CI bypass: TURNSTILE_SECRET_KEY está configurado na edge function de produção,
