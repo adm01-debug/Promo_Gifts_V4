@@ -12,6 +12,7 @@
  * useMockupDraft — ao estourar, o rascunho para de persistir em silêncio.
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { toast } from 'sonner';
 import {
   mockupSelection,
   type MockupSelectionSnapshot,
@@ -21,6 +22,8 @@ import type { ExternalVariantStock, Product } from '@/hooks/products';
 vi.mock('@/lib/logger', () => ({
   logger: { error: vi.fn(), warn: vi.fn(), info: vi.fn(), debug: vi.fn() },
 }));
+
+vi.mock('sonner', () => ({ toast: { error: vi.fn(), success: vi.fn() } }));
 
 const FOTO_P1 = 'https://cdn.test/prod-1-foto-3.jpg';
 const FOTO_P2 = 'https://cdn.test/prod-2-foto-1.jpg';
@@ -139,5 +142,33 @@ describe('mockupSelection.saveForHistory — teto de cota do localStorage', () =
 
     expect(mockupSelection.readForHistory('user-2', 'rec-x')).not.toBeNull();
     expect(localStorage.getItem('mockup_draft_v1_user-1_default')).not.toBeNull();
+  });
+});
+
+describe('mockupSelection — falha definitiva avisa o vendedor', () => {
+  it('escrita que falha mesmo depois de abrir espaco: avisa em vez de sumir calado', () => {
+    const original = Storage.prototype.setItem;
+    const falhaDeCota = () => {
+      throw new DOMException('QuotaExceededError', 'QuotaExceededError');
+    };
+    Storage.prototype.setItem = falhaDeCota as typeof original;
+    try {
+      mockupSelection.saveForHistory('user-1', 'rec-cota', SNAP_P1);
+    } finally {
+      Storage.prototype.setItem = original;
+    }
+
+    expect(toast.error).toHaveBeenCalledWith(
+      'Não foi possível guardar a variante e a foto escolhidas neste mockup.',
+    );
+  });
+
+  it('leitura que falha: avisa em vez de devolver null calado', () => {
+    localStorage.setItem('mockup_selection_v1_user-1_rec-ruim', '{isso nao e json');
+
+    expect(mockupSelection.readForHistory('user-1', 'rec-ruim')).toBeNull();
+    expect(toast.error).toHaveBeenCalledWith(
+      'Não foi possível restaurar a variante e a foto deste mockup.',
+    );
   });
 });
