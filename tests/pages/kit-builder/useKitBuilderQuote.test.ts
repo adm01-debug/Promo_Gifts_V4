@@ -21,7 +21,13 @@ vi.mock('@/hooks/kit-builder/useKitFitsValidation', () => ({ validateKitFitsForQ
 vi.mock('@/lib/db/postgrest', () => ({ dbInvoke: vi.fn() }));
 
 vi.mock('@/lib/logger', () => ({ logger: { error: vi.fn(), warn: vi.fn(), info: vi.fn() } }));
-vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
+// `warning` é obrigatório no mock: o hook avisa quando o orçamento é criado sem
+// cliente, e a maioria dos casos deste arquivo não informa cliente. Sem ele o
+// `toast.warning` seria undefined e a exceção cairia no catch, mascarando o
+// caminho de sucesso (navigate deixaria de ser chamado).
+vi.mock('sonner', () => ({
+  toast: { success: vi.fn(), error: vi.fn(), warning: vi.fn() },
+}));
 vi.mock('react-router-dom', () => ({ useNavigate: () => vi.fn() }));
 vi.mock('@/lib/kit-builder', () => ({
   getKitItemLineId: (item: { id: string; lineId?: string; selectedVariantId?: string }) =>
