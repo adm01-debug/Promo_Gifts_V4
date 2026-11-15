@@ -7,6 +7,8 @@ import Fuse from 'fuse.js';
 import { useQuotes, type Quote, type QuoteItem } from '@/hooks/quotes';
 import { QUOTE_CHIP_MATCHERS } from '@/components/quotes/QuotesStatusChips';
 import { useListUrlState } from '@/hooks/common/useListUrlState';
+import { parseISO } from 'date-fns';
+import { computeExpiration } from '@/lib/quotes/expiration';
 
 export type SortOption = 'expiring' | 'highest' | 'lowest' | 'newest' | 'oldest';
 
@@ -101,6 +103,10 @@ export function useQuotesListPage() {
       results = results.filter((q) => {
         if (q.status === 'expired') return false;
         if (!q.valid_until) return false; // sem data não há "vencimento próximo"
+        if (/^\d{4}-\d{2}-\d{2}$/.test(q.valid_until)) {
+          const diffDays = computeExpiration(q.valid_until).diffDays;
+          return diffDays !== null && diffDays >= 0;
+        }
         const t = new Date(q.valid_until).getTime();
         return Number.isFinite(t) && t >= now;
       });
@@ -117,8 +123,8 @@ export function useQuotesListPage() {
         case 'lowest':
           return (a.total || 0) - (b.total || 0);
         case 'expiring': {
-          const aDate = a.valid_until ? new Date(a.valid_until).getTime() : Infinity;
-          const bDate = b.valid_until ? new Date(b.valid_until).getTime() : Infinity;
+          const aDate = a.valid_until ? parseISO(a.valid_until).getTime() : Infinity;
+          const bDate = b.valid_until ? parseISO(b.valid_until).getTime() : Infinity;
           return aDate - bDate;
         }
         default:

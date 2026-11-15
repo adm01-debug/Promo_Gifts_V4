@@ -8,6 +8,13 @@
 DO $$
 BEGIN
   IF NOT EXISTS (
+    SELECT 1 FROM vault.decrypted_secrets
+    WHERE name = 'XBZ_IMAGE_UPLOADER_CRON_SECRET'
+  ) THEN
+    RAISE EXCEPTION 'Pré-condição falhou: XBZ_IMAGE_UPLOADER_CRON_SECRET não encontrado no vault';
+  END IF;
+
+  IF NOT EXISTS (
     SELECT 1 FROM pg_proc p
     JOIN pg_namespace n ON n.oid = p.pronamespace
     WHERE n.nspname = 'public' AND p.proname = 'get_edge_function_secret'

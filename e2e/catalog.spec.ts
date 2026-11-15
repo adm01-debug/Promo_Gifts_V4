@@ -23,7 +23,7 @@ test.describe("Catalog & Filters", () => {
     // Open categories section (click only if not already expanded)
     const categoryTrigger = page.locator('[data-testid="filter-section-trigger-categorias"]');
     await expect(categoryTrigger).toBeVisible();
-    const isOpen = await categoryTrigger.getAttribute('aria-expanded');
+    const isOpen = await categoryTrigger.getAttribute('data-state-open');
     if (isOpen !== 'true') {
       await categoryTrigger.click();
     }
@@ -35,19 +35,21 @@ test.describe("Catalog & Filters", () => {
 
     // Apply price filter
     const priceTrigger = page.locator('[data-testid="filter-section-trigger-preco"]');
-    const isPriceOpen = await priceTrigger.getAttribute('aria-expanded');
+    const isPriceOpen = await priceTrigger.getAttribute('data-state-open');
     if (isPriceOpen !== 'true') {
       await priceTrigger.click();
     }
-    await page.locator('input[placeholder="Ex: 0"]').first().fill("50");
+    // O input de mínimo não tem placeholder (só o de máximo tem "Sem limite").
+    await page.locator('input[type="number"]').first().fill("50");
     await page.locator('input[placeholder="Sem limite"]').first().fill("200");
 
     // Wait for network/results update
     await page.waitForTimeout(1000);
 
     // Check URL contains price filter params
-    expect(page.url()).toContain("priceRange=50");
-    expect(page.url()).toContain("priceRange=200");
+    // useFiltersPageState serializa a faixa de preço como priceMin/priceMax.
+    await expect(page).toHaveURL(/[?&]priceMin=50(&|$)/);
+    await expect(page).toHaveURL(/[?&]priceMax=200(&|$)/);
   });
 
   test("should handle sorting options", async ({ page }) => {
@@ -62,9 +64,11 @@ test.describe("Catalog & Filters", () => {
   });
 
   test("should display correct empty state for impossible filter combination", async ({ page }) => {
-    await gotoAndSettle(page, "/produtos?priceRange=0&priceRange=1&q=impossibleproductname");
+    // /produtos lê só search e priceMin/priceMax. Há produto a R$ 0,00, então a
+    // faixa começa em 0.01 para a combinação ser de fato impossível.
+    await gotoAndSettle(page, "/produtos?search=zzz-impossible-product-xyz&priceMin=0.01&priceMax=0.02");
     const body = page.locator("body");
-    await expect(body).toContainText("Nenhum produto encontrado", { timeout: 10000 });
+    await expect(body).toContainText("Nenhum produto encontrado", { timeout: 15000 });
   });
 
   test("should scroll to load more products", async ({ page }) => {
@@ -122,28 +126,40 @@ test.describe("Catalog & Filters", () => {
     await gotoAndSettle(page, "/produtos");
     await expectVisibleByTestId(page, "virtualized-product-grid");
 
-    // Aguarda primeira imagem do grid carregar (event 'load' real do browser)
-    const firstImg = page.locator('[data-testid="virtualized-product-grid"] img').first();
-    await expect(firstImg).toBeVisible({ timeout: 15_000 });
-    await firstImg.evaluate((el: HTMLImageElement) => {
-      if (el.complete && el.naturalWidth > 0) return;
-      return new Promise<void>((resolve) => {
-        el.addEventListener("load", () => resolve(), { once: true });
-        el.addEventListener("error", () => resolve(), { once: true });
+    // Mede só a <img> principal do OptimizedImage: exclui o placeholder
+    // (aria-hidden) e a imagem "todas as cores" do hover (pointer-events-none,
+    // opacity-0 até o hover). Cards fora do viewport/overscan ficam sem src
+    // (IntersectionObserver) e não disparam onLoad por design — por isso só
+    // contam imagens que o browser de fato carregou.
+    const mainImgs = page.locator(
+      '[data-testid="virtualized-product-grid"] img[src]:not([aria-hidden]):not(.pointer-events-none)',
+    );
+    const loadedStats = () =>
+      mainImgs.evaluateAll((els) => {
+        const loaded = (els as HTMLImageElement[]).filter((el) => el.complete && el.naturalWidth > 0);
+        return {
+          loaded: loaded.length,
+          opacityZero: loaded.filter((el) => el.classList.contains("opacity-0")).length,
+        };
       });
-    });
 
-    // Conta quantas imagens permaneceram em opacity-0 (regressão)
-    const opacityZero = await page.locator('[data-testid="virtualized-product-grid"] img.opacity-0').count();
-    const totalImgs = await page.locator('[data-testid="virtualized-product-grid"] img').count();
-    if (totalImgs === 0) {
-      expect(false, "[E108] Sem <img> no grid — provavelmente sem dados.").toBeTruthy();
-      return;
-    }
-    // Permitimos até 20% ainda em opacity-0 (cards abaixo do viewport / lazy load).
-    expect(
-      opacityZero / totalImgs,
-      `${opacityZero}/${totalImgs} imgs ficaram com opacity-0 após carga`,
-    ).toBeLessThanOrEqual(0.2);
+    // Aguarda ao menos uma imagem principal carregar (event 'load' real do browser)
+    await expect
+      .poll(async () => (await loadedStats()).loaded, {
+        message: "[E108] Nenhuma <img> principal carregada no grid — provavelmente sem dados.",
+        timeout: 15_000,
+      })
+      .toBeGreaterThan(0);
+
+    // Regressão: imagem já carregada que permanece em opacity-0.
+    await expect
+      .poll(
+        async () => {
+          const { loaded, opacityZero } = await loadedStats();
+          return `${opacityZero}/${loaded} imgs carregadas ficaram com opacity-0`;
+        },
+        { timeout: 10_000 },
+      )
+      .toMatch(/^0\//);
   });
 });

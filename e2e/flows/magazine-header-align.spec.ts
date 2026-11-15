@@ -37,17 +37,16 @@ const CENTER_TOLERANCE_PX = 8;
 
 async function openFirstEditor(page: Page): Promise<boolean> {
   await gotoAndSettle(page, "/magazine");
-  // Cards are <article data-testid="magazine-card-{id}"> opened via navigate(),
-  // NOT anchor tags. The only a[href^="/magazine/"] on this page is the
-  // "Trocar template" Link — clicking it would land on /magazine/templates,
-  // not an editor, causing the expect(toHaveURL) below to time out.
+  // The article is a container; navigation belongs to its accessible link.
+  // Clicking the article itself does not activate the card and leaves the page
+  // at /magazine, so target the interactive control explicitly.
   const firstCard = page.locator('[data-testid^="magazine-card-"]').first();
   try {
     await firstCard.waitFor({ state: 'attached', timeout: 10_000 });
   } catch {
     return false;
   }
-  await firstCard.click();
+  await firstCard.getByRole("link", { name: /^Abrir revista / }).click();
   await expect(page).toHaveURL(/\/magazine\/[^/]+$/);
   await page.addStyleTag({ content: FREEZE_CSS });
   await expect(page.getByTestId("page-title-magazine-editor")).toBeVisible({

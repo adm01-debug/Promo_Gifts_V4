@@ -92,17 +92,25 @@ export function use2FA(targetUserId?: string) {
       }
 
       try {
-        const backupCodes = Array.from({ length: 8 }, () =>
-          Math.random().toString(36).substring(2, 10).toUpperCase(),
-        );
-
-        const { error } = await untypedFrom('user_2fa_settings').upsert({
-          user_id: effectiveUserId,
-          totp_secret: pendingSecret,
-          is_enabled: true,
-          backup_codes: backupCodes,
-          enabled_at: new Date().toISOString(),
+        // R10: crypto.getRandomValues com 8 bytes (64 bits de entropia) — NIST SP 800-63B §5.1.2
+        const backupCodes = Array.from({ length: 8 }, () => {
+          const buf = new Uint8Array(8);
+          crypto.getRandomValues(buf);
+          return Array.from(buf, (b) => b.toString(16).padStart(2, '0'))
+            .join('')
+            .toUpperCase();
         });
+
+        const { error } = await untypedFrom('user_2fa_settings').upsert(
+          {
+            user_id: effectiveUserId,
+            totp_secret: pendingSecret,
+            is_enabled: true,
+            backup_codes: backupCodes,
+            enabled_at: new Date().toISOString(),
+          },
+          { onConflict: 'user_id' },
+        );
 
         if (error) throw error;
 

@@ -19,7 +19,10 @@ import { ConfirmDialog } from '../ConfirmDialog';
 type Variant = 'default' | 'destructive' | 'info' | 'warning';
 const VARIANTS: Variant[] = ['default', 'destructive', 'warning', 'info'];
 
-function mount(variant: Variant, overrides: Partial<React.ComponentProps<typeof ConfirmDialog>> = {}) {
+function mount(
+  variant: Variant,
+  overrides: Partial<React.ComponentProps<typeof ConfirmDialog>> = {},
+) {
   const onOpenChange = vi.fn();
   const onConfirm = vi.fn();
   const utils = render(
@@ -39,6 +42,16 @@ function mount(variant: Variant, overrides: Partial<React.ComponentProps<typeof 
 }
 
 describe('ConfirmDialog — navegação por teclado + leitor de tela (todas variantes)', () => {
+  it('durante loading, Escape não fecha o diálogo', async () => {
+    const user = userEvent.setup();
+    const { onOpenChange } = mount('destructive', { loading: true });
+
+    await user.keyboard('{Escape}');
+
+    expect(onOpenChange).not.toHaveBeenCalled();
+    expect(screen.getByRole('alertdialog')).toBeVisible();
+  });
+
   describe.each(VARIANTS)('variante %s', (variant) => {
     it('foco inicial cai dentro do diálogo', async () => {
       mount(variant);

@@ -27,7 +27,14 @@ if (!existsSync(BASELINE_PATH)) {
   process.exit(2);
 }
 
-const baseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
+let baseline;
+try {
+  baseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
+} catch (err) {
+  console.error(`❌ .any-type-baseline.json inválido (JSON corrompido): ${err.message}`);
+  console.error('Gere novamente com: node scripts/update-any-type-baseline.mjs');
+  process.exit(2);
+}
 const baselineCounts = baseline.counts ?? {};
 
 function countAnyInSrc() {
@@ -40,6 +47,7 @@ function countAnyInSrc() {
   const counts = {};
 
   for (const pattern of patterns) {
+    const occurrenceRe = new RegExp(pattern, 'g');
     let output = '';
     try {
       output = execSync(
@@ -75,7 +83,10 @@ function countAnyInSrc() {
 
       const file = rawLine.slice(0, colonIdx);
       const relFile = relative(ROOT, file.startsWith('/') ? file : join(ROOT, file));
-      counts[relFile] = (counts[relFile] ?? 0) + 1;
+      // grep -n reporta a linha 1x mesmo com N ocorrências do padrão nela
+      // (ex.: `(a: any, b: any): any`); contar matches evita bypass do gate.
+      const occurrences = (content.match(occurrenceRe) ?? []).length || 1;
+      counts[relFile] = (counts[relFile] ?? 0) + occurrences;
     }
   }
 

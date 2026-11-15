@@ -10,12 +10,12 @@ export type {
 } from '@/types/advancedFilters';
 export * from '@/hooks/products/useCartTemplates';
 export * from '@/hooks/products/useCatalogFiltering';
-export * from '@/hooks/products/useCatalogPrefetch';
 export * from '@/hooks/products/useCatalogRealStats';
 export * from '@/hooks/products/useCatalogState';
 export * from '@/hooks/products/useCategories';
 export * from '@/hooks/products/useCategoriesTree';
 export * from '@/hooks/products/useCategoryIcons';
+export * from '@/hooks/products/getCategoryIcon';
 export * from '@/hooks/products/useColorEnrichment';
 export * from '@/hooks/products/useColorFanout';
 export * from '@/hooks/products/useColorSystem';

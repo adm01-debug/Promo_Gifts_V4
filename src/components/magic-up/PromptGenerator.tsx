@@ -31,7 +31,8 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 import type { ScenePrompt } from './PromptBank';
-import { OBJECTIVES, TONES, AUDIENCES, SEASONS, getMoodColor } from './promptGeneratorConstants';
+import { OBJECTIVES, TONES, AUDIENCES, SEASONS } from './promptGeneratorConstants';
+import { MagicUpMoodBadge } from './MagicUpCreativeControls';
 import type { PrintAreaWithTechniques } from '@/types/gravacao';
 import { PromptCustomizationPanel } from './PromptCustomizationPanel';
 
@@ -180,6 +181,11 @@ export function PromptGenerator({
       const { data, error } = await invokeEdge<{ prompts?: GeneratedPrompt[]; error?: string }>(
         'generate-ad-prompt',
         {
+          // E-14 (mesmo padrão do BUG-MAGICUP-TIMEOUT-1 em useMagicUpGeneration.ts):
+          // o default do invokeEdge é 10s, pouco para a IA gerar 4 cenários e a
+          // chamada esgotava as 2 tentativas mesmo quando a edge responderia.
+          // Mesmo valor da generate-ad-image (AI_PROVIDER_TIMEOUT_MS da edge).
+          timeoutMs: 60_000,
           body: {
             productName,
             productColor,
@@ -242,8 +248,6 @@ export function PromptGenerator({
     onSelectPrompt(scenePrompt);
   };
 
-  // getMoodColor imported from ./promptGeneratorConstants
-
   const safePrintAreas = printAreas ?? [];
   const hasPrintAreas = safePrintAreas.length > 0;
 
@@ -267,7 +271,7 @@ export function PromptGenerator({
             <Target className="h-3 w-3" /> Objetivo
           </Label>
           <Select value={objective} onValueChange={setObjective}>
-            <SelectTrigger className="h-8 text-xs">
+            <SelectTrigger className="h-8 text-xs" aria-label="Objetivo da campanha">
               <SelectValue placeholder="Escolha..." />
             </SelectTrigger>
             <SelectContent>
@@ -285,7 +289,7 @@ export function PromptGenerator({
             <Sparkles className="h-3 w-3" /> Tom
           </Label>
           <Select value={tone} onValueChange={setTone}>
-            <SelectTrigger className="h-8 text-xs">
+            <SelectTrigger className="h-8 text-xs" aria-label="Tom da comunicação">
               <SelectValue placeholder="Escolha..." />
             </SelectTrigger>
             <SelectContent>
@@ -303,7 +307,7 @@ export function PromptGenerator({
             <Users className="h-3 w-3" /> Público-alvo
           </Label>
           <Select value={audience} onValueChange={setAudience}>
-            <SelectTrigger className="h-8 text-xs">
+            <SelectTrigger className="h-8 text-xs" aria-label="Público-alvo">
               <SelectValue placeholder="Escolha..." />
             </SelectTrigger>
             <SelectContent>
@@ -321,7 +325,7 @@ export function PromptGenerator({
             <CalendarDays className="h-3 w-3" /> Temporada
           </Label>
           <Select value={season} onValueChange={setSeason}>
-            <SelectTrigger className="h-8 text-xs">
+            <SelectTrigger className="h-8 text-xs" aria-label="Temporada">
               <SelectValue placeholder="Opcional..." />
             </SelectTrigger>
             <SelectContent>
@@ -422,12 +426,7 @@ export function PromptGenerator({
                         </p>
                       </div>
                       <div className="flex shrink-0 items-center gap-1">
-                        <Badge
-                          variant="outline"
-                          className={cn('border px-1.5 py-0 text-[8px]', getMoodColor(gp.mood))}
-                        >
-                          {gp.mood}
-                        </Badge>
+                        <MagicUpMoodBadge mood={gp.mood} />
                       </div>
                     </div>
                     <p className="mb-2 line-clamp-2 text-[11px] text-muted-foreground">

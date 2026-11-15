@@ -1,0 +1,331 @@
+{
+  "2420": {
+    "files": [
+      "src/components/admin/products/ProductFormFullscreen.tsx",
+      "supabase/migrations/20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql",
+      "supabase/rollbacks/20261019000000_rollback.sql"
+    ],
+    "has_migrations": true,
+    "has_edge_functions": false,
+    "has_workflows": false,
+    "touches_client_ts": false,
+    "has_rollback_header": true,
+    "has_destructive_sql": true,
+    "destructive_sql_lines": [
+      "supabase/rollbacks/20261019000000_rollback.sql:5 — ALTER TABLE \"public\".\"frontend_telemetry\" DROP CONSTRAINT IF EXISTS \"frontend_telemetry_size_caps_check\"",
+      "supabase/rollbacks/20261019000000_rollback.sql:6 — DROP VIEW IF EXISTS \"public\".\"v_system_health_dashboard\""
+    ],
+    "summary": "Sync PR that adds a '-- Rollback:' header to migration 20261019000000 (OOB mirror for frontend_telemetry constraint + v_system_health_dashboard view) and creates the rollback file (DROP CONSTRAINT + DROP VIEW). Also fixes a TypeScript resolver type cast in ProductFormFullscreen.tsx (zodResolver as unknown as Resolver<ProductFormData>)."
+  },
+  "2572": {
+    "files": [
+      ".as-assertions-baseline.json",
+      ".file-size-baseline.json",
+      ".github/workflows/contract-tests.yml",
+      "PENDENCIAS.md",
+      "RELATORIO_CI.md",
+      "analise-prs/RELATORIO_PRS.md",
+      "analise-prs/dossies/PR-2420.md",
+      "analise-prs/dossies/PR-2558.md",
+      "analise-prs/dossies/PR-2561.md",
+      "analise-prs/dossies/PR-2563.md",
+      "analise-prs/dossies/PR-2564.md",
+      "analise-prs/dossies/PR-2565.md",
+      "analise-prs/dossies/PR-2566.md",
+      "analise-prs/dossies/PR-2567.md",
+      "analise-prs/dossies/PR-2568.md",
+      "analise-prs/dossies/PR-2569.md",
+      "analise-prs/dossies/PR-2570.md",
+      "analise-prs/dossies/PR-2571.md",
+      "analise-prs/dossies/PR-2572.md",
+      "analise-prs/dossies/PR-2573.md",
+      "analise-prs/dossies/PR-2574.md",
+      "analise-prs/dossies/PR-2575.md",
+      "analise-prs/dossies/PR-2576.md",
+      "analise-prs/dossies/PR-2577.md",
+      "analise-prs/dossies/PR-2578.md",
+      "analise-prs/dossies/PR-2579.md",
+      "analise-prs/dossies/PR-2580.md",
+      "analise-prs/dossies/PR-2581.md",
+      "analise-prs/progresso.json",
+      "analise-prs/prs.csv",
+      "analise-prs/prs.json",
+      "audit/supabase-reference-catalog.temporary.json",
+      "docs/FUNCIONALIDADES_E_FERRAMENTAS.md",
+      "docs/INTEGRACAO_FRONTEND_MEDALLION.md",
+      "docs/ci/SEGREDOS.md",
+      "docs/estado/BACKLOG_PRODUCAO.md",
+      "docs/estado/BASELINE.md",
+      "docs/estado/backlog/banco.md",
+      "docs/estado/backlog/banco_migrations_460.tsv",
+      "docs/estado/backlog/banco_pacote_aprovacao.md",
+      "docs/estado/backlog/supabase.md",
+      "scripts/migration-ledger-remote-only-allowlist.json",
+      "src/components/bi/BIAiCopilot.tsx",
+      "src/components/kit-builder/BoxSelector.tsx",
+      "src/components/kit-builder/ItemCard.tsx",
+      "src/components/kit-builder/KitBuilderHeader.tsx",
+      "src/components/kit-builder/SelectedItemsBadges.tsx",
+      "src/components/kit-builder/WizardSteps.tsx",
+      "src/components/kit-builder/kit-summary/KitCompositionCard.tsx",
+      "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
+      "src/components/layout/Header.tsx",
+      "src/components/layout/UserMenuShortcutItems.tsx",
+      "src/lib/auth/auth-audit.ts",
+      "src/pages/kit-builder/KitBuilderPage.tsx",
+      "src/services/__tests__/orderService.test.ts",
+      "src/services/notificationService.ts",
+      "src/services/orderService.ts",
+      "supabase/functions/categories-api/index.ts",
+      "supabase/migrations/20261022195616_fix_update_company_fields_security_definer_search_path.sql",
+      "supabase/migrations/20261022203935_update_company_fields_security_fix.sql",
+      "supabase/rollbacks/20261022195616_rollback.sql",
+      "supabase/rollbacks/20261022203935_rollback.sql"
+    ],
+    "has_migrations": true,
+    "has_edge_functions": true,
+    "has_workflows": true,
+    "touches_client_ts": false,
+    "has_rollback_header": true,
+    "has_destructive_sql": false,
+    "destructive_sql_lines": [],
+    "note_on_destructive_sql": "Migrations 20261022195616 and 20261022203935 are security definer search_path fixes (ALTER FUNCTION/CREATE OR REPLACE). Full patches not inspected but no DROP/TRUNCATE/DELETE/RENAME/ALTER TYPE expected. Rollbacks likely REVOKE/GRANT only.",
+    "summary": "Large docs-and-code PR from a previous Claude session. Contains: 24 analise-prs dossier docs, src changes (kit-builder components, Header, auth-audit, services), 2 security definer migrations, rollbacks for those migrations, categories-api edge function fix, contract-tests workflow change, baselines, and docs updates. Files in src/ and supabase/ confirm this is not purely docs."
+  },
+  "2579": {
+    "files": [
+      ".release-please-manifest.json",
+      "CHANGELOG.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "has_migrations": false,
+    "has_edge_functions": false,
+    "has_workflows": false,
+    "touches_client_ts": false,
+    "has_rollback_header": false,
+    "has_destructive_sql": false,
+    "destructive_sql_lines": [],
+    "summary": "Release-please bot PR. Bumps version from 1.2.1 to 1.0.0 (note: this is a downgrade in semver — may be release-please resetting for a new release cycle or major version). Adds CHANGELOG.md entries for 225 lines covering features and bug fixes since 1.2.1."
+  },
+  "2580": {
+    "files": [
+      "supabase/migrations/20260916202000_e23_force_rls_secret_tables.sql",
+      "supabase/rollbacks/20260916202000_rollback.sql"
+    ],
+    "has_migrations": true,
+    "has_edge_functions": false,
+    "has_workflows": false,
+    "touches_client_ts": false,
+    "has_rollback_header": true,
+    "has_destructive_sql": true,
+    "destructive_sql_lines": [
+      "supabase/rollbacks/20260916202000_rollback.sql:4 — ALTER TABLE public.integration_credentials NO FORCE ROW LEVEL SECURITY",
+      "supabase/rollbacks/20260916202000_rollback.sql:5 — ALTER TABLE public.external_connections NO FORCE ROW LEVEL SECURITY",
+      "supabase/rollbacks/20260916202000_rollback.sql:6 — ALTER TABLE public.secret_rotation_log NO FORCE ROW LEVEL SECURITY",
+      "supabase/rollbacks/20260916202000_rollback.sql:7 — ALTER TABLE public.step_up_tokens NO FORCE ROW LEVEL SECURITY",
+      "supabase/rollbacks/20260916202000_rollback.sql:8 — ALTER TABLE public.user_token_revocations NO FORCE ROW LEVEL SECURITY"
+    ],
+    "summary": "DRAFT PR. Adds a '-- Rollback:' header to migration 20260916202000_e23_force_rls_secret_tables.sql and creates rollback file to undo FORCE ROW LEVEL SECURITY on 5 secret tables (integration_credentials, external_connections, secret_rotation_log, step_up_tokens, user_token_revocations). The rollback uses ALTER TABLE ... NO FORCE ROW LEVEL SECURITY — not data-destructive, but weakens security posture."
+  },
+  "2587": {
+    "files": [
+      "package-lock.json",
+      "package.json"
+    ],
+    "has_migrations": false,
+    "has_edge_functions": false,
+    "has_workflows": false,
+    "touches_client_ts": false,
+    "has_rollback_header": false,
+    "has_destructive_sql": false,
+    "destructive_sql_lines": [],
+    "summary": "Bumps zustand from ^4.5.0 (resolved 4.5.7) to ^5.0.16. Breaking: zustand v5 drops bundled use-sync-external-store (now optional peer dep), requires react >=18 and node >=12.20. No other file changes."
+  },
+  "2588": {
+    "files": [
+      "package-lock.json",
+      "package.json"
+    ],
+    "has_migrations": false,
+    "has_edge_functions": false,
+    "has_workflows": false,
+    "touches_client_ts": false,
+    "has_rollback_header": false,
+    "has_destructive_sql": false,
+    "destructive_sql_lines": [],
+    "summary": "Bumps react-day-picker from ^8.10.0 (resolved 8.10.2) to ^10.0.2. v10 is a major rewrite: bundles its own date-fns ^4.4.0 (separate from project's date-fns v3), adds @date-fns/tz ^1.5.0 peer dep, removes date-fns v2/v3 peer dep requirement. Likely has breaking API changes."
+  },
+  "2605": {
+    "files": [
+      "e2e/catalog/novidades-reposicao-card-parity.spec.ts",
+      "src/components/products/gallery/PromoFlixPlayer.tsx",
+      "src/components/quotes/__tests__/__snapshots__/NegotiationMarkupCard.visualA11y.test.tsx.snap",
+      "src/lib/__tests__/chunk-recovery.shared-reload-budget.test.ts",
+      "tests/integration/replenishment-resilience.test.ts"
+    ],
+    "has_migrations": false,
+    "has_edge_functions": false,
+    "has_workflows": false,
+    "touches_client_ts": false,
+    "has_rollback_header": false,
+    "has_destructive_sql": false,
+    "destructive_sql_lines": [],
+    "key_changes": {
+      "e2e/catalog/novidades-reposicao-card-parity.spec.ts:214": "Raises replGap threshold from 64px to 96px",
+      "src/components/products/gallery/PromoFlixPlayer.tsx:654": "Fixes suppressMutePersistRef — keeps flag active for duplicate volumechange listeners instead of resetting on autoplay-forced mute",
+      "src/components/quotes/__tests__/__snapshots__/NegotiationMarkupCard.visualA11y.test.tsx.snap:2,312": "Removes quotes around viewport labels in snapshot keys ('desktop' -> desktop, 'mobile' -> mobile)",
+      "src/lib/__tests__/chunk-recovery.shared-reload-budget.test.ts:32,63": "Wraps Date.now()-dependent tests in vi.useFakeTimers()/vi.useRealTimers() to eliminate race conditions",
+      "tests/integration/replenishment-resilience.test.ts:16": "Adds await to expect(mockSelect()).resolves.toMatchObject for proper async assertion"
+    },
+    "summary": "Test quality fixes: adds fake timers to chunk-recovery tests (eliminates ms-level races), fixes PromoFlixPlayer mute suppression logic (keeps flag active across duplicate events), raises E2E visual gap threshold (64→96px), fixes snapshot key quoting, adds await to async assertion."
+  },
+  "2622": {
+    "files": [
+      "analise-prs/RELATORIO_PRS.md",
+      "analise-prs/baseline/state.md",
+      "analise-prs/dossies/PR-2420.md",
+      "analise-prs/dossies/PR-2572.md",
+      "analise-prs/dossies/PR-2579.md",
+      "analise-prs/dossies/PR-2580.md",
+      "analise-prs/dossies/PR-2587.md",
+      "analise-prs/dossies/PR-2588.md",
+      "analise-prs/dossies/PR-2594.md",
+      "analise-prs/dossies/PR-2597.md",
+      "analise-prs/dossies/PR-2600.md",
+      "analise-prs/dossies/PR-2604.md",
+      "analise-prs/dossies/PR-2605.md",
+      "analise-prs/dossies/PR-2612.md",
+      "analise-prs/dossies/PR-2619.md",
+      "analise-prs/dossies/PR-2621.md",
+      "analise-prs/dossies/PR-2622.md",
+      "analise-prs/progresso.json",
+      "analise-prs/prs.csv",
+      "supabase/functions/_shared/edge-authz-manifest.ts",
+      "supabase/rollbacks/20261027120000_rollback.sql",
+      "supabase/rollbacks/20261027140000_rollback.sql",
+      "supabase/rollbacks/20261027160000_rollback.sql",
+      "supabase/rollbacks/20261027180000_rollback.sql",
+      "supabase/rollbacks/20261027200000_rollback.sql",
+      "supabase/rollbacks/20261027220000_rollback.sql",
+      "supabase/rollbacks/20261027230000_rollback.sql",
+      "supabase/rollbacks/20261027233000_rollback.sql",
+      "supabase/rollbacks/20261027234500_rollback.sql"
+    ],
+    "has_migrations": false,
+    "has_edge_functions": true,
+    "has_workflows": false,
+    "touches_client_ts": false,
+    "has_rollback_header": false,
+    "has_destructive_sql": true,
+    "destructive_sql_lines": [
+      "supabase/rollbacks/20261027200000_rollback.sql — DROP POLICY IF EXISTS deny_all ON supplier_stricker.* (17 tables)",
+      "supabase/rollbacks/20261027200000_rollback.sql — ALTER TABLE supplier_stricker.* DISABLE ROW LEVEL SECURITY (17 tables)"
+    ],
+    "per_file_detail": {
+      "supabase/rollbacks/20261027120000_rollback.sql": "Reverts connections-auto-test cron to use old 'CRON_SECRET' (pre-fix, buggy 401 state). cron.alter_job only.",
+      "supabase/rollbacks/20261027140000_rollback.sql": "Reverts 5 cron schedules to pre-stagger values (burst collision state). cron.alter_job only.",
+      "supabase/rollbacks/20261027160000_rollback.sql": "Reactivates image-dimensions-backfill cron (would cause 404 every 3h — stated in comment). cron.alter_job only.",
+      "supabase/rollbacks/20261027180000_rollback.sql": "Deactivates generate-blurhashes cron and restores original schedule. cron.alter_job only.",
+      "supabase/rollbacks/20261027200000_rollback.sql": "Removes supplier_stricker RLS deny_all policies and DISABLES RLS on 17 tables. DROP POLICY + ALTER TABLE DISABLE ROW LEVEL SECURITY — security regression if applied.",
+      "supabase/rollbacks/20261027220000_rollback.sql": "Reactivates xbz-image-uploader cron (would cause silent failures — stated in comment). cron.alter_job only.",
+      "supabase/rollbacks/20261027230000_rollback.sql": "Recreates get_edge_function_secret with 3 stale entries reinserted (WEBHOOK_DISPATCHER_URL, WEBHOOK_SECRET, ASIA_INGESTION_CRON_SECRET). CREATE OR REPLACE FUNCTION.",
+      "supabase/rollbacks/20261027233000_rollback.sql": "Patch not inspected (file added, content not retrieved in diff scan).",
+      "supabase/rollbacks/20261027234500_rollback.sql": "Patch not inspected (file added, content not retrieved in diff scan).",
+      "supabase/functions/_shared/edge-authz-manifest.ts": "Edge function shared manifest update (likely adds new function entries)."
+    },
+    "summary": "Creates 9 rollback SQL files for 2026-10-27 cron and security migrations. Rollbacks are NOT forward-applying production code — they document how to UNDO already-applied migrations. Most are cron.alter_job calls (schedule/active changes). One dangerous rollback: 20261027200000 disables RLS on 17 supplier_stricker tables (security regression). Also updates edge-authz-manifest.ts and adds dossier docs for 17 PRs. The rollbacks themselves would never be executed directly by CI — they are reference documents."
+  },
+  "2631": {
+    "files": [
+      "PENDENCIAS.md",
+      "RELATORIO_CI.md"
+    ],
+    "has_migrations": false,
+    "has_edge_functions": false,
+    "has_workflows": false,
+    "touches_client_ts": false,
+    "has_rollback_header": false,
+    "has_destructive_sql": false,
+    "destructive_sql_lines": [],
+    "summary": "DRAFT documentation PR. Updates PENDENCIAS.md (§4) and RELATORIO_CI.md (§§5-10) to document the deploy-edge-functions.yml block: environment: production has required_reviewers: adm01-debug, causing 4 deploy runs to remain pending. 106 edge functions divergent between GitHub and Supabase. Gate Final is green; edge-functions-drift-check is a standalone required check still red. Adds RELATORIO_CI.md §10 with explicit instructions for PO to approve the deploy."
+  },
+  "2645": {
+    "files": [
+      "supabase/MIGRATIONS_SYNC_LOG.md"
+    ],
+    "has_migrations": false,
+    "has_edge_functions": false,
+    "has_workflows": false,
+    "touches_client_ts": false,
+    "has_rollback_header": false,
+    "has_destructive_sql": false,
+    "destructive_sql_lines": [],
+    "summary": "Adds E15 receipt for migration 20261027140000 (stagger cron burst schedules) to MIGRATIONS_SYNC_LOG.md. Records: hash e63a43b3..., applied via db-apply-migration.yml by adm01-debug on 2026-10-27 13:58:20 UTC (run 40512572184)."
+  },
+  "2646": {
+    "files": [
+      ".github/workflows/db-schema-drift-check.yml",
+      ".github/workflows/deploy-gates.yml",
+      ".github/workflows/schema-snapshot-export.yml",
+      "docs/suppliers/spot-fontes-de-dados.md",
+      "scripts/migration-ledger-remote-only-allowlist.json",
+      "supabase/functions/_shared/edge-authz-manifest.ts",
+      "supabase/migrations/20260706181356_crm_callback_events.sql",
+      "supabase/migrations/20261027160000_deactivate_image_dimensions_backfill_cron.sql",
+      "supabase/migrations/20261027220000_deactivate_xbz_image_uploader_cron.sql",
+      "supabase/migrations/20261027230000_cleanup_get_edge_function_secret_allowlist.sql",
+      "supabase/rollbacks/20261027120000_rollback.sql",
+      "supabase/rollbacks/20261027140000_rollback.sql",
+      "supabase/rollbacks/20261027160000_rollback.sql",
+      "supabase/rollbacks/20261027180000_rollback.sql",
+      "supabase/rollbacks/20261027200000_rollback.sql",
+      "supabase/rollbacks/20261027220000_rollback.sql",
+      "supabase/rollbacks/20261027230000_rollback.sql",
+      "supabase/sql-legacy/20260713_001_secdef_revoke_webhook_locks.sql"
+    ],
+    "has_migrations": true,
+    "has_edge_functions": true,
+    "has_workflows": true,
+    "touches_client_ts": false,
+    "has_rollback_header": true,
+    "has_destructive_sql": true,
+    "destructive_sql_lines": [
+      "supabase/migrations/20260706181356_crm_callback_events.sql:35 — DROP POLICY IF EXISTS \"Admins can view crm callback events\" ON public.crm_callback_events (idempotent guard before CREATE POLICY)",
+      "supabase/rollbacks/20261027200000_rollback.sql — DROP POLICY IF EXISTS deny_all ON supplier_stricker.* (17 tables)",
+      "supabase/rollbacks/20261027200000_rollback.sql — ALTER TABLE supplier_stricker.* DISABLE ROW LEVEL SECURITY (17 tables)",
+      "supabase/sql-legacy/20260713_001_secdef_revoke_webhook_locks.sql — REVOKE EXECUTE ON FUNCTION public.claim_webhook_delivery, release_webhook_delivery_lock, cleanup_stale_webhook_locks FROM PUBLIC, anon, authenticated"
+    ],
+    "gate_final_failure_analysis": {
+      "likely_cause": "The primary change is converting supabase/migrations/20260706181356_crm_callback_events.sql and supabase/sql-legacy/20260713_001_secdef_revoke_webhook_locks.sql from base64-encoded content to readable SQL (E058 Gate 1.8 compliance). The workflow changes (deploy-gates.yml +3 lines, db-schema-drift-check.yml +8/-4) may have introduced a Gate 1.11 (workflow contracts) or actionlint violation. The migration-ledger-remote-only-allowlist.json change may affect Gate 1.3 baseline checks.",
+      "workflow_changes": {
+        "db-schema-drift-check.yml": "+8 additions, -4 deletions",
+        "deploy-gates.yml": "+3 additions, 0 deletions",
+        "schema-snapshot-export.yml": "+3 additions, 0 deletions"
+      }
+    },
+    "summary": "E058 compliance PR — converts two base64-encoded SQL files to readable text (Gate 1.8 fix). Also adds rollback headers to 3 migrations, creates 7 rollback files, updates edge-authz-manifest.ts, adds workflow changes to 3 CI files, updates migration-ledger allowlist. Gate Final FAILED — likely due to workflow changes breaking Gate 1.11 (workflow contracts check) or actionlint violations introduced in the workflow edits."
+  },
+  "2650": {
+    "files": [
+      "e2e/catalog.spec.ts",
+      "e2e/kit-builder.spec.ts"
+    ],
+    "has_migrations": false,
+    "has_edge_functions": false,
+    "has_workflows": false,
+    "touches_client_ts": false,
+    "has_rollback_header": false,
+    "has_destructive_sql": false,
+    "destructive_sql_lines": [],
+    "key_changes": {
+      "e2e/catalog.spec.ts:14,16": "product-grid → virtualized-product-grid, filter-section-* → filter-section-trigger-*",
+      "e2e/catalog.spec.ts:47,52": "Handles accordion state (checks aria-expanded before clicking filter triggers)",
+      "e2e/catalog.spec.ts:72": "sort-select-trigger → catalog-sort-trigger, uses data-testid for sort items",
+      "e2e/catalog.spec.ts:84": "Replaces empty state locator with body.toContainText fallback",
+      "e2e/catalog.spec.ts:88": "Replaces pagination test with infinite-scroll load-more-trigger pattern",
+      "e2e/kit-builder.spec.ts:14": "Adds exitLandingState() helper to dismiss KitMakerLanding before wizard tests"
+    },
+    "summary": "DRAFT E2E test fixes for catalog and kit-builder. Catalog spec updated for new data-testids (virtualized grid, trigger-prefixed filter accordions, new sort testid) and new patterns (infinite scroll vs pagination, aria-expanded checks). Kit-builder spec updated to handle the KitMakerLanding screen that now appears before the wizard."
+  }
+}

@@ -1,4 +1,4 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { buildPublicCorsHeaders } from "../_shared/cors.ts";
 import { authorizeCron } from "../_shared/dispatcher-auth.ts";
 import { getCredential } from "../_shared/credentials.ts";
@@ -172,7 +172,7 @@ async function sendEmailViaResend(apiKey: string, to: string, subject: string, h
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "Promo Gifts <noreply@promogifts.com.br>",
+      from: "Promo Gifts <noreply@promobrindes.com.br>",
       to: [to],
       subject: `📊 ${subject}`,
       html,

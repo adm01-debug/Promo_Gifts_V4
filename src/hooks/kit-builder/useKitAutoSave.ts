@@ -10,7 +10,14 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import type { KitState } from '@/lib/kit-builder';
+import type {
+  KitState,
+  KitBox,
+  KitItem,
+  KitPersonalization,
+  KitIdentity,
+  KitType,
+} from '@/lib/kit-builder';
 import { logger } from '@/lib/logger';
 import {
   buildKitPersistencePayload,
@@ -19,6 +26,18 @@ import {
 } from '@/lib/kit-builder/persistence';
 
 const AUTO_SAVE_DELAY_MS = 5000;
+const LS_BACKUP_KEY_PREFIX = 'kit-builder-unload-backup';
+
+export interface BackupFullState {
+  name: string;
+  kitType: KitType;
+  box: KitBox | null;
+  items: KitItem[];
+  personalization: KitPersonalization;
+  identity?: KitIdentity;
+  notes?: string;
+  qty: number;
+}
 
 interface AutoSaveResult {
   lastSavedAt: Date | null;
@@ -26,12 +45,29 @@ interface AutoSaveResult {
   autoSavedKitId: string | null;
   /** A visible, sanitized state — failed automatic saves must not be log-only. */
   autoSaveError: string | null;
+  /** True when the last save failed with a PostgreSQL 40001 serialization conflict. */
+  isConflictError: boolean;
   /** Replays the most recent snapshot with the same optimistic revision rules. */
   retryLastSave: () => Promise<void>;
   /** Cancels a debounced save before the explicit save action takes ownership. */
   cancelPendingSave: () => void;
   /** Supersedes any failed automatic operation after a successful explicit save. */
   acknowledgeManualSave: (kitId: string, revision: number) => void;
+  /** Reads and clears the localStorage backup written on beforeunload, if any. */
+  consumeUnloadBackup: () => {
+    kitId: string | null;
+    snapshot: string;
+    savedAt: number;
+    revision?: number | null;
+    fullState?: BackupFullState;
+  } | null;
+  /** Re-persists a backup to localStorage (use before cross-kit navigation to preserve fullState). */
+  persistUnloadBackup: (backup: {
+    kitId: string | null;
+    snapshot: string;
+    savedAt: number;
+    fullState?: BackupFullState;
+  }) => void;
 }
 
 export function useKitAutoSave(
@@ -48,8 +84,10 @@ export function useKitAutoSave(
   const [isSaving, setIsSaving] = useState(false);
   const [autoSavedKitId, setAutoSavedKitId] = useState<string | null>(currentKitId || null);
   const [autoSaveError, setAutoSaveError] = useState<string | null>(null);
+  const [isConflictError, setIsConflictError] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const snapshotRef = useRef<string>('');
+  const hasUnsavedChangesRef = useRef(false);
   const isFirstRender = useRef(true);
   const wasEnabledRef = useRef(enabled);
   const saveInFlightRef = useRef(false);
@@ -86,6 +124,9 @@ export function useKitAutoSave(
   const revisionRef = useRef<number | null>(currentRevision);
   const enabledRef = useRef(enabled);
   const contextRef = useRef(context);
+  // Set to true by persistUnloadBackup immediately before cross-kit navigation
+  // so the beforeunload handler won't overwrite the just-persisted backup.
+  const suppressNextUnloadBackupRef = useRef(false);
 
   // Update mutable callback inputs only after React commits the render. Writing
   // refs during render can leak an abandoned concurrent render into a timer.
@@ -117,26 +158,26 @@ export function useKitAutoSave(
     if (!currentKitState.box && currentKitState.items.length === 0) return;
 
     const kitId = autoSavedKitIdRef.current || currentKitId;
-    const operation = pendingOperationRef.current ?? {
-      requestId: globalThis.crypto.randomUUID(),
-      kitId: kitId ?? undefined,
-      expectedRevision: kitId ? revisionRef.current : null,
-      payload: buildKitPersistencePayload(
-        user.id,
-        currentKitState,
-        currentKitQuantity,
-        contextRef.current,
-      ),
-      editVersion: editVersionRef.current,
-    };
-    // A transport failure may happen after the transaction commits. Keep both
-    // the idempotency key and the exact payload frozen until the response is
-    // recovered; changing updated_at would also change the server payload hash.
-    pendingOperationRef.current = operation;
-
     saveInFlightRef.current = true;
     setIsSaving(true);
     try {
+      const operation = pendingOperationRef.current ?? {
+        requestId: globalThis.crypto.randomUUID(),
+        kitId: kitId ?? undefined,
+        expectedRevision: kitId ? revisionRef.current : null,
+        payload: buildKitPersistencePayload(
+          user.id,
+          currentKitState,
+          currentKitQuantity,
+          contextRef.current,
+        ),
+        editVersion: editVersionRef.current,
+      };
+      // A transport failure may happen after the transaction commits. Keep both
+      // the idempotency key and the exact payload frozen until the response is
+      // recovered; changing updated_at would also change the server payload hash.
+      pendingOperationRef.current = operation;
+
       const data = await persistCustomKitAtomically({
         kitId: operation.kitId,
         expectedRevision: operation.expectedRevision,
@@ -160,12 +201,20 @@ export function useKitAutoSave(
         }
         saveQueuedRef.current = true;
       } else {
+        hasUnsavedChangesRef.current = false;
         setLastSavedAt(new Date());
         setAutoSaveError(null);
+        setIsConflictError(false);
       }
     } catch (err) {
+      const isConflict = (err as { code?: string })?.code === '40001';
       logger.warn('[auto-save] Failed:', err);
-      setAutoSaveError('O rascunho ainda não foi salvo. Tente novamente antes de sair.');
+      setIsConflictError(isConflict);
+      setAutoSaveError(
+        isConflict
+          ? 'Outro dispositivo editou este kit ao mesmo tempo. Recarregue a página para obter a versão mais recente.'
+          : 'O rascunho ainda não foi salvo. Tente novamente antes de sair.',
+      );
     } finally {
       saveInFlightRef.current = false;
       setIsSaving(false);
@@ -202,11 +251,13 @@ export function useKitAutoSave(
     }
     pendingOperationRef.current = null;
     saveQueuedRef.current = false;
+    hasUnsavedChangesRef.current = false;
     autoSavedKitIdRef.current = kitId;
     revisionRef.current = revision;
     setAutoSavedKitId(kitId);
     setLastSavedAt(new Date());
     setAutoSaveError(null);
+    setIsConflictError(false);
   }, []);
 
   // Snapshot effect: agenda o timer quando o estado muda de forma relevante
@@ -247,6 +298,7 @@ export function useKitAutoSave(
     if (nextSnapshot === snapshotRef.current) return;
     snapshotRef.current = nextSnapshot;
     editVersionRef.current += 1;
+    hasUnsavedChangesRef.current = true;
 
     // Cancela timer anterior (debounce) e reagenda
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -277,6 +329,56 @@ export function useKitAutoSave(
     };
   }, []);
 
+  // beforeunload backup: persists unsaved snapshot to localStorage so it can
+  // be recovered after an accidental tab close or navigation.
+  useEffect(() => {
+    if (!enabled) return;
+    const handleBeforeUnload = () => {
+      if (!snapshotRef.current || !user?.id) return;
+      // Pending and failed edits remain recoverable even after their timer has
+      // elapsed. A confirmed clean snapshot must not overwrite an old backup.
+      if (
+        !hasUnsavedChangesRef.current &&
+        !timerRef.current &&
+        !saveInFlightRef.current &&
+        !saveQueuedRef.current
+      )
+        return;
+      if (suppressNextUnloadBackupRef.current) {
+        suppressNextUnloadBackupRef.current = false;
+        return;
+      }
+      try {
+        const key = `${LS_BACKUP_KEY_PREFIX}-${user.id}`;
+        const ks = kitStateRef.current;
+        const fullState: BackupFullState = {
+          name: ks.name,
+          kitType: ks.kitType,
+          box: ks.box,
+          items: ks.items,
+          personalization: ks.personalization,
+          identity: ks.identity,
+          notes: ks.notes,
+          qty: kitQuantityRef.current,
+        };
+        localStorage.setItem(
+          key,
+          JSON.stringify({
+            kitId: autoSavedKitIdRef.current,
+            snapshot: snapshotRef.current,
+            savedAt: Date.now(),
+            revision: revisionRef.current,
+            fullState,
+          }),
+        );
+      } catch {
+        // localStorage may be unavailable in private browsing — fail silently.
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [enabled, user?.id]);
+
   // Update autoSavedKitId when currentKitId changes externally
   useEffect(() => {
     if (currentKitId) {
@@ -290,13 +392,54 @@ export function useKitAutoSave(
     revisionRef.current = currentRevision;
   }, [currentRevision]);
 
+  const consumeUnloadBackup = useCallback(() => {
+    if (!user?.id) return null;
+    try {
+      const key = `${LS_BACKUP_KEY_PREFIX}-${user.id}`;
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      localStorage.removeItem(key);
+      return JSON.parse(raw) as {
+        kitId: string | null;
+        snapshot: string;
+        savedAt: number;
+        revision?: number | null;
+        fullState?: BackupFullState;
+      };
+    } catch {
+      return null;
+    }
+  }, [user?.id]);
+
+  const persistUnloadBackup = useCallback(
+    (backup: {
+      kitId: string | null;
+      snapshot: string;
+      savedAt: number;
+      fullState?: BackupFullState;
+    }) => {
+      if (!user?.id) return;
+      try {
+        const key = `${LS_BACKUP_KEY_PREFIX}-${user.id}`;
+        suppressNextUnloadBackupRef.current = true;
+        localStorage.setItem(key, JSON.stringify(backup));
+      } catch {
+        // localStorage indisponível — falha silenciosa
+      }
+    },
+    [user?.id],
+  );
+
   return {
     lastSavedAt,
     isSaving,
     autoSavedKitId,
     autoSaveError,
+    isConflictError,
     retryLastSave,
     cancelPendingSave,
     acknowledgeManualSave,
+    consumeUnloadBackup,
+    persistUnloadBackup,
   };
 }

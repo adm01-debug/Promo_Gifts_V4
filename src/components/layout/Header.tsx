@@ -185,7 +185,8 @@ export const Header = React.memo(({ onMenuToggle, sidebarOpen }: HeaderProps) =>
         } as CSSProperties
       }
       className={cn(
-        'theme-transitioning fixed right-0 top-0 z-40 border-b transition-all duration-300 print:hidden',
+        // transition sem `right`: a compensação da trava de rolagem (src/index.css) muda na hora, sem deslizar.
+        'theme-transitioning fixed right-0 top-0 z-40 border-b transition-[left,height,background-color,border-color,box-shadow,backdrop-filter] duration-300 print:hidden',
         'border-border/10 bg-sidebar/60 backdrop-blur-xl',
         'h-[var(--header-h)]',
         isScrolled &&

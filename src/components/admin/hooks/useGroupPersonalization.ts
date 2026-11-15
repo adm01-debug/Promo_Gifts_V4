@@ -288,11 +288,11 @@ export function useGroupPersonalization() {
     const { arrayMove } = await import('@dnd-kit/sortable');
     const reordered = arrayMove(groupComponents, oldIndex, newIndex);
     for (let i = 0; i < reordered.length; i++) {
-      if (reordered[i].sort_order !== i) {
+      if (reordered[i]!.sort_order !== i) {
         // BUG-GROUPCOMP-REORDER-SILENT-FAIL FIX: bare untypedFrom await swallowed RLS errors.
         const { error: reorderErr } = await untypedFrom('product_group_components')
           .update({ sort_order: i })
-          .eq('id', reordered[i].id);
+          .eq('id', reordered[i]!.id);
         if (reorderErr) logger.warn('[group-personalization] reorder update failed:', reorderErr);
       }
     }

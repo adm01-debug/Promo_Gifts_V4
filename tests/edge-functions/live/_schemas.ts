@@ -23,7 +23,9 @@ export const errorEnvelopeSchema = z
     code: z.string().optional(),
     error: z.string().optional(),
     message: z.string().optional(),
-    fields: z.array(fieldIssueSchema).optional(),
+    // Lista canônica OU o formato `zod.flatten().fieldErrors` ({ campo: [mensagens] }),
+    // emitido pelas mcp-keys-* (`{ error: "validation_failed", fields }`).
+    fields: z.union([z.array(fieldIssueSchema), z.record(z.string(), z.array(z.string()))]).optional(),
   })
   .passthrough()
   // ao menos um identificador de erro presente

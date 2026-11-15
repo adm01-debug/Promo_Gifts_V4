@@ -36,7 +36,13 @@ const args = new Map(
     return [k, v ?? "true"];
   }),
 );
-const SCALE = Math.max(1, Number(args.get("scale") || 1));
+const RAW_SCALE = Number(args.get("scale") || 1);
+// GUARD: --scale=abc virava NaN, os laços não rodavam e o relatório dizia "0 cenários, 0 falhas ✅".
+if (!Number.isFinite(RAW_SCALE)) {
+  console.error(`❌ --scale inválido: "${args.get("scale")}" (esperado um número >= 1).`);
+  process.exit(2);
+}
+const SCALE = Math.max(1, RAW_SCALE);
 const JSON_OUT = args.get("json");
 const OUT_DIR = args.get("out-dir");
 

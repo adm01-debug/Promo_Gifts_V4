@@ -19,6 +19,7 @@ import type { Page } from "@playwright/test";
 import { gotoAndSettle } from "../helpers/nav";
 import { Sel } from "../fixtures/selectors";
 import { switchCatalogView, type RowView } from "../catalog/helpers/swatch-view";
+import { installQuickViewDataset, PRODUCT_DETAIL_ROUTE } from "../fixtures/quickview-dataset";
 
 /**
  * Tempo máximo para os dados do módulo chegarem. Sob carga o backend do CI leva
@@ -27,6 +28,11 @@ import { switchCatalogView, type RowView } from "../catalog/helpers/swatch-view"
  * goto fazia TODOS os testes caírem em skip ("Nenhum thumb visível").
  */
 const THUMB_WAIT_MS = 45_000;
+
+async function requireAuthWithQuickViewDataset(page: Page) {
+  requireAuth();
+  await installQuickViewDataset(page);
+}
 
 type ModuleCase = {
   label: string;
@@ -95,7 +101,7 @@ async function findFirstThumb(page: Page, selectors: string[]) {
 }
 
 test.describe("QuickView na foto — paridade entre módulos", () => {
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(({ page }) => requireAuthWithQuickViewDataset(page));
 
   for (const mod of MODULES) {
     test(`${mod.label}: clique na foto abre QuickView sem navegar`, async ({ page }) => {
@@ -137,7 +143,7 @@ test.describe("QuickView na foto — paridade entre módulos", () => {
  * pendente ou retorna erro.
  */
 test.describe("Estoque • QuickView — estados de borda", () => {
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(({ page }) => requireAuthWithQuickViewDataset(page));
 
   test("sem imagem: thumb continua clicável e abre QuickView", async ({ page }) => {
     await gotoAndSettle(page, "/estoque");
@@ -163,12 +169,14 @@ test.describe("Estoque • QuickView — estados de borda", () => {
     const thumb = await stockThumb(page);
     if ((await thumb.count()) === 0) expect(false, "[E108] Tabela de estoque vazia").toBeTruthy();
 
-    // Atrasamos QUALQUER chamada à edge do bridge externa após o page settle,
-    // simulando um useProduct lento. O modal só monta quando o produto chega
-    // (open && !!product) — o que importa aqui é que a URL não muda.
-    await page.route("**/functions/v1/external-db-bridge*", async (route) => {
+    // Atrasamos o detalhe REST-native após o page settle. A última rota
+    // registrada tem precedência sobre a fixture determinística.
+    await page.route(PRODUCT_DETAIL_ROUTE, async (route) => {
+      if (!new URL(route.request().url()).searchParams.get("id")?.startsWith("eq.")) {
+        return route.fallback();
+      }
       await new Promise((r) => setTimeout(r, 1500));
-      await route.continue();
+      await route.fallback();
     });
 
     const urlBefore = page.url();
@@ -193,15 +201,18 @@ test.describe("Estoque • QuickView — estados de borda", () => {
     const thumb = await stockThumb(page);
     if ((await thumb.count()) === 0) expect(false, "[E108] Tabela de estoque vazia").toBeTruthy();
 
-    // Após o settle inicial, forçamos 500 em todas as próximas chamadas do bridge.
-    await page.route("**/functions/v1/external-db-bridge*", (route) =>
-      route.fulfill({
+    // Após o settle inicial, forçamos 500 somente no detalhe REST-native.
+    await page.route(PRODUCT_DETAIL_ROUTE, (route) => {
+      if (!new URL(route.request().url()).searchParams.get("id")?.startsWith("eq.")) {
+        return route.fallback();
+      }
+      return route.fulfill({
         status: 500,
         contentType: "application/json",
         headers: { "access-control-allow-origin": "*" },
         body: JSON.stringify({ error: "internal" }),
-      }),
-    );
+      });
+    });
 
     const urlBefore = page.url();
     await thumb.click();
@@ -220,7 +231,7 @@ test.describe("Estoque • QuickView — estados de borda", () => {
  * suprimir o handler do card pai.
  */
 test.describe("Clique fora da thumb navega para PDP (não abre QuickView)", () => {
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(({ page }) => requireAuthWithQuickViewDataset(page));
 
   const NAV_CASES: {
     label: string;
@@ -261,7 +272,7 @@ test.describe("Clique fora da thumb navega para PDP (não abre QuickView)", () =
  * preservando a11y (foco volta ao trigger; aria-modal correto).
  */
 test.describe("QuickView • fechamento e a11y", () => {
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(({ page }) => requireAuthWithQuickViewDataset(page));
 
   async function openFromStock(page: Page) {
     await gotoAndSettle(page, "/estoque");
@@ -317,7 +328,7 @@ test.describe("QuickView • fechamento e a11y", () => {
  *  - Primeiro elemento focável é parte do dialog (não vaza para o body)
  */
 test.describe("QuickView • navegação por teclado e focus trap", () => {
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(({ page }) => requireAuthWithQuickViewDataset(page));
 
   async function focusFirstThumb(page: Page) {
     await gotoAndSettle(page, "/estoque");
@@ -369,7 +380,7 @@ test.describe("QuickView • navegação por teclado e focus trap", () => {
  * Carrinho + Compartilhar apareciam.
  */
 test.describe("Estoque • QuickView — paridade de ações (4 botões)", () => {
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(({ page }) => requireAuthWithQuickViewDataset(page));
 
   test("exibe cart + favorite + compare + share no /estoque", async ({ page }) => {
     await gotoAndSettle(page, "/estoque");
@@ -393,7 +404,7 @@ test.describe("Estoque • QuickView — paridade de ações (4 botões)", () =>
  * BulkAddToCollectionModal single-row co-montado dentro do <TableRow>).
  */
 test.describe("Estoque • QuickView — abertura/fechamento em sequência", () => {
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(({ page }) => requireAuthWithQuickViewDataset(page));
 
   test("abre e fecha o QuickView 3x sem crash nem testid duplicado", async ({ page }) => {
     await gotoAndSettle(page, "/estoque");
@@ -419,7 +430,4 @@ test.describe("Estoque • QuickView — abertura/fechamento em sequência", () 
     await expect(page.locator("body")).toBeVisible();
   });
 });
-
-
-
 

@@ -1,21 +1,22 @@
 /**
  * Fixture determinística para specs de Risco de Ruptura.
  *
- * Intercepta os 6 endpoints REST reais consumidos por `stockFetcher.ts`:
+ * Intercepta os 7 endpoints REST reais consumidos por `stockFetcher.ts`:
  *   - /rest/v1/v_products_public          (alias Gold de `products`)
  *   - /rest/v1/product_variants
  *   - /rest/v1/variant_supplier_sources
  *   - /rest/v1/categories
  *   - /rest/v1/v_suppliers_public         (alias Gold de `suppliers`)
  *   - /rest/v1/product_images
+ *   - /rest/v1/mv_stock_velocity
  *
  * Serve um catálogo mínimo de 3 produtos/variantes que exercitam:
  *  - HEALTHY: estoque alto, baixa baixa → never low_stock
  *  - AT_RISK_30D: dispara apenas no horizonte 30d com alvo ≥ 500
  *  - MISSING_FIELDS: current/min/max nulos → fallback estático sem crash
  *
- * Avg daily depletion é simulado via `next_quantity_*` em
- * `variant_supplier_sources` (a Inteligência de Mercado deriva daí).
+ * Avg daily depletion vem de `mv_stock_velocity` (única fonte de
+ * `avgDailySales` em `stockFetcher.ts`); sem mock, a request ia ao banco real.
  */
 import type { Page, Route } from '@playwright/test';
 
@@ -88,6 +89,22 @@ export const FX_SUPPLIER_SOURCES: SupplierSourceRow[] = [
 const FX_CATEGORIES = [{ id: CAT_ID, name: 'Brindes FX' }];
 const FX_SUPPLIERS = [{ id: SUP_ID, name: 'FX Fornecedor Único', code: 'FX' }];
 const FX_IMAGES: unknown[] = [];
+// mv_stock_velocity: `id` = alias de variant_supplier_source_id (ver select em stockFetcher.ts).
+// Healthy ~5/dia; Risk ~20/dia (30d → 800 − 600 = 200); Missing sem linha (sem sinal).
+const FX_VELOCITY = [
+  {
+    id: 'fx-ss-healthy',
+    variant_id: 'fx-v-healthy',
+    avg_daily_depletion_7d: 5,
+    avg_daily_depletion_30d: 5,
+  },
+  {
+    id: 'fx-ss-risk',
+    variant_id: 'fx-v-risk',
+    avg_daily_depletion_7d: 20,
+    avg_daily_depletion_30d: 20,
+  },
+];
 
 const ROUTE_MAP: Array<{ match: RegExp; rows: unknown[] }> = [
   { match: /\/rest\/v1\/v_products_public(\?|$)/, rows: FX_PRODUCTS },
@@ -98,6 +115,7 @@ const ROUTE_MAP: Array<{ match: RegExp; rows: unknown[] }> = [
   { match: /\/rest\/v1\/v_suppliers_public(\?|$)/, rows: FX_SUPPLIERS },
   { match: /\/rest\/v1\/suppliers(\?|$)/, rows: FX_SUPPLIERS },
   { match: /\/rest\/v1\/product_images(\?|$)/, rows: FX_IMAGES },
+  { match: /\/rest\/v1\/mv_stock_velocity(\?|$)/, rows: FX_VELOCITY },
 ];
 
 export async function installRuptureFixture(page: Page): Promise<void> {

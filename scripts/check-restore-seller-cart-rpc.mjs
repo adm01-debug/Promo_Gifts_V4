@@ -123,7 +123,7 @@ async function main() {
           apikey: apiKey,
           Authorization: `Bearer ${apiKey}`,
         },
-        body: JSON.stringify({ fname: RPC_NAME }),
+        body: JSON.stringify({ _fname: RPC_NAME }), // fn_rpc_exists(_fname text): sem o underscore o fallback nunca retornava true
       });
       if (existsRes.ok) {
         exists = await existsRes.json();
@@ -164,7 +164,7 @@ async function main() {
           apikey: apiKey,
           Authorization: `Bearer ${apiKey}`,
         },
-        body: JSON.stringify({ fname: RPC_NAME }),
+        body: JSON.stringify({ _fname: RPC_NAME }), // fn_rpc_exists(_fname text): sem o underscore o fallback nunca retornava true
       });
       if (existsRes42883.ok) {
         exists42883 = await existsRes42883.json();
@@ -193,6 +193,14 @@ async function main() {
       `PostgREST retornou 401 (anon key inválida para ${url}). ` +
       `Não é possível verificar a RPC — configure CANONICAL_SUPABASE_ANON_KEY ` +
       `com a anon key do projeto canônico.`;
+    if (STRICT) fail(msg);
+    return skip(msg);
+  }
+
+  // GUARD: 5xx (PostgREST/Supabase fora do ar) ou resposta sem código de erro de RPC não prova
+  // que a função existe — antes qualquer status que não fosse 404/42883/401 virava "presente".
+  if (res.status >= 500) {
+    const msg = `PostgREST retornou ${res.status}: não foi possível verificar a RPC.`;
     if (STRICT) fail(msg);
     return skip(msg);
   }

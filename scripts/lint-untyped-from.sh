@@ -18,7 +18,7 @@
 #   2. database.types.ts está desatualizado → rodar `supabase gen types`.
 #
 # Uso local: ./scripts/lint-untyped-from.sh
-# Uso CI:    .github/workflows/lint-untyped-from.yml
+# Uso CI:    .github/workflows/static-checks.yml (step "untypedFrom × types.ts")
 
 set -euo pipefail
 
@@ -65,7 +65,7 @@ grep -rhE "untypedFrom[^(]*\(['\"]([a-z_][a-z0-9_]*)['\"]" "$SRC_DIR" \
 #    com 6 espaços de indentação seguida de `: {`.
 grep -E '^      [a-z_][a-z0-9_]+: \{$' "$TYPES_FILE" \
   | sed -E 's/^      ([a-z_][a-z0-9_]+):.*/\1/' \
-  | sort -u > "$tmp_schema"
+  | sort -u > "$tmp_schema" || true
 
 called_count=$(wc -l < "$tmp_called" | tr -d ' ')
 schema_count=$(wc -l < "$tmp_schema" | tr -d ' ')

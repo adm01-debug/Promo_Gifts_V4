@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Brain, Database, RefreshCw, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { untypedRpc } from '@/lib/supabase-untyped';
 import {
   ResponsiveContainer,
   BarChart,
@@ -39,19 +40,23 @@ export function MarketIntelInsightsUsagePanel() {
         .order('created_at', { ascending: false })
         .limit(2000);
 
-      const { data: cacheRows } = await supabase
-        .from('ai_insights_cache')
-        .select('id, created_at, expires_at')
-        .eq('function_name', 'market-intelligence-insights')
-        .gte('created_at', since);
+      // Contagem agregada via RPC com guarda de papel (a view ai_insights_cache não tem SELECT para
+      // authenticated). Erro → null ("indisponível"), nunca 0 silencioso.
+      const { data: cacheTotal, error: cacheError } = await untypedRpc('fn_insights_cache_count', {
+        p_function_name: 'market-intelligence-insights',
+        p_since: since,
+      });
 
-      return { events: (events || []) as UsageRow[], cacheCount: cacheRows?.length || 0 };
+      return {
+        events: (events || []) as UsageRow[],
+        cacheCount: cacheError ? null : Number(cacheTotal ?? 0),
+      };
     },
     staleTime: 1000 * 60 * 2,
   });
 
   const events = useMemo(() => data?.events ?? [], [data]);
-  const cacheCount = data?.cacheCount || 0;
+  const cacheCount = data?.cacheCount ?? null;
 
   const totalRegens = useMemo(
     () => events.filter((e) => e.event_type === 'manual_regenerate').length,
@@ -59,13 +64,12 @@ export function MarketIntelInsightsUsagePanel() {
   );
   const uniqueUsers = useMemo(() => new Set(events.map((e) => e.user_id)).size, [events]);
   // Cache hit aproximado: cache rows existentes / (cache rows + regenerations)
-  const cacheHitRate = useMemo(
-    () =>
-      totalRegens + cacheCount > 0
-        ? Math.round((cacheCount / (cacheCount + totalRegens)) * 100)
-        : 0,
-    [totalRegens, cacheCount],
-  );
+  const cacheHitRate = useMemo(() => {
+    if (cacheCount === null) return null;
+    return totalRegens + cacheCount > 0
+      ? Math.round((cacheCount / (cacheCount + totalRegens)) * 100)
+      : 0;
+  }, [totalRegens, cacheCount]);
 
   // Agrupa por dia
   const chartData = useMemo(() => {
@@ -128,8 +132,12 @@ export function MarketIntelInsightsUsagePanel() {
               <StatTile
                 icon={<Database className="h-4 w-4" />}
                 label="Cache hit estimado"
-                value={`${cacheHitRate}%`}
-                hint={`${cacheCount} respostas em cache`}
+                value={cacheHitRate === null ? 'indisponível' : `${cacheHitRate}%`}
+                hint={
+                  cacheCount === null
+                    ? 'Contagem de cache indisponível'
+                    : `${cacheCount} respostas em cache`
+                }
               />
             </div>
 

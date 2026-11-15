@@ -1,5 +1,5 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4';
-import * as OTPAuth from 'https://esm.sh/otpauth@9.3.5';
+import { createClient } from 'npm:@supabase/supabase-js@2.49.4';
+import * as OTPAuth from 'npm:otpauth@9.3.5';
 import { getCorsHeaders } from '../_shared/cors.ts';
 import { createStructuredLogger } from '../_shared/structured-logger.ts';
 import { getOrCreateRequestId } from '../_shared/request-id.ts';
@@ -105,6 +105,20 @@ Deno.serve(async (req: Request) => {
 
     if (!isAdmin) {
       return json({ success: false, error: 'Permissao insuficiente' }, 403);
+    }
+
+    if (!roles.includes('dev')) {
+      const { data: targetRoleRows, error: targetRoleErr } = await admin
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', effectiveUserId);
+      if (targetRoleErr) {
+        console.error('[verify-2fa-token] Erro roles alvo:', targetRoleErr.message);
+        return json({ success: false, error: 'Erro interno' }, 500);
+      }
+      if ((targetRoleRows ?? []).some((r: { role: string }) => r.role === 'dev')) {
+        return json({ success: false, error: 'Permissao insuficiente' }, 403);
+      }
     }
   }
 

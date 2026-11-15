@@ -96,7 +96,7 @@ export function useQuotes() {
   }, [userId, scope, queryClient]);
 
   // `discount_approval_status` / `discount_approved_at` são colunas reais de `quotes`
-  // (materializadas pelo trigger trg_sync_quote_dar) e já vêm no SELECT * de fetchQuotes —
+  // (materializadas pelo trigger trg_sync_quote_dar) e já vêm no select explícito de fetchQuotes —
   // sem necessidade da antiga 2ª query derivada em `discount_approval_requests`.
   const {
     data: quotes = [],

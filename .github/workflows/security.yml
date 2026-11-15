@@ -27,6 +27,11 @@ defaults:
     shell: bash
 
 jobs:
+  # Job `gitleaks` RESTAURADO 2026-11-02 (achado Codex P1 na review de gestão de
+  # workflows): não é duplicata do Gate E23 do deploy-gates.yml. Este job usa
+  # gitleaks-action, que varre o RANGE DE COMMITS da PR (detecta segredo
+  # adicionado e removido em commits diferentes da mesma PR); o Gate E23 usa
+  # `--no-git` (varre só o estado final da árvore), que não vê esse caso.
   gitleaks:
     name: Gitleaks — Secret Scan
     runs-on: ubuntu-24.04

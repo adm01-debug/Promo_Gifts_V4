@@ -48,6 +48,11 @@ build/
 # === GRAFOS PROPRIOS ===
 graphify-out/graph.json
 graphify-out/graph.html
+
+# === SQL EM MAPA SEPARADO ===
+# Migrations, testes de contrato e snapshots SQL têm um grafo próprio;
+# misturá-los ao mapa principal distorce comunidades e conectividade.
+*.sql
 .eslint-baseline.json
 .security/supabase-linter-baseline.json
 bundle-size-baseline.json

@@ -3,6 +3,8 @@ import {
   getCorsHeaders,
   handleCorsPreflightIfNeeded,
 } from "../_shared/cors.ts";
+import { createStructuredLogger } from "../_shared/structured-logger.ts";
+import { getOrCreateRequestId } from "../_shared/request-id.ts";
 import {
   buildEmaHealthResponse,
   type RuptureHealthCheckRow,
@@ -21,16 +23,20 @@ function jsonResponse(
 }
 
 Deno.serve(async (req) => {
+  const requestId = getOrCreateRequestId(req);
+  const log = createStructuredLogger({ fn: "ema-pipeline-health", requestId, req });
+  log.info("request_start");
+
   const preflight = handleCorsPreflightIfNeeded(req);
-  if (preflight) return preflight;
+  if (preflight) return log.respond(preflight);
 
   const corsHeaders = getCorsHeaders(req);
   if (req.method !== "GET" && req.method !== "POST") {
-    return jsonResponse({ error: "method_not_allowed" }, 405, corsHeaders);
+    return log.respond(jsonResponse({ error: "method_not_allowed" }, 405, corsHeaders));
   }
 
   const auth = await authorize(req, { requireRole: "dev" });
-  if (!auth.ok) return auth.response;
+  if (!auth.ok) return log.respond(auth.response);
 
   try {
     const [checksResult, quickStatsResult] = await Promise.all([
@@ -39,11 +45,11 @@ Deno.serve(async (req) => {
     ]);
 
     if (checksResult.error || quickStatsResult.error) {
-      console.error("[ema-pipeline-health] canonical source failed", {
+      log.error("ema_health_source_failed", {
         checks: checksResult.error?.message,
         quick_stats: quickStatsResult.error?.message,
       });
-      return jsonResponse(
+      return log.respond(jsonResponse(
         {
           error: "ema_health_source_failed",
           sources: {
@@ -53,18 +59,17 @@ Deno.serve(async (req) => {
         },
         502,
         corsHeaders,
-      );
+      ));
     }
 
     const response = buildEmaHealthResponse(
       (checksResult.data ?? []) as RuptureHealthCheckRow[],
       (quickStatsResult.data ?? []) as RuptureQuickStatsRow[],
     );
-    return jsonResponse(response, 200, corsHeaders);
+    log.info("request_ok");
+    return log.respond(jsonResponse(response, 200, corsHeaders));
   } catch (error) {
-    console.error("[ema-pipeline-health] unexpected failure", {
-      message: error instanceof Error ? error.message : String(error),
-    });
-    return jsonResponse({ error: "internal_error" }, 500, corsHeaders);
+    log.error("request_failed", { err: error });
+    return log.respond(jsonResponse({ error: "internal_error" }, 500, corsHeaders));
   }
 });

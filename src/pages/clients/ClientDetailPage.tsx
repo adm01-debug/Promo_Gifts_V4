@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useClientTopProducts, useCrmCompany } from '@/hooks/crm';
 import { ClientDetailHeader } from '@/components/clients/ClientDetailHeader';
+import { SalesAssistantCard } from '@/components/assistant';
 import { TrendingUp } from 'lucide-react';
 import { getCompanyDisplayName } from '@/types/crm';
 
@@ -46,6 +47,14 @@ export default function ClientDetailPage() {
       />
       <div className="mx-auto w-full max-w-[1920px] animate-fade-in space-y-3 px-3 py-3 pb-24 sm:space-y-4 sm:px-4 sm:py-4 md:pb-6 lg:px-6 xl:px-8">
         <ClientDetailHeader client={client} />
+
+        {/*
+          Encaixe do Cliente vem ACIMA de "Produtos mais comprados" porque é o
+          card que tem o que dizer: `orders` tem 5 linhas e 0 com `client_id`
+          (medido no canônico), então o card de baixo está sempre vazio hoje.
+          O de baixo fica, para quando o histórico de pedidos for ligado.
+        */}
+        <SalesAssistantCard clientId={id} />
 
         <Card>
           <CardHeader>

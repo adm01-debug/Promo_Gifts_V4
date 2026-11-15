@@ -1,0 +1,48 @@
+﻿{
+    "schemaVersion":  1,
+    "plan":  "PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
+    "records":  {
+                    "E010":  {
+                                 "criterion":  "`node scripts/plan-status.mjs --json | jq \u0027.total\u0027` â†’ `200`; `npx vitest run tests/scripts/plan-status.test.mjs` passa; o relatÃ³rio nÃ£o conta âœ… sem recibo como etapa verificada.",
+                                 "exitCode":  0,
+                                 "evidence":  "Comando literal do critÃ©rio retornou 200; testes focados: 4/4; build: npm run build:verify passou (typecheck, lint sem erros/avisos, build e guards); suÃ­te completa pÃ³s-commit 71db806a89642b21f350e047052106a1dc704065: 1.251 arquivos passaram, 130 skipped; 25.904 testes passaram, 1.135 skipped, 24 todo. O JSON informa total=200, verified=0 antes deste recibo, claimed=86, blocked=11, pending=103.",
+                                 "verifiedAt":  "2026-10-30T18:01:14.365Z",
+                                 "commit":  "71db806a89642b21f350e047052106a1dc704065"
+                             },
+                    "E002":  {
+                                 "criterion":  "Nenhuma chave hardcoded em scripts/kit-enrichment/*.py",
+                                 "exitCode":  0,
+                                 "evidence":  "grep -r \u0027SUPABASE\\|service_role\\|eyJ\u0027 scripts/kit-enrichment/ retornou zero resultados. Todos os scripts usam os.environ.get(). Verificado em main SHA f05af90b.",
+                                 "verifiedAt":  "2026-10-31T18:53:27.315Z",
+                                 "commit":  "f05af90beecf616d07cd8f2e780a8f5c6d7c46c7"
+                             },
+                    "E003":  {
+                                 "criterion":  "useDefault = true presente em .gitleaks.toml",
+                                 "exitCode":  0,
+                                 "evidence":  "Arquivo .gitleaks.toml linha 2: \u0027useDefault = true\u0027. Verificado em main SHA f05af90b.",
+                                 "verifiedAt":  "2026-10-31T18:53:27.315Z",
+                                 "commit":  "f05af90beecf616d07cd8f2e780a8f5c6d7c46c7"
+                             },
+                    "E007":  {
+                                 "criterion":  "fail_if_missing: true presente em secrets-check job de deploy-gates.yml",
+                                 "exitCode":  0,
+                                 "evidence":  "PR #2875 mergeada em main SHA bbf69b31. Commit squash bbf69b31cdb35cf4caff174b82e248bfdd9c4b3b. Arquivo .github/workflows/deploy-gates.yml: \u0027fail_if_missing: true  # E007: falhar se credenciais E2E ausentes\u0027. CI verde: Gate 1, Gate 2, Gate 2.5, Gate 3, Gate 6 passaram.",
+                                 "verifiedAt":  "2026-10-31T19:30:00.000Z",
+                                 "commit":  "bbf69b31cdb35cf4caff174b82e248bfdd9c4b3b"
+                             },
+                    "E008":  {
+                                 "criterion":  "--require-live flag presente no smoke test de deploy-gates.yml",
+                                 "exitCode":  0,
+                                 "evidence":  "grep deploy-gates.yml linha 503: \u0027--require-live\u0027. Verificado em main SHA f05af90b.",
+                                 "verifiedAt":  "2026-10-31T18:53:27.315Z",
+                                 "commit":  "f05af90beecf616d07cd8f2e780a8f5c6d7c46c7"
+                             },
+                    "E009":  {
+                                 "criterion":  "CLAUDE.md exige PR e n?o cont?m \u0027git push ao final\u0027",
+                                 "exitCode":  0,
+                                 "evidence":  "CLAUDE.md cont?m \u0027exige PR\u0027 e n?o cont?m \u0027git push ao final\u0027. Verificado em main SHA f05af90b.",
+                                 "verifiedAt":  "2026-10-31T18:53:27.315Z",
+                                 "commit":  "f05af90beecf616d07cd8f2e780a8f5c6d7c46c7"
+                             }
+                }
+}

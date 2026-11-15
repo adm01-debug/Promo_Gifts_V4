@@ -205,7 +205,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
         >
           <svg
             aria-hidden="true"
-            class="lucide lucide-triangle-alert lucide-alert-triangle h-3 w-3"
+            class="lucide lucide-triangle-exclamation-point lucide-alert-triangle lucide-triangle-alert h-3 w-3"
             fill="none"
             height="24"
             stroke="currentColor"
@@ -652,7 +652,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
         >
           <svg
             aria-hidden="true"
-            class="lucide lucide-triangle-alert lucide-alert-triangle h-3.5 w-3.5"
+            class="lucide lucide-triangle-exclamation-point lucide-alert-triangle lucide-triangle-alert h-3.5 w-3.5"
             fill="none"
             height="24"
             stroke="currentColor"
@@ -1000,7 +1000,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
         >
           <svg
             aria-hidden="true"
-            class="lucide lucide-triangle-alert lucide-alert-triangle h-3.5 w-3.5 shrink-0"
+            class="lucide lucide-triangle-exclamation-point lucide-alert-triangle lucide-triangle-alert h-3.5 w-3.5 shrink-0"
             fill="none"
             height="24"
             stroke="currentColor"
@@ -1359,7 +1359,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
         >
           <svg
             aria-hidden="true"
-            class="lucide lucide-triangle-alert lucide-alert-triangle mt-0.5 h-3.5 w-3.5 shrink-0"
+            class="lucide lucide-triangle-exclamation-point lucide-alert-triangle lucide-triangle-alert mt-0.5 h-3.5 w-3.5 shrink-0"
             fill="none"
             height="24"
             stroke="currentColor"

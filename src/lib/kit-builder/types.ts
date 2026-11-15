@@ -16,6 +16,8 @@ export interface KitBox {
   sku: string;
   imageUrl: string | null;
   price: number;
+  /** False marks an unavailable/invalid catalog price; never a financial zero. */
+  priceKnown?: boolean;
   // Dimensões internas em cm
   internalWidth: number;
   internalHeight: number;
@@ -55,6 +57,8 @@ export interface KitItem {
   sku: string;
   imageUrl: string | null;
   price: number;
+  /** False marks an unavailable/invalid catalog price; never a financial zero. */
+  priceKnown?: boolean;
   // Dimensões do item em cm (convertidas de mm se necessário)
   width: number;
   height: number;
@@ -170,9 +174,14 @@ export interface KitIdentity {
   isFavorite?: boolean;
 }
 
+/** How the kit was initiated in this session. Not persisted to DB yet. */
+export type KitOrigin = 'ai' | 'manual' | 'template';
+
 export interface KitState {
   name: string;
   kitType: KitType;
+  /** Session-only: how the kit was started. Undefined for loaded drafts. */
+  origin?: KitOrigin;
   box: KitBox | null;
   items: KitItem[];
   personalization: KitPersonalization;

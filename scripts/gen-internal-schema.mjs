@@ -34,12 +34,20 @@
 import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import pg from 'pg';
+import { missingPrerequisite } from './lib/missing-prerequisite.mjs';
+let pg;
+try {
+  pg = (await import('pg')).default;
+} catch {
+  missingPrerequisite('gen-internal-schema', 'pacote `pg` não instalado', {
+    exitCode: 1,
+    hint: 'Instale com: npm i -D pg',
+  });
+}
 
 const DATABASE_URL = process.env.DATABASE_URL;
 if (!DATABASE_URL) {
-  console.error('ERRO: defina a variável de ambiente DATABASE_URL.');
-  process.exit(1);
+  missingPrerequisite('gen-internal-schema', 'DATABASE_URL ausente', { exitCode: 1 });
 }
 
 const SQL = `

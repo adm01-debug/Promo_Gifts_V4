@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { TechniqueCard } from './TechniqueCard';
 import { ConfigurationPanelV6 } from './ConfigurationPanelV6';
+import { useTrackedTimeout } from './useTrackedTimeout';
 import { cn } from '@/lib/utils';
 import type {
   TechniqueOption,
@@ -123,11 +124,7 @@ function SelectedTechniqueBar({
   return (
     <motion.div
       layout={reduceMotion ? false : 'position'}
-      transition={
-        reduceMotion
-          ? { duration: 0 }
-          : { duration: 0.18, ease: [0.16, 1, 0.3, 1] }
-      }
+      transition={reduceMotion ? { duration: 0 } : { duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
         'flex items-center justify-between gap-2 rounded-full border px-3 py-1.5',
         'transition-[background-color,border-color,box-shadow] duration-200 ease-out',
@@ -182,7 +179,6 @@ function SelectedTechniqueBar({
   );
 }
 
-
 export function LocationPanel({
   location,
   quantity,
@@ -198,6 +194,7 @@ export function LocationPanel({
   const [announcement, setAnnouncement] = useState('');
   const [isSwapping, setIsSwapping] = useState(false);
   const reduceMotion = useReducedMotion();
+  const scheduleTrackedTimeout = useTrackedTimeout();
 
   // Hidrata estado inicial: confirmada > rascunho persistido > nada.
   const initialDraft = useMemo<LocationDraft | null>(
@@ -364,10 +361,10 @@ export function LocationPanel({
       setSelectedTechnique(technique);
       setIsPickerOpen(false);
       setIsSwapping(true);
-      setTimeout(() => setIsSwapping(false), reduceMotion ? 0 : 140);
+      scheduleTrackedTimeout(() => setIsSwapping(false), reduceMotion ? 0 : 140);
 
       // Foco automático no controle ajustado se houve clamp (A11y)
-      setTimeout(() => {
+      scheduleTrackedTimeout(() => {
         if (forcedW) {
           document.querySelector<HTMLElement>('[data-testid="customization-width-input"]')?.focus();
         } else if (forcedH) {
@@ -382,7 +379,7 @@ export function LocationPanel({
       }, 50);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: see comment above
-    [selectedTechnique, toast, reduceMotion],
+    [selectedTechnique, toast, reduceMotion, scheduleTrackedTimeout],
   );
 
   const handlePriceCalculated = useCallback(
@@ -560,8 +557,6 @@ export function LocationPanel({
           </div>
         </motion.div>
       )}
-
-
 
       {/* Configuration panel — permanece MONTADO mesmo com o picker aberto,
           apenas ocultado via `hidden`. Isso preserva o hook reativo de preço

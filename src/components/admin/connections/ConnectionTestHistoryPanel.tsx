@@ -196,6 +196,7 @@ function LatencySparkline({
     .map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`)
     .join(' ');
   const last = points[points.length - 1];
+  if (!last) return null;
   const allOk = points.every((p) => p.ok);
 
   return (
@@ -514,7 +515,8 @@ export function ConnectionTestHistoryPanel({
   useEffect(() => {
     if (prevRefreshKeyRef.current === refreshKey) return;
     prevRefreshKeyRef.current = refreshKey;
-    if (items.length > 0) setHighlightId(items[0].id);
+    const latestItem = items[0];
+    if (latestItem) setHighlightId(latestItem.id);
   }, [refreshKey, items]);
 
   const goToLatestFailure = (e?: React.MouseEvent) => {

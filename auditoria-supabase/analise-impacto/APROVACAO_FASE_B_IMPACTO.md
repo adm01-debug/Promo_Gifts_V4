@@ -216,3 +216,15 @@ validar, depois aplicar nas 40 restantes (38 são `magazine_*` com baixo tráfeg
 
 P03_security_definer é o candidato mais urgente: risco de regressão zero,
 impacto de segurança crítico (`get_edge_function_secret` lê Vault como postgres).
+
+---
+
+## Status Final FASE B — 2026-11-08
+
+| Proposta | Status | Evidência |
+|----------|--------|-----------|
+| P03 security_definer | ✅ APLICADO | Migration `20261024163500` — 45 funções corrigidas (PR #2443, merge 2026-10-26) |
+| P14 RLS initplan | ✅ APLICADO | Todas as policies corrigidas com `(SELECT auth.uid())` wrapper (PR #2443) |
+| P06 views security_invoker | ❌ ENCERRADO | PR #3003 fechado pelo PO 2026-11-07 — migrations posteriores (`20260717151138`, `20260717161443`) tornam a proposta incorreta para as views públicas; `v_system_health_dashboard` já corrigida por `20260512201500`. Ver ADENDO §ENCERRAMENTO P06 e P15. |
+| P15 anon SELECT color_synonym_map | ❌ ENCERRADO | PR #3003 fechado — `color_synonym_map` movida para schema `archive` em `20260621130000`; policy inexiste em `public`. |
+| P09 ledger reconciliação | ⏸️ ADIADO | 8–16h de trabalho investigativo; nenhuma migration aplicada nesta sessão. |

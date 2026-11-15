@@ -16,35 +16,35 @@
  * Mock de rede via `page.route` no host Supabase canônico (`doufsxqlfjyuvxuezpln`).
  * O host `pqpdolkaeqlyzpdpbizo` NÃO deve receber tráfego (guarda SSOT).
  */
-import { test, expect, requireAuth } from "../fixtures/test-base";
-import { installMockAuth, isMockAuthEnabled } from "../helpers/mock-auth";
-import { gotoAndSettle } from "../helpers/nav";
-import { Sel } from "../fixtures/selectors";
-import { seedQuotesForStatusChips } from "../helpers/quotes-status-seed";
+import { test, expect, requireLiveDatabaseAuth } from '../fixtures/test-base';
+import { gotoAndSettle } from '../helpers/nav';
+import { Sel } from '../fixtures/selectors';
+import { seedQuotesForStatusChips } from '../helpers/quotes-status-seed';
 
-test.use({ trace: "retain-on-failure", screenshot: "only-on-failure" });
+test.use({ trace: 'retain-on-failure', screenshot: 'only-on-failure' });
 
 const QUOTES_REST = /\/rest\/v1\/quotes(\?|$)/;
 const UNDO_TOAST = '[data-testid="undo-toast"]';
 const UNDO_BTN = '[data-testid="undo-toast-button"]';
 
-test.describe("Fluxo: exclusão individual de orçamento com Desfazer", () => {
-  test.beforeEach(async ({ page }) => {
-    requireAuth();
-    if (isMockAuthEnabled()) await installMockAuth(page);
+test.describe('Fluxo: exclusão individual de orçamento com Desfazer', () => {
+  test.beforeEach(() => {
+    requireLiveDatabaseAuth();
   });
 
-  test("delete → toast Desfazer com contador → clicar Desfazer dispara POST de restore", async ({
+  test('delete → toast Desfazer com contador → clicar Desfazer dispara POST de restore', async ({
     page,
   }) => {
     test.setTimeout(120_000);
 
-    await gotoAndSettle(page, "/orcamentos");
+    await gotoAndSettle(page, '/orcamentos');
     const seed = await seedQuotesForStatusChips(page);
-    if (seed.skipped != null) { test.skip(true, `seed falhou: ${seed.skipped}`); }
+    if (seed.skipped != null) {
+      test.skip(true, `seed falhou: ${seed.skipped}`);
+    }
 
-    await gotoAndSettle(page, "/orcamentos");
-    await expect(page.locator(Sel.page.title("orcamentos")).first()).toBeVisible({
+    await gotoAndSettle(page, '/orcamentos');
+    await expect(page.locator(Sel.page.title('orcamentos')).first()).toBeVisible({
       timeout: 10_000,
     });
 
@@ -54,8 +54,8 @@ test.describe("Fluxo: exclusão individual de orçamento com Desfazer", () => {
     // Pega o id da primeira linha visível (testid `quote-row-<id>`)
     const firstRow = page.locator('[data-testid^="quote-row-"]').first();
     await expect(firstRow).toBeVisible({ timeout: 10_000 });
-    const rowTestId = (await firstRow.getAttribute("data-testid"))!;
-    const quoteId = rowTestId.replace(/^quote-row-/, "");
+    const rowTestId = (await firstRow.getAttribute('data-testid'))!;
+    const quoteId = rowTestId.replace(/^quote-row-/, '');
     expect(quoteId.length).toBeGreaterThan(0);
 
     // Mocks: DELETE 204, POST (recreate) 201
@@ -64,12 +64,12 @@ test.describe("Fluxo: exclusão individual de orçamento com Desfazer", () => {
     const restorePayloads: unknown[] = [];
     await page.route(QUOTES_REST, async (route, request) => {
       const method = request.method();
-      if (method === "DELETE") {
+      if (method === 'DELETE') {
         deleteCalls += 1;
-        await route.fulfill({ status: 204, body: "" });
+        await route.fulfill({ status: 204, body: '' });
         return;
       }
-      if (method === "POST") {
+      if (method === 'POST') {
         postCalls += 1;
         try {
           const raw = request.postData();
@@ -79,8 +79,8 @@ test.describe("Fluxo: exclusão individual de orçamento com Desfazer", () => {
         }
         await route.fulfill({
           status: 201,
-          contentType: "application/json",
-          body: JSON.stringify([{ id: `restored-${quoteId}`, quote_number: "ORC-R" }]),
+          contentType: 'application/json',
+          body: JSON.stringify([{ id: `restored-${quoteId}`, quote_number: 'ORC-R' }]),
         });
         return;
       }
@@ -92,16 +92,14 @@ test.describe("Fluxo: exclusão individual de orçamento com Desfazer", () => {
     await page.getByTestId(`quote-row-menu-delete-${quoteId}`).click();
 
     // Dialog abre
-    const dialog = page.getByTestId("quote-list-delete-dialog");
+    const dialog = page.getByTestId('quote-list-delete-dialog');
     await expect(dialog).toBeVisible({ timeout: 5_000 });
 
-    const confirm = page.getByTestId("quote-list-delete-dialog-yes");
+    const confirm = page.getByTestId('quote-list-delete-dialog-yes');
     await confirm.click();
 
     // Aguarda DELETE ser disparado
-    await expect
-      .poll(() => deleteCalls, { timeout: 15_000 })
-      .toBeGreaterThanOrEqual(1);
+    await expect.poll(() => deleteCalls, { timeout: 15_000 }).toBeGreaterThanOrEqual(1);
 
     // Dialog fecha e toast "Desfazer" aparece com contador
     await expect(dialog).toBeHidden({ timeout: 10_000 });
@@ -131,9 +129,7 @@ test.describe("Fluxo: exclusão individual de orçamento com Desfazer", () => {
 
     // Clica em "Desfazer" → POST de restore é chamado
     await page.locator(UNDO_BTN).click();
-    await expect
-      .poll(() => postCalls, { timeout: 10_000 })
-      .toBeGreaterThanOrEqual(1);
+    await expect.poll(() => postCalls, { timeout: 10_000 }).toBeGreaterThanOrEqual(1);
 
     // Toast é dispensado após o clique (undoToast fecha o toast original)
     await expect(page.locator(UNDO_TOAST)).toHaveCount(0);
@@ -148,61 +144,61 @@ test.describe("Fluxo: exclusão individual de orçamento com Desfazer", () => {
     expect(restorePayloads.length).toBeGreaterThanOrEqual(1);
 
     const ALLOWED_FIELDS = new Set([
-      "items",
-      "_items",
-      "client_id",
-      "client_name",
-      "client_cnpj",
-      "client_email",
-      "client_phone",
-      "client_address",
-      "client_response_at",
-      "client_response_notes",
-      "seller_id",
-      "seller_name",
-      "organization_id",
-      "user_id",
-      "total",
-      "subtotal",
-      "discount_percent",
-      "discount_value",
-      "real_discount_percent",
-      "freight_value",
-      "markup_ratio",
-      "negotiation_markup_percent",
-      "payment_terms",
-      "delivery_time",
-      "valid_until",
-      "notes",
-      "internal_notes",
-      "status",
-      "version",
-      "origin",
-      "source",
-      "bitrix_deal_id",
-      "promo_champions_id",
-      "external_id",
-      "public_token",
-      "signed_by_cnpj",
-      "signed_by_ip",
-      "signed_by_ua",
-      "signature_hash",
-      "signed_at",
-      "approval_request_id",
-      "approved_by",
-      "approved_at",
-      "price_table_id",
-      "metadata",
-      "tags",
+      'items',
+      '_items',
+      'client_id',
+      'client_name',
+      'client_cnpj',
+      'client_email',
+      'client_phone',
+      'client_address',
+      'client_response_at',
+      'client_response_notes',
+      'seller_id',
+      'seller_name',
+      'organization_id',
+      'user_id',
+      'total',
+      'subtotal',
+      'discount_percent',
+      'discount_value',
+      'real_discount_percent',
+      'freight_value',
+      'markup_ratio',
+      'negotiation_markup_percent',
+      'payment_terms',
+      'delivery_time',
+      'valid_until',
+      'notes',
+      'internal_notes',
+      'status',
+      'version',
+      'origin',
+      'source',
+      'bitrix_deal_id',
+      'promo_champions_id',
+      'external_id',
+      'public_token',
+      'signed_by_cnpj',
+      'signed_by_ip',
+      'signed_by_ua',
+      'signature_hash',
+      'signed_at',
+      'approval_request_id',
+      'approved_by',
+      'approved_at',
+      'price_table_id',
+      'metadata',
+      'tags',
     ]);
-    const FORBIDDEN_FIELDS = ["id", "quote_number", "created_at", "updated_at"];
+    const FORBIDDEN_FIELDS = ['id', 'quote_number', 'created_at', 'updated_at'];
 
     let payloadsWithItems = 0;
     const leaks: Array<{ payloadIndex: number; unknownFields: string[] }> = [];
     for (let i = 0; i < restorePayloads.length; i++) {
       const p = restorePayloads[i];
       const rec = Array.isArray(p) ? p[0] : (p as Record<string, unknown>);
-      if (!rec || typeof rec !== "object") continue;
+      if (!rec || typeof rec !== 'object') continue;
       const obj = rec as Record<string, unknown>;
       for (const forbidden of FORBIDDEN_FIELDS) {
         expect(obj[forbidden], `campo proibido '${forbidden}' no payload #${i}`).toBeUndefined();
@@ -213,7 +209,7 @@ test.describe("Fluxo: exclusão individual de orçamento com Desfazer", () => {
     }
     expect(
       payloadsWithItems,
-      "pelo menos 1 payload de restore precisa carregar `items`",
+      'pelo menos 1 payload de restore precisa carregar `items`',
     ).toBeGreaterThanOrEqual(1);
     expect(
       leaks,
@@ -221,38 +217,40 @@ test.describe("Fluxo: exclusão individual de orçamento com Desfazer", () => {
     ).toEqual([]);
   });
 
-  test("restore falha: POST 503 → toast de erro, sem duplicatas e sem retry automático", async ({
+  test('restore falha: POST 503 → toast de erro, sem duplicatas e sem retry automático', async ({
     page,
   }) => {
     test.setTimeout(120_000);
 
-    await gotoAndSettle(page, "/orcamentos");
+    await gotoAndSettle(page, '/orcamentos');
     const seed = await seedQuotesForStatusChips(page);
-    if (seed.skipped != null) { test.skip(true, `seed falhou: ${seed.skipped}`); }
+    if (seed.skipped != null) {
+      test.skip(true, `seed falhou: ${seed.skipped}`);
+    }
 
-    await gotoAndSettle(page, "/orcamentos");
+    await gotoAndSettle(page, '/orcamentos');
     await page.locator('button[data-chip-key="all"]').click();
 
     const firstRow = page.locator('[data-testid^="quote-row-"]').first();
     await expect(firstRow).toBeVisible({ timeout: 10_000 });
-    const rowTestId = (await firstRow.getAttribute("data-testid"))!;
-    const quoteId = rowTestId.replace(/^quote-row-/, "");
+    const rowTestId = (await firstRow.getAttribute('data-testid'))!;
+    const quoteId = rowTestId.replace(/^quote-row-/, '');
 
     let deleteCalls = 0;
     let postCalls = 0;
     await page.route(QUOTES_REST, async (route, request) => {
       const method = request.method();
-      if (method === "DELETE") {
+      if (method === 'DELETE') {
         deleteCalls += 1;
-        await route.fulfill({ status: 204, body: "" });
+        await route.fulfill({ status: 204, body: '' });
         return;
       }
-      if (method === "POST") {
+      if (method === 'POST') {
         postCalls += 1;
         await route.fulfill({
           status: 503,
-          contentType: "application/json",
-          body: JSON.stringify({ message: "unavailable", code: "PGRST503" }),
+          contentType: 'application/json',
+          body: JSON.stringify({ message: 'unavailable', code: 'PGRST503' }),
         });
         return;
       }
@@ -261,11 +259,9 @@ test.describe("Fluxo: exclusão individual de orçamento com Desfazer", () => {
 
     await page.getByTestId(`quote-row-more-${quoteId}`).click();
     await page.getByTestId(`quote-row-menu-delete-${quoteId}`).click();
-    await page.getByTestId("quote-list-delete-dialog-yes").click();
+    await page.getByTestId('quote-list-delete-dialog-yes').click();
 
-    await expect
-      .poll(() => deleteCalls, { timeout: 15_000 })
-      .toBeGreaterThanOrEqual(1);
+    await expect.poll(() => deleteCalls, { timeout: 15_000 }).toBeGreaterThanOrEqual(1);
 
     const toast = page.locator(UNDO_TOAST);
     await expect(toast).toBeVisible({ timeout: 10_000 });
@@ -273,46 +269,46 @@ test.describe("Fluxo: exclusão individual de orçamento com Desfazer", () => {
     await page.locator(UNDO_BTN).click();
 
     // Um único POST → tentativa manual do usuário; nenhum retry automático
-    await expect
-      .poll(() => postCalls, { timeout: 10_000 })
-      .toBe(1);
+    await expect.poll(() => postCalls, { timeout: 10_000 }).toBe(1);
 
     // Aguarda um pouco e reconfirma: sem retry silencioso
     expect(postCalls).toBe(1);
   });
 
-  test("botão confirmar desabilitado durante DELETE — cliques duplicados não geram DELETEs extras", async ({
+  test('botão confirmar desabilitado durante DELETE — cliques duplicados não geram DELETEs extras', async ({
     page,
   }) => {
     test.setTimeout(90_000);
 
-    await gotoAndSettle(page, "/orcamentos");
+    await gotoAndSettle(page, '/orcamentos');
     const seed = await seedQuotesForStatusChips(page);
-    if (seed.skipped != null) { test.skip(true, `seed falhou: ${seed.skipped}`); }
+    if (seed.skipped != null) {
+      test.skip(true, `seed falhou: ${seed.skipped}`);
+    }
 
-    await gotoAndSettle(page, "/orcamentos");
+    await gotoAndSettle(page, '/orcamentos');
     await page.locator('button[data-chip-key="all"]').click();
 
     const firstRow = page.locator('[data-testid^="quote-row-"]').first();
     await expect(firstRow).toBeVisible({ timeout: 10_000 });
-    const rowTestId = (await firstRow.getAttribute("data-testid"))!;
-    const quoteId = rowTestId.replace(/^quote-row-/, "");
+    const rowTestId = (await firstRow.getAttribute('data-testid'))!;
+    const quoteId = rowTestId.replace(/^quote-row-/, '');
 
     // DELETE com delay de 1500ms para dar tempo de spam-clicar
     let deleteCalls = 0;
     await page.route(QUOTES_REST, async (route, request) => {
       const method = request.method();
-      if (method === "DELETE") {
+      if (method === 'DELETE') {
         deleteCalls += 1;
         await new Promise((r) => setTimeout(r, 1500));
-        await route.fulfill({ status: 204, body: "" });
+        await route.fulfill({ status: 204, body: '' });
         return;
       }
-      if (method === "POST") {
+      if (method === 'POST') {
         await route.fulfill({
           status: 201,
-          contentType: "application/json",
-          body: JSON.stringify([{ id: "ok" }]),
+          contentType: 'application/json',
+          body: JSON.stringify([{ id: 'ok' }]),
         });
         return;
       }
@@ -322,15 +318,13 @@ test.describe("Fluxo: exclusão individual de orçamento com Desfazer", () => {
     await page.getByTestId(`quote-row-more-${quoteId}`).click();
     await page.getByTestId(`quote-row-menu-delete-${quoteId}`).click();
 
-    const confirm = page.getByTestId("quote-list-delete-dialog-yes");
+    const confirm = page.getByTestId('quote-list-delete-dialog-yes');
     // 1º clique inicia o delete
     await confirm.click();
 
     // Enquanto o DELETE não responde: botão fica disabled e spinner aparece
     await expect(confirm).toBeDisabled({ timeout: 3_000 });
-    await expect(
-      page.getByTestId("quote-list-delete-dialog-loading"),
-    ).toBeVisible();
+    await expect(page.getByTestId('quote-list-delete-dialog-loading')).toBeVisible();
 
     // Spam de cliques (Playwright respeita disabled → não emite click)
     for (let i = 0; i < 10; i++) {
@@ -340,12 +334,10 @@ test.describe("Fluxo: exclusão individual de orçamento com Desfazer", () => {
     }
 
     // Aguarda o DELETE terminar
-    await expect
-      .poll(() => deleteCalls, { timeout: 10_000 })
-      .toBe(1);
+    await expect.poll(() => deleteCalls, { timeout: 10_000 }).toBe(1);
 
     // Dialog fecha e toast Desfazer aparece
-    await expect(page.getByTestId("quote-list-delete-dialog")).toBeHidden({
+    await expect(page.getByTestId('quote-list-delete-dialog')).toBeHidden({
       timeout: 10_000,
     });
     await expect(page.locator(UNDO_TOAST)).toBeVisible({ timeout: 10_000 });

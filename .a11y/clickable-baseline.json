@@ -1,6 +1,6 @@
 {
   "description": "Baseline de arquivos com `role=\"button\"` inline em elementos não-nativos. Regressões (arquivos novos fora da baseline) falham CI. Refatore para `<Clickable>` de @/components/shared/Clickable.",
-  "updated_at": "2026-07-15T18:32:09.789Z",
+  "updated_at": "2026-10-29T21:27:46.335Z",
   "files": [
     "src/components/admin/connections/ConnectionTestHistoryPanel.tsx",
     "src/components/admin/connections/DataSourceDebugTab.tsx",
@@ -9,6 +9,7 @@
     "src/components/inventory/supplier-reliability/SupplierReliabilityTable.tsx",
     "src/components/magic-up/AdImageResult.tsx",
     "src/components/mockup/AreaCard.tsx",
+    "src/components/mockup/ArtFileUpload.tsx",
     "src/components/mockup/MockupClientSelector.tsx",
     "src/components/mockup/MockupHistoryPanel.tsx",
     "src/components/mockup/MockupProductSelector.tsx",

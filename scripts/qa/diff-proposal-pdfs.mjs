@@ -52,7 +52,7 @@ function sh(cmd) {
 }
 
 console.log('[pdf-diff] 1/4 · regenerando HTMLs de proposta...');
-sh('bunx vitest run exportSampleProposal --silent');
+sh('npm exec -- vitest run exportSampleProposal --silent');
 
 console.log('[pdf-diff] 2/4 · gerando PDFs headless...');
 sh('node scripts/qa/generate-proposal-pdf.mjs');

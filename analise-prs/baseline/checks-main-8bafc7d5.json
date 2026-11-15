@@ -1,0 +1,60 @@
+{
+  "sha": "8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb",
+  "captured_at": "2026-10-22T23:32Z",
+  "session": "session_012WyySbh2tj8vhRQLBf3mHo",
+  "typecheck_errors": 1,
+  "typecheck_errors_detail": [
+    "TS2688: Cannot find type definition file for 'node' (pré-existente no main)"
+  ],
+  "gate_final": "success",
+  "gate_final_check_run_id": 120142508825,
+  "gate_final_run_id": 39869261220,
+  "gate_final_completed_at": "2026-10-22T23:12:21Z",
+  "note": "Baseline capturado após merge do PR #2356 (session guard 5 callers). Um erro TS2688 pré-existente no main.",
+  "how_captured": "npx tsc --noEmit rodado no working tree com origin/main checado; Gate Final verificado via mcp__GITHUB_-_MCP_-_FOREVER__github_list_check_runs(ref=cfabab26) conclusion=success",
+  "gate_e40_schema_drift": {
+    "status": "skipped",
+    "job_id": 120141146953,
+    "job_name": "Gate E40 - Schema Drift Check",
+    "conclusion": "skipped",
+    "steps_count": 0,
+    "reason": "PR #2356 não alterou arquivos de schema (supabase/migrations/, supabase/baseline/). O job de detecção (job 120139590626) rodou e não encontrou mudanças — schema drift check condicional foi ignorado.",
+    "evidence_source": "mcp__GITHUB_-_MCP_-_FOREVER__github_list_workflow_run_jobs(run_id=39869261220) — job 120141146953 conclusion=skipped, steps=[]"
+  },
+  "gate_e40_pre_existing_evidence": {
+    "source_file": "analise-prs/baseline/checks-main-8e8053b9.json",
+    "finding": "\"Migrations x Canonical schema\" listada explicitamente em failures[] no SHA 8e8053b9 (baseline original, antes de qualquer merge desta sessão)",
+    "implication": "A falha de Gate E40 é pré-existente ao início desta sessão — não foi introduzida por nenhum merge"
+  },
+  "dependabot_vulnerabilities": {
+    "total_high": 2,
+    "pre_existing": true,
+    "created_at": "2026-09-27",
+    "nota": "Ambas as alertas existiam ANTES do início desta sessão (criadas 2026-09-27; baseline desta sessão é 2026-10-22). Nenhum merge desta sessão as introduziu.",
+    "alerts": [
+      {
+        "number": 68,
+        "package": "extract-zip",
+        "cve": "CVE-2026-56876",
+        "severity": "high",
+        "scope": "development",
+        "relationship": "transitive",
+        "summary": "extract-zip unvalidated symlink path traversal",
+        "first_patched_version": null,
+        "regressao_desta_sessao": false
+      },
+      {
+        "number": 69,
+        "package": "extract-zip",
+        "cve": "CVE-2026-19693",
+        "severity": "high",
+        "scope": "development",
+        "relationship": "transitive",
+        "summary": "extract-zip allows arbitrary file writes through symlink archive entries",
+        "first_patched_version": null,
+        "regressao_desta_sessao": false
+      }
+    ],
+    "avaliacao": "extract-zip é dependência transitiva de dev (Playwright/testes). Não afeta o bundle de produção (não inclusa no build Vite — scope:development). Sem versão com patch disponível (first_patched_version=null). Risco: ambiente de CI, não produção."
+  }
+}

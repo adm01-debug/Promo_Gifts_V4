@@ -41,6 +41,10 @@
     {
       "fn": "public.submit_quote_response(_token text, _response text, _response_notes text)",
       "reason": "SECDEF necessário: grava na tabela de cotações, na qual anon não tem INSERT/UPDATE direto. anon precisa de EXECUTE: é como um destinatário anônimo de cotação responde sem criar conta (via link com token). search_path fixo; parâmetros tipados; valida o token de cotação antes de gravar e falha fechado em token inválido, mesmo padrão de get_quote_token_public. Revisado em E17, 2026-09-16."
+    },
+    {
+      "fn": "public.request_password_reset(p_email text)",
+      "reason": "Pedido de reset de senha na tela de login (pré-autenticação) — 20261112120900: só grava pedido pendente em password_reset_requests, sem leitura de dados nem retorno de PII; rate limit por IP e por e-mail (trg_password_reset_rate_limit, trg_anon_rate_guard); search_path fixo; parâmetro tipado, sem SQL dinâmico."
     }
   ]
 }

@@ -48,7 +48,7 @@ runs:
 
     - name: Generate E2E fixtures
       shell: bash
-      run: npm run e2e:generate-fixtures 2>/dev/null || true
+      run: npm run e2e:generate-fixtures
 
     - name: Setup mock auth
       if: inputs.mock-auth == 'true'

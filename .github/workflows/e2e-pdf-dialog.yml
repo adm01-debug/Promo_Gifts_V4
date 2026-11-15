@@ -14,14 +14,9 @@ name: E2E — PDF Dialog (watermark pixel-diff, authed)
 # gerados por este workflow no primeiro dispatch e depois versionados via PR.
 
 on:
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   push:
     branches: [main]
-    paths:
-      - 'e2e/flows/pdf-dialog.spec.ts'
-      - 'src/components/pdf/**'
-      - 'src/components/quotes/PdfGenerationDialog*'
-      - '.github/workflows/e2e-pdf-dialog.yml'
-  pull_request:
     paths:
       - 'e2e/flows/pdf-dialog.spec.ts'
       - 'src/components/pdf/**'

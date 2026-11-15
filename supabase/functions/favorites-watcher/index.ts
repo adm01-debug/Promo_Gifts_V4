@@ -2,7 +2,7 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 import { authorizeCron } from "../_shared/dispatcher-auth.ts";
 // favorites-watcher: cron diário que detecta quedas de preço em favoritos
 // e gera workspace_notifications (categoria "favorites") com dedupe 24h.
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.95.0";
+import { createClient } from "npm:@supabase/supabase-js@2.95.0";
 import { castSupabaseClient } from "../_shared/supabase-client-adapter.ts";
 
 const DEDUPE_WINDOW_HOURS = 24;
@@ -63,18 +63,15 @@ Deno.serve(async (req) => {
 
     // Busca preços atuais via external bridge (usa products table sincronizada)
     const productIds = [...new Set(items.map((i) => i.product_id))];
-    const { data: products } = await service
+    const { data: products, error: prodErr } = await service
       .from("products")
-      .select("id, name, price, sale_price")
+      .select("id, name, sale_price")
       .in("id", productIds);
+    if (prodErr) throw prodErr;
 
     const priceMap = new Map<string, { name: string; price: number }>();
-    (products ?? []).forEach((p: { id: string; name: string; price: number | null; sale_price?: number | null }) => {
-      // Use effective selling price: sale_price when available, otherwise price
-      const effectivePrice = (typeof p.sale_price === 'number' && p.sale_price > 0)
-        ? p.sale_price
-        : p.price;
-      if (effectivePrice && effectivePrice > 0) priceMap.set(p.id, { name: p.name, price: effectivePrice });
+    (products ?? []).forEach((p: { id: string; name: string; sale_price: number | null }) => {
+      if (p.sale_price && p.sale_price > 0) priceMap.set(p.id, { name: p.name, price: p.sale_price });
     });
 
     // Agrupa drops por usuário

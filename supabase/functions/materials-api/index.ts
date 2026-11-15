@@ -1,5 +1,5 @@
 import { getCorsHeaders } from '../_shared/cors.ts';
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { z } from '../_shared/zod-validate.ts';
 import { getCredential } from '../_shared/credentials.ts';
 
@@ -16,6 +16,20 @@ const MaterialsRequestSchema = z.object({
 });
 
 const EXTERNAL_TIMEOUT_MS = 20_000;
+
+const PAGE_SIZE = 1000;
+
+async function fetchAllRows<T>(
+  fetchPage: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: unknown }>,
+): Promise<{ data: T[]; error: unknown }> {
+  const rows: T[] = [];
+  for (let from = 0; ; from += PAGE_SIZE) {
+    const { data, error } = await fetchPage(from, from + PAGE_SIZE - 1);
+    if (error) return { data: rows, error };
+    rows.push(...(data ?? []));
+    if (!data || data.length < PAGE_SIZE) return { data: rows, error: null };
+  }
+}
 
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -199,7 +213,7 @@ Deno.serve(async (req) => {
           }
         }
         if (targetMaterialIds.length === 0) { result = { productIds: [], count: 0 }; break; }
-        const { data: productMaterials, error: pmError } = await externalSupabase.from('product_materials').select('product_id').in('material_id', targetMaterialIds).eq('is_active', true);
+        const { data: productMaterials, error: pmError } = await fetchAllRows<{ product_id: string }>((from, to) => externalSupabase.from('product_materials').select('product_id').in('material_id', targetMaterialIds).eq('is_active', true).order('id', { ascending: true }).range(from, to));
         if (pmError) throw pmError;
         const uniqueProductIds = [...new Set((productMaterials || []).map((pm: any) => pm.product_id))];
         result = { productIds: uniqueProductIds, count: uniqueProductIds.length, materialTypeIds: targetMaterialIds };

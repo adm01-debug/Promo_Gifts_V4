@@ -47,7 +47,12 @@ function* walk(dir) {
   for (const entry of readdirSync(dir)) {
     if (IGNORE_DIRS.has(entry)) continue;
     const full = join(dir, entry);
-    const st = statSync(full);
+    let st;
+    try {
+      st = statSync(full);
+    } catch {
+      continue; // symlink quebrado/ciclo (ELOOP) ou sem permissão — ignora a entrada
+    }
     if (st.isDirectory()) yield* walk(full);
     else if (EXT_RE.test(entry)) yield full;
   }

@@ -125,8 +125,21 @@ async function loadRows() {
     return { kind: 'fixture', rows };
   }
 
-  if (process.env.SUPABASE_PROJECT_REF !== CANONICAL_PROJECT_REF) {
+  if (process.env.SUPABASE_PROJECT_REF && process.env.SUPABASE_PROJECT_REF !== CANONICAL_PROJECT_REF) {
     return { kind: 'wrong-project' };
+  }
+  // querySupabaseReadOnly só usa a Management API (que valida o project ref)
+  // quando SUPABASE_PROJECT_REF *e* SUPABASE_ACCESS_TOKEN estão ambos
+  // presentes. Faltando qualquer um dos dois, ela cai para o fallback
+  // pg-meta via VITE_SUPABASE_URL — e o .env local costuma apontar essa
+  // variável para o projeto Lovable Cloud (pqp), não o canônico. Então
+  // sempre que esse fallback pode ser usado, a URL precisa ser validada
+  // aqui, mesmo com SUPABASE_ACCESS_TOKEN definido sozinho.
+  if (!process.env.SUPABASE_PROJECT_REF || !process.env.SUPABASE_ACCESS_TOKEN) {
+    const url = (process.env.VITE_SUPABASE_URL ?? '').replace(/\/$/, '');
+    if (!url.includes(CANONICAL_PROJECT_REF)) {
+      return { kind: 'missing-config' };
+    }
   }
   return querySupabaseReadOnly(SQL);
 }

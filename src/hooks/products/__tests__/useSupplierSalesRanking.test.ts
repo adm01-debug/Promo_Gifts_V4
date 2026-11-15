@@ -16,7 +16,11 @@ const mockRpc = vi.hoisted(() => vi.fn());
 
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
-    rpc: (...args: unknown[]) => mockRpc(...args),
+    rpc: (...args: unknown[]) => ({
+      order: () => ({
+        range: (from: number, to: number) => mockRpc(...args, from, to),
+      }),
+    }),
   },
 }));
 
@@ -164,11 +168,25 @@ describe('graceful fallback MV nao populada', () => {
 });
 
 describe('invariantes de chamada ao supabase.rpc', () => {
-  it('chama fn_get_product_intelligence_all (RPC bypassa max_rows=1000 do PostgREST)', async () => {
+  it('chama fn_get_product_intelligence_all paginando em blocos de 1000 (max_rows do PostgREST)', async () => {
     mockRpc.mockResolvedValue({ data: [], error: null });
     renderHook(() => useSupplierSalesRanking(), { wrapper: makeWrapper() });
     await waitFor(() => expect(mockRpc).toHaveBeenCalled());
     expect(mockRpc.mock.calls[0][0]).toBe('fn_get_product_intelligence_all');
+  });
+
+  it('busca a página seguinte quando a primeira vem cheia (1000 linhas)', async () => {
+    const fullPage = Array.from({ length: 1000 }, (_, i) => ({ product_id: `p${i}` }));
+    mockRpc
+      .mockResolvedValueOnce({ data: fullPage, error: null })
+      .mockResolvedValueOnce({ data: [{ product_id: 'p1000' }], error: null });
+    const { result } = renderHook(() => useSupplierSalesRanking(), { wrapper: makeWrapper() });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(mockRpc.mock.calls.map((c) => [c[1], c[2]])).toEqual([
+      [0, 999],
+      [1000, 1999],
+    ]);
+    expect(result.current.data!.size).toBe(1001);
   });
 
   it('retorna Map vazia quando data vazio', async () => {

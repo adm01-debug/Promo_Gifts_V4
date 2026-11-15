@@ -49,7 +49,7 @@ const CHECKS = [
   },
   {
     name: 'painel colapsável aplica `inert` quando colapsado',
-    fn: (s) => /collapsedInteractionProps/.test(s) && /inert\?: ''/.test(s),
+    fn: (s) => /collapsedInteractionProps/.test(s) && /inert\?: boolean/.test(s),
   },
   {
     name: 'painel mantém `grid-rows-[0fr]`/`grid-rows-[1fr]` alternantes',

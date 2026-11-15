@@ -7,7 +7,7 @@ import type { ProposalTemplateData } from '@/components/pdf/ProposalHtmlTemplate
 import type { TablesUpdate } from '@/integrations/supabase/types';
 import type { Quote } from '@/hooks/quotes';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { logger } from '@/lib/logger';
 import { isValidQuoteTransition } from '@/lib/quote-status-config';
@@ -52,7 +52,7 @@ export function buildWhatsAppUrl(quote: Quote, approvalLink: string | null): str
   ];
   if (quote.valid_until) {
     lines.push(
-      `📅 Válida até: ${format(new Date(quote.valid_until), 'dd/MM/yyyy', { locale: ptBR })}`,
+      `📅 Válida até: ${format(parseISO(quote.valid_until), 'dd/MM/yyyy', { locale: ptBR })}`,
     );
   }
   if (approvalLink) {

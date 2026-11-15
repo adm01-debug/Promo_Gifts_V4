@@ -64,7 +64,7 @@ export function ProductCardResult({
             </div>
             {priceBreakdown.customizationPrice > 0 && (
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span>Personalização:</span>
+                <span>Personalização (a partir de):</span>
                 <span>{formatCurrency(priceBreakdown.customizationPrice)}</span>
               </div>
             )}
@@ -118,7 +118,7 @@ export function ProductTableResult({
               <th className="p-3 text-left text-sm font-medium">SKU</th>
               <th className="p-3 text-left text-sm font-medium">Técnica</th>
               <th className="p-3 text-right text-sm font-medium">Produto</th>
-              <th className="p-3 text-right text-sm font-medium">Gravação</th>
+              <th className="p-3 text-right text-sm font-medium">Gravação (a partir de)</th>
               <th className="p-3 text-right text-sm font-medium">Setup</th>
               <th className="p-3 text-right text-sm font-medium">Unit. Final</th>
               <th className="p-3 text-right text-sm font-medium">Total ({quantity})</th>

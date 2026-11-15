@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { X, Download } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 
 interface CompareMockup {
   id: string;
@@ -48,9 +48,14 @@ export function MockupCompareDialog({
           {/* Header */}
           <div className="flex items-center justify-between border-b p-4">
             <div className="flex items-center gap-2">
-              <h2 className="font-display text-lg font-semibold">Comparação de Mockups</h2>
+              <DialogTitle className="font-display text-lg font-semibold">
+                Comparação de Mockups
+              </DialogTitle>
               <Badge variant="secondary">{mockups.length} selecionados</Badge>
             </div>
+            <DialogDescription className="sr-only">
+              Comparação de {mockups.length} mockups selecionados
+            </DialogDescription>
             <Button
               variant="ghost"
               size="icon"

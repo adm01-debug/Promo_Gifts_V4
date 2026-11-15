@@ -31,4 +31,4 @@ export {
 } from "./parse.ts";
 
 // Re-export do Zod para padronizar o pinning em todo o repo
-export { z } from "https://esm.sh/zod@3.23.8";
+export { z } from "npm:zod@3.23.8";
