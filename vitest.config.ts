@@ -66,6 +66,9 @@ export default defineConfig({
       'src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       'e2e/scripts/__tests__/*.test.ts',
       'supabase/functions/e2e-cleanup/index.mockups.test.ts',
+      // Geometria cm→px da logo no mockup (fórmula pura; index.ts não é
+      // importável sob Node). Sem esta entrada o arquivo não é coletado.
+      'supabase/functions/generate-mockup/index.geometry.test.ts',
       // T-FIX-5: descobre a suite vitest do script anti-órfão.
       // Ver docs/redeploy/T-FIX-5-CHECKLIST.md (Passo 3).
       'scripts/__tests__/**/*.{test,spec}.{ts,mts,cts}',

@@ -9,12 +9,11 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { useDebounce } from '@/hooks/common';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { Search, Package, X, SearchX, Filter, RefreshCw } from 'lucide-react';
+import { Search, Package, X, Filter, RefreshCw } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getCdnUrl } from '@/utils/image-utils';
-import { Skeleton } from '@/components/ui/skeleton';
 import {
   Dialog,
   DialogContent,
@@ -23,6 +22,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useProductsCatalog, type ExternalVariantStock, type Product } from '@/hooks/products';
+import { CatalogEmptyState, CatalogGridSkeleton, CatalogLoadError } from './MockupCatalogStates';
 import { ProductLoaderAndColorSelector } from './MockupColorSelector';
 import { MockupPhotoPicker } from './MockupPhotoPicker';
 import { getMockupVariantPhotos } from './mockupVariantPhotos';
@@ -75,6 +75,9 @@ export function MockupProductSelector({
     hasNextPage,
     isFetchingNextPage,
     isLoading: isLoadingProducts,
+    isError: isCatalogError,
+    error: catalogError,
+    refetch: refetchCatalog,
   } = useProductsCatalog({ search: debouncedQuery });
 
   const products = useMemo(() => data?.pages.flatMap((page) => page.products) ?? [], [data]);
@@ -271,10 +274,18 @@ export function MockupProductSelector({
       />
     );
   }
+  // Ver MockupProductSelector.errors.test.tsx: exigir lista vazia evita que o aviso apague a grade.
+  const catalogoFalhouSemNada = isCatalogError && sortedProducts.length === 0;
+
 
   // ─── State: Product list (search) ──────────────────────────────────
   return (
     <div className="flex flex-col gap-3">
+      {/* A-estados: a falha de carga do catálogo avisa no bloco do produto, antes de abrir a
+          busca — sem ela o painel só mostrava o botão e o vendedor não sabia o que houve. */}
+      {catalogoFalhouSemNada && (
+        <CatalogLoadError error={catalogError} onRetry={() => refetchCatalog()} />
+      )}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
           <Button
@@ -375,33 +386,11 @@ export function MockupProductSelector({
                 onScroll={handleScroll}
               >
                 {isLoadingProducts || isFilterPending ? (
-                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-                    {Array.from({ length: 12 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="space-y-3 rounded-2xl border border-border/30 bg-card p-3"
-                      >
-                        <Skeleton className="aspect-square w-full rounded-xl" />
-                        <div className="space-y-2">
-                          <Skeleton className="h-4 w-3/4" />
-                          <Skeleton className="h-3 w-1/2" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <CatalogGridSkeleton />
+                ) : catalogoFalhouSemNada ? (
+                  <CatalogLoadError error={catalogError} onRetry={() => refetchCatalog()} />
                 ) : sortedProducts.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
-                    <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-muted">
-                      <SearchX aria-hidden="true" className="h-10 w-10 opacity-20" />
-                    </div>
-                    <p className="font-display text-xl font-bold text-foreground">
-                      Nenhum resultado
-                    </p>
-                    <p className="mt-1 text-sm">Tente usar termos mais genéricos ou outro SKU.</p>
-                    <Button variant="link" className="mt-2" onClick={() => setSearchQuery('')}>
-                      Limpar busca
-                    </Button>
-                  </div>
+                  <CatalogEmptyState onClearSearch={() => setSearchQuery('')} />
                 ) : (
                   <div
                     className="relative w-full"

@@ -102,6 +102,23 @@ export function MarketIntelligenceChart({
     );
   }
 
+  // A agregação ainda não existe neste banco: é ausência de recurso, não falha.
+  // Mostrar "Erro ao carregar dados de mercado" aqui faz o vendedor achar que o
+  // sistema quebrou, quando o que falta é a migration ser aplicada.
+  if (realData?.aggregationUnavailable) {
+    return (
+      <Card>
+        <CardContent className="py-8">
+          <EmptyState
+            variant="analytics"
+            title="Visão de mercado em preparação"
+            description="A agregação de estoque ainda não foi liberada neste ambiente. Os dados aparecem aqui assim que ela entrar."
+          />
+        </CardContent>
+      </Card>
+    );
+  }
+
   if (error && !hasRealData) {
     return (
       <Card>
