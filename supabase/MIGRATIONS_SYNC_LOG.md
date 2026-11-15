@@ -1668,3 +1668,17 @@ aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]` (porta 5
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261114160000` | `perf_idx_sds_restock_counts` | `d538e03130d8151ccde29c56a72c1004a74b76e3789aed0095b64d8c19bcc03a` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (linha `approved-by`) e `db-apply-migration.yml` (branch `claude/perf-idx-sds-restock-counts-261114-1006`) |
+
+## 2026-11-15 — Reparo: `trg_anon_rate_guard` em `kill_switch_hits` (resgate da branch `claude/laughing-cori-o9w35e`)
+
+O Gate 1.13.2 (Deploy Gates run 41402296461, 2026-11-02) detectou o trigger `trg_anon_rate_guard` ausente em
+`kill_switch_hits`, embora a `20261029160339` (que o cria) esteja no ledger. Nenhuma migration posterior no `main`
+recria o trigger. A migration de reparo (DROP IF EXISTS + CREATE TRIGGER, mesma definição da `20261029160339`) vem da
+branch `claude/laughing-cori-o9w35e` (commit `1f3a1734e`), com arquivo de rollback (E063).
+**NÃO VERIFICADO no banco em 2026-11-15**: se o trigger já existir em produção, a migration é idempotente (DROP IF EXISTS
+antes do CREATE) — confirmar com `SELECT tgname FROM pg_trigger WHERE tgrelid = 'public.kill_switch_hits'::regclass`
+antes do dispatch. Ainda não está no ledger; aplicação só por `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261102063000` | `repair_kill_switch_hits_anon_rate_guard` | `1cfc7343ea254805b19c765fbce566eb3acd23f6aea36fa2b35fd38623ce2226` | pendente — aplicar via `db-apply-migration.yml` após merge (estado do trigger em produção NÃO VERIFICADO em 2026-11-15) |
