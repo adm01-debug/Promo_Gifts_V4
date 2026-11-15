@@ -7,6 +7,9 @@
 
 import { useState } from 'react';
 import { Loader2, Paintbrush, RefreshCw, Info, ChevronDown, Wand2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { createClientLogger } from '@/lib/telemetry/structuredLogger';
+import { fetchClientLogoFile } from './clientLogoFile';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -29,6 +32,7 @@ import { LogoColorAnalyzer } from './LogoColorAnalyzer';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import type { DetectedColor } from '@/hooks/simulation';
 
+const log = createClientLogger('mockup-config-panel');
 interface Technique {
   id: string;
   name: string;
@@ -124,283 +128,304 @@ export function MockupConfigPanel({
 }: MockupConfigPanelProps) {
   const hasLogo = personalizationAreas.some((a) => a.logoPreview);
   const [confirmClearOpen, setConfirmClearOpen] = useState(false);
+  // Logo do CRM na área ativa pelo MESMO caminho do upload manual (formato, tamanho, SVG, cor).
+  const handleUseClientLogo = async (client: MockupClient) => {
+    if (!client.logo_url) return; // a ação só é oferecida para cliente com logo
+    const areaId = activeAreaId ?? personalizationAreas[0]?.id;
+    if (!areaId) {
+      toast.error('Selecione uma área de personalização antes de usar a logo do cliente.');
+      return;
+    }
+    try {
+      onLogoUpload(areaId, await fetchClientLogoFile(client.logo_url));
+    } catch (err) {
+      // Não mexe em cliente nem produto: avisa e mantém o upload manual.
+      toast.error('Não foi possível carregar a logo do cliente. Faça o upload manual.');
+      log.error('use_client_logo_failed', { error: err instanceof Error ? err.message : '?' });
+    }
+  };
 
   return (
     <>
-    <Card className="border-border/30">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Wand2 className="h-5 w-5 text-primary" aria-hidden="true" />
-          Configuração
-        </CardTitle>
-        <CardDescription>
-          Selecione o produto, técnica e faça upload do logo do cliente
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {isLoadingData && (
-          <div className="flex items-center justify-center py-8">
-            <div className="text-center" role="status">
-              <Loader2
-                className="mx-auto mb-2 h-8 w-8 animate-spin text-primary"
-                aria-hidden="true"
-              />
-              <p className="text-sm text-muted-foreground">Carregando dados...</p>
+      <Card className="border-border/30">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Wand2 className="h-5 w-5 text-primary" aria-hidden="true" />
+            Configuração
+          </CardTitle>
+          <CardDescription>
+            Selecione o produto, técnica e faça upload do logo do cliente
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {isLoadingData && (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-center" role="status">
+                <Loader2
+                  className="mx-auto mb-2 h-8 w-8 animate-spin text-primary"
+                  aria-hidden="true"
+                />
+                <p className="text-sm text-muted-foreground">Carregando dados...</p>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {!isLoadingData && (
-          <>
-            {/* Step 1: Client Selection — collapsible on mobile */}
-            <MobileCollapsibleSection
-              id="step-client"
-              label="Empresa"
-              isCompleted={!!selectedClient}
-              summary={selectedClient?.name}
-              required
-            >
-              <MockupClientSelector
-                selectedClient={selectedClient}
-                onClientSelect={onClientSelect}
-              />
-            </MobileCollapsibleSection>
-
-            {/* Step 2: Product Selection */}
-            <MobileCollapsibleSection
-              id="step-product"
-              label="Produto"
-              isCompleted={!!productSelection}
-              summary={productSelection?.product.name}
-            >
-              <MockupProductSelector selection={productSelection} onSelect={onProductSelect} />
-            </MobileCollapsibleSection>
-
-            {/* Step 3: Technique Selection */}
-            <MobileCollapsibleSection
-              id="step-technique"
-              label="Técnica de Personalização"
-              isCompleted={!!selectedTechnique}
-              summary={selectedTechnique?.name}
-              trailing={
-                selectedTechnique && (
-                  <TechniqueTooltip technique={selectedTechnique}>
-                    <Info
-                      className="h-3.5 w-3.5 cursor-help text-muted-foreground transition-colors hover:text-primary"
-                      aria-label="Informações sobre a técnica"
-                    />
-                  </TechniqueTooltip>
-                )
-              }
-            >
-              <Select
-                value={selectedTechnique?.id ?? ''}
-                onValueChange={(value) => {
-                  const technique = filteredTechniques.find((t) => t.id === value);
-                  onTechniqueSelect(technique || null);
-                }}
-              >
-                <SelectTrigger
-                  data-testid="mockup-technique-select-trigger"
-                  aria-label="Selecionar técnica de personalização"
-                >
-                  <SelectValue placeholder="Selecione uma técnica..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {filteredTechniques.length > 0 ? (
-                    <>
-                      {productSelection && filteredTechniques.length < techniques.length && (
-                        <div className="bg-muted/50 px-2 py-1.5 text-[10px] text-muted-foreground">
-                          Técnicas compatíveis com {productSelection.product.name}
-                        </div>
-                      )}
-                      {filteredTechniques
-                        .filter((t) => t.id)
-                        .map((technique) => (
-                          <TechniqueTooltip key={technique.id} technique={technique}>
-                            <SelectItem value={technique.id} className="cursor-pointer">
-                              <div className="flex w-full flex-col gap-0.5">
-                                <div className="flex items-center gap-2">
-                                  <Paintbrush
-                                    className="h-3.5 w-3.5 text-primary"
-                                    aria-hidden="true"
-                                  />
-                                  <span>{technique.name}</span>
-                                  {technique.maxWidth && technique.maxHeight ? (
-                                    <span className="ml-auto text-[10px] tabular-nums text-muted-foreground">
-                                      {technique.maxWidth}×{technique.maxHeight}cm
-                                    </span>
-                                  ) : null}
-                                </div>
-                                {(technique.variationLabel ||
-                                  technique.maxColors ||
-                                  technique.isCurved ||
-                                  technique.usesDimension) && (
-                                  <div className="ml-5 flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                                    {technique.variationLabel && (
-                                      <span className="max-w-[140px] truncate">
-                                        {technique.variationLabel}
-                                      </span>
-                                    )}
-                                    {technique.maxColors ? (
-                                      <span>
-                                        · {technique.maxColors} cor
-                                        {technique.maxColors > 1 ? 'es' : ''}
-                                      </span>
-                                    ) : null}
-                                    {technique.isCurved ? <span>· curvo</span> : null}
-                                    {technique.usesDimension ? <span>· por área</span> : null}
-                                  </div>
-                                )}
-                              </div>
-                            </SelectItem>
-                          </TechniqueTooltip>
-                        ))}
-                    </>
-                  ) : (
-                    <div className="px-2 py-4 text-center text-sm text-muted-foreground">
-                      {productSelection
-                        ? 'Nenhuma técnica disponível para este produto'
-                        : 'Selecione um produto primeiro'}
-                    </div>
-                  )}
-                </SelectContent>
-              </Select>
-              {selectedTechnique &&
-                (selectedTechnique.locationName ||
-                  selectedTechnique.maxWidth ||
-                  selectedTechnique.maxColors) && (
-                  <p className="text-[11px] text-muted-foreground">
-                    {selectedTechnique.locationName ? (
-                      <>
-                        Local:{' '}
-                        <strong className="text-foreground/80">
-                          {selectedTechnique.locationName}
-                        </strong>
-                      </>
-                    ) : null}
-                    {selectedTechnique.maxWidth && selectedTechnique.maxHeight ? (
-                      <>
-                        {' '}
-                        · Máx {selectedTechnique.maxWidth}×{selectedTechnique.maxHeight}cm
-                      </>
-                    ) : null}
-                    {selectedTechnique.maxColors ? (
-                      <>
-                        {' '}
-                        · {selectedTechnique.maxColors} cor
-                        {selectedTechnique.maxColors > 1 ? 'es' : ''}
-                        {selectedTechnique.chargesPerColor ? ' (cobra por cor)' : ''}
-                      </>
-                    ) : null}
-                    {selectedTechnique.setupCost ? (
-                      <> · Setup R$ {selectedTechnique.setupCost.toFixed(2)}</>
-                    ) : null}
-                  </p>
-                )}
-              {productSelection &&
-                filteredTechniques.length > 0 &&
-                filteredTechniques.length < techniques.length && (
-                  <p className="text-[10px] text-muted-foreground">
-                    {filteredTechniques.length} de {techniques.length} técnicas compatíveis
-                  </p>
-                )}
-            </MobileCollapsibleSection>
-
-            {/* Step 4: Areas */}
-            <MobileCollapsibleSection
-              id="step-logo"
-              label="Áreas de Personalização"
-              isCompleted={hasLogo}
-              summary={
-                hasLogo
-                  ? `${personalizationAreas.filter((a) => a.logoPreview).length} logo(s)`
-                  : undefined
-              }
-            >
-              <MultiAreaManager
-                areas={personalizationAreas}
-                activeAreaId={activeAreaId}
-                onAreasChange={onAreasChange}
-                onActiveAreaChange={onActiveAreaChange}
-                onLogoUpload={onLogoUpload}
-                onLogoRemove={onLogoRemove}
-                areaErrors={areaErrors}
-                retryingAreaIds={retryingAreaIds}
-                onRetryArea={onRetryArea}
-                productLocations={productLocations}
-              />
-            </MobileCollapsibleSection>
-
-            {/* Step 5: Art Files — only rendered when user is authenticated */}
-            {userId && (
+          {!isLoadingData && (
+            <>
+              {/* Step 1: Client Selection — collapsible on mobile */}
               <MobileCollapsibleSection
-                id="step-art-files"
-                label="Arquivos de Arte (Vetor)"
-                isCompleted={artAttachments.length > 0}
-                summary={
-                  artAttachments.length > 0 ? `${artAttachments.length} arquivo(s)` : undefined
-                }
+                id="step-client"
+                label="Empresa"
+                isCompleted={!!selectedClient}
+                summary={selectedClient?.name}
+                required
               >
-                <ArtFileUpload
-                  userId={userId}
-                  attachments={artAttachments}
-                  onAttachmentsChange={onArtAttachmentsChange}
+                <MockupClientSelector
+                  selectedClient={selectedClient}
+                  onClientSelect={onClientSelect}
+                  onUseClientLogo={handleUseClientLogo}
                 />
               </MobileCollapsibleSection>
-            )}
 
-            {/* Logo Color Analysis — auto-appears after logo upload */}
-            {logoColorAnalysis &&
-              (logoColorAnalysis.colors.length > 0 || logoColorAnalysis.isAnalyzing) && (
+              {/* Step 2: Product Selection */}
+              <MobileCollapsibleSection
+                id="step-product"
+                label="Produto"
+                isCompleted={!!productSelection}
+                summary={productSelection?.product.name}
+              >
+                <MockupProductSelector selection={productSelection} onSelect={onProductSelect} />
+              </MobileCollapsibleSection>
+
+              {/* Step 3: Technique Selection */}
+              <MobileCollapsibleSection
+                id="step-technique"
+                label="Técnica de Personalização"
+                isCompleted={!!selectedTechnique}
+                summary={selectedTechnique?.name}
+                trailing={
+                  selectedTechnique && (
+                    <TechniqueTooltip technique={selectedTechnique}>
+                      <Info
+                        className="h-3.5 w-3.5 cursor-help text-muted-foreground transition-colors hover:text-primary"
+                        aria-label="Informações sobre a técnica"
+                      />
+                    </TechniqueTooltip>
+                  )
+                }
+              >
+                <Select
+                  value={selectedTechnique?.id ?? ''}
+                  onValueChange={(value) => {
+                    const technique = filteredTechniques.find((t) => t.id === value);
+                    onTechniqueSelect(technique || null);
+                  }}
+                >
+                  <SelectTrigger
+                    data-testid="mockup-technique-select-trigger"
+                    aria-label="Selecionar técnica de personalização"
+                  >
+                    <SelectValue placeholder="Selecione uma técnica..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {filteredTechniques.length > 0 ? (
+                      <>
+                        {productSelection && filteredTechniques.length < techniques.length && (
+                          <div className="bg-muted/50 px-2 py-1.5 text-[10px] text-muted-foreground">
+                            Técnicas compatíveis com {productSelection.product.name}
+                          </div>
+                        )}
+                        {filteredTechniques
+                          .filter((t) => t.id)
+                          .map((technique) => (
+                            <TechniqueTooltip key={technique.id} technique={technique}>
+                              <SelectItem value={technique.id} className="cursor-pointer">
+                                <div className="flex w-full flex-col gap-0.5">
+                                  <div className="flex items-center gap-2">
+                                    <Paintbrush
+                                      className="h-3.5 w-3.5 text-primary"
+                                      aria-hidden="true"
+                                    />
+                                    <span>{technique.name}</span>
+                                    {technique.maxWidth && technique.maxHeight ? (
+                                      <span className="ml-auto text-[10px] tabular-nums text-muted-foreground">
+                                        {technique.maxWidth}×{technique.maxHeight}cm
+                                      </span>
+                                    ) : null}
+                                  </div>
+                                  {(technique.variationLabel ||
+                                    technique.maxColors ||
+                                    technique.isCurved ||
+                                    technique.usesDimension) && (
+                                    <div className="ml-5 flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                                      {technique.variationLabel && (
+                                        <span className="max-w-[140px] truncate">
+                                          {technique.variationLabel}
+                                        </span>
+                                      )}
+                                      {technique.maxColors ? (
+                                        <span>
+                                          · {technique.maxColors} cor
+                                          {technique.maxColors > 1 ? 'es' : ''}
+                                        </span>
+                                      ) : null}
+                                      {technique.isCurved ? <span>· curvo</span> : null}
+                                      {technique.usesDimension ? <span>· por área</span> : null}
+                                    </div>
+                                  )}
+                                </div>
+                              </SelectItem>
+                            </TechniqueTooltip>
+                          ))}
+                      </>
+                    ) : (
+                      <div className="px-2 py-4 text-center text-sm text-muted-foreground">
+                        {productSelection
+                          ? 'Nenhuma técnica disponível para este produto'
+                          : 'Selecione um produto primeiro'}
+                      </div>
+                    )}
+                  </SelectContent>
+                </Select>
+                {selectedTechnique &&
+                  (selectedTechnique.locationName ||
+                    selectedTechnique.maxWidth ||
+                    selectedTechnique.maxColors) && (
+                    <p className="text-[11px] text-muted-foreground">
+                      {selectedTechnique.locationName ? (
+                        <>
+                          Local:{' '}
+                          <strong className="text-foreground/80">
+                            {selectedTechnique.locationName}
+                          </strong>
+                        </>
+                      ) : null}
+                      {selectedTechnique.maxWidth && selectedTechnique.maxHeight ? (
+                        <>
+                          {' '}
+                          · Máx {selectedTechnique.maxWidth}×{selectedTechnique.maxHeight}cm
+                        </>
+                      ) : null}
+                      {selectedTechnique.maxColors ? (
+                        <>
+                          {' '}
+                          · {selectedTechnique.maxColors} cor
+                          {selectedTechnique.maxColors > 1 ? 'es' : ''}
+                          {selectedTechnique.chargesPerColor ? ' (cobra por cor)' : ''}
+                        </>
+                      ) : null}
+                      {selectedTechnique.setupCost ? (
+                        <> · Setup R$ {selectedTechnique.setupCost.toFixed(2)}</>
+                      ) : null}
+                    </p>
+                  )}
+                {productSelection &&
+                  filteredTechniques.length > 0 &&
+                  filteredTechniques.length < techniques.length && (
+                    <p className="text-[10px] text-muted-foreground">
+                      {filteredTechniques.length} de {techniques.length} técnicas compatíveis
+                    </p>
+                  )}
+              </MobileCollapsibleSection>
+
+              {/* Step 4: Areas */}
+              <MobileCollapsibleSection
+                id="step-logo"
+                label="Áreas de Personalização"
+                isCompleted={hasLogo}
+                summary={
+                  hasLogo
+                    ? `${personalizationAreas.filter((a) => a.logoPreview).length} logo(s)`
+                    : undefined
+                }
+              >
+                <MultiAreaManager
+                  areas={personalizationAreas}
+                  activeAreaId={activeAreaId}
+                  onAreasChange={onAreasChange}
+                  onActiveAreaChange={onActiveAreaChange}
+                  onLogoUpload={onLogoUpload}
+                  onLogoRemove={onLogoRemove}
+                  areaErrors={areaErrors}
+                  retryingAreaIds={retryingAreaIds}
+                  onRetryArea={onRetryArea}
+                  productLocations={productLocations}
+                />
+              </MobileCollapsibleSection>
+
+              {/* Step 5: Art Files — only rendered when user is authenticated */}
+              {userId && (
                 <MobileCollapsibleSection
-                  id="step-colors"
-                  label="Cores da Logo"
-                  isCompleted={
-                    logoColorAnalysis.colors.length > 0 && !logoColorAnalysis.isAnalyzing
-                  }
+                  id="step-art-files"
+                  label="Arquivos de Arte (Vetor)"
+                  isCompleted={artAttachments.length > 0}
                   summary={
-                    logoColorAnalysis.colors.length > 0
-                      ? `${logoColorAnalysis.colors.length} Pantone`
-                      : undefined
+                    artAttachments.length > 0 ? `${artAttachments.length} arquivo(s)` : undefined
                   }
                 >
-                  <LogoColorAnalyzer
-                    colors={logoColorAnalysis.colors}
-                    isAnalyzing={logoColorAnalysis.isAnalyzing}
-                    error={logoColorAnalysis.error}
-                    onPantoneChange={logoColorAnalysis.updatePantone}
+                  <ArtFileUpload
+                    userId={userId}
+                    attachments={artAttachments}
+                    onAttachmentsChange={onArtAttachmentsChange}
                   />
                 </MobileCollapsibleSection>
               )}
 
-            {/* Reset Button */}
-            <div className="flex gap-2 pt-4">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="outline" onClick={() => setConfirmClearOpen(true)} aria-label="Limpar formulário">
-                    <RefreshCw className="h-4 w-4" aria-hidden="true" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Limpar formulário</TooltipContent>
-              </Tooltip>
-            </div>
-          </>
-        )}
-      </CardContent>
-    </Card>
-    {/* FT-172: Confirmação antes de limpar formulário */}
-    <ConfirmDialog
-      open={confirmClearOpen}
-      onOpenChange={setConfirmClearOpen}
-      variant="warning"
-      title="Limpar formulário?"
-      description="Todas as seleções (produto, técnica, cliente, áreas e arte) serão removidas."
-      confirmLabel="Limpar tudo"
-      cancelLabel="Cancelar"
-      onConfirm={onReset}
-      testId="mockup-config-panel-reset-confirm"
-    />
+              {/* Logo Color Analysis — auto-appears after logo upload */}
+              {logoColorAnalysis &&
+                (logoColorAnalysis.colors.length > 0 || logoColorAnalysis.isAnalyzing) && (
+                  <MobileCollapsibleSection
+                    id="step-colors"
+                    label="Cores da Logo"
+                    isCompleted={
+                      logoColorAnalysis.colors.length > 0 && !logoColorAnalysis.isAnalyzing
+                    }
+                    summary={
+                      logoColorAnalysis.colors.length > 0
+                        ? `${logoColorAnalysis.colors.length} Pantone`
+                        : undefined
+                    }
+                  >
+                    <LogoColorAnalyzer
+                      colors={logoColorAnalysis.colors}
+                      isAnalyzing={logoColorAnalysis.isAnalyzing}
+                      error={logoColorAnalysis.error}
+                      onPantoneChange={logoColorAnalysis.updatePantone}
+                    />
+                  </MobileCollapsibleSection>
+                )}
+
+              {/* Reset Button */}
+              <div className="flex gap-2 pt-4">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      onClick={() => setConfirmClearOpen(true)}
+                      aria-label="Limpar formulário"
+                    >
+                      <RefreshCw className="h-4 w-4" aria-hidden="true" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Limpar formulário</TooltipContent>
+                </Tooltip>
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+      {/* FT-172: Confirmação antes de limpar formulário */}
+      <ConfirmDialog
+        open={confirmClearOpen}
+        onOpenChange={setConfirmClearOpen}
+        variant="warning"
+        title="Limpar formulário?"
+        description="Todas as seleções (produto, técnica, cliente, áreas e arte) serão removidas."
+        confirmLabel="Limpar tudo"
+        cancelLabel="Cancelar"
+        onConfirm={onReset}
+        testId="mockup-config-panel-reset-confirm"
+      />
     </>
   );
 }
