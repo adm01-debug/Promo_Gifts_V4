@@ -21,6 +21,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { SinaisDaMarcaDoCliente } from '@/hooks/assistant/useClientBrandSignals';
 import {
   contextoDoCliente,
+  ErroDeRpcNaoAplicada,
   nomeDoGrupoDeCorUnico,
   LIMITE_DE_CANDIDATOS,
   mapearCandidato,
@@ -420,5 +421,34 @@ describe('resposta malformada', () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual([]);
+  });
+});
+
+describe('RPC ainda não aplicada no banco', () => {
+  it('PGRST202 vira ErroDeRpcNaoAplicada, para o card não dizer que falhou', async () => {
+    // A migration chega ao `main` antes de ser aplicada em produção. Sem este
+    // ramo, a ficha de TODO cliente mostrava "A busca de brindes falhou".
+    mockRpc.mockResolvedValue({
+      data: null,
+      error: { code: 'PGRST202', message: 'Could not find the function' },
+    });
+
+    const { result } = renderHookWithProviders(() => useSalesAssistantCandidates(sinais()));
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(result.current.error).toBeInstanceOf(ErroDeRpcNaoAplicada);
+  });
+
+  it('qualquer outro erro continua sendo erro comum — falha real não fica escondida', async () => {
+    mockRpc.mockResolvedValue({
+      data: null,
+      error: { code: '42501', message: 'permission denied for function' },
+    });
+
+    const { result } = renderHookWithProviders(() => useSalesAssistantCandidates(sinais()));
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(result.current.error).toBeInstanceOf(Error);
+    expect(result.current.error).not.toBeInstanceOf(ErroDeRpcNaoAplicada);
   });
 });
