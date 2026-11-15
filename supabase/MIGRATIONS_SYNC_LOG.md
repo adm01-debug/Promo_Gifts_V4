@@ -1119,6 +1119,12 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 |---|---|---|
 | `20261106232045` | `fix_handle_updated_at_search_path` | aplicada — ledger e `pg_proc.proconfig = {search_path=public}` confirmados no canônico em 2026-11-08 |
 
+## 2026-11-07 — Identidade canônica de vendedor CRM
+
+| version | sha256 | arquivo | status |
+|---|---|---|---|
+| `20261107134429` | `c35bd1512cfb61af55cc132e1f43332789911483f581d7f7c08e432ed521642d` | `create_crm_seller_identity_links` | pendente — cria vínculo 1:1 privado `auth_user_id → crm_seller_id`; aplicar via `db-apply-migration.yml` após merge da PR, antes do deploy do `crm-db-bridge` |
+
 ## Recibos — E15 (workflow de aplicação controlada)
 
 | versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check | status |
