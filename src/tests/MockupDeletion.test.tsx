@@ -96,6 +96,7 @@ const createMockGeneratorState = () => ({
   setActiveAreaId: vi.fn(),
   handleAreaLogoUpload: vi.fn(),
   logoColorAnalysis: { colors: [], clearAnalysis: vi.fn() },
+  clearColorAnalysisForArea: vi.fn(),
   productLocations: [],
   getProductImage: vi.fn(),
   activeArea: null,
@@ -609,8 +610,14 @@ describe('Mockup Deletion Flow', () => {
     expect(mockMg.setPersonalizationAreas).toHaveBeenCalledWith([{ id: 'area-2' }]);
     expect(mockMg.setActiveAreaId).toHaveBeenCalledWith('area-2');
     expect(mockMg.handleAreaLogoUpload).toHaveBeenCalledWith(expect.any(File));
-    // FT-167: a análise de cores é global (pertence ao logo da área aberta). Sem área ativa
-    // a remoção não é da área aberta, então a análise NÃO é apagada.
+    // FT-167 + guard de 2026-11-15: a página não decide mais se limpa — ela delega para
+    // `clearColorAnalysisForArea(areaId)`, e o hook limpa só se a análise viva for daquela
+    // área. A página nunca deve chamar `clearAnalysis` direto: fazer isso de volta traria
+    // o bug de apagar a análise da área aberta ao mexer em outra.
+    // O botão clicado aqui é "Remover logo", que passa `activeAreaId` — e neste cenário de
+    // estado vazio ele é `null`. A página delega mesmo assim, e o hook é quem decide (com
+    // análise nenhuma viva, não há o que limpar).
+    expect(mockMg.clearColorAnalysisForArea).toHaveBeenCalledWith(null);
     expect(mockMg.logoColorAnalysis.clearAnalysis).not.toHaveBeenCalled();
     expect(mockMg.updateActiveArea).not.toHaveBeenCalled();
     expect(mockMg.setArtAttachments).toHaveBeenCalledWith([{ id: 'art-2' }]);
@@ -696,6 +703,7 @@ describe('Mockup Deletion Flow', () => {
         ],
         clearAnalysis: vi.fn(),
       },
+      clearColorAnalysisForArea: vi.fn(),
       positionHistory: {
         canUndo: true,
         canRedo: true,
@@ -733,7 +741,14 @@ describe('Mockup Deletion Flow', () => {
     expect(mockTechnique.setColorConfigDialogOpen).toHaveBeenCalledWith(true);
 
     fireEvent.click(screen.getByRole('button', { name: 'Remover logo' }));
-    expect(mockMg.logoColorAnalysis.clearAnalysis).toHaveBeenCalled();
+    // A asserção original era `clearAnalysis).toHaveBeenCalled()`. Desde 2026-11-15 a página
+    // não decide mais: ela delega para `clearColorAnalysisForArea(areaId)` com o id da área
+    // de onde a logo saiu — aqui a área ATIVA (`area-1`). Quem decide limpar é o hook, e a
+    // decisão está provada em src/hooks/mockup/__tests__/colorAnalysisPorArea.test.ts
+    // (limpa quando a análise é daquela área, não limpa quando é de outra). Trocar esta
+    // asserção de volta para `clearAnalysis` direto reintroduziria o bug de apagar a análise
+    // da área aberta ao mexer em outra.
+    expect(mockMg.clearColorAnalysisForArea).toHaveBeenCalledWith('area-1');
     expect(mockMg.setPersonalizationAreas).toHaveBeenCalledWith(expect.any(Function));
     // Porte da asserção da PR #3339: o updater limpa o logo SÓ da área ativa (area-1)
     // e preserva as demais intactas.
@@ -758,10 +773,21 @@ describe('Mockup Deletion Flow', () => {
       expect.objectContaining({ id: 'area-2', logoPreview: 'data:image/png;base64,verso' }),
     ]);
 
-    // FT-167: remover o logo de OUTRA área (area-2) limpa só aquela área e NÃO pode apagar
-    // a análise de cores da área aberta (area-1) — clearAnalysis segue com 1 chamada.
+    // FT-167 + guard de 2026-11-15: remover o logo de OUTRA área (area-2) limpa só aquela
+    // área. A decisão de apagar ou não a análise de cores é do hook, via
+    // `clearColorAnalysisForArea('area-2')` — a página não chama `clearAnalysis` por conta
+    // própria, e é por isso que a contagem dela não sobe aqui.
     fireEvent.click(screen.getByRole('button', { name: 'Remover logo de outra área' }));
-    expect(mockMg.logoColorAnalysis.clearAnalysis).toHaveBeenCalledTimes(1);
+    expect(mockMg.clearColorAnalysisForArea).toHaveBeenCalledWith('area-2');
+    // GUARD: a página NUNCA chama `clearAnalysis` por conta própria. Se alguém puser a
+    // chamada direta de volta aqui, a análise da área aberta volta a ser apagada ao mexer
+    // em outra área — foi esse o bug original. A decisão é só do hook.
+    expect(mockMg.logoColorAnalysis.clearAnalysis).not.toHaveBeenCalled();
+    // As duas remoções desta suíte (área ativa e outra área) delegaram, cada uma com o seu id.
+    expect(mockMg.clearColorAnalysisForArea.mock.calls.map((c) => c[0])).toEqual([
+      'area-1',
+      'area-2',
+    ]);
     const updateOtherArea = mockMg.setPersonalizationAreas.mock.calls.at(-1)?.[0] as (
       areas: AreaWithLogo[],
     ) => AreaWithLogo[];
