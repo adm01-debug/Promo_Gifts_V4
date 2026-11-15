@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f1044db3b405b92f1257b81914de7d4e63fa8c7e",
+  "commit": "8ece9cc431c6fffdc83354f11f5722aa987005ad",
   "branch": "main",
-  "data_commit": "2026-11-15T15:45:47Z",
+  "data_commit": "2026-11-15T15:54:58Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "8ece9cc4",
+    "data": "2026-11-15",
+    "assunto": "fix(inteligencia): grafico de mercado nao acusa erro quando a RPC ainda nao foi aplicada (#3675)"
+   },
    {
     "sha": "f1044db3",
     "data": "2026-11-15",
@@ -126,11 +131,6 @@
     "sha": "e998b095",
     "data": "2026-11-14",
     "assunto": "fix(kit): rascunhos de kit salvos sem personalização voltam a abrir (resgate cirúrgico da #3390) (#3631)"
-   },
-   {
-    "sha": "36b6c1d7",
-    "data": "2026-11-14",
-    "assunto": "fix(security): corrige o sha256 do retrato de policies (destrava o CI) (#3635)"
    }
   ],
   "arquivos_mudados_7d": 2118,
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 231
+    "mudancas": 230
    },
    {
     "pasta": "src/components/quotes",
@@ -247,11 +247,11 @@
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 14
+    "mudancas": 13
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 14
+    "mudancas": 13
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 581
+    "commits": 580
    },
    {
     "autor": "Joaquim Ataides",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10265,
   "arquivos_codigo": 5292,
-  "linhas_codigo": 1008503,
+  "linhas_codigo": 1008624,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1884,7 +1884,7 @@
   },
   "src/components": {
    "arquivos": 1378,
-   "linhas": 275485
+   "linhas": 275502
   },
   "src/config": {
    "arquivos": 1,
@@ -1908,7 +1908,7 @@
   },
   "src/hooks": {
    "arquivos": 469,
-   "linhas": 88118
+   "linhas": 88222
   },
   "src/integrations": {
    "arquivos": 11,
@@ -2358,7 +2358,7 @@
   "console_log": 1270,
   "ts_ignore": 0,
   "eslint_disable": 24,
-  "todos": 105,
+  "todos": 106,
   "arquivos_acima_500_linhas": 185
  },
  "todos": [
@@ -2691,6 +2691,12 @@
    "linha": 216,
    "tipo": "TODO",
    "texto": "render, inclusive"
+  },
+  {
+   "arquivo": "src/hooks/intelligence/__tests__/useMarketIntelligenceMacro.test.tsx",
+   "linha": 100,
+   "tipo": "TODO",
+   "texto": "usuário logado passou a ver o cartão"
   },
   {
    "arquivo": "src/hooks/products/useProductsLightweight.ts",

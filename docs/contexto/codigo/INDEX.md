@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f1044db3b405b92f1257b81914de7d4e63fa8c7e` (2026-11-15T15:45:47Z).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8ece9cc431c6fffdc83354f11f5722aa987005ad` (2026-11-15T15:54:58Z).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 10265 |
 | arquivos_codigo | 5292 |
-| linhas_codigo | 1008503 |
+| linhas_codigo | 1008624 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -589,8 +589,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43778 nós · 75714 arestas · 2303 comunidades · grafo do commit `f1044db3`
-- comunidades maiores: vitest (983), ref_components (656), ref_node_child_process (416), ref_hooks (404), react (391), ref_contexts (380), ref_node_fs (359), cors.ts (316), react-router-dom (311), scripts (302), sonner (285), gotoAndSettle (271)
+- 43779 nós · 75715 arestas · 2380 comunidades · grafo do commit `8ece9cc4`
+- comunidades maiores: ref_integrations (721), ref_components (683), vitest (629), ref_hooks (457), @tanstack/react-query (448), ref_node_child_process (415), @testing-library/react (401), ref_node_fs (391), react (372), sonner (304), scripts (302), concludeCheck (278)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -607,8 +607,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - .github/workflows/deploy-gates.yml (16)
 - src/pages/kit-builder/KitBuilderPage.tsx (16)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (15)
-- analise-prs/RELATORIO_PRS.md (14)
-- analise-prs/prs.json (14)
+- analise-prs/RELATORIO_PRS.md (13)
+- analise-prs/prs.json (13)
 - audit/supabase-reference-catalog.temporary.json (12)
 
 ## Workflows
@@ -1173,6 +1173,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-15 `8ece9cc4` fix(inteligencia): grafico de mercado nao acusa erro quando a RPC ainda nao foi aplicada (#3675)
 - 2026-11-15 `f1044db3` feat(mockup): aviso de "não carregou, tentar de novo" no catálogo do painel de mockup (#3670)
 - 2026-11-15 `c72d30a9` fix(mockup): etapas do gerador voltam a ser anunciadas pelo leitor de tela no celular (#3671)
 - 2026-11-15 `aa89361b` fix(magic-up): resgata varredura axe da pagina e nomeia selects e campos do briefing (#3668)
@@ -1187,7 +1188,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-15 `eecfde92` fix: trem de 3 correções de front — busca, cores por área do mockup e trocar item no kit (#3653)
 - 2026-11-15 `3893d57f` fix(ci): portão de recibos deixa de dar verde com version citada no recibo de outra migration (#3649)
 - 2026-11-15 `1eafa069` fix(db): cria o rollback que destrava o revoke E18 — estoque alterável por qualquer usuário logado (#3648)
-- 2026-11-15 `e5afe824` fix: trem das 5 correções já verdes — recibos, código morto do CRM, 3 resgates, gerador de mockup e aba Marketing (#3647
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `f1044db3b4` · branch `main` · 2026-11-15 15:47 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `8ece9cc431` · branch `main` · 2026-11-15 15:56 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -5495,6 +5495,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MAX_RETRIES` | `2` | `src/hooks/intelligence/useAIRecommendations.ts` |
 | `INITIAL_BACKOFF_MS` | `500` | `src/hooks/intelligence/useAIRecommendations.ts` |
 | `ID_CHUNK_SIZE` | `150` | `src/hooks/intelligence/useCommercialIntelligence.helpers.ts` |
+| `PGRST_FUNCAO_INEXISTENTE` | `'PGRST202'` | `src/hooks/intelligence/useMarketIntelligenceMacro.ts` |
 | `SPARKLINE_WINDOW_DAYS` | `90` | `src/hooks/intelligence/useSparklineSales.tsx` |
 | `PAGE_SIZE` | `1000` | `src/hooks/intelligence/useSparklineSales.tsx` |
 | `BATCH_SIZE` | `50` | `src/hooks/intelligence/useSparklineSales.tsx` |
@@ -5591,8 +5592,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MAX_ROWS` | `5000` | `src/hooks/stock/useRuptureAlerts.ts` |
 | `TABLE` | `'saved_stock_views'` | `src/hooks/stock/useSavedStockViews.ts` |
 | `MOBILE_BREAKPOINT` | `768` | `src/hooks/ui/use-mobile.tsx` |
-| `HEALTHY_INTERVAL` | `60` | `src/hooks/ui/useCloudStatus.ts` |
-| … +344 linhas — lista completa em `context.json` | | |
+| … +345 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6505,7 +6505,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21490 testes em 2182 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21494 testes em 2182 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7277,4 +7277,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ANTI-REGRESSÃO: primary_image_url deve vir ANTES de og_image_url. | `src/components/mockup/ProductSearchCombobox.tsx` |
 | NÃO contém limites numéricos: qualquer número de limite (cores, dimensões, | `src/components/mockup/TechniqueTooltip.tsx` |
 | qualitativos abaixo são apenas estimativas e aparecem rotulados como tal. | `src/components/mockup/TechniqueTooltip.tsx` |
-| … +1291 linhas — lista completa em `context.json` | |
+| … +1292 linhas — lista completa em `context.json` | |

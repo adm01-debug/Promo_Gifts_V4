@@ -8068,12 +8068,12 @@
   {
    "arquivo": "src/hooks/intelligence/__tests__/useMarketIntelligenceMacro.test.tsx",
    "tipo": "unit",
-   "linhas": 105,
+   "linhas": 171,
    "testa": [
     "src/hooks/intelligence/useMarketIntelligenceMacro.ts",
     "src/lib/supabase-untyped.ts"
    ],
-   "casos": 4
+   "casos": 7
   },
   {
    "arquivo": "src/hooks/intelligence/__tests__/useStockHistory.test.ts",

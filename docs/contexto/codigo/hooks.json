@@ -9208,7 +9208,7 @@
    "hooks_exportados": [
     "useMarketIntelligenceMacro"
    ],
-   "linhas": 198,
+   "linhas": 236,
    "dominio": "hooks/intelligence",
    "tabelas": [],
    "rpcs": [],
