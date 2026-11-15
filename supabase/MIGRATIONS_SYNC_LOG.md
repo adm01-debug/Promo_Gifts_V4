@@ -1168,6 +1168,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261107134429` | `fd1fbfceb0a148371b9507618ccf3b67a913b6f3f4b1e4e420caf0c273093286` | `--` | GitHub Actions (db-apply-migration.yml, run 43654437109; job Recibo saiu success sem gravar — registrado a posteriori) | E15 | 2026-11-14 23:41:43 UTC | job 3 (Pós-check) da run 43654437109: preflight-migration-apply --expect-applied passed — "version 20261107134429 confirmada no ledger pós-aplicação"; isInLedger=true | aplicada |
 | `20261114170845` | `594d31966a784f02c6a69faf144adc3422ab75369a5643a258fc2a7779c7eac4` | `--` | GitHub Actions (db-apply-migration.yml, run 43646998992); recibo do job 4 veio na PR #3632, que ficou em conflito no log — dados copiados dela | E15 | 2026-11-14 22:14:43 UTC | job post-check da run 43646998992 confirmou a version no ledger | aplicada |
 | `20261114170921` | `5b87f587d338b1016e5dce6f36b7f18c488baaa2e0422ac3ea5c23a91d4af9f4` | `--` | GitHub Actions (db-apply-migration.yml, run 43647154042); recibo do job 4 veio na PR #3633, que ficou em conflito no log — dados copiados dela | E15 | 2026-11-14 22:16:55 UTC | job post-check da run 43647154042 confirmou a version no ledger | aplicada |
+| `20261114014500` | `a06fe201d75afdb1be8b99ab19164ca374bb57ec5dae44808049ea33e5e6f8c0` | `--` | GitHub Actions (db-apply-migration.yml, run 43634292304); recibo do job 4 veio na PR #3624, que ficou em conflito no log — dados copiados dela e confirmados no banco | E15 | 2026-11-14 19:51:43 UTC | job 3 (Pós-check) da run 43634292304 success; version confirmada em supabase_migrations.schema_migrations (consulta read-only 2026-11-15) | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
@@ -1605,7 +1606,7 @@ comparados; sem isso o `db-schema-drift-check` replayaria as 360 sobre o baselin
 
 | version | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261114014500` | `p09_reconcile_ledger_schema_migrations` | `a06fe201d75afdb1be8b99ab19164ca374bb57ec5dae44808049ea33e5e6f8c0` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono no chat de 2026-11-14) |
+| `20261114014500` | `p09_reconcile_ledger_schema_migrations` | `a06fe201d75afdb1be8b99ab19164ca374bb57ec5dae44808049ea33e5e6f8c0` | **aplicada em 2026-11-14 19:51:43 UTC** pelo `db-apply-migration.yml` (run 43634292304; recibo E15 abaixo). Confirmada em `supabase_migrations.schema_migrations` por consulta read-only em 2026-11-15. A linha dizia "pendente" porque o job 4 da run abriu a PR #3624 em vez de gravar aqui, e a PR ficou aberta (aprovado pelo dono no chat de 2026-11-14) |
 ## 2026-11-14 — Índices de FK em estoque e índices de desempenho ausentes (supersede #3412)
 
 11 índices que faltam em produção (verificado em `pg_indexes` em 2026-11-14): 3 FKs `ON DELETE CASCADE` de
