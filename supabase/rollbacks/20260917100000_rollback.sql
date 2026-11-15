@@ -3,6 +3,22 @@
 -- (bare/wrapped multi-statement). Reintroduz o risco de savepoint acoplado
 -- descrito na migration E37.
 
+-- GUARD: rollback de migration que AINDA NAO foi aplicada nao pode rodar.
+-- Em 2026-11-15, 20260917100000 nao esta em supabase_migrations.schema_migrations
+-- (a janela de 17/set tem so 20260917061500 no ledger) e os jobs de cron em
+-- producao seguem no estado PRE-migration. Sem esta guarda, rodar o arquivo
+-- aplicaria "rollback" sobre um estado que nunca mudou.
+DO $guard$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260917100000'
+  ) THEN
+    RAISE EXCEPTION
+      'rollback abortado: a migration 20260917100000 nao esta aplicada neste banco; nao ha o que desfazer';
+  END IF;
+END
+$guard$;
+
 SELECT cron.alter_job(233, command := $cmd$SELECT public.fn_cron_safe_run(154::bigint, $sql$
     UPDATE ai_enrichment_queue SET status='pending', locked_by=NULL, locked_at=NULL,
         last_error='cron-reset:stuck>'||ROUND(EXTRACT(EPOCH FROM (now()-locked_at))/3600,1)||'h', updated_at=now()
