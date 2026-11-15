@@ -9,6 +9,7 @@
  *   - LogoSizeControls: com o vínculo de proporções LIGADO, alterar a largura
  *     mantém a proporção (e vice-versa); DESLIGADO, o outro lado não muda.
  */
+import { useState } from 'react';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -54,6 +55,38 @@ function renderSize(overrides: Partial<Parameters<typeof LogoSizeControls>[0]> =
     />,
   );
   return { onSizeChange, onLogoScaleChange };
+}
+
+/** Versão com estado: as props voltam para o componente, como na tela real. */
+function renderSizeStateful(
+  initial: { width: number; height: number },
+  overrides: Partial<Parameters<typeof LogoSizeControls>[0]> = {},
+) {
+  const calls: Array<[number, number]> = [];
+  function Harness() {
+    const [size, setSize] = useState(initial);
+    return (
+      <LogoSizeControls
+        logoPreview="data:image/png;base64,xxx"
+        logoWidth={size.width}
+        logoHeight={size.height}
+        logoScale={100}
+        logoRotation={0}
+        positionX={50}
+        positionY={50}
+        maxWidth={20}
+        maxHeight={20}
+        onSizeChange={(width, height) => {
+          calls.push([width, height]);
+          setSize({ width, height });
+        }}
+        onLogoScaleChange={vi.fn()}
+        {...overrides}
+      />
+    );
+  }
+  render(<Harness />);
+  return { calls, last: () => calls[calls.length - 1] };
 }
 
 describe('LogoQuickActions — centralizar com alvo explícito', () => {
@@ -121,8 +154,49 @@ describe('LogoSizeControls — tamanho proporcional (vínculo de proporções)',
   });
 
   it('o vínculo não deixa o lado proporcional passar do máximo da área', () => {
+    // Razão 2:1 e altura limitada a 2,1 cm → a largura para em 4,2 cm, não em 4,5.
     const { onSizeChange } = renderSize({ logoWidth: 4, logoHeight: 2, maxHeight: 2.1 });
     fireEvent.click(screen.getByRole('button', { name: 'Aumentar largura' }));
-    expect(onSizeChange).toHaveBeenCalledWith(4.5, 2.1);
+    expect(onSizeChange).toHaveBeenCalledWith(4.2, 2.1);
+  });
+
+  it('máximo da ALTURA trava a largura e preserva a proporção', () => {
+    // 4×2 (razão 2) com altura máxima já no limite: a largura não pode crescer.
+    const { onSizeChange } = renderSize({ logoWidth: 4, logoHeight: 2, maxHeight: 2 });
+    fireEvent.click(screen.getByRole('button', { name: 'Aumentar largura' }));
+    expect(onSizeChange).toHaveBeenCalledWith(4, 2);
+  });
+
+  it('máximo da LARGURA trava a altura e preserva a proporção', () => {
+    // 4×2 (razão 2) com largura máxima já no limite: a altura não pode crescer.
+    const { onSizeChange } = renderSize({ logoWidth: 4, logoHeight: 2, maxWidth: 4 });
+    fireEvent.click(screen.getByRole('button', { name: 'Aumentar altura' }));
+    expect(onSizeChange).toHaveBeenCalledWith(4, 2);
+  });
+
+  it('mínimo da ALTURA trava a largura e preserva a proporção', () => {
+    // 2,2×1,1 (razão 2): a altura não desce de 1 cm, então a largura para em 2.
+    const { onSizeChange } = renderSize({ logoWidth: 2.2, logoHeight: 1.1 });
+    fireEvent.click(screen.getByRole('button', { name: 'Diminuir largura' }));
+    expect(onSizeChange).toHaveBeenCalledWith(2, 1);
+  });
+
+  it('mínimo da LARGURA trava a altura e preserva a proporção', () => {
+    // 1,2×2,4 (razão 0,5): a largura não desce de 1 cm, então a altura para em 2.
+    const { onSizeChange } = renderSize({ logoWidth: 1.2, logoHeight: 2.4 });
+    fireEvent.click(screen.getByRole('button', { name: 'Diminuir altura' }));
+    expect(onSizeChange).toHaveBeenCalledWith(1, 2);
+  });
+
+  it('ida e volta na largura volta ao tamanho original sem perder a proporção', () => {
+    // 4×2 → reduzir até o limite → voltar para 4 deve dar 4×2, nunca 4×4.
+    const { last } = renderSizeStateful({ width: 4, height: 2 });
+    const diminuir = screen.getByRole('button', { name: 'Diminuir largura' });
+    for (let i = 0; i < 8; i += 1) fireEvent.click(diminuir);
+    expect(last()).toEqual([2, 1]);
+
+    const aumentar = screen.getByRole('button', { name: 'Aumentar largura' });
+    for (let i = 0; i < 4; i += 1) fireEvent.click(aumentar);
+    expect(last()).toEqual([4, 2]);
   });
 });
