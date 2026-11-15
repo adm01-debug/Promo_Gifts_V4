@@ -294,7 +294,15 @@ export function useSalesAssistantCandidates(
       // untypedRpc: a RPC nasce na migration desta entrega e ainda não está
       // no types.ts gerado. É o mesmo `supabase.rpc()` por baixo
       // (src/lib/supabase-untyped.ts), sem o estreitamento de nome.
-      const { data, error } = await untypedRpc(RPC_DE_CANDIDATOS, { ...args });
+      //
+      // O nome vai como LITERAL, não como `RPC_DE_CANDIDATOS`:
+      // scripts/check-supabase-reference-catalog.mjs só resolve o nome quando
+      // ele está literal na chamada. Com a constante, a referência cai em
+      // `new_dynamic_dispatch` e a exceção teria de liberar o arquivo inteiro;
+      // com o literal, a exceção no catálogo nomeia esta RPC e só ela.
+      // `RPC_DE_CANDIDATOS` segue como SSOT do nome e um teste garante que os
+      // dois não divergem.
+      const { data, error } = await untypedRpc('rpc_sales_assistant_candidates', { ...args });
       if (error) throw new Error(error.message);
 
       const linhas = Array.isArray(data) ? (data as unknown[]) : [];
