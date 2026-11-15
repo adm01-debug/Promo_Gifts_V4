@@ -17,6 +17,8 @@ import { m as motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useReducedMotion } from '@/hooks/ui/useReducedMotion';
 import { maskCnpj } from '@/utils/masks';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { CompanyAvatar } from './CompanyAvatar';
 import type { MockupClient } from './MockupConfigPanel';
 
 interface MockupClientSelectorProps {
@@ -24,43 +26,6 @@ interface MockupClientSelectorProps {
   onClientSelect: (client: MockupClient | null) => void;
   /** Aplica a logo do CRM na área ativa pelo mesmo caminho do upload manual. */
   onUseClientLogo?: (client: MockupClient) => void;
-}
-
-function CompanyAvatar({
-  name,
-  logoUrl,
-  size = 'md',
-}: {
-  name: string;
-  logoUrl?: string | null;
-  size?: 'md' | 'sm';
-}) {
-  const dim = size === 'sm' ? 'w-7 h-7 text-[10px]' : 'w-8 h-8 text-xs';
-
-  if (logoUrl) {
-    return (
-      <img
-        src={logoUrl}
-        alt=""
-        className={cn(
-          dim,
-          'flex-shrink-0 rounded-full border border-border bg-background object-cover',
-        )}
-        loading="lazy"
-      />
-    );
-  }
-
-  return (
-    <div
-      className={cn(
-        dim,
-        'flex flex-shrink-0 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground',
-      )}
-    >
-      {name.substring(0, 2).toUpperCase()}
-    </div>
-  );
 }
 
 const SEARCH_MIN_CHARS = 2;
@@ -102,6 +67,8 @@ export function MockupClientSelector({
   const [searchQuery, setSearchQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
+  // Remover a empresa exige confirmação (mesma regra do Magic Up) — evita perda acidental.
+  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const reducedMotion = useReducedMotion();
@@ -209,16 +176,12 @@ export function MockupClientSelector({
         tabIndex={0}
         className="group flex min-h-[44px] w-full cursor-pointer items-center gap-3 rounded-md border border-border bg-background px-3 py-2 transition-colors hover:border-primary/50"
         data-testid="mockup-client-chip"
-        aria-label={`Empresa selecionada: ${selectedClient.name}. Clique para remover`}
-        onClick={() => {
-          onClientSelect(null);
-          setTimeout(() => inputRef.current?.focus(), 50);
-        }}
+        aria-label={`Empresa selecionada: ${selectedClient.name}. Remover empresa`}
+        onClick={() => setConfirmRemoveOpen(true)}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            onClientSelect(null);
-            setTimeout(() => inputRef.current?.focus(), 50);
+            setConfirmRemoveOpen(true);
           }
         }}
       >
@@ -250,6 +213,20 @@ export function MockupClientSelector({
     return (
       <>
         {chip}
+        <ConfirmDialog
+          open={confirmRemoveOpen}
+          onOpenChange={setConfirmRemoveOpen}
+          title="Remover empresa?"
+          description={`A empresa ${selectedClient.name} sai do mockup; produto, técnica e logo ficam como estão.`}
+          confirmLabel="Remover"
+          cancelLabel="Cancelar"
+          variant="destructive"
+          testId="mockup-client-remove-confirm"
+          onConfirm={() => {
+            onClientSelect(null);
+            setTimeout(() => inputRef.current?.focus(), 50);
+          }}
+        />
         {selectedClient.logo_url && onUseClientLogo && (
           <Button
             type="button"
