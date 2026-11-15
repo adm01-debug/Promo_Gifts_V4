@@ -1703,3 +1703,19 @@ em vez de mock. Nenhuma das duas está no ledger; aplicação só por `db-apply-
 |---|---|---|---|
 | `20261115130000` | `idx_sds_summary_date_supplier_include` | `d4d441540da99ea12752eeb2253bcef7af00afac0640c85b95ed72107d7bfccc` | pendente — aplicar via `db-apply-migration.yml` após merge, ANTES da `20261115130100` (CONCURRENTLY, `transaction: none`; exige linha `approved-by` do dono; porta 5432, fora do pico) |
 | `20261115130100` | `fn_market_intelligence_macro` | `ea7aa33fb9f533d94229859f35f3814a5792699425728ec36ec9c426574c6771` | pendente — aplicar via `db-apply-migration.yml` após merge e após a `20261115130000` |
+
+## 2026-11-15 — SEC-001 (E056): REVOKE EXECUTE de PUBLIC/anon em 106 funções trigger/internas
+
+Resgate da branch `claude/fix-sec001-revoke-anon-trigger-funcs-261101-2230` (commit `39ec2b456`, version original
+`20261101210000`, que colide com a `sb0007` já no `main` → renumerada). Levantamento de 2026-11-01:
+`has_function_privilege('anon', …, 'EXECUTE') = true` em 106 funções sem referência no TS nem em RLS, todas trigger
+handlers/sync hooks/utilitários internos; o trigger não checa EXECUTE, só a chamada direta (RPC). Revalidação de
+2026-11-15 contra o repo: as 106 existem no baseline `20261015140000_baseline_schema.sql`, nenhuma migration posterior
+as dropa nem já revoga PUBLIC/anon. O REVOKE é `FROM PUBLIC, anon` (o default privileges do Supabase concede anon
+explicitamente). Estado atual dos grants em produção NÃO VERIFICADO nesta sessão (sem acesso ao banco); se uma função
+tiver sumido fora do fluxo, a migration falha inteira (fail-loud). Ainda não está no ledger; aplicação só por
+`db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261115130200` | `sec001_revoke_anon_execute_trigger_functions` | `ae08e41935a7c79d7256ef1ba14903ae1694ffd56423c7bc719212997fc736df` | pendente — aplicar via `db-apply-migration.yml` após merge (grants atuais em produção NÃO VERIFICADOS em 2026-11-15) |
