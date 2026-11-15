@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(coordenacao): auditoria das 528 branches — 9 achados de produção e vereditos com evidência (#3679)",
+   "fix(e2e): não repetir o login em cada teste quando o auth.setup degradou (#3680)",
    "feat(mockup): aviso de falha ao carregar as técnicas de personalização, com \"Tentar novamente\" (#3677)",
    "fix(assistente): card não acusa falha enquanto a RPC não foi aplicada (#3678)",
-   "feat(assistente): Encaixe do Cliente — fase 1 validada e com os 2 portões destravados (#3663)",
-   "fix(inteligencia): grafico de mercado nao acusa erro quando a RPC ainda nao foi aplicada (#3675)",
-   "feat(mockup): aviso de \"não carregou, tentar de novo\" no catálogo do painel de mockup (#3670)"
+   "feat(assistente): Encaixe do Cliente — fase 1 validada e com os 2 portões destravados (#3663)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

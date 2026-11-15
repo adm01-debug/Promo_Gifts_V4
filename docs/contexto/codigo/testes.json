@@ -1005,7 +1005,7 @@
   {
    "arquivo": "e2e/fixtures/test-base.ts",
    "tipo": "e2e",
-   "linhas": 411,
+   "linhas": 434,
    "testa": [],
    "casos": 6
   },
@@ -2356,9 +2356,9 @@
   {
    "arquivo": "e2e/helpers/auth.ts",
    "tipo": "e2e",
-   "linhas": 319,
+   "linhas": 335,
    "testa": [],
-   "casos": 3
+   "casos": 4
   },
   {
    "arquivo": "e2e/helpers/cart-assertions.ts",

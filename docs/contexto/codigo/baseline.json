@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a78b0bacfd0cbf45e9c8186ebf9d1f55f1e535d1",
+  "commit": "956761e556e08cefddecfb620175422ce75ec0a7",
   "branch": "main",
-  "data_commit": "2026-11-15T16:49:15Z",
+  "data_commit": "2026-11-15T17:05:46Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "956761e5",
+    "data": "2026-11-15",
+    "assunto": "docs(coordenacao): auditoria das 528 branches — 9 achados de produção e vereditos com evidência (#3679)"
+   },
+   {
+    "sha": "56ea27fb",
+    "data": "2026-11-15",
+    "assunto": "fix(e2e): não repetir o login em cada teste quando o auth.setup degradou (#3680)"
+   },
    {
     "sha": "a78b0bac",
     "data": "2026-11-15",
@@ -121,181 +131,171 @@
     "sha": "4c912e19",
     "data": "2026-11-15",
     "assunto": "fix(migrations): registra o recibo E15 da 20261107134429 (destrava o Gate 1.13.3) (#3639)"
-   },
-   {
-    "sha": "865c86ef",
-    "data": "2026-11-15",
-    "assunto": "fix(security): documenta deny-all intencional de crm_seller_identity_links (main vermelha) (#3638)"
-   },
-   {
-    "sha": "847aa874",
-    "data": "2026-11-14",
-    "assunto": "fix(crm): vendedor com vínculo fixo em vez de identificação por e-mail (#3636)"
    }
   ],
-  "arquivos_mudados_7d": 2141,
+  "arquivos_mudados_7d": 2167,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 648
-   },
-   {
-    "pasta": "src/components/products",
-    "mudancas": 334
+    "mudancas": 352
    },
    {
     "pasta": "recovery/src-legacy/src",
     "mudancas": 317
    },
    {
+    "pasta": "src/components/products",
+    "mudancas": 185
+   },
+   {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 247
-   },
-   {
-    "pasta": "src/hooks/products",
-    "mudancas": 230
-   },
-   {
-    "pasta": "src/components/quotes",
-    "mudancas": 194
-   },
-   {
-    "pasta": "src/pages/magazine",
-    "mudancas": 188
-   },
-   {
-    "pasta": "src/components/inventory",
-    "mudancas": 173
+    "mudancas": 132
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 173
+    "mudancas": 127
+   },
+   {
+    "pasta": "src/hooks/products",
+    "mudancas": 126
+   },
+   {
+    "pasta": "src/components/quotes",
+    "mudancas": 112
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 167
+    "mudancas": 98
+   },
+   {
+    "pasta": "src/pages/magazine",
+    "mudancas": 96
+   },
+   {
+    "pasta": "RELATORIO_CI.md",
+    "mudancas": 93
+   },
+   {
+    "pasta": "src/components/inventory",
+    "mudancas": 93
+   },
+   {
+    "pasta": "PENDENCIAS.md",
+    "mudancas": 88
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 157
-   },
-   {
-    "pasta": "src/pages/admin",
-    "mudancas": 134
+    "mudancas": 84
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 129
+    "mudancas": 82
    },
    {
-    "pasta": "src/pages/products",
-    "mudancas": 114
-   },
-   {
-    "pasta": "src/pages/quotes",
-    "mudancas": 111
+    "pasta": "src/pages/admin",
+    "mudancas": 75
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 94
+    "mudancas": 93
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 89
+    "mudancas": 88
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 60
+    "mudancas": 59
    },
    {
     "arquivo": "package.json",
-    "mudancas": 38
+    "mudancas": 37
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 27
+    "mudancas": 26
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 20
-   },
-   {
-    "arquivo": "analise-prs/progresso.json",
     "mudancas": 19
    },
    {
-    "arquivo": "CHANGELOG.md",
+    "arquivo": "analise-prs/progresso.json",
     "mudancas": 18
+   },
+   {
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 17
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 18
+    "mudancas": 17
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 16
+    "mudancas": 15
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 16
+    "mudancas": 15
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 14
+    "mudancas": 13
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
-    "mudancas": 12
-   },
-   {
-    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 12
-   },
-   {
-    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
     "mudancas": 11
    },
    {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "mudancas": 11
+   },
+   {
+    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
     "mudancas": 10
    },
    {
-    "arquivo": ".github/workflows/db-schema-drift-check.yml",
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 9
+   },
+   {
+    "arquivo": ".github/workflows/db-schema-drift-check.yml",
+    "mudancas": 8
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 9
+    "mudancas": 8
    },
    {
     "arquivo": "CLAUDE.md",
-    "mudancas": 9
+    "mudancas": 8
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 9
+    "mudancas": 8
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 9
+    "mudancas": 8
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
-    "mudancas": 9
+    "mudancas": 8
    }
   ],
   "autores_30d": [
@@ -317,14 +317,14 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 9
+    "commits": 8
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 10285,
+  "arquivos_total": 10310,
   "arquivos_codigo": 5310,
-  "linhas_codigo": 1012589,
+  "linhas_codigo": 1012628,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -339,7 +339,7 @@
   "testes": 2509,
   "workflows": 87,
   "scripts": 272,
-  "docs_md": 1024
+  "docs_md": 1046
  },
  "por_pasta": {
   ".github/scripts": {
@@ -544,7 +544,7 @@
   },
   "e2e/fixtures": {
    "arquivos": 10,
-   "linhas": 1575
+   "linhas": 1598
   },
   "e2e/flows": {
    "arquivos": 183,
@@ -564,7 +564,7 @@
   },
   "e2e/helpers": {
    "arquivos": 37,
-   "linhas": 5048
+   "linhas": 5064
   },
   "e2e/initial-load.spec.ts": {
    "arquivos": 1,

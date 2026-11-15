@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "a78b0bacfd0cbf45e9c8186ebf9d1f55f1e535d1",
+  "sha": "956761e556e08cefddecfb620175422ce75ec0a7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 16:50 UTC",
-  "files_total": 10213,
+  "generated_at": "2026-11-15 17:13 UTC",
+  "files_total": 10238,
   "code_files": 8738,
-  "code_lines": 1231903
+  "code_lines": 1231942
  },
  "version": "1.3.2",
- "facts_hash": "1c73b911f20f91d0",
+ "facts_hash": "d25745f404cad516",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -148637,7 +148637,7 @@
   {
    "module": "e2e",
    "files": 626,
-   "lines": 75777,
+   "lines": 75816,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -148654,7 +148654,7 @@
     "quickview-dataset.ts: FIXTURE_PRODUCT, PRODUCT_DETAIL_ROUTE, PRODUCT_IMAGES_ROUTE, PRODUCT_VARIANTS_ROUTE, PRODUCT_VIDEOS_ROUTE, installQuickViewDataset",
     "selectors.ts: TID, TID_PREFIX, PageSlug, Sel",
     "stock-rupture-fixture.ts: FX_PRODUCTS, FX_VARIANTS, FX_SUPPLIER_SOURCES, installRuptureFixture",
-    "test-base.ts: skipIfQuarantined, E2eResources, test, requireAuth, requireLiveDatabaseAuth, requireAdmin",
+    "test-base.ts: skipIfQuarantined, E2eResources, test, authSetupProducedNoSession, requireAuth, requireLiveDatabaseAuth",
     "test-user.ts: getTestUserEmail, getTestUserPassword, getTestPrefix, e2eScope, e2eName, isE2eName",
     "_mocks.ts: mockEdgeFunctionFailure, mockExternalDbOffline, mockCrmBridgeOffline, mockBitrixWebhookFail, mockAllEdgeFunctions5xx, mockSessionExpired",
     "analytics.ts: AnalyticsEvent, readAnalyticsEvents, readAnalyticsEventNames, resetAnalyticsBuffer, assertEventOrder, WaitForEventSequenceOptions",
@@ -403020,11 +403020,12 @@
   },
   "e2e/fixtures/test-base.ts": {
    "path": "e2e/fixtures/test-base.ts",
-   "lines": 411,
+   "lines": 434,
    "exports": [
     "function skipIfQuarantined",
     "interface E2eResources",
     "const test",
+    "function authSetupProducedNoSession",
     "function requireAuth",
     "function requireLiveDatabaseAuth",
     "function requireAdmin"
@@ -403050,6 +403051,7 @@
     "precedência; o restante recebe apenas respostas locais seguras.",
     "a rede, portanto um JWT sintético não pode tocar o banco canônico.",
     "coerentes. Em mock aceitamos somente a sentinela gerada pelo script oficial.",
+    "* Verdadeiro somente quando o `auth.setup` rodou e gravou um storageState",
     "* Em PR com E2E_MOCK_AUTH o skip é intencional: o JWT sintético nunca deve"
    ]
   },
@@ -407297,7 +407299,7 @@
   },
   "e2e/helpers/auth.ts": {
    "path": "e2e/helpers/auth.ts",
-   "lines": 319,
+   "lines": 335,
    "exports": [
     "interface LoginCreds",
     "type Role",
@@ -538822,10 +538824,53 @@
   }
  },
  "git": {
-  "sha": "a78b0bacfd0cbf45e9c8186ebf9d1f55f1e535d1",
+  "sha": "956761e556e08cefddecfb620175422ce75ec0a7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "956761e",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "docs(coordenacao): auditoria das 528 branches — 9 achados de produção e vereditos com evidência (#3679)",
+    "files": [
+     "analise-branches/auditoria-261115/00-LEIA-ISTO.md",
+     "analise-branches/auditoria-261115/01-ACHADOS-DE-PRODUCAO.md",
+     "analise-branches/auditoria-261115/363-apagadas-sha-para-restaurar.psv",
+     "analise-branches/auditoria-261115/VEREDITOS_165_BRANCHES.md",
+     "analise-branches/auditoria-261115/VEREDITO_106_APAGADAS.md",
+     "analise-branches/auditoria-261115/linha-a-linha-165-existentes.psv",
+     "analise-branches/auditoria-261115/linha-a-linha-363-apagadas.psv",
+     "analise-branches/auditoria-261115/veredito_grupo00.md",
+     "analise-branches/auditoria-261115/veredito_grupo01.md",
+     "analise-branches/auditoria-261115/veredito_grupo02.md",
+     "analise-branches/auditoria-261115/veredito_grupo03.md",
+     "analise-branches/auditoria-261115/veredito_grupo04.md",
+     "analise-branches/auditoria-261115/veredito_grupo05.md",
+     "analise-branches/auditoria-261115/veredito_grupo06.md",
+     "analise-branches/auditoria-261115/veredito_grupo07.md",
+     "analise-branches/auditoria-261115/veredito_grupo08.md",
+     "analise-branches/auditoria-261115/veredito_grupo09.md",
+     "analise-branches/auditoria-261115/veredito_grupo10.md",
+     "analise-branches/auditoria-261115/veredito_grupo11.md",
+     "analise-branches/auditoria-261115/veredito_lote00.md",
+     "analise-branches/auditoria-261115/veredito_lote01.md",
+     "analise-branches/auditoria-261115/veredito_lote02.md",
+     "analise-branches/auditoria-261115/veredito_lote03.md",
+     "analise-branches/auditoria-261115/veredito_lote04.md",
+     "analise-branches/auditoria-261115/veredito_lote05.md"
+    ]
+   },
+   {
+    "sha": "56ea27f",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "fix(e2e): não repetir o login em cada teste quando o auth.setup degradou (#3680)",
+    "files": [
+     "e2e/fixtures/test-base.ts",
+     "e2e/helpers/auth.ts"
+    ]
+   },
    {
     "sha": "a78b0ba",
     "date": "2026-11-15",
@@ -539374,22 +539419,6 @@
      "tests/lib/kit-builder-draft-preservation.test.ts",
      "tests/lib/kit-read-draft-production-shapes.test.ts"
     ]
-   },
-   {
-    "sha": "36b6c1d",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(security): corrige o sha256 do retrato de policies (destrava o CI) (#3635)",
-    "files": [
-     ".security/policies-baseline.json"
-    ]
-   },
-   {
-    "sha": "c5d670c",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230",
-    "files": []
    }
   ],
   "hot_files": [
@@ -539420,6 +539449,10 @@
    [
     "src/pages/kit-builder/KitBuilderPage.tsx",
     3
+   ],
+   [
+    "e2e/helpers/auth.ts",
+    2
    ],
    [
     "src/components/mockup/MockupConfigPanelLoadError.tsx",
@@ -539467,10 +539500,6 @@
    ],
    [
     ".github/workflows/deploy-gates.yml",
-    2
-   ],
-   [
-    "src/components/mockup/MockupClientSelector.tsx",
     2
    ]
   ]
