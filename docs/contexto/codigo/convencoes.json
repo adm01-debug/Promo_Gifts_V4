@@ -24,7 +24,7 @@
   ],
   "testes": [
    "tests/ (1022)",
-   "co-localizado (__tests__) (666)",
+   "co-localizado (__tests__) (667)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(mockup): resgata teste de a11y da fatia 2, aviso de falha na seleção do mockup e trava do braces (#3676)",
    "test(mockup): resgata 39 testes do gerador de mockup que estavam desligados por mock incompleto (#3672)",
    "feat(mockup): editor de logo com largura e altura proporcionais e botão \"Girar\" (#3669)",
    "fix(docs): dossies nao citam migration de branch apagada como caminho da arvore (#3681)",
-   "docs(coordenacao): auditoria das 528 branches — 9 achados de produção e vereditos com evidência (#3679)",
-   "fix(e2e): não repetir o login em cada teste quando o auth.setup degradou (#3680)"
+   "docs(coordenacao): auditoria das 528 branches — 9 achados de produção e vereditos com evidência (#3679)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

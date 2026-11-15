@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "dbe11812e9a3627b2ae32323908d69e756bb6905",
+  "commit": "54826844aa09704192e90fe1fe96236e61dc4b5d",
   "branch": "main",
-  "data_commit": "2026-11-15T18:02:40Z",
+  "data_commit": "2026-11-15T18:19:14Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "54826844",
+    "data": "2026-11-15",
+    "assunto": "fix(mockup): resgata teste de a11y da fatia 2, aviso de falha na seleção do mockup e trava do braces (#3676)"
+   },
    {
     "sha": "dbe11812",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "e5afe824",
     "data": "2026-11-15",
     "assunto": "fix: trem das 5 correções já verdes — recibos, código morto do CRM, 3 resgates, gerador de mockup e aba Marketing (#3647"
-   },
-   {
-    "sha": "bc3fdff6",
-    "data": "2026-11-15",
-    "assunto": "fix(db): get_quote_token_public deixa de devolver dados com link expirado (#3645)"
    }
   ],
-  "arquivos_mudados_7d": 2170,
+  "arquivos_mudados_7d": 2171,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 130
+    "mudancas": 131
    },
    {
     "pasta": "src/hooks/products",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 39
+    "mudancas": 40
    },
    {
     "arquivo": "package-lock.json",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10311,
-  "arquivos_codigo": 5311,
-  "linhas_codigo": 1013050,
+  "arquivos_total": 10312,
+  "arquivos_codigo": 5312,
+  "linhas_codigo": 1013141,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 548,
   "migrations": 3096,
   "cron_jobs": 122,
-  "testes": 2510,
+  "testes": 2511,
   "workflows": 87,
   "scripts": 272,
   "docs_md": 1046
@@ -1883,8 +1883,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1385,
-   "linhas": 276507
+   "arquivos": 1386,
+   "linhas": 276563
   },
   "src/config": {
    "arquivos": 1,
@@ -1908,7 +1908,7 @@
   },
   "src/hooks": {
    "arquivos": 475,
-   "linhas": 89842
+   "linhas": 89877
   },
   "src/integrations": {
    "arquivos": 11,
