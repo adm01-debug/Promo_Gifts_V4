@@ -36,16 +36,27 @@ export function useMockupCompletionStatus(
   const [savedMockupUrl, setSavedMockupUrl] = useState<string | null>(null);
   const [capturedSheetUrl, setCapturedSheetUrl] = useState<string | null>(null);
 
+  // Só a gravação DA IMAGEM EXIBIDA entra no rastreio. "Gerar Layout" grava outro
+  // registro (o PNG estático) sem trocar a imagem na tela; sem este casamento, as
+  // confirmações do resultado exibido regrediam para "ainda não salvo"/"indisponível".
   useEffect(() => {
-    if (lastSavedRecordId && lastSavedMockupUrl) setSavedMockupUrl(lastSavedMockupUrl);
-  }, [lastSavedRecordId, lastSavedMockupUrl]);
+    if (lastSavedRecordId && lastSavedMockupUrl === generatedMockup)
+      setSavedMockupUrl(lastSavedMockupUrl);
+  }, [lastSavedRecordId, lastSavedMockupUrl, generatedMockup]);
 
   const handleLayoutCaptured = useCallback(() => {
-    if (lastSavedMockupUrl) setCapturedSheetUrl(lastSavedMockupUrl);
+    if (lastSavedMockupUrl && lastSavedMockupUrl === generatedMockup)
+      setCapturedSheetUrl(lastSavedMockupUrl);
     setLastSavedRecordId(null);
     setLastSavedMockupUrl(null);
     fetchHistory();
-  }, [lastSavedMockupUrl, setLastSavedRecordId, setLastSavedMockupUrl, fetchHistory]);
+  }, [
+    lastSavedMockupUrl,
+    generatedMockup,
+    setLastSavedRecordId,
+    setLastSavedMockupUrl,
+    fetchHistory,
+  ]);
 
   const projectSaveStatus: MockupCompletionStatus =
     !!generatedMockup && savedMockupUrl === generatedMockup ? 'done' : 'idle';

@@ -24,16 +24,19 @@ const LOTE: BatchMockupResult[] = [
 
 describe('saveBatchResults — a gravação devolvida é a do resultado exibido', () => {
   it('lote todo gravado: devolve o registro da PRIMEIRA área (a que o card exibe)', async () => {
-    const saved = await saveBatchResults(LOTE, AREAS, async (_url, area) => `rec-${area.id}`);
+    const saved = await saveBatchResults(LOTE, AREAS, (_url, area) =>
+      Promise.resolve(`rec-${area.id}`),
+    );
 
     // O card exibe batchResults[0].url (useMockupGenerator.ts:598); é essa a
     // gravação que o indicador "Projeto salvo" compara.
-    expect(saved).toEqual({ recordId: 'rec-a1', url: 'u1' });
+    // ...e carrega a ÁREA daquela gravação: é dela que a ficha tira as medidas.
+    expect(saved).toEqual({ recordId: 'rec-a1', url: 'u1', area: AREAS[0] });
   });
 
   it('quando a área exibida não gravou, devolve outra gravação (sem reivindicar a exibida)', async () => {
-    const saved = await saveBatchResults(LOTE, AREAS, async (_url, area) =>
-      area.id === 'a1' ? null : `rec-${area.id}`,
+    const saved = await saveBatchResults(LOTE, AREAS, (_url, area) =>
+      Promise.resolve(area.id === 'a1' ? null : `rec-${area.id}`),
     );
 
     expect(saved?.url).not.toBe('u1');
@@ -97,5 +100,40 @@ describe('useMockupCompletionStatus — salvo e ficha rastreados à parte', () =
 
     expect(result.current.projectSaveStatus).toBe('idle');
     expect(result.current.sheetStatus).toBe('idle');
+  });
+});
+
+describe('useMockupCompletionStatus — gravar OUTRO resultado não apaga o rastreio do exibido', () => {
+  it('"Gerar Layout" grava o PNG estático e as confirmações da imagem de IA ficam de pé', () => {
+    const { result, rerender } = statusHook(generatorState(), true);
+
+    act(() => {
+      result.current.handleLayoutCaptured();
+    });
+    rerender({
+      mg: generatorState({ lastSavedRecordId: null, lastSavedMockupUrl: null }),
+      capturing: false,
+    });
+    expect(result.current.projectSaveStatus).toBe('done');
+    expect(result.current.sheetStatus).toBe('done');
+
+    // "Gerar Layout" grava OUTRO registro (o PNG estático). A imagem EXIBIDA
+    // continua sendo a de IA ('u1') — as confirmações dela não podem regredir.
+    rerender({
+      mg: generatorState({ lastSavedRecordId: 'rec-static', lastSavedMockupUrl: 'static-png' }),
+      capturing: true,
+    });
+    expect(result.current.projectSaveStatus).toBe('done');
+
+    // A ficha do estático é capturada; a da imagem exibida segue disponível.
+    act(() => {
+      result.current.handleLayoutCaptured();
+    });
+    rerender({
+      mg: generatorState({ lastSavedRecordId: null, lastSavedMockupUrl: null }),
+      capturing: false,
+    });
+    expect(result.current.projectSaveStatus).toBe('done');
+    expect(result.current.sheetStatus).toBe('done');
   });
 });

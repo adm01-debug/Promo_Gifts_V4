@@ -157,7 +157,7 @@ export default function MockupGenerator() {
         mg.setGenerationError(null);
       }
       // Outro cliente = outro projeto: o resultado preservado no card não vale mais.
-      mg.setProjectResetCount((n) => n + 1);
+      mg.resetProjectIdentity();
       mg.setSelectedClient(null);
       mg.setActiveTab('generator');
       scrollToStep(1, true);
@@ -169,7 +169,7 @@ export default function MockupGenerator() {
       mg.setPersonalizationAreas,
       mg.setGeneratedMockup,
       mg.setGenerationError,
-      mg.setProjectResetCount,
+      mg.resetProjectIdentity,
       mg.setSelectedClient,
       mg.setActiveTab,
     ],
@@ -319,9 +319,13 @@ export default function MockupGenerator() {
                   onProductSelect={(sel) => {
                     mg.setProductSelection(sel);
                     mg.setGeneratedMockup(null);
+                    mg.resetProjectIdentity();
                   }}
                   onTechniqueSelect={handleTechniqueSelect}
-                  onClientSelect={mg.setSelectedClient}
+                  onClientSelect={(client) => {
+                    mg.setSelectedClient(client);
+                    mg.resetProjectIdentity();
+                  }}
                   onReset={mg.resetForm}
                   activeAreaId={mg.activeAreaId}
                   onAreasChange={mg.setPersonalizationAreas}
@@ -471,6 +475,7 @@ export default function MockupGenerator() {
                                 if (recordId) {
                                   mg.setLastSavedMockupUrl(dataUrl);
                                   mg.setLastSavedLayoutMode('static');
+                                  mg.setLastSavedArea(mg.activeArea);
                                   mg.setLastSavedRecordId(recordId);
                                 }
                               } catch (err) {

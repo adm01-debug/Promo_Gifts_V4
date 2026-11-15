@@ -194,29 +194,33 @@ export async function loadMockupTechniques(): Promise<Technique[]> {
  * ÚLTIMA gravação mostrava "Projeto ainda não salvo" com o lote todo gravado,
  * porque o indicador compara com a imagem exibida. Se a área exibida não gravou,
  * cai na última gravação (a ficha ainda sai; "salvo" não é reivindicado).
+ *
+ * Devolve TAMBÉM a área daquela gravação: é dela que a ficha de aprovação tira
+ * local e medidas. Sem isso a ficha lia a área ATIVA e podia imprimir as medidas
+ * de uma área sobre a imagem de outra.
  */
 export async function saveBatchResults<A extends { id: string }>(
   batchResults: BatchMockupResult[],
   areasWithLogos: A[],
   save: (url: string, area: A) => Promise<string | null>,
-): Promise<{ recordId: string; url: string } | null> {
+): Promise<{ recordId: string; url: string; area: A } | null> {
+  type SavedEntry = { recordId: string | null; r: BatchMockupResult; area: A | null };
   const settled = await Promise.allSettled(
-    batchResults.map((r, i) => {
+    batchResults.map((r, i): Promise<SavedEntry> => {
       const area = r.areaId ? areasWithLogos.find((a) => a.id === r.areaId) : areasWithLogos[i];
-      if (!area) return Promise.resolve({ recordId: null, r });
-      return save(r.url, area).then((recordId) => ({ recordId, r }));
+      if (!area) return Promise.resolve({ recordId: null, r, area: null });
+      return save(r.url, area).then((recordId) => ({ recordId, r, area }));
     }),
   );
   const saved = settled
-    .filter(
-      (res): res is PromiseFulfilledResult<{ recordId: string | null; r: BatchMockupResult }> =>
-        res.status === 'fulfilled',
-    )
+    .filter((res): res is PromiseFulfilledResult<SavedEntry> => res.status === 'fulfilled')
     .map((res) => res.value)
-    .filter((v): v is { recordId: string; r: BatchMockupResult } => !!v.recordId);
+    .filter(
+      (v): v is { recordId: string; r: BatchMockupResult; area: A } => !!v.recordId && !!v.area,
+    );
   const displayedUrl = batchResults[0]?.url;
   const chosen = saved.find((v) => v.r.url === displayedUrl) ?? saved[saved.length - 1];
-  return chosen ? { recordId: chosen.recordId, url: chosen.r.url } : null;
+  return chosen ? { recordId: chosen.recordId, url: chosen.r.url, area: chosen.area } : null;
 }
 
 /**

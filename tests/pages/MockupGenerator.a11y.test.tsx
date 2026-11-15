@@ -34,6 +34,7 @@ const { mockMg, mockTechnique, makeGeneratorState, makeTechniqueState } = vi.hoi
     'setProductSelection setSelectedTechnique setSelectedClient resetForm setPersonalizationAreas ' +
     'setActiveAreaId handleAreaLogoUpload getProductImage setTechniqueColorConfig setArtAttachments ' +
     'setMockupAnnotations setLastSavedRecordId setLastSavedMockupUrl setLastSavedLayoutMode ' +
+    'setLastSavedArea resetProjectIdentity ' +
     'downloadMockup generateMockup saveMockupToHistory setDeleteDialogOpen setMockupToDelete ' +
     'deleteMockup loadFromHistory';
 
