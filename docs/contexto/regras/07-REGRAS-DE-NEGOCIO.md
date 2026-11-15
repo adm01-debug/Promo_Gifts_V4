@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `7307f53346` · branch `main` · 2026-11-15 14:48 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a03adc3548` · branch `main` · 2026-11-15 14:59 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -4762,6 +4762,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const { id } = useParams<{ id: string }>(); const isValid = !!id && id !== 'undefined' && id !== 'null' && UUID_RE.test(id); if (!isValid) return <Navigate to="/orcamentos" replace />; return children;
   ```
+- **round2(value: number)** — `src/services/orderService.ts`
+  ```
+  Math.round((value + Number.EPSILON) * 100) / 100;
+  ```
 - **shouldSample(eventType: TelemetryEventType)** — `src/services/telemetryService.ts`
   ```
   const rate = SAMPLE_RATE[eventType] ?? 1.0; if (rate >= 1) return true; return crypto.getRandomValues(new Uint32Array(1))[0] / 0x100000000 < rate;
@@ -6503,7 +6507,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21438 testes em 2176 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21443 testes em 2177 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6807,7 +6811,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/product-webhook.test.ts` | 18 | product-webhook · evento product.created · retorna 200 para evento product.created válido · evento product.updated … |
 | `tests/hooks/useGlobalSearch-voice.test.ts` | 18 | Voice Action Handler Logic · navigate action · should extract route from navigate action · should handle navigate without route gracefully … |
 | `tests/lib/product-types.test.ts` | 18 | getProductImageUrl · should prefer primary_image_url · should fallback to image_url · should fallback to first image in images array … |
-| … +1876 linhas — lista completa em `context.json` | | |
+| … +1877 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7275,4 +7279,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ANTI-REGRESSÃO: primary_image_url deve vir ANTES de og_image_url. | `src/components/mockup/ProductSearchCombobox.tsx` |
 | NÃO contém limites numéricos: qualquer número de limite (cores, dimensões, | `src/components/mockup/TechniqueTooltip.tsx` |
 | qualitativos abaixo são apenas estimativas e aparecem rotulados como tal. | `src/components/mockup/TechniqueTooltip.tsx` |
-| … +1281 linhas — lista completa em `context.json` | |
+| … +1284 linhas — lista completa em `context.json` | |

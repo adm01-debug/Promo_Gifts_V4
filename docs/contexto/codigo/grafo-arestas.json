@@ -14527,6 +14527,9 @@
    "src/integrations/supabase/client.ts",
    "src/lib/logger.ts"
   ],
+  "src/services/orderService.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
   "src/services/productService.ts": [
    "src/lib/external-db/index.ts",
    "src/types/product-catalog.ts",

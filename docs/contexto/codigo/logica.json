@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 299,
+ "total": 300,
  "por_camada": {
   "api": 3,
   "config": 1,
@@ -9,7 +9,7 @@
   "integrations": 8,
   "lib": 228,
   "python": 9,
-  "services": 9,
+  "services": 10,
   "stores": 8,
   "utils": 30
  },
@@ -696,7 +696,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 404,
+   "usado_por": 405,
    "usado_por_modulos": [
     "components/admin",
     "components/ai",
@@ -768,7 +768,7 @@
     "stores",
     "utils"
    ],
-   "coberto_por_testes": 51,
+   "coberto_por_testes": 52,
    "orfao": false
   },
   {
@@ -7987,6 +7987,32 @@
    ],
    "coberto_por_testes": 0,
    "orfao": false
+  },
+  {
+   "arquivo": "src/services/orderService.ts",
+   "camada": "services",
+   "exports": [
+    "OrderLookup",
+    "OrderLookupItem",
+    "orderService"
+   ],
+   "export_default": null,
+   "linhas": 101,
+   "tabelas": [
+    "order_items",
+    "orders"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 0,
+   "usado_por_modulos": [],
+   "coberto_por_testes": 1,
+   "orfao": true
   },
   {
    "arquivo": "src/services/productService.ts",

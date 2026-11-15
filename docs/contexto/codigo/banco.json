@@ -26425,7 +26425,7 @@
     "quote_item_id->quote_items"
    ],
    "criada_em": "20250103080000_complete_schema.sql",
-   "usada_no_front": 12,
+   "usada_no_front": 13,
    "usada_em_edges": [
     "market-intelligence-insights"
    ],
@@ -26919,7 +26919,7 @@
     "quote_id->quotes"
    ],
    "criada_em": "20250103080000_complete_schema.sql",
-   "usada_no_front": 14,
+   "usada_no_front": 15,
    "usada_em_edges": [
     "expert-chat",
     "market-intelligence-insights",

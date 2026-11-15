@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `7307f53346` · branch `main` · 2026-11-15 14:48 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a03adc3548` · branch `main` · 2026-11-15 14:59 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -432,7 +432,10 @@
 | coluna | coluna `is_public` usada no código não existe no schema de `collections` |  |
 | coluna | coluna `share_expires_at` usada no código não existe no schema de `collections` |  |
 | coluna | coluna `share_token` usada no código não existe no schema de `collections` |  |
+| coluna | coluna `tax_amount` usada no código não existe no schema de `orders` |  |
 | coluna | coluna `total` usada no código não existe no schema de `orders` |  |
+| coluna | coluna `personalization_cost` usada no código não existe no schema de `order_items` |  |
+| coluna | coluna `subtotal` usada no código não existe no schema de `order_items` |  |
 | coluna | coluna `bitrix_deal_id` usada no código não existe no schema de `quotes` |  |
 | coluna | coluna `bitrix_quote_id` usada no código não existe no schema de `quotes` |  |
 | coluna | coluna `client_response` usada no código não existe no schema de `quotes` |  |
@@ -643,10 +646,7 @@
 | edge | edge function `fn` invocada mas não existe em supabase/functions/ | `tests/scripts/gate-baseline-absence.test.mjs` |
 | edge | edge function `ghost-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
 | edge | edge function `inexistente` invocada mas não existe em supabase/functions/ | `scripts/ai-context/cenarios.mjs` |
-| edge | edge function `minha-func` invocada mas não existe em supabase/functions/ | `tests/scripts/gen-edges-readme.test.mjs` |
-| edge | edge function `no` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
-| edge | edge function `nome` invocada mas não existe em supabase/functions/ | `scripts/gen-edges-readme.mjs` |
-| … +224 linhas — lista completa em `context.json` | | |
+| … +227 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

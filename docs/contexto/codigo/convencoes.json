@@ -20,11 +20,11 @@
   "servicos_logica": [
    "src/lib (228)",
    "src/utils (30)",
-   "src/services (9)"
+   "src/services (10)"
   ],
   "testes": [
    "tests/ (1019)",
-   "co-localizado (__tests__) (657)",
+   "co-localizado (__tests__) (658)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -43,7 +43,7 @@
  "nomenclatura": {
   "componentes": "PascalCase (95%)",
   "hooks": "use + PascalCase",
-  "servicos": "kebab-case (53%)",
+  "servicos": "kebab-case (52%)",
   "edge_functions": "kebab-case (99%)",
   "tabelas": "snake_case (86%)"
  },
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(orders): resgata conferência do total do pedido contra a soma dos itens (#3667)",
    "feat(mockup): cabeçalho de trabalho do gerador, Meus mockups do cliente e captura de layout extraída (#3664)",
    "fix(ci): recibo de migration entra sozinho e para de travar o CI (#3662)",
    "fix(ci): E14 volta a valer para PR que só toca docs/ci/SEGREDOS.md (#3661)",
-   "fix: trem de resgates — 16 correções recuperadas de branches de outros agentes (#3660)",
-   "ci: enxuga workflows — checagens estáticas consolidadas, 12 aposentados, contexto 1×/h (#3659)"
+   "fix: trem de resgates — 16 correções recuperadas de branches de outros agentes (#3660)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
