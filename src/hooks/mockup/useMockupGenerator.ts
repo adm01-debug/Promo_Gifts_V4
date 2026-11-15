@@ -44,6 +44,7 @@ import { buildHistoryClients } from '@/hooks/mockup/mockupHistoryClients';
 import { useMockupAreaRetry } from '@/hooks/mockup/useMockupAreaRetry';
 import { useMockupEntryParams } from '@/hooks/mockup/useMockupEntryParams';
 import { useMockupTechniquesLoad } from '@/hooks/mockup/useMockupTechniquesLoad';
+import { useSavedMockupProject } from '@/hooks/mockup/useSavedMockupProject';
 import {
   MAX_BATCH_AREAS,
   MISSING_DIMENSIONS_MESSAGE,
@@ -109,9 +110,8 @@ export function useMockupGenerator() {
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [mockupToDelete, setMockupToDelete] = useState<string | null>(null);
-  const [lastSavedRecordId, setLastSavedRecordId] = useState<string | null>(null);
-  const [lastSavedMockupUrl, setLastSavedMockupUrl] = useState<string | null>(null);
-  const [lastSavedLayoutMode, setLastSavedLayoutMode] = useState<'ai' | 'static'>('ai');
+  // Registro gravado do resultado exibido (id, URL, modo, ÁREA) + identidade do projeto.
+  const savedProject = useSavedMockupProject();
   const [hasDraftRestored, setHasDraftRestored] = useState(false);
   const [showDraftRestoredNotice, setShowDraftRestoredNotice] = useState(false);
   const isRestoringDraft = useRef(false);
@@ -570,9 +570,10 @@ export function useMockupGenerator() {
         setGeneratedMockup(result.singleUrl);
         const recordId = await saveMockupToHistory(result.singleUrl, areasWithLogos[0]);
         if (recordId) {
-          setLastSavedMockupUrl(result.singleUrl);
-          setLastSavedLayoutMode('ai');
-          setLastSavedRecordId(recordId);
+          savedProject.setLastSavedMockupUrl(result.singleUrl);
+          savedProject.setLastSavedLayoutMode('ai');
+          savedProject.setLastSavedArea(areasWithLogos[0]);
+          savedProject.setLastSavedRecordId(recordId);
         }
         showMockupSuccessToast({
           mockupUrl: result.singleUrl,
@@ -591,9 +592,10 @@ export function useMockupGenerator() {
         const failed = failedAreaErrors(result.batchResults, areasWithLogos);
         if (failed) setAreaErrors(failed);
         if (savedLast) {
-          setLastSavedMockupUrl(savedLast.url);
-          setLastSavedLayoutMode('ai');
-          setLastSavedRecordId(savedLast.recordId);
+          savedProject.setLastSavedMockupUrl(savedLast.url);
+          savedProject.setLastSavedLayoutMode('ai');
+          savedProject.setLastSavedArea(savedLast.area);
+          savedProject.setLastSavedRecordId(savedLast.recordId);
         }
         setGeneratedMockup(result.batchResults[0]?.url || result.singleUrl || null);
         setGeneratedBatchMockups(result.batchResults);
@@ -627,6 +629,7 @@ export function useMockupGenerator() {
     downloadMockup,
     fetchHistory,
     setAreaErrors,
+    savedProject,
   ]);
 
   const deleteMockup = useCallback(async () => {
@@ -663,13 +666,11 @@ export function useMockupGenerator() {
     setBeforeImage(null);
     setHasUserInteractedPosition(false);
     setTechniqueColorConfig(null);
-    setLastSavedRecordId(null);
-    setLastSavedMockupUrl(null);
-    setLastSavedLayoutMode('ai');
+    savedProject.resetProjectIdentity();
     positionHistory.clear();
     await clearDraft();
     logoColorAnalysis.clearAnalysis();
-  }, [positionHistory, clearDraft, logoColorAnalysis, setAreaErrors]);
+  }, [positionHistory, clearDraft, logoColorAnalysis, setAreaErrors, savedProject]);
 
   const handleShareMockup = useCallback((mockup: GeneratedMockup) => {
     const text = `Confira o mockup: ${mockup.product_name} com ${mockup.technique_name}`;
@@ -724,6 +725,7 @@ export function useMockupGenerator() {
       // locations chegarem tarde para o mesmo produto.
       areasProductIdRef.current = product?.id ?? null;
       setGeneratedMockup(null);
+      savedProject.resetProjectIdentity();
       setHasUserInteractedPosition(true);
       positionHistory.clear();
       setActiveTab('generator');
@@ -734,7 +736,15 @@ export function useMockupGenerator() {
       await clearDraft();
       toast.success('Configurações carregadas!');
     },
-    [techniques, getProductById, logoColorAnalysis, clearDraft, positionHistory, user?.id],
+    [
+      techniques,
+      getProductById,
+      logoColorAnalysis,
+      clearDraft,
+      positionHistory,
+      user?.id,
+      savedProject,
+    ],
   );
 
   const wizardStep = getMockupWizardStep({
@@ -794,12 +804,7 @@ export function useMockupGenerator() {
       loadFromHistory,
       handleShareMockup,
       historyClients,
-      lastSavedRecordId,
-      setLastSavedRecordId,
-      lastSavedMockupUrl,
-      setLastSavedMockupUrl,
-      lastSavedLayoutMode,
-      setLastSavedLayoutMode,
+      ...savedProject,
       isDraftSaving,
       isDraftLoading,
       lastSaved,
@@ -857,9 +862,7 @@ export function useMockupGenerator() {
       loadFromHistory,
       handleShareMockup,
       historyClients,
-      lastSavedRecordId,
-      lastSavedMockupUrl,
-      lastSavedLayoutMode,
+      savedProject,
       isDraftSaving,
       isDraftLoading,
       lastSaved,

@@ -29,7 +29,7 @@ export function useLayoutCaptureRequest(
     selectedTechnique,
     selectedClient,
     productSelection,
-    activeArea,
+    lastSavedArea,
     techniqueColorConfig,
     logoColorAnalysis,
     getProductImage,
@@ -83,9 +83,12 @@ export function useLayoutCaptureRequest(
       personalization: {
         techniqueName: tech.name ?? '',
         techniqueCode: tech.code ?? '',
-        locationName: techLocationName ?? activeArea?.name ?? 'Frente',
-        widthCm: activeArea?.logoWidth || 0,
-        heightCm: activeArea?.logoHeight || 0,
+        // Local e medidas vêm da área que gerou a IMAGEM gravada, nunca da área
+        // ATIVA: num lote de várias áreas elas são diferentes, e a ficha que o
+        // cliente aprova chegava com a imagem de uma e as medidas de outra.
+        locationName: techLocationName ?? lastSavedArea?.name ?? 'Frente',
+        widthCm: lastSavedArea?.logoWidth || 0,
+        heightCm: lastSavedArea?.logoHeight || 0,
         colorsCount: techniqueColorConfig?.colorCount,
       },
       pantoneColors: (coresDaLogo || []).map((c) => ({
@@ -107,7 +110,7 @@ export function useLayoutCaptureRequest(
     selectedTechnique,
     selectedClient,
     productSelection,
-    activeArea,
+    lastSavedArea,
     techniqueColorConfig,
     coresDaLogo,
     getProductImage,
