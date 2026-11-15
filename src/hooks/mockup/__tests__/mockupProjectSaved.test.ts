@@ -11,7 +11,7 @@
  * Execução: npx vitest run src/hooks/mockup/__tests__/mockupProjectSaved.test.ts
  */
 import { describe, it, expect, vi } from 'vitest';
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { saveBatchResults, type BatchMockupResult } from '../mockupGeneratorModel';
 import { useMockupCompletionStatus } from '@/pages/mockups/mockup-generator/useMockupCompletionStatus';
 
@@ -74,7 +74,11 @@ describe('useMockupCompletionStatus — salvo e ficha rastreados à parte', () =
   it('depois da captura, a ficha fica disponível e o salvo não regride', () => {
     const { result, rerender } = statusHook(generatorState(), true);
 
-    result.current.handleLayoutCaptured();
+    // handleLayoutCaptured atualiza estado: fora de act(), o React emite
+    // console.error e o setup strict-test-side-effects reprova o teste.
+    act(() => {
+      result.current.handleLayoutCaptured();
+    });
     // A captura zera recordId/URL no dono do estado (handleLayoutCaptured).
     rerender({
       mg: generatorState({ lastSavedRecordId: null, lastSavedMockupUrl: null }),
