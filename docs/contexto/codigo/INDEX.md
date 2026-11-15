@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ecface83bd8f628557f69a57c4a9a0656f2ae310` (2026-11-15T18:58:02Z).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ef2a7fa15458f830584c78d83c4ada450b864f7e` (2026-11-15T19:12:45Z).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 10321 |
 | arquivos_codigo | 5321 |
-| linhas_codigo | 1014156 |
+| linhas_codigo | 1014163 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -589,14 +589,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 44353 nós · 76614 arestas · 2455 comunidades · grafo do commit `ecface83`
+- 44353 nós · 76614 arestas · 2455 comunidades · grafo do commit `ef2a7fa1`
 - comunidades maiores: vitest (963), ref_components (692), ref_hooks (418), ref_node_child_process (410), @tanstack/react-query (383), react (378), gotoAndSettle (344), ref_node_fs (310), scripts (302), sonner (290), ref_contexts (272), ref_utils (265)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (93)
-- PENDENCIAS.md (88)
+- RELATORIO_CI.md (92)
+- PENDENCIAS.md (87)
 - supabase/MIGRATIONS_SYNC_LOG.md (57)
 - package.json (41)
 - package-lock.json (26)
@@ -1173,6 +1173,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-15 `ef2a7fa1` fix(e2e): orcamento do teste cobre a espera de 150s do login em CI (#3682)
 - 2026-11-15 `ecface83` feat(mockup): preserva o resultado quando a geração falha, e a ficha sai com as medidas da área certa (#3674)
 - 2026-11-15 `54826844` fix(mockup): resgata teste de a11y da fatia 2, aviso de falha na seleção do mockup e trava do braces (#3676)
 - 2026-11-15 `dbe11812` test(mockup): resgata 39 testes do gerador de mockup que estavam desligados por mock incompleto (#3672)
@@ -1187,7 +1188,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-15 `f1044db3` feat(mockup): aviso de "não carregou, tentar de novo" no catálogo do painel de mockup (#3670)
 - 2026-11-15 `c72d30a9` fix(mockup): etapas do gerador voltam a ser anunciadas pelo leitor de tela no celular (#3671)
 - 2026-11-15 `aa89361b` fix(magic-up): resgata varredura axe da pagina e nomeia selects e campos do briefing (#3668)
-- 2026-11-15 `b89a44e1` fix(db): trem de banco — gráfico de mercado com dado real, revoke de 106 funções, índices e crons mais baratos (#3665)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

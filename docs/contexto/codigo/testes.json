@@ -2356,7 +2356,7 @@
   {
    "arquivo": "e2e/helpers/auth.ts",
    "tipo": "e2e",
-   "linhas": 335,
+   "linhas": 342,
    "testa": [],
    "casos": 4
   },

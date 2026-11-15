@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "ecface83bd8f628557f69a57c4a9a0656f2ae310",
+  "sha": "ef2a7fa15458f830584c78d83c4ada450b864f7e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 18:59 UTC",
+  "generated_at": "2026-11-15 20:15 UTC",
   "files_total": 10249,
   "code_files": 8749,
-  "code_lines": 1233470
+  "code_lines": 1233477
  },
  "version": "1.3.2",
- "facts_hash": "e95218ce9fcf1183",
+ "facts_hash": "f61bcb21209ed563",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -148649,7 +148649,7 @@
   {
    "module": "e2e",
    "files": 626,
-   "lines": 75816,
+   "lines": 75823,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -407632,7 +407632,7 @@
   },
   "e2e/helpers/auth.ts": {
    "path": "e2e/helpers/auth.ts",
-   "lines": 335,
+   "lines": 342,
    "exports": [
     "interface LoginCreds",
     "type Role",
@@ -407678,6 +407678,7 @@
     "- **Todo login UI** deve passar por `loginViaUI` ou `loginAs` — nunca usar",
     "apenas refazendo UI se a sessão não estiver presente.",
     "* Quando true, espera permanecer em /login (validação/erro). */",
+    "tela — o limite global dos demais continua 120 s.",
     "roles válidos. Consulta a edge real e neutraliza somente esse motivo;",
     "visita rápida à home não deve cair em tela de auth nem exibir o form."
    ],
@@ -539414,10 +539415,19 @@
   }
  },
  "git": {
-  "sha": "ecface83bd8f628557f69a57c4a9a0656f2ae310",
+  "sha": "ef2a7fa15458f830584c78d83c4ada450b864f7e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "ef2a7fa",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "fix(e2e): orcamento do teste cobre a espera de 150s do login em CI (#3682)",
+    "files": [
+     "e2e/helpers/auth.ts"
+    ]
+   },
    {
     "sha": "ecface8",
     "date": "2026-11-15",
@@ -540003,24 +540013,11 @@
      "src/components/admin/connections/useIntegrationsHealthCard.ts",
      "supabase/functions/connections-hub-audit/index.ts"
     ]
-   },
-   {
-    "sha": "4c912e1",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(migrations): registra o recibo E15 da 20261107134429 (destrava o Gate 1.13.3) (#3639)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "src/pages/mockups/MockupGenerator.tsx",
-    5
-   ],
-   [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
     5
    ],
    [
@@ -540034,6 +540031,14 @@
    [
     "src/hooks/mockup/useMockupGenerator.ts",
     4
+   ],
+   [
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    4
+   ],
+   [
+    "e2e/helpers/auth.ts",
+    3
    ],
    [
     "src/tests/MockupDeletion.test.tsx",
@@ -540089,10 +540094,6 @@
    ],
    [
     "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts",
-    2
-   ],
-   [
-    "analise-branches/auditoria-261115/veredito_grupo00.md",
     2
    ]
   ]

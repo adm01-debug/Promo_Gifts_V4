@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ecface83bd8f628557f69a57c4a9a0656f2ae310",
+  "commit": "ef2a7fa15458f830584c78d83c4ada450b864f7e",
   "branch": "main",
-  "data_commit": "2026-11-15T18:58:02Z",
+  "data_commit": "2026-11-15T19:12:45Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ef2a7fa1",
+    "data": "2026-11-15",
+    "assunto": "fix(e2e): orcamento do teste cobre a espera de 150s do login em CI (#3682)"
+   },
    {
     "sha": "ecface83",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "3893d57f",
     "data": "2026-11-15",
     "assunto": "fix(ci): portão de recibos deixa de dar verde com version citada no recibo de outra migration (#3649)"
-   },
-   {
-    "sha": "1eafa069",
-    "data": "2026-11-15",
-    "assunto": "fix(db): cria o rollback que destrava o revoke E18 — estoque alterável por qualquer usuário logado (#3648)"
    }
   ],
-  "arquivos_mudados_7d": 2181,
+  "arquivos_mudados_7d": 2178,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -172,16 +172,16 @@
     "mudancas": 96
    },
    {
-    "pasta": "RELATORIO_CI.md",
-    "mudancas": 93
-   },
-   {
     "pasta": "src/components/inventory",
     "mudancas": 93
    },
    {
+    "pasta": "RELATORIO_CI.md",
+    "mudancas": 92
+   },
+   {
     "pasta": "PENDENCIAS.md",
-    "mudancas": 88
+    "mudancas": 87
    },
    {
     "pasta": "src/components/kit-builder",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 81
+    "mudancas": 80
    },
    {
     "pasta": "src/pages/admin",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 93
+    "mudancas": 92
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 88
+    "mudancas": 87
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -290,18 +290,18 @@
     "mudancas": 8
    },
    {
-    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
+    "arquivo": "e2e/helpers/auth.ts",
     "mudancas": 8
    },
    {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
     "mudancas": 8
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 579
+    "commits": 580
    },
    {
     "autor": "Joaquim Ataides",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 36
+    "commits": 35
    },
    {
     "autor": "dependabot[bot]",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10321,
   "arquivos_codigo": 5321,
-  "linhas_codigo": 1014156,
+  "linhas_codigo": 1014163,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -564,7 +564,7 @@
   },
   "e2e/helpers": {
    "arquivos": 37,
-   "linhas": 5064
+   "linhas": 5071
   },
   "e2e/initial-load.spec.ts": {
    "arquivos": 1,
