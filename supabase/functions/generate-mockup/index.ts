@@ -6,6 +6,7 @@ import { assertSwitchEnabled } from "../_shared/kill_switch.ts";
 import {
   allowedFetchHosts, fetchBytes as guardedFetchBytes, ImageFetchError, isAllowedFetchHost, MAX_IMAGE_BYTES,
 } from "./fetch-guard.ts";
+import { logoSizePx } from "./geometry.ts";
 
 // ─ Types ─────────────────────────────────────────────────────────────────
 
@@ -29,13 +30,12 @@ interface GenerateMockupBody {
   logoRotation?: number;
   logoScale?: number;
   productName?: string;
-  // AUDIT 2026-06-17 — physical-aware WYSIWYG calibration (optional, back-compat):
-  // when the client sends the product's real-world dimensions (cm) the edge sizes
-  // the logo with the SAME px-per-cm the on-screen preview uses, so the generated
-  // mockup matches what the user positioned. When absent, the edge falls back to the
-  // legacy /20 reference (a 20 cm product filling the canvas) — no regression.
-  // productFractionX/Y are the product's bounding-box occupancy in the preview frame
-  // (0..1); omitted ⇒ treated as 1 (product fills its contain rect).
+  // AUDIT 2026-06-17 / 2026-11-15 — WYSIWYG: a edge usa a MESMA geometria do editor
+  // (src/lib/mockup-geometry.ts, replicada em ./geometry.ts). productWidthCm/HeightCm
+  // são as dimensões REAIS do produto (cm); com uma só, a outra é inferida como no editor;
+  // sem nenhuma, vale a estimativa 8×20 cm do editor (fallback — o kit-builder gera prévia
+  // sem dimensões). productFractionX/Y é a fração da imagem ocupada pelo produto (0..1);
+  // ausente ⇒ default do cliente (0.85, ver DEFAULT_PRODUCT_FRACTION em ./geometry.ts).
   productWidthCm?: number;
   productHeightCm?: number;
   productFractionX?: number;
@@ -194,63 +194,12 @@ function base64ToBytes(dataUrl: string): Uint8Array {
 // ─ Canvas composition ───────────────────────────────────────────────────────
 
 const CANVAS_PX = 1024;
-// Logo-sizing calibration (AUDIT 2026-06-17 — WYSIWYG):
-const FALLBACK_PRODUCT_REFERENCE_CM = 20; // legacy assumption: 20 cm product fills canvas
-const MAX_LOGO_CANVAS_FRACTION = 0.98;    // never let the logo overflow the frame
-const MIN_LOGO_PX = 8;                     // keep tiny logos visible
-
-// Sanitizers so malformed numbers can never produce NaN/Infinity/0 geometry.
-const finiteOr = (x: unknown, fallback: number): number =>
-  (typeof x === "number" && Number.isFinite(x)) ? x : fallback;
-const positiveOr = (x: unknown, fallback: number): number => {
-  const v = finiteOr(x, NaN);
-  return v > 0 ? v : fallback;
-};
-const fraction01 = (x: unknown): number => {
-  const v = finiteOr(x, NaN);
-  return (v > 0 && v <= 1) ? v : 1; // out-of-range ⇒ "fills its rect"
-};
-
-// Compute the logo's pixel size on the 1024² canvas. When the product's real
-// dimensions (cm) are known we mirror the preview's px-per-cm so the on-screen
-// placement and the rendered mockup agree (WYSIWYG); otherwise we reproduce the
-// legacy /20 behaviour exactly. The clamp is PROPORTIONAL — it shrinks both sides
-// by the same factor, so the logo's aspect ratio is always preserved.
-// Validated by 25 calibration scenarios (parity ≤1e-9, fallback ≡ legacy, clamp,
-// and sanitization of NaN/negative/Infinity/0 inputs).
-function computeLogoPx(
-  containW: number, containH: number,
-  logoWidthCm: unknown, logoHeightCm: unknown,
-  productWidthCm: unknown, productHeightCm: unknown,
-  fractionX: unknown, fractionY: unknown,
-  scalePct: number,
-): { lw: number; lh: number } {
-  const s = scalePct / 100;
-  const lwCm = positiveOr(logoWidthCm, 5);
-  const lhCm = positiveOr(logoHeightCm, 3);
-  const pW = positiveOr(productWidthCm, 0);
-  const pH = positiveOr(productHeightCm, 0);
-
-  let pxPerCm: number;
-  if (pW > 0 && pH > 0) {
-    const fx = fraction01(fractionX), fy = fraction01(fractionY);
-    pxPerCm = Math.min((containW * fx) / pW, (containH * fy) / pH); // mirrors the preview
-  } else {
-    pxPerCm = CANVAS_PX / FALLBACK_PRODUCT_REFERENCE_CM;            // legacy fallback
-  }
-
-  let lw = lwCm * pxPerCm * s;
-  let lh = lhCm * pxPerCm * s;
-
-  const maxPx = CANVAS_PX * MAX_LOGO_CANVAS_FRACTION;
-  const over = Math.max(lw / maxPx, lh / maxPx, 1);
-  lw /= over; lh /= over;                                           // proportional clamp
-  if (lw < MIN_LOGO_PX && lh < MIN_LOGO_PX) {
-    const boost = MIN_LOGO_PX / Math.max(lw, lh);
-    lw *= boost; lh *= boost;
-  }
-  return { lw, lh };
-}
+// O tamanho da logo vem de ./geometry.ts (`cmParaPx`/`logoSizePx`) — a MESMA
+// fórmula do editor, inclusive o mínimo de 40 px, a inferência de uma dimensão
+// a partir da outra e a estimativa 8×20 cm quando não há nenhuma (fallback). Não
+// existe mais aqui o produto-referência de 20 cm (que enchia o canvas) nem o
+// mínimo de 8 px. A sanitização de cm ≤ 0 e o teto proporcional de absurdo
+// (MAX_LOGO_PX) seguem em ./geometry.ts.
 
 // BUG-A13 FIX (26/05/2026): OffscreenCanvas pode não estar disponível em todos
 // os runtimes Deno Edge. Adicionado try/catch específico com mensagem clara.
@@ -320,19 +269,23 @@ async function compositeImages(
   ctx.drawImage(prodBmp, 0, 0, prodBmp.width, prodBmp.height, dx, dy, dw, dh);
 
   // Logo -- positioned, rotated, scaled.
-  // Size comes from computeLogoPx, which mirrors the preview's px-per-cm using the
-  // SAME contain rect (dw×dh) computed just above for the product — that's what makes
-  // the rendered logo match the on-screen placement. Falls back to legacy /20 when the
-  // product has no known cm dimensions.
+  // O tamanho vem de logoSizePx (./geometry.ts): a MESMA fórmula do editor, sobre
+  // o MESMO contain rect (dw×dh) do produto calculado acima — é isso que faz a logo
+  // renderizada bater com a que o vendedor posicionou na tela. Sem dimensões reais,
+  // geometry.ts usa a estimativa 8×20 cm do editor (mesmo fallback da tela).
   const cx = (posXPct / 100) * CANVAS_PX;
   const cy = (posYPct / 100) * CANVAS_PX;
-  const { lw, lh } = computeLogoPx(
-    dw, dh,
-    logoWidthCm, logoHeightCm,
-    productWidthCm, productHeightCm,
-    fractionX, fractionY,
+  const { lw, lh } = logoSizePx({
+    renderedImgW: dw,
+    renderedImgH: dh,
+    logoWidthCm,
+    logoHeightCm,
+    productWidthCm,
+    productHeightCm,
+    fractionX,
+    fractionY,
     scalePct,
-  );
+  });
   ctx.save();
   ctx.translate(cx, cy);
   ctx.rotate((rotDeg * Math.PI) / 180);
@@ -406,7 +359,7 @@ Deno.serve(async (req) => {
   const posX    = Math.max(0, Math.min(100, body.positionX ?? 50));
   const posY    = Math.max(0, Math.min(100, body.positionY ?? 50));
   // Logo size is no longer pre-reduced to a /20 ratio here. We forward the raw cm
-  // (with defaults) and let computeLogoPx() inside compositeImages convert cm→px
+  // (with defaults) and let logoSizePx() inside compositeImages convert cm→px
   // using the product's contain rect, so the result matches the preview (WYSIWYG).
   const logoWidthCm  = body.logoWidthCm  ?? 5;
   const logoHeightCm = body.logoHeightCm ?? 3;
