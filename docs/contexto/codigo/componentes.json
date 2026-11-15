@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1226,
+ "total": 1228,
  "orfaos": 160,
  "nomes_duplicados": {
   "AdvancedPriceSearchPage": [
@@ -71,6 +71,10 @@
   "CommercialIntelligencePage": [
    "recovery/src-legacy/src/pages/CommercialIntelligencePage.tsx",
    "src/pages/bi/CommercialIntelligencePage.tsx"
+  ],
+  "CompanyAvatar": [
+   "src/components/mockup/CompanyAvatar.tsx",
+   "src/components/quotes/company-contact/shared-types.tsx"
   ],
   "CompareCartsDialog": [
    "src/components/cart/cart-utils/CartDialogs.tsx",
@@ -8264,7 +8268,7 @@
     "FavoriteListsSidebar"
    ],
    "export_default": null,
-   "linhas": 215,
+   "linhas": 210,
    "dominio": "components/favorites",
    "hooks_locais": [],
    "tabelas": [],
@@ -9422,7 +9426,7 @@
     "StockDashboard"
    ],
    "export_default": "StockDashboard",
-   "linhas": 780,
+   "linhas": 781,
    "dominio": "components/inventory",
    "hooks_locais": [
     "useListUrlState",
@@ -10456,6 +10460,20 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/kit-library/KitLibraryStats.tsx",
+   "exports": [
+    "KitLibraryStats"
+   ],
+   "export_default": null,
+   "linhas": 64,
+   "dominio": "components/kit-library",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/kit-library/KitTemplatePreviewDialog.tsx",
    "exports": [
     "KitTemplatePreviewDialog"
@@ -11238,6 +11256,20 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/mockup/CompanyAvatar.tsx",
+   "exports": [
+    "CompanyAvatar"
+   ],
+   "export_default": null,
+   "linhas": 43,
+   "dominio": "components/mockup",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/mockup/GeneratingOverlay.tsx",
    "exports": [
     "GeneratingOverlay"
@@ -11365,7 +11397,7 @@
     "MockupClientSelector"
    ],
    "export_default": null,
-   "linhas": 501,
+   "linhas": 478,
    "dominio": "components/mockup",
    "hooks_locais": [
     "useClientFuzzySearch",
@@ -11416,7 +11448,7 @@
     "MockupConfigPanel"
    ],
    "export_default": null,
-   "linhas": 499,
+   "linhas": 500,
    "dominio": "components/mockup",
    "hooks_locais": [
     "useMediaQuery"
@@ -15805,7 +15837,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 345,
+   "usado_por": 346,
    "orfao": false
   },
   {
@@ -15923,7 +15955,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 41,
+   "usado_por": 42,
    "orfao": false
   },
   {
@@ -18282,7 +18314,7 @@
     "KitBuilderPage"
    ],
    "export_default": "KitBuilderPage",
-   "linhas": 495,
+   "linhas": 499,
    "dominio": "pages/kit-builder",
    "hooks_locais": [
     "useKitBuilderPageState",
@@ -18300,7 +18332,7 @@
     "KitLibraryPage"
    ],
    "export_default": "KitLibraryPage",
-   "linhas": 749,
+   "linhas": 705,
    "dominio": "pages/kit-builder",
    "hooks_locais": [
     "useAuth",

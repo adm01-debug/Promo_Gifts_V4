@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `9e656a39b9` · branch `main` · 2026-11-15 12:49 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5e59cb9c79` · branch `main` · 2026-11-15 13:22 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1784,7 +1784,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `dimension` | compara, escreve | `src/components/pricing/calculator/QuantityComparisonTable.tsx` |
 | `status` | `done` | compara | `src/pages/admin/telemetry/useOptimizationQueue.ts` |
 | `status` | `down` | compara | `recovery/src-legacy/src/hooks/useCloudStatus.ts`<br>`src/components/system/CloudStatusBanner.tsx`<br>`src/hooks/ui/useCloudStatus.ts`<br>`src/lib/external-db/invoke.ts` |
-| `status` | `draft` | compara, escreve, filtra | `recovery/src-legacy/src/hooks/useKitAutoSave.ts`<br>`recovery/src-legacy/src/hooks/useKitTemplates.ts`<br>`recovery/src-legacy/src/hooks/useMagicUpGeneration.ts`<br>`recovery/src-legacy/src/hooks/useMagicUpState.ts`<br>`recovery/src-legacy/src/hooks/useQuoteBuilderState.ts`<br>… +40 |
+| `status` | `draft` | compara, escreve, filtra | `recovery/src-legacy/src/hooks/useKitAutoSave.ts`<br>`recovery/src-legacy/src/hooks/useKitTemplates.ts`<br>`recovery/src-legacy/src/hooks/useMagicUpGeneration.ts`<br>`recovery/src-legacy/src/hooks/useMagicUpState.ts`<br>`recovery/src-legacy/src/hooks/useQuoteBuilderState.ts`<br>… +41 |
 | `status` | `duplicate_ignored` | escreve | `supabase/functions/receive-crm-callback/index.ts` |
 | `status` | `em_separacao` | escreve | `src/hooks/products/useSellerCarts.ts` |
 | `status` | `empty` | escreve | `src/components/admin/connections/KeysValidationTab.tsx` |
@@ -6378,7 +6378,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | DOWNLOAD_SIZE_LIMIT | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_ACTION_AFTER | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_JSON_KEY | `scripts/diagnose-personalization-artifact.py` |
-| … +1252 linhas — lista completa em `context.json` | |
+| … +1259 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6502,7 +6502,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21358 testes em 2165 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21385 testes em 2170 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6806,7 +6806,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/product-webhook.test.ts` | 18 | product-webhook · evento product.created · retorna 200 para evento product.created válido · evento product.updated … |
 | `tests/hooks/useGlobalSearch-voice.test.ts` | 18 | Voice Action Handler Logic · navigate action · should extract route from navigate action · should handle navigate without route gracefully … |
 | `tests/lib/product-types.test.ts` | 18 | getProductImageUrl · should prefer primary_image_url · should fallback to image_url · should fallback to first image in images array … |
-| … +1865 linhas — lista completa em `context.json` | | |
+| … +1870 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7268,10 +7268,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ArrowRight/Down no último e ArrowLeft/Up no primeiro param no limite (não ciclam); | `src/components/magic-up/MagicUpVariationComparator.tsx` |
 | Regra única do logo do mockup (SVG fora: a edge generate-mockup rejeita SVG). | `src/components/mockup/AreaCard.tsx` |
 | * Validação sem rede: extensão, tipo informado pelo navegador e tamanho. Retorna a mensagem de erro ou null. */ | `src/components/mockup/ArtFileUpload.tsx` |
+| Remover a empresa exige confirmação (mesma regra do Magic Up) — evita perda acidental. | `src/components/mockup/MockupClientSelector.tsx` |
 | Fecha APENAS a lista — a empresa selecionada permanece intacta. | `src/components/mockup/MockupClientSelector.tsx` |
 | * Máximo de cores suportadas na área */ | `src/components/mockup/MultiAreaManager.tsx` |
 | ANTI-REGRESSÃO: primary_image_url deve vir ANTES de og_image_url. | `src/components/mockup/ProductSearchCombobox.tsx` |
 | NÃO contém limites numéricos: qualquer número de limite (cores, dimensões, | `src/components/mockup/TechniqueTooltip.tsx` |
 | qualitativos abaixo são apenas estimativas e aparecem rotulados como tal. | `src/components/mockup/TechniqueTooltip.tsx` |
-| limite quando o cadastro realmente o traz — nada de valor fixo no código. | `src/components/mockup/TechniqueTooltip.tsx` |
-| … +1275 linhas — lista completa em `context.json` | |
+| … +1278 linhas — lista completa em `context.json` | |

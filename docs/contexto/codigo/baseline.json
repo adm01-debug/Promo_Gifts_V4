@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "9e656a39b9b062f310c3ef02b8341fe9505c36b9",
+  "commit": "5e59cb9c7969b118d2573608af307f8acbb63506",
   "branch": "main",
-  "data_commit": "2026-11-15T09:47:43-03:00",
+  "data_commit": "2026-11-15T10:21:27-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "5e59cb9c",
+    "data": "2026-11-15",
+    "assunto": "fix: trem de resgates — 16 correções recuperadas de branches de outros agentes (#3660)"
+   },
    {
     "sha": "9e656a39",
     "data": "2026-11-15",
@@ -126,18 +131,13 @@
     "sha": "6f156767",
     "data": "2026-11-14",
     "assunto": "Merge branch 'main' into claude/trem4-front-perf-261114-2020"
-   },
-   {
-    "sha": "23cfcc13",
-    "data": "2026-11-14",
-    "assunto": "fix(pdp): aborta de verdade a consulta do produto ao estourar o limite de 15 s (#3622)"
    }
   ],
-  "arquivos_mudados_7d": 2061,
+  "arquivos_mudados_7d": 2084,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 648
+    "mudancas": 649
    },
    {
     "pasta": "src/components/products",
@@ -165,19 +165,19 @@
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 171
+    "mudancas": 173
    },
    {
     "pasta": "supabase/functions/_shared",
     "mudancas": 167
    },
    {
-    "pasta": "src/components/ui",
-    "mudancas": 159
+    "pasta": "src/components/mockup",
+    "mudancas": 163
    },
    {
-    "pasta": "src/components/mockup",
-    "mudancas": 157
+    "pasta": "src/components/ui",
+    "mudancas": 159
    },
    {
     "pasta": "src/pages/admin",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 113
+    "mudancas": 114
    },
    {
     "pasta": "src/pages/quotes",
@@ -211,11 +211,11 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 43
+    "mudancas": 42
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 33
+    "mudancas": 32
    },
    {
     "arquivo": "analise-prs/progresso.json",
@@ -238,6 +238,10 @@
     "mudancas": 18
    },
    {
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "mudancas": 16
+   },
+   {
     "arquivo": ".github/workflows/deploy-gates.yml",
     "mudancas": 15
    },
@@ -247,10 +251,6 @@
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 15
-   },
-   {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
     "mudancas": 15
    },
    {
@@ -317,26 +317,26 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 15
+    "commits": 14
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 10217,
-  "arquivos_codigo": 5265,
-  "linhas_codigo": 1004404,
+  "arquivos_total": 10224,
+  "arquivos_codigo": 5272,
+  "linhas_codigo": 1005121,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
   "modulos": 158,
-  "componentes": 1226,
+  "componentes": 1228,
   "hooks": 617,
   "edge_functions": 111,
   "tabelas": 548,
   "migrations": 3087,
   "cron_jobs": 122,
-  "testes": 2487,
+  "testes": 2490,
   "workflows": 87,
   "scripts": 272,
   "docs_md": 1024
@@ -548,7 +548,7 @@
   },
   "e2e/flows": {
    "arquivos": 183,
-   "linhas": 25331
+   "linhas": 25329
   },
   "e2e/future-stock.spec.ts": {
    "arquivos": 1,
@@ -564,7 +564,7 @@
   },
   "e2e/helpers": {
    "arquivos": 37,
-   "linhas": 5042
+   "linhas": 5048
   },
   "e2e/initial-load.spec.ts": {
    "arquivos": 1,
@@ -803,8 +803,8 @@
    "linhas": 171
   },
   "e2e/routes": {
-   "arquivos": 92,
-   "linhas": 4837
+   "arquivos": 90,
+   "linhas": 4819
   },
   "e2e/scripts": {
    "arquivos": 3,
@@ -1492,7 +1492,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 1251
+   "linhas": 1255
   },
   "scripts/dry-run-migration-draft.mjs": {
    "arquivos": 1,
@@ -1883,8 +1883,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1371,
-   "linhas": 274974
+   "arquivos": 1375,
+   "linhas": 275266
   },
   "src/config": {
    "arquivos": 1,
@@ -1908,15 +1908,15 @@
   },
   "src/hooks": {
    "arquivos": 466,
-   "linhas": 87542
+   "linhas": 87612
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66577
   },
   "src/lib": {
-   "arquivos": 332,
-   "linhas": 50920
+   "arquivos": 333,
+   "linhas": 50955
   },
   "src/logic": {
    "arquivos": 4,
@@ -1928,7 +1928,7 @@
   },
   "src/pages": {
    "arquivos": 353,
-   "linhas": 82901
+   "linhas": 82861
   },
   "src/routes": {
    "arquivos": 14,
@@ -1956,11 +1956,11 @@
   },
   "src/utils": {
    "arquivos": 56,
-   "linhas": 8171
+   "linhas": 8174
   },
   "supabase/functions": {
-   "arquivos": 270,
-   "linhas": 50123
+   "arquivos": 271,
+   "linhas": 50360
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -2059,8 +2059,8 @@
    "linhas": 165
   },
   "tests/edge-functions": {
-   "arquivos": 173,
-   "linhas": 13128
+   "arquivos": 174,
+   "linhas": 13141
   },
   "tests/fixtures": {
    "arquivos": 3,
@@ -2079,8 +2079,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 132,
-   "linhas": 18247
+   "arquivos": 134,
+   "linhas": 18357
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2140,7 +2140,7 @@
   },
   "tests/scripts": {
    "arquivos": 176,
-   "linhas": 27782
+   "linhas": 27789
   },
   "tests/search": {
    "arquivos": 1,
@@ -2286,7 +2286,7 @@
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",
-   "linhas": 1251
+   "linhas": 1255
   },
   {
    "arquivo": "src/pages/products/SellerCartsPage.tsx",
@@ -2330,7 +2330,7 @@
   },
   {
    "arquivo": "src/lib/bi/pptxGenerator.ts",
-   "linhas": 952
+   "linhas": 944
   },
   {
    "arquivo": "src/data/mock-match-products.ts",
@@ -2359,7 +2359,7 @@
   "ts_ignore": 0,
   "eslint_disable": 24,
   "todos": 105,
-  "arquivos_acima_500_linhas": 187
+  "arquivos_acima_500_linhas": 186
  },
  "todos": [
   {
@@ -2610,7 +2610,7 @@
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",
-   "linha": 601,
+   "linha": 605,
    "tipo": "TODO",
    "texto": "objeto (ex.: `.*`, `^create table`, `public`)."
   },
@@ -3302,6 +3302,7 @@
    "CollectionDetailPage",
    "CollectionsPage",
    "CommercialIntelligencePage",
+   "CompanyAvatar",
    "CompareCartsDialog",
    "ComparePage",
    "ConfirmDialog",

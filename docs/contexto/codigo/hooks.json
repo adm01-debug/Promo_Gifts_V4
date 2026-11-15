@@ -5036,7 +5036,7 @@
    "hooks_exportados": [
     "useNewSupplierForm"
    ],
-   "linhas": 730,
+   "linhas": 731,
    "dominio": "components/admin",
    "tabelas": [],
    "rpcs": [],
@@ -6732,7 +6732,7 @@
    "hooks_exportados": [
     "useDeviceDetection"
    ],
-   "linhas": 199,
+   "linhas": 201,
    "dominio": "hooks/admin",
    "tabelas": [],
    "rpcs": [],
@@ -9169,7 +9169,7 @@
    "usado_por_arquivos": [
     "src/hooks/intelligence/useMagicUpState.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/intelligence/useMagicUpState.ts",
@@ -12101,7 +12101,7 @@
    "hooks_exportados": [
     "useQuoteTemplates"
    ],
-   "linhas": 426,
+   "linhas": 493,
    "dominio": "hooks/quotes",
    "tabelas": [
     "profiles",

@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4814)",
+   "TypeScript (4821)",
    "SQL (3406)",
    "Markdown (1024)",
    "JavaScript (443)",
@@ -4623,11 +4623,11 @@
    },
    {
     "host": "cdn.test",
-    "arquivos": 8
+    "arquivos": 9
    },
    {
     "host": "edge-contract.invalid",
-    "arquivos": 7
+    "arquivos": 8
    },
    {
     "host": "ai.gateway.lovable.dev",
@@ -4636,6 +4636,10 @@
    {
     "host": "api.ipify.org",
     "arquivos": 6
+   },
+   {
+    "host": "api.resend.com",
+    "arquivos": 5
    },
    {
     "host": "fonts.googleapis.com",
@@ -4654,15 +4658,15 @@
     "arquivos": 5
    },
    {
-    "host": "api.resend.com",
-    "arquivos": 4
-   },
-   {
     "host": "criar-together-now.lovable.app",
     "arquivos": 4
    },
    {
     "host": "example.supabase.co",
+    "arquivos": 4
+   },
+   {
+    "host": "example.test",
     "arquivos": 4
    },
    {
@@ -4699,10 +4703,6 @@
    },
    {
     "host": "evil.example",
-    "arquivos": 3
-   },
-   {
-    "host": "example.test",
     "arquivos": 3
    },
    {
@@ -5127,6 +5127,10 @@
    },
    {
     "host": "s.asiaimport.com.br",
+    "arquivos": 1
+   },
+   {
+    "host": "scheduled-reports-contract.invalid",
     "arquivos": 1
    },
    {

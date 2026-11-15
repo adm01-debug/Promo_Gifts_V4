@@ -2642,7 +2642,7 @@
    "nome": "process-scheduled-reports",
    "entrada": "supabase/functions/process-scheduled-reports/index.ts",
    "arquivos": 1,
-   "linhas": 195,
+   "linhas": 206,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS"
@@ -2672,7 +2672,7 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": true,
    "orfa": false,
-   "testes": 1
+   "testes": 2
   },
   {
    "nome": "product-visual-search",

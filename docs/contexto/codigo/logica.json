@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 298,
+ "total": 299,
  "por_camada": {
   "api": 3,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 227,
+  "lib": 228,
   "python": 9,
   "services": 9,
   "stores": 8,
@@ -1970,7 +1970,7 @@
     "generateBIPptx"
    ],
    "export_default": null,
-   "linhas": 952,
+   "linhas": 944,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -1984,6 +1984,30 @@
    "usado_por": 1,
    "usado_por_modulos": [
     "components/bi"
+   ],
+   "coberto_por_testes": 0,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/bi/pptxTheme.ts",
+   "camada": "lib",
+   "exports": [
+    "C",
+    "addMockBadge"
+   ],
+   "export_default": null,
+   "linhas": 39,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "lib/bi"
    ],
    "coberto_por_testes": 0,
    "orfao": false
@@ -3230,7 +3254,7 @@
     "shouldFallbackSelect"
    ],
    "export_default": null,
-   "linhas": 303,
+   "linhas": 307,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -7529,7 +7553,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 651,
+   "usado_por": 652,
    "usado_por_modulos": [
     "components",
     "components/admin",
@@ -9069,7 +9093,7 @@
     "sortProducts"
    ],
    "export_default": null,
-   "linhas": 174,
+   "linhas": 177,
    "tabelas": [],
    "rpcs": [],
    "edges": [],

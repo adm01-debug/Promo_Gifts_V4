@@ -5981,6 +5981,7 @@
    "src/components/inventory/SupplierRiskPanel.tsx",
    "src/components/inventory/VariantStockTable.tsx",
    "src/components/inventory/stockKpiCards.ts",
+   "src/components/inventory/stockTabDefault.ts",
    "src/components/inventory/supplier-reliability/SupplierReliabilityTab.tsx",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
@@ -6594,6 +6595,10 @@
    "src/components/ui/select.tsx",
    "src/lib/utils.ts"
   ],
+  "src/components/kit-library/KitLibraryStats.tsx": [
+   "src/components/ui/card.tsx",
+   "src/hooks/kit-builder/index.ts"
+  ],
   "src/components/kit-library/KitTemplatePreviewDialog.tsx": [
    "src/components/kit-library/RelatedTemplates.tsx",
    "src/components/kit-library/kit-template-icons.ts",
@@ -6937,6 +6942,9 @@
    "src/lib/logger.ts",
    "src/lib/utils.ts"
   ],
+  "src/components/mockup/CompanyAvatar.tsx": [
+   "src/lib/utils.ts"
+  ],
   "src/components/mockup/GeneratingOverlay.tsx": [
    "src/lib/utils.ts"
   ],
@@ -6974,7 +6982,9 @@
    "src/lib/utils.ts"
   ],
   "src/components/mockup/MockupClientSelector.tsx": [
+   "src/components/mockup/CompanyAvatar.tsx",
    "src/components/mockup/MockupConfigPanel.tsx",
+   "src/components/ui/ConfirmDialog.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/input.tsx",
    "src/components/ui/scroll-area.tsx",
@@ -11622,7 +11632,8 @@
    "src/hooks/bi/useClientSeasonality.ts",
    "src/hooks/bi/useClientVsIndustry.ts",
    "src/hooks/bi/useIndustryTrends.ts",
-   "src/lib/bi/executive-summary.ts"
+   "src/lib/bi/executive-summary.ts",
+   "src/lib/bi/pptxTheme.ts"
   ],
   "src/lib/carts/status-transition-guard.ts": [
    "src/hooks/products/index.ts"
@@ -13204,6 +13215,7 @@
    "src/components/kit-library/KitCardSkeleton.tsx",
    "src/components/kit-library/KitCategoryChips.tsx",
    "src/components/kit-library/KitLibraryFilters.tsx",
+   "src/components/kit-library/KitLibraryStats.tsx",
    "src/components/kit-library/KitTemplatePreviewDialog.tsx",
    "src/components/seo/PageSEO.tsx",
    "src/components/ui/ConfirmDialog.tsx",

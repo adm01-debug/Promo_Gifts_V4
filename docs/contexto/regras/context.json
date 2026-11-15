@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "9e656a39b9b062f310c3ef02b8341fe9505c36b9",
+  "sha": "5e59cb9c7969b118d2573608af307f8acbb63506",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 12:49 UTC",
-  "files_total": 10145,
-  "code_files": 8670,
-  "code_lines": 1222624
+  "generated_at": "2026-11-15 13:22 UTC",
+  "files_total": 10152,
+  "code_files": 8677,
+  "code_lines": 1223341
  },
  "version": "1.3.2",
- "facts_hash": "c0984406ff58dc0d",
+ "facts_hash": "2854ffc2f8cdd48c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1104,8 +1104,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3406,
-   ".ts": 2939,
-   ".tsx": 1876,
+   ".ts": 2943,
+   ".tsx": 1879,
    ".mjs": 436,
    ".py": 13,
    ".js": 7
@@ -137317,7 +137317,7 @@
      "log_user_logout",
      "restore_seller_cart"
     ],
-    "deps_count": 228
+    "deps_count": 229
    },
    {
     "path": "/external-db-test",
@@ -137472,7 +137472,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 226
+    "deps_count": 227
    },
    {
     "path": "/ferramentas/bi/comparar",
@@ -140069,7 +140069,10 @@
     ],
     "invokes": [],
     "doc": "",
-    "errors": [],
+    "errors": [
+     "RESEND_API_KEY não configurado",
+     "Resend ${sendRes.status}: ${(await sendRes.text()).slice(0, 300)}"
+    ],
     "side_effects": [],
     "webhook_events": [],
     "idempotency": false
@@ -142994,7 +142997,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1630,
+  "components_count": 1634,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -146835,8 +146838,8 @@
   },
   {
    "module": "e2e",
-   "files": 628,
-   "lines": 75791,
+   "files": 626,
+   "lines": 75777,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -147306,7 +147309,7 @@
   {
    "module": "scripts",
    "files": 287,
-   "lines": 62095,
+   "lines": 62099,
    "tables": [
     "a",
     "b",
@@ -147545,8 +147548,8 @@
   },
   {
    "module": "src/components",
-   "files": 1371,
-   "lines": 274973,
+   "files": 1375,
+   "lines": 275265,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -147910,7 +147913,7 @@
   {
    "module": "src/hooks",
    "files": 466,
-   "lines": 87542,
+   "lines": 87612,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -148196,8 +148199,8 @@
   },
   {
    "module": "src/lib",
-   "files": 333,
-   "lines": 50930,
+   "files": 334,
+   "lines": 50965,
    "tables": [
     "...",
     "companies",
@@ -148403,7 +148406,7 @@
   {
    "module": "src/pages",
    "files": 353,
-   "lines": 82901,
+   "lines": 82861,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -148965,7 +148968,7 @@
   {
    "module": "src/utils",
    "files": 56,
-   "lines": 8171,
+   "lines": 8174,
    "tables": [],
    "exports": [
     "br-schemas.ts: cpfOptionalSchema, cepOptionalSchema, phoneBrOptionalSchema, assertPersistableCpf, assertPersistableCep, assertPersistablePhoneBr",
@@ -149105,8 +149108,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 270,
-   "lines": 50123,
+   "files": 271,
+   "lines": 50360,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -149625,8 +149628,8 @@
   },
   {
    "module": "tests",
-   "files": 1029,
-   "lines": 157781,
+   "files": 1032,
+   "lines": 157911,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -165330,6 +165333,18 @@
    },
    {
     "file": "src/hooks/quotes/useQuoteTemplates.ts",
+    "msg": "Dados originais do template indisponíveis. Recarregue antes de copiar."
+   },
+   {
+    "file": "src/hooks/quotes/useQuoteTemplates.ts",
+    "msg": "Nenhum template foi atualizado. Verifique sua permissão de edição."
+   },
+   {
+    "file": "src/hooks/quotes/useQuoteTemplates.ts",
+    "msg": "Nenhum template foi excluído. Verifique sua permissão de exclusão."
+   },
+   {
+    "file": "src/hooks/quotes/useQuoteTemplates.ts",
     "msg": "Não foi possível atualizar o template"
    },
    {
@@ -165343,6 +165358,14 @@
    {
     "file": "src/hooks/quotes/useQuoteTemplates.ts",
     "msg": "Não foi possível excluir o template"
+   },
+   {
+    "file": "src/hooks/quotes/useQuoteTemplates.ts",
+    "msg": "O banco não confirmou a gravação do template."
+   },
+   {
+    "file": "src/hooks/quotes/useQuoteTemplates.ts",
+    "msg": "O vendedor não terá acesso à cópia"
    },
    {
     "file": "src/hooks/quotes/useQuoteTemplates.ts",
@@ -166879,6 +166902,14 @@
    {
     "file": "supabase/functions/mcp-server/index.ts",
     "msg": "[${err.code}] ${err.message}"
+   },
+   {
+    "file": "supabase/functions/process-scheduled-reports/index.ts",
+    "msg": "RESEND_API_KEY não configurado"
+   },
+   {
+    "file": "supabase/functions/process-scheduled-reports/index.ts",
+    "msg": "Resend ${sendRes.status}: ${(await sendRes.text()).slice(0, 300)}"
    },
    {
     "file": "supabase/functions/product-visual-search/index.ts",
@@ -168715,6 +168746,10 @@
    {
     "file": "src/components/mockup/ArtFileUpload.tsx",
     "text": "* Validação sem rede: extensão, tipo informado pelo navegador e tamanho. Retorna a mensagem de erro ou null. */"
+   },
+   {
+    "file": "src/components/mockup/MockupClientSelector.tsx",
+    "text": "Remover a empresa exige confirmação (mesma regra do Magic Up) — evita perda acidental."
    },
    {
     "file": "src/components/mockup/MockupClientSelector.tsx",
@@ -171033,6 +171068,10 @@
     "text": "Usado pelo ExecutiveSummaryButton no módulo Business Analytic."
    },
    {
+    "file": "src/lib/bi/pptxTheme.ts",
+    "text": "* Tipo estrutural mínimo do slide. A guarda `scripts/check-pptx-image-parser-exposure.mjs`"
+   },
+   {
     "file": "src/lib/carts/shipping-deadline.ts",
     "text": "* shipping-deadline — utilitários para o campo `shipping_deadline` do carrinho."
    },
@@ -173271,6 +173310,10 @@
    {
     "file": "supabase/functions/ownership-repair/index.ts",
     "text": "pelo último relatório de `ownership-audit`. Apenas admins/devs."
+   },
+   {
+    "file": "supabase/functions/process-scheduled-reports/index.ts",
+    "text": "FIX: sem chave ou com recusa do Resend o relatório NÃO pode ser marcado como"
    },
    {
     "file": "supabase/functions/product-visual-search/index.ts",
@@ -201416,6 +201459,12 @@
     "kind": "compara"
    },
    {
+    "file": "src/components/kit-library/KitLibraryStats.tsx",
+    "field": "status",
+    "value": "draft",
+    "kind": "compara"
+   },
+   {
     "file": "src/components/layout/SidebarReorganized.tsx",
     "field": "status",
     "value": "pending",
@@ -206207,12 +206256,6 @@
     "file": "src/pages/kit-builder/KitLibraryPage.tsx",
     "field": "status",
     "value": "archived",
-    "kind": "compara"
-   },
-   {
-    "file": "src/pages/kit-builder/KitLibraryPage.tsx",
-    "field": "status",
-    "value": "draft",
     "kind": "compara"
    },
    {
@@ -231088,6 +231131,22 @@
     "name": "não gera quando os campos obrigatórios estão incompletos"
    },
    {
+    "file": "src/components/mockup/__tests__/KeyboardShortcuts.dead.test.tsx",
+    "name": "atalhos destrutivos removidos (Esc, Ctrl+R, Ctrl+D) continuam fora"
+   },
+   {
+    "file": "src/components/mockup/__tests__/KeyboardShortcuts.dead.test.tsx",
+    "name": "Escape não reseta o formulário nem previne o evento"
+   },
+   {
+    "file": "src/components/mockup/__tests__/KeyboardShortcuts.dead.test.tsx",
+    "name": "Ctrl+R e Cmd+R não resetam e deixam o navegador agir"
+   },
+   {
+    "file": "src/components/mockup/__tests__/KeyboardShortcuts.dead.test.tsx",
+    "name": "Ctrl+D não baixa nem sequestra o atalho do navegador"
+   },
+   {
     "file": "src/components/mockup/__tests__/MockupBeforeAfter.a11y.test.tsx",
     "name": "MockupBeforeAfter — teclado e leitor de tela"
    },
@@ -231160,6 +231219,22 @@
     "name": "sem violações WCAG sem empresas encontradas (ramo aberto sem listbox)"
    },
    {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    "name": "MockupClientSelector — remover empresa exige confirmação"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    "name": "o chip expõe "
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    "name": "confirmar remove a empresa selecionada"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    "name": "cancelar mantém a empresa selecionada"
+   },
+   {
     "file": "src/components/mockup/__tests__/MockupClientSelector.logo.test.tsx",
     "name": "MockupClientSelector — usar logo do cliente"
    },
@@ -231218,6 +231293,26 @@
    {
     "file": "src/components/mockup/__tests__/MockupColorSelector.error.test.tsx",
     "name": "falha ao carregar o produto também vira erro retentável (não "
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupConfigPanel.maxColors.test.tsx",
+    "name": "MockupConfigPanel — aviso de cores da logo acima do limite da técnica"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupConfigPanel.maxColors.test.tsx",
+    "name": "logo com 3 cores e técnica de 2 cores: avisa com o limite da técnica"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupConfigPanel.maxColors.test.tsx",
+    "name": "logo com 3 cores e técnica de 4 cores: nenhum aviso"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupConfigPanel.maxColors.test.tsx",
+    "name": "técnica sem limite cadastrado (null): nenhum aviso"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupConfigPanel.maxColors.test.tsx",
+    "name": "sem técnica selecionada: nenhum aviso"
    },
    {
     "file": "src/components/mockup/__tests__/MockupLayoutButtons.test.tsx",
@@ -258560,6 +258655,22 @@
     "name": "corta os textos livres antes de compor o prompt"
    },
    {
+    "file": "supabase/functions/process-scheduled-reports/index.send-failure.test.ts",
+    "name": "process-scheduled-reports — status reflete a resposta do Resend"
+   },
+   {
+    "file": "supabase/functions/process-scheduled-reports/index.send-failure.test.ts",
+    "name": "recusa do provedor: não marca como enviado e registra o motivo"
+   },
+   {
+    "file": "supabase/functions/process-scheduled-reports/index.send-failure.test.ts",
+    "name": "sem RESEND_API_KEY: não chama o provedor nem marca como enviado"
+   },
+   {
+    "file": "supabase/functions/process-scheduled-reports/index.send-failure.test.ts",
+    "name": "provedor aceita: marca last_sent_at e devolve sent"
+   },
+   {
     "file": "supabase/functions/quote-sync-promo-champions/index.test.ts",
     "name": "hmacSha256Hex: assinatura estável e determinística"
    },
@@ -273072,6 +273183,10 @@
     "name": "handles complex filter action"
    },
    {
+    "file": "tests/edge-functions/process-scheduled-reports.send-failure.test.ts",
+    "name": "carrega a suíte de envio do process-scheduled-reports"
+   },
+   {
     "file": "tests/edge-functions/repo-only-files.test.ts",
     "name": "toda edge function só tem arquivos não-teste alcançáveis a partir de index.ts"
    },
@@ -276876,6 +276991,18 @@
     "name": "should combine catalog flags + intelligence badges"
    },
    {
+    "file": "tests/hooks/mockupGenerationService.download.test.ts",
+    "name": "Mockup PDF downloads retain object metadata and historical fallback"
+   },
+   {
+    "file": "tests/hooks/mockupGenerationService.download.test.ts",
+    "name": "builds the existing filename from real data %j"
+   },
+   {
+    "file": "tests/hooks/mockupGenerationService.download.test.ts",
+    "name": "propagates fetch/download errors instead of reporting false success"
+   },
+   {
     "file": "tests/hooks/quoteHelpers.priceConfirmed.test.ts",
     "name": "quoteHelpers — persistência do price_confirmed_at (save)"
    },
@@ -279010,6 +279137,30 @@
    {
     "file": "tests/hooks/useMagicUpGeneration.share.test.tsx",
     "name": "sem imagem disponível o botão informa o motivo e não abre o WhatsApp"
+   },
+   {
+    "file": "tests/hooks/useMagicUpProducts.helpers.test.ts",
+    "name": "Canonical product mapper uses real image records without changing ranking/contracts"
+   },
+   {
+    "file": "tests/hooks/useMagicUpProducts.helpers.test.ts",
+    "name": "fixes string-image getter while preserving IDs, gallery order and all URLs"
+   },
+   {
+    "file": "tests/hooks/useMagicUpProducts.helpers.test.ts",
+    "name": "preserves primary/image_url precedence %j"
+   },
+   {
+    "file": "tests/hooks/useMagicUpProducts.helpers.test.ts",
+    "name": "preserves FTS candidates, name-match ranking, diacritics and limit50"
+   },
+   {
+    "file": "tests/hooks/useMagicUpProducts.helpers.test.ts",
+    "name": "normalizes absent image galleries without inventing image URLs"
+   },
+   {
+    "file": "tests/hooks/useMagicUpProducts.helpers.test.ts",
+    "name": "propagates server failure for the caller to show a real error"
    },
    {
     "file": "tests/hooks/useMagicUpState.brandkit.test.tsx",
@@ -292949,6 +293100,10 @@
    },
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "remove somente o BOM inicial da cópia de replay e preserva U+FEFF interno"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
     "name": "remove CONCURRENTLY só de CREATE INDEX executável no shadow"
    },
    {
@@ -293242,10 +293397,6 @@
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
     "name": "DEFAULT com caixa diferente é diferença real e fica no resíduo"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "identificador entre aspas com maiúscula não equivale ao minúsculo"
    },
    {
     "file": "tests/scripts/e2e-mock-auth-setup.test.mjs",
@@ -342372,6 +342523,7 @@
       "compara:recovery/src-legacy/src/pages/quote-view/useQuoteViewData.ts",
       "compara:src/components/dashboard/MyRecentQuotesWidget.tsx",
       "compara:src/components/dashboard/RecentKitsWidget.tsx",
+      "compara:src/components/kit-library/KitLibraryStats.tsx",
       "compara:src/components/quotes/QuotesStatusChips.tsx",
       "compara:src/components/workflows/WorkflowCanvas.tsx",
       "compara:src/hooks/quotes/useQuoteBuilderState.ts",
@@ -349637,6 +349789,7 @@
    "supabase/functions/migrate-helper/source_contract_test.ts",
    "supabase/functions/ownership-audit/index.ts",
    "supabase/functions/process-queue/index.ts",
+   "supabase/functions/process-scheduled-reports/index.send-failure.test.ts",
    "supabase/functions/process-scheduled-reports/index.ts",
    "supabase/functions/product-visual-search/index.ts",
    "supabase/functions/product-webhook/idempotency_test.ts",
@@ -399161,7 +399314,7 @@
   },
   "e2e/flows/04r-undo-toast-a11y-keyboard.spec.ts": {
    "path": "e2e/flows/04r-undo-toast-a11y-keyboard.spec.ts",
-   "lines": 253,
+   "lines": 251,
    "is_test": true,
    "errors": [
     "window.__showUndoToast não disponível — DEV build necessária."
@@ -402262,7 +402415,7 @@
   },
   "e2e/helpers/auth.ts": {
    "path": "e2e/helpers/auth.ts",
-   "lines": 313,
+   "lines": 319,
    "exports": [
     "interface LoginCreds",
     "type Role",
@@ -405027,16 +405180,6 @@
   "e2e/routes/public/approve.spec.ts": {
    "path": "e2e/routes/public/approve.spec.ts",
    "lines": 10,
-   "is_test": true
-  },
-  "e2e/routes/public/colecao-publica.spec.ts": {
-   "path": "e2e/routes/public/colecao-publica.spec.ts",
-   "lines": 9,
-   "is_test": true
-  },
-  "e2e/routes/public/comparar-publica.spec.ts": {
-   "path": "e2e/routes/public/comparar-publica.spec.ts",
-   "lines": 9,
    "is_test": true
   },
   "e2e/routes/public/dossie.spec.ts": {
@@ -418206,7 +418349,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "path": "scripts/drift-baseline.mjs",
-   "lines": 1251,
+   "lines": 1255,
    "exports": [
     "const BASELINE_DIR",
     "const BASELINE_NAME_RE",
@@ -418278,6 +418421,7 @@
     "Mesma regra do CLI (`^([0-9]+)_(.*)\\.sql$`): a versão é o prefixo numérico, de",
     "Esta semente B+1 recria apenas as pré-condições históricas e é idempotente.",
     "tráfego concorrente; remover apenas CONCURRENTLY preserva o índice resultante",
+    "como token inválido quando ele abre a migration. Normalize somente a cópia",
     "duplas não pode virar início de string/comentário.",
     "argumentos) não pode puxar o `(` de um comando posterior. O `;` e os nomes são",
     "scenarios — not schema objects, strip before allowlist validation."
@@ -426640,7 +426784,7 @@
   },
   "src/components/admin/products/new-supplier/useNewSupplierForm.ts": {
    "path": "src/components/admin/products/new-supplier/useNewSupplierForm.ts",
-   "lines": 730,
+   "lines": 731,
    "exports": [
     "function useNewSupplierForm",
     "type NewSupplierForm"
@@ -432056,7 +432200,7 @@
   },
   "src/components/favorites/FavoriteListsSidebar.tsx": {
    "path": "src/components/favorites/FavoriteListsSidebar.tsx",
-   "lines": 215,
+   "lines": 210,
    "exports": [
     "function FavoriteListsSidebar"
    ]
@@ -433128,7 +433272,7 @@
   },
   "src/components/inventory/StockDashboard.tsx": {
    "path": "src/components/inventory/StockDashboard.tsx",
-   "lines": 780,
+   "lines": 781,
    "exports": [
     "function StockDashboard"
    ],
@@ -433379,6 +433523,14 @@
     }
    ],
    "doc": "stockKpiCards — Helper puro que define os KPIs do dashboard de estoque. Mantém o mapeamento `summary → cards` fora do componente para permitir teste unitário (sem providers, sem React Query) e garantir que cada card use a contagem certa (variações vs produtos) e o filtro correto."
+  },
+  "src/components/inventory/stockTabDefault.ts": {
+   "path": "src/components/inventory/stockTabDefault.ts",
+   "lines": 20,
+   "exports": [
+    "function initialStockTab"
+   ],
+   "doc": "Aba inicial do painel de estoque usada como default de `useListUrlState`. Distingue dois cenários: 1. URL já tem ?tab → devolve 'overview' (default estável do app) para que a normalização do hook mantenha qualquer valor diferente de 'overview' (ex: 'reliability') intacto — preservando URLs compartil …"
   },
   "src/components/inventory/useSelectionShortcut.ts": {
    "path": "src/components/inventory/useSelectionShortcut.ts",
@@ -435212,6 +435364,21 @@
    ],
    "doc": "Filtros visuais para a Biblioteca de Kits — chips por tag/cor + ordenação."
   },
+  "src/components/kit-library/KitLibraryStats.tsx": {
+   "path": "src/components/kit-library/KitLibraryStats.tsx",
+   "lines": 64,
+   "exports": [
+    "function KitLibraryStats"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "draft",
+     "kind": "compara"
+    }
+   ],
+   "doc": "KitLibraryStats — cards de estatística da Biblioteca de Kits (KMM-075). \"Publicados\" usa o mesmo critério do filtro da página (status 'published' ou 'shared')."
+  },
   "src/components/kit-library/KitTemplatePreviewDialog.tsx": {
    "path": "src/components/kit-library/KitTemplatePreviewDialog.tsx",
    "lines": 158,
@@ -436219,6 +436386,14 @@
     }
    ]
   },
+  "src/components/mockup/CompanyAvatar.tsx": {
+   "path": "src/components/mockup/CompanyAvatar.tsx",
+   "lines": 43,
+   "exports": [
+    "function CompanyAvatar"
+   ],
+   "doc": "CompanyAvatar — logo da empresa ou iniciais, usado no chip e na lista do seletor de cliente do mockup."
+  },
   "src/components/mockup/GeneratingOverlay.tsx": {
    "path": "src/components/mockup/GeneratingOverlay.tsx",
    "lines": 72,
@@ -436292,7 +436467,7 @@
   },
   "src/components/mockup/MockupClientSelector.tsx": {
    "path": "src/components/mockup/MockupClientSelector.tsx",
-   "lines": 501,
+   "lines": 478,
    "exports": [
     "function MockupClientSelector"
    ],
@@ -436310,6 +436485,7 @@
     }
    ],
    "rule_comments": [
+    "Remover a empresa exige confirmação (mesma regra do Magic Up) — evita perda acidental.",
     "Fecha APENAS a lista — a empresa selecionada permanece intacta."
    ],
    "doc": "MockupClientSelector — Campo unificado de busca + seleção de empresa Um único input que filtra e mostra resultados inline (sem botão separado)",
@@ -436338,7 +436514,7 @@
   },
   "src/components/mockup/MockupConfigPanel.tsx": {
    "path": "src/components/mockup/MockupConfigPanel.tsx",
-   "lines": 499,
+   "lines": 500,
    "exports": [
     "interface MockupClient",
     "function MockupConfigPanel"
@@ -436631,7 +436807,7 @@
   },
   "src/components/mockup/__tests__/KeyboardShortcuts.dead.test.tsx": {
    "path": "src/components/mockup/__tests__/KeyboardShortcuts.dead.test.tsx",
-   "lines": 99,
+   "lines": 124,
    "is_test": true,
    "tests": [
     "KeyboardShortcutsHint (componente morto)",
@@ -436640,7 +436816,11 @@
     "Ctrl+Enter continua gerando o mockup",
     "Cmd+Enter (metaKey) também gera o mockup",
     "Enter sozinho não gera",
-    "não gera quando os campos obrigatórios estão incompletos"
+    "não gera quando os campos obrigatórios estão incompletos",
+    "atalhos destrutivos removidos (Esc, Ctrl+R, Ctrl+D) continuam fora",
+    "Escape não reseta o formulário nem previne o evento",
+    "Ctrl+R e Cmd+R não resetam e deixam o navegador agir",
+    "Ctrl+D não baixa nem sequestra o atalho do navegador"
    ]
   },
   "src/components/mockup/__tests__/MockupBeforeAfter.a11y.test.tsx": {
@@ -436675,7 +436855,7 @@
   },
   "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx": {
    "path": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
-   "lines": 243,
+   "lines": 293,
    "is_test": true,
    "doc": "A11y — combobox acessível do seletor de cliente do mockup: roles combobox/listbox/option, setas circulares + Enter escolhem e Esc fecha só a lista (sem mexer na seleção). Sem a correção estes casos falham.",
    "tests": [
@@ -436688,7 +436868,11 @@
     "sem violações WCAG no combobox aberto com resultados",
     "sem violações WCAG no erro do CRM (ramo aberto sem listbox)",
     "sem violações WCAG com a busca pendente (ramo aberto sem listbox)",
-    "sem violações WCAG sem empresas encontradas (ramo aberto sem listbox)"
+    "sem violações WCAG sem empresas encontradas (ramo aberto sem listbox)",
+    "MockupClientSelector — remover empresa exige confirmação",
+    "o chip expõe ",
+    "confirmar remove a empresa selecionada",
+    "cancelar mantém a empresa selecionada"
    ]
   },
   "src/components/mockup/__tests__/MockupClientSelector.logo.test.tsx": {
@@ -436738,6 +436922,22 @@
     "clicar em ",
     "produto realmente sem variantes continua sendo selecionado sem cor (sem estado de erro)",
     "falha ao carregar o produto também vira erro retentável (não "
+   ]
+  },
+  "src/components/mockup/__tests__/MockupConfigPanel.maxColors.test.tsx": {
+   "path": "src/components/mockup/__tests__/MockupConfigPanel.maxColors.test.tsx",
+   "lines": 115,
+   "is_test": true,
+   "rule_comments": [
+    "(prop `maxColors`), mas o `MockupConfigPanel` não repassava o limite da"
+   ],
+   "doc": "MockupConfigPanel.maxColors.test.tsx Contrato: quem monta o mockup tem que ser avisado quando a logo traz mais cores do que a técnica de gravação selecionada aceita — ANTES de mandar para produção. Falha sem a correção: o `LogoColorAnalyzer` já sabia emitir o aviso (prop `maxColors`), mas o `MockupC …",
+   "tests": [
+    "MockupConfigPanel — aviso de cores da logo acima do limite da técnica",
+    "logo com 3 cores e técnica de 2 cores: avisa com o limite da técnica",
+    "logo com 3 cores e técnica de 4 cores: nenhum aviso",
+    "técnica sem limite cadastrado (null): nenhum aviso",
+    "sem técnica selecionada: nenhum aviso"
    ]
   },
   "src/components/mockup/__tests__/MockupLayoutButtons.test.tsx": {
@@ -447946,7 +448146,7 @@
   },
   "src/hooks/admin/useDeviceDetection.ts": {
    "path": "src/hooks/admin/useDeviceDetection.ts",
-   "lines": 199,
+   "lines": 201,
    "exports": [
     "function useDeviceDetection"
    ],
@@ -453141,7 +453341,7 @@
   },
   "src/hooks/mockup/mockupGenerationService.ts": {
    "path": "src/hooks/mockup/mockupGenerationService.ts",
-   "lines": 568,
+   "lines": 569,
    "exports": [
     "interface Technique",
     "function createDefaultArea",
@@ -457654,7 +457854,7 @@
   },
   "src/hooks/quotes/useQuoteTemplates.ts": {
    "path": "src/hooks/quotes/useQuoteTemplates.ts",
-   "lines": 426,
+   "lines": 493,
    "exports": [
     "interface QuoteTemplateItem",
     "interface QuoteTemplate",
@@ -457692,7 +457892,11 @@
     },
     {
      "table": "quote_templates",
-     "op": "delete"
+     "op": "delete,select"
+    },
+    {
+     "table": "quote_templates",
+     "op": "insert,select"
     },
     {
      "table": "quote_templates",
@@ -457712,10 +457916,15 @@
    },
    "errors": [
     "Apenas administradores podem clonar templates entre vendedores",
+    "Dados originais do template indisponíveis. Recarregue antes de copiar.",
+    "Nenhum template foi atualizado. Verifique sua permissão de edição.",
+    "Nenhum template foi excluído. Verifique sua permissão de exclusão.",
     "Não foi possível atualizar o template",
     "Não foi possível clonar o template",
     "Não foi possível criar o template",
     "Não foi possível excluir o template",
+    "O banco não confirmou a gravação do template.",
+    "O vendedor não terá acesso à cópia",
     "Template não encontrado",
     "Você precisa estar logado para criar templates"
    ],
@@ -463761,7 +463970,7 @@
   },
   "src/lib/bi/pptxGenerator.ts": {
    "path": "src/lib/bi/pptxGenerator.ts",
-   "lines": 952,
+   "lines": 944,
    "exports": [
     "function generateBIPptx"
    ],
@@ -463790,6 +463999,18 @@
     "y: 2.3 + i * 0.85,",
     "y: 2.5 + i * 0.85,"
    ]
+  },
+  "src/lib/bi/pptxTheme.ts": {
+   "path": "src/lib/bi/pptxTheme.ts",
+   "lines": 39,
+   "exports": [
+    "const C",
+    "function addMockBadge"
+   ],
+   "rule_comments": [
+    "* Tipo estrutural mínimo do slide. A guarda `scripts/check-pptx-image-parser-exposure.mjs`"
+   ],
+   "doc": "pptxTheme — paleta corporativa e marcações comuns aos slides do PPTX de BI."
   },
   "src/lib/carts/cart-version-conflict.ts": {
    "path": "src/lib/carts/cart-version-conflict.ts",
@@ -464914,7 +465135,7 @@
   },
   "src/lib/external-db/product-types.ts": {
    "path": "src/lib/external-db/product-types.ts",
-   "lines": 303,
+   "lines": 307,
    "exports": [
     "interface PromobrindProduct",
     "function getProductImageUrl",
@@ -472576,7 +472797,7 @@
   },
   "src/pages/kit-builder/KitBuilderPage.tsx": {
    "path": "src/pages/kit-builder/KitBuilderPage.tsx",
-   "lines": 495,
+   "lines": 499,
    "exports": [
     "function KitBuilderPage"
    ],
@@ -472596,7 +472817,7 @@
   },
   "src/pages/kit-builder/KitLibraryPage.tsx": {
    "path": "src/pages/kit-builder/KitLibraryPage.tsx",
-   "lines": 749,
+   "lines": 705,
    "exports": [
     "function fetchOwnKits",
     "function deleteOwnKit",
@@ -472652,11 +472873,6 @@
     {
      "field": "status",
      "value": "archived",
-     "kind": "compara"
-    },
-    {
-     "field": "status",
-     "value": "draft",
      "kind": "compara"
     },
     {
@@ -474999,7 +475215,7 @@
     "/orcamentos/novo",
     "/produto/"
    ],
-   "doc": "ComparePage — Comparador de produtos (10/10) C1: score, radar, AI advisor, TCO, differences-only. C2: CRM picker, share público, export, sync, CTA orçamento. C3: Duel mode, mobile carousel, presentation, variant sync. C4: similar rail, presentation launcher. C5: shortcuts, ARIA-live, smart empty sta …"
+   "doc": "ComparePage — Comparador de produtos (10/10) C1: score, radar, AI advisor, TCO, differences-only. C2: CRM picker, export, sync, CTA orçamento. C3: Duel mode, mobile carousel, presentation, variant sync. C4: similar rail, presentation launcher. C5: shortcuts, ARIA-live, smart empty state, recent side …"
   },
   "src/pages/products/FavoritesPage.tsx": {
    "path": "src/pages/products/FavoritesPage.tsx",
@@ -482052,7 +482268,7 @@
   },
   "src/utils/product-sorting.ts": {
    "path": "src/utils/product-sorting.ts",
-   "lines": 174,
+   "lines": 177,
    "exports": [
     "function compareNamePtBR",
     "function sortProducts"
@@ -491341,9 +491557,24 @@
    ],
    "uses_service_role": true
   },
+  "supabase/functions/process-scheduled-reports/index.send-failure.test.ts": {
+   "path": "supabase/functions/process-scheduled-reports/index.send-failure.test.ts",
+   "lines": 226,
+   "is_test": true,
+   "exports": [
+    "const sendFailureHandlerLoaded"
+   ],
+   "tests": [
+    "process-scheduled-reports — status reflete a resposta do Resend",
+    "recusa do provedor: não marca como enviado e registra o motivo",
+    "sem RESEND_API_KEY: não chama o provedor nem marca como enviado",
+    "provedor aceita: marca last_sent_at e devolve sent"
+   ],
+   "uses_service_role": true
+  },
   "supabase/functions/process-scheduled-reports/index.ts": {
    "path": "supabase/functions/process-scheduled-reports/index.ts",
-   "lines": 195,
+   "lines": 206,
    "tables": [
     {
      "table": "scheduled_reports",
@@ -491393,6 +491624,10 @@
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
    ],
+   "errors": [
+    "RESEND_API_KEY não configurado",
+    "Resend ${sendRes.status}: ${(await sendRes.text()).slice(0, 300)}"
+   ],
    "status_values": [
     {
      "field": "status",
@@ -491409,6 +491644,9 @@
      "value": "approved",
      "kind": "compara"
     }
+   ],
+   "rule_comments": [
+    "FIX: sem chave ou com recusa do Resend o relatório NÃO pode ser marcado como"
    ],
    "calc_fns": [
     {
@@ -516701,6 +516939,15 @@
     "handles complex filter action"
    ]
   },
+  "tests/edge-functions/process-scheduled-reports.send-failure.test.ts": {
+   "path": "tests/edge-functions/process-scheduled-reports.send-failure.test.ts",
+   "lines": 13,
+   "is_test": true,
+   "doc": "Entrada do runner Vitest para o teste co-localizado da edge process-scheduled-reports. `supabase/functions/**` não está no include do vitest.config.ts (config compartilhada), então este shim importa o arquivo co-localizado para que o Vitest o colete e execute de verdade. Espelha o padrão aceito das …",
+   "tests": [
+    "carrega a suíte de envio do process-scheduled-reports"
+   ]
+  },
   "tests/edge-functions/repo-only-files.test.ts": {
    "path": "tests/edge-functions/repo-only-files.test.ts",
    "lines": 51,
@@ -519506,6 +519753,16 @@
     "should combine catalog flags + intelligence badges"
    ]
   },
+  "tests/hooks/mockupGenerationService.download.test.ts": {
+   "path": "tests/hooks/mockupGenerationService.download.test.ts",
+   "lines": 33,
+   "is_test": true,
+   "tests": [
+    "Mockup PDF downloads retain object metadata and historical fallback",
+    "builds the existing filename from real data %j",
+    "propagates fetch/download errors instead of reporting false success"
+   ]
+  },
   "tests/hooks/quoteHelpers.priceConfirmed.test.ts": {
    "path": "tests/hooks/quoteHelpers.priceConfirmed.test.ts",
    "lines": 109,
@@ -520595,6 +520852,19 @@
     "useMagicUpGeneration — compartilhar (E-3)",
     "nunca embute a imagem no link — só a descrição e o nome do criativo",
     "sem imagem disponível o botão informa o motivo e não abre o WhatsApp"
+   ]
+  },
+  "tests/hooks/useMagicUpProducts.helpers.test.ts": {
+   "path": "tests/hooks/useMagicUpProducts.helpers.test.ts",
+   "lines": 77,
+   "is_test": true,
+   "tests": [
+    "Canonical product mapper uses real image records without changing ranking/contracts",
+    "fixes string-image getter while preserving IDs, gallery order and all URLs",
+    "preserves primary/image_url precedence %j",
+    "preserves FTS candidates, name-match ranking, diacritics and limit50",
+    "normalizes absent image galleries without inventing image URLs",
+    "propagates server failure for the caller to show a real error"
    ]
   },
   "tests/hooks/useMagicUpState.brandkit.test.tsx": {
@@ -527888,7 +528158,7 @@
   },
   "tests/scripts/drift-baseline.test.mjs": {
    "path": "tests/scripts/drift-baseline.test.mjs",
-   "lines": 1072,
+   "lines": 1079,
    "is_test": true,
    "doc": "Testa scripts/drift-baseline.mjs: montagem da pasta de replay do db-schema-drift-check (baseline + migrations aplicadas depois do dump), filtro de ruído do diff e varredura de segredos do dump.",
    "tests": [
@@ -527897,6 +528167,7 @@
     "replayFileName",
     "renumera para depois do baseline mantendo o nome original",
     "sanitizeReplayMigration",
+    "remove somente o BOM inicial da cópia de replay e preserva U+FEFF interno",
     "remove CONCURRENTLY só de CREATE INDEX executável no shadow",
     "falha fechado se a migration histórica mudar e não tiver exatamente dois índices",
     "aceita a migration real da #3550 (1 índice CONCURRENTLY) no replay do shadow",
@@ -527970,8 +528241,7 @@
     "mantém o \\\\n depois de comentário de linha",
     "literal com espaço diferente mantém a função no resíduo (Codex P1)",
     "dropDumpLossyFunctions — cabeçalho preserva literais e identificadores (Codex P1)",
-    "DEFAULT com caixa diferente é diferença real e fica no resíduo",
-    "identificador entre aspas com maiúscula não equivale ao minúsculo"
+    "DEFAULT com caixa diferente é diferença real e fica no resíduo"
    ],
    "uses_service_role": true
   },
@@ -532548,10 +532818,52 @@
   }
  },
  "git": {
-  "sha": "9e656a39b9b062f310c3ef02b8341fe9505c36b9",
+  "sha": "5e59cb9c7969b118d2573608af307f8acbb63506",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "5e59cb9",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "fix: trem de resgates — 16 correções recuperadas de branches de outros agentes (#3660)",
+    "files": [
+     "artifacts/route-test-matrix.json",
+     "e2e/flows/04r-undo-toast-a11y-keyboard.spec.ts",
+     "e2e/helpers/auth.ts",
+     "e2e/routes/public/colecao-publica.spec.ts",
+     "e2e/routes/public/comparar-publica.spec.ts",
+     "scripts/drift-baseline.mjs",
+     "src/components/admin/products/new-supplier/useNewSupplierForm.ts",
+     "src/components/favorites/FavoriteListsSidebar.tsx",
+     "src/components/inventory/StockDashboard.tsx",
+     "src/components/inventory/stockTabDefault.ts",
+     "src/components/kit-library/KitLibraryStats.tsx",
+     "src/components/mockup/CompanyAvatar.tsx",
+     "src/components/mockup/MockupClientSelector.tsx",
+     "src/components/mockup/MockupConfigPanel.tsx",
+     "src/components/mockup/__tests__/KeyboardShortcuts.dead.test.tsx",
+     "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+     "src/components/mockup/__tests__/MockupConfigPanel.maxColors.test.tsx",
+     "src/hooks/admin/useDeviceDetection.ts",
+     "src/hooks/intelligence/useMagicUpState.helpers.ts",
+     "src/hooks/mockup/mockupGenerationService.ts",
+     "src/hooks/quotes/useQuoteTemplates.ts",
+     "src/lib/bi/pptxGenerator.ts",
+     "src/lib/bi/pptxTheme.ts",
+     "src/lib/external-db/product-types.ts",
+     "src/pages/kit-builder/KitBuilderPage.tsx",
+     "src/pages/kit-builder/KitLibraryPage.tsx",
+     "src/pages/products/ComparePage.tsx",
+     "src/utils/product-sorting.ts",
+     "supabase/functions/process-scheduled-reports/index.send-failure.test.ts",
+     "supabase/functions/process-scheduled-reports/index.ts",
+     "tests/edge-functions/process-scheduled-reports.send-failure.test.ts",
+     "tests/hooks/mockupGenerationService.download.test.ts",
+     "tests/hooks/useMagicUpProducts.helpers.test.ts",
+     "tests/scripts/drift-baseline.test.mjs"
+    ]
+   },
    {
     "sha": "9e656a3",
     "date": "2026-11-15",
@@ -532978,16 +533290,6 @@
     "author": "Claude",
     "subject": "Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945",
     "files": []
-   },
-   {
-    "sha": "5eae42b",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(migrations): destrava o CI — recibo das versões reconciliadas e correções no plano de workflows (#3629)",
-    "files": [
-     "docs/faxina-261114/05-plano-workflows.md",
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
@@ -532996,8 +533298,28 @@
     9
    ],
    [
+    "src/pages/kit-builder/KitBuilderPage.tsx",
+    3
+   ],
+   [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    4
+    3
+   ],
+   [
+    "src/components/mockup/MockupClientSelector.tsx",
+    2
+   ],
+   [
+    "src/components/mockup/MockupConfigPanel.tsx",
+    2
+   ],
+   [
+    "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    2
+   ],
+   [
+    "src/hooks/mockup/mockupGenerationService.ts",
+    2
    ],
    [
     ".github/workflows/e2e-stock.yml",
@@ -533020,10 +533342,6 @@
     2
    ],
    [
-    "src/pages/kit-builder/KitBuilderPage.tsx",
-    2
-   ],
-   [
     "src/pages/mockups/MockupGenerator.tsx",
     2
    ],
@@ -533040,35 +533358,19 @@
     2
    ],
    [
-    ".github/required-checks.json",
+    "artifacts/route-test-matrix.json",
     1
    ],
    [
-    ".github/workflows/branch-protection-sentinel.yml",
+    "e2e/flows/04r-undo-toast-a11y-keyboard.spec.ts",
     1
    ],
    [
-    ".github/workflows/ci.yml",
+    "e2e/helpers/auth.ts",
     1
    ],
    [
-    ".github/workflows/contexto.yml",
-    1
-   ],
-   [
-    ".github/workflows/db-schema-drift-check.yml",
-    1
-   ],
-   [
-    ".github/workflows/deploy-gates.yml",
-    1
-   ],
-   [
-    ".github/workflows/edge-functions-drift-check.yml",
-    1
-   ],
-   [
-    ".github/workflows/policies-baseline.yml",
+    "e2e/routes/public/colecao-publica.spec.ts",
     1
    ]
   ]
