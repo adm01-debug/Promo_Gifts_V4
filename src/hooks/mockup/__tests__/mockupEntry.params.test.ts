@@ -91,7 +91,14 @@ vi.mock('@/hooks/mockup/useMockupTechniques', async (importOriginal) => ({
   useFilteredTechniques: () => [],
   useProductCustomizationOptionsForMockup: () => ({ data: undefined }),
 }));
-vi.mock('@/hooks/simulation', () => ({
+// Mock parcial: o estrato "por área" é o módulo REAL (mantém a lógica de qual área é dona
+// da análise) sobre a análise base stubada no caminho direto. O spread do módulo real evita
+// que um export novo de '@/hooks/simulation' volte a derrubar este arquivo.
+vi.mock('@/hooks/simulation/useLogoColorAnalysis', () => ({
+  useLogoColorAnalysis: () => colorAnalysis,
+}));
+vi.mock('@/hooks/simulation', async () => ({
+  ...(await import('@/hooks/simulation/useLogoColorAnalysisByArea')),
   useLogoColorAnalysis: () => colorAnalysis,
   usePositionHistory: () => positionHistory,
 }));
