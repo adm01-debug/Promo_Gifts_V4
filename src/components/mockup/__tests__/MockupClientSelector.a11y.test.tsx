@@ -57,14 +57,16 @@ vi.mock('@/hooks/crm', () => ({
 }));
 vi.mock('@/hooks/ui/useReducedMotion', () => ({ useReducedMotion: () => true }));
 
-function renderSelector() {
+function renderSelector(
+  selectedClient: React.ComponentProps<typeof MockupClientSelector>['selectedClient'] = null,
+) {
   const onClientSelect = vi.fn();
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   const wrapper = ({ children }: { children: ReactNode }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
   const utils = render(
-    <MockupClientSelector selectedClient={null} onClientSelect={onClientSelect} />,
+    <MockupClientSelector selectedClient={selectedClient} onClientSelect={onClientSelect} />,
     {
       wrapper,
     },
@@ -238,5 +240,53 @@ describe('MockupClientSelector — combobox acessível', () => {
     expect(results.violations).toEqual([]);
     expectAriaTargetsExist();
     cleanup();
+  });
+});
+
+describe('MockupClientSelector — remover empresa exige confirmação', () => {
+  const selectedClient = {
+    id: 'c1',
+    name: 'Alfa Brindes',
+    ramo: 'Brindes corporativos',
+    cnpj: '12345678000199',
+  };
+
+  it('o chip expõe "Remover empresa" no nome acessível e NÃO remove no 1º clique', async () => {
+    const user = userEvent.setup();
+    const { onClientSelect } = renderSelector(selectedClient);
+
+    const chip = screen.getByRole('button', { name: /remover empresa/i });
+    await user.click(chip);
+
+    // O clique abre a confirmação; o cliente NÃO é removido direto.
+    expect(onClientSelect).not.toHaveBeenCalled();
+    const dialog = await screen.findByRole('alertdialog');
+    expect(within(dialog).getByTestId('mockup-client-remove-confirm-title')).toHaveTextContent(
+      'Remover empresa?',
+    );
+  });
+
+  it('confirmar remove a empresa selecionada', async () => {
+    const user = userEvent.setup();
+    const { onClientSelect } = renderSelector(selectedClient);
+
+    await user.click(screen.getByRole('button', { name: /remover empresa/i }));
+    await screen.findByRole('alertdialog');
+    await user.click(screen.getByTestId('mockup-client-remove-confirm-yes'));
+
+    expect(onClientSelect).toHaveBeenCalledTimes(1);
+    expect(onClientSelect).toHaveBeenCalledWith(null);
+  });
+
+  it('cancelar mantém a empresa selecionada', async () => {
+    const user = userEvent.setup();
+    const { onClientSelect } = renderSelector(selectedClient);
+
+    await user.click(screen.getByRole('button', { name: /remover empresa/i }));
+    await screen.findByRole('alertdialog');
+    await user.click(screen.getByTestId('mockup-client-remove-confirm-no'));
+
+    expect(onClientSelect).not.toHaveBeenCalled();
+    expect(screen.getByTestId('mockup-client-chip')).toHaveTextContent('Alfa Brindes');
   });
 });
