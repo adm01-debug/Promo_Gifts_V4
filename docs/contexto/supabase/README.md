@@ -1,6 +1,6 @@
 # Snapshot Supabase — contexto para agentes de IA
 
-Gerado automaticamente a cada 10 min pelo workflow `contexto.yml` (job `banco`) na branch `contexto`. **Não edite manualmente.**
+Gerado automaticamente a cada hora pelo workflow `contexto.yml` (job `banco`) na branch `contexto`. **Não edite manualmente.**
 
 Última coleta concluída publicada: `manifest.json` → `gerado_em` (UTC), com erros e seções reaproveitadas. Última publicação: `git log -1 --format=%cI -- docs/contexto/supabase`. Mudanças estruturais estão em `CHANGELOG.md`.
 
