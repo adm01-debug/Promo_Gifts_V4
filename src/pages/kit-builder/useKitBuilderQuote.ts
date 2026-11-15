@@ -449,6 +449,14 @@ export function useKitBuilderQuote() {
       retryableRequestRef.current = null;
       clearRetryReceipt(operation.fingerprint);
       toast.success(`Orçamento criado com sucesso!`);
+      // O payload grava o placeholder `Cliente a definir` quando nenhum cliente
+      // foi escolhido. Sem este aviso no momento do salvamento, o vendedor só
+      // descobre depois, na lista, sem saber de qual orçamento se trata.
+      if (!client.client_name?.trim()) {
+        toast.warning(
+          'Orçamento salvo sem cliente definido. Edite o orçamento para associar um cliente.',
+        );
+      }
       navigate(`/orcamentos/${quote.id}`);
     } catch (err) {
       logger.error('[Kit Quote] Error creating quote:', err);
