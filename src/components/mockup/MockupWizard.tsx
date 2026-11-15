@@ -263,10 +263,11 @@ export const MockupWizard = forwardRef<HTMLDivElement, MockupWizardProps>(
           </div>
 
           {/* Step Pills */}
-          <div className="flex items-center justify-center gap-1.5">
+          <div className="flex items-center justify-center gap-1.5" role="list">
             {steps.map((step) => (
               <div
                 key={step.id}
+                role="listitem"
                 aria-current={step.isActive ? 'step' : undefined}
                 aria-label={`Etapa ${step.id}: ${step.label}${step.isCompleted ? ' (concluída)' : step.isActive ? ' (atual)' : ''}`}
                 className={cn(
