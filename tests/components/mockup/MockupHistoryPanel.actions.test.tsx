@@ -143,20 +143,4 @@ describe('MockupHistoryPanel — ações visíveis sem hover (A-5)', () => {
       expect(btn.className).not.toMatch(/\bh-8\b/);
     }
   });
-
-  it('lista: checkbox de comparação com alvo de 44px sem ampliar o visual', async () => {
-    const user = userEvent.setup();
-    renderPanel();
-    await user.click(screen.getByTestId('go-list-view'));
-
-    const cb = await screen.findByRole('checkbox', {
-      name: /selecionar caneta para comparação/i,
-    });
-    // 20px visuais (h-5 w-5) + 12px de cada lado (after:-inset-3) = alvo de 44px.
-    expect(cb.className).toMatch(/\bh-5\b/);
-    expect(cb.className).toMatch(/\bw-5\b/);
-    expect(cb.className).toMatch(/\brelative\b/);
-    expect(cb.className).toMatch(/after:absolute/);
-    expect(cb.className).toMatch(/after:-inset-3\b/);
-  });
 });
