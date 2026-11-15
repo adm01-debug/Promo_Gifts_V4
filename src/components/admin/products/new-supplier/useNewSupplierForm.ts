@@ -423,8 +423,9 @@ export function useNewSupplierForm(onCreated: (id: string) => void) {
         phone2 = assertPersistablePhoneBr(foneFixo2.trim() || null);
       } catch (err) {
         const msg = err instanceof Error ? err.message : 'Dado inválido';
-        if (/cnpj/i.test(msg)) setCnpjError(msg);
-        toast.error(msg);
+        const cnpjMsg = /cnpj/i.test(cnpjErrorHaystack(err)) ? mapCnpjError(err).message : null;
+        if (cnpjMsg) setCnpjError(cnpjMsg);
+        toast.error(cnpjMsg ?? msg);
         setSaving(false);
         return;
       }

@@ -41,6 +41,16 @@ async function expectAriaBusy(btn: Locator, value: 'true' | 'false') {
     .toBe(value);
 }
 
+// Estado vazio real de /estoque quando a busca do toolbar zera o resultado:
+// StockDashboard.tsx renderiza StockEmptyFiltersHint (chip "Busca: <termo>")
+// e a VariantStockTable mostra "Nenhuma variação encontrada".
+async function expectSearchApplied(page: Page, term: string) {
+  await expect(page.getByTestId('stock-empty-filters-chip-search')).toContainText(term, {
+    timeout: 15_000,
+  });
+  await expect(page.getByText('Nenhuma variação encontrada')).toBeVisible();
+}
+
 async function tabUntilFocused(page: Page, target: Locator, maxHops = 8) {
   for (let i = 0; i < maxHops; i += 1) {
     if (await target.evaluate((el) => el === document.activeElement).catch(() => false)) return;
@@ -87,9 +97,7 @@ for (const vp of VIEWPORTS) {
 
       // Aceita qualquer estado terminal (busy ou idle) — mas a UI precisa
       // refletir o resultado da busca.
-      await expect(page.getByText(/Nenhum produto encontrado/i)).toBeVisible({
-        timeout: 15_000,
-      });
+      await expectSearchApplied(page, 'xxx_enter_no_botao_promo');
       await expectAriaBusy(btn, 'false');
     });
 
@@ -126,7 +134,7 @@ for (const vp of VIEWPORTS) {
       await input.fill('aaa_inexistente_teclado');
       await tabUntilFocused(page, btn);
       await page.keyboard.press('Enter');
-      await expect(page.getByText(/Nenhum produto encontrado/i)).toBeVisible({ timeout: 15_000 });
+      await expectSearchApplied(page, 'aaa_inexistente_teclado');
       await expectAriaBusy(btn, 'false');
 
       // 2) Reset via teclado.
@@ -144,7 +152,7 @@ for (const vp of VIEWPORTS) {
       await input.focus();
       await input.fill('bbb_inexistente_pos_reset');
       await input.press('Enter');
-      await expect(page.getByText(/Nenhum produto encontrado/i)).toBeVisible({ timeout: 15_000 });
+      await expectSearchApplied(page, 'bbb_inexistente_pos_reset');
       await expectAriaBusy(btn, 'false');
     });
   });

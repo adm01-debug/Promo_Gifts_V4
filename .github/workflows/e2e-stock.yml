@@ -5,22 +5,22 @@ name: E2E Stock — Matrix (E80)
 #   stock-filter-stress, stock-module-quality, stock-rupture-horizon-e2e.
 # Os workflows individuais permanecem ativos; este é o dono canônico.
 
+# 2026-11-13: saiu de pull_request/push para schedule + dispatch.
+# Em 7 dias foram 28 runs e nenhum sucesso. As suítes logam no Supabase de
+# produção e esperam a tela /estoque sair de "Sincronizando estoque", o que
+# depende do volume e da latência do banco canônico, não do PR:
+#   - rupture-horizon/filter: "Sincronizando estoque" visível > 60 s
+#     (job 131701219685, stock-rupture-horizon.spec.ts:24);
+#   - auth.setup: REST do canônico devolvendo 503 por ~150 s
+#     (job 131815539460);
+#   - future-stock (69 testes) e dashboard (39) estouram timeout-minutes: 20
+#     e saem "cancelled" (job 131815539461: 09:57:48 → 10:17:24).
+# Como teste de PR, isso só gerava vermelho sem relação com o diff. Rodando
+# 1×/dia, o resultado fica como sinal do estado do estoque em produção.
+# Specs desatualizados: a #3454 corrige stock-search-*; a #3457 mapeia E2E_ADMIN_*.
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'src/components/inventory/**'
-      - 'src/hooks/useFutureStockPreference.ts'
-      - 'src/hooks/__tests__/useFutureStockPreference*'
-      - 'e2e/admin/stock-*.spec.ts'
-      - 'e2e/routes/app/stock-*.spec.ts'
-      - '.github/workflows/e2e-stock.yml'
-  push:
-    branches: [main]
-    paths:
-      - 'src/components/inventory/**'
-      - 'e2e/admin/stock-*.spec.ts'
-      - 'e2e/routes/app/stock-*.spec.ts'
+  schedule:
+    - cron: '27 4 * * *'  # diário 04:27 UTC (E89: ≥15 min de 04:11)
   workflow_dispatch:
     inputs:
       suite:
@@ -32,10 +32,10 @@ on:
 permissions:
   contents: read
 
-# R2 — PRs cancelam; push e dispatch não
+# R2 — schedule e dispatch nunca cancelam
 concurrency:
   group: e2e-stock-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: false
 
 defaults:
   run:

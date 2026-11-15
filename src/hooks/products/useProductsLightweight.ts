@@ -130,8 +130,23 @@ export function mapLightweightToProduct(
 
 /** Número de produtos por página nas queries do catálogo. */
 export const CATALOG_PAGE_SIZE = 500;
-/** Número de páginas buscadas em paralelo no primeiro load (burst inicial). */
-export const CATALOG_BATCH_PAGES = 4;
+/**
+ * Número de páginas buscadas em paralelo no primeiro load.
+ *
+ * 1 desde 2026-11-14: as 4 consultas simultâneas de 500 linhas (~2.000 produtos,
+ * ~160 MB de blocos lidos cada, com `count=exact` na primeira) competiam pelo
+ * mesmo banco e eram o pico que derrubava o projeto sob carga — em 2026-11-14
+ * às 16:25 UTC o Supabase respondeu 520/521/525 com ~151 mil requisições de
+ * localhost contra 1,2 mil de produção. Com 1 consulta o primeiro paint espera
+ * uma leitura em vez de quatro concorrentes.
+ *
+ * `CATALOG_PAGE_SIZE` segue em 500 de propósito: baixá-lo multiplicaria o número
+ * de chamadas por sessão (o prefetch de `useCatalogState` percorre o catálogo
+ * inteiro porque os filtros de categoria são client-side), trocando um pico por
+ * uma carga total maior. Reduzir a página só faz sentido junto com filtros no
+ * servidor, que é trabalho separado.
+ */
+export const CATALOG_BATCH_PAGES = 1;
 
 /**
  * SELECT do catálogo.
