@@ -280,6 +280,9 @@ vi.mock('@/components/mockup/MockupConfigPanel', () => ({
       <button type="button" onClick={() => onLogoRemove(activeAreaId)}>
         Remover logo
       </button>
+      <button type="button" onClick={() => onLogoRemove('area-2')}>
+        Remover logo de outra área
+      </button>
       <button type="button" onClick={() => onArtAttachmentsChange([{ id: 'art-2' }])}>
         Alterar anexos
       </button>
@@ -606,7 +609,9 @@ describe('Mockup Deletion Flow', () => {
     expect(mockMg.setPersonalizationAreas).toHaveBeenCalledWith([{ id: 'area-2' }]);
     expect(mockMg.setActiveAreaId).toHaveBeenCalledWith('area-2');
     expect(mockMg.handleAreaLogoUpload).toHaveBeenCalledWith(expect.any(File));
-    expect(mockMg.logoColorAnalysis.clearAnalysis).toHaveBeenCalled();
+    // FT-167: a análise de cores é global (pertence ao logo da área aberta). Sem área ativa
+    // a remoção não é da área aberta, então a análise NÃO é apagada.
+    expect(mockMg.logoColorAnalysis.clearAnalysis).not.toHaveBeenCalled();
     expect(mockMg.updateActiveArea).not.toHaveBeenCalled();
     expect(mockMg.setArtAttachments).toHaveBeenCalledWith([{ id: 'art-2' }]);
 
@@ -751,6 +756,18 @@ describe('Mockup Deletion Flow', () => {
     expect(updateAreas(areasBeforeRemoval)).toEqual([
       expect.objectContaining({ id: 'area-1', logoPreview: null, logoFile: null }),
       expect.objectContaining({ id: 'area-2', logoPreview: 'data:image/png;base64,verso' }),
+    ]);
+
+    // FT-167: remover o logo de OUTRA área (area-2) limpa só aquela área e NÃO pode apagar
+    // a análise de cores da área aberta (area-1) — clearAnalysis segue com 1 chamada.
+    fireEvent.click(screen.getByRole('button', { name: 'Remover logo de outra área' }));
+    expect(mockMg.logoColorAnalysis.clearAnalysis).toHaveBeenCalledTimes(1);
+    const updateOtherArea = mockMg.setPersonalizationAreas.mock.calls.at(-1)?.[0] as (
+      areas: AreaWithLogo[],
+    ) => AreaWithLogo[];
+    expect(updateOtherArea(areasBeforeRemoval)).toEqual([
+      expect.objectContaining({ id: 'area-1', logoPreview: 'data:image/svg+xml;base64,logo' }),
+      expect.objectContaining({ id: 'area-2', logoPreview: null, logoFile: null }),
     ]);
 
     fireEvent.click(screen.getByRole('button', { name: 'Aplicar sugestão completa' }));
