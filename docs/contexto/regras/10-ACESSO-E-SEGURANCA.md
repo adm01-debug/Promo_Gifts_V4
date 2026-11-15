@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e5afe82459` · branch `main` · 2026-11-15 01:54 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1eafa069a0` · branch `main` · 2026-11-15 02:26 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -327,7 +327,7 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
-## Onde o RLS é IGNORADO (service_role) — 826 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 827 arquivo(s)
 
 - `auditoria-supabase/propostas/P01_rls_restrictive_correcao.sql`
 - `auditoria-supabase/propostas/P10_func_new_001_fn_cron_guard_revoke.sql`
@@ -479,7 +479,7 @@
 - `supabase/functions/hash-product-images/index.ts`
 - `supabase/functions/health-check/index.ts`
 - `supabase/functions/load-test/index.ts`
-- … +676 (lista completa em `context.json`)
+- … +677 (lista completa em `context.json`)
 
 ## Funções SQL `SECURITY DEFINER` (rodam com privilégio do dono, ignoram RLS)
 
@@ -1229,7 +1229,7 @@ Middleware matcher (Next.js): nenhum
 | grant | anon, service_role | execute | `fn_dequeue_ai_enrichment`, `fn_save_ai_enrichment_results`, `fn_enqueue_ai_enrichment`, `fn_enqueue_ai_enrichment`, `fn_dequeue_ai_enrichment`, `fn_dequeue_ai_enrichment`, `fn_save_ai_enrichment_results`, `fn_dequeue_ai_enrichment` |
 | grant | anon, service_role | select | `vw_ai_enrichment_status` |
 | grant | authenticated | all | `user_preferences` |
-| grant | authenticated | execute | `seed_discount_test_users`, `cleanup_discount_test_data`, `get_bundle_suggestions`, `get_client_top_products`, `get_industry_top_products`, `get_industry_benchmark_stats`, `get_web_vitals_summary`, `check_hardening_status`, `get_top_favorited_products`, `get_favorites_weekly_count`, `set_connections_auto_test_interval`, `get_connections_auto_test_interval`, `set_connection_failure_window_minutes`, `get_connection_failure_window_minutes`, `get_auto_test_job_status` … +126 |
+| grant | authenticated | execute | `seed_discount_test_users`, `cleanup_discount_test_data`, `get_bundle_suggestions`, `get_client_top_products`, `get_industry_top_products`, `get_industry_benchmark_stats`, `get_web_vitals_summary`, `check_hardening_status`, `get_top_favorited_products`, `get_favorites_weekly_count`, `set_connections_auto_test_interval`, `get_connections_auto_test_interval`, `set_connection_failure_window_minutes`, `get_connection_failure_window_minutes`, `get_auto_test_job_status` … +130 |
 | grant | authenticated | insert | `kill_switch_hits`, `system_error_logs`, `navigation_analytics`, `navigation_analytics`, `navigation_analytics`, `frontend_telemetry` |
 | grant | authenticated | insert, update, delete | `collection_products` |
 | grant | authenticated | select | `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `crm_callback_events`, `user_token_revocations`, `collection_products`, `system_kill_switches`, `v_kill_switch_hits_summary`, `v_kill_switch_hits_summary`, `smoke_tests_runs`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `system_error_logs` … +63 |

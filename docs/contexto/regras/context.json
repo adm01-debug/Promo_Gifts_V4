@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "e5afe82459241cf56411d3b057354dec7f7a0dbc",
+  "sha": "1eafa069a047cda77e2e19daab5d21071691333c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 01:54 UTC",
-  "files_total": 10138,
-  "code_files": 8665,
-  "code_lines": 1222230
+  "generated_at": "2026-11-15 02:26 UTC",
+  "files_total": 10139,
+  "code_files": 8666,
+  "code_lines": 1222269
  },
  "version": "1.3.2",
- "facts_hash": "630864143a8eb2f3",
+ "facts_hash": "0d70f770556047ab",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1221,7 +1221,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3405,
+   ".sql": 3406,
    ".ts": 2936,
    ".tsx": 1875,
    ".mjs": 436,
@@ -96331,6 +96331,7 @@
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260916202000_rollback.sql",
+   "supabase/rollbacks/20260917061500_rollback.sql",
    "supabase/rollbacks/20261015150000_rollback.sql",
    "supabase/rollbacks/20261018000041_rollback.sql",
    "supabase/rollbacks/20261018000042_rollback.sql",
@@ -132051,6 +132052,38 @@
     "src": "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql"
    },
    {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "confirm_notifications_dispatched",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20260917061500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "registrar_entrada_estoque",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20260917061500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "registrar_saida_estoque",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20260917061500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_notify_user",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20260917061500_rollback.sql"
+   },
+   {
     "kind": "revoke",
     "privs": "all",
     "object": "admin_revoke_user_sessions",
@@ -149526,8 +149559,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 88,
-   "lines": 2499,
+   "files": 89,
+   "lines": 2538,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -149539,6 +149572,7 @@
     "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
     "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
     "supabase/rollbacks/20260916202000_rollback.sql",
+    "supabase/rollbacks/20260917061500_rollback.sql",
     "supabase/rollbacks/20261015150000_rollback.sql",
     "supabase/rollbacks/20261018000041_rollback.sql",
     "supabase/rollbacks/20261018000042_rollback.sql",
@@ -149612,8 +149646,7 @@
     "supabase/rollbacks/20261113140000_rollback.sql",
     "supabase/rollbacks/20261113225000_rollback.sql",
     "supabase/rollbacks/20261113235000_rollback.sql",
-    "supabase/rollbacks/20261113235800_rollback.sql",
-    "supabase/rollbacks/20261114003000_rollback.sql"
+    "supabase/rollbacks/20261113235800_rollback.sql"
    ]
   },
   {
@@ -350272,6 +350305,7 @@
    "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
+   "supabase/rollbacks/20260917061500_rollback.sql",
    "supabase/rollbacks/20261022000000_rollback.sql",
    "supabase/rollbacks/20261022000100_rollback.sql",
    "supabase/rollbacks/20261022193000_rollback.sql",
@@ -386122,6 +386156,38 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "confirm_notifications_dispatched",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20260917061500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "registrar_entrada_estoque",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20260917061500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "registrar_saida_estoque",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20260917061500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_notify_user",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20260917061500_rollback.sql"
    },
    {
     "kind": "revoke",
@@ -508329,6 +508395,11 @@
    "path": "supabase/rollbacks/20260916202000_rollback.sql",
    "lines": 9
   },
+  "supabase/rollbacks/20260917061500_rollback.sql": {
+   "path": "supabase/rollbacks/20260917061500_rollback.sql",
+   "lines": 39,
+   "uses_service_role": true
+  },
   "supabase/rollbacks/20261015150000_rollback.sql": {
    "path": "supabase/rollbacks/20261015150000_rollback.sql",
    "lines": 5
@@ -532506,10 +532577,20 @@
   }
  },
  "git": {
-  "sha": "e5afe82459241cf56411d3b057354dec7f7a0dbc",
+  "sha": "1eafa069a047cda77e2e19daab5d21071691333c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1eafa06",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(db): cria o rollback que destrava o revoke E18 — estoque alterável por qualquer usuário logado (#3648)",
+    "files": [
+     "docs/coordenacao/conflitos-semanticos.md",
+     "supabase/rollbacks/20260917061500_rollback.sql"
+    ]
+   },
    {
     "sha": "e5afe82",
     "date": "2026-11-14",
@@ -532845,19 +532926,12 @@
     "author": "Claude",
     "subject": "merge: claude/fix-stock-pagination-sem-count-exact-261114-1007",
     "files": []
-   },
-   {
-    "sha": "0407e41",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "merge: claude/fix-cache-publico-alvo-options-261114-1005",
-    "files": []
    }
   ],
   "hot_files": [
    [
     "docs/coordenacao/conflitos-semanticos.md",
-    6
+    7
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -532866,6 +532940,10 @@
    [
     ".security/policies-baseline.json",
     2
+   ],
+   [
+    "supabase/rollbacks/20260917061500_rollback.sql",
+    1
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
@@ -532929,10 +533007,6 @@
    ],
    [
     "src/hooks/mockup/__tests__/mockupBatch.partial.test.ts",
-    1
-   ],
-   [
-    "src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts",
     1
    ]
   ]

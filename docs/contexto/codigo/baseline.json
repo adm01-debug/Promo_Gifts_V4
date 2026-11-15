@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e5afe82459241cf56411d3b057354dec7f7a0dbc",
+  "commit": "1eafa069a047cda77e2e19daab5d21071691333c",
   "branch": "main",
-  "data_commit": "2026-11-15T01:52:40Z",
+  "data_commit": "2026-11-15T02:24:51Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "1eafa069",
+    "data": "2026-11-15",
+    "assunto": "fix(db): cria o rollback que destrava o revoke E18 — estoque alterável por qualquer usuário logado (#3648)"
+   },
    {
     "sha": "e5afe824",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "87653797",
     "data": "2026-11-14",
     "assunto": "Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945"
-   },
-   {
-    "sha": "5eae42bb",
-    "data": "2026-11-14",
-    "assunto": "fix(migrations): destrava o CI — recibo das versões reconciliadas e correções no plano de workflows (#3629)"
    }
   ],
-  "arquivos_mudados_7d": 2162,
+  "arquivos_mudados_7d": 2163,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 114
+    "mudancas": 113
    },
    {
     "pasta": "src/pages/quotes",
@@ -230,12 +230,12 @@
     "mudancas": 18
    },
    {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
     "mudancas": 17
    },
    {
-    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 16
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "mudancas": 17
    },
    {
     "arquivo": "analise-prs/prs.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 583
+    "commits": 582
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10210,
+  "arquivos_total": 10211,
   "arquivos_codigo": 5261,
   "linhas_codigo": 1004049,
   "rotas": 138,
