@@ -351,7 +351,8 @@ export default function MockupGenerator() {
                   onActiveAreaChange={mg.setActiveAreaId}
                   onLogoUpload={mg.handleAreaLogoUpload}
                   onLogoRemove={(areaId) => {
-                    if (mg.activeArea?.id === areaId) mg.logoColorAnalysis.clearAnalysis();
+                    // Limpa a análise só se ela for DAQUELA área (ver guard no useMockupGenerator).
+                    mg.clearColorAnalysisForArea(areaId);
                     mg.setPersonalizationAreas((prev) =>
                       prev.map((a) =>
                         a.id === areaId ? { ...a, logoPreview: null, logoFile: null } : a,
