@@ -1718,7 +1718,7 @@ tiver sumido fora do fluxo, a migration falha inteira (fail-loud). Ainda não es
 
 | version | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261115130200` | `sec001_revoke_anon_execute_trigger_functions` | `ae08e41935a7c79d7256ef1ba14903ae1694ffd56423c7bc719212997fc736df` | pendente — aplicar via `db-apply-migration.yml` após merge (grants atuais em produção NÃO VERIFICADOS em 2026-11-15) |
+| `20261115130200` | `sec001_revoke_anon_execute_trigger_functions` | `dd9f99bb3a9d8be6fafd98c12b39c3eec7d181a3793bbce12b97cf2ea4b018f0` | pendente — aplicar via `db-apply-migration.yml` após merge. Grants VERIFICADOS em produção 2026-11-15: 115 de 303 funções trigger de `public` executáveis por `anon` e `authenticated`; esta migration revoga 106 delas. Hash recalculado após corrigir a assinatura `fn_hex_to_rgb(text)` → `fn_hex_to_rgb()` (só existe sem argumentos em `pg_proc`), que abortaria o arquivo inteiro na aplicação transacional |
 
 ## 2026-11-15 — `fn_global_search`: clamp de `p_limit` com `search_path` fechado (substitui a `20261101190101`, sem recibo)
 

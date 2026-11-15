@@ -40,7 +40,7 @@ REVOKE EXECUTE ON FUNCTION public.fn_dar_set_snapshot_hash() FROM PUBLIC, anon;
 REVOKE EXECUTE ON FUNCTION public.fn_enforce_inactive_variant_zero_stock() FROM PUBLIC, anon;
 REVOKE EXECUTE ON FUNCTION public.fn_ensure_single_primary_image() FROM PUBLIC, anon;
 REVOKE EXECUTE ON FUNCTION public.fn_force_user_logout() FROM PUBLIC, anon;
-REVOKE EXECUTE ON FUNCTION public.fn_hex_to_rgb(text) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.fn_hex_to_rgb() FROM PUBLIC, anon;
 REVOKE EXECUTE ON FUNCTION public.fn_image_types_check_constraint_reminder() FROM PUBLIC, anon;
 REVOKE EXECUTE ON FUNCTION public.fn_inherit_techniques_from_material() FROM PUBLIC, anon;
 REVOKE EXECUTE ON FUNCTION public.fn_kit_component_calc_circumference() FROM PUBLIC, anon;
