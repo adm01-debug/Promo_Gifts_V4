@@ -241,3 +241,51 @@ describe('crm-db-bridge — fornecedor e transportadora não são dado de client
     }
   });
 });
+
+describe('crm-db-bridge — ver sim, editar e assumir NAO (decisao do dono, 2026-11-15)', () => {
+  // Junto com "vendedor ve cliente sem dono", o dono decidiu em 2026-11-15 que o
+  // vendedor NAO pode editar nem ASSUMIR esse cliente. Hoje isso ja vale, e nao por
+  // escopo de linha: VENDOR_WRITE_TABLES e vazia, entao todo insert/update/delete de
+  // papel restrito cai em 403 antes de chegar ao CRM (handleUpdate/handleDelete nao
+  // aplicam escopo nenhum — e a lista vazia que protege).
+  //
+  // Este bloco existe porque agora que o vendedor VE o cliente sem dono, "deixa ele
+  // assumir" e a proxima mudanca tentadora. Quem precisar liberar escrita tera de
+  // derrubar estes testes de proposito, e ai a decisao volta ao dono.
+  //
+  // Sao asserções sobre o TEXTO do handler, fragil de proposito: VENDOR_WRITE_TABLES e
+  // constante privada do modulo e nao ha superficie exportada para testar isso sem
+  // reescrever o handler.
+  const VAZIA = /const VENDOR_WRITE_TABLES:\s*string\[\]\s*=\s*\[\s*\];/;
+
+  it('nenhuma tabela e gravavel por vendedor: VENDOR_WRITE_TABLES vazia', () => {
+    expect(indexSrc).toMatch(VAZIA);
+  });
+
+  it('insert, update e delete de papel restrito sao recusados com 403', () => {
+    expect(indexSrc).toMatch(/mutatingOperation\s*=\s*\["insert",\s*"update",\s*"delete"\]/);
+    expect(indexSrc).toMatch(/if\s*\(mutatingOperation\s*&&\s*restrictedWriter\)/);
+    expect(indexSrc).toMatch(/Permissao insuficiente para modificar esta tabela/);
+  });
+
+  it('assumir o cliente passaria por update em customers, que esta barrado', () => {
+    // "Assumir" = gravar vendedor_id em customers. E um update, logo cai no mesmo 403.
+    expect(OWNERSHIP_RULES.customers).toEqual({ kind: 'direct', filterColumn: 'vendedor_id' });
+    expect(indexSrc).toMatch(VAZIA);
+  });
+
+  it('batch nao pode virar porta de escrita: so monta consulta de leitura', () => {
+    const inicio = indexSrc.indexOf('async function handleBatch');
+    expect(inicio).toBeGreaterThan(-1);
+    // Delimita pelo proximo `function` de topo, nao por um nome fixo: buildReadQuery
+    // fica ANTES de handleBatch no arquivo, e qualquer reordenacao quebraria o corte.
+    const resto = indexSrc.slice(inicio + 1);
+    const offsetProxima = resto.search(/\n(?:async )?function /);
+    expect(offsetProxima).toBeGreaterThan(-1);
+    const corpoBatch = resto.slice(0, offsetProxima);
+    expect(corpoBatch).toContain('buildReadQuery');
+    expect(corpoBatch).not.toMatch(/\.insert\(/);
+    expect(corpoBatch).not.toMatch(/\.update\(/);
+    expect(corpoBatch).not.toMatch(/\.delete\(/);
+  });
+});
