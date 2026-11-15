@@ -79,8 +79,10 @@ vi.mock('@/hooks/mockup/useMockupTechniques', async (importOriginal) => ({
   useProductCustomizationOptionsForMockup: () => ({ data: undefined }),
 }));
 // Mock parcial: o estrato "por área" é o módulo REAL (mantém a lógica de qual área é dona
-// da análise) sobre a análise base stubada no caminho direto. O spread do módulo real evita
-// que um export novo de '@/hooks/simulation' volte a derrubar este arquivo.
+// da análise) sobre a análise base stubada no caminho direto. O índice NÃO é espalhado de
+// propósito: ele carrega todo o estrato de simulação (client incluso). Logo, export novo do
+// módulo por área já está coberto; hook novo que o gerador passe a importar do índice ainda
+// exige acrescentá-lo aqui.
 vi.mock('@/hooks/simulation/useLogoColorAnalysis', () => ({
   useLogoColorAnalysis: () => colorAnalysis,
 }));
