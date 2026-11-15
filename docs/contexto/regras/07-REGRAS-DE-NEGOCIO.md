@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `ef2a7fa154` · branch `main` · 2026-11-15 20:15 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `956593c027` · branch `main` · 2026-11-15 20:24 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2681,7 +2681,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **mockupBodySchema** (`supabase/functions/generate-mockup/index.ts`, z.object):
   ```ts
-  { productImageUrl: z.string().max(4096).optional(), // Mesmo teto do base64ToBytes (MAX_IMAGE_BYTES=15MiB decodificados): // 15*1024*1024 * 4/3 ≈ 20.971.520 chars + margem p/ prefixo data URL. logoBase64: z.string().max(21_000_000).optional(), logoUrl: z.string().max(4096).optional(), techniqueName: z.string().max(200).optional(), techniquePrompt: z.string().max(8000).optional(), areaName: z.string().max(200).optional(), positionX: z.coerce.number().finite().optional(), positionY: z.coerce.number().finite().optional(), logoWidthCm: z.coerce.number().finite().optional(), logoHeightCm: z.coerce.number().finite().optional(), logoRotation: z.coerce.number().finite().optional(), logoScale: z.coerce.number().finite().optional(), productName: z.string().max(500).optional(), productWidthCm: z.coer …
+  { productImageUrl: z.string().max(4096).optional(), // Mesmo teto do base64ToBytes (MAX_IMAGE_BYTES=15MiB decodificados): // 15*1024*1024 * 4/3 ≈ 20.971.520 chars + margem p/ prefixo data URL. logoBase64: z.string().max(21_000_000).optional(), logoUrl: z.string().max(4096).optional(), techniqueName: z.string().max(200).optional(), techniquePrompt: z.string().max(8000).optional(), areaName: z.string().max(200).optional(), // `z.unknown()` de propósito: um `areas` malformado (objeto, string) não pode // derrubar o safeParse inteiro — `batchExceedsLimit` já só conta array. areas: z.unknown().optional(), positionX: z.coerce.number().finite().optional(), positionY: z.coerce.number().finite().optional(), logoWidthCm: z.coerce.number().finite().optional(), logoHeightCm: z.coerce.number().finite() …
   ```
 - **ProductSeoSchema** (`supabase/functions/generate-product-seo/index.ts`, z.object):
   ```ts
@@ -5610,7 +5610,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `FETCH_ALL_LIMIT` | `2000` | `src/hooks/products/useReplenishments.ts` |
 | `MAX_SELLER_CARTS` | `50` | `src/hooks/products/useSellerCarts.helpers.ts` |
 | `MIN_ITEM_QUANTITY` | `1` | `src/hooks/products/useSellerCarts.helpers.ts` |
-| … +364 linhas — lista completa em `context.json` | | |
+| … +366 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6523,7 +6523,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21706 testes em 2196 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21721 testes em 2197 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6827,7 +6827,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/pages/magazine/templates-gallery/__tests__/gallery.test.tsx` | 18 | MagazineTemplatesGalleryPage · renderiza os 12 cards de template · filtro  · filtro  … |
 | `src/pages/quotes/__tests__/quote-builder-freight-block.rtl.test.tsx` | 18 | Bloco Frete — hierarquia + data-testid do grid · shippingType= · shippingType= · shippingType= … |
 | `src/utils/__tests__/cnpj-exhaustive.test.ts` | 18 | CNPJ — B1 idempotência massiva (1.000 casos) · normalize(normalize(x)) === normalize(x) · CNPJ — B2 roundtrip (1.000 casos) · normalize(mask(normalize(v))) === normalize(v) … |
-| … +1896 linhas — lista completa em `context.json` | | |
+| … +1897 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7295,4 +7295,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Fecha APENAS a lista — a empresa selecionada permanece intacta. | `src/components/mockup/MockupClientSelector.tsx` |
 | * Máximo de cores suportadas na área */ | `src/components/mockup/MultiAreaManager.tsx` |
 | ANTI-REGRESSÃO: primary_image_url deve vir ANTES de og_image_url. | `src/components/mockup/ProductSearchCombobox.tsx` |
-| … +1308 linhas — lista completa em `context.json` | |
+| … +1312 linhas — lista completa em `context.json` | |

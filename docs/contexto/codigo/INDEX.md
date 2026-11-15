@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ef2a7fa15458f830584c78d83c4ada450b864f7e` (2026-11-15T19:12:45Z).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `956593c027a45574a38d4f18ed82445f38e9d1d9` (2026-11-15T17:23:39-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4870), SQL (3429), Markdown (1046), JavaScript (443), JSON (126), YAML (112), Shell (27), HTML (20)
+- linguagens: TypeScript (4872), SQL (3429), Markdown (1046), JavaScript (443), JSON (126), YAML (112), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10321 |
-| arquivos_codigo | 5321 |
-| linhas_codigo | 1014163 |
+| arquivos_total | 10323 |
+| arquivos_codigo | 5323 |
+| linhas_codigo | 1014497 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 548 |
 | migrations | 3096 |
 | cron_jobs | 122 |
-| testes | 2516 |
+| testes | 2517 |
 | workflows | 87 |
 | scripts | 272 |
 | docs_md | 1046 |
@@ -561,7 +561,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Integrações externas
 - SDKs: ElevenLabs, Sentry, Supabase, react-query, zod
-- hosts mais citados: doufsxqlfjyuvxuezpln.supabase.co, wa.me, www.promogifts.com.br, test.supabase.co, cdn.test, fixture.invalid, imagedelivery.net, api.supabase.com, edge-contract.invalid, ai.gateway.lovable.dev, api.ipify.org, api.resend.com, fonts.googleapis.com, images.unsplash.com, www.spotgifts.com.br
+- hosts mais citados: doufsxqlfjyuvxuezpln.supabase.co, wa.me, www.promogifts.com.br, test.supabase.co, cdn.test, fixture.invalid, imagedelivery.net, api.supabase.com, edge-contract.invalid, ai.gateway.lovable.dev, api.ipify.org, api.resend.com, edge.local, fonts.googleapis.com, images.unsplash.com
 - webhooks recebidos: ai-recommendations, asia-ingestion, backfill-image-dimensions, check-login, cleanup-notifications, cleanup-novelties, collections-watcher, comparison-price-watcher, connections-auto-test, connections-health-check, crm-callback-alerts, crm-callback-reprocess, crm-db-bridge, e2e-cleanup, external-db-inspect, favorites-watcher, get-visitor-info, image-proxy, log-login-attempt, magazine-import-local, magazine-public-react, magazine-public-view, magazine-reader-state-read, magazine-reader-state-write, mcp-server, ownership-audit, process-queue, process-scheduled-reports, quote-followup-reminders, receive-crm-callback, send-digest, send-notification, send-scheduled-reports, sync-external-db, webhook-dispatcher, webhook-inbound
 - env de integração (só nomes): CF_ORIGIN_SECRET, CONNECTIONS_AUTO_TEST_SECRET, CRM_CALLBACK_API_KEY, CSRF_SECRET, E2E_CLEANUP_TOKEN, LOVABLE_API_KEY, PRODUCT_WEBHOOK_ALLOWED_ORIGINS, PRODUCT_WEBHOOK_BATCH_SIZE, PROMO_CHAMPIONS_WEBHOOK_SECRET, TURNSTILE_SECRET_KEY, VITE_SENTRY_DSN, VITE_SENTRY_ENVIRONMENT, WEBHOOK_DISPATCHER_SECRET
 
@@ -589,18 +589,18 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 44353 nós · 76614 arestas · 2455 comunidades · grafo do commit `ef2a7fa1`
-- comunidades maiores: vitest (963), ref_components (692), ref_hooks (418), ref_node_child_process (410), @tanstack/react-query (383), react (378), gotoAndSettle (344), ref_node_fs (310), scripts (302), sonner (290), ref_contexts (272), ref_utils (265)
+- 44367 nós · 76657 arestas · 2497 comunidades · grafo do commit `956593c0`
+- comunidades maiores: vitest (854), ref_components (781), ref_integrations (601), ref_hooks (460), gotoAndSettle (389), ref_node_child_process (373), @tanstack/react-query (372), react (367), ref_types (329), scripts (302), sonner (301), ref_utils (299)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (92)
-- PENDENCIAS.md (87)
+- RELATORIO_CI.md (91)
+- PENDENCIAS.md (86)
 - supabase/MIGRATIONS_SYNC_LOG.md (57)
 - package.json (41)
 - package-lock.json (26)
-- docs/coordenacao/conflitos-semanticos.md (19)
+- docs/coordenacao/conflitos-semanticos.md (20)
 - CHANGELOG.md (17)
 - analise-prs/progresso.json (17)
 - supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (17)
@@ -1173,6 +1173,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-15 `956593c0` fix(mockup): teto de corpo e de lote na edge generate-mockup antes de processar (#3673)
 - 2026-11-15 `ef2a7fa1` fix(e2e): orcamento do teste cobre a espera de 150s do login em CI (#3682)
 - 2026-11-15 `ecface83` feat(mockup): preserva o resultado quando a geração falha, e a ficha sai com as medidas da área certa (#3674)
 - 2026-11-15 `54826844` fix(mockup): resgata teste de a11y da fatia 2, aviso de falha na seleção do mockup e trava do braces (#3676)
@@ -1187,7 +1188,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-15 `8ece9cc4` fix(inteligencia): grafico de mercado nao acusa erro quando a RPC ainda nao foi aplicada (#3675)
 - 2026-11-15 `f1044db3` feat(mockup): aviso de "não carregou, tentar de novo" no catálogo do painel de mockup (#3670)
 - 2026-11-15 `c72d30a9` fix(mockup): etapas do gerador voltam a ser anunciadas pelo leitor de tela no celular (#3671)
-- 2026-11-15 `aa89361b` fix(magic-up): resgata varredura axe da pagina e nomeia selects e campos do briefing (#3668)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

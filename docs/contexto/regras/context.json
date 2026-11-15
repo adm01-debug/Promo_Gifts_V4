@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "ef2a7fa15458f830584c78d83c4ada450b864f7e",
+  "sha": "956593c027a45574a38d4f18ed82445f38e9d1d9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 20:15 UTC",
-  "files_total": 10249,
-  "code_files": 8749,
-  "code_lines": 1233477
+  "generated_at": "2026-11-15 20:24 UTC",
+  "files_total": 10251,
+  "code_files": 8751,
+  "code_lines": 1233811
  },
  "version": "1.3.2",
- "facts_hash": "f61bcb21209ed563",
+ "facts_hash": "03bde83fe823e5c7",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1104,7 +1104,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3429,
-   ".ts": 2973,
+   ".ts": 2975,
    ".tsx": 1898,
    ".mjs": 436,
    ".py": 13,
@@ -148482,7 +148482,7 @@
   {
    "module": "(raiz)",
    "files": 9,
-   "lines": 3400,
+   "lines": 3403,
    "tables": [],
    "exports": [
     "playwright.config.ts: defineConfig",
@@ -150923,8 +150923,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 273,
-   "lines": 50610,
+   "files": 275,
+   "lines": 50941,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -160177,7 +160177,7 @@
     "file": "supabase/functions/generate-mockup/index.ts",
     "name": "mockupBodySchema",
     "kind": "object",
-    "body": "{ productImageUrl: z.string().max(4096).optional(), // Mesmo teto do base64ToBytes (MAX_IMAGE_BYTES=15MiB decodificados): // 15*1024*1024 * 4/3 ≈ 20.971.520 chars + margem p/ prefixo data URL. logoBase64: z.string().max(21_000_000).optional(), logoUrl: z.string().max(4096).optional(), techniqueName: z.string().max(200).optional(), techniquePrompt: z.string().max(8000).optional(), areaName: z.string().max(200).optional(), positionX: z.coerce.number().finite().optional(), positionY: z.coerce.number().finite().optional(), logoWidthCm: z.coerce.number().finite().optional(), logoHeightCm: z.coerce.number().finite().optional(), logoRotation: z.coerce.number().finite().optional(), logoScale: z.coerce.number().finite().optional(), productName: z.string().max(500).optional(), productWidthCm: z.coer …",
+    "body": "{ productImageUrl: z.string().max(4096).optional(), // Mesmo teto do base64ToBytes (MAX_IMAGE_BYTES=15MiB decodificados): // 15*1024*1024 * 4/3 ≈ 20.971.520 chars + margem p/ prefixo data URL. logoBase64: z.string().max(21_000_000).optional(), logoUrl: z.string().max(4096).optional(), techniqueName: z.string().max(200).optional(), techniquePrompt: z.string().max(8000).optional(), areaName: z.string().max(200).optional(), // `z.unknown()` de propósito: um `areas` malformado (objeto, string) não pode // derrubar o safeParse inteiro — `batchExceedsLimit` já só conta array. areas: z.unknown().optional(), positionX: z.coerce.number().finite().optional(), positionY: z.coerce.number().finite().optional(), logoWidthCm: z.coerce.number().finite().optional(), logoHeightCm: z.coerce.number().finite() …",
     "refines": [],
     "chain": []
    },
@@ -175153,6 +175153,10 @@
    },
    {
     "file": "supabase/functions/generate-mockup/index.ts",
+    "text": "`z.unknown()` de propósito: um `areas` malformado (objeto, string) não pode"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.ts",
     "text": "─ Validation ──────────────────────────────────────────────────────────────"
    },
    {
@@ -175169,11 +175173,23 @@
    },
    {
     "file": "supabase/functions/generate-mockup/index.ts",
+    "text": "heurísticas do portão (req.json/req.text), que audita a dívida de validação."
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.ts",
     "text": "validation error path fires cleanly instead of a 500."
    },
    {
     "file": "supabase/functions/generate-mockup/index.ts",
     "text": "isFetchableUrl unifies scheme validation + SSRF blocking + mandatory allowlist."
+   },
+   {
+    "file": "supabase/functions/generate-mockup/limits.ts",
+    "text": "duplicá-lo criaria dois números conflitantes para a mesma regra. Aqui ficam só"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/limits.ts",
+    "text": "próprio handler aceita: um logo inline no limite ocupa `MAX_IMAGE_BYTES * 4/3`"
    },
    {
     "file": "supabase/functions/intelligence-substitute-applied/index.ts",
@@ -199421,6 +199437,16 @@
     "file": "supabase/functions/generate-mockup/index.ts",
     "name": "MAX_BITMAP_PIXELS",
     "value": "40"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/limits.ts",
+    "name": "BODY_OVERHEAD_BYTES",
+    "value": "128"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/limits.ts",
+    "name": "MAX_BATCH_AREAS",
+    "value": "6"
    },
    {
     "file": "supabase/functions/hash-product-images/index.ts",
@@ -261877,6 +261903,66 @@
    {
     "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
     "name": "validationError segue com 400 fixo (nenhum status novo entrou no handler)"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.size.test.ts",
+    "name": "teto do corpo JSON — MAX_BODY_BYTES"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.size.test.ts",
+    "name": "recusa pelo Content-Length declarado, sem esperar o corpo"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.size.test.ts",
+    "name": "recusa pela contagem de bytes lidos quando o Content-Length não barra"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.size.test.ts",
+    "name": "corta no meio do stream em vez de bufferizar tudo"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.size.test.ts",
+    "name": "aceita e devolve o texto de um corpo dentro do teto"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.size.test.ts",
+    "name": "respeita o limite exato (<= passa, > recusa)"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.size.test.ts",
+    "name": "Content-Length ausente ou não numérico não conta como estouro"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.size.test.ts",
+    "name": "teto do lote de áreas — MAX_BATCH_AREAS"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.size.test.ts",
+    "name": "recusa lote declarado acima de 6 áreas"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.size.test.ts",
+    "name": "aceita lote no teto e ausência de lote declarado"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.size.test.ts",
+    "name": "invariante entre o teto do corpo e o teto de imagem do fetch-guard"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.size.test.ts",
+    "name": "o corpo comporta o maior logo inline que o handler aceita"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.size.test.ts",
+    "name": "o teto de imagem NÃO é duplicado em limits.ts (dono é o fetch-guard)"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.size.test.ts",
+    "name": "index.ts está ligado aos tetos de entrada"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.size.test.ts",
+    "name": "usa o teto do corpo (413) e o do lote (400) antes de qualquer fetch"
    },
    {
     "file": "supabase/functions/generate-mockup/index.test.ts",
@@ -398790,7 +398876,7 @@
   },
   "vitest.config.ts": {
    "path": "vitest.config.ts",
-   "lines": 171,
+   "lines": 174,
    "exports": [
     "default defineConfig"
    ],
@@ -495607,6 +495693,31 @@
     "validationError segue com 400 fixo (nenhum status novo entrou no handler)"
    ]
   },
+  "supabase/functions/generate-mockup/index.size.test.ts": {
+   "path": "supabase/functions/generate-mockup/index.size.test.ts",
+   "lines": 163,
+   "is_test": true,
+   "tests": [
+    "teto do corpo JSON — MAX_BODY_BYTES",
+    "recusa pelo Content-Length declarado, sem esperar o corpo",
+    "recusa pela contagem de bytes lidos quando o Content-Length não barra",
+    "corta no meio do stream em vez de bufferizar tudo",
+    "aceita e devolve o texto de um corpo dentro do teto",
+    "respeita o limite exato (<= passa, > recusa)",
+    "Content-Length ausente ou não numérico não conta como estouro",
+    "teto do lote de áreas — MAX_BATCH_AREAS",
+    "recusa lote declarado acima de 6 áreas",
+    "aceita lote no teto e ausência de lote declarado",
+    "invariante entre o teto do corpo e o teto de imagem do fetch-guard",
+    "o corpo comporta o maior logo inline que o handler aceita",
+    "o teto de imagem NÃO é duplicado em limits.ts (dono é o fetch-guard)",
+    "index.ts está ligado aos tetos de entrada",
+    "usa o teto do corpo (413) e o do lote (400) antes de qualquer fetch"
+   ],
+   "side_effects": [
+    "enqueue("
+   ]
+  },
   "supabase/functions/generate-mockup/index.test.ts": {
    "path": "supabase/functions/generate-mockup/index.test.ts",
    "lines": 84,
@@ -495627,7 +495738,7 @@
   },
   "supabase/functions/generate-mockup/index.ts": {
    "path": "supabase/functions/generate-mockup/index.ts",
-   "lines": 507,
+   "lines": 557,
    "storage": [
     "mockup-assets"
    ],
@@ -495644,7 +495755,7 @@
     {
      "name": "mockupBodySchema",
      "kind": "object",
-     "body": "{ productImageUrl: z.string().max(4096).optional(), // Mesmo teto do base64ToBytes (MAX_IMAGE_BYTES=15MiB decodificados): // 15*1024*1024 * 4/3 ≈ 20.971.520 chars + margem p/ prefixo data URL. logoBase64: z.string().max(21_000_000).optional(), logoUrl: z.string().max(4096).optional(), techniqueName: z.string().max(200).optional(), techniquePrompt: z.string().max(8000).optional(), areaName: z.string().max(200).optional(), positionX: z.coerce.number().finite().optional(), positionY: z.coerce.number().finite().optional(), logoWidthCm: z.coerce.number().finite().optional(), logoHeightCm: z.coerce.number().finite().optional(), logoRotation: z.coerce.number().finite().optional(), logoScale: z.coerce.number().finite().optional(), productName: z.string().max(500).optional(), productWidthCm: z.coer …",
+     "body": "{ productImageUrl: z.string().max(4096).optional(), // Mesmo teto do base64ToBytes (MAX_IMAGE_BYTES=15MiB decodificados): // 15*1024*1024 * 4/3 ≈ 20.971.520 chars + margem p/ prefixo data URL. logoBase64: z.string().max(21_000_000).optional(), logoUrl: z.string().max(4096).optional(), techniqueName: z.string().max(200).optional(), techniquePrompt: z.string().max(8000).optional(), areaName: z.string().max(200).optional(), // `z.unknown()` de propósito: um `areas` malformado (objeto, string) não pode // derrubar o safeParse inteiro — `batchExceedsLimit` já só conta array. areas: z.unknown().optional(), positionX: z.coerce.number().finite().optional(), positionY: z.coerce.number().finite().optional(), logoWidthCm: z.coerce.number().finite().optional(), logoHeightCm: z.coerce.number().finite() …",
      "refines": [],
      "chain": []
     }
@@ -495672,10 +495783,12 @@
     }
    ],
    "rule_comments": [
+    "`z.unknown()` de propósito: um `areas` malformado (objeto, string) não pode",
     "─ Validation ──────────────────────────────────────────────────────────────",
     "SVG cannot be rasterised by createImageBitmap in the Deno edge runtime, so it must",
     "fórmula do editor, inclusive o mínimo de 40 px, a inferência de uma dimensão",
     "mínimo de 8 px. A sanitização de cm ≤ 0 e o teto proporcional de absurdo",
+    "heurísticas do portão (req.json/req.text), que audita a dívida de validação.",
     "validation error path fires cleanly instead of a 500.",
     "isFetchableUrl unifies scheme validation + SSRF blocking + mandatory allowlist."
    ],
@@ -495687,6 +495800,33 @@
     }
    ],
    "uses_service_role": true
+  },
+  "supabase/functions/generate-mockup/limits.ts": {
+   "path": "supabase/functions/generate-mockup/limits.ts",
+   "lines": 118,
+   "exports": [
+    "const MAX_BODY_BYTES",
+    "const MAX_BATCH_AREAS",
+    "class PayloadTooLargeError",
+    "function declaredExceedsLimit",
+    "function readStreamCapped",
+    "function readBodyTextCapped",
+    "function batchExceedsLimit"
+   ],
+   "params": [
+    {
+     "name": "BODY_OVERHEAD_BYTES",
+     "value": "128"
+    },
+    {
+     "name": "MAX_BATCH_AREAS",
+     "value": "6"
+    }
+   ],
+   "rule_comments": [
+    "duplicá-lo criaria dois números conflitantes para a mesma regra. Aqui ficam só",
+    "próprio handler aceita: um logo inline no limite ocupa `MAX_IMAGE_BYTES * 4/3`"
+   ]
   },
   "supabase/functions/generate-product-seo/index.ts": {
    "path": "supabase/functions/generate-product-seo/index.ts",
@@ -539415,10 +539555,23 @@
   }
  },
  "git": {
-  "sha": "ef2a7fa15458f830584c78d83c4ada450b864f7e",
+  "sha": "956593c027a45574a38d4f18ed82445f38e9d1d9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "956593c",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "fix(mockup): teto de corpo e de lote na edge generate-mockup antes de processar (#3673)",
+    "files": [
+     "docs/coordenacao/conflitos-semanticos.md",
+     "supabase/functions/generate-mockup/index.size.test.ts",
+     "supabase/functions/generate-mockup/index.ts",
+     "supabase/functions/generate-mockup/limits.ts",
+     "vitest.config.ts"
+    ]
+   },
    {
     "sha": "ef2a7fa",
     "date": "2026-11-15",
@@ -540000,28 +540153,15 @@
     "files": [
      "PENDENCIAS.md"
     ]
-   },
-   {
-    "sha": "7d873e3",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(admin): auditoria do Connections Hub exige confirmação antes de ações destrutivas (#3615)",
-    "files": [
-     "src/components/admin/connections/IntegrationsHealthCard.tsx",
-     "src/components/admin/connections/__tests__/IntegrationsHealthCard.confirm.test.tsx",
-     "src/components/admin/connections/pendingDestructiveCounts.ts",
-     "src/components/admin/connections/useIntegrationsHealthCard.ts",
-     "supabase/functions/connections-hub-audit/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
-    "src/pages/mockups/MockupGenerator.tsx",
-    5
+    "docs/coordenacao/conflitos-semanticos.md",
+    6
    ],
    [
-    "docs/coordenacao/conflitos-semanticos.md",
+    "src/pages/mockups/MockupGenerator.tsx",
     5
    ],
    [
@@ -540051,6 +540191,14 @@
    [
     "audit/supabase-reference-catalog.temporary.json",
     3
+   ],
+   [
+    "supabase/functions/generate-mockup/index.ts",
+    2
+   ],
+   [
+    "vitest.config.ts",
+    2
    ],
    [
     "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts",
@@ -540086,14 +540234,6 @@
    ],
    [
     "src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts",
-    2
-   ],
-   [
-    "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
-    2
-   ],
-   [
-    "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts",
     2
    ]
   ]

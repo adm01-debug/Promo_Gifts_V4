@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(mockup): teto de corpo e de lote na edge generate-mockup antes de processar (#3673)",
    "fix(e2e): orcamento do teste cobre a espera de 150s do login em CI (#3682)",
    "feat(mockup): preserva o resultado quando a geração falha, e a ficha sai com as medidas da área certa (#3674)",
    "fix(mockup): resgata teste de a11y da fatia 2, aviso de falha na seleção do mockup e trava do braces (#3676)",
-   "test(mockup): resgata 39 testes do gerador de mockup que estavam desligados por mock incompleto (#3672)",
-   "feat(mockup): editor de logo com largura e altura proporcionais e botão \"Girar\" (#3669)"
+   "test(mockup): resgata 39 testes do gerador de mockup que estavam desligados por mock incompleto (#3672)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -15116,7 +15116,11 @@
    "supabase/functions/_shared/kill_switch.ts",
    "supabase/functions/_shared/zod-validate.ts",
    "supabase/functions/generate-mockup/fetch-guard.ts",
-   "supabase/functions/generate-mockup/geometry.ts"
+   "supabase/functions/generate-mockup/geometry.ts",
+   "supabase/functions/generate-mockup/limits.ts"
+  ],
+  "supabase/functions/generate-mockup/limits.ts": [
+   "supabase/functions/generate-mockup/fetch-guard.ts"
   ],
   "supabase/functions/generate-product-seo/index.ts": [
    "supabase/functions/_shared/ai-credentials.ts",

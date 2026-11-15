@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2516,
+ "total": 2517,
  "por_tipo": {
   "contrato": 65,
   "e2e": 677,
   "pytest": 4,
   "qa": 17,
-  "unit": 1753
+  "unit": 1754
  },
  "onde_ficam": [
   {
@@ -28,7 +28,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 147
+   "arquivos": 148
   },
   {
    "padrao": "outro",
@@ -12295,6 +12295,16 @@
    "casos": 12
   },
   {
+   "arquivo": "supabase/functions/generate-mockup/index.size.test.ts",
+   "tipo": "unit",
+   "linhas": 163,
+   "testa": [
+    "supabase/functions/generate-mockup/fetch-guard.ts",
+    "supabase/functions/generate-mockup/limits.ts"
+   ],
+   "casos": 11
+  },
+  {
    "arquivo": "supabase/functions/generate-mockup/index.test.ts",
    "tipo": "unit",
    "linhas": 84,
@@ -22159,8 +22169,9 @@
   "supabase/functions/generate-ad-image/index.ts": 1,
   "supabase/functions/generate-ad-image/sanitize.ts": 1,
   "supabase/functions/generate-ad-prompt/timeout.ts": 1,
-  "supabase/functions/generate-mockup/fetch-guard.ts": 1,
+  "supabase/functions/generate-mockup/fetch-guard.ts": 2,
   "supabase/functions/generate-mockup/geometry.ts": 1,
+  "supabase/functions/generate-mockup/limits.ts": 1,
   "supabase/functions/magazine-import-local/logic.ts": 1,
   "supabase/functions/magic-up-score/index.ts": 2,
   "supabase/functions/process-scheduled-reports/index.ts": 1,

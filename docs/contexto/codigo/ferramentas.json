@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4870)",
+   "TypeScript (4872)",
    "SQL (3429)",
    "Markdown (1046)",
    "JavaScript (443)",
@@ -4642,6 +4642,10 @@
     "arquivos": 5
    },
    {
+    "host": "edge.local",
+    "arquivos": 5
+   },
+   {
     "host": "fonts.googleapis.com",
     "arquivos": 5
    },
@@ -4659,10 +4663,6 @@
    },
    {
     "host": "criar-together-now.lovable.app",
-    "arquivos": 4
-   },
-   {
-    "host": "edge.local",
     "arquivos": 4
    },
    {
