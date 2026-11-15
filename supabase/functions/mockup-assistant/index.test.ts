@@ -324,6 +324,41 @@ describe('mockup-assistant — contrato da edge', () => {
     }
   });
 
+  it('a migration exige uma capability que o modelo REALMENTE tem', () => {
+    // Defeito que quase foi para producao: required_capabilities com {"text": true}.
+    // satisfiesCapabilities (_shared/ai-router/index.ts:157-158) reprova quando a
+    // chave exigida nao existe no modelo, e o DeepSeek Flash e cadastrado sem
+    // chave `text`. Com fallback vazio, isso daria 502 para sempre -- o oposto do
+    // que a migration existe para consertar. Teste de TEXTO porque nao ha banco
+    // aqui; e barato e pega a regressao na mesma hora.
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20261115230000_ai_function_routing_mockup_assistant.sql'),
+      'utf-8',
+    );
+    const registro = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615210001_deepseek_v4_register_models.sql'),
+      'utf-8',
+    );
+    // capabilities declaradas no cadastro do deepseek-v4-flash
+    const linhaFlash = registro.slice(registro.indexOf("'deepseek-v4-flash'"));
+    const capsJson = /'(\{"chat".*?\})'::jsonb/.exec(linhaFlash);
+    expect(capsJson, 'nao achei as capabilities do deepseek-v4-flash').not.toBeNull();
+    const caps = JSON.parse(capsJson![1]) as Record<string, boolean>;
+
+    // as capabilities que a migration exige
+    const exigidas = /'(\{[^']*\})'::jsonb,\s*\n\s*'\{\}'::jsonb/.exec(migration);
+    expect(exigidas, 'nao achei required_capabilities na migration').not.toBeNull();
+    const required = JSON.parse(exigidas![1]) as Record<string, boolean>;
+
+    expect(Object.keys(required).length).toBeGreaterThan(0);
+    for (const [chave, precisa] of Object.entries(required)) {
+      if (!precisa) continue;
+      expect(caps[chave], `o modelo nao tem a capability exigida "${chave}"`).toBe(true);
+    }
+    // fallback vazio e proposital: e o que impede chamada paga a modelo nao permitido
+    expect(migration).toMatch(/'\{\}'::uuid\[\]/);
+  });
+
   it('sem X-Request-Id, o id devolvido na falha e o MESMO usado nos logs', async () => {
     // getOrCreateRequestId gera UUID novo a cada chamada sem header
     // (_shared/request-id.ts): chamando duas vezes, o cliente recebia um id que

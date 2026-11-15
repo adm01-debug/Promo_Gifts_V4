@@ -23,7 +23,16 @@ VALUES
   ('mockup-assistant',
    'e375d89c-8f14-44c9-892b-d213372dbc44'::uuid,
    '{}'::uuid[],
-   '{"text": true}'::jsonb,
+   -- `chat`, nao `text`: o modelo e cadastrado com
+   -- {"chat":true,"tools":true,"json_mode":true,"reasoning":true,"streaming":true,
+   --  "image_out":false,"vision_in":false} (20260615210001_deepseek_v4_register_models.sql:19,
+   -- confirmado no banco em 2026-11-15) e NAO tem chave `text`.
+   -- satisfiesCapabilities (_shared/ai-router/index.ts:157-158) reprova quando a
+   -- chave exigida nao existe no modelo, entao `text` eliminaria o unico candidato
+   -- e, com fallback vazio, o assistente devolveria 502 para sempre -- o oposto do
+   -- que esta migration existe para consertar. Nenhuma das 18 funcoes usa `text`;
+   -- 7 delas usam exatamente {"chat": true}. Achado P1 do chatgpt-codex-connector.
+   '{"chat": true}'::jsonb,
    '{}'::jsonb,
    true,
    'Assistente do gerador de mockups. SOMENTE DeepSeek Flash, nunca Pro: fallback vazio de proposito (PR #3666).')

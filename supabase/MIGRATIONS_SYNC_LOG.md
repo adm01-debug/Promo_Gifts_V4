@@ -1818,6 +1818,14 @@ não tem o que chamar além do Flash: não existe caminho para uma chamada paga 
 função. É isso que fecha o achado P2 da revisão — a restrição de modelo na edge acontece depois de
 `adapter.call` (`_shared/ai-router/index.ts:341`), tarde demais para evitar o custo.
 
+**`required_capabilities` = `{"chat": true}`, não `text`.** O `deepseek-v4-flash` é cadastrado com
+`{"chat":true,"tools":true,"json_mode":true,"reasoning":true,"streaming":true,"image_out":false,"vision_in":false}`
+(`20260615210001_deepseek_v4_register_models.sql:19`, confirmado no banco) e **não tem chave `text`**.
+`satisfiesCapabilities` (`_shared/ai-router/index.ts:157-158`) reprova quando a chave exigida não
+existe no modelo: com `text` e fallback vazio, o assistente devolveria 502 para sempre — o oposto do
+que esta migration conserta. Nenhuma das 18 funções usa `text`; 7 usam exatamente `{"chat": true}`.
+Achado P1 do `chatgpt-codex-connector` na #3666, corrigido antes do merge.
+
 É INSERT, não DDL: `ON CONFLICT (function_name) DO NOTHING`, e a `UNIQUE (function_name)` existe
 (conferida em `pg_constraint`), então reaplicar é no-op. A FK
 `ai_function_routing_primary_model_id_fkey` aponta para `ai_models(id)`; o modelo citado existe e está
@@ -1825,4 +1833,4 @@ ativo.
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261115230000` | `ai_function_routing_mockup_assistant` | `42e647d30257c98d74e3497bc121f08ca3797c31ff1984e9ef32e3b3ee7a884d` | pendente — aplicar via `db-apply-migration.yml` após merge (banco de produção autorizado pelo dono no chat em 2026-11-15) |
+| `20261115230000` | `ai_function_routing_mockup_assistant` | `d0be155220fe96133d094d71f1942037ffa61418299faa24c3c2c1cb50ebd7fa` | pendente — aplicar via `db-apply-migration.yml` após merge (banco de produção autorizado pelo dono no chat em 2026-11-15) |
