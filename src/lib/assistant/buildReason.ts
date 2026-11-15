@@ -291,10 +291,15 @@ export function buildHonestNote(
     frases.push(`Não achei novidade${qualificador} — ${trechoDaTroca(pedido, resultado, total)}.`);
   }
 
+  // A contagem só mede a lista que está na tela. O grupo de cor PODE ter casado
+  // com a logo e ainda assim nenhum produto exibido pontuar por cor — o corte de
+  // nota, a diversificação e o limite de 8 da RPC excluem candidatos. Dizer que
+  // "a cor não bateu com o catálogo" seria um diagnóstico falso; quem afirma isso
+  // é o estado vazio, que olha `colorGroupIds.length === 0`.
   if (nomeDaCor !== null && contagem(resultado.comCorDaLogo) === 0) {
     const sujeito = total === 1 ? 'O único que achei não tem' : `Nenhum dos ${total} tem`;
     frases.push(
-      `${sujeito} versão ${nomeDaCor} — a cor da logo não bateu com nenhum grupo de cor do catálogo.`,
+      `${sujeito} versão ${nomeDaCor} — os produtos desta lista encaixaram por outros sinais.`,
     );
   }
 
