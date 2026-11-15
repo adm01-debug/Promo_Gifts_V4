@@ -10,6 +10,7 @@ import type { IndustryTrendsResult } from '@/hooks/bi/useIndustryTrends';
 import type { SeasonalityResult } from '@/hooks/bi/useClientSeasonality';
 import type { ClientVsIndustryResult } from '@/hooks/bi/useClientVsIndustry';
 import type { CategorySection } from '@/lib/bi/executive-summary';
+import { C, addMockBadge } from '@/lib/bi/pptxTheme';
 
 interface Args {
   clientName: string;
@@ -25,19 +26,6 @@ interface Args {
 
 const fmtBRL = (v: number) =>
   v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
-
-// Paleta corporativa (violeta/fuchsia + neutros)
-const C = {
-  primary: '6D28D9', // violet-700
-  accent: 'C026D3', // fuchsia-600
-  bg: '0F172A', // slate-900
-  bgLight: 'F8FAFC', // slate-50
-  text: '1E293B', // slate-800
-  muted: '64748B', // slate-500
-  good: '10B981', // emerald-500
-  warn: 'F59E0B', // amber-500
-  bad: 'EF4444', // red-500
-};
 
 function tierColor(tier: string): string {
   if (tier === 'healthy') return C.good;
@@ -190,6 +178,7 @@ export async function generateBIPptx({
   // ====================== SLIDE 2 — KPIs ======================
   const s2 = pptx.addSlide();
   s2.background = { color: C.bgLight };
+  if (bi.isMock || vs.isMock) addMockBadge(s2);
   s2.addText('Visão 360° do cliente', {
     x: 0.5,
     y: 0.4,
@@ -351,6 +340,7 @@ export async function generateBIPptx({
   // ====================== SLIDE 3 — AFINIDADE & TENDÊNCIAS ======================
   const s3 = pptx.addSlide();
   s3.background = { color: C.bgLight };
+  if (affinity?.isMock || trends?.isMock) addMockBadge(s3);
   s3.addText('O que vender agora', {
     x: 0.5,
     y: 0.4,
@@ -507,6 +497,7 @@ export async function generateBIPptx({
   // ====================== SLIDE 4 — SAZONALIDADE ======================
   const s4 = pptx.addSlide();
   s4.background = { color: C.bgLight };
+  if (seasonality.isMock) addMockBadge(s4);
   s4.addText('Quando abordar', {
     x: 0.5,
     y: 0.4,
@@ -666,6 +657,7 @@ export async function generateBIPptx({
   // ====================== SLIDE 5 — PRÓXIMA AÇÃO ======================
   const s5 = pptx.addSlide();
   s5.background = { color: C.bg };
+  if (bi.isMock || vs.isMock || seasonality.isMock) addMockBadge(s5);
   s5.addShape('rect', { x: 0, y: 0, w: 13.33, h: 0.5, fill: { color: C.accent } });
 
   s5.addText('PRÓXIMA AÇÃO', {

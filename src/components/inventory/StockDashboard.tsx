@@ -52,6 +52,7 @@ const StockHealthBreakdownDrawer = lazyWithRetry(() =>
   import('./StockHealthBreakdownDrawer').then((m) => ({ default: m.StockHealthBreakdownDrawer })),
 );
 import { StockEmptyFiltersHint } from './StockEmptyFiltersHint';
+import { initialStockTab } from './stockTabDefault';
 
 const RISK_PANEL_STORAGE_KEY = 'stock-dashboard:risk-panel-open:v1';
 const ACTIVE_TAB_STORAGE_KEY = 'stock-dashboard:active-tab:v1';
@@ -128,9 +129,9 @@ export function StockDashboard() {
   // Aba ativa: URL é a SSOT (deep-link + share), com fallback para o preferido
   // salvo em localStorage na primeira visita. `useListUrlState` mantém o
   // padrão das demais listagens (/orcamentos, /carrinhos) — status/sort/busca
-  // via query string.
-  const initialTab: StockTabValue = reliabilityFlag ? readActiveTabPref() : 'overview';
-  const stockUrlKeys = useMemo(() => ({ tab: initialTab }), [initialTab]);
+  // via query string. `initialStockTab` preserva ?tab compartilhado (ver módulo).
+  const [stockTabDefault] = useState(() => initialStockTab(reliabilityFlag, readActiveTabPref));
+  const stockUrlKeys = useMemo(() => ({ tab: stockTabDefault }), [stockTabDefault]);
   const { values: stockUrlValues, setValue: setStockUrlValue } = useListUrlState({
     keys: stockUrlKeys,
   });
