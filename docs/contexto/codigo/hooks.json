@@ -12448,7 +12448,7 @@
    "usado_por_arquivos": [
     "src/hooks/simulation/index.ts"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 10
   },
   {
    "arquivo": "src/hooks/simulation/usePositionHistory.ts",

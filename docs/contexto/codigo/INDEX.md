@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3bd8af664660aa1647bcce868bb2cf2bf8dfbc8d` (2026-11-15T17:51:15Z).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `dbe11812e9a3627b2ae32323908d69e756bb6905` (2026-11-15T18:02:40Z).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 10311 |
 | arquivos_codigo | 5311 |
-| linhas_codigo | 1012905 |
+| linhas_codigo | 1013050 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -589,8 +589,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 44304 nós · 76503 arestas · 2518 comunidades · grafo do commit `3bd8af66`
-- comunidades maiores: vitest (973), ref_components (698), ref_integrations (639), ref_hooks (453), @tanstack/react-query (407), ref_node_child_process (405), sonner (394), ref_types (383), gotoAndSettle (381), ref_utils (324), react (313), scripts (302)
+- 44304 nós · 76517 arestas · 2490 comunidades · grafo do commit `dbe11812`
+- comunidades maiores: vitest (876), ref_components (751), ref_integrations (572), ref_node_child_process (475), ref_hooks (424), @tanstack/react-query (394), gotoAndSettle (381), ref_utils (362), sonner (361), react (339), ref_types (332), scripts (302)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -598,7 +598,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - RELATORIO_CI.md (93)
 - PENDENCIAS.md (88)
 - supabase/MIGRATIONS_SYNC_LOG.md (58)
-- package.json (38)
+- package.json (39)
 - package-lock.json (26)
 - docs/coordenacao/conflitos-semanticos.md (19)
 - CHANGELOG.md (17)
@@ -792,7 +792,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `test:quote-rpc:postgres`: `node scripts/simulate-quote-rpc-proposals.mjs`
 - `check:quote-rpc:canonical`: `node scripts/check-quote-rpc-canonical-readiness.mjs`
 - `test:quality`: `TZ=America/Sao_Paulo vitest run --exclude 'tests/hooks/**'`
-- `test:ci-core`: `TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx`
+- `test:ci-core`: `TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts src/hooks/mockup/__tests__/mockupBatch.partial.test.ts src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts src/hooks/mockup/__tests__/mockupEntry.params.test.ts src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts src/hooks/mockup/__tests__/mockupRestore.selection.test.ts src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts tests/components/mockup/acceptance/grupo1.acceptance.test.tsx tests/components/mockup/acceptance/grupo3.acceptance.test.tsx tests/components/mockup/acceptance/grupo6.acceptance.test.tsx src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts`
 - `test:ci-core:coverage`: `TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --coverage --coverage.include=src/lib/theme-presets.ts --coverage.include=src/components/products/ProductSparkline.tsx --coverage.reporter=text --coverage.reporter=json --coverage.reporter=json-summary --coverage.thresholds.lines=50 --coverage.thresholds.functions=50 --coverage.thresholds.branches=30 --coverage.thresholds.statements=50`
 - `test:deploy-gate`: `TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --reporter=dot`
 - `test:watch`: `TZ=America/Sao_Paulo vitest`
@@ -1173,6 +1173,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-15 `dbe11812` test(mockup): resgata 39 testes do gerador de mockup que estavam desligados por mock incompleto (#3672)
 - 2026-11-15 `3bd8af66` feat(mockup): editor de logo com largura e altura proporcionais e botão "Girar" (#3669)
 - 2026-11-15 `0c05df33` fix(docs): dossies nao citam migration de branch apagada como caminho da arvore (#3681)
 - 2026-11-15 `956761e5` docs(coordenacao): auditoria das 528 branches — 9 achados de produção e vereditos com evidência (#3679)
@@ -1187,7 +1188,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-15 `b89a44e1` fix(db): trem de banco — gráfico de mercado com dado real, revoke de 106 funções, índices e crons mais baratos (#3665)
 - 2026-11-15 `a03adc35` feat(orders): resgata conferência do total do pedido contra a soma dos itens (#3667)
 - 2026-11-15 `7307f533` feat(mockup): cabeçalho de trabalho do gerador, Meus mockups do cliente e captura de layout extraída (#3664)
-- 2026-11-15 `335bdb60` fix(ci): recibo de migration entra sozinho e para de travar o CI (#3662)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

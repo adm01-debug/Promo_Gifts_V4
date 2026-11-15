@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "test(mockup): resgata 39 testes do gerador de mockup que estavam desligados por mock incompleto (#3672)",
    "feat(mockup): editor de logo com largura e altura proporcionais e botão \"Girar\" (#3669)",
    "fix(docs): dossies nao citam migration de branch apagada como caminho da arvore (#3681)",
    "docs(coordenacao): auditoria das 528 branches — 9 achados de produção e vereditos com evidência (#3679)",
-   "fix(e2e): não repetir o login em cada teste quando o auth.setup degradou (#3680)",
-   "feat(mockup): aviso de falha ao carregar as técnicas de personalização, com \"Tentar novamente\" (#3677)"
+   "fix(e2e): não repetir o login em cada teste quando o auth.setup degradou (#3680)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3bd8af664660aa1647bcce868bb2cf2bf8dfbc8d",
+  "commit": "dbe11812e9a3627b2ae32323908d69e756bb6905",
   "branch": "main",
-  "data_commit": "2026-11-15T17:51:15Z",
+  "data_commit": "2026-11-15T18:02:40Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "dbe11812",
+    "data": "2026-11-15",
+    "assunto": "test(mockup): resgata 39 testes do gerador de mockup que estavam desligados por mock incompleto (#3672)"
+   },
    {
     "sha": "3bd8af66",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "bc3fdff6",
     "data": "2026-11-15",
     "assunto": "fix(db): get_quote_token_public deixa de devolver dados com link expirado (#3645)"
-   },
-   {
-    "sha": "a7d22aff",
-    "data": "2026-11-15",
-    "assunto": "docs(pendencias): registra o que depende do dono na sessao de 15/11 (#3644)"
    }
   ],
-  "arquivos_mudados_7d": 2167,
+  "arquivos_mudados_7d": 2170,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 82
+    "mudancas": 81
    },
    {
     "pasta": "src/pages/admin",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 38
+    "mudancas": 39
    },
    {
     "arquivo": "package-lock.json",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10311,
   "arquivos_codigo": 5311,
-  "linhas_codigo": 1012905,
+  "linhas_codigo": 1013050,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1908,7 +1908,7 @@
   },
   "src/hooks": {
    "arquivos": 475,
-   "linhas": 89760
+   "linhas": 89842
   },
   "src/integrations": {
    "arquivos": 11,
@@ -2036,7 +2036,7 @@
   },
   "tests/components": {
    "arquivos": 155,
-   "linhas": 34211
+   "linhas": 34274
   },
   "tests/config": {
    "arquivos": 6,

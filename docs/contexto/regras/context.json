@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "3bd8af664660aa1647bcce868bb2cf2bf8dfbc8d",
+  "sha": "dbe11812e9a3627b2ae32323908d69e756bb6905",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 17:52 UTC",
+  "generated_at": "2026-11-15 18:03 UTC",
   "files_total": 10239,
   "code_files": 8739,
-  "code_lines": 1232219
+  "code_lines": 1232364
  },
  "version": "1.3.2",
- "facts_hash": "78f56a6cd086787b",
+ "facts_hash": "8021ac2c5a02c834",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -189,7 +189,7 @@
    "test:quote-rpc:postgres": "node scripts/simulate-quote-rpc-proposals.mjs",
    "check:quote-rpc:canonical": "node scripts/check-quote-rpc-canonical-readiness.mjs",
    "test:quality": "TZ=America/Sao_Paulo vitest run --exclude 'tests/hooks/**'",
-   "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+   "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts src/hooks/mockup/__tests__/mockupBatch.partial.test.ts src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts src/hooks/mockup/__tests__/mockupEntry.params.test.ts src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts src/hooks/mockup/__tests__/mockupRestore.selection.test.ts src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts tests/components/mockup/acceptance/grupo1.acceptance.test.tsx tests/components/mockup/acceptance/grupo3.acceptance.test.tsx tests/components/mockup/acceptance/grupo6.acceptance.test.tsx src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts",
    "test:ci-core:coverage": "TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --coverage --coverage.include=src/lib/theme-presets.ts --coverage.include=src/components/products/ProductSparkline.tsx --coverage.reporter=text --coverage.reporter=json --coverage.reporter=json-summary --coverage.thresholds.lines=50 --coverage.thresholds.functions=50 --coverage.thresholds.branches=30 --coverage.thresholds.statements=50",
    "test:deploy-gate": "TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --reporter=dot",
    "test:watch": "TZ=America/Sao_Paulo vitest",
@@ -149711,7 +149711,7 @@
   {
    "module": "src/hooks",
    "files": 475,
-   "lines": 89760,
+   "lines": 89842,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -151433,7 +151433,7 @@
   {
    "module": "tests",
    "files": 1036,
-   "lines": 159315,
+   "lines": 159378,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -459171,7 +459171,7 @@
   },
   "src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts": {
    "path": "src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts",
-   "lines": 292,
+   "lines": 301,
    "is_test": true,
    "rule_comments": [
     "* B F-02 — Recarregar os locais do produto NAO pode recriar as areas."
@@ -459185,7 +459185,7 @@
   },
   "src/hooks/mockup/__tests__/mockupBatch.partial.test.ts": {
    "path": "src/hooks/mockup/__tests__/mockupBatch.partial.test.ts",
-   "lines": 219,
+   "lines": 233,
    "is_test": true,
    "doc": "Lote multi-área (Q14/Q29): entrega as áreas boas, mostra erro próprio da que falhou e permite regerar só ela (máx. 6 áreas). Resultados associados por id estável da área.",
    "tests": [
@@ -459198,7 +459198,7 @@
   },
   "src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts": {
    "path": "src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts",
-   "lines": 259,
+   "lines": 268,
    "is_test": true,
    "rule_comments": [
     "estimava 8×20 cm em silêncio; o mockup não pode inventar medida.",
@@ -459222,7 +459222,7 @@
   },
   "src/hooks/mockup/__tests__/mockupEntry.params.test.ts": {
    "path": "src/hooks/mockup/__tests__/mockupEntry.params.test.ts",
-   "lines": 209,
+   "lines": 218,
    "is_test": true,
    "tests": [
     "A-7 — os três formatos de entrada pré-selecionam o mesmo produto",
@@ -459243,7 +459243,7 @@
   },
   "src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts": {
    "path": "src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts",
-   "lines": 268,
+   "lines": 291,
    "is_test": true,
    "rule_comments": [
     "O modulo real de tecnicas (importOriginal acima) importa o client — stub minimo"
@@ -459349,7 +459349,7 @@
   },
   "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts": {
    "path": "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
-   "lines": 382,
+   "lines": 391,
    "is_test": true,
    "params": [
     {
@@ -459520,7 +459520,7 @@
   },
   "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts": {
    "path": "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts",
-   "lines": 298,
+   "lines": 307,
    "is_test": true,
    "doc": "F-03 — Restauração de técnica no gerador de mockup. A lista `techniques` (tabela_preco_gravacao_oficial) e a UI (`filteredTechniques`, ids de `print_area_techniques` via RPC fn_get_product_customization_options) usam espaços de id diferentes, e o id muda de um produto para outro. Sem a correção, a t …",
    "tests": [
@@ -519546,7 +519546,7 @@
   },
   "tests/components/mockup/acceptance/grupo1.acceptance.test.tsx": {
    "path": "tests/components/mockup/acceptance/grupo1.acceptance.test.tsx",
-   "lines": 217,
+   "lines": 233,
    "is_test": true,
    "tests": [
     "A01 — marca do cliente aplicada e reaberta sem upload manual",
@@ -519572,7 +519572,7 @@
   },
   "tests/components/mockup/acceptance/grupo3.acceptance.test.tsx": {
    "path": "tests/components/mockup/acceptance/grupo3.acceptance.test.tsx",
-   "lines": 179,
+   "lines": 188,
    "is_test": true,
    "rule_comments": [
     "Cada área mostra a SUA paleta (limite de cores próprio).",
@@ -519703,7 +519703,7 @@
   },
   "tests/components/mockup/acceptance/grupo6.acceptance.test.tsx": {
    "path": "tests/components/mockup/acceptance/grupo6.acceptance.test.tsx",
-   "lines": 304,
+   "lines": 342,
    "is_test": true,
    "errors": [
     ")).toHaveTextContent(ERRO_ANALISE);\n  });\n});\n\n// ─── A16 — falha de salvar e repetir ─────────────────────────────────\n\ndescribe("
@@ -519715,6 +519715,8 @@
     }
    ],
    "rule_comments": [
+    "Estrato \"por área\" do gerador: mesma forma e mesma regra de dono do hook real",
+    "regra de dono: `clearForArea` só limpa quando a análise viva é da área que saiu. Aqui o",
     "* jsdom não aplica CSS de mídia: reproduzimos SÓ a regra de visibilidade dos",
     "Nova análise falha: a resposta ANTIGA (verde) não pode permanecer exibida."
    ],
@@ -538942,10 +538944,29 @@
   }
  },
  "git": {
-  "sha": "3bd8af664660aa1647bcce868bb2cf2bf8dfbc8d",
+  "sha": "dbe11812e9a3627b2ae32323908d69e756bb6905",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "dbe1181",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "test(mockup): resgata 39 testes do gerador de mockup que estavam desligados por mock incompleto (#3672)",
+    "files": [
+     "package.json",
+     "src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts",
+     "src/hooks/mockup/__tests__/mockupBatch.partial.test.ts",
+     "src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts",
+     "src/hooks/mockup/__tests__/mockupEntry.params.test.ts",
+     "src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts",
+     "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
+     "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts",
+     "tests/components/mockup/acceptance/grupo1.acceptance.test.tsx",
+     "tests/components/mockup/acceptance/grupo3.acceptance.test.tsx",
+     "tests/components/mockup/acceptance/grupo6.acceptance.test.tsx"
+    ]
+   },
    {
     "sha": "3bd8af6",
     "date": "2026-11-15",
@@ -539500,13 +539521,6 @@
     "author": "adm01-debug",
     "subject": "fix(crm): vendedor com vínculo fixo em vez de identificação por e-mail (#3636)",
     "files": []
-   },
-   {
-    "sha": "1fb3a1c",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230",
-    "files": []
    }
   ],
   "hot_files": [
@@ -539535,6 +539549,38 @@
     3
    ],
    [
+    "package.json",
+    2
+   ],
+   [
+    "src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts",
+    2
+   ],
+   [
+    "src/hooks/mockup/__tests__/mockupBatch.partial.test.ts",
+    2
+   ],
+   [
+    "src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts",
+    2
+   ],
+   [
+    "src/hooks/mockup/__tests__/mockupEntry.params.test.ts",
+    2
+   ],
+   [
+    "src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts",
+    2
+   ],
+   [
+    "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
+    2
+   ],
+   [
+    "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts",
+    2
+   ],
+   [
     "analise-branches/auditoria-261115/veredito_grupo00.md",
     2
    ],
@@ -539556,38 +539602,6 @@
    ],
    [
     "analise-branches/auditoria-261115/veredito_lote04.md",
-    2
-   ],
-   [
-    "e2e/helpers/auth.ts",
-    2
-   ],
-   [
-    "src/components/mockup/MockupConfigPanelLoadError.tsx",
-    2
-   ],
-   [
-    "src/components/assistant/SalesAssistantCard.tsx",
-    2
-   ],
-   [
-    "src/components/assistant/SalesAssistantStates.tsx",
-    2
-   ],
-   [
-    "src/components/assistant/index.ts",
-    2
-   ],
-   [
-    "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
-    2
-   ],
-   [
-    "src/hooks/assistant/useSalesAssistantCandidates.ts",
-    2
-   ],
-   [
-    "src/hooks/intelligence/__tests__/useMarketIntelligenceMacro.test.tsx",
     2
    ]
   ]

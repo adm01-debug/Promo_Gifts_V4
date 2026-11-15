@@ -8164,48 +8164,53 @@
   {
    "arquivo": "src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts",
    "tipo": "unit",
-   "linhas": 292,
+   "linhas": 301,
    "testa": [
-    "src/hooks/mockup/useMockupGenerator.ts"
+    "src/hooks/mockup/useMockupGenerator.ts",
+    "src/hooks/simulation/useLogoColorAnalysisByArea.ts"
    ],
    "casos": 3
   },
   {
    "arquivo": "src/hooks/mockup/__tests__/mockupBatch.partial.test.ts",
    "tipo": "unit",
-   "linhas": 219,
+   "linhas": 233,
    "testa": [
     "src/hooks/mockup/mockupGeneratorModel.ts",
-    "src/hooks/mockup/useMockupGenerator.ts"
+    "src/hooks/mockup/useMockupGenerator.ts",
+    "src/hooks/simulation/useLogoColorAnalysisByArea.ts"
    ],
    "casos": 4
   },
   {
    "arquivo": "src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts",
    "tipo": "unit",
-   "linhas": 259,
+   "linhas": 268,
    "testa": [
     "src/hooks/mockup/mockupGeneratorModel.ts",
-    "src/hooks/mockup/useMockupGenerator.ts"
+    "src/hooks/mockup/useMockupGenerator.ts",
+    "src/hooks/simulation/useLogoColorAnalysisByArea.ts"
    ],
    "casos": 9
   },
   {
    "arquivo": "src/hooks/mockup/__tests__/mockupEntry.params.test.ts",
    "tipo": "unit",
-   "linhas": 209,
+   "linhas": 218,
    "testa": [
     "src/hooks/mockup/mockupGeneratorModel.ts",
-    "src/hooks/mockup/useMockupGenerator.ts"
+    "src/hooks/mockup/useMockupGenerator.ts",
+    "src/hooks/simulation/useLogoColorAnalysisByArea.ts"
    ],
    "casos": 11
   },
   {
    "arquivo": "src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts",
    "tipo": "unit",
-   "linhas": 268,
+   "linhas": 291,
    "testa": [
-    "src/hooks/mockup/useMockupGenerator.ts"
+    "src/hooks/mockup/useMockupGenerator.ts",
+    "src/hooks/simulation/useLogoColorAnalysisByArea.ts"
    ],
    "casos": 4
   },
@@ -8234,13 +8239,14 @@
   {
    "arquivo": "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
    "tipo": "unit",
-   "linhas": 382,
+   "linhas": 391,
    "testa": [
     "src/components/mockup/MultiAreaManager.tsx",
     "src/hooks/mockup/mockupGenerationService.ts",
     "src/hooks/mockup/useMockupDraft.ts",
     "src/hooks/mockup/useMockupGenerator.ts",
-    "src/hooks/products/index.ts"
+    "src/hooks/products/index.ts",
+    "src/hooks/simulation/useLogoColorAnalysisByArea.ts"
    ],
    "casos": 8
   },
@@ -8296,12 +8302,13 @@
   {
    "arquivo": "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts",
    "tipo": "unit",
-   "linhas": 298,
+   "linhas": 307,
    "testa": [
     "src/components/mockup/MockupProductSelector.tsx",
     "src/hooks/mockup/mockupGenerationService.ts",
     "src/hooks/mockup/useMockupDraft.ts",
-    "src/hooks/mockup/useMockupGenerator.ts"
+    "src/hooks/mockup/useMockupGenerator.ts",
+    "src/hooks/simulation/useLogoColorAnalysisByArea.ts"
    ],
    "casos": 5
   },
@@ -13567,10 +13574,11 @@
   {
    "arquivo": "tests/components/mockup/acceptance/grupo1.acceptance.test.tsx",
    "tipo": "unit",
-   "linhas": 217,
+   "linhas": 233,
    "testa": [
     "src/hooks/mockup/useMockupGenerator.ts",
-    "src/hooks/mockup/useMockupTechniques.ts"
+    "src/hooks/mockup/useMockupTechniques.ts",
+    "src/hooks/simulation/useLogoColorAnalysisByArea.ts"
    ],
    "casos": 2
   },
@@ -13587,13 +13595,14 @@
   {
    "arquivo": "tests/components/mockup/acceptance/grupo3.acceptance.test.tsx",
    "tipo": "unit",
-   "linhas": 179,
+   "linhas": 188,
    "testa": [
     "src/components/mockup/LogoColorAnalyzer.tsx",
     "src/components/mockup/LogoPositionEditor.tsx",
     "src/components/mockup/MultiAreaManager.tsx",
     "src/components/ui/tooltip.tsx",
-    "src/hooks/mockup/useMockupGenerator.ts"
+    "src/hooks/mockup/useMockupGenerator.ts",
+    "src/hooks/simulation/useLogoColorAnalysisByArea.ts"
    ],
    "casos": 5
   },
@@ -13659,7 +13668,7 @@
   {
    "arquivo": "tests/components/mockup/acceptance/grupo6.acceptance.test.tsx",
    "tipo": "unit",
-   "linhas": 304,
+   "linhas": 342,
    "testa": [
     "src/components/mockup/LogoColorAnalyzer.tsx",
     "src/components/mockup/MockupWizard.tsx",
@@ -21719,7 +21728,7 @@
   "src/hooks/simulation/useCustomizationPrice.ts": 3,
   "src/hooks/simulation/useGravacaoPriceV2.ts": 3,
   "src/hooks/simulation/useLogoColorAnalysis.ts": 2,
-  "src/hooks/simulation/useLogoColorAnalysisByArea.ts": 1,
+  "src/hooks/simulation/useLogoColorAnalysisByArea.ts": 10,
   "src/hooks/simulation/usePrintAreas.ts": 2,
   "src/hooks/simulation/useTechniquePricing.ts": 2,
   "src/hooks/simulator/useUndoRedo.ts": 1,
