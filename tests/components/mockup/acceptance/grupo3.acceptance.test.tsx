@@ -35,7 +35,14 @@ vi.mock('@/hooks/mockup/useMockupTechniques', () => ({ useFilteredTechniques: ()
 vi.mock('@/hooks/mockup/useMockupDraft', () => ({
   useMockupDraft: () => ({ saveDraft: vi.fn(), loadDraft: vi.fn().mockResolvedValue(null), clearDraft: vi.fn().mockResolvedValue(undefined), isSaving: false, isLoading: false, lastSaved: null, error: null }),
 }));
-vi.mock('@/hooks/simulation', () => ({
+// Mock parcial: o estrato "por área" é o módulo REAL (mantém a lógica de qual área é dona
+// da análise) sobre a análise base stubada no caminho direto. O spread do módulo real evita
+// que um export novo de '@/hooks/simulation' volte a derrubar este arquivo.
+vi.mock('@/hooks/simulation/useLogoColorAnalysis', () => ({
+  useLogoColorAnalysis: () => ({ colors: [], isAnalyzing: false, error: null, analyzeImage: vi.fn(), clearAnalysis: vi.fn(), updatePantone: vi.fn() }),
+}));
+vi.mock('@/hooks/simulation', async () => ({
+  ...(await import('@/hooks/simulation/useLogoColorAnalysisByArea')),
   useLogoColorAnalysis: () => ({ colors: [], isAnalyzing: false, error: null, analyzeImage: vi.fn(), clearAnalysis: vi.fn(), updatePantone: vi.fn() }),
   usePositionHistory: () => ({ setOnApply: vi.fn(), pushState: vi.fn(), clear: vi.fn(), canRedo: false }),
 }));

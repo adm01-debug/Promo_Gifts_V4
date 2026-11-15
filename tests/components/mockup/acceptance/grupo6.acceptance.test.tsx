@@ -35,6 +35,41 @@ const mocks = vi.hoisted(() => ({
   getProductById: vi.fn(),
   dbInvoke: vi.fn(),
   untypedFrom: vi.fn(),
+  // Estrato "por área" do gerador: mesma forma e mesma regra de dono do hook real
+  // (src/hooks/simulation/useLogoColorAnalysisByArea.ts) — `clearForArea` só limpa quando a
+  // análise viva pertence à área que saiu, e `restoreFor` sem logo deixa a análise órfã.
+  logoColorAnalysisByArea: (() => {
+    let dona: string | null = null;
+    const analyzeImage = vi.fn((_logo: string, ownerAreaId: string) => {
+      dona = ownerAreaId;
+    });
+    const clearAnalysis = vi.fn(() => {
+      dona = null;
+    });
+    const clearForArea = vi.fn((removedAreaId: string | null) => {
+      if (dona === null || dona !== removedAreaId) return false;
+      clearAnalysis();
+      return true;
+    });
+    const restoreFor = vi.fn((logoUrl: string | null | undefined, restoredAreaId: string) => {
+      if (logoUrl) return analyzeImage(logoUrl, restoredAreaId);
+      dona = null;
+      return undefined;
+    });
+    return {
+      colors: [],
+      isAnalyzing: false,
+      error: null,
+      updatePantone: vi.fn(),
+      analyzeImage,
+      clearAnalysis,
+      clearForArea,
+      restoreFor,
+      get areaId() {
+        return dona;
+      },
+    };
+  })(),
 }));
 
 vi.mock('@/lib/edge/safeInvokeCall', () => ({ invokeEdge: mocks.invokeEdge, newIdempotencyKey: mocks.newIdempotencyKey }));
@@ -52,6 +87,10 @@ vi.mock('@/hooks/mockup/useMockupTechniques', () => ({ useFilteredTechniques: ()
 // hook real pelo caminho direto '@/hooks/simulation/useLogoColorAnalysis'.
 vi.mock('@/hooks/simulation', () => ({
   useLogoColorAnalysis: () => ({ colors: [], isAnalyzing: false, error: null, analyzeImage: vi.fn(), clearAnalysis: vi.fn(), updatePantone: vi.fn() }),
+  // Mesma forma do hook real (src/hooks/simulation/useLogoColorAnalysisByArea.ts), inclusive a
+  // regra de dono: `clearForArea` só limpa quando a análise viva é da área que saiu. Aqui o
+  // estrato é stubado (e não o módulo real) porque o A15 usa o hook base real pelo caminho direto.
+  useLogoColorAnalysisByArea: () => mocks.logoColorAnalysisByArea,
   usePositionHistory: () => ({ setOnApply: vi.fn(), pushState: vi.fn(), clear: vi.fn(), canRedo: false }),
 }));
 vi.mock('@/components/mockup/mockupWizardStep', () => ({ getMockupWizardStep: () => 'product' }));
