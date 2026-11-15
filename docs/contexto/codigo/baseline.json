@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "956761e556e08cefddecfb620175422ce75ec0a7",
+  "commit": "3bd8af664660aa1647bcce868bb2cf2bf8dfbc8d",
   "branch": "main",
-  "data_commit": "2026-11-15T17:05:46Z",
+  "data_commit": "2026-11-15T17:51:15Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3bd8af66",
+    "data": "2026-11-15",
+    "assunto": "feat(mockup): editor de logo com largura e altura proporcionais e botão \"Girar\" (#3669)"
+   },
+   {
+    "sha": "0c05df33",
+    "data": "2026-11-15",
+    "assunto": "fix(docs): dossies nao citam migration de branch apagada como caminho da arvore (#3681)"
+   },
    {
     "sha": "956761e5",
     "data": "2026-11-15",
@@ -121,16 +131,6 @@
     "sha": "a7d22aff",
     "data": "2026-11-15",
     "assunto": "docs(pendencias): registra o que depende do dono na sessao de 15/11 (#3644)"
-   },
-   {
-    "sha": "7d873e33",
-    "data": "2026-11-15",
-    "assunto": "fix(admin): auditoria do Connections Hub exige confirmação antes de ações destrutivas (#3615)"
-   },
-   {
-    "sha": "4c912e19",
-    "data": "2026-11-15",
-    "assunto": "fix(migrations): registra o recibo E15 da 20261107134429 (destrava o Gate 1.13.3) (#3639)"
    }
   ],
   "arquivos_mudados_7d": 2167,
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 127
+    "mudancas": 130
    },
    {
     "pasta": "src/hooks/products",
@@ -184,11 +184,11 @@
     "mudancas": 88
    },
    {
-    "pasta": "src/components/ui",
-    "mudancas": 84
+    "pasta": "src/components/kit-builder",
+    "mudancas": 82
    },
    {
-    "pasta": "src/components/kit-builder",
+    "pasta": "src/components/ui",
     "mudancas": 82
    },
    {
@@ -207,11 +207,11 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 59
+    "mudancas": 58
    },
    {
     "arquivo": "package.json",
-    "mudancas": 37
+    "mudancas": 38
    },
    {
     "arquivo": "package-lock.json",
@@ -222,11 +222,11 @@
     "mudancas": 19
    },
    {
-    "arquivo": "analise-prs/progresso.json",
-    "mudancas": 18
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 17
    },
    {
-    "arquivo": "CHANGELOG.md",
+    "arquivo": "analise-prs/progresso.json",
     "mudancas": 17
    },
    {
@@ -234,28 +234,28 @@
     "mudancas": 17
    },
    {
-    "arquivo": ".github/workflows/deploy-gates.yml",
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
     "mudancas": 15
    },
    {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 15
+    "arquivo": ".github/workflows/deploy-gates.yml",
+    "mudancas": 14
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
     "mudancas": 13
    },
    {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
     "mudancas": 12
+   },
+   {
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "mudancas": 11
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 12
-   },
-   {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
@@ -272,10 +272,6 @@
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 9
-   },
-   {
-    "arquivo": ".github/workflows/db-schema-drift-check.yml",
-    "mudancas": 8
    },
    {
     "arquivo": "AGENTS.md",
@@ -296,12 +292,16 @@
    {
     "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
     "mudancas": 8
+   },
+   {
+    "arquivo": ".github/workflows/db-schema-drift-check.yml",
+    "mudancas": 7
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 578
+    "commits": 579
    },
    {
     "autor": "Joaquim Ataides",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 37
+    "commits": 36
    },
    {
     "autor": "dependabot[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10310,
-  "arquivos_codigo": 5310,
-  "linhas_codigo": 1012628,
+  "arquivos_total": 10311,
+  "arquivos_codigo": 5311,
+  "linhas_codigo": 1012905,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 548,
   "migrations": 3096,
   "cron_jobs": 122,
-  "testes": 2509,
+  "testes": 2510,
   "workflows": 87,
   "scripts": 272,
   "docs_md": 1046
@@ -1883,8 +1883,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1384,
-   "linhas": 276230
+   "arquivos": 1385,
+   "linhas": 276507
   },
   "src/config": {
    "arquivos": 1,

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `956761e556` · branch `main` · 2026-11-15 17:13 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3bd8af6646` · branch `main` · 2026-11-15 17:52 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3775,6 +3775,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const el = stageRef.current; const available = (el?.clientWidth || window.innerWidth) - STAGE_GUTTER; if (available <= 0) return; setScale(Math.min(1, available / PAGE_WIDTH));
   ```
+- **round2(n: number)** — `src/components/mockup/logo-editor/LogoSizeControls.tsx`
+  ```
+  Math.round(n * 100) / 100;
+  ```
 - **computeLogoBounds(input: LogoBoundsInput)** — `src/components/mockup/logo-editor/useLogoDrag.ts`
   ```
   const { containerWidth, containerHeight, logoWidthPx, logoHeightPx, rotationDeg = 0 } = input; const fallback = { minX: FALLBACK_MIN, maxX: FALLBACK_MAX, minY: FALLBACK_MIN, maxY: FALLBACK_MAX, }; if ( !(containerWidth > 0) || !(containerHeight > 0) || !logoWidthPx || !logoHeightPx || logoWidthPx <= 0 || logoHeightPx <= 0 ) { return fallback; } const rad = (rotationDeg * Math.PI) / 180; const cos = Math.abs(Math.cos(rad)); const sin = Math.abs(Math.sin(rad)); const halfW = ((logoWidthPx * cos + …
@@ -6519,7 +6523,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21647 testes em 2189 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21664 testes em 2190 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6823,7 +6827,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/pages/magazine/templates-gallery/__tests__/gallery.test.tsx` | 18 | MagazineTemplatesGalleryPage · renderiza os 12 cards de template · filtro  · filtro  … |
 | `src/pages/quotes/__tests__/quote-builder-freight-block.rtl.test.tsx` | 18 | Bloco Frete — hierarquia + data-testid do grid · shippingType= · shippingType= · shippingType= … |
 | `src/utils/__tests__/cnpj-exhaustive.test.ts` | 18 | CNPJ — B1 idempotência massiva (1.000 casos) · normalize(normalize(x)) === normalize(x) · CNPJ — B2 roundtrip (1.000 casos) · normalize(mask(normalize(v))) === normalize(v) … |
-| … +1889 linhas — lista completa em `context.json` | | |
+| … +1890 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7291,4 +7295,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Fecha APENAS a lista — a empresa selecionada permanece intacta. | `src/components/mockup/MockupClientSelector.tsx` |
 | * Máximo de cores suportadas na área */ | `src/components/mockup/MultiAreaManager.tsx` |
 | ANTI-REGRESSÃO: primary_image_url deve vir ANTES de og_image_url. | `src/components/mockup/ProductSearchCombobox.tsx` |
-| … +1306 linhas — lista completa em `context.json` | |
+| … +1307 linhas — lista completa em `context.json` | |

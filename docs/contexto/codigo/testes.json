@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2509,
+ "total": 2510,
  "por_tipo": {
   "contrato": 65,
   "e2e": 677,
   "pytest": 4,
   "qa": 17,
-  "unit": 1746
+  "unit": 1747
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 665
+   "arquivos": 666
   },
   {
    "padrao": "e2e/",
@@ -6087,6 +6087,17 @@
     "src/types/mockup-approval.ts"
    ],
    "casos": 5
+  },
+  {
+   "arquivo": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+   "tipo": "unit",
+   "linhas": 224,
+   "testa": [
+    "src/components/mockup/logo-editor/LogoQuickActions.tsx",
+    "src/components/mockup/logo-editor/LogoSizeControls.tsx",
+    "src/components/ui/tooltip.tsx"
+   ],
+   "casos": 18
   },
   {
    "arquivo": "src/components/mockup/logo-editor/__tests__/LogoPreviewCanvas.clip.test.tsx",
@@ -21431,8 +21442,8 @@
   "src/components/mockup/approval/MockupApprovalTemplate.tsx": 2,
   "src/components/mockup/approval/MockupLayoutButtons.tsx": 3,
   "src/components/mockup/logo-editor/LogoPreviewCanvas.tsx": 2,
-  "src/components/mockup/logo-editor/LogoQuickActions.tsx": 1,
-  "src/components/mockup/logo-editor/LogoSizeControls.tsx": 1,
+  "src/components/mockup/logo-editor/LogoQuickActions.tsx": 2,
+  "src/components/mockup/logo-editor/LogoSizeControls.tsx": 2,
   "src/components/mockup/logo-editor/logoTechniqueFilters.ts": 2,
   "src/components/mockup/logo-editor/useLogoDrag.ts": 1,
   "src/components/mockup/logo-editor/useLogoProcessing.ts": 1,
@@ -21553,7 +21564,7 @@
   "src/components/ui/label.tsx": 3,
   "src/components/ui/popover.tsx": 2,
   "src/components/ui/select.tsx": 6,
-  "src/components/ui/tooltip.tsx": 120,
+  "src/components/ui/tooltip.tsx": 121,
   "src/components/ui/truncated-tooltip.tsx": 1,
   "src/components/workflows/WorkflowEditDialog.tsx": 1,
   "src/constants/filters.ts": 7,

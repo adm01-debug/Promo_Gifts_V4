@@ -24,7 +24,7 @@
   ],
   "testes": [
    "tests/ (1022)",
-   "co-localizado (__tests__) (665)",
+   "co-localizado (__tests__) (666)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(mockup): editor de logo com largura e altura proporcionais e botão \"Girar\" (#3669)",
+   "fix(docs): dossies nao citam migration de branch apagada como caminho da arvore (#3681)",
    "docs(coordenacao): auditoria das 528 branches — 9 achados de produção e vereditos com evidência (#3679)",
    "fix(e2e): não repetir o login em cada teste quando o auth.setup degradou (#3680)",
-   "feat(mockup): aviso de falha ao carregar as técnicas de personalização, com \"Tentar novamente\" (#3677)",
-   "fix(assistente): card não acusa falha enquanto a RPC não foi aplicada (#3678)",
-   "feat(assistente): Encaixe do Cliente — fase 1 validada e com os 2 portões destravados (#3663)"
+   "feat(mockup): aviso de falha ao carregar as técnicas de personalização, com \"Tentar novamente\" (#3677)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

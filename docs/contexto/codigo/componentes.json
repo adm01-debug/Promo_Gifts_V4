@@ -11361,7 +11361,7 @@
     "LogoQuickActions"
    ],
    "export_default": null,
-   "linhas": 148,
+   "linhas": 152,
    "dominio": "components/mockup",
    "hooks_locais": [],
    "tabelas": [],
@@ -11375,7 +11375,7 @@
     "LogoSizeControls"
    ],
    "export_default": null,
-   "linhas": 230,
+   "linhas": 279,
    "dominio": "components/mockup",
    "hooks_locais": [],
    "tabelas": [],

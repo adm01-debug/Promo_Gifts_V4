@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "956761e556e08cefddecfb620175422ce75ec0a7",
+  "sha": "3bd8af664660aa1647bcce868bb2cf2bf8dfbc8d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 17:13 UTC",
-  "files_total": 10238,
-  "code_files": 8738,
-  "code_lines": 1231942
+  "generated_at": "2026-11-15 17:52 UTC",
+  "files_total": 10239,
+  "code_files": 8739,
+  "code_lines": 1232219
  },
  "version": "1.3.2",
- "facts_hash": "d25745f404cad516",
+ "facts_hash": "78f56a6cd086787b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -189,7 +189,7 @@
    "test:quote-rpc:postgres": "node scripts/simulate-quote-rpc-proposals.mjs",
    "check:quote-rpc:canonical": "node scripts/check-quote-rpc-canonical-readiness.mjs",
    "test:quality": "TZ=America/Sao_Paulo vitest run --exclude 'tests/hooks/**'",
-   "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts",
+   "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
    "test:ci-core:coverage": "TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --coverage --coverage.include=src/lib/theme-presets.ts --coverage.include=src/components/products/ProductSparkline.tsx --coverage.reporter=text --coverage.reporter=json --coverage.reporter=json-summary --coverage.thresholds.lines=50 --coverage.thresholds.functions=50 --coverage.thresholds.branches=30 --coverage.thresholds.statements=50",
    "test:deploy-gate": "TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --reporter=dot",
    "test:watch": "TZ=America/Sao_Paulo vitest",
@@ -1105,7 +1105,7 @@
   "languages": {
    ".sql": 3429,
    ".ts": 2967,
-   ".tsx": 1893,
+   ".tsx": 1894,
    ".mjs": 436,
    ".py": 13,
    ".js": 7
@@ -144771,7 +144771,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1644,
+  "components_count": 1645,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -149346,8 +149346,8 @@
   },
   {
    "module": "src/components",
-   "files": 1384,
-   "lines": 276229,
+   "files": 1385,
+   "lines": 276506,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -170697,6 +170697,10 @@
    {
     "file": "src/components/mockup/logo-editor/LogoPreviewCanvas.tsx",
     "text": "2. `validada`    — técnica com regra + dimensões reais do produto + limites oficiais"
+   },
+   {
+    "file": "src/components/mockup/logo-editor/LogoSizeControls.tsx",
+    "text": "razão se mantém mesmo quando um dos lados bate no mínimo ou no máximo."
    },
    {
     "file": "src/components/mockup/logo-editor/logoTechniqueFilters.ts",
@@ -213080,6 +213084,12 @@
     "body": "const el = stageRef.current; const available = (el?.clientWidth || window.innerWidth) - STAGE_GUTTER; if (available <= 0) return; setScale(Math.min(1, available / PAGE_WIDTH));"
    },
    {
+    "file": "src/components/mockup/logo-editor/LogoSizeControls.tsx",
+    "name": "round2",
+    "params": "n: number",
+    "body": "Math.round(n * 100) / 100;"
+   },
+   {
     "file": "src/components/mockup/logo-editor/useLogoDrag.ts",
     "name": "computeLogoBounds",
     "params": "input: LogoBoundsInput",
@@ -233940,6 +233950,74 @@
    {
     "file": "src/components/mockup/approval/__tests__/MockupApprovalTemplate.tokens.test.tsx",
     "name": "mantém o aviso de prévia do mockup sob a imagem"
+   },
+   {
+    "file": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+    "name": "LogoQuickActions — centralizar com alvo explícito"
+   },
+   {
+    "file": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+    "name": "as ações de centralizar ficam num grupo nomeado "
+   },
+   {
+    "file": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+    "name": "o botão de orientação se chama "
+   },
+   {
+    "file": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+    "name": "LogoSizeControls — tamanho proporcional (vínculo de proporções)"
+   },
+   {
+    "file": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+    "name": "o vínculo de proporções começa ligado"
+   },
+   {
+    "file": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+    "name": "com o vínculo LIGADO, aumentar a largura mantém a proporção"
+   },
+   {
+    "file": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+    "name": "com o vínculo LIGADO, aumentar a altura mantém a proporção"
+   },
+   {
+    "file": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+    "name": "com o vínculo DESLIGADO, alterar a largura não mexe na altura"
+   },
+   {
+    "file": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+    "name": "o vínculo não deixa o lado proporcional passar do máximo da área"
+   },
+   {
+    "file": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+    "name": "máximo da ALTURA trava a largura e preserva a proporção"
+   },
+   {
+    "file": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+    "name": "máximo da LARGURA trava a altura e preserva a proporção"
+   },
+   {
+    "file": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+    "name": "mínimo da ALTURA trava a largura e preserva a proporção"
+   },
+   {
+    "file": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+    "name": "mínimo da LARGURA trava a altura e preserva a proporção"
+   },
+   {
+    "file": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+    "name": "com o vínculo LIGADO, "
+   },
+   {
+    "file": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+    "name": "com o vínculo LIGADO, "
+   },
+   {
+    "file": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+    "name": "com o vínculo DESLIGADO, "
+   },
+   {
+    "file": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+    "name": "ida e volta na largura volta ao tamanho original sem perder a proporção"
    },
    {
     "file": "src/components/mockup/logo-editor/__tests__/LogoPreviewCanvas.clip.test.tsx",
@@ -442318,16 +442396,26 @@
   },
   "src/components/mockup/logo-editor/LogoQuickActions.tsx": {
    "path": "src/components/mockup/logo-editor/LogoQuickActions.tsx",
-   "lines": 148,
+   "lines": 152,
    "exports": [
     "function LogoQuickActions"
    ]
   },
   "src/components/mockup/logo-editor/LogoSizeControls.tsx": {
    "path": "src/components/mockup/logo-editor/LogoSizeControls.tsx",
-   "lines": 230,
+   "lines": 279,
    "exports": [
     "function LogoSizeControls"
+   ],
+   "rule_comments": [
+    "razão se mantém mesmo quando um dos lados bate no mínimo ou no máximo."
+   ],
+   "calc_fns": [
+    {
+     "name": "round2",
+     "params": "n: number",
+     "body": "Math.round(n * 100) / 100;"
+    }
    ],
    "percents": [
     "Resetar 100%"
@@ -442411,6 +442499,36 @@
    ],
    "hooks": [
     "useLogoProcessing"
+   ]
+  },
+  "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx": {
+   "path": "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx",
+   "lines": 224,
+   "is_test": true,
+   "rule_comments": [
+    "4×2 (razão 2) com altura máxima já no limite: a largura não pode crescer.",
+    "4×2 (razão 2) com largura máxima já no limite: a altura não pode crescer.",
+    "4×2 → reduzir até o limite → voltar para 4 deve dar 4×2, nunca 4×4."
+   ],
+   "doc": "Testes de comportamento — controles do editor de logo Cobre o que o cartão pede (falham sem a correção): - LogoQuickActions: as ações de centralizar formam um grupo com alvo declarado e cada uma move só o eixo do seu alvo. - LogoQuickActions: o botão de orientação se chama \"Girar\" (rótulo fixo, em v …",
+   "tests": [
+    "LogoQuickActions — centralizar com alvo explícito",
+    "as ações de centralizar ficam num grupo nomeado ",
+    "o botão de orientação se chama ",
+    "LogoSizeControls — tamanho proporcional (vínculo de proporções)",
+    "o vínculo de proporções começa ligado",
+    "com o vínculo LIGADO, aumentar a largura mantém a proporção",
+    "com o vínculo LIGADO, aumentar a altura mantém a proporção",
+    "com o vínculo DESLIGADO, alterar a largura não mexe na altura",
+    "o vínculo não deixa o lado proporcional passar do máximo da área",
+    "máximo da ALTURA trava a largura e preserva a proporção",
+    "máximo da LARGURA trava a altura e preserva a proporção",
+    "mínimo da ALTURA trava a largura e preserva a proporção",
+    "mínimo da LARGURA trava a altura e preserva a proporção",
+    "com o vínculo LIGADO, ",
+    "com o vínculo LIGADO, ",
+    "com o vínculo DESLIGADO, ",
+    "ida e volta na largura volta ao tamanho original sem perder a proporção"
    ]
   },
   "src/components/mockup/logo-editor/__tests__/LogoPreviewCanvas.clip.test.tsx": {
@@ -538824,10 +538942,36 @@
   }
  },
  "git": {
-  "sha": "956761e556e08cefddecfb620175422ce75ec0a7",
+  "sha": "3bd8af664660aa1647bcce868bb2cf2bf8dfbc8d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "3bd8af6",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "feat(mockup): editor de logo com largura e altura proporcionais e botão \"Girar\" (#3669)",
+    "files": [
+     "package.json",
+     "src/components/mockup/logo-editor/LogoQuickActions.tsx",
+     "src/components/mockup/logo-editor/LogoSizeControls.tsx",
+     "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx"
+    ]
+   },
+   {
+    "sha": "0c05df3",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "fix(docs): dossies nao citam migration de branch apagada como caminho da arvore (#3681)",
+    "files": [
+     "analise-branches/auditoria-261115/veredito_grupo00.md",
+     "analise-branches/auditoria-261115/veredito_grupo02.md",
+     "analise-branches/auditoria-261115/veredito_lote00.md",
+     "analise-branches/auditoria-261115/veredito_lote02.md",
+     "analise-branches/auditoria-261115/veredito_lote03.md",
+     "analise-branches/auditoria-261115/veredito_lote04.md"
+    ]
+   },
    {
     "sha": "956761e",
     "date": "2026-11-15",
@@ -539363,71 +539507,15 @@
     "author": "Claude",
     "subject": "Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230",
     "files": []
-   },
-   {
-    "sha": "3792045",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "fix(crm): declara isencao de soft-delete na tabela de vinculo de vendedor",
-    "files": [
-     "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql"
-    ]
-   },
-   {
-    "sha": "e998b09",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(kit): rascunhos de kit salvos sem personalização voltam a abrir (resgate cirúrgico da #3390) (#3631)",
-    "files": [
-     "docs/coordenacao/conflitos-semanticos.md",
-     "src/components/intelligence/SalesOverviewChart.tsx",
-     "src/components/kit-builder/BoxSelector.tsx",
-     "src/components/kit-builder/BoxSelector.types.ts",
-     "src/components/kit-builder/ItemCard.tsx",
-     "src/components/kit-builder/ItemSelector.tsx",
-     "src/components/kit-builder/ItemSelector.types.ts",
-     "src/components/kit-builder/KitHeroPricingCard.tsx",
-     "src/components/kit-builder/KitMobileSummaryBar.tsx",
-     "src/components/kit-builder/KitPresentablePreview.tsx",
-     "src/components/kit-builder/KitSummary.tsx",
-     "src/components/kit-builder/kit-summary/KitActionsBar.tsx",
-     "src/components/kit-builder/kit-summary/KitCompositionCard.tsx",
-     "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
-     "src/components/kit-library/KitCard.tsx",
-     "src/hooks/intelligence/useSalesHistoryMacro.ts",
-     "src/hooks/kit-builder/useKitAutoSave.ts",
-     "src/hooks/kit-builder/useKitBuilder.ts",
-     "src/hooks/kit-builder/useKitBuilderPageState.ts",
-     "src/lib/__tests__/json-value.test.ts",
-     "src/lib/json-value.ts",
-     "src/lib/kit-builder/ai-composition.ts",
-     "src/lib/kit-builder/persistence.ts",
-     "src/lib/kit-builder/pricing-availability.ts",
-     "src/lib/kit-builder/snapshot/read-draft.ts",
-     "src/lib/kit-builder/types.ts",
-     "src/lib/kit-builder/validate-composition.ts",
-     "src/lib/kit-library/buildCustomKitInsert.ts",
-     "src/pages/bi/CommercialIntelligencePage.tsx",
-     "src/pages/kit-builder/KitBuilderPage.tsx",
-     "tests/components/SalesOverviewChart.product-filter.test.tsx",
-     "tests/components/kit-builder/financial-availability.test.tsx",
-     "tests/components/kit-library/KitCard.test.tsx",
-     "tests/components/pages/KitBuilderPage.test.tsx",
-     "tests/hooks/useKitAutoSave.validation-recovery.test.tsx",
-     "tests/hooks/useKitBuilderPageState.snapshot.test.tsx",
-     "tests/hooks/useSalesHistoryMacro.product-filter.test.ts",
-     "tests/lib/kit-builder-draft-preservation.test.ts",
-     "tests/lib/kit-read-draft-production-shapes.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
-    "docs/coordenacao/conflitos-semanticos.md",
-    6
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    5
    ],
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
+    "docs/coordenacao/conflitos-semanticos.md",
     5
    ],
    [
@@ -539447,8 +539535,28 @@
     3
    ],
    [
-    "src/pages/kit-builder/KitBuilderPage.tsx",
-    3
+    "analise-branches/auditoria-261115/veredito_grupo00.md",
+    2
+   ],
+   [
+    "analise-branches/auditoria-261115/veredito_grupo02.md",
+    2
+   ],
+   [
+    "analise-branches/auditoria-261115/veredito_lote00.md",
+    2
+   ],
+   [
+    "analise-branches/auditoria-261115/veredito_lote02.md",
+    2
+   ],
+   [
+    "analise-branches/auditoria-261115/veredito_lote03.md",
+    2
+   ],
+   [
+    "analise-branches/auditoria-261115/veredito_lote04.md",
+    2
    ],
    [
     "e2e/helpers/auth.ts",
@@ -539480,26 +539588,6 @@
    ],
    [
     "src/hooks/intelligence/__tests__/useMarketIntelligenceMacro.test.tsx",
-    2
-   ],
-   [
-    "src/hooks/intelligence/useMarketIntelligenceMacro.ts",
-    2
-   ],
-   [
-    "src/components/mockup/MockupProductSelector.tsx",
-    2
-   ],
-   [
-    "src/components/mockup/MockupWizard.tsx",
-    2
-   ],
-   [
-    "scripts/drift-baseline.mjs",
-    2
-   ],
-   [
-    ".github/workflows/deploy-gates.yml",
     2
    ]
   ]
