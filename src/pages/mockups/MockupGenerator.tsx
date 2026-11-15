@@ -191,6 +191,7 @@ export default function MockupGenerator() {
         <OffscreenLayoutCapture
           request={layoutCaptureRequest}
           onCaptured={completion.handleLayoutCaptured}
+          onFailed={completion.handleLayoutFailed}
         />
       </Suspense>
 
