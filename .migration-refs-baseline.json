@@ -2016,6 +2016,26 @@
     {
       "file": "tests/security/restore-seller-cart-rpc.test.ts",
       "ref": "supabase/migrations/20260713101342_...sql"
+    },
+    {
+      "file": "CHANGELOG.md",
+      "ref": "supabase/migrations/x6"
+    },
+    {
+      "file": "analise-prs/2026-11-12/prs.json",
+      "ref": "supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql"
+    },
+    {
+      "file": "analise-prs/2026-11-12/prs.json",
+      "ref": "supabase/migrations/20260511235960_add_categories_full_path_readable_drift.sql"
+    },
+    {
+      "file": "analise-prs/2026-11-12/prs.json",
+      "ref": "supabase/migrations/20261108230000_cron002_fix_residual_collisions.sql"
+    },
+    {
+      "file": "analise-prs/2026-11-12/prs.json",
+      "ref": "supabase/migrations/20261111222500_fix_touch_seller_cart_secdef.sql"
     }
   ]
 }
