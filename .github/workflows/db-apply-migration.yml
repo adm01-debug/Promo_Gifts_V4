@@ -5,9 +5,12 @@ name: DB — Aplicação controlada de migration única (E15)
 # MCP-ticket (docs/db/POLITICA_DDL.md). `supabase db push` continua proibido.
 #
 # Fluxo: workflow_dispatch(version) → preflight (read-only) → apply (gated
-# por `environment: production` — configurar required reviewers nas
-# Settings → Environments do repositório; este workflow NÃO pode configurar
-# isso sozinho) → `migration repair --status applied` → post-check
+# SEM gate de aprovação desde 2026-11-14, por decisão explícita do dono
+# registrada no chat da sessão Claude: o `environment: production` e o step
+# que exigia required reviewers foram removidos para que agentes possam
+# aplicar migration sem clique humano. O preflight read-only, o
+# `validate-migration-target`, o rollback obrigatório e o receipt por PR
+# continuam) → `migration repair --status applied` → post-check
 # (read-only) → receipt (abre PR com a linha nova em MIGRATIONS_SYNC_LOG.md,
 # nunca commita direto em main).
 #
@@ -108,21 +111,6 @@ jobs:
       - name: Valida input antes de qualquer uso no shell
         run: node scripts/validate-migration-target.mjs --version-only
 
-      - name: Confirma reviewer obrigatório no environment Production
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          # O rótulo `environment: production` sozinho NÃO exige revisão.
-          # Em 2026-09-22 o environment existia mas protection_rules=[].
-          reviewer_rules=$(gh api \
-            "repos/${{ github.repository }}/environments/production" \
-            --jq '[.protection_rules[]? | select(.type == "required_reviewers" and (.reviewers | length) > 0)] | length')
-          if [ "$reviewer_rules" -lt 1 ]; then
-            echo "::error::Environment Production sem reviewer obrigatório. Configure a proteção antes de aplicar qualquer migration."
-            exit 1
-          fi
-
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: '.nvmrc'
@@ -133,11 +121,10 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
   apply:
-    name: 2. Apply (requer aprovação do environment production)
+    name: 2. Apply (sem gate de aprovação — decisão do dono 2026-11-14)
     needs: preflight
     runs-on: ubuntu-24.04
     timeout-minutes: 15
-    environment: production
     permissions:
       contents: read
     env:

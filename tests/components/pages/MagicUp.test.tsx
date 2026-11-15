@@ -182,6 +182,18 @@ describe("MagicUp — fluxo real da página", () => {
     expect(screen.queryByText("Escolha um cenário")).not.toBeInTheDocument();
   });
 
+  it("'Trocar logo' reabre o seletor de arquivo", async () => {
+    const user = setupUser();
+    renderMagicUp();
+    await screen.findByTestId("mockup-product-combobox-trigger");
+    await uploadLogo();
+
+    const input = document.getElementById("magic-logo-upload") as HTMLInputElement;
+    const click = vi.spyOn(input, "click");
+    await user.click(screen.getByRole("button", { name: "Trocar logo" }));
+    expect(click).toHaveBeenCalledTimes(1);
+  });
+
   it("gera a imagem pelo fluxo real e exibe o resultado", async () => {
     const user = setupUser();
     renderMagicUp();

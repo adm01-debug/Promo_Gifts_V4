@@ -26,10 +26,11 @@ import { safeParseDateForChart } from '@/lib/stock-chart-utils';
 
 interface Props {
   days?: number;
+  productId?: string | null;
 }
 
-export function SalesOverviewChart({ days = 30 }: Props) {
-  const { data, isLoading } = useSalesHistoryMacro(days);
+export function SalesOverviewChart({ days = 30, productId }: Props) {
+  const { data, isLoading } = useSalesHistoryMacro(days, productId ?? undefined);
 
   const chartData = useMemo(() => {
     if (!data?.daily?.length) return [];

@@ -1,4 +1,7 @@
+import { hasKnownKitPrices } from '@/lib/kit-builder/pricing-availability';
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { useKitBuilderPageState } from '@/hooks/kit-builder';
 import { Card, CardContent } from '@/components/ui/card';
@@ -146,10 +149,17 @@ export default function KitBuilderPage() {
       },
       duration: 10_000,
     });
-  }, [state.isHydrating, state.currentKitId, state.autoSavedKitId, state.currentRevision, state.isLanding, actions]);
+  }, [
+    state.isHydrating,
+    state.currentKitId,
+    state.autoSavedKitId,
+    state.currentRevision,
+    state.isLanding,
+    actions,
+  ]);
 
   useKitWizardShortcuts({
-    enabled: !state.isLanding,
+    enabled: !state.isLanding && !state.isHydrating && !state.hydrationError,
     canProceed: state.wizardState.canProceed,
     currentStep: state.wizardState.currentStep,
     completedSteps: state.wizardState.completedSteps,
@@ -161,7 +171,7 @@ export default function KitBuilderPage() {
 
   useEffect(() => {
     const handleEditorShortcut = (event: KeyboardEvent) => {
-      if (state.isLanding) return;
+      if (state.isLanding || state.isHydrating || state.hydrationError) return;
       if (!event.metaKey && !event.ctrlKey) return;
       const key = event.key.toLowerCase();
       const target = event.target as HTMLElement | null;
@@ -182,7 +192,19 @@ export default function KitBuilderPage() {
     };
     window.addEventListener('keydown', handleEditorShortcut);
     return () => window.removeEventListener('keydown', handleEditorShortcut);
-  }, [handleSaveKit, redo, state.isLanding, undo]);
+  }, [handleSaveKit, redo, state.isLanding, state.isHydrating, state.hydrationError, undo]);
+
+  if (state.isHydrating) {
+    return (
+      <div
+        data-testid="kit-builder-container"
+        role="status"
+        className="flex min-h-[50vh] items-center justify-center gap-2"
+      >
+        <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" /> Carregando kit salvo...
+      </div>
+    );
+  }
 
   return (
     <div
@@ -225,6 +247,40 @@ export default function KitBuilderPage() {
         />
       ) : (
         <>
+          {state.hydrationError && (
+            <div
+              role="alert"
+              className="container my-4 rounded-lg border border-destructive/30 bg-destructive/5 p-4"
+            >
+              <p className="font-semibold">Não foi possível carregar este rascunho</p>
+              <p className="mt-1 text-sm">{state.hydrationError}</p>
+              <Link
+                to="/meus-kits"
+                className="mt-2 inline-block text-sm font-semibold text-primary underline"
+              >
+                Voltar à biblioteca de kits
+              </Link>
+            </div>
+          )}
+          {state.quantityNeedsConfirmation && (
+            <div
+              role="alert"
+              className="container my-4 rounded-lg border border-warning/30 bg-warning/5 p-4"
+            >
+              <p className="text-sm">
+                Quantidade não informada: defina a quantidade antes de salvar ou criar orçamento.
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="mt-2"
+                onClick={() => actions.setKitQuantity(state.kitQuantity)}
+              >
+                Confirmar {state.kitQuantity} kit{state.kitQuantity === 1 ? '' : 's'}
+              </Button>
+            </div>
+          )}
           <KitBuilderHeader
             kitName={state.kitState.name}
             onKitNameChange={actions.setKitName}
@@ -384,6 +440,7 @@ export default function KitBuilderPage() {
               {!usesFullWorkspace && (
                 <div className="space-y-6 lg:col-span-1">
                   <KitHeroPricingCard
+                    pricesKnown={hasKnownKitPrices(state.kitState)}
                     unitPrice={meta.pricing.unitPrice}
                     total={meta.pricing.total}
                     kitQuantity={state.kitQuantity}
@@ -401,6 +458,7 @@ export default function KitBuilderPage() {
           </div>
           <KitMobileSummaryBar kitState={state.kitState} kitQuantity={state.kitQuantity}>
             <KitHeroPricingCard
+              pricesKnown={hasKnownKitPrices(state.kitState)}
               unitPrice={meta.pricing.unitPrice}
               total={meta.pricing.total}
               kitQuantity={state.kitQuantity}

@@ -1,15 +1,18 @@
 import { test, expect } from '@playwright/test';
 import { gotoAndSettle } from './helpers/nav';
+import { devOnlyRouteReason, isProductionBuild } from './helpers/dev-only-route';
 
 /**
  * Testes de Regressão Visual para OptimizedImage.
  * Valida o efeito blur-up, fade-in e estado de erro em diferentes viewports.
  *
- * A rota /debug/images é pública (sem ProtectedRoute) em todos os ambientes.
+ * A rota /debug/images é pública (sem ProtectedRoute), mas só montada em dev
+ * (import.meta.env.DEV): contra build de produção o grupo é pulado.
  * Executa no project chromium-public (chromium, sem auth).
  */
 test.describe('OptimizedImage Visual Regression', () => {
   const DEBUG_URL = '/debug/images';
+  test.skip(isProductionBuild, devOnlyRouteReason(DEBUG_URL));
 
   test.beforeEach(async ({ page }, testInfo) => {
     test.skip(
