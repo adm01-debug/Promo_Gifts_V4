@@ -1,5 +1,10 @@
 -- mockup-assistant: linha de roteamento de IA (a edge nao funciona sem ela).
 --
+-- Rollback: supabase/rollbacks/20261115230000_rollback.sql
+--   Apaga SO a linha inserida por esta migration, identificada pelo texto de
+--   `notes`. Se a funcao ja tinha rota antes (ON CONFLICT DO NOTHING fez nada),
+--   a linha preexistente e preservada. Nenhum outro dado e tocado.
+--
 -- O roteador exige uma linha ATIVA em public.ai_function_routing e nao tem modelo
 -- padrao quando ela falta (_shared/ai-router/index.ts): sem esta linha, todo pedido
 -- valido ao assistente devolve 502. A edge foi resgatada na PR #3666 e a linha

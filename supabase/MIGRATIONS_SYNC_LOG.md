@@ -1826,6 +1826,16 @@ existe no modelo: com `text` e fallback vazio, o assistente devolveria 502 para 
 que esta migration conserta. Nenhuma das 18 funções usa `text`; 7 usam exatamente `{"chat": true}`.
 Achado P1 do `chatgpt-codex-connector` na #3666, corrigido antes do merge.
 
+**Rollback obrigatório, exigido pelo preflight.** `scripts/preflight-migration-apply.mjs:304-315`
+rejeita migration nova sem cabeçalho `-- Rollback:` nas 40 primeiras linhas E sem arquivo em
+`supabase/rollbacks/`. Sem os dois, `db-apply-migration.yml` nunca aplicaria esta versão — o merge
+não resolveria nada e o assistente seguiria em 502. Criado `supabase/rollbacks/20261115230000_rollback.sql`,
+que apaga **só** a linha inserida aqui, identificada pelo texto de `notes`: como a migration usa
+`ON CONFLICT DO NOTHING`, apagar por `function_name` destruiria uma rota preexistente que não é dela.
+Testado em PostgreSQL 16 nos dois cenários: banco limpo (insere, e o rollback apaga) e rota
+preexistente (migration é no-op, e o rollback **preserva** a linha alheia). Achado do
+`devin-ai-integration` na #3666.
+
 É INSERT, não DDL: `ON CONFLICT (function_name) DO NOTHING`, e a `UNIQUE (function_name)` existe
 (conferida em `pg_constraint`), então reaplicar é no-op. A FK
 `ai_function_routing_primary_model_id_fkey` aponta para `ai_models(id)`; o modelo citado existe e está
@@ -1833,4 +1843,4 @@ ativo.
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261115230000` | `ai_function_routing_mockup_assistant` | `d0be155220fe96133d094d71f1942037ffa61418299faa24c3c2c1cb50ebd7fa` | pendente — aplicar via `db-apply-migration.yml` após merge (banco de produção autorizado pelo dono no chat em 2026-11-15) |
+| `20261115230000` | `ai_function_routing_mockup_assistant` | `2937d5ff62750fed7a98cec78f147de2547df00055d361796ce65ee6db996dec` | pendente — aplicar via `db-apply-migration.yml` após merge (banco de produção autorizado pelo dono no chat em 2026-11-15) |
