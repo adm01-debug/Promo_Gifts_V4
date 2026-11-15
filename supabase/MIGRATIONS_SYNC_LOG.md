@@ -1682,3 +1682,24 @@ antes do dispatch. Ainda não está no ledger; aplicação só por `db-apply-mig
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261102063000` | `repair_kill_switch_hits_anon_rate_guard` | `1cfc7343ea254805b19c765fbce566eb3acd23f6aea36fa2b35fd38623ce2226` | pendente — aplicar via `db-apply-migration.yml` após merge (estado do trigger em produção NÃO VERIFICADO em 2026-11-15) |
+
+## 2026-11-15 — Inteligência de mercado macro: índice de cobertura + RPC `fn_market_intelligence_macro` (bug #57; o 11º item da #3584)
+
+A `fn_market_intelligence_macro` ficou fora da #3584 por desempenho: EXPLAIN em produção (2026-11-15) da agregação por
+`(summary_date, supplier_id)` sem filtro de fornecedor = Parallel Seq Scan em `stock_daily_summary` (~3,1M linhas, ~1 GB;
+índices existentes: `idx_daily_product_date (product_id, summary_date desc)`, `idx_sds_cenario_a` e `idx_sds_zero_to_positive`
+parciais, `idx_stock_daily_summary_supplier_id`, `uq_stock_daily_vss_date` — nenhum serve a janela de datas).
+Enquanto isso, `useMarketIntelligenceMacro.ts` lê a tabela cru via PostgREST sem filtro de data, ascendente, `limit 5000`:
+o max-rows devolve as linhas mais antigas, todas cortadas pelo `cutoff` no cliente, e a tela mostra o mock como dado real.
+Duas migrations, **nesta ordem**: (1) índice `(summary_date, supplier_id) INCLUDE (stock_close, units_depleted, units_restocked)`
+em `CREATE INDEX CONCURRENTLY` (`transaction: none`; a linha `approved-by` entra no momento da aplicação) — torna
+redundante o `idx_sds_summary_date` da `20261108223000` (pendente; prefixo deste); (2) a RPC (SECURITY INVOKER,
+`search_path = ''`, REVOKE anon/PUBLIC, EXECUTE authenticated/service_role), conteúdo da `20261112121000` da branch
+`claude/fix-migrations-acesso-rpcs-261112-1050` renumerado para ficar atrás do índice. O front
+(`untypedRpc('fn_market_intelligence_macro')`) só funciona depois da (2) aplicada; até lá o gráfico mostra erro (PGRST202)
+em vez de mock. Nenhuma das duas está no ledger; aplicação só por `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261115130000` | `idx_sds_summary_date_supplier_include` | `d4d441540da99ea12752eeb2253bcef7af00afac0640c85b95ed72107d7bfccc` | pendente — aplicar via `db-apply-migration.yml` após merge, ANTES da `20261115130100` (CONCURRENTLY, `transaction: none`; exige linha `approved-by` do dono; porta 5432, fora do pico) |
+| `20261115130100` | `fn_market_intelligence_macro` | `ea7aa33fb9f533d94229859f35f3814a5792699425728ec36ec9c426574c6771` | pendente — aplicar via `db-apply-migration.yml` após merge e após a `20261115130000` |
