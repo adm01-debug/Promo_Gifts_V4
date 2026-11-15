@@ -45,7 +45,37 @@ export interface MacroMarketData {
   kpis: MacroMarketKpis;
   suppliers: MacroSupplierMetrics[];
   supplierIds: string[];
+  /**
+   * `true` quando a RPC de agregação ainda não existe no banco deste ambiente.
+   * A migration `20261115130100_fn_market_intelligence_macro` chegou ao `main`
+   * antes de ser aplicada em produção (ela depende do índice
+   * `20261115130000`, que exige aprovação humana por usar
+   * `CREATE INDEX CONCURRENTLY`). Sem esta distinção, o PGRST202 virava
+   * `error` e a tela trocava o gráfico por "Erro ao carregar dados de
+   * mercado", que faz o vendedor achar que o sistema quebrou. Quando a
+   * migration for aplicada, este campo volta a `false` sozinho.
+   */
+  aggregationUnavailable: boolean;
 }
+
+/** PostgREST devolve este código quando a função chamada não existe no banco. */
+const PGRST_FUNCAO_INEXISTENTE = 'PGRST202';
+
+const SEM_AGREGACAO: MacroMarketData = {
+  daily: [],
+  kpis: {
+    totalDepleted7d: 0,
+    totalDepleted30d: 0,
+    totalRestocked30d: 0,
+    totalCurrentStock: 0,
+    avgDailyDepletion: 0,
+    supplierCount: 0,
+    topDepletionDay: null,
+  },
+  suppliers: [],
+  supplierIds: [],
+  aggregationUnavailable: true,
+};
 
 /**
  * Busca stock_daily_summary agregado (macro) para visão de mercado.
@@ -63,7 +93,14 @@ export function useMarketIntelligenceMacro(days = 30, supplierId?: string | null
         p_days: days,
         p_supplier_id: supplierId ?? null,
       });
-      if (error) throw error;
+      // Só o "função não existe" é tratado como ausência de recurso. Qualquer
+      // outro erro (permissão, rede, timeout) continua subindo, para não
+      // esconder falha de verdade atrás de uma tela vazia.
+      if (error) {
+        const codigo = (error as { code?: string } | null)?.code;
+        if (codigo === PGRST_FUNCAO_INEXISTENTE) return SEM_AGREGACAO;
+        throw error;
+      }
       const rows: MacroRow[] = Array.isArray(data) ? data : [];
 
       // Aggregate by date (for chart)
@@ -190,6 +227,7 @@ export function useMarketIntelligenceMacro(days = 30, supplierId?: string | null
         },
         suppliers,
         supplierIds: Array.from(uniqueSuppliers),
+        aggregationUnavailable: false,
       };
     },
     staleTime: 10 * 60 * 1000,
