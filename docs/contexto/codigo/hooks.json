@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 623,
+ "total": 626,
  "hooks": [
   {
    "arquivo": "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
@@ -5775,6 +5775,29 @@
    "coberto_por_testes": 1
   },
   {
+   "arquivo": "src/components/mockup/usePreservedMockupResult.ts",
+   "hooks_exportados": [
+    "usePreservedMockupResult"
+   ],
+   "linhas": 57,
+   "dominio": "components/mockup",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useEffect",
+    "useRef",
+    "useState"
+   ],
+   "canais_realtime": [],
+   "usado_por": 2,
+   "usado_por_arquivos": [
+    "src/components/mockup/MockupResultCard.tsx",
+    "src/pages/mockups/mockup-generator/useMockupCompletionStatus.ts"
+   ],
+   "coberto_por_testes": 0
+  },
+  {
    "arquivo": "src/components/navigation/Breadcrumbs.tsx",
    "hooks_exportados": [
     "useBreadcrumbs"
@@ -6283,7 +6306,7 @@
     "recovery/src-legacy/src/hooks/useOnboarding.ts",
     "recovery/src-legacy/src/hooks/useProductAnalytics.ts"
    ],
-   "coberto_por_testes": 37
+   "coberto_por_testes": 38
   },
   {
    "arquivo": "src/contexts/BICategoryFocusContext.tsx",
@@ -10266,7 +10289,7 @@
    "hooks_exportados": [
     "useMockupGenerator"
    ],
-   "linhas": 884,
+   "linhas": 887,
    "dominio": "hooks/mockup",
    "tabelas": [],
    "rpcs": [],
@@ -10286,6 +10309,7 @@
     "useProductCustomizationOptionsForMockup",
     "useProductsContext",
     "useRef",
+    "useSavedMockupProject",
     "useState"
    ],
    "canais_realtime": [],
@@ -10340,6 +10364,28 @@
     "src/hooks/mockup/useMockupGenerator.ts"
    ],
    "coberto_por_testes": 1
+  },
+  {
+   "arquivo": "src/hooks/mockup/useSavedMockupProject.ts",
+   "hooks_exportados": [
+    "useSavedMockupProject"
+   ],
+   "linhas": 75,
+   "dominio": "hooks/mockup",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useCallback",
+    "useMemo",
+    "useState"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/hooks/mockup/useMockupGenerator.ts"
+   ],
+   "coberto_por_testes": 0
   },
   {
    "arquivo": "src/hooks/products/useAdvancedFilters.ts",
@@ -14444,7 +14490,7 @@
    "hooks_exportados": [
     "useLayoutCaptureRequest"
    ],
-   "linhas": 117,
+   "linhas": 120,
    "dominio": "pages/mockups",
    "tabelas": [],
    "rpcs": [],
@@ -14457,7 +14503,29 @@
    "usado_por_arquivos": [
     "src/pages/mockups/MockupGenerator.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
+  },
+  {
+   "arquivo": "src/pages/mockups/mockup-generator/useMockupCompletionStatus.ts",
+   "hooks_exportados": [
+    "useMockupCompletionStatus"
+   ],
+   "linhas": 64,
+   "dominio": "pages/mockups",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useCallback",
+    "useEffect",
+    "usePreservedMockupResult"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/pages/mockups/MockupGenerator.tsx"
+   ],
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/pages/mockups/mockup-generator/useWizardNavigation.ts",

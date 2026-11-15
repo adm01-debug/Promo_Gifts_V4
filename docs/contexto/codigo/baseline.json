@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "54826844aa09704192e90fe1fe96236e61dc4b5d",
+  "commit": "ecface83bd8f628557f69a57c4a9a0656f2ae310",
   "branch": "main",
-  "data_commit": "2026-11-15T18:19:14Z",
+  "data_commit": "2026-11-15T18:58:02Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ecface83",
+    "data": "2026-11-15",
+    "assunto": "feat(mockup): preserva o resultado quando a geração falha, e a ficha sai com as medidas da área certa (#3674)"
+   },
    {
     "sha": "54826844",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "1eafa069",
     "data": "2026-11-15",
     "assunto": "fix(db): cria o rollback que destrava o revoke E18 — estoque alterável por qualquer usuário logado (#3648)"
-   },
-   {
-    "sha": "e5afe824",
-    "data": "2026-11-15",
-    "assunto": "fix: trem das 5 correções já verdes — recibos, código morto do CRM, 3 resgates, gerador de mockup e aba Marketing (#3647"
    }
   ],
-  "arquivos_mudados_7d": 2171,
+  "arquivos_mudados_7d": 2181,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -148,12 +148,12 @@
     "mudancas": 185
    },
    {
-    "pasta": "tests/edge-functions/live",
-    "mudancas": 132
+    "pasta": "src/components/mockup",
+    "mudancas": 136
    },
    {
-    "pasta": "src/components/mockup",
-    "mudancas": 131
+    "pasta": "tests/edge-functions/live",
+    "mudancas": 132
    },
    {
     "pasta": "src/hooks/products",
@@ -207,11 +207,11 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 58
+    "mudancas": 57
    },
    {
     "arquivo": "package.json",
-    "mudancas": 40
+    "mudancas": 41
    },
    {
     "arquivo": "package-lock.json",
@@ -294,8 +294,8 @@
     "mudancas": 8
    },
    {
-    "arquivo": ".github/workflows/db-schema-drift-check.yml",
-    "mudancas": 7
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "mudancas": 8
    }
   ],
   "autores_30d": [
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10312,
-  "arquivos_codigo": 5312,
-  "linhas_codigo": 1013141,
+  "arquivos_total": 10321,
+  "arquivos_codigo": 5321,
+  "linhas_codigo": 1014156,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
   "modulos": 161,
-  "componentes": 1234,
-  "hooks": 623,
+  "componentes": 1235,
+  "hooks": 626,
   "edge_functions": 111,
   "tabelas": 548,
   "migrations": 3096,
   "cron_jobs": 122,
-  "testes": 2511,
+  "testes": 2516,
   "workflows": 87,
   "scripts": 272,
   "docs_md": 1046
@@ -1883,8 +1883,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1386,
-   "linhas": 276563
+   "arquivos": 1390,
+   "linhas": 277075
   },
   "src/config": {
    "arquivos": 1,
@@ -1907,8 +1907,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 475,
-   "linhas": 89877
+   "arquivos": 478,
+   "linhas": 90173
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1927,8 +1927,8 @@
    "linhas": 63
   },
   "src/pages": {
-   "arquivos": 359,
-   "linhas": 83648
+   "arquivos": 361,
+   "linhas": 83851
   },
   "src/routes": {
    "arquivos": 14,
@@ -1948,7 +1948,7 @@
   },
   "src/tests": {
    "arquivos": 33,
-   "linhas": 5132
+   "linhas": 5135
   },
   "src/types": {
    "arquivos": 26,
@@ -2116,7 +2116,7 @@
   },
   "tests/pages": {
    "arquivos": 15,
-   "linhas": 3288
+   "linhas": 3289
   },
   "tests/product-form-improvements.test.ts": {
    "arquivos": 1,

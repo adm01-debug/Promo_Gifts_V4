@@ -7037,6 +7037,10 @@
    "src/components/ui/button.tsx",
    "src/components/ui/dialog.tsx"
   ],
+  "src/components/mockup/MockupCompletionStates.tsx": [
+   "src/components/ui/button.tsx",
+   "src/lib/utils.ts"
+  ],
   "src/components/mockup/MockupConfigPanel.tsx": [
    "src/components/mockup/ArtFileUpload.tsx",
    "src/components/mockup/LogoColorAnalyzer.tsx",
@@ -7107,7 +7111,9 @@
   "src/components/mockup/MockupResultCard.tsx": [
    "src/components/mockup/MockupAnnotations.tsx",
    "src/components/mockup/MockupBeforeAfter.tsx",
+   "src/components/mockup/MockupCompletionStates.tsx",
    "src/components/mockup/ShareMenu.tsx",
+   "src/components/mockup/usePreservedMockupResult.ts",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
@@ -10684,6 +10690,7 @@
    "src/hooks/mockup/useMockupEntryParams.ts",
    "src/hooks/mockup/useMockupTechniques.ts",
    "src/hooks/mockup/useMockupTechniquesLoad.ts",
+   "src/hooks/mockup/useSavedMockupProject.ts",
    "src/hooks/simulation/index.ts",
    "src/lib/image-converter.ts",
    "src/lib/logger.ts",
@@ -10699,6 +10706,9 @@
    "src/hooks/mockup/mockupGenerationService.ts",
    "src/hooks/mockup/mockupGeneratorModel.ts",
    "src/lib/logger.ts"
+  ],
+  "src/hooks/mockup/useSavedMockupProject.ts": [
+   "src/components/mockup/MultiAreaManager.tsx"
   ],
   "src/hooks/products/dailyCatalogDefaults.ts": [
    "src/components/products/ColumnSelector.tsx"
@@ -13760,6 +13770,7 @@
    "src/pages/mockups/mockup-generator/MockupTechniqueHandlers.tsx",
    "src/pages/mockups/mockup-generator/MockupToolbar.tsx",
    "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts",
+   "src/pages/mockups/mockup-generator/useMockupCompletionStatus.ts",
    "src/pages/mockups/mockup-generator/useWizardNavigation.ts",
    "src/types/external-db.ts"
   ],
@@ -13807,6 +13818,11 @@
    "src/contexts/AuthContext.tsx",
    "src/hooks/mockup/index.ts",
    "src/types/mockup-approval.ts"
+  ],
+  "src/pages/mockups/mockup-generator/useMockupCompletionStatus.ts": [
+   "src/components/mockup/MockupCompletionStates.tsx",
+   "src/components/mockup/usePreservedMockupResult.ts",
+   "src/hooks/mockup/index.ts"
   ],
   "src/pages/products/CartsListPage.tsx": [
    "src/components/cart/CartCompanyPickerDialog.tsx",

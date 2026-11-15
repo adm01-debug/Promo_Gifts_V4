@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1234,
+ "total": 1235,
  "orfaos": 160,
  "nomes_duplicados": {
   "AdvancedPriceSearchPage": [
@@ -11513,6 +11513,23 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/mockup/MockupCompletionStates.tsx",
+   "exports": [
+    "MockupCompletionState",
+    "MockupCompletionStates",
+    "MockupCompletionStatesProps",
+    "MockupCompletionStatus"
+   ],
+   "export_default": null,
+   "linhas": 156,
+   "dominio": "components/mockup",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/mockup/MockupConfigPanel.tsx",
    "exports": [
     "MockupClient",
@@ -11613,9 +11630,10 @@
     "MockupResultCard"
    ],
    "export_default": null,
-   "linhas": 448,
+   "linhas": 497,
    "dominio": "components/mockup",
    "hooks_locais": [
+    "usePreservedMockupResult",
     "useReducedMotion"
    ],
    "tabelas": [],
@@ -11665,7 +11683,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 9,
+   "usado_por": 10,
    "orfao": false
   },
   {
@@ -15890,7 +15908,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 621,
+   "usado_por": 622,
    "orfao": false
   },
   {
@@ -19170,12 +19188,13 @@
     "MockupGenerator"
    ],
    "export_default": "MockupGenerator",
-   "linhas": 610,
+   "linhas": 629,
    "dominio": "pages/mockups",
    "hooks_locais": [
     "useAuth",
     "useKeyboardShortcuts",
     "useLayoutCaptureRequest",
+    "useMockupCompletionStatus",
     "useMockupGenerator",
     "useTechniqueHandlers",
     "useWizardNavigation"

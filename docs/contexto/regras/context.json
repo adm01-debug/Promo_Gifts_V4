@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "54826844aa09704192e90fe1fe96236e61dc4b5d",
+  "sha": "ecface83bd8f628557f69a57c4a9a0656f2ae310",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 18:20 UTC",
-  "files_total": 10240,
-  "code_files": 8740,
-  "code_lines": 1232455
+  "generated_at": "2026-11-15 18:59 UTC",
+  "files_total": 10249,
+  "code_files": 8749,
+  "code_lines": 1233470
  },
  "version": "1.3.2",
- "facts_hash": "53bc583fd92952b1",
+ "facts_hash": "e95218ce9fcf1183",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -189,7 +189,7 @@
    "test:quote-rpc:postgres": "node scripts/simulate-quote-rpc-proposals.mjs",
    "check:quote-rpc:canonical": "node scripts/check-quote-rpc-canonical-readiness.mjs",
    "test:quality": "TZ=America/Sao_Paulo vitest run --exclude 'tests/hooks/**'",
-   "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts src/hooks/mockup/__tests__/mockupBatch.partial.test.ts src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts src/hooks/mockup/__tests__/mockupEntry.params.test.ts src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts src/hooks/mockup/__tests__/mockupRestore.selection.test.ts src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts tests/components/mockup/acceptance/grupo1.acceptance.test.tsx tests/components/mockup/acceptance/grupo3.acceptance.test.tsx tests/components/mockup/acceptance/grupo6.acceptance.test.tsx src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts src/components/mockup/__tests__/mockupA11y.slice2.test.tsx src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
+   "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts src/hooks/mockup/__tests__/mockupBatch.partial.test.ts src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts src/hooks/mockup/__tests__/mockupEntry.params.test.ts src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts src/hooks/mockup/__tests__/mockupRestore.selection.test.ts src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts tests/components/mockup/acceptance/grupo1.acceptance.test.tsx tests/components/mockup/acceptance/grupo3.acceptance.test.tsx tests/components/mockup/acceptance/grupo6.acceptance.test.tsx src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts src/components/mockup/__tests__/mockupA11y.slice2.test.tsx src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts src/components/mockup/__tests__/MockupResultCard.states.test.tsx src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx src/hooks/mockup/__tests__/mockupProjectSaved.test.ts src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts src/hooks/mockup/__tests__/trocaDeProjeto.test.ts",
    "test:ci-core:coverage": "TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --coverage --coverage.include=src/lib/theme-presets.ts --coverage.include=src/components/products/ProductSparkline.tsx --coverage.reporter=text --coverage.reporter=json --coverage.reporter=json-summary --coverage.thresholds.lines=50 --coverage.thresholds.functions=50 --coverage.thresholds.branches=30 --coverage.thresholds.statements=50",
    "test:deploy-gate": "TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --reporter=dot",
    "test:watch": "TZ=America/Sao_Paulo vitest",
@@ -1104,8 +1104,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3429,
-   ".ts": 2967,
-   ".tsx": 1895,
+   ".ts": 2973,
+   ".tsx": 1898,
    ".mjs": 436,
    ".py": 13,
    ".js": 7
@@ -138317,7 +138317,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 85
+    "deps_count": 89
    },
    {
     "path": "",
@@ -144771,7 +144771,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1646,
+  "components_count": 1650,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -146250,6 +146250,10 @@
     "file": "src/components/mockup/logo-editor/useLogoProcessing.ts"
    },
    {
+    "name": "usePreservedMockupResult",
+    "file": "src/components/mockup/usePreservedMockupResult.ts"
+   },
+   {
     "name": "useBreadcrumbs",
     "file": "src/components/navigation/Breadcrumbs.tsx"
    },
@@ -147274,6 +147278,10 @@
     "file": "src/hooks/mockup/useMockupTechniquesLoad.ts"
    },
    {
+    "name": "useSavedMockupProject",
+    "file": "src/hooks/mockup/useSavedMockupProject.ts"
+   },
+   {
     "name": "useAdvancedFilters",
     "file": "src/hooks/products/useAdvancedFilters.ts"
    },
@@ -148188,6 +148196,10 @@
    {
     "name": "useLayoutCaptureRequest",
     "file": "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts"
+   },
+   {
+    "name": "useMockupCompletionStatus",
+    "file": "src/pages/mockups/mockup-generator/useMockupCompletionStatus.ts"
    },
    {
     "name": "useWizardNavigation",
@@ -149346,8 +149358,8 @@
   },
   {
    "module": "src/components",
-   "files": 1386,
-   "lines": 276562,
+   "files": 1390,
+   "lines": 277074,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -149710,8 +149722,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 475,
-   "lines": 89877,
+   "files": 478,
+   "lines": 90173,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -150203,8 +150215,8 @@
   },
   {
    "module": "src/pages",
-   "files": 359,
-   "lines": 83648,
+   "files": 361,
+   "lines": 83851,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -150614,7 +150626,7 @@
   {
    "module": "src/tests",
    "files": 33,
-   "lines": 5132,
+   "lines": 5135,
    "tables": [
     "products",
     "v_products_public",
@@ -151433,7 +151445,7 @@
   {
    "module": "tests",
    "files": 1036,
-   "lines": 159378,
+   "lines": 159379,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -161665,6 +161677,11 @@
     "values": "last-used | name-asc | price-desc | recent | usage-desc"
    },
    {
+    "file": "src/components/mockup/MockupCompletionStates.tsx",
+    "name": "MockupCompletionStatus",
+    "values": "done | error | idle | running"
+   },
+   {
     "file": "src/components/mockup/techniqueColorUtils.ts",
     "name": "TechniqueCategory",
     "values": "digital | laser | other | serigrafia"
@@ -170681,6 +170698,10 @@
    {
     "file": "src/components/mockup/techniqueColorUtils.ts",
     "text": "Laser detection — must come before UV check since \"Laser UV\" exists"
+   },
+   {
+    "file": "src/components/mockup/usePreservedMockupResult.ts",
+    "text": "`generationError` e isso NÃO pode descartar o resultado nem o rótulo de"
    },
    {
     "file": "src/components/mockup/logo-editor/LogoPreviewCanvas.tsx",
@@ -203568,6 +203589,60 @@
     "kind": "escreve"
    },
    {
+    "file": "src/components/mockup/MockupCompletionStates.tsx",
+    "field": "status",
+    "value": "done",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/mockup/MockupCompletionStates.tsx",
+    "field": "status",
+    "value": "running",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/mockup/MockupCompletionStates.tsx",
+    "field": "status",
+    "value": "idle",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/mockup/MockupCompletionStates.tsx",
+    "field": "status",
+    "value": "error",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/mockup/MockupCompletionStates.tsx",
+    "field": "status",
+    "value": "done",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/mockup/MockupCompletionStates.tsx",
+    "field": "status",
+    "value": "running",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/mockup/MockupCompletionStates.tsx",
+    "field": "status",
+    "value": "error",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/mockup/MockupCompletionStates.tsx",
+    "field": "status",
+    "value": "error",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/mockup/MockupCompletionStates.tsx",
+    "field": "status",
+    "value": "error",
+    "kind": "compara"
+   },
+   {
     "file": "src/components/mockup/logo-editor/LogoPreviewCanvas.tsx",
     "field": "state",
     "value": "sem_regra",
@@ -233564,6 +233639,66 @@
     "name": "o sucesso continua indicado sem animação (estado, não movimento)"
    },
    {
+    "file": "src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx",
+    "name": "MockupResultCard — o resultado preservado pertence a um projeto"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx",
+    "name": "projeto novo: a imagem do cliente anterior não reaparece sob o nome do novo produto"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx",
+    "name": "nova tentativa do MESMO projeto: o resultado preservado continua na tela"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx",
+    "name": "MockupResultCard — dispensar o alerta não descarta o resultado"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx",
+    "name": "com o alerta de erro dispensado, a imagem anterior e o rótulo continuam"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupResultCard.states.test.tsx",
+    "name": "MockupResultCard — imagem e projeto salvo como estados separados"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupResultCard.states.test.tsx",
+    "name": "mostra indicadores independentes, cada um com o próprio estado"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupResultCard.states.test.tsx",
+    "name": "falha de salvar não esconde a imagem gerada nem contamina os outros indicadores"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupResultCard.states.test.tsx",
+    "name": "não oferece repetição para a imagem quando ela já está concluída"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupResultCard.states.test.tsx",
+    "name": "MockupResultCard — falha de geração não apaga o resultado anterior"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupResultCard.states.test.tsx",
+    "name": "conserva a imagem anterior, rotulada como anterior, com repetição"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupResultCard.states.test.tsx",
+    "name": "o botão de repetir a geração chama só a geração"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupResultCard.states.test.tsx",
+    "name": "com o resultado anterior na tela, não deixa baixar nem compartilhar como se fosse o novo"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupResultCard.states.test.tsx",
+    "name": "quando a geração nova dá certo, o resultado anterior sai de cena sem resquício"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupResultCard.states.test.tsx",
+    "name": "sem resultado anterior, uma falha de geração não inventa imagem na tela"
+   },
+   {
     "file": "src/components/mockup/__tests__/MockupSuccessToast.test.tsx",
     "name": "MockupSuccessToast — movimento e apresentação"
    },
@@ -243208,6 +243343,46 @@
     "name": "propaga o erro do PostgREST em vez de devolver lista vazia"
    },
    {
+    "file": "src/hooks/mockup/__tests__/mockupProjectSaved.test.ts",
+    "name": "saveBatchResults — a gravação devolvida é a do resultado exibido"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupProjectSaved.test.ts",
+    "name": "lote todo gravado: devolve o registro da PRIMEIRA área (a que o card exibe)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupProjectSaved.test.ts",
+    "name": "quando a área exibida não gravou, devolve outra gravação (sem reivindicar a exibida)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupProjectSaved.test.ts",
+    "name": "useMockupCompletionStatus — o salvo é da imagem exibida"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupProjectSaved.test.ts",
+    "name": "gravação confirmada da imagem exibida: "
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupProjectSaved.test.ts",
+    "name": "depois da captura da ficha, que zera o recordId, o salvo não regride"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupProjectSaved.test.ts",
+    "name": "sem gravação confirmada da imagem exibida, não diz salvo"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupProjectSaved.test.ts",
+    "name": "useMockupCompletionStatus — gravar OUTRO resultado não apaga o rastreio do exibido"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupProjectSaved.test.ts",
+    "name": "useMockupCompletionStatus — re-geração que falha não desfaz "
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/mockupProjectSaved.test.ts",
+    "name": "com a imagem anterior preservada na tela, o projeto continua salvo"
+   },
+   {
     "file": "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
     "name": "reabrir rascunho ou histórico restaura variante e foto exatas"
    },
@@ -243318,6 +243493,30 @@
    {
     "file": "src/hooks/mockup/__tests__/resolveTechnique.order.test.ts",
     "name": "nada bate: devolve null"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/trocaDeProjeto.test.ts",
+    "name": "troca de identidade do projeto — os três fluxos descartam o projeto anterior"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/trocaDeProjeto.test.ts",
+    "name": "selecionar outro produto descarta a identidade do projeto"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/trocaDeProjeto.test.ts",
+    "name": "selecionar outro cliente descarta a identidade do projeto"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/trocaDeProjeto.test.ts",
+    "name": "carregar outro registro do histórico descarta a identidade do projeto"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/trocaDeProjeto.test.ts",
+    "name": "nova tentativa do MESMO projeto NÃO descarta (é o caso que a preservação serve)"
+   },
+   {
+    "file": "src/hooks/mockup/__tests__/trocaDeProjeto.test.ts",
+    "name": "o descarte central zera o registro salvo (id, URL e área) e abre outro projeto"
    },
    {
     "file": "src/hooks/mockup/__tests__/useClientMockups.test.ts",
@@ -254866,6 +255065,22 @@
    {
     "file": "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.test.tsx",
     "name": "sem nada não mostra status"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts",
+    "name": "ficha de aprovação — medidas da área da imagem escolhida"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts",
+    "name": "a gravação devolvida pelo lote traz a identidade da área da imagem exibida"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts",
+    "name": "lote com a SEGUNDA área ativa: a ficha leva local e medidas da área da imagem exibida"
+   },
+   {
+    "file": "src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts",
+    "name": "layout estático: a ficha leva as medidas da área que gerou aquele PNG"
    },
    {
     "file": "src/pages/mockups/mockup-generator/__tests__/useWizardNavigation.test.ts",
@@ -345856,6 +346071,7 @@
       "compara:src/components/admin/connections/IssueMcpKeyForm.tsx",
       "compara:src/components/admin/security/keys/RotateMcpKeyDialog.tsx",
       "compara:src/components/admin/security/keys/UpdateMcpKeyDialog.tsx",
+      "compara:src/components/mockup/MockupCompletionStates.tsx",
       "compara:src/components/pricing/calculator/QuantityComparisonTable.tsx",
       "compara:src/components/quotes/QuoteAutoSave.tsx",
       "compara:src/pages/system/SystemStatusPage.tsx",
@@ -346324,6 +346540,7 @@
      ],
      "idle": [
       "compara:src/components/admin/connections/SmokeTestChecklist.tsx",
+      "compara:src/components/mockup/MockupCompletionStates.tsx",
       "compara:src/components/quotes/QuoteAutoSave.tsx",
       "escreve:src/components/admin/connections/SmokeTestChecklist.tsx",
       "escreve:src/hooks/kit-builder/useKitStockValidation.ts",
@@ -346332,6 +346549,7 @@
      "running": [
       "compara:src/components/admin/connections/SmokeTestChecklist.tsx",
       "compara:src/components/admin/telemetry/OptimizationQueuePanel.tsx",
+      "compara:src/components/mockup/MockupCompletionStates.tsx",
       "escreve:src/components/admin/connections/SmokeTestChecklist.tsx",
       "escreve:tests/p0/_mocks.ts"
      ],
@@ -346479,6 +346697,10 @@
       "compara:src/components/kit-builder/VolumeIndicator.tsx",
       "compara:src/pages/admin/AdminClientPerformancePage.tsx"
      ],
+     "done": [
+      "compara:src/components/mockup/MockupCompletionStates.tsx",
+      "compara:src/pages/admin/telemetry/useOptimizationQueue.ts"
+     ],
      "expiring_soon": [
       "compara:src/components/novelties/NoveltyCards.tsx"
      ],
@@ -346597,9 +346819,6 @@
       "compara:src/pages/admin/telemetry/useOptimizationQueue.ts",
       "escreve:src/pages/admin/telemetry/useOptimizationQueue.ts",
       "escreve:supabase/functions/simulation-orchestrator/index.ts"
-     ],
-     "done": [
-      "compara:src/pages/admin/telemetry/useOptimizationQueue.ts"
      ],
      "insufficient_data": [
       "escreve:src/pages/admin/telemetry/useRegressionGuardrail.ts"
@@ -441597,6 +441816,69 @@
    ],
    "doc": "MockupCompareDialog — Side-by-side comparison of selected mockups from history"
   },
+  "src/components/mockup/MockupCompletionStates.tsx": {
+   "path": "src/components/mockup/MockupCompletionStates.tsx",
+   "lines": 156,
+   "exports": [
+    "type MockupCompletionStatus",
+    "interface MockupCompletionState",
+    "interface MockupCompletionStatesProps",
+    "function MockupCompletionStates"
+   ],
+   "enums": [
+    {
+     "name": "MockupCompletionStatus",
+     "values": "done | error | idle | running"
+    }
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "done",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "running",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "idle",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "done",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "running",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "compara"
+    }
+   ]
+  },
   "src/components/mockup/MockupConfigPanel.tsx": {
    "path": "src/components/mockup/MockupConfigPanel.tsx",
    "lines": 494,
@@ -441689,7 +441971,7 @@
   },
   "src/components/mockup/MockupResultCard.tsx": {
    "path": "src/components/mockup/MockupResultCard.tsx",
-   "lines": 448,
+   "lines": 497,
    "exports": [
     "function getConfettiTokenColors",
     "const MockupResultCard"
@@ -441858,6 +442140,19 @@
     "Laser detection — must come before UV check since \"Laser UV\" exists"
    ],
    "doc": "Technique color classification utilities Extracted to a separate module to enable tree-shaking of the heavy Dialog component"
+  },
+  "src/components/mockup/usePreservedMockupResult.ts": {
+   "path": "src/components/mockup/usePreservedMockupResult.ts",
+   "lines": 57,
+   "exports": [
+    "function usePreservedMockupResult"
+   ],
+   "rule_comments": [
+    "`generationError` e isso NÃO pode descartar o resultado nem o rótulo de"
+   ],
+   "hooks": [
+    "usePreservedMockupResult"
+   ]
   },
   "src/components/mockup/__tests__/ArtFileUpload.test.tsx": {
    "path": "src/components/mockup/__tests__/ArtFileUpload.test.tsx",
@@ -442106,6 +442401,54 @@
     "MockupResultCard — confete respeita prefers-reduced-motion",
     "não dispara o confete quando o SO pede movimento reduzido",
     "o sucesso continua indicado sem animação (estado, não movimento)"
+   ]
+  },
+  "src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx": {
+   "path": "src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx",
+   "lines": 103,
+   "is_test": true,
+   "params": [
+    {
+     "name": "CANECA_CLIENTE_A",
+     "value": "'data:image/png;base64,CANECA-A'"
+    }
+   ],
+   "rule_comments": [
+    "A caneca do cliente A não pode aparecer rotulada como a mochila do cliente B."
+   ],
+   "tests": [
+    "MockupResultCard — o resultado preservado pertence a um projeto",
+    "projeto novo: a imagem do cliente anterior não reaparece sob o nome do novo produto",
+    "nova tentativa do MESMO projeto: o resultado preservado continua na tela",
+    "MockupResultCard — dispensar o alerta não descarta o resultado",
+    "com o alerta de erro dispensado, a imagem anterior e o rótulo continuam"
+   ]
+  },
+  "src/components/mockup/__tests__/MockupResultCard.states.test.tsx": {
+   "path": "src/components/mockup/__tests__/MockupResultCard.states.test.tsx",
+   "lines": 147,
+   "is_test": true,
+   "params": [
+    {
+     "name": "IMAGE",
+     "value": "'data:image/png;base64,PRIMEIRA'"
+    },
+    {
+     "name": "IMAGE_NOVA",
+     "value": "'data:image/png;base64,SEGUNDA'"
+    }
+   ],
+   "tests": [
+    "MockupResultCard — imagem e projeto salvo como estados separados",
+    "mostra indicadores independentes, cada um com o próprio estado",
+    "falha de salvar não esconde a imagem gerada nem contamina os outros indicadores",
+    "não oferece repetição para a imagem quando ela já está concluída",
+    "MockupResultCard — falha de geração não apaga o resultado anterior",
+    "conserva a imagem anterior, rotulada como anterior, com repetição",
+    "o botão de repetir a geração chama só a geração",
+    "com o resultado anterior na tela, não deixa baixar nem compartilhar como se fosse o novo",
+    "quando a geração nova dá certo, o resultado anterior sai de cena sem resquício",
+    "sem resultado anterior, uma falha de geração não inventa imagem na tela"
    ]
   },
   "src/components/mockup/__tests__/MockupSuccessToast.test.tsx": {
@@ -458812,7 +459155,7 @@
   },
   "src/hooks/mockup/mockupGeneratorModel.ts": {
    "path": "src/hooks/mockup/mockupGeneratorModel.ts",
-   "lines": 233,
+   "lines": 242,
    "exports": [
     "const MAX_BATCH_AREAS",
     "interface BatchMockupResult",
@@ -459040,7 +459383,7 @@
   },
   "src/hooks/mockup/useMockupGenerator.ts": {
    "path": "src/hooks/mockup/useMockupGenerator.ts",
-   "lines": 884,
+   "lines": 887,
    "exports": [
     "function useMockupGenerator"
    ],
@@ -459113,6 +459456,17 @@
    ],
    "hooks": [
     "useMockupTechniquesLoad"
+   ]
+  },
+  "src/hooks/mockup/useSavedMockupProject.ts": {
+   "path": "src/hooks/mockup/useSavedMockupProject.ts",
+   "lines": 75,
+   "exports": [
+    "interface SavedMockupProject",
+    "function useSavedMockupProject"
+   ],
+   "hooks": [
+    "useSavedMockupProject"
    ]
   },
   "src/hooks/mockup/__tests__/colorAnalysisPorArea.test.ts": {
@@ -459399,6 +459753,26 @@
     "propaga o erro do PostgREST em vez de devolver lista vazia"
    ]
   },
+  "src/hooks/mockup/__tests__/mockupProjectSaved.test.ts": {
+   "path": "src/hooks/mockup/__tests__/mockupProjectSaved.test.ts",
+   "lines": 139,
+   "is_test": true,
+   "rule_comments": [
+    "continua sendo a de IA ('u1') — a confirmação dela não pode regredir."
+   ],
+   "tests": [
+    "saveBatchResults — a gravação devolvida é a do resultado exibido",
+    "lote todo gravado: devolve o registro da PRIMEIRA área (a que o card exibe)",
+    "quando a área exibida não gravou, devolve outra gravação (sem reivindicar a exibida)",
+    "useMockupCompletionStatus — o salvo é da imagem exibida",
+    "gravação confirmada da imagem exibida: ",
+    "depois da captura da ficha, que zera o recordId, o salvo não regride",
+    "sem gravação confirmada da imagem exibida, não diz salvo",
+    "useMockupCompletionStatus — gravar OUTRO resultado não apaga o rastreio do exibido",
+    "useMockupCompletionStatus — re-geração que falha não desfaz ",
+    "com a imagem anterior preservada na tela, o projeto continua salvo"
+   ]
+  },
   "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts": {
    "path": "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
    "lines": 391,
@@ -459480,6 +459854,22 @@
     "id de outro espaço: resolve pelo NOME, não pelo código compartilhado",
     "nome que não existe mais na lista: cai para o código",
     "nada bate: devolve null"
+   ]
+  },
+  "src/hooks/mockup/__tests__/trocaDeProjeto.test.ts": {
+   "path": "src/hooks/mockup/__tests__/trocaDeProjeto.test.ts",
+   "lines": 70,
+   "is_test": true,
+   "errors": [
+    "bloco não fechado em ${caminho}: ${marcador}"
+   ],
+   "tests": [
+    "troca de identidade do projeto — os três fluxos descartam o projeto anterior",
+    "selecionar outro produto descarta a identidade do projeto",
+    "selecionar outro cliente descarta a identidade do projeto",
+    "carregar outro registro do histórico descarta a identidade do projeto",
+    "nova tentativa do MESMO projeto NÃO descarta (é o caso que a preservação serve)",
+    "o descarte central zera o registro salvo (id, URL e área) e abre outro projeto"
    ]
   },
   "src/hooks/mockup/__tests__/useClientMockups.test.ts": {
@@ -480704,7 +481094,7 @@
   },
   "src/pages/mockups/MockupGenerator.tsx": {
    "path": "src/pages/mockups/MockupGenerator.tsx",
-   "lines": 610,
+   "lines": 629,
    "exports": [
     "function MockupGenerator"
    ],
@@ -480824,7 +481214,7 @@
   },
   "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts": {
    "path": "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts",
-   "lines": 117,
+   "lines": 120,
    "exports": [
     "function useLayoutCaptureRequest"
    ],
@@ -480834,6 +481224,16 @@
    "doc": "useLayoutCaptureRequest — monta o pedido de captura da ficha de aprovação (OffscreenLayoutCapture) a partir do estado do gerador. Extraído de MockupGenerator.tsx sem mudança de comportamento.",
    "hooks": [
     "useLayoutCaptureRequest"
+   ]
+  },
+  "src/pages/mockups/mockup-generator/useMockupCompletionStatus.ts": {
+   "path": "src/pages/mockups/mockup-generator/useMockupCompletionStatus.ts",
+   "lines": 64,
+   "exports": [
+    "function useMockupCompletionStatus"
+   ],
+   "hooks": [
+    "useMockupCompletionStatus"
    ]
   },
   "src/pages/mockups/mockup-generator/useWizardNavigation.ts": {
@@ -480971,6 +481371,21 @@
     "sem erro, salvando tem prioridade sobre Salvo",
     "sem erro e sem salvamento em curso mostra Salvo",
     "sem nada não mostra status"
+   ]
+  },
+  "src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts": {
+   "path": "src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts",
+   "lines": 117,
+   "is_test": true,
+   "rule_comments": [
+    "quando mandou gerar. A ficha NÃO pode imprimir 3×2 sobre a imagem da frente."
+   ],
+   "doc": "A ficha de aprovação imprime as medidas DA MESMA área da imagem que ela mostra. Num lote de várias áreas o card exibe a PRIMEIRA (useMockupGenerator.ts:600) e `saveBatchResults` devolve a gravação dessa área — mas a captura da ficha lia local e medidas da área ATIVA. Com a segunda área ativa na hora …",
+   "tests": [
+    "ficha de aprovação — medidas da área da imagem escolhida",
+    "a gravação devolvida pelo lote traz a identidade da área da imagem exibida",
+    "lote com a SEGUNDA área ativa: a ficha leva local e medidas da área da imagem exibida",
+    "layout estático: a ficha leva as medidas da área que gerou aquele PNG"
    ]
   },
   "src/pages/mockups/mockup-generator/__tests__/useWizardNavigation.test.ts": {
@@ -486268,7 +486683,7 @@
   },
   "src/tests/MockupDeletion.test.tsx": {
    "path": "src/tests/MockupDeletion.test.tsx",
-   "lines": 914,
+   "lines": 917,
    "is_test": true,
    "rule_comments": [
     "área. A página nunca deve chamar `clearAnalysis` direto: fazer isso de volta traria"
@@ -531174,7 +531589,7 @@
   },
   "tests/pages/MockupGenerator.a11y.test.tsx": {
    "path": "tests/pages/MockupGenerator.a11y.test.tsx",
-   "lines": 361,
+   "lines": 362,
    "is_test": true,
    "rule_comments": [
     "`matchMedia` responder `min-width`/`max-width` do viewport corrente. Nenhuma regra do runner é",
@@ -538999,10 +539414,35 @@
   }
  },
  "git": {
-  "sha": "54826844aa09704192e90fe1fe96236e61dc4b5d",
+  "sha": "ecface83bd8f628557f69a57c4a9a0656f2ae310",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "ecface8",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "feat(mockup): preserva o resultado quando a geração falha, e a ficha sai com as medidas da área certa (#3674)",
+    "files": [
+     "package.json",
+     "src/components/mockup/MockupCompletionStates.tsx",
+     "src/components/mockup/MockupResultCard.tsx",
+     "src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx",
+     "src/components/mockup/__tests__/MockupResultCard.states.test.tsx",
+     "src/components/mockup/usePreservedMockupResult.ts",
+     "src/hooks/mockup/__tests__/mockupProjectSaved.test.ts",
+     "src/hooks/mockup/__tests__/trocaDeProjeto.test.ts",
+     "src/hooks/mockup/mockupGeneratorModel.ts",
+     "src/hooks/mockup/useMockupGenerator.ts",
+     "src/hooks/mockup/useSavedMockupProject.ts",
+     "src/pages/mockups/MockupGenerator.tsx",
+     "src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts",
+     "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts",
+     "src/pages/mockups/mockup-generator/useMockupCompletionStatus.ts",
+     "src/tests/MockupDeletion.test.tsx",
+     "tests/pages/MockupGenerator.a11y.test.tsx"
+    ]
+   },
    {
     "sha": "5482684",
     "date": "2026-11-15",
@@ -539572,18 +540012,13 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "865c86e",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(security): documenta deny-all intencional de crm_seller_identity_links (main vermelha) (#3638)",
-    "files": [
-     ".security/rls-no-policy-allowlist.json"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "src/pages/mockups/MockupGenerator.tsx",
+    5
+   ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     5
@@ -539593,11 +540028,15 @@
     5
    ],
    [
-    "src/pages/mockups/MockupGenerator.tsx",
+    "package.json",
     4
    ],
    [
-    "package.json",
+    "src/hooks/mockup/useMockupGenerator.ts",
+    4
+   ],
+   [
+    "src/tests/MockupDeletion.test.tsx",
     3
    ],
    [
@@ -539605,12 +540044,16 @@
     3
    ],
    [
-    "src/hooks/mockup/useMockupGenerator.ts",
+    "audit/supabase-reference-catalog.temporary.json",
     3
    ],
    [
-    "audit/supabase-reference-catalog.temporary.json",
-    3
+    "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts",
+    2
+   ],
+   [
+    "tests/pages/MockupGenerator.a11y.test.tsx",
+    2
    ],
    [
     "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
@@ -539650,18 +540093,6 @@
    ],
    [
     "analise-branches/auditoria-261115/veredito_grupo00.md",
-    2
-   ],
-   [
-    "analise-branches/auditoria-261115/veredito_grupo02.md",
-    2
-   ],
-   [
-    "analise-branches/auditoria-261115/veredito_lote00.md",
-    2
-   ],
-   [
-    "analise-branches/auditoria-261115/veredito_lote02.md",
     2
    ]
   ]

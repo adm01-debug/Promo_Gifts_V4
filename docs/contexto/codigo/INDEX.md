@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `54826844aa09704192e90fe1fe96236e61dc4b5d` (2026-11-15T18:19:14Z).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ecface83bd8f628557f69a57c4a9a0656f2ae310` (2026-11-15T18:58:02Z).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4861), SQL (3429), Markdown (1046), JavaScript (443), JSON (126), YAML (112), Shell (27), HTML (20)
+- linguagens: TypeScript (4870), SQL (3429), Markdown (1046), JavaScript (443), JSON (126), YAML (112), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,31 +34,31 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10312 |
-| arquivos_codigo | 5312 |
-| linhas_codigo | 1013141 |
+| arquivos_total | 10321 |
+| arquivos_codigo | 5321 |
+| linhas_codigo | 1014156 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
 | itens_menu | 69 |
 | modulos | 161 |
-| componentes | 1234 |
-| hooks | 623 |
+| componentes | 1235 |
+| hooks | 626 |
 | edge_functions | 111 |
 | tabelas | 548 |
 | migrations | 3096 |
 | cron_jobs | 122 |
-| testes | 2511 |
+| testes | 2516 |
 | workflows | 87 |
 | scripts | 272 |
 | docs_md | 1046 |
 
 ## Onde ficam as coisas
 - telas: src/pages (111), src/components (3), api/health.ts (1)
-- componentes: src/components (939), src/pages (177), recovery/src-legacy (100)
-- hooks: src/hooks (297), recovery/src-legacy (196), src/components (76)
+- componentes: src/components (940), src/pages (177), recovery/src-legacy (100)
+- hooks: src/hooks (298), recovery/src-legacy (196), src/components (77)
 - servicos_logica: src/lib (231), src/utils (30), src/services (10)
-- testes: tests/ (1022), co-localizado (__tests__) (667), e2e/ (625)
+- testes: tests/ (1022), co-localizado (__tests__) (672), e2e/ (625)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/lib (7), scripts/graphify (4), scripts/inventario (4)
@@ -71,54 +71,54 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|---|---|---|---|---|
 | api | 0 | 3 | 3 | 0 | 0 | 0 |
 | components/access | 0 | 1 | 2 | 0 | 0 | 1 |
-| components/admin | 0 | 0 | 298 | 362 | 10 | 87 |
+| components/admin | 0 | 0 | 298 | 363 | 10 | 87 |
 | components/audit | 1 | 1 | 3 | 19 | 0 | 7 |
 | components/auth | 0 | 0 | 7 | 16 | 0 | 5 |
-| components/bi | 0 | 0 | 22 | 281 | 4 | 41 |
-| components/cart | 0 | 0 | 16 | 272 | 4 | 41 |
-| components/catalog | 0 | 0 | 8 | 309 | 5 | 50 |
-| components/collections | 0 | 0 | 14 | 274 | 5 | 44 |
-| components/common | 0 | 0 | 27 | 288 | 4 | 43 |
-| components/compare | 0 | 0 | 23 | 276 | 5 | 44 |
-| components/dashboard | 0 | 0 | 10 | 281 | 4 | 51 |
+| components/bi | 0 | 0 | 22 | 282 | 4 | 41 |
+| components/cart | 0 | 0 | 16 | 273 | 4 | 41 |
+| components/catalog | 0 | 0 | 8 | 310 | 5 | 50 |
+| components/collections | 0 | 0 | 14 | 275 | 5 | 44 |
+| components/common | 0 | 0 | 27 | 289 | 4 | 43 |
+| components/compare | 0 | 0 | 23 | 277 | 5 | 44 |
+| components/dashboard | 0 | 0 | 10 | 282 | 4 | 51 |
 | components/dev | 0 | 0 | 6 | 20 | 0 | 7 |
 | components/effects | 0 | 0 | 5 | 27 | 0 | 7 |
-| components/expert | 0 | 0 | 14 | 271 | 5 | 41 |
-| components/favorites | 0 | 0 | 11 | 268 | 4 | 41 |
-| components/filters | 0 | 0 | 23 | 269 | 4 | 42 |
-| components/intelligence | 0 | 0 | 27 | 289 | 4 | 44 |
-| components/inventory | 0 | 0 | 41 | 318 | 5 | 46 |
-| components/kit-builder | 0 | 0 | 49 | 295 | 4 | 52 |
+| components/expert | 0 | 0 | 14 | 272 | 5 | 41 |
+| components/favorites | 0 | 0 | 11 | 269 | 4 | 41 |
+| components/filters | 0 | 0 | 23 | 270 | 4 | 42 |
+| components/intelligence | 0 | 0 | 27 | 290 | 4 | 44 |
+| components/inventory | 0 | 0 | 41 | 319 | 5 | 46 |
+| components/kit-builder | 0 | 0 | 49 | 296 | 4 | 52 |
 | components/kit-library | 0 | 0 | 8 | 27 | 0 | 9 |
-| components/layout | 0 | 4 | 18 | 443 | 8 | 82 |
-| components/magic-up | 0 | 0 | 18 | 268 | 4 | 41 |
-| components/mockup | 0 | 0 | 44 | 271 | 4 | 41 |
+| components/layout | 0 | 4 | 18 | 446 | 8 | 82 |
+| components/magic-up | 0 | 0 | 18 | 269 | 4 | 41 |
+| components/mockup | 0 | 0 | 46 | 273 | 4 | 41 |
 | components/notifications | 0 | 0 | 7 | 31 | 0 | 8 |
-| components/novelties | 0 | 0 | 7 | 300 | 5 | 46 |
+| components/novelties | 0 | 0 | 7 | 301 | 5 | 46 |
 | components/pdf | 0 | 0 | 13 | 0 | 0 | 0 |
-| components/pricing | 0 | 0 | 20 | 268 | 4 | 41 |
-| components/products | 0 | 0 | 103 | 310 | 5 | 49 |
-| components/quotes | 0 | 0 | 50 | 295 | 5 | 50 |
-| components/replenishments | 0 | 0 | 9 | 301 | 5 | 46 |
-| components/search | 0 | 0 | 25 | 294 | 5 | 47 |
+| components/pricing | 0 | 0 | 20 | 269 | 4 | 41 |
+| components/products | 0 | 0 | 103 | 311 | 5 | 49 |
+| components/quotes | 0 | 0 | 50 | 296 | 5 | 50 |
+| components/replenishments | 0 | 0 | 9 | 302 | 5 | 46 |
+| components/search | 0 | 0 | 25 | 295 | 5 | 47 |
 | components/security | 0 | 0 | 10 | 51 | 0 | 17 |
 | components/shared | 0 | 0 | 5 | 19 | 0 | 7 |
 | components/simulator | 0 | 0 | 24 | 54 | 0 | 7 |
 | components/ui | 0 | 0 | 61 | 33 | 1 | 7 |
-| contexts | 0 | 0 | 10 | 304 | 4 | 49 |
+| contexts | 0 | 0 | 10 | 305 | 4 | 49 |
 | hooks | 0 | 0 | 8 | 15 | 0 | 4 |
 | hooks/admin | 0 | 0 | 19 | 29 | 1 | 9 |
 | hooks/auth | 0 | 0 | 11 | 13 | 0 | 5 |
 | hooks/bi | 0 | 0 | 14 | 41 | 0 | 6 |
-| hooks/common | 0 | 0 | 23 | 271 | 4 | 41 |
-| hooks/comparison | 0 | 0 | 6 | 273 | 4 | 43 |
+| hooks/common | 0 | 0 | 23 | 272 | 4 | 41 |
+| hooks/comparison | 0 | 0 | 6 | 274 | 4 | 43 |
 | hooks/crm | 0 | 0 | 7 | 24 | 0 | 3 |
-| hooks/favorites | 0 | 0 | 8 | 268 | 4 | 41 |
-| hooks/intelligence | 0 | 0 | 39 | 271 | 4 | 41 |
+| hooks/favorites | 0 | 0 | 8 | 269 | 4 | 41 |
+| hooks/intelligence | 0 | 0 | 39 | 272 | 4 | 41 |
 | hooks/kit-builder | 0 | 0 | 23 | 25 | 0 | 9 |
-| hooks/mockup | 0 | 0 | 13 | 269 | 4 | 41 |
-| hooks/products | 0 | 0 | 70 | 278 | 4 | 41 |
-| hooks/quotes | 0 | 0 | 21 | 302 | 4 | 52 |
+| hooks/mockup | 0 | 0 | 14 | 270 | 4 | 41 |
+| hooks/products | 0 | 0 | 70 | 279 | 4 | 41 |
+| hooks/quotes | 0 | 0 | 21 | 303 | 4 | 52 |
 | hooks/simulation | 0 | 0 | 17 | 45 | 0 | 5 |
 | hooks/simulator | 0 | 0 | 8 | 51 | 0 | 6 |
 | hooks/stock | 0 | 0 | 13 | 37 | 0 | 8 |
@@ -126,7 +126,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks/ui | 0 | 0 | 18 | 31 | 0 | 8 |
 | hooks/voice | 0 | 0 | 10 | 1 | 2 | 1 |
 | integrations/supabase | 0 | 0 | 7 | 3 | 0 | 2 |
-| lib | 0 | 0 | 58 | 432 | 8 | 81 |
+| lib | 0 | 0 | 58 | 435 | 8 | 81 |
 | lib/access | 0 | 0 | 6 | 3 | 0 | 3 |
 | lib/auth | 0 | 0 | 19 | 12 | 0 | 5 |
 | lib/bi | 0 | 0 | 8 | 9 | 0 | 2 |
@@ -138,27 +138,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | lib/security | 0 | 0 | 10 | 3 | 0 | 2 |
 | lib/telemetry | 0 | 0 | 14 | 0 | 0 | 1 |
 | lib/validations | 0 | 0 | 5 | 0 | 0 | 0 |
-| pages | 3 | 7 | 7 | 336 | 5 | 61 |
-| pages/__visual | 0 | 9 | 9 | 282 | 4 | 50 |
-| pages/admin | 17 | 40 | 59 | 415 | 13 | 105 |
+| pages | 3 | 7 | 7 | 337 | 5 | 61 |
+| pages/__visual | 0 | 9 | 9 | 283 | 4 | 50 |
+| pages/admin | 17 | 40 | 59 | 416 | 13 | 105 |
 | pages/auth | 0 | 7 | 11 | 12 | 0 | 3 |
-| pages/bi | 3 | 3 | 3 | 303 | 4 | 44 |
-| pages/clients | 0 | 3 | 3 | 280 | 5 | 41 |
-| pages/collections | 2 | 2 | 3 | 302 | 5 | 46 |
+| pages/bi | 3 | 3 | 3 | 304 | 4 | 44 |
+| pages/clients | 0 | 3 | 3 | 281 | 5 | 41 |
+| pages/collections | 2 | 2 | 3 | 303 | 5 | 46 |
 | pages/dev | 0 | 8 | 8 | 2 | 0 | 0 |
-| pages/kit-builder | 0 | 1 | 3 | 295 | 4 | 52 |
+| pages/kit-builder | 0 | 1 | 3 | 296 | 4 | 52 |
 | pages/magazine | 1 | 6 | 64 | 82 | 2 | 10 |
-| pages/magic-up | 0 | 0 | 5 | 268 | 4 | 41 |
-| pages/mockups | 3 | 2 | 9 | 275 | 5 | 41 |
-| pages/products | 9 | 10 | 24 | 331 | 5 | 56 |
-| pages/quotes | 3 | 7 | 13 | 295 | 4 | 50 |
-| pages/system | 1 | 3 | 3 | 287 | 4 | 44 |
-| pages/tools | 6 | 8 | 9 | 291 | 5 | 50 |
-| routes | 0 | 0 | 9 | 509 | 16 | 116 |
+| pages/magic-up | 0 | 0 | 5 | 269 | 4 | 41 |
+| pages/mockups | 3 | 2 | 10 | 278 | 5 | 41 |
+| pages/products | 9 | 10 | 24 | 332 | 5 | 56 |
+| pages/quotes | 3 | 7 | 13 | 296 | 4 | 50 |
+| pages/system | 1 | 3 | 3 | 288 | 4 | 44 |
+| pages/tools | 6 | 8 | 9 | 292 | 5 | 50 |
+| routes | 0 | 0 | 9 | 512 | 16 | 116 |
 | services | 0 | 0 | 10 | 45 | 2 | 17 |
 | stores | 0 | 0 | 8 | 0 | 0 | 1 |
 | types | 0 | 0 | 19 | 0 | 0 | 1 |
-| utils | 0 | 0 | 31 | 268 | 5 | 41 |
+| utils | 0 | 0 | 31 | 269 | 5 | 41 |
 
 ## Rotas (url → arquivo)
 - `/` [tela] → src/pages/Index.tsx
@@ -589,16 +589,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 44307 nós · 76532 arestas · 2466 comunidades · grafo do commit `54826844`
-- comunidades maiores: vitest (1009), ref_components (745), ref_integrations (571), ref_node_child_process (526), @tanstack/react-query (420), ref_hooks (355), gotoAndSettle (346), react (338), ref_types (317), ref_node_fs (306), scripts (302), concludeCheck (298)
+- 44353 nós · 76614 arestas · 2455 comunidades · grafo do commit `ecface83`
+- comunidades maiores: vitest (963), ref_components (692), ref_hooks (418), ref_node_child_process (410), @tanstack/react-query (383), react (378), gotoAndSettle (344), ref_node_fs (310), scripts (302), sonner (290), ref_contexts (272), ref_utils (265)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - RELATORIO_CI.md (93)
 - PENDENCIAS.md (88)
-- supabase/MIGRATIONS_SYNC_LOG.md (58)
-- package.json (40)
+- supabase/MIGRATIONS_SYNC_LOG.md (57)
+- package.json (41)
 - package-lock.json (26)
 - docs/coordenacao/conflitos-semanticos.md (19)
 - CHANGELOG.md (17)
@@ -792,7 +792,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `test:quote-rpc:postgres`: `node scripts/simulate-quote-rpc-proposals.mjs`
 - `check:quote-rpc:canonical`: `node scripts/check-quote-rpc-canonical-readiness.mjs`
 - `test:quality`: `TZ=America/Sao_Paulo vitest run --exclude 'tests/hooks/**'`
-- `test:ci-core`: `TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts src/hooks/mockup/__tests__/mockupBatch.partial.test.ts src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts src/hooks/mockup/__tests__/mockupEntry.params.test.ts src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts src/hooks/mockup/__tests__/mockupRestore.selection.test.ts src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts tests/components/mockup/acceptance/grupo1.acceptance.test.tsx tests/components/mockup/acceptance/grupo3.acceptance.test.tsx tests/components/mockup/acceptance/grupo6.acceptance.test.tsx src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts src/components/mockup/__tests__/mockupA11y.slice2.test.tsx src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts`
+- `test:ci-core`: `TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts src/hooks/mockup/__tests__/mockupBatch.partial.test.ts src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts src/hooks/mockup/__tests__/mockupEntry.params.test.ts src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts src/hooks/mockup/__tests__/mockupRestore.selection.test.ts src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts tests/components/mockup/acceptance/grupo1.acceptance.test.tsx tests/components/mockup/acceptance/grupo3.acceptance.test.tsx tests/components/mockup/acceptance/grupo6.acceptance.test.tsx src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts src/components/mockup/__tests__/mockupA11y.slice2.test.tsx src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts src/components/mockup/__tests__/MockupResultCard.states.test.tsx src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx src/hooks/mockup/__tests__/mockupProjectSaved.test.ts src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts src/hooks/mockup/__tests__/trocaDeProjeto.test.ts`
 - `test:ci-core:coverage`: `TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --coverage --coverage.include=src/lib/theme-presets.ts --coverage.include=src/components/products/ProductSparkline.tsx --coverage.reporter=text --coverage.reporter=json --coverage.reporter=json-summary --coverage.thresholds.lines=50 --coverage.thresholds.functions=50 --coverage.thresholds.branches=30 --coverage.thresholds.statements=50`
 - `test:deploy-gate`: `TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --reporter=dot`
 - `test:watch`: `TZ=America/Sao_Paulo vitest`
@@ -1173,6 +1173,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-15 `ecface83` feat(mockup): preserva o resultado quando a geração falha, e a ficha sai com as medidas da área certa (#3674)
 - 2026-11-15 `54826844` fix(mockup): resgata teste de a11y da fatia 2, aviso de falha na seleção do mockup e trava do braces (#3676)
 - 2026-11-15 `dbe11812` test(mockup): resgata 39 testes do gerador de mockup que estavam desligados por mock incompleto (#3672)
 - 2026-11-15 `3bd8af66` feat(mockup): editor de logo com largura e altura proporcionais e botão "Girar" (#3669)
@@ -1187,7 +1188,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-15 `c72d30a9` fix(mockup): etapas do gerador voltam a ser anunciadas pelo leitor de tela no celular (#3671)
 - 2026-11-15 `aa89361b` fix(magic-up): resgata varredura axe da pagina e nomeia selects e campos do briefing (#3668)
 - 2026-11-15 `b89a44e1` fix(db): trem de banco — gráfico de mercado com dado real, revoke de 106 funções, índices e crons mais baratos (#3665)
-- 2026-11-15 `a03adc35` feat(orders): resgata conferência do total do pedido contra a soma dos itens (#3667)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
