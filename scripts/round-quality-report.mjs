@@ -28,6 +28,7 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { tscHeapArgs } from './lib/tsc-run.mjs';
 
 const ROOT = process.cwd();
 const OUT_DIR = join(ROOT, 'qa', 'quality-rounds');
@@ -45,7 +46,12 @@ const runTs = !args.has('--no-ts');
 const runEslint = !args.has('--no-eslint');
 const baseRef = argValue('--base') ?? 'HEAD~1';
 
-mkdirSync(OUT_DIR, { recursive: true });
+try {
+  mkdirSync(OUT_DIR, { recursive: true });
+} catch (err) {
+  console.error(`⚠ Falha ao criar ${OUT_DIR}: ${err.message}`);
+  process.exit(2);
+}
 
 const log = (msg) => console.log(msg);
 const fmtDelta = (n) => (n > 0 ? `+${n}` : String(n));
@@ -58,7 +64,7 @@ function runTypescript() {
   if (!existsSync(TSC_BIN)) return { skipped: true, reason: 'tsc não instalado' };
 
   log('⏳ Rodando tsc -p tsconfig.app.json --noEmit ...');
-  const res = spawnSync(process.execPath, [TSC_BIN, '-p', 'tsconfig.app.json', '--noEmit'], {
+  const res = spawnSync(process.execPath, [...tscHeapArgs(), TSC_BIN, '-p', 'tsconfig.app.json', '--noEmit'], {
     encoding: 'utf8',
     maxBuffer: 100 * 1024 * 1024,
   });
@@ -78,6 +84,11 @@ function runTypescript() {
     byRule[rule] = (byRule[rule] || 0) + 1;
     total++;
   }
+  if (res.status !== 0 && total === 0) {
+    // tsc saiu com erro mas nenhuma linha bateu no ERR_RE (ex.: tsconfig
+    // inválido) — reportar "0" aqui seria falso-negativo do gate.
+    return { error: output.trim() || `tsc saiu com código ${res.status} sem erros reconhecíveis` };
+  }
   return { total, byFile, byRule };
 }
 
@@ -94,6 +105,11 @@ function runEslintCheck() {
   );
   if (res.status === null || res.error) {
     return { error: res.error?.message || 'eslint crash' };
+  }
+  if (!res.stdout || !res.stdout.trim()) {
+    // eslint crashou antes de emitir o JSON (ex.: eslint.config.js ausente)
+    // — stdout vazio virava `[]` e reportava "0 erros" por engano.
+    return { error: (res.stderr || '').trim() || 'eslint não produziu saída (crash silencioso)' };
   }
   let results;
   try {
@@ -188,10 +204,16 @@ const report = {
 };
 
 // ── Persistência ───────────────────────────────────────────────────────────
-const jsonPath = join(OUT_DIR, `round-${timestamp}.json`);
-writeFileSync(jsonPath, JSON.stringify(report, null, 2));
-writeFileSync(join(OUT_DIR, 'latest.json'), JSON.stringify(report, null, 2));
-appendFileSync(join(OUT_DIR, 'history.jsonl'), JSON.stringify(report) + '\n');
+let jsonPath;
+try {
+  jsonPath = join(OUT_DIR, `round-${timestamp}.json`);
+  writeFileSync(jsonPath, JSON.stringify(report, null, 2));
+  writeFileSync(join(OUT_DIR, 'latest.json'), JSON.stringify(report, null, 2));
+  appendFileSync(join(OUT_DIR, 'history.jsonl'), JSON.stringify(report) + '\n');
+} catch (err) {
+  console.error(`⚠ Falha ao gravar relatório em ${OUT_DIR}: ${err.message}`);
+  process.exit(2);
+}
 
 // ── Markdown ───────────────────────────────────────────────────────────────
 const topEntries = (obj, n = 5) =>
@@ -227,7 +249,12 @@ ${topEntries(eslint?.byRule)}
 ${report.changedFiles.slice(0, 40).map((f) => `- \`${f.status}\` ${f.path}`).join('\n') || '_(nenhum)_'}
 ${report.changedFiles.length > 40 ? `\n_… +${report.changedFiles.length - 40} arquivos_` : ''}
 `;
-writeFileSync(join(OUT_DIR, 'latest.md'), md);
+try {
+  writeFileSync(join(OUT_DIR, 'latest.md'), md);
+} catch (err) {
+  console.error(`⚠ Falha ao gravar ${OUT_DIR}/latest.md: ${err.message}`);
+  process.exit(2);
+}
 
 // ── Console summary ────────────────────────────────────────────────────────
 const trendIcon = (n) => (n == null ? '·' : n > 0 ? '⬆' : n < 0 ? '⬇' : '=');

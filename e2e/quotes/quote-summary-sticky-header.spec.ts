@@ -11,7 +11,8 @@
  * Selectors: data-testid (`quote-summary-header`, `quote-summary-collapse-all`,
  * `quote-summary-group-trigger`, `quote-summary-item-N`).
  */
-import { test, expect, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 import { loginAs } from '../helpers/auth';
 import { gotoAndSettle } from '../helpers/nav';
 
@@ -33,7 +34,10 @@ async function setup(page: Page, width: number, height: number) {
 async function skipIfEmpty(page: Page) {
   const firstCard = page.getByTestId('quote-summary-item-0');
   if ((await firstCard.count()) === 0) {
-    expect(false, '[E108] Resumo vazio — adicionar produto está fora do escopo desta spec.').toBeTruthy();
+    expect(
+      false,
+      '[E108] Resumo vazio — adicionar produto está fora do escopo desta spec.',
+    ).toBeTruthy();
   }
   await expect(firstCard).toBeVisible({ timeout: 10_000 });
 }
@@ -55,19 +59,23 @@ async function scrollSummaryToBottom(page: Page) {
     window.scrollTo(0, document.body.scrollHeight);
   });
   // Aguarda o container realmente atingir o fim (sem waitForTimeout).
-  await page.waitForFunction(() => {
-    const header = document.querySelector('[data-testid="quote-summary-header"]');
-    if (!header) return false;
-    let el: HTMLElement | null = header.parentElement;
-    while (el) {
-      const s = getComputedStyle(el);
-      if (/(auto|scroll)/.test(s.overflowY) && el.scrollHeight > el.clientHeight) {
-        return el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
+  await page.waitForFunction(
+    () => {
+      const header = document.querySelector('[data-testid="quote-summary-header"]');
+      if (!header) return false;
+      let el: HTMLElement | null = header.parentElement;
+      while (el) {
+        const s = getComputedStyle(el);
+        if (/(auto|scroll)/.test(s.overflowY) && el.scrollHeight > el.clientHeight) {
+          return el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
+        }
+        el = el.parentElement;
       }
-      el = el.parentElement;
-    }
-    return true;
-  }, null, { timeout: 5000 });
+      return true;
+    },
+    null,
+    { timeout: 5000 },
+  );
 }
 
 /** Anexa screenshot + log estruturado quando a posição sticky desviar. */
@@ -95,10 +103,9 @@ async function attachStickyDrift(
     body: shot,
     contentType: 'image/png',
   });
-   
+
   console.warn('[sticky-header-drift]', JSON.stringify(evidence));
 }
-
 
 test.describe('Quote Builder · Resumo sticky header — desktop', () => {
   test.beforeEach(async ({ page }) => {
@@ -125,7 +132,6 @@ test.describe('Quote Builder · Resumo sticky header — desktop', () => {
     }
     expect(dy, `Sticky header desviou ${dy}px no eixo Y após scroll`).toBeLessThanOrEqual(4);
   });
-
 
   test('botões continuam clicáveis no estado sticky', async ({ page }) => {
     await skipIfEmpty(page);

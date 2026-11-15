@@ -48,19 +48,19 @@ describe('ssot-report-bump — CLI', () => {
 
   it('exige --kind válido', () => {
     const r = runBump(sandbox, ['--reason=motivo suficiente']);
-    expect(r.status).toBe(1);
+    expect(r.status).toBe(2);
     expect(r.stderr).toMatch(/--kind/);
   });
 
   it('exige --reason com pelo menos 8 caracteres', () => {
     const r = runBump(sandbox, ['--kind=patch', '--reason=curta']);
-    expect(r.status).toBe(1);
+    expect(r.status).toBe(2);
     expect(r.stderr).toMatch(/--reason/);
   });
 
   it('rejeita --kind fora de major|minor|patch', () => {
     const r = runBump(sandbox, ['--kind=hotfix', '--reason=motivo suficiente aqui']);
-    expect(r.status).toBe(1);
+    expect(r.status).toBe(2);
   });
 
   it('--dry retorna plano sem mutar arquivos', () => {

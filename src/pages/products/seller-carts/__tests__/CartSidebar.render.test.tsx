@@ -4,8 +4,7 @@
  * Após a repaginação, o subtotal/SKUs/Qtd. total saíram da sidebar
  * e passaram a viver no header da página. A sidebar mantém
  * EXCLUSIVAMENTE o card hero de peso/volume.
- * O CTA "Gerar Orçamento" foi movido para CartHeaderActions (ver
- * CartHeaderActions.render.test.tsx para o contrato do CTA).
+ * O CTA "Gerar Orçamento" vive no CartActionsMenu do header da página.
  *
  * Estes testes garantem:
  *   1) Render mínimo (hero card com peso/volume quando presentes)
@@ -14,6 +13,8 @@
  *   4) A sidebar consome APENAS o `weightVolume` recebido — nunca agrega
  *      dados de outros carrinhos.
  *   5) O botão "Gerenciar Carrinho" foi removido em definitivo.
+ *   6) Atalhos de template: "Salvar como Template" (carrinho com itens) e
+ *      "Usar Template (N)" (quando há templates salvos) vivem na sidebar.
  */
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
@@ -90,12 +91,12 @@ function renderSidebar(props: Partial<SidebarProps> = {}) {
 }
 
 describe('CartSidebar — render smoke pós-repaginação', () => {
-  it('monta card hero com data-loaded=true quando há peso/volume (CTA vive no CartHeaderActions)', () => {
+  it('monta card hero com data-loaded=true quando há peso/volume (CTA vive no CartActionsMenu)', () => {
     renderSidebar({ weightVolume: { weightKg: 2.5, volumeM3: 0.012, volumeCm3: 12000 } });
     const hero = screen.getByTestId('cart-sidebar-hero');
     expect(hero).toBeInTheDocument();
     expect(hero).toHaveAttribute('data-loaded', 'true');
-    // CTA foi movido para CartHeaderActions — não deve aparecer na sidebar.
+    // CTA vive no CartActionsMenu — não deve aparecer na sidebar.
     expect(screen.queryByTestId('cart-checkout-cta')).not.toBeInTheDocument();
   });
 
@@ -154,6 +155,41 @@ describe('CartSidebar — render smoke pós-repaginação', () => {
     renderSidebar({ weightVolume: { weightKg: 0, volumeM3: 0, volumeCm3: 0 } });
     expect(screen.queryByText(/Peso/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Volume/i)).not.toBeInTheDocument();
+  });
+});
+
+describe('CartSidebar — atalhos de template', () => {
+  it('mostra "Salvar como Template" quando o carrinho tem itens, mesmo sem peso/volume', () => {
+    renderSidebar({ weightVolume: null });
+    expect(screen.getByTestId('cart-sidebar-templates')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Salvar como Template/i })).toBeInTheDocument();
+    expect(screen.queryByTestId('cart-sidebar-hero')).not.toBeInTheDocument();
+  });
+
+  it('mostra "Usar Template (N)" quando há templates salvos e oculta quando não há', () => {
+    renderSidebar({
+      templates: [{ id: 't1', name: 'Kit Onboarding', items: [] }],
+    });
+    expect(screen.getByRole('button', { name: /Usar Template \(1\)/i })).toBeInTheDocument();
+  });
+
+  it('carrinho vazio com templates salvos ainda oferece "Usar Template" (e não "Salvar")', () => {
+    renderSidebar({
+      cart: makeCart({ items: [] }),
+      templates: [{ id: 't1', name: 'Kit Onboarding', items: [] }],
+    });
+    expect(screen.getByRole('button', { name: /Usar Template \(1\)/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Salvar como Template/i })).not.toBeInTheDocument();
+  });
+
+  it('não mostra "Usar Template" sem templates salvos', () => {
+    renderSidebar({ templates: [] });
+    expect(screen.queryByRole('button', { name: /Usar Template/i })).not.toBeInTheDocument();
+  });
+
+  it('carrinho vazio sem templates e sem peso/volume não renderiza nada', () => {
+    const { container } = renderSidebar({ cart: makeCart({ items: [] }), templates: [] });
+    expect(container).toBeEmptyDOMElement();
   });
 });
 
@@ -220,7 +256,7 @@ describe('CartSidebar — isolamento do carrinho ativo (sem agregação)', () =>
     // Peso trocou para o do cartB e o do cartA sumiu.
     expect(screen.getByText(/3\.7kg/)).toBeInTheDocument();
     expect(screen.queryByText(/1\.0kg/)).not.toBeInTheDocument();
-    // O CTA foi movido para CartHeaderActions; isolamento do CTA
-    // é coberto em CartHeaderActions.render.test.tsx.
+    // O CTA vive no CartActionsMenu; o isolamento do CTA
+    // não pertence a esta sidebar.
   });
 });

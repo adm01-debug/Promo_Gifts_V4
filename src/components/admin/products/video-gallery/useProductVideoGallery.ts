@@ -257,6 +257,9 @@ export function useProductVideoGallery(productId?: string) {
       const { data, error } = await untypedFrom<{ id: string }>('product_videos')
         .insert({
           product_id: productId,
+          cloudflare_video_id: youtubeId
+            ? `cf-vid-yt-${youtubeId}-${crypto.randomUUID()}`
+            : `cf-vid-${crypto.randomUUID()}`,
           url_original: url,
           url_stream: url,
           url_thumbnail: thumbnailUrl,
@@ -270,7 +273,10 @@ export function useProductVideoGallery(productId?: string) {
         })
         .select('id')
         .single();
-      if (error || !data) return null;
+      if (error || !data) {
+        logger.warn('[video-gallery] product_videos insert failed:', error);
+        return null;
+      }
       return (data as { id?: string }).id || null;
     },
     [productId, uploadVideoType, videos],
@@ -288,6 +294,7 @@ export function useProductVideoGallery(productId?: string) {
       setUploadProgress(0);
       try {
         let successCount = 0;
+        let failedCount = 0;
         for (let i = 0; i < files.length; i++) {
           setUploadProgress(i + 1);
           const result = await uploadFile(files[i]);
@@ -298,7 +305,11 @@ export function useProductVideoGallery(productId?: string) {
             files[i].name,
             result.thumbnailUrl,
           );
-          if (videoId && uploadVariant !== 'none') {
+          if (!videoId) {
+            failedCount++;
+            continue;
+          }
+          if (uploadVariant !== 'none') {
             const variant = variantMap.get(uploadVariant);
             if (variant) {
               // BUG-VIDEO-UPLOAD-LINK-SILENT-FAIL FIX: bare await swallowed RLS errors.
@@ -320,6 +331,7 @@ export function useProductVideoGallery(productId?: string) {
           queryClient.invalidateQueries({ queryKey: ['video-variant-links', productId] });
           toast.success(`${successCount} vídeo(s) enviado(s)!`);
         }
+        if (failedCount > 0) toast.error(`${failedCount} vídeo(s) não puderam ser registrados`);
       } catch {
         toast.error('Erro ao enviar vídeos');
       } finally {
@@ -352,7 +364,11 @@ export function useProductVideoGallery(productId?: string) {
         thumbUrl,
         ytId,
       );
-      if (videoId && uploadVariant !== 'none') {
+      if (!videoId) {
+        toast.error('Erro ao adicionar vídeo do YouTube');
+        return;
+      }
+      if (uploadVariant !== 'none') {
         const variant = variantMap.get(uploadVariant);
         if (variant) {
           // BUG-VIDEO-YOUTUBE-LINK-SILENT-FAIL FIX: bare await swallowed RLS errors.

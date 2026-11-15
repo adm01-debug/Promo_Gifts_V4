@@ -24,7 +24,7 @@ import {
   maskUrl,
   shouldRequireLive,
 } from './check-result-contract.mjs';
-import { querySupabaseReadOnly } from './supabase-read-only-query.mjs';
+import { hasLiveSupabaseConfig, querySupabaseReadOnly } from './supabase-read-only-query.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -82,15 +82,41 @@ function validateSyncLogIntegrity(content) {
   return [];
 }
 
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function hasReceiptForVersion(logContent, version) {
   // Usa word-boundary numérico para evitar falso positivo por substring.
   // Ex: versão "2026091615572" (13 dígitos) não faz match em "20260916155725".
-  const re = new RegExp(`(?<!\\d)${version}(?!\\d)`);
+  // version é escapado porque pode vir de --from-file ou de dados do ledger
+  // fora do formato canônico de 14 dígitos; sem escape, um metacaractere de
+  // regex (ex.: "(", "*") quebra o RegExp com SyntaxError não tratada.
+  const re = new RegExp(`(?<!\\d)${escapeRegExp(version)}(?!\\d)`);
+
+  // FALSO POSITIVO CORRIGIDO (2026-11-15): antes este gate aceitava QUALQUER linha que
+  // contivesse a version. Isso o fazia passar quando a version aparecia só como texto de
+  // referência dentro do recibo de OUTRA migration — e essas linhas trazem "aplicada" por
+  // falarem da outra. Caso real que escapou: a `20261114014500` ficou com o próprio recibo
+  // marcado "pendente", mas 10 linhas de outras versions diziam "reconciliação P09
+  // (20261114014500) ... aplicada", e o gate deu verde com a migration já aplicada em
+  // produção e sem recibo. Agora só conta a linha de tabela cuja PRIMEIRA CÉLULA é a
+  // própria version — que é como `append-migration-receipt.mjs` grava o recibo.
+  const linhasDeRecibo = logContent.split('\n').filter((l) => {
+    if (!l.trimStart().startsWith('|')) return false;
+    const primeiraCelula = (l.split('|')[1] ?? '').trim().replace(/`/g, '');
+    return primeiraCelula === String(version);
+  });
+  // Fallback: formatos legados que registram a version fora da primeira célula continuam
+  // aceitos, mas só se a linha NÃO for de tabela (parágrafo de registro antigo). Assim o
+  // histórico anterior ao `append-migration-receipt.mjs` não vira falso negativo.
+  const linhas = linhasDeRecibo.length > 0
+    ? linhasDeRecibo
+    : logContent.split('\n').filter((l) => !l.trimStart().startsWith('|') && re.test(l));
+  if (linhas.length === 0) return false;
   // Linha "pendente-only" (contém a versão mas apenas status pendente, sem "aplicada")
   // NÃO conta como recibo — a migration ainda não foi efetivada em produção.
-  const lines = logContent.split('\n').filter((l) => re.test(l));
-  if (lines.length === 0) return false;
-  return lines.some((l) => {
+  return linhas.some((l) => {
     if (!/pendente/i.test(l)) return true;
     // Tem "pendente" — só conta se também tem "aplicada" positivo (não "não aplicada")
     return /\baplicada\b/i.test(l) && !/não\s+aplicada/i.test(l);
@@ -116,7 +142,9 @@ async function fetchLiveVersions() {
 async function main() {
   const logContent = loadSyncLog();
 
-  // ── Gate mode (sem live DB): valida só integridade estrutural do log ──────
+  // ── Gate mode: integridade estrutural do log; só fica nisso se NÃO há credencial live ──
+  // Antes, `--gate` nunca consultava o banco, mesmo com SUPABASE_ACCESS_TOKEN no workflow:
+  // migration aplicada sem recibo passava. Com credencial, segue para o modo live abaixo.
   if (GATE_MODE && !fromFileArg) {
     if (!logContent) {
       process.stderr.write(
@@ -137,7 +165,7 @@ async function main() {
     }
 
     const receiptCount = logContent.split('\n').filter((l) => l.startsWith('## ') && /\d{14}/.test(l)).length;
-    return concludeCheck({
+    if (!hasLiveSupabaseConfig()) return concludeCheck({
       check: 'migration-receipts',
       status: CHECK_RESULT_STATUS.STATIC_PASS,
       summary: `MIGRATIONS_SYNC_LOG.md válido (${receiptCount} recibo(s)); sem live DB em --gate`,

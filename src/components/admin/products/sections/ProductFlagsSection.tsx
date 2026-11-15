@@ -39,15 +39,15 @@ function daysToExpiry(days: string): string | null {
 }
 
 /** Find the closest option for an existing expiry date */
-function expiryToOption(expiresAt: string | null): string {
-  if (!expiresAt) return 'none';
+function expiryToOption(expiresAt: string | null, allowNone: boolean): string {
+  if (!expiresAt) return allowNone ? 'none' : '30';
   const diff = Math.round((new Date(expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
   if (diff <= 0) return '7';
   if (diff <= 10) return '7';
   if (diff <= 20) return '15';
   if (diff <= 60) return '30';
   if (diff <= 120) return '90';
-  return 'none';
+  return allowNone ? 'none' : '90';
 }
 
 /** Format remaining days for display */
@@ -129,6 +129,7 @@ export function ProductFlagsSection({ setValue, flags, expirations }: Props) {
           };
 
           const expiresAt = expiryKey ? (expirations[expiryKey] as string | null) : null;
+          const allowNoExpiry = expiryKey === 'is_on_sale_expires_at';
           const remaining = expiryKey && value ? formatRemaining(expiresAt) : null;
 
           return (
@@ -173,18 +174,20 @@ export function ProductFlagsSection({ setValue, flags, expirations }: Props) {
                   <div className="flex items-center gap-1.5">
                     <Clock className="h-3 w-3 shrink-0 text-muted-foreground/60" />
                     <Select
-                      value={expiryToOption(expiresAt)}
+                      value={expiryToOption(expiresAt, allowNoExpiry)}
                       onValueChange={(v) => setValue(expiryKey, daysToExpiry(v))}
                     >
                       <SelectTrigger className="h-6 w-full border-border/30 bg-background/50 text-[10px]">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {EXPIRY_OPTIONS.map((opt) => (
-                          <SelectItem key={opt.value} value={opt.value} className="text-xs">
-                            {opt.label}
-                          </SelectItem>
-                        ))}
+                        {EXPIRY_OPTIONS.filter((opt) => opt.value !== 'none' || allowNoExpiry).map(
+                          (opt) => (
+                            <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                              {opt.label}
+                            </SelectItem>
+                          ),
+                        )}
                       </SelectContent>
                     </Select>
                     {remaining && (

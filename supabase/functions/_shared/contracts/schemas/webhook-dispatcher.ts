@@ -8,7 +8,7 @@
  *     campos coerentes para cada modo via discriminated union.
  */
 
-import { z } from "https://esm.sh/zod@3.23.8";
+import { z } from "npm:zod@3.23.8";
 
 // ---------------------------------------------------------------------------
 // v1 — compat com produção

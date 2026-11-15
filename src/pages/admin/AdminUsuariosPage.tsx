@@ -59,13 +59,11 @@ export default function AdminUsuariosPage() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const tabParam = searchParams.get('tab');
-  const initialTab: TabValue = (VALID_TABS as readonly string[]).includes(tabParam ?? '')
+  const activeTab: TabValue = (VALID_TABS as readonly string[]).includes(tabParam ?? '')
     ? (tabParam as TabValue)
     : 'users';
-  const [activeTab, setActiveTab] = useState<TabValue>(initialTab);
 
   const handleTabChange = (value: string) => {
-    setActiveTab(value as TabValue);
     const next = new URLSearchParams(searchParams);
     if (value === 'users') next.delete('tab');
     else next.set('tab', value);

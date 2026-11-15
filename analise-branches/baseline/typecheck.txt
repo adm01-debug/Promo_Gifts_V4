@@ -1,4 +1,9 @@
-# Baseline TypeScript — main@652a7f14
-# Data: 2026-10-24
-# Comando: npx tsc --noEmit 2>&1 | grep "^src/" | wc -l
-ERROS_TS_MAIN=0
+SHA main baseline: d2033d9237fa72971ff9c92ca47442f7437463ff
+Data: 2026-11-01
+Sessão: claude/chore-analise-branches-revalida-261101-2200
+
+Erros TS totais (npm run typecheck 2>&1 | grep "error TS" | wc -l): 49716
+Executado nesta sessão — nenhuma branch mergeada antes do run.
+
+Nota: 49716 erros são pré-existentes em main — nenhuma branch analisada foi mergeada.
+Regressão se mede contra este baseline: qualquer merge que aumente este número é bloqueante.

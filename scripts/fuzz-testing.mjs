@@ -25,6 +25,7 @@
  */
 
 import process from "node:process";
+import { pathToFileURL } from "node:url";
 
 const SUPABASE_URL = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "").replace(/\/+$/, "");
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_TEST_BYPASS_TOKEN;
@@ -36,14 +37,11 @@ const DRY_RUN = !SUPABASE_URL || !SERVICE_ROLE_KEY || process.env.DRY_RUN !== '0
 
 // E38 — bloqueia execução live contra projeto canônico de produção sem gating explícito
 const CANONICAL_PROJECT = 'doufsxqlfjyuvxuezpln';
-if (!DRY_RUN && SUPABASE_URL.includes(CANONICAL_PROJECT) && process.env.ALLOW_PROD_LOAD !== '1') {
-  console.error('[fuzz-testing] BLOQUEADO: URL aponta para o projeto canônico de produção.');
-  console.error('  Defina ALLOW_PROD_LOAD=1 somente em dispatch gated.');
-  process.exit(1);
-}
 
-if (DRY_RUN) {
-  console.log("⚠️  Credenciais ausentes ou DRY_RUN ≠ 0 — modo dry-run: gerando e validando payloads sem HTTP.");
+function validateExecutionTarget() {
+  if (!DRY_RUN && SUPABASE_URL.includes(CANONICAL_PROJECT) && process.env.ALLOW_PROD_LOAD !== '1') {
+    throw new Error('[fuzz-testing] BLOQUEADO: produção exige ALLOW_PROD_LOAD=1 em dispatch gated.');
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -144,7 +142,8 @@ const UUID_CORPUS = [
 function missingFieldsMatrix(basePayload) {
   const keys = Object.keys(basePayload);
   return keys.map((k) => {
-    const { [k]: _removed, ...rest } = basePayload;
+    const rest = { ...basePayload };
+    delete rest[k];
     return rest;
   });
 }
@@ -435,15 +434,31 @@ const FUNCTION_SPECS = [
 
 const STACK_TRACE_RE = /\bat\s+\w[\w.]*\s+\(|TypeError:|ReferenceError:|SyntaxError:/;
 
+export function serializeFuzzPayload(payload, isRaw = false) {
+  if (isRaw) {
+    const rawBody = typeof payload === "string" ? payload : payload?.rawBody;
+    if (typeof rawBody !== "string") {
+      throw new TypeError(`rawBody deve ser string; recebido ${typeof rawBody}`);
+    }
+    return rawBody;
+  }
+
+  if (payload == null) return "";
+  const serialized = JSON.stringify(payload);
+  if (typeof serialized !== "string") {
+    throw new TypeError(`payload não serializável: ${typeof payload}`);
+  }
+  JSON.parse(serialized);
+  return serialized;
+}
+
 async function execRequest(url, body, isRaw, authToken) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
   try {
     const headers = { "Content-Type": "application/json" };
     if (authToken) headers["Authorization"] = `Bearer ${authToken}`;
-    const bodyStr = isRaw
-      ? (typeof body === "string" ? body : (body?.rawBody ?? ""))
-      : body == null ? "" : JSON.stringify(body);
+    const bodyStr = serializeFuzzPayload(body, isRaw);
     const resp = await fetch(url, {
       method: "POST",
       headers,
@@ -464,6 +479,10 @@ async function execRequest(url, body, isRaw, authToken) {
 // ---------------------------------------------------------------------------
 
 async function runFuzz() {
+  validateExecutionTarget();
+  if (DRY_RUN) {
+    console.log("⚠️  Credenciais ausentes ou DRY_RUN ≠ 0 — modo dry-run: gerando e validando payloads sem HTTP.");
+  }
   console.log("🚀 Fuzz Testing — Iniciando bateria exaustiva...");
   console.log(`   Modo: ${DRY_RUN ? "DRY-RUN (sem HTTP)" : "LIVE (HTTP real)"}`);
   console.log(`   Funções alvo: ${FUNCTION_SPECS.length} | Concorrência: ${CONCURRENCY}`);
@@ -473,6 +492,7 @@ async function runFuzz() {
   let totalRequests = 0;
   let totalCrashes = 0;
   let totalTimeouts = 0;
+  let totalNetErrors = 0;
   let totalStackLeaks = 0;
   const allIssues = [];
 
@@ -480,11 +500,19 @@ async function runFuzz() {
     const payloads = [...spec.gen(), ...MALFORMED_JSON_STRINGS.map(s => ({ rawBody: s }))];
     totalPayloads += payloads.length;
     console.log(`\n📦 [${spec.name}] — ${payloads.length} payloads`);
+    payloads.forEach((payload, index) => {
+      const isRaw = payload && typeof payload === "object" && "rawBody" in payload;
+      try {
+        serializeFuzzPayload(payload, isRaw);
+      } catch (error) {
+        throw new TypeError(`[${spec.name}] payload ${index} inválido: ${error.message}`);
+      }
+    });
     if (DRY_RUN) return { fn: spec.name, crashes: 0, timeouts: 0, stackLeaks: 0, issues: [] };
 
     const url = `${SUPABASE_URL}/functions/v1/${spec.endpoint}`;
     const authToken = spec.authRequired ? SERVICE_ROLE_KEY : null;
-    let fnCrashes = 0, fnTimeouts = 0, fnStackLeaks = 0;
+    let fnCrashes = 0, fnTimeouts = 0, fnStackLeaks = 0, fnNetErrors = 0;
     const fnIssues = [];
 
     for (let i = 0; i < payloads.length; i += CONCURRENCY) {
@@ -496,6 +524,7 @@ async function runFuzz() {
         const issues = [];
         if (r.status === 500) issues.push("HTTP 500 — CRASH");
         if (r.error === "TIMEOUT") { issues.push("TIMEOUT"); fnTimeouts++; }
+        else if (r.status === -1) { issues.push(`NETWORK ERROR — ${r.error}`); fnNetErrors++; }
         if (r.body && STACK_TRACE_RE.test(r.body)) issues.push("STACK TRACE LEAK");
         if (issues.some(i => i.includes("500"))) fnCrashes++;
         if (issues.some(i => i.includes("STACK"))) fnStackLeaks++;
@@ -505,17 +534,18 @@ async function runFuzz() {
       }
     }
 
-    return { fn: spec.name, crashes: fnCrashes, timeouts: fnTimeouts, stackLeaks: fnStackLeaks, issues: fnIssues };
+    return { fn: spec.name, crashes: fnCrashes, timeouts: fnTimeouts, stackLeaks: fnStackLeaks, netErrors: fnNetErrors, issues: fnIssues };
   }
 
   for (let i = 0; i < FUNCTION_SPECS.length; i += FUNCTION_CONCURRENCY) {
     const chunk = FUNCTION_SPECS.slice(i, i + FUNCTION_CONCURRENCY);
     const chunkResults = await Promise.all(chunk.map(runFunctionSpec));
     for (const result of chunkResults) {
-      const ok = result.crashes === 0 && result.stackLeaks === 0;
+      const ok = result.crashes === 0 && result.stackLeaks === 0 && result.timeouts === 0 && !result.netErrors;
       console.log(`   ${ok ? "✅" : "❌"} [${result.fn}] Crashes: ${result.crashes} | Timeouts: ${result.timeouts} | StackLeaks: ${result.stackLeaks}`);
       totalCrashes += result.crashes;
       totalTimeouts += result.timeouts;
+      totalNetErrors += result.netErrors ?? 0;
       totalStackLeaks += result.stackLeaks;
       allIssues.push(...result.issues.map(issue => ({ fn: result.fn, ...issue })));
     }
@@ -528,6 +558,7 @@ async function runFuzz() {
   console.log(`Requests enviados: ${totalRequests}`);
   console.log(`Crashes (500):     ${totalCrashes}`);
   console.log(`Timeouts:          ${totalTimeouts}`);
+  console.log(`Erros de rede:     ${totalNetErrors}`);
   console.log(`Stack leaks:       ${totalStackLeaks}`);
   console.log("");
   if (allIssues.length > 0) {
@@ -536,8 +567,9 @@ async function runFuzz() {
     Object.entries(byFunction).sort((a, b) => b[1] - a[1]).forEach(([fn, count]) => console.log(` - ${fn}: ${count}`));
   }
 
-  if (totalCrashes > 0 || totalStackLeaks > 0) {
-    console.error(`❌ FALHOU — ${totalCrashes} crashes e ${totalStackLeaks} stack leaks.`);
+  // GUARD: servidor inalcançável (conexão recusada → status -1) e timeouts reprovam; antes só 500 e stack leak.
+  if (totalCrashes > 0 || totalStackLeaks > 0 || totalTimeouts > 0 || totalNetErrors > 0) {
+    console.error(`❌ FALHOU — ${totalCrashes} crashes, ${totalStackLeaks} stack leaks, ${totalTimeouts} timeouts e ${totalNetErrors} erros de rede.`);
     process.exit(1);
   }
 
@@ -549,7 +581,10 @@ async function runFuzz() {
   }
 }
 
-runFuzz().catch(err => {
-  console.error("❌ Erro fatal:", err.message);
-  process.exit(1);
-});
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isMain) {
+  runFuzz().catch(err => {
+    console.error("❌ Erro fatal:", err.message);
+    process.exit(1);
+  });
+}

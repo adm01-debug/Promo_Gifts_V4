@@ -51,7 +51,10 @@ for (const tag of REQUIRED_TAGS) {
     continue;
   }
   const url = match[1];
-  if (!url.includes(REQUIRED_DOMAIN)) {
+  // GUARD: o domínio tem de ser o HOST da URL (antes `includes` aceitava `?ref=promogifts.com.br`).
+  let host = '';
+  try { host = new URL(url).hostname; } catch { /* URL inválida → falha abaixo */ }
+  if (host !== REQUIRED_DOMAIN && !host.endsWith(`.${REQUIRED_DOMAIN}`)) {
     console.error(`❌ ${tag.name}: URL "${url}" nao contem "${REQUIRED_DOMAIN}"`);
     failed = true;
   } else {

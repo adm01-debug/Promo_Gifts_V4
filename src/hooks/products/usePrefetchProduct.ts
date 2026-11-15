@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
-import { QUERY_KEY_PREFIXES, PRODUTOS_QUERY_OPTIONS } from '@/lib/query-config';
-import { productService } from '@/services/productService';
+import { PRODUTOS_QUERY_OPTIONS } from '@/lib/query-config';
+import { PRODUCT_DETAIL_QUERY_KEY, fetchProductDetail } from '@/hooks/products/useProducts';
 
 export function usePrefetchProduct() {
   const queryClient = useQueryClient();
@@ -9,8 +9,12 @@ export function usePrefetchProduct() {
   const prefetchProduct = useCallback(
     async (productId: string) => {
       await queryClient.prefetchQuery({
-        queryKey: [QUERY_KEY_PREFIXES.PRODUTO_PERSONALIZACAO, productId],
-        queryFn: () => productService.fetchProductById(productId),
+        // Mesma chave de useProduct (PDP): sem isso o hover aquece um cache que a
+        // PDP nunca lê e a busca do produto roda duas vezes contra o banco.
+        queryKey: [PRODUCT_DETAIL_QUERY_KEY, productId],
+        // Mesmo queryFn da PDP (com timeout): se a PDP abrir com o prefetch ainda
+        // pendente, ela reaproveita esta promise e também precisa de limite.
+        queryFn: () => fetchProductDetail(productId),
         ...PRODUTOS_QUERY_OPTIONS,
         // Only prefetch if we don't have the data or it's stale
         staleTime: 5 * 60 * 1000,

@@ -15,7 +15,7 @@
 // - Fire-and-forget: retorna 202 assim que o insert é aceito; erros de RLS
 //   ou schema mudam para 5xx para que o client possa monitorar.
 
-import { z } from "https://esm.sh/zod@3.23.8";
+import { z } from "npm:zod@3.23.8";
 
 import { buildPublicCorsHeaders } from "../_shared/cors.ts";
 import { authenticateRequest, authErrorResponse } from "../_shared/auth.ts";

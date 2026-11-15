@@ -5,8 +5,9 @@ describe('Graphify low-connectivity metric', () => {
   it('excludes dependencies, config and SQL while retaining source-file structure', () => {
     const graph = {
       nodes: [
-        { id: 'file-a', label: 'a.ts', file_type: 'code', source_file: 'src/a.ts', source_location: 'L1' },
+        { id: 'src_a', label: 'a.ts', _origin: 'ast', file_type: 'code', source_file: 'src/a.ts', source_location: 'L1' },
         { id: 'alpha', label: 'Alpha', _origin: 'ast', file_type: 'code', source_file: 'src/a.ts', source_location: 'L2' },
+        { id: 'same-name', label: 'a', _origin: 'ast', file_type: 'code', source_file: 'src/a.ts', source_location: 'L3' },
         { id: 'vendor', label: 'VendorType', _origin: 'ast', file_type: 'code', source_file: 'node_modules/pkg/index.ts', source_location: 'L2' },
         { id: 'config', label: 'defineConfig', _origin: 'ast', file_type: 'code', source_file: 'vite.config.ts', source_location: 'L1' },
         { id: 'sql', label: 'products', _origin: 'ast', file_type: 'code', source_file: ['supabase', 'migrations', '001.sql'].join('/'), source_location: 'L1' },
@@ -15,7 +16,7 @@ describe('Graphify low-connectivity metric', () => {
       links: [
         { source: 'alpha', target: 'vendor', relation: 'references' },
         { source: 'alpha', target: 'config', relation: 'imports' },
-        { source: 'scaffold', target: 'file-a', relation: 'contains' },
+        { source: 'scaffold', target: 'src_a', relation: 'contains' },
       ],
     };
     const metrics = calculateLowConnectivity(graph);
@@ -23,13 +24,14 @@ describe('Graphify low-connectivity metric', () => {
     expect(metrics.lowConnectivityCount).toBe(3);
     expect(metrics.sample).toEqual(expect.arrayContaining([
       expect.objectContaining({ id: 'alpha', degree: 0 }),
-      expect.objectContaining({ id: 'scaffold', degree: 1 }),
-      expect.objectContaining({ id: 'file-a', degree: 1 }),
+      expect.objectContaining({ id: 'same-name', degree: 0 }),
+      expect.objectContaining({ id: 'scaffold', degree: 0 }),
     ]));
     expect(metrics.excluded).toMatchObject({
       'dependency-or-generated-output': 1,
       configuration: 1,
       'non-code': 1,
+      'structural-file-node': 1,
     });
   });
 
@@ -58,6 +60,24 @@ describe('Graphify low-connectivity metric', () => {
     expect(exclusionReason({ file_type: 'code', source_file: '.github/workflows/ci.ts', label: 'job' })).toBe('configuration');
     expect(exclusionReason({ file_type: 'code', source_file: 'vendor/pkg/index.ts', label: 'job' })).toBe('dependency-or-generated-output');
     expect(exclusionReason({ file_type: 'code', source_file: 'package.json', community_name: 'dependencies', label: 'react' })).toBe('dependency');
+  });
+
+  it('refreshes its Portuguese metric on repeated runs and inserts it when missing', () => {
+    const first = replaceKnowledgeGapMetrics('## Knowledge Gaps\n- **3 nós de baixa conectividade (grau ≤ 1):** A\n  Métrica calculada sobre 10 nós de código elegíveis.\n- **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.\n\n## Questions', {
+      lowConnectivityCount: 2,
+      eligibleNodeCount: 8,
+      sample: [{ label: 'Alpha', source_file: 'src/a.ts' }],
+    });
+    expect(first).toContain('2 nós de baixa conectividade');
+    expect(first).not.toContain('3 nós de baixa conectividade');
+    expect(first).toContain('4 comunidades pequenas');
+
+    const withoutMetric = replaceKnowledgeGapMetrics('## Knowledge Gaps\n- **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.\n\n## Questions', {
+      lowConnectivityCount: 1,
+      eligibleNodeCount: 5,
+      sample: [{ label: 'Beta', source_file: 'src/b.ts' }],
+    });
+    expect(withoutMetric).toContain('1 nó de baixa conectividade');
   });
 
   it('synchronizes summary totals after graph enrichment', () => {

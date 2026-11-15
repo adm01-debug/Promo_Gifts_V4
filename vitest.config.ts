@@ -18,10 +18,12 @@ const rewriteDenoUrlImports = (): Plugin => ({
   enforce: 'pre',
   transform(code, id) {
     if (!/\.(ts|tsx|mts|js|mjs)$/.test(id)) return null;
-    if (!code.includes('https://')) return null;
+    if (!code.includes('https://') && !code.includes('npm:')) return null;
     const next = code
       .replace(/(["'])https:\/\/esm\.sh\/zod@[^"']+\1/g, '"zod"')
-      .replace(/(["'])https:\/\/deno\.land\/x\/zod@[^"']+\/mod\.ts\1/g, '"zod"');
+      .replace(/(["'])https:\/\/deno\.land\/x\/zod@[^"']+\/mod\.ts\1/g, '"zod"')
+      .replace(/(["'])npm:zod@[^"']+\1/g, '"zod"')
+      .replace(/(["'])npm:@supabase\/supabase-js@[^"']+\1/g, '"@supabase/supabase-js"');
     return next === code ? null : { code: next, map: null };
   },
 });
@@ -63,6 +65,13 @@ export default defineConfig({
       'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       'src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       'e2e/scripts/__tests__/*.test.ts',
+      'supabase/functions/e2e-cleanup/index.mockups.test.ts',
+      // Geometria cm→px da logo no mockup (fórmula pura; index.ts não é
+      // importável sob Node). Sem esta entrada o arquivo não é coletado.
+      'supabase/functions/generate-mockup/index.geometry.test.ts',
+      // Tetos de entrada do generate-mockup (funções puras; index.ts não é
+      // importável sob Node). Sem esta entrada o arquivo não é coletado.
+      'supabase/functions/generate-mockup/index.size.test.ts',
       // T-FIX-5: descobre a suite vitest do script anti-órfão.
       // Ver docs/redeploy/T-FIX-5-CHECKLIST.md (Passo 3).
       'scripts/__tests__/**/*.{test,spec}.{ts,mts,cts}',
@@ -92,6 +101,8 @@ export default defineConfig({
       // Usa node:test (Node.js native runner) — incompatível com vitest client environment.
       // Roda apenas via `node tests/scripts/check-file-size-baseline.test.mjs`.
       'tests/scripts/check-file-size-baseline.test.mjs',
+      // Idem — node:test. Roda via `node tests/scripts/check-as-assertions-baseline.test.mjs`.
+      'tests/scripts/check-as-assertions-baseline.test.mjs',
     ],
     // CI runners (GitHub Actions ubuntu-latest) têm 2 vCPU (4 vThreads).
     // Default thread pool causava timeout de 75min — mitigado com
@@ -142,7 +153,6 @@ export default defineConfig({
         statements: 60,
       },
     },
-
   },
   resolve: {
     alias: [

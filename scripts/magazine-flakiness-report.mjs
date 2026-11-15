@@ -132,6 +132,23 @@ for (let i = 1; i <= RUNS; i++) {
 
 // Classificação por teste.
 const tests = [...testsById.values()];
+
+// Nenhum teste coletado em nenhuma rodada (pattern sem match, vitest não
+// gerou JSON, ou JSON inválido em todas as rodadas): reportar "sem
+// flakiness" aqui seria falso-positivo — o gate ficaria verde sem nenhum
+// teste ter rodado de fato.
+if (tests.length === 0) {
+  console.error(
+    `\n[flakiness] ERRO DE INFRAESTRUTURA — nenhum teste foi coletado em ${RUNS} rodada(s) (padrão: ${PATTERNS.join(', ')}).`,
+  );
+  if (runFailures.length) {
+    console.error(`[flakiness] Motivo(s): ${runFailures.map((r) => `#${r.run} (${r.reason})`).join(', ')}`);
+  } else {
+    console.error('[flakiness] O padrão não casou com nenhum arquivo de teste.');
+  }
+  process.exit(2);
+}
+
 const flaky = tests.filter((t) => t.passes > 0 && t.fails > 0);
 const failAll = tests.filter((t) => t.passes === 0 && t.fails > 0);
 const stable = tests.filter((t) => t.fails === 0);

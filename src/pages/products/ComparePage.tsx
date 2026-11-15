@@ -1,7 +1,7 @@
 /**
  * ComparePage — Comparador de produtos (10/10)
  * C1: score, radar, AI advisor, TCO, differences-only.
- * C2: CRM picker, share público, export, sync, CTA orçamento.
+ * C2: CRM picker, export, sync, CTA orçamento.
  * C3: Duel mode, mobile carousel, presentation, variant sync.
  * C4: similar rail, presentation launcher.
  * C5: shortcuts, ARIA-live, smart empty state, recent sidebar.
@@ -152,11 +152,24 @@ export default function ComparePage() {
   });
 
   const handleCreateQuote = () => {
-    const productParams = compareItems.map((i) => i.productId).join(',');
-    const params = new URLSearchParams({ products: productParams });
-    if (client?.id) params.set('client_id', client.id);
-    if (client?.name) params.set('client_name', client.name);
-    navigate(`/orcamentos/novo?${params.toString()}`);
+    navigate('/orcamentos/novo', {
+      state: {
+        fromCart: true,
+        handoffSource: 'fromCompare',
+        companyId: client?.id,
+        companyName: client?.name,
+        items: compareEntries.map(({ product: p, variant: v }) => ({
+          product_id: String(p.id),
+          product_name: p.name ?? '',
+          product_sku: p.sku || undefined,
+          product_image_url: p.images?.[0] || undefined,
+          quantity: Math.max(1, p.minQuantity ?? 1),
+          unit_price: p.price ?? 0,
+          color_name: v?.color_name || undefined,
+          color_hex: v?.color_hex || undefined,
+        })),
+      },
+    });
   };
 
   // Empty state with smart suggestions

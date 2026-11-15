@@ -23,6 +23,9 @@ type ValidateMcpKeyRow = {
 
 const SOURCE = "mcp-server";
 
+// UUID sentinel para origem sem usuário autenticado (mesma convenção de fn_audit_row_change).
+const SENTINEL_USER_ID = "00000000-0000-0000-0000-000000000000";
+
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
@@ -88,7 +91,7 @@ async function audit(
     const startedAt = ctx?.startedAt ?? finishedAt;
     const duration = ctx ? Date.now() - ctx.startedMs : 0;
     await supabase.from("admin_audit_log").insert({
-      user_id: null,
+      user_id: SENTINEL_USER_ID,
       action,
       resource_type: "mcp_api_key",
       resource_id: ctx?.keyId ?? null,
@@ -419,7 +422,7 @@ app.all("/*", async (c: Context) => {
     const nowIso = new Date().toISOString();
     try {
       await supabase.from("admin_audit_log").insert({
-        user_id: auth.createdBy,
+        user_id: auth.createdBy ?? SENTINEL_USER_ID,
         action: "mcp_tool.denied_dev_revoked",
         resource_type: "mcp_api_key",
         resource_id: auth.keyId,
@@ -459,7 +462,7 @@ app.all("/*", async (c: Context) => {
     const code = auth.reason === "expired" ? ERR.KEY_EXPIRED : ERR.KEY_REVOKED;
     try {
       await supabase.from("admin_audit_log").insert({
-        user_id: auth.createdBy,
+        user_id: auth.createdBy ?? SENTINEL_USER_ID,
         action: "mcp_tool.denied",
         resource_type: "mcp_api_key",
         resource_id: auth.keyId,
@@ -492,7 +495,7 @@ app.all("/*", async (c: Context) => {
     try {
       const keyHeader = c.req.raw.headers.get("x-mcp-key") || "";
       await supabase.from("admin_audit_log").insert({
-        user_id: null,
+        user_id: SENTINEL_USER_ID,
         action: "mcp_tool.denied",
         resource_type: "mcp_api_key",
         resource_id: null,

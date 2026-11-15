@@ -75,14 +75,29 @@ export function runBaselineGate({ baselineFile, label, description, totalKey, fi
   const BASELINE_PATH = join(ROOT, baselineFile);
   const UPDATE = process.argv.includes('--update');
 
-  const currentCounts = Object.fromEntries(scan());
+  let currentCounts;
+  try {
+    currentCounts = Object.fromEntries(scan());
+  } catch (err) {
+    console.error(`❌ Falha ao escanear src/ para ${label}: ${err.message}`);
+    process.exit(2);
+  }
   const totalCurrent = Object.values(currentCounts).reduce((a, b) => a + b, 0);
 
   if (UPDATE) {
+    let prevMeta;
+    try {
+      prevMeta = existsSync(BASELINE_PATH)
+        ? JSON.parse(readFileSync(BASELINE_PATH, 'utf8'))?.meta
+        : undefined;
+    } catch {
+      prevMeta = undefined; // baseline corrompido — nao travar o --update (QODO c466935b)
+    }
     const next = {
       generatedAt: new Date().toISOString(),
       description,
       [totalKey]: totalCurrent,
+      ...(prevMeta ? { meta: prevMeta } : {}),
       counts: currentCounts,
     };
     writeFileSync(BASELINE_PATH, `${JSON.stringify(next, null, 2)}\n`);
@@ -97,7 +112,13 @@ export function runBaselineGate({ baselineFile, label, description, totalKey, fi
     process.exit(2);
   }
 
-  const baseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
+  let baseline;
+  try {
+    baseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
+  } catch (error) {
+    console.error(`❌ ${baselineFile} ilegível ou inválido (JSON corrompido): ${error.message}. Regere com --update.`);
+    process.exit(2);
+  }
   const baselineCounts = baseline.counts ?? {};
   const totalBaseline = baseline[totalKey] ?? 0;
 

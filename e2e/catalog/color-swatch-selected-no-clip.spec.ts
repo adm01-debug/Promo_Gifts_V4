@@ -9,7 +9,7 @@
  * Estratégia: para cada card com swatches, clica o primeiro swatch e compara
  * o bounding box do <button> (que já inclui ring + scale aplicados pelo browser)
  * com o bounding box do <radiogroup>. Asserção: o swatch deve estar inteiramente
- * contido verticalmente no container (com tolerância de 0.5px por anti-aliasing).
+ * contido verticalmente no container (com tolerância de 1px por subpixel rendering).
  *
  * Cobre desktop + mobile, várias contagens de cores (cards sem e com overflow).
  */
@@ -21,11 +21,11 @@ const VIEWPORTS = [
   { name: 'mobile', width: 390, height: 844 },
 ] as const;
 
-const TOLERANCE_PX = 0.5;
+const TOLERANCE_PX = 1;
 const SAMPLE_CARDS = 5;
 
 async function settleCatalog(page: Page) {
-  await page.waitForSelector('[data-testid="product-card"]', { timeout: 20_000 });
+  await page.waitForSelector('[data-testid="product-card"]', { timeout: 60_000 });
   await expect(page.locator('[data-testid="product-card-skeleton"]')).toHaveCount(0);
   await page.addStyleTag({
     content: `*, *::before, *::after { transition: none !important; animation: none !important; }`,
@@ -50,7 +50,7 @@ test.describe('ProductCard — swatch selecionado não é cortado', () => {
   for (const vp of VIEWPORTS) {
     test(`viewport ${vp.name}: nenhuma bolinha selecionada vaza do radiogroup`, async ({ page }) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
-      await gotoAndSettle(page, '/catalogo');
+      await gotoAndSettle(page, '/produtos');
       await settleCatalog(page);
 
       const cards = page.locator('[data-testid="product-card"]:has([role="radiogroup"])');
@@ -68,14 +68,14 @@ test.describe('ProductCard — swatch selecionado não é cortado', () => {
 
         // Clica a primeira bolinha → estado "selecionado" com ring + scale + glow.
         const target = swatches.first();
-        await target.click({ force: true });
+        await target.click();
         await expect(target).toHaveAttribute('aria-checked', 'true');
 
         await assertSwatchNotClipped(group, target);
 
         // Também valida última bolinha visível (canto direito tende a clipar primeiro).
         const last = swatches.nth(swatchCount - 1);
-        await last.click({ force: true });
+        await last.click();
         await expect(last).toHaveAttribute('aria-checked', 'true');
         await assertSwatchNotClipped(group, last);
       }

@@ -1,5 +1,5 @@
 /**
- * Emissor local (não roda em CI) — usado por /tmp/pdf-diff para
+ * Emissor local (não roda em CI) — usado por <tmpdir>/pdf-diff para
  * gerar HTMLs isolados de TotalsSection (PDF interno) e ProposalTotals
  * (proposta exportada) e diffar pixel-a-pixel.
  *
@@ -9,11 +9,13 @@ import React from 'react';
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { writeFileSync, mkdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 import { TotalsSection } from '../../ProposalSections';
 import { ProposalTotals } from '../ProposalTotals';
 import { PROPOSAL_10015_26 } from './fixtures/proposal-10015-26';
 
-const OUT = '/tmp/pdf-diff';
+const OUT = join(tmpdir(), 'pdf-diff');
 
 function wrap(title: string, body: string): string {
   return `<!DOCTYPE html><html><head><meta charset="utf-8"/>
@@ -23,7 +25,7 @@ function wrap(title: string, body: string): string {
 }
 
 describe('emitter local — blocos de totais isolados', () => {
-  it('emite HTMLs em /tmp/pdf-diff', () => {
+  it('emite HTMLs em pdf-diff', () => {
     mkdirSync(OUT, { recursive: true });
     writeFileSync(
       `${OUT}/totals-internal.html`,

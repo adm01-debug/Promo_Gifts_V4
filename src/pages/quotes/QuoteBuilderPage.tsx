@@ -120,6 +120,11 @@ export default function QuoteBuilderPage() {
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   // FIX-E04: tracks the last successful server save so QuoteAutoSave can reset its baseline.
   const [serverSavedAt, setServerSavedAt] = useState<number | undefined>(undefined);
+  // Rascunho local restaurado não é alteração nova: rebaseline do QuoteAutoSave no commit
+  // seguinte (dados restaurados já propagados), sem acusar "não salvo" só por abrir o builder.
+  useEffect(() => {
+    if (s.draftRestoredAt) setServerSavedAt(s.draftRestoredAt);
+  }, [s.draftRestoredAt]);
   const conditionsStorageKey = `quote-builder:conditions-collapsed:${s.quoteId ?? 'new'}`;
   const [conditionsCollapsed, setConditionsCollapsed] = useState<boolean>(false);
   // Rehidrata o estado de colapso quando o ID do orçamento muda (incl. transição novo → salvo).

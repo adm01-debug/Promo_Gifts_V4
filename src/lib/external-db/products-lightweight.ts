@@ -14,7 +14,6 @@ const PRODUCT_SELECT_LIGHTWEIGHT =
   'color_swatches, has_colors';
 const LIGHTWEIGHT_PAGE_SIZE = 500;
 const LIGHTWEIGHT_MAX_CONCURRENCY = 3;
-const LIGHTWEIGHT_MIN_SPLIT_PAGE_SIZE = 125;
 const LIGHTWEIGHT_MAX_TOTAL = 15000;
 const LIGHTWEIGHT_INITIAL_BURST = 4;
 
@@ -80,13 +79,6 @@ export interface LightweightProduct {
   has_colors?: boolean | null;
 }
 
-function isTimeoutError(error: unknown): boolean {
-  const message = error instanceof Error ? error.message : String(error ?? '');
-  return /(statement timeout|canceling statement|57014|bad gateway|boot_error|function failed to start)/i.test(
-    message,
-  );
-}
-
 async function fetchPage(params: {
   filters: Record<string, unknown>;
   orderBy: { column: string; ascending?: boolean };
@@ -114,38 +106,6 @@ async function fetchPage(params: {
   }
 }
 
-async function fetchPageResilient(params: {
-  filters: Record<string, unknown>;
-  orderBy: { column: string; ascending?: boolean };
-  limit: number;
-  offset: number;
-  countMode?: 'estimated' | 'exact' | 'none' | 'planned';
-}): Promise<InvokeResult<LightweightProduct>> {
-  try {
-    return await fetchPage(params);
-  } catch (error) {
-    if (!isTimeoutError(error) || params.limit <= LIGHTWEIGHT_MIN_SPLIT_PAGE_SIZE) throw error;
-    const firstHalf = Math.ceil(params.limit / 2);
-    const secondHalf = params.limit - firstHalf;
-    logger.warn(
-      `[lightweight] Timeout at offset=${params.offset}, splitting ${params.limit} -> ${firstHalf}+${secondHalf}`,
-    );
-    const [left, right] = await Promise.all([
-      fetchPageResilient({ ...params, limit: firstHalf, countMode: 'none' }),
-      fetchPageResilient({
-        ...params,
-        offset: params.offset + firstHalf,
-        limit: secondHalf,
-        countMode: 'none',
-      }),
-    ]);
-    return {
-      records: [...left.records, ...right.records],
-      count: params.countMode === 'none' ? null : (left.count ?? right.count ?? null),
-    };
-  }
-}
-
 export async function fetchPromobrindProductsLightweight(options?: {
   search?: string;
   limit?: number;
@@ -159,7 +119,7 @@ export async function fetchPromobrindProductsLightweight(options?: {
   const baseOffset = options?.offset ?? 0;
 
   if (typeof options?.limit === 'number' && options.limit > 0) {
-    const result = await fetchPageResilient({
+    const result = await fetchPage({
       filters,
       orderBy,
       limit: options.limit,
@@ -205,7 +165,7 @@ export async function fetchPromobrindProductsLightweight(options?: {
   while (products.length < maxTotal) {
     let page: InvokeResult<LightweightProduct>;
     try {
-      page = await fetchPageResilient({
+      page = await fetchPage({
         filters,
         orderBy,
         limit: LIGHTWEIGHT_PAGE_SIZE,
@@ -234,7 +194,7 @@ async function fetchSequential(
   baseOffset: number,
   maxTotal: number,
 ): Promise<LightweightProduct[]> {
-  const firstPage = await fetchPageResilient({
+  const firstPage = await fetchPage({
     filters,
     orderBy,
     limit: LIGHTWEIGHT_PAGE_SIZE,
@@ -260,7 +220,7 @@ async function fetchSequential(
     const batch = offsets.slice(i, i + LIGHTWEIGHT_MAX_CONCURRENCY);
     const pages = await Promise.all(
       batch.map((offset) =>
-        fetchPageResilient({
+        fetchPage({
           filters,
           orderBy,
           limit: LIGHTWEIGHT_PAGE_SIZE,

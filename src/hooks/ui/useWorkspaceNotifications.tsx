@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { startOfDay, endOfDay } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { untypedFrom } from '@/lib/supabase-untyped';
 import { useAuth } from '@/contexts/AuthContext';
@@ -194,8 +195,10 @@ export function useWorkspaceNotifications() {
       const targetSearch = opts.search ?? search;
       const targetCategory = opts.category ?? category;
       const targetUnreadOnly = opts.unreadOnly ?? unreadOnly;
-      const targetStartDate = opts.startDate ?? dateRange.from?.toISOString();
-      const targetEndDate = opts.endDate ?? dateRange.to?.toISOString();
+      const targetStartDate =
+        opts.startDate ?? (dateRange.from ? startOfDay(dateRange.from).toISOString() : undefined);
+      const targetEndDate =
+        opts.endDate ?? (dateRange.to ? endOfDay(dateRange.to).toISOString() : undefined);
       const offset = (targetPage - 1) * limit;
 
       const hasData = notificationsLengthRef.current > 0;

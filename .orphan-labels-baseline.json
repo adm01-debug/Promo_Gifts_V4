@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-18",
+  "generatedAt": "2026-11-08",
   "description": "Snapshot de Labels sem htmlFor/id pré-existentes. Novas violações são bloqueadas pelo gate. Regenerar com UPDATE_BASELINE=1.",
-  "totalAtGeneration": 348,
+  "totalAtGeneration": 344,
   "entries": [
     {
       "file": "src/components/admin/access-security/CityWhitelistTab.tsx",
@@ -1348,24 +1348,6 @@
       "line": 96
     },
     {
-      "file": "src/components/compare/ComparisonWeightsPopover.tsx",
-      "hash": "c155e35964dbec53",
-      "snippet": "<Label className=\"text-xs\">{f.label}</Label>",
-      "line": 64
-    },
-    {
-      "file": "src/components/compare/ShareComparisonDialog.tsx",
-      "hash": "27e34d8569d571e4",
-      "snippet": "<Label>Validade do link</Label>",
-      "line": 116
-    },
-    {
-      "file": "src/components/compare/ShareComparisonDialog.tsx",
-      "hash": "32d5519c12d4193d",
-      "snippet": "<Label>Link público</Label>",
-      "line": 133
-    },
-    {
       "file": "src/components/favorites/CreateListDialog.tsx",
       "hash": "8987dd774b0f96c8",
       "snippet": "<Label>Cliente CRM (opcional)</Label>",
@@ -1376,12 +1358,6 @@
       "hash": "d6eec8153220b9b2",
       "snippet": "<Label>Cor</Label>",
       "line": 134
-    },
-    {
-      "file": "src/components/favorites/ShareListDialog.tsx",
-      "hash": "dc725ae66b577c18",
-      "snippet": "<Label>Link público</Label>",
-      "line": 87
     },
     {
       "file": "src/components/filters/filter-panel/sections/MaterialsFilter.tsx",
@@ -1583,15 +1559,15 @@
     },
     {
       "file": "src/components/magic-up/MagicUpCreativeControls.tsx",
-      "hash": "6519eb2306c9ece8",
-      "snippet": "<Label className=\"text-xs text-muted-foreground\">Negative prompt</Label>",
-      "line": 86
+      "hash": "3ce3c4e7408c93f7",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">{label}</Label>",
+      "line": 102
     },
     {
       "file": "src/components/magic-up/MagicUpCreativeControls.tsx",
-      "hash": "f7472c410b5e09f4",
-      "snippet": "<Label className=\"text-xs text-muted-foreground\">{label}</Label>",
-      "line": 64
+      "hash": "9ef31567f2f62b94",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">O que evitar</Label>",
+      "line": 124
     },
     {
       "file": "src/components/magic-up/MagicUpLogoLibrary.tsx",
@@ -1613,33 +1589,33 @@
     },
     {
       "file": "src/components/magic-up/PromptGenerator.tsx",
-      "hash": "09fce74be0cc99a0",
+      "hash": "1253419e00c65790",
       "snippet": "<Label className=\"flex items-center gap-1 text-[11px] text-muted-foreground\">",
-      "line": 266
+      "line": 288
     },
     {
       "file": "src/components/magic-up/PromptGenerator.tsx",
-      "hash": "170121c9fa38553d",
+      "hash": "a6b59d78700052bd",
       "snippet": "<Label className=\"flex items-center gap-1 text-[11px] text-muted-foreground\">",
-      "line": 284
+      "line": 270
     },
     {
       "file": "src/components/magic-up/PromptGenerator.tsx",
-      "hash": "5e9b803ee6aaf4e7",
+      "hash": "a7629a26bedb7ab5",
       "snippet": "<Label className=\"flex items-center gap-1 text-[11px] text-muted-foreground\">",
-      "line": 302
+      "line": 324
     },
     {
       "file": "src/components/magic-up/PromptGenerator.tsx",
-      "hash": "93eff6ab5cbe72bf",
+      "hash": "edef8a9cec2242da",
       "snippet": "<Label className=\"flex items-center gap-1 text-[11px] text-muted-foreground\">",
-      "line": 320
+      "line": 306
     },
     {
       "file": "src/components/mockup/MockupConfigPanel.tsx",
-      "hash": "2587b066b39de37b",
+      "hash": "fb6d2c4716e673a5",
       "snippet": "<Label className=\"flex items-center gap-2\">",
-      "line": 438
+      "line": 464
     },
     {
       "file": "src/components/mockup/TechniqueColorConfigDialog.tsx",
@@ -1738,10 +1714,10 @@
       "line": 170
     },
     {
-      "file": "src/components/quotes/QuoteBuilderSummaryColumn.tsx",
-      "hash": "9df23c986dfd0124",
+      "file": "src/components/quotes/QuoteBuilderSummaryDialogs.tsx",
+      "hash": "ec96f9aa5ce15ec8",
       "snippet": "<Label>",
-      "line": 1582
+      "line": 186
     },
     {
       "file": "src/components/quotes/QuoteSignaturePad.tsx",
@@ -1997,21 +1973,21 @@
     },
     {
       "file": "src/pages/magic-up/MagicUpConfigPanel.tsx",
-      "hash": "0d7b6813addcb1fb",
+      "hash": "1fdbac6d3006bb31",
       "snippet": "<Label className=\"flex items-center gap-1.5 text-xs text-muted-foreground\">",
-      "line": 294
+      "line": 306
     },
     {
       "file": "src/pages/magic-up/MagicUpConfigPanel.tsx",
-      "hash": "895c4fc7fd13869f",
+      "hash": "9ed0271dca2d0147",
       "snippet": "<Label className=\"mb-1 block text-xs text-muted-foreground\">",
-      "line": 521
+      "line": 495
     },
     {
       "file": "src/pages/magic-up/MagicUpConfigPanel.tsx",
-      "hash": "c1692963902d3e64",
+      "hash": "9f64900932e6d63e",
       "snippet": "<Label className=\"flex items-center gap-1.5 text-xs text-muted-foreground\">",
-      "line": 332
+      "line": 268
     },
     {
       "file": "src/pages/quotes/QuoteBuilderPage.tsx",

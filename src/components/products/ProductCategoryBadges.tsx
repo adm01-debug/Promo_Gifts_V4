@@ -4,7 +4,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { Badge } from '@/components/ui/badge';
 import { Package, Palette, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getCategoryIcon, useCategoryIcons } from '@/hooks/products/useCategoryIcons';
+import { useCategoryIcons } from '@/hooks/products/useCategoryIcons';
+import { getCategoryIcon } from '@/hooks/products/getCategoryIcon';
 import { CategoryIcon as CategoryIconComponent } from '@/components/ui/CategoryIcon';
 
 /**

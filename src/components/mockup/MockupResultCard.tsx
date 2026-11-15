@@ -21,6 +21,8 @@ import { MockupBeforeAfter } from './MockupBeforeAfter';
 import { MockupAnnotations, type Annotation } from './MockupAnnotations';
 import { ShareMenu } from './ShareMenu';
 import { useReducedMotion } from '@/hooks/ui/useReducedMotion';
+import { MockupCompletionStates, type MockupCompletionState } from './MockupCompletionStates';
+import { usePreservedMockupResult } from './usePreservedMockupResult';
 
 /**
  * Tokens de cor do tema (Blue Premium) usados na celebração.
@@ -61,6 +63,14 @@ interface MockupResultCardProps {
   /** Callback to persist annotations */
   onAnnotationsChange?: (annotations: Annotation[]) => void;
   annotations?: Annotation[];
+  /** Erro da geração vindo do dono do estado (useMockupGenerator). */
+  generationError?: string | null;
+  /** Repetir a geração da imagem. */
+  onRetryGenerate?: () => void;
+  /** Persistência do projeto. `done` só com gravação CONFIRMADA — a imagem não conta como salvo. */
+  projectSave?: MockupCompletionState;
+  /** Contador de reset do projeto: muda ⇒ o resultado anterior preservado é descartado. */
+  projectResetCount?: number;
 }
 
 export const MockupResultCard = memo(
@@ -75,6 +85,10 @@ export const MockupResultCard = memo(
     beforeImage,
     onAnnotationsChange,
     annotations = [],
+    generationError,
+    onRetryGenerate,
+    projectSave,
+    projectResetCount,
   }: MockupResultCardProps) => {
     const [zoom, setZoom] = useState(1);
     const [showSuccess, setShowSuccess] = useState(false);
@@ -83,6 +97,13 @@ export const MockupResultCard = memo(
     const [fullscreenZoom, setFullscreenZoom] = useState(1);
     const [isClientMode, setIsClientMode] = useState(false);
     const prefersReducedMotion = useReducedMotion();
+    // Resultado anterior preservado: amarrado ao projeto e à falha lembrada
+    // (dispensar o alerta não descarta nada) — ver usePreservedMockupResult.
+    const { displayedMockup, showsPreviousResult } = usePreservedMockupResult({
+      generatedMockup,
+      generationError,
+      projectResetCount,
+    });
 
     // Trigger success animation when mockup is generated
     useEffect(() => {
@@ -118,6 +139,9 @@ export const MockupResultCard = memo(
         setFullscreenZoom(1);
       }
     }, [generatedMockup]);
+
+    // Há imagem atual ⇒ a imagem saiu. Só é erro de imagem quando não há imagem atual.
+    const imageStatus: MockupCompletionState['status'] = generatedMockup ? 'done' : 'error';
 
     const handleZoomIn = () => setZoom((z) => Math.min(z + 0.25, 3));
     const handleZoomOut = () => setZoom((z) => Math.max(z - 0.25, 0.5));
@@ -163,8 +187,8 @@ export const MockupResultCard = memo(
       );
     }
 
-    // Success State with Mockup
-    if (generatedMockup) {
+    // Success State with Mockup (ou o resultado anterior preservado numa falha)
+    if (displayedMockup) {
       return (
         <Card
           data-testid="mockup-result-card"
@@ -191,20 +215,36 @@ export const MockupResultCard = memo(
                 </div>
                 <div>
                   <span className="text-foreground">
-                    {showSuccess ? 'Mockup Criado!' : 'Mockup Gerado'}
+                    {showsPreviousResult
+                      ? 'Resultado anterior'
+                      : showSuccess
+                        ? 'Mockup Criado!'
+                        : 'Mockup Gerado'}
                   </span>
                   {productName && (
                     <p className="text-xs font-normal text-muted-foreground">{productName}</p>
                   )}
+                  {showsPreviousResult && (
+                    <p data-testid="previous-result-notice" className="text-xs text-destructive">
+                      Imagem anterior — a nova tentativa falhou. Não envie como se fosse a nova.
+                    </p>
+                  )}
                 </div>
               </CardTitle>
               <div className="flex items-center gap-2">
-                <ShareMenu
-                  mockupUrl={generatedMockup}
-                  productName={productName}
-                  techniqueName={techniqueName}
-                />
-                <Button size="sm" onClick={onDownload} className="gap-1.5">
+                {!showsPreviousResult && (
+                  <ShareMenu
+                    mockupUrl={displayedMockup}
+                    productName={productName}
+                    techniqueName={techniqueName}
+                  />
+                )}
+                <Button
+                  size="sm"
+                  onClick={onDownload}
+                  disabled={!generatedMockup}
+                  className="gap-1.5"
+                >
                   <Download className="h-4 w-4" aria-hidden="true" /> Baixar
                 </Button>
               </div>
@@ -212,8 +252,16 @@ export const MockupResultCard = memo(
           </CardHeader>
 
           <CardContent className="space-y-3 p-4">
+            {/* Imagem gerada e projeto salvo: condições independentes. */}
+            <MockupCompletionStates
+              imageStatus={imageStatus}
+              imageError={generationError}
+              onRetryImage={onRetryGenerate}
+              projectSave={projectSave}
+            />
+
             {/* Before/After toggle */}
-            {beforeImage && (
+            {beforeImage && !showsPreviousResult && (
               <div className="flex items-center gap-2">
                 <Button
                   variant={showBeforeAfter ? 'default' : 'outline'}
@@ -228,8 +276,8 @@ export const MockupResultCard = memo(
             )}
 
             {/* Before/After or Result */}
-            {showBeforeAfter && beforeImage ? (
-              <MockupBeforeAfter beforeImage={beforeImage} afterImage={generatedMockup} />
+            {showBeforeAfter && beforeImage && !showsPreviousResult ? (
+              <MockupBeforeAfter beforeImage={beforeImage} afterImage={displayedMockup} />
             ) : (
               <div
                 className={cn(
@@ -242,7 +290,7 @@ export const MockupResultCard = memo(
                   style={{ cursor: zoom > 1 ? 'grab' : 'default' }}
                 >
                   <img
-                    src={generatedMockup}
+                    src={displayedMockup}
                     alt="Mockup gerado com IA"
                     className="max-h-full max-w-full object-contain transition-transform duration-200"
                     style={{ transform: `scale(${zoom})` }}
@@ -290,7 +338,7 @@ export const MockupResultCard = memo(
             {/* Annotations */}
             {onAnnotationsChange && (
               <MockupAnnotations
-                imageUrl={generatedMockup}
+                imageUrl={displayedMockup}
                 annotations={annotations}
                 onAnnotationsChange={onAnnotationsChange}
               />
@@ -324,6 +372,11 @@ export const MockupResultCard = memo(
                 </Button>
               )}
             </div>
+
+            {/* FT-174: Disclaimer de prévia indicativa */}
+            <p className="text-center text-[11px] text-muted-foreground/70">
+              Prévia indicativa — o resultado final pode variar conforme o produto físico.
+            </p>
           </CardContent>
 
           {/* Fullscreen Lightbox */}
@@ -344,6 +397,7 @@ export const MockupResultCard = memo(
                       size="sm"
                       variant="secondary"
                       onClick={onDownload}
+                      disabled={!generatedMockup}
                       className="gap-1.5 shadow-md"
                     >
                       <Download className="h-4 w-4" aria-hidden="true" /> Baixar
@@ -411,7 +465,7 @@ export const MockupResultCard = memo(
                   style={{ cursor: fullscreenZoom > 1 ? 'grab' : 'default' }}
                 >
                   <img
-                    src={generatedMockup}
+                    src={displayedMockup}
                     alt="Mockup em tela cheia"
                     className="max-h-[85vh] max-w-full object-contain transition-transform duration-200"
                     style={{ transform: `scale(${fullscreenZoom})` }}

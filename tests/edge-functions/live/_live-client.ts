@@ -66,8 +66,39 @@ export const ALLOW_COSTLY = (readEnv("EDGE_LIVE_COSTLY") ?? "") === "1";
 
 const TIMEOUT_MS = Number(readEnv("EDGE_LIVE_TIMEOUT_MS")) || 15_000;
 const RETRY_STATUSES = new Set([502, 503, 504]);
-const RETRY_COUNT = Number(readEnv("EDGE_LIVE_RETRIES")) || 3;
+const RETRY_COUNT = (() => {
+  // "0" desliga os retries (antes `|| 3` transformava 0 em 3).
+  // Só inteiro >= 0 é aceito; negativo ("-1": o loop nunca rodava e callEdge devolvia
+  // undefined), fracionário ("1.5": `attempt === RETRY_COUNT` nunca batia) ou não
+  // numérico caem no padrão 3. Ver tests/edge-functions/live-client-retry.test.ts.
+  const n = Number(readEnv("EDGE_LIVE_RETRIES"));
+  return Number.isInteger(n) && n >= 0 && readEnv("EDGE_LIVE_RETRIES") !== undefined && readEnv("EDGE_LIVE_RETRIES") !== "" ? n : 3;
+})();
 const RETRY_DELAY_MS = Number(readEnv("EDGE_LIVE_RETRY_DELAY_MS")) || 800;
+/**
+ * Deadline do signInWithPassword em getJwt() — ver nota no MAX_RETRY_BUDGET_MS.
+ * 30s, não 10s: observado em CI real (runs 41539775319 e 41539114390,
+ * 2026-11-02) auth/v1/token respondendo em até 26116ms — 10s disparava
+ * JwtTimeoutError em arquivos diferentes a cada rerun (persistente, não
+ * flaky), derrubando o job por causa do próprio timeout, não por bug.
+ */
+const JWT_TIMEOUT_MS = Number(readEnv("EDGE_LIVE_JWT_TIMEOUT_MS")) || 30_000;
+
+/**
+ * Pior caso de wall-clock de callEdge(): JWT_TIMEOUT_MS (getJwt() é aguardado
+ * ANTES do loop de retry, para roles != anon — achado do Qodo na PR #3057)
+ * + (RETRY_COUNT+1) tentativas, cada uma podendo levar até TIMEOUT_MS (cold
+ * start real, não é só rede), mais o backoff linear entre tentativas
+ * (RETRY_DELAY_MS * (RETRY_COUNT*(RETRY_COUNT+1))/2).
+ * Exportado para _live-suite.ts derivar o timeout do `it()` daqui — timeout do
+ * teste menor que isso cancela a chamada antes do próprio retry terminar
+ * (causa real do timeout de 30s em intelligence-substitute-applied/magic-up-score,
+ * 2026-11-02: 4 tentativas de 15s cada já somam 60s, sem contar o backoff).
+ */
+export const MAX_RETRY_BUDGET_MS =
+  JWT_TIMEOUT_MS +
+  (RETRY_COUNT + 1) * TIMEOUT_MS +
+  RETRY_DELAY_MS * ((RETRY_COUNT * (RETRY_COUNT + 1)) / 2);
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -83,6 +114,8 @@ export interface CallEdgeOptions {
   /** Query string (sem o "?"). */
   query?: string;
   signalTimeoutMs?: number;
+  /** false: não repete após timeout do cliente (chamadas caras ou não idempotentes). */
+  retryOnTimeout?: boolean;
 }
 
 export interface EdgeResult {
@@ -90,6 +123,8 @@ export interface EdgeResult {
   headers: Headers;
   text: string;
   json: unknown;
+  /** true quando o CLIENTE abortou por timeout (408 sintético): não é resposta da função. */
+  timedOut?: boolean;
 }
 
 /**
@@ -143,11 +178,17 @@ export async function callEdge(name: string, opts: CallEdgeOptions = {}): Promis
       if (!RETRY_STATUSES.has(res.status) || attempt === RETRY_COUNT) return lastResult;
     } catch (err: unknown) {
       // AbortError means our client-side timeout fired — not a server crash.
-      // Return synthetic 408 so tests can assert status < 500 without throwing.
+      // Cold start (1ª chamada carrega as dependências da função) estoura o timeout e a
+      // tentativa seguinte já pega a função quente: repete antes de concluir. Só no fim
+      // devolve o 408 sintético com timedOut (lentidão persistente = falha real).
+      // (magic-up-score / intelligence-substitute-applied: 9 falsos vermelhos em 12/11.)
       if ((err as { name?: string }).name === "AbortError") {
-        return { status: 408, headers: new Headers(), text: "", json: null };
+        lastResult = { status: 408, headers: new Headers(), text: "", json: null, timedOut: true };
+        // Chamadas caras/não idempotentes (opts.retryOnTimeout === false) não repetem.
+        if (attempt === RETRY_COUNT || opts.retryOnTimeout === false) return lastResult;
+      } else {
+        throw err;
       }
-      throw err;
     } finally {
       clearTimeout(t);
     }
@@ -180,6 +221,14 @@ const ROLE_CREDS: Record<Exclude<EdgeRole, "anon">, { email?: string; password?:
 
 const jwtCache = new Map<EdgeRole, string | null>();
 
+/** Marca especificamente o timeout do sign-in — nunca cacheado como "sem credencial". */
+class JwtTimeoutError extends Error {
+  constructor() {
+    super("getJwt: signInWithPassword timeout");
+    this.name = "JwtTimeoutError";
+  }
+}
+
 /** Retorna o access_token do role (ou null se não há credencial / falha de login). */
 export async function getJwt(role: EdgeRole): Promise<string | null> {
   if (role === "anon") return null;
@@ -196,14 +245,24 @@ export async function getJwt(role: EdgeRole): Promise<string | null> {
     const client = createClient(SUPABASE_URL, ANON_KEY, {
       auth: { persistSession: false, autoRefreshToken: false },
     });
-    const { data, error } = await client.auth.signInWithPassword({
-      email: creds.email,
-      password: creds.password,
-    });
+    // Timeout explícito — sem ele, signInWithPassword() pode ficar pendurado
+    // sem limite e o budget de MAX_RETRY_BUDGET_MS fica sem sentido (achado
+    // do Qodo na PR #3057: a espera do JWT acontece ANTES do retry loop).
+    const { data, error } = await Promise.race([
+      client.auth.signInWithPassword({ email: creds.email, password: creds.password }),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new JwtTimeoutError()), JWT_TIMEOUT_MS)),
+    ]);
     const token = error ? null : (data.session?.access_token ?? null);
     jwtCache.set(role, token);
     return token;
-  } catch {
+  } catch (err) {
+    // Timeout ≠ credencial ausente/inválida (achado Qodo na PR #3057): cachear
+    // null aqui faria um login lento-mas-válido virar "sem credencial" PARA
+    // SEMPRE (cache por role), degradando testes autenticados pra anon/skip
+    // silenciosamente — justo o cenário que esses testes deveriam cobrir.
+    // Deixa propagar: o teste falha alto (erro real), em vez de passar verde
+    // sem ter exercitado o caminho autenticado.
+    if (err instanceof JwtTimeoutError) throw err;
     jwtCache.set(role, null);
     return null;
   }

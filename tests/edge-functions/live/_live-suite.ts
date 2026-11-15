@@ -21,10 +21,17 @@ import {
   describeLive,
   getJwt,
   ALLOW_COSTLY,
+  MAX_RETRY_BUDGET_MS,
   type CallEdgeOptions,
   type EdgeRole,
 } from "./_live-client";
-import { expectedAnonStatuses, happyPathRole, isDestructive, SUPPORTS_DRY_RUN } from "./_authz";
+import {
+  expectedAnonStatuses,
+  happyPathRole,
+  isDestructive,
+  LENIENT_BODY,
+  SUPPORTS_DRY_RUN,
+} from "./_authz";
 import { errorEnvelopeSchema, type Schema } from "./_schemas";
 
 type Body = CallEdgeOptions["body"];
@@ -68,8 +75,13 @@ export interface LiveSuiteDescriptor {
 }
 
 // Requests live (cold start + retry em 5xx) podem passar dos 5s default do
-// vitest. Damos folga generosa por teste.
-const LIVE_TEST_TIMEOUT = Number(process.env.EDGE_LIVE_TEST_TIMEOUT_MS) || 30_000;
+// vitest. O fallback deriva de MAX_RETRY_BUDGET_MS (pior caso real do próprio
+// callEdge) + 20% de margem — um valor fixo menor que esse budget corta a
+// chamada antes do retry terminar (bug real: 2026-11-02, 6 testes de
+// intelligence-substitute-applied/magic-up-score estouraram 30_000ms fixos
+// porque 4 tentativas de 15s já somam 60s).
+const LIVE_TEST_TIMEOUT =
+  Number(process.env.EDGE_LIVE_TEST_TIMEOUT_MS) || Math.ceil(MAX_RETRY_BUDGET_MS * 1.2);
 
 const DEFAULT_INVALID: InvalidInput[] = [
   { label: "JSON inválido", body: '{"broken": ' },
@@ -126,7 +138,8 @@ export function runLiveSuite(desc: LiveSuiteDescriptor): void {
     const invalids = [...DEFAULT_INVALID, ...(desc.invalidInputs ?? [])];
     for (const inv of invalids) {
       it(`input inválido (${inv.label}) → sem crash 5xx`, async () => {
-        const useRole = inv.role ?? (anon.mode === "reject" ? role : "anon");
+        // LENIENT_BODY: autenticado, a função executaria de verdade com valores padrão.
+        const useRole = inv.role ?? (anon.mode === "reject" && !LENIENT_BODY.has(fn) ? role : "anon");
         // Se o tier exige role e não há credencial, a chamada vira 401 (ainda <500).
         const res = await callEdge(fn, {
           method,
@@ -135,6 +148,8 @@ export function runLiveSuite(desc: LiveSuiteDescriptor): void {
           headers: { ...baseHeaders, ...inv.headers },
           body: inv.body,
         });
+        // 408 sintético = timeout do CLIENTE: a função seguiu executando; não é "4xx de validação".
+        expect(res.timedOut, `${inv.label}: timeout do cliente — a função executou além do limite`).not.toBe(true);
         expectNoCrash(res.status, inv.label);
         // Quando alcançamos o handler autenticado, esperamos 4xx (validação).
         if (useRole !== "anon" && (await getJwt(useRole)) && res.status !== 401 && res.status !== 403) {
@@ -167,6 +182,8 @@ export function runLiveSuite(desc: LiveSuiteDescriptor): void {
           }
         }
         const res = await callEdge(fn, {
+          // happy-path executa a função de verdade: timeout não é repetido (sem efeito duplicado/custo)
+          retryOnTimeout: false,
           method: hp.method ?? method,
           query: hp.query ?? query,
           role: hpRole,

@@ -33,7 +33,7 @@ if ! curl -sf http://localhost:8080 >/dev/null 2>&1; then
   npm run dev >/tmp/visual-dev.log 2>&1 &
   DEV_PID=$!
   STARTED_DEV="1"
-  trap 'kill ${DEV_PID} 2>/dev/null || true' EXIT
+  trap 'kill ${DEV_PID} 2>/dev/null; wait ${DEV_PID} 2>/dev/null || true' EXIT
   timeout 90 bash -c 'until curl -sf http://localhost:8080 > /dev/null 2>&1; do sleep 1; done'
 else
   echo "▶ 3/4 Dev server já está rodando — reutilizando."

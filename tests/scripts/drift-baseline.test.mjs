@@ -21,6 +21,7 @@ import {
   maxNumericVersion,
   prepareWorkdir,
   sanitizeBaselineForReplay,
+  sanitizeReplayMigration,
   replayFileName,
   selectReplayMigrations,
 } from '../../scripts/drift-baseline.mjs';
@@ -74,7 +75,96 @@ describe('replayFileName', () => {
   });
 });
 
+describe('sanitizeReplayMigration', () => {
+  it('remove somente o BOM inicial da cópia de replay e preserva U+FEFF interno', () => {
+    const sql = '\uFEFFSELECT \'\uFEFF\';';
+    expect(sanitizeReplayMigration('20261107180000_security_fix.sql', sql)).toBe(
+      'SELECT \'\uFEFF\';',
+    );
+  });
+
+  it('remove CONCURRENTLY só de CREATE INDEX executável no shadow', () => {
+    const fileName = '20261101140003_sb0006_index_kit_fk_user_id.sql';
+    const sql = [
+      'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_a ON public.a(id);',
+      '  CREATE UNIQUE INDEX CONCURRENTLY idx_b ON public.b(id);',
+      '-- CREATE INDEX CONCURRENTLY idx_comment ON public.c(id);',
+      "SELECT 'CREATE INDEX CONCURRENTLY idx_text ON public.d(id)';",
+      'DROP INDEX CONCURRENTLY IF EXISTS public.idx_old;',
+    ].join('\n');
+
+    expect(sanitizeReplayMigration(fileName, sql)).toBe(
+      [
+        'CREATE INDEX IF NOT EXISTS idx_a ON public.a(id);',
+        '  CREATE UNIQUE INDEX idx_b ON public.b(id);',
+        '-- CREATE INDEX CONCURRENTLY idx_comment ON public.c(id);',
+        "SELECT 'CREATE INDEX CONCURRENTLY idx_text ON public.d(id)';",
+        'DROP INDEX CONCURRENTLY IF EXISTS public.idx_old;',
+      ].join('\n'),
+    );
+  });
+
+  it('falha fechado se a migration histórica mudar e não tiver exatamente dois índices', () => {
+    const fileName = '20261101140003_sb0006_index_kit_fk_user_id.sql';
+    for (const count of [0, 1, 3]) {
+      const sql = Array.from(
+        { length: count },
+        (_, index) =>
+          `CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_${index} ON public.a(id);`,
+      ).join('\n');
+      expect(() => sanitizeReplayMigration(fileName, sql)).toThrow(
+        new RegExp(`esperado\\(s\\) 2 .* encontrado\\(s\\) ${count}`),
+      );
+    }
+  });
+
+  it('aceita a migration real da #3550 (1 índice CONCURRENTLY) no replay do shadow', () => {
+    const fileName = '20261113235000_perf_idx_products_active_created_at_desc.sql';
+    const sql = readFileSync(join('supabase', 'migrations', fileName), 'utf8');
+    const out = sanitizeReplayMigration(fileName, sql);
+    expect(out).not.toMatch(/^\s*CREATE\s+(?:UNIQUE\s+)?INDEX\s+CONCURRENTLY\b/im);
+    expect(out).toMatch(/^CREATE INDEX IF NOT EXISTS idx_products_active_created_at_desc$/m);
+  });
+
+  it('não reescreve migrations fora do allowlist de compatibilidade do pipeline', () => {
+    const sql = 'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_a ON public.a(id);';
+    expect(sanitizeReplayMigration('20261109999999_future.sql', sql)).toBe(sql);
+  });
+});
+
 describe('prepareWorkdir', () => {
+  it('reescreve CONCURRENTLY somente na cópia temporária do replay', () => {
+    const migration = '20261101140003_sb0006_index_kit_fk_user_id.sql';
+    const sourceSql = [
+      'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_a ON public.a(id);',
+      'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_b ON public.b(id);',
+      '',
+    ].join('\n');
+    const root = fixtureRepo({
+      baselineVersion: '20261015140000',
+      ledgerVersions: ['20261015140000'],
+      migrations: [migration],
+    });
+    const source = join(root, 'supabase', 'migrations', migration);
+    writeFileSync(source, sourceSql);
+    const out = join(tmp(), 'wd');
+
+    prepareWorkdir({
+      rootDir: root,
+      outDir: out,
+      appliedVersions: ['20261015140000', '20261101140003'],
+      projectRef: 'x',
+    });
+
+    const delivered = readFileSync(
+      join(out, 'supabase', 'migrations', replayFileName('20261015140000', 1, migration)),
+      'utf8',
+    );
+    expect(delivered).not.toContain('CONCURRENTLY');
+    expect(delivered.match(/^CREATE INDEX/gm)).toHaveLength(2);
+    expect(readFileSync(source, 'utf8')).toBe(sourceSql);
+  });
+
   it('monta config.toml com PG 17, o baseline e o replay renumerado em ordem', () => {
     const root = fixtureRepo({
       baselineVersion: '20261015140000',
@@ -239,6 +329,15 @@ describe('sanitizeBaselineForReplay', () => {
     const delivered = readFileSync(join(mig, '20261015140001_drift_replay_cron_seed.sql'), 'utf8');
     expect(delivered).toContain("cron.schedule('auto-block-offenders'");
     expect(delivered).toContain("cron.schedule('image-dimensions-backfill'");
+    expect(delivered).toContain("'generate-blurhashes'");
+    expect(delivered).toContain('cron.alter_job(job_id := v_id, active := false)');
+    for (const fixedId of [114, 224, 235, 241, 243, 276, 292, 303]) {
+      expect(delivered).toMatch(new RegExp(`\\b${fixedId}\\b`));
+    }
+    expect(delivered).toContain('v_id <> 235');
+    expect(delivered).toContain('conjunto de jobids fixos incompleto');
+    expect(delivered).toContain('pg_publication_tables');
+    expect(delivered).toContain('ALTER PUBLICATION supabase_realtime ADD TABLE auth.users');
     expect(delivered).toContain('cron.unschedule(v_id)');
     expect(delivered).not.toContain('UPDATE cron.job');
   });
@@ -527,6 +626,23 @@ describe('export-schema-snapshot — credenciais presentes e CLI ausente', () =>
 });
 
 describe('sanitizeBaselineForReplay — round-trip do dump', () => {
+  it('popula materialized views vazias no shadow sem alterar a definição nem texto fora da cláusula', () => {
+    const sql = [
+      'CREATE MATERIALIZED VIEW "analytics"."mv_a" AS',
+      '  SELECT 1 AS id',
+      '  WITH NO DATA;',
+      'CREATE VIEW "public"."v_a" AS SELECT \'WITH NO DATA;\' AS note;',
+      'CREATE FUNCTION "public"."f_a"() RETURNS text LANGUAGE sql AS $fn$',
+      "  SELECT 'WITH NO DATA;'",
+      '$fn$;',
+    ].join('\n');
+    const out = sanitizeBaselineForReplay(sql);
+    expect(out.rewrites.materializedViewPopulation).toBe(1);
+    expect(out.sql).toContain('  SELECT 1 AS id\n  ;');
+    expect(out.sql).toContain("CREATE VIEW \"public\".\"v_a\" AS SELECT 'WITH NO DATA;' AS note;");
+    expect(out.sql).toContain("SELECT 'WITH NO DATA;'");
+  });
+
   it('passa o ARRAY de varchar por `::character varying[]` antes do cast para text[]', () => {
     const sql = `CREATE TABLE "public"."t" (
     "kind" character varying,
@@ -940,5 +1056,23 @@ describe('dropDumpLossyFunctions — tipo entre aspas com nome de palavra-chave 
 
   it('controle: "text" (não é palavra-chave) segue equivalente a text', () => {
     expect(dropDumpLossyFunctions(remote('text'), shadow('"text"')).dropped).toEqual(['public.f(x text)']);
+  });
+});
+
+describe('versões só de ledger (P09)', () => {
+  it('as versões que a 20261114014500 registra no ledger já estão no snapshot do baseline e não são replayadas', () => {
+    const repoRoot = join(import.meta.dirname, '..', '..');
+    const migrationsDir = join(repoRoot, 'supabase', 'migrations');
+    const p09 = readFileSync(join(migrationsDir, '20261114014500_p09_reconcile_ledger_schema_migrations.sql'), 'utf8');
+    const ledgerOnly = [...p09.matchAll(/^\s*\('(\d{14})'\)/gm)].map((m) => m[1]);
+    expect(ledgerOnly).toHaveLength(360);
+    const baseline = findBaseline(repoRoot);
+    expect(ledgerOnly.filter((v) => !baseline.versions.has(v))).toEqual([]);
+    const replay = selectReplayMigrations({
+      files: readdirSync(migrationsDir),
+      baselineVersions: baseline.versions,
+      appliedVersions: [...ledgerOnly, '20261114014500'],
+    });
+    expect(replay).toEqual(['20261114014500_p09_reconcile_ledger_schema_migrations.sql']);
   });
 });

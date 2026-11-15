@@ -83,7 +83,7 @@ test.describe('Replenishment Grid Advanced Visual & A11y @mobile', () => {
 
       test('Grid Visual Regression & Scroll', async ({ page }) => {
         await page.goto('/reposicao');
-        const grid = page.locator('div[role="list"]');
+        const grid = page.getByRole('list', { name: /^Grade de produtos repostos/ });
         await grid.waitFor({ state: 'visible' });
         await page.waitForTimeout(1000);
 
@@ -103,11 +103,11 @@ test.describe('Replenishment Grid Advanced Visual & A11y @mobile', () => {
 
       test('Accessibility Scan', async ({ page }) => {
         await page.goto('/reposicao');
-        const grid = page.locator('div[role="list"]');
+        const grid = page.getByRole('list', { name: /^Grade de produtos repostos/ });
         await grid.waitFor({ state: 'visible' });
 
         const results = await new AxeBuilder({ page })
-          .include('div[role="list"]')
+          .include('div[role="list"][aria-label^="Grade de produtos repostos"]')
           .analyze();
         
         expect(results.violations).toEqual([]);

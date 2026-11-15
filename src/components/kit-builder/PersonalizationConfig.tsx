@@ -20,7 +20,6 @@ import {
   Images,
   Sparkles,
   HelpCircle,
-  ArrowLeftRight,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -47,6 +46,7 @@ import {
   type KitItemPersonalization,
 } from '@/lib/kit-builder';
 import { useProductCustomizationOptions } from '@/hooks/products';
+import { SwapItemBanner } from '@/components/kit-builder/SwapItemBanner';
 import { useKitComponentPrintAreas } from '@/hooks/kit-builder/useKitBuilderQueries';
 import { useCustomizationPriceReactive } from '@/hooks/simulation';
 import type { GravacaoLocation } from '@/types/customization';
@@ -67,6 +67,8 @@ interface PersonalizationConfigProps {
   onItemPersonalizationChange: (itemId: string, config: KitItemPersonalization) => void;
   /** Navigates back to the items step, preserving state. */
   onEditItems?: () => void;
+  /** Navigates to the items step to substitute a specific item (line ID). */
+  onReplaceItem?: (itemId: string) => void;
   /** Reopens the shared Kit Maker onboarding tour. */
   onOpenGuide?: () => void;
 }
@@ -344,6 +346,10 @@ function ItemPersonalizationCard({
     priceData?.setup_total,
     priceData?.success,
     priceData?.total_cobrado,
+    personalization.estimatedPrice,
+    personalization.setupCost,
+    personalization.totalPrice,
+    personalization.pricedQuantity,
   ]);
 
   const handleToggle = (enabled: boolean) => {
@@ -1076,15 +1082,26 @@ function PersonalizationSummaryPanel({ targets }: { targets: PersonalizationTarg
             target.personalization.enabled &&
             Boolean(target.personalization.techniqueId) &&
             Number.isFinite(target.personalization.estimatedPrice) &&
+            (target.personalization.estimatedPrice ?? 0) > 0 &&
             Number.isFinite(target.personalization.totalPrice) &&
             target.personalization.pricedQuantity === target.quantity;
+          // FT-107: estado inválido — técnica selecionada mas preço retornou 0 ou negativo
+          const invalid =
+            target.personalization.enabled &&
+            Boolean(target.personalization.techniqueId) &&
+            typeof target.personalization.pricedQuantity === 'number' &&
+            target.personalization.pricedQuantity === target.quantity &&
+            typeof target.personalization.estimatedPrice === 'number' &&
+            target.personalization.estimatedPrice <= 0;
           const status = !target.personalization.enabled
             ? 'Sem personalização'
             : !target.personalization.techniqueId
               ? 'Pendente'
-              : configured
-                ? 'Concluído'
-                : 'Em edição';
+              : invalid
+                ? 'Inválido'
+                : configured
+                  ? 'Concluído'
+                  : 'Em edição';
           const dimensions =
             target.personalization.width && target.personalization.height
               ? `${target.personalization.width} × ${target.personalization.height} cm`
@@ -1100,6 +1117,22 @@ function PersonalizationSummaryPanel({ targets }: { targets: PersonalizationTarg
                   {target.personalization.techniqueName || 'Sem técnica'}
                   {dimensions ? ` · ${dimensions}` : ''}
                 </p>
+                {/* FT-108: custo adicional por unidade — só quando o preço está atualizado para a qty atual */}
+                {configured &&
+                  typeof target.personalization.estimatedPrice === 'number' &&
+                  target.personalization.estimatedPrice > 0 && (
+                    <p className="truncate text-xs text-muted-foreground">
+                      + R${' '}
+                      {(target.personalization.totalPrice! / target.quantity).toLocaleString(
+                        'pt-BR',
+                        {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        },
+                      )}{' '}
+                      / unidade
+                    </p>
+                  )}
               </div>
               <Badge
                 variant={
@@ -1107,7 +1140,9 @@ function PersonalizationSummaryPanel({ targets }: { targets: PersonalizationTarg
                     ? 'default'
                     : status === 'Sem personalização'
                       ? 'outline'
-                      : 'secondary'
+                      : status === 'Inválido'
+                        ? 'destructive'
+                        : 'secondary'
                 }
                 className={cn(
                   'shrink-0 text-[10px]',
@@ -1137,6 +1172,7 @@ export function PersonalizationConfig({
   onBoxPersonalizationChange,
   onItemPersonalizationChange,
   onEditItems,
+  onReplaceItem,
   onOpenGuide,
 }: PersonalizationConfigProps) {
   const targets = [
@@ -1328,23 +1364,11 @@ export function PersonalizationConfig({
             </Card>
 
             <div className="min-w-0 space-y-2">
-              {onEditItems && !activeTarget.isBox && (
-                <div className="flex items-center justify-between rounded-lg border border-dashed px-3 py-2">
-                  <span className="truncate text-sm text-muted-foreground">
-                    Configurando:{' '}
-                    <strong className="text-foreground">{activeTarget.displayName}</strong>
-                  </span>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="h-auto shrink-0 gap-1.5 px-2 py-1 text-xs"
-                    onClick={onEditItems}
-                  >
-                    <ArrowLeftRight className="h-3 w-3" />
-                    Trocar item
-                  </Button>
-                </div>
+              {(onEditItems || onReplaceItem) && !activeTarget.isBox && (
+                <SwapItemBanner
+                  displayName={activeTarget.displayName}
+                  onSwap={() => (onReplaceItem ? onReplaceItem(activeTarget.key) : onEditItems?.())}
+                />
               )}
               <ItemPersonalizationCard
                 key={activeTarget.key}

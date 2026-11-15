@@ -31,8 +31,17 @@ const LIST = process.argv.includes('--list');
 const SKIP_DIRS = new Set(['__tests__', 'tests', '__mocks__', 'stories', 'node_modules']);
 
 function walk(dir) {
+  let entries;
+  try {
+    entries = readdirSync(dir);
+  } catch {
+    // Diretório inacessível (ex.: ROOT ausente, permissão negada, symlink
+    // quebrado/ciclo): não deve abortar o scan inteiro e descartar achados
+    // já coletados em outras partes da árvore.
+    return [];
+  }
   const out = [];
-  for (const entry of readdirSync(dir)) {
+  for (const entry of entries) {
     const full = join(dir, entry);
     let st;
     try {
@@ -67,8 +76,11 @@ function findOrphanLabels(src, file) {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    // Detecta abertura de <Label (exatamente Label, não LabelX)
-    const idx = line.search(/<Label(?=[\s/>])/);
+    // Detecta abertura de <Label (exatamente Label, não LabelX). O `|$`
+    // cobre o caso comum do Prettier quebrar a tag antes dos atributos
+    // (`<Label` sozinho no final da linha) — sem ele, essa abertura nunca
+    // era reconhecida e o Label nunca era verificado (falso-negativo).
+    const idx = line.search(/<Label(?=[\s/>]|$)/);
     if (idx === -1) continue;
 
     // Acumula o bloco da tag de abertura até > ou />

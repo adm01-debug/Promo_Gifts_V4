@@ -33,17 +33,17 @@ const maxSkippedRatio = ratioRaw !== undefined ? parseFloat(ratioRaw) : 1.0;
 
 if (!filePath) {
   console.error('Uso: node check-playwright-min-executed.mjs <results.json> [--min N] [--max-skipped-ratio R]');
-  process.exit(1);
+  process.exit(2);
 }
 
 if (isNaN(min) || min < 1) {
   console.error(`[check-playwright-min-executed] --min deve ser >= 1, recebido: ${minRaw}`);
-  process.exit(1);
+  process.exit(2);
 }
 
 if (isNaN(maxSkippedRatio) || maxSkippedRatio < 0 || maxSkippedRatio > 1) {
   console.error(`[check-playwright-min-executed] --max-skipped-ratio deve ser entre 0 e 1, recebido: ${ratioRaw}`);
-  process.exit(1);
+  process.exit(2);
 }
 
 let data;

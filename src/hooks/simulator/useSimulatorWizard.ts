@@ -67,7 +67,10 @@ export function useSimulatorWizard() {
     if (locationsData) dispatch({ type: 'SET_AVAILABLE_LOCATIONS', payload: locationsData });
   }, [locationsData, dispatch]);
 
-  const { fetchComparisonPrices, confirmTechnique } = useWizardPricing({ state, dispatch });
+  const { fetchComparisonPrices, confirmTechnique, retryRecalc } = useWizardPricing({
+    state,
+    dispatch,
+  });
   useWizardPersistence(state);
 
   // Actions
@@ -272,6 +275,7 @@ export function useSimulatorWizard() {
     updateSpecs,
     fetchComparisonPrices,
     confirmTechnique,
+    retryRecalc,
     removePersonalization,
     removeAllPersonalizations,
     editPersonalization,
