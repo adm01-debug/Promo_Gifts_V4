@@ -12,6 +12,7 @@
  * a gravação do resultado exibido, não a da última área do lote.
  */
 import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import type { useMockupGenerator } from '@/hooks/mockup';
 import type { MockupCompletionStatus } from '@/components/mockup/MockupCompletionStates';
 import { usePreservedMockupResult } from '@/components/mockup/usePreservedMockupResult';
@@ -21,6 +22,7 @@ type MockupGeneratorState = ReturnType<typeof useMockupGenerator>;
 export function useMockupCompletionStatus(mg: MockupGeneratorState): {
   projectSaveStatus: MockupCompletionStatus;
   handleLayoutCaptured: () => void;
+  handleLayoutFailed: () => void;
 } {
   const {
     generatedMockup,
@@ -56,8 +58,24 @@ export function useMockupCompletionStatus(mg: MockupGeneratorState): {
     fetchHistory();
   }, [setLastSavedRecordId, setLastSavedMockupUrl, fetchHistory]);
 
+  // Falha na ficha: avisa o vendedor e libera o pedido pendente. Sem isto o
+  // pedido ficava preso (o processedRef da captura barra nova tentativa) e a
+  // ficha nunca chegava ao cliente, em silêncio. O mockup em si segue salvo.
+  const handleLayoutFailed = useCallback(
+    () => {
+      // Nao registra log aqui: a captura ja registra a falha na origem, com o
+      // erro real (OffscreenLayoutCapture). Log duplicado so poluiria.
+      setLastSavedRecordId(null);
+      setLastSavedMockupUrl(null);
+      toast.error(
+        'Não foi possível preparar a ficha de aprovação deste mockup. O mockup está salvo — gere a ficha de novo.',
+      );
+    },
+    [setLastSavedRecordId, setLastSavedMockupUrl],
+  );
+
   const projectSaveStatus: MockupCompletionStatus =
     !!displayedMockup && savedMockupUrl === displayedMockup ? 'done' : 'idle';
 
-  return { projectSaveStatus, handleLayoutCaptured };
+  return { projectSaveStatus, handleLayoutCaptured, handleLayoutFailed };
 }
