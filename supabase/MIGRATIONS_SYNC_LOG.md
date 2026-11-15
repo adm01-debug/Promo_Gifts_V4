@@ -1801,3 +1801,28 @@ em produção nada foi alterado — decisão do dono.
 |---|---|---|---|---|
 | `20250103080000` | `complete_schema` | `b30c559adeef877f77c70c3f6dfd781ba03575dcddb25ab06ab4e795e5b3f324` | `096a7a6b1827f39d4c328e88e51536363c4ceb1532a5569fc90fcb3543018ac9` | já aplicada em produção; conserto só vale para replay do zero, não vai a produção |
 | `20260512000000` | `bootstrap_missing_application_schemas` | `a6c946928ff8eeb6505f1d303ecde32ea8bd2751017d5d82410ebbe725191d58` | `7e848bc78ad6026fc640e46807b00669f7fa4a61119d24701d38544d0064aa52` | já aplicada em produção; conserto só vale para replay do zero, não vai a produção |
+
+## 2026-11-15 — `mockup-assistant`: linha de roteamento de IA (a edge não funciona sem ela)
+
+A edge `mockup-assistant` foi resgatada na PR #3666, mas a linha dela nunca existiu em produção:
+consulta read-only em 2026-11-15 em `doufsxqlfjyuvxuezpln` devolveu **18** funções em
+`public.ai_function_routing` e `mockup-assistant` **não** está entre elas. O roteador
+(`_shared/ai-router/index.ts`) exige uma linha ativa e não tem modelo padrão quando ela falta, então
+hoje **todo pedido válido ao assistente devolve 502**.
+
+**Política do dono gravada no banco, não só no código:** `primary_model_id` =
+`e375d89c-8f14-44c9-892b-d213372dbc44` (`ai_models.model_id` = `deepseek-v4-flash`, provedor
+`deepseek`, `is_active` = true — o mesmo primário que outras 12 funções usam) e
+`fallback_model_ids` = `'{}'::uuid[]`, **vazio de propósito**. Sem candidato alternativo o roteador
+não tem o que chamar além do Flash: não existe caminho para uma chamada paga a Pro ou a Gemini nesta
+função. É isso que fecha o achado P2 da revisão — a restrição de modelo na edge acontece depois de
+`adapter.call` (`_shared/ai-router/index.ts:341`), tarde demais para evitar o custo.
+
+É INSERT, não DDL: `ON CONFLICT (function_name) DO NOTHING`, e a `UNIQUE (function_name)` existe
+(conferida em `pg_constraint`), então reaplicar é no-op. A FK
+`ai_function_routing_primary_model_id_fkey` aponta para `ai_models(id)`; o modelo citado existe e está
+ativo.
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261115230000` | `ai_function_routing_mockup_assistant` | `42e647d30257c98d74e3497bc121f08ca3797c31ff1984e9ef32e3b3ee7a884d` | pendente — aplicar via `db-apply-migration.yml` após merge (banco de produção autorizado pelo dono no chat em 2026-11-15) |
