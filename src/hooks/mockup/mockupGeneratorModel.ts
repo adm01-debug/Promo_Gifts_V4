@@ -189,8 +189,11 @@ export async function loadMockupTechniques(): Promise<Technique[]> {
 
 /**
  * Grava cada resultado do lote na SUA área (id estável; sem `areaId` — resposta
- * legada — cai no índice, nunca no nome), em paralelo. Devolve o último registro
- * salvo com id, para a ficha/estado "salvo".
+ * legada — cai no índice, nunca no nome), em paralelo. Devolve a gravação do
+ * resultado EXIBIDO (o primeiro do lote) para a ficha/estado "salvo": devolver a
+ * ÚLTIMA gravação mostrava "Projeto ainda não salvo" com o lote todo gravado,
+ * porque o indicador compara com a imagem exibida. Se a área exibida não gravou,
+ * cai na última gravação (a ficha ainda sai; "salvo" não é reivindicado).
  */
 export async function saveBatchResults<A extends { id: string }>(
   batchResults: BatchMockupResult[],
@@ -204,14 +207,16 @@ export async function saveBatchResults<A extends { id: string }>(
       return save(r.url, area).then((recordId) => ({ recordId, r }));
     }),
   );
-  const lastFulfilled = settled
+  const saved = settled
     .filter(
       (res): res is PromiseFulfilledResult<{ recordId: string | null; r: BatchMockupResult }> =>
         res.status === 'fulfilled',
     )
-    .pop();
-  const recordId = lastFulfilled?.value.recordId;
-  return recordId ? { recordId, url: lastFulfilled.value.r.url } : null;
+    .map((res) => res.value)
+    .filter((v): v is { recordId: string; r: BatchMockupResult } => !!v.recordId);
+  const displayedUrl = batchResults[0]?.url;
+  const chosen = saved.find((v) => v.r.url === displayedUrl) ?? saved[saved.length - 1];
+  return chosen ? { recordId: chosen.recordId, url: chosen.r.url } : null;
 }
 
 /**

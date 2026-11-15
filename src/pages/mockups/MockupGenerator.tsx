@@ -6,7 +6,7 @@ import { type MockupTechnique } from '@/types/external-db';
  * Progressive Preview + Enhanced Header + Sticky Navigator.
  */
 
-import { useCallback, useEffect, useState, Suspense } from 'react';
+import { useCallback, Suspense } from 'react';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { Button } from '@/components/ui/button';
 import { Loader2, AlertCircle, CheckCircle2, History, Wand2 } from 'lucide-react';
@@ -34,6 +34,7 @@ const log = createClientLogger('mockup-generator');
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
 import { useLayoutCaptureRequest } from '@/pages/mockups/mockup-generator/useLayoutCaptureRequest';
 import { useWizardNavigation } from '@/pages/mockups/mockup-generator/useWizardNavigation';
+import { useMockupCompletionStatus } from '@/pages/mockups/mockup-generator/useMockupCompletionStatus';
 
 // Lazy load heavy sub-components
 const LogoPositionEditor = lazyWithRetry(() =>
@@ -155,6 +156,8 @@ export default function MockupGenerator() {
         mg.setGeneratedMockup(null);
         mg.setGenerationError(null);
       }
+      // Outro cliente = outro projeto: o resultado preservado no card não vale mais.
+      mg.setProjectResetCount((n) => n + 1);
       mg.setSelectedClient(null);
       mg.setActiveTab('generator');
       scrollToStep(1, true);
@@ -166,31 +169,16 @@ export default function MockupGenerator() {
       mg.setPersonalizationAreas,
       mg.setGeneratedMockup,
       mg.setGenerationError,
+      mg.setProjectResetCount,
       mg.setSelectedClient,
       mg.setActiveTab,
     ],
   );
 
-  // Gravação CONFIRMADA pelo banco. O recordId é zerado pela captura da ficha
-  // (handleLayoutCaptured), então guardamos a URL salva para "Projeto salvo"
-  // não regredir para "não salvo" depois que a ficha fica pronta.
-  const [savedMockupUrl, setSavedMockupUrl] = useState<string | null>(null);
-  useEffect(() => {
-    if (mg.lastSavedRecordId && mg.lastSavedMockupUrl) setSavedMockupUrl(mg.lastSavedMockupUrl);
-  }, [mg.lastSavedRecordId, mg.lastSavedMockupUrl]);
-
   // Três condições independentes, cada uma do seu dado: a imagem vem de
-  // generatedMockup/generationError, o salvo da gravação confirmada e a ficha
-  // do ciclo de captura (pedido montado → capturado → recordId zerado).
-  const isSaved = !!mg.generatedMockup && savedMockupUrl === mg.generatedMockup;
-  const sheetStatus = layoutCaptureRequest ? 'running' : isSaved ? 'done' : 'idle';
-
-  const handleLayoutCaptured = useCallback(() => {
-    mg.setLastSavedRecordId(null);
-    mg.setLastSavedMockupUrl(null);
-    mg.fetchHistory();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mg.setLastSavedRecordId, mg.setLastSavedMockupUrl, mg.fetchHistory]);
+  // generatedMockup/generationError; o salvo e a ficha seguem o resultado
+  // EXIBIDO, cada um com o seu rastreio (useMockupCompletionStatus).
+  const completion = useMockupCompletionStatus(mg, !!layoutCaptureRequest);
 
   return (
     <DiagnosticProfiler id="MockupGenerator">
@@ -200,7 +188,10 @@ export default function MockupGenerator() {
         path="/mockup-generator"
       />
       <Suspense fallback={null}>
-        <OffscreenLayoutCapture request={layoutCaptureRequest} onCaptured={handleLayoutCaptured} />
+        <OffscreenLayoutCapture
+          request={layoutCaptureRequest}
+          onCaptured={completion.handleLayoutCaptured}
+        />
       </Suspense>
 
       <GeneratingOverlay
@@ -517,8 +508,9 @@ export default function MockupGenerator() {
                     onAnnotationsChange={mg.setMockupAnnotations}
                     generationError={mg.generationError}
                     onRetryGenerate={mg.generateMockup}
-                    projectSave={{ status: isSaved ? 'done' : 'idle' }}
-                    sheet={{ status: sheetStatus }}
+                    projectSave={{ status: completion.projectSaveStatus }}
+                    sheet={{ status: completion.sheetStatus }}
+                    projectResetCount={mg.projectResetCount}
                   />
 
                   {/* A grade "Todas as áreas" é um anexo do preview: o lote sempre

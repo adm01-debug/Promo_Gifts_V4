@@ -88,6 +88,9 @@ export function useMockupGenerator() {
   const [activeAreaId, setActiveAreaId] = useState<string | null>(null);
   const [generatedMockup, setGeneratedMockup] = useState<string | null>(null);
   const [generatedBatchMockups, setGeneratedBatchMockups] = useState<BatchMockupResult[]>([]);
+  // Projeto atual: cada reset/troca de cliente abre OUTRO projeto, e o resultado
+  // preservado no card (imagem anterior) não pode atravessar essa fronteira.
+  const [projectResetCount, setProjectResetCount] = useState(0);
   const [artAttachments, setArtAttachments] = useState<ArtFileAttachment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   // Re-entrancy guard for generateMockup: setIsLoading(true) is async/batched and
@@ -666,6 +669,7 @@ export function useMockupGenerator() {
     setLastSavedRecordId(null);
     setLastSavedMockupUrl(null);
     setLastSavedLayoutMode('ai');
+    setProjectResetCount((n) => n + 1);
     positionHistory.clear();
     await clearDraft();
     logoColorAnalysis.clearAnalysis();
@@ -771,6 +775,8 @@ export function useMockupGenerator() {
       generatedMockup,
       setGeneratedMockup,
       generatedBatchMockups,
+      projectResetCount,
+      setProjectResetCount,
       areaErrors,
       retryingAreaIds,
       retryArea,
@@ -839,6 +845,7 @@ export function useMockupGenerator() {
       productLocations,
       generatedMockup,
       generatedBatchMockups,
+      projectResetCount,
       areaErrors,
       retryingAreaIds,
       retryArea,

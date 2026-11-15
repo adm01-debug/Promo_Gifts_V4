@@ -22,6 +22,7 @@ import { MockupAnnotations, type Annotation } from './MockupAnnotations';
 import { ShareMenu } from './ShareMenu';
 import { useReducedMotion } from '@/hooks/ui/useReducedMotion';
 import { MockupCompletionStates, type MockupCompletionState } from './MockupCompletionStates';
+import { usePreservedMockupResult } from './usePreservedMockupResult';
 
 /**
  * Tokens de cor do tema (Blue Premium) usados na celebração.
@@ -70,6 +71,8 @@ interface MockupResultCardProps {
   projectSave?: MockupCompletionState;
   /** Ficha de aprovação do projeto. */
   sheet?: MockupCompletionState;
+  /** Contador de reset do projeto: muda ⇒ o resultado anterior preservado é descartado. */
+  projectResetCount?: number;
 }
 
 export const MockupResultCard = memo(
@@ -88,6 +91,7 @@ export const MockupResultCard = memo(
     onRetryGenerate,
     projectSave,
     sheet,
+    projectResetCount,
   }: MockupResultCardProps) => {
     const [zoom, setZoom] = useState(1);
     const [showSuccess, setShowSuccess] = useState(false);
@@ -96,8 +100,13 @@ export const MockupResultCard = memo(
     const [fullscreenZoom, setFullscreenZoom] = useState(1);
     const [isClientMode, setIsClientMode] = useState(false);
     const prefersReducedMotion = useReducedMotion();
-    // Último resultado real: uma tentativa que FALHA não apaga da tela o mockup que o vendedor já tinha.
-    const [lastGeneratedMockup, setLastGeneratedMockup] = useState<string | null>(generatedMockup);
+    // Resultado anterior preservado: amarrado ao projeto e à falha lembrada
+    // (dispensar o alerta não descarta nada) — ver usePreservedMockupResult.
+    const { displayedMockup, showsPreviousResult } = usePreservedMockupResult({
+      generatedMockup,
+      generationError,
+      projectResetCount,
+    });
 
     // Trigger success animation when mockup is generated
     useEffect(() => {
@@ -134,14 +143,6 @@ export const MockupResultCard = memo(
       }
     }, [generatedMockup]);
 
-    // Sucesso novo vira o resultado atual: o anterior sai de cena na hora, sem resquício.
-    useEffect(() => {
-      if (generatedMockup) setLastGeneratedMockup(generatedMockup);
-    }, [generatedMockup]);
-
-    // Falha com resultado anterior: ele fica na tela ROTULADO, em vez de sumir.
-    const showsPreviousResult = !generatedMockup && !!generationError && !!lastGeneratedMockup;
-    const displayedMockup = generatedMockup ?? (showsPreviousResult ? lastGeneratedMockup : null);
     // Há imagem atual ⇒ a imagem saiu. Só é erro de imagem quando não há imagem atual.
     const imageStatus: MockupCompletionState['status'] = generatedMockup ? 'done' : 'error';
 
