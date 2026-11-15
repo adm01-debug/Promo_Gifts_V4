@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "865c86ef8ffe5650416a5ace436acbbf61d9d080",
+  "commit": "4c912e1938920b85e77fa19cdf73a8dc6b68ec71",
   "branch": "main",
-  "data_commit": "2026-11-15T00:01:38Z",
+  "data_commit": "2026-11-15T00:33:48Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "4c912e19",
+    "data": "2026-11-15",
+    "assunto": "fix(migrations): registra o recibo E15 da 20261107134429 (destrava o Gate 1.13.3) (#3639)"
+   },
    {
     "sha": "865c86ef",
     "data": "2026-11-15",
@@ -126,11 +131,6 @@
     "sha": "34301051",
     "data": "2026-11-14",
     "assunto": "merge: claude/fix-stock-pagination-sem-count-exact-261114-1007"
-   },
-   {
-    "sha": "0407e41b",
-    "data": "2026-11-14",
-    "assunto": "merge: claude/fix-cache-publico-alvo-options-261114-1005"
    }
   ],
   "arquivos_mudados_7d": 2114,
@@ -199,15 +199,15 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 99
+    "mudancas": 98
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 92
+    "mudancas": 91
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 57
+    "mudancas": 58
    },
    {
     "arquivo": "package.json",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 40
+    "commits": 39
    },
    {
     "autor": "dependabot[bot]",

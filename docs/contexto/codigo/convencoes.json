@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(migrations): registra o recibo E15 da 20261107134429 (destrava o Gate 1.13.3) (#3639)",
    "fix(security): documenta deny-all intencional de crm_seller_identity_links (main vermelha) (#3638)",
    "fix(crm): vendedor com vínculo fixo em vez de identificação por e-mail (#3636)",
    "Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230",
-   "fix(crm): declara isencao de soft-delete na tabela de vinculo de vendedor",
-   "fix(kit): rascunhos de kit salvos sem personalização voltam a abrir (resgate cirúrgico da #3390) (#3631)"
+   "fix(crm): declara isencao de soft-delete na tabela de vinculo de vendedor"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

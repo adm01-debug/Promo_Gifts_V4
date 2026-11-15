@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "865c86ef8ffe5650416a5ace436acbbf61d9d080",
+  "sha": "4c912e1938920b85e77fa19cdf73a8dc6b68ec71",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 00:33 UTC",
+  "generated_at": "2026-11-15 00:36 UTC",
   "files_total": 10112,
   "code_files": 8639,
   "code_lines": 1217892
@@ -531049,10 +531049,19 @@
   }
  },
  "git": {
-  "sha": "865c86ef8ffe5650416a5ace436acbbf61d9d080",
+  "sha": "4c912e1938920b85e77fa19cdf73a8dc6b68ec71",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "4c912e1",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(migrations): registra o recibo E15 da 20261107134429 (destrava o Gate 1.13.3) (#3639)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "865c86e",
     "date": "2026-11-14",
@@ -531334,19 +531343,16 @@
     "author": "Claude",
     "subject": "fix(pdp): aborta de verdade a consulta do produto ao estourar o limite de 15s",
     "files": []
-   },
-   {
-    "sha": "778dbf5",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "Merge pull request #3619 from adm01-debug/claude/trem2-front-limpeza-261114-1850",
-    "files": []
    }
   ],
   "hot_files": [
    [
     "docs/coordenacao/conflitos-semanticos.md",
     6
+   ],
+   [
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    2
    ],
    [
     ".security/policies-baseline.json",
@@ -531418,10 +531424,6 @@
    ],
    [
     "src/components/kit-library/KitCard.tsx",
-    1
-   ],
-   [
-    "src/hooks/intelligence/useSalesHistoryMacro.ts",
     1
    ]
   ]
