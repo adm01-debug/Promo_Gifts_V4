@@ -4,11 +4,10 @@
  * Nenhum teste desativado. Só comportamento que JÁ passa no código atual; o que
  * depende de correção não integrada está listado no relato como PENDENTE.
  *
- * PENDENTE (A15, "resposta antiga"): resposta de uma análise ANTERIOR que chega
- * DEPOIS de uma análise mais nova ainda sobrescreve as cores
- * (useLogoColorAnalysis não confere `controller.signal.aborted` após o await da
- * edge). Hoje só vale o caso sequencial abaixo; o caso tardio fica para o cartão
- * que corrigir o hook.
+ * A15 ("resposta antiga") NÃO é pendência: a guarda vive em
+ * src/hooks/simulation/useLogoColorAnalysis.ts:86,105 (`isStale()` conferido depois do await da
+ * edge, desde 50880c967) e quem a protege é src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts;
+ * aqui o A15 cobre o caso sequencial.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import React from 'react';
