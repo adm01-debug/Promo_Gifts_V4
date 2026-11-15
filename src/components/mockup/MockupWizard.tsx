@@ -23,6 +23,13 @@ interface MockupWizardStep {
 
 interface MockupWizardProps {
   currentStep: number;
+  /**
+   * Etapa mais avançada que o preenchimento já liberou. `currentStep` é a etapa
+   * EM FOCO (o Voltar move só ela), então os atalhos precisam deste valor:
+   * sem ele, voltar uma etapa tirava o clique da etapa pendente que estava
+   * disponível antes.
+   */
+  reachableStep?: number;
   hasClient: boolean;
   hasProduct: boolean;
   hasTechnique: boolean;
@@ -37,6 +44,7 @@ export const MockupWizard = forwardRef<HTMLDivElement, MockupWizardProps>(
   (
     {
       currentStep,
+      reachableStep,
       hasClient,
       hasProduct,
       hasTechnique,
@@ -147,7 +155,8 @@ export const MockupWizard = forwardRef<HTMLDivElement, MockupWizardProps>(
 
             {steps.map((step, _index) => {
               // Allow clicking completed steps or the current active step's next
-              const isClickable = onStepClick && (step.isCompleted || step.id <= currentStep);
+              const maxClickable = Math.max(reachableStep ?? currentStep, currentStep);
+              const isClickable = onStepClick && (step.isCompleted || step.id <= maxClickable);
               return (
                 <div
                   key={step.id}

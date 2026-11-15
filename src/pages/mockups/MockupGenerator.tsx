@@ -203,6 +203,7 @@ export default function MockupGenerator() {
             <Suspense fallback={null}>
               <MockupWizard
                 currentStep={wizardStep}
+                reachableStep={mg.wizardStep}
                 hasClient={!!mg.selectedClient}
                 hasProduct={!!mg.selectedProduct}
                 hasTechnique={!!mg.selectedTechnique}
