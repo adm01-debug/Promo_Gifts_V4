@@ -6,24 +6,7 @@ name: E2E · Dialogs visual PR check
 #   - E2E · Update Confirm Dialog snapshots
 #   - E2E · Update Dialog snapshots
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - "e2e/ui/alert-dialog-visual.spec.ts"
-      - "e2e/ui/confirm-dialog-visual.spec.ts"
-      - "e2e/ui/dialog-visual.spec.ts"
-      - "e2e/ui/undo-toast-visual.spec.ts"
-      - "src/pages/dev/AlertDialogHarness.tsx"
-      - "src/pages/dev/ConfirmDialogHarness.tsx"
-      - "src/pages/dev/DialogHarness.tsx"
-      - "src/pages/dev/UndoToastHarness.tsx"
-      - "src/components/ui/alert-dialog.tsx"
-      - "src/components/ui/dialog.tsx"
-      - "src/components/common/ConfirmDialog.tsx"
-      - "src/utils/undoToast.tsx"
-      - "package.json"
-      - "playwright.config.ts"
-      - ".github/workflows/e2e-dialogs-pr-check.yml"
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   workflow_dispatch:
 
 permissions:

@@ -21,7 +21,7 @@ import {
 } from './useMockupTechniques';
 import { useMockupDraft } from './useMockupDraft';
 import { mockupSelection } from './mockupSelectionSnapshot';
-import { useLogoColorAnalysis, usePositionHistory } from '@/hooks/simulation';
+import { useLogoColorAnalysisByArea, usePositionHistory } from '@/hooks/simulation';
 import { useProductsContext } from '@/contexts/ProductsContext';
 import { getMockupWizardStep } from '@/components/mockup/mockupWizardStep';
 import { showMockupSuccessToast } from '@/components/mockup/MockupSuccessToast';
@@ -124,7 +124,7 @@ export function useMockupGenerator() {
   const [activeTab, setActiveTab] = useState<'generator' | 'history'>('generator');
   const [hasUserInteractedPosition, setHasUserInteractedPosition] = useState(false);
 
-  const logoColorAnalysis = useLogoColorAnalysis();
+  const logoColorAnalysis = useLogoColorAnalysisByArea();
   const positionHistory = usePositionHistory({ enabled: true });
 
   useEffect(() => {
@@ -456,7 +456,7 @@ export function useMockupGenerator() {
         setPersonalizationAreas((prev) =>
           prev.map((area) => (area.id === areaId ? { ...area, logoPreview: logoData } : area)),
         );
-        logoColorAnalysis.analyzeImage(logoData);
+        logoColorAnalysis.analyzeImage(logoData, areaId);
       };
       reader.onerror = (e) => {
         logger.error('[useMockupGenerator] FileReader error ao ler imagem:', e);
@@ -742,7 +742,7 @@ export function useMockupGenerator() {
       setHasUserInteractedPosition(true);
       positionHistory.clear();
       setActiveTab('generator');
-      if (mockup.logo_url) logoColorAnalysis.analyzeImage(mockup.logo_url);
+      logoColorAnalysis.restoreFor(mockup.logo_url, restoredArea.id);
       // BUG-04 FIX: clear stale draft.
       // BUG-F-LOADHISTORY FIX: await clearDraft() — same race as resetForm (BUG-F).
       // Without await, the 1 s auto-save debounce can fire and re-persist the old draft.
