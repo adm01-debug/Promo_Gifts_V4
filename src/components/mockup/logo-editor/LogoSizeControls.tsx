@@ -168,7 +168,9 @@ export function LogoSizeControls({
               variant="ghost"
               size="sm"
               className="h-7 px-1.5 text-[10px] text-primary hover:text-primary"
-              onClick={() => onSizeChange(maxWidth, maxHeight)}
+              onClick={() =>
+                aspectLinked ? setWidth(effectiveMaxW) : onSizeChange(maxWidth, maxHeight)
+              }
             >
               <Target aria-hidden="true" className="mr-1 h-3 w-3" />
               Máxima

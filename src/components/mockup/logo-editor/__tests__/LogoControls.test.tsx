@@ -188,6 +188,27 @@ describe('LogoSizeControls — tamanho proporcional (vínculo de proporções)',
     expect(onSizeChange).toHaveBeenCalledWith(1, 2);
   });
 
+  it('com o vínculo LIGADO, "Máxima" usa o maior fator comum e preserva a proporção', () => {
+    // 4×2 (razão 2) numa área 20×20: encher a altura distorceria para 1:1.
+    const { onSizeChange } = renderSize();
+    fireEvent.click(screen.getByRole('button', { name: 'Máxima' }));
+    expect(onSizeChange).toHaveBeenCalledWith(20, 10);
+  });
+
+  it('com o vínculo LIGADO, "Máxima" respeita o limite da LARGURA', () => {
+    // 2×4 (razão 0,5) numa área 20×20: quem morde é a largura.
+    const { onSizeChange } = renderSize({ logoWidth: 2, logoHeight: 4 });
+    fireEvent.click(screen.getByRole('button', { name: 'Máxima' }));
+    expect(onSizeChange).toHaveBeenCalledWith(10, 20);
+  });
+
+  it('com o vínculo DESLIGADO, "Máxima" preenche os dois eixos', () => {
+    const { onSizeChange } = renderSize();
+    fireEvent.click(screen.getByRole('button', { name: /vínculo de proporções/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'Máxima' }));
+    expect(onSizeChange).toHaveBeenCalledWith(20, 20);
+  });
+
   it('ida e volta na largura volta ao tamanho original sem perder a proporção', () => {
     // 4×2 → reduzir até o limite → voltar para 4 deve dar 4×2, nunca 4×4.
     const { last } = renderSizeStateful({ width: 4, height: 2 });
