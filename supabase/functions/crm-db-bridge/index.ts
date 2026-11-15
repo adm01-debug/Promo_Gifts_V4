@@ -21,6 +21,7 @@ import {
   isTransientCrmFailure,
   mapPostgrestErrorStatus,
   sellerScopeFilter,
+  sellerScopeOrFilter,
   splitCompanyAddressFilters,
   stripInternalRelations,
   validateQueryColumns,
@@ -447,7 +448,21 @@ function buildReadQuery(
   // GUARD: sellerScopeFilter devolve null para tabela sem escopo (suppliers/carriers).
   // Sem este null-check, .eq() em cima de null quebraria a consulta.
   const scopeFilter = sellerScoped ? sellerScopeFilter(table) : null;
-  if (scopeFilter) query = query.eq(scopeFilter.column, sellerId ?? -1);
+  if (scopeFilter) {
+    if (typeof sellerId === "number") {
+      // GUARD (decisão do dono, 2026-11-15 — REVERTE a de 2026-11-14): vendedor COM vínculo
+      // vê a carteira dele MAIS os clientes sem dono. Não trocar por .eq: é decisão de
+      // negócio, não afrouxamento de portão.
+      const scopeOr = sellerScopeOrFilter(scopeFilter.column, sellerId);
+      query = scopeOr.referencedTable
+        ? query.or(scopeOr.filters, { referencedTable: scopeOr.referencedTable })
+        : query.or(scopeOr.filters);
+    } else {
+      // GUARD (mantida de 2026-11-14): sem vendedor resolvido o escopo NÃO abre — o
+      // sentinela -1 não casa com nenhum id, então vendedor sem vínculo não vê nada.
+      query = query.eq(scopeFilter.column, -1);
+    }
+  }
   query = applyFilters(query, companyFilters.direct);
   query = applyFilters(query, companyFilters.address, INTERNAL_ADDRESS_ALIAS);
   return query;
