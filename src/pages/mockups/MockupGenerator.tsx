@@ -33,6 +33,7 @@ import { createClientLogger } from '@/lib/telemetry/structuredLogger';
 const log = createClientLogger('mockup-generator');
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
 import { useLayoutCaptureRequest } from '@/pages/mockups/mockup-generator/useLayoutCaptureRequest';
+import { useWizardNavigation } from '@/pages/mockups/mockup-generator/useWizardNavigation';
 
 // Lazy load heavy sub-components
 const LogoPositionEditor = lazyWithRetry(() =>
@@ -139,6 +140,8 @@ export default function MockupGenerator() {
 
   const layoutCaptureRequest = useLayoutCaptureRequest(mg, profile, user?.id);
 
+  const { wizardStep, navigateToStep } = useWizardNavigation(mg.wizardStep);
+
   // Cabeçalho "Trocar cliente": a reconciliação da marca já foi decidida no toolbar.
   // 'limpar-marca' remove o logo de TODAS as áreas (é a marca do cliente anterior);
   // 'manter-marca' só solta o cliente. Em ambos, volta à etapa 1 para escolher outro.
@@ -150,6 +153,10 @@ export default function MockupGenerator() {
           prev.map((a) => ({ ...a, logoPreview: null, logoFile: null })),
         );
         mg.setGeneratedMockup(null);
+        // A grade "Todas as áreas" é renderizada só por generatedBatchMockups.length > 1,
+        // sem olhar o cliente: sem limpar aqui, os PNGs com a marca do cliente anterior
+        // continuariam na tela depois de trocar de cliente (mesmo motivo do resetForm).
+        mg.setGeneratedBatchMockups([]);
       }
       mg.setSelectedClient(null);
       mg.setActiveTab('generator');
@@ -199,7 +206,7 @@ export default function MockupGenerator() {
           <div className="sticky top-0 z-[40] -mx-2 flex items-center rounded-xl border border-transparent bg-background/80 pb-3 pl-2 pr-8 pt-5 backdrop-blur-md transition-all duration-300 hover:border-border/40">
             <Suspense fallback={null}>
               <MockupWizard
-                currentStep={mg.wizardStep}
+                currentStep={wizardStep}
                 hasClient={!!mg.selectedClient}
                 hasProduct={!!mg.selectedProduct}
                 hasTechnique={!!mg.selectedTechnique}
@@ -208,6 +215,7 @@ export default function MockupGenerator() {
                 hasGenerated={!!mg.generatedMockup}
                 onStepClick={(step) => {
                   mg.setActiveTab('generator');
+                  navigateToStep(step);
                   scrollToStep(step, true);
                 }}
               />

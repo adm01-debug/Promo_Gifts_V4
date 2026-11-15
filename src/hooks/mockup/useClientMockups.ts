@@ -13,6 +13,7 @@
  * antes e depois da migration, sem quebrar a consulta.
  */
 import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { untypedFrom } from '@/lib/supabase-untyped';
 import { logger } from '@/lib/logger';
@@ -124,15 +125,31 @@ export async function fetchClientMockups(
   );
 }
 
-/** Sempre habilitado: sem `clientId` o queryFn resolve [] sem requisição. */
+/**
+ * Sempre habilitado: sem `clientId` o queryFn resolve [] sem requisição.
+ *
+ * O ID do usuário autenticado entra na CHAVE do cache de propósito. O
+ * `QueryClient` é um só para a aba inteira (src/App.tsx) e o `signOut` não o
+ * limpa; sem o usuário na chave, trocar de conta sem recarregar a página
+ * devolveria, por até `staleTime`, os mockups e as URLs assinadas da conta
+ * anterior — sem passar pela RLS de novo. Com o usuário na chave, cada conta
+ * tem seu próprio balde.
+ *
+ * `refetchOnMount: 'always'`: o painel desmonta ao fechar o popover, então cada
+ * abertura refaz a consulta. É o que faz um mockup recém-salvo (ou recém-
+ * excluído) aparecer no menu sem esperar os 5 minutos de `staleTime`; a lista
+ * em cache continua visível enquanto a nova chega.
+ */
 export function useClientMockups(
   clientId: string | null | undefined,
   options: UseClientMockupsOptions = {},
 ) {
   const { limit = DEFAULT_CLIENT_MOCKUPS_LIMIT, staleTime = 5 * 60 * 1000 } = options;
+  const { user } = useAuth();
   return useQuery<ClientMockup[]>({
-    queryKey: ['client-mockups', clientId ?? null, limit],
+    queryKey: ['client-mockups', user?.id ?? null, clientId ?? null, limit],
     queryFn: () => fetchClientMockups(clientId, { limit }),
     staleTime,
+    refetchOnMount: 'always',
   });
 }
