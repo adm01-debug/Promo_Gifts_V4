@@ -209,6 +209,22 @@ function confiancaDaCorDoCliente(sinais: SinaisDaMarcaDoCliente | null | undefin
   return sinais?.encaixesDeCor[0]?.confianca ?? null;
 }
 
+/**
+ * Nome do grupo de cor APENAS quando a logo casou com um único grupo.
+ *
+ * A RPC liga `sinal_cor` quando o produto tem variante em QUALQUER um dos
+ * `p_color_group_ids`. Com dois grupos (logo azul e vermelha, por exemplo),
+ * nomear o primeiro faria um produto só vermelho aparecer como "azul". Com mais
+ * de um grupo devolvemos `null` e a frase cai no texto genérico de
+ * `buildReason` ("tem versão na cor da logo"), que é verdadeiro nos dois casos.
+ */
+export function nomeDoGrupoDeCorUnico(
+  sinais: SinaisDaMarcaDoCliente | null | undefined,
+): string | null {
+  const encaixes = sinais?.encaixesDeCor ?? [];
+  return encaixes.length === 1 ? encaixes[0].nomeDoGrupo : null;
+}
+
 /** Monta o contexto do cliente que a RPC não devolve (e nem deveria). */
 export function contextoDoCliente(
   sinais: SinaisDaMarcaDoCliente | null | undefined,
@@ -217,7 +233,7 @@ export function contextoDoCliente(
   const confianca: ConfiancaDeCor | null = confiancaDaCorDoCliente(sinais);
   return {
     ramoNome: sinais?.ramoNome ?? null,
-    corNome: sinais?.encaixesDeCor[0]?.nomeDoGrupo ?? null,
+    corNome: nomeDoGrupoDeCorUnico(sinais),
     // Exata OU próxima conta como "a cor da logo"; aproximada é só a família.
     corExata: confianca === 'exata' || confianca === 'proxima',
     faixaMin: faixa?.min ?? null,
