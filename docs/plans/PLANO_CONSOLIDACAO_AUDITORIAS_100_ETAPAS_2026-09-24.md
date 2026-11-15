@@ -391,6 +391,7 @@ Cada etapa traz: **Objetivo · Onde · Como · Aceite · Prova · Depende de · 
 - Aceite: item com `weight_g=0` entra em `itemsWithUnknownWeight`.
 - Prova: caso novo em `useKitBuilderTransformers.test.ts` (hoje 3 testes, nenhum de estoque/peso).
 - Depende de: —. Esforço: P.
+- **Execução 2026-10-30:** concluída em `src/lib/kit-builder/weight.ts` e `src/hooks/kit-builder/useKitBuilderTransformers.ts`; pesos zero, negativos e não finitos são normalizados como desconhecidos. `summarizeKitWeight` exclui pesos inválidos do total e preserva a contagem para o aviso de frete. Cobertura em `tests/hooks/useKitBuilderTransformers.test.ts` e `tests/lib/kit-builder/weight.test.ts`.
 
 ### E44 — Teste de integração `KitSummary → FreightEstimator`
 - Objetivo: a contagem `itemsWithUnknownWeight` (`KitSummary.tsx:81–85` → `:243`) não tem teste no nível do container; só prop-level no `FreightEstimator`.
@@ -399,6 +400,7 @@ Cada etapa traz: **Objetivo · Onde · Como · Aceite · Prova · Depende de · 
 - Aceite: verde.
 - Prova: comando.
 - Depende de: —. Esforço: P.
+- **Execução 2026-10-30:** concluída em `tests/components/kit-builder/KitSummary.weight.test.tsx`; a integração verifica que o resumo repassa ao estimador a contagem de itens e caixa sem peso, incluindo `weight=0`.
 
 ### E45 — Contagem de produtos sem peso atualizada (637 → 657)
 - Objetivo: dado real de 24/09: `weight_g IS NULL` = 657 ativos, `= 0` → 0.

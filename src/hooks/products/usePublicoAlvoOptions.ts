@@ -11,7 +11,7 @@
  * lightweight nunca hidrata -> a secao ficava eternamente vazia.
  */
 import { dbInvoke } from '@/lib/db/postgrest';
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { logger } from '@/lib/logger';
 
 interface SuperFiltroOptionRow {
@@ -19,12 +19,14 @@ interface SuperFiltroOptionRow {
   ordem: number | null;
 }
 
+// Cache compartilhado entre todos os FilterPanel: a lista (6 slugs) muda raramente e
+// v_super_filtro_options custa ~4,5 s por chamada (pg_stat_statements, 2026-11-14).
 export function usePublicoAlvoOptions(): string[] {
-  const [options, setOptions] = useState<string[]>([]);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
+  const { data = [] } = useQuery({
+    queryKey: ['super-filtro-options', 'target_audience'],
+    staleTime: 30 * 60_000,
+    gcTime: 60 * 60_000,
+    queryFn: async () => {
       try {
         const res = await dbInvoke<SuperFiltroOptionRow>({
           table: 'v_super_filtro_options',
@@ -35,20 +37,16 @@ export function usePublicoAlvoOptions(): string[] {
           limit: 100,
           offset: 0,
         });
-        if (cancelled) return;
-        const vals = (res.records || [])
+        return (res.records || [])
           .map((r) => r.slug_ou_codigo)
           .filter((v): v is string => typeof v === 'string' && v.length > 0);
-        setOptions(vals);
       } catch (err) {
         logger.error('[usePublicoAlvoOptions] erro ao carregar opcoes:', err);
-        if (!cancelled) setOptions([]);
+        // Relanca para nao cachear [] por 30 min; o hook devolve [] (data default).
+        throw err;
       }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+    },
+  });
 
-  return options;
+  return data;
 }

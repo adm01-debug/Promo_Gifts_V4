@@ -583,7 +583,7 @@ export const magazineService = {
     const { data, error } = await magazineDb.rpc('magazine_add_items_v2', {
       p_magazine_id: id,
       p_expected_edit_version: version,
-      p_items: rows as unknown as Json,
+      p_items: JSON.parse(JSON.stringify(rows)) as Json,
     });
     if (error) throw mutationError('adicionar produtos', error);
     return hydrateMutation(

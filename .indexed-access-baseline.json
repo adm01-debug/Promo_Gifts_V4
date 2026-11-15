@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-02T10:53:42.674Z",
+  "generatedAt": "2026-10-30T00:00:00.000Z",
   "description": "Baseline de erros do tsc com --noUncheckedIndexedAccess. Falha se a contagem crescer (ratchet descendente).",
-  "errorCount": 889,
+  "errorCount": 872,
   "meta": {
     "target": 600,
     "deadline": "2027-01-31",

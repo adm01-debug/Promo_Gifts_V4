@@ -17,7 +17,8 @@
  *    thead/tbody em <table>s distintas.
  *  - Documento não estoura horizontalmente em nenhum breakpoint.
  */
-import { test, expect, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 import { gotoAndSettle } from '../helpers/nav';
 
 const ROUTE = '/__visual/quote-view-order';
@@ -69,7 +70,9 @@ async function measureAlignment(scope: ReturnType<Page['getByTestId']>) {
 
 for (const vp of VIEWPORTS) {
   for (const fx of FIXTURES) {
-    test(`[${vp.name}/${fx.label}] header fora do scroller, colunas alinhadas e a11y`, async ({ page }) => {
+    test(`[${vp.name}/${fx.label}] header fora do scroller, colunas alinhadas e a11y`, async ({
+      page,
+    }) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
       await open(page);
 
@@ -94,7 +97,9 @@ for (const vp of VIEWPORTS) {
         };
       });
       for (const k of ['tl', 'tr', 'bl', 'br'] as const) {
-        expect(px(w[k]), `wrapper ${k} @${vp.name}/${fx.label}`).toBeGreaterThanOrEqual(MIN_RADIUS_PX);
+        expect(px(w[k]), `wrapper ${k} @${vp.name}/${fx.label}`).toBeGreaterThanOrEqual(
+          MIN_RADIUS_PX,
+        );
       }
       expect(w.ox).toBe('hidden');
       expect(w.oy).toBe('hidden');
@@ -116,7 +121,9 @@ for (const vp of VIEWPORTS) {
           theadInScroller: !!(sc && thead && sc.contains(thead)),
           tbodyInScroller: !!(sc && tbody && sc.contains(tbody)),
           theadInHeaderWrap: !!(hw && thead && hw.contains(thead)),
-          cornerMaskCount: el.querySelectorAll('[data-testid="quote-items-table-scrollbar-corner-mask"]').length,
+          cornerMaskCount: el.querySelectorAll(
+            '[data-testid="quote-items-table-scrollbar-corner-mask"]',
+          ).length,
         };
       });
       expect(topo.theadInScroller).toBe(false);
@@ -129,7 +136,9 @@ for (const vp of VIEWPORTS) {
       const thCount = await ths.count();
       expect(thCount).toBeGreaterThan(1);
       const firstTl = await ths.first().evaluate((el) => getComputedStyle(el).borderTopLeftRadius);
-      const lastTr = await ths.nth(thCount - 1).evaluate((el) => getComputedStyle(el).borderTopRightRadius);
+      const lastTr = await ths
+        .nth(thCount - 1)
+        .evaluate((el) => getComputedStyle(el).borderTopRightRadius);
       expect(px(firstTl)).toBeGreaterThanOrEqual(MIN_RADIUS_PX);
       expect(px(lastTr)).toBeGreaterThanOrEqual(MIN_RADIUS_PX);
 
@@ -165,7 +174,9 @@ for (const vp of VIEWPORTS) {
       ).toBeLessThanOrEqual(1);
 
       // ── Header não se move ao rolar verticalmente (constância de top).
-      const headTop0 = await headerWrap.locator('thead').evaluate((el) => el.getBoundingClientRect().top);
+      const headTop0 = await headerWrap
+        .locator('thead')
+        .evaluate((el) => el.getBoundingClientRect().top);
 
       if (scrollMetrics.canScrollY) {
         // Meio do scroll.
@@ -173,7 +184,9 @@ for (const vp of VIEWPORTS) {
           el.scrollTop = Math.floor((el.scrollHeight - el.clientHeight) / 2);
         });
         await page.waitForTimeout(120);
-        const headTopMid = await headerWrap.locator('thead').evaluate((el) => el.getBoundingClientRect().top);
+        const headTopMid = await headerWrap
+          .locator('thead')
+          .evaluate((el) => el.getBoundingClientRect().top);
         expect(Math.abs(headTopMid - headTop0)).toBeLessThanOrEqual(1);
         const alignMid = await measureAlignment(fixture);
         for (const a of alignMid) {
@@ -186,7 +199,9 @@ for (const vp of VIEWPORTS) {
           el.scrollTop = el.scrollHeight;
         });
         await page.waitForTimeout(120);
-        const headTopEnd = await headerWrap.locator('thead').evaluate((el) => el.getBoundingClientRect().top);
+        const headTopEnd = await headerWrap
+          .locator('thead')
+          .evaluate((el) => el.getBoundingClientRect().top);
         expect(Math.abs(headTopEnd - headTop0)).toBeLessThanOrEqual(1);
         const alignEnd = await measureAlignment(fixture);
         for (const a of alignEnd) {

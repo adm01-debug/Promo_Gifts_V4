@@ -11,6 +11,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { CHECK_RESULT_STATUS } from '../../scripts/check-result-contract.mjs';
 import {
+  addedOrRenamedMigrationFilenames,
   changedMigrationFilenames,
   evaluateSyncLogGate,
   extractMigrationVersion,
@@ -103,6 +104,22 @@ describe('changedMigrationFilenames', () => {
   });
 });
 
+describe('addedOrRenamedMigrationFilenames', () => {
+  it('trata migration renomeada para nova versão como adição lógica', () => {
+    const diff = [
+      `A\t${migrationPath('20261028100000_new.sql')}`,
+      `R078\t${migrationPath('20261027200000_old.sql')}\t${migrationPath('20261027195959_replacement.sql')}`,
+      `M\t${migrationPath('20261027180000_existing.sql')}`,
+      `D\t${migrationPath('20261027170000_removed.sql')}`,
+    ].join('\n');
+
+    expect(addedOrRenamedMigrationFilenames(diff)).toEqual([
+      '20261028100000_new.sql',
+      '20261027195959_replacement.sql',
+    ]);
+  });
+});
+
 // ─── evaluateSyncLogGate ─────────────────────────────────────────────────────
 
 describe('evaluateSyncLogGate', () => {
@@ -146,6 +163,27 @@ describe('evaluateSyncLogGate', () => {
     expect(result.checkedCount).toBe(2);
     expect(result.missing).toHaveLength(1);
     expect(result.missing[0].version).toBe('20260917000000');
+  });
+
+  it('aceita recibo pendente para migration nova renomeada, mas não para migration só modificada', () => {
+    const version = '20261027195959';
+    const filename = `${version}_supplier_stricker_rls_deny_all.sql`;
+    const logContent = `| \`${version}\` | hash | — | origem | E15 | previsto | pendente — aplicar via workflow E15 |`;
+
+    expect(evaluateSyncLogGate({
+      changedFilenames: [filename],
+      addedFilenames: [filename],
+      logContent,
+    }).ok).toBe(true);
+
+    expect(evaluateSyncLogGate({
+      changedFilenames: [filename],
+      addedFilenames: [],
+      logContent,
+    })).toMatchObject({
+      ok: false,
+      missing: [{ filename, version, reason: 'pendente_sem_adicao_no_pr' }],
+    });
   });
 });
 

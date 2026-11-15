@@ -6,6 +6,9 @@ import { test, expect } from '@playwright/test';
 const AUTH_URL_RE = /\/auth(\?|#|$)/;
 
 test.describe('Mockup Generator', () => {
+  // Redirect anônimo: roda sem sessão mesmo no project chromium-authed.
+  test.use({ storageState: { cookies: [], origins: [] } });
+
   test('mockup studio requires auth', async ({ page }) => {
     await page.goto('/mockup-generator');
     await page.waitForURL(AUTH_URL_RE, { timeout: 10000 });

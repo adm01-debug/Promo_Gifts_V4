@@ -2,7 +2,6 @@
  * MarketIntelligenceChart — Visão MACRO de mercado
  * Replica o layout do StockHistoryChart (página de produto)
  * mas com dados agregados de todos os produtos.
- * Inclui mock data quando não há dados reais.
  */
 import { useMemo, useState } from 'react';
 import {
@@ -35,117 +34,18 @@ import { KpiCard } from '@/components/ui/kpi-card';
 import { formatTooltipNumber, formatTooltipPercent } from '@/lib/format-utils';
 import {
   useMarketIntelligenceMacro,
-  type MacroMarketPoint,
   type MacroSupplierMetrics,
-  type MacroMarketKpis,
 } from '@/hooks/intelligence/useMarketIntelligenceMacro';
 import { useSupplierNames } from '@/hooks/products/useSupplierNames';
 import { safeParseDateForChart } from '@/lib/stock-chart-utils';
 import { SupplierChartFilter } from '@/components/products/SupplierChartFilter';
 import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/common/EmptyState';
 
 interface Props {
   days?: number;
   supplierId?: string | null;
   productId?: string | null;
-}
-
-// ---------- Mock data generator ----------
-function generateMockMarketData(days: number) {
-  const daily: MacroMarketPoint[] = [];
-  const now = new Date();
-  let stock = 3200 + Math.floor(Math.random() * 800);
-
-  for (let i = days - 1; i >= 0; i--) {
-    const d = new Date(now);
-    d.setDate(d.getDate() - i);
-    const dateStr = d.toISOString().split('T')[0];
-
-    const dayOfWeek = d.getDay();
-    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-    const baseDepleted = isWeekend ? 15 : 45;
-    const depleted = Math.max(0, Math.round(baseDepleted + (Math.random() - 0.4) * 30));
-    const restocked = Math.random() > 0.85 ? Math.round(200 + Math.random() * 400) : 0;
-
-    stock = Math.max(100, stock - depleted + restocked);
-
-    daily.push({ date: dateStr, stockClose: stock, depleted, restocked });
-  }
-
-  const d7 = daily.slice(-7);
-  const totalDepleted7d = d7.reduce((s, p) => s + p.depleted, 0);
-  const totalDepleted30d = daily.reduce((s, p) => s + p.depleted, 0);
-  const totalRestocked30d = daily.reduce((s, p) => s + p.restocked, 0);
-  const activeDays = daily.filter((d) => d.depleted > 0).length;
-
-  const topDay = daily.reduce(
-    (best, d) => (d.depleted > (best?.depleted ?? 0) ? d : best),
-    daily[0],
-  );
-
-  const mockSuppliers: MacroSupplierMetrics[] = [
-    {
-      supplierId: 'mock-supplier-1',
-      avgDailyDepletion7d: 10.2,
-      currentStock: 659,
-      totalDepleted: 420,
-      totalRestocked: 200,
-      velocityTrend: 1.26,
-      daysToStockout: 64,
-    },
-    {
-      supplierId: 'mock-supplier-2',
-      avgDailyDepletion7d: 9.1,
-      currentStock: 413,
-      totalDepleted: 350,
-      totalRestocked: 150,
-      velocityTrend: 1.15,
-      daysToStockout: 45,
-    },
-    {
-      supplierId: 'mock-supplier-3',
-      avgDailyDepletion7d: 8.7,
-      currentStock: 362,
-      totalDepleted: 310,
-      totalRestocked: 100,
-      velocityTrend: 0.52,
-      daysToStockout: 41,
-    },
-    {
-      supplierId: 'mock-supplier-4',
-      avgDailyDepletion7d: 3.5,
-      currentStock: 424,
-      totalDepleted: 140,
-      totalRestocked: 80,
-      velocityTrend: 0.95,
-      daysToStockout: 121,
-    },
-  ];
-
-  const kpis: MacroMarketKpis = {
-    totalDepleted7d,
-    totalDepleted30d,
-    totalRestocked30d,
-    totalCurrentStock: stock,
-    avgDailyDepletion: activeDays > 0 ? totalDepleted30d / activeDays : 0,
-    supplierCount: 4,
-    topDepletionDay: { date: topDay.date, value: topDay.depleted },
-  };
-
-  const mockSupplierNames = new Map<string, string>([
-    ['mock-supplier-1', 'Brasil Brindes'],
-    ['mock-supplier-2', 'Master Promo'],
-    ['mock-supplier-3', 'Premium Gifts'],
-    ['mock-supplier-4', 'Master Promo'],
-  ]);
-
-  return {
-    daily,
-    kpis,
-    suppliers: mockSuppliers,
-    supplierIds: mockSuppliers.map((s) => s.supplierId),
-    supplierNames: mockSupplierNames,
-  };
 }
 
 export function MarketIntelligenceChart({
@@ -159,19 +59,12 @@ export function MarketIntelligenceChart({
 
   const { data: realData, isLoading, error } = useMarketIntelligenceMacro(days, supplierId);
 
-  // Mock data fallback
-  const mock = useMemo(() => generateMockMarketData(days), [days]);
   const hasRealData = !!realData?.daily?.length;
-  const isDemo = !hasRealData && !error;
+  const effectiveData = hasRealData ? realData : undefined;
 
-  const effectiveData = hasRealData ? realData : mock;
-  const effectiveSupplierNames = hasRealData ? null : mock.supplierNames;
-
-  // Supplier names (only fetch for real data)
-  const { data: realSupplierNamesMap } = useSupplierNames(
+  const { data: supplierNamesMap } = useSupplierNames(
     hasRealData ? (realData?.supplierIds ?? []) : [],
   );
-  const supplierNamesMap = hasRealData ? realSupplierNamesMap : effectiveSupplierNames;
 
   const supplierOptions = useMemo(() => {
     const ids = effectiveData?.supplierIds ?? [];
@@ -204,6 +97,23 @@ export function MarketIntelligenceChart({
       <Card>
         <CardContent className="flex items-center justify-center py-8">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // A agregação ainda não existe neste banco: é ausência de recurso, não falha.
+  // Mostrar "Erro ao carregar dados de mercado" aqui faz o vendedor achar que o
+  // sistema quebrou, quando o que falta é a migration ser aplicada.
+  if (realData?.aggregationUnavailable) {
+    return (
+      <Card>
+        <CardContent className="py-8">
+          <EmptyState
+            variant="analytics"
+            title="Visão de mercado em preparação"
+            description="A agregação de estoque ainda não foi liberada neste ambiente. Os dados aparecem aqui assim que ela entrar."
+          />
         </CardContent>
       </Card>
     );
@@ -267,11 +177,6 @@ export function MarketIntelligenceChart({
               <CardDescription className="mt-0">
                 Como o mercado está comprando · visão macro · {days} dias
               </CardDescription>
-              {isDemo && (
-                <Badge variant="outline" className="px-1.5 py-0 text-[10px]">
-                  dados ilustrativos
-                </Badge>
-              )}
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -449,9 +354,12 @@ export function MarketIntelligenceChart({
 
         {/* Chart */}
         {!hasData ? (
-          <div className="flex h-48 items-center justify-center text-sm text-muted-foreground">
-            Sem dados de mercado disponíveis para este período
-          </div>
+          <EmptyState
+            variant="analytics"
+            title="Sem dados no período"
+            description={`Nenhuma movimentação de estoque registrada nos últimos ${days} dias.`}
+            className="py-6"
+          />
         ) : (
           <div className="h-[160px] w-full sm:h-[200px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -537,7 +445,6 @@ export function MarketIntelligenceChart({
               day: '2-digit',
               month: '2-digit',
             })}
-            {isDemo && ' (demo)'}
           </p>
         )}
       </CardContent>

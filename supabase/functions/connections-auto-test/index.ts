@@ -8,7 +8,7 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 //   - Retrocompat: se CONNECTIONS_AUTO_TEST_SECRET não estiver setado, aceita anônimo com warning
 //
 // Ver: supabase/functions/_shared/dispatcher-auth.ts
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { runConnectionTest, type ConnectionType, isTransientFailure } from "../_shared/connection-test-runner.ts";
 import { resolveTimeout } from "../_shared/connection-timeouts.ts";
 import {

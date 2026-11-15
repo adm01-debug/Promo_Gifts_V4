@@ -9,10 +9,12 @@
  *   node scripts/check-clickable-drift.mjs                # falha se houver arquivos novos
  *   node scripts/check-clickable-drift.mjs --update       # regrava baseline
  *
+ * Saídas: 0 sem regressão · 1 regressão detectada · 2 erro de execução (baseline ilegível).
+ *
  * @see docs/architecture/A11Y_CLICKABLE.md
  */
-import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';
-import { resolve, join, extname } from 'node:path';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { resolve, join, extname, dirname } from 'node:path';
 
 const ROOT = resolve(process.cwd());
 const BASELINE = resolve(ROOT, '.a11y/clickable-baseline.json');
@@ -59,7 +61,11 @@ let baseline = { files: [] };
 try {
   baseline = JSON.parse(readFileSync(BASELINE, 'utf8'));
 } catch (e) {
-  if (e.code !== 'ENOENT') throw e;
+  if (e.code !== 'ENOENT') {
+    console.error(`\n❌ Falha ao ler baseline (${BASELINE}): ${e.message}`);
+    console.error(`   Regrave com: node scripts/check-clickable-drift.mjs --update\n`);
+    process.exit(2);
+  }
 }
 const baselineSet = new Set(baseline.files ?? []);
 
@@ -70,6 +76,7 @@ if (UPDATE) {
     updated_at: new Date().toISOString(),
     files: [...current].sort(),
   };
+  mkdirSync(dirname(BASELINE), { recursive: true });
   writeFileSync(BASELINE, JSON.stringify(next, null, 2) + '\n');
   console.log(`✅ Baseline regravada: ${next.files.length} arquivo(s).`);
   process.exit(0);

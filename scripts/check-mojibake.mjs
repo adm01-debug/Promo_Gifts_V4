@@ -25,7 +25,15 @@ const SKIP_DIRS = new Set([
 ]);
 
 function* walk(dir) {
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+  let entries;
+  try {
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch {
+    // Subdiretório inacessível (ex.: permissão negada): não deve abortar o
+    // scan inteiro e descartar achados já coletados em outras partes da árvore.
+    return;
+  }
+  for (const entry of entries) {
     if (entry.name.startsWith('.') && entry.name !== '.github') continue;
     const full = join(dir, entry.name);
     if (entry.isDirectory()) {

@@ -71,7 +71,7 @@ const FIELD_MAP: DataSourceMap[] = [
     field: 'Lista de produtos (catálogo)',
     description: 'Dados do banco Promobrind',
     source: 'integration_credentials',
-    notes: 'URL/key consumidos pelo `external-db-bridge` em runtime',
+    notes: 'URL/key consumidos via REST nativo externo (bridge descomissionado em 2026-05-30)',
   },
 ];
 
@@ -261,9 +261,9 @@ export function DataSourceDebugTab() {
           ...base,
           technicalSource: {
             kind: 'edge_function' as const,
-            name: 'external-db-bridge (op: select_products)',
+            name: 'external-db REST nativo (op: select_products)',
             snippet:
-              "// Edge function lê EXTERNAL_PROMOBRIND_URL + _SERVICE_ROLE_KEY\n// (de integration_credentials, via secrets-manager interno)\n// e cria um client Supabase apontando para o BD do catálogo.\nconst client = createClient(URL, SERVICE_ROLE_KEY);\nawait client.from('products').select(...);",
+              "// REST nativo lê EXTERNAL_PROMOBRIND_URL + _SERVICE_ROLE_KEY\n// (de integration_credentials, via secrets-manager interno)\n// e cria um client Supabase apontando para o BD do catálogo.\n// (bridge descomissionado em 2026-05-30 — kill-switch OFF)\nconst client = createClient(URL, SERVICE_ROLE_KEY);\nawait client.from('products').select(...);",
           },
           samples: [
             {
@@ -491,7 +491,7 @@ export function DataSourceDebugTab() {
       {/* Métricas de cache da SSOT (resolveCredential) */}
       <CredentialCacheMetricsPanel />
 
-      {/* Pré-visualização paginada dos produtos retornados pelo external-db-bridge */}
+      {/* Pré-visualização paginada dos produtos retornados via external-db REST nativo */}
       <BridgeProductsPreviewPanel />
 
       {/* Raw rows */}

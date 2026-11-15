@@ -149,8 +149,11 @@ export const ProductListItem = memo(
     const [activeVariantIdx, setActiveVariantIdx] = useState(0);
     // Cor selecionada manualmente via swatch (bolinha) — sobrescreve imagem/estoque exibidos
     const setSelectedColor = useProductSelectionStore((st) => st.setSelectedColor);
+    const setSelectedVariant = useProductSelectionStore((st) => st.setSelectedVariant);
+    const clearSelectedColor = useProductSelectionStore((st) => st.clearSelectedColor);
     const userSelectedColorName =
       useProductSelectionStore((st) => st.selectedColors[product.id]) ?? null;
+    const userSelectedVariantId = useProductSelectionStore((st) => st.selectedVariantIds[product.id]) ?? null;
 
     // FIX-COLOR-SEL-02 (2026-06-21): busca dados reais da variante ao selecionar cor.
     // Dispara SOMENTE quando o usuário clicou numa bolinha (userSelectedColorName != null).
@@ -174,6 +177,8 @@ export const ProductListItem = memo(
       stock_quantity: product.stock ?? 0,
       color_swatches: productSwatchesData ?? undefined,
       has_colors: !!productSwatchesData?.length,
+      selected_color_name: userSelectedColorName,
+      selected_variant_id: userSelectedVariantId,
     });
     const useSwatchesV2 = swatchesV2Enabled && (productSwatchesData?.length ?? 0) > 0;
 
@@ -390,21 +395,23 @@ export const ProductListItem = memo(
     const variantImage = userSelectedImage || liveImage || currentVariant?.image;
     const colorSpecificImage = variantImage || resolveColorImage(product, activeColorFilter);
     // primary_image_url (is_primary=true) é a imagem capa canônica — deve ser a primeira exibida
-    const rawImageUrl =
+    const fallbackImageUrl =
       colorSpecificImage ||
       product.primary_image_url ||
       product.og_image_url ||
       product.images[0] ||
       null;
+    const rawImageUrl = useSwatchesV2 ? (swatchV2.displayImage ?? fallbackImageUrl) : fallbackImageUrl;
     const thumbUrl = rawImageUrl ? getCdnUrl(rawImageUrl, 'card') : '/placeholder.svg';
 
     const colorStock = resolveColorStock(product, activeColorFilter, userSelectedColorName);
     // FIX-COLOR-SEL-02: liveStockQty supera resolveColorStock quando disponível —
     // dado real do BD vs cache que pode estar sem stock por falta de hydration anterior.
-    const displayStock =
-      liveStockQty !== null ? liveStockQty : (colorStock?.stock ?? product.stock);
-    const displayStatus =
-      liveStockQty !== null
+    const fallbackStock = liveStockQty !== null ? liveStockQty : (colorStock?.stock ?? product.stock);
+    const displayStock = useSwatchesV2 ? swatchV2.displayStock : fallbackStock;
+    const displayStatus = useSwatchesV2
+      ? getCatalogStockStatus(swatchV2.displayStock, undefined, product.minQuantity)
+      : liveStockQty !== null
         ? getCatalogStockStatus(liveStockQty, undefined, product.minQuantity)
         : (colorStock?.stockStatus ?? product.stockStatus);
 
@@ -697,7 +704,7 @@ export const ProductListItem = memo(
                     swatchV2.selectVariant(variantId);
                     const sw = swatchV2.swatches.find((s) => s.variant_id === variantId);
                     if (sw) {
-                      setSelectedColor(product.id, sw.color_name);
+                      setSelectedVariant(product.id, variantId, sw.color_name);
                       if (typeof window !== 'undefined') {
                         const url = new URL(window.location.href);
                         url.searchParams.set('cor', sw.color_name);
@@ -709,11 +716,7 @@ export const ProductListItem = memo(
                   }}
                   onReset={() => {
                     swatchV2.resetActive();
-                    useProductSelectionStore.setState((state) => {
-                      const next = { ...state.selectedColors };
-                      delete next[product.id];
-                      return { selectedColors: next };
-                    });
+                    clearSelectedColor(product.id);
                     if (typeof window !== 'undefined') {
                       const url = new URL(window.location.href);
                       if (url.searchParams.get('pid') === product.id) {
@@ -745,11 +748,7 @@ export const ProductListItem = memo(
                     // FIX-SWATCH-INLINE-V1: seleção de cor inline no modo lista.
                   }}
                   onClear={() => {
-                    useProductSelectionStore.setState((state) => {
-                      const next = { ...state.selectedColors };
-                      delete next[product.id];
-                      return { selectedColors: next };
-                    });
+                    clearSelectedColor(product.id);
                     if (typeof window !== 'undefined') {
                       const url = new URL(window.location.href);
                       if (url.searchParams.get('pid') === product.id) {

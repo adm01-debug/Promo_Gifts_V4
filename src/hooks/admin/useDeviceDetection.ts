@@ -173,17 +173,19 @@ export function useDeviceDetection(targetUserId?: string) {
     async (deviceId: string): Promise<boolean> => {
       if (!effectiveUserId) return false;
 
-      const { error } = await untypedFrom('user_known_devices')
+      const { data, error } = await untypedFrom('user_known_devices')
         .update({ is_trusted: true })
         .eq('id', deviceId)
-        .eq('user_id', effectiveUserId);
+        .eq('user_id', effectiveUserId)
+        .select('id')
+        .maybeSingle();
 
       if (error) {
         logger.error('Error trusting device:', error);
         return false;
       }
 
-      return true;
+      return Boolean(data);
     },
     [effectiveUserId],
   );

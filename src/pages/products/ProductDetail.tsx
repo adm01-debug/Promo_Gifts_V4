@@ -427,6 +427,10 @@ export default function ProductDetail() {
             product={product}
             open={supplierCompareOpen}
             onOpenChange={setSupplierCompareOpen}
+            onSelectSupplier={(pid) => {
+              setSupplierCompareOpen(false);
+              navigate(`/produto/${pid}`);
+            }}
           />
         </Suspense>
         <Suspense fallback={<ModalSkeleton />}>

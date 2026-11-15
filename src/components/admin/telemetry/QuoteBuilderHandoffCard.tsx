@@ -30,6 +30,8 @@ interface HandoffRow {
 
 const SOURCE_LABELS: Record<QuoteHandoffSource, string> = {
   fromCart: 'Carrinho',
+  fromCompare: 'Comparador',
+  fromBiSuggestions: 'Sugestões do BI',
   fromCollection: 'Coleção',
   fromSimulator: 'Simulador',
   fromUrlParams: 'URL params (lote)',
@@ -38,6 +40,8 @@ const SOURCE_LABELS: Record<QuoteHandoffSource, string> = {
 
 const ALL_SOURCES: QuoteHandoffSource[] = [
   'fromCart',
+  'fromCompare',
+  'fromBiSuggestions',
   'fromCollection',
   'fromSimulator',
   'fromUrlParams',

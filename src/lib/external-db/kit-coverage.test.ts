@@ -93,7 +93,7 @@ describe('kit-coverage / computeKitCoverage', () => {
 
   it('detecta campos 100% null em linhas crus', () => {
     const r = computeKitCoverage([SPARSE_ROW, SPARSE_ROW]);
-    expect(r.fullyNullFields.length).toBeGreaterThan(10);
+    expect(r.fullyNullFields.length).toBe(KIT_AUDITED_FIELDS.length - 1);
     expect(r.coverage.component_name.pct).toBe(100); // único preenchido
     expect(r.coverage.material.pct).toBe(0);
     expect(r.coverage.weight_g.pct).toBe(0);
@@ -118,7 +118,7 @@ describe('kit-coverage / compareCoverage (gate de regressão da view)', () => {
     const view = computeKitCoverage([SPARSE_ROW, SPARSE_ROW]);
     const base = computeKitCoverage([RICH_ROW, RICH_ROW]);
     const cmp = compareCoverage(view, base);
-    expect(cmp.regressions.length).toBeGreaterThan(10);
+    expect(cmp.regressions.length).toBe(KIT_AUDITED_FIELDS.length - 1);
     for (const reg of cmp.regressions) {
       expect(reg.viewPct).toBeLessThan(reg.basePct);
     }

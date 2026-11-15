@@ -95,31 +95,42 @@ function isAllowed(lines, idx) {
 }
 
 const violations = [];
-for (const file of walk(SRC)) {
-  const rel = relative(ROOT, file).replaceAll("\\", "/");
-  if (IGNORE_FILE_SUFFIX.some((s) => rel.endsWith(s))) continue;
-  const src = readFileSync(file, "utf8");
+try {
+  for (const file of walk(SRC)) {
+    const rel = relative(ROOT, file).replaceAll("\\", "/");
+    if (IGNORE_FILE_SUFFIX.some((s) => rel.endsWith(s))) continue;
+    const src = readFileSync(file, "utf8");
 
-  // Pré-filtro: nenhuma regra dispara → pula o arquivo.
-  const candidateRules = RULES.filter((r) => r.pattern.test(src));
-  if (candidateRules.length === 0) continue;
+    // Pré-filtro: nenhuma regra dispara → pula o arquivo.
+    const candidateRules = RULES.filter((r) => r.pattern.test(src));
+    if (candidateRules.length === 0) continue;
 
-  // Data router de fato → todas as APIs são válidas neste arquivo.
-  if (RE_DATA_ROUTER.test(src)) continue;
+    // Data router de fato → todas as APIs são válidas neste arquivo.
+    if (RE_DATA_ROUTER.test(src)) continue;
 
-  const lines = src.split("\n");
-  for (let i = 0; i < lines.length; i++) {
-    for (const rule of candidateRules) {
-      if (!rule.pattern.test(lines[i])) continue;
-      if (isAllowed(lines, i)) continue;
-      violations.push({
-        rule: rule.id,
-        file: rel,
-        line: i + 1,
-        snippet: lines[i].trim(),
-      });
+    const lines = src.split("\n");
+    for (let i = 0; i < lines.length; i++) {
+      for (const rule of candidateRules) {
+        if (!rule.pattern.test(lines[i])) continue;
+        if (isAllowed(lines, i)) continue;
+        violations.push({
+          rule: rule.id,
+          file: rel,
+          line: i + 1,
+          snippet: lines[i].trim(),
+        });
+      }
     }
   }
+} catch (err) {
+  // Fail-closed: diretório ausente, loop de symlink (ELOOP), permissão
+  // negada etc. — não dá pra confirmar ausência de violações, então
+  // falha o gate com mensagem clara em vez de estourar stack trace crua
+  // (mesmo padrão de check-no-prod-leak.mjs / check-product-type-fields.mjs).
+  console.error(
+    `❌ Não foi possível varrer ${relative(ROOT, SRC) || "src"}/ (${err.code || err.message}) — gate route-error-element não pôde ser verificado.`,
+  );
+  process.exit(1);
 }
 
 const asJson = process.argv.includes("--json");

@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { untypedFrom } from '@/lib/supabase-untyped';
 import { searchCache } from './searchCache';
+import { useQuickSuggestions } from './useQuickSuggestions';
 import { pushRecentSearch } from './EmptySearchState';
 import { useDebounce, useSearchHistory } from '@/hooks/common';
 import {
@@ -278,6 +279,7 @@ export function useGlobalSearch() {
   // ── Popular products ──
   // product_popularity_30d view was removed; return empty until a replacement is created.
   const popularProducts: PopularProduct[] = [];
+  const quickSuggestions = useQuickSuggestions();
 
   // ── Typing suggestions ──
   useEffect(() => {
@@ -441,13 +443,13 @@ export function useGlobalSearch() {
               'companies',
               'razao_social',
               searchTerm,
-              { select: 'id, razao_social, nome_fantasia, ramo', limit: 5 },
+              { select: 'id, razao_social, nome_fantasia, ramo_atividade', limit: 5 },
             );
             companies.forEach((c) => {
               allResults.push({
                 id: c.id,
                 title: c.nome_fantasia || c.razao_social,
-                subtitle: c.ramo || 'Empresa',
+                subtitle: c.ramo_atividade || 'Empresa',
                 type: 'client',
                 href: `/cliente/${c.id}`,
               });
@@ -647,7 +649,7 @@ export function useGlobalSearch() {
               title: t.name,
               subtitle: `${itemCount} ${itemCount === 1 ? 'item' : 'itens'} • ${t.description || 'Template de carrinho'}`,
               type: 'cart_template',
-              href: `/carrinho?template=${t.id}`,
+              href: '/carrinhos',
             });
           });
         } catch {
@@ -905,10 +907,7 @@ export function useGlobalSearch() {
     searchError,
     popularProducts,
     typingSuggestions,
-    // quickSuggestions: campo obrigatorio em GlobalSearchIdleState.
-    // Retorna [] por ora — o componente nao renderiza a secao quando vazio.
-    // Futuramente pode ser populado com sugestoes dinamicas.
-    quickSuggestions: [] as QuickSuggestion[],
+    quickSuggestions,
     voiceOverlayOpen,
     setVoiceOverlayOpen,
     handleOpenVoiceOverlay,

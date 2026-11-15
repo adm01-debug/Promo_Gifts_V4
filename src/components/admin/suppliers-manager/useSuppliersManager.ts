@@ -1,4 +1,4 @@
-import { dbInvoke, dbInvokeSingle, dbInvokeDelete } from '@/lib/db/postgrest';
+import { dbInvokeDelete } from '@/lib/db/postgrest';
 import { untypedFrom } from '@/lib/supabase-untyped';
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { applyPixMask, validatePixKey } from '@/utils/pixMask';
@@ -378,17 +378,19 @@ export function useSuppliersManager() {
         logger.warn('[SuppliersManager] CNPJ dup check failed:', err);
       }
     }
-    // BUG-21 FIX: case-insensitive name dup check via __ilike_ prefix
+    // BUG-21 FIX: case-insensitive name dup check (LIKE wildcards escaped)
+    const escapeLike = (v: string) => v.replace(/[\\%_]/g, (c) => `\\${c}`);
     if (editingSupplier.name?.trim()) {
       try {
-        const existingByName = await dbInvoke<{ id: string; name: string }>({
-          table: 'suppliers',
-          operation: 'select',
-          select: 'id,name',
-          filters: { __ilike_name: editingSupplier.name.trim() },
-          limit: 5,
-        });
-        const dupByName = existingByName.records?.find((r) => r.id !== editingSupplier.id);
+        const { data: existingByName, error: nameCheckErr } = await untypedFrom<{
+          id: string;
+          name: string;
+        }>('suppliers')
+          .select('id,name')
+          .ilike('name', escapeLike(editingSupplier.name.trim()))
+          .limit(5);
+        if (nameCheckErr) throw nameCheckErr;
+        const dupByName = existingByName?.find((r) => r.id !== editingSupplier.id);
         if (dupByName) {
           toast.error(`Já existe outro fornecedor com este nome: "${dupByName.name}".`);
           setSaving(false);
@@ -400,19 +402,17 @@ export function useSuppliersManager() {
     }
     if (editingSupplier.trading_name?.trim()) {
       try {
-        const existingByTN = await dbInvoke<{
+        // BUG-21 FIX: case-insensitive trading_name dup check
+        const { data: existingByTN, error: tnCheckErr } = await untypedFrom<{
           id: string;
           name: string;
           trading_name: string;
-        }>({
-          table: 'suppliers',
-          operation: 'select',
-          select: 'id,name,trading_name',
-          // BUG-21 FIX: case-insensitive trading_name dup check
-          filters: { __ilike_trading_name: editingSupplier.trading_name.trim() },
-          limit: 5,
-        });
-        const dupByTN = existingByTN.records?.find((r) => r.id !== editingSupplier.id);
+        }>('suppliers')
+          .select('id,name,trading_name')
+          .ilike('trading_name', escapeLike(editingSupplier.trading_name.trim()))
+          .limit(5);
+        if (tnCheckErr) throw tnCheckErr;
+        const dupByTN = existingByTN?.find((r) => r.id !== editingSupplier.id);
         if (dupByTN) {
           toast.error(
             `Já existe outro fornecedor com este Nome Fantasia: "${dupByTN.trading_name || dupByTN.name}".`,
@@ -477,12 +477,9 @@ export function useSuppliersManager() {
         inscricao_estadual: inscricaoEstadual.trim() || null,
         tax_regime: regimeTributario || null,
         state_uf: estadoFaturamento || null,
-        // BUG-07 + BUG-30 FIX: persist social media fields to dedicated columns
-        instagram: es.instagram?.trim() || null,
-        facebook: es.facebook?.trim() || null,
-        linkedin: es.linkedin?.trim() || null,
-        youtube: es.youtube?.trim() || null,
-        tiktok: es.tiktok?.trim() || null,
+        // NOTE: the suppliers table has NO instagram/facebook/linkedin/youtube/tiktok
+        // columns, so sending them made PostgREST reject the whole write (PGRST204).
+        // They are omitted here until dedicated columns exist; the UI inputs are kept.
         notes: buildNotesPayload(
           es,
           contacts,
@@ -504,15 +501,20 @@ export function useSuppliersManager() {
       if (isNew) {
         payload.organization_id = ORGANIZATION_ID;
         payload.created_at = now;
-        await dbInvokeSingle({ table: 'suppliers', operation: 'insert', data: payload });
+        // RETURNING só de `id`: authenticated não tem SELECT table-level em suppliers (api_credentials).
+        const { error: insertErr } = await untypedFrom('suppliers')
+          .insert(payload)
+          .select('id')
+          .single();
+        if (insertErr) throw insertErr;
         toast.success(`Fornecedor "${editingSupplier.name}" criado`);
       } else {
-        await dbInvokeSingle({
-          table: 'suppliers',
-          operation: 'update',
-          id: editingSupplier.id,
-          data: payload,
-        });
+        const { error: updateErr } = await untypedFrom('suppliers')
+          .update(payload)
+          .eq('id', editingSupplier.id)
+          .select('id')
+          .single();
+        if (updateErr) throw updateErr;
         toast.success(`Fornecedor "${editingSupplier.name}" atualizado`);
       }
       setEditingSupplier(null);
@@ -770,7 +772,7 @@ function buildNotesPayload(
 
   // NOTE: Fones Fixos, Fiscal (IE, Regime, UF) are NO LONGER serialized here.
   // They now use dedicated columns: phone, phone2, inscricao_estadual, tax_regime, state_uf.
-  // Social media (instagram, facebook, etc.) also use dedicated columns now.
+  // Social media (instagram, facebook, etc.) is not persisted: suppliers has no such columns.
 
   return parts.join('\n') || null;
 }

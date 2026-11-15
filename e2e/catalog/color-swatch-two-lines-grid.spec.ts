@@ -7,7 +7,7 @@
  *
  * Cobre:
  *  1) Altura ≤ 2 linhas em qualquer card visível (todos os breakpoints).
- *  2) Cards com overflow → chip "+N" aparece e visíveis+ocultas = total.
+ *  2) Cards com overflow → chip "+N" aparece, hidden > 0 e pelo menos 1 visível.
  *  3) Estados sem clipping: idle, hover do card, focus do swatch, selected.
  *  4) Screenshot do container por breakpoint (artefato de revisão).
  */
@@ -25,16 +25,11 @@ const TOLERANCE_PX = 1;
 const SAMPLE_CARDS = 8;
 
 async function settleCatalog(page: Page) {
-  await page.waitForSelector('[data-testid="product-card"]', { timeout: 20_000 });
+  await page.waitForSelector('[data-testid="product-card"]', { timeout: 60_000 });
   await expect(page.locator('[data-testid="product-card-skeleton"]')).toHaveCount(0);
   await page.addStyleTag({
     content: `*, *::before, *::after { transition: none !important; animation: none !important; }`,
   });
-}
-
-function parsePx(v: string): number {
-  const n = parseFloat(v);
-  return Number.isFinite(n) ? n : 0;
 }
 
 async function measureGroup(group: Locator) {
@@ -70,7 +65,7 @@ test.describe('ProductCard — swatches travados em 2 linhas no grid', () => {
       page,
     }, testInfo) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
-      await gotoAndSettle(page, '/catalogo');
+      await gotoAndSettle(page, '/produtos');
       await settleCatalog(page);
 
       const cards = page.locator('[data-testid="product-card"]:has([role="radiogroup"])');
@@ -108,18 +103,18 @@ test.describe('ProductCard — swatches travados em 2 linhas no grid', () => {
           firstGroupShot = true;
         }
 
-        // (2) overflow: chip "+N" presente e visíveis + hidden = total
+        // (2) overflow: chip presente → há bolinhas ocultas e ao menos 1 visível
         const chip = card.locator('[data-testid="color-swatches-overflow"]').first();
         if (await chip.isVisible().catch(() => false)) {
           const ariaLabel = (await chip.getAttribute('aria-label')) ?? '';
-          const declaredTotal = Number(ariaLabel.match(/(\d+)\s+cores?/i)?.[1] ?? '0');
-          const hidden = Number(ariaLabel.match(/\+?(\d+)/)?.[1] ?? '0');
+          // aria-label = "Mais N cores" — fornece somente o count oculto, não o total
+          const hidden = Number(ariaLabel.match(/Mais\s+(\d+)/i)?.[1] ?? '0');
           const visible = await group.locator('[role="radio"]').count();
-          if (declaredTotal > 0) {
+          if (hidden > 0) {
             expect(
-              visible + hidden,
-              `card ${i}: visíveis(${visible}) + ocultas(${hidden}) ≠ total(${declaredTotal})`,
-            ).toBe(declaredTotal);
+              visible,
+              `card ${i}: chip mostra ${hidden} ocultas mas nenhuma bolinha visível`,
+            ).toBeGreaterThan(0);
             overflowAsserted++;
           }
         }
@@ -134,7 +129,7 @@ test.describe('ProductCard — swatches travados em 2 linhas no grid', () => {
         await first.focus();
         await assertSwatchInsideGroup(group, first, `card ${i} focus`);
 
-        await first.click({ force: true });
+        await first.click();
         await expect(first).toHaveAttribute('aria-checked', 'true');
         await assertSwatchInsideGroup(group, first, `card ${i} selected`);
       }

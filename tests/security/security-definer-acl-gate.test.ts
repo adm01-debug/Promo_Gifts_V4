@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { spawnSync } from 'child_process';
+import { readFileSync } from 'node:fs';
 
 function runWithoutCreds(args: string[] = []) {
   return spawnSync('node', ['scripts/check-security-definer-acl.mjs', ...args], {
@@ -25,5 +26,19 @@ describe('check-security-definer-acl gate', () => {
     expect(r.status).toBe(2);
     expect(r.stdout).toMatch(/inconclusive/);
     expect(r.stdout).toMatch(/evidência live obrigatória/);
+  });
+});
+
+describe('rollback do cleanup de funções de auditoria', () => {
+  const rollback = readFileSync('supabase/rollbacks/20261101202000_rollback.sql', 'utf8');
+
+  it('não reabre EXECUTE para papéis públicos', () => {
+    expect(rollback).not.toMatch(/GRANT\s+EXECUTE[\s\S]*\b(?:PUBLIC|anon|authenticated)\b/i);
+  });
+
+  it('mantém o ACL canônico fail-closed e idempotente', () => {
+    expect(rollback).toMatch(
+      /REVOKE\s+EXECUTE\s+ON\s+FUNCTION\s+public\.cleanup_expired_auth_sessions\(\)\s+FROM\s+PUBLIC,\s*anon,\s*authenticated\s*;/i,
+    );
   });
 });

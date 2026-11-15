@@ -9,16 +9,28 @@
  * projeto; cada workflow deve passar --min explícito para seu contexto)
  */
 import fs from 'fs';
+import { missingPrerequisite } from './lib/missing-prerequisite.mjs';
 
 const args = process.argv.slice(2);
 const reportPath = args.find((a) => !a.startsWith('--')) ?? 'test-results/results.json';
 const minArg = args.find((a) => a.startsWith('--min='));
-const MIN_TESTS = minArg ? parseInt(minArg.replace('--min=', ''), 10) : 10;
+const minRaw = minArg?.slice('--min='.length);
+const MIN_TESTS = minRaw === undefined ? 10 : Number(minRaw);
+
+if (
+  minRaw !== undefined
+  && (!/^\d+$/.test(minRaw) || !Number.isSafeInteger(MIN_TESTS) || MIN_TESTS < 1)
+) {
+  console.error(`[check-min-tests] Valor invalido para --min: ${minRaw || '(vazio)'}`);
+  console.error('[check-min-tests] Use um inteiro seguro maior ou igual a 1 (ex.: --min=10).');
+  process.exit(2);
+}
 
 if (!fs.existsSync(reportPath)) {
-  console.error(`[check-min-tests] Relatorio nao encontrado: ${reportPath}`);
-  console.error('[check-min-tests] Execute playwright com --reporter=json antes deste gate.');
-  process.exit(1);
+  missingPrerequisite('check-min-tests', `relatorio ${reportPath} ausente`, {
+    exitCode: 1,
+    hint: 'Execute playwright com --reporter=json antes deste gate.',
+  });
 }
 
 let report;

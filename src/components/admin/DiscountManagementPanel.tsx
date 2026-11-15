@@ -310,7 +310,7 @@ export function DiscountManagementPanel() {
                                     : 'bg-muted text-muted-foreground',
                                 )}
                               >
-                                {(seller.full_name || seller.email || '?')[0].toUpperCase()}
+                                {(seller.full_name || seller.email || '?')[0]!.toUpperCase()}
                               </div>
                               <div>
                                 <p className="text-sm font-medium">
@@ -345,7 +345,7 @@ export function DiscountManagementPanel() {
                                     open: true,
                                     userId: seller.user_id,
                                     name: seller.full_name || seller.email || '',
-                                    currentLimit: limit?.max_discount_percent || 5,
+                                    currentLimit: limit?.max_discount_percent ?? 5,
                                     notes: limit?.notes ?? '',
                                   })
                                 }

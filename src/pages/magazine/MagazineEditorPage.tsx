@@ -393,7 +393,7 @@ export default function MagazineEditorPage() {
               }}
             />
           </div>
-          <div className="flex flex-wrap items-center gap-2.5 lg:pb-0.5">
+          <div className="flex flex-wrap items-center gap-2.5 lg:shrink-0 lg:flex-nowrap lg:pb-0.5">
             {/* Status de salvamento — sempre visível */}
             <span
               role="status"

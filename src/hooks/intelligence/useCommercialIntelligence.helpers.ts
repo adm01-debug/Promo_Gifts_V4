@@ -70,6 +70,38 @@ export interface CategoryRankingItem {
   totalScore: number;
 }
 
+const ID_CHUNK_SIZE = 150;
+
+async function fetchForIds<T>(
+  ids: string[] | undefined,
+  fetchChunk: (chunk?: string[]) => Promise<T[]>,
+): Promise<T[]> {
+  if (!ids) return fetchChunk();
+  const chunks: string[][] = [];
+  for (let i = 0; i < ids.length; i += ID_CHUNK_SIZE) chunks.push(ids.slice(i, i + ID_CHUNK_SIZE));
+  const pages = await Promise.all(chunks.map((chunk) => fetchChunk(chunk)));
+  return pages.flat();
+}
+
+async function fetchActiveProductRows<T>(
+  select: string,
+  extraFilters: Record<string, unknown> = {},
+): Promise<T[]> {
+  const { dbInvoke } = await import('@/lib/db/postgrest');
+  return fetchAllPages<T>(async (from, to) => {
+    const result = await dbInvoke<T>({
+      table: 'products',
+      operation: 'select',
+      select,
+      filters: { active: true, ...extraFilters },
+      orderBy: { column: 'id', ascending: true },
+      limit: to - from + 1,
+      offset: from,
+    });
+    return { data: result.records, error: null };
+  });
+}
+
 export async function fetchFilteredProductIds(
   categoryId?: string | null,
   supplierId?: string | null,
@@ -77,11 +109,10 @@ export async function fetchFilteredProductIds(
 ): Promise<Set<string> | null> {
   if (productId) return new Set([productId]);
   if (!categoryId && !supplierId) return null;
-  const { fetchPromobrindProducts } = await import('@/lib/external-db');
   const filters: Record<string, unknown> = {};
   if (categoryId) filters.category_id = categoryId;
   if (supplierId) filters.supplier_id = supplierId;
-  const products = await fetchPromobrindProducts({ limit: 5000, filters });
+  const products = await fetchActiveProductRows<{ id: string }>('id', filters);
   return new Set(products.map((p) => p.id));
 }
 
@@ -110,41 +141,49 @@ export async function fetchCommercialKPIs(args: {
       };
 
     const [quoteItems, orderItems, orderItemsMonth, quoteItemsMonth] = await Promise.all([
-      fetchAllPages((from, to) =>
-        supabase
-          .from('quote_items')
-          .select('quote_id, product_id')
-          .gte('created_at', since)
-          .in('product_id', pids.slice(0, 200))
-          .order('id', { ascending: true })
-          .range(from, to),
+      fetchForIds(pids, (chunk = []) =>
+        fetchAllPages((from, to) =>
+          supabase
+            .from('quote_items')
+            .select('quote_id, product_id')
+            .gte('created_at', since)
+            .in('product_id', chunk)
+            .order('id', { ascending: true })
+            .range(from, to),
+        ),
       ).catch(() => []),
-      fetchAllPages((from, to) =>
-        supabase
-          .from('order_items')
-          .select('order_id, product_id, quantity, unit_price')
-          .gte('created_at', since)
-          .in('product_id', pids.slice(0, 200))
-          .order('id', { ascending: true })
-          .range(from, to),
+      fetchForIds(pids, (chunk = []) =>
+        fetchAllPages((from, to) =>
+          supabase
+            .from('order_items')
+            .select('order_id, product_id, quantity, unit_price')
+            .gte('created_at', since)
+            .in('product_id', chunk)
+            .order('id', { ascending: true })
+            .range(from, to),
+        ),
       ).catch(() => []),
-      fetchAllPages((from, to) =>
-        supabase
-          .from('order_items')
-          .select('order_id, product_id, quantity, unit_price')
-          .gte('created_at', startOfMonth)
-          .in('product_id', pids.slice(0, 200))
-          .order('id', { ascending: true })
-          .range(from, to),
+      fetchForIds(pids, (chunk = []) =>
+        fetchAllPages((from, to) =>
+          supabase
+            .from('order_items')
+            .select('order_id, product_id, quantity, unit_price')
+            .gte('created_at', startOfMonth)
+            .in('product_id', chunk)
+            .order('id', { ascending: true })
+            .range(from, to),
+        ),
       ).catch(() => []),
-      fetchAllPages((from, to) =>
-        supabase
-          .from('quote_items')
-          .select('quote_id, product_id')
-          .gte('created_at', startOfMonth)
-          .in('product_id', pids.slice(0, 200))
-          .order('id', { ascending: true })
-          .range(from, to),
+      fetchForIds(pids, (chunk = []) =>
+        fetchAllPages((from, to) =>
+          supabase
+            .from('quote_items')
+            .select('quote_id, product_id')
+            .gte('created_at', startOfMonth)
+            .in('product_id', chunk)
+            .order('id', { ascending: true })
+            .range(from, to),
+        ),
       ).catch(() => []),
     ]);
 
@@ -235,28 +274,32 @@ export async function fetchTrendingProducts(args: {
   limit: number;
 }): Promise<TrendingProduct[]> {
   const { productIds, since, searchTerm, limit } = args;
-  const pids = productIds ? Array.from(productIds).slice(0, 200) : undefined;
+  const pids = productIds ? Array.from(productIds) : undefined;
   const [orderItems, quoteItems] = await Promise.all([
-    fetchAllPages((from, to) => {
-      let q = supabase
-        .from('order_items')
-        .select(
-          'product_id, product_sku, product_name, product_image_url, quantity, unit_price, order_id, created_at',
-        )
-        .gte('created_at', since);
-      if (pids) q = q.in('product_id', pids);
-      return q.order('id', { ascending: true }).range(from, to);
-    }).catch(() => []),
-    fetchAllPages((from, to) => {
-      let q = supabase
-        .from('quote_items')
-        .select(
-          'product_id, product_sku, product_name, product_image_url, quantity, unit_price, created_at',
-        )
-        .gte('created_at', since);
-      if (pids) q = q.in('product_id', pids);
-      return q.order('id', { ascending: true }).range(from, to);
-    }).catch(() => []),
+    fetchForIds(pids, (chunk) =>
+      fetchAllPages((from, to) => {
+        let q = supabase
+          .from('order_items')
+          .select(
+            'product_id, product_sku, product_name, product_image_url, quantity, unit_price, order_id, created_at',
+          )
+          .gte('created_at', since);
+        if (chunk) q = q.in('product_id', chunk);
+        return q.order('id', { ascending: true }).range(from, to);
+      }),
+    ).catch(() => []),
+    fetchForIds(pids, (chunk) =>
+      fetchAllPages((from, to) => {
+        let q = supabase
+          .from('quote_items')
+          .select(
+            'product_id, product_sku, product_name, product_image_url, quantity, unit_price, created_at',
+          )
+          .gte('created_at', since);
+        if (chunk) q = q.in('product_id', chunk);
+        return q.order('id', { ascending: true }).range(from, to);
+      }),
+    ).catch(() => []),
   ]);
 
   if (!orderItems.length) return [];
@@ -313,20 +356,22 @@ export async function fetchSegmentData(args: {
 }): Promise<SegmentData[]> {
   const { hasFilter, productIds, since } = args;
   if (hasFilter && productIds) {
-    const pids = Array.from(productIds).slice(0, 200);
+    const pids = Array.from(productIds);
     if (!pids.length) return [];
     // BUG-COMMERCIALINTEL-SEGMENTS-OI-SELECT-SILENT-FAIL FIX: { data: oi } without error
     // check — RLS failure silently returned [] making queryFn succeed with empty segments.
     let oi: Array<{ order_id: string | null }>;
     try {
-      oi = await fetchAllPages<{ order_id: string | null }>((from, to) =>
-        supabase
-          .from('order_items')
-          .select('order_id')
-          .gte('created_at', since)
-          .in('product_id', pids)
-          .order('id', { ascending: true })
-          .range(from, to),
+      oi = await fetchForIds(pids, (chunk = []) =>
+        fetchAllPages<{ order_id: string | null }>((from, to) =>
+          supabase
+            .from('order_items')
+            .select('order_id')
+            .gte('created_at', since)
+            .in('product_id', chunk)
+            .order('id', { ascending: true })
+            .range(from, to),
+        ),
       );
     } catch (oiErr) {
       return degradeOrThrow(oiErr, 'segments.order_items', [] as SegmentData[]);
@@ -335,13 +380,24 @@ export async function fetchSegmentData(args: {
     if (!orderIds.length) return [];
     // BUG-COMMERCIALINTEL-SEGMENTS-ORDERS-SELECT-SILENT-FAIL FIX: { data: orders } without
     // error check — failure silently produced empty segments instead of triggering retry.
-    const { data: orders, error: ordersErr } = await supabase
-      // rls-allow: respeita can_view_all_sales server-side
-      .from('orders')
-      .select('id, client_company, total')
-      .in('id', orderIds.slice(0, 200));
-    if (ordersErr) return degradeOrThrow(ordersErr, 'segments.orders', [] as SegmentData[]);
-    return aggregateSegments(orders || []);
+    let orders: Array<{ id: string; client_company: string | null; total: number | null }>;
+    try {
+      orders = await fetchForIds(orderIds, (chunk = []) =>
+        fetchAllPages<{ id: string; client_company: string | null; total: number | null }>(
+          (from, to) =>
+            supabase
+              // rls-allow: respeita can_view_all_sales server-side
+              .from('orders')
+              .select('id, client_company, total')
+              .in('id', chunk)
+              .order('id', { ascending: true })
+              .range(from, to),
+        ),
+      );
+    } catch (ordersErr) {
+      return degradeOrThrow(ordersErr, 'segments.orders', [] as SegmentData[]);
+    }
+    return aggregateSegments(orders);
   }
   // BUG-COMMERCIALINTEL-SEGMENTS-ALLORDERS-SELECT-SILENT-FAIL FIX
   let orders: Array<{ client_company: string | null; total: number | null }>;
@@ -367,24 +423,28 @@ export async function fetchOpportunities(args: {
   since: string;
 }): Promise<OpportunityProduct[]> {
   const { productIds, since } = args;
-  const pids = productIds ? Array.from(productIds).slice(0, 200) : undefined;
+  const pids = productIds ? Array.from(productIds) : undefined;
   const [quoteItems, orderItems] = await Promise.all([
-    fetchAllPages((from, to) => {
-      let q = supabase
-        .from('quote_items')
-        .select('product_id, product_sku, product_name, product_image_url, quantity, created_at')
-        .gte('created_at', since);
-      if (pids) q = q.in('product_id', pids);
-      return q.order('id', { ascending: true }).range(from, to);
-    }).catch(() => []),
-    fetchAllPages((from, to) => {
-      let q = supabase
-        .from('order_items')
-        .select('product_id, product_sku, product_name, created_at')
-        .gte('created_at', since);
-      if (pids) q = q.in('product_id', pids);
-      return q.order('id', { ascending: true }).range(from, to);
-    }).catch(() => []),
+    fetchForIds(pids, (chunk) =>
+      fetchAllPages((from, to) => {
+        let q = supabase
+          .from('quote_items')
+          .select('product_id, product_sku, product_name, product_image_url, quantity, created_at')
+          .gte('created_at', since);
+        if (chunk) q = q.in('product_id', chunk);
+        return q.order('id', { ascending: true }).range(from, to);
+      }),
+    ).catch(() => []),
+    fetchForIds(pids, (chunk) =>
+      fetchAllPages((from, to) => {
+        let q = supabase
+          .from('order_items')
+          .select('product_id, product_sku, product_name, created_at')
+          .gte('created_at', since);
+        if (chunk) q = q.in('product_id', chunk);
+        return q.order('id', { ascending: true }).range(from, to);
+      }),
+    ).catch(() => []),
   ]);
   if (!quoteItems.length) return [];
 
@@ -446,20 +506,22 @@ export async function fetchTopClients(args: {
 }): Promise<ClientAggregate[]> {
   const { hasFilter, productIds, since } = args;
   if (hasFilter && productIds) {
-    const pids = Array.from(productIds).slice(0, 200);
+    const pids = Array.from(productIds);
     if (!pids.length) return [];
     // BUG-TOPCLIENTS-OI-SELECT-SILENT-FAIL FIX: { data: oi } without error check —
     // RLS failure silently returned [] making queryFn succeed with empty client list.
     let oi: Array<{ order_id: string | null }>;
     try {
-      oi = await fetchAllPages<{ order_id: string | null }>((from, to) =>
-        supabase
-          .from('order_items')
-          .select('order_id, quantity, unit_price')
-          .gte('created_at', since)
-          .in('product_id', pids)
-          .order('id', { ascending: true })
-          .range(from, to),
+      oi = await fetchForIds(pids, (chunk = []) =>
+        fetchAllPages<{ order_id: string | null }>((from, to) =>
+          supabase
+            .from('order_items')
+            .select('order_id, quantity, unit_price')
+            .gte('created_at', since)
+            .in('product_id', chunk)
+            .order('id', { ascending: true })
+            .range(from, to),
+        ),
       );
     } catch (oiErr) {
       return degradeOrThrow(oiErr, 'top_clients.order_items', [] as ClientAggregate[]);
@@ -467,14 +529,33 @@ export async function fetchTopClients(args: {
     const orderIds = [...new Set(oi.map((o) => o.order_id).filter(Boolean))] as string[];
     if (!orderIds.length) return [];
     // BUG-TOPCLIENTS-ORDERS-FILTERED-SELECT-SILENT-FAIL FIX
-    const { data: orders, error: ordersFilteredErr } = await supabase
-      // rls-allow: respeita can_view_all_sales server-side
-      .from('orders')
-      .select('id, client_name, client_company, total')
-      .in('id', orderIds.slice(0, 200));
-    if (ordersFilteredErr)
+    let filteredOrders: Array<{
+      id: string;
+      client_name: string | null;
+      client_company: string | null;
+      total: number | null;
+    }>;
+    try {
+      filteredOrders = await fetchForIds(orderIds, (chunk = []) =>
+        fetchAllPages<{
+          id: string;
+          client_name: string | null;
+          client_company: string | null;
+          total: number | null;
+        }>((from, to) =>
+          supabase
+            // rls-allow: respeita can_view_all_sales server-side
+            .from('orders')
+            .select('id, client_name, client_company, total')
+            .in('id', chunk)
+            .order('id', { ascending: true })
+            .range(from, to),
+        ),
+      );
+    } catch (ordersFilteredErr) {
       return degradeOrThrow(ordersFilteredErr, 'top_clients.orders', [] as ClientAggregate[]);
-    return aggregateClients(orders || []);
+    }
+    return aggregateClients(filteredOrders);
   }
   // BUG-TOPCLIENTS-ALLORDERS-SELECT-SILENT-FAIL FIX
   let orders: Array<{
@@ -507,7 +588,7 @@ export async function fetchCategoryRanking(args: {
   since: string;
 }): Promise<CategoryRankingItem[]> {
   const { productIds, since } = args;
-  const pids = productIds ? Array.from(productIds).slice(0, 200) : undefined;
+  const pids = productIds ? Array.from(productIds) : undefined;
   // BUG-COMMERCIAL-CATRANK-SILENT-FAIL FIX: { data } without error check silently returned
   // empty results on RLS denial — now throws so TanStack Query retries/surfaces the error.
   let orderItems: Array<{
@@ -516,24 +597,30 @@ export async function fetchCategoryRanking(args: {
     unit_price: number | null;
   }>;
   try {
-    orderItems = await fetchAllPages<{
-      product_id: string | null;
-      quantity: number | null;
-      unit_price: number | null;
-    }>((from, to) => {
-      let q = supabase
-        .from('order_items')
-        .select('product_id, quantity, unit_price')
-        .gte('created_at', since);
-      if (pids) q = q.in('product_id', pids);
-      return q.order('id', { ascending: true }).range(from, to);
-    });
+    orderItems = await fetchForIds(pids, (chunk) =>
+      fetchAllPages<{
+        product_id: string | null;
+        quantity: number | null;
+        unit_price: number | null;
+      }>((from, to) => {
+        let q = supabase
+          .from('order_items')
+          .select('product_id, quantity, unit_price')
+          .gte('created_at', since);
+        if (chunk) q = q.in('product_id', chunk);
+        return q.order('id', { ascending: true }).range(from, to);
+      }),
+    );
   } catch (orderErr) {
     return degradeOrThrow(orderErr, 'category_ranking.order_items', [] as CategoryRankingItem[]);
   }
 
-  const { fetchPromobrindProducts } = await import('@/lib/external-db');
-  const products = await fetchPromobrindProducts({ limit: 5000 });
+  const products = await fetchActiveProductRows<{
+    id: string;
+    category_id: string | null;
+    main_category_id: string | null;
+    category_name: string | null;
+  }>('id, category_id, main_category_id, category_name:leaf_category_name');
   const productCategoryMap = new Map<string, { catId: string; catName: string }>();
   products.forEach((p) => {
     const catId = p.category_id || p.main_category_id || '';
@@ -561,16 +648,21 @@ export async function fetchCategoryRanking(args: {
   });
 
   try {
-    const { dbInvoke } = await import('@/lib/db/postgrest');
-    const sinceDate = since.split('T')[0];
-    const result = await dbInvoke<{ product_id: string; units_depleted: number }>({
-      table: 'stock_daily_summary',
-      operation: 'select',
-      select: 'product_id,units_depleted',
-      filters: { summary_date: { op: 'gte', value: sinceDate } }, // FIX: objeto -> .gte() (era string -> .eq() -> 400)
-      limit: 5000,
-    });
-    (result?.records ?? []).forEach((snap) => {
+    // Saídas de mercado vêm de janelas fixas (30d/90d) agregadas no servidor: somar
+    // stock_daily_summary no cliente exigiria centenas de páginas (~69 mil linhas só em 30d).
+    // Período em dias inteiros (since é calculado no render; o queryFn roda depois) e
+    // proporcional à janela mais próxima quando o período não é exatamente 30 ou 90 dias.
+    const periodDays = Math.max(
+      1,
+      Math.round((Date.now() - new Date(since).getTime()) / 86_400_000),
+    );
+    const useWindow30 = periodDays <= 30;
+    const windowFactor = periodDays / (useWindow30 ? 30 : 90);
+    const { fetchProductIntelligenceAll } =
+      await import('@/hooks/products/useSupplierSalesRanking');
+    const { rows: market, error: marketErr } = await fetchProductIntelligenceAll();
+    if (marketErr) throw new Error(marketErr.message ?? 'RPC error');
+    market.forEach((snap) => {
       const cat = productCategoryMap.get(snap.product_id);
       if (!cat) return;
       const e = categoryMap.get(cat.catId) || {
@@ -582,7 +674,10 @@ export async function fetchCategoryRanking(args: {
         marketDepleted: 0,
         totalScore: 0,
       };
-      e.marketDepleted += snap.units_depleted ?? 0;
+      // Acumula sem arredondar: arredondar por produto zerava saídas pequenas em períodos curtos.
+      e.marketDepleted +=
+        (Number(useWindow30 ? snap.total_depleted_30d : snap.total_depleted_90d) || 0) *
+        windowFactor;
       categoryMap.set(cat.catId, e);
     });
   } catch (e) {
@@ -590,6 +685,9 @@ export async function fetchCategoryRanking(args: {
   }
 
   const items = Array.from(categoryMap.values());
+  items.forEach((i) => {
+    i.marketDepleted = Math.round(i.marketDepleted);
+  });
   const maxR = Math.max(1, ...items.map((i) => i.internalRevenue));
   const maxD = Math.max(1, ...items.map((i) => i.marketDepleted));
   items.forEach((i) => {
@@ -603,7 +701,7 @@ export async function fetchSupplierSales(args: {
   since: string;
 }): Promise<SupplierSalesRow[]> {
   const { productIds, since } = args;
-  const pids = productIds ? Array.from(productIds).slice(0, 200) : undefined;
+  const pids = productIds ? Array.from(productIds) : undefined;
   // BUG-COMMERCIAL-SUPPLIERSALES-SILENT-FAIL FIX: { data } without error check.
   let orderItems: Array<{
     product_id: string | null;
@@ -612,26 +710,30 @@ export async function fetchSupplierSales(args: {
     unit_price: number | null;
   }>;
   try {
-    orderItems = await fetchAllPages<{
-      product_id: string | null;
-      product_name: string | null;
-      quantity: number | null;
-      unit_price: number | null;
-    }>((from, to) => {
-      let q = supabase
-        .from('order_items')
-        .select('product_id, product_name, quantity, unit_price')
-        .gte('created_at', since);
-      if (pids) q = q.in('product_id', pids);
-      return q.order('id', { ascending: true }).range(from, to);
-    });
+    orderItems = await fetchForIds(pids, (chunk) =>
+      fetchAllPages<{
+        product_id: string | null;
+        product_name: string | null;
+        quantity: number | null;
+        unit_price: number | null;
+      }>((from, to) => {
+        let q = supabase
+          .from('order_items')
+          .select('product_id, product_name, quantity, unit_price')
+          .gte('created_at', since);
+        if (chunk) q = q.in('product_id', chunk);
+        return q.order('id', { ascending: true }).range(from, to);
+      }),
+    );
   } catch (orderErr) {
     return degradeOrThrow(orderErr, 'supplier_sales.order_items', [] as SupplierSalesRow[]);
   }
   if (!orderItems.length) return [];
 
-  const { fetchPromobrindProducts } = await import('@/lib/external-db');
-  const products = await fetchPromobrindProducts({ limit: 5000 });
+  const products = await fetchActiveProductRows<{
+    id: string;
+    supplier_reference: string | null;
+  }>('id, supplier_reference');
   const productSupplierMap = new Map<string, string>();
   products.forEach((p) => {
     productSupplierMap.set(p.id, p.supplier_reference || 'Sem fornecedor');

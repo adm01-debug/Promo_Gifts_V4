@@ -88,10 +88,14 @@ export function useTelemetryData() {
 
   const handleCleanup = async () => {
     const threshold = new Date(Date.now() - 604800000).toISOString();
-    const { error } = await supabase.from('query_telemetry').delete().lt('created_at', threshold);
+    const { error, count } = await supabase
+      .from('query_telemetry')
+      .delete({ count: 'exact' })
+      .lt('created_at', threshold);
     if (error) toast.error('Erro ao limpar dados antigos');
+    else if (!count) toast.info('Nenhum registro removido (nada com +7 dias ou sem permissão)');
     else {
-      toast.success('Dados com mais de 7 dias removidos');
+      toast.success(`${count} registros com mais de 7 dias removidos`);
       refetch();
     }
   };

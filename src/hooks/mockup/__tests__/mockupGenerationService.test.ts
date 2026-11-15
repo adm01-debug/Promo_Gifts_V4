@@ -131,6 +131,14 @@ describe('getTechniquePrompt', () => {
     expect(getTechniquePrompt({ id: '3', name: 'Laser', code: 'laser' })).toMatch(/laser engraved/);
   });
 
+  it('maps the remaining known codes (uv, sublimacao)', () => {
+    // Carried over from the retired mockup-audit.test.ts T7 local copy.
+    expect(getTechniquePrompt({ id: '6', name: 'UV Digital', code: 'uv' })).toMatch(/UV printed/);
+    expect(getTechniquePrompt({ id: '7', name: 'Sublimacao', code: 'sublimacao' })).toMatch(
+      /sublimation printed/,
+    );
+  });
+
   it('falls back to default for unknown techniques', () => {
     expect(getTechniquePrompt({ id: '4', name: 'Nova', code: null })).toMatch(
       /professionally printed/,
@@ -156,14 +164,18 @@ describe('saveMockupToDb', () => {
       product: { id: 'prod-1', name: 'Caneca', sku: 'CAN-001' },
       technique: silk,
       client: { id: 'c1', name: 'Cliente' },
-      area: area({ logoRotation: 45, logoScale: 150 }),
+      area: area({ logoRotation: 45, logoScale: 150, positionX: 30, positionY: 70 }),
       mockupUrl: 'https://cdn.example.com/mockup.png',
     });
 
     expect(recordId).toBe('rec-1');
     const row = captured.insert!;
     expect(row.thumbnail_url).toBe('https://cdn.example.com/mockup.png');
-    expect(row.position_x).toBe(50);
+    // X e Y distintos: trocar position_x por position_y no INSERT quebra o teste.
+    expect(row.position_x).toBe(30);
+    expect(row.position_y).toBe(70);
+    expect(row.logo_width_cm).toBe(5);
+    expect(row.logo_height_cm).toBe(3);
     expect(row.logo_url).toBe('https://cdn.example.com/logo.png');
     const cfg = row.area_config as Record<string, unknown>;
     expect(cfg.logoRotation).toBe(45);

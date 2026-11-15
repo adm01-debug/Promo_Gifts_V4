@@ -1,6 +1,6 @@
 import { getCorsHeaders } from '../_shared/cors.ts';
 import { authenticateRequest } from '../_shared/auth.ts';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4';
+import { createClient } from 'npm:@supabase/supabase-js@2.49.4';
 import { callAiWithTracking } from '../_shared/ai-usage.ts';
 import { z } from '../_shared/zod-validate.ts';
 import { applyRateLimit, rateLimiters } from '../_shared/rate-limiter.ts';

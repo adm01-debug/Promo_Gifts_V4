@@ -34,8 +34,6 @@ const ALLOWLIST = new Set([
   'secrets.BRANCH_PROTECTION_READ_TOKEN',
   // Allowlistado em check-workflow-contracts (Gate 4 opcional)
   'secrets.LHCI_GITHUB_APP_TOKEN',
-  // Padrão didático R5 em _template.yml — não é segredo real
-  'secrets.EXAMPLE_API_KEY',
 ]);
 
 const isScanEdge = process.argv.includes('--scan-edge');
@@ -174,9 +172,17 @@ const yamlFiles = [
 
 // Agrega todas as referências
 const allRefs = new Map(); // key → Set<relPath>
+let hasReadError = false;
 for (const file of yamlFiles) {
-  const content = readFileSync(file, 'utf8');
   const relPath = relative(ROOT, file);
+  let content;
+  try {
+    content = readFileSync(file, 'utf8');
+  } catch (err) {
+    console.error(`::error::check-secrets-inventory: erro ao ler ${relPath}: ${err.message}`);
+    hasReadError = true;
+    continue;
+  }
   const refs = extractRefs(content);
   for (const [key] of refs) {
     if (!allRefs.has(key)) allRefs.set(key, new Set());
@@ -187,7 +193,12 @@ for (const file of yamlFiles) {
 // Conta referências por chave (para relatório)
 const refCounts = new Map();
 for (const file of yamlFiles) {
-  const content = readFileSync(file, 'utf8');
+  let content;
+  try {
+    content = readFileSync(file, 'utf8');
+  } catch {
+    continue;
+  }
   const exprRe = /(secrets|vars)\.([A-Z][A-Z0-9_]*)/g;
   let m;
   while ((m = exprRe.exec(content)) !== null) {
@@ -291,9 +302,16 @@ if (isScanEdge || isGate) {
   const edgeRefs = new Map(); // VAR_NAME → Set<relPath>
 
   for (const file of edgeFiles) {
-    const content = readFileSync(file, 'utf8');
-    const refs = extractDenoEnvRefs(content);
     const relPath = relative(ROOT, file);
+    let content;
+    try {
+      content = readFileSync(file, 'utf8');
+    } catch (err) {
+      console.error(`::error::check-secrets-inventory: erro ao ler ${relPath}: ${err.message}`);
+      hasReadError = true;
+      continue;
+    }
+    const refs = extractDenoEnvRefs(content);
     for (const ref of refs) {
       if (!edgeRefs.has(ref)) edgeRefs.set(ref, new Set());
       edgeRefs.get(ref).add(relPath);
@@ -338,5 +356,10 @@ if (isGate && undocumented.length > 0) {
 
 if (isGate && edgeExitCode > 0) {
   console.error(`::error::check-secrets-inventory: edge functions com Deno.env.get() não documentados em docs/ci/SEGREDOS.md (seção "Segredos de Edge Functions").`);
+  process.exit(1);
+}
+
+if (isGate && hasReadError) {
+  console.error('::error::check-secrets-inventory: um ou mais arquivos não puderam ser lidos — gate não pode garantir completude do inventário de segredos.');
   process.exit(1);
 }

@@ -169,6 +169,18 @@ describe('Security Headers: Content-Security-Policy', () => {
     expect(styleSrc).toContain(`'sha256-${sonnerStyleHash}'`);
   });
 
+  it('allows the self-hosted GlitchTip/Sentry ingest host (VITE_SENTRY_DSN) in connect-src', () => {
+    // O DSN de produção aponta para https://...@erros.atomicabr.com.br/4
+    // (docs/hardening/ONDA-5-GLITCHTIP-INIT.md). Sem este host no connect-src,
+    // o browser bloqueia todo POST /api/4/envelope/ e nenhum erro chega ao painel.
+    const connectSrc = csp.match(/connect-src\s+([^;]+)/)?.[1] || '';
+    const sources = connectSrc.trim().split(/\s+/);
+
+    expect(sources).toContain('https://erros.atomicabr.com.br');
+    expect(sources).not.toContain('https://*.atomicabr.com.br');
+    expect(sources).not.toContain('*');
+  });
+
   it('does not allow unsafe-inline in script-src', () => {
     const scriptSrc = csp.match(/script-src\s+([^;]+)/)![1];
     expect(scriptSrc).not.toContain("'unsafe-inline'");

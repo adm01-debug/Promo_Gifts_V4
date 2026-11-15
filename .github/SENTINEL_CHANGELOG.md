@@ -1,5 +1,50 @@
 # Sentinel Changelog
 
+## v2.1.3 — 2026-10-30 — Audita todo o first-parent no intervalo do push
+
+**Contexto:** o review do PR #2839 demonstrou que limitar a auditoria a HEAD
+quando o título termina em `(#NNN)` perde commits anteriores sem PR no mesmo
+push (commit humano não revisado seguido de squash válido).
+
+**Correção:** o Sentinel usa `git rev-list --first-parent --reverse` no intervalo
+`PUSH_BEFORE..PUSH_AFTER`. Assim, audita cada commit do ramo de destino, na ordem
+cronológica, incluindo commits anteriores a squash, e não percorre commits
+laterais internos de merge commits já revisados na PR. `scripts/sentinel-push-range.sh`
+implementa a seleção com verificações de SHA e ancestralidade; testes criam
+históricos Git temporários para cobrir squash isolado, squash precedido por
+commit não revisado, merge real e intervalo inválido. O workflow
+`sentinel-self-test.yml` executa a regressão em PR.
+
+## v2.1.2 — 2026-10-30 — Reconhece títulos de squash na detecção de merge PR
+
+**Contexto:** o push `main@554ef41b4` terminou com falha no Branch Protection Sentinel
+[#41134852421](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852421).
+O título final do PR #2810 termina em `(#2810)` e já é aceito por `sentinel-check.sh`,
+mas a etapa que decide auditar somente o commit final reconhecia apenas títulos
+`Merge ... #NNN` e `merge(pr-NNN):`. Por isso, a auditoria tratou como push comum os
+23 commits internos trazidos pela integração do PR.
+
+**Correção histórica substituída pela v2.1.3:** a detecção do título final foi
+extraída para um helper, mas a otimização ignorava commits anteriores do mesmo
+push. O helper foi removido; a seleção agora usa o intervalo first-parent completo.
+
+## v2.1.1 — 2026-10-29 — Regra 7.5: SHA allowlist histórica (P-CI-H)
+
+**Contexto:** Push direto em main entre `14b6d5fc` e `c3b41286` (por TIPROMO)
+incluiu 6 commits com padrões não cobertos pelo sentinel (docs(ci), docs(auditoria),
+docs(audit), fix(ci), merge: e Merge branch). Run 40965131389 concluiu failure.
+
+**Fix:** adicionada Regra 7.5 que lê `.github/SENTINEL_SHA_ALLOWLIST.txt`.
+Script aceita SHA como 4º argumento opcional. Workflow passa `$SHA` ao script.
+Os 6 SHAs históricos foram registrados no allowlist com aprovação do PO.
+
+**Retrocompatibilidade:** testes em `sentinel-self-test.yml` usam 3 args — 4º arg
+é opcional; quando ausente, Regra 7.5 é pulada sem impacto.
+
+**SHAs isentos:** 153630ff, 03680382, 4e83d972, e2518bbd, c55c6781, 9d9dd2a7
+
+
+
 > **Por que este arquivo existe:** o `Branch Protection Sentinel` é um guard-rail
 > ativo. Mudar suas regras sem registro é uma forma fácil de degradar a segurança
 > sem ninguém perceber. Cada mudança aqui é uma decisão registrada para sobreviver

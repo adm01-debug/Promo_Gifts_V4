@@ -19,7 +19,7 @@
  *     NÃO estão no repo (foram removidos para regeneração via workflow).
  *
  * Os itens dinâmicos (cálculos em runtime, persistência, integrações CRM/PDF,
- * regeneração visual) ficam para o workflow `update-quote-reset-snapshots.yml`
+ * regeneração visual) ficam para o workflow `update-snapshots.yml` (project=chromium-authed)
  * e specs Playwright correspondentes.
  *
  * Uso: `node scripts/qa-price-readonly-regression.mjs`
@@ -37,9 +37,20 @@ const fail = (msg) => {
 };
 
 function walk(dir, out = []) {
-  for (const name of readdirSync(dir)) {
+  let entries;
+  try {
+    entries = readdirSync(dir);
+  } catch {
+    return out;
+  }
+  for (const name of entries) {
     const p = join(dir, name);
-    const s = statSync(p);
+    let s;
+    try {
+      s = statSync(p);
+    } catch {
+      continue;
+    }
     if (s.isDirectory()) {
       if (['node_modules', '.git', 'dist', 'build', 'playwright-report', 'test-results'].includes(name)) continue;
       walk(p, out);
@@ -150,4 +161,4 @@ if (fails.length) {
 }
 console.log('✅ Todas as checagens estáticas passaram.');
 console.log('ℹ Para regenerar snapshots visuais, dispare o workflow:');
-console.log('  .github/workflows/update-quote-reset-snapshots.yml');
+console.log('  .github/workflows/update-snapshots.yml (spec=e2e/quotes/quote-*.spec.ts project=chromium-authed)');

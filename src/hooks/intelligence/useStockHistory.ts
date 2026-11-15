@@ -89,15 +89,34 @@ export function useStockDailySummary(productId: string | undefined, days = 90) {
     queryFn: async (): Promise<StockDailySummary[]> => {
       if (!productId) return [];
 
-      const result = await dbInvoke<StockDailySummary>({
-        table: 'stock_daily_summary',
-        operation: 'select',
-        filters: { product_id: productId },
-        limit: Math.min(days * 20, 5000), // B18 fix: scale with suppliers (up to 20) capped at 5000
-        orderBy: { column: 'summary_date', ascending: true },
-      });
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - days);
+      const cutoffStr = [
+        cutoff.getFullYear(),
+        String(cutoff.getMonth() + 1).padStart(2, '0'),
+        String(cutoff.getDate()).padStart(2, '0'),
+      ].join('-');
 
-      return result.records;
+      const PAGE_SIZE = 1000;
+      const records: StockDailySummary[] = [];
+      let offset = 0;
+      while (true) {
+        const result = await dbInvoke<StockDailySummary>({
+          table: 'stock_daily_summary',
+          operation: 'select',
+          filters: { product_id: productId, summary_date: { op: 'gte', value: cutoffStr } },
+          limit: PAGE_SIZE,
+          offset,
+          orderBy: { column: 'summary_date', ascending: true },
+          secondaryOrderBy: { column: 'id', ascending: true },
+        });
+        const page = result.records || [];
+        records.push(...page);
+        if (page.length < PAGE_SIZE) break;
+        offset += PAGE_SIZE;
+      }
+
+      return records;
     },
     enabled: !!productId,
     staleTime: 10 * 60 * 1000,
