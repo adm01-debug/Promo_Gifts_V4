@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7d873e33be7bdf9f6d26edd4dde7c68d56edd93c",
+  "commit": "a7d22afff7b2596a381a7b476d81e066af4386e3",
   "branch": "main",
-  "data_commit": "2026-11-15T00:48:24Z",
+  "data_commit": "2026-11-15T01:07:34Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "a7d22aff",
+    "data": "2026-11-15",
+    "assunto": "docs(pendencias): registra o que depende do dono na sessao de 15/11 (#3644)"
+   },
    {
     "sha": "7d873e33",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "2c040e80",
     "data": "2026-11-14",
     "assunto": "merge: codex/fix-sidebar-tooltips-auth-261107-0205"
-   },
-   {
-    "sha": "34a8b603",
-    "data": "2026-11-14",
-    "assunto": "merge: claude/fix-suggestions-sem-useadvancedfilters-261114-1004"
    }
   ],
-  "arquivos_mudados_7d": 2118,
+  "arquivos_mudados_7d": 2117,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -185,7 +185,7 @@
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 126
+    "mudancas": 125
    },
    {
     "pasta": "src/pages/products",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 98
+    "mudancas": 96
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 91
+    "mudancas": 90
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 586
+    "commits": 585
    },
    {
     "autor": "Joaquim Ataides",

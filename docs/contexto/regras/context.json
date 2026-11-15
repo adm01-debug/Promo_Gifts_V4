@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "7d873e33be7bdf9f6d26edd4dde7c68d56edd93c",
+  "sha": "a7d22afff7b2596a381a7b476d81e066af4386e3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 00:49 UTC",
+  "generated_at": "2026-11-15 01:12 UTC",
   "files_total": 10115,
   "code_files": 8642,
   "code_lines": 1218215
@@ -531171,10 +531171,19 @@
   }
  },
  "git": {
-  "sha": "7d873e33be7bdf9f6d26edd4dde7c68d56edd93c",
+  "sha": "a7d22afff7b2596a381a7b476d81e066af4386e3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "a7d22af",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "docs(pendencias): registra o que depende do dono na sessao de 15/11 (#3644)",
+    "files": [
+     "PENDENCIAS.md"
+    ]
+   },
    {
     "sha": "7d873e3",
     "date": "2026-11-14",
@@ -531461,22 +531470,12 @@
     "author": "Claude",
     "subject": "Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945",
     "files": []
-   },
-   {
-    "sha": "4bb9964",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "infra(ci): db-apply-migration aplica migration sem gate de aprovação (#3620)",
-    "files": [
-     ".github/workflows/db-apply-migration.yml",
-     "docs/coordenacao/conflitos-semanticos.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/coordenacao/conflitos-semanticos.md",
-    6
+    5
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -531489,6 +531488,10 @@
    [
     "docs/faxina-261114/05-plano-workflows.md",
     2
+   ],
+   [
+    "PENDENCIAS.md",
+    1
    ],
    [
     "src/components/admin/connections/IntegrationsHealthCard.tsx",
@@ -531548,10 +531551,6 @@
    ],
    [
     "src/components/kit-builder/KitMobileSummaryBar.tsx",
-    1
-   ],
-   [
-    "src/components/kit-builder/KitPresentablePreview.tsx",
     1
    ]
   ]

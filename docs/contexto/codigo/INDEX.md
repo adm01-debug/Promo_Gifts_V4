@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7d873e33be7bdf9f6d26edd4dde7c68d56edd93c` (2026-11-15T00:48:24Z).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a7d22afff7b2596a381a7b476d81e066af4386e3` (2026-11-15T01:07:34Z).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -589,14 +589,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43449 nós · 75099 arestas · 2435 comunidades · grafo do commit `7d873e33`
-- comunidades maiores: vitest (875), ref_components (716), ref_integrations (611), ref_node_child_process (490), ref_hooks (392), @tanstack/react-query (369), react-router-dom (358), ref_node_fs (319), ref_types (315), sonner (306), scripts (302), concludeCheck (300)
+- 43457 nós · 75107 arestas · 2446 comunidades · grafo do commit `a7d22aff`
+- comunidades maiores: vitest (853), ref_components (689), ref_integrations (570), ref_node_child_process (466), gotoAndSettle (354), ref_hooks (352), @tanstack/react-query (344), react (339), scripts (302), react-router-dom (296), ref_types (283), sonner (280)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (98)
-- PENDENCIAS.md (91)
+- RELATORIO_CI.md (96)
+- PENDENCIAS.md (90)
 - supabase/MIGRATIONS_SYNC_LOG.md (58)
 - package.json (44)
 - package-lock.json (35)
@@ -1024,7 +1024,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
-- `PENDENCIAS.md` — PENDENCIAS.md — Workflows com falha não corrigível nesta sessão (1007 linhas)
+- `PENDENCIAS.md` — PENDENCIAS.md — Workflows com falha não corrigível nesta sessão (1091 linhas)
 - `PERFORMANCE-ANALYSIS.md` — 🔍 Relatório de Análise de Performance - MainLayout (195 linhas)
 - `README.md` — 🎁 Promo Brindes — Plataforma de Vendas de Brindes Promocionais (842 linhas)
 - `RECOVERY_PLAN.md` — 🛠️ RECOVERY PLAN — Restauração de 65 tabelas faltantes (235 linhas)
@@ -1184,6 +1184,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-15 `a7d22aff` docs(pendencias): registra o que depende do dono na sessao de 15/11 (#3644)
 - 2026-11-15 `7d873e33` fix(admin): auditoria do Connections Hub exige confirmação antes de ações destrutivas (#3615)
 - 2026-11-15 `4c912e19` fix(migrations): registra o recibo E15 da 20261107134429 (destrava o Gate 1.13.3) (#3639)
 - 2026-11-15 `865c86ef` fix(security): documenta deny-all intencional de crm_seller_identity_links (main vermelha) (#3638)
@@ -1198,7 +1199,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-14 `29569b16` fix(security): sincroniza o retrato de policies com producao apos as 6 migracoes (#3634)
 - 2026-11-14 `f84444c1` fix(crm): vincular vendedor do bridge por auth_user_id, nao por e-mail
 - 2026-11-14 `1a9cc9a4` fix(migrations): declara o rollback da 20261114170845 e documenta o schema net exposto na API pública (#3628)
-- 2026-11-14 `7b84ebe5` Merge pull request #3630 from adm01-debug/claude/trem4-front-perf-261114-2020
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
