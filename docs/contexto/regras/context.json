@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "847aa874d2a12ca09f4238a6e2ea39224c317e2c",
+  "sha": "865c86ef8ffe5650416a5ace436acbbf61d9d080",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-14 23:41 UTC",
+  "generated_at": "2026-11-15 00:33 UTC",
   "files_total": 10112,
   "code_files": 8639,
   "code_lines": 1217892
@@ -531049,10 +531049,19 @@
   }
  },
  "git": {
-  "sha": "847aa874d2a12ca09f4238a6e2ea39224c317e2c",
+  "sha": "865c86ef8ffe5650416a5ace436acbbf61d9d080",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "865c86e",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(security): documenta deny-all intencional de crm_seller_identity_links (main vermelha) (#3638)",
+    "files": [
+     ".security/rls-no-policy-allowlist.json"
+    ]
+   },
    {
     "sha": "847aa87",
     "date": "2026-11-14",
@@ -531332,13 +531341,6 @@
     "author": "adm01-debug",
     "subject": "Merge pull request #3619 from adm01-debug/claude/trem2-front-limpeza-261114-1850",
     "files": []
-   },
-   {
-    "sha": "74ba199",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "Merge remote-tracking branch 'origin/main' into claude/trem2-front-limpeza-261114-1850",
-    "files": []
    }
   ],
   "hot_files": [
@@ -531353,6 +531355,10 @@
    [
     "docs/faxina-261114/05-plano-workflows.md",
     2
+   ],
+   [
+    ".security/rls-no-policy-allowlist.json",
+    1
    ],
    [
     "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql",
@@ -531416,10 +531422,6 @@
    ],
    [
     "src/hooks/intelligence/useSalesHistoryMacro.ts",
-    1
-   ],
-   [
-    "src/hooks/kit-builder/useKitAutoSave.ts",
     1
    ]
   ]

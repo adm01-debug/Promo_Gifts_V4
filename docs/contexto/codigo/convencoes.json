@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(security): documenta deny-all intencional de crm_seller_identity_links (main vermelha) (#3638)",
    "fix(crm): vendedor com vínculo fixo em vez de identificação por e-mail (#3636)",
    "Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230",
    "fix(crm): declara isencao de soft-delete na tabela de vinculo de vendedor",
-   "fix(kit): rascunhos de kit salvos sem personalização voltam a abrir (resgate cirúrgico da #3390) (#3631)",
-   "fix(security): corrige o sha256 do retrato de policies (destrava o CI) (#3635)"
+   "fix(kit): rascunhos de kit salvos sem personalização voltam a abrir (resgate cirúrgico da #3390) (#3631)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

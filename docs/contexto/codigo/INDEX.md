@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `847aa874d2a12ca09f4238a6e2ea39224c317e2c` (2026-11-14T20:40:43-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `865c86ef8ffe5650416a5ace436acbbf61d9d080` (2026-11-15T00:01:38Z).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -589,7 +589,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43439 nós · 75073 arestas · 2508 comunidades · grafo do commit `847aa874`
+- 43439 nós · 75073 arestas · 2508 comunidades · grafo do commit `865c86ef`
 - comunidades maiores: ref_node_child_process (487), lucide-react (467), react (442), ref_lib (397), nav.ts (373), vitest (354), ref_hooks (353), @testing-library/react (329), ref_integrations (325), ref_node_fs (303), scripts (302), cors.ts (300)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -603,7 +603,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - analise-prs/progresso.json (21)
 - analise-prs/RELATORIO_PRS.md (19)
 - CHANGELOG.md (18)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (18)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (17)
 - analise-prs/prs.json (15)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (15)
 - docs/coordenacao/conflitos-semanticos.md (15)
@@ -1184,6 +1184,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-15 `865c86ef` fix(security): documenta deny-all intencional de crm_seller_identity_links (main vermelha) (#3638)
 - 2026-11-14 `847aa874` fix(crm): vendedor com vínculo fixo em vez de identificação por e-mail (#3636)
 - 2026-11-14 `1fb3a1c0` Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230
 - 2026-11-14 `37920454` fix(crm): declara isencao de soft-delete na tabela de vinculo de vendedor
@@ -1198,7 +1199,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-14 `7b84ebe5` Merge pull request #3630 from adm01-debug/claude/trem4-front-perf-261114-2020
 - 2026-11-14 `6f156767` Merge branch 'main' into claude/trem4-front-perf-261114-2020
 - 2026-11-14 `23cfcc13` fix(pdp): aborta de verdade a consulta do produto ao estourar o limite de 15 s (#3622)
-- 2026-11-14 `a47e0824` Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
