@@ -1,70 +1,63 @@
 /**
- * useMockupCompletionStatus — "Projeto salvo" e "Ficha disponível" do resultado
- * que está sendo EXIBIDO. Extraído de MockupGenerator.tsx.
+ * useMockupCompletionStatus — "Projeto salvo" do resultado que está sendo
+ * EXIBIDO. Extraído de MockupGenerator.tsx.
  *
- * Duas condições, dois rastreios distintos:
- *  • salvo: a gravação CONFIRMADA da imagem exibida (saveBatchResults devolve a
- *    gravação do resultado exibido, não a da última área do lote);
- *  • ficha: a captura já concluída daquela mesma imagem. A captura zera o
- *    recordId, então sem rastreio próprio a ficha pronta voltava a aparecer
- *    como "ainda não disponível".
+ * O indicador segue o resultado EXIBIDO pelo card (o gerado agora ou o
+ * preservado quando a tentativa falhou — usePreservedMockupResult), nunca
+ * `generatedMockup`: `generateMockup` zera esse valor antes de tentar, então
+ * numa re-geração que falha o card preservava a imagem salva e o indicador
+ * regredia para "Projeto ainda não salvo".
+ *
+ * "Salvo" é a gravação CONFIRMADA da imagem exibida: `saveBatchResults` devolve
+ * a gravação do resultado exibido, não a da última área do lote.
  */
 import { useCallback, useEffect, useState } from 'react';
 import type { useMockupGenerator } from '@/hooks/mockup';
 import type { MockupCompletionStatus } from '@/components/mockup/MockupCompletionStates';
+import { usePreservedMockupResult } from '@/components/mockup/usePreservedMockupResult';
 
 type MockupGeneratorState = ReturnType<typeof useMockupGenerator>;
 
-export function useMockupCompletionStatus(
-  mg: MockupGeneratorState,
-  isCapturingSheet: boolean,
-): {
+export function useMockupCompletionStatus(mg: MockupGeneratorState): {
   projectSaveStatus: MockupCompletionStatus;
-  sheetStatus: MockupCompletionStatus;
   handleLayoutCaptured: () => void;
 } {
   const {
     generatedMockup,
+    generationError,
+    projectResetCount,
     lastSavedRecordId,
     lastSavedMockupUrl,
     setLastSavedRecordId,
     setLastSavedMockupUrl,
     fetchHistory,
   } = mg;
-  // URL com gravação confirmada e URL com ficha já capturada: o recordId é
-  // zerado pela captura, então cada condição guarda a sua própria URL.
+  // A MESMA identidade que o card exibe (mesmas entradas, mesmo resultado).
+  const { displayedMockup } = usePreservedMockupResult({
+    generatedMockup,
+    generationError,
+    projectResetCount,
+  });
+  // URL com gravação confirmada: a captura da ficha zera o recordId, então o
+  // rastreio guarda a própria URL para não regredir depois dela.
   const [savedMockupUrl, setSavedMockupUrl] = useState<string | null>(null);
-  const [capturedSheetUrl, setCapturedSheetUrl] = useState<string | null>(null);
 
   // Só a gravação DA IMAGEM EXIBIDA entra no rastreio. "Gerar Layout" grava outro
-  // registro (o PNG estático) sem trocar a imagem na tela; sem este casamento, as
-  // confirmações do resultado exibido regrediam para "ainda não salvo"/"indisponível".
+  // registro (o PNG estático) sem trocar a imagem na tela; sem este casamento, a
+  // confirmação do resultado exibido regredia para "ainda não salvo".
   useEffect(() => {
-    if (lastSavedRecordId && lastSavedMockupUrl === generatedMockup)
+    if (lastSavedRecordId && lastSavedMockupUrl === displayedMockup)
       setSavedMockupUrl(lastSavedMockupUrl);
-  }, [lastSavedRecordId, lastSavedMockupUrl, generatedMockup]);
+  }, [lastSavedRecordId, lastSavedMockupUrl, displayedMockup]);
 
   const handleLayoutCaptured = useCallback(() => {
-    if (lastSavedMockupUrl && lastSavedMockupUrl === generatedMockup)
-      setCapturedSheetUrl(lastSavedMockupUrl);
     setLastSavedRecordId(null);
     setLastSavedMockupUrl(null);
     fetchHistory();
-  }, [
-    lastSavedMockupUrl,
-    generatedMockup,
-    setLastSavedRecordId,
-    setLastSavedMockupUrl,
-    fetchHistory,
-  ]);
+  }, [setLastSavedRecordId, setLastSavedMockupUrl, fetchHistory]);
 
   const projectSaveStatus: MockupCompletionStatus =
-    !!generatedMockup && savedMockupUrl === generatedMockup ? 'done' : 'idle';
-  const sheetStatus: MockupCompletionStatus = isCapturingSheet
-    ? 'running'
-    : !!generatedMockup && capturedSheetUrl === generatedMockup
-      ? 'done'
-      : 'idle';
+    !!displayedMockup && savedMockupUrl === displayedMockup ? 'done' : 'idle';
 
-  return { projectSaveStatus, sheetStatus, handleLayoutCaptured };
+  return { projectSaveStatus, handleLayoutCaptured };
 }

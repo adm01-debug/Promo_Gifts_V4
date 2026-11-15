@@ -69,8 +69,6 @@ interface MockupResultCardProps {
   onRetryGenerate?: () => void;
   /** Persistência do projeto. `done` só com gravação CONFIRMADA — a imagem não conta como salvo. */
   projectSave?: MockupCompletionState;
-  /** Ficha de aprovação do projeto. */
-  sheet?: MockupCompletionState;
   /** Contador de reset do projeto: muda ⇒ o resultado anterior preservado é descartado. */
   projectResetCount?: number;
 }
@@ -90,7 +88,6 @@ export const MockupResultCard = memo(
     generationError,
     onRetryGenerate,
     projectSave,
-    sheet,
     projectResetCount,
   }: MockupResultCardProps) => {
     const [zoom, setZoom] = useState(1);
@@ -255,13 +252,12 @@ export const MockupResultCard = memo(
           </CardHeader>
 
           <CardContent className="space-y-3 p-4">
-            {/* Imagem gerada, projeto salvo e ficha: condições independentes. */}
+            {/* Imagem gerada e projeto salvo: condições independentes. */}
             <MockupCompletionStates
               imageStatus={imageStatus}
               imageError={generationError}
               onRetryImage={onRetryGenerate}
               projectSave={projectSave}
-              sheet={sheet}
             />
 
             {/* Before/After toggle */}

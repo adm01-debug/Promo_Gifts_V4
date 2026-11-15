@@ -175,10 +175,10 @@ export default function MockupGenerator() {
     ],
   );
 
-  // Três condições independentes, cada uma do seu dado: a imagem vem de
-  // generatedMockup/generationError; o salvo e a ficha seguem o resultado
-  // EXIBIDO, cada um com o seu rastreio (useMockupCompletionStatus).
-  const completion = useMockupCompletionStatus(mg, !!layoutCaptureRequest);
+  // Duas condições independentes, cada uma do seu dado: a imagem vem de
+  // generatedMockup/generationError; o salvo segue o resultado EXIBIDO, com o
+  // seu próprio rastreio (useMockupCompletionStatus).
+  const completion = useMockupCompletionStatus(mg);
 
   return (
     <DiagnosticProfiler id="MockupGenerator">
@@ -514,7 +514,6 @@ export default function MockupGenerator() {
                     generationError={mg.generationError}
                     onRetryGenerate={mg.generateMockup}
                     projectSave={{ status: completion.projectSaveStatus }}
-                    sheet={{ status: completion.sheetStatus }}
                     projectResetCount={mg.projectResetCount}
                   />
 

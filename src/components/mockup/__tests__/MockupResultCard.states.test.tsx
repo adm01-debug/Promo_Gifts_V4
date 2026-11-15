@@ -1,9 +1,9 @@
 /**
- * MockupResultCard — "a imagem saiu", "o projeto foi salvo" e "a ficha está
- * pronta" como estados SEPARADOS, e a preservação do resultado em falha.
+ * MockupResultCard — "a imagem saiu" e "o projeto foi salvo" como estados
+ * SEPARADOS, e a preservação do resultado em falha.
  *
  * O que está provado aqui:
- *  1. os três indicadores têm estado próprio e não se contaminam;
+ *  1. os indicadores têm estado próprio e não se contaminam;
  *  2. uma falha de gravação não esconde a imagem já gerada;
  *  3. uma re-geração que FALHA mantém o resultado anterior na tela, rotulado,
  *     com repetição e sem deixar baixar/compartilhar como se fosse o novo;
@@ -32,13 +32,12 @@ function renderCard(overrides: Partial<CardProps> = {}) {
   return render(<MockupResultCard {...props(overrides)} />);
 }
 
-describe('MockupResultCard — imagem, projeto salvo e ficha como estados separados', () => {
-  it('mostra três indicadores independentes, cada um com o próprio estado', () => {
-    renderCard({ projectSave: { status: 'done' }, sheet: { status: 'idle' } });
+describe('MockupResultCard — imagem e projeto salvo como estados separados', () => {
+  it('mostra indicadores independentes, cada um com o próprio estado', () => {
+    renderCard({ projectSave: { status: 'idle' } });
 
     expect(screen.getByTestId('completion-image')).toHaveAttribute('data-status', 'done');
-    expect(screen.getByTestId('completion-project-save')).toHaveAttribute('data-status', 'done');
-    expect(screen.getByTestId('completion-sheet')).toHaveAttribute('data-status', 'idle');
+    expect(screen.getByTestId('completion-project-save')).toHaveAttribute('data-status', 'idle');
   });
 
   it('falha de salvar não esconde a imagem gerada nem contamina os outros indicadores', () => {
@@ -51,16 +50,6 @@ describe('MockupResultCard — imagem, projeto salvo e ficha como estados separa
     const save = screen.getByTestId('completion-project-save');
     expect(save).toHaveAttribute('data-status', 'error');
     expect(save).toHaveTextContent('Sem conexão');
-    // a ficha não herda o erro do salvamento
-    expect(screen.getByTestId('completion-sheet')).toHaveAttribute('data-status', 'idle');
-  });
-
-  it('ficha em preparo não muda o estado da imagem nem o do salvamento', () => {
-    renderCard({ projectSave: { status: 'done' }, sheet: { status: 'running' } });
-
-    expect(screen.getByTestId('completion-image')).toHaveAttribute('data-status', 'done');
-    expect(screen.getByTestId('completion-project-save')).toHaveAttribute('data-status', 'done');
-    expect(screen.getByTestId('completion-sheet')).toHaveAttribute('data-status', 'running');
   });
 
   it('não oferece repetição para a imagem quando ela já está concluída', () => {

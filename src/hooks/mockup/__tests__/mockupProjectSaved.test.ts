@@ -1,12 +1,13 @@
 /**
- * "Projeto salvo" e "Ficha disponível" seguem o resultado EXIBIDO.
+ * "Projeto salvo" segue o resultado EXIBIDO.
  *
  * O que está provado aqui:
  *  1. num lote com URLs diferentes, a gravação devolvida é a do resultado que
  *     o card EXIBE (o primeiro), não a da última área gravada — era por isso
  *     que um lote inteiro gravado aparecia como "Projeto ainda não salvo";
- *  2. a ficha é rastreada separadamente: depois da captura (que zera o
- *     recordId) ela continua "disponível", e "Projeto salvo" não regride.
+ *  2. a confirmação não regride depois da captura da ficha, que zera o recordId;
+ *  3. numa re-geração que FALHA, com a imagem anterior preservada na tela, o
+ *     card continua dizendo que o projeto está salvo.
  *
  * Execução: npx vitest run src/hooks/mockup/__tests__/mockupProjectSaved.test.ts
  */
@@ -46,11 +47,10 @@ describe('saveBatchResults — a gravação devolvida é a do resultado exibido'
 
 type StatusArgs = Parameters<typeof useMockupCompletionStatus>;
 
-function statusHook(mg: Record<string, unknown>, isCapturing: boolean) {
+function statusHook(mg: Record<string, unknown>) {
   return renderHook(
-    ({ mg: m, capturing }: { mg: Record<string, unknown>; capturing: boolean }) =>
-      useMockupCompletionStatus(m as StatusArgs[0], capturing),
-    { initialProps: { mg, capturing: isCapturing } },
+    ({ mg: m }: { mg: Record<string, unknown> }) => useMockupCompletionStatus(m as StatusArgs[0]),
+    { initialProps: { mg } },
   );
 }
 
@@ -66,16 +66,15 @@ function generatorState(over: Record<string, unknown> = {}) {
   };
 }
 
-describe('useMockupCompletionStatus — salvo e ficha rastreados à parte', () => {
-  it('gravação confirmada da imagem exibida: "salvo" com a ficha em preparo', () => {
-    const { result } = statusHook(generatorState(), true);
+describe('useMockupCompletionStatus — o salvo é da imagem exibida', () => {
+  it('gravação confirmada da imagem exibida: "salvo"', () => {
+    const { result } = statusHook(generatorState());
 
     expect(result.current.projectSaveStatus).toBe('done');
-    expect(result.current.sheetStatus).toBe('running');
   });
 
-  it('depois da captura, a ficha fica disponível e o salvo não regride', () => {
-    const { result, rerender } = statusHook(generatorState(), true);
+  it('depois da captura da ficha, que zera o recordId, o salvo não regride', () => {
+    const { result, rerender } = statusHook(generatorState());
 
     // handleLayoutCaptured atualiza estado: fora de act(), o React emite
     // console.error e o setup strict-test-side-effects reprova o teste.
@@ -83,57 +82,57 @@ describe('useMockupCompletionStatus — salvo e ficha rastreados à parte', () =
       result.current.handleLayoutCaptured();
     });
     // A captura zera recordId/URL no dono do estado (handleLayoutCaptured).
-    rerender({
-      mg: generatorState({ lastSavedRecordId: null, lastSavedMockupUrl: null }),
-      capturing: false,
-    });
+    rerender({ mg: generatorState({ lastSavedRecordId: null, lastSavedMockupUrl: null }) });
 
     expect(result.current.projectSaveStatus).toBe('done');
-    expect(result.current.sheetStatus).toBe('done');
   });
 
-  it('sem gravação confirmada da imagem exibida, não diz salvo nem ficha pronta', () => {
+  it('sem gravação confirmada da imagem exibida, não diz salvo', () => {
     const { result } = statusHook(
       generatorState({ lastSavedRecordId: null, lastSavedMockupUrl: null }),
-      false,
     );
 
     expect(result.current.projectSaveStatus).toBe('idle');
-    expect(result.current.sheetStatus).toBe('idle');
   });
 });
 
 describe('useMockupCompletionStatus — gravar OUTRO resultado não apaga o rastreio do exibido', () => {
-  it('"Gerar Layout" grava o PNG estático e as confirmações da imagem de IA ficam de pé', () => {
-    const { result, rerender } = statusHook(generatorState(), true);
+  it('"Gerar Layout" grava o PNG estático e a confirmação da imagem de IA fica de pé', () => {
+    const { result, rerender } = statusHook(generatorState());
 
     act(() => {
       result.current.handleLayoutCaptured();
     });
-    rerender({
-      mg: generatorState({ lastSavedRecordId: null, lastSavedMockupUrl: null }),
-      capturing: false,
-    });
+    rerender({ mg: generatorState({ lastSavedRecordId: null, lastSavedMockupUrl: null }) });
     expect(result.current.projectSaveStatus).toBe('done');
-    expect(result.current.sheetStatus).toBe('done');
 
     // "Gerar Layout" grava OUTRO registro (o PNG estático). A imagem EXIBIDA
-    // continua sendo a de IA ('u1') — as confirmações dela não podem regredir.
+    // continua sendo a de IA ('u1') — a confirmação dela não pode regredir.
     rerender({
       mg: generatorState({ lastSavedRecordId: 'rec-static', lastSavedMockupUrl: 'static-png' }),
-      capturing: true,
     });
     expect(result.current.projectSaveStatus).toBe('done');
 
-    // A ficha do estático é capturada; a da imagem exibida segue disponível.
     act(() => {
       result.current.handleLayoutCaptured();
     });
-    rerender({
-      mg: generatorState({ lastSavedRecordId: null, lastSavedMockupUrl: null }),
-      capturing: false,
-    });
+    rerender({ mg: generatorState({ lastSavedRecordId: null, lastSavedMockupUrl: null }) });
     expect(result.current.projectSaveStatus).toBe('done');
-    expect(result.current.sheetStatus).toBe('done');
+  });
+});
+
+describe('useMockupCompletionStatus — re-geração que falha não desfaz "Projeto salvo"', () => {
+  it('com a imagem anterior preservada na tela, o projeto continua salvo', () => {
+    const { result, rerender } = statusHook(generatorState());
+    expect(result.current.projectSaveStatus).toBe('done');
+
+    // É o que o dono do estado produz numa re-geração que falha: generatedMockup
+    // volta a null (useMockupGenerator.ts:563) e o erro é preenchido no catch
+    // (:625). O card preserva 'u1' na tela — e 'u1' está salvo.
+    rerender({
+      mg: generatorState({ generatedMockup: null, generationError: 'A geração falhou' }),
+    });
+
+    expect(result.current.projectSaveStatus).toBe('done');
   });
 });

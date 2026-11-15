@@ -1,19 +1,19 @@
 /**
- * MockupCompletionStates — os três estados de conclusão do mockup, separados.
+ * MockupCompletionStates — os estados de conclusão do mockup, separados.
  *
- * "A imagem saiu", "o projeto foi salvo" e "a ficha de aprovação está pronta"
- * são condições DISTINTAS: cada uma tem o próprio estado e a própria mensagem.
- * A falha de uma nunca esconde nem resolve nenhuma outra.
+ * "A imagem saiu" e "o projeto foi salvo" são condições DISTINTAS: cada uma tem
+ * o próprio estado e a própria mensagem. A falha de uma nunca esconde nem
+ * resolve nenhuma outra.
  *
  * "Salvo" só aparece com persistência CONFIRMADA pelo dono do estado (a
  * existência da imagem não conta como salvo): quem chama informa `done`.
  *
  * Repetição: só a imagem tem repetição aqui, porque só ela tem produtor de
- * erro hoje (useMockupGenerator.ts:625). Gravação e ficha ainda não expõem
- * erro próprio, então não recebem botão que nunca apareceria.
+ * erro hoje (useMockupGenerator.ts:625). A gravação ainda não expõe erro
+ * próprio, então não recebe botão que nunca apareceria.
  */
 import type { ReactNode } from 'react';
-import { AlertCircle, CheckCircle2, CloudOff, FileText, ImageIcon, Loader2, RotateCcw } from 'lucide-react';
+import { AlertCircle, CheckCircle2, CloudOff, ImageIcon, Loader2, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -40,13 +40,6 @@ const PROJECT_SAVE_LABELS: CompletionLabels = {
   running: 'Salvando o projeto...',
   done: 'Projeto salvo',
   error: 'O projeto não foi salvo',
-};
-
-const SHEET_LABELS: CompletionLabels = {
-  idle: 'Ficha ainda não disponível',
-  running: 'Preparando a ficha...',
-  done: 'Ficha disponível',
-  error: 'A ficha não ficou pronta',
 };
 
 interface CompletionIndicatorProps {
@@ -125,8 +118,6 @@ export interface MockupCompletionStatesProps {
   onRetryImage?: () => void;
   /** Persistência do projeto no histórico. */
   projectSave?: MockupCompletionState;
-  /** Ficha de aprovação do projeto. */
-  sheet?: MockupCompletionState;
 }
 
 export function MockupCompletionStates({
@@ -134,7 +125,6 @@ export function MockupCompletionStates({
   imageError,
   onRetryImage,
   projectSave,
-  sheet,
 }: MockupCompletionStatesProps) {
   return (
     <section
@@ -159,13 +149,6 @@ export function MockupCompletionStates({
         labels={PROJECT_SAVE_LABELS}
         idleIcon={<CloudOff className="h-3.5 w-3.5" />}
         error={projectSave?.error}
-      />
-      <CompletionIndicator
-        testId="completion-sheet"
-        status={sheet?.status ?? 'idle'}
-        labels={SHEET_LABELS}
-        idleIcon={<FileText className="h-3.5 w-3.5" />}
-        error={sheet?.error}
       />
     </section>
   );
