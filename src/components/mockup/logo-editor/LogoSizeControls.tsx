@@ -40,24 +40,29 @@ export function LogoSizeControls({
   const ratio = logoWidth > 0 && logoHeight > 0 ? logoWidth / logoHeight : 1;
   const round2 = (n: number) => Math.round(n * 100) / 100;
 
+  // Com o vínculo ligado, o intervalo da dimensão editada já embute os limites
+  // da dimensão vinculada: o corte vira um fator comum aos dois eixos, então a
+  // razão se mantém mesmo quando um dos lados bate no mínimo ou no máximo.
   const setWidth = (nextWidth: number) => {
-    const width = Math.min(effectiveMaxW, Math.max(1, nextWidth));
     if (aspectLinked) {
-      const height = Math.min(effectiveMaxH, Math.max(1, round2(width / ratio)));
-      onSizeChange(round2(width), height);
+      const linkedMinW = Math.max(1, ratio);
+      const linkedMaxW = Math.min(effectiveMaxW, effectiveMaxH * ratio);
+      const width = Math.min(linkedMaxW, Math.max(linkedMinW, nextWidth));
+      onSizeChange(round2(width), round2(width / ratio));
       return;
     }
-    onSizeChange(round2(width), logoHeight);
+    onSizeChange(round2(Math.min(effectiveMaxW, Math.max(1, nextWidth))), logoHeight);
   };
 
   const setHeight = (nextHeight: number) => {
-    const height = Math.min(effectiveMaxH, Math.max(1, nextHeight));
     if (aspectLinked) {
-      const width = Math.min(effectiveMaxW, Math.max(1, round2(height * ratio)));
-      onSizeChange(width, round2(height));
+      const linkedMinH = Math.max(1, 1 / ratio);
+      const linkedMaxH = Math.min(effectiveMaxH, effectiveMaxW / ratio);
+      const height = Math.min(linkedMaxH, Math.max(linkedMinH, nextHeight));
+      onSizeChange(round2(height * ratio), round2(height));
       return;
     }
-    onSizeChange(logoWidth, round2(height));
+    onSizeChange(logoWidth, round2(Math.min(effectiveMaxH, Math.max(1, nextHeight))));
   };
 
   return (
