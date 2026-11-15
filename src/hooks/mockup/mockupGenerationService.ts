@@ -87,7 +87,7 @@ export function getTechniquePrompt(technique: Technique): string {
   return `as ${TECHNIQUE_PROMPTS.default}`;
 }
 
-// T8 FIX: limit to 200 records to prevent unbounded payload growth.
+// T8 FIX: limit to 200 records (invalid `limit` falls back to it) to prevent unbounded payload.
 // Explicit column list (incl. layout_url + area_config). Geometry now lives in
 // dedicated top-level columns (position_x/y, logo_width_cm/height_cm — added by
 // migration 20251215011449) AND mirrored in area_config for backward-compat with
@@ -134,11 +134,11 @@ interface MockupHistoryRow {
   created_at: string;
 }
 
-export async function fetchMockupHistory(userId?: string): Promise<GeneratedMockup[]> {
+export async function fetchMockupHistory(userId?: string, limit = 200): Promise<GeneratedMockup[]> {
   let query = untypedFrom('generated_mockups')
     .select(MOCKUP_HISTORY_COLUMNS)
     .order('created_at', { ascending: false })
-    .limit(200);
+    .limit(Math.trunc(limit) > 0 ? Math.trunc(limit) : 200);
   if (userId) query = query.eq('user_id', userId);
   const { data, error } = await query;
   if (error) throw error;
@@ -337,7 +337,7 @@ async function extractEdgeErrorMessage(error: unknown): Promise<string> {
   const ctx = (error as { context?: Response } | null)?.context;
   if (ctx && typeof ctx.json === 'function') {
     try {
-      const body = (await ctx.json()) as { error?: string; errorCode?: string; message?: string };
+      const body: { error?: string; errorCode?: string; message?: string } = await ctx.json();
       if (body?.message) return body.message;
       if (body?.error) return body.error;
     } catch {
@@ -398,7 +398,7 @@ async function invokeMockupForArea(
   });
   if (error) throw new Error(await extractEdgeErrorMessage(error));
   if (!data?.mockupUrl) throw new Error('Nenhuma imagem retornada pela API de mockup.');
-  return data.mockupUrl as string;
+  return data.mockupUrl;
 }
 
 export async function generateMockupApi(
@@ -461,11 +461,12 @@ export async function generateMockupApi(
 
 export function downloadMockupAsPdf(
   mockupUrl: string,
-  product: { sku?: string | null },
-  technique: Technique,
+  product?: { sku?: string | null } | null,
+  technique?: Pick<Technique, 'code' | 'name'> | null,
 ): Promise<void> {
-  const safeSku = product.sku?.replace(/[^a-zA-Z0-9]/g, '-') || 'mockup';
-  const safeTechnique = (technique.code || technique.name).replace(/[^a-zA-Z0-9]/g, '-');
+  const safeSku = product?.sku?.replace(/[^a-zA-Z0-9]/g, '-') || 'mockup';
+  const label = technique?.code || technique?.name || 'personalizacao';
+  const safeTechnique = label.replace(/[^a-zA-Z0-9]/g, '-');
   const fileName = `mockup-${safeSku}-${safeTechnique}.pdf`;
   return downloadImageAsPdfFromUrl(mockupUrl, fileName);
 }

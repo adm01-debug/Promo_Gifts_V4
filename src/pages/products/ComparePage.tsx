@@ -1,7 +1,7 @@
 /**
  * ComparePage — Comparador de produtos (10/10)
  * C1: score, radar, AI advisor, TCO, differences-only.
- * C2: CRM picker, share público, export, sync, CTA orçamento.
+ * C2: CRM picker, export, sync, CTA orçamento.
  * C3: Duel mode, mobile carousel, presentation, variant sync.
  * C4: similar rail, presentation launcher.
  * C5: shortcuts, ARIA-live, smart empty state, recent sidebar.

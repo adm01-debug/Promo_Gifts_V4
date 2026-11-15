@@ -10,6 +10,8 @@ on:
       - 'scripts/sentinel-push-range.sh'
       - 'tests/scripts/sentinel-push-range.test.mjs'
       - '.github/workflows/branch-protection-sentinel.yml'
+      # Desde 2026-11-13 a expressão das fixtures de test-protection-config vive no guard.
+      - '.github/workflows/required-checks-guard.yml'
       - '.github/workflows/sentinel-self-test.yml'
   workflow_dispatch:
 
@@ -127,6 +129,8 @@ jobs:
           fi
 
   test-protection-config:
+    # Espelha a expressão Python do job "Assert Gate Final is required on main"
+    # (required-checks-guard.yml; antes check-protection-config do sentinel).
     name: Test check-protection-config parsing logic
     runs-on: ubuntu-24.04
     timeout-minutes: 5

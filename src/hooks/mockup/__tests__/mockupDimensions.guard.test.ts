@@ -93,11 +93,23 @@ vi.mock('@/hooks/mockup/useMockupDraft', () => ({
     error: null,
   }),
 }));
-vi.mock('@/hooks/mockup/useMockupTechniques', () => ({
+// `resolveTechnique` vem do modulo real: e funcao pura e o gerador depende dela
+// para resolver a tecnica do rascunho/historico (so os hooks de rede sao substituidos).
+vi.mock('@/hooks/mockup/useMockupTechniques', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
   useFilteredTechniques: () => [],
   useProductCustomizationOptionsForMockup: () => ({ data: undefined }),
 }));
-vi.mock('@/hooks/simulation', () => ({
+// Mock parcial: o estrato "por área" é o módulo REAL (mantém a lógica de qual área é dona
+// da análise) sobre a análise base stubada no caminho direto. O índice NÃO é espalhado de
+// propósito: ele carrega todo o estrato de simulação (client incluso). Logo, export novo do
+// módulo por área já está coberto; hook novo que o gerador passe a importar do índice ainda
+// exige acrescentá-lo aqui.
+vi.mock('@/hooks/simulation/useLogoColorAnalysis', () => ({
+  useLogoColorAnalysis: () => colorAnalysis,
+}));
+vi.mock('@/hooks/simulation', async () => ({
+  ...(await import('@/hooks/simulation/useLogoColorAnalysisByArea')),
   useLogoColorAnalysis: () => colorAnalysis,
   usePositionHistory: () => positionHistory,
 }));

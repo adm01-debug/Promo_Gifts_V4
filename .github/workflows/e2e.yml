@@ -6,24 +6,10 @@ name: E2E (Playwright)
 # Artefatos (relatório HTML, screenshots, vídeos, traces) são publicados.
 
 on:
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   push:
     branches: [main]
     paths:
-      - 'src/**'
-      - '!src/**/__tests__/**'
-      - '!src/**/*.test.*'
-      - '!src/**/*.spec.*'
-      - 'e2e/**'
-      - 'public/**'
-      - 'package*.json'
-      - '.nvmrc'
-      - 'playwright.config.*'
-      - 'vite.config.*'
-      - '.github/workflows/e2e.yml'
-      - '.github/scripts/e2e-relevance.mjs'
-  pull_request:
-    branches: [main]
-    paths:  # E14: evitar CI em PRs doc-only
       - 'src/**'
       - '!src/**/__tests__/**'
       - '!src/**/*.test.*'
@@ -92,6 +78,8 @@ jobs:
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_SELLER_EMAIL: ${{ secrets.E2E_SELLER_EMAIL || secrets.E2E_USER_EMAIL }}
+          E2E_SELLER_PASSWORD: ${{ secrets.E2E_SELLER_PASSWORD || secrets.E2E_USER_PASSWORD }}
           E2E_BASE_URL: http://localhost:8080
 
       # ─── HEADER STICKY GATE ────────────────────────────────────────────────
@@ -101,6 +89,8 @@ jobs:
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_SELLER_EMAIL: ${{ secrets.E2E_SELLER_EMAIL || secrets.E2E_USER_EMAIL }}
+          E2E_SELLER_PASSWORD: ${{ secrets.E2E_SELLER_PASSWORD || secrets.E2E_USER_PASSWORD }}
           E2E_BASE_URL: http://localhost:8080
         run: |
           npx playwright test \
@@ -125,6 +115,8 @@ jobs:
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_SELLER_EMAIL: ${{ secrets.E2E_SELLER_EMAIL || secrets.E2E_USER_EMAIL }}
+          E2E_SELLER_PASSWORD: ${{ secrets.E2E_SELLER_PASSWORD || secrets.E2E_USER_PASSWORD }}
           E2E_BASE_URL: http://localhost:8080
         run: |
           npx playwright test \
@@ -152,6 +144,8 @@ jobs:
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_SELLER_EMAIL: ${{ secrets.E2E_SELLER_EMAIL || secrets.E2E_USER_EMAIL }}
+          E2E_SELLER_PASSWORD: ${{ secrets.E2E_SELLER_PASSWORD || secrets.E2E_USER_PASSWORD }}
           E2E_BASE_URL: http://localhost:8080
         run: |
           npx playwright test \
@@ -174,6 +168,8 @@ jobs:
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_SELLER_EMAIL: ${{ secrets.E2E_SELLER_EMAIL || secrets.E2E_USER_EMAIL }}
+          E2E_SELLER_PASSWORD: ${{ secrets.E2E_SELLER_PASSWORD || secrets.E2E_USER_PASSWORD }}
           E2E_BASE_URL: http://localhost:8080
         run: |
           npx playwright test \
@@ -226,6 +222,8 @@ jobs:
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_SELLER_EMAIL: ${{ secrets.E2E_SELLER_EMAIL || secrets.E2E_USER_EMAIL }}
+          E2E_SELLER_PASSWORD: ${{ secrets.E2E_SELLER_PASSWORD || secrets.E2E_USER_PASSWORD }}
           E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
           E2E_BASE_URL: http://localhost:8080

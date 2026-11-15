@@ -6,20 +6,11 @@ name: E2E Cart — Matrix (E79)
 # Os workflows individuais permanecem ativos; este é o dono canônico.
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'src/components/cart/**'
-      - 'src/contexts/SellerCartContext.tsx'
-      - 'src/hooks/products/useSellerCarts.ts'
-      - 'e2e/ui/cart-*.spec.ts'
-      - 'e2e/flows/13*.spec.ts'
-      - 'e2e/carrinhos/**'
-      - 'e2e/helpers/cart-*.ts'
-      - '.github/workflows/e2e-cart.yml'
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   push:
     branches: [main]
     paths:
+      - '.github/workflows/e2e-cart.yml'
       - 'src/components/cart/**'
       - 'src/contexts/SellerCartContext.tsx'
       - 'src/hooks/products/useSellerCarts.ts'
@@ -112,6 +103,8 @@ jobs:
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_SELLER_EMAIL: ${{ secrets.E2E_SELLER_EMAIL || secrets.E2E_USER_EMAIL }}
+          E2E_SELLER_PASSWORD: ${{ secrets.E2E_SELLER_PASSWORD || secrets.E2E_USER_PASSWORD }}
           E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
         run: |

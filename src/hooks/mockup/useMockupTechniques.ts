@@ -213,6 +213,47 @@ function toUnlimited(t: Technique): TechniqueWithLimits {
   };
 }
 
+/** Referência de técnica para resolução (id/nome/código podem vir de fontes diferentes). */
+export interface TechniqueRef {
+  id?: string | null;
+  name?: string | null;
+  code?: string | null;
+}
+
+/**
+ * Resolve uma referência de técnica contra uma lista.
+ *
+ * F-03: a lista `techniques` (tabela_preco_gravacao_oficial) e a UI
+ * (filteredTechniques, ids de `print_area_techniques` via RPC) usam espaços de id
+ * diferentes — e o id muda de um produto para outro. Por isso a resolução cai para
+ * `name` e depois `code` antes de desistir; devolve `null` só quando a técnica não
+ * existe na lista.
+ *
+ * Ordem id → name → code (e não id → code → name): o mapa de `useFilteredTechniques`
+ * é chaveado por `tecnica_nome` (uma entrada por nome e por produto), enquanto
+ * `codigo_tabela` é compartilhado por variações da mesma técnica (`variacao_label`) —
+ * casar por código devolveria uma variação qualquer no lugar da técnica escolhida.
+ */
+export function resolveTechnique<T extends { id: string; name: string; code: string | null }>(
+  list: T[],
+  ref: TechniqueRef,
+): T | null {
+  if (!ref || (!ref.id && !ref.name && !ref.code)) return null;
+  if (ref.id) {
+    const byId = list.find((t) => t.id === ref.id);
+    if (byId) return byId;
+  }
+  if (ref.name) {
+    const name = ref.name.trim().toLowerCase();
+    const byName = list.find((t) => t.name.trim().toLowerCase() === name);
+    if (byName) return byName;
+  }
+  if (ref.code) {
+    return list.find((t) => t.code === ref.code) ?? null;
+  }
+  return null;
+}
+
 export function useFilteredTechniques(
   techniques: Technique[],
   selectedProduct: { id: string } | null,
