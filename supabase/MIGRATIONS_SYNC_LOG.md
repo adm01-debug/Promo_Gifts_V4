@@ -1755,9 +1755,13 @@ comando é no-op e as 62 colunas declaradas ali nunca nascem num banco construí
 parar em `20260512000000_bootstrap_missing_application_schemas.sql:717` com
 `column categories.display_order does not exist`. O conserto adiciona `ADD COLUMN IF NOT EXISTS` com o
 tipo/default exatos do próprio `CREATE TABLE`, a `UNIQUE` de `categories.slug` e a FK
-`quotes_client_id_fkey`; e dá a `20260512000000` stub `IF NOT EXISTS` de `material_groups`,
-`material_types` e `product_materials` (as matviews `analytics` do próprio arquivo leem essas 3 tabelas e
-nenhuma migration as cria).
+`quotes_client_id_fkey`; e dá a `20260512000000` stub `IF NOT EXISTS` das 6 tabelas que as matviews
+`analytics` do próprio arquivo leem e que nenhuma migration cria em momento algum: `material_groups`,
+`material_types`, `product_materials`, `product_images`, `variant_supplier_sources` e
+`stock_daily_summary`. Sem as 3 últimas o replay seguia parando, agora no statement 66 com
+`relation "public.product_images" does not exist` (evidência: check `Supabase Preview` da #3685,
+SHA `8efffeb0e5`). Com as 6, as únicas tabelas que `20260512000000` lê sem criar passam a ser
+`categories`, `products`, `suppliers` e `product_variants`, todas criadas por migrations anteriores.
 
 **Nenhuma escrita em produção.** As duas `version` já estão aplicadas no ledger e os arquivos não voltam a
 rodar em produção; em um banco onde as colunas já existem cada statement novo é no-op. O `sha256` dos dois
@@ -1774,4 +1778,4 @@ em produção nada foi alterado — decisão do dono.
 | versão | arquivo | sha256 anterior | sha256 novo | status |
 |---|---|---|---|---|
 | `20250103080000` | `complete_schema` | `b30c559adeef877f77c70c3f6dfd781ba03575dcddb25ab06ab4e795e5b3f324` | `4dcc93d8c5acfd562b083b0470bd3c4acbbc776a65b27d86bb6fb6d74629af51` | já aplicada em produção; conserto só vale para replay do zero, não vai a produção |
-| `20260512000000` | `bootstrap_missing_application_schemas` | `a6c946928ff8eeb6505f1d303ecde32ea8bd2751017d5d82410ebbe725191d58` | `fe6fe4be7b7fa45b448595a45d1df888a66d7dab09479c00515b08735ad783fd` | já aplicada em produção; conserto só vale para replay do zero, não vai a produção |
+| `20260512000000` | `bootstrap_missing_application_schemas` | `a6c946928ff8eeb6505f1d303ecde32ea8bd2751017d5d82410ebbe725191d58` | `f1920b531f0440b27af2e02aa365c16edccecf6c68afd287a334e7c3fd806d1b` | já aplicada em produção; conserto só vale para replay do zero, não vai a produção |

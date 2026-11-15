@@ -104,6 +104,167 @@ CREATE TABLE IF NOT EXISTS "public"."product_materials" (
     "created_by" "uuid",
     "updated_by" "uuid"
 );
+
+--
+-- REPLAY FIX (2): public.product_images / stock_daily_summary /
+-- variant_supplier_sources — mesmo defeito das 3 tabelas acima: existem na
+-- producao mas nenhuma migration as cria em momento algum, e as materialized
+-- views analytics.mv_media_health, analytics.mv_stock_velocity e
+-- analytics.mv_supplier_reliability deste proprio arquivo as leem; num banco
+-- construido do zero o replay parava no statement 66 com
+-- `relation "public.product_images" does not exist`. DDL abaixo = colunas/
+-- tipos/defaults reais da producao (doufsxqlfjyuvxuezpln), consultados em
+-- 2026-11-15; na producao cada statement e no-op por IF NOT EXISTS.
+--
+
+-- soft-delete-exempt: espelho fiel de tabela que JA existe em producao --
+-- stub de replay, nao e tabela nova.
+CREATE TABLE IF NOT EXISTS "public"."product_images" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "variant_id" "uuid",
+    "color_id" "uuid",
+    "cloudflare_image_id" character varying NOT NULL,
+    "url_cdn" "text" NOT NULL,
+    "filename" character varying,
+    "file_size_bytes" bigint,
+    "width_px" integer,
+    "height_px" integer,
+    "format" character varying,
+    "image_type" character varying DEFAULT 'gallery'::character varying NOT NULL,
+    "is_primary" boolean DEFAULT false,
+    "display_order" integer DEFAULT 0,
+    "applies_to_color" boolean DEFAULT false,
+    "source_supplier" character varying,
+    "url_original" "text",
+    "is_active" boolean DEFAULT true,
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    "image_type_id" "uuid" DEFAULT '1590e144-e3f8-41e6-98f9-f4a25bae496d'::"uuid" NOT NULL,
+    "supplier_code" character varying,
+    "alt_text" "text",
+    "title_text" "text",
+    "caption" "text",
+    "is_og_image" boolean DEFAULT false,
+    "organization_id" "uuid" DEFAULT '5db5aee1-064b-4ef4-9193-345dcd8274ea'::"uuid" NOT NULL,
+    "cf_sync_status" "text" DEFAULT 'pending'::"text" NOT NULL,
+    "cf_uploaded_at" timestamp with time zone,
+    "cf_verified_at" timestamp with time zone,
+    "cf_check_attempts" smallint DEFAULT 0 NOT NULL,
+    "cf_last_error" "text",
+    "cf_id_scheme" "text",
+    "content_hash" "text",
+    "canonical_image_id" "uuid",
+    "is_shared" boolean DEFAULT false NOT NULL,
+    "r2_bucket" "text",
+    "r2_object_key" "text",
+    "last_modified_source" "text",
+    "deleted_at" timestamp with time zone,
+    "deleted_reason" "text",
+    "blurhash" "text",
+    "requires_signed_url" boolean DEFAULT false NOT NULL,
+    "aspect_ratio" numeric,
+    "cf_last_checked_at" timestamp with time zone
+);
+
+-- soft-delete-exempt: espelho fiel de tabela que JA existe em producao, sem
+-- deleted_at/archived_at -- stub de replay, nao e tabela nova.
+CREATE TABLE IF NOT EXISTS "public"."variant_supplier_sources" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "organization_id" "uuid" NOT NULL,
+    "variant_id" "uuid" NOT NULL,
+    "supplier_id" "uuid" NOT NULL,
+    "quantity" integer DEFAULT 0,
+    "source" character varying DEFAULT 'manual'::character varying,
+    "last_synced_at" timestamp with time zone,
+    "sync_status" character varying DEFAULT 'synced'::character varying,
+    "sync_error" "text",
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    "next_quantity_1" integer,
+    "next_date_1" "date",
+    "next_quantity_2" integer,
+    "next_date_2" "date",
+    "next_quantity_3" integer,
+    "next_date_3" "date",
+    "supplier_sku" character varying,
+    "supplier_color_code" character varying,
+    "supplier_color_name" character varying,
+    "cost_price" numeric,
+    "list_price" numeric,
+    "cost_price_1" numeric,
+    "min_qty_1" integer,
+    "cost_price_2" numeric,
+    "min_qty_2" integer,
+    "cost_price_3" numeric,
+    "min_qty_3" integer,
+    "cost_price_4" numeric,
+    "min_qty_4" integer,
+    "cost_price_5" numeric,
+    "min_qty_5" integer,
+    "lead_time_days" integer,
+    "min_order_qty" integer DEFAULT 1,
+    "pack_quantity" integer DEFAULT 1,
+    "sale_multiplier" integer DEFAULT 1,
+    "is_preferred" boolean DEFAULT false,
+    "priority" integer DEFAULT 99,
+    "is_active" boolean DEFAULT true,
+    "supplier_images" "jsonb" DEFAULT '[]'::"jsonb",
+    "supplier_videos" "jsonb" DEFAULT '[]'::"jsonb",
+    "supplier_thumbnail" character varying,
+    "removed_from_api" boolean DEFAULT false,
+    "removed_at" timestamp with time zone,
+    "raw_data" "jsonb",
+    "stock_main_warehouse" integer DEFAULT 0 NOT NULL,
+    "stock_other_warehouses" integer DEFAULT 0 NOT NULL,
+    "supplier_availability_status" character varying,
+    "supplier_ipi_rate" numeric,
+    "supplier_branch_id" "uuid",
+    "icms_rate" numeric,
+    "pis_rate" numeric,
+    "cofins_rate" numeric,
+    "cfop" character varying,
+    "csosn" character varying,
+    "cest" character varying,
+    "cst" character varying,
+    "operation_nature" character varying,
+    "price_updated_at" timestamp with time zone,
+    "next_quantity_4" integer,
+    "next_quantity_5" integer,
+    "next_quantity_6" integer,
+    "next_date_4" "date",
+    "next_date_5" "date",
+    "next_date_6" "date",
+    "your_price" numeric
+);
+
+-- soft-delete-exempt: espelho fiel de tabela que JA existe em producao, sem
+-- deleted_at/archived_at -- stub de replay, nao e tabela nova.
+-- `id` e bigint gerado por identidade na producao.
+CREATE TABLE IF NOT EXISTS "public"."stock_daily_summary" (
+    "id" bigint GENERATED BY DEFAULT AS IDENTITY NOT NULL,
+    "variant_supplier_source_id" "uuid" NOT NULL,
+    "supplier_id" "uuid" NOT NULL,
+    "supplier_branch_id" "uuid",
+    "variant_id" "uuid" NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "summary_date" "date" NOT NULL,
+    "stock_open" integer,
+    "stock_close" integer,
+    "stock_min" integer,
+    "stock_max" integer,
+    "net_change" integer,
+    "units_depleted" integer DEFAULT 0,
+    "units_restocked" integer DEFAULT 0,
+    "restock_detected" boolean DEFAULT false,
+    "restock_quantity" integer DEFAULT 0,
+    "restock_count" smallint DEFAULT 0,
+    "cost_price_open" numeric,
+    "cost_price_close" numeric,
+    "price_changed" boolean DEFAULT false,
+    "sync_count" smallint DEFAULT 0,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "restock_zero_to_positive" boolean DEFAULT false NOT NULL
+);
 SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
