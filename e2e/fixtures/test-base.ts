@@ -337,6 +337,29 @@ function authStorageHasSession(mockMode: boolean): boolean {
   }
 }
 
+/** Verdadeiro somente quando o `auth.setup` rodou e gravou um storageState
+ *  SEM nenhuma sessão Supabase — a forma `{cookies: [], origins: []}` que ele
+ *  escreve ao degradar fora de CI (ver `auth.setup.ts`).
+ *
+ *  Diferente de `authStorageHasSession`, NAO olha `exp`: um access token que
+ *  venceu durante uma suíte longa não é falha de setup — o navegador renova a
+ *  sessão (`autoRefreshToken`) e o arquivo estático não acompanha. Arquivo
+ *  ausente ou ilegível também não é setup degradado: devolve false e deixa o
+ *  fluxo normal seguir. */
+export function authSetupProducedNoSession(): boolean {
+  try {
+    const state = JSON.parse(fs.readFileSync(STORAGE_STATE, 'utf-8')) as {
+      origins?: { localStorage?: { name?: string; value?: string }[] }[];
+    };
+    const storageKey = 'sb-doufsxqlfjyuvxuezpln-auth-token';
+    return !(state.origins ?? [])
+      .flatMap((origin) => origin.localStorage ?? [])
+      .some((entry) => entry.name === storageKey && !!entry.value);
+  } catch {
+    return false;
+  }
+}
+
 /** Marca o teste como skip se as credenciais E2E_USER_* não foram fornecidas
  *  OU se o auth.setup falhou (login inválido, Supabase indisponível, etc.).
  *

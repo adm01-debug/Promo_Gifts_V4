@@ -76,6 +76,13 @@ describe('replayFileName', () => {
 });
 
 describe('sanitizeReplayMigration', () => {
+  it('remove somente o BOM inicial da cópia de replay e preserva U+FEFF interno', () => {
+    const sql = '\uFEFFSELECT \'\uFEFF\';';
+    expect(sanitizeReplayMigration('20261107180000_security_fix.sql', sql)).toBe(
+      'SELECT \'\uFEFF\';',
+    );
+  });
+
   it('remove CONCURRENTLY só de CREATE INDEX executável no shadow', () => {
     const fileName = '20261101140003_sb0006_index_kit_fk_user_id.sql';
     const sql = [
@@ -109,6 +116,14 @@ describe('sanitizeReplayMigration', () => {
         new RegExp(`esperado\\(s\\) 2 .* encontrado\\(s\\) ${count}`),
       );
     }
+  });
+
+  it('aceita a migration real da #3550 (1 índice CONCURRENTLY) no replay do shadow', () => {
+    const fileName = '20261113235000_perf_idx_products_active_created_at_desc.sql';
+    const sql = readFileSync(join('supabase', 'migrations', fileName), 'utf8');
+    const out = sanitizeReplayMigration(fileName, sql);
+    expect(out).not.toMatch(/^\s*CREATE\s+(?:UNIQUE\s+)?INDEX\s+CONCURRENTLY\b/im);
+    expect(out).toMatch(/^CREATE INDEX IF NOT EXISTS idx_products_active_created_at_desc$/m);
   });
 
   it('não reescreve migrations fora do allowlist de compatibilidade do pipeline', () => {
@@ -1041,5 +1056,23 @@ describe('dropDumpLossyFunctions — tipo entre aspas com nome de palavra-chave 
 
   it('controle: "text" (não é palavra-chave) segue equivalente a text', () => {
     expect(dropDumpLossyFunctions(remote('text'), shadow('"text"')).dropped).toEqual(['public.f(x text)']);
+  });
+});
+
+describe('versões só de ledger (P09)', () => {
+  it('as versões que a 20261114014500 registra no ledger já estão no snapshot do baseline e não são replayadas', () => {
+    const repoRoot = join(import.meta.dirname, '..', '..');
+    const migrationsDir = join(repoRoot, 'supabase', 'migrations');
+    const p09 = readFileSync(join(migrationsDir, '20261114014500_p09_reconcile_ledger_schema_migrations.sql'), 'utf8');
+    const ledgerOnly = [...p09.matchAll(/^\s*\('(\d{14})'\)/gm)].map((m) => m[1]);
+    expect(ledgerOnly).toHaveLength(360);
+    const baseline = findBaseline(repoRoot);
+    expect(ledgerOnly.filter((v) => !baseline.versions.has(v))).toEqual([]);
+    const replay = selectReplayMigrations({
+      files: readdirSync(migrationsDir),
+      baselineVersions: baseline.versions,
+      appliedVersions: [...ledgerOnly, '20261114014500'],
+    });
+    expect(replay).toEqual(['20261114014500_p09_reconcile_ledger_schema_migrations.sql']);
   });
 });

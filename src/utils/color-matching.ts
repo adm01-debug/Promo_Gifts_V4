@@ -9,7 +9,7 @@ import { PANTONE_CATALOG, type PantoneColor } from '@/data/pantone-coated';
 
 // ─── RGB → Lab conversion ────────────────────────────────────────────
 
-function rgbToLab(r: number, g: number, b: number): [number, number, number] {
+export function rgbToLab(r: number, g: number, b: number): [number, number, number] {
   // Normalize to 0-1
   let rr = r / 255,
     gg = g / 255,
@@ -34,13 +34,13 @@ function rgbToLab(r: number, g: number, b: number): [number, number, number] {
   return [L, a, bLab];
 }
 
-function hexToRgb(hex: string): [number, number, number] {
+export function hexToRgb(hex: string): [number, number, number] {
   const h = hex.replace('#', '');
   return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
 }
 
 // Delta-E (CIE76) — Euclidean distance in Lab space
-function deltaE(lab1: [number, number, number], lab2: [number, number, number]): number {
+export function deltaE(lab1: [number, number, number], lab2: [number, number, number]): number {
   return Math.sqrt((lab1[0] - lab2[0]) ** 2 + (lab1[1] - lab2[1]) ** 2 + (lab1[2] - lab2[2]) ** 2);
 }
 

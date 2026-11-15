@@ -2,6 +2,7 @@ name: Visual Baseline Tests — Nightly
 
 # 2026-09-27: paths filter — evita rodar 17+min de Playwright visual em mudanças não-UI
 on:
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   push:
     branches: [main]
     paths:
@@ -15,20 +16,6 @@ on:
       - 'package-lock.json'
       - '.github/workflows/visual-tests.yml'
       - '.github/scripts/e2e-relevance.mjs'
-  pull_request:
-    branches: [main]
-    paths:
-      - 'src/**'
-      - '!src/**/__tests__/**'
-      - '!src/**/*.test.*'
-      - '!src/**/*.spec.*'
-      - 'public/**'
-      - 'e2e/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/visual-tests.yml'
-      - '.github/scripts/e2e-relevance.mjs'
-
 permissions:
   contents: read
   pull-requests: read

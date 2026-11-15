@@ -181,3 +181,34 @@ describe('audit-db-frontend-coverage — varredura em Node sem ripgrep (revisão
     expect(cols.find((c) => c.name === 'nome').status).toBe('ORPHAN');
   });
 });
+
+describe('audit-db-frontend-coverage — rg falha de verdade (A1, reforço 12/11)', () => {
+  const psql = 'produtos\tid\tuuid\t5\nprodutos\tnome\ttext\t5\n';
+  function withBrokenRg(fixture, exitCode, stderrLine) {
+    const binDir = resolve(fixture.dir, 'brokenbin');
+    mkdirSync(binDir, { recursive: true });
+    writeFileSync(resolve(binDir, 'rg'), `#!/bin/sh\necho ${shQuote(stderrLine)} >&2\nexit ${exitCode}\n`);
+    chmodSync(resolve(binDir, 'rg'), 0o755);
+    return { ...fixture, path: `${binDir}:${fixture.path}` };
+  }
+  const readCols = (dir) =>
+    JSON.parse(readFileSync(resolve(dir, 'audit/db-frontend-coverage.json'), 'utf8'))
+      .reports.find((r) => r.label === 'BD Interno (app)')
+      .tables.find((t) => t.table === 'produtos').columns;
+
+  it('rg com status 2 (erro real, não ENOENT/127): emite warn com status+stderr e usa a varredura em Node', () => {
+    const fx = withBrokenRg(makeFixture({ psqlOutput: psql }), 2, 'rg: regex parse error');
+    const result = runScript(fx);
+    expect(result.status).toBe(0);
+    expect(result.stderr).toMatch(/rg falhou \(status 2\); usando varredura em Node: rg: regex parse error/);
+    expect(readCols(fx.dir).find((c) => c.name === 'nome').status).toBe('READ'); // fallback leu src/x.ts
+  });
+
+  it('rg ausente (127) usa a varredura em Node SEM warn (ausência é esperada no runner)', () => {
+    const fx = withBrokenRg(makeFixture({ psqlOutput: psql }), 127, 'rg: not found');
+    const result = runScript(fx);
+    expect(result.status).toBe(0);
+    expect(result.stderr).not.toMatch(/rg falhou/);
+    expect(readCols(fx.dir).find((c) => c.name === 'nome').status).toBe('READ');
+  });
+});

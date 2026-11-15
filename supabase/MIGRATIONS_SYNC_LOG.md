@@ -956,9 +956,9 @@ Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_
 | `20261022100001` | `91404707c71551f6060fc1845cfdd24b608cb6338a2685a92f6b4f98f1f9334f` | aplicado via E15 | Claude FASE-B-P10-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40165954774 | 2026-10-25T05:36 UTC | anon_has_execute=false ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
 | `20261022100010` | `8ff71060a255026b55cfd1a7bbd817b7a0de05b79aac68a2b2d8a3d766a35ac7` | `—` (não aplicado) | Claude sessão P18/auditoria | E15 (pendente) | pendente | pendente — 50 ALTER POLICY auth.uid() → (SELECT auth.uid()) em 24 tabelas (ADV-PERF-001) |
 | `20261022100011` | `19392e733d888cb4147bf5ccaace6007d99f4b7870eb8d7c1eaa7b07cf90670d` | `—` (não aplicado) | Claude sessão P18/auditoria | E15 (pendente) | pendente | pendente — 13 DROP INDEX unused (~779 MB); 7 deferred (unique/GIN — aprovação PO) |
-| `20261022100020` | `c429599dc3becf972269b08c994cef994a28c591ba47c41524b5390019546d8a` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — dispatcher-failure-alert: */5 → 3,13,23,33,43,53 (offset +3min, P19) |
-| `20261022100021` | `4c3ddf72ef90ac779830893686099c48ef1eb6c524c0269a7b2551665816c888` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — hash-product-images: */5 → 4,14,24,34,44,54 (offset +4min, P19) |
-| `20261022100022` | `2cc1e34477a862cccd3c0b7d5925179a755cdda50a7e646bad41e40f277675c7` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — sync-is-stockout-universal: */5 → */10 (frequência reduzida, P19) |
+| `20261022100020` | `c429599dc3becf972269b08c994cef994a28c591ba47c41524b5390019546d8a` | `—` | Claude sessão P19/auditoria | E05 (a posteriori) | no ledger do banco (confirmado 2026-11-15); o agendamento que ela escreveu foi **superado** por migrations posteriores da série cron — ver recibo E05 abaixo | pendente — dispatcher-failure-alert: */5 → 3,13,23,33,43,53 (offset +3min, P19) |
+| `20261022100021` | `4c3ddf72ef90ac779830893686099c48ef1eb6c524c0269a7b2551665816c888` | `—` | Claude sessão P19/auditoria | E05 (a posteriori) | no ledger do banco (confirmado 2026-11-15); o agendamento que ela escreveu foi **superado** por migrations posteriores da série cron — ver recibo E05 abaixo | pendente — hash-product-images: */5 → 4,14,24,34,44,54 (offset +4min, P19) |
+| `20261022100022` | `2cc1e34477a862cccd3c0b7d5925179a755cdda50a7e646bad41e40f277675c7` | `—` | Claude sessão P19/auditoria | E05 (a posteriori) | no ledger do banco (confirmado 2026-11-15); o agendamento que ela escreveu foi **superado** por migrations posteriores da série cron — ver recibo E05 abaixo | pendente — sync-is-stockout-universal: */5 → */10 (frequência reduzida, P19) |
 | `20261022193000` | `eaa8a33524f37c7a7f24ddb6c8a23c0a873101d94f01aa9b6257d5423f4b9e68` | — (md5 query timeout; stmts_null=false confirmado) | sessão autônoma pré-FASE-B (P19_cron001) | n/d (autônoma — aplicada antes do início de FASE B; ver correcoes.md §P19_cron001) | 2026-10-22 ~19:30 UTC | ledger_count=1 ✅ (SELECT version FROM schema_migrations WHERE version='20261022193000' — sessão 01JPgV7FqkG4UuFBJWiJa9FB, 2026-10-25) |
 | `20261022194000` | `58785577281c32a9646a416653629d1a69764bb4e4bfc1e310e3b00171e28048` | `—` (não aplicado) | Claude sessão E30/segurança | E15 (pendente) | pendente | superado — aplicada em produção (confirmado no ledger 2026-11-11; ver "Reconciliação retroativa"); o sha desta linha é de versão anterior do arquivo, não a aplicada. Nota original: REVOKE INSERT,UPDATE,DELETE,REFERENCES,TRIGGER ON external_connections FROM anon (brecha E30) |
 | `20261022194100` | `389601c24ab27be5fd302b3244724a30966a3ccb280941892ab0116ef1a8888c` | `—` (não aplicado) | Claude sessão E40/segurança | E15 (pendente) | pendente | superado — aplicada em produção (confirmado no ledger 2026-11-11; ver "Reconciliação retroativa"); o sha desta linha é de versão anterior do arquivo, não a aplicada. Nota original: REVOKE ALL ON mockup_approval_links FROM anon (brecha E40) |
@@ -969,7 +969,8 @@ Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_
 | `20261024180003` | `f810068550bbfa2da6179d3772f8187821df732417d48dafd15ffd27acfb2a94` | aplicado via E15 | Claude FASE-B-P19-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40167137573 | 2026-10-25T05:58 UTC | schedule=15min (1,16,31,46) ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
 | `20261024190001` | `eb5c03f7d8f690297ce6960ef0803d7c205fb3999891cbb2ef0a4b85dc82c030` | aplicado via E15 | Claude FASE-B-P01-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40166925674 | 2026-10-25T05:52 UTC | x-cron-secret ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
 | `20261025002500` | `6ce2ca6a8a4228486ae5123574845a11a1f1e59b6e4a316628dc6a56925c1f59` | aplicado via E15 | Claude FASE-B-P03-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40165426404 | 2026-10-25T05:28 UTC | categories last_analyze=2026-10-25T05:28 ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
-| `20261031000000` | `209ba7abacce4f1c1989dfe19c97b470db9dd7a1d9fc74b224acded12187ebd3` | — | claude-code (session_01Gd4dBi3n2GguZNjoaenJgk) | corrigida | 2026-11-01 UTC | corrigida: deleted_at + stock_notes_active_idx adicionados (Gate 1.12); tabela não existe em produção — aplicar via db-apply-migration.yml após merge da PR |
+| `20261031000000` | `209ba7abacce4f1c1989dfe19c97b470db9dd7a1d9fc74b224acded12187ebd3` | — | claude-code (session_01Gd4dBi3n2GguZNjoaenJgk) | corrigida | 2026-11-01 UTC | corrigida: deleted_at + stock_notes_active_idx adicionados (Gate 1.12). CORREÇÃO 2026-11-15: a tabela EXISTE em produção (`to_regclass('public.stock_notes')` devolve `stock_notes`, RLS ligada, 4 policies) e a version `20261031000000` ESTÁ no ledger — a linha de 2026-11-01 que dizia o contrário está vencida; vale o registro de aplicação fora do fluxo E15 (Lovable/PR #2871) mais abaixo |
+| `20261115034500` | `e8cb3bf9a77607728af8ee8cdd59b4927de1e9b58bc0c5383ce418728314c79a` | `—` (não aplicada) | claude-code (session_01Gd4dBhHK5o8Sg5eHHAF3G7) | E15 (pendente) | pendente | pendente — `rpc_sales_assistant_candidates` (SECURITY INVOKER, assistente Encaixe do Cliente). Conferido em produção nesta sessão: a função NÃO existe (`pg_proc` = 0) e a version não está em `schema_migrations`; todas as colunas/tabelas que o corpo lê existem e têm RLS. Aplicar por `db-apply-migration.yml` após o merge. Rollback: `supabase/rollbacks/20261115034500_rollback.sql` |
 
 ---
 
@@ -1119,6 +1120,12 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 |---|---|---|
 | `20261106232045` | `fix_handle_updated_at_search_path` | aplicada — ledger e `pg_proc.proconfig = {search_path=public}` confirmados no canônico em 2026-11-08 |
 
+## 2026-11-07 — Identidade canônica de vendedor CRM
+
+| version | sha256 | arquivo | status |
+|---|---|---|---|
+| `20261107134429` | `fd1fbfceb0a148371b9507618ccf3b67a913b6f3f4b1e4e420caf0c273093286` | `create_crm_seller_identity_links` | **aplicada em 2026-11-14 23:41:43 UTC** pelo `db-apply-migration.yml` (run 43654437109; recibo E15 abaixo). Cria vínculo 1:1 privado `auth_user_id → crm_seller_id`. O sha256 registrado antes da aplicação era `c35bd151…`: o arquivo recebeu depois, em `3792045445` (2026-11-14 23:28 UTC, 13 min antes do Apply), a linha de comentário `-- soft-delete-exempt:` exigida pelo Gate de soft-delete — comentário SQL, sem efeito no DDL executado. O hash acima é o do conteúdo que a run de fato aplicou. |
+
 ## Recibos — E15 (workflow de aplicação controlada)
 
 | versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check | status |
@@ -1130,7 +1137,43 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261112130000` | `81e3c7900b74f7de043556d412dae21248e538f70aca73ad1b85f190b6627f52` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 04:55:11 UTC | job post-check da run 43345670118 confirmou a version no ledger | aplicada |
 | `20261108223100` | `a912697ce92a3b6da285fad499575dc89fb8c2138f1f3b573dbdc9206c717dfa` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 07:45:38 UTC | job post-check da run 43384113364 confirmou a version no ledger | aplicada |
 | `20260511235950` | `dfacb733f8b6036b3c00db74dffbf61597f3fc88cc72a50fcbe3a0480b2824a6` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 08:32:53 UTC | job post-check da run 43390126038 confirmou a version no ledger | aplicada |
-| `20261111191000` | `04966954d978ccf4ca7f7a7beb5bd20129243018b303f92575c5b12b4f581524` | — | não identificado — aplicada fora do fluxo E15 (nenhuma run de `db-apply-migration.yml` em 11–12/11 aplicou esta versão) | reconciliação retroativa | — | Gate 1.13.3 live (Deploy Gates run 43416005680, 2026-11-13 12:07 UTC) leu a versão no ledger de produção | aplicada (fora do fluxo E15; confirmada no ledger 2026-11-13) |
+| `20261111191000` | `04966954d978ccf4ca7f7a7beb5bd20129243018b303f92575c5b12b4f581524` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 12:07:10 UTC | job post-check da run 43417662659 confirmou a version no ledger | aplicada |
+| `20261112140000` | `6aa856168cc1ef0e6308757fe01b04f4917f043170ff3ce996e0933a52575b9f` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 18:03:52 UTC | job Apply da run 43471685129 concluiu com sucesso (preflight ok); pós-check na fila no momento do registro | aplicada |
+| `20261113235000` | `45dff9f0d993448eae3c68c09aa143304601efb96029ccedda607e976ba28e46` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 02:37:27 UTC | job post-check da run 43546049063 confirmou a version no ledger | aplicada |
+| `20261113235800` | `f0cddef3bb3e9b322c5e9767a1be6e0bb916d65b7bd8d60278e8962ea4db680e` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 05:02:37 UTC | job post-check da run 43557850878 confirmou a version no ledger | aplicada |
+| `20261114040000` | `f34df73857031d37795afbd5519604c3e1604657fb5141eefddb7bcdb677e5bb` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 04:18:25 UTC | job post-check da run 43555824840 confirmou a version no ledger | aplicada |
+| `20261114003000` | `c742a627a964faf49ae9be913336b8aafaa76e8b6f7a3e95bc266d9cc2a54efa` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 06:11:17 UTC | job post-check da run 43564625050 confirmou a version no ledger | aplicada |
+| `20261112120000` | `2843dc46113510dea1810788b9f83c63cd25b02d02befd1f45d27dfec485c393` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:13:12 UTC | job post-check da run 43588905947 confirmou a version no ledger | aplicada |
+| `20261112120100` | `6c79e6999200d391e4a0bf79fe72f2a681c3ec01435921e41ae73fbe23d19334` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:15:48 UTC | job post-check da run 43589115373 confirmou a version no ledger | aplicada |
+| `20261112120200` | `c8647e9ddd4ea64b072721dcb0336d7738ffe5078ea9652b27100350083a5b54` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:17:30 UTC | job post-check da run 43589261116 confirmou a version no ledger | aplicada |
+| `20261112120300` | `c4a2b8606f9bbcd8b56823a41bdda148499f063b4f319fa30952244a59457602` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:19:23 UTC | job post-check da run 43589395511 confirmou a version no ledger | aplicada |
+| `20261112120400` | `79c76a16c0036283028028a213eea687bac5caf62685c4373dba543e70a6f612` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:21:17 UTC | job post-check da run 43589545510 confirmou a version no ledger | aplicada |
+| `20261112120500` | `dd6849a1c3ff925423ac7bc91eb5605882ea03477b93b199ecf17eb574f3734e` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:23:13 UTC | job post-check da run 43589714577 confirmou a version no ledger | aplicada |
+| `20261112120600` | `2aafacec03bb10d108aeda1192f5754600dc071ea420fb9a431a6b3ad26ea07a` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:24:50 UTC | job post-check da run 43589851580 confirmou a version no ledger | aplicada |
+| `20261112120700` | `13dcabc4850b19a6f360203693dfc259474adaa42227dcc8ef2ad43587cabaaa` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:26:40 UTC | job post-check da run 43589984419 confirmou a version no ledger | aplicada |
+| `20261112120800` | `27438bfdec7aba456af33f6b77e2ceef6d593e20f7a5da5cbb7045661b72371e` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:28:47 UTC | job post-check da run 43590125142 confirmou a version no ledger | aplicada |
+| `20261112120900` | `d73e208b1830ab5692904320c746c89e63b46ba4b54a253b147fe65d3f65dda4` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:31:01 UTC | job post-check da run 43590307044 confirmou a version no ledger | aplicada |
+| `20260915113458` | `81c17caf85e4ef50c04f4e1382f0a3c75b16967141d33c5c50b1b64328e8846d` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260905033200` | `3607f008f8dec27a2f7707d8775e35bb00ade9b6ba8f2e4c2062809bc2ca29e2` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260905033100` | `a707b8702b68b0bf81b9d21b3970d8bf7c44f35d31ca40f2c800c12faf0a3f68` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260903093500` | `da12bc143a63beaccf269b955eae92d51cc1fdc3673dcd664c8f8738e9999306` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260902221900` | `26ce447711337286d69fd20e1a0eb47ab9df046f7edd270664cac25d5ad497cb` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260902221000` | `301da9c5075d5f95e7e93bb4f0e24c1ee03ffea0d823a4eccc67fc7a5ee0e9bd` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260826000000` | `8c6fce74ad3088b1645ad4c3efe7c13a58cf6f0680dd4d0e78001dfda4e443bd` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260718140000` | `394ee1158bb3573c522204a8ee3476968c38c997aa16df18fc24d2ceb8a0dcef` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260717235500` | `7abba259b5ad7d7ddd2665befb09fd2e058452773855ca9a83d070b9558a5b88` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260717190000` | `950b93a76c8901dca9490a56c64dc350492f864e2b74464467c21f7d9796a6aa` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20261113225000` | `4bc14de41e30ea25aabe13a6bb59799b360fbdf2f18a5f9fd93be9aafa9689d2` | `--` | db-apply-migration.yml run 43634465261 | E15 | 2026-11-14 | pós-check do workflow success (run 43634465261) | aplicada em produção |
+| `20261114014100` | `651823afa2f7fd9901fcc185a3147aa53d1cf5ad11fea1374196a3021d200578` | `--` | db-apply-migration.yml run 43634622250 | E15 | 2026-11-14 | pós-check do workflow success (run 43634622250) | aplicada em produção |
+| `20261114031000` | `76b1497b85e289d3de69f01308f325d454436e5a03a59f2f77b5e50a6f1287b6` | `--` | db-apply-migration.yml run 43634805809 | E15 | 2026-11-14 | pós-check do workflow success (run 43634805809) | aplicada em produção |
+| `20261107134429` | `fd1fbfceb0a148371b9507618ccf3b67a913b6f3f4b1e4e420caf0c273093286` | `--` | GitHub Actions (db-apply-migration.yml, run 43654437109; job Recibo saiu success sem gravar — registrado a posteriori) | E15 | 2026-11-14 23:41:43 UTC | job 3 (Pós-check) da run 43654437109: preflight-migration-apply --expect-applied passed — "version 20261107134429 confirmada no ledger pós-aplicação"; isInLedger=true | aplicada |
+| `20261114170845` | `594d31966a784f02c6a69faf144adc3422ab75369a5643a258fc2a7779c7eac4` | `--` | GitHub Actions (db-apply-migration.yml, run 43646998992); recibo do job 4 veio na PR #3632, que ficou em conflito no log — dados copiados dela | E15 | 2026-11-14 22:14:43 UTC | job post-check da run 43646998992 confirmou a version no ledger | aplicada |
+| `20261114170921` | `5b87f587d338b1016e5dce6f36b7f18c488baaa2e0422ac3ea5c23a91d4af9f4` | `--` | GitHub Actions (db-apply-migration.yml, run 43647154042); recibo do job 4 veio na PR #3633, que ficou em conflito no log — dados copiados dela | E15 | 2026-11-14 22:16:55 UTC | job post-check da run 43647154042 confirmou a version no ledger | aplicada |
+| `20261114014500` | `a06fe201d75afdb1be8b99ab19164ca374bb57ec5dae44808049ea33e5e6f8c0` | `--` | GitHub Actions (db-apply-migration.yml, run 43634292304); recibo do job 4 veio na PR #3624, que ficou em conflito no log — dados copiados dela e confirmados no banco | E15 | 2026-11-14 19:51:43 UTC | job 3 (Pós-check) da run 43634292304 success; version confirmada em supabase_migrations.schema_migrations (consulta read-only 2026-11-15) | aplicada |
+| `20261022100020` | `c429599dc3becf972269b08c994cef994a28c591ba47c41524b5390019546d8a` | `--` | NÃO VERIFICADO — a version está em supabase_migrations.schema_migrations com name NULL, o que indica registro por caminho diferente do db-apply-migration.yml; não localizei a run que a inseriu | E05 | NÃO VERIFICADO | version confirmada em supabase_migrations.schema_migrations (consulta read-only 2026-11-15). ATENÇÃO: o agendamento que esta migration escreveu NÃO é o que está em produção — cron.job mostra 'dispatcher-failure-alert' em '5,20,35,50', valor definido por migrations posteriores da série cron (20261027140000, 20261101220000/232022, 20261108230100, 20261113235800). O objetivo original (eliminar colisão de startup) está atingido, mas por outra migration | aplicada (no ledger) — efeito superado por migration posterior |
+| `20261022100021` | `4c3ddf72ef90ac779830893686099c48ef1eb6c524c0269a7b2551665816c888` | `--` | NÃO VERIFICADO — a version está em supabase_migrations.schema_migrations com name NULL, o que indica registro por caminho diferente do db-apply-migration.yml; não localizei a run que a inseriu | E05 | NÃO VERIFICADO | version confirmada em supabase_migrations.schema_migrations (consulta read-only 2026-11-15). ATENÇÃO: o agendamento que esta migration escreveu NÃO é o que está em produção — cron.job mostra 'hash-product-images' em '11,26,41,56', valor definido por migrations posteriores da série cron (20261027140000, 20261101220000/232022, 20261108230100, 20261113235800). O objetivo original (eliminar colisão de startup) está atingido, mas por outra migration | aplicada (no ledger) — efeito superado por migration posterior |
+| `20261022100022` | `2cc1e34477a862cccd3c0b7d5925179a755cdda50a7e646bad41e40f277675c7` | `--` | NÃO VERIFICADO — a version está em supabase_migrations.schema_migrations com name NULL, o que indica registro por caminho diferente do db-apply-migration.yml; não localizei a run que a inseriu | E05 | NÃO VERIFICADO | version confirmada em supabase_migrations.schema_migrations (consulta read-only 2026-11-15). ATENÇÃO: o agendamento que esta migration escreveu NÃO é o que está em produção — cron.job mostra 'sync-is-stockout-universal' em '', valor definido por migrations posteriores da série cron (20261027140000, 20261101220000/232022, 20261108230100, 20261113235800). O objetivo original (eliminar colisão de startup) está atingido, mas por outra migration | aplicada (no ledger) — efeito superado por migration posterior |
+| `20260917061500` | `74f5094bab6b28abe0306f65519ae4d49f3f259a6de8061ea5504c2a0b8577ae` | `--` | GitHub Actions (db-apply-migration.yml, run 43668677152); disparada por mim nesta sessão com a autorização explícita do dono para o banco. O job 4 (Recibo) saiu success e abriu PR em vez de gravar aqui — mesmo padrão já registrado em docs/security/ | E15 | 2026-11-15 02:38:50 UTC | job 3 (Pós-check) da run 43668677152: "version 20260917061500 confirmada no ledger pós-aplicação", isInLedger=true. Efeito conferido por consulta direta ao canônico: has_function_privilege(authenticated, EXECUTE) = false nas 4 funções (registrar_entrada_estoque, registrar_saida_estoque, confirm_notifications_dispatched, fn_notify_user) e service_role preservado = true nas 4 | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
@@ -1412,6 +1455,23 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 |---|---|---|---|
 | `20261112011000` | `fix_sb0003_fn_get_rupture_alerts` | `8e081152c457ed572cb3aa349f62027bc7cd461996bb8036f499efb12af6a449` | **aplicada em 12/11/2026** pelo `db-apply-migration.yml` (run 43233358789, aprovado pelo dono; recibo E15 acima) |
 
+## 2026-11-12 — 10 telas com 42501 ou RPC ausente: migrations pendentes em produção
+
+Correções de acesso e RPCs novas (PR substituta da #3432; a RPC de inteligência de mercado (`fn_market_intelligence_macro`) ficou de fora — ver PR). Nenhuma aplicada ainda; aplicar uma a uma, na ordem da tabela, via `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261112120000` | `fix_fn_get_supplier_reliability` | `2843dc46113510dea1810788b9f83c63cd25b02d02befd1f45d27dfec485c393` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120100` | `fix_smoke_tests_dashboard_admin_rpc` | `6c79e6999200d391e4a0bf79fe72f2a681c3ec01435921e41ae73fbe23d19334` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120200` | `fix_kill_switch_obs_grant_summary_view` | `c8647e9ddd4ea64b072721dcb0336d7738ffe5078ea9652b27100350083a5b54` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120300` | `fix_medallion_health_dev_rpc` | `c4a2b8606f9bbcd8b56823a41bdda148499f063b4f319fa30952244a59457602` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120400` | `fn_insights_cache_count` | `79c76a16c0036283028028a213eea687bac5caf62685c4373dba543e70a6f612` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120500` | `fix_optimization_queue_rpcs_dev_access` | `dd6849a1c3ff925423ac7bc91eb5605882ea03477b93b199ecf17eb574f3734e` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120600` | `admin_execute_role_migration_batch_rpc` | `2aafacec03bb10d108aeda1192f5754600dc071ea420fb9a431a6b3ad26ea07a` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120700` | `fix_grant_fn_admin_sync_external_connections` | `13dcabc4850b19a6f360203693dfc259474adaa42227dcc8ef2ad43587cabaaa` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120800` | `query_telemetry_delete_dev_policy` | `27438bfdec7aba456af33f6b77e2ceef6d593e20f7a5da5cbb7045661b72371e` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120900` | `fix_password_reset_request_rpc_anon` | `d73e208b1830ab5692904320c746c89e63b46ba4b54a253b147fe65d3f65dda4` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+
 ## 2026-11-12 — sitemap: EXECUTE de `anon` em `get_sitemap_public` pendente em produção
 
 `/api/sitemap` responde 503 porque `anon` perdeu EXECUTE em `public.get_sitemap_public(integer, integer)` (verificado via
@@ -1421,3 +1481,269 @@ A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão,
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261112130000` | `fix_get_sitemap_public_anon_grant` | `81e3c7900b74f7de043556d412dae21248e538f70aca73ad1b85f190b6627f52` | **aplicada em 13/11/2026** pelo `db-apply-migration.yml` (run 43345670118; recibo E15 acima) |
+
+### 2026-11-12 — RLS nas partições p2027_03..p2027_12 (Supabase Linter Gate)
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261112140000` | `fix_rls_supplier_products_raw_history_p2027` | `6aa856168cc1ef0e6308757fe01b04f4917f043170ff3ce996e0933a52575b9f` | **aplicada em 13/11/2026** pelo `db-apply-migration.yml` (run 43471685129; recibo E15 acima) |
+
+## 2026-11-13 — Catálogo: índice parcial para a ordenação "mais novos" em `products`
+
+Consulta read-only em produção (2026-11-13, `pg_indexes`/`pg_get_viewdef`): nenhum dos 36 índices de
+`public.products` cobre `created_at`; `v_products_public` filtra `is_deleted IS NOT TRUE AND is_active = true` e o
+PostgREST ordena por `created_at DESC, id ASC` — 18.163 chamadas × 1.033 ms em 12,8 h com Sort de ~7.500 linhas
+(`pg_stat_statements`). O índice parcial casa com o predicado da view. `VACUUM (FULL, ANALYZE) public.tags`
+(88 linhas em 323 páginas) fica fora da migration: o preflight bloqueia VACUUM sempre. Ainda não está no ledger;
+aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]` (porta 5432, `transaction: none`).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261113235000` | `perf_idx_products_active_created_at_desc` | `45dff9f0d993448eae3c68c09aa143304601efb96029ccedda607e976ba28e46` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (linha `approved-by`) e `db-apply-migration.yml` (branch `claude/feat-idx-products-created-at-vacuum-tags-261113-2350`) |
+
+## 2026-11-14 — P0 da auditoria exaustiva: INSERT em `workspace_notifications` sem escopo (reaplica 20260622185000)
+
+A policy de INSERT viva em produção ainda é a versão fraca de `20260622143055`
+(`WITH CHECK (auth.uid() IS NOT NULL AND user_id IS NOT NULL)`), que permite qualquer
+autenticado notificar qualquer outro usuário (spam/phishing cross-tenant) — confirmado
+via `pg_policies` em 2026-11-14. A migration `20260622185000` já reapertava isso para
+`WITH CHECK (user_id = auth.uid())`, mas nunca foi de fato aplicada. Reaplica o mesmo
+fix; callers revalidados (2 inserts diretos do frontend são auto-notificação, edge
+functions usam `service_role`, aprovação de desconto roda via trigger `SECURITY DEFINER`)
+— nenhum quebra com o check estrito.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114170845` | `fix_workspace_notifications_insert_policy_reapply` | `7ab43f818e883b3de852ac10134d1c76614f90e861a11c8c4b08d2edc54b562b` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-workspace-notifications-rls-insert-261114-1708`) |
+
+## 2026-11-14 — Data API cai a cada 10 min: `idle_session_timeout` do `authenticator` mata o LISTEN do PostgREST
+
+Logs do PostgREST (`analytics/endpoints/logs`, `source = 'postgrest_logs'`, 2026-11-14 03:00–04:00Z): a cada ~10 min
+`FATAL: terminating connection due to idle-session timeout` → `Failed listening for database notifications on the "pgrst" channel`
+→ `Schema cache queried in` 12.821–72.852 ms, com rajadas de PGRST002/PGRST003. `pg_db_role_setting` (read-only):
+`authenticator` com `idle_session_timeout=600000` (de `20260524211024`) e `postgres` (DATABASE) com `600000` (de `20260525132458`).
+A migration zera só o do `authenticator`. Ainda não está no ledger; aplicação só por `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114040000` | `fix_authenticator_idle_session_timeout_pgrst_listener` | `f34df73857031d37795afbd5519604c3e1604657fb5141eefddb7bcdb677e5bb` | pendente — aplicação só por `db-apply-migration.yml` após o merge |
+
+## 2026-11-14 — P0 (auditoria QA): RLS de `orders`/`order_items` sem escopo por vendedor
+
+Confirmado ao vivo via MCP Supabase (`pg_policies`, schema `public`, projeto `doufsxqlfjyuvxuezpln`): as
+policies `orders_select`, `orders_insert`, `orders_update`, `order_items_select`, `order_items_update`
+checam só `user_is_org_member(organization_id)` — qualquer vendedor autenticado da org lê/edita pedidos,
+faturamento e histórico de clientes de outros vendedores. `docs/security/RLS_MATRIX.md:92-116` exige DENY
+para vendedor terceiro. Nenhuma migration no repo cria essas 5 policies com esse nome (regressão sem
+rastro, mesma classe de `docs/agentes/banco-migrations.md` REGRA #8); a migration
+`20260426125603_b96b3daf-...sql` (linhas 124-257) tinha o padrão correto em policies `*_scope` que foram
+substituídas depois (cadeia `order_items_select_v2..v7`, 2026-05-26) sem nunca recriar o escopo por
+`seller_id` nas 5 vivas hoje. A migration reaplica esse padrão (`can_view_all_sales()` OR
+supervisor-na-org OR `seller_id = auth.uid()`) nas mesmas 5 policies, sem renomear.
+[AUTORIZAÇÃO BD]: aprovado pelo dono no chat desta sessão em 2026-11-14.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114170921` | `fix_rls_orders_order_items_seller_scope` | `024b841c5c98e71c2e0a8d958de49e8af7015b7db086fe658ead482d72a73922` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (já citada acima) e `db-apply-migration.yml`; PR fica aberta (Git #7 — DDL em produção) |
+
+## 2026-11-13 — CRON-003: proposta de reagendamento noturno dos crons pesados de fornecedores
+
+Consulta read-only em produção (2026-11-13 23:5xZ, `cron.job` + `cron.job_run_details` 24 h): 137 jobs ativos,
+`cron.max_running_jobs = 32`, 70 falhas "job startup timeout" em 15 jobs nas últimas 3 h (prod-readiness §7.4).
+A migration move 14 jobs de scraping/imagens/enriquecimento (xbz-*, sm-*, asia-*, spot-relink, kit-ficha-*) para
+01:00–08:59 UTC (22:00–05:59 BRT) nos mesmos minutos de hoje e reduz 7 jobs de estoque/ingestão/MV para 1×/h ou
+1×/2 h. Opção 2 de prod-readiness §7.8 — decisão de negócio do dono (atraso de estoque/preço); cada linha pode ser
+vetada. `cron.max_running_jobs` não tem caminho por migration (GUC; ALTER SYSTEM bloqueado) — só recomendação.
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261113235800` | `cron003_reagendamento_noturno_fornecedores` | `f0cddef3bb3e9b322c5e9767a1be6e0bb916d65b7bd8d60278e8962ea4db680e` | pendente — aprovada pelo dono no chat da sessão Claude (2026-11-14, "Eu aprovo todas!"); aplicação só por `db-apply-migration.yml` após o merge |
+
+## 2026-11-14 — Desagenda o cron `xbz-image-uploader` (edge esboço, 401 a cada 10 min)
+
+Consulta read-only em produção (2026-11-14): `cron.job` jobid=268 `xbz-image-uploader` ativo (`3,13,23,33,43,53 * * * *`)
+chamando a edge `xbz-image-uploader`, que é um esboço (`not_implemented`) sem o segredo `XBZ_IMAGE_UPLOADER_CRON_SECRET`
+e sem a tabela `xbz_image_import_staging`; logs 24h: 317 POST → 401, 0 → 200. Ainda não está no ledger; aplicação só por
+`db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114003000` | `fix_unschedule_cron_xbz_image_uploader` | `c742a627a964faf49ae9be913336b8aafaa76e8b6f7a3e95bc266d9cc2a54efa` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-cron-xbz-image-uploader-261114-0030`) |
+
+| `20261113140000` | `marketing_tab_links_rls_and_endomarketing` | `9b8c6f1f28df01eebaec6c9ee2e456409a9df7ad45cd49b2730a824349c91135` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+## 2026-11-13 — Data API: fecha anon/authenticated em `supabase_functions.*` (e registra o limite em `net.*`)
+
+Consulta read-only em produção (2026-11-13, `has_table_privilege`/`has_schema_privilege`): anon e authenticated com
+SELECT/INSERT/UPDATE/DELETE em `net._http_response`, `net.http_request_queue`, `supabase_functions.hooks`,
+`supabase_functions.migrations` e USAGE em `net`/`supabase_functions`; o PostgREST expõe esses schemas
+(`db_schema`), e um GET anônimo com `Accept-Profile` devolveu 200/206 com linhas. Os grants em
+`supabase_functions.*` são de `supabase_functions_admin` (postgres é membro → REVOKE efetivo); os de `net.*` são a
+PUBLIC por `supabase_admin` e os USAGE de schema também — fora do alcance de `postgres`; fecham só pelo `db_schema`
+(config, dono). Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261113225000` | `sec_revoke_anon_authenticated_net_supabase_functions` | `4bc14de41e30ea25aabe13a6bb59799b360fbdf2f18a5f9fd93be9aafa9689d2` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-revoke-net-schemas-anon-261113-2230`) |
+## 2026-11-14 — `user_known_devices.is_trusted` (coluna que o front usa e não existe em produção)
+
+Consulta read-only em produção (2026-11-14, `information_schema.columns`): `user_known_devices` não tem `is_trusted`,
+mas `useDeviceDetection.ts:177` faz `.update({ is_trusted: true })` e `KnownDevicesManager.tsx` lê a coluna. Achado na
+análise da #3390 (a migration `20261110024530` dela nunca foi aplicada e não foi levada pela #3548).
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114031000` | `fix_user_known_devices_is_trusted` | `76b1497b85e289d3de69f01308f325d454436e5a03a59f2f77b5e50a6f1287b6` | pendente — aplicação só por `db-apply-migration.yml` após o merge |
+## 2026-11-14 — P09 revisada (supersede #3411): ledger só com versões verificadas
+
+A P09 (`20261108020000`, nunca aplicada) registraria 432 versões como aplicadas; a revisão da PR #3411
+(`20261112013000`, nunca aplicada) tirou 48 com objeto ausente. A verificação ao vivo de 2026-11-14
+(`pg_class`, `pg_proc`, `pg_policies`, `pg_trigger`, `pg_constraint`, `cron.job` e o ledger) achou mais 23
+versões que criam índice, função, trigger, política, constraint ou cron que não existe em produção, sem
+`DROP`/`RENAME` por migration posterior já aplicada e sem gêmea de conteúdo equivalente no ledger. Elas ficam de
+fora (lista no cabeçalho da migration), e também `20261101210000`: as 10 policies `rls_restrictive_*` que ela
+apaga seguem em produção, então o DROP nunca rodou e ela continua pendente. Registra 360 versões; nenhuma estava no ledger. Só escreve no ledger,
+sem DDL de schema. Rollback: `supabase/rollbacks/20261114014500_rollback.sql`.
+O snapshot do ledger do baseline (`supabase/baseline/20261015140000_ledger_versions.json`) foi estendido com as
+mesmas 360 versões (2524 → 2884), porque o efeito delas já está no dump do baseline ou fica fora dos schemas
+comparados; sem isso o `db-schema-drift-check` replayaria as 360 sobre o baseline (72 falham no replay local).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114014500` | `p09_reconcile_ledger_schema_migrations` | `a06fe201d75afdb1be8b99ab19164ca374bb57ec5dae44808049ea33e5e6f8c0` | **aplicada em 2026-11-14 19:51:43 UTC** pelo `db-apply-migration.yml` (run 43634292304; recibo E15 abaixo). Confirmada em `supabase_migrations.schema_migrations` por consulta read-only em 2026-11-15. A linha dizia "pendente" porque o job 4 da run abriu a PR #3624 em vez de gravar aqui, e a PR ficou aberta (aprovado pelo dono no chat de 2026-11-14) |
+## 2026-11-14 — Índices de FK em estoque e índices de desempenho ausentes (supersede #3412)
+
+11 índices que faltam em produção (verificado em `pg_indexes` em 2026-11-14): 3 FKs `ON DELETE CASCADE` de
+`stock_snapshots`, 2 FKs de `stock_notes` e 6 índices de migrations antigas que nunca foram aplicadas.
+`CREATE INDEX CONCURRENTLY`, `transaction: none`. Substitui a `20261112014000` da PR #3412 (nunca aplicada): saíram
+`idx_ss_supplier_id` e `idx_stock_snapshots_supplier_branch_id`, que a PERF-002 (`20261101194200`) apagou
+por `idx_scan=0` (FKs `NO ACTION` para tabelas de 5 e 7 linhas).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114014100` | `idx_fk_stock_and_missing_perf_indexes` | `651823afa2f7fd9901fcc185a3147aa53d1cf5ad11fea1374196a3021d200578` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono no chat em 2026-11-14) |
+
+## 2026-11-14 — CRON-004: reduz a frequência de 7 jobs ociosos ou redundantes (648 → 97 execuções/dia)
+
+Consulta read-only em produção (2026-11-14, `cron.job_run_details` janela de 6 h, runid > 1399672): 881 execuções e
+244 "job startup timeout". Os 7 jobs abaixo estão ociosos ou redundantes: filas de `product_images` zeradas (as 79 sem
+blurhash nunca são processadas), `external_connections` vazia, `mv_supplier_reliability` com 3 linhas e reload horário
+do PostgREST redundante com `pgrst_ddl_watch`/`pgrst_drop_watch`.
+A migration reagenda `generate-blurhashes`, `hash-product-images` e `backfill-image-dimensions` para a cada 2 h das 09 às 23 UTC (8×/dia, fora da janela dos scrapers; lote fixo no código: 15/80/40 imagens por rodada),
+`connections-auto-test`, `connections-health-check` e `refresh-mv-supplier-reliability` para 1×/h e
+`pgrst-schema-reload` para 1×/dia (09:07 UTC, segue ativo por causa do smoke test #37). Minutos são subconjunto dos
+atuais. `medallion-promote-tick` fica em `6,36 * * * *`: em 30 dias de `pipeline_run_log` há rajadas no teto do lote
+(300 variantes) e 1×/h cortaria pela metade a vazão de promoção. O snapshot
+`supabase/baseline/20261108000000_cron_jobs.json` só muda depois do apply (Gate E40).
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114120000` | `cron004_reduz_frequencia_jobs_ociosos` | `e1371c31840255c9a9bc071cea76efc543ec02637dba7961f622c10a314c6a18` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/perf-cron004-reduz-jobs-ociosos-261114-1001`) |
+
+## 2026-11-14 — CRON-005: `refresh-all-materialized-views` 1×/dia às 09:38 UTC com `statement_timeout` real de 600 s
+
+Consulta read-only em produção (2026-11-14): `cron.job` jobid=234 `38 */2 * * *`, command
+`fn_cron_safe_run(47, 'SELECT public.refresh_all_materialized_views();', 55000, 'refresh-all-mvs')`; `pg_settings`
+`statement_timeout=120000` (configuration file), `cron.use_background_workers=off`, PG 17.
+As 18 linhas de `postgres_logs` citadas na branch de origem **NÃO foram verificadas por mim** — trato como
+NÃO VERIFICADO. A prova que eu medi, em 2026-11-15, é a duração colada no teto em `cron.job_run_details` do
+jobid=234: 145 das 151 execuções dos últimos 7 dias chegaram a 119 s ou mais, com 8 de 8 em 2026-11-15, 24 de 24
+em 10, 11 e 12 de novembro, e média diária entre 106 e 122 s. `status` diz `succeeded` porque
+`fn_cron_safe_run` é `SECURITY DEFINER` com `EXCEPTION WHEN query_canceled THEN … RETURN` e engole o timeout:
+quem olhar só a coluna `status` conclui, errado, que está tudo bem. O `SET LOCAL` de `fn_cron_safe_run` não rearma
+o timeout do statement em curso e o rollback desfaz as 7 MVs. A migration põe `SET statement_timeout = '600s';` antes do `SELECT` e roda 1×/dia.
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`. Depois de aplicada, atualizar
+`supabase/baseline/20261108000000_cron_jobs.json` (`refresh-all-materialized-views` → `38 9 * * *`).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114120100` | `cron005_refresh_all_mvs_diario_timeout_real` | `46c10be42fa859abe362cbac3f4b3a0066d0e59115b96ecf3cddf19a2184bfb2` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/perf-cron005-refresh-all-mvs-diario-261114-1002`) |
+
+## 2026-11-14 — Estoque: índice parcial para a contagem de restocks de `fn_get_stock_notification_counts`
+
+Consulta read-only em produção (`pg_indexes`/`pg_get_functiondef`/`pg_stat_statements`).
+**CORREÇÃO 2026-11-15**: os números de 2026-11-14 citados aqui antes (14.871 chamadas, média 522 ms) vinham de uma
+janela de `pg_stat_statements` que foi **resetada em 2026-11-14 16:26 UTC** e não dá para reconstituir. Medição
+própria de 2026-11-15, 22,4 h após o reset: `fn_get_stock_notification_counts()` com **4.732 chamadas, média
+170,0 ms, máximo 12.163,8 ms e 805 s de CPU acumulada** (sino do Header, `StockAlertsIndicator.tsx`). O ganho
+continua justificado pela volumetria e pelos 805 s de CPU em menos de um dia, mas é cerca de 5× menor do que o
+texto anterior sugeria — quem aprovar deve aprovar por este número, não pelo antigo. No bloco `restocks`, `idx_sds_cenario_a` lê ~9,3k linhas/buffers de `stock_daily_summary`
+(30 dias) e descarta 7,8k pelo filtro `COALESCE(stock_open,0)=0 AND COALESCE(stock_close,0)>0`. O índice parcial
+`idx_sds_restock_zero_to_pos_date` usa o mesmo predicado da função e cobre `product_id`. Ainda não está no ledger;
+aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]` (porta 5432, `transaction: none`, fora do pico).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114160000` | `perf_idx_sds_restock_counts` | `d538e03130d8151ccde29c56a72c1004a74b76e3789aed0095b64d8c19bcc03a` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (linha `approved-by`) e `db-apply-migration.yml` (branch `claude/perf-idx-sds-restock-counts-261114-1006`) |
+
+## 2026-11-15 — Reparo: `trg_anon_rate_guard` em `kill_switch_hits` (resgate da branch `claude/laughing-cori-o9w35e`)
+
+O Gate 1.13.2 (Deploy Gates run 41402296461, 2026-11-02) detectou o trigger `trg_anon_rate_guard` ausente em
+`kill_switch_hits`, embora a `20261029160339` (que o cria) esteja no ledger. Nenhuma migration posterior no `main`
+recria o trigger. A migration de reparo (DROP IF EXISTS + CREATE TRIGGER, mesma definição da `20261029160339`) vem da
+branch `claude/laughing-cori-o9w35e` (commit `1f3a1734e`), com arquivo de rollback (E063).
+**NÃO VERIFICADO no banco em 2026-11-15**: se o trigger já existir em produção, a migration é idempotente (DROP IF EXISTS
+antes do CREATE) — confirmar com `SELECT tgname FROM pg_trigger WHERE tgrelid = 'public.kill_switch_hits'::regclass`
+antes do dispatch. Ainda não está no ledger; aplicação só por `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261102063000` | `repair_kill_switch_hits_anon_rate_guard` | `1cfc7343ea254805b19c765fbce566eb3acd23f6aea36fa2b35fd38623ce2226` | pendente — aplicar via `db-apply-migration.yml` após merge (estado do trigger em produção NÃO VERIFICADO em 2026-11-15) |
+
+## 2026-11-15 — Inteligência de mercado macro: índice de cobertura + RPC `fn_market_intelligence_macro` (bug #57; o 11º item da #3584)
+
+A `fn_market_intelligence_macro` ficou fora da #3584 por desempenho: EXPLAIN em produção (2026-11-15) da agregação por
+`(summary_date, supplier_id)` sem filtro de fornecedor = Parallel Seq Scan em `stock_daily_summary` (~3,1M linhas, ~1 GB;
+índices existentes: `idx_daily_product_date (product_id, summary_date desc)`, `idx_sds_cenario_a` e `idx_sds_zero_to_positive`
+parciais, `idx_stock_daily_summary_supplier_id`, `uq_stock_daily_vss_date` — nenhum serve a janela de datas).
+Enquanto isso, `useMarketIntelligenceMacro.ts` lê a tabela cru via PostgREST sem filtro de data, ascendente, `limit 5000`:
+o max-rows devolve as linhas mais antigas, todas cortadas pelo `cutoff` no cliente, e a tela mostra o mock como dado real.
+Duas migrations, **nesta ordem**: (1) índice `(summary_date, supplier_id) INCLUDE (stock_close, units_depleted, units_restocked)`
+em `CREATE INDEX CONCURRENTLY` (`transaction: none`; a linha `approved-by` entra no momento da aplicação) — torna
+redundante o `idx_sds_summary_date` da `20261108223000` (pendente; prefixo deste); (2) a RPC (SECURITY INVOKER,
+`search_path = ''`, REVOKE anon/PUBLIC, EXECUTE authenticated/service_role), conteúdo da `20261112121000` da branch
+`claude/fix-migrations-acesso-rpcs-261112-1050` renumerado para ficar atrás do índice. O front
+(`untypedRpc('fn_market_intelligence_macro')`) só funciona depois da (2) aplicada; até lá o gráfico mostra erro (PGRST202)
+em vez de mock. Nenhuma das duas está no ledger; aplicação só por `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261115130000` | `idx_sds_summary_date_supplier_include` | `d4d441540da99ea12752eeb2253bcef7af00afac0640c85b95ed72107d7bfccc` | pendente — aplicar via `db-apply-migration.yml` após merge, ANTES da `20261115130100` (CONCURRENTLY, `transaction: none`; exige linha `approved-by` do dono; porta 5432, fora do pico) |
+| `20261115130100` | `fn_market_intelligence_macro` | `ea7aa33fb9f533d94229859f35f3814a5792699425728ec36ec9c426574c6771` | pendente — aplicar via `db-apply-migration.yml` após merge e após a `20261115130000` |
+
+## 2026-11-15 — SEC-001 (E056): REVOKE EXECUTE de PUBLIC/anon em 106 funções trigger/internas
+
+Resgate da branch `claude/fix-sec001-revoke-anon-trigger-funcs-261101-2230` (commit `39ec2b456`, version original
+`20261101210000`, que colide com a `sb0007` já no `main` → renumerada). Levantamento de 2026-11-01:
+`has_function_privilege('anon', …, 'EXECUTE') = true` em 106 funções sem referência no TS nem em RLS, todas trigger
+handlers/sync hooks/utilitários internos; o trigger não checa EXECUTE, só a chamada direta (RPC). Revalidação de
+2026-11-15 contra o repo: as 106 existem no baseline `20261015140000_baseline_schema.sql`, nenhuma migration posterior
+as dropa nem já revoga PUBLIC/anon. O REVOKE é `FROM PUBLIC, anon` (o default privileges do Supabase concede anon
+explicitamente). Estado atual dos grants em produção NÃO VERIFICADO nesta sessão (sem acesso ao banco); se uma função
+tiver sumido fora do fluxo, a migration falha inteira (fail-loud). Ainda não está no ledger; aplicação só por
+`db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261115130200` | `sec001_revoke_anon_execute_trigger_functions` | `dd9f99bb3a9d8be6fafd98c12b39c3eec7d181a3793bbce12b97cf2ea4b018f0` | pendente — aplicar via `db-apply-migration.yml` após merge. Grants VERIFICADOS em produção 2026-11-15: 115 de 303 funções trigger de `public` executáveis por `anon` e `authenticated`; esta migration revoga 106 delas. Hash recalculado após corrigir a assinatura `fn_hex_to_rgb(text)` → `fn_hex_to_rgb()` (só existe sem argumentos em `pg_proc`), que abortaria o arquivo inteiro na aplicação transacional |
+
+## 2026-11-15 — `fn_global_search`: clamp de `p_limit` com `search_path` fechado (substitui a `20261101190101`, sem recibo)
+
+A `20261101190101_fn_global_search_clamp_limit.sql` está no `main` desde 2026-11-01 sem recibo, sem rollback e sem
+registro em allowlist/PENDENCIAS; nunca entrou no ledger. Ela recria a função SECURITY DEFINER (executável por anon,
+allowlist E17) com `SET search_path TO 'public', 'extensions'` — o preflight a bloqueia (E066: sem `pg_temp`). A branch
+`codex/fix-db-migration-preflight-261107` (commit `3ebaad4ea`) tinha a versão endurecida como rename
+(`20261107143509_…_hardened`); rename de versão já existente não é permitido, então o conteúdo entra como versão NOVA
+`20261115130300` (única diferença de corpo: `search_path TO 'pg_catalog','public','extensions','pg_temp'`), com
+rollback guardado por `pg_get_functiondef` (remove só o clamp). A `20261101190101` fica registrada aqui como
+substituída e ganha arquivo de rollback (E063), para não ser aplicada por engano. Mesma PR: o rollback da
+`20261101202000` passa a ser fail-closed (REVOKE em vez de re-GRANT a PUBLIC/anon/authenticated em
+`cleanup_expired_auth_sessions()`, SECURITY DEFINER que apaga `auth.sessions`; a `20261101202426`, já aplicada, tinha
+revogado antes) com teste em `tests/security/security-definer-acl-gate.test.ts` — commit `4f235fd50` da mesma branch.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261101190101` | `fn_global_search_clamp_limit` | `6f97aa10518e4a04edb2fd40f5b7f0b08f70097679449f445741ffe7fb01f3e4` | substituída pela `20261115130300` — NÃO aplicar (preflight E066: SECURITY DEFINER sem `pg_temp`); nunca esteve no ledger; mantida no repo porque sua versão já está no histórico |
+| `20261115130300` | `fn_global_search_clamp_limit_hardened` | `35f326cead81afefcbf4f234ee1a2365fe3d12049dead6469d2325beada7972c` | pendente — aplicar via `db-apply-migration.yml` após merge (estado atual de `fn_global_search` em produção NÃO VERIFICADO em 2026-11-15) |
