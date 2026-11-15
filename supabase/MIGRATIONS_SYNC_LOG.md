@@ -1747,3 +1747,31 @@ revogado antes) com teste em `tests/security/security-definer-acl-gate.test.ts` 
 |---|---|---|---|
 | `20261101190101` | `fn_global_search_clamp_limit` | `6f97aa10518e4a04edb2fd40f5b7f0b08f70097679449f445741ffe7fb01f3e4` | substituída pela `20261115130300` — NÃO aplicar (preflight E066: SECURITY DEFINER sem `pg_temp`); nunca esteve no ledger; mantida no repo porque sua versão já está no histórico |
 | `20261115130300` | `fn_global_search_clamp_limit_hardened` | `35f326cead81afefcbf4f234ee1a2365fe3d12049dead6469d2325beada7972c` | pendente — aplicar via `db-apply-migration.yml` após merge (estado atual de `fn_global_search` em produção NÃO VERIFICADO em 2026-11-15) |
+## 2026-11-15 — Replay do zero: colunas perdidas por `CREATE TABLE IF NOT EXISTS` no-op
+
+`20250103080000_complete_schema.sql` declara `categories`, `suppliers`, `products` e `quotes` com
+`CREATE TABLE IF NOT EXISTS`, mas `20250102000000_gifts_production.sql` já criou as 4 tabelas antes: o
+comando é no-op e as 62 colunas declaradas ali nunca nascem num banco construído do zero. Daí o replay
+parar em `20260512000000_bootstrap_missing_application_schemas.sql:717` com
+`column categories.display_order does not exist`. O conserto adiciona `ADD COLUMN IF NOT EXISTS` com o
+tipo/default exatos do próprio `CREATE TABLE`, a `UNIQUE` de `categories.slug` e a FK
+`quotes_client_id_fkey`; e dá a `20260512000000` stub `IF NOT EXISTS` de `material_groups`,
+`material_types` e `product_materials` (as matviews `analytics` do próprio arquivo leem essas 3 tabelas e
+nenhuma migration as cria).
+
+**Nenhuma escrita em produção.** As duas `version` já estão aplicadas no ledger e os arquivos não voltam a
+rodar em produção; em um banco onde as colunas já existem cada statement novo é no-op. O `sha256` dos dois
+arquivos mudou por causa deste conserto de replay (nenhum dos dois tinha linha de recibo antes — ambos são
+anteriores ao corte `20260623111612` da tabela "Recibos"); os hashes novos ficam registrados abaixo.
+
+**Divergência produção × migrations:** 11 das 62 colunas declaradas não existem em produção (consulta
+read-only em 2026-11-15, `doufsxqlfjyuvxuezpln`) — `products.base_price`, `products.dimensions`,
+`products.minimum_stock`, `products.personalization_areas`, `products.personalization_options`,
+`products.sizes`, `products.stock_unit`, `products.weight`, `quotes.delivery_terms`,
+`quotes.discount_percentage`, `suppliers.is_active`. O replay as cria (é o que a migration já declarava);
+em produção nada foi alterado — decisão do dono.
+
+| versão | arquivo | sha256 anterior | sha256 novo | status |
+|---|---|---|---|---|
+| `20250103080000` | `complete_schema` | `b30c559adeef877f77c70c3f6dfd781ba03575dcddb25ab06ab4e795e5b3f324` | `4dcc93d8c5acfd562b083b0470bd3c4acbbc776a65b27d86bb6fb6d74629af51` | já aplicada em produção; conserto só vale para replay do zero, não vai a produção |
+| `20260512000000` | `bootstrap_missing_application_schemas` | `a6c946928ff8eeb6505f1d303ecde32ea8bd2751017d5d82410ebbe725191d58` | `fe6fe4be7b7fa45b448595a45d1df888a66d7dab09479c00515b08735ad783fd` | já aplicada em produção; conserto só vale para replay do zero, não vai a produção |

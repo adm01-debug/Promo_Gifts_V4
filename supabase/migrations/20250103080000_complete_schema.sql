@@ -57,6 +57,28 @@ CREATE TABLE IF NOT EXISTS public.categories (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- REPLAY FIX: o CREATE TABLE IF NOT EXISTS acima e no-op num banco onde
+-- 20250102000000_gifts_production.sql ja criou public.categories com outro
+-- conjunto de colunas, e as colunas declaradas aqui nunca nasciam num banco
+-- construido do zero. Os ADD COLUMN IF NOT EXISTS abaixo repetem tipo/default
+-- exatos declarados no CREATE TABLE acima. Na producao sao no-op (as colunas
+-- ja existem) e este arquivo nao e reaplicado — sua version ja esta registrada.
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS slug TEXT;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS image_url TEXT;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS display_order INTEGER DEFAULT 0;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+-- A UNIQUE de `slug TEXT UNIQUE NOT NULL` tambem e perdida quando o CREATE acima
+-- e no-op; os seeds 20250103130000/140000/150000 fazem ON CONFLICT (slug).
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conrelid = 'public.categories'::regclass
+      AND conname = 'categories_slug_key'
+  ) THEN
+    ALTER TABLE public.categories ADD CONSTRAINT categories_slug_key UNIQUE (slug);
+  END IF;
+END $$;
+
 -- Suppliers
 CREATE TABLE IF NOT EXISTS public.suppliers (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -75,6 +97,21 @@ CREATE TABLE IF NOT EXISTS public.suppliers (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- REPLAY FIX: o CREATE TABLE IF NOT EXISTS acima e no-op num banco onde
+-- 20250102000000_gifts_production.sql ja criou public.suppliers com outro
+-- conjunto de colunas, e as colunas declaradas aqui nunca nasciam num banco
+-- construido do zero. Os ADD COLUMN IF NOT EXISTS abaixo repetem tipo/default
+-- exatos declarados no CREATE TABLE acima. Na producao sao no-op (as colunas
+-- ja existem) e este arquivo nao e reaplicado — sua version ja esta registrada.
+ALTER TABLE public.suppliers ADD COLUMN IF NOT EXISTS website TEXT;
+ALTER TABLE public.suppliers ADD COLUMN IF NOT EXISTS address JSONB;
+ALTER TABLE public.suppliers ADD COLUMN IF NOT EXISTS contact_person TEXT;
+ALTER TABLE public.suppliers ADD COLUMN IF NOT EXISTS delivery_time_days INTEGER;
+ALTER TABLE public.suppliers ADD COLUMN IF NOT EXISTS minimum_order_value DECIMAL(10,2);
+ALTER TABLE public.suppliers ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true;
+ALTER TABLE public.suppliers ADD COLUMN IF NOT EXISTS notes TEXT;
+ALTER TABLE public.suppliers ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
 
 -- Products
 CREATE TABLE IF NOT EXISTS public.products (
@@ -134,6 +171,37 @@ CREATE TABLE IF NOT EXISTS public.products (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- REPLAY FIX: o CREATE TABLE IF NOT EXISTS acima e no-op num banco onde
+-- 20250102000000_gifts_production.sql ja criou public.products com outro
+-- conjunto de colunas, e as colunas declaradas aqui nunca nasciam num banco
+-- construido do zero. Os ADD COLUMN IF NOT EXISTS abaixo repetem tipo/default
+-- exatos declarados no CREATE TABLE acima. Na producao sao no-op (as colunas
+-- ja existem) e este arquivo nao e reaplicado — sua version ja esta registrada.
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS base_price DECIMAL(10,2);
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS cost_price DECIMAL(10,2);
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS suggested_price DECIMAL(10,2);
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS stock_quantity INTEGER DEFAULT 0;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS minimum_stock INTEGER DEFAULT 0;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS stock_unit TEXT DEFAULT 'un';
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS weight DECIMAL(10,3);
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS dimensions JSONB;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS primary_image_url TEXT;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS videos JSONB DEFAULT '[]';
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS allows_personalization BOOLEAN DEFAULT false;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS personalization_options JSONB DEFAULT '[]';
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS personalization_areas JSONB DEFAULT '[]';
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS sizes JSONB DEFAULT '[]';
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS meta_title TEXT;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS meta_description TEXT;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS meta_keywords TEXT[];
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS is_featured BOOLEAN DEFAULT false;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS is_new BOOLEAN DEFAULT false;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS is_on_sale BOOLEAN DEFAULT false;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS view_count INTEGER DEFAULT 0;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS favorite_count INTEGER DEFAULT 0;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS order_count INTEGER DEFAULT 0;
 
 -- Product Variants
 CREATE TABLE IF NOT EXISTS public.product_variants (
@@ -333,6 +401,39 @@ CREATE TABLE IF NOT EXISTS public.quotes (
   CONSTRAINT valid_quote_status CHECK (status IN ('draft', 'pending', 'sent', 'approved', 'rejected', 'expired', 'converted')),
   CONSTRAINT valid_priority CHECK (priority IN ('low', 'normal', 'high', 'urgent'))
 );
+
+-- REPLAY FIX: o CREATE TABLE IF NOT EXISTS acima e no-op num banco onde
+-- 20250102000000_gifts_production.sql ja criou public.quotes com outro
+-- conjunto de colunas, e as colunas declaradas aqui nunca nasciam num banco
+-- construido do zero. Os ADD COLUMN IF NOT EXISTS abaixo repetem tipo/default
+-- exatos declarados no CREATE TABLE acima. Na producao sao no-op (as colunas
+-- ja existem) e este arquivo nao e reaplicado — sua version ja esta registrada.
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS quote_number TEXT;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS client_id UUID
+  REFERENCES public.bitrix_clients(id) ON DELETE SET NULL;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS assigned_to UUID;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS stage TEXT DEFAULT 'elaboration';
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS priority TEXT DEFAULT 'normal';
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS discount_percentage DECIMAL(5,2) DEFAULT 0;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS discount_amount DECIMAL(10,2) DEFAULT 0;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS shipping_cost DECIMAL(10,2) DEFAULT 0;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS tax_amount DECIMAL(10,2) DEFAULT 0;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS estimated_delivery_days INTEGER;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS internal_notes TEXT;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS payment_terms TEXT;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS delivery_terms TEXT;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS tags JSONB DEFAULT '[]';
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS approval_token TEXT;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS approved_at TIMESTAMPTZ;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS approved_by_client_name TEXT;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS client_feedback TEXT;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS viewed_at TIMESTAMPTZ;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS view_count INTEGER DEFAULT 0;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS last_sent_at TIMESTAMPTZ;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS converted_to_order_id UUID;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS converted_at TIMESTAMPTZ;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS conversion_notes TEXT;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
 
 -- Quote Items
 CREATE TABLE IF NOT EXISTS public.quote_items (

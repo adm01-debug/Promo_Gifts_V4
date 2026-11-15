@@ -43,6 +43,67 @@ SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
+
+--
+-- REPLAY FIX: public.material_groups / material_types / product_materials
+-- existem na producao mas nenhuma migration as cria (mesmo padrao de
+-- 20260604141700_bootstrap_fresh_replay_prereqs.sql). As materialized views
+-- analytics.mv_material_group_stats e analytics.mv_product_material_coverage
+-- deste proprio arquivo leem essas tabelas, entao num banco construido do zero
+-- o replay parava aqui. DDL abaixo = colunas/tipos/defaults reais da producao
+-- (doufsxqlfjyuvxuezpln), consultados em 2026-11-15; na producao cada statement
+-- e no-op por IF NOT EXISTS.
+--
+
+-- soft-delete-exempt: espelho fiel de tabela que JA existe em producao, sem
+-- deleted_at/archived_at -- stub de replay, nao e tabela nova.
+CREATE TABLE IF NOT EXISTS "public"."material_groups" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "organization_id" "uuid" NOT NULL,
+    "name" character varying NOT NULL,
+    "slug" character varying NOT NULL,
+    "description" "text",
+    "sort_order" integer DEFAULT 100,
+    "is_active" boolean DEFAULT true,
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    "created_by" "uuid",
+    "updated_by" "uuid"
+);
+
+-- soft-delete-exempt: espelho fiel de tabela que JA existe em producao, sem
+-- deleted_at/archived_at -- stub de replay, nao e tabela nova.
+CREATE TABLE IF NOT EXISTS "public"."material_types" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "organization_id" "uuid" NOT NULL,
+    "group_id" "uuid" NOT NULL,
+    "name" character varying NOT NULL,
+    "slug" character varying NOT NULL,
+    "description" "text",
+    "properties" "jsonb" DEFAULT '{}'::"jsonb",
+    "display_order" integer DEFAULT 0,
+    "is_active" boolean DEFAULT true,
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"()
+);
+
+-- soft-delete-exempt: espelho fiel de tabela que JA existe em producao, sem
+-- deleted_at/archived_at -- stub de replay, nao e tabela nova.
+CREATE TABLE IF NOT EXISTS "public"."product_materials" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "organization_id" "uuid" NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "material_id" "uuid" NOT NULL,
+    "part" character varying,
+    "percentage" numeric,
+    "notes" "text",
+    "sort_order" integer DEFAULT 100,
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    "is_active" boolean DEFAULT true,
+    "created_by" "uuid",
+    "updated_by" "uuid"
+);
 SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
