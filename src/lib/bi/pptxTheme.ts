@@ -1,7 +1,14 @@
 /**
  * pptxTheme — paleta corporativa e marcações comuns aos slides do PPTX de BI.
  */
-import type PptxGenJS from 'pptxgenjs';
+/**
+ * Tipo estrutural mínimo do slide. A guarda `scripts/check-pptx-image-parser-exposure.mjs`
+ * só permite a biblioteca em `src/lib/bi/pptxGenerator.ts` (adaptador revisado), então
+ * aqui não se importa o pacote — nem como tipo.
+ */
+type SlideLike = {
+  addText: (text: string, options: Record<string, unknown>) => unknown;
+};
 
 // Paleta corporativa (violeta/fuchsia + neutros)
 export const C = {
@@ -17,7 +24,7 @@ export const C = {
 };
 
 /** FT-004: marca o slide quando a seção veio de dados simulados (isMock). */
-export function addMockBadge(slide: PptxGenJS.Slide): void {
+export function addMockBadge(slide: SlideLike): void {
   slide.addText('Dados simulados', {
     x: 10.5,
     y: 0.7,
