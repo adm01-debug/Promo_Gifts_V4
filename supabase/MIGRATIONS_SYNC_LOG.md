@@ -1645,10 +1645,14 @@ Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `
 
 Consulta read-only em produção (2026-11-14): `cron.job` jobid=234 `38 */2 * * *`, command
 `fn_cron_safe_run(47, 'SELECT public.refresh_all_materialized_views();', 55000, 'refresh-all-mvs')`; `pg_settings`
-`statement_timeout=120000` (configuration file), `cron.use_background_workers=off`, PG 17. `postgres_logs` 2026-11-13 10:40 →
-2026-11-14 04:40: 18 linhas `fn_cron_safe_run [refresh-all-mvs] TIMEOUT após 120000–132000ms (limite=55000ms)` e 0 linhas
-`[refresh_all_materialized_views] Concluído (7 MVs)` — o `SET LOCAL` de `fn_cron_safe_run` não rearma o timeout do statement
-em curso e o rollback desfaz as 7 MVs. A migration põe `SET statement_timeout = '600s';` antes do `SELECT` e roda 1×/dia.
+`statement_timeout=120000` (configuration file), `cron.use_background_workers=off`, PG 17.
+As 18 linhas de `postgres_logs` citadas na branch de origem **NÃO foram verificadas por mim** — trato como
+NÃO VERIFICADO. A prova que eu medi, em 2026-11-15, é a duração colada no teto em `cron.job_run_details` do
+jobid=234: 145 das 151 execuções dos últimos 7 dias chegaram a 119 s ou mais, com 8 de 8 em 2026-11-15, 24 de 24
+em 10, 11 e 12 de novembro, e média diária entre 106 e 122 s. `status` diz `succeeded` porque
+`fn_cron_safe_run` é `SECURITY DEFINER` com `EXCEPTION WHEN query_canceled THEN … RETURN` e engole o timeout:
+quem olhar só a coluna `status` conclui, errado, que está tudo bem. O `SET LOCAL` de `fn_cron_safe_run` não rearma
+o timeout do statement em curso e o rollback desfaz as 7 MVs. A migration põe `SET statement_timeout = '600s';` antes do `SELECT` e roda 1×/dia.
 Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`. Depois de aplicada, atualizar
 `supabase/baseline/20261108000000_cron_jobs.json` (`refresh-all-materialized-views` → `38 9 * * *`).
 
@@ -1658,9 +1662,13 @@ Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `
 
 ## 2026-11-14 — Estoque: índice parcial para a contagem de restocks de `fn_get_stock_notification_counts`
 
-Consulta read-only em produção (2026-11-14, `pg_indexes`/`pg_get_functiondef`/`pg_stat_statements`):
-`fn_get_stock_notification_counts()` tem 14.871 chamadas com média de 522 ms (sino do Header,
-`StockAlertsIndicator.tsx`). No bloco `restocks`, `idx_sds_cenario_a` lê ~9,3k linhas/buffers de `stock_daily_summary`
+Consulta read-only em produção (`pg_indexes`/`pg_get_functiondef`/`pg_stat_statements`).
+**CORREÇÃO 2026-11-15**: os números de 2026-11-14 citados aqui antes (14.871 chamadas, média 522 ms) vinham de uma
+janela de `pg_stat_statements` que foi **resetada em 2026-11-14 16:26 UTC** e não dá para reconstituir. Medição
+própria de 2026-11-15, 22,4 h após o reset: `fn_get_stock_notification_counts()` com **4.732 chamadas, média
+170,0 ms, máximo 12.163,8 ms e 805 s de CPU acumulada** (sino do Header, `StockAlertsIndicator.tsx`). O ganho
+continua justificado pela volumetria e pelos 805 s de CPU em menos de um dia, mas é cerca de 5× menor do que o
+texto anterior sugeria — quem aprovar deve aprovar por este número, não pelo antigo. No bloco `restocks`, `idx_sds_cenario_a` lê ~9,3k linhas/buffers de `stock_daily_summary`
 (30 dias) e descarta 7,8k pelo filtro `COALESCE(stock_open,0)=0 AND COALESCE(stock_close,0)>0`. O índice parcial
 `idx_sds_restock_zero_to_pos_date` usa o mesmo predicado da função e cobre `product_id`. Ainda não está no ledger;
 aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]` (porta 5432, `transaction: none`, fora do pico).
