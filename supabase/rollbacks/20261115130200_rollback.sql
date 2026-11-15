@@ -25,7 +25,7 @@ GRANT EXECUTE ON FUNCTION public.fn_dar_set_snapshot_hash() TO PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.fn_enforce_inactive_variant_zero_stock() TO PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.fn_ensure_single_primary_image() TO PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.fn_force_user_logout() TO PUBLIC, anon;
-GRANT EXECUTE ON FUNCTION public.fn_hex_to_rgb(text) TO PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.fn_hex_to_rgb() TO PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.fn_image_types_check_constraint_reminder() TO PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.fn_inherit_techniques_from_material() TO PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.fn_kit_component_calc_circumference() TO PUBLIC, anon;
