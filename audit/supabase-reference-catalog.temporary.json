@@ -332,14 +332,22 @@
   "relation_aliases": {
     "customization_price_tables": {
       "target": "tabela_preco_gravacao_oficial",
-      "forms": ["wrapper"],
-      "receivers": ["dbInvoke"],
+      "forms": [
+        "wrapper"
+      ],
+      "receivers": [
+        "dbInvoke"
+      ],
       "reason": "Alias de leitura resolvido por BRIDGE_ALIASES em src/lib/db/postgrest.ts."
     },
     "tecnica_gravacao": {
       "target": "tabela_preco_gravacao_oficial",
-      "forms": ["wrapper"],
-      "receivers": ["dbInvoke"],
+      "forms": [
+        "wrapper"
+      ],
+      "receivers": [
+        "dbInvoke"
+      ],
       "reason": "Alias de leitura resolvido por BRIDGE_ALIASES em src/lib/db/postgrest.ts."
     }
   },
@@ -519,6 +527,14 @@
       "occurrences": 4,
       "stage": 67,
       "reason": "Tabela criada pela migration supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql (aba Marketing do produto, endomarketing separado por decisao do dono), ainda NAO aplicada em producao em 2026-11-13. Ate a aplicacao via db-apply-migration.yml a aba mostra so a categoria Endomarketing como 'nao carregou' (as outras funcionam). Remover esta excecao e mover o nome para relations depois de confirmar a tabela via pg_catalog apos aplicar."
+    },
+    {
+      "kind": "rpc",
+      "name": "rpc_sales_assistant_candidates",
+      "file": "src/hooks/assistant/useSalesAssistantCandidates.ts",
+      "occurrences": 1,
+      "stage": 115,
+      "reason": "RPC versionada na migration 20261115034500 (assistente Encaixe do Cliente), ainda pendente do workflow E15 — conferido no canônico em 2026-11-15: pg_proc = 0 e version fora de schema_migrations. Remover esta exceção source-scoped e promover a RPC a `rpcs` somente após a aplicação por db-apply-migration.yml, verificação via pg_catalog e recaptura administrativa."
     }
   ],
   "dynamic_baseline": [

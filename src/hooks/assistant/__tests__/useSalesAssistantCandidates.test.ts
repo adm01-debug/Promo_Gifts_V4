@@ -11,6 +11,8 @@
  * `20261115034500_rpc_sales_assistant_candidates.sql`.
  */
 
+import { readFileSync } from 'node:fs';
+
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
@@ -277,6 +279,18 @@ describe('erro da RPC', () => {
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.error?.message).toContain('network down');
+  });
+});
+
+describe('nome da RPC', () => {
+  it('a constante e o literal da chamada não divergem', () => {
+    // A chamada usa o literal (exigência do check-supabase-reference-catalog);
+    // a constante é a SSOT que os testes e a migration citam. Se alguém mudar
+    // um e esquecer o outro, este teste quebra antes de ir para produção.
+    // Caminho a partir da raiz: o vitest roda com cwd no projeto, e
+    // `import.meta.url` aqui não é file:// (transform do Vite).
+    const fonte = readFileSync('src/hooks/assistant/useSalesAssistantCandidates.ts', 'utf8');
+    expect(fonte).toContain(`untypedRpc('${RPC_DE_CANDIDATOS}'`);
   });
 });
 
