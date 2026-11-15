@@ -67,6 +67,8 @@ interface PersonalizationConfigProps {
   onItemPersonalizationChange: (itemId: string, config: KitItemPersonalization) => void;
   /** Navigates back to the items step, preserving state. */
   onEditItems?: () => void;
+  /** Navigates to the items step to substitute a specific item (line ID). */
+  onReplaceItem?: (itemId: string) => void;
   /** Reopens the shared Kit Maker onboarding tour. */
   onOpenGuide?: () => void;
 }
@@ -1121,10 +1123,13 @@ function PersonalizationSummaryPanel({ targets }: { targets: PersonalizationTarg
                   target.personalization.estimatedPrice > 0 && (
                     <p className="truncate text-xs text-muted-foreground">
                       + R${' '}
-                      {(target.personalization.totalPrice! / target.quantity).toLocaleString('pt-BR', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}{' '}
+                      {(target.personalization.totalPrice! / target.quantity).toLocaleString(
+                        'pt-BR',
+                        {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        },
+                      )}{' '}
                       / unidade
                     </p>
                   )}
@@ -1167,6 +1172,7 @@ export function PersonalizationConfig({
   onBoxPersonalizationChange,
   onItemPersonalizationChange,
   onEditItems,
+  onReplaceItem,
   onOpenGuide,
 }: PersonalizationConfigProps) {
   const targets = [
@@ -1358,7 +1364,7 @@ export function PersonalizationConfig({
             </Card>
 
             <div className="min-w-0 space-y-2">
-              {onEditItems && !activeTarget.isBox && (
+              {(onEditItems || onReplaceItem) && !activeTarget.isBox && (
                 <div className="flex items-center justify-between rounded-lg border border-dashed px-3 py-2">
                   <span className="truncate text-sm text-muted-foreground">
                     Configurando:{' '}
@@ -1369,7 +1375,9 @@ export function PersonalizationConfig({
                     variant="ghost"
                     size="sm"
                     className="h-auto shrink-0 gap-1.5 px-2 py-1 text-xs"
-                    onClick={onEditItems}
+                    onClick={() =>
+                      onReplaceItem ? onReplaceItem(activeTarget.key) : onEditItems?.()
+                    }
                   >
                     <ArrowLeftRight className="h-3 w-3" />
                     Trocar item

@@ -31,4 +31,8 @@ export interface ItemSelectorProps {
   volumeUsagePercent?: number;
   onNext?: () => void;
   canProceed?: boolean;
+  /** When set, the step is in "replace" mode: selecting an item substitutes this one. */
+  replaceTarget?: { itemId: string; displayName: string } | null;
+  /** Called instead of onAddItem when replaceTarget is set. */
+  onReplaceItem?: (oldItemId: string, newItem: KitItem) => CompatibilityResult;
 }
