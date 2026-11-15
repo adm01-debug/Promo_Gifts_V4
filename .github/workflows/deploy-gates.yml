@@ -73,6 +73,10 @@ jobs:
     timeout-minutes: 2
     outputs:
       docs_only: ${{ steps.result.outputs.docs_only }}
+      # E188: o ledger de conflitos é .md, logo cai no bypass docs-only — mas é lido por um
+      # gate. Sem esta saída, um PR que só edita o ledger pula justamente o portão que o valida
+      # e a quebra só aparece no push para main (onde docs_only é false).
+      ledger: ${{ steps.filter.outputs.ledger }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -82,6 +86,8 @@ jobs:
         if: github.event_name == 'pull_request' || github.event_name == 'push'
         with:
           filters: |
+            ledger:
+              - 'docs/coordenacao/conflitos-semanticos.md'
             code:
               - 'src/**'
               - 'scripts/**'
@@ -467,7 +473,8 @@ jobs:
         if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/check-product-type-duplicates.mjs
       - name: Gate 1.18 — Ledger de conflitos semânticos (E188)
-        if: needs.changes.outputs.docs_only != 'true'
+        # Roda fora de docs-only E também quando o PR mexe no próprio ledger (E188).
+        if: needs.changes.outputs.docs_only != 'true' || needs.changes.outputs.ledger == 'true'
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
           GITHUB_HEAD_REF: ${{ github.head_ref }}
