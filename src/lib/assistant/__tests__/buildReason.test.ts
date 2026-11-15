@@ -254,17 +254,17 @@ describe('buildHonestNote', () => {
     ).toBe('Não achei novidade — troquei por 4 que encaixam por outros sinais.');
   });
 
-  it('cor da logo pedida e nenhuma versão achada: diz isso na cara', () => {
+  it('cor da logo pedida e nenhum da LISTA com essa versão: afirma só o fato medido', () => {
     expect(
       buildHonestNote({ corDaLogoNome: 'Vinho' }, { total: 8, comNovidade: 2, comCorDaLogo: 0 }),
     ).toBe(
-      'Nenhum dos 8 tem versão vinho — a cor da logo não bateu com nenhum grupo de cor do catálogo.',
+      'Nenhum dos 8 tem versão vinho — os produtos desta lista encaixaram por outros sinais.',
     );
   });
 
   it('lista de um só produto sem a cor: a frase sai em português', () => {
     expect(buildHonestNote({ corDaLogoNome: 'Vinho' }, { total: 1, comCorDaLogo: 0 })).toBe(
-      'O único que achei não tem versão vinho — a cor da logo não bateu com nenhum grupo de cor do catálogo.',
+      'O único que achei não tem versão vinho — os produtos desta lista encaixaram por outros sinais.',
     );
   });
 

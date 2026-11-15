@@ -19,6 +19,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { SinaisDaMarcaDoCliente } from '@/hooks/assistant/useClientBrandSignals';
 import {
   contextoDoCliente,
+  nomeDoGrupoDeCorUnico,
   LIMITE_DE_CANDIDATOS,
   mapearCandidato,
   MAXIMO_POR_CATEGORIA,
@@ -288,6 +289,26 @@ describe('contextoDoCliente', () => {
         undefined,
       ).corExata,
     ).toBe(true);
+  });
+
+  it('dois grupos de cor casados: não nomeia nenhum (a RPC liga o sinal por qualquer um)', () => {
+    const doisGrupos = sinais({
+      encaixesDeCor: [
+        encaixe({ colorGroupId: 'grupo-azul', nomeDoGrupo: 'Azul', confianca: 'proxima' }),
+        encaixe({ colorGroupId: 'grupo-vermelho', nomeDoGrupo: 'Vermelho', hexDoGrupo: '#e53935' }),
+      ],
+      colorGroupIds: ['grupo-azul', 'grupo-vermelho'],
+    });
+    // Um produto com variante só vermelha receberia o selo "Azul" se nomeássemos o primeiro.
+    expect(contextoDoCliente(doisGrupos, undefined).corNome).toBeNull();
+    // A confiança continua vindo do melhor encaixe — só o NOME fica de fora.
+    expect(contextoDoCliente(doisGrupos, undefined).corExata).toBe(true);
+    expect(nomeDoGrupoDeCorUnico(doisGrupos)).toBeNull();
+  });
+
+  it('um único grupo casado: nomeia a cor', () => {
+    expect(nomeDoGrupoDeCorUnico(sinais())).toBe('Azul');
+    expect(nomeDoGrupoDeCorUnico(null)).toBeNull();
   });
 
   it('cor apenas aproximada não é tratada como a cor da logo', () => {
