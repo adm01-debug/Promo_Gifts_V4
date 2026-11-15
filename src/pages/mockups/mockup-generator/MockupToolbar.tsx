@@ -7,12 +7,12 @@
  * salvamento do rascunho e o acesso ao histórico ("Meus mockups").
  */
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Loader2, Undo2, Redo2, Cloud, CloudOff, Building2, RefreshCw, History } from 'lucide-react';
+import { Loader2, Undo2, Redo2, Cloud, CloudOff, Building2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { ClientMockupsMenu } from './ClientMockupsMenu';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -20,6 +20,8 @@ import { ptBR } from 'date-fns/locale';
 export type ClientBrandDisposition = 'limpar-marca' | 'manter-marca';
 
 interface MockupToolbarClient {
+  /** id do cliente no CRM — chave da listagem "Meus mockups". */
+  id?: string | null;
   name: string;
   logoUrl?: string | null;
 }
@@ -43,7 +45,7 @@ interface MockupToolbarProps {
    * marca já aplicada; quem consome troca o cliente e aplica a escolha.
    */
   onChangeClient?: (disposition: ClientBrandDisposition) => void;
-  /** Rota do histórico ("Meus mockups"). */
+  /** Rota do histórico completo (rodapé de "Meus mockups"). */
   historyHref?: string;
 }
 
@@ -178,12 +180,11 @@ export function MockupToolbar({
         ) : null}
       </div>
 
-      <Button asChild variant="ghost" size="sm" className="h-8 gap-1.5 px-2 text-xs">
-        <Link to={historyHref} aria-label="Meus mockups">
-          <History aria-hidden="true" className="h-3.5 w-3.5" />
-          Meus mockups
-        </Link>
-      </Button>
+      <ClientMockupsMenu
+        clientId={client?.id ?? null}
+        clientName={client?.name ?? null}
+        historyHref={historyHref}
+      />
 
       <ConfirmDialog
         open={confirmChangeOpen}
