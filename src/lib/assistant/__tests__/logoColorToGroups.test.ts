@@ -92,24 +92,26 @@ describe('logoColorToGroups — azul institucional', () => {
 });
 
 describe('logoColorToGroups — tom ambíguo entre dois grupos', () => {
-  // #CCCCCC cai quase exatamente entre Transparente (#d8d8d8) e Prata
-  // (#C0C0C0): 4,2939 contra 4,3414, diferença medida de 0,0475.
-  it('devolve os dois grupos vizinhos, na ordem da distância medida', () => {
+  // #CCCCCC é cinza claro. Transparente (#d8d8d8) e Colorido (#ABABAB) ficariam
+  // em 1º e 3º por Delta-E, mas são pseudo-cores: o hex delas é ilustrativo, e
+  // casar com elas afirmaria ao vendedor que o produto tem versão na cor da
+  // logo quando a variante é transparente ou multicolorida. Por isso saem do
+  // casamento (GRUPOS_SEM_COR_PROPRIA) e sobram as cores de verdade.
+  it('ignora as pseudo-cores e devolve as cores reais mais próximas', () => {
     const encaixes = logoColorToGroups(['#CCCCCC'], GRUPOS_REAIS, { limite: 2 });
 
-    expect(nomes(encaixes)).toEqual(['Transparente', 'Prata']);
-    expect(encaixes[0].deltaE).toBeCloseTo(4.2939, 4);
-    expect(encaixes[1].deltaE).toBeCloseTo(4.3414, 4);
-    expect(encaixes[1].deltaE - encaixes[0].deltaE).toBeLessThan(0.1);
-    // Ambos na mesma faixa: quem chama precisa ver que a escolha é disputada
-    // em vez de receber um vencedor fabricado.
-    expect(encaixes.map((e) => e.confianca)).toEqual(['proxima', 'proxima']);
+    expect(nomes(encaixes)).toEqual(['Prata', 'Bege']);
+    expect(encaixes[0].deltaE).toBeCloseTo(4.3414, 4);
+    expect(encaixes[0].confianca).toBe('proxima');
   });
 
-  it('não esconde o 2º lugar quando o limite permite', () => {
-    const encaixes = logoColorToGroups(['#CCCCCC'], GRUPOS_REAIS, { limite: 4 });
+  it('Transparente e Colorido nunca aparecem, mesmo com o limite alto', () => {
+    const encaixes = logoColorToGroups(['#CCCCCC'], GRUPOS_REAIS, { limite: 8 });
 
-    expect(nomes(encaixes)).toEqual(['Transparente', 'Prata', 'Colorido', 'Bege']);
+    expect(nomes(encaixes)).not.toContain('Transparente');
+    expect(nomes(encaixes)).not.toContain('Colorido');
+    // Natural (#BB8B64) é cor de verdade e continua elegível.
+    expect(GRUPOS_REAIS.some((g) => g.name === 'Natural')).toBe(true);
   });
 
   it('desempata empate exato por nome e depois por id, sem localeCompare', () => {
@@ -223,7 +225,8 @@ describe('logoColorToGroups — lista vazia e estados de borda', () => {
 
   it('nunca devolve mais que o limite, nem com o catálogo inteiro', () => {
     expect(logoColorToGroups(['#0057B8'], GRUPOS_REAIS)).toHaveLength(3);
-    expect(logoColorToGroups(['#0057B8'], GRUPOS_REAIS, { limite: 50 })).toHaveLength(18);
+    // 18 na fixture menos Transparente e Colorido, que saem do casamento.
+    expect(logoColorToGroups(['#0057B8'], GRUPOS_REAIS, { limite: 50 })).toHaveLength(16);
   });
 });
 
@@ -255,8 +258,11 @@ describe('logoColorToGroups — logo com várias cores', () => {
 
     const encaixes = logoColorToGroups(['#CCCCCC'], duplicado, { limite: 50 });
 
-    expect(encaixes).toHaveLength(18);
-    expect(encaixes[0].colorGroupId).toBe(ID_TRANSPARENTE);
+    // 18 na fixture menos as 2 pseudo-cores, e cada grupo aparece uma vez só
+    // mesmo com o catálogo duplicado.
+    expect(encaixes).toHaveLength(16);
+    expect(new Set(encaixes.map((e) => e.colorGroupId)).size).toBe(16);
+    expect(encaixes.map((e) => e.colorGroupId)).not.toContain(ID_TRANSPARENTE);
   });
 });
 

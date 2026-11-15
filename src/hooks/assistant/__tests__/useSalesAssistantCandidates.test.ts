@@ -315,9 +315,30 @@ describe('contextoDoCliente', () => {
     });
     // Um produto com variante só vermelha receberia o selo "Azul" se nomeássemos o primeiro.
     expect(contextoDoCliente(doisGrupos, undefined).corNome).toBeNull();
-    // A confiança continua vindo do melhor encaixe — só o NOME fica de fora.
-    expect(contextoDoCliente(doisGrupos, undefined).corExata).toBe(true);
+    // A confiança passa a ser a MAIS FRACA entre os encaixes: aqui o segundo é
+    // 'aproximada', então a frase não pode afirmar "cor igual à logo" — o
+    // produto pode ter casado só com esse. Antes vinha do primeiro e prometia
+    // mais do que o produto tem.
+    expect(contextoDoCliente(doisGrupos, undefined).corExata).toBe(false);
     expect(nomeDoGrupoDeCorUnico(doisGrupos)).toBeNull();
+  });
+
+  it('dois grupos, os dois fortes: a cor segue valendo como igual à logo', () => {
+    const doisFortes = sinais({
+      encaixesDeCor: [
+        encaixe({ colorGroupId: 'grupo-azul', nomeDoGrupo: 'Azul', confianca: 'exata' }),
+        encaixe({
+          colorGroupId: 'grupo-vermelho',
+          nomeDoGrupo: 'Vermelho',
+          hexDoGrupo: '#e53935',
+          confianca: 'proxima',
+        }),
+      ],
+      colorGroupIds: ['grupo-azul', 'grupo-vermelho'],
+    });
+
+    expect(contextoDoCliente(doisFortes, undefined).corExata).toBe(true);
+    expect(contextoDoCliente(doisFortes, undefined).corNome).toBeNull();
   });
 
   it('um único grupo casado: nomeia a cor', () => {

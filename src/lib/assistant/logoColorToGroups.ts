@@ -127,7 +127,28 @@ export function classificarConfianca(distancia: number): ConfiancaDeCor {
 }
 
 /**
- * Descarta grupos inativos ou sem hex utilizável e pré-calcula o Lab.
+ * Grupos do catálogo que NÃO representam uma cor: o hex deles é só ilustrativo.
+ * `Colorido` (#ABABAB) e `Transparente` (#d8d8d8) são dois cinzas médios, então
+ * qualquer logo acinzentada casa com eles por Delta-E e o produto apareceria
+ * como "tem versão na cor da logo" quando a única variante que casou é
+ * multicolorida ou transparente. Conferido em produção: só esses dois existem
+ * com esse papel (`Natural`, #BB8B64, é cor de verdade e continua valendo).
+ * O descarte vale apenas para o casamento de cor — o catálogo segue completo
+ * para quem precisar listar os grupos.
+ */
+export const GRUPOS_SEM_COR_PROPRIA: readonly string[] = ['colorido', 'transparente'];
+
+function semCorPropria(nome: string): boolean {
+  const normalizado = nome
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toLowerCase();
+  return GRUPOS_SEM_COR_PROPRIA.includes(normalizado);
+}
+
+/**
+ * Descarta grupos inativos, sem cor própria ou sem hex utilizável e pré-calcula o Lab.
  * Grupos repetidos (mesmo `id`) entram uma vez só — a primeira ocorrência
  * vence, para o resultado não depender da ordem de paginação de quem leu.
  */
@@ -136,6 +157,7 @@ function prepararGrupos(grupos: readonly GrupoDeCorCatalogo[]): GrupoPreparado[]
 
   for (const grupo of grupos) {
     if (grupo.is_active === false) continue;
+    if (semCorPropria(grupo.name)) continue;
     if (porId.has(grupo.id)) continue;
 
     const hex = normalizarHex(grupo.hex_code);
