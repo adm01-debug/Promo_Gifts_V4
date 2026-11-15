@@ -1,20 +1,20 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2790,
- "arestas": 11020,
+ "nos": 2799,
+ "arestas": 11049,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
-   "importado_por": 658
+   "importado_por": 659
   },
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 625
+   "importado_por": 626
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
-   "importado_por": 477
+   "importado_por": 478
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
@@ -22,7 +22,7 @@
   },
   {
    "arquivo": "src/components/ui/card.tsx",
-   "importado_por": 346
+   "importado_por": 347
   },
   {
    "arquivo": "src/lib/logger.ts",
@@ -42,7 +42,7 @@
   },
   {
    "arquivo": "src/components/ui/skeleton.tsx",
-   "importado_por": 182
+   "importado_por": 183
   },
   {
    "arquivo": "src/components/ui/select.tsx",
@@ -101,15 +101,15 @@
    "importado_por": 61
   },
   {
+   "arquivo": "src/lib/supabase-untyped.ts",
+   "importado_por": 61
+  },
+  {
    "arquivo": "src/types/magazine.ts",
    "importado_por": 61
   },
   {
    "arquivo": "src/components/ui/switch.tsx",
-   "importado_por": 60
-  },
-  {
-   "arquivo": "src/lib/supabase-untyped.ts",
    "importado_por": 60
   },
   {
@@ -623,7 +623,7 @@
   {
    "modulo": "lib",
    "depende_de": 20,
-   "importado_por": 104
+   "importado_por": 106
   },
   {
    "modulo": "contexts",
@@ -633,7 +633,7 @@
   {
    "modulo": "components/ui",
    "depende_de": 7,
-   "importado_por": 67
+   "importado_por": 68
   },
   {
    "modulo": "integrations/supabase",
@@ -643,22 +643,22 @@
   {
    "modulo": "hooks/products",
    "depende_de": 29,
-   "importado_por": 37
+   "importado_por": 38
   },
   {
    "modulo": "types",
    "depende_de": 4,
-   "importado_por": 50
+   "importado_por": 51
+  },
+  {
+   "modulo": "utils",
+   "depende_de": 10,
+   "importado_por": 39
   },
   {
    "modulo": "components/products",
    "depende_de": 31,
    "importado_por": 17
-  },
-  {
-   "modulo": "utils",
-   "depende_de": 10,
-   "importado_por": 37
   },
   {
    "modulo": "hooks/intelligence",

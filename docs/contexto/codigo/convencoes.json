@@ -8,23 +8,23 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (936)",
+   "src/components (939)",
    "src/pages (177)",
    "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (294)",
+   "src/hooks (296)",
    "recovery/src-legacy (196)",
    "src/components (76)"
   ],
   "servicos_logica": [
-   "src/lib (228)",
+   "src/lib (231)",
    "src/utils (30)",
    "src/services (10)"
   ],
   "testes": [
    "tests/ (1022)",
-   "co-localizado (__tests__) (659)",
+   "co-localizado (__tests__) (664)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -47,9 +47,9 @@
   "edge_functions": "kebab-case (99%)",
   "tabelas": "snake_case (86%)"
  },
- "barrels_index": 44,
+ "barrels_index": 45,
  "extensao_componentes": [
-  ".tsx (1231)"
+  ".tsx (1234)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(assistente): Encaixe do Cliente — fase 1 validada e com os 2 portões destravados (#3663)",
    "fix(inteligencia): grafico de mercado nao acusa erro quando a RPC ainda nao foi aplicada (#3675)",
    "feat(mockup): aviso de \"não carregou, tentar de novo\" no catálogo do painel de mockup (#3670)",
    "fix(mockup): etapas do gerador voltam a ser anunciadas pelo leitor de tela no celular (#3671)",
-   "fix(magic-up): resgata varredura axe da pagina e nomeia selects e campos do briefing (#3668)",
-   "fix(db): trem de banco — gráfico de mercado com dado real, revoke de 106 funções, índices e crons mais baratos (#3665)"
+   "fix(magic-up): resgata varredura axe da pagina e nomeia selects e campos do briefing (#3668)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

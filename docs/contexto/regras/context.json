@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "8ece9cc431c6fffdc83354f11f5722aa987005ad",
+  "sha": "4344666f2d78d7be7d3e35efd8a3f89b040ca879",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 15:56 UTC",
-  "files_total": 10193,
-  "code_files": 8718,
-  "code_lines": 1227718
+  "generated_at": "2026-11-15 16:05 UTC",
+  "files_total": 10209,
+  "code_files": 8734,
+  "code_lines": 1231493
  },
  "version": "1.3.2",
- "facts_hash": "9b8b63d9d2d1ac71",
+ "facts_hash": "d74ac068c51224ab",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1103,9 +1103,9 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3427,
-   ".ts": 2953,
-   ".tsx": 1889,
+   ".sql": 3429,
+   ".ts": 2964,
+   ".tsx": 1892,
    ".mjs": 436,
    ".py": 13,
    ".js": 7
@@ -96160,6 +96160,7 @@
    "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
    "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql",
    "supabase/migrations/20261115013000_fix_get_quote_token_public_respeita_expiracao.sql",
+   "supabase/migrations/20261115034500_rpc_sales_assistant_candidates.sql",
    "supabase/migrations/20261115130000_idx_sds_summary_date_supplier_include.sql",
    "supabase/migrations/20261115130100_fn_market_intelligence_macro.sql",
    "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql",
@@ -96261,6 +96262,7 @@
    "supabase/rollbacks/20261114170845_rollback.sql",
    "supabase/rollbacks/20261114170921_rollback.sql",
    "supabase/rollbacks/20261115013000_rollback.sql",
+   "supabase/rollbacks/20261115034500_rollback.sql",
    "supabase/rollbacks/20261115130000_rollback.sql",
    "supabase/rollbacks/20261115130100_rollback.sql",
    "supabase/rollbacks/20261115130200_rollback.sql",
@@ -131825,6 +131827,30 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "rpc_sales_assistant_candidates",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261115034500_rpc_sales_assistant_candidates.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "rpc_sales_assistant_candidates",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261115034500_rpc_sales_assistant_candidates.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "rpc_sales_assistant_candidates",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261115034500_rpc_sales_assistant_candidates.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_market_intelligence_macro",
     "objkind": "function",
     "roles": "PUBLIC, anon",
@@ -144745,7 +144771,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1638,
+  "components_count": 1642,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -146430,6 +146456,14 @@
    {
     "name": "useReprocessMany",
     "file": "src/hooks/admin/useV4Callbacks.ts"
+   },
+   {
+    "name": "useClientBrandSignals",
+    "file": "src/hooks/assistant/useClientBrandSignals.ts"
+   },
+   {
+    "name": "useSalesAssistantCandidates",
+    "file": "src/hooks/assistant/useSalesAssistantCandidates.ts"
    },
    {
     "name": "useAccessSecurity",
@@ -149308,8 +149342,8 @@
   },
   {
    "module": "src/components",
-   "files": 1378,
-   "lines": 275501,
+   "files": 1382,
+   "lines": 276003,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -149672,8 +149706,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 469,
-   "lines": 88222,
+   "files": 473,
+   "lines": 89578,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -149770,6 +149804,8 @@
     "useSmokeTests.ts: SmokeTestRow, SmokeTestTrend, SmokeModuleFailureRate, SmokeSummaryMetrics, SmokeTrendPoint, SmokeTestsData",
     "useSystemSettings.ts: SystemSetting, useSystemSettings",
     "useV4Callbacks.ts: CallbackResult, EventType, CallbackEventRow, CallbackFilters, useV4Callbacks, TimeBucket",
+    "useClientBrandSignals.ts: COLUNAS_DE_COR_DA_MARCA, SinaisDaMarcaDoCliente, UseClientBrandSignalsResult, extrairHexesDaMarca, hexesDaMarcaDaEmpresa, useClientBrandSignals",
+    "useSalesAssistantCandidates.ts: RPC_DE_CANDIDATOS, LIMITE_DE_CANDIDATOS, SCORE_MINIMO, MAXIMO_POR_CATEGORIA, ArgsDaRpcDeCandidatos, LinhaDeCandidato",
     "use2FA.ts: use2FA",
     "useAccessSecurity.ts: IpWhitelistEntry, CountryWhitelistEntry, AccessBlockedLog, AccessSecuritySettings, useAccessSecurity",
     "useAuthHydrationMetrics.ts: HydrationSample, HydrationMetrics, UseAuthHydrationMetricsResult, useAuthHydrationMetrics",
@@ -149780,9 +149816,7 @@
     "useProfileRoles.ts: useProfileRoles",
     "useRBAC.tsx: RoleName, Role, Permission, useRBAC",
     "useStepUpAuth.ts: StepUpAction, useStepUpAuth",
-    "useBIDossierExport.ts: useBIDossierExport",
-    "useChurnRisk.ts: ChurnRiskResult, useChurnRisk",
-    "useClientAffinity.ts: ClientTopProduct, AffinityCategory, ClientAffinityResult, useClientAffinity"
+    "useBIDossierExport.ts: useBIDossierExport"
    ],
    "docs": [
     "useFutureStockPreference.ts: useFutureStockPreference Persiste a preferência do usuário para o toggle \"Estoque Futuro\" (ligado/desligado + janela de 7/15/30 dias) em localStorage. SSOT do storage key e dos valores válidos para a janela. Defensivo contra SSR, JSON inválido e janelas fora do conjunto permitido.",
@@ -149879,6 +149913,10 @@
     "src/hooks/admin/useSystemSettings.ts",
     "src/hooks/admin/useV4Callbacks.ts",
     "src/hooks/admin/__tests__/useIntelligenceBadgeSettings.fuzz.test.ts",
+    "src/hooks/assistant/useClientBrandSignals.ts",
+    "src/hooks/assistant/useSalesAssistantCandidates.ts",
+    "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
     "src/hooks/auth/index.ts",
     "src/hooks/auth/use2FA.ts",
     "src/hooks/auth/useAccessSecurity.ts",
@@ -149902,11 +149940,7 @@
     "src/hooks/bi/useClientOrdersHistory.ts",
     "src/hooks/bi/useClientSeasonality.ts",
     "src/hooks/bi/useClientVsIndustry.ts",
-    "src/hooks/bi/useClientsComparison.ts",
-    "src/hooks/bi/useIndustryCategoryTrends.ts",
-    "src/hooks/bi/useIndustryTrends.ts",
-    "src/hooks/bi/useSeasonalPeakNotifications.ts",
-    "src/hooks/bi/__tests__/useClientBI.test.ts"
+    "src/hooks/bi/useClientsComparison.ts"
    ]
   },
   {
@@ -149959,8 +149993,8 @@
   },
   {
    "module": "src/lib",
-   "files": 334,
-   "lines": 50965,
+   "files": 340,
+   "lines": 52646,
    "tables": [
     "...",
     "companies",
@@ -150166,7 +150200,7 @@
   {
    "module": "src/pages",
    "files": 359,
-   "lines": 83637,
+   "lines": 83646,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -150653,7 +150687,7 @@
   {
    "module": "src/types",
    "files": 30,
-   "lines": 4595,
+   "lines": 4602,
    "tables": [],
    "exports": [
     "advancedFilters.ts: ColorOption, CategoryOption, TechniqueOption, SupplierOption, MaterialOption, StockFilterOption",
@@ -150743,7 +150777,7 @@
     "cnpj-schema.ts: cnpjOptionalSchema, assertPersistableCnpj",
     "color-group-hex.ts: COLOR_GROUP_HEX, resolveHighlightHex",
     "color-image-resolver.ts: ActiveColorFilter, resolveColorImage, resolveColorStock, getActiveColorName",
-    "color-matching.ts: PantoneMatch, findNearestPantone, getBestPantoneMatch",
+    "color-matching.ts: rgbToLab, hexToRgb, deltaE, PantoneMatch, findNearestPantone, getBestPantoneMatch",
     "color-variant-carousel.ts: MatchedColorVariant, resolveAllMatchingColors",
     "colorSorting.ts: sortByColorGroup, sortVariationsByColor, sortColorSummary",
     "currency.ts: formatBRL, formatBRLShort, formatBRLCompact, parseBRL",
@@ -151119,8 +151153,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3094,
-   "lines": 222560,
+   "files": 3095,
+   "lines": 222764,
    "tables": [
     "...",
     "admin_audit_log",
@@ -151218,8 +151252,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 102,
-   "lines": 2988,
+   "files": 103,
+   "lines": 3004,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -161777,6 +161811,11 @@
     "values": "approved | expired | order_created | rejected | sent_to_client"
    },
    {
+    "file": "src/hooks/assistant/useClientBrandSignals.ts",
+    "name": "COLUNAS_DE_COR_DA_MARCA",
+    "values": "'brand_colors', 'cores_marca'"
+   },
+   {
     "file": "src/hooks/auth/useRBAC.tsx",
     "name": "RoleName",
     "values": "agente | dev | supervisor"
@@ -162035,6 +162074,31 @@
     "file": "src/lib/analytics/zeroResultAnalytics.ts",
     "name": "ZERO_RESULT_ACTIONS",
     "values": "'clear_filter', 'widen_window', 'apply_substitute', 'undo',"
+   },
+   {
+    "file": "src/lib/assistant/buildReason.ts",
+    "name": "ChaveDeSinal",
+    "values": "cor | estoque | giro | gravacao | novidade | preco | ramo"
+   },
+   {
+    "file": "src/lib/assistant/buildReason.ts",
+    "name": "ClasseDeGiro",
+    "values": "A | B | C"
+   },
+   {
+    "file": "src/lib/assistant/logoColorToGroups.ts",
+    "name": "ConfiancaDeCor",
+    "values": "aproximada | distante | exata | proxima"
+   },
+   {
+    "file": "src/lib/assistant/ramoAliases.ts",
+    "name": "ConfiancaRamo",
+    "values": "alta | baixa | media"
+   },
+   {
+    "file": "src/lib/assistant/ramoAliases.ts",
+    "name": "RAMOS_CANONICOS",
+    "values": "'Agro', 'Celulose', 'Educação', 'Energia', 'Ferramentas e Ferragens', 'Financeiro', 'Holdings', 'Indústria Alimentícia', 'Indústria Automobilística', 'Indústria Construção', 'Indústria Eletrônicos', 'Indústria Embalagens', 'Indústria Farmacêutica', 'Indústria Fitas Adesivas', 'Indústria Química', 'I …"
    },
    {
     "file": "src/lib/auth/auth-flow-tracer.ts",
@@ -165553,6 +165617,10 @@
    {
     "file": "src/components/ai/AIRecommendationsPanel.tsx",
     "msg": "\n          className="
+   },
+   {
+    "file": "src/components/assistant/SalesAssistantStates.tsx",
+    "msg": " className="
    },
    {
     "file": "src/components/audit/AuditReport.tsx",
@@ -170179,6 +170247,14 @@
     "text": "R4: exibida apenas quando o usuário digita texto livre (não é uma ação rápida conhecida)"
    },
    {
+    "file": "src/components/assistant/SalesAssistantCard.tsx",
+    "text": "Mesma regra do motivo por produto: com mais de um grupo de cor casado, não"
+   },
+   {
+    "file": "src/components/assistant/SalesAssistantProductRow.tsx",
+    "text": "* Máximo teórico da nota: 30 (ramo) + 25 (cor) + 15 (giro) + 12 (novidade) +"
+   },
+   {
     "file": "src/components/auth/SocialLoginButtons.tsx",
     "text": "que o pai deve automaticamente focar o formulário de e-mail (sem exigir clique)."
    },
@@ -171425,6 +171501,26 @@
    {
     "file": "src/hooks/admin/useV4Callbacks.ts",
     "text": "* hard limit; default 1000 */"
+   },
+   {
+    "file": "src/hooks/assistant/useClientBrandSignals.ts",
+    "text": "* Quantos grupos de cor no máximo viram sinal. */"
+   },
+   {
+    "file": "src/hooks/assistant/useClientBrandSignals.ts",
+    "text": "em que aparecem, e no máximo {@link MAXIMO_DE_HEXES}."
+   },
+   {
+    "file": "src/hooks/assistant/useSalesAssistantCandidates.ts",
+    "text": "* Corte de nota: máximo teórico 110, corte em 50. */"
+   },
+   {
+    "file": "src/hooks/assistant/useSalesAssistantCandidates.ts",
+    "text": "* Nome do grupo de cor APENAS quando a logo casou com um único grupo."
+   },
+   {
+    "file": "src/hooks/assistant/useSalesAssistantCandidates.ts",
+    "text": "@param opcoes Limite, corte de nota, teto por categoria e faixa de preço."
    },
    {
     "file": "src/hooks/auth/useAuthHydrationMetrics.ts",
@@ -172785,6 +172881,34 @@
    {
     "file": "src/lib/analytics/mfaNavigationAnalytics.ts",
     "text": "buffer é best-effort — nunca deve quebrar a navegação */"
+   },
+   {
+    "file": "src/lib/assistant/buildReason.ts",
+    "text": "doufsxqlfjyuvxuezpln em 2026-11-15, `execute_sql` somente leitura), em vez de"
+   },
+   {
+    "file": "src/lib/assistant/buildReason.ts",
+    "text": "fraca de um produto que a camada de score aprovou seria validação, não"
+   },
+   {
+    "file": "src/lib/assistant/buildReason.ts",
+    "text": "nota, a diversificação e o limite de 8 da RPC excluem candidatos. Dizer que"
+   },
+   {
+    "file": "src/lib/assistant/logoColorToGroups.ts",
+    "text": "O descarte vale apenas para o casamento de cor — o catálogo segue completo"
+   },
+   {
+    "file": "src/lib/assistant/logoColorToGroups.ts",
+    "text": "* Cada grupo aparece no máximo uma vez, com a MENOR distância entre ele e"
+   },
+   {
+    "file": "src/lib/assistant/ramoAliases.ts",
+    "text": "* MEDIDO no canônico em 2026-11-15 (`execute_sql`, somente leitura):"
+   },
+   {
+    "file": "src/lib/assistant/ramoAliases.ts",
+    "text": "* REGRA DE OURO: nunca chutar. Recomendar pelo ramo errado é pior que recomendar"
    },
    {
     "file": "src/lib/auth/apply-seller-scope.ts",
@@ -196537,6 +196661,31 @@
     "value": "30"
    },
    {
+    "file": "src/components/assistant/SalesAssistantCard.tsx",
+    "name": "TITULO_DO_CARD",
+    "value": "'Encaixe do Cliente'"
+   },
+   {
+    "file": "src/components/assistant/SalesAssistantCard.tsx",
+    "name": "ID_DO_TITULO",
+    "value": "'encaixe-do-cliente-titulo'"
+   },
+   {
+    "file": "src/components/assistant/SalesAssistantProductRow.tsx",
+    "name": "SCORE_MAXIMO",
+    "value": "110"
+   },
+   {
+    "file": "src/components/assistant/SalesAssistantProductRow.tsx",
+    "name": "SEM_PRECO",
+    "value": "'Preço sob consulta'"
+   },
+   {
+    "file": "src/components/assistant/SalesAssistantStates.tsx",
+    "name": "LINHAS_DO_ESQUELETO",
+    "value": "3"
+   },
+   {
     "file": "src/components/auth/SocialLoginButtons.tsx",
     "name": "SLOW_REDIRECT_MS",
     "value": "6000"
@@ -197105,6 +197254,41 @@
     "file": "src/hooks/admin/useV4Callbacks.ts",
     "name": "DEFAULT_LIMIT",
     "value": "1000"
+   },
+   {
+    "file": "src/hooks/assistant/useClientBrandSignals.ts",
+    "name": "PROFUNDIDADE_MAXIMA",
+    "value": "3"
+   },
+   {
+    "file": "src/hooks/assistant/useClientBrandSignals.ts",
+    "name": "MAXIMO_DE_HEXES",
+    "value": "8"
+   },
+   {
+    "file": "src/hooks/assistant/useClientBrandSignals.ts",
+    "name": "MAXIMO_DE_GRUPOS_DE_COR",
+    "value": "3"
+   },
+   {
+    "file": "src/hooks/assistant/useSalesAssistantCandidates.ts",
+    "name": "RPC_DE_CANDIDATOS",
+    "value": "'rpc_sales_assistant_candidates'"
+   },
+   {
+    "file": "src/hooks/assistant/useSalesAssistantCandidates.ts",
+    "name": "LIMITE_DE_CANDIDATOS",
+    "value": "8"
+   },
+   {
+    "file": "src/hooks/assistant/useSalesAssistantCandidates.ts",
+    "name": "SCORE_MINIMO",
+    "value": "50"
+   },
+   {
+    "file": "src/hooks/assistant/useSalesAssistantCandidates.ts",
+    "name": "MAXIMO_POR_CATEGORIA",
+    "value": "2"
    },
    {
     "file": "src/hooks/auth/useAuthHydrationMetrics.ts",
@@ -197990,6 +198174,36 @@
     "file": "src/lib/analytics/zeroResultAnalytics.ts",
     "name": "E2E_BUFFER_LIMIT",
     "value": "200"
+   },
+   {
+    "file": "src/lib/assistant/buildReason.ts",
+    "name": "SEPARADOR",
+    "value": "' · '"
+   },
+   {
+    "file": "src/lib/assistant/buildReason.ts",
+    "name": "AVISO_GRAVACAO",
+    "value": "'preciso confirmar a gravação'"
+   },
+   {
+    "file": "src/lib/assistant/buildReason.ts",
+    "name": "MOTIVO_SEM_SINAL",
+    "value": "'Sem sinal de encaixe para este cliente'"
+   },
+   {
+    "file": "src/lib/assistant/buildReason.ts",
+    "name": "NOTA_SEM_RESULTADO_INICIO",
+    "value": "'Não achei nenhum brinde'"
+   },
+   {
+    "file": "src/lib/assistant/buildReason.ts",
+    "name": "NOTA_SEM_RESULTADO_FIM",
+    "value": "'com encaixe para este cliente.'"
+   },
+   {
+    "file": "src/lib/assistant/logoColorToGroups.ts",
+    "name": "LIMITE_PADRAO",
+    "value": "3"
    },
    {
     "file": "src/lib/auth/invoke-full-scope.ts",
@@ -213091,6 +213305,12 @@
     "body": "if (sinceParam) return sinceParam; return new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();"
    },
    {
+    "file": "src/hooks/assistant/useSalesAssistantCandidates.ts",
+    "name": "sinaisDaLinha",
+    "params": "linha: LinhaDeCandidato",
+    "body": "// Objeto literal em vez de acumulador com asserção: o compilador exige as 7 // chaves de ChaveDeSinal e já conhece o tipo de cada campo da linha, então o // gate de `as` (E125) fica limpo sem perder a exaustividade. return { cor: comoBooleano(linha.sinal_cor), estoque: comoBooleano(linha.sinal_estoque), giro: comoBooleano(linha.sinal_giro), gravacao: comoBooleano(linha.sinal_gravacao), novidade: comoBooleano(linha.sinal_novidade), preco: comoBooleano(linha.sinal_preco), ramo: comoBooleano(linha …"
+   },
+   {
     "file": "src/hooks/bi/useClientHealthScore.ts",
     "name": "recencyScore",
     "params": "days: number | null",
@@ -213593,6 +213813,12 @@
     "name": "generateSecurityId",
     "params": "prefix: 'AUTH' | 'REQ', path: string",
     "body": "return `${prefix}-${generateSecurityHash(path)}`;"
+   },
+   {
+    "file": "src/lib/assistant/buildReason.ts",
+    "name": "trechoPreco",
+    "params": "dados: DadosDoProduto",
+    "body": "const min = ehNumeroUtil(dados.faixaMin) ? dados.faixaMin : null; const max = ehNumeroUtil(dados.faixaMax) ? dados.faixaMax : null; if (min !== null && max !== null) { return `cabe em R$ ${formatarReal(min)}–${formatarReal(max)}`; } if (max !== null) return `cabe até R$ ${formatarReal(max)}`; if (min !== null) return `cabe acima de R$ ${formatarReal(min)}`; return 'cabe na faixa de preço do cliente';"
    },
    {
     "file": "src/lib/auth/apply-seller-scope.ts",
@@ -215907,6 +216133,10 @@
     "line": "return new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();"
    },
    {
+    "file": "src/hooks/assistant/useSalesAssistantCandidates.ts",
+    "line": "staleTime: 10 * 60 * 1000,"
+   },
+   {
     "file": "src/hooks/auth/useLoginAttempts.ts",
     "line": "const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();"
    },
@@ -218127,6 +218357,10 @@
    {
     "file": "src/lib/theme-presets-css-vars-patch.ts",
     "line": "* travados no valor padrão (217 91% 60% = azul)."
+   },
+   {
+    "file": "src/lib/assistant/logoColorToGroups.ts",
+    "line": "/** Mais perto que 90% das cores conseguem chegar (medido: p10 = 12,74). */"
    },
    {
     "file": "src/lib/auth/safeAuthCall.ts",
@@ -240883,6 +241117,222 @@
     "name": "save() com payload inválido grava versão sanitizada (não-finito → default)"
    },
    {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "sem cliente"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "não consulta o CRM e devolve os sinais zerados"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "cliente sem ramo"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "deixa ramoPaiId nulo e confiança baixa, sem inventar ramo"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "texto de ramo sem correspondência honesta também fica baixa"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "cliente sem cor"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "desliga o sinal de cor quando nenhuma coluna da allowlist tem hex"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "cor ilegível não vira cor: hex malformado é descartado"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "caminho feliz"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "resolve ramo pelo catálogo e casa a cor da logo com color_groups"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "apelido curado resolve o ramo com confiança media"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "limita a 3 grupos de cor mesmo com logo multicolor"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "erro do CRM"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "expõe o erro em vez de devolver sinais falsamente vazios"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "extrairHexesDaMarca"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "lê %s"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "devolve vazio para %s"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "não desce além do limite de profundidade"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "respeita o teto de 8 cores"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "hexesDaMarcaDaEmpresa"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "prefere brand_colors e só cai para cores_marca quando a primeira não rende hex"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+    "name": "devolve vazio para empresa ausente"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "sem cliente ou sem sinal"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "não chama a RPC quando não há sinais"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "não chama a RPC quando não há cliente"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "não chama a RPC quando o cliente não tem ramo nem cor"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "enabled false desliga a busca mesmo com sinal"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "caminho feliz"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "chama a RPC com o nome e os sete argumentos do contrato"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "mapeia a linha para o formato que buildReason consome"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "faixa de preço vai para a RPC e para a frase do motivo"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "aceita limite, corte de nota e teto por categoria vindos de fora"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "cliente só com cor também busca, com ramo nulo"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "lista vazia é estado vazio, não erro"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "erro da RPC"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "propaga o erro em vez de devolver lista vazia"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "rejeição da rede também vira erro do hook"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "nome da RPC"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "a constante e o literal da chamada não divergem"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "contextoDoCliente"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "cor exata ou próxima conta como a cor da logo"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "dois grupos de cor casados: não nomeia nenhum (a RPC liga o sinal por qualquer um)"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "dois grupos, os dois fortes: a cor segue valendo como igual à logo"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "um único grupo casado: nomeia a cor"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "cor apenas aproximada não é tratada como a cor da logo"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "sem cliente devolve contexto vazio, sem inventar nome"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "mapearCandidato — defesa contra formato"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "numeric como string (PostgREST) vira número"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "sinal nulo é sinal desligado, nunca ligado por omissão"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "não inventa número nem classe quando a RPC não mediu"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "classe de giro fora de A/B/C é descartada"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "resposta malformada"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "descarta linha sem product_id em vez de quebrar a tela"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "data que não é lista vira lista vazia"
+   },
+   {
     "file": "src/hooks/auth/__tests__/login-flow.test.ts",
     "name": "Login Flow & Role Loading — RPC get_profile_and_roles"
    },
@@ -246861,6 +247311,346 @@
    {
     "file": "src/lib/analytics/__tests__/mfaNavigationAnalytics.test.ts",
     "name": "nunca lança quando o buffer está poluído com valor inválido"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "buildReason"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "com todos os sinais ligados, cita os sete na ordem do mais forte ao mais fraco"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "a ordem dos trechos acompanha ORDEM_DOS_SINAIS"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "só um sinal"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "só ramo: cita o ramo e mais nada (fora o aviso da gravação)"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "só estoque: a frase começa com maiúscula mesmo sem o trecho de ramo"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "só gravação: afirma a gravação e não repete o aviso"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "nenhum sinal"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "não devolve frase vazia nem elogio que não se sustenta"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "sem sinal e sem dados do produto, ainda devolve frase utilizável"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "gravação ausente"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "avisa em vez de afirmar que aceita, e o aviso vai para o fim"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "nunca diz que o produto NÃO aceita gravação"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "nunca inventa número nem classe"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "preço sem faixa informada: fala da faixa sem citar valor"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "giro sem classe medida: não chuta "
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "classe C medida é dita como está, sem maquiagem"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "cor aproximada não é vendida como igual à logo"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "cor sem nome de grupo: não inventa o nome da cor"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "formata reais em pt-BR, com centavos só quando existem"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "faixa só com teto: não inventa o piso"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "faixa com valor inválido é tratada como ausente"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "buildHonestNote"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "cenário 1 — queria novidade azul nessa faixa e não achou: confessa a troca"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "cenário 2 — não achou nada: diz que não achou, sem oferecer substituto"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "cenário 3 — achou o que foi pedido: não há rodapé nenhum"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "sem contagem de giro na cor da logo, não afirma a troca "
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "sem novidade e sem giro, não promete campeão que não existe"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "cor da logo pedida e nenhum da LISTA com essa versão: afirma só o fato medido"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "lista de um só produto sem a cor: a frase sai em português"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "produtos sem a marca de gravação entram no rodapé com o aviso"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "um único produto sem a marca usa singular"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "contagem absurda não vira número inventado: fica limitada ao total"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/buildReason.test.ts",
+    "name": "nada pedido e nada faltando: devolve null em vez de linha vazia"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "logoColorToGroups — azul institucional"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "põe Azul na frente, com a distância medida e folga sobre o 2º lugar"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "devolve o hex do grupo e o hex da logo normalizados em minúsculo"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "trata a logo que usa literalmente o hex do grupo como cor exata"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "aceita a forma curta de 3 dígitos"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "logoColorToGroups — tom ambíguo entre dois grupos"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "ignora as pseudo-cores e devolve as cores reais mais próximas"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "Transparente e Colorido nunca aparecem, mesmo com o limite alto"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "desempata empate exato por nome e depois por id, sem localeCompare"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "logoColorToGroups — hex malformado"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "ignora valores não-string vindos de JSON do CRM"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "aproveita as cores válidas e descarta só as ilegíveis"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "descarta grupo cujo hex_code é nulo ou ilegível, sem contaminar com NaN"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "logoColorToGroups — lista vazia e estados de borda"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "devolve [] quando a logo não tem cor"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "devolve [] quando o catálogo de grupos vem vazio"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "devolve [] quando os dois lados vêm vazios"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "devolve [] quando todo grupo do catálogo está sem hex"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "descarta grupo inativo"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "devolve [] para limite menor que 1 ou NaN"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "corta pelo deltaEMaximo"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "nunca devolve mais que o limite, nem com o catálogo inteiro"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "logoColorToGroups — logo com várias cores"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "usa a menor distância de cada grupo e não repete grupo"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "não deixa uma cor repetida da logo ocupar o ranking"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "conta o grupo repetido no catálogo uma vez só"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "normalizarHex"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "normaliza %s para %s"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "devolve null para entrada inválida (%s)"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "classificarConfianca"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+    "name": "classifica Delta-E %s como %s"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "normalizeRamo"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "os 22 nomes do catálogo (confiança alta)"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "reconhece os 22 nomes exatos e resolve o ID pelo catálogo"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "sem catálogo, traduz o nome mas devolve ramoPaiId null"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "devolve ramoPaiId null quando o catálogo não tem o ramo traduzido"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "desvios reais digitados no CRM (confiança média)"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "traduz %s para %s"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "manda Petroquímica para Petróleo, não para Indústria Química"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "cada apelido curado cai no ramo que a tabela declara"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "sem correspondência honesta: devolve null em vez de chutar"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "não inventa ramo para %s"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "texto vazio e ausente"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "devolve baixa para %s"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "devolve baixa para %s"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "acento, caixa, plural e ordem das palavras"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "casa %s com %s"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "chaveRamo"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "ignora acento, caixa, pontuação, plural e ordem"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "resolve plurais irregulares do vocabulário"
+   },
+   {
+    "file": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+    "name": "não encurta tokens de até três letras"
    },
    {
     "file": "src/lib/auth/auth-utils.test.ts",
@@ -352666,6 +353456,7 @@
    "supabase/migrations/20261113225000_sec_revoke_anon_authenticated_net_supabase_functions.sql",
    "supabase/migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql",
    "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
+   "supabase/migrations/20261115034500_rpc_sales_assistant_candidates.sql",
    "supabase/migrations/20261115130100_fn_market_intelligence_macro.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -388440,6 +389231,30 @@
     "objkind": "table",
     "roles": "service_role",
     "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "rpc_sales_assistant_candidates",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261115034500_rpc_sales_assistant_candidates.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "rpc_sales_assistant_candidates",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261115034500_rpc_sales_assistant_candidates.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "rpc_sales_assistant_candidates",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261115034500_rpc_sales_assistant_candidates.sql"
    },
    {
     "kind": "revoke",
@@ -432831,6 +433646,74 @@
     "em DEV mantém o campo de texto livre"
    ]
   },
+  "src/components/assistant/SalesAssistantCard.tsx": {
+   "path": "src/components/assistant/SalesAssistantCard.tsx",
+   "lines": 168,
+   "exports": [
+    "const TITULO_DO_CARD",
+    "interface SalesAssistantCardProps",
+    "function SalesAssistantCard"
+   ],
+   "params": [
+    {
+     "name": "TITULO_DO_CARD",
+     "value": "'Encaixe do Cliente'"
+    },
+    {
+     "name": "ID_DO_TITULO",
+     "value": "'encaixe-do-cliente-titulo'"
+    }
+   ],
+   "rule_comments": [
+    "Mesma regra do motivo por produto: com mais de um grupo de cor casado, não"
+   ]
+  },
+  "src/components/assistant/SalesAssistantProductRow.tsx": {
+   "path": "src/components/assistant/SalesAssistantProductRow.tsx",
+   "lines": 170,
+   "exports": [
+    "const SCORE_MAXIMO",
+    "const SEM_PRECO",
+    "function SalesAssistantProductRow"
+   ],
+   "params": [
+    {
+     "name": "SCORE_MAXIMO",
+     "value": "110"
+    },
+    {
+     "name": "SEM_PRECO",
+     "value": "'Preço sob consulta'"
+    }
+   ],
+   "rule_comments": [
+    "* Máximo teórico da nota: 30 (ramo) + 25 (cor) + 15 (giro) + 12 (novidade) +"
+   ]
+  },
+  "src/components/assistant/SalesAssistantStates.tsx": {
+   "path": "src/components/assistant/SalesAssistantStates.tsx",
+   "lines": 153,
+   "exports": [
+    "function SalesAssistantSkeleton",
+    "function SalesAssistantError",
+    "function motivosDaFaltaDeSinal",
+    "function SalesAssistantSemSinal",
+    "function SalesAssistantSemCandidatos"
+   ],
+   "errors": [
+    " className="
+   ],
+   "params": [
+    {
+     "name": "LINHAS_DO_ESQUELETO",
+     "value": "3"
+    }
+   ]
+  },
+  "src/components/assistant/index.ts": {
+   "path": "src/components/assistant/index.ts",
+   "lines": 11
+  },
   "src/components/audit/AuditHistory.tsx": {
    "path": "src/components/audit/AuditHistory.tsx",
    "lines": 321,
@@ -452584,6 +453467,173 @@
     "save() com payload inválido grava versão sanitizada (não-finito → default)"
    ]
   },
+  "src/hooks/assistant/useClientBrandSignals.ts": {
+   "path": "src/hooks/assistant/useClientBrandSignals.ts",
+   "lines": 302,
+   "exports": [
+    "const COLUNAS_DE_COR_DA_MARCA",
+    "interface SinaisDaMarcaDoCliente",
+    "interface UseClientBrandSignalsResult",
+    "function extrairHexesDaMarca",
+    "function hexesDaMarcaDaEmpresa",
+    "function useClientBrandSignals"
+   ],
+   "enums": [
+    {
+     "name": "COLUNAS_DE_COR_DA_MARCA",
+     "values": "'brand_colors', 'cores_marca'"
+    }
+   ],
+   "params": [
+    {
+     "name": "PROFUNDIDADE_MAXIMA",
+     "value": "3"
+    },
+    {
+     "name": "MAXIMO_DE_HEXES",
+     "value": "8"
+    },
+    {
+     "name": "MAXIMO_DE_GRUPOS_DE_COR",
+     "value": "3"
+    }
+   ],
+   "rule_comments": [
+    "* Quantos grupos de cor no máximo viram sinal. */",
+    "em que aparecem, e no máximo {@link MAXIMO_DE_HEXES}."
+   ],
+   "hooks": [
+    "useClientBrandSignals"
+   ]
+  },
+  "src/hooks/assistant/useSalesAssistantCandidates.ts": {
+   "path": "src/hooks/assistant/useSalesAssistantCandidates.ts",
+   "lines": 330,
+   "exports": [
+    "const RPC_DE_CANDIDATOS",
+    "const LIMITE_DE_CANDIDATOS",
+    "const SCORE_MINIMO",
+    "const MAXIMO_POR_CATEGORIA",
+    "interface ArgsDaRpcDeCandidatos",
+    "interface LinhaDeCandidato",
+    "interface ContextoDoCliente",
+    "interface CandidatoDeEncaixe",
+    "interface FaixaDePreco",
+    "interface OpcoesDeCandidatos",
+    "function mapearCandidato",
+    "function nomeDoGrupoDeCorUnico",
+    "function contextoDoCliente",
+    "function useSalesAssistantCandidates"
+   ],
+   "params": [
+    {
+     "name": "RPC_DE_CANDIDATOS",
+     "value": "'rpc_sales_assistant_candidates'"
+    },
+    {
+     "name": "LIMITE_DE_CANDIDATOS",
+     "value": "8"
+    },
+    {
+     "name": "SCORE_MINIMO",
+     "value": "50"
+    },
+    {
+     "name": "MAXIMO_POR_CATEGORIA",
+     "value": "2"
+    }
+   ],
+   "rule_comments": [
+    "* Corte de nota: máximo teórico 110, corte em 50. */",
+    "* Nome do grupo de cor APENAS quando a logo casou com um único grupo.",
+    "@param opcoes Limite, corte de nota, teto por categoria e faixa de preço."
+   ],
+   "hooks": [
+    "useSalesAssistantCandidates"
+   ],
+   "calc_fns": [
+    {
+     "name": "sinaisDaLinha",
+     "params": "linha: LinhaDeCandidato",
+     "body": "// Objeto literal em vez de acumulador com asserção: o compilador exige as 7 // chaves de ChaveDeSinal e já conhece o tipo de cada campo da linha, então o // gate de `as` (E125) fica limpo sem perder a exaustividade. return { cor: comoBooleano(linha.sinal_cor), estoque: comoBooleano(linha.sinal_estoque), giro: comoBooleano(linha.sinal_giro), gravacao: comoBooleano(linha.sinal_gravacao), novidade: comoBooleano(linha.sinal_novidade), preco: comoBooleano(linha.sinal_preco), ramo: comoBooleano(linha …"
+    }
+   ],
+   "temporal": [
+    "staleTime: 10 * 60 * 1000,"
+   ]
+  },
+  "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts": {
+   "path": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+   "lines": 299,
+   "is_test": true,
+   "tests": [
+    "sem cliente",
+    "não consulta o CRM e devolve os sinais zerados",
+    "cliente sem ramo",
+    "deixa ramoPaiId nulo e confiança baixa, sem inventar ramo",
+    "texto de ramo sem correspondência honesta também fica baixa",
+    "cliente sem cor",
+    "desliga o sinal de cor quando nenhuma coluna da allowlist tem hex",
+    "cor ilegível não vira cor: hex malformado é descartado",
+    "caminho feliz",
+    "resolve ramo pelo catálogo e casa a cor da logo com color_groups",
+    "apelido curado resolve o ramo com confiança media",
+    "limita a 3 grupos de cor mesmo com logo multicolor",
+    "erro do CRM",
+    "expõe o erro em vez de devolver sinais falsamente vazios",
+    "extrairHexesDaMarca",
+    "lê %s",
+    "devolve vazio para %s",
+    "não desce além do limite de profundidade",
+    "respeita o teto de 8 cores",
+    "hexesDaMarcaDaEmpresa",
+    "prefere brand_colors e só cai para cores_marca quando a primeira não rende hex",
+    "devolve vazio para empresa ausente"
+   ]
+  },
+  "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts": {
+   "path": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+   "lines": 425,
+   "is_test": true,
+   "rule_comments": [
+    "'aproximada', então a frase não pode afirmar \"cor igual à logo\" — o"
+   ],
+   "doc": "Testes — useSalesAssistantCandidates O mock é do CLIENT do Supabase (`@/integrations/supabase/client`), não de `untypedRpc`: `untypedRpc` é só `supabase.rpc()` sem o estreitamento de nome (src/lib/supabase-untyped.ts), então stubar o client exercita o caminho real de chamada e prova os NOMES dos arg …",
+   "tests": [
+    "sem cliente ou sem sinal",
+    "não chama a RPC quando não há sinais",
+    "não chama a RPC quando não há cliente",
+    "não chama a RPC quando o cliente não tem ramo nem cor",
+    "enabled false desliga a busca mesmo com sinal",
+    "caminho feliz",
+    "chama a RPC com o nome e os sete argumentos do contrato",
+    "mapeia a linha para o formato que buildReason consome",
+    "faixa de preço vai para a RPC e para a frase do motivo",
+    "aceita limite, corte de nota e teto por categoria vindos de fora",
+    "cliente só com cor também busca, com ramo nulo",
+    "lista vazia é estado vazio, não erro",
+    "erro da RPC",
+    "propaga o erro em vez de devolver lista vazia",
+    "rejeição da rede também vira erro do hook",
+    "nome da RPC",
+    "a constante e o literal da chamada não divergem",
+    "contextoDoCliente",
+    "cor exata ou próxima conta como a cor da logo",
+    "dois grupos de cor casados: não nomeia nenhum (a RPC liga o sinal por qualquer um)",
+    "dois grupos, os dois fortes: a cor segue valendo como igual à logo",
+    "um único grupo casado: nomeia a cor",
+    "cor apenas aproximada não é tratada como a cor da logo",
+    "sem cliente devolve contexto vazio, sem inventar nome",
+    "mapearCandidato — defesa contra formato",
+    "numeric como string (PostgREST) vira número",
+    "sinal nulo é sinal desligado, nunca ligado por omissão",
+    "não inventa número nem classe quando a RPC não mediu",
+    "classe de giro fora de A/B/C é descartada",
+    "resposta malformada",
+    "descarta linha sem product_id em vez de quebrar a tela",
+    "data que não é lista vira lista vazia"
+   ]
+  },
   "src/hooks/auth/index.ts": {
    "path": "src/hooks/auth/index.ts",
    "lines": 16,
@@ -467214,6 +468264,269 @@
     "nunca lança quando o buffer está poluído com valor inválido"
    ]
   },
+  "src/lib/assistant/buildReason.ts": {
+   "path": "src/lib/assistant/buildReason.ts",
+   "lines": 315,
+   "exports": [
+    "type ChaveDeSinal",
+    "type SinaisDeEncaixe",
+    "const ORDEM_DOS_SINAIS",
+    "type ClasseDeGiro",
+    "interface DadosDoProduto",
+    "const SEPARADOR",
+    "const AVISO_GRAVACAO",
+    "const MOTIVO_SEM_SINAL",
+    "function buildReason",
+    "interface PedidoDeEncaixe",
+    "interface ResultadoDoEncaixe",
+    "function buildHonestNote"
+   ],
+   "enums": [
+    {
+     "name": "ChaveDeSinal",
+     "values": "cor | estoque | giro | gravacao | novidade | preco | ramo"
+    },
+    {
+     "name": "ClasseDeGiro",
+     "values": "A | B | C"
+    }
+   ],
+   "params": [
+    {
+     "name": "SEPARADOR",
+     "value": "' · '"
+    },
+    {
+     "name": "AVISO_GRAVACAO",
+     "value": "'preciso confirmar a gravação'"
+    },
+    {
+     "name": "MOTIVO_SEM_SINAL",
+     "value": "'Sem sinal de encaixe para este cliente'"
+    },
+    {
+     "name": "NOTA_SEM_RESULTADO_INICIO",
+     "value": "'Não achei nenhum brinde'"
+    },
+    {
+     "name": "NOTA_SEM_RESULTADO_FIM",
+     "value": "'com encaixe para este cliente.'"
+    }
+   ],
+   "rule_comments": [
+    "doufsxqlfjyuvxuezpln em 2026-11-15, `execute_sql` somente leitura), em vez de",
+    "fraca de um produto que a camada de score aprovou seria validação, não",
+    "nota, a diversificação e o limite de 8 da RPC excluem candidatos. Dizer que"
+   ],
+   "calc_fns": [
+    {
+     "name": "trechoPreco",
+     "params": "dados: DadosDoProduto",
+     "body": "const min = ehNumeroUtil(dados.faixaMin) ? dados.faixaMin : null; const max = ehNumeroUtil(dados.faixaMax) ? dados.faixaMax : null; if (min !== null && max !== null) { return `cabe em R$ ${formatarReal(min)}–${formatarReal(max)}`; } if (max !== null) return `cabe até R$ ${formatarReal(max)}`; if (min !== null) return `cabe acima de R$ ${formatarReal(min)}`; return 'cabe na faixa de preço do cliente';"
+    }
+   ]
+  },
+  "src/lib/assistant/logoColorToGroups.ts": {
+   "path": "src/lib/assistant/logoColorToGroups.ts",
+   "lines": 247,
+   "exports": [
+    "interface GrupoDeCorCatalogo",
+    "type ConfiancaDeCor",
+    "interface EncaixeDeCor",
+    "interface OpcoesDeEncaixeDeCor",
+    "const DELTA_E_CONFIANCA",
+    "function normalizarHex",
+    "function classificarConfianca",
+    "const GRUPOS_SEM_COR_PROPRIA",
+    "function logoColorToGroups"
+   ],
+   "enums": [
+    {
+     "name": "ConfiancaDeCor",
+     "values": "aproximada | distante | exata | proxima"
+    }
+   ],
+   "params": [
+    {
+     "name": "LIMITE_PADRAO",
+     "value": "3"
+    }
+   ],
+   "rule_comments": [
+    "O descarte vale apenas para o casamento de cor — o catálogo segue completo",
+    "* Cada grupo aparece no máximo uma vez, com a MENOR distância entre ele e"
+   ],
+   "percents": [
+    "/** Mais perto que 90% das cores conseguem chegar (medido: p10 = 12,74). */"
+   ]
+  },
+  "src/lib/assistant/ramoAliases.ts": {
+   "path": "src/lib/assistant/ramoAliases.ts",
+   "lines": 346,
+   "exports": [
+    "interface RamoCatalogo",
+    "type ConfiancaRamo",
+    "interface RamoNormalizado",
+    "const RAMOS_CANONICOS",
+    "const APELIDOS_POR_RAMO",
+    "function chaveRamo",
+    "function normalizeRamo"
+   ],
+   "enums": [
+    {
+     "name": "ConfiancaRamo",
+     "values": "alta | baixa | media"
+    },
+    {
+     "name": "RAMOS_CANONICOS",
+     "values": "'Agro', 'Celulose', 'Educação', 'Energia', 'Ferramentas e Ferragens', 'Financeiro', 'Holdings', 'Indústria Alimentícia', 'Indústria Automobilística', 'Indústria Construção', 'Indústria Eletrônicos', 'Indústria Embalagens', 'Indústria Farmacêutica', 'Indústria Fitas Adesivas', 'Indústria Química', 'I …"
+    }
+   ],
+   "rule_comments": [
+    "* MEDIDO no canônico em 2026-11-15 (`execute_sql`, somente leitura):",
+    "* REGRA DE OURO: nunca chutar. Recomendar pelo ramo errado é pior que recomendar"
+   ]
+  },
+  "src/lib/assistant/__tests__/buildReason.test.ts": {
+   "path": "src/lib/assistant/__tests__/buildReason.test.ts",
+   "lines": 294,
+   "is_test": true,
+   "tests": [
+    "buildReason",
+    "com todos os sinais ligados, cita os sete na ordem do mais forte ao mais fraco",
+    "a ordem dos trechos acompanha ORDEM_DOS_SINAIS",
+    "só um sinal",
+    "só ramo: cita o ramo e mais nada (fora o aviso da gravação)",
+    "só estoque: a frase começa com maiúscula mesmo sem o trecho de ramo",
+    "só gravação: afirma a gravação e não repete o aviso",
+    "nenhum sinal",
+    "não devolve frase vazia nem elogio que não se sustenta",
+    "sem sinal e sem dados do produto, ainda devolve frase utilizável",
+    "gravação ausente",
+    "avisa em vez de afirmar que aceita, e o aviso vai para o fim",
+    "nunca diz que o produto NÃO aceita gravação",
+    "nunca inventa número nem classe",
+    "preço sem faixa informada: fala da faixa sem citar valor",
+    "giro sem classe medida: não chuta ",
+    "classe C medida é dita como está, sem maquiagem",
+    "cor aproximada não é vendida como igual à logo",
+    "cor sem nome de grupo: não inventa o nome da cor",
+    "formata reais em pt-BR, com centavos só quando existem",
+    "faixa só com teto: não inventa o piso",
+    "faixa com valor inválido é tratada como ausente",
+    "buildHonestNote",
+    "cenário 1 — queria novidade azul nessa faixa e não achou: confessa a troca",
+    "cenário 2 — não achou nada: diz que não achou, sem oferecer substituto",
+    "cenário 3 — achou o que foi pedido: não há rodapé nenhum",
+    "sem contagem de giro na cor da logo, não afirma a troca ",
+    "sem novidade e sem giro, não promete campeão que não existe",
+    "cor da logo pedida e nenhum da LISTA com essa versão: afirma só o fato medido",
+    "lista de um só produto sem a cor: a frase sai em português",
+    "produtos sem a marca de gravação entram no rodapé com o aviso",
+    "um único produto sem a marca usa singular",
+    "contagem absurda não vira número inventado: fica limitada ao total",
+    "nada pedido e nada faltando: devolve null em vez de linha vazia"
+   ]
+  },
+  "src/lib/assistant/__tests__/logoColorToGroups.test.ts": {
+   "path": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+   "lines": 311,
+   "is_test": true,
+   "params": [
+    {
+     "name": "ID_AZUL",
+     "value": "'85e0e385-508b-4fda-ac37-ec50d592d8d0'"
+    },
+    {
+     "name": "ID_PRATA",
+     "value": "'23bb328d-f7cb-417b-8351-c8579cbd7cb7'"
+    },
+    {
+     "name": "ID_CINZA",
+     "value": "'11a77781-39a8-48d9-bfa6-c0e3c08391e9'"
+    },
+    {
+     "name": "ID_TRANSPARENTE",
+     "value": "'26e985d7-be96-4728-8163-b244f5e8ce55'"
+    },
+    {
+     "name": "ID_VERMELHO",
+     "value": "'338990e8-ba94-49f7-a6f5-2894d9dd9e46'"
+    }
+   ],
+   "rule_comments": [
+    "2196f3'], GRUPOS_REAIS, { limite: 2 });",
+    "CCCCCC'], GRUPOS_REAIS, { limite: 2 });",
+    "CCCCCC'], GRUPOS_REAIS, { limite: 8 });",
+    "0057B8'], GRUPOS_REAIS, { limite: 0 })).toEqual([]);",
+    "0057B8'], GRUPOS_REAIS, { limite: -3 })).toEqual([]);",
+    "0057B8'], GRUPOS_REAIS, { limite: Number.NaN })).toEqual([]);",
+    "0057B8'], GRUPOS_REAIS, { limite: 50 })).toHaveLength(16);",
+    "0057B8', '#E30613'], GRUPOS_REAIS, { limite: 4 });",
+    "CCCCCC'], duplicado, { limite: 50 });"
+   ],
+   "doc": "Testes de `logoColorToGroups` — base de cor do Encaixe do Cliente. Os 18 grupos da fixture são os dados REAIS de `color_groups` no banco canônico `doufsxqlfjyuvxuezpln`, lidos em 2026-11-15 com `select id, name, slug, hex_code, is_active, sort_order from color_groups order by name` (18 linhas, todas …",
+   "tests": [
+    "logoColorToGroups — azul institucional",
+    "põe Azul na frente, com a distância medida e folga sobre o 2º lugar",
+    "devolve o hex do grupo e o hex da logo normalizados em minúsculo",
+    "trata a logo que usa literalmente o hex do grupo como cor exata",
+    "aceita a forma curta de 3 dígitos",
+    "logoColorToGroups — tom ambíguo entre dois grupos",
+    "ignora as pseudo-cores e devolve as cores reais mais próximas",
+    "Transparente e Colorido nunca aparecem, mesmo com o limite alto",
+    "desempata empate exato por nome e depois por id, sem localeCompare",
+    "logoColorToGroups — hex malformado",
+    "ignora valores não-string vindos de JSON do CRM",
+    "aproveita as cores válidas e descarta só as ilegíveis",
+    "descarta grupo cujo hex_code é nulo ou ilegível, sem contaminar com NaN",
+    "logoColorToGroups — lista vazia e estados de borda",
+    "devolve [] quando a logo não tem cor",
+    "devolve [] quando o catálogo de grupos vem vazio",
+    "devolve [] quando os dois lados vêm vazios",
+    "devolve [] quando todo grupo do catálogo está sem hex",
+    "descarta grupo inativo",
+    "devolve [] para limite menor que 1 ou NaN",
+    "corta pelo deltaEMaximo",
+    "nunca devolve mais que o limite, nem com o catálogo inteiro",
+    "logoColorToGroups — logo com várias cores",
+    "usa a menor distância de cada grupo e não repete grupo",
+    "não deixa uma cor repetida da logo ocupar o ranking",
+    "conta o grupo repetido no catálogo uma vez só",
+    "normalizarHex",
+    "normaliza %s para %s",
+    "devolve null para entrada inválida (%s)",
+    "classificarConfianca",
+    "classifica Delta-E %s como %s"
+   ]
+  },
+  "src/lib/assistant/__tests__/ramoAliases.test.ts": {
+   "path": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+   "lines": 168,
+   "is_test": true,
+   "tests": [
+    "normalizeRamo",
+    "os 22 nomes do catálogo (confiança alta)",
+    "reconhece os 22 nomes exatos e resolve o ID pelo catálogo",
+    "sem catálogo, traduz o nome mas devolve ramoPaiId null",
+    "devolve ramoPaiId null quando o catálogo não tem o ramo traduzido",
+    "desvios reais digitados no CRM (confiança média)",
+    "traduz %s para %s",
+    "manda Petroquímica para Petróleo, não para Indústria Química",
+    "cada apelido curado cai no ramo que a tabela declara",
+    "sem correspondência honesta: devolve null em vez de chutar",
+    "não inventa ramo para %s",
+    "texto vazio e ausente",
+    "devolve baixa para %s",
+    "devolve baixa para %s",
+    "acento, caixa, plural e ordem das palavras",
+    "casa %s com %s",
+    "chaveRamo",
+    "ignora acento, caixa, pontuação, plural e ordem",
+    "resolve plurais irregulares do vocabulário",
+    "não encurta tokens de até três letras"
+   ]
+  },
   "src/lib/auth/apply-seller-scope.ts": {
    "path": "src/lib/auth/apply-seller-scope.ts",
    "lines": 53,
@@ -476518,7 +477831,7 @@
   },
   "src/pages/clients/ClientDetailPage.tsx": {
    "path": "src/pages/clients/ClientDetailPage.tsx",
-   "lines": 98,
+   "lines": 107,
    "exports": [
     "function ClientDetailPage"
    ]
@@ -485073,7 +486386,7 @@
   },
   "src/types/crm.ts": {
    "path": "src/types/crm.ts",
-   "lines": 386,
+   "lines": 393,
    "exports": [
     "interface CrmCompany",
     "function getCompanyDisplayName",
@@ -486037,6 +487350,9 @@
    "path": "src/utils/color-matching.ts",
    "lines": 98,
    "exports": [
+    "function rgbToLab",
+    "function hexToRgb",
+    "function deltaE",
     "interface PantoneMatch",
     "function findNearestPantone",
     "function getBestPantoneMatch"
@@ -512954,6 +514270,11 @@
    "path": "supabase/migrations/20261115013000_fix_get_quote_token_public_respeita_expiracao.sql",
    "lines": 68
   },
+  "supabase/migrations/20261115034500_rpc_sales_assistant_candidates.sql": {
+   "path": "supabase/migrations/20261115034500_rpc_sales_assistant_candidates.sql",
+   "lines": 204,
+   "uses_service_role": true
+  },
   "supabase/migrations/20261115130000_idx_sds_summary_date_supplier_include.sql": {
    "path": "supabase/migrations/20261115130000_idx_sds_summary_date_supplier_include.sql",
    "lines": 30,
@@ -513380,6 +514701,10 @@
   "supabase/rollbacks/20261115013000_rollback.sql": {
    "path": "supabase/rollbacks/20261115013000_rollback.sql",
    "lines": 30
+  },
+  "supabase/rollbacks/20261115034500_rollback.sql": {
+   "path": "supabase/rollbacks/20261115034500_rollback.sql",
+   "lines": 16
   },
   "supabase/rollbacks/20261115130000_rollback.sql": {
    "path": "supabase/rollbacks/20261115130000_rollback.sql",
@@ -537369,10 +538694,39 @@
   }
  },
  "git": {
-  "sha": "8ece9cc431c6fffdc83354f11f5722aa987005ad",
+  "sha": "4344666f2d78d7be7d3e35efd8a3f89b040ca879",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "4344666",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "feat(assistente): Encaixe do Cliente — fase 1 validada e com os 2 portões destravados (#3663)",
+    "files": [
+     "audit/supabase-reference-catalog.temporary.json",
+     "src/components/assistant/SalesAssistantCard.tsx",
+     "src/components/assistant/SalesAssistantProductRow.tsx",
+     "src/components/assistant/SalesAssistantStates.tsx",
+     "src/components/assistant/index.ts",
+     "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+     "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+     "src/hooks/assistant/useClientBrandSignals.ts",
+     "src/hooks/assistant/useSalesAssistantCandidates.ts",
+     "src/lib/assistant/__tests__/buildReason.test.ts",
+     "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+     "src/lib/assistant/__tests__/ramoAliases.test.ts",
+     "src/lib/assistant/buildReason.ts",
+     "src/lib/assistant/logoColorToGroups.ts",
+     "src/lib/assistant/ramoAliases.ts",
+     "src/pages/clients/ClientDetailPage.tsx",
+     "src/types/crm.ts",
+     "src/utils/color-matching.ts",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261115034500_rpc_sales_assistant_candidates.sql",
+     "supabase/rollbacks/20261115034500_rollback.sql"
+    ]
+   },
    {
     "sha": "8ece9cc",
     "date": "2026-11-15",
@@ -537900,15 +539254,6 @@
      "tests/security/crm-db-bridge-ownership.test.ts",
      "tests/security/crm-db-bridge-seller-scope.test.ts"
     ]
-   },
-   {
-    "sha": "29569b1",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(security): sincroniza o retrato de policies com producao apos as 6 migracoes (#3634)",
-    "files": [
-     ".security/policies-baseline.json"
-    ]
    }
   ],
   "hot_files": [
@@ -537918,7 +539263,11 @@
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    4
+    5
+   ],
+   [
+    "audit/supabase-reference-catalog.temporary.json",
+    3
    ],
    [
     "src/pages/mockups/MockupGenerator.tsx",
@@ -537942,10 +539291,6 @@
    ],
    [
     "src/components/mockup/MockupWizard.tsx",
-    2
-   ],
-   [
-    "audit/supabase-reference-catalog.temporary.json",
     2
    ],
    [

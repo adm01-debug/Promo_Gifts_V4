@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1231,
+ "total": 1234,
  "orfaos": 160,
  "nomes_duplicados": {
   "AdvancedPriceSearchPage": [
@@ -5881,6 +5881,58 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/assistant/SalesAssistantCard.tsx",
+   "exports": [
+    "SalesAssistantCard",
+    "SalesAssistantCardProps",
+    "TITULO_DO_CARD"
+   ],
+   "export_default": null,
+   "linhas": 168,
+   "dominio": "components/assistant",
+   "hooks_locais": [
+    "useClientBrandSignals",
+    "useSalesAssistantCandidates"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/assistant/SalesAssistantProductRow.tsx",
+   "exports": [
+    "SCORE_MAXIMO",
+    "SEM_PRECO",
+    "SalesAssistantProductRow"
+   ],
+   "export_default": null,
+   "linhas": 170,
+   "dominio": "components/assistant",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/assistant/SalesAssistantStates.tsx",
+   "exports": [
+    "SalesAssistantError",
+    "SalesAssistantSemCandidatos",
+    "SalesAssistantSemSinal",
+    "SalesAssistantSkeleton"
+   ],
+   "export_default": null,
+   "linhas": 153,
+   "dominio": "components/assistant",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
    "orfao": false
   },
   {
@@ -15801,7 +15853,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 477,
+   "usado_por": 478,
    "orfao": false
   },
   {
@@ -15836,7 +15888,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 620,
+   "usado_por": 621,
    "orfao": false
   },
   {
@@ -15870,7 +15922,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 346,
+   "usado_por": 347,
    "orfao": false
   },
   {
@@ -16527,7 +16579,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 182,
+   "usado_por": 183,
    "orfao": false
   },
   {
@@ -18126,7 +18178,7 @@
     "ClientDetailPage"
    ],
    "export_default": "ClientDetailPage",
-   "linhas": 98,
+   "linhas": 107,
    "dominio": "pages/clients",
    "hooks_locais": [
     "useClientTopProducts",

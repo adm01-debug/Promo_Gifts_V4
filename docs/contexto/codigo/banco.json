@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3095,
+ "migrations": 3096,
  "seeds": [],
  "avisos": [
   "319 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -1353,6 +1353,7 @@
   "revoke_user_step_up",
   "rls_matrix_export",
   "rotate_mcp_key",
+  "rpc_sales_assistant_candidates",
   "save_custom_kit_atomic",
   "save_step_up_audit",
   "search_notebooks_by_size",

@@ -4340,6 +4340,31 @@
    "src/components/ai/AIMockupAssistant.tsx",
    "src/components/ai/AIRecommendationsPanel.tsx"
   ],
+  "src/components/assistant/SalesAssistantCard.tsx": [
+   "src/components/assistant/SalesAssistantProductRow.tsx",
+   "src/components/assistant/SalesAssistantStates.tsx",
+   "src/components/ui/card.tsx",
+   "src/hooks/assistant/useClientBrandSignals.ts",
+   "src/hooks/assistant/useSalesAssistantCandidates.ts",
+   "src/lib/assistant/buildReason.ts"
+  ],
+  "src/components/assistant/SalesAssistantProductRow.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/hooks/assistant/useSalesAssistantCandidates.ts",
+   "src/lib/assistant/buildReason.ts",
+   "src/lib/utils.ts",
+   "src/utils/currency.ts"
+  ],
+  "src/components/assistant/SalesAssistantStates.tsx": [
+   "src/components/ui/button.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/hooks/assistant/useClientBrandSignals.ts"
+  ],
+  "src/components/assistant/index.ts": [
+   "src/components/assistant/SalesAssistantCard.tsx",
+   "src/components/assistant/SalesAssistantProductRow.tsx",
+   "src/components/assistant/SalesAssistantStates.tsx"
+  ],
   "src/components/audit/AuditHistory.tsx": [
    "src/components/ui/badge.tsx",
    "src/components/ui/card.tsx",
@@ -9829,6 +9854,20 @@
   "src/hooks/admin/useV4Callbacks.ts": [
    "src/integrations/supabase/client.ts"
   ],
+  "src/hooks/assistant/useClientBrandSignals.ts": [
+   "src/hooks/crm/useCrmCompanies.ts",
+   "src/hooks/crm/useRamoAtividade.ts",
+   "src/hooks/products/useColorSystem.ts",
+   "src/lib/assistant/logoColorToGroups.ts",
+   "src/lib/assistant/ramoAliases.ts",
+   "src/types/crm.ts"
+  ],
+  "src/hooks/assistant/useSalesAssistantCandidates.ts": [
+   "src/hooks/assistant/useClientBrandSignals.ts",
+   "src/lib/assistant/buildReason.ts",
+   "src/lib/assistant/logoColorToGroups.ts",
+   "src/lib/supabase-untyped.ts"
+  ],
   "src/hooks/auth/index.ts": [
    "src/hooks/auth/use2FA.ts",
    "src/hooks/auth/useAccessSecurity.ts",
@@ -11586,6 +11625,9 @@
    "src/hooks/intelligence/useZeroResultDiagnosis.ts",
    "src/lib/telemetry/structuredLogger.ts"
   ],
+  "src/lib/assistant/logoColorToGroups.ts": [
+   "src/utils/color-matching.ts"
+  ],
   "src/lib/auth/apply-seller-scope.ts": [
    "src/lib/auth/visibility-scope.ts"
   ],
@@ -13075,6 +13117,7 @@
    "src/components/ui/card.tsx"
   ],
   "src/pages/clients/ClientDetailPage.tsx": [
+   "src/components/assistant/index.ts",
    "src/components/clients/ClientDetailHeader.tsx",
    "src/components/seo/PageSEO.tsx",
    "src/components/ui/card.tsx",

@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 620,
+ "total": 622,
  "hooks": [
   {
    "arquivo": "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
@@ -7019,6 +7019,49 @@
    "coberto_por_testes": 0
   },
   {
+   "arquivo": "src/hooks/assistant/useClientBrandSignals.ts",
+   "hooks_exportados": [
+    "useClientBrandSignals"
+   ],
+   "linhas": 302,
+   "dominio": "hooks/assistant",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useColorSystem",
+    "useCrmCompany",
+    "useRamosAtividade"
+   ],
+   "canais_realtime": [],
+   "usado_por": 3,
+   "usado_por_arquivos": [
+    "src/components/assistant/SalesAssistantCard.tsx",
+    "src/components/assistant/SalesAssistantStates.tsx",
+    "src/hooks/assistant/useSalesAssistantCandidates.ts"
+   ],
+   "coberto_por_testes": 2
+  },
+  {
+   "arquivo": "src/hooks/assistant/useSalesAssistantCandidates.ts",
+   "hooks_exportados": [
+    "useSalesAssistantCandidates"
+   ],
+   "linhas": 330,
+   "dominio": "hooks/assistant",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [],
+   "canais_realtime": [],
+   "usado_por": 2,
+   "usado_por_arquivos": [
+    "src/components/assistant/SalesAssistantCard.tsx",
+    "src/components/assistant/SalesAssistantProductRow.tsx"
+   ],
+   "coberto_por_testes": 1
+  },
+  {
    "arquivo": "src/hooks/auth/index.ts",
    "hooks_exportados": [
     "useAccessSecurity",
@@ -8334,9 +8377,10 @@
     "useQuery"
    ],
    "canais_realtime": [],
-   "usado_por": 4,
+   "usado_por": 5,
    "usado_por_arquivos": [
     "src/components/cart/CartHeaderButton.tsx",
+    "src/hooks/assistant/useClientBrandSignals.ts",
     "src/hooks/crm/index.ts",
     "src/pages/products/CartsListPage.tsx",
     "src/pages/products/SellerCartsPage.tsx"
@@ -8386,8 +8430,9 @@
     "useQueryClient"
    ],
    "canais_realtime": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_arquivos": [
+    "src/hooks/assistant/useClientBrandSignals.ts",
     "src/hooks/crm/index.ts"
    ],
    "coberto_por_testes": 0
@@ -10589,10 +10634,11 @@
    "edges": [],
    "hooks_internos": [],
    "canais_realtime": [],
-   "usado_por": 4,
+   "usado_por": 5,
    "usado_por_arquivos": [
     "src/components/products/ProductColorSelector.tsx",
     "src/components/products/ProductListItem.tsx",
+    "src/hooks/assistant/useClientBrandSignals.ts",
     "src/hooks/products/index.ts",
     "src/pages/filters/useFiltersPageState.ts"
    ],

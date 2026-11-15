@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 300,
+ "total": 303,
  "por_camada": {
   "api": 3,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 228,
+  "lib": 231,
   "python": 9,
   "services": 10,
   "stores": 8,
@@ -1262,6 +1262,101 @@
     "pages/bi"
    ],
    "coberto_por_testes": 0,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/assistant/buildReason.ts",
+   "camada": "lib",
+   "exports": [
+    "AVISO_GRAVACAO",
+    "ChaveDeSinal",
+    "ClasseDeGiro",
+    "DadosDoProduto",
+    "MOTIVO_SEM_SINAL",
+    "ORDEM_DOS_SINAIS",
+    "PedidoDeEncaixe",
+    "ResultadoDoEncaixe",
+    "SEPARADOR",
+    "SinaisDeEncaixe",
+    "buildHonestNote",
+    "buildReason"
+   ],
+   "export_default": null,
+   "linhas": 315,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 3,
+   "usado_por_modulos": [
+    "components/assistant",
+    "hooks/assistant"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/assistant/logoColorToGroups.ts",
+   "camada": "lib",
+   "exports": [
+    "ConfiancaDeCor",
+    "DELTA_E_CONFIANCA",
+    "EncaixeDeCor",
+    "GRUPOS_SEM_COR_PROPRIA",
+    "GrupoDeCorCatalogo",
+    "OpcoesDeEncaixeDeCor",
+    "classificarConfianca",
+    "logoColorToGroups",
+    "normalizarHex"
+   ],
+   "export_default": null,
+   "linhas": 247,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "hooks/assistant"
+   ],
+   "coberto_por_testes": 2,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/assistant/ramoAliases.ts",
+   "camada": "lib",
+   "exports": [
+    "APELIDOS_POR_RAMO",
+    "ConfiancaRamo",
+    "RAMOS_CANONICOS",
+    "RamoCatalogo",
+    "RamoNormalizado",
+    "chaveRamo",
+    "normalizeRamo"
+   ],
+   "export_default": null,
+   "linhas": 346,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "hooks/assistant"
+   ],
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {
@@ -6691,13 +6786,14 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 58,
+   "usado_por": 59,
    "usado_por_modulos": [
     "components/admin",
     "components/mockup",
     "components/search",
     "hooks",
     "hooks/admin",
+    "hooks/assistant",
     "hooks/auth",
     "hooks/collections",
     "hooks/gravacao",
@@ -7553,11 +7649,12 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 652,
+   "usado_por": 653,
    "usado_por_modulos": [
     "components",
     "components/admin",
     "components/ai",
+    "components/assistant",
     "components/audit",
     "components/auth",
     "components/bi",
@@ -8583,8 +8680,11 @@
    "camada": "utils",
    "exports": [
     "PantoneMatch",
+    "deltaE",
     "findNearestPantone",
-    "getBestPantoneMatch"
+    "getBestPantoneMatch",
+    "hexToRgb",
+    "rgbToLab"
    ],
    "export_default": null,
    "linhas": 98,
@@ -8596,9 +8696,10 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "usado_por_modulos": [
-    "hooks/simulation"
+    "hooks/simulation",
+    "lib/assistant"
    ],
    "coberto_por_testes": 0,
    "orfao": false
@@ -8672,8 +8773,9 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_modulos": [
+    "components/assistant",
     "components/quotes"
    ],
    "coberto_por_testes": 1,

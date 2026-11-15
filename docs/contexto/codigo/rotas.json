@@ -13149,6 +13149,7 @@
     "useCategoryIcons",
     "useCategoryRanking",
     "useCategorySelection",
+    "useClientBrandSignals",
     "useClientFuzzySearch",
     "useClientTopProducts",
     "useCollectionsGlobalShortcuts",
@@ -13334,6 +13335,7 @@
     "useReplenishmentStats",
     "useReplenishmentsSelectionMode",
     "useReplenishmentsWithDetails",
+    "useSalesAssistantCandidates",
     "useSalesGoals",
     "useSalesHistory",
     "useSalesHistoryMacro",
@@ -13440,6 +13442,7 @@
     "useCategoryIcons",
     "useCategoryRanking",
     "useCategorySelection",
+    "useClientBrandSignals",
     "useClientFuzzySearch",
     "useClientTopProducts",
     "useCollectionsGlobalShortcuts",
@@ -13608,6 +13611,7 @@
     "useReplenishmentStats",
     "useReplenishmentsSelectionMode",
     "useReplenishmentsWithDetails",
+    "useSalesAssistantCandidates",
     "useSalesGoals",
     "useSalesHistory",
     "useSalesHistoryMacro",
@@ -13759,10 +13763,11 @@
     "progressbar",
     "radio",
     "radiogroup",
+    "region",
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 418
+   "arquivos_puxados": 428
   },
   {
    "protegida": false,
@@ -13778,7 +13783,9 @@
    "redireciona": null,
    "hooks": [
     "useCallback",
+    "useClientBrandSignals",
     "useClientTopProducts",
+    "useColorSystem",
     "useCreateRamoAtividade",
     "useCreateSegmento",
     "useCrmCompanies",
@@ -13802,6 +13809,7 @@
     "useRamoAtividadeGroups",
     "useRamosAtividade",
     "useRamosAtividadeGroups",
+    "useSalesAssistantCandidates",
     "useSegmento",
     "useSegmentos",
     "useSegmentosCompletos",
@@ -13813,7 +13821,9 @@
     "useUpdateSegmento"
    ],
    "hooks_locais": [
+    "useClientBrandSignals",
     "useClientTopProducts",
+    "useColorSystem",
     "useCreateRamoAtividade",
     "useCreateSegmento",
     "useCrmCompanies",
@@ -13829,6 +13839,7 @@
     "useRamoAtividadeGroups",
     "useRamosAtividade",
     "useRamosAtividadeGroups",
+    "useSalesAssistantCandidates",
     "useSegmento",
     "useSegmentos",
     "useSegmentosCompletos",
@@ -13849,8 +13860,11 @@
    ],
    "canais_realtime": [],
    "flags": [],
-   "papeis": [],
-   "arquivos_puxados": 44
+   "papeis": [
+    "alert",
+    "region"
+   ],
+   "arquivos_puxados": 57
   },
   {
    "protegida": false,

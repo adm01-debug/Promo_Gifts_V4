@@ -1390,6 +1390,76 @@
    ]
   },
   {
+   "modulo": "components/assistant",
+   "arquivos": 4,
+   "testes": 0,
+   "linhas": 502,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 3,
+   "hooks_locais": [
+    "useClientBrandSignals",
+    "useColorSystem",
+    "useCreateRamoAtividade",
+    "useCrmCompanies",
+    "useCrmCompany",
+    "useCrmCompanySelector",
+    "useCrmCustomer",
+    "useCrmInfiniteCompanySelector",
+    "useDeleteRamoAtividade",
+    "useRamoAtividade",
+    "useRamosAtividade",
+    "useRamosAtividadeGroups",
+    "useSalesAssistantCandidates",
+    "useToggleRamoAtividade",
+    "useUpdateRamoAtividade"
+   ],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [
+    "system_kill_switches"
+   ],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "DEV",
+    "MODE",
+    "PROD",
+    "VITE_SENTRY_DSN",
+    "VITE_SENTRY_ENVIRONMENT",
+    "VITE_SUPABASE_ANON_KEY",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL",
+    "VITE_VERCEL_GIT_COMMIT_SHA"
+   ],
+   "flags": [],
+   "papeis": [
+    "alert",
+    "region"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "pages/clients"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "hooks/assistant",
+    "lib",
+    "lib/assistant",
+    "utils"
+   ],
+   "pacotes_externos": [
+    "lucide-react",
+    "react-router-dom"
+   ]
+  },
+  {
    "modulo": "components/audit",
    "arquivos": 3,
    "testes": 1,
@@ -8852,6 +8922,7 @@
     "useCategoryIcons",
     "useCategoryRanking",
     "useCategorySelection",
+    "useClientBrandSignals",
     "useClientFuzzySearch",
     "useClientMockups",
     "useClientTopProducts",
@@ -9143,6 +9214,7 @@
     "useRoleMigration",
     "useRuptureAlerts",
     "useRuptureHorizon",
+    "useSalesAssistantCandidates",
     "useSalesGoals",
     "useSalesHistory",
     "useSalesHistoryMacro",
@@ -10102,6 +10174,7 @@
     "useCategoryIcons",
     "useCategoryRanking",
     "useCategorySelection",
+    "useClientBrandSignals",
     "useClientFuzzySearch",
     "useClientMockups",
     "useClientTopProducts",
@@ -10385,6 +10458,7 @@
     "useRoleMigration",
     "useRuptureAlerts",
     "useRuptureHorizon",
+    "useSalesAssistantCandidates",
     "useSalesGoals",
     "useSalesHistory",
     "useSalesHistoryMacro",
@@ -16003,6 +16077,7 @@
     "components/access",
     "components/admin",
     "components/ai",
+    "components/assistant",
     "components/audit",
     "components/auth",
     "components/bi",
@@ -17146,6 +17221,75 @@
    "pacotes_externos": [
     "@tanstack/react-query",
     "sonner"
+   ]
+  },
+  {
+   "modulo": "hooks/assistant",
+   "arquivos": 2,
+   "testes": 2,
+   "linhas": 632,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [
+    "useClientBrandSignals",
+    "useColorSystem",
+    "useCreateRamoAtividade",
+    "useCrmCompanies",
+    "useCrmCompany",
+    "useCrmCompanySelector",
+    "useCrmCustomer",
+    "useCrmInfiniteCompanySelector",
+    "useDeleteRamoAtividade",
+    "useRamoAtividade",
+    "useRamosAtividade",
+    "useRamosAtividadeGroups",
+    "useSalesAssistantCandidates",
+    "useToggleRamoAtividade",
+    "useUpdateRamoAtividade"
+   ],
+   "hooks_definidos": [
+    "useClientBrandSignals",
+    "useSalesAssistantCandidates"
+   ],
+   "edges": [],
+   "tabelas": [
+    "system_kill_switches"
+   ],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "DEV",
+    "MODE",
+    "PROD",
+    "VITE_SENTRY_DSN",
+    "VITE_SENTRY_ENVIRONMENT",
+    "VITE_SUPABASE_ANON_KEY",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL",
+    "VITE_VERCEL_GIT_COMMIT_SHA"
+   ],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "components/assistant"
+   ],
+   "depende_de_modulos": [
+    "hooks/crm",
+    "hooks/products",
+    "lib",
+    "lib/assistant",
+    "types"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query"
    ]
   },
   {
@@ -18804,6 +18948,7 @@
     "components/cart",
     "components/filters",
     "components/mockup",
+    "hooks/assistant",
     "hooks/bi",
     "hooks/products",
     "pages/bi",
@@ -21121,6 +21266,7 @@
     "components/replenishments",
     "components/search",
     "contexts",
+    "hooks/assistant",
     "hooks/collections",
     "hooks/common",
     "hooks/comparison",
@@ -22730,6 +22876,7 @@
     "useCategoryIcons",
     "useCategoryRanking",
     "useCategorySelection",
+    "useClientBrandSignals",
     "useClientFuzzySearch",
     "useClientMockups",
     "useClientTopProducts",
@@ -23013,6 +23160,7 @@
     "useRoleMigration",
     "useRuptureAlerts",
     "useRuptureHorizon",
+    "useSalesAssistantCandidates",
     "useSalesGoals",
     "useSalesHistory",
     "useSalesHistoryMacro",
@@ -23342,6 +23490,7 @@
     "components",
     "components/admin",
     "components/ai",
+    "components/assistant",
     "components/audit",
     "components/auth",
     "components/bi",
@@ -23392,6 +23541,7 @@
     "contexts",
     "hooks",
     "hooks/admin",
+    "hooks/assistant",
     "hooks/auth",
     "hooks/bi",
     "hooks/collections",
@@ -23632,6 +23782,39 @@
     "hooks/intelligence",
     "lib/edge",
     "lib/telemetry"
+   ],
+   "pacotes_externos": []
+  },
+  {
+   "modulo": "lib/assistant",
+   "arquivos": 3,
+   "testes": 3,
+   "linhas": 908,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "components/assistant",
+    "hooks/assistant"
+   ],
+   "depende_de_modulos": [
+    "utils"
    ],
    "pacotes_externos": []
   },
@@ -28269,7 +28452,7 @@
    "modulo": "pages/clients",
    "arquivos": 3,
    "testes": 0,
-   "linhas": 461,
+   "linhas": 470,
    "itens_menu": [],
    "telas": [
     "/clientes",
@@ -28317,6 +28500,7 @@
     "useCategorySelection",
     "useClientAffinity",
     "useClientBI",
+    "useClientBrandSignals",
     "useClientCategoryAffinity",
     "useClientFuzzySearch",
     "useClientHealthScore",
@@ -28491,6 +28675,7 @@
     "useReplenishmentStats",
     "useReplenishmentsSelectionMode",
     "useReplenishmentsWithDetails",
+    "useSalesAssistantCandidates",
     "useSalesGoals",
     "useSalesHistory",
     "useSalesHistoryMacro",
@@ -28669,6 +28854,7 @@
     "progressbar",
     "radio",
     "radiogroup",
+    "region",
     "status",
     "supervisor"
    ],
@@ -28682,6 +28868,7 @@
     "routes"
    ],
    "depende_de_modulos": [
+    "components/assistant",
     "components/bi",
     "components/clients",
     "components/layout",
@@ -33314,6 +33501,7 @@
     "useChurnRisk",
     "useClientAffinity",
     "useClientBI",
+    "useClientBrandSignals",
     "useClientCategoryAffinity",
     "useClientFuzzySearch",
     "useClientHealthScore",
@@ -33648,6 +33836,7 @@
     "useRoleMigration",
     "useRuptureAlerts",
     "useRuptureHorizon",
+    "useSalesAssistantCandidates",
     "useSalesGoals",
     "useSalesHistory",
     "useSalesHistoryMacro",
@@ -34531,7 +34720,7 @@
    "modulo": "types",
    "arquivos": 19,
    "testes": 0,
-   "linhas": 3236,
+   "linhas": 3243,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -34591,6 +34780,7 @@
     "constants",
     "contexts",
     "data",
+    "hooks/assistant",
     "hooks/bi",
     "hooks/crm",
     "hooks/favorites",
@@ -35122,6 +35312,7 @@
    },
    "importado_por_outros_modulos": [
     "components/admin",
+    "components/assistant",
     "components/cart",
     "components/catalog",
     "components/clients",
@@ -35146,6 +35337,7 @@
     "hooks/products",
     "hooks/quotes",
     "hooks/simulation",
+    "lib/assistant",
     "lib/bi",
     "lib/external-db",
     "pages/admin",

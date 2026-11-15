@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2502,
+ "total": 2507,
  "por_tipo": {
   "contrato": 65,
   "e2e": 677,
   "pytest": 4,
   "qa": 17,
-  "unit": 1739
+  "unit": 1744
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 659
+   "arquivos": 664
   },
   {
    "padrao": "e2e/",
@@ -7906,6 +7906,27 @@
    "casos": 3
   },
   {
+   "arquivo": "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
+   "tipo": "unit",
+   "linhas": 299,
+   "testa": [
+    "src/hooks/assistant/useClientBrandSignals.ts",
+    "src/types/crm.ts"
+   ],
+   "casos": 15
+  },
+  {
+   "arquivo": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+   "tipo": "unit",
+   "linhas": 425,
+   "testa": [
+    "src/hooks/assistant/useClientBrandSignals.ts",
+    "src/hooks/assistant/useSalesAssistantCandidates.ts",
+    "src/lib/assistant/logoColorToGroups.ts"
+   ],
+   "casos": 25
+  },
+  {
    "arquivo": "src/hooks/auth/__tests__/login-flow.test.ts",
    "tipo": "unit",
    "linhas": 338,
@@ -9087,6 +9108,33 @@
     "src/lib/analytics/mfaNavigationAnalytics.ts"
    ],
    "casos": 16
+  },
+  {
+   "arquivo": "src/lib/assistant/__tests__/buildReason.test.ts",
+   "tipo": "unit",
+   "linhas": 294,
+   "testa": [
+    "src/lib/assistant/buildReason.ts"
+   ],
+   "casos": 28
+  },
+  {
+   "arquivo": "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
+   "tipo": "unit",
+   "linhas": 311,
+   "testa": [
+    "src/lib/assistant/logoColorToGroups.ts"
+   ],
+   "casos": 25
+  },
+  {
+   "arquivo": "src/lib/assistant/__tests__/ramoAliases.test.ts",
+   "tipo": "unit",
+   "linhas": 168,
+   "testa": [
+    "src/lib/assistant/ramoAliases.ts"
+   ],
+   "casos": 13
   },
   {
    "arquivo": "src/lib/auth/__tests__/auth-flow-tracer.test.ts",
@@ -21503,6 +21551,8 @@
   "src/hooks/admin/useGeoBlocking.ts": 1,
   "src/hooks/admin/useIPValidation.ts": 3,
   "src/hooks/admin/useIntelligenceBadgeSettings.ts": 3,
+  "src/hooks/assistant/useClientBrandSignals.ts": 2,
+  "src/hooks/assistant/useSalesAssistantCandidates.ts": 1,
   "src/hooks/auth/use2FA.ts": 2,
   "src/hooks/auth/useAccessSecurity.ts": 2,
   "src/hooks/auth/useLoginAttempts.ts": 3,
@@ -21672,6 +21722,9 @@
   "src/lib/analytics/cartAnalytics.ts": 1,
   "src/lib/analytics/intelligenceAnalytics.ts": 4,
   "src/lib/analytics/mfaNavigationAnalytics.ts": 1,
+  "src/lib/assistant/buildReason.ts": 1,
+  "src/lib/assistant/logoColorToGroups.ts": 2,
+  "src/lib/assistant/ramoAliases.ts": 1,
   "src/lib/auth/apply-seller-scope.ts": 2,
   "src/lib/auth/auth-flow-tracer.ts": 1,
   "src/lib/auth/auth-utils.ts": 2,
@@ -21930,6 +21983,7 @@
   "src/stores/useFavoritesStore.ts": 7,
   "src/stores/useProductSelectionStore.ts": 1,
   "src/types/advancedFilters.ts": 1,
+  "src/types/crm.ts": 1,
   "src/types/customization.ts": 6,
   "src/types/domain/simulator-wizard.ts": 2,
   "src/types/external-db.ts": 2,

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8ece9cc431c6fffdc83354f11f5722aa987005ad",
+  "commit": "4344666f2d78d7be7d3e35efd8a3f89b040ca879",
   "branch": "main",
-  "data_commit": "2026-11-15T15:54:58Z",
+  "data_commit": "2026-11-15T16:04:18Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "4344666f",
+    "data": "2026-11-15",
+    "assunto": "feat(assistente): Encaixe do Cliente — fase 1 validada e com os 2 portões destravados (#3663)"
+   },
    {
     "sha": "8ece9cc4",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "37920454",
     "data": "2026-11-14",
     "assunto": "fix(crm): declara isencao de soft-delete na tabela de vinculo de vendedor"
-   },
-   {
-    "sha": "e998b095",
-    "data": "2026-11-14",
-    "assunto": "fix(kit): rascunhos de kit salvos sem personalização voltam a abrir (resgate cirúrgico da #3390) (#3631)"
    }
   ],
-  "arquivos_mudados_7d": 2118,
+  "arquivos_mudados_7d": 2137,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 59
+    "mudancas": 60
    },
    {
     "arquivo": "package.json",
@@ -255,7 +255,7 @@
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 580
+    "commits": 579
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10265,
-  "arquivos_codigo": 5292,
-  "linhas_codigo": 1008624,
+  "arquivos_total": 10281,
+  "arquivos_codigo": 5306,
+  "linhas_codigo": 1012179,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
-  "modulos": 158,
-  "componentes": 1231,
-  "hooks": 620,
+  "modulos": 161,
+  "componentes": 1234,
+  "hooks": 622,
   "edge_functions": 111,
   "tabelas": 548,
-  "migrations": 3095,
+  "migrations": 3096,
   "cron_jobs": 122,
-  "testes": 2502,
+  "testes": 2507,
   "workflows": 87,
   "scripts": 272,
   "docs_md": 1024
@@ -1883,8 +1883,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1378,
-   "linhas": 275502
+   "arquivos": 1382,
+   "linhas": 276004
   },
   "src/config": {
    "arquivos": 1,
@@ -1907,16 +1907,16 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 469,
-   "linhas": 88222
+   "arquivos": 473,
+   "linhas": 89578
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66577
   },
   "src/lib": {
-   "arquivos": 333,
-   "linhas": 50955
+   "arquivos": 339,
+   "linhas": 52636
   },
   "src/logic": {
    "arquivos": 4,
@@ -1928,7 +1928,7 @@
   },
   "src/pages": {
    "arquivos": 359,
-   "linhas": 83637
+   "linhas": 83646
   },
   "src/routes": {
    "arquivos": 14,
@@ -1952,7 +1952,7 @@
   },
   "src/types": {
    "arquivos": 26,
-   "linhas": 4430
+   "linhas": 4437
   },
   "src/utils": {
    "arquivos": 56,
