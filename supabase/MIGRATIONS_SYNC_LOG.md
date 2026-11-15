@@ -969,7 +969,7 @@ Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_
 | `20261024180003` | `f810068550bbfa2da6179d3772f8187821df732417d48dafd15ffd27acfb2a94` | aplicado via E15 | Claude FASE-B-P19-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40167137573 | 2026-10-25T05:58 UTC | schedule=15min (1,16,31,46) ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
 | `20261024190001` | `eb5c03f7d8f690297ce6960ef0803d7c205fb3999891cbb2ef0a4b85dc82c030` | aplicado via E15 | Claude FASE-B-P01-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40166925674 | 2026-10-25T05:52 UTC | x-cron-secret ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
 | `20261025002500` | `6ce2ca6a8a4228486ae5123574845a11a1f1e59b6e4a316628dc6a56925c1f59` | aplicado via E15 | Claude FASE-B-P03-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40165426404 | 2026-10-25T05:28 UTC | categories last_analyze=2026-10-25T05:28 ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
-| `20261031000000` | `209ba7abacce4f1c1989dfe19c97b470db9dd7a1d9fc74b224acded12187ebd3` | — | claude-code (session_01Gd4dBi3n2GguZNjoaenJgk) | corrigida | 2026-11-01 UTC | corrigida: deleted_at + stock_notes_active_idx adicionados (Gate 1.12); tabela não existe em produção — aplicar via db-apply-migration.yml após merge da PR |
+| `20261031000000` | `209ba7abacce4f1c1989dfe19c97b470db9dd7a1d9fc74b224acded12187ebd3` | — | claude-code (session_01Gd4dBi3n2GguZNjoaenJgk) | corrigida | 2026-11-01 UTC | corrigida: deleted_at + stock_notes_active_idx adicionados (Gate 1.12). CORREÇÃO 2026-11-15: a tabela EXISTE em produção (`to_regclass('public.stock_notes')` devolve `stock_notes`, RLS ligada, 4 policies) e a version `20261031000000` ESTÁ no ledger — a linha de 2026-11-01 que dizia o contrário está vencida; vale o registro de aplicação fora do fluxo E15 (Lovable/PR #2871) mais abaixo |
 
 ---
 
@@ -1622,3 +1622,127 @@ por `idx_scan=0` (FKs `NO ACTION` para tabelas de 5 e 7 linhas).
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261114014100` | `idx_fk_stock_and_missing_perf_indexes` | `651823afa2f7fd9901fcc185a3147aa53d1cf5ad11fea1374196a3021d200578` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono no chat em 2026-11-14) |
+
+## 2026-11-14 — CRON-004: reduz a frequência de 7 jobs ociosos ou redundantes (648 → 97 execuções/dia)
+
+Consulta read-only em produção (2026-11-14, `cron.job_run_details` janela de 6 h, runid > 1399672): 881 execuções e
+244 "job startup timeout". Os 7 jobs abaixo estão ociosos ou redundantes: filas de `product_images` zeradas (as 79 sem
+blurhash nunca são processadas), `external_connections` vazia, `mv_supplier_reliability` com 3 linhas e reload horário
+do PostgREST redundante com `pgrst_ddl_watch`/`pgrst_drop_watch`.
+A migration reagenda `generate-blurhashes`, `hash-product-images` e `backfill-image-dimensions` para a cada 2 h das 09 às 23 UTC (8×/dia, fora da janela dos scrapers; lote fixo no código: 15/80/40 imagens por rodada),
+`connections-auto-test`, `connections-health-check` e `refresh-mv-supplier-reliability` para 1×/h e
+`pgrst-schema-reload` para 1×/dia (09:07 UTC, segue ativo por causa do smoke test #37). Minutos são subconjunto dos
+atuais. `medallion-promote-tick` fica em `6,36 * * * *`: em 30 dias de `pipeline_run_log` há rajadas no teto do lote
+(300 variantes) e 1×/h cortaria pela metade a vazão de promoção. O snapshot
+`supabase/baseline/20261108000000_cron_jobs.json` só muda depois do apply (Gate E40).
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114120000` | `cron004_reduz_frequencia_jobs_ociosos` | `e1371c31840255c9a9bc071cea76efc543ec02637dba7961f622c10a314c6a18` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/perf-cron004-reduz-jobs-ociosos-261114-1001`) |
+
+## 2026-11-14 — CRON-005: `refresh-all-materialized-views` 1×/dia às 09:38 UTC com `statement_timeout` real de 600 s
+
+Consulta read-only em produção (2026-11-14): `cron.job` jobid=234 `38 */2 * * *`, command
+`fn_cron_safe_run(47, 'SELECT public.refresh_all_materialized_views();', 55000, 'refresh-all-mvs')`; `pg_settings`
+`statement_timeout=120000` (configuration file), `cron.use_background_workers=off`, PG 17.
+As 18 linhas de `postgres_logs` citadas na branch de origem **NÃO foram verificadas por mim** — trato como
+NÃO VERIFICADO. A prova que eu medi, em 2026-11-15, é a duração colada no teto em `cron.job_run_details` do
+jobid=234: 145 das 151 execuções dos últimos 7 dias chegaram a 119 s ou mais, com 8 de 8 em 2026-11-15, 24 de 24
+em 10, 11 e 12 de novembro, e média diária entre 106 e 122 s. `status` diz `succeeded` porque
+`fn_cron_safe_run` é `SECURITY DEFINER` com `EXCEPTION WHEN query_canceled THEN … RETURN` e engole o timeout:
+quem olhar só a coluna `status` conclui, errado, que está tudo bem. O `SET LOCAL` de `fn_cron_safe_run` não rearma
+o timeout do statement em curso e o rollback desfaz as 7 MVs. A migration põe `SET statement_timeout = '600s';` antes do `SELECT` e roda 1×/dia.
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`. Depois de aplicada, atualizar
+`supabase/baseline/20261108000000_cron_jobs.json` (`refresh-all-materialized-views` → `38 9 * * *`).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114120100` | `cron005_refresh_all_mvs_diario_timeout_real` | `46c10be42fa859abe362cbac3f4b3a0066d0e59115b96ecf3cddf19a2184bfb2` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/perf-cron005-refresh-all-mvs-diario-261114-1002`) |
+
+## 2026-11-14 — Estoque: índice parcial para a contagem de restocks de `fn_get_stock_notification_counts`
+
+Consulta read-only em produção (`pg_indexes`/`pg_get_functiondef`/`pg_stat_statements`).
+**CORREÇÃO 2026-11-15**: os números de 2026-11-14 citados aqui antes (14.871 chamadas, média 522 ms) vinham de uma
+janela de `pg_stat_statements` que foi **resetada em 2026-11-14 16:26 UTC** e não dá para reconstituir. Medição
+própria de 2026-11-15, 22,4 h após o reset: `fn_get_stock_notification_counts()` com **4.732 chamadas, média
+170,0 ms, máximo 12.163,8 ms e 805 s de CPU acumulada** (sino do Header, `StockAlertsIndicator.tsx`). O ganho
+continua justificado pela volumetria e pelos 805 s de CPU em menos de um dia, mas é cerca de 5× menor do que o
+texto anterior sugeria — quem aprovar deve aprovar por este número, não pelo antigo. No bloco `restocks`, `idx_sds_cenario_a` lê ~9,3k linhas/buffers de `stock_daily_summary`
+(30 dias) e descarta 7,8k pelo filtro `COALESCE(stock_open,0)=0 AND COALESCE(stock_close,0)>0`. O índice parcial
+`idx_sds_restock_zero_to_pos_date` usa o mesmo predicado da função e cobre `product_id`. Ainda não está no ledger;
+aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]` (porta 5432, `transaction: none`, fora do pico).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114160000` | `perf_idx_sds_restock_counts` | `d538e03130d8151ccde29c56a72c1004a74b76e3789aed0095b64d8c19bcc03a` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (linha `approved-by`) e `db-apply-migration.yml` (branch `claude/perf-idx-sds-restock-counts-261114-1006`) |
+
+## 2026-11-15 — Reparo: `trg_anon_rate_guard` em `kill_switch_hits` (resgate da branch `claude/laughing-cori-o9w35e`)
+
+O Gate 1.13.2 (Deploy Gates run 41402296461, 2026-11-02) detectou o trigger `trg_anon_rate_guard` ausente em
+`kill_switch_hits`, embora a `20261029160339` (que o cria) esteja no ledger. Nenhuma migration posterior no `main`
+recria o trigger. A migration de reparo (DROP IF EXISTS + CREATE TRIGGER, mesma definição da `20261029160339`) vem da
+branch `claude/laughing-cori-o9w35e` (commit `1f3a1734e`), com arquivo de rollback (E063).
+**NÃO VERIFICADO no banco em 2026-11-15**: se o trigger já existir em produção, a migration é idempotente (DROP IF EXISTS
+antes do CREATE) — confirmar com `SELECT tgname FROM pg_trigger WHERE tgrelid = 'public.kill_switch_hits'::regclass`
+antes do dispatch. Ainda não está no ledger; aplicação só por `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261102063000` | `repair_kill_switch_hits_anon_rate_guard` | `1cfc7343ea254805b19c765fbce566eb3acd23f6aea36fa2b35fd38623ce2226` | pendente — aplicar via `db-apply-migration.yml` após merge (estado do trigger em produção NÃO VERIFICADO em 2026-11-15) |
+
+## 2026-11-15 — Inteligência de mercado macro: índice de cobertura + RPC `fn_market_intelligence_macro` (bug #57; o 11º item da #3584)
+
+A `fn_market_intelligence_macro` ficou fora da #3584 por desempenho: EXPLAIN em produção (2026-11-15) da agregação por
+`(summary_date, supplier_id)` sem filtro de fornecedor = Parallel Seq Scan em `stock_daily_summary` (~3,1M linhas, ~1 GB;
+índices existentes: `idx_daily_product_date (product_id, summary_date desc)`, `idx_sds_cenario_a` e `idx_sds_zero_to_positive`
+parciais, `idx_stock_daily_summary_supplier_id`, `uq_stock_daily_vss_date` — nenhum serve a janela de datas).
+Enquanto isso, `useMarketIntelligenceMacro.ts` lê a tabela cru via PostgREST sem filtro de data, ascendente, `limit 5000`:
+o max-rows devolve as linhas mais antigas, todas cortadas pelo `cutoff` no cliente, e a tela mostra o mock como dado real.
+Duas migrations, **nesta ordem**: (1) índice `(summary_date, supplier_id) INCLUDE (stock_close, units_depleted, units_restocked)`
+em `CREATE INDEX CONCURRENTLY` (`transaction: none`; a linha `approved-by` entra no momento da aplicação) — torna
+redundante o `idx_sds_summary_date` da `20261108223000` (pendente; prefixo deste); (2) a RPC (SECURITY INVOKER,
+`search_path = ''`, REVOKE anon/PUBLIC, EXECUTE authenticated/service_role), conteúdo da `20261112121000` da branch
+`claude/fix-migrations-acesso-rpcs-261112-1050` renumerado para ficar atrás do índice. O front
+(`untypedRpc('fn_market_intelligence_macro')`) só funciona depois da (2) aplicada; até lá o gráfico mostra erro (PGRST202)
+em vez de mock. Nenhuma das duas está no ledger; aplicação só por `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261115130000` | `idx_sds_summary_date_supplier_include` | `d4d441540da99ea12752eeb2253bcef7af00afac0640c85b95ed72107d7bfccc` | pendente — aplicar via `db-apply-migration.yml` após merge, ANTES da `20261115130100` (CONCURRENTLY, `transaction: none`; exige linha `approved-by` do dono; porta 5432, fora do pico) |
+| `20261115130100` | `fn_market_intelligence_macro` | `ea7aa33fb9f533d94229859f35f3814a5792699425728ec36ec9c426574c6771` | pendente — aplicar via `db-apply-migration.yml` após merge e após a `20261115130000` |
+
+## 2026-11-15 — SEC-001 (E056): REVOKE EXECUTE de PUBLIC/anon em 106 funções trigger/internas
+
+Resgate da branch `claude/fix-sec001-revoke-anon-trigger-funcs-261101-2230` (commit `39ec2b456`, version original
+`20261101210000`, que colide com a `sb0007` já no `main` → renumerada). Levantamento de 2026-11-01:
+`has_function_privilege('anon', …, 'EXECUTE') = true` em 106 funções sem referência no TS nem em RLS, todas trigger
+handlers/sync hooks/utilitários internos; o trigger não checa EXECUTE, só a chamada direta (RPC). Revalidação de
+2026-11-15 contra o repo: as 106 existem no baseline `20261015140000_baseline_schema.sql`, nenhuma migration posterior
+as dropa nem já revoga PUBLIC/anon. O REVOKE é `FROM PUBLIC, anon` (o default privileges do Supabase concede anon
+explicitamente). Estado atual dos grants em produção NÃO VERIFICADO nesta sessão (sem acesso ao banco); se uma função
+tiver sumido fora do fluxo, a migration falha inteira (fail-loud). Ainda não está no ledger; aplicação só por
+`db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261115130200` | `sec001_revoke_anon_execute_trigger_functions` | `dd9f99bb3a9d8be6fafd98c12b39c3eec7d181a3793bbce12b97cf2ea4b018f0` | pendente — aplicar via `db-apply-migration.yml` após merge. Grants VERIFICADOS em produção 2026-11-15: 115 de 303 funções trigger de `public` executáveis por `anon` e `authenticated`; esta migration revoga 106 delas. Hash recalculado após corrigir a assinatura `fn_hex_to_rgb(text)` → `fn_hex_to_rgb()` (só existe sem argumentos em `pg_proc`), que abortaria o arquivo inteiro na aplicação transacional |
+
+## 2026-11-15 — `fn_global_search`: clamp de `p_limit` com `search_path` fechado (substitui a `20261101190101`, sem recibo)
+
+A `20261101190101_fn_global_search_clamp_limit.sql` está no `main` desde 2026-11-01 sem recibo, sem rollback e sem
+registro em allowlist/PENDENCIAS; nunca entrou no ledger. Ela recria a função SECURITY DEFINER (executável por anon,
+allowlist E17) com `SET search_path TO 'public', 'extensions'` — o preflight a bloqueia (E066: sem `pg_temp`). A branch
+`codex/fix-db-migration-preflight-261107` (commit `3ebaad4ea`) tinha a versão endurecida como rename
+(`20261107143509_…_hardened`); rename de versão já existente não é permitido, então o conteúdo entra como versão NOVA
+`20261115130300` (única diferença de corpo: `search_path TO 'pg_catalog','public','extensions','pg_temp'`), com
+rollback guardado por `pg_get_functiondef` (remove só o clamp). A `20261101190101` fica registrada aqui como
+substituída e ganha arquivo de rollback (E063), para não ser aplicada por engano. Mesma PR: o rollback da
+`20261101202000` passa a ser fail-closed (REVOKE em vez de re-GRANT a PUBLIC/anon/authenticated em
+`cleanup_expired_auth_sessions()`, SECURITY DEFINER que apaga `auth.sessions`; a `20261101202426`, já aplicada, tinha
+revogado antes) com teste em `tests/security/security-definer-acl-gate.test.ts` — commit `4f235fd50` da mesma branch.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261101190101` | `fn_global_search_clamp_limit` | `6f97aa10518e4a04edb2fd40f5b7f0b08f70097679449f445741ffe7fb01f3e4` | substituída pela `20261115130300` — NÃO aplicar (preflight E066: SECURITY DEFINER sem `pg_temp`); nunca esteve no ledger; mantida no repo porque sua versão já está no histórico |
+| `20261115130300` | `fn_global_search_clamp_limit_hardened` | `35f326cead81afefcbf4f234ee1a2365fe3d12049dead6469d2325beada7972c` | pendente — aplicar via `db-apply-migration.yml` após merge (estado atual de `fn_global_search` em produção NÃO VERIFICADO em 2026-11-15) |

@@ -505,6 +505,14 @@
       "reason": "RPC criada pela migration supabase/migrations/20261112120000_fix_fn_get_supplier_reliability.sql (SECURITY DEFINER sobre mv_supplier_reliability, restrita a is_supervisor_or_above), ainda nao aplicada no canonico. Remover esta excecao e registrar o RPC em rpcs depois de aplicar via db-apply-migration.yml e confirmar via pg_catalog."
     },
     {
+      "kind": "rpc",
+      "name": "fn_market_intelligence_macro",
+      "file": "src/hooks/intelligence/useMarketIntelligenceMacro.ts",
+      "occurrences": 1,
+      "stage": 103,
+      "reason": "RPC criada pela migration supabase/migrations/20261115130100_fn_market_intelligence_macro.sql (agregacao macro de stock_daily_summary no servidor, SECURITY INVOKER; depende do indice 20261115130000), ainda nao aplicada no canonico. Remover esta excecao e registrar o RPC em rpcs depois de aplicar via db-apply-migration.yml e confirmar via pg_catalog."
+    },
+    {
       "kind": "relation",
       "name": "endomarketing_themes",
       "file": "src/components/admin/products/productMarketingData.ts",
