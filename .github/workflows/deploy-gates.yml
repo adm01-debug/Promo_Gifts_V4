@@ -193,7 +193,10 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs: [ssot-gate, changes]
-    if: always() && needs.ssot-gate.result == 'success' && (needs.changes.result == 'skipped' || needs.changes.outputs.docs_only != 'true')
+    # E188: entra também quando o PR só mexe no ledger de conflitos — é .md (docs-only),
+    # mas o Gate 1.18 abaixo lê exatamente esse arquivo. Nesse caso só o 1.18 roda: todos os
+    # outros steps deste job seguem com `if: docs_only != 'true'`.
+    if: always() && needs.ssot-gate.result == 'success' && (needs.changes.result == 'skipped' || needs.changes.outputs.docs_only != 'true' || needs.changes.outputs.ledger == 'true')
     env:
       NODE_OPTIONS: --max-old-space-size=4096
     steps:
@@ -202,13 +205,17 @@ jobs:
         run: |
           echo "## ✅ Gate 1 — Lint + TypeScript (docs-only bypass)" >> "$GITHUB_STEP_SUMMARY"
           echo "PR modifica apenas documentação — sem arquivos de código alterados." >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ needs.changes.outputs.ledger }}" = "true" ]; then
+            echo "Exceção E188: o PR mexe no ledger de conflitos, então o Gate 1.18 roda mesmo assim." >> "$GITHUB_STEP_SUMMARY"
+          fi
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        if: needs.changes.outputs.docs_only != 'true'
+        # E188: checkout e Node também no caso ledger-only, senão o Gate 1.18 não tem o que ler.
+        if: needs.changes.outputs.docs_only != 'true' || needs.changes.outputs.ledger == 'true'
         with:
           persist-credentials: false  # E32
           fetch-depth: 0
       - name: Setup Node CI
-        if: needs.changes.outputs.docs_only != 'true'
+        if: needs.changes.outputs.docs_only != 'true' || needs.changes.outputs.ledger == 'true'
         uses: ./.github/actions/setup-node-ci
       - run: npm run typecheck
         if: needs.changes.outputs.docs_only != 'true'
