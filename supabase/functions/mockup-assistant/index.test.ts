@@ -126,28 +126,48 @@ beforeEach(() => {
 
 describe('mockup-assistant — contrato da edge', () => {
   it('sem JWT retorna 401 e não chama a IA', async () => {
-    h.authThrow = { status: 401, message: 'Token de autenticação ausente' };
-    const res = await ENTRY(post({ message: 'Como posiciono a logo?' }, {}));
-    expect(res.status).toBe(401);
-    expect((await res.json()).error).toBe('Token de autenticação ausente');
-    expect(h.aiCalls).toHaveLength(0);
-    expect(h.rateIds).toHaveLength(0); // quem não autentica não consome nem polui o limite
+    // Caminho de erro: safeErrorResponse chama console.error de proposito, e o
+    // portao test:ci-core roda com STRICT_TEST_SIDE_EFFECTS=1, que reprova
+    // console.error NAO interceptado pelo proprio teste
+    // (tests/setup-strict-side-effects.ts). Interceptar aqui e o mecanismo
+    // previsto, nao mascara: o log continua sendo emitido.
+    const consoleSpy = captureConsole();
+    try {
+      h.authThrow = { status: 401, message: 'Token de autenticação ausente' };
+      const res = await ENTRY(post({ message: 'Como posiciono a logo?' }, {}));
+      expect(res.status).toBe(401);
+      expect((await res.json()).error).toBe('Token de autenticação ausente');
+      expect(h.aiCalls).toHaveLength(0);
+      expect(h.rateIds).toHaveLength(0); // quem não autentica não consome nem polui o limite
+    } finally {
+      consoleSpy.restore();
+    }
   });
 
   it('token inválido, expirado, revogado ou sem permissão não chega ao limiter nem à IA', async () => {
-    const negados = [
-      { status: 401, message: 'Token inválido ou expirado' },
-      { status: 401, message: 'Sessao foi revogada. Faca login novamente.' },
-      { status: 403, message: "Acesso restrito ao papel 'vendedor'" },
-    ];
-    for (const negado of negados) {
-      h.authThrow = negado;
-      const res = await ENTRY(post({ message: 'oi' }, { Authorization: 'Bearer token.invalido.x' }));
-      expect(res.status).toBe(negado.status);
-      expect((await res.json()).error).toBe(negado.message);
+    // Caminho de erro: safeErrorResponse chama console.error de proposito, e o
+    // portao test:ci-core roda com STRICT_TEST_SIDE_EFFECTS=1, que reprova
+    // console.error NAO interceptado pelo proprio teste
+    // (tests/setup-strict-side-effects.ts). Interceptar aqui e o mecanismo
+    // previsto, nao mascara: o log continua sendo emitido.
+    const consoleSpy = captureConsole();
+    try {
+      const negados = [
+        { status: 401, message: 'Token inválido ou expirado' },
+        { status: 401, message: 'Sessao foi revogada. Faca login novamente.' },
+        { status: 403, message: "Acesso restrito ao papel 'vendedor'" },
+      ];
+      for (const negado of negados) {
+        h.authThrow = negado;
+        const res = await ENTRY(post({ message: 'oi' }, { Authorization: 'Bearer token.invalido.x' }));
+        expect(res.status).toBe(negado.status);
+        expect((await res.json()).error).toBe(negado.message);
+      }
+      expect(h.aiCalls).toHaveLength(0);
+      expect(h.rateIds).toHaveLength(0);
+    } finally {
+      consoleSpy.restore();
     }
-    expect(h.aiCalls).toHaveLength(0);
-    expect(h.rateIds).toHaveLength(0);
   });
 
   it('corpo inválido é rejeitado pelo Zod com 422', async () => {
@@ -246,24 +266,89 @@ describe('mockup-assistant — contrato da edge', () => {
   });
 
   it('resposta vazia do provedor vira 502, nunca 200 com answer vazio', async () => {
-    for (const content of ['', '   \n']) {
-      h.aiResult = { content, used_model_name: 'deepseek-v4-flash', finish_reason: 'length' };
-      const res = await ENTRY(post({ message: 'Qual o tamanho ideal?' }));
-      expect(res.status).toBe(502);
-      const body = await res.json();
-      expect(body.error).toBe(mod.PROVIDER_ERROR_MESSAGE);
-      expect(body).not.toHaveProperty('answer');
+    // Caminho de erro: safeErrorResponse chama console.error de proposito, e o
+    // portao test:ci-core roda com STRICT_TEST_SIDE_EFFECTS=1, que reprova
+    // console.error NAO interceptado pelo proprio teste
+    // (tests/setup-strict-side-effects.ts). Interceptar aqui e o mecanismo
+    // previsto, nao mascara: o log continua sendo emitido.
+    const consoleSpy = captureConsole();
+    try {
+      for (const content of ['', '   \n']) {
+        h.aiResult = { content, used_model_name: 'deepseek-v4-flash', finish_reason: 'length' };
+        const res = await ENTRY(post({ message: 'Qual o tamanho ideal?' }));
+        expect(res.status).toBe(502);
+        const body = await res.json();
+        expect(body.error).toBe(mod.PROVIDER_ERROR_MESSAGE);
+        expect(body).not.toHaveProperty('answer');
+      }
+    } finally {
+      consoleSpy.restore();
     }
   });
 
   it('resposta de modelo que não é Flash (ex.: Pro) é recusada com 502 e não chega ao usuário', async () => {
-    expect(mod.isFlashModel('deepseek-v4-flash')).toBe(true);
-    expect(mod.isFlashModel('deepseek-flash')).toBe(true);
-    for (const model of ['deepseek-v4-pro', 'claude-sonnet-4-6', '', undefined]) {
-      h.aiResult = { content: 'RESPOSTA-DO-MODELO-ERRADO', used_model_name: model };
+    // Caminho de erro: safeErrorResponse chama console.error de proposito, e o
+    // portao test:ci-core roda com STRICT_TEST_SIDE_EFFECTS=1, que reprova
+    // console.error NAO interceptado pelo proprio teste
+    // (tests/setup-strict-side-effects.ts). Interceptar aqui e o mecanismo
+    // previsto, nao mascara: o log continua sendo emitido.
+    const consoleSpy = captureConsole();
+    try {
+      expect(mod.isFlashModel('deepseek-v4-flash')).toBe(true);
+      expect(mod.isFlashModel('deepseek-flash')).toBe(true);
+      // Upgrade de modelo DeepSeek continua valendo, sem mexer em codigo.
+      expect(mod.isFlashModel('deepseek-v5-flash')).toBe(true);
+      // Flash de OUTRO provedor NAO vale: a politica e DeepSeek Flash, e o catalogo
+      // tem 6 modelos com "flash" no nome que /flash/i aceitaria por engano.
+      for (const model of [
+        'deepseek-v4-pro',
+        'deepseek-chat',
+        'claude-sonnet-4-6',
+        'gemini-2.5-flash',
+        'gemini-2.5-flash-lite',
+        'gemini-2.5-flash-image',
+        'google/gemini-2.5-flash',
+        'google/gemini-2.5-flash-image-preview',
+        'google/gemini-2.5-flash-lite',
+        '',
+        undefined,
+      ]) {
+        expect(mod.isFlashModel(model)).toBe(false);
+        h.aiResult = { content: 'RESPOSTA-DO-MODELO-ERRADO', used_model_name: model };
+        const res = await ENTRY(post({ message: 'oi' }));
+        expect(res.status).toBe(502);
+        expect(JSON.stringify(await res.json())).not.toContain('RESPOSTA-DO-MODELO-ERRADO');
+      }
+    } finally {
+      consoleSpy.restore();
+    }
+  });
+
+  it('sem X-Request-Id, o id devolvido na falha e o MESMO usado nos logs', async () => {
+    // getOrCreateRequestId gera UUID novo a cada chamada sem header
+    // (_shared/request-id.ts): chamando duas vezes, o cliente recebia um id que
+    // nao localiza log nenhum, e a correlacao de suporte se perdia.
+    const consoleSpy = captureConsole();
+    let logado = '';
+    try {
+      h.aiError = new Error('provedor fora do ar');
       const res = await ENTRY(post({ message: 'oi' }));
       expect(res.status).toBe(502);
-      expect(JSON.stringify(await res.json())).not.toContain('RESPOSTA-DO-MODELO-ERRADO');
+      logado = consoleSpy.text();
+      const body = await res.json();
+      const idDaResposta = body.request_id ?? res.headers.get('X-Request-Id');
+      expect(typeof idDaResposta).toBe('string');
+      expect(String(idDaResposta).length).toBeGreaterThan(7);
+      // Nao basta "o id aparece no log": safeErrorResponse loga o PROPRIO id que
+      // devolve, entao essa assercao passaria mesmo com o defeito. O que importa
+      // e o id da linha do HANDLER (provider_error), que e o que correlaciona com
+      // a decisao de roteamento. Com o defeito, esse e outro UUID.
+      const doHandler = /\[mockup-assistant\] provider_error[\s\S]{0,40}?"request_id":"([^"]+)"/.exec(logado);
+      expect(doHandler, 'log provider_error do handler nao encontrado').not.toBeNull();
+      expect(doHandler?.[1]).toBe(String(idDaResposta));
+    } finally {
+      consoleSpy.restore();
+      h.aiError = null;
     }
   });
 

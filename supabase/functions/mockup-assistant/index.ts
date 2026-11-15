@@ -31,9 +31,29 @@ export const PROVIDER_ERROR_MESSAGE =
 /** Cota mensal de IA do usuário esgotada (mesmo texto da edge expert-chat). */
 export const QUOTA_ERROR_MESSAGE = 'Limite mensal de IA atingido. Contate o administrador.';
 
-/** Política do dono: este chat usa SOMENTE o DeepSeek Flash, nunca o Pro. */
+/**
+ * Política do dono: este chat usa SOMENTE o DeepSeek Flash, nunca o Pro.
+ *
+ * `/flash/i` NÃO serve: o catálogo tem 6 outros modelos com "flash" no nome
+ * (gemini-2.5-flash, -flash-lite, -flash-image e os três via Lovable), e todos
+ * passariam. O roteador devolve `used_model_name = cand.modelName`, o nome puro
+ * do modelo (ai-router/index.ts:389), então a conferência é por identificador,
+ * com o prefixo de provedor tolerado caso o formato mude.
+ */
+// Familia DeepSeek Flash: `deepseek-flash`, `deepseek-v4-flash` e o que vier
+// depois (v5...). Lista exata travaria o assistente no dia de um upgrade de
+// modelo; este padrao sobrevive a isso e continua barrando o que importa:
+//   deepseek-v4-pro            -> NAO (nao termina em flash)
+//   gemini-2.5-flash           -> NAO (nao e da familia deepseek)
+//   gemini-2.5-flash-lite      -> NAO
+//   gemini-2.5-flash-image     -> NAO
+//   google/gemini-2.5-flash    -> NAO (prefixo de provedor removido antes)
+const DEEPSEEK_FLASH_RE = /^deepseek-(?:[a-z0-9.-]*-)?flash$/;
+
 export function isFlashModel(name: unknown): boolean {
-  return typeof name === 'string' && /flash/i.test(name);
+  if (typeof name !== 'string') return false;
+  const puro = name.includes('/') ? name.slice(name.lastIndexOf('/') + 1) : name;
+  return DEEPSEEK_FLASH_RE.test(puro.trim().toLowerCase());
 }
 
 /** Contexto da tela (opcional e limitado). */
@@ -172,8 +192,12 @@ export async function handleMockupAssistantRequest(
 export async function serveMockupAssistant(req: Request): Promise<Response> {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders });
+  // Uma única vez: getOrCreateRequestId gera UUID novo a cada chamada quando não
+  // há header (request-id.ts:17-24), então chamá-lo de novo no catch devolvia ao
+  // cliente um id que não localiza nenhum log.
+  const requestId = getOrCreateRequestId(req);
   try {
-    return await handleMockupAssistantRequest(req, corsHeaders, getOrCreateRequestId(req));
+    return await handleMockupAssistantRequest(req, corsHeaders, requestId);
   } catch (err) {
     const http = err as { status?: number; message?: string };
     // Erro de borda (auth do _shared ou provedor indisponível): MOSTRA status e
@@ -182,7 +206,7 @@ export async function serveMockupAssistant(req: Request): Promise<Response> {
     return safeErrorResponse(err, {
       corsHeaders,
       status: http.status,
-      requestId: getOrCreateRequestId(req),
+      requestId,
       publicMessage: http.message,
     });
   }

@@ -99,7 +99,11 @@ export const anthropicNativeAdapter: Adapter = {
     if (!resp.ok) {
       const text = await resp.text().catch(() => "");
       const cls = classifyHttpStatus(resp.status);
-      throw new AdapterError(`HTTP ${resp.status}: ${text.slice(0, 500)}`, {
+      // O corpo da resposta do provedor NAO entra na mensagem: ai-router/index.ts
+      // copia `err.message` para outcomes.error_message (:405) e para console.warn
+      // (:411), e um provedor que ecoa o prompt deixaria conteudo do cliente no log
+      // e no historico de roteamento. O corpo segue em `raw`, que nao e logado.
+      throw new AdapterError(`HTTP ${resp.status}`, {
         status: resp.status, retryable: cls.retryable, errorKind: cls.kind, raw: text,
       });
     }
