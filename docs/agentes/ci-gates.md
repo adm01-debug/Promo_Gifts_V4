@@ -6,13 +6,14 @@ Se algo aqui divergir da realidade, corrija ESTE arquivo no mesmo PR do fix.
 
 ## Gates obrigatórios (required checks em `main`)
 
-Lista oficial do que **deve** ser required em `.github/required-checks.json` (5 nomes):
-**"Gate Final - Deploy Ready"** (`deploy-gates.yml`, agrega todos os gates abaixo), "Compare GitHub × Canonical"
-(`edge-functions-drift-check.yml`), "Analyze (javascript-typescript)" (`codeql.yml`), "Gate E23 - Secret Scan
-(gitleaks)" (`deploy-gates.yml`) e "Assert Gate Final is required on main". Estado real conferido em 2026-11-07
-(`gh api …/branches/main/protection` e `…/rules/branches/main`): só **"Gate Final - Deploy Ready"** está
-required de fato — os outros 4 nomes existem como `name:` de job mas não são exigidos pela proteção. PR que
-altere um `name:` de job desses workflows atualiza o JSON junto, senão o Branch Protection Sentinel alerta.
+Lista oficial em `.github/required-checks.json` → `rulesets[main].required_checks` (**3 nomes**, desde a #3659):
+**"Gate Final - Deploy Ready"** (`deploy-gates.yml`, agrega todos os gates abaixo), "Analyze
+(javascript-typescript)" (`codeql.yml`) e "Gate E23 - Secret Scan (gitleaks)" (`deploy-gates.yml`).
+"Compare GitHub × Canonical" (`edge-functions-drift-check.yml`) e "Assert Gate Final is required on main"
+saíram do JSON para `_removidos` na #3659: nunca estiveram no ruleset ativo, e os jobs continuam existindo e
+rodando. Estado real da proteção (`…/rules/branches/main`): `strict=true` e **só "Gate Final - Deploy Ready"**
+é exigido de fato — os outros rodam sem bloquear. PR que altere um `name:` de job desses workflows atualiza o
+JSON junto, senão o Required Checks Guard alerta.
 
 Tipo `job` = job independente no Actions (procure pelo `name:` do job); `step` = passo dentro de um job
 agregador (`static-gates`, `drift-gates`, `security-gates` ou `build`; procure pelo `- name:` do step).
@@ -60,16 +61,16 @@ agregador (`static-gates`, `drift-gates`, `security-gates` ou `build`; procure p
 
 | Trigger | Workflows principais | Propósito |
 |---|---|---|
-| **PR** | `deploy-gates.yml` (Gate Final) | Todos os gates obrigatórios. Bypass docs-only (E14): o job "Detectar mudanças" (`deploy-gates.yml:71-107`, `dorny/paths-filter`) só marca a PR como código se tocar os paths do filtro `code:` (`src/**`, `scripts/**`, `supabase/**`, `tests/**`, `e2e/**`, `playwright/**`, `.github/workflows/**`, `.github/actions/**`, `package*.json`, `tsconfig*.json`, `vite.config.*`, `playwright.config.*`, `.nvmrc`, `eslint.config*`). `AGENTS.md`, `CLAUDE.md`, `docs/**` e qualquer outro `.md` **não** estão no filtro: PR só com eles é docs-only — os gates de código reportam `success` sem executar e o e2e-smoke é pulado |
-| **PR** | `workflow-lint.yml` | actionlint + shellcheck |
-| **PR** | `required-checks-guard.yml` | Checks fantasmas + divergência required-checks.json |
+| **PR** | `deploy-gates.yml` (Gate Final) | Todos os gates obrigatórios. Bypass docs-only (E14): o job "Detectar mudanças" (`deploy-gates.yml:71-107`, `dorny/paths-filter`) só marca a PR como código se tocar os paths do filtro `code:` (`src/**`, `scripts/**`, `supabase/**`, `tests/**`, `e2e/**`, `playwright/**`, `.github/workflows/**`, `.github/actions/**`, `package*.json`, `tsconfig*.json`, `vite.config.*`, `playwright.config.*`, `.nvmrc`, `eslint.config*`). O filtro inclui ainda os baselines da raiz (`.*-baseline*`, `bundle-size-baseline.json`), que são código de portão. `AGENTS.md`, `CLAUDE.md`, `docs/**` e qualquer outro `.md` **não** estão no filtro: PR só com eles é docs-only — os gates de código reportam `success` sem executar e o e2e-smoke é pulado |
+| **PR** | `static-checks.yml` | Checagens estáticas consolidadas: actionlint + shellcheck, no-prod-leak, select-columns, untypedFrom, checks fantasmas (E71), allowlist, doctor/test da automação, unit de OptimizedImage + URL-state e recibo de migration (só quando o PR toca `supabase/migrations/**`) |
+| **PR (só nos paths que ele valida)** | `required-checks-guard.yml` | Divergência do `required-checks.json` × rulesets efetivos + inventário de secrets (`docs/ci/SEGREDOS.md`, `scripts/check-secrets-inventory.mjs`) |
 | **push: main** | `deploy-gates.yml` + `codeql.yml` | Gate Final + scan de segurança |
 | **push: main** | `ddl-out-of-band-detector.yml` | Detecta DDL fora do fluxo |
 | **schedule (diário)** | `required-checks-guard.yml` | Auditoria de checks |
 | **schedule (semanal)** | `codeql.yml` | Scan completo seg 09:33 UTC |
 | **schedule (semanal)** | `ddl-out-of-band-detector.yml` | Drift do ledger |
 | **schedule (30 min)** | `uptime-monitor.yml` | Health check externo |
-| **schedule (10 min) + push: main** | `contexto.yml` | Contexto vivo para agentes na branch `contexto` (código, banco read-only, regras) |
+| **schedule (1×/h, minuto 7) + push: main** | `contexto.yml` | Contexto vivo para agentes na branch `contexto` (código, banco read-only, regras) |
 | **workflow_dispatch** | `db-apply-migration.yml` | ÚNICO caminho para migration em prod |
 | **workflow_dispatch** | `deploy-edge-functions.yml` | ÚNICO caminho para deploy de edge function |
 | **workflow_dispatch** | `schema-snapshot-export.yml` | Gira baseline do drift-check |

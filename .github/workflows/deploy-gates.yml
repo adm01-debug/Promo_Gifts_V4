@@ -101,11 +101,12 @@ jobs:
               - 'playwright.config.*'
               - '.nvmrc'
               - 'eslint.config*'
-              # baselines na raiz (eslint, as-assertions, file-size...) e o inventário de secrets:
-              # sem isto um PR que só mexe neles é docs_only e o Gate 1 (lint:baseline, 1.14) é pulado.
+              # baselines na raiz (eslint, as-assertions, file-size...): sem isto um PR que só
+              # mexe neles é docs_only e o Gate 1 (lint:baseline) é pulado. O inventário de
+              # secrets (docs/ci/SEGREDOS.md) NÃO entra aqui: é .md e entraria em conflito com
+              # o E14; quem o valida em PR é o required-checks-guard.yml (paths próprios).
               - '.*-baseline*'  # inclui .tsc-ratchet-baseline (Gate 1.7), que não tem extensão
               - 'bundle-size-baseline.json'
-              - 'docs/ci/SEGREDOS.md'
       - name: Determinar docs_only
         id: result
         run: |
