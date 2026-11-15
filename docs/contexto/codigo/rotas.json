@@ -4503,6 +4503,7 @@
     "useIncidentTimeline72h",
     "useInfiniteQuery",
     "useInfiniteScroll",
+    "useIntegrationsHealthCard",
     "useIntelligenceBadgeSettings",
     "useIntelligenceBadgeSettingsValue",
     "useInvalidateTecnicas",
@@ -4823,6 +4824,7 @@
     "useIncidentSeverityCounts",
     "useIncidentTimeline72h",
     "useInfiniteScroll",
+    "useIntegrationsHealthCard",
     "useIntelligenceBadgeSettings",
     "useIntelligenceBadgeSettingsValue",
     "useInvalidateTecnicas",
@@ -5119,7 +5121,7 @@
     "switch",
     "toolbar"
    ],
-   "arquivos_puxados": 552
+   "arquivos_puxados": 554
   },
   {
    "protegida": true,

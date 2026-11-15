@@ -15,7 +15,7 @@
   "hooks": [
    "src/hooks (291)",
    "recovery/src-legacy (196)",
-   "src/components (75)"
+   "src/components (76)"
   ],
   "servicos_logica": [
    "src/lib (227)",
@@ -24,7 +24,7 @@
   ],
   "testes": [
    "tests/ (1012)",
-   "co-localizado (__tests__) (637)",
+   "co-localizado (__tests__) (638)",
    "e2e/ (627)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(admin): auditoria do Connections Hub exige confirmação antes de ações destrutivas (#3615)",
    "fix(migrations): registra o recibo E15 da 20261107134429 (destrava o Gate 1.13.3) (#3639)",
    "fix(security): documenta deny-all intencional de crm_seller_identity_links (main vermelha) (#3638)",
    "fix(crm): vendedor com vínculo fixo em vez de identificação por e-mail (#3636)",
-   "Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230",
-   "fix(crm): declara isencao de soft-delete na tabela de vinculo de vendedor"
+   "Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

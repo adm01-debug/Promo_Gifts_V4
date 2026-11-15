@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 614,
+ "total": 615,
  "hooks": [
   {
    "arquivo": "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
@@ -4499,9 +4499,9 @@
     "src/components/admin/connections/CredentialSourceBadge.tsx",
     "src/components/admin/connections/CredentialsSourceFilter.tsx",
     "src/components/admin/connections/CredentialsSourceIndicator.tsx",
-    "src/components/admin/connections/IntegrationsHealthCard.tsx",
     "src/components/admin/connections/SecretField.tsx",
     "src/components/admin/connections/TestAllConnectionsButton.tsx",
+    "src/components/admin/connections/useIntegrationsHealthCard.ts",
     "src/pages/admin/AdminConexoesPage.tsx"
    ],
    "coberto_por_testes": 3
@@ -4648,6 +4648,37 @@
    "usado_por": 1,
    "usado_por_arquivos": [
     "src/components/admin/connections/IncidentTimeline72h.tsx"
+   ],
+   "coberto_por_testes": 0
+  },
+  {
+   "arquivo": "src/components/admin/connections/useIntegrationsHealthCard.ts",
+   "hooks_exportados": [
+    "useIntegrationsHealthCard"
+   ],
+   "linhas": 246,
+   "dominio": "components/admin",
+   "tabelas": [
+    "connection_test_history",
+    "external_connections",
+    "mcp_api_keys",
+    "outbound_webhooks",
+    "secret_rotation_log",
+    "webhook_deliveries"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useAuth",
+    "useCredentialsSourceFilter",
+    "useMemo",
+    "useQuery",
+    "useState"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/components/admin/connections/IntegrationsHealthCard.tsx"
    ],
    "coberto_por_testes": 0
   },
@@ -6252,7 +6283,7 @@
     "recovery/src-legacy/src/hooks/useOnboarding.ts",
     "recovery/src-legacy/src/hooks/useProductAnalytics.ts"
    ],
-   "coberto_por_testes": 36
+   "coberto_por_testes": 37
   },
   {
    "arquivo": "src/contexts/BICategoryFocusContext.tsx",

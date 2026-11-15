@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4c912e1938920b85e77fa19cdf73a8dc6b68ec71",
+  "commit": "7d873e33be7bdf9f6d26edd4dde7c68d56edd93c",
   "branch": "main",
-  "data_commit": "2026-11-15T00:33:48Z",
+  "data_commit": "2026-11-15T00:48:24Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "7d873e33",
+    "data": "2026-11-15",
+    "assunto": "fix(admin): auditoria do Connections Hub exige confirmação antes de ações destrutivas (#3615)"
+   },
    {
     "sha": "4c912e19",
     "data": "2026-11-15",
@@ -126,18 +131,13 @@
     "sha": "34a8b603",
     "data": "2026-11-14",
     "assunto": "merge: claude/fix-suggestions-sem-useadvancedfilters-261114-1004"
-   },
-   {
-    "sha": "34301051",
-    "data": "2026-11-14",
-    "assunto": "merge: claude/fix-stock-pagination-sem-count-exact-261114-1007"
    }
   ],
-  "arquivos_mudados_7d": 2114,
+  "arquivos_mudados_7d": 2118,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 640
+    "mudancas": 644
    },
    {
     "pasta": "src/components/products",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 189
+    "mudancas": 188
    },
    {
     "pasta": "src/components/inventory",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 587
+    "commits": 586
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10184,
-  "arquivos_codigo": 5239,
-  "linhas_codigo": 999759,
+  "arquivos_total": 10187,
+  "arquivos_codigo": 5242,
+  "linhas_codigo": 1000082,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
   "modulos": 158,
   "componentes": 1225,
-  "hooks": 614,
+  "hooks": 615,
   "edge_functions": 111,
   "tabelas": 546,
   "migrations": 3085,
   "cron_jobs": 122,
-  "testes": 2470,
+  "testes": 2471,
   "workflows": 98,
   "scripts": 272,
   "docs_md": 1023
@@ -1883,8 +1883,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1361,
-   "linhas": 273474
+   "arquivos": 1364,
+   "linhas": 273774
   },
   "src/config": {
    "arquivos": 1,
@@ -1960,7 +1960,7 @@
   },
   "supabase/functions": {
    "arquivos": 271,
-   "linhas": 50195
+   "linhas": 50218
   },
   "tailwind.config.ts": {
    "arquivos": 1,

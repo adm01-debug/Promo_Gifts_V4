@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4c912e1938` · branch `main` · 2026-11-15 00:36 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `7d873e33be` · branch `main` · 2026-11-15 00:49 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1931,6 +1931,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ConnectionStatus | active \| error \| unconfigured | `src/components/admin/connections/connectionStatus.ts` |
 | TargetZone | health \| operation | `src/components/admin/connections/incidentZoneMapping.ts` |
 | SecretErrorCategory | conflict \| network \| permission \| rate_limit \| server \| timeout \| unknown \| validation \| whitelist | `src/components/admin/connections/secretErrors.ts` |
+| MetricTone | default \| destructive \| success \| warning | `src/components/admin/connections/useIntegrationsHealthCard.ts` |
 | PulseSeverity | P0 \| P1 \| P2 | `src/components/admin/connections/usePulseBarStatus.ts` |
 | IncidentSeverity | P0 \| P1 \| P2 | `src/components/admin/connections/useRecentIncidents.ts` |
 | IncidentSource | notification \| test_history | `src/components/admin/connections/useRecentIncidents.ts` |
@@ -5777,14 +5778,16 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `setTimeout(() => setCopied(false), 1500);` | `src/components/admin/connections/FieldSourceDrillDownDialog.tsx` |
 | `const dayMs = 24 * 60 * 60 * 1000;` | `src/components/admin/connections/InboundEventsPanel.tsx` |
 | `const since = new Date(Date.now() - PERIOD_HOURS[period] * 60 * 60 * 1000).toISOString();` | `src/components/admin/connections/InboundEventsPanel.tsx` |
-| `const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();` | `src/components/admin/connections/IntegrationsHealthCard.tsx` |
-| `const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();` | `src/components/admin/connections/IntegrationsHealthCard.tsx` |
-| `const sinceLastHour = new Date(Date.now() - 60 * 60 * 1000).toISOString();` | `src/components/admin/connections/IntegrationsHealthCard.tsx` |
 | `const maxMs = FULL_SCOPE_MAX_TTL_DAYS * 24 * 60 * 60 * 1000;` | `src/components/admin/connections/IssueMcpKeyForm.tsx` |
 | `const days = Math.floor(ms / (24 * 60 * 60 * 1000));` | `src/components/admin/connections/McpTab.tsx` |
 | `const t = window.setTimeout(() => { ping(); }, 1200);` | `src/components/admin/connections/SecretsManagerHealthPanel.tsx` |
+| `const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();` | `src/components/admin/connections/pendingDestructiveCounts.ts` |
+| `const sinceLastHour = new Date(Date.now() - 60 * 60 * 1000).toISOString();` | `src/components/admin/connections/pendingDestructiveCounts.ts` |
 | `const TTL_MS = 30 * 60 * 1000; // 30 minutos` | `src/components/admin/connections/useFocusContext.ts` |
 | `const WINDOW_MS = 72 * 60 * 60 * 1000;` | `src/components/admin/connections/useIncidentTimeline72h.ts` |
+| `const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();` | `src/components/admin/connections/useIntegrationsHealthCard.ts` |
+| `const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();` | `src/components/admin/connections/useIntegrationsHealthCard.ts` |
+| `const sinceLastHour = new Date(Date.now() - 60 * 60 * 1000).toISOString();` | `src/components/admin/connections/useIntegrationsHealthCard.ts` |
 | `const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();` | `src/components/admin/connections/usePulseBarStatus.ts` |
 | `const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();` | `src/components/admin/connections/usePulseBarStatus.ts` |
 | `const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();` | `src/components/admin/connections/useRecentIncidents.ts` |
@@ -5893,9 +5896,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;` | `src/hooks/bi/useClientCategoryAffinity.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientCategoryAffinity.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientOrdersHistory.ts` |
-| `staleTime: 10 * 60 * 1000,` | `src/hooks/bi/useClientSeasonality.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientVsIndustry.ts` |
-| … +381 linhas — lista completa em `context.json` | |
+| … +383 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -5936,10 +5937,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | 50 | `src/components/admin/connections/ConnectionTimelineDrawer.tsx` |
 | 20 | `src/components/admin/connections/ExternalConnectionsSyncLogPanel.tsx` |
 | 500 | `src/components/admin/connections/InboundEventsPanel.tsx` |
-| 1 | `src/components/admin/connections/IntegrationsHealthCard.tsx` |
 | 1 | `src/components/admin/connections/LastSyncRunPanel.tsx` |
 | 200 | `src/components/admin/connections/useIncidentDetails.ts` |
 | 80 | `src/components/admin/connections/useIncidentTimeline72h.ts` |
+| 1 | `src/components/admin/connections/useIntegrationsHealthCard.ts` |
 | 1 | `src/components/admin/connections/usePulseBarStatus.ts` |
 | 15 | `src/components/admin/connections/useRecentIncidents.ts` |
 | 20 | `src/components/admin/connections/useRecentIncidents.ts` |
@@ -6379,7 +6380,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | DOWNLOAD_SIZE_LIMIT | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_ACTION_AFTER | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_JSON_KEY | `scripts/diagnose-personalization-artifact.py` |
-| … +1249 linhas — lista completa em `context.json` | |
+| … +1251 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6505,7 +6506,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21245 testes em 2148 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21249 testes em 2149 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6809,7 +6810,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/product-webhook.test.ts` | 18 | product-webhook · evento product.created · retorna 200 para evento product.created válido · evento product.updated … |
 | `tests/hooks/useGlobalSearch-voice.test.ts` | 18 | Voice Action Handler Logic · navigate action · should extract route from navigate action · should handle navigate without route gracefully … |
 | `tests/lib/product-types.test.ts` | 18 | getProductImageUrl · should prefer primary_image_url · should fallback to image_url · should fallback to first image in images array … |
-| … +1848 linhas — lista completa em `context.json` | | |
+| … +1849 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7143,6 +7144,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * True se URL + Service estão presentes (mínimo para testar). */ | `src/components/admin/connections/TestAllConnectionsButton.tsx` |
 | Invalida apenas as queryKeys relevantes da zona via React Query e | `src/components/admin/connections/ZoneRefreshButton.tsx` |
 | * Tom semântico do header — afeta apenas o ícone + barra lateral */ | `src/components/admin/connections/ZoneSection.tsx` |
+| Extraído de IntegrationsHealthCard.tsx para manter os arquivos sob o limite | `src/components/admin/connections/pendingDestructiveCounts.ts` |
 | All Connections components must use these helpers so the user | `src/components/admin/connections/secretErrors.ts` |
 | * Short tag rendered as a chip ("Permissão", "Validação", ...). */ | `src/components/admin/connections/secretErrors.ts` |
 | * Stable code so callers can branch (e.g., disable retry on permission). */ | `src/components/admin/connections/secretErrors.ts` |
@@ -7158,6 +7160,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Expira contexto antigo | `src/components/admin/connections/useFocusContext.ts` |
 | * Apenas leitura inicial (sem reagir). Útil para restauração one-shot no mount. */ | `src/components/admin/connections/useFocusContext.ts` |
 | garante JWT pronto + permissão admin | `src/components/admin/connections/useIncidentTimeline72h.ts` |
+| Extraído de IntegrationsHealthCard.tsx para manter os arquivos sob o limite de | `src/components/admin/connections/useIntegrationsHealthCard.ts` |
 | garante JWT pronto + permissão admin | `src/components/admin/connections/useRecentIncidents.ts` |
 | - Mudança de P0→P1 (downgrade) — apenas escalations geram toast | `src/components/admin/connections/useSeverityChangeNotifier.ts` |
 | Must throw on failure — proceeding would create duplicate components. | `src/components/admin/personalization/GroupInheritance.tsx` |
@@ -7275,6 +7278,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | limite quando o cadastro realmente o traz — nada de valor fixo no código. | `src/components/mockup/TechniqueTooltip.tsx` |
 | Cores — limite do cadastro quando existir; senão, estimativa rotulada */} | `src/components/mockup/TechniqueTooltip.tsx` |
 | Laser detection — must come before UV check since "Laser UV" exists | `src/components/mockup/techniqueColorUtils.ts` |
-| a caixa cheia é um limite superior: a bbox nunca subestima a marca girada e um | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
-| * Filtro de técnica EFETIVO — o mesmo que a prévia aplica. Decide se há regra. */ | `src/components/mockup/logo-editor/LogoPreviewCanvas.tsx` |
-| … +1262 linhas — lista completa em `context.json` | |
+| … +1264 linhas — lista completa em `context.json` | |

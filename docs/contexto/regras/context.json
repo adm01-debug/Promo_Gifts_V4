@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "4c912e1938920b85e77fa19cdf73a8dc6b68ec71",
+  "sha": "7d873e33be7bdf9f6d26edd4dde7c68d56edd93c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 00:36 UTC",
-  "files_total": 10112,
-  "code_files": 8639,
-  "code_lines": 1217892
+  "generated_at": "2026-11-15 00:49 UTC",
+  "files_total": 10115,
+  "code_files": 8642,
+  "code_lines": 1218215
  },
  "version": "1.3.2",
- "facts_hash": "98ea9fbf270e16bb",
+ "facts_hash": "9b6df5a2b4049086",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1222,8 +1222,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3401,
-   ".ts": 2923,
-   ".tsx": 1866,
+   ".ts": 2925,
+   ".tsx": 1867,
    ".mjs": 436,
    ".py": 13,
    ".js": 7
@@ -142947,7 +142947,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1616,
+  "components_count": 1619,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -144252,6 +144252,10 @@
    {
     "name": "useIncidentTimeline72h",
     "file": "src/components/admin/connections/useIncidentTimeline72h.ts"
+   },
+   {
+    "name": "useIntegrationsHealthCard",
+    "file": "src/components/admin/connections/useIntegrationsHealthCard.ts"
    },
    {
     "name": "usePulseBarStatus",
@@ -147486,8 +147490,8 @@
   },
   {
    "module": "src/components",
-   "files": 1361,
-   "lines": 273473,
+   "files": 1364,
+   "lines": 273773,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -149041,7 +149045,7 @@
   {
    "module": "supabase/functions",
    "files": 271,
-   "lines": 50195,
+   "lines": 50218,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -150147,9 +150151,9 @@
     "select": [
      "src/components/admin/connections/ConnectionErrorDetailsDialog.tsx",
      "src/components/admin/connections/ConnectionTimelineDrawer.tsx",
-     "src/components/admin/connections/IntegrationsHealthCard.tsx",
      "src/components/admin/connections/useIncidentDetails.ts",
      "src/components/admin/connections/useIncidentTimeline72h.ts",
+     "src/components/admin/connections/useIntegrationsHealthCard.ts",
      "src/components/admin/connections/usePulseBarStatus.ts",
      "src/components/admin/connections/useRecentIncidents.ts",
      "supabase/functions/connection-tester/index.ts",
@@ -150359,8 +150363,8 @@
      "src/components/admin/connections/ConnectionErrorDetailsDialog.tsx",
      "src/components/admin/connections/ConnectionTimelineDrawer.tsx",
      "src/components/admin/connections/DataSourceDebugTab.tsx",
-     "src/components/admin/connections/IntegrationsHealthCard.tsx",
      "src/components/admin/connections/useIncidentDetails.ts",
+     "src/components/admin/connections/useIntegrationsHealthCard.ts",
      "src/components/admin/connections/usePulseBarStatus.ts",
      "src/hooks/intelligence/useConnectionsOverview.ts",
      "src/pages/admin/AdminConexoesStatusPage.tsx",
@@ -150543,6 +150547,7 @@
    "inbound_webhook_events": {
     "select": [
      "src/components/admin/connections/InboundEventsPanel.tsx",
+     "src/components/admin/connections/pendingDestructiveCounts.ts",
      "supabase/functions/webhook-inbound/index.ts",
      "supabase/functions/webhook-inbound/integration_test.ts"
     ],
@@ -150818,8 +150823,8 @@
    },
    "mcp_api_keys": {
     "select": [
-     "src/components/admin/connections/IntegrationsHealthCard.tsx",
      "src/components/admin/connections/McpTab.tsx",
+     "src/components/admin/connections/useIntegrationsHealthCard.ts",
      "src/components/admin/security/keys/audit/useStepUpAttempts.ts",
      "src/components/admin/security/keys/useMcpKeys.ts",
      "supabase/functions/_shared/connection-test-runner.ts",
@@ -150969,9 +150974,9 @@
    },
    "outbound_webhooks": {
     "select": [
-     "src/components/admin/connections/IntegrationsHealthCard.tsx",
      "src/components/admin/connections/WebhooksTab.tsx",
      "src/components/admin/connections/useIncidentDetails.ts",
+     "src/components/admin/connections/useIntegrationsHealthCard.ts",
      "src/components/admin/connections/usePulseBarStatus.ts",
      "supabase/functions/connections-health-check/index.ts",
      "supabase/functions/webhook-dispatcher/index.ts"
@@ -151654,7 +151659,7 @@
    },
    "secret_rotation_log": {
     "select": [
-     "src/components/admin/connections/IntegrationsHealthCard.tsx",
+     "src/components/admin/connections/useIntegrationsHealthCard.ts",
      "src/components/admin/connections/usePulseBarStatus.ts",
      "supabase/functions/connections-health-check/index.ts",
      "supabase/functions/secrets-manager/index.ts"
@@ -152090,8 +152095,9 @@
    "webhook_deliveries": {
     "select": [
      "src/components/admin/connections/FailedDeliveriesPanel.tsx",
-     "src/components/admin/connections/IntegrationsHealthCard.tsx",
+     "src/components/admin/connections/pendingDestructiveCounts.ts",
      "src/components/admin/connections/useIncidentDetails.ts",
+     "src/components/admin/connections/useIntegrationsHealthCard.ts",
      "src/components/admin/connections/usePulseBarStatus.ts",
      "supabase/functions/webhook-dispatcher/index.ts"
     ],
@@ -152553,6 +152559,7 @@
     "ip_address",
     "payload",
     "processed",
+    "received_at",
     "signature_valid"
    ],
    "integration_credentials": [
@@ -159523,6 +159530,11 @@
     "values": "conflict | network | permission | rate_limit | server | timeout | unknown | validation | whitelist"
    },
    {
+    "file": "src/components/admin/connections/useIntegrationsHealthCard.ts",
+    "name": "MetricTone",
+    "values": "default | destructive | success | warning"
+   },
+   {
     "file": "src/components/admin/connections/usePulseBarStatus.ts",
     "name": "PulseSeverity",
     "values": "P0 | P1 | P2"
@@ -162665,10 +162677,6 @@
     "msg": "Falha ao atualizar do banco"
    },
    {
-    "file": "src/components/admin/connections/IntegrationsHealthCard.tsx",
-    "msg": "Falha na auditoria: ${toErrorMessage(err)}"
-   },
-   {
     "file": "src/components/admin/connections/IssueMcpKeyForm.tsx",
     "msg": "Falha ao emitir chave"
    },
@@ -162779,6 +162787,18 @@
    {
     "file": "src/components/admin/connections/WebhooksTab.tsx",
     "msg": "Preencha nome, URL e ao menos um evento"
+   },
+   {
+    "file": "src/components/admin/connections/useIntegrationsHealthCard.ts",
+    "msg": "Falha ao calcular impacto: ${toErrorMessage(err)}"
+   },
+   {
+    "file": "src/components/admin/connections/useIntegrationsHealthCard.ts",
+    "msg": "Falha ao executar: ${toErrorMessage(err)}"
+   },
+   {
+    "file": "src/components/admin/connections/useIntegrationsHealthCard.ts",
+    "msg": "Falha na auditoria: ${toErrorMessage(err)}"
    },
    {
     "file": "src/components/admin/hooks/useGroupPersonalization.ts",
@@ -168025,6 +168045,10 @@
     "text": "* Tom semântico do header — afeta apenas o ícone + barra lateral */"
    },
    {
+    "file": "src/components/admin/connections/pendingDestructiveCounts.ts",
+    "text": "Extraído de IntegrationsHealthCard.tsx para manter os arquivos sob o limite"
+   },
+   {
     "file": "src/components/admin/connections/secretErrors.ts",
     "text": "All Connections components must use these helpers so the user"
    },
@@ -168083,6 +168107,10 @@
    {
     "file": "src/components/admin/connections/useIncidentTimeline72h.ts",
     "text": "garante JWT pronto + permissão admin"
+   },
+   {
+    "file": "src/components/admin/connections/useIntegrationsHealthCard.ts",
+    "text": "Extraído de IntegrationsHealthCard.tsx para manter os arquivos sob o limite de"
    },
    {
     "file": "src/components/admin/connections/useRecentIncidents.ts",
@@ -213337,18 +213365,6 @@
     "line": "const since = new Date(Date.now() - PERIOD_HOURS[period] * 60 * 60 * 1000).toISOString();"
    },
    {
-    "file": "src/components/admin/connections/IntegrationsHealthCard.tsx",
-    "line": "const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();"
-   },
-   {
-    "file": "src/components/admin/connections/IntegrationsHealthCard.tsx",
-    "line": "const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();"
-   },
-   {
-    "file": "src/components/admin/connections/IntegrationsHealthCard.tsx",
-    "line": "const sinceLastHour = new Date(Date.now() - 60 * 60 * 1000).toISOString();"
-   },
-   {
     "file": "src/components/admin/connections/IssueMcpKeyForm.tsx",
     "line": "const maxMs = FULL_SCOPE_MAX_TTL_DAYS * 24 * 60 * 60 * 1000;"
    },
@@ -213361,12 +213377,32 @@
     "line": "const t = window.setTimeout(() => { ping(); }, 1200);"
    },
    {
+    "file": "src/components/admin/connections/pendingDestructiveCounts.ts",
+    "line": "const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();"
+   },
+   {
+    "file": "src/components/admin/connections/pendingDestructiveCounts.ts",
+    "line": "const sinceLastHour = new Date(Date.now() - 60 * 60 * 1000).toISOString();"
+   },
+   {
     "file": "src/components/admin/connections/useFocusContext.ts",
     "line": "const TTL_MS = 30 * 60 * 1000; // 30 minutos"
    },
    {
     "file": "src/components/admin/connections/useIncidentTimeline72h.ts",
     "line": "const WINDOW_MS = 72 * 60 * 60 * 1000;"
+   },
+   {
+    "file": "src/components/admin/connections/useIntegrationsHealthCard.ts",
+    "line": "const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();"
+   },
+   {
+    "file": "src/components/admin/connections/useIntegrationsHealthCard.ts",
+    "line": "const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();"
+   },
+   {
+    "file": "src/components/admin/connections/useIntegrationsHealthCard.ts",
+    "line": "const sinceLastHour = new Date(Date.now() - 60 * 60 * 1000).toISOString();"
    },
    {
     "file": "src/components/admin/connections/usePulseBarStatus.ts",
@@ -226535,6 +226571,22 @@
    {
     "file": "src/components/admin/connections/__tests__/ConnectionsOverviewTable.test.tsx",
     "name": "should handle empty state"
+   },
+   {
+    "file": "src/components/admin/connections/__tests__/IntegrationsHealthCard.confirm.test.tsx",
+    "name": "IntegrationsHealthCard — confirmação das ações destrutivas"
+   },
+   {
+    "file": "src/components/admin/connections/__tests__/IntegrationsHealthCard.confirm.test.tsx",
+    "name": "não dispara a ação destrutiva ao clicar no botão: só abre a confirmação"
+   },
+   {
+    "file": "src/components/admin/connections/__tests__/IntegrationsHealthCard.confirm.test.tsx",
+    "name": "dispara a ação destrutiva somente depois de confirmar"
+   },
+   {
+    "file": "src/components/admin/connections/__tests__/IntegrationsHealthCard.confirm.test.tsx",
+    "name": "cancelar a confirmação não dispara a ação destrutiva"
    },
    {
     "file": "src/components/admin/products/__tests__/ProductFormSchema.test.ts",
@@ -339169,10 +339221,6 @@
     "limit": "500"
    },
    {
-    "file": "src/components/admin/connections/IntegrationsHealthCard.tsx",
-    "limit": "1"
-   },
-   {
     "file": "src/components/admin/connections/LastSyncRunPanel.tsx",
     "limit": "1"
    },
@@ -339183,6 +339231,10 @@
    {
     "file": "src/components/admin/connections/useIncidentTimeline72h.ts",
     "limit": "80"
+   },
+   {
+    "file": "src/components/admin/connections/useIntegrationsHealthCard.ts",
+    "limit": "1"
    },
    {
     "file": "src/components/admin/connections/usePulseBarStatus.ts",
@@ -388987,14 +389039,6 @@
    },
    {
     "kind": "status",
-    "msg": "valor `destructive` para `status` usado no código não existe em nenhum enum do banco/TS",
-    "where": [
-     "compara:src/components/kit-builder/VolumeIndicator.tsx",
-     "compara:src/pages/admin/AdminClientPerformancePage.tsx"
-    ]
-   },
-   {
-    "kind": "status",
     "msg": "valor `dimension` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/components/pricing/calculator/QuantityComparisonTable.tsx",
@@ -422721,93 +422765,11 @@
   },
   "src/components/admin/connections/IntegrationsHealthCard.tsx": {
    "path": "src/components/admin/connections/IntegrationsHealthCard.tsx",
-   "lines": 486,
+   "lines": 368,
    "exports": [
     "function IntegrationsHealthCard"
    ],
-   "tables": [
-    {
-     "table": "outbound_webhooks",
-     "op": "select"
-    },
-    {
-     "table": "outbound_webhooks",
-     "op": "select"
-    },
-    {
-     "table": "webhook_deliveries",
-     "op": "select"
-    },
-    {
-     "table": "webhook_deliveries",
-     "op": "select"
-    },
-    {
-     "table": "external_connections",
-     "op": "select"
-    },
-    {
-     "table": "mcp_api_keys",
-     "op": "select"
-    },
-    {
-     "table": "secret_rotation_log",
-     "op": "select"
-    },
-    {
-     "table": "outbound_webhooks",
-     "op": "select"
-    },
-    {
-     "table": "connection_test_history",
-     "op": "select"
-    },
-    {
-     "table": "connection_test_history",
-     "op": "select"
-    }
-   ],
-   "table_cols": {
-    "outbound_webhooks": [
-     "active",
-     "auto_disabled_at",
-     "id"
-    ],
-    "webhook_deliveries": [
-     "delivered_at",
-     "success"
-    ],
-    "external_connections": [
-     "id",
-     "last_test_ok"
-    ],
-    "mcp_api_keys": [
-     "id",
-     "last_used_at",
-     "revoked_at"
-    ],
-    "secret_rotation_log": [
-     "rotated_at",
-     "secret_name"
-    ],
-    "connection_test_history": [
-     "success",
-     "tested_at",
-     "triggered_by"
-    ]
-   },
-   "errors": [
-    "Falha na auditoria: ${toErrorMessage(err)}"
-   ],
-   "doc": "IntegrationsHealthCard — Onda 9 Card read-only no topo de /admin/conexoes com auto-refresh 60s. Mostra saúde agregada de webhooks, conexões e MCP keys.",
-   "temporal": [
-    "const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();",
-    "const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();",
-    "const sinceLastHour = new Date(Date.now() - 60 * 60 * 1000).toISOString();"
-   ],
-   "pagination": [
-    "1"
-   ]
+   "doc": "IntegrationsHealthCard — Onda 9 Card read-only no topo de /admin/conexoes com auto-refresh 60s. Mostra saúde agregada de webhooks, conexões e MCP keys. Estado, leitura e ações vivem em ./useIntegrationsHealthCard (extração feita para respeitar o gate de tamanho de arquivo — sem mudança de comportame …"
   },
   "src/components/admin/connections/IssueMcpKeyForm.tsx": {
    "path": "src/components/admin/connections/IssueMcpKeyForm.tsx",
@@ -423654,6 +423616,47 @@
    ],
    "doc": "incidentZoneMapping — Onda 14 Mapeia incidentes para a zona semântica relevante de /admin/conexoes: - \"health\" → questões de saúde imediata (conexão caída, webhook auto-disabled, falhas de teste). - \"operation\" → questões operacionais/cron (auto-test parado, janela de falha, secret stale/rotação). U …"
   },
+  "src/components/admin/connections/pendingDestructiveCounts.ts": {
+   "path": "src/components/admin/connections/pendingDestructiveCounts.ts",
+   "lines": 39,
+   "exports": [
+    "interface PendingDestructiveCounts",
+    "function fetchPendingDestructiveCounts"
+   ],
+   "tables": [
+    {
+     "table": "webhook_deliveries",
+     "op": "select"
+    },
+    {
+     "table": "webhook_deliveries",
+     "op": "select"
+    },
+    {
+     "table": "inbound_webhook_events",
+     "op": "select"
+    }
+   ],
+   "table_cols": {
+    "webhook_deliveries": [
+     "delivered_at",
+     "id",
+     "success"
+    ],
+    "inbound_webhook_events": [
+     "id",
+     "received_at"
+    ]
+   },
+   "rule_comments": [
+    "Extraído de IntegrationsHealthCard.tsx para manter os arquivos sob o limite"
+   ],
+   "doc": "Contagens só-leitura usadas para compor a mensagem de confirmação das ações destrutivas do Connections Hub (retry de webhooks falhados + limpeza de logs). Extraído de IntegrationsHealthCard.tsx para manter os arquivos sob o limite de 500 linhas do gate de tamanho — comportamento idêntico.",
+   "temporal": [
+    "const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();",
+    "const sinceLastHour = new Date(Date.now() - 60 * 60 * 1000).toISOString();"
+   ]
+  },
   "src/components/admin/connections/secretErrors.ts": {
    "path": "src/components/admin/connections/secretErrors.ts",
    "lines": 200,
@@ -423945,6 +423948,113 @@
    ],
    "pagination": [
     "80"
+   ]
+  },
+  "src/components/admin/connections/useIntegrationsHealthCard.ts": {
+   "path": "src/components/admin/connections/useIntegrationsHealthCard.ts",
+   "lines": 246,
+   "exports": [
+    "type MetricTone",
+    "interface HealthData",
+    "function fetchHealth",
+    "function useIntegrationsHealthCard"
+   ],
+   "tables": [
+    {
+     "table": "outbound_webhooks",
+     "op": "select"
+    },
+    {
+     "table": "outbound_webhooks",
+     "op": "select"
+    },
+    {
+     "table": "webhook_deliveries",
+     "op": "select"
+    },
+    {
+     "table": "webhook_deliveries",
+     "op": "select"
+    },
+    {
+     "table": "external_connections",
+     "op": "select"
+    },
+    {
+     "table": "mcp_api_keys",
+     "op": "select"
+    },
+    {
+     "table": "secret_rotation_log",
+     "op": "select"
+    },
+    {
+     "table": "outbound_webhooks",
+     "op": "select"
+    },
+    {
+     "table": "connection_test_history",
+     "op": "select"
+    },
+    {
+     "table": "connection_test_history",
+     "op": "select"
+    }
+   ],
+   "table_cols": {
+    "outbound_webhooks": [
+     "active",
+     "auto_disabled_at",
+     "id"
+    ],
+    "webhook_deliveries": [
+     "delivered_at",
+     "success"
+    ],
+    "external_connections": [
+     "id",
+     "last_test_ok"
+    ],
+    "mcp_api_keys": [
+     "id",
+     "last_used_at",
+     "revoked_at"
+    ],
+    "secret_rotation_log": [
+     "rotated_at",
+     "secret_name"
+    ],
+    "connection_test_history": [
+     "success",
+     "tested_at",
+     "triggered_by"
+    ]
+   },
+   "errors": [
+    "Falha ao calcular impacto: ${toErrorMessage(err)}",
+    "Falha ao executar: ${toErrorMessage(err)}",
+    "Falha na auditoria: ${toErrorMessage(err)}"
+   ],
+   "enums": [
+    {
+     "name": "MetricTone",
+     "values": "default | destructive | success | warning"
+    }
+   ],
+   "rule_comments": [
+    "Extraído de IntegrationsHealthCard.tsx para manter os arquivos sob o limite de"
+   ],
+   "doc": "useIntegrationsHealthCard — estado, leitura e ações do IntegrationsHealthCard. Extraído de IntegrationsHealthCard.tsx para manter os arquivos sob o limite de 500 linhas do gate de tamanho. É extração pura: mesmas chamadas, mesma ordem, mesmas mensagens e mesmo tratamento de erro do componente origin …",
+   "hooks": [
+    "useIntegrationsHealthCard"
+   ],
+   "temporal": [
+    "const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();",
+    "const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();",
+    "const sinceLastHour = new Date(Date.now() - 60 * 60 * 1000).toISOString();"
+   ],
+   "pagination": [
+    "1"
    ]
   },
   "src/components/admin/connections/usePulseBarStatus.ts": {
@@ -424242,6 +424352,18 @@
     "should show status badges correctly",
     "should trigger refresh when button is clicked",
     "should handle empty state"
+   ]
+  },
+  "src/components/admin/connections/__tests__/IntegrationsHealthCard.confirm.test.tsx": {
+   "path": "src/components/admin/connections/__tests__/IntegrationsHealthCard.confirm.test.tsx",
+   "lines": 133,
+   "is_test": true,
+   "doc": "Guarda da PR #3615: as ações destrutivas do Connections Hub (reenviar webhooks falhados + apagar logs antigos) NÃO podem disparar sem confirmação explícita. \"Rodar auditoria\" segue sendo só-leitura.",
+   "tests": [
+    "IntegrationsHealthCard — confirmação das ações destrutivas",
+    "não dispara a ação destrutiva ao clicar no botão: só abre a confirmação",
+    "dispara a ação destrutiva somente depois de confirmar",
+    "cancelar a confirmação não dispara a ação destrutiva"
    ]
   },
   "src/components/admin/group-personalization/GroupComponentCard.tsx": {
@@ -485330,7 +485452,7 @@
   },
   "supabase/functions/connections-hub-audit/index.ts": {
    "path": "supabase/functions/connections-hub-audit/index.ts",
-   "lines": 217,
+   "lines": 240,
    "env": [
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
@@ -531049,10 +531171,23 @@
   }
  },
  "git": {
-  "sha": "4c912e1938920b85e77fa19cdf73a8dc6b68ec71",
+  "sha": "7d873e33be7bdf9f6d26edd4dde7c68d56edd93c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7d873e3",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(admin): auditoria do Connections Hub exige confirmação antes de ações destrutivas (#3615)",
+    "files": [
+     "src/components/admin/connections/IntegrationsHealthCard.tsx",
+     "src/components/admin/connections/__tests__/IntegrationsHealthCard.confirm.test.tsx",
+     "src/components/admin/connections/pendingDestructiveCounts.ts",
+     "src/components/admin/connections/useIntegrationsHealthCard.ts",
+     "supabase/functions/connections-hub-audit/index.ts"
+    ]
+   },
    {
     "sha": "4c912e1",
     "date": "2026-11-14",
@@ -531336,13 +531471,6 @@
      ".github/workflows/db-apply-migration.yml",
      "docs/coordenacao/conflitos-semanticos.md"
     ]
-   },
-   {
-    "sha": "38b77c6",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "fix(pdp): aborta de verdade a consulta do produto ao estourar o limite de 15s",
-    "files": []
    }
   ],
   "hot_files": [
@@ -531361,6 +531489,26 @@
    [
     "docs/faxina-261114/05-plano-workflows.md",
     2
+   ],
+   [
+    "src/components/admin/connections/IntegrationsHealthCard.tsx",
+    1
+   ],
+   [
+    "src/components/admin/connections/__tests__/IntegrationsHealthCard.confirm.test.tsx",
+    1
+   ],
+   [
+    "src/components/admin/connections/pendingDestructiveCounts.ts",
+    1
+   ],
+   [
+    "src/components/admin/connections/useIntegrationsHealthCard.ts",
+    1
+   ],
+   [
+    "supabase/functions/connections-hub-audit/index.ts",
+    1
    ],
    [
     ".security/rls-no-policy-allowlist.json",
@@ -531404,26 +531552,6 @@
    ],
    [
     "src/components/kit-builder/KitPresentablePreview.tsx",
-    1
-   ],
-   [
-    "src/components/kit-builder/KitSummary.tsx",
-    1
-   ],
-   [
-    "src/components/kit-builder/kit-summary/KitActionsBar.tsx",
-    1
-   ],
-   [
-    "src/components/kit-builder/kit-summary/KitCompositionCard.tsx",
-    1
-   ],
-   [
-    "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
-    1
-   ],
-   [
-    "src/components/kit-library/KitCard.tsx",
     1
    ]
   ]

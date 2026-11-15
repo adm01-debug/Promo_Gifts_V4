@@ -2700,15 +2700,12 @@
    "src/lib/utils.ts"
   ],
   "src/components/admin/connections/IntegrationsHealthCard.tsx": [
-   "src/components/admin/connections/CredentialsSourceFilterContext.tsx",
+   "src/components/admin/connections/useIntegrationsHealthCard.ts",
+   "src/components/ui/ConfirmDialog.tsx",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
-   "src/contexts/AuthContext.tsx",
    "src/hooks/admin/index.ts",
-   "src/integrations/supabase/client.ts",
-   "src/lib/edge/safeInvokeCall.ts",
-   "src/lib/to-error-message.ts",
    "src/lib/utils.ts"
   ],
   "src/components/admin/connections/IssueMcpKeyForm.tsx": [
@@ -3002,6 +2999,9 @@
   "src/components/admin/connections/incidentZoneMapping.ts": [
    "src/components/admin/connections/useRecentIncidents.ts"
   ],
+  "src/components/admin/connections/pendingDestructiveCounts.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
   "src/components/admin/connections/secretErrors.ts": [
    "src/hooks/admin/index.ts"
   ],
@@ -3024,6 +3024,15 @@
    "src/components/admin/connections/useRecentIncidents.ts",
    "src/contexts/AuthContext.tsx",
    "src/integrations/supabase/client.ts"
+  ],
+  "src/components/admin/connections/useIntegrationsHealthCard.ts": [
+   "src/components/admin/connections/CredentialsSourceFilterContext.tsx",
+   "src/components/admin/connections/pendingDestructiveCounts.ts",
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/admin/index.ts",
+   "src/integrations/supabase/client.ts",
+   "src/lib/edge/safeInvokeCall.ts",
+   "src/lib/to-error-message.ts"
   ],
   "src/components/admin/connections/usePulseBarStatus.ts": [
    "src/contexts/AuthContext.tsx",

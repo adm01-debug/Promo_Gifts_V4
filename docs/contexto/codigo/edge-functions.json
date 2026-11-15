@@ -882,7 +882,7 @@
    "nome": "connections-hub-audit",
    "entrada": "supabase/functions/connections-hub-audit/index.ts",
    "arquivos": 1,
-   "linhas": 217,
+   "linhas": 240,
    "verify_jwt": true,
    "metodos": [],
    "tabelas": [

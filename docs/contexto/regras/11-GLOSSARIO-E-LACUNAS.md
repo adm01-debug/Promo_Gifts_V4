@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4c912e1938` · branch `main` · 2026-11-15 00:36 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `7d873e33be` · branch `main` · 2026-11-15 00:49 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -307,7 +307,7 @@
 | `product_print_positions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 18 colunas | migration |
 | `product_properties` | Relacionamento entre produtos e suas propriedades | 9 colunas | migration |
 | `product_qa_image_alerts` | Tabela de qualidade: rastreia produtos ativos que foram ativados ou encontrados sem imagem. Regra de negócio violada: "nenhum produto ativo pode existir sem ao menos uma imagem".  ━━━ CICLO DE VIDA DE UM ALERTA ━━━ ABERTO    → is_resolved=false, resolved_at=NULL RESOLVIDO → is_resolved=true,  resolved_at=timestamp, resolution_notes=motivo  ━━━ FONTES DE CRIAÇÃO (2 caminhos) ━━━ 1. Trigger em tempo real  — products: BEFORE UPDATE    Função: fn_qa_alert_on_activate_without_image()    Gatilho: qualquer UPDATE que mude is_active de false/NULL → true    Efeito: além do alerta, seta products.sync_status = 'activated_no_image' (18 chars, MAX varchar(20))     2. Varredura periódica — pg_cron 'qa-imageless-products' (a cada 30 minutos)    Função: fn_qa_scan_imageless_products()    Detecta produtos que escaparam do trigger (ex.: criados diretamente em pipeline mode)    Também auto-resolve alertas de produtos que já sanaram a situação  ━━━ AUTO-RESOLUÇÃO (fn_qa_scan_imageless_products) ━━━ Um alerta aberto é marcado is_resolved=true automaticamente quando:   • O produto recebeu uma imagem  (row ativa em product_images, primary_image_url, ou images JSONB)   • O produto foi desativado      (is_active=false)   • O produto foi deletado        (is_deleted=true) Para forçar uma varredura manual: SELECT * FROM fn_qa_scan_imageless_products();  ━━━ RELACIONAMENTOS ━━━ • products (FK product_id, ON DELETE CASCADE) — produto monitorado • supplier_id, sku_promo, product_name        — denormalizados no momento do alerta   (para leitura rápida sem JOIN, mesmo se o produto for deletado depois)  ━━━ QUEM ALIMENTA / CONSOME ━━━ Escreve:  trigger fn_qa_alert_on_activate_without_image() \| fn_qa_scan_imageless_products() Lê:       dashboards de qualidade \| rotinas de re-ativação pós-imagem \| n8n workflows de alerta NÃO deve ser editado manualmente — gerenciado exclusivamente pelas funções acima.  ━━━ ÍNDICES ━━━ • idx_pqia_product_id   — busca por produto • idx_pqia_is_resolved  — WHERE is_resolved=false (alertas abertos) • idx_pqia_detected_at  — ordenação por data de detecção  | 11 colunas | migration |
-| … +489 linhas — lista completa em `context.json` | | | |
+| … +490 linhas — lista completa em `context.json` | | | |
 
 ## Dados de referência (seed — planos, categorias, perfis fixos)
 
@@ -366,7 +366,6 @@
 | status | valor `overstocked` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/inventory/StockDashboard.tsx`<br>`compara:src/hooks/products/useVariantStock.ts`<br>`compara:src/types/stock.ts` |
 | status | valor `Concluído` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/kit-builder/PersonalizationConfig.tsx` |
 | status | valor `Inválido` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/kit-builder/PersonalizationConfig.tsx` |
-| status | valor `destructive` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/kit-builder/VolumeIndicator.tsx`<br>`compara:src/pages/admin/AdminClientPerformancePage.tsx` |
 | status | valor `dimension` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/pricing/calculator/QuantityComparisonTable.tsx`<br>`escreve:src/components/pricing/calculator/QuantityComparisonTable.tsx` |
 | status | valor `violations` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/kit-builder/useKitBuilderQuote.ts`<br>`escreve:src/hooks/kit-builder/useKitFitsValidation.ts`<br>`escreve:src/hooks/kit-builder/useKitMinQuantityValidation.ts` |
 | status | valor `changed` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/kit-builder/useKitBuilderQuote.ts`<br>`escreve:src/hooks/kit-builder/useKitPriceValidation.ts` |
@@ -646,7 +645,8 @@
 | edge | edge function `runtime-missing` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
 | edge | edge function `send-email` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs`<br>`tests/scripts/inventario-rotas.test.mjs` |
 | edge | edge function `so-chamada-em-teste` invocada mas não existe em supabase/functions/ | `tests/scripts/inventario-repo.test.mjs` |
-| … +216 linhas — lista completa em `context.json` | | |
+| edge | edge function `ssot-ignored` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
+| … +215 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

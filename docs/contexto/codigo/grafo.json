@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2769,
- "arestas": 10966,
+ "nos": 2771,
+ "arestas": 10971,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -18,7 +18,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 449
+   "importado_por": 450
   },
   {
    "arquivo": "src/components/ui/card.tsx",
@@ -38,7 +38,7 @@
   },
   {
    "arquivo": "src/contexts/AuthContext.tsx",
-   "importado_por": 239
+   "importado_por": 240
   },
   {
    "arquivo": "src/components/ui/skeleton.tsx",
@@ -90,7 +90,7 @@
   },
   {
    "arquivo": "src/lib/edge/safeInvokeCall.ts",
-   "importado_por": 70
+   "importado_por": 71
   },
   {
    "arquivo": "src/types/stock.ts",
@@ -142,7 +142,7 @@
   },
   {
    "arquivo": "src/hooks/admin/index.ts",
-   "importado_por": 50
+   "importado_por": 51
   },
   {
    "arquivo": "src/hooks/quotes/index.ts",
@@ -153,16 +153,16 @@
    "importado_por": 46
   },
   {
+   "arquivo": "src/components/ui/ConfirmDialog.tsx",
+   "importado_por": 44
+  },
+  {
    "arquivo": "src/lib/format.ts",
    "importado_por": 44
   },
   {
    "arquivo": "src/stores/useComparisonStore.ts",
    "importado_por": 44
-  },
-  {
-   "arquivo": "src/components/ui/ConfirmDialog.tsx",
-   "importado_por": 43
   }
  ],
  "ciclos": {

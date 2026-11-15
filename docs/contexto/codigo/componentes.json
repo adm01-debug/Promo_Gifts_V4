@@ -3023,20 +3023,12 @@
     "IntegrationsHealthCard"
    ],
    "export_default": null,
-   "linhas": 486,
+   "linhas": 368,
    "dominio": "components/admin",
    "hooks_locais": [
-    "useAuth",
-    "useCredentialsSourceFilter"
+    "useIntegrationsHealthCard"
    ],
-   "tabelas": [
-    "connection_test_history",
-    "external_connections",
-    "mcp_api_keys",
-    "outbound_webhooks",
-    "secret_rotation_log",
-    "webhook_deliveries"
-   ],
+   "tabelas": [],
    "edges": [],
    "usado_por": 1,
    "orfao": false
@@ -15922,7 +15914,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 40,
+   "usado_por": 41,
    "orfao": false
   },
   {
