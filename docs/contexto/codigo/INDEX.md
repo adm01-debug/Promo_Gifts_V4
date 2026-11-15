@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `eecfde92d054e8df530186d285fb910b8d3f0ba1` (2026-11-15T09:11:40-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `20dfb7b30bca9e3636a8c990bec6bbcfbd0581ed` (2026-11-15T09:27:19-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 10215 |
 | arquivos_codigo | 5265 |
-| linhas_codigo | 1004404 |
+| linhas_codigo | 1004402 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -589,7 +589,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43597 nós · 75401 arestas · 2414 comunidades · grafo do commit `eecfde92`
+- 43597 nós · 75401 arestas · 2414 comunidades · grafo do commit `20dfb7b3`
 - comunidades maiores: vitest (854), ref_components (781), ref_integrations (630), ref_node_child_process (461), @tanstack/react-query (394), react-router-dom (381), ref_hooks (355), ref_types (349), ref_node_fs (328), sonner (327), gotoAndSettle (317), react (307)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -599,12 +599,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - PENDENCIAS.md (90)
 - supabase/MIGRATIONS_SYNC_LOG.md (59)
 - package.json (44)
-- package-lock.json (35)
+- package-lock.json (34)
 - analise-prs/progresso.json (21)
 - analise-prs/RELATORIO_PRS.md (19)
 - docs/coordenacao/conflitos-semanticos.md (19)
 - CHANGELOG.md (18)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (17)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (18)
 - analise-prs/prs.json (15)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (15)
 - src/pages/kit-builder/KitBuilderPage.tsx (15)
@@ -634,35 +634,35 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `db-schema-drift-check.yml` — db-schema-drift-check (pull_request, schedule, workflow_call, workflow_dispatch; cron 29 9 * * *)
 - `ddl-out-of-band-detector.yml` — ddl-out-of-band-detector (schedule, workflow_dispatch; cron 8 8 * * 1)
 - `delete-orphan-edges.yml` — Delete Orphan Edge Functions (workflow_dispatch)
-- `delivery-quality.yml` — Quote Builder Delivery Quality (pull_request, push)
+- `delivery-quality.yml` — Quote Builder Delivery Quality (push)
 - `deploy-edge-functions.yml` — Deploy Edge Functions (workflow_call, workflow_dispatch)
 - `deploy-gates.yml` — Deploy Gates (pull_request, push, workflow_dispatch)
 - `deploy-vercel.yml` — Deploy to Vercel (Manual Fallback) (workflow_dispatch)
 - `deployment-failure-alert.yml` — Deployment Failure Alert (deployment_status)
 - `dr-drill-reminder.yml` — DR Drill Reminder (schedule, workflow_dispatch; cron 0 9 1-7 1,4,7,10 1)
 - `drafts-index-check.yml` — drafts-index-check (pull_request, push, workflow_dispatch)
-- `e2e-cart.yml` — E2E Cart — Matrix (E79) (pull_request, push, workflow_dispatch)
-- `e2e-check-calendar-snapshots.yml` — E2E · Check Calendar snapshots (pull_request)
-- `e2e-color-swatch-grid.yml` — E2E • ColorSwatch 2 linhas (Grid) (pull_request, push, workflow_dispatch)
-- `e2e-crm-callback-approved.yml` — E2E — CRM Callback (approved → V4 → CRM) (pull_request, push, schedule, workflow_dispatch; cron 20 6 * * *)
-- `e2e-customization-collapse.yml` — E2E — Customization Collapse (LocationPanel) (pull_request, push, workflow_dispatch)
-- `e2e-dialogs-pr-check.yml` — E2E · Dialogs visual PR check (pull_request, workflow_dispatch)
-- `e2e-discount-approval.yml` — E2E Discount Approval (04c*) (pull_request, push, workflow_dispatch)
-- `e2e-flows.yml` — E2E — Critical Flows & Error Boundaries (pull_request, push, workflow_dispatch)
-- `e2e-focused.yml` — E2E Focused UI — Matrix (E78) (pull_request, schedule, workflow_dispatch; cron 0 2 * * 1)
-- `e2e-freight.yml` — E2E Freight — Matrix (E80) (pull_request, push, workflow_dispatch)
-- `e2e-magazine-header.yml` — E2E — Magazine Header Layout (pull_request, push, workflow_dispatch)
-- `e2e-pdf-dialog.yml` — E2E — PDF Dialog (watermark pixel-diff, authed) (pull_request, push, workflow_dispatch)
-- `e2e-personalization.yml` — E2E — Personalization Flow (pull_request, push, workflow_dispatch)
-- `e2e-quotes.yml` — E2E Quotes — Matrix (E77) (pull_request, workflow_dispatch)
-- `e2e-stock.yml` — E2E Stock — Matrix (E80) (pull_request, push, workflow_dispatch)
-- `e2e-swatch-quickview.yml` — E2E • Swatch QuickView (Lista + Tabela) (pull_request, push)
-- `e2e-visual-preview-button.yml` — E2E — Visual Regression (Preview button) (pull_request, push, workflow_dispatch)
-- `e2e.yml` — E2E (Playwright) (pull_request, push, workflow_dispatch)
+- `e2e-cart.yml` — E2E Cart — Matrix (E79) (push, workflow_dispatch)
+- `e2e-check-calendar-snapshots.yml` — E2E · Check Calendar snapshots (workflow_dispatch)
+- `e2e-color-swatch-grid.yml` — E2E • ColorSwatch 2 linhas (Grid) (push, workflow_dispatch)
+- `e2e-crm-callback-approved.yml` — E2E — CRM Callback (approved → V4 → CRM) (push, schedule, workflow_dispatch; cron 20 6 * * *)
+- `e2e-customization-collapse.yml` — E2E — Customization Collapse (LocationPanel) (push, workflow_dispatch)
+- `e2e-dialogs-pr-check.yml` — E2E · Dialogs visual PR check (workflow_dispatch)
+- `e2e-discount-approval.yml` — E2E Discount Approval (04c*) (push, workflow_dispatch)
+- `e2e-flows.yml` — E2E — Critical Flows & Error Boundaries (push, workflow_dispatch)
+- `e2e-focused.yml` — E2E Focused UI — Matrix (E78) (schedule, workflow_dispatch; cron 0 2 * * 1)
+- `e2e-freight.yml` — E2E Freight — Matrix (E80) (push, workflow_dispatch)
+- `e2e-magazine-header.yml` — E2E — Magazine Header Layout (push, workflow_dispatch)
+- `e2e-pdf-dialog.yml` — E2E — PDF Dialog (watermark pixel-diff, authed) (push, workflow_dispatch)
+- `e2e-personalization.yml` — E2E — Personalization Flow (push, workflow_dispatch)
+- `e2e-quotes.yml` — E2E Quotes — Matrix (E77) (workflow_dispatch)
+- `e2e-stock.yml` — E2E Stock — Matrix (E80) (push, workflow_dispatch)
+- `e2e-swatch-quickview.yml` — E2E • Swatch QuickView (Lista + Tabela) (push)
+- `e2e-visual-preview-button.yml` — E2E — Visual Regression (Preview button) (push, workflow_dispatch)
+- `e2e.yml` — E2E (Playwright) (push, workflow_dispatch)
 - `edge-functions-drift-check.yml` — edge-functions-drift-check (pull_request, schedule, workflow_dispatch, workflow_run; cron 6 9 * * *)
 - `edge-integration-all.yml` — Edge Integration Tests — All Functions (pull_request, push, workflow_dispatch)
 - `gitleaks-history-audit.yml` — Gitleaks — Full History Audit (push, schedule, workflow_dispatch; cron 44 6 * * *)
-- `global-search-gate.yml` — Global Search Quality Gate (pull_request, push)
+- `global-search-gate.yml` — Global Search Quality Gate (push)
 - `kit-coverage-integration.yml` — Kit Coverage — Integration (schedule, workflow_dispatch; cron 41 3 * * *)
 - `labels-sync.yml` — Sync labels (push, workflow_dispatch)
 - `lint-untyped-from.yml` — Lint untypedFrom (pull_request, push, workflow_dispatch)
@@ -676,9 +676,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `migration-dry-run.yml` — migration-dry-run (workflow_dispatch)
 - `migrations-sync-log-gate.yml` — migrations-sync-log-gate (pull_request)
 - `nightly-full.yml` — Nightly Full CI (schedule, workflow_dispatch; cron 43 2 * * *)
-- `optimized-image-e2e.yml` — OptimizedImage E2E CI (pull_request, push)
+- `optimized-image-e2e.yml` — OptimizedImage E2E CI (push)
 - `pdf-quality.yml` — PDF Quality Gate (pull_request, push, workflow_dispatch)
-- `pdf-visual-regression.yml` — PDF Visual Regression (pull_request, workflow_dispatch)
+- `pdf-visual-regression.yml` — PDF Visual Regression (workflow_dispatch)
 - `personalization-trace-diagnostics.yml` — Personalização — diagnóstico readonly do artifact fixo (pull_request, workflow_dispatch)
 - `pgss-slo-report.yml` — pgss-slo-report (schedule, workflow_dispatch; cron 52 10 * * 1)
 - `policies-baseline.yml` — Policies Baseline (pull_request, push, schedule, workflow_dispatch; cron 30 10 * * 1)
@@ -688,7 +688,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `ratchet-weekly.yml` — Ratchet Weekly — Baixar baselines (schedule, workflow_dispatch; cron 54 8 * * 1)
 - `regenerate-supabase-types.yml` — Regenerate Supabase Types (workflow_dispatch)
 - `release-please.yml` — Release Please (push)
-- `replenishment-quality.yml` — CI - Replenishment Module Quality Gate (pull_request, push)
+- `replenishment-quality.yml` — CI - Replenishment Module Quality Gate (push)
 - `required-checks-guard.yml` — Required Checks Guard (pull_request, push, schedule, workflow_dispatch; cron 45 8 * * *)
 - `restore-seller-cart-rpc.yml` — E2E · restore_seller_cart RPC (multi-env) (push, schedule, workflow_dispatch; cron 49 9 * * *)
 - `schema-snapshot-export.yml` — schema-snapshot-export (pull_request, push, schedule, workflow_dispatch; cron 36 6 * * 1)
@@ -701,13 +701,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `stock-rupture-fuzz.yml` — stock-rupture-fuzz (schedule, workflow_dispatch; cron 11 4 * * *)
 - `supabase-linter-gate.yml` — Supabase Linter Gate (pull_request, push, schedule, workflow_dispatch; cron 57 6 * * *)
 - `supabase-security-gate.yml` — Gate 5 — Supabase Security Audit (pull_request, push)
-- `supplier-comparison.yml` — Supplier Comparison CI (pull_request)
+- `supplier-comparison.yml` — Supplier Comparison CI (workflow_dispatch)
 - `ts-unused-ratchet.yml` — TS Unused Locals Ratchet (pull_request, push, schedule; cron 47 6 * * 1)
 - `ui-visual-a11y.yml` — UI · Visual & A11y (pull_request, push)
 - `update-snapshots.yml` — E2E · Atualizar snapshots visuais (E155) (push, workflow_dispatch)
 - `uptime-monitor.yml` — Uptime Monitor (schedule, workflow_dispatch; cron */30 * * * *)
 - `url-state-unit.yml` — URL State — Unit & Fuzz (pull_request, push, schedule; cron 41 6 * * 1)
-- `visual-tests.yml` — Visual Baseline Tests — Nightly (pull_request, push)
+- `visual-tests.yml` — Visual Baseline Tests — Nightly (push)
 - `workflow-lint.yml` — Workflow Lint (pull_request, push)
 - `wraparound-monitor-report.yml` — wraparound-monitor-report (schedule, workflow_dispatch; cron 30 5 * * *)
 
@@ -1184,6 +1184,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-15 `20dfb7b3` chore: trem de infra — BOM da edge asia-ingestion, recibo E66, E2E fora dos PRs e snapshots all-authed (#3658)
 - 2026-11-15 `eecfde92` fix: trem de 3 correções de front — busca, cores por área do mockup e trocar item no kit (#3653)
 - 2026-11-15 `3893d57f` fix(ci): portão de recibos deixa de dar verde com version citada no recibo de outra migration (#3649)
 - 2026-11-15 `1eafa069` fix(db): cria o rollback que destrava o revoke E18 — estoque alterável por qualquer usuário logado (#3648)
@@ -1198,7 +1199,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-14 `37920454` fix(crm): declara isencao de soft-delete na tabela de vinculo de vendedor
 - 2026-11-14 `e998b095` fix(kit): rascunhos de kit salvos sem personalização voltam a abrir (resgate cirúrgico da #3390) (#3631)
 - 2026-11-14 `36b6c1d7` fix(security): corrige o sha256 do retrato de policies (destrava o CI) (#3635)
-- 2026-11-14 `c5d670cf` Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

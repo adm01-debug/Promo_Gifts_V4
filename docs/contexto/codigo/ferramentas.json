@@ -1151,7 +1151,6 @@
    "arquivo": ".github/workflows/delivery-quality.yml",
    "nome": "Quote Builder Delivery Quality",
    "gatilhos": [
-    "pull_request",
     "push"
    ],
    "crons": [],
@@ -1457,7 +1456,6 @@
    "arquivo": ".github/workflows/e2e-cart.yml",
    "nome": "E2E Cart — Matrix (E79)",
    "gatilhos": [
-    "pull_request",
     "push",
     "workflow_dispatch"
    ],
@@ -1493,7 +1491,7 @@
    "arquivo": ".github/workflows/e2e-check-calendar-snapshots.yml",
    "nome": "E2E · Check Calendar snapshots",
    "gatilhos": [
-    "pull_request"
+    "workflow_dispatch"
    ],
    "crons": [],
    "branches": [],
@@ -1519,7 +1517,6 @@
    "arquivo": ".github/workflows/e2e-color-swatch-grid.yml",
    "nome": "E2E • ColorSwatch 2 linhas (Grid)",
    "gatilhos": [
-    "pull_request",
     "push",
     "workflow_dispatch"
    ],
@@ -1550,7 +1547,6 @@
    "arquivo": ".github/workflows/e2e-crm-callback-approved.yml",
    "nome": "E2E — CRM Callback (approved → V4 → CRM)",
    "gatilhos": [
-    "pull_request",
     "push",
     "schedule",
     "workflow_dispatch"
@@ -1586,7 +1582,6 @@
    "arquivo": ".github/workflows/e2e-customization-collapse.yml",
    "nome": "E2E — Customization Collapse (LocationPanel)",
    "gatilhos": [
-    "pull_request",
     "push",
     "workflow_dispatch"
    ],
@@ -1622,13 +1617,10 @@
    "arquivo": ".github/workflows/e2e-dialogs-pr-check.yml",
    "nome": "E2E · Dialogs visual PR check",
    "gatilhos": [
-    "pull_request",
     "workflow_dispatch"
    ],
    "crons": [],
-   "branches": [
-    "main"
-   ],
+   "branches": [],
    "jobs": [
     "visual-check"
    ],
@@ -1652,7 +1644,6 @@
    "arquivo": ".github/workflows/e2e-discount-approval.yml",
    "nome": "E2E Discount Approval (04c*)",
    "gatilhos": [
-    "pull_request",
     "push",
     "workflow_dispatch"
    ],
@@ -1688,7 +1679,6 @@
    "arquivo": ".github/workflows/e2e-flows.yml",
    "nome": "E2E — Critical Flows & Error Boundaries",
    "gatilhos": [
-    "pull_request",
     "push",
     "workflow_dispatch"
    ],
@@ -1723,16 +1713,13 @@
    "arquivo": ".github/workflows/e2e-focused.yml",
    "nome": "E2E Focused UI — Matrix (E78)",
    "gatilhos": [
-    "pull_request",
     "schedule",
     "workflow_dispatch"
    ],
    "crons": [
     "0 2 * * 1"
    ],
-   "branches": [
-    "main"
-   ],
+   "branches": [],
    "jobs": [
     "e2e-relevance",
     "secrets_check",
@@ -1761,7 +1748,6 @@
    "arquivo": ".github/workflows/e2e-freight.yml",
    "nome": "E2E Freight — Matrix (E80)",
    "gatilhos": [
-    "pull_request",
     "push",
     "workflow_dispatch"
    ],
@@ -1793,7 +1779,6 @@
    "arquivo": ".github/workflows/e2e-magazine-header.yml",
    "nome": "E2E — Magazine Header Layout",
    "gatilhos": [
-    "pull_request",
     "push",
     "workflow_dispatch"
    ],
@@ -1826,7 +1811,6 @@
    "arquivo": ".github/workflows/e2e-pdf-dialog.yml",
    "nome": "E2E — PDF Dialog (watermark pixel-diff, authed)",
    "gatilhos": [
-    "pull_request",
     "push",
     "workflow_dispatch"
    ],
@@ -1861,7 +1845,6 @@
    "arquivo": ".github/workflows/e2e-personalization.yml",
    "nome": "E2E — Personalization Flow",
    "gatilhos": [
-    "pull_request",
     "push",
     "workflow_dispatch"
    ],
@@ -1894,13 +1877,10 @@
    "arquivo": ".github/workflows/e2e-quotes.yml",
    "nome": "E2E Quotes — Matrix (E77)",
    "gatilhos": [
-    "pull_request",
     "workflow_dispatch"
    ],
    "crons": [],
-   "branches": [
-    "main"
-   ],
+   "branches": [],
    "jobs": [
     "secrets_check",
     "matrix_plan",
@@ -1930,7 +1910,6 @@
    "arquivo": ".github/workflows/e2e-stock.yml",
    "nome": "E2E Stock — Matrix (E80)",
    "gatilhos": [
-    "pull_request",
     "push",
     "workflow_dispatch"
    ],
@@ -1964,7 +1943,6 @@
    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
    "nome": "E2E • Swatch QuickView (Lista + Tabela)",
    "gatilhos": [
-    "pull_request",
     "push"
    ],
    "crons": [],
@@ -1996,7 +1974,6 @@
    "arquivo": ".github/workflows/e2e-visual-preview-button.yml",
    "nome": "E2E — Visual Regression (Preview button)",
    "gatilhos": [
-    "pull_request",
     "push",
     "workflow_dispatch"
    ],
@@ -2028,7 +2005,6 @@
    "arquivo": ".github/workflows/e2e.yml",
    "nome": "E2E (Playwright)",
    "gatilhos": [
-    "pull_request",
     "push",
     "workflow_dispatch"
    ],
@@ -2182,7 +2158,6 @@
    "arquivo": ".github/workflows/global-search-gate.yml",
    "nome": "Global Search Quality Gate",
    "gatilhos": [
-    "pull_request",
     "push"
    ],
    "crons": [],
@@ -2615,7 +2590,6 @@
    "arquivo": ".github/workflows/optimized-image-e2e.yml",
    "nome": "OptimizedImage E2E CI",
    "gatilhos": [
-    "pull_request",
     "push"
    ],
    "crons": [],
@@ -2672,7 +2646,6 @@
    "arquivo": ".github/workflows/pdf-visual-regression.yml",
    "nome": "PDF Visual Regression",
    "gatilhos": [
-    "pull_request",
     "workflow_dispatch"
    ],
    "crons": [],
@@ -2964,7 +2937,6 @@
    "arquivo": ".github/workflows/replenishment-quality.yml",
    "nome": "CI - Replenishment Module Quality Gate",
    "gatilhos": [
-    "pull_request",
     "push"
    ],
    "crons": [],
@@ -3391,7 +3363,7 @@
    "arquivo": ".github/workflows/supplier-comparison.yml",
    "nome": "Supplier Comparison CI",
    "gatilhos": [
-    "pull_request"
+    "workflow_dispatch"
    ],
    "crons": [],
    "branches": [],
@@ -3569,7 +3541,6 @@
    "arquivo": ".github/workflows/visual-tests.yml",
    "nome": "Visual Baseline Tests — Nightly",
    "gatilhos": [
-    "pull_request",
     "push"
    ],
    "crons": [],

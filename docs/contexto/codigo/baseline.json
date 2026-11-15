@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "eecfde92d054e8df530186d285fb910b8d3f0ba1",
+  "commit": "20dfb7b30bca9e3636a8c990bec6bbcfbd0581ed",
   "branch": "main",
-  "data_commit": "2026-11-15T09:11:40-03:00",
+  "data_commit": "2026-11-15T09:27:19-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "20dfb7b3",
+    "data": "2026-11-15",
+    "assunto": "chore: trem de infra — BOM da edge asia-ingestion, recibo E66, E2E fora dos PRs e snapshots all-authed (#3658)"
+   },
    {
     "sha": "eecfde92",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "a47e0824",
     "data": "2026-11-14",
     "assunto": "Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945"
-   },
-   {
-    "sha": "cf64ee7e",
-    "data": "2026-11-14",
-    "assunto": "perf(catalog): primeiro carregamento com 1 consulta em vez de 4, mantendo 500 produtos na tela (#3621)"
    }
   ],
-  "arquivos_mudados_7d": 2013,
+  "arquivos_mudados_7d": 2033,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 35
+    "mudancas": 34
    },
    {
     "arquivo": "analise-prs/progresso.json",
@@ -235,7 +235,7 @@
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 17
+    "mudancas": 18
    },
    {
     "arquivo": "analise-prs/prs.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 580
+    "commits": 581
    },
    {
     "autor": "Joaquim Ataides",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 39
+    "commits": 37
    },
    {
     "autor": "dependabot[bot]",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10215,
   "arquivos_codigo": 5265,
-  "linhas_codigo": 1004404,
+  "linhas_codigo": 1004402,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1960,7 +1960,7 @@
   },
   "supabase/functions": {
    "arquivos": 270,
-   "linhas": 50125
+   "linhas": 50123
   },
   "tailwind.config.ts": {
    "arquivos": 1,

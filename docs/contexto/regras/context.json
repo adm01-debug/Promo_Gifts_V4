@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "eecfde92d054e8df530186d285fb910b8d3f0ba1",
+  "sha": "20dfb7b30bca9e3636a8c990bec6bbcfbd0581ed",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 12:12 UTC",
+  "generated_at": "2026-11-15 12:28 UTC",
   "files_total": 10143,
   "code_files": 8670,
-  "code_lines": 1222624
+  "code_lines": 1222622
  },
  "version": "1.3.2",
- "facts_hash": "40fb563db605054e",
+ "facts_hash": "2a71dda78a9c6b24",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -591,7 +591,6 @@
     "file": ".github/workflows/delivery-quality.yml",
     "name": "Quote Builder Delivery Quality",
     "triggers": [
-     "pull_request",
      "push"
     ]
    },
@@ -644,7 +643,6 @@
     "file": ".github/workflows/e2e-cart.yml",
     "name": "E2E Cart — Matrix (E79)",
     "triggers": [
-     "pull_request",
      "push",
      "workflow_dispatch"
     ]
@@ -653,14 +651,13 @@
     "file": ".github/workflows/e2e-check-calendar-snapshots.yml",
     "name": "E2E · Check Calendar snapshots",
     "triggers": [
-     "pull_request"
+     "workflow_dispatch"
     ]
    },
    {
     "file": ".github/workflows/e2e-color-swatch-grid.yml",
     "name": "E2E • ColorSwatch 2 linhas (Grid)",
     "triggers": [
-     "pull_request",
      "push",
      "workflow_dispatch"
     ]
@@ -669,7 +666,6 @@
     "file": ".github/workflows/e2e-crm-callback-approved.yml",
     "name": "E2E — CRM Callback (approved → V4 → CRM)",
     "triggers": [
-     "pull_request",
      "push",
      "schedule",
      "workflow_dispatch"
@@ -679,7 +675,6 @@
     "file": ".github/workflows/e2e-customization-collapse.yml",
     "name": "E2E — Customization Collapse (LocationPanel)",
     "triggers": [
-     "pull_request",
      "push",
      "workflow_dispatch"
     ]
@@ -688,7 +683,6 @@
     "file": ".github/workflows/e2e-dialogs-pr-check.yml",
     "name": "E2E · Dialogs visual PR check",
     "triggers": [
-     "pull_request",
      "workflow_dispatch"
     ]
    },
@@ -696,7 +690,6 @@
     "file": ".github/workflows/e2e-discount-approval.yml",
     "name": "E2E Discount Approval (04c*)",
     "triggers": [
-     "pull_request",
      "push",
      "workflow_dispatch"
     ]
@@ -705,7 +698,6 @@
     "file": ".github/workflows/e2e-flows.yml",
     "name": "E2E — Critical Flows & Error Boundaries",
     "triggers": [
-     "pull_request",
      "push",
      "workflow_dispatch"
     ]
@@ -714,7 +706,6 @@
     "file": ".github/workflows/e2e-focused.yml",
     "name": "E2E Focused UI — Matrix (E78)",
     "triggers": [
-     "pull_request",
      "schedule",
      "workflow_dispatch"
     ]
@@ -723,7 +714,6 @@
     "file": ".github/workflows/e2e-freight.yml",
     "name": "E2E Freight — Matrix (E80)",
     "triggers": [
-     "pull_request",
      "push",
      "workflow_dispatch"
     ]
@@ -732,7 +722,6 @@
     "file": ".github/workflows/e2e-magazine-header.yml",
     "name": "E2E — Magazine Header Layout",
     "triggers": [
-     "pull_request",
      "push",
      "workflow_dispatch"
     ]
@@ -741,7 +730,6 @@
     "file": ".github/workflows/e2e-pdf-dialog.yml",
     "name": "E2E — PDF Dialog (watermark pixel-diff, authed)",
     "triggers": [
-     "pull_request",
      "push",
      "workflow_dispatch"
     ]
@@ -750,7 +738,6 @@
     "file": ".github/workflows/e2e-personalization.yml",
     "name": "E2E — Personalization Flow",
     "triggers": [
-     "pull_request",
      "push",
      "workflow_dispatch"
     ]
@@ -759,7 +746,6 @@
     "file": ".github/workflows/e2e-quotes.yml",
     "name": "E2E Quotes — Matrix (E77)",
     "triggers": [
-     "pull_request",
      "workflow_dispatch"
     ]
    },
@@ -767,7 +753,6 @@
     "file": ".github/workflows/e2e-stock.yml",
     "name": "E2E Stock — Matrix (E80)",
     "triggers": [
-     "pull_request",
      "push",
      "workflow_dispatch"
     ]
@@ -776,7 +761,6 @@
     "file": ".github/workflows/e2e-swatch-quickview.yml",
     "name": "E2E • Swatch QuickView (Lista + Tabela)",
     "triggers": [
-     "pull_request",
      "push"
     ]
    },
@@ -784,7 +768,6 @@
     "file": ".github/workflows/e2e-visual-preview-button.yml",
     "name": "E2E — Visual Regression (Preview button)",
     "triggers": [
-     "pull_request",
      "push",
      "workflow_dispatch"
     ]
@@ -793,7 +776,6 @@
     "file": ".github/workflows/e2e.yml",
     "name": "E2E (Playwright)",
     "triggers": [
-     "pull_request",
      "push",
      "workflow_dispatch"
     ]
@@ -829,7 +811,6 @@
     "file": ".github/workflows/global-search-gate.yml",
     "name": "Global Search Quality Gate",
     "triggers": [
-     "pull_request",
      "push"
     ]
    },
@@ -940,7 +921,6 @@
     "file": ".github/workflows/optimized-image-e2e.yml",
     "name": "OptimizedImage E2E CI",
     "triggers": [
-     "pull_request",
      "push"
     ]
    },
@@ -957,7 +937,6 @@
     "file": ".github/workflows/pdf-visual-regression.yml",
     "name": "PDF Visual Regression",
     "triggers": [
-     "pull_request",
      "workflow_dispatch"
     ]
    },
@@ -1037,7 +1016,6 @@
     "file": ".github/workflows/replenishment-quality.yml",
     "name": "CI - Replenishment Module Quality Gate",
     "triggers": [
-     "pull_request",
      "push"
     ]
    },
@@ -1149,7 +1127,7 @@
     "file": ".github/workflows/supplier-comparison.yml",
     "name": "Supplier Comparison CI",
     "triggers": [
-     "pull_request"
+     "workflow_dispatch"
     ]
    },
    {
@@ -1198,7 +1176,6 @@
     "file": ".github/workflows/visual-tests.yml",
     "name": "Visual Baseline Tests — Nightly",
     "triggers": [
-     "pull_request",
      "push"
     ]
    },
@@ -149224,7 +149201,7 @@
   {
    "module": "supabase/functions",
    "files": 270,
-   "lines": 50125,
+   "lines": 50123,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -485642,7 +485619,7 @@
   },
   "supabase/functions/asia-ingestion/index.ts": {
    "path": "supabase/functions/asia-ingestion/index.ts",
-   "lines": 117,
+   "lines": 115,
    "tables": [
     {
      "table": "supplier_products_raw",
@@ -532666,10 +532643,46 @@
   }
  },
  "git": {
-  "sha": "eecfde92d054e8df530186d285fb910b8d3f0ba1",
+  "sha": "20dfb7b30bca9e3636a8c990bec6bbcfbd0581ed",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "20dfb7b",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "chore: trem de infra — BOM da edge asia-ingestion, recibo E66, E2E fora dos PRs e snapshots all-authed (#3658)",
+    "files": [
+     ".github/workflows/delivery-quality.yml",
+     ".github/workflows/e2e-cart.yml",
+     ".github/workflows/e2e-check-calendar-snapshots.yml",
+     ".github/workflows/e2e-color-swatch-grid.yml",
+     ".github/workflows/e2e-crm-callback-approved.yml",
+     ".github/workflows/e2e-customization-collapse.yml",
+     ".github/workflows/e2e-dialogs-pr-check.yml",
+     ".github/workflows/e2e-discount-approval.yml",
+     ".github/workflows/e2e-flows.yml",
+     ".github/workflows/e2e-focused.yml",
+     ".github/workflows/e2e-freight.yml",
+     ".github/workflows/e2e-magazine-header.yml",
+     ".github/workflows/e2e-pdf-dialog.yml",
+     ".github/workflows/e2e-personalization.yml",
+     ".github/workflows/e2e-quotes.yml",
+     ".github/workflows/e2e-stock.yml",
+     ".github/workflows/e2e-swatch-quickview.yml",
+     ".github/workflows/e2e-visual-preview-button.yml",
+     ".github/workflows/e2e.yml",
+     ".github/workflows/global-search-gate.yml",
+     ".github/workflows/optimized-image-e2e.yml",
+     ".github/workflows/pdf-visual-regression.yml",
+     ".github/workflows/replenishment-quality.yml",
+     ".github/workflows/supplier-comparison.yml",
+     ".github/workflows/update-snapshots.yml",
+     ".github/workflows/visual-tests.yml",
+     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+     "supabase/functions/asia-ingestion/index.ts"
+    ]
+   },
    {
     "sha": "eecfde9",
     "date": "2026-11-15",
@@ -533029,13 +533042,6 @@
     "files": [
      "docs/coordenacao/conflitos-semanticos.md"
     ]
-   },
-   {
-    "sha": "2c040e8",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "merge: codex/fix-sidebar-tooltips-auth-261107-0205",
-    "files": []
    }
   ],
   "hot_files": [
@@ -533080,43 +533086,43 @@
     2
    ],
    [
-    "src/components/kit-builder/PersonalizationConfig.tsx",
+    ".github/workflows/delivery-quality.yml",
     1
    ],
    [
-    "src/components/kit-builder/SwapItemBanner.tsx",
+    ".github/workflows/e2e-cart.yml",
     1
    ],
    [
-    "src/components/search/__tests__/useGlobalSearch.test.ts",
+    ".github/workflows/e2e-check-calendar-snapshots.yml",
     1
    ],
    [
-    "src/hooks/kit-builder/index.ts",
+    ".github/workflows/e2e-color-swatch-grid.yml",
     1
    ],
    [
-    "src/hooks/kit-builder/useKitItemReplaceTarget.ts",
+    ".github/workflows/e2e-crm-callback-approved.yml",
     1
    ],
    [
-    "src/hooks/mockup/__tests__/colorAnalysisPorArea.test.ts",
+    ".github/workflows/e2e-customization-collapse.yml",
     1
    ],
    [
-    "src/hooks/simulation/index.ts",
+    ".github/workflows/e2e-dialogs-pr-check.yml",
     1
    ],
    [
-    "src/hooks/simulation/useLogoColorAnalysisByArea.ts",
+    ".github/workflows/e2e-discount-approval.yml",
     1
    ],
    [
-    "scripts/check-migration-receipts.mjs",
+    ".github/workflows/e2e-flows.yml",
     1
    ],
    [
-    "supabase/rollbacks/20260917061500_rollback.sql",
+    ".github/workflows/e2e-focused.yml",
     1
    ]
   ]
