@@ -144065,7 +144065,7 @@
         ],
         "definition": null,
         "definition_sha": "5dd9442daac6cc39",
-        "execute_api_roles": "authenticated, service_role",
+        "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -159436,7 +159436,7 @@
         ],
         "definition": null,
         "definition_sha": "48d2a484a2d45702",
-        "execute_api_roles": "authenticated, service_role",
+        "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -186814,7 +186814,7 @@
         ],
         "definition": null,
         "definition_sha": "6d29a9c2765561cf",
-        "execute_api_roles": "authenticated, service_role",
+        "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -186896,7 +186896,7 @@
         ],
         "definition": null,
         "definition_sha": "fa4ac5180d4f22a7",
-        "execute_api_roles": "authenticated, service_role",
+        "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -237949,6 +237949,12 @@
         "statements": 1,
         "statements_sha": "c95d503cac0d28d6",
         "version": "20260916155725"
+      },
+      {
+        "name": "e18_revoke_authenticated_authz_gaps",
+        "statements": 6,
+        "statements_sha": "055f2ec97200821c",
+        "version": "20260917061500"
       },
       {
         "name": "signup_identity_safe_default",

@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-15 02:47 UTC
+
+- **functions** alterado (4): `public.confirm_notifications_dispatched(p_ids uuid[])`, `public.fn_notify_user(_target_user_id uuid, _title text, _message text, _type text, _category text, _action_url text, _metadata jsonb)`, `public.registrar_entrada_estoque(p_variant_sku character varying, p_quantity integer, p_unit_cost numeric, p_supplier_name character varying, p_document_number character varying, p_notes text, p_user_id uuid)`, `public.registrar_saida_estoque(p_variant_sku character varying, p_quantity integer, p_movement_type character varying, p_document_number character varying, p_notes text, p_user_id uuid, p_allow_negative boolean)`
+- **migrations** adicionado (1): `20260917061500_e18_revoke_authenticated_authz_gaps`
+
 ## 2026-11-15 01:59 UTC
 
 - **functions** alterado (1): `public.set_updated_at()`
