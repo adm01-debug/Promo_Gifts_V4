@@ -1747,3 +1747,57 @@ revogado antes) com teste em `tests/security/security-definer-acl-gate.test.ts` 
 |---|---|---|---|
 | `20261101190101` | `fn_global_search_clamp_limit` | `6f97aa10518e4a04edb2fd40f5b7f0b08f70097679449f445741ffe7fb01f3e4` | substituída pela `20261115130300` — NÃO aplicar (preflight E066: SECURITY DEFINER sem `pg_temp`); nunca esteve no ledger; mantida no repo porque sua versão já está no histórico |
 | `20261115130300` | `fn_global_search_clamp_limit_hardened` | `35f326cead81afefcbf4f234ee1a2365fe3d12049dead6469d2325beada7972c` | pendente — aplicar via `db-apply-migration.yml` após merge (estado atual de `fn_global_search` em produção NÃO VERIFICADO em 2026-11-15) |
+## 2026-11-15 — Replay do zero: colunas perdidas por `CREATE TABLE IF NOT EXISTS` no-op
+
+`20250103080000_complete_schema.sql` declara `categories`, `suppliers`, `products` e `quotes` com
+`CREATE TABLE IF NOT EXISTS`, mas `20250102000000_gifts_production.sql` já criou as 4 tabelas antes: o
+comando é no-op e as 62 colunas declaradas ali nunca nascem num banco construído do zero. Daí o replay
+parar em `20260512000000_bootstrap_missing_application_schemas.sql:717` com
+`column categories.display_order does not exist`. O conserto adiciona `ADD COLUMN IF NOT EXISTS` com o
+tipo/default exatos do próprio `CREATE TABLE`, a `UNIQUE` de `categories.slug` e a FK
+`quotes_client_id_fkey`; e dá a `20260512000000` stub `IF NOT EXISTS` das 6 tabelas que as matviews
+`analytics` do próprio arquivo leem e que nenhuma migration cria em momento algum: `material_groups`,
+`material_types`, `product_materials`, `product_images`, `variant_supplier_sources` e
+`stock_daily_summary`. Sem as 3 últimas o replay seguia parando, agora no statement 66 com
+`relation "public.product_images" does not exist` (evidência: check `Supabase Preview` da #3685,
+SHA `8efffeb0e5`). Com as 6, as únicas tabelas que `20260512000000` lê sem criar passam a ser
+`categories`, `products`, `suppliers` e `product_variants`, todas criadas por migrations anteriores.
+
+**Chaves, RLS e colunas geradas (3ª rodada, achados da revisão da #3686).** Os stubs sem `PRIMARY KEY`
+só empurravam a parede do replay adiante: `NOT NULL` não cria chave referenciável, e
+`20260604141720_create_supplier_price_tiers.sql:3`, `20260605121608_001_silver_enum_and_products.sql:84` e
+`20260605121655_004_silver_images_queue.sql:18` referenciam `variant_supplier_sources(id)`,
+`material_types(id)` e `product_images(id)` — o replay pararia com `there is no unique constraint matching
+given keys for referenced table`. Acrescentadas as 13 constraints reais de produção (lidas em
+`pg_constraint`), `ENABLE ROW LEVEL SECURITY` nas 6 (produção tem RLS ligado nas 6; as migrations de policy
+posteriores criam policy mas não habilitam RLS) e as duas colunas `GENERATED ALWAYS ... STORED` de
+`product_images` (`cf_id_scheme`, `aspect_ratio`), que nasceriam comuns e nunca seriam recriadas, porque as
+migrations posteriores usam `ADD COLUMN IF NOT EXISTS`.
+
+Em `20250103080000`, as `UNIQUE` de `quotes.quote_number` e `quotes.approval_token` também se perdiam, e
+pior: `20251214194907_a5a0f44d-...sql:80-86` cria coluna **e** constraint num bloco guardado por "se a
+coluna não existir", que agora é pulado — nenhuma migration posterior recriava a chave, e o banco
+reconstruído aceitaria orçamentos com número repetido. Constraints adicionadas de forma idempotente.
+
+**Verificado em PostgreSQL 16.15 local, não por leitura:** as duas aplicações seguidas passam (idempotente),
+as 13 constraints e o RLS aparecem em `pg_constraint`/`pg_class`, as 3 FKs que falhavam passam a ser
+aceitas, `cf_id_scheme` classifica `xbz_site_abc` como `hash_legacy` e `aspect_ratio` de 800×600 dá
+`1.3333`, e o segundo orçamento com o mesmo número é recusado com
+`duplicate key value violates unique constraint "quotes_quote_number_key"`.
+
+**Nenhuma escrita em produção.** As duas `version` já estão aplicadas no ledger e os arquivos não voltam a
+rodar em produção; em um banco onde as colunas já existem cada statement novo é no-op. O `sha256` dos dois
+arquivos mudou por causa deste conserto de replay (nenhum dos dois tinha linha de recibo antes — ambos são
+anteriores ao corte `20260623111612` da tabela "Recibos"); os hashes novos ficam registrados abaixo.
+
+**Divergência produção × migrations:** 11 das 62 colunas declaradas não existem em produção (consulta
+read-only em 2026-11-15, `doufsxqlfjyuvxuezpln`) — `products.base_price`, `products.dimensions`,
+`products.minimum_stock`, `products.personalization_areas`, `products.personalization_options`,
+`products.sizes`, `products.stock_unit`, `products.weight`, `quotes.delivery_terms`,
+`quotes.discount_percentage`, `suppliers.is_active`. O replay as cria (é o que a migration já declarava);
+em produção nada foi alterado — decisão do dono.
+
+| versão | arquivo | sha256 anterior | sha256 novo | status |
+|---|---|---|---|---|
+| `20250103080000` | `complete_schema` | `b30c559adeef877f77c70c3f6dfd781ba03575dcddb25ab06ab4e795e5b3f324` | `096a7a6b1827f39d4c328e88e51536363c4ceb1532a5569fc90fcb3543018ac9` | já aplicada em produção; conserto só vale para replay do zero, não vai a produção |
+| `20260512000000` | `bootstrap_missing_application_schemas` | `a6c946928ff8eeb6505f1d303ecde32ea8bd2751017d5d82410ebbe725191d58` | `7e848bc78ad6026fc640e46807b00669f7fa4a61119d24701d38544d0064aa52` | já aplicada em produção; conserto só vale para replay do zero, não vai a produção |

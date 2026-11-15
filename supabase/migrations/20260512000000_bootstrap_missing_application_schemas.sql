@@ -43,6 +43,316 @@ SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
+
+--
+-- REPLAY FIX: public.material_groups / material_types / product_materials
+-- existem na producao mas nenhuma migration as cria (mesmo padrao de
+-- 20260604141700_bootstrap_fresh_replay_prereqs.sql). As materialized views
+-- analytics.mv_material_group_stats e analytics.mv_product_material_coverage
+-- deste proprio arquivo leem essas tabelas, entao num banco construido do zero
+-- o replay parava aqui. DDL abaixo = colunas/tipos/defaults reais da producao
+-- (doufsxqlfjyuvxuezpln), consultados em 2026-11-15; na producao cada statement
+-- e no-op por IF NOT EXISTS.
+--
+
+-- soft-delete-exempt: espelho fiel de tabela que JA existe em producao, sem
+-- deleted_at/archived_at -- stub de replay, nao e tabela nova.
+CREATE TABLE IF NOT EXISTS "public"."material_groups" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "organization_id" "uuid" NOT NULL,
+    "name" character varying NOT NULL,
+    "slug" character varying NOT NULL,
+    "description" "text",
+    "sort_order" integer DEFAULT 100,
+    "is_active" boolean DEFAULT true,
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    "created_by" "uuid",
+    "updated_by" "uuid"
+);
+
+-- soft-delete-exempt: espelho fiel de tabela que JA existe em producao, sem
+-- deleted_at/archived_at -- stub de replay, nao e tabela nova.
+CREATE TABLE IF NOT EXISTS "public"."material_types" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "organization_id" "uuid" NOT NULL,
+    "group_id" "uuid" NOT NULL,
+    "name" character varying NOT NULL,
+    "slug" character varying NOT NULL,
+    "description" "text",
+    "properties" "jsonb" DEFAULT '{}'::"jsonb",
+    "display_order" integer DEFAULT 0,
+    "is_active" boolean DEFAULT true,
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"()
+);
+
+-- soft-delete-exempt: espelho fiel de tabela que JA existe em producao, sem
+-- deleted_at/archived_at -- stub de replay, nao e tabela nova.
+CREATE TABLE IF NOT EXISTS "public"."product_materials" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "organization_id" "uuid" NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "material_id" "uuid" NOT NULL,
+    "part" character varying,
+    "percentage" numeric,
+    "notes" "text",
+    "sort_order" integer DEFAULT 100,
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    "is_active" boolean DEFAULT true,
+    "created_by" "uuid",
+    "updated_by" "uuid"
+);
+
+--
+-- REPLAY FIX (2): public.product_images / stock_daily_summary /
+-- variant_supplier_sources — mesmo defeito das 3 tabelas acima: existem na
+-- producao mas nenhuma migration as cria em momento algum, e as materialized
+-- views analytics.mv_media_health, analytics.mv_stock_velocity e
+-- analytics.mv_supplier_reliability deste proprio arquivo as leem; num banco
+-- construido do zero o replay parava no statement 66 com
+-- `relation "public.product_images" does not exist`. DDL abaixo = colunas/
+-- tipos/defaults reais da producao (doufsxqlfjyuvxuezpln), consultados em
+-- 2026-11-15; na producao cada statement e no-op por IF NOT EXISTS.
+--
+
+-- soft-delete-exempt: espelho fiel de tabela que JA existe em producao --
+-- stub de replay, nao e tabela nova.
+CREATE TABLE IF NOT EXISTS "public"."product_images" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "variant_id" "uuid",
+    "color_id" "uuid",
+    "cloudflare_image_id" character varying NOT NULL,
+    "url_cdn" "text" NOT NULL,
+    "filename" character varying,
+    "file_size_bytes" bigint,
+    "width_px" integer,
+    "height_px" integer,
+    "format" character varying,
+    "image_type" character varying DEFAULT 'gallery'::character varying NOT NULL,
+    "is_primary" boolean DEFAULT false,
+    "display_order" integer DEFAULT 0,
+    "applies_to_color" boolean DEFAULT false,
+    "source_supplier" character varying,
+    "url_original" "text",
+    "is_active" boolean DEFAULT true,
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    "image_type_id" "uuid" DEFAULT '1590e144-e3f8-41e6-98f9-f4a25bae496d'::"uuid" NOT NULL,
+    "supplier_code" character varying,
+    "alt_text" "text",
+    "title_text" "text",
+    "caption" "text",
+    "is_og_image" boolean DEFAULT false,
+    "organization_id" "uuid" DEFAULT '5db5aee1-064b-4ef4-9193-345dcd8274ea'::"uuid" NOT NULL,
+    "cf_sync_status" "text" DEFAULT 'pending'::"text" NOT NULL,
+    "cf_uploaded_at" timestamp with time zone,
+    "cf_verified_at" timestamp with time zone,
+    "cf_check_attempts" smallint DEFAULT 0 NOT NULL,
+    "cf_last_error" "text",
+    -- GENERATED ALWAYS STORED na producao: migrations posteriores
+    -- (20260616170638_pi_cf_sync_observability_e1.sql:12-25 e
+    -- 20260616171501_product_images_cf_sync_observability.sql) usam
+    -- ADD COLUMN IF NOT EXISTS, logo nao recriariam a expressao se a coluna
+    -- nascesse comum aqui: o replay ficaria com classificacao nula e a view
+    -- cf_recon.v_verification_queue deixaria passar id `xbz_site_...`.
+    "cf_id_scheme" "text" GENERATED ALWAYS AS (
+CASE
+    WHEN (("cloudflare_image_id")::"text" ~ '^xbz_site_'::"text") THEN 'hash_legacy'::"text"
+    WHEN ((("cloudflare_image_id")::"text" ~ '-dup-'::"text") OR (("cloudflare_image_id")::"text" ~ '-leg-'::"text") OR (("cloudflare_image_id")::"text" ~ '--ref'::"text") OR (("cloudflare_image_id")::"text" ~ '-legacy$'::"text")) THEN 'synthetic'::"text"
+    WHEN (("cloudflare_image_id")::"text" ~ '^[0-9a-f]{8}-[0-9a-f]{4}-'::"text") THEN 'uuid'::"text"
+    WHEN (("cloudflare_image_id")::"text" ~ '-(main|gal-[0-9]+)$'::"text") THEN 'main_gal'::"text"
+    WHEN (("cloudflare_image_id")::"text" ~ '-d[0-9]+$'::"text") THEN 'detail_dn'::"text"
+    WHEN ((("cloudflare_image_id")::"text" ~ '-[0-9]{4,}-[0-9]{9,}$'::"text") OR (("cloudflare_image_id")::"text" ~ 'd[0-9]+-[0-9]{9,}$'::"text")) THEN 'slug_ts'::"text"
+    WHEN (("cloudflare_image_id")::"text" ~ '_[0-9]'::"text") THEN 'legacy_cor'::"text"
+    ELSE 'seq'::"text"
+END) STORED,
+    "content_hash" "text",
+    "canonical_image_id" "uuid",
+    "is_shared" boolean DEFAULT false NOT NULL,
+    "r2_bucket" "text",
+    "r2_object_key" "text",
+    "last_modified_source" "text",
+    "deleted_at" timestamp with time zone,
+    "deleted_reason" "text",
+    "blurhash" "text",
+    "requires_signed_url" boolean DEFAULT false NOT NULL,
+    -- GENERATED ALWAYS STORED na producao (mesmo motivo do cf_id_scheme).
+    "aspect_ratio" numeric GENERATED ALWAYS AS (
+CASE
+    WHEN (("height_px" IS NOT NULL) AND ("height_px" > 0) AND ("width_px" IS NOT NULL)) THEN "round"((("width_px")::numeric / ("height_px")::numeric), 4)
+    ELSE NULL::numeric
+END) STORED,
+    "cf_last_checked_at" timestamp with time zone
+);
+
+-- soft-delete-exempt: espelho fiel de tabela que JA existe em producao, sem
+-- deleted_at/archived_at -- stub de replay, nao e tabela nova.
+CREATE TABLE IF NOT EXISTS "public"."variant_supplier_sources" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "organization_id" "uuid" NOT NULL,
+    "variant_id" "uuid" NOT NULL,
+    "supplier_id" "uuid" NOT NULL,
+    "quantity" integer DEFAULT 0,
+    "source" character varying DEFAULT 'manual'::character varying,
+    "last_synced_at" timestamp with time zone,
+    "sync_status" character varying DEFAULT 'synced'::character varying,
+    "sync_error" "text",
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    "next_quantity_1" integer,
+    "next_date_1" "date",
+    "next_quantity_2" integer,
+    "next_date_2" "date",
+    "next_quantity_3" integer,
+    "next_date_3" "date",
+    "supplier_sku" character varying,
+    "supplier_color_code" character varying,
+    "supplier_color_name" character varying,
+    "cost_price" numeric,
+    "list_price" numeric,
+    "cost_price_1" numeric,
+    "min_qty_1" integer,
+    "cost_price_2" numeric,
+    "min_qty_2" integer,
+    "cost_price_3" numeric,
+    "min_qty_3" integer,
+    "cost_price_4" numeric,
+    "min_qty_4" integer,
+    "cost_price_5" numeric,
+    "min_qty_5" integer,
+    "lead_time_days" integer,
+    "min_order_qty" integer DEFAULT 1,
+    "pack_quantity" integer DEFAULT 1,
+    "sale_multiplier" integer DEFAULT 1,
+    "is_preferred" boolean DEFAULT false,
+    "priority" integer DEFAULT 99,
+    "is_active" boolean DEFAULT true,
+    "supplier_images" "jsonb" DEFAULT '[]'::"jsonb",
+    "supplier_videos" "jsonb" DEFAULT '[]'::"jsonb",
+    "supplier_thumbnail" character varying,
+    "removed_from_api" boolean DEFAULT false,
+    "removed_at" timestamp with time zone,
+    "raw_data" "jsonb",
+    "stock_main_warehouse" integer DEFAULT 0 NOT NULL,
+    "stock_other_warehouses" integer DEFAULT 0 NOT NULL,
+    "supplier_availability_status" character varying,
+    "supplier_ipi_rate" numeric,
+    "supplier_branch_id" "uuid",
+    "icms_rate" numeric,
+    "pis_rate" numeric,
+    "cofins_rate" numeric,
+    "cfop" character varying,
+    "csosn" character varying,
+    "cest" character varying,
+    "cst" character varying,
+    "operation_nature" character varying,
+    "price_updated_at" timestamp with time zone,
+    "next_quantity_4" integer,
+    "next_quantity_5" integer,
+    "next_quantity_6" integer,
+    "next_date_4" "date",
+    "next_date_5" "date",
+    "next_date_6" "date",
+    "your_price" numeric
+);
+
+-- soft-delete-exempt: espelho fiel de tabela que JA existe em producao, sem
+-- deleted_at/archived_at -- stub de replay, nao e tabela nova.
+-- `id` e bigint gerado por identidade na producao.
+CREATE TABLE IF NOT EXISTS "public"."stock_daily_summary" (
+    "id" bigint GENERATED BY DEFAULT AS IDENTITY NOT NULL,
+    "variant_supplier_source_id" "uuid" NOT NULL,
+    "supplier_id" "uuid" NOT NULL,
+    "supplier_branch_id" "uuid",
+    "variant_id" "uuid" NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "summary_date" "date" NOT NULL,
+    "stock_open" integer,
+    "stock_close" integer,
+    "stock_min" integer,
+    "stock_max" integer,
+    "net_change" integer,
+    "units_depleted" integer DEFAULT 0,
+    "units_restocked" integer DEFAULT 0,
+    "restock_detected" boolean DEFAULT false,
+    "restock_quantity" integer DEFAULT 0,
+    "restock_count" smallint DEFAULT 0,
+    "cost_price_open" numeric,
+    "cost_price_close" numeric,
+    "price_changed" boolean DEFAULT false,
+    "sync_count" smallint DEFAULT 0,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "restock_zero_to_positive" boolean DEFAULT false NOT NULL
+);
+
+--
+-- REPLAY FIX (3): chaves e RLS das 6 tabelas espelhadas acima.
+--
+-- `NOT NULL` nao cria chave referenciavel: o Postgres exige PRIMARY KEY ou UNIQUE
+-- na coluna alvo de uma FK. Sem os blocos abaixo, o replay segue e quebra adiante,
+-- com `there is no unique constraint matching given keys for referenced table`:
+--   20260604141720_create_supplier_price_tiers.sql:3        -> variant_supplier_sources(id)
+--   20260605121608_001_silver_enum_and_products.sql:84      -> material_types(id)
+--   20260605121655_004_silver_images_queue.sql:18           -> product_images(id)
+-- E as 6 tabelas tem RLS LIGADO em producao; as migrations de policy posteriores
+-- criam policy mas NAO fazem ENABLE ROW LEVEL SECURITY, logo num banco do zero as
+-- tabelas nasceriam sem isolamento por organizacao.
+--
+-- Nomes, colunas e RLS conferidos em producao (doufsxqlfjyuvxuezpln, read-only,
+-- 2026-11-15) em pg_constraint e pg_class.relrowsecurity. Cada bloco e guardado por
+-- existencia, entao em producao e no-op. Achados do devin-ai-integration (bug
+-- 🔴 e security 🟨) e do chatgpt-codex-connector (P2) na PR #3686.
+--
+
+DO $$
+DECLARE
+  r record;
+BEGIN
+  FOR r IN
+    SELECT * FROM (VALUES
+      ('material_groups',          'material_groups_pkey',                                'PRIMARY KEY ("id")'),
+      ('material_groups',          'material_groups_organization_id_name_key',             'UNIQUE ("organization_id", "name")'),
+      ('material_groups',          'material_groups_organization_id_slug_key',             'UNIQUE ("organization_id", "slug")'),
+      ('material_types',           'material_types_pkey',                                 'PRIMARY KEY ("id")'),
+      ('material_types',           'material_types_organization_id_slug_key',              'UNIQUE ("organization_id", "slug")'),
+      ('product_materials',        'product_materials_pkey',                              'PRIMARY KEY ("id")'),
+      ('product_materials',        'product_materials_product_material_unique',           'UNIQUE ("product_id", "material_id")'),
+      ('product_images',           'product_images_pkey',                                 'PRIMARY KEY ("id")'),
+      ('product_images',           'product_images_cloudflare_image_id_key',              'UNIQUE ("cloudflare_image_id")'),
+      ('variant_supplier_sources', 'variant_stocks_pkey',                                 'PRIMARY KEY ("id")'),
+      ('variant_supplier_sources', 'variant_stocks_organization_id_variant_id_supplier_id_key', 'UNIQUE ("organization_id", "variant_id", "supplier_id")'),
+      ('stock_daily_summary',      'stock_daily_summary_pkey',                            'PRIMARY KEY ("id")'),
+      ('stock_daily_summary',      'uq_stock_daily_vss_date',                             'UNIQUE ("variant_supplier_source_id", "summary_date")')
+    ) AS t(tabela, constraint_name, definicao)
+  LOOP
+    IF to_regclass('public.' || quote_ident(r.tabela)) IS NOT NULL
+       AND NOT EXISTS (
+         SELECT 1 FROM pg_constraint
+          WHERE conrelid = ('public.' || quote_ident(r.tabela))::regclass
+            AND conname = r.constraint_name
+       )
+    THEN
+      EXECUTE format('ALTER TABLE public.%I ADD CONSTRAINT %I %s',
+                     r.tabela, r.constraint_name, r.definicao);
+    END IF;
+  END LOOP;
+END $$;
+
+-- ENABLE ROW LEVEL SECURITY e idempotente: no-op quando já está ligado.
+DO $$
+DECLARE
+  t text;
+BEGIN
+  FOREACH t IN ARRAY ARRAY['material_groups','material_types','product_materials',
+                           'product_images','variant_supplier_sources','stock_daily_summary']
+  LOOP
+    IF to_regclass('public.' || quote_ident(t)) IS NOT NULL THEN
+      EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', t);
+    END IF;
+  END LOOP;
+END $$;
 SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
