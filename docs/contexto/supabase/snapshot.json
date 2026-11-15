@@ -188499,9 +188499,13 @@
             {
               "file": "supabase/migrations/20260626141721_packaging_robustness_v1.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 8,
+          "code_total_files": 9,
           "cron": [],
           "db": [],
           "triggers": [
