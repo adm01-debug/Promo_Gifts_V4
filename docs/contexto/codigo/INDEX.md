@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1eafa069a047cda77e2e19daab5d21071691333c` (2026-11-15T02:24:51Z).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3893d57fe05a6e32c30db37516ea991573961155` (2026-11-15T03:09:21Z).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 10211 |
 | arquivos_codigo | 5261 |
-| linhas_codigo | 1004049 |
+| linhas_codigo | 1004068 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -589,7 +589,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43587 nós · 75384 arestas · 2443 comunidades · grafo do commit `1eafa069`
+- 43587 nós · 75384 arestas · 2443 comunidades · grafo do commit `3893d57f`
 - comunidades maiores: vitest (846), react (588), lucide-react (556), ref_hooks (483), ref_integrations (427), @tanstack/react-query (378), ref_node_child_process (343), ref_node_fs (327), sonner (321), ref_components (320), cors.ts (317), scripts (302)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -597,13 +597,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Hotspots (arquivos mais alterados, 90 dias)
 - RELATORIO_CI.md (94)
 - PENDENCIAS.md (90)
-- supabase/MIGRATIONS_SYNC_LOG.md (59)
+- supabase/MIGRATIONS_SYNC_LOG.md (60)
 - package.json (44)
 - package-lock.json (35)
 - analise-prs/progresso.json (21)
 - analise-prs/RELATORIO_PRS.md (19)
 - CHANGELOG.md (18)
-- docs/coordenacao/conflitos-semanticos.md (17)
+- docs/coordenacao/conflitos-semanticos.md (18)
 - supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (17)
 - analise-prs/prs.json (15)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (15)
@@ -1184,6 +1184,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-15 `3893d57f` fix(ci): portão de recibos deixa de dar verde com version citada no recibo de outra migration (#3649)
 - 2026-11-15 `1eafa069` fix(db): cria o rollback que destrava o revoke E18 — estoque alterável por qualquer usuário logado (#3648)
 - 2026-11-15 `e5afe824` fix: trem das 5 correções já verdes — recibos, código morto do CRM, 3 resgates, gerador de mockup e aba Marketing (#3647
 - 2026-11-15 `bc3fdff6` fix(db): get_quote_token_public deixa de devolver dados com link expirado (#3645)
@@ -1198,7 +1199,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-14 `36b6c1d7` fix(security): corrige o sha256 do retrato de policies (destrava o CI) (#3635)
 - 2026-11-14 `c5d670cf` Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230
 - 2026-11-14 `98589a4e` chore(coordenacao): registra o resgate da correcao de ownership do CRM (E188)
-- 2026-11-14 `9af05ef8` fix(crm): fornecedor e transportadora fora do escopo por vendedor, e teste travando a regra nova
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

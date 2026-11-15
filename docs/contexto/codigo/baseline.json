@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1eafa069a047cda77e2e19daab5d21071691333c",
+  "commit": "3893d57fe05a6e32c30db37516ea991573961155",
   "branch": "main",
-  "data_commit": "2026-11-15T02:24:51Z",
+  "data_commit": "2026-11-15T03:09:21Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3893d57f",
+    "data": "2026-11-15",
+    "assunto": "fix(ci): portão de recibos deixa de dar verde com version citada no recibo de outra migration (#3649)"
+   },
    {
     "sha": "1eafa069",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "16bc011d",
     "data": "2026-11-14",
     "assunto": "Merge remote-tracking branch 'origin/main' into claude/trem4-front-perf-261114-2020"
-   },
-   {
-    "sha": "87653797",
-    "data": "2026-11-14",
-    "assunto": "Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945"
    }
   ],
-  "arquivos_mudados_7d": 2163,
+  "arquivos_mudados_7d": 2087,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 59
+    "mudancas": 60
    },
    {
     "arquivo": "package.json",
@@ -231,7 +231,7 @@
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 17
+    "mudancas": 18
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 582
+    "commits": 581
    },
    {
     "autor": "Joaquim Ataides",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10211,
   "arquivos_codigo": 5261,
-  "linhas_codigo": 1004049,
+  "linhas_codigo": 1004068,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1224,7 +1224,7 @@
   },
   "scripts/check-migration-receipts.mjs": {
    "arquivos": 1,
-   "linhas": 220
+   "linhas": 239
   },
   "scripts/check-migrations-sync-log-gate.mjs": {
    "arquivos": 1,

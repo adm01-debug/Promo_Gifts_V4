@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): portão de recibos deixa de dar verde com version citada no recibo de outra migration (#3649)",
    "fix(db): cria o rollback que destrava o revoke E18 — estoque alterável por qualquer usuário logado (#3648)",
    "fix: trem das 5 correções já verdes — recibos, código morto do CRM, 3 resgates, gerador de mockup e aba Marketing (#3647)",
    "fix(db): get_quote_token_public deixa de devolver dados com link expirado (#3645)",
-   "docs(pendencias): registra o que depende do dono na sessao de 15/11 (#3644)",
-   "fix(admin): auditoria do Connections Hub exige confirmação antes de ações destrutivas (#3615)"
+   "docs(pendencias): registra o que depende do dono na sessao de 15/11 (#3644)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

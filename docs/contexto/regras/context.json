@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "1eafa069a047cda77e2e19daab5d21071691333c",
+  "sha": "3893d57fe05a6e32c30db37516ea991573961155",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 02:26 UTC",
+  "generated_at": "2026-11-15 03:11 UTC",
   "files_total": 10139,
   "code_files": 8666,
-  "code_lines": 1222269
+  "code_lines": 1222288
  },
  "version": "1.3.2",
- "facts_hash": "0d70f770556047ab",
+ "facts_hash": "142784bf249073a9",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -147416,7 +147416,7 @@
   {
    "module": "scripts",
    "files": 287,
-   "lines": 62074,
+   "lines": 62093,
    "tables": [
     "a",
     "b",
@@ -417108,7 +417108,7 @@
   },
   "scripts/check-migration-receipts.mjs": {
    "path": "scripts/check-migration-receipts.mjs",
-   "lines": 220,
+   "lines": 239,
    "rule_comments": [
     "Linha \"pendente-only\" (contém a versão mas apenas status pendente, sem \"aplicada\")"
    ],
@@ -417117,7 +417117,7 @@
     {
      "name": "validateSyncLogIntegrity",
      "params": "content",
-     "body": "if (!content || content.trim().length === 0) { return ['arquivo MIGRATIONS_SYNC_LOG.md está vazio']; } // Conta versões em linhas de tabela (1ª célula), não em cabeçalhos de seção. // Cabeçalhos como \"## Recibos — ... (versão > `20260623111612`)\" têm 14 dígitos // mas não são recibos individuais. const receiptLines = content.split('\\n').filter((l) => { if (!l.trimStart().startsWith('|')) return false; const firstCell = l."
+     "body": "if (!content || content.trim().length === 0) { return ['arquivo MIGRATIONS_SYNC_LOG.md está vazio']; } // Conta versões em linhas de tabela (1ª célula), não em cabeçalhos de seção. // Cabeçalhos como \"## Recibos — ... (versão > `20260623111612`)\" têm 14 dígitos // mas não são recibos individuais. const receiptLines = content.split('\\n').filter((l) => { if (!l.trimStart().startsWith('|')) return false; const firstCell = l.split('|')[1] ?? ''; return /`\\d{14}/.test(firstCell); }); if (receiptLines …"
     }
    ],
    "temporal": [
@@ -532577,10 +532577,21 @@
   }
  },
  "git": {
-  "sha": "1eafa069a047cda77e2e19daab5d21071691333c",
+  "sha": "3893d57fe05a6e32c30db37516ea991573961155",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "3893d57",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "fix(ci): portão de recibos deixa de dar verde com version citada no recibo de outra migration (#3649)",
+    "files": [
+     "docs/coordenacao/conflitos-semanticos.md",
+     "scripts/check-migration-receipts.mjs",
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "1eafa06",
     "date": "2026-11-14",
@@ -532919,27 +532930,24 @@
     "author": "Claude",
     "subject": "merge: claude/fix-suggestions-sem-useadvancedfilters-261114-1004",
     "files": []
-   },
-   {
-    "sha": "3430105",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "merge: claude/fix-stock-pagination-sem-count-exact-261114-1007",
-    "files": []
    }
   ],
   "hot_files": [
    [
     "docs/coordenacao/conflitos-semanticos.md",
-    7
+    8
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    3
+    4
    ],
    [
     ".security/policies-baseline.json",
     2
+   ],
+   [
+    "scripts/check-migration-receipts.mjs",
+    1
    ],
    [
     "supabase/rollbacks/20260917061500_rollback.sql",
@@ -533003,10 +533011,6 @@
    ],
    [
     "src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts",
-    1
-   ],
-   [
-    "src/hooks/mockup/__tests__/mockupBatch.partial.test.ts",
     1
    ]
   ]
