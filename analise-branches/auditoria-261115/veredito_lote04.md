@@ -141,7 +141,7 @@ Provas: `src/components/mockup/TemplateSelector.tsx` **não existe** na main (`g
 **Veredito: DECISAO_HUMANA**
 Endurecimento de segurança aprovado pelo PO em 2026-11-01 e **nunca aplicado**: liga `security_invoker` em 8 views públicas (P06) e revoga a leitura anônima irrestrita do mapa de sinônimos de cor (P15).
 Provas:
-- `supabase/migrations/20261101000001_security_invoker_views_p06.sql` (+13) e `20261101000002_revoke_anon_color_synonym_map_p15.sql` (+8) não existem na main (`git grep "rls_anon_read_color_synonym_map" origin/main -- supabase/migrations` → nada; a política só aparece no baseline `origin/main:supabase/baseline/20261015140000_baseline_schema.sql:107605`).
+- a migration `20261101000001_security_invoker_views_p06.sql` (da branch, nao da arvore) (+13) e `20261101000002_revoke_anon_color_synonym_map_p15.sql` (+8) não existem na main (`git grep "rls_anon_read_color_synonym_map" origin/main -- supabase/migrations` → nada; a política só aparece no baseline `origin/main:supabase/baseline/20261015140000_baseline_schema.sql:107605`).
 - Produção (read-only, 2026-11-15): as 8 views continuam `security_invoker=false` (`v_system_health_dashboard` nem tem a opção) e a política `rls_anon_read_color_synonym_map` ainda existe em `pg_policies`.
 O que decidir: mudar `security_invoker` em views públicas pode quebrar leitura anônima do catálogo/preços (a própria migration exclui `v_variant_sale_prices_public` por isso) — é DDL de produção com risco de negócio.
 

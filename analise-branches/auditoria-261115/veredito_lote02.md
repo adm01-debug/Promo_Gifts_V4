@@ -285,7 +285,7 @@ Resumo: revoga a permissão de execução pública em 106 funções internas do 
 rotinas de sincronização) — DDL em produção, com conflito de numeração de migration.
 
 Conteúdo (~322 linhas):
-- `supabase/migrations/20261101210000_sec001_revoke_anon_execute_trigger_functions.sql` (+115) —
+- a migration `20261101210000_sec001_revoke_anon_execute_trigger_functions.sql` (da branch, nao da arvore) (+115) —
   `REVOKE EXECUTE ON FUNCTION ... FROM PUBLIC` em 106 funções (`fn_audit_role_changes`,
   `fn_log_login_attempt`, `fn_log_price_change`, `fn_force_user_logout`, …).
 - `supabase/rollbacks/20261101210000_rollback.sql` (+109) — rollback da acima.
