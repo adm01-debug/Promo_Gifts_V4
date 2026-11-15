@@ -204,9 +204,26 @@ function ehLinhaDeCandidato(valor: unknown): valor is LinhaDeCandidato {
   );
 }
 
-/** Confiança do melhor encaixe de cor da logo, ou `null` quando não há cor. */
-function confiancaDaCorDoCliente(sinais: SinaisDaMarcaDoCliente | null | undefined) {
-  return sinais?.encaixesDeCor[0]?.confianca ?? null;
+/**
+ * Confiança da cor da logo: a MAIS FRACA entre os encaixes, ou `null` sem cor.
+ *
+ * A RPC liga `sinal_cor` quando o produto tem variante em QUALQUER um dos
+ * `p_color_group_ids`, e não diz qual. Com dois grupos — um exato e um
+ * aproximado — pegar o primeiro afirmaria "cor igual à logo" para um produto
+ * que casou só com o aproximado. A mais fraca nunca promete mais do que o
+ * produto tem.
+ */
+function confiancaDaCorDoCliente(
+  sinais: SinaisDaMarcaDoCliente | null | undefined,
+): ConfiancaDeCor | null {
+  const encaixes = sinais?.encaixesDeCor ?? [];
+  if (encaixes.length === 0) return null;
+  const ordem: ConfiancaDeCor[] = ['exata', 'proxima', 'aproximada', 'distante'];
+  return encaixes.reduce<ConfiancaDeCor>(
+    (pior, encaixe) =>
+      ordem.indexOf(encaixe.confianca) > ordem.indexOf(pior) ? encaixe.confianca : pior,
+    encaixes[0].confianca,
+  );
 }
 
 /**
