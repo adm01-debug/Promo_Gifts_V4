@@ -43,6 +43,7 @@ import { fetchRecentMockupHistory } from '@/hooks/mockup/mockupHistoryAdapter';
 import { buildHistoryClients } from '@/hooks/mockup/mockupHistoryClients';
 import { useMockupAreaRetry } from '@/hooks/mockup/useMockupAreaRetry';
 import { useMockupEntryParams } from '@/hooks/mockup/useMockupEntryParams';
+import { useMockupTechniquesLoad } from '@/hooks/mockup/useMockupTechniquesLoad';
 import {
   MAX_BATCH_AREAS,
   MISSING_DIMENSIONS_MESSAGE,
@@ -50,7 +51,6 @@ import {
   resolveProductDimensions,
   hasRealProductDimensions,
   logoLimitWarnings,
-  loadMockupTechniques,
   saveBatchResults,
   failedAreaErrors,
   type BatchMockupResult,
@@ -74,8 +74,9 @@ export function useMockupGenerator() {
   } = useMockupDraft();
   const { getProductById } = useProductsContext();
 
-  const [techniques, setTechniques] = useState<Technique[]>([]);
-  const [isLoadingData, setIsLoadingData] = useState(true);
+  // Carga das técnicas (lista, carregando e ERRO) mora em useMockupTechniquesLoad.
+  const { techniques, isLoadingData, techniquesError, reloadTechniques } =
+    useMockupTechniquesLoad();
   const [productSelection, setProductSelection] = useState<MockupProductSelection | null>(null);
   const [selectedTechnique, setSelectedTechnique] = useState<
     Technique | TechniqueWithLimits | null
@@ -226,10 +227,6 @@ export function useMockupGenerator() {
       setActiveAreaId(personalizationAreas[0].id);
   }, [activeAreaId, personalizationAreas]);
 
-  useEffect(() => {
-    fetchData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   // F-03: reconcilia a técnica restaurada com o id canônico de filteredTechniques (os ids vêm de
   // espaços diferentes — RPC print_area_techniques x tabela_preco_gravacao_oficial — e mudam de
   // produto para produto); só limpa quando a técnica não existe para o produto. Grava SÓ quando o
@@ -351,18 +348,6 @@ export function useMockupGenerator() {
   useEffect(() => {
     if (user?.id) fetchHistory();
   }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const fetchData = useCallback(async () => {
-    try {
-      const techniquesData = await loadMockupTechniques();
-      setTechniques(techniquesData);
-    } catch (error) {
-      logger.error('Error fetching data:', error);
-      toast.error('Erro ao carregar dados. Tente novamente.');
-    } finally {
-      setIsLoadingData(false);
-    }
-  }, []);
 
   const fetchHistory = useCallback(async () => {
     setIsLoadingHistory(true);
@@ -766,6 +751,8 @@ export function useMockupGenerator() {
       user,
       techniques,
       isLoadingData,
+      techniquesError,
+      reloadTechniques,
       productSelection,
       setProductSelection,
       selectedProduct,
@@ -838,6 +825,8 @@ export function useMockupGenerator() {
       user,
       techniques,
       isLoadingData,
+      techniquesError,
+      reloadTechniques,
       productSelection,
       selectedProduct,
       selectedTechnique,
