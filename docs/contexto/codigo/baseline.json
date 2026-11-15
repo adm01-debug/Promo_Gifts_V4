@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a7d22afff7b2596a381a7b476d81e066af4386e3",
+  "commit": "bc3fdff61fed8e92dd42f232484de2ceecdecb03",
   "branch": "main",
-  "data_commit": "2026-11-15T01:07:34Z",
+  "data_commit": "2026-11-15T01:23:17Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "bc3fdff6",
+    "data": "2026-11-15",
+    "assunto": "fix(db): get_quote_token_public deixa de devolver dados com link expirado (#3645)"
+   },
    {
     "sha": "a7d22aff",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "8288d686",
     "data": "2026-11-14",
     "assunto": "chore(coordenacao): registra o trem 4 no ledger (E188)"
-   },
-   {
-    "sha": "2c040e80",
-    "data": "2026-11-14",
-    "assunto": "merge: codex/fix-sidebar-tooltips-auth-261107-0205"
    }
   ],
-  "arquivos_mudados_7d": 2117,
+  "arquivos_mudados_7d": 2119,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 96
+    "mudancas": 95
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 585
+    "commits": 584
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10187,
+  "arquivos_total": 10189,
   "arquivos_codigo": 5242,
   "linhas_codigo": 1000082,
   "rotas": 138,
@@ -334,7 +334,7 @@
   "hooks": 615,
   "edge_functions": 111,
   "tabelas": 546,
-  "migrations": 3085,
+  "migrations": 3086,
   "cron_jobs": 122,
   "testes": 2471,
   "workflows": 98,

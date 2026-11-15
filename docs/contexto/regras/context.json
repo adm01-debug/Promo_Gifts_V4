@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "a7d22afff7b2596a381a7b476d81e066af4386e3",
+  "sha": "bc3fdff61fed8e92dd42f232484de2ceecdecb03",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 01:12 UTC",
-  "files_total": 10115,
-  "code_files": 8642,
-  "code_lines": 1218215
+  "generated_at": "2026-11-15 01:24 UTC",
+  "files_total": 10117,
+  "code_files": 8644,
+  "code_lines": 1218313
  },
  "version": "1.3.2",
- "facts_hash": "9b6df5a2b4049086",
+ "facts_hash": "1fd9e1b7570c8e5c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1221,7 +1221,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3401,
+   ".sql": 3403,
    ".ts": 2925,
    ".tsx": 1867,
    ".mjs": 436,
@@ -70107,7 +70107,7 @@
     "args": "_token text",
     "returns": "jsonb",
     "lang": "sql",
-    "src": "supabase/migrations/20260904102000_audit_r4_sec009_sec010_quote_token_pii_and_password_reset_path.sql",
+    "src": "supabase/rollbacks/20261115013000_rollback.sql",
     "security_definer": true,
     "search_path": true,
     "body": "SELECT jsonb_build_object( 'id', qat.id, 'quote_id', qat.quote_id, 'token', qat.token, 'status', qat.status, 'expires_at', qat.expires_at, 'client_name', qat.client_name, 'viewed_at', qat.viewed_at, 'responded_at', qat.responded_at, 'response', qat.response, 'response_notes', qat.response_notes, 'created_at', qat.created_at, 'signer_name', qat.signer_name, 'signed_at', qat.signed_at ) FROM public.quote_approval_tokens qat WHERE qat.token = _token LIMIT 1;",
@@ -96248,6 +96248,7 @@
    "supabase/migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql",
    "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
    "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql",
+   "supabase/migrations/20261115013000_fix_get_quote_token_public_respeita_expiracao.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96333,6 +96334,7 @@
    "supabase/rollbacks/20261114040000_rollback.sql",
    "supabase/rollbacks/20261114170845_rollback.sql",
    "supabase/rollbacks/20261114170921_rollback.sql",
+   "supabase/rollbacks/20261115013000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -149289,8 +149291,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3084,
-   "lines": 221786,
+   "files": 3085,
+   "lines": 221854,
    "tables": [
     "...",
     "admin_audit_log",
@@ -149388,8 +149390,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 86,
-   "lines": 2432,
+   "files": 87,
+   "lines": 2462,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -328876,7 +328878,7 @@
     "args": "_token text",
     "returns": "jsonb",
     "lang": "sql",
-    "src": "supabase/migrations/20260904102000_audit_r4_sec009_sec010_quote_token_pii_and_password_reset_path.sql",
+    "src": "supabase/rollbacks/20261115013000_rollback.sql",
     "security_definer": true,
     "search_path": true,
     "body": "SELECT jsonb_build_object( 'id', qat.id, 'quote_id', qat.quote_id, 'token', qat.token, 'status', qat.status, 'expires_at', qat.expires_at, 'client_name', qat.client_name, 'viewed_at', qat.viewed_at, 'responded_at', qat.responded_at, 'response', qat.response, 'response_notes', qat.response_notes, 'created_at', qat.created_at, 'signer_name', qat.signer_name, 'signed_at', qat.signed_at ) FROM public.quote_approval_tokens qat WHERE qat.token = _token LIMIT 1;",
@@ -507031,6 +507033,10 @@
    "path": "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql",
    "lines": 132
   },
+  "supabase/migrations/20261115013000_fix_get_quote_token_public_respeita_expiracao.sql": {
+   "path": "supabase/migrations/20261115013000_fix_get_quote_token_public_respeita_expiracao.sql",
+   "lines": 68
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -507384,6 +507390,10 @@
   "supabase/rollbacks/20261114170921_rollback.sql": {
    "path": "supabase/rollbacks/20261114170921_rollback.sql",
    "lines": 57
+  },
+  "supabase/rollbacks/20261115013000_rollback.sql": {
+   "path": "supabase/rollbacks/20261115013000_rollback.sql",
+   "lines": 30
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -531171,10 +531181,20 @@
   }
  },
  "git": {
-  "sha": "a7d22afff7b2596a381a7b476d81e066af4386e3",
+  "sha": "bc3fdff61fed8e92dd42f232484de2ceecdecb03",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "bc3fdff",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "fix(db): get_quote_token_public deixa de devolver dados com link expirado (#3645)",
+    "files": [
+     "supabase/migrations/20261115013000_fix_get_quote_token_public_respeita_expiracao.sql",
+     "supabase/rollbacks/20261115013000_rollback.sql"
+    ]
+   },
    {
     "sha": "a7d22af",
     "date": "2026-11-14",
@@ -531463,13 +531483,6 @@
      "docs/faxina-261114/06-prova-prs-supersedidas-trem2.tsv",
      "docs/faxina-261114/README.md"
     ]
-   },
-   {
-    "sha": "a63a77b",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945",
-    "files": []
    }
   ],
   "hot_files": [
@@ -531488,6 +531501,14 @@
    [
     "docs/faxina-261114/05-plano-workflows.md",
     2
+   ],
+   [
+    "supabase/migrations/20261115013000_fix_get_quote_token_public_respeita_expiracao.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261115013000_rollback.sql",
+    1
    ],
    [
     "PENDENCIAS.md",
@@ -531543,14 +531564,6 @@
    ],
    [
     "src/components/kit-builder/ItemSelector.types.ts",
-    1
-   ],
-   [
-    "src/components/kit-builder/KitHeroPricingCard.tsx",
-    1
-   ],
-   [
-    "src/components/kit-builder/KitMobileSummaryBar.tsx",
     1
    ]
   ]
